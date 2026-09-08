@@ -1,5 +1,6 @@
 import { upgradeScene } from '../scene.mjs';
-import { BEHAVIOR_API_GUIDE,BEHAVIOR_CAPABILITIES,BEHAVIOR_LIMITS,BEHAVIOR_PERMISSIONS,BEHAVIOR_REQUIREMENTS } from '../behavior-contracts.mjs';
+import { BEHAVIOR_API_GUIDE,BEHAVIOR_LIMITS } from '../behavior-contracts.mjs';
+import { capabilitiesCatalog } from './capabilities.mjs';
 import { contentHash,fields,integer,requireValue,TOOL_NAMES } from './contracts.mjs';
 
 export const TOOL_GUIDE=[
@@ -41,8 +42,7 @@ export class DomainTools{
       return {id:module.id,version:module.version,hash:module.hash,text:chars.slice(start,end).join(''),start,next:end<chars.length?end:null,totalChars:chars.length};
     }
     if(name==='capabilities.read'){
-      fields(args,[]);return {runtime:'craftmine-web/5',capabilities:BEHAVIOR_CAPABILITIES,permissions:BEHAVIOR_PERMISSIONS,
-        requires:BEHAVIOR_REQUIREMENTS,limits:BEHAVIOR_LIMITS,guide:BEHAVIOR_API_GUIDE};
+      fields(args,[]);return {...capabilitiesCatalog(),limits:BEHAVIOR_LIMITS,guide:BEHAVIOR_API_GUIDE};
     }
     if(name==='workspace.patch')return w.patch(args,callId);
     if(name==='candidate.build'){fields(args,[]);requireValue(typeof this.build==='function','TOOL_UNAVAILABLE','当前没有配置候选验证器');return this.build();}

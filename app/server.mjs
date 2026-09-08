@@ -11,6 +11,7 @@ import { PACKAGE_BYTES } from './asset-packages.mjs';
 import { checkCreationModule,rememberCreationCheck } from './creation-verify.mjs';
 import { verifyAsset } from './asset-verify.mjs';
 import { loadLocalConfig } from './local-config.mjs';
+import { capabilitiesCatalog } from './harness/capabilities.mjs';
 
 const APP = path.dirname(fileURLToPath(import.meta.url)), ROOT = path.dirname(APP);
 const port = Number(process.env.CRAFTMINE_PORT || 8787), dataRoot = path.resolve(process.env.CRAFTMINE_DATA_DIR || path.join(ROOT,'.craftmine'));
@@ -91,6 +92,7 @@ const server = http.createServer(async (req,res) => {
         if (url.pathname === '/api/modules/read') return json(res,200,store.modules.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
         if (url.pathname === '/api/modules/export') return json(res,200,store.exportModule(url.searchParams.get('id'),Number(url.searchParams.get('version'))));
         if (url.pathname === '/api/assets/read') return json(res,200,store.assets.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
+        if (url.pathname === '/api/capabilities') return json(res,200,capabilitiesCatalog());
       } else {
         const input = await body(req,['/api/import','/api/modules/import'].includes(url.pathname)?PACKAGE_BYTES:url.pathname==='/api/assets/import'?12_000_000:1_500_000);
         switch (url.pathname) {
