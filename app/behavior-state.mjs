@@ -1,5 +1,5 @@
 import { exactKeys,identifier,bounded } from './gameplay.mjs';
-import { jsonRecord,validateBehaviorResult,validateInventory,validateItem,validatePanel } from './behavior-contracts.mjs';
+import { jsonRecord,validateBehaviorResult,validateInventory,validateItem,validatePanel,allowKeys } from './behavior-contracts.mjs';
 import { checkAppearanceBounds } from './asset-binding.mjs';
 import { intersects } from './geometry.mjs';
 
@@ -16,6 +16,21 @@ function migrateRecord(definition,record,revision){
   for(const [key,value]of Object.entries(definition.initialState||{}))if(!Object.hasOwn(state,key))state[key]=structuredClone(value);
   for(const [key,value]of Object.entries(step.add||{}))state[key]=structuredClone(value);
   return {...record,stateVersion:definition.stateVersion,revision,state,error:''};
+}
+// 90 度整步朝向：把旋转后的角点重新算成轴对齐包围盒，结果精确且不需要改碰撞。
+function rotateBounds(bounds,origin,yaw){
+  const rotate=(x,z)=>{
+    const dx=x-origin.x,dz=z-origin.z;
+    if(yaw===90)return {x:origin.x+dz,z:origin.z-dx};
+    if(yaw===180)return {x:origin.x-dx,z:origin.z-dz};
+    return {x:origin.x-dz,z:origin.z+dx};
+  };
+  const corners=[];
+  for(const x of [bounds.min.x,bounds.max.x])for(const z of [bounds.min.z,bounds.max.z])corners.push(rotate(x,z));
+  return {
+    min:{x:Math.min(...corners.map(c=>c.x)),y:bounds.min.y,z:Math.min(...corners.map(c=>c.z))},
+    max:{x:Math.max(...corners.map(c=>c.x)),y:bounds.max.y,z:Math.max(...corners.map(c=>c.z))},
+  };
 }
 export function validateBehaviorState(value){
   const capable=value?.format==='craftmine.behavior-state/3',archived=capable||value?.format==='craftmine.behavior-state/2';
@@ -34,7 +49,8 @@ export function validateBehaviorState(value){
     jsonRecord(module.state);table(module.overrides,16);
     if(capable){table(module.panels,3);for(const panel of Object.values(module.panels))validatePanel(panel);}
     for(const patch of Object.values(module.overrides)){
-      exactKeys(patch,['offset','visible','solid','color']);vector(patch.offset);
+      allowKeys(patch,['offset','visible','solid','color','yaw'],['offset','visible','solid','color']);vector(patch.offset);
+      if(patch.yaw!==undefined&&![0,90,180,270].includes(patch.yaw))throw Error('代码玩法对象朝向无效');
       if(typeof patch.visible!=='boolean'||(patch.solid!==null&&typeof patch.solid!=='boolean')||(patch.color!==null&&!/^#[0-9a-fA-F]{6}$/.test(patch.color)))throw Error('代码玩法对象状态无效');
     }
   }
@@ -82,7 +98,12 @@ export class BehaviorState {
     for(const o of objects){for(const n of Object.values(o.position))bounded(n,-40,40);checkAppearanceBounds(o);}
     const primitives=(this.build.primitives||[]).map(p=>{
       const patch=overrides[p.id];if(!patch)return {...p,visible:true};
-      return {...p,min:Object.fromEntries(['x','y','z'].map(k=>[k,p.min[k]+patch.offset[k]])),max:Object.fromEntries(['x','y','z'].map(k=>[k,p.max[k]+patch.offset[k]])),solid:patch.solid===null?p.solid:patch.solid&&p.shape==='box',color:patch.color||p.color,visible:patch.visible};
+      const moved={...p,min:Object.fromEntries(['x','y','z'].map(k=>[k,p.min[k]+patch.offset[k]])),max:Object.fromEntries(['x','y','z'].map(k=>[k,p.max[k]+patch.offset[k]])),solid:patch.solid===null?p.solid:patch.solid&&p.shape==='box',color:patch.color||p.color,visible:patch.visible};
+      // 朝向只支持 90 度整步：把旋转烘焙成新的轴对齐包围盒，碰撞和渲染都不需要改。
+      const yaw=patch.yaw||0;if(!yaw)return moved;
+      const base=this.build.scene.objects.find(o=>o.id===p.id);if(!base)return moved;
+      const origin={x:base.position.x+patch.offset.x,y:base.position.y+patch.offset.y,z:base.position.z+patch.offset.z};
+      return {...moved,...rotateBounds(moved,origin,yaw)};
     });
     for(const p of primitives)if(p.min.x< -46||p.min.z< -46||p.min.y<5.99999||p.max.x>46||p.max.z>46||p.max.y>38)throw Error('玩法移动使物体超出世界边界');
     return {objects,primitives};
@@ -93,8 +114,8 @@ export class BehaviorState {
     const next=structuredClone(this.value),record=next.modules[definition.id],changed=new Set(),effects=[];
     for(const c of checked.commands){
       if(c.type==='object.patch'){
-        const base=this.build.scene.objects.find(o=>o.id===c.id),old=record.overrides[c.id]||{offset:{x:0,y:0,z:0},visible:true,solid:null,color:null};
-        const patch={offset:c.position?Object.fromEntries(['x','y','z'].map(k=>[k,c.position[k]-base.position[k]])):old.offset,visible:c.visible??old.visible,solid:c.solid??old.solid,color:c.color??old.color};
+        const base=this.build.scene.objects.find(o=>o.id===c.id),old=record.overrides[c.id]||{offset:{x:0,y:0,z:0},visible:true,solid:null,color:null,yaw:0};
+        const patch={offset:c.position?Object.fromEntries(['x','y','z'].map(k=>[k,c.position[k]-base.position[k]])):old.offset,visible:c.visible??old.visible,solid:c.solid??old.solid,color:c.color??old.color,yaw:c.yaw??old.yaw??0};
         if(JSON.stringify(old)!==JSON.stringify(patch)){record.overrides[c.id]=patch;changed.add(c.id);}
       }else if(c.type==='inventory.add'){
         const count=(next.inventory[c.item]||0)+c.count;if(count<0||count>9999)throw Error('库存不足或超过容量，整步操作未应用');

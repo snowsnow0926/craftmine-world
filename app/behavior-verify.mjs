@@ -27,7 +27,7 @@ export async function verifyBehaviors(build,{origin,signal,deadline=Date.now()+3
           for(const [moduleId,module] of Object.entries(value.modules||{}))for(const [key,panel] of Object.entries(module?.panels||{}))panels[moduleId+':'+key]=panel;
           return acceptance.worldSnapshot({
             playerHealth:Object.values(value.systems||{}).find(s=>s?.type==='health')?.health,
-            objects:view.objects.map(o=>({id:o.id,position:o.position,visible:o.visible,mesh:view.primitives.some(p=>p.id===o.id),health:o.components.health})),
+            objects:view.objects.map(o=>{const parts=view.primitives.filter(p=>p.id===o.id);return {id:o.id,position:o.position,visible:o.visible,mesh:parts.length>0,health:o.components.health,bounds:parts.length?{min:{x:Math.min(...parts.map(p=>p.min.x)),y:Math.min(...parts.map(p=>p.min.y)),z:Math.min(...parts.map(p=>p.min.z))},max:{x:Math.max(...parts.map(p=>p.max.x)),y:Math.max(...parts.map(p=>p.max.y)),z:Math.max(...parts.map(p=>p.max.z))}}:null};}),
             inventory:value.inventory||{},panels,effects:entry.effects});};
         try{
           session=new BehaviorSession(one,null,{context,apply:result=>entry.effects.push(...result.effects.map(e=>({type:e.type,...(e.type==='player.impulse'?{velocity:e.velocity}:{})}))),onStep:({frame,result})=>{if(frame?.event?.type==='key'&&result.commands.length)entry.keyCommands=(entry.keyCommands||0)+result.commands.length;entry.motions.push(...result.commands.filter(c=>c.type==='object.patch'&&c.position).map(c=>({id:c.id,position:c.position})));}});

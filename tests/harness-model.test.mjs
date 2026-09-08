@@ -208,7 +208,7 @@ test('提示词带索引与焦点，不再包含整个场景',()=>{
 test('object.patch 命令允许省略字段（省略等于保留），未知字段仍被拒绝',()=>{
   const definition=doorBehavior(),frame=behaviorFrame(),coordinates={local:false,definition};
   const omitted=validateBehaviorResult({state:{open:true},commands:[{type:'object.patch',id:'door-one'}]},definition,frame,coordinates);
-  assert.deepEqual(omitted.commands[0],{type:'object.patch',id:'door-one',position:null,visible:null,solid:null,color:null});
+  assert.deepEqual(omitted.commands[0],{type:'object.patch',id:'door-one',position:null,visible:null,solid:null,color:null,yaw:null});
   assert.throws(()=>validateBehaviorResult({state:{open:true},commands:[{type:'object.patch',id:'door-one',extra:1}]},definition,frame,coordinates),/多出 extra/);
 });
 

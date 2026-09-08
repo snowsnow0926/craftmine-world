@@ -11,6 +11,7 @@ export function worldSnapshot(input = {}) {
     visible: object.visible !== false,
     mesh: object.mesh !== false,
     health: Number.isFinite(object.health) ? object.health : null,
+    bounds: object.bounds ? { min: { ...object.bounds.min }, max: { ...object.bounds.max } } : null,
   })).sort((a, b) => a.id.localeCompare(b.id));
   const inventory = Object.fromEntries(Object.entries(input.inventory || {}).sort(([a], [b]) => a.localeCompare(b)));
   const panels = Object.fromEntries(Object.entries(input.panels || {}).map(([key, value]) => [key, stable(value)]).sort(([a], [b]) => a.localeCompare(b)));
@@ -32,6 +33,7 @@ export function observableChange(before, after) {
     if (!old || !next) { fields.push(`object:${id}`); continue; }
     for (const key of ['visible', 'mesh', 'health']) if (old[key] !== next[key]) fields.push(`object:${id}.${key}`);
     if (stable(old.position) !== stable(next.position)) fields.push(`object:${id}.position`);
+    if (stable(old.bounds) !== stable(next.bounds)) fields.push(`object:${id}.bounds`);
   }
   for (const key of [...new Set([...Object.keys(before.inventory), ...Object.keys(after.inventory)])].sort())
     if ((before.inventory[key] ?? 0) !== (after.inventory[key] ?? 0)) fields.push(`inventory.${key}`);

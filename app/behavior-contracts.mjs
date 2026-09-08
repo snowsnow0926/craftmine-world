@@ -113,12 +113,13 @@ export function validateBehaviorResult(result,definition,frame,{local=false}={})
   const capability=name=>{if(!definition.capabilities?.includes(name))throw Error('玩法没有声明所需能力：'+name);};
   for(const command of result.commands){
     if(command?.type==='object.patch'){
-      permit('objects.write');allowKeys(command,['type','id','position','visible','solid','color'],['type','id']);
-      for(const key of ['position','visible','solid','color'])if(!Object.hasOwn(command,key))command[key]=null;
+      permit('objects.write');allowKeys(command,['type','id','position','visible','solid','color','yaw'],['type','id']);
+      for(const key of ['position','visible','solid','color','yaw'])if(!Object.hasOwn(command,key))command[key]=null;
       if(!definition.targets.includes(command.id)||!frame.objects.some(o=>o.id===command.id))throw Error('玩法试图修改未授权或已不存在的对象');
       if(command.position!==null){vec(command.position,local?-128:-40,local?128:40);if(!local&&(command.position.y<6||command.position.y>38))throw Error('对象位置超出范围');}
       for(const key of ['visible','solid'])if(command[key]!==null&&typeof command[key]!=='boolean')throw Error('对象修改字段无效');
       if(command.color!==null&&(typeof command.color!=='string'||!/^#[0-9a-fA-F]{6}$/.test(command.color)))throw Error('对象颜色无效');
+      if(command.yaw!==null&&![0,90,180,270].includes(command.yaw))throw Error('对象朝向只支持 0、90、180、270 度');
     }else if(command?.type==='player.impulse'){
       permit('player.motion');exactKeys(command,['type','velocity']);vec(command.velocity,-18,18);
     }else if(command?.type==='hud.message'){
@@ -150,7 +151,7 @@ export const BEHAVIOR_API_GUIDE=`玩法源文件必须导出同步或异步函�
 frame={dt,time,event:{type,targetId,code},player:{position:{x,y,z},grounded,health},objects:[{id,position,visible,solid,health}]}。事件有 start/tick/interact/contact/attack/land/key，位置单位为米，地面 y=6。
 frame 里没有按键状态：不存在 frame.keys，也不能轮询按键。玩家按键必须用模块自己的 keys 字段声明（最多 4 个，例如 keys:['KeyG']），宿主只在引擎未占用该键时派发 {type:'key',code:'KeyG'} 事件。引擎已占用、不能声明：W/A/S/D、空格、Shift、1、2、E、F、R、T、Enter、Esc。
 commands 每步最多32条，仅能使用声明的权限和 targets：
-objects.write: {type:'object.patch',id,position:null或{x,y,z},visible:null或boolean,solid:null或boolean,color:null或'#RRGGBB'}，null表示保留原字段；position/visible/solid/color 可以整项省略，省略等同于 null。
+objects.write: {type:'object.patch',id,position:null或{x,y,z},visible:null或boolean,solid:null或boolean,color:null或'#RRGGBB',yaw:null或0/90/180/270}，null表示保留原字段；position/visible/solid/color/yaw 可以整项省略，省略等同于 null。yaw 是绕对象自身原点的水平朝向，只支持 90 度整步（宿主把旋转烘焙成轴对齐包围盒，碰撞随之改变）。
 制作后才出现的对象，也要先在场地内定义合法位置与几何；在 start 根据已保存状态返回 visible:false、solid:false 隐藏未解锁对象，解锁后才显示。不能通过把对象埋到地下、移到边界外或设为零尺寸来隐藏，否则源码执行前的场景检查就会拒绝。
 player.motion: {type:'player.impulse',velocity:{x,y,z}}，各轴 -18..18。
 hud.message: {type:'hud.message',text:'最多160字'}。

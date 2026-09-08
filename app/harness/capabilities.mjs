@@ -30,7 +30,7 @@ export const EVENT_TYPES = Object.freeze([
 export const COMMANDS = Object.freeze([
   {
     type: 'object.patch', permission: 'objects.write', scope: '声明过的 targets 里的对象',
-    fields: { id: '对象 ID', position: '{x,y,z} 或 null；整项省略等同 null（保留原值）', visible: 'boolean 或 null', solid: 'boolean 或 null', color: "'#RRGGBB' 或 null" },
+    fields: { id: '对象 ID', position: '{x,y,z} 或 null；整项省略等同 null（保留原值）', visible: 'boolean 或 null', solid: 'boolean 或 null', color: "'#RRGGBB' 或 null", yaw: 'null 或 0/90/180/270' },
     quota: `每步最多 ${BEHAVIOR_LIMITS.commands} 条命令`, example: "{type:'object.patch',id:'door-1',visible:false}",
     note: 'visible:true 不会让已死亡的目标重新生效，复活必须用 target.revive',
   },
