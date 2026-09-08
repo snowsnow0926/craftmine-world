@@ -381,7 +381,7 @@
       "glb": "仅静态（拒绝动画与骨骼），外观仅支持绕 Y 轴旋转",
       "limits": "128 物体 / 每步 32 命令 / 代码 32KB / 状态 16KB / 10 万面"
     },
-    "tests": "npm test: 247 passed",
+    "tests": "npm test: 254 passed",
     "developmentBatches": [
       {
         "batch": "0",
@@ -554,23 +554,29 @@
         "P0": "done",
         "P1": "done",
         "P2": "done（由独立裁判实现，超出原计划）",
-        "P3": "mechanism done, not wired into agent loop",
-        "P4": "mechanism done, not wired into agent loop",
+        "P3": "done（记录+落盘+工具已接线）",
+        "P4": "done（预算+检查点已接进分步闭环）",
         "P5": "partial",
         "P6": "partial",
-        "P7": "mechanism done"
+        "P7": "done"
       },
       "addedThisRound": [
         "app/harness/provider-contract.mjs（P0 适配器能力声明，没证据一律 unavailable）",
         "app/harness/memory-records.mjs（P3 类型化记忆：来源/范围/替代/失效）",
         "app/harness/context-budget.mjs（P4 预算公式、分配、阈值动作）",
         "app/harness/checkpoint.mjs（P4 机器事实检查点 + 压缩事务 + 重启核对）",
-        "app/harness/selfcheck.mjs + npm run doctor（P7 启动自检）"
+        "app/harness/selfcheck.mjs + npm run doctor（P7 启动自检）",
+        "app/harness/task-store.mjs（任务计划/步骤/证据/完成回执）",
+        "app/harness/memory-store.mjs（记忆落盘与替代）",
+        "14 个领域工具（新增 memory.search/memory.remember/task.plan/task.step/task.finish/evidence.read/verify.run）",
+        "verify.run 接进真实隔离 Worker 验收；candidate.build/verify.run 自动留证据",
+        "分步闭环每轮估算上下文、到压缩阈值停下、产出机器事实检查点"
       ],
       "remaining": [
-        "tools.mjs 缺 memory.search / verify.run / evidence.read / task.plan / task.finish",
-        "memory-records / context-budget / checkpoint 还没接进 app/agent.mjs 循环",
-        "还没有真实模型长任务的强制压缩回归"
+        "真实模型长任务的强制压缩回归",
+        "E2 扩展命令的异步派发（SELF_EXTENSION_PLAN §10）",
+        "P5 战斗奖励闭环与第二项目安装",
+        "P6 第二个真实后端"
       ]
     }
   },

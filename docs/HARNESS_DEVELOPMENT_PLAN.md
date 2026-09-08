@@ -820,10 +820,10 @@ P 编号表示本计划的新工程阶段；M 编号继续表示已有产品里�
 | 阶段 | 状态 | 已有实现 | 机器证据 | 还缺什么 |
 | --- | --- | --- | --- | --- |
 | P0 协议与接入基线 | **已落地** | `app/agent-model.mjs` provider 分发与 `providerStatus`、`app/harness/contracts.mjs`（动作/工具/限制契约）、`app/harness/provider-contract.mjs`（能力声明，不支持项明确 unavailable） | `tests/harness-model.test.mjs`、`tests/provider-contract.test.mjs` | 第二后端的真实接入（属 P6） |
-| P1 最小工具闭环 | **已落地** | `app/harness/tools.mjs`（7 个领域工具）、`app/harness/workspace.mjs`（草稿与补丁）、`app/harness/orchestrator.mjs`（步骤/预算/取消）、`app/scene.mjs` 的 `changes` 局部修改协议 | `tests/harness-workspace.test.mjs`、`tests/harness-loop.test.mjs`、128 对象世界单对象改动 12,976→147 输出 token | `memory.search`/`verify.run`/`evidence.read`/`task.plan`/`task.finish` 五个工具 |
-| P2 产品内试玩与修复 | **已落地并超出原计划** | `app/harness/requirements.mjs`（10 条冻结需求）、`assertions.mjs`（16 种断言）、`judge.mjs`（纯函数裁判）、`injection.mjs`（红性验证）、`trace-runner.mjs`（真实引擎录轨迹）、`behavior-verify.mjs`（命令级结果验收） | `tests/judge.test.mjs`（12 项）、`tests/judgment-browser.mjs`（参考实现全过、影子运行签名一致、坏实现全红） | 更多需求形状；动作 DSL 的移动/寻路 |
-| P3 作品与经验记忆 | **部分** | 模块版本库、`app/harness/memory-records.mjs`（类型化记忆记录：范围、来源、替代、失效） | `tests/memory-records.test.mjs` | 检索排序与界面 |
-| P4 上下文与自动压缩 | **部分** | 按需读取（输入 22,722→14,129）、`app/harness/context-budget.mjs`（预算公式与分配）、`app/harness/checkpoint.mjs`（机器事实 + 解释，压缩事务） | `tests/context-budget.test.mjs`、`tests/checkpoint.test.mjs` | 真实模型长任务的强制压缩回归 |
+| P1 最小工具闭环 | **已落地** | `app/harness/tools.mjs`（14 个领域工具）、`app/harness/workspace.mjs`（草稿与补丁）、`app/harness/task-store.mjs`（计划/步骤/证据/完成回执）、`app/harness/orchestrator.mjs`（步骤/预算/取消/检查点）、`app/scene.mjs` 的 `changes` 局部修改协议 | `tests/harness-workspace.test.mjs`、`tests/harness-task-tools.test.mjs`、`tests/harness-loop.test.mjs`、128 对象世界单对象改动 12,976→147 输出 token | 动作 DSL 的移动/寻路 |
+| P2 产品内试玩与修复 | **已落地并超出原计划** | `app/harness/requirements.mjs`（10 条冻结需求）、`assertions.mjs`（16 种断言）、`judge.mjs`（纯函数裁判）、`injection.mjs`（红性验证）、`trace-runner.mjs`（真实引擎录轨迹）、`behavior-verify.mjs`（命令级结果验收），并接进 `verify.run` 工具 | `tests/judge.test.mjs`（12 项）、`tests/judgment-browser.mjs`（参考实现全过、影子运行签名一致、坏实现全红） | 更多需求形状 |
+| P3 作品与经验记忆 | **部分** | 模块版本库、`app/harness/memory-records.mjs`（类型化记忆：范围、来源、替代、失效）、`app/harness/memory-store.mjs`（落盘记忆库），并接进 `memory.search`/`memory.remember` 工具 | `tests/memory-records.test.mjs`、`tests/harness-task-tools.test.mjs` | 检索排序的评测集与界面 |
+| P4 上下文与自动压缩 | **部分** | 按需读取（输入 22,722→14,129）、`app/harness/context-budget.mjs`（预算公式与分配）、`app/harness/checkpoint.mjs`（机器事实 + 压缩事务）；分步闭环每轮估算上下文、到压缩阈值就停下并产出检查点 | `tests/context-budget.test.mjs`、`tests/checkpoint.test.mjs`、`tests/harness-loop.test.mjs` | 真实模型长任务的强制压缩回归 |
 | P5 组合、迁移和 M5 | **部分** | 能力目录、物品身份（`inventory.define`）、状态迁移（`migrate`）、资源系统、`target.damage`/`health.add` | `tests/resource-system.test.mjs`、`tests/state-migration.test.mjs` | 战斗奖励的完整闭环、第二项目安装 |
 | P6 后端可替换性 | **部分** | provider 开关与能力声明；`app/harness/extension*.mjs`（L2 扩展 ABI 与沙箱） | `tests/provider-contract.test.mjs`、`tests/extension*.test.mjs` | 第二个真实后端的原生循环/压缩转换 |
 | P7 Windows 个人交付 | **部分** | `app/harness/selfcheck.mjs` + `npm run doctor`（启动自检：数据目录、密钥、构建、内核哈希、扩展、端口） | `tests/selfcheck.test.mjs` | 升级备份与恢复演练、可运行示例包 |
@@ -936,4 +936,4 @@ DeepSeek 当前 README 将其标为 developer preview，整个框架的直接采
 
 个人交付仍要准备：旧程序可恢复归档、数据备份、可运行初始示例、启动自检、明确的版本变化、兼容迁移和升级失败恢复。准备好可审查的交付后再安排用户服务更新，不能为每次测试重启其正在玩的世界。
 
-**下一接点（2026-09-09 复盘后）：** P0/P1/P2 已落地，P3/P4/P7 的机制也已补齐（见 §18.1）。剩下的三件事按顺序做：① 把 `app/harness/tools.mjs` 里缺的五个工具补上（`memory.search`、`verify.run`、`evidence.read`、`task.plan`、`task.finish`），让 P1 的工具闭环完整；② 把 `app/harness/memory-records.mjs`、`context-budget.mjs`、`checkpoint.mjs` 接进真实的 `app/agent.mjs` 循环（目前是可用但未接线的能力）；③ 用真实模型跑一条长任务，做一次强制压缩回归（§17.2 的压缩连续性门槛）。E2 的扩展派发（异步效果阶段）见 SELF_EXTENSION_PLAN.md §10 的遗留项。
+**下一接点（2026-09-09 复盘后）：** P0/P1/P2 已落地，P3/P4/P7 的机制已补齐并接进工具网关与分步闭环（见 §18.1）。剩下两件事：① 用真实模型跑一条长任务，做一次强制压缩回归（§17.2 的压缩连续性门槛），验证 `context-budget` 的阈值与 `checkpoint` 的压缩事务在真实用量下成立；② E2 的扩展命令派发（把扩展的异步效果接进玩法执行路径），见 SELF_EXTENSION_PLAN.md §10 的遗留项。P5/P6 的规模化验证依赖真实模型与第二个后端，按 §18 的依赖顺序推进。
