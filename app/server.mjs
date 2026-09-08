@@ -45,7 +45,7 @@ const staticAssets=new Map([...staticFiles].map(([route,[file,type]])=>[route,{t
 const pages=new Map(['index.html','game.html','verify.html','asset-viewer.html'].map(file=>[file,fs.readFileSync(path.join(APP,file),'utf8')]));
 const runtimeSource=fs.readFileSync(path.join(ROOT,'world-workshop-3d','src','voxel-runtime.js'));
 async function checkCode(build,events){
-  const report=await verifyBehaviors(build,{origin:`http://127.0.0.1:${port}`,events});
+  const report=await verifyBehaviors(build,{origin:`http://127.0.0.1:${port}`,extensions:structuredClone(store.data.extensions),events});
   atomicJSON(path.join(store.root,'builds',build.id,'behavior-verification.json'),report);
   if(!report.passed)throw Error('创作源码未通过后台检查：'+report.modules.filter(m=>!m.passed).map(m=>m.id+'：'+m.error).join('；'));
   return report;
@@ -53,7 +53,7 @@ async function checkCode(build,events){
 async function checkAssets(assets){
   for(const asset of assets){const report=await verifyAsset(asset,{origin:`http://127.0.0.1:${port}`});atomicJSON(path.join(store.root,'assets',asset.id,asset.version+'-'+asset.hash+'.check.json'),report);}
 }
-// 扩展的对抗评审：评审只能提出带断言的问题，有阻断项就不许装载。
+// 扩展对抗评审必须运行并留下断言；设计意见交给玩家，机器检查控制装载。
 // 评审必须看到真实的运行证据（自带测试在沙箱里的实际结果），而不是一句「测试过了」。
 async function reviewExtension(extension, { selfTests = null } = {}) {
   const dir = path.join(dataRoot, 'extensions', 'review-' + extension.id + '-' + Date.now());
@@ -234,7 +234,7 @@ const server = http.createServer(async (req,res) => {
             if(assetImportBusy)throw Error('另一个素材或作品正在检查，请稍候');assetImportBusy=true;
             try{store.idle();const base=store.data.current,{build,assets}=store.prepareSave(input);await checkAssets(assets);
             if(build.behaviors?.length){
-              const verification=await verifyBehaviors(build,{origin:`http://127.0.0.1:${port}`});
+              const verification=await verifyBehaviors(build,{origin:`http://127.0.0.1:${port}`,extensions:structuredClone(store.data.extensions)});
               atomicJSON(path.join(store.root,'builds',build.id,'behavior-verification.json'),verification);
               if(!verification.passed)throw Error('导入源码未通过后台检查：'+verification.modules.filter(m=>!m.passed).map(m=>m.id+'：'+m.error).join('；'));
             }

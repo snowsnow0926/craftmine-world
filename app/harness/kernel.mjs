@@ -36,7 +36,7 @@ export const FROZEN_KERNEL_HASHES = Object.freeze({
   'app/store.mjs': '2469fad89532cc3642ecf74e09746d622773fc57de632a22129bfac120118f7a',
   'app/behavior-contracts.mjs': '536bd8616330610221a4f7d9f679b5c4e215c8813319bc896bc281068cb2b6de',
   'app/canonical.mjs': '788dee7dbae8231382b35952b20052db73e9e064bd85ea34603f1f00a5e03779',
-  'app/static-files.mjs': '93cd5daa2bdfbaca7be1101d3b42a10171fc44070e9ecc2a3244cf4cc71daefd',
+  'app/static-files.mjs': '57c0c34bf7fe9d63654275af44b79f83870e67d4fa7489e3383f93ddf7d27678',
 });
 
 export function kernelRoot() {

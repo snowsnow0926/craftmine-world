@@ -131,7 +131,7 @@ export class AgentRunner {
           if(!ref||Object.keys(ref).length!==3||!Object.hasOwn(ref,'position'))throw Error('创作记忆复用字段无效');
           if(!memories.some(m=>m.kind==='creation'&&m.id===ref.id&&m.version===ref.version))throw Error('不能复用未提供的创作记忆版本');
           const module=store.modules.read(store.data,ref.id,ref.version);
-          setPhase('behavior');const report=await checkCreationModule(store,module,{origin:this.options.verificationOrigin,signal:active.abort.signal,deadline:active.deadline});this.assertActive(active);
+          setPhase('behavior');const report=await checkCreationModule(store,module,{origin:this.options.verificationOrigin,extensions:structuredClone(this.store.data.extensions),signal:active.abort.signal,deadline:active.deadline});this.assertActive(active);
           setPhase('storage');rememberCreationCheck(store,module,report);
           setPhase('scene');nextScene=store.modules.instantiate(store.data,nextScene,ref.id,ref.version,context.player,ref.position);
         }
@@ -144,7 +144,7 @@ export class AgentRunner {
         setPhase('progress');this.checkProgress(build);
         if(build.behaviors.length){
           setPhase('behavior');this.log(active.id,'正在独立后台浏览器中运行源码，检查事件、命令、超时和状态恢复。');
-          const report=await verifyBehaviors(build,{origin:this.options.verificationOrigin,signal:active.abort.signal,deadline:active.deadline});this.assertActive(active);
+          const report=await verifyBehaviors(build,{origin:this.options.verificationOrigin,extensions:structuredClone(this.store.data.extensions),signal:active.abort.signal,deadline:active.deadline});this.assertActive(active);
           setPhase('storage');atomicJSON(path.join(attemptDir,'behavior-verification.json'),report);atomicJSON(path.join(store.root,'builds',build.id,'behavior-verification.json'),report);
           this.update(active.id,t=>{t.behaviorVerification=report.modules.map(m=>({id:m.id,revision:m.revision,passed:m.passed,error:m.error}));});
           setPhase('behavior');if(!report.passed)throw new CheckFailure(report.modules.filter(m=>!m.passed).map(m=>m.id+'：'+m.error).join('；'),report.modules.filter(m=>!m.passed).map(m=>({id:m.id,revision:m.revision,error:m.error,failedEvent:m.failedEvent,events:m.events})));
@@ -195,7 +195,7 @@ export class AgentRunner {
       // verify.run 真的跑：把当前草稿送进隔离 Worker，走一遍事件与恢复检查。
       setPhase('behavior');
       const build=draftBuild||store.build(workspace.scene());
-      const report=await verifyBehaviors(build,{origin:this.options.verificationOrigin,signal:active.abort.signal,deadline:active.deadline});
+      const report=await verifyBehaviors(build,{origin:this.options.verificationOrigin,extensions:structuredClone(this.store.data.extensions),signal:active.abort.signal,deadline:active.deadline});
       this.assertActive(active);
       setPhase('storage');
       return {...report,summary:`玩法验收（隔离 Worker 事件与恢复检查）${report.passed?'通过':'未通过'}${requirement?`：${requirement}`:''}`,scope:'接口与事件序列检查；不等同于玩家需求验收'};
@@ -274,7 +274,7 @@ export class AgentRunner {
     // 候选必须真的能跑：源码验证和单次生成路径一样，不能只看场景编译。
     if(build.behaviors?.length){
       setPhase('behavior');this.log(active.id,'正在独立后台浏览器中运行源码，检查事件、命令、超时和状态恢复。');
-      const report=await verifyBehaviors(build,{origin:this.options.verificationOrigin,signal:active.abort.signal,deadline:active.deadline});this.assertActive(active);
+      const report=await verifyBehaviors(build,{origin:this.options.verificationOrigin,extensions:structuredClone(this.store.data.extensions),signal:active.abort.signal,deadline:active.deadline});this.assertActive(active);
       setPhase('storage');atomicJSON(path.join(store.root,'builds',build.id,'behavior-verification.json'),report);
       this.update(active.id,t=>{t.behaviorVerification=report.modules.map(m=>({id:m.id,revision:m.revision,passed:m.passed,error:m.error}));});
       const failed=report.modules.filter(m=>!m.passed);

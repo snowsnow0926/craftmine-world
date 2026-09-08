@@ -17,7 +17,7 @@ function node(tag,text,className){const e=document.createElement(tag);if(text!==
 function button(text,action){const e=node('button',text,'subtle');e.type='button';e.onclick=()=>action().catch(error=>toast(error.message));return e;}
 function post(frame,type,payload={}){frame.element.contentWindow.postMessage({channel:'craftmine-host/1',nonce:frame.nonce,type,...payload},'*');}
 function removeFrame(frame,error=Error('世界副本已关闭')){if(!frame)return;frames.delete(frame.nonce);frame.element.remove();clearTimeout(frame.timer);frame.reject?.(error);frame.reject=null;frame.resolve=null;for(const [id,request]of requests)if(request.frame===frame){clearTimeout(request.timer);requests.delete(id);request.reject(error);}}
-function mount(build,snapshot,{container=$('game-wrap'),preview=false,extensions=[],onCreated=()=>{}}={}){return new Promise((resolve,reject)=>{
+function mount(build,snapshot,{container=$('game-wrap'),preview=false,extensions=project?.extensions||[],onCreated=()=>{}}={}){return new Promise((resolve,reject)=>{
   const nonce=crypto.randomUUID(),element=document.createElement('iframe');
   element.title=preview?'独立预览副本':'可游玩的 3D 世界';element.className='staging';element.dataset.role=preview?'preview':'world';element.setAttribute('sandbox','allow-scripts allow-pointer-lock');element.src='/game#'+nonce;
   const record={nonce,element,build,snapshot,version:build.id,resolve,reject,preview,extensions};frames.set(nonce,record);onCreated(record);

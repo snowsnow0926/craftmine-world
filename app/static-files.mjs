@@ -14,6 +14,7 @@ export const STATIC_FILES = Object.freeze([
   ['/app/harness/trace-runner.mjs', 'harness/trace-runner.mjs', 'text/javascript'],
   ['/app/harness/extension-effects.mjs', 'harness/extension-effects.mjs', 'text/javascript'],
   ['/app/extension-runner.mjs', 'extension-runner.mjs', 'text/javascript'],
+  ['/app/extension-runtime.mjs', 'extension-runtime.mjs', 'text/javascript'],
   // 渲染扩展层：Worker 沙箱、ABI 校验，以及渲染扩展自己要用到的断言与轨迹（浏览器安全）。
   ['/app/render-runner.mjs', 'render-runner.mjs', 'text/javascript'],
   ['/app/harness/render-extension.mjs', 'harness/render-extension.mjs', 'text/javascript'],

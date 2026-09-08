@@ -17,7 +17,7 @@ export const TOOL_GUIDE=[
   'task.step {id,status:"doing"|"done"|"dropped",note?}：更新某一步的状态；结束任务前每一步都必须 done 或 dropped。',
   'evidence.read {ref,start?:0,limit?:4000}：读取某条证据原件，next 非空时继续分段。',
   'verify.run {requirement?}：运行宿主登记的玩法验收；未配置时明确返回不可用，不会假装跑过。',
-  'workspace.patch {workspaceRevision,operations:[{kind,id,expectedHash,value}]}：原子替换已读取的既有资源。value 为完整资源 JSON 对象。仅允许修改当前任务范围，保留 ID、绑定与兼容状态版本。一次最多 8 项。',
+  'workspace.patch {workspaceRevision,operations:[{op,kind,id,expectedHash,value}]}：原子修改草稿。替换既有资源用 op:"replace"（省略 op 时默认 replace），必须先读取并提供 expectedHash；新增对象、玩法模块或系统用 op:"add"、expectedHash:null 和不存在的新 ID。value 为完整资源 JSON。新增和替换都受当前任务范围、编译与状态兼容检查约束；一次最多 8 项。',
   'candidate.build {}：对当前草稿构建并检查；源码检查不是完整玩法验收。结果自动记为该任务的证据。',
   'task.finish {summary,candidateRef?|noChangeReason?,evidenceRefs:[ref]}：提交完成回执；宿主检查计划是否全部结束、证据是否存在，模型无权自己宣布完成。',
 ].join('\n');

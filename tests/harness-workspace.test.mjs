@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { ProjectStore } from '../app/store.mjs';
-import { floraScene } from './scene-fixtures.mjs';
+import { floraScene, flower } from './scene-fixtures.mjs';
 import { HARNESS_LIMITS, TOOL_NAMES, contentHash, fields, parseAction, requireValue } from '../app/harness/contracts.mjs';
 import { BEHAVIOR_LIMITS } from '../app/behavior-contracts.mjs';
 import { TaskWorkspace } from '../app/harness/workspace.mjs';
@@ -27,6 +27,40 @@ const replace = (workspace, read, mutate) => {
   return { workspaceRevision: read.workspaceRevision, operations: [{ kind: 'object', id: value.id, expectedHash: read.hash, value }] };
 };
 const action = (value) => JSON.stringify({ kind: 'tool', tool: value.tool ?? null, argumentsJSON: JSON.stringify(value.args ?? {}), summary: value.summary ?? '测试动作' });
+
+test('新增对象和玩法在同一事务编译，丢失回执后重放不会重复新增', () => {
+  const { store, base, workspace } = fixture();
+  const behavior = {
+    format: 'craftmine.behavior/2', id: 'new-behavior', name: '花的动作', description: '生成的新玩法',
+    code: 'export function step({state}) { return {state,commands:[]}; }',
+    stateVersion: 1, initialState: {}, params: {}, targets: ['new-flower'],
+    permissions: ['objects.write'], requires: [], binding: null, keys: [],
+  };
+  const request = { workspaceRevision: 0, operations: [
+    { op: 'add', kind: 'object', id: 'new-flower', expectedHash: null, value: flower('new-flower', 5, 15) },
+    { op: 'add', kind: 'behavior', id: behavior.id, expectedHash: null, value: behavior },
+  ] };
+  const result = workspace.patch(request, 'create-once');
+  assert.equal(result.workspaceRevision, 1);
+  assert.equal(workspace.scene().behaviors[0].id, behavior.id);
+  assert.equal(store.data.current, base);
+  const restored = new TaskWorkspace(store, { id: TASK, base });
+  assert.deepEqual(restored.patch(request, 'create-once'), result);
+  assert.equal(restored.scene().objects.filter(o => o.id === 'new-flower').length, 1);
+  assert.throws(() => restored.patch({ ...request, workspaceRevision: 1 }, 'duplicate'), /已经存在/);
+});
+
+test('新增必须声明空哈希，失败批次不残留对象，选中对象任务不能新增其他对象', () => {
+  const { workspace } = fixture();
+  const op = { op: 'add', kind: 'object', id: 'new-flower', expectedHash: null, value: flower('new-flower', 5, 15) };
+  assert.throws(() => workspace.patch({ workspaceRevision: 0, operations: [{ ...op, expectedHash: 'invented' }] }, 'bad-hash'), /必须为 null/);
+  const invalid = { ...op, id: 'other', value: { ...op.value, id: 'other', parts: [] } };
+  assert.throws(() => workspace.patch({ workspaceRevision: 0, operations: [op, invalid] }, 'atomic-failure'), /几何部分/);
+  assert.equal(workspace.readManifest().revision, 0);
+  assert.equal(workspace.scene().objects.length, 5);
+  const scoped = fixture({ selected: 'flower-one' }).workspace;
+  assert.throws(() => scoped.patch({ workspaceRevision: 0, operations: [op] }, 'scope-failure'), /范围/);
+});
 
 test('草稿建立不可变版本，读取记录来源哈希，重启后仍能恢复', () => {
   const { store, base, workspace } = fixture();

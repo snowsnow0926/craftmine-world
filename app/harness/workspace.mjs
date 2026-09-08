@@ -103,13 +103,24 @@ export class TaskWorkspace {
     requireValue(m.receipts.length<HARNESS_LIMITS.calls,'CALL_LIMIT','草稿修改次数已达上限');
     const original=this.scene(m),next=upgradeScene(original),touched=new Set();
     for(const op of input.operations){
-      fields(op,['kind','id','expectedHash','value']);
-      requireValue(Object.hasOwn(groups,op.kind),'INVALID_RESOURCE','本批仅支持替换既有对象、行为或系统');
-      const key=resourceKey(op.kind,op.id),old=this.resource(op.kind,op.id,next),hash=contentHash(old);
+      fields(op,['kind','id','expectedHash','value'],['op']);
+      const operation=op.op??'replace';
+      requireValue(['add','replace'].includes(operation),'INVALID_ARGUMENTS','补丁 op 只支持 add 或 replace');
+      requireValue(Object.hasOwn(groups,op.kind),'INVALID_RESOURCE','只支持对象、行为或系统资源');
+      requireValue(typeof op.id==='string'&&/^[a-z][a-z0-9-]{0,47}$/.test(op.id),'INVALID_RESOURCE','资源 ID 无效');
+      const key=resourceKey(op.kind,op.id);
       requireValue(!touched.has(key),'INVALID_ARGUMENTS','同一补丁不能重复修改资源');touched.add(key);
-      requireValue(op.expectedHash===hash&&m.reads[key]===hash,'READ_CONFLICT','请先读取要修改的当前资源及哈希');
       requireValue(op.value&&op.value.id===op.id,'IDENTITY_CHANGED','局部替换必须保留资源身份');
-      next[groups[op.kind]]=next[groups[op.kind]].map(o=>o.id===op.id?structuredClone(op.value):o);
+      if(operation==='add'){
+        requireValue(op.expectedHash===null,'READ_CONFLICT','新增资源的 expectedHash 必须为 null');
+        if(op.kind==='behavior'&&next.format==='craftmine.scene/2'){next.format='craftmine.scene/3';next.behaviors=[];}
+        requireValue(!next[groups[op.kind]].some(o=>o.id===op.id),'RESOURCE_EXISTS','资源已经存在，不能重复新增：'+key);
+        next[groups[op.kind]].push(structuredClone(op.value));
+      }else{
+        const old=this.resource(op.kind,op.id,next),hash=contentHash(old);
+        requireValue(op.expectedHash===hash&&m.reads[key]===hash,'READ_CONFLICT','请先读取要修改的当前资源及哈希');
+        next[groups[op.kind]]=next[groups[op.kind]].map(o=>o.id===op.id?structuredClone(op.value):o);
+      }
     }
     // 已装载扩展必须参与编译：否则玩法模块声明 ext: 依赖时，草稿会被误判成「扩展没有装载」。
     const compiled=compileScene(next,{extensions:this.store.extensionSet()});

@@ -1,21 +1,10 @@
 'use strict';
 import { makeWorldRuntime } from './world-runtime.mjs';
+import { createExtensionTable, disposeExtensionTable } from './extension-runtime.mjs';
 (() => {
   const nonce = location.hash.slice(1), parentOrigin = new URL(location.href).origin;
   const send = (type,payload={}) => {if(preview&&type==='agent'){inform('关闭预览后，可以继续描述对原世界的修改。');return;}parent.postMessage({channel:'craftmine-game/1',nonce,type,...payload},parentOrigin);};
-  let engine, build, frozen=false, lastTarget=null, preview=false;
-// 已装载的扩展：每个扩展一个隔离 Worker，命令表交给玩法会话派发。
-async function createExtensions(list){
-  if(!Array.isArray(list)||!list.length)return null;
-  const { ExtensionRunner }=await import('./extension-runner.mjs');
-  const table=new Map();
-  for(const extension of list){
-    const runner=new ExtensionRunner(extension);
-    try{await runner.ready;}catch{runner.dispose();continue;}
-    for(const command of extension.provides.commands)table.set(command.type,{extensionId:extension.id,version:extension.version,permission:command.permission,permissions:extension.permissions,targets:extension.targets||[],capabilities:extension.capabilities||[],runner});
-  }
-  return table.size?table:null;
-}
+  let engine, build, frozen=false, lastTarget=null, preview=false, extensions=null;
   const enter = document.getElementById('enter'), notice = document.getElementById('notice'); let noticeTimer;
   function inform(text,{tone='info',duration=4500}={}) { notice.textContent=text;notice.dataset.tone=tone;notice.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>notice.hidden=true,Math.max(1000,Math.min(10000,Number.isFinite(duration)?duration:4500))); }
   const BlankRuntime=makeWorldRuntime({send,inform,enter,isFrozen:()=>frozen});
@@ -32,7 +21,7 @@ async function createExtensions(list){
           onStats:s=>{if(!frozen)send('state',{snapshot:snapshot(),selected:lastTarget,fps:s.fps,renderer:engine.software?'兼容 3D':'WebGL'});},
           onNotice:inform,onControl:()=>{},onError:message=>send('error',{message}),
         });
-        const extensions=await createExtensions(m.extensions);
+        extensions=await createExtensionTable(m.extensions);
         await engine.generateBuild(m.build,m.snapshot,{extensions});engine.pauseInput();
         // A hidden candidate iframe may not receive animation frames until activated.
         // Draw explicitly so readiness checks never depend on visibility scheduling.
@@ -49,11 +38,11 @@ async function createExtensions(list){
       if(m.type==='resume'){frozen=false;engine.setActive(true);enter.hidden=false;}
       if(m.type==='pause'){engine.pauseInput();enter.hidden=false;}
       if(m.type==='respawn')engine.respawn();
-    }catch(error){send('error',{message:error.message,requestId:m.requestId});}
+    }catch(error){if(m.type==='load')disposeExtensionTable(extensions);send('error',{message:error.message,requestId:m.requestId});}
   });
   enter.onclick=()=>{if(!engine||frozen||engine.play?.dead)return;enter.hidden=true;engine.enter();};
   document.getElementById('revive').onclick=()=>{if(engine&&!frozen)engine.revive();};
   document.getElementById('interact').onclick=()=>engine?.interact();
-  addEventListener('pagehide',()=>engine?.dispose());
+  addEventListener('pagehide',()=>{engine?.dispose();disposeExtensionTable(extensions);});
   send('ready');
 })();

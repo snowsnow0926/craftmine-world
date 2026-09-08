@@ -10,7 +10,7 @@ export class BehaviorBinding {
     this.localToWorld=new Map(this.binding?.objects.map(p=>[p.local,p.world])||[]);
     this.worldToLocal=new Map(this.binding?.objects.map(p=>[p.world,p.local])||[]);
     const {binding,requires,...base}=this.world;
-    this.authored={...base,format:base.format==='craftmine.behavior/3'?base.format:'craftmine.behavior/1',targets:this.binding?base.targets.map(id=>this.worldToLocal.get(id)):base.targets,...(base.format==='craftmine.behavior/3'?{requires:[],binding:null}:{})};
+    this.authored={...base,targets:this.binding?base.targets.map(id=>this.worldToLocal.get(id)):base.targets,...(base.format!=='craftmine.behavior/1'?{requires:structuredClone(requires),binding:null}:{})};
     validateBehavior(this.authored);
   }
   frame(input){
