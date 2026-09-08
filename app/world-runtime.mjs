@@ -143,6 +143,8 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
         if(effect.type==='player.impulse'){this.vy=effect.velocity.y;this.impulse={x:effect.velocity.x,z:effect.velocity.z};this.grounded=false;}
         if(effect.type==='resource.add'){this.play?.addResource(effect.id,effect.amount);this.updateHud();}
         if(effect.type==='resource.set'){this.play?.setResource(effect.id,effect.value);this.updateHud();}
+        if(effect.type==='health.add'){const player=this.play?.player;if(player){player.health=Math.max(0,Math.min(player.maxHealth,player.health+effect.amount));this.updateHud();}}
+        if(effect.type==='target.damage'){const target=this.play?.state?.targets?.[effect.id];if(target&&target.health>0){target.health=Math.max(0,target.health-effect.amount);if(target.health===0)this.rebuildObject(effect.id);this.updateHud();}}
       }
     }
     async interact(){

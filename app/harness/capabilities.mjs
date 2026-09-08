@@ -62,6 +62,16 @@ export const COMMANDS = Object.freeze([
     fields: { id: '资源系统 ID', value: '0..10000' }, quota: '每步最多 1 条', example: "{type:'resource.set',id:'system-mana',value:0}",
   },
   {
+    type: 'health.add', permission: 'health.write', scope: '当前玩家生命值',
+    fields: { amount: '整数 -10000..10000；正数治疗、负数扣血' }, quota: '每步最多 1 条', example: "{type:'health.add',amount:-12}",
+    note: '结果夹在 0 到血量上限之间；需要玩家生命值系统',
+  },
+  {
+    type: 'target.damage', permission: 'targets.write', scope: '声明过的 targets 里的目标',
+    fields: { id: '目标 ID', amount: '0..10000' }, quota: '每步最多 16 个目标', example: "{type:'target.damage',id:'zombie-1',amount:8}",
+    note: '直接扣目标血量；血量归零后模型消失，复活仍必须用 target.revive',
+  },
+  {
     type: 'inventory.add', permission: 'inventory.write', scope: '当前玩家背包',
     fields: { item: '稳定英文 ID（小写字母开头）', count: '整数 -100..100' }, quota: '每步最多 1 条', example: "{type:'inventory.add',item:'wood',count:3}",
   },

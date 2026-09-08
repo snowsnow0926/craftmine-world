@@ -11,6 +11,7 @@ export const STATIC_FILES = Object.freeze([
   ['/app/behavior-binding.mjs', 'behavior-binding.mjs', 'text/javascript'],
   ['/app/tween.mjs', 'tween.mjs', 'text/javascript'],
   ['/app/harness/acceptance.mjs', 'harness/acceptance.mjs', 'text/javascript'],
+  ['/app/harness/trace-runner.mjs', 'harness/trace-runner.mjs', 'text/javascript'],
   ['/app/scene-diff.mjs', 'scene-diff.mjs', 'text/javascript'], ['/app/canonical.mjs', 'canonical.mjs', 'text/javascript'],
   ['/app/review.js', 'review.js', 'text/javascript'],
   ['/app/project-context.mjs', 'project-context.mjs', 'text/javascript'], ['/app/context-panel.js', 'context-panel.js', 'text/javascript'],

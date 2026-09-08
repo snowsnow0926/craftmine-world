@@ -2,7 +2,7 @@
 import { exactKeys, identifier, bounded,validateSource } from './gameplay.mjs';
 
 export const BEHAVIOR_FORMAT='craftmine.behavior/1';
-export const BEHAVIOR_PERMISSIONS=['objects.write','player.motion','hud.message','inventory.write','audio.play','targets.write','resources.write'];
+export const BEHAVIOR_PERMISSIONS=['objects.write','player.motion','hud.message','inventory.write','audio.play','targets.write','resources.write','health.write'];
 export const AUDIO_SOUNDS=['shoot','hit','open','pickup','error','jump','land','step','explode','heal','hurt','unlock','deny','win'];
 export const MESSAGE_TONES=['info','warn','success'];
 // 可供创作模块声明的按键。引擎自己占用的键（WASD/空格/Shift/1/2/E/F/R/T/Enter/Esc）不在此列。
@@ -145,6 +145,11 @@ export function validateBehaviorResult(result,definition,frame,{local=false}={})
       permit('resources.write');exactKeys(command,['type','id','amount']);if(!safeId(command.id))throw Error('资源 ID 无效');bounded(command.amount,-10000,10000);
     }else if(command?.type==='resource.set'){
       permit('resources.write');exactKeys(command,['type','id','value']);if(!safeId(command.id))throw Error('资源 ID 无效');bounded(command.value,0,10000);
+    }else if(command?.type==='health.add'){
+      permit('health.write');exactKeys(command,['type','amount']);bounded(command.amount,-10000,10000);
+    }else if(command?.type==='target.damage'){
+      permit('targets.write');exactKeys(command,['type','id','amount']);if(!safeId(command.id))throw Error('目标 ID 无效');bounded(command.amount,0,10000);
+      if(!definition.targets.includes(command.id))throw Error('玩法试图伤害未授权的目标');
     }else throw Error('不支持的玩法命令');
   }
   // The caller only receives a result after every command has passed.
@@ -163,6 +168,8 @@ hud.message: {type:'hud.message',text:'最多160字',tone:可选'info'|'warn'|'s
 audio.play: {type:'audio.play',sound:'shoot'|'hit'|'open'|'pickup'|'error'|'jump'|'land'|'step'|'explode'|'heal'|'hurt'|'unlock'|'deny'|'win',volume:可选0..1}。宿主用内置音效合成播放，不需要素材。
 targets.write: {type:'target.revive',id}。把该目标的血量恢复到上限并让它重新出现（用于刷新怪物）。只能用于声明过的 targets；被杀死的目标必须用它复活，object.patch 的 visible:true 不会让已死目标重新生效。
 resources.write: {type:'resource.add',id:'资源系统ID',amount:整数-10000..10000} 或 {type:'resource.set',id:'资源系统ID',value:0..10000}。id 是场景里 type 为 resource 的系统 ID（例如体力、魔法、饥饿、护甲）；结果会自动夹在 0 到该系统 max 之间。资源条会显示在屏幕左下角。
+health.write: {type:'health.add',amount:整数-10000..10000}。正数治疗、负数扣血，结果夹在 0 到玩家血量上限之间；需要玩家生命值系统。
+targets.write: {type:'target.damage',id,amount:0..10000}。直接扣目标血量（用于吸血、中毒、爆炸等）；只能作用于声明过的 targets，血量归零时模型会消失，复活仍必须用 target.revive。
 inventory.write: {type:'inventory.add',item:'稳定英文ID',count:整数-100..100}。
 需要共享背包读取、物品名称或持久任务时，使用 craftmine.behavior/3，保留 /2 的 requires 与 binding，并声明 capabilities（只选需要的）：
 - inventory.read@1：frame.inventory 是本步开始时的共享库存 {wood:3,...}，缺少 ID 表示 0。只读快照，修改它不能改变背包；不同模块按场景顺序依次读取最新已提交库存。配方先检查 (frame.inventory.wood||0)>=所需数量，不足时返回提示与原状态；不要尝试扣负库存，否则整步拒绝并停止模块。

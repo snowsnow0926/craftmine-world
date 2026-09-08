@@ -13,6 +13,7 @@ import { verifyAsset } from './asset-verify.mjs';
 import { loadLocalConfig } from './local-config.mjs';
 import { capabilitiesCatalog } from './harness/capabilities.mjs';
 import { summarizeTasks } from './harness/metrics.mjs';
+import { judgmentReport, readJudgments } from './harness/judgment-run.mjs';
 import { STATIC_FILES } from './static-files.mjs';
 
 const APP = path.dirname(fileURLToPath(import.meta.url)), ROOT = path.dirname(APP);
@@ -82,6 +83,7 @@ const server = http.createServer(async (req,res) => {
         if (url.pathname === '/api/assets/read') return json(res,200,store.assets.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
         if (url.pathname === '/api/capabilities') return json(res,200,capabilitiesCatalog());
         if (url.pathname === '/api/metrics') return json(res,200,summarizeTasks(store.data.tasks));
+    if (url.pathname === '/api/judgment') return json(res,200,{report:judgmentReport(),runs:readJudgments(store.root).map(run=>({started:run.started,signature:run.signature,metrics:run.metrics}))});
       } else {
         const input = await body(req,['/api/import','/api/modules/import'].includes(url.pathname)?PACKAGE_BYTES:url.pathname==='/api/assets/import'?12_000_000:1_500_000);
         switch (url.pathname) {

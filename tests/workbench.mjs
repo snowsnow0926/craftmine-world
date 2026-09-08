@@ -35,5 +35,5 @@ export async function workbench(name,{preload,env={},resumeDir}={}){
   async function request(prompt){const previous=new Set((await api('/api/state')).tasks.map(t=>t.id));await page.evaluate(prompt=>{document.getElementById('prompt').value=prompt;document.getElementById('composer').requestSubmit();},prompt);const start=Date.now();let last='';while(Date.now()-start<250000){const state=await api('/api/state'),t=state.tasks.find(t=>!previous.has(t.id));if(t&&t.status!==last){console.log('LLM '+t.status);last=t.status;}if(t?.status==='ready')return state;if(t&&['failed','cancelled','discussed','interrupted','unchanged'].includes(t.status))throw Error(t.error||'Unexpected task status '+t.status);await page.waitForTimeout(1000);}throw Error('LLM timeout');}
   const saveScreenshot=async name=>{await page.screenshot({path:path.join(dir,name+'.png')});};
   await start();
-  return {dir,checks,errors,check,api,snapshot,apply,load,request,domClick,saveScreenshot,start,close,get page(){return page;},game:()=>page.frameLocator('#game-wrap iframe:not(.staging)'),report};
+  return {dir,origin:`http://127.0.0.1:${port}`,checks,errors,check,api,snapshot,apply,load,request,domClick,saveScreenshot,start,close,get page(){return page;},game:()=>page.frameLocator('#game-wrap iframe:not(.staging)'),report};
 }

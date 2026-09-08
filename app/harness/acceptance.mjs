@@ -12,13 +12,16 @@ export function worldSnapshot(input = {}) {
     mesh: object.mesh !== false,
     health: Number.isFinite(object.health) ? object.health : null,
     solid: object.solid !== false,
+    color: typeof object.color === 'string' ? object.color : null,
     bounds: object.bounds ? { min: { ...object.bounds.min }, max: { ...object.bounds.max } } : null,
   })).sort((a, b) => a.id.localeCompare(b.id));
   const inventory = Object.fromEntries(Object.entries(input.inventory || {}).sort(([a], [b]) => a.localeCompare(b)));
+  const items = Object.fromEntries(Object.entries(input.items || {}).map(([id, item]) => [id, item?.name || id]).sort(([a], [b]) => a.localeCompare(b)));
+  const resources = Object.fromEntries(Object.entries(input.resources || {}).map(([id, value]) => [id, { value: Number(value?.value) || 0, max: Number(value?.max) || 0 }]).sort(([a], [b]) => a.localeCompare(b)));
   const panels = Object.fromEntries(Object.entries(input.panels || {}).map(([key, value]) => [key, stable(value)]).sort(([a], [b]) => a.localeCompare(b)));
   return {
     playerHealth: Number.isFinite(input.playerHealth) ? input.playerHealth : null,
-    objects, inventory, panels,
+    objects, inventory, items, resources, panels,
     effects: (input.effects || []).map(effect => effect.type),
   };
 }
@@ -32,12 +35,16 @@ export function observableChange(before, after) {
   for (const id of [...new Set([...oldObjects.keys(), ...newObjects.keys()])].sort()) {
     const old = oldObjects.get(id), next = newObjects.get(id);
     if (!old || !next) { fields.push(`object:${id}`); continue; }
-    for (const key of ['visible', 'mesh', 'health', 'solid']) if (old[key] !== next[key]) fields.push(`object:${id}.${key}`);
+    for (const key of ['visible', 'mesh', 'health', 'solid', 'color']) if (old[key] !== next[key]) fields.push(`object:${id}.${key}`);
     if (stable(old.position) !== stable(next.position)) fields.push(`object:${id}.position`);
     if (stable(old.bounds) !== stable(next.bounds)) fields.push(`object:${id}.bounds`);
   }
   for (const key of [...new Set([...Object.keys(before.inventory), ...Object.keys(after.inventory)])].sort())
     if ((before.inventory[key] ?? 0) !== (after.inventory[key] ?? 0)) fields.push(`inventory.${key}`);
+  for (const key of [...new Set([...Object.keys(before.items || {}), ...Object.keys(after.items || {})])].sort())
+    if (before.items?.[key] !== after.items?.[key]) fields.push(`item.${key}`);
+  for (const key of [...new Set([...Object.keys(before.resources || {}), ...Object.keys(after.resources || {})])].sort())
+    if (stable(before.resources?.[key]) !== stable(after.resources?.[key])) fields.push(`resource.${key}`);
   for (const key of [...new Set([...Object.keys(before.panels), ...Object.keys(after.panels)])].sort())
     if (before.panels[key] !== after.panels[key]) fields.push(`panel.${key}`);
   if (stable(before.effects) !== stable(after.effects)) fields.push('effects');
