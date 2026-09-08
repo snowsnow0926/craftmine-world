@@ -22,7 +22,7 @@ export async function verifyBehaviors(build,{origin,signal,deadline=Date.now()+3
         let player={position:{x:0,y:6,z:30},grounded:true,health:100},session,event='start';
         const context=()=>({player,objects:session.data.view.objects.map(o=>({id:o.id,position:o.position,visible:o.visible,solid:session.data.view.primitives.some(p=>p.id===o.id&&p.solid),health:o.components.health}))});
         try{
-          session=new BehaviorSession(one,null,{context,apply:result=>entry.effects.push(...result.effects.map(e=>({type:e.type,...(e.type==='player.impulse'?{velocity:e.velocity}:{})}))),onStep:({result})=>entry.motions.push(...result.commands.filter(c=>c.type==='object.patch'&&c.position).map(c=>({id:c.id,position:c.position})))});
+          session=new BehaviorSession(one,null,{context,apply:result=>entry.effects.push(...result.effects.map(e=>({type:e.type,...(e.type==='player.impulse'?{velocity:e.velocity}:{})}))),onStep:({frame,result})=>{if(frame?.event?.type==='key'&&result.commands.length)entry.keyCommands=(entry.keyCommands||0)+result.commands.length;entry.motions.push(...result.commands.filter(c=>c.type==='object.patch'&&c.position).map(c=>({id:c.id,position:c.position})));}});
           await session.start();entry.events.push('start');
           event='tick';await session.execute({type:'tick',targetId:null},.1,true);entry.events.push('tick');
           for(const id of artifact.definition.targets){
@@ -32,6 +32,9 @@ export async function verifyBehaviors(build,{origin,signal,deadline=Date.now()+3
               event=type+':'+id;session.data.value.time+=.2;await session.execute({type,targetId:id},.1,true);entry.events.push(event);
             }
           }
+          const declaredKeys=artifact.definition.keys||[];entry.declaredKeys=declaredKeys;
+          for(const code of declaredKeys){event='key:'+code;session.data.value.time+=.2;await session.execute({type:'key',targetId:null,code},.1,true);entry.events.push(event);}
+          if(declaredKeys.length&&!entry.keyCommands)throw Error('声明了按键但按键事件没有产生任何命令：不要读取 frame.keys，按键事件带 code');
           entry.state=session.snapshot();session.dispose();
           event='restore';const restored=new BehaviorSession(one,entry.state,{context,apply:()=>{}});session=restored;await restored.start();restored.dispose();entry.events.push('restore');entry.passed=true;
         }catch(error){entry.error=error.message;entry.failedEvent=event;}finally{session?.dispose();}

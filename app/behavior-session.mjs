@@ -44,11 +44,11 @@ export class BehaviorSession {
       }
     }
   }
-  dispatch(type,targetId=null,dt=0){
+  dispatch(type,targetId=null,dt=0,code=null){
     if(this.disposed||!this.runners.size)return Promise.resolve();
     if(type==='tick'&&this.pending)return this.pending;
     if(this.queue.length>=8)return this.pending||Promise.resolve();
-    this.queue.push({event:{type,targetId},dt});
+    this.queue.push({event:{type,targetId,...(code?{code}:{})},dt});
     if(!this.pending)this.pending=this.drain().finally(()=>{this.pending=null;});
     return this.pending;
   }

@@ -3,6 +3,24 @@ import { WorldAssets } from './world-assets.mjs';
 import { GameplaySession } from './gameplay.mjs';
 import { primitiveVertices,intersects,rayBox } from './geometry.mjs';
 import { BehaviorSession } from './behavior-session.mjs';
+// 内置音效：用 WebAudio 合成短音，不需要素材；浏览器未授权音频时静默跳过。
+let audioContext;
+function playSound(sound){
+  try{
+    const Ctor=globalThis.AudioContext||globalThis.webkitAudioContext;
+    if(!Ctor)return;
+    audioContext=audioContext||new Ctor();
+    if(audioContext.state==='suspended')audioContext.resume();
+    const spec={shoot:[880,.07,'square'],hit:[220,.09,'sawtooth'],open:[440,.12,'sine'],pickup:[660,.08,'triangle'],error:[160,.16,'square']}[sound]||[440,.08,'sine'];
+    const now=audioContext.currentTime,osc=audioContext.createOscillator(),gain=audioContext.createGain();
+    osc.type=spec[2];osc.frequency.setValueAtTime(spec[0],now);
+    gain.gain.setValueAtTime(.0001,now);
+    gain.gain.exponentialRampToValueAtTime(.12,now+.01);
+    gain.gain.exponentialRampToValueAtTime(.0001,now+spec[1]);
+    osc.connect(gain);gain.connect(audioContext.destination);
+    osc.start(now);osc.stop(now+spec[1]+.02);
+  }catch{}
+}
 export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
   const {VoxelRuntime,B,index,basis}=WorldRuntime;
   class BlankRuntime extends VoxelRuntime {
@@ -25,6 +43,7 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
           if(e.code==='KeyF'&&this.play?.equip('melee'))this.attack();
           if(e.code==='KeyE'){e.preventDefault();this.interact();}
         }
+        if(this.input&&!e.repeat&&this.behaviorKeys?.has(e.code)){e.preventDefault();this.behaviors.dispatch('key',null,0,e.code);}
         if(this.input&&['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','ShiftLeft','ShiftRight'].includes(e.code)){e.preventDefault();this.keys.add(e.code);}
       });
       this.listen(document,'keyup',e=>this.keys.delete(e.code));
@@ -46,6 +65,7 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       for(const [x,y,z,material,id]of value.voxels){this.put(x,y,z,material);this.treeAt.set(index(x,y,z),id);}
       this.p={...snapshot.player};this.fly=false;this.vy=0;this.grounded=false;
       this.behaviors=new BehaviorSession(value,snapshot.behaviors,{context:()=>this.behaviorContext(),apply:(result,view)=>this.applyBehavior(result,view),notice:inform,gameplay:this.play.state});
+      this.behaviorKeys=new Set(this.behaviors.data.definitions.flatMap(artifact=>artifact.definition.keys||[]));
       this.primitives=this.behaviors.data.view.primitives;this.objects=new Map(this.behaviors.data.view.objects.map(o=>[o.id,o]));
       for(let z=-48;z<48;z+=16)for(let x=-48;x<48;x+=16)this.rebuild(x,z);
       for(const o of value.scene.objects)if(this.play.alive(o.id)&&this.objects.get(o.id).visible!==false){
@@ -74,6 +94,8 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       for(const id of changed)this.rebuildObject(id);
       for(const effect of effects){
         if(effect.type==='hud.message')inform(effect.text);
+        if(effect.type==='audio.play')playSound(effect.sound);
+        if(effect.type==='target.revive'){const target=this.play?.state?.targets?.[effect.id];if(target)target.health=target.maxHealth;this.rebuildObject(effect.id);}
         if(effect.type==='player.impulse'){this.vy=effect.velocity.y;this.impulse={x:effect.velocity.x,z:effect.velocity.z};this.grounded=false;}
       }
     }
