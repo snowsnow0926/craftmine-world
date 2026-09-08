@@ -12,6 +12,7 @@ import { checkCreationModule,rememberCreationCheck } from './creation-verify.mjs
 import { verifyAsset } from './asset-verify.mjs';
 import { loadLocalConfig } from './local-config.mjs';
 import { capabilitiesCatalog } from './harness/capabilities.mjs';
+import { summarizeTasks } from './harness/metrics.mjs';
 
 const APP = path.dirname(fileURLToPath(import.meta.url)), ROOT = path.dirname(APP);
 const port = Number(process.env.CRAFTMINE_PORT || 8787), dataRoot = path.resolve(process.env.CRAFTMINE_DATA_DIR || path.join(ROOT,'.craftmine'));
@@ -35,6 +36,7 @@ const staticFiles = new Map([
   ['/app/behavior-contracts.mjs',['behavior-contracts.mjs','text/javascript']], ['/app/behavior-runner.mjs',['behavior-runner.mjs','text/javascript']],
   ['/app/behavior-state.mjs',['behavior-state.mjs','text/javascript']], ['/app/behavior-session.mjs',['behavior-session.mjs','text/javascript']], ['/app/world-runtime.mjs',['world-runtime.mjs','text/javascript']],
   ['/app/behavior-binding.mjs',['behavior-binding.mjs','text/javascript']],
+  ['/app/harness/acceptance.mjs',['harness/acceptance.mjs','text/javascript']],
   ['/app/scene-diff.mjs',['scene-diff.mjs','text/javascript']], ['/app/canonical.mjs',['canonical.mjs','text/javascript']], ['/app/review.js',['review.js','text/javascript']],
   ['/app/project-context.mjs',['project-context.mjs','text/javascript']], ['/app/context-panel.js',['context-panel.js','text/javascript']],
   ['/app/context.css',['context.css','text/css']],
@@ -93,6 +95,7 @@ const server = http.createServer(async (req,res) => {
         if (url.pathname === '/api/modules/export') return json(res,200,store.exportModule(url.searchParams.get('id'),Number(url.searchParams.get('version'))));
         if (url.pathname === '/api/assets/read') return json(res,200,store.assets.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
         if (url.pathname === '/api/capabilities') return json(res,200,capabilitiesCatalog());
+        if (url.pathname === '/api/metrics') return json(res,200,summarizeTasks(store.data.tasks));
       } else {
         const input = await body(req,['/api/import','/api/modules/import'].includes(url.pathname)?PACKAGE_BYTES:url.pathname==='/api/assets/import'?12_000_000:1_500_000);
         switch (url.pathname) {

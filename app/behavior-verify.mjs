@@ -16,11 +16,19 @@ export async function verifyBehaviors(build,{origin,signal,deadline=Date.now()+3
     const page=await context.newPage();await page.goto(origin+'/verify');
     const result=await page.frameLocator('iframe').locator('body').evaluate(async(_,{build,events})=>{
       const {BehaviorSession}=await import('/app/behavior-session.mjs');
+      const acceptance=await import('/app/harness/acceptance.mjs');
       const report={format:'craftmine.behavior-check/1',build:build.hash,passed:false,modules:[],scope:'接口与事件序列检查；不等同于玩家需求验收'};
       for(const artifact of build.behaviors){
         const one={...build,behaviors:[artifact]},entry={id:artifact.definition.id,revision:artifact.id,passed:false,events:[],effects:[],motions:[],error:null};
         let player={position:{x:0,y:6,z:30},grounded:true,health:100},session,event='start';
         const context=()=>({player,objects:session.data.view.objects.map(o=>({id:o.id,position:o.position,visible:o.visible,solid:session.data.view.primitives.some(p=>p.id===o.id&&p.solid),health:o.components.health}))});
+        // 世界快照只包含玩家能真正观察到的事实：血量、模型是否重建、位置、可见、背包和面板。
+        const snapshot=()=>{const value=session.data.value,view=session.data.view,panels={};
+          for(const [moduleId,module] of Object.entries(value.modules||{}))for(const [key,panel] of Object.entries(module?.panels||{}))panels[moduleId+':'+key]=panel;
+          return acceptance.worldSnapshot({
+            playerHealth:Object.values(value.systems||{}).find(s=>s?.type==='health')?.health,
+            objects:view.objects.map(o=>({id:o.id,position:o.position,visible:o.visible,mesh:view.primitives.some(p=>p.id===o.id),health:o.components.health})),
+            inventory:value.inventory||{},panels,effects:entry.effects});};
         try{
           session=new BehaviorSession(one,null,{context,apply:result=>entry.effects.push(...result.effects.map(e=>({type:e.type,...(e.type==='player.impulse'?{velocity:e.velocity}:{})}))),onStep:({frame,result})=>{if(frame?.event?.type==='key'&&result.commands.length)entry.keyCommands=(entry.keyCommands||0)+result.commands.length;entry.motions.push(...result.commands.filter(c=>c.type==='object.patch'&&c.position).map(c=>({id:c.id,position:c.position})));}});
           await session.start();entry.events.push('start');
@@ -32,9 +40,15 @@ export async function verifyBehaviors(build,{origin,signal,deadline=Date.now()+3
               event=type+':'+id;session.data.value.time+=.2;await session.execute({type,targetId:id},.1,true);entry.events.push(event);
             }
           }
-          const declaredKeys=artifact.definition.keys||[];entry.declaredKeys=declaredKeys;
-          for(const code of declaredKeys){event='key:'+code;session.data.value.time+=.2;await session.execute({type:'key',targetId:null,code},.1,true);entry.events.push(event);}
+          const declaredKeys=artifact.definition.keys||[];entry.declaredKeys=declaredKeys;entry.keyEffects=[];
+          for(const code of declaredKeys){
+            const before=snapshot();
+            event='key:'+code;session.data.value.time+=.2;await session.execute({type:'key',targetId:null,code},.1,true);entry.events.push(event);
+            entry.keyEffects.push({code,change:acceptance.observableChange(before,snapshot())});
+          }
+          entry.acceptance=acceptance.evaluateKeyAcceptance({declaredKeys,keyCommands:entry.keyCommands||0,observations:entry.keyEffects});
           if(declaredKeys.length&&!entry.keyCommands)throw Error('声明了按键但按键事件没有产生任何命令：不要读取 frame.keys，按键事件带 code');
+          if(!entry.acceptance.passed)throw Error('按键验收未通过：'+entry.acceptance.assertions.filter(a=>!a.passed).map(a=>a.detail).join('；'));
           entry.state=session.snapshot();session.dispose();
           event='restore';const restored=new BehaviorSession(one,entry.state,{context,apply:()=>{}});session=restored;await restored.start();restored.dispose();entry.events.push('restore');entry.passed=true;
         }catch(error){entry.error=error.message;entry.failedEvent=event;}finally{session?.dispose();}
