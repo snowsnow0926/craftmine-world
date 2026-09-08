@@ -62,13 +62,16 @@ Esc 释放鼠标。浏览器不允许鼠标锁定时，按住画面拖动仍可�
 
 ## 可选配置
 
-配置通过启动 Node 进程的环境变量传入，[.env.example](.env.example) 给出不含密钥的例子；它不会被自动加载。
+配置通过启动 Node 进程的环境变量传入，[.env.example](.env.example) 给出不含密钥的例子；它不会被自动加载。更省事的做法是把变量写进数据目录的 `secrets.json`（默认 `.craftmine/secrets.json`），服务启动时自动读取：该目录已被 git 忽略，也不进入源码归档，环境变量优先于文件。
 
 | 变量 | 用途 |
 | --- | --- |
 | `CRAFTMINE_PORT` | 默认 `8787` |
+| `CRAFTMINE_MODEL_PROVIDER` | `deepseek` 或 `codex`；未设置时按是否配置 DeepSeek 密钥推断 |
+| `CRAFTMINE_DEEPSEEK_API_KEY` | DeepSeek 官方 API 密钥，只在服务端进程读取 |
+| `CRAFTMINE_MODEL` | 可选模型 ID；DeepSeek 默认 `deepseek-v4.1-flash-expires-on-0910` |
+| `CRAFTMINE_MAX_TOKENS` | 单次生成的最大输出 token，默认 `32000` |
 | `CRAFTMINE_CODEX_PATH` | 指定本机 `codex.exe`，通常会自动找到 |
-| `CRAFTMINE_MODEL` | 可选的可用模型 ID；默认使用 CLI 默认模型 |
 | `CRAFTMINE_DATA_DIR` | 为另一个独立本地数据目录启动项目 |
 
 例如 PowerShell 中更换端口：
@@ -78,7 +81,7 @@ $env:CRAFTMINE_PORT = '8788'
 node app/server.mjs
 ```
 
-应用复用 Codex CLI 的本机登录和结构化输出能力，见[官方非交互执行说明](https://learn.chatgpt.com/docs/non-interactive-mode)。它不会把登录凭据放进页面、场景或导出存档。
+默认使用 DeepSeek 官方 API：需要 `CRAFTMINE_DEEPSEEK_API_KEY`，模型名可配置，思考模式关闭，JSON Schema 随提示一起发送、结构由本地校验与修复循环兜底。也可以设置 `CRAFTMINE_MODEL_PROVIDER=codex` 复用 Codex CLI 的本机登录和结构化输出能力，见[官方非交互执行说明](https://learn.chatgpt.com/docs/non-interactive-mode)。两种方式都不会把密钥或登录凭据放进页面、场景或导出存档。
 
 ## 开发与验证
 
@@ -121,13 +124,17 @@ npm run test:live-assets
 - [M4 素材库、世界绑定与验收记录](docs/M4_ASSETS.md)
 - [真实模型生成的滑门与弹跳板演示](examples/door-and-bounce.save.json)
 - [M5 完整可玩世界实施与验收计划](docs/M5_WORLD.md)
+- [最新主计划：游戏创作 Harness 项目开发计划书](docs/HARNESS_DEVELOPMENT_PLAN.md)
+- [Codex、Claude Code 与 DeepSeek Harness 参考研究](docs/HARNESS_REFERENCE_RESEARCH.md)
+- [Harness 差距评估与优先级](docs/HARNESS_GAP_ASSESSMENT.md)
+- [创作循环：愿景、实测证据与决策记录](docs/CREATION_LOOP.md)
 - [当前目标与持续开发路线](docs/CONTINUOUS_DEVELOPMENT.md)
 - [开发进度记录](docs/DEVELOPMENT_STATUS.json)
 - [新玩法代码运行接口与验证](docs/BEHAVIOR_RUNTIME.md)
 - [模块记忆设计方案](docs/MODULE_MEMORY_PLAN.md)
 - [Alpha 0.3 历史实现记录](docs/IMPLEMENTATION.md)
 - [产品想法](docs/PRODUCT_VISION.md)
-- [开发计划](docs/DEVELOPMENT_PLAN.md)
+- [早期产品梳理与开发计划（历史）](docs/DEVELOPMENT_PLAN.md)
 
 ## 项目基线
 

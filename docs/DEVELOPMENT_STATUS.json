@@ -2,7 +2,7 @@
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "M5",
-  "baseline": "78b3ad0",
+  "baseline": "b7dbdad",
   "updated": "2026-09-09",
   "items": [
     {
@@ -191,11 +191,11 @@
       ]
     }
   ],
-  "nextAction": "用户最新目标是成为真正好用的 Harness；先阅读 docs/HARNESS_GAP_ASSESSMENT.md。本次仅完成缺口评估，H1–H3 未实现。下一批优先把产品内按需查询、模块读取、局部修改及真实试玩工具接成闭环，复用 test-results/live-world-6z8K3a 的 craft-tested 营地验证；M5 剩余战斗、奖励、迁移和 Alpha 0.9 交付继续保留，完成示例不等同于 Harness 好用性验收。",
+  "nextAction": "模型后端已按用户指定切换到 DeepSeek 官方 API，并完成一次真实门需求验收（见 harnessPlan.modelBackend）。下一批从 P0 的后端能力清单、领域工具协议与真实回执验证开始，接着 P1 的按需读取、局部源码补丁、持久草稿和恢复，再接 P2 的实际试玩。以独立门场景及 test-results/live-world-6z8K3a 的 craft-tested 营地验证；M5 剩余战斗、奖励、迁移和 Alpha 0.9 个人交付继续保留。用户正在运行的服务仍是 Alpha 0.8 与 Codex 路径，未重启、未写入个人数据；切换后需在启动进程里配置 CRAFTMINE_DEEPSEEK_API_KEY。不得操作用户输入设备或拿个人数据做测试。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",
-    "developmentSlice": "M5.1 完成；真实模型采木、制作与两次重启已验收，战斗和最终交付待下一批。用户个人服务仍为 Alpha 0.8，本批未重启或写入个人数据。",
+    "developmentSlice": "M5.1 完成；真实模型采木、制作与两次重启已验收，战斗和最终交付待下一批。本批新增模型后端切换：Codex CLI 改为 DeepSeek 官方 API（Codex 保留回退），核心测试 100 项通过，并用真实门需求完成候选、隔离验证与应用验收。用户个人服务仍为 Alpha 0.8，本批未重启或写入个人数据。",
     "personalWorldCandidate": "2026-09-09 只读核对：当前世界 v-ef6c29ea887d0323e15d，无候选及应用事务；原花草候选已成为当前世界，本批未操作其个人项目。",
     "example": "examples/door-and-bounce.save.json",
     "service": {
@@ -219,6 +219,127 @@
       "applying": null
     }
   },
+  "harnessPlan": {
+    "date": "2026-09-09",
+    "document": "docs/HARNESS_DEVELOPMENT_PLAN.md",
+    "research": "docs/HARNESS_REFERENCE_RESEARCH.md",
+    "status": "planned_not_implemented",
+    "currentPhase": "P0",
+    "deepseekReferenceCommit": "5dda764ed3aa172535a7967b06ff95d9cbfe536a",
+    "phases": [
+      {"id": "P0", "title": "协议与接入基线", "status": "planned"},
+      {"id": "P1", "title": "按需工具、局部修改与持久草稿", "status": "planned"},
+      {"id": "P2", "title": "产品内实际试玩与证据修复", "status": "planned"},
+      {"id": "P3", "title": "作品与经验记忆", "status": "planned"},
+      {"id": "P4", "title": "上下文、提示词与自动压缩", "status": "planned"},
+      {"id": "P5", "title": "组合、迁移与 M5 剩余验收", "status": "planned"},
+      {"id": "P6", "title": "可选第二后端与续接验证", "status": "planned", "optional": true},
+      {"id": "P7", "title": "Windows 个人交付", "status": "planned"}
+    ],
+    "existingMilestonesRetained": true,
+    "runtimeChangedInPlanningBatch": true,
+    "personalServiceChangedInPlanningBatch": false,
+    "modelBackend": {
+      "date": "2026-09-09",
+      "decision": "过渡期模型后端从 Codex CLI 改为 DeepSeek 官方 API；Codex CLI 保留为可回退路径",
+      "provider": "deepseek",
+      "defaultModel": "deepseek-v4.1-flash-expires-on-0910",
+      "configuration": ["CRAFTMINE_MODEL_PROVIDER", "CRAFTMINE_DEEPSEEK_API_KEY", "CRAFTMINE_MODEL", "CRAFTMINE_MAX_TOKENS"],
+      "implementation": [
+        "app/agent-model.mjs: provider 分发与 DeepSeek HTTP 适配器（json_object、thinking disabled、schema 进提示、取消、用量回报）",
+        "app/agent.mjs: 按 provider 判断可用性，不再强制要求 Codex CLI",
+        "app/scene.mjs: 导出 OBJECT_ID_PATTERN，校验与提示词共用同一份",
+        "app/behavior-build.mjs: 静态检查源码是否以 ES 模块导出 step",
+        "app/agent-prompt.mjs: 由运行器注入 ID 正则与 export 硬约束",
+        "app/client.js: 按 provider 显示连接状态",
+        "app/local-config.mjs 与 app/server.mjs: 数据目录 secrets.json 启动时自动加载（该目录已 gitignore，不进入源码归档；环境变量优先）",
+        ".env.example: 新增模型后端变量说明"
+      ],
+      "tests": [
+        "npm test: 101 passed（原 95 + 新增 tests/harness-model.test.mjs 6 项）",
+        "test-results/live-door-deepseek-JSMux5/report.json: 6 passed; 真实 DeepSeek 第 1 次尝试即形成候选，源码含 export function step，隔离 Worker 验证通过，应用后状态保存，无鼠标锁定与浏览器异常",
+        "test-results/live-door-deepseek-E9KxrR/report.json: 真实请求形成候选；第 1 次回复格式失败后由修复循环完成"
+      ],
+      "measured": {
+        "contextTokensAccepted": 360033,
+        "cachedPromptTokens": 3200,
+        "inputTokensPerDoorRequest": 8036,
+        "outputTokensPerDoorRequest": 1218,
+        "jsonSchemaStrict": "unavailable (HTTP 400)",
+        "thinkingDisabled": "required"
+      },
+      "knownRisk": "默认模型名带 expires-on-0910 到期标记且不在 /models 列表中；缓解方式是模型 ID 配置化，并可切换到 deepseek-v4-flash 或 deepseek-v4-pro",
+      "notYetVerified": ["产品内多步工具循环（function calling 单次已验证）", "与现有完整场景生成的耗时与输入量对照（§17.4）"]
+    },
+    "creationLoopBatch": {
+      "date": "2026-09-09",
+      "document": "docs/CREATION_LOOP.md",
+      "capabilityProbes": [
+        {"name": "小镇（3 间店铺）", "before": "3 次尝试失败：实心对象重叠", "after": "2 次尝试通过（改进报错后）"},
+        {"name": "会追人的怪物", "before": "3 次尝试失败：JSON 转义与模块字段不符", "after": "2 次尝试通过，源码 readsPlayer/movesObject 为真"},
+        {"name": "后坐力 + 音效", "before": "1 次通过", "after": "后坐力真实；音效仍为 HUD 文字代替并诚实标注"},
+        {"name": "挖洞", "before": "1 次通过", "after": "用拆重排几何实现，无体素编辑"}
+      ],
+      "capabilitiesAdded": [
+        "app/scene.mjs: 实心重叠报错给出双方 ID、重叠区域与最小分离方向",
+        "app/gameplay.mjs: 字段校验报错列出缺少与多出的键"
+      ],
+      "patchProtocol": {
+        "status": "complete",
+        "implementation": [
+          "app/scene.mjs: OUTPUT_SCHEMA 增加 changes；导出 applySceneChanges 与 decodeBehaviorDefinition",
+          "app/agent.mjs: changes 与 scene 二选一，补丁仍走完整校验与候选事务",
+          "app/agent-prompt.mjs: 说明 changes 的七种操作与使用条件"
+        ],
+        "operations": ["object.patch", "object.add", "object.remove", "behavior.set", "behavior.remove", "system.set", "system.remove"],
+        "measured": {"worldObjects": 128, "mode": "changes", "outputTokens": 157, "beforeOutputTokens": 12976, "latencyMs": 1045, "changedObjects": ["obj-7"]}
+      },
+      "inputReading": {
+        "status": "complete",
+        "implementation": [
+          "app/scene.mjs: 导出 sceneIndex / sceneFocus / expandSceneObjects",
+          "app/agent-prompt.mjs: 提示只带对象索引 + 焦点对象完整定义 + 完整模块；模型可用 read 请求补读",
+          "app/agent.mjs: 每次尝试最多补一次读取；世界不使用素材时提示省略 scene/4 的重复 schema"
+        ],
+        "measured": {"worldObjects": 128, "inputTokens": 14129, "beforeInputTokens": 22722, "promptBytes": 35172, "beforePromptBytes": 51921, "createTaskInputTokens": 6253, "createTaskBeforeInputTokens": 18208}
+      },
+      "contractRelaxation": "app/behavior-contracts.mjs: object.patch 允许省略 position/visible/solid/color（省略等于保留原字段），修掉怪物探针最后一处机械失败",
+      "audioCapability": {
+        "status": "complete",
+        "implementation": ["app/behavior-contracts.mjs: 权限 audio.play 与内置音效名 shoot/hit/open/pickup/error", "app/world-runtime.mjs: WebAudio 合成短音播放，无需素材", "app/scene.mjs: 权限枚举改为引用 BEHAVIOR_PERMISSIONS"],
+        "evidence": "后坐力+音效探针 1 次通过，源码含 audio.play 且不含 hud.message（不再用文字冒充）"
+      },
+      "riskFixes": {
+        "R2": "app/store.mjs + app/scene.mjs playerBlockedBy: 应用候选时用玩家此刻的位置检查新实心几何，冲突则拒绝并指出对象名",
+        "R1": "新增回归测试：状态版本兼容时改代码不重置已领取状态与背包"
+      },
+      "tests": ["npm test: 115 passed（重叠诊断、字段诊断、局部修改、按需读取、object.patch 省略、音效、位置检查、进度不重置、按键声明、按键帧校验、target.revive）"],
+      "knownGaps": ["动画/骨骼", "粒子", "刚体物理"],
+      "userFeedbackBatch": {
+        "date": "2026-09-09",
+        "feedback": "用户在自己世界连续尝试“怪物刷新键”，任务显示已应用但功能不生效",
+        "diagnosis": [
+          "行为模块没有按键事件：模型写了 frame.keys，而该字段不存在，条件永远为假；语法/权限/命令均合法，构建与隔离验证都通过",
+          "死掉的目标 health===0 时引擎 alive() 为假，object.patch 的 visible:true 无法复活，需要重置目标血量"
+        ],
+        "fixes": [
+          "app/behavior-contracts.mjs: 新增 BEHAVIOR_KEYS 与可选的 keys 声明；新增 target.revive 命令与 targets.write 权限；帧校验允许 key 事件",
+          "app/behavior-session.mjs + app/world-runtime.mjs: 按键未被引擎占用时派发 {type:'key',code}；target.revive 恢复血量并重建网格",
+          "app/behavior-verify.mjs: 验证序列会按一遍模块声明的按键，且要求至少产生一条命令，否则判定失败",
+          "app/agent-prompt.mjs + 行为指南: 明确“不存在 frame.keys”、可用按键清单与换键要求"
+        ],
+        "evidence": "同一需求（按 G 复活全部怪物）2 次尝试通过；验证报告 declaredKeys:[\"KeyG\"], keyCommands:8, events:[\"key:KeyG\"]"
+      },
+      "thinkingMode": {
+        "default": "off",
+        "enable": "CRAFTMINE_THINKING=on",
+        "effort": "CRAFTMINE_REASONING_EFFORT=high（low|medium|high）",
+        "sideEffects": "开启时任务总时限自动放宽到 20 分钟（CRAFTMINE_TASK_TIMEOUT_MS），默认输出上限提到 64,000",
+        "reason": "思考 token 与答案共用输出预算，默认开启会把预算吃光而返回空内容"
+      },
+      "personalServiceChanged": false
+    }
+  },
   "harnessAssessment": {
     "date": "2026-09-09",
     "document": "docs/HARNESS_GAP_ASSESSMENT.md",
@@ -229,6 +350,7 @@
       "H2 产品内真实试玩与固定需求验收条件",
       "H3 长任务恢复、上下文效率、模块组合和进度迁移"
     ],
-    "existingMilestonesRetained": true
+    "existingMilestonesRetained": true,
+    "modelBackendNote": "2026-09-09 后端已切换到 DeepSeek 官方 API 并通过一次真实门需求验收；这属于 H1/P1 的接入基线，不等于工具闭环或真实试玩验收完成。"
   }
 }
