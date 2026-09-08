@@ -20,23 +20,23 @@ export class BehaviorSession {
     }catch(error){this.dispose();throw error;}
   }
   async execute(event,dt,strict=false){
-    const context=this.context(),frame={dt,time:this.data.value.time,event,...context};
-    const results=await Promise.all(this.data.definitions.map(async artifact=>{
-      const id=artifact.definition.id,runner=this.runners.get(id);if(!runner||runner.closed||this.data.value.modules[id].error)return null;
-      if(event.targetId&&!artifact.definition.targets.includes(event.targetId))return null;
-      try{const binding=this.bindings.get(id);return {artifact,result:binding.result(await runner.step(binding.frame(frame),this.data.value.modules[id].state),frame)};}catch(error){return {artifact,error};}
-    }));
-    if(this.disposed)return;
-    for(const entry of results.filter(Boolean)){
-      const {artifact}=entry,id=artifact.definition.id;
+    // Stable order makes each consumer see inventory committed by earlier modules.
+    // Each worker receives its own clone, never the host's mutable inventory.
+    for(const artifact of this.data.definitions){
+      if(this.disposed)return;
+      const id=artifact.definition.id,runner=this.runners.get(id);if(!runner||runner.closed||this.data.value.modules[id].error)continue;
+      if(event.targetId&&!artifact.definition.targets.includes(event.targetId))continue;
+      const frame={dt,time:this.data.value.time,event,...this.context(),...(artifact.definition.capabilities?.includes('inventory.read@1')?{inventory:structuredClone(this.data.value.inventory)}:{})};
       try{
-        if(entry.error)throw entry.error;
+        const binding=this.bindings.get(id),result=binding.result(await runner.step(binding.frame(frame),this.data.value.modules[id].state),frame);
+        if(this.disposed)return;
         // Recheck against current geometry and player position, which may have moved
         // during the asynchronous computation. Commit only after the whole batch passes.
-        const applied=this.data.apply(artifact,entry.result,{...frame,...this.context()});
-        this.onStep({id,frame,result:entry.result});
+        const applied=this.data.apply(artifact,result,{...frame,...this.context()});
+        this.onStep({id,frame,result});
         this.apply(applied,this.data.view);
       }catch(error){
+        if(this.disposed)return;
         this.runners.get(id)?.dispose();this.data.value.modules[id].error=String(error.message).slice(0,600);
         const failure={id,name:artifact.definition.name,message:this.data.value.modules[id].error};this.failures.push(failure);
         if(strict)throw Error(`「${failure.name}」检查失败：${failure.message}`);

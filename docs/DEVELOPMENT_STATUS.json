@@ -154,17 +154,43 @@
     {
       "id": "M5",
       "title": "自然语言完成一个可导出和复用的完整可玩世界",
-      "status": "pending",
+      "status": "in_progress",
       "evidence": [
-        "docs/M5_WORLD.md: implementation and acceptance plan, not yet completed"
+        "docs/M5_WORLD.md"
+      ],
+      "slices": [
+        {
+          "id": "M5.1",
+          "title": "共享库存读取、物品名称和持久任务面板，显式能力与原子提交",
+          "status": "complete",
+          "evidence": [
+            "npm test: 93 passed",
+            "test-results/world-capabilities-eYJ8mn/report.json: 12 passed; real Workers, serial inventory consumers, actual interaction, collision and persistence using authored fixtures",
+            "test-results/world-capabilities-target-JnKZqO/report.json: 8 passed; second project, initial module reuse, uninstall/restore, literal DOM text and layout",
+            "test-results/behavior-browser-eVfsCM/report.json: 11 passed",
+            "test-results/code-world-aKrwOg/report.json: 10 passed"
+          ]
+        },
+        {
+          "id": "M5.2",
+          "title": "真实模型从空白世界连续生成采木、制作、战斗和一次性任务奖励",
+          "status": "in_progress",
+          "evidence": []
+        },
+        {
+          "id": "M5.3",
+          "title": "完整作品和源码复用、多次重启、可运行真实模型示例与个人交付",
+          "status": "pending",
+          "evidence": []
+        }
       ]
     }
   ],
-  "nextAction": "M5.1：按 docs/M5_WORLD.md 增加受能力声明约束的共享库存只读快照、物品友好名称和持久任务消息，保留旧源码/模块/存档兼容与整步原子提交；随后用真实模型逐步完成采木、制作门、目标战斗、任务奖励，跨重启和第二项目复用，并交付可运行示例。",
+  "nextAction": "M5.2：从独立空白测试项目开始真实模型连续创作，两棵可砍伐树木掉木材，增加材料不足提示及制作可开关的门，再加入射击目标和持久任务奖励；每阶段实际运行、跨至少两次重启保留进度，随后 M5.3 跨项目复用与可运行示例交付。不得把接口夹具当成模型生成证据。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",
-    "developmentSlice": "M1–M4 全部完成并验收，个人 8787 服务已启动 Alpha 0.8。M5 完整可玩世界继续开发。",
+    "developmentSlice": "M1–M4 已交付 Alpha 0.8；M5.1 新接口完成并验收，个人服务尚未替换，继续 M5.2 真实模型完整流程。",
     "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
     "example": "examples/door-and-bounce.save.json",
     "service": {

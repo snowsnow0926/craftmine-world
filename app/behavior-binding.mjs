@@ -10,11 +10,11 @@ export class BehaviorBinding {
     this.localToWorld=new Map(this.binding?.objects.map(p=>[p.local,p.world])||[]);
     this.worldToLocal=new Map(this.binding?.objects.map(p=>[p.world,p.local])||[]);
     const {binding,requires,...base}=this.world;
-    this.authored={...base,format:'craftmine.behavior/1',targets:this.binding?base.targets.map(id=>this.worldToLocal.get(id)):base.targets};
+    this.authored={...base,format:base.format==='craftmine.behavior/3'?base.format:'craftmine.behavior/1',targets:this.binding?base.targets.map(id=>this.worldToLocal.get(id)):base.targets,...(base.format==='craftmine.behavior/3'?{requires:[],binding:null}:{})};
     validateBehavior(this.authored);
   }
   frame(input){
-    validateBehaviorFrame(input);if(!this.binding)return structuredClone(input);
+    validateBehaviorFrame(input,{definition:this.world});if(!this.binding)return structuredClone(input);
     const value=structuredClone(input),used=new Set(this.localToWorld.keys());
     value.objects=value.objects.map((object,index)=>{
       let id=this.worldToLocal.get(object.id);
@@ -23,7 +23,7 @@ export class BehaviorBinding {
     });
     value.player.position=shifted(value.player.position,this.binding.translation,-1);
     if(value.event.targetId!==null){value.event.targetId=this.worldToLocal.get(value.event.targetId);if(!value.event.targetId)throw Error('玩法事件超出实例绑定');}
-    return validateBehaviorFrame(value,{local:true});
+    return validateBehaviorFrame(value,{local:true,definition:this.authored});
   }
   result(input,frame){
     if(!this.binding)return validateBehaviorResult(input,this.world,frame);

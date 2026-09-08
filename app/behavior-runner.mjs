@@ -30,7 +30,7 @@ export class BehaviorRunner {
   constructor(input,{stepTimeoutMs=150,loadTimeoutMs=2500,localCoordinates=false}={}){
     this.definition=validateBehavior(input);this.stepTimeoutMs=stepTimeoutMs;this.closed=false;this.sequence=0;this.pending=null;this.urls=[];
     this.state=structuredClone(this.definition.initialState);
-    this.coordinates={local:localCoordinates};
+    this.coordinates={local:localCoordinates,definition:this.definition};
     this.ready=new Promise((resolve,reject)=>{this.readyResolve=resolve;this.readyReject=reject;});
     try{
       const moduleURL=URL.createObjectURL(new Blob([this.definition.code],{type:'text/javascript'}));this.urls.push(moduleURL);

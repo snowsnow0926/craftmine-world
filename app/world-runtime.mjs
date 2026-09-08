@@ -154,7 +154,17 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       document.getElementById('target').textContent=target?`${this.objects.get(target)?.name||''}${life?' · '+Math.ceil(life.health)+' / '+life.maxHealth:''}`:'';
       const interactive=this.target?.distance<=4&&this.behaviors?.data.definitions.some(b=>b.definition.targets.includes(target));
       document.getElementById('interact').hidden=!interactive;document.getElementById('interact').textContent='E · 互动';
-      const items=Object.entries(this.behaviors?.data.value.inventory||{});document.getElementById('inventory-hud').hidden=!items.length;document.getElementById('inventory-hud').textContent=items.map(([id,count])=>`${id} × ${count}`).join(' · ');
+      this.updateCreationHud();
+    }
+    updateCreationHud(){
+      const saved=this.behaviors?.data.value,items=Object.entries(saved?.inventory||{}).filter(([,count])=>count>0).map(([id,count])=>({id,count,...(saved.items?.[id]||{name:id,description:''})}));
+      const panels=(this.behaviors?.data.definitions||[]).flatMap(({definition:d})=>Object.entries(saved.modules[d.id]?.panels||{}).map(([key,panel])=>({owner:d.id,source:d.name,key,...panel})));
+      const signature=JSON.stringify({items,panels});if(signature===this.creationHudSignature)return;this.creationHudSignature=signature;
+      const inventory=document.getElementById('inventory-hud');inventory.replaceChildren();inventory.hidden=!items.length;
+      if(items.length){const label=document.createElement('div');label.className='hud-label';label.textContent='背包';inventory.append(label);}
+      for(const item of items){const row=document.createElement('div');row.className='inventory-item';row.title=item.description;row.dataset.item=item.id;const name=document.createElement('span'),count=document.createElement('b');name.textContent=item.name;count.textContent='× '+item.count;row.append(name,count);inventory.append(row);}
+      const tasks=document.getElementById('task-hud');tasks.replaceChildren();tasks.hidden=!panels.length;
+      for(const panel of panels){const card=document.createElement('section');card.className='task-panel';card.dataset.owner=panel.owner;card.dataset.key=panel.key;const source=document.createElement('div'),title=document.createElement('h2');source.className='hud-label';source.textContent=panel.source;title.textContent=panel.title;card.append(source,title);for(const line of panel.lines){const p=document.createElement('p');p.textContent=line;card.append(p);}tasks.append(card);}
     }
     render(time){this.assetDraws=[];const target=this.target;if(target?.primitive)this.target=null;super.render(time);this.target=target;}
     revive(){this.play?.revive();this.respawn(false);this.updateHud();inform('已复活，世界中的变化仍保留');enter.hidden=false;}

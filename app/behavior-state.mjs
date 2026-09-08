@@ -1,15 +1,15 @@
 import { exactKeys,identifier,bounded } from './gameplay.mjs';
-import { jsonRecord,validateBehaviorResult } from './behavior-contracts.mjs';
+import { jsonRecord,validateBehaviorResult,validateInventory,validateItem,validatePanel } from './behavior-contracts.mjs';
 import { checkAppearanceBounds } from './asset-binding.mjs';
 import { intersects } from './geometry.mjs';
 
 const vector=v=>{exactKeys(v,['x','y','z']);for(const n of Object.values(v))bounded(n,-80,80);};
-const table=(v,limit)=>{if(!v||typeof v!=='object'||Array.isArray(v)||Object.keys(v).length>limit||Object.keys(v).some(k=>!identifier(k)))throw Error('代码玩法存档索引无效');};
+const table=(v,limit)=>{if(!v||typeof v!=='object'||Array.isArray(v)||Object.keys(v).length>limit||Object.keys(v).some(k=>!identifier(k)||['constructor','prototype'].includes(k)))throw Error('代码玩法存档索引无效');};
 export function validateBehaviorState(value){
-  const archived=value?.format==='craftmine.behavior-state/2';
-  exactKeys(value,['format','time','modules','inventory',...(archived?['archive']:[])]);if(!archived&&value.format!=='craftmine.behavior-state/1')throw Error('代码玩法存档格式不兼容');bounded(value.time,0,1e12);
-  table(value.modules,8);table(value.inventory,128);
-  for(const count of Object.values(value.inventory)){bounded(count,0,9999);if(!Number.isInteger(count))throw Error('库存数需要是整数');}
+  const capable=value?.format==='craftmine.behavior-state/3',archived=capable||value?.format==='craftmine.behavior-state/2';
+  exactKeys(value,['format','time','modules','inventory',...(archived?['archive']:[]),...(capable?['items']:[])]);if(!archived&&value.format!=='craftmine.behavior-state/1')throw Error('代码玩法存档格式不兼容');bounded(value.time,0,1e12);
+  table(value.modules,8);validateInventory(value.inventory);
+  if(capable){table(value.items,128);for(const item of Object.values(value.items))validateItem(item);}
   let archivedModules=[];
   if(archived){
     if(!Array.isArray(value.archive)||value.archive.length>32)throw Error('历史玩法进度超过 32 份上限，请先导出整理');const seen=new Set();
@@ -17,9 +17,10 @@ export function validateBehaviorState(value){
     archivedModules=value.archive.map(e=>e.record);
   }
   for(const module of [...Object.values(value.modules),...archivedModules]){
-    exactKeys(module,['stateVersion','revision','state','overrides','error']);
+    exactKeys(module,['stateVersion','revision','state','overrides','error',...(capable?['panels']:[])]);
     if(!Number.isInteger(module.stateVersion)||module.stateVersion<1||module.stateVersion>10000||!/^code-[a-f0-9]{20}$/.test(module.revision)||typeof module.error!=='string'||module.error.length>600)throw Error('代码玩法状态版本无效');
     jsonRecord(module.state);table(module.overrides,16);
+    if(capable){table(module.panels,3);for(const panel of Object.values(module.panels))validatePanel(panel);}
     for(const patch of Object.values(module.overrides)){
       exactKeys(patch,['offset','visible','solid','color']);vector(patch.offset);
       if(typeof patch.visible!=='boolean'||(patch.solid!==null&&typeof patch.solid!=='boolean')||(patch.color!==null&&!/^#[0-9a-fA-F]{6}$/.test(patch.color)))throw Error('代码玩法对象状态无效');
@@ -31,15 +32,18 @@ export class BehaviorState {
   constructor(build,saved,gameplay){
     if(saved)validateBehaviorState(saved);
     this.build=build;this.definitions=build.behaviors||[];
-    this.value={format:'craftmine.behavior-state/2',time:saved?.time||0,modules:{},inventory:structuredClone(saved?.inventory||{}),archive:structuredClone(saved?.archive||[])};
-    const remember=(id,record)=>{this.value.archive=this.value.archive.filter(e=>e.id!==id||e.record.stateVersion!==record.stateVersion);this.value.archive.push({id,record:structuredClone(record)});};
+    const capable=saved?.format==='craftmine.behavior-state/3'||this.definitions.some(b=>b.definition.format==='craftmine.behavior/3');
+    const normalize=record=>({...structuredClone(record),...(capable?{panels:structuredClone(record.panels||{})}:{})});
+    this.value={format:capable?'craftmine.behavior-state/3':'craftmine.behavior-state/2',time:saved?.time||0,modules:{},inventory:structuredClone(saved?.inventory||{}),archive:(saved?.archive||[]).map(e=>({id:e.id,record:normalize(e.record)})),...(capable?{items:structuredClone(saved?.items||{})}:{})};
+    const remember=(id,record)=>{this.value.archive=this.value.archive.filter(e=>e.id!==id||e.record.stateVersion!==record.stateVersion);this.value.archive.push({id,record:normalize(record)});};
     for(const [id,record]of Object.entries(saved?.modules||{}))if(!this.definitions.some(b=>b.definition.id===id&&b.definition.stateVersion===record.stateVersion))remember(id,record);
     for(const artifact of this.definitions){
       const d=artifact.definition,current=saved?.modules[d.id],old=current?.stateVersion===d.stateVersion?current:this.value.archive.find(e=>e.id===d.id&&e.record.stateVersion===d.stateVersion)?.record;
       if(current&&!old)throw Error(`「${d.name}」需要迁移状态 v${current.stateVersion} → v${d.stateVersion}，原进度已保留`);
       this.value.archive=this.value.archive.filter(e=>e.id!==d.id||e.record.stateVersion!==d.stateVersion);
-      const record=old?structuredClone(old):{stateVersion:d.stateVersion,revision:artifact.id,state:structuredClone(d.initialState),overrides:{},error:''};
+      const record=normalize(old||{stateVersion:d.stateVersion,revision:artifact.id,state:structuredClone(d.initialState),overrides:{},error:''});
       if(record.revision!==artifact.id)record.error='';record.revision=artifact.id;
+      if(capable&&!d.capabilities?.includes('hud.panel@1'))record.panels={};
       for(const id of Object.keys(record.overrides))if(!d.targets.includes(id)||!d.permissions.includes('objects.write'))delete record.overrides[id];
       this.value.modules[d.id]=record;
     }
@@ -82,6 +86,10 @@ export class BehaviorState {
       }else if(c.type==='inventory.add'){
         const count=(next.inventory[c.item]||0)+c.count;if(count<0||count>9999)throw Error('库存不足或超过容量，整步操作未应用');
         if(count)next.inventory[c.item]=count;else delete next.inventory[c.item];
+      }else if(c.type==='inventory.define'){
+        next.items[c.item]??={name:c.name,description:c.description};
+      }else if(c.type==='hud.panel'){
+        if(c.panel===null)delete record.panels[c.key];else record.panels[c.key]=c.panel;
       }else effects.push(c);
     }
     record.state=checked.state;

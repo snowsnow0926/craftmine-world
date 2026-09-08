@@ -47,4 +47,20 @@
 
 M2 已增加 `craftmine.behavior/2` 的 `requires` 和 `binding`。宿主通过 `BehaviorBinding` 转换对象身份和坐标，原始源码、参数与 JSON 状态保持作者坐标约定；结果转换后再次通过实际世界校验。`behavior-state/2` 保存已卸载进度，兼容版本恢复原状态，未实现通用迁移的状态格式变化会拒绝应用。
 
-下个接点是 M3：结构化失败诊断、有次数与总时长上限的自动修复，以及现场上下文和候选差异预览。检查的接口事件通过不等于玩法语义通过，真实需求仍要实际运行验收。
+M3、M4 已完成，当前继续 M5，完整证据见各版本交付文档。检查的接口事件通过不等于玩法语义通过，真实需求仍要实际运行验收。
+
+## M5 共享背包与持久任务接口
+
+使用新接口的源码采用 `craftmine.behavior/3`，增加 `capabilities` 数组，保留 /2 的 `requires`、`binding`。只声明实际需要的能力：
+
+| 能力 | 接口 | 约束 |
+| --- | --- | --- |
+| `inventory.read@1` | `frame.inventory`，例如 `{wood:3}` | 只读本步快照，缺少 ID 视为零；按场景顺序读取前面模块已提交的库存 |
+| `inventory.items@1` | `{type:'inventory.define',item:'wood',name:'木材',description:'用于制作'}` | 需要 `inventory.write`；名称 40 字、说明 200 字；同 ID 首次定义保留 |
+| `hud.panel@1` | `{type:'hud.panel',key:'quest',panel:{title:'营地任务',lines:['木材 1 / 3']}}` | 需要 `hud.message`；每模块最多 3 个，标题 48 字、最多 6 行且每行 120 字；`panel:null` 删除自身面板 |
+
+背包计数仍由 `inventory.add` 改变，最多 128 种物品、每种 0–9999；物品定义目录最多 128 项，即使计数归零仍保留名称。库存不足应由源码返回正常提示，不能直接提交负库存。扣料、物品定义、对象变化、持久面板及状态在整批检查通过后一起提交。注册可在 start 执行，奖励须使用已保存的状态标记，不能因加载再次发奖。
+
+`behavior-state/3` 增加共享 `items` 与每份模块进度的 `panels`。旧世界继续输出 /2；出现新源码或已经保存 /3 进度时才使用 /3。面板以 DOM `textContent` 绘制，有独立高度限制和滚动区域；不解释 HTML。卸载时隐藏并归档，兼容恢复时继续，移除面板能力时不保留活动面板。
+
+带新能力的完整创作使用 `craftmine.module/4` 与 `craftmine-web/5`，能力写入依赖列表。旧模块约定和旧内容哈希不变。M5.1 验证与限制见 `M5_WORLD.md`。

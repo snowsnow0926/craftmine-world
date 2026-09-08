@@ -6,6 +6,7 @@ import { canonicalJSON } from './canonical.mjs';
 import { validateAppearance,checkAppearanceBounds,sceneAssetReferences } from './asset-binding.mjs';
 import { compileBehavior } from './behavior-build.mjs';
 import { validateBehaviorState } from './behavior-state.mjs';
+import { BEHAVIOR_CAPABILITIES } from './behavior-contracts.mjs';
 export { canonicalJSON } from './canonical.mjs';
 
 export const MATERIALS = { grass: 1, dirt: 2, stone: 3, wood: 4, leaves: 5, planks: 6, sand: 7, brick: 8, light: 9, glass: 12 };
@@ -147,6 +148,7 @@ export const OUTPUT_SCHEMA = objSchema({
   }) ] },
 });
 
+OUTPUT_SCHEMA.properties.scene.anyOf[1].properties.behaviors.items.anyOf.push(objSchema({format:{type:'string',enum:['craftmine.behavior/3']},...behaviorFields,requires:{type:'array',items:{type:'string',enum:['health@1','ranged@1','melee@1']}},binding:bindingSchema,capabilities:{type:'array',items:{type:'string',enum:BEHAVIOR_CAPABILITIES}}}));
 const assetSceneSchema=structuredClone(OUTPUT_SCHEMA.properties.scene.anyOf[1]);
 assetSceneSchema.properties.format.enum=['craftmine.scene/4'];
 assetSceneSchema.properties.objects.items.properties.appearance={anyOf:[{type:'null'},objSchema({asset:objSchema({id:{type:'string'},version:{type:'integer'},hash:{type:'string'}}),offset:vecSchema,size:vecSchema,rotationY:{type:'number'},fit:{type:'string',enum:['contain','stretch']}})]};
@@ -157,7 +159,7 @@ export function encodeAgentScene(input){const scene=upgradeScene(input);return {
 export function decodeAgentScene(input){
   if(!['craftmine.scene/3','craftmine.scene/4'].includes(input?.format)||!Array.isArray(input.behaviors))throw Error('模型需要返回完整的新场景格式');
   return {...input,behaviors:input.behaviors.map(d=>{
-    exactKeys(d,['format','id','name','description','code','stateVersion','initialStateJSON','paramsJSON','targets','permissions',...(d?.format==='craftmine.behavior/2'?['requires','binding']:[])]);
+    exactKeys(d,['format','id','name','description','code','stateVersion','initialStateJSON','paramsJSON','targets','permissions',...(['craftmine.behavior/2','craftmine.behavior/3'].includes(d?.format)?['requires','binding']:[]),...(d?.format==='craftmine.behavior/3'?['capabilities']:[])]);
     if(typeof d.initialStateJSON!=='string'||d.initialStateJSON.length>16000||typeof d.paramsJSON!=='string'||d.paramsJSON.length>8000)throw Error('模型代码参数或初始状态无效');
     const {initialStateJSON,paramsJSON,...rest}=d;return {...rest,initialState:JSON.parse(initialStateJSON),params:JSON.parse(paramsJSON)};
   })};

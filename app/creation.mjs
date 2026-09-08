@@ -36,7 +36,7 @@ export function captureCreation(group,scene){
   const scripts=group.behaviors.map(d=>{
     const aliases=group.objects.map(o=>({local:d.binding?.objects.find(p=>p.world===o.id)?.local||o.id,object:objectKeys.get(o.id)}));
     const {binding,...base}=d;
-    return {key:behaviorKeys.get(d.id),definition:{...structuredClone(base),id:behaviorKeys.get(d.id),format:'craftmine.behavior/2',requires:d.requires||[],binding:null,targets:d.targets.map(id=>aliases.find(p=>p.object===objectKeys.get(id)).local)},translation:shift(binding?.translation||{x:0,y:0,z:0},anchor,-1),objects:aliases};
+    return {key:behaviorKeys.get(d.id),definition:{...structuredClone(base),id:behaviorKeys.get(d.id),format:d.format==='craftmine.behavior/3'?d.format:'craftmine.behavior/2',requires:d.requires||[],binding:null,targets:d.targets.map(id=>aliases.find(p=>p.object===objectKeys.get(id)).local)},translation:shift(binding?.translation||{x:0,y:0,z:0},anchor,-1),objects:aliases};
   });
   const required=new Set(scripts.flatMap(s=>s.definition.requires));if(objects.some(o=>o.components.contactDamage>0))required.add('health@1');
   const systems=scene.systems.filter(s=>required.has(s.type+'@1')).map(({source,...s})=>({...structuredClone(s),source:null}));
@@ -51,7 +51,7 @@ export function validateCreation(payload){
   const keys=new Set();for(const o of payload.objects){exactKeys(o,['key','name','position','parts','components',...(o.appearance?['appearance']:[])]);if(!safeId(o.key)||keys.has(o.key))throw Error('创作对象标识重复或无效');keys.add(o.key);vector(o.position,-80,80);}
   const scripts=new Set();for(const s of payload.scripts){
     exactKeys(s,['key','definition','translation','objects']);if(!safeId(s.key)||scripts.has(s.key))throw Error('创作玩法标识重复或无效');scripts.add(s.key);vector(s.translation,-80,80);validateBehavior(s.definition);
-    if(s.definition.id!==s.key||s.definition.format!=='craftmine.behavior/2'||s.definition.binding!==null||!Array.isArray(s.objects)||s.objects.length!==keys.size)throw Error('模板需要未绑定的源码和完整对象映射');
+    if(s.definition.id!==s.key||!['craftmine.behavior/2','craftmine.behavior/3'].includes(s.definition.format)||s.definition.binding!==null||!Array.isArray(s.objects)||s.objects.length!==keys.size)throw Error('模板需要未绑定的源码和完整对象映射');
     const aliases=new Set(),roles=new Set();for(const p of s.objects){exactKeys(p,['local','object']);if(!safeId(p.local)||aliases.has(p.local)||!keys.has(p.object)||roles.has(p.object))throw Error('模板对象关系无效');aliases.add(p.local);roles.add(p.object);}
     if(s.definition.targets.some(id=>!aliases.has(id)))throw Error('模板源码引用了未保存的对象');
   }
@@ -91,4 +91,5 @@ export function placeCreation(scene,payload,source,player,{bounds,obstacles=[]}=
   throw Error('附近无法放下完整创作：'+(lastError?.message||'与玩家位置冲突'));
 }
 
-export const creationDependencies=payload=>[...new Set(['geometry@2','behavior@2',...(payload.objects.some(o=>o.appearance)?['assets@1']:[]),...payload.scripts.flatMap(s=>s.definition.requires),...payload.scripts.flatMap(s=>s.definition.permissions.map(p=>({'player.motion':'player@1','inventory.write':'inventory@1','hud.message':'hud@1','objects.write':'geometry@2'})[p])),...(payload.objects.some(o=>o.components.contactDamage>0)?['health@1']:[]),...(payload.objects.some(o=>o.components.health>0)?['damageable@1']:[])])].sort();
+export const creationHasCapabilities=payload=>payload.scripts.some(s=>s.definition.format==='craftmine.behavior/3');
+export const creationDependencies=payload=>[...new Set(['geometry@2',creationHasCapabilities(payload)?'behavior@3':'behavior@2',...(payload.objects.some(o=>o.appearance)?['assets@1']:[]),...payload.scripts.flatMap(s=>s.definition.capabilities||[]),...payload.scripts.flatMap(s=>s.definition.requires),...payload.scripts.flatMap(s=>s.definition.permissions.map(p=>({'player.motion':'player@1','inventory.write':'inventory@1','hud.message':'hud@1','objects.write':'geometry@2'})[p])),...(payload.objects.some(o=>o.components.contactDamage>0)?['health@1']:[]),...(payload.objects.some(o=>o.components.health>0)?['damageable@1']:[])])].sort();

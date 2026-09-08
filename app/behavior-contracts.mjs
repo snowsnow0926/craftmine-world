@@ -5,6 +5,7 @@ export const BEHAVIOR_FORMAT='craftmine.behavior/1';
 export const BEHAVIOR_PERMISSIONS=['objects.write','player.motion','hud.message','inventory.write'];
 export const BEHAVIOR_LIMITS={code:32000,state:16000,params:8000,commands:32,targets:16};
 export const BEHAVIOR_REQUIREMENTS=['health@1','ranged@1','melee@1'];
+export const BEHAVIOR_CAPABILITIES=['inventory.read@1','inventory.items@1','hud.panel@1'];
 
 export function jsonRecord(value,maxBytes=16000){
   if(!value||typeof value!=='object'||Array.isArray(value))throw Error('状态和参数必须是 JSON 对象');
@@ -25,9 +26,19 @@ export function jsonRecord(value,maxBytes=16000){
 const text=(value,max)=>{if(typeof value!=='string'||!value.trim()||value.length>max)throw Error('代码模块文字字段无效');};
 const safeId=value=>identifier(value)&&!['constructor','prototype'].includes(value);
 const vec=(value,min,max)=>{exactKeys(value,['x','y','z']);for(const n of Object.values(value))bounded(n,min,max);};
+export function validateInventory(value){
+  if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length>128)throw Error('背包最多 128 种物品');
+  for(const [id,count]of Object.entries(value))if(!safeId(id)||!Number.isInteger(count)||count<0||count>9999)throw Error('物品 ID 或库存数无效');
+}
+export function validateItem(value){exactKeys(value,['name','description']);text(value.name,40);if(typeof value.description!=='string'||value.description.length>200)throw Error('物品说明最多 200 字');}
+export function validatePanel(value){
+  exactKeys(value,['title','lines']);text(value.title,48);
+  if(!Array.isArray(value.lines)||value.lines.length>6)throw Error('任务面板最多 6 行');
+  for(const line of value.lines)text(line,120);
+}
 export function validateBehavior(definition){
-  const portable=definition?.format==='craftmine.behavior/2';
-  exactKeys(definition,['format','id','name','description','code','stateVersion','initialState','params','targets','permissions',...(portable?['requires','binding']:[])]);
+  const capable=definition?.format==='craftmine.behavior/3',portable=capable||definition?.format==='craftmine.behavior/2';
+  exactKeys(definition,['format','id','name','description','code','stateVersion','initialState','params','targets','permissions',...(portable?['requires','binding']:[]),...(capable?['capabilities']:[])]);
   if((!portable&&definition.format!==BEHAVIOR_FORMAT)||!safeId(definition.id))throw Error('代码模块格式或 ID 无效');
   text(definition.name,60);text(definition.description,1000);text(definition.code,BEHAVIOR_LIMITS.code);
   if(!Number.isInteger(definition.stateVersion)||definition.stateVersion<1||definition.stateVersion>10000)throw Error('代码模块状态版本无效');
@@ -35,6 +46,11 @@ export function validateBehavior(definition){
   for(const [name,limit]of [['targets',BEHAVIOR_LIMITS.targets],['permissions',BEHAVIOR_PERMISSIONS.length]]){
     const list=definition[name];if(!Array.isArray(list)||list.length>limit||new Set(list).size!==list.length)throw Error('代码模块范围声明无效');
     for(const entry of list)if(name==='targets'?!safeId(entry):!BEHAVIOR_PERMISSIONS.includes(entry))throw Error('代码模块范围或权限无效');
+  }
+  if(capable){
+    const c=definition.capabilities;
+    if(!Array.isArray(c)||c.length>BEHAVIOR_CAPABILITIES.length||new Set(c).size!==c.length||c.some(v=>!BEHAVIOR_CAPABILITIES.includes(v)))throw Error('代码模块能力声明无效');
+    if((c.includes('inventory.items@1')&&!definition.permissions.includes('inventory.write'))||(c.includes('hud.panel@1')&&!definition.permissions.includes('hud.message')))throw Error('代码模块能力缺少所需权限');
   }
   if(portable){
     if(!Array.isArray(definition.requires)||definition.requires.length>3||new Set(definition.requires).size!==definition.requires.length||definition.requires.some(r=>!BEHAVIOR_REQUIREMENTS.includes(r)))throw Error('代码模块依赖无效');
@@ -50,8 +66,11 @@ export function validateBehavior(definition){
   }
   return structuredClone(definition);
 }
-export function validateBehaviorFrame(frame,{local=false}={}){
-  exactKeys(frame,['dt','time','event','player','objects']);bounded(frame.dt,0,.5);bounded(frame.time,0,1e12);
+export function validateBehaviorFrame(frame,{local=false,definition}={}){
+  const inventory=Object.hasOwn(frame||{},'inventory');
+  exactKeys(frame,['dt','time','event','player','objects',...(inventory?['inventory']:[])]);bounded(frame.dt,0,.5);bounded(frame.time,0,1e12);
+  if(definition&&inventory!==!!definition.capabilities?.includes('inventory.read@1'))throw Error('库存上下文与读取能力声明不一致');
+  if(inventory)validateInventory(frame.inventory);
   exactKeys(frame.event,['type','targetId']);if(!['start','tick','interact','contact','attack','land'].includes(frame.event.type)||(frame.event.targetId!==null&&!identifier(frame.event.targetId)))throw Error('玩法事件无效');
   exactKeys(frame.player,['position','grounded','health']);vec(frame.player.position,local?-128:-48,local?128:48);if((!local&&(frame.player.position.y<6||frame.player.position.y>38))||typeof frame.player.grounded!=='boolean')throw Error('玩法玩家上下文无效');if(frame.player.health!==null)bounded(frame.player.health,0,10000);
   if(!Array.isArray(frame.objects)||frame.objects.length>128)throw Error('玩法对象上下文过大');
@@ -62,6 +81,7 @@ export function validateBehaviorResult(result,definition,frame,{local=false}={})
   exactKeys(result,['state','commands']);const state=jsonRecord(result.state,BEHAVIOR_LIMITS.state);
   if(!Array.isArray(result.commands)||result.commands.length>BEHAVIOR_LIMITS.commands)throw Error('玩法命令超过每步 32 条限制');
   const permit=permission=>{if(!definition.permissions.includes(permission))throw Error('玩法没有声明所需权限：'+permission);};
+  const capability=name=>{if(!definition.capabilities?.includes(name))throw Error('玩法没有声明所需能力：'+name);};
   for(const command of result.commands){
     if(command?.type==='object.patch'){
       permit('objects.write');exactKeys(command,['type','id','position','visible','solid','color']);
@@ -75,6 +95,10 @@ export function validateBehaviorResult(result,definition,frame,{local=false}={})
       permit('hud.message');exactKeys(command,['type','text']);text(command.text,160);
     }else if(command?.type==='inventory.add'){
       permit('inventory.write');exactKeys(command,['type','item','count']);if(!safeId(command.item)||!Number.isInteger(command.count)||command.count< -100||command.count>100)throw Error('物品变化无效');
+    }else if(command?.type==='inventory.define'){
+      permit('inventory.write');capability('inventory.items@1');exactKeys(command,['type','item','name','description']);if(!safeId(command.item))throw Error('物品 ID 无效');validateItem({name:command.name,description:command.description});
+    }else if(command?.type==='hud.panel'){
+      permit('hud.message');capability('hud.panel@1');exactKeys(command,['type','key','panel']);if(!safeId(command.key))throw Error('任务面板 ID 无效');if(command.panel!==null)validatePanel(command.panel);
     }else throw Error('不支持的玩法命令');
   }
   // The caller only receives a result after every command has passed.
@@ -88,4 +112,9 @@ objects.write: {type:'object.patch',id,position:null或{x,y,z},visible:null或bo
 player.motion: {type:'player.impulse',velocity:{x,y,z}}，各轴 -18..18。
 hud.message: {type:'hud.message',text:'最多160字'}。
 inventory.write: {type:'inventory.add',item:'稳定英文ID',count:整数-100..100}。
+需要共享背包读取、物品名称或持久任务时，使用 craftmine.behavior/3，保留 /2 的 requires 与 binding，并声明 capabilities（只选需要的）：
+- inventory.read@1：frame.inventory 是本步开始时的共享库存 {wood:3,...}，缺少 ID 表示 0。只读快照，修改它不能改变背包；不同模块按场景顺序依次读取最新已提交库存。配方先检查 (frame.inventory.wood||0)>=所需数量，不足时返回提示与原状态；不要尝试扣负库存，否则整步拒绝并停止模块。
+- inventory.items@1（需 inventory.write）：{type:'inventory.define',item:'wood',name:'木材',description:'最多200字'}。name 最多40字；按稳定 ID 注册显示名称，第一次已提交的定义保留，后续同 ID 定义不覆盖。可在 start 注册，不能在 start 重复发放物品；同类物品跨创作沿用同 ID，不同物品用不同 ID。
+- hud.panel@1（需 hud.message）：{type:'hud.panel',key:'quest',panel:{title:'任务名称',lines:['采集木材 1 / 3','最多6行，每行120字']}}。title 最多48字，每模块最多3个面板；panel:null 删除该面板。全部为纯文本，按 key 替换本模块面板，不能操作别的模块面板。面板随进度保存，卸载隐藏，恢复兼容版本后继续；仅状态改变时更新，不必每 tick 重发。
+扣料、对象变化、任务面板和 state 在同一步全部校验后一起提交。一次性奖励用 state 标记已领取；初始状态须兼容新增字段（例如 state.rewarded??false），不能靠 start 重置已完成任务。
 模块在 Worker 中执行，没有 DOM、开发服务、网络请求、文件访问、计时器或创建新 Worker 的能力。不得使用 import、eval、Function、fetch、全局消息接口。每步应快速结束；持续行为使用 frame.dt 与返回的 state。params 保存可调参数。源码是真正的逻辑，请用事件与状态编程实现需求，不要只返回说明文字。`;

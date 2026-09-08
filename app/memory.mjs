@@ -4,7 +4,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { compileScene, upgradeScene, withAppearanceFormat, clone, canonicalJSON } from './scene.mjs';
 import { objectContentBounds } from './asset-binding.mjs';
 import { SYSTEMS, identifier, exactKeys, validateSystem } from './gameplay.mjs';
-import { captureCreation,creationGroups,validateCreation,creationDependencies,placeCreation,materializeCreation } from './creation.mjs';
+import { captureCreation,creationGroups,validateCreation,creationDependencies,creationHasCapabilities,placeCreation,materializeCreation } from './creation.mjs';
 
 export const MODULE_RUNTIME='craftmine-web/2';
 const hash=content=>createHash('sha256').update(canonicalJSON(content)).digest('hex');
@@ -14,8 +14,8 @@ function payloadOf(kind,definition){
 }
 export function validateModule(input){
   exactKeys(input,['format','runtime','id','version','kind','hash','name','description','dependencies','payload','origin']);
-  const creation=input.kind==='creation',assets=!!(input.payload?.appearance||input.payload?.objects?.some(o=>o.appearance));
-  if(input.format!==(assets?'craftmine.module/3':creation?'craftmine.module/2':'craftmine.module/1')||input.runtime!==(assets?'craftmine-web/4':creation?'craftmine-web/3':MODULE_RUNTIME)||!identifier(input.id)||!Number.isInteger(input.version)||input.version<1||input.version>100000||!['object','gameplay','creation'].includes(input.kind))throw Error('模块格式或运行约定不兼容');
+  const creation=input.kind==='creation',assets=!!(input.payload?.appearance||input.payload?.objects?.some(o=>o.appearance)),capable=creation&&Array.isArray(input.payload?.scripts)&&creationHasCapabilities(input.payload);
+  if(input.format!==(capable?'craftmine.module/4':assets?'craftmine.module/3':creation?'craftmine.module/2':'craftmine.module/1')||input.runtime!==(capable?'craftmine-web/5':assets?'craftmine-web/4':creation?'craftmine-web/3':MODULE_RUNTIME)||!identifier(input.id)||!Number.isInteger(input.version)||input.version<1||input.version>100000||!['object','gameplay','creation'].includes(input.kind))throw Error('模块格式或运行约定不兼容');
   if(typeof input.name!=='string'||!input.name.trim()||input.name.length>60||typeof input.description!=='string'||input.description.length>2000||input.name!==input.payload?.name)throw Error('模块名称或来源需求无效');
   if(!input.origin||typeof input.origin!=='object'||Array.isArray(input.origin))throw Error('模块来源无效');
   exactKeys(input.origin,['build','definition','time']);
@@ -85,7 +85,8 @@ export class ModuleLibrary {
       let entry=data.library.find(m=>m.id===id&&m.kind==='creation');if(!entry){id='creation-'+randomUUID();entry=null;}
       const identical=entry?.versions.find(v=>v.hash===contentHash),version=identical?.version||(entry?.latest||0)+1;
       if(!identical){
-        this.register(data,{format:payload.objects.some(o=>o.appearance)?'craftmine.module/3':'craftmine.module/2',runtime:payload.objects.some(o=>o.appearance)?'craftmine-web/4':'craftmine-web/3',id,version,kind:'creation',hash:contentHash,name:payload.name,description:String(prompt).slice(0,2000),dependencies:creationDependencies(payload),payload,origin:{build:buildId,definition:group.behaviors[0].id,time:Date.now()}});
+        const capable=creationHasCapabilities(payload),assets=payload.objects.some(o=>o.appearance);
+        this.register(data,{format:capable?'craftmine.module/4':assets?'craftmine.module/3':'craftmine.module/2',runtime:capable?'craftmine-web/5':assets?'craftmine-web/4':'craftmine-web/3',id,version,kind:'creation',hash:contentHash,name:payload.name,description:String(prompt).slice(0,2000),dependencies:creationDependencies(payload),payload,origin:{build:buildId,definition:group.behaviors[0].id,time:Date.now()}});
         captured.push({id,version,name:payload.name});
       }
       data.moduleBindings.creation[group.id]={id,version,origin:clone(group.behaviors.find(d=>d.binding)?.binding.origin||group.objects[0]?.position||{x:0,y:6,z:0}),objects:payload.objects.map((o,i)=>({key:o.key,world:group.objects[i].id})),behaviors:payload.scripts.map((s,i)=>({local:s.key,world:group.behaviors[i].id}))};
