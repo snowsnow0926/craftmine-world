@@ -2,8 +2,79 @@
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "M5",
-  "baseline": "b7dbdad",
+  "baseline": "490f6dc",
   "updated": "2026-09-09",
+  "execution": {
+    "scope": "current_codex_thread",
+    "status": "stopped_by_user",
+    "reason": "用户已取消此前任务，现明确希望分析 PI-Desktop 并改进 Windows 客户端计划。本轮仅研究源码、修订计划与同步文档，未运行测试或启动客户端迁移。",
+    "activeGoal": false,
+    "recurringDevelopment": false,
+    "previousLiveCompactionTestStopped": true
+  },
+  "windowsClientPlan": {
+    "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",
+    "version": "2.0",
+    "status": "proposed_not_started",
+    "firstPhase": "W0",
+    "initialDeliveryPhases": ["W0", "W1", "W2"],
+    "strategy": "以固定版本 PI-Desktop 派生 Windows 客户端，复用 Electron、Rust host-core 与 pi Agent，通过受信任的产品插件和服务接入现有世界、作品、存档和验收；DeepSeek 继续作为初期模型供应商，DeepSeek Harness 只作对照",
+    "primaryReferenceRepository": "https://github.com/vastsa/PI-Desktop",
+    "primaryReferenceCommit": "ed0a75414e775eef4b4ee6c985cc9ddfe146ced2",
+    "primaryReferenceSourceVersion": "0.14.3",
+    "primaryReferenceLatestReleaseAtReview": "v0.14.2",
+    "primaryReferenceAgentDependencyVersion": "0.85.1",
+    "primaryReferenceLicense": "LGPL-3.0-or-later",
+    "localPiCheckoutCommitAtReview": "3cdf42931c9ae243a80b1f61bc29799177e318b6",
+    "piBuildOrTestsRunInThisReview": false,
+    "deepseekReferenceRole": "comparison_only",
+    "deepseekReferenceCommit": "5dda764ed3aa172535a7967b06ff95d9cbfe536a",
+    "reviewIncludesPreexistingUncommittedChanges": true,
+    "concurrentProjectTestsFromPiDesktopObserved": true,
+    "concurrentProjectTestsObservationScope": "历史复盘记录，不代表本轮仍在运行；本轮未操作 PI-Desktop 进程或其工作目录",
+    "baselineVerificationScope": "此前复盘的历史快照，本轮未重跑；不等同于 PI-Desktop 集成验证",
+    "baselineVerificationTime": "2026-09-09T06:20:21+08:00",
+    "baselineVerification": {
+      "command": "npm test",
+      "passed": 272,
+      "failed": 0,
+      "skipped": 0,
+      "evidence": "test-results/windows-plan-final-snapshot-20260909.log（271 条）与 2026-09-09 晚真实端到端修复后的 272 条"
+    },
+    "knownGaps": [
+      "尚无 Windows 桌面客户端和安装包",
+      "PI-Desktop 的世界插件、资源加载和长时验收尚待兼容性验证与适配",
+      "PI 插件调用上下文需透传真实 toolCallId，并补齐项目写入租约和恢复去重",
+      "需核实完整模型请求的上下文预算，补齐世界记忆注入与 Windows 系统保护凭据",
+      "自建分步工具循环默认关闭，需要显式环境开关",
+      "工具闭环只能替换既有资源，不能新增玩法模块，因此「新增模块调用扩展命令」还走不通",
+      "隔离验证沙箱没有装载扩展，带 ext: 依赖的模块过不了 verifyBehaviors",
+      "真实压缩回归已能触发压缩并接上检查点继续，但还没有一次「压缩后把任务做完」的绿色收尾",
+      "verify.run 的接口与事件检查尚不等同完整玩家需求验收",
+      "扩展对抗评审断言留档后尚未逐项接入实际轨迹执行；评审结论已改为建议，硬门槛只保留机器可复核的检查"
+    ],
+    "runtimeChangedInThisReview": false,
+    "personalServiceOrDataChangedInThisReview": false
+  },
+  "liveVerification": {
+    "date": "2026-09-09",
+    "document": "docs/LIVE_VERIFICATION.md",
+    "extension": {
+      "script": "tests/live-extension.mjs",
+      "status": "partial",
+      "passed": ["真实模型提议扩展并通过格式校验", "真实 Worker 沙箱跑通自带测试与反造假", "真实模型对抗评审真的运行", "冻结回归真跑", "扩展启用并进入能力目录"],
+      "failed": ["玩法模块调用扩展命令的浏览器端到端：工具闭环只能替换既有资源，且隔离验证沙箱没有装载扩展"]
+    },
+    "compaction": {
+      "script": "tests/live-compaction.mjs",
+      "status": "partial",
+      "passed": ["真实长任务触发强制压缩", "压缩后接上机器检查点继续", "草稿改动一条不丢"],
+      "failed": ["压缩后把任务做完；参数已修好，待用 CRAFTMINE_CONTEXT_CAP=12000 复验"]
+    },
+    "defectsFoundAndFixed": 12,
+    "designDecision": "对抗评审必须运行，但结论是建议；硬门槛只保留机器能复核的检查（ABI、沙箱自带测试与反造假、冻结回归、命令名冲突、世界编译）",
+    "testsAfterFixes": 272
+  },
   "items": [
     {
       "id": "M1.1",
@@ -191,7 +262,7 @@
       ]
     }
   ],
-  "nextAction": "模型后端已按用户指定切换到 DeepSeek 官方 API，并完成一次真实门需求验收（见 harnessPlan.modelBackend）。下一批从 P0 的后端能力清单、领域工具协议与真实回执验证开始，接着 P1 的按需读取、局部源码补丁、持久草稿和恢复，再接 P2 的实际试玩。以独立门场景及 test-results/live-world-6z8K3a 的 craft-tested 营地验证；M5 剩余战斗、奖励、迁移和 Alpha 0.9 个人交付继续保留。用户正在运行的服务仍是 Alpha 0.8 与 Codex 路径，未重启、未写入个人数据；切换后需在启动进程里配置 CRAFTMINE_DEEPSEEK_API_KEY。不得操作用户输入设备或拿个人数据做测试。",
+  "nextAction": "旧持续开发已取消，不自动启动新任务。用户下一次要求开发时，按 docs/WINDOWS_CLIENT_REUSE_PLAN.md v2 从 W0 固定 PI-Desktop 源码基线、验证插件边界开始，优先完成 W1 Windows 世界客户端与 W2 真实创作闭环。保留现有未提交代码和个人存档，建立项目单写入入口；本轮未重启个人服务，未验证其当前模型路由。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",
@@ -585,8 +656,9 @@
     "date": "2026-09-09",
     "document": "docs/HARNESS_DEVELOPMENT_PLAN.md",
     "research": "docs/HARNESS_REFERENCE_RESEARCH.md",
-    "status": "planned_not_implemented",
-    "currentPhase": "P0",
+    "status": "superseded_by_windows_client_plan",
+    "currentPhase": null,
+    "statusNote": "以下 P 阶段与批次保留历史记录，其中部分状态已落后于代码；当前复盘和后续顺序以 windowsClientPlan 为准，不据此重启旧任务。",
     "deepseekReferenceCommit": "5dda764ed3aa172535a7967b06ff95d9cbfe536a",
     "phases": [
       {

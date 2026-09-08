@@ -258,10 +258,11 @@ A 是过渡期的正确做法，但有天花板：开发者一周加 3–5 个�
 | **E2** | 扩展沙箱（独立 Worker，无文件/网络） | ✅ | `app/extension-runner.mjs` | `tests/extension-browser.mjs`：探针证明 DOM/网络/计时器/Worker 全为 undefined |
 | **E2** | 扩展只能产出内核原子效果 | ✅ | `app/harness/extension-effects.mjs` | 复用玩法命令校验，越权/未声明目标直接拒绝 |
 | **E2** | 自带测试 + 反造假 | ✅ | `app/harness/extension-loader.mjs` | 每条自带测试都要「真实现通过、空实现变红」，否则拒绝装载 |
-| **E2** | 装载流程（评审 + 冻结回归 + 人一键接受） | ✅ | `app/harness/extension-loader.mjs`、`app/server.mjs` | 缺对抗评审直接拒绝；回归失败拒绝；`/api/extensions/propose|activate|rollback|unload` |
+| **E2** | 装载流程（评审 + 冻结回归 + 人一键接受） | ✅ | `app/harness/extension-loader.mjs`、`app/server.mjs` | 缺对抗评审直接拒绝；评审结论是建议（见 §11）；回归失败拒绝；`/api/extensions/propose|activate|rollback|unload` |
+| **E2** | 模型自己提议扩展 + 自动改稿 | ✅ | `app/harness/extension-author.mjs`、`POST /api/extensions/author` | 提议包要过格式校验；自带测试失败/评审意见回灌给模型重写，最多 3 次 |
 | **E2** | 卸载语义显式失败 | ✅ | `app/scene.mjs`、`app/store.mjs` | `tests/extension.test.mjs`：`requires:['ext:life-steal@1']` 未装载时编译报错 |
 | **E2** | 能力目录包含已装载扩展 | ✅ | `app/harness/capabilities.mjs`、`GET /api/capabilities` | 目录由扩展事实派生，不手写 |
-| **E2** | 扩展命令派发 | ✅ 机制 | `app/behavior-contracts.mjs`、`behavior-state.mjs`、`behavior-session.mjs`、`behavior-binding.mjs`、`behavior-runner.mjs` | `tests/extension-dispatch.test.mjs`：依赖+权限两道门、状态跨步累积、越权效果被拒；游戏侧 runner 表还没接 |
+| **E2** | 扩展命令派发 | ✅ 机制 + 游戏侧接线 | `app/behavior-contracts.mjs`、`behavior-state.mjs`、`behavior-session.mjs`、`behavior-binding.mjs`、`behavior-runner.mjs`、`app/game.js` | `tests/extension-dispatch.test.mjs`：依赖+权限两道门、状态跨步累积、越权效果被拒；`app/game.js` 为每个扩展建 Worker 并交给 `BehaviorSession` |
 | **E3** | 渲染扩展点（粒子 drawable） | ✅ | `app/harness/render-extension.mjs`、`app/render-runner.mjs` | 真实沙箱产出 drawable 并通过宿主校验 |
 | **E3** | 帧预算 + 自动降级 | ✅ | `app/render-runner.mjs`、`app/world-runtime.mjs` | 死循环/越界只关掉该扩展，页面继续跑 |
 | **E3** | 自动回滚 | ✅ | `app/harness/render-extension.mjs` | 注册表回退到上一版本 |
@@ -271,19 +272,28 @@ A 是过渡期的正确做法，但有天花板：开发者一周加 3–5 个�
 ### 怎么自己验
 
 ```powershell
-npm test                                  # 230 个 Node 测试（含冻结需求、扩展 ABI、内核哈希）
+npm test                                  # 272 个 Node 测试（含冻结需求、扩展 ABI、内核哈希）
 node tests/judgment-browser.mjs           # 真实引擎录轨迹 → 裁判判定 + 影子运行 + 坏实现必须变红
 node tests/extension-browser.mjs          # 真实 Worker 沙箱：越权拒绝、死循环自动停用
 node tests/render-browser.mjs             # 粒子扩展、帧预算降级、回滚
 node tests/kernel-parts-browser.mjs       # 内核部件审批门与回退
+node tests/live-extension.mjs             # 真实模型提议扩展 → 沙箱自带测试 → 对抗评审 → 启用（要真实密钥）
+node tests/live-compaction.mjs            # 真实长任务强制压缩回归（要真实密钥）
 ```
 
 ### 还没做到的
 
-- **扩展命令的派发机制已实现，但游戏侧还没接线**：玩法模块现在可以发出扩展命令（`requires:['ext:id@v']` + 该命令声明的权限两道门），宿主把它派发到扩展沙箱、再把扩展产出的内核效果落地——这条链有 5 项确定性测试（`tests/extension-dispatch.test.mjs`）。还没做的是**游戏页把已装载扩展组装成 runner 表**：需要把扩展包送到游戏页、为每个扩展建一个 Worker，再传给 `BehaviorSession`。在那之前，真实游玩里扩展命令仍然发不出去（会明确报错，不会静默失效）。
+- **玩法调用扩展的最后一公里**：扩展命令的派发机制和游戏侧接线都已落地（`app/game.js` 为每个扩展建 Worker），但真实端到端还差两段：①工具闭环只能**替换既有资源**，不能新增玩法模块（真实运行报 `资源不存在：behavior:xxx`）；②隔离验证沙箱 `verifyBehaviors` 里的 `BehaviorSession` **没有装载扩展**，带 `ext:` 依赖的模块过不了验收。两段都补齐后才有浏览器端到端证据。
 - **评审断言还没被真正执行**：对抗评审的每条发现都会转成一条可执行断言并随候选留档（`reviewAssertions`），但扩展目前没有「轨迹」可以拿这些断言去跑；等扩展派发接上之后，这些断言就能像玩法断言一样被机器复核。
 - **沙箱的「不能 import」只能靠 CSP 兜底**：bootstrap 关掉了 DOM/网络/计时器/新 Worker，但模块里的 `import()` 语法本身没有被语法层禁止；实际拦它的是游戏页的 `script-src`/`connect-src`。这是已知残留风险。
 - **E2/E3 的退出条件**：≥3 个模型自写扩展、≥1 个模型自写渲染扩展长期稳定运行。机制已经能拦住坏扩展，但「模型能不能持续写出好扩展」只能靠真实使用来回答。
 - **E4 的规模**：目前只证明了一个渲染通道、一个 HUD 部件、一个后处理部件的可替换性；更重的部件还没有真实替换过。
+
+## 11. 真实运行后的两处修正（2026-09-09 晚）
+
+细节与证据见 [真实端到端验证记录](LIVE_VERIFICATION.md)。这里只记结论：
+
+1. **对抗评审：必须运行，但结论是建议。** 连续多次真实运行中，评审给出的「阻断」都是设计意见（治疗量按请求值还是按实际伤害、要不要白名单、要不要冷却……），改一稿又冒出新的意见——把它当硬门槛会让改稿循环**永不收敛**（实测连续几轮都被新意见拦下）。现在硬门槛只保留机器能复核的检查：ABI 校验、沙箱自带测试 + 反造假、冻结回归、命令名冲突、世界编译；评审的每条意见仍必须带可执行断言并随候选留档，阻断级意见会显示给玩家。
+2. **模型提议要能自动改稿。** `/api/extensions/author` 会把宿主的拒绝理由（格式错误、自带测试失败）回灌给模型重写，最多 3 次；这条闭环在真实运行中把「一次失败就整件事失败」变成了「1–3 次内收敛」。
 
 > 仍然成立的红线：扩展与部件都不能改判定面（验证器、权限模型、回滚逻辑、存档格式、测试集、指标定义）。
