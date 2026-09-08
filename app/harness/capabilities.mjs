@@ -1,4 +1,4 @@
-import { BEHAVIOR_CAPABILITIES, BEHAVIOR_KEYS, BEHAVIOR_LIMITS, BEHAVIOR_PERMISSIONS, BEHAVIOR_REQUIREMENTS } from '../behavior-contracts.mjs';
+import { AUDIO_SOUNDS, BEHAVIOR_CAPABILITIES, BEHAVIOR_KEYS, BEHAVIOR_LIMITS, BEHAVIOR_PERMISSIONS, BEHAVIOR_REQUIREMENTS, MESSAGE_TONES } from '../behavior-contracts.mjs';
 import { SYSTEMS } from '../gameplay.mjs';
 import { MATERIALS, OBJECT_ID_PATTERN } from '../scene.mjs';
 
@@ -40,11 +40,11 @@ export const COMMANDS = Object.freeze([
   },
   {
     type: 'hud.message', permission: 'hud.message', scope: '当前玩家',
-    fields: { text: '最多 160 字纯文本' }, quota: '每步最多 1 条', example: "{type:'hud.message',text:'门开了'}",
+    fields: { text: '最多 160 字纯文本', tone: '可选 ' + MESSAGE_TONES.map(tone => `'${tone}'`).join(' | '), duration: '可选 1000..10000 毫秒' }, quota: '每步最多 1 条', example: "{type:'hud.message',text:'门开了',tone:'success'}",
   },
   {
     type: 'audio.play', permission: 'audio.play', scope: '当前玩家',
-    fields: { sound: "'shoot' | 'hit' | 'open' | 'pickup' | 'error'" }, quota: '每步最多 1 条', example: "{type:'audio.play',sound:'open'}",
+    fields: { sound: AUDIO_SOUNDS.map(sound => `'${sound}'`).join(' | '), volume: '可选 0..1' }, quota: '每步最多 1 条', example: "{type:'audio.play',sound:'explode',volume:0.8}",
     note: '使用宿主内置音效，不需要素材',
   },
   {

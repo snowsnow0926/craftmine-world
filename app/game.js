@@ -5,7 +5,7 @@ import { makeWorldRuntime } from './world-runtime.mjs';
   const send = (type,payload={}) => {if(preview&&type==='agent'){inform('关闭预览后，可以继续描述对原世界的修改。');return;}parent.postMessage({channel:'craftmine-game/1',nonce,type,...payload},parentOrigin);};
   let engine, build, frozen=false, lastTarget=null, preview=false;
   const enter = document.getElementById('enter'), notice = document.getElementById('notice'); let noticeTimer;
-  function inform(text) { notice.textContent=text;notice.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>notice.hidden=true,4500); }
+  function inform(text,{tone='info',duration=4500}={}) { notice.textContent=text;notice.dataset.tone=tone;notice.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>notice.hidden=true,Math.max(1000,Math.min(10000,Number.isFinite(duration)?duration:4500))); }
   const BlankRuntime=makeWorldRuntime({send,inform,enter,isFrozen:()=>frozen});
   const snapshot=()=>['craftmine.scene/3','craftmine.scene/4'].includes(build?.scene.format)||engine.behaviors?.data.value.format==='craftmine.behavior-state/3'||engine.behaviors?.data.value.archive.length||Object.keys(engine.behaviors?.data.value.inventory||{}).length?{format:'craftmine.progress/3',player:{...engine.p},gameplay:engine.play.snapshot(),behaviors:engine.behaviors.snapshot()}:engine.play?.definitions.length||Object.keys(engine.play?.state.targets||{}).length||Object.keys(engine.play?.state.archivedTargets||{}).length?{format:'craftmine.progress/2',player:{...engine.p},gameplay:engine.play.snapshot()}:{format:'craftmine.progress/1',player:{...engine.p}};
   window.addEventListener('message',async event=>{

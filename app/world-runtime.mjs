@@ -6,20 +6,38 @@ import { easeInOut,sameBounds,tweenDelta,tweenProgress,unionBounds } from './twe
 import { BehaviorSession } from './behavior-session.mjs';
 // 内置音效：用 WebAudio 合成短音，不需要素材；浏览器未授权音频时静默跳过。
 let audioContext;
-function playSound(sound){
+const SOUND_SPECS={
+  shoot:{wave:'square',from:880,to:220,duration:.07,gain:.12},
+  hit:{wave:'sawtooth',from:220,to:120,duration:.09,gain:.12},
+  open:{wave:'sine',from:440,to:660,duration:.12,gain:.1},
+  pickup:{wave:'triangle',from:660,to:990,duration:.08,gain:.1},
+  error:{wave:'square',from:160,to:110,duration:.16,gain:.1},
+  jump:{wave:'sine',from:320,to:760,duration:.14,gain:.09},
+  land:{wave:'sine',from:240,to:120,duration:.1,gain:.09},
+  step:{wave:'triangle',from:180,to:120,duration:.05,gain:.05},
+  explode:{wave:'sawtooth',from:420,to:40,duration:.32,gain:.16},
+  heal:{wave:'sine',from:520,to:1040,duration:.28,gain:.1},
+  hurt:{wave:'sawtooth',from:300,to:90,duration:.2,gain:.13},
+  unlock:{wave:'triangle',from:520,to:780,duration:.22,gain:.1},
+  deny:{wave:'square',from:200,to:160,duration:.18,gain:.1},
+  win:{wave:'triangle',from:660,to:1320,duration:.4,gain:.12},
+};
+function playSound(sound,volume){
   try{
     const Ctor=globalThis.AudioContext||globalThis.webkitAudioContext;
     if(!Ctor)return;
     audioContext=audioContext||new Ctor();
     if(audioContext.state==='suspended')audioContext.resume();
-    const spec={shoot:[880,.07,'square'],hit:[220,.09,'sawtooth'],open:[440,.12,'sine'],pickup:[660,.08,'triangle'],error:[160,.16,'square']}[sound]||[440,.08,'sine'];
+    const spec=SOUND_SPECS[sound]||SOUND_SPECS.open;
+    const level=Math.max(.0001,Math.min(1,Number.isFinite(volume)?volume:1)*spec.gain);
     const now=audioContext.currentTime,osc=audioContext.createOscillator(),gain=audioContext.createGain();
-    osc.type=spec[2];osc.frequency.setValueAtTime(spec[0],now);
+    osc.type=spec.wave;osc.frequency.setValueAtTime(spec.from,now);
+    if(spec.to!==spec.from)osc.frequency.exponentialRampToValueAtTime(Math.max(1,spec.to),now+spec.duration);
     gain.gain.setValueAtTime(.0001,now);
-    gain.gain.exponentialRampToValueAtTime(.12,now+.01);
-    gain.gain.exponentialRampToValueAtTime(.0001,now+spec[1]);
+    gain.gain.exponentialRampToValueAtTime(level,now+.01);
+    gain.gain.exponentialRampToValueAtTime(.0001,now+spec.duration);
     osc.connect(gain);gain.connect(audioContext.destination);
-    osc.start(now);osc.stop(now+spec[1]+.02);
+    osc.start(now);osc.stop(now+spec.duration+.02);
   }catch{}
 }
 export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
@@ -119,8 +137,8 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
         this.rebuildObject(id);
       }
       for(const effect of effects){
-        if(effect.type==='hud.message')inform(effect.text);
-        if(effect.type==='audio.play')playSound(effect.sound);
+        if(effect.type==='hud.message')inform(effect.text,{tone:effect.tone,duration:effect.duration});
+        if(effect.type==='audio.play')playSound(effect.sound,effect.volume);
         if(effect.type==='target.revive'){const target=this.play?.state?.targets?.[effect.id];if(target)target.health=target.maxHealth;this.rebuildObject(effect.id);}
         if(effect.type==='player.impulse'){this.vy=effect.velocity.y;this.impulse={x:effect.velocity.x,z:effect.velocity.z};this.grounded=false;}
         if(effect.type==='resource.add'){this.play?.addResource(effect.id,effect.amount);this.updateHud();}
