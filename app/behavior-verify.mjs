@@ -30,25 +30,29 @@ export async function verifyBehaviors(build,{origin,signal,deadline=Date.now()+3
             objects:view.objects.map(o=>{const parts=view.primitives.filter(p=>p.id===o.id);return {id:o.id,position:o.position,visible:o.visible,mesh:parts.length>0,health:o.components.health,bounds:parts.length?{min:{x:Math.min(...parts.map(p=>p.min.x)),y:Math.min(...parts.map(p=>p.min.y)),z:Math.min(...parts.map(p=>p.min.z))},max:{x:Math.max(...parts.map(p=>p.max.x)),y:Math.max(...parts.map(p=>p.max.y)),z:Math.max(...parts.map(p=>p.max.z))}}:null};}),
             inventory:value.inventory||{},panels,effects:entry.effects});};
         try{
-          session=new BehaviorSession(one,null,{context,apply:result=>entry.effects.push(...result.effects.map(e=>({type:e.type,...(e.type==='player.impulse'?{velocity:e.velocity}:{})}))),onStep:({frame,result})=>{if(frame?.event?.type==='key'&&result.commands.length)entry.keyCommands=(entry.keyCommands||0)+result.commands.length;entry.motions.push(...result.commands.filter(c=>c.type==='object.patch'&&c.position).map(c=>({id:c.id,position:c.position})));}});
+          const observations=[];let stepCommands=[];
+          const runEvent=async(e,dt=.1)=>{const before=snapshot();stepCommands=[];await session.execute(e,dt,true);observations.push({event:{type:e.type,...(e.code?{code:e.code}:{})},commands:stepCommands.slice(),before,after:snapshot()});};
+          session=new BehaviorSession(one,null,{context,apply:result=>entry.effects.push(...result.effects.map(e=>({type:e.type,...(e.type==='player.impulse'?{velocity:e.velocity}:{})}))),onStep:({frame,result})=>{stepCommands.push(...result.commands);if(frame?.event?.type==='key'&&result.commands.length)entry.keyCommands=(entry.keyCommands||0)+result.commands.length;entry.motions.push(...result.commands.filter(c=>c.type==='object.patch'&&c.position).map(c=>({id:c.id,position:c.position})));}});
           await session.start();entry.events.push('start');
-          event='tick';await session.execute({type:'tick',targetId:null},.1,true);entry.events.push('tick');
+          event='tick';await runEvent({type:'tick',targetId:null});entry.events.push('tick');
           for(const id of artifact.definition.targets){
             const object=build.scene.objects.find(o=>o.id===id),parts=build.primitives.filter(p=>p.id===id),maxZ=Math.max(...parts.map(p=>p.max.z));
             player={...player,position:{x:object.position.x,y:Math.max(6,object.position.y),z:Math.min(47,maxZ+2)}};
             for(const type of events.slice(2,-1)){
-              event=type+':'+id;session.data.value.time+=.2;await session.execute({type,targetId:id},.1,true);entry.events.push(event);
+              event=type+':'+id;session.data.value.time+=.2;await runEvent({type,targetId:id});entry.events.push(event);
             }
           }
           const declaredKeys=artifact.definition.keys||[];entry.declaredKeys=declaredKeys;entry.keyEffects=[];
           for(const code of declaredKeys){
             const before=snapshot();
-            event='key:'+code;session.data.value.time+=.2;await session.execute({type:'key',targetId:null,code},.1,true);entry.events.push(event);
+            event='key:'+code;session.data.value.time+=.2;await runEvent({type:'key',targetId:null,code});entry.events.push(event);
             entry.keyEffects.push({code,change:acceptance.observableChange(before,snapshot())});
           }
-          entry.acceptance=acceptance.evaluateKeyAcceptance({declaredKeys,keyCommands:entry.keyCommands||0,observations:entry.keyEffects});
+          const keyAcceptance=acceptance.evaluateKeyAcceptance({declaredKeys,keyCommands:entry.keyCommands||0,observations:entry.keyEffects});
+          const commandAcceptance=acceptance.evaluateCommandAcceptance({observations});
+          entry.acceptance={format:keyAcceptance.format,passed:keyAcceptance.passed&&commandAcceptance.passed,assertions:[...keyAcceptance.assertions,...commandAcceptance.assertions],summary:`${keyAcceptance.summary}；${commandAcceptance.summary}`};
           if(declaredKeys.length&&!entry.keyCommands)throw Error('声明了按键但按键事件没有产生任何命令：不要读取 frame.keys，按键事件带 code');
-          if(!entry.acceptance.passed)throw Error('按键验收未通过：'+entry.acceptance.assertions.filter(a=>!a.passed).map(a=>a.detail).join('；'));
+          if(!entry.acceptance.passed)throw Error('结果级验收未通过：'+entry.acceptance.assertions.filter(a=>!a.passed).map(a=>a.detail).join('；'));
           entry.state=session.snapshot();session.dispose();
           event='restore';const restored=new BehaviorSession(one,entry.state,{context,apply:()=>{}});session=restored;await restored.start();restored.dispose();entry.events.push('restore');entry.passed=true;
         }catch(error){entry.error=error.message;entry.failedEvent=event;}finally{session?.dispose();}

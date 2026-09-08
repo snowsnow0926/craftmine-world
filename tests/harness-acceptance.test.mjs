@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ACCEPTANCE_FORMAT, evaluateKeyAcceptance, observableChange, worldSnapshot } from '../app/harness/acceptance.mjs';
+import { ACCEPTANCE_FORMAT, evaluateCommandAcceptance, evaluateKeyAcceptance, observableChange, worldSnapshot } from '../app/harness/acceptance.mjs';
 import { METRICS_FORMAT, percentile, summarizeTasks, taskRecord } from '../app/harness/metrics.mjs';
 
 const world = (overrides = {}) => worldSnapshot({
@@ -78,6 +78,70 @@ test('刷新怪物回归：命令有效但已死目标没有重建模型，验�
   const revived = withObject(dead, 'zombie-1', { mesh: true, health: 60 });
   const revivedReport = evaluateKeyAcceptance({ declaredKeys: ['KeyR'], keyCommands: 8, observations: [{ code: 'KeyR', change: observableChange(dead, revived) }] });
   assert.equal(revivedReport.passed, true);
+});
+
+test('命令级验收：位置补丁必须真的把对象移动到目标', () => {
+  const before = world();
+  const commands = [{ type: 'object.patch', id: 'zombie-1', position: { x: 4, y: 6, z: 2 } }];
+  const observation = after => [{ event: { type: 'tick' }, commands, before, after }];
+  const ok = evaluateCommandAcceptance({ observations: observation(withObject(before, 'zombie-1', { position: { x: 4, y: 6, z: 2 } })) });
+  assert.equal(ok.passed, true);
+  assert.equal(ok.assertions.length, 1);
+  const bad = evaluateCommandAcceptance({ observations: observation(before) });
+  assert.equal(bad.passed, false);
+  assert.match(bad.assertions[0].detail, /没有生效/);
+});
+
+test('命令级验收：本来就没有变化的补丁不产生断言', () => {
+  const before = world();
+  const position = before.objects.find(object => object.id === 'zombie-1').position;
+  const report = evaluateCommandAcceptance({ observations: [{ event: { type: 'tick' }, commands: [{ type: 'object.patch', id: 'zombie-1', position, visible: true }], before, after: before }] });
+  assert.deepEqual(report.assertions, []);
+  assert.equal(report.skipped, true);
+  assert.equal(report.passed, true);
+});
+
+test('命令级验收：对已死亡目标用可见补丁不会通过，必须真的重建模型', () => {
+  const dead = withObject(world(), 'zombie-1', { mesh: false, health: 0 });
+  const commands = [{ type: 'object.patch', id: 'zombie-1', visible: true }];
+  const report = after => evaluateCommandAcceptance({ observations: [{ event: { type: 'key', code: 'KeyR' }, commands, before: dead, after }] });
+  assert.equal(report(dead).passed, false);
+  assert.match(report(dead).assertions[0].detail, /target\.revive/);
+  assert.equal(report(withObject(dead, 'zombie-1', { mesh: true, health: 60 })).passed, true);
+});
+
+test('命令级验收：复活、物品和面板按期望值检查，已经满足的情况不误判', () => {
+  const dead = withObject(world(), 'zombie-1', { mesh: false, health: 0 });
+  const revive = after => evaluateCommandAcceptance({ observations: [{ event: { type: 'key' }, commands: [{ type: 'target.revive', id: 'zombie-1' }], before: dead, after }] });
+  assert.equal(revive(withObject(dead, 'zombie-1', { mesh: true, health: 60 })).passed, true);
+  assert.equal(revive(dead).passed, false);
+  assert.equal(revive(withObject(dead, 'zombie-1', { health: 60 })).passed, false);
+  assert.deepEqual(evaluateCommandAcceptance({ observations: [{ event: { type: 'key' }, commands: [{ type: 'target.revive', id: 'zombie-1' }], before: withObject(world(), 'zombie-1', { health: 60 }), after: withObject(world(), 'zombie-1', { health: 60 }) }] }).assertions, []);
+
+  const inventory = after => evaluateCommandAcceptance({ observations: [{ event: { type: 'tick' }, commands: [{ type: 'inventory.add', item: 'wood', count: 2 }], before: world(), after }] });
+  assert.equal(inventory(world({ inventory: { wood: 5 } })).passed, true);
+  assert.equal(inventory(world({ inventory: { wood: 9 } })).passed, false);
+  assert.equal(inventory(world()).passed, false);
+  assert.deepEqual(evaluateCommandAcceptance({ observations: [{ event: { type: 'tick' }, commands: [{ type: 'inventory.add', item: 'wood', count: 0 }], before: world(), after: world() }] }).assertions, []);
+
+  const panel = (commands, before, after) => evaluateCommandAcceptance({ observations: [{ event: { type: 'start' }, commands, before, after }] });
+  const created = { type: 'hud.panel', key: 'quest', panel: { title: '任务', lines: [] } };
+  assert.equal(panel([created], world({ panels: {} }), world({ panels: { 'mod:quest': { title: '任务', lines: [] } } })).passed, true);
+  assert.equal(panel([created], world({ panels: {} }), world({ panels: {} })).passed, false);
+  assert.equal(panel([{ type: 'hud.panel', key: 'quest', panel: null }], world({ panels: { 'mod:quest': { title: '任务', lines: [] } } }), world({ panels: {} })).passed, true);
+  assert.equal(panel([{ type: 'hud.panel', key: 'quest', panel: null }], world({ panels: {} }), world({ panels: {} })).skipped, true);
+});
+
+test('命令级验收：一条失败就整体失败，并给出是哪条命令没生效', () => {
+  const before = world();
+  const report = evaluateCommandAcceptance({ observations: [
+    { event: { type: 'tick' }, commands: [{ type: 'object.patch', id: 'door-1', position: { x: 9, y: 6, z: 4 } }], before, after: withObject(before, 'door-1', { position: { x: 9, y: 6, z: 4 } }) },
+    { event: { type: 'tick' }, commands: [{ type: 'object.patch', id: 'zombie-1', position: { x: 7, y: 6, z: 2 } }], before, after: before },
+  ] });
+  assert.equal(report.passed, false);
+  assert.equal(report.assertions.length, 2);
+  assert.deepEqual(report.assertions.map(assertion => assertion.passed), [true, false]);
+  assert.match(report.assertions[1].id, /tick#2:object\.patch/);
 });
 
 test('任务指标从日志派生：首次通过、修复通过、失败分类和耗时', () => {
