@@ -222,6 +222,7 @@
   "capabilityRoadmap": {
     "date": "2026-09-09",
     "document": "docs/ROADMAP.md",
+    "extensionPlan": "docs/SELF_EXTENSION_PLAN.md",
     "northStar": "玩家说一句中文，系统尽力把它实现——包括需要新增宿主能力的请求；玩家不需要知道 L0–L4 的存在",
     "successCriterion": "玩家不用找开发者改代码，就能把想做的玩法做出来",
     "layers": [
