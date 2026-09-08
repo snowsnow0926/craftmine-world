@@ -1,0 +1,12 @@
+{
+  "name": "craftmine-world",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node app/server.mjs",
+    "test": "node --test tests/core.test.mjs",
+    "test:browser": "node tests/browser.mjs"
+  },
+  "engines": { "node": ">=22" }
+}
