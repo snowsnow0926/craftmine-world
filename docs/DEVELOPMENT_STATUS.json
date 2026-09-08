@@ -264,7 +264,16 @@
       "glb": "仅静态（拒绝动画与骨骼），外观仅支持绕 Y 轴旋转",
       "limits": "128 物体 / 每步 32 命令 / 代码 32KB / 状态 16KB / 10 万面"
     },
-    "tests": "npm test: 115 passed"
+    "tests": "npm test: 170 passed",
+    "developmentBatches": [
+      {"batch": "0", "title": "收纳 app/harness 并补测试", "status": "done", "commit": "harness workspace tools + 9 tests", "note": "发现并修复 project.inspect/world.query 在无 behaviors 的场景上崩溃"},
+      {"batch": "5", "title": "能力目录 capabilities.catalog", "status": "done", "commit": "app/harness/capabilities.mjs + GET /api/capabilities", "note": "从运行契约派生，漂移测试锁定到 BEHAVIOR_API_GUIDE"},
+      {"batch": "2", "title": "R0 结果级验证 + 指标", "status": "done", "commit": "acceptance.mjs + metrics.mjs + GET /api/metrics", "note": "按键必须造成可观测世界变化；复刻刷新怪物 bug 的回归测试"},
+      {"batch": "1", "title": "接线 P1 工具闭环", "status": "done", "commit": "orchestrator.mjs + loop-model.mjs + CRAFTMINE_HARNESS_LOOP", "note": "默认关闭；11 个循环测试"},
+      {"batch": "3", "title": "通用资源系统", "status": "done", "commit": "resource 系统 + resources.write + 资源条 HUD", "note": "蓝条/体力/饥饿/护甲不需要改宿主"},
+      {"batch": "4", "title": "状态迁移 v1→v2", "status": "done", "commit": "migrate:[{from,keep,rename,add}]", "note": "数据驱动、不执行模型代码；旧进度不再被阻断"},
+      {"batch": "6", "title": "90 度朝向旋转", "status": "partial", "commit": "object.patch yaw 0/90/180/270", "note": "旋转烘焙成轴对齐包围盒；平滑移动（带时长的 object.move）仍未实现"}
+    ]
   },
   "harnessPlan": {
     "date": "2026-09-09",
