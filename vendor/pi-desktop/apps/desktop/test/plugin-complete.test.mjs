@@ -17,7 +17,7 @@ const { listReadyPluginModels, pluginCompleteContext, parsePluginModelKey } =
   await import("../electron/main/plugin-agent-complete.ts");
 
 function forkPluginProcess({ entry }) {
-  const child = fork(entry, [], { stdio: ["ignore", "pipe", "pipe", "ipc"] });
+  const child = fork(entry, [], { windowsHide: true, stdio: ["ignore", "pipe", "pipe", "ipc"] });
   return {
     postMessage: (message) => {
       if (child.connected) child.send(message);
@@ -161,6 +161,27 @@ test("session context and complete stay bound to an in-flight tool call", async 
   assert.equal(completes[0].includeSessionContext, true);
   assert.equal(completes[0].sessionId, "sess-1");
   assert.equal(typeof completes[0].signal?.aborted, "boolean");
+});
+
+test("plugin invocation identity survives the process boundary and ignores forged arguments", async (t) => {
+  const runtime = new PluginRuntime({ hostEntry: hostProcessEntry, spawnProcess: forkPluginProcess });
+  t.after(async () => {
+    for (const loaded of runtime.listLoaded()) await runtime.unload(loaded.manifest.id);
+  });
+  const dir = writePlugin({
+    permissions: ["agent.tool.register"],
+    main: `module.exports = { async onLoad() {
+      await pi.agent.registerTool({ name:"identity", description:"Return the trusted invocation context",
+        execute: async (args, ctx) => ({sessionId:ctx.sessionId,turnId:ctx.turnId,toolCallId:ctx.toolCallId,executionId:ctx.executionId}) });
+    } };`,
+  });
+  await runtime.loadFromPath(dir, ["agent.tool.register"]);
+  const tool = runtime.getTools().find(entry => entry.name === "identity");
+  const bound = { sessionId:"session-a",turnId:"turn-a",toolCallId:"call_123",executionId:"dispatch-1" };
+  assert.deepEqual(await tool.execute({toolCallId:"forged",sessionId:"foreign"}, bound), bound);
+  const retry = {...bound,executionId:"dispatch-2"};
+  assert.deepEqual(await tool.execute({},retry),retry);
+  assert.deepEqual(await tool.execute({toolCallId:"forged"}), {sessionId:""});
 });
 
 test("agent.complete is rate-limited per plugin", async (t) => {

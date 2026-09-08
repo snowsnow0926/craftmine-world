@@ -745,6 +745,7 @@ async fn execute_plugin_tool(
             "executionId": execution_id,
             "sessionId": p.session_id,
             "toolCallId": p.tool_call_id,
+            "turnId": p.turn_id,
             "toolName": p.tool_name,
             "args": p.args,
         }),

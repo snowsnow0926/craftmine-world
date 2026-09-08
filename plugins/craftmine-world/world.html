@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; frame-src 'self' file:; style-src 'unsafe-inline'; base-uri 'none'">
+  <title>世界 · 最中幻想</title>
+  <style>
+    :root { color-scheme: light dark; font-family:system-ui,'Microsoft YaHei',sans-serif; }
+    * { box-sizing:border-box; } body { margin:0; height:100vh; display:flex; flex-direction:column; background:light-dark(#fafafa,#191919); color:light-dark(#242424,#dedede); }
+    header { height:40px; display:flex; align-items:center; padding:0 14px; font-size:12px; border-bottom:1px solid light-dark(#e3e3e3,#333); }
+    iframe { display:block; flex:1; width:100%; border:0; min-height:0; }
+  </style>
+  <script src="view.js" defer></script>
+</head>
+<body>
+  <header id="world-status">正在载入世界…</header>
+  <iframe title="可游玩的世界" sandbox="allow-scripts allow-pointer-lock"></iframe>
+</body>
+</html>

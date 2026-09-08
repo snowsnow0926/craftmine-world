@@ -367,6 +367,8 @@ async function handleParentCall(method, payload) {
       const result = await execute(payload?.args, {
         sessionId: payload?.sessionId,
         turnId: payload?.turnId,
+        toolCallId: payload?.toolCallId,
+        executionId: payload?.executionId,
         modelKey: payload?.modelKey,
         thinkingLevel: payload?.thinkingLevel,
         log: (msg) => log("info", msg),

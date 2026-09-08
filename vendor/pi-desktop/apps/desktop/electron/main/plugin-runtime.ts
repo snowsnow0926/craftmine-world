@@ -86,7 +86,7 @@ export type RegisteredPluginTool = {
   schema?: unknown;
   execute: (
     args: unknown,
-    ctx?: { sessionId?: string; modelKey?: string; thinkingLevel?: string },
+    ctx?: { sessionId?: string; turnId?: string; toolCallId?: string; executionId?: string; modelKey?: string; thinkingLevel?: string },
   ) => Promise<unknown>;
 };
 
@@ -1448,6 +1448,9 @@ export class PluginRuntime {
                       name,
                       args: toolArgs,
                       sessionId,
+                      turnId: ctx?.turnId,
+                      toolCallId: ctx?.toolCallId,
+                      executionId: ctx?.executionId,
                       modelKey: ctx?.modelKey,
                       thinkingLevel: ctx?.thinkingLevel,
                     },

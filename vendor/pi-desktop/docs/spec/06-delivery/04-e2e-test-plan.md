@@ -8444,3 +8444,11 @@ are withdrawn with ADR 0165.
 - **Status**: Unit-covered (`apps/desktop/test/markdown-link-menu.test.mjs` and
   locale catalog tests); full UI journey Draft (do not run E2E locally unless
   explicitly requested)
+
+#### CRAFTMINE-001: Bound drafts and plugin call identity
+
+- Preconditions: downstream Rust journal and plugin protocol integration are available; use isolated test data and hidden Node processes.
+- Steps: start a bound world task, commit a draft, lose the response, reopen the journal and replay the same call; cancel a task and deliver a late response; send a plugin tool forged identity arguments with distinct host context IDs.
+- Expected: one draft revision and one receipt; cancellation survives restart; foreign sessions/projects cannot inspect or write the task; plugin context carries the host session, turn, tool-call and dispatch IDs.
+- Validation: `cargo test -p craftmine-core`; `node --test test/plugin-complete.test.mjs` from the desktop package. No browser or OS input simulation is required.
+- Status: targeted checks; complete application journey remains W1/W2 work.

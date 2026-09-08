@@ -4398,6 +4398,7 @@ function wireHost(h: HostProcess) {
           executionId: string;
           sessionId?: string;
           toolCallId?: string;
+          turnId?: string;
           toolName: string;
           args: unknown;
         };
@@ -4457,6 +4458,9 @@ function wireHost(h: HostProcess) {
             }
             const result = await tool.execute(q.args, {
               sessionId: q.sessionId,
+              toolCallId: q.toolCallId,
+              executionId: q.executionId,
+              turnId: q.turnId,
               modelKey,
               thinkingLevel,
             });

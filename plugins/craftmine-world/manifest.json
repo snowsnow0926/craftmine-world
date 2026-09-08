@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "craftmine.world",
+  "name": "Craftmine World",
+  "version": "0.1.0",
+  "description": "World creation surfaces for the Craftmine desktop.",
+  "main": "main.cjs",
+  "contributes": {
+    "services": [{"id":"world-core","label":"Craftmine Rust core"}],
+    "views": [{"id":"world","title":{"en":"World","zh-CN":"世界"},"icon":"target","entry":"views/world.html","order":1}],
+    "agentTools": [{"name":"runtime_info","description":"Inspect the connected Craftmine runtime and its available integration capabilities.","risk":"low","schema":{"type":"object","properties":{},"additionalProperties":false}}]
+  },
+  "permissions": ["ui.view", "agent.tool.register", "background.service"],
+  "activationEvents": ["onStartup"],
+  "engines": {"piDesktop": ">=0.14.3"}
+}

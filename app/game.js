@@ -2,8 +2,9 @@
 import { makeWorldRuntime } from './world-runtime.mjs';
 import { createExtensionTable, disposeExtensionTable } from './extension-runtime.mjs';
 (() => {
-  const nonce = location.hash.slice(1), parentOrigin = new URL(location.href).origin;
-  const send = (type,payload={}) => {if(preview&&type==='agent'){inform('关闭预览后，可以继续描述对原世界的修改。');return;}parent.postMessage({channel:'craftmine-game/1',nonce,type,...payload},parentOrigin);};
+  const nonce = location.hash.slice(1) || document.querySelector('meta[name="craftmine-nonce"]')?.content || '', parentOrigin = new URL(location.href).origin;
+  const replyOrigin = parentOrigin === 'null' ? '*' : parentOrigin;
+  const send = (type,payload={}) => {if(preview&&type==='agent'){inform('关闭预览后，可以继续描述对原世界的修改。');return;}parent.postMessage({channel:'craftmine-game/1',nonce,type,...payload},replyOrigin);};
   let engine, build, frozen=false, lastTarget=null, preview=false, extensions=null;
   const enter = document.getElementById('enter'), notice = document.getElementById('notice'); let noticeTimer;
   function inform(text,{tone='info',duration=4500}={}) { notice.textContent=text;notice.dataset.tone=tone;notice.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>notice.hidden=true,Math.max(1000,Math.min(10000,Number.isFinite(duration)?duration:4500))); }

@@ -6,3 +6,4 @@ __pycache__/
 .env.*
 !.env.example
 *.local.json
+desktop/build/

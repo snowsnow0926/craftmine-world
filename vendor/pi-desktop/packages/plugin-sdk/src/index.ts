@@ -252,6 +252,10 @@ export type PluginTool = {
 export type PluginToolExecContext = {
   sessionId?: string;
   turnId?: string;
+  /** Host-assigned model tool-call identity. Never read it from tool arguments. */
+  toolCallId?: string;
+  /** Host dispatch attempt identity; a retried call can have a new execution ID. */
+  executionId?: string;
   /** Executor model for this session, `providerId/modelId`. Configuration, not transcript. */
   modelKey?: string;
   thinkingLevel?: string;
