@@ -21,7 +21,7 @@ try{
   await w.domClick('#review-focus');await w.page.waitForFunction(()=>document.getElementById('review-status').dataset.error!=='true');
   await previewSnapshot();await frame().locator('#interact').evaluate(el=>el.onclick());const trial=await previewSnapshot();
   w.check('候选副本里的真实源码能关门，当前世界的门保持打开',trial.behaviors.modules[behaviorId].state.open===false&&(await w.snapshot()).behaviors.modules[behaviorId].state.open===true,trial.behaviors);
-  w.check('预览没有提交场景、历史、模块库或试玩状态',(await read()).current===stable.current&&JSON.stringify((await read()).history)===JSON.stringify(stable.history)&&JSON.stringify((await read()).library)===JSON.stringify(stable.library)&&JSON.stringify((await read()).snapshot)===JSON.stringify(stable.snapshot));
+  w.check('预览没有提交场景、历史、模块库、项目约定或试玩状态',(await read()).current===stable.current&&JSON.stringify((await read()).history)===JSON.stringify(stable.history)&&JSON.stringify((await read()).library)===JSON.stringify(stable.library)&&JSON.stringify((await read()).projectContext)===JSON.stringify(stable.projectContext)&&JSON.stringify((await read()).snapshot)===JSON.stringify(stable.snapshot));
   await side('before');w.check('切换当前版本显示原状态的独立副本',(await previewSnapshot()).behaviors.modules[behaviorId].state.open===true&&(await read()).candidate.id===staged.candidate.id);
   await side('after');w.check('返回候选重新建立副本，不沿用前一次试玩结果',(await previewSnapshot()).behaviors.modules[behaviorId].state.open===true);
   await w.page.locator('#review-fields .field-change').evaluateAll(nodes=>nodes.forEach(el=>el.open=true));await w.saveScreenshot('candidate-comparison');await w.page.setViewportSize({width:700,height:950});

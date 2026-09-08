@@ -32,6 +32,8 @@ const staticFiles = new Map([
   ['/app/behavior-state.mjs',['behavior-state.mjs','text/javascript']], ['/app/behavior-session.mjs',['behavior-session.mjs','text/javascript']], ['/app/world-runtime.mjs',['world-runtime.mjs','text/javascript']],
   ['/app/behavior-binding.mjs',['behavior-binding.mjs','text/javascript']],
   ['/app/scene-diff.mjs',['scene-diff.mjs','text/javascript']], ['/app/canonical.mjs',['canonical.mjs','text/javascript']], ['/app/review.js',['review.js','text/javascript']],
+  ['/app/project-context.mjs',['project-context.mjs','text/javascript']], ['/app/context-panel.js',['context-panel.js','text/javascript']],
+  ['/app/context.css',['context.css','text/css']],
 ]);
 // Keep one coherent runtime for this server's lifetime while development continues.
 const staticAssets=new Map([...staticFiles].map(([route,[file,type]])=>[route,{type,content:fs.readFileSync(path.join(APP,file))}]));
@@ -73,6 +75,7 @@ const server = http.createServer(async (req,res) => {
         if (url.pathname === '/api/state') return json(res,200,{...store.data,provider});
         if (url.pathname === '/api/build') return json(res,200,store.readBuild(url.searchParams.get('id')));
         if (url.pathname === '/api/tasks/attempt') return json(res,200,store.readAttempt(url.searchParams.get('id'),Number(url.searchParams.get('number'))));
+        if (url.pathname === '/api/tasks/context') return json(res,200,store.readTaskContext(url.searchParams.get('id')));
         if (url.pathname === '/api/candidate/review') return json(res,200,store.reviewCandidate(url.searchParams.get('id'),url.searchParams.get('base')));
         if (url.pathname === '/api/export') return json(res,200,store.exportSave());
         if (url.pathname === '/api/modules/export') return json(res,200,store.modules.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
@@ -80,6 +83,7 @@ const server = http.createServer(async (req,res) => {
         const input = await body(req);
         switch (url.pathname) {
           case '/api/save': store.save(input.version,input.snapshot); break;
+          case '/api/project-context': store.editContext(input); return json(res,200,{ok:true,projectContext:store.data.projectContext});
           case '/api/tasks': {
             if (input.version !== store.data.current) throw Error('运行版本已过期，请刷新后重试');
             if (typeof input.prompt !== 'string' || !input.prompt.trim() || input.prompt.length > 2000 || !['execute','discuss'].includes(input.intent)) throw Error('请输入 1–2000 字的需求');

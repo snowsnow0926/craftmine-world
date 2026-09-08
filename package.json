@@ -1,11 +1,11 @@
 {
   "name": "craftmine-world",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node app/server.mjs",
-    "test": "node --test tests/core.test.mjs tests/modules.test.mjs tests/behavior.test.mjs tests/creation.test.mjs tests/agent.test.mjs tests/review.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/modules.test.mjs tests/behavior.test.mjs tests/creation.test.mjs tests/agent.test.mjs tests/review.test.mjs tests/context.test.mjs",
     "test:browser": "node tests/background-browser.mjs",
     "test:live": "node tests/live-memory.mjs",
     "test:behaviors": "node tests/behavior-browser.mjs",
@@ -17,7 +17,9 @@
     "test:repair": "node tests/repair-browser.mjs",
     "test:repair-cancel": "node tests/repair-browser.mjs --cancel",
     "test:live-repair": "node tests/repair-browser.mjs --live",
-    "test:review": "node tests/review-browser.mjs"
+    "test:review": "node tests/review-browser.mjs",
+    "test:context": "node tests/context-browser.mjs",
+    "test:live-context": "node tests/live-context.mjs"
   },
   "engines": { "node": ">=22" }
 }

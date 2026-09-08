@@ -1,8 +1,8 @@
 {
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
-  "currentMilestone": "M3",
-  "baseline": "9c6b226",
+  "currentMilestone": "M4",
+  "baseline": "8b68535",
   "updated": "2026-09-08",
   "items": [
     {
@@ -54,10 +54,12 @@
     {
       "id": "M3",
       "title": "多轮创作、差异预览、失败诊断和有上限的自动修复",
-      "status": "in_progress",
+      "status": "complete",
       "evidence": [
-        "docs/M3_REPAIR.md: M3.1 complete",
-        "docs/M3_PREVIEW.md: M3.2 complete; M3.3 pending"
+        "docs/ALPHA_0_7.md",
+        "docs/M3_REPAIR.md",
+        "docs/M3_PREVIEW.md",
+        "docs/M3_CONTEXT.md"
       ],
       "slices": [
         {
@@ -89,7 +91,15 @@
         {
           "id": "M3.3",
           "title": "长期项目意图和运行问题上下文、非预设措辞多轮验收",
-          "status": "pending"
+          "status": "complete",
+          "evidence": [
+            "npm test: 63 passed",
+            "test-results/context-browser-KexwPD/report.json: 13 passed",
+            "test-results/live-context-BjJK1w/report.json: 10 passed; two real model changes, 90 synthetic discussion messages, restart, preserved latest state and actual door interaction",
+            "test-results/review-browser-DsO8ps/report.json: 15 passed",
+            "test-results/repair-scripted-dAHBxA/report.json: 9 passed",
+            "docs/M3_CONTEXT.md"
+          ]
         }
       ]
     },
@@ -106,11 +116,11 @@
       "evidence": []
     }
   ],
-  "nextAction": "M3.3：持久保存可编辑的项目创作方向与带来源的需求记录，提供已保存的实际运行错误上下文；用超出近期对话窗口的真实 LLM 多轮场景与源码修改验收。M3 完整通过后再集中更新 8787 服务。",
+  "nextAction": "M4.1：设计并实现本地图片和标准 3D 素材库，固定资产身份与不可变版本、限制资源规模、校验文件并提供独立预览；随后接入对象外观绑定、替换与回退，保留源码行为、碰撞和进度，再验证素材随完整存档/创作模块导出到第二个项目。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.6",
-    "developmentSlice": "M1、M2、M3.1 自动修复、M3.2 差异预览已完成并验收；继续 M3.3 长期上下文、M4 素材和 M5 完整世界。本轮未重启个人 Alpha 0.6 服务。",
+    "developmentSlice": "M1、M2、M3 全部完成并验收，Alpha 0.7 准备集中更新；下一项 M4 素材，之后 M5 完整可玩世界。",
     "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
     "example": "examples/door-and-bounce.save.json",
     "service": {

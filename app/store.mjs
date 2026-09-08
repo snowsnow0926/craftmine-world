@@ -3,6 +3,7 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { EMPTY_SCENE, INITIAL_SNAPSHOT, compileScene, clone, validateSnapshot, sceneDiff } from './scene.mjs';
 import { ModuleLibrary } from './memory.mjs';
+import { emptyProjectContext,editProjectContext,rememberAppliedRequest,retrieveProjectContext } from './project-context.mjs';
 
 export function atomicJSON(file, value) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -18,7 +19,7 @@ export class ProjectStore {
     fs.mkdirSync(this.root, { recursive: true });
     if (!fs.existsSync(this.file)) {
       const build = this.build(EMPTY_SCENE);
-      atomicJSON(this.file, { format: 'craftmine.project/1', current: build.id, snapshot: clone(INITIAL_SNAPSHOT), candidate: null, applying: null, tasks: [], messages: [], library:[],moduleBindings:{object:{},gameplay:{},creation:{}},activeCreations:[],history: [{ id: build.id, summary: '空白世界', time: Date.now() }] });
+      atomicJSON(this.file, { format: 'craftmine.project/1', current: build.id, snapshot: clone(INITIAL_SNAPSHOT), candidate: null, applying: null, tasks: [], messages: [], projectContext:emptyProjectContext(),library:[],moduleBindings:{object:{},gameplay:{},creation:{}},activeCreations:[],history: [{ id: build.id, summary: '空白世界', time: Date.now() }] });
     }
     this.data = JSON.parse(fs.readFileSync(this.file, 'utf8'));
     if (this.data.format !== 'craftmine.project/1') throw Error('项目格式不兼容，未覆盖原文件');
@@ -30,6 +31,13 @@ export class ProjectStore {
     if(!this.data.moduleBindings.creation){
       atomicJSON(path.join(this.root,'backups','before-creation-memory-'+Date.now()+'.json'),this.data);
       this.change(d=>this.modules.capture(d,this.readBuild(d.current).scene,'从已有代码世界保存的创作',d.current));
+    }
+    if(!this.data.projectContext){
+      atomicJSON(path.join(this.root,'backups','before-project-context-'+Date.now()+'.json'),this.data);
+      this.change(d=>{
+        d.projectContext=emptyProjectContext();
+        for(const task of d.tasks)if(task.status==='applied'&&task.build)rememberAppliedRequest(d.projectContext,task,{id:task.build,base:task.base,summary:d.history.find(h=>h.id===task.build)?.summary||task.prompt,diff:{}},task.finished||task.started);
+      });
     }
     if (this.data.applying || this.data.tasks.some(t => ['running','validating','cancelling'].includes(t.status))) this.change(data => {
       data.applying = null;
@@ -67,6 +75,12 @@ export class ProjectStore {
     const before=this.readBuild(base),after=this.readBuild(id);
     return {id,base,summary:c.summary,checks:clone(c.checks),time:c.time,before,after,diff:sceneDiff(before.scene,after.scene),importSnapshot:clone(c.importSnapshot||null)};
   }
+  editContext(input){this.change(d=>{d.projectContext=editProjectContext(d.projectContext,input,this.readBuild(d.current).scene);});}
+  contextFor(text,selected,build=this.readBuild(this.data.current)){return retrieveProjectContext(this.data.projectContext,{text,selected,build,snapshot:this.data.snapshot});}
+  readTaskContext(id){
+    if(!/^[a-f0-9-]{36}$/.test(id)||!this.data.tasks.some(t=>t.id===id))throw Error('任务记录不存在');
+    const file=path.join(this.root,'tasks',id,'project-context.json');return fs.existsSync(file)?JSON.parse(fs.readFileSync(file,'utf8')):null;
+  }
   idle() { if (this.data.applying || this.data.candidate || this.data.tasks.some(t => ['running','validating','cancelling'].includes(t.status))) throw Error('请先完成当前任务或处理候选更新'); }
   addMessage(role, text) { this.change(d => { d.messages.push({ role, text: String(text).slice(0,5000), time: Date.now() }); d.messages = d.messages.slice(-80); }); }
   save(version, snapshot) {
@@ -99,6 +113,7 @@ export class ProjectStore {
       d.current = tx.candidate; d.snapshot = latest; d.lastCommit = tx.id;
       d.history.push({ id: tx.candidate, summary: d.candidate.summary, time: Date.now() }); d.history = d.history.slice(-30);
       const task = d.tasks.find(t => t.id === d.candidate.taskId);
+      rememberAppliedRequest(d.projectContext,task,d.candidate);
       if (task) { task.status = 'applied'; task.remembered=remembered;task.logs.push({time:Date.now(),text:`浏览器载入与绘制检查完成，场景版本和进度已保存；记住了 ${remembered.length} 个新模块版本。`}); }
       d.messages.push({role:'system',text:d.candidate.importSnapshot?'完整存档已应用，恢复了文件中的场景和位置；切换前的世界已备份。':'候选已应用到世界，已保存最新兼容进度。可以继续体验和修改。',time:Date.now()});
       d.messages = d.messages.slice(-80);

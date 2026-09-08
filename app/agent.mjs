@@ -57,7 +57,11 @@ export class AgentRunner {
     this.update(active.id,t=>{t.memories=memories.map(m=>({id:m.id,version:m.version,name:m.name,kind:m.kind}));});
     this.log(active.id,memories.length?'已从创作记忆中读取：'+memories.map(m=>`${m.name} v${m.version}`).join('、'):'记忆库中暂无相关成果，本次从零创作。');
     atomicJSON(path.join(dir,'scene.before.json'),scene);atomicJSON(path.join(dir,'response.schema.json'),OUTPUT_SCHEMA);
-    const basePrompt=buildPrompt({scene,memories,text,intent,context,messages:store.data.messages.slice(-8),snapshot:store.data.snapshot});
+    const projectContext=store.contextFor(text,context.selected,store.readBuild(base));
+    atomicJSON(path.join(dir,'project-context.json'),projectContext);
+    this.update(active.id,t=>{t.contextRead={revision:projectContext.revision,notes:projectContext.notes.map(n=>n.id),requests:projectContext.acceptedChanges.map(r=>r.id),problems:projectContext.runtimeProblems.map(p=>p.id)};});
+    this.log(active.id,`已读取创作方向、${projectContext.notes.length} 条长期约定、${projectContext.acceptedChanges.length} 条已应用需求和 ${projectContext.runtimeProblems.length} 个已保存的运行问题。`);
+    const basePrompt=buildPrompt({scene,memories,text,intent,context,messages:store.data.messages.slice(-8),snapshot:store.data.snapshot,projectContext});
     let previous;
     for(let number=1;number<=REPAIR_LIMIT+1;number++){
       this.assertActive(active);const attemptDir=path.join(dir,'attempts',String(number));let phase='storage',raw='',build;

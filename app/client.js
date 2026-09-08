@@ -1,4 +1,5 @@
 import { CandidateReview } from './review.js';
+import { ProjectContextPanel } from './context-panel.js';
 const $ = id => document.getElementById(id);
 const token = document.querySelector('meta[name="craftmine-token"]').content;
 let client = sessionStorage.getItem('craftmine-client');
@@ -29,6 +30,7 @@ function requestFrame(frame,type,payload={}){return new Promise((resolve,reject)
 });}
 const requestSnapshot=(frame,freeze=false)=>requestFrame(frame,'snapshot',{freeze});
 const review=new CandidateReview({api,mount,remove:removeFrame,post,snapshot:requestSnapshot,inspect:(frame,id)=>requestFrame(frame,'inspect',{objectId:id}),active:()=>activeFrame,project:()=>project,apply:applyCandidate,discard:discardCandidate,select:id=>{selected=id;updateContext();renderObjects();switchView('play');$('prompt').focus();}});
+const contextPanel=new ProjectContextPanel({api,refresh,repair:problem=>{selected=problem.objects.length===1?problem.objects[0]:null;updateContext();renderObjects();switchView('play');$('intent').value='execute';$('prompt').value=`请修复「${problem.name}」停止运行的问题。根据已保存的实际错误检查源码，保留原有功能和兼容进度。`;$('prompt').focus();}});
 window.addEventListener('message',event=>{
   const m=event.data,frame=frames.get(m?.nonce);
   if(!frame||event.source!==frame.element.contentWindow||m.channel!=='craftmine-game/1'||event.origin!=='null')return;
@@ -63,6 +65,7 @@ function switchView(view){currentView=view;for(const name of ['play','develop','
 function render(){
   if(!project)return;
   review.invalidate(project);
+  contextPanel.render(project,activeFrame?.build);
   $('provider').textContent=project.provider.available?'● Codex 已登录':'○ 需要连接 LLM';$('provider').title=project.provider.message;
   $('version').textContent='v'+(project.history.length)+ ' · 当前可玩';
   const task=project.tasks.at(-1),running=task&&['running','validating','cancelling'].includes(task.status);
@@ -83,6 +86,7 @@ function render(){
     const details=node('details'),summary=node('summary','执行记录'),logs=node('ol');for(const log of t.logs)logs.append(node('li',new Date(log.time).toLocaleTimeString()+' · '+log.text));details.append(summary,logs);
     if(t.usage)details.append(node('p',`实际用量：输入 ${t.usage.input_tokens??'—'} / 输出 ${t.usage.output_tokens??'—'} tokens`));
     if(t.memories?.length)details.append(node('p','读取的创作记忆：'+t.memories.map(m=>`${m.name} v${m.version}`).join('、')));
+    if(t.contextRead){const read=t.contextRead;details.append(node('p',`读取的项目上下文：方向 v${read.revision} · ${read.notes.length} 条约定 · ${read.requests.length} 条历史需求 · ${read.problems.length} 个运行问题`));const content=node('pre',undefined,'source-preview');content.hidden=true;details.append(button('查看本次读取的项目上下文',async()=>{content.textContent=JSON.stringify(await api('/api/tasks/context?id='+t.id),null,2);content.hidden=false;}),content);}
     if(t.usedModules?.length)details.append(node('p','生成结果引用了 '+t.usedModules.length+' 个模块版本。'));
     if(t.error)details.append(node('p',t.error));
     for(const attempt of t.attempts||[]){
@@ -184,6 +188,7 @@ $('memory-search').oninput=renderLibrary;
 $('module-import-button').onclick=()=>$('module-import-file').click();
 $('module-import-file').onchange=async()=>{const file=$('module-import-file').files[0];if(!file)return;try{if(file.size>1_500_000)throw Error('模块文件过大');await api('/api/modules/import',JSON.parse(await file.text()));await refresh();toast('模块已记入本地库，可选择版本复用到世界。');}catch(error){toast(error.message);}finally{$('module-import-file').value='';}};
 $('example').onclick=()=>{$('prompt').value='我想要有树';$('prompt').focus();};
+$('context-open').onclick=()=>{switchView('develop');$('project-direction').scrollIntoView({block:'start'});};
 $('clear-context').onclick=()=>{selected=null;target=null;updateContext();renderObjects();};
 $('apply').onclick=applyCandidate;
 async function discardCandidate(){try{await api('/api/discard',{});review.close();await refresh();}catch(error){toast(error.message);}}

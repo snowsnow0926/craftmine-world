@@ -1,0 +1,37 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { workbench } from './workbench.mjs';
+const w=await workbench('context-browser',{preload:'./tests/context-fixture-provider.mjs'}),state=()=>w.api('/api/state');
+const set=async(selector,value)=>w.page.locator(selector).evaluate((el,value)=>{el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));},value);
+const save=async()=>{await w.page.evaluate(()=>document.getElementById('context-editor').requestSubmit());await w.page.waitForFunction(()=>document.getElementById('context-status').textContent.startsWith('已保存。'));};
+try{
+  const example=JSON.parse(fs.readFileSync('examples/door-and-bounce.save.json','utf8')),object=example.scene.objects[0].id,behavior=example.scene.behaviors[0].id;
+  await w.load(example.scene,{...example.snapshot,player:{x:1.25,y:6,z:9.6,yaw:0,pitch:0}});const initial=await state();
+  await w.domClick('#context-open');await set('#context-brief','雨后花园：保留入口与可步行的通道。');await w.domClick('#context-add-note');await set('#context-notes textarea','这扇门保持手动开关，不自动复位。');await set('#context-notes select',object);await save();
+  const saved=await state();w.check('创作方向和对象约定可保存，编辑不会改变世界或进度',saved.projectContext.revision===1&&saved.projectContext.notes[0].objectId===object&&saved.current===initial.current&&JSON.stringify(saved.snapshot)===JSON.stringify(initial.snapshot));
+  await set('#context-brief','尚未保存的本地草稿');await w.api('/api/project-context',{revision:1,brief:'另一处保存的方向',notes:saved.projectContext.notes});
+  await w.page.waitForFunction(()=>document.getElementById('context-status').textContent.includes('草稿仍保留'));
+  w.check('刷新不会覆盖未保存的编辑',await w.page.locator('#context-brief').inputValue()==='尚未保存的本地草稿');
+  await w.page.evaluate(()=>document.getElementById('context-editor').requestSubmit());await w.page.waitForFunction(()=>document.getElementById('context-status').textContent.includes('请先载入已保存内容'));
+  w.check('旧版本保存被拒绝，原方向和草稿保留',(await state()).projectContext.brief==='另一处保存的方向'&&await w.page.locator('#context-brief').inputValue()==='尚未保存的本地草稿');
+  await w.domClick('#context-reload');await w.page.waitForFunction(()=>document.getElementById('context-brief').value==='另一处保存的方向');
+  await set('#context-brief','雨后花园：保留入口与可步行的通道。');await save();
+  const requested=await w.request('在门旁增加一朵粉花，让入口有一点生机。'),task=requested.tasks.at(-1),read=await w.api('/api/tasks/context?id='+task.id);
+  w.check('生成实际读取保存的方向，读取产物有来源与版本',read.revision===3&&read.notes[0].objectId===object&&task.contextRead.revision===3&&requested.projectContext.accepted.length===0);
+  await w.apply();await w.domClick('#context-open');await w.page.locator('#context-history details').waitFor({state:'attached'});const accepted=await state();
+  w.check('应用后需求原文和实际构建进入长期记录',accepted.projectContext.accepted[0].id===task.id&&accepted.projectContext.accepted[0].build===accepted.current);
+  await w.page.locator('.context-history').evaluate(el=>el.open=true);await w.page.locator('#context-history details').evaluate(el=>el.open=true);await w.page.locator('#context-history button').evaluate(el=>el.onclick());
+  w.check('历史需求可整理为约定草稿，尚未保存时不改变模型方向',(await state()).projectContext.notes.length===1&&await w.page.locator('#context-notes textarea').count()===2);await save();await w.saveScreenshot('project-direction');
+  await w.request('把刚才的花颜色稍微调淡。');await w.domClick('#discard');await w.page.locator('#candidate').waitFor({state:'hidden'});w.check('丢弃候选不增加已应用需求',(await state()).projectContext.accepted.length===1);
+  const faultBuild=await w.api('/api/build?id='+(await state()).current);faultBuild.scene.behaviors[0].code=faultBuild.scene.behaviors[0].code.replace('\n',"\n  if(frame.event.type==='interact' && frame.player.position.x>1) throw new Error('营地门闩测试故障'); // CONTEXT_TEST_FAULT\n");
+  await w.load(faultBuild.scene,await w.snapshot());await w.game().locator('#interact').evaluate(el=>el.onclick());const stopped=await w.snapshot();await w.api('/api/save',{version:(await state()).current,snapshot:stopped});
+  await w.domClick('#context-open');await w.page.locator('.runtime-problem').waitFor({state:'visible'});
+  w.check('真实游戏源码错误进入已保存的问题列表',stopped.behaviors.modules[behavior].error.includes('营地门闩测试故障')&&(await w.page.locator('#runtime-problems').textContent()).includes('营地门闩测试故障'));
+  await w.page.locator('.runtime-problem button').evaluate(el=>el.onclick());const prompt=await w.page.locator('#prompt').inputValue();w.check('问题入口选择相关对象并准备修复描述',prompt.includes('修复')&&(await w.page.locator('#context-label').textContent()).includes(object));
+  const repaired=await w.request(prompt),repairTask=repaired.tasks.at(-1),context=await w.api('/api/tasks/context?id='+repairTask.id);
+  w.check('修复任务读取当前版本真实错误，旧模块状态仍保留',context.runtimeProblems[0].id===behavior&&context.runtimeProblems[0].message.includes('营地门闩测试故障')&&(await w.snapshot()).behaviors.modules[behavior].error!==''&&context.acceptedChanges[0].id===task.id);
+  await w.apply();await w.game().locator('#interact').evaluate(el=>el.onclick());const working=await w.snapshot();await w.api('/api/save',{version:(await state()).current,snapshot:working});
+  w.check('修复后源码实际开门，原有约定和记录继续保留',working.behaviors.modules[behavior].state.open===true&&!working.behaviors.modules[behavior].error&&(await state()).projectContext.notes.length===2);
+  await w.close();await w.start();await w.domClick('#context-open');w.check('重启后方向、应用需求与开门进度一起保留',(await state()).projectContext.accepted.length===2&&(await w.snapshot()).behaviors.modules[behavior].state.open===true&&await w.page.locator('#context-brief').inputValue()==='雨后花园：保留入口与可步行的通道。');
+  w.check('后台验证无浏览器异常或鼠标锁定',!w.errors.length&&await w.game().locator('body').evaluate(()=>document.pointerLockElement===null),w.errors);
+}catch(error){w.errors.push(error.stack);console.error(error);await w.saveScreenshot('failure');process.exitCode=1;}finally{await w.close();console.log('Report: '+path.join(w.dir,'report.json'));}

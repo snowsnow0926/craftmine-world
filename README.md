@@ -2,7 +2,7 @@
 
 从一个能走动的空白 3D 世界开始，用自然语言逐步创造内容。
 
-**本地创作 Alpha 0.6：把真实生成的玩法记住，在新世界继续使用。** 源码、对象、参数、依赖和检查用例作为完整创作保存；支持自然语言复用、跨项目导入、固定版本切换和卸载恢复。保留细粒度花草、代码玩法、E 互动、物品计数与基础战斗。
+**本地创作 Alpha 0.7：记住方向，先试玩改变，再继续创造。** 支持长期约定、已应用需求检索、候选差异与独立试玩，以及有次数和总时限上限的自动修复。保留真实源码生成、完整创作跨项目复用、版本切换、花草与基础战斗。
 
 ## 启动
 
@@ -25,11 +25,13 @@ node app/server.mjs
 1. 点击“进入世界”，WASD 移动，鼠标环顾，Space 跳跃，Shift 冲刺。
 2. 按 T 打开对话，或直接在右侧输入：**我想要有树**。
 3. 发送后可回到世界继续走动；真实生成任务会显示阶段，并可取消。
-4. 候选就绪后，点击“应用并进入世界”。系统先保存最新位置，再载入新场景。
+4. 候选就绪后，可先“查看变化与预览”，在独立副本里试玩；再点击“应用并进入世界”。系统先保存原世界最新进度，再载入新场景。
 5. 靠近并将准星对准树干，按 T，输入：**把这棵树变高一点**。也可在“素材”工作区选中对象。
 6. “开发”工作区可查看实际执行记录、生成的场景内容，以及准备恢复此前的场景版本。
 
 Esc 释放鼠标。浏览器不允许鼠标锁定时，按住画面拖动仍可环顾。“只讨论”不会改变世界；执行期间的讨论会先记录，当前任务结束后可继续发送。
+
+对话框下方的“创作方向与长期约定”可保存世界方向和特定对象的要求，长对话后仍供助手读取。已应用需求自动保存原文与来源版本；开发记录可查看每次实际读取的上下文。检查失败最多自动修复两次，共用 240 秒总时限。详见 [Alpha 0.7 使用与验收](docs/ALPHA_0_7.md)。
 
 ## 创作记忆与玩法
 
@@ -88,6 +90,8 @@ npm run test:repair
 npm run test:repair-cancel
 npm run test:live-repair
 npm run test:review
+npm run test:context
+npm run test:live-context
 ```
 
 核心测试仅需 Node.js。浏览器测试需要 Playwright 和 Chrome／Edge；本机可使用已提供的 Playwright 运行库，其他环境可安装 Playwright，或用 `PLAYWRIGHT_MODULE_PATH` 指定模块位置。`CRAFTMINE_BROWSER` 可指定浏览器路径。
@@ -99,8 +103,10 @@ npm run test:review
 - [Alpha 0.4 设计与验证记录](docs/ALPHA_0_4.md)
 - [Alpha 0.5 源码玩法与验收](docs/ALPHA_0_5.md)
 - [Alpha 0.6 完整创作记忆与验收](docs/ALPHA_0_6.md)
-- [下一版本开发：M3.1 自动修复与失败记录](docs/M3_REPAIR.md)
-- [下一版本开发：M3.2 候选差异与独立试玩](docs/M3_PREVIEW.md)
+- [Alpha 0.7 连续创作与独立试玩](docs/ALPHA_0_7.md)
+- [M3.1 自动修复与失败记录](docs/M3_REPAIR.md)
+- [M3.2 候选差异与独立试玩](docs/M3_PREVIEW.md)
+- [M3.3 长期方向、需求与运行上下文](docs/M3_CONTEXT.md)
 - [真实模型生成的滑门与弹跳板演示](examples/door-and-bounce.save.json)
 - [当前目标与持续开发路线](docs/CONTINUOUS_DEVELOPMENT.md)
 - [开发进度记录](docs/DEVELOPMENT_STATUS.json)
