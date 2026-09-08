@@ -1,11 +1,11 @@
 {
   "name": "craftmine-world",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node app/server.mjs",
-    "test": "node --test tests/core.test.mjs tests/modules.test.mjs tests/behavior.test.mjs tests/creation.test.mjs tests/agent.test.mjs tests/review.test.mjs tests/context.test.mjs tests/assets.test.mjs tests/asset-world.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/modules.test.mjs tests/behavior.test.mjs tests/creation.test.mjs tests/agent.test.mjs tests/review.test.mjs tests/context.test.mjs tests/assets.test.mjs tests/asset-world.test.mjs tests/asset-packages.test.mjs",
     "test:browser": "node tests/background-browser.mjs",
     "test:live": "node tests/live-memory.mjs",
     "test:behaviors": "node tests/behavior-browser.mjs",
@@ -21,7 +21,9 @@
     "test:context": "node tests/context-browser.mjs",
     "test:live-context": "node tests/live-context.mjs",
     "test:assets": "node tests/assets-browser.mjs",
-    "test:asset-world": "node tests/asset-world-browser.mjs"
+    "test:asset-world": "node tests/asset-world-browser.mjs",
+    "test:asset-packages": "node tests/asset-packages-browser.mjs",
+    "test:live-assets": "node tests/live-assets.mjs"
   },
   "engines": {
     "node": ">=22"

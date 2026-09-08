@@ -5,9 +5,11 @@ import { spawn } from 'node:child_process';
 import assert from 'node:assert/strict';
 import { playwright,browserOptions } from './browser-tools.mjs';
 
-export async function workbench(name,{preload,env={}}={}){
-  fs.mkdirSync('test-results',{recursive:true});const dir=path.resolve(fs.mkdtempSync('test-results/'+name+'-'));
-  const checks=[],errors=[];let server,browser,page;
+export async function workbench(name,{preload,env={},resumeDir}={}){
+  fs.mkdirSync('test-results',{recursive:true});let dir;
+  if(resumeDir){const root=fs.realpathSync('test-results');dir=fs.realpathSync(resumeDir);if(!dir.toLowerCase().startsWith(root.toLowerCase()+path.sep)||!fs.existsSync(path.join(dir,'project','project.json')))throw Error('只能恢复 test-results 内已有的独立测试项目');}
+  else dir=path.resolve(fs.mkdtempSync('test-results/'+name+'-'));
+  const previous=resumeDir?JSON.parse(fs.readFileSync(path.join(dir,'report.json'),'utf8')):null,checks=previous?.checks||[],errors=previous?.errors||[];let server,browser,page;
   const port=await new Promise(resolve=>{const s=http.createServer();s.listen(0,'127.0.0.1',()=>{const port=s.address().port;s.close(()=>resolve(port));});});
   const report=()=>fs.writeFileSync(path.join(dir,'report.json'),JSON.stringify({date:new Date().toISOString(),checks,errors},null,2));
   const check=(name,value,detail)=>{checks.push({name,passed:!!value,detail});report();assert.ok(value,name);console.log('PASS '+name);};
@@ -19,7 +21,7 @@ export async function workbench(name,{preload,env={}}={}){
     page=await browser.newPage();page.on('pageerror',error=>errors.push(error.message));
     await page.goto(`http://127.0.0.1:${port}`);await page.locator('#loading').waitFor({state:'hidden'});
   }
-  async function close(){if(browser){await browser.close();browser=null;}if(server&&server.exitCode===null)await new Promise(resolve=>{server.once('exit',resolve);server.kill();});report();}
+  async function close(){const context=browser,child=server;browser=null;server=null;if(context)await context.close();if(child&&child.exitCode===null&&child.signalCode===null)await new Promise(resolve=>{child.once('exit',resolve);child.kill();});report();}
   async function api(route,body){return page.evaluate(async({route,body})=>{
     const r=await fetch(route,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json','X-Craftmine-Token':document.querySelector('meta[name="craftmine-token"]').content,'X-Craftmine-Client':sessionStorage.getItem('craftmine-client')},...(body===undefined?{}:{body:JSON.stringify(body)})});const result=await r.json();if(!r.ok)throw Error(result.error);return result;
   },{route,body});}

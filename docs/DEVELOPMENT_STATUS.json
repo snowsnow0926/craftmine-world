@@ -1,8 +1,8 @@
 {
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
-  "currentMilestone": "M4",
-  "baseline": "dbacc0e",
+  "currentMilestone": "M5",
+  "baseline": "4ba794c",
   "updated": "2026-09-08",
   "items": [
     {
@@ -106,8 +106,9 @@
     {
       "id": "M4",
       "title": "本地图片和标准 3D 素材导入、绑定和外观替换",
-      "status": "in_progress",
+      "status": "complete",
       "evidence": [
+        "docs/ALPHA_0_8.md",
         "docs/M4_ASSETS.md"
       ],
       "slices": [
@@ -137,8 +138,16 @@
         {
           "id": "M4.3",
           "title": "素材随世界和创作模块跨项目复用，真实模型绑定与替换验收",
-          "status": "pending",
-          "evidence": []
+          "status": "complete",
+          "evidence": [
+            "npm test: 85 passed",
+            "test-results/asset-package-source-9OVLpY/report.json: 2 passed",
+            "test-results/asset-package-target-s0DeoQ/report.json: 10 passed",
+            "test-results/asset-package-module-YxqUo0/report.json: 6 passed",
+            "test-results/live-assets-8vBn9j/report.json: 8 passed; two real model requests, exact asset references, restart, preserved progress, actual door interaction and portable export",
+            "test-results/asset-world-ZHsvsX/report.json: 18 passed",
+            "test-results/background-browser-HJKHh4/report.json: 10 passed"
+          ]
         }
       ]
     },
@@ -146,14 +155,16 @@
       "id": "M5",
       "title": "自然语言完成一个可导出和复用的完整可玩世界",
       "status": "pending",
-      "evidence": []
+      "evidence": [
+        "docs/M5_WORLD.md: implementation and acceptance plan, not yet completed"
+      ]
     }
   ],
-  "nextAction": "M4.3：为完整存档和创作模块打包必需的固定素材版本，导入前重新校验原始文件与源码，第二个独立项目恢复并交互；验证篡改/缺失/同版本冲突不会改世界，再用真实模型完成素材绑定和多轮外观替换。M4 全部通过后集中交付新 Alpha。",
+  "nextAction": "完成 Alpha 0.8 本地服务启动与原项目逐字段核对后，进入 M5：先补足代码模块读取共享库存、物品友好名称和持久任务提示所需的通用接口，再用真实模型按自然语言逐步完成采木、制作门、目标战斗与任务奖励闭环；多次重启、完整导出、第二项目复用并提供个人可运行示例。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.7",
-    "developmentSlice": "个人服务保持 Alpha 0.7。开发版 M4.1 素材库和 M4.2 世界外观绑定已验收；M4.3 跨项目携带素材和真实模型验收待完成。",
+    "developmentSlice": "M1–M4 已验收，Alpha 0.8 代码准备交付；旧个人 0.7 服务已确认停止，启动前已备份项目。M5 完整世界待完成。",
     "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
     "example": "examples/door-and-bounce.save.json",
     "service": {
@@ -164,7 +175,8 @@
       "upgradeRecord": ".craftmine/backups/alpha-0.7-upgrade.json",
       "worldCandidateAndProgressUnchanged": true,
       "allPreviousFieldsUnchanged": true,
-      "migration": "Only added projectContext with explicit applied-task history; no world, progress, candidate, messages or history changes"
+      "migration": "Only added projectContext with explicit applied-task history; no world, progress, candidate, messages or history changes",
+      "status": "stopped_before_alpha_0_8"
     }
   }
 }

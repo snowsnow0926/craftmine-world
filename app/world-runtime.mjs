@@ -1,3 +1,4 @@
+import { objectContentBounds } from './asset-binding.mjs';
 import { WorldAssets } from './world-assets.mjs';
 import { GameplaySession } from './gameplay.mjs';
 import { primitiveVertices,intersects,rayBox } from './geometry.mjs';
@@ -60,6 +61,7 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       const object=this.objects.get(id);if(!object)throw Error('这一版中没有这个对象');
       const parts=this.primitives.filter(p=>p.id===id);
       const min={},max={};for(const k of ['x','y','z']){min[k]=parts.length?Math.min(...parts.map(p=>p.min[k])):object.position[k]+Math.min(...object.parts.map(p=>p.offset[k]));max[k]=parts.length?Math.max(...parts.map(p=>p.max[k])):object.position[k]+Math.max(...object.parts.map(p=>p.offset[k]+p.size[k]));}
+      if(object.appearance){const visual=objectContentBounds(object);for(const k of ['x','y','z']){min[k]=Math.min(min[k],visual.min[k]);max[k]=Math.max(max[k],visual.max[k]);}}
       const center=Object.fromEntries(['x','y','z'].map(k=>[k,(min[k]+max[k])/2])),distance=Math.max(2.4,...['x','y','z'].map(k=>(max[k]-min[k])*1.5));
       for(const angle of [0,Math.PI/2,Math.PI,-Math.PI/2,Math.PI/4]){
         const x=center.x+Math.sin(angle)*distance,z=center.z+Math.cos(angle)*distance,y=Math.max(6,Math.min(36,center.y-.9));

@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { EMPTY_SCENE, INITIAL_SNAPSHOT, compileScene, clone, validateSnapshot, sceneDiff,upgradeScene,withAppearanceFormat,validateObjectScope } from './scene.mjs';
+import { validatePackedAssets,unpackModule,moduleAssetsScene } from './asset-packages.mjs';
+import { exactKeys } from './gameplay.mjs';
 import { ModuleLibrary } from './memory.mjs';
 import { emptyProjectContext,editProjectContext,rememberAppliedRequest,retrieveProjectContext } from './project-context.mjs';
 import { defaultAppearance } from './asset-binding.mjs';
@@ -48,8 +50,8 @@ export class ProjectStore {
     });
   }
   change(fn) { const next = clone(this.data); fn(next); atomicJSON(this.file, next); this.data = next; return next; }
-  build(scene) {
-    const compiled = compileScene(scene),assets=this.assets.resolve(this.data,compiled.scene), id = 'v-' + compiled.hash.slice(0, 20), dir = path.join(this.root, 'builds', id);
+  build(scene,{assets:supplied}={}) {
+    const compiled = compileScene(scene),assets=supplied===undefined?this.assets.resolve(this.data,compiled.scene):validatePackedAssets(compiled.scene,supplied), id = 'v-' + compiled.hash.slice(0, 20), dir = path.join(this.root, 'builds', id);
     if (!fs.existsSync(path.join(dir, 'build.json'))) {
       atomicJSON(path.join(dir, 'scene.json'), compiled.scene);
       atomicJSON(path.join(dir, 'build.json'), { ...compiled, id });
@@ -129,7 +131,9 @@ export class ProjectStore {
     if (this.data.applying) throw Error('正在应用，暂时不能丢弃');
     this.change(d => { const task = d.tasks.find(t => t.id === d.candidate?.taskId); if (task) task.status = 'discarded'; d.candidate = null; });
   }
-  importModule(input){this.idle();this.change(d=>this.modules.register(d,input));}
+  exportModule(id,version){const module=this.modules.read(this.data,id,version),assets=this.assets.resolve(this.data,moduleAssetsScene(module));return assets.length?{format:'craftmine.module-package/1',module,assets}:module;}
+  prepareModule(input){const prepared=unpackModule(input,this.assets,this.data);this.assets.preflight(this.data,prepared.assets);return prepared;}
+  importModule(input){this.idle();const {module,assets}=this.prepareModule(input);this.change(d=>{for(const asset of assets)this.assets.register(d,asset);this.modules.register(d,module);});}
   reuseModule(id,version,player){
     this.idle();const module=this.modules.read(this.data,id,version);
     const scene=this.modules.instantiate(this.data,this.readBuild(this.data.current).scene,id,version,player);
@@ -143,11 +147,17 @@ export class ProjectStore {
     else{const asset=this.assets.read(this.data,input.assetId,input.assetVersion);object.appearance=object.appearance?{...object.appearance,asset:{id:asset.id,version:asset.version,hash:asset.hash}}:defaultAppearance(object,asset);}
     validateObjectScope(before,next,object.id);const build=this.build(next);if(build.id===this.data.current)throw Error('对象已经使用这个外观版本');return build;
   }
-  exportSave() { return { format: 'craftmine.save/1', scene: this.readBuild(this.data.current).scene, snapshot: clone(this.data.snapshot) }; }
-  importSave(save) {
-    this.idle(); if (save?.format !== 'craftmine.save/1') throw Error('不是此版本的完整存档');
-    const snapshot = validateSnapshot(save.snapshot), build = this.build(save.scene);
+  exportSave() {const build=this.readBuild(this.data.current);return {format:build.assets?.length?'craftmine.save/2':'craftmine.save/1',scene:build.scene,snapshot:clone(this.data.snapshot),...(build.assets?.length?{assets:build.assets}:{})};}
+  prepareSave(save){
+    if(!['craftmine.save/1','craftmine.save/2'].includes(save?.format))throw Error('不是此版本的完整存档');
+    exactKeys(save,['format','scene','snapshot',...(save.format==='craftmine.save/2'?['assets']:[])]);
+    const snapshot=validateSnapshot(save.snapshot);compileScene(save.scene);
+    const assets=save.format==='craftmine.save/2'?validatePackedAssets(save.scene,save.assets):this.assets.resolve(this.data,save.scene);this.assets.preflight(this.data,assets);
+    return {build:this.build(save.scene,{assets}),snapshot,assets};
+  }
+  importSave(save,base=this.data.current) {
+    this.idle();if(base!==this.data.current)throw Error('检查期间世界已改变，请重新导入');const {snapshot,build,assets}=this.prepareSave(save);
     // Full-state restoration still goes through the same browser-validated transaction.
-    this.change(d => { d.candidate = { id:build.id, base:d.current, summary:'导入完整存档（恢复文件中的世界与位置）', taskId:null, checks:['存档格式与场景构建校验通过'], diff:sceneDiff(this.readBuild(d.current).scene,build.scene), importSnapshot:snapshot, time:Date.now() }; });
+    this.change(d => {for(const asset of assets)this.assets.register(d,asset); d.candidate = { id:build.id, base:d.current, summary:'导入完整存档（恢复文件中的世界与位置）', taskId:null, checks:['存档格式与场景构建校验通过'], diff:sceneDiff(this.readBuild(d.current).scene,build.scene), importSnapshot:snapshot, time:Date.now() }; });
   }
 }

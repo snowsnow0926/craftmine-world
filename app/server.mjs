@@ -7,7 +7,7 @@ import { ProjectStore,atomicJSON } from './store.mjs';
 import { AgentRunner, providerStatus } from './agent.mjs';
 import { validateSnapshot } from './scene.mjs';
 import { verifyBehaviors } from './behavior-verify.mjs';
-import { validateModule } from './memory.mjs';
+import { PACKAGE_BYTES } from './asset-packages.mjs';
 import { checkCreationModule,rememberCreationCheck } from './creation-verify.mjs';
 import { verifyAsset } from './asset-verify.mjs';
 
@@ -50,6 +50,9 @@ async function checkCode(build,events){
   if(!report.passed)throw Error('创作源码未通过后台检查：'+report.modules.filter(m=>!m.passed).map(m=>m.id+'：'+m.error).join('；'));
   return report;
 }
+async function checkAssets(assets){
+  for(const asset of assets){const report=await verifyAsset(asset,{origin:`http://127.0.0.1:${port}`});atomicJSON(path.join(store.root,'assets',asset.id,asset.version+'-'+asset.hash+'.check.json'),report);}
+}
 const json = (res, status, data) => { res.writeHead(status, {'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}); res.end(JSON.stringify(data)); };
 async function body(req,limit=1_500_000) {
   if (!(req.headers['content-type'] || '').startsWith('application/json')) throw Error('请求必须为 JSON');
@@ -83,10 +86,11 @@ const server = http.createServer(async (req,res) => {
         if (url.pathname === '/api/tasks/context') return json(res,200,store.readTaskContext(url.searchParams.get('id')));
         if (url.pathname === '/api/candidate/review') return json(res,200,store.reviewCandidate(url.searchParams.get('id'),url.searchParams.get('base')));
         if (url.pathname === '/api/export') return json(res,200,store.exportSave());
-        if (url.pathname === '/api/modules/export') return json(res,200,store.modules.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
+        if (url.pathname === '/api/modules/read') return json(res,200,store.modules.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
+        if (url.pathname === '/api/modules/export') return json(res,200,store.exportModule(url.searchParams.get('id'),Number(url.searchParams.get('version'))));
         if (url.pathname === '/api/assets/read') return json(res,200,store.assets.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
       } else {
-        const input = await body(req,url.pathname==='/api/assets/import'?12_000_000:1_500_000);
+        const input = await body(req,['/api/import','/api/modules/import'].includes(url.pathname)?PACKAGE_BYTES:url.pathname==='/api/assets/import'?12_000_000:1_500_000);
         switch (url.pathname) {
           case '/api/save': store.save(input.version,input.snapshot); break;
           case '/api/project-context': store.editContext(input); return json(res,200,{ok:true,projectContext:store.data.projectContext});
@@ -115,20 +119,23 @@ const server = http.createServer(async (req,res) => {
           case '/api/apply/commit': store.commit(input.id,input.snapshot); break;
           case '/api/apply/abort': store.abort(input.id); break;
           case '/api/import': {
-            store.idle();validateSnapshot(input.snapshot);const build=store.build(input.scene);
+            if(assetImportBusy)throw Error('另一个素材或作品正在检查，请稍候');assetImportBusy=true;
+            try{store.idle();const base=store.data.current,{build,assets}=store.prepareSave(input);await checkAssets(assets);
             if(build.behaviors?.length){
               const verification=await verifyBehaviors(build,{origin:`http://127.0.0.1:${port}`});
               atomicJSON(path.join(store.root,'builds',build.id,'behavior-verification.json'),verification);
               if(!verification.passed)throw Error('导入源码未通过后台检查：'+verification.modules.filter(m=>!m.passed).map(m=>m.id+'：'+m.error).join('；'));
             }
-            store.importSave(input);
+            store.importSave(input,base);
             if(build.behaviors?.length)store.change(d=>d.candidate.checks.push('导入源码已在隔离 Worker 中通过事件和恢复检查'));
-            break;
+            }finally{assetImportBusy=false;}break;
           }
           case '/api/modules/import': {
-            store.idle();const module=validateModule(input);
-            const report=module.kind==='creation'?await checkCreationModule(store,module,{origin:`http://127.0.0.1:${port}`}):null;
-            store.importModule(input);if(report)rememberCreationCheck(store,module,report);break;
+            if(assetImportBusy)throw Error('另一个素材或作品正在检查，请稍候');assetImportBusy=true;
+            try{store.idle();const {module,assets}=store.prepareModule(input);await checkAssets(assets);
+              const report=module.kind==='creation'?await checkCreationModule(store,module,{origin:`http://127.0.0.1:${port}`,assets}):null;
+              store.importModule(input);if(report)rememberCreationCheck(store,module,report);
+            }finally{assetImportBusy=false;}break;
           }
           case '/api/modules/reuse': {
             if(input.version!==store.data.current)throw Error('运行版本已过期，请刷新后重试');

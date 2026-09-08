@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { compileScene,upgradeScene,withAppearanceFormat,canonicalJSON } from './scene.mjs';
+import { objectContentBounds } from './asset-binding.mjs';
 import { exactKeys,identifier,bounded } from './gameplay.mjs';
 import { validateBehavior } from './behavior-contracts.mjs';
 
@@ -39,7 +40,7 @@ export function captureCreation(group,scene){
   });
   const required=new Set(scripts.flatMap(s=>s.definition.requires));if(objects.some(o=>o.components.contactDamage>0))required.add('health@1');
   const systems=scene.systems.filter(s=>required.has(s.type+'@1')).map(({source,...s})=>({...structuredClone(s),source:null}));
-  const minimum=k=>Math.min(0,...objects.flatMap(o=>o.parts.map(p=>o.position[k]+p.offset[k]))),maximum=k=>Math.max(0,...objects.flatMap(o=>o.parts.map(p=>o.position[k]+p.offset[k]+p.size[k])));
+  const ranges=objects.map(objectContentBounds),minimum=k=>Math.min(0,...ranges.map(b=>b.min[k])),maximum=k=>Math.max(0,...ranges.map(b=>b.max[k]));
   const checkAnchor={x:Number((-(minimum('x')+maximum('x'))/2).toFixed(8)),y:Number((6-minimum('y')).toFixed(8)),z:Number((-(minimum('z')+maximum('z'))/2).toFixed(8))};
   return {name:group.behaviors[0].name,anchor:checkAnchor,objects,scripts,systems,tests:{format:'craftmine.creation-tests/1',scope:'interface',events:['start','tick','interact','interact','contact','attack','land','restore']}};
 }
@@ -74,7 +75,7 @@ export function materializeCreation(payload,source,position,instanceId='creation
 
 export function placeCreation(scene,payload,source,player,{bounds,obstacles=[]}={}){
   const next=upgradeScene(scene),front={x:player.x-Math.sin(player.yaw)*5,z:player.z-Math.cos(player.yaw)*5};
-  const min=k=>bounds?.min[k]??Math.min(0,...payload.objects.flatMap(o=>o.parts.map(p=>o.position[k]+p.offset[k]))),max=k=>bounds?.max[k]??Math.max(0,...payload.objects.flatMap(o=>o.parts.map(p=>o.position[k]+p.offset[k]+p.size[k])));
+  const ranges=payload.objects.map(objectContentBounds),min=k=>bounds?.min[k]??Math.min(0,...ranges.map(b=>b.min[k])),max=k=>bounds?.max[k]??Math.max(0,...ranges.map(b=>b.max[k]));
   const instanceId='creation-'+randomUUID();let lastError;
   for(let ring=0;ring<10;ring++)for(let side=0;side<(ring?8:1);side++){
     const angle=side*Math.PI/4,position={x:Number((front.x+Math.cos(angle)*ring*2-(min('x')+max('x'))/2).toFixed(2)),y:6-min('y'),z:Number((front.z+Math.sin(angle)*ring*2-(min('z')+max('z'))/2).toFixed(2))};

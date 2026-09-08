@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { compileScene, upgradeScene, withAppearanceFormat, clone, canonicalJSON } from './scene.mjs';
+import { objectContentBounds } from './asset-binding.mjs';
 import { SYSTEMS, identifier, exactKeys, validateSystem } from './gameplay.mjs';
 import { captureCreation,creationGroups,validateCreation,creationDependencies,placeCreation,materializeCreation } from './creation.mjs';
 
@@ -24,7 +25,7 @@ export function validateModule(input){
   else if(input.kind==='object'){
     exactKeys(input.payload,['name','parts','components',...(assets?['appearance']:[])]);
     if(!Array.isArray(input.payload.parts)||!input.payload.parts.length||input.payload.parts.length>128)throw Error('模块几何无效');
-    const parts=input.payload.parts,minimum=k=>Math.min(...parts.map(p=>p?.offset?.[k])),maximum=k=>Math.max(...parts.map(p=>p?.offset?.[k]+p?.size?.[k]));
+    const bounds=objectContentBounds({...input.payload,position:{x:0,y:0,z:0}}),minimum=k=>bounds.min[k],maximum=k=>bounds.max[k];
     const object={id:'module-check',...clone(input.payload),position:{x:Math.min(0,46-maximum('x')),y:6-minimum('y'),z:Math.min(0,46-maximum('z'))},source:null};
     // A contact-damage object declares the health dependency. Validate using it.
     const systems=object.components?.contactDamage>0?[{id:'health-check',name:'生命值',type:'health',source:null,config:{maxHealth:100,fallDamage:5,regenPerSecond:0}}]:[];
@@ -122,8 +123,8 @@ export class ModuleLibrary {
       next.systems=next.systems.filter(s=>s.type!==definition.type);next.systems.push(definition);const normalized=withAppearanceFormat(next);compileScene(normalized);return normalized;
     }
     if(module.dependencies.includes('health@1')&&!next.systems.some(s=>s.type==='health'))throw Error('此对象需要生命值模块，请先复用或创建生命值模块');
-    const min=Object.fromEntries(['x','y','z'].map(k=>[k,Math.min(...module.payload.parts.map(p=>p.offset[k]))]));
-    const size=Object.fromEntries(['x','y','z'].map(k=>[k,Math.max(...module.payload.parts.map(p=>p.offset[k]+p.size[k]))-min[k]]));
+    const bounds=objectContentBounds({...module.payload,position:{x:0,y:0,z:0}}),min=bounds.min;
+    const size=Object.fromEntries(['x','y','z'].map(k=>[k,bounds.max[k]-min[k]]));
     const front={x:player.x-Math.sin(player.yaw)*5,z:player.z-Math.cos(player.yaw)*5};
     let lastError;
     for(let ring=0;ring<10;ring++)for(let side=0;side<(ring?8:1);side++){

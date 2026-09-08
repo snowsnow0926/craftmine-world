@@ -58,3 +58,8 @@ test('带外观世界仍能安装旧对象和旧创作，并切回不含素材�
   const oldObject=store.modules.instantiate(store.data,restored,object.id,object.version,INITIAL_SNAPSHOT.player);store.build(oldObject);assert.equal(oldObject.objects.at(-1).appearance,null);
   const oldCreation=store.modules.instantiate(store.data,restored,creation.id,creation.version,INITIAL_SNAPSHOT.player,{x:-8,y:6,z:0});store.build(oldCreation);assert.equal(oldCreation.objects.at(-1).appearance,null);
 });
+test('外观低于或大于碰撞范围时，记忆校验和新实例放置使用完整外观边界',()=>{
+  const store=fixture(),a=addAsset(store),scene=sceneFor(a);scene.objects[0].position.y=7;scene.objects[0].appearance.offset.y=-1;scene.objects[0].appearance.size.y=3.5;scene.behaviors[0].params.y=7;apply(store,scene);
+  const object=store.data.moduleBindings.object['door-one'],creation=store.data.moduleBindings.creation['sliding-door'],pack=store.modules.read(store.data,creation.id,creation.version);assert.equal(pack.payload.anchor.y,7);
+  const placed=store.modules.instantiate(store.data,scene,object.id,object.version,INITIAL_SNAPSHOT.player);assert.equal(placed.objects.at(-1).position.y+placed.objects.at(-1).appearance.offset.y,6);store.build(placed);
+});

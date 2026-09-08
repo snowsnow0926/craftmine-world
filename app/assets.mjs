@@ -39,12 +39,13 @@ export class AssetLibrary {
     const same=entry?.versions.find(r=>r.hash===content.hash);if(same)return this.read(data,entry.id,same.version);
     return {format:'craftmine.asset/1',id:entry?.id||'asset-'+randomUUID(),version:(entry?.latest||0)+1,name:input.name,filename:input.filename,mime:input.mime,...content,data:input.data,created:Date.now()};
   }
-  register(data,input){
+  preflight(data,assets){const trial=structuredClone(data);for(const asset of assets)this.register(trial,asset,{persist:false});}
+  register(data,input,{persist=true}={}){
     const asset=validateAsset(input);data.assets??=[];let entry=data.assets.find(a=>a.id===asset.id),existing=entry?.versions.find(r=>r.version===asset.version);
-    if(existing){if(existing.hash!==asset.hash)throw Error('同一素材版本存在不同内容，原版本未覆盖');const file=this.file(asset.id,asset.version);if(fs.existsSync(file))this.read(data,asset.id,asset.version);else this.write(file,asset);return;}
+    if(existing){if(existing.hash!==asset.hash)throw Error('同一素材版本存在不同内容，原版本未覆盖');const file=this.file(asset.id,asset.version);if(fs.existsSync(file))this.read(data,asset.id,asset.version);else if(persist)this.write(file,asset);return;}
     if(entry&&entry.kind!==asset.kind)throw Error('素材类别冲突');if(!entry&&data.assets.length>=256||entry?.versions.length>=64)throw Error('素材库已达到 256 项或单项 64 个版本的上限');
     const total=data.assets.reduce((sum,e)=>sum+e.versions.reduce((s,r)=>s+r.bytes,0),0);if(total+asset.bytes>512*1024*1024)throw Error('素材库已达到 512 MB 容量，请先导出整理');
-    const file=this.file(asset.id,asset.version);if(fs.existsSync(file)){const prior=validateAsset(JSON.parse(fs.readFileSync(file,'utf8')));if(prior.hash!==asset.hash)throw Error('素材文件版本冲突，未覆盖原文件');}else this.write(file,asset);
+    const file=this.file(asset.id,asset.version);if(fs.existsSync(file)){const prior=validateAsset(JSON.parse(fs.readFileSync(file,'utf8')));if(prior.hash!==asset.hash)throw Error('素材文件版本冲突，未覆盖原文件');}else if(persist)this.write(file,asset);
     if(!entry){entry={id:asset.id,kind:asset.kind,name:asset.name,latest:asset.version,versions:[]};data.assets.push(entry);}
     entry.versions.push({version:asset.version,hash:asset.hash,name:asset.name,filename:asset.filename,bytes:asset.bytes,meta:asset.meta,time:asset.created});entry.versions.sort((a,b)=>a.version-b.version);if(asset.version>=entry.latest){entry.latest=asset.version;entry.name=asset.name;}
   }

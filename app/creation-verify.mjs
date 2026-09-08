@@ -1,19 +1,20 @@
 import path from 'node:path';
+import { appearanceBounds } from './asset-binding.mjs';
 import { materializeCreation } from './creation.mjs';
 import { verifyBehaviors } from './behavior-verify.mjs';
 import { atomicJSON } from './store.mjs';
 
-export async function checkCreationModule(store,module,{origin,signal,deadline}={}){
+export async function checkCreationModule(store,module,{origin,signal,deadline,assets}={}){
   const cached=store.data.library.find(m=>m.id===module.id)?.verifications?.[module.version];
   if(cached?.hash===module.hash&&cached.passed)return cached;
-  const preview=store.build(materializeCreation(module.payload,{id:module.id,version:module.version},module.payload.anchor));
+  const preview=store.build(materializeCreation(module.payload,{id:module.id,version:module.version},module.payload.anchor),{assets});
   const report=await verifyBehaviors(preview,{origin,signal,deadline,events:module.payload.tests.events});
   atomicJSON(path.join(store.root,'builds',preview.id,'behavior-verification.json'),report);
   if(!report.passed)throw Error('创作源码未通过后台检查：'+report.modules.filter(m=>!m.passed).map(m=>m.id+'：'+m.error).join('；'));
-  const ranges=preview.primitives.map(p=>({min:p.min,max:p.max}));
+  const ranges=[...preview.primitives.map(p=>({min:p.min,max:p.max})),...preview.scene.objects.map(appearanceBounds).filter(Boolean)];
   for(const motion of report.modules.flatMap(m=>m.motions)){
     const object=preview.scene.objects.find(o=>o.id===motion.id);if(!object)continue;
-    for(const part of preview.primitives.filter(p=>p.id===motion.id))ranges.push(Object.fromEntries(['min','max'].map(edge=>[edge,Object.fromEntries(['x','y','z'].map(k=>[k,part[edge][k]+motion.position[k]-object.position[k]]))])));
+    for(const part of [...preview.primitives.filter(p=>p.id===motion.id),appearanceBounds(object)].filter(Boolean))ranges.push(Object.fromEntries(['min','max'].map(edge=>[edge,Object.fromEntries(['x','y','z'].map(k=>[k,part[edge][k]+motion.position[k]-object.position[k]]))])));
   }
   const bounds={min:{},max:{}};
   for(const axis of ['x','y','z']){bounds.min[axis]=Math.min(0,...ranges.map(r=>r.min[axis]-module.payload.anchor[axis]));bounds.max[axis]=Math.max(0,...ranges.map(r=>r.max[axis]-module.payload.anchor[axis]));}

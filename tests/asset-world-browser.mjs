@@ -46,7 +46,7 @@ try{
   scene.objects.push({id:'model-display',name:'模型展示',position:{x:-4,y:6,z:6},parts:[part([-1,0,-1],[2,2,2],'#ffffff','box',false)],source:null,components:{health:0,contactDamage:0},appearance:null});scene.objects[0].appearance=defaultAppearance(scene.objects[0],image);scene.objects.at(-1).appearance=defaultAppearance(scene.objects.at(-1),model);
   await w.load(scene,{...spawn,player:{x:-3,y:6,z:11,yaw:0,pitch:0}});const modelWorld=(await w.api('/api/state')).current;await w.saveScreenshot('model-and-image-world');
   const materialized=await w.api('/api/build?id='+modelWorld);w.check('图片和标准 GLB 同时进入可游玩世界，原始纹理数据仍在',materialized.assets.length===2&&materialized.assets.some(a=>a.id===model.id)&&materialized.scene.objects.at(-1).appearance.asset.hash===model.hash);
-  const creation=(await w.api('/api/state')).moduleBindings.creation['sliding-door'],memory=await w.api('/api/modules/export?id='+creation.id+'&version='+creation.version);
+  const creation=(await w.api('/api/state')).moduleBindings.creation['sliding-door'],pack=await w.api('/api/modules/export?id='+creation.id+'&version='+creation.version),memory=pack.module||pack;
   w.check('完整创作记忆保存外观引用和门的原始源码',memory.format==='craftmine.module/3'&&memory.payload.objects[0].appearance.asset.hash===image.hash&&memory.payload.scripts[0].definition.code===scene.behaviors[0].code);
   await w.api('/api/modules/reuse',{version:modelWorld,id:creation.id,moduleVersion:creation.version,player:(await w.snapshot()).player});await w.apply();const reused=await w.api('/api/build?id='+(await w.api('/api/state')).current);
   w.check('从记忆复用的新门拥有独立身份和同一固定素材版本',reused.scene.objects.filter(o=>o.appearance?.asset.id===image.id).length===2&&reused.scene.behaviors.length===3);

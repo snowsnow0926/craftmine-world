@@ -17,6 +17,10 @@ export function appearanceBounds(object){
   const half={x:(c*a.size.x+s*a.size.z)/2,y:a.size.y/2,z:(s*a.size.x+c*a.size.z)/2},center=Object.fromEntries(['x','y','z'].map(k=>[k,object.position[k]+a.offset[k]+a.size[k]/2]));
   return {min:Object.fromEntries(['x','y','z'].map(k=>[k,center[k]-half[k]])),max:Object.fromEntries(['x','y','z'].map(k=>[k,center[k]+half[k]]))};
 }
+export function objectContentBounds(object){
+  const visual=appearanceBounds(object),ranges=object.parts.map(p=>({min:Object.fromEntries(['x','y','z'].map(k=>[k,object.position[k]+p.offset[k]])),max:Object.fromEntries(['x','y','z'].map(k=>[k,object.position[k]+p.offset[k]+p.size[k]]))}));if(visual)ranges.push(visual);
+  return {min:Object.fromEntries(['x','y','z'].map(k=>[k,Math.min(...ranges.map(b=>b.min[k]))])),max:Object.fromEntries(['x','y','z'].map(k=>[k,Math.max(...ranges.map(b=>b.max[k]))]))};
+}
 export function checkAppearanceBounds(object){const b=appearanceBounds(object);if(b&&(b.min.x< -46||b.min.z< -46||b.min.y<5.99999||b.max.x>46||b.max.z>46||b.max.y>38))throw Error('素材外观超出世界边界');}
 export function sceneAssetReferences(scene){
   const refs=new Map();for(const o of scene.objects)if(o.appearance){const ref=o.appearance.asset;validateAssetReference(ref);const key=assetKey(ref);if(refs.has(key)&&refs.get(key).hash!==ref.hash)throw Error('同一素材版本不能引用不同内容');refs.set(key,ref);}

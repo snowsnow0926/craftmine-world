@@ -143,7 +143,7 @@ function renderLibrary(){
     const versions=node('select');versions.setAttribute('aria-label',m.name+' 的版本');for(const v of [...m.versions].reverse()){const option=node('option',`v${v.version}${v.version===m.latest?' · 最新':''}`);option.value=String(v.version);versions.append(option);}
     const actions=node('div',undefined,'module-actions'),use=button('复用到世界 ↗',async()=>reuseModule(m.id,Number(versions.value)));use.disabled=!!project.candidate||applying||project.tasks.some(t=>['running','validating','cancelling'].includes(t.status));actions.append(versions,use);
     actions.append(button('导出',async()=>{const module=await api('/api/modules/export?id='+encodeURIComponent(m.id)+'&version='+versions.value);downloadJSON(module,`craftmine-module-${m.id}-v${versions.value}.json`);}));e.append(actions);
-    const details=node('details'),summary=node('summary','查看保存的定义'),content=node('pre',undefined,'source-preview');details.append(summary,content);details.ontoggle=async()=>{if(details.open)try{content.textContent=JSON.stringify(await api('/api/modules/export?id='+encodeURIComponent(m.id)+'&version='+versions.value),null,2);}catch(error){toast(error.message);}};versions.onchange=()=>{details.open=false;};e.append(details);list.append(e);
+    const details=node('details'),summary=node('summary','查看保存的定义'),content=node('pre',undefined,'source-preview');details.append(summary,content);details.ontoggle=async()=>{if(details.open)try{content.textContent=JSON.stringify(await api('/api/modules/read?id='+encodeURIComponent(m.id)+'&version='+versions.value),null,2);}catch(error){toast(error.message);}};versions.onchange=()=>{details.open=false;};e.append(details);list.append(e);
   }
 }
 async function refresh(){if(refreshing)return;refreshing=true;try{project=await api('/api/state');connected=true;render();}catch(error){connected=false;$('send').disabled=true;$('save-status').textContent='○ 连接中断：'+error.message;}finally{refreshing=false;}}
@@ -189,7 +189,7 @@ $('prompt').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.sh
 $('intent').onchange=render;
 $('memory-search').oninput=renderLibrary;
 $('module-import-button').onclick=()=>$('module-import-file').click();
-$('module-import-file').onchange=async()=>{const file=$('module-import-file').files[0];if(!file)return;try{if(file.size>1_500_000)throw Error('模块文件过大');await api('/api/modules/import',JSON.parse(await file.text()));await refresh();toast('模块已记入本地库，可选择版本复用到世界。');}catch(error){toast(error.message);}finally{$('module-import-file').value='';}};
+$('module-import-file').onchange=async()=>{const file=$('module-import-file').files[0];if(!file)return;try{if(file.size>48*1024*1024)throw Error('模块作品包超过 48 MB');toast('正在检查作品中的素材与源码…');await api('/api/modules/import',JSON.parse(await file.text()));await refresh();toast('模块已记入本地库，可选择版本复用到世界。');}catch(error){toast(error.message);}finally{$('module-import-file').value='';}};
 $('example').onclick=()=>{$('prompt').value='我想要有树';$('prompt').focus();};
 $('context-open').onclick=()=>{switchView('develop');$('project-direction').scrollIntoView({block:'start'});};
 $('clear-context').onclick=()=>{selected=null;target=null;updateContext();renderObjects();};
@@ -199,14 +199,14 @@ $('discard').onclick=discardCandidate;
 $('cancel').onclick=async()=>{try{await api('/api/cancel',{});await refresh();}catch(error){toast(error.message);}};
 $('respawn').onclick=()=>{if(activeFrame&&!applying)post(activeFrame,'respawn');};
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>switchView(b.dataset.view));
-$('export').onclick=async()=>{try{if(applying)throw Error('请等待当前更新结束');await saveCurrent();const data=await api('/api/export'),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='craftmine-world-save-'+Date.now()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);toast('完整场景和最新位置已导出。');}catch(error){toast(error.message);}};
+$('export').onclick=async()=>{try{if(applying)throw Error('请等待当前更新结束');await saveCurrent();const data=await api('/api/export'),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='craftmine-world-save-'+Date.now()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);toast('完整场景、所需素材和最新进度已导出。');}catch(error){toast(error.message);}};
 $('import-button').onclick=()=>$('import-file').click();
 $('import-file').onchange=async()=>{
   const file=$('import-file').files[0];if(!file)return;
   try{
-    if(applying)throw Error('请等待当前更新结束');if(file.size>1_500_000)throw Error('文件超过大小限制');
+    if(applying)throw Error('请等待当前更新结束');if(file.size>48*1024*1024)throw Error('存档作品包超过 48 MB');
     const data=JSON.parse(await file.text());await saveCurrent();
-    await api('/api/import',data);await refresh();switchView('play');toast('存档校验通过。点击应用后恢复文件中的世界与位置，当前世界会先备份。');
+    toast('正在检查存档中的素材与源码…');await api('/api/import',data);await refresh();switchView('play');toast('存档校验通过。点击应用后恢复文件中的世界与位置，当前世界会先备份。');
   }catch(error){toast(error.message);}finally{applying=false;$('import-file').value='';await refresh();renderObjects();}
 };
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&activeFrame&&!applying){fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json','X-Craftmine-Token':token,'X-Craftmine-Client':client},body:JSON.stringify({version:activeFrame.version,snapshot:activeFrame.snapshot}),keepalive:true}).catch(()=>{});}});
