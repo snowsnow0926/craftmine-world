@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "start": "node app/server.mjs",
-    "test": "node --test tests/core.test.mjs tests/modules.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/modules.test.mjs tests/behavior.test.mjs",
     "test:browser": "node tests/background-browser.mjs",
-    "test:live": "node tests/live-memory.mjs"
+    "test:live": "node tests/live-memory.mjs",
+    "test:behaviors": "node tests/behavior-browser.mjs"
   },
   "engines": { "node": ">=22" }
 }

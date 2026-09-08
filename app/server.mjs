@@ -25,6 +25,7 @@ const staticFiles = new Map([
   ['/app/client.js',['client.js','text/javascript']], ['/app/style.css',['style.css','text/css']],
   ['/app/game.js',['game.js','text/javascript']], ['/app/game.css',['game.css','text/css']],
   ['/app/gameplay.mjs',['gameplay.mjs','text/javascript']], ['/app/geometry.mjs',['geometry.mjs','text/javascript']],
+  ['/app/behavior-contracts.mjs',['behavior-contracts.mjs','text/javascript']], ['/app/behavior-runner.mjs',['behavior-runner.mjs','text/javascript']],
 ]);
 const json = (res, status, data) => { res.writeHead(status, {'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}); res.end(JSON.stringify(data)); };
 async function body(req) {
@@ -91,7 +92,8 @@ const server = http.createServer(async (req,res) => {
       return json(res,404,{error:'接口不存在'});
     }
     if (req.method !== 'GET') return json(res,405,{error:'不支持的请求方法'});
-    res.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src " + (url.pathname === '/game' ? "'none'" : "'self'") + "; frame-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'none'");
+    const isGame=url.pathname==='/game';
+    res.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'self'"+(isGame?" blob:":'')+"; worker-src "+(isGame?"blob:":"'none'")+"; style-src 'self'; img-src 'self' data:; connect-src " + (isGame ? "'none'" : "'self'") + "; frame-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'none'");
     if (url.pathname === '/') {
       res.setHeader('Content-Type','text/html; charset=utf-8');
       return res.end(fs.readFileSync(path.join(APP,'index.html'),'utf8').replace('SESSION_TOKEN',token));

@@ -1,0 +1,19 @@
+{
+  "format": "craftmine.development/1",
+  "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
+  "currentMilestone": "M1",
+  "baseline": "7e13631",
+  "updated": "2026-09-08",
+  "items": [
+    { "id": "M1.1", "title": "通用代码模块契约、独立 Worker、命令和状态校验、超时恢复", "status": "complete", "evidence": ["npm test: 30 passed", "test-results/behavior-browser-Ny0f6X/report.json: 11 passed", "test-results/background-browser-tOcuNe/report.json: 10 passed", "docs/BEHAVIOR_RUNTIME.md"] },
+    { "id": "M1.2", "title": "真实 LLM 生成源码，独立构建与后台验收后形成候选", "status": "pending", "evidence": [] },
+    { "id": "M1.3", "title": "接入世界交互和运行存档，以门和弹跳板验证不同新逻辑", "status": "pending", "evidence": [] },
+    { "id": "M2", "title": "带源码、状态版本、依赖和证据的记忆模块跨项目复用", "status": "pending", "evidence": [] },
+    { "id": "M3", "title": "多轮创作、差异预览、失败诊断和有上限的自动修复", "status": "pending", "evidence": [] },
+    { "id": "M4", "title": "本地图片和标准 3D 素材导入、绑定和外观替换", "status": "pending", "evidence": [] },
+    { "id": "M5", "title": "自然语言完成一个可导出和复用的完整可玩世界", "status": "pending", "evidence": [] }
+  ],
+  "nextAction": "M1.2：把行为定义接入新场景格式与模型结构化输出，保留旧格式哈希；后台验证模型生成源码后形成候选。按 docs/BEHAVIOR_RUNTIME.md 接点继续，之后连接 M1.3 世界事件、命令和存档。",
+  "blockers": [],
+  "delivery": { "runningVersion": "Alpha 0.4", "developmentSlice": "M1.1 已验证；尚未接入日常创作入口，不作为新玩法已发布", "personalWorldCandidate": "保留用户已有候选，不作为测试或开发阻塞" }
+}

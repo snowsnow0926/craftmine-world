@@ -76,6 +76,7 @@ node app/server.mjs
 npm test
 npm run test:browser
 npm run test:live
+npm run test:behaviors
 ```
 
 核心测试仅需 Node.js。浏览器测试需要 Playwright 和 Chrome／Edge；本机可使用已提供的 Playwright 运行库，其他环境可安装 Playwright，或用 `PLAYWRIGHT_MODULE_PATH` 指定模块位置。`CRAFTMINE_BROWSER` 可指定浏览器路径。
@@ -85,6 +86,9 @@ npm run test:live
 **测试不抢占鼠标：**默认浏览器验收使用独立 headless 进程、禁用 Pointer Lock，通过页面脚本和 HTTP 检查，不发送鼠标键盘输入。旧的输入操作测试已加显式运行保护，不属于默认入口。参见 `AGENTS.md`。
 
 - [Alpha 0.4 设计与验证记录](docs/ALPHA_0_4.md)
+- [当前目标与持续开发路线](docs/CONTINUOUS_DEVELOPMENT.md)
+- [开发进度记录](docs/DEVELOPMENT_STATUS.json)
+- [新玩法代码运行接口与验证](docs/BEHAVIOR_RUNTIME.md)
 - [模块记忆设计方案](docs/MODULE_MEMORY_PLAN.md)
 - [Alpha 0.3 历史实现记录](docs/IMPLEMENTATION.md)
 - [产品想法](docs/PRODUCT_VISION.md)
