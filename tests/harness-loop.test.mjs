@@ -438,3 +438,16 @@ test('闭环结束时给出机器事实检查点：基准、草稿、验收引�
   assert.ok(result.checkpoint.artifactRefs.some(ref => ref.startsWith('evidence:')), '候选构建要留下证据引用');
   assert.equal(result.checkpoint.candidateRef, result.build.id);
 });
+
+test('模型「演」出多步对话时，宿主只取第一个满足 schema 的操作对象', async () => {
+  const { parseAction } = await import('../app/harness/contracts.mjs');
+  const one = JSON.stringify({ kind: 'tool', tool: 'project.inspect', argumentsJSON: '{}', summary: '看目录' });
+  assert.equal(parseAction(one).tool, 'project.inspect');
+  const simulated = one + '\n\n<result>\n{"draftRevision":0}\n</result>\n\n' + JSON.stringify({ kind: 'tool', tool: 'world.query', argumentsJSON: '{"kind":"object"}', summary: '第二步' });
+  assert.equal(parseAction(simulated).tool, 'project.inspect', '只执行第一个操作，伪造的后续步骤和结果是噪声');
+  assert.equal(parseAction('说明文字\n```json\n' + one + '\n```').tool, 'project.inspect');
+  assert.equal(parseAction(JSON.stringify({ kind: 'tool', tool: 'resource.read', argumentsJSON: JSON.stringify({ kind: 'object', id: 'flower-one' }), summary: '说明里带 { 和 } 也要正确切分' })).args.id, 'flower-one');
+  assert.throws(() => parseAction('这里没有 JSON'), /有效 JSON/);
+  assert.throws(() => parseAction('{"draftRevision":0}'), /字段/);
+  assert.throws(() => parseAction(JSON.stringify({ kind: 'tool', tool: 'shell.run', argumentsJSON: '{}', summary: '越权' })), /未授权或不存在/);
+});

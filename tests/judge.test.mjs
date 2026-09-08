@@ -289,6 +289,10 @@ test('评审只能提意见：没有可执行断言的发现会让整份评审�
   const prompt = reviewPrompt({ said: '开门要消耗一块木头', artifact: 'object.patch ...', evidence: 'open-1 扣了 1 块' });
   assert.match(prompt, /看不到实现者的推理过程/);
   assert.match(prompt, /只输出 JSON/);
+  assert.match(prompt, /入口是 step/);
+  const extensionPrompt = reviewPrompt({ said: '新增吸血扩展', artifact: 'export function apply() {}', evidence: '自带测试 2 个', kind: 'extension' });
+  assert.match(extensionPrompt, /入口是 export function apply/);
+  assert.doesNotMatch(extensionPrompt, /入口是 step/, '扩展评审不能被玩法模块的入口约定带偏');
   const findings = parseFindings(JSON.stringify({ findings: [
     { claim: '重复开门会重复扣料', severity: 'blocker', assertion: { id: 'r03.no-double', kind: 'inventoryDelta', why: '第二次不能再扣', red: '重复扣料的实现', item: 'wood', delta: 0, step: 'open-2' } },
   ] }));
@@ -301,5 +305,14 @@ test('评审只能提意见：没有可执行断言的发现会让整份评审�
   assert.equal(findingsToAssertions(findings)[0].fromReview, '重复开门会重复扣料');
   assert.throws(() => parseFindings({ findings: [{ claim: '我觉得这段代码写得不好', severity: 'minor' }] }), /没有带可执行断言/);
   assert.throws(() => parseFindings({ findings: [{ claim: '不好', severity: '致命', assertion: { id: 'x', kind: 'noErrors', why: '不能崩', red: '抛错的实现' } }] }), /严重程度无效/);
+  // 评审模型漏写断言 id（真实端到端出现过）：宿主补一个确定性标签，语义检查一条都不放松。
+  const repaired = parseFindings({ findings: [
+    { claim: '开局就能用门', severity: 'major', assertion: { kind: 'objectField', why: '门一开始应该是关的', red: '开局开门的实现', object: 'door-one', field: 'solid', value: true } },
+    { claim: '第二条也缺 id 和 why', severity: 'minor', assertion: { kind: 'noErrors' } },
+  ] });
+  assert.deepEqual(repaired.map(finding => finding.assertion.id), ['review-1', 'review-2']);
+  assert.equal(repaired[1].assertion.why, '第二条也缺 id 和 why', 'why 缺省用 finding 的说明补上');
+  assert.equal(repaired[1].assertion.red, '忽略这条检查的错误实现');
+  assert.throws(() => parseFindings({ findings: [{ claim: '缺 kind', severity: 'minor', assertion: { id: 'x', why: '看', red: '坏实现', kind: 'notAKind' } }] }), /不支持的断言类型/);
   assert.equal(reviewSummary([]).total, 0);
 });

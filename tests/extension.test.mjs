@@ -183,13 +183,21 @@ test('世界模型落地：原子效果真的改变可观察事实', () => {
   assert.equal(applyEffects(world, [{ type: 'resource.add', id: 'system-stamina', amount: 999 }]).resources['system-stamina'].value, 100);
 });
 
-test('没有对抗评审就不允许进入候选状态，评审提出阻断问题也不允许', async () => {
+test('没有对抗评审就不允许进入候选状态；评审的阻断意见是建议，不阻止装载', async () => {
   const noReview = await stageExtension(lifeSteal(), { createRunner });
   assert.equal(noReview.status, 'rejected');
   assert.match(noReview.error, /必须先过对抗评审/);
-  const blocked = await stageExtension(lifeSteal(), { createRunner, review: async () => ({ passed: false, blocked: true, summary: '评审发现阻断问题：重复吸血没有冷却' }) });
-  assert.equal(blocked.status, 'rejected');
-  assert.match(blocked.error, /重复吸血没有冷却/);
+  // 真实运行证明评审会不断提出新的设计意见（等量治疗、白名单、冷却……）：把它当硬门槛会让改稿循环永不收敛。
+  // 因此评审必须真的跑过，但严重程度只作为建议随候选留档，硬门槛只保留机器能复核的检查。
+  const blocked = await stageExtension(lifeSteal(), { createRunner, review: async () => ({ passed: false, blocked: true, summary: '评审发现阻断问题：重复吸血没有冷却', findings: [{ claim: '重复吸血没有冷却', severity: 'blocker' }], assertions: [] }) });
+  assert.equal(blocked.status, 'ready');
+  assert.equal(blocked.reviewBlocked, true);
+  assert.equal(blocked.reviewRan, true);
+  assert.deepEqual(blocked.reviewFindings, [{ claim: '重复吸血没有冷却', severity: 'blocker' }]);
+  assert.match(blocked.checks.find(check => check.name === '对抗评审').detail, /属于建议/);
+  const broken = await stageExtension(lifeSteal(), { createRunner, review: async () => { throw Error('评审模型不可用'); } });
+  assert.equal(broken.status, 'rejected', '评审跑不起来仍然是硬失败');
+  assert.match(broken.error, /评审模型不可用/);
 });
 
 test('玩法模块可以声明扩展依赖：装载了才通过，卸载后显式失败', () => {
@@ -206,4 +214,56 @@ test('玩法模块可以声明扩展依赖：装载了才通过，卸载后显�
   const build = compileScene(scene, { extensions: new Set(['ext:life-steal@1']) });
   assert.equal(build.behaviors.length, 1);
   assert.deepEqual(build.behaviors[0].definition.requires, ['ext:life-steal@1']);
+});
+
+test('自带测试的轨迹真的算出变化字段，change 断言才有意义', async () => {
+  const extension = validateExtension(lifeSteal(1, { selfTests: [{
+    ...lifeSteal().selfTests[0],
+    expect: [
+      { id: 'e1', kind: 'objectHealth', why: '目标掉血', red: '不扣血的实现', object: 'zombie-1', max: 30, step: 'command-1' },
+      { id: 'e2', kind: 'step', why: '这一步确实改动了目标与玩家血量', red: '什么都没做的实现', label: 'command-1', change: { minFields: 2, fields: ['object:zombie-1', 'player'] } },
+    ],
+  }] }));
+  // 假执行器：真实代码产出效果，空实现（NOOP_CODE）什么都不产出，让反造假能变红。
+  const createRunner = extension => ({
+    ready: Promise.resolve(true),
+    apply: async ({ command, state }) => (extension.code.includes('target.damage')
+      ? { effects: [{ type: 'target.damage', id: command.targetId, amount: 10 }, { type: 'health.add', amount: 10 }], state }
+      : { effects: [], state }),
+    dispose: async () => {},
+  });
+  const report = await runSelfTests(extension, { createRunner });
+  assert.equal(report.passed, true, report.summary);
+  assert.match(report.results[0].real.detail, /2 条断言全部通过/);
+});
+
+test('沙箱代理把载荷原样传给页面函数（page.evaluate 的第一个参数就是值）', async () => {
+  const { sandboxRunner } = await import('../app/harness/extension-sandbox-browser.mjs');
+  const seen = [];
+  const page = { evaluate: async (pageFunction, argument) => { seen.push(argument); return 'ok'; } };
+  const runner = sandboxRunner(page)(validateExtension(lifeSteal()));
+  await runner.ready;
+  const payload = { command: { type: 'life.steal', targetId: 'zombie-1', amount: 10 }, world: { objects: [] }, state: {} };
+  assert.equal(await runner.apply(payload), 'ok');
+  assert.deepEqual(seen[1], payload, '第二个调用的第一个参数必须是完整载荷，否则页面里 command 会是 undefined');
+  assert.equal(seen[0].meta.id, 'life-steal');
+  assert.equal(seen[0].code, lifeSteal().code);
+  await runner.dispose();
+  assert.equal(seen.length, 3);
+});
+
+test('沙箱已经关闭时释放失败不会变成未处理拒绝（真实端到端曾因此让服务退出）', async () => {
+  const extension = validateExtension(lifeSteal());
+  let disposed = 0;
+  const createRunner = () => ({
+    ready: Promise.resolve(true),
+    apply: async ({ command, state }) => ({ effects: [{ type: 'target.damage', id: command.targetId, amount: 10 }, { type: 'health.add', amount: 10 }], state }),
+    dispose: async () => { disposed += 1; throw Error('Target page, context or browser has been closed'); },
+  });
+  const report = await runSelfTests(extension, { createRunner });
+  assert.equal(report.format, 'craftmine.extension-selftest/1');
+  assert.equal(disposed, 2, '真实实现与空实现各释放一次');
+  // 假执行器对空实现也返回同样效果，反造假必须把它打红——释放失败不能改变这个判定。
+  assert.equal(report.passed, false);
+  assert.match(report.summary, /空实现/);
 });
