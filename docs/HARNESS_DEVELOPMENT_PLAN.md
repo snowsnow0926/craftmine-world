@@ -1,8 +1,8 @@
 # craftmine world / 最中幻想：游戏创作 Harness 项目开发计划书
 
-版本：1.1 · 2026-09-09  
+版本：1.2 · 2026-09-09  
 适用范围：用户本人在 Windows 本机使用的创作工作台。  
-文档状态：**研究和设计已完成；本文新增的 P0–P7 能力仍是待开发计划。** 2026-09-09 新增 §6.4：DeepSeek 官方 API 的真实调用实测结果与模型后端决策；该节的数字全部来自本机实际请求，不是官方文档转述。
+文档状态：**研究、设计与第一批实现已完成。P0 与 P1 已落地，P2 由独立裁判（见 SELF_EXTENSION_PLAN.md E1）实现并超出原计划，P3/P4/P7 的实现进度见 §18.1。** 2026-09-09 新增 §6.4：DeepSeek 官方 API 的真实调用实测结果与模型后端决策；该节的数字全部来自本机实际请求，不是官方文档转述。2026-09-09 第二次复盘：把 §2、§17.3、§18、§22 中已被后续开发追上的描述改成实绩，并新增 §18.1 阶段进度表。
 
 本文综合 [Harness 差距评估与优先级](HARNESS_GAP_ASSESSMENT.md)、现有代码、[持续开发路线](CONTINUOUS_DEVELOPMENT.md) 及 Codex、Claude Code、DeepSeek Harness 的官方资料。外部机制的核实范围、固定提交和来源见 [参考研究](HARNESS_REFERENCE_RESEARCH.md)；本文具体接口、预算、阶段和指标均为本项目建议，尚未通过实现证明。
 
@@ -36,7 +36,9 @@
 
 ## 2. 当前基础、缺口与这份计划的关系
 
-本轮代码基线是 **b7dbdad**。用户运行版本的最新记录仍为 Alpha 0.8；M5 开发成果不等于已经更新到用户正在使用的服务。
+本轮代码基线是 **72598f5**。用户运行版本的最新记录仍为 Alpha 0.8；M5 开发成果不等于已经更新到用户正在使用的服务。
+
+> **2026-09-09 复盘：下面这张表的「需要补齐」一列已经部分实现。** 逐项实绩见 §18.1；未完成项在表中仍按原样保留，避免把已做和没做混在一起。
 
 | 能力 | 当前已具备 | 新计划需要补齐 |
 | --- | --- | --- |
@@ -786,7 +788,7 @@ Token 或费用限制由用户配置及供应商能力决定；缺少实时费�
 - 模型省略玩法源码的 `export step`，或改用 CommonJS 的 `exports.step`；构建阶段必须给出明确错误，而不是等到试玩才失败（实测复现见 §6.4.2）。
 - 模型生成的对象 ID 不符合 `^[a-z][a-z0-9-]{0,47}$`（含下划线、大写或超长）。
 
-这些是需要开发的有效回归测试，不是本轮运行结果。原有 95 项核心检查与营地真实联调结果继续作为历史基线，新能力必须另有证据。
+这些是需要开发的有效回归测试，不是本轮运行结果。原有 95 项核心检查与营地真实联调结果继续作为历史基线，新能力必须另有证据；当前 `npm test` 共 **247** 项。
 
 ### 17.4 评测成本与对照
 
@@ -812,6 +814,21 @@ P 编号表示本计划的新工程阶段；M 编号继续表示已有产品里�
 | P7 Windows 个人交付 | 启动、自检、可运行例子、升级备份、恢复、报告与诊断 | 从启动到创作应用、重启恢复及更新均可按说明完成 | P5；不依赖可选 P6 | 中 |
 
 阶段按验收推进，不承诺固定日期。P0 完成后根据实际接入开销细化批次；P1 和 P2 每次只选一个能实际验证的切片，避免长时间只搭框架没有可用结果。
+
+### 18.1 阶段进度（2026-09-09 复盘，以代码与测试为准）
+
+| 阶段 | 状态 | 已有实现 | 机器证据 | 还缺什么 |
+| --- | --- | --- | --- | --- |
+| P0 协议与接入基线 | **已落地** | `app/agent-model.mjs` provider 分发与 `providerStatus`、`app/harness/contracts.mjs`（动作/工具/限制契约）、`app/harness/provider-contract.mjs`（能力声明，不支持项明确 unavailable） | `tests/harness-model.test.mjs`、`tests/provider-contract.test.mjs` | 第二后端的真实接入（属 P6） |
+| P1 最小工具闭环 | **已落地** | `app/harness/tools.mjs`（7 个领域工具）、`app/harness/workspace.mjs`（草稿与补丁）、`app/harness/orchestrator.mjs`（步骤/预算/取消）、`app/scene.mjs` 的 `changes` 局部修改协议 | `tests/harness-workspace.test.mjs`、`tests/harness-loop.test.mjs`、128 对象世界单对象改动 12,976→147 输出 token | `memory.search`/`verify.run`/`evidence.read`/`task.plan`/`task.finish` 五个工具 |
+| P2 产品内试玩与修复 | **已落地并超出原计划** | `app/harness/requirements.mjs`（10 条冻结需求）、`assertions.mjs`（16 种断言）、`judge.mjs`（纯函数裁判）、`injection.mjs`（红性验证）、`trace-runner.mjs`（真实引擎录轨迹）、`behavior-verify.mjs`（命令级结果验收） | `tests/judge.test.mjs`（12 项）、`tests/judgment-browser.mjs`（参考实现全过、影子运行签名一致、坏实现全红） | 更多需求形状；动作 DSL 的移动/寻路 |
+| P3 作品与经验记忆 | **部分** | 模块版本库、`app/harness/memory-records.mjs`（类型化记忆记录：范围、来源、替代、失效） | `tests/memory-records.test.mjs` | 检索排序与界面 |
+| P4 上下文与自动压缩 | **部分** | 按需读取（输入 22,722→14,129）、`app/harness/context-budget.mjs`（预算公式与分配）、`app/harness/checkpoint.mjs`（机器事实 + 解释，压缩事务） | `tests/context-budget.test.mjs`、`tests/checkpoint.test.mjs` | 真实模型长任务的强制压缩回归 |
+| P5 组合、迁移和 M5 | **部分** | 能力目录、物品身份（`inventory.define`）、状态迁移（`migrate`）、资源系统、`target.damage`/`health.add` | `tests/resource-system.test.mjs`、`tests/state-migration.test.mjs` | 战斗奖励的完整闭环、第二项目安装 |
+| P6 后端可替换性 | **部分** | provider 开关与能力声明；`app/harness/extension*.mjs`（L2 扩展 ABI 与沙箱） | `tests/provider-contract.test.mjs`、`tests/extension*.test.mjs` | 第二个真实后端的原生循环/压缩转换 |
+| P7 Windows 个人交付 | **部分** | `app/harness/selfcheck.mjs` + `npm run doctor`（启动自检：数据目录、密钥、构建、内核哈希、扩展、端口） | `tests/selfcheck.test.mjs` | 升级备份与恢复演练、可运行示例包 |
+
+> 说明：P2 的验收能力用「冻结需求 + 确定性断言」实现，比原计划的「动作 DSL」更严格也更容易复现；因此 P2 记作已落地，动作 DSL 作为后续增强。P0/P1 的实绩同时覆盖了原 H1；P3/P4/P7 是本次复盘新增的实现。
 
 ### 与差距评估的对应
 
@@ -919,4 +936,4 @@ DeepSeek 当前 README 将其标为 developer preview，整个框架的直接采
 
 个人交付仍要准备：旧程序可恢复归档、数据备份、可运行初始示例、启动自检、明确的版本变化、兼容迁移和升级失败恢复。准备好可审查的交付后再安排用户服务更新，不能为每次测试重启其正在玩的世界。
 
-**下一接点：先按 §6.4 把模型后端切到 DeepSeek 官方 API（模型 ID 配置化、关闭思考、schema 进提示、补齐 ID 与 export 硬约束、`compileBehavior` 增加导出静态检查），并用现有 95 项核心测试加一次真实门需求验证；随后从 P0 的后端能力与领域工具协议开始，完成 P1 的门修改闭环。M5 剩余工作作为真实场景持续验收，不因计划升级而被遗漏。**
+**下一接点（2026-09-09 复盘后）：** P0/P1/P2 已落地，P3/P4/P7 的机制也已补齐（见 §18.1）。剩下的三件事按顺序做：① 把 `app/harness/tools.mjs` 里缺的五个工具补上（`memory.search`、`verify.run`、`evidence.read`、`task.plan`、`task.finish`），让 P1 的工具闭环完整；② 把 `app/harness/memory-records.mjs`、`context-budget.mjs`、`checkpoint.mjs` 接进真实的 `app/agent.mjs` 循环（目前是可用但未接线的能力）；③ 用真实模型跑一条长任务，做一次强制压缩回归（§17.2 的压缩连续性门槛）。E2 的扩展派发（异步效果阶段）见 SELF_EXTENSION_PLAN.md §10 的遗留项。

@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn,spawnSync } from 'node:child_process';
+import { providerContract } from './harness/provider-contract.mjs';
 
 const DEEPSEEK_BASE = 'https://api.deepseek.com';
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4.1-flash-expires-on-0910';
@@ -46,14 +47,15 @@ export function findCodex() {
 }
 export function providerStatus() {
   const provider = modelProvider(), model = modelId();
+  const contract = providerContract(provider, { model });
   if (provider === 'deepseek') {
-    if (!deepseekKey()) return { available: false, provider, model, message: '未配置 DeepSeek 密钥（CRAFTMINE_DEEPSEEK_API_KEY 或 DEEPSEEK_API_KEY）。' };
-    return { available: true, provider, model, thinking: thinkingEnabled(), message: `DeepSeek 官方 API · ${model} · ${thinkingEnabled() ? `思考模式开（${reasoningEffort()}）` : '思考模式关'} · 真实 LLM` };
+    if (!deepseekKey()) return { available: false, provider, model, contract, message: '未配置 DeepSeek 密钥（CRAFTMINE_DEEPSEEK_API_KEY 或 DEEPSEEK_API_KEY）。' };
+    return { available: true, provider, model, contract, thinking: thinkingEnabled(), message: `DeepSeek 官方 API · ${model} · ${thinkingEnabled() ? `思考模式开（${reasoningEffort()}）` : '思考模式关'} · 真实 LLM` };
   }
   const executable = findCodex();
-  if (!executable) return { available: false, provider, model, message: '未找到 Codex CLI。安装并运行 codex login 后重启本地服务。' };
+  if (!executable) return { available: false, provider, model, contract, message: '未找到 Codex CLI。安装并运行 codex login 后重启本地服务。' };
   const result = spawnSync(executable, ['login','status'], { encoding: 'utf8', timeout: 10000, windowsHide: true });
-  return { available: result.status === 0, provider, model, message: result.status === 0 ? 'Codex 已登录 · 真实 LLM' : 'Codex 尚未登录，请在本机终端运行 codex login。' };
+  return { available: result.status === 0, provider, model, contract, message: result.status === 0 ? 'Codex 已登录 · 真实 LLM' : 'Codex 尚未登录，请在本机终端运行 codex login。' };
 }
 export function killProcessTree(child) {
   if (!child || child.exitCode !== null) return;

@@ -381,7 +381,7 @@
       "glb": "仅静态（拒绝动画与骨骼），外观仅支持绕 Y 轴旋转",
       "limits": "128 物体 / 每步 32 命令 / 代码 32KB / 状态 16KB / 10 万面"
     },
-    "tests": "npm test: 230 passed",
+    "tests": "npm test: 247 passed",
     "developmentBatches": [
       {
         "batch": "0",
@@ -545,6 +545,33 @@
           "沙箱 import 只能靠 CSP 兜底"
         ]
       }
+    },
+    "harnessPlan": {
+      "document": "docs/HARNESS_DEVELOPMENT_PLAN.md",
+      "version": "1.2",
+      "reviewed": "2026-09-09",
+      "stages": {
+        "P0": "done",
+        "P1": "done",
+        "P2": "done（由独立裁判实现，超出原计划）",
+        "P3": "mechanism done, not wired into agent loop",
+        "P4": "mechanism done, not wired into agent loop",
+        "P5": "partial",
+        "P6": "partial",
+        "P7": "mechanism done"
+      },
+      "addedThisRound": [
+        "app/harness/provider-contract.mjs（P0 适配器能力声明，没证据一律 unavailable）",
+        "app/harness/memory-records.mjs（P3 类型化记忆：来源/范围/替代/失效）",
+        "app/harness/context-budget.mjs（P4 预算公式、分配、阈值动作）",
+        "app/harness/checkpoint.mjs（P4 机器事实检查点 + 压缩事务 + 重启核对）",
+        "app/harness/selfcheck.mjs + npm run doctor（P7 启动自检）"
+      ],
+      "remaining": [
+        "tools.mjs 缺 memory.search / verify.run / evidence.read / task.plan / task.finish",
+        "memory-records / context-budget / checkpoint 还没接进 app/agent.mjs 循环",
+        "还没有真实模型长任务的强制压缩回归"
+      ]
     }
   },
   "harnessPlan": {
