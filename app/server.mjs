@@ -17,7 +17,7 @@ import { judgmentReport, readJudgments } from './harness/judgment-run.mjs';
 import { extensionCatalog } from './harness/extension.mjs';
 import { stageExtension } from './harness/extension-loader.mjs';
 import { withExtensionSandbox } from './harness/extension-sandbox-browser.mjs';
-import { parseFindings, reviewPrompt, reviewSummary } from './harness/review.mjs';
+import { findingsToAssertions, parseFindings, reviewPrompt, reviewSummary } from './harness/review.mjs';
 import { generateModel } from './agent-model.mjs';
 import { STATIC_FILES } from './static-files.mjs';
 
@@ -66,7 +66,7 @@ async function reviewExtension(extension) {
   });
   const findings = parseFindings(text);
   const summary = reviewSummary(findings);
-  return { ...summary, findings, passed: !summary.blocked };
+  return { ...summary, findings, assertions: findingsToAssertions(findings), passed: !summary.blocked };
 }
 // 完整装载检查：沙箱自带测试 + 反造假 + 对抗评审 + 冻结回归。
 async function stageExtensionFully(extension) {
@@ -74,8 +74,18 @@ async function stageExtensionFully(extension) {
     loaded: store.data.extensions,
     createRunner,
     review: reviewExtension,
-    verifyWorld: async () => ({ passed: true, summary: '冻结回归：当前世界的构建与玩法未受影响' }),
+    // 冻结回归是真跑一遍：当前世界的源码要在隔离 Worker 里通过事件与恢复检查。
+    verifyWorld: async () => {
+      const build = store.readBuild(store.data.current, { resolveAssets: false });
+      if (build.behaviors?.length) await checkCode(build);
+      return { passed: true, summary: build.behaviors?.length ? `冻结回归：当前世界 ${build.behaviors.length} 个源码模块在隔离 Worker 中通过事件与恢复检查` : '冻结回归：当前世界没有源码模块，构建校验通过' };
+    },
   }));
+}
+// 改动扩展集合前，先确认当前世界还编译得过：依赖被破坏时立刻显式失败。
+function assertWorldAccepts(extensions) {
+  const scene = store.readBuild(store.data.current, { resolveAssets: false }).scene;
+  compileScene(scene, { extensions: new Set(extensions.map(extension => `ext:${extension.id}@${extension.version}`)) });
 }
 const json = (res, status, data) => { res.writeHead(status, {'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}); res.end(JSON.stringify(data)); };
 async function body(req,limit=1_500_000) {
@@ -152,8 +162,10 @@ const server = http.createServer(async (req,res) => {
           const staged = await stageExtensionFully(input.extension);
           if (staged.status !== 'ready') throw Error(staged.error);
           const previous = store.data.extensions.find(extension => extension.id === staged.extension.id) || null;
+          const next = store.data.extensions.filter(extension => extension.id !== staged.extension.id).concat([staged.extension]);
+          assertWorldAccepts(next);
           store.change(d => {
-            d.extensions = d.extensions.filter(extension => extension.id !== staged.extension.id).concat([staged.extension]);
+            d.extensions = next;
             d.extensionHistory = [...(d.extensionHistory || []).filter(extension => extension.id !== staged.extension.id), ...(previous ? [previous] : [])].slice(-10);
           });
           return json(res,200,{ok:true,activated:staged.requirement,previous:previous?`ext:${previous.id}@${previous.version}`:null,checks:staged.checks});
@@ -162,9 +174,12 @@ const server = http.createServer(async (req,res) => {
           const history = (store.data.extensionHistory || []).filter(extension => extension.id === input.id);
           const previous = history[history.length - 1];
           if (!previous) throw Error(`扩展 ${input.id} 没有可以回退的历史版本`);
+          const next = store.data.extensions.filter(extension => extension.id !== input.id).concat([previous]);
+          assertWorldAccepts(next);
           store.change(d => {
-            d.extensions = d.extensions.filter(extension => extension.id !== input.id).concat([previous]);
-            d.extensionHistory = (d.extensionHistory || []).filter(extension => extension !== previous);
+            d.extensions = next;
+            // 按 id+版本消费历史条目：深拷贝后引用比较不成立，会导致回退永远回到同一版。
+            d.extensionHistory = (d.extensionHistory || []).filter(extension => !(extension.id === previous.id && extension.version === previous.version));
           });
           return json(res,200,{ok:true,activated:`ext:${previous.id}@${previous.version}`});
         }
@@ -172,8 +187,7 @@ const server = http.createServer(async (req,res) => {
           const remaining = store.data.extensions.filter(extension => extension.id !== input.id);
           if (remaining.length === store.data.extensions.length) throw Error(`扩展 ${input.id} 没有装载`);
           // 卸载前先确认没有模块依赖它：依赖方在这里显式失败，而不是静默失效。
-          const scene = store.readBuild(store.data.current,{resolveAssets:false}).scene;
-          compileScene(scene,{extensions:new Set(remaining.map(extension=>`ext:${extension.id}@${extension.version}`))});
+          assertWorldAccepts(remaining);
           store.change(d => { d.extensions = remaining; });
           return json(res,200,{ok:true,unloaded:input.id});
         }

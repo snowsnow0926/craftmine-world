@@ -98,8 +98,18 @@ try {
   const selfTests = await runSelfTests(EXTENSION, { createRunner });
   w.check('真实沙箱里跑通自带测试，且空实现会被打红', selfTests.passed, selfTests.summary);
 
-  const staged = await stageExtension(EXTENSION, { createRunner, verifyWorld: async () => ({ passed: true, summary: '冻结回归 10/10 通过' }) });
-  w.check('真实沙箱 + 冻结回归都通过才拿到 ready', staged.status === 'ready', staged.error || staged.checks.map(check => check.detail).join(' / '));
+  const approveReview = async () => ({ passed: true, summary: '评审没有提出阻断问题', findings: [] });
+  const staged = await stageExtension(EXTENSION, { createRunner, review: approveReview, verifyWorld: async () => ({ passed: true, summary: '冻结回归 10/10 通过' }) });
+  w.check('真实沙箱 + 对抗评审 + 冻结回归都通过才拿到 ready', staged.status === 'ready', staged.error || staged.checks.map(check => check.detail).join(' / '));
+  const noReview = await stageExtension(EXTENSION, { createRunner, verifyWorld: async () => ({ passed: true }) });
+  w.check('没有对抗评审时一律拒绝装载', noReview.status === 'rejected' && /对抗评审/.test(noReview.error), noReview.error);
+
+  const extensionApi = await w.api('/api/extensions');
+  w.check('扩展接口：没有装载时列表为空', extensionApi.loaded.length === 0 && extensionApi.history.length === 0);
+  const capabilities = await w.api('/api/capabilities');
+  w.check('能力目录带着扩展槽位（没有扩展时为空数组）', Array.isArray(capabilities.extensions) && capabilities.extensions.length === 0);
+  const unloadUnknown = await w.api('/api/extensions/unload', { id: 'nope' }).then(() => null, error => error.message);
+  w.check('卸载未装载的扩展会显式报错', /没有装载/.test(unloadUnknown || ''), unloadUnknown);
 
   w.check('沙箱测试没有抢占鼠标锁定', await game.evaluate(() => document.pointerLockElement === null));
   w.check('沙箱故障没有变成页面未处理异常', w.errors.length === 0, w.errors.join(' / '));

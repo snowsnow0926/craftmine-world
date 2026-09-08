@@ -26,16 +26,17 @@ try {
       check('内置默认渲染通道什么都不做', parts.getPart('renderPass').run() === null && parts.getPart('hudWidget').render() === null && parts.getPart('postProcess')(5) === 5);
 
       let passCalls = 0;
+      check('没有人工审批记录就不许注册内核部件', (() => { try { parts.registerPart('renderPass', 'unapproved-pass', () => ({ run() {} })); return false; } catch (error) { return /审批/.test(error.message); } })());
       parts.registerPart('renderPass', 'counter-pass', () => ({
         id: 'counter-pass', kind: 'renderPass',
         run({ primitives, objects }) { passCalls += 1; return { primitives: primitives.length, objects: objects.length }; },
-      }));
+      }), { by: '人类', at: Date.now() });
       engine.render(1);
       engine.render(2);
       check('游戏页注册的渲染通道被世界运行时每帧调用', passCalls >= 2, `calls=${passCalls}`);
 
       let widgetCalls = 0;
-      parts.registerPart('hudWidget', 'counter-widget', () => ({ id: 'counter-widget', kind: 'hudWidget', render() { widgetCalls += 1; return null; } }));
+      parts.registerPart('hudWidget', 'counter-widget', () => ({ id: 'counter-widget', kind: 'hudWidget', render() { widgetCalls += 1; return null; } }), { by: '人类', at: Date.now() });
       engine.updateHud();
       check('HUD 更新路径调用注册的 HUD 部件', widgetCalls >= 1, `calls=${widgetCalls}`);
 

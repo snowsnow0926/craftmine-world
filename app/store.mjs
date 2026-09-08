@@ -159,7 +159,7 @@ export class ProjectStore {
   prepareSave(save){
     if(!['craftmine.save/1','craftmine.save/2'].includes(save?.format))throw Error('不是此版本的完整存档');
     exactKeys(save,['format','scene','snapshot',...(save.format==='craftmine.save/2'?['assets']:[])]);
-    const snapshot=validateSnapshot(save.snapshot);compileScene(save.scene);
+    const snapshot=validateSnapshot(save.snapshot);compileScene(save.scene, { extensions: this.extensionSet() });
     const assets=save.format==='craftmine.save/2'?validatePackedAssets(save.scene,save.assets):this.assets.resolve(this.data,save.scene);this.assets.preflight(this.data,assets);
     return {build:this.build(save.scene,{assets}),snapshot,assets};
   }

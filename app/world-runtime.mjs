@@ -100,7 +100,17 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
     objectBounds(id){return unionBounds((this.primitives||[]).filter(p=>p.id===id));}
     // 渲染扩展：模型只产出几何体，这里把它们当普通网格上传，绝不参与碰撞、存档和输入。
     setRenderExtensions(entries){
-      this.renderExtensions=(entries||[]).map(entry=>({id:entry.id,runner:entry.runner,drawables:[],inFlight:false}));
+      const next=(entries||[]).map(entry=>({id:entry.id,runner:entry.runner,drawables:[],inFlight:false}));
+      const keep=new Set(next.map(entry=>entry.id));
+      // 被移除的扩展必须当场清干净：删网格与 GL 缓冲、停掉 Worker，否则粒子会一直留在画面上。
+      for(const entry of this.renderExtensions||[]){
+        if(keep.has(entry.id))continue;
+        const key='ext:'+entry.id,mesh=this.meshes.get(key);
+        if(mesh?.buffer)this.gl.deleteBuffer(mesh.buffer);
+        this.meshes.delete(key);
+        try{entry.runner?.dispose?.();}catch{}
+      }
+      this.renderExtensions=next;
       return this.renderExtensions;
     }
     applyRenderExtensions(time){

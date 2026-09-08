@@ -26,6 +26,7 @@
     "test:live-assets": "node tests/live-assets.mjs",
     "test:capabilities": "node tests/world-capabilities-browser.mjs",
     "test:judge": "node tests/judgment-browser.mjs",
+    "test:extensions": "node tests/extension-browser.mjs",
     "test:render": "node tests/render-browser.mjs",
     "test:kernel": "node tests/kernel-parts-browser.mjs"
   },

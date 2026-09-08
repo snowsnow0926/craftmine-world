@@ -14,17 +14,20 @@ function kindOf(kind) {
   return kind;
 }
 
-export function registerPart(kind, id, factory) {
+export function registerPart(kind, id, factory, approval) {
   kindOf(kind);
   need(PART_ID.test(id || ''), `部件 ID 无效：${id}（小写字母开头，可含数字和连字符）`);
   need(typeof factory === 'function', `部件 ${kind}/${id} 需要一个工厂函数`);
+  // 内核部件的第一个改动必须有人审一次：没有审批记录就一步都走不了。
+  need(approval && typeof approval === 'object' && typeof approval.by === 'string' && approval.by.trim().length > 0 && Number.isFinite(approval.at),
+    `部件 ${kind}/${id} 必须带人工审批记录 {by, at} 才能注册`);
   const parts = registry.get(kind);
   need(!parts.has(id), `部件 ${kind}/${id} 已经注册，不能重复注册`);
-  parts.set(id, { kind, id, factory, builtin: false });
+  parts.set(id, { kind, id, factory, builtin: false, approval: { by: approval.by.trim(), at: approval.at } });
   // 新注册的部件立刻生效：调用方想换回来必须显式 usePart，语义和扩展升级一致。
   active.set(kind, id);
   instances.delete(kind);
-  return { kind, id, builtin: false, active: true };
+  return { kind, id, builtin: false, active: true, approval: { by: approval.by.trim(), at: approval.at } };
 }
 
 // 切回某个已注册的部件；切到内置默认也走这里，因此不存在「悄悄消失」的路径。
@@ -69,7 +72,7 @@ export function activePartId(kind) {
 
 export function listParts(kind) {
   const kinds = kind === undefined ? PART_KINDS : [kindOf(kind)];
-  return kinds.flatMap(name => [...registry.get(name).values()].map(entry => ({ kind: entry.kind, id: entry.id, builtin: entry.builtin, active: active.get(entry.kind) === entry.id })));
+  return kinds.flatMap(name => [...registry.get(name).values()].map(entry => ({ kind: entry.kind, id: entry.id, builtin: entry.builtin, active: active.get(entry.kind) === entry.id, approvedBy: entry.approval?.by || null })));
 }
 
 function defineDefault(kind, factory) {

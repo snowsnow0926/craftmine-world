@@ -157,18 +157,20 @@ test('浏览器侧部件表：注册、取用、重复、未知类型和回退�
   assert.equal(getPart('postProcess')(7), 7);
 
   let calls = 0;
-  const registered = registerPart('renderPass', 'counter-pass', () => ({ id: 'counter-pass', kind: 'renderPass', run() { calls += 1; return null; } }));
+  assert.throws(() => registerPart('renderPass', 'unapproved', () => ({})), /审批/);
+  const registered = registerPart('renderPass', 'counter-pass', () => ({ id: 'counter-pass', kind: 'renderPass', run() { calls += 1; return null; } }), { by: '人类', at: Date.now() });
   assert.equal(registered.active, true);
+  assert.equal(registered.approval.by, '人类');
   const part = getPart('renderPass');
   assert.equal(part.id, 'counter-pass');
   part.run();
   assert.equal(calls, 1);
   assert.equal(getPart('renderPass'), part, '工厂只应该被调用一次');
-  assert.ok(listParts('renderPass').some(entry => entry.id === 'counter-pass' && entry.active));
-  assert.throws(() => registerPart('renderPass', 'counter-pass', () => ({})), /已经注册/);
-  assert.throws(() => registerPart('spritePass', 'x', () => ({})), /未知的部件类型/);
-  assert.throws(() => registerPart('renderPass', 'Bad_ID', () => ({})), /部件 ID 无效/);
-  assert.throws(() => registerPart('renderPass', 'no-factory'), /需要一个工厂函数/);
+  assert.ok(listParts('renderPass').some(entry => entry.id === 'counter-pass' && entry.active && entry.approvedBy === '人类'));
+  assert.throws(() => registerPart('renderPass', 'counter-pass', () => ({}), { by: '人类', at: Date.now() }), /已经注册/);
+  assert.throws(() => registerPart('spritePass', 'x', () => ({}), { by: '人类', at: Date.now() }), /未知的部件类型/);
+  assert.throws(() => registerPart('renderPass', 'Bad_ID', () => ({}), { by: '人类', at: Date.now() }), /部件 ID 无效/);
+  assert.throws(() => registerPart('renderPass', 'no-factory', undefined, { by: '人类', at: Date.now() }), /需要一个工厂函数/);
   assert.throws(() => getPart('spritePass'), /未知的部件类型/);
   assert.throws(() => usePart('renderPass', 'nope'), /没有注册/);
 

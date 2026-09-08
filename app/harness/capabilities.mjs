@@ -137,7 +137,7 @@ export function capabilitiesText({ extensions = [] } = {}) {
     ...catalog.commands.map(command => `- ${command.type}｜权限 ${command.permission}${command.capability ? `｜能力 ${command.capability}` : ''}｜${command.fields.map(field => `${field.name}: ${field.description}`).join('；')}｜${command.example}${command.note ? '｜' + command.note : ''}`),
     `配额：代码 ${STORAGE_LIMITS.codeChars} 字符、状态 ${STORAGE_LIMITS.stateChars} 字符、参数 ${STORAGE_LIMITS.paramsChars} 字符、目标 ${STORAGE_LIMITS.targets} 个、每模块按键 ${STORAGE_LIMITS.keysPerModule} 个。`,
     `场景上限：对象 ${SCENE_LIMITS.objects} 个、每对象部件 ${SCENE_LIMITS.partsPerObject} 个、总面数 ${SCENE_LIMITS.faces}、场地 ${SCENE_LIMITS.fieldArea}×${SCENE_LIMITS.fieldArea}、高度 ${SCENE_LIMITS.groundY}..${SCENE_LIMITS.topY}。`,
-    ...(catalog.extensions.length ? ['已装载扩展（可以直接当命令用，用 requires:[\'ext:ID@版本\'] 声明依赖）：', ...catalog.extensions.map(extension => `- ${extension.id}@${extension.version}「${extension.name}」：${(extension.commands || []).map(command => `${command.type}（权限 ${command.permission}）`).join('、')}`)] : []),
+    ...(catalog.extensions.length ? ['已装载扩展（命令由宿主执行；玩法模块还不能直接发出，异步派发是下一步）：', ...catalog.extensions.map(extension => `- ${extension.id}@${extension.version}「${extension.name}」：${(extension.commands || []).map(command => `${command.type}（权限 ${command.permission}）`).join('、')}`)] : []),
   ];
   return lines.join('\n');
 }

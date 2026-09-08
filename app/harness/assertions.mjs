@@ -43,7 +43,7 @@ export function validateAssertion(assertion) {
   const { id, kind } = assertion;
   need(text(id) && id.length <= 80, '断言必须有 id');
   need(ASSERTION_KINDS.includes(kind), `${id}：不支持的断言类型 ${kind}；可用：${ASSERTION_KINDS.join('、')}`);
-  const allowed = ['id', 'kind', 'why', 'red', 'step', 'min', 'max', 'exact', 'delta', 'changed', 'exists', 'text', 'value', 'field', 'type', 'region', 'solid', 'except', 'item', 'minFields', 'minCommands', 'commands', 'change', 'label', 'key', 'object', 'resourceId', 'resource'];
+  const allowed = ['id', 'kind', 'why', 'red', 'step', 'min', 'max', 'exact', 'delta', 'changed', 'exists', 'text', 'value', 'field', 'type', 'region', 'solid', 'except', 'item', 'minFields', 'minCommands', 'commands', 'change', 'label', 'key', 'object', 'resourceId', 'resource', 'fromReview', 'severity'];
   const extra = Object.keys(assertion).filter(key => !allowed.includes(key));
   need(!extra.length, `${id}：断言包含不支持的字段 ${extra.join('、')}`);
   need(text(assertion.why), `${id}：断言必须写清楚 why（这条断言在检查什么玩家能看见的事实）`);

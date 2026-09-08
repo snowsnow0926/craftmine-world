@@ -28,13 +28,13 @@ catch(error){send({type:'error',message:String(error?.message||error).slice(0,60
 }
 
 export class RenderRunner {
-  constructor(extension, { emitTimeoutMs = 250, loadTimeoutMs = 2500 } = {}) {
+  constructor(extension, { emitTimeoutMs = null, loadTimeoutMs = 2500 } = {}) {
     this.extension = extension;
-    // budgetMs 是扩展自己声明的单帧预算（用于限额和报告）；硬超时要给 Worker 消息往返留余量，
-    // 否则正常的调度抖动会被误判成死循环。
+    // budgetMs 是扩展自己声明的单帧预算：它直接决定硬超时（×12 作为 Worker 消息往返余量，
+    // 至少 50ms），所以声明 1ms 的扩展会被更早停用，而不是和声明 16ms 的扩展共用同一个上限。
     this.budgetMs = extension?.budgetMs ?? 4;
     this.maxFailures = extension?.maxFailures ?? 3;
-    this.emitTimeoutMs = emitTimeoutMs;
+    this.emitTimeoutMs = emitTimeoutMs ?? Math.max(50, this.budgetMs * 12);
     this.loadTimeoutMs = loadTimeoutMs;
     this.disabled = false;
     this.failures = 0;

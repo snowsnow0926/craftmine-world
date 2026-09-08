@@ -132,8 +132,11 @@ export function extensionCatalog(extensions = []) {
 
 export function extensionText(extensions = []) {
   if (!extensions.length) return '当前没有装载任何扩展。';
-  return extensionCatalog(extensions).map(extension => [
-    `扩展 ${extension.id}@${extension.version}「${extension.name}」`,
-    ...extension.commands.map(command => `- ${command.type}｜权限 ${command.permission}｜${command.fields.join('；')}`),
-  ].join('\n')).join('\n');
+  return [
+    '注意：扩展命令目前由宿主与扩展自带测试执行，玩法模块还不能直接发出它们（异步效果派发是下一步）。',
+    ...extensionCatalog(extensions).map(extension => [
+      `扩展 ${extension.id}@${extension.version}「${extension.name}」`,
+      ...extension.commands.map(command => `- ${command.type}｜权限 ${command.permission}｜${command.fields.join('；')}`),
+    ].join('\n')),
+  ].join('\n');
 }

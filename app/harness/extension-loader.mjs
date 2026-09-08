@@ -130,12 +130,14 @@ export async function stageExtension(input, { loaded = [], createRunner, verifyW
   const selfTests = await runSelfTests(prepared.extension, { createRunner });
   const checks = [{ name: '自带测试与反造假', passed: selfTests.passed, detail: selfTests.summary }];
   // 对抗评审是装载流程的必经环节：没有评审，扩展不允许进入候选状态。
+  // 评审只能提意见，但它的每条意见都必须带可执行断言，这些断言随候选一起留档。
+  let reviewAssertions = [];
   if (typeof review !== 'function') checks.push({ name: '对抗评审', passed: false, detail: '装载扩展必须先过对抗评审（评审只能提出带断言的问题）' });
   else if (selfTests.passed) {
     try {
       const report = await review(prepared.extension);
-      const findings = report?.findings || [];
-      checks.push({ name: '对抗评审', passed: report?.passed !== false && !(report?.blocked), detail: report?.summary || (findings.length ? `评审提出 ${findings.length} 条问题` : '评审没有提出阻断问题') });
+      reviewAssertions = report?.assertions || [];
+      checks.push({ name: '对抗评审', passed: report?.passed !== false && !(report?.blocked), detail: report?.summary || (report?.findings?.length ? `评审提出 ${report.findings.length} 条问题` : '评审没有提出阻断问题') });
     } catch (error) { checks.push({ name: '对抗评审', passed: false, detail: '对抗评审执行失败：' + error.message }); }
   }
   if (selfTests.passed && typeof verifyWorld === 'function') {
@@ -148,7 +150,7 @@ export async function stageExtension(input, { loaded = [], createRunner, verifyW
   return {
     ...prepared, status: failed.length ? 'rejected' : 'ready', checks,
     error: failed.length ? failed.map(check => check.detail).join('；') : null,
-    selfTests,
+    selfTests, reviewAssertions,
   };
 }
 

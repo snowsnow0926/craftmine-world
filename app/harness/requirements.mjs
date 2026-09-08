@@ -157,11 +157,11 @@ export function requirementById(id, list = REQUIREMENTS) {
   return found;
 }
 
-// 冻结文件本身也要被哈希：实现者偷偷改断言必须能被发现。
-export const FROZEN_REQUIREMENTS_HASH = requirementsHash(REQUIREMENTS);
+// 冻结文件本身也要被哈希：这里必须是**写死的常量**，否则改了需求集哈希会自动跟着变，等于没冻结。
+export const FROZEN_REQUIREMENTS_HASH = '9df3f1d4ce9ae648ae13ef63472c62cb2176f55679d677640e1dce32361bc76c';
 
 export function assertFrozenIntegrity(hash = FROZEN_REQUIREMENTS_HASH) {
   const actual = requirementsHash(REQUIREMENTS);
-  if (actual !== hash) throw Error(`冻结需求集被改动过：期望 ${hash}，实际 ${actual}`);
+  if (actual !== hash) throw Error(`冻结需求集被改动过：期望 ${hash}，实际 ${actual}。只有人能更新这个常量。`);
   return actual;
 }
