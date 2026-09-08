@@ -191,7 +191,7 @@
       ]
     }
   ],
-  "nextAction": "用户要求本批结束提供小白能懂的完整报告，见 docs/BATCH_REPORT_2026_09_09_M5.md。下一批继续 M5.2：从 test-results/live-world-6z8K3a 的 craft-tested 断点继续真实模型生命值、射击目标和一次性任务奖励，检查换武器后的采木判断兼容，保留已制作门、一份木材、两棵已砍树和任务进度；随后 M5.3 完整迁移与初始示例并交付 Alpha 0.9。不要重跑已完成生成。",
+  "nextAction": "用户最新目标是成为真正好用的 Harness；先阅读 docs/HARNESS_GAP_ASSESSMENT.md。本次仅完成缺口评估，H1–H3 未实现。下一批优先把产品内按需查询、模块读取、局部修改及真实试玩工具接成闭环，复用 test-results/live-world-6z8K3a 的 craft-tested 营地验证；M5 剩余战斗、奖励、迁移和 Alpha 0.9 交付继续保留，完成示例不等同于 Harness 好用性验收。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",
@@ -218,5 +218,17 @@
       "candidate": null,
       "applying": null
     }
+  },
+  "harnessAssessment": {
+    "date": "2026-09-09",
+    "document": "docs/HARNESS_GAP_ASSESSMENT.md",
+    "status": "assessed_not_implemented",
+    "mainGap": "产品内 Agent 尚未拥有按需读、局部修改、真实试玩和基于证据修复的完整工具闭环；目前完整语义验收仍有外部脚本参与。",
+    "proposedPriority": [
+      "H1 受约束的开发工具与分步任务",
+      "H2 产品内真实试玩与固定需求验收条件",
+      "H3 长任务恢复、上下文效率、模块组合和进度迁移"
+    ],
+    "existingMilestonesRetained": true
   }
 }
