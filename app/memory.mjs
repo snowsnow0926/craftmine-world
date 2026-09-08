@@ -3,6 +3,7 @@ import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { compileScene, upgradeScene, clone, canonicalJSON } from './scene.mjs';
 import { SYSTEMS, identifier, exactKeys, validateSystem } from './gameplay.mjs';
+import { captureCreation,creationGroups,validateCreation,creationDependencies,placeCreation,materializeCreation } from './creation.mjs';
 
 export const MODULE_RUNTIME='craftmine-web/2';
 const hash=content=>createHash('sha256').update(canonicalJSON(content)).digest('hex');
@@ -12,13 +13,15 @@ function payloadOf(kind,definition){
 }
 export function validateModule(input){
   exactKeys(input,['format','runtime','id','version','kind','hash','name','description','dependencies','payload','origin']);
-  if(input.format!=='craftmine.module/1'||input.runtime!==MODULE_RUNTIME||!identifier(input.id)||!Number.isInteger(input.version)||input.version<1||input.version>100000||!['object','gameplay'].includes(input.kind))throw Error('模块格式或运行约定不兼容');
+  const creation=input.kind==='creation';
+  if(input.format!==(creation?'craftmine.module/2':'craftmine.module/1')||input.runtime!==(creation?'craftmine-web/3':MODULE_RUNTIME)||!identifier(input.id)||!Number.isInteger(input.version)||input.version<1||input.version>100000||!['object','gameplay','creation'].includes(input.kind))throw Error('模块格式或运行约定不兼容');
   if(typeof input.name!=='string'||!input.name.trim()||input.name.length>60||typeof input.description!=='string'||input.description.length>2000||input.name!==input.payload?.name)throw Error('模块名称或来源需求无效');
   if(!input.origin||typeof input.origin!=='object'||Array.isArray(input.origin))throw Error('模块来源无效');
   exactKeys(input.origin,['build','definition','time']);
   if(typeof input.origin.build!=='string'||input.origin.build.length>80||!identifier(input.origin.definition)||!Number.isFinite(input.origin.time))throw Error('模块来源无效');
   let dependencies;
-  if(input.kind==='object'){
+  if(creation){validateCreation(input.payload);dependencies=creationDependencies(input.payload);}
+  else if(input.kind==='object'){
     exactKeys(input.payload,['name','parts','components']);
     if(!Array.isArray(input.payload.parts)||!input.payload.parts.length||input.payload.parts.length>128)throw Error('模块几何无效');
     const parts=input.payload.parts,minimum=k=>Math.min(...parts.map(p=>p?.offset?.[k])),maximum=k=>Math.max(...parts.map(p=>p?.offset?.[k]+p?.size?.[k]));
@@ -73,18 +76,47 @@ export class ModuleLibrary {
         payload,origin:{build:buildId,definition:definition.id,time:Date.now()}};
       this.register(data,module);data.moduleBindings[kind][definition.id]={id,version};captured.push({id,version,name:module.name});
     }
+    data.moduleBindings.creation??={};
+    const groups=creationGroups(normalized);data.activeCreations=groups.map(g=>g.id);
+    for(const group of groups){
+      const payload=captureCreation(group,normalized),contentHash=hash({kind:'creation',payload});
+      let id=data.moduleBindings.creation[group.id]?.id||group.behaviors.find(d=>d.binding)?.binding.source.id;
+      let entry=data.library.find(m=>m.id===id&&m.kind==='creation');if(!entry){id='creation-'+randomUUID();entry=null;}
+      const identical=entry?.versions.find(v=>v.hash===contentHash),version=identical?.version||(entry?.latest||0)+1;
+      if(!identical){
+        this.register(data,{format:'craftmine.module/2',runtime:'craftmine-web/3',id,version,kind:'creation',hash:contentHash,name:payload.name,description:String(prompt).slice(0,2000),dependencies:creationDependencies(payload),payload,origin:{build:buildId,definition:group.behaviors[0].id,time:Date.now()}});
+        captured.push({id,version,name:payload.name});
+      }
+      data.moduleBindings.creation[group.id]={id,version,origin:clone(group.behaviors.find(d=>d.binding)?.binding.origin||group.objects[0]?.position||{x:0,y:6,z:0}),objects:payload.objects.map((o,i)=>({key:o.key,world:group.objects[i].id})),behaviors:payload.scripts.map((s,i)=>({local:s.key,world:group.behaviors[i].id}))};
+    }
     return captured;
   }
   retrieve(data,query,selected=null){
     const normalized=String(query).toLowerCase(),tokens=new Set([...normalized.matchAll(/[a-z0-9]+|[\u3400-\u9fff]/g)].map(m=>m[0]).filter(t=>!['的','我','个','一','请','把','在','了','和','是','这','要'].includes(t)));
-    const selectedRef=data.moduleBindings?.object[selected];
-    const ranked=data.library.map((m,i)=>{const name=m.name.toLowerCase(),text=m.description.toLowerCase();let score=normalized.includes(name)?30:0;for(const token of tokens){if(name.includes(token))score+=8;if(text.includes(token))score+=1;}if(selectedRef?.id===m.id)score+=100;return {m,score,i};}).sort((a,b)=>b.score-a.score||b.i-a.i);
+    const selectedRef=data.moduleBindings?.object[selected],selectedCreation=Object.values(data.moduleBindings?.creation||{}).find(c=>c.objects.some(o=>o.world===selected));
+    const ranked=data.library.map((m,i)=>{const name=m.name.toLowerCase(),text=m.description.toLowerCase();let score=normalized.includes(name)?30:0;for(const token of tokens){if(name.includes(token))score+=8;if(text.includes(token))score+=1;}if(selectedRef?.id===m.id)score+=100;if(m.kind==='creation'&&score)score+=25;if(selectedCreation?.id===m.id)score+=150;return {m,score,i};}).sort((a,b)=>b.score-a.score||b.i-a.i);
     const results=[];let size=0;
-    for(const {m,score}of ranked){if(results.length>=6)break;if(!score&&results.length>=2)continue;const module=this.read(data,m.id,m.latest),length=JSON.stringify(module).length;if(size+length>45000)continue;results.push(module);size+=length;}
+    for(const {m,score}of ranked){if(results.length>=6)break;if(!score&&results.length>=2)continue;let module=this.read(data,m.id,m.latest),length=JSON.stringify(module).length;
+      if(module.kind==='creation'&&length>30000){module={id:module.id,version:module.version,hash:module.hash,kind:module.kind,name:module.name,description:module.description,dependencies:module.dependencies,manifest:{objects:module.payload.objects.map(o=>o.name),behaviors:module.payload.scripts.map(s=>s.definition.name)},payloadAvailableLocally:true};length=JSON.stringify(module).length;}
+      if(size+length>45000)continue;results.push(module);size+=length;}
     return results;
   }
-  instantiate(data,scene,id,version,player){
+  instantiate(data,scene,id,version,player,position=null){
     const module=this.read(data,id,version),next=upgradeScene(scene),source={id,version};
+    if(module.kind==='creation'){
+      if(!position){
+        const checked=data.library.find(m=>m.id===id)?.verifications?.[version],bounds=checked?.hash===module.hash?checked.bounds:null,obstacles=compileScene(next).primitives?.filter(p=>p.solid).map(p=>({min:p.min,max:p.max}))||[];
+        for(const group of creationGroups(next)){
+          const binding=group.behaviors.find(d=>d.binding)?.binding,installed=data.moduleBindings?.creation?.[group.id],entry=data.library.find(m=>m.id===(installed?.id||binding?.source.id));
+          if(!entry)continue;
+          const contentHash=hash({kind:'creation',payload:captureCreation(group,next)}),record=entry.versions.find(v=>v.hash===contentHash),report=entry.verifications?.[record?.version];
+          if(report?.passed&&report.hash===contentHash){const origin=binding?.origin||group.objects[0]?.position||{x:0,y:6,z:0};obstacles.push({min:Object.fromEntries(['x','y','z'].map(k=>[k,origin[k]+report.bounds.min[k]])),max:Object.fromEntries(['x','y','z'].map(k=>[k,origin[k]+report.bounds.max[k]]))});}
+        }
+        return placeCreation(next,module.payload,source,player,{bounds,obstacles});
+      }
+      const generated=materializeCreation(module.payload,source,position),candidate={...next,format:'craftmine.scene/3',objects:[...next.objects,...generated.objects],behaviors:[...(next.behaviors||[]),...generated.behaviors],systems:[...next.systems,...generated.systems.filter(s=>!next.systems.some(old=>old.type===s.type)).map(s=>({...s,id:'system-'+randomUUID()}))]};
+      compileScene(candidate);return candidate;
+    }
     if(module.kind==='gameplay'){
       const old=next.systems.find(s=>s.type===module.payload.type),definition={id:old?.id||'system-'+randomUUID(),...clone(module.payload),source};
       next.systems=next.systems.filter(s=>s.type!==definition.type);next.systems.push(definition);compileScene(next);return next;
@@ -102,5 +134,18 @@ export class ModuleLibrary {
       try{compileScene(candidate);return candidate;}catch(e){lastError=e;}
     }
     throw Error('附近没有足够的放置空间：'+lastError?.message);
+  }
+  changeCreation(data,scene,instanceId,version){
+    const installed=data.moduleBindings?.creation?.[instanceId];if(!installed)throw Error('创作实例不在此项目中');
+    const next=upgradeScene(scene),group=creationGroups(next).find(g=>g.id===instanceId);if(!group)throw Error('创作实例已卸载');
+    const objectIds=new Set(group.objects.map(o=>o.id)),behaviorIds=new Set(group.behaviors.map(b=>b.id));
+    next.objects=next.objects.filter(o=>!objectIds.has(o.id));next.behaviors=next.behaviors.filter(b=>!behaviorIds.has(b.id));
+    if(version!==null){
+      const module=this.read(data,installed.id,version);if(module.kind!=='creation')throw Error('需要完整创作模块');
+      const generated=materializeCreation(module.payload,{id:installed.id,version},installed.origin,instanceId,installed);
+      next.objects.push(...generated.objects);next.behaviors.push(...generated.behaviors);
+      next.systems.push(...generated.systems.filter(s=>!next.systems.some(old=>old.type===s.type)).map(s=>({...s,id:'system-'+randomUUID()})));
+    }
+    compileScene(next);return next;
   }
 }

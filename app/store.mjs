@@ -18,7 +18,7 @@ export class ProjectStore {
     fs.mkdirSync(this.root, { recursive: true });
     if (!fs.existsSync(this.file)) {
       const build = this.build(EMPTY_SCENE);
-      atomicJSON(this.file, { format: 'craftmine.project/1', current: build.id, snapshot: clone(INITIAL_SNAPSHOT), candidate: null, applying: null, tasks: [], messages: [], library:[],moduleBindings:{object:{},gameplay:{}},history: [{ id: build.id, summary: '空白世界', time: Date.now() }] });
+      atomicJSON(this.file, { format: 'craftmine.project/1', current: build.id, snapshot: clone(INITIAL_SNAPSHOT), candidate: null, applying: null, tasks: [], messages: [], library:[],moduleBindings:{object:{},gameplay:{},creation:{}},activeCreations:[],history: [{ id: build.id, summary: '空白世界', time: Date.now() }] });
     }
     this.data = JSON.parse(fs.readFileSync(this.file, 'utf8'));
     if (this.data.format !== 'craftmine.project/1') throw Error('项目格式不兼容，未覆盖原文件');
@@ -26,6 +26,10 @@ export class ProjectStore {
     if(!this.data.library){
       atomicJSON(path.join(this.root,'backups','before-memory-upgrade-'+Date.now()+'.json'),this.data);
       this.change(d=>{d.library=[];d.moduleBindings={object:{},gameplay:{}};this.modules.capture(d,this.readBuild(d.current).scene,'从已确认的历史世界保存的创作',d.current);});
+    }
+    if(!this.data.moduleBindings.creation){
+      atomicJSON(path.join(this.root,'backups','before-creation-memory-'+Date.now()+'.json'),this.data);
+      this.change(d=>this.modules.capture(d,this.readBuild(d.current).scene,'从已有代码世界保存的创作',d.current));
     }
     if (this.data.applying || this.data.tasks.some(t => ['running','validating','cancelling'].includes(t.status))) this.change(data => {
       data.applying = null;

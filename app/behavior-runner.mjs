@@ -27,9 +27,10 @@ catch(error){send({type:'error',message:String(error?.message||error).slice(0,60
 }
 
 export class BehaviorRunner {
-  constructor(input,{stepTimeoutMs=150,loadTimeoutMs=2500}={}){
+  constructor(input,{stepTimeoutMs=150,loadTimeoutMs=2500,localCoordinates=false}={}){
     this.definition=validateBehavior(input);this.stepTimeoutMs=stepTimeoutMs;this.closed=false;this.sequence=0;this.pending=null;this.urls=[];
     this.state=structuredClone(this.definition.initialState);
+    this.coordinates={local:localCoordinates};
     this.ready=new Promise((resolve,reject)=>{this.readyResolve=resolve;this.readyReject=reject;});
     try{
       const moduleURL=URL.createObjectURL(new Blob([this.definition.code],{type:'text/javascript'}));this.urls.push(moduleURL);
@@ -50,13 +51,13 @@ export class BehaviorRunner {
     const job=this.pending;
     if(message?.type!=='result'||!job||message.sequence!==job.sequence){this.fail(Error('玩法发送了无效或过期的消息'));return;}
     try{
-      const result=validateBehaviorResult(message.value,this.definition,job.frame);
+      const result=validateBehaviorResult(message.value,this.definition,job.frame,this.coordinates);
       clearTimeout(job.timer);this.pending=null;this.state=structuredClone(result.state);job.resolve(result);
     }catch(error){this.fail(error);}
   }
   async step(frame,state=this.state){
     await this.ready;if(this.closed)throw Error('玩法模块已停止');if(this.pending)throw Error('玩法上一步尚未完成');
-    const checked=validateBehaviorFrame(frame),saved=jsonRecord(state,BEHAVIOR_LIMITS.state),sequence=++this.sequence;
+    const checked=validateBehaviorFrame(frame,this.coordinates),saved=jsonRecord(state,BEHAVIOR_LIMITS.state),sequence=++this.sequence;
     return new Promise((resolve,reject)=>{
       const timer=setTimeout(()=>this.fail(Error('玩法计算超时，已停止该模块')),this.stepTimeoutMs);
       this.pending={sequence,frame:checked,resolve,reject,timer};

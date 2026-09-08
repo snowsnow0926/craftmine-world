@@ -1,9 +1,10 @@
 // Data-only boundary shared by builds, the game host and isolated code runners.
-import { exactKeys, identifier, bounded } from './gameplay.mjs';
+import { exactKeys, identifier, bounded,validateSource } from './gameplay.mjs';
 
 export const BEHAVIOR_FORMAT='craftmine.behavior/1';
 export const BEHAVIOR_PERMISSIONS=['objects.write','player.motion','hud.message','inventory.write'];
 export const BEHAVIOR_LIMITS={code:32000,state:16000,params:8000,commands:32,targets:16};
+export const BEHAVIOR_REQUIREMENTS=['health@1','ranged@1','melee@1'];
 
 export function jsonRecord(value,maxBytes=16000){
   if(!value||typeof value!=='object'||Array.isArray(value))throw Error('状态和参数必须是 JSON 对象');
@@ -25,8 +26,9 @@ const text=(value,max)=>{if(typeof value!=='string'||!value.trim()||value.length
 const safeId=value=>identifier(value)&&!['constructor','prototype'].includes(value);
 const vec=(value,min,max)=>{exactKeys(value,['x','y','z']);for(const n of Object.values(value))bounded(n,min,max);};
 export function validateBehavior(definition){
-  exactKeys(definition,['format','id','name','description','code','stateVersion','initialState','params','targets','permissions']);
-  if(definition.format!==BEHAVIOR_FORMAT||!safeId(definition.id))throw Error('代码模块格式或 ID 无效');
+  const portable=definition?.format==='craftmine.behavior/2';
+  exactKeys(definition,['format','id','name','description','code','stateVersion','initialState','params','targets','permissions',...(portable?['requires','binding']:[])]);
+  if((!portable&&definition.format!==BEHAVIOR_FORMAT)||!safeId(definition.id))throw Error('代码模块格式或 ID 无效');
   text(definition.name,60);text(definition.description,1000);text(definition.code,BEHAVIOR_LIMITS.code);
   if(!Number.isInteger(definition.stateVersion)||definition.stateVersion<1||definition.stateVersion>10000)throw Error('代码模块状态版本无效');
   jsonRecord(definition.initialState,BEHAVIOR_LIMITS.state);jsonRecord(definition.params,BEHAVIOR_LIMITS.params);
@@ -34,17 +36,29 @@ export function validateBehavior(definition){
     const list=definition[name];if(!Array.isArray(list)||list.length>limit||new Set(list).size!==list.length)throw Error('代码模块范围声明无效');
     for(const entry of list)if(name==='targets'?!safeId(entry):!BEHAVIOR_PERMISSIONS.includes(entry))throw Error('代码模块范围或权限无效');
   }
+  if(portable){
+    if(!Array.isArray(definition.requires)||definition.requires.length>3||new Set(definition.requires).size!==definition.requires.length||definition.requires.some(r=>!BEHAVIOR_REQUIREMENTS.includes(r)))throw Error('代码模块依赖无效');
+    if(definition.binding!==null){
+      const b=definition.binding;exactKeys(b,['instanceId','source','origin','translation','objects','behaviors']);
+      if(!safeId(b.instanceId)||!b.source)throw Error('代码模块实例来源无效');validateSource(b.source);vec(b.origin,-40,40);vec(b.translation,-80,80);
+      for(const [key,limit]of [['objects',16],['behaviors',8]]){
+        if(!Array.isArray(b[key])||b[key].length>limit)throw Error('代码模块绑定范围无效');
+        const local=new Set(),world=new Set(),keys=new Set();for(const pair of b[key]){exactKeys(pair,key==='objects'?['key','local','world']:['local','world']);if(!safeId(pair.local)||!safeId(pair.world)||(key==='objects'&&(!safeId(pair.key)||keys.has(pair.key)))||local.has(pair.local)||world.has(pair.world))throw Error('代码模块绑定 ID 无效或重复');local.add(pair.local);world.add(pair.world);keys.add(pair.key);}
+      }
+      if(!b.behaviors.some(p=>p.world===definition.id)||definition.targets.some(id=>!b.objects.some(p=>p.world===id)))throw Error('代码模块声明的对象未绑定');
+    }
+  }
   return structuredClone(definition);
 }
-export function validateBehaviorFrame(frame){
+export function validateBehaviorFrame(frame,{local=false}={}){
   exactKeys(frame,['dt','time','event','player','objects']);bounded(frame.dt,0,.5);bounded(frame.time,0,1e12);
   exactKeys(frame.event,['type','targetId']);if(!['start','tick','interact','contact','attack','land'].includes(frame.event.type)||(frame.event.targetId!==null&&!identifier(frame.event.targetId)))throw Error('玩法事件无效');
-  exactKeys(frame.player,['position','grounded','health']);vec(frame.player.position,-48,48);if(frame.player.position.y<6||frame.player.position.y>38||typeof frame.player.grounded!=='boolean')throw Error('玩法玩家上下文无效');if(frame.player.health!==null)bounded(frame.player.health,0,10000);
+  exactKeys(frame.player,['position','grounded','health']);vec(frame.player.position,local?-128:-48,local?128:48);if((!local&&(frame.player.position.y<6||frame.player.position.y>38))||typeof frame.player.grounded!=='boolean')throw Error('玩法玩家上下文无效');if(frame.player.health!==null)bounded(frame.player.health,0,10000);
   if(!Array.isArray(frame.objects)||frame.objects.length>128)throw Error('玩法对象上下文过大');
-  const ids=new Set();for(const object of frame.objects){exactKeys(object,['id','position','visible','solid','health']);if(!identifier(object.id)||ids.has(object.id)||typeof object.visible!=='boolean'||typeof object.solid!=='boolean')throw Error('玩法对象上下文无效');ids.add(object.id);vec(object.position,-48,48);bounded(object.health,0,10000);}
+  const ids=new Set();for(const object of frame.objects){exactKeys(object,['id','position','visible','solid','health']);if(!identifier(object.id)||ids.has(object.id)||typeof object.visible!=='boolean'||typeof object.solid!=='boolean')throw Error('玩法对象上下文无效');ids.add(object.id);vec(object.position,local?-128:-48,local?128:48);bounded(object.health,0,10000);}
   return structuredClone(frame);
 }
-export function validateBehaviorResult(result,definition,frame){
+export function validateBehaviorResult(result,definition,frame,{local=false}={}){
   exactKeys(result,['state','commands']);const state=jsonRecord(result.state,BEHAVIOR_LIMITS.state);
   if(!Array.isArray(result.commands)||result.commands.length>BEHAVIOR_LIMITS.commands)throw Error('玩法命令超过每步 32 条限制');
   const permit=permission=>{if(!definition.permissions.includes(permission))throw Error('玩法没有声明所需权限：'+permission);};
@@ -52,7 +66,7 @@ export function validateBehaviorResult(result,definition,frame){
     if(command?.type==='object.patch'){
       permit('objects.write');exactKeys(command,['type','id','position','visible','solid','color']);
       if(!definition.targets.includes(command.id)||!frame.objects.some(o=>o.id===command.id))throw Error('玩法试图修改未授权或已不存在的对象');
-      if(command.position!==null){vec(command.position,-40,40);if(command.position.y<6||command.position.y>38)throw Error('对象位置超出范围');}
+      if(command.position!==null){vec(command.position,local?-128:-40,local?128:40);if(!local&&(command.position.y<6||command.position.y>38))throw Error('对象位置超出范围');}
       for(const key of ['visible','solid'])if(command[key]!==null&&typeof command[key]!=='boolean')throw Error('对象修改字段无效');
       if(command.color!==null&&(typeof command.color!=='string'||!/^#[0-9a-fA-F]{6}$/.test(command.color)))throw Error('对象颜色无效');
     }else if(command?.type==='player.impulse'){

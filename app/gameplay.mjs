@@ -28,13 +28,13 @@ export function validateSystems(systems) {
   for(const s of systems){validateSystem(s);if(types.has(s.type)||ids.has(s.id))throw Error('同类玩法系统或 ID 重复');types.add(s.type);ids.add(s.id);}
 }
 export function validateGameplayState(state) {
-  exactKeys(state,['systems','targets','equipped']);
+  exactKeys(state,['systems','targets','equipped',...(Object.hasOwn(state,'archivedTargets')?['archivedTargets']:[])]);
   if(![null,'ranged','melee'].includes(state.equipped))throw Error('装备状态无效');
-  for(const [name,limit]of [['systems',3],['targets',128]]) {
+  for(const [name,limit]of [['systems',3],['targets',128],...(Object.hasOwn(state,'archivedTargets')?[['archivedTargets',128]]:[])]) {
     const table=state[name];if(!table||typeof table!=='object'||Array.isArray(table)||Object.keys(table).length>limit)throw Error('玩法存档大小无效');
     for(const [id,value]of Object.entries(table)) {
       if(!identifier(id))throw Error('玩法存档 ID 无效');
-      if(name==='targets'){exactKeys(value,['health','maxHealth']);bounded(value.maxHealth,1,10000);bounded(value.health,0,value.maxHealth);}
+      if(name==='targets'||name==='archivedTargets'){exactKeys(value,['health','maxHealth']);bounded(value.maxHealth,1,10000);bounded(value.health,0,value.maxHealth);}
       else if(value?.type==='health'){exactKeys(value,['type','health','maxHealth']);bounded(value.maxHealth,1,10000);bounded(value.health,0,value.maxHealth);}
       else if(value?.type==='ranged'){exactKeys(value,['type','ammo','reloadRemaining']);bounded(value.ammo,0,100);if(!Number.isInteger(value.ammo))throw Error('弹药数无效');bounded(value.reloadRemaining,0,10);}
       else if(value?.type==='melee')exactKeys(value,['type']);
@@ -48,15 +48,17 @@ export class GameplaySession {
   constructor(systems=[],objects=[],saved=null) {
     validateSystems(systems);if(saved)validateGameplayState(saved);
     this.definitions=systems;this.objects=objects;this.cooldown=0;
-    this.state={systems:{},targets:{},equipped:null};
+    this.state={systems:{},targets:{},equipped:null,archivedTargets:structuredClone(saved?.archivedTargets||{})};
+    for(const [id,value]of Object.entries(saved?.targets||{}))if(!objects.some(o=>o.id===id&&o.components?.health>0))this.state.archivedTargets[id]=structuredClone(value);
     for(const s of systems) {
       const old=saved?.systems[s.id];
       this.state.systems[s.id]=s.type==='health'?{type:s.type,health:old?.type===s.type?Math.min(old.health,s.config.maxHealth):s.config.maxHealth,maxHealth:s.config.maxHealth}:
         s.type==='ranged'?{type:s.type,ammo:old?.type===s.type?Math.min(old.ammo,s.config.magazine):s.config.magazine,reloadRemaining:old?.type===s.type?Math.min(old.reloadRemaining,s.config.reloadSeconds):0}:{type:s.type};
     }
-    for(const o of objects)if(o.components?.health>0){const old=saved?.targets[o.id];this.state.targets[o.id]={health:old?Math.min(old.health,o.components.health):o.components.health,maxHealth:o.components.health};}
+    for(const o of objects)if(o.components?.health>0){const old=saved?.targets[o.id]||this.state.archivedTargets[o.id];this.state.targets[o.id]={health:old?Math.min(old.health,o.components.health):o.components.health,maxHealth:o.components.health};delete this.state.archivedTargets[o.id];}
     const weapons=systems.filter(s=>s.type!=='health').map(s=>s.type);
     this.state.equipped=weapons.includes(saved?.equipped)?saved.equipped:weapons[0]||null;
+    validateGameplayState(this.state);
   }
   get(type){return this.definitions.find(s=>s.type===type);}
   get player(){const s=this.get('health');return s?this.state.systems[s.id]:null;}

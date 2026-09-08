@@ -1,8 +1,8 @@
 {
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
-  "currentMilestone": "M2",
-  "baseline": "5fa0fc6",
+  "currentMilestone": "M3",
+  "baseline": "c8d4ba4",
   "updated": "2026-09-08",
   "items": [
     {
@@ -38,8 +38,18 @@
     {
       "id": "M2",
       "title": "带源码、状态版本、依赖和证据的记忆模块跨项目复用",
-      "status": "pending",
-      "evidence": []
+      "status": "complete",
+      "evidence": [
+        "npm test: 45 passed",
+        "test-results/creation-source-d7IYuH/report.json: 2 passed",
+        "test-results/creation-target-K0ks3j/report.json: 13 passed; second project, fixed versions, uninstall, rollback, restart, rejected source and independent copies",
+        "test-results/creation-ui-mo0U2Z/report.json: 6 passed",
+        "test-results/live-creation-CWgD2Y/report.json: 5 passed; real LLM memory retrieval and working door",
+        "test-results/behavior-browser-Vc1IOa/report.json: 11 passed",
+        "test-results/code-world-tQkKNb/report.json: 10 passed",
+        "test-results/background-browser-z2fmb6/report.json: 10 passed",
+        "docs/ALPHA_0_6.md"
+      ]
     },
     {
       "id": "M3",
@@ -60,18 +70,19 @@
       "evidence": []
     }
   ],
-  "nextAction": "M2：把已验证源码、目标对象及空间参数绑定、状态版本、依赖与验收证据保存成可复用代码模块。先设计可移植的实例绑定，复用时不要简单替换源码字符串；跨项目导入与版本/卸载/回退状态一起验证。",
+  "nextAction": "M3：先将 AgentRunner 的单次执行拆成可记录的生成与验证尝试；为结构化输出、构建、范围及 Worker 错误记录明确诊断，最多两次自动修复、共享总时限，取消立即结束整个循环。保留每次失败源码和报告，用真实模型纠正一个实际失败并验证最新状态未丢失。随后完善对象选择/候选差异预览和长期项目上下文。",
   "blockers": [],
   "delivery": {
-    "runningVersion": "Alpha 0.5",
-    "developmentSlice": "M1 完成，详见 docs/ALPHA_0_5.md；M2–M5 仍待完成",
+    "runningVersion": "Alpha 0.6",
+    "developmentSlice": "M1、M2 完成，详见 docs/ALPHA_0_5.md 和 docs/ALPHA_0_6.md；继续 M3–M5",
     "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
     "example": "examples/door-and-bounce.save.json",
     "service": {
       "port": 8787,
-      "pid": 154184,
-      "backup": ".craftmine/backups/before-alpha-0.5-1788870138426.json",
-      "projectUnchanged": true
+      "pid": 156784,
+      "backup": ".craftmine/backups/before-alpha-0.6-1788872902878.json",
+      "worldCandidateAndProgressUnchanged": true,
+      "migration": "Added creation module bindings and active instance index; previous worlds, candidate, progress, messages and history unchanged"
     }
   }
 }

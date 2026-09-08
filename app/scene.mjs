@@ -122,9 +122,16 @@ export function compileScene(input) {
     if(!Array.isArray(input.behaviors)||input.behaviors.length>8)throw Error('一个世界最多启用 8 个代码模块');
     const modules=new Set(),writers=new Set();behaviors=input.behaviors.map(d=>{
       const artifact=compileBehavior(d);if(modules.has(d.id))throw Error('代码模块 ID 重复');modules.add(d.id);
+      for(const requirement of d.requires||[])if(!input.systems.some(s=>s.type===requirement.split('@')[0]))throw Error('代码玩法缺少依赖：'+requirement);
       for(const id of d.targets){if(!ids.has(id))throw Error('代码模块引用了不存在的对象');if(d.permissions.includes('objects.write')){if(writers.has(id))throw Error('同一对象只能由一个代码模块修改');writers.add(id);}}
       return artifact;
     });
+    const instances=new Map();
+    for(const {definition:d}of behaviors)if(d.binding){
+      const b=d.binding,known=instances.get(b.instanceId),serialized=canonicalJSON({source:b.source,origin:b.origin,behaviors:b.behaviors,objects:b.objects.map(({key,world})=>({key,world})).sort((a,b)=>a.key.localeCompare(b.key))});
+      if(known&&known!==serialized)throw Error('同一创作实例的绑定不一致');instances.set(b.instanceId,serialized);
+      if(b.objects.some(p=>!ids.has(p.world))||b.behaviors.some(p=>!input.behaviors.some(other=>other.id===p.world&&other.binding?.instanceId===b.instanceId)))throw Error('创作实例缺少绑定的对象或玩法');
+    }
   }
   const scene=clone(input),hash=createHash('sha256').update(canonicalJSON(scene)).digest('hex');
   return {format:scripted?'craftmine.build/3':'craftmine.build/2',hash,scene,voxels:[],primitives,...(scripted?{behaviors}:{})};
@@ -132,9 +139,12 @@ export function compileScene(input) {
 const vecSchema = { type: 'object', properties: { x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['x','y','z'], additionalProperties: false };
 const objSchema = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
 const sourceSchema={anyOf:[{type:'null'},objSchema({id:{type:'string'},version:{type:'integer'}})]};
+const bindingSchema={anyOf:[{type:'null'},objSchema({instanceId:{type:'string'},source:objSchema({id:{type:'string'},version:{type:'integer'}}),origin:vecSchema,translation:vecSchema,objects:{type:'array',items:objSchema({key:{type:'string'},local:{type:'string'},world:{type:'string'}})},behaviors:{type:'array',items:objSchema({local:{type:'string'},world:{type:'string'}})}})]};
+const behaviorFields={id:{type:'string'},name:{type:'string'},description:{type:'string'},code:{type:'string'},stateVersion:{type:'integer'},initialStateJSON:{type:'string'},paramsJSON:{type:'string'},targets:{type:'array',items:{type:'string'}},permissions:{type:'array',items:{type:'string',enum:['objects.write','player.motion','hud.message','inventory.write']}}};
 export const OUTPUT_SCHEMA = objSchema({
   summary: { type: 'string' },
   notes: { type: 'array', items: { type: 'string' } },
+  reuseCreations:{type:'array',items:objSchema({id:{type:'string'},version:{type:'integer'},position:{anyOf:[{type:'null'},vecSchema]}})},
   scene: { anyOf: [ { type: 'null' }, objSchema({
     format: { type: 'string', enum: ['craftmine.scene/3'] }, title: { type: 'string' }, night: { type: 'boolean' },
     objects: { type: 'array', items: objSchema({
@@ -143,10 +153,7 @@ export const OUTPUT_SCHEMA = objSchema({
       parts: { type: 'array', items: objSchema({ shape:{type:'string',enum:['box','blade']},offset: vecSchema, size: vecSchema, material: { type: 'string', enum: [...Object.keys(MATERIALS),'solid'] },color:{type:'string'},solid:{type:'boolean'} }) },
     }) },
     systems:{type:'array',items:{anyOf:Object.entries(SYSTEMS).map(([type,definition])=>objSchema({id:{type:'string'},name:{type:'string'},type:{type:'string',enum:[type]},config:objSchema(Object.fromEntries(Object.keys(definition.fields).map(k=>[k,{type:k==='magazine'?'integer':'number'}]))),source:sourceSchema}))}},
-    behaviors:{type:'array',items:objSchema({
-      format:{type:'string',enum:['craftmine.behavior/1']},id:{type:'string'},name:{type:'string'},description:{type:'string'},code:{type:'string'},stateVersion:{type:'integer'},initialStateJSON:{type:'string'},paramsJSON:{type:'string'},
-      targets:{type:'array',items:{type:'string'}},permissions:{type:'array',items:{type:'string',enum:['objects.write','player.motion','hud.message','inventory.write']}},
-    })},
+    behaviors:{type:'array',items:{anyOf:[objSchema({format:{type:'string',enum:['craftmine.behavior/1']},...behaviorFields}),objSchema({format:{type:'string',enum:['craftmine.behavior/2']},...behaviorFields,requires:{type:'array',items:{type:'string',enum:['health@1','ranged@1','melee@1']}},binding:bindingSchema})]}},
   }) ] },
 });
 
@@ -154,7 +161,7 @@ export function encodeAgentScene(input){const scene=upgradeScene(input);return {
 export function decodeAgentScene(input){
   if(input?.format!=='craftmine.scene/3'||!Array.isArray(input.behaviors))throw Error('模型需要返回完整的新场景格式');
   return {...input,behaviors:input.behaviors.map(d=>{
-    exactKeys(d,['format','id','name','description','code','stateVersion','initialStateJSON','paramsJSON','targets','permissions']);
+    exactKeys(d,['format','id','name','description','code','stateVersion','initialStateJSON','paramsJSON','targets','permissions',...(d?.format==='craftmine.behavior/2'?['requires','binding']:[])]);
     if(typeof d.initialStateJSON!=='string'||d.initialStateJSON.length>16000||typeof d.paramsJSON!=='string'||d.paramsJSON.length>8000)throw Error('模型代码参数或初始状态无效');
     const {initialStateJSON,paramsJSON,...rest}=d;return {...rest,initialState:JSON.parse(initialStateJSON),params:JSON.parse(paramsJSON)};
   })};

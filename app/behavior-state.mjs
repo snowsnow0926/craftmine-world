@@ -5,10 +5,17 @@ import { intersects } from './geometry.mjs';
 const vector=v=>{exactKeys(v,['x','y','z']);for(const n of Object.values(v))bounded(n,-80,80);};
 const table=(v,limit)=>{if(!v||typeof v!=='object'||Array.isArray(v)||Object.keys(v).length>limit||Object.keys(v).some(k=>!identifier(k)))throw Error('代码玩法存档索引无效');};
 export function validateBehaviorState(value){
-  exactKeys(value,['format','time','modules','inventory']);if(value.format!=='craftmine.behavior-state/1')throw Error('代码玩法存档格式不兼容');bounded(value.time,0,1e12);
+  const archived=value?.format==='craftmine.behavior-state/2';
+  exactKeys(value,['format','time','modules','inventory',...(archived?['archive']:[])]);if(!archived&&value.format!=='craftmine.behavior-state/1')throw Error('代码玩法存档格式不兼容');bounded(value.time,0,1e12);
   table(value.modules,8);table(value.inventory,128);
   for(const count of Object.values(value.inventory)){bounded(count,0,9999);if(!Number.isInteger(count))throw Error('库存数需要是整数');}
-  for(const module of Object.values(value.modules)){
+  let archivedModules=[];
+  if(archived){
+    if(!Array.isArray(value.archive)||value.archive.length>32)throw Error('历史玩法进度超过 32 份上限，请先导出整理');const seen=new Set();
+    for(const entry of value.archive){exactKeys(entry,['id','record']);const key=entry.id+'@'+entry.record?.stateVersion;if(!identifier(entry.id)||seen.has(key))throw Error('历史玩法进度索引无效');seen.add(key);}
+    archivedModules=value.archive.map(e=>e.record);
+  }
+  for(const module of [...Object.values(value.modules),...archivedModules]){
     exactKeys(module,['stateVersion','revision','state','overrides','error']);
     if(!Number.isInteger(module.stateVersion)||module.stateVersion<1||module.stateVersion>10000||!/^code-[a-f0-9]{20}$/.test(module.revision)||typeof module.error!=='string'||module.error.length>600)throw Error('代码玩法状态版本无效');
     jsonRecord(module.state);table(module.overrides,16);
@@ -23,15 +30,19 @@ export class BehaviorState {
   constructor(build,saved,gameplay){
     if(saved)validateBehaviorState(saved);
     this.build=build;this.definitions=build.behaviors||[];
-    this.value={format:'craftmine.behavior-state/1',time:saved?.time||0,modules:{},inventory:structuredClone(saved?.inventory||{})};
+    this.value={format:'craftmine.behavior-state/2',time:saved?.time||0,modules:{},inventory:structuredClone(saved?.inventory||{}),archive:structuredClone(saved?.archive||[])};
+    const remember=(id,record)=>{this.value.archive=this.value.archive.filter(e=>e.id!==id||e.record.stateVersion!==record.stateVersion);this.value.archive.push({id,record:structuredClone(record)});};
+    for(const [id,record]of Object.entries(saved?.modules||{}))if(!this.definitions.some(b=>b.definition.id===id&&b.definition.stateVersion===record.stateVersion))remember(id,record);
     for(const artifact of this.definitions){
-      const d=artifact.definition,old=saved?.modules[d.id];
-      if(old&&old.stateVersion!==d.stateVersion)throw Error(`「${d.name}」需要迁移状态 v${old.stateVersion} → v${d.stateVersion}，原进度已保留`);
+      const d=artifact.definition,current=saved?.modules[d.id],old=current?.stateVersion===d.stateVersion?current:this.value.archive.find(e=>e.id===d.id&&e.record.stateVersion===d.stateVersion)?.record;
+      if(current&&!old)throw Error(`「${d.name}」需要迁移状态 v${current.stateVersion} → v${d.stateVersion}，原进度已保留`);
+      this.value.archive=this.value.archive.filter(e=>e.id!==d.id||e.record.stateVersion!==d.stateVersion);
       const record=old?structuredClone(old):{stateVersion:d.stateVersion,revision:artifact.id,state:structuredClone(d.initialState),overrides:{},error:''};
       if(record.revision!==artifact.id)record.error='';record.revision=artifact.id;
       for(const id of Object.keys(record.overrides))if(!d.targets.includes(id)||!d.permissions.includes('objects.write'))delete record.overrides[id];
       this.value.modules[d.id]=record;
     }
+    validateBehaviorState(this.value);
     this.view=this.materialize(this.value);
     if(saved){
       const bins=new Map();

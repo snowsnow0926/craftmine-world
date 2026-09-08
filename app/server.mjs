@@ -7,6 +7,8 @@ import { ProjectStore,atomicJSON } from './store.mjs';
 import { AgentRunner, providerStatus } from './agent.mjs';
 import { validateSnapshot } from './scene.mjs';
 import { verifyBehaviors } from './behavior-verify.mjs';
+import { validateModule } from './memory.mjs';
+import { checkCreationModule,rememberCreationCheck } from './creation-verify.mjs';
 
 const APP = path.dirname(fileURLToPath(import.meta.url)), ROOT = path.dirname(APP);
 const port = Number(process.env.CRAFTMINE_PORT || 8787), dataRoot = path.resolve(process.env.CRAFTMINE_DATA_DIR || path.join(ROOT,'.craftmine'));
@@ -28,11 +30,18 @@ const staticFiles = new Map([
   ['/app/gameplay.mjs',['gameplay.mjs','text/javascript']], ['/app/geometry.mjs',['geometry.mjs','text/javascript']],
   ['/app/behavior-contracts.mjs',['behavior-contracts.mjs','text/javascript']], ['/app/behavior-runner.mjs',['behavior-runner.mjs','text/javascript']],
   ['/app/behavior-state.mjs',['behavior-state.mjs','text/javascript']], ['/app/behavior-session.mjs',['behavior-session.mjs','text/javascript']], ['/app/world-runtime.mjs',['world-runtime.mjs','text/javascript']],
+  ['/app/behavior-binding.mjs',['behavior-binding.mjs','text/javascript']],
 ]);
 // Keep one coherent runtime for this server's lifetime while development continues.
 const staticAssets=new Map([...staticFiles].map(([route,[file,type]])=>[route,{type,content:fs.readFileSync(path.join(APP,file))}]));
 const pages=new Map(['index.html','game.html','verify.html'].map(file=>[file,fs.readFileSync(path.join(APP,file),'utf8')]));
 const runtimeSource=fs.readFileSync(path.join(ROOT,'world-workshop-3d','src','voxel-runtime.js'));
+async function checkCode(build,events){
+  const report=await verifyBehaviors(build,{origin:`http://127.0.0.1:${port}`,events});
+  atomicJSON(path.join(store.root,'builds',build.id,'behavior-verification.json'),report);
+  if(!report.passed)throw Error('创作源码未通过后台检查：'+report.modules.filter(m=>!m.passed).map(m=>m.id+'：'+m.error).join('；'));
+  return report;
+}
 const json = (res, status, data) => { res.writeHead(status, {'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}); res.end(JSON.stringify(data)); };
 async function body(req) {
   if (!(req.headers['content-type'] || '').startsWith('application/json')) throw Error('请求必须为 JSON');
@@ -95,11 +104,26 @@ const server = http.createServer(async (req,res) => {
             if(build.behaviors?.length)store.change(d=>d.candidate.checks.push('导入源码已在隔离 Worker 中通过事件和恢复检查'));
             break;
           }
-          case '/api/modules/import': store.importModule(input); break;
+          case '/api/modules/import': {
+            store.idle();const module=validateModule(input);
+            const report=module.kind==='creation'?await checkCreationModule(store,module,{origin:`http://127.0.0.1:${port}`}):null;
+            store.importModule(input);if(report)rememberCreationCheck(store,module,report);break;
+          }
           case '/api/modules/reuse': {
             if(input.version!==store.data.current)throw Error('运行版本已过期，请刷新后重试');
             const player=validateSnapshot({format:'craftmine.progress/1',player:input.player}).player;
-            store.reuseModule(input.id,input.moduleVersion,player);break;
+            const module=store.modules.read(store.data,input.id,input.moduleVersion);
+            if(module.kind==='creation'){
+              store.idle();const report=await checkCreationModule(store,module,{origin:`http://127.0.0.1:${port}`});store.idle();rememberCreationCheck(store,module,report);
+              const base=store.data.current,build=store.build(store.modules.instantiate(store.data,store.readBuild(base).scene,input.id,input.moduleVersion,player));
+              await checkCode(build,module.payload.tests.events);store.idle();store.stage(build,`复用完整创作「${module.name}」v${module.version}`,base,null,['源码、参数、对象关系、依赖与检查用例已从记忆读取','新实例的源码在后台执行和恢复检查通过']);
+            }else store.reuseModule(input.id,input.moduleVersion,player);break;
+          }
+          case '/api/creations/change': {
+            if(input.version!==store.data.current)throw Error('运行版本已过期，请刷新后重试');store.idle();const base=store.data.current;
+            const build=store.build(store.modules.changeCreation(store.data,store.readBuild(base).scene,input.instanceId,input.moduleVersion));
+            if(build.id===base)throw Error('此实例已经使用该版本');
+            await checkCode(build);store.idle();store.stage(build,input.moduleVersion===null?'卸载完整创作（保留可恢复进度）':'切换创作实例到 v'+input.moduleVersion,base,null,['实例身份与依赖已校验','源码检查通过；应用时保留兼容进度']);break;
           }
           default: return json(res,404,{error:'接口不存在'});
         }

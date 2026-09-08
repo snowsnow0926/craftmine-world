@@ -1,17 +1,20 @@
 import { BehaviorRunner } from './behavior-runner.mjs';
 import { BehaviorState } from './behavior-state.mjs';
+import { BehaviorBinding } from './behavior-binding.mjs';
 
 // The world owns committed state and effects. Workers only propose one bounded step.
 export class BehaviorSession {
-  constructor(build,saved,{context,apply,notice=()=>{},gameplay}){
+  constructor(build,saved,{context,apply,notice=()=>{},gameplay,onStep=()=>{}}){
     this.data=new BehaviorState(build,saved,gameplay);this.context=context;this.apply=apply;this.notice=notice;
     this.runners=new Map();this.queue=[];this.pending=null;this.disposed=false;this.failures=[];this.elapsed=0;
+    this.bindings=new Map(this.data.definitions.map(b=>[b.definition.id,new BehaviorBinding(b.definition)]));
+    this.onStep=onStep;
   }
   async start(){
     try{
       await Promise.all(this.data.definitions.map(async artifact=>{
         const record=this.data.value.modules[artifact.definition.id];if(record.error){this.notice(`「${artifact.definition.name}」仍已停止：${record.error}`);return;}
-        const runner=new BehaviorRunner(artifact.definition);this.runners.set(artifact.definition.id,runner);await runner.ready;
+        const binding=this.bindings.get(artifact.definition.id),runner=new BehaviorRunner(binding.authored,{localCoordinates:!!binding.binding});this.runners.set(artifact.definition.id,runner);await runner.ready;
       }));
       await this.execute({type:'start',targetId:null},0,true);
     }catch(error){this.dispose();throw error;}
@@ -21,7 +24,7 @@ export class BehaviorSession {
     const results=await Promise.all(this.data.definitions.map(async artifact=>{
       const id=artifact.definition.id,runner=this.runners.get(id);if(!runner||runner.closed||this.data.value.modules[id].error)return null;
       if(event.targetId&&!artifact.definition.targets.includes(event.targetId))return null;
-      try{return {artifact,result:await runner.step(frame,this.data.value.modules[id].state)};}catch(error){return {artifact,error};}
+      try{const binding=this.bindings.get(id);return {artifact,result:binding.result(await runner.step(binding.frame(frame),this.data.value.modules[id].state),frame)};}catch(error){return {artifact,error};}
     }));
     if(this.disposed)return;
     for(const entry of results.filter(Boolean)){
@@ -31,6 +34,7 @@ export class BehaviorSession {
         // Recheck against current geometry and player position, which may have moved
         // during the asynchronous computation. Commit only after the whole batch passes.
         const applied=this.data.apply(artifact,entry.result,{...frame,...this.context()});
+        this.onStep({id,frame,result:entry.result});
         this.apply(applied,this.data.view);
       }catch(error){
         this.runners.get(id)?.dispose();this.data.value.modules[id].error=String(error.message).slice(0,600);

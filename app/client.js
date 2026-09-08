@@ -68,7 +68,7 @@ function render(){
   if(c){$('candidate-title').textContent=c.summary;const changes=[c.diff.systems,c.diff.behaviors].filter(Boolean).flatMap(s=>[...s.added,...s.changed,...s.removed]);$('candidate-detail').textContent=`对象：新增 ${c.diff.added.length} · 修改 ${c.diff.changed.length} · 移除 ${c.diff.removed.length}。${changes.length?'玩法：'+changes.join('、')+'。':''}应用时保存最新进度。`;}
   const mk=JSON.stringify(project.messages);
   if(mk!==messagesKey){messagesKey=mk;if(project.messages.length){const atBottom=$('messages').scrollHeight-$('messages').scrollTop-$('messages').clientHeight<80;$('messages').replaceChildren();for(const m of project.messages){const e=node('div',undefined,'message '+m.role);e.append(node('div',m.role==='user'?'你':m.role==='assistant'?'创作助手':'项目记录','who'),node('div',m.text));$('messages').append(e);}if(atBottom||project.messages.at(-1)?.role==='user')$('messages').scrollTop=$('messages').scrollHeight;}}
-  const rk=JSON.stringify([project.tasks,project.history,project.current,project.library,project.candidate?.id]);if(rk===renderKey)return;renderKey=rk;
+  const rk=JSON.stringify([project.tasks,project.history,project.current,project.library,project.activeCreations,project.candidate?.id]);if(rk===renderKey)return;renderKey=rk;
   $('task-list').replaceChildren();
   if(!project.tasks.length)$('task-list').append(node('p','从右侧描述第一个想法，开发记录会出现在这里。','empty'));
   for(const t of [...project.tasks].reverse()){
@@ -97,7 +97,16 @@ function renderObjects(){
   for(const s of activeFrame?.build.scene.systems||[]){const e=node('article',undefined,'system-card');e.append(node('strong',s.name),node('small',s.type==='health'?'显示生命值 · 受伤与复活':s.type==='ranged'?'1 装备 · 左键射击 · R 换弹':'2 装备 · 左键 / F 近战'));$('system-list').append(e);}
   for(const s of activeFrame?.build.scene.behaviors||[]){const e=node('article',undefined,'system-card');e.append(node('strong',s.name),node('small',s.description));const details=node('details'),summary=node('summary','查看玩法源码');details.append(summary,node('pre',s.code,'source-preview'));e.append(details);$('system-list').append(e);}
   if(!$('system-list').children.length)$('system-list').append(node('p','还没有启用玩法。可以说：“增加 100 点生命值”或“增加射击和一个训练靶”。','empty'));
-  renderLibrary();
+  renderCreations();renderLibrary();
+}
+function renderCreations(){
+  for(const instanceId of project.activeCreations||[]){
+    const installed=project.moduleBindings.creation[instanceId],module=project.library.find(m=>m.id===installed.id);if(!module)continue;
+    const card=node('article',undefined,'system-card');card.append(node('strong',module.name+' · 完整创作'),node('small',`实例 v${installed.version} · ${installed.objects.length} 个对象 · ${installed.behaviors.length} 份源码`));
+    const select=node('select');select.setAttribute('aria-label',module.name+' 的实例版本');for(const v of [...module.versions].reverse()){const option=node('option','v'+v.version);option.value=String(v.version);option.selected=v.version===installed.version;select.append(option);}
+    const change=async version=>{await api('/api/creations/change',{version:activeFrame.version,instanceId,moduleVersion:version});await refresh();switchView('play');toast('候选已准备，应用后更新这个创作实例。');};
+    const controls=node('div',undefined,'module-actions'),update=button('切换此实例版本',()=>change(Number(select.value))),uninstall=button('卸载此实例',()=>change(null));update.disabled=uninstall.disabled=!!project.candidate||applying||project.tasks.some(t=>['running','validating','cancelling'].includes(t.status));controls.append(select,update,uninstall);card.append(controls);$('system-list').append(card);
+  }
 }
 function downloadJSON(data,name){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}
 async function reuseModule(id,moduleVersion){if(applying)throw Error('请等待当前更新结束');const snap=await requestSnapshot(activeFrame);await api('/api/modules/reuse',{id,moduleVersion,version:activeFrame.version,player:snap.player});await refresh();switchView('play');toast('已从记忆中读取模块。应用候选后进入世界，无需重新生成。');}
@@ -108,7 +117,7 @@ function renderLibrary(){
   if(!modules.length)list.append(node('p',query?'没有匹配的记忆。':'应用一次创造后，这里会记住它。模块会保存在本机，关闭程序后也能复用。','empty'));
   for(const m of [...modules].reverse()){
     const e=node('article',undefined,'module-card');e.dataset.moduleId=m.id;
-    const title=node('div',undefined,'module-heading');title.append(node('span',m.kind==='object'?'◇':'⚙','module-icon'),node('h3',m.name),node('small',m.kind==='object'?'对象':'玩法'));e.append(title);
+    const title=node('div',undefined,'module-heading');title.append(node('span',m.kind==='object'?'◇':'⚙','module-icon'),node('h3',m.name),node('small',m.kind==='creation'?'完整创作 · 含源码':m.kind==='object'?'对象':'玩法'));e.append(title);
     e.append(node('p',m.description||'来自你的创作','module-description'));
     const versions=node('select');versions.setAttribute('aria-label',m.name+' 的版本');for(const v of [...m.versions].reverse()){const option=node('option',`v${v.version}${v.version===m.latest?' · 最新':''}`);option.value=String(v.version);versions.append(option);}
     const actions=node('div',undefined,'module-actions'),use=button('复用到世界 ↗',async()=>reuseModule(m.id,Number(versions.value)));use.disabled=!!project.candidate||applying||project.tasks.some(t=>['running','validating','cancelling'].includes(t.status));actions.append(versions,use);
@@ -159,7 +168,7 @@ $('prompt').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.sh
 $('intent').onchange=render;
 $('memory-search').oninput=renderLibrary;
 $('module-import-button').onclick=()=>$('module-import-file').click();
-$('module-import-file').onchange=async()=>{const file=$('module-import-file').files[0];if(!file)return;try{if(file.size>300000)throw Error('模块文件过大');await api('/api/modules/import',JSON.parse(await file.text()));await refresh();toast('模块已记入本地库，可选择版本复用到世界。');}catch(error){toast(error.message);}finally{$('module-import-file').value='';}};
+$('module-import-file').onchange=async()=>{const file=$('module-import-file').files[0];if(!file)return;try{if(file.size>1_500_000)throw Error('模块文件过大');await api('/api/modules/import',JSON.parse(await file.text()));await refresh();toast('模块已记入本地库，可选择版本复用到世界。');}catch(error){toast(error.message);}finally{$('module-import-file').value='';}};
 $('example').onclick=()=>{$('prompt').value='我想要有树';$('prompt').focus();};
 $('clear-context').onclick=()=>{selected=null;target=null;updateContext();};
 $('apply').onclick=applyCandidate;

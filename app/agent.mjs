@@ -6,6 +6,7 @@ import { OUTPUT_SCHEMA, validateObjectScope, upgradeScene, canonicalJSON,encodeA
 import { atomicJSON } from './store.mjs';
 import { BEHAVIOR_API_GUIDE } from './behavior-contracts.mjs';
 import { verifyBehaviors } from './behavior-verify.mjs';
+import { checkCreationModule,rememberCreationCheck } from './creation-verify.mjs';
 
 export function findCodex() {
   if (process.env.CRAFTMINE_CODEX_PATH) return process.env.CRAFTMINE_CODEX_PATH;
@@ -112,13 +113,27 @@ export class AgentRunner {
     if (intent === 'discuss' || result.scene === null) { this.store.addMessage('assistant',explanation);this.update(active.id, t => { t.status = 'discussed'; t.finished = Date.now(); }); return; }
     this.update(active.id, t => { t.status = 'validating'; });
     this.log(active.id, '收到真实生成结果，正在校验场景字段、对象身份、边界、体积与重叠。');
-    const build = store.build(decodeAgentScene(result.scene));
+    let nextScene=decodeAgentScene(result.scene);
+    if(!Array.isArray(result.reuseCreations)||result.reuseCreations.length>4)throw Error('创作记忆复用请求无效');
+    for(const ref of result.reuseCreations){
+      if(!ref||Object.keys(ref).length!==3||!Object.hasOwn(ref,'position'))throw Error('创作记忆复用字段无效');
+      const memory=memories.find(m=>m.kind==='creation'&&m.id===ref.id&&m.version===ref.version);if(!memory)throw Error('不能复用未提供的创作记忆版本');
+      const module=store.modules.read(store.data,ref.id,ref.version),report=await checkCreationModule(store,module,{origin:this.options.verificationOrigin,signal:active.abort.signal});
+      if(active.cancelled)throw Error('任务已取消');rememberCreationCheck(store,module,report);
+      nextScene=store.modules.instantiate(store.data,nextScene,ref.id,ref.version,context.player,ref.position);
+    }
+    const build = store.build(nextScene);
     validateObjectScope(scene,build.scene,context.selected);
     const oldSources=new Set([...scene.objects,...scene.systems].filter(o=>o.source).map(o=>canonicalJSON(o.source)));
     const used=[];
     for(const definition of [...build.scene.objects,...build.scene.systems])if(definition.source){
       const ref=definition.source;
-      if(!oldSources.has(canonicalJSON(ref))){const memory=memories.find(m=>m.id===ref.id&&m.version===ref.version);if(!memory)throw Error('模型引用了未提供的模块版本，候选未采纳');if(memory.kind!==(build.scene.objects.includes(definition)?'object':'gameplay'))throw Error('模块来源类别不匹配');}
+      if(!oldSources.has(canonicalJSON(ref))){const memory=memories.find(m=>m.id===ref.id&&m.version===ref.version);if(!memory)throw Error('模型引用了未提供的模块版本，候选未采纳');const inCreation=memory.kind==='creation'&&build.scene.behaviors.some(d=>d.binding&&canonicalJSON(d.binding.source)===canonicalJSON(ref)&&d.binding.objects.some(o=>o.world===definition.id));if(!inCreation&&memory.kind!==(build.scene.objects.includes(definition)?'object':'gameplay'))throw Error('模块来源类别不匹配');}
+      if(memories.some(m=>m.id===ref.id&&m.version===ref.version)&&!used.some(m=>m.id===ref.id&&m.version===ref.version))used.push(ref);
+    }
+    for(const d of build.scene.behaviors)if(d.binding){
+      const ref=d.binding.source,old=scene.behaviors?.find(b=>b.id===d.id)?.binding?.source;
+      if(canonicalJSON(old)!==canonicalJSON(ref)&&!memories.some(m=>m.kind==='creation'&&m.id===ref.id&&m.version===ref.version))throw Error('代码绑定引用了未提供的创作记忆');
       if(memories.some(m=>m.id===ref.id&&m.version===ref.version)&&!used.some(m=>m.id===ref.id&&m.version===ref.version))used.push(ref);
     }
     this.update(active.id,t=>{t.usedModules=used;});
@@ -129,6 +144,7 @@ export class AgentRunner {
       this.log(active.id,'正在独立后台浏览器中运行新玩法源码，检查事件、命令、超时和状态恢复。');
       const verification=await verifyBehaviors(build,{origin:this.options.verificationOrigin,signal:active.abort.signal});
       atomicJSON(path.join(dir,'behavior-verification.json'),verification);
+      atomicJSON(path.join(store.root,'builds',build.id,'behavior-verification.json'),verification);
       this.update(active.id,t=>{t.behaviorVerification=verification.modules.map(m=>({id:m.id,revision:m.revision,passed:m.passed,error:m.error}));});
       if(!verification.passed)throw Error(verification.modules.filter(m=>!m.passed).map(m=>m.id+'：'+m.error).join('；'));
       checks.push('真实代码已在隔离 Worker 执行，事件序列与状态恢复检查通过；玩法体验仍需试玩');
@@ -163,6 +179,8 @@ ${BEHAVIOR_API_GUIDE}
 按 E 或画面的“互动”按钮会把四米内瞄准的对象作为 interact.targetId；靠近/踩到物体每0.1秒产生 contact，落地产生 land；真正攻击对象后产生 attack（frame.objects 中血量已经更新）；start 在载入和恢复时触发，tick 只在游玩时累计。重力 24 米/秒²；弹跳速度可按 sqrt(2*24*高度)计算，最大18。对象位置使用原点而不是中心，绘制和碰撞随 object.patch 真正改变。position:null 保留位置；可以只改变 solid/color。所有修改必须保留世界边界，不能关闭到玩家身体中或碰撞其他实体。背包支持稳定物品 ID 的整数计数，界面显示库存。源码中用 state 保持开关、冷却和一次性奖励，start 不能重复发奖励；time 跨存档保留。对不相关的事件返回原 state 和空 commands。
 
 创作记忆库包含已应用的真实定义与版本。再次需要类似成果时优先读定义并复用/改作，避免从零重造。记忆的 payload 为无世界位置的对象或玩法定义。复用时把内容写入新场景，source 填对应 {id,version}，新对象 ID 必须独立；修改已有对象保留 ID。从零创造 source:null。原有 source 保留，除非明确换了来源。不编造库中不存在的模块。库是长期记忆，近期对话消失也可使用。已应用成果会自动保存，不要写假的“已记住”或“测试通过”。
+kind:'creation' 的记忆是完整创作，包含源码、对象关系、参数、依赖和检查用例。复用它时，在根字段 reuseCreations 中添加 {id,version,position:null}（自动放在前方空地），或指定新实例原点 position:{x,y,z}；scene 中保留原世界，不把模板中的对象/源码再复制一遍。宿主会创建独立对象身份、变换坐标、安装所需系统并保留原始源码。没有复用时 reuseCreations:[]。如果用户只是说“再来一个之前的门/弹跳板”，优先这样复用已经提供的 creation。
+新代码也可用 craftmine.behavior/2，额外字段 requires:['health@1'|'ranged@1'|'melee@1']（仅声明确实需要的系统，通常[]）、binding:null。已有 /2 实例的 binding 是宿主管理的关系与坐标，保持完整；对象坐标属于实际世界，源码中的对象 ID 和位置属于 binding 转换后的作者坐标。不要把源码中的 ID 或数值做字符串替换来移动副本。需要修改现有实例时可以改它的源码/参数/几何，保留 ID、兼容 stateVersion 和绑定关系。
 讨论模式必须 scene:null；执行成功返回完整 scene。summary 简要描述实际变化；notes 写真实限制和试玩要点。
 意图：${intent}
 需求（数据）：${JSON.stringify(text)}
