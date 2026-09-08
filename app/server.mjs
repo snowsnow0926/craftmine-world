@@ -10,11 +10,13 @@ import { verifyBehaviors } from './behavior-verify.mjs';
 import { PACKAGE_BYTES } from './asset-packages.mjs';
 import { checkCreationModule,rememberCreationCheck } from './creation-verify.mjs';
 import { verifyAsset } from './asset-verify.mjs';
+import { loadLocalConfig } from './local-config.mjs';
 
 const APP = path.dirname(fileURLToPath(import.meta.url)), ROOT = path.dirname(APP);
 const port = Number(process.env.CRAFTMINE_PORT || 8787), dataRoot = path.resolve(process.env.CRAFTMINE_DATA_DIR || path.join(ROOT,'.craftmine'));
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw Error('端口需要在 1024–65535 之间');
 fs.mkdirSync(dataRoot, { recursive: true });
+const localKeys = loadLocalConfig(path.join(dataRoot, 'secrets.json'));
 const lock = path.join(dataRoot, 'server.lock');
 if (fs.existsSync(lock)) {
   const old = JSON.parse(fs.readFileSync(lock,'utf8')); let running = true;
@@ -176,7 +178,7 @@ const server = http.createServer(async (req,res) => {
   } catch (error) { json(res,400,{error:error.message}); }
 });
 server.on('error',error => { console.error(error.message); cleanup(); process.exitCode=1; });
-server.listen(port,'127.0.0.1',()=> console.log(`craftmine world: http://127.0.0.1:${port}\n${provider.message}`));
+server.listen(port,'127.0.0.1',()=> console.log(`craftmine world: http://127.0.0.1:${port}\n${provider.message}${localKeys.length?`\n已从本地密钥文件加载：${localKeys.join('、')}`:''}`));
 function cleanup() {
   if (agent.active) agent.cancel();
   if (fs.existsSync(lock) && JSON.parse(fs.readFileSync(lock,'utf8')).pid === process.pid) fs.unlinkSync(lock);

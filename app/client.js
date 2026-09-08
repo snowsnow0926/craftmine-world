@@ -69,7 +69,7 @@ function render(){
   review.invalidate(project);
   contextPanel.render(project,activeFrame?.build);
   assetPanel.render(project);
-  $('provider').textContent=project.provider.available?'● Codex 已登录':'○ 需要连接 LLM';$('provider').title=project.provider.message;
+  $('provider').textContent=project.provider.available?(project.provider.provider==='deepseek'?'● DeepSeek 已连接':'● Codex 已登录'):'○ 需要连接 LLM';$('provider').title=project.provider.message;
   $('version').textContent='v'+(project.history.length)+ ' · 当前可玩';
   const task=project.tasks.at(-1),running=task&&['running','validating','cancelling'].includes(task.status);
   $('send').disabled=!connected||!activeFrame||applying||!project.provider.available||($('intent').value==='execute'&&(!!running||!!project.candidate));
