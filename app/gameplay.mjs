@@ -6,7 +6,9 @@ export const SYSTEMS = {
 };
 export const identifier = value => typeof value === 'string' && /^[a-z][a-z0-9-]{0,63}$/.test(value);
 export function exactKeys(value, fields) {
-  if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).length !== fields.length || fields.some(k=>!Object.hasOwn(value,k))) throw Error('模块字段不符合格式');
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('模块字段不符合格式：需要一个 JSON 对象');
+  const missing = fields.filter(k => !Object.hasOwn(value, k)), extra = Object.keys(value).filter(k => !fields.includes(k));
+  if (missing.length || extra.length) throw Error(`模块字段不符合格式：${missing.length ? '缺少 ' + missing.join('、') : ''}${missing.length && extra.length ? '；' : ''}${extra.length ? '多出 ' + extra.join('、') : ''}。允许的字段只有：${fields.join('、')}`);
 }
 export function bounded(value,min,max) { if (!Number.isFinite(value)||value<min||value>max) throw Error(`数值需要在 ${min} 到 ${max} 之间`); }
 export function validateSource(source) {

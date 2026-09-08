@@ -1,19 +1,21 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { OUTPUT_SCHEMA,validateObjectScope,upgradeScene,canonicalJSON,decodeAgentScene } from './scene.mjs';
+import { OUTPUT_SCHEMA,validateObjectScope,upgradeScene,canonicalJSON,decodeAgentScene,applySceneChanges,expandSceneObjects } from './scene.mjs';
 import { atomicJSON } from './store.mjs';
 import { verifyBehaviors } from './behavior-verify.mjs';
 import { checkCreationModule,rememberCreationCheck } from './creation-verify.mjs';
 import { GameplaySession } from './gameplay.mjs';
 import { BehaviorState } from './behavior-state.mjs';
 import { buildPrompt,buildRepairPrompt } from './agent-prompt.mjs';
-import { findCodex,generateModel,killProcessTree } from './agent-model.mjs';
-export { findCodex,providerStatus,killProcessTree } from './agent-model.mjs';
+import { findCodex,generateModel,killProcessTree,modelProvider,deepseekKey,thinkingEnabled } from './agent-model.mjs';
+export { findCodex,providerStatus,killProcessTree,modelProvider,modelId,thinkingEnabled } from './agent-model.mjs';
 export { buildPrompt } from './agent-prompt.mjs';
 
 export const REPAIR_LIMIT=2;
 export const TASK_TIMEOUT=240000;
+// 开启思考后单次调用可能接近 200 秒，必须给整个任务留出更多时间。
+export const TASK_TIMEOUT_THINKING=Number(process.env.CRAFTMINE_TASK_TIMEOUT_MS||1200000);
 const stageNames={response:'回复格式',scene:'场景构建',scope:'修改范围',memory:'记忆来源',behavior:'源码运行',progress:'已有进度',provider:'模型连接',storage:'本地保存',commit:'候选提交',deadline:'总时限',cancelled:'取消'};
 const retryStages=new Set(['response','scene','scope','memory','progress']);
 class CheckFailure extends Error {
@@ -27,8 +29,10 @@ export class AgentRunner {
       if(intent==='discuss'){this.store.addMessage('user',text);this.store.addMessage('system','讨论已记录。当前任务或候选仍待处理，这条消息没有触发修改。');return null;}
       throw Error('请先完成任务，或应用／丢弃当前候选');
     }
-    this.store.idle();const executable=this.executable();if(!executable)throw Error('未找到 Codex CLI，请先安装并登录');
-    const id=randomUUID(),base=this.store.data.current,started=Date.now(),timeoutMs=this.options.timeoutMs??TASK_TIMEOUT;
+    this.store.idle();const provider=modelProvider(),executable=provider==='codex'?this.executable():null;
+    if(provider==='codex'&&!executable)throw Error('未找到 Codex CLI，请先安装并登录');
+    if(provider==='deepseek'&&!deepseekKey())throw Error('未配置 DeepSeek 密钥，请设置 CRAFTMINE_DEEPSEEK_API_KEY 后重启本地服务');
+    const id=randomUUID(),base=this.store.data.current,started=Date.now(),timeoutMs=this.options.timeoutMs??(thinkingEnabled()?TASK_TIMEOUT_THINKING:TASK_TIMEOUT);
     this.store.addMessage('user',text);
     this.store.change(d=>{d.tasks.push({id,base,intent,prompt:text,context,status:'running',started,attempts:[],limits:{repairs:REPAIR_LIMIT,timeoutMs},logs:[{time:started,text:'已固定当前场景版本，正在启动真实 LLM。'}]});d.tasks=d.tasks.slice(-40);});
     const active={id,cancelled:false,timedOut:false,abort:new AbortController(),deadline:started+timeoutMs};this.active=active;
@@ -49,7 +53,7 @@ export class AgentRunner {
     if(!this.active)throw Error('当前没有运行中的任务');this.active.cancelled=true;this.active.abort.abort();
     try{this.update(this.active.id,t=>{t.status='cancelling';});}finally{killProcessTree(this.child);}
   }
-  generate(input){return generateModel({...input,onChild:child=>{this.child=child;},onLog:text=>this.log(input.active.id,text),onUsage:usage=>{
+  generate(input){return generateModel({...input,schema:input.schema||OUTPUT_SCHEMA,onChild:child=>{this.child=child;},onLog:text=>this.log(input.active.id,text),onUsage:usage=>{
     this.attempt(input.active,input.number,(attempt,task)=>{attempt.usage=usage;task.usage={};for(const a of task.attempts)for(const [key,n]of Object.entries(a.usage||{}))if(Number.isFinite(n))task.usage[key]=(task.usage[key]||0)+n;});
   }});}
   async run(executable,active,text,intent,context,base){
@@ -62,28 +66,47 @@ export class AgentRunner {
     this.update(active.id,t=>{t.contextRead={revision:projectContext.revision,notes:projectContext.notes.map(n=>n.id),requests:projectContext.acceptedChanges.map(r=>r.id),problems:projectContext.runtimeProblems.map(p=>p.id)};});
     this.log(active.id,`已读取创作方向、${projectContext.notes.length} 条长期约定、${projectContext.acceptedChanges.length} 条已应用需求和 ${projectContext.runtimeProblems.length} 个已保存的运行问题。`);
     const assets=store.assets.manifest(store.data,scene,text);atomicJSON(path.join(dir,'assets-read.json'),assets);
+    // 世界不使用素材时，提示里不必带 scene/4 的整份重复 schema。
+    const promptSchema=assets.length||scene.objects.some(o=>o.appearance)?OUTPUT_SCHEMA:{...OUTPUT_SCHEMA,properties:{...OUTPUT_SCHEMA.properties,scene:{anyOf:OUTPUT_SCHEMA.properties.scene.anyOf.slice(0,2)}}};
     const basePrompt=buildPrompt({assets,scene,memories,text,intent,context,messages:store.data.messages.slice(-8),snapshot:store.data.snapshot,projectContext});
     let previous;
     for(let number=1;number<=REPAIR_LIMIT+1;number++){
-      this.assertActive(active);const attemptDir=path.join(dir,'attempts',String(number));let phase='storage',raw='',build;
+      this.assertActive(active);const attemptDir=path.join(dir,'attempts',String(number));let phase='storage',raw='',build,readRound=false;
       this.update(active.id,t=>{t.status='running';t.attempts.push({number,kind:number===1?'generate':'repair',status:'running',phase:'provider',started:Date.now()});});
       const setPhase=value=>{phase=value;this.attempt(active,number,(a,t)=>{a.phase=value;if(value!=='provider')t.status='validating';});};
       try{
         const prompt=previous?buildRepairPrompt(basePrompt,{number,...previous,snapshot:store.data.snapshot}):basePrompt;
-        atomicJSON(path.join(attemptDir,'response.schema.json'),OUTPUT_SCHEMA);fs.writeFileSync(path.join(attemptDir,'request.txt'),prompt,'utf8');
+        atomicJSON(path.join(attemptDir,'response.schema.json'),promptSchema);fs.writeFileSync(path.join(attemptDir,'request.txt'),prompt,'utf8');
         if(number===1)fs.writeFileSync(path.join(dir,'request.txt'),prompt,'utf8');
         this.log(active.id,number===1?'第 1 次生成开始。':`自动修复 ${number-1}/${REPAIR_LIMIT}：根据${stageNames[previous.diagnostic.stage]}的实际报错修正，同一总时限继续计时。`);
-        setPhase('provider');raw=await this.generate({executable,dir:attemptDir,prompt,active,number});this.assertActive(active);
+        setPhase('provider');raw=await this.generate({executable,dir:attemptDir,prompt,schema:promptSchema,active,number});this.assertActive(active);
         setPhase('storage');fs.writeFileSync(path.join(attemptDir,'response.json'),raw,'utf8');
         setPhase('response');if(typeof raw!=='string'||Buffer.byteLength(raw)>1_000_000)throw Error('模型回复超过大小限制');
-        const result=JSON.parse(raw);
-        if(!result||typeof result.summary!=='string'||!result.summary.trim()||result.summary.length>3000||!Array.isArray(result.notes)||result.notes.length>20||result.notes.some(s=>typeof s!=='string'||s.length>1000))throw Error('模型回复格式无效');
+        const validResult=value=>Boolean(value)&&typeof value.summary==='string'&&Boolean(value.summary.trim())&&value.summary.length<=3000&&Array.isArray(value.notes)&&value.notes.length<=20&&value.notes.every(s=>typeof s==='string'&&s.length<=1000);
+        let result=JSON.parse(raw);
+        if(!validResult(result))throw Error('模型回复格式无效');
+        if(Array.isArray(result.read)&&result.read.length){
+          if(readRound)throw Error('已经补充过一次读取，请直接给出 changes 或完整 scene');
+          if(Array.isArray(result.changes)&&result.changes.length)throw Error('read 与 changes 不能同时返回');
+          if(result.scene!==null&&result.scene!==undefined)throw Error('read 与 scene 不能同时返回');
+          readRound=true;const extra=expandSceneObjects(scene,result.read);
+          const followup=prompt+`\n\n你请求读取的对象完整定义（数据）：${JSON.stringify(extra)}\n现在请直接给出 changes 或完整 scene，不要再返回 read。`;
+          setPhase('storage');fs.writeFileSync(path.join(attemptDir,'request.read.txt'),followup,'utf8');
+          this.log(active.id,`模型请求读取 ${extra.length} 个对象的完整定义，已补充后继续。`);
+          setPhase('provider');raw=await this.generate({executable,dir:attemptDir,prompt:followup,schema:promptSchema,active,number});this.assertActive(active);
+          setPhase('storage');fs.writeFileSync(path.join(attemptDir,'response.read.json'),raw,'utf8');
+          setPhase('response');if(typeof raw!=='string'||Buffer.byteLength(raw)>1_000_000)throw Error('模型回复超过大小限制');
+          result=JSON.parse(raw);
+          if(!validResult(result))throw Error('模型回复格式无效');
+        }
         const explanation=result.summary+(result.notes.length?'\n\n'+result.notes.join('\n'):'');
-        if(intent==='discuss'||result.scene===null){
-          if(previous&&intent!=='discuss')throw Error('修复必须返回完整候选场景，不能以文字回复替代原需求');
+        const hasChanges=Array.isArray(result.changes)&&result.changes.length>0;
+        if(hasChanges&&result.scene!==null&&result.scene!==undefined)throw Error('局部修改（changes）与完整场景（scene）只能二选一');
+        if(intent==='discuss'||(result.scene===null&&!hasChanges)){
+          if(previous&&intent!=='discuss')throw Error('修复必须返回候选场景或局部修改，不能以文字回复替代原需求');
           this.assertActive(active);this.attempt(active,number,(a,t)=>{a.status='discussed';a.finished=Date.now();t.status='discussed';t.finished=Date.now();});store.addMessage('assistant',explanation);return;
         }
-        setPhase('scene');let nextScene=decodeAgentScene(result.scene);
+        setPhase('scene');let nextScene=hasChanges?applySceneChanges(scene,result.changes):decodeAgentScene(result.scene);
         setPhase('memory');if(!Array.isArray(result.reuseCreations)||result.reuseCreations.length>4)throw Error('创作记忆复用请求无效');
         for(const ref of result.reuseCreations){
           if(!ref||Object.keys(ref).length!==3||!Object.hasOwn(ref,'position'))throw Error('创作记忆复用字段无效');

@@ -6,8 +6,11 @@ import { canonicalJSON } from './canonical.mjs';
 import { validateAppearance,checkAppearanceBounds,sceneAssetReferences } from './asset-binding.mjs';
 import { compileBehavior } from './behavior-build.mjs';
 import { validateBehaviorState } from './behavior-state.mjs';
-import { BEHAVIOR_CAPABILITIES } from './behavior-contracts.mjs';
+import { BEHAVIOR_CAPABILITIES,BEHAVIOR_PERMISSIONS,BEHAVIOR_KEYS } from './behavior-contracts.mjs';
 export { canonicalJSON } from './canonical.mjs';
+
+// 对象 ID 的硬约束。校验与提示词都从这里取，避免两处各写一份而漂移。
+export const OBJECT_ID_PATTERN = /^[a-z][a-z0-9-]{0,47}$/;
 
 export const MATERIALS = { grass: 1, dirt: 2, stone: 3, wood: 4, leaves: 5, planks: 6, sand: 7, brick: 8, light: 9, glass: 12 };
 export const EMPTY_SCENE = { format: 'craftmine.scene/1', title: '最初的世界', night: false, objects: [] };
@@ -42,7 +45,7 @@ function compileLegacy(input) {
   const ids = new Set(), cells = new Map(); let volume = 0;
   for (const object of input.objects) {
     keys(object, ['id', 'name', 'position', 'parts']); string(object.name, 60);
-    if (typeof object.id !== 'string' || !/^[a-z][a-z0-9-]{0,47}$/.test(object.id) || ids.has(object.id)) throw Error('对象 ID 无效或重复');
+    if (typeof object.id !== 'string' || !OBJECT_ID_PATTERN.test(object.id) || ids.has(object.id)) throw Error('对象 ID 无效或重复');
     ids.add(object.id); vector(object.position, -40, 40);
     if (!Array.isArray(object.parts) || !object.parts.length || object.parts.length > 128) throw Error('每个对象需要 1–128 个几何部分');
     for (const part of object.parts) {
@@ -74,6 +77,15 @@ export function validateObjectScope(before, after, selected) {
 }
 
 export const overlaps=(a,b)=>['x','y','z'].every(k=>a.min[k]<b.max[k]-0.00001&&a.max[k]>b.min[k]+0.00001);
+// 冲突诊断要能让模型算出怎么改：给出双方 ID、重叠区域和最小分离方向。
+function overlapDetail(a,b){
+  const min=Object.fromEntries(['x','y','z'].map(k=>[k,Number(Math.max(a.min[k],b.min[k]).toFixed(3))]));
+  const max=Object.fromEntries(['x','y','z'].map(k=>[k,Number(Math.min(a.max[k],b.max[k]).toFixed(3))]));
+  const size=Object.fromEntries(['x','y','z'].map(k=>[k,Number((max[k]-min[k]).toFixed(3))]));
+  const axis=['x','y','z'].reduce((best,k)=>size[k]<size[best]?k:best,'x');
+  const push=Number((size[axis]+0.1).toFixed(2)),direction=a.min[axis]<b.min[axis]?'-':'+';
+  return `「${a.id}」与「${b.id}」的实心部分重叠：重叠区域最小角 ${JSON.stringify(min)}，最大角 ${JSON.stringify(max)}，尺寸 ${JSON.stringify(size)}。最小分离方向是 ${axis} 轴，把其中一个对象沿 ${axis} 移动 ${direction}${push} 米即可分开（或缩小到不重叠）。`;
+}
 export function objectBounds(object) {
   return {min:Object.fromEntries(['x','y','z'].map(k=>[k,Math.min(...object.parts.map(p=>object.position[k]+p.offset[k]))])),max:Object.fromEntries(['x','y','z'].map(k=>[k,Math.max(...object.parts.map(p=>object.position[k]+p.offset[k]+p.size[k]))]))};
 }
@@ -105,7 +117,7 @@ export function compileScene(input) {
       // Decorations may overlap naturally. Solid parts from different objects must not intersect.
       if(p.solid){const seen=new Set();for(let x=Math.floor(min.x/4);x<=Math.floor(max.x/4);x++)for(let y=Math.floor(min.y/4);y<=Math.floor(max.y/4);y++)for(let z=Math.floor(min.z/4);z<=Math.floor(max.z/4);z++){
         const key=`${x},${y},${z}`,near=bins.get(key)||[];
-        for(const other of near)if(!seen.has(other)){seen.add(other);if(other.id!==o.id&&overlaps(primitive,other))throw Error('不同实心对象发生重叠，请调整位置');}
+        for(const other of near)if(!seen.has(other)){seen.add(other);if(other.id!==o.id&&overlaps(primitive,other))throw Error(overlapDetail(primitive,other));}
         near.push(primitive);bins.set(key,near);
       }}
       primitives.push(primitive);
@@ -135,11 +147,16 @@ const vecSchema = { type: 'object', properties: { x: { type: 'number' }, y: { ty
 const objSchema = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
 const sourceSchema={anyOf:[{type:'null'},objSchema({id:{type:'string'},version:{type:'integer'}})]};
 const bindingSchema={anyOf:[{type:'null'},objSchema({instanceId:{type:'string'},source:objSchema({id:{type:'string'},version:{type:'integer'}}),origin:vecSchema,translation:vecSchema,objects:{type:'array',items:objSchema({key:{type:'string'},local:{type:'string'},world:{type:'string'}})},behaviors:{type:'array',items:objSchema({local:{type:'string'},world:{type:'string'}})}})]};
-const behaviorFields={id:{type:'string'},name:{type:'string'},description:{type:'string'},code:{type:'string'},stateVersion:{type:'integer'},initialStateJSON:{type:'string'},paramsJSON:{type:'string'},targets:{type:'array',items:{type:'string'}},permissions:{type:'array',items:{type:'string',enum:['objects.write','player.motion','hud.message','inventory.write']}}};
-export const OUTPUT_SCHEMA = objSchema({
+const behaviorFields={id:{type:'string'},name:{type:'string'},description:{type:'string'},code:{type:'string'},stateVersion:{type:'integer'},initialStateJSON:{type:'string'},paramsJSON:{type:'string'},targets:{type:'array',items:{type:'string'}},permissions:{type:'array',items:{type:'string',enum:BEHAVIOR_PERMISSIONS}},keys:{type:'array',items:{type:'string',enum:BEHAVIOR_KEYS}}};
+const changeSchema={type:'object',properties:{op:{type:'string'},id:{type:'string'},name:{type:'string'},position:vecSchema,components:{type:'object'},parts:{type:'array'},object:{type:'object'},behavior:{type:'object'},system:{type:'object'}},required:['op'],additionalProperties:false};
+export const OUTPUT_SCHEMA = {
+  type: 'object',
+  properties: {
   summary: { type: 'string' },
   notes: { type: 'array', items: { type: 'string' } },
   reuseCreations:{type:'array',items:objSchema({id:{type:'string'},version:{type:'integer'},position:{anyOf:[{type:'null'},vecSchema]}})},
+  changes:{anyOf:[{type:'null'},{type:'array',items:changeSchema}]},
+  read:{anyOf:[{type:'null'},{type:'array',items:{type:'string'}}]},
   scene: { anyOf: [ { type: 'null' }, objSchema({
     format: { type: 'string', enum: ['craftmine.scene/3'] }, title: { type: 'string' }, night: { type: 'boolean' },
     objects: { type: 'array', items: objSchema({
@@ -150,7 +167,10 @@ export const OUTPUT_SCHEMA = objSchema({
     systems:{type:'array',items:{anyOf:Object.entries(SYSTEMS).map(([type,definition])=>objSchema({id:{type:'string'},name:{type:'string'},type:{type:'string',enum:[type]},config:objSchema(Object.fromEntries(Object.keys(definition.fields).map(k=>[k,{type:k==='magazine'?'integer':'number'}]))),source:sourceSchema}))}},
     behaviors:{type:'array',items:{anyOf:[objSchema({format:{type:'string',enum:['craftmine.behavior/1']},...behaviorFields}),objSchema({format:{type:'string',enum:['craftmine.behavior/2']},...behaviorFields,requires:{type:'array',items:{type:'string',enum:['health@1','ranged@1','melee@1']}},binding:bindingSchema})]}},
   }) ] },
-});
+  },
+  required: ['summary','notes','reuseCreations','scene'],
+  additionalProperties: false,
+};
 
 OUTPUT_SCHEMA.properties.scene.anyOf[1].properties.behaviors.items.anyOf.push(objSchema({format:{type:'string',enum:['craftmine.behavior/3']},...behaviorFields,requires:{type:'array',items:{type:'string',enum:['health@1','ranged@1','melee@1']}},binding:bindingSchema,capabilities:{type:'array',items:{type:'string',enum:BEHAVIOR_CAPABILITIES}}}));
 const assetSceneSchema=structuredClone(OUTPUT_SCHEMA.properties.scene.anyOf[1]);
@@ -160,11 +180,109 @@ assetSceneSchema.properties.objects.items.required.push('appearance');
 OUTPUT_SCHEMA.properties.scene.anyOf.push(assetSceneSchema);
 
 export function encodeAgentScene(input){const scene=upgradeScene(input);return {...scene,format:scene.format==='craftmine.scene/4'?scene.format:'craftmine.scene/3',behaviors:(scene.behaviors||[]).map(({initialState,params,...d})=>({...d,initialStateJSON:JSON.stringify(initialState),paramsJSON:JSON.stringify(params)}))};}
+export function decodeBehaviorDefinition(d){
+  const portable=['craftmine.behavior/2','craftmine.behavior/3'].includes(d?.format),capable=d?.format==='craftmine.behavior/3';
+  const required=['format','id','name','description','code','stateVersion','initialStateJSON','paramsJSON','targets','permissions',...(portable?['requires','binding']:[]),...(capable?['capabilities']:[])];
+  changeKeys(d,[...required,'keys'],required);
+  if(typeof d.initialStateJSON!=='string'||d.initialStateJSON.length>16000||typeof d.paramsJSON!=='string'||d.paramsJSON.length>8000)throw Error('模型代码参数或初始状态无效');
+  const {initialStateJSON,paramsJSON,...rest}=d;return {...rest,initialState:JSON.parse(initialStateJSON),params:JSON.parse(paramsJSON)};
+}
 export function decodeAgentScene(input){
   if(!['craftmine.scene/3','craftmine.scene/4'].includes(input?.format)||!Array.isArray(input.behaviors))throw Error('模型需要返回完整的新场景格式');
-  return {...input,behaviors:input.behaviors.map(d=>{
-    exactKeys(d,['format','id','name','description','code','stateVersion','initialStateJSON','paramsJSON','targets','permissions',...(['craftmine.behavior/2','craftmine.behavior/3'].includes(d?.format)?['requires','binding']:[]),...(d?.format==='craftmine.behavior/3'?['capabilities']:[])]);
-    if(typeof d.initialStateJSON!=='string'||d.initialStateJSON.length>16000||typeof d.paramsJSON!=='string'||d.paramsJSON.length>8000)throw Error('模型代码参数或初始状态无效');
-    const {initialStateJSON,paramsJSON,...rest}=d;return {...rest,initialState:JSON.parse(initialStateJSON),params:JSON.parse(paramsJSON)};
-  })};
+  return {...input,behaviors:input.behaviors.map(decodeBehaviorDefinition)};
+}
+
+// 局部修改：模型只返回改动的对象/模块/系统，宿主把它应用到基准场景上。
+// 结果仍会走完整的 compileScene / 范围校验 / 隔离验证，所以安全性不降级。
+function changeKeys(value,allowed,required){
+  if(!value||typeof value!=='object'||Array.isArray(value))throw Error('局部修改的每条操作必须是 JSON 对象');
+  const extra=Object.keys(value).filter(k=>!allowed.includes(k)),missing=required.filter(k=>!Object.hasOwn(value,k));
+  if(extra.length||missing.length)throw Error(`局部修改操作字段无效：${missing.length?'缺少 '+missing.join('、'):''}${missing.length&&extra.length?'；':''}${extra.length?'多出 '+extra.join('、'):''}。允许：${allowed.join('、')}`);
+}
+export function applySceneChanges(base,changes){
+  if(!Array.isArray(changes)||!changes.length||changes.length>64)throw Error('局部修改需要 1–64 条操作');
+  const next=upgradeScene(clone(base));
+  const objects=new Map(next.objects.map(o=>[o.id,o])),behaviors=new Map((next.behaviors||[]).map(b=>[b.id,b])),systems=new Map((next.systems||[]).map(s=>[s.id,s]));
+  const touched=new Set();
+  for(const change of changes){
+    const op=change?.op,id=change?.id??change?.object?.id??change?.behavior?.id??change?.system?.id;
+    const key=op+':'+id;
+    if(touched.has(key))throw Error('同一次修改里对同一目标重复操作：'+key);
+    touched.add(key);
+    if(op==='object.patch'){
+      changeKeys(change,['op','id','name','position','components','parts'],['op','id']);
+      const current=objects.get(change.id);if(!current)throw Error('要修改的对象不存在：'+change.id);
+      const updated={...current};
+      for(const field of ['name','position','components','parts'])if(Object.hasOwn(change,field))updated[field]=clone(change[field]);
+      objects.set(change.id,updated);
+    }else if(op==='object.add'){
+      changeKeys(change,['op','object'],['op','object']);
+      const object=change.object;
+      if(!object||typeof object!=='object'||Array.isArray(object))throw Error('object.add 需要一个对象定义');
+      if(objects.has(object.id))throw Error('对象 ID 已存在，不能重复添加：'+String(object.id));
+      objects.set(object.id,clone(object));
+    }else if(op==='object.remove'){
+      changeKeys(change,['op','id'],['op','id']);
+      if(!objects.has(change.id))throw Error('要删除的对象不存在：'+change.id);
+      objects.delete(change.id);
+    }else if(op==='behavior.set'){
+      changeKeys(change,['op','behavior'],['op','behavior']);
+      const behavior=change.behavior;
+      if(!behavior||typeof behavior!=='object'||Array.isArray(behavior))throw Error('behavior.set 需要一个模块定义');
+      behaviors.set(behavior.id,decodeBehaviorDefinition(behavior));
+    }else if(op==='behavior.remove'){
+      changeKeys(change,['op','id'],['op','id']);
+      if(!behaviors.has(change.id))throw Error('要删除的模块不存在：'+change.id);
+      behaviors.delete(change.id);
+    }else if(op==='system.set'){
+      changeKeys(change,['op','system'],['op','system']);
+      const system=change.system;
+      if(!system||typeof system!=='object'||Array.isArray(system))throw Error('system.set 需要一个系统定义');
+      systems.set(system.id,clone(system));
+    }else if(op==='system.remove'){
+      changeKeys(change,['op','id'],['op','id']);
+      if(!systems.has(change.id))throw Error('要删除的系统不存在：'+change.id);
+      systems.delete(change.id);
+    }else throw Error('不支持的局部修改操作：'+String(op));
+  }
+  return {...next,objects:[...objects.values()],behaviors:[...behaviors.values()],systems:[...systems.values()]};
+}
+
+// 输入侧按需读取：默认只给对象概要（索引），完整定义只展开与本次需求相关的对象。
+// 模型可以再通过 read 请求索引里其他对象的完整定义，宿主最多补一次。
+export function sceneIndex(scene,{player,selected}={}){
+  const objects=(scene.objects||[]).map(o=>{
+    const bounds=objectBounds(o);
+    return {id:o.id,name:o.name,at:[o.position.x,o.position.y,o.position.z],
+      size:['x','y','z'].map(k=>Number((bounds.max[k]-bounds.min[k]).toFixed(2))),
+      parts:o.parts.length,solid:o.parts.some(p=>p.solid),health:o.components?.health??0};
+  });
+  return {format:'craftmine.index/1',count:objects.length,
+    player:player?{x:player.x,y:player.y,z:player.z}:null,selected:selected||null,objects,
+    behaviors:(scene.behaviors||[]).map(b=>({id:b.id,name:b.name,targets:b.targets,stateVersion:b.stateVersion})),
+    systems:(scene.systems||[]).map(s=>({id:s.id,name:s.name,type:s.type}))};
+}
+export function sceneFocus(scene,{player,selected,text}={},limit=12){
+  const want=new Set(),lower=String(text||'').toLowerCase();
+  if(selected)want.add(selected);
+  for(const object of scene.objects||[]){
+    if(lower.includes(object.id.toLowerCase())||(object.name&&lower.includes(String(object.name).toLowerCase())))want.add(object.id);
+  }
+  if(player){
+    const near=[...(scene.objects||[])].map(o=>({o,d:Math.hypot(o.position.x-player.x,o.position.z-player.z)})).sort((a,b)=>a.d-b.d);
+    for(const {o,d} of near)if(d<=14&&want.size<limit)want.add(o.id);
+  }
+  const ids=(scene.objects||[]).map(o=>o.id).filter(id=>want.has(id)).slice(0,limit);
+  return ids.map(id=>(scene.objects||[]).find(o=>o.id===id));
+}
+export function expandSceneObjects(scene,ids){
+  if(!Array.isArray(ids)||!ids.length||ids.length>12||ids.some(id=>typeof id!=='string'))throw Error('read 需要 1–12 个对象 id');
+  return ids.map(id=>{const object=(scene.objects||[]).find(o=>o.id===id);if(!object)throw Error('要读取的对象不存在：'+id);return object;});
+}
+// 应用候选时用玩家“此刻”的位置检查：生成期间玩家可能走到新实心几何里。
+export function playerBlockedBy(build,player){
+  if(!player)return null;
+  const body={min:{x:player.x-0.29,y:player.y+0.001,z:player.z-0.29},max:{x:player.x+0.29,y:player.y+1.719,z:player.z+0.29}};
+  for(const primitive of build?.primitives||[])if(primitive.visible!==false&&primitive.solid&&overlaps(body,primitive))return primitive.id;
+  return null;
 }
