@@ -17,3 +17,8 @@ export const bounceBehavior=()=>({
   return {state:{lastBounce:frame.time,bounces:state.bounces+1},commands:[{type:'player.impulse',velocity:{x:0,y:Math.sqrt(2*24*params.height),z:0}}]};
 }`,
 });
+import { part } from './scene-fixtures.mjs';
+export const behaviorScene=()=>({format:'craftmine.scene/3',title:'源码玩法试验地',night:false,systems:[],behaviors:[doorBehavior(),bounceBehavior()],objects:[
+  {id:'door-one',name:'木滑门',position:{x:0,y:6,z:7},source:null,components:{health:0,contactDamage:0},parts:[part([-.5,0,0],[1,2.5,.15],'#d3ad6d','box',true,'wood'),part([.25,1.1,.15],[.1,.12,.08],'#f2d598')]},
+  {id:'pad-one',name:'弹跳板',position:{x:3,y:6,z:7},source:null,components:{health:0,contactDamage:0},parts:[part([-.7,0,-.7],[1.4,.15,1.4],'#6bcbbc','box',true)]},
+]});

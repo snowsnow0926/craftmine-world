@@ -22,16 +22,17 @@ export function jsonRecord(value,maxBytes=16000){
   return structuredClone(value);
 }
 const text=(value,max)=>{if(typeof value!=='string'||!value.trim()||value.length>max)throw Error('代码模块文字字段无效');};
+const safeId=value=>identifier(value)&&!['constructor','prototype'].includes(value);
 const vec=(value,min,max)=>{exactKeys(value,['x','y','z']);for(const n of Object.values(value))bounded(n,min,max);};
 export function validateBehavior(definition){
   exactKeys(definition,['format','id','name','description','code','stateVersion','initialState','params','targets','permissions']);
-  if(definition.format!==BEHAVIOR_FORMAT||!identifier(definition.id))throw Error('代码模块格式或 ID 无效');
+  if(definition.format!==BEHAVIOR_FORMAT||!safeId(definition.id))throw Error('代码模块格式或 ID 无效');
   text(definition.name,60);text(definition.description,1000);text(definition.code,BEHAVIOR_LIMITS.code);
   if(!Number.isInteger(definition.stateVersion)||definition.stateVersion<1||definition.stateVersion>10000)throw Error('代码模块状态版本无效');
   jsonRecord(definition.initialState,BEHAVIOR_LIMITS.state);jsonRecord(definition.params,BEHAVIOR_LIMITS.params);
   for(const [name,limit]of [['targets',BEHAVIOR_LIMITS.targets],['permissions',BEHAVIOR_PERMISSIONS.length]]){
     const list=definition[name];if(!Array.isArray(list)||list.length>limit||new Set(list).size!==list.length)throw Error('代码模块范围声明无效');
-    for(const entry of list)if(name==='targets'?!identifier(entry):!BEHAVIOR_PERMISSIONS.includes(entry))throw Error('代码模块范围或权限无效');
+    for(const entry of list)if(name==='targets'?!safeId(entry):!BEHAVIOR_PERMISSIONS.includes(entry))throw Error('代码模块范围或权限无效');
   }
   return structuredClone(definition);
 }
@@ -59,7 +60,7 @@ export function validateBehaviorResult(result,definition,frame){
     }else if(command?.type==='hud.message'){
       permit('hud.message');exactKeys(command,['type','text']);text(command.text,160);
     }else if(command?.type==='inventory.add'){
-      permit('inventory.write');exactKeys(command,['type','item','count']);if(!identifier(command.item)||!Number.isInteger(command.count)||command.count< -100||command.count>100)throw Error('物品变化无效');
+      permit('inventory.write');exactKeys(command,['type','item','count']);if(!safeId(command.item)||!Number.isInteger(command.count)||command.count< -100||command.count>100)throw Error('物品变化无效');
     }else throw Error('不支持的玩法命令');
   }
   // The caller only receives a result after every command has passed.

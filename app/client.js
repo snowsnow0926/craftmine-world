@@ -65,7 +65,7 @@ function render(){
   $('task-status').hidden=!task;
   if(task){$('task-stage').textContent=statuses[task.status]||task.status;$('task-log').textContent=task.error||task.logs.at(-1)?.text||'';$('cancel').hidden=!running;$('cancel').disabled=task.status==='cancelling';}
   const c=project.candidate;$('candidate').hidden=!c;
-  if(c){$('candidate-title').textContent=c.summary;const systems=c.diff.systems,changes=systems?[...systems.added,...systems.changed,...systems.removed]:[];$('candidate-detail').textContent=`对象：新增 ${c.diff.added.length} · 修改 ${c.diff.changed.length} · 移除 ${c.diff.removed.length}。${changes.length?'玩法：'+changes.join('、')+'。':''}应用时保存最新进度，成功后记住新成果。`;}
+  if(c){$('candidate-title').textContent=c.summary;const changes=[c.diff.systems,c.diff.behaviors].filter(Boolean).flatMap(s=>[...s.added,...s.changed,...s.removed]);$('candidate-detail').textContent=`对象：新增 ${c.diff.added.length} · 修改 ${c.diff.changed.length} · 移除 ${c.diff.removed.length}。${changes.length?'玩法：'+changes.join('、')+'。':''}应用时保存最新进度。`;}
   const mk=JSON.stringify(project.messages);
   if(mk!==messagesKey){messagesKey=mk;if(project.messages.length){const atBottom=$('messages').scrollHeight-$('messages').scrollTop-$('messages').clientHeight<80;$('messages').replaceChildren();for(const m of project.messages){const e=node('div',undefined,'message '+m.role);e.append(node('div',m.role==='user'?'你':m.role==='assistant'?'创作助手':'项目记录','who'),node('div',m.text));$('messages').append(e);}if(atBottom||project.messages.at(-1)?.role==='user')$('messages').scrollTop=$('messages').scrollHeight;}}
   const rk=JSON.stringify([project.tasks,project.history,project.current,project.library,project.candidate?.id]);if(rk===renderKey)return;renderKey=rk;
@@ -95,6 +95,7 @@ function renderObjects(){
   for(const o of objects){const e=node('article',undefined,'object-card');e.append(node('div','◇','object-icon'),node('h3',o.name),node('p',`${o.parts.length} 个几何部分 · ${o.parts.some(p=>p.solid!==false)?'含实体碰撞':'可自由穿行'}${o.components?.health?' · 生命值 '+o.components.health:''}`),button('选中并继续修改 ↗',async()=>{selected=o.id;updateContext();$('prompt').focus();}));const binding=project.moduleBindings?.object[o.id];if(binding)e.append(node('small','已记住 · v'+binding.version,'memory-badge'));$('object-list').append(e);}
   $('system-list').replaceChildren();
   for(const s of activeFrame?.build.scene.systems||[]){const e=node('article',undefined,'system-card');e.append(node('strong',s.name),node('small',s.type==='health'?'显示生命值 · 受伤与复活':s.type==='ranged'?'1 装备 · 左键射击 · R 换弹':'2 装备 · 左键 / F 近战'));$('system-list').append(e);}
+  for(const s of activeFrame?.build.scene.behaviors||[]){const e=node('article',undefined,'system-card');e.append(node('strong',s.name),node('small',s.description));const details=node('details'),summary=node('summary','查看玩法源码');details.append(summary,node('pre',s.code,'source-preview'));e.append(details);$('system-list').append(e);}
   if(!$('system-list').children.length)$('system-list').append(node('p','还没有启用玩法。可以说：“增加 100 点生命值”或“增加射击和一个训练靶”。','empty'));
   renderLibrary();
 }

@@ -1,0 +1,233 @@
+{
+  "format": "craftmine.save/1",
+  "scene": {
+    "format": "craftmine.scene/3",
+    "title": "最初的世界",
+    "night": false,
+    "objects": [
+      {
+        "id": "wood-slide-door-01",
+        "name": "互动木滑门",
+        "position": {
+          "x": 0.5,
+          "y": 6,
+          "z": 7.5
+        },
+        "source": null,
+        "components": {
+          "health": 0,
+          "contactDamage": 0
+        },
+        "parts": [
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "size": {
+              "x": 1.5,
+              "y": 2.6,
+              "z": 0.18
+            },
+            "material": "planks",
+            "color": "#BE8A55",
+            "solid": true
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0.05,
+              "y": 0.35,
+              "z": 0.18
+            },
+            "size": {
+              "x": 1.4,
+              "y": 0.12,
+              "z": 0.06
+            },
+            "material": "wood",
+            "color": "#765033",
+            "solid": false
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0.05,
+              "y": 2.25,
+              "z": 0.18
+            },
+            "size": {
+              "x": 1.4,
+              "y": 0.12,
+              "z": 0.06
+            },
+            "material": "wood",
+            "color": "#765033",
+            "solid": false
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0.52,
+              "y": 1.2,
+              "z": 0.18
+            },
+            "size": {
+              "x": 0.07,
+              "y": 0.3,
+              "z": 0.09
+            },
+            "material": "solid",
+            "color": "#E2C17D",
+            "solid": false
+          }
+        ]
+      },
+      {
+        "id": "teal-bounce-pad-01",
+        "name": "青绿色弹跳板",
+        "position": {
+          "x": 4.5,
+          "y": 6,
+          "z": 7.5
+        },
+        "source": null,
+        "components": {
+          "health": 0,
+          "contactDamage": 0
+        },
+        "parts": [
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0,
+              "y": 0.08,
+              "z": 0
+            },
+            "size": {
+              "x": 1.8,
+              "y": 0.16,
+              "z": 1.8
+            },
+            "material": "solid",
+            "color": "#176C70",
+            "solid": true
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0,
+              "y": 0.17,
+              "z": 0
+            },
+            "size": {
+              "x": 1.56,
+              "y": 0.02,
+              "z": 1.56
+            },
+            "material": "solid",
+            "color": "#36D6BD",
+            "solid": false
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0,
+              "y": 0.185,
+              "z": 0
+            },
+            "size": {
+              "x": 0.18,
+              "y": 0.02,
+              "z": 0.8
+            },
+            "material": "solid",
+            "color": "#D6FFF2",
+            "solid": false
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0,
+              "y": 0.185,
+              "z": 0
+            },
+            "size": {
+              "x": 0.8,
+              "y": 0.02,
+              "z": 0.18
+            },
+            "material": "solid",
+            "color": "#D6FFF2",
+            "solid": false
+          }
+        ]
+      }
+    ],
+    "systems": [],
+    "behaviors": [
+      {
+        "format": "craftmine.behavior/1",
+        "id": "wood-slide-door-behavior-01",
+        "name": "木门交互滑动",
+        "description": "按 E 在关闭位置与左移 1.8 米的打开位置间切换，保留真实碰撞；玩家占据移动终点时拒绝移动。",
+        "code": "export function step({frame,params,state}) {\n  const commands = [];\n  if (frame.event.type !== 'interact' || frame.event.targetId !== params.doorId) return {state,commands};\n  const door = frame.objects.find(o => o.id === params.doorId);\n  if (!door) return {state,commands};\n  const open = !state.open;\n  const position = {x: params.closed.x + (open ? -params.travel : 0), y: params.closed.y, z: params.closed.z};\n  const p = frame.player.position;\n  const occupied = Math.abs(p.x-position.x) < 1.15 && Math.abs(p.z-position.z) < 0.55 && p.y < position.y+2.7 && p.y+1.9 > position.y;\n  const blocked = frame.objects.some(o => o.id !== params.doorId && o.solid !== false && o.visible !== false && Math.abs(o.position.x-position.x) < 1.8 && Math.abs(o.position.z-position.z) < 1.2 && Math.abs(o.position.y-position.y) < 3);\n  if (occupied || blocked) return {state,commands:[{type:'hud.message',text:'门的移动终点被占用，请稍微让开后再按 E。'}]};\n  commands.push({type:'object.patch',id:params.doorId,position,visible:null,solid:null,color:null});\n  commands.push({type:'hud.message',text:open ? '门已滑开，可以通过；瞄准门按 E 关闭。' : '木门已关闭。'});\n  return {state:{...state,open},commands};\n}",
+        "stateVersion": 1,
+        "targets": [
+          "wood-slide-door-01"
+        ],
+        "permissions": [
+          "objects.write",
+          "hud.message"
+        ],
+        "initialState": {
+          "open": false
+        },
+        "params": {
+          "doorId": "wood-slide-door-01",
+          "closed": {
+            "x": 0.5,
+            "y": 6,
+            "z": 7.5
+          },
+          "travel": 1.8
+        }
+      },
+      {
+        "format": "craftmine.behavior/1",
+        "id": "teal-bounce-behavior-01",
+        "name": "三米弹跳与冷却",
+        "description": "站上弹跳板触发向上 12 米每秒的冲量，并使用可保存状态记录 1.2 秒冷却。",
+        "code": "export function step({frame,params,state}) {\n  const commands = [];\n  if (frame.event.type === 'tick') {\n    return {state:{...state,cooldown:Math.max(0,state.cooldown-Math.max(0,frame.dt))},commands};\n  }\n  if (frame.event.type !== 'contact' || frame.event.targetId !== params.padId || state.cooldown > 0) return {state,commands};\n  const pad = frame.objects.find(o => o.id === params.padId);\n  if (!pad || pad.visible === false || pad.solid === false) return {state,commands};\n  const p = frame.player.position;\n  const top = pad.position.y + 0.16;\n  if (!frame.player.grounded || Math.abs(p.x-pad.position.x) > 0.92 || Math.abs(p.z-pad.position.z) > 0.92 || p.y < top-0.1 || p.y > top+0.3) return {state,commands};\n  commands.push({type:'player.impulse',velocity:{x:0,y:Math.min(18,Math.sqrt(2*24*params.height)),z:0}});\n  commands.push({type:'hud.message',text:'弹跳！约三米高，冷却 1.2 秒。'});\n  return {state:{...state,cooldown:params.cooldownSeconds},commands};\n}",
+        "stateVersion": 1,
+        "targets": [
+          "teal-bounce-pad-01"
+        ],
+        "permissions": [
+          "player.motion",
+          "hud.message"
+        ],
+        "initialState": {
+          "cooldown": 0
+        },
+        "params": {
+          "padId": "teal-bounce-pad-01",
+          "height": 3,
+          "cooldownSeconds": 1.2
+        }
+      }
+    ]
+  },
+  "snapshot": {
+    "format": "craftmine.progress/1",
+    "player": {
+      "x": 2.2,
+      "y": 6,
+      "z": 13.2,
+      "yaw": -0.05,
+      "pitch": -0.1
+    }
+  }
+}

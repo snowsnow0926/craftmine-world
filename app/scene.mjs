@@ -1,12 +1,14 @@
 import { createHash } from 'node:crypto';
 import { SYSTEMS, identifier, exactKeys, bounded, validateSource, validateSystems, validateGameplayState } from './gameplay.mjs';
+import { canonicalJSON } from './canonical.mjs';
+import { compileBehavior } from './behavior-build.mjs';
+import { validateBehaviorState } from './behavior-state.mjs';
+export { canonicalJSON } from './canonical.mjs';
 
 export const MATERIALS = { grass: 1, dirt: 2, stone: 3, wood: 4, leaves: 5, planks: 6, sand: 7, brick: 8, light: 9, glass: 12 };
 export const EMPTY_SCENE = { format: 'craftmine.scene/1', title: '最初的世界', night: false, objects: [] };
 export const INITIAL_SNAPSHOT = { format: 'craftmine.progress/1', player: { x: 0.5, y: 6, z: 12.5, yaw: 0, pitch: 0 } };
 export const clone = value => structuredClone(value);
-export const canonicalJSON=value=>JSON.stringify(canonical(value));
-function canonical(value){if(Array.isArray(value))return value.map(canonical);if(value&&typeof value==='object')return Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k])]));return value;}
 function keys(value, allowed) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('需要 JSON 对象');
   if (Object.keys(value).some(key => !allowed.includes(key)) || allowed.some(key => !Object.hasOwn(value, key))) throw Error('对象字段不符合格式');
@@ -15,9 +17,10 @@ function string(value, max) { if (typeof value !== 'string' || !value.trim() || 
 function integer(value, min, max) { if (!Number.isInteger(value) || value < min || value > max) throw Error(`整数需要在 ${min} 到 ${max} 之间`); }
 function vector(value, min, max) { keys(value, ['x', 'y', 'z']); for (const n of Object.values(value)) integer(n, min, max); }
 export function validateSnapshot(input) {
-  if(!['craftmine.progress/1','craftmine.progress/2'].includes(input?.format))throw Error('进度格式不兼容，已保留原存档');
-  keys(input, input.format==='craftmine.progress/2'?['format','player','gameplay']:['format', 'player']);
-  if(input.format==='craftmine.progress/2')validateGameplayState(input.gameplay);
+  if(!['craftmine.progress/1','craftmine.progress/2','craftmine.progress/3'].includes(input?.format))throw Error('进度格式不兼容，已保留原存档');
+  keys(input, input.format==='craftmine.progress/3'?['format','player','gameplay','behaviors']:input.format==='craftmine.progress/2'?['format','player','gameplay']:['format', 'player']);
+  if(input.format!=='craftmine.progress/1')validateGameplayState(input.gameplay);
+  if(input.format==='craftmine.progress/3')validateBehaviorState(input.behaviors);
   keys(input.player, ['x', 'y', 'z', 'yaw', 'pitch']);
   const p = input.player;
   if (Object.values(p).some(n => !Number.isFinite(n)) || Math.abs(p.x) > 47.4 || Math.abs(p.z) > 47.4 || p.y < 6 || p.y > 38 || Math.abs(p.yaw) > 1e6 || Math.abs(p.pitch) > 1.52) throw Error('玩家位置或视角无效');
@@ -60,6 +63,7 @@ export function sceneDiff(before, after) {
     removed: before.objects.filter(o => !next.has(o.id)).map(o => o.name),
     environment: before.night !== after.night,
     systems: { added:after.systems.filter(s=>!before.systems.some(p=>p.id===s.id)).map(s=>s.name), changed:after.systems.filter(s=>before.systems.some(p=>p.id===s.id&&canonicalJSON(p)!==canonicalJSON(s))).map(s=>s.name), removed:before.systems.filter(s=>!after.systems.some(p=>p.id===s.id)).map(s=>s.name) },
+    behaviors: {added:(after.behaviors||[]).filter(s=>!(before.behaviors||[]).some(p=>p.id===s.id)).map(s=>s.name),changed:(after.behaviors||[]).filter(s=>(before.behaviors||[]).some(p=>p.id===s.id&&canonicalJSON(p)!==canonicalJSON(s))).map(s=>s.name),removed:(before.behaviors||[]).filter(s=>!(after.behaviors||[]).some(p=>p.id===s.id)).map(s=>s.name)},
   };
 }
 export function validateObjectScope(before, after, selected) {
@@ -68,10 +72,12 @@ export function validateObjectScope(before, after, selected) {
   const beforeRest = before.objects.filter(o => o.id !== selected);
   const afterRest = after.objects.filter(o => o.id !== selected);
   if (canonicalJSON(beforeRest) !== canonicalJSON(afterRest) || before.night !== after.night || before.title !== after.title || canonicalJSON(before.systems)!==canonicalJSON(after.systems)) throw Error('模型修改超出了选中对象的范围，候选未采纳。若要修改整个世界，请先清除对象选择。');
+  const behaviorIds=new Set([...(before.behaviors||[]),...(after.behaviors||[])].map(b=>b.id));
+  for(const id of behaviorIds){const a=before.behaviors?.find(b=>b.id===id),b=after.behaviors?.find(b=>b.id===id);if(canonicalJSON(a)===canonicalJSON(b))continue;for(const d of [a,b].filter(Boolean))if(d.targets.length!==1||d.targets[0]!==selected||d.permissions.some(p=>!['objects.write','hud.message'].includes(p)))throw Error('玩法修改超出了选中对象的范围');}
 }
 
 export function upgradeScene(input) {
-  if(input.format==='craftmine.scene/2')return clone(input);
+  if(['craftmine.scene/2','craftmine.scene/3'].includes(input.format))return clone(input);
   return {format:'craftmine.scene/2',title:input.title,night:input.night,objects:input.objects.map(o=>({...clone(o),source:null,components:{health:0,contactDamage:0},parts:o.parts.map(p=>({...clone(p),shape:'box',color:p.material==='leaves'?'#9cdc5e':'#ffffff',solid:true}))})),systems:[]};
 }
 export const overlaps=(a,b)=>['x','y','z'].every(k=>a.min[k]<b.max[k]-0.00001&&a.max[k]>b.min[k]+0.00001);
@@ -80,8 +86,9 @@ export function objectBounds(object) {
 }
 export function compileScene(input) {
   if(input?.format==='craftmine.scene/1')return compileLegacy(input);
-  exactKeys(input,['format','title','night','objects','systems']);
-  if(input.format!=='craftmine.scene/2')throw Error('场景格式不兼容');
+  const scripted=input?.format==='craftmine.scene/3';
+  exactKeys(input,scripted?['format','title','night','objects','systems','behaviors']:['format','title','night','objects','systems']);
+  if(!scripted&&input.format!=='craftmine.scene/2')throw Error('场景格式不兼容');
   string(input.title,80);if(typeof input.night!=='boolean'||!Array.isArray(input.objects)||input.objects.length>128)throw Error('场景最多包含 128 个对象');
   validateSystems(input.systems);
   const ids=new Set(),primitives=[],bins=new Map();let volume=0,faces=0;
@@ -110,8 +117,17 @@ export function compileScene(input) {
       primitives.push(primitive);
     }
   }
+  let behaviors;
+  if(scripted){
+    if(!Array.isArray(input.behaviors)||input.behaviors.length>8)throw Error('一个世界最多启用 8 个代码模块');
+    const modules=new Set(),writers=new Set();behaviors=input.behaviors.map(d=>{
+      const artifact=compileBehavior(d);if(modules.has(d.id))throw Error('代码模块 ID 重复');modules.add(d.id);
+      for(const id of d.targets){if(!ids.has(id))throw Error('代码模块引用了不存在的对象');if(d.permissions.includes('objects.write')){if(writers.has(id))throw Error('同一对象只能由一个代码模块修改');writers.add(id);}}
+      return artifact;
+    });
+  }
   const scene=clone(input),hash=createHash('sha256').update(canonicalJSON(scene)).digest('hex');
-  return {format:'craftmine.build/2',hash,scene,voxels:[],primitives};
+  return {format:scripted?'craftmine.build/3':'craftmine.build/2',hash,scene,voxels:[],primitives,...(scripted?{behaviors}:{})};
 }
 const vecSchema = { type: 'object', properties: { x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['x','y','z'], additionalProperties: false };
 const objSchema = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
@@ -120,12 +136,26 @@ export const OUTPUT_SCHEMA = objSchema({
   summary: { type: 'string' },
   notes: { type: 'array', items: { type: 'string' } },
   scene: { anyOf: [ { type: 'null' }, objSchema({
-    format: { type: 'string', enum: ['craftmine.scene/2'] }, title: { type: 'string' }, night: { type: 'boolean' },
+    format: { type: 'string', enum: ['craftmine.scene/3'] }, title: { type: 'string' }, night: { type: 'boolean' },
     objects: { type: 'array', items: objSchema({
       id: { type: 'string' }, name: { type: 'string' }, position: vecSchema,source:sourceSchema,
       components:objSchema({health:{type:'number'},contactDamage:{type:'number'}}),
       parts: { type: 'array', items: objSchema({ shape:{type:'string',enum:['box','blade']},offset: vecSchema, size: vecSchema, material: { type: 'string', enum: [...Object.keys(MATERIALS),'solid'] },color:{type:'string'},solid:{type:'boolean'} }) },
     }) },
     systems:{type:'array',items:{anyOf:Object.entries(SYSTEMS).map(([type,definition])=>objSchema({id:{type:'string'},name:{type:'string'},type:{type:'string',enum:[type]},config:objSchema(Object.fromEntries(Object.keys(definition.fields).map(k=>[k,{type:k==='magazine'?'integer':'number'}]))),source:sourceSchema}))}},
+    behaviors:{type:'array',items:objSchema({
+      format:{type:'string',enum:['craftmine.behavior/1']},id:{type:'string'},name:{type:'string'},description:{type:'string'},code:{type:'string'},stateVersion:{type:'integer'},initialStateJSON:{type:'string'},paramsJSON:{type:'string'},
+      targets:{type:'array',items:{type:'string'}},permissions:{type:'array',items:{type:'string',enum:['objects.write','player.motion','hud.message','inventory.write']}},
+    })},
   }) ] },
 });
+
+export function encodeAgentScene(input){const scene=upgradeScene(input);return {...scene,format:'craftmine.scene/3',behaviors:(scene.behaviors||[]).map(({initialState,params,...d})=>({...d,initialStateJSON:JSON.stringify(initialState),paramsJSON:JSON.stringify(params)}))};}
+export function decodeAgentScene(input){
+  if(input?.format!=='craftmine.scene/3'||!Array.isArray(input.behaviors))throw Error('模型需要返回完整的新场景格式');
+  return {...input,behaviors:input.behaviors.map(d=>{
+    exactKeys(d,['format','id','name','description','code','stateVersion','initialStateJSON','paramsJSON','targets','permissions']);
+    if(typeof d.initialStateJSON!=='string'||d.initialStateJSON.length>16000||typeof d.paramsJSON!=='string'||d.paramsJSON.length>8000)throw Error('模型代码参数或初始状态无效');
+    const {initialStateJSON,paramsJSON,...rest}=d;return {...rest,initialState:JSON.parse(initialStateJSON),params:JSON.parse(paramsJSON)};
+  })};
+}

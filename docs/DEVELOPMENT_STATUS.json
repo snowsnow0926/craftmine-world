@@ -1,19 +1,77 @@
 {
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
-  "currentMilestone": "M1",
-  "baseline": "7e13631",
+  "currentMilestone": "M2",
+  "baseline": "5fa0fc6",
   "updated": "2026-09-08",
   "items": [
-    { "id": "M1.1", "title": "通用代码模块契约、独立 Worker、命令和状态校验、超时恢复", "status": "complete", "evidence": ["npm test: 30 passed", "test-results/behavior-browser-Ny0f6X/report.json: 11 passed", "test-results/background-browser-tOcuNe/report.json: 10 passed", "docs/BEHAVIOR_RUNTIME.md"] },
-    { "id": "M1.2", "title": "真实 LLM 生成源码，独立构建与后台验收后形成候选", "status": "pending", "evidence": [] },
-    { "id": "M1.3", "title": "接入世界交互和运行存档，以门和弹跳板验证不同新逻辑", "status": "pending", "evidence": [] },
-    { "id": "M2", "title": "带源码、状态版本、依赖和证据的记忆模块跨项目复用", "status": "pending", "evidence": [] },
-    { "id": "M3", "title": "多轮创作、差异预览、失败诊断和有上限的自动修复", "status": "pending", "evidence": [] },
-    { "id": "M4", "title": "本地图片和标准 3D 素材导入、绑定和外观替换", "status": "pending", "evidence": [] },
-    { "id": "M5", "title": "自然语言完成一个可导出和复用的完整可玩世界", "status": "pending", "evidence": [] }
+    {
+      "id": "M1.1",
+      "title": "通用代码模块契约、独立 Worker、命令和状态校验、超时恢复",
+      "status": "complete",
+      "evidence": [
+        "npm test: 30 passed",
+        "test-results/behavior-browser-Ny0f6X/report.json: 11 passed",
+        "test-results/background-browser-tOcuNe/report.json: 10 passed",
+        "docs/BEHAVIOR_RUNTIME.md"
+      ]
+    },
+    {
+      "id": "M1.2",
+      "title": "真实 LLM 生成源码，独立构建与后台验收后形成候选",
+      "status": "complete",
+      "evidence": [
+        "test-results/live-code-mudUMw/report.json: real LLM generation and background checks",
+        "test-results/live-code-repair-kAdtMv/report.json: real LLM feedback"
+      ]
+    },
+    {
+      "id": "M1.3",
+      "title": "接入世界交互和运行存档，以门和弹跳板验证不同新逻辑",
+      "status": "complete",
+      "evidence": [
+        "test-results/live-code-repair-kAdtMv/report.json: door collision, 2.899m physics rise, latest state and restart",
+        "test-results/code-world-RkEJRM/report.json: 10 passed",
+        "npm test: 36 passed"
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "带源码、状态版本、依赖和证据的记忆模块跨项目复用",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "M3",
+      "title": "多轮创作、差异预览、失败诊断和有上限的自动修复",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "M4",
+      "title": "本地图片和标准 3D 素材导入、绑定和外观替换",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "M5",
+      "title": "自然语言完成一个可导出和复用的完整可玩世界",
+      "status": "pending",
+      "evidence": []
+    }
   ],
-  "nextAction": "M1.2：把行为定义接入新场景格式与模型结构化输出，保留旧格式哈希；后台验证模型生成源码后形成候选。按 docs/BEHAVIOR_RUNTIME.md 接点继续，之后连接 M1.3 世界事件、命令和存档。",
+  "nextAction": "M2：把已验证源码、目标对象及空间参数绑定、状态版本、依赖与验收证据保存成可复用代码模块。先设计可移植的实例绑定，复用时不要简单替换源码字符串；跨项目导入与版本/卸载/回退状态一起验证。",
   "blockers": [],
-  "delivery": { "runningVersion": "Alpha 0.4", "developmentSlice": "M1.1 已验证；尚未接入日常创作入口，不作为新玩法已发布", "personalWorldCandidate": "保留用户已有候选，不作为测试或开发阻塞" }
+  "delivery": {
+    "runningVersion": "Alpha 0.5",
+    "developmentSlice": "M1 完成，详见 docs/ALPHA_0_5.md；M2–M5 仍待完成",
+    "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
+    "example": "examples/door-and-bounce.save.json",
+    "service": {
+      "port": 8787,
+      "pid": 154184,
+      "backup": ".craftmine/backups/before-alpha-0.5-1788870138426.json",
+      "projectUnchanged": true
+    }
+  }
 }
