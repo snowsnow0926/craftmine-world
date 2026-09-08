@@ -1,0 +1,9 @@
+{
+  "backend": "OpenGL ES 3.2 Mesa 25.0.7-2",
+  "programs": {
+    "VS/FS": "compiled and linked",
+    "SKYVS/SKYFS": "compiled and linked",
+    "LINEVS/LINEFS": "compiled and linked"
+  },
+  "note": "Native EGL GLSL compilation/link validation only; does not certify browser WebGL rendering."
+}

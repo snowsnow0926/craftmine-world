@@ -1,0 +1,37 @@
+{
+  "format": "world-workshop-cartridge/0.2",
+  "id": "local.mtscvg4v",
+  "name": "森林测试卡带",
+  "version": "1.0.0",
+  "kind": "world",
+  "runtime": "voxel-webgl@0.2",
+  "author": "本地创作者",
+  "license": "仅供个人体验；再分发请联系作者",
+  "permissions": [],
+  "dependencies": [
+    "runtime.core"
+  ],
+  "config": {
+    "harvest": false,
+    "yield": 2,
+    "bridge": false,
+    "night": false,
+    "treeStyle": "pine",
+    "speed": 4.5,
+    "treeRules": {
+      "tree-002": {
+        "harvest": true,
+        "yield": 5
+      }
+    }
+  },
+  "world": {
+    "seed": "forest-001",
+    "edits": {
+      "61674": 6
+    },
+    "collected": [
+      "tree-001"
+    ]
+  }
+}

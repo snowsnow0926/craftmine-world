@@ -1,0 +1,17 @@
+{
+  "format": "world-workshop-cartridge/0.2",
+  "id": "workshop.demo.sakura",
+  "name": "樱花森林",
+  "version": "1.0.0",
+  "kind": "asset",
+  "runtime": "voxel-webgl@0.2",
+  "author": "最中幻想 · 内置示例",
+  "license": "演示内容：允许本地使用与改作",
+  "permissions": [],
+  "dependencies": [
+    "runtime.core"
+  ],
+  "config": {
+    "treeStyle": "sakura"
+  }
+}

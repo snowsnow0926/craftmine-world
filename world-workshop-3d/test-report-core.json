@@ -1,0 +1,311 @@
+{
+  "environment": {
+    "renderer": "shipped CPU perspective-3D fallback; browser WebGL unavailable",
+    "storage": "Map-backed test shim; native storage not certified",
+    "navigation": "Playwright set_content, no network or policy changes",
+    "world": {
+      "chunks": 36,
+      "trees": 84,
+      "vertices": 228420,
+      "software": true
+    }
+  },
+  "passed": 32,
+  "checks": [
+    {
+      "name": "3D runtime boots without errors",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Chunked world and tree entities generated",
+      "passed": true,
+      "details": {
+        "chunks": 36,
+        "trees": 84,
+        "vertices": 228420,
+        "software": true
+      }
+    },
+    {
+      "name": "DDA raycast finds the tree in front of spawn",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Desktop layout fits viewport",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "D moves to camera-right through real keyboard handler",
+      "passed": true,
+      "details": {
+        "before": {
+          "x": -9.5,
+          "y": 6,
+          "z": 17.5,
+          "yaw": -0.17,
+          "pitch": 0.035
+        },
+        "after": {
+          "x": -8.701676338803253,
+          "y": 6,
+          "z": 17.637037702744266,
+          "yaw": -0.17,
+          "pitch": 0.035
+        }
+      }
+    },
+    {
+      "name": "A moves to camera-left",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "W moves forward (negative Z)",
+      "passed": true,
+      "details": {
+        "forward": 17.75000000000002,
+        "diagonal": 2.2499999999999765,
+        "peak": 7.366666666666667,
+        "landed": 6,
+        "wall": -4.324999999999998
+      }
+    },
+    {
+      "name": "Diagonal movement is normalized",
+      "passed": true,
+      "details": {
+        "forward": 17.75000000000002,
+        "diagonal": 2.2499999999999765,
+        "peak": 7.366666666666667,
+        "landed": 6,
+        "wall": -4.324999999999998
+      }
+    },
+    {
+      "name": "Jump rises and lands on terrain",
+      "passed": true,
+      "details": {
+        "forward": 17.75000000000002,
+        "diagonal": 2.2499999999999765,
+        "peak": 7.366666666666667,
+        "landed": 6,
+        "wall": -4.324999999999998
+      }
+    },
+    {
+      "name": "Solid two-block wall prevents walking through",
+      "passed": true,
+      "details": {
+        "forward": 17.75000000000002,
+        "diagonal": 2.2499999999999765,
+        "peak": 7.366666666666667,
+        "landed": 6,
+        "wall": -4.324999999999998
+      }
+    },
+    {
+      "name": "Placing and undoing a real voxel",
+      "passed": true,
+      "details": {
+        "placed": 1,
+        "block": 6,
+        "after": 0
+      }
+    },
+    {
+      "name": "Cannot place a block inside the player",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Harvest is gated before its rule is installed",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Candidate does not mutate running config",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Agent carries object context",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Apply updates harvest and yield",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Apply preserves latest position, inventory and hand edits",
+      "passed": true,
+      "details": {
+        "before": {
+          "player": {
+            "x": -9.85,
+            "y": 6,
+            "z": 17.5,
+            "yaw": -0.17,
+            "pitch": 0.035
+          },
+          "wood": 4,
+          "stone": 0,
+          "edits": {
+            "61674": 6
+          },
+          "collected": [],
+          "fly": false,
+          "slot": 2
+        },
+        "after": {
+          "player": {
+            "x": -9.85,
+            "y": 6,
+            "z": 17.5,
+            "yaw": -0.17,
+            "pitch": 0.035
+          },
+          "wood": 4,
+          "stone": 0,
+          "edits": {
+            "61674": 6
+          },
+          "collected": [],
+          "fly": false,
+          "slot": 2
+        }
+      }
+    },
+    {
+      "name": "Harvest removes tree and grants configured reward",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "A collected tree cannot reward twice",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Asset binding preserves gameplay and harvested tree",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Bridge geometry is present and has collision",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Night update retains world edits and inventory",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Config rollback keeps play progress and hand edits",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Unsafe/invalid packages and parameters are rejected",
+      "passed": true,
+      "details": {
+        "bounds": true,
+        "code": true,
+        "permissions": true,
+        "old": true,
+        "yield": true,
+        "proto": true
+      }
+    },
+    {
+      "name": "Selected-tree rules do not enable global harvest",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "World cartridge includes real hand-built content",
+      "passed": true,
+      "details": {
+        "format": "world-workshop-cartridge/0.2",
+        "id": "local.mtscvg4v",
+        "name": "森林测试卡带",
+        "version": "1.0.0",
+        "kind": "world",
+        "runtime": "voxel-webgl@0.2",
+        "author": "本地创作者",
+        "license": "仅供个人体验；再分发请联系作者",
+        "permissions": [],
+        "dependencies": [
+          "runtime.core"
+        ],
+        "config": {
+          "harvest": false,
+          "yield": 2,
+          "bridge": false,
+          "night": false,
+          "treeStyle": "pine",
+          "speed": 4.5,
+          "treeRules": {
+            "tree-002": {
+              "harvest": true,
+              "yield": 5
+            }
+          }
+        },
+        "world": {
+          "seed": "forest-001",
+          "edits": {
+            "61674": 6
+          },
+          "collected": [
+            "tree-001"
+          ]
+        }
+      }
+    },
+    {
+      "name": "World cartridge excludes player personal progress",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Full save export includes position and inventory",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "World cartridge creates a fresh world and archives old one",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Archive restore recovers the complete old world",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "No application JavaScript errors in core tests",
+      "passed": true,
+      "details": []
+    },
+    {
+      "name": "No external network requests in core tests",
+      "passed": true,
+      "details": []
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "not_verified": [
+    "Browser-native WebGL rendering",
+    "Native browser storage across restarts",
+    "Native pointer lock",
+    "Physical Android/iOS devices",
+    "Native file downloads"
+  ]
+}

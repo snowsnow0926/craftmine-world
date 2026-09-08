@@ -1,0 +1,28 @@
+{
+  "format": "world-workshop-cartridge/0.2",
+  "id": "workshop.demo.night",
+  "name": "夜航河谷",
+  "version": "1.0.0",
+  "kind": "world",
+  "runtime": "voxel-webgl@0.2",
+  "author": "最中幻想 · 内置示例",
+  "license": "演示内容：允许本地使用与改作",
+  "permissions": [],
+  "dependencies": [
+    "runtime.core"
+  ],
+  "config": {
+    "harvest": true,
+    "yield": 2,
+    "bridge": true,
+    "night": true,
+    "treeStyle": "pine",
+    "speed": 4.5,
+    "treeRules": {}
+  },
+  "world": {
+    "seed": "forest-001",
+    "edits": {},
+    "collected": []
+  }
+}

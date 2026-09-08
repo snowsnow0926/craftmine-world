@@ -1,0 +1,58 @@
+{
+  "environment": {
+    "renderer": "shipped CPU perspective-3D fallback; browser WebGL unavailable",
+    "storage": "Map-backed test shim; native storage not certified",
+    "navigation": "Playwright set_content, no network or policy changes",
+    "world": {}
+  },
+  "passed": 7,
+  "checks": [
+    {
+      "name": "Mobile viewport has no horizontal overflow",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Mobile touch controls are visible",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Mobile Agent launch is not covered by hotbar",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Touch joystick moves the player",
+      "passed": true,
+      "details": {
+        "before": 17.5,
+        "after": 15.652324237474652
+      }
+    },
+    {
+      "name": "Mobile Agent can be opened over the world",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "No application JavaScript errors in mobile",
+      "passed": true,
+      "details": []
+    },
+    {
+      "name": "No external network requests in mobile",
+      "passed": true,
+      "details": []
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "not_verified": [
+    "Browser-native WebGL rendering",
+    "Native browser storage across restarts",
+    "Native pointer lock",
+    "Physical Android/iOS devices",
+    "Native file downloads"
+  ]
+}

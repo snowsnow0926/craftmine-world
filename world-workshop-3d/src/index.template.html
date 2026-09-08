@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111713"><title>最中幻想 · craftmine world · 林间起点 3D</title>
+<style>/* STYLES */</style>
+</head>
+<body>
+<svg class="svg-defs" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="i-cube" viewBox="0 0 24 24"><path d="m12 3 9 5v9l-9 5-9-5V8l9-5Zm0 10 9-5m-9 5L3 8m9 5v9M7.5 5.5l9 5"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8V4Z"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m7 7-5 5 5 5m10-10 5 5-5 5M14 3l-4 18"/></symbol>
+<symbol id="i-assets" viewBox="0 0 24 24"><path d="M3 3h7v7H3V3Zm11 0h7v7h-7V3ZM3 14h7v7H3v-7Zm14 0 4 7h-8l4-7Z"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z"/></symbol>
+<symbol id="i-cart" viewBox="0 0 24 24"><path d="M5 3h14v18H5V3Zm3 0v7h8V3M8 16h8M8 19h8"/></symbol>
+<symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 3H3v6m12-6h6v6M3 15v6h6m6 0h6v-6"/></symbol>
+</defs></svg>
+<div class="app" id="app">
+<header class="topbar">
+ <a class="brand" href="#" aria-label="最中幻想 · craftmine world 首页"><span class="brand-icon"><svg><use href="#i-cube"/></svg></span><span>最中幻想<small>craftmine world</small></span></a>
+ <div class="project-crumb"><span class="slash">/</span> 林间起点 <span class="tag">3D 实验场</span></div>
+ <nav class="tabs" aria-label="工作区">
+  <button data-mode="develop"><svg><use href="#i-code"/></svg>开发</button>
+  <button data-mode="play" class="active"><svg><use href="#i-play"/></svg>游玩</button>
+  <button data-mode="assets"><svg><use href="#i-assets"/></svg>素材</button>
+ </nav>
+ <div class="header-actions"><span class="local-badge"><i></i>本地项目</span><button class="button subtle" id="libraryBtn"><svg><use href="#i-cart"/></svg><span>卡带库</span></button><button class="avatar" id="helpBtn" aria-label="操作说明">?</button></div>
+</header>
+<div class="workspace" id="workspace">
+ <main class="main">
+  <div class="scene-header"><div><div class="eyebrow" id="eyebrow">PLAY. CREATE. REPEAT.</div><h1 id="pageTitle">你的世界，从这里生长。</h1></div><div class="scene-actions"><span class="run-status"><i></i><span id="version">v0.2.1</span> <span class="status-sep">/</span> 可试玩</span><button class="icon-btn" id="historyBtn" title="版本与回退" aria-label="版本与回退">↶</button><button class="button subtle compact" id="packageBtn">＋ 打包卡带</button><button class="icon-btn" id="focusBtn" title="沉浸视图" aria-label="切换沉浸视图"><svg><use href="#i-expand"/></svg></button></div></div>
+  <section class="view play-view" id="view-play" aria-label="3D 游玩工作区">
+   <div class="game-wrap" id="gameWrap">
+    <canvas id="world" tabindex="0" aria-label="3D 方块世界。点击进入世界，WASD移动，空格跳跃，T打开Agent。"></canvas>
+    <div class="game-vignette"></div>
+    <div class="world-card glass"><div class="world-overline"><span class="live-dot"></span> WORLD 001 <span id="worldTime">清晨</span></div><div class="world-name">林间起点</div><div class="world-description">一片可以被你改变的森林。</div></div>
+    <div class="map-wrap glass"><canvas id="minimap" width="180" height="180" aria-label="世界俯视小地图"></canvas><span class="map-n">N</span><div class="map-position" id="position">−9.5 · 6.0 · 17.5</div></div>
+    <div class="crosshair" id="crosshair"><span></span><span></span></div>
+    <div class="target-label" id="targetLabel"></div>
+    <div class="enter-card glass" id="enterCard"><span class="enter-eyebrow">这一回，不只是看着它。</span><h2>走进你创造的世界。</h2><p>穿过树林，沿着河岸走走。<br>有了新想法，按 <kbd>T</kbd> 就能开始改变它。</p><button class="button primary" id="enterBtn"><svg><use href="#i-play"/></svg>进入世界 <span>↗</span></button><small>WASD 移动 · 鼠标环顾 · 空格跳跃</small></div>
+    <div class="resume-pill glass" id="resumePill" hidden><span>已释放鼠标</span><button id="resumeBtn">继续游玩 ↗</button></div>
+    <div class="world-footer"><div class="controls-legend glass"><div><kbd>W A S D</kbd> 移动 <span>·</span> <kbd>Space</kbd> 跳跃</div><div>左键破坏 <span>·</span> 右键放置 <span>·</span> <kbd>F</kbd> 飞行</div></div><div class="hotbar-wrap"><div class="selected-name" id="selectedName">木板 · 无限搭建</div><div class="hotbar" id="hotbar" aria-label="方块快捷栏"></div></div><button class="agent-launch" id="agentLaunch"><svg><use href="#i-spark"/></svg>唤醒 Agent <kbd>T</kbd></button></div>
+    <div class="touch-controls" id="touchControls"><div class="joystick" id="joystick" aria-label="拖动摇杆移动"><div id="joystickThumb"></div></div><div class="touch-buttons"><button id="touchBreak">破坏</button><button id="touchPlace">放置</button><button id="touchJump">跳跃</button><button id="touchHarvest">采集</button></div></div>
+    <div class="game-status"><span id="moveMode">步行 / 创造模式</span><span id="fps">— FPS</span></div>
+    <div class="reload-mask" id="reloadMask" hidden><div class="spinner"></div><h3>正在载入世界更新</h3><p>保留最新位置、背包和手动搭建。</p></div>
+    <div class="error-screen" id="errorScreen" hidden><h2>暂时无法启动 3D 世界</h2><p id="errorText"></p><button class="button primary" onclick="location.reload()">重新载入</button></div>
+   </div>
+   <div class="play-caption"><span><i></i><span id="caption">世界正在运行。灵感也在发生。</span></span><div><button id="respawnBtn">⌖ 回到出生点</button><span class="caption-divider">/</span><span>木材 <b id="woodCount">0</b></span><span class="caption-divider">/</span><button id="collectBtn">E 采集</button></div></div>
+  </section>
+  <section class="view panel-view" id="view-develop" hidden>
+   <div class="dev-hero"><span class="eyebrow">AN IDEA IS A PLACE TO START.</span><h2>先说出一个想法。<br>再走进去，看看它。</h2><p>开发、游玩和素材，共用同一个世界。<br>这里是本地预设执行演示，还没有连接真实 AI 编程服务。</p><button class="button primary" data-go-play>进入当前世界 ↗</button><div class="hero-cube"><span>◈</span></div></div>
+   <div class="dev-grid"><button data-prompt="让树木可以被砍，每次掉落2份木材"><small>01 / 玩法</small><h3>让世界有事可做。</h3><p>给树木添加采集和木材掉落。</p><span>制作采集更新 ↗</span></button><button data-prompt="在河上建一座桥"><small>02 / 场景</small><h3>去到河的另一边。</h3><p>在预设河道位置搭起一座木桥。</p><span>制作木桥更新 ↗</span></button></div>
+   <div class="section-heading"><h3>世界的创作记录</h3><span>玩法版本与游玩进度分开保存</span></div><div id="devHistory" class="version-list"></div>
+  </section>
+  <section class="view panel-view" id="view-assets" hidden>
+   <div class="section-heading"><div><span class="eyebrow">LOOKS CHANGE. WORLDS CONTINUE.</span><h2>换一个外观，保留整个故事。</h2></div><span class="tag">内置程序化素材</span></div><p class="muted">把外观绑定到全部树木，采集规则、手动搭建和背包保持不变。</p>
+   <div class="asset-grid" id="assetGrid"></div>
+   <div class="binding-card"><div><span class="eyebrow">ASSET BINDING</span><h3>树木外观绑定</h3><p>目标对象：全部原生树木与手动放置的树叶。</p></div><div class="binding-detail"><span>当前外观 <b id="currentStyle">林间绿</b></span><span>候选外观 <b id="candidateStyle">樱花粉</b></span><span>保留内容 <b>对象 ID / 玩法 / 存档</b></span></div><button class="button primary" id="bindBtn">制作外观更新 ↗</button></div>
+   <p class="asset-notice">这版演示程序化像素纹理和外观绑定，未接入 AI 生图、3D 模型生成或任意模型导入。</p>
+  </section>
+  <div class="pending-banner" id="pendingBanner" hidden><span class="pending-icon">✓</span><div><b id="pendingTitle">新版本可以试玩了</b><p id="pendingSummary">应用时保留最新游戏进度。</p></div><button class="button primary compact" id="applyBtn">应用并继续玩</button><button class="icon-btn" id="discardBtn" aria-label="丢弃候选更新">×</button></div>
+  <div class="taskbar"><div class="task-orb" id="taskOrb"><svg><use href="#i-spark"/></svg></div><div><b id="taskTitle">边玩，边创造。</b><p id="taskDetail">按 T 描述想法；更新准备好后，再由你决定何时应用。</p></div><span class="task-badge" id="taskBadge">运行与修改分离</span></div>
+ </main>
+ <aside class="agent" id="agent" aria-label="世界 Agent 对话">
+  <div class="agent-header"><div class="agent-avatar"><svg><use href="#i-spark"/></svg></div><div><h2>世界 Agent</h2><p><i></i>已关联林间起点</p></div><button class="icon-btn" id="closeAgent" aria-label="收起 Agent">−</button></div>
+  <div class="demo-notice"><span>DEMO</span>本地预设执行器 · 未连接真实 AI</div>
+  <div class="messages" id="messages" aria-live="polite"></div>
+  <div class="composer">
+   <div class="context-row"><span>⌖</span><span id="contextTarget">当前世界</span><button id="clearContext" title="清除选中对象" aria-label="清除选中对象">×</button></div>
+   <div class="scope-row"><label for="scope">作用范围</label><select id="scope"><option value="all">整个世界 / 全部树木</option><option value="selected">仅选中树木的采集规则</option></select></div>
+   <div class="suggestions"><button data-prompt="让树木可以被砍，每次掉落2份木材">＋ 采集玩法</button><button data-prompt="在河上建一座桥">＋ 河上木桥</button><button data-prompt="把树木换成樱花粉色">✿ 樱花森林</button><button data-prompt="把世界变成夜晚">☾ 夜晚</button></div>
+   <form id="chatForm"><div class="input-box"><textarea id="prompt" maxlength="1200" placeholder="这里应该有……" aria-label="描述需求"></textarea><div class="input-bottom"><select id="intent" aria-label="讨论或执行"><option value="build">执行修改</option><option value="discuss">只讨论</option></select><button id="sendBtn" type="submit" aria-label="发送需求">↑</button></div></div></form>
+   <div class="composer-hint"><span>Enter 发送 · Shift + Enter 换行</span><span>在场景中按 T</span></div>
+  </div>
+ </aside>
+</div>
+<footer class="footer"><span id="saveStatus">● 进度仅保存在此浏览器</span><span>3D VOXEL RUNTIME <b>0.2</b><span class="footer-divider"> / </span>离线可用 · 无需账号</span><button id="saveExportBtn">导出存档 ↗</button></footer>
+</div>
+<div class="modal-overlay" id="modalOverlay" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header><div><span class="eyebrow" id="modalEyebrow">craftmine world</span><h2 id="modalTitle"></h2></div><button class="icon-btn" id="closeModal" aria-label="关闭对话框">×</button></header><div class="modal-content" id="modalContent"></div></section></div>
+<input type="file" id="importFile" accept=".json,application/json" hidden><input type="file" id="importSaveFile" accept=".json,application/json" hidden>
+<div class="toast" id="toast" role="status"></div>
+<script>/* RUNTIME */</script>
+<script>/* APPLICATION */</script>
+</body></html>

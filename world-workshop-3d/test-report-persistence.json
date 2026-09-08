@@ -1,0 +1,35 @@
+{
+  "environment": {
+    "renderer": "shipped CPU perspective-3D fallback; browser WebGL unavailable",
+    "storage": "Map-backed test shim; native storage not certified",
+    "navigation": "Playwright set_content, no network or policy changes",
+    "world": {}
+  },
+  "passed": 3,
+  "checks": [
+    {
+      "name": "Save serialization roundtrip (test-only storage shim)",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "No application JavaScript errors in persistence",
+      "passed": true,
+      "details": []
+    },
+    {
+      "name": "No external network requests in persistence",
+      "passed": true,
+      "details": []
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "not_verified": [
+    "Browser-native WebGL rendering",
+    "Native browser storage across restarts",
+    "Native pointer lock",
+    "Physical Android/iOS devices",
+    "Native file downloads"
+  ]
+}
