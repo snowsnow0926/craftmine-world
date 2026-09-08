@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { EMPTY_SCENE, INITIAL_SNAPSHOT, compileScene, clone, validateSnapshot, sceneDiff,upgradeScene,withAppearanceFormat,validateObjectScope } from './scene.mjs';
+import { EMPTY_SCENE, INITIAL_SNAPSHOT, compileScene, clone, validateSnapshot, sceneDiff,upgradeScene,withAppearanceFormat,validateObjectScope,playerBlockedBy } from './scene.mjs';
 import { validatePackedAssets,unpackModule,moduleAssetsScene } from './asset-packages.mjs';
 import { exactKeys } from './gameplay.mjs';
 import { ModuleLibrary } from './memory.mjs';
@@ -104,7 +104,10 @@ export class ProjectStore {
   prepare(candidateId, version, snapshot) {
     const d = this.data, c = d.candidate;
     if (d.applying || !c || c.id !== candidateId || c.base !== d.current || version !== d.current) throw Error('候选或运行版本已过期');
-    const latest = validateSnapshot(snapshot), transaction = { id: randomUUID(), previous: d.current, candidate: c.id, snapshot: latest, loadSnapshot: c.importSnapshot || latest, time: Date.now() };
+    const latest = validateSnapshot(snapshot);
+    const blocked = playerBlockedBy(this.readBuild(c.id), latest.player);
+    if (blocked) throw Error(`新内容会挡住你：「${blocked}」与你现在的位置重叠。请先走开几米，再点应用。`);
+    const transaction = { id: randomUUID(), previous: d.current, candidate: c.id, snapshot: latest, loadSnapshot: c.importSnapshot || latest, time: Date.now() };
     atomicJSON(path.join(this.root, 'backups', transaction.id + '.json'), { ...d, snapshot: latest, applying: null });
     this.change(next => { next.snapshot = latest; next.applying = transaction; });
     return transaction;
