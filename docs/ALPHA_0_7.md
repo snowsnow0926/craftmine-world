@@ -30,4 +30,6 @@
 
 ## 本地更新
 
-更新前保留 Alpha 0.6 的 Git 版本与项目备份。旧项目迁移只添加项目方向与明确已应用的需求索引，不改变当前世界、待处理候选或进度。升级记录在 `.craftmine/backups/alpha-0.7-upgrade.json`；实际更新后刷新本机页面使用新界面。
+本机 8787 服务已更新，刷新页面使用 Alpha 0.7。升级前项目备份为 `.craftmine/backups/before-alpha-0.7-1788876683134.json`，旧版源码归档为 `.craftmine/backups/alpha-0.6-source-590c737.zip`。
+
+已逐字段核对：迁移仅添加 `projectContext`，当前世界、待处理花草候选、进度、对话、历史以及其他原有字段全部保持原样。个人候选没有被应用或丢弃。服务新进程为 256284，公开静态资源和版本标记已核对；没有获取个人工作台控制租约或使用个人浏览器。完整升级记录在 `.craftmine/backups/alpha-0.7-upgrade.json`。

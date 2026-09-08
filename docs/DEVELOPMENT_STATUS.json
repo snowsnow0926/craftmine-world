@@ -2,7 +2,7 @@
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "M4",
-  "baseline": "8b68535",
+  "baseline": "99fbe00",
   "updated": "2026-09-08",
   "items": [
     {
@@ -119,16 +119,19 @@
   "nextAction": "M4.1：设计并实现本地图片和标准 3D 素材库，固定资产身份与不可变版本、限制资源规模、校验文件并提供独立预览；随后接入对象外观绑定、替换与回退，保留源码行为、碰撞和进度，再验证素材随完整存档/创作模块导出到第二个项目。",
   "blockers": [],
   "delivery": {
-    "runningVersion": "Alpha 0.6",
-    "developmentSlice": "M1、M2、M3 全部完成并验收，Alpha 0.7 准备集中更新；下一项 M4 素材，之后 M5 完整可玩世界。",
+    "runningVersion": "Alpha 0.7",
+    "developmentSlice": "M1、M2、M3 全部完成并验收，个人 8787 服务已集中更新至 Alpha 0.7。下一项 M4 素材导入，之后 M5 完整可玩世界。",
     "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
     "example": "examples/door-and-bounce.save.json",
     "service": {
       "port": 8787,
-      "pid": 156784,
-      "backup": ".craftmine/backups/before-alpha-0.6-1788872902878.json",
+      "pid": 256284,
+      "backup": ".craftmine/backups/before-alpha-0.7-1788876683134.json",
+      "sourceArchive": ".craftmine/backups/alpha-0.6-source-590c737.zip",
+      "upgradeRecord": ".craftmine/backups/alpha-0.7-upgrade.json",
       "worldCandidateAndProgressUnchanged": true,
-      "migration": "Added creation module bindings and active instance index; previous worlds, candidate, progress, messages and history unchanged"
+      "allPreviousFieldsUnchanged": true,
+      "migration": "Only added projectContext with explicit applied-task history; no world, progress, candidate, messages or history changes"
     }
   }
 }
