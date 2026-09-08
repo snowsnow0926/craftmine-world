@@ -52,6 +52,17 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       await this.behaviors.start();this.updateHud();
     }
     behaviorContext(){return {player:{position:{x:this.p.x,y:this.p.y,z:this.p.z},grounded:this.grounded,health:this.play.player?.health??null},objects:[...this.objects.values()].map(o=>({id:o.id,position:o.position,visible:o.visible!==false&&this.play.alive(o.id),solid:this.primitives.some(p=>p.id===o.id&&p.solid),health:this.play.state.targets[o.id]?.health||0}))};}
+    inspectObject(id){
+      const object=this.objects.get(id);if(!object)throw Error('这一版中没有这个对象');
+      const parts=this.primitives.filter(p=>p.id===id);
+      const min={},max={};for(const k of ['x','y','z']){min[k]=parts.length?Math.min(...parts.map(p=>p.min[k])):object.position[k]+Math.min(...object.parts.map(p=>p.offset[k]));max[k]=parts.length?Math.max(...parts.map(p=>p.max[k])):object.position[k]+Math.max(...object.parts.map(p=>p.offset[k]+p.size[k]));}
+      const center=Object.fromEntries(['x','y','z'].map(k=>[k,(min[k]+max[k])/2])),distance=Math.max(2.4,...['x','y','z'].map(k=>(max[k]-min[k])*1.5));
+      for(const angle of [0,Math.PI/2,Math.PI,-Math.PI/2,Math.PI/4]){
+        const x=center.x+Math.sin(angle)*distance,z=center.z+Math.cos(angle)*distance,y=Math.max(6,Math.min(36,center.y-.9));
+        if(this.collision(x,y,z))continue;this.p={x,y,z,yaw:angle,pitch:Math.max(-1.4,Math.min(1.4,Math.atan2(center.y-y-1.56,distance)))};this.vy=0;this.impulse=null;this.fallPeak=y;this.update(0,performance.now());this.render(performance.now()/1000);enter.hidden=false;return;
+      }
+      throw Error('对象周围暂时没有合适的观察位置，可直接在副本中走动查看');
+    }
     applyBehavior({changed,effects},view){
       this.primitives=view.primitives;this.objects=new Map(view.objects.map(o=>[o.id,o]));
       for(const id of changed){const key='object:'+id,old=this.meshes.get(key);if(old)this.gl.deleteBuffer(old.buffer);this.meshes.delete(key);const parts=this.primitives.filter(p=>p.id===id&&p.visible&&this.play.alive(id));if(parts.length)this.meshes.set(key,this.upload(primitiveVertices(parts)));}

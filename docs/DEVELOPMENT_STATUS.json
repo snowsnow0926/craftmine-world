@@ -2,7 +2,7 @@
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "M3",
-  "baseline": "590c737",
+  "baseline": "9c6b226",
   "updated": "2026-09-08",
   "items": [
     {
@@ -56,7 +56,8 @@
       "title": "多轮创作、差异预览、失败诊断和有上限的自动修复",
       "status": "in_progress",
       "evidence": [
-        "docs/M3_REPAIR.md: M3.1 complete; M3.2 and M3.3 pending"
+        "docs/M3_REPAIR.md: M3.1 complete",
+        "docs/M3_PREVIEW.md: M3.2 complete; M3.3 pending"
       ],
       "slices": [
         {
@@ -75,7 +76,15 @@
         {
           "id": "M3.2",
           "title": "现场选择与可审查的候选差异、应用前世界预览",
-          "status": "pending"
+          "status": "complete",
+          "evidence": [
+            "npm test: 56 passed",
+            "test-results/review-browser-xcDSp9/report.json: 15 passed; independent playable candidate, source/parameter differences, latest original progress, discard and failed loads",
+            "test-results/code-world-F9jXI5/report.json: 10 passed",
+            "test-results/repair-scripted-D8ApMv/report.json: 9 passed",
+            "test-results/background-browser-6NvPnz/report.json: 10 passed",
+            "docs/M3_PREVIEW.md"
+          ]
         },
         {
           "id": "M3.3",
@@ -97,11 +106,11 @@
       "evidence": []
     }
   ],
-  "nextAction": "M3.2：扩展 sceneDiff 为带稳定 ID 的对象、源码、参数和环境变化详情，在工作台展示；实现候选应用前的独立世界预览，关闭或丢弃不改变当前世界与最新进度，后台测试依然不操作鼠标。之后 M3.3 补长期项目意图/运行问题上下文，并做超出近期对话窗口的真实多轮验收。M3 完整通过后再更新 8787 服务。",
+  "nextAction": "M3.3：持久保存可编辑的项目创作方向与带来源的需求记录，提供已保存的实际运行错误上下文；用超出近期对话窗口的真实 LLM 多轮场景与源码修改验收。M3 完整通过后再集中更新 8787 服务。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.6",
-    "developmentSlice": "M1、M2 完成；M3.1 自动修复开发与验收完成，详见 docs/M3_REPAIR.md；M3.2、M3.3、M4、M5 继续开发。本轮未重启个人 Alpha 0.6 服务。",
+    "developmentSlice": "M1、M2、M3.1 自动修复、M3.2 差异预览已完成并验收；继续 M3.3 长期上下文、M4 素材和 M5 完整世界。本轮未重启个人 Alpha 0.6 服务。",
     "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
     "example": "examples/door-and-bounce.save.json",
     "service": {

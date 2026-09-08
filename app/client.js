@@ -1,3 +1,4 @@
+import { CandidateReview } from './review.js';
 const $ = id => document.getElementById(id);
 const token = document.querySelector('meta[name="craftmine-token"]').content;
 let client = sessionStorage.getItem('craftmine-client');
@@ -13,42 +14,47 @@ function toast(text){$('toast').textContent=text;$('toast').hidden=false;clearTi
 function node(tag,text,className){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(className)e.className=className;return e;}
 function button(text,action){const e=node('button',text,'subtle');e.type='button';e.onclick=()=>action().catch(error=>toast(error.message));return e;}
 function post(frame,type,payload={}){frame.element.contentWindow.postMessage({channel:'craftmine-host/1',nonce:frame.nonce,type,...payload},'*');}
-function removeFrame(frame){if(!frame)return;frames.delete(frame.nonce);frame.element.remove();clearTimeout(frame.timer);}
-function mount(build,snapshot){return new Promise((resolve,reject)=>{
+function removeFrame(frame,error=Error('世界副本已关闭')){if(!frame)return;frames.delete(frame.nonce);frame.element.remove();clearTimeout(frame.timer);frame.reject?.(error);frame.reject=null;frame.resolve=null;for(const [id,request]of requests)if(request.frame===frame){clearTimeout(request.timer);requests.delete(id);request.reject(error);}}
+function mount(build,snapshot,{container=$('game-wrap'),preview=false,onCreated=()=>{}}={}){return new Promise((resolve,reject)=>{
   const nonce=crypto.randomUUID(),element=document.createElement('iframe');
-  element.title='可游玩的 3D 世界';element.className='staging';element.setAttribute('sandbox','allow-scripts allow-pointer-lock');element.src='/game#'+nonce;
-  const record={nonce,element,build,snapshot,version:build.id,resolve,reject};frames.set(nonce,record);
-  record.timer=setTimeout(()=>{removeFrame(record);reject(Error('世界载入超时，原版本仍保留'));},20000);
-  $('game-wrap').append(element);
+  element.title=preview?'独立预览副本':'可游玩的 3D 世界';element.className='staging';element.dataset.role=preview?'preview':'world';element.setAttribute('sandbox','allow-scripts allow-pointer-lock');element.src='/game#'+nonce;
+  const record={nonce,element,build,snapshot,version:build.id,resolve,reject,preview};frames.set(nonce,record);onCreated(record);
+  record.timer=setTimeout(()=>removeFrame(record,Error('世界载入超时，原版本仍保留')),20000);
+  container.append(element);
 });}
-function requestSnapshot(frame,freeze=false){return new Promise((resolve,reject)=>{
+function requestFrame(frame,type,payload={}){return new Promise((resolve,reject)=>{
   if(!frame){reject(Error('世界还没有载入'));return;}
   const requestId=crypto.randomUUID(),timer=setTimeout(()=>{requests.delete(requestId);reject(Error('读取最新进度超时，未应用更新'));},5000);
-  requests.set(requestId,{resolve,reject,timer,frame});post(frame,'snapshot',{requestId,freeze});
+  requests.set(requestId,{resolve,reject,timer,frame});post(frame,type,{requestId,...payload});
 });}
+const requestSnapshot=(frame,freeze=false)=>requestFrame(frame,'snapshot',{freeze});
+const review=new CandidateReview({api,mount,remove:removeFrame,post,snapshot:requestSnapshot,inspect:(frame,id)=>requestFrame(frame,'inspect',{objectId:id}),active:()=>activeFrame,project:()=>project,apply:applyCandidate,discard:discardCandidate,select:id=>{selected=id;updateContext();renderObjects();switchView('play');$('prompt').focus();}});
 window.addEventListener('message',event=>{
   const m=event.data,frame=frames.get(m?.nonce);
   if(!frame||event.source!==frame.element.contentWindow||m.channel!=='craftmine-game/1'||event.origin!=='null')return;
-  if(m.type==='ready')post(frame,'load',{build:frame.build,snapshot:frame.snapshot});
+  if(m.type==='ready')post(frame,'load',{build:frame.build,snapshot:frame.snapshot,preview:frame.preview});
   if(m.type==='loaded'){
-    if(m.version!==frame.version){frame.reject?.(Error('运行版本不匹配'));return;}
+    if(m.version!==frame.version){removeFrame(frame,Error('运行版本不匹配'));return;}
     frame.snapshot=m.snapshot;frame.renderer=m.renderer;clearTimeout(frame.timer);frame.resolve?.(frame);frame.resolve=null;frame.reject=null;
   }
   if(m.type==='error'){
+    const request=requests.get(m.requestId);if(request?.frame===frame){clearTimeout(request.timer);requests.delete(m.requestId);request.reject(Error(m.message));}
     if(frame.reject){clearTimeout(frame.timer);frame.reject(Error(m.message));removeFrame(frame);}
     else if(frame===activeFrame)toast(m.message);
+    else if(frame.preview)review.frameError(frame,m.message);
   }
-  if(m.type==='snapshot'){
+  if(m.type==='snapshot'||m.type==='inspected'){
     const request=requests.get(m.requestId);if(!request||request.frame!==frame)return;
     clearTimeout(request.timer);requests.delete(m.requestId);frame.snapshot=m.snapshot;request.resolve(m.snapshot);
   }
+  if(frame.preview&&m.type==='state')frame.snapshot=m.snapshot;
   if(frame!==activeFrame||applying)return;
   if(m.type==='state'){
     frame.snapshot=m.snapshot;target=m.selected;
     $('renderer').textContent=`${m.renderer} · ${m.fps||'—'} FPS`;
     const p=m.snapshot.player;$('position').textContent=`${p.x.toFixed(1)} · ${p.y.toFixed(1)} · ${p.z.toFixed(1)}`;
   }
-  if(m.type==='agent'){selected=m.selected;updateContext();$('prompt').focus();}
+  if(m.type==='agent'){selected=m.selected;updateContext();renderObjects();$('prompt').focus();}
 });
 function activate(frame){const old=activeFrame;activeFrame=frame;frame.element.classList.remove('staging');if(old&&old!==frame)removeFrame(old);$('loading').hidden=true;updateWorld();}
 function updateWorld(){if(!activeFrame)return;const scene=activeFrame.build.scene;$('world-title').textContent=scene.title;$('world-count').textContent=scene.objects.length?`${scene.objects.length} 个对象 · 由你的想法创造`:'一片空地，等一个想法。';if(!scene.objects.some(o=>o.id===selected))selected=null;updateContext();}
@@ -56,16 +62,17 @@ function updateContext(){const object=activeFrame?.build.scene.objects.find(o=>o
 function switchView(view){currentView=view;for(const name of ['play','develop','assets'])$(name).hidden=name!==view;document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view!=='play'&&activeFrame)post(activeFrame,'pause');}
 function render(){
   if(!project)return;
+  review.invalidate(project);
   $('provider').textContent=project.provider.available?'● Codex 已登录':'○ 需要连接 LLM';$('provider').title=project.provider.message;
   $('version').textContent='v'+(project.history.length)+ ' · 当前可玩';
   const task=project.tasks.at(-1),running=task&&['running','validating','cancelling'].includes(task.status);
   $('send').disabled=!connected||applying||!project.provider.available||($('intent').value==='execute'&&(!!running||!!project.candidate));
-  $('apply').disabled=applying;$('discard').disabled=applying;
+  $('apply').disabled=applying;$('discard').disabled=applying;$('review-open').disabled=applying||!activeFrame;
   const statuses={running:'正在创造',validating:'正在检查',cancelling:'正在停止执行',ready:'候选已就绪',failed:'任务未完成',cancelled:'任务已取消',interrupted:'任务已中断',discussed:'讨论已完成',unchanged:'场景没有变化',applied:'已应用到世界',discarded:'候选已丢弃'};
   $('task-status').hidden=!task;
   if(task){const attempt=task.attempts?.at(-1);$('task-stage').textContent=(running&&task.status!=='cancelling'&&attempt?.number>1?`自动修复 ${attempt.number-1}/${task.limits.repairs} · `:'')+(statuses[task.status]||task.status);$('task-log').textContent=task.error||task.logs.at(-1)?.text||'';$('cancel').hidden=!running;$('cancel').disabled=task.status==='cancelling';}
   const c=project.candidate;$('candidate').hidden=!c;
-  if(c){$('candidate-title').textContent=c.summary;const changes=[c.diff.systems,c.diff.behaviors].filter(Boolean).flatMap(s=>[...s.added,...s.changed,...s.removed]);$('candidate-detail').textContent=`对象：新增 ${c.diff.added.length} · 修改 ${c.diff.changed.length} · 移除 ${c.diff.removed.length}。${changes.length?'玩法：'+changes.join('、')+'。':''}应用时保存最新进度。`;}
+  if(c){$('candidate-title').textContent=c.summary;const changes=[c.diff.systems,c.diff.behaviors].filter(Boolean).flatMap(s=>[...s.added,...s.changed,...s.removed]);$('candidate-detail').textContent=`对象：新增 ${c.diff.added.length} · 修改 ${c.diff.changed.length} · 移除 ${c.diff.removed.length}。${changes.length?'玩法：'+changes.join('、')+'。':''}${c.importSnapshot?'应用将恢复文件中的进度。':'应用时保存最新进度。'}`;}
   const mk=JSON.stringify(project.messages);
   if(mk!==messagesKey){messagesKey=mk;if(project.messages.length){const atBottom=$('messages').scrollHeight-$('messages').scrollTop-$('messages').clientHeight<80;$('messages').replaceChildren();for(const m of project.messages){const e=node('div',undefined,'message '+m.role);e.append(node('div',m.role==='user'?'你':m.role==='assistant'?'创作助手':'项目记录','who'),node('div',m.text));$('messages').append(e);}if(atBottom||project.messages.at(-1)?.role==='user')$('messages').scrollTop=$('messages').scrollHeight;}}
   const rk=JSON.stringify([project.tasks,project.history,project.current,project.library,project.activeCreations,project.candidate?.id]);if(rk===renderKey)return;renderKey=rk;
@@ -99,7 +106,7 @@ function render(){
 function renderObjects(){
   $('object-list').replaceChildren();const objects=activeFrame?.build.scene.objects||[];
   if(!objects.length)$('object-list').append(node('p','世界里还没有对象。先说说你想创造什么。','empty'));
-  for(const o of objects){const e=node('article',undefined,'object-card');e.append(node('div','◇','object-icon'),node('h3',o.name),node('p',`${o.parts.length} 个几何部分 · ${o.parts.some(p=>p.solid!==false)?'含实体碰撞':'可自由穿行'}${o.components?.health?' · 生命值 '+o.components.health:''}`),button('选中并继续修改 ↗',async()=>{selected=o.id;updateContext();$('prompt').focus();}));const binding=project.moduleBindings?.object[o.id];if(binding)e.append(node('small','已记住 · v'+binding.version,'memory-badge'));$('object-list').append(e);}
+  for(const o of objects){const e=node('article',undefined,'object-card');e.dataset.objectId=o.id;e.classList.toggle('selected',selected===o.id);const choose=button(selected===o.id?'已选中 · 继续描述修改':'选中并继续修改 ↗',async()=>{selected=o.id;updateContext();renderObjects();$('prompt').focus();});choose.setAttribute('aria-pressed',String(selected===o.id));e.append(node('div','◇','object-icon'),node('h3',o.name),node('p',`${o.parts.length} 个几何部分 · ${o.parts.some(p=>p.solid!==false)?'含实体碰撞':'可自由穿行'}${o.components?.health?' · 生命值 '+o.components.health:''}`),choose);const binding=project.moduleBindings?.object[o.id];if(binding)e.append(node('small','已记住 · v'+binding.version,'memory-badge'));$('object-list').append(e);}
   $('system-list').replaceChildren();
   for(const s of activeFrame?.build.scene.systems||[]){const e=node('article',undefined,'system-card');e.append(node('strong',s.name),node('small',s.type==='health'?'显示生命值 · 受伤与复活':s.type==='ranged'?'1 装备 · 左键射击 · R 换弹':'2 装备 · 左键 / F 近战'));$('system-list').append(e);}
   for(const s of activeFrame?.build.scene.behaviors||[]){const e=node('article',undefined,'system-card');e.append(node('strong',s.name),node('small',s.description));const details=node('details'),summary=node('summary','查看玩法源码');details.append(summary,node('pre',s.code,'source-preview'));e.append(details);$('system-list').append(e);}
@@ -140,7 +147,7 @@ function saveCurrent(){
   });return saveChain;
 }
 async function applyCandidate(){
-  if(applying||!project?.candidate)return;applying=true;render();switchView('play');
+  if(applying||!project?.candidate)return;review.close({resume:false});applying=true;render();switchView('play');
   let transaction,next,uncertain=false;const old=activeFrame;
   try {
     await saveChain.catch(()=>{});
@@ -177,9 +184,10 @@ $('memory-search').oninput=renderLibrary;
 $('module-import-button').onclick=()=>$('module-import-file').click();
 $('module-import-file').onchange=async()=>{const file=$('module-import-file').files[0];if(!file)return;try{if(file.size>1_500_000)throw Error('模块文件过大');await api('/api/modules/import',JSON.parse(await file.text()));await refresh();toast('模块已记入本地库，可选择版本复用到世界。');}catch(error){toast(error.message);}finally{$('module-import-file').value='';}};
 $('example').onclick=()=>{$('prompt').value='我想要有树';$('prompt').focus();};
-$('clear-context').onclick=()=>{selected=null;target=null;updateContext();};
+$('clear-context').onclick=()=>{selected=null;target=null;updateContext();renderObjects();};
 $('apply').onclick=applyCandidate;
-$('discard').onclick=async()=>{try{await api('/api/discard',{});await refresh();}catch(error){toast(error.message);}};
+async function discardCandidate(){try{await api('/api/discard',{});review.close();await refresh();}catch(error){toast(error.message);}}
+$('discard').onclick=discardCandidate;
 $('cancel').onclick=async()=>{try{await api('/api/cancel',{});await refresh();}catch(error){toast(error.message);}};
 $('respawn').onclick=()=>{if(activeFrame&&!applying)post(activeFrame,'respawn');};
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>switchView(b.dataset.view));
@@ -195,7 +203,7 @@ $('import-file').onchange=async()=>{
 };
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&activeFrame&&!applying){fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json','X-Craftmine-Token':token,'X-Craftmine-Client':client},body:JSON.stringify({version:activeFrame.version,snapshot:activeFrame.snapshot}),keepalive:true}).catch(()=>{});}});
 async function boot(){
-  try{await api('/api/session',{});project=await api('/api/state');if(project.applying){await api('/api/apply/abort',{id:project.applying.id});project=await api('/api/state');}connected=true;render();activate(await mount(await api('/api/build?id='+project.current),project.snapshot));renderObjects();$('save-status').textContent='● 世界已从本机载入';}
+  try{await api('/api/session',{});project=await api('/api/state');if(project.applying){await api('/api/apply/abort',{id:project.applying.id});project=await api('/api/state');}connected=true;render();activate(await mount(await api('/api/build?id='+project.current),project.snapshot));render();renderObjects();$('save-status').textContent='● 世界已从本机载入';}
   catch(error){$('loading').textContent=error.message;toast(error.message);}
   setInterval(refresh,1800);
   setInterval(()=>saveCurrent().catch(error=>{$('save-status').textContent='○ 未保存：'+error.message;}),3000);

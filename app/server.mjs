@@ -31,6 +31,7 @@ const staticFiles = new Map([
   ['/app/behavior-contracts.mjs',['behavior-contracts.mjs','text/javascript']], ['/app/behavior-runner.mjs',['behavior-runner.mjs','text/javascript']],
   ['/app/behavior-state.mjs',['behavior-state.mjs','text/javascript']], ['/app/behavior-session.mjs',['behavior-session.mjs','text/javascript']], ['/app/world-runtime.mjs',['world-runtime.mjs','text/javascript']],
   ['/app/behavior-binding.mjs',['behavior-binding.mjs','text/javascript']],
+  ['/app/scene-diff.mjs',['scene-diff.mjs','text/javascript']], ['/app/canonical.mjs',['canonical.mjs','text/javascript']], ['/app/review.js',['review.js','text/javascript']],
 ]);
 // Keep one coherent runtime for this server's lifetime while development continues.
 const staticAssets=new Map([...staticFiles].map(([route,[file,type]])=>[route,{type,content:fs.readFileSync(path.join(APP,file))}]));
@@ -72,6 +73,7 @@ const server = http.createServer(async (req,res) => {
         if (url.pathname === '/api/state') return json(res,200,{...store.data,provider});
         if (url.pathname === '/api/build') return json(res,200,store.readBuild(url.searchParams.get('id')));
         if (url.pathname === '/api/tasks/attempt') return json(res,200,store.readAttempt(url.searchParams.get('id'),Number(url.searchParams.get('number'))));
+        if (url.pathname === '/api/candidate/review') return json(res,200,store.reviewCandidate(url.searchParams.get('id'),url.searchParams.get('base')));
         if (url.pathname === '/api/export') return json(res,200,store.exportSave());
         if (url.pathname === '/api/modules/export') return json(res,200,store.modules.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
       } else {

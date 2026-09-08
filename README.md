@@ -87,6 +87,7 @@ npm run test:live-creation
 npm run test:repair
 npm run test:repair-cancel
 npm run test:live-repair
+npm run test:review
 ```
 
 核心测试仅需 Node.js。浏览器测试需要 Playwright 和 Chrome／Edge；本机可使用已提供的 Playwright 运行库，其他环境可安装 Playwright，或用 `PLAYWRIGHT_MODULE_PATH` 指定模块位置。`CRAFTMINE_BROWSER` 可指定浏览器路径。
@@ -99,6 +100,7 @@ npm run test:live-repair
 - [Alpha 0.5 源码玩法与验收](docs/ALPHA_0_5.md)
 - [Alpha 0.6 完整创作记忆与验收](docs/ALPHA_0_6.md)
 - [下一版本开发：M3.1 自动修复与失败记录](docs/M3_REPAIR.md)
+- [下一版本开发：M3.2 候选差异与独立试玩](docs/M3_PREVIEW.md)
 - [真实模型生成的滑门与弹跳板演示](examples/door-and-bounce.save.json)
 - [当前目标与持续开发路线](docs/CONTINUOUS_DEVELOPMENT.md)
 - [开发进度记录](docs/DEVELOPMENT_STATUS.json)

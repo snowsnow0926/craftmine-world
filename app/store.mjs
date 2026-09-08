@@ -62,6 +62,11 @@ export class ProjectStore {
     };
     return {attempt:clone(attempt),response:read('response.json'),diagnostic:read('diagnostic.json'),verification:read('behavior-verification.json')};
   }
+  reviewCandidate(id,base){
+    const c=this.data.candidate;if(!c||c.id!==id||c.base!==base||base!==this.data.current||this.data.applying)throw Error('候选已改变，请重新打开预览');
+    const before=this.readBuild(base),after=this.readBuild(id);
+    return {id,base,summary:c.summary,checks:clone(c.checks),time:c.time,before,after,diff:sceneDiff(before.scene,after.scene),importSnapshot:clone(c.importSnapshot||null)};
+  }
   idle() { if (this.data.applying || this.data.candidate || this.data.tasks.some(t => ['running','validating','cancelling'].includes(t.status))) throw Error('请先完成当前任务或处理候选更新'); }
   addMessage(role, text) { this.change(d => { d.messages.push({ role, text: String(text).slice(0,5000), time: Date.now() }); d.messages = d.messages.slice(-80); }); }
   save(version, snapshot) {

@@ -1,3 +1,5 @@
+import { sceneDiff,upgradeScene } from './scene-diff.mjs';
+export { sceneDiff,upgradeScene } from './scene-diff.mjs';
 import { createHash } from 'node:crypto';
 import { SYSTEMS, identifier, exactKeys, bounded, validateSource, validateSystems, validateGameplayState } from './gameplay.mjs';
 import { canonicalJSON } from './canonical.mjs';
@@ -54,18 +56,6 @@ function compileLegacy(input) {
   const scene = clone(input), hash = createHash('sha256').update(JSON.stringify(scene)).digest('hex');
   return { format: 'craftmine.build/1', hash, scene, voxels: [...cells.values()] };
 }
-export function sceneDiff(before, after) {
-  before=upgradeScene(before);after=upgradeScene(after);
-  const old = new Map(before.objects.map(o => [o.id, o])), next = new Map(after.objects.map(o => [o.id, o]));
-  return {
-    added: after.objects.filter(o => !old.has(o.id)).map(o => o.name),
-    changed: after.objects.filter(o => old.has(o.id) && canonicalJSON(old.get(o.id)) !== canonicalJSON(o)).map(o => o.name),
-    removed: before.objects.filter(o => !next.has(o.id)).map(o => o.name),
-    environment: before.night !== after.night,
-    systems: { added:after.systems.filter(s=>!before.systems.some(p=>p.id===s.id)).map(s=>s.name), changed:after.systems.filter(s=>before.systems.some(p=>p.id===s.id&&canonicalJSON(p)!==canonicalJSON(s))).map(s=>s.name), removed:before.systems.filter(s=>!after.systems.some(p=>p.id===s.id)).map(s=>s.name) },
-    behaviors: {added:(after.behaviors||[]).filter(s=>!(before.behaviors||[]).some(p=>p.id===s.id)).map(s=>s.name),changed:(after.behaviors||[]).filter(s=>(before.behaviors||[]).some(p=>p.id===s.id&&canonicalJSON(p)!==canonicalJSON(s))).map(s=>s.name),removed:(before.behaviors||[]).filter(s=>!(after.behaviors||[]).some(p=>p.id===s.id)).map(s=>s.name)},
-  };
-}
 export function validateObjectScope(before, after, selected) {
   if (!selected) return;
   before=upgradeScene(before);after=upgradeScene(after);
@@ -76,10 +66,6 @@ export function validateObjectScope(before, after, selected) {
   for(const id of behaviorIds){const a=before.behaviors?.find(b=>b.id===id),b=after.behaviors?.find(b=>b.id===id);if(canonicalJSON(a)===canonicalJSON(b))continue;for(const d of [a,b].filter(Boolean))if(d.targets.length!==1||d.targets[0]!==selected||d.permissions.some(p=>!['objects.write','hud.message'].includes(p)))throw Error('玩法修改超出了选中对象的范围');}
 }
 
-export function upgradeScene(input) {
-  if(['craftmine.scene/2','craftmine.scene/3'].includes(input.format))return clone(input);
-  return {format:'craftmine.scene/2',title:input.title,night:input.night,objects:input.objects.map(o=>({...clone(o),source:null,components:{health:0,contactDamage:0},parts:o.parts.map(p=>({...clone(p),shape:'box',color:p.material==='leaves'?'#9cdc5e':'#ffffff',solid:true}))})),systems:[]};
-}
 export const overlaps=(a,b)=>['x','y','z'].every(k=>a.min[k]<b.max[k]-0.00001&&a.max[k]>b.min[k]+0.00001);
 export function objectBounds(object) {
   return {min:Object.fromEntries(['x','y','z'].map(k=>[k,Math.min(...object.parts.map(p=>object.position[k]+p.offset[k]))])),max:Object.fromEntries(['x','y','z'].map(k=>[k,Math.max(...object.parts.map(p=>object.position[k]+p.offset[k]+p.size[k]))]))};

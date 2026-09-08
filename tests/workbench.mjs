@@ -24,7 +24,7 @@ export async function workbench(name,{preload,env={}}={}){
     const r=await fetch(route,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json','X-Craftmine-Token':document.querySelector('meta[name="craftmine-token"]').content,'X-Craftmine-Client':sessionStorage.getItem('craftmine-client')},...(body===undefined?{}:{body:JSON.stringify(body)})});const result=await r.json();if(!r.ok)throw Error(result.error);return result;
   },{route,body});}
   async function snapshot(){return page.evaluate(()=>new Promise((resolve,reject)=>{
-    const f=document.querySelector('iframe:not(.staging)'),nonce=new URL(f.src).hash.slice(1),requestId=crypto.randomUUID(),timer=setTimeout(()=>reject(Error('snapshot timeout')),5000);
+    const f=document.querySelector('#game-wrap iframe:not(.staging)'),nonce=new URL(f.src).hash.slice(1),requestId=crypto.randomUUID(),timer=setTimeout(()=>reject(Error('snapshot timeout')),5000);
     const receive=e=>{if(e.source===f.contentWindow&&e.data.requestId===requestId){clearTimeout(timer);removeEventListener('message',receive);resolve(e.data.snapshot);}};addEventListener('message',receive);f.contentWindow.postMessage({channel:'craftmine-host/1',nonce,type:'snapshot',requestId},'*');
   }));}
   async function domClick(selector){await page.evaluate(selector=>document.querySelector(selector).click(),selector);}
@@ -33,5 +33,5 @@ export async function workbench(name,{preload,env={}}={}){
   async function request(prompt){await page.evaluate(prompt=>{document.getElementById('prompt').value=prompt;document.getElementById('composer').requestSubmit();},prompt);const start=Date.now();let last='';while(Date.now()-start<250000){const state=await api('/api/state'),t=state.tasks.at(-1);if(t&&t.status!==last){console.log('LLM '+t.status);last=t.status;}if(t?.status==='ready')return state;if(t&&['failed','cancelled','discussed','interrupted','unchanged'].includes(t.status))throw Error(t.error||'Unexpected task status '+t.status);await page.waitForTimeout(1000);}throw Error('LLM timeout');}
   const saveScreenshot=async name=>{await page.screenshot({path:path.join(dir,name+'.png')});};
   await start();
-  return {dir,checks,errors,check,api,snapshot,apply,load,request,domClick,saveScreenshot,start,close,get page(){return page;},game:()=>page.frameLocator('iframe:not(.staging)'),report};
+  return {dir,checks,errors,check,api,snapshot,apply,load,request,domClick,saveScreenshot,start,close,get page(){return page;},game:()=>page.frameLocator('#game-wrap iframe:not(.staging)'),report};
 }
