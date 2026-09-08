@@ -53,6 +53,15 @@ export const COMMANDS = Object.freeze([
     note: '把血量恢复到上限并重建模型；这是唯一能让已死亡目标复活的方式',
   },
   {
+    type: 'resource.add', permission: 'resources.write', scope: '场景里 type 为 resource 的玩家资源',
+    fields: { id: '资源系统 ID', amount: '整数 -10000..10000' }, quota: '每步最多 1 条', example: "{type:'resource.add',id:'system-stamina',amount:-15}",
+    note: '结果自动夹在 0 到该系统 max 之间；体力、魔法、饥饿、护甲都用它',
+  },
+  {
+    type: 'resource.set', permission: 'resources.write', scope: '场景里 type 为 resource 的玩家资源',
+    fields: { id: '资源系统 ID', value: '0..10000' }, quota: '每步最多 1 条', example: "{type:'resource.set',id:'system-mana',value:0}",
+  },
+  {
     type: 'inventory.add', permission: 'inventory.write', scope: '当前玩家背包',
     fields: { item: '稳定英文 ID（小写字母开头）', count: '整数 -100..100' }, quota: '每步最多 1 条', example: "{type:'inventory.add',item:'wood',count:3}",
   },
@@ -114,7 +123,7 @@ export function capabilitiesText() {
     `权限：${catalog.permissions.join('、')}；能力：${catalog.capabilities.join('、')}；依赖：${catalog.requires.join('、')}。`,
     `玩法系统：${catalog.systems.map(system => `${system.type}(${system.fields.map(field => `${field.name} ${field.min}..${field.max}`).join(', ')})`).join('、')}。`,
     `命令（每步最多 ${BEHAVIOR_LIMITS.commands} 条）：`,
-    ...catalog.commands.map(command => `- ${command.type}｜权限 ${command.permission}${command.capability ? `｜能力 ${command.capability}` : ''}｜${command.fields.map(field => `${field.name}: ${field.description}`).join('；')}｜${command.example}`),
+    ...catalog.commands.map(command => `- ${command.type}｜权限 ${command.permission}${command.capability ? `｜能力 ${command.capability}` : ''}｜${command.fields.map(field => `${field.name}: ${field.description}`).join('；')}｜${command.example}${command.note ? '｜' + command.note : ''}`),
     `配额：代码 ${STORAGE_LIMITS.codeChars} 字符、状态 ${STORAGE_LIMITS.stateChars} 字符、参数 ${STORAGE_LIMITS.paramsChars} 字符、目标 ${STORAGE_LIMITS.targets} 个、每模块按键 ${STORAGE_LIMITS.keysPerModule} 个。`,
     `场景上限：对象 ${SCENE_LIMITS.objects} 个、每对象部件 ${SCENE_LIMITS.partsPerObject} 个、总面数 ${SCENE_LIMITS.faces}、场地 ${SCENE_LIMITS.fieldArea}×${SCENE_LIMITS.fieldArea}、高度 ${SCENE_LIMITS.groundY}..${SCENE_LIMITS.topY}。`,
   ];

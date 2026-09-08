@@ -97,6 +97,8 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
         if(effect.type==='audio.play')playSound(effect.sound);
         if(effect.type==='target.revive'){const target=this.play?.state?.targets?.[effect.id];if(target)target.health=target.maxHealth;this.rebuildObject(effect.id);}
         if(effect.type==='player.impulse'){this.vy=effect.velocity.y;this.impulse={x:effect.velocity.x,z:effect.velocity.z};this.grounded=false;}
+        if(effect.type==='resource.add'){this.play?.addResource(effect.id,effect.amount);this.updateHud();}
+        if(effect.type==='resource.set'){this.play?.setResource(effect.id,effect.value);this.updateHud();}
       }
     }
     async interact(){
@@ -172,6 +174,17 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       document.getElementById('weapon-hud').hidden=!weapon;document.getElementById('held-item').hidden=!weapon;
       if(weapon){document.getElementById('weapon-name').textContent=weapon.name;document.getElementById('ammo').textContent=weapon.type==='ranged'?(ammo.reloadRemaining?`换弹 ${ammo.reloadRemaining.toFixed(1)}s`:`${ammo.ammo} / ${ranged.config.magazine}`):'近战';document.getElementById('held-item').dataset.weapon=weapon.type;document.getElementById('weapon-controls').textContent=[ranged?'1 射击 · R 换弹':null,this.play.get('melee')?'2 / F 近战':null,'左键攻击'].filter(Boolean).join(' · ');}
       document.getElementById('death').hidden=!this.play.dead;if(this.play.dead){enter.hidden=true;this.pauseInput();}
+      const resources=this.play.resources(),resourceSignature=JSON.stringify(resources.map(r=>[r.id,r.name,r.value,r.max]));
+      if(resourceSignature!==this.resourceSignature){
+        this.resourceSignature=resourceSignature;
+        const hud=document.getElementById('resource-hud');hud.replaceChildren();hud.hidden=!resources.length;
+        for(const resource of resources){
+          const row=document.createElement('div');row.className='resource-item';row.dataset.resource=resource.id;
+          const label=document.createElement('span'),value=document.createElement('b'),meter=document.createElement('progress');
+          label.textContent=resource.name;value.textContent=`${Math.ceil(resource.value)} / ${resource.max}`;
+          meter.max=resource.max;meter.value=resource.value;row.append(label,value,meter);hud.append(row);
+        }
+      }
       const target=this.target?.treeId,life=this.play.state.targets[target];
       document.getElementById('target').textContent=target?`${this.objects.get(target)?.name||''}${life?' · '+Math.ceil(life.health)+' / '+life.maxHealth:''}`:'';
       const interactive=this.target?.distance<=4&&this.behaviors?.data.definitions.some(b=>b.definition.targets.includes(target));

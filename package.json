@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node app/server.mjs",
-    "test": "node --test tests/core.test.mjs tests/modules.test.mjs tests/behavior.test.mjs tests/creation.test.mjs tests/agent.test.mjs tests/review.test.mjs tests/context.test.mjs tests/assets.test.mjs tests/asset-world.test.mjs tests/asset-packages.test.mjs tests/world-capabilities.test.mjs tests/harness-model.test.mjs tests/harness-workspace.test.mjs tests/harness-capabilities.test.mjs tests/harness-acceptance.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/modules.test.mjs tests/behavior.test.mjs tests/creation.test.mjs tests/agent.test.mjs tests/review.test.mjs tests/context.test.mjs tests/assets.test.mjs tests/asset-world.test.mjs tests/asset-packages.test.mjs tests/world-capabilities.test.mjs tests/harness-model.test.mjs tests/harness-workspace.test.mjs tests/harness-capabilities.test.mjs tests/harness-acceptance.test.mjs tests/resource-system.test.mjs",
     "test:browser": "node tests/background-browser.mjs",
     "test:live": "node tests/live-memory.mjs",
     "test:behaviors": "node tests/behavior-browser.mjs",

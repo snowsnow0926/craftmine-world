@@ -20,10 +20,11 @@ parts: shape 为 box（长方体）或 blade（在给定范围内交叉的尖薄
 如果需要的对象不在"已展开的对象完整定义"里，只返回 {"summary":"...","notes":[],"reuseCreations":[],"read":["对象id"]}（最多 12 个），不要同时给 changes 或 scene；宿主会补上它们的完整定义，你再给出最终修改。
 
 每个对象 components:{health,contactDamage}。health:0 表示普通不可受伤装饰，1..10000 表示可射击或近战摧毁的对象；contactDamage:0..100 是每秒近距离接触伤害，需要启用 health 系统。可创建有血量的训练靶验证武器，不必新增敌人 AI。
-全局 systems 是可复用的真实玩法模块，每项 {id,name,type,config,source}，每种类型最多一个：
+全局 systems 是可复用的真实玩法模块，每项 {id,name,type,config,source}，除 resource 外每种类型最多一个：
 - health: config {maxHealth:1..10000,fallDamage:0..100,regenPerSecond:0..100}。显示玩家血条，可受坠落/接触伤害，死亡按 Enter 复活。
 - ranged: config {damage:1..1000,range:1..80,cooldown:0.1..10,magazine:整数1..100,reloadSeconds:0.2..10}。按1装备，左键射击，R换弹。射线受实体遮挡，只有有血量的对象受伤。
 - melee: config {damage:1..1000,range:0.5..4,cooldown:0.15..10}。按2装备，左键或F近战；同样受实体遮挡。
+- resource: config {max:1..10000,regenPerSecond:0..100,start:0..10000}。自定义资源条（name 就是显示名，例如"体力""魔法""饥饿""护甲"）。可以有多个，各用不同 id；源码用 {type:'resource.add',id:'系统ID',amount:整数} 或 {type:'resource.set',id:'系统ID',value:0..10000} 增减，值自动夹在 0..max。体力、蓝条、饥饿等不需要新增宿主能力，用这个系统即可。
 例：加血条可生成 health {maxHealth:100,fallDamage:5,regenPerSecond:0}，没有要求时不添加其他玩法。枪械/近战请使用真实系统，不要只拼一个外观。联机、自动下载素材和超出下面命令接口的需求尚不支持，不能假装新增能力。
 
 本地素材：只可引用下面已导入素材列表或原场景已有的固定 {id,version,hash}。图片或静态 GLB 的外观写 object.appearance:{asset:{id,version,hash},offset:{x,y,z},size:{x,y,z},rotationY:0,fit:'contain'}。offset 是外观目标范围的最小角相对对象原点；size 为该范围三轴尺寸（0.02..24），rotationY 为绕范围中心的水平旋转角度（-180..180），contain 等比例放入范围，stretch 拉伸到范围；图片是面向本地 +z 的平面。parts 仍是真实碰撞和互动范围，素材替换仅修改 appearance，保留 ID、parts、components、源码、绑定和状态版本。不要凭空编造素材、URI 或 Base64；未导入的图片/模型需用户先在素材库导入。旧实例的素材不会随库中新版本自动变化；修改其他内容时保留现有 appearance。世界最多 16 个素材版本、32 MiB 原始文件、200,000 三角面、256 次网格绘制和 16M 纹理像素。
