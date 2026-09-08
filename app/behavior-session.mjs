@@ -4,17 +4,20 @@ import { BehaviorBinding } from './behavior-binding.mjs';
 
 // The world owns committed state and effects. Workers only propose one bounded step.
 export class BehaviorSession {
-  constructor(build,saved,{context,apply,notice=()=>{},gameplay,onStep=()=>{}}){
-    this.data=new BehaviorState(build,saved,gameplay);this.context=context;this.apply=apply;this.notice=notice;
+  constructor(build,saved,{context,apply,notice=()=>{},gameplay,onStep=()=>{},extensions=null,runnerFactory=null}){
+    this.data=new BehaviorState(build,saved,gameplay,extensions);this.context=context;this.apply=apply;this.notice=notice;
     this.runners=new Map();this.queue=[];this.pending=null;this.disposed=false;this.failures=[];this.elapsed=0;
-    this.bindings=new Map(this.data.definitions.map(b=>[b.definition.id,new BehaviorBinding(b.definition)]));
+    this.extensions=extensions;this.extensionStates=new Map();
+    // runnerFactory 只用于测试注入假 Worker；生产路径始终是隔离 Worker。
+    this.runnerFactory=runnerFactory||((authored,options)=>new BehaviorRunner(authored,options));
+    this.bindings=new Map(this.data.definitions.map(b=>[b.definition.id,new BehaviorBinding(b.definition,extensions)]));
     this.onStep=onStep;
   }
   async start(){
     try{
       await Promise.all(this.data.definitions.map(async artifact=>{
         const record=this.data.value.modules[artifact.definition.id];if(record.error){this.notice(`「${artifact.definition.name}」仍已停止：${record.error}`);return;}
-        const binding=this.bindings.get(artifact.definition.id),runner=new BehaviorRunner(binding.authored,{localCoordinates:!!binding.binding});this.runners.set(artifact.definition.id,runner);await runner.ready;
+        const binding=this.bindings.get(artifact.definition.id),runner=this.runnerFactory(binding.authored,{localCoordinates:!!binding.binding,extensions:this.extensions});this.runners.set(artifact.definition.id,runner);await runner.ready;
       }));
       await this.execute({type:'start',targetId:null},0,true);
     }catch(error){this.dispose();throw error;}
@@ -34,7 +37,12 @@ export class BehaviorSession {
         // during the asynchronous computation. Commit only after the whole batch passes.
         const applied=this.data.apply(artifact,result,{...frame,...this.context()});
         this.onStep({id,frame,result});
-        this.apply(applied,this.data.view);
+        // 扩展命令本身不交给运行时：先派发，运行时只看到派发后的内核效果。
+        const visible=this.extensions?.size?{...applied,effects:applied.effects.filter(effect=>!this.extensions.has(effect.type))}:applied;
+        this.apply(visible,this.data.view);
+        // 扩展命令：玩法只提出调用，效果由扩展沙箱算出来，再由宿主按扩展声明的权限落地。
+        await this.resolveExtensions(artifact,applied.effects,frame);
+        if(this.disposed)return;
       }catch(error){
         if(this.disposed)return;
         this.runners.get(id)?.dispose();this.data.value.modules[id].error=String(error.message).slice(0,600);
@@ -42,6 +50,28 @@ export class BehaviorSession {
         if(strict)throw Error(`「${failure.name}」检查失败：${failure.message}`);
         this.notice(`「${failure.name}」已停止：${failure.message}`);
       }
+    }
+  }
+  async resolveExtensions(artifact,effects,frame){
+    if(!this.extensions?.size||!effects?.length)return;
+    const grouped=new Map();
+    for(const command of effects){
+      const entry=this.extensions.get(command.type);
+      if(!entry)continue;
+      const list=grouped.get(entry)||[];
+      list.push(command);grouped.set(entry,list);
+    }
+    for(const [entry,commands] of grouped){
+      const kernel=[];
+      for(const command of commands){
+        const result=await entry.runner.apply({command,world:this.context(),state:this.extensionStates.get(entry.extensionId)??null});
+        if(this.disposed)return;
+        this.extensionStates.set(entry.extensionId,result.state);
+        kernel.push(...result.effects);
+      }
+      if(!kernel.length)continue;
+      const applied=this.data.applyExtensionEffects(artifact.definition.id,entry,kernel,{...frame,...this.context()});
+      this.apply(applied,this.data.view);
     }
   }
   dispatch(type,targetId=null,dt=0,code=null){

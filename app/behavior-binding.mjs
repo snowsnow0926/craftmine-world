@@ -5,8 +5,8 @@ const shifted=(position,translation,sign)=>Object.fromEntries(['x','y','z'].map(
 // Source code and arbitrary JSON state stay in their authored coordinate system.
 // Only the explicit host frame and commands cross the instance boundary.
 export class BehaviorBinding {
-  constructor(input){
-    this.world=validateBehavior(input);this.binding=input.binding||null;
+  constructor(input,extensions=null){
+    this.world=validateBehavior(input);this.binding=input.binding||null;this.extensions=extensions;
     this.localToWorld=new Map(this.binding?.objects.map(p=>[p.local,p.world])||[]);
     this.worldToLocal=new Map(this.binding?.objects.map(p=>[p.world,p.local])||[]);
     const {binding,requires,...base}=this.world;
@@ -26,13 +26,13 @@ export class BehaviorBinding {
     return validateBehaviorFrame(value,{local:true,definition:this.authored});
   }
   result(input,frame){
-    if(!this.binding)return validateBehaviorResult(input,this.world,frame);
-    validateBehaviorResult(input,this.authored,this.frame(frame),{local:true});
+    if(!this.binding)return validateBehaviorResult(input,this.world,frame,{extensions:this.extensions});
+    validateBehaviorResult(input,this.authored,this.frame(frame),{local:true,extensions:this.extensions});
     const value=structuredClone(input);
     for(const command of value.commands)if(command.type==='object.patch'){
       command.id=this.localToWorld.get(command.id);
       if(command.position)command.position=shifted(command.position,this.binding.translation,1);
     }
-    return validateBehaviorResult(value,this.world,frame);
+    return validateBehaviorResult(value,this.world,frame,{extensions:this.extensions});
   }
 }

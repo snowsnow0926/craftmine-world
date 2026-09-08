@@ -27,10 +27,10 @@ catch(error){send({type:'error',message:String(error?.message||error).slice(0,60
 }
 
 export class BehaviorRunner {
-  constructor(input,{stepTimeoutMs=150,loadTimeoutMs=2500,localCoordinates=false}={}){
+  constructor(input,{stepTimeoutMs=150,loadTimeoutMs=2500,localCoordinates=false,extensions=null}={}){
     this.definition=validateBehavior(input);this.stepTimeoutMs=stepTimeoutMs;this.closed=false;this.sequence=0;this.pending=null;this.urls=[];
     this.state=structuredClone(this.definition.initialState);
-    this.coordinates={local:localCoordinates,definition:this.definition};
+    this.coordinates={local:localCoordinates,definition:this.definition,extensions};
     this.ready=new Promise((resolve,reject)=>{this.readyResolve=resolve;this.readyReject=reject;});
     try{
       const moduleURL=URL.createObjectURL(new Blob([this.definition.code],{type:'text/javascript'}));this.urls.push(moduleURL);
@@ -51,7 +51,7 @@ export class BehaviorRunner {
     const job=this.pending;
     if(message?.type!=='result'||!job||message.sequence!==job.sequence){this.fail(Error('玩法发送了无效或过期的消息'));return;}
     try{
-      const result=validateBehaviorResult(message.value,this.definition,job.frame,this.coordinates);
+      const result=validateBehaviorResult(message.value,this.definition,job.frame,{local:this.coordinates.local,extensions:this.coordinates.extensions});
       clearTimeout(job.timer);this.pending=null;this.state=structuredClone(result.state);job.resolve(result);
     }catch(error){this.fail(error);}
   }

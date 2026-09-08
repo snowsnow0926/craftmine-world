@@ -57,9 +57,9 @@ export function validateBehaviorState(value){
   return structuredClone(value);
 }
 export class BehaviorState {
-  constructor(build,saved,gameplay){
+  constructor(build,saved,gameplay,extensions=null){
     if(saved)validateBehaviorState(saved);
-    this.build=build;this.definitions=build.behaviors||[];
+    this.build=build;this.definitions=build.behaviors||[];this.extensions=extensions;
     const capable=saved?.format==='craftmine.behavior-state/3'||this.definitions.some(b=>b.definition.format==='craftmine.behavior/3');
     const normalize=record=>({...structuredClone(record),...(capable?{panels:structuredClone(record.panels||{})}:{})});
     this.value={format:capable?'craftmine.behavior-state/3':'craftmine.behavior-state/2',time:saved?.time||0,modules:{},inventory:structuredClone(saved?.inventory||{}),archive:(saved?.archive||[]).map(e=>({id:e.id,record:normalize(e.record)})),...(capable?{items:structuredClone(saved?.items||{})}:{})};
@@ -109,10 +109,26 @@ export class BehaviorState {
     return {objects,primitives};
   }
   apply(artifact,result,frame){
-    const definition=artifact.definition,checked=validateBehaviorResult(result,definition,frame);
+    const definition=artifact.definition,checked=validateBehaviorResult(result,definition,frame,{extensions:this.extensions});
     if(!checked.commands.length){this.value.modules[definition.id].state=checked.state;return {changed:[],effects:[]};}
     const next=structuredClone(this.value),record=next.modules[definition.id],changed=new Set(),effects=[];
-    for(const c of checked.commands){
+    this.mutate(next,record,checked.commands,effects,changed);
+    record.state=checked.state;
+    return this.finalize(next,changed,effects,frame);
+  }
+  // 扩展命令的落地效果由宿主按扩展声明的权限校验，但归属到发起调用的模块。
+  applyExtensionEffects(moduleId,extension,commands,frame){
+    if(!Array.isArray(commands)||!commands.length)return {changed:[],effects:[]};
+    const definition={format:'craftmine.behavior/1',id:extension.extensionId,name:extension.extensionId,description:'扩展',code:'export function step() { return { state: {}, commands: [] }; }',stateVersion:1,initialState:{},params:{},targets:[...(extension.targets||[])],permissions:[...extension.permissions],capabilities:[...(extension.capabilities||[])],keys:[]};
+    const checked=validateBehaviorResult({state:{},commands},definition,frame);
+    const next=structuredClone(this.value),record=next.modules[moduleId];
+    if(!record)return {changed:[],effects:[]};
+    const changed=new Set(),effects=[];
+    this.mutate(next,record,checked.commands,effects,changed);
+    return this.finalize(next,changed,effects,frame);
+  }
+  mutate(next,record,commands,effects,changed){
+    for(const c of commands){
       if(c.type==='object.patch'){
         const base=this.build.scene.objects.find(o=>o.id===c.id),old=record.overrides[c.id]||{offset:{x:0,y:0,z:0},visible:true,solid:null,color:null,yaw:0};
         const patch={offset:c.position?Object.fromEntries(['x','y','z'].map(k=>[k,c.position[k]-base.position[k]])):old.offset,visible:c.visible??old.visible,solid:c.solid??old.solid,color:c.color??old.color,yaw:c.yaw??old.yaw??0};
@@ -126,7 +142,9 @@ export class BehaviorState {
         if(c.panel===null)delete record.panels[c.key];else record.panels[c.key]=c.panel;
       }else effects.push(c);
     }
-    record.state=checked.state;
+    return {changed,effects};
+  }
+  finalize(next,changed,effects,frame){
     validateBehaviorState(next);const view=changed.size?this.materialize(next):this.view;
     const dead=new Set(this.build.scene.objects.filter(o=>o.components.health>0&&frame.objects.find(p=>p.id===o.id)?.health===0).map(o=>o.id));
     const solids=view.primitives.filter(p=>p.solid&&p.visible&&!dead.has(p.id));

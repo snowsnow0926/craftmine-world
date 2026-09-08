@@ -261,6 +261,7 @@ A 是过渡期的正确做法，但有天花板：开发者一周加 3–5 个�
 | **E2** | 装载流程（评审 + 冻结回归 + 人一键接受） | ✅ | `app/harness/extension-loader.mjs`、`app/server.mjs` | 缺对抗评审直接拒绝；回归失败拒绝；`/api/extensions/propose|activate|rollback|unload` |
 | **E2** | 卸载语义显式失败 | ✅ | `app/scene.mjs`、`app/store.mjs` | `tests/extension.test.mjs`：`requires:['ext:life-steal@1']` 未装载时编译报错 |
 | **E2** | 能力目录包含已装载扩展 | ✅ | `app/harness/capabilities.mjs`、`GET /api/capabilities` | 目录由扩展事实派生，不手写 |
+| **E2** | 扩展命令派发 | ✅ 机制 | `app/behavior-contracts.mjs`、`behavior-state.mjs`、`behavior-session.mjs`、`behavior-binding.mjs`、`behavior-runner.mjs` | `tests/extension-dispatch.test.mjs`：依赖+权限两道门、状态跨步累积、越权效果被拒；游戏侧 runner 表还没接 |
 | **E3** | 渲染扩展点（粒子 drawable） | ✅ | `app/harness/render-extension.mjs`、`app/render-runner.mjs` | 真实沙箱产出 drawable 并通过宿主校验 |
 | **E3** | 帧预算 + 自动降级 | ✅ | `app/render-runner.mjs`、`app/world-runtime.mjs` | 死循环/越界只关掉该扩展，页面继续跑 |
 | **E3** | 自动回滚 | ✅ | `app/harness/render-extension.mjs` | 注册表回退到上一版本 |
@@ -279,7 +280,7 @@ node tests/kernel-parts-browser.mjs       # 内核部件审批门与回退
 
 ### 还没做到的
 
-- **扩展命令还没有接进玩法派发**：`craftmine.extension/1` 的包格式、沙箱、自带测试、反造假、对抗评审、冻结回归、卸载语义和目录都已经能跑，但**玩法模块还不能直接发出扩展命令**。原因是扩展的 `apply` 在 Worker 里跑，天然是异步的，而玩法命令的落地目前是同步的；接进去需要给效果落地加一个异步阶段。所以现在扩展命令只能由宿主和扩展自带测试执行，`requires:['ext:id@v']` 是依赖声明与装载校验，不是「玩法能调用它」。这是 E2 剩下的最后一块。
+- **扩展命令的派发机制已实现，但游戏侧还没接线**：玩法模块现在可以发出扩展命令（`requires:['ext:id@v']` + 该命令声明的权限两道门），宿主把它派发到扩展沙箱、再把扩展产出的内核效果落地——这条链有 5 项确定性测试（`tests/extension-dispatch.test.mjs`）。还没做的是**游戏页把已装载扩展组装成 runner 表**：需要把扩展包送到游戏页、为每个扩展建一个 Worker，再传给 `BehaviorSession`。在那之前，真实游玩里扩展命令仍然发不出去（会明确报错，不会静默失效）。
 - **评审断言还没被真正执行**：对抗评审的每条发现都会转成一条可执行断言并随候选留档（`reviewAssertions`），但扩展目前没有「轨迹」可以拿这些断言去跑；等扩展派发接上之后，这些断言就能像玩法断言一样被机器复核。
 - **沙箱的「不能 import」只能靠 CSP 兜底**：bootstrap 关掉了 DOM/网络/计时器/新 Worker，但模块里的 `import()` 语法本身没有被语法层禁止；实际拦它的是游戏页的 `script-src`/`connect-src`。这是已知残留风险。
 - **E2/E3 的退出条件**：≥3 个模型自写扩展、≥1 个模型自写渲染扩展长期稳定运行。机制已经能拦住坏扩展，但「模型能不能持续写出好扩展」只能靠真实使用来回答。

@@ -381,7 +381,7 @@
       "glb": "仅静态（拒绝动画与骨骼），外观仅支持绕 Y 轴旋转",
       "limits": "128 物体 / 每步 32 命令 / 代码 32KB / 状态 16KB / 10 万面"
     },
-    "tests": "npm test: 254 passed",
+    "tests": "npm test: 259 passed",
     "developmentBatches": [
       {
         "batch": "0",
@@ -479,7 +479,7 @@
           "name": "L2 扩展 ABI",
           "status": "done",
           "evidence": "app/harness/{extension,extension-effects,extension-loader,extension-sandbox-browser}.mjs + app/extension-runner.mjs + tests/extension.test.mjs + tests/extension-browser.mjs + /api/extensions/*",
-          "note": "扩展只能产出内核原子效果；独立 Worker 沙箱；自带测试必须对空实现变红；对抗评审强制；冻结回归；卸载后依赖模块显式失败"
+          "note": "扩展只能产出内核原子效果；独立 Worker 沙箱；自带测试必须对空实现变红；对抗评审强制；冻结回归；卸载后依赖模块显式失败；扩展命令派发机制已实现并有测试，游戏侧 runner 表待接"
         },
         {
           "id": "E3",
@@ -522,6 +522,7 @@
         }
       ],
       "notDone": [
+        "游戏页把已装载扩展组装成 runner 表（派发机制已就绪）",
         "模型自己写扩展并长期运行（E2/E3 的退出条件）",
         "公开插件市场、云记忆、多 Agent 并写世界（明确不做）"
       ],
@@ -574,7 +575,7 @@
       ],
       "remaining": [
         "真实模型长任务的强制压缩回归",
-        "E2 扩展命令的异步派发（SELF_EXTENSION_PLAN §10）",
+        "游戏侧扩展 runner 表接线",
         "P5 战斗奖励闭环与第二项目安装",
         "P6 第二个真实后端"
       ]

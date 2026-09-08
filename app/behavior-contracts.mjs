@@ -111,7 +111,7 @@ export function validateBehaviorFrame(frame,{local=false,definition}={}){
   const ids=new Set();for(const object of frame.objects){exactKeys(object,['id','position','visible','solid','health']);if(!identifier(object.id)||ids.has(object.id)||typeof object.visible!=='boolean'||typeof object.solid!=='boolean')throw Error('玩法对象上下文无效');ids.add(object.id);vec(object.position,local?-128:-48,local?128:48);bounded(object.health,0,10000);}
   return structuredClone(frame);
 }
-export function validateBehaviorResult(result,definition,frame,{local=false}={}){
+export function validateBehaviorResult(result,definition,frame,{local=false,extensions=null}={}){
   exactKeys(result,['state','commands']);const state=jsonRecord(result.state,BEHAVIOR_LIMITS.state);
   if(!Array.isArray(result.commands)||result.commands.length>BEHAVIOR_LIMITS.commands)throw Error('玩法命令超过每步 32 条限制');
   const permit=permission=>{if(!definition.permissions.includes(permission))throw Error('玩法没有声明所需权限：'+permission);};
@@ -154,6 +154,14 @@ export function validateBehaviorResult(result,definition,frame,{local=false}={})
     }else if(command?.type==='target.damage'){
       permit('targets.write');exactKeys(command,['type','id','amount']);if(!safeId(command.id))throw Error('目标 ID 无效');bounded(command.amount,0,10000);
       if(!definition.targets.includes(command.id))throw Error('玩法试图伤害未授权的目标');
+    }else if(extensions&&extensions.has(command?.type)){
+      // 扩展命令：模块必须声明该扩展依赖，并持有该命令声明的权限。
+      // 命令自身的字段由扩展沙箱校验，宿主只保证「越不过扩展声明的权限」。
+      const entry=extensions.get(command.type);
+      const requirement='ext:'+entry.extensionId+'@'+entry.version;
+      if(!(definition.requires||[]).includes(requirement))throw Error('玩法没有声明所需的扩展依赖：'+requirement);
+      permit(entry.permission);
+      jsonRecord(command,BEHAVIOR_LIMITS.params);
     }else throw Error('不支持的玩法命令');
   }
   // The caller only receives a result after every command has passed.

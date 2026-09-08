@@ -34,7 +34,7 @@ export const FROZEN_KERNEL_HASHES = Object.freeze({
   'app/harness/extension.mjs': '3ea95af0144c0a67dc885eea33f73bdd29246c527653af07f056c2ecaeda3af1',
   'app/harness/extension-loader.mjs': 'c7731e59540561a630b08b6daab01c37c9dd85afb4a3ce401f689f79d3493e92',
   'app/store.mjs': '2469fad89532cc3642ecf74e09746d622773fc57de632a22129bfac120118f7a',
-  'app/behavior-contracts.mjs': 'd5dbae6d2e60e8555eb1e54533f413cfe436bbebcf8b7ae1e3c19088ec937812',
+  'app/behavior-contracts.mjs': '0dcebb03b194148597b24b1da1b04cc2a5510c17b1d3a3d93cfdad0b41d98782',
   'app/canonical.mjs': '788dee7dbae8231382b35952b20052db73e9e064bd85ea34603f1f00a5e03779',
   'app/static-files.mjs': '93cd5daa2bdfbaca7be1101d3b42a10171fc44070e9ecc2a3244cf4cc71daefd',
 });
