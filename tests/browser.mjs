@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { playwright,browserOptions } from './browser-tools.mjs';
 import { EMPTY_SCENE,INITIAL_SNAPSHOT,clone } from '../app/scene.mjs';
 
+if(!process.argv.includes('--explicit-user-input-test'))throw Error('此历史测试包含真实输入。日常验证请运行 tests/background-browser.mjs。');
 fs.mkdirSync('test-results',{recursive:true});
 const live=process.argv.includes('--live'),dir=path.resolve(fs.mkdtempSync('test-results/browser-'));
 const {chromium}=playwright(),checks=[],errors=[];
@@ -52,7 +53,7 @@ try{
     check('真实 LLM 从工作台生成候选，当前场景保持空白',state.current===initial&&!!state.candidate&&state.tasks.at(-1).usage?.output_tokens>0);
     check('LLM 等待期间仍能继续走动',waited.player.x>1.5);
     const treeBuild=(await api('/api/build?id='+state.candidate.id)).body;
-    check('LLM 生成实际几何与稳定对象 ID',treeBuild.scene.objects.length>0&&treeBuild.voxels.length>0);
+    check('LLM 生成实际几何与稳定对象 ID',treeBuild.scene.objects.length>0&&(treeBuild.voxels.length>0||treeBuild.primitives.length>0));
     await apply();const applied=await snapshot();check('应用候选保留等待期间的最新位置',Math.abs(applied.player.x-waited.player.x)<.01);
     state=(await api('/api/state')).body;
     const tree=treeBuild.scene.objects[0],oldHeight=Math.max(...tree.parts.map(p=>p.offset.y+p.size.y));

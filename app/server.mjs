@@ -24,6 +24,7 @@ const token = randomUUID(); let lease = null;
 const staticFiles = new Map([
   ['/app/client.js',['client.js','text/javascript']], ['/app/style.css',['style.css','text/css']],
   ['/app/game.js',['game.js','text/javascript']], ['/app/game.css',['game.css','text/css']],
+  ['/app/gameplay.mjs',['gameplay.mjs','text/javascript']], ['/app/geometry.mjs',['geometry.mjs','text/javascript']],
 ]);
 const json = (res, status, data) => { res.writeHead(status, {'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}); res.end(JSON.stringify(data)); };
 async function body(req) {
@@ -55,6 +56,7 @@ const server = http.createServer(async (req,res) => {
         if (url.pathname === '/api/state') return json(res,200,{...store.data,provider});
         if (url.pathname === '/api/build') return json(res,200,store.readBuild(url.searchParams.get('id')));
         if (url.pathname === '/api/export') return json(res,200,store.exportSave());
+        if (url.pathname === '/api/modules/export') return json(res,200,store.modules.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
       } else {
         const input = await body(req);
         switch (url.pathname) {
@@ -76,6 +78,12 @@ const server = http.createServer(async (req,res) => {
           case '/api/apply/commit': store.commit(input.id,input.snapshot); break;
           case '/api/apply/abort': store.abort(input.id); break;
           case '/api/import': store.importSave(input); break;
+          case '/api/modules/import': store.importModule(input); break;
+          case '/api/modules/reuse': {
+            if(input.version!==store.data.current)throw Error('运行版本已过期，请刷新后重试');
+            const player=validateSnapshot({format:'craftmine.progress/1',player:input.player}).player;
+            store.reuseModule(input.id,input.moduleVersion,player);break;
+          }
           default: return json(res,404,{error:'接口不存在'});
         }
         return json(res,200,{ok:true});
@@ -90,7 +98,7 @@ const server = http.createServer(async (req,res) => {
     }
     if (url.pathname === '/game') { res.setHeader('Content-Type','text/html; charset=utf-8'); return res.end(fs.readFileSync(path.join(APP,'game.html'))); }
     if (url.pathname === '/runtime.js') { res.setHeader('Content-Type','text/javascript; charset=utf-8'); return res.end(fs.readFileSync(path.join(ROOT,'world-workshop-3d','src','voxel-runtime.js'))); }
-    if (staticFiles.has(url.pathname)) { const [file,type] = staticFiles.get(url.pathname); res.setHeader('Content-Type',type+'; charset=utf-8'); return res.end(fs.readFileSync(path.join(APP,file))); }
+    if (staticFiles.has(url.pathname)) { const [file,type] = staticFiles.get(url.pathname); res.setHeader('Content-Type',type+'; charset=utf-8');if(type==='text/javascript')res.setHeader('Access-Control-Allow-Origin','*'); return res.end(fs.readFileSync(path.join(APP,file))); }
     if (url.pathname === '/favicon.ico') { res.writeHead(204); return res.end(); }
     return json(res,404,{error:'文件不存在'});
   } catch (error) { json(res,400,{error:error.message}); }

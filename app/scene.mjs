@@ -1,9 +1,12 @@
 import { createHash } from 'node:crypto';
+import { SYSTEMS, identifier, exactKeys, bounded, validateSource, validateSystems, validateGameplayState } from './gameplay.mjs';
 
 export const MATERIALS = { grass: 1, dirt: 2, stone: 3, wood: 4, leaves: 5, planks: 6, sand: 7, brick: 8, light: 9, glass: 12 };
 export const EMPTY_SCENE = { format: 'craftmine.scene/1', title: '最初的世界', night: false, objects: [] };
 export const INITIAL_SNAPSHOT = { format: 'craftmine.progress/1', player: { x: 0.5, y: 6, z: 12.5, yaw: 0, pitch: 0 } };
 export const clone = value => structuredClone(value);
+export const canonicalJSON=value=>JSON.stringify(canonical(value));
+function canonical(value){if(Array.isArray(value))return value.map(canonical);if(value&&typeof value==='object')return Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k])]));return value;}
 function keys(value, allowed) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('需要 JSON 对象');
   if (Object.keys(value).some(key => !allowed.includes(key)) || allowed.some(key => !Object.hasOwn(value, key))) throw Error('对象字段不符合格式');
@@ -12,14 +15,15 @@ function string(value, max) { if (typeof value !== 'string' || !value.trim() || 
 function integer(value, min, max) { if (!Number.isInteger(value) || value < min || value > max) throw Error(`整数需要在 ${min} 到 ${max} 之间`); }
 function vector(value, min, max) { keys(value, ['x', 'y', 'z']); for (const n of Object.values(value)) integer(n, min, max); }
 export function validateSnapshot(input) {
-  keys(input, ['format', 'player']);
-  if (input.format !== INITIAL_SNAPSHOT.format) throw Error('进度格式不兼容，已保留原存档');
+  if(!['craftmine.progress/1','craftmine.progress/2'].includes(input?.format))throw Error('进度格式不兼容，已保留原存档');
+  keys(input, input.format==='craftmine.progress/2'?['format','player','gameplay']:['format', 'player']);
+  if(input.format==='craftmine.progress/2')validateGameplayState(input.gameplay);
   keys(input.player, ['x', 'y', 'z', 'yaw', 'pitch']);
   const p = input.player;
   if (Object.values(p).some(n => !Number.isFinite(n)) || Math.abs(p.x) > 47.4 || Math.abs(p.z) > 47.4 || p.y < 6 || p.y > 38 || Math.abs(p.yaw) > 1e6 || Math.abs(p.pitch) > 1.52) throw Error('玩家位置或视角无效');
   return clone(input);
 }
-export function compileScene(input) {
+function compileLegacy(input) {
   keys(input, ['format', 'title', 'night', 'objects']);
   if (input.format !== EMPTY_SCENE.format) throw Error('场景格式不兼容');
   string(input.title, 80);
@@ -48,30 +52,80 @@ export function compileScene(input) {
   return { format: 'craftmine.build/1', hash, scene, voxels: [...cells.values()] };
 }
 export function sceneDiff(before, after) {
+  before=upgradeScene(before);after=upgradeScene(after);
   const old = new Map(before.objects.map(o => [o.id, o])), next = new Map(after.objects.map(o => [o.id, o]));
   return {
     added: after.objects.filter(o => !old.has(o.id)).map(o => o.name),
-    changed: after.objects.filter(o => old.has(o.id) && JSON.stringify(old.get(o.id)) !== JSON.stringify(o)).map(o => o.name),
+    changed: after.objects.filter(o => old.has(o.id) && canonicalJSON(old.get(o.id)) !== canonicalJSON(o)).map(o => o.name),
     removed: before.objects.filter(o => !next.has(o.id)).map(o => o.name),
     environment: before.night !== after.night,
+    systems: { added:after.systems.filter(s=>!before.systems.some(p=>p.id===s.id)).map(s=>s.name), changed:after.systems.filter(s=>before.systems.some(p=>p.id===s.id&&canonicalJSON(p)!==canonicalJSON(s))).map(s=>s.name), removed:before.systems.filter(s=>!after.systems.some(p=>p.id===s.id)).map(s=>s.name) },
   };
 }
 export function validateObjectScope(before, after, selected) {
   if (!selected) return;
+  before=upgradeScene(before);after=upgradeScene(after);
   const beforeRest = before.objects.filter(o => o.id !== selected);
   const afterRest = after.objects.filter(o => o.id !== selected);
-  if (JSON.stringify(beforeRest) !== JSON.stringify(afterRest) || before.night !== after.night || before.title !== after.title) throw Error('模型修改超出了选中对象的范围，候选未采纳。若要修改整个世界，请先清除对象选择。');
+  if (canonicalJSON(beforeRest) !== canonicalJSON(afterRest) || before.night !== after.night || before.title !== after.title || canonicalJSON(before.systems)!==canonicalJSON(after.systems)) throw Error('模型修改超出了选中对象的范围，候选未采纳。若要修改整个世界，请先清除对象选择。');
 }
-const vecSchema = { type: 'object', properties: { x: { type: 'integer' }, y: { type: 'integer' }, z: { type: 'integer' } }, required: ['x','y','z'], additionalProperties: false };
+
+export function upgradeScene(input) {
+  if(input.format==='craftmine.scene/2')return clone(input);
+  return {format:'craftmine.scene/2',title:input.title,night:input.night,objects:input.objects.map(o=>({...clone(o),source:null,components:{health:0,contactDamage:0},parts:o.parts.map(p=>({...clone(p),shape:'box',color:p.material==='leaves'?'#9cdc5e':'#ffffff',solid:true}))})),systems:[]};
+}
+export const overlaps=(a,b)=>['x','y','z'].every(k=>a.min[k]<b.max[k]-0.00001&&a.max[k]>b.min[k]+0.00001);
+export function objectBounds(object) {
+  return {min:Object.fromEntries(['x','y','z'].map(k=>[k,Math.min(...object.parts.map(p=>object.position[k]+p.offset[k]))])),max:Object.fromEntries(['x','y','z'].map(k=>[k,Math.max(...object.parts.map(p=>object.position[k]+p.offset[k]+p.size[k]))]))};
+}
+export function compileScene(input) {
+  if(input?.format==='craftmine.scene/1')return compileLegacy(input);
+  exactKeys(input,['format','title','night','objects','systems']);
+  if(input.format!=='craftmine.scene/2')throw Error('场景格式不兼容');
+  string(input.title,80);if(typeof input.night!=='boolean'||!Array.isArray(input.objects)||input.objects.length>128)throw Error('场景最多包含 128 个对象');
+  validateSystems(input.systems);
+  const ids=new Set(),primitives=[],bins=new Map();let volume=0,faces=0;
+  const vec=(v,min,max)=>{exactKeys(v,['x','y','z']);for(const n of Object.values(v))bounded(n,min,max);};
+  for(const o of input.objects){
+    exactKeys(o,['id','name','position','parts','components','source']);string(o.name,60);
+    if(!identifier(o.id)||ids.has(o.id))throw Error('对象 ID 无效或重复');ids.add(o.id);
+    vec(o.position,-40,40);validateSource(o.source);exactKeys(o.components,['health','contactDamage']);bounded(o.components.health,0,10000);bounded(o.components.contactDamage,0,100);
+    if(o.components.contactDamage>0&&!input.systems.some(s=>s.type==='health'))throw Error('接触伤害需要启用生命值模块');
+    if(!Array.isArray(o.parts)||!o.parts.length||o.parts.length>128)throw Error('每个对象需要 1–128 个几何部分');
+    for(const p of o.parts){
+      exactKeys(p,['shape','offset','size','material','color','solid']);vec(p.offset,-24,24);vec(p.size,0.02,24);
+      if(!['box','blade'].includes(p.shape)||!Object.hasOwn({...MATERIALS,solid:0},p.material)||!/^#[0-9a-fA-F]{6}$/.test(p.color)||typeof p.solid!=='boolean')throw Error('几何、材质、颜色或碰撞无效');
+      if(p.shape==='blade'&&p.solid)throw Error('薄叶片不能作为实心碰撞体');
+      volume+=p.size.x*p.size.y*p.size.z;if(volume>24000||primitives.length>=4096)throw Error('场景超出构造预算（24,000 体积 / 4,096 部件）');
+      const [x,y,z]=Object.values(p.size).map(Math.ceil);faces+=p.shape==='blade'?4:p.material==='solid'?6:2*(x*y+x*z+y*z);if(faces>100000)throw Error('场景超过 100,000 面的绘制预算');
+      const min=Object.fromEntries(['x','y','z'].map(k=>[k,o.position[k]+p.offset[k]])),max=Object.fromEntries(['x','y','z'].map(k=>[k,min[k]+p.size[k]]));
+      if(min.x< -46||min.z< -46||min.y<5.99999||max.x>46||max.z>46||max.y>38)throw Error('对象超出场地：地面 y=6，水平边界 ±46，高度小于 38');
+      const primitive={...clone(p),id:o.id,min,max};
+      // Decorations may overlap naturally. Solid parts from different objects must not intersect.
+      if(p.solid){const seen=new Set();for(let x=Math.floor(min.x/4);x<=Math.floor(max.x/4);x++)for(let y=Math.floor(min.y/4);y<=Math.floor(max.y/4);y++)for(let z=Math.floor(min.z/4);z<=Math.floor(max.z/4);z++){
+        const key=`${x},${y},${z}`,near=bins.get(key)||[];
+        for(const other of near)if(!seen.has(other)){seen.add(other);if(other.id!==o.id&&overlaps(primitive,other))throw Error('不同实心对象发生重叠，请调整位置');}
+        near.push(primitive);bins.set(key,near);
+      }}
+      primitives.push(primitive);
+    }
+  }
+  const scene=clone(input),hash=createHash('sha256').update(canonicalJSON(scene)).digest('hex');
+  return {format:'craftmine.build/2',hash,scene,voxels:[],primitives};
+}
+const vecSchema = { type: 'object', properties: { x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['x','y','z'], additionalProperties: false };
 const objSchema = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
+const sourceSchema={anyOf:[{type:'null'},objSchema({id:{type:'string'},version:{type:'integer'}})]};
 export const OUTPUT_SCHEMA = objSchema({
   summary: { type: 'string' },
   notes: { type: 'array', items: { type: 'string' } },
   scene: { anyOf: [ { type: 'null' }, objSchema({
-    format: { type: 'string', enum: ['craftmine.scene/1'] }, title: { type: 'string' }, night: { type: 'boolean' },
+    format: { type: 'string', enum: ['craftmine.scene/2'] }, title: { type: 'string' }, night: { type: 'boolean' },
     objects: { type: 'array', items: objSchema({
-      id: { type: 'string' }, name: { type: 'string' }, position: vecSchema,
-      parts: { type: 'array', items: objSchema({ offset: vecSchema, size: vecSchema, material: { type: 'string', enum: Object.keys(MATERIALS) } }) },
+      id: { type: 'string' }, name: { type: 'string' }, position: vecSchema,source:sourceSchema,
+      components:objSchema({health:{type:'number'},contactDamage:{type:'number'}}),
+      parts: { type: 'array', items: objSchema({ shape:{type:'string',enum:['box','blade']},offset: vecSchema, size: vecSchema, material: { type: 'string', enum: [...Object.keys(MATERIALS),'solid'] },color:{type:'string'},solid:{type:'boolean'} }) },
     }) },
+    systems:{type:'array',items:{anyOf:Object.entries(SYSTEMS).map(([type,definition])=>objSchema({id:{type:'string'},name:{type:'string'},type:{type:'string',enum:[type]},config:objSchema(Object.fromEntries(Object.keys(definition.fields).map(k=>[k,{type:k==='magazine'?'integer':'number'}]))),source:sourceSchema}))}},
   }) ] },
 });

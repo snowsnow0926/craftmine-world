@@ -65,16 +65,18 @@ function render(){
   $('task-status').hidden=!task;
   if(task){$('task-stage').textContent=statuses[task.status]||task.status;$('task-log').textContent=task.error||task.logs.at(-1)?.text||'';$('cancel').hidden=!running;$('cancel').disabled=task.status==='cancelling';}
   const c=project.candidate;$('candidate').hidden=!c;
-  if(c){$('candidate-title').textContent=c.summary;$('candidate-detail').textContent=`新增 ${c.diff.added.length} · 修改 ${c.diff.changed.length} · 移除 ${c.diff.removed.length}。已通过场景构建校验；应用时保存最新进度并检查画面。`;}
+  if(c){$('candidate-title').textContent=c.summary;const systems=c.diff.systems,changes=systems?[...systems.added,...systems.changed,...systems.removed]:[];$('candidate-detail').textContent=`对象：新增 ${c.diff.added.length} · 修改 ${c.diff.changed.length} · 移除 ${c.diff.removed.length}。${changes.length?'玩法：'+changes.join('、')+'。':''}应用时保存最新进度，成功后记住新成果。`;}
   const mk=JSON.stringify(project.messages);
   if(mk!==messagesKey){messagesKey=mk;if(project.messages.length){const atBottom=$('messages').scrollHeight-$('messages').scrollTop-$('messages').clientHeight<80;$('messages').replaceChildren();for(const m of project.messages){const e=node('div',undefined,'message '+m.role);e.append(node('div',m.role==='user'?'你':m.role==='assistant'?'创作助手':'项目记录','who'),node('div',m.text));$('messages').append(e);}if(atBottom||project.messages.at(-1)?.role==='user')$('messages').scrollTop=$('messages').scrollHeight;}}
-  const rk=JSON.stringify([project.tasks,project.history,project.current]);if(rk===renderKey)return;renderKey=rk;
+  const rk=JSON.stringify([project.tasks,project.history,project.current,project.library,project.candidate?.id]);if(rk===renderKey)return;renderKey=rk;
   $('task-list').replaceChildren();
   if(!project.tasks.length)$('task-list').append(node('p','从右侧描述第一个想法，开发记录会出现在这里。','empty'));
   for(const t of [...project.tasks].reverse()){
     const e=node('article',undefined,'record'),row=node('div');row.append(node('strong',t.prompt),node('small',statuses[t.status]||t.status));e.append(row);
     const details=node('details'),summary=node('summary','执行记录'),logs=node('ol');for(const log of t.logs)logs.append(node('li',new Date(log.time).toLocaleTimeString()+' · '+log.text));details.append(summary,logs);
     if(t.usage)details.append(node('p',`实际用量：输入 ${t.usage.input_tokens??'—'} / 输出 ${t.usage.output_tokens??'—'} tokens`));
+    if(t.memories?.length)details.append(node('p','读取的创作记忆：'+t.memories.map(m=>`${m.name} v${m.version}`).join('、')));
+    if(t.usedModules?.length)details.append(node('p','生成结果引用了 '+t.usedModules.length+' 个模块版本。'));
     if(t.error)details.append(node('p',t.error));
     if(t.build)details.append(button('查看实际场景产物',async()=>{const build=await api('/api/build?id='+t.build);const code=node('pre',JSON.stringify(build.scene,null,2));code.className='source-preview';details.append(code);}));
     e.append(details);$('task-list').append(e);
@@ -90,7 +92,28 @@ function render(){
 function renderObjects(){
   $('object-list').replaceChildren();const objects=activeFrame?.build.scene.objects||[];
   if(!objects.length)$('object-list').append(node('p','世界里还没有对象。先说说你想创造什么。','empty'));
-  for(const o of objects){const e=node('article',undefined,'object-card');e.append(node('div','◇','object-icon'),node('h3',o.name),node('p',`${o.id}\n位置 ${o.position.x}, ${o.position.y}, ${o.position.z}\n${o.parts.length} 个几何部分 · ${[...new Set(o.parts.map(p=>p.material))].join(' / ')}`),button('选中并继续修改 ↗',async()=>{selected=o.id;updateContext();$('prompt').focus();}));$('object-list').append(e);}
+  for(const o of objects){const e=node('article',undefined,'object-card');e.append(node('div','◇','object-icon'),node('h3',o.name),node('p',`${o.parts.length} 个几何部分 · ${o.parts.some(p=>p.solid!==false)?'含实体碰撞':'可自由穿行'}${o.components?.health?' · 生命值 '+o.components.health:''}`),button('选中并继续修改 ↗',async()=>{selected=o.id;updateContext();$('prompt').focus();}));const binding=project.moduleBindings?.object[o.id];if(binding)e.append(node('small','已记住 · v'+binding.version,'memory-badge'));$('object-list').append(e);}
+  $('system-list').replaceChildren();
+  for(const s of activeFrame?.build.scene.systems||[]){const e=node('article',undefined,'system-card');e.append(node('strong',s.name),node('small',s.type==='health'?'显示生命值 · 受伤与复活':s.type==='ranged'?'1 装备 · 左键射击 · R 换弹':'2 装备 · 左键 / F 近战'));$('system-list').append(e);}
+  if(!$('system-list').children.length)$('system-list').append(node('p','还没有启用玩法。可以说：“增加 100 点生命值”或“增加射击和一个训练靶”。','empty'));
+  renderLibrary();
+}
+function downloadJSON(data,name){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}
+async function reuseModule(id,moduleVersion){if(applying)throw Error('请等待当前更新结束');const snap=await requestSnapshot(activeFrame);await api('/api/modules/reuse',{id,moduleVersion,version:activeFrame.version,player:snap.player});await refresh();switchView('play');toast('已从记忆中读取模块。应用候选后进入世界，无需重新生成。');}
+function renderLibrary(){
+  const list=$('memory-list');list.replaceChildren();const query=$('memory-search').value.trim().toLowerCase();
+  const modules=(project.library||[]).filter(m=>(m.name+' '+m.description).toLowerCase().includes(query));
+  $('memory-count').textContent=(project.library||[]).length+' 个创作模块';
+  if(!modules.length)list.append(node('p',query?'没有匹配的记忆。':'应用一次创造后，这里会记住它。模块会保存在本机，关闭程序后也能复用。','empty'));
+  for(const m of [...modules].reverse()){
+    const e=node('article',undefined,'module-card');e.dataset.moduleId=m.id;
+    const title=node('div',undefined,'module-heading');title.append(node('span',m.kind==='object'?'◇':'⚙','module-icon'),node('h3',m.name),node('small',m.kind==='object'?'对象':'玩法'));e.append(title);
+    e.append(node('p',m.description||'来自你的创作','module-description'));
+    const versions=node('select');versions.setAttribute('aria-label',m.name+' 的版本');for(const v of [...m.versions].reverse()){const option=node('option',`v${v.version}${v.version===m.latest?' · 最新':''}`);option.value=String(v.version);versions.append(option);}
+    const actions=node('div',undefined,'module-actions'),use=button('复用到世界 ↗',async()=>reuseModule(m.id,Number(versions.value)));use.disabled=!!project.candidate||applying||project.tasks.some(t=>['running','validating','cancelling'].includes(t.status));actions.append(versions,use);
+    actions.append(button('导出',async()=>{const module=await api('/api/modules/export?id='+encodeURIComponent(m.id)+'&version='+versions.value);downloadJSON(module,`craftmine-module-${m.id}-v${versions.value}.json`);}));e.append(actions);
+    const details=node('details'),summary=node('summary','查看保存的定义'),content=node('pre',undefined,'source-preview');details.append(summary,content);details.ontoggle=async()=>{if(details.open)try{content.textContent=JSON.stringify(await api('/api/modules/export?id='+encodeURIComponent(m.id)+'&version='+versions.value),null,2);}catch(error){toast(error.message);}};versions.onchange=()=>{details.open=false;};e.append(details);list.append(e);
+  }
 }
 async function refresh(){if(refreshing)return;refreshing=true;try{project=await api('/api/state');connected=true;render();}catch(error){connected=false;$('send').disabled=true;$('save-status').textContent='○ 连接中断：'+error.message;}finally{refreshing=false;}}
 function saveCurrent(){
@@ -133,6 +156,9 @@ $('composer').onsubmit=async event=>{
 $('prompt').addEventListener('focus',()=>{if(activeFrame)post(activeFrame,'pause');});
 $('prompt').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();$('composer').requestSubmit();}});
 $('intent').onchange=render;
+$('memory-search').oninput=renderLibrary;
+$('module-import-button').onclick=()=>$('module-import-file').click();
+$('module-import-file').onchange=async()=>{const file=$('module-import-file').files[0];if(!file)return;try{if(file.size>300000)throw Error('模块文件过大');await api('/api/modules/import',JSON.parse(await file.text()));await refresh();toast('模块已记入本地库，可选择版本复用到世界。');}catch(error){toast(error.message);}finally{$('module-import-file').value='';}};
 $('example').onclick=()=>{$('prompt').value='我想要有树';$('prompt').focus();};
 $('clear-context').onclick=()=>{selected=null;target=null;updateContext();};
 $('apply').onclick=applyCandidate;
