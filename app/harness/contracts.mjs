@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { canonicalJSON } from '../canonical.mjs';
 
 export const HARNESS_LIMITS = Object.freeze({steps:16,calls:48,patchOperations:8,readChars:16000,actionBytes:180000});
-export const TOOL_NAMES = Object.freeze(['project.inspect','world.query','resource.read','module.read','capabilities.read','workspace.patch','candidate.build']);
+export const TOOL_NAMES = Object.freeze(['project.inspect','world.query','resource.read','module.read','capabilities.read','workspace.patch','candidate.build','memory.search','memory.remember','task.plan','task.step','task.finish','evidence.read','verify.run']);
 export const ACTION_SCHEMA = {
   type:'object',additionalProperties:false,required:['kind','tool','argumentsJSON','summary'],
   properties:{

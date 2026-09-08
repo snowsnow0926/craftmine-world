@@ -1,6 +1,8 @@
-import { HARNESS_LIMITS,integer,parseAction,requireValue } from './contracts.mjs';
+import { HARNESS_LIMITS,contentHash,integer,parseAction,requireValue } from './contracts.mjs';
 import { TOOL_GUIDE } from './tools.mjs';
 import { capabilitiesText } from './capabilities.mjs';
+import { contextBudget, measure } from './context-budget.mjs';
+import { machineCheckpoint } from './checkpoint.mjs';
 
 export const HARNESS_LOOP_FORMAT = 'craftmine.harness-loop/1';
 export const HARNESS_STATE_FORMAT = 'craftmine.harness-state/1';
@@ -47,7 +49,7 @@ function budgetValue(value,fallback,label){
 // 纯逻辑分步循环：模型每一步只输出一个操作 JSON，由本类校验、执行、记账。
 // 它不认识任何模型实现，decide 由调用方注入，因此可以完全用脚本化动作测试。
 export class HarnessLoop {
-  constructor({workspace,tools,decide,requirement='',intent='execute',budget,steps,calls,signal=null,traceChars=TRACE_RESULT_CHARS,onStep=null}={}){
+  constructor({workspace,tools,decide,requirement='',intent='execute',budget,steps,calls,signal=null,traceChars=TRACE_RESULT_CHARS,onStep=null,contextWindow=null,contextCap=null,intentRevision=0}={}){
     requireValue(workspace&&typeof workspace.readManifest==='function','INVALID_ARGUMENTS','分步闭环需要一个开发草稿工作区');
     requireValue(tools&&typeof tools.execute==='function','INVALID_ARGUMENTS','分步闭环需要领域工具集');
     requireValue(typeof decide==='function','INVALID_ARGUMENTS','分步闭环需要一个决策函数');
@@ -56,7 +58,11 @@ export class HarnessLoop {
     this.stepBudget=budgetValue(steps??budget?.steps,HARNESS_LIMITS.steps,'步数预算');
     this.callBudget=budgetValue(calls??budget?.calls,HARNESS_LIMITS.calls,'工具调用预算');
     integer(traceChars,64,100000,'轨迹结果长度');
+    integer(intentRevision,0,10000,'目标版本');
     this.traceChars=traceChars;this.signal=signal;this.onStep=typeof onStep==='function'?onStep:null;
+    this.intentRevision=intentRevision;
+    // 后端回报了窗口才算得出预算；没有回报时明确标注 unknown，不编造剩余百分比。
+    this.budget=Number.isFinite(contextWindow)?contextBudget({window:contextWindow,cap:contextCap}):null;
     this.steps=[];this.trace=[];this.lastResult=null;this.lastError=null;
     this.built=null;this.builtRevision=null;this.round=0;this.calls=0;
   }
@@ -64,6 +70,20 @@ export class HarnessLoop {
     try{ return this.workspace.readManifest().revision; }catch{ return null; }
   }
   callId(round){return `call-${String(this.workspace.id).slice(0,8)}-${round}`;}
+  // 每一轮都在这里估算输入压力：先算清「这一轮要带多少」，再决定要不要先整理。
+  contextSegments(){
+    return [
+      {id:'guide',share:'rules',mandatory:true,text:TOOL_GUIDE},
+      {id:'capabilities',share:'rules',text:capabilitiesText()},
+      {id:'task',share:'task',mandatory:true,text:this.requirement},
+      {id:'trace',share:'history',text:JSON.stringify(this.trace)},
+      {id:'result',share:'scene',text:JSON.stringify(this.lastResult??null)},
+    ];
+  }
+  contextReport(){
+    if(!this.budget)return {format:'craftmine.context-budget/1',known:false,action:'none',detail:'后端没有回报上下文容量：按输出上限与工具尺寸保守运行，不编造剩余空间'};
+    return {...measure({budget:this.budget,segments:this.contextSegments()}),known:true};
+  }
   // 每一轮都重新读取草稿事实，模型看到的版本号必须是最新的。
   state(round=this.round+1){
     const manifest=this.workspace.readManifest();
@@ -73,10 +93,26 @@ export class HarnessLoop {
       base:manifest.base,selected:manifest.selected,draftRevision:manifest.revision,
       remainingSteps:Math.max(0,this.stepBudget-(round-1)),
       remainingCalls:Math.max(0,this.callBudget-this.calls),
-      guide:TOOL_GUIDE,capabilities:capabilitiesText(),
+      guide:TOOL_GUIDE,capabilities:capabilitiesText(),context:this.contextReport(),
       trace:this.trace.map(entry=>({...entry})),
       lastResult:this.lastResult,lastError:this.lastError,built:this.built,
     };
+  }
+  // 机器事实检查点：恢复时先读它，再用摘要补背景。
+  checkpoint(){
+    const manifest=this.workspace.readManifest();
+    const evidence=this.steps.map(entry=>entry.evidenceRef).filter(ref=>typeof ref==='string');
+    return machineCheckpoint({
+      taskId:this.workspace.id,intentRevision:this.intentRevision,
+      baseBuild:manifest.base,draftHead:manifest.head,
+      acceptanceRef:'acceptance:'+contentHash({requirement:this.requirement,intentRevision:this.intentRevision}).slice(0,12),
+      budgetRef:'budget:'+this.workspace.id,
+      completedSteps:this.steps.filter(entry=>entry.status==='ok'||entry.status==='finish').map(entry=>({id:`step-${entry.step}`,tool:entry.tool,evidenceRef:entry.result?.evidenceRef??null})),
+      pendingSteps:this.built?[]:['还没有生成候选'],
+      openToolCalls:[],candidateRef:this.built?.id??null,
+      progressObservationRef:null,journalThrough:this.steps.length,
+      artifactRefs:[...new Set(evidence)],
+    });
   }
   recordStep(entry){
     this.steps.push(entry);
@@ -105,8 +141,15 @@ export class HarnessLoop {
       if(this.signal?.aborted){status='cancelled';error='分步闭环已取消，草稿保留';break;}
       if(this.round>=this.stepBudget){status='budget';error=`步数预算已用完（上限 ${this.stepBudget} 步），草稿保留，未生成候选`;break;}
       this.round+=1;
+      const stepState=this.state(this.round);
+      // 到压缩阈值就停下来让宿主整理上下文，而不是硬塞进窗口。
+      if(stepState.context.known&&stepState.context.action==='compact'){
+        status='context';
+        error=`上下文已到压缩阈值（估算 ${stepState.context.estimated} token / 可用 ${this.budget.available}）：请先整理上下文再继续，草稿保留`;
+        break;
+      }
       let raw;
-      try{ raw=await this.decide(this.state(this.round)); }
+      try{ raw=await this.decide(stepState); }
       catch(decideError){
         if(this.signal?.aborted){status='cancelled';error=messageOf(decideError);}
         else if(codeOf(decideError)==='EMPTY_ACTION'){
@@ -142,6 +185,7 @@ export class HarnessLoop {
       const entry={
         step:this.round,tool:action.tool,arguments:argumentSummary(action.args),modelSummary:action.summary,
         status:failure?'error':'ok',code:failure?codeOf(failure):null,message:failure?messageOf(failure):null,durationMs,
+        evidenceRef:failure?null:(typeof result?.evidenceRef==='string'?result.evidenceRef:null),
         result:failure?null:compactResult(result,this.traceChars),
       };
       this.recordStep(entry);
@@ -155,6 +199,7 @@ export class HarnessLoop {
     return {
       format:HARNESS_LOOP_FORMAT,status,steps:this.steps.map(entry=>({...entry})),
       draftRevision:this.readRevision(),build:this.built,error,summary,
+      context:this.contextReport(),checkpoint:this.checkpoint(),
     };
   }
 }

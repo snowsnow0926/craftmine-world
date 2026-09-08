@@ -8,7 +8,7 @@ import { checkCreationModule,rememberCreationCheck } from './creation-verify.mjs
 import { GameplaySession } from './gameplay.mjs';
 import { BehaviorState } from './behavior-state.mjs';
 import { buildPrompt,buildRepairPrompt } from './agent-prompt.mjs';
-import { findCodex,generateModel,killProcessTree,modelProvider,deepseekKey,thinkingEnabled } from './agent-model.mjs';
+import { findCodex,generateModel,killProcessTree,modelProvider,providerStatus,deepseekKey,thinkingEnabled } from './agent-model.mjs';
 import { ACTION_SCHEMA } from './harness/contracts.mjs';
 import { TaskWorkspace } from './harness/workspace.mjs';
 import { DomainTools } from './harness/tools.mjs';
@@ -183,6 +183,14 @@ export class AgentRunner {
       setPhase('storage');
       workspace.validated(build,{passed:true,checks:['草稿通过场景编译与稳定 ID 校验','独立构建产物已生成，SHA-256 已记录']});
       return build;
+    },verify:async({requirement}={})=>{
+      // verify.run 真的跑：把当前草稿送进隔离 Worker，走一遍事件与恢复检查。
+      setPhase('behavior');
+      const build=draftBuild||store.build(workspace.scene());
+      const report=await verifyBehaviors(build,{origin:this.options.verificationOrigin,signal:active.abort.signal,deadline:active.deadline});
+      this.assertActive(active);
+      setPhase('storage');
+      return {...report,summary:`玩法验收（隔离 Worker 事件与恢复检查）${report.passed?'通过':'未通过'}${requirement?`：${requirement}`:''}`,scope:'接口与事件序列检查；不等同于玩家需求验收'};
     }});
     const statusLabels={ok:'完成',error:'失败',rejected:'被拒绝',failed:'决策失败',finish:'结束'};
     // options.harnessDecide 只用于测试注入假模型，生产不设置它；其余记录行为一致。
@@ -204,6 +212,8 @@ export class AgentRunner {
     };
     const loop=new HarnessLoop({
       workspace,tools,requirement:text,intent,signal:active.abort.signal,
+      contextWindow:providerStatus().contract?.capabilities?.contextWindow?.value ?? null,
+      intentRevision:(store.data.tasks.find(t=>t.id===active.id)?.revision??0),
       onStep:step=>{
         const label=statusLabels[step.status]||step.status;
         const detail=step.message?`：${step.message}`:step.status==='ok'?`（${step.durationMs} 毫秒）`:'';

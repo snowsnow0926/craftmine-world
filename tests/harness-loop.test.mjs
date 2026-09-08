@@ -398,3 +398,43 @@ test('同一个 attempt 内的多次模型调用用量累加，不是只保留�
   assert.deepEqual(task.attempts[0].usage, { input_tokens: 13, output_tokens: 6 });
   assert.deepEqual(task.usage, { input_tokens: 13, output_tokens: 6 });
 });
+
+test('上下文到压缩阈值就停下来让宿主整理，不硬塞进窗口', async () => {
+  const ctx = fixture();
+  const result = await runLoop(ctx, [action({ tool: 'project.inspect', args: {}, summary: '不该走到这里' })], { contextWindow: 40000, requirement: '把 flower-one 挪到 x=4'.repeat(5000) });
+  assert.equal(result.status, 'context');
+  assert.match(result.error, /压缩阈值/);
+  assert.equal(result.steps.length, 0, '超预算时一次模型调用都不该发生');
+  assert.equal(result.context.known, true);
+  assert.ok(result.context.estimated > 0);
+  const unknown = await runLoop(ctx, [action({ tool: 'project.inspect', args: {}, summary: '先看目录' })]);
+  assert.equal(unknown.context.known, false);
+  assert.match(unknown.context.detail, /没有回报上下文容量/);
+});
+
+test('闭环结束时给出机器事实检查点：基准、草稿、验收引用和证据都在', async () => {
+  const ctx = fixture();
+  const script = [
+    action({ tool: 'project.inspect', args: {}, summary: '先看目录' }),
+    action({ tool: 'resource.read', args: { kind: 'object', id: 'flower-one' }, summary: '读取目标花' }),
+    state => {
+      const read = state.lastResult, value = JSON.parse(read.text);
+      value.position.x = 4;
+      return action({ tool: 'workspace.patch', args: { workspaceRevision: read.workspaceRevision, operations: [{ kind: 'object', id: 'flower-one', expectedHash: read.hash, value }] }, summary: '挪到 x=4' });
+    },
+    action({ tool: 'candidate.build', args: {}, summary: '构建候选' }),
+    action({ kind: 'finish', args: {}, summary: '改好了' }),
+  ];
+  const result = await runLoop(ctx, script, { intentRevision: 2 });
+  assert.equal(result.status, 'finished');
+  assert.equal(result.checkpoint.format, 'craftmine.checkpoint/1');
+  assert.equal(result.checkpoint.baseBuild, ctx.base);
+  assert.match(result.checkpoint.draftHead, /^\d+-[a-f0-9]{64}\.json$/);
+  assert.match(result.checkpoint.acceptanceRef, /^acceptance:/);
+  assert.equal(result.checkpoint.budgetRef, 'budget:' + TASK);
+  assert.equal(result.checkpoint.intentRevision, 2);
+  assert.equal(result.checkpoint.journalThrough, result.steps.length);
+  assert.ok(result.checkpoint.completedSteps.length >= 4);
+  assert.ok(result.checkpoint.artifactRefs.some(ref => ref.startsWith('evidence:')), '候选构建要留下证据引用');
+  assert.equal(result.checkpoint.candidateRef, result.build.id);
+});
