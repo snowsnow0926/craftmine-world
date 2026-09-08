@@ -71,7 +71,7 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       this.listen(document,'visibilitychange',()=>{if(document.hidden)this.pauseInput();});
       this.listen(this.canvas,'webglcontextlost',e=>{e.preventDefault();this.setActive(false);send('error',{message:'图形上下文丢失，请刷新以恢复已保存的世界。'});});
     }
-    async generateBuild(value,snapshot) {
+    async generateBuild(value,snapshot,{extensions=null}={}) {
       const wasActive=this.active;this.setActive(false);this.worldAssets=new WorldAssets(this);await this.worldAssets.load(value);
       this.config={night:value.scene.night,speed:4.5,treeStyle:'pine'};
       this.world.fill(0);this.trees.clear();this.treeAt.clear();this.edits={};this.collected=[];
@@ -84,7 +84,7 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       this.play=new GameplaySession(value.scene.systems||[],value.scene.objects,snapshot.gameplay);
       for(const [x,y,z,material,id]of value.voxels){this.put(x,y,z,material);this.treeAt.set(index(x,y,z),id);}
       this.p={...snapshot.player};this.fly=false;this.vy=0;this.grounded=false;
-      this.behaviors=new BehaviorSession(value,snapshot.behaviors,{context:()=>this.behaviorContext(),apply:(result,view)=>this.applyBehavior(result,view),notice:inform,gameplay:this.play.state});
+      this.behaviors=new BehaviorSession(value,snapshot.behaviors,{context:()=>this.behaviorContext(),apply:(result,view)=>this.applyBehavior(result,view),notice:inform,gameplay:this.play.state,extensions});
       this.behaviorKeys=new Set(this.behaviors.data.definitions.flatMap(artifact=>artifact.definition.keys||[]));
       this.primitives=this.behaviors.data.view.primitives;this.objects=new Map(this.behaviors.data.view.objects.map(o=>[o.id,o]));
       for(let z=-48;z<48;z+=16)for(let x=-48;x<48;x+=16)this.rebuild(x,z);

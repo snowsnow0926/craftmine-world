@@ -17,10 +17,10 @@ function node(tag,text,className){const e=document.createElement(tag);if(text!==
 function button(text,action){const e=node('button',text,'subtle');e.type='button';e.onclick=()=>action().catch(error=>toast(error.message));return e;}
 function post(frame,type,payload={}){frame.element.contentWindow.postMessage({channel:'craftmine-host/1',nonce:frame.nonce,type,...payload},'*');}
 function removeFrame(frame,error=Error('世界副本已关闭')){if(!frame)return;frames.delete(frame.nonce);frame.element.remove();clearTimeout(frame.timer);frame.reject?.(error);frame.reject=null;frame.resolve=null;for(const [id,request]of requests)if(request.frame===frame){clearTimeout(request.timer);requests.delete(id);request.reject(error);}}
-function mount(build,snapshot,{container=$('game-wrap'),preview=false,onCreated=()=>{}}={}){return new Promise((resolve,reject)=>{
+function mount(build,snapshot,{container=$('game-wrap'),preview=false,extensions=[],onCreated=()=>{}}={}){return new Promise((resolve,reject)=>{
   const nonce=crypto.randomUUID(),element=document.createElement('iframe');
   element.title=preview?'独立预览副本':'可游玩的 3D 世界';element.className='staging';element.dataset.role=preview?'preview':'world';element.setAttribute('sandbox','allow-scripts allow-pointer-lock');element.src='/game#'+nonce;
-  const record={nonce,element,build,snapshot,version:build.id,resolve,reject,preview};frames.set(nonce,record);onCreated(record);
+  const record={nonce,element,build,snapshot,version:build.id,resolve,reject,preview,extensions};frames.set(nonce,record);onCreated(record);
   record.timer=setTimeout(()=>removeFrame(record,Error('世界载入超时，原版本仍保留')),20000);
   container.append(element);
 });}
@@ -36,7 +36,7 @@ const assetPanel=new AssetPanel({api,refresh,toast,download:downloadJSON,active:
 window.addEventListener('message',event=>{
   const m=event.data,frame=frames.get(m?.nonce);
   if(!frame||event.source!==frame.element.contentWindow||m.channel!=='craftmine-game/1'||event.origin!=='null')return;
-  if(m.type==='ready')post(frame,'load',{build:frame.build,snapshot:frame.snapshot,preview:frame.preview});
+  if(m.type==='ready')post(frame,'load',{build:frame.build,snapshot:frame.snapshot,preview:frame.preview,extensions:frame.extensions||[]});
   if(m.type==='loaded'){
     if(m.version!==frame.version){removeFrame(frame,Error('运行版本不匹配'));return;}
     frame.snapshot=m.snapshot;frame.renderer=m.renderer;clearTimeout(frame.timer);frame.resolve?.(frame);frame.resolve=null;frame.reject=null;
@@ -161,7 +161,7 @@ async function applyCandidate(){
     const latest=await requestSnapshot(old,true);
     transaction=await api('/api/apply/prepare',{candidateId:project.candidate.id,version:old.version,snapshot:latest});
     $('loading').textContent='正在让你的想法进入世界…';$('loading').hidden=false;
-    next=await mount(await api('/api/build?id='+transaction.candidate),transaction.loadSnapshot);
+    next=await mount(await api('/api/build?id='+transaction.candidate),transaction.loadSnapshot,{extensions:project.extensions||[]});
     await api('/api/apply/commit',{id:transaction.id,snapshot:next.snapshot});
     activate(next);toast('世界已更新。继续走走，看看你的创造。');
   }catch(error){
