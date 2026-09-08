@@ -1,24 +1,31 @@
 {
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
-  "currentMilestone": "M5",
-  "baseline": "490f6dc",
+  "currentMilestone": "W0",
+  "baseline": "3bdf52f",
   "updated": "2026-09-09",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "stopped_by_user",
-    "reason": "用户已取消此前任务，现明确希望分析 PI-Desktop 并改进 Windows 客户端计划。本轮仅研究源码、修订计划与同步文档，未运行测试或启动客户端迁移。",
-    "activeGoal": false,
-    "recurringDevelopment": false,
-    "previousLiveCompactionTestStopped": true
+    "status": "running",
+    "reason": "用户授权按计划持续完成 W0–W5，追加 Rust 核心后端与完整 PI 桌面体验；正在独立工作树推进 W0。",
+    "activeGoal": true,
+    "recurringDevelopment": true,
+    "previousLiveCompactionTestStopped": true,
+    "automationId": "craftmine-windows",
+    "worktree": "D:/Craftmine World-worktrees/pi-client-20260909",
+    "branch": "codex/pi-client-20260909"
   },
   "windowsClientPlan": {
     "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",
-    "version": "2.0",
-    "status": "proposed_not_started",
+    "version": "2.1",
+    "status": "in_progress",
     "firstPhase": "W0",
-    "initialDeliveryPhases": ["W0", "W1", "W2"],
-    "strategy": "以固定版本 PI-Desktop 派生 Windows 客户端，复用 Electron、Rust host-core 与 pi Agent，通过受信任的产品插件和服务接入现有世界、作品、存档和验收；DeepSeek 继续作为初期模型供应商，DeepSeek Harness 只作对照",
+    "initialDeliveryPhases": [
+      "W0",
+      "W1",
+      "W2"
+    ],
+    "strategy": "保留并强化 PI-Desktop 完整桌面体验；第一版建立 Rust 创作领域核心，逐项迁移项目、任务、版本、回执、作业和记忆。保留 pi Agent 与现有游戏运行器，DeepSeek 作为初期模型供应商。",
     "primaryReferenceRepository": "https://github.com/vastsa/PI-Desktop",
     "primaryReferenceCommit": "ed0a75414e775eef4b4ee6c985cc9ddfe146ced2",
     "primaryReferenceSourceVersion": "0.14.3",
@@ -26,7 +33,7 @@
     "primaryReferenceAgentDependencyVersion": "0.85.1",
     "primaryReferenceLicense": "LGPL-3.0-or-later",
     "localPiCheckoutCommitAtReview": "3cdf42931c9ae243a80b1f61bc29799177e318b6",
-    "piBuildOrTestsRunInThisReview": false,
+    "piBuildOrTestsRunInThisReview": true,
     "deepseekReferenceRole": "comparison_only",
     "deepseekReferenceCommit": "5dda764ed3aa172535a7967b06ff95d9cbfe536a",
     "reviewIncludesPreexistingUncommittedChanges": true,
@@ -47,14 +54,30 @@
       "PI 插件调用上下文需透传真实 toolCallId，并补齐项目写入租约和恢复去重",
       "需核实完整模型请求的上下文预算，补齐世界记忆注入与 Windows 系统保护凭据",
       "自建分步工具循环默认关闭，需要显式环境开关",
-      "工具闭环只能替换既有资源，不能新增玩法模块，因此「新增模块调用扩展命令」还走不通",
-      "隔离验证沙箱没有装载扩展，带 ext: 依赖的模块过不了 verifyBehaviors",
       "真实压缩回归已能触发压缩并接上检查点继续，但还没有一次「压缩后把任务做完」的绿色收尾",
       "verify.run 的接口与事件检查尚不等同完整玩家需求验收",
       "扩展对抗评审断言留档后尚未逐项接入实际轨迹执行；评审结论已改为建议，硬门槛只保留机器可复核的检查"
     ],
-    "runtimeChangedInThisReview": false,
-    "personalServiceOrDataChangedInThisReview": false
+    "runtimeChangedInThisReview": true,
+    "personalServiceOrDataChangedInThisReview": false,
+    "currentPhase": "W0",
+    "sourceImportCommit": "2920fc7",
+    "sourceBaselineVerified": true,
+    "developmentLog": "docs/WINDOWS_DEVELOPMENT_LOG.md",
+    "latestVerification": {
+      "command": "npm test",
+      "passed": 274,
+      "failed": 0,
+      "skipped": 0,
+      "evidence": "test-results/domain-full.log",
+      "scope": "独立开发工作树；另有真实 headless 固定源码回归 7/7，不等同真实模型完整任务通过"
+    },
+    "buildVerification": {
+      "dependencies": "pnpm install --frozen-lockfile: passed",
+      "rust": "cargo build --release --locked -p host-core: passed",
+      "frontend": "pnpm build:js: passed",
+      "visibleAppLaunched": false
+    }
   },
   "liveVerification": {
     "date": "2026-09-09",
@@ -62,14 +85,28 @@
     "extension": {
       "script": "tests/live-extension.mjs",
       "status": "partial",
-      "passed": ["真实模型提议扩展并通过格式校验", "真实 Worker 沙箱跑通自带测试与反造假", "真实模型对抗评审真的运行", "冻结回归真跑", "扩展启用并进入能力目录"],
-      "failed": ["玩法模块调用扩展命令的浏览器端到端：工具闭环只能替换既有资源，且隔离验证沙箱没有装载扩展"]
+      "passed": [
+        "真实模型提议扩展并通过格式校验",
+        "真实 Worker 沙箱跑通自带测试与反造假",
+        "真实模型对抗评审真的运行",
+        "冻结回归真跑",
+        "扩展启用并进入能力目录"
+      ],
+      "failed": [
+        "真实模型全链路尚未复验；新增资源、验收装载、Worker 依赖和重开扩展传递已由固定源码 headless 回归验证"
+      ]
     },
     "compaction": {
       "script": "tests/live-compaction.mjs",
       "status": "partial",
-      "passed": ["真实长任务触发强制压缩", "压缩后接上机器检查点继续", "草稿改动一条不丢"],
-      "failed": ["压缩后把任务做完；参数已修好，待用 CRAFTMINE_CONTEXT_CAP=12000 复验"]
+      "passed": [
+        "真实长任务触发强制压缩",
+        "压缩后接上机器检查点继续",
+        "草稿改动一条不丢"
+      ],
+      "failed": [
+        "压缩后把任务做完；参数已修好，待用 CRAFTMINE_CONTEXT_CAP=12000 复验"
+      ]
     },
     "defectsFoundAndFixed": 12,
     "designDecision": "对抗评审必须运行，但结论是建议；硬门槛只保留机器能复核的检查（ABI、沙箱自带测试与反造假、冻结回归、命令名冲突、世界编译）",
@@ -262,7 +299,7 @@
       ]
     }
   ],
-  "nextAction": "旧持续开发已取消，不自动启动新任务。用户下一次要求开发时，按 docs/WINDOWS_CLIENT_REUSE_PLAN.md v2 从 W0 固定 PI-Desktop 源码基线、验证插件边界开始，优先完成 W1 Windows 世界客户端与 W2 真实创作闭环。保留现有未提交代码和个人存档，建立项目单写入入口；本轮未重启个人服务，未验证其当前模型路由。",
+  "nextAction": "继续 docs/WINDOWS_DEVELOPMENT_LOG.md 指定的独立工作树，完成 W0 Rust 领域事务、调用身份透传和世界资源探针，然后 W1 完整 PI 桌面客户端。旧真实压缩和真实模型扩展全链路仍需复验，不将固定源码测试代替真实模型证据。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",
