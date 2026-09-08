@@ -1,0 +1,42 @@
+{
+  "name": "pi-desktop",
+  "private": true,
+  "version": "0.14.3",
+  "description": "Local-first AI coding agent desktop client",
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": ">=22.19.0",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @pi-desktop/desktop dev",
+    "preview": "pnpm --filter @pi-desktop/desktop run preview",
+    "pack": "pnpm --filter @pi-desktop/desktop run pack",
+    "dist": "pnpm --filter @pi-desktop/desktop run dist",
+    "pi-plugin": "pi-plugin",
+    "build": "pnpm -r --if-present build && cargo build --release -p host-core",
+    "build:js": "pnpm -r --if-present build",
+    "build:host": "cargo build --release -p host-core",
+    "typecheck": "pnpm -r --if-present build && pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test && cargo test -p host-core",
+    "test:host": "cargo test -p host-core",
+    "test:e2e": "node scripts/e2e-smoke.mjs",
+    "test:e2e:plan": "node scripts/e2e-plan.mjs",
+    "test:e2e:plan-ui": "node scripts/e2e-plan-ui.mjs",
+    "test:e2e:boot": "node scripts/e2e-electron-boot.mjs",
+    "test:e2e:supervision": "node scripts/e2e-supervision.mjs",
+    "test:e2e:subagents": "node scripts/e2e-subagents.mjs",
+    "check:marketplace": "node scripts/check-marketplace-catalog.mjs",
+    "check:release-docs": "node scripts/check-release-docs.mjs",
+    "docs:dev": "pnpm --filter @pi-desktop/docs dev",
+    "docs:build": "pnpm --filter @pi-desktop/docs build",
+    "docs:preview": "pnpm --filter @pi-desktop/docs preview",
+    "docs:check": "pnpm --filter @pi-desktop/docs check:locales",
+    "lint": "pnpm -r --if-present lint",
+    "host:dev": "cargo run -p host-core",
+    "clean": "pnpm -r --if-present clean && cargo clean"
+  },
+  "devDependencies": {
+    "@pi-desktop/plugin-devkit": "workspace:*"
+  }
+}

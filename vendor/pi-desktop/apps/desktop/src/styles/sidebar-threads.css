@@ -1,0 +1,242 @@
+/*
+  Sidebar thread rows — session row pitch, titles, status dots, and group
+  headers. More sidebar session management (lists, popovers, sort, disclosure)
+  lives in sessions.css.
+*/
+
+.thread-item {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 2px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  padding: 0 2px 0 0;
+  min-height: 28px; /* WorkBuddy-style compact scoped-session row pitch. */
+  color: var(--ds-text-secondary);
+  transition: background var(--motion-duration-fast) var(--motion-ease-out), color var(--motion-duration-fast) var(--motion-ease-out);
+}
+
+.thread-item-main {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 6px 5px 20px;
+  text-align: left;
+  color: inherit;
+}
+
+.thread-item-title {
+  overflow: hidden;
+  font-size: var(--text-md); /* session titles stay compact within the sidebar */
+  line-height: var(--leading-row);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thread-item:hover,
+.thread-item.active {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+}
+
+.thread-item.active {
+  background: var(--ds-bg-active);
+}
+
+.sidebar-session-groups {
+  display: flex;
+  min-height: 0;
+  /* Basis 0, not auto: with a content-derived basis the scroller's resolved
+     height is re-solved from its own content, so collapsing the first project
+     nudges the whole list up a few pixels before it settles back. */
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 2px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  padding-top: 2px;
+}
+
+/* Keep sidebar scrolling available without turning the navigation tree into a
+   second visual rail. The base.css scrollbar is already transparent at rest
+   and revealed on hover or while scrolling; the sidebar lists narrow it to
+   6px, also reveal it while a row has keyboard focus, and use a 20% ink thumb
+   in every revealed state so the thumb never darkens further under the
+   pointer. No `scrollbar-color` here: it would disable the pseudo-elements. */
+.sidebar-session-groups,
+.sidebar-session-group-body.standalone {
+  --sidebar-scrollbar-thumb-hover: color-mix(in oklab, var(--ds-text-primary) 20%, transparent);
+}
+
+.sidebar-session-groups::-webkit-scrollbar,
+.sidebar-session-group-body.standalone::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.sidebar-session-groups::-webkit-scrollbar-thumb,
+.sidebar-session-group-body.standalone::-webkit-scrollbar-thumb {
+  border-width: 1px;
+}
+
+.sidebar-session-groups:hover::-webkit-scrollbar-thumb,
+.sidebar-session-groups:focus-within::-webkit-scrollbar-thumb,
+.sidebar-session-groups[data-scrolling]::-webkit-scrollbar-thumb,
+.sidebar-session-group-body.standalone:hover::-webkit-scrollbar-thumb,
+.sidebar-session-group-body.standalone:focus-within::-webkit-scrollbar-thumb,
+.sidebar-session-group-body.standalone[data-scrolling]::-webkit-scrollbar-thumb,
+.sidebar-session-groups::-webkit-scrollbar-thumb:hover,
+.sidebar-session-groups::-webkit-scrollbar-thumb:active,
+.sidebar-session-group-body.standalone::-webkit-scrollbar-thumb:hover,
+.sidebar-session-group-body.standalone::-webkit-scrollbar-thumb:active {
+  background: var(--sidebar-scrollbar-thumb-hover);
+  background-clip: content-box;
+}
+
+.sidebar-session-group {
+  min-width: 0;
+}
+
+.sidebar-session-group-header {
+  display: flex;
+  min-height: 28px;
+  align-items: center;
+  gap: 2px;
+  padding: 0 2px;
+}
+
+.sidebar-session-group-title {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 5px;
+  border-radius: var(--radius-sm);
+  padding: 5px 6px;
+  color: var(--ds-text-secondary);
+  font-size: var(--text-md); /* project/group labels one step quieter than sessions */
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-compact);
+  text-align: left;
+}
+
+.sidebar-session-group-title:not(.static):hover {
+  color: var(--ds-text-primary);
+}
+
+.sidebar-session-group-title svg {
+  flex: 0 0 auto;
+  color: var(--ds-text-muted);
+}
+
+.sidebar-session-group-title span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-session-group-add {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-2xs);
+  color: var(--ds-text-muted);
+  opacity: 0;
+  transition:
+    opacity var(--motion-duration-fast) var(--motion-ease-out),
+    background var(--motion-duration-fast) var(--motion-ease-out),
+    color var(--motion-duration-fast) var(--motion-ease-out),
+    transform var(--motion-duration-fast) var(--motion-ease-out);
+}
+
+.sidebar-session-group-add:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+}
+
+.sidebar-session-group-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  max-height: 2000px;
+  opacity: 1;
+  transition: max-height var(--motion-duration-slow) var(--motion-ease-out),
+    opacity var(--motion-duration-normal) var(--motion-ease-out);
+}
+
+.sidebar-session-group-body.collapsed {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Nested session rows read as children through the indent alone; the tree
+   rail is gone (D297). */
+.sidebar-session-group-body.project {
+  margin-left: 13px;
+  padding-left: 9px;
+}
+
+.sidebar-session-group-body.temporary {
+  margin-left: 13px;
+  padding-left: 9px;
+}
+
+.sidebar-time-group-header {
+  padding: 6px 6px 2px 20px;
+  color: var(--ds-text-muted);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-load-more {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding: 4px 6px 4px 20px;
+  border-radius: var(--radius-sm);
+  color: var(--ds-text-muted);
+  font-size: var(--text-xs-plus);
+  text-align: left;
+  transition: background var(--motion-duration-fast) var(--motion-ease-out), color var(--motion-duration-fast) var(--motion-ease-out);
+}
+
+.sidebar-load-more:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-secondary);
+}
+
+.sidebar-session-group-body.standalone {
+  max-height: 140px; /* Five compact session rows before internal scrolling. */
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  padding: 0 2px;
+}
+
+.sidebar-standalone-sessions {
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.sidebar-session-empty {
+  padding: 5px 8px;
+  color: var(--ds-text-muted);
+  font-size: var(--text-md); /* empty-state copy tracks group titles */
+  line-height: var(--leading-compact);
+}

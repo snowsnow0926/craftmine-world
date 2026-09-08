@@ -1,0 +1,13 @@
+{
+  "format": "craftmine.upstream/1",
+  "repository": "https://github.com/vastsa/PI-Desktop",
+  "commit": "ed0a75414e775eef4b4ee6c985cc9ddfe146ced2",
+  "version": "0.14.3",
+  "license": "LGPL-3.0-or-later",
+  "sourceDirectory": "vendor/pi-desktop",
+  "archiveURL": "https://codeload.github.com/vastsa/PI-Desktop/zip/ed0a75414e775eef4b4ee6c985cc9ddfe146ced2",
+  "archiveSHA256": "fe28ec8bf8a7da3f1622ba8f708b657958a0c844b793ce23ee483c8cc395a881",
+  "craftmineBaseline": "3bdf52f",
+  "importedAt": "2026-09-09",
+  "distribution": "Preserve upstream copyright and license notices. Include corresponding covered source, modifications and reproducible build instructions with distributions."
+}

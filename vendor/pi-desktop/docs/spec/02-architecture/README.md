@@ -1,0 +1,7 @@
+# Architecture & Engineering
+
+| Doc | Description |
+|---|---|
+| [01-architecture.md](01-architecture.md) | System architecture |
+| [02-tech-stack.md](02-tech-stack.md) | Tech stack |
+| [03-repo-structure.md](03-repo-structure.md) | Repository structure |
