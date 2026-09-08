@@ -9,8 +9,19 @@ import { GameplaySession } from './gameplay.mjs';
 import { BehaviorState } from './behavior-state.mjs';
 import { buildPrompt,buildRepairPrompt } from './agent-prompt.mjs';
 import { findCodex,generateModel,killProcessTree,modelProvider,deepseekKey,thinkingEnabled } from './agent-model.mjs';
+import { ACTION_SCHEMA } from './harness/contracts.mjs';
+import { TaskWorkspace } from './harness/workspace.mjs';
+import { DomainTools } from './harness/tools.mjs';
+import { HarnessLoop } from './harness/orchestrator.mjs';
+import { actionPrompt,decideAction } from './harness/loop-model.mjs';
 export { findCodex,providerStatus,killProcessTree,modelProvider,modelId,thinkingEnabled } from './agent-model.mjs';
 export { buildPrompt } from './agent-prompt.mjs';
+
+// 分步工具闭环默认关闭：只有显式设置 CRAFTMINE_HARNESS_LOOP=1 才走新路径，
+// 未设置时 run/修复循环与历史行为完全一致。
+export const harnessLoopEnabled=()=>String(process.env.CRAFTMINE_HARNESS_LOOP||'').trim()==='1';
+// 只有执行意图才走分步闭环；讨论消息不能变成世界改动（计划书 §5.1）。
+export const usesHarnessLoop=intent=>harnessLoopEnabled()&&intent==='execute';
 
 export const REPAIR_LIMIT=2;
 export const TASK_TIMEOUT=240000;
@@ -37,7 +48,8 @@ export class AgentRunner {
     this.store.change(d=>{d.tasks.push({id,base,intent,prompt:text,context,status:'running',started,attempts:[],limits:{repairs:REPAIR_LIMIT,timeoutMs},logs:[{time:started,text:'已固定当前场景版本，正在启动真实 LLM。'}]});d.tasks=d.tasks.slice(-40);});
     const active={id,cancelled:false,timedOut:false,abort:new AbortController(),deadline:started+timeoutMs};this.active=active;
     const timer=setTimeout(()=>{active.timedOut=true;active.abort.abort();killProcessTree(this.child);},timeoutMs);
-    active.done=this.run(executable,active,text,intent,context,base).catch(error=>{
+    const pipeline=usesHarnessLoop(intent)?this.runHarness(executable,active,text,intent,context,base):this.run(executable,active,text,intent,context,base);
+    active.done=pipeline.catch(error=>{
       const message=this.stoppedMessage(active)||String(error.message||error).slice(0,2000);
       this.update(id,t=>{t.status=active.cancelled?'cancelled':'failed';t.error=message;t.finished=Date.now();});
       this.store.addMessage('system',active.cancelled?'任务已取消，当前世界保持不变。':'任务未完成：'+message);
@@ -53,9 +65,9 @@ export class AgentRunner {
     if(!this.active)throw Error('当前没有运行中的任务');this.active.cancelled=true;this.active.abort.abort();
     try{this.update(this.active.id,t=>{t.status='cancelling';});}finally{killProcessTree(this.child);}
   }
-  generate(input){return generateModel({...input,schema:input.schema||OUTPUT_SCHEMA,onChild:child=>{this.child=child;},onLog:text=>this.log(input.active.id,text),onUsage:usage=>{
-    this.attempt(input.active,input.number,(attempt,task)=>{attempt.usage=usage;task.usage={};for(const a of task.attempts)for(const [key,n]of Object.entries(a.usage||{}))if(Number.isFinite(n))task.usage[key]=(task.usage[key]||0)+n;});
-  }});}
+  // 同一个 attempt 内可能有多次模型调用（闭环每步一次、单次路径的按需读取追问），用量必须累加。
+  applyUsage(active,number,usage){this.attempt(active,number,(attempt,task)=>{attempt.usage={...(attempt.usage||{})};for(const [key,n]of Object.entries(usage||{}))if(Number.isFinite(n))attempt.usage[key]=(attempt.usage[key]||0)+n;task.usage={};for(const a of task.attempts)for(const [key,n]of Object.entries(a.usage||{}))if(Number.isFinite(n))task.usage[key]=(task.usage[key]||0)+n;});}
+  generate(input){return generateModel({...input,schema:input.schema||OUTPUT_SCHEMA,onChild:child=>{this.child=child;},onLog:text=>this.log(input.active.id,text),onUsage:usage=>this.applyUsage(input.active,input.number,usage)});}
   async run(executable,active,text,intent,context,base){
     const store=this.store,dir=path.join(store.root,'tasks',active.id),scene=upgradeScene(store.readBuild(base).scene),memories=store.modules.retrieve(store.data,text,context.selected);
     this.update(active.id,t=>{t.memories=memories.map(m=>({id:m.id,version:m.version,name:m.name,kind:m.kind}));});
@@ -152,6 +164,92 @@ export class AgentRunner {
         previous={diagnostic,response:raw};
       }
     }
+  }
+  // 分步工具闭环：模型逐步调用领域工具读世界、改草稿，最后构建候选。
+  // 默认关闭，只有 CRAFTMINE_HARNESS_LOOP=1 时由 start 调用。
+  async runHarness(executable,active,text,intent,context,base){
+    const store=this.store,number=1;
+    this.update(active.id,t=>{t.status='running';t.attempts.push({number,kind:'harness',status:'running',phase:'provider',started:Date.now()});});
+    const setPhase=phase=>{this.attempt(active,number,(a,t)=>{a.phase=phase;if(phase!=='provider')t.status='validating';});};
+    this.log(active.id,'分步工具闭环已开启，模型将逐步读取世界、局部修改草稿，再构建候选。');
+    const workspace=new TaskWorkspace(store,{id:active.id,base,selected:context?.selected??null});
+    const loopDir=path.join(workspace.dir,'loop');fs.mkdirSync(loopDir,{recursive:true});
+    atomicJSON(path.join(loopDir,'response.schema.json'),ACTION_SCHEMA);
+    let draftBuild=null;
+    const tools=new DomainTools(workspace,{build:()=>{
+      setPhase('scene');
+      const build=store.build(workspace.scene());
+      draftBuild=build;
+      setPhase('storage');
+      workspace.validated(build,{passed:true,checks:['草稿通过场景编译与稳定 ID 校验','独立构建产物已生成，SHA-256 已记录']});
+      return build;
+    }});
+    const statusLabels={ok:'完成',error:'失败',rejected:'被拒绝',failed:'决策失败',finish:'结束'};
+    // options.harnessDecide 只用于测试注入假模型，生产不设置它；其余记录行为一致。
+    const decide=async state=>{
+      this.assertActive(active);
+      const prompt=actionPrompt(state);
+      fs.writeFileSync(path.join(loopDir,`step-${state.step}.request.txt`),prompt,'utf8');
+      setPhase('provider');
+      const raw=this.options.harnessDecide
+        ?await this.options.harnessDecide(state,{prompt})
+        :await decideAction({executable,dir:loopDir,prompt,schema:ACTION_SCHEMA,signal:active.abort.signal,
+          onChild:child=>{this.child=child;},
+          onLog:logText=>this.log(active.id,logText),
+          onUsage:usage=>this.applyUsage(active,number,usage)});
+      if(typeof raw==='string')fs.writeFileSync(path.join(loopDir,`step-${state.step}.action.json`),raw,'utf8');
+      const responseFile=path.join(loopDir,'response.json');
+      if(fs.existsSync(responseFile))fs.copyFileSync(responseFile,path.join(loopDir,`step-${state.step}.response.json`));
+      return raw;
+    };
+    const loop=new HarnessLoop({
+      workspace,tools,requirement:text,intent,signal:active.abort.signal,
+      onStep:step=>{
+        const label=statusLabels[step.status]||step.status;
+        const detail=step.message?`：${step.message}`:step.status==='ok'?`（${step.durationMs} 毫秒）`:'';
+        this.log(active.id,`第 ${step.step} 步：${step.tool||'结束'} ${label}${detail}`);
+      },
+      decide,
+    });
+    const result=await loop.run();
+    this.attempt(active,number,a=>{a.loop={status:result.status,steps:result.steps.length,draftRevision:result.draftRevision,build:result.build?.id??null};});
+    atomicJSON(path.join(workspace.dir,'loop.json'),result);
+    if(result.status!=='finished'){
+      const message=result.error||'分步闭环未完成，草稿保留，未生成候选';
+      this.attempt(active,number,a=>{a.status=result.status==='cancelled'?'cancelled':'failed';a.diagnostic={stage:'harness',title:'分步闭环',message,repairable:false,details:[],time:Date.now()};a.finished=Date.now();});
+      throw Error(message);
+    }
+    const build=draftBuild||store.readBuild(result.build.id);
+    setPhase('progress');this.checkProgress(build);
+    const checks=[
+      `分步工具闭环完成：${result.steps.length} 步，其中 ${result.steps.filter(step=>step.status==='ok').length} 次工具调用成功`,
+      `草稿经过 ${result.draftRevision} 个不可变版本，候选基于当前草稿构建`,
+      '独立场景产物已构建，SHA-256 已记录',
+    ];
+    // 候选必须真的能跑：源码验证和单次生成路径一样，不能只看场景编译。
+    if(build.behaviors?.length){
+      setPhase('behavior');this.log(active.id,'正在独立后台浏览器中运行源码，检查事件、命令、超时和状态恢复。');
+      const report=await verifyBehaviors(build,{origin:this.options.verificationOrigin,signal:active.abort.signal,deadline:active.deadline});this.assertActive(active);
+      setPhase('storage');atomicJSON(path.join(store.root,'builds',build.id,'behavior-verification.json'),report);
+      this.update(active.id,t=>{t.behaviorVerification=report.modules.map(m=>({id:m.id,revision:m.revision,passed:m.passed,error:m.error}));});
+      const failed=report.modules.filter(m=>!m.passed);
+      if(failed.length){
+        const message=failed.map(m=>m.id+'：'+m.error).join('；');
+        this.attempt(active,number,a=>{a.status='failed';a.diagnostic={stage:'behavior',title:stageNames.behavior,message,repairable:false,details:failed.map(m=>({id:m.id,revision:m.revision,error:m.error,failedEvent:m.failedEvent,events:m.events})),time:Date.now()};a.finished=Date.now();});
+        throw Error('创作源码未通过后台检查：'+message);
+      }
+      checks.push('真实代码在隔离 Worker 通过事件序列与恢复检查；玩法体验仍需试玩');
+    }
+    this.assertActive(active);
+    if(build.id===base){
+      this.attempt(active,number,(a,t)=>{a.status='unchanged';a.finished=Date.now();t.status='unchanged';t.finished=Date.now();});
+      this.log(active.id,'草稿最终与基准场景相同，没有创建候选。');return;
+    }
+    setPhase('commit');this.assertActive(active);
+    store.stage(build,result.summary,base,active.id,checks);
+    store.addMessage('assistant','候选方案（尚未应用到世界）：\n'+result.summary);
+    this.attempt(active,number,(a,t)=>{a.status='passed';a.finished=Date.now();t.status='ready';t.build=build.id;t.finished=Date.now();});
+    this.log(active.id,`分步闭环完成，共 ${result.steps.length} 步；候选 ${build.id} 已就绪，草稿保留在任务目录。`);
   }
   checkProgress(build){
     const latest=this.store.data.snapshot,gameplay=new GameplaySession(build.scene.systems,build.scene.objects,latest.gameplay);
