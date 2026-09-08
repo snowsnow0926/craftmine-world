@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
-import { compileScene, upgradeScene, clone, canonicalJSON } from './scene.mjs';
+import { compileScene, upgradeScene, withAppearanceFormat, clone, canonicalJSON } from './scene.mjs';
 import { SYSTEMS, identifier, exactKeys, validateSystem } from './gameplay.mjs';
 import { captureCreation,creationGroups,validateCreation,creationDependencies,placeCreation,materializeCreation } from './creation.mjs';
 
@@ -9,12 +9,12 @@ export const MODULE_RUNTIME='craftmine-web/2';
 const hash=content=>createHash('sha256').update(canonicalJSON(content)).digest('hex');
 function payloadOf(kind,definition){
   if(kind==='gameplay')return {name:definition.name,type:definition.type,config:clone(definition.config)};
-  return {name:definition.name,parts:clone(definition.parts),components:clone(definition.components)};
+  return {name:definition.name,parts:clone(definition.parts),components:clone(definition.components),...(definition.appearance?{appearance:clone(definition.appearance)}:{})};
 }
 export function validateModule(input){
   exactKeys(input,['format','runtime','id','version','kind','hash','name','description','dependencies','payload','origin']);
-  const creation=input.kind==='creation';
-  if(input.format!==(creation?'craftmine.module/2':'craftmine.module/1')||input.runtime!==(creation?'craftmine-web/3':MODULE_RUNTIME)||!identifier(input.id)||!Number.isInteger(input.version)||input.version<1||input.version>100000||!['object','gameplay','creation'].includes(input.kind))throw Error('模块格式或运行约定不兼容');
+  const creation=input.kind==='creation',assets=!!(input.payload?.appearance||input.payload?.objects?.some(o=>o.appearance));
+  if(input.format!==(assets?'craftmine.module/3':creation?'craftmine.module/2':'craftmine.module/1')||input.runtime!==(assets?'craftmine-web/4':creation?'craftmine-web/3':MODULE_RUNTIME)||!identifier(input.id)||!Number.isInteger(input.version)||input.version<1||input.version>100000||!['object','gameplay','creation'].includes(input.kind))throw Error('模块格式或运行约定不兼容');
   if(typeof input.name!=='string'||!input.name.trim()||input.name.length>60||typeof input.description!=='string'||input.description.length>2000||input.name!==input.payload?.name)throw Error('模块名称或来源需求无效');
   if(!input.origin||typeof input.origin!=='object'||Array.isArray(input.origin))throw Error('模块来源无效');
   exactKeys(input.origin,['build','definition','time']);
@@ -22,14 +22,14 @@ export function validateModule(input){
   let dependencies;
   if(creation){validateCreation(input.payload);dependencies=creationDependencies(input.payload);}
   else if(input.kind==='object'){
-    exactKeys(input.payload,['name','parts','components']);
+    exactKeys(input.payload,['name','parts','components',...(assets?['appearance']:[])]);
     if(!Array.isArray(input.payload.parts)||!input.payload.parts.length||input.payload.parts.length>128)throw Error('模块几何无效');
     const parts=input.payload.parts,minimum=k=>Math.min(...parts.map(p=>p?.offset?.[k])),maximum=k=>Math.max(...parts.map(p=>p?.offset?.[k]+p?.size?.[k]));
     const object={id:'module-check',...clone(input.payload),position:{x:Math.min(0,46-maximum('x')),y:6-minimum('y'),z:Math.min(0,46-maximum('z'))},source:null};
     // A contact-damage object declares the health dependency. Validate using it.
     const systems=object.components?.contactDamage>0?[{id:'health-check',name:'生命值',type:'health',source:null,config:{maxHealth:100,fallDamage:5,regenPerSecond:0}}]:[];
-    compileScene({format:'craftmine.scene/2',title:'模块校验',night:false,objects:[object],systems});
-    dependencies=systems.length?['geometry@2','health@1']:['geometry@2'];
+    compileScene(withAppearanceFormat({format:'craftmine.scene/2',title:'模块校验',night:false,objects:[object],systems}));
+    dependencies=[...(systems.length?['geometry@2','health@1']:['geometry@2']),...(assets?['assets@1']:[])];
   }else{
     exactKeys(input.payload,['name','type','config']);
     validateSystem({id:'module-check',...input.payload,source:null});dependencies=SYSTEMS[input.payload.type].dependencies;
@@ -71,8 +71,8 @@ export class ModuleLibrary {
       const identical=entry?.versions.find(v=>v.hash===contentHash);
       if(identical){data.moduleBindings[kind][definition.id]={id,version:identical.version};continue;}
       const version=(entry?.latest||0)+1;
-      const module={format:'craftmine.module/1',runtime:MODULE_RUNTIME,id,version,kind,hash:contentHash,name:definition.name,description:String(prompt).slice(0,2000),
-        dependencies:kind==='object'?(definition.components.contactDamage>0?['geometry@2','health@1']:['geometry@2']):SYSTEMS[definition.type].dependencies,
+      const module={format:definition.appearance?'craftmine.module/3':'craftmine.module/1',runtime:definition.appearance?'craftmine-web/4':MODULE_RUNTIME,id,version,kind,hash:contentHash,name:definition.name,description:String(prompt).slice(0,2000),
+        dependencies:kind==='object'?[...(definition.components.contactDamage>0?['geometry@2','health@1']:['geometry@2']),...(definition.appearance?['assets@1']:[])]:SYSTEMS[definition.type].dependencies,
         payload,origin:{build:buildId,definition:definition.id,time:Date.now()}};
       this.register(data,module);data.moduleBindings[kind][definition.id]={id,version};captured.push({id,version,name:module.name});
     }
@@ -84,7 +84,7 @@ export class ModuleLibrary {
       let entry=data.library.find(m=>m.id===id&&m.kind==='creation');if(!entry){id='creation-'+randomUUID();entry=null;}
       const identical=entry?.versions.find(v=>v.hash===contentHash),version=identical?.version||(entry?.latest||0)+1;
       if(!identical){
-        this.register(data,{format:'craftmine.module/2',runtime:'craftmine-web/3',id,version,kind:'creation',hash:contentHash,name:payload.name,description:String(prompt).slice(0,2000),dependencies:creationDependencies(payload),payload,origin:{build:buildId,definition:group.behaviors[0].id,time:Date.now()}});
+        this.register(data,{format:payload.objects.some(o=>o.appearance)?'craftmine.module/3':'craftmine.module/2',runtime:payload.objects.some(o=>o.appearance)?'craftmine-web/4':'craftmine-web/3',id,version,kind:'creation',hash:contentHash,name:payload.name,description:String(prompt).slice(0,2000),dependencies:creationDependencies(payload),payload,origin:{build:buildId,definition:group.behaviors[0].id,time:Date.now()}});
         captured.push({id,version,name:payload.name});
       }
       data.moduleBindings.creation[group.id]={id,version,origin:clone(group.behaviors.find(d=>d.binding)?.binding.origin||group.objects[0]?.position||{x:0,y:6,z:0}),objects:payload.objects.map((o,i)=>({key:o.key,world:group.objects[i].id})),behaviors:payload.scripts.map((s,i)=>({local:s.key,world:group.behaviors[i].id}))};
@@ -114,12 +114,12 @@ export class ModuleLibrary {
         }
         return placeCreation(next,module.payload,source,player,{bounds,obstacles});
       }
-      const generated=materializeCreation(module.payload,source,position),candidate={...next,format:'craftmine.scene/3',objects:[...next.objects,...generated.objects],behaviors:[...(next.behaviors||[]),...generated.behaviors],systems:[...next.systems,...generated.systems.filter(s=>!next.systems.some(old=>old.type===s.type)).map(s=>({...s,id:'system-'+randomUUID()}))]};
-      compileScene(candidate);return candidate;
+      const generated=materializeCreation(module.payload,source,position),candidate={...next,format:next.format==='craftmine.scene/4'?'craftmine.scene/4':'craftmine.scene/3',objects:[...next.objects,...generated.objects],behaviors:[...(next.behaviors||[]),...generated.behaviors],systems:[...next.systems,...generated.systems.filter(s=>!next.systems.some(old=>old.type===s.type)).map(s=>({...s,id:'system-'+randomUUID()}))]};
+      const normalized=withAppearanceFormat(candidate);compileScene(normalized);return normalized;
     }
     if(module.kind==='gameplay'){
       const old=next.systems.find(s=>s.type===module.payload.type),definition={id:old?.id||'system-'+randomUUID(),...clone(module.payload),source};
-      next.systems=next.systems.filter(s=>s.type!==definition.type);next.systems.push(definition);compileScene(next);return next;
+      next.systems=next.systems.filter(s=>s.type!==definition.type);next.systems.push(definition);const normalized=withAppearanceFormat(next);compileScene(normalized);return normalized;
     }
     if(module.dependencies.includes('health@1')&&!next.systems.some(s=>s.type==='health'))throw Error('此对象需要生命值模块，请先复用或创建生命值模块');
     const min=Object.fromEntries(['x','y','z'].map(k=>[k,Math.min(...module.payload.parts.map(p=>p.offset[k]))]));
@@ -131,7 +131,7 @@ export class ModuleLibrary {
       if(player.x+.4>position.x+min.x&&player.x-.4<position.x+min.x+size.x&&player.z+.4>position.z+min.z&&player.z-.4<position.z+min.z+size.z)continue;
       const object={id:'instance-'+randomUUID(),...clone(module.payload),position,source};
       const candidate={...next,objects:[...next.objects,object]};
-      try{compileScene(candidate);return candidate;}catch(e){lastError=e;}
+      try{const normalized=withAppearanceFormat(candidate);compileScene(normalized);return normalized;}catch(e){lastError=e;}
     }
     throw Error('附近没有足够的放置空间：'+lastError?.message);
   }
@@ -146,6 +146,6 @@ export class ModuleLibrary {
       next.objects.push(...generated.objects);next.behaviors.push(...generated.behaviors);
       next.systems.push(...generated.systems.filter(s=>!next.systems.some(old=>old.type===s.type)).map(s=>({...s,id:'system-'+randomUUID()})));
     }
-    compileScene(next);return next;
+    const normalized=withAppearanceFormat(next);compileScene(normalized);return normalized;
   }
 }

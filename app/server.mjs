@@ -35,6 +35,7 @@ const staticFiles = new Map([
   ['/app/scene-diff.mjs',['scene-diff.mjs','text/javascript']], ['/app/canonical.mjs',['canonical.mjs','text/javascript']], ['/app/review.js',['review.js','text/javascript']],
   ['/app/project-context.mjs',['project-context.mjs','text/javascript']], ['/app/context-panel.js',['context-panel.js','text/javascript']],
   ['/app/context.css',['context.css','text/css']],
+  ['/app/asset-binding.mjs',['asset-binding.mjs','text/javascript']], ['/app/world-assets.mjs',['world-assets.mjs','text/javascript']],
   ['/app/asset-decode.mjs',['asset-decode.mjs','text/javascript']], ['/app/asset-renderer.mjs',['asset-renderer.mjs','text/javascript']],
   ['/app/asset-viewer.js',['asset-viewer.js','text/javascript']], ['/app/asset-viewer.css',['asset-viewer.css','text/css']],
   ['/app/asset-panel.js',['asset-panel.js','text/javascript']], ['/app/asset-panel.css',['asset-panel.css','text/css']],
@@ -89,6 +90,10 @@ const server = http.createServer(async (req,res) => {
         switch (url.pathname) {
           case '/api/save': store.save(input.version,input.snapshot); break;
           case '/api/project-context': store.editContext(input); return json(res,200,{ok:true,projectContext:store.data.projectContext});
+          case '/api/assets/bind': {
+            const base=store.data.current,build=store.bindAsset(input),object=build.scene.objects.find(o=>o.id===input.objectId);await checkCode(build);store.idle();
+            store.stage(build,object.appearance?`更换「${object.name}」外观（素材 v${object.appearance.asset.version}）`:`恢复「${object.name}」的原几何外观`,base,null,['素材固定版本、哈希和世界资源预算通过','对象 ID、碰撞定义和玩法源码保留；应用时读取最新进度']);break;
+          }
           case '/api/assets/import': {
             if(assetImportBusy)throw Error('另一个素材正在检查，请稍候');assetImportBusy=true;
             try{const asset=store.assets.prepare(store.data,input),report=await verifyAsset(asset,{origin:`http://127.0.0.1:${port}`});atomicJSON(path.join(store.root,'assets',asset.id,asset.version+'-'+asset.hash+'.check.json'),report);store.change(d=>store.assets.register(d,asset));return json(res,200,{ok:true,id:asset.id,version:asset.version,report});}finally{assetImportBusy=false;}

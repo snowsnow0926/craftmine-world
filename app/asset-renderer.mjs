@@ -39,16 +39,16 @@ export class AssetRenderer {
       if(gl.getError()!==gl.NO_ERROR)throw Error('素材无法上传至图形设备');return {kind:decoded.kind,triangles:model.triangles,images:images.length,bounds:model.bounds};
     }catch(error){this.clear();throw Error('素材载入失败：'+error.message);}
   }
-  draw(vp,modelMatrix=identity(),{night=0}={}){
+  draw(vp,modelMatrix=identity(),{night=0,tint=null,alphaPass='all'}={}){
     if(!this.model||this.disposed)return;const gl=this.gl,u=this.uniforms,a=this.attributes;
     const cofactor=[cross(modelMatrix.slice(4,7),modelMatrix.slice(8,11)),cross(modelMatrix.slice(8,11),modelMatrix.slice(0,3)),cross(modelMatrix.slice(0,3),modelMatrix.slice(4,7))],det=dot(modelMatrix.slice(0,3),cofactor[0]);if(Math.abs(det)<1e-16)return;
     gl.useProgram(this.program);gl.enable(gl.DEPTH_TEST);gl.activeTexture(gl.TEXTURE0);gl.uniform1i(u.uTexture,0);gl.uniformMatrix4fv(u.uVP,false,vp);gl.uniformMatrix4fv(u.uModel,false,modelMatrix);gl.uniformMatrix3fv(u.uNormal,false,cofactor.flat().map(n=>n/det));gl.uniform1f(u.uNight,night);
     const wrap=value=>value===33071?0:value===33648?2:1;
     for(const mesh of [...this.meshes].sort((a,b)=>Number(this.model.materials[a.material].alpha==='BLEND')-Number(this.model.materials[b.material].alpha==='BLEND'))){
-      const material=this.model.materials[mesh.material],texture=material.texture;
+      const material=this.model.materials[mesh.material],texture=material.texture;if(alphaPass==='opaque'&&material.alpha==='BLEND'||alphaPass==='blend'&&material.alpha!=='BLEND')continue;
       material.doubleSided?gl.disable(gl.CULL_FACE):gl.enable(gl.CULL_FACE);gl.frontFace(det<0?gl.CW:gl.CCW);
       if(material.alpha==='BLEND'){gl.enable(gl.BLEND);gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);}else{gl.disable(gl.BLEND);gl.depthMask(true);}
-      gl.bindTexture(gl.TEXTURE_2D,texture?this.textures[texture.image]:this.white);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,texture?.nearest?gl.NEAREST:gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,texture?.nearest?gl.NEAREST:gl.LINEAR);gl.uniform2fv(u.uWrap,[wrap(texture?.wrapS??33071),wrap(texture?.wrapT??33071)]);gl.uniform4fv(u.uColor,material.color);gl.uniform1f(u.uAlpha,{OPAQUE:0,MASK:1,BLEND:2}[material.alpha]);gl.uniform1f(u.uCutoff,material.cutoff);gl.uniform1f(u.uUnlit,material.unlit?1:0);
+      gl.bindTexture(gl.TEXTURE_2D,texture?this.textures[texture.image]:this.white);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,texture?.nearest?gl.NEAREST:gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,texture?.nearest?gl.NEAREST:gl.LINEAR);gl.uniform2fv(u.uWrap,[wrap(texture?.wrapS??33071),wrap(texture?.wrapT??33071)]);const color=material.color.map((n,i)=>i<3&&tint?n*(parseInt(tint.slice(1+i*2,3+i*2),16)/255):n);gl.uniform4fv(u.uColor,color);gl.uniform1f(u.uAlpha,{OPAQUE:0,MASK:1,BLEND:2}[material.alpha]);gl.uniform1f(u.uCutoff,material.cutoff);gl.uniform1f(u.uUnlit,material.unlit?1:0);
       gl.bindBuffer(gl.ARRAY_BUFFER,mesh.buffer);for(const [name,size,offset]of [['aPosition',3,0],['aNormal',3,12],['aUV',2,24],['aColor',4,32]])if(a[name]>=0){gl.enableVertexAttribArray(a[name]);gl.vertexAttribPointer(a[name],size,gl.FLOAT,false,48,offset);}gl.drawArrays(gl.TRIANGLES,0,mesh.count);
     }
     gl.depthMask(true);gl.frontFace(gl.CCW);gl.disable(gl.BLEND);gl.enable(gl.CULL_FACE);

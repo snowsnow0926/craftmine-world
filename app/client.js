@@ -32,7 +32,7 @@ function requestFrame(frame,type,payload={}){return new Promise((resolve,reject)
 const requestSnapshot=(frame,freeze=false)=>requestFrame(frame,'snapshot',{freeze});
 const review=new CandidateReview({api,mount,remove:removeFrame,post,snapshot:requestSnapshot,inspect:(frame,id)=>requestFrame(frame,'inspect',{objectId:id}),active:()=>activeFrame,project:()=>project,apply:applyCandidate,discard:discardCandidate,select:id=>{selected=id;updateContext();renderObjects();switchView('play');$('prompt').focus();}});
 const contextPanel=new ProjectContextPanel({api,refresh,repair:problem=>{selected=problem.objects.length===1?problem.objects[0]:null;updateContext();renderObjects();switchView('play');$('intent').value='execute';$('prompt').value=`请修复「${problem.name}」停止运行的问题。根据已保存的实际错误检查源码，保留原有功能和兼容进度。`;$('prompt').focus();}});
-const assetPanel=new AssetPanel({api,refresh,toast,download:downloadJSON});
+const assetPanel=new AssetPanel({api,refresh,toast,download:downloadJSON,active:()=>activeFrame,staged:()=>{switchView('play');toast('外观候选已准备好，可先查看变化与预览，再应用。');}});
 window.addEventListener('message',event=>{
   const m=event.data,frame=frames.get(m?.nonce);
   if(!frame||event.source!==frame.element.contentWindow||m.channel!=='craftmine-game/1'||event.origin!=='null')return;
@@ -72,7 +72,7 @@ function render(){
   $('provider').textContent=project.provider.available?'● Codex 已登录':'○ 需要连接 LLM';$('provider').title=project.provider.message;
   $('version').textContent='v'+(project.history.length)+ ' · 当前可玩';
   const task=project.tasks.at(-1),running=task&&['running','validating','cancelling'].includes(task.status);
-  $('send').disabled=!connected||applying||!project.provider.available||($('intent').value==='execute'&&(!!running||!!project.candidate));
+  $('send').disabled=!connected||!activeFrame||applying||!project.provider.available||($('intent').value==='execute'&&(!!running||!!project.candidate));
   $('apply').disabled=applying;$('discard').disabled=applying;$('review-open').disabled=applying||!activeFrame;
   const statuses={running:'正在创造',validating:'正在检查',cancelling:'正在停止执行',ready:'候选已就绪',failed:'任务未完成',cancelled:'任务已取消',interrupted:'任务已中断',discussed:'讨论已完成',unchanged:'场景没有变化',applied:'已应用到世界',discarded:'候选已丢弃'};
   $('task-status').hidden=!task;

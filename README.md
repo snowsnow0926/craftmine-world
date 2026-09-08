@@ -93,6 +93,7 @@ npm run test:review
 npm run test:context
 npm run test:live-context
 npm run test:assets
+npm run test:asset-world
 ```
 
 核心测试仅需 Node.js。浏览器测试需要 Playwright 和 Chrome／Edge；本机可使用已提供的 Playwright 运行库，其他环境可安装 Playwright，或用 `PLAYWRIGHT_MODULE_PATH` 指定模块位置。`CRAFTMINE_BROWSER` 可指定浏览器路径。

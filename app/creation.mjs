@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { compileScene,upgradeScene,canonicalJSON } from './scene.mjs';
+import { compileScene,upgradeScene,withAppearanceFormat,canonicalJSON } from './scene.mjs';
 import { exactKeys,identifier,bounded } from './gameplay.mjs';
 import { validateBehavior } from './behavior-contracts.mjs';
 
@@ -31,7 +31,7 @@ export function captureCreation(group,scene){
   const anchor=group.behaviors.find(d=>d.binding)?.binding.origin||group.objects[0]?.position||{x:0,y:6,z:0},objectKeys=new Map(),behaviorKeys=new Map(),used=new Set();
   for(const o of group.objects){let key=group.behaviors.flatMap(d=>d.binding?.objects||[]).find(p=>p.world===o.id)?.key||o.id;if(used.has(key))key=o.id;used.add(key);objectKeys.set(o.id,key);}
   used.clear();for(const d of group.behaviors){let key=d.binding?.behaviors.find(p=>p.world===d.id)?.local||d.id;if(used.has(key))key=d.id;used.add(key);behaviorKeys.set(d.id,key);}
-  const objects=group.objects.map(o=>({key:objectKeys.get(o.id),name:o.name,position:shift(o.position,anchor,-1),parts:structuredClone(o.parts),components:structuredClone(o.components)}));
+  const objects=group.objects.map(o=>({key:objectKeys.get(o.id),name:o.name,position:shift(o.position,anchor,-1),parts:structuredClone(o.parts),components:structuredClone(o.components),...(o.appearance?{appearance:structuredClone(o.appearance)}:{})}));
   const scripts=group.behaviors.map(d=>{
     const aliases=group.objects.map(o=>({local:d.binding?.objects.find(p=>p.world===o.id)?.local||o.id,object:objectKeys.get(o.id)}));
     const {binding,...base}=d;
@@ -47,7 +47,7 @@ export function captureCreation(group,scene){
 export function validateCreation(payload){
   exactKeys(payload,['name','anchor','objects','scripts','systems','tests']);vector(payload.anchor,-40,40);
   if(typeof payload.name!=='string'||!payload.name.trim()||payload.name.length>60||!Array.isArray(payload.objects)||payload.objects.length>16||!Array.isArray(payload.scripts)||!payload.scripts.length||payload.scripts.length>8)throw Error('创作模块内容无效');
-  const keys=new Set();for(const o of payload.objects){exactKeys(o,['key','name','position','parts','components']);if(!safeId(o.key)||keys.has(o.key))throw Error('创作对象标识重复或无效');keys.add(o.key);vector(o.position,-80,80);}
+  const keys=new Set();for(const o of payload.objects){exactKeys(o,['key','name','position','parts','components',...(o.appearance?['appearance']:[])]);if(!safeId(o.key)||keys.has(o.key))throw Error('创作对象标识重复或无效');keys.add(o.key);vector(o.position,-80,80);}
   const scripts=new Set();for(const s of payload.scripts){
     exactKeys(s,['key','definition','translation','objects']);if(!safeId(s.key)||scripts.has(s.key))throw Error('创作玩法标识重复或无效');scripts.add(s.key);vector(s.translation,-80,80);validateBehavior(s.definition);
     if(s.definition.id!==s.key||s.definition.format!=='craftmine.behavior/2'||s.definition.binding!==null||!Array.isArray(s.objects)||s.objects.length!==keys.size)throw Error('模板需要未绑定的源码和完整对象映射');
@@ -65,11 +65,11 @@ export function validateCreation(payload){
 export function materializeCreation(payload,source,position,instanceId='creation-'+randomUUID(),existing=null){
   const objects=payload.objects.map((o,index)=>({key:o.key,local:o.key,world:existing?.objects.find(p=>p.key===o.key)?.world||(existing?'instance-object-'+randomUUID():instanceId+'-o'+index)}));
   const behaviors=payload.scripts.map((s,index)=>({local:s.key,world:existing?.behaviors.find(p=>p.local===s.key)?.world||(existing?'instance-behavior-'+randomUUID():instanceId+'-b'+index)}));
-  const scene={format:'craftmine.scene/3',title:payload.name,night:false,objects:payload.objects.map(o=>({id:objects.find(p=>p.key===o.key).world,name:o.name,position:shift(o.position,position),parts:structuredClone(o.parts),components:structuredClone(o.components),source:structuredClone(source)})),systems:structuredClone(payload.systems),behaviors:payload.scripts.map(s=>({
+  const scene={format:'craftmine.scene/3',title:payload.name,night:false,objects:payload.objects.map(o=>({id:objects.find(p=>p.key===o.key).world,name:o.name,position:shift(o.position,position),parts:structuredClone(o.parts),components:structuredClone(o.components),...(o.appearance?{appearance:structuredClone(o.appearance)}:{}),source:structuredClone(source)})),systems:structuredClone(payload.systems),behaviors:payload.scripts.map(s=>({
     ...structuredClone(s.definition),id:behaviors.find(p=>p.local===s.key).world,targets:s.definition.targets.map(alias=>objects.find(p=>p.key===s.objects.find(a=>a.local===alias).object).world),
     binding:{instanceId,source:structuredClone(source),origin:structuredClone(position),translation:shift(s.translation,position),objects:s.objects.map(p=>({key:p.object,local:p.local,world:objects.find(o=>o.key===p.object).world})),behaviors:structuredClone(behaviors)},
   }))};
-  return scene;
+  return withAppearanceFormat(scene);
 }
 
 export function placeCreation(scene,payload,source,player,{bounds,obstacles=[]}={}){
@@ -84,10 +84,10 @@ export function placeCreation(scene,payload,source,player,{bounds,obstacles=[]}=
       if(obstacles.some(other=>['x','y','z'].every(k=>area.min[k]<other.max[k]-.001&&area.max[k]>other.min[k]+.001)))continue;
     }
     const generated=materializeCreation(payload,source,position,instanceId);
-    const candidate={...next,format:'craftmine.scene/3',objects:[...next.objects,...generated.objects],behaviors:[...(next.behaviors||[]),...generated.behaviors],systems:[...next.systems,...generated.systems.filter(s=>!next.systems.some(old=>old.type===s.type)).map(s=>({...s,id:'system-'+randomUUID()}))]};
+    const candidate=withAppearanceFormat({...next,format:next.format==='craftmine.scene/4'?'craftmine.scene/4':'craftmine.scene/3',objects:[...next.objects,...generated.objects],behaviors:[...(next.behaviors||[]),...generated.behaviors],systems:[...next.systems,...generated.systems.filter(s=>!next.systems.some(old=>old.type===s.type)).map(s=>({...s,id:'system-'+randomUUID()}))]});
     try{const build=compileScene(candidate);const body={min:{x:player.x-.4,y:player.y,z:player.z-.4},max:{x:player.x+.4,y:player.y+1.8,z:player.z+.4}};if(build.primitives.some(p=>generated.objects.some(o=>o.id===p.id)&&p.solid&&['x','y','z'].every(k=>p.min[k]<body.max[k]&&p.max[k]>body.min[k])))continue;return candidate;}catch(error){lastError=error;}
   }
   throw Error('附近无法放下完整创作：'+(lastError?.message||'与玩家位置冲突'));
 }
 
-export const creationDependencies=payload=>[...new Set(['geometry@2','behavior@2',...payload.scripts.flatMap(s=>s.definition.requires),...payload.scripts.flatMap(s=>s.definition.permissions.map(p=>({'player.motion':'player@1','inventory.write':'inventory@1','hud.message':'hud@1','objects.write':'geometry@2'})[p])),...(payload.objects.some(o=>o.components.contactDamage>0)?['health@1']:[]),...(payload.objects.some(o=>o.components.health>0)?['damageable@1']:[])])].sort();
+export const creationDependencies=payload=>[...new Set(['geometry@2','behavior@2',...(payload.objects.some(o=>o.appearance)?['assets@1']:[]),...payload.scripts.flatMap(s=>s.definition.requires),...payload.scripts.flatMap(s=>s.definition.permissions.map(p=>({'player.motion':'player@1','inventory.write':'inventory@1','hud.message':'hud@1','objects.write':'geometry@2'})[p])),...(payload.objects.some(o=>o.components.contactDamage>0)?['health@1']:[]),...(payload.objects.some(o=>o.components.health>0)?['damageable@1']:[])])].sort();

@@ -2,7 +2,7 @@
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "M4",
-  "baseline": "99fbe00",
+  "baseline": "dbacc0e",
   "updated": "2026-09-08",
   "items": [
     {
@@ -125,8 +125,14 @@
         {
           "id": "M4.2",
           "title": "素材显示在世界中，替换外观保留对象、碰撞、源码与最新状态",
-          "status": "pending",
-          "evidence": []
+          "status": "complete",
+          "evidence": [
+            "npm test: 77 passed; subsequent asset-world targeted suite: 7 passed",
+            "test-results/asset-world-EIbyde/report.json: 18 passed; actual GLB and image in world, door behavior/collision, latest progress, previews, fixed versions, reuse and missing file recovery",
+            "test-results/assets-browser-BfBdLe/report.json: 16 passed",
+            "test-results/review-browser-VGr8Ms/report.json: 15 passed",
+            "docs/M4_ASSETS.md"
+          ]
         },
         {
           "id": "M4.3",
@@ -143,11 +149,11 @@
       "evidence": []
     }
   ],
-  "nextAction": "M4.2：为对象增加固定素材版本引用，把图片/标准 GLB 接入实际世界渲染；沿用候选事务替换外观并保留碰撞、源码行为与最新进度。同步避免记忆捕获丢失外观。之后 M4.3 验证完整导出到第二个项目及真实模型使用素材。",
+  "nextAction": "M4.3：为完整存档和创作模块打包必需的固定素材版本，导入前重新校验原始文件与源码，第二个独立项目恢复并交互；验证篡改/缺失/同版本冲突不会改世界，再用真实模型完成素材绑定和多轮外观替换。M4 全部通过后集中交付新 Alpha。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.7",
-    "developmentSlice": "个人服务保持 Alpha 0.7。开发版 M4.1 素材库、版本与独立预览已验收；继续 M4.2 世界绑定，M4 整体完成后再集中更新服务。",
+    "developmentSlice": "个人服务保持 Alpha 0.7。开发版 M4.1 素材库和 M4.2 世界外观绑定已验收；M4.3 跨项目携带素材和真实模型验收待完成。",
     "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
     "example": "examples/door-and-bounce.save.json",
     "service": {

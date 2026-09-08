@@ -1,9 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { EMPTY_SCENE, INITIAL_SNAPSHOT, compileScene, clone, validateSnapshot, sceneDiff } from './scene.mjs';
+import { EMPTY_SCENE, INITIAL_SNAPSHOT, compileScene, clone, validateSnapshot, sceneDiff,upgradeScene,withAppearanceFormat,validateObjectScope } from './scene.mjs';
 import { ModuleLibrary } from './memory.mjs';
 import { emptyProjectContext,editProjectContext,rememberAppliedRequest,retrieveProjectContext } from './project-context.mjs';
+import { defaultAppearance } from './asset-binding.mjs';
 import { AssetLibrary } from './assets.mjs';
 
 export function atomicJSON(file, value) {
@@ -25,7 +26,7 @@ export class ProjectStore {
     }
     this.data = JSON.parse(fs.readFileSync(this.file, 'utf8'));
     if (this.data.format !== 'craftmine.project/1') throw Error('项目格式不兼容，未覆盖原文件');
-    validateSnapshot(this.data.snapshot); this.readBuild(this.data.current);
+    validateSnapshot(this.data.snapshot); this.readBuild(this.data.current,{resolveAssets:false});
     if(!this.data.library){
       atomicJSON(path.join(this.root,'backups','before-memory-upgrade-'+Date.now()+'.json'),this.data);
       this.change(d=>{d.library=[];d.moduleBindings={object:{},gameplay:{}};this.modules.capture(d,this.readBuild(d.current).scene,'从已确认的历史世界保存的创作',d.current);});
@@ -48,19 +49,20 @@ export class ProjectStore {
   }
   change(fn) { const next = clone(this.data); fn(next); atomicJSON(this.file, next); this.data = next; return next; }
   build(scene) {
-    const compiled = compileScene(scene), id = 'v-' + compiled.hash.slice(0, 20), dir = path.join(this.root, 'builds', id);
+    const compiled = compileScene(scene),assets=this.assets.resolve(this.data,compiled.scene), id = 'v-' + compiled.hash.slice(0, 20), dir = path.join(this.root, 'builds', id);
     if (!fs.existsSync(path.join(dir, 'build.json'))) {
       atomicJSON(path.join(dir, 'scene.json'), compiled.scene);
       atomicJSON(path.join(dir, 'build.json'), { ...compiled, id });
     }
-    return { ...compiled, id };
+    return { ...compiled, id,...(assets.length?{assets}:{}) };
   }
-  readBuild(id) {
+  readBuild(id,{resolveAssets=true}={}) {
     if (typeof id !== 'string' || !/^v-[a-f0-9]{20}$/.test(id)) throw Error('版本 ID 无效');
     const stored = JSON.parse(fs.readFileSync(path.join(this.root, 'builds', id, 'build.json'), 'utf8'));
     const checked = compileScene(stored.scene);
     if (stored.hash !== checked.hash || id !== 'v-' + checked.hash.slice(0,20)) throw Error('构建校验失败，保留原世界');
-    return { ...checked, id };
+    const assets=resolveAssets?this.assets.resolve(this.data,checked.scene):[];
+    return { ...checked, id,...(assets.length?{assets}:{}) };
   }
   readAttempt(id,number){
     const task=this.data.tasks.find(t=>t.id===id),attempt=task?.attempts?.find(a=>a.number===number);
@@ -133,6 +135,13 @@ export class ProjectStore {
     const scene=this.modules.instantiate(this.data,this.readBuild(this.data.current).scene,id,version,player);
     const build=this.build(scene);if(build.id===this.data.current)throw Error('该玩法模块已经使用这个版本和参数');
     this.stage(build,`复用「${module.name}」v${version}`,this.data.current,null,['已读取记忆库中的实际模块定义','兼容声明、依赖、版本哈希与场景构建校验通过']);
+  }
+  bindAsset(input){
+    this.idle();if(input.version!==this.data.current)throw Error('世界版本已改变，请重新选择对象');
+    const before=this.readBuild(this.data.current).scene,next=withAppearanceFormat({...upgradeScene(before),format:'craftmine.scene/4'}),object=next.objects.find(o=>o.id===input.objectId);if(!object)throw Error('请先选择世界中的对象');
+    if(input.assetId===null){if(input.assetVersion!==null)throw Error('外观恢复参数无效');object.appearance=null;}
+    else{const asset=this.assets.read(this.data,input.assetId,input.assetVersion);object.appearance=object.appearance?{...object.appearance,asset:{id:asset.id,version:asset.version,hash:asset.hash}}:defaultAppearance(object,asset);}
+    validateObjectScope(before,next,object.id);const build=this.build(next);if(build.id===this.data.current)throw Error('对象已经使用这个外观版本');return build;
   }
   exportSave() { return { format: 'craftmine.save/1', scene: this.readBuild(this.data.current).scene, snapshot: clone(this.data.snapshot) }; }
   importSave(save) {

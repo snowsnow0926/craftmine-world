@@ -1,8 +1,9 @@
 import { sceneDiff,upgradeScene } from './scene-diff.mjs';
-export { sceneDiff,upgradeScene } from './scene-diff.mjs';
+export { sceneDiff,upgradeScene,withAppearanceFormat } from './scene-diff.mjs';
 import { createHash } from 'node:crypto';
 import { SYSTEMS, identifier, exactKeys, bounded, validateSource, validateSystems, validateGameplayState } from './gameplay.mjs';
 import { canonicalJSON } from './canonical.mjs';
+import { validateAppearance,checkAppearanceBounds,sceneAssetReferences } from './asset-binding.mjs';
 import { compileBehavior } from './behavior-build.mjs';
 import { validateBehaviorState } from './behavior-state.mjs';
 export { canonicalJSON } from './canonical.mjs';
@@ -59,6 +60,7 @@ function compileLegacy(input) {
 export function validateObjectScope(before, after, selected) {
   if (!selected) return;
   before=upgradeScene(before);after=upgradeScene(after);
+  for(const scene of [before,after])scene.objects=scene.objects.map(o=>({...o,appearance:o.appearance||null}));
   const beforeRest = before.objects.filter(o => o.id !== selected);
   const afterRest = after.objects.filter(o => o.id !== selected);
   if (canonicalJSON(beforeRest) !== canonicalJSON(afterRest) || before.night !== after.night || before.title !== after.title || canonicalJSON(before.systems)!==canonicalJSON(after.systems)) throw Error('模型修改超出了选中对象的范围，候选未采纳。若要修改整个世界，请先清除对象选择。');
@@ -72,7 +74,7 @@ export function objectBounds(object) {
 }
 export function compileScene(input) {
   if(input?.format==='craftmine.scene/1')return compileLegacy(input);
-  const scripted=input?.format==='craftmine.scene/3';
+  const assets=input?.format==='craftmine.scene/4',scripted=assets||input?.format==='craftmine.scene/3';
   exactKeys(input,scripted?['format','title','night','objects','systems','behaviors']:['format','title','night','objects','systems']);
   if(!scripted&&input.format!=='craftmine.scene/2')throw Error('场景格式不兼容');
   string(input.title,80);if(typeof input.night!=='boolean'||!Array.isArray(input.objects)||input.objects.length>128)throw Error('场景最多包含 128 个对象');
@@ -80,7 +82,8 @@ export function compileScene(input) {
   const ids=new Set(),primitives=[],bins=new Map();let volume=0,faces=0;
   const vec=(v,min,max)=>{exactKeys(v,['x','y','z']);for(const n of Object.values(v))bounded(n,min,max);};
   for(const o of input.objects){
-    exactKeys(o,['id','name','position','parts','components','source']);string(o.name,60);
+    exactKeys(o,['id','name','position','parts','components','source',...(assets?['appearance']:[])]);string(o.name,60);
+    if(assets){validateAppearance(o.appearance);checkAppearanceBounds(o);}
     if(!identifier(o.id)||ids.has(o.id))throw Error('对象 ID 无效或重复');ids.add(o.id);
     vec(o.position,-40,40);validateSource(o.source);exactKeys(o.components,['health','contactDamage']);bounded(o.components.health,0,10000);bounded(o.components.contactDamage,0,100);
     if(o.components.contactDamage>0&&!input.systems.some(s=>s.type==='health'))throw Error('接触伤害需要启用生命值模块');
@@ -103,6 +106,7 @@ export function compileScene(input) {
       primitives.push(primitive);
     }
   }
+  if(assets)sceneAssetReferences(input);
   let behaviors;
   if(scripted){
     if(!Array.isArray(input.behaviors)||input.behaviors.length>8)throw Error('一个世界最多启用 8 个代码模块');
@@ -120,7 +124,7 @@ export function compileScene(input) {
     }
   }
   const scene=clone(input),hash=createHash('sha256').update(canonicalJSON(scene)).digest('hex');
-  return {format:scripted?'craftmine.build/3':'craftmine.build/2',hash,scene,voxels:[],primitives,...(scripted?{behaviors}:{})};
+  return {format:assets?'craftmine.build/4':scripted?'craftmine.build/3':'craftmine.build/2',hash,scene,voxels:[],primitives,...(scripted?{behaviors}:{})};
 }
 const vecSchema = { type: 'object', properties: { x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['x','y','z'], additionalProperties: false };
 const objSchema = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
@@ -143,9 +147,15 @@ export const OUTPUT_SCHEMA = objSchema({
   }) ] },
 });
 
-export function encodeAgentScene(input){const scene=upgradeScene(input);return {...scene,format:'craftmine.scene/3',behaviors:(scene.behaviors||[]).map(({initialState,params,...d})=>({...d,initialStateJSON:JSON.stringify(initialState),paramsJSON:JSON.stringify(params)}))};}
+const assetSceneSchema=structuredClone(OUTPUT_SCHEMA.properties.scene.anyOf[1]);
+assetSceneSchema.properties.format.enum=['craftmine.scene/4'];
+assetSceneSchema.properties.objects.items.properties.appearance={anyOf:[{type:'null'},objSchema({asset:objSchema({id:{type:'string'},version:{type:'integer'},hash:{type:'string'}}),offset:vecSchema,size:vecSchema,rotationY:{type:'number'},fit:{type:'string',enum:['contain','stretch']}})]};
+assetSceneSchema.properties.objects.items.required.push('appearance');
+OUTPUT_SCHEMA.properties.scene.anyOf.push(assetSceneSchema);
+
+export function encodeAgentScene(input){const scene=upgradeScene(input);return {...scene,format:scene.format==='craftmine.scene/4'?scene.format:'craftmine.scene/3',behaviors:(scene.behaviors||[]).map(({initialState,params,...d})=>({...d,initialStateJSON:JSON.stringify(initialState),paramsJSON:JSON.stringify(params)}))};}
 export function decodeAgentScene(input){
-  if(input?.format!=='craftmine.scene/3'||!Array.isArray(input.behaviors))throw Error('模型需要返回完整的新场景格式');
+  if(!['craftmine.scene/3','craftmine.scene/4'].includes(input?.format)||!Array.isArray(input.behaviors))throw Error('模型需要返回完整的新场景格式');
   return {...input,behaviors:input.behaviors.map(d=>{
     exactKeys(d,['format','id','name','description','code','stateVersion','initialStateJSON','paramsJSON','targets','permissions',...(d?.format==='craftmine.behavior/2'?['requires','binding']:[])]);
     if(typeof d.initialStateJSON!=='string'||d.initialStateJSON.length>16000||typeof d.paramsJSON!=='string'||d.paramsJSON.length>8000)throw Error('模型代码参数或初始状态无效');

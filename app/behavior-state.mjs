@@ -1,5 +1,6 @@
 import { exactKeys,identifier,bounded } from './gameplay.mjs';
 import { jsonRecord,validateBehaviorResult } from './behavior-contracts.mjs';
+import { checkAppearanceBounds } from './asset-binding.mjs';
 import { intersects } from './geometry.mjs';
 
 const vector=v=>{exactKeys(v,['x','y','z']);for(const n of Object.values(v))bounded(n,-80,80);};
@@ -59,9 +60,9 @@ export class BehaviorState {
   materialize(value){
     const overrides=Object.assign({},...Object.values(value.modules).map(m=>m.overrides));
     const objects=this.build.scene.objects.map(o=>{
-      const p=overrides[o.id];return {...o,position:Object.fromEntries(['x','y','z'].map(k=>[k,o.position[k]+(p?.offset[k]||0)])),visible:p?.visible??true};
+      const p=overrides[o.id];return {...o,position:Object.fromEntries(['x','y','z'].map(k=>[k,o.position[k]+(p?.offset[k]||0)])),visible:p?.visible??true,...(o.appearance?{appearanceTint:p?.color||null}:{})};
     });
-    for(const o of objects)for(const n of Object.values(o.position))bounded(n,-40,40);
+    for(const o of objects){for(const n of Object.values(o.position))bounded(n,-40,40);checkAppearanceBounds(o);}
     const primitives=(this.build.primitives||[]).map(p=>{
       const patch=overrides[p.id];if(!patch)return {...p,visible:true};
       return {...p,min:Object.fromEntries(['x','y','z'].map(k=>[k,p.min[k]+patch.offset[k]])),max:Object.fromEntries(['x','y','z'].map(k=>[k,p.max[k]+patch.offset[k]])),solid:patch.solid===null?p.solid:patch.solid&&p.shape==='box',color:patch.color||p.color,visible:patch.visible};

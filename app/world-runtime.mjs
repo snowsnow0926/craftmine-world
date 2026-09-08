@@ -1,3 +1,4 @@
+import { WorldAssets } from './world-assets.mjs';
 import { GameplaySession } from './gameplay.mjs';
 import { primitiveVertices,intersects,rayBox } from './geometry.mjs';
 import { BehaviorSession } from './behavior-session.mjs';
@@ -31,6 +32,7 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       this.listen(this.canvas,'webglcontextlost',e=>{e.preventDefault();this.setActive(false);send('error',{message:'图形上下文丢失，请刷新以恢复已保存的世界。'});});
     }
     async generateBuild(value,snapshot) {
+      const wasActive=this.active;this.setActive(false);this.worldAssets=new WorldAssets(this);await this.worldAssets.load(value);
       this.config={night:value.scene.night,speed:4.5,treeStyle:'pine'};
       this.world.fill(0);this.trees.clear();this.treeAt.clear();this.edits={};this.collected=[];
       for(let z=-48;z<48;z++)for(let x=-48;x<48;x++){
@@ -46,11 +48,13 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       this.primitives=this.behaviors.data.view.primitives;this.objects=new Map(this.behaviors.data.view.objects.map(o=>[o.id,o]));
       for(let z=-48;z<48;z+=16)for(let x=-48;x<48;x+=16)this.rebuild(x,z);
       for(const o of value.scene.objects)if(this.play.alive(o.id)&&this.objects.get(o.id).visible!==false){
-        const parts=this.primitives.filter(p=>p.id===o.id);if(parts.length)this.meshes.set('object:'+o.id,this.upload(primitiveVertices(parts)));
+        this.rebuildObject(o.id);
       }
       this.makeWater();this.makeClouds();this.night=value.scene.night?1:0;this.safePosition();this.changed();
-      await this.behaviors.start();this.updateHud();
+      await this.behaviors.start();this.updateHud();this.setActive(wasActive);
     }
+    drawMesh(mesh,locations){if(mesh?.asset){this.assetDraws.push(mesh);return;}super.drawMesh(mesh,locations);if(mesh===this.clouds&&this.assetDraws?.length){this.worldAssets.drawAll(this.assetDraws);this.assetDraws=[];}}
+    rebuildObject(id){const key='object:'+id,old=this.meshes.get(key);if(old?.buffer)this.gl.deleteBuffer(old.buffer);this.meshes.delete(key);const object=this.objects.get(id);if(!object||object.visible===false||!this.play.alive(id))return;const parts=this.primitives.filter(p=>p.id===id);if(parts.length)this.meshes.set(key,object.appearance?this.worldAssets.mesh(object):this.upload(primitiveVertices(parts)));}
     behaviorContext(){return {player:{position:{x:this.p.x,y:this.p.y,z:this.p.z},grounded:this.grounded,health:this.play.player?.health??null},objects:[...this.objects.values()].map(o=>({id:o.id,position:o.position,visible:o.visible!==false&&this.play.alive(o.id),solid:this.primitives.some(p=>p.id===o.id&&p.solid),health:this.play.state.targets[o.id]?.health||0}))};}
     inspectObject(id){
       const object=this.objects.get(id);if(!object)throw Error('这一版中没有这个对象');
@@ -65,7 +69,7 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
     }
     applyBehavior({changed,effects},view){
       this.primitives=view.primitives;this.objects=new Map(view.objects.map(o=>[o.id,o]));
-      for(const id of changed){const key='object:'+id,old=this.meshes.get(key);if(old)this.gl.deleteBuffer(old.buffer);this.meshes.delete(key);const parts=this.primitives.filter(p=>p.id===id&&p.visible&&this.play.alive(id));if(parts.length)this.meshes.set(key,this.upload(primitiveVertices(parts)));}
+      for(const id of changed)this.rebuildObject(id);
       for(const effect of effects){
         if(effect.type==='hud.message')inform(effect.text);
         if(effect.type==='player.impulse'){this.vy=effect.velocity.y;this.impulse={x:effect.velocity.x,z:effect.velocity.z};this.grounded=false;}
@@ -112,7 +116,7 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       const weapon=document.getElementById('held-item');weapon.classList.remove('swing','fire');void weapon.offsetWidth;weapon.classList.add(result.type==='melee'?'swing':'fire');
       document.getElementById('hit-marker').classList.toggle('hit',result.damage>0);clearTimeout(this.hitTimer);this.hitTimer=setTimeout(()=>document.getElementById('hit-marker').classList.remove('hit'),180);
       if(result.damage)inform(`${this.objects.get(result.id)?.name} −${result.damage}${result.destroyed?' · 已击破':''}`);
-      if(result.destroyed){const key='object:'+result.id,mesh=this.meshes.get(key);if(mesh)this.gl.deleteBuffer(mesh.buffer);this.meshes.delete(key);}
+      if(result.destroyed){const key='object:'+result.id,mesh=this.meshes.get(key);if(mesh?.buffer)this.gl.deleteBuffer(mesh.buffer);this.meshes.delete(key);}
       if(hit?.treeId)this.behaviors?.dispatch('attack',hit.treeId);
       this.updateHud();
     }
@@ -150,10 +154,10 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       document.getElementById('interact').hidden=!interactive;document.getElementById('interact').textContent='E · 互动';
       const items=Object.entries(this.behaviors?.data.value.inventory||{});document.getElementById('inventory-hud').hidden=!items.length;document.getElementById('inventory-hud').textContent=items.map(([id,count])=>`${id} × ${count}`).join(' · ');
     }
-    render(time){const target=this.target;if(target?.primitive)this.target=null;super.render(time);this.target=target;}
+    render(time){this.assetDraws=[];const target=this.target;if(target?.primitive)this.target=null;super.render(time);this.target=target;}
     revive(){this.play?.revive();this.respawn(false);this.updateHud();inform('已复活，世界中的变化仍保留');enter.hidden=false;}
     respawn(notify=true){this.p={x:.5,y:6,z:12.5,yaw:0,pitch:0};for(let y=6;y<38;y+=.5)if(!this.collision(this.p.x,y,this.p.z)){this.p.y=y;break;}this.vy=0;this.fallPeak=this.p.y;if(notify)inform('已回到出生位置');}
-    dispose(){this.behaviors?.dispose();super.dispose();}
+    dispose(){this.behaviors?.dispose();this.worldAssets?.dispose();for(const [key,mesh]of this.meshes)if(mesh.asset)this.meshes.delete(key);super.dispose();}
   }
   return BlankRuntime;
 }

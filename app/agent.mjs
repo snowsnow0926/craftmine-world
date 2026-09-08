@@ -61,7 +61,8 @@ export class AgentRunner {
     atomicJSON(path.join(dir,'project-context.json'),projectContext);
     this.update(active.id,t=>{t.contextRead={revision:projectContext.revision,notes:projectContext.notes.map(n=>n.id),requests:projectContext.acceptedChanges.map(r=>r.id),problems:projectContext.runtimeProblems.map(p=>p.id)};});
     this.log(active.id,`已读取创作方向、${projectContext.notes.length} 条长期约定、${projectContext.acceptedChanges.length} 条已应用需求和 ${projectContext.runtimeProblems.length} 个已保存的运行问题。`);
-    const basePrompt=buildPrompt({scene,memories,text,intent,context,messages:store.data.messages.slice(-8),snapshot:store.data.snapshot,projectContext});
+    const assets=store.assets.manifest(store.data,scene,text);atomicJSON(path.join(dir,'assets-read.json'),assets);
+    const basePrompt=buildPrompt({assets,scene,memories,text,intent,context,messages:store.data.messages.slice(-8),snapshot:store.data.snapshot,projectContext});
     let previous;
     for(let number=1;number<=REPAIR_LIMIT+1;number++){
       this.assertActive(active);const attemptDir=path.join(dir,'attempts',String(number));let phase='storage',raw='',build;

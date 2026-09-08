@@ -2,11 +2,13 @@ import { canonicalJSON } from './canonical.mjs';
 const clone=value=>structuredClone(value);
 
 export function upgradeScene(input) {
-  if(['craftmine.scene/2','craftmine.scene/3'].includes(input.format))return clone(input);
+  if(['craftmine.scene/2','craftmine.scene/3','craftmine.scene/4'].includes(input.format))return clone(input);
   return {format:'craftmine.scene/2',title:input.title,night:input.night,objects:input.objects.map(o=>({...clone(o),source:null,components:{health:0,contactDamage:0},parts:o.parts.map(p=>({...clone(p),shape:'box',color:p.material==='leaves'?'#9cdc5e':'#ffffff',solid:true}))})),systems:[]};
 }
+export function withAppearanceFormat(input){const scene=clone(input);if(scene.format==='craftmine.scene/4'||scene.objects.some(o=>o.appearance)){scene.format='craftmine.scene/4';scene.behaviors??=[];scene.objects=scene.objects.map(o=>({...o,appearance:o.appearance||null}));}return scene;}
 export function sceneDiff(before, after) {
   before=upgradeScene(before);after=upgradeScene(after);
+  for(const scene of [before,after])scene.objects=scene.objects.map(o=>({...o,appearance:o.appearance||null}));
   const old = new Map(before.objects.map(o => [o.id, o])), next = new Map(after.objects.map(o => [o.id, o]));
   return {
     added: after.objects.filter(o => !old.has(o.id)).map(o => o.name),
@@ -19,7 +21,7 @@ export function sceneDiff(before, after) {
   };
 }
 
-export const FIELD_LABELS={name:'名称',title:'世界名称',night:'昼夜',position:'位置',parts:'外观与碰撞',components:'生命值与接触伤害',source:'来源版本',type:'玩法类型',config:'玩法参数',description:'规则说明',code:'玩法源码',params:'代码参数',stateVersion:'状态格式',initialState:'新实例初始进度',targets:'关联对象',permissions:'作用范围',requires:'依赖',binding:'实例关系',format:'定义格式'};
+export const FIELD_LABELS={name:'名称',title:'世界名称',night:'昼夜',position:'位置',appearance:'素材外观与固定版本',parts:'外观与碰撞',components:'生命值与接触伤害',source:'来源版本',type:'玩法类型',config:'玩法参数',description:'规则说明',code:'玩法源码',params:'代码参数',stateVersion:'状态格式',initialState:'新实例初始进度',targets:'关联对象',permissions:'作用范围',requires:'依赖',binding:'实例关系',format:'定义格式'};
 export function changeDetails(before,after){
   const items=[];
   for(const [kind,key]of [['object','objects'],['system','systems'],['behavior','behaviors']]){
