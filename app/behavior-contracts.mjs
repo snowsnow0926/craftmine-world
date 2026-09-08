@@ -9,6 +9,10 @@ export const MESSAGE_TONES=['info','warn','success'];
 export const BEHAVIOR_KEYS=['KeyB','KeyC','KeyG','KeyH','KeyI','KeyJ','KeyK','KeyL','KeyM','KeyN','KeyO','KeyP','KeyQ','KeyU','KeyV','KeyX','KeyY','KeyZ','Digit3','Digit4','Digit5','Digit6','Digit7','Digit8','Digit9'];
 export const BEHAVIOR_LIMITS={code:32000,state:16000,params:8000,commands:32,targets:16};
 export const BEHAVIOR_REQUIREMENTS=['health@1','ranged@1','melee@1','resource@1'];
+// 依赖可以是宿主系统（health@1…）或已装载的扩展（ext:life-steal@1）。
+export const BEHAVIOR_REQUIREMENT_PATTERN=/^(health|ranged|melee|resource)@1$|^ext:[a-z][a-z0-9-]{0,47}@\d{1,4}$/;
+export const isExtensionRequirement=value=>typeof value==='string'&&value.startsWith('ext:');
+export const isRequirement=value=>typeof value==='string'&&BEHAVIOR_REQUIREMENT_PATTERN.test(value);
 export const BEHAVIOR_CAPABILITIES=['inventory.read@1','inventory.items@1','hud.panel@1'];
 
 // 只校验允许的键；required 之外的字段可以省略（例如可选的能力、按键声明）。
@@ -83,7 +87,7 @@ export function validateBehavior(definition){
     if((c.includes('inventory.items@1')&&!definition.permissions.includes('inventory.write'))||(c.includes('hud.panel@1')&&!definition.permissions.includes('hud.message')))throw Error('代码模块能力缺少所需权限');
   }
   if(portable){
-    if(!Array.isArray(definition.requires)||definition.requires.length>BEHAVIOR_REQUIREMENTS.length||new Set(definition.requires).size!==definition.requires.length||definition.requires.some(r=>!BEHAVIOR_REQUIREMENTS.includes(r)))throw Error('代码模块依赖无效');
+    if(!Array.isArray(definition.requires)||definition.requires.length>BEHAVIOR_REQUIREMENTS.length+4||new Set(definition.requires).size!==definition.requires.length||definition.requires.some(r=>!isRequirement(r)))throw Error('代码模块依赖无效');
     if(definition.binding!==null){
       const b=definition.binding;exactKeys(b,['instanceId','source','origin','translation','objects','behaviors']);
       if(!safeId(b.instanceId)||!b.source)throw Error('代码模块实例来源无效');validateSource(b.source);vec(b.origin,-40,40);vec(b.translation,-80,80);

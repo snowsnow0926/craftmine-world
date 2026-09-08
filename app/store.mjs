@@ -28,6 +28,7 @@ export class ProjectStore {
     }
     this.data = JSON.parse(fs.readFileSync(this.file, 'utf8'));
     if (this.data.format !== 'craftmine.project/1') throw Error('项目格式不兼容，未覆盖原文件');
+    if(!Array.isArray(this.data.extensions))this.change(d=>{d.extensions=[];});
     validateSnapshot(this.data.snapshot); this.readBuild(this.data.current,{resolveAssets:false});
     if(!this.data.library){
       atomicJSON(path.join(this.root,'backups','before-memory-upgrade-'+Date.now()+'.json'),this.data);
@@ -50,8 +51,12 @@ export class ProjectStore {
     });
   }
   change(fn) { const next = clone(this.data); fn(next); atomicJSON(this.file, next); this.data = next; return next; }
+  // 已装载扩展的显式集合：模块的 requires 拿它校验，卸载后必须立刻失败。
+  extensionSet(data = this.data || {}) {
+    return new Set((data.extensions || []).map(extension => `ext:${extension.id}@${extension.version}`));
+  }
   build(scene,{assets:supplied}={}) {
-    const compiled = compileScene(scene),assets=supplied===undefined?this.assets.resolve(this.data,compiled.scene):validatePackedAssets(compiled.scene,supplied), id = 'v-' + compiled.hash.slice(0, 20), dir = path.join(this.root, 'builds', id);
+    const compiled = compileScene(scene, { extensions: this.extensionSet() }),assets=supplied===undefined?this.assets.resolve(this.data,compiled.scene):validatePackedAssets(compiled.scene,supplied), id = 'v-' + compiled.hash.slice(0, 20), dir = path.join(this.root, 'builds', id);
     if (!fs.existsSync(path.join(dir, 'build.json'))) {
       atomicJSON(path.join(dir, 'scene.json'), compiled.scene);
       atomicJSON(path.join(dir, 'build.json'), { ...compiled, id });
@@ -61,7 +66,7 @@ export class ProjectStore {
   readBuild(id,{resolveAssets=true}={}) {
     if (typeof id !== 'string' || !/^v-[a-f0-9]{20}$/.test(id)) throw Error('版本 ID 无效');
     const stored = JSON.parse(fs.readFileSync(path.join(this.root, 'builds', id, 'build.json'), 'utf8'));
-    const checked = compileScene(stored.scene);
+    const checked = compileScene(stored.scene, { extensions: this.extensionSet() });
     if (stored.hash !== checked.hash || id !== 'v-' + checked.hash.slice(0,20)) throw Error('构建校验失败，保留原世界');
     const assets=resolveAssets?this.assets.resolve(this.data,checked.scene):[];
     return { ...checked, id,...(assets.length?{assets}:{}) };

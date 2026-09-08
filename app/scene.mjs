@@ -6,7 +6,7 @@ import { canonicalJSON } from './canonical.mjs';
 import { validateAppearance,checkAppearanceBounds,sceneAssetReferences } from './asset-binding.mjs';
 import { compileBehavior } from './behavior-build.mjs';
 import { validateBehaviorState } from './behavior-state.mjs';
-import { BEHAVIOR_CAPABILITIES,BEHAVIOR_PERMISSIONS,BEHAVIOR_KEYS,BEHAVIOR_REQUIREMENTS } from './behavior-contracts.mjs';
+import { BEHAVIOR_CAPABILITIES,BEHAVIOR_PERMISSIONS,BEHAVIOR_KEYS,BEHAVIOR_REQUIREMENTS,BEHAVIOR_REQUIREMENT_PATTERN,isExtensionRequirement } from './behavior-contracts.mjs';
 export { canonicalJSON } from './canonical.mjs';
 
 // 对象 ID 的硬约束。校验与提示词都从这里取，避免两处各写一份而漂移。
@@ -89,7 +89,7 @@ function overlapDetail(a,b){
 export function objectBounds(object) {
   return {min:Object.fromEntries(['x','y','z'].map(k=>[k,Math.min(...object.parts.map(p=>object.position[k]+p.offset[k]))])),max:Object.fromEntries(['x','y','z'].map(k=>[k,Math.max(...object.parts.map(p=>object.position[k]+p.offset[k]+p.size[k]))]))};
 }
-export function compileScene(input) {
+export function compileScene(input, { extensions = new Set() } = {}) {
   if(input?.format==='craftmine.scene/1')return compileLegacy(input);
   const assets=input?.format==='craftmine.scene/4',scripted=assets||input?.format==='craftmine.scene/3';
   exactKeys(input,scripted?['format','title','night','objects','systems','behaviors']:['format','title','night','objects','systems']);
@@ -129,7 +129,11 @@ export function compileScene(input) {
     if(!Array.isArray(input.behaviors)||input.behaviors.length>8)throw Error('一个世界最多启用 8 个代码模块');
     const modules=new Set(),writers=new Set();behaviors=input.behaviors.map(d=>{
       const artifact=compileBehavior(d);if(modules.has(d.id))throw Error('代码模块 ID 重复');modules.add(d.id);
-      for(const requirement of d.requires||[])if(!input.systems.some(s=>s.type===requirement.split('@')[0]))throw Error('代码玩法缺少依赖：'+requirement);
+      for(const requirement of d.requires||[]){
+        // 扩展依赖必须在装载表里，否则模块显式失败，不静默失效。
+        if(isExtensionRequirement(requirement)){if(!extensions.has(requirement))throw Error('代码玩法依赖的扩展没有装载：'+requirement);continue;}
+        if(!input.systems.some(s=>s.type===requirement.split('@')[0]))throw Error('代码玩法缺少依赖：'+requirement);
+      }
       for(const id of d.targets){if(!ids.has(id))throw Error('代码模块引用了不存在的对象');if(d.permissions.includes('objects.write')){if(writers.has(id))throw Error('同一对象只能由一个代码模块修改');writers.add(id);}}
       return artifact;
     });
@@ -172,7 +176,7 @@ export const OUTPUT_SCHEMA = {
   additionalProperties: false,
 };
 
-OUTPUT_SCHEMA.properties.scene.anyOf[1].properties.behaviors.items.anyOf.push(objSchema({format:{type:'string',enum:['craftmine.behavior/3']},...behaviorFields,requires:{type:'array',items:{type:'string',enum:BEHAVIOR_REQUIREMENTS}},binding:bindingSchema,capabilities:{type:'array',items:{type:'string',enum:BEHAVIOR_CAPABILITIES}}}));
+OUTPUT_SCHEMA.properties.scene.anyOf[1].properties.behaviors.items.anyOf.push(objSchema({format:{type:'string',enum:['craftmine.behavior/3']},...behaviorFields,requires:{type:'array',items:{type:'string',pattern:BEHAVIOR_REQUIREMENT_PATTERN.source}},binding:bindingSchema,capabilities:{type:'array',items:{type:'string',enum:BEHAVIOR_CAPABILITIES}}}));
 const assetSceneSchema=structuredClone(OUTPUT_SCHEMA.properties.scene.anyOf[1]);
 assetSceneSchema.properties.format.enum=['craftmine.scene/4'];
 assetSceneSchema.properties.objects.items.properties.appearance={anyOf:[{type:'null'},objSchema({asset:objSchema({id:{type:'string'},version:{type:'integer'},hash:{type:'string'}}),offset:vecSchema,size:vecSchema,rotationY:{type:'number'},fit:{type:'string',enum:['contain','stretch']}})]};

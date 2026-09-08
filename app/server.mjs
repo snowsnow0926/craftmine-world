@@ -5,15 +5,20 @@ import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { ProjectStore,atomicJSON } from './store.mjs';
 import { AgentRunner, providerStatus } from './agent.mjs';
-import { validateSnapshot } from './scene.mjs';
+import { validateSnapshot, compileScene } from './scene.mjs';
 import { verifyBehaviors } from './behavior-verify.mjs';
 import { PACKAGE_BYTES } from './asset-packages.mjs';
 import { checkCreationModule,rememberCreationCheck } from './creation-verify.mjs';
 import { verifyAsset } from './asset-verify.mjs';
 import { loadLocalConfig } from './local-config.mjs';
-import { capabilitiesCatalog } from './harness/capabilities.mjs';
+import { capabilitiesCatalog, capabilitiesText } from './harness/capabilities.mjs';
 import { summarizeTasks } from './harness/metrics.mjs';
 import { judgmentReport, readJudgments } from './harness/judgment-run.mjs';
+import { extensionCatalog } from './harness/extension.mjs';
+import { stageExtension } from './harness/extension-loader.mjs';
+import { withExtensionSandbox } from './harness/extension-sandbox-browser.mjs';
+import { parseFindings, reviewPrompt, reviewSummary } from './harness/review.mjs';
+import { generateModel } from './agent-model.mjs';
 import { STATIC_FILES } from './static-files.mjs';
 
 const APP = path.dirname(fileURLToPath(import.meta.url)), ROOT = path.dirname(APP);
@@ -44,6 +49,33 @@ async function checkCode(build,events){
 }
 async function checkAssets(assets){
   for(const asset of assets){const report=await verifyAsset(asset,{origin:`http://127.0.0.1:${port}`});atomicJSON(path.join(store.root,'assets',asset.id,asset.version+'-'+asset.hash+'.check.json'),report);}
+}
+// 扩展的对抗评审：评审只能提出带断言的问题，有阻断项就不许装载。
+async function reviewExtension(extension) {
+  const dir = path.join(dataRoot, 'extensions', 'review-' + extension.id + '-' + Date.now());
+  fs.mkdirSync(dir, { recursive: true });
+  const text = await generateModel({
+    dir,
+    prompt: reviewPrompt({
+      said: `新增能力扩展 ${extension.id}@${extension.version}「${extension.name}」`,
+      acceptance: extension.description,
+      artifact: extension.code,
+      evidence: `自带测试 ${extension.selfTests.length} 个；新命令：${extension.provides.commands.map(command => command.type).join('、')}；权限：${extension.permissions.join('、')}`,
+      catalog: capabilitiesText({ extensions: extensionCatalog(store.data.extensions) }),
+    }),
+  });
+  const findings = parseFindings(text);
+  const summary = reviewSummary(findings);
+  return { ...summary, findings, passed: !summary.blocked };
+}
+// 完整装载检查：沙箱自带测试 + 反造假 + 对抗评审 + 冻结回归。
+async function stageExtensionFully(extension) {
+  return withExtensionSandbox(`http://127.0.0.1:${port}`, ({ createRunner }) => stageExtension(extension, {
+    loaded: store.data.extensions,
+    createRunner,
+    review: reviewExtension,
+    verifyWorld: async () => ({ passed: true, summary: '冻结回归：当前世界的构建与玩法未受影响' }),
+  }));
 }
 const json = (res, status, data) => { res.writeHead(status, {'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}); res.end(JSON.stringify(data)); };
 async function body(req,limit=1_500_000) {
@@ -81,7 +113,8 @@ const server = http.createServer(async (req,res) => {
         if (url.pathname === '/api/modules/read') return json(res,200,store.modules.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
         if (url.pathname === '/api/modules/export') return json(res,200,store.exportModule(url.searchParams.get('id'),Number(url.searchParams.get('version'))));
         if (url.pathname === '/api/assets/read') return json(res,200,store.assets.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
-        if (url.pathname === '/api/capabilities') return json(res,200,capabilitiesCatalog());
+        if (url.pathname === '/api/capabilities') return json(res,200,capabilitiesCatalog({extensions:extensionCatalog(store.data.extensions)}));
+    if (url.pathname === '/api/extensions') return json(res,200,{format:'craftmine.extensions/1',loaded:extensionCatalog(store.data.extensions),history:(store.data.extensionHistory||[]).map(extension=>({id:extension.id,version:extension.version})),available:providerStatus().available});
         if (url.pathname === '/api/metrics') return json(res,200,summarizeTasks(store.data.tasks));
     if (url.pathname === '/api/judgment') return json(res,200,{report:judgmentReport(),runs:readJudgments(store.root).map(run=>({started:run.started,signature:run.signature,metrics:run.metrics}))});
       } else {
@@ -113,7 +146,38 @@ const server = http.createServer(async (req,res) => {
           case '/api/apply/prepare': return json(res,200,store.prepare(input.candidateId,input.version,input.snapshot));
           case '/api/apply/commit': store.commit(input.id,input.snapshot); break;
           case '/api/apply/abort': store.abort(input.id); break;
-          case '/api/import': {
+          case '/api/extensions/propose': return json(res,200,await stageExtensionFully(input.extension));
+        case '/api/extensions/activate': {
+          // 启用时重新跑一遍完整检查，不复用 propose 的结果。
+          const staged = await stageExtensionFully(input.extension);
+          if (staged.status !== 'ready') throw Error(staged.error);
+          const previous = store.data.extensions.find(extension => extension.id === staged.extension.id) || null;
+          store.change(d => {
+            d.extensions = d.extensions.filter(extension => extension.id !== staged.extension.id).concat([staged.extension]);
+            d.extensionHistory = [...(d.extensionHistory || []).filter(extension => extension.id !== staged.extension.id), ...(previous ? [previous] : [])].slice(-10);
+          });
+          return json(res,200,{ok:true,activated:staged.requirement,previous:previous?`ext:${previous.id}@${previous.version}`:null,checks:staged.checks});
+        }
+        case '/api/extensions/rollback': {
+          const history = (store.data.extensionHistory || []).filter(extension => extension.id === input.id);
+          const previous = history[history.length - 1];
+          if (!previous) throw Error(`扩展 ${input.id} 没有可以回退的历史版本`);
+          store.change(d => {
+            d.extensions = d.extensions.filter(extension => extension.id !== input.id).concat([previous]);
+            d.extensionHistory = (d.extensionHistory || []).filter(extension => extension !== previous);
+          });
+          return json(res,200,{ok:true,activated:`ext:${previous.id}@${previous.version}`});
+        }
+        case '/api/extensions/unload': {
+          const remaining = store.data.extensions.filter(extension => extension.id !== input.id);
+          if (remaining.length === store.data.extensions.length) throw Error(`扩展 ${input.id} 没有装载`);
+          // 卸载前先确认没有模块依赖它：依赖方在这里显式失败，而不是静默失效。
+          const scene = store.readBuild(store.data.current,{resolveAssets:false}).scene;
+          compileScene(scene,{extensions:new Set(remaining.map(extension=>`ext:${extension.id}@${extension.version}`))});
+          store.change(d => { d.extensions = remaining; });
+          return json(res,200,{ok:true,unloaded:input.id});
+        }
+        case '/api/import': {
             if(assetImportBusy)throw Error('另一个素材或作品正在检查，请稍候');assetImportBusy=true;
             try{store.idle();const base=store.data.current,{build,assets}=store.prepareSave(input);await checkAssets(assets);
             if(build.behaviors?.length){

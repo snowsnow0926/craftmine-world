@@ -4,6 +4,7 @@ import { GameplaySession } from './gameplay.mjs';
 import { primitiveVertices,intersects,rayBox } from './geometry.mjs';
 import { easeInOut,sameBounds,tweenDelta,tweenProgress,unionBounds } from './tween.mjs';
 import { BehaviorSession } from './behavior-session.mjs';
+import { getPart } from './harness/parts.mjs';
 // 内置音效：用 WebAudio 合成短音，不需要素材；浏览器未授权音频时静默跳过。
 let audioContext;
 const SOUND_SPECS={
@@ -97,6 +98,61 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
     rebuildObject(id){this.uploadMesh(id,(this.primitives||[]).filter(p=>p.id===id));}
     uploadMesh(id,parts){const key='object:'+id,old=this.meshes.get(key);if(old?.buffer)this.gl.deleteBuffer(old.buffer);this.meshes.delete(key);const object=this.objects.get(id);if(!object||object.visible===false||!this.play.alive(id))return;if(parts.length)this.meshes.set(key,object.appearance?this.worldAssets.mesh(object):this.upload(primitiveVertices(parts)));}
     objectBounds(id){return unionBounds((this.primitives||[]).filter(p=>p.id===id));}
+    // 渲染扩展：模型只产出几何体，这里把它们当普通网格上传，绝不参与碰撞、存档和输入。
+    setRenderExtensions(entries){
+      this.renderExtensions=(entries||[]).map(entry=>({id:entry.id,runner:entry.runner,drawables:[],inFlight:false}));
+      return this.renderExtensions;
+    }
+    applyRenderExtensions(time){
+      if(!this.renderExtensions?.length)return;
+      const dt=Math.max(0,Math.min(.045,time-(this.renderExtensionTime??time)));
+      this.renderExtensionTime=time;
+      const world={objects:[...(this.objects?.values()||[])].map(o=>({id:o.id,position:o.position,visible:o.visible!==false,solid:(this.primitives||[]).some(p=>p.id===o.id&&p.solid)}))};
+      for(const entry of this.renderExtensions){
+        const runner=entry.runner;
+        // 上一帧还没回来就跳过这一帧：宁可少画一帧，也不排队堆积延迟。
+        if(!runner||entry.inFlight||runner.disabled)continue;
+        entry.inFlight=true;
+        Promise.resolve(runner.emit({world,time,dt})).then(drawables=>{
+          entry.drawables=Array.isArray(drawables)?drawables:[];
+          this.syncRenderExtensionMesh(entry);
+        }).catch(error=>{
+          // 同步网格是宿主自己的活，出错要留证据，但绝不能把渲染循环打断。
+          entry.drawables=[];
+          this.renderExtensionErrors=[...(this.renderExtensionErrors||[]),String(error?.message||error)].slice(-8);
+        }).finally(()=>{entry.inFlight=false;});
+      }
+    }
+    syncRenderExtensionMesh(entry){
+      const key='ext:'+entry.id,old=this.meshes.get(key);
+      if(old?.buffer)this.gl.deleteBuffer(old.buffer);
+      this.meshes.delete(key);
+      const parts=[];
+      for(const drawable of entry.drawables||[]){
+        if(drawable.kind==='particle'){
+          const half=drawable.size/2,p=drawable.position;
+          parts.push({min:{x:p.x-half,y:p.y-half,z:p.z-half},max:{x:p.x+half,y:p.y+half,z:p.z+half},size:{x:drawable.size,y:drawable.size,z:drawable.size},color:drawable.color,shape:'box',solid:false,material:'solid'});
+        }else if(drawable.kind==='box'){
+          parts.push({min:{...drawable.min},max:{...drawable.max},size:{x:drawable.max.x-drawable.min.x,y:drawable.max.y-drawable.min.y,z:drawable.max.z-drawable.min.z},color:drawable.color,shape:'box',solid:false,material:'solid'});
+        }
+      }
+      if(parts.length)this.meshes.set(key,this.upload(primitiveVertices(parts)));
+    }
+    // 内核可替换部件：渲染通道只是每帧被调用的钩子，返回值暂时忽略，坏掉也不许拖垮画面。
+    useRenderPass(pass){this.renderPass=pass||null;return this.renderPass;}
+    activeRenderPass(){return this.renderPass||getPart('renderPass');}
+    applyRenderPass(time){
+      const pass=this.activeRenderPass();
+      if(!pass||typeof pass.run!=='function')return;
+      try{pass.run({time,primitives:this.primitives||[],objects:[...(this.objects?.values()||[])]});}
+      catch(error){this.partFailures=[...(this.partFailures||[]),error.message].slice(-8);}
+    }
+    applyHudWidget(){
+      const widget=getPart('hudWidget');
+      if(!widget||typeof widget.render!=='function')return;
+      try{widget.render({play:this.play,time:this.behaviors?.data?.value?.time??0});}
+      catch(error){this.partFailures=[...(this.partFailures||[]),error.message].slice(-8);}
+    }
     // 平滑移动：网格从旧位置插值到新位置，碰撞和存档始终使用目标位置。
     applyTweens(time){
       if(!this.tweens?.size)return;
@@ -236,6 +292,8 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       const interactive=this.target?.distance<=4&&this.behaviors?.data.definitions.some(b=>b.definition.targets.includes(target));
       document.getElementById('interact').hidden=!interactive;document.getElementById('interact').textContent='E · 互动';
       this.updateCreationHud();
+      // HUD 部件钩子：内置默认返回 null，因此不装载部件时 HUD 行为与以前完全一致。
+      this.applyHudWidget();
     }
     updateCreationHud(){
       const saved=this.behaviors?.data.value,items=Object.entries(saved?.inventory||{}).filter(([,count])=>count>0).map(([id,count])=>({id,count,...(saved.items?.[id]||{name:id,description:''})}));
@@ -247,10 +305,10 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       const tasks=document.getElementById('task-hud');tasks.replaceChildren();tasks.hidden=!panels.length;
       for(const panel of panels){const card=document.createElement('section');card.className='task-panel';card.dataset.owner=panel.owner;card.dataset.key=panel.key;const source=document.createElement('div'),title=document.createElement('h2');source.className='hud-label';source.textContent=panel.source;title.textContent=panel.title;card.append(source,title);for(const line of panel.lines){const p=document.createElement('p');p.textContent=line;card.append(p);}tasks.append(card);}
     }
-    render(time){this.applyTweens(time);this.assetDraws=[];const target=this.target;if(target?.primitive)this.target=null;super.render(time);this.target=target;}
+    render(time){this.applyTweens(time);this.applyRenderExtensions(time);this.applyRenderPass(time);this.assetDraws=[];const target=this.target;if(target?.primitive)this.target=null;super.render(time);this.target=target;}
     revive(){this.play?.revive();this.respawn(false);this.updateHud();inform('已复活，世界中的变化仍保留');enter.hidden=false;}
     respawn(notify=true){this.p={x:.5,y:6,z:12.5,yaw:0,pitch:0};for(let y=6;y<38;y+=.5)if(!this.collision(this.p.x,y,this.p.z)){this.p.y=y;break;}this.vy=0;this.fallPeak=this.p.y;if(notify)inform('已回到出生位置');}
-    dispose(){this.tweens?.clear();this.behaviors?.dispose();this.worldAssets?.dispose();for(const [key,mesh]of this.meshes)if(mesh.asset)this.meshes.delete(key);super.dispose();}
+    dispose(){for(const entry of this.renderExtensions||[])entry.runner?.dispose?.();this.renderExtensions=[];this.tweens?.clear();this.behaviors?.dispose();this.worldAssets?.dispose();for(const [key,mesh]of this.meshes)if(mesh.asset)this.meshes.delete(key);super.dispose();}
   }
   return BlankRuntime;
 }
