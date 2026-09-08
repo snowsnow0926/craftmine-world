@@ -111,7 +111,8 @@ export class TaskWorkspace {
       requireValue(op.value&&op.value.id===op.id,'IDENTITY_CHANGED','局部替换必须保留资源身份');
       next[groups[op.kind]]=next[groups[op.kind]].map(o=>o.id===op.id?structuredClone(op.value):o);
     }
-    const compiled=compileScene(next);
+    // 已装载扩展必须参与编译：否则玩法模块声明 ext: 依赖时，草稿会被误判成「扩展没有装载」。
+    const compiled=compileScene(next,{extensions:this.store.extensionSet()});
     validateObjectScope(this.store.readBuild(this.base).scene,compiled.scene,this.selected);
     requireValue(contentHash(original)!==contentHash(compiled.scene),'NO_CHANGE','补丁没有修改草稿');
     this.journal('patch.prepared',{callId,requestHash,fromRevision:m.revision});

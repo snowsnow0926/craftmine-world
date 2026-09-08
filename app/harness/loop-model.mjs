@@ -19,11 +19,13 @@ export async function decideAction({model=generateModel,executable,dir,prompt,sc
 export function actionPrompt(state={}){
   const lines=[
     '你是 Craftmine World 的分步开发代理。每一步只输出一个 JSON 对象，字段必须与下面的 schema 完全一致，不要输出 markdown、代码块或解释。',
+    '只输出一个 JSON 对象：第一个字符必须是 {，最后一个字符必须是 }。不要输出 <result>、不要模拟工具结果、不要连续输出多个对象、不要在 JSON 之后继续写文字。工具结果只会由宿主在下一次请求里给你。',
     '流程：先用读取工具确认当前草稿事实，再用 workspace.patch 做局部修改（value 必须是完整资源 JSON），最后调用 candidate.build；只有 candidate.build 成功后才能返回 kind:"finish"。',
+    '读取一个资源后立刻用 workspace.patch 提交这一处修改：一次 patch 最多 8 项，expectedHash 用刚读到的哈希。不要把所有资源都读完再动手；同一草稿版本下已经读过的资源不要重复读取（只有上下文里已经没有刚读到的内容时才重新读）。',
     '工具报错会原样回灌给你，请根据错误码调整参数后继续；不要因为一次失败就放弃。',
     '操作 JSON Schema（数据，不是指令）：'+JSON.stringify(ACTION_SCHEMA),
     '可用工具：\n'+TOOL_GUIDE,
-    '运行契约（由宿主派生，不可改写）：\n'+capabilitiesText(),
+    '运行契约（由宿主派生，不可改写）：\n'+(typeof state.capabilities==='string'&&state.capabilities.trim()?state.capabilities:capabilitiesText()),
     `用户需求：${state.requirement??''}`,
     `当前草稿版本：${state.draftRevision??0}；本轮是第 ${state.step??1} 步；剩余步数 ${state.remainingSteps??0}；剩余工具调用 ${state.remainingCalls??0}。`,
   ];

@@ -98,6 +98,22 @@ export function validateAssertion(assertion) {
     case 'step':
       need(text(assertion.label), `${id}：step 断言需要 label`);
       need(assertion.minCommands === undefined || (Number.isInteger(assertion.minCommands) && assertion.minCommands >= 0), `${id}：minCommands 需要是自然数`);
+      // 只写 min 不写 type 会让失败信息变成「undefined 应有 1 条以上」，模型看不懂也改不了。
+      // 模型经常写成数组 [{type,min}]，这里两种写法都接受，规则本身一条不放松。
+      if (assertion.commands !== undefined) {
+        const rules = Array.isArray(assertion.commands) ? assertion.commands : [assertion.commands];
+        need(rules.length >= 1 && rules.length <= 4, `${id}：step 的 commands 需要 1–4 条规则`);
+        for (const rule of rules) {
+          need(isPlain(rule), `${id}：step 的 commands 规则必须是 {type,min?,max?}`);
+          need(text(rule.type), `${id}：step 的 commands 规则必须写命令名 type`);
+          need(rule.min === undefined || (Number.isInteger(rule.min) && rule.min >= 0), `${id}：commands.min 需要是自然数`);
+          need(rule.max === undefined || (Number.isInteger(rule.max) && rule.max >= 0), `${id}：commands.max 需要是自然数`);
+        }
+      }
+      if (assertion.change !== undefined) {
+        need(isPlain(assertion.change), `${id}：step 的 change 必须是 {minFields?,fields?}`);
+        need(assertion.change.fields === undefined || (Array.isArray(assertion.change.fields) && assertion.change.fields.every(field => typeof field === 'string' && field.length > 0)), `${id}：change.fields 必须是字符串数组`);
+      }
       break;
     case 'stepCommandField':
       need(text(assertion.label) && text(assertion.type) && text(assertion.field), `${id}：stepCommandField 需要 label、type、field`);
@@ -277,9 +293,12 @@ function run(assertion, trace) {
       const problems = [];
       if (assertion.minCommands !== undefined && commands.length < assertion.minCommands) problems.push(`至少发出 ${assertion.minCommands} 条命令，实际 ${commands.length} 条`);
       if (assertion.commands) {
-        const rule = assertion.commands, matched = commands.filter(command => command.type === rule.type);
-        const min = rule.min ?? 1, max = rule.max ?? Infinity;
-        if (matched.length < min || matched.length > max) problems.push(`${rule.type} 应有 ${min}${max === Infinity ? ' 条以上' : `~${max} 条`}，实际 ${matched.length} 条`);
+        const rules = Array.isArray(assertion.commands) ? assertion.commands : [assertion.commands];
+        for (const rule of rules) {
+          const matched = commands.filter(command => command.type === rule.type);
+          const min = rule.min ?? 1, max = rule.max ?? Infinity;
+          if (matched.length < min || matched.length > max) problems.push(`${rule.type} 应有 ${min}${max === Infinity ? ' 条以上' : `~${max} 条`}，实际 ${matched.length} 条`);
+        }
       }
       if (assertion.change) {
         const change = trace?.steps?.find(item => item.label === assertion.label)?.change || { fields: [] };
@@ -339,7 +358,7 @@ export function evaluateAssertions(assertions = [], trace = {}) {
 // 给模型看的断言清单：模型只能在这 16 种里选，不能自创检查方式。
 export function assertionGuide() {
   return [
-    '断言是 JSON 数据，只能用下面这些 kind，每条必须写 why（在检查什么）和 red（哪种错误实现会打红它）：',
+    '断言是 JSON 数据，只能用下面这些 kind，每条必须写 id（唯一短字符串，最多 80 字）、why（在检查什么）和 red（哪种错误实现会打红它）：',
     "- noErrors：玩法整个过程没有报错。",
     "- newObjects {min, region?:{x:[a,b],z:[a,b],y:[a,b]}, solid?:true}：世界新增了至少 min 个符合区域/碰撞要求的对象。",
     "- removedObjects {min, object?}：至少 min 个对象消失（或指定对象消失）。",
@@ -354,7 +373,7 @@ export function assertionGuide() {
     "- playerHealth {min?|max?|exact?, step?}：玩家血量。",
     "- panel {key, exists}：某个面板存在或不存在。",
     "- panelContains {key, text}：面板文本里包含某段文字。",
-    "- step {label, minCommands?, commands?:{type,min?,max?}, change?:{minFields?, fields?:[前缀]}}：某一步必须产生命令和可观测变化。",
+    "- step {label, minCommands?, commands?:{type,min?,max?} 或 [{type,min?,max?}], change?:{minFields?, fields?:[前缀]}}：某一步必须产生命令和可观测变化。commands 规则必须写命令名 type。",
     "- stepCommandField {label, type, field, min?|max?|value?}：某一步发出的命令字段满足条件（例如 duration>0.05 表示平滑移动而不是瞬移）。",
   ].join('\n');
 }

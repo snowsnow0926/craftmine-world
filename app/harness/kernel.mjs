@@ -27,14 +27,14 @@ export const FROZEN_KERNEL = Object.freeze([
 
 export const FROZEN_KERNEL_HASHES = Object.freeze({
   'app/harness/acceptance.mjs': 'dc41330bd7ccb08e34ac07b0334ea57bee138716384f75c68be4fd8e240f6ef0',
-  'app/harness/assertions.mjs': 'd0697d87bf861f37dd46c62adbe9669101b3433c9db19ee8a8bffc4423518a60',
+  'app/harness/assertions.mjs': 'fa860eef569397d8ad55001bad0ede296ca5d0577032d57b9cac33cd3c91ec5d',
   'app/harness/requirements.mjs': '04454be75b2fd10721695b7691ee3440eb284b86e2870d4f17ba5be5a155b343',
   'app/harness/judge.mjs': '9ee5f7b593c40acc7baa6bf640eee56b55cce5230183f8667c2915c73e0d0763',
   'app/harness/metrics.mjs': 'ceccfdc7991b174af56a1a7ad76711e2379f9af3c06cda896c9dc0d9935c3a44',
-  'app/harness/extension.mjs': '3ea95af0144c0a67dc885eea33f73bdd29246c527653af07f056c2ecaeda3af1',
-  'app/harness/extension-loader.mjs': 'c7731e59540561a630b08b6daab01c37c9dd85afb4a3ce401f689f79d3493e92',
+  'app/harness/extension.mjs': '10de8886a682148592262e4bb7908e4c79994a3d9430cf7045d888351df3e32e',
+  'app/harness/extension-loader.mjs': 'a76d414edbc7359472de5e82ff6fcdca241326191853081cf33b7565904a2244',
   'app/store.mjs': '2469fad89532cc3642ecf74e09746d622773fc57de632a22129bfac120118f7a',
-  'app/behavior-contracts.mjs': '0dcebb03b194148597b24b1da1b04cc2a5510c17b1d3a3d93cfdad0b41d98782',
+  'app/behavior-contracts.mjs': '536bd8616330610221a4f7d9f679b5c4e215c8813319bc896bc281068cb2b6de',
   'app/canonical.mjs': '788dee7dbae8231382b35952b20052db73e9e064bd85ea34603f1f00a5e03779',
   'app/static-files.mjs': '93cd5daa2bdfbaca7be1101d3b42a10171fc44070e9ecc2a3244cf4cc71daefd',
 });

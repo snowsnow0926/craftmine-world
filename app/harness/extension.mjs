@@ -133,7 +133,7 @@ export function extensionCatalog(extensions = []) {
 export function extensionText(extensions = []) {
   if (!extensions.length) return '当前没有装载任何扩展。';
   return [
-    '注意：扩展命令目前由宿主与扩展自带测试执行，玩法模块还不能直接发出它们（异步效果派发是下一步）。',
+    '注意：扩展命令由宿主沙箱执行；玩法模块可以直接发出它们，但必须在 requires 里声明对应的 ext:ID@版本，并声明命令要求的权限。',
     ...extensionCatalog(extensions).map(extension => [
       `扩展 ${extension.id}@${extension.version}「${extension.name}」`,
       ...extension.commands.map(command => `- ${command.type}｜权限 ${command.permission}｜${command.fields.join('；')}`),

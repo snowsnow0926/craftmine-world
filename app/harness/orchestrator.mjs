@@ -2,7 +2,7 @@ import { HARNESS_LIMITS,contentHash,integer,parseAction,requireValue } from './c
 import { TOOL_GUIDE } from './tools.mjs';
 import { capabilitiesText } from './capabilities.mjs';
 import { contextBudget, measure } from './context-budget.mjs';
-import { machineCheckpoint } from './checkpoint.mjs';
+import { machineCheckpoint, validateCheckpoint } from './checkpoint.mjs';
 
 export const HARNESS_LOOP_FORMAT = 'craftmine.harness-loop/1';
 export const HARNESS_STATE_FORMAT = 'craftmine.harness-state/1';
@@ -49,7 +49,7 @@ function budgetValue(value,fallback,label){
 // 纯逻辑分步循环：模型每一步只输出一个操作 JSON，由本类校验、执行、记账。
 // 它不认识任何模型实现，decide 由调用方注入，因此可以完全用脚本化动作测试。
 export class HarnessLoop {
-  constructor({workspace,tools,decide,requirement='',intent='execute',budget,steps,calls,signal=null,traceChars=TRACE_RESULT_CHARS,onStep=null,contextWindow=null,contextCap=null,intentRevision=0}={}){
+  constructor({workspace,tools,decide,requirement='',intent='execute',budget,steps,calls,signal=null,traceChars=TRACE_RESULT_CHARS,onStep=null,contextWindow=null,contextCap=null,intentRevision=0,extensions=null,checkpoint=null,resumeTrace=null}={}){
     requireValue(workspace&&typeof workspace.readManifest==='function','INVALID_ARGUMENTS','分步闭环需要一个开发草稿工作区');
     requireValue(tools&&typeof tools.execute==='function','INVALID_ARGUMENTS','分步闭环需要领域工具集');
     requireValue(typeof decide==='function','INVALID_ARGUMENTS','分步闭环需要一个决策函数');
@@ -61,10 +61,35 @@ export class HarnessLoop {
     integer(intentRevision,0,10000,'目标版本');
     this.traceChars=traceChars;this.signal=signal;this.onStep=typeof onStep==='function'?onStep:null;
     this.intentRevision=intentRevision;
+    // 已装载扩展必须进入模型看到的能力文本，否则模型不知道能调用哪些扩展命令。
+    this.extensions=Array.isArray(extensions)?extensions:[];
+    this.capabilityText=capabilitiesText({extensions:this.extensions});
     // 后端回报了窗口才算得出预算；没有回报时明确标注 unknown，不编造剩余百分比。
     this.budget=Number.isFinite(contextWindow)?contextBudget({window:contextWindow,cap:contextCap}):null;
-    this.steps=[];this.trace=[];this.lastResult=null;this.lastError=null;
-    this.built=null;this.builtRevision=null;this.round=0;this.calls=0;
+    const resume=this.readResume(checkpoint,resumeTrace);
+    this.resumed=Boolean(resume.resumed);
+    this.steps=resume.steps;this.trace=resume.trace;this.lastResult=null;this.lastError=null;
+    this.built=resume.built;this.builtRevision=resume.builtRevision;this.round=resume.round;this.calls=0;
+  }
+  // 压缩后恢复：只信机器事实。检查点与当前草稿对不上时显式拒绝，不做「大概是对的」猜测。
+  readResume(checkpoint,resumeTrace){
+    if(checkpoint===null||checkpoint===undefined)return {resumed:false,steps:[],trace:[],round:0,built:null,builtRevision:null};
+    validateCheckpoint(checkpoint);
+    const manifest=this.workspace.readManifest();
+    requireValue(checkpoint.taskId===this.workspace.id,'RESUME_MISMATCH','检查点属于另一个任务，不能恢复');
+    requireValue(checkpoint.baseBuild===manifest.base,'RESUME_MISMATCH','检查点的世界基准与当前草稿不一致，不能恢复');
+    requireValue(checkpoint.draftHead===manifest.head,'RESUME_MISMATCH','检查点的草稿版本与当前草稿不一致，不能恢复');
+    const steps=checkpoint.completedSteps.map(entry=>({
+      step:Number(String(entry.id??'').replace(/^step-/,''))||0,tool:entry.tool??null,arguments:null,modelSummary:null,
+      status:'ok',code:null,message:'（压缩前已完成，原始结果已归档）',durationMs:0,
+      evidenceRef:entry.evidenceRef??null,result:null,resumed:true,
+    }));
+    return {
+      resumed:true,steps,round:Math.max(checkpoint.journalThrough,...steps.map(entry=>entry.step),0),
+      trace:Array.isArray(resumeTrace)?resumeTrace.slice(-TRACE_ENTRIES):[],
+      built:checkpoint.candidateRef?{id:checkpoint.candidateRef,hash:null,objects:null}:null,
+      builtRevision:checkpoint.candidateRef?this.readRevision():null,
+    };
   }
   readRevision(){
     try{ return this.workspace.readManifest().revision; }catch{ return null; }
@@ -74,7 +99,7 @@ export class HarnessLoop {
   contextSegments(){
     return [
       {id:'guide',share:'rules',mandatory:true,text:TOOL_GUIDE},
-      {id:'capabilities',share:'rules',text:capabilitiesText()},
+      {id:'capabilities',share:'rules',text:this.capabilityText},
       {id:'task',share:'task',mandatory:true,text:this.requirement},
       {id:'trace',share:'history',text:JSON.stringify(this.trace)},
       {id:'result',share:'scene',text:JSON.stringify(this.lastResult??null)},
@@ -93,7 +118,7 @@ export class HarnessLoop {
       base:manifest.base,selected:manifest.selected,draftRevision:manifest.revision,
       remainingSteps:Math.max(0,this.stepBudget-(round-1)),
       remainingCalls:Math.max(0,this.callBudget-this.calls),
-      guide:TOOL_GUIDE,capabilities:capabilitiesText(),context:this.contextReport(),
+      guide:TOOL_GUIDE,capabilities:this.capabilityText,context:this.contextReport(),
       trace:this.trace.map(entry=>({...entry})),
       lastResult:this.lastResult,lastError:this.lastError,built:this.built,
     };
@@ -198,6 +223,7 @@ export class HarnessLoop {
     }
     return {
       format:HARNESS_LOOP_FORMAT,status,steps:this.steps.map(entry=>({...entry})),
+      resumed:this.resumed,
       draftRevision:this.readRevision(),build:this.built,error,summary,
       context:this.contextReport(),checkpoint:this.checkpoint(),
     };

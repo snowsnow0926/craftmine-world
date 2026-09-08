@@ -5,11 +5,15 @@ import { validateAssertion, assertionGuide } from './assertions.mjs';
 export const REVIEW_FORMAT = 'craftmine.review/1';
 export const REVIEW_SEVERITIES = Object.freeze(['blocker', 'major', 'minor']);
 
-export function reviewPrompt({ said, acceptance = '', artifact = '', evidence = '', catalog = '' }) {
+export function reviewPrompt({ said, acceptance = '', artifact = '', evidence = '', catalog = '', kind = 'gameplay' }) {
+  const entry = kind === 'extension'
+    ? '被评审的产物是一份「扩展包」：入口是 export function apply({command, world, state}) => {effects, state}，effects 只能是宿主原子效果。不要把玩法模块的 step 约定套到扩展上。'
+    : '被评审的产物是玩法源码：入口是 step({frame, params, state}) => {state, commands}。';
   return [
     '你是独立评审者。你看不到实现者的推理过程，也不接受任何口头解释；你只能看需求、产物和运行证据。',
     `需求原话：「${said}」`,
     acceptance ? `验收要点：${acceptance}` : null,
+    entry,
     '',
     '产物（场景改动或玩法源码）：',
     '```',
@@ -25,6 +29,7 @@ export function reviewPrompt({ said, acceptance = '', artifact = '', evidence = 
     '',
     '输出要求：只输出 JSON 对象 {"findings":[{"claim":"一句话说明问题","severity":"blocker|major|minor","assertion":{...}}]}。',
     '- 每条 finding 必须带一条可执行断言；缺断言的评审会被整份拒绝。',
+    '- 每条断言必须带 id、why、red 三个非空字符串字段；缺任何一个都会让整份评审作废。',
     '- 断言必须是「机器跑一遍就有客观结论」的检查，不能是主观判断。',
     '- 优先找：需求里写了但没人检查的情况、能骗过现有断言的错误实现、边界与重复操作。',
     catalog ? `\n宿主能力（超出这些的实现一定跑不起来）：\n${catalog}` : null,
@@ -48,8 +53,13 @@ export function parseFindings(raw) {
     if (typeof finding.claim !== 'string' || !finding.claim.trim() || finding.claim.length > 400) throw Error(`第 ${index + 1} 条发现缺少说明`);
     if (!REVIEW_SEVERITIES.includes(finding.severity)) throw Error(`第 ${index + 1} 条发现的严重程度无效`);
     if (!isPlain(finding.assertion)) throw Error(`第 ${index + 1} 条发现没有带可执行断言：评审只能提意见，意见必须能被机器复核`);
-    validateAssertion(finding.assertion);
-    findings.push({ claim: finding.claim.trim(), severity: finding.severity, assertion: finding.assertion });
+    // id / why / red 只是标签与说明（判决不看它们）：模型漏写时由宿主确定性地补齐。
+    const assertion = { ...finding.assertion };
+    if (typeof assertion.id !== 'string' || !assertion.id.trim()) assertion.id = `review-${index + 1}`;
+    if (typeof assertion.why !== 'string' || !assertion.why.trim()) assertion.why = finding.claim.trim();
+    if (typeof assertion.red !== 'string' || !assertion.red.trim()) assertion.red = '忽略这条检查的错误实现';
+    validateAssertion(assertion);
+    findings.push({ claim: finding.claim.trim(), severity: finding.severity, assertion });
   }
   return findings;
 }

@@ -183,6 +183,7 @@ resources.write: {type:'resource.add',id:'资源系统ID',amount:整数-10000..1
 health.write: {type:'health.add',amount:整数-10000..10000}。正数治疗、负数扣血，结果夹在 0 到玩家血量上限之间；需要玩家生命值系统。
 targets.write: {type:'target.damage',id,amount:0..10000}。直接扣目标血量（用于吸血、中毒、爆炸等）；只能作用于声明过的 targets，血量归零时模型会消失，复活仍必须用 target.revive。
 inventory.write: {type:'inventory.add',item:'稳定英文ID',count:整数-100..100}。
+扩展命令：世界装载了扩展时，玩法模块可以直接发出扩展声明的命令（命令名、字段与权限见宿主能力目录的「已装载扩展」）。使用时必须把模块格式升级为 craftmine.behavior/2 或 /3，在 requires 里写上 ext:扩展ID@版本，并声明该命令要求的权限；扩展命令由宿主沙箱执行，它产出的效果仍然是上面这些内核原子效果，不会给你新的权力。
 需要共享背包读取、物品名称或持久任务时，使用 craftmine.behavior/3，保留 /2 的 requires 与 binding，并声明 capabilities（只选需要的）：
 - inventory.read@1：frame.inventory 是本步开始时的共享库存 {wood:3,...}，缺少 ID 表示 0。只读快照，修改它不能改变背包；不同模块按场景顺序依次读取最新已提交库存。配方先检查 (frame.inventory.wood||0)>=所需数量，不足时返回提示与原状态；不要尝试扣负库存，否则整步拒绝并停止模块。
 - inventory.items@1（需 inventory.write）：{type:'inventory.define',item:'wood',name:'木材',description:'最多200字'}。name 最多40字；按稳定 ID 注册显示名称，第一次已提交的定义保留，后续同 ID 定义不覆盖。可在 start 注册，不能在 start 重复发放物品；同类物品跨创作沿用同 ID，不同物品用不同 ID。

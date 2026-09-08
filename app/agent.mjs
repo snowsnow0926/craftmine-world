@@ -14,6 +14,7 @@ import { TaskWorkspace } from './harness/workspace.mjs';
 import { DomainTools } from './harness/tools.mjs';
 import { HarnessLoop } from './harness/orchestrator.mjs';
 import { actionPrompt,decideAction } from './harness/loop-model.mjs';
+import { extensionCatalog } from './harness/extension.mjs';
 export { findCodex,providerStatus,killProcessTree,modelProvider,modelId,thinkingEnabled } from './agent-model.mjs';
 export { buildPrompt } from './agent-prompt.mjs';
 
@@ -22,6 +23,12 @@ export { buildPrompt } from './agent-prompt.mjs';
 export const harnessLoopEnabled=()=>String(process.env.CRAFTMINE_HARNESS_LOOP||'').trim()==='1';
 // 只有执行意图才走分步闭环；讨论消息不能变成世界改动（计划书 §5.1）。
 export const usesHarnessLoop=intent=>harnessLoopEnabled()&&intent==='execute';
+// 上下文压缩阈值的人工上限：只用于回归验证「真的会压缩」，生产默认不设。
+export const contextCap=()=>{const value=Number(process.env.CRAFTMINE_CONTEXT_CAP);return Number.isFinite(value)&&value>0?Math.floor(value):null;};
+// 一个任务内最多压缩几次；压缩后仍超出预算就如实失败，不无限重试。
+export const COMPACTION_LIMIT=8;
+// 分步闭环的总步数预算（跨压缩累计）。默认 16；长任务可以调大，代价是更多模型调用。
+export const harnessSteps=()=>{const value=Number(process.env.CRAFTMINE_HARNESS_STEPS);return Number.isFinite(value)&&value>=1?Math.min(200,Math.floor(value)):16;};
 
 export const REPAIR_LIMIT=2;
 export const TASK_TIMEOUT=240000;
@@ -176,7 +183,8 @@ export class AgentRunner {
     const loopDir=path.join(workspace.dir,'loop');fs.mkdirSync(loopDir,{recursive:true});
     atomicJSON(path.join(loopDir,'response.schema.json'),ACTION_SCHEMA);
     let draftBuild=null;
-    const tools=new DomainTools(workspace,{build:()=>{
+    const extensions=extensionCatalog(store.data.extensions);
+    const tools=new DomainTools(workspace,{extensions,build:()=>{
       setPhase('scene');
       const build=store.build(workspace.scene());
       draftBuild=build;
@@ -210,9 +218,12 @@ export class AgentRunner {
       if(fs.existsSync(responseFile))fs.copyFileSync(responseFile,path.join(loopDir,`step-${state.step}.response.json`));
       return raw;
     };
-    const loop=new HarnessLoop({
+    const startLoop=(checkpoint=null,resumeTrace=null)=>new HarnessLoop({
       workspace,tools,requirement:text,intent,signal:active.abort.signal,
       contextWindow:providerStatus().contract?.capabilities?.contextWindow?.value ?? null,
+      contextCap:contextCap(),
+      steps:harnessSteps(),
+      extensions,checkpoint,resumeTrace,
       intentRevision:(store.data.tasks.find(t=>t.id===active.id)?.revision??0),
       onStep:step=>{
         const label=statusLabels[step.status]||step.status;
@@ -221,8 +232,32 @@ export class AgentRunner {
       },
       decide,
     });
-    const result=await loop.run();
-    this.attempt(active,number,a=>{a.loop={status:result.status,steps:result.steps.length,draftRevision:result.draftRevision,build:result.build?.id??null};});
+    let result=await startLoop().run();
+    // 上下文到压缩阈值时由宿主压缩：机器检查点一条不少，原始轨迹只留短账目，然后继续。
+    // 压缩不是「让模型自己忘记」：模型无权决定丢什么，丢什么由机器检查点决定。
+    let compactions=0;
+    while(result.status==='context'&&compactions<COMPACTION_LIMIT){
+      compactions+=1;
+      // 压缩只丢原始载荷，不丢机器事实：哪些资源已经改过、草稿到了第几版，仍然告诉模型。
+      const ledger=result.steps.map(entry=>{
+        const summary=entry.result&&typeof entry.result==='object'?entry.result:null;
+        return {step:entry.step,tool:entry.tool,status:entry.status,code:entry.code,message:entry.message,
+          ...(Array.isArray(summary?.changed)?{changed:summary.changed}:{}),
+          ...(Number.isInteger(summary?.workspaceRevision)?{workspaceRevision:summary.workspaceRevision}:{}),
+          ...(typeof summary?.evidenceRef==='string'?{evidenceRef:summary.evidenceRef}:{}),
+          ...(typeof summary?.id==='string'?{id:summary.id}:{}),
+          ...(typeof summary?.hash==='string'?{hash:summary.hash}:{})};
+      });
+      atomicJSON(path.join(workspace.dir,`compaction-${compactions}.json`),{checkpoint:result.checkpoint,context:result.context,ledger});
+      this.log(active.id,`上下文到压缩阈值，宿主执行第 ${compactions} 次压缩：保留 ${result.checkpoint.completedSteps.length} 条机器事实，把 ${result.steps.length} 步原始轨迹压成短账目后继续。`);
+      const resumed=startLoop(result.checkpoint,ledger);
+      const seeded=resumed.steps.length;
+      const next=await resumed.run();
+      result=next;
+      // 压缩后一步都没走又撞阈值：基线本身超预算，如实失败，不空转。
+      if(next.steps.length<=seeded)break;
+    }
+    this.attempt(active,number,a=>{a.loop={status:result.status,steps:result.steps.length,draftRevision:result.draftRevision,build:result.build?.id??null,compactions};});
     atomicJSON(path.join(workspace.dir,'loop.json'),result);
     if(result.status!=='finished'){
       const message=result.error||'分步闭环未完成，草稿保留，未生成候选';

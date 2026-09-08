@@ -15,9 +15,10 @@ import { capabilitiesCatalog, capabilitiesText } from './harness/capabilities.mj
 import { summarizeTasks } from './harness/metrics.mjs';
 import { judgmentReport, readJudgments } from './harness/judgment-run.mjs';
 import { extensionCatalog } from './harness/extension.mjs';
-import { stageExtension } from './harness/extension-loader.mjs';
+import { runSelfTests, stageExtension } from './harness/extension-loader.mjs';
 import { withExtensionSandbox } from './harness/extension-sandbox-browser.mjs';
 import { findingsToAssertions, parseFindings, reviewPrompt, reviewSummary } from './harness/review.mjs';
+import { authorExtension } from './harness/extension-author.mjs';
 import { generateModel } from './agent-model.mjs';
 import { STATIC_FILES } from './static-files.mjs';
 
@@ -35,6 +36,8 @@ if (fs.existsSync(lock)) {
 }
 fs.writeFileSync(lock, JSON.stringify({pid:process.pid,port}), {flag:'wx'});
 const store = new ProjectStore(dataRoot), agent = new AgentRunner(store,{verificationOrigin:`http://127.0.0.1:${port}`}), provider = providerStatus();
+// 未处理的异步失败不应该把本地服务整进程带走：记录到 stderr，让当前请求失败即可。
+process.on('unhandledRejection', reason => { console.error('[unhandledRejection] ' + String(reason?.stack || reason).slice(0, 2000)); });
 const token = randomUUID(); let lease = null, assetImportBusy=false;
 const staticFiles=new Map(STATIC_FILES.map(([route,file,type])=>[route,[file,type]]));
 // Keep one coherent runtime for this server's lifetime while development continues.
@@ -51,16 +54,21 @@ async function checkAssets(assets){
   for(const asset of assets){const report=await verifyAsset(asset,{origin:`http://127.0.0.1:${port}`});atomicJSON(path.join(store.root,'assets',asset.id,asset.version+'-'+asset.hash+'.check.json'),report);}
 }
 // 扩展的对抗评审：评审只能提出带断言的问题，有阻断项就不许装载。
-async function reviewExtension(extension) {
+// 评审必须看到真实的运行证据（自带测试在沙箱里的实际结果），而不是一句「测试过了」。
+async function reviewExtension(extension, { selfTests = null } = {}) {
   const dir = path.join(dataRoot, 'extensions', 'review-' + extension.id + '-' + Date.now());
   fs.mkdirSync(dir, { recursive: true });
+  const evidence = selfTests
+    ? `自带测试：${selfTests.summary}；用例：${selfTests.results.map(result => `${result.name}（真实实现${result.real?.passed ? '通过' : '失败'}，空实现${result.noop?.passed ? '也通过' : '变红'}）`).join('；')}；新命令：${extension.provides.commands.map(command => command.type).join('、')}`
+    : `自带测试 ${extension.selfTests.length} 个（未提供运行报告）；新命令：${extension.provides.commands.map(command => command.type).join('、')}`;
   const text = await generateModel({
     dir,
     prompt: reviewPrompt({
       said: `新增能力扩展 ${extension.id}@${extension.version}「${extension.name}」`,
       acceptance: extension.description,
       artifact: extension.code,
-      evidence: `自带测试 ${extension.selfTests.length} 个；新命令：${extension.provides.commands.map(command => command.type).join('、')}；权限：${extension.permissions.join('、')}`,
+      evidence,
+      kind: 'extension',
       catalog: capabilitiesText({ extensions: extensionCatalog(store.data.extensions) }),
     }),
   });
@@ -157,6 +165,37 @@ const server = http.createServer(async (req,res) => {
           case '/api/apply/commit': store.commit(input.id,input.snapshot); break;
           case '/api/apply/abort': store.abort(input.id); break;
           case '/api/extensions/propose': return json(res,200,await stageExtensionFully(input.extension));
+        case '/api/extensions/author': {
+          // 模型只负责提议：它写出的包必须自己通过格式校验，再走 propose/activate 的确定性检查。
+          // 一次格式错误不判死：把宿主的拒绝理由回灌给模型重写（最多两次）。
+          const dir = path.join(dataRoot, 'extensions', 'author-' + Date.now());
+          fs.mkdirSync(dir, { recursive: true });
+          const scene = store.readBuild(store.data.current, { resolveAssets: false }).scene;
+          let lastCheck = null;
+          const authored = await authorExtension({
+            said: String(input.said ?? ''),
+            extensions: extensionCatalog(store.data.extensions),
+            targets: (scene.objects || []).map(object => object.id).slice(0, 64),
+            catalog: capabilitiesText({ extensions: extensionCatalog(store.data.extensions) }),
+            generate: async (prompt, attempt) => {
+              const text = await generateModel({ dir, prompt });
+              fs.writeFileSync(path.join(dir, `attempt-${attempt}.txt`), String(text), 'utf8');
+              return text;
+            },
+            // 提议也要真的跑得起来：沙箱自带测试是硬门槛；对抗评审必须跑，但结论是建议。
+            // 注意这轮检查只用来帮模型改稿；启用时 propose/activate 会独立再跑一遍。
+            verify: async (extension, attempt) => {
+              const selfTests = await withExtensionSandbox(`http://127.0.0.1:${port}`, ({ createRunner }) => runSelfTests(extension, { createRunner }));
+              if (!selfTests.passed) throw Error(selfTests.summary);
+              const review = await reviewExtension(extension, { selfTests });
+              lastCheck = { attempt, selfTests: { passed: selfTests.passed, summary: selfTests.summary }, review: { total: review.total, blocked: review.blocked, summary: review.summary, findings: review.findings.map(finding => ({ claim: finding.claim, severity: finding.severity })) } };
+            },
+            attempts: 3,
+            feedback: typeof input.feedback === 'string' && input.feedback.trim() ? input.feedback.trim().slice(0, 2000) : null,
+          });
+          fs.writeFileSync(path.join(dir, 'proposal.json'), JSON.stringify(authored.extension, null, 2), 'utf8');
+          return json(res, 200, { ok: true, ...authored, check: lastCheck, dir });
+        }
         case '/api/extensions/activate': {
           // 启用时重新跑一遍完整检查，不复用 propose 的结果。
           const staged = await stageExtensionFully(input.extension);

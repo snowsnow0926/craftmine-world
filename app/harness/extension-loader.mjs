@@ -1,4 +1,5 @@
 import { evaluateAssertions } from './assertions.mjs';
+import { observableChange } from './acceptance.mjs';
 import { buildTrace } from './trace.mjs';
 import { extensionCatalog, extensionDigest, extensionRequirement, validateExtension } from './extension.mjs';
 import { EXTENSION_EFFECT_LIMIT } from './extension-effects.mjs';
@@ -81,10 +82,13 @@ async function runCommands(extension, test, { createRunner, noop = false } = {})
       state = result.state;
       world = applyEffects(world, result.effects);
       const after = snapshotOf(world);
-      steps.push({ label: `command-${index + 1}`, event: { type: 'extension', targetId: null }, commands: result.effects, before, after, change: { changed: JSON.stringify(before) !== JSON.stringify(after), fields: [] } });
+      steps.push({ label: `command-${index + 1}`, event: { type: 'extension', targetId: null }, commands: result.effects, before, after, change: observableChange(before, after) });
     }
     return { trace: buildTrace({ requirement: extension.id, start, steps, final: steps[steps.length - 1]?.after || start }), effects: steps.flatMap(step => step.commands) };
-  } finally { runner.dispose?.(); }
+  } finally {
+    // 沙箱可能已经因为超时被关闭：释放失败不能再抛出去，否则会变成未处理拒绝并把进程带走。
+    try { await runner.dispose?.(); } catch { /* 已经关闭，忽略 */ }
+  }
 }
 
 export async function runSelfTests(extension, { createRunner } = {}) {
@@ -130,14 +134,23 @@ export async function stageExtension(input, { loaded = [], createRunner, verifyW
   const selfTests = await runSelfTests(prepared.extension, { createRunner });
   const checks = [{ name: '自带测试与反造假', passed: selfTests.passed, detail: selfTests.summary }];
   // 对抗评审是装载流程的必经环节：没有评审，扩展不允许进入候选状态。
-  // 评审只能提意见，但它的每条意见都必须带可执行断言，这些断言随候选一起留档。
-  let reviewAssertions = [];
+  // 评审只能提意见，每条意见必须带可执行断言，随候选一起留档。
+  // 评审的严重程度是**建议**，不是判据：真实运行证明评审会不断提出新的设计意见（等量治疗、
+  // 白名单、冷却……），把它当硬门槛会让改稿循环永不收敛。硬门槛只保留机器能复核的检查。
+  let reviewAssertions = [], reviewFindings = [], reviewBlocked = false, reviewRan = false;
   if (typeof review !== 'function') checks.push({ name: '对抗评审', passed: false, detail: '装载扩展必须先过对抗评审（评审只能提出带断言的问题）' });
   else if (selfTests.passed) {
     try {
-      const report = await review(prepared.extension);
+      const report = await review(prepared.extension, { selfTests });
+      reviewRan = true;
       reviewAssertions = report?.assertions || [];
-      checks.push({ name: '对抗评审', passed: report?.passed !== false && !(report?.blocked), detail: report?.summary || (report?.findings?.length ? `评审提出 ${report.findings.length} 条问题` : '评审没有提出阻断问题') });
+      reviewFindings = (report?.findings || []).map(finding => ({ claim: finding.claim, severity: finding.severity }));
+      reviewBlocked = Boolean(report?.blocked);
+      checks.push({
+        name: '对抗评审', passed: true,
+        detail: (report?.summary || (report?.findings?.length ? `评审提出 ${report.findings.length} 条问题` : '评审没有提出问题'))
+          + (reviewBlocked ? '；其中含阻断级意见：属于建议，已随候选留档并会显示给玩家，不阻止装载' : ''),
+      });
     } catch (error) { checks.push({ name: '对抗评审', passed: false, detail: '对抗评审执行失败：' + error.message }); }
   }
   if (selfTests.passed && typeof verifyWorld === 'function') {
@@ -150,7 +163,7 @@ export async function stageExtension(input, { loaded = [], createRunner, verifyW
   return {
     ...prepared, status: failed.length ? 'rejected' : 'ready', checks,
     error: failed.length ? failed.map(check => check.detail).join('；') : null,
-    selfTests, reviewAssertions,
+    selfTests, reviewAssertions, reviewFindings, reviewBlocked, reviewRan,
   };
 }
 

@@ -5,7 +5,7 @@ import { providerContract } from './harness/provider-contract.mjs';
 
 const DEEPSEEK_BASE = 'https://api.deepseek.com';
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4.1-flash-expires-on-0910';
-const DEEPSEEK_SYSTEM = '你只输出一个 JSON 对象，不要 markdown 代码块，不要解释。';
+const DEEPSEEK_SYSTEM = '你只输出一个 JSON 对象，第一个字符是 {，最后一个字符是 }。不要 markdown 代码块，不要解释，不要模拟工具结果，不要在 JSON 之后继续输出内容。';
 
 export function deepseekKey() {
   return process.env.CRAFTMINE_DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY || '';

@@ -23,7 +23,7 @@ export const TOOL_GUIDE=[
 ].join('\n');
 const group={object:'objects',behavior:'behaviors',system:'systems'};
 export class DomainTools{
-  constructor(workspace,{build,verify}={}){this.workspace=workspace;this.build=build;this.verify=verify;this.memory=new MemoryStore(workspace.store);this.tasks=new TaskStore(workspace.store,{id:workspace.id});}
+  constructor(workspace,{build,verify,extensions=null}={}){this.workspace=workspace;this.build=build;this.verify=verify;this.extensions=Array.isArray(extensions)?extensions:[];this.memory=new MemoryStore(workspace.store);this.tasks=new TaskStore(workspace.store,{id:workspace.id});}
   async execute(name,args,{callId}={}){
     requireValue(TOOL_NAMES.includes(name),'UNKNOWN_TOOL','未授权工具：'+name);
     const w=this.workspace;
@@ -51,7 +51,7 @@ export class DomainTools{
       return {id:module.id,version:module.version,hash:module.hash,text:chars.slice(start,end).join(''),start,next:end<chars.length?end:null,totalChars:chars.length};
     }
     if(name==='capabilities.read'){
-      fields(args,[]);return {...capabilitiesCatalog(),limits:BEHAVIOR_LIMITS,guide:BEHAVIOR_API_GUIDE};
+      fields(args,[]);return {...capabilitiesCatalog({extensions:this.extensions}),limits:BEHAVIOR_LIMITS,guide:BEHAVIOR_API_GUIDE};
     }
     if(name==='workspace.patch')return w.patch(args,callId);
     if(name==='candidate.build'){
