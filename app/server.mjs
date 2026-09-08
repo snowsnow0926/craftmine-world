@@ -13,6 +13,7 @@ import { verifyAsset } from './asset-verify.mjs';
 import { loadLocalConfig } from './local-config.mjs';
 import { capabilitiesCatalog } from './harness/capabilities.mjs';
 import { summarizeTasks } from './harness/metrics.mjs';
+import { STATIC_FILES } from './static-files.mjs';
 
 const APP = path.dirname(fileURLToPath(import.meta.url)), ROOT = path.dirname(APP);
 const port = Number(process.env.CRAFTMINE_PORT || 8787), dataRoot = path.resolve(process.env.CRAFTMINE_DATA_DIR || path.join(ROOT,'.craftmine'));
@@ -29,22 +30,7 @@ if (fs.existsSync(lock)) {
 fs.writeFileSync(lock, JSON.stringify({pid:process.pid,port}), {flag:'wx'});
 const store = new ProjectStore(dataRoot), agent = new AgentRunner(store,{verificationOrigin:`http://127.0.0.1:${port}`}), provider = providerStatus();
 const token = randomUUID(); let lease = null, assetImportBusy=false;
-const staticFiles = new Map([
-  ['/app/client.js',['client.js','text/javascript']], ['/app/style.css',['style.css','text/css']],
-  ['/app/game.js',['game.js','text/javascript']], ['/app/game.css',['game.css','text/css']],
-  ['/app/gameplay.mjs',['gameplay.mjs','text/javascript']], ['/app/geometry.mjs',['geometry.mjs','text/javascript']],
-  ['/app/behavior-contracts.mjs',['behavior-contracts.mjs','text/javascript']], ['/app/behavior-runner.mjs',['behavior-runner.mjs','text/javascript']],
-  ['/app/behavior-state.mjs',['behavior-state.mjs','text/javascript']], ['/app/behavior-session.mjs',['behavior-session.mjs','text/javascript']], ['/app/world-runtime.mjs',['world-runtime.mjs','text/javascript']],
-  ['/app/behavior-binding.mjs',['behavior-binding.mjs','text/javascript']],
-  ['/app/harness/acceptance.mjs',['harness/acceptance.mjs','text/javascript']],
-  ['/app/scene-diff.mjs',['scene-diff.mjs','text/javascript']], ['/app/canonical.mjs',['canonical.mjs','text/javascript']], ['/app/review.js',['review.js','text/javascript']],
-  ['/app/project-context.mjs',['project-context.mjs','text/javascript']], ['/app/context-panel.js',['context-panel.js','text/javascript']],
-  ['/app/context.css',['context.css','text/css']],
-  ['/app/asset-binding.mjs',['asset-binding.mjs','text/javascript']], ['/app/world-assets.mjs',['world-assets.mjs','text/javascript']],
-  ['/app/asset-decode.mjs',['asset-decode.mjs','text/javascript']], ['/app/asset-renderer.mjs',['asset-renderer.mjs','text/javascript']],
-  ['/app/asset-viewer.js',['asset-viewer.js','text/javascript']], ['/app/asset-viewer.css',['asset-viewer.css','text/css']],
-  ['/app/asset-panel.js',['asset-panel.js','text/javascript']], ['/app/asset-panel.css',['asset-panel.css','text/css']],
-]);
+const staticFiles=new Map(STATIC_FILES.map(([route,file,type])=>[route,[file,type]]));
 // Keep one coherent runtime for this server's lifetime while development continues.
 const staticAssets=new Map([...staticFiles].map(([route,[file,type]])=>[route,{type,content:fs.readFileSync(path.join(APP,file))}]));
 const pages=new Map(['index.html','game.html','verify.html','asset-viewer.html'].map(file=>[file,fs.readFileSync(path.join(APP,file),'utf8')]));

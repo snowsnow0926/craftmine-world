@@ -2,6 +2,7 @@ import { objectContentBounds } from './asset-binding.mjs';
 import { WorldAssets } from './world-assets.mjs';
 import { GameplaySession } from './gameplay.mjs';
 import { primitiveVertices,intersects,rayBox } from './geometry.mjs';
+import { easeInOut,sameBounds,tweenDelta,tweenProgress,unionBounds } from './tween.mjs';
 import { BehaviorSession } from './behavior-session.mjs';
 // 内置音效：用 WebAudio 合成短音，不需要素材；浏览器未授权音频时静默跳过。
 let audioContext;
@@ -75,7 +76,19 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       await this.behaviors.start();this.updateHud();this.setActive(wasActive);
     }
     drawMesh(mesh,locations){if(mesh?.asset){this.assetDraws.push(mesh);return;}super.drawMesh(mesh,locations);if(mesh===this.clouds&&this.assetDraws?.length){this.worldAssets.drawAll(this.assetDraws);this.assetDraws=[];}}
-    rebuildObject(id){const key='object:'+id,old=this.meshes.get(key);if(old?.buffer)this.gl.deleteBuffer(old.buffer);this.meshes.delete(key);const object=this.objects.get(id);if(!object||object.visible===false||!this.play.alive(id))return;const parts=this.primitives.filter(p=>p.id===id);if(parts.length)this.meshes.set(key,object.appearance?this.worldAssets.mesh(object):this.upload(primitiveVertices(parts)));}
+    rebuildObject(id){this.uploadMesh(id,(this.primitives||[]).filter(p=>p.id===id));}
+    uploadMesh(id,parts){const key='object:'+id,old=this.meshes.get(key);if(old?.buffer)this.gl.deleteBuffer(old.buffer);this.meshes.delete(key);const object=this.objects.get(id);if(!object||object.visible===false||!this.play.alive(id))return;if(parts.length)this.meshes.set(key,object.appearance?this.worldAssets.mesh(object):this.upload(primitiveVertices(parts)));}
+    objectBounds(id){return unionBounds((this.primitives||[]).filter(p=>p.id===id));}
+    // 平滑移动：网格从旧位置插值到新位置，碰撞和存档始终使用目标位置。
+    applyTweens(time){
+      if(!this.tweens?.size)return;
+      for(const [id,tween] of [...this.tweens]){
+        const t=easeInOut(tweenProgress(tween.start,time,tween.duration));
+        if(t>=1){this.tweens.delete(id);this.rebuildObject(id);continue;}
+        const delta=tweenDelta(tween.from,tween.to,t);
+        this.uploadMesh(id,this.primitives.filter(p=>p.id===id).map(p=>({...p,min:{x:p.min.x+delta.x,y:p.min.y+delta.y,z:p.min.z+delta.z},max:{x:p.max.x+delta.x,y:p.max.y+delta.y,z:p.max.z+delta.z}})));
+      }
+    }
     behaviorContext(){return {player:{position:{x:this.p.x,y:this.p.y,z:this.p.z},grounded:this.grounded,health:this.play.player?.health??null},objects:[...this.objects.values()].map(o=>({id:o.id,position:o.position,visible:o.visible!==false&&this.play.alive(o.id),solid:this.primitives.some(p=>p.id===o.id&&p.solid),health:this.play.state.targets[o.id]?.health||0}))};}
     inspectObject(id){
       const object=this.objects.get(id);if(!object)throw Error('这一版中没有这个对象');
@@ -90,8 +103,21 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       throw Error('对象周围暂时没有合适的观察位置，可直接在副本中走动查看');
     }
     applyBehavior({changed,effects},view){
+      const moves=new Map();
+      for(const effect of effects)if(effect.type==='object.move')moves.set(effect.id,effect.duration);
+      const before=new Map();
+      for(const id of changed)if(moves.has(id))before.set(id,this.objectBounds(id));
       this.primitives=view.primitives;this.objects=new Map(view.objects.map(o=>[o.id,o]));
-      for(const id of changed)this.rebuildObject(id);
+      for(const id of changed){
+        const duration=moves.get(id),from=before.get(id),to=duration?this.objectBounds(id):null;
+        const visible=this.objects.get(id)?.visible!==false&&this.play.alive(id);
+        if(duration&&from&&to&&visible&&!sameBounds(from,to)){
+          if(!this.tweens)this.tweens=new Map();
+          this.tweens.set(id,{from,to,start:performance.now()/1000,duration});
+          continue;
+        }
+        this.rebuildObject(id);
+      }
       for(const effect of effects){
         if(effect.type==='hud.message')inform(effect.text);
         if(effect.type==='audio.play')playSound(effect.sound);
@@ -201,10 +227,10 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       const tasks=document.getElementById('task-hud');tasks.replaceChildren();tasks.hidden=!panels.length;
       for(const panel of panels){const card=document.createElement('section');card.className='task-panel';card.dataset.owner=panel.owner;card.dataset.key=panel.key;const source=document.createElement('div'),title=document.createElement('h2');source.className='hud-label';source.textContent=panel.source;title.textContent=panel.title;card.append(source,title);for(const line of panel.lines){const p=document.createElement('p');p.textContent=line;card.append(p);}tasks.append(card);}
     }
-    render(time){this.assetDraws=[];const target=this.target;if(target?.primitive)this.target=null;super.render(time);this.target=target;}
+    render(time){this.applyTweens(time);this.assetDraws=[];const target=this.target;if(target?.primitive)this.target=null;super.render(time);this.target=target;}
     revive(){this.play?.revive();this.respawn(false);this.updateHud();inform('已复活，世界中的变化仍保留');enter.hidden=false;}
     respawn(notify=true){this.p={x:.5,y:6,z:12.5,yaw:0,pitch:0};for(let y=6;y<38;y+=.5)if(!this.collision(this.p.x,y,this.p.z)){this.p.y=y;break;}this.vy=0;this.fallPeak=this.p.y;if(notify)inform('已回到出生位置');}
-    dispose(){this.behaviors?.dispose();this.worldAssets?.dispose();for(const [key,mesh]of this.meshes)if(mesh.asset)this.meshes.delete(key);super.dispose();}
+    dispose(){this.tweens?.clear();this.behaviors?.dispose();this.worldAssets?.dispose();for(const [key,mesh]of this.meshes)if(mesh.asset)this.meshes.delete(key);super.dispose();}
   }
   return BlankRuntime;
 }

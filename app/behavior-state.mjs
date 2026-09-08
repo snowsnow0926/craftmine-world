@@ -116,7 +116,7 @@ export class BehaviorState {
       if(c.type==='object.patch'){
         const base=this.build.scene.objects.find(o=>o.id===c.id),old=record.overrides[c.id]||{offset:{x:0,y:0,z:0},visible:true,solid:null,color:null,yaw:0};
         const patch={offset:c.position?Object.fromEntries(['x','y','z'].map(k=>[k,c.position[k]-base.position[k]])):old.offset,visible:c.visible??old.visible,solid:c.solid??old.solid,color:c.color??old.color,yaw:c.yaw??old.yaw??0};
-        if(JSON.stringify(old)!==JSON.stringify(patch)){record.overrides[c.id]=patch;changed.add(c.id);}
+        if(JSON.stringify(old)!==JSON.stringify(patch)){record.overrides[c.id]=patch;changed.add(c.id);if(c.duration)effects.push({type:'object.move',id:c.id,duration:c.duration});}
       }else if(c.type==='inventory.add'){
         const count=(next.inventory[c.item]||0)+c.count;if(count<0||count>9999)throw Error('库存不足或超过容量，整步操作未应用');
         if(count)next.inventory[c.item]=count;else delete next.inventory[c.item];
