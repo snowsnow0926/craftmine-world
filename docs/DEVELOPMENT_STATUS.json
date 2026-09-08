@@ -2,8 +2,8 @@
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "M5",
-  "baseline": "88122b7",
-  "updated": "2026-09-08",
+  "baseline": "78b3ad0",
+  "updated": "2026-09-09",
   "items": [
     {
       "id": "M1.1",
@@ -164,7 +164,7 @@
           "title": "共享库存读取、物品名称和持久任务面板，显式能力与原子提交",
           "status": "complete",
           "evidence": [
-            "npm test: 93 passed",
+            "npm test: 95 passed; test-results/m5-batch-core.txt",
             "test-results/world-capabilities-eYJ8mn/report.json: 12 passed; real Workers, serial inventory consumers, actual interaction, collision and persistence using authored fixtures",
             "test-results/world-capabilities-target-JnKZqO/report.json: 8 passed; second project, initial module reuse, uninstall/restore, literal DOM text and layout",
             "test-results/behavior-browser-eVfsCM/report.json: 11 passed",
@@ -175,7 +175,12 @@
           "id": "M5.2",
           "title": "真实模型从空白世界连续生成采木、制作、战斗和一次性任务奖励",
           "status": "in_progress",
-          "evidence": []
+          "evidence": [
+            "test-results/live-world-6z8K3a/batch-acceptance.json: harvest 6 and craft 9 final checks passed; raw historical failures and resolved test issues retained",
+            "test-results/live-world-6z8K3a/harvest-model-build.json: real model task 53f98de3-557b-4fcc-885b-b70e2179d6a2",
+            "test-results/live-world-6z8K3a/craft-model-build.json: real model task 1d4d42d1-d037-4768-8fa5-31f16dfff193",
+            "test-results/live-world-6z8K3a/world-checkpoint.json: craft-tested, same world and latest progress ready for combat phase"
+          ]
         },
         {
           "id": "M5.3",
@@ -186,12 +191,12 @@
       ]
     }
   ],
-  "nextAction": "M5.2：从独立空白测试项目开始真实模型连续创作，两棵可砍伐树木掉木材，增加材料不足提示及制作可开关的门，再加入射击目标和持久任务奖励；每阶段实际运行、跨至少两次重启保留进度，随后 M5.3 跨项目复用与可运行示例交付。不得把接口夹具当成模型生成证据。",
+  "nextAction": "用户要求本批结束提供小白能懂的完整报告，见 docs/BATCH_REPORT_2026_09_09_M5.md。下一批继续 M5.2：从 test-results/live-world-6z8K3a 的 craft-tested 断点继续真实模型生命值、射击目标和一次性任务奖励，检查换武器后的采木判断兼容，保留已制作门、一份木材、两棵已砍树和任务进度；随后 M5.3 完整迁移与初始示例并交付 Alpha 0.9。不要重跑已完成生成。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",
-    "developmentSlice": "M1–M4 已交付 Alpha 0.8；M5.1 新接口完成并验收，个人服务尚未替换，继续 M5.2 真实模型完整流程。",
-    "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
+    "developmentSlice": "M5.1 完成；真实模型采木、制作与两次重启已验收，战斗和最终交付待下一批。用户个人服务仍为 Alpha 0.8，本批未重启或写入个人数据。",
+    "personalWorldCandidate": "2026-09-09 只读核对：当前世界 v-ef6c29ea887d0323e15d，无候选及应用事务；原花草候选已成为当前世界，本批未操作其个人项目。",
     "example": "examples/door-and-bounce.save.json",
     "service": {
       "pid": 140584,
@@ -204,6 +209,14 @@
       "allPreviousFieldsUnchanged": true,
       "projectFileBytesUnchanged": true,
       "migration": "No project migration; all project bytes unchanged. Asset index is created only on explicit import."
+    },
+    "lastReadOnlyCheck": {
+      "date": "2026-09-08T16:02:55.917Z",
+      "httpStatus": 200,
+      "runtime": "Alpha 0.8",
+      "current": "v-ef6c29ea887d0323e15d",
+      "candidate": null,
+      "applying": null
     }
   }
 }

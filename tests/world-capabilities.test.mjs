@@ -8,10 +8,12 @@ import { behaviorScene,behaviorFrame,doorBehavior } from './behavior-fixtures.mj
 import { validateBehavior,validateBehaviorFrame,validateBehaviorResult } from '../app/behavior-contracts.mjs';
 import { BehaviorState,validateBehaviorState } from '../app/behavior-state.mjs';
 import { BehaviorBinding } from '../app/behavior-binding.mjs';
-import { compileScene,encodeAgentScene,decodeAgentScene,canonicalJSON,OUTPUT_SCHEMA } from '../app/scene.mjs';
+import { compileScene,encodeAgentScene,decodeAgentScene,canonicalJSON,OUTPUT_SCHEMA,withAppearanceFormat,INITIAL_SNAPSHOT,EMPTY_SCENE } from '../app/scene.mjs';
 import { captureCreation,creationGroups,materializeCreation,creationDependencies } from '../app/creation.mjs';
 import { ModuleLibrary,validateModule } from '../app/memory.mjs';
-import { atomicJSON } from '../app/store.mjs';
+import { atomicJSON,ProjectStore } from '../app/store.mjs';
+import { defaultAppearance } from '../app/asset-binding.mjs';
+import { png } from './asset-fixtures.mjs';
 const frame=()=>({...behaviorFrame(),inventory:{}});
 const panel=(key='quest')=>({type:'hud.panel',key,panel:{title:'制作进度',lines:['木材 1 / 3']}});
 const item={type:'inventory.define',item:'wood',name:'木材',description:'用于制作'};
@@ -73,4 +75,16 @@ test('新创作导出使用 module/4 与 web/5，声明能力依赖并拒绝伪�
   assert.throws(()=>validateModule({...module,format:'craftmine.module/2',runtime:'craftmine-web/3'}),/运行约定/);
   assert.throws(()=>validateModule({...module,dependencies:module.dependencies.filter(d=>d!=='hud.panel@1')}),/依赖/);
   const hash=createHash('sha256').update(canonicalJSON({kind:module.kind,payload:module.payload})).digest('hex');assert.equal(module.hash,hash);assert.ok(fs.existsSync(path.join(root,'modules',ref.id,'1.json')));
+});
+test('新能力和固定素材一起打包到第二项目，模块运行版本不会因外观降级',()=>{
+  fs.mkdirSync('test-results',{recursive:true});const a=new ProjectStore(fs.mkdtempSync('test-results/capability-assets-source-')),b=new ProjectStore(fs.mkdtempSync('test-results/capability-assets-target-'));
+  const asset=a.assets.prepare(a.data,{id:null,baseVersion:null,name:'任务木门',filename:'quest-door.png',mime:'image/png',data:png(4,10,[160,190,90,255]).toString('base64')});a.change(d=>a.assets.register(d,asset));
+  const scene=withAppearanceFormat({...capabilityScene(),format:'craftmine.scene/4'});scene.objects[0].appearance=defaultAppearance(scene.objects[0],asset);a.importSave({format:'craftmine.save/1',scene,snapshot:INITIAL_SNAPSHOT});const tx=a.prepare(a.data.candidate.id,a.data.current,a.data.snapshot);a.commit(tx.id,tx.loadSnapshot);
+  const ref=a.data.library.find(m=>m.kind==='creation'),pack=a.exportModule(ref.id,ref.latest);assert.equal(pack.format,'craftmine.module-package/1');assert.equal(pack.module.format,'craftmine.module/4');assert.ok(pack.module.dependencies.includes('assets@1'));assert.ok(pack.module.dependencies.includes('inventory.read@1'));assert.deepEqual(pack.assets,[asset]);
+  b.importModule(pack);assert.deepEqual(b.exportModule(ref.id,ref.latest),pack);const generated=b.modules.instantiate(b.data,EMPTY_SCENE,ref.id,ref.latest,INITIAL_SNAPSHOT.player),build=b.build(generated);
+  assert.equal(generated.format,'craftmine.scene/4');assert.equal(generated.objects[0].appearance.asset.hash,asset.hash);assert.ok(build.behaviors.every(s=>s.definition.format==='craftmine.behavior/3'));assert.equal(build.assets[0].hash,asset.hash);
+});
+test('隐藏物体仍受场地约束，诊断准确指出对象、部件和实际坐标',()=>{
+  const scene=capabilityScene();scene.objects[0].position.y=-4;
+  assert.throws(()=>compileScene(scene),error=>error.message.includes('door-one')&&error.message.includes('第 1 个部件')&&error.message.includes('"y":-4')&&error.message.includes('visible:false'));
 });

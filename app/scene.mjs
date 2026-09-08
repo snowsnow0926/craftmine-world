@@ -30,6 +30,10 @@ export function validateSnapshot(input) {
   if (Object.values(p).some(n => !Number.isFinite(n)) || Math.abs(p.x) > 47.4 || Math.abs(p.z) > 47.4 || p.y < 6 || p.y > 38 || Math.abs(p.yaw) > 1e6 || Math.abs(p.pitch) > 1.52) throw Error('玩家位置或视角无效');
   return clone(input);
 }
+function boundsError(object,part,min,max){
+  const rounded=v=>Object.fromEntries(Object.entries(v).map(([k,n])=>[k,Number(n.toFixed(5))]));
+  return Error(`对象超出场地：${object.name}（${object.id}）第 ${object.parts.indexOf(part)+1} 个部件，实际最小角 ${JSON.stringify(rounded(min))}，最大角 ${JSON.stringify(rounded(max))}；地面 y=6，水平边界 ±46，顶部不超过 38。暂时隐藏的对象也必须在场地内，用 visible:false 和 solid:false 隐藏，不可移到地下。`);
+}
 function compileLegacy(input) {
   keys(input, ['format', 'title', 'night', 'objects']);
   if (input.format !== EMPTY_SCENE.format) throw Error('场景格式不兼容');
@@ -47,7 +51,7 @@ function compileLegacy(input) {
       volume += part.size.x * part.size.y * part.size.z;
       if (volume > 24000) throw Error('场景超出 24,000 格构造预算，请缩小规模');
       const min = Object.fromEntries(['x','y','z'].map(k => [k, object.position[k] + part.offset[k]]));
-      if (min.x < -46 || min.z < -46 || min.y < 6 || min.x + part.size.x > 46 || min.z + part.size.z > 46 || min.y + part.size.y > 38) throw Error('对象超出场地：地面 y=6，水平边界 ±46，高度小于 38');
+      if (min.x < -46 || min.z < -46 || min.y < 6 || min.x + part.size.x > 46 || min.z + part.size.z > 46 || min.y + part.size.y > 38) throw boundsError(object,part,min,Object.fromEntries(['x','y','z'].map(k=>[k,min[k]+part.size[k]])));
       for (let x = min.x; x < min.x + part.size.x; x++) for (let y = min.y; y < min.y + part.size.y; y++) for (let z = min.z; z < min.z + part.size.z; z++) {
         const key = `${x},${y},${z}`, old = cells.get(key);
         if (old && old[4] !== object.id) throw Error('不同对象发生重叠，请调整位置');
@@ -96,7 +100,7 @@ export function compileScene(input) {
       volume+=p.size.x*p.size.y*p.size.z;if(volume>24000||primitives.length>=4096)throw Error('场景超出构造预算（24,000 体积 / 4,096 部件）');
       const [x,y,z]=Object.values(p.size).map(Math.ceil);faces+=p.shape==='blade'?4:p.material==='solid'?6:2*(x*y+x*z+y*z);if(faces>100000)throw Error('场景超过 100,000 面的绘制预算');
       const min=Object.fromEntries(['x','y','z'].map(k=>[k,o.position[k]+p.offset[k]])),max=Object.fromEntries(['x','y','z'].map(k=>[k,min[k]+p.size[k]]));
-      if(min.x< -46||min.z< -46||min.y<5.99999||max.x>46||max.z>46||max.y>38)throw Error('对象超出场地：地面 y=6，水平边界 ±46，高度小于 38');
+      if(min.x< -46||min.z< -46||min.y<5.99999||max.x>46||max.z>46||max.y>38)throw boundsError(o,p,min,max);
       const primitive={...clone(p),id:o.id,min,max};
       // Decorations may overlap naturally. Solid parts from different objects must not intersect.
       if(p.solid){const seen=new Set();for(let x=Math.floor(min.x/4);x<=Math.floor(max.x/4);x++)for(let y=Math.floor(min.y/4);y<=Math.floor(max.y/4);y++)for(let z=Math.floor(min.z/4);z<=Math.floor(max.z/4);z++){

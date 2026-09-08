@@ -109,6 +109,7 @@ export const BEHAVIOR_API_GUIDE=`玩法源文件必须导出同步或异步函�
 frame={dt,time,event:{type,targetId},player:{position:{x,y,z},grounded,health},objects:[{id,position,visible,solid,health}]}。事件有 start/tick/interact/contact/attack/land，位置单位为米，地面 y=6。
 commands 每步最多32条，仅能使用声明的权限和 targets：
 objects.write: {type:'object.patch',id,position:null或{x,y,z},visible:null或boolean,solid:null或boolean,color:null或'#RRGGBB'}，null表示保留原字段。
+制作后才出现的对象，也要先在场地内定义合法位置与几何；在 start 根据已保存状态返回 visible:false、solid:false 隐藏未解锁对象，解锁后才显示。不能通过把对象埋到地下、移到边界外或设为零尺寸来隐藏，否则源码执行前的场景检查就会拒绝。
 player.motion: {type:'player.impulse',velocity:{x,y,z}}，各轴 -18..18。
 hud.message: {type:'hud.message',text:'最多160字'}。
 inventory.write: {type:'inventory.add',item:'稳定英文ID',count:整数-100..100}。
