@@ -219,6 +219,53 @@
       "applying": null
     }
   },
+  "capabilityRoadmap": {
+    "date": "2026-09-09",
+    "document": "docs/ROADMAP.md",
+    "northStar": "玩家说一句中文，系统尽力把它实现——包括需要新增宿主能力的请求；玩家不需要知道 L0–L4 的存在",
+    "successCriterion": "玩家不用找开发者改代码，就能把想做的玩法做出来",
+    "layers": [
+      {"id": "L0", "title": "数据（场景 JSON、物体、参数）", "author": "模型", "verifier": "宿主校验器", "status": "available"},
+      {"id": "L1", "title": "玩法（沙箱 JS + 8 条命令）", "author": "模型", "verifier": "契约 + headless 验证", "status": "available"},
+      {"id": "L2", "title": "词表（新命令/事件/资源类型）", "author": "模型（受审）", "verifier": "扩展 ABI + 扩展自带测试", "status": "missing"},
+      {"id": "L3", "title": "内核（渲染、物理、输入、存档）", "author": "模型（远期、限低风险区）", "verifier": "冻结内核 + 回归测试", "status": "not_recommended_near_term"},
+      {"id": "L4", "title": "策略（提示词、工具集、计划、记忆）", "author": "模型（受审）", "verifier": "外置冻结判定", "status": "missing"},
+      {"id": "judgement", "title": "判定面（验证器、权限、回滚、测试集、指标）", "author": "只有人", "verifier": "—", "status": "partial"}
+    ],
+    "invariant": "可变的是「怎么做」，不可变的是「什么算对」；判定面永远不交给模型",
+    "gapLadder": [
+      {"id": "G0", "condition": "现有词表能实现", "behavior": "直接生成候选并 headless 验收"},
+      {"id": "G1", "condition": "现有词表能部分实现", "behavior": "先做能做的，明确列出做不到的"},
+      {"id": "G2", "condition": "需要新词表（L2）", "behavior": "生成宿主扩展提案，走 R2 流程"},
+      {"id": "G3", "condition": "需要内核改动（L3）", "behavior": "生成内核变更提案，限低风险区，必须人审"},
+      {"id": "G4", "condition": "当前架构做不到", "behavior": "明确说明原因与替代方案，绝不伪装成实现"}
+    ],
+    "stages": [
+      {"id": "R0", "title": "度量与结果级验证", "status": "next", "maps": ["H2", "P1", "P2", "计划 §7.2/§7.3/§17"], "exit": "10 条冻结需求集能自动判对错，指标可复现"},
+      {"id": "R1", "title": "L1 词表扩容", "status": "planned", "maps": ["CREATION_LOOP §7 优先级 2", "H3"], "exit": "≥20 条真实请求测出「无需改宿主」基线"},
+      {"id": "R2", "title": "L2 扩展 ABI（模型造动词）", "status": "planned", "maps": ["H3 新能力扩展", "计划 §14.1", "§13 L646"], "exit": "≥3 个模型自写扩展上线且稳定"},
+      {"id": "R3", "title": "L4-a 策略层自演化", "status": "planned", "maps": ["新增"], "exit": "至少一次「模型改策略→指标提升→人接受」"},
+      {"id": "R4", "title": "L3 内核自改（远期实验）", "status": "deferred", "maps": ["计划 §21 完全自主修改宿主（改为受控）"], "exit": "能安全加一个后处理效果且不破坏回归"},
+      {"id": "R5", "title": "多人共创", "status": "deferred", "maps": ["M6"], "exit": "单机闭环稳定后再评估"}
+    ],
+    "firstBatch": [
+      "R0 最小版：capabilities.catalog + acceptanceSpec 执行器 + 指标落盘",
+      "用 R0 复刻「刷新怪物」bug，确认验收器能抓住",
+      "R1-P0 第一条：通用资源系统（替代写死血量）"
+    ],
+    "redLines": ["验证器", "权限模型", "回滚逻辑", "存档格式", "测试集与指标定义"],
+    "supplySide": {
+      "commands": 8,
+      "events": 7,
+      "systems": 3,
+      "shapes": 2,
+      "materials": 10,
+      "builtinSounds": 5,
+      "glb": "仅静态（拒绝动画与骨骼），外观仅支持绕 Y 轴旋转",
+      "limits": "128 物体 / 每步 32 命令 / 代码 32KB / 状态 16KB / 10 万面"
+    },
+    "tests": "npm test: 115 passed"
+  },
   "harnessPlan": {
     "date": "2026-09-09",
     "document": "docs/HARNESS_DEVELOPMENT_PLAN.md",
