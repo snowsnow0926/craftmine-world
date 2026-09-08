@@ -106,8 +106,35 @@
     {
       "id": "M4",
       "title": "本地图片和标准 3D 素材导入、绑定和外观替换",
-      "status": "pending",
-      "evidence": []
+      "status": "in_progress",
+      "evidence": [
+        "docs/M4_ASSETS.md"
+      ],
+      "slices": [
+        {
+          "id": "M4.1",
+          "title": "本地 PNG/JPEG/静态 GLB 素材库、不可变版本与独立实际预览",
+          "status": "complete",
+          "evidence": [
+            "npm test: 71 passed",
+            "test-results/assets-browser-lBWDE2/report.json: 16 passed; actual standard GLB, PNG colors/alpha, JPEG, versions, corruption/missing resources, restart and second project",
+            "test-results/review-browser-LP08i9/report.json: 15 passed",
+            "docs/M4_ASSETS.md"
+          ]
+        },
+        {
+          "id": "M4.2",
+          "title": "素材显示在世界中，替换外观保留对象、碰撞、源码与最新状态",
+          "status": "pending",
+          "evidence": []
+        },
+        {
+          "id": "M4.3",
+          "title": "素材随世界和创作模块跨项目复用，真实模型绑定与替换验收",
+          "status": "pending",
+          "evidence": []
+        }
+      ]
     },
     {
       "id": "M5",
@@ -116,11 +143,11 @@
       "evidence": []
     }
   ],
-  "nextAction": "M4.1：设计并实现本地图片和标准 3D 素材库，固定资产身份与不可变版本、限制资源规模、校验文件并提供独立预览；随后接入对象外观绑定、替换与回退，保留源码行为、碰撞和进度，再验证素材随完整存档/创作模块导出到第二个项目。",
+  "nextAction": "M4.2：为对象增加固定素材版本引用，把图片/标准 GLB 接入实际世界渲染；沿用候选事务替换外观并保留碰撞、源码行为与最新进度。同步避免记忆捕获丢失外观。之后 M4.3 验证完整导出到第二个项目及真实模型使用素材。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.7",
-    "developmentSlice": "M1、M2、M3 全部完成并验收，个人 8787 服务已集中更新至 Alpha 0.7。下一项 M4 素材导入，之后 M5 完整可玩世界。",
+    "developmentSlice": "个人服务保持 Alpha 0.7。开发版 M4.1 素材库、版本与独立预览已验收；继续 M4.2 世界绑定，M4 整体完成后再集中更新服务。",
     "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
     "example": "examples/door-and-bounce.save.json",
     "service": {

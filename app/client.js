@@ -1,5 +1,6 @@
 import { CandidateReview } from './review.js';
 import { ProjectContextPanel } from './context-panel.js';
+import { AssetPanel } from './asset-panel.js';
 const $ = id => document.getElementById(id);
 const token = document.querySelector('meta[name="craftmine-token"]').content;
 let client = sessionStorage.getItem('craftmine-client');
@@ -31,6 +32,7 @@ function requestFrame(frame,type,payload={}){return new Promise((resolve,reject)
 const requestSnapshot=(frame,freeze=false)=>requestFrame(frame,'snapshot',{freeze});
 const review=new CandidateReview({api,mount,remove:removeFrame,post,snapshot:requestSnapshot,inspect:(frame,id)=>requestFrame(frame,'inspect',{objectId:id}),active:()=>activeFrame,project:()=>project,apply:applyCandidate,discard:discardCandidate,select:id=>{selected=id;updateContext();renderObjects();switchView('play');$('prompt').focus();}});
 const contextPanel=new ProjectContextPanel({api,refresh,repair:problem=>{selected=problem.objects.length===1?problem.objects[0]:null;updateContext();renderObjects();switchView('play');$('intent').value='execute';$('prompt').value=`请修复「${problem.name}」停止运行的问题。根据已保存的实际错误检查源码，保留原有功能和兼容进度。`;$('prompt').focus();}});
+const assetPanel=new AssetPanel({api,refresh,toast,download:downloadJSON});
 window.addEventListener('message',event=>{
   const m=event.data,frame=frames.get(m?.nonce);
   if(!frame||event.source!==frame.element.contentWindow||m.channel!=='craftmine-game/1'||event.origin!=='null')return;
@@ -66,6 +68,7 @@ function render(){
   if(!project)return;
   review.invalidate(project);
   contextPanel.render(project,activeFrame?.build);
+  assetPanel.render(project);
   $('provider').textContent=project.provider.available?'● Codex 已登录':'○ 需要连接 LLM';$('provider').title=project.provider.message;
   $('version').textContent='v'+(project.history.length)+ ' · 当前可玩';
   const task=project.tasks.at(-1),running=task&&['running','validating','cancelling'].includes(task.status);

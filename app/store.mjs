@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { EMPTY_SCENE, INITIAL_SNAPSHOT, compileScene, clone, validateSnapshot, sceneDiff } from './scene.mjs';
 import { ModuleLibrary } from './memory.mjs';
 import { emptyProjectContext,editProjectContext,rememberAppliedRequest,retrieveProjectContext } from './project-context.mjs';
+import { AssetLibrary } from './assets.mjs';
 
 export function atomicJSON(file, value) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -16,6 +17,7 @@ export class ProjectStore {
   constructor(root) {
     this.root = path.resolve(root); this.file = path.join(this.root, 'project.json');
     this.modules = new ModuleLibrary(this.root, atomicJSON);
+    this.assets = new AssetLibrary(this.root, atomicJSON);
     fs.mkdirSync(this.root, { recursive: true });
     if (!fs.existsSync(this.file)) {
       const build = this.build(EMPTY_SCENE);

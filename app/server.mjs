@@ -9,6 +9,7 @@ import { validateSnapshot } from './scene.mjs';
 import { verifyBehaviors } from './behavior-verify.mjs';
 import { validateModule } from './memory.mjs';
 import { checkCreationModule,rememberCreationCheck } from './creation-verify.mjs';
+import { verifyAsset } from './asset-verify.mjs';
 
 const APP = path.dirname(fileURLToPath(import.meta.url)), ROOT = path.dirname(APP);
 const port = Number(process.env.CRAFTMINE_PORT || 8787), dataRoot = path.resolve(process.env.CRAFTMINE_DATA_DIR || path.join(ROOT,'.craftmine'));
@@ -23,7 +24,7 @@ if (fs.existsSync(lock)) {
 }
 fs.writeFileSync(lock, JSON.stringify({pid:process.pid,port}), {flag:'wx'});
 const store = new ProjectStore(dataRoot), agent = new AgentRunner(store,{verificationOrigin:`http://127.0.0.1:${port}`}), provider = providerStatus();
-const token = randomUUID(); let lease = null;
+const token = randomUUID(); let lease = null, assetImportBusy=false;
 const staticFiles = new Map([
   ['/app/client.js',['client.js','text/javascript']], ['/app/style.css',['style.css','text/css']],
   ['/app/game.js',['game.js','text/javascript']], ['/app/game.css',['game.css','text/css']],
@@ -34,10 +35,13 @@ const staticFiles = new Map([
   ['/app/scene-diff.mjs',['scene-diff.mjs','text/javascript']], ['/app/canonical.mjs',['canonical.mjs','text/javascript']], ['/app/review.js',['review.js','text/javascript']],
   ['/app/project-context.mjs',['project-context.mjs','text/javascript']], ['/app/context-panel.js',['context-panel.js','text/javascript']],
   ['/app/context.css',['context.css','text/css']],
+  ['/app/asset-decode.mjs',['asset-decode.mjs','text/javascript']], ['/app/asset-renderer.mjs',['asset-renderer.mjs','text/javascript']],
+  ['/app/asset-viewer.js',['asset-viewer.js','text/javascript']], ['/app/asset-viewer.css',['asset-viewer.css','text/css']],
+  ['/app/asset-panel.js',['asset-panel.js','text/javascript']], ['/app/asset-panel.css',['asset-panel.css','text/css']],
 ]);
 // Keep one coherent runtime for this server's lifetime while development continues.
 const staticAssets=new Map([...staticFiles].map(([route,[file,type]])=>[route,{type,content:fs.readFileSync(path.join(APP,file))}]));
-const pages=new Map(['index.html','game.html','verify.html'].map(file=>[file,fs.readFileSync(path.join(APP,file),'utf8')]));
+const pages=new Map(['index.html','game.html','verify.html','asset-viewer.html'].map(file=>[file,fs.readFileSync(path.join(APP,file),'utf8')]));
 const runtimeSource=fs.readFileSync(path.join(ROOT,'world-workshop-3d','src','voxel-runtime.js'));
 async function checkCode(build,events){
   const report=await verifyBehaviors(build,{origin:`http://127.0.0.1:${port}`,events});
@@ -46,10 +50,10 @@ async function checkCode(build,events){
   return report;
 }
 const json = (res, status, data) => { res.writeHead(status, {'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}); res.end(JSON.stringify(data)); };
-async function body(req) {
+async function body(req,limit=1_500_000) {
   if (!(req.headers['content-type'] || '').startsWith('application/json')) throw Error('请求必须为 JSON');
   let size = 0; const chunks = [];
-  for await (const chunk of req) { size += chunk.length; if (size > 1_500_000) throw Error('请求超过大小限制'); chunks.push(chunk); }
+  for await (const chunk of req) { size += chunk.length; if (size > limit) throw Error('请求超过大小限制'); chunks.push(chunk); }
   return JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}');
 }
 const server = http.createServer(async (req,res) => {
@@ -79,11 +83,16 @@ const server = http.createServer(async (req,res) => {
         if (url.pathname === '/api/candidate/review') return json(res,200,store.reviewCandidate(url.searchParams.get('id'),url.searchParams.get('base')));
         if (url.pathname === '/api/export') return json(res,200,store.exportSave());
         if (url.pathname === '/api/modules/export') return json(res,200,store.modules.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
+        if (url.pathname === '/api/assets/read') return json(res,200,store.assets.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
       } else {
-        const input = await body(req);
+        const input = await body(req,url.pathname==='/api/assets/import'?12_000_000:1_500_000);
         switch (url.pathname) {
           case '/api/save': store.save(input.version,input.snapshot); break;
           case '/api/project-context': store.editContext(input); return json(res,200,{ok:true,projectContext:store.data.projectContext});
+          case '/api/assets/import': {
+            if(assetImportBusy)throw Error('另一个素材正在检查，请稍候');assetImportBusy=true;
+            try{const asset=store.assets.prepare(store.data,input),report=await verifyAsset(asset,{origin:`http://127.0.0.1:${port}`});atomicJSON(path.join(store.root,'assets',asset.id,asset.version+'-'+asset.hash+'.check.json'),report);store.change(d=>store.assets.register(d,asset));return json(res,200,{ok:true,id:asset.id,version:asset.version,report});}finally{assetImportBusy=false;}
+          }
           case '/api/tasks': {
             if (input.version !== store.data.current) throw Error('运行版本已过期，请刷新后重试');
             if (typeof input.prompt !== 'string' || !input.prompt.trim() || input.prompt.length > 2000 || !['execute','discuss'].includes(input.intent)) throw Error('请输入 1–2000 字的需求');
@@ -139,13 +148,14 @@ const server = http.createServer(async (req,res) => {
       return json(res,404,{error:'接口不存在'});
     }
     if (req.method !== 'GET') return json(res,405,{error:'不支持的请求方法'});
-    const isGame=url.pathname==='/game';
-    res.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'self'"+(isGame?" blob:":'')+"; worker-src "+(isGame?"blob:":"'none'")+"; style-src 'self'; img-src 'self' data:; connect-src " + (isGame ? "'none'" : "'self'") + "; frame-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'none'");
+    const isGame=url.pathname==='/game',isAssetViewer=url.pathname==='/asset-viewer';
+    res.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'self'"+(isGame?" blob:":'')+"; worker-src "+(isGame?"blob:":"'none'")+"; style-src 'self'; img-src 'self' data:; connect-src " + (isGame||isAssetViewer ? "'none'" : "'self'") + "; frame-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'none'");
     if (url.pathname === '/') {
       res.setHeader('Content-Type','text/html; charset=utf-8');
       return res.end(pages.get('index.html').replace('SESSION_TOKEN',token));
     }
     if (url.pathname === '/game') { res.setHeader('Content-Type','text/html; charset=utf-8'); return res.end(pages.get('game.html')); }
+    if (url.pathname === '/asset-viewer') { res.setHeader('Content-Type','text/html; charset=utf-8'); return res.end(pages.get('asset-viewer.html')); }
     if (url.pathname === '/verify') { res.setHeader('Content-Type','text/html; charset=utf-8'); return res.end(pages.get('verify.html')); }
     if (url.pathname === '/runtime.js') { res.setHeader('Content-Type','text/javascript; charset=utf-8'); return res.end(runtimeSource); }
     if (staticAssets.has(url.pathname)) { const {type,content}=staticAssets.get(url.pathname);res.setHeader('Content-Type',type+'; charset=utf-8');if(type==='text/javascript')res.setHeader('Access-Control-Allow-Origin','*');return res.end(content); }

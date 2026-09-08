@@ -92,6 +92,7 @@ npm run test:live-repair
 npm run test:review
 npm run test:context
 npm run test:live-context
+npm run test:assets
 ```
 
 核心测试仅需 Node.js。浏览器测试需要 Playwright 和 Chrome／Edge；本机可使用已提供的 Playwright 运行库，其他环境可安装 Playwright，或用 `PLAYWRIGHT_MODULE_PATH` 指定模块位置。`CRAFTMINE_BROWSER` 可指定浏览器路径。
@@ -107,6 +108,7 @@ npm run test:live-context
 - [M3.1 自动修复与失败记录](docs/M3_REPAIR.md)
 - [M3.2 候选差异与独立试玩](docs/M3_PREVIEW.md)
 - [M3.3 长期方向、需求与运行上下文](docs/M3_CONTEXT.md)
+- [M4 素材库、世界绑定与验收进度（开发中）](docs/M4_ASSETS.md)
 - [真实模型生成的滑门与弹跳板演示](examples/door-and-bounce.save.json)
 - [当前目标与持续开发路线](docs/CONTINUOUS_DEVELOPMENT.md)
 - [开发进度记录](docs/DEVELOPMENT_STATUS.json)
