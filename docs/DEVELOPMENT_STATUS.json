@@ -2,7 +2,7 @@
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "M3",
-  "baseline": "c8d4ba4",
+  "baseline": "590c737",
   "updated": "2026-09-08",
   "items": [
     {
@@ -54,8 +54,35 @@
     {
       "id": "M3",
       "title": "多轮创作、差异预览、失败诊断和有上限的自动修复",
-      "status": "pending",
-      "evidence": []
+      "status": "in_progress",
+      "evidence": [
+        "docs/M3_REPAIR.md: M3.1 complete; M3.2 and M3.3 pending"
+      ],
+      "slices": [
+        {
+          "id": "M3.1",
+          "title": "有限自动修复、失败记录、共享时限、取消和状态兼容预检",
+          "status": "complete",
+          "evidence": [
+            "npm test: 52 passed",
+            "test-results/repair-live-i8OdGo/report.json: 10 passed; injected real failure repaired by real LLM, actual door behavior and latest progress retained",
+            "test-results/repair-live-cancel-rPN1tE/report.json: 5 passed; verified live Codex process exits on cancellation",
+            "test-results/repair-cancel-OxKPx1/report.json: 4 passed",
+            "test-results/repair-scripted-XjiKuC/report.json: 9 passed",
+            "test-results/background-browser-uCyxZM/report.json: 10 passed"
+          ]
+        },
+        {
+          "id": "M3.2",
+          "title": "现场选择与可审查的候选差异、应用前世界预览",
+          "status": "pending"
+        },
+        {
+          "id": "M3.3",
+          "title": "长期项目意图和运行问题上下文、非预设措辞多轮验收",
+          "status": "pending"
+        }
+      ]
     },
     {
       "id": "M4",
@@ -70,11 +97,11 @@
       "evidence": []
     }
   ],
-  "nextAction": "M3：先将 AgentRunner 的单次执行拆成可记录的生成与验证尝试；为结构化输出、构建、范围及 Worker 错误记录明确诊断，最多两次自动修复、共享总时限，取消立即结束整个循环。保留每次失败源码和报告，用真实模型纠正一个实际失败并验证最新状态未丢失。随后完善对象选择/候选差异预览和长期项目上下文。",
+  "nextAction": "M3.2：扩展 sceneDiff 为带稳定 ID 的对象、源码、参数和环境变化详情，在工作台展示；实现候选应用前的独立世界预览，关闭或丢弃不改变当前世界与最新进度，后台测试依然不操作鼠标。之后 M3.3 补长期项目意图/运行问题上下文，并做超出近期对话窗口的真实多轮验收。M3 完整通过后再更新 8787 服务。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.6",
-    "developmentSlice": "M1、M2 完成，详见 docs/ALPHA_0_5.md 和 docs/ALPHA_0_6.md；继续 M3–M5",
+    "developmentSlice": "M1、M2 完成；M3.1 自动修复开发与验收完成，详见 docs/M3_REPAIR.md；M3.2、M3.3、M4、M5 继续开发。本轮未重启个人 Alpha 0.6 服务。",
     "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
     "example": "examples/door-and-bounce.save.json",
     "service": {

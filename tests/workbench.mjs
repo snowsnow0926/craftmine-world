@@ -5,14 +5,14 @@ import { spawn } from 'node:child_process';
 import assert from 'node:assert/strict';
 import { playwright,browserOptions } from './browser-tools.mjs';
 
-export async function workbench(name){
+export async function workbench(name,{preload,env={}}={}){
   fs.mkdirSync('test-results',{recursive:true});const dir=path.resolve(fs.mkdtempSync('test-results/'+name+'-'));
   const checks=[],errors=[];let server,browser,page;
   const port=await new Promise(resolve=>{const s=http.createServer();s.listen(0,'127.0.0.1',()=>{const port=s.address().port;s.close(()=>resolve(port));});});
   const report=()=>fs.writeFileSync(path.join(dir,'report.json'),JSON.stringify({date:new Date().toISOString(),checks,errors},null,2));
   const check=(name,value,detail)=>{checks.push({name,passed:!!value,detail});report();assert.ok(value,name);console.log('PASS '+name);};
   async function start(){
-    server=spawn(process.execPath,['app/server.mjs'],{env:{...process.env,CRAFTMINE_PORT:String(port),CRAFTMINE_DATA_DIR:path.join(dir,'project')},windowsHide:true,stdio:['ignore','pipe','pipe']});
+    server=spawn(process.execPath,[...(preload?['--import',preload]:[]),'app/server.mjs'],{env:{...process.env,...env,CRAFTMINE_PORT:String(port),CRAFTMINE_DATA_DIR:path.join(dir,'project')},windowsHide:true,stdio:['ignore','pipe','pipe']});
     await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Server timeout')),15000);server.stdout.on('data',chunk=>{if(chunk.toString().includes('http://')){clearTimeout(timer);resolve();}});server.stderr.on('data',chunk=>errors.push(chunk.toString()));server.once('exit',code=>{clearTimeout(timer);reject(Error('Server exited '+code));});});
     browser=await playwright().chromium.launchPersistentContext(path.join(dir,'profile'),browserOptions());
     await browser.addInitScript(()=>{Element.prototype.requestPointerLock=function(){throw Error('Pointer lock is disabled in background verification');};window.focus=()=>{};});

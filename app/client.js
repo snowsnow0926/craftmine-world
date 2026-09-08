@@ -63,7 +63,7 @@ function render(){
   $('apply').disabled=applying;$('discard').disabled=applying;
   const statuses={running:'正在创造',validating:'正在检查',cancelling:'正在停止执行',ready:'候选已就绪',failed:'任务未完成',cancelled:'任务已取消',interrupted:'任务已中断',discussed:'讨论已完成',unchanged:'场景没有变化',applied:'已应用到世界',discarded:'候选已丢弃'};
   $('task-status').hidden=!task;
-  if(task){$('task-stage').textContent=statuses[task.status]||task.status;$('task-log').textContent=task.error||task.logs.at(-1)?.text||'';$('cancel').hidden=!running;$('cancel').disabled=task.status==='cancelling';}
+  if(task){const attempt=task.attempts?.at(-1);$('task-stage').textContent=(running&&task.status!=='cancelling'&&attempt?.number>1?`自动修复 ${attempt.number-1}/${task.limits.repairs} · `:'')+(statuses[task.status]||task.status);$('task-log').textContent=task.error||task.logs.at(-1)?.text||'';$('cancel').hidden=!running;$('cancel').disabled=task.status==='cancelling';}
   const c=project.candidate;$('candidate').hidden=!c;
   if(c){$('candidate-title').textContent=c.summary;const changes=[c.diff.systems,c.diff.behaviors].filter(Boolean).flatMap(s=>[...s.added,...s.changed,...s.removed]);$('candidate-detail').textContent=`对象：新增 ${c.diff.added.length} · 修改 ${c.diff.changed.length} · 移除 ${c.diff.removed.length}。${changes.length?'玩法：'+changes.join('、')+'。':''}应用时保存最新进度。`;}
   const mk=JSON.stringify(project.messages);
@@ -78,6 +78,13 @@ function render(){
     if(t.memories?.length)details.append(node('p','读取的创作记忆：'+t.memories.map(m=>`${m.name} v${m.version}`).join('、')));
     if(t.usedModules?.length)details.append(node('p','生成结果引用了 '+t.usedModules.length+' 个模块版本。'));
     if(t.error)details.append(node('p',t.error));
+    for(const attempt of t.attempts||[]){
+      const record=node('details',undefined,'attempt-record'),states={running:'进行中',passed:'检查通过',failed:'检查未通过',cancelled:'已取消',interrupted:'已中断',discussed:'讨论完成',unchanged:'无变化'};
+      record.dataset.attempt=String(attempt.number);record.append(node('summary',`${attempt.number===1?'首次生成':'自动修复 '+(attempt.number-1)} · ${states[attempt.status]||attempt.status}`));
+      if(attempt.diagnostic){record.append(node('p',attempt.diagnostic.title+'：'+attempt.diagnostic.message));for(const item of attempt.diagnostic.details)record.append(node('p',item.id+(item.failedEvent?' · '+item.failedEvent:'')+'：'+item.error));}
+      const content=node('pre',undefined,'source-preview');content.hidden=true;
+      record.append(button('查看此轮产物与检查',async()=>{content.textContent=JSON.stringify(await api('/api/tasks/attempt?id='+encodeURIComponent(t.id)+'&number='+attempt.number),null,2);content.hidden=false;}),content);details.append(record);
+    }
     if(t.build)details.append(button('查看实际场景产物',async()=>{const build=await api('/api/build?id='+t.build);const code=node('pre',JSON.stringify(build.scene,null,2));code.className='source-preview';details.append(code);}));
     e.append(details);$('task-list').append(e);
   }
@@ -161,7 +168,7 @@ async function applyCandidate(){
 $('composer').onsubmit=async event=>{
   event.preventDefault();const prompt=$('prompt').value.trim();if(!prompt||$('send').disabled)return;
   $('send').disabled=true;
-  try{const snapshot=await requestSnapshot(activeFrame);await api('/api/tasks',{prompt,intent:$('intent').value,version:activeFrame.version,context:{player:snapshot.player,selected}});$('prompt').value='';await refresh();}catch(error){toast(error.message);render();}
+  try{await saveCurrent();const snapshot=activeFrame.snapshot;await api('/api/tasks',{prompt,intent:$('intent').value,version:activeFrame.version,context:{player:snapshot.player,selected}});$('prompt').value='';await refresh();}catch(error){toast(error.message);render();}
 };
 $('prompt').addEventListener('focus',()=>{if(activeFrame)post(activeFrame,'pause');});
 $('prompt').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();$('composer').requestSubmit();}});

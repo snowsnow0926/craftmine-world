@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node app/server.mjs",
-    "test": "node --test tests/core.test.mjs tests/modules.test.mjs tests/behavior.test.mjs tests/creation.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/modules.test.mjs tests/behavior.test.mjs tests/creation.test.mjs tests/agent.test.mjs",
     "test:browser": "node tests/background-browser.mjs",
     "test:live": "node tests/live-memory.mjs",
     "test:behaviors": "node tests/behavior-browser.mjs",
@@ -13,7 +13,10 @@
     "test:live-code": "node tests/live-code.mjs",
     "test:creations": "node tests/creation-browser.mjs",
     "test:creation-ui": "node tests/creation-ui.mjs",
-    "test:live-creation": "node tests/live-creation.mjs"
+    "test:live-creation": "node tests/live-creation.mjs",
+    "test:repair": "node tests/repair-browser.mjs",
+    "test:repair-cancel": "node tests/repair-browser.mjs --cancel",
+    "test:live-repair": "node tests/repair-browser.mjs --live"
   },
   "engines": { "node": ">=22" }
 }

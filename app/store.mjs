@@ -33,7 +33,7 @@ export class ProjectStore {
     }
     if (this.data.applying || this.data.tasks.some(t => ['running','validating','cancelling'].includes(t.status))) this.change(data => {
       data.applying = null;
-      for (const task of data.tasks) if (['running','validating','cancelling'].includes(task.status)) { task.status = 'interrupted'; task.error = '本地服务中断，当前世界未改变。'; }
+      for (const task of data.tasks) if (['running','validating','cancelling'].includes(task.status)) { task.status = 'interrupted'; task.error = '本地服务中断，当前世界未改变。'; for(const attempt of task.attempts||[])if(attempt.status==='running'){attempt.status='interrupted';attempt.finished=Date.now();} }
     });
   }
   change(fn) { const next = clone(this.data); fn(next); atomicJSON(this.file, next); this.data = next; return next; }
@@ -51,6 +51,16 @@ export class ProjectStore {
     const checked = compileScene(stored.scene);
     if (stored.hash !== checked.hash || id !== 'v-' + checked.hash.slice(0,20)) throw Error('构建校验失败，保留原世界');
     return { ...checked, id };
+  }
+  readAttempt(id,number){
+    const task=this.data.tasks.find(t=>t.id===id),attempt=task?.attempts?.find(a=>a.number===number);
+    if(!/^[0-9a-f-]{36}$/.test(id)||!Number.isInteger(number)||number<1||number>3||!attempt)throw Error('这次生成记录不存在');
+    const dir=path.join(this.root,'tasks',id,'attempts',String(number)),read=name=>{
+      const file=path.join(dir,name);if(!fs.existsSync(file))return null;
+      if(fs.statSync(file).size>2_000_000)throw Error('生成记录超过查看限制');
+      const text=fs.readFileSync(file,'utf8');try{return JSON.parse(text);}catch{return text;}
+    };
+    return {attempt:clone(attempt),response:read('response.json'),diagnostic:read('diagnostic.json'),verification:read('behavior-verification.json')};
   }
   idle() { if (this.data.applying || this.data.candidate || this.data.tasks.some(t => ['running','validating','cancelling'].includes(t.status))) throw Error('请先完成当前任务或处理候选更新'); }
   addMessage(role, text) { this.change(d => { d.messages.push({ role, text: String(text).slice(0,5000), time: Date.now() }); d.messages = d.messages.slice(-80); }); }

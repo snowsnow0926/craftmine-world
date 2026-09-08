@@ -71,6 +71,7 @@ const server = http.createServer(async (req,res) => {
       if (req.method === 'GET') {
         if (url.pathname === '/api/state') return json(res,200,{...store.data,provider});
         if (url.pathname === '/api/build') return json(res,200,store.readBuild(url.searchParams.get('id')));
+        if (url.pathname === '/api/tasks/attempt') return json(res,200,store.readAttempt(url.searchParams.get('id'),Number(url.searchParams.get('number'))));
         if (url.pathname === '/api/export') return json(res,200,store.exportSave());
         if (url.pathname === '/api/modules/export') return json(res,200,store.modules.read(store.data,url.searchParams.get('id'),Number(url.searchParams.get('version'))));
       } else {

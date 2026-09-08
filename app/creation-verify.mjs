@@ -3,11 +3,11 @@ import { materializeCreation } from './creation.mjs';
 import { verifyBehaviors } from './behavior-verify.mjs';
 import { atomicJSON } from './store.mjs';
 
-export async function checkCreationModule(store,module,{origin,signal}={}){
+export async function checkCreationModule(store,module,{origin,signal,deadline}={}){
   const cached=store.data.library.find(m=>m.id===module.id)?.verifications?.[module.version];
   if(cached?.hash===module.hash&&cached.passed)return cached;
   const preview=store.build(materializeCreation(module.payload,{id:module.id,version:module.version},module.payload.anchor));
-  const report=await verifyBehaviors(preview,{origin,signal,events:module.payload.tests.events});
+  const report=await verifyBehaviors(preview,{origin,signal,deadline,events:module.payload.tests.events});
   atomicJSON(path.join(store.root,'builds',preview.id,'behavior-verification.json'),report);
   if(!report.passed)throw Error('创作源码未通过后台检查：'+report.modules.filter(m=>!m.passed).map(m=>m.id+'：'+m.error).join('；'));
   const ranges=preview.primitives.map(p=>({min:p.min,max:p.max}));
