@@ -49,8 +49,25 @@ export function validatePanel(value){
 export function validateBehavior(definition){
   const capable=definition?.format==='craftmine.behavior/3',portable=capable||definition?.format==='craftmine.behavior/2';
   const required=['format','id','name','description','code','stateVersion','initialState','params','targets','permissions',...(portable?['requires','binding']:[]),...(capable?['capabilities']:[])];
-  allowKeys(definition,[...required,'keys'],required);
+  allowKeys(definition,[...required,'keys','migrate'],required);
   if(definition.keys!==undefined&&(!Array.isArray(definition.keys)||definition.keys.length>4||new Set(definition.keys).size!==definition.keys.length||definition.keys.some(k=>!BEHAVIOR_KEYS.includes(k))))throw Error('代码模块按键声明无效，可用：'+BEHAVIOR_KEYS.join('、'));
+  if(definition.migrate!==undefined){
+    const stateKey=value=>typeof value==='string'&&value.length>0&&value.length<=64&&!['__proto__','constructor','prototype'].includes(value);
+    if(!Array.isArray(definition.migrate)||definition.migrate.length>8)throw Error('状态迁移声明无效：最多 8 条');
+    const froms=new Set();
+    for(const step of definition.migrate){
+      const keys=step&&typeof step==='object'&&!Array.isArray(step)?Object.keys(step):[];
+      if(!keys.includes('from')||keys.some(k=>!['from','keep','rename','add'].includes(k)))throw Error('状态迁移声明无效：只允许 from/keep/rename/add');
+      if(!Number.isInteger(step.from)||step.from<1||step.from>=definition.stateVersion||froms.has(step.from))throw Error('状态迁移的起始版本无效或重复');
+      froms.add(step.from);
+      if(step.keep!==undefined&&(!Array.isArray(step.keep)||step.keep.length>32||new Set(step.keep).size!==step.keep.length||step.keep.some(k=>!stateKey(k))))throw Error('状态迁移保留字段无效');
+      if(step.rename!==undefined){
+        if(!step.rename||typeof step.rename!=='object'||Array.isArray(step.rename)||Object.keys(step.rename).length>32)throw Error('状态迁移重命名字段无效');
+        for(const [from,to]of Object.entries(step.rename))if(!stateKey(from)||!stateKey(to))throw Error('状态迁移重命名字段无效');
+      }
+      if(step.add!==undefined)jsonRecord(step.add,BEHAVIOR_LIMITS.state);
+    }
+  }
   if((!portable&&definition.format!==BEHAVIOR_FORMAT)||!safeId(definition.id))throw Error('代码模块格式或 ID 无效');
   text(definition.name,60);text(definition.description,1000);text(definition.code,BEHAVIOR_LIMITS.code);
   if(!Number.isInteger(definition.stateVersion)||definition.stateVersion<1||definition.stateVersion>10000)throw Error('代码模块状态版本无效');
@@ -65,7 +82,7 @@ export function validateBehavior(definition){
     if((c.includes('inventory.items@1')&&!definition.permissions.includes('inventory.write'))||(c.includes('hud.panel@1')&&!definition.permissions.includes('hud.message')))throw Error('代码模块能力缺少所需权限');
   }
   if(portable){
-    if(!Array.isArray(definition.requires)||definition.requires.length>3||new Set(definition.requires).size!==definition.requires.length||definition.requires.some(r=>!BEHAVIOR_REQUIREMENTS.includes(r)))throw Error('代码模块依赖无效');
+    if(!Array.isArray(definition.requires)||definition.requires.length>BEHAVIOR_REQUIREMENTS.length||new Set(definition.requires).size!==definition.requires.length||definition.requires.some(r=>!BEHAVIOR_REQUIREMENTS.includes(r)))throw Error('代码模块依赖无效');
     if(definition.binding!==null){
       const b=definition.binding;exactKeys(b,['instanceId','source','origin','translation','objects','behaviors']);
       if(!safeId(b.instanceId)||!b.source)throw Error('代码模块实例来源无效');validateSource(b.source);vec(b.origin,-40,40);vec(b.translation,-80,80);
@@ -129,6 +146,7 @@ export function validateBehaviorResult(result,definition,frame,{local=false}={})
 }
 
 export const BEHAVIOR_API_GUIDE=`玩法源文件必须导出同步或异步函数 step({frame,params,state})，返回 {state,commands}。state 为可保存的 JSON 对象；必须返回完整状态，不使用模块全局变量存储进度。
+改变 stateVersion 时必须同时声明数据迁移，否则旧进度会被拒绝：在模块定义里加 migrate:[{from:旧版本号,rename:{旧字段:'新字段'},keep:['要保留的字段'],add:{新字段:默认值}}]。宿主只做数据迁移（改名、丢弃、补默认值），不执行迁移代码；initialState 里缺少的字段会自动补齐。不要为了绕过迁移而把 stateVersion 改回旧值。
 frame={dt,time,event:{type,targetId,code},player:{position:{x,y,z},grounded,health},objects:[{id,position,visible,solid,health}]}。事件有 start/tick/interact/contact/attack/land/key，位置单位为米，地面 y=6。
 frame 里没有按键状态：不存在 frame.keys，也不能轮询按键。玩家按键必须用模块自己的 keys 字段声明（最多 4 个，例如 keys:['KeyG']），宿主只在引擎未占用该键时派发 {type:'key',code:'KeyG'} 事件。引擎已占用、不能声明：W/A/S/D、空格、Shift、1、2、E、F、R、T、Enter、Esc。
 commands 每步最多32条，仅能使用声明的权限和 targets：

@@ -6,7 +6,7 @@ import { canonicalJSON } from './canonical.mjs';
 import { validateAppearance,checkAppearanceBounds,sceneAssetReferences } from './asset-binding.mjs';
 import { compileBehavior } from './behavior-build.mjs';
 import { validateBehaviorState } from './behavior-state.mjs';
-import { BEHAVIOR_CAPABILITIES,BEHAVIOR_PERMISSIONS,BEHAVIOR_KEYS } from './behavior-contracts.mjs';
+import { BEHAVIOR_CAPABILITIES,BEHAVIOR_PERMISSIONS,BEHAVIOR_KEYS,BEHAVIOR_REQUIREMENTS } from './behavior-contracts.mjs';
 export { canonicalJSON } from './canonical.mjs';
 
 // 对象 ID 的硬约束。校验与提示词都从这里取，避免两处各写一份而漂移。
@@ -147,7 +147,7 @@ const vecSchema = { type: 'object', properties: { x: { type: 'number' }, y: { ty
 const objSchema = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
 const sourceSchema={anyOf:[{type:'null'},objSchema({id:{type:'string'},version:{type:'integer'}})]};
 const bindingSchema={anyOf:[{type:'null'},objSchema({instanceId:{type:'string'},source:objSchema({id:{type:'string'},version:{type:'integer'}}),origin:vecSchema,translation:vecSchema,objects:{type:'array',items:objSchema({key:{type:'string'},local:{type:'string'},world:{type:'string'}})},behaviors:{type:'array',items:objSchema({local:{type:'string'},world:{type:'string'}})}})]};
-const behaviorFields={id:{type:'string'},name:{type:'string'},description:{type:'string'},code:{type:'string'},stateVersion:{type:'integer'},initialStateJSON:{type:'string'},paramsJSON:{type:'string'},targets:{type:'array',items:{type:'string'}},permissions:{type:'array',items:{type:'string',enum:BEHAVIOR_PERMISSIONS}},keys:{type:'array',items:{type:'string',enum:BEHAVIOR_KEYS}}};
+const behaviorFields={id:{type:'string'},name:{type:'string'},description:{type:'string'},code:{type:'string'},stateVersion:{type:'integer'},initialStateJSON:{type:'string'},paramsJSON:{type:'string'},targets:{type:'array',items:{type:'string'}},permissions:{type:'array',items:{type:'string',enum:BEHAVIOR_PERMISSIONS}},keys:{type:'array',items:{type:'string',enum:BEHAVIOR_KEYS}},migrate:{type:'array',items:{type:'object',properties:{from:{type:'integer'},keep:{type:'array',items:{type:'string'}},rename:{type:'object'},add:{type:'object'}},required:['from'],additionalProperties:false}}};
 const changeSchema={type:'object',properties:{op:{type:'string'},id:{type:'string'},name:{type:'string'},position:vecSchema,components:{type:'object'},parts:{type:'array'},object:{type:'object'},behavior:{type:'object'},system:{type:'object'}},required:['op'],additionalProperties:false};
 export const OUTPUT_SCHEMA = {
   type: 'object',
@@ -165,14 +165,14 @@ export const OUTPUT_SCHEMA = {
       parts: { type: 'array', items: objSchema({ shape:{type:'string',enum:['box','blade']},offset: vecSchema, size: vecSchema, material: { type: 'string', enum: [...Object.keys(MATERIALS),'solid'] },color:{type:'string'},solid:{type:'boolean'} }) },
     }) },
     systems:{type:'array',items:{anyOf:Object.entries(SYSTEMS).map(([type,definition])=>objSchema({id:{type:'string'},name:{type:'string'},type:{type:'string',enum:[type]},config:objSchema(Object.fromEntries(Object.keys(definition.fields).map(k=>[k,{type:k==='magazine'?'integer':'number'}]))),source:sourceSchema}))}},
-    behaviors:{type:'array',items:{anyOf:[objSchema({format:{type:'string',enum:['craftmine.behavior/1']},...behaviorFields}),objSchema({format:{type:'string',enum:['craftmine.behavior/2']},...behaviorFields,requires:{type:'array',items:{type:'string',enum:['health@1','ranged@1','melee@1']}},binding:bindingSchema})]}},
+    behaviors:{type:'array',items:{anyOf:[objSchema({format:{type:'string',enum:['craftmine.behavior/1']},...behaviorFields}),objSchema({format:{type:'string',enum:['craftmine.behavior/2']},...behaviorFields,requires:{type:'array',items:{type:'string',enum:BEHAVIOR_REQUIREMENTS}},binding:bindingSchema})]}},
   }) ] },
   },
   required: ['summary','notes','reuseCreations','scene'],
   additionalProperties: false,
 };
 
-OUTPUT_SCHEMA.properties.scene.anyOf[1].properties.behaviors.items.anyOf.push(objSchema({format:{type:'string',enum:['craftmine.behavior/3']},...behaviorFields,requires:{type:'array',items:{type:'string',enum:['health@1','ranged@1','melee@1']}},binding:bindingSchema,capabilities:{type:'array',items:{type:'string',enum:BEHAVIOR_CAPABILITIES}}}));
+OUTPUT_SCHEMA.properties.scene.anyOf[1].properties.behaviors.items.anyOf.push(objSchema({format:{type:'string',enum:['craftmine.behavior/3']},...behaviorFields,requires:{type:'array',items:{type:'string',enum:BEHAVIOR_REQUIREMENTS}},binding:bindingSchema,capabilities:{type:'array',items:{type:'string',enum:BEHAVIOR_CAPABILITIES}}}));
 const assetSceneSchema=structuredClone(OUTPUT_SCHEMA.properties.scene.anyOf[1]);
 assetSceneSchema.properties.format.enum=['craftmine.scene/4'];
 assetSceneSchema.properties.objects.items.properties.appearance={anyOf:[{type:'null'},objSchema({asset:objSchema({id:{type:'string'},version:{type:'integer'},hash:{type:'string'}}),offset:vecSchema,size:vecSchema,rotationY:{type:'number'},fit:{type:'string',enum:['contain','stretch']}})]};
@@ -183,7 +183,7 @@ export function encodeAgentScene(input){const scene=upgradeScene(input);return {
 export function decodeBehaviorDefinition(d){
   const portable=['craftmine.behavior/2','craftmine.behavior/3'].includes(d?.format),capable=d?.format==='craftmine.behavior/3';
   const required=['format','id','name','description','code','stateVersion','initialStateJSON','paramsJSON','targets','permissions',...(portable?['requires','binding']:[]),...(capable?['capabilities']:[])];
-  changeKeys(d,[...required,'keys'],required);
+  changeKeys(d,[...required,'keys','migrate'],required);
   if(typeof d.initialStateJSON!=='string'||d.initialStateJSON.length>16000||typeof d.paramsJSON!=='string'||d.paramsJSON.length>8000)throw Error('模型代码参数或初始状态无效');
   const {initialStateJSON,paramsJSON,...rest}=d;return {...rest,initialState:JSON.parse(initialStateJSON),params:JSON.parse(paramsJSON)};
 }

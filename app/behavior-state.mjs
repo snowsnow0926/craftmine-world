@@ -5,6 +5,18 @@ import { intersects } from './geometry.mjs';
 
 const vector=v=>{exactKeys(v,['x','y','z']);for(const n of Object.values(v))bounded(n,-80,80);};
 const table=(v,limit)=>{if(!v||typeof v!=='object'||Array.isArray(v)||Object.keys(v).length>limit||Object.keys(v).some(k=>!identifier(k)||['constructor','prototype'].includes(k)))throw Error('代码玩法存档索引无效');};
+// 状态迁移是数据驱动的：只允许改名、丢弃和补默认值，不执行模型代码，保持同步与可验证。
+function migrateRecord(definition,record,revision){
+  const step=(definition.migrate||[]).find(entry=>entry.from===record.stateVersion);
+  if(!step)throw Error(`「${definition.name}」需要迁移状态 v${record.stateVersion} → v${definition.stateVersion}：请在模块定义里加一条 migrate（from:${record.stateVersion}，可写 keep/rename/add），原进度已保留`);
+  const source=record.state&&typeof record.state==='object'&&!Array.isArray(record.state)?record.state:{};
+  const state={};
+  for(const [key,value]of Object.entries(source))state[step.rename?.[key]||key]=structuredClone(value);
+  if(step.keep)for(const key of Object.keys(state))if(!step.keep.includes(key))delete state[key];
+  for(const [key,value]of Object.entries(definition.initialState||{}))if(!Object.hasOwn(state,key))state[key]=structuredClone(value);
+  for(const [key,value]of Object.entries(step.add||{}))state[key]=structuredClone(value);
+  return {...record,stateVersion:definition.stateVersion,revision,state,error:''};
+}
 export function validateBehaviorState(value){
   const capable=value?.format==='craftmine.behavior-state/3',archived=capable||value?.format==='craftmine.behavior-state/2';
   exactKeys(value,['format','time','modules','inventory',...(archived?['archive']:[]),...(capable?['items']:[])]);if(!archived&&value.format!=='craftmine.behavior-state/1')throw Error('代码玩法存档格式不兼容');bounded(value.time,0,1e12);
@@ -38,8 +50,9 @@ export class BehaviorState {
     const remember=(id,record)=>{this.value.archive=this.value.archive.filter(e=>e.id!==id||e.record.stateVersion!==record.stateVersion);this.value.archive.push({id,record:normalize(record)});};
     for(const [id,record]of Object.entries(saved?.modules||{}))if(!this.definitions.some(b=>b.definition.id===id&&b.definition.stateVersion===record.stateVersion))remember(id,record);
     for(const artifact of this.definitions){
-      const d=artifact.definition,current=saved?.modules[d.id],old=current?.stateVersion===d.stateVersion?current:this.value.archive.find(e=>e.id===d.id&&e.record.stateVersion===d.stateVersion)?.record;
-      if(current&&!old)throw Error(`「${d.name}」需要迁移状态 v${current.stateVersion} → v${d.stateVersion}，原进度已保留`);
+      const d=artifact.definition,current=saved?.modules[d.id];
+      let old=current?.stateVersion===d.stateVersion?current:this.value.archive.find(e=>e.id===d.id&&e.record.stateVersion===d.stateVersion)?.record;
+      if(current&&!old&&current.stateVersion!==d.stateVersion)old=migrateRecord(d,current,artifact.id);
       this.value.archive=this.value.archive.filter(e=>e.id!==d.id||e.record.stateVersion!==d.stateVersion);
       const record=normalize(old||{stateVersion:d.stateVersion,revision:artifact.id,state:structuredClone(d.initialState),overrides:{},error:''});
       if(record.revision!==artifact.id)record.error='';record.revision=artifact.id;
