@@ -264,7 +264,7 @@
       "glb": "仅静态（拒绝动画与骨骼），外观仅支持绕 Y 轴旋转",
       "limits": "128 物体 / 每步 32 命令 / 代码 32KB / 状态 16KB / 10 万面"
     },
-    "tests": "npm test: 170 passed",
+    "tests": "npm test: 189 passed",
     "developmentBatches": [
       {"batch": "0", "title": "收纳 app/harness 并补测试", "status": "done", "commit": "harness workspace tools + 9 tests", "note": "发现并修复 project.inspect/world.query 在无 behaviors 的场景上崩溃"},
       {"batch": "5", "title": "能力目录 capabilities.catalog", "status": "done", "commit": "app/harness/capabilities.mjs + GET /api/capabilities", "note": "从运行契约派生，漂移测试锁定到 BEHAVIOR_API_GUIDE"},
@@ -272,7 +272,10 @@
       {"batch": "1", "title": "接线 P1 工具闭环", "status": "done", "commit": "orchestrator.mjs + loop-model.mjs + CRAFTMINE_HARNESS_LOOP", "note": "默认关闭；11 个循环测试"},
       {"batch": "3", "title": "通用资源系统", "status": "done", "commit": "resource 系统 + resources.write + 资源条 HUD", "note": "蓝条/体力/饥饿/护甲不需要改宿主"},
       {"batch": "4", "title": "状态迁移 v1→v2", "status": "done", "commit": "migrate:[{from,keep,rename,add}]", "note": "数据驱动、不执行模型代码；旧进度不再被阻断"},
-      {"batch": "6", "title": "90 度朝向旋转", "status": "partial", "commit": "object.patch yaw 0/90/180/270", "note": "旋转烘焙成轴对齐包围盒；平滑移动（带时长的 object.move）仍未实现"}
+      {"batch": "6", "title": "90 度朝向旋转", "status": "done", "commit": "object.patch yaw 0/90/180/270", "note": "旋转烘焙成轴对齐包围盒"},
+      {"batch": "7", "title": "平滑移动", "status": "done", "commit": "object.patch duration + app/tween.mjs", "note": "网格插值，碰撞与存档用目标位置；新增浏览器模块白名单测试"},
+      {"batch": "8", "title": "命令级结果验收", "status": "done", "commit": "evaluateCommandAcceptance + 每个事件的前后快照", "note": "每条命令都必须真的改变世界"},
+      {"batch": "9", "title": "玩家反馈能力包", "status": "done", "commit": "14 个内置音效 + 音量 + 飘字色调/时长", "note": "音效与色调列表从契约派生"}
     ]
   },
   "harnessPlan": {
