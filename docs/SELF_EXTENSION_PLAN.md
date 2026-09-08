@@ -240,3 +240,47 @@ A 是过渡期的正确做法，但有天花板：开发者一周加 3–5 个�
 - **不让扩展改判定面**：验证器、权限模型、回滚逻辑、存档格式、测试集、指标定义。
 - **不在 E1 完成前开 E2**：没有裁判的扩展装载等于随机漫步。
 - **不做公开插件市场、云记忆、多 Agent 并写世界**（沿用 HARNESS_DEVELOPMENT_PLAN §21）。
+
+---
+
+## 10. 落地进度（2026-09-09）
+
+四个阶段的**机制**已经全部落地，每一格都能被机器验证。还差的是**规模**：E2/E3 的退出条件要求「模型自己写出来的扩展长期稳定运行」，这需要真实模型持续产出，不是一次性工程。
+
+| 阶段 | 交付物 | 状态 | 代码 | 机器验证 |
+| --- | --- | --- | --- | --- |
+| **E1** | 10 条冻结需求 + 可执行断言 | ✅ | `app/harness/requirements.mjs`、`scenarios.mjs` | `tests/judge.test.mjs`：10 条需求各有正确轨迹，逐条通过 |
+| **E1** | 需求 → 断言翻译流程 | ✅ | `app/harness/translate.mjs` | 断言成组校验 + 红性检查，太松不许冻结 |
+| **E1** | 确定性断言执行器 | ✅ | `app/harness/assertions.mjs`、`judge.mjs`、`trace-runner.mjs` | `tests/judgment-browser.mjs`：真实引擎录轨迹 → Node 判对错 |
+| **E1** | 指标落盘与影子运行 | ✅ | `app/harness/judge.mjs`、`judgment-run.mjs`、`GET /api/judgment` | 两次影子运行判定签名必须一致 |
+| **E1** | 每条断言都能被故意写错的实现打红 | ✅ | `app/harness/injection.mjs` | `verifyRedness()`：10 条需求 × 声明的坏实现全部变红 |
+| **E2** | 扩展包格式 `craftmine.extension/1` | ✅ | `app/harness/extension.mjs` | 格式、命令名、权限、字段、自带测试逐项校验 |
+| **E2** | 扩展沙箱（独立 Worker，无文件/网络） | ✅ | `app/extension-runner.mjs` | `tests/extension-browser.mjs`：探针证明 DOM/网络/计时器/Worker 全为 undefined |
+| **E2** | 扩展只能产出内核原子效果 | ✅ | `app/harness/extension-effects.mjs` | 复用玩法命令校验，越权/未声明目标直接拒绝 |
+| **E2** | 自带测试 + 反造假 | ✅ | `app/harness/extension-loader.mjs` | 每条自带测试都要「真实现通过、空实现变红」，否则拒绝装载 |
+| **E2** | 装载流程（评审 + 冻结回归 + 人一键接受） | ✅ | `app/harness/extension-loader.mjs`、`app/server.mjs` | 缺对抗评审直接拒绝；回归失败拒绝；`/api/extensions/propose|activate|rollback|unload` |
+| **E2** | 卸载语义显式失败 | ✅ | `app/scene.mjs`、`app/store.mjs` | `tests/extension.test.mjs`：`requires:['ext:life-steal@1']` 未装载时编译报错 |
+| **E2** | 能力目录包含已装载扩展 | ✅ | `app/harness/capabilities.mjs`、`GET /api/capabilities` | 目录由扩展事实派生，不手写 |
+| **E3** | 渲染扩展点（粒子 drawable） | ✅ | `app/harness/render-extension.mjs`、`app/render-runner.mjs` | 真实沙箱产出 drawable 并通过宿主校验 |
+| **E3** | 帧预算 + 自动降级 | ✅ | `app/render-runner.mjs`、`app/world-runtime.mjs` | 死循环/越界只关掉该扩展，页面继续跑 |
+| **E3** | 自动回滚 | ✅ | `app/harness/render-extension.mjs` | 注册表回退到上一版本 |
+| **E4** | 冻结内核哈希 | ✅ | `app/harness/kernel.mjs` | 改动任何冻结文件立刻被点名 |
+| **E4** | 可替换部件 + 人工审批门 | ✅ | `app/harness/{kernel,parts}.mjs` | 没有审批记录一步都走不了；失败回退到默认部件 |
+
+### 怎么自己验
+
+```powershell
+npm test                                  # 230 个 Node 测试（含冻结需求、扩展 ABI、内核哈希）
+node tests/judgment-browser.mjs           # 真实引擎录轨迹 → 裁判判定 + 影子运行 + 坏实现必须变红
+node tests/extension-browser.mjs          # 真实 Worker 沙箱：越权拒绝、死循环自动停用
+node tests/render-browser.mjs             # 粒子扩展、帧预算降级、回滚
+node tests/kernel-parts-browser.mjs       # 内核部件审批门与回退
+```
+
+### 还没做到的
+
+- **E2/E3 的退出条件**：≥3 个模型自写扩展、≥1 个模型自写渲染扩展长期稳定运行。机制已经能拦住坏扩展，但「模型能不能持续写出好扩展」只能靠真实使用来回答。
+- **E4 的规模**：目前只证明了一个渲染通道、一个 HUD 部件的可替换性；后处理着色等更重的部件还没有真实替换过。
+- **评审 LLM 的真实接入**：`/api/extensions/propose` 已经会调用模型做对抗评审（`reviewExtension`），但还没有长期统计它的漏报率。
+
+> 仍然成立的红线：扩展与部件都不能改判定面（验证器、权限模型、回滚逻辑、存档格式、测试集、指标定义）。

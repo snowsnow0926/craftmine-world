@@ -226,35 +226,151 @@
     "northStar": "玩家说一句中文，系统尽力把它实现——包括需要新增宿主能力的请求；玩家不需要知道 L0–L4 的存在",
     "successCriterion": "玩家不用找开发者改代码，就能把想做的玩法做出来",
     "layers": [
-      {"id": "L0", "title": "数据（场景 JSON、物体、参数）", "author": "模型", "verifier": "宿主校验器", "status": "available"},
-      {"id": "L1", "title": "玩法（沙箱 JS + 8 条命令）", "author": "模型", "verifier": "契约 + headless 验证", "status": "available"},
-      {"id": "L2", "title": "词表（新命令/事件/资源类型）", "author": "模型（受审）", "verifier": "扩展 ABI + 扩展自带测试", "status": "missing"},
-      {"id": "L3", "title": "内核（渲染、物理、输入、存档）", "author": "模型（远期、限低风险区）", "verifier": "冻结内核 + 回归测试", "status": "not_recommended_near_term"},
-      {"id": "L4", "title": "策略（提示词、工具集、计划、记忆）", "author": "模型（受审）", "verifier": "外置冻结判定", "status": "missing"},
-      {"id": "judgement", "title": "判定面（验证器、权限、回滚、测试集、指标）", "author": "只有人", "verifier": "—", "status": "partial"}
+      {
+        "id": "L0",
+        "title": "数据（场景 JSON、物体、参数）",
+        "author": "模型",
+        "verifier": "宿主校验器",
+        "status": "available"
+      },
+      {
+        "id": "L1",
+        "title": "玩法（沙箱 JS + 8 条命令）",
+        "author": "模型",
+        "verifier": "契约 + headless 验证",
+        "status": "available"
+      },
+      {
+        "id": "L2",
+        "title": "词表（新命令/事件/资源类型）",
+        "author": "模型（受审）",
+        "verifier": "扩展 ABI + 扩展自带测试",
+        "status": "missing"
+      },
+      {
+        "id": "L3",
+        "title": "内核（渲染、物理、输入、存档）",
+        "author": "模型（远期、限低风险区）",
+        "verifier": "冻结内核 + 回归测试",
+        "status": "not_recommended_near_term"
+      },
+      {
+        "id": "L4",
+        "title": "策略（提示词、工具集、计划、记忆）",
+        "author": "模型（受审）",
+        "verifier": "外置冻结判定",
+        "status": "missing"
+      },
+      {
+        "id": "judgement",
+        "title": "判定面（验证器、权限、回滚、测试集、指标）",
+        "author": "只有人",
+        "verifier": "—",
+        "status": "partial"
+      }
     ],
     "invariant": "可变的是「怎么做」，不可变的是「什么算对」；判定面永远不交给模型",
     "gapLadder": [
-      {"id": "G0", "condition": "现有词表能实现", "behavior": "直接生成候选并 headless 验收"},
-      {"id": "G1", "condition": "现有词表能部分实现", "behavior": "先做能做的，明确列出做不到的"},
-      {"id": "G2", "condition": "需要新词表（L2）", "behavior": "生成宿主扩展提案，走 R2 流程"},
-      {"id": "G3", "condition": "需要内核改动（L3）", "behavior": "生成内核变更提案，限低风险区，必须人审"},
-      {"id": "G4", "condition": "当前架构做不到", "behavior": "明确说明原因与替代方案，绝不伪装成实现"}
+      {
+        "id": "G0",
+        "condition": "现有词表能实现",
+        "behavior": "直接生成候选并 headless 验收"
+      },
+      {
+        "id": "G1",
+        "condition": "现有词表能部分实现",
+        "behavior": "先做能做的，明确列出做不到的"
+      },
+      {
+        "id": "G2",
+        "condition": "需要新词表（L2）",
+        "behavior": "生成宿主扩展提案，走 R2 流程"
+      },
+      {
+        "id": "G3",
+        "condition": "需要内核改动（L3）",
+        "behavior": "生成内核变更提案，限低风险区，必须人审"
+      },
+      {
+        "id": "G4",
+        "condition": "当前架构做不到",
+        "behavior": "明确说明原因与替代方案，绝不伪装成实现"
+      }
     ],
     "stages": [
-      {"id": "R0", "title": "度量与结果级验证", "status": "next", "maps": ["H2", "P1", "P2", "计划 §7.2/§7.3/§17"], "exit": "10 条冻结需求集能自动判对错，指标可复现"},
-      {"id": "R1", "title": "L1 词表扩容", "status": "planned", "maps": ["CREATION_LOOP §7 优先级 2", "H3"], "exit": "≥20 条真实请求测出「无需改宿主」基线"},
-      {"id": "R2", "title": "L2 扩展 ABI（模型造动词）", "status": "planned", "maps": ["H3 新能力扩展", "计划 §14.1", "§13 L646"], "exit": "≥3 个模型自写扩展上线且稳定"},
-      {"id": "R3", "title": "L4-a 策略层自演化", "status": "planned", "maps": ["新增"], "exit": "至少一次「模型改策略→指标提升→人接受」"},
-      {"id": "R4", "title": "L3 内核自改（远期实验）", "status": "deferred", "maps": ["计划 §21 完全自主修改宿主（改为受控）"], "exit": "能安全加一个后处理效果且不破坏回归"},
-      {"id": "R5", "title": "多人共创", "status": "deferred", "maps": ["M6"], "exit": "单机闭环稳定后再评估"}
+      {
+        "id": "R0",
+        "title": "度量与结果级验证",
+        "status": "next",
+        "maps": [
+          "H2",
+          "P1",
+          "P2",
+          "计划 §7.2/§7.3/§17"
+        ],
+        "exit": "10 条冻结需求集能自动判对错，指标可复现"
+      },
+      {
+        "id": "R1",
+        "title": "L1 词表扩容",
+        "status": "planned",
+        "maps": [
+          "CREATION_LOOP §7 优先级 2",
+          "H3"
+        ],
+        "exit": "≥20 条真实请求测出「无需改宿主」基线"
+      },
+      {
+        "id": "R2",
+        "title": "L2 扩展 ABI（模型造动词）",
+        "status": "planned",
+        "maps": [
+          "H3 新能力扩展",
+          "计划 §14.1",
+          "§13 L646"
+        ],
+        "exit": "≥3 个模型自写扩展上线且稳定"
+      },
+      {
+        "id": "R3",
+        "title": "L4-a 策略层自演化",
+        "status": "planned",
+        "maps": [
+          "新增"
+        ],
+        "exit": "至少一次「模型改策略→指标提升→人接受」"
+      },
+      {
+        "id": "R4",
+        "title": "L3 内核自改（远期实验）",
+        "status": "deferred",
+        "maps": [
+          "计划 §21 完全自主修改宿主（改为受控）"
+        ],
+        "exit": "能安全加一个后处理效果且不破坏回归"
+      },
+      {
+        "id": "R5",
+        "title": "多人共创",
+        "status": "deferred",
+        "maps": [
+          "M6"
+        ],
+        "exit": "单机闭环稳定后再评估"
+      }
     ],
     "firstBatch": [
       "R0 最小版：capabilities.catalog + acceptanceSpec 执行器 + 指标落盘",
       "用 R0 复刻「刷新怪物」bug，确认验收器能抓住",
       "R1-P0 第一条：通用资源系统（替代写死血量）"
     ],
-    "redLines": ["验证器", "权限模型", "回滚逻辑", "存档格式", "测试集与指标定义"],
+    "redLines": [
+      "验证器",
+      "权限模型",
+      "回滚逻辑",
+      "存档格式",
+      "测试集与指标定义"
+    ],
     "supplySide": {
       "commands": 8,
       "events": 7,
@@ -265,19 +381,151 @@
       "glb": "仅静态（拒绝动画与骨骼），外观仅支持绕 Y 轴旋转",
       "limits": "128 物体 / 每步 32 命令 / 代码 32KB / 状态 16KB / 10 万面"
     },
-    "tests": "npm test: 189 passed",
+    "tests": "npm test: 230 passed",
     "developmentBatches": [
-      {"batch": "0", "title": "收纳 app/harness 并补测试", "status": "done", "commit": "harness workspace tools + 9 tests", "note": "发现并修复 project.inspect/world.query 在无 behaviors 的场景上崩溃"},
-      {"batch": "5", "title": "能力目录 capabilities.catalog", "status": "done", "commit": "app/harness/capabilities.mjs + GET /api/capabilities", "note": "从运行契约派生，漂移测试锁定到 BEHAVIOR_API_GUIDE"},
-      {"batch": "2", "title": "R0 结果级验证 + 指标", "status": "done", "commit": "acceptance.mjs + metrics.mjs + GET /api/metrics", "note": "按键必须造成可观测世界变化；复刻刷新怪物 bug 的回归测试"},
-      {"batch": "1", "title": "接线 P1 工具闭环", "status": "done", "commit": "orchestrator.mjs + loop-model.mjs + CRAFTMINE_HARNESS_LOOP", "note": "默认关闭；11 个循环测试"},
-      {"batch": "3", "title": "通用资源系统", "status": "done", "commit": "resource 系统 + resources.write + 资源条 HUD", "note": "蓝条/体力/饥饿/护甲不需要改宿主"},
-      {"batch": "4", "title": "状态迁移 v1→v2", "status": "done", "commit": "migrate:[{from,keep,rename,add}]", "note": "数据驱动、不执行模型代码；旧进度不再被阻断"},
-      {"batch": "6", "title": "90 度朝向旋转", "status": "done", "commit": "object.patch yaw 0/90/180/270", "note": "旋转烘焙成轴对齐包围盒"},
-      {"batch": "7", "title": "平滑移动", "status": "done", "commit": "object.patch duration + app/tween.mjs", "note": "网格插值，碰撞与存档用目标位置；新增浏览器模块白名单测试"},
-      {"batch": "8", "title": "命令级结果验收", "status": "done", "commit": "evaluateCommandAcceptance + 每个事件的前后快照", "note": "每条命令都必须真的改变世界"},
-      {"batch": "9", "title": "玩家反馈能力包", "status": "done", "commit": "14 个内置音效 + 音量 + 飘字色调/时长", "note": "音效与色调列表从契约派生"}
-    ]
+      {
+        "batch": "0",
+        "title": "收纳 app/harness 并补测试",
+        "status": "done",
+        "commit": "harness workspace tools + 9 tests",
+        "note": "发现并修复 project.inspect/world.query 在无 behaviors 的场景上崩溃"
+      },
+      {
+        "batch": "5",
+        "title": "能力目录 capabilities.catalog",
+        "status": "done",
+        "commit": "app/harness/capabilities.mjs + GET /api/capabilities",
+        "note": "从运行契约派生，漂移测试锁定到 BEHAVIOR_API_GUIDE"
+      },
+      {
+        "batch": "2",
+        "title": "R0 结果级验证 + 指标",
+        "status": "done",
+        "commit": "acceptance.mjs + metrics.mjs + GET /api/metrics",
+        "note": "按键必须造成可观测世界变化；复刻刷新怪物 bug 的回归测试"
+      },
+      {
+        "batch": "1",
+        "title": "接线 P1 工具闭环",
+        "status": "done",
+        "commit": "orchestrator.mjs + loop-model.mjs + CRAFTMINE_HARNESS_LOOP",
+        "note": "默认关闭；11 个循环测试"
+      },
+      {
+        "batch": "3",
+        "title": "通用资源系统",
+        "status": "done",
+        "commit": "resource 系统 + resources.write + 资源条 HUD",
+        "note": "蓝条/体力/饥饿/护甲不需要改宿主"
+      },
+      {
+        "batch": "4",
+        "title": "状态迁移 v1→v2",
+        "status": "done",
+        "commit": "migrate:[{from,keep,rename,add}]",
+        "note": "数据驱动、不执行模型代码；旧进度不再被阻断"
+      },
+      {
+        "batch": "6",
+        "title": "90 度朝向旋转",
+        "status": "done",
+        "commit": "object.patch yaw 0/90/180/270",
+        "note": "旋转烘焙成轴对齐包围盒"
+      },
+      {
+        "batch": "7",
+        "title": "平滑移动",
+        "status": "done",
+        "commit": "object.patch duration + app/tween.mjs",
+        "note": "网格插值，碰撞与存档用目标位置；新增浏览器模块白名单测试"
+      },
+      {
+        "batch": "8",
+        "title": "命令级结果验收",
+        "status": "done",
+        "commit": "evaluateCommandAcceptance + 每个事件的前后快照",
+        "note": "每条命令都必须真的改变世界"
+      },
+      {
+        "batch": "9",
+        "title": "玩家反馈能力包",
+        "status": "done",
+        "commit": "14 个内置音效 + 音量 + 飘字色调/时长",
+        "note": "音效与色调列表从契约派生"
+      },
+      {
+        "batch": "E1",
+        "name": "外置裁判与冻结需求集",
+        "commit": "b151f19"
+      },
+      {
+        "batch": "E2-E4",
+        "name": "扩展 ABI、渲染扩展层、内核可替换部件",
+        "commit": "ebdbd7d"
+      }
+    ],
+    "selfExtension": {
+      "document": "docs/SELF_EXTENSION_PLAN.md",
+      "stages": [
+        {
+          "id": "E1",
+          "name": "外置裁判",
+          "status": "done",
+          "evidence": "app/harness/{requirements,assertions,judge,injection,translate,review,trace,trace-runner,judgment-run}.mjs + tests/judge.test.mjs + tests/judgment-browser.mjs",
+          "note": "10 条冻结需求、16 种断言、纯函数裁判、注入红性检查、需求→断言与对抗评审流水线；真实引擎录制轨迹端到端跑通"
+        },
+        {
+          "id": "E2",
+          "name": "L2 扩展 ABI",
+          "status": "done",
+          "evidence": "app/harness/{extension,extension-effects,extension-loader,extension-sandbox-browser}.mjs + app/extension-runner.mjs + tests/extension.test.mjs + tests/extension-browser.mjs + /api/extensions/*",
+          "note": "扩展只能产出内核原子效果；独立 Worker 沙箱；自带测试必须对空实现变红；对抗评审强制；冻结回归；卸载后依赖模块显式失败"
+        },
+        {
+          "id": "E3",
+          "name": "渲染扩展层",
+          "status": "done",
+          "evidence": "app/harness/render-extension.mjs + app/render-runner.mjs + app/world-runtime.mjs + tests/render-extension.test.mjs + tests/render-browser.mjs",
+          "note": "粒子 drawable、帧预算、超预算/异常自动降级、注册表回滚；不碰存档、碰撞与输入"
+        },
+        {
+          "id": "E4",
+          "name": "内核可替换部件",
+          "status": "done",
+          "evidence": "app/harness/{kernel,parts}.mjs + app/world-runtime.mjs + app/game.js + tests/kernel.test.mjs + tests/kernel-parts-browser.mjs",
+          "note": "冻结内核哈希 + 人工审批门 + 部件自带测试与回退；只有人能改冻结清单"
+        }
+      ],
+      "exitConditions": [
+        {
+          "stage": "E1",
+          "condition": "10 条需求都有可执行断言并能自动判对错",
+          "met": true
+        },
+        {
+          "stage": "E2",
+          "condition": "≥3 个模型自写扩展上线且稳定运行",
+          "met": false,
+          "note": "ABI/沙箱/装载流水线已就绪；还需要真实模型产出 3 个扩展并长期运行"
+        },
+        {
+          "stage": "E3",
+          "condition": "≥1 个模型自写渲染扩展稳定运行且不破坏回归",
+          "met": false,
+          "note": "参考粒子扩展已在真实沙箱跑通；还需要模型自己写的渲染扩展"
+        },
+        {
+          "stage": "E4",
+          "condition": "第一个内核部件改动必须人审",
+          "met": true,
+          "note": "审批门已在代码里强制"
+        }
+      ],
+      "notDone": [
+        "模型自己写扩展并长期运行（E2/E3 的退出条件）",
+        "公开插件市场、云记忆、多 Agent 并写世界（明确不做）"
+      ]
+    }
   },
   "harnessPlan": {
     "date": "2026-09-09",
@@ -287,14 +535,47 @@
     "currentPhase": "P0",
     "deepseekReferenceCommit": "5dda764ed3aa172535a7967b06ff95d9cbfe536a",
     "phases": [
-      {"id": "P0", "title": "协议与接入基线", "status": "planned"},
-      {"id": "P1", "title": "按需工具、局部修改与持久草稿", "status": "planned"},
-      {"id": "P2", "title": "产品内实际试玩与证据修复", "status": "planned"},
-      {"id": "P3", "title": "作品与经验记忆", "status": "planned"},
-      {"id": "P4", "title": "上下文、提示词与自动压缩", "status": "planned"},
-      {"id": "P5", "title": "组合、迁移与 M5 剩余验收", "status": "planned"},
-      {"id": "P6", "title": "可选第二后端与续接验证", "status": "planned", "optional": true},
-      {"id": "P7", "title": "Windows 个人交付", "status": "planned"}
+      {
+        "id": "P0",
+        "title": "协议与接入基线",
+        "status": "planned"
+      },
+      {
+        "id": "P1",
+        "title": "按需工具、局部修改与持久草稿",
+        "status": "planned"
+      },
+      {
+        "id": "P2",
+        "title": "产品内实际试玩与证据修复",
+        "status": "planned"
+      },
+      {
+        "id": "P3",
+        "title": "作品与经验记忆",
+        "status": "planned"
+      },
+      {
+        "id": "P4",
+        "title": "上下文、提示词与自动压缩",
+        "status": "planned"
+      },
+      {
+        "id": "P5",
+        "title": "组合、迁移与 M5 剩余验收",
+        "status": "planned"
+      },
+      {
+        "id": "P6",
+        "title": "可选第二后端与续接验证",
+        "status": "planned",
+        "optional": true
+      },
+      {
+        "id": "P7",
+        "title": "Windows 个人交付",
+        "status": "planned"
+      }
     ],
     "existingMilestonesRetained": true,
     "runtimeChangedInPlanningBatch": true,
@@ -304,7 +585,12 @@
       "decision": "过渡期模型后端从 Codex CLI 改为 DeepSeek 官方 API；Codex CLI 保留为可回退路径",
       "provider": "deepseek",
       "defaultModel": "deepseek-v4.1-flash-expires-on-0910",
-      "configuration": ["CRAFTMINE_MODEL_PROVIDER", "CRAFTMINE_DEEPSEEK_API_KEY", "CRAFTMINE_MODEL", "CRAFTMINE_MAX_TOKENS"],
+      "configuration": [
+        "CRAFTMINE_MODEL_PROVIDER",
+        "CRAFTMINE_DEEPSEEK_API_KEY",
+        "CRAFTMINE_MODEL",
+        "CRAFTMINE_MAX_TOKENS"
+      ],
       "implementation": [
         "app/agent-model.mjs: provider 分发与 DeepSeek HTTP 适配器（json_object、thinking disabled、schema 进提示、取消、用量回报）",
         "app/agent.mjs: 按 provider 判断可用性，不再强制要求 Codex CLI",
@@ -329,16 +615,35 @@
         "thinkingDisabled": "required"
       },
       "knownRisk": "默认模型名带 expires-on-0910 到期标记且不在 /models 列表中；缓解方式是模型 ID 配置化，并可切换到 deepseek-v4-flash 或 deepseek-v4-pro",
-      "notYetVerified": ["产品内多步工具循环（function calling 单次已验证）", "与现有完整场景生成的耗时与输入量对照（§17.4）"]
+      "notYetVerified": [
+        "产品内多步工具循环（function calling 单次已验证）",
+        "与现有完整场景生成的耗时与输入量对照（§17.4）"
+      ]
     },
     "creationLoopBatch": {
       "date": "2026-09-09",
       "document": "docs/CREATION_LOOP.md",
       "capabilityProbes": [
-        {"name": "小镇（3 间店铺）", "before": "3 次尝试失败：实心对象重叠", "after": "2 次尝试通过（改进报错后）"},
-        {"name": "会追人的怪物", "before": "3 次尝试失败：JSON 转义与模块字段不符", "after": "2 次尝试通过，源码 readsPlayer/movesObject 为真"},
-        {"name": "后坐力 + 音效", "before": "1 次通过", "after": "后坐力真实；音效仍为 HUD 文字代替并诚实标注"},
-        {"name": "挖洞", "before": "1 次通过", "after": "用拆重排几何实现，无体素编辑"}
+        {
+          "name": "小镇（3 间店铺）",
+          "before": "3 次尝试失败：实心对象重叠",
+          "after": "2 次尝试通过（改进报错后）"
+        },
+        {
+          "name": "会追人的怪物",
+          "before": "3 次尝试失败：JSON 转义与模块字段不符",
+          "after": "2 次尝试通过，源码 readsPlayer/movesObject 为真"
+        },
+        {
+          "name": "后坐力 + 音效",
+          "before": "1 次通过",
+          "after": "后坐力真实；音效仍为 HUD 文字代替并诚实标注"
+        },
+        {
+          "name": "挖洞",
+          "before": "1 次通过",
+          "after": "用拆重排几何实现，无体素编辑"
+        }
       ],
       "capabilitiesAdded": [
         "app/scene.mjs: 实心重叠报错给出双方 ID、重叠区域与最小分离方向",
@@ -351,8 +656,25 @@
           "app/agent.mjs: changes 与 scene 二选一，补丁仍走完整校验与候选事务",
           "app/agent-prompt.mjs: 说明 changes 的七种操作与使用条件"
         ],
-        "operations": ["object.patch", "object.add", "object.remove", "behavior.set", "behavior.remove", "system.set", "system.remove"],
-        "measured": {"worldObjects": 128, "mode": "changes", "outputTokens": 157, "beforeOutputTokens": 12976, "latencyMs": 1045, "changedObjects": ["obj-7"]}
+        "operations": [
+          "object.patch",
+          "object.add",
+          "object.remove",
+          "behavior.set",
+          "behavior.remove",
+          "system.set",
+          "system.remove"
+        ],
+        "measured": {
+          "worldObjects": 128,
+          "mode": "changes",
+          "outputTokens": 157,
+          "beforeOutputTokens": 12976,
+          "latencyMs": 1045,
+          "changedObjects": [
+            "obj-7"
+          ]
+        }
       },
       "inputReading": {
         "status": "complete",
@@ -361,20 +683,38 @@
           "app/agent-prompt.mjs: 提示只带对象索引 + 焦点对象完整定义 + 完整模块；模型可用 read 请求补读",
           "app/agent.mjs: 每次尝试最多补一次读取；世界不使用素材时提示省略 scene/4 的重复 schema"
         ],
-        "measured": {"worldObjects": 128, "inputTokens": 14129, "beforeInputTokens": 22722, "promptBytes": 35172, "beforePromptBytes": 51921, "createTaskInputTokens": 6253, "createTaskBeforeInputTokens": 18208}
+        "measured": {
+          "worldObjects": 128,
+          "inputTokens": 14129,
+          "beforeInputTokens": 22722,
+          "promptBytes": 35172,
+          "beforePromptBytes": 51921,
+          "createTaskInputTokens": 6253,
+          "createTaskBeforeInputTokens": 18208
+        }
       },
       "contractRelaxation": "app/behavior-contracts.mjs: object.patch 允许省略 position/visible/solid/color（省略等于保留原字段），修掉怪物探针最后一处机械失败",
       "audioCapability": {
         "status": "complete",
-        "implementation": ["app/behavior-contracts.mjs: 权限 audio.play 与内置音效名 shoot/hit/open/pickup/error", "app/world-runtime.mjs: WebAudio 合成短音播放，无需素材", "app/scene.mjs: 权限枚举改为引用 BEHAVIOR_PERMISSIONS"],
+        "implementation": [
+          "app/behavior-contracts.mjs: 权限 audio.play 与内置音效名 shoot/hit/open/pickup/error",
+          "app/world-runtime.mjs: WebAudio 合成短音播放，无需素材",
+          "app/scene.mjs: 权限枚举改为引用 BEHAVIOR_PERMISSIONS"
+        ],
         "evidence": "后坐力+音效探针 1 次通过，源码含 audio.play 且不含 hud.message（不再用文字冒充）"
       },
       "riskFixes": {
         "R2": "app/store.mjs + app/scene.mjs playerBlockedBy: 应用候选时用玩家此刻的位置检查新实心几何，冲突则拒绝并指出对象名",
         "R1": "新增回归测试：状态版本兼容时改代码不重置已领取状态与背包"
       },
-      "tests": ["npm test: 115 passed（重叠诊断、字段诊断、局部修改、按需读取、object.patch 省略、音效、位置检查、进度不重置、按键声明、按键帧校验、target.revive）"],
-      "knownGaps": ["动画/骨骼", "粒子", "刚体物理"],
+      "tests": [
+        "npm test: 115 passed（重叠诊断、字段诊断、局部修改、按需读取、object.patch 省略、音效、位置检查、进度不重置、按键声明、按键帧校验、target.revive）"
+      ],
+      "knownGaps": [
+        "动画/骨骼",
+        "粒子",
+        "刚体物理"
+      ],
       "userFeedbackBatch": {
         "date": "2026-09-09",
         "feedback": "用户在自己世界连续尝试“怪物刷新键”，任务显示已应用但功能不生效",
