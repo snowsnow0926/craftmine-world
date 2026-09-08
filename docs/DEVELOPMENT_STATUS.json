@@ -2,7 +2,7 @@
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "M5",
-  "baseline": "4ba794c",
+  "baseline": "88122b7",
   "updated": "2026-09-08",
   "items": [
     {
@@ -160,23 +160,24 @@
       ]
     }
   ],
-  "nextAction": "完成 Alpha 0.8 本地服务启动与原项目逐字段核对后，进入 M5：先补足代码模块读取共享库存、物品友好名称和持久任务提示所需的通用接口，再用真实模型按自然语言逐步完成采木、制作门、目标战斗与任务奖励闭环；多次重启、完整导出、第二项目复用并提供个人可运行示例。",
+  "nextAction": "M5.1：按 docs/M5_WORLD.md 增加受能力声明约束的共享库存只读快照、物品友好名称和持久任务消息，保留旧源码/模块/存档兼容与整步原子提交；随后用真实模型逐步完成采木、制作门、目标战斗、任务奖励，跨重启和第二项目复用，并交付可运行示例。",
   "blockers": [],
   "delivery": {
-    "runningVersion": "Alpha 0.7",
-    "developmentSlice": "M1–M4 已验收，Alpha 0.8 代码准备交付；旧个人 0.7 服务已确认停止，启动前已备份项目。M5 完整世界待完成。",
+    "runningVersion": "Alpha 0.8",
+    "developmentSlice": "M1–M4 全部完成并验收，个人 8787 服务已启动 Alpha 0.8。M5 完整可玩世界继续开发。",
     "personalWorldCandidate": "保留 v-ef6c29ea887d0323e15d 花草修复候选，未静默应用",
     "example": "examples/door-and-bounce.save.json",
     "service": {
+      "pid": 140584,
       "port": 8787,
-      "pid": 256284,
-      "backup": ".craftmine/backups/before-alpha-0.7-1788876683134.json",
-      "sourceArchive": ".craftmine/backups/alpha-0.6-source-590c737.zip",
-      "upgradeRecord": ".craftmine/backups/alpha-0.7-upgrade.json",
+      "status": "running",
+      "backup": ".craftmine/backups/before-alpha-0.8-1788880921318.json",
+      "sourceArchive": ".craftmine/backups/alpha-0.7-source-99fbe00.zip",
+      "upgradeRecord": ".craftmine/backups/alpha-0.8-upgrade.json",
       "worldCandidateAndProgressUnchanged": true,
       "allPreviousFieldsUnchanged": true,
-      "migration": "Only added projectContext with explicit applied-task history; no world, progress, candidate, messages or history changes",
-      "status": "stopped_before_alpha_0_8"
+      "projectFileBytesUnchanged": true,
+      "migration": "No project migration; all project bytes unchanged. Asset index is created only on explicit import."
     }
   }
 }
