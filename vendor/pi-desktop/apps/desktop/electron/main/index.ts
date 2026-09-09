@@ -4464,10 +4464,11 @@ function wireHost(h: HostProcess) {
             let modelKey: string | undefined;
             let thinkingLevel: string | undefined;
             let projectId: string | undefined;
+            let craftmineOrigin: unknown;
             if (q.sessionId && host) {
               try {
                 const detail = await host.call<{
-                  session?: { id?: string; projectPath?: string | null; providerId?: string; modelId?: string; thinkingLevel?: string };
+                  session?: { id?: string; projectPath?: string | null; providerId?: string; modelId?: string; thinkingLevel?: string; messages?: UiMessage[] };
                 }>("session.get", { id: q.sessionId });
                 const session = detail?.session;
                 if (session?.providerId && session?.modelId) {
@@ -4476,6 +4477,10 @@ function wireHost(h: HostProcess) {
                 thinkingLevel = session?.thinkingLevel;
                 if (tool.pluginId === "craftmine.world") {
                   projectId = craftmineProjectIdentity(session, q.sessionId);
+                  const request = session?.messages?.findLast(message => message.role === "user");
+                  craftmineOrigin = { modelKey: modelKey ?? null, thinkingLevel,
+                    request: request ? { messageId: request.id, text: request.content,
+                      attachmentsOmitted: request.attachments?.length ?? 0 } : null };
                 }
               } catch {
                 // Executor identity is best-effort; the tool can still run.
@@ -4495,6 +4500,7 @@ function wireHost(h: HostProcess) {
               turnId: q.turnId,
               modelKey,
               thinkingLevel,
+              craftmineOrigin,
             });
             payload = {
               executionId: q.executionId,
@@ -8918,6 +8924,8 @@ installHeadlessControl({
     if (!headlessAcceptance || !host) throw new Error("Native draft acceptance is unavailable");
     return runNativeDraftProbe({
       call: (method, params) => host!.call(method, params),
+      reviewBaseUrl: process.env.CRAFTMINE_TEST_APPLICATION === "1" ? process.env.CRAFTMINE_TEST_REVIEW_URL : undefined,
+      liveReview: process.env.CRAFTMINE_TEST_LIVE_REVIEW === "1" ? {modelId:process.env.CRAFTMINE_NATIVE_REVIEW_MODEL||"",secret:process.env.CRAFTMINE_NATIVE_REVIEW_KEY||"",thinkingLevel:process.env.CRAFTMINE_NATIVE_REVIEW_THINKING||"off"} : undefined,
       toolName: (name) => {
         const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name);
         if (!tool) throw new Error(`Missing world tool: ${name}`);
@@ -8927,6 +8935,28 @@ installHeadlessControl({
       finish: (sessionId) => finishTurn(sessionId, "completed", undefined, { createNotification: false }),
       verification: process.env.CRAFTMINE_TEST_VERIFICATION === "1" ? {
         panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload),
+        apply: process.env.CRAFTMINE_TEST_APPLICATION === "1" || process.env.CRAFTMINE_TEST_LIVE_REVIEW === "1" ? async (id) => {
+          const contents=pluginViews.headlessWorldContents();
+          if(!contents)throw new Error("World view unavailable");
+          const result=await contents.executeJavaScript(`(async()=>{
+            const before=(await craftmineView.snapshot()).snapshot.player;
+            await craftmineView.preview(${JSON.stringify(id)});
+            if(document.getElementById('apply-world').disabled)throw Error('Reviewed candidate cannot be applied');
+            document.getElementById('apply-form').requestSubmit();
+            const deadline=Date.now()+60000;
+            while(Date.now()<deadline){
+              if(!document.body.dataset.previewLoaded&&document.body.dataset.worldLoaded==='true'){
+                const after=(await craftmineView.snapshot()).snapshot.player;
+                return {applied:true,playerPreserved:JSON.stringify(before)===JSON.stringify(after),worldId:document.body.dataset.worldId,player:after};
+              }
+              const error=document.getElementById('error');if(!error.hidden)throw Error(error.textContent);
+              await new Promise(resolve=>setTimeout(resolve,100));
+            }
+            throw Error('Native panel application timed out');
+          })()`,false);
+          result.image=(await contents.capturePage()).toPNG().toString("base64");
+          return result;
+        } : undefined,
         preview: async (id) => {
           const contents = pluginViews.headlessWorldContents();
           if (!contents) throw new Error("World view unavailable");

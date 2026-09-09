@@ -3,8 +3,10 @@ const {CoreClient} = require('./core-client.cjs');
 const {randomUUID} = require('node:crypto');
 const {createWorldTools} = require('./world-tools.cjs');
 const {createVerificationJobs} = require('./verification-jobs.cjs');
+const {createReviewJobs} = require('./review-jobs.cjs');
+const {createApplications} = require('./applications.cjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary} = require('./domain.cjs');
-let core,verifications;
+let core,verifications,reviews,applications;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
 const importErrors={
@@ -21,7 +23,9 @@ const importErrors={
 };
 async function onLoad() {
   core = new CoreClient(process.env.CRAFTMINE_CORE_BIN, await pi.plugin.getDataPath());
-  verifications=createVerificationJobs(core,pi.craftmine);
+  reviews=createReviewJobs(core,pi.craftmine);
+  verifications=createVerificationJobs(core,pi.craftmine,id=>reviews.start(id));
+  applications=createApplications(core,pi.craftmine);
   pi.services.register({id:'world-core',start:()=>core.start(),stop:()=>core.stop()});
   await pi.agent.registerTool({
     name: 'runtime_info',
@@ -35,18 +39,19 @@ async function onLoad() {
       worldWritesAvailable: false,
       draftToolsAvailable: info.sessionDrafts===true,
       verificationJobsAvailable: info.verificationJobs===true,
+      playerApplicationsAvailable: info.playerApplications===true,
       core: info,
       invocation: {sessionId:context?.sessionId,turnId:context?.turnId,toolCallId:context?.toolCallId},
       };
     },
   });
-  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context)),verifications))await pi.agent.registerTool(tool);
+  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context)),verifications,reviews))await pi.agent.registerTool(tool);
 }
 
 // Private parent-process lifecycle. There is no panel channel for this method.
 async function onHostTurnEnd(payload) {
   endedTurns.add(turnKey(payload));
-  if(payload.status!=='completed')await verifications.cancelTurn(payload);
+  if(payload.status!=='completed'){await verifications.cancelTurn(payload);await reviews.cancelTurn(payload);}
   await core.start();
   await core.call('workspace.endTurn',payload);
   endedTurns.delete(turnKey(payload)); // Rust now owns the durable rejection.
@@ -54,6 +59,14 @@ async function onHostTurnEnd(payload) {
 
 async function onPanelInvoke(channel, payload={}) {
   await core.start();
+  if(channel==='candidate.apply')return applications.apply(payload);
+  if(channel==='candidate.applicationState')return applications.state(payload.operationId,payload.worldId);
+  if(channel==='review.list')return core.call('review.list',{verificationId:payload.verificationId}).then(records=>records.map(record=>({id:record.id,status:record.status,current:record.current,
+    summary:record.output?.summary,verdict:record.output?.verdict,suggestions:record.output?.suggestions||[],limitations:record.output?.limitations||[],
+    error:record.output?.error,request:record.input.origin.request,acceptance:record.output?.acceptance?{passed:record.output.acceptance.passed,assertions:record.output.acceptance.assertions}:null,
+    modelKey:record.input.origin.modelKey,usage:record.output?.usage||null,createdAt:record.createdAt})));
+  if(channel==='review.start')return reviews.start(payload.verificationId,{retry:true}).then(record=>({id:record.id,status:record.status}));
+  if(channel==='review.cancel')return reviews.cancel(payload.id).then(()=>({ok:true}));
   if(channel==='verification.list')return core.call('verification.list',{worldId:payload.worldId,offset:payload.offset??0,limit:payload.limit??16});
   if(channel==='verification.read')return readVerification(await core.call('verification.read',{id:payload.id}),payload);
   if(channel==='verification.preview') {
@@ -103,6 +116,7 @@ async function onPanelInvoke(channel, payload={}) {
 
 async function onUnload() {
   await verifications?.stop();
+  await reviews?.stop();
   await core?.stop();
   for(const tool of require('./manifest.json').contributes.agentTools)await pi.agent.unregisterTool(tool.name);
 }

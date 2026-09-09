@@ -7,9 +7,12 @@ export async function runNativeDraftProbe(access: {
   toolName: (name: string) => string;
   begin: (sessionId: string, turnId: string) => void;
   finish: (sessionId: string) => Promise<void>;
+  reviewBaseUrl?: string;
+  liveReview?: { modelId: string; secret: string; thinkingLevel: string };
   verification?: {
     panel: (channel: string, payload: Record<string, unknown>) => Promise<any>;
     preview: (id: string) => Promise<any>;
+    apply?: (id: string) => Promise<any>;
   };
 }): Promise<unknown> {
   const checks: Array<{ name: string; passed: boolean }> = [];
@@ -19,9 +22,25 @@ export async function runNativeDraftProbe(access: {
   };
   const created = await access.call("session.create", { title: "Native draft acceptance" });
   const sessionId = created.session.id as string;
-  await access.call("session.configure", { id: sessionId, mode: "agent", permissionMode: "auto" });
+  let providerId: string | undefined;
+  const modelId=access.liveReview?.modelId||"craftmine-review-fixture";
+  if(access.liveReview) {
+    if(!/^deepseek-[a-z0-9.-]+$/i.test(modelId)||!access.liveReview.secret)throw Error("Explicit live DeepSeek configuration is required");
+    const result=await access.call("providers.create",{name:"Isolated live DeepSeek review",vendorKey:"deepseek",protocol:"openai_compatible",type:"openai_compatible",
+      baseUrl:"https://api.deepseek.com",authKind:"api_key_and_base_url",secretValue:access.liveReview.secret,apiStyle:"chat_completions",defaultModelId:modelId,
+      models:[{id:modelId,contextWindow:1000000,maxTokens:32768,thinkingLevels:["off","low","medium","high"]}]});
+    providerId=result.provider.id;
+  } else if(access.reviewBaseUrl) {
+    if(!/^http:\/\/127\.0\.0\.1:\d+\/v1$/.test(access.reviewBaseUrl))throw Error("Native review fixture must be loopback");
+    const result=await access.call("providers.create",{name:"Isolated review fixture",vendorKey:"custom",protocol:"openai_compatible",type:"openai_compatible",
+      baseUrl:access.reviewBaseUrl,authKind:"api_key_and_base_url",secretValue:"isolated-fixture-key",apiStyle:"chat_completions",defaultModelId:"craftmine-review-fixture",
+      models:[{id:"craftmine-review-fixture",contextWindow:128000,maxTokens:4096,thinkingLevels:["off"]}]});
+    providerId=result.provider.id;
+  }
+  await access.call("session.configure", { id: sessionId, mode: "agent", permissionMode: "auto",...(providerId?{providerId,modelId,thinkingLevel:access.liveReview?.thinkingLevel||"off"}:{}) });
   const turn = await access.call("session.beginTurn", { sessionId });
   const turnId = turn.turnId as string;
+  if(providerId)await access.call("session.appendMessage",{sessionId,turnId,message:{id:"native-review-user",role:"user",content:"真实宿主需求：在地上增加一朵有花瓣的花，按 G 隐藏花，再按一次恢复。",createdAt:new Date().toISOString(),status:"complete"}});
   access.begin(sessionId, turnId);
   let sequence = 0;
   const raw = (name: string, args: unknown, callId = `native-world-${++sequence}`) => access.call("tools.execute", {
@@ -51,11 +70,16 @@ export async function runNativeDraftProbe(access: {
     check("Native read returns the saved authored resource and its hash", JSON.parse(read.text).parts.length === 2 && read.hash.length === 64);
     const forged = await raw("project_inspect", { sessionId: "foreign" });
     check("Native tool dispatch cannot accept model-authored session identity", !forged.ok);
-    const verification = access.verification ? await runNativeVerificationProbe({ invoke, check, worldId: start.worldId, ...access.verification }) : null;
+    const verification = access.verification ? await runNativeVerificationProbe({ invoke, check, worldId: start.worldId, liveReview:!!access.liveReview, ...access.verification }) : null;
     await access.finish(sessionId);
     const late = await raw("workspace_patch", request, "native-late-flower");
     check("Finishing the host turn prevents late native tool writes", !late.ok);
-    return { sessionId, turnId, worldId: start.worldId, taskId: start.taskId, checks, modelCalled: false, verification };
+    if(access.verification?.apply){
+      const next=await access.call("session.beginTurn",{sessionId});access.begin(sessionId,next.turnId);
+      const after=await access.call("tools.execute",{sessionId,turnId:next.turnId,toolCallId:"native-after-apply",toolName:access.toolName("project_inspect"),args:{},mode:"agent",declaredRisk:"low",timeoutMs:10000});
+      check("The next native PI turn starts from the applied world and retains the flower",after.ok&&after.content.baseBuild!==start.baseBuild&&after.content.resources.some((resource:any)=>resource.id==='native-flower'));
+    }
+    return { sessionId, turnId, worldId: start.worldId, taskId: start.taskId, checks, draftAuthorship:"fixed-native-fixture", modelCalled:!!access.liveReview, verification };
   } finally {
     await access.finish(sessionId);
   }

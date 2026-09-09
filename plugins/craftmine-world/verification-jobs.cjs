@@ -2,7 +2,7 @@ const {randomUUID}=require('node:crypto');
 const {compileVerification}=require('./domain.cjs');
 
 // Scheduling only: Rust owns jobs and evidence, PI owns all Agent turns.
-function createVerificationJobs(core,service) {
+function createVerificationJobs(core,service,onPassed=async()=>{}) {
   const jobs=new Map();
   let stopped=false;
   function enqueue(job,context) {
@@ -27,7 +27,12 @@ function createVerificationJobs(core,service) {
       if(entry.cancelled||stopped)return;
       // Stale/cancelled work is intentionally rejected. Transport failures are
       // logged and retain the immutable input for recovery, never a false pass.
-      try {await core.call('verification.finish',{id:job.id,token,output},10000);}
+      try {
+        const result=await core.call('verification.finish',{id:job.id,token,output},10000);
+        if(result.status==='passed'&&record.input.origin?.request?.text&&record.input.origin?.modelKey){
+          try{await onPassed(job.id);}catch(error){console.warn('Verification passed but review did not start:',job.id,error.message);}
+        }
+      }
       catch(error){console.warn('Verification completion was not committed:',job.id,error.message);}
     }).catch(error=>console.warn('Verification worker failed:',job.id,error.message)).finally(()=>jobs.delete(job.id));
   }

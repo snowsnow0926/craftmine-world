@@ -105,6 +105,8 @@ function buildApi() {
     ...(pluginId === "craftmine.world" ? { craftmine: {
       verify: (input) => call("craftmine.verify", [input]),
       cancelVerification: (id) => call("craftmine.cancelVerification", [id]),
+      complete: (id, input) => call("craftmine.complete", [id, input]),
+      cancelComplete: (id) => call("craftmine.cancelComplete", [id]),
     } } : {}),
     app: {
       getVersion: () => call("app.getVersion"),
@@ -376,6 +378,7 @@ async function handleParentCall(method, payload) {
         executionId: payload?.executionId,
         modelKey: payload?.modelKey,
         thinkingLevel: payload?.thinkingLevel,
+        craftmineOrigin: payload?.craftmineOrigin,
         log: (msg) => log("info", msg),
       });
       return result ?? null;

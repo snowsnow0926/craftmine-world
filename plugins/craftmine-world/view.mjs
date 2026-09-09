@@ -17,6 +17,7 @@ const checksPanel=document.getElementById('checks-panel');
 const previewPanel=document.getElementById('preview-panel');
 let previewFrame=null;
 let preview=null,checkOffset=0,checkWorld=null,checksLoading=false,evidenceJob=null,evidenceNext=null;
+let previewReview=null,reviewLoading=false,applicationAttempt=null;
 
 function applyAppearance(appearance) {
   if(appearance?.base==='light'||appearance?.base==='dark') {
@@ -35,21 +36,24 @@ function send(type, value = {}) {
 
 function showError(error) {
   errorBox.textContent=String(error.message||error);errorBox.hidden=false;
-  status.textContent='未保存';status.dataset.error='true';
+  status.textContent='操作未完成';status.dataset.error='true';
 }
 
 function controls() {
-  select.disabled=!bridge||busy||closing||!!preview;newButton.disabled=!bridge||busy||closing||!!preview;saveButton.disabled=!bridge||busy||closing||!loaded||!!preview;
-  importButton.disabled=!bridge||busy||closing||!!preview;
-  document.getElementById('close-preview').disabled=busy||closing;
-  frame.inert=closing;
+  select.disabled=!bridge||busy||closing||!!preview||!!applicationAttempt;newButton.disabled=select.disabled;saveButton.disabled=select.disabled||!loaded;
+  importButton.disabled=select.disabled;
+  document.getElementById('close-preview').disabled=busy||closing||!!applicationAttempt;
+  document.getElementById('apply-world').disabled=busy||closing||!!applicationAttempt||!preview||!previewReview?.current||previewReview.status!=='completed'||!previewReview.acceptance?.passed;
+  document.getElementById('retry-review').disabled=busy||closing||!!applicationAttempt;
+  document.getElementById('cancel-review').disabled=busy||closing;
+  frame.inert=closing||!!applicationAttempt;
 }
 
 function action(run) {
   if(busy||closing)return Promise.resolve();
   busy=true;controls();errorBox.hidden=true;delete status.dataset.error;
   activeOperation=(async()=>{
-    try {return await run();}catch(error){send('resume');showError(error);}
+    try {return await run();}catch(error){if(!applicationAttempt)send('resume');showError(error);}
     finally {busy=false;controls();}
   })();
   return activeOperation;
@@ -65,6 +69,7 @@ function snapshot({freeze=false}={}) {
 }
 
 async function save({freeze=false}={}) {
+  if(applicationAttempt)await reconcileApplication();
   if(!bridge||!loaded||!current?.id)return;
   const result=await snapshot({freeze});
   const serialized=JSON.stringify(result.snapshot);
@@ -78,7 +83,7 @@ async function save({freeze=false}={}) {
 }
 
 function cancelClose() {
-  closeGeneration++;closing=false;controls();send('resume');
+  closeGeneration++;closing=false;controls();if(!applicationAttempt)send('resume');
 }
 
 function prepareClose() {
@@ -88,6 +93,7 @@ function prepareClose() {
   closeOperation=(async()=>{
     try {
       await previous;
+      if(applicationAttempt)await reconcileApplication();
       if(generation!==closeGeneration)throw Error('退出已取消');
       busy=true;controls();
       closePreview(false);
@@ -127,6 +133,7 @@ addEventListener('message',event=>{
   if(event.source!==frame.contentWindow||message?.channel!=='craftmine-game/1'||message.nonce!==nonce)return;
   if(message.type==='ready')send('load',current.world);
   if(message.type==='loaded') {
+    if(message.version!==current.world.build.id){showError(Error('载入版本不一致'));return;}
     loaded=true;status.textContent=bridge?'已保存':'本地预览';
     document.body.dataset.worldLoaded='true';controls();
   }
@@ -191,26 +198,29 @@ async function showEvidence(id,start=0) {
     line(result.overview.checks.map(check=>`${check.passed===true?'✓':check.passed===false?'×':'—'} ${check.name}`).join('　'));
     for(const change of result.overview.changes)if(change.objects+change.behaviors+change.systems)line(`${change.name}：${change.objects} 个对象，${change.behaviors} 个代码玩法，${change.systems} 个系统`);
     if(result.overview.error)line(result.overview.error);
-    line(result.current?'这份草稿尚未应用。机器检查通过后，还需要完成评审与需求验收。':'这是历史草稿的检查记录。当前草稿已经改变。');
+    line(result.current?'打开预览可以查看需求检查、评审建议，并决定是否应用。':'这是历史版本的检查记录。');
   }
   const text=document.getElementById('check-evidence');
-  const prefix=`${checkLabels[result.status]||result.status}${result.current?'':' · 历史草稿'}\n机器检查通过后仍需完成评审和需求验收。当前世界尚未应用这份草稿。\n\n`;
+  const prefix=`${checkLabels[result.status]||result.status}${result.current?'':' · 历史版本'}\n\n`;
   text.textContent=start?text.textContent+result.text:prefix+result.text;
   document.getElementById('evidence-more').hidden=evidenceNext===null;
 }
 function closePreview(resume=true) {
   if(!preview)return;
-  preview=null;previewPanel.hidden=true;previewFrame?.remove();previewFrame=null;delete document.body.dataset.previewLoaded;
+  preview=null;previewReview=null;previewPanel.hidden=true;previewFrame?.remove();previewFrame=null;delete document.body.dataset.previewLoaded;
   if(resume)send('resume');controls();
 }
 async function openPreview(id) {
   if(preview)closePreview(false);
   await save({freeze:true});
   const result=await bridge.invoke('verification.preview',{id});
-  const state={nonce:crypto.randomUUID(),world:result.world};preview=state;
+  const state={nonce:crypto.randomUUID(),world:result.world,job:result.job};preview=state;previewReview=null;
   previewFrame=document.createElement('iframe');previewFrame.title='草稿预览副本';previewFrame.setAttribute('sandbox','allow-scripts allow-pointer-lock');
   previewPanel.append(previewFrame);
   previewPanel.hidden=false;document.getElementById('preview-title').textContent=result.job.summary;
+  document.getElementById('review-state').textContent='正在读取评审…';
+  document.getElementById('review-notes').replaceChildren();
+  await refreshReview();
   try {
     await new Promise((resolve,reject)=>{
       const finish=error=>{clearTimeout(timer);removeEventListener('message',receive);error?reject(error):resolve();};
@@ -230,12 +240,72 @@ async function openPreview(id) {
     });
   }catch(error){closePreview();throw error;}
 }
+async function refreshReview() {
+  if(!preview||reviewLoading||closing)return;
+  const state=preview;reviewLoading=true;
+  try{
+    const records=await bridge.invoke('review.list',{verificationId:state.job.id});
+    if(preview!==state)return;
+    const review=records[0]||null;previewReview=review;
+    const labels={running:'正在评审与检查需求…',failed:'评审未完成',cancelled:'评审已取消',interrupted:'评审已中断'};
+    document.getElementById('review-state').textContent=!review?'尚未完成评审':!review.current?'历史草稿 · 请检查最新草稿':
+      review.status==='completed'?(review.acceptance?.passed?'需求检查通过 · 可以应用':'需求检查未通过 · 请继续修改'):labels[review.status]||review.status;
+    const notes=document.getElementById('review-notes');notes.replaceChildren();
+    const line=text=>{const p=document.createElement('p');p.textContent=text;notes.append(p);};
+    if(review?.request?.text)line('你的需求：'+review.request.text);
+    if(review?.summary)line(review.summary);
+    if(review?.suggestions?.length){line('评审建议（由你决定）：');const ul=document.createElement('ul');for(const text of review.suggestions){const li=document.createElement('li');li.textContent=text;ul.append(li);}notes.append(ul);}
+    for(const text of review?.limitations||[])line('仍需体验：'+text);
+    for(const assertion of review?.acceptance?.assertions||[])line(`${assertion.passed?'✓':'×'} ${assertion.why||assertion.id}：${assertion.detail}`);
+    if(review?.error)line(review.error);
+    if(!review)line('新检查会自动使用对话里的原始需求与模型评审。旧记录需要在对话中重新提交检查。');
+    document.getElementById('retry-review').hidden=!review||!review.current||review.status==='running';
+    document.getElementById('cancel-review').hidden=review?.status!=='running';
+    if(review?.verdict==='block'||review?.acceptance?.passed===false||review?.error)document.getElementById('review-details').open=true;
+  }catch(error){document.getElementById('review-state').textContent='读取评审失败：'+error.message;previewReview=null;}
+  finally{reviewLoading=false;controls();}
+}
+
+async function applyCandidate() {
+  const state=preview,review=previewReview;
+  if(!state||!review?.current||review.status!=='completed'||!review.acceptance?.passed)throw Error('请先完成这份草稿的需求检查与评审');
+  await save({freeze:true});
+  const args={operationId:crypto.randomUUID(),verificationId:state.job.id,reviewId:review.id,worldId:current.id,revision:current.revision};
+  applicationAttempt=args;status.textContent='正在检查最新进度并应用…';
+  try{
+    const result=await bridge.invoke('candidate.apply',args);
+    if(result.status!=='applied')throw Error('应用尚未提交');
+    applicationAttempt=null;mount(result.record);await refreshList();
+  }catch(error){
+    try{
+      const recovered=await bridge.invoke('candidate.applicationState',{operationId:args.operationId,worldId:args.worldId});
+      if(recovered.status==='applied'){applicationAttempt=null;mount(recovered.record);await refreshList();return;}
+      if(['aborted','interrupted'].includes(recovered.status))applicationAttempt=null;
+    }catch{}
+    throw error;
+  }
+}
+async function reconcileApplication() {
+  const attempt=applicationAttempt;if(!attempt)return;
+  let result;
+  try{result=await bridge.invoke('candidate.applicationState',{operationId:attempt.operationId,worldId:attempt.worldId});}
+  catch(error){if(String(error.message).includes('APPLICATION_NOT_FOUND')){applicationAttempt=null;return;}throw error;}
+  if(applicationAttempt!==attempt)return;
+  if(result.status==='applied'){applicationAttempt=null;mount(result.record);await refreshList();return;}
+  if(['aborted','interrupted'].includes(result.status)){applicationAttempt=null;send('resume');return;}
+  throw Error('应用结果尚在确认，原世界保持暂停。');
+}
 document.getElementById('world-mode').onclick=()=>setMode(false);
 document.getElementById('checks-mode').onclick=()=>setMode(true);
 document.getElementById('close-preview').onclick=()=>closePreview();
+document.getElementById('apply-form').onsubmit=event=>{event.preventDefault();void action(applyCandidate);};
+document.getElementById('retry-review').onclick=()=>void action(async()=>{await bridge.invoke('review.start',{verificationId:preview.job.id});await refreshReview();});
+document.getElementById('cancel-review').onclick=()=>void action(async()=>{await bridge.invoke('review.cancel',{id:previewReview.id});await refreshReview();});
 document.getElementById('checks-more').onclick=()=>{checkOffset+=8;void refreshChecks();};
 document.getElementById('evidence-more').onclick=()=>void action(()=>showEvidence(evidenceJob,evidenceNext));
 setInterval(()=>{if(!busy&&!closing&&!checksPanel.hidden&&!preview&&checkOffset===0)void refreshChecks();},2500);
+setInterval(()=>{if(preview&&!busy&&!closing)void refreshReview();},2500);
+setInterval(()=>{if(applicationAttempt&&!busy&&!closing)void action(reconcileApplication);},2500);
 
 saveButton.addEventListener('click',()=>void action(save));
 newButton.addEventListener('click',()=>{form.hidden=!form.hidden;});

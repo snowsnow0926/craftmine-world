@@ -1,6 +1,7 @@
 'use strict';
 import { makeWorldRuntime } from './world-runtime.mjs';
 import { createExtensionTable, disposeExtensionTable } from './extension-runtime.mjs';
+import { observePreview, stepPreview } from './preview-probe.mjs';
 (() => {
   const nonce = location.hash.slice(1) || document.querySelector('meta[name="craftmine-nonce"]')?.content || '', parentOrigin = new URL(location.href).origin;
   const replyOrigin = parentOrigin === 'null' ? '*' : parentOrigin;
@@ -26,15 +27,22 @@ import { createExtensionTable, disposeExtensionTable } from './extension-runtime
         await engine.generateBuild(m.build,m.snapshot,{extensions});engine.pauseInput();
         // Resizing clears the canvas after the first synchronous draw. Hidden
         // offscreen views skip the normal frame loop, so redraw after layout.
-        presentationObserver=new ResizeObserver(()=>{if(engine&&!frozen)engine.render(performance.now()/1000);});
+        presentationObserver=new ResizeObserver(()=>{if(engine)engine.render(performance.now()/1000);});
         presentationObserver.observe(document.getElementById('world').parentElement);
         // A hidden candidate iframe may not receive animation frames until activated.
         // Draw explicitly so readiness checks never depend on visibility scheduling.
         engine.render(performance.now()/1000);
         if(!engine.software&&engine.gl.getError()!==engine.gl.NO_ERROR)throw Error('WebGL 绘制检查失败');
+        if(m.paused){frozen=true;engine.setActive(false);}
         send('loaded',{snapshot:snapshot(),version:build.id,renderer:engine.software?'兼容 3D':'WebGL'});
       }
       if(!engine)return;
+      if(m.type==='request-observe'||m.type==='request-step'){
+        if(!preview)throw Error('需求检查仅适用于独立预览');
+        frozen=true;engine.pauseInput();engine.setActive(false);await engine.behaviors.flush();
+        const observation=m.type==='request-step'?await stepPreview(engine,m.step):observePreview(engine);
+        send('request-result',{requestId:m.requestId,observation});
+      }
       if(m.type==='snapshot'){if(m.freeze){frozen=true;engine.pauseInput();engine.setActive(false);}await engine.behaviors?.flush();send('snapshot',{requestId:m.requestId,snapshot:snapshot()});}
       if(m.type==='inspect'){
         if(!preview)throw Error('定位查看仅适用于独立预览');

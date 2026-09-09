@@ -261,6 +261,12 @@ export type PluginToolExecContext = {
   /** Executor model for this session, `providerId/modelId`. Configuration, not transcript. */
   modelKey?: string;
   thinkingLevel?: string;
+  /** Built-in Craftmine review provenance, captured from the host transcript. */
+  craftmineOrigin?: {
+    modelKey: string | null;
+    thinkingLevel?: string;
+    request: { messageId: string; text: string; attachmentsOmitted: number } | null;
+  };
   signal?: AbortSignal;
   log: (msg: string) => void;
 };

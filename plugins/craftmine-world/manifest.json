@@ -269,6 +269,7 @@
   "permissions": [
     "ui.view",
     "agent.tool.register",
+    "agent.complete",
     "background.service",
     "fs.read"
   ],

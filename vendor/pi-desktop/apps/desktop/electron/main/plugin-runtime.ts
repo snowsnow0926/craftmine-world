@@ -86,7 +86,7 @@ export type RegisteredPluginTool = {
   schema?: unknown;
   execute: (
     args: unknown,
-    ctx?: { projectId?: string; sessionId?: string; turnId?: string; toolCallId?: string; executionId?: string; modelKey?: string; thinkingLevel?: string },
+    ctx?: { projectId?: string; sessionId?: string; turnId?: string; toolCallId?: string; executionId?: string; modelKey?: string; thinkingLevel?: string; craftmineOrigin?: unknown },
   ) => Promise<unknown>;
 };
 
@@ -621,6 +621,7 @@ export class PluginRuntime {
    */
   private executingToolSessions = new Map<string, Array<{ sessionId: string; toolName: string }>>();
   private completeRate = new Map<string, { windowStart: number; count: number }>();
+  private craftmineCompletes = new Map<string, AbortController>();
   /**
    * File accesses the user allowed for the rest of the run, keyed
    * `<mode>:<directory>`. In memory only: a session grant that outlived the
@@ -1321,7 +1322,7 @@ export class PluginRuntime {
             method: "panel.invoke",
             payload: { channel, payload: payload ?? {} },
           },
-          PLUGIN_PANEL_TIMEOUT_MS,
+          pluginId === "craftmine.world" && channel === "candidate.apply" ? 60_000 : PLUGIN_PANEL_TIMEOUT_MS,
         );
     }
   }
@@ -1407,6 +1408,14 @@ export class PluginRuntime {
   ): Promise<unknown> {
     const pluginId = loaded.manifest.id;
     switch (api) {
+      case "craftmine.complete":
+      case "craftmine.cancelComplete": {
+        if (pluginId !== "craftmine.world" || !/^review-[a-f0-9]{64}$/.test(String(args[0]))) throw apiError("UNSUPPORTED", "Built-in review unavailable");
+        const id = String(args[0]);
+        if (api === "craftmine.cancelComplete") { this.craftmineCompletes.get(id)?.abort(); return { ok: true }; }
+        if (this.craftmineCompletes.has(id)) throw apiError("INVALID_ARGUMENT", "Review already running");
+        return this.runAgentComplete(loaded, args[1] as PluginCompleteInput, id);
+      }
       case "craftmine.verify":
       case "craftmine.cancelVerification": {
         if (pluginId !== "craftmine.world" || !this.services.craftmineVerification) throw apiError("UNSUPPORTED", "Built-in verifier unavailable");
@@ -1486,6 +1495,7 @@ export class PluginRuntime {
                       executionId: ctx?.executionId,
                       modelKey: ctx?.modelKey,
                       thinkingLevel: ctx?.thinkingLevel,
+                      ...(pluginId === "craftmine.world" ? { craftmineOrigin: ctx?.craftmineOrigin } : {}),
                     },
                   },
                   PLUGIN_TOOL_TIMEOUT_MS,
@@ -2400,6 +2410,7 @@ export class PluginRuntime {
   private async runAgentComplete(
     loaded: LoadedPlugin,
     input: PluginCompleteInput,
+    craftmineReviewId?: string,
   ): Promise<PluginCompleteResult> {
     this.assertPermission(loaded, "agent.complete");
     const modelKey = String(input.modelKey ?? "").trim();
@@ -2440,7 +2451,9 @@ export class PluginRuntime {
       throw apiError("UNSUPPORTED", "host api not available: agent.complete");
     }
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), PLUGIN_COMPLETE_TIMEOUT_MS);
+    if (craftmineReviewId) this.craftmineCompletes.set(craftmineReviewId, controller);
+    let timedOut = false;
+    const timer = setTimeout(() => { timedOut = true; controller.abort(); }, PLUGIN_COMPLETE_TIMEOUT_MS);
     let result: PluginCompleteResult;
     try {
       result = await this.services.complete({
@@ -2455,20 +2468,22 @@ export class PluginRuntime {
           : undefined,
         signal: controller.signal,
       });
+      controller.signal.throwIfAborted();
     } catch (error) {
       if (controller.signal.aborted) {
         this.services.audit?.({
           pluginId: loaded.manifest.id,
           api: "agent.complete",
           ok: false,
-          errorCode: "TIMEOUT",
+          errorCode: timedOut ? "TIMEOUT" : "CANCELLED",
           ts: Date.now(),
         });
-        throw apiError("TIMEOUT", "advisor complete timed out");
+        throw apiError(timedOut ? "TIMEOUT" : "CANCELLED", timedOut ? "advisor complete timed out" : "advisor complete cancelled");
       }
       throw error;
     } finally {
       clearTimeout(timer);
+      if (craftmineReviewId) this.craftmineCompletes.delete(craftmineReviewId);
     }
     this.services.audit?.({
       pluginId: loaded.manifest.id,

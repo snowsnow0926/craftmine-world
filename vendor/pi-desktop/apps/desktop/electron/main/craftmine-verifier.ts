@@ -13,7 +13,8 @@ export class CraftmineVerifier {
 
   async verify(input: any, pluginPath: string): Promise<unknown> {
     const id = input?.id;
-    if (typeof id !== "string" || !/^check-[a-f0-9]{64}$/.test(id) || !input.world?.build?.id) throw new Error("INVALID_VERIFICATION_REQUEST");
+    if (typeof id !== "string" || !/^(check|review|apply)-[a-f0-9]{64}$/.test(id) || !input.world?.build?.id) throw new Error("INVALID_VERIFICATION_REQUEST");
+    if (input.mode !== undefined && !["verification", "application", "observe", "acceptance"].includes(input.mode)) throw new Error("INVALID_VERIFICATION_MODE");
     if (Buffer.byteLength(JSON.stringify(input)) > 66 * 1024 * 1024) throw new Error("VERIFICATION_TOO_LARGE");
     if (this.jobs.has(id) || this.jobs.size >= 2) throw new Error("VERIFIER_BUSY");
     const directory = join(pluginPath, "views");
@@ -37,15 +38,31 @@ export class CraftmineVerifier {
     try {
       return await Promise.race([stopped, (async () => {
         await window.loadFile(join(directory, "verify.html"));
-        const result = await window.webContents.executeJavaScript(`globalThis.craftmineVerify(${JSON.stringify(input.world)})`, false);
+        const result = await window.webContents.executeJavaScript(`globalThis.craftmineVerify(${JSON.stringify(input)})`, false);
         const frames = await Promise.all(window.webContents.mainFrame.framesInSubtree.map(async frame => await frame.executeJavaScript("({guard:globalThis.__craftmineHeadless||null,node:typeof process,bridge:typeof pluginBridge})", false) as {guard: {focus: number; pointerLock: number} | null; node: string; bridge: string}));
         if (window.isVisible() || window.isFocusable() || !window.webContents.isOffscreen() || frames.some(frame => !frame.guard || frame.guard.focus || frame.guard.pointerLock || frame.node !== "undefined" || frame.bridge !== "undefined")) throw new Error("VERIFIER_ISOLATION_FAILED");
         result.isolation = { offscreen: true, focusable: false, visible: false, frames };
         if (result.render?.passed) {
-          const capture = await window.webContents.capturePage();
-          const pixels = checkCraftmineFrame(capture);
-          const png = capture.toPNG();
-          result.render.capture = { sha256: createHash("sha256").update(png).digest("hex"), ...capture.getSize(), ...pixels };
+          // A loaded message precedes the compositor's first offscreen paint.
+          // Require real pixels within a bounded readiness window; an empty
+          // canvas still fails, regardless of successful script/Worker replies.
+          const paintDeadline = Date.now() + 2500;
+          let attempts = 0;
+          for (;;) {
+            if (window.isDestroyed()) throw new Error("VERIFIER_RENDERER_EXIT");
+            window.webContents.invalidate();
+            const capture = await window.webContents.capturePage();
+            attempts++;
+            try {
+              const pixels = checkCraftmineFrame(capture);
+              const png = capture.toPNG();
+              result.render.capture = { sha256: createHash("sha256").update(png).digest("hex"), ...capture.getSize(), ...pixels, attempts };
+              break;
+            } catch (error) {
+              if (!(error instanceof Error) || error.message !== "BLANK_GAME_FRAME" || Date.now() >= paintDeadline) throw error;
+              await new Promise(resolve => setTimeout(resolve, 50));
+            }
+          }
         }
         return result;
       })()]);

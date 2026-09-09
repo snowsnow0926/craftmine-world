@@ -9,7 +9,7 @@ function hostContext(context) {
   return {projectId:context.projectId,sessionId:context.sessionId,turnId:context.turnId};
 }
 
-function createWorldTools(core,getSettings,isEnded=()=>false,verifications) {
+function createWorldTools(core,getSettings,isEnded=()=>false,verifications,reviews) {
   const definitions=require('./manifest.json').contributes.agentTools.filter(tool=>tool.name!=='runtime_info');
   return definitions.map(definition=>({...definition,execute:async(args,invocation)=>{
     const context=hostContext(invocation);
@@ -23,7 +23,11 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications) {
     await core.start();
     if(definition.name==='verification_read') {
       const job=await core.call('verification.read',{context,id:args.id});
-      return readVerification(job,args);
+      return {...readVerification(job,args),reviews:await core.call('review.list',{verificationId:args.id}).then(records=>records.slice(0,1).map(record=>{
+        const failed=(record.output?.acceptance?.assertions||[]).filter(assertion=>!assertion.passed);
+        return {id:record.id,status:record.status,summary:record.output?.summary?.slice(0,1200),error:record.output?.error?.slice(0,600),requestPassed:record.output?.acceptance?.passed,advisory:true,
+          failedCount:failed.length,failedAssertions:failed.slice(0,6).map(assertion=>({id:assertion.id,why:assertion.why?.slice(0,200),detail:assertion.detail?.slice(0,400)}))};
+      }))};
     }
     if(definition.name==='verification_cancel') {
       const result=await core.call('verification.cancel',{context,id:args.id});
@@ -33,8 +37,9 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications) {
     assertActive();
     const workspace=await core.call('workspace.open',{context,selectedWorld});
     await verifications?.cancelOtherTurns(context);
+    await reviews?.cancelOtherTurns(context);
     if(definition.name==='verification_submit') {
-      const job=await core.call('verification.submit',{context,toolCallId:invocation.toolCallId,revision:args.workspaceRevision,summary:args.summary});
+      const job=await core.call('verification.submit',{context,toolCallId:invocation.toolCallId,revision:args.workspaceRevision,summary:args.summary,origin:invocation.craftmineOrigin||null});
       verifications.enqueue(job,context);return job;
     }
     if(definition.name==='project_inspect')return inspectDraft(workspace,args);
@@ -53,6 +58,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications) {
       assertActive();
       const receipt=await core.call('workspace.commit',{...params,binding:workspace.task.binding,revision:workspace.task.revision,draft:patched.draft});
       await verifications?.cancelTurn(context);
+      await reviews?.cancelTurn(context);
       return {workspaceRevision:receipt.revision,draftHash:receipt.draftHash,changed:patched.changed,replayed:false,publishingAvailable:false};
     }
     throw Error('UNKNOWN_WORLD_TOOL');

@@ -3,18 +3,18 @@
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "W2",
   "baseline": "3bdf52f",
-  "updated": "2026-09-09T04:31:52.416Z",
+  "updated": "2026-09-09T05:26:52.754Z",
   "execution": {
     "scope": "current_codex_thread",
     "status": "running",
-    "reason": "第 5 批进行中：Rust 评审记录、冻结断言计划和正式应用事务已实现，28 项 Rust 测试通过；PI 评审、真实需求断言及面板/原生接线仍在开发。",
+    "reason": "第 5 批核心实现已通过：Rust 28 项，原生固定服务 39 项，原生真实 DeepSeek 评审 33 项；正在生成并验收新的 Windows 程序目录。",
     "activeGoal": true,
     "recurringDevelopment": true,
     "previousLiveCompactionTestStopped": true,
     "automationId": "craftmine-windows",
     "worktree": "D:/Craftmine World-worktrees/pi-apply-20260909",
     "branch": "codex/pi-apply-20260909",
-    "nextStep": "继续本请求 pi-apply-20260909 工作树：将宿主真实需求/模型身份送入不可变检查，复用 PI 一次性 completion 执行评审并冻结断言计划，接通隔离验收和候选应用面板。先完成真实原生事务验收，再推进作品库和原生真实模型闭环。不要将 Rust 固定测试输入当作模型或原生验收。",
+    "nextStep": "完成 pi-apply-20260909 的程序包固定/真实模型验收、证据报告和本地合并。随后新建工作树继续 W2 作品库与原生 Agent 自动创作闭环。",
     "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。"
   },
   "windowsClientPlan": {
@@ -52,7 +52,7 @@
     },
     "knownGaps": [
       "W1 开发版与包内 EXE 已通过原生离屏验收；可见窗口合成、物理双击、正式安装、图标/引导仍待完善",
-      "W2 Rust 草稿、后台检查、不可变证据和 PI 独立预览已接通；模型评审、正式应用事务和作品检索仍待完成",
+      "W2 Rust 草稿、后台检查、PI 评审、真实需求断言和正式应用已接通；作品检索与原生 Agent 自动生成到应用/重启复用仍待完成",
       "实际 Electron 工具分发已通过；真实 PI/DeepSeek 草稿生成续改使用隔离调用会话，不等于桌面模型设置到玩家应用的完整闭环",
       "世界草稿写入租约与停止跨进程接线已完成；崩溃后的租约恢复、显式丢弃与跨会话作品复用仍待实现",
       "需核实完整模型请求上下文预算，补世界记忆注入、Windows 凭据和至少三次强制压缩后绿色收尾",
@@ -162,6 +162,18 @@
       "signature": "NotSigned",
       "merge": "f784a19 and all implementation commits merged into local master",
       "cleanup": "Merged branch and worktree registration removed. Residual directory retained after automatic approval review rejected recursive cleanup (blocked by policy). Do not retry deletion or reuse."
+    },
+    "batch05": {
+      "status": "packaging",
+      "rustTests": 28,
+      "nativeFixtureDevelopment": 39,
+      "nativeRealReviewDevelopment": 33,
+      "realModel": "deepseek-v4.1-flash-expires-on-0910",
+      "thinking": "high",
+      "realDraftAuthorship": "fixed-native-fixture",
+      "requestAssertions": 14,
+      "evidence": "docs/evidence/windows-batch-05",
+      "remaining": "程序包验收和本批交付；W2 作品检索与原生 Agent 自动创作仍未完成"
     }
   },
   "liveVerification": {
@@ -384,7 +396,7 @@
       ]
     }
   ],
-  "nextAction": "第 4 批 f784a19 及实现 1a497f8、2f12573、2566c4f 已合并本地 master；先确认本交付状态记录也已合并，再创建新的 codex/ 分支和独立 W2 工作树。复用已通过的 Rust verification.* 作业和 PI 检查/预览；接入必须执行但只作建议的模型评审、玩家需求验收与 Rust 正式应用事务。应用时保存最新玩家进度，处理位置/状态/版本冲突并正确推进草稿基准。随后完成作品检索/固定版本复用及真实桌面模型设置全流程。不要重做草稿、后台检查或无改动重复 W1；不要将机器检查通过当成已经应用。",
+  "nextAction": "完成 pi-apply-20260909 的程序包固定/真实模型验收、证据报告和本地合并。随后新建工作树继续 W2 作品库与原生 Agent 自动创作闭环。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",

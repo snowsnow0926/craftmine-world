@@ -8568,3 +8568,24 @@ side-effect syntax without executing it and rejects malformed module syntax.
 ### CRAFTMINE-012 — Reviewed application transaction
 
 Prepare an exact successful check using the latest saved player progress and a completed advisory review with executed request assertions. Verify that an advisory block remains visible but does not veto passing machine checks. Reject missing/failed review evidence, wrong build/runner/player, stale revisions and concurrent draft/progress writes. Abort or restart before commit must retain the old world and draft. Commit twice with the same receipt must publish once; restart must recover the applied world and let the next turn use its new base. Preserve dirty drafts from other bases. Journal unit fixtures cover these transitions; actual PI review, native renderer and panel acceptance remain required separately.
+
+### CRAFTMINE-013 — Native request acceptance and panel application
+
+Use a separately marked offscreen profile and configure a loopback fixture provider through actual Rust provider/session APIs. Capture the original user message in a verification, obtain a review through PI one-shot completion and seal its data plan. In the real game copy, run G-key behavior events through the guarded script protocol without input simulation. A color-only implementation must pass general checks but fail requested hiding and actual mesh assertions; a panel call must not bypass that failure. Fix the behavior, retain the advisory block suggestion, apply from the actual preview form, preserve current player progress and verify that the next PI turn reads the applied flower. Keep zero input/focus/page-error audits and distinguish the fixed provider from direct real-model acceptance.
+
+The Agent must also read bounded failure details for the wrong-effect repair.
+The host cancellation test cancels a running review, supplies a late provider
+success and requires cancellation rather than timeout, then reuses the released
+request ID. The broker fault test loses a committed receipt, recovers without a
+second application, and rejects a different review/revision using that ID.
+
+### CRAFTMINE-014 — Native real-model request review
+
+With explicit authorized local DeepSeek configuration and an isolated offscreen
+profile, create the provider/session through Rust and use the native PI completion
+path. Keep the existing model and thinking level. Review a fixed grounded flower
+and toggle behavior, execute the model's frozen assertions in the actual renderer,
+apply from the panel, and preserve progress/next-turn base. Save real usage, failed
+and successful evidence separately. Ground y=6 and hidden drawable-mesh semantics
+must come from the runtime contract. This proves real-model review of a fixture,
+not Agent-generated code. Never export credentials or the test profile.

@@ -8,6 +8,19 @@ import {createRequire} from 'node:module';
 import {DatabaseSync} from 'node:sqlite';
 import {setTimeout as delay} from 'node:timers/promises';
 import {ProjectStore} from '../app/store.mjs';
+import {startDesktopReviewProvider} from './helpers/desktop-review-provider.mjs';
+import {loadLocalConfig} from '../app/local-config.mjs';
+import {deepseekKey,modelId,modelProvider,thinkingEnabled,reasoningEffort} from '../app/agent-model.mjs';
+
+const liveReview=process.env.CRAFTMINE_TEST_LIVE_REVIEW==='1';
+if(liveReview){
+  const file=process.env.CRAFTMINE_LIVE_CONFIG;
+  assert.ok(file&&path.isAbsolute(file),'Explicit authorized live configuration is required');
+  loadLocalConfig(file);
+  assert.ok(modelProvider()==='deepseek'&&deepseekKey(),'Configured DeepSeek credentials are required; no fallback');
+  assert.notEqual(process.env.CRAFTMINE_TEST_APPLICATION,'1','Choose either a fixed provider or real-model review');
+  process.env.CRAFTMINE_TEST_VERIFICATION='1';
+}
 
 const repository=path.resolve('.'),desktop=path.join(repository,'vendor/pi-desktop/apps/desktop');
 const require=createRequire(path.join(desktop,'package.json'));
@@ -24,7 +37,7 @@ const readAppFile=relative=>{
 const mainSource=readAppFile('out/main/index.js').toString();
 for(const guard of ['configureHeadlessAcceptance()', 'focusable: !headlessAcceptance', 'offscreen: !!headlessAcceptance'])assert.ok(mainSource.includes(guard),'Refusing a build without native input isolation: '+guard);
 assert.ok(readAppFile('out/preload/craftmine-headless.cjs').length>0,'Headless preload is missing');
-if(process.env.CRAFTMINE_TEST_VERIFICATION==='1') {
+if(process.env.CRAFTMINE_TEST_VERIFICATION==='1'||process.env.CRAFTMINE_TEST_APPLICATION==='1') {
   const domain=fs.readFileSync(packaged?path.join(resources,'plugins/craftmine.world/domain.cjs'):path.join(desktop,'resources/plugins/craftmine.world/domain.cjs'),'utf8');
   assert.ok(!domain.includes('node:child_process'),'Refusing a desktop behavior compiler that can spawn Electron as Node');
   assert.ok(fs.readFileSync(packaged?path.join(resources,'plugins/craftmine.world/BABEL_PARSER_LICENSE.txt'):path.join(desktop,'resources/plugins/craftmine.world/BABEL_PARSER_LICENSE.txt')).length>0,'Bundled static parser license missing');
@@ -41,10 +54,13 @@ const core=packaged?path.join(resources,'bin/craftmine-core.exe'):process.env.CR
 const host=packaged?path.join(resources,'bin/pi-desktop-host-core.exe'):process.env.PI_DESKTOP_HOST_BIN||path.join(repository,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe');
 for(const file of [electron,core,host])assert.ok(fs.existsSync(file),'Build prerequisite missing: '+file);
 const checks=[],evidence={};
+const reviewProvider=process.env.CRAFTMINE_TEST_APPLICATION==='1'?await startDesktopReviewProvider():null;
 const check=(name,condition)=>{checks.push({name,passed:!!condition});assert.ok(condition,name);console.log('PASS '+name);};
 
 function launch(label) {
   const env={...process.env,CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_HEADLESS_ROOT:directory,CRAFTMINE_DATA_DIR:profile,CRAFTMINE_HEADLESS_TOKEN:token,CRAFTMINE_CORE_BIN:core,PI_DESKTOP_HOST_BIN:host};
+  if(reviewProvider){env.CRAFTMINE_TEST_VERIFICATION='1';env.CRAFTMINE_TEST_REVIEW_URL=reviewProvider.url;}
+  if(liveReview){env.CRAFTMINE_NATIVE_REVIEW_MODEL=modelId();env.CRAFTMINE_NATIVE_REVIEW_KEY=deepseekKey();env.CRAFTMINE_NATIVE_REVIEW_THINKING=thinkingEnabled()?reasoningEffort():'off';}
   delete env.ELECTRON_RUN_AS_NODE;
   for(const name of Object.keys(env))if(/^PI_DESKTOP_(CAPTURE|BOOT_PROBE|SUPERVISION_PROBE|PLAN_UI_PROBE)/.test(name))delete env[name];
   const child=spawn(electron,packaged?[]:[desktop],{cwd:directory,windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env});
@@ -103,10 +119,11 @@ try {
   const guards=await client.rpc('guards');evidence.guards=guards;
   check('桌面、世界面板和游戏初始化时均禁止鼠标锁定与焦点请求',guards.length>=3&&guards.every(frame=>frame.guard&&frame.guard.pointerLock===0&&frame.guard.focus===0));
   check('实际游戏隔离帧无法访问 Node 或插件桥',guards.some(frame=>frame.url==='about:srcdoc'&&frame.node==='undefined'&&frame.bridge==='undefined'));
-  if(process.env.CRAFTMINE_TEST_DRAFTS==='1'||process.env.CRAFTMINE_TEST_VERIFICATION==='1') {
-    const drafts=await client.rpc('draftProbe',{},110000);evidence.drafts=drafts;
+  if(process.env.CRAFTMINE_TEST_DRAFTS==='1'||process.env.CRAFTMINE_TEST_VERIFICATION==='1'||reviewProvider) {
+    const drafts=await client.rpc('draftProbe',{},liveReview?220000:reviewProvider?180000:110000);evidence.drafts=drafts;
     if(drafts.verification?.preview?.image){fs.writeFileSync(path.join(directory,'native-check-preview.png'),Buffer.from(drafts.verification.preview.image,'base64'));delete drafts.verification.preview.image;}
     if(drafts.verification?.preview?.reviewImage){fs.writeFileSync(path.join(directory,'native-check-results.png'),Buffer.from(drafts.verification.preview.reviewImage,'base64'));delete drafts.verification.preview.reviewImage;}
+    if(drafts.verification?.application?.image){fs.writeFileSync(path.join(directory,'native-application.png'),Buffer.from(drafts.verification.application.image,'base64'));delete drafts.verification.application.image;}
     for(const result of drafts.checks)check(result.name,result.passed);
   }
   await client.rpc('importLegacy');
@@ -156,7 +173,9 @@ try {
 finally {
   if(lock){lock.exec('ROLLBACK');lock.close();}
   if(client)await client.stop();
+  if(reviewProvider){evidence.reviewProvider={kind:'fixed-loopback-fixture',requests:reviewProvider.requests};await reviewProvider.close();}
+  if(liveReview)evidence.reviewProvider={kind:'real-deepseek-native-pi-completion',model:modelId(),thinking:thinkingEnabled()?reasoningEffort():'off',draftAuthorship:'fixed-native-fixture'};
   const sha256=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-  fs.writeFileSync(path.join(directory,'report.json'),JSON.stringify({format:'craftmine.native-acceptance/1',mode:packaged?'packaged':'development',time:new Date().toISOString(),passed:!evidence.failure&&checks.every(check=>check.passed),checks,evidence,binaries:{electron:sha256(electron),host:sha256(host),core:sha256(core)},limits:['离屏运行，未做可见窗口或物理双击验收','目录选择返回测试夹具，未打开系统对话框','桌面与世界分别离屏渲染和截图，不证明可见原生窗口的最终合成','本次不调用模型，也不证明真实 Agent 创作闭环']},null,2));
+  fs.writeFileSync(path.join(directory,'report.json'),JSON.stringify({format:'craftmine.native-acceptance/1',mode:packaged?'packaged':'development',time:new Date().toISOString(),passed:!evidence.failure&&checks.every(check=>check.passed),checks,evidence,binaries:{electron:sha256(electron),host:sha256(host),core:sha256(core)},limits:['离屏运行，未做可见窗口或物理双击验收','目录选择返回测试夹具，未打开系统对话框','桌面与世界分别离屏渲染和截图，不证明可见原生窗口的最终合成',liveReview?'真实模型只评审固定草稿，尚未验证原生 Agent 自动创作闭环':reviewProvider?'PI 评审回复来自固定服务，未调用真实模型':'本次不调用模型，也不证明真实 Agent 创作闭环']},null,2));
   console.log('Native acceptance report: '+path.join(directory,'report.json'));
 }

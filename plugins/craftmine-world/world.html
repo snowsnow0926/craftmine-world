@@ -27,6 +27,11 @@
     #preview-panel { display:flex; flex-direction:column; }
     #preview-panel header { flex:none; }
     #preview-title { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    #preview-review { flex:none; max-height:32vh; overflow:auto; padding:8px 12px; border-bottom:1px solid light-dark(#ddd,#393939); font-size:12px; line-height:1.6; }
+    #preview-review p { margin:5px 0; overflow-wrap:anywhere; }
+    #preview-review ul { margin:6px 0; padding-left:20px; }
+    #apply-world { background:light-dark(#316349,#b2d2bd); color:light-dark(#fff,#16231b); border-color:transparent; }
+    #review-state { font-weight:550; }
     .check-row { padding:12px; margin-bottom:10px; border:1px solid light-dark(#ddd,#393939); border-radius:8px; }
     .check-row h3 { margin:0 0 6px; font-size:13px; font-weight:550; overflow-wrap:anywhere; }
     .check-meta { color:light-dark(#656565,#aaa); display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 10px; }
@@ -67,7 +72,13 @@
       <section id="check-detail" hidden><strong>检查结果</strong><div id="check-overview"></div><details><summary>详细记录</summary><pre id="check-evidence"></pre><button id="evidence-more" type="button" hidden>继续读取</button></details></section>
     </section>
     <section id="preview-panel" aria-label="草稿预览" hidden>
-      <header><span id="preview-title">草稿预览</span><span class="save-state">独立副本 · 未应用</span><button id="close-preview" type="button">返回世界</button></header>
+      <header><span id="preview-title">草稿预览</span><span class="save-state">独立副本</span><button id="close-preview" type="button">返回世界</button><form id="apply-form"><button id="apply-world" type="submit" disabled>应用到世界</button></form></header>
+      <section id="preview-review" aria-label="需求检查和评审">
+        <div id="review-state" role="status">正在读取评审…</div>
+        <details id="review-details"><summary>查看需求与建议</summary><div id="review-notes"></div></details>
+        <button id="retry-review" type="button" hidden>重新评审</button>
+        <button id="cancel-review" type="button" hidden>取消评审</button>
+      </section>
     </section>
   </main>
 </body>

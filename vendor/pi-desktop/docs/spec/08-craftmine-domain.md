@@ -114,7 +114,8 @@ The built-in plugin exposes `verification_submit/read/cancel` to PI. Reads are
 paginated to 16,000 Unicode characters and include a compact check overview. The
 World work-panel tab retains the full PI shell and adds Check records, result
 details and independent preview copies. Preview freezes and saves the formal
-world first; it never writes preview progress back or presents an Apply action.
+world first; it never writes preview progress back. Reviewed application is a
+separate player action using the latest formal progress, as specified below.
 World switches clear the old world's check list immediately.
 
 The private `craftmine.verify` service is callable only by the built-in plugin
@@ -150,6 +151,24 @@ effects are discarded, so formal activation does not replay preflight rewards.
 Abort, startup and timeout retain the original world and draft. Only a consumed
 draft may advance its next turn's base without an explicit conflict resolution.
 
-These private Rust operations are the application foundation. The broker's real
-model review, request assertion execution and player UI/native flow are separate
-integration work; journal fixtures do not constitute end-to-end acceptance.
+The built-in broker now connects PI's one-shot model API, sealed review plans,
+native event/mesh assertions and the preview Apply action. The host request and
+model come from the actual session, not model tool arguments. Cancellation revokes
+both the durable review and the active PI request. Input remains bounded; review
+syntax errors retain the raw response and do not publish a success.
+
+The trusted preview diagnostics expose observations and bounded data-only events
+inside disposable game frames. The formal game rejects these messages. Assertions
+read actual runtime and mesh state with no simulated OS input. The preview shows
+the request, suggestions, unverified aspects and assertion outcomes; an advisory
+block does not disable Apply when machine checks pass. A failed operation keeps
+the old runtime paused until its authoritative receipt is resolved. See ADR 0310.
+
+Native fixture-provider acceptance covers this complete protocol and actual game
+execution. An opt-in real DeepSeek review through native PI configuration also
+passes; its draft is still fixture-authored. Full Agent-generated creation remains
+a separate requirement; a fixed response must never be labeled a real model result.
+Reviews include authoritative ground/visibility semantics and distinguish module
+fixture traces from renderer observations. Agent reads include bounded failed
+assertions for repair. Receipt identity is checked on concurrent and durable
+replays; late successful provider replies cannot override cancellation.

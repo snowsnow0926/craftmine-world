@@ -10,7 +10,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
     let method = request["method"].as_str().context("METHOD_REQUIRED")?;
     if method == "hello" {
         return Ok(
-            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"verificationJobs":true,"publishesWorlds":false}),
+            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"verificationJobs":true,"advisoryReviews":true,"playerApplications":true,"publishesWorlds":true,"agentPublishesWorlds":false}),
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
