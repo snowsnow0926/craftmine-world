@@ -14,4 +14,4 @@ Rust regression tests cover the transaction/accounting subset. Native PI compact
 9. Submit an invented memory source and a forged validated status. They must not become validated. A literal journaled player rule may become validated only in its actual world; another world must not retrieve it.
 10. Export, inspect and restore a real domain archive; recomputed outer hashes must not hide corrupt inner world content or changed SQL columns. CAS, cancelled operations and active leases must preserve the existing world. A new-profile restore downgrades imported provenance.
 
-The four Node process suites run a real compiler and Rust service with explicit journal proof fixtures. They do not establish real model/native gameplay effects. Native capture and three actual PI compactions remain integration gates.
+The five Node process suites run a real compiler and Rust service with explicit journal proof fixtures. They do not establish real model/native gameplay effects. Native capture and three actual PI compactions remain integration gates.
