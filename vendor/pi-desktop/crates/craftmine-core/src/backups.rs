@@ -12,8 +12,20 @@ use rusqlite::{
 };
 use serde_json::{json, Map, Value};
 
+mod complete;
+
 const LIMIT: usize = 32 * 1024 * 1024;
 const SCHEMA_VERSION: u64 = 3;
+const FORMAT_DOMAIN: &str = "craftmine.domain-backup/1";
+/// Tables added after schema version 3. Older archives are padded with the
+/// exact live column list so a restore never guesses a shape.
+const PACKAGE_TABLES: &[&str] = &[
+    "craftmine_packages",
+    "craftmine_package_operations",
+    "craftmine_package_instances",
+    "craftmine_package_instance_operations",
+    "craftmine_legacy_conversions",
+];
 const TABLES: &[&str] = &[
     "craftmine_worlds",
     "craftmine_tasks",
@@ -38,6 +50,11 @@ const TABLES: &[&str] = &[
     "craftmine_task_requirements",
     "craftmine_library",
     "craftmine_library_operations",
+    "craftmine_packages",
+    "craftmine_package_operations",
+    "craftmine_package_instances",
+    "craftmine_package_instance_operations",
+    "craftmine_legacy_conversions",
     "craftmine_memories",
     "craftmine_memory_operations",
     "craftmine_memory_history",
@@ -87,8 +104,22 @@ fn snapshot(db: &Connection) -> Result<Value> {
 fn fingerprint(db: &Connection) -> Result<String> {
     Ok(digest(&serde_json::to_string(&snapshot(db)?)?))
 }
-fn compatible_tables(archive: &Value) -> Result<Value> {
+fn compatible_tables(db: &Connection, archive: &Value) -> Result<Value> {
     let mut tables = archive["tables"].clone();
+    // Archives written before the package tables existed are padded with the
+    // live column list, so an older profile restores with no packages instead
+    // of failing the whole restore.
+    {
+        let map = tables.as_object_mut().context("BACKUP_TABLES_REQUIRED")?;
+        for table in PACKAGE_TABLES {
+            if !map.contains_key(*table) {
+                map.insert(
+                    (*table).into(),
+                    json!({"columns": columns(db, table)?, "rows": []}),
+                );
+            }
+        }
+    }
     if archive["schemaVersion"]
         .as_u64()
         .is_some_and(|version| version < 3)
@@ -157,7 +188,9 @@ fn compatible_tables(archive: &Value) -> Result<Value> {
     let map = tables.as_object().context("BACKUP_TABLES_REQUIRED")?;
     ensure!(
         map.len() == TABLES.len() && TABLES.iter().all(|name| map.contains_key(*name)),
-        "BACKUP_SCHEMA_MISMATCH"
+        "BACKUP_SCHEMA_MISMATCH: {} tables vs {} expected",
+        map.len(),
+        TABLES.len()
     );
     if archive["schemaVersion"] == 1 {
         let operations = &mut tables["craftmine_memory_operations"];
@@ -287,7 +320,7 @@ fn validate_archive(db: &Connection, archive: &Value) -> Result<Value> {
         &["format", "schemaVersion", "createdAt", "tables", "hash"],
     )?;
     ensure!(
-        archive["format"] == "craftmine.domain-backup/1"
+        archive["format"] == FORMAT_DOMAIN
             && matches!(
                 archive["schemaVersion"].as_u64(),
                 Some(1 | 2 | SCHEMA_VERSION)
@@ -307,7 +340,7 @@ fn validate_archive(db: &Connection, archive: &Value) -> Result<Value> {
         staging.execute_batch(&sql)?;
     }
     let tx = staging.transaction_with_behavior(TransactionBehavior::Immediate)?;
-    restore_tables(&tx, &compatible_tables(archive)?)?;
+    restore_tables(&tx, &compatible_tables(&tx, archive)?)?;
     validate_integrity(&tx)?;
     tx.commit()?;
     let known:bool=db.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_backup_jobs WHERE kind='export' AND archive_hash=?1 AND status='completed')",[&hash],|r|r.get(0))?;
@@ -399,7 +432,7 @@ impl TaskJournal {
         let before = snapshot(&tx)?;
         let previous_hash = digest(&serde_json::to_string(&before)?);
         job_capacity(&tx, serde_json::to_vec(&before)?.len() + 256)?;
-        restore_tables(&tx, &compatible_tables(&args["archive"])?)?;
+        restore_tables(&tx, &compatible_tables(&tx, &args["archive"])?)?;
         // Raw legacy import archives remain outside portable backups. Keep
         // their local manifests, but detach a link whose world was replaced.
         tx.execute("UPDATE craftmine_legacy_imports SET world_id=NULL,world_hash=NULL WHERE world_id IS NOT NULL AND world_id NOT IN (SELECT id FROM craftmine_worlds)",[])?;
