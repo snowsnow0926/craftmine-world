@@ -18,6 +18,11 @@
     "url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz",
     "bytes": 1281349702,
     "sha256": "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011",
+    "webDebug": {
+      "file": "web_nothreads_debug.zip",
+      "bytes": 10232720,
+      "sha256": "08962aefef811b603541d7951ac67ef00413aad2d978855183c28adee98f626a"
+    },
     "webRelease": {
       "file": "web_nothreads_release.zip",
       "bytes": 10245903,

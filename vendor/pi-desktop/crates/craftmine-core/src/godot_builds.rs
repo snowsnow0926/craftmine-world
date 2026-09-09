@@ -55,6 +55,7 @@ pub(super) struct AssetRow {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(super) struct BuildIdentity {
+    pub branch_id:String,
     pub world_id: String,
     pub build_id: String,
     pub base_id: String,
@@ -111,6 +112,8 @@ fn asset_limit() -> usize {
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct BuildStartArgs {
+    #[serde(default="super::godot_projects::main_branch")]
+    branch_id:String,
     context: WorkspaceContext,
     world_id: String,
     tool_call_id: String,
@@ -177,6 +180,7 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     for (column, definition) in [
         ("content_oid", "TEXT"),
         ("asset_lock_hash", "TEXT"),
+        ("branch_id", "TEXT NOT NULL DEFAULT 'main'"),
     ] {
         let present: bool = db.query_row(
             "SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_builds') WHERE name=?1",
@@ -611,7 +615,7 @@ pub(super) fn materialize(
     let mut total = 0u64;
     for (path, entry) in &manifest.files {
         let text = match source {
-            SourceContent::Legacy => super::godot_projects::blob_read(directory, world, entry)?,
+            SourceContent::Legacy => super::godot_projects::blob_read_bytes(directory, world, entry)?,
             SourceContent::Git {
                 store,
                 layout,
@@ -622,7 +626,7 @@ pub(super) fn materialize(
                     super::godot_projects::file_digest(&bytes) == entry.sha256,
                     "CORRUPT_GODOT_BUILD"
                 );
-                String::from_utf8(bytes).context("CONTENT_NOT_UTF8")?
+                bytes
             }
         };
         let parent = match path.rsplit_once('/') {
@@ -632,7 +636,7 @@ pub(super) fn materialize(
         let target = ensure_dirs(&source_root, parent, "GODOT_STORAGE_UNAVAILABLE")?.join(
             path.rsplit('/').next().unwrap_or(path),
         );
-        write_verified(&target, &entry.sha256, text.as_bytes(), "CORRUPT_GODOT_BUILD")?;
+        write_verified(&target, &entry.sha256, &text, "CORRUPT_GODOT_BUILD")?;
         total = total
             .checked_add(text.len() as u64)
             .context("GODOT_BUILD_TOO_LARGE")?;
@@ -843,6 +847,7 @@ impl TaskJournal {
     /// The per-build copy is materialized here; import/compile/check run in the
     /// registered isolated executor, never in this process.
     pub fn godot_build_start(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock=crate::operation_lock::OperationLock::domain(&self.directory)?;
         let request_hash = request_hash("godotBuild.start", args)?;
         let args: BuildStartArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.tool_call_id)?;
@@ -858,7 +863,7 @@ impl TaskJournal {
             None
         };
         scope(&self.db, &args.context, &args.world_id, false)?;
-        let (manifest, manifest_hash) = self.project_manifest(&args.world_id, None)?;
+        let (manifest, manifest_hash) = self.project_manifest_for(&args.world_id, None,&args.branch_id)?;
         let content_oid = if git_backed {
             Some(
                 super::godot_projects::git_commit_for(&self.db, &args.world_id, manifest.revision)?
@@ -890,12 +895,15 @@ impl TaskJournal {
             "WORLD_BUILD_CONFLICT"
         );
         let (asset_manifest_hash, assets) = asset_manifest(&tx, &args.world_id)?;
-        let asset_lock_hash = if git_backed {
-            Some(asset_lock_hash(&tx, &args.world_id)?)
+        let asset_lock_hash = if let Some((store,layout))=&git {
+            let lock=store.asset_lock(layout,content_oid.as_deref().context("GODOT_BUILD_CONTENT_UNKNOWN")?)?
+                .unwrap_or_else(super::content_history::contract::AssetLock::empty);
+            Some(lock.asset_lock_hash()?)
         } else {
             None
         };
         let mut identity = BuildIdentity {
+            branch_id:args.branch_id.clone(),
             world_id: args.world_id.clone(),
             build_id: String::new(),
             base_id: manifest.base_id.clone(),
@@ -947,12 +955,12 @@ impl TaskJournal {
         tx.execute(
             "INSERT OR IGNORE INTO craftmine_godot_builds(world_id,build_id,source_revision,manifest_hash,
                 asset_manifest_hash,base_id,base_build,engine_version,renderer,target,files,bytes,created_at,
-                content_oid,asset_lock_hash)
-             VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15)",
+                content_oid,asset_lock_hash,branch_id)
+             VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16)",
             params![args.world_id, identity.build_id, i64::try_from(identity.source_revision)?, manifest_hash,
                 asset_manifest_hash, identity.base_id, identity.base_build, identity.engine_version,
                 identity.renderer, identity.target, files.len() as i64, bytes as i64, worlds::timestamp()?,
-                identity.content_oid, identity.asset_lock_hash],
+                identity.content_oid, identity.asset_lock_hash,identity.branch_id],
         )?;
         // The recorded file list is what an executor may read; it is the exact
         // set that was verified on disk above.
@@ -1010,14 +1018,8 @@ impl TaskJournal {
             record["worldId"] == args.world_id,
             "PROJECT_WORLD_BINDING_MISMATCH"
         );
-        let current: Option<(i64, String)> = self
-            .db
-            .query_row(
-                "SELECT revision,hash FROM craftmine_godot_projects WHERE world_id=?1",
-                [&args.world_id],
-                |row| Ok((row.get(0)?, row.get(1)?)),
-            )
-            .optional()?;
+        let current = super::godot_projects::branch_head_manifest(&self.db,&args.world_id,record["branchId"].as_str().unwrap_or("main"))
+            .ok().map(|(manifest,hash)|(manifest.revision as i64,hash));
         let source_stale = current.as_ref().is_none_or(|(revision, hash)| {
             i64::try_from(record["sourceRevision"].as_u64().unwrap_or(u64::MAX)).ok() != Some(*revision)
                 || record["manifestHash"].as_str() != Some(hash.as_str())

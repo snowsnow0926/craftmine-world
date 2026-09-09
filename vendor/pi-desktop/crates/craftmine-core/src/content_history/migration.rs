@@ -25,7 +25,7 @@ use super::{
     contract::validate_identifier,
     repo::{ContentFile, RepositoryStore, MAIN_BRANCH, MIGRATION_REF_PREFIX},
 };
-use crate::godot_projects::{blob_read, load_manifest};
+use crate::godot_projects::{blob_read_bytes, load_manifest};
 
 pub const REPOSITORY_FORMAT: &str = "craftmine.content-repository/1";
 
@@ -274,10 +274,10 @@ pub fn plan(db: &Connection, directory: &Path, world: &str) -> Result<MigrationP
                 let mut file_count = 0u64;
                 let mut byte_count = 0u64;
                 for (path, entry) in &manifest.files {
-                    match blob_read(directory, world, entry) {
-                        Ok(text) => {
+                    match blob_read_bytes(directory, world, entry) {
+                        Ok(bytes) => {
                             file_count += 1;
-                            byte_count += text.len() as u64;
+                            byte_count += bytes.len() as u64;
                         }
                         Err(error) => problems.push(format!(
                             "revision {revision} path {path}: {}",
@@ -414,11 +414,11 @@ pub fn apply(
         let (manifest, _) = load_manifest(db, world, Some(summary.revision))?;
         let mut files = Vec::with_capacity(manifest.files.len());
         for (path, entry) in &manifest.files {
-            let text = blob_read(directory, world, entry)
+            let bytes = blob_read_bytes(directory, world, entry)
                 .with_context(|| format!("revision {} path {path}", summary.revision))?;
             files.push(ContentFile {
                 path: path.clone(),
-                bytes: text.into_bytes(),
+                bytes,
             });
         }
 
@@ -682,8 +682,8 @@ pub fn verify(
             ));
         }
         for (path, entry) in &manifest.files {
-            let legacy = match blob_read(directory, world, entry) {
-                Ok(text) => text.into_bytes(),
+            let legacy = match blob_read_bytes(directory, world, entry) {
+                Ok(bytes) => bytes,
                 Err(error) => {
                     problems.push(format!("revision {revision} path {path}: {error}"));
                     continue;

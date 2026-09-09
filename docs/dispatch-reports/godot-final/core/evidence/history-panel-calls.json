@@ -1,0 +1,597 @@
+[
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "turn.begin",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-5fd20c19-199f-4181-97ac-aee9dfd78a7d",
+        "turnId": "5fd20c19-199f-4181-97ac-aee9dfd78a7d"
+      },
+      "selectedWorld": "world-a",
+      "request": {
+        "id": "5fd20c19-199f-4181-97ac-aee9dfd78a7d",
+        "text": "Manage the selected world's creation branch from the history panel."
+      }
+    }
+  },
+  {
+    "method": "godotProject.index",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-5fd20c19-199f-4181-97ac-aee9dfd78a7d",
+        "turnId": "5fd20c19-199f-4181-97ac-aee9dfd78a7d"
+      },
+      "worldId": "world-a",
+      "branchId": "main",
+      "offset": 0,
+      "limit": 32
+    }
+  },
+  {
+    "method": "content.history",
+    "args": {
+      "worldId": "world-a",
+      "rev": "cceb3e3dbf6611eb77f3032d14fa09129555cd58",
+      "skip": 0,
+      "limit": 20
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "history-5fd20c19-199f-4181-97ac-aee9dfd78a7d",
+      "turnId": "5fd20c19-199f-4181-97ac-aee9dfd78a7d",
+      "status": "completed"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "content.branch.create",
+    "args": {
+      "worldId": "world-a",
+      "branchId": "forest",
+      "fromRev": "cceb3e3dbf6611eb77f3032d14fa09129555cd58",
+      "requestId": "ef0e2f5e-73ae-4362-a01f-c97b644b6d46",
+      "taskId": "native-history-panel",
+      "title": "Create forest"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "turn.begin",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-58aa3569-5bb1-4bba-a201-bcc3a46ae660",
+        "turnId": "58aa3569-5bb1-4bba-a201-bcc3a46ae660"
+      },
+      "selectedWorld": "world-a",
+      "request": {
+        "id": "58aa3569-5bb1-4bba-a201-bcc3a46ae660",
+        "text": "Manage the selected world's creation branch from the history panel."
+      }
+    }
+  },
+  {
+    "method": "godotProject.index",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-58aa3569-5bb1-4bba-a201-bcc3a46ae660",
+        "turnId": "58aa3569-5bb1-4bba-a201-bcc3a46ae660"
+      },
+      "worldId": "world-a",
+      "branchId": "forest",
+      "offset": 0,
+      "limit": 32
+    }
+  },
+  {
+    "method": "content.history",
+    "args": {
+      "worldId": "world-a",
+      "rev": "e4c2fe9ab2036a5c3961f9616b80ebb04ad45b1f",
+      "skip": 0,
+      "limit": 20
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "history-58aa3569-5bb1-4bba-a201-bcc3a46ae660",
+      "turnId": "58aa3569-5bb1-4bba-a201-bcc3a46ae660",
+      "status": "completed"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "turn.begin",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-98430c95-1fa9-4584-8c6e-512b993f5e2b",
+        "turnId": "98430c95-1fa9-4584-8c6e-512b993f5e2b"
+      },
+      "selectedWorld": "world-a",
+      "request": {
+        "id": "98430c95-1fa9-4584-8c6e-512b993f5e2b",
+        "text": "Manage the selected world's creation branch from the history panel."
+      }
+    }
+  },
+  {
+    "method": "godotProject.read",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-98430c95-1fa9-4584-8c6e-512b993f5e2b",
+        "turnId": "98430c95-1fa9-4584-8c6e-512b993f5e2b"
+      },
+      "worldId": "world-a",
+      "branchId": "forest",
+      "revision": 1,
+      "manifestHash": "80c9b3b80833a359c21d918da1be2ed377388598bbed1ec4e805b770ac9ef7ff",
+      "path": "world.gd",
+      "offset": 0,
+      "limit": 16000
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "history-98430c95-1fa9-4584-8c6e-512b993f5e2b",
+      "turnId": "98430c95-1fa9-4584-8c6e-512b993f5e2b",
+      "status": "completed"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "turn.begin",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-44555b11-a625-4c0a-9236-4478a6e4ea89",
+        "turnId": "44555b11-a625-4c0a-9236-4478a6e4ea89"
+      },
+      "selectedWorld": "world-a",
+      "request": {
+        "id": "44555b11-a625-4c0a-9236-4478a6e4ea89",
+        "text": "Manage the selected world's creation branch from the history panel."
+      }
+    }
+  },
+  {
+    "method": "godotProject.patch",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-44555b11-a625-4c0a-9236-4478a6e4ea89",
+        "turnId": "44555b11-a625-4c0a-9236-4478a6e4ea89"
+      },
+      "worldId": "world-a",
+      "revision": 1,
+      "manifestHash": "80c9b3b80833a359c21d918da1be2ed377388598bbed1ec4e805b770ac9ef7ff",
+      "toolCallId": "history-4cd53f56-ed2b-45fd-b1a2-bdc6ccf853cc",
+      "operation": {
+        "operationId": "history-4cd53f56-ed2b-45fd-b1a2-bdc6ccf853cc",
+        "worldId": "world-a",
+        "repoId": "world-world-a",
+        "branchId": "forest",
+        "expectedHeadOid": "e4c2fe9ab2036a5c3961f9616b80ebb04ad45b1f",
+        "expectedAppliedOid": null,
+        "expectedProgressRevision": null
+      },
+      "operations": [
+        {
+          "op": "put",
+          "path": "world.gd",
+          "expectedHash": "bb2306b7c77a57f0f5552d847a00a89aacf70e59050199bc3e9988e17b494a45",
+          "text": "extends Node3D\nvar damage := 21\n"
+        }
+      ]
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "history-44555b11-a625-4c0a-9236-4478a6e4ea89",
+      "turnId": "44555b11-a625-4c0a-9236-4478a6e4ea89",
+      "status": "completed"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "turn.begin",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-49c44ebf-64c8-4dd8-acc2-e9daeb681cd0",
+        "turnId": "49c44ebf-64c8-4dd8-acc2-e9daeb681cd0"
+      },
+      "selectedWorld": "world-a",
+      "request": {
+        "id": "49c44ebf-64c8-4dd8-acc2-e9daeb681cd0",
+        "text": "Manage the selected world's creation branch from the history panel."
+      }
+    }
+  },
+  {
+    "method": "godotProject.index",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-49c44ebf-64c8-4dd8-acc2-e9daeb681cd0",
+        "turnId": "49c44ebf-64c8-4dd8-acc2-e9daeb681cd0"
+      },
+      "worldId": "world-a",
+      "branchId": "forest",
+      "offset": 0,
+      "limit": 32
+    }
+  },
+  {
+    "method": "content.history",
+    "args": {
+      "worldId": "world-a",
+      "rev": "c8c60adc3c92a3538626dbb30ef97475aa13c0dd",
+      "skip": 0,
+      "limit": 20
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "history-49c44ebf-64c8-4dd8-acc2-e9daeb681cd0",
+      "turnId": "49c44ebf-64c8-4dd8-acc2-e9daeb681cd0",
+      "status": "completed"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "turn.begin",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-60e6fc73-6539-4e02-93c3-c930ee913db2",
+        "turnId": "60e6fc73-6539-4e02-93c3-c930ee913db2"
+      },
+      "selectedWorld": "world-a",
+      "request": {
+        "id": "60e6fc73-6539-4e02-93c3-c930ee913db2",
+        "text": "Manage the selected world's creation branch from the history panel."
+      }
+    }
+  },
+  {
+    "method": "godotBuild.start",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-60e6fc73-6539-4e02-93c3-c930ee913db2",
+        "turnId": "60e6fc73-6539-4e02-93c3-c930ee913db2"
+      },
+      "worldId": "world-a",
+      "branchId": "forest",
+      "revision": 1,
+      "manifestHash": "80c9b3b80833a359c21d918da1be2ed377388598bbed1ec4e805b770ac9ef7ff",
+      "toolCallId": "history-46c6625b-f8ad-4e71-b821-08635ab43a61",
+      "mode": "check"
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "history-60e6fc73-6539-4e02-93c3-c930ee913db2",
+      "turnId": "60e6fc73-6539-4e02-93c3-c930ee913db2",
+      "status": "error"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "turn.begin",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-06d285b4-093f-4e08-963d-5ea957a1ac44",
+        "turnId": "06d285b4-093f-4e08-963d-5ea957a1ac44"
+      },
+      "selectedWorld": "world-a",
+      "request": {
+        "id": "06d285b4-093f-4e08-963d-5ea957a1ac44",
+        "text": "Manage the selected world's creation branch from the history panel."
+      }
+    }
+  },
+  {
+    "method": "godotBuild.start",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-06d285b4-093f-4e08-963d-5ea957a1ac44",
+        "turnId": "06d285b4-093f-4e08-963d-5ea957a1ac44"
+      },
+      "worldId": "world-a",
+      "branchId": "forest",
+      "revision": 2,
+      "manifestHash": "1bbb7f338241512496c7c1189621d18a6e42a28e85a05d54d569547859c264a1",
+      "toolCallId": "history-53433cf9-e8a1-4efc-9073-17f03734a944",
+      "mode": "check"
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "history-06d285b4-093f-4e08-963d-5ea957a1ac44",
+      "turnId": "06d285b4-093f-4e08-963d-5ea957a1ac44",
+      "status": "completed"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "turn.begin",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-e73fd846-3013-40b5-af02-fda48686d0b3",
+        "turnId": "e73fd846-3013-40b5-af02-fda48686d0b3"
+      },
+      "selectedWorld": "world-a",
+      "request": {
+        "id": "e73fd846-3013-40b5-af02-fda48686d0b3",
+        "text": "Manage the selected world's creation branch from the history panel."
+      }
+    }
+  },
+  {
+    "method": "godotProject.index",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-e73fd846-3013-40b5-af02-fda48686d0b3",
+        "turnId": "e73fd846-3013-40b5-af02-fda48686d0b3"
+      },
+      "worldId": "world-a",
+      "branchId": "main",
+      "offset": 0,
+      "limit": 32
+    }
+  },
+  {
+    "method": "content.history",
+    "args": {
+      "worldId": "world-a",
+      "rev": "cceb3e3dbf6611eb77f3032d14fa09129555cd58",
+      "skip": 0,
+      "limit": 20
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "history-e73fd846-3013-40b5-af02-fda48686d0b3",
+      "turnId": "e73fd846-3013-40b5-af02-fda48686d0b3",
+      "status": "completed"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "turn.begin",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-2a98ae6e-63ff-4bb5-b193-8b3885b1e015",
+        "turnId": "2a98ae6e-63ff-4bb5-b193-8b3885b1e015"
+      },
+      "selectedWorld": "world-a",
+      "request": {
+        "id": "2a98ae6e-63ff-4bb5-b193-8b3885b1e015",
+        "text": "Manage the selected world's creation branch from the history panel."
+      }
+    }
+  },
+  {
+    "method": "godotProject.read",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-2a98ae6e-63ff-4bb5-b193-8b3885b1e015",
+        "turnId": "2a98ae6e-63ff-4bb5-b193-8b3885b1e015"
+      },
+      "worldId": "world-a",
+      "branchId": "main",
+      "revision": 0,
+      "manifestHash": "18263a20c8019db44e3adc436df00a10635344f3180f85ce26ce40ef4acf3925",
+      "path": "world.gd",
+      "offset": 0,
+      "limit": 16000
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "history-2a98ae6e-63ff-4bb5-b193-8b3885b1e015",
+      "turnId": "2a98ae6e-63ff-4bb5-b193-8b3885b1e015",
+      "status": "completed"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "turn.begin",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-ae7a339e-446e-4026-bcea-58d7002d9d49",
+        "turnId": "ae7a339e-446e-4026-bcea-58d7002d9d49"
+      },
+      "selectedWorld": "world-a",
+      "request": {
+        "id": "ae7a339e-446e-4026-bcea-58d7002d9d49",
+        "text": "Manage the selected world's creation branch from the history panel."
+      }
+    }
+  },
+  {
+    "method": "godotProject.index",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-ae7a339e-446e-4026-bcea-58d7002d9d49",
+        "turnId": "ae7a339e-446e-4026-bcea-58d7002d9d49"
+      },
+      "worldId": "world-a",
+      "branchId": "forest",
+      "offset": 0,
+      "limit": 32
+    }
+  },
+  {
+    "method": "content.history",
+    "args": {
+      "worldId": "world-a",
+      "rev": "c8c60adc3c92a3538626dbb30ef97475aa13c0dd",
+      "skip": 0,
+      "limit": 20
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "history-ae7a339e-446e-4026-bcea-58d7002d9d49",
+      "turnId": "ae7a339e-446e-4026-bcea-58d7002d9d49",
+      "status": "completed"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "world-a"
+    }
+  },
+  {
+    "method": "turn.begin",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-2ece9639-eaa4-4be0-90b4-f12fe507ba0d",
+        "turnId": "2ece9639-eaa4-4be0-90b4-f12fe507ba0d"
+      },
+      "selectedWorld": "world-a",
+      "request": {
+        "id": "2ece9639-eaa4-4be0-90b4-f12fe507ba0d",
+        "text": "Manage the selected world's creation branch from the history panel."
+      }
+    }
+  },
+  {
+    "method": "godotProject.read",
+    "args": {
+      "context": {
+        "projectId": "craftmine-history-panel",
+        "sessionId": "history-2ece9639-eaa4-4be0-90b4-f12fe507ba0d",
+        "turnId": "2ece9639-eaa4-4be0-90b4-f12fe507ba0d"
+      },
+      "worldId": "world-a",
+      "branchId": "forest",
+      "revision": 2,
+      "manifestHash": "1bbb7f338241512496c7c1189621d18a6e42a28e85a05d54d569547859c264a1",
+      "path": "world.gd",
+      "offset": 0,
+      "limit": 16000
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "history-2ece9639-eaa4-4be0-90b4-f12fe507ba0d",
+      "turnId": "2ece9639-eaa4-4be0-90b4-f12fe507ba0d",
+      "status": "completed"
+    }
+  }
+]

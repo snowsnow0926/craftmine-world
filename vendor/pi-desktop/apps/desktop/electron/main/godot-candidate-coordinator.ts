@@ -3,9 +3,10 @@ import {isDeepStrictEqual} from "node:util";
 import type {GodotWorldViewHost} from "./godot-world-view-host";
 import type {createGodotRuntimeAdapter, GodotCandidateDescriptor} from "./godot-runtime-adapter";
 type Data = Record<string, any>;
-type Session = {worldId:string;candidateId:string;id:string;token:string;phase:"preparing"|"preview"|"applying"|"uncertain"|"committed";prepared?:Data;descriptor?:GodotCandidateDescriptor;evidence?:Data};
+type Session = {worldId:string;candidateId:string;id:string;token:string;phase:"preparing"|"preview"|"applying"|"uncertain"|"committed";prepared?:Data;descriptor?:GodotCandidateDescriptor;evidence?:Data;contentOperation?:string};
 const object=(value:unknown):value is Data=>!!value&&typeof value==="object"&&!Array.isArray(value);
 const sha=(text:string)=>createHash("sha256").update(text,"utf8").digest("hex");
+const canonical=(value:any):string=>Array.isArray(value)?`[${value.map(canonical).join(",")}]`:object(value)?`{${Object.keys(value).sort().map(key=>`${JSON.stringify(key)}:${canonical(value[key])}`).join(",")}}`:JSON.stringify(value);
 /** Main-only candidate lifecycle. Pages choose an id, never a token, state or launch proof. */
 export function createGodotCandidateCoordinator(options:{
   host:GodotWorldViewHost;adapter:ReturnType<typeof createGodotRuntimeAdapter>;
@@ -50,6 +51,10 @@ export function createGodotCandidateCoordinator(options:{
   async function finishApplied(session:Session,result:Data) {
     applicationMatches(session,result);
     if(result.status!=="applied"||!session.evidence||!isDeepStrictEqual(result.output,session.evidence))throw new Error("GODOT_APPLICATION_COMMIT_UNCERTAIN");
+    if(session.contentOperation) {
+      const content=await rpc("content.apply.confirm",{operationId:session.contentOperation,applicationId:session.id,detail:"Confirmed by the durable Godot deployment and first-load receipt."});
+      if(content.state!=="committed")throw Error("CONTENT_APPLICATION_CONFIRM_UNCERTAIN");
+    }
     session.phase="committed";
     const descriptor=await options.adapter.describe(session.worldId);
     if(!descriptor||descriptor.buildId!==session.prepared!.buildId||!isDeepStrictEqual(descriptor.snapshot,session.evidence.snapshot)||descriptor.revision!==session.prepared!.input.revision+1)throw new Error("GODOT_FORMAL_COMMIT_MISMATCH");
@@ -60,6 +65,27 @@ export function createGodotCandidateCoordinator(options:{
     completed.set(completionKey(session.worldId,session.candidateId),{worldId:session.worldId,candidateId:session.candidateId,buildId:descriptor.buildId});
     if(completed.size>32)completed.delete(completed.keys().next().value!);
     drop();return {status:"applied",worldId:session.worldId,candidateId:session.candidateId,record};
+  }
+  async function commit(session:Session) {
+    const status=await rpc("content.status",{worldId:session.worldId});
+    if(status.backend==="git") {
+      const candidate=await rpc("godotCandidate.read",{worldId:session.worldId,candidateId:session.candidateId});
+      const content=candidate.candidate?.content;
+      if(!object(content)||content.repoId!==status.repoId||typeof content.contentOid!=="string"||typeof content.branchId!=="string")throw Error("GODOT_CANDIDATE_CONTENT_UNKNOWN");
+      const branch=(status.branches??[]).find((item:Data)=>item.branchId===content.branchId||item.name===content.branchId||item.name===`refs/heads/${content.branchId}`);
+      const context={operationId:session.id,worldId:session.worldId,repoId:content.repoId,branchId:content.branchId,
+        expectedHeadOid:content.branchId==="main"?status.headOid:branch?.headOid??branch?.oid,
+        expectedAppliedOid:status.appliedOid,expectedProgressRevision:session.prepared!.input.revision};
+      if(context.expectedHeadOid===undefined)throw Error("CONTENT_BRANCH_NOT_FOUND");
+      // Remember before the request, so a lost prepare reply remains recoverable.
+      session.contentOperation=session.id;
+      await rpc("content.apply.prepare",{worldId:session.worldId,context,kind:"apply",targetOid:content.contentOid,detail:"Apply the checked Godot candidate."});
+      await rpc("content.apply.advance",{operationId:session.id});
+    }
+    let result;
+    try {result=await rpc("godotApplication.commit",{id:session.id,token:session.token,evidence:session.evidence});}
+    catch {result=await rpc("godotApplication.read",{id:session.id});}
+    return finishApplied(session,result);
   }
   async function recover(session:Session):Promise<Data> {
     let raw;
@@ -77,6 +103,10 @@ export function createGodotCandidateCoordinator(options:{
       if(aborted.status==="applied")return finishApplied(session,aborted);
       if(!["aborted","interrupted"].includes(aborted.status))throw new Error("GODOT_APPLICATION_ABORT_UNCERTAIN");
     } else if(!["aborted","interrupted"].includes(result.status))throw new Error("GODOT_APPLICATION_STATE_UNKNOWN");
+    if(session.contentOperation) {
+      const operation=await rpc("content.operation.read",{worldId:session.worldId,operationId:session.contentOperation});
+      if(operation.state!=="aborted")await rpc("content.apply.rollback",{operationId:session.contentOperation,reason:"Godot deployment was not committed."});
+    }
     await options.host.discardCandidate();drop();await options.host.resume();return {status:"aborted",worldId:session.worldId};
   }
   async function failed(error:unknown):Promise<Data> {
@@ -108,10 +138,7 @@ export function createGodotCandidateCoordinator(options:{
       const formal=await options.adapter.describe(worldId);if(!formal||formal.revision!==checkpoint.receipt.revision||!isDeepStrictEqual(formal.snapshot,checkpoint.snapshot))throw new Error("GODOT_LATEST_PROGRESS_REQUIRED");
       const session=await prepare(worldId,candidateId,formal.revision,formal.snapshot,"applying");
       session.evidence=await confirm(session);
-      let result;
-      try {result=await rpc("godotApplication.commit",{id:session.id,token:session.token,evidence:session.evidence});}
-      catch {result=await rpc("godotApplication.read",{id:session.id});}
-      return await finishApplied(session,result);
+      return await commit(session);
     }catch(error){return failed(error);}
   }
   /**
@@ -123,17 +150,21 @@ export function createGodotCandidateCoordinator(options:{
     if(active)throw new Error("GODOT_CANDIDATE_ACTIVE");
     await identity(worldId,true);
     if(options.host.instance?.worldId===worldId)throw new Error("GODOT_WORLD_ALREADY_RUNNING");
-    if(await options.adapter.describe(worldId))throw new Error("GODOT_FORMAL_WORLD_EXISTS");
+    let formal;
+    try { formal = await options.adapter.describe(worldId); }
+    catch (error) {
+      if (!/GODOT_WORLD_NOT_INITIALIZED/.test(String(error))) throw error;
+      const init = await rpc("godotWorld.initStatus", {worldId});
+      if (init.playable !== false) throw error;
+    }
+    if(formal)throw new Error("GODOT_FORMAL_WORLD_EXISTS");
     release=await options.host.holdSelectionSync();
     try {
       const record=await rpc("world.read",{id:worldId});
       if(record.id!==worldId||!Number.isSafeInteger(record.revision)||record.revision<0||!object(record.world))throw new Error("GODOT_WORLD_RECORD_INVALID");
       const session=await prepare(worldId,candidateId,record.revision,record.world.snapshot,"applying",true);
       session.evidence=await confirm(session);
-      let result;
-      try {result=await rpc("godotApplication.commit",{id:session.id,token:session.token,evidence:session.evidence});}
-      catch {result=await rpc("godotApplication.read",{id:session.id});}
-      return await finishApplied(session,result);
+      return await commit(session);
     }catch(error){return failed(error);}
   }
   async function close(){if(!active)return {status:"closed"};const session=active;try{const result=await recover(session);options.host.setSurfaceVisible(true);return result;}catch(error){session.phase="uncertain";await options.host.candidateRequest("pause").catch(()=>undefined);options.host.setCandidateVisible(false);options.host.setSurfaceVisible(false);throw error;}}
@@ -146,6 +177,26 @@ export function createGodotCandidateCoordinator(options:{
       if(busy)throw new Error("WORLD_BUSY");
       busy=true;
       try{return await firstLoadInner(worldId,candidateId);}finally{busy=false;}
+    },
+    /** Only the native restore service can replace a missing export cache. */
+    async restoreLoad(worldId:string,candidateId:string) {
+      if(busy||active)throw Error("GODOT_CANDIDATE_ACTIVE");
+      busy=true;
+      try {
+        await identity(worldId,true);
+        if(options.host.instance)throw Error("GODOT_WORLD_ALREADY_RUNNING");
+        const plan=await rpc("godotWorld.rebuildPlan",{worldId});
+        if(plan.format!=="craftmine.godot-rebuild-plan/1"||plan.worldId!==worldId||!plan.rebuildRequired||!plan.rebuildContentOid)throw Error("GODOT_REBUILD_PLAN_REQUIRED");
+        const raw=await rpc("godotCandidate.read",{worldId,candidateId});
+        const content=raw.candidate?.content;
+        if(content?.repoId!==plan.repoId||content?.branchId!==plan.rebuildBranchId||content?.contentOid!==plan.rebuildContentOid)throw Error("GODOT_REBUILD_CANDIDATE_MISMATCH");
+        release=await options.host.holdSelectionSync();
+        const record=await rpc("world.read",{id:worldId});
+        if(record.id!==worldId||record.world?.build?.id!==plan.formalBuildId||record.revision!==plan.worldRevision||sha(canonical(record.world.snapshot))!==plan.snapshotHash)throw Error("GODOT_REBUILD_WORLD_CHANGED");
+        const session=await prepare(worldId,candidateId,record.revision,record.world.snapshot,"applying",true);
+        session.evidence=await confirm(session);
+        return await commit(session);
+      }catch(error){return failed(error);}finally{busy=false;}
     },
     async invoke(channel:string,payload:Data) {
       const fields=["godot.candidatePreview","godot.candidateApply","godot.candidateState"].includes(channel)?["worldId","candidateId"]:["worldId"];

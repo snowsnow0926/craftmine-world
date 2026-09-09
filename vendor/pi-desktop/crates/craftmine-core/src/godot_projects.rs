@@ -9,6 +9,7 @@ use std::{
 };
 
 use anyhow::{ensure, Context, Result};
+use base64::{engine::general_purpose::STANDARD, Engine};
 use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -73,6 +74,13 @@ struct CreateArgs {
 #[derive(Deserialize)]
 #[serde(tag = "op", rename_all = "camelCase", deny_unknown_fields)]
 enum Operation {
+    PutBytes {
+        path: String,
+        #[serde(rename = "bytesBase64")]
+        bytes_base64: String,
+        #[serde(rename = "expectedHash", deserialize_with = "required_optional_hash")]
+        expected_hash: Option<String>,
+    },
     Put {
         path: String,
         text: String,
@@ -110,6 +118,8 @@ struct PatchArgs {
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct IndexArgs {
+    #[serde(default="main_branch")]
+    branch_id:String,
     context: WorkspaceContext,
     world_id: String,
     revision: Option<u64>,
@@ -126,6 +136,8 @@ fn index_limit() -> usize {
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct ReadArgs {
+    #[serde(default="main_branch")]
+    branch_id:String,
     context: WorkspaceContext,
     world_id: String,
     revision: u64,
@@ -139,6 +151,7 @@ struct ReadArgs {
 fn text_limit() -> usize {
     16000
 }
+pub(super) fn main_branch()->String { repo::MAIN_BRANCH.to_owned() }
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -179,6 +192,10 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
         PRIMARY KEY(world_id,revision)
     );",
     )?;
+    let has_manifest: bool=db.query_row("SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_project_commits') WHERE name='manifest'",[],|row|Ok(row.get::<_,i64>(0)?>0))?;
+    if !has_manifest { db.execute_batch("ALTER TABLE craftmine_godot_project_commits ADD COLUMN manifest TEXT")?; }
+    let has_branch: bool=db.query_row("SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_project_commits') WHERE name='branch_id'",[],|row|Ok(row.get::<_,i64>(0)?>0))?;
+    if !has_branch { db.execute_batch("ALTER TABLE craftmine_godot_project_commits ADD COLUMN branch_id TEXT NOT NULL DEFAULT 'main'")?; }
     Ok(())
 }
 
@@ -234,6 +251,10 @@ fn source_path(path: &str) -> Result<()> {
                 | "md"
                 | "csv"
                 | "svg"
+                | "obj"
+                | "mtl"
+                | "uid"
+                | "png" | "jpg" | "jpeg" | "webp" | "wav" | "ogg" | "glb"
         ),
         "UNSUPPORTED_PROJECT_FILE"
     );
@@ -340,6 +361,10 @@ fn blob_directory(directory: &Path, world: &str, create: bool) -> Result<PathBuf
 }
 
 pub(super) fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Result<String> {
+    String::from_utf8(blob_read_bytes(directory,world,entry)?).context("CONTENT_NOT_UTF8")
+}
+
+pub(super) fn blob_read_bytes(directory: &Path, world: &str, entry: &FileEntry) -> Result<Vec<u8>> {
     valid_hash(&entry.sha256)?;
     let path = blob_directory(directory, world, false)?.join(&entry.sha256);
     let meta = ordinary(&path, "PROJECT_STORAGE_UNAVAILABLE")?;
@@ -354,24 +379,28 @@ pub(super) fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Res
         use std::os::windows::fs::OpenOptionsExt;
         options.custom_flags(0x00200000); // FILE_FLAG_OPEN_REPARSE_POINT.
     }
-    let mut text = String::new();
+    let mut text = Vec::new();
     options
         .open(path)?
         .take(FILE_LIMIT as u64 + 1)
-        .read_to_string(&mut text)
+        .read_to_end(&mut text)
         .context("CORRUPT_PROJECT_FILE")?;
     ensure!(
-        text.len() as u64 == entry.bytes && digest(&text) == entry.sha256,
+        text.len() as u64 == entry.bytes && digest_bytes(&text) == entry.sha256,
         "CORRUPT_PROJECT_FILE"
     );
     Ok(text)
 }
 
 pub(super) fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text: &str) -> Result<()> {
+    blob_write_bytes(directory,world,entry,text.as_bytes())
+}
+
+pub(super) fn blob_write_bytes(directory: &Path, world: &str, entry: &FileEntry, text: &[u8]) -> Result<()> {
     let parent = blob_directory(directory, world, true)?;
     let target = parent.join(&entry.sha256);
     if fs::symlink_metadata(&target).is_ok() {
-        blob_read(directory, world, entry)?;
+        blob_read_bytes(directory, world, entry)?;
         return Ok(());
     }
     let temporary = parent.join(format!(
@@ -389,13 +418,13 @@ pub(super) fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text:
             options.custom_flags(0x80000000); // FILE_FLAG_WRITE_THROUGH.
         }
         let mut file = options.open(&temporary)?;
-        file.write_all(text.as_bytes())?;
+        file.write_all(text)?;
         file.sync_all()?;
         drop(file);
         // The immediate SQLite transaction serializes writers across connections.
         // Existing immutable data is verified, never overwritten to repair corruption.
         if fs::symlink_metadata(&target).is_ok() {
-            blob_read(directory, world, entry)?;
+            blob_read_bytes(directory, world, entry)?;
         } else {
             fs::rename(&temporary, &target)?;
         }
@@ -403,7 +432,7 @@ pub(super) fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text:
         {
             fs::File::open(&parent)?.sync_all()?;
         }
-        blob_read(directory, world, entry)?;
+        blob_read_bytes(directory, world, entry)?;
         Ok(())
     })();
     if temporary.try_exists().unwrap_or(false) {
@@ -549,12 +578,12 @@ fn git_content_files(
     world: &str,
     manifest: &Manifest,
     head: Option<&str>,
-    changed: &BTreeMap<String, String>,
+    changed: &BTreeMap<String, Vec<u8>>,
 ) -> Result<Vec<ContentFile>> {
     let mut files = Vec::with_capacity(manifest.files.len() + 1);
     for (path, entry) in &manifest.files {
         let bytes = match changed.get(path) {
-            Some(text) => text.as_bytes().to_vec(),
+            Some(text) => text.clone(),
             None => {
                 let head = head.context("GODOT_PROJECT_HEAD_MISSING")?;
                 let bytes = store.read_file(layout, head, path)?;
@@ -571,10 +600,20 @@ fn git_content_files(
         });
     }
     let (_, assets) = godot_builds::asset_manifest(db, world)?;
-    if let Some(lock) = godot_builds::asset_lock(&assets)? {
+    if let Some(file) = files.iter().find(|file| file.path == super::content_history::contract::ASSET_LOCK_FILE) {
+        let lock: super::content_history::contract::AssetLock = serde_json::from_slice(&file.bytes)?;
+        ensure!(lock.canonical_bytes()? == file.bytes, "INVALID_ASSET_LOCK");
+    } else if let Some(lock) = godot_builds::asset_lock(&assets)? {
         files.push(ContentFile::asset_lock(&lock)?);
     }
     Ok(files)
+}
+
+fn committed_lock_hash(files:&[ContentFile])->Result<String> {
+    if let Some(file)=files.iter().find(|file|file.path==super::content_history::contract::ASSET_LOCK_FILE) {
+        let lock:super::content_history::contract::AssetLock=serde_json::from_slice(&file.bytes)?;
+        lock.asset_lock_hash()
+    } else { super::content_history::contract::AssetLock::empty().asset_lock_hash() }
 }
 
 /// Exact bytes for a world, read from Git when the world uses the Git backend.
@@ -601,15 +640,19 @@ pub(super) fn read_indexed_file(
     path: &str,
     entry: &FileEntry,
 ) -> Result<String> {
+    String::from_utf8(read_indexed_bytes(journal,world,revision,path,entry)?).context("CONTENT_NOT_UTF8")
+}
+
+pub(super) fn read_indexed_bytes(journal: &TaskJournal,world: &str,revision: u64,path: &str,entry: &FileEntry) -> Result<Vec<u8>> {
     if journal.is_git_backed(world)? {
         let (store, layout) = journal.content_layout(world)?;
         let commit = git_commit_for(&journal.db, world, revision)?
             .context("GODOT_PROJECT_REVISION_NOT_INDEXED")?;
         let bytes = store.read_file(&layout, &commit, path)?;
         ensure!(digest_bytes(&bytes) == entry.sha256, "CORRUPT_PROJECT_FILE");
-        return String::from_utf8(bytes).context("CONTENT_NOT_UTF8");
+        return Ok(bytes);
     }
-    blob_read(&journal.directory, world, entry)
+    blob_read_bytes(&journal.directory, world, entry)
 }
 
 /// Every indexed file of a manifest with its exact text, using the backend the
@@ -618,16 +661,16 @@ pub(super) fn read_manifest_files(
     journal: &TaskJournal,
     world: &str,
     manifest: &Manifest,
-) -> Result<Vec<(String, FileEntry, String)>> {
+) -> Result<Vec<(String, FileEntry, Vec<u8>)>> {
     let mut files = Vec::with_capacity(manifest.files.len());
     for (path, entry) in &manifest.files {
-        let text = read_indexed_file(journal, world, manifest.revision, path, entry)?;
+        let text = read_indexed_bytes(journal, world, manifest.revision, path, entry)?;
         files.push((path.clone(), entry.clone(), text));
     }
     Ok(files)
 }
 
-fn digest_bytes(bytes: &[u8]) -> String {
+pub(super) fn digest_bytes(bytes: &[u8]) -> String {
     use sha2::{Digest, Sha256};
     Sha256::digest(bytes)
         .iter()
@@ -649,15 +692,16 @@ fn store_git_index(
     request_hash: &str,
     commit_oid: &str,
     asset_lock_hash: &str,
+    branch: &str,
 ) -> Result<Value> {
     let body = serde_json::to_string(manifest)?;
     ensure!(body.len() <= MANIFEST_LIMIT, "PROJECT_MANIFEST_TOO_LARGE");
     let hash = digest(&body);
-    db.execute(
+    if branch==repo::MAIN_BRANCH { db.execute(
         "INSERT INTO craftmine_godot_projects(world_id,revision,manifest,hash) VALUES(?1,?2,?3,?4)
          ON CONFLICT(world_id) DO UPDATE SET revision=excluded.revision,manifest=excluded.manifest,hash=excluded.hash",
         params![manifest.world_id, i64::try_from(manifest.revision)?, body, hash],
-    )?;
+    )?; }
     record_git_commit(
         db,
         &manifest.world_id,
@@ -668,9 +712,11 @@ fn store_git_index(
         &manifest.task.task_id,
         call,
     )?;
+    db.execute("UPDATE craftmine_godot_project_commits SET manifest=?3,branch_id=?4 WHERE world_id=?1 AND revision=?2",
+        params![manifest.world_id,i64::try_from(manifest.revision)?,body,branch])?;
     let result = json!({"revision":manifest.revision,"manifestHash":hash,"baseBuild":manifest.base_build,
         "fileCount":manifest.files.len(),"currentTaskId":manifest.task.task_id,"lastWriter":manifest.task,
-        "commitOid":commit_oid,"assetLockHash":asset_lock_hash});
+        "commitOid":commit_oid,"assetLockHash":asset_lock_hash,"branchId":branch});
     db.execute(
         "INSERT INTO craftmine_godot_receipts(task_id,tool_call_id,request_hash,result) VALUES(?1,?2,?3,?4)",
         params![manifest.task.task_id, call, request_hash, serde_json::to_string(&result)?],
@@ -679,6 +725,28 @@ fn store_git_index(
 }
 
 impl TaskJournal {
+    /// Return an existing world-bound session head for trusted source readers.
+    /// This does not create a task, acquire a write lease, or mutate Git.
+    pub fn godot_project_source_context(&self, args: &Value) -> Result<Value> {
+        #[derive(Deserialize)]
+        #[serde(rename_all="camelCase", deny_unknown_fields)]
+        struct Args { world_id: String }
+        let args: Args=serde_json::from_value(args.clone())?;
+        worlds::read(&self.db,&args.world_id)?;
+        let exists: bool=self.db.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_godot_projects WHERE world_id=?1)",
+            [&args.world_id],|row|row.get(0))?;
+        ensure!(exists,"GODOT_PROJECT_NOT_FOUND");
+        let binding: Option<String>=self.db.query_row(
+            "SELECT t.binding FROM craftmine_session_worlds s JOIN craftmine_tasks t ON t.id=s.head_task
+             JOIN craftmine_workspaces w ON w.task_id=t.id AND w.world_id=s.world_id
+             WHERE s.world_id=?1 ORDER BY t.rowid DESC LIMIT 1",[&args.world_id],|row|row.get(0)).optional()?;
+        let binding: TaskBinding=serde_json::from_str(&binding.context("GODOT_SOURCE_CONTEXT_UNAVAILABLE")?)?;
+        let context=WorkspaceContext {project_id:binding.project_id,session_id:binding.session_id,turn_id:binding.turn_id};
+        let snapshot=workspaces::inspect(&self.db,&context)?;
+        ensure!(snapshot.world_id==args.world_id,"PROJECT_WORLD_BINDING_MISMATCH");
+        Ok(json!({"context":context}))
+    }
+
     /// Manifest for the head (or an indexed revision) of a world, adopting a Git
     /// commit that landed before the SQLite index could record it. Git is
     /// authoritative for content, so the index is rebuilt from the commit rather
@@ -688,10 +756,61 @@ impl TaskJournal {
         world: &str,
         revision: Option<u64>,
     ) -> Result<(Manifest, String)> {
-        if !self.is_git_backed(world)? || revision.is_some() {
+        self.project_manifest_for(world,revision,repo::MAIN_BRANCH)
+    }
+
+    pub(super) fn project_manifest_for(&self, world:&str,revision:Option<u64>,branch:&str)->Result<(Manifest,String)> {
+        super::content_history::contract::validate_identifier(branch,"INVALID_BRANCH_ID")?;
+        if !self.is_git_backed(world)? {
+            ensure!(branch==repo::MAIN_BRANCH,"CONTENT_BRANCH_REQUIRES_GIT");
             return load_manifest(&self.db, world, revision);
         }
+        if branch!=repo::MAIN_BRANCH {
+            let (store,layout)=self.content_layout(world)?;
+            let head=store.branch_head(&layout,branch)?.context("CONTENT_BRANCH_NOT_FOUND")?;
+            let indexed:Option<(String,String,String)>=self.db.query_row(
+                "SELECT manifest,manifest_hash,commit_oid FROM craftmine_godot_project_commits WHERE world_id=?1 AND branch_id=?2 AND manifest IS NOT NULL AND (?3 IS NULL OR revision=?3) ORDER BY revision DESC LIMIT 1",
+                params![world,branch,revision.map(i64::try_from).transpose()?],|row|Ok((row.get(0)?,row.get(1)?,row.get(2)?))).optional()?;
+            if let Some((body,hash,oid))=&indexed {
+                if revision.is_some() || oid==&head {
+                    ensure!(digest(body)==*hash,"CORRUPT_PROJECT_MANIFEST");
+                    let manifest:Manifest=serde_json::from_str(body)?; validate_manifest(&manifest)?;
+                    return Ok((manifest,hash.clone()));
+                }
+            }
+            ensure!(revision.is_none(),"GODOT_PROJECT_REVISION_NOT_INDEXED");
+            let mut manifest=if let Some((body,_,_))=indexed {serde_json::from_str::<Manifest>(&body)?}else{load_manifest(&self.db,world,None)?.0};
+            manifest.revision=next_git_revision(&self.db,world)?;
+            manifest.files.clear();
+            for entry in store.tree_entries(&layout,&head)? {
+                ensure!(matches!(entry.mode.as_str(),"100644"|"100755"),"CONTENT_COPY_UNSUPPORTED_ENTRY");
+                source_path(&entry.path)?;
+                let bytes=store.read_file(&layout,&head,&entry.path)?;
+                manifest.files.insert(entry.path,FileEntry{sha256:digest_bytes(&bytes),bytes:bytes.len() as u64});
+            }
+            validate_manifest(&manifest)?;
+            let body=serde_json::to_string(&manifest)?; let hash=digest(&body);
+            let lock=store.asset_lock(&layout,&head)?.unwrap_or_else(super::content_history::contract::AssetLock::empty);
+            record_git_commit(&self.db,world,manifest.revision,&head,&hash,&lock.asset_lock_hash()?,&manifest.task.task_id,"branch-index")?;
+            self.db.execute("UPDATE craftmine_godot_project_commits SET manifest=?3,branch_id=?4 WHERE world_id=?1 AND revision=?2",
+                params![world,i64::try_from(manifest.revision)?,body,branch])?;
+            return Ok((manifest,hash));
+        }
         let (manifest, hash) = load_manifest(&self.db, world, None)?;
+        if let Some(revision)=revision {
+            if revision==manifest.revision { return Ok((manifest,hash)); }
+            let indexed:Option<(String,String)>=self.db.query_row(
+                "SELECT manifest,manifest_hash FROM craftmine_godot_project_commits WHERE world_id=?1 AND revision=?2 AND branch_id='main' AND manifest IS NOT NULL",
+                params![world,i64::try_from(revision)?],|row|Ok((row.get(0)?,row.get(1)?))).optional()?;
+            if let Some((body,hash))=indexed {
+                ensure!(digest(&body)==hash,"CORRUPT_PROJECT_MANIFEST");
+                let manifest:Manifest=serde_json::from_str(&body)?;
+                validate_manifest(&manifest)?;
+                ensure!(manifest.world_id==world && manifest.revision==revision,"CORRUPT_PROJECT_MANIFEST");
+                return Ok((manifest,hash));
+            }
+            return load_manifest(&self.db,world,Some(revision));
+        }
         let stored = git_commit_for(&self.db, world, manifest.revision)?;
         let (store, layout) = self.content_layout(world)?;
         let head = store.branch_head(&layout, repo::MAIN_BRANCH)?;
@@ -703,17 +822,17 @@ impl TaskJournal {
             .git()
             .repo(&layout.git_dir, &["log", "-1", "--format=%B", &head])?;
         ensure!(message.ok(), "GIT_LOG_FAILED: {}", message.stderr.trim());
-        let revision = message
+        let mut revision = message
             .stdout_text()?
             .lines()
             .find_map(|line| line.strip_prefix("Craftmine-Revision: "))
             .and_then(|value| value.trim().parse::<u64>().ok())
-            .unwrap_or(manifest.revision + 1);
+            .unwrap_or(next_git_revision(&self.db,world)?);
+        let collision:bool=self.db.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_godot_project_commits WHERE world_id=?1 AND revision=?2 AND (commit_oid<>?3 OR branch_id<>'main'))",
+            params![world,i64::try_from(revision)?,head],|r|r.get(0))?;
+        if collision {revision=next_git_revision(&self.db,world)?;}
         let mut files = BTreeMap::new();
         for entry in store.tree_entries(&layout, &head)? {
-            if entry.path == super::content_history::contract::ASSET_LOCK_FILE {
-                continue;
-            }
             ensure!(
                 matches!(entry.mode.as_str(), "100644" | "100755"),
                 "CONTENT_COPY_UNSUPPORTED_ENTRY: {}",
@@ -736,10 +855,11 @@ impl TaskJournal {
         store_git_index(
             &self.db,
             &adopted,
-            "@host:adopt-git-head",
+            &format!("@host:adopt-{head}"),
             &digest(&head),
             &head,
             &lock_hash,
+            repo::MAIN_BRANCH,
         )?;
         let body = serde_json::to_string(&adopted)?;
         Ok((adopted, digest(&body)))
@@ -758,6 +878,18 @@ impl TaskJournal {
     pub(super) fn project_is_git_backed(&self, world: &str) -> Result<bool> {
         self.is_git_backed(world)
     }
+}
+
+fn next_git_revision(db:&Connection,world:&str)->Result<u64> {
+    let max:i64=db.query_row("SELECT MAX(revision) FROM (SELECT revision FROM craftmine_godot_projects WHERE world_id=?1 UNION ALL SELECT revision FROM craftmine_godot_project_commits WHERE world_id=?1)",[world],|row|row.get(0))?;
+    u64::try_from(max.checked_add(1).context("REVISION_LIMIT")?).context("REVISION_LIMIT")
+}
+
+pub(super) fn branch_head_manifest(db:&Connection,world:&str,branch:&str)->Result<(Manifest,String)> {
+    if branch==repo::MAIN_BRANCH {return load_manifest(db,world,None)}
+    let (body,hash):(String,String)=db.query_row("SELECT manifest,manifest_hash FROM craftmine_godot_project_commits WHERE world_id=?1 AND branch_id=?2 AND manifest IS NOT NULL ORDER BY revision DESC LIMIT 1",params![world,branch],|r|Ok((r.get(0)?,r.get(1)?))).context("CONTENT_BRANCH_NOT_INDEXED")?;
+    ensure!(digest(&body)==hash,"CORRUPT_PROJECT_MANIFEST");
+    let manifest=serde_json::from_str(&body)?;validate_manifest(&manifest)?;Ok((manifest,hash))
 }
 
 fn scope(
@@ -822,6 +954,7 @@ fn store(db: &Connection, manifest: &Manifest, call: &str, request_hash: &str) -
 
 impl TaskJournal {
     pub fn godot_project_create(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let request_hash = request_hash("godotProject.create", args)?;
         let args: CreateArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.tool_call_id)?;
@@ -886,13 +1019,13 @@ impl TaskJournal {
         };
         validate_manifest(&manifest)?;
         let result = if let Some((store, layout)) = &git {
-            let changed: BTreeMap<String, String> = args
+            let changed: BTreeMap<String, Vec<u8>> = args
                 .files
                 .iter()
-                .map(|file| (file.path.clone(), file.text.clone()))
+                .map(|file| (file.path.clone(), file.text.as_bytes().to_vec()))
                 .collect();
             let content = git_content_files(store, layout, &tx, &args.world_id, &manifest, None, &changed)?;
-            let lock_hash = godot_builds::asset_lock_hash(&tx, &args.world_id)?;
+            let lock_hash = committed_lock_hash(&content)?;
             let message = project_commit_message(
                 0,
                 &args.tool_call_id,
@@ -906,6 +1039,7 @@ impl TaskJournal {
                 &request_hash,
                 &oid,
                 &lock_hash,
+                repo::MAIN_BRANCH,
             )?
         } else {
             for file in args.files {
@@ -923,6 +1057,7 @@ impl TaskJournal {
     }
 
     pub fn godot_project_index(&self, args: &Value) -> Result<Value> {
+        let _operation_lock=crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: IndexArgs = serde_json::from_value(args.clone())?;
         let workspace = scope(&self.db, &args.context, &args.world_id, false)?;
         ensure!(
@@ -931,7 +1066,7 @@ impl TaskJournal {
                 && args.revision.is_some() == args.manifest_hash.is_some(),
             "INVALID_PROJECT_PAGE"
         );
-        let (manifest, hash) = self.project_manifest(&args.world_id, args.revision)?;
+        let (manifest, hash) = self.project_manifest_for(&args.world_id, args.revision,&args.branch_id)?;
         if let (Some(revision), Some(expected)) = (args.revision, args.manifest_hash) {
             bound_version(&manifest, &hash, revision, &expected)?;
         }
@@ -954,6 +1089,7 @@ impl TaskJournal {
     }
 
     pub fn godot_project_read(&self, args: &Value) -> Result<Value> {
+        let _operation_lock=crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: ReadArgs = serde_json::from_value(args.clone())?;
         scope(&self.db, &args.context, &args.world_id, false)?;
         source_path(&args.path)?;
@@ -961,12 +1097,20 @@ impl TaskJournal {
             args.limit > 0 && args.limit <= 16000,
             "INVALID_PROJECT_PAGE"
         );
-        let (manifest, hash) = self.project_manifest(&args.world_id, Some(args.revision))?;
+        let (manifest, hash) = self.project_manifest_for(&args.world_id, Some(args.revision),&args.branch_id)?;
         bound_version(&manifest, &hash, args.revision, &args.manifest_hash)?;
         let entry = manifest
             .files
             .get(&args.path)
             .context("PROJECT_FILE_NOT_FOUND")?;
+        if matches!(args.path.rsplit('.').next(),Some("png"|"jpg"|"jpeg"|"webp"|"wav"|"ogg"|"glb")) {
+            let bytes=read_indexed_bytes(self,&args.world_id,manifest.revision,&args.path,entry)?;
+            ensure!(args.offset<=bytes.len(),"INVALID_PROJECT_PAGE");
+            let end=(args.offset+args.limit).min(bytes.len());
+            return Ok(json!({"worldId":args.world_id,"revision":manifest.revision,"manifestHash":hash,"path":args.path,
+                "sha256":entry.sha256,"bytes":entry.bytes,"offset":args.offset,"encoding":"base64",
+                "bytesBase64":STANDARD.encode(&bytes[args.offset..end]),"totalBytes":bytes.len(),"nextOffset":(end<bytes.len()).then_some(end)}));
+        }
         let source = self.project_file_text(&args.world_id, manifest.revision, &args.path, entry)?;
         let total = source.chars().count();
         ensure!(args.offset <= total, "INVALID_PROJECT_PAGE");
@@ -979,11 +1123,32 @@ impl TaskJournal {
     }
 
     pub fn godot_project_patch(&mut self, args: &Value) -> Result<Value> {
-        let request_hash = request_hash("godotProject.patch", args)?;
+        self.project_patch_bytes(args, &request_hash("godotProject.patch", args)?, 16)
+    }
+
+    /// Private host installation transaction; bytes keep their project paths.
+    pub fn godot_project_apply_files(&mut self, args: &Value) -> Result<Value> {
+        #[derive(Deserialize)]
+        #[serde(rename_all="camelCase",deny_unknown_fields)]
+        struct File {path:String,bytes_base64:String,#[serde(deserialize_with="required_optional_hash")] expected_hash:Option<String>}
+        #[derive(Deserialize)]
+        #[serde(rename_all="camelCase",deny_unknown_fields)]
+        struct Args { context: WorkspaceContext,world_id:String,tool_call_id:String,revision:u64,manifest_hash:String,
+            operation:Option<super::content_history::contract::OperationContext>,files:Vec<File> }
+        let hash=request_hash("godotProject.applyFiles",args)?;
+        let parsed:Args=serde_json::from_value(args.clone())?;
+        let operations:Vec<Value>=parsed.files.into_iter().map(|file|json!({"op":"putBytes","path":file.path,
+            "bytesBase64":file.bytes_base64,"expectedHash":file.expected_hash})).collect();
+        self.project_patch_bytes(&json!({"context":parsed.context,"worldId":parsed.world_id,"toolCallId":parsed.tool_call_id,
+            "revision":parsed.revision,"manifestHash":parsed.manifest_hash,"operation":parsed.operation,"operations":operations}),&hash,FILE_COUNT)
+    }
+
+    fn project_patch_bytes(&mut self, args:&Value, request_hash:&str, operation_limit:usize) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: PatchArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.tool_call_id)?;
         ensure!(
-            !args.operations.is_empty() && args.operations.len() <= 16,
+            !args.operations.is_empty() && args.operations.len() <= operation_limit,
             "INVALID_PROJECT_PATCH"
         );
         let git_backed = self.is_git_backed(&args.world_id)?;
@@ -997,7 +1162,8 @@ impl TaskJournal {
         scope(&self.db, &args.context, &args.world_id, false)?;
         // Loading before the transaction reconciles a commit that landed before
         // its SQLite index row; the Git CAS below is the real write guard.
-        let (mut manifest, hash) = self.project_manifest(&args.world_id, None)?;
+        let branch=args.operation.as_ref().map(|op|op.branch_id.as_str()).unwrap_or(repo::MAIN_BRANCH);
+        let (mut manifest, hash) = self.project_manifest_for(&args.world_id, None,branch)?;
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -1027,15 +1193,32 @@ impl TaskJournal {
         );
         let original_files = manifest.files.clone();
         let mut touched = BTreeSet::new();
-        let mut text_files = Vec::new();
+        let mut text_files: BTreeMap<String,Vec<u8>> = BTreeMap::new();
         for operation in args.operations {
+            let operation = match operation {
+                Operation::Put{path,text,expected_hash} => {
+                    source_entry(&path,&text)?;
+                    Operation::PutBytes{path,bytes_base64:STANDARD.encode(text.as_bytes()),expected_hash}
+                },
+                other=>other,
+            };
             match operation {
-                Operation::Put {
+                Operation::PutBytes {
                     path,
-                    text,
+                    bytes_base64,
                     expected_hash,
                 } => {
-                    let entry = source_entry(&path, &text)?;
+                    source_path(&path)?;
+                    let bytes=STANDARD.decode(bytes_base64).context("INVALID_PROJECT_BASE64")?;
+                    ensure!(bytes.len()<=FILE_LIMIT,"PROJECT_FILE_TOO_LARGE");
+                    if !matches!(path.rsplit('.').next(),Some("png"|"jpg"|"jpeg"|"webp"|"wav"|"ogg"|"glb")) {
+                        source_entry(&path,std::str::from_utf8(&bytes).context("CONTENT_NOT_UTF8")?)?;
+                    }
+                    let entry=FileEntry{sha256:digest_bytes(&bytes),bytes:bytes.len() as u64};
+                    if path==super::content_history::contract::ASSET_LOCK_FILE {
+                        let lock:super::content_history::contract::AssetLock=serde_json::from_slice(&bytes)?;
+                        ensure!(lock.canonical_bytes()?==bytes,"INVALID_ASSET_LOCK");
+                    }
                     ensure!(
                         touched.insert(path.to_ascii_lowercase()),
                         "PROJECT_PATH_COLLISION"
@@ -1049,7 +1232,7 @@ impl TaskJournal {
                         "PROJECT_FILE_CONFLICT"
                     );
                     manifest.files.insert(path.clone(), entry);
-                    text_files.push(SourceFile { path, text });
+                    text_files.insert(path,bytes);
                 }
                 Operation::Remove {
                     path,
@@ -1070,14 +1253,16 @@ impl TaskJournal {
                     );
                     manifest.files.remove(&path);
                 }
+                Operation::Put{..}=>unreachable!(),
             }
         }
         ensure!(
-            text_files.iter().map(|file| file.text.len()).sum::<usize>() <= PATCH_LIMIT,
+            text_files.values().map(|file| file.len()).sum::<usize>() <= PATCH_LIMIT,
             "PROJECT_REQUEST_TOO_LARGE"
         );
         ensure!(manifest.files != original_files, "NO_CHANGE");
-        manifest.revision = manifest.revision.checked_add(1).context("REVISION_LIMIT")?;
+        let previous_revision=manifest.revision;
+        manifest.revision = if git_backed {next_git_revision(&tx,&args.world_id)?} else {manifest.revision.checked_add(1).context("REVISION_LIMIT")?};
         manifest.task = workspace.task.binding;
         // A new immutable revision records the actual applied baseline this
         // writer used; older revisions keep their original baseline.
@@ -1086,7 +1271,7 @@ impl TaskJournal {
         }
         validate_manifest(&manifest)?;
         let result = if let Some((store, layout)) = &git {
-            let previous = manifest.revision - 1;
+            let previous = previous_revision;
             let head = git_commit_for(&tx, &args.world_id, previous)?
                 .context("GODOT_PROJECT_HEAD_MISSING")?;
             // The host binds the exact commit it read; a model cannot write over
@@ -1100,20 +1285,14 @@ impl TaskJournal {
                 operation.world_id == args.world_id,
                 "CONTENT_CONTEXT_MISMATCH"
             );
-            ensure!(
-                operation.branch_id == repo::MAIN_BRANCH,
-                "CONTENT_WRITE_BRANCH_NOT_MAIN"
-            );
+            ensure!(operation.repo_id==layout.repo_id,"CONTENT_CONTEXT_MISMATCH");
             ensure!(
                 operation.expected_head_oid.as_deref() == Some(head.as_str()),
                 "CONTENT_EXPECTED_HEAD_MISMATCH"
             );
-            let changed: BTreeMap<String, String> = text_files
-                .iter()
-                .map(|file| (file.path.clone(), file.text.clone()))
-                .collect();
+            let changed = text_files.clone();
             let content = git_content_files(store, layout, &tx, &args.world_id, &manifest, Some(&head), &changed)?;
-            let lock_hash = godot_builds::asset_lock_hash(&tx, &args.world_id)?;
+            let lock_hash = committed_lock_hash(&content)?;
             let message = project_commit_message(
                 manifest.revision,
                 &args.tool_call_id,
@@ -1121,7 +1300,7 @@ impl TaskJournal {
             );
             let oid = store.commit(
                 layout,
-                repo::MAIN_BRANCH,
+                branch,
                 Some(&head),
                 &content,
                 &message,
@@ -1133,20 +1312,21 @@ impl TaskJournal {
                 &request_hash,
                 &oid,
                 &lock_hash,
+                branch,
             )?
         } else {
             // Every surviving reference is integrity checked, including unchanged files.
             for (path, entry) in &original_files {
                 if manifest.files.get(path) == Some(entry) {
-                    blob_read(&self.directory, &args.world_id, entry)?;
+                    blob_read_bytes(&self.directory, &args.world_id, entry)?;
                 }
             }
-            for file in text_files {
-                blob_write(
+            for (path,bytes) in text_files {
+                blob_write_bytes(
                     &self.directory,
                     &args.world_id,
-                    &manifest.files[&file.path],
-                    &file.text,
+                    &manifest.files[&path],
+                    &bytes,
                 )?;
             }
             store(&tx, &manifest, &args.tool_call_id, &request_hash)?
@@ -1163,7 +1343,7 @@ impl TaskJournal {
         ensure!(
             matches!(
                 args.method.as_str(),
-                "godotProject.create" | "godotProject.patch"
+                "godotProject.create" | "godotProject.patch" | "godotProject.applyFiles"
             ),
             "INVALID_PROJECT_METHOD"
         );
@@ -1184,4 +1364,3 @@ impl TaskJournal {
         .unwrap_or(Value::Null))
     }
 }
-

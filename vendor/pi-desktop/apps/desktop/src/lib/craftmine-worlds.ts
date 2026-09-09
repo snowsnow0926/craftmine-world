@@ -29,7 +29,7 @@ export const CRAFTMINE_REQUIRED_CHANNELS = [
   "world.create",
   "world.saveProgress",
   "world.switch",
-  "world.creationAction",
+  "world.creationRetry",
   "workbench.capabilities",
   "verification.list",
 ] as const;
@@ -440,6 +440,10 @@ export function createCraftmineWorldBridge(
     },
     async creationAction(worldId, action) {
       if (!CRAFTMINE_CREATION_ACTIONS.includes(action)) throw new Error("INVALID_WORLD_CREATION_ACTION");
+      if (action === "retry") {
+        await call("world.creationRetry", { worldId });
+        return;
+      }
       await call("world.creationAction", { worldId, action });
     },
     async switchWorld(id) {

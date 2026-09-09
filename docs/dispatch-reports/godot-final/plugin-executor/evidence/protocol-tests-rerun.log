@@ -1,0 +1,39 @@
+✔ happy check job: real import/export receipts, staged web artifacts, passed candidate (427.4422ms)
+✔ the verifier receives the staged descriptor, never a caller-supplied path (385.0516ms)
+✔ check job without a verifier records a failure instead of a false pass (355.0894ms)
+✔ a failing runtime check fails the job and its assertions (433.1596ms)
+✔ forged preflight evidence never registers an executor (661.7286ms)
+✔ measured source files must equal the claimed manifest (1120.7318ms)
+✔ unlisted, tampered and escaping artifacts are refused (1277.4091ms)
+✔ compile failures are fatal, known native isolation diagnostics are not (615.8365ms)
+✔ a broker that never answers or dies is recorded as a failure, never a pass (448.718ms)
+✔ a job that exceeds its budget is failed, not left running (1707.2076ms)
+✔ cancel kills the broker, records no result and cancels the core job (522.7414ms)
+✔ executor stop revokes registration and rejects new jobs (100.1839ms)
+✔ sourceSnapshotDigest matches the documented broker digest shape (0.1355ms)
+✔ missing or tampered host files report their own reason (19.6082ms)
+✔ a changed broker binary is refused when a pin is configured (3.0921ms)
+✔ an unpinned broker and its self-nominated adjacent manifest never execute recovery (7.5275ms)
+✔ private host configuration pins the broker independently of child environment (138.1899ms)
+✔ a recovery entry counts as reclaimed only when identity and journal retirement are both proven (0.6095ms)
+✔ a report that claims a final receipt is surfaced as a contradiction (0.0943ms)
+✔ an unparseable recovery output is reported, never treated as a clean pass (0.0735ms)
+✔ startup runs a recovery pass over the executor tasks root before preflight (117.7649ms)
+✔ a broker that dies without a final response is reclaimed, never counted as success (258.2007ms)
+✔ a broker success that did not retire its journal entry still triggers recovery (356.1993ms)
+✔ a failing recovery pass cannot change a job result (247.6876ms)
+✔ a damaged ledger entry cannot stop the executor from starting (134.1497ms)
+✔ cancel runs a recovery pass of its own (251.6601ms)
+✔ stop runs a recovery pass after every job has settled (103.1894ms)
+✔ restart reconciliation never restarts a job whose old task identity was not re-proved (110.0921ms)
+✔ restart reconciliation requeues only after the recovery pass re-proved the old task (326.9716ms)
+✔ the executor source contains no pid or image-name process cleanup (0.4471ms)
+✔ the generated broker task id stays inside the Windows profile-name limit (0.0458ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8190.3656

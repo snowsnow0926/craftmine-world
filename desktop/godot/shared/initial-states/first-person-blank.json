@@ -1,0 +1,61 @@
+{
+  "format": "craftmine.authored-initial-state/1",
+  "baseId": "first-person",
+  "template": "blank",
+  "worldId": "authored-initial-world",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "sourceDigest": "be02c475685ff7c4cddeda9505c8006c4c6e4c6e86210bf14c63b2fcc4e4e5b0",
+  "snapshot": {
+    "baseId": "first-person",
+    "baseVersion": "0.1.0",
+    "body": {
+      "base": "first-person",
+      "baseVersion": "0.1.0",
+      "equipment": {
+        "active": "pistol",
+        "items": [
+          {
+            "id": "pistol",
+            "magazine": 6,
+            "reserve": 12
+          },
+          {
+            "id": "practice_sword",
+            "magazine": 0,
+            "reserve": 0
+          },
+          {
+            "id": "inspection_tool",
+            "magazine": 0,
+            "reserve": 0
+          }
+        ]
+      },
+      "format": "craftmine.godot-base-state/1",
+      "interactables": [],
+      "inventory": {
+        "slots": []
+      },
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          0
+        ],
+        "yaw": 0
+      },
+      "quests": {
+        "quests": []
+      },
+      "savedAt": "2026-09-09T20:55:20Z",
+      "stateVersion": 1,
+      "targets": [],
+      "worldId": "authored-initial-world"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "authored-initial-world"
+  }
+}

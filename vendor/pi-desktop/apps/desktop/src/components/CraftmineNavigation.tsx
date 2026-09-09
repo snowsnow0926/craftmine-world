@@ -12,6 +12,7 @@ import { useCraftmineWorlds } from "../hooks/use-craftmine-worlds";
 import { WorldListPanel } from "./craftmine/WorldListPanel";
 import { WorldAuxSections } from "./craftmine/WorldAuxSections";
 import { AssetLibraryPanel } from "./craftmine/assets/AssetLibraryPanel";
+import { GodotHistoryPanel } from "./craftmine/GodotHistoryPanel";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
@@ -59,6 +60,12 @@ export function CraftmineNavigation() {
   // channel, which the host routes into the retained view.
   const [surfaceError, setSurfaceError] = useState<string | null>(null);
   const [assetsOpen, setAssetsOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  useEffect(() => {
+    const open = assetsOpen || historyOpen;
+    window.dispatchEvent(new CustomEvent("craftmine-sheet-visibility", {detail: {open}}));
+    return () => { window.dispatchEvent(new CustomEvent("craftmine-sheet-visibility", {detail: {open: false}})); };
+  }, [assetsOpen, historyOpen]);
   const openSurface = (surface: CraftmineAuxSurface, section: string) => {
     open();
     setSurfaceError(null);
@@ -108,6 +115,11 @@ export function CraftmineNavigation() {
           )}
 
           <WorldAuxSections controller={controller} lang={lang} onOpenSurface={openSurface} />
+          <button type="button" data-godot-history-open disabled={!controller.activeWorldId} onClick={() => setHistoryOpen(true)}>版本与创作分支</button>
+          {historyOpen && <div className="craftmine-asset-sheet" role="dialog" aria-label="版本与创作分支" data-history-sheet>
+            <div className="craftmine-asset-sheet-head"><span>版本与创作分支</span><button onClick={() => setHistoryOpen(false)}>关闭</button></div>
+            <GodotHistoryPanel bridge={controller.bridge} worldId={controller.activeWorldId} onOpenChecks={() => { setHistoryOpen(false); openSurface({ kind: "checks" }, "checks"); }}/>
+          </div>}
           {surfaceError && (
             <p className="craftmine-world-error" role="alert" data-surface-error="true">{surfaceError}</p>
           )}

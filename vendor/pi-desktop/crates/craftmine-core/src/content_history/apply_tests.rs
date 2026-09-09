@@ -68,7 +68,7 @@ fn context(applied: Option<&str>, candidate: &str) -> OperationContext {
         operation_id: "op-1".to_string(),
         world_id: "world-1".to_string(),
         repo_id: "world-1-repo".to_string(),
-        branch_id: MAIN_BRANCH.to_string(),
+        branch_id: "plan-a".to_string(),
         expected_head_oid: Some(candidate.to_string()),
         expected_applied_oid: applied.map(|oid| oid.to_string()),
         expected_progress_revision: Some(7),
@@ -299,6 +299,7 @@ fn two_writers_cannot_both_advance_the_same_world() -> Result<()> {
     first.operation_id = "op-1".to_string();
     let mut other = context(Some(&applied), &second);
     other.operation_id = "op-2".to_string();
+    other.branch_id = "plan-b".to_string();
     prepare(
         &mut fixture.journal.db,
         &first,
@@ -396,16 +397,17 @@ fn operation_ids_are_idempotent_but_cannot_be_reused() -> Result<()> {
         &evidence(&candidate),
         "done",
     )?;
-    assert!(prepare(
+    assert_eq!(prepare(
         &mut fixture.journal.db,
         &ctx,
         OperationKind::Apply,
         &candidate,
         "again",
     )
-    .unwrap_err()
-    .to_string()
-    .starts_with("CONTENT_OPERATION_CLOSED"));
+    ?.state,OperationState::Committed);
+    let mut different=ctx.clone(); different.branch_id="other".into();
+    assert!(prepare(&mut fixture.journal.db,&different,OperationKind::Apply,&candidate,"same oid, wrong branch")
+        .unwrap_err().to_string().starts_with("CONTENT_OPERATION_ID_REUSED"));
     Ok(())
 }
 

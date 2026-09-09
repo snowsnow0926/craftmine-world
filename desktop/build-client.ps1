@@ -1,4 +1,8 @@
-param([switch]$Installer)
+param(
+    [switch]$Installer,
+    [Parameter(Mandatory=$true)][string]$GodotCache,
+    [Parameter(Mandatory=$true)][string]$GitArchive
+)
 $ErrorActionPreference = 'Stop'
 $craftmineRoot = Split-Path -Parent $PSScriptRoot
 Push-Location -LiteralPath $craftmineRoot
@@ -6,6 +10,13 @@ try {
     $craftmineChanges = git status --porcelain --untracked-files=normal
     if ($craftmineChanges) { throw 'Commit source changes before packaging so the source archive matches the binary.' }
     $craftmineBuildCommit = git rev-parse HEAD
+    $craftmineGodotCache = (Resolve-Path -LiteralPath $GodotCache).Path
+    $craftmineGitArchive = (Resolve-Path -LiteralPath $GitArchive).Path
+    $craftmineBrokerTarget = Join-Path $craftmineRoot 'desktop/godot/sandbox/target'
+    cargo build --manifest-path desktop/godot/sandbox/Cargo.toml --target-dir $craftmineBrokerTarget --release --locked --bin godot-host-broker
+    if ($LASTEXITCODE -ne 0) { throw 'Release Godot broker build failed' }
+    node desktop/prepare-runtime-resources.mjs --godot-cache $craftmineGodotCache --git-zip $craftmineGitArchive --broker-bin (Join-Path $craftmineBrokerTarget 'release/godot-host-broker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Pinned runtime resource staging failed' }
     node desktop/prepare-client.mjs
     if ($LASTEXITCODE -ne 0) { throw 'World plugin build failed' }
     git archive --format=zip --output=desktop/build/CraftmineWorld-source.zip HEAD

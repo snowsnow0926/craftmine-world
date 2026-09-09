@@ -7,14 +7,14 @@ function boundedText(value,max){if(typeof value!=='string'||!value.trim()||Buffe
 function assertIdentity(input,snapshot){
   if(!sameBinding(input.binding,snapshot.binding)||input.generation!==snapshot.generation)throw Error('CRAFTMINE_BUDGET_BINDING_MISMATCH');
 }
-function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService}){
+function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService,portableRestore}){
   const reservations=new Map();
   // The bounded surface of the S5 asset service and the S3 works/package
   // service. The router forwards a method name, never an arbitrary core call.
   const ASSET_METHODS=new Set(['search','read','versions','usage','annotate','scan','importAsset','previewRead','probe',
     'resolveLegacy','recordUsage','recordCheck','preview','cancel']);
   const PACKAGE_METHODS=new Set(['check','install','list','read','progress','grant','upgrade','uninstall','restore',
-    'exportPackage','importPackage','usage','backupFull','backupVerify','backupRestoreFull','legacyConvert','explain']);
+    'exportPackage','importPackage','installSource','sourceList','exportSource','usage','backupFull','backupVerify','backupRestoreFull','legacyConvert','explain']);
   const keyOf=(context,id)=>JSON.stringify([context.projectId,context.sessionId,context.turnId,id]);
   async function snapshot(context){
     const value=await core.call('task.context',{context});
@@ -55,7 +55,18 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
   }
   return async function onHostRequest(method,params={}){
     await core.start();
+    if(method==='backup.restorePortableActive'){
+      fields(params,['operationId','archivePath','archiveHash','expectedCurrentHash']);
+      if(!portableRestore)throw Error('BACKUP_LIFECYCLE_UNAVAILABLE');
+      await godotExecutor?.stop();
+      try{return await portableRestore.restore(params);}
+      finally{await godotExecutor?.start();}
+    }
     if(method==='godotRuntime.describe'){
+      fields(params,['worldId']);
+      return core.call(method,params,60000);
+    }
+    if(method==='godotWorld.rebuildPlan'||method==='godotWorld.prepareRebuildSource'){
       fields(params,['worldId']);
       return core.call(method,params,60000);
     }
@@ -124,15 +135,20 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     const godotRoutes={
       'godotWorld.initialize':[['worldId','title','baseId','baseBuild','snapshot'],[]],
       'godotWorld.initStatus':[['worldId'],[]],
+      'content.branch.create':[['worldId','branchId','fromRev'],['requestId','taskId','title']],
+      'content.migrate.plan':[['worldId'],[]],
+      'content.migrate.apply':[['worldId'],[]],
+      'content.migrate.verify':[['worldId'],[]],
       'godotWorld.copy':[['sourceWorldId','targetWorldId','title','progress'],['snapshot','context']],
       'godotWorld.backupSnapshot':[['worldId'],['context']],
       'godotWorld.verifySnapshot':[['worldId','snapshot'],['context']],
       'godotProject.create':[['context','worldId','toolCallId','baseBuild','baseId','files'],[]],
-      'godotProject.index':[['context','worldId'],['revision','manifestHash','offset','limit']],
-      'godotProject.read':[['context','worldId','revision','manifestHash','path'],['offset','limit']],
-      'godotProject.patch':[['context','worldId','toolCallId','revision','manifestHash','operations'],[]],
+      'godotProject.applyFiles':[['context','worldId','toolCallId','revision','manifestHash','files'],['operation']],
+      'godotProject.index':[['context','worldId'],['revision','manifestHash','offset','limit','branchId']],
+      'godotProject.read':[['context','worldId','revision','manifestHash','path'],['offset','limit','branchId']],
+      'godotProject.patch':[['context','worldId','toolCallId','revision','manifestHash','operations'],['operation']],
       'godotProject.receipt':[['binding','worldId','toolCallId','method','request'],[]],
-      'godotBuild.start':[['context','worldId','toolCallId','revision','manifestHash','mode'],[]],
+      'godotBuild.start':[['context','worldId','toolCallId','revision','manifestHash','mode'],['branchId']],
       'godotBuild.read':[['worldId','jobId'],['context']],
       'godotBuild.cancel':[['worldId','jobId'],['context']],
       'godotBuild.receipt':[['binding','worldId','toolCallId','method','request'],[]],
@@ -157,9 +173,10 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'content.checkpoint.list':[['worldId','taskId'],[]],
       'content.apply.prepare':[['worldId','context','kind','targetOid','detail'],[]],
       'content.apply.advance':[['operationId'],[]],
-      'content.apply.confirm':[['operationId','appliedOid','detail'],[]],
+      'content.apply.confirm':[['operationId','applicationId','detail'],[]],
       'content.apply.rollback':[['operationId','reason'],[]],
       'content.apply.recover':[['worldId'],[]],
+      'content.operation.read':[['worldId','operationId'],[]],
       'content.reclaim.plan':[['worldId'],['keep']],
       'content.reclaim.prune':[['worldId'],['keep']],
       'content.verify':[['worldId'],['refs']],
@@ -168,13 +185,33 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'library.read':[['ref'],[]],
       'library.capture':[['operationId','applicationId','worldId','kind','resourceId','bundle','scope','tags'],[]],
       'world.list':[[],[]],
+      'workspace.endTurn':[['sessionId','turnId','status'],[]],
+      'asset.bodyPath':[['assetId','version','path'],[]],
       'world.create':[['id','title','world'],[]],
       'world.saveProgress':[['id','revision','baseBuild','snapshot'],[]],
+      'backup.exportPortable':[['operationId','archivePath'],[]],
+      'backup.inspectPortable':[['archivePath'],[]],
+      'backup.verifyPortable':[['archivePath'],[]],
+      'backup.restorePortable':[['operationId','archivePath','targetDirectory'],[]],
+      'backup.cancelPortable':[['operationId'],[]],
+      'backup.protectedRefs':[['worldId'],[]],
+      'backup.releasePortable':[['archiveId'],[]],
     };
     if(Object.hasOwn(godotRoutes,method)){
       const [required,optional]=godotRoutes[method];
       fields(params,required,optional);
-      return core.call(method,params,60000);
+      const result=await core.call(method,params,method.startsWith('backup.')?120000:60000);
+      // The existing authorized build route performs the same dispatch as the
+      // model tool. No additional renderer or generic executor route is opened.
+      if(method==='godotBuild.start'&&result?.executionAvailable!==false&&godotExecutor){
+        const execution=await godotExecutor.enqueue(result,params.context);
+        return {...result,execution};
+      }
+      if(method==='godotBuild.cancel'&&godotExecutor){
+        const execution=await godotExecutor.cancel(params.jobId);
+        return {...result,execution};
+      }
+      return result;
     }
     if(method==='budget.configure'||method==='budget.findReceipt'){
       fields(params,['projectId','sessionId','worldId','taskId','generation','operationId','maxTokens']);

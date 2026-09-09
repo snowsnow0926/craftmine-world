@@ -1,0 +1,55 @@
+{
+  "format": "craftmine.authored-initial-state/1",
+  "baseId": "top-down",
+  "template": "town",
+  "worldId": "authored-initial-world",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "sourceDigest": "ab43472838fa091f9262e693181a24f7896b97e418414d06a2feeda53f467245",
+  "snapshot": {
+    "baseId": "top-down",
+    "baseVersion": "1.0.0",
+    "body": {
+      "coins": 40,
+      "flags": {},
+      "format": "craftmine.godot-topdown-state/1",
+      "grantedRewards": {},
+      "inventory": {},
+      "player": {
+        "facing": "down",
+        "position": [
+          104,
+          168
+        ],
+        "sceneId": "overworld"
+      },
+      "quests": {
+        "herb-delivery": {
+          "delivered": 0,
+          "rewarded": false,
+          "status": "active"
+        }
+      },
+      "scenePositions": {
+        "overworld": [
+          104,
+          168
+        ]
+      },
+      "shops": {
+        "general": {
+          "stock": {
+            "apple": 5,
+            "bread": 3,
+            "potion": 2,
+            "rope": 1
+          }
+        }
+      },
+      "stateVersion": 1,
+      "worldId": "authored-initial-world"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "authored-initial-world"
+  }
+}

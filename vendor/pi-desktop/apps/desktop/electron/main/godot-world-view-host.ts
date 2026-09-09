@@ -165,6 +165,7 @@ export class GodotWorldViewHost {
   private savePromise: Promise<GodotWorldSaveResult> | null = null;
   private checkpointPromise: Promise<GodotWorldSaveResult> | null = null;
   private frozen: { instance: LiveInstance; result: GodotWorldSaveResult } | null = null;
+  private captureBounds: GodotWorldBounds | null = null;
   private syncHolds = 0;
   private syncing = false;
   private syncPromise: Promise<GodotWorldState | null> = Promise.resolve(null);
@@ -484,6 +485,38 @@ export class GodotWorldViewHost {
     if (!instance?.alive) return null;
     const response = await instance.runtime.snapshot().catch(() => null);
     return (response?.result ?? null) as Record<string, unknown> | null;
+  }
+
+  /** Private acceptance capture of the actual game view; never generates input. */
+  async headlessCapture(width: number, height: number): Promise<{pngBase64: string; width: number; height: number; pixelStats: {bytes: number; sampledColors: number}; viewportObservation: unknown}> {
+    const instance = this.current;
+    if (process.env.CRAFTMINE_HEADLESS_TEST === "1" && !instance?.alive) throw Error("GODOT_CAPTURE_RUNTIME_NOT_RUNNING");
+    if (process.env.CRAFTMINE_HEADLESS_TEST !== "1" || !instance?.alive ||
+        !instance.view.webContents.isOffscreen() || !Number.isSafeInteger(width) ||
+        !Number.isSafeInteger(height) || width < 320 || height < 240 || width > 1920 || height > 1080) {
+      throw new Error("GODOT_HEADLESS_CAPTURE_REFUSED");
+    }
+    const previous = instance.view.getBounds();
+    if (this.captureBounds) throw Error("GODOT_CAPTURE_ALREADY_RUNNING");
+    this.captureBounds = {x: 0, y: 0, width, height};
+    ++this.syncHolds;
+    try {
+      instance.view.setBounds({x: 0, y: 0, width, height});
+      await new Promise(resolve => setTimeout(resolve, 350));
+      if (this.current !== instance || !instance.alive) throw new Error("GODOT_WORLD_CHANGED");
+      instance.view.webContents.invalidate();
+      const screenshot = await instance.view.webContents.capturePage();
+      const viewportObservation = await this.request("observe-envelope", {});
+      const pixels = screenshot.toBitmap(), colors = new Set<number>();
+      const stride = Math.max(1, Math.floor(pixels.length / 4 / 65536));
+      for (let offset = 0; offset + 4 <= pixels.length; offset += 4 * stride) colors.add(pixels.readUInt32LE(offset));
+      return {pngBase64: screenshot.toPNG().toString("base64"), ...screenshot.getSize(), pixelStats: {bytes: pixels.length, sampledColors: colors.size}, viewportObservation};
+    } finally {
+      this.captureBounds = null;
+      if (instance.alive && !instance.view.webContents.isDestroyed()) instance.view.setBounds(previous);
+      --this.syncHolds;
+      this.applyBounds();
+    }
   }
 
   /** Forward one runtime operation; the base owns everything but the core ops. */
@@ -888,9 +921,11 @@ export class GodotWorldViewHost {
       this.detachView(instance.view);
       return;
     }
+    const rect = this.captureBounds ?? gameBounds(this.bounds, this.candidateVisible ? WORLD_CHROME_HEIGHT + 46 : WORLD_CHROME_HEIGHT);
+    if (rect.width < 1 || rect.height < 1) { this.detachView(instance.view); return; }
     const children = window.contentView.children;
     if (!children.includes(instance.view)) window.contentView.addChildView(instance.view);
-    instance.view.setBounds(gameBounds(this.bounds, this.candidateVisible ? WORLD_CHROME_HEIGHT + 46 : WORLD_CHROME_HEIGHT));
+    instance.view.setBounds(rect);
   }
 
   private detachView(view: WebContentsView): void {

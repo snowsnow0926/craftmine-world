@@ -3,6 +3,27 @@ import { defineConfig } from "electron-vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import type { Plugin } from "vite";
+import { build as bundleScript } from "esbuild";
+
+// Sandboxed preloads cannot require a Rollup shared chunk. Bundle each entry
+// independently so shared guards are present before any page code executes.
+function standalonePreloads(): Plugin {
+  return {
+    name: "pi-standalone-sandbox-preloads",
+    async generateBundle(_options, output) {
+      for (const file of Object.values(output)) {
+        if (file.type !== "chunk" || !file.isEntry || !file.facadeModuleId) continue;
+        const result = await bundleScript({entryPoints: [file.facadeModuleId], bundle: true,
+          write: false, platform: "node", format: "cjs", target: "node22", external: ["electron"]});
+        file.code = result.outputFiles[0].text;
+        file.imports = []; file.dynamicImports = []; file.map = null;
+      }
+      for (const [name, file] of Object.entries(output)) {
+        if (file.type === "chunk" && !file.isEntry) delete output[name];
+      }
+    },
+  };
+}
 
 // Dev needs 'unsafe-eval' for vite HMR tooling; production must not ship it.
 function tightenCsp(): Plugin {
@@ -59,6 +80,7 @@ export default defineConfig({
     },
   },
   preload: {
+    plugins: [standalonePreloads()],
     // The preload must be a fully bundled CJS file so it can run in a
     // sandboxed renderer without Node module resolution.
     build: {

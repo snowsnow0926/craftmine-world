@@ -220,9 +220,28 @@ export class PluginViewHost {
     await this.prepareEntries([...this.views.values()]);
   }
 
+  /** Restore owns an in-flight panel request, so it must not await prepareClose. */
+  async restoreCraftmine(phase: "begin" | "finish", request: Record<string, unknown>): Promise<unknown> {
+    const entry = this.views.get(pluginViewKey("craftmine.world", "world"));
+    if (!entry || entry.view.webContents.isDestroyed()) return {absent: true};
+    const method = phase === "begin" ? "beginRestore" : "finishRestore";
+    return entry.view.webContents.executeJavaScript(
+      `globalThis.craftmineView.${method}(${JSON.stringify(request)})`, false,
+    );
+  }
+
   async navigateCraftmine(request: Record<string, unknown>): Promise<unknown> {
     const entry = this.views.get(pluginViewKey("craftmine.world", "world"));
-    if (!entry || entry.view.webContents.isDestroyed()) throw new Error("WORLD_VIEW_UNAVAILABLE");
+    if (!entry) throw new Error("WORLD_VIEW_NOT_CREATED");
+    if (entry.view.webContents.isDestroyed()) throw new Error("WORLD_VIEW_DESTROYED");
+    const deadline = Date.now() + 15_000;
+    while (!entry.view.webContents.isDestroyed()) {
+      const ready = !entry.view.webContents.isLoading() && await entry.view.webContents.executeJavaScript(
+        "typeof globalThis.craftmineView?.navigate === 'function' && (document.body.dataset.worldLoaded === 'true' || document.body.dataset.godot === 'true')", false).catch(() => false);
+      if (ready) break;
+      if (Date.now() >= deadline) throw new Error("WORLD_VIEW_START_TIMEOUT");
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
     // JSON is a JavaScript value here, never shell text. The method is fixed and
     // the destination is the trusted product panel, never authored gameplay.
     return entry.view.webContents.executeJavaScript(

@@ -11,7 +11,7 @@ const form = document.getElementById('create-form');
 const errorBox = document.getElementById('error');
 const bridge = globalThis.pluginBridge;
 const requests = new Map();
-let current, nonce, loaded=false, busy=false, closing=false, lastSaved='';
+let current, nonce, loaded=false, busy=false, closing=false, lastSaved='', backupFrozen=false;
 let activeOperation=Promise.resolve();
 let closeOperation, closeGeneration=0;
 const checksPanel=document.getElementById('checks-panel');
@@ -55,6 +55,7 @@ function onGodotState(payload) {
   // see exactly which world/build/instance they observed.
   if(typeof payload.instanceId==='string')godotIdentity={worldId:payload.worldId,buildId:String(payload.buildId||''),instanceId:payload.instanceId};
   const state=String(payload.state||'');
+  if(state==='ready')backupFrozen=false;
   const label=godotStateLabels[state]||state;
   document.body.dataset.godotState=state;
   status.textContent=label;
@@ -68,6 +69,7 @@ function onGodotState(payload) {
 }
 
 function send(type, value = {}) {
+  if(type==='resume')backupFrozen=false;
   // Godot worlds never speak the voxel host protocol; the host owns the game view.
   if(godot){
     if(type==='resume')void bridge.invoke('godot.runtimeResume',{worldId:current.id}).catch(showError);
@@ -145,7 +147,33 @@ function cancelClose() {
   closeGeneration++;closing=false;controls();if(!applicationAttempt)send('resume');
 }
 
+let restoreOperation=null;
+async function beginRestore({operationId}) {
+  if(typeof operationId!=='string'||!/^[A-Za-z0-9_-]{8,100}$/.test(operationId))throw Error('INVALID_RESTORE_OPERATION');
+  if(restoreOperation===operationId)return {locked:true};
+  if(restoreOperation||closing||applicationAttempt||preview)throw Error('WORLD_BUSY');
+  // This is invoked by Main while the backup action is awaiting its IPC reply.
+  // Waiting for activeOperation here would wait on that very same reply.
+  restoreOperation=operationId;closing=true;controls();send('pause');
+  try {
+    if(!godot&&loaded) {
+      const result=await snapshot({freeze:true});
+      if(JSON.stringify(result.snapshot)!==lastSaved)throw Error('BACKUP_PROGRESS_CHANGED_REINSPECT');
+    }
+    return {locked:true};
+  } catch(error) {restoreOperation=null;cancelClose();throw error;}
+}
+async function finishRestore({operationId,record,empty=false}) {
+  if(restoreOperation!==operationId)throw Error('RESTORE_OPERATION_CHANGED');
+  restoreOperation=null;closing=false;controls();
+  if(record)mount(record);
+  else if(empty){loaded=false;current=null;godotIdentity=null;frame.removeAttribute('srcdoc');delete document.body.dataset.worldLoaded;delete document.body.dataset.worldId;status.textContent='备份中没有世界，请新建世界。';controls();}
+  else if(!applicationAttempt)send('resume');
+  return {unlocked:true};
+}
+
 function prepareClose() {
+  if(restoreOperation)return Promise.resolve({loaded:false,restorePending:true});
   if(closing&&closeOperation)return closeOperation;
   const generation=++closeGeneration, previous=activeOperation;
   closing=true;controls();
@@ -200,6 +228,7 @@ function mount(record) {
       if(!state)return;
       if(current?.id!==record.id)return;
       onGodotState(state);
+      if(state.initializing)return;
       await bridge.invoke('godot.runtimeSurface',{worldId:record.id,visible:true});
     }).catch(error=>{if(current?.id===record.id)showError(error);});
   } else {
@@ -231,7 +260,7 @@ addEventListener('message',event=>{
 
 // Only the trusted product panel owns this lifecycle surface. Authored code
 // lives in the opaque game iframe and cannot reach it.
-globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,navigate,showSurface,pickDirectory,showChecks:()=>setMode(true),showWorkbench:tab=>openWorkbench(tab),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
+globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,beginRestore,finishRestore,navigate,showSurface,pickDirectory,showChecks:()=>setMode(true),showWorkbench:tab=>openWorkbench(tab),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
 
 // Surfaces requested by the left column. Only surfaces this page can actually
 // show are accepted; an unknown workbench tab is refused instead of silently
@@ -260,7 +289,7 @@ async function pickDirectory() {
 // requests explicitly; action() deliberately absorbs errors for DOM handlers.
 async function navigate(request) {
   if(busy||closing||preview||applicationAttempt||workbench?.busy)throw Error('WORLD_BUSY');
-  if(!bridge||!loaded||!current?.id)throw Error('WORLD_VIEW_UNAVAILABLE');
+  if(!bridge||(!loaded&&!godot)||!current?.id)throw Error('WORLD_VIEW_UNAVAILABLE');
   if(!['switch','create'].includes(request?.operation))throw Error('INVALID_NAVIGATION_REQUEST');
   if(request.operation==='switch'&&request.id===current.id)return {ok:true,activeWorldId:current.id};
   busy=true;controls();errorBox.hidden=true;
@@ -271,9 +300,9 @@ async function navigate(request) {
       if(request.operation==='switch') {
         target=await bridge.invoke('world.read',{id:request.id});
       }
-      await save({freeze:true});
+      if(loaded)await save({freeze:true});
       if(request.operation==='create')target=await bridge.invoke('world.create',{
-        title:request.title,baseId:request.baseId,starterId:request.starterId,activate:false,
+        title:request.title,baseId:request.baseId,starterId:request.starterId,operationId:request.operationId,activate:false,
       });
       const record=await bridge.invoke('world.open',{id:target.id});
       mount(record);
@@ -514,7 +543,7 @@ workbench=createWorkbench({
   element:document.getElementById('workbench-panel'),selectionElement:document.getElementById('selection-context'),
   request:(channel,payload)=>bridge?bridge.invoke(channel,payload):Promise.reject(Error('桌面服务尚未连接')),
   getWorld:()=>current,pause:()=>send('pause'),isLocked:()=>busy||closing||!!applicationAttempt||!!preview,
-  onChange:controls,replaceWorld:mount,saveBeforeBackup:()=>save({freeze:true}),
+  onChange:controls,replaceWorld:mount,saveBeforeBackup:async()=>{const receipt=await save({freeze:true});backupFrozen=true;return receipt;},
   reloadWorld:async()=>{const result=await bridge.invoke('world.list');const next=result.worlds.find(item=>item.id===result.activeWorldId)||result.worlds[0];if(next){mount(await bridge.invoke('world.open',{id:next.id}));await refreshList();}},
   run:async fn=>{
     if(busy||closing||applicationAttempt||preview)throw Error('请先完成当前世界操作');
@@ -552,7 +581,7 @@ select.addEventListener('change',()=>{
   const id=select.value;
   void navigate({operation:'switch',id}).catch(()=>{select.value=current?.id||'';});
 });
-setInterval(()=>{if(loaded&&!busy&&!closing&&!preview&&bridge)void action(save);},10000);
+setInterval(()=>{if(loaded&&!busy&&!closing&&!preview&&!backupFrozen&&bridge)void action(save);},10000);
 
 void action(async()=>{
   if(!bridge) {mount({title:initialWorld.build.scene.title,world:initialWorld});select.options[0].textContent=initialWorld.build.scene.title;return;}

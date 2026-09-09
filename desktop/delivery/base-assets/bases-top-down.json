@@ -293,8 +293,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 766,
-      "sha256": "cad57353104e2ab8ddc0d109f1e83bc9d78f1093026591e582c00cd5baa74b88",
+      "bytes": 940,
+      "sha256": "67baa8e1769f6864a27a47c3f585f44a072e7697c12fb2c1dce9a7df4a38fe0f",
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
@@ -426,8 +426,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 10587,
-      "sha256": "fe200494489a4f687e60732353a292023914a142366f801221b595bb1ba1dbff",
+      "bytes": 10871,
+      "sha256": "a1ce89b4ae6d87bd46312e06f72d1cc3aad1f681a50e401d54f62c2857b8f60c",
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
@@ -613,8 +613,8 @@
       "distribution": [
         "development-only"
       ],
-      "bytes": 6719,
-      "sha256": "a513bdc9bced03596eb91d79865c308a59340c5fb007289f86da858e5f5f4e42",
+      "bytes": 6717,
+      "sha256": "a70b1e483a75f3f826e75bea0dda9a2694999094a166067a6268a122e77a5ab8",
       "notes": "Project documentation; not loaded by the running game."
     },
     {
@@ -650,8 +650,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 1258,
-      "sha256": "de322a5152b8646c31174b5f553e56187b3eb7aad53e81a19179e1a139f0ed3c",
+      "bytes": 10207,
+      "sha256": "d1c10fc3e61397de51016856d534b0d79ea44c15ce95c0822afaa236b86ca0b4",
       "notes": "Project or base configuration."
     },
     {
@@ -986,11 +986,11 @@
       "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
       "redistribution": "permitted",
       "distribution": [
-        "development-only"
+        "app-bundle"
       ],
       "bytes": 9344,
       "sha256": "76e561a575335ec87700108c6f3eed437149cc8658048fafe987f08249d53413",
-      "notes": "Development-only Node script; never shipped to players."
+      "notes": "Trusted world materialization entry point; required in the client, not a runtime game script. Licence status is unchanged."
     },
     {
       "path": "tools/verify.mjs",
@@ -1272,8 +1272,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 766,
-      "sha256": "cad57353104e2ab8ddc0d109f1e83bc9d78f1093026591e582c00cd5baa74b88",
+      "bytes": 940,
+      "sha256": "67baa8e1769f6864a27a47c3f585f44a072e7697c12fb2c1dce9a7df4a38fe0f",
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
@@ -1405,8 +1405,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 10587,
-      "sha256": "fe200494489a4f687e60732353a292023914a142366f801221b595bb1ba1dbff",
+      "bytes": 10871,
+      "sha256": "a1ce89b4ae6d87bd46312e06f72d1cc3aad1f681a50e401d54f62c2857b8f60c",
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
@@ -1558,7 +1558,7 @@
         "user-export"
       ],
       "bytes": 5387,
-      "sha256": "58f2ad6beb6a9d9e79a291825c43053788ede6abc6ad04b47177bf96f2512846",
+      "sha256": "118b4d84081acead99ee7a251ce405b70c33f7cd1d88e6588ad2166f1665235f",
       "notes": "Project or base configuration."
     },
     {
@@ -1956,8 +1956,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 766,
-      "sha256": "cad57353104e2ab8ddc0d109f1e83bc9d78f1093026591e582c00cd5baa74b88",
+      "bytes": 940,
+      "sha256": "67baa8e1769f6864a27a47c3f585f44a072e7697c12fb2c1dce9a7df4a38fe0f",
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
@@ -2089,8 +2089,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 10587,
-      "sha256": "fe200494489a4f687e60732353a292023914a142366f801221b595bb1ba1dbff",
+      "bytes": 10871,
+      "sha256": "a1ce89b4ae6d87bd46312e06f72d1cc3aad1f681a50e401d54f62c2857b8f60c",
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
@@ -2242,7 +2242,7 @@
         "user-export"
       ],
       "bytes": 6819,
-      "sha256": "a9619203033da991addd7f76c9f3aa81a4f369625dcfa818aa470d4aa9f7a89f",
+      "sha256": "0446d50f73c2eae501ae8ac9e5f44e8fc39e5365c421fba9a113415b089e5abf",
       "notes": "Project or base configuration."
     },
     {

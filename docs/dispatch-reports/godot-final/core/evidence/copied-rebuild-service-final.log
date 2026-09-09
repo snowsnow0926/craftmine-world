@@ -1,0 +1,4 @@
+PASS ready orchestration; progress/source never replaced
+PASS blocked orchestration; progress/source never replaced
+PASS wrong-candidate orchestration; progress/source never replaced
+Evidence: D:\cm-godot-final-core-20260910\test-results\rebuild-service-kxh33k

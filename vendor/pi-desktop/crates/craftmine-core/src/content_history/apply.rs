@@ -260,13 +260,17 @@ pub fn prepare(
         .optional()?
     {
         let state = OperationState::parse(&existing.1)?;
+        let old=load(&transaction,&context.operation_id)?;
         ensure!(
-            existing.0 == target_oid,
+            existing.0 == target_oid && old.world_id==context.world_id && old.repo_id==context.repo_id
+                && old.branch_id==context.branch_id && old.kind==kind
+                && old.expected_head_oid==context.expected_head_oid && old.expected_applied_oid==context.expected_applied_oid
+                && old.expected_progress_revision==context.expected_progress_revision,
             "CONTENT_OPERATION_ID_REUSED: {}",
             context.operation_id
         );
         ensure!(
-            matches!(state, OperationState::Prepared | OperationState::ReferenceAdvanced),
+            matches!(state, OperationState::Prepared | OperationState::ReferenceAdvanced | OperationState::Committed),
             "CONTENT_OPERATION_CLOSED: {} is {}",
             context.operation_id,
             existing.1
@@ -305,6 +309,7 @@ pub fn advance(
     operation_id: &str,
 ) -> Result<ReferenceIntent> {
     let intent = load(db, operation_id)?;
+    if intent.state==OperationState::Committed {return Ok(intent);}
     if intent.state == OperationState::ReferenceAdvanced {
         // Replaying a completed Git half is idempotent, but only if the
         // reference really is where the intent says.
@@ -325,6 +330,7 @@ pub fn advance(
         intent.state.as_str()
     );
     let layout = store.open_existing(&intent.repo_id)?;
+    ensure!(store.branch_head(&layout,&intent.branch_id)?==intent.expected_head_oid,"CONTENT_EXPECTED_HEAD_MISMATCH");
     let ref_name = applied_ref(&intent.world_id)?;
     let observed = store.git().ref_value(&layout.git_dir, &ref_name)?;
     if observed.as_deref() == Some(intent.target_oid.as_str()) {

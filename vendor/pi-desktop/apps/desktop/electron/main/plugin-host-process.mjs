@@ -112,7 +112,9 @@ function buildApi() {
       // Isolated asset preview decoding and live gameplay sampling are host
       // capabilities: the plugin child asks for a bounded result and never gets
       // the decoder, the window or a progress write path.
-      assetPreview: (input, options) => call("craftmine.assetPreview", [input, options]),
+      assetPreview: (input) => call("craftmine.assetPreview", [input]),
+      cancelAssetPreview: (input) => call("craftmine.cancelAssetPreview", [input]),
+      getGodotToolchain: () => call("craftmine.getGodotToolchain", []),
       sampleLiveState: (input) => call("craftmine.sampleLiveState", [input]),
       // Live observation of the running instance (task S6). Returns the host's
       // observation envelope, or null when no formal instance is running.

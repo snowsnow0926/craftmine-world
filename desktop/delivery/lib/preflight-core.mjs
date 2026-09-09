@@ -2,6 +2,7 @@
 // Facts only: every rule below compares pinned bytes or declared metadata. It never
 // downloads, executes or rewrites anything inside the checked tree.
 import fs from 'node:fs';
+import {loadRuntimeDistribution,runtimeDecision,runtimeRepositoryPath} from './runtime-distribution.mjs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
@@ -31,7 +32,19 @@ export const PACKAGE_REQUIRED_FILES = [
   // its bundle record are part of a delivery package.
   'resources/git/bin/git.exe',
   'resources/git/GIT-BUNDLE.json',
-  'resources/git/LICENSE.txt'
+  'resources/git/LICENSE.txt',
+  'resources/runtime-resources.json',
+  'resources/godot/broker/godot-host-broker.exe',
+  'resources/godot/broker/broker-identity.json',
+  'resources/godot/engine/4.7.2-stable/editor/Godot_v4.7.2-stable_win64.exe',
+  'resources/godot/engine/4.7.2-stable/templates/web_release.zip',
+  'resources/godot/engine/4.7.2-stable/templates/web_nothreads_release.zip',
+  'resources/godot/engine/4.7.2-stable/templates/web_nothreads_debug.zip',
+  'resources/godot/engine/4.7.2-stable/templates/version.txt',
+  'resources/godot/engine/4.7.2-stable/templates/windows_release_x86_64.exe',
+  'resources/godot/engine/4.7.2-stable/templates/windows_debug_x86_64.exe',
+  'resources/licenses/godot/GODOT_LICENSE.txt',
+  'resources/licenses/godot/GODOT_COPYRIGHT.txt'
 ];
 
 const MAX_TEXT_SCAN = 1024 * 1024;
@@ -534,7 +547,7 @@ function checkDevelopmentOnlyFiles(root, directory, files, failures) {
   for (const file of files) {
     const relativePath = rel(directory, file);
     for (const candidate of declared) {
-      if (relativePath === candidate || relativePath.endsWith('/' + candidate)) {
+      if (relativePath === candidate || relativePath.endsWith('/' + candidate) || runtimeRepositoryPath(relativePath) === candidate) {
         failures.push(fail('DEVELOPMENT_ONLY_FILE_SHIPPED', 'Development-only file must not ship: ' + relativePath));
         found++;
         break;
@@ -573,6 +586,18 @@ export function checkPackage(root, packageDirectory) {
     if (!exists(path.join(directory, relative))) failures.push(fail('PACKAGE_FILE_MISSING', 'Package is missing ' + relative));
   }
   facts.developmentOnlyFiles = checkDevelopmentOnlyFiles(root, directory, packageFiles, failures);
+  try {
+    const distribution=loadRuntimeDistribution(root);
+    for(const file of packageFiles){
+      const relative=runtimeRepositoryPath(rel(directory,file));
+      if(!relative||!/^desktop\/godot\/(bases|shared|web)\//.test(relative))continue;
+      try{
+        if(!runtimeDecision(relative,distribution).include)failures.push(fail('PACKAGE_ASSET_DISTRIBUTION','Runtime file is not declared app-bundle: '+relative));
+        else {const bytes=fs.statSync(file).size,digest=sha256(file);if(!distribution.get(relative).some(entry=>entry.distribution?.includes('app-bundle')&&entry.bytes===bytes&&entry.sha256===digest))failures.push(fail('PACKAGE_ASSET_PIN_MISMATCH','Packaged runtime bytes differ from the declared source: '+relative));}
+      }
+      catch(error){failures.push(fail('PACKAGE_ASSET_UNDECLARED',String(error.message)));}
+    }
+  } catch(error){failures.push(fail('PACKAGE_DISTRIBUTION_INVALID',String(error.message)));}
   const manifestPath = path.join(directory, 'resources/source/build-manifest.json');
   if (exists(manifestPath)) {
     const manifest = readJson(manifestPath);

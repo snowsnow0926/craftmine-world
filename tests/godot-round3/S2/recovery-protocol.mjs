@@ -74,7 +74,7 @@ function environment({projectFiles = {'project.godot':'config_version=5\n', 'mai
   process.env.CRAFTMINE_GODOT_TOOLCHAIN_LOCK = lock;
   process.env.CRAFTMINE_GODOT_BRIDGE_PATH = bridge;
   process.env.CRAFTMINE_S2_FIXTURE_FILE = scenarioFile;
-  delete process.env.CRAFTMINE_GODOT_BROKER_SHA256;
+  process.env.CRAFTMINE_GODOT_BROKER_SHA256 = sha256(fs.readFileSync(broker));
   delete process.env.CRAFTMINE_GODOT_BROKER_IDENTITY;
   return {root, broker, engineRoot, bridge, projectRoot, artifactsRoot, dataPath, scenarioFile};
 }
@@ -170,11 +170,11 @@ function recoveryRunner({reclaim = true, entries = null, report = null, unreadab
   return Object.assign(run, {calls});
 }
 
-function makeExecutor({env, core, verifier = {godotCheck:async () => passingEvidence()}, runRecovery, jobTimeoutMs = 30000}) {
+function makeExecutor({env, core, verifier = {godotCheck:async () => passingEvidence()}, runRecovery, jobTimeoutMs = 30000, toolchain}) {
   return createGodotExecutor(core ?? fakeCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot}), {
     dataPath:env.dataPath, verifier, jobTimeoutMs, logger:{log(){}, warn(){}, error(){}},
     spawnBroker:(binary, args, settings) => spawn(process.execPath, [stubBroker, ...args], settings),
-    runRecovery,
+    runRecovery, toolchain,
   });
 }
 
@@ -188,6 +188,38 @@ async function waitFor(predicate, timeoutMs = 20000, label = 'condition') {
 }
 
 const triggers = executor => (executor.status().recoveries ?? []).map(entry => entry.trigger);
+
+test('an unpinned broker and its self-nominated adjacent manifest never execute recovery',async()=>{
+  const env=environment();
+  delete process.env.CRAFTMINE_GODOT_BROKER_SHA256;
+  fs.writeFileSync(path.join(path.dirname(env.broker),'broker-identity.json'),JSON.stringify({
+    format:'craftmine.godot-broker-identity/1',sha256:sha256(fs.readFileSync(env.broker)),bytes:fs.statSync(env.broker).size}));
+  const recovery=recoveryRunner({entries:[]});
+  const executor=makeExecutor({env,runRecovery:recovery});
+  assert.equal((await executor.start()).reason,'GODOT_BROKER_PIN_REQUIRED');
+  assert.equal(recovery.calls.length,0);
+  await executor.stop();
+});
+
+test('private host configuration pins the broker independently of child environment',async()=>{
+  const env=environment();
+  const identity=path.join(env.root,'release-identity.json');
+  fs.writeFileSync(identity,JSON.stringify({format:'craftmine.godot-broker-identity/1',
+    sha256:sha256(fs.readFileSync(env.broker)),bytes:fs.statSync(env.broker).size}));
+  process.env.CRAFTMINE_GODOT_BROKER_SHA256='0'.repeat(64);
+  const toolchain={broker:env.broker,brokerIdentity:identity,engineRoot:env.engineRoot,
+    toolchainLock:process.env.CRAFTMINE_GODOT_TOOLCHAIN_LOCK,bridgePath:env.bridge};
+  const recovery=recoveryRunner({entries:[]});
+  const executor=makeExecutor({env,runRecovery:recovery,toolchain});
+  assert.equal((await executor.start()).available,true);
+  await executor.stop();
+  fs.writeFileSync(identity,'{bad');
+  const rejected=makeExecutor({env,runRecovery:recovery,toolchain});
+  const before=recovery.calls.length;
+  assert.equal((await rejected.start()).reason,'GODOT_BROKER_PIN_REQUIRED');
+  assert.equal(recovery.calls.length,before);
+  await rejected.stop();
+});
 
 test('a recovery entry counts as reclaimed only when identity and journal retirement are both proven', () => {
   const report = {policyVersion:RECOVERY_POLICY, tasksRoot:'D:\\tasks', journalRoot:'D:\\tasks\\.recovery-journal',

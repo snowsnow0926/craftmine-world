@@ -1,0 +1,2 @@
+vendor/pi-desktop/apps/desktop/electron/main/godot-history-panel-service.ts(1,28): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+vendor/pi-desktop/apps/desktop/electron/main/godot-history-panel-service.ts(89,87): error TS2580: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.

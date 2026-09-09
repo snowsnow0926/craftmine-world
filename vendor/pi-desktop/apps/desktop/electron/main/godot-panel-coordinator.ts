@@ -9,6 +9,7 @@ type Options = {
   invoke: (channel: string, payload: Record<string, unknown>) => Promise<unknown>;
   /** Client-side Godot creation. Absent only in tests that never create worlds. */
   creation?: (() => ReturnType<typeof createGodotWorldFactory> | null) | null;
+  resumeRestored?: (worldId: string) => Promise<void>;
 };
 /** Authenticated panel actions may choose a world; they never supply runtime data or paths. */
 export function createGodotPanelCoordinator(options: Options) {
@@ -67,7 +68,14 @@ export function createGodotPanelCoordinator(options: Options) {
   };
   return {
     async invoke(channel: string, payload: Record<string, unknown> = {}): Promise<unknown> {
-      if (channel === "godot.runtimeState") { await requireCurrent(payload, ["worldId"]); return options.host.state; }
+      if (channel === "godot.runtimeState") {
+        if (Object.keys(payload).some(key => key !== "worldId") || typeof payload.worldId !== "string") throw Error("INVALID_GODOT_PANEL_ACTION");
+        if (!options.host.instance && await options.selection() === payload.worldId) {
+          const initialization = await currentCreation()?.status(payload.worldId);
+          if (initialization && initialization.state !== "ready") return {worldId: payload.worldId, state: "loading", initializing: true};
+        }
+        await requireCurrent(payload, ["worldId"]); return options.host.state;
+      }
       if (channel === "godot.runtimeSave") {
         await requireCurrent(payload, ["worldId", "freeze"]);
         if (switching || typeof payload.freeze !== "boolean") throw new Error("WORLD_BUSY");
@@ -86,11 +94,27 @@ export function createGodotPanelCoordinator(options: Options) {
       }
       if (channel === "world.createOptions") return mergedCreateOptions();
       if (channel === "world.list") return augmentWorldList(await options.invoke(channel, payload));
+      if (channel === "world.creationRetry") {
+        if (typeof payload.worldId !== "string" || Object.keys(payload).some(key => key !== "worldId")) throw Error("INVALID_GODOT_PANEL_ACTION");
+        void currentCreation()?.retry(payload.worldId);
+        return {status: "running", worldId: payload.worldId};
+      }
       if (channel === "world.create") {
         const creation = currentCreation();
         const baseId = typeof payload.baseId === "string" ? payload.baseId : "";
         // A Godot base is created here; every other base keeps the legacy path.
-        if (creation && creation.options.bases.some(base => base.id === baseId)) return creation.create(payload);
+        if (creation && creation.options.bases.some(base => base.id === baseId)) {
+          if (switching) throw Error("WORLD_BUSY");
+          switching = true;
+          let release: (() => void) | undefined;
+          try {
+            release = await options.host.holdSelectionSync();
+            const result = await creation.create(payload);
+            await options.host.switchWorld(null);
+            await options.invoke("world.open", {id: result.id});
+            return result;
+          } finally { release?.(); switching = false; }
+        }
       }
       if (channel !== "world.open") return options.invoke(channel, payload);
       if (switching || typeof payload.id !== "string" || Object.keys(payload).some(key => key !== "id")) throw new Error("WORLD_BUSY");
@@ -100,6 +124,13 @@ export function createGodotPanelCoordinator(options: Options) {
       try {
         release = await options.host.holdSelectionSync();
         previous = await options.selection();
+        const initializing = await currentCreation()?.status(payload.id);
+        if (initializing && initializing.state !== "ready") {
+          await options.host.switchWorld(null);
+          await options.invoke("world.open", {id: payload.id});
+          await options.resumeRestored?.(payload.id);
+          return options.invoke("world.open", {id: payload.id});
+        }
         // The descriptor resolves only a verified applied artifact; errors are
         // not a legacy fallback and do not change the saved selection.
         const next = await options.adapter.describe(payload.id);

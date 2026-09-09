@@ -98,7 +98,7 @@ function respond(request) {
       policyVersion:'craftmine.windows.recovery-journal.v1', cleared:scenario.journalCleared !== false, error:null},
     resourceEnforcement:scenario.resourceEnforcement ?? null,
     error:null,
-    brokerSha256:scenario.brokerSha256 ?? sha256('broker-stub'),
+    brokerSha256:scenario.brokerSha256 ?? sha256(fs.readFileSync(process.env.CRAFTMINE_GODOT_BROKER_BIN)),
   };
 }
 

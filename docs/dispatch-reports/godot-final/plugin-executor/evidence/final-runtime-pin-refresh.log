@@ -1,0 +1,85 @@
+{
+  "format": "craftmine.authored-pin-refresh/1",
+  "sourceCommit": "ce7f5854c5825207abc2defaefe4f4bff572280b",
+  "changed": [
+    "desktop/delivery/base-assets/bases-first-person.json",
+    "desktop/delivery/base-assets/bases-mining-sandbox.json",
+    "desktop/delivery/base-assets/bases-side-view.json",
+    "desktop/delivery/base-assets/bases-top-down.json",
+    "desktop/delivery/base-assets/first-person.json",
+    "desktop/delivery/base-assets/shared-web.json",
+    "desktop/delivery/base-assets/top-down.json",
+    "desktop/delivery/base-assets/shared-runtime.json"
+  ],
+  "canonicalized": [
+    "desktop/godot/bases/README.md",
+    "desktop/godot/bases/base-catalog.json",
+    "desktop/godot/bases/component-catalog.json",
+    "desktop/godot/shared/README.md",
+    "desktop/godot/shared/adapters/first-person.gd",
+    "desktop/godot/shared/adapters/mining-sandbox.gd",
+    "desktop/godot/shared/adapters/side-view.gd",
+    "desktop/godot/shared/adapters/top-down.gd",
+    "desktop/godot/shared/runtime_bridge.gd",
+    "desktop/godot/shared/state_guard.gd",
+    "desktop/godot/shared/tests/driver.gd"
+  ],
+  "checkoutDrift": [
+    {
+      "path": "desktop/godot/bases/README.md",
+      "checkoutBytes": 6428,
+      "gitBytes": 6301
+    },
+    {
+      "path": "desktop/godot/bases/base-catalog.json",
+      "checkoutBytes": 18601,
+      "gitBytes": 18013
+    },
+    {
+      "path": "desktop/godot/bases/component-catalog.json",
+      "checkoutBytes": 33721,
+      "gitBytes": 32549
+    },
+    {
+      "path": "desktop/godot/shared/README.md",
+      "checkoutBytes": 13892,
+      "gitBytes": 13757
+    },
+    {
+      "path": "desktop/godot/shared/adapters/first-person.gd",
+      "checkoutBytes": 2409,
+      "gitBytes": 2355
+    },
+    {
+      "path": "desktop/godot/shared/adapters/mining-sandbox.gd",
+      "checkoutBytes": 10098,
+      "gitBytes": 9847
+    },
+    {
+      "path": "desktop/godot/shared/adapters/side-view.gd",
+      "checkoutBytes": 5028,
+      "gitBytes": 4931
+    },
+    {
+      "path": "desktop/godot/shared/adapters/top-down.gd",
+      "checkoutBytes": 2165,
+      "gitBytes": 2119
+    },
+    {
+      "path": "desktop/godot/shared/runtime_bridge.gd",
+      "checkoutBytes": 6461,
+      "gitBytes": 6328
+    },
+    {
+      "path": "desktop/godot/shared/state_guard.gd",
+      "checkoutBytes": 1800,
+      "gitBytes": 1759
+    },
+    {
+      "path": "desktop/godot/shared/tests/driver.gd",
+      "checkoutBytes": 1478,
+      "gitBytes": 1444
+    }
+  ],
+  "rightsChanged": false
+}

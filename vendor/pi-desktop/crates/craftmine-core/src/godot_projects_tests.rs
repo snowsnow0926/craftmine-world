@@ -1,6 +1,78 @@
 use super::*;
 use crate::WorldDocument;
 
+#[test]
+fn private_source_context_reads_an_existing_finished_workspace_without_writing() -> Result<()> {
+    let dir=tempfile::tempdir()?;let path=dir.path().join("tasks.sqlite");let mut journal=setup(&path)?;
+    let context=ctx("one");journal.godot_project_create(&create_request(&context))?;
+    journal.workspace_end_turn(&context.session_id,&context.turn_id,"completed")?;
+    let changed=journal.db.total_changes();
+    let found=journal.godot_project_source_context(&json!({"worldId":"a"}))?;
+    assert_eq!(found["context"],serde_json::to_value(&context)?);
+    assert_eq!(journal.db.total_changes(),changed);
+    assert!(journal.godot_project_index(&json!({"worldId":"a","context":found["context"]}))?["files"].as_array().unwrap().len()>0);
+    failed(journal.godot_project_source_context(&json!({"worldId":"b"})),"GODOT_PROJECT_NOT_FOUND");
+    journal.workspace_open(&ctx("moved"),"b")?;
+    // This existing session remains bound to a; sourceContext follows its real
+    // head instead of returning the older, now stale author context.
+    assert_eq!(journal.godot_project_source_context(&json!({"worldId":"a"}))?["context"]["turnId"],"moved");
+    journal.db.execute("DELETE FROM craftmine_session_worlds WHERE world_id='a'",[])?;
+    failed(journal.godot_project_source_context(&json!({"worldId":"a"})),"GODOT_SOURCE_CONTEXT_UNAVAILABLE");
+    Ok(())
+}
+
+#[test]
+fn a_private_file_install_is_atomic_binary_safe_and_replayable_on_both_backends() -> Result<()> {
+    for git in [false,true] {
+        let dir=tempfile::tempdir()?;
+        let path=dir.path().join("tasks.sqlite");
+        let mut journal=setup(&path)?;
+        let context=ctx("one");
+        let version=journal.godot_project_create(&create_request(&context))?;
+        let mut operation=Value::Null;
+        if git {
+            journal.content_migrate_apply(&json!({"worldId":"a"}))?;
+            let status=journal.content_status(&json!({"worldId":"a"}))?;
+            operation=json!({"operationId":"install-op","worldId":"a","repoId":status["repoId"],"branchId":"main",
+                "expectedHeadOid":status["headOid"],"expectedAppliedOid":status["appliedOid"],"expectedProgressRevision":0});
+        }
+        let binary=b"\x89PNG\r\n\x1a\n\0\xffexact bytes";
+        let lock=crate::content_history::contract::AssetLock::empty().canonical_bytes()?;
+        let mut request=json!({"context":context,"worldId":"a","toolCallId":"install-files","revision":version["revision"],
+            "manifestHash":version["manifestHash"],"operation":operation,"files":[
+                {"path":"images/nested/test.png","bytesBase64":STANDARD.encode(binary),"expectedHash":null},
+                {"path":"craftmine.assets.lock.json","bytesBase64":STANDARD.encode(&lock),"expectedHash":null},
+                {"path":"craftmine.instances.json","bytesBase64":STANDARD.encode(b"{}"),"expectedHash":null},
+                {"path":"world.gd","bytesBase64":STANDARD.encode(b"extends Node3D\nvar installed := true\n"),"expectedHash":"0".repeat(64)}]});
+        failed(journal.godot_project_apply_files(&request),"PROJECT_FILE_CONFLICT");
+        assert_eq!(journal.godot_project_index(&index_request(&context))?["manifestHash"],version["manifestHash"]);
+        request["files"][3]["expectedHash"]=json!(digest("extends Node3D\nvar damage := 12\n"));
+        let installed=journal.godot_project_apply_files(&request)?;
+        assert_eq!(installed["revision"],1);
+        assert_eq!(journal.godot_project_apply_files(&request)?,installed);
+        let read=journal.godot_project_read(&read_request(&context,&installed,"images/nested/test.png"))?;
+        assert_eq!(STANDARD.decode(read["bytesBase64"].as_str().unwrap())?,binary);
+        let job=journal.godot_build_start(&json!({"context":context,"worldId":"a","toolCallId":"installed-build",
+            "revision":installed["revision"],"manifestHash":installed["manifestHash"],"mode":"build"}))?;
+        let root=godot_builds::build_root(&journal.directory,"a",job["buildId"].as_str().unwrap(),false)?;
+        assert_eq!(fs::read(root.join("source/images/nested/test.png"))?,binary);
+        assert_eq!(fs::read(root.join("source/craftmine.assets.lock.json"))?,lock);
+        if !git {
+            assert_eq!(journal.content_migrate_plan(&json!({"worldId":"a"}))?["problems"],json!([]));
+            journal.content_migrate_apply(&json!({"worldId":"a"}))?;
+            assert_eq!(journal.content_migrate_verify(&json!({"worldId":"a"}))?["verified"],true);
+            let status=journal.content_status(&json!({"worldId":"a"}))?;
+            let (store,layout)=journal.content_layout("a")?;
+            assert_eq!(store.read_file(&layout,status["headOid"].as_str().unwrap(),"images/nested/test.png")?,binary);
+            assert_eq!(journal.godot_project_read(&read_request(&context,&installed,"images/nested/test.png"))?["bytesBase64"],read["bytesBase64"]);
+        }
+        drop(journal);
+        let journal=TaskJournal::open(&path)?;
+        assert_eq!(journal.godot_project_read(&read_request(&context,&installed,"images/nested/test.png"))?["bytesBase64"],read["bytesBase64"]);
+    }
+    Ok(())
+}
+
 fn ctx(turn: &str) -> WorkspaceContext {
     WorkspaceContext {
         project_id: "project-a".into(),

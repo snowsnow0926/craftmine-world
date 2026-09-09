@@ -7,6 +7,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {
   REPO_ROOT,
+  PACKAGE_REQUIRED_FILES,
   checkBaseAssets,
   checkExport,
   checkGodotCache,
@@ -281,7 +282,7 @@ test('export whose build.json hash no longer matches fails', () => {
 });
 
 // 17. Windows package: valid synthetic package passes, tampering fails.
-function makePackage(root) {
+function makePackage(root,{runtime=true}={}) {
   const directory = path.join(root, 'package');
   const write = (relative, content) => {
     const target = path.join(directory, relative);
@@ -307,6 +308,11 @@ function makePackage(root) {
     return {path: relative, bytes: buffer.length, sha256: digest(buffer)};
   });
   write('resources/source/build-manifest.json', JSON.stringify({format: 'craftmine.build/1', commit: '0'.repeat(40), sourceDate: '2026-09-09T00:00:00Z', appId: 'world.craftmine.desktop', sourceArchiveHash: artifacts.at(-1).sha256, artifacts, toolchain: {node: 'v24.0.0', cargo: 'cargo 1.96.1'}}));
+  if(runtime){
+    for(const relative of PACKAGE_REQUIRED_FILES)if(!fs.existsSync(path.join(directory,relative)))write(relative,'synthetic '+relative);
+    for(const name of ['GODOT_LICENSE.txt','GODOT_COPYRIGHT.txt'])write('resources/licenses/godot/'+name,fs.readFileSync(path.join(REPO_ROOT,'desktop/godot/licenses',name)));
+    fs.appendFileSync(path.join(directory,'resources/licenses/CRAFTMINE-NOTICES.md'),'Godot 4.7.2-stable MIT notices.\n');
+  }
   return directory;
 }
 test('well-formed Windows package passes', () => {
@@ -331,7 +337,7 @@ test('package whose third-party inventory points at an absent text fails', () =>
 });
 test('package bundling an engine without Godot notices fails', () => {
   const {root} = fixture();
-  const directory = makePackage(root);
+  const directory = makePackage(root,{runtime:false});
   fs.writeFileSync(path.join(directory, 'Godot_v4.7.2-stable_win64.exe'), 'synthetic engine');
   const found = codes(checkPackage(root, directory));
   assert.ok(found.includes('PACKAGE_GODOT_NOTICE_MISSING'), 'PACKAGE_GODOT_NOTICE_MISSING');
@@ -370,12 +376,12 @@ for (const value of ['unrevealed', 'unreviewed']) test(value + ' notice redistri
   assert.ok(codes(checkNotices(root)).includes('NOTICE_REDISTRIBUTION_DENIED'));
 });
 test('deeply nested Godot executable cannot bypass package notice checks', () => {
-  const {root} = fixture(), directory = makePackage(root), nested = path.join(directory, 'a/b/c/d/e/f/g');
+  const {root} = fixture(), directory = makePackage(root,{runtime:false}), nested = path.join(directory, 'a/b/c/d/e/f/g');
   fs.mkdirSync(nested, {recursive: true});fs.writeFileSync(path.join(nested, 'godot.exe'), 'synthetic engine');
   assert.ok(codes(checkPackage(root, directory)).includes('PACKAGE_GODOT_NOTICE_MISSING'));
 });
 test('renamed engine is recognized by the locked executable hash', () => {
-  const {root, readLock, writeLock} = fixture(), directory = makePackage(root), bytes = Buffer.from('synthetic locked executable');
+  const {root, readLock, writeLock} = fixture(), directory = makePackage(root,{runtime:false}), bytes = Buffer.from('synthetic locked executable');
   const lock = readLock(); lock.editor.executableSha256 = digest(bytes); writeLock(lock);
   fs.writeFileSync(path.join(directory, 'innocent.dat'), bytes);
   const result = checkPackage(root, directory);
@@ -383,7 +389,7 @@ test('renamed engine is recognized by the locked executable hash', () => {
   assert.ok(codes(result).includes('PACKAGE_GODOT_NOTICE_MISSING'));
 });
 test('Web WASM and PCK without native executable still require Godot notices', () => {
-  const {root} = fixture(), directory = makePackage(root);
+  const {root} = fixture(), directory = makePackage(root,{runtime:false});
   fs.writeFileSync(path.join(directory, 'renamed.wasm'), 'synthetic wasm');fs.writeFileSync(path.join(directory, 'differently-named.pck'), 'synthetic pack');
   assert.ok(codes(checkPackage(root, directory)).includes('PACKAGE_GODOT_NOTICE_MISSING'));
 });

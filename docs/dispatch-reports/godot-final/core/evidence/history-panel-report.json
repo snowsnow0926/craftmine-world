@@ -1,0 +1,51 @@
+{
+  "kind": "real-react-private-service-rust-git",
+  "binarySha256": "41d740d0b14cce18f4980b73c2e1485cba7a30fe18089acde76d0b0a9a5dfc81",
+  "checks": [
+    {
+      "name": "forged context and cross-world selection rejected",
+      "passed": true
+    },
+    {
+      "name": "real Git versions and source list rendered",
+      "passed": true
+    },
+    {
+      "name": "new branch is real and selected",
+      "passed": true
+    },
+    {
+      "name": "save changes forest while preserving main and applied",
+      "passed": true
+    },
+    {
+      "name": "stale source cannot be checked as latest branch",
+      "passed": true
+    },
+    {
+      "name": "check binds forest source and reports missing executor honestly",
+      "passed": true
+    },
+    {
+      "name": "candidate entry reuses existing checks without applying refs",
+      "passed": true
+    },
+    {
+      "name": "switch back reads main original source",
+      "passed": true
+    },
+    {
+      "name": "no input focus pointer lock or page errors",
+      "passed": true
+    },
+    {
+      "name": "full Rust restart restores branch edit",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "No real Godot executor or model: truthful blocked check required.",
+    "Electron navigation routing is integrated separately; HTTP replaces only its transport."
+  ]
+}

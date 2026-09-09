@@ -1,0 +1,456 @@
+{
+  "format": "craftmine.base-assets/1",
+  "baseId": "shared-runtime",
+  "displayName": "Authored managed Godot host and runtime protocol",
+  "baseVersion": "1",
+  "engine": {
+    "version": "4.7.2-stable",
+    "language": "GDScript and JavaScript"
+  },
+  "sourceDirectory": "desktop/godot/shared",
+  "rightsStatus": "pending-formal-application",
+  "rightsNote": "Project-authored managed protocol, materializers, component installation and captured authored initial states. Content inventory only; formal per-module licence application remains pending.",
+  "entries": [
+    {
+      "path": "README.md",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 13757,
+      "sha256": "84ac18a03c592b7ab5be62e217f9e8678fdb765e731fac51370f987bb62ce8ec"
+    },
+    {
+      "path": "adapters/first-person.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 2355,
+      "sha256": "7978f2a16b0c67a65189e309016f22f9498fb9c05afdc7e1eec4c772638512b1"
+    },
+    {
+      "path": "adapters/mining-sandbox.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 9847,
+      "sha256": "5e02541cc5f11585c8dce86b6a0f3aa80f1e9d7a0b4e74859ec60c368ef7e82e"
+    },
+    {
+      "path": "adapters/side-view.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 4931,
+      "sha256": "75d64503525dc3da5b80c41bcf7fea13af41a39850dd293bf45e6eea758b2474"
+    },
+    {
+      "path": "adapters/top-down.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 2119,
+      "sha256": "ee03ee790bd7b306df279a9a4148bca57ec74e998975de3a65e0bccf15f5fd45"
+    },
+    {
+      "path": "base_contract.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 15584,
+      "sha256": "6361acdd519030832804912517cf25f13f83bf1ba9b29155a6b5dc0fab8bf5ad"
+    },
+    {
+      "path": "components.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 16837,
+      "sha256": "ddc61f00c53d19554dd43ef34c042cfb2c181c664dfe9ea17bfe30a465f8bc7a"
+    },
+    {
+      "path": "draft_install.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 22520,
+      "sha256": "367d85c0506c1062e5a3627fb8e4ada85b37d78d8369d5a312206e8b4275baf5"
+    },
+    {
+      "path": "initial-states/first-person-blank.json",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 1440,
+      "sha256": "bcce5d185cc11176ff023c2ef155a946c52e55b5996338666fca0932ae502b01"
+    },
+    {
+      "path": "initial-states/first-person-training-range.json",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 2367,
+      "sha256": "6ea705de90ddd492a5bcb3c6fa43325e09b75ada7c798b0e3b5ee12c1687ac77"
+    },
+    {
+      "path": "initial-states/side-view-blank.json",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 1111,
+      "sha256": "e8bb223279700cbfed37128faf4d9ec5ced82c194168b29052be46d3e2e34397"
+    },
+    {
+      "path": "initial-states/side-view-ruins.json",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 1118,
+      "sha256": "cfd620e46ea18298103f34ca9cbe46de7e600dcd86cfd6e229ccd11d5cbef653"
+    },
+    {
+      "path": "initial-states/top-down-blank.json",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 955,
+      "sha256": "5b906dabfe8724d9a14c0523897c3acf902f1994613d728b9ec0bee3ba8063d8"
+    },
+    {
+      "path": "initial-states/top-down-town.json",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 1257,
+      "sha256": "c1c245cc0c4b2619b6faeffb49f850ff9c186492f23973ec4cbca25069234207"
+    },
+    {
+      "path": "materialize.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 4451,
+      "sha256": "954c6d91cc1d258bade210a9149ad5fc7d73558d06577b87d36cb75c9634e513"
+    },
+    {
+      "path": "observation.d.mts",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 196,
+      "sha256": "44f7ff130170121eb5d90b697cbabf904507a1ad26a5cbd51308ac78a4507df2"
+    },
+    {
+      "path": "observation.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 13003,
+      "sha256": "d25437ff8ce136baa015e746b9e8240e9bac7876ebdca90f7537aaffe354350a"
+    },
+    {
+      "path": "runtime_bridge.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 6328,
+      "sha256": "2af684266582fe46c013a5f0d057c37c48776b9651cd1cccbd78524bfb438c17"
+    },
+    {
+      "path": "scene_materializer.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 15057,
+      "sha256": "195f5343401cf74ce354f0b36c5229e50d375fb7c802f09b6e8b1242e7b89fb3"
+    },
+    {
+      "path": "state_guard.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 1759,
+      "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+    },
+    {
+      "path": "tests/driver.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 1444,
+      "sha256": "fa2ff2a84569fa80d4180850ec73be79c92655cca1db1a9f1986a33ea6a3c499"
+    },
+    {
+      "path": "tests/progress.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 7586,
+      "sha256": "180c1cdd3cf8655469710d9050da49a741a4044291ed3c8baf668884e73c5f28"
+    },
+    {
+      "path": "tools/build-base-catalog.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 8991,
+      "sha256": "165e7750c5f81f1f379de14ae4ff55af1023f559778aa1b9ce17eb4dc7a2e11d"
+    },
+    {
+      "path": "tools/capture-initial-states.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 3293,
+      "sha256": "a56d085e575c90da02045a0d985467e2966890fd204bf5c9442dd88b582ba6df"
+    }
+  ],
+  "externalEntries": [
+    {
+      "path": "desktop/godot/bases/base-catalog.json",
+      "role": "catalog",
+      "origin": "generated",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 18013,
+      "sha256": "c43c461bfe51f8f9a40414567dd30984ebc89ed5ff99059dea765367395843e0"
+    },
+    {
+      "path": "desktop/godot/bases/component-catalog.json",
+      "role": "catalog",
+      "origin": "generated",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 32549,
+      "sha256": "eea408cd388f67d1c149ce13eda5f698ea9fb01b4ec8e79e1142e857be304fda"
+    },
+    {
+      "path": "desktop/godot/bases/README.md",
+      "role": "doc",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 6301,
+      "sha256": "52b85e2bcf597854225e420642074c2d3ab28c56f5d59bcddc25d9708ae80b3b"
+    }
+  ],
+  "requiredNotices": []
+}

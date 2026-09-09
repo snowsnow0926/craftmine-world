@@ -339,7 +339,31 @@ fn compatible_tables(db: &Connection, archive: &Value) -> Result<Value> {
             cells.push(Value::Null);
         }
     }
+    for (table,data) in tables.as_object_mut().context("BACKUP_TABLES_REQUIRED")? {
+        for column in columns(db,table)? {
+            if !data["columns"].as_array().context("BACKUP_COLUMNS_REQUIRED")?.iter().any(|value|value==&column) {
+                if let Some(default)=additive_column_default(table,&column) {
+                    data["columns"].as_array_mut().context("BACKUP_COLUMNS_REQUIRED")?.push(json!(column));
+                    for row in data["rows"].as_array_mut().context("BACKUP_ROWS_REQUIRED")? {
+                        row.as_array_mut().context("BACKUP_ROW_REQUIRED")?.push(default.clone());
+                    }
+                }
+            }
+        }
+    }
     Ok(tables)
+}
+
+/// Exact defaults for known additive schema migrations, never arbitrary missing
+/// columns. An older main-only archive cannot acquire an invented branch.
+pub(super) fn additive_column_default(table:&str,column:&str)->Option<Value> {
+    match (table,column) {
+        ("craftmine_godot_project_commits","manifest") |
+        ("craftmine_godot_builds","content_oid"|"asset_lock_hash") |
+        ("craftmine_content_operations","application_id") => Some(Value::Null),
+        ("craftmine_godot_project_commits"|"craftmine_godot_builds","branch_id") => Some(json!("main")),
+        _=>None,
+    }
 }
 fn restore_tables(db: &Connection, tables: &Value) -> Result<()> {
     let map = tables.as_object().context("BACKUP_TABLES_REQUIRED")?;
@@ -501,6 +525,20 @@ fn job_capacity(db: &Connection, additional: usize) -> Result<()> {
     Ok(())
 }
 impl TaskJournal {
+    /// Verify the atomic restore identity after startup has legitimately
+    /// reconciled tasks. Startup mutations do not erase this commit proof.
+    pub fn backup_restore_proof(&self,args:&Value)->Result<Value> {
+        fields(args,&["operationId","archiveHash"])?;
+        let id=text(args,"operationId",240)?;
+        let hash=text(args,"archiveHash",64)?;
+        ensure!(hash.len()==64 && hash.bytes().all(|byte|byte.is_ascii_hexdigit()),"BACKUP_HASH_REQUIRED");
+        let (domain,committed):(String,i64)=self.db.query_row(
+            "SELECT domain_hash,committed_at FROM craftmine_restore_marks WHERE operation_id=?1 AND archive_hash=?2",
+            params![id,hash],|row|Ok((row.get(0)?,row.get(1)?))).context("BACKUP_RESTORE_PROOF_MISSING")?;
+        Ok(json!({"verified":true,"operationId":id,"archiveHash":hash,"domainHash":domain,
+            "committedAt":committed,"currentHash":fingerprint(&self.db)?}))
+    }
+
     pub fn backup_export(&mut self, args: &Value) -> Result<Value> {
         fields(args, &["operationId"])?;
         let id = text(args, "operationId", 240)?;
