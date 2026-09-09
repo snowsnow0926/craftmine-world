@@ -59,6 +59,33 @@ initialising world has no exception: it becomes playable only after its own
 verified check and confirmed first launch. This closes the path where a page or
 model could persist progress against a self-declared build.
 
+## Apply confirmation
+
+`content.apply.confirm` no longer accepts a caller-supplied object id or a
+free-text deployment claim. It takes `{operationId, applicationId, detail}` and
+resolves the deployment itself from the durable application record:
+
+* the application must be `applied` and its `input.worldId` must match the
+  operation's world;
+* its launch evidence must be a real instance (`passed`, `instanceId`,
+  64-hex `stateHash`);
+* the candidate it consumed must still be `ready`/`applied` and its check job
+  `passed` with exactly the recorded `checkOutputHash`;
+* the published build's `content_oid` must equal the operation's `targetOid`, so
+  the Git commit and the SQLite deployment describe the same content;
+* the application's `input.revision` must equal the operation's
+  `expectedProgressRevision` and the formal world must now be exactly one
+  revision further, so the latest official progress is bound to the operation;
+* `refs/craftmine/applied/<world>` must still point at the target.
+
+Only then is the operation moved to `committed` and the application id recorded
+in `craftmine_content_operations.application_id`. Repeating the call with the
+same application returns the stored intent (a lost response is answered from the
+same operation); a different application is `REPLAY_MISMATCH`. A deployment of
+other content is `CONTENT_OPERATION_TARGET_MISMATCH`, a mismatched progress is
+`CONTENT_PROGRESS_CONFLICT`, and an application that never launched is
+`GODOT_APPLICATION_NOT_APPLIED` / `GODOT_LAUNCH_REQUIRED`.
+
 ## RPC registration
 
 `main.rs` is the only place an RPC becomes reachable. The asset catalog

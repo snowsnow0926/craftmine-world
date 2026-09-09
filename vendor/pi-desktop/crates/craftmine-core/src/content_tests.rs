@@ -197,3 +197,67 @@ fn branches_versions_and_file_reads_come_from_the_git_history() -> Result<()> {
     Ok(())
 }
 
+/// A content apply is committed only when a formally applied, launch-confirmed
+/// deployment binds the exact Git commit. A caller-supplied object id or a
+/// free-text claim can no longer mark content applied.
+#[test]
+fn a_content_apply_is_confirmed_only_by_a_launch_confirmed_deployment() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let project = create_project(&mut journal, &context)?;
+    journal.content_migrate_apply(&json!({"worldId":"a"}))?;
+    let status = journal.content_status(&json!({"worldId":"a"}))?;
+    let repo = status["repoId"].as_str().unwrap().to_string();
+    let head = status["headOid"].as_str().unwrap().to_string();
+
+    // A checked candidate plus a launch-confirmed application publishes the
+    // world and binds the build to the migrated commit.
+    let (job, finished) = run_check(&mut journal, &context, &project, "check-one", true)?;
+    let candidate = finished["candidateId"].as_str().unwrap().to_string();
+    let prepared = journal.godot_application_prepare(&json!({"id":"apply-one","token":"token-a",
+        "candidateId":candidate,"worldId":"a","revision":0,"snapshot":world().snapshot}))?;
+    let application = json!({"id":"apply-one","token":"token-a","evidence":{
+        "format":"craftmine.godot-application/1","inputHash":prepared["inputHash"],
+        "launch":{"passed":true,"buildId":job["buildId"],"instanceId":"instance-1",
+            "stateHash":digest("launched-state")},"player":world().snapshot["player"]}});
+    // A prepared application is not deployment evidence.
+    let operation = json!({"operationId":"op-apply","worldId":"a","repoId":repo,"branchId":"main",
+        "expectedHeadOid":head,"expectedAppliedOid":null,"expectedProgressRevision":0});
+    journal.content_apply_prepare(&json!({"worldId":"a","context":operation,"kind":"apply",
+        "targetOid":head,"detail":"apply the checked candidate"}))?;
+    journal.content_apply_advance(&json!({"operationId":"op-apply"}))?;
+    failed(
+        journal.content_apply_confirm(&json!({"operationId":"op-apply","applicationId":"apply-one",
+            "detail":"prepared only"})),
+        "GODOT_APPLICATION_NOT_APPLIED",
+    );
+    // The old self-attestation is gone: an object id is not deployment evidence.
+    failed(
+        journal.content_apply_confirm(&json!({"operationId":"op-apply","appliedOid":head,
+            "detail":"host committed deployment"})),
+        "unknown field",
+    );
+    // Confirming before the instance launched is refused.
+    let mut unlaunched = application.clone();
+    unlaunched["evidence"]["launch"]["passed"] = json!(false);
+    failed(
+        journal.godot_application_commit(&unlaunched),
+        "GODOT_LAUNCH_REQUIRED",
+    );
+    journal.godot_application_commit(&application)?;
+    let after = journal.world_read("a")?;
+    assert_eq!(after.summary.revision, 1);
+    assert_eq!(after.world.build["godot"]["sourceRevision"], 0);
+
+    let committed = journal.content_apply_confirm(&json!({"operationId":"op-apply",
+        "applicationId":"apply-one","detail":"deployment confirmed by the applied instance"}))?;
+    assert_eq!(committed["state"], "committed");
+    assert_eq!(committed["applicationId"], "apply-one");
+    // A lost response is answered by the same operation instead of applying again.
+    let replay = journal.content_apply_confirm(&json!({"operationId":"op-apply",
+        "applicationId":"apply-one","detail":"deployment confirmed by the applied instance"}))?;
+    assert_eq!(replay["state"], "committed");
+    Ok(())
+}
+

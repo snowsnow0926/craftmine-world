@@ -75,6 +75,22 @@ fn context(applied: Option<&str>, candidate: &str) -> OperationContext {
     }
 }
 
+/// Synthetic deployment evidence that binds `content_oid` to the same world and
+/// to one step past the operation's expected progress revision.
+fn evidence(content_oid: &str) -> DeploymentEvidence {
+    DeploymentEvidence {
+        application_id: "application-1".to_string(),
+        build_id: "build-1".to_string(),
+        content_oid: content_oid.to_string(),
+        candidate_id: "candidate-1".to_string(),
+        check_job_id: "check-1".to_string(),
+        check_output_hash: "c".repeat(64),
+        input_revision: 7,
+        world_revision: 8,
+        instance_id: "instance-1".to_string(),
+    }
+}
+
 #[test]
 fn git_advance_and_database_confirmation_are_separate_durable_steps() -> Result<()> {
     let mut fixture = fixture()?;
@@ -128,13 +144,101 @@ fn git_advance_and_database_confirmation_are_separate_durable_steps() -> Result<
         &mut fixture.journal.db,
         &fixture.store,
         "op-1",
-        &candidate,
+        &evidence(&candidate),
         "deployment record written",
     )?;
     assert_eq!(committed.state, OperationState::Committed);
+    assert_eq!(
+        committed.application_id.as_deref(),
+        Some("application-1")
+    );
+    // A lost response is answered by the same operation, not by applying again.
+    let replay = confirm(
+        &mut fixture.journal.db,
+        &fixture.store,
+        "op-1",
+        &evidence(&candidate),
+        "deployment record written",
+    )?;
+    assert_eq!(replay.state, OperationState::Committed);
+    let mut forged = evidence(&candidate);
+    forged.application_id = "application-2".to_string();
+    assert!(confirm(
+        &mut fixture.journal.db,
+        &fixture.store,
+        "op-1",
+        &forged,
+        "another deployment",
+    )
+    .unwrap_err()
+    .to_string()
+    .starts_with("REPLAY_MISMATCH"));
     assert!(recover(&fixture.journal.db, &fixture.store, "world-1")?
         .actions
         .is_empty());
+    Ok(())
+}
+
+#[test]
+fn a_deployment_that_does_not_match_the_operation_is_refused() -> Result<()> {
+    let mut fixture = fixture()?;
+    let (applied, candidate) = seeded(&mut fixture)?;
+    prepare(
+        &mut fixture.journal.db,
+        &context(Some(&applied), &candidate),
+        OperationKind::Apply,
+        &candidate,
+        "apply plan-a candidate",
+    )?;
+    advance(&mut fixture.journal.db, &fixture.store, "op-1")?;
+
+    // A deployment of different content never confirms this operation.
+    let mut other_content = evidence(&candidate);
+    other_content.content_oid = applied.clone();
+    assert!(confirm(
+        &mut fixture.journal.db,
+        &fixture.store,
+        "op-1",
+        &other_content,
+        "wrong content",
+    )
+    .unwrap_err()
+    .to_string()
+    .starts_with("CONTENT_OPERATION_TARGET_MISMATCH"));
+
+    // A deployment prepared at a different formal progress is stale.
+    let mut stale = evidence(&candidate);
+    stale.input_revision = 6;
+    assert!(confirm(
+        &mut fixture.journal.db,
+        &fixture.store,
+        "op-1",
+        &stale,
+        "stale progress",
+    )
+    .unwrap_err()
+    .to_string()
+    .starts_with("CONTENT_PROGRESS_CONFLICT"));
+
+    // A deployment that did not advance progress by exactly one step is stale.
+    let mut skipped = evidence(&candidate);
+    skipped.world_revision = 9;
+    assert!(confirm(
+        &mut fixture.journal.db,
+        &fixture.store,
+        "op-1",
+        &skipped,
+        "skipped progress",
+    )
+    .unwrap_err()
+    .to_string()
+    .starts_with("CONTENT_PROGRESS_CONFLICT"));
+
+    // The operation is still open and the Git reference is unchanged.
+    assert_eq!(
+        intent(&fixture.journal.db, "op-1")?.state,
+        OperationState::ReferenceAdvanced
+    );
     Ok(())
 }
 
@@ -289,7 +393,7 @@ fn operation_ids_are_idempotent_but_cannot_be_reused() -> Result<()> {
         &mut fixture.journal.db,
         &fixture.store,
         "op-1",
-        &candidate,
+        &evidence(&candidate),
         "done",
     )?;
     assert!(prepare(
