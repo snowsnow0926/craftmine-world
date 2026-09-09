@@ -59,6 +59,19 @@ initialising world has no exception: it becomes playable only after its own
 verified check and confirmed first launch. This closes the path where a page or
 model could persist progress against a self-declared build.
 
+## RPC registration
+
+`main.rs` is the only place an RPC becomes reachable. The asset catalog
+(`asset.*`), creation packages (`package.*`), the portable archive
+(`backup.*Portable`, `backup.protectedRefs`, `backup.releasePortable`), the full
+archive (`backup.export-full`/`verify`/`restore-full`, `backup.contentUsage`) and
+`legacy.convert` are registered there, and `hello` advertises
+`assetCatalog`/`assetPreview`/`creationPackages`/`portableBackup`. A module unit
+test does not prove the product entry: `tests/godot-round3/S1/core-rpc-registration.mjs`
+drives the built binary and fails if any of these methods answers
+`UNKNOWN_METHOD`. Startup runs `backup_recover` with the other recovery sweeps so
+a crashed portable export is reconciled before a reclaimer trusts the pin set.
+
 ## Contract vectors
 
 `tests/godot-remaining/M/contract/asset-lock-vectors.json` is executed by

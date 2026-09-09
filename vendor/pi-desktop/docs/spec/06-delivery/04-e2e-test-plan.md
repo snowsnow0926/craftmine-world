@@ -8781,3 +8781,27 @@ Fixed source/executor/application fixtures prove transport and persistence only;
 record separately whether the actual product entry was built/exercised. Do not
 claim arbitrary model execution, OS sandbox, candidate UI application or packaged
 asset licensing from these checks.
+
+## CRAFTMINE-GODOT-023 - Content apply is bound to a launch-confirmed deployment
+
+Run `cargo test -p craftmine-core` (the apply and content tests),
+`node tests/godot-round3/S1/core-rpc-registration.mjs` and
+`node tests/godot-round2/R6/core-rpc-smoke.mjs` against the built binary.
+
+Verify that `content.apply.confirm` refuses `{operationId, appliedOid, detail}`
+(no deployment), refuses an application that is only `prepared`, and refuses an
+application whose launch evidence is absent; a mismatched content commit is
+`CONTENT_OPERATION_TARGET_MISMATCH`, a mismatched formal progress is
+`CONTENT_PROGRESS_CONFLICT`. Only an `applied`, launch-confirmed application
+whose build `content_oid` equals the operation target and whose input revision
+is exactly one step behind the formal world commits the operation, and the
+application id is recorded. Repeating the call returns the stored intent; a
+different application is `REPLAY_MISMATCH`.
+
+Verify that `asset.*`, `package.*`, `backup.*Portable`, `backup.protectedRefs`,
+`backup.releasePortable`, `backup.export-full`/`verify`/`restore-full`,
+`backup.contentUsage` and `legacy.convert` answer a domain result or a validation
+error over the real stdio protocol, never `UNKNOWN_METHOD`, and that `hello`
+advertises the corresponding capabilities.
+
+No actual input, focus activation, Pointer Lock or user browser is permitted.
