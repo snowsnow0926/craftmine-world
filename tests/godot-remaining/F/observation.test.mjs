@@ -127,6 +127,7 @@ test('each base adapter allowlist matches the shared bounded operation schema', 
     'first-person': `${SHARED}/adapters/first-person.gd`,
     'top-down': `${SHARED}/adapters/top-down.gd`,
     'side-view': `${SHARED}/adapters/side-view.gd`,
+    'mining-sandbox': `${SHARED}/adapters/mining-sandbox.gd`,
   };
   const declaredOps = (text) => {
     const allowed = /ALLOWED_OPERATIONS\s*:=\s*(\[[^\]]*\])/.exec(text);

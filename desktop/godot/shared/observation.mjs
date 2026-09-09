@@ -102,6 +102,34 @@ export const BOUNDED_OPERATIONS = Object.freeze({
       control: { segments: argSpec('control-segments') },
     },
   },
+  'mining-sandbox': {
+    readOnly: ['snapshot', 'tile', 'inventory', 'hash', 'chunk'],
+    mutating: {
+      move: {
+        dx: argSpec('number', { min: -1, max: 1, optional: true }),
+        dy: argSpec('number', { min: -1, max: 1, optional: true }),
+        steps: argSpec('integer', { min: 1, max: 600 }),
+      },
+      wait: { frames: argSpec('integer', { min: 1, max: 600 }) },
+      dig: {
+        tx: argSpec('integer'),
+        ty: argSpec('integer'),
+        requestId: argSpec('string', { optional: true }),
+      },
+      place: {
+        tx: argSpec('integer'),
+        ty: argSpec('integer'),
+        materialId: argSpec('string'),
+        requestId: argSpec('string', { optional: true }),
+      },
+      craft: {
+        recipeId: argSpec('string'),
+        requestId: argSpec('string', { optional: true }),
+        stationId: argSpec('string', { optional: true }),
+      },
+      cancel: { requestId: argSpec('string') },
+    },
+  },
 });
 
 const MAX_CONTROL_SEGMENTS = 64;

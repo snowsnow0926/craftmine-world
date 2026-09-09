@@ -53,7 +53,7 @@
         "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
         "generator": "tools/generate_meshes.mjs"
       },
-      "contentHash": "7a1e5dc9483e062200000a4810f5642e3f809b4323e900089e6e7c0343b2671a",
+      "contentHash": "c131ea79cbb7dabeeabfd553ed285f5b5b5d55282b2373367a51b793c92588e8",
       "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
       "entityIdScheme": null,
       "capabilities": [],
@@ -150,6 +150,148 @@
       }
     },
     {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "title": "mining-sandbox",
+      "status": "delivered-example-and-blank-start",
+      "engine": {
+        "name": "godot",
+        "version": "4.7.2-stable",
+        "language": "GDScript",
+        "renderer": "gl_compatibility",
+        "targets": []
+      },
+      "protocols": {
+        "world": "craftmine.godot-mining-sandbox-world/1",
+        "state": "craftmine.godot-mining-sandbox-state/1",
+        "progress": "craftmine.godot-mining-sandbox-progress/1",
+        "probe": "craftmine.godot-mining-sandbox-probe/1",
+        "params": "craftmine.godot-mining-sandbox-params/1",
+        "baseProtocolVersion": 1
+      },
+      "state": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "version": 1,
+        "preserved": [
+          "worldId",
+          "player",
+          "inventory",
+          "tools",
+          "equipped",
+          "flags",
+          "chunkIndex",
+          "editCount",
+          "terrainHash",
+          "worldRevision",
+          "ledger",
+          "ledgerEvicted"
+        ],
+        "migrations": []
+      },
+      "assets": {
+        "manifest": "assets/ASSET_MANIFEST.json",
+        "provenance": "ASSET_SOURCES.md",
+        "license": "ASSET_SOURCES.md",
+        "generator": null
+      },
+      "contentHash": "2b8836852638b54d49e1471ae6b9225b7dcb7732b0a2dc7a8760670839bf45d8",
+      "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+      "entityIdScheme": "stable string id declared in world data, never a node path",
+      "capabilities": [
+        "deterministic finite terrain generation",
+        "stable chunk identity with boundary chunks",
+        "reach-, target-, occupancy- and adjacency-validated dig and place",
+        "tool-tier gating per material",
+        "drops into inventory with request idempotency",
+        "material-consuming placement and crafting",
+        "no burying the player in solid tiles",
+        "per-chunk atomic persistence with index hashes",
+        "strict whole-file rejection of corrupt, missing or version-mismatched progress",
+        "atomic save with backup recovery and honest write-failure reporting",
+        "read-only snapshot and headless probe over the real gameplay code path"
+      ],
+      "templates": [
+        {
+          "id": "blank",
+          "kind": "blank-start",
+          "label": "Blank start",
+          "entryScene": "res://scenes/main.tscn",
+          "description": "Finite 48x24 generated map with dig, place, inventory and saving only. No recipes, no rewards, no tools and an empty inventory.",
+          "source": "templates/blank",
+          "initialState": {
+            "inventory": {},
+            "tools": [],
+            "edits": 0
+          },
+          "create": {
+            "tool": "tools/new-world.mjs",
+            "args": [
+              "--template",
+              "blank",
+              "--world-id",
+              "<worldId>",
+              "--out",
+              "<dir>"
+            ]
+          }
+        },
+        {
+          "id": "mine-camp",
+          "kind": "example",
+          "label": "Mining camp",
+          "entryScene": "res://scenes/main.tscn",
+          "description": "Finite 96x48 mining camp: dig soil and stone by hand, craft a stone pickaxe, mine coal and iron, smelt an iron ingot at the camp forge, craft an iron pickaxe, then build with stone bricks.",
+          "source": "templates/mine-camp",
+          "initialState": {
+            "inventory": {
+              "wood": 6
+            },
+            "tools": [],
+            "edits": 0
+          },
+          "create": {
+            "tool": "tools/new-world.mjs",
+            "args": [
+              "--template",
+              "mine-camp",
+              "--world-id",
+              "<worldId>",
+              "--out",
+              "<dir>"
+            ]
+          }
+        }
+      ],
+      "components": [
+        "ms.crafting-station",
+        "ms.material",
+        "ms.ore-vein",
+        "ms.recipe",
+        "ms.spawn-point",
+        "ms.terrain-layer"
+      ],
+      "managedMaterialize": {
+        "function": "materializeBase",
+        "module": "desktop/godot/shared/materialize.mjs",
+        "args": {
+          "baseId": "mining-sandbox",
+          "worldId": "<worldId>",
+          "template": "<templateId>",
+          "out": "<dir>"
+        }
+      },
+      "tools": {
+        "newWorld": "tools/new-world.mjs",
+        "checkSync": "tools/check-sync.mjs",
+        "verify": "tools/verify.mjs"
+      },
+      "acceptance": {
+        "headless": "tests/godot-remaining/G/a16-acceptance.mjs",
+        "smoke": "desktop/godot/bases/mining-sandbox/tools/verify.mjs",
+        "engine": "4.7.2-stable"
+      }
+    },
+    {
       "baseId": "side-view",
       "baseVersion": "1.0.0",
       "title": "side-view",
@@ -193,7 +335,7 @@
         "license": "docs/assets-and-provenance.md",
         "generator": null
       },
-      "contentHash": "dd5faab942bfa8c6ea4daa0f5368d153cc977069a2bd30059b015a9aff9fe3d3",
+      "contentHash": "7f26102435cc9d3b3fb21858fffc6d4c6ad259e9f2a8a313698c3dcac00e82ed",
       "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
       "entityIdScheme": "stable string id declared in world data, never a node path",
       "capabilities": [

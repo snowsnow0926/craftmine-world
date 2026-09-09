@@ -7,6 +7,34 @@
   "renderer": "gl_compatibility",
   "status": "delivered-example-and-blank-start",
   "entryScene": "res://scenes/main.tscn",
+  "contract": {
+    "format": "craftmine.godot-base-contract/1",
+    "assets": {
+      "manifest": "assets/ASSET_MANIFEST.json",
+      "provenance": "ASSET_SOURCES.md",
+      "license": "ASSET_SOURCES.md",
+      "generator": null
+    },
+    "state": {
+      "format": "craftmine.godot-mining-sandbox-state/1",
+      "version": 1,
+      "preserved": [
+        "worldId",
+        "player",
+        "inventory",
+        "tools",
+        "equipped",
+        "flags",
+        "chunkIndex",
+        "editCount",
+        "terrainHash",
+        "worldRevision",
+        "ledger",
+        "ledgerEvicted"
+      ],
+      "migrations": []
+    }
+  },
   "stage": {
     "plan": "GD5",
     "story": "A16",
@@ -58,6 +86,134 @@
       "description": "Finite 96x48 mining camp: dig soil, stone, coal and iron, craft a stone pickaxe, then an iron ingot and an iron pickaxe at the camp station, and build with stone bricks."
     }
   },
+  "templates": [
+    {
+      "id": "blank",
+      "kind": "blank-start",
+      "label": "Blank start",
+      "entryScene": "res://scenes/main.tscn",
+      "source": "templates/blank",
+      "description": "Finite 48x24 generated map with dig, place, inventory and saving only. No recipes, no rewards, no tools and an empty inventory.",
+      "initialState": {
+        "inventory": {},
+        "tools": [],
+        "edits": 0
+      }
+    },
+    {
+      "id": "mine-camp",
+      "kind": "example",
+      "label": "Mining camp",
+      "entryScene": "res://scenes/main.tscn",
+      "source": "templates/mine-camp",
+      "description": "Finite 96x48 mining camp: dig soil and stone by hand, craft a stone pickaxe, mine coal and iron, smelt an iron ingot at the camp forge, craft an iron pickaxe, then build with stone bricks.",
+      "initialState": {
+        "inventory": {
+          "wood": 6
+        },
+        "tools": [],
+        "edits": 0
+      }
+    }
+  ],
+  "components": [
+    {
+      "id": "ms.material",
+      "version": 1,
+      "kind": "data",
+      "label": "Terrain material",
+      "compatibleBases": ["mining-sandbox"],
+      "identity": { "scheme": "id in world.json materials[]", "field": "id", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": ["chunkIndex", "terrainHash"],
+        "capture": "MiningWorldState.to_dict() plus terrain.cells_of_chunk()",
+        "restore": "MiningWorldState.from_dict() plus terrain.apply_chunk()"
+      },
+      "initialState": { "placed": 0, "dug": 0 },
+      "files": ["core/scripts/terrain_service.gd"]
+    },
+    {
+      "id": "ms.ore-vein",
+      "version": 1,
+      "kind": "data",
+      "label": "Ore vein",
+      "compatibleBases": ["mining-sandbox"],
+      "identity": { "scheme": "material id in world.json generation.ores[]", "field": "material", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": ["chunkIndex", "terrainHash"],
+        "capture": "MiningWorldState.to_dict() plus terrain.cells_of_chunk()",
+        "restore": "MiningWorldState.from_dict() plus terrain.apply_chunk()"
+      },
+      "initialState": { "generated": true },
+      "files": ["core/scripts/terrain_generator.gd"]
+    },
+    {
+      "id": "ms.recipe",
+      "version": 1,
+      "kind": "data",
+      "label": "Crafting recipe",
+      "compatibleBases": ["mining-sandbox"],
+      "identity": { "scheme": "id in world.json recipes[]", "field": "id", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": ["inventory", "ledger"],
+        "capture": "MiningWorldState.to_dict()",
+        "restore": "MiningWorldState.from_dict()"
+      },
+      "initialState": { "crafted": 0 },
+      "files": ["core/scripts/crafting_service.gd"]
+    },
+    {
+      "id": "ms.terrain-layer",
+      "version": 1,
+      "kind": "data",
+      "label": "Terrain layer",
+      "compatibleBases": ["mining-sandbox"],
+      "identity": { "scheme": "material id in world.json generation soil/rock/deepRock/bedrock", "field": "material", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": ["chunkIndex", "terrainHash"],
+        "capture": "MiningWorldState.to_dict() plus terrain.cells_of_chunk()",
+        "restore": "MiningWorldState.from_dict() plus terrain.apply_chunk()"
+      },
+      "initialState": { "generated": true },
+      "files": ["core/scripts/terrain_generator.gd"]
+    },
+    {
+      "id": "ms.spawn-point",
+      "version": 1,
+      "kind": "data",
+      "label": "Player spawn point",
+      "compatibleBases": ["mining-sandbox"],
+      "identity": { "scheme": "world.json initialProgress.player.tile", "field": "tile", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": ["player"],
+        "capture": "MiningWorldState.to_dict()",
+        "restore": "MiningWorldState.from_dict()"
+      },
+      "initialState": { "facing": "right", "health": 3 },
+      "files": ["core/scripts/mining_game.gd"]
+    },
+    {
+      "id": "ms.crafting-station",
+      "version": 1,
+      "kind": "entity",
+      "label": "Crafting station",
+      "compatibleBases": ["mining-sandbox"],
+      "identity": { "scheme": "id in world.json entities[]", "field": "id", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": ["inventory", "ledger"],
+        "capture": "MiningWorldState.to_dict()",
+        "restore": "MiningWorldState.from_dict()"
+      },
+      "initialState": { "recipes": [] },
+      "files": ["core/scripts/station.gd"]
+    }
+  ],
   "capabilities": [
     "deterministic finite terrain generation",
     "stable chunk identity with boundary chunks",
@@ -75,6 +231,11 @@
     "newWorld": "tools/new-world.mjs",
     "checkSync": "tools/check-sync.mjs",
     "verify": "tools/verify.mjs"
+  },
+  "acceptance": {
+    "headless": "tests/godot-remaining/G/a16-acceptance.mjs",
+    "smoke": "desktop/godot/bases/mining-sandbox/tools/verify.mjs",
+    "engine": "4.7.2-stable"
   },
   "stateVersion": 1,
   "entityIdScheme": "stable string id declared in world data, never a node path",

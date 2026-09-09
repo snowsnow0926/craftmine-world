@@ -317,6 +317,199 @@
       ]
     },
     {
+      "id": "ms.crafting-station",
+      "version": 1,
+      "kind": "entity",
+      "label": "Crafting station",
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "identity": {
+        "scheme": "id in world.json entities[]",
+        "field": "id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": [
+          "inventory",
+          "ledger"
+        ],
+        "capture": "MiningWorldState.to_dict()",
+        "restore": "MiningWorldState.from_dict()"
+      },
+      "initialState": {
+        "recipes": []
+      },
+      "files": [
+        {
+          "path": "core/scripts/station.gd",
+          "bytes": 1319,
+          "sha256": "43eb858d6a49b766d2b1af8537c8cf6ad8777ba0964cc6dfd2a5155bbe1cbe38"
+        }
+      ]
+    },
+    {
+      "id": "ms.material",
+      "version": 1,
+      "kind": "data",
+      "label": "Terrain material",
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "identity": {
+        "scheme": "id in world.json materials[]",
+        "field": "id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": [
+          "chunkIndex",
+          "terrainHash"
+        ],
+        "capture": "MiningWorldState.to_dict() plus terrain.cells_of_chunk()",
+        "restore": "MiningWorldState.from_dict() plus terrain.apply_chunk()"
+      },
+      "initialState": {
+        "placed": 0,
+        "dug": 0
+      },
+      "files": [
+        {
+          "path": "core/scripts/terrain_service.gd",
+          "bytes": 13492,
+          "sha256": "fa6ccba603908a3379e2af1607a76dfb1e2ccd18ed1857b0afdc9b9dfe54b543"
+        }
+      ]
+    },
+    {
+      "id": "ms.ore-vein",
+      "version": 1,
+      "kind": "data",
+      "label": "Ore vein",
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "identity": {
+        "scheme": "material id in world.json generation.ores[]",
+        "field": "material",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": [
+          "chunkIndex",
+          "terrainHash"
+        ],
+        "capture": "MiningWorldState.to_dict() plus terrain.cells_of_chunk()",
+        "restore": "MiningWorldState.from_dict() plus terrain.apply_chunk()"
+      },
+      "initialState": {
+        "generated": true
+      },
+      "files": [
+        {
+          "path": "core/scripts/terrain_generator.gd",
+          "bytes": 8013,
+          "sha256": "e8953ae90eabee6dc0234d6cf708ee4c14e78fa8a30f56278507d466114f2ce8"
+        }
+      ]
+    },
+    {
+      "id": "ms.recipe",
+      "version": 1,
+      "kind": "data",
+      "label": "Crafting recipe",
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "identity": {
+        "scheme": "id in world.json recipes[]",
+        "field": "id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": [
+          "inventory",
+          "ledger"
+        ],
+        "capture": "MiningWorldState.to_dict()",
+        "restore": "MiningWorldState.from_dict()"
+      },
+      "initialState": {
+        "crafted": 0
+      },
+      "files": [
+        {
+          "path": "core/scripts/crafting_service.gd",
+          "bytes": 5805,
+          "sha256": "67f396e8dd898db861067c5fb3871de0b3cccd5f51013c8e1203df0712789050"
+        }
+      ]
+    },
+    {
+      "id": "ms.spawn-point",
+      "version": 1,
+      "kind": "data",
+      "label": "Player spawn point",
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "identity": {
+        "scheme": "world.json initialProgress.player.tile",
+        "field": "tile",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": [
+          "player"
+        ],
+        "capture": "MiningWorldState.to_dict()",
+        "restore": "MiningWorldState.from_dict()"
+      },
+      "initialState": {
+        "facing": "right",
+        "health": 3
+      },
+      "files": [
+        {
+          "path": "core/scripts/mining_game.gd",
+          "bytes": 26867,
+          "sha256": "bf7e1b3aeac60640614926ff8004ed54859ef4453760f9995b2ba40843a42dc0"
+        }
+      ]
+    },
+    {
+      "id": "ms.terrain-layer",
+      "version": 1,
+      "kind": "data",
+      "label": "Terrain layer",
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "identity": {
+        "scheme": "material id in world.json generation soil/rock/deepRock/bedrock",
+        "field": "material",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "fields": [
+          "chunkIndex",
+          "terrainHash"
+        ],
+        "capture": "MiningWorldState.to_dict() plus terrain.cells_of_chunk()",
+        "restore": "MiningWorldState.from_dict() plus terrain.apply_chunk()"
+      },
+      "initialState": {
+        "generated": true
+      },
+      "files": [
+        {
+          "path": "core/scripts/terrain_generator.gd",
+          "bytes": 8013,
+          "sha256": "e8953ae90eabee6dc0234d6cf708ee4c14e78fa8a30f56278507d466114f2ce8"
+        }
+      ]
+    },
+    {
       "id": "sv.ability-pickup",
       "version": 1,
       "kind": "entity",
