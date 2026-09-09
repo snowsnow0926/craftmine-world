@@ -11,10 +11,30 @@ import {loadLocalConfig} from '../../../app/local-config.mjs';
 import {deepseekKey,modelId,modelProvider,thinkingEnabled,reasoningEffort} from '../../../app/agent-model.mjs';
 
 const repo=path.resolve('.'),desktop=path.join(repo,'vendor/pi-desktop/apps/desktop');
-const require=createRequire(path.join(desktop,'package.json')),electron=require('electron');
-const main=path.join(desktop,'out/main/index.js'),source=fs.readFileSync(main,'utf8');
+const require=createRequire(path.join(desktop,'package.json'));
+const packaged=process.env.CRAFTMINE_PACKAGED_ROOT?fs.realpathSync(path.resolve(process.env.CRAFTMINE_PACKAGED_ROOT)):null;
+const resources=packaged?path.join(packaged,'resources'):null;
+const electron=packaged?path.join(packaged,'Craftmine World.exe'):require('electron');
+const readAppFile=relative=>{
+  if(!packaged)return fs.readFileSync(path.join(desktop,relative));
+  const builderRequire=createRequire(require.resolve('electron-builder'));
+  const libRequire=createRequire(builderRequire.resolve('app-builder-lib'));
+  return libRequire('@electron/asar').extractFile(path.join(resources,'app.asar'),path.normalize(relative));
+};
+const mainBytes=readAppFile('out/main/index.js'),source=mainBytes.toString();
 for(const guard of ['configureHeadlessAcceptance()','focusable: !headlessAcceptance','offscreen: !!headlessAcceptance','installNativeAgentAcceptance'])assert.ok(source.includes(guard),'Refuse unsafe or unprepared native build: '+guard);
-assert.ok(fs.statSync(path.join(desktop,'out/preload/craftmine-headless.cjs')).size>0);
+assert.ok(readAppFile('out/preload/craftmine-headless.cjs').length>0);
+const domain=fs.readFileSync(packaged?path.join(resources,'plugins/craftmine.world/domain.cjs'):path.join(desktop,'resources/plugins/craftmine.world/domain.cjs'),'utf8');
+assert.ok(!domain.includes('node:child_process'),'Refuse a compiler that can launch Electron as Node');
+let packageManifest=null;
+if(packaged){
+  packageManifest=JSON.parse(fs.readFileSync(path.join(resources,'source/build-manifest.json'),'utf8'));
+  assert.equal(packageManifest.format,'craftmine.build/1');
+  for(const [relative,index] of [['bin/pi-desktop-host-core.exe',0],['bin/craftmine-core.exe',1],['agent-runtime/sidecar.js',2],['plugins/craftmine.world/manifest.json',3],['source/CraftmineWorld-source.zip',4]]){
+    const actual=createHash('sha256').update(fs.readFileSync(path.join(resources,relative))).digest('hex');
+    assert.equal(actual,packageManifest.artifacts[index].sha256,'Refuse package/source manifest mismatch: '+relative);
+  }
+}
 const config=process.env.CRAFTMINE_LIVE_CONFIG;
 assert.ok(config&&path.isAbsolute(config),'Explicit authorized model configuration required');
 loadLocalConfig(config);
@@ -23,15 +43,15 @@ const compactions=Number(process.env.CRAFTMINE_F_COMPACTIONS||0);
 assert.ok([0,3].includes(compactions),'Only fixed baseline or three-compaction scenario allowed');
 const workbench=process.env.CRAFTMINE_F_WORKBENCH==='1',recovery=process.env.CRAFTMINE_F_RECOVERY==='1';
 assert.ok(!(workbench&&recovery)&&(!(workbench||recovery)||compactions===0),'Choose one fixed acceptance scenario');
-const core=path.resolve(process.env.CRAFTMINE_CORE_BIN||'test-results/dispatch-f/bin/craftmine-core.exe');
-const host=path.resolve(process.env.PI_DESKTOP_HOST_BIN||'test-results/dispatch-f/bin/pi-desktop-host-core.exe');
+const core=packaged?path.join(resources,'bin/craftmine-core.exe'):path.resolve(process.env.CRAFTMINE_CORE_BIN||'test-results/dispatch-f/bin/craftmine-core.exe');
+const host=packaged?path.join(resources,'bin/pi-desktop-host-core.exe'):path.resolve(process.env.PI_DESKTOP_HOST_BIN||'test-results/dispatch-f/bin/pi-desktop-host-core.exe');
 for(const binary of [electron,core,host])assert.ok(fs.existsSync(binary),'Missing binary: '+binary);
 fs.mkdirSync('test-results',{recursive:true});
 const directory=fs.mkdtempSync(path.resolve('test-results/desktop-native-f-'));
 const profile=path.join(directory,'profile'),legacySource=path.join(directory,'legacy'),token=randomUUID();
 fs.mkdirSync(profile);fs.mkdirSync(legacySource);
 fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));
-const checks=[],evidence={model:{id:modelId(),thinking:thinkingEnabled()?reasoningEffort():'off',authorship:'actual-native-PI-Agent'},scenario:{compactions,workbench,recovery,timeoutMs:1200000,maxRequests:80}};
+const checks=[],evidence={packageManifest,model:{id:modelId(),thinking:thinkingEnabled()?reasoningEffort():'off',authorship:'actual-native-PI-Agent'},scenario:{compactions,workbench,recovery,timeoutMs:1200000,maxRequests:80}};
 const check=(name,value)=>{checks.push({name,passed:!!value});assert.ok(value,name);console.log('PASS '+name);};
 const sha=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const startedAt=Date.now();
@@ -46,7 +66,7 @@ function launch(label,overrides={}){
     CRAFTMINE_F_AGENT:'1',CRAFTMINE_F_MODEL:modelId(),CRAFTMINE_F_KEY:deepseekKey(),CRAFTMINE_F_THINKING:thinkingEnabled()?reasoningEffort():'off',CRAFTMINE_F_COMPACTIONS:String(compactions),...overrides};
   delete env.ELECTRON_RUN_AS_NODE;
   for(const name of Object.keys(env))if(/^PI_DESKTOP_(CAPTURE|BOOT_PROBE|SUPERVISION_PROBE|PLAN_UI_PROBE)/.test(name))delete env[name];
-  const child=spawn(electron,[desktop],{cwd:directory,windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env});
+  const child=spawn(electron,packaged?[]:[desktop],{cwd:directory,windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env});
   const log=fs.createWriteStream(path.join(directory,label+'.log'));child.stdout.pipe(log,{end:false});child.stderr.pipe(log,{end:false});
   let ready=false,ended=false,audit,exitResult;const pending=new Map();
   const exit=new Promise(resolve=>{const end=value=>{if(ended)return;ended=true;exitResult=value;log.end();for(const item of pending.values()){clearTimeout(item.timer);item.reject(Error('Native exited '+JSON.stringify(value)));}pending.clear();resolve(value);};child.once('exit',(code,signal)=>end({code,signal}));child.once('error',error=>end({error:String(error)}));});
@@ -161,6 +181,6 @@ finally{
   if(client)await client.stop();
   try{evidence.finalLedger=ledger();}catch(error){evidence.ledgerReadError=String(error);}
   evidence.exitAudit=client?.audit;
-  fs.writeFileSync(path.join(directory,'report.json'),JSON.stringify({format:'craftmine.f-native-agent/1',passed:!evidence.failure&&checks.every(c=>c.passed),elapsedMs:Date.now()-startedAt,checks,evidence,binaries:{electron:sha(electron),core:sha(core),host:sha(host),main:sha(main)},limits:['No visible-window or clean-Windows installation validation','No library reuse claim from tree persistence alone','No measured performance threshold during concurrent builds']},null,2));
+  fs.writeFileSync(path.join(directory,'report.json'),JSON.stringify({format:'craftmine.f-native-agent/1',mode:packaged?'packaged':'development',passed:!evidence.failure&&checks.every(c=>c.passed),elapsedMs:Date.now()-startedAt,checks,evidence,binaries:{electron:sha(electron),core:sha(core),host:sha(host),main:createHash('sha256').update(mainBytes).digest('hex')},limits:['No visible-window or clean-Windows installation validation','No library reuse claim from tree persistence alone','No measured performance threshold during concurrent builds']},null,2));
   console.log('Native Agent report: '+path.join(directory,'report.json'));
 }
