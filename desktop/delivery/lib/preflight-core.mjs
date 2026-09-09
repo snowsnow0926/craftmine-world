@@ -31,7 +31,16 @@ export const PACKAGE_REQUIRED_FILES = [
   // its bundle record are part of a delivery package.
   'resources/git/bin/git.exe',
   'resources/git/GIT-BUNDLE.json',
-  'resources/git/LICENSE.txt'
+  'resources/git/LICENSE.txt',
+  'resources/runtime-resources.json',
+  'resources/godot/broker/godot-host-broker.exe',
+  'resources/godot/broker/broker-identity.json',
+  'resources/godot/engine/4.7.2-stable/editor/Godot_v4.7.2-stable_win64.exe',
+  'resources/godot/engine/4.7.2-stable/templates/web_release.zip',
+  'resources/godot/engine/4.7.2-stable/templates/windows_release_x86_64.exe',
+  'resources/godot/engine/4.7.2-stable/templates/windows_debug_x86_64.exe',
+  'resources/licenses/godot/GODOT_LICENSE.txt',
+  'resources/licenses/godot/GODOT_COPYRIGHT.txt'
 ];
 
 const MAX_TEXT_SCAN = 1024 * 1024;

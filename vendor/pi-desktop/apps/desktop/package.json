@@ -196,6 +196,11 @@
       "icon": "build/craftmine-icon.png",
       "extraResources": [
         {
+          "from": "../../../../desktop/build/runtime-resources",
+          "to": ".",
+          "filter": ["**/*", "!.craftmine-runtime-stage.json"]
+        },
+        {
           "from": "../../target/release/pi-desktop-host-core.exe",
           "to": "bin/pi-desktop-host-core.exe"
         },

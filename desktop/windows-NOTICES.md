@@ -10,4 +10,8 @@ Electron and Chromium notices are carried in their normal package files. `resour
 
 The locally shipped Geist, Inter, Noto Sans SC and LXGW WenKai font licenses are copied into `resources/licenses/fonts`. Original font files and attribution remain in the corresponding source archive. The Babel parser license is additionally present in the built-in world plugin. User-authored/imported assets retain their own provenance and are not relicensed by this client.
 
+The fixed Godot 4.7.2-stable engine, Web templates and Windows x86-64 templates are staged under `resources/godot/engine/4.7.2-stable`. Godot's MIT text and third-party aggregate are included in `resources/licenses/godot/` and `resources/godot/licenses/`. The broker's host-generated release identity is in `resources/godot/broker/broker-identity.json`.
+
+The complete pinned MinGit 2.53.0.windows.1 distribution is included under `resources/git/`, including `LICENSE.txt` and its component license trees. `GIT-BUNDLE-PIN.json` records the official archive URL and hash. `resources/runtime-resources.json` records every staged runtime file and the exact Craftmine source commit; the source archive above covers Craftmine and its broker, not the independent upstream Godot/Git repositories.
+
 Windows current-user DPAPI is a system service, not a transferable credential backup format. Portable domain backups exclude credentials. The application, domain files and model-provider account remain independent of any personal PI-Desktop installation.

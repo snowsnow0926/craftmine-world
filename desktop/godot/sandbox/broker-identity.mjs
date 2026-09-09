@@ -17,8 +17,14 @@ import {fileURLToPath} from 'node:url';
 
 const sandbox = path.dirname(fileURLToPath(import.meta.url));
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
-const SOURCE_FILES = ['Cargo.toml', 'Cargo.lock', 'src/lib.rs', 'src/broker.rs', 'src/task.rs', 'src/recovery.rs',
-  'src/preflight.rs', 'src/verification.rs', 'src/launch.rs', 'src/desktop.rs', 'src/bin/godot-host-broker.rs'];
+function rustFiles(directory,prefix='src'){
+  return fs.readdirSync(directory,{withFileTypes:true}).flatMap(entry=>{
+    const relative=prefix+'/'+entry.name;
+    if(entry.isSymbolicLink())throw Error('BROKER_SOURCE_LINK_DENIED');
+    return entry.isDirectory()?rustFiles(path.join(directory,entry.name),relative):entry.name.endsWith('.rs')?[relative]:[];
+  });
+}
+const SOURCE_FILES = ['Cargo.toml', 'Cargo.lock', ...rustFiles(path.join(sandbox,'src'))];
 
 function sourceDigest() {
   const records = SOURCE_FILES.filter(relative => fs.existsSync(path.join(sandbox, relative)))
