@@ -23,6 +23,9 @@ mod apply_tests;
 #[path = "contract_tests.rs"]
 mod contract_tests;
 #[cfg(test)]
+#[path = "contract_vectors_tests.rs"]
+mod contract_vectors_tests;
+#[cfg(test)]
 #[path = "git_tests.rs"]
 mod git_tests;
 #[cfg(test)]
