@@ -29,11 +29,11 @@ func _ready() -> void:
 		push_error("SideView: invalid instance identity")
 		get_tree().quit(2)
 		return
-	var state := WorldState.create(instance_id, state_version)
-	var store := SaveStore.create(instance_id)
+	var state: WorldState = WorldState.create(instance_id, state_version)
+	var store: SaveStore = SaveStore.create(instance_id)
 	if OS.get_environment("CRAFTMINE_SIDEVIEW_RESET") == "1":
 		store.wipe()
-	var load_report := store.load_into(state)
+	var load_report := {"loaded": false, "created": false, "error": ""} if ProjectSettings.get_setting("craftmine/runtime/enabled", false) else store.load_into(state)
 	if not String(load_report.get("error", "")).is_empty():
 		push_error("SideView: refusing to overwrite rejected progress: " + String(load_report.error))
 		get_tree().quit(3)

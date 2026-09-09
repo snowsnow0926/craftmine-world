@@ -1,0 +1,221 @@
+{
+  "format": "craftmine.native-base-evidence-summary/1",
+  "source": {
+    "path": "test-results/godot-first-person-base-NYNHiO/report.json",
+    "bytes": 732825,
+    "sha256": "629edb208e412ee7196190f2da0f8d55e74ea63ba7e0ea4d58262bd2b667c980"
+  },
+  "engine": "4.7.2-stable",
+  "checks": [
+    {
+      "name": "Pinned real engine imports the base project headlessly",
+      "passed": true
+    },
+    {
+      "name": "Base starts headless with a real viewport and no captured input",
+      "passed": true
+    },
+    {
+      "name": "Crosshair is a full-rect control centred on the real viewport",
+      "passed": true
+    },
+    {
+      "name": "Crosshair stays centred across real resolution changes",
+      "passed": true
+    },
+    {
+      "name": "Resolution changes really reach the engine viewport",
+      "passed": true
+    },
+    {
+      "name": "Held model keeps its camera-local mount after a real look",
+      "passed": true
+    },
+    {
+      "name": "Held model moves and turns in world space with the camera",
+      "passed": true
+    },
+    {
+      "name": "Sword state swaps the model and hides the crosshair from the same state",
+      "passed": true
+    },
+    {
+      "name": "Sword attack executes melee, uses no ammunition and respects real reach",
+      "passed": true
+    },
+    {
+      "name": "Switching back restores the gun model, reticle and untouched ammunition",
+      "passed": true
+    },
+    {
+      "name": "Forward movement is real and the body stays on the floor",
+      "passed": true
+    },
+    {
+      "name": "Real aim ray hits the centre target with the authored damage",
+      "passed": true
+    },
+    {
+      "name": "A second immediate shot is blocked by the real cooldown",
+      "passed": true
+    },
+    {
+      "name": "After the cooldown expires the next shot fires and damages the target",
+      "passed": true
+    },
+    {
+      "name": "Reload moves real rounds from the reserve into the magazine",
+      "passed": true
+    },
+    {
+      "name": "Saving writes progress through the real filesystem",
+      "passed": true
+    },
+    {
+      "name": "Sliding into the range wall stops movement instead of passing through it",
+      "passed": true
+    },
+    {
+      "name": "A brand new process starts from authored defaults",
+      "passed": true
+    },
+    {
+      "name": "Restore across a full process restart recovers ammo, equipment and target damage",
+      "passed": true
+    },
+    {
+      "name": "Restored player position and look match the saved state",
+      "passed": true
+    },
+    {
+      "name": "A restored world reports the same save on disk",
+      "passed": true
+    },
+    {
+      "name": "Walking with the sword equipped closes the real distance to the target",
+      "passed": true
+    },
+    {
+      "name": "Aimed sword melee reports the target inside real reach",
+      "passed": true
+    },
+    {
+      "name": "Sword melee damages a target inside its real reach",
+      "passed": true
+    },
+    {
+      "name": "Destroying two targets completes the authored quest",
+      "passed": true
+    },
+    {
+      "name": "Quest completion grants the reserve and inventory reward exactly once",
+      "passed": true
+    },
+    {
+      "name": "The HUD shows the live quest and inventory from the same state",
+      "passed": true
+    },
+    {
+      "name": "Quest progress and the one-time reward survive a full restart",
+      "passed": true
+    },
+    {
+      "name": "Blank start runs as its own real scene with no targets or interactables",
+      "passed": true
+    },
+    {
+      "name": "Blank start moves with real physics and fires with no target present",
+      "passed": true
+    },
+    {
+      "name": "Blank start saves and restores its own world identity",
+      "passed": true
+    },
+    {
+      "name": "Pointing at the crate produces a real aim result and prompt",
+      "passed": true
+    },
+    {
+      "name": "Interacting adds real reserve ammunition through EquipmentState",
+      "passed": true
+    },
+    {
+      "name": "Interactable state and the granted ammunition survive a restart",
+      "passed": true
+    },
+    {
+      "name": "An incomplete state is rejected with a concrete reason",
+      "passed": true
+    },
+    {
+      "name": "A newer state version is rejected instead of being guessed at",
+      "passed": true
+    },
+    {
+      "name": "Rejected states leave the live world completely unchanged",
+      "passed": true
+    },
+    {
+      "name": "Equipment models resolve to the authored OBJ assets in this project",
+      "passed": true
+    },
+    {
+      "name": "A ready weapon shows the style colour before any attack",
+      "passed": true
+    },
+    {
+      "name": "A confirmed hit turns the reticle to the hit colour",
+      "passed": true
+    },
+    {
+      "name": "A second attack is refused while cooling down",
+      "passed": true
+    },
+    {
+      "name": "The reticle shows the cooldown colour while the item is cooling down",
+      "passed": true
+    },
+    {
+      "name": "An attack is refused while reloading",
+      "passed": true
+    },
+    {
+      "name": "After the reload the reticle returns to the style colour and the magazine is full",
+      "passed": true
+    },
+    {
+      "name": "An empty magazine refuses the next attack with the empty reason",
+      "passed": true
+    },
+    {
+      "name": "A no-attack item shows no model and no reticle from the same state",
+      "passed": true
+    },
+    {
+      "name": "A no-attack item refuses an attack with the no-attack reason",
+      "passed": true
+    },
+    {
+      "name": "A state that fails on a later block is rejected with a concrete reason",
+      "passed": true
+    },
+    {
+      "name": "Blocks applied before the failure are rolled back completely",
+      "passed": true
+    },
+    {
+      "name": "A world with no save of its own cannot read another world progress",
+      "passed": true
+    },
+    {
+      "name": "Edited source damage applies without discarding saved progress",
+      "passed": true
+    },
+    {
+      "name": "The edited damage drives the next real hit",
+      "passed": true
+    }
+  ],
+  "passed": 52,
+  "failed": 0
+}

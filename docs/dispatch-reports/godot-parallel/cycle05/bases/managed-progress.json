@@ -1,0 +1,125 @@
+{
+  "format": "craftmine.managed-progress-tests/1",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "checks": [
+    "first-person explicit initial load required",
+    "first-person full state receipt",
+    "first-person preserves original timestamp across snapshot and save",
+    "first-person paused live restore preserves the complete checkpoint",
+    "first-person durable acknowledgement binds latest runner hash and instance",
+    "first-person full process restart preserves native body",
+    "first-person invalid and future state rejects atomically",
+    "top-down explicit initial load required",
+    "top-down full state receipt",
+    "top-down paused live restore preserves the complete checkpoint",
+    "top-down durable acknowledgement binds latest runner hash and instance",
+    "top-down full process restart preserves native body",
+    "top-down invalid and future state rejects atomically",
+    "side-view explicit initial load required",
+    "side-view full state receipt",
+    "side-view real node damage captured",
+    "side-view paused live restore preserves the complete checkpoint",
+    "side-view durable acknowledgement binds latest runner hash and instance",
+    "side-view full process restart preserves native body",
+    "side-view invalid and future state rejects atomically"
+  ],
+  "passed": 20,
+  "evidence": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX",
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 90,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-import",
+      "elapsedMs": 2497,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-fresh",
+      "elapsedMs": 339,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-enriched",
+      "elapsedMs": 340,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-live-restore",
+      "elapsedMs": 341,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-acknowledgement",
+      "elapsedMs": 342,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-restart-and-reject",
+      "elapsedMs": 344,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-import",
+      "elapsedMs": 2024,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-fresh",
+      "elapsedMs": 338,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-enriched",
+      "elapsedMs": 335,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-live-restore",
+      "elapsedMs": 335,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-acknowledgement",
+      "elapsedMs": 335,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-restart-and-reject",
+      "elapsedMs": 339,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-import",
+      "elapsedMs": 2120,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-fresh",
+      "elapsedMs": 351,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-enriched",
+      "elapsedMs": 336,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-live-restore",
+      "elapsedMs": 335,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-acknowledgement",
+      "elapsedMs": 338,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-restart-and-reject",
+      "elapsedMs": 354,
+      "exitCode": 0
+    }
+  ]
+}

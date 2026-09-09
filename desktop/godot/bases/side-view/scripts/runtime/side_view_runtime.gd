@@ -77,6 +77,8 @@ func emit_event(name: String, data: Dictionary = {}) -> void:
 	event_emitted.emit(name, data)
 
 func save_now(reason: String) -> Dictionary:
+	if ProjectSettings.get_setting("craftmine/runtime/enabled", false):
+		return {"saved": false, "managed": true, "reason": reason}
 	if state == null or save_store == null:
 		return {"saved": false, "error": "runtime not bound"}
 	var result := save_store.save(state)

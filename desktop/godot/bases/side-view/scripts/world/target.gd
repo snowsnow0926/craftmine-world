@@ -27,8 +27,10 @@ func build(raw: Dictionary, config_value: SideViewConfig, state_value: WorldStat
 	reward_id = str(raw.get("rewardId", ""))
 	grants = raw.get("grants", {})
 	max_health = maxi(1, int(raw.get("health", 2)))
-	health = max_health
-	if reward_id != "" and state.has_reward(reward_id):
+	health = int(state.entities.get(target_id, {}).get("health", 0 if state.has_reward(reward_id) else max_health))
+	state.entities[target_id] = {"health": health}
+	if health <= 0 or (reward_id != "" and state.has_reward(reward_id)):
+		_defeated = true
 		queue_free()
 		return
 	collision_layer = 4
@@ -59,7 +61,8 @@ func build(raw: Dictionary, config_value: SideViewConfig, state_value: WorldStat
 func receive_hit(damage: int, facing: int) -> void:
 	if _defeated:
 		return
-	health -= damage
+	health = maxi(0, health - damage)
+	state.entities[target_id] = {"health": health}
 	if runtime != null:
 		runtime.emit_event("target_hit", {"targetId": target_id, "damage": damage, "facing": facing, "health": maxi(health, 0)})
 		runtime.state.add_counter("hits", 1)

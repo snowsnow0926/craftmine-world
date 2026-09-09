@@ -37,7 +37,7 @@ func _ready() -> void:
 	if state.world_id.is_empty():
 		boot_error = "World manifest has no worldId"
 		push_error(boot_error)
-	var restored := SaveSystem.restore_into(state)
+	var restored := {"ok": true, "restored": false} if ProjectSettings.get_setting("craftmine/runtime/enabled", false) else SaveSystem.restore_into(state)
 	if not restored.get("ok", false):
 		boot_error = String(restored.get("error", "Progress could not be restored"))
 		push_error(boot_error)
@@ -313,6 +313,8 @@ static func _int_property(node: Node, property: StringName, fallback: int) -> in
 # --------------------------------------------------------- persistence verbs
 
 func save() -> Dictionary:
+	if ProjectSettings.get_setting("craftmine/runtime/enabled", false):
+		return {"ok": false, "error": "Managed progress is persisted by the host"}
 	if not boot_error.is_empty():
 		return {"ok": false, "error": boot_error}
 	if not _pending_restore.is_empty():
@@ -417,6 +419,8 @@ func _process(delta: float) -> void:
 
 
 func _autosave() -> void:
+	if ProjectSettings.get_setting("craftmine/runtime/enabled", false):
+		return
 	# Also runs from NOTIFICATION_PREDELETE, where the node is already outside the
 	# tree; SaveSystem only touches the filesystem, so saving there is still valid.
 	if state == null or state.world_id.is_empty():
@@ -424,3 +428,53 @@ func _autosave() -> void:
 	if not bool(world.get("autosaveOnExit", true)):
 		return
 	save()
+
+# Stage the authored scene before replacing a live managed world. The old root
+# remains alive until the new root binds, so rejection can restore it unchanged.
+func restore_runtime_state(candidate: WorldState) -> String:
+	var catalog: Variant = world.get("scenes", {})
+	var scene_path: Variant = catalog.get(candidate.scene_id, "") if catalog is Dictionary else ""
+	if not scene_path is String or not scene_path.begins_with("res://scenes/") or not scene_path.ends_with(".tscn"):
+		return "Saved scene is not in the authored catalog"
+	if not ResourceLoader.exists(scene_path):
+		return "Saved scene is unavailable"
+	var packed: Resource = load(scene_path)
+	if not packed is PackedScene:
+		return "Saved scene is unavailable"
+	var next := (packed as PackedScene).instantiate()
+	if next.get("scene_id") != candidate.scene_id:
+		next.free()
+		return "Saved scene identity does not match"
+	var tree := get_tree()
+	var previous := tree.current_scene
+	_record_scene_position()
+	var previous_state := state
+	var previous_dirty := _dirty
+	var previous_dirty_timer := _dirty_timer
+	var previous_mode := previous.process_mode
+	var previous_error := boot_error
+	previous.process_mode = Node.PROCESS_MODE_DISABLED
+	tree.root.remove_child(previous)
+	state = candidate
+	boot_error = ""
+	_pending_restore = {"sceneId": candidate.scene_id, "position": candidate.player_position, "facing": candidate.player_facing}
+	_pending_spawn = ""
+	_scene_root = null
+	tree.root.add_child(next)
+	tree.current_scene = next
+	if _scene_root != next or not _duplicate_entity_ids.is_empty() or not boot_error.is_empty():
+		tree.root.remove_child(next)
+		next.queue_free()
+		state = previous_state
+		boot_error = previous_error
+		_pending_restore.clear()
+		tree.root.add_child(previous)
+		tree.current_scene = previous
+		previous.process_mode = previous_mode
+		bind_scene(previous, previous_state.scene_id)
+		_dirty = previous_dirty
+		_dirty_timer = previous_dirty_timer
+		return "Saved scene failed to bind; previous state retained"
+	previous.queue_free()
+	_dirty = false
+	return ""

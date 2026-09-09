@@ -20,6 +20,8 @@ signal state_applied()
 @export var base_id := "first-person"
 @export var base_version := "0.1.0"
 @export var world_id := "local-world"
+## Stable state metadata. Capture is read-only; restoring preserves the original value.
+var saved_at: String = Time.get_datetime_string_from_system(true) + "Z"
 
 var player: PlayerController
 var equipment_state: EquipmentState
@@ -41,7 +43,7 @@ func capture() -> Dictionary:
 		"base": base_id,
 		"baseVersion": base_version,
 		"worldId": world_id,
-		"savedAt": Time.get_datetime_string_from_system(true) + "Z",
+		"savedAt": saved_at,
 		"player": player.snapshot() if player != null else {},
 		"equipment": equipment_state.snapshot() if equipment_state != null else {},
 		"inventory": inventory.snapshot() if inventory != null else {"slots": []},
@@ -78,6 +80,8 @@ func validate_envelope(state: Dictionary) -> String:
 		return "State is empty"
 	if not state.get("worldId") is String or state.worldId != world_id:
 		return "State belongs to another world"
+	if state.has("savedAt") and (not state.savedAt is String or state.savedAt.is_empty() or state.savedAt.length() > 128):
+		return "State timestamp is invalid"
 	if state.get("format") != FORMAT:
 		return "State format is not supported"
 	var version = state.get("stateVersion")
@@ -127,6 +131,7 @@ func _apply_inner(state: Dictionary) -> String:
 		var quest_problem := quest_tracker.restore(state.get("quests", {}))
 		if not quest_problem.is_empty():
 			return quest_problem
+	saved_at = state.get("savedAt", saved_at)
 	return ""
 
 

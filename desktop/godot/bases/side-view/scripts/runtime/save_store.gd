@@ -16,8 +16,9 @@ var world_id: String = ""
 var root_dir: String = ""
 var last_error: String = ""
 
-static func create(world_id_value: String) -> SaveStore:
-	var store := SaveStore.new()
+# Avoid a self-typed static factory: Godot 4.7.2 retains the script at editor exit.
+static func create(world_id_value: String):
+	var store = load("res://scripts/runtime/save_store.gd").new()
 	store.world_id = world_id_value
 	var override_dir := OS.get_environment("CRAFTMINE_SIDEVIEW_SAVE_DIR")
 	if override_dir != "":

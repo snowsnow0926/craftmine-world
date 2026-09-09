@@ -93,11 +93,11 @@ for (const [base, script] of Object.entries(cases)) {
   const label = base.split('/')[0];
   const project = path.join(out, label);
   if (base === 'side-view') {
-    // Isolate the persistence classes; the full gameplay suite separately imports
-    // the complete base, whose editor currently reports shutdown resource leaks.
-    fs.mkdirSync(project, {recursive:true});
+    // Isolate persistence classes while retaining their real resource paths.
+    // The full base import below must also exit without resource leaks.
+    fs.mkdirSync(path.join(project,'scripts/runtime'), {recursive:true});
     fs.writeFileSync(path.join(project,'project.godot'), 'config_version=5\n');
-    for(const file of ['world_state.gd','save_store.gd']) fs.copyFileSync(path.join(bases,base,'scripts/runtime',file),path.join(project,file));
+    for(const file of ['world_state.gd','save_store.gd']) fs.copyFileSync(path.join(bases,base,'scripts/runtime',file),path.join(project,'scripts/runtime',file));
   } else fs.cpSync(path.join(bases, base), project, {recursive:true, filter:p=>path.basename(p) !== '.godot'});
   // Unit fixtures load classes only: no gameplay autoloads or live world boot.
   await env.run(label+'-import', ['--path', project, '--editor', '--import']);
@@ -118,7 +118,7 @@ const imported=spawnSync(env.executable,['--headless','--path',bootProject,'--im
 const importLog=imported.stdout+imported.stderr;
 fs.writeFileSync(path.join(out,'side-view-full-import.log'),importLog);
 assert.equal(imported.status,0);
-assert.ok(!/SCRIPT ERROR|Parse Error/.test(importLog));
+assert.ok(!/SCRIPT ERROR|Parse Error|ERROR:|leaked at exit/.test(importLog));
 const rejectedSave=path.join(bootEnv.CRAFTMINE_SIDEVIEW_SAVE_DIR,'ruins/state.json');
 fs.mkdirSync(path.dirname(rejectedSave),{recursive:true});
 const rejectedBytes='{"format":"craftmine.godot-sideview-state/1","stateVersion":99}';

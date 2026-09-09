@@ -22,6 +22,9 @@ var world_id := ""
 
 
 func _ready() -> void:
+	if ProjectSettings.get_setting("craftmine/runtime/enabled", false):
+		set_process(false)
+		return
 	name = "PreviewBridge"
 	var root := get_parent()
 	if root is BaseWorld:
