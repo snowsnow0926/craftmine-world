@@ -19,11 +19,12 @@ test('navigation keeps raw writes and host execution credentials out of the rend
 test('create and both switch names go through live-view checkpointing',async()=>{
   const calls=[];
   const deps={invoke:async()=>{throw Error('raw mutation must not run');},navigate:async(value)=>{calls.push(value);return value;}};
-  await invokeCraftmineNavigation(request('world.create',{title:' Home ',baseId:'craftmine-web/5',token:'forged',activate:true}),deps);
+  await invokeCraftmineNavigation(request('world.create',{title:' Home ',baseId:'craftmine-web/5',token:'forged',activate:true,operationId:'op-home-1'}),deps);
   await invokeCraftmineNavigation(request('world.switch',{id:'alpha',snapshot:{fake:true}}),deps);
   await invokeCraftmineNavigation(request('world.open',{id:'beta'}),deps);
-  assert.deepEqual(calls,[{operation:'create',title:'Home',baseId:'craftmine-web/5',starterId:undefined},
+  assert.deepEqual(calls,[{operation:'create',title:'Home',baseId:'craftmine-web/5',starterId:undefined,operationId:'op-home-1'},
     {operation:'switch',id:'alpha'},{operation:'switch',id:'beta'}]);
+  await assert.rejects(invokeCraftmineNavigation(request('world.create',{title:'x',operationId:'../evil'}),deps),/INVALID_OPERATION_ID/);
 });
 
 test('failed save propagates without an independent world.open or retry',async()=>{

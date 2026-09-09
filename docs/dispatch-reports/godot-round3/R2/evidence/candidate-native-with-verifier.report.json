@@ -1,0 +1,40 @@
+{
+  "kind": "real-electron-godot-candidate-coordination",
+  "out": "D:\\Craftmine World-worktrees\\godot-round2-r2-20260910\\test-results\\godot-candidate-native-KIPNFQ",
+  "checks": [
+    {
+      "name": "Real candidate preview mutation never changes formal Rust progress",
+      "passed": true
+    },
+    {
+      "name": "Candidate isolated view renders without input or Node",
+      "passed": true
+    },
+    {
+      "name": "Cancel keeps exact original native instance",
+      "passed": true
+    },
+    {
+      "name": "Storage failure keeps original native instance",
+      "passed": true
+    },
+    {
+      "name": "Real application preserves latest formal state using a fresh candidate instance",
+      "passed": true
+    },
+    {
+      "name": "Actual committed reply loss reconciles without replay",
+      "passed": true
+    },
+    {
+      "name": "New formal build and complete progress survive Electron and Rust restart",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Repository-authored base and test-only executor/application registration; no model or OS sandbox claim",
+    "Production index.ts wiring is compile-checked separately; this harness constructs the same classes",
+    "Software offscreen rendering; no player input or feel acceptance"
+  ],
+  "passed": true
+}

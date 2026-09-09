@@ -177,9 +177,16 @@ export type PluginHostServices = {
     cancel: (id: string) => void;
   };
   /**
-   * Isolated Godot runtime check. The host injects the verifier instance
-   * (`GodotBuildVerifier`); the plugin child reaches it only through the private
-   * `craftmine.godotCheck` / `craftmine.cancelGodotCheck` bridge calls.
+   * Isolated Godot build check. The main process owns the offscreen renderer
+   * window; the plugin host only supplies the bounded descriptor.
+   */
+  godotVerification?: {
+    check: (input: unknown) => Promise<unknown>;
+    cancel: (id: string) => void;
+  };
+  /**
+   * Compatibility alias for the same verifier under the name the plugin's
+   * private bridge calls it by. Exactly one of the two is supplied.
    */
   craftmineGodotCheck?: {
     check: (input: unknown) => Promise<unknown>;
@@ -1500,9 +1507,10 @@ export class PluginRuntime {
         // The isolated runtime check runs in the host process only: it owns the
         // hidden window, the ephemeral session and the input guard. The plugin
         // child never gets the window, the origin or a progress write path.
-        if (pluginId !== "craftmine.world" || !this.services.craftmineGodotCheck) throw apiError("UNSUPPORTED", "Isolated Godot check unavailable");
-        if (api === "craftmine.cancelGodotCheck") return this.services.craftmineGodotCheck.cancel(String(args[0] ?? ""));
-        return this.services.craftmineGodotCheck.check(args[0]);
+        const verifier = this.services.godotVerification ?? this.services.craftmineGodotCheck;
+        if (pluginId !== "craftmine.world" || !verifier) throw apiError("UNSUPPORTED", "Isolated Godot check unavailable");
+        if (api === "craftmine.cancelGodotCheck") return verifier.cancel(String(args[0] ?? ""));
+        return verifier.check(args[0]);
       }
       case "craftmine.assetPreview": {
         if (pluginId !== "craftmine.world" || !this.services.craftmineAssetPreview) throw apiError("UNSUPPORTED", "Isolated asset preview unavailable");

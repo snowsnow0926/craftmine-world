@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   CRAFTMINE_WORLD_TITLE_MAX,
   normalizeWorldTitle,
@@ -31,6 +31,11 @@ export function WorldCreatePanel({
   const [starterId, setStarterId] = useState("");
   const [title, setTitle] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
+  // One stable identity for this dialog. Retrying after a lost reply targets
+  // the same world instead of creating a second one.
+  const operationId = useRef<string>(
+    globalThis.crypto?.randomUUID?.() ?? `create-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  );
 
   const deliveredBase = bases.some((base) => base.delivered);
   const submit = async () => {
@@ -48,6 +53,7 @@ export function WorldCreatePanel({
     const chosenStarter = starters.find((starter) => starter.id === starterId && starter.delivered)?.id ?? "";
     const created = await controller.create({
       title: normalizeWorldTitle(title),
+      operationId: operationId.current,
       ...(chosenBase ? { baseId: chosenBase } : {}),
       ...(chosenStarter ? { starterId: chosenStarter } : {}),
     });

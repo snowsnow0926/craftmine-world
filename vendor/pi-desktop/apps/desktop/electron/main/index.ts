@@ -26,6 +26,7 @@ import { createCraftmineDiagnosticsService } from "./craftmine-diagnostics-servi
 import { createCraftmineTelemetry } from "./craftmine-telemetry";
 import { readCraftmineBuildIdentity } from "./craftmine-build-identity";
 import { CraftmineVerifier } from "./craftmine-verifier";
+import { GodotBuildVerifier } from "./godot-build-verifier";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
 import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
@@ -596,9 +597,16 @@ const pluginPanels = new PluginPanelHost(
 
 );
 const craftmineVerifier = new CraftmineVerifier();
+// The isolated Godot build check owns its own offscreen renderer window; the
+// plugin host only supplies a bounded descriptor and reads the evidence back.
+const godotVerifier = new GodotBuildVerifier();
 const plugins: PluginRuntime = new PluginRuntime({
   craftminePanelRequest: (channel, payload) => craftminePanelRequest(channel, payload),
   craftmineVerification: craftmineVerifier,
+  godotVerification: {
+    check: (input) => godotVerifier.check(input),
+    cancel: (id) => godotVerifier.cancel(id),
+  },
   getWorkspacePath: () => {
     // Filled after host boots; temporary stub until services rebinding.
     return null;
@@ -925,7 +933,7 @@ const godotRoot = resolveGodotRoot({
   override: process.env.CRAFTMINE_GODOT_BASES,
 });
 let materializeBase: GodotCreationDependencies["materialize"] | null = null;
-void loadMaterializer(pathToFileURL(join(godotRoot, "shared", "materialize.mjs")).href)
+void loadMaterializer(join(godotRoot, "shared", "materialize.mjs"))
   .then(fn => { materializeBase = fn; })
   .catch(error => { logger.app("plugin", "warn", `godot materializer unavailable: ${String(error)}`); });
 // Constructed once the managed data directory exists; the coordinator reads it
@@ -9533,6 +9541,7 @@ app.on("before-quit", (event) => {
     if (craftmineQuitPreparation) return;
     craftmineQuitPreparation = (async () => {
       await godotCandidates.closeForDeparture();
+      godotVerifier.cancelAll();
       await pluginViews.prepareCraftmineForQuit();
       const godot = await godotWorld.prepareForQuit();
       if (!godot.ok) throw new Error(godot.error ?? "Godot progress was not saved");

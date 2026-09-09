@@ -58,9 +58,14 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
     if (typeof payload.title !== "string" || !payload.title.trim() || payload.title.length > 80) {
       throw new Error("INVALID_WORLD_TITLE");
     }
+    // A stable operation id lets a retried submit reach the same world.
+    if (payload.operationId != null
+      && (typeof payload.operationId !== "string" || !/^[A-Za-z0-9_-]{8,80}$/.test(payload.operationId))) {
+      throw new Error("INVALID_OPERATION_ID");
+    }
     return deps.navigate({
       operation: "create", title: payload.title.trim(),
-      baseId: payload.baseId, starterId: payload.starterId,
+      baseId: payload.baseId, starterId: payload.starterId, operationId: payload.operationId,
     });
   }
   // No renderer path for raw progress writes, executor registration, application
