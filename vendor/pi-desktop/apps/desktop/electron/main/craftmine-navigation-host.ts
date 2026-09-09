@@ -3,6 +3,9 @@
 export const NAVIGATION_READ_CHANNELS = new Set([
   "world.list", "world.createOptions", "workbench.capabilities", "task.current", "task.recoverable",
   "verification.list", "library.search", "memory.search", "backup.status",
+  // Asset browsing reads (R6's contract). Writes stay behind the player flow.
+  "asset.search", "asset.read", "asset.versions", "asset.usage", "asset.scan",
+  "asset.probe", "asset.previewRead",
 ]);
 
 type Request = { pluginId?: unknown; channel?: unknown; payload?: unknown };
@@ -11,6 +14,8 @@ type Dependencies = {
   navigate: (request: Record<string, unknown>) => Promise<unknown>;
   /** Opens a surface inside the retained world view (no world mutation). */
   showSurface: (request: Record<string, unknown>) => Promise<unknown>;
+  /** Host-owned directory grant, performed by the retained view. */
+  pickDirectory: () => Promise<unknown>;
 };
 
 const SURFACE_KINDS = new Set(["workbench", "checks", "world"]);
@@ -38,6 +43,10 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
       throw new Error("INVALID_SURFACE_REQUEST");
     }
     return deps.showSurface({ operation: "surface", surface, section: payload.section ?? null });
+  }
+  if (channel === "world.pickDirectory") {
+    if (Object.keys(payload).length > 0) throw new Error("INVALID_NAVIGATION_REQUEST");
+    return deps.pickDirectory();
   }
   if (channel === "world.switch" || channel === "world.open") {
     if (typeof payload.id !== "string" || !payload.id || payload.id.length > 128) {

@@ -191,12 +191,15 @@ export function AssetLibraryPanel({
   };
 
   // Mount-time load only; later changes go through `searchWith`.
+  // `useAssetLibrary` returns a fresh object each render, so the effect must
+  // depend on the stable search method instead of the controller object; the
+  // old dependency re-ran the mount search after every render.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     void controller
       .search({ ...filters, scope: "local-library", limit: ASSET_SEARCH_LIMIT_DEFAULT })
       .catch(() => {});
-  }, [controller]);
+  }, [controller.search]);
 
   const scan = controller.scan;
   const preview = describePreview(controller.preview, lang);

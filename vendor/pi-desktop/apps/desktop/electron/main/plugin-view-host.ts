@@ -239,6 +239,13 @@ export class PluginViewHost {
     );
   }
 
+  /** Native directory grant, executed by the retained view that owns the permission. */
+  async pickCraftmineDirectory(): Promise<unknown> {
+    const entry = this.views.get(pluginViewKey("craftmine.world", "world"));
+    if (!entry || entry.view.webContents.isDestroyed()) throw new Error("WORLD_VIEW_UNAVAILABLE");
+    return entry.view.webContents.executeJavaScript("globalThis.craftmineView.pickDirectory()", false);
+  }
+
   private async prepareEntries(entries: LiveView[]): Promise<void> {
     await prepareWorldViewsForQuit(entries.map((entry) => ({
       pluginId: entry.pluginId,

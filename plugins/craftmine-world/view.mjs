@@ -225,7 +225,7 @@ addEventListener('message',event=>{
 
 // Only the trusted product panel owns this lifecycle surface. Authored code
 // lives in the opaque game iframe and cannot reach it.
-globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,navigate,showSurface,showChecks:()=>setMode(true),showWorkbench:tab=>openWorkbench(tab),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
+globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,navigate,showSurface,pickDirectory,showChecks:()=>setMode(true),showWorkbench:tab=>openWorkbench(tab),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
 
 // Surfaces requested by the left column. Only surfaces this page can actually
 // show are accepted; an unknown workbench tab is refused instead of silently
@@ -240,6 +240,14 @@ async function showSurface(request) {
   await openWorkbench(surface.tab);
   if(workbench?.tab!==surface.tab)throw Error('WORLD_BUSY');
   return {ok:true,shown:'workbench',tab:surface.tab};
+}
+
+// The asset panel lives in the main window but the directory grant belongs to
+// this trusted page, exactly like the legacy import picker.
+async function pickDirectory() {
+  if(!bridge)throw Error('桌面服务尚未连接');
+  const sourceRoot=await bridge.invoke('fs.requestDirectory');
+  return sourceRoot?{sourceRoot}:null;
 }
 
 // Both navigation columns use the same live-view save sequence. Reject busy

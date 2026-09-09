@@ -5942,6 +5942,7 @@ function registerIpc() {
       invoke: (channel, params) => plugins.invokePanelBridge("craftmine.world", channel, params),
       navigate: (request) => pluginViews.navigateCraftmine(request),
       showSurface: (request) => pluginViews.showCraftmineSurface(request),
+      pickDirectory: () => pluginViews.pickCraftmineDirectory(),
     });
   });
 

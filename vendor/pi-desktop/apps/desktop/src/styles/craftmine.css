@@ -200,3 +200,24 @@
 @media (max-width: 1100px) {
   .craftmine-world-items { max-height: 30vh; }
 }
+/* The asset library is a main-window panel over the world-first layout. */
+.craftmine-asset-sheet {
+  position: fixed; inset: 6vh 8vw; z-index: 60; display: flex; flex-direction: column;
+  min-width: 0; min-height: 0; padding: 10px 12px 12px; overflow: hidden;
+  background: var(--ds-bg); color: var(--ds-text-primary);
+  border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-xs);
+  box-shadow: 0 18px 48px rgb(0 0 0 / 45%);
+}
+.craftmine-asset-sheet-head {
+  display: flex; align-items: center; gap: 8px; padding-bottom: 8px; flex: none;
+  font-size: var(--text-md); overflow-wrap: anywhere;
+}
+.craftmine-asset-sheet-head button {
+  margin-left: auto; padding: 4px 10px; font-size: var(--text-2xs); color: var(--ds-text-secondary);
+  background: var(--ds-tile); border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-xs);
+}
+.craftmine-asset-sheet-head button:hover { color: var(--ds-text-primary); }
+.craftmine-asset-sheet > :not(.craftmine-asset-sheet-head) { flex: 1 1 auto; min-height: 0; min-width: 0; }
+@media (max-width: 760px) {
+  .craftmine-asset-sheet { inset: 2vh 2vw; }
+}

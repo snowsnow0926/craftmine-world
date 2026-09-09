@@ -11,6 +11,7 @@ import type { CraftmineAuxSurface } from "../lib/craftmine-aux";
 import { useCraftmineWorlds } from "../hooks/use-craftmine-worlds";
 import { WorldListPanel } from "./craftmine/WorldListPanel";
 import { WorldAuxSections } from "./craftmine/WorldAuxSections";
+import { AssetLibraryPanel } from "./craftmine/assets/AssetLibraryPanel";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
@@ -57,9 +58,15 @@ export function CraftmineNavigation() {
   // real action; the surface request is sent over the documented navigation
   // channel, which the host routes into the retained view.
   const [surfaceError, setSurfaceError] = useState<string | null>(null);
+  const [assetsOpen, setAssetsOpen] = useState(false);
   const openSurface = (surface: CraftmineAuxSurface, section: string) => {
     open();
     setSurfaceError(null);
+    // The asset library is a main-window panel, not a plugin-panel tab.
+    if (surface.kind === "assets") {
+      setAssetsOpen(true);
+      return;
+    }
     const bridge = controller.bridge;
     if (!bridge) {
       setSurfaceError(CRAFTMINE_WORLD_TEXT.unavailable[lang]);
@@ -105,6 +112,31 @@ export function CraftmineNavigation() {
             <p className="craftmine-world-error" role="alert" data-surface-error="true">{surfaceError}</p>
           )}
           <CraftmineLayoutControls />
+          {assetsOpen && (
+            <div className="craftmine-asset-sheet" role="dialog" aria-modal="true"
+              aria-label={CRAFTMINE_WORLD_TEXT.assetsTitle[lang]} data-asset-sheet="true">
+              <div className="craftmine-asset-sheet-head">
+                <span>{CRAFTMINE_WORLD_TEXT.assetsTitle[lang]}</span>
+                <button type="button" data-asset-sheet-close="true" onClick={() => setAssetsOpen(false)}>
+                  {CRAFTMINE_WORLD_TEXT.assetsClose[lang]}
+                </button>
+              </div>
+              <AssetLibraryPanel
+                bridge={controller.bridge}
+                lang={lang}
+                worldId={controller.activeWorldId}
+                onImportRequest={async () => {
+                  const bridge = controller.bridge;
+                  if (!bridge) return null;
+                  // The retained trusted view owns the native directory grant,
+                  // exactly like the legacy import picker.
+                  const picked = await bridge.call("world.pickDirectory", {}) as {sourceRoot?: unknown} | null;
+                  const sourceRoot = typeof picked?.sourceRoot === "string" ? picked.sourceRoot : "";
+                  return sourceRoot ? {sourceRoot, sourcePath: ""} : null;
+                }}
+              />
+            </div>
+          )}
         </>
       )}
     </nav>

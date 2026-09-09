@@ -72,6 +72,8 @@ export const CRAFTMINE_WORLD_TEXT = {
   },
   creationStage: { zh: "当前步骤", en: "Current step" },
   layoutReset: { zh: "恢复默认布局", en: "Reset layout" },
+  assetsTitle: { zh: "素材与作品库", en: "Asset library" },
+  assetsClose: { zh: "关闭", en: "Close" },
   auxTitle: { zh: "辅助工作区", en: "Auxiliary workspaces" },
   auxOpen: { zh: "打开世界面板", en: "Open the world panel" },
   sessionTitle: { zh: "会话", en: "Session" },
