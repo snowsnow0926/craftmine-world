@@ -1,0 +1,4 @@
+# Preserve byte-level package evidence and the published fixture patch hash.
+*.json -text
+*.patch -text
+*.log -text
