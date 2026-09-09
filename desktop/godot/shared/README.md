@@ -73,6 +73,22 @@ real `.tscn` by `scene_materializer.mjs`, which allocates the `ext_resource`,
 keeps the script's `uid://`, refuses duplicate identities and appends only (see
 `desktop/godot/bases/README.md`).
 
+### Scene identity rules (round-three audit fixes)
+
+- The plan owns node structure and identity. `placement` and `overrides` may set
+  declared exports only; `entity_id`/identity field, `parent`, `script`, `name`,
+  `instance`, `type` and `groups` are refused with `reserved-override`. The
+  round-two counterexample (`overrides:{entity_id:'old-id'}` accepted, two nodes
+  with the same identity) is a regression test in
+  `tests/godot-round3/S3/scene-identity.test.mjs`.
+- After serialization the scene is re-parsed and refused if the planned identity
+  does not occur exactly once, if any identity value occurs twice, if a node
+  declares the identity field twice, or if a node name repeats under one parent.
+- `.tscn` and `project.godot` may use CRLF. The parser normalizes `\r`, so CRLF
+  scenes no longer hide existing identities, and new lines keep the file's own
+  line ending. `planInputActions` accepts `[input]` sections with either ending,
+  so an existing action is no longer reported as missing.
+
 ## Observation and bounded operations
 
 `observation.mjs` defines `craftmine.godot-observation/1`:
