@@ -7,3 +7,11 @@ Shared API desktop/godot/shared/progress-migration.mjs exports deriveAdditivePro
 Verifier should load null in a fresh isolated candidate, capture defaults, derive, load the derived state, and compare full native state. Core must independently recompute/validate this fixed rule against a trusted completed candidate check and current formal world revision/hash; no caller-supplied rules or arbitrary subset acceptance. Prepare/commit must bind the complete migrated snapshot, exact candidate check identity and old-formal CAS. A newer formal save requires fresh derivation from verified scene defaults. The original world is not changed until the usual durable application commit.
 
 FPS WorldState retains complete collection cardinality and checks all scene and saved IDs for nonempty uniqueness. Restore resolves by stable id rather than input array position; unknown/missing IDs remain errors. Transactional rollback remains unchanged. No implicit default insertion or data dropping occurs in runtime restore.
+
+The isolated client acceptance controller has two finite gameplay sequences.
+After checking an imported scene, `godotAdvance` uses real resume, equip and look
+operations to leave different equipment and camera orientation from `godotPlay`.
+It accepts no caller-selected actions, arguments, scripts or state. The complete
+client test compares these fields against the check-time snapshot before testing
+application and restart, so repeating the same final state is not accepted as
+evidence that newer formal progress survived.

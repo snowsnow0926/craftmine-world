@@ -9,7 +9,7 @@ export type GodotGameplayAccess = {
 export function createGodotGameplayAcceptance(access: GodotGameplayAccess) {
   let busy = false;
   return async (method: string): Promise<any> => {
-    if (!["godotPlay", "godotCapture720", "godotCapture600", "godotCapture1080"].includes(method)) throw Error("Unknown fixed gameplay evidence operation");
+    if (!["godotPlay", "godotAdvance", "godotCapture720", "godotCapture600", "godotCapture1080"].includes(method)) throw Error("Unknown fixed gameplay evidence operation");
     if (busy) throw Error("A fixed gameplay evidence operation is already running");
     busy = true;
     let identity: any = null;
@@ -30,12 +30,14 @@ export function createGodotGameplayAcceptance(access: GodotGameplayAccess) {
     };
     try {
       const before = await observe();
-      if (method !== "godotPlay") {
+      if (method !== "godotPlay" && method !== "godotAdvance") {
         const [width, height] = method === "godotCapture720" ? [1280, 720] : method === "godotCapture600" ? [800, 600] : [1920, 1080];
         return { before, ...await capture(width, height) };
       }
       const actions: any[] = [], captures: any[] = [];
-      const sequence: [string, Record<string, unknown>][] = [["resume", {}], ["equip", { value: "pistol" }], ["look", { yaw: 0.3, pitch: 0.15 }], ["equip", { value: "practice_sword" }], ["look", { yaw: -0.3, pitch: -0.1 }], ["equip", { value: "pistol" }], ["equip", { value: "practice_sword" }], ["equip", { value: "pistol" }]];
+      const sequence: [string, Record<string, unknown>][] = method === "godotAdvance"
+        ? [["resume", {}], ["equip", {value:"practice_sword"}], ["look", {yaw:0.45,pitch:0.2}]]
+        : [["resume", {}], ["equip", { value: "pistol" }], ["look", { yaw: 0.3, pitch: 0.15 }], ["equip", { value: "practice_sword" }], ["look", { yaw: -0.3, pitch: -0.1 }], ["equip", { value: "pistol" }], ["equip", { value: "practice_sword" }], ["equip", { value: "pistol" }]];
       for (const [op, args] of sequence) {
         const result = await access.action(op, args);
         if (result?.error) throw Error("Actual gameplay operation failed: " + String(result.error));

@@ -106,15 +106,18 @@ try{
     const target=await nav('world.create',{baseId:'first-person',starterId:'training-range',title:'Reuse target',operationId:randomUUID()});await settled(target.id);
     await step('play the reuse target before adding content',()=>rpc('godotPlay',{},60000));
     await panel(target.id,'godot.runtimeSave',{freeze:true});
+    const checkTimeSnapshot=godotPersistentProgress(await rpc('godotSnapshot'));
     const imported=await step('install into a different world draft',()=>panel(target.id,'package.request',{method:'importSource',params:{worldId:target.id,operationId:randomUUID()}}));
     assert.ok(imported.grantId);assert.equal(imported.applied,false);
     await step('first import check reaches its actual terminal state',()=>until(()=>nav('godot.historyJob',{worldId:target.id,jobId:imported.job.id}),job=>{if(['failed','blocked','cancelled','interrupted'].includes(job.status))throw Object.assign(Error(JSON.stringify(job)),{fatal:true});return job.status==='passed';},'First component check',900000));
     const second=await step('install a second independent instance',()=>panel(target.id,'package.request',{method:'repeatImportSource',params:{worldId:target.id,operationId:randomUUID(),grantId:imported.grantId}}));
     assert.ok(imported.instanceIds.every(id=>!second.instanceIds.includes(id)));
     const checked=await step('real check of both installed instances',()=>until(()=>nav('godot.historyJob',{worldId:target.id,jobId:second.job.id}),job=>{if(['failed','blocked','cancelled','interrupted'].includes(job.status))throw Object.assign(Error(JSON.stringify(job)),{fatal:true});return job.status==='passed';},'Component check',900000));
-    await step('advance real player progress after the candidate was checked',()=>rpc('godotPlay',{},60000));
+    await step('advance real player progress after the candidate was checked',()=>rpc('godotAdvance',{},60000));
     await panel(target.id,'godot.runtimeSave',{freeze:true});
     const beforeApply=godotPersistentProgress(await rpc('godotSnapshot'));
+    assert.notEqual(beforeApply.body.player.yaw,checkTimeSnapshot.body.player.yaw);
+    assert.notEqual(beforeApply.body.equipment.active,checkTimeSnapshot.body.equipment.active);
     await step('preview and apply checked reused content',async()=>{await panel(target.id,'godot.candidatePreview',{candidateId:checked.candidateId});return panel(target.id,'godot.candidateApply',{candidateId:checked.candidateId});});
     const appliedSnapshot=await step('both new instances exist and every old native field is preserved',async()=>{
       const actual=godotPersistentProgress(await rpc('godotSnapshot')),projected=structuredClone(actual);let added=0;

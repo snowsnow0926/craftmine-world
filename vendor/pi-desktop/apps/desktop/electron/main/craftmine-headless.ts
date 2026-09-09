@@ -101,6 +101,7 @@ export function installHeadlessControl(access: {
           if (Object.keys(request).sort().join(",") !== "id,method,type" || !godotBases) throw Error("Unsupported fixed base gameplay request");
           return godotBases(request.method);
         case "godotPlay":
+        case "godotAdvance":
         case "godotCapture720":
         case "godotCapture600":
         case "godotCapture1080":
