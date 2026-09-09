@@ -1,0 +1,192 @@
+✖ happy check job: real import/export receipts, staged web artifacts, passed candidate (323.6666ms)
+✖ the verifier receives the staged descriptor, never a caller-supplied path (322.2291ms)
+✖ check job without a verifier records a failure instead of a false pass (250.9891ms)
+✖ a failing runtime check fails the job and its assertions (246.371ms)
+✔ forged preflight evidence never registers an executor (841.6552ms)
+✖ measured source files must equal the claimed manifest (303.5774ms)
+✖ unlisted, tampered and escaping artifacts are refused (232.8798ms)
+✖ compile failures are fatal, known native isolation diagnostics are not (497.0882ms)
+✔ a broker that never answers or dies is recorded as a failure, never a pass (511.829ms)
+✔ a job that exceeds its budget is failed, not left running (1726.4624ms)
+✔ cancel kills the broker, records no result and cancels the core job (522.687ms)
+✔ executor stop revokes registration and rejects new jobs (99.5471ms)
+✔ sourceSnapshotDigest matches the documented broker digest shape (0.1356ms)
+✔ missing or tampered host files report their own reason (17.7788ms)
+✔ a changed broker binary is refused when a pin is configured (2.9585ms)
+✔ an unpinned broker and its self-nominated adjacent manifest never execute recovery (11.1435ms)
+✔ private host configuration pins the broker independently of child environment (166.4238ms)
+✔ a recovery entry counts as reclaimed only when identity and journal retirement are both proven (1.1022ms)
+✔ a report that claims a final receipt is surfaced as a contradiction (0.1904ms)
+✔ an unparseable recovery output is reported, never treated as a clean pass (0.1695ms)
+✔ startup runs a recovery pass over the executor tasks root before preflight (128.2728ms)
+✔ a broker that dies without a final response is reclaimed, never counted as success (235.2676ms)
+✖ a broker success that did not retire its journal entry still triggers recovery (20127.4936ms)
+✔ a failing recovery pass cannot change a job result (200.4403ms)
+✔ a damaged ledger entry cannot stop the executor from starting (93.2895ms)
+✔ cancel runs a recovery pass of its own (183.6104ms)
+✔ stop runs a recovery pass after every job has settled (96.3964ms)
+✔ restart reconciliation never restarts a job whose old task identity was not re-proved (93.1044ms)
+✖ restart reconciliation requeues only after the recovery pass re-proved the old task (20109.3485ms)
+✔ the executor source contains no pid or image-name process cleanup (0.9329ms)
+✔ the generated broker task id stays inside the Windows profile-name limit (0.0633ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 22
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41617.3582
+
+✖ failing tests:
+
+test at tests\godot-remaining\C\executor-protocol.mjs:165:1
+✖ happy check job: real import/export receipts, staged web artifacts, passed candidate (323.6666ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'failed' !== 'passed'
+  
+      at TestContext.<anonymous> (file:///D:/CraftmineWorld-final-plugin-executor/tests/godot-remaining/C/executor-protocol.mjs:170:10)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'failed',
+    expected: 'passed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\godot-remaining\C\executor-protocol.mjs:185:1
+✖ the verifier receives the staged descriptor, never a caller-supplied path (322.2291ms)
+  TypeError: Cannot read properties of null (reading 'format')
+      at TestContext.<anonymous> (file:///D:/CraftmineWorld-final-plugin-executor/tests/godot-remaining/C/executor-protocol.mjs:196:21)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at tests\godot-remaining\C\executor-protocol.mjs:205:1
+✖ check job without a verifier records a failure instead of a false pass (250.9891ms)
+  AssertionError [ERR_ASSERTION]: the real import still ran and is recorded
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///D:/CraftmineWorld-final-plugin-executor/tests/godot-remaining/C/executor-protocol.mjs:210:10)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\godot-remaining\C\executor-protocol.mjs:215:1
+✖ a failing runtime check fails the job and its assertions (246.371ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+  +     'runtime.not-run',
+  -     'runtime.ready',
+  -     true
+  -   ],
+  -   [
+  -     'runtime.frame',
+  -     true
+  -   ],
+  -   [
+  -     'runtime.no-errors',
+  -     true
+  -   ],
+  -   [
+  -     'runtime.snapshot',
+  -     true
+  -   ],
+  -   [
+  -     'runtime.isolation',
+        false
+      ],
+  -   [
+  -     'runtime.recovery',
+  -     false
+  -   ]
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/CraftmineWorld-final-plugin-executor/tests/godot-remaining/C/executor-protocol.mjs:221:10)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'runtime.not-run', false ] ],
+    expected: [ [ 'runtime.ready', true ], [ 'runtime.frame', true ], [ 'runtime.no-errors', true ], [ 'runtime.snapshot', true ], [ 'runtime.isolation', false ], [ 'runtime.recovery', false ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\godot-remaining\C\executor-protocol.mjs:239:1
+✖ measured source files must equal the claimed manifest (303.5774ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /GODOT_BROKER_SOURCE_CHANGED:main\.gd/. Input:
+  
+  'GODOT_BROKER_MISMATCH'
+  
+      at TestContext.<anonymous> (file:///D:/CraftmineWorld-final-plugin-executor/tests/godot-remaining/C/executor-protocol.mjs:246:12)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'GODOT_BROKER_MISMATCH',
+    expected: /GODOT_BROKER_SOURCE_CHANGED:main\.gd/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tests\godot-remaining\C\executor-protocol.mjs:250:1
+✖ unlisted, tampered and escaping artifacts are refused (232.8798ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /GODOT_ARTIFACT_UNLISTED:secret\.txt/. Input:
+  
+  'GODOT_BROKER_MISMATCH'
+  
+      at TestContext.<anonymous> (file:///D:/CraftmineWorld-final-plugin-executor/tests/godot-remaining/C/executor-protocol.mjs:257:12)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'GODOT_BROKER_MISMATCH',
+    expected: /GODOT_ARTIFACT_UNLISTED:secret\.txt/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tests\godot-remaining\C\executor-protocol.mjs:262:1
+✖ compile failures are fatal, known native isolation diagnostics are not (497.0882ms)
+  AssertionError [ERR_ASSERTION]: the known native diagnostics alone must not fail a build
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///D:/CraftmineWorld-final-plugin-executor/tests/godot-remaining/C/executor-protocol.mjs:289:10)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\godot-round3\S2\recovery-protocol.mjs:299:1
+✖ a broker success that did not retire its journal entry still triggers recovery (20127.4936ms)
+  Error: timed out waiting for job finish entry={"jobId":"gjob-dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd","worldId":"world-s2","mode":"check","state":"failed","attempts":[{"requestId":"im-66be03fc1c624b328576d310","operation":"import","startedAt":"2026-09-09T20:42:37.483Z","outcome":"succeeded","transport":"succeeded","recovery":{"trigger":"broker-exit","ok":true,"parseError":null,"reclaimed":["im-66be03fc1c624b328576d310","pf-ebaddd547d5b47b4867d9d8a"],"skipped":0,"unreadable":0},"finishedAt":"2026-09-09T20:42:37.572Z","journalRetired":false}],"startedAt":"2026-09-09T20:42:37.483Z","finishedAt":"2026-09-09T20:42:37.572Z","outcome":"failed","reason":"GODOT_BROKER_MISMATCH"} core={"status":"failed","progress":[{"stage":"import","percent":10}],"finished":null,"cancelled":false,"executor":{"format":"craftmine.godot-executor/1","isolation":"craftmine.windows.lpac-registry.v1","evidenceHash":"ce5515bf31ace2e01bf45f43440b296b375ab16edb4c4b4398bb25b45fd39241","engineVersion":"4.7.2-stable","capabilities":{"import":true,"build":true,"check":true}},"output":{"format":"craftmine.godot-job-result/1","inputHash":"c96c6d5be8d08a12e7b5cdc1b207fa6b2430974c86803d8891675e76fd992c20","passed":false,"import":{"passed":false,"log":"Godot Engine v4.7.2.stable.official.ed1daf0bf\n"},"compile":{"passed":false,"errors":["GODOT_BROKER_MISMATCH"],"warnings":[]},"check":{"passed":false,"assertions":[{"id":"runtime.not-run","passed":false,"detail":"GODOT_BROKER_MISMATCH"}]},"artifacts":[],"engine":{"version":"4.7.2-stable","isolation":"craftmine.windows.lpac-registry.v1","evidenceHash":"ce5515bf31ace2e01bf45f43440b296b375ab16edb4c4b4398bb25b45fd39241"}}} status=null
+      at TestContext.<anonymous> (file:///D:/CraftmineWorld-final-plugin-executor/tests/godot-round3/S2/recovery-protocol.mjs:310:11)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at tests\godot-round3\S2\recovery-protocol.mjs:414:1
+✖ restart reconciliation requeues only after the recovery pass re-proved the old task (20109.3485ms)
+  Error: timed out waiting for requeued job finish
+      at waitFor (file:///D:/CraftmineWorld-final-plugin-executor/tests/godot-round3/S2/recovery-protocol.mjs:185:38)
+      at async TestContext.<anonymous> (file:///D:/CraftmineWorld-final-plugin-executor/tests/godot-round3/S2/recovery-protocol.mjs:433:3)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)

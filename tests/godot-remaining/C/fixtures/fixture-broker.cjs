@@ -94,7 +94,7 @@ function respond(request) {
     cleanup: scenario.cleanupVerified === false ? {verified:false, profileHresult:1, workRemoved:false, error:'cleanup failed'}
       : {verified:true, profileHresult:0, workRemoved:true, error:null},
     error: scenario.error ?? null,
-    brokerSha256: scenario.brokerSha256 ?? sha256('fixture-broker'),
+    brokerSha256: scenario.brokerSha256 ?? sha256(fs.readFileSync(process.env.CRAFTMINE_GODOT_BROKER_BIN)),
   };
   return response;
 }

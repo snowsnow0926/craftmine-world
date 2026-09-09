@@ -8,7 +8,7 @@ import {
   statSync,
   rmSync,
 } from "node:fs";
-import { basename, join, dirname, relative, resolve, sep } from "node:path";
+import { basename, join, dirname, relative, resolve, sep, isAbsolute } from "node:path";
 import { homedir } from "node:os";
 import { AsyncLocalStorage } from "node:async_hooks";
 import {
@@ -196,7 +196,12 @@ export type PluginHostServices = {
    * Host-owned asset preview decoding. The plugin's asset service calls it and
    * receives evidence only; the decoder itself stays in the host.
    */
-  craftmineAssetPreview?: (input: unknown, options?: unknown) => Promise<unknown>;
+  craftmineAssetPreview?: (input: unknown) => Promise<unknown>;
+  craftmineCancelAssetPreview?: (input: {jobId: string}) => Promise<unknown>;
+  /** Fixed release resources, supplied by main; never taken from model/panel arguments. */
+  craftmineGodotToolchain?: {
+    broker: string; brokerIdentity: string; engineRoot: string; toolchainLock: string; bridgePath: string;
+  };
   /**
    * Live observation of the running Godot instance. The plugin may ask for a
    * sample of the world it is bound to; the host supplies the instance identity
@@ -957,9 +962,13 @@ export class PluginRuntime {
       "content.status", "content.gitInfo", "content.history", "content.changes", "content.diff", "content.readFile",
       "content.branch.list", "content.version.list", "content.checkpoint.set", "content.checkpoint.list",
       "content.apply.prepare", "content.apply.advance", "content.apply.confirm", "content.apply.rollback", "content.apply.recover",
+      "content.operation.read",
+      "backup.exportPortable", "backup.inspectPortable", "backup.verifyPortable", "backup.restorePortable",
+      "backup.cancelPortable", "backup.protectedRefs", "backup.releasePortable",
       "content.reclaim.plan", "content.reclaim.prune", "content.verify", "content.bundle",
       "library.search", "library.read", "library.capture",
       "world.list", "world.create", "world.saveProgress",
+      "workspace.endTurn", "asset.bodyPath",
       "asset.request", "package.request",
     ]) allowed.add(operation);
     if (!allowed.has(method)) throw apiError("UNSUPPORTED", "Unsupported Craftmine host request");
@@ -1514,7 +1523,23 @@ export class PluginRuntime {
       }
       case "craftmine.assetPreview": {
         if (pluginId !== "craftmine.world" || !this.services.craftmineAssetPreview) throw apiError("UNSUPPORTED", "Isolated asset preview unavailable");
-        return this.services.craftmineAssetPreview(args[0], args[1]);
+        return this.services.craftmineAssetPreview(args[0]);
+      }
+      case "craftmine.cancelAssetPreview": {
+        if (pluginId !== "craftmine.world" || !this.services.craftmineCancelAssetPreview) throw apiError("UNSUPPORTED", "Isolated asset preview unavailable");
+        const input = args[0] as {jobId?: unknown} | undefined;
+        if (!input || Object.keys(input).some(key => key !== "jobId") || typeof input.jobId !== "string" || !input.jobId || input.jobId.length > 240)
+          throw apiError("INVALID_ARGUMENT", "An exact preview jobId is required");
+        return this.services.craftmineCancelAssetPreview({jobId:input.jobId});
+      }
+      case "craftmine.getGodotToolchain": {
+        if (pluginId !== "craftmine.world" || args.length !== 0) throw apiError("UNSUPPORTED", "Private toolchain configuration required");
+        const value = this.services.craftmineGodotToolchain;
+        if (!value) return null;
+        const keys = ["broker", "brokerIdentity", "engineRoot", "toolchainLock", "bridgePath"] as const;
+        if (keys.some(key => typeof value[key] !== "string" || !isAbsolute(value[key])))
+          throw apiError("INVALID_ARGUMENT", "Toolchain resources must be host-owned absolute paths");
+        return Object.fromEntries(keys.map(key => [key, value[key]]));
       }
       case "craftmine.sampleLiveState": {
         if (pluginId !== "craftmine.world" || !this.services.craftmineLiveSample) throw apiError("UNSUPPORTED", "Live gameplay sampling unavailable");

@@ -78,7 +78,7 @@ function environment({projectFiles = {'project.godot':'config_version=5\n', 'mai
   process.env.CRAFTMINE_GODOT_TOOLCHAIN_LOCK = lock;
   process.env.CRAFTMINE_GODOT_BRIDGE_PATH = bridge;
   process.env.CRAFTMINE_FIXTURE_BROKER_FILE = scenarioFile;
-  delete process.env.CRAFTMINE_GODOT_BROKER_SHA256;
+  process.env.CRAFTMINE_GODOT_BROKER_SHA256 = sha256(fs.readFileSync(broker));
   return {root, broker, engineRoot, bridge, projectRoot, artifactsRoot, dataPath, scenarioFile, files:listFiles(projectRoot)};
 }
 

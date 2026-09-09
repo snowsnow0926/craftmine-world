@@ -1,0 +1,21 @@
+   Compiling craftmine-godot-sandbox-probe v0.1.0 (D:\CraftmineWorld-final-plugin-executor\desktop\godot\sandbox)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running unittests src\lib.rs (target\debug\deps\craftmine_godot_sandbox_probe-4bb7b40224961141.exe)
+
+running 13 tests
+test recovery::tests::own_process_is_reported_alive_and_a_missing_pid_is_not ... ok
+test recovery::tests::nonces_are_not_repeated_within_a_process ... ok
+test recovery::tests::identity_markers_are_exclusive_and_bound_to_the_task_id ... ok
+test recovery::tests::journal_clear_reports_a_real_removal ... ok
+test recovery::tests::journal_entry_is_exclusive_and_survives_reopen ... ok
+test recovery::tests::recovery_reports_a_truncated_entry_instead_of_aborting ... ok
+test recovery::tests::recovery_keeps_an_entry_when_the_task_root_is_already_absent ... ok
+test recovery::tests::recovery_refuses_to_touch_a_task_whose_broker_is_still_running ... ok
+test recovery::tests::recovery_refuses_an_entry_recorded_for_another_tasks_root ... ok
+test recovery::tests::recovery_skips_an_entry_whose_task_root_was_replaced ... ok
+test recovery::tests::recovery_skips_a_task_root_without_a_matching_identity_marker ... ok
+test recovery::tests::incomplete_child_recovery_preserves_profile_and_retry_evidence ... ok
+test recovery::tests::profile_identity_mismatch_preserves_task_marker_for_retry ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.02s
+
