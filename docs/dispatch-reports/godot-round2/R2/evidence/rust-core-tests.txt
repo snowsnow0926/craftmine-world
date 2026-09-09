@@ -1,3 +1,11 @@
-test result: ok. 172 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 4.34s
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test applications::tests::explicit_player_acknowledgement_is_bound_and_never_changes_failed_review ... ok
+test applications::tests::missing_review_failed_request_and_forged_load_cannot_publish ... ok
+test backups::portable::tests::portable_archive_restores_into_a_new_directory_without_the_source ... FAILED
+test godot_worlds::tests::a_failed_initialization_keeps_a_recoverable_record_and_can_be_retried ... ok
+test recovery::tests::failed_resume_launch_can_resume_again_without_resetting_budget_draft_or_goal ... ok
+test verification::tests::failed_checks_and_tampered_storage_are_distinguished ... ok
+test recovery::tests::startup_repairs_only_proven_legacy_failed_current_heads ... ok
+failures:
+failures:
+test result: FAILED. 226 passed; 1 failed; 3 ignored; 0 measured; 0 filtered out; finished in 9.83s
+error: test failed, to rerun pass `-p craftmine-core --lib`

@@ -1,0 +1,81 @@
+{
+  "kind": "real-react-asset-navigation-with-fixture-host",
+  "sourceCommit": "451033b1f0889012096452a27e7c70066c136661",
+  "checks": [
+    {
+      "name": "素材行存在并有真实打开入口",
+      "passed": true,
+      "detail": {
+        "text": "素材接口未接入本地素材库：按版本浏览、预览与导入，不自动应用世界。打开世界面板",
+        "toggle": true
+      }
+    },
+    {
+      "name": "素材行显示主机报告的条目数",
+      "passed": true
+    },
+    {
+      "name": "素材入口在窗口中打开真实素材面板",
+      "passed": true
+    },
+    {
+      "name": "面板通过真实桥读取本地素材库",
+      "passed": true,
+      "detail": {
+        "pluginId": "craftmine.world",
+        "channel": "asset.search",
+        "payload": {
+          "worldId": "w1",
+          "scope": "local-library",
+          "offset": 0,
+          "limit": 5
+        }
+      }
+    },
+    {
+      "name": "素材面板带自己的关闭入口",
+      "passed": true
+    },
+    {
+      "name": "关闭素材面板后回到世界列表",
+      "passed": true
+    },
+    {
+      "name": "导入按钮请求宿主目录授权",
+      "passed": true,
+      "detail": "导入素材"
+    },
+    {
+      "name": "授权目录随后用于真实扫描",
+      "passed": true,
+      "detail": {
+        "pluginId": "craftmine.world",
+        "channel": "asset.scan",
+        "payload": {
+          "sourceRoot": "C:/authorized/assets"
+        }
+      }
+    },
+    {
+      "name": "没有请求鼠标锁定或焦点",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Fixture host: proves navigation and payloads, not the Rust asset catalog.",
+    "No real model call and no visible-window composition."
+  ],
+  "defects": [
+    {
+      "owner": "R6",
+      "summary": "AssetLibraryPanel crashes during the import flow: `scan` names both the snapshot result and the action, so the panel reads .items off the function.",
+      "repro": "open the asset sheet, press 导入素材",
+      "evidence": {
+        "pageErrors": [
+          "Uncaught TypeError: Cannot read properties of undefined (reading 'find')\n    at AssetLibraryPanel (file:///D:/Craftmine%20World-worktrees/godot-round2-r2-20260910/test-results/godot-round2-r2-assets-4huZ6S/fixture.js:24484:51)\n    at react_stack_bottom_frame (file:///D:/Craftmine%20World-worktrees/godot-round2-r2-20260910/test-results/godot-round2-r2-assets-4huZ6S/fixture.js:19766:21)\n    at renderWithHooks (file:///D:/Craftmine%20World-worktrees/godot-round2-r2-20260910/test-results/godot-round2-r2-assets-4huZ6S/fixture.js:6911:25)\n    at updateFunctionComponent (file:///D:/Craftmine%20World-"
+        ]
+      }
+    }
+  ]
+}

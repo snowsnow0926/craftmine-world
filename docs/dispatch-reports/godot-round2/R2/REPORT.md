@@ -28,11 +28,16 @@ E `6bc9ec3` 已保留历史合入）。未推送、未合并，主目录与其�
 | --- | --- |
 | `electron/main/index.ts` | 应用 D 的候选协调器接线；构造 Godot 创建工厂；退出/禁用/卸载前先关闭候选 |
 | `electron/main/plugin-view-host.ts` | 新增 `showCraftmineSurface`（导航到保留视图的面板表面） |
-| `electron/main/craftmine-navigation-host.ts` | 新增 `world.surface` 路由与校验；读取白名单加入 `task.recoverable` |
+| `electron/main/craftmine-navigation-host.ts` | 新增 `world.surface` 与 `world.pickDirectory` 路由及校验；读取白名单加入 `task.recoverable` 与 `asset.*` 只读通道 |
+| `electron/main/craftmine-panel-gateway.ts` | 主进程面板白名单加入 `asset.*` 只读通道 |
+| `electron/main/plugin-view-host.ts` | 新增 `showCraftmineSurface`、`pickCraftmineDirectory` |
 | `electron/main/godot-world-creation.ts` | **新增**：底座目录读取、请求校验、可移植世界 ID、初始进度读取与封装、`godotWorld.initialize` 编排、`initStatus` → 界面状态映射 |
 | `electron/main/godot-panel-coordinator.ts` | 拦截 `world.createOptions`（合并已交付 Godot 底座）、`world.create`（Godot 底座走真实初始化事务）、`world.list`（补真实 `state`/`creation`） |
-| `plugins/craftmine-world/view.mjs` | 应用 D 的 Godot 预览/应用片段；新增 `craftmineView.showSurface` |
-| `src/components/CraftmineNavigation.tsx` | 辅助入口改走真实通道并显示失败原因 |
+| `plugins/craftmine-world/view.mjs` | 应用 D 的 Godot 预览/应用片段；新增 `craftmineView.showSurface`、`pickDirectory` |
+| `src/components/CraftmineNavigation.tsx` | 辅助入口改走真实通道；新增素材库窗口面板与宿主目录授权回调 |
+| `src/components/craftmine/assets/AssetLibraryPanel.tsx` | R2 最小集成修复：挂载 effect 依赖由不稳定的 `controller` 改为 `controller.search`（详见 INTERFACE_REQUEST §4） |
+| `src/lib/craftmine-aux.ts` | `assets` 行改为真实通道 `asset.search` 与窗口面板表面，并显示主机条目数 |
+| `src/lib/craftmine-worlds-text.ts`、`src/styles/craftmine.css` | 素材面板文案与样式 |
 | `apps/desktop/test/*` | 新增 `godot-world-creation.test.mjs`；扩展导航网关测试 |
 
 ## 3 验证（全部 headless/offscreen、独立目录、无真实输入）
@@ -40,12 +45,13 @@ E `6bc9ec3` 已保留历史合入）。未推送、未合并，主目录与其�
 | 验证 | 命令 | 结果 | 证据 |
 | --- | --- | --- | --- |
 | 客户端创建契约（真实核心 stdio） | `node tests/godot-round2/R2/creation-contract-core.mjs` | **12/12** | `evidence/creation-contract-core.report.json` |
-| 左侧面板真实导航（真实网关+插件+核心） | `node tests/godot-round2/R2/surface-navigation-e2e.mjs` | **12/12** | `evidence/surface-navigation-e2e.report.json`、`evidence/surface-navigation.png` |
+| 左侧面板真实导航（真实网关+插件+核心） | `node tests/godot-round2/R2/surface-navigation-e2e.mjs` | **13/13** | `evidence/surface-navigation-e2e.report.json`、`evidence/surface-navigation.png` |
+| 素材库导航（真实 R6 组件 + 夹具宿主） | `node tests/godot-round2/R2/asset-navigation-ui.mjs` | **9/9 通过**，另记录 1 项 R6 缺陷 | `evidence/asset-navigation-ui.report.json`、`evidence/asset-navigation.png` |
 | 客户端单元（创建映射/协调器/导航网关/世界模型） | `node --test test/godot-world-creation.test.mjs test/craftmine-navigation-host.test.mjs test/craftmine-world-navigation.test.mjs` | **36/36** | `evidence/client-unit-tests.txt` |
 | D 原生候选闭环（R1 核心） | `node tests/godot-remaining/D/godot-candidate-native.mjs` | **7/7** | `evidence/candidate-native-with-r1-core.report.json` |
 | 上一轮真实创建/切换/重启回归 | `node tests/godot-remaining/e/world-create-e2e.mjs` | **19/19** | `evidence/client-create-e2e-regression.report.json` |
 | 上一轮创建流程 UI 回归 | `node tests/godot-remaining/e/create-flow-ui.mjs` | **23/23** | `test-results/godot-remaining-e-create-ui-*` |
-| Rust 核心 | `cargo test -p craftmine-core --release` | **172 通过**，2 忽略 | `evidence/rust-core-tests.txt` |
+| Rust 核心 | `cargo test -p craftmine-core --release` | 226 通过 / **1 失败** / 3 忽略 | `evidence/rust-core-tests.txt`（失败为 R5×R1 跨模块缺陷，见 §4） |
 | 桌面端全量源码契约 | `node --test test/*.test.mjs` | 1239/1255，14 项失败 | `evidence/desktop-suite-baseline-comparison.json` |
 | 基线对照 | 干净 `bcebeb1` 工作树同一命令 | 失败集合逐项相同，新增回归 **0** | 同上 |
 
@@ -62,14 +68,18 @@ Electron 43.4.0；Godot 导出固定副本 `index.wasm` SHA-256 `F6090F055E16765
 | 2 同一客户端完成创建→游玩→对话修改→检查→预览/取消→应用→退出重开 | 预览/取消/应用/重启已用真实 Electron + Rust 跑通（D 的 7/7）；创建与“首次构建→可游玩”之间仍缺工程登记与首个构建的调用顺序 | R1 确认 §3 的三步顺序；C 落地路由后 R2 补 `creation-e2e-client.mjs` 跑完整故事 |
 | 3 重跑原生候选测试、崩溃快速失败 | 已重跑通过；渲染进程崩溃诊断沿用 D 的实现 | 重复预览/取消/最新进度/回包丢失/保存失败/重启已覆盖；`firstLoad` 仍只在单测中 |
 | 4 界面真实验收（居中/右侧/窄窗/中文/缩放/主题/记忆/返回/会话） | 上一轮 23/23 + 本轮 19/19 回归通过 | 可见合成与手感仍需人工/真机；本轮未新增主窗口候选界面（候选界面在插件面板内） |
-| 5 历史/素材/作品安装/草稿接续/备份入口 | 作品/检查/记忆/任务/备份入口已接真实面板；任务行显示真实可接续草稿 | 历史（R1 `content.*`）与素材（R6）面板通道未落地，R2 未放假按钮；通道就绪后按 §4 接入 |
+| 5 历史/素材/作品安装/草稿接续/备份入口 | 作品/检查/记忆/任务/备份入口已接真实面板；任务行显示真实可接续草稿；**素材库已挂到窗口面板**（真实 R6 组件，浏览 9/9 通过） | 素材导入流程在 R6 组件内崩溃（同名 `scan` 冲突，已记录未放行）；`asset-service.mjs` 尚未在插件注册，真实主机返回 `UNKNOWN_WORKBENCH_CHANNEL`；历史（R1 `content.*`）面板通道未落地 |
 | 6 核对 14 项桌面失败 | 已证明全部为基线既有 | 无本轮回归；其中 1 项是 Windows 无法创建符号链接（`EPERM`，环境限制），其余为 vendored 源码与断言漂移，均不在 R2 改动文件内 |
+| 集成新发现：R5×R1 | **1 项 Rust 测试失败** | R5 便携归档表清单不含 R1 新增的 Godot/Git 表 → 恢复后 `GODOT_PROJECT_REVISION_NOT_INDEXED`；归属与复现见 `INTERFACE_REQUEST.md` §5 |
 
 ## 5 提交
 
 - `ac2798a` `feat(craftmine-ui): open world panel surfaces and resumable drafts from the left column`
 - `36603ab` `feat(godot-host): create Godot worlds from the shipped base catalog through the core transaction`
 - `923a36f` `docs(godot): record R2 client wiring, creation contract evidence and interface request`
+- `451033b` `merge(godot): integrate round-two R5 portable backups over R1 content registration`
+- `957bbe4` `feat(craftmine-ui): host the asset library in the main window and route its reads`
+- `3cf57d6` `feat(craftmine-host): allow asset reads through the panel gateway`
 
 合并记录（保留历史）：`9449932` D、`99d030c` E、`2e4fafb` R1、`0ba…` F、`48a4e9b` G、
 `3ba33fa` C、`2f7f068` R3、`5957c8b` R1 最新。

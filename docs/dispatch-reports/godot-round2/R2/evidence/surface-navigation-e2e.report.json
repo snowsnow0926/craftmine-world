@@ -1,6 +1,6 @@
 {
   "kind": "real-gateway-and-retained-view-surface-navigation",
-  "sourceCommit": "6b08407d97c37b66f6fd367c4ebed40bce12814b",
+  "sourceCommit": "957bbe427b24e536263a1d1077031cb26495e0e0",
   "checks": [
     {
       "name": "作品入口打开真实工作台标签",
@@ -60,6 +60,15 @@
       }
     },
     {
+      "name": "素材读取到达插件服务层并报告真实未注册",
+      "passed": true,
+      "detail": {
+        "ok": false,
+        "code": "PLUGIN_CALL_FAILED",
+        "message": "Unsupported Craftmine panel operation"
+      }
+    },
+    {
       "name": "没有请求鼠标锁定或焦点",
       "passed": true
     },
@@ -74,6 +83,6 @@
     "Panel surfaces only; no candidate build, no model call, no visible-window composition."
   ],
   "engine": {
-    "coreSha256": "d7c1e1b78eec252bff88bbb481d6a258dc2a73344055690f9386b9d986ef2bdc"
+    "coreSha256": "8925d553a987f7bd4ca61709013fddfd66279cca9c676a9b8c008cc8736cca98"
   }
 }
