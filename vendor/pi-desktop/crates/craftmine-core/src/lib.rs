@@ -14,9 +14,12 @@ mod backups;
 mod durable;
 mod godot_applications;
 mod godot_builds;
+mod godot_host_resources;
 mod godot_jobs;
 mod godot_projects;
 mod godot_runtime;
+mod godot_storage;
+mod godot_worlds;
 mod legacy;
 mod library;
 mod memories;
@@ -165,6 +168,8 @@ impl TaskJournal {
         godot_builds::migrate(&db)?;
         godot_jobs::migrate(&db)?;
         godot_applications::migrate(&db)?;
+        godot_storage::migrate(&db)?;
+        godot_worlds::migrate(&db)?;
         let directory = std::fs::canonicalize(
             path.parent()
                 .filter(|p| !p.as_os_str().is_empty())
