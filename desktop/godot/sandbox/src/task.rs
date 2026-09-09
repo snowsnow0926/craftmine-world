@@ -41,6 +41,7 @@ pub enum TaskKind {
     Version,
     Import,
     ExportWeb,
+    ExportWindows,
 }
 
 impl TaskKind {
@@ -60,6 +61,11 @@ impl TaskKind {
                 "--export-release".into(),
                 "Web".into(),
                 export_dir.join("index.html").to_string_lossy().into_owned(),
+            ],
+            TaskKind::ExportWindows => vec![
+                "--headless".into(), "--path".into(),
+                project.to_string_lossy().into_owned(), "--export-release".into(),
+                "Windows Desktop".into(), export_dir.join("game.exe").to_string_lossy().into_owned(),
             ],
         }
     }
@@ -871,6 +877,10 @@ mod tests {
         assert_eq!(args[3], "--export-release");
         assert_eq!(args[4], "Web");
         assert!(args[5].ends_with("index.html"));
+        let windows = TaskKind::ExportWindows.args(project, export);
+        assert_eq!(windows[4], "Windows Desktop");
+        assert!(windows[5].ends_with("game.exe"));
+        assert_eq!(windows.len(), 6);
         assert!(TaskKind::Import.args(project, export).contains(&"--import".to_string()));
     }
 

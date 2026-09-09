@@ -1,0 +1,503 @@
+{
+  "format": "craftmine.windows-user-game-acceptance/1",
+  "root": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-user-game-7rVA29",
+  "passed": false,
+  "checks": [
+    "Actual Rust managed source transaction and pinned paginated read materialize full training range",
+    "LPAC + Job fixed Windows export returns original pinned engine EXE and nonempty PCK with verified cleanup"
+  ],
+  "limitations": [
+    "Authored base, not a real model run.",
+    "Headless native gameplay and persistence, not visible CP4 play acceptance.",
+    "Standalone executable is unsigned; module rights and distributable packaging require delivery review."
+  ],
+  "toolchain": {
+    "engineRoot": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-user-game-7rVA29\\toolchain",
+    "template": {
+      "file": "windows_release_x86_64.exe",
+      "bytes": 109268480,
+      "sha256": "d34d36f3be1a6c49c56525ae86469b92e4f417ddf0b43cf00dd80c385c4b0562"
+    },
+    "archiveSha256": "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011"
+  },
+  "brokerSha256": "de0b9677ceddacd4fddb7d3f78fa981734b19bba092d93fffbaba39ad74f2e1c",
+  "coreSha256": "41d740d0b14cce18f4980b73c2e1485cba7a30fe18089acde76d0b0a9a5dfc81",
+  "source": {
+    "applied": false,
+    "baseBuild": "base-windows",
+    "bytes": 153533,
+    "fileCount": 58,
+    "manifestHash": "baef48ecd5acea65743964e84f84627472b4813290a91cef51526572ff505c74",
+    "revision": 1,
+    "status": "source-only",
+    "taskId": "work-8fa21635b109be58a6790ec9bd9efec90654d1cb0de8eb9fa85d72e560f2078b",
+    "toolCallId": "full-author-source",
+    "verified": false,
+    "worldId": "standalone-world"
+  },
+  "response": {
+    "schemaVersion": 1,
+    "requestId": "exportwindows-1788990562498",
+    "taskId": "exportwindows-1788990562498",
+    "operation": "exportWindows",
+    "sourceBinding": {
+      "worldId": "standalone-world",
+      "buildId": "authored-windows-check",
+      "sourceRevision": 1,
+      "sourceDigest": "baef48ecd5acea65743964e84f84627472b4813290a91cef51526572ff505c74"
+    },
+    "inputHash": "baef48ecd5acea65743964e84f84627472b4813290a91cef51526572ff505c74",
+    "sourceSnapshotDigest": "7a4900fe325187a0eed2ee2da3f5e6ea6f3d880a4c53c2693f1ea1d9c05b4f19",
+    "sourceFiles": [
+      {
+        "path": "assets/ASSET_MANIFEST.json",
+        "bytes": 4902,
+        "sha256": "fc1468d9a8633bccb0457ba84a0794339df7634a624e012bea6966939dff66ed"
+      },
+      {
+        "path": "assets/materials/ammo_crate.tres",
+        "bytes": 123,
+        "sha256": "c24e2cdba717abce260c1e2c3cf7d05b48e14861f148ab4a539f71a61a8cbe06"
+      },
+      {
+        "path": "assets/materials/crate_wood.tres",
+        "bytes": 124,
+        "sha256": "9905461f79f608125581a290791d95c63c257ef49c5677ff95237304e84b8ce7"
+      },
+      {
+        "path": "assets/materials/pickup_kit.tres",
+        "bytes": 220,
+        "sha256": "83c19b9c7bef57f857daaed4561c8c81e60394bee0054e352b7bcabe8f19851b"
+      },
+      {
+        "path": "assets/materials/pistol_body.tres",
+        "bytes": 142,
+        "sha256": "d7b39baf4f1038cc04a95e97087ab0038209a919f14772c196059ccca8b70309"
+      },
+      {
+        "path": "assets/materials/range_floor.tres",
+        "bytes": 124,
+        "sha256": "f2da6abd284c572bc3af716e996f47d3d9ebf7ab627ca2793de4a08d8d9b318e"
+      },
+      {
+        "path": "assets/materials/range_wall.tres",
+        "bytes": 125,
+        "sha256": "8f96618b4c5c60b77b2b4636d74de45994b6e3cdd28d835bdab256bf8b735f0f"
+      },
+      {
+        "path": "assets/materials/sword_blade.tres",
+        "bytes": 142,
+        "sha256": "acb6df02acf66e2530fab60dfa3294c09fbad38a6571a3384bd20c6ec0d04403"
+      },
+      {
+        "path": "assets/materials/target_plate.tres",
+        "bytes": 124,
+        "sha256": "c5edae0af7bccaceb6d8de24d334386be4f24f2ea391c8e1c9bf0eb933cfa403"
+      },
+      {
+        "path": "base_manifest.json",
+        "bytes": 12585,
+        "sha256": "8797aded9be45f6d5e4fb76189637815de3abf25f45a0cbc807b6d11d9eb2b11"
+      },
+      {
+        "path": "data/balance/blank_start.tres",
+        "bytes": 356,
+        "sha256": "0beff95e72cdf4c9bd4468d1acaaf5c13a5f10684399233daf8d8aaa109368b5"
+      },
+      {
+        "path": "data/balance/training_range.tres",
+        "bytes": 356,
+        "sha256": "0beff95e72cdf4c9bd4468d1acaaf5c13a5f10684399233daf8d8aaa109368b5"
+      },
+      {
+        "path": "data/equipment/equipment_catalog.tres",
+        "bytes": 621,
+        "sha256": "49b4dd6f09eee09deef27efbec81d64c98757deed23c699aac2dbaecde3f074c"
+      },
+      {
+        "path": "data/equipment/inspection_tool.tres",
+        "bytes": 773,
+        "sha256": "2513efe37e1930b973273fe04ccfd2289812f60c3ad74642919626f175defe1c"
+      },
+      {
+        "path": "data/equipment/pistol.tres",
+        "bytes": 1145,
+        "sha256": "7fd9521ab3ba0c4f72b05c0d0b7a1035d6041583cd2426e03a7c32ce656d9262"
+      },
+      {
+        "path": "data/equipment/practice_sword.tres",
+        "bytes": 1149,
+        "sha256": "d3442c71f169f432c557cc211ace1f975aaf5c99c117e0475a296f6b962957f4"
+      },
+      {
+        "path": "data/quests/range_basic.tres",
+        "bytes": 466,
+        "sha256": "573ef83a37c6c7ba3402c25a23c34d2dd3e57c73c21c3ebd282cc51a07d8dc31"
+      },
+      {
+        "path": "data/ui/crosshair_melee.tres",
+        "bytes": 411,
+        "sha256": "663c80abb5ed74c00f6511fe25dd8cd069dae27225cd3f33d191b45717527b7f"
+      },
+      {
+        "path": "data/ui/crosshair_precision.tres",
+        "bytes": 406,
+        "sha256": "aed9d6331d1e05d36b27d3a660ef3991c0913f2b0ac973e72be4b92059b06353"
+      },
+      {
+        "path": "export_presets.cfg",
+        "bytes": 643,
+        "sha256": "bbb3cb73a759318fc891216f57b40923d5888062a7dd6fa729507eb6f5c58357"
+      },
+      {
+        "path": "icon.svg",
+        "bytes": 525,
+        "sha256": "dea7e5179c20bcfaff795536867fe53a7bc0ce3426f7d3643ef2f2085bd86dec"
+      },
+      {
+        "path": "project.godot",
+        "bytes": 2485,
+        "sha256": "68cb0fe7d852ebb73d8466be87ec6f8d02a23e209923683a5f1a238559e4e0f4"
+      },
+      {
+        "path": "scenes/actors/player.tscn",
+        "bytes": 1914,
+        "sha256": "eefdc2c1636b0ac4979f138e30ed3a0338244a23195e17a4a1de37bf731606fb"
+      },
+      {
+        "path": "scenes/actors/target_dummy.tscn",
+        "bytes": 884,
+        "sha256": "e9bec5b13ce2f79e73910f43a13f0e2c490613f4015c5cc88da94df608e1aa7e"
+      },
+      {
+        "path": "scenes/blank_start.tscn",
+        "bytes": 3328,
+        "sha256": "35c9dfe889c56dfa5b57e8d241957c4567d459085f03dfaaf38da263a2c05dfa"
+      },
+      {
+        "path": "scenes/props/ammo_crate.tscn",
+        "bytes": 870,
+        "sha256": "53136311263bf382e71c271a037cb41e41fd43e282ba1e132f7098a7d703a6af"
+      },
+      {
+        "path": "scenes/props/pickup_item.tscn",
+        "bytes": 935,
+        "sha256": "6a9251f75827a9d5e2357c3aec236a9a3cada0a97c9f9174b487f289504eca5e"
+      },
+      {
+        "path": "scenes/props/range_crate.tscn",
+        "bytes": 694,
+        "sha256": "6a665c867014969a7e105d3b06551cb144a7b26f24ca9d939b204da83cceb051"
+      },
+      {
+        "path": "scenes/training_range.tscn",
+        "bytes": 7518,
+        "sha256": "a03f70a245562cfed7a5c2d91eb62ef9fa6dd3ccfcff36b49a95d97d0a597b71"
+      },
+      {
+        "path": "scenes/ui/hud.tscn",
+        "bytes": 2966,
+        "sha256": "dadad07a9f5d9538be0ba02e018bde72348250fe308f6c37d3bddccefe2a9fc1"
+      },
+      {
+        "path": "scripts/adapters/base_ops.gd",
+        "bytes": 6394,
+        "sha256": "c1d1963b079636dccc9ffa0b2d1eb99f1fb082672919497db9402dcc969f2076"
+      },
+      {
+        "path": "scripts/adapters/preview_bridge.gd",
+        "bytes": 2413,
+        "sha256": "41e4589a14433d881f1e0439bf38ac1915906149e3fcbdec5d7bc0ad1a0b36ba"
+      },
+      {
+        "path": "scripts/adapters/probe_runner.gd",
+        "bytes": 3150,
+        "sha256": "ea263f8f7eac652d5b22af1a7f6f5b206e094b4fe837202b5628f946fb01486c"
+      },
+      {
+        "path": "scripts/core/aim_query.gd",
+        "bytes": 3661,
+        "sha256": "fc98091abbb02d43db75742df06453b752448b860a5b77370f99610a614f6815"
+      },
+      {
+        "path": "scripts/core/ammo_crate.gd",
+        "bytes": 1745,
+        "sha256": "ac7d374b7835f9364a4cba57b1403238bac4fe44d57217afb35f5932636e53a5"
+      },
+      {
+        "path": "scripts/core/attack_dispatcher.gd",
+        "bytes": 2927,
+        "sha256": "6af6085ed8a5ee072e9f2b4c225775a6fe7a2bc222167dd3b95e2160ef8b5109"
+      },
+      {
+        "path": "scripts/core/balance_profile.gd",
+        "bytes": 1012,
+        "sha256": "b9b01a5d1c5880959503e74d5cddf2b047dad3ed32c9d0aa9dcffaf12f63a527"
+      },
+      {
+        "path": "scripts/core/base_world.gd",
+        "bytes": 8720,
+        "sha256": "0d025bc0d4b6a3aa087fc6c38151002039c1aa1ce725d0984b0e954fd57f779c"
+      },
+      {
+        "path": "scripts/core/camera_rig.gd",
+        "bytes": 1578,
+        "sha256": "76a8c99e34b5fae49eb7bb382708469a9ca05a564a61c582f73fd8f26cc3f36c"
+      },
+      {
+        "path": "scripts/core/equipment_catalog.gd",
+        "bytes": 1841,
+        "sha256": "9269b73c71cfe315a0ca7ebb2b0b85f6324c4bdecd3bfbbf44b26ce8f4d50780"
+      },
+      {
+        "path": "scripts/core/equipment_definition.gd",
+        "bytes": 3420,
+        "sha256": "28a311cadc1626649a6751fe84ee86f641c92f91b761d9b800ab5e3918e313be"
+      },
+      {
+        "path": "scripts/core/equipment_state.gd",
+        "bytes": 10700,
+        "sha256": "10c4cd49fb01d3e8dbd82ea9da93de708629cbf90e101a2dbba1d14c7072f07c"
+      },
+      {
+        "path": "scripts/core/equipment_visuals.gd",
+        "bytes": 1944,
+        "sha256": "15af90e8a20169f189996f1300f580b74afbc58a49c419b4c714657cc7f85abc"
+      },
+      {
+        "path": "scripts/core/interactable.gd",
+        "bytes": 1085,
+        "sha256": "5493aed7a2eefcf53f3d0af3658d67de999a42af37a3e18eab2b1f74c1f26d31"
+      },
+      {
+        "path": "scripts/core/inventory.gd",
+        "bytes": 2339,
+        "sha256": "60fa6fb82dffdbb6347ba6221dddfbb3e366c2d57a935a50149fb3a50f017baf"
+      },
+      {
+        "path": "scripts/core/melee_attack.gd",
+        "bytes": 3754,
+        "sha256": "c44c3373376c57ffb1538d576e943e2e535723f8a8f41950230ec34603c55203"
+      },
+      {
+        "path": "scripts/core/pickup_item.gd",
+        "bytes": 1419,
+        "sha256": "80c28cd8b30245c91f14a50d9f8e8466826e29657bef44a79bea7490610ae72d"
+      },
+      {
+        "path": "scripts/core/player_controller.gd",
+        "bytes": 5869,
+        "sha256": "bd780724d1ce8ab5bb3e07ab839711cbf33c05edccef3c741abcd81d840cc34c"
+      },
+      {
+        "path": "scripts/core/quest_definition.gd",
+        "bytes": 1292,
+        "sha256": "0607b3905a7700c9ef43c01560c9ea42af5529bd60694940135b06287de9b1af"
+      },
+      {
+        "path": "scripts/core/quest_tracker.gd",
+        "bytes": 6041,
+        "sha256": "456f381becd6b302087b1b2e6720a44dc06e35d539cad3a6226f5966dfc83a43"
+      },
+      {
+        "path": "scripts/core/ranged_attack.gd",
+        "bytes": 3330,
+        "sha256": "3f2ab846a28c748ca4c777ba556e760958116e3df05b86567d43e521cb5f9dd3"
+      },
+      {
+        "path": "scripts/core/save_store.gd",
+        "bytes": 4027,
+        "sha256": "d85e1ada777a307bb45e7a089c10ad21c1d016c9eb9a2d467b54323461104ef8"
+      },
+      {
+        "path": "scripts/core/target_dummy.gd",
+        "bytes": 4155,
+        "sha256": "30e03144b0b6953e56e1bdd878880072142e14786985aec36b588b94c28dd4b8"
+      },
+      {
+        "path": "scripts/core/world_state.gd",
+        "bytes": 6982,
+        "sha256": "ca097b794611a86cbd98ce3a35073943dc98d7d9252ad84a63899d20f2bbc9bc"
+      },
+      {
+        "path": "scripts/ui/crosshair.gd",
+        "bytes": 6057,
+        "sha256": "ac731aa902583a4ee465180ca342e114fc702633df352b6b7314747bbff8d169"
+      },
+      {
+        "path": "scripts/ui/crosshair_style.gd",
+        "bytes": 1312,
+        "sha256": "d6c7622573196940413b5378ee4246bb3a15a9068a40104744cc7b512d064f20"
+      },
+      {
+        "path": "scripts/ui/hud.gd",
+        "bytes": 7656,
+        "sha256": "c5a59d95ad98962e7bd82c58e7b6d7ab6db66dcc7b032adadb3f491ea5436956"
+      },
+      {
+        "path": "standalone_acceptance.gd",
+        "bytes": 1654,
+        "sha256": "d1841c7ab982476df34241574dafd75f0b98986200b39580b47580471823d13e"
+      }
+    ],
+    "state": "succeeded",
+    "exitCode": 0,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "processVerification": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "pid": 249424,
+      "creationTimeFiletime": "134334641693468970",
+      "imagePath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-user-game-7rVA29\\tasks\\exportwindows-1788990562498\\bin\\Godot_v4.7.2-stable_win64.exe",
+      "appContainerSid": "S-1-15-2-3338012336-171895898-1815825289-1425589278-193215138-1124078154-3100267723",
+      "capabilitySids": [
+        "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+      ],
+      "integrityRid": 4096,
+      "isAppContainer": true,
+      "lpacQueryValue": null,
+      "lpacQueryError": 87,
+      "lpacCreationAttribute": true,
+      "jobMembershipVerified": true,
+      "jobLimitFlags": 8456,
+      "activeProcessLimit": 1,
+      "processMemoryBytes": 4294967296,
+      "verifiedBeforeResume": true,
+      "resumePreviousCount": 1
+    },
+    "networkPreflight": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "hostPositiveControls": [
+        "tcp4Echo",
+        "tcp6Echo",
+        "udp4Echo",
+        "udp6Echo"
+      ],
+      "hostReceivedCounts": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "exactTaskExempt": false,
+      "processVerification": {
+        "verified": true,
+        "policyVersion": "craftmine.windows.lpac-registry.v1",
+        "pid": 277660,
+        "creationTimeFiletime": "134334641692488372",
+        "imagePath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-user-game-7rVA29\\tasks\\exportwindows-1788990562498\\bin\\broker-preflight.exe",
+        "appContainerSid": "S-1-15-2-3338012336-171895898-1815825289-1425589278-193215138-1124078154-3100267723",
+        "capabilitySids": [
+          "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+        ],
+        "integrityRid": 4096,
+        "isAppContainer": true,
+        "lpacQueryValue": null,
+        "lpacQueryError": 87,
+        "lpacCreationAttribute": true,
+        "jobMembershipVerified": true,
+        "jobLimitFlags": 8456,
+        "activeProcessLimit": 1,
+        "processMemoryBytes": 4294967296,
+        "verifiedBeforeResume": true,
+        "resumePreviousCount": 1
+      },
+      "observation": {
+        "winsockStartup": 0,
+        "checks": [
+          {
+            "name": "tcp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          }
+        ]
+      }
+    },
+    "resourceEnforcement": {
+      "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+      "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+      "hardFilesystemQuota": false,
+      "workBytesLimit": 1073741824,
+      "logBytesLimit": 4194304,
+      "sampleIntervalMs": 50,
+      "samples": 51,
+      "maxObservedWorkBytes": 222238532,
+      "maxObservedLogBytes": 19602,
+      "enforced": false,
+      "reason": null
+    },
+    "artifacts": [
+      {
+        "path": "game.exe",
+        "bytes": 109268480,
+        "sha256": "d34d36f3be1a6c49c56525ae86469b92e4f417ddf0b43cf00dd80c385c4b0562"
+      },
+      {
+        "path": "game.pck",
+        "bytes": 182308,
+        "sha256": "4afe65f4c71efcf4cd709323382320691af4a588ad430d78aa05855bacbe4dfe"
+      }
+    ],
+    "artifactsRoot": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-user-game-7rVA29\\tasks\\exportwindows-1788990562498\\artifacts",
+    "logsRoot": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-user-game-7rVA29\\tasks\\exportwindows-1788990562498\\logs",
+    "logs": [
+      {
+        "path": "preflight.json",
+        "bytes": 508,
+        "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+      },
+      {
+        "path": "task.log",
+        "bytes": 19602,
+        "sha256": "6820598dc7698417935591e496932e964b055538230356e8dbdd7d81f1cc975e"
+      }
+    ],
+    "cleanup": {
+      "verified": true,
+      "profileHresult": 0,
+      "workRemoved": true,
+      "error": null
+    },
+    "recoveryJournal": {
+      "path": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-user-game-7rVA29\\tasks\\.recovery-journal\\exportwindows-1788990562498.json",
+      "policyVersion": "craftmine.windows.recovery-journal.v1",
+      "cleared": true,
+      "error": null
+    },
+    "error": null,
+    "brokerSha256": "de0b9677ceddacd4fddb7d3f78fa981734b19bba092d93fffbaba39ad74f2e1c"
+  },
+  "error": "Error: Command failed: C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-user-game-7rVA29\\standalone\\game.exe --headless -- --craftmine-write\nUSER_GAME_FAILURE: Full native state changed after restore\r\n\n    at genericNodeError (node:internal/errors:985:15)\n    at wrappedFn (node:internal/errors:539:14)\n    at ChildProcess.exithandler (node:child_process:417:12)\n    at ChildProcess.emit (node:events:508:28)\n    at maybeClose (node:internal/child_process:1100:16)\n    at ChildProcess._handle.onexit (node:internal/child_process:305:5)"
+}
