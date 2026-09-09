@@ -1,0 +1,11 @@
+✔ concurrent service calls run one worker and cancellation rejects its late result (1.244ms)
+✔ file identity separates caches and exceptions finish the attempt before retry (0.3111ms)
+✔ host resolves and verifies bytes; duplicate job shares execution and cancel is explicit (5.2708ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9.0818

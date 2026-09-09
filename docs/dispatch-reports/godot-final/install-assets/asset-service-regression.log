@@ -1,0 +1,16 @@
+✔ read-only channels are forwarded unchanged to the core (1.3583ms)
+✔ preview decodes the exact body and records evidence against the claim (0.5282ms)
+✔ a cached ok preview does not re-run the decoder and has no claim (0.1198ms)
+✔ a failed preview is retried as a new attempt with a new claim (0.1648ms)
+✔ a worker failure is recorded as failed, never as ok (0.1568ms)
+✔ cancel terminates the live worker and a late result is discarded (0.7981ms)
+✔ cancel never rewrites a cached ok preview (0.0824ms)
+✔ the asset service contains no window, input or playback calls (0.0961ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6.6702

@@ -115,8 +115,8 @@ test('preview decodes the exact body and records evidence against the claim', as
   assert.equal(result.stale, false);
   const methods = calls.map(entry => entry.method);
   assert.deepEqual(methods, [
-    'asset.previewBegin',
     'asset.read',
+    'asset.previewBegin',
     'asset.bodyPath',
     'readFile',
     'runPreview',
@@ -169,6 +169,7 @@ test('a worker failure is recorded as failed, never as ok', async () => {
 
 test('cancel terminates the live worker and a late result is discarded', async () => {
   let sawAbort = false;
+  let markStarted; const started = new Promise(resolve=>markStarted=resolve);
   const runner = (request, options) =>
     new Promise(resolve => {
       const aborted = () => {
@@ -182,9 +183,11 @@ test('cancel terminates the live worker and a late result is discarded', async (
         return;
       }
       options.signal.addEventListener('abort', aborted, { once: true });
+      markStarted();
     });
   const { service, calls } = harness({ runner });
   const pending = service.preview({ assetId: 'door-texture', version: 1 });
+  await started;
   const cancelled = await service.cancel({ assetId: 'door-texture', version: 1, detail: 'world switched' });
   assert.equal(cancelled.cancelled, true);
   assert.equal(cancelled.applied, true);
