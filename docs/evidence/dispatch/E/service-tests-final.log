@@ -1,0 +1,19 @@
+✔ export uses a native choice and restores only a content-bound opaque grant (6.6072ms)
+✔ renderer paths and raw archives cannot become filesystem authority (0.3925ms)
+✔ file replacement after preview and stale world hash prevent restore (2.4743ms)
+✔ lost restore receipt can be explicitly retried using the same operation id (2.0838ms)
+✔ cancelled picker cannot start export and expired grants cannot restore (0.8527ms)
+✔ corrupt and oversized selected files fail without leaking their paths (2.1355ms)
+✔ diagnostics is an allowlist with measured counters and no secrets/source/private paths (2.9313ms)
+✔ failed export file write is not confused with a completed domain snapshot (0.6338ms)
+✔ diagnostic export errors omit selected private paths (0.5328ms)
+✔ offline upgrade guard copies synthetic data and verifies corruption without touching originals (1431.9746ms)
+✔ offline upgrade guard refuses a profile with an open database file (430.1208ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1986.2345
