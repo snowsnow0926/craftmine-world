@@ -184,7 +184,11 @@ import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
 import { GodotWorldViewHost } from "./godot-world-view-host";
 import { createGodotRuntimeAdapter } from "./godot-runtime-adapter";
 import { createGodotCandidateCoordinator } from "./godot-candidate-coordinator";
+import {
+  createGodotWorldFactory, loadMaterializer, resolveGodotRoot, type GodotCreationDependencies,
+} from "./godot-world-creation";
 import { createGodotPanelCoordinator } from "./godot-panel-coordinator";
+import { pathToFileURL } from "node:url";
 import { parseAllowedExternalUrl } from "./safe-open-external";
 import type { PluginAppearance } from "../shared/plugin-panel-chrome";
 import { Logger, ignoreBrokenStdio } from "./logger";
@@ -908,8 +912,24 @@ const godotCandidates = createGodotCandidateCoordinator({
   host: godotWorld, adapter: godotAdapter, selection: godotSelection,
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
 });
+// Godot world creation. The shipped base catalog and materializer live next to
+// the engine toolchain; a development checkout is found by walking up.
+const godotRoot = resolveGodotRoot({
+  resourcesPath: app.isPackaged ? process.resourcesPath : undefined,
+  startDir: __dirname,
+  override: process.env.CRAFTMINE_GODOT_BASES,
+});
+let materializeBase: GodotCreationDependencies["materialize"] | null = null;
+void loadMaterializer(pathToFileURL(join(godotRoot, "shared", "materialize.mjs")).href)
+  .then(fn => { materializeBase = fn; })
+  .catch(error => { logger.app("plugin", "warn", `godot materializer unavailable: ${String(error)}`); });
+// Constructed once the managed data directory exists; the coordinator reads it
+// through a getter so panel channels registered earlier still see it.
+let godotCreation: ReturnType<typeof createGodotWorldFactory> | null = null;
+const godotCreationFactory = () => godotCreation;
 const godotPanel = createGodotPanelCoordinator({
   host: godotWorld, adapter: godotAdapter, selection: godotSelection,
+  creation: godotCreationFactory,
   invoke: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload),
 });
 pluginPanels.addSenderResolver((senderId) => pluginViews.pluginIdForSender(senderId));
@@ -982,6 +1002,17 @@ const logger = new Logger(
   dataDir,
   process.env.NODE_ENV === "production" ? "info" : "debug",
 );
+// Managed project sources for worlds created in this client.
+godotCreation = createGodotWorldFactory({
+  worldsRoot: join(dataDir, "godot-worlds"),
+  catalogFile: join(godotRoot, "bases", "base-catalog.json"),
+  basesRoot: join(godotRoot, "bases"),
+  domain: (method, params) => plugins.requestCraftmineHost(method, params),
+  materialize: input => {
+    if (!materializeBase) throw new Error("GODOT_MATERIALIZER_UNAVAILABLE");
+    return materializeBase(input);
+  },
+});
 const bootTiming = new BootTiming((message, data) => {
   logger.app("timing", "info", message, data ? { data } : undefined);
 }, processStartedAt);
