@@ -28,6 +28,7 @@ import { readCraftmineBuildIdentity } from "./craftmine-build-identity";
 import { CraftmineVerifier } from "./craftmine-verifier";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
 import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
+import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
 import { configureHeadlessAcceptance, installHeadlessControl } from "./craftmine-headless";
 import {
@@ -9095,6 +9096,7 @@ function registerIpc() {
 }
 
 installNativeAgentAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload), active: (sessionId) => activeTurns.has(sessionId) });
+installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), toolName: name => { const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name); if (!tool) throw Error("Missing world tool: " + name); return tool.fullName; }, begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId), finish: sessionId => finishTurn(sessionId, "completed", undefined, { createNotification: false }) });
 installHeadlessControl({
   window: () => mainWindow,
   world: () => pluginViews.headlessWorldContents(),

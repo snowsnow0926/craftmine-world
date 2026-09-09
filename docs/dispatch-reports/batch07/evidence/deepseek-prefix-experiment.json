@@ -1,0 +1,78 @@
+{
+  "kind": "real-provider-prefix-experiment/1",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "thinking": "high",
+  "fixtureFacts": true,
+  "worldWrites": 0,
+  "maxRequests": 6,
+  "requests": [
+    {
+      "mode": "changing-system",
+      "step": 1,
+      "durationMs": 512,
+      "stopReason": "stop",
+      "promptTokens": 19006,
+      "cacheReadTokens": 0,
+      "outputTokens": 2,
+      "totalTokens": 19008,
+      "hitRate": 0
+    },
+    {
+      "mode": "changing-system",
+      "step": 2,
+      "durationMs": 993,
+      "stopReason": "stop",
+      "promptTokens": 19006,
+      "cacheReadTokens": 256,
+      "outputTokens": 2,
+      "totalTokens": 19008,
+      "hitRate": 0.013469430706092812
+    },
+    {
+      "mode": "changing-system",
+      "step": 3,
+      "durationMs": 470,
+      "stopReason": "stop",
+      "promptTokens": 19006,
+      "cacheReadTokens": 256,
+      "outputTokens": 2,
+      "totalTokens": 19008,
+      "hitRate": 0.013469430706092812
+    },
+    {
+      "mode": "stable-system",
+      "step": 1,
+      "durationMs": 506,
+      "stopReason": "stop",
+      "promptTokens": 19022,
+      "cacheReadTokens": 128,
+      "outputTokens": 2,
+      "totalTokens": 19024,
+      "hitRate": 0.006729050573020713
+    },
+    {
+      "mode": "stable-system",
+      "step": 2,
+      "durationMs": 496,
+      "stopReason": "stop",
+      "promptTokens": 19022,
+      "cacheReadTokens": 18688,
+      "outputTokens": 2,
+      "totalTokens": 19024,
+      "hitRate": 0.9824413836610241
+    },
+    {
+      "mode": "stable-system",
+      "step": 3,
+      "durationMs": 406,
+      "stopReason": "stop",
+      "promptTokens": 19022,
+      "cacheReadTokens": 18688,
+      "outputTokens": 2,
+      "totalTokens": 19024,
+      "hitRate": 0.9824413836610241
+    }
+  ],
+  "unknownRequests": 0,
+  "passed": true
+}
