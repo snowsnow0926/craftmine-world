@@ -1815,6 +1815,12 @@ export const tr = {
     justNow: "Az önce",
   },
   errors: {
+    TOKEN_BUDGET_EXHAUSTED: "Yerel görev token bütçesi tükendi. Dünya çalışma alanında bütçeyi ayarlayıp kaydedilmiş görevi sürdürün.",
+    REQUEST_BUDGET_EXHAUSTED: "Görev istek sınırına ulaşıldı. Dünya çalışma alanında görevi inceleyin.",
+    COMPACTION_BUDGET_EXHAUSTED: "Görev sıkıştırma sınırına ulaşıldı. Dünya çalışma alanında görevi inceleyin.",
+    TASK_DEADLINE_EXCEEDED: "Görev süre sınırına ulaşıldı. Dünya çalışma alanında görevi inceleyin.",
+    CRAFTMINE_REQUEST_TOO_LARGE: "İstek model bağlamını veya ayrılmış çıktı kapasitesini aşıyor. Devam etmeden bağlamı kurtarın.",
+    CRAFTMINE_TASK_STATE_CHANGED: "Kaydedilmiş görevin durumu değişti. Dünya çalışma alanını yenileyin.",
     HOST_UNAVAILABLE: "Yerel servis kullanılamıyor",
     MODEL_NOT_CONFIGURED: "Bu model kurulu değil veya AI servisi onu sunmuyor.",
     TOOL_DENIED: "Bu eylem için izin reddedildi",

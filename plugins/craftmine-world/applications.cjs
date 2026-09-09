@@ -7,14 +7,16 @@ function createApplications(core,service) {
   async function state(operationId,worldId) {
     const receipt=await core.call('application.read',{id:applicationId(operationId)});
     if(receipt.input.worldId!==worldId)throw Error('APPLICATION_WORLD_MISMATCH');
-    return {id:receipt.id,status:receipt.status,verificationId:receipt.input.verificationId,reviewId:receipt.input.reviewId,revision:receipt.input.revision,
+    return {id:receipt.id,status:receipt.status,verificationId:receipt.input.verificationId,reviewId:receipt.input.reviewId,revision:receipt.input.revision,acknowledgeReviewWarnings:receipt.input.acknowledgeReviewWarnings===true,
       record:await core.call('world.read',{id:worldId})};
   }
   async function apply(args) {
-    fields(args,['operationId','verificationId','reviewId','worldId','revision'],[]);
+    fields(args,['operationId','verificationId','reviewId','worldId','revision'],['acknowledgeReviewWarnings']);
+    if(args.acknowledgeReviewWarnings!==undefined&&typeof args.acknowledgeReviewWarnings!=='boolean')throw Error('INVALID_REVIEW_ACKNOWLEDGEMENT');
+    const acknowledged=args.acknowledgeReviewWarnings===true;
     if(typeof args.operationId!=='string'||!/^[a-f0-9-]{36}$/.test(args.operationId))throw Error('INVALID_APPLICATION_ID');
     const id=applicationId(args.operationId);
-    const request=JSON.stringify([args.worldId,args.revision,args.verificationId,args.reviewId]);
+    const request=JSON.stringify([args.worldId,args.revision,args.verificationId,args.reviewId,acknowledged]);
     if(running.has(id)){
       const active=running.get(id);if(active.request!==request)throw Error('REPLAY_MISMATCH');
       return active.operation;
@@ -23,7 +25,7 @@ function createApplications(core,service) {
       // Recover an uncertain receipt before trying to prepare from a newer world.
       try{
         const previous=await state(args.operationId,args.worldId);
-        if(previous.verificationId!==args.verificationId||previous.reviewId!==args.reviewId||previous.revision!==args.revision)throw Error('REPLAY_MISMATCH');
+        if(previous.verificationId!==args.verificationId||previous.reviewId!==args.reviewId||previous.revision!==args.revision||previous.acknowledgeReviewWarnings!==acknowledged)throw Error('REPLAY_MISMATCH');
         if(previous.status==='applied')return previous;
         throw Error('APPLICATION_INACTIVE: 请重新打开候选后重试');
       }catch(error){if(!String(error.message).includes('APPLICATION_NOT_FOUND'))throw error;}
@@ -32,7 +34,7 @@ function createApplications(core,service) {
       if(before.revision!==args.revision)throw Error('WORLD_REVISION_CONFLICT');
       const world=prepareApplication(job,before),token=randomUUID();
       const prepared=await core.call('application.prepare',{id,token,verificationId:args.verificationId,reviewId:args.reviewId,
-        worldId:args.worldId,revision:args.revision,snapshot:world.snapshot});
+        worldId:args.worldId,revision:args.revision,snapshot:world.snapshot,acknowledgeReviewWarnings:acknowledged});
       try{
         const checked=await service.verify({id,mode:'application',world});
         const evidence={format:'craftmine.desktop-application/1',inputHash:prepared.inputHash,...checked};

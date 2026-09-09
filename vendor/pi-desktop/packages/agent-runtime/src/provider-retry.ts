@@ -329,6 +329,7 @@ export function captureProviderResponse(
 
 function normalizeRateLimitMessage(message: AssistantMessage): AssistantMessage {
   const errorMessage = message.errorMessage ?? "";
+  if (!classifyAgentError(errorMessage).retriable) return message;
   if (/^\s*429\b/.test(errorMessage)) return message;
   return {
     ...message,
@@ -420,7 +421,7 @@ export function createProviderRetryStream(
             opaqueLimitRejection = error;
             break;
           }
-          const attempt = controller.claim(error, "request");
+          const attempt = error.retriable ? controller.claim(error, "request") : undefined;
           if (attempt !== undefined) {
             retry = { error, attempt };
             break;

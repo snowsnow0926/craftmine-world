@@ -10,7 +10,7 @@ export class BehaviorSession {
   constructor(build,saved,{context,apply,notice=()=>{},gameplay,onStep=()=>{},extensions=null,runnerFactory=null}){
     this.data=new BehaviorState(build,saved,gameplay,extensions);this.context=context;this.apply=apply;this.notice=notice;
     this.runners=new Map();this.queue=[];this.pending=null;this.disposed=false;this.failures=[];this.elapsed=0;
-    this.extensions=extensions;this.extensionStates=new Map();
+    this.extensions=extensions;this.extensionStates=new Map();this.gameplay=gameplay;
     // runnerFactory 只用于测试注入假 Worker；生产路径始终是隔离 Worker。
     this.runnerFactory=runnerFactory||((authored,options)=>new BehaviorRunner(authored,options));
     this.bindings=new Map(this.data.definitions.map(b=>[b.definition.id,new BehaviorBinding(b.definition,extensions)]));
@@ -40,15 +40,19 @@ export class BehaviorSession {
         if(this.disposed)return;
         // Recheck against current geometry and player position, which may have moved
         // during the asynchronous computation. Commit only after the whole batch passes.
-        const applied=this.data.apply(artifact,result,{...frame,...this.context()});
-        this.onStep({id,frame,result});
-        // 扩展命令本身不交给运行时：先派发，运行时只看到派发后的内核效果。
-        const visible=this.extensions?.size?{...applied,effects:applied.effects.filter(effect=>!this.extensions.has(effect.type))}:applied;
-        this.apply(visible,this.data.view);
-        // 扩展命令：玩法只提出调用，效果由扩展沙箱算出来，再由宿主按扩展声明的权限落地。
-        await this.resolveExtensions(artifact,applied.effects,frame);
+        const draft=this.data.fork(),applied=draft.apply(artifact,result,{...frame,...this.context()});
+        const batch={draft,changed:new Set(applied.changed),effects:applied.effects.filter(effect=>!this.extensions?.has(effect.type)),extensionStates:new Map()};
+        // Neither state nor visible effects escape while any extension may fail.
+        // Later commands observe the staged state of earlier commands.
+        await this.resolveExtensions(artifact,applied.effects,frame,batch);
         if(this.disposed)return;
-        if(event.type==='start')this.data.value.modules[id].initialized=true;
+        draft.value.time=this.data.value.time;
+        if(event.type==='start')draft.value.modules[id].initialized=true;
+        const visible=draft.finalize(draft.value,batch.changed,batch.effects,this.stagedFrame(frame,batch));
+        this.data.value=draft.value;this.data.view=draft.view;
+        for(const [extensionId,state]of batch.extensionStates)this.extensionStates.set(extensionId,state);
+        this.apply(visible,this.data.view);
+        this.onStep({id,frame,result});
       }catch(error){
         if(this.disposed)return;
         disposeRunner(this.runners.get(id));this.data.value.modules[id].error=String(error.message).slice(0,600);
@@ -58,20 +62,35 @@ export class BehaviorSession {
       }
     }
   }
-  async resolveExtensions(artifact,effects,frame){
+  stagedFrame(frame,batch){
+    const live=this.context(),view=batch.draft.view;
+    const value={...frame,...live,time:this.data.value.time,player:structuredClone(live.player),objects:view.objects.map(object=>({
+      id:object.id,position:structuredClone(object.position),visible:object.visible!==false,
+      solid:view.primitives.some(primitive=>primitive.id===object.id&&primitive.solid),
+      health:live.objects.find(item=>item.id===object.id)?.health??0,
+    }))};
+    if(Object.hasOwn(frame,'inventory'))value.inventory=structuredClone(batch.draft.value.inventory);
+    for(const effect of batch.effects){
+      if(effect.type==='health.add'&&value.player.health!==null){
+        const maximum=Object.values(this.gameplay?.systems||{}).find(system=>system.type==='health')?.maxHealth??10000;
+        value.player.health=Math.max(0,Math.min(maximum,value.player.health+effect.amount));
+      }
+      if(effect.type==='player.impulse')value.player.grounded=false;
+      const target=value.objects.find(object=>object.id===effect.id);
+      if(target&&effect.type==='target.damage')target.health=Math.max(0,target.health-effect.amount);
+      if(target&&effect.type==='target.revive')target.health=this.gameplay?.targets?.[effect.id]?.maxHealth??0;
+    }
+    for(const object of value.objects)if(this.gameplay?.targets?.[object.id]&&object.health===0)object.visible=false;
+    return value;
+  }
+  async resolveExtensions(artifact,effects,frame,batch){
     if(!this.extensions?.size||!effects?.length)return;
-    const grouped=new Map();
     for(const command of effects){
       const entry=this.extensions.get(command.type);
       if(!entry)continue;
-      const list=grouped.get(entry)||[];
-      list.push(command);grouped.set(entry,list);
-    }
-    for(const [entry,commands] of grouped){
-      for(const command of commands){
-        const record=this.data.value.modules[artifact.definition.id],previous=record.extensions[entry.extensionId];
+        const record=batch.draft.value.modules[artifact.definition.id],previous=record.extensions[entry.extensionId];
         if(previous&&previous.version!==entry.version)throw Error('扩展状态版本不匹配，原进度已保留');
-        const binding=this.bindings.get(artifact.definition.id),currentFrame={...frame,...this.context()};
+        const binding=this.bindings.get(artifact.definition.id),currentFrame=this.stagedFrame(frame,batch);
         const call=binding.extensionCall(command,currentFrame);
         const result=await entry.runner.apply({...call,state:previous?.state??null});
         if(this.disposed)return;
@@ -79,11 +98,12 @@ export class BehaviorSession {
         // Validate and commit effects before persisting the returned state.
         if(result.effects.length){
           const scoped={...entry,targets:entry.targets.map(id=>binding.localToWorld.get(id)||id)};
-          const applied=this.data.applyExtensionEffects(artifact.definition.id,scoped,binding.extensionEffects(result.effects),{...frame,...this.context()});this.apply(applied,this.data.view);
+          const applied=batch.draft.applyExtensionEffects(artifact.definition.id,scoped,binding.extensionEffects(result.effects),this.stagedFrame(frame,batch));
+          for(const id of applied.changed)batch.changed.add(id);
+          batch.effects.push(...applied.effects);
         }
-        this.data.value.modules[artifact.definition.id].extensions[entry.extensionId]={version:entry.version,state:extensionState};
-        this.extensionStates.set(entry.extensionId,structuredClone(extensionState));
-      }
+        batch.draft.value.modules[artifact.definition.id].extensions[entry.extensionId]={version:entry.version,state:extensionState};
+        batch.extensionStates.set(entry.extensionId,structuredClone(extensionState));
     }
   }
   dispatch(type,targetId=null,dt=0,code=null){

@@ -901,7 +901,7 @@ export class PluginRuntime {
 
   /** Private orchestrator-to-domain bridge; no renderer/third-party API maps here. */
   async requestCraftmineHost(method: string, params: Record<string, unknown>): Promise<unknown> {
-    const allowed = new Set(["selection.read", "maintenance.context", "turn.begin", "task.context", "budget.reserve", "budget.settle", "budget.boundary", "review.context", "review.reserve", "review.settle", "workbench.request", "task.resume", "task.interrupt", "task.discard", "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel"]);
+    const allowed = new Set(["selection.read", "maintenance.context", "turn.begin", "task.context", "budget.configure", "budget.reserve", "budget.settle", "budget.boundary", "review.context", "review.reserve", "review.settle", "workbench.request", "task.resume", "task.interrupt", "task.discard", "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel"]);
     if (!allowed.has(method)) throw apiError("UNSUPPORTED", "Unsupported Craftmine host request");
     const loaded = this.loaded.get("craftmine.world");
     if (!loaded?.child) throw apiError("UNSUPPORTED", "Craftmine world service unavailable");
@@ -1316,7 +1316,7 @@ export class PluginRuntime {
       case "browser.cdp":
         return this.invokeBrowser(loaded, "cdp", payload);
       default:
-        if (pluginId === "craftmine.world" && /^(?:workbench|task|library|memory|selection|backup|diagnostics)\./.test(channel)) {
+        if (pluginId === "craftmine.world" && /^(?:workbench|task|draft|library|memory|selection|backup|diagnostics)\./.test(channel)) {
           if (!this.services.craftminePanelRequest) throw apiError("UNSUPPORTED", "Craftmine desktop service unavailable");
           return this.services.craftminePanelRequest(channel, payload ?? {});
         }

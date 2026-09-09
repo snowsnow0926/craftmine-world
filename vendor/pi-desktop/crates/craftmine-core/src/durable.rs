@@ -11,7 +11,9 @@ use serde_json::{json, Value};
 mod tests;
 
 pub(super) fn migrate(db: &Connection) -> Result<()> {
-    db.execute_batch(
+    let tx = rusqlite::Transaction::new_unchecked(db, TransactionBehavior::Immediate)?;
+    let configured: bool = tx.query_row("SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name='craftmine_budget_configurations')", [], |r| r.get(0))?;
+    tx.execute_batch(
         "CREATE TABLE IF NOT EXISTS craftmine_task_runtime (
       task_id TEXT PRIMARY KEY REFERENCES craftmine_tasks(id), generation INTEGER NOT NULL,
       budget_owner TEXT NOT NULL, recovery TEXT NOT NULL DEFAULT 'none');
@@ -31,7 +33,29 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
       task_id TEXT NOT NULL,request_id TEXT NOT NULL,kind TEXT NOT NULL,text TEXT NOT NULL,
       created_at INTEGER NOT NULL,PRIMARY KEY(task_id,request_id));",
     )?;
+    if !configured {
+        tx.execute("INSERT OR IGNORE INTO craftmine_task_runtime(task_id,generation,budget_owner) SELECT id,1,id FROM craftmine_tasks", [])?;
+        tx.execute("INSERT OR IGNORE INTO craftmine_budget_limits(owner,limits) SELECT DISTINCT budget_owner,?1 FROM craftmine_task_runtime", [serde_json::to_string(&legacy_limits())?])?;
+    }
+    tx.execute_batch(
+        "CREATE TABLE IF NOT EXISTS craftmine_budget_configurations (
+      owner TEXT NOT NULL,operation_id TEXT NOT NULL,request TEXT NOT NULL,result TEXT NOT NULL,
+      created_at INTEGER NOT NULL,PRIMARY KEY(owner,operation_id));",
+    )?;
+    tx.commit()?;
     Ok(())
+}
+pub(super) fn legacy_limits() -> Value {
+    json!({"maxRequests":80,"maxTokens":1000000,"maxCompactions":8,"deadlineAt":null})
+}
+const MAX_TOKEN_LIMIT: u64 = 9_007_199_254_740_991;
+fn token_limit(value: &Value) -> Result<Option<u64>> {
+    if value.is_null() {
+        return Ok(None);
+    }
+    let n = value.as_u64().context("INVALID_BUDGET_LIMIT")?;
+    ensure!(n > 0 && n <= MAX_TOKEN_LIMIT, "INVALID_BUDGET_LIMIT");
+    Ok(Some(n))
 }
 
 pub(super) fn fields(value: &Value, allowed: &[&str]) -> Result<()> {
@@ -82,7 +106,8 @@ fn identity(db: &Connection, args: &Value, live: bool) -> Result<(TaskBinding, S
         let review = args["purpose"] == "review";
         let maintenance = args["purpose"] == "summary" || args["kind"] == "compaction";
         ensure!(
-            (task.status == "running" || (review || maintenance) && task.status == "finished") && recovery == "none",
+            (task.status == "running" || (review || maintenance) && task.status == "finished")
+                && recovery == "none",
             "TASK_INACTIVE"
         );
         let ctx = WorkspaceContext {
@@ -116,9 +141,7 @@ fn limits(db: &Connection, owner: &str) -> Result<Value> {
     Ok(stored
         .map(|s| serde_json::from_str(&s))
         .transpose()?
-        .unwrap_or(
-            json!({"maxRequests":80,"maxTokens":1000000,"maxCompactions":8,"deadlineAt":null}),
-        ))
+        .unwrap_or(json!({"maxRequests":80,"maxTokens":null,"maxCompactions":8,"deadlineAt":null})))
 }
 pub(super) fn budget(db: &Connection, owner: &str) -> Result<Value> {
     let mut requests = db.prepare(
@@ -157,10 +180,66 @@ pub(super) fn budget(db: &Connection, owner: &str) -> Result<Value> {
     };
     let limits = limits(db, owner)?;
     Ok(
-        json!({"ownerTaskId":owner,"requestCount":count,"toolCallCount":count_kind("tool")?,"compactionCount":count_kind("compaction")?,"actualTokens":actual,"reservedTokens":reserved,"unknownRequestCount":unknown,"chargedTokens":actual+reserved,"remainingTokens":limits["maxTokens"].as_u64().unwrap().saturating_sub(actual+reserved),"limits":limits}),
+        json!({"ownerTaskId":owner,"requestCount":count,"toolCallCount":count_kind("tool")?,"compactionCount":count_kind("compaction")?,"actualTokens":actual,"reservedTokens":reserved,"unknownRequestCount":unknown,"chargedTokens":actual+reserved,"remainingTokens":token_limit(&limits["maxTokens"])? .map(|max| max.saturating_sub(actual+reserved)),"limits":limits}),
     )
 }
 impl TaskJournal {
+    /// Player-only entry point, deliberately absent from the model budget dispatcher.
+    pub fn budget_configure(&mut self, args: &Value) -> Result<Value> {
+        fields(
+            args,
+            &[
+                "projectId",
+                "sessionId",
+                "worldId",
+                "taskId",
+                "generation",
+                "operationId",
+                "maxTokens",
+            ],
+        )?;
+        let operation = text(args, "operationId", 240)?;
+        let task_id = text(args, "taskId", 240)?;
+        let max_tokens = token_limit(args.get("maxTokens").context("MAX_TOKENS_REQUIRED")?)?;
+        let tx = self
+            .db
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        let task = read_task(&tx, task_id)?;
+        ensure!(
+            args["projectId"] == task.binding.project_id
+                && args["sessionId"] == task.binding.session_id,
+            "TASK_BINDING_MISMATCH"
+        );
+        let ctx = WorkspaceContext {
+            project_id: task.binding.project_id.clone(),
+            session_id: task.binding.session_id.clone(),
+            turn_id: task.binding.turn_id.clone(),
+        };
+        let snapshot = workspaces::inspect(&tx, &ctx)?;
+        ensure!(
+            args["worldId"] == snapshot.world_id,
+            "WORLD_BINDING_MISMATCH"
+        );
+        let (generation, owner, _) = runtime(&tx, task_id)?;
+        ensure!(
+            args["generation"].as_u64() == Some(generation),
+            "STALE_GENERATION"
+        );
+        let request = document(args)?;
+        let prior: Option<(String,String)> = tx.query_row("SELECT request,result FROM craftmine_budget_configurations WHERE owner=?1 AND operation_id=?2",params![owner,operation],|r|Ok((r.get(0)?,r.get(1)?))).optional()?;
+        if let Some((old, result)) = prior {
+            ensure!(old == request, "REPLAY_MISMATCH");
+            return Ok(serde_json::from_str(&result)?);
+        }
+        let previous = limits(&tx, &owner)?;
+        let mut updated = previous.clone();
+        updated["maxTokens"] = json!(max_tokens);
+        tx.execute("INSERT INTO craftmine_budget_limits(owner,limits) VALUES(?1,?2) ON CONFLICT(owner) DO UPDATE SET limits=excluded.limits",params![owner,serde_json::to_string(&updated)?])?;
+        let result = json!({"operationId":operation,"budget":budget(&tx,&owner)?,"previousMaxTokens":previous["maxTokens"]});
+        tx.execute("INSERT INTO craftmine_budget_configurations(owner,operation_id,request,result,created_at) VALUES(?1,?2,?3,?4,?5)",params![owner,operation,request,serde_json::to_string(&result)?,worlds::timestamp()?])?;
+        tx.commit()?;
+        Ok(result)
+    }
     pub fn budget_call(&mut self, method: &str, args: &Value) -> Result<Value> {
         let allowed = match method {
             "budget.inspect" => vec!["binding", "generation"],
@@ -217,16 +296,15 @@ impl TaskJournal {
                         &["maxRequests", "maxTokens", "maxCompactions", "deadlineAt"],
                     )?;
                     let mut normalized = limits(&tx, &owner)?;
-                    for (key, max) in [
-                        ("maxRequests", 10000),
-                        ("maxTokens", 100_000_000),
-                        ("maxCompactions", 100),
-                    ] {
+                    for (key, max) in [("maxRequests", 10000), ("maxCompactions", 100)] {
                         if input.get(key).is_some() {
                             let n = number(input, key, max)?;
                             ensure!(n > 0, "INVALID_BUDGET_LIMIT");
                             normalized[key] = json!(n);
                         }
+                    }
+                    if let Some(value) = input.get("maxTokens") {
+                        normalized["maxTokens"] = json!(token_limit(value)?);
                     }
                     if input.get("deadlineAt").is_some() {
                         normalized["deadlineAt"] = if input["deadlineAt"].is_null() {
@@ -243,10 +321,29 @@ impl TaskJournal {
                         )
                         .optional()?;
                     if let Some(old) = prior {
-                        ensure!(
-                            serde_json::from_str::<Value>(&old)? == normalized,
-                            "BUDGET_LIMITS_IMMUTABLE"
-                        );
+                        let old: Value = serde_json::from_str(&old)?;
+                        if old != normalized {
+                            // Player configuration may precede the first model request.
+                            // Initialize its clock once without replacing any policy.
+                            let count: i64 = tx.query_row(
+                                "SELECT COUNT(*) FROM craftmine_budget_requests WHERE owner=?1",
+                                [&owner],
+                                |r| r.get(0),
+                            )?;
+                            ensure!(
+                                count == 0
+                                    && old["deadlineAt"].is_null()
+                                    && normalized["deadlineAt"].as_i64().is_some()
+                                    && ["maxRequests", "maxTokens", "maxCompactions"]
+                                        .iter()
+                                        .all(|key| old[*key] == normalized[*key]),
+                                "BUDGET_LIMITS_IMMUTABLE"
+                            );
+                            tx.execute(
+                                "UPDATE craftmine_budget_limits SET limits=?2 WHERE owner=?1",
+                                params![owner, serde_json::to_string(&normalized)?],
+                            )?;
+                        }
                     } else {
                         tx.execute(
                             "INSERT INTO craftmine_budget_limits(owner,limits) VALUES(?1,?2)",
@@ -261,8 +358,11 @@ impl TaskJournal {
                     "REQUEST_BUDGET_EXHAUSTED"
                 );
                 ensure!(
-                    current["chargedTokens"].as_u64().unwrap() + estimate
-                        <= l["maxTokens"].as_u64().unwrap(),
+                    token_limit(&l["maxTokens"])?.is_none_or(|max| current["chargedTokens"]
+                        .as_u64()
+                        .unwrap()
+                        + estimate
+                        <= max),
                     "TOKEN_BUDGET_EXHAUSTED"
                 );
                 ensure!(

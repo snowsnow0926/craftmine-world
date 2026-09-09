@@ -1,0 +1,54 @@
+{
+  "format": "craftmine.batch07-delivery/1",
+  "status": "implementation-ready-awaiting-integrated-freeze",
+  "implementationCommits": [
+    "ed32592",
+    "9871d1c",
+    "9f1b4d4"
+  ],
+  "tests": {
+    "serviceSuite": {
+      "passed": 16,
+      "total": 16
+    },
+    "deliveryWithLocalExecuteRefusal": {
+      "passed": 6,
+      "total": 6
+    },
+    "rustCore": {
+      "passed": 47,
+      "total": 47
+    },
+    "desktopTypecheck": "passed-before-main-integration",
+    "hostDeadline": {
+      "passed": 3,
+      "total": 3
+    }
+  },
+  "performance": {
+    "status": "measured",
+    "benchmarkAcceptance": false,
+    "evidence": "evidence/development-performance.json",
+    "measuredWithUncommittedTelemetry": true,
+    "inputAudit": {
+      "pointerLock": 0,
+      "focus": 0
+    }
+  },
+  "windows": {
+    "cleanWindowsVerified": false,
+    "installationExecuted": false,
+    "vmAvailableByUser": false,
+    "signed": false,
+    "systemChanges": false,
+    "readinessEvidence": "evidence/windows-readiness.json",
+    "isolatedCiExecution": "not-run",
+    "localExecuteRefusal": "passed"
+  },
+  "finalArtifacts": null,
+  "limitations": [
+    "Await integrated product freeze before final packaging.",
+    "Development benchmark is not visible Electron or clean-OS acceptance.",
+    "No local install/uninstall, VM download or real input."
+  ]
+}

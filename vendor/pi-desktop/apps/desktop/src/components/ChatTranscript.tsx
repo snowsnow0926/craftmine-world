@@ -221,6 +221,7 @@ function AssistantErrorMessage({ message }: { message: UiMessage }) {
   const localizedKey = `errors.${error.code}`;
   const localized = t(localizedKey);
   const summary = localized === localizedKey ? t("chat.responseFailed") : localized;
+  const taskLimit = ["TOKEN_BUDGET_EXHAUSTED", "REQUEST_BUDGET_EXHAUSTED", "COMPACTION_BUDGET_EXHAUSTED", "TASK_DEADLINE_EXCEEDED"].includes(error.code);
   const configurationError = [
     "MODEL_NOT_CONFIGURED",
     "PROVIDER_SECRET_MISSING",
@@ -248,7 +249,7 @@ function AssistantErrorMessage({ message }: { message: UiMessage }) {
             <IconChevronRight size={12} aria-hidden />
             {open ? t("chat.hideErrorDetails") : t("chat.showErrorDetails")}
           </button>
-          <button
+          {!taskLimit && <button
             type="button"
             className="copy-btn primary"
             onClick={() =>
@@ -258,7 +259,7 @@ function AssistantErrorMessage({ message }: { message: UiMessage }) {
             }
           >
             {t("errors.action.continue")}
-          </button>
+          </button>}
           {configurationError ? (
             <button
               type="button"
