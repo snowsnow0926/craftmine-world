@@ -65,11 +65,21 @@ M/N 集成后的复测保留为未完成**，并给出可直接执行的入口�
 node desktop/delivery/preflight.mjs all --cache "<godot cache>" --package "<win-unpacked>" --quiet
 # PASS notices / assets / lgpl / godot-cache / export(skipped) / package
 # PREFLIGHT PASSED: 6 checks, 0 failures, 25 warnings
-node --test desktop/delivery/preflight-selftest.mjs   # 35 cases, 0 failed
+node --test desktop/delivery/preflight-selftest.mjs   # 39 cases, 0 failed
 node --test tests/godot-remaining/K/*.test.mjs        # 43 tests, 42 pass, 1 skipped(符号链接权限)
 ```
 
 25 条警告全部是显式的“许可文本待正式适用”说明，没有被改写成通过。
+
+对抗性复审后进一步收紧（同一天，全部保留为失败而非警告）：
+- 许可文本与权利声明文件必须是**真实常规文件**，目录或符号链接不再算数；
+- 新增 `DEVELOPMENT_ONLY_FILE_SHIPPED`：包或导出物里出现清单声明为
+  `development-only` 的文件（按仓库路径精确/后缀匹配，不按裸文件名匹配，
+  避免 `index.html` 之类同名误报）即失败；
+- `resources/source/USER_GUIDE.zh-CN.md` 纳入必需文件，缺使用说明的包不再算完整；
+- `rightsStatus` 被省略但仍带 `targetLicense`/`licenseDocument` 时同样报告
+  `ASSET_RIGHTS_PENDING`；
+- 自测从 35 例增加到 39 例，覆盖以上四条规则。
 
 补充：H 在 `46739d2` 曾记录 6/6 通过、19 警告；本轮失败是其后集成引入的漂移，
 两次记录的差异已用本次重跑证据对齐。
@@ -204,6 +214,7 @@ node desktop/delivery/measure.mjs all --package <新包> --cache <cache>
 | 6 | candidate-apply / install 等待时间 | 无真实计时/不执行安装器 | 真实应用与隔离安装各跑一次后补样本 |
 | 7 | 45 个无许可文本的 npm 包、MPL-2.0/BlueOak/Unicode-3.0 复核、未知权利人与主体、CLA 与商业合同 | 需人工/法律复核 | `licensing/README.md` 的开放问题清单，交法律复核后回填 |
 | 8 | 把 K 的测试并入全局 `npm test` | `package.json` 由 root 统一修改 | root 追加 `tests/godot-remaining/K/*.test.mjs` |
+| 9 | 旧 `windows-package-tools.mjs verify` 的必需文件列表与 `PACKAGE_REQUIRED_FILES` 未完全统一 | 该模式服务 `electron-builder` 输出目录，本树没有 `vendor/pi-desktop/apps/desktop/release/win-unpacked` 可验证，改动会无法测试地影响其他任务的构建 | 下次完整构建后由 root 统一为同一份清单 |
 
 ## 10 集成注意事项
 

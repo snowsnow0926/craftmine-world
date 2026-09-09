@@ -35,14 +35,30 @@ whose rights are not applied must still carry `outstanding` or `licenseDocument`
 ## 4 New preflight behaviour
 
 - `ASSET_RIGHTS_PENDING` (warning): emitted once per manifest whose `rightsStatus` is
-  not `applied`. The warning quotes `rightsDocument` and `rightsNote`, so the pending
-  state stays visible in every preflight record and never turns into a silent pass.
+  not `applied`, and also when `rightsStatus` is omitted but any entry tracks a
+  `targetLicense` or `licenseDocument`. The warning quotes `rightsDocument` and
+  `rightsNote`, so the pending state stays visible in every preflight record and never
+  turns into a silent pass.
 - `ASSET_LICENSE_DOCUMENT_MISSING` (failure): an entry that names `licenseDocument`
-  must resolve to an existing file relative to the repository root. A rights claim may
-  not point at a missing document.
+  must resolve to an existing regular file relative to the repository root. A rights
+  claim may not point at a missing document, a directory or a symlink.
+- `ASSET_LICENSE_FILE_MISSING` was tightened the same way: the notice file must be a
+  regular file, not a directory or a symlink.
+- `DEVELOPMENT_ONLY_FILE_SHIPPED` (failure): a shipped package or exported build must
+  not contain a file whose declared repository path is `development-only`. Matching is
+  by exact path or path suffix only; a bare-basename match is deliberately not used
+  because names such as `index.html` are shared by shipped and development-only files.
+  This means the check catches a file copied with its repository path and cannot catch
+  a development-only file renamed into an unrelated path; that limitation is accepted
+  rather than trading it for false failures.
+- `PACKAGE_REQUIRED_FILES` now includes `resources/source/USER_GUIDE.zh-CN.md`, so a
+  package without the delivery guide is incomplete. The legacy `verify` mode in
+  `desktop/windows-package-tools.mjs` still carries its own narrower list for the
+  `electron-builder` output directory; unifying the two belongs to the next full build
+  (the vendor `win-unpacked` directory does not exist in this tree to test it).
 
 Both codes are additive; no existing code changed meaning and no assertion was
-relaxed. `desktop/delivery/preflight-selftest.mjs` still passes all 35 cases.
+relaxed. `desktop/delivery/preflight-selftest.mjs` now passes 39 cases (was 35).
 
 ## 5 Drafting tool (never blesses bytes)
 

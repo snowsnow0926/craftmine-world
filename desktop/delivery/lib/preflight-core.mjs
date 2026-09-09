@@ -24,6 +24,7 @@ export const PACKAGE_REQUIRED_FILES = [
   'resources/plugins/craftmine.world/main.cjs',
   'resources/source/CraftmineWorld-source.zip',
   'resources/source/build-manifest.json',
+  'resources/source/USER_GUIDE.zh-CN.md',
   'resources/licenses/PI-Desktop-LICENSE.txt',
   'resources/licenses/CRAFTMINE-NOTICES.md'
 ];
@@ -39,6 +40,15 @@ const NO_NOTICE_LICENCES = ['project-authored', 'public-domain', 'CC0-1.0', 'Unl
 export const sha256 = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 export const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const exists = file => fs.existsSync(file);
+// A notice or rights document must be a real regular file: a symlink or a directory
+// must not satisfy a licence claim.
+const isRegularFile = file => {
+  try {
+    return fs.lstatSync(file).isFile();
+  } catch {
+    return false;
+  }
+};
 const readText = file => fs.readFileSync(file).subarray(0, MAX_TEXT_SCAN).toString('utf8');
 const rel = (root, file) => path.relative(root, file).replaceAll('\\', '/');
 
@@ -241,7 +251,7 @@ function validateBaseEntry(root, manifest, entry, fileDirectory, failures) {
     if (!entry.licenseFile) failures.push(fail('ASSET_LICENSE_FILE_MISSING', label + ' needs a notice file for licence ' + entry.license));
     else {
       const resolved = path.isAbsolute(entry.licenseFile) ? entry.licenseFile : path.resolve(fileDirectory, entry.licenseFile);
-      if (!exists(resolved)) failures.push(fail('ASSET_LICENSE_FILE_MISSING', label + ' notice file is absent: ' + rel(root, resolved)));
+      if (!isRegularFile(resolved)) failures.push(fail('ASSET_LICENSE_FILE_MISSING', label + ' notice file is absent or is not a regular file: ' + rel(root, resolved)));
     }
   }
   if (entry.license === 'project-authored' && !entry.outstanding && !entry.licenseDocument) {
@@ -249,7 +259,7 @@ function validateBaseEntry(root, manifest, entry, fileDirectory, failures) {
   }
   if (entry.licenseDocument) {
     const resolved = path.isAbsolute(entry.licenseDocument) ? entry.licenseDocument : path.resolve(root, entry.licenseDocument);
-    if (!exists(resolved)) failures.push(fail('ASSET_LICENSE_DOCUMENT_MISSING', label + ' rights document is absent: ' + entry.licenseDocument));
+    if (!isRegularFile(resolved)) failures.push(fail('ASSET_LICENSE_DOCUMENT_MISSING', label + ' rights document is absent or is not a regular file: ' + entry.licenseDocument));
   }
   if (entry.distribution.includes('user-export') && entry.redistribution === 'denied') {
     failures.push(fail('ASSET_EXPORT_DENIED', label + ' is marked user-export but redistribution is denied'));
@@ -462,18 +472,73 @@ export function checkExport(root, exportDirectory) {
     }
     facts.manifestFiles = checked;
   }
+  const exportFiles = [];
   const walk = current => {
     for (const child of fs.readdirSync(current)) {
       const childPath = path.join(current, child);
       if (fs.lstatSync(childPath).isSymbolicLink()) { failures.push(fail('EXPORT_LINK_DENIED', 'Exported build contains a link: ' + rel(directory, childPath))); continue; }
       if (fs.statSync(childPath).isDirectory()) walk(childPath);
+      else exportFiles.push(childPath);
     }
   };
   walk(directory);
+  facts.developmentOnlyFiles = checkDevelopmentOnlyFiles(root, directory, exportFiles, failures);
   return {id: 'export', ok: failures.length === 0, failures, warnings: [], facts};
 }
 
 /** Built Windows package: required files, source manifest, third-party texts and offline entry. */
+/**
+ * Files a provenance manifest declares development-only. The spec says they must
+ * never ship or export, so the package and export checks look for them explicitly.
+ * An entry that carries a shipping distribution value as well is not included,
+ * because the shipping value is authoritative.
+ *
+ * Matching is by declared repository path (exact or as a suffix), never by bare
+ * basename: a basename such as index.html is shared by shipped and development-only
+ * files, and flagging it would produce false failures. The limitation is recorded in
+ * docs/dispatch-reports/godot-remaining/K/SPEC_K_BASE_MANIFEST_DELTA.md.
+ */
+function developmentOnlyIndex(root) {
+  const paths = new Set();
+  const directory = path.join(root, BASE_ASSETS_DIR);
+  if (!exists(directory)) return paths;
+  for (const name of fs.readdirSync(directory).filter(entry => entry.endsWith('.json')).sort()) {
+    let manifest;
+    try {
+      manifest = readJson(path.join(directory, name));
+    } catch {
+      continue;
+    }
+    const record = (entry, repositoryPath) => {
+      const distribution = entry.distribution ?? [];
+      if (!distribution.includes('development-only')) return;
+      if (distribution.some(value => SHIPPED.includes(value))) return;
+      paths.add(String(repositoryPath).replaceAll('\\', '/'));
+    };
+    for (const entry of manifest.entries ?? []) record(entry, (manifest.sourceDirectory ? manifest.sourceDirectory + '/' : '') + entry.path);
+    for (const entry of manifest.externalEntries ?? []) record(entry, entry.path);
+  }
+  return paths;
+}
+
+/** Report every shipped file whose path matches a development-only declaration. */
+function checkDevelopmentOnlyFiles(root, directory, files, failures) {
+  const declared = developmentOnlyIndex(root);
+  if (!declared.size) return 0;
+  let found = 0;
+  for (const file of files) {
+    const relativePath = rel(directory, file);
+    for (const candidate of declared) {
+      if (relativePath === candidate || relativePath.endsWith('/' + candidate)) {
+        failures.push(fail('DEVELOPMENT_ONLY_FILE_SHIPPED', 'Development-only file must not ship: ' + relativePath));
+        found++;
+        break;
+      }
+    }
+  }
+  return found;
+}
+
 export function checkPackage(root, packageDirectory) {
   const failures = [];
   const warnings = [];
@@ -502,6 +567,7 @@ export function checkPackage(root, packageDirectory) {
   for (const relative of required) {
     if (!exists(path.join(directory, relative))) failures.push(fail('PACKAGE_FILE_MISSING', 'Package is missing ' + relative));
   }
+  facts.developmentOnlyFiles = checkDevelopmentOnlyFiles(root, directory, packageFiles, failures);
   const manifestPath = path.join(directory, 'resources/source/build-manifest.json');
   if (exists(manifestPath)) {
     const manifest = readJson(manifestPath);

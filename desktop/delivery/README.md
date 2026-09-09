@@ -76,9 +76,15 @@ Rules:
   `permitted-with-notice-and-corresponding-source`, `conditional` (needs `conditions`),
   `denied`, `unreviewed`. Shipping or exporting with `denied`/`unreviewed` fails.
 - Any shipped entry whose licence is not `project-authored`, `public-domain`, `CC0-1.0`
-  or `Unlicense` must point at an existing `licenseFile`.
+  or `Unlicense` must point at an existing `licenseFile`, and that file must be a real
+  regular file: a directory or a symlink does not satisfy a licence claim.
 - `project-authored` entries must state either `licenseDocument` or an explicit
-  `outstanding` reason, so an unresolved licence decision can never be silent.
+  `outstanding` reason, so an unresolved licence decision can never be silent. A named
+  `licenseDocument` must also exist as a regular file.
+- A file declared `development-only` must not appear inside a shipped package or an
+  exported build. The check matches declared repository paths (exact or suffix), never a
+  bare basename, so a shared name such as `index.html` cannot cause a false failure;
+  `DEVELOPMENT_ONLY_FILE_SHIPPED` reports a real violation.
 - Every file under `sourceDirectory` must be declared; an undeclared file fails.
 - `engine.version` must equal `desktop/godot/toolchain.lock.json.version`.
 - Hashes are pinned at the `reviewedCommit` recorded in the manifest. When a base
@@ -188,6 +194,21 @@ the real tree at `e4621478`, not against the previous report:
 `node desktop/delivery/preflight.mjs assets` now passes with zero failures. The
 remaining warnings are the documented pending-licence notes, which are intentionally
 not converted into passes.
+
+### Hardening after the adversarial review (same day)
+
+- `ASSET_LICENSE_FILE_MISSING` and `ASSET_LICENSE_DOCUMENT_MISSING` now require a real
+  regular file: a directory or a symlink no longer satisfies a notice or rights claim.
+- `DEVELOPMENT_ONLY_FILE_SHIPPED` fails a package or export that contains a file whose
+  declared repository path is `development-only` (exact path or path suffix; never a
+  bare basename, which would misfire on shared names such as `index.html`).
+- `resources/source/USER_GUIDE.zh-CN.md` joined `PACKAGE_REQUIRED_FILES`, so a package
+  without the delivery guide is incomplete. The legacy `verify` mode in
+  `desktop/windows-package-tools.mjs` keeps its own narrower list for the
+  `electron-builder` output path; unifying the two is left to the next full build.
+- `ASSET_RIGHTS_PENDING` is emitted even when a manifest omits `rightsStatus` but
+  tracks a `targetLicense` or `licenseDocument`.
+- `preflight-selftest.mjs` grew from 35 to 39 cases covering these four rules.
 Both asset shipping declarations and notice declarations fail for denied or
 pending redistribution. Existing approved rights metadata is not rewritten.
 
