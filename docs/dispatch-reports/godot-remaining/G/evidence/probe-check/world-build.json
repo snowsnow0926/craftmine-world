@@ -1,0 +1,76 @@
+{
+  "format": "craftmine.godot-world-build/1",
+  "baseId": "mining-sandbox",
+  "baseVersion": "1.0.0",
+  "baseProtocolVersion": 1,
+  "worldFormat": "craftmine.godot-mining-sandbox-world/1",
+  "stateFormat": "craftmine.godot-mining-sandbox-state/1",
+  "progressFormat": "craftmine.godot-mining-sandbox-progress/1",
+  "chunkFormat": "craftmine.godot-mining-sandbox-chunk/1",
+  "probeFormat": "craftmine.godot-mining-sandbox-probe/1",
+  "godotVersion": "4.7.2-stable",
+  "worldId": "probe-check",
+  "template": "mine-camp",
+  "entryScene": "res://scenes/main.tscn",
+  "stateVersion": 1,
+  "seed": 31415926,
+  "mapSize": [
+    96,
+    48
+  ],
+  "chunkTiles": [
+    16,
+    16
+  ],
+  "initialProgress": {
+    "player": {
+      "tile": [
+        8,
+        8
+      ],
+      "facing": "right",
+      "health": 3
+    },
+    "inventory": [
+      {
+        "id": "wood",
+        "count": 2
+      }
+    ],
+    "tools": [],
+    "flags": []
+  },
+  "userDirName": "craftmine-mining-sandbox-probe-check",
+  "files": [
+    {
+      "path": "icon.svg",
+      "bytes": 699,
+      "sha256": "55253ce29a79806ddc89b5b09e2d10f0906be42ec739ee339bdfe91d5c7c0a0b"
+    },
+    {
+      "path": "params/mining_sandbox_params.json",
+      "bytes": 1928,
+      "sha256": "b2ff7d5c713ab86dc85ff429b1a8362df71ce05e84abaa7dc489361376554762"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 1329,
+      "sha256": "43d39db79569d5e8ab1d5e3d91fc9867f0223619c758d8e41eed4ba404cafd58"
+    },
+    {
+      "path": "scenes/main.tscn",
+      "bytes": 181,
+      "sha256": "38ef7ae271d02f636a4c122b6d908fbfec257fc2da1074d062df83499bccda66"
+    },
+    {
+      "path": "scripts/base/base_contract.gd",
+      "bytes": 1292,
+      "sha256": "cc5c6c0adfc0c87d4574a4bd05092c1950a8d69dff5178d45465379453d29a06"
+    },
+    {
+      "path": "world.json",
+      "bytes": 6683,
+      "sha256": "c3b8be85d0363fe6d361704cee000fbb5d4f536ec60c1dbcce2269bf0accfbc6"
+    }
+  ]
+}

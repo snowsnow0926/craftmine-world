@@ -1,0 +1,376 @@
+{
+  "format": "craftmine.mining-sandbox-verify/1",
+  "baseId": "mining-sandbox",
+  "baseVersion": "1.0.0",
+  "godot": "D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable\\editor\\Godot_v4.7.2-stable_win64_console.exe",
+  "runs": 14,
+  "total": 14,
+  "passed": 14,
+  "checks": [
+    {
+      "name": "generation is reproducible for the same seed",
+      "ok": true,
+      "detail": {
+        "hashA": {
+          "hash": "7a4ce32e8dbf78535b7078d8fd651211e4c37005f4bd564c24a50ae4f1a577c0",
+          "ok": true
+        },
+        "hashB": {
+          "hash": "7a4ce32e8dbf78535b7078d8fd651211e4c37005f4bd564c24a50ae4f1a577c0",
+          "ok": true
+        }
+      }
+    },
+    {
+      "name": "a different seed changes the terrain",
+      "ok": true,
+      "detail": {
+        "hashC": {
+          "hash": "8daf346b225954151e2e7bfdd9ab9d50d2fe91f734a005998c88dbac2d7391f8",
+          "ok": true
+        }
+      }
+    },
+    {
+      "name": "a stone tile can be found through the probe",
+      "ok": true,
+      "detail": {
+        "stone": {
+          "tx": 3,
+          "ty": 14
+        }
+      }
+    },
+    {
+      "name": "a legal dig removes the tile and grants one drop",
+      "ok": true,
+      "detail": {
+        "dig": {
+          "chunk": "0_0",
+          "dropped": {
+            "count": 1,
+            "id": "stone"
+          },
+          "material": "stone",
+          "ok": true,
+          "op": "dig",
+          "revision": 1,
+          "tx": 3,
+          "ty": 14
+        },
+        "tile": {
+          "breakable": false,
+          "chunk": "0_0",
+          "material": "air",
+          "ok": true,
+          "requiredTier": 0,
+          "solid": false,
+          "tx": 3,
+          "ty": 14
+        },
+        "inventory": {
+          "coal": 0,
+          "deepstone": 0,
+          "dirt": 0,
+          "iron_ingot": 0,
+          "iron_ore": 0,
+          "iron_pickaxe": 0,
+          "ok": true,
+          "stone": 3,
+          "stone_brick": 4,
+          "stone_pickaxe": 0,
+          "wood": 0
+        }
+      }
+    },
+    {
+      "name": "replaying the same request id grants nothing twice",
+      "ok": true,
+      "detail": {
+        "replay": {
+          "chunk": "0_0",
+          "dropped": {
+            "count": 1,
+            "id": "stone"
+          },
+          "duplicate": true,
+          "material": "stone",
+          "ok": true,
+          "op": "dig",
+          "requestId": "verify-dig",
+          "revision": 1,
+          "tx": 3,
+          "ty": 14
+        },
+        "inventory": {
+          "coal": 0,
+          "deepstone": 0,
+          "dirt": 0,
+          "iron_ingot": 0,
+          "iron_ore": 0,
+          "iron_pickaxe": 0,
+          "ok": true,
+          "stone": 3,
+          "stone_brick": 4,
+          "stone_pickaxe": 0,
+          "wood": 0
+        }
+      }
+    },
+    {
+      "name": "a dig beyond reach is rejected",
+      "ok": true,
+      "detail": {
+        "result": {
+          "ok": false,
+          "op": "dig",
+          "reason": "out_of_range",
+          "requestId": "verify-far",
+          "tx": 4,
+          "ty": 14
+        }
+      }
+    },
+    {
+      "name": "a legal place sets the tile and consumes one item",
+      "ok": true,
+      "detail": {
+        "place": {
+          "chunk": "0_0",
+          "consumed": {
+            "count": 1,
+            "id": "stone_brick"
+          },
+          "material": "stone_brick",
+          "ok": true,
+          "op": "place",
+          "revision": 2,
+          "tx": 3,
+          "ty": 14
+        },
+        "tile": {
+          "breakable": true,
+          "chunk": "0_0",
+          "material": "stone_brick",
+          "ok": true,
+          "requiredTier": 0,
+          "solid": true,
+          "tx": 3,
+          "ty": 14
+        },
+        "inventory": {
+          "coal": 0,
+          "deepstone": 0,
+          "dirt": 0,
+          "iron_ingot": 0,
+          "iron_ore": 0,
+          "iron_pickaxe": 0,
+          "ok": true,
+          "stone": 3,
+          "stone_brick": 3,
+          "stone_pickaxe": 0,
+          "wood": 0
+        }
+      }
+    },
+    {
+      "name": "placing into an occupied tile is rejected",
+      "ok": true,
+      "detail": {
+        "result": {
+          "ok": false,
+          "op": "place",
+          "reason": "cell_occupied",
+          "requestId": "verify-place-2",
+          "tx": 3,
+          "ty": 14
+        }
+      }
+    },
+    {
+      "name": "a craft consumes its inputs and grants the output",
+      "ok": true,
+      "detail": {
+        "craft": {
+          "consumed": [
+            {
+              "count": 2,
+              "id": "stone"
+            }
+          ],
+          "ok": true,
+          "op": "craft",
+          "output": {
+            "count": 1,
+            "id": "stone_brick"
+          },
+          "recipeId": "stone-brick",
+          "station": ""
+        },
+        "inventory": {
+          "coal": 0,
+          "deepstone": 0,
+          "dirt": 0,
+          "iron_ingot": 0,
+          "iron_ore": 0,
+          "iron_pickaxe": 0,
+          "ok": true,
+          "stone": 1,
+          "stone_brick": 4,
+          "stone_pickaxe": 0,
+          "wood": 0
+        }
+      }
+    },
+    {
+      "name": "a craft without materials is rejected",
+      "ok": true,
+      "detail": {
+        "result": {
+          "ok": false,
+          "op": "craft",
+          "reason": "out_of_range",
+          "recipeId": "iron-pickaxe",
+          "requestId": "verify-craft-2",
+          "station": "camp-forge"
+        }
+      }
+    },
+    {
+      "name": "save then reopen keeps terrain, inventory and position",
+      "ok": true,
+      "detail": {
+        "before": {
+          "hash": "b824d835f39dc482cbf56bc32d82e2a09ac111a1eccb5bcbb4969c76b8374d7f",
+          "inventory": {
+            "stone": 1,
+            "stone_brick": 4
+          }
+        },
+        "after": {
+          "hash": "b824d835f39dc482cbf56bc32d82e2a09ac111a1eccb5bcbb4969c76b8374d7f",
+          "inventory": {
+            "stone": 1,
+            "stone_brick": 4
+          }
+        }
+      }
+    },
+    {
+      "name": "a modified chunk has a file and an unmodified chunk does not",
+      "ok": true,
+      "detail": {
+        "chunkFiles": [
+          "0_0.json"
+        ]
+      }
+    },
+    {
+      "name": "a corrupt progress file is rejected and nothing is applied",
+      "ok": true,
+      "detail": {
+        "restore": {
+          "detail": "progress file is not valid JSON",
+          "error": "bad_json: progress file is not valid JSON",
+          "ok": false,
+          "path": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\ms-verify-PKOf3n\\verify-corrupt-progress/worlds/38680315ea83e557d0dc74558b5860b9525124a871878f15429e6e8e94678e97/progress.json",
+          "reason": "bad_json",
+          "snapshot": {
+            "baseId": "mining-sandbox",
+            "baseVersion": "1.0.0",
+            "bootError": "bad_json: progress file is not valid JSON",
+            "chunkTiles": [
+              16,
+              16
+            ],
+            "chunks": {},
+            "cursor": [
+              8,
+              8
+            ],
+            "editCount": 0,
+            "format": "craftmine.godot-mining-sandbox-snapshot/1",
+            "inventory": {
+              "wood": 2
+            },
+            "lastAction": {},
+            "mapSize": [
+              96,
+              48
+            ],
+            "physical": {
+              "overlaps": [],
+              "solidTilesInPlayerRect": 0
+            },
+            "player": {
+              "equipped": "",
+              "facing": "right",
+              "health": 3,
+              "onFloor": false,
+              "position": [
+                136,
+                154.5
+              ],
+              "tile": [
+                8,
+                8
+              ],
+              "toolTier": 0
+            },
+            "rescue": {
+              "from": [],
+              "reason": "",
+              "resolved": false,
+              "resolvedTiles": [
+                {
+                  "from": [
+                    14,
+                    12
+                  ],
+                  "id": "camp-forge",
+                  "kind": "entity",
+                  "to": [
+                    14,
+                    10
+                  ]
+                }
+              ],
+              "to": []
+            },
+            "save": {
+              "lastSave": {}
+            },
+            "seed": 31415926,
+            "stateVersion": 1,
+            "terrainHash": "676353eab9ac60270840a2b37030355735f802c3e0e126e33778b1c123fa2a00",
+            "tileSize": 16,
+            "tools": [],
+            "worldId": "verify-corrupt",
+            "worldRevision": 0
+          }
+        },
+        "inventory": {
+          "coal": 0,
+          "deepstone": 0,
+          "dirt": 0,
+          "iron_ingot": 0,
+          "iron_ore": 0,
+          "iron_pickaxe": 0,
+          "ok": true,
+          "stone": 0,
+          "stone_brick": 0,
+          "stone_pickaxe": 0,
+          "wood": 2
+        }
+      }
+    },
+    {
+      "name": "the blank template ships no items, recipes or entities",
+      "ok": true,
+      "detail": {
+        "inventory": [],
+        "recipes": 0
+      }
+    }
+  ]
+}

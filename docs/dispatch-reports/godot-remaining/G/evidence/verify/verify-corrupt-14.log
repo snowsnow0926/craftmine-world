@@ -1,0 +1,24 @@
+exit=0
+request={"format":"craftmine.godot-mining-sandbox-probe/1","commands":[{"op":"restore"},{"op":"inventory"}],"saveOnExit":false}
+response={"baseId":"mining-sandbox","baseVersion":"1.0.0","finalSnapshot":{"baseId":"mining-sandbox","baseVersion":"1.0.0","bootError":"bad_json: progress file is not valid JSON","chunkTiles":[16,16],"chunks":{},"cursor":[8,8],"editCount":0,"format":"craftmine.godot-mining-sandbox-snapshot/1","inventory":{"wood":2},"lastAction":{},"mapSize":[96,48],"physical":{"overlaps":[],"solidTilesInPlayerRect":0},"player":{"equipped":"","facing":"right","health":3,"onFloor":false,"position":[136,154.5],"tile":[8,8],"toolTier":0},"rescue":{"from":[],"reason":"","resolved":false,"resolvedTiles":[{"from":[14,12],"id":"camp-forge","kind":"entity","to":[14,10]}],"to":[]},"save":{"lastSave":{}},"seed":31415926,"stateVersion":1,"terrainHash":"676353eab9ac60270840a2b37030355735f802c3e0e126e33778b1c123fa2a00","tileSize":16,"tools":[],"worldId":"verify-corrupt","worldRevision":0},"format":"craftmine.godot-mining-sandbox-probe/1","ok":false,"results":[{"args":{},"op":"restore","result":{"detail":"progress file is not valid JSON","error":"bad_json: progress file is not valid JSON","ok":false,"path":"C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\ms-verify-PKOf3n\\verify-corrupt-progress/worlds/38680315ea83e557d0dc74558b5860b9525124a871878f15429e6e8e94678e97/progress.json","reason":"bad_json","snapshot":{"baseId":"mining-sandbox","baseVersion":"1.0.0","bootError":"bad_json: progress file is not valid JSON","chunkTiles":[16,16],"chunks":{},"cursor":[8,8],"editCount":0,"format":"craftmine.godot-mining-sandbox-snapshot/1","inventory":{"wood":2},"lastAction":{},"mapSize":[96,48],"physical":{"overlaps":[],"solidTilesInPlayerRect":0},"player":{"equipped":"","facing":"right","health":3,"onFloor":false,"position":[136,154.5],"tile":[8,8],"toolTier":0},"rescue":{"from":[],"reason":"","resolved":false,"resolvedTiles":[{"from":[14,12],"id":"camp-forge","kind":"entity","to":[14,10]}],"to":[]},"save":{"lastSave":{}},"seed":31415926,"stateVersion":1,"terrainHash":"676353eab9ac60270840a2b37030355735f802c3e0e126e33778b1c123fa2a00","tileSize":16,"tools":[],"worldId":"verify-corrupt","worldRevision":0}}},{"args":{},"op":"inventory","result":{"coal":0,"deepstone":0,"dirt":0,"iron_ingot":0,"iron_ore":0,"iron_pickaxe":0,"ok":true,"stone":0,"stone_brick":0,"stone_pickaxe":0,"wood":2}}],"worldId":"verify-corrupt"}
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+ERROR: Parse JSON failed. Error at line 0: Expected key
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] restore_into (res://scripts/base/save_store.gd:226)
+       [1] _restore_on_boot (res://scripts/base/mining_game.gd:193)
+       [2] _ready (res://scripts/base/mining_game.gd:60)
+ERROR: mining-sandbox progress rejected: bad_json: progress file is not valid JSON
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _restore_on_boot (res://scripts/base/mining_game.gd:196)
+       [1] _ready (res://scripts/base/mining_game.gd:60)
+ERROR: Parse JSON failed. Error at line 0: Expected key
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] restore_into (res://scripts/base/save_store.gd:226)
+       [1] restore (res://scripts/base/mining_game.gd:451)
+       [2] _dispatch (res://scripts/base/probe.gd:114)
+       [3] run (res://scripts/base/probe.gd:53)
