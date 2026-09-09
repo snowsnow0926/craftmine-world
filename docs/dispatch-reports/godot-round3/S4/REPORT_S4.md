@@ -110,16 +110,16 @@ pwsh -File tests/godot-round3/S4/run-s4-evidence.ps1
 | --- | --- |
 | `rust-s4-domain-tests.txt` | `ok. 2 passed; 0 failed` |
 | `rust-s4-portable-tests.txt` | `ok. 10 passed; 0 failed; 2 ignored` |
-| `rust-s4-durability-tests.txt` | `ok. 5 passed; 0 failed; 1 ignored` |
-| `rust-s4-full-crate-tests.txt` | `ok. 234 passed; 0 failed; 5 ignored` |
-| `rust-s4-memory-stdout.txt` | large-store export+verify `ok. 1 passed`; `export marginal peak commit: 0 MiB (peak before 7626752 bytes, peak after 7626752 bytes, content 83910649 bytes)` |
-| `rust-s4-memory-peak.txt` | child-process peak private bytes `7.3 MiB` |
+| `rust-s4-durability-tests.txt` | `ok. 6 passed; 0 failed; 1 ignored` |
+| `rust-s4-full-crate-tests.txt` | `ok. 235 passed; 0 failed; 5 ignored` |
+| `rust-s4-memory-stdout.txt` | large-store export+verify `ok. 1 passed`; `export marginal peak commit: 0 MiB (peak before 7442432 bytes, peak after 7442432 bytes, content 83910649 bytes)` |
+| `rust-s4-memory-peak.txt` | child-process peak private bytes `7.1 MiB` |
 | `identity.txt` | branch, commit, toolchain |
 
 Regression baseline: R2 recorded `226 passed / 1 failed / 3 ignored` with
 `backups::portable::tests::portable_archive_restores_into_a_new_directory_without_the_source`
 failing with `GODOT_PROJECT_REVISION_NOT_INDEXED`. That test now passes and the
-crate is `234 passed / 0 failed / 5 ignored`.
+crate is `235 passed / 0 failed / 5 ignored`.
 
 ### 5.1 The documented joint failure: corrected root cause
 
@@ -178,7 +178,7 @@ undo a committed restore. The review's remaining findings are listed in §7.
 | requirement | status |
 | --- | --- |
 | 1. Durable export/restore operations, common snapshot boundary, operationId query/retry/cancel/status, final receipt; recoverable commit order; lost reply returns the same result | **done** for restore (durable row, journal, pre-commit receipt, status/retry/cancel). Export already had a durable row and pins; `backup.status` returns it. |
-| 2. End a real independent test process at each persistent boundary (content move, Git rebuild, database commit, publish, receipt) | **done**: `after-claim`, `after-stage`, `after-content`, `after-git`, `after-commit`, each in its own process; recovery rolls back or promotes; retry converges; no `BACKUP_TARGET_NOT_EMPTY` loss. |
+| 2. End a real independent test process at each persistent boundary (content move, Git rebuild, database commit, publish, receipt) | **done**: `after-claim`, `after-stage`, `after-content`, `after-git`, `before-commit` (receipt written, commit not yet) and `after-commit`, each in its own process; recovery rolls back or promotes; retry converges; no `BACKUP_TARGET_NOT_EMPTY` loss. |
 | 3. Remove name-prefix cleanup; bind target/staging/journal to verifiable operation identity; refuse unknown directories, reparse/link/path substitution; re-verify ownership before cleanup | **done** for restore and export staging; lookalike and reparse refusal covered by tests. |
 | 4. Common consistency snapshot on the final model, including Godot/Git tables, indexes and references; detect future schema additions | **done** in `backups.rs` (all 63 tables, `BACKUP_SCHEMA_DRIFT`); the portable snapshot already discovers tables dynamically. |
 | 5. Restore into a new directory after the origin is gone, then keep creating through real `godotProject.read`/index, asset read, history query and world load; keep the latest selected state and provenance | **partly done**: new-directory restore + `godotProject.read` + Git file read + asset body + world load + new project/revision creation are covered. `godotProject.build` and a full history query need the executor/engine and are not claimed here. |

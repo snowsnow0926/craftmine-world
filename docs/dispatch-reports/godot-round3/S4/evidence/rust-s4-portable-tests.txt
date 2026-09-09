@@ -91,5 +91,5 @@ test backups::portable::tests::a_damaged_archive_is_refused_and_never_touches_th
 test backups::portable::tests::restore_into_a_separate_empty_directory_creates_a_new_database ... ok
 test backups::portable::tests::portable_archive_restores_into_a_new_directory_without_the_source ... ok
 
-test result: ok. 10 passed; 0 failed; 2 ignored; 0 measured; 227 filtered out; finished in 1.57s
+test result: ok. 10 passed; 0 failed; 2 ignored; 0 measured; 228 filtered out; finished in 1.70s
 

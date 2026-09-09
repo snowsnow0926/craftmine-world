@@ -74,16 +74,17 @@ warning: function `VECTORS_JSON` should have a snake case name
     = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
 
 warning: `craftmine-core` (lib test) generated 9 warnings (run `cargo fix --lib -p craftmine-core --tests` to apply 2 suggestions)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
      Running unittests src\lib.rs (C:\Users\WINDOWS\.pi-desktop\scratch\1f91bbf7-ffcc-4e6e-ae40-74f28e0d2433\cargo-target-s4\debug\deps\craftmine_core-13091a1caf054aaf.exe)
 
-running 6 tests
+running 7 tests
 test backups::portable::durability_tests::crash_helper ... ignored, crash helper: driven by S4_CRASH_ROOT and CRAFTMINE_S4_CRASH_AT
 test backups::portable::durability_tests::a_lookalike_staging_directory_is_refused_and_never_deleted ... ok
 test backups::portable::durability_tests::a_cancel_request_converges_and_removes_only_owned_staging ... ok
 test backups::portable::durability_tests::a_kill_after_the_commit_is_promoted_from_the_precommit_receipt ... ok
 test backups::portable::durability_tests::a_restored_installation_keeps_authoring_new_revisions ... ok
+test backups::portable::durability_tests::a_committed_restore_is_never_rolled_back_by_another_operation ... ok
 test backups::portable::durability_tests::a_kill_before_the_commit_is_undone_and_the_same_operation_can_retry ... ok
 
-test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 233 filtered out; finished in 1.70s
+test result: ok. 6 passed; 0 failed; 1 ignored; 0 measured; 233 filtered out; finished in 1.32s
 
