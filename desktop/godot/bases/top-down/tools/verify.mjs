@@ -451,6 +451,63 @@ function main() {
       && fresh.snapshot.worldId === ids.townC,
       { coins: fresh.snapshot.coins, quest: fresh.snapshot.quests['herb-delivery'], granted: fresh.snapshot.grantedRewards });
 
+    // Full-process placement recovery: reach a non-entry room by normal scene
+    // transition and move through actual physics. Restart sends no placement,
+    // facing or scene command that could disguise a lost save.
+    const inside = townC.world.probe('placement-shop-save', [
+      { op: 'change-scene', args: { scene: 'res://scenes/shop_interior.tscn', spawn: 'from-street', label: 'enter' } },
+      { op: 'move', args: { dx: 0, dy: -1, steps: 40, label: 'walk-counter' } },
+      { op: 'buy', args: { shopId: 'shop-general', itemId: 'bread', label: 'buy' } },
+      { op: 'move', args: { dx: -1, dy: 0, steps: 8, label: 'walk-left' } },
+      { op: 'move', args: { dx: 0, dy: -1, steps: 3, label: 'face-up' } },
+      { op: 'save', args: { label: 'save' } },
+    ]);
+    checks.add('placement-01', 'save captures a real shop purchase and non-spawn placement facing up',
+      inside.byLabel.buy.ok && inside.snapshot.coins === 34 && inside.snapshot.inventory.bread === 1
+      && inside.snapshot.sceneId === 'shop-interior' && inside.snapshot.physical.facing === 'up'
+      && inside.snapshot.physical.playerPosition[0] < 159 && inside.snapshot.physical.playerPosition[1] < 160,
+      inside.snapshot);
+    const insideRestart = townC.world.probe('placement-shop-restart', [{ op: 'snapshot', args: { label: 'untouched-boot' } }]);
+    const samePosition = (a,b) => a.length === 2 && b.length === 2 && a.every((v,i) => Math.abs(v-b[i]) < 0.001);
+    const sameLedgers = (a,b) => ['coins','inventory','shops','quests','grantedRewards','flags'].every(key=>JSON.stringify(a[key]) === JSON.stringify(b[key]));
+    checks.add('placement-02', 'a new process restores shop scene, exact position and visible facing without setup commands',
+      insideRestart.snapshot.bootError === '' && insideRestart.snapshot.sceneId === 'shop-interior'
+      && insideRestart.snapshot.player.sceneId === 'shop-interior'
+      && samePosition(inside.snapshot.physical.playerPosition,insideRestart.snapshot.physical.playerPosition)
+      && insideRestart.snapshot.physical.facing === 'up' && insideRestart.snapshot.sprite.facing === 'up',
+      {before:inside.snapshot,after:insideRestart.snapshot});
+    checks.add('placement-03', 'room restoration preserves inventory, shop stock and every reward ledger',
+      sameLedgers(inside.snapshot,insideRestart.snapshot),insideRestart.snapshot);
+    const savedPlacementPath = insideRestart.raw.save.path;
+    const savedPlacementBytes = readFileSync(savedPlacementPath);
+    const manifestPath = join(townC.world.root,'world.json');
+    const manifestBytes = readFileSync(manifestPath);
+    for (const [suffix,mapping] of [['missing',null],['mismatch','res://scenes/overworld.tscn']]) {
+      const changed = JSON.parse(manifestBytes.toString('utf8'));
+      if (mapping === null) delete changed.scenes['shop-interior'];
+      else changed.scenes['shop-interior'] = mapping;
+      writeFileSync(manifestPath,JSON.stringify(changed));
+      try {
+        const refused = townC.world.probe('placement-'+suffix,[{op:'snapshot',args:{label:'rejected-boot'}}]);
+        checks.add('placement-'+suffix, 'unavailable or mismatched saved scene refuses autosave and preserves disk bytes',
+          refused.snapshot.bootError.length > 0 && refused.raw.save.ok === false
+          && readFileSync(savedPlacementPath).equals(savedPlacementBytes),
+          {bootError:refused.snapshot.bootError,save:refused.raw.save});
+      } finally { writeFileSync(manifestPath,manifestBytes); }
+    }
+    const outside = townC.world.probe('placement-street-save', [
+      { op: 'change-scene', args: { scene: 'res://scenes/overworld.tscn', spawn: 'from-shop', label: 'exit' } },
+      { op: 'move', args: { dx: -1, dy: 0, steps: 20, label: 'walk-left' } },
+      { op: 'save', args: { label: 'save' } },
+    ]);
+    const outsideRestart = townC.world.probe('placement-street-restart', [{ op: 'snapshot', args: { label: 'untouched-boot' } }]);
+    checks.add('placement-04', 'entry-scene restart restores a non-default position and left-facing sprite with all progress',
+      outsideRestart.snapshot.sceneId === 'overworld' && outsideRestart.snapshot.physical.facing === 'left'
+      && outsideRestart.snapshot.sprite.facing === 'left'
+      && samePosition(outside.snapshot.physical.playerPosition,outsideRestart.snapshot.physical.playerPosition)
+      && sameLedgers(outside.snapshot,outsideRestart.snapshot),
+      {before:outside.snapshot,after:outsideRestart.snapshot});
+
     // The create-world guard itself: a template that ships author progress must
     // be refused, not silently sanitised.
     const guardDir = join(work, 'template-guard');

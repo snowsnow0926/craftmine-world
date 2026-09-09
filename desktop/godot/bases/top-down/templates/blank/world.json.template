@@ -7,6 +7,7 @@
   "displayName": "__WORLD_NAME__",
   "description": "Blank top-down start: one room, movement, collision and saving only.",
   "entryScene": "res://scenes/world.tscn",
+  "scenes": {"world": "res://scenes/world.tscn"},
   "stateVersion": 1,
   "autosaveOnExit": true,
   "initialProgress": {

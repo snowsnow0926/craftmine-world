@@ -159,3 +159,19 @@ See [the shared authored-base audit contract](../../tests/PERSISTENCE_AUDIT.md) 
 [the state-boundary decision](../../tests/ADR-0001-audit-state-boundary.md).
 Foreign or rejected progress must not mutate live state or overwrite the prior save.
 The audit regression entry point is `desktop/godot/bases/tests/audit-persistence.mjs`.
+
+## Saved-scene resume
+
+`world.json.scenes` maps stable scene IDs to authored `res://scenes/*.tscn` paths.
+On a full process restart, validated `state.player.sceneId`, `position` and `facing`
+take priority over the entry scene and default player node values. The temporary
+entry scene does not process input or write progress while routing to the saved
+room. The restored facing is applied to both the player and its directional sprite.
+Missing or mismatched scene mappings refuse saving and preserve existing disk bytes.
+See [ADR-0002](ADR-0002-saved-scene-routing.md).
+
+Acceptance scenarios `placement-01` through `placement-04` reach the shop, purchase
+an item, walk away from the spawn and save facing up; a new process issues only a
+snapshot and must report the same shop, exact position, facing and ledgers. A second
+restart checks an overworld position facing left. `placement-missing` and
+`placement-mismatch` verify refused boot saves leave the prior file byte-identical.

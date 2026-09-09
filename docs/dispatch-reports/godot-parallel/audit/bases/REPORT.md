@@ -31,8 +31,8 @@ E 首次重跑中原测试未携带 worldId，使“新版状态原因”断言�
 1. P1/H：素材清单 sourceDirectory 仍指向旧 probes/**，E/F/G 新 bases/** 不受清单覆盖；
    发布门禁不能把这次 assets PASS 算作新底座权利核对完成。Godot 包内探测只搜最多
    四层 godot*.exe，WASM-only、改名或更深路径有漏检。保持用户已确认许可策略，未批量改许可。
-2. P2/F：Game.bind_scene 覆盖已存 scene_id，完整重启仍回入口场景；saved facing 也被
-   当前角色默认值覆盖。现有34项只验金币、物品、任务等，没有证明店内原位置恢复。
+2. P2/F：场景与朝向恢复已在后续逻辑提交修复，新增完整重启和拒绝坏映射验收，
+   40/40 通过。详见 SCENE_RESUME.md 与 scene-resume-evidence.json。
 3. P2/E：实体状态按场景路径排序、数组长度严格匹配；新增/删除/重排实体需显式迁移。
    当前改伤害保进度通过，不能扩大为任意内容编辑都保进度。
 4. E/F/G 的存档格式、运行协议不同。E 为 craftmine.godot-base-state/1，F/G各有格式；

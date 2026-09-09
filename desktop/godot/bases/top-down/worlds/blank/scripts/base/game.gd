@@ -24,6 +24,8 @@ var _entities: Dictionary = {}
 var _duplicate_entity_ids: Array = []
 var _dirty := false
 var _dirty_timer := 0.0
+var _pending_restore: Dictionary = {}
+var _resume_attempted := false
 
 const AUTOSAVE_INTERVAL := 1.0
 
@@ -39,6 +41,8 @@ func _ready() -> void:
 	if not restored.get("ok", false):
 		boot_error = String(restored.get("error", "Progress could not be restored"))
 		push_error(boot_error)
+	elif restored.get("restored", false):
+		_pending_restore = {"sceneId": state.scene_id, "position": state.player_position, "facing": state.player_facing}
 	if OS.get_cmdline_user_args().has("--probe"):
 		_start_probe.call_deferred()
 
@@ -144,6 +148,21 @@ func item_name(item_id: String) -> String:
 # ------------------------------------------------------------ scene binding
 
 func bind_scene(root: Node, scene_id_value: String) -> Dictionary:
+	if not _pending_restore.is_empty() and _pending_restore.sceneId != scene_id_value:
+		# The project entry scene can differ from the player's saved room. Do not
+		# publish or simulate it while routing to the authored saved-scene mapping.
+		root.process_mode = Node.PROCESS_MODE_DISABLED
+		if _resume_attempted:
+			boot_error = "Saved scene mapping points to a different scene identity"
+			return {"ok": false, "error": boot_error}
+		_resume_attempted = true
+		var catalog: Variant = world.get("scenes", {})
+		var target: Variant = catalog.get(_pending_restore.sceneId, "") if catalog is Dictionary else ""
+		if not target is String or not target.begins_with("res://scenes/") or not target.ends_with(".tscn") or not ResourceLoader.exists(target):
+			boot_error = "Saved scene is unavailable in the world scene catalog"
+			return {"ok": false, "error": boot_error}
+		_resume_saved_scene.call_deferred(target)
+		return {"ok": true, "restoring": true}
 	_entities.clear()
 	_duplicate_entity_ids.clear()
 	_scene_root = root
@@ -162,6 +181,11 @@ func bind_scene(root: Node, scene_id_value: String) -> Dictionary:
 	_place_player()
 	scene_bound.emit(scene_id_value)
 	return {"ok": _duplicate_entity_ids.is_empty(), "duplicates": _duplicate_entity_ids}
+
+func _resume_saved_scene(scene_path: String) -> void:
+	var result := get_tree().change_scene_to_file(scene_path)
+	if result != OK:
+		boot_error = "Saved scene could not be loaded: %d" % result
 
 
 func _entity_id_of(node: Node) -> String:
@@ -205,7 +229,12 @@ func _place_player() -> void:
 	if body == null:
 		return
 	var target: Vector2 = body.global_position
-	if not _pending_spawn.is_empty():
+	if not _pending_restore.is_empty():
+		target = _pending_restore.position
+		if actor.has_method("set_facing"):
+			actor.set_facing(_pending_restore.facing)
+		_pending_restore.clear()
+	elif not _pending_spawn.is_empty():
 		var marker := _find_spawn(_pending_spawn)
 		var marker_body := marker as Node2D
 		if marker_body != null:
@@ -248,6 +277,8 @@ func _record_scene_position() -> void:
 
 
 func tick(_root: Node) -> void:
+	if not _pending_restore.is_empty() or not boot_error.is_empty():
+		return
 	var actor := player()
 	var body := actor as Node2D
 	if body == null:
@@ -284,6 +315,8 @@ static func _int_property(node: Node, property: StringName, fallback: int) -> in
 func save() -> Dictionary:
 	if not boot_error.is_empty():
 		return {"ok": false, "error": boot_error}
+	if not _pending_restore.is_empty():
+		return {"ok": false, "error": "Saved scene is still restoring"}
 	_record_scene_position()
 	var result := SaveSystem.save(state)
 	if result.get("ok", false):

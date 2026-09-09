@@ -30,8 +30,12 @@ static func run(game: Node) -> void:
 		game.get_tree().quit(65)
 		return
 
-	# Let the main scene finish its first frame before touching nodes.
-	await game.get_tree().process_frame
+	# Boot may route from the entry scene to a different saved room. Observe only
+	# the final bound scene, never a transient entry scene that will be discarded.
+	for _frame in range(300):
+		await game.get_tree().process_frame
+		if game.scene_root() != null or not game.boot_error.is_empty():
+			break
 	await game.get_tree().physics_frame
 
 	var results: Array = []
