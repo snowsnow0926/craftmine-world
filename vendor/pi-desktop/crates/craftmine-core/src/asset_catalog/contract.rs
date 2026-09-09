@@ -187,6 +187,8 @@ impl UsageKind {
 
 /// A stable `AssetRef` from catalog storage. CP0 fixes resource versions as
 /// positive integers, so the decimal form is the shared reference version.
+/// Consumed by the install/upgrade layer (R4) and by the catalog tests.
+#[allow(dead_code)]
 pub(super) fn asset_ref(asset_id: &str, version: u64, content_hash: &str) -> Result<AssetRef> {
     let reference = AssetRef {
         asset_id: asset_id.to_string(),

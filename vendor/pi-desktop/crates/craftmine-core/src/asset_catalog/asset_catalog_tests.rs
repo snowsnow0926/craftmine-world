@@ -1070,7 +1070,7 @@ fn al2_probe_verifies_the_whole_blob_even_beyond_the_prefix() -> Result<()> {
 
 #[test]
 fn al1_sweeps_stale_staging_files_and_keeps_recent_ones() -> Result<()> {
-    let (dir, _path, journal) = journal()?;
+    let (_dir, _path, journal) = journal()?;
     let blobs = store::blob_root(&journal.directory, true)?;
     let stale = blobs.join("pending-999-1-0");
     std::fs::write(&stale, b"partial body")?;
@@ -1244,5 +1244,43 @@ fn al2_search_and_import_measurements_are_recorded() -> Result<()> {
         imported["contentHash"] == expected_large
     );
     assert_eq!(imported["contentHash"], expected_large);
+
+    // Full planned tiers: 1 MiB and 64 MiB at the budget boundary, plus one
+    // byte over the boundary which must be refused.
+    for (label, size) in [("1MiB", 1024 * 1024usize), ("64MiB", 64 * 1024 * 1024usize)] {
+        let body = write_source(&root, &format!("tier-{label}.bin"), &deterministic_bytes(size))?;
+        let started = std::time::Instant::now();
+        let result = journal.asset_import(&import_args(
+            &root,
+            &body,
+            &format!("op-tier-{label}"),
+            &format!("tier-{label}"),
+            1,
+            &format!("textures/tier-{label}.png"),
+            "image/png",
+            "image",
+        ))?;
+        println!(
+            "MEASURED import {label} body: {} ms",
+            started.elapsed().as_millis()
+        );
+        assert_eq!(result["bytes"], size as u64);
+    }
+    let over = write_source(&root, "over.bin", &deterministic_bytes(64 * 1024 * 1024 + 1))?;
+    let error = journal
+        .asset_import(&import_args(
+            &root,
+            &over,
+            "op-tier-over",
+            "tier-over",
+            1,
+            "textures/over.png",
+            "image/png",
+            "image",
+        ))
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("ASSET_FILE_TOO_LARGE"), "{error}");
+    println!("MEASURED import 64MiB+1 rejected: ASSET_FILE_TOO_LARGE");
     Ok(())
 }
