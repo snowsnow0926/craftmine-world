@@ -1,0 +1,79 @@
+{
+  "task": "C",
+  "title": "把 Godot Web 世界接入真实 Electron 客户端中央区域",
+  "branch": "codex/godot-parallel-c-20260909",
+  "worktree": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909",
+  "baseCommit": "46739d2",
+  "commits": [
+    "93d3469 feat(godot): host real Godot Web worlds in an Electron content view",
+    "0f96b13 fix(godot): close review findings in the world runtime host"
+  ],
+  "merged": false,
+  "pushed": false,
+  "reports": {
+    "report": "docs/dispatch-reports/godot-parallel/C/REPORT_C.md",
+    "protocol": "docs/dispatch-reports/godot-parallel/C/GODOT_WEB_RUNTIME_PROTOCOL.md",
+    "adr": "docs/dispatch-reports/godot-parallel/C/ADR-C-godot-world-view-host.md",
+    "integration": "docs/dispatch-reports/godot-parallel/C/INTEGRATION_C.md",
+    "integrationPatch": "docs/dispatch-reports/godot-parallel/C/integration.patch",
+    "evidence": "docs/dispatch-reports/godot-parallel/C/evidence"
+  },
+  "files": {
+    "added": [
+      "desktop/godot/web/runtime.mjs",
+      "desktop/godot/web/runtime.d.mts",
+      "vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host.ts",
+      "vendor/pi-desktop/apps/desktop/electron/preload/godot-world.ts",
+      "vendor/pi-desktop/apps/desktop/electron/shared/godot-world-chrome.ts",
+      "tests/godot-runtime.mjs",
+      "tests/godot-world-view.mjs",
+      "tests/godot-world-view/main.mjs",
+      "tests/godot-world-view/panel.html",
+      "tests/godot-world-view/pointer-guard.cjs"
+    ],
+    "modified": [
+      "desktop/godot/web/bridge.js",
+      "desktop/godot/probes/shared/web_bridge.gd",
+      "vendor/pi-desktop/apps/desktop/src/components/workpanel/PluginViewTab.tsx",
+      "plugins/craftmine-world/view.mjs",
+      "plugins/craftmine-world/world.html"
+    ],
+    "notTouched": [
+      "vendor/pi-desktop/apps/desktop/src/App.tsx",
+      "vendor/pi-desktop/apps/desktop/src/components/Sidebar.tsx",
+      "vendor/pi-desktop/apps/desktop/src/styles/craftmine.css",
+      "vendor/pi-desktop/crates/**",
+      "plugins/craftmine-world/main.cjs",
+      "plugins/craftmine-world/manifest.json",
+      "desktop/build-world-plugin.mjs",
+      "electron/main/index.ts",
+      "electron.vite.config.ts"
+    ]
+  },
+  "verification": [
+    { "command": "node tests/godot-runtime.mjs", "result": "23/23", "evidence": "docs/dispatch-reports/godot-parallel/C/evidence/godot-runtime.json" },
+    { "command": "node tests/godot-world-view.mjs", "result": "24/24", "evidence": "docs/dispatch-reports/godot-parallel/C/evidence/godot-world-view.json" },
+    { "command": "node tests/godot-web.mjs", "result": "33/33", "evidence": "docs/dispatch-reports/godot-parallel/C/evidence/godot-web-preview.json" },
+    { "command": "node tests/godot-web-transport.mjs", "result": "21/21" },
+    { "command": "node tests/godot-headless.mjs", "result": "13/13" },
+    { "command": "node tests/desktop-view-probe.mjs", "result": "6/6" },
+    { "command": "node desktop/build-world-plugin.mjs", "result": "pass" },
+    { "command": "pnpm build:js", "result": "pass" },
+    { "command": "integration.patch + tsc --noEmit -p tsconfig.json", "result": "0 errors (patch applied in the worktree, then reverted)" },
+    { "command": "integration.patch + electron-vite build", "result": "out/preload/godot-world.cjs emitted; main bundle contains the runtime host" }
+  ],
+  "openItems": [
+    "index.ts / electron.vite.config.ts wiring is task I's step; integration.patch is provided and verified applicable",
+    "the durable progress transaction in the acceptance harness is a fixture; the real world.saveProgress path needs task I wiring",
+    "world documents must carry world.build.engine for the host to start a Godot runtime",
+    "Godot worlds have no in-panel draft preview yet",
+    "no real-model authorship, packaged Windows build, or GPU/player-feel evidence"
+  ],
+  "requiredFromOthers": {
+    "I": "wire the host into electron/main/index.ts and the preload build (INTEGRATION_C.md)",
+    "B": "world.saveProgress returns the durable revision/contentHash",
+    "D": "keep reporting the panel rect on creation/play switches and resizes",
+    "world builder": "write world.build.engine = {kind:\"godot-web\", buildId, root, entry, threads}",
+    "E/F/G": "implement web_command(op,args); optionally load"
+  }
+}
