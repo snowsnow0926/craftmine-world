@@ -715,7 +715,7 @@ function createGodotExecutor(core, options = {}) {
       {id:'runtime.ready', passed:evidence?.ready?.ok === true, detail:`ops=${(evidence?.ready?.ops ?? []).join(',')}`},
       {id:'runtime.frame', passed:evidence?.render?.ok === true, detail:`frames=${evidence?.render?.frames ?? 0} distinct=${evidence?.render?.distinctFrames ?? 0}`},
       {id:'runtime.no-errors', passed:evidence?.errors?.ok === true, detail:(evidence?.errors?.runtime ?? []).slice(0, 2).join(' | ').slice(0, 200) || null},
-      {id:'runtime.snapshot', passed:evidence?.snapshot?.ok === true, detail:evidence?.snapshot?.equal === true ? 'formal progress unchanged' : 'snapshot not confirmed'},
+      {id:'runtime.snapshot', passed:evidence?.snapshot?.ok === true, detail:evidence?.snapshot?.equal === true ? (evidence?.progressMigration?.added?.length ? 'existing progress preserved; new scene defaults verified' : 'formal progress unchanged') : 'snapshot not confirmed'},
       {id:'runtime.isolation', passed:evidence?.isolation?.ok === true, detail:`guard=${JSON.stringify(evidence?.isolation?.guard ?? null)}`},
       {id:'runtime.recovery', passed:evidence?.recovery?.ok === true, detail:`graceful=${evidence?.recovery?.gracefulExit === true}`},
     ];
@@ -858,7 +858,7 @@ function createGodotExecutor(core, options = {}) {
         && assertions.every(assertion => assertion.passed === true),
       import:result.import,
       compile:result.compile,
-      check:{passed:result.check.passed, assertions},
+      check:{passed:result.check.passed, assertions, ...(result.check.passed && result.runtime?.passed && result.runtime?.defaultsSnapshot && result.runtime?.progressMigration ? {defaultsSnapshot:result.runtime.defaultsSnapshot, progressMigration:result.runtime.progressMigration} : {})},
       artifacts:result.artifacts,
       engine:{version:ENGINE_VERSION, isolation:ISOLATION, evidenceHash:discovery.evidenceHash},
     };

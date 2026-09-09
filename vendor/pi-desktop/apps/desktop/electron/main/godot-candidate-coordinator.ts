@@ -2,6 +2,7 @@ import {createHash, randomUUID} from "node:crypto";
 import {isDeepStrictEqual} from "node:util";
 import type {GodotWorldViewHost} from "./godot-world-view-host";
 import type {createGodotRuntimeAdapter, GodotCandidateDescriptor} from "./godot-runtime-adapter";
+import {deriveAdditiveProgress} from "../../../../../../desktop/godot/shared/progress-migration.mjs";
 type Data = Record<string, any>;
 type Session = {worldId:string;candidateId:string;id:string;token:string;phase:"preparing"|"preview"|"applying"|"uncertain"|"committed";prepared?:Data;descriptor?:GodotCandidateDescriptor;evidence?:Data;contentOperation?:string};
 const object=(value:unknown):value is Data=>!!value&&typeof value==="object"&&!Array.isArray(value);
@@ -31,12 +32,15 @@ export function createGodotCandidateCoordinator(options:{
     return result;
   };
   async function prepare(worldId:string,candidateId:string,revision:number,snapshot:unknown,phase:Session["phase"],first=false) {
+    const candidate=await rpc("godotCandidate.read",{worldId,candidateId});
+    const defaults=candidate.job?.check?.defaultsSnapshot;
+    const expected=defaults ? deriveAdditiveProgress(snapshot,defaults).snapshot : snapshot;
     const session:Session={worldId,candidateId,id:randomUUID(),token:randomUUID(),phase};active=session;
     const prepared=applicationMatches(session,await rpc("godotApplication.prepare",{id:session.id,token:session.token,candidateId,worldId,revision,snapshot}));
-    if(prepared.status!=="prepared"||!isDeepStrictEqual(prepared.input.snapshot,snapshot)||prepared.input.revision!==revision||!/^[a-f0-9]{64}$/.test(prepared.inputHash))throw new Error("GODOT_APPLICATION_PREPARE_MISMATCH");
+    if(prepared.status!=="prepared"||!isDeepStrictEqual(prepared.input.snapshot,expected)||(defaults&&!isDeepStrictEqual(prepared.input.previousSnapshot,snapshot))||prepared.input.revision!==revision||!/^[a-f0-9]{64}$/.test(prepared.inputHash))throw new Error("GODOT_APPLICATION_PREPARE_MISMATCH");
     session.prepared=prepared;
     const descriptor=await options.adapter.describeCandidate(worldId,session.id,session.token);
-    if(descriptor.buildId!==prepared.buildId||descriptor.applicationInputHash!==prepared.inputHash||!isDeepStrictEqual(descriptor.snapshot,snapshot))throw new Error("GODOT_CANDIDATE_DESCRIPTOR_MISMATCH");
+    if(descriptor.buildId!==prepared.buildId||descriptor.applicationInputHash!==prepared.inputHash||!isDeepStrictEqual(descriptor.snapshot,expected))throw new Error("GODOT_CANDIDATE_DESCRIPTOR_MISMATCH");
     session.descriptor=descriptor;
     await options.host.stageCandidate(descriptor,{first});
     return session;

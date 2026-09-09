@@ -8830,3 +8830,35 @@ fixtures prove transport, identity and accounting only: record separately whethe
 the real product entry, a real running instance and a real model were exercised.
 Do not claim a rendered game, a real compile result or a real model turn from
 these checks.
+
+## CRAFTMINE-GODOT-024 - Integrated creation, reuse, recovery and Windows delivery
+
+Run `tests/godot-final/client-complete.mjs` in its private offscreen Electron
+profile against the compiled client and again with `CRAFTMINE_PACKAGED_ROOT`
+pointing to the verified release. Exercise all four managed bases, actual
+play, full native save/restart comparison and actual game bitmap capture.
+Enable `CRAFTMINE_TEST_REUSE`, `CRAFTMINE_TEST_COPY` and `CRAFTMINE_TEST_BACKUP`
+for independent source instances, every-base copies and portable activation.
+For reuse, play before import, await both real checks, advance formal progress
+again, preview/apply, verify every old native field and both new identities,
+then restart. Accept scene defaults only from a passed runtime check; render
+or load failures must still finish as failed jobs. Check complete-state and
+stale-CAS rejection with the additive protocol and core fault tests.
+
+Exercise recovery after an activation reply is lost, reject restoring against
+a changed current-data hash, and retain original failed runs. Block world
+transitions, new model tasks and quit while copies or exports own a checkpoint.
+Do not dispose the exporter before a potentially failing quit checkpoint.
+Export Windows games through the actual world-panel route and private native
+directory grant; compare exported initial progress and native save/restart.
+Record direct service tests separately from complete-client tests.
+
+Build the installer, unpacked client and source archive from one clean commit
+using `desktop/build-client.ps1 -Installer`. Verify per-run sealed outputs and
+extracted NSIS payload against that build's source/runtime manifests; an older
+global setup or manifest is not evidence. Record unsigned status and remaining
+rights entries. A verified payload is not clean Windows installation, upgrade
+or uninstall evidence. Separately count the formal model suite at 15 categories,
+30 rounds and 141 assertions; authored worlds do not count as model acceptance.
+No real or simulated input, foreground windows, Pointer Lock or personal browser
+access is permitted in automated acceptance.

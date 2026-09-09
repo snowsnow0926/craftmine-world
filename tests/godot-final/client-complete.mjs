@@ -104,14 +104,25 @@ try{
     const item=listed.items.find(item=>item.supported);assert.ok(item,'No reusable source entity');
     await step('export selected entity through native file grant',()=>panel(source.id,'package.request',{method:'exportSource',params:{worldId:source.id,revision:listed.revision,manifestHash:listed.manifestHash,nodePath:item.nodePath,assetId:'accepted-component',version:1}}));
     const target=await nav('world.create',{baseId:'first-person',starterId:'training-range',title:'Reuse target',operationId:randomUUID()});await settled(target.id);
+    await step('play the reuse target before adding content',()=>rpc('godotPlay',{},60000));
+    await panel(target.id,'godot.runtimeSave',{freeze:true});
     const imported=await step('install into a different world draft',()=>panel(target.id,'package.request',{method:'importSource',params:{worldId:target.id,operationId:randomUUID()}}));
     assert.ok(imported.grantId);assert.equal(imported.applied,false);
     await step('first import check reaches its actual terminal state',()=>until(()=>nav('godot.historyJob',{worldId:target.id,jobId:imported.job.id}),job=>{if(['failed','blocked','cancelled','interrupted'].includes(job.status))throw Object.assign(Error(JSON.stringify(job)),{fatal:true});return job.status==='passed';},'First component check',900000));
     const second=await step('install a second independent instance',()=>panel(target.id,'package.request',{method:'repeatImportSource',params:{worldId:target.id,operationId:randomUUID(),grantId:imported.grantId}}));
     assert.ok(imported.instanceIds.every(id=>!second.instanceIds.includes(id)));
     const checked=await step('real check of both installed instances',()=>until(()=>nav('godot.historyJob',{worldId:target.id,jobId:second.job.id}),job=>{if(['failed','blocked','cancelled','interrupted'].includes(job.status))throw Object.assign(Error(JSON.stringify(job)),{fatal:true});return job.status==='passed';},'Component check',900000));
+    await step('advance real player progress after the candidate was checked',()=>rpc('godotPlay',{},60000));
+    await panel(target.id,'godot.runtimeSave',{freeze:true});
+    const beforeApply=godotPersistentProgress(await rpc('godotSnapshot'));
     await step('preview and apply checked reused content',async()=>{await panel(target.id,'godot.candidatePreview',{candidateId:checked.candidateId});return panel(target.id,'godot.candidateApply',{candidateId:checked.candidateId});});
-    await capture('first-person');
+    const appliedSnapshot=await step('both new instances exist and every old native field is preserved',async()=>{
+      const actual=godotPersistentProgress(await rpc('godotSnapshot')),projected=structuredClone(actual);let added=0;
+      for(const key of ['targets','interactables']){const original=beforeApply.body[key],entries=actual.body[key];assert.equal(new Set(entries.map(entry=>entry.id)).size,entries.length);for(const entry of original)assert.deepEqual(entries.find(next=>next.id===entry.id),entry);added+=entries.length-original.length;projected.body[key]=original;}
+      assert.equal(added,2);assert.deepEqual(projected,beforeApply);await capture('first-person');return actual;
+    });
+    await panel(target.id,'godot.runtimeSave',{freeze:true});
+    await step('restart preserves the applied reusable content and complete progress',async()=>{await stop();start();await started();await settled(target.id);const compared=compareGodotPersistentProgress(appliedSnapshot,await rpc('godotSnapshot'));assert.equal(compared.equal,true,JSON.stringify(compared.differences));await capture('first-person');return compared;});
   }
   if(process.env.CRAFTMINE_TEST_COPY==='1'){
     for(const source of worlds){

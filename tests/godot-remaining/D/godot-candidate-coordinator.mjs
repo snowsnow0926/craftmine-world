@@ -2,10 +2,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {stripTypeScriptTypes} from 'node:module';
 import {createHash} from 'node:crypto';
-const source=stripTypeScriptTypes(fs.readFileSync('vendor/pi-desktop/apps/desktop/electron/main/godot-candidate-coordinator.ts','utf8'),{mode:'transform'});
-const {createGodotCandidateCoordinator}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const {createGodotCandidateCoordinator}=await import('../../../vendor/pi-desktop/apps/desktop/electron/main/godot-candidate-coordinator.ts');
 const clone=x=>JSON.parse(JSON.stringify(x)),hash=x=>createHash('sha256').update(x).digest('hex');
 function fixture({cold=false,formalBuild=!cold}={}){
  const events=[],records=new Map();let selected='alpha',fault='',sequence=0,formalExists=formalBuild;
@@ -23,6 +21,7 @@ function fixture({cold=false,formalBuild=!cold}={}){
  const adapter={async describe(){events.push('describe-formal');if(!formalExists)return null;return {phase:'formal',worldId:'alpha',buildId:formal.world.build.id,revision:formal.revision,snapshot:clone(formal.world.snapshot)};},async describeCandidate(worldId,id){events.push('describe-candidate');if(fault==='descriptor')throw Error('artifact missing');const r=records.get(id);return {phase:'candidate',worldId,buildId:r.buildId,applicationId:id,applicationInputHash:r.inputHash,revision:formal.revision,snapshot:clone(formal.world.snapshot)};}};
  const domain=async(method,args)=>{
   events.push(method);
+  if(method==='godotCandidate.read')return {candidate:{},job:{check:{}}};
   if(method==='godotApplication.prepare'){
    if(fault==='prepare')throw Object.assign(Error('prepare invalid'),{errorCode:'INVALID'});
    const r={id:args.id,worldId:args.worldId,candidateId:args.candidateId,buildId:'build-new',inputHash:hash(args.id),status:'prepared',input:{revision:args.revision,snapshot:clone(args.snapshot)}};records.set(args.id,r);return clone(r);

@@ -21,6 +21,8 @@ const NEW_AUTHORED=new Set([
   'desktop/godot/shared/windows-export.cfg',
   'desktop/godot/shared/initial-states/mining-sandbox-blank.json',
   'desktop/godot/shared/initial-states/mining-sandbox-mine-camp.json',
+  'desktop/godot/shared/progress-migration.mjs',
+  'desktop/godot/shared/progress-migration.d.mts',
 ]);
 export function authored(entry){return entry.author==='Craftmine World project'&&['authored','generated'].includes(entry.origin)&&['project-authored','MIT'].includes(entry.license);}
 function newEntry(relative,manifest){
@@ -54,6 +56,7 @@ export function refreshManifest(manifest,files,{approvedNew=NEW_AUTHORED}={}){
     if(['desktop/godot/web/bridge.js','desktop/godot/web/shell.html'].includes(full))entry.distribution=['app-bundle','user-export'];
     if(full==='desktop/godot/shared/standalone_bootstrap.gd')entry.distribution=['app-bundle','user-export'];
     if(full==='desktop/godot/shared/windows-export.cfg')entry.distribution=['app-bundle'];
+    if(full.startsWith('desktop/godot/shared/progress-migration.'))entry.distribution=['development-only'];
   }
   return result;
 }

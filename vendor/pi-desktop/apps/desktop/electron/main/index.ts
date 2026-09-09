@@ -9724,7 +9724,7 @@ app.on("before-quit", (event) => {
   if (!craftmineQuitPrepared) {
     if (craftmineQuitPreparation) return;
     craftmineQuitPreparation = (async () => {
-      await godotExports.dispose();
+      if (godotCopies.busy || godotExportBusy) throw Error("Wait for world copy or export to finish, or cancel the export before quitting");
       await godotCandidates.closeForDeparture();
       godotVerifier.cancelAll();
       await pluginViews.prepareCraftmineForQuit();
@@ -9752,6 +9752,7 @@ app.on("before-quit", (event) => {
     pluginLauncherAccelerator = null;
   }
   shutdownPromise = (async () => {
+    await godotExports.dispose();
     // Replies still streaming are stopped through the sidecar first so their
     // aborted final rows can reach the transcript while host-core is alive;
     // whatever does not make it in time is covered by the last checkpoint

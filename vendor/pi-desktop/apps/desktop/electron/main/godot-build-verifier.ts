@@ -28,6 +28,7 @@ import {
 } from "../../../../../../desktop/godot/web/runtime.mjs";
 import { GODOT_WORLD_MESSAGE_CHANNEL, godotWorldScopeArgument } from "../shared/godot-world-chrome";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
+import { deriveAdditiveProgress } from "../../../../../../desktop/godot/shared/progress-migration.mjs";
 
 /** Descriptor produced by the Rust core (`godotJob.checkDescriptor`). */
 export type GodotRuntimeCheckDescriptor = {
@@ -135,6 +136,8 @@ export type GodotRuntimeCheckEvidence = {
   /** Bounded page console lines; diagnostic only, never part of `passed`. */
   diagnostics: string[];
   error: string | null;
+  defaultsSnapshot?: unknown;
+  progressMigration?: ReturnType<typeof deriveAdditiveProgress>;
 };
 
 /** One bounded deadline for the whole check, mirroring `CraftmineVerifier`. */
@@ -378,6 +381,9 @@ export class GodotBuildVerifier {
     };
     const recovery: GodotRuntimeCheckRecovery = { ok: false, gracefulExit: false, windowDestroyed: false, serverClosed: false };
     let error: string | null = null;
+    let expectedSnapshot = descriptor.snapshot ?? null;
+    let defaultsSnapshot: unknown;
+    let progressMigration: ReturnType<typeof deriveAdditiveProgress> | undefined;
     let runtime: WorldRuntime | null = null;
     let window: BrowserWindow | null = null;
     let isolated: Session | null = null;
@@ -547,7 +553,19 @@ export class GodotBuildVerifier {
       } finally {
         clearInterval(probe);
       }
-      const loaded = await bounded(activeRuntime.load({ build: null, snapshot: descriptor.snapshot ?? null }));
+      if (descriptor.baseId === "first-person" && isRecord(descriptor.snapshot) && descriptor.snapshot.format === "craftmine.godot-progress/1") {
+        // Read defaults from this exact new scene before restoring any player
+        // state. Only fixed additive entity rules can combine the two snapshots.
+        const fresh = await bounded(activeRuntime.load({build:null, snapshot:null}));
+        if (fresh.error) throw Error(`GODOT_CHECK_DEFAULT_LOAD_FAILED: ${fresh.error}`);
+        const observedDefaults = await bounded(activeRuntime.snapshot());
+        const raw = observedDefaults.result;
+        if (observedDefaults.error || !isRecord(raw) || raw.worldId !== descriptor.worldId || !isRecord(raw.state)) throw Error("GODOT_CHECK_DEFAULT_SNAPSHOT_INVALID");
+        defaultsSnapshot = raw.state;
+        progressMigration = deriveAdditiveProgress(descriptor.snapshot, defaultsSnapshot);
+        expectedSnapshot = progressMigration.snapshot;
+      }
+      const loaded = await bounded(activeRuntime.load({ build: null, snapshot: expectedSnapshot }));
       if (loaded.error) throw new Error(`GODOT_CHECK_LOAD_FAILED: ${loaded.error}`);
       assertRunning();
 
@@ -580,7 +598,7 @@ export class GodotBuildVerifier {
           ? returned.state : null
         : returned;
       const actualHash = actual === null ? null : hashJson(actual);
-      const expectedHash = descriptor.snapshot === null ? null : hashJson(descriptor.snapshot);
+      const expectedHash = expectedSnapshot === null ? null : hashJson(expectedSnapshot);
       snapshot.expectedHash = expectedHash;
       snapshot.actualHash = actualHash;
       snapshot.keys = isRecord(actual) ? Object.keys(actual).sort() : [];
@@ -711,6 +729,7 @@ export class GodotBuildVerifier {
       assertions,
       diagnostics,
       error,
+      ...(defaultsSnapshot && progressMigration ? {defaultsSnapshot, progressMigration} : {}),
     };
   }
 }
