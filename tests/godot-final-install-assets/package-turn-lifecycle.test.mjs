@@ -55,3 +55,32 @@ test('binding failure after workspace creation always closes its owned task',asy
   const ends=[];const bind=createPackageInstallBinding({call:async()=>({runtimeKind:'godot'}),selected:async()=>'world',begin:async()=>{throw Error('recordContext failed');},finish:async(c,s)=>ends.push([c,s])});
   await assert.rejects(bind('world','install-test'),/recordContext failed/);assert.equal(ends.length,1);assert.equal(ends[0][1],'error');
 });
+
+test('terminal package status waits for the owned lease and coalesces concurrent finalization',async()=>{
+  let status='running',release,ends=0;
+  const barrier=new Promise(resolve=>{release=resolve;});
+  const turns=createPackageTurnLifecycle({pollMs:60000,call:async(method)=>{
+    if(method==='godotBuild.read')return {status};
+    if(method==='workspace.endTurn'){ends++;await barrier;return {};}
+    throw Error(method);
+  }});
+  turns.watch({worldId:'world',jobId:'job'},context);
+  await new Promise(resolve=>setImmediate(resolve));status='passed';
+  let returned=false;
+  const first=turns.readJob({worldId:'world',jobId:'job'}).then(job=>{returned=true;return job;});
+  const second=turns.readJob({worldId:'world',jobId:'job'});
+  await new Promise(resolve=>setImmediate(resolve));assert.equal(returned,false);assert.equal(ends,1);
+  release();assert.equal((await first).status,'passed');await second;await turns.drain();await turns.stop();assert.equal(ends,1);
+});
+
+test('failed finalization cannot declare a terminal import ready and can be retried',async()=>{
+  let status='running',fail=true,ends=0;
+  const turns=createPackageTurnLifecycle({pollMs:60000,call:async(method)=>{
+    if(method==='godotBuild.read')return {status};
+    if(method==='workspace.endTurn'){ends++;if(fail)throw Error('TRANSPORT_LOST');return {};}
+    throw Error(method);
+  }});
+  turns.watch({worldId:'world',jobId:'job'},context);await new Promise(resolve=>setImmediate(resolve));status='passed';
+  await assert.rejects(turns.readJob({worldId:'world',jobId:'job'}),/TRANSPORT_LOST/);
+  fail=false;assert.equal((await turns.readJob({worldId:'world',jobId:'job'})).status,'passed');await turns.drain();await turns.stop();assert.equal(ends,2);
+});

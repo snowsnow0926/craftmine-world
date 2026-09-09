@@ -1,4 +1,4 @@
-// Recover an actual owned failed initialization through the unchanged package.
+// Recover an actual owned failed initialization through an immutable package.
 // No input events, model calls, arbitrary scripts, or personal profiles.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -43,7 +43,7 @@ async function stop(){if(ended)return;try{await rpc('quit',{},5000);}catch{}awai
 async function started(){await until(()=>ready,Boolean,'Controller');const status=await until(()=>rpc('status'),value=>value.windows?.length>0,'Offscreen window');assert.deepEqual(status.violations,[]);assert.ok(status.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));await until(()=>nav('world.createOptions'),x=>x.bases?.length>0,'Catalog');return status;}
 async function settled(id){await until(()=>nav('world.list'),list=>list.worlds.some(w=>w.id===id&&w.state==='ready'),'World ready',600000);await until(()=>rpc('godotObserve'),x=>x.worldId===id&&x.instanceId,'Actual runtime');await until(()=>rpc('worldNavigationReady'),x=>x.ready&&x.worldId===id,'Navigation');}
 try{
- start();await step('restart the unchanged package on its actual failed profile',started);
+ start();await step('start the recorded package on the actual failed profile',started);
  await step('retry the same failed world through the product action',async()=>{const before=await nav('world.list');assert.equal(before.worlds.find(w=>w.id===worldId).state,'failed');const result=await nav('world.creationRetry',{worldId});assert.equal(result.worldId,worldId);await settled(worldId);const after=await nav('world.list');assert.equal(after.worlds.length,before.worlds.length);return result;});
  await step('recovered side-view game produces actual pixels and gameplay',async()=>{const play=await rpc('godotPlayRuins',{},240000);assert.equal(play.ok,true,play.error);const capture=await rpc('godotCaptureView');assert.ok(capture.pixelStats.sampledColors>4);await rpc('worldPanel',{channel:'godot.runtimeSave',payload:{worldId,freeze:true}});expected.set(worldId,await rpc('godotSnapshot'));return {play,capture};});
  for(const[id,snapshot]of expected)await step('same profile keeps complete native progress '+id,async()=>{await nav('world.open',{id});await settled(id);const compared=compareGodotPersistentProgress(snapshot,await rpc('godotSnapshot'));assert.equal(compared.equal,true,JSON.stringify(compared.differences));return compared;});

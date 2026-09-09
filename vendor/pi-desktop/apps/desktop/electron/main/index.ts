@@ -1103,11 +1103,11 @@ godotCreation = createGodotWorldFactory({
   basesRoot: join(godotRoot, "bases"),
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
   initialization: {
-    start: async worldId => {
+    start: async (worldId, settings) => {
       const init = await plugins.requestCraftmineHost("godotWorld.initStatus", {worldId}) as any;
       if (init.rebuildRequired) {
         if (await godotSelection() === worldId) await godotRestores.start(worldId).catch(() => undefined);
-      } else await godotInitializer.start(worldId);
+      } else await godotInitializer.start(worldId, settings);
     },
     running: worldId => godotInitializer.running(worldId) || godotRestores.running(worldId),
     error: worldId => godotRestores.status(worldId)?.status === "failed" ? godotRestores.status(worldId)!.reason : godotInitializer.error(worldId),

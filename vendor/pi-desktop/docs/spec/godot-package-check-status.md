@@ -2,9 +2,15 @@
 
 The native package service accepts `package.request` with method `sourceJob`
 and only `{worldId,jobId}`. It validates the selected world before and after the
-private `godotBuild.read`, accepts only a `gjob-` SHA256 identity, and projects
+private `package.sourceJob`, accepts only a `gjob-` SHA256 identity, and projects
 only worldId, jobId, status and terminal. No source, file path, token or raw job
 output crosses this route.
+
+The private route reads the real core job and, for an owned terminal package
+check, awaits installation-turn finalization before returning. Concurrent
+poller and status reads share finalization. A lost end-turn reply remains
+retryable and cannot unlock another import. The recorded JlDN7e packaged
+acceptance exposed this lease-release race after the check had passed.
 
 The package panel disables new and repeated imports while its actual job is
 pending. Passed, failed, cancelled and interrupted are terminal. Blocked jobs

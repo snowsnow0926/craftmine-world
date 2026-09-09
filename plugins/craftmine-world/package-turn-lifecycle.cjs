@@ -9,14 +9,31 @@ function createPackageTurnLifecycle({call,logger=console,pollMs=500,timeoutMs=90
     const id=key(context);unsettled.set(id,{context,status});
     await call('workspace.endTurn',{sessionId:context.sessionId,turnId:context.turnId,status});unsettled.delete(id);
   };
-  async function close(entry,cancel=false) {
+  async function closeTurn(entry,cancel=false) {
     let job=await call('godotBuild.read',{worldId:entry.worldId,jobId:entry.jobId});
     if(!terminal(job)&&cancel){await call('godotBuild.cancel',{worldId:entry.worldId,jobId:entry.jobId});job=await call('godotBuild.read',{worldId:entry.worldId,jobId:entry.jobId});}
     if(!terminal(job))return false;
-    await finish(entry.context,job.status==='passed'?'completed':'error');pending.delete(key(entry.context));return true;
+    await finish(entry.context,job.status==='passed'?'completed':'error');pending.delete(key(entry.context));clearTimeout(entry.timer);entry.wake?.();return true;
+  }
+  function close(entry,cancel=false) {
+    if(pending.get(key(entry.context))!==entry)return Promise.resolve(true);
+    if(entry.closing)return entry.closing;
+    entry.closing=closeTurn(entry,cancel).finally(()=>{entry.closing=null;});
+    return entry.closing;
   }
   return {
     finish,
+    async readJob({worldId,jobId}) {
+      const job=await call('godotBuild.read',{worldId,jobId});
+      if(terminal(job)) {
+        // A completed check still owns its installation turn until finalization
+        // succeeds. Do not unlock repeat import in that interval.
+        for(const entry of pending.values())if(entry.worldId===worldId&&entry.jobId===jobId) {
+          if(!await close(entry)&&!await close(entry))throw Error('PACKAGE_TASK_FINALIZATION_PENDING');
+        }
+      }
+      return job;
+    },
     watch(job,context) {
       const id=key(context);if(pending.has(id))return;
       const entry={context,worldId:job.worldId,jobId:job.jobId};pending.set(id,entry);

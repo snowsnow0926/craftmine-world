@@ -41,14 +41,23 @@ test('history proposals perform no writes',()=>{
   assert.equal(history.mergeCandidate({from:ref(),to:ref('b')}).applies,false);
   assert.equal(calls.length,0);
 });
-function router(godotExecutor){
+function router(godotExecutor,packageTurns){
   const source=readFileSync(new URL('../../plugins/craftmine-world/host-requests.cjs',import.meta.url),'utf8');
   const module={exports:{}};
   vm.runInThisContext('(function(require,module,exports){'+source+'\n})')(
     name=>{assert.equal(name,'./domain.cjs');return {fields};},module,module.exports);
   const {core,calls}=fixture();
-  return {calls,handle:module.exports.createHostRequests(core,{godotExecutor})};
+  return {calls,handle:module.exports.createHostRequests(core,{godotExecutor,packageTurns})};
 }
+
+test('private package status uses only its bounded lifecycle route',async()=>{
+  const reads=[];
+  const {handle,calls}=router(undefined,{readJob:async args=>{reads.push(args);return {status:'passed'};}});
+  assert.equal((await handle('package.sourceJob',{worldId:'alpha',jobId:'job'})).status,'passed');
+  await assert.rejects(handle('package.sourceJob',{worldId:'alpha',jobId:'job',context:{}}));
+  assert.deepEqual(reads,[{worldId:'alpha',jobId:'job'}]);assert.deepEqual(calls,[]);
+  await assert.rejects(router().handle('package.sourceJob',{worldId:'alpha',jobId:'job'}),/LIFECYCLE_REQUIRED/);
+});
 test('private application confirmation rejects old self-attestation',async()=>{
   const {handle,calls}=router();
   await handle('content.apply.confirm',{operationId:'op',applicationId:'app',detail:'verified'});
@@ -63,6 +72,7 @@ test('portable and history private routes forward exact fields',async()=>{
     ['backup.cancelPortable',{operationId:'restore'}],['backup.protectedRefs',{worldId:'alpha'}],
     ['backup.releasePortable',{archiveId:'archive'}],['content.operation.read',{worldId:'alpha',operationId:'op'}],
     ['workspace.endTurn',{sessionId:'s',turnId:'t',status:'completed'}],
+    ['task.recoverable',{projectId:'initialization',worldId:'alpha'}],
     ['asset.bodyPath',{assetId:'a',version:1,path:'asset.png'}],
     ['godotProject.patch',{context:{},worldId:'alpha',toolCallId:'t',revision:1,manifestHash:'h',operations:[],operation:{}}]];
   for(const [method,args]of cases){await handle(method,args);await assert.rejects(handle(method,{...args,arbitraryShell:'no'}));}

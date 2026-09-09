@@ -72,7 +72,7 @@ async function onLoad() {
   godotExecutor=createGodotExecutor(core,{dataPath:await pi.plugin.getDataPath(),verifier:pi.craftmine,logger:console,toolchain});
   const restoreService=createPortableRestoreService({core,rootDirectory:await pi.plugin.getDataPath()});
   const portableRestore={restore:async params=>{await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();}}};
-  hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService,portableRestore});
+  hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns});
   pi.services.register({id:'world-core',start:()=>{packageTurns.start();return core.start();},stop:async()=>{await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
   pi.services.register({id:'godot-executor',start:()=>godotExecutor.start(),stop:()=>godotExecutor.stop()});
   await pi.agent.registerTool({

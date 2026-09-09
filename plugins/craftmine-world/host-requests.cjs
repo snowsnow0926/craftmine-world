@@ -7,7 +7,7 @@ function boundedText(value,max){if(typeof value!=='string'||!value.trim()||Buffe
 function assertIdentity(input,snapshot){
   if(!sameBinding(input.binding,snapshot.binding)||input.generation!==snapshot.generation)throw Error('CRAFTMINE_BUDGET_BINDING_MISMATCH');
 }
-function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService,portableRestore}){
+function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns}){
   const reservations=new Map();
   // The bounded surface of the S5 asset service and the S3 works/package
   // service. The router forwards a method name, never an arbitrary core call.
@@ -109,6 +109,11 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       if(!ASSET_METHODS.has(params.method))throw Error('UNSUPPORTED_ASSET_OPERATION');
       return assetService[params.method](params.args??{});
     }
+    if(method==='package.sourceJob'){
+      fields(params,['worldId','jobId']);
+      if(!packageTurns)throw Error('PACKAGE_TURN_LIFECYCLE_REQUIRED');
+      return packageTurns.readJob(params);
+    }
     if(method==='package.request'){
       fields(params,['method'],['args']);
       if(!reuseService)throw Error('PACKAGE_SERVICE_UNAVAILABLE');
@@ -138,6 +143,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     // channel and no model tool exposes it. Routes that the core does not
     // implement are deliberately absent rather than opened as generic RPC.
     const godotRoutes={
+      'task.recoverable':[['projectId','worldId'],[]],
       'godotWorld.initialize':[['worldId','title','baseId','baseBuild','snapshot'],[]],
       'godotWorld.initStatus':[['worldId'],[]],
       'godotWorld.copyStatus':[['worldId'],['sourceWorldId']],

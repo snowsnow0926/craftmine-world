@@ -8873,3 +8873,6 @@ complete cleanup and journal retirement. Protocol tests must reject second
 crashes, script errors, input drift, tampered logs and unknown cleanup. Separately
 exercise world.creationRetry against an actual failed owned profile and compare
 all other saved worlds after retry and restart. See godot-native-import-retry.md.
+### Final package lease and initialization recovery integration
+
+Verify that a passed component check cannot unlock repeated import until its owned task lease is released. Exercise concurrent status/background finalization and a lost end-turn reply. Use the actual failed private initialization profile with the rebuilt immutable package; retry must retain its world ID and all previous world snapshots through another restart. Run all four bases, continuous component reuse, copies and portable restoration against the same rebuilt package.

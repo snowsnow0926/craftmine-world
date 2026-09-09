@@ -20,7 +20,7 @@ test('sourceJob queries exact world/job only and projects no source, token or pr
  const service=createCraftminePackageService({selection:()=>selected,pickFile:async()=>{throw Error('picker forbidden');},domainCall:async(method,args)=>{calls.push({method,args});return{worldId:wrong?'beta':'alpha',jobId,status,source:{text:'private script'},request:{token:'private'},artifactsRoot:'private path'};}});
  const call=(extra={})=>service.request('package.request',{worldId:'alpha',method:'sourceJob',params:{worldId:'alpha',jobId,...extra}});
  assert.deepEqual(await call(),{worldId:'alpha',jobId,status:'running',terminal:false});
- assert.deepEqual(calls,[{method:'godotBuild.read',args:{worldId:'alpha',jobId}}]);
+ assert.deepEqual(calls,[{method:'package.sourceJob',args:{worldId:'alpha',jobId}}]);
  status='blocked';assert.equal((await call()).terminal,false);
  status='passed';assert.equal((await call()).terminal,true);
  status='unexpected';await assert.rejects(call(),/JOB_RECEIPT_INVALID/);status='running';
