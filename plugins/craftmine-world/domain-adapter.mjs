@@ -1,7 +1,61 @@
-import {compileScene, INITIAL_SNAPSHOT, validateSnapshot, upgradeScene} from '../../app/scene.mjs';
+import {compileScene, INITIAL_SNAPSHOT, validateSnapshot, upgradeScene, OUTPUT_SCHEMA} from '../../app/scene.mjs';
 import {validatePackedAssets} from '../../app/asset-packages.mjs';
 import {sceneAssetReferences} from '../../app/asset-binding.mjs';
 import {validateExtension, extensionRequirement} from '../../app/harness/extension.mjs';
+import {patchWorkspaceScene,workspaceResource} from '../../app/harness/resource-patch.mjs';
+import {contentHash,fields,integer,HARNESS_LIMITS} from '../../app/harness/contracts.mjs';
+import {capabilitiesCatalog} from '../../app/harness/capabilities.mjs';
+import {BEHAVIOR_API_GUIDE} from '../../app/behavior-contracts.mjs';
+
+const groups={object:'objects',behavior:'behaviors',system:'systems'};
+
+function page(text,{start=0,limit=12000}={}) {
+  integer(start,0,2000000,'读取起点');integer(limit,1,16000,'读取长度');
+  const chars=Array.from(text);
+  if(start>chars.length)throw Error('读取起点超过末尾');
+  const end=Math.min(start+limit,chars.length);
+  return {text:chars.slice(start,end).join(''),start,next:end<chars.length?end:null,totalChars:chars.length};
+}
+
+export function inspectDraft(workspace,args) {
+  fields(args,[],['offset','limit']);
+  const {offset=0,limit=24}=args;
+  integer(offset,0,256,'目录起点');integer(limit,1,32,'目录数量');
+  const scene=upgradeScene(workspace.task.draft.scene);
+  const resources=Object.entries(groups).flatMap(([kind,key])=>(scene[key]||[]).map(value=>({kind,id:value.id,name:value.name,hash:contentHash(value)})));
+  return {worldId:workspace.worldId,taskId:workspace.task.binding.taskId,baseBuild:workspace.task.binding.baseBuild,
+    title:scene.title,workspaceRevision:workspace.task.revision,status:workspace.task.status,
+    resumedFrom:workspace.resumedFrom,resources:resources.slice(offset,offset+limit),next:offset+limit<resources.length?offset+limit:null,total:resources.length,
+    publishingAvailable:false};
+}
+
+export function readDraftResource(workspace,args) {
+  fields(args,['kind','id'],['start','limit']);
+  const value=workspaceResource(workspace.task.draft.scene,args.kind,args.id);
+  return {kind:args.kind,id:args.id,hash:contentHash(value),workspaceRevision:workspace.task.revision,...page(JSON.stringify(value,null,2),args)};
+}
+
+export function patchDraft(workspace,args,world) {
+  if(args.workspaceRevision!==workspace.task.revision)throw Error('STALE_DRAFT: 草稿已改变，请重新读取');
+  if(workspace.task.revision>=HARNESS_LIMITS.calls)throw Error('CALL_LIMIT: 本轮草稿修改次数已达上限');
+  const extensions=new Set(world.extensions.map(extension=>extensionRequirement(extension.id,extension.version)));
+  const patched=patchWorkspaceScene(workspace.task.draft.scene,args,{reads:workspace.reads,extensions,baseScene:world.build.scene});
+  // Asset references must remain satisfiable by the actual immutable packages.
+  validatePackedAssets(patched.scene,world.build.assets||[]);
+  return {draft:{scene:patched.scene},changed:patched.changed};
+}
+
+export function readCapabilities(args,extensions) {
+  fields(args,[],['section','start','limit']);
+  const {section='objects'}=args;
+  let text;
+  if(section==='objects'||section==='systems') {
+    text=JSON.stringify({groundY:6,instructions:'Use workspace_patch to add or replace one complete resource. Coordinates are world units. Small plants use thin non-solid parts, not full-sized building blocks.',schemas:OUTPUT_SCHEMA.properties.scene.anyOf.filter(s=>s.properties).map(s=>s.properties[section])},null,2);
+  } else if(section==='behaviors')text=BEHAVIOR_API_GUIDE;
+  else if(section==='catalog')text=JSON.stringify(capabilitiesCatalog({extensions}),null,2);
+  else throw Error('未知能力章节');
+  return {section,...page(text,args)};
+}
 
 export function emptyWorld(title) {
   const build = compileScene({format:'craftmine.scene/3',title,night:false,objects:[],systems:[],behaviors:[]});
@@ -9,6 +63,7 @@ export function emptyWorld(title) {
 }
 
 export {validateSnapshot};
+export {fields};
 
 export async function prepareLegacyWorld(project, read) {
   if(project?.format!=='craftmine.project/1'||!/^v-[a-f0-9]{20}$/.test(project.current))throw Error('旧世界格式或版本无效');

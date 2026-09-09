@@ -250,6 +250,8 @@ export type PluginTool = {
 };
 
 export type PluginToolExecContext = {
+  /** Host-resolved project identity; never supplied by the model or panel. */
+  projectId?: string;
   sessionId?: string;
   turnId?: string;
   /** Host-assigned model tool-call identity. Never read it from tool arguments. */
@@ -513,6 +515,8 @@ export type PluginHostApi = {
 };
 
 export type PluginModule = {
+  /** Downstream Craftmine-only acknowledged host lifecycle, unavailable to panels. */
+  onHostTurnEnd?: (input: { sessionId: string; turnId: string; status: "completed" | "aborted" | "error" }) => Promise<void> | void;
   onLoad?: () => Promise<void> | void;
   onUnload?: () => Promise<void> | void;
   /** Optional fixed-channel operations for an isolated plugin panel. */

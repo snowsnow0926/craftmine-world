@@ -1,8 +1,11 @@
 // Trusted product glue. Authored gameplay never runs in this Node process.
 const {CoreClient} = require('./core-client.cjs');
 const {randomUUID} = require('node:crypto');
+const {createWorldTools} = require('./world-tools.cjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld} = require('./domain.cjs');
 let core;
+const endedTurns=new Set();
+const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
 const importErrors={
   LEGACY_PROJECT_NOT_FOUND:'所选文件夹里没有旧世界，请选择原项目目录或其中的 .craftmine 文件夹。',
   LEGACY_PROJECT_FORMAT:'所选文件夹的存档格式不兼容，原文件未更改。',
@@ -26,10 +29,19 @@ async function onLoad() {
       format: 'craftmine.desktop-runtime/1',
       view: 'world',
       worldWritesAvailable: false,
+      draftToolsAvailable: true,
       core: await core.start(),
       invocation: {sessionId:context?.sessionId,turnId:context?.turnId,toolCallId:context?.toolCallId},
     }),
   });
+  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context))))await pi.agent.registerTool(tool);
+}
+
+// Private parent-process lifecycle. There is no panel channel for this method.
+async function onHostTurnEnd(payload) {
+  endedTurns.add(turnKey(payload));
+  await core.start();
+  await core.call('workspace.endTurn',payload);
 }
 
 async function onPanelInvoke(channel, payload={}) {
@@ -69,5 +81,8 @@ async function onPanelInvoke(channel, payload={}) {
   throw Error('Unsupported Craftmine panel operation');
 }
 
-async function onUnload() { await core?.stop();await pi.agent.unregisterTool('runtime_info'); }
-module.exports = {onLoad, onUnload, onPanelInvoke};
+async function onUnload() {
+  await core?.stop();
+  for(const tool of require('./manifest.json').contributes.agentTools)await pi.agent.unregisterTool(tool.name);
+}
+module.exports = {onLoad, onUnload, onPanelInvoke, onHostTurnEnd};

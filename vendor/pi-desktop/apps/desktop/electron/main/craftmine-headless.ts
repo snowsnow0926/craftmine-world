@@ -62,6 +62,7 @@ export function installHeadlessControl(access: {
   window: () => BrowserWindow | null;
   world: () => WebContents | null;
   runtime: () => unknown;
+  draftProbe: () => Promise<unknown>;
 }): void {
   if (!profile) return;
   const configuration = profile;
@@ -85,6 +86,7 @@ export function installHeadlessControl(access: {
           const window = access.window(); if (!window) throw new Error("Window is not ready");
           return window.webContents.executeJavaScript(`(async()=>({title:document.title,text:document.body.innerText,version:globalThis.piDesktop?await piDesktop.invoke(piDesktop.channels.invoke.appGetVersion):null,guard:globalThis.__craftmineHeadless}))()`, false);
         }
+        case "draftProbe": return access.draftProbe();
         case "guards": {
           const contents = [access.window()?.webContents, access.world()].filter((value): value is WebContents => !!value);
           return Promise.all(contents.flatMap(view => view.mainFrame.framesInSubtree.map(frame => frame.executeJavaScript(`({url:location.href,guard:globalThis.__craftmineHeadless||null,node:typeof process,bridge:typeof pluginBridge})`, false))));

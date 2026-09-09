@@ -14,6 +14,14 @@ turn retains the previous draft and records its source. Formal world code and
 progress must remain unchanged. These checks do not count as real-model or
 candidate-application acceptance.
 
+Native coverage: set `CRAFTMINE_TEST_DRAFTS=1` when running the downstream
+`tests/desktop-native.mjs`. Its fixed parent-only scenario creates an actual Rust
+PI session and durable turn, dispatches tools through `tools.execute` and the
+production Electron utility-process spawner, then invokes normal turn
+finalization. Check resource commit/read, same-call recovery, forged-identity
+rejection and late-call rejection. No model is invoked by this scenario. Keep
+the existing zero-input, save-failure and full native restart checks enabled.
+
 > Scope: MVP acceptance scenarios plus current shipped product increments for PI-Desktop
 > Status: Accepted (protocol/Electron automation is active; full desktop Playwright remains planned)
 > Cross-references: [acceptance-criteria](02-acceptance-criteria.md) · [milestones](01-mvp-milestones.md) · [ai-development-workflow](03-ai-development-workflow.md) · [change-checklist](05-change-checklist.md)

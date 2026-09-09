@@ -86,7 +86,7 @@ export type RegisteredPluginTool = {
   schema?: unknown;
   execute: (
     args: unknown,
-    ctx?: { sessionId?: string; turnId?: string; toolCallId?: string; executionId?: string; modelKey?: string; thinkingLevel?: string },
+    ctx?: { projectId?: string; sessionId?: string; turnId?: string; toolCallId?: string; executionId?: string; modelKey?: string; thinkingLevel?: string },
   ) => Promise<unknown>;
 };
 
@@ -881,6 +881,15 @@ export class PluginRuntime {
     }
   }
 
+  /** Host lifecycle only. There is no panel or plugin API for ending turns. */
+  async endCraftmineTurn(input: { sessionId: string; turnId: string; status: "completed" | "aborted" | "error" }): Promise<void> {
+    const loaded = this.loaded.get("craftmine.world");
+    if (!loaded?.child) return;
+    await this.sendToChild(loaded, {
+      t: "call", method: "lifecycle.turnEnded", payload: input,
+    }, 10_000);
+  }
+
   /**
    * Validate the manifest, start a dedicated host process and run `onLoad`
    * inside it. Contribution points arrive over RPC while `onLoad` runs; a
@@ -1461,6 +1470,7 @@ export class PluginRuntime {
                       name,
                       args: toolArgs,
                       sessionId,
+                      projectId: ctx?.projectId,
                       turnId: ctx?.turnId,
                       toolCallId: ctx?.toolCallId,
                       executionId: ctx?.executionId,

@@ -365,6 +365,7 @@ async function handleParentCall(method, payload) {
         throw error;
       }
       const result = await execute(payload?.args, {
+        projectId: payload?.projectId,
         sessionId: payload?.sessionId,
         turnId: payload?.turnId,
         toolCallId: payload?.toolCallId,
@@ -395,6 +396,11 @@ async function handleParentCall(method, payload) {
       if (!entry?.running) return { ok: true };
       entry.running = false;
       if (entry.stop) await entry.stop();
+      return { ok: true };
+    }
+    case "lifecycle.turnEnded": {
+      if (pluginId !== "craftmine.world") throw new Error("UNSUPPORTED");
+      await pluginModule?.onHostTurnEnd?.(payload);
       return { ok: true };
     }
     case "lifecycle.unload": {

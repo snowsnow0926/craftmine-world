@@ -172,12 +172,12 @@ test("plugin invocation identity survives the process boundary and ignores forge
     permissions: ["agent.tool.register"],
     main: `module.exports = { async onLoad() {
       await pi.agent.registerTool({ name:"identity", description:"Return the trusted invocation context",
-        execute: async (args, ctx) => ({sessionId:ctx.sessionId,turnId:ctx.turnId,toolCallId:ctx.toolCallId,executionId:ctx.executionId}) });
+        execute: async (args, ctx) => ({projectId:ctx.projectId,sessionId:ctx.sessionId,turnId:ctx.turnId,toolCallId:ctx.toolCallId,executionId:ctx.executionId}) });
     } };`,
   });
   await runtime.loadFromPath(dir, ["agent.tool.register"]);
   const tool = runtime.getTools().find(entry => entry.name === "identity");
-  const bound = { sessionId:"session-a",turnId:"turn-a",toolCallId:"call_123",executionId:"dispatch-1" };
+  const bound = { projectId:"project-a",sessionId:"session-a",turnId:"turn-a",toolCallId:"call_123",executionId:"dispatch-1" };
   assert.deepEqual(await tool.execute({toolCallId:"forged",sessionId:"foreign"}, bound), bound);
   const retry = {...bound,executionId:"dispatch-2"};
   assert.deepEqual(await tool.execute({},retry),retry);

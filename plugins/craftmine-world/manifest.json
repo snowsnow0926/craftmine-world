@@ -6,11 +6,205 @@
   "description": "World creation surfaces for the Craftmine desktop.",
   "main": "main.cjs",
   "contributes": {
-    "services": [{"id":"world-core","label":"Craftmine Rust core"}],
-    "views": [{"id":"world","title":{"en":"World","zh-CN":"世界"},"icon":"target","entry":"views/world.html","order":1}],
-    "agentTools": [{"name":"runtime_info","description":"Inspect the connected Craftmine runtime and its available integration capabilities.","risk":"low","schema":{"type":"object","properties":{},"additionalProperties":false}}]
+    "services": [
+      {
+        "id": "world-core",
+        "label": "Craftmine Rust core"
+      }
+    ],
+    "views": [
+      {
+        "id": "world",
+        "title": {
+          "en": "World",
+          "zh-CN": "世界"
+        },
+        "icon": "target",
+        "entry": "views/world.html",
+        "order": 1
+      }
+    ],
+    "agentTools": [
+      {
+        "name": "runtime_info",
+        "description": "Inspect the connected Craftmine runtime and its available integration capabilities.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "project_inspect",
+        "description": "Inspect the actual Craftmine world draft before creating or editing it. The first world tool binds this PI session to the selected world; changing the panel afterwards does not redirect it. Returns revision and a paginated resource index. Use capabilities_read for the actual resource contracts. Draft tools do not apply or verify a playable candidate yet; do not claim that a draft is already in the world.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 256
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 32
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "capabilities_read",
+        "description": "Read the installed world contracts in bounded pages. Sections: objects and systems are schemas, behaviors is the authored JavaScript module guide (initialState and params are objects), catalog lists actual commands and loaded extensions. Follow next until the needed section is complete. All authored code runs in the gameplay sandbox.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "section": {
+              "type": "string",
+              "enum": [
+                "objects",
+                "systems",
+                "behaviors",
+                "catalog"
+              ]
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "resource_read",
+        "description": "Read one world draft resource and its current hash. This records read provenance. Read before replacing an existing resource; use next for long code. IDs are resource IDs, never filesystem paths.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "object",
+                "behavior",
+                "system"
+              ]
+            },
+            "id": {
+              "type": "string"
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "workspace_patch",
+        "description": "Atomically modify the Rust-owned world draft after project_inspect. Use 1-8 operations; add requires a new ID and expectedHash:null, replace requires a prior resource_read and its hash. value is the complete resource object retaining its ID. Uses the real compiler and installed extension catalogue. Compilation errors leave the draft unchanged. This saves code only; candidate verification and player application are separate.",
+        "risk": "medium",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "workspaceRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 48
+            },
+            "operations": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 8,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "op": {
+                    "type": "string",
+                    "enum": [
+                      "add",
+                      "replace"
+                    ]
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "object",
+                      "behavior",
+                      "system"
+                    ]
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "expectedHash": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "value": {
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "op",
+                  "kind",
+                  "id",
+                  "expectedHash",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "workspaceRevision",
+            "operations"
+          ],
+          "additionalProperties": false
+        }
+      }
+    ]
   },
-  "permissions": ["ui.view", "agent.tool.register", "background.service", "fs.read"],
-  "activationEvents": ["onStartup"],
-  "engines": {"piDesktop": ">=0.14.3"}
+  "permissions": [
+    "ui.view",
+    "agent.tool.register",
+    "background.service",
+    "fs.read"
+  ],
+  "activationEvents": [
+    "onStartup"
+  ],
+  "engines": {
+    "piDesktop": ">=0.14.3"
+  }
 }

@@ -98,6 +98,10 @@ try {
   const guards=await client.rpc('guards');evidence.guards=guards;
   check('桌面、世界面板和游戏初始化时均禁止鼠标锁定与焦点请求',guards.length>=3&&guards.every(frame=>frame.guard&&frame.guard.pointerLock===0&&frame.guard.focus===0));
   check('实际游戏隔离帧无法访问 Node 或插件桥',guards.some(frame=>frame.url==='about:srcdoc'&&frame.node==='undefined'&&frame.bridge==='undefined'));
+  if(process.env.CRAFTMINE_TEST_DRAFTS==='1') {
+    const drafts=await client.rpc('draftProbe',{},60000);evidence.drafts=drafts;
+    for(const result of drafts.checks)check(result.name,result.passed);
+  }
   await client.rpc('importLegacy');
   const imported=await client.state(state=>state.loaded&&state.id!==initial.id&&!state.disabled);
   check('原生表单经 Electron 授权目录桥和 Rust 完成旧世界导入',imported.snapshot.player.x===8&&fs.readFileSync(legacy.file).equals(original));

@@ -1,10 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { atomicJSON } from '../store.mjs';
-import { upgradeScene,compileScene,validateObjectScope } from '../scene.mjs';
+import { upgradeScene } from '../scene.mjs';
+import {patchWorkspaceScene,workspaceResource} from './resource-patch.mjs';
 import { contentHash,fields,integer,requireValue,HARNESS_LIMITS } from './contracts.mjs';
 
-const groups={object:'objects',behavior:'behaviors',system:'systems'};
 const resourceKey=(kind,id)=>kind+':'+id;
 const taskPattern=/^[a-f0-9-]{36}$/;
 const callPattern=/^[a-zA-Z0-9-]{1,80}$/;
@@ -72,10 +72,7 @@ export class TaskWorkspace {
     requireValue(this.store.data.current===this.base&&!this.store.data.candidate&&!this.store.data.applying,'STALE_BASE','正式世界或候选已经改变');
   }
   resource(kind,id,scene=this.scene()){
-    requireValue(Object.hasOwn(groups,kind),'INVALID_RESOURCE','只支持对象、行为和系统资源');
-    requireValue(typeof id==='string'&&/^[a-z][a-z0-9-]{0,47}$/.test(id),'INVALID_RESOURCE','资源 ID 无效');
-    const found=(upgradeScene(scene)[groups[kind]]||[]).find(o=>o.id===id);
-    requireValue(found,'NOT_FOUND','资源不存在：'+kind+':'+id);return found;
+    return workspaceResource(scene,kind,id);
   }
   readResource({kind,id,start=0,limit=HARNESS_LIMITS.readChars}){
     integer(start,0,200000,'读取起点');integer(limit,1,HARNESS_LIMITS.readChars,'读取长度');
@@ -101,34 +98,10 @@ export class TaskWorkspace {
     requireValue(Array.isArray(input.operations)&&input.operations.length>0&&input.operations.length<=HARNESS_LIMITS.patchOperations,
       'INVALID_ARGUMENTS','每次需要 1–8 项修改');
     requireValue(m.receipts.length<HARNESS_LIMITS.calls,'CALL_LIMIT','草稿修改次数已达上限');
-    const original=this.scene(m),next=upgradeScene(original),touched=new Set();
-    for(const op of input.operations){
-      fields(op,['kind','id','expectedHash','value'],['op']);
-      const operation=op.op??'replace';
-      requireValue(['add','replace'].includes(operation),'INVALID_ARGUMENTS','补丁 op 只支持 add 或 replace');
-      requireValue(Object.hasOwn(groups,op.kind),'INVALID_RESOURCE','只支持对象、行为或系统资源');
-      requireValue(typeof op.id==='string'&&/^[a-z][a-z0-9-]{0,47}$/.test(op.id),'INVALID_RESOURCE','资源 ID 无效');
-      const key=resourceKey(op.kind,op.id);
-      requireValue(!touched.has(key),'INVALID_ARGUMENTS','同一补丁不能重复修改资源');touched.add(key);
-      requireValue(op.value&&op.value.id===op.id,'IDENTITY_CHANGED','局部替换必须保留资源身份');
-      if(operation==='add'){
-        requireValue(op.expectedHash===null,'READ_CONFLICT','新增资源的 expectedHash 必须为 null');
-        if(op.kind==='behavior'&&next.format==='craftmine.scene/2'){next.format='craftmine.scene/3';next.behaviors=[];}
-        requireValue(!next[groups[op.kind]].some(o=>o.id===op.id),'RESOURCE_EXISTS','资源已经存在，不能重复新增：'+key);
-        next[groups[op.kind]].push(structuredClone(op.value));
-      }else{
-        const old=this.resource(op.kind,op.id,next),hash=contentHash(old);
-        requireValue(op.expectedHash===hash&&m.reads[key]===hash,'READ_CONFLICT','请先读取要修改的当前资源及哈希');
-        next[groups[op.kind]]=next[groups[op.kind]].map(o=>o.id===op.id?structuredClone(op.value):o);
-      }
-    }
-    // 已装载扩展必须参与编译：否则玩法模块声明 ext: 依赖时，草稿会被误判成「扩展没有装载」。
-    const compiled=compileScene(next,{extensions:this.store.extensionSet()});
-    validateObjectScope(this.store.readBuild(this.base).scene,compiled.scene,this.selected);
-    requireValue(contentHash(original)!==contentHash(compiled.scene),'NO_CHANGE','补丁没有修改草稿');
+    const patched=patchWorkspaceScene(this.scene(m),input,{reads:m.reads,extensions:this.store.extensionSet(),baseScene:this.store.readBuild(this.base).scene,selected:this.selected});
     this.journal('patch.prepared',{callId,requestHash,fromRevision:m.revision});
-    const revision=m.revision+1,head=this.writeRevision(revision,compiled.scene);
-    const result={workspaceRevision:revision,headHash:contentHash(compiled.scene),changed:[...touched]};
+    const revision=m.revision+1,head=this.writeRevision(revision,patched.scene);
+    const result={workspaceRevision:revision,headHash:contentHash(patched.scene),changed:patched.changed};
     const updated={...m,revision,head,validation:null,receipts:[...m.receipts,{callId,requestHash,result}]};
     this.assertMutable();
     atomicJSON(this.file,updated);

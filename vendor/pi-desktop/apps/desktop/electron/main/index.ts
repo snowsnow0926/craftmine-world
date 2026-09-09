@@ -16,6 +16,8 @@ import { dirname, isAbsolute, join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
+import { craftmineProjectIdentity } from "./craftmine-tool-context";
+import { runNativeDraftProbe } from "./craftmine-draft-probe";
 import { configureHeadlessAcceptance, installHeadlessControl } from "./craftmine-headless";
 import {
   existsSync,
@@ -4457,21 +4459,32 @@ function wireHost(h: HostProcess) {
           try {
             let modelKey: string | undefined;
             let thinkingLevel: string | undefined;
+            let projectId: string | undefined;
             if (q.sessionId && host) {
               try {
                 const detail = await host.call<{
-                  session?: { providerId?: string; modelId?: string; thinkingLevel?: string };
+                  session?: { id?: string; projectPath?: string | null; providerId?: string; modelId?: string; thinkingLevel?: string };
                 }>("session.get", { id: q.sessionId });
                 const session = detail?.session;
                 if (session?.providerId && session?.modelId) {
                   modelKey = `${session.providerId}/${session.modelId}`;
                 }
                 thinkingLevel = session?.thinkingLevel;
+                if (tool.pluginId === "craftmine.world") {
+                  projectId = craftmineProjectIdentity(session, q.sessionId);
+                }
               } catch {
                 // Executor identity is best-effort; the tool can still run.
               }
             }
+            if (tool.pluginId === "craftmine.world" && tool.name !== "runtime_info") {
+              if (!projectId || !q.sessionId || !q.turnId ||
+                  activeTurns.get(q.sessionId) !== q.turnId || turnFinalizations.has(q.sessionId)) {
+                throw new Error("CRAFTMINE_ACTIVE_TURN_REQUIRED");
+              }
+            }
             const result = await tool.execute(q.args, {
+              projectId,
               sessionId: q.sessionId,
               toolCallId: q.toolCallId,
               executionId: q.executionId,
@@ -4937,6 +4950,9 @@ function finishTurn(
 
     try {
       if (host && turnId) {
+        await plugins.endCraftmineTurn({ sessionId, turnId, status }).catch((error) => {
+          logger.app("persistence", "error", "Craftmine draft turn end failed", { sessionId, data: String(error) });
+        });
         const createNotification =
           options.createNotification ??
           (!wasPlanSubmission && shouldCreateTaskNotification(sessionId));
@@ -6046,6 +6062,7 @@ function registerIpc() {
   );
   handle(IPC.invoke.sessionDelete, async (id: string) => {
     if (!host) throw new Error("host unavailable");
+    await finishTurn(id, "aborted", "SESSION_DELETED");
     const res = await host.call("session.delete", { id });
     await persistenceOutbox.dropSession(id);
     // Drop the session's pi-agent so a later session with the same id (or a
@@ -7943,6 +7960,10 @@ function registerIpc() {
       )?.[0];
     let result: unknown;
     try {
+      const turnId = activeTurns.get(req.sessionId);
+      if (turnId) await plugins.endCraftmineTurn({ sessionId: req.sessionId, turnId, status: "aborted" }).catch((error) => {
+        logger.app("persistence", "error", "Craftmine draft cancellation failed", { sessionId: req.sessionId, data: String(error) });
+      });
       result = await sidecar.call("agent.abort", req);
     } finally {
       await finishTurn(req.sessionId, "aborted", "TURN_ABORTED");
@@ -8889,6 +8910,19 @@ installHeadlessControl({
   window: () => mainWindow,
   world: () => pluginViews.headlessWorldContents(),
   runtime: () => ({ hostAvailable: !!host?.isAvailable(), plugins: plugins.listLoaded().map(plugin => plugin.manifest.id) }),
+  draftProbe: async () => {
+    if (!headlessAcceptance || !host) throw new Error("Native draft acceptance is unavailable");
+    return runNativeDraftProbe({
+      call: (method, params) => host!.call(method, params),
+      toolName: (name) => {
+        const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name);
+        if (!tool) throw new Error(`Missing world tool: ${name}`);
+        return tool.fullName;
+      },
+      begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId),
+      finish: (sessionId) => finishTurn(sessionId, "completed", undefined, { createNotification: false }),
+    });
+  },
 });
 
 app.whenReady().then(async () => {

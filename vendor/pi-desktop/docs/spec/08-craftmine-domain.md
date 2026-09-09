@@ -33,11 +33,30 @@ code. Progress and formal world code are unchanged by these operations.
 
 ## Plugin execution identity
 
-The Rust `plugins.execute` notification includes its existing `sessionId`, `toolCallId`, and `executionId`, plus `turnId` from `ToolsExecuteParams`. Electron main, PluginRuntime, the plugin process, and `PluginToolExecContext` preserve these values. The public fields remain optional for compatibility. Craftmine mutating tools must reject missing identity rather than accepting IDs supplied by the model. Execution IDs identify dispatch attempts; tool-call IDs remain the idempotency identity within the bound task. Cancellation and project binding remain separate requirements.
+The Rust `plugins.execute` notification includes its existing `sessionId`, `toolCallId`, and `executionId`, plus `turnId` from `ToolsExecuteParams`. Electron main, PluginRuntime, the plugin process, and `PluginToolExecContext` preserve these values. For Craftmine, main resolves `projectId` from the persisted session's project path (or its own session ID when projectless), hashes that identity, and requires the matching active turn with no finalization in progress. The public fields remain optional for compatibility; Craftmine draft tools reject missing identity and unknown authored identity fields. Execution IDs identify dispatch attempts; tool-call IDs remain the idempotency identity within the bound task.
+
+The desktop awaits the private `lifecycle.turnEnded` call on turn finalization,
+abort and active-session deletion. The built-in broker marks the turn ended
+before awaiting Rust, so an in-flight asynchronous operation cannot submit a new
+commit after that boundary even if persistence fails. Rust persists the terminal
+marker and releases the lease. The call is not a panel or plugin API. Errors are
+logged; draft data is retained for recovery. Abrupt process termination still
+requires W3 recovery rather than claiming an acknowledged lifecycle event.
 
 ## Product service and world panel
 
-`craftmine-core --data-dir <absolute path>` owns `tasks.sqlite` and accepts bounded JSON-lines requests on its private stdio pipe. `hello`, `task.start`, `task.inspect`, `task.commit` and `task.cancel` are available to the trusted broker. The built-in `craftmine.world` plugin owns the service lifecycle. Its first agent tool reports actual runtime status and explicitly reports world publishing as unavailable.
+`craftmine-core --data-dir <absolute path>` owns `tasks.sqlite` and accepts bounded JSON-lines requests on its private stdio pipe. Task and workspace methods are available to the trusted broker. The built-in `craftmine.world` plugin owns the service lifecycle. `runtime_info` reports draft tools as available and formal world publishing as unavailable.
+
+The PI tool catalogue exposes `project_inspect`, `capabilities_read`,
+`resource_read` and `workspace_patch` under the normal plugin namespace. Index
+pages hold at most 32 resources; code and contract pages at most 16,000 Unicode
+characters. A patch contains 1–8 additions/replacements and a checked revision.
+Replacement requires a recorded read of the matching resource hash. The web
+workspace and desktop broker share the same pure transformation and compiler,
+including loaded extension versions and object scope validation. Desktop patches
+also check immutable asset availability. Rust alone persists desktop changes.
+This slice does not register a candidate-apply tool or execute authored code in
+the privileged plugin process.
 
 Electron resolves the domain executable and forwards `CRAFTMINE_CORE_BIN` only to the `craftmine.world` utility process. Other plugin processes keep the existing minimal environment; provider secrets, headless test tokens and unrelated host variables are never forwarded. Native acceptance must exercise the production utility-process spawner, because a test-only Node fork with a copied environment cannot verify this boundary.
 
