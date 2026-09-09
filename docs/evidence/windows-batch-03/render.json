@@ -1,0 +1,14 @@
+{
+  "scope": "Actual bundled world renderer and real-model object geometry; fixture outer bridge, no candidate publishing",
+  "checks": [
+    {
+      "name": "Render recorded first geometry with no input",
+      "passed": true
+    },
+    {
+      "name": "Render recorded second geometry with no input",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,70 @@
+{
+  "scope": "Rust service and real PI plugin process; fixture host invocation identity; no real model or Electron main acceptance",
+  "checks": [
+    {
+      "name": "真实插件注册查询、契约、资源读取与草稿修改工具",
+      "passed": true
+    },
+    {
+      "name": "首次查询绑定 Rust 世界，伪造身份不能成为参数",
+      "passed": true
+    },
+    {
+      "name": "切换世界面板不会重定向正在创作的会话",
+      "passed": true
+    },
+    {
+      "name": "另一会话不能同时获得同一世界的草稿写入权",
+      "passed": true
+    },
+    {
+      "name": "能力契约按需分段，不把完整世界和代码塞进返回值",
+      "passed": true
+    },
+    {
+      "name": "新增花与玩法模块一起编译并存入 Rust 草稿",
+      "passed": true
+    },
+    {
+      "name": "重启插件和 Rust 后恢复旧回执，不重复新增",
+      "passed": true
+    },
+    {
+      "name": "重启后读取来源仍有效，可以用原哈希替换资源",
+      "passed": true
+    },
+    {
+      "name": "编译失败和过期补丁保留最后一次有效草稿",
+      "passed": true
+    },
+    {
+      "name": "中文工具载荷按 UTF-8 字节限制大小",
+      "passed": true
+    },
+    {
+      "name": "草稿修改没有改动正式世界和玩家进度",
+      "passed": true
+    },
+    {
+      "name": "宿主停止会拒绝迟到工具，页面不能伪造停止其他会话",
+      "passed": true
+    },
+    {
+      "name": "新一轮继续保留修改后的代码并指明来源",
+      "passed": true
+    },
+    {
+      "name": "上一轮结束后另一会话可以获得世界写入权",
+      "passed": true
+    },
+    {
+      "name": "停止写库失败时仍拒绝迟到工具，解锁后可补写停止记录",
+      "passed": true
+    },
+    {
+      "name": "停止早于首个工具时也不会事后创建任务",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

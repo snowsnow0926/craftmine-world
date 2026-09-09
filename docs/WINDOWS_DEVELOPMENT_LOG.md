@@ -57,3 +57,13 @@
 - 完整报告 `docs/WINDOWS_BATCH_02.md`，便携证据 `docs/evidence/windows-batch-02`，原始运行目录已保存到主项目 `test-results/windows-batch-02`。
 - W1 核心运行自动验收通过，进入 W2 接线。仍未验收可见窗口合成、物理双击、安装器和新桌面的真实模型创作；没有复制个人凭据或操作用户世界。作品检索、候选界面和压缩后绿色收尾继续待办。
 - 合并完成：`a5779f2` 及全部本批提交已进入本地 `master`。工作树登记与开发分支已删除；Git 删除目录返回 `Directory not empty`，随后针对本批残留的递归清理被自动执行审核以 `blocked by policy` 拒绝，未提供更具体原因。保留 `D:/Craftmine World-worktrees/pi-client-w1-20260909` 残留，不再自动删除或复用；不触碰先前已被拒绝清理的旧残留。此状态记录使用单独的轻量工作树提交，不在主目录直接开发。
+
+## 2026-09-09：W2 会话草稿和真实 PI 创作
+
+- 使用独立分支 codex/pi-client-w2-20260909、工作树 D:/Craftmine World-worktrees/pi-client-w2-20260909，从本地 master 6183279 开始。
+- Rust 接管会话/世界绑定、草稿写入租约、不可变版本、读取来源、回执和停止记录；新轮次继承草稿，旧轮次与其他会话不能越权修改。
+- PI 注册 project_inspect、capabilities_read、resource_read、workspace_patch；沿用纯世界编译/补丁逻辑。Electron 解析真实项目身份并检查当前轮次，停止和结束通过私有确认调用落到 Rust。
+- 实现提交 bc5ff3a、b360559、d526ebb。Rust 16/16，插件草稿 16/16（含真实 SQLite 停止失败），核心探针 8/8，身份传递 5/5，原生开发版 23/23，领域回归 276/276；构建与类型检查通过。
+- 真实 pi-agent-core/pi-ai 0.85.1 + DeepSeek 完成创建树、重启后保留树干放大树冠。首跑发现 appearance 格式混用和悬空树；修正契约并补接地检查后 6/6，11 次模型请求、10 次工具调用、0 次工具报错。两版几何在实际游戏沙箱渲染并检查截图。
+- 本次真实模型使用隔离调用会话，不算实际桌面模型配置到应用的整条验收。候选、验收作业和作品复用继续待办；本批未更新 EXE 包，持续目标仍是 W0–W5。
+- 完整报告 WINDOWS_BATCH_03.md，便携证据 docs/evidence/windows-batch-03，原始运行目录已复制到主项目 test-results/windows-batch-03。未操作真实输入、置前窗口或修改个人世界；未推送远程。

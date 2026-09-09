@@ -1,0 +1,57 @@
+{
+  "format": "craftmine.batch-verification/1",
+  "date": "2026-09-09",
+  "sourceCommits": [
+    "bc5ff3a",
+    "b360559",
+    "d526ebb"
+  ],
+  "checks": [
+    {
+      "command": "npm test",
+      "passed": 276,
+      "evidence": "test-results/windows-batch-03/w2-domain-tests.log"
+    },
+    {
+      "command": "cargo test --locked -p craftmine-core",
+      "passed": 16,
+      "evidence": "Development session terminal output"
+    },
+    {
+      "command": "node --test test/plugin-complete.test.mjs",
+      "cwd": "vendor/pi-desktop/apps/desktop",
+      "passed": 5,
+      "evidence": "Development session terminal output"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "cwd": "vendor/pi-desktop/apps/desktop",
+      "result": "passed",
+      "evidence": "Development session terminal output"
+    },
+    {
+      "command": "pnpm --filter @pi-desktop/desktop build",
+      "result": "passed",
+      "evidence": "test-results/windows-batch-03/w2-desktop-build.log"
+    },
+    {
+      "command": "cargo build --release --locked -p craftmine-core",
+      "result": "passed",
+      "evidence": "Development session terminal output"
+    }
+  ],
+  "reportChecks": {
+    "native-development.json": 23,
+    "drafts.json": 16,
+    "core.json": 8,
+    "live-pi.json": 6,
+    "render.json": 2
+  },
+  "limits": [
+    "No new Windows package built",
+    "Native tool dispatch and real model loop verified separately",
+    "Real model session is an isolated test invocation, not native model configuration",
+    "No candidate verification, application, cross-session memory or compaction acceptance in this batch",
+    "Initial model run passed narrower checks but visual/source review found an ungrounded trunk; subsequent run added and passed ground contact"
+  ]
+}

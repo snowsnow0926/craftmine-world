@@ -7,14 +7,14 @@
   "execution": {
     "scope": "current_codex_thread",
     "status": "running",
-    "reason": "第 2 批完成原生 Windows 开发版与包内 EXE 的启动、导入、保存故障重试和重启验收。持续目标仍在执行，开始 W2 真实 PI Agent 世界创作接线。",
+    "reason": "W2 第 3 批完成会话绑定、Rust 草稿工具、原生分发和真实 PI/DeepSeek 草稿续改。候选验收、预览应用、作品复用与桌面模型设置闭环继续推进。",
     "activeGoal": true,
     "recurringDevelopment": true,
     "previousLiveCompactionTestStopped": true,
     "automationId": "craftmine-windows",
-    "worktree": null,
-    "branch": null,
-    "nextStep": "先核对本地 master 已包含 3490f46 及 WINDOWS_BATCH_02.md；若上一批交付中断，先处理同请求的未合并工作。随后从最新本地 master 创建新的 codex/ 分支与独立 W2 工作树，接入 Rust 世界/会话绑定、草稿与作业工具、候选和作品面板，跑真实 DeepSeek 创作与复用闭环。17 项原生检查已通过，不要无改动重复开发或重复验收 W1。",
+    "worktree": "D:/Craftmine World-worktrees/pi-client-w2-20260909",
+    "branch": "codex/pi-client-w2-20260909",
+    "nextStep": "先核对第 3 批提交 bc5ff3a、b360559、d526ebb 和 WINDOWS_BATCH_03.md 是否已合入 master；未合并只续作本批工作树，已合并则从最新 master 创建新的 W2 候选开发工作树。接入 Rust 验收作业/证据和候选事务，补 PI 候选差异/预览/应用面板，再接最小作品检索与真实桌面模型闭环。不要重复已经通过的草稿接线；目标 W0–W5 仍未完成。",
     "cleanupNote": "两批实现已合并，工作树登记与开发分支均已移除。D:/Craftmine World-worktrees/pi-client-20260909 和 D:/Craftmine World-worktrees/pi-client-w1-20260909 留有文件：Git 删除报告 Directory not empty，随后递归清理分别被自动执行审核以 blocked by policy 拒绝，未给出更具体原因。保留且不自动重试，不复用这两个目录。"
   },
   "windowsClientPlan": {
@@ -51,14 +51,13 @@
       "evidence": "test-results/windows-plan-final-snapshot-20260909.log（271 条）与 2026-09-09 晚真实端到端修复后的 272 条"
     },
     "knownGaps": [
-      "W1 的开发版与包内 EXE 均通过 17 项原生离屏验收；可见窗口合成、实体双击体验、正式安装流程与产品图标/引导仍需后续验收和完善",
-      "世界面板、Rust 存储与打包组件通过；PI Agent 世界工具、长时验收、作品和候选面板仍需集成",
-      "真实 toolCallId 透传和 Rust 草稿恢复去重通过；仍需项目写入租约和取消跨进程接线",
-      "需核实完整模型请求的上下文预算，补齐世界记忆注入与 Windows 系统保护凭据",
-      "自建分步工具循环默认关闭，需要显式环境开关",
-      "真实压缩回归已能触发压缩并接上检查点继续，但还没有一次「压缩后把任务做完」的绿色收尾",
-      "verify.run 的接口与事件检查尚不等同完整玩家需求验收",
-      "扩展对抗评审断言留档后尚未逐项接入实际轨迹执行；评审结论已改为建议，硬门槛只保留机器可复核的检查"
+      "W1 开发版与包内 EXE 已通过原生离屏验收；可见窗口合成、物理双击、正式安装、图标/引导仍待完善",
+      "W2 Rust 会话草稿和 PI 工具已接通；候选验收作业、证据、预览/应用、作品检索仍待接入",
+      "实际 Electron 工具分发已通过；真实 PI/DeepSeek 草稿生成续改使用隔离调用会话，不等于桌面模型设置到玩家应用的完整闭环",
+      "世界草稿写入租约与停止跨进程接线已完成；崩溃后的租约恢复、显式丢弃与跨会话作品复用仍待实现",
+      "需核实完整模型请求上下文预算，补世界记忆注入、Windows 凭据和至少三次强制压缩后绿色收尾",
+      "旧网页自建分步工具循环默认关闭；新桌面继续使用 pi Agent 循环",
+      "扩展模型评审必须执行但只作建议；硬门槛由实际编译、隔离运行、断言和冻结回归决定"
     ],
     "runtimeChangedInThisReview": true,
     "personalServiceOrDataChangedInThisReview": false,
@@ -71,8 +70,8 @@
       "passed": 276,
       "failed": 0,
       "skipped": 0,
-      "evidence": "test-results/windows-batch-02/w1-final-domain-tests.log",
-      "scope": "领域回归；另有 Rust 10/10、桌面定向 47/47、原生开发版与包内 EXE 各 17/17、React 布局 9/9。未调用真实模型。"
+      "evidence": "test-results/windows-batch-03/w2-domain-tests.log",
+      "scope": "领域回归；另有 Rust 16、插件草稿 16、核心探针 8、原生开发版 23、身份传递 5、真实 PI 模型草稿 6、渲染 2 项通过。具体边界见第 3 批报告。"
     },
     "buildVerification": {
       "dependencies": "pnpm install --frozen-lockfile: passed",
@@ -109,6 +108,31 @@
       "buildCommit": "7a2376d",
       "visibleWindowAcceptance": "pending",
       "installerAcceptance": "pending"
+    },
+    "batch03": {
+      "report": "docs/WINDOWS_BATCH_03.md",
+      "status": "W2 draft integration complete; candidate, memory and native model flow pending",
+      "rustTests": "16/16",
+      "pluginDraftChecks": "16/16",
+      "coreChecks": "8/8",
+      "nativeDevelopmentChecks": "23/23",
+      "pluginIdentityChecks": "5/5",
+      "realPiDraftChecks": "6/6",
+      "renderChecks": "2/2",
+      "model": "deepseek-v4.1-flash-expires-on-0910",
+      "thinking": "high",
+      "modelRequests": 11,
+      "modelToolCalls": 10,
+      "modelToolErrors": 0,
+      "modelReportedTokens": 70983,
+      "realModelScope": "Actual pinned pi-agent-core/pi-ai with real DeepSeek, plugin process and Rust; fixture host session; not native model configuration or candidate application",
+      "evidenceDirectory": "docs/evidence/windows-batch-03",
+      "packageUpdated": false,
+      "sourceCommits": [
+        "bc5ff3a",
+        "b360559",
+        "d526ebb"
+      ]
     }
   },
   "liveVerification": {

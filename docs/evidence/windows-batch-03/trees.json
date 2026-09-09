@@ -1,0 +1,130 @@
+{
+  "first": {
+    "components": {
+      "contactDamage": 0,
+      "health": 20
+    },
+    "id": "forest-tree",
+    "name": "森林之树",
+    "parts": [
+      {
+        "color": "#6b4a2b",
+        "material": "wood",
+        "offset": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "shape": "box",
+        "size": {
+          "x": 0.6,
+          "y": 3,
+          "z": 0.6
+        },
+        "solid": true
+      },
+      {
+        "color": "#6b4a2b",
+        "material": "wood",
+        "offset": {
+          "x": 0.6,
+          "y": 2.2,
+          "z": 0.15
+        },
+        "shape": "box",
+        "size": {
+          "x": 1,
+          "y": 0.4,
+          "z": 0.4
+        },
+        "solid": true
+      },
+      {
+        "color": "#3f8f3a",
+        "material": "leaves",
+        "offset": {
+          "x": -1.2,
+          "y": 2.5,
+          "z": -1.2
+        },
+        "shape": "box",
+        "size": {
+          "x": 3,
+          "y": 2,
+          "z": 3
+        },
+        "solid": false
+      }
+    ],
+    "position": {
+      "x": 3,
+      "y": 6,
+      "z": 3
+    },
+    "source": null
+  },
+  "second": {
+    "components": {
+      "contactDamage": 0,
+      "health": 20
+    },
+    "id": "forest-tree",
+    "name": "森林之树",
+    "parts": [
+      {
+        "color": "#6b4a2b",
+        "material": "wood",
+        "offset": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "shape": "box",
+        "size": {
+          "x": 0.6,
+          "y": 3,
+          "z": 0.6
+        },
+        "solid": true
+      },
+      {
+        "color": "#6b4a2b",
+        "material": "wood",
+        "offset": {
+          "x": 0.6,
+          "y": 2.2,
+          "z": 0.15
+        },
+        "shape": "box",
+        "size": {
+          "x": 1,
+          "y": 0.4,
+          "z": 0.4
+        },
+        "solid": true
+      },
+      {
+        "color": "#3f8f3a",
+        "material": "leaves",
+        "offset": {
+          "x": -2.2,
+          "y": 2,
+          "z": -2.2
+        },
+        "shape": "box",
+        "size": {
+          "x": 5,
+          "y": 3.5,
+          "z": 5
+        },
+        "solid": false
+      }
+    ],
+    "position": {
+      "x": 3,
+      "y": 6,
+      "z": 3
+    },
+    "source": null
+  }
+}
