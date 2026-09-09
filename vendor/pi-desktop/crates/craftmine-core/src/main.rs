@@ -10,7 +10,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
     let method = request["method"].as_str().context("METHOD_REQUIRED")?;
     if method == "hello" {
         return Ok(
-            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"verificationJobs":true,"advisoryReviews":true,"playerApplications":true,"publishesWorlds":true,"agentPublishesWorlds":false,"godotProjects":true,"godotExecution":false,"godotBuildJobs":true,"godotExecutorGate":true}),
+            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"verificationJobs":true,"advisoryReviews":true,"playerApplications":true,"publishesWorlds":true,"agentPublishesWorlds":false,"godotProjects":true,"godotExecution":false,"godotBuildJobs":true,"godotExecutorGate":true,"contentHistory":true,"managedGit":true}),
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
@@ -45,7 +45,45 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "godotRuntime.describeCandidate" => return journal.godot_runtime_describe_candidate(params),
         "godotRuntime.saveProgress" => return journal.godot_runtime_save_progress(params),
         "godotExecutor.register" => return journal.godot_executor_register(params),
+        "godotExecutor.status" => return Ok(journal.godot_executor_status()),
+        "godotExecutor.revoke" => return journal.godot_executor_revoke(params),
+        "godotJob.checkDescriptor" => return journal.godot_job_check_descriptor(params),
+        "godotJob.continue" => return journal.godot_job_continue(params),
+        "godotJob.usage" => return journal.godot_usage_summary(params),
         "godotJob.claim" => return journal.godot_job_claim(params),
+        "godotStorage.status" => return journal.godot_storage_status(params),
+        "godotStorage.reclaimPlan" => return journal.godot_storage_reclaim_plan(params),
+        "godotStorage.reclaimCommit" => return journal.godot_storage_reclaim_commit(params),
+        "godotWorld.initialize" => return journal.godot_world_initialize(params),
+        "godotWorld.initStatus" => return journal.godot_world_init_status(params),
+        "godotWorld.copy" => return journal.godot_world_copy(params),
+        "godotWorld.backupSnapshot" => return journal.godot_world_backup_snapshot(params),
+        "godotWorld.verifySnapshot" => return journal.godot_world_verify_snapshot(params),
+        "content.status" => return journal.content_status(params),
+        "content.gitInfo" => return journal.content_git_info(params),
+        "content.migrate.plan" => return journal.content_migrate_plan(params),
+        "content.migrate.apply" => return journal.content_migrate_apply(params),
+        "content.migrate.verify" => return journal.content_migrate_verify(params),
+        "content.history" => return journal.content_history(params),
+        "content.changes" => return journal.content_changes(params),
+        "content.diff" => return journal.content_diff(params),
+        "content.readFile" => return journal.content_read_file(params),
+        "content.branch.list" => return journal.content_branch_list(params),
+        "content.branch.create" => return journal.content_branch_create(params),
+        "content.branch.merge" => return journal.content_branch_merge(params),
+        "content.version.create" => return journal.content_version_create(params),
+        "content.version.list" => return journal.content_version_list(params),
+        "content.checkpoint.set" => return journal.content_checkpoint_set(params),
+        "content.checkpoint.list" => return journal.content_checkpoint_list(params),
+        "content.apply.prepare" => return journal.content_apply_prepare(params),
+        "content.apply.advance" => return journal.content_apply_advance(params),
+        "content.apply.confirm" => return journal.content_apply_confirm(params),
+        "content.apply.rollback" => return journal.content_apply_rollback(params),
+        "content.apply.recover" => return journal.content_apply_recover(params),
+        "content.reclaim.plan" => return journal.content_reclaim_plan(params),
+        "content.reclaim.prune" => return journal.content_reclaim_prune(params),
+        "content.verify" => return journal.content_verify(params),
+        "content.bundle" => return journal.content_bundle(params),
         "godotJob.progress" => return journal.godot_job_progress(params),
         "godotJob.heartbeat" => return journal.godot_job_heartbeat(params),
         "godotJob.finish" => return journal.godot_job_finish(params),
@@ -302,6 +340,7 @@ fn main() -> Result<()> {
     journal.application_recover()?;
     journal.godot_application_recover()?;
     journal.godot_recover()?;
+    journal.godot_storage_recover()?;
     journal.task_recover()?;
     let mut input = io::stdin().lock();
     let mut output = io::stdout().lock();

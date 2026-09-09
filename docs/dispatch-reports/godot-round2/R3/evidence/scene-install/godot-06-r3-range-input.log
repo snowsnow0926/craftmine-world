@@ -1,0 +1,38 @@
+exit=0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCENE_IDS=[{"field":"target_id","node":"TargetA","value":"target_a"},{"field":"target_id","node":"TargetB","value":"target_b"},{"field":"target_id","node":"TargetC","value":"target_c"},{"field":"target_id","node":"r3_dummy_a","value":"r3_dummy_a"},{"field":"target_id","node":"r3_dummy_b","value":"r3_dummy_b"},{"field":"entity_id","node":"r3_interactable","value":"r3_interactable"}]
+ERROR: 14 RID allocations of type 'P11GodotBody3D' were leaked at exit.
+ERROR: 7 RID allocations of type 'P12GodotShape3D' were leaked at exit.
+ERROR: 1 RID allocations of type 'N26RendererEnvironmentStorage11EnvironmentE' were leaked at exit.
+ERROR: 7 RID allocations of type 'N13RendererDummy15MaterialStorage13DummyMaterialE' were leaked at exit.
+ERROR: 2 RID allocations of type 'N13RendererDummy15MaterialStorage11DummyShaderE' were leaked at exit.
+ERROR: 13 RID allocations of type 'N13RendererDummy9DummyMeshE' were leaked at exit.
+ERROR: 16 RID allocations of type 'N17RendererSceneCull8InstanceE' were leaked at exit.
+ERROR: 1 RID allocations of type 'N17RendererSceneCull6CameraE' were leaked at exit.
+ERROR: 18 RID allocations of type 'PN18TextServerAdvanced22ShapedTextDataAdvancedE' were leaked at exit.
+ERROR: 1 RID allocations of type 'PN18TextServerAdvanced12FontAdvancedE' were leaked at exit.
+
+WARNING: 1 RID of type "Canvas" was leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2733)
+WARNING: 12 RIDs of type "CanvasItem" were leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2735)
+ERROR: Pages in use exist at exit in PagedAllocator: N20RasterizerSceneDummy21GeometryInstanceDummyE
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: 171 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 65 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+

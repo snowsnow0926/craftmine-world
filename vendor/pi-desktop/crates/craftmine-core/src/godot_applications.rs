@@ -323,6 +323,9 @@ impl TaskJournal {
                 now
             ],
         )?;
+        // The first real application is what turns an initialising world into a
+        // playable formal world; the initialisation record is confirmed here.
+        super::godot_worlds::confirm(&tx, world_id, &args.id)?;
         // The authoring draft is superseded by the applied build; otherwise the
         // next turn would resume a scene draft against a different base build.
         let author = input["authorTaskId"].as_str().context("TASK_REQUIRED")?;

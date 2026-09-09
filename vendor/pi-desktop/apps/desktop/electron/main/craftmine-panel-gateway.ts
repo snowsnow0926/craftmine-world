@@ -8,6 +8,9 @@ export const CRAFTMINE_PANEL_CHANNELS = new Set([
   "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel",
   "diagnostics.status", "diagnostics.export",
   "workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge", "draft.recheck", "task.budget",
+  // Asset library reads (R6's contract). Writes stay in the player import flow.
+  "asset.search", "asset.read", "asset.versions", "asset.usage", "asset.scan",
+  "asset.probe", "asset.previewRead",
 ]);
 type Domain = (method: string, params: Record<string, any>) => Promise<any>;
 type Owner = { sessionId: string | null; projectId: string; selectedWorld: string; active: boolean; context?: Record<string, string>; origin?: unknown; previous?: any };

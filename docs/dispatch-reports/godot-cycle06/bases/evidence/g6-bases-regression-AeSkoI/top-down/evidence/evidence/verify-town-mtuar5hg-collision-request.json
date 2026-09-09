@@ -1,0 +1,29 @@
+{
+  "format": "craftmine.godot-topdown-probe/1",
+  "commands": [
+    {
+      "op": "set-position",
+      "args": {
+        "x": 416,
+        "y": 160,
+        "facing": "up",
+        "label": "place"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": -1,
+        "steps": 60,
+        "label": "into-wall"
+      }
+    },
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "after"
+      }
+    }
+  ]
+}

@@ -22,6 +22,12 @@ func on_trigger(body: Node) -> void:
 	if not body.is_in_group("player"):
 		return
 	_transitioning = true
+	# Area2D enters during a physics flush; defer removing its collision objects.
+	_enter_scene.call_deferred()
+
+func _enter_scene() -> void:
+	if not is_inside_tree():
+		return
 	var outcome := Game.change_scene(target_scene, target_spawn)
 	if not outcome.get("ok", false):
 		push_error("Door transition failed: %s" % String(outcome.get("error", "unknown")))

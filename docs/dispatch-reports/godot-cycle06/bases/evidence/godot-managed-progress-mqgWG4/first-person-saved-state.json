@@ -1,0 +1,98 @@
+{
+  "baseId": "first-person",
+  "baseVersion": "0.1.0",
+  "body": {
+    "base": "first-person",
+    "baseVersion": "0.1.0",
+    "equipment": {
+      "active": "pistol",
+      "items": [
+        {
+          "id": "pistol",
+          "magazine": 3,
+          "reserve": 12
+        },
+        {
+          "id": "practice_sword",
+          "magazine": 0,
+          "reserve": 0
+        },
+        {
+          "id": "inspection_tool",
+          "magazine": 0,
+          "reserve": 0
+        }
+      ]
+    },
+    "format": "craftmine.godot-base-state/1",
+    "interactables": [
+      {
+        "enabled": true,
+        "id": "AmmoCrate",
+        "usesLeft": 1
+      },
+      {
+        "enabled": true,
+        "id": "RepairKit",
+        "taken": false
+      }
+    ],
+    "inventory": {
+      "slots": [
+        {
+          "count": 2,
+          "id": "repair_kit"
+        }
+      ]
+    },
+    "player": {
+      "onFloor": false,
+      "pitch": 0,
+      "position": [
+        1.25,
+        3.25,
+        4.5
+      ],
+      "yaw": 0.5
+    },
+    "quests": {
+      "quests": [
+        {
+          "count": 1,
+          "id": "range_basic",
+          "rewardGranted": false,
+          "status": 1
+        }
+      ]
+    },
+    "savedAt": "2001-02-03T04:05:06Z",
+    "stateVersion": 1,
+    "targets": [
+      {
+        "damageTaken": 25,
+        "destroyed": false,
+        "health": 25,
+        "hitCount": 1,
+        "id": "target_a"
+      },
+      {
+        "damageTaken": 0,
+        "destroyed": false,
+        "health": 50,
+        "hitCount": 0,
+        "id": "target_b"
+      },
+      {
+        "damageTaken": 0,
+        "destroyed": false,
+        "health": 50,
+        "hitCount": 0,
+        "id": "target_c"
+      }
+    ],
+    "worldId": "managed-first-person"
+  },
+  "format": "craftmine.godot-progress/1",
+  "stateVersion": 1,
+  "worldId": "managed-first-person"
+}

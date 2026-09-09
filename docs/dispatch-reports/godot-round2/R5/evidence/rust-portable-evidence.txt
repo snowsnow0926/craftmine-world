@@ -1,0 +1,272 @@
+﻿cargo : crates\craftmine-core\src\content_history\migration_tests.rs:142:9: warning: variable does not need to be mutab
+le
+所在位置 行:1 字符: 527
++ ... CE_DIR=$ev; cargo test -p craftmine-core --lib backups::portable::tes ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (crates\craftmin...d to be mutable:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warning: `craftmine-core` (lib test) generated 1 warning (run `cargo fix --lib -p craftmine-core --tests` to apply 1 su
+ggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src\lib.rs (C:\Users\WINDOWS\.pi-desktop\scratch\3d732e51-6eac-42ff-8487-568e244b45de\cargo-targ
+et-r5\debug\deps\craftmine_core-13091a1caf054aaf.exe)
+
+running 1 test
+=== archive manifest ===
+{
+  "consistency": {
+    "assetBlobs": 1,
+    "boundary": "one immediate transaction over the domain database; every body is immutable content-addressed or sealed data read after that snapshot, and each body is re-hashed while streaming",
+    "builds": 0,
+    "contentRoots": [
+      "R1",
+      "R5",
+      "R6"
+    ],
+    "credentialsIncluded": false,
+    "gitRefs": 1,
+    "legacyImports": 1,
+    "sessionNote": "local session and world-lease routing rows travel with the domain snapshot; they hold no credentials or tokens",
+    "sessionRowsIncluded": true,
+    "snapshotHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
+    "sourceBlobs": 3,
+    "tables": 62
+  },
+  "createdAt": 1788978674860,
+  "entryCount": 16,
+  "format": "craftmine.portable-archive/1",
+  "rebuildable": [
+    {
+      "excluded": true,
+      "kind": "godot-builds/<worldKey>/<buildId>/source",
+      "reason": "materialized project source, rebuilt from the archived source blobs"
+    },
+    {
+      "excluded": true,
+      "kind": "godot-builds/<worldKey>/<buildId>/artifacts",
+      "reason": "export artifacts, rebuilt by the managed build job from the archived source and the fixed toolchain"
+    },
+    {
+      "excluded": true,
+      "kind": "godot-builds/<worldKey>/<buildId>/cache",
+      "reason": "per-build scratch space, never a source of truth"
+    },
+    {
+      "excluded": true,
+      "kind": "content-history/repos/<repoKey>/copies",
+      "reason": "materialized worktrees, rebuilt from the archived Git objects"
+    },
+    {
+      "excluded": true,
+      "kind": "git-config",
+      "reason": "local Git configuration, recreated by the Git adapter"
+    }
+  ],
+  "schemaVersion": 1,
+  "sourceDigest": "ba409c25aa8825282a516fd5d5c396b3151f4c703e05092bbc1e529c4f08847c"
+}
+archive: 23094 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-59792-1788978674860.cmarchive (not committed)
+=== export receipt ===
+{
+  "archivePath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\r5-evidence-59792-1788978674860.cmarchive",
+  "consistency": {
+    "assetBlobs": 1,
+    "boundary": "one immediate transaction over the domain database; every body is immutable content-addressed or sealed data read after that snapshot, and each body is re-hashed while streaming",
+    "builds": 0,
+    "contentRoots": [
+      "R1",
+      "R5",
+      "R6"
+    ],
+    "credentialsIncluded": false,
+    "gitRefs": 1,
+    "legacyImports": 1,
+    "sessionNote": "local session and world-lease routing rows travel with the domain snapshot; they hold no credentials or tokens",
+    "sessionRowsIncluded": true,
+    "snapshotHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
+    "sourceBlobs": 3,
+    "tables": 62
+  },
+  "content": {
+    "assetBlobs": 1,
+    "files": 16,
+    "gitObjects": 6,
+    "gitRefs": 1,
+    "godotAssetBodies": 1,
+    "legacyImports": 1,
+    "sourceBlobs": 3
+  },
+  "credentialsIncluded": false,
+  "id": "portable-1",
+  "kind": "export-portable",
+  "manifest": {
+    "bytes": 23094,
+    "contentBytes": 15247,
+    "domainHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
+    "entries": 16,
+    "hash": "e0bc201bf8e63233d9c8fc4746f886f308c5237b89a2bf6b01a37a4412e3aad7",
+    "schemaVersion": 1,
+    "streamSha256": "0fd9a1dcacc418f0d8f2dd007d3df63d63259177b0cf3f5f53a704945d072202"
+  },
+  "protectedRefs": {
+    "builds": 0,
+    "gitRefs": 1
+  },
+  "rebuildableExcluded": [
+    {
+      "excluded": true,
+      "kind": "godot-builds/<worldKey>/<buildId>/source",
+      "reason": "materialized project source, rebuilt from the archived source blobs"
+    },
+    {
+      "excluded": true,
+      "kind": "godot-builds/<worldKey>/<buildId>/artifacts",
+      "reason": "export artifacts, rebuilt by the managed build job from the archived source and the fixed toolchain"
+    },
+    {
+      "excluded": true,
+      "kind": "godot-builds/<worldKey>/<buildId>/cache",
+      "reason": "per-build scratch space, never a source of truth"
+    },
+    {
+      "excluded": true,
+      "kind": "content-history/repos/<repoKey>/copies",
+      "reason": "materialized worktrees, rebuilt from the archived Git objects"
+    },
+    {
+      "excluded": true,
+      "kind": "git-config",
+      "reason": "local Git configuration, recreated by the Git adapter"
+    }
+  ],
+  "sessionNote": "local session and world-lease routing rows travel with the domain snapshot; they hold no credentials or tokens",
+  "sessionRowsIncluded": true,
+  "status": "completed"
+}
+=== verify report ===
+{
+  "archiveHash": "e0bc201bf8e63233d9c8fc4746f886f308c5237b89a2bf6b01a37a4412e3aad7",
+  "consistency": {
+    "assetBlobs": 1,
+    "boundary": "one immediate transaction over the domain database; every body is immutable content-addressed or sealed data read after that snapshot, and each body is re-hashed while streaming",
+    "builds": 0,
+    "contentRoots": [
+      "R1",
+      "R5",
+      "R6"
+    ],
+    "credentialsIncluded": false,
+    "gitRefs": 1,
+    "legacyImports": 1,
+    "sessionNote": "local session and world-lease routing rows travel with the domain snapshot; they hold no credentials or tokens",
+    "sessionRowsIncluded": true,
+    "snapshotHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
+    "sourceBlobs": 3,
+    "tables": 62
+  },
+  "contentBytes": 15247,
+  "createdAt": 1788978674860,
+  "credentialsIncluded": false,
+  "entries": 16,
+  "format": "craftmine.portable-archive/1",
+  "rebuildable": [
+    {
+      "excluded": true,
+      "kind": "godot-builds/<worldKey>/<buildId>/source",
+      "reason": "materialized project source, rebuilt from the archived source blobs"
+    },
+    {
+      "excluded": true,
+      "kind": "godot-builds/<worldKey>/<buildId>/artifacts",
+      "reason": "export artifacts, rebuilt by the managed build job from the archived source and the fixed toolchain"
+    },
+    {
+      "excluded": true,
+      "kind": "godot-builds/<worldKey>/<buildId>/cache",
+      "reason": "per-build scratch space, never a source of truth"
+    },
+    {
+      "excluded": true,
+      "kind": "content-history/repos/<repoKey>/copies",
+      "reason": "materialized worktrees, rebuilt from the archived Git objects"
+    },
+    {
+      "excluded": true,
+      "kind": "git-config",
+      "reason": "local Git configuration, recreated by the Git adapter"
+    }
+  ],
+  "valid": true,
+  "verifiedFiles": 15
+}
+=== source-unreadable condition ===
+{
+  "movedStillResolves": true,
+  "movedTo": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmpDMr2Po\\data-moved-away",
+  "sourceDirectory": "\\\\?\\C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmpABgqpz",
+  "sourceStillResolves": false,
+  "topLevelBeforeMove": [
+    "asset-catalog",
+    "content-history",
+    "git-config",
+    "godot-assets",
+    "godot-source",
+    "legacy-imports",
+    "tasks.sqlite",
+    "tasks.sqlite-shm",
+    "tasks.sqlite-wal"
+  ]
+}
+=== restore receipt ===
+{
+  "archiveHash": "e0bc201bf8e63233d9c8fc4746f886f308c5237b89a2bf6b01a37a4412e3aad7",
+  "contentBytes": 15247,
+  "credentialsIncluded": false,
+  "currentHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
+  "domainHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
+  "entries": 16,
+  "id": "evidence-restore",
+  "importedProvenance": true,
+  "kind": "restore-portable",
+  "rebuildRequired": [],
+  "repositories": [
+    {
+      "objectFormat": "sha1",
+      "objects": 6,
+      "refs": 1,
+      "repoId": "repo-world-a"
+    }
+  ],
+  "restoredInPlace": true,
+  "status": "completed",
+  "targetDirectory": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmpFyLGyW\\data",
+  "verifiedFiles": 15
+}
+=== restored state ===
+{
+  "assetBlobRestored": true,
+  "domainHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
+  "gitFileMatchesSource": true,
+  "gitHead": "170cc8fb704a31e5ccb79c5b6558d7eb457b6066",
+  "gitHeadMatchesSource": true,
+  "godotAssetRestored": true,
+  "legacyProjectRestored": true,
+  "restoredCurrentHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
+  "sourceBlobRestored": true,
+  "worldAProgress": {
+    "format": "craftmine.progress/1",
+    "player": {
+      "pitch": 0,
+      "x": 0.5,
+      "y": 7.6,
+      "yaw": 0,
+      "z": 0.5
+    }
+  },
+  "worlds": 2
+}
+test backups::portable::tests::evidence_archive_manifest_and_restore_state ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 206 filtered out; finished in 1.50s
+

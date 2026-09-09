@@ -1,0 +1,28 @@
+{
+  "format": "craftmine.godot-topdown-probe/1",
+  "commands": [
+    {
+      "op": "change-scene",
+      "args": {
+        "scene": "res://scenes/overworld.tscn",
+        "spawn": "from-shop",
+        "label": "exit"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": -1,
+        "dy": 0,
+        "steps": 20,
+        "label": "walk-left"
+      }
+    },
+    {
+      "op": "save",
+      "args": {
+        "label": "save"
+      }
+    }
+  ]
+}

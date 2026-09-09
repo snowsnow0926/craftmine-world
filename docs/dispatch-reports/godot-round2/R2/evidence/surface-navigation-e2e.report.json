@@ -1,0 +1,88 @@
+{
+  "kind": "real-gateway-and-retained-view-surface-navigation",
+  "sourceCommit": "66a8f2f967fcb985d755ab46668c9453d083f78e",
+  "checks": [
+    {
+      "name": "作品入口打开真实工作台标签",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "shown": "workbench",
+        "tab": "library"
+      }
+    },
+    {
+      "name": "工作台标签在真实页面中被选中",
+      "passed": true
+    },
+    {
+      "name": "打开工作台时原生世界视图被隐藏",
+      "passed": true
+    },
+    {
+      "name": "检查入口切回检查视图",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "shown": "checks"
+      }
+    },
+    {
+      "name": "检查视图在真实页面中可见",
+      "passed": true
+    },
+    {
+      "name": "世界入口回到世界视图",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "shown": "world"
+      }
+    },
+    {
+      "name": "世界视图恢复显示",
+      "passed": true
+    },
+    {
+      "name": "未知标签被真实拒绝而不是打开别的面板",
+      "passed": true
+    },
+    {
+      "name": "渲染进程仍不能直接调用任务恢复",
+      "passed": true
+    },
+    {
+      "name": "任务行可以读取真实可接续草稿",
+      "passed": true,
+      "detail": {
+        "items": [],
+        "modelReplay": false
+      }
+    },
+    {
+      "name": "素材读取到达插件服务层并报告真实未注册",
+      "passed": true,
+      "detail": {
+        "ok": false,
+        "code": "PLUGIN_CALL_FAILED",
+        "message": "Unsupported Craftmine panel operation"
+      }
+    },
+    {
+      "name": "没有请求鼠标锁定或焦点",
+      "passed": true
+    },
+    {
+      "name": "页面没有未处理异常",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Panel surfaces only; no candidate build, no model call, no visible-window composition."
+  ],
+  "engine": {
+    "coreSha256": "8925d553a987f7bd4ca61709013fddfd66279cca9c676a9b8c008cc8736cca98"
+  }
+}

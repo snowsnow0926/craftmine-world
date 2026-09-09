@@ -86,6 +86,17 @@ export type GodotWorldSaveResult =
 /** How often the active world descriptor is re-read while the panel is visible. */
 const SYNC_INTERVAL_MS = 2000;
 const ID_PATTERN = /^[a-zA-Z0-9._-]{1,128}$/;
+/** Renderer lines retained per instance so a startup failure is diagnosable. */
+const CONSOLE_KEEP = 40;
+/** Renderer faults retained per instance; the array must not grow without bound. */
+const FAULT_KEEP = 20;
+/** Total budget for the diagnostic suffix attached to a startup failure. */
+const DIAGNOSTIC_CHARS = 700;
+
+/** Drop the per-instance secret origin token from a served request path. */
+export function redactRuntimePath(url: string): string {
+  return typeof url === "string" ? url.replace(/^\/w\/[a-f0-9]{64}\//, "/w/*/") : "";
+}
 
 function requireId(name: string, value: unknown): string {
   if (typeof value !== "string" || !ID_PATTERN.test(value)) throw new Error(`Invalid ${name}`);
@@ -102,7 +113,7 @@ export function isInsideAllowedRoot(candidate: string, allowedRoots: readonly st
 }
 
 /** The game rect: the measured panel surface minus the panel chrome strip. */
-export function gameBounds(bounds: GodotWorldBounds, chromeHeight = WORLD_CHROME_HEIGHT): GodotWorldBounds {
+export function gameBounds(bounds: GodotWorldBounds, chromeHeight: number = WORLD_CHROME_HEIGHT): GodotWorldBounds {
   const x = Math.max(0, Math.round(Number(bounds.x) || 0));
   const y = Math.max(0, Math.round(Number(bounds.y) || 0));
   const width = Math.max(0, Math.round(Number(bounds.width) || 0));
@@ -121,12 +132,29 @@ type LiveInstance = {
   alive: boolean;
   /** The web contents were already closed; closing twice must be a no-op. */
   closed: boolean;
+  /** Bounded renderer console tail; evidence for a failed startup. */
+  consoleLog: Array<{ at: number; level: string; message: string }>;
+  /** Page/renderer faults observed for this instance, newest last. */
+  faults: string[];
+};
+
+/** Bounded evidence for one native instance; never a claim that it rendered. */
+export type GodotWorldDiagnostics = {
+  worldId: string;
+  buildId: string;
+  instanceId: string;
+  alive: boolean;
+  console: Array<{ at: number; level: string; message: string }>;
+  faults: string[];
+  requests: Array<{ method: string; path: string; status: number }>;
 };
 
 export class GodotWorldViewHost {
   private current: LiveInstance | null = null;
   /** Replacement instance that has not finished starting yet. */
   private pending: LiveInstance | null = null;
+  private stagedRequest: GodotWorldOpenRequest | null = null;
+  private candidateVisible = false;
   private bounds: GodotWorldBounds = { x: 0, y: 0, width: 0, height: 0 };
   private visible = false;
   private surfaceVisible = true;
@@ -226,7 +254,7 @@ export class GodotWorldViewHost {
     }
   }
 
-  private async startReplacement(request: GodotWorldOpenRequest, root: string, worldId: string, buildId: string, previous: LiveInstance | null): Promise<GodotWorldState> {
+  private async startReplacement(request: GodotWorldOpenRequest, root: string, worldId: string, buildId: string, previous: LiveInstance | null, staged = false): Promise<GodotWorldState> {
     const generation = this.generation;
     const runtime = await createWorldRuntime({
       worldId,
@@ -255,21 +283,42 @@ export class GodotWorldViewHost {
       detach: () => {},
       alive: true,
       closed: false,
+      consoleLog: [],
+      faults: [],
     };
     this.pending = instance;
     instance.detach = runtime.attach((message) => {
       if (!instance.alive || instance.view.webContents.isDestroyed()) return;
       instance.view.webContents.send(GODOT_WORLD_MESSAGE_CHANNEL, message);
     });
+    // Renderer console is the only signal a Web export gives before `ready`;
+    // keep a bounded tail so a startup failure names the actual cause.
+    const onConsole = (event: unknown, legacyLevel?: unknown, legacyMessage?: unknown): void => {
+      const details = (event ?? {}) as Record<string, unknown>;
+      const message = typeof details.message === "string" ? details.message : typeof legacyMessage === "string" ? legacyMessage : "";
+      if (!message) return;
+      const level = typeof details.level === "string" ? details.level : typeof legacyLevel === "number" ? String(legacyLevel) : "unknown";
+      instance.consoleLog.push({ at: Date.now(), level, message: message.replace(/[\u0000-\u001f\u007f]/g, " ").slice(0, 400) });
+      if (instance.consoleLog.length > CONSOLE_KEEP) instance.consoleLog.shift();
+    };
+    // Electron 43 passes one event object; older builds pass (event, level, message, line, source).
+    view.webContents.on("console-message", onConsole as unknown as (event: Electron.Event) => void);
     view.webContents.on("did-fail-load", (_event, code, description, _url, isMainFrame) => {
       if (!isMainFrame) return;
       if (instance !== this.current && instance !== this.pending) return;
+      this.recordFault(instance, `did-fail-load ${code} ${description}`);
+      // A pending startup can never finish: reject it now instead of waiting
+      // out the whole startup budget for a page that is not there.
+      runtime.abortStartup(`World view failed to load (${code} ${description})`);
       this.fail(instance, `World view failed to load (${code} ${description})`, true);
     });
     view.webContents.on("render-process-gone", (_event, details) => {
       if (instance !== this.current && instance !== this.pending) return;
+      this.recordFault(instance, `render-process-gone ${details.reason} ${details.exitCode}`);
+      runtime.abortStartup(`World renderer stopped: ${details.reason} (${details.exitCode})`);
       this.fail(instance, `World renderer stopped: ${details.reason}`, true);
     });
+    view.webContents.on("destroyed", () => { this.recordFault(instance, "renderer-destroyed"); });
     try {
       await view.webContents.loadURL(runtime.url);
       await runtime.waitReady();
@@ -277,8 +326,10 @@ export class GodotWorldViewHost {
         const loaded = await runtime.load({ build: request.build ?? null, snapshot: request.snapshot ?? null });
         if (loaded.error) throw new Error(loaded.error);
       }
-      const resumed = await runtime.resume();
-      if (resumed.error) throw new Error(resumed.error);
+      if (!staged) {
+        const resumed = await runtime.resume();
+        if (resumed.error) throw new Error(resumed.error);
+      }
     } catch (error) {
       this.pending = null;
       instance.alive = false;
@@ -286,6 +337,7 @@ export class GodotWorldViewHost {
       this.closeView(instance);
       await runtime.dispose({ graceful: false }).catch(() => undefined);
       const message = error instanceof Error ? error.message : String(error);
+      const reason = `${message}${this.describeFailure(instance)}`;
       if (previous?.alive) {
         // The running world is untouched: report its own identity, not the
         // candidate that failed.
@@ -293,12 +345,25 @@ export class GodotWorldViewHost {
       } else {
         this.publish({ worldId, buildId, instanceId: "", state: "failed", error: message });
       }
-      throw new Error(`${message}${previous?.alive ? " (previous world kept running)" : ""}`);
+      throw new Error(`${reason}${previous?.alive ? " (previous world kept running)" : ""}`);
     }
     if (this.disposed || generation !== this.generation || !instance.alive) {
+      this.pending = null;
+      this.stagedRequest = null;
+      instance.alive = false;
+      instance.detach();
       this.closeView(instance);
-      await runtime.dispose({ graceful: false });
+      await runtime.dispose({ graceful: false }).catch(() => undefined);
       throw new Error("World startup was cancelled");
+    }
+    if (staged) {
+      runtime.onEvent(event=>{
+        if(this.pending!==instance)return;
+        if(event.type==="exited"||event.type==="runtime-error")instance.alive=false;
+        this.options.onEvent?.(event);
+      });
+      this.stagedRequest = request;
+      return {...this.identityOf(instance), state:"paused"};
     }
     this.pending = null;
     this.current = instance;
@@ -326,6 +391,93 @@ export class GodotWorldViewHost {
     return this.currentState!;
   }
 
+  /**
+   * Start a candidate in an independent origin while retaining the old formal
+   * instance. `first` stages the very first instance of a world that has no
+   * formal runtime yet, so the creation flow is not blocked on a world that
+   * only a confirmed application can produce.
+   */
+  async stageCandidate(request: GodotWorldOpenRequest, options: { first?: boolean } = {}): Promise<GodotWorldState> {
+    if (this.disposed || this.transitioning || this.pending || this.stagedRequest) throw new Error("WORLD_BUSY");
+    this.transitioning = true;
+    try {
+      const worldId = requireId("world identity", request.worldId);
+      const buildId = requireId("build identity", request.buildId);
+      if (options.first) {
+        if (this.current?.alive) throw new Error("GODOT_WORLD_ALREADY_RUNNING");
+      } else {
+        if (!this.current?.alive || this.current.worldId !== worldId) throw new Error("GODOT_WORLD_CHANGED");
+      }
+      if (!Number.isSafeInteger(request.revision) || request.revision < 0 || !Array.isArray(request.artifacts) || !request.artifacts.length) throw new Error("INVALID_GODOT_CANDIDATE_DESCRIPTOR");
+      const root = await realpath(resolve(request.root));
+      const roots = (await Promise.all((this.options.allowedRoots?.() ?? []).map(item=>realpath(resolve(item)).catch(()=>null)))).filter((item):item is string=>item!==null);
+      if (!isInsideAllowedRoot(root, roots)) throw new Error("Candidate build is outside the allowed build roots");
+      if (!options.first) await this.pause();
+      return await this.startReplacement(request, root, worldId, buildId, this.current, true);
+    } finally { this.transitioning = false; }
+  }
+
+  get candidateInstance(): {worldId:string;buildId:string;instanceId:string} | null {
+    return this.stagedRequest && this.pending?.alive ? this.identityOf(this.pending) : null;
+  }
+
+  /** Candidate operations never call the formal progress adapter. */
+  async candidateRequest(op: string, args: Record<string, unknown> = {}): Promise<Record<string, unknown>> {
+    const candidate = this.pending;
+    if (!this.stagedRequest || !candidate?.alive) throw new Error("GODOT_CANDIDATE_UNAVAILABLE");
+    const response = await candidate.runtime.request(op, args);
+    if (response.error) throw new Error(response.error);
+    return (response.result ?? {}) as Record<string, unknown>;
+  }
+
+  setCandidateVisible(visible: boolean): void {
+    this.candidateVisible = visible;
+    this.applyBounds();
+  }
+
+  async discardCandidate(): Promise<void> {
+    const candidate = this.pending;
+    this.pending = null;
+    this.stagedRequest = null;
+    this.candidateVisible = false;
+    if (candidate) {
+      candidate.alive = false;
+      candidate.detach();
+      this.detachView(candidate.view);
+      this.closeView(candidate);
+      await candidate.runtime.dispose({graceful:false}).catch(()=>undefined);
+      if(!candidate.view.webContents.isDestroyed()) {
+        await new Promise<void>((resolve,reject)=>{
+          const contents=candidate.view.webContents;
+          const done=()=>{clearTimeout(timer);resolve();};
+          const timer=setTimeout(()=>{contents.removeListener("destroyed",done);reject(new Error("GODOT_CANDIDATE_CLOSE_TIMEOUT"));},3000);
+          contents.once("destroyed",done);
+        });
+      }
+    }
+    this.applyBounds();
+  }
+
+  /** Only a descriptor re-read after a confirmed Rust commit authorizes promotion. */
+  async promoteCandidate(request: GodotWorldOpenRequest): Promise<GodotWorldState> {
+    const candidate = this.pending, staged = this.stagedRequest;
+    if (!candidate?.alive || !staged || candidate.worldId !== request.worldId || candidate.buildId !== request.buildId ||
+        resolve(staged.root) !== resolve(request.root) || request.revision <= staged.revision ||
+        JSON.stringify(staged.artifacts) !== JSON.stringify(request.artifacts)) throw new Error("GODOT_CANDIDATE_PROMOTION_MISMATCH");
+    const previous = this.current;
+    this.pending = null; this.stagedRequest = null; this.candidateVisible = false;
+    this.current = candidate; this.revision = request.revision; this.frozen = null;
+    candidate.runtime.onEvent(event=>this.handleEvent(candidate,event));
+    this.publish({...this.identityOf(candidate),state:"paused"});
+    this.applyBounds();
+    if (previous) {
+      previous.alive = false; previous.detach(); this.detachView(previous.view); this.closeView(previous);
+      await previous.runtime.dispose({graceful:true}).catch(()=>undefined);
+    }
+    await this.resume();
+    return this.currentState!;
+  }
+
   /** Current world state as the runtime reports it; used by the progress transaction. */
   async snapshot(): Promise<Record<string, unknown> | null> {
     const instance = this.current;
@@ -338,7 +490,7 @@ export class GodotWorldViewHost {
   async request(op: string, args: Record<string, unknown> = {}): Promise<Record<string, unknown> | null> {
     const instance = this.current;
     if (!instance?.alive) throw new Error("No world runtime is running");
-    if (this.transitioning || this.checkpointPromise || this.frozen) throw new Error("WORLD_BUSY");
+    if (this.pending || this.transitioning || this.checkpointPromise || this.frozen) throw new Error("WORLD_BUSY");
     const response = await instance.runtime.request(op, args);
     if (response.error) throw new Error(response.error);
     return (response.result ?? null) as Record<string, unknown> | null;
@@ -445,6 +597,7 @@ export class GodotWorldViewHost {
    * receipt, and the world is only reported saved after the host committed.
    */
   async save(options: { revision?: number } = {}): Promise<GodotWorldSaveResult> {
+    if (this.stagedRequest) return {status:"failed",error:"GODOT_CANDIDATE_ACTIVE"};
     if (this.savePromise) return this.savePromise;
     this.frozen = null;
     this.savePromise = this.saveInner(options).finally(() => { this.savePromise = null; });
@@ -521,6 +674,7 @@ export class GodotWorldViewHost {
   }
 
   async resume(): Promise<void> {
+    if (this.stagedRequest) throw new Error("GODOT_CANDIDATE_ACTIVE");
     const instance = this.current;
     if (!instance?.alive) return;
     this.frozen = null;
@@ -531,6 +685,7 @@ export class GodotWorldViewHost {
 
   /** Freeze and durably save the current instance; successful checkpoints stay paused. */
   async checkpoint(): Promise<GodotWorldSaveResult> {
+    if (this.stagedRequest) return {status:"failed",error:"GODOT_CANDIDATE_ACTIVE"};
     const instance = this.current;
     if (!instance?.alive) return { status: "failed", error: "No world runtime is running" };
     if (this.frozen?.instance === instance) return this.frozen.result;
@@ -557,6 +712,7 @@ export class GodotWorldViewHost {
 
   /** Safe departure, including a switch back to the legacy runner. */
   async switchWorld(request: GodotWorldOpenRequest | null): Promise<GodotWorldState | null> {
+    if (this.stagedRequest) throw new Error("GODOT_CANDIDATE_ACTIVE");
     if (request) return this.ensure(request);
     if (this.transitioning) throw new Error("WORLD_BUSY");
     this.transitioning = true;
@@ -572,6 +728,7 @@ export class GodotWorldViewHost {
 
   /** Snapshot and persist before the client exits; the world is kept on failure. */
   async prepareForQuit(): Promise<{ ok: boolean; error?: string }> {
+    if (this.pending || this.stagedRequest) return {ok:false,error:"GODOT_CANDIDATE_ACTIVE"};
     const instance = this.current;
     if (!instance?.alive) return { ok: true };
     const saved = await this.checkpoint();
@@ -589,6 +746,8 @@ export class GodotWorldViewHost {
     const pending = this.pending;
     this.current = null;
     this.pending = null;
+    this.stagedRequest = null;
+    this.candidateVisible = false;
     this.frozen = null;
     this.revision = null;
     if (pending) {
@@ -635,6 +794,51 @@ export class GodotWorldViewHost {
     return { worldId: instance.worldId, buildId: instance.buildId, instanceId: instance.instanceId };
   }
 
+  /** Keep the newest bounded fault list; a hostile page cannot grow it forever. */
+  private recordFault(instance: LiveInstance, text: string): void {
+    instance.faults.push(text.slice(0, 200));
+    if (instance.faults.length > FAULT_KEEP) instance.faults.splice(0, instance.faults.length - FAULT_KEEP);
+  }
+
+  /**
+   * Bounded evidence for the instance the caller names. It reports what the
+   * renderer actually said; it never claims the view was visible or played.
+   * Request paths are returned with the per-instance origin token redacted.
+   */
+  diagnostics(which: "formal" | "candidate" = "formal"): GodotWorldDiagnostics | null {
+    const instance = which === "candidate" ? this.pending : this.current;
+    if (!instance) return null;
+    return {
+      worldId: instance.worldId,
+      buildId: instance.buildId,
+      instanceId: instance.instanceId,
+      alive: instance.alive,
+      console: instance.consoleLog.map((entry) => ({ ...entry })),
+      faults: instance.faults.slice(-FAULT_KEEP).map((entry) => entry.slice(0, 200)),
+      requests: instance.runtime.requests.map((entry) => ({
+        method: entry.method.slice(0, 16),
+        path: redactRuntimePath(entry.url).slice(0, 300),
+        status: entry.status,
+      })),
+    };
+  }
+
+  /** Compact, bounded cause summary appended to a failed startup. */
+  private describeFailure(instance: LiveInstance): string {
+    const parts: string[] = [];
+    const fault = instance.faults[instance.faults.length - 1];
+    if (fault) parts.push(`fault=${fault.slice(0, 160)}`);
+    const errors = instance.consoleLog.filter((entry) => entry.level === "error");
+    const line = errors[errors.length - 1] ?? instance.consoleLog[instance.consoleLog.length - 1];
+    // Renderer console is page-controlled: strip control characters before it
+    // can reach an error string that a panel renders.
+    if (line) parts.push(`console[${line.level}]=${line.message.replace(/\s+/g, " ").replace(/[\u0000-\u001f\u007f]/g, " ").slice(0, 200)}`);
+    const requests = instance.runtime.requests;
+    parts.push(`requests=${requests.filter((item) => item.status === 200).length}/${requests.length}`);
+    const text = parts.join("; ").slice(0, DIAGNOSTIC_CHARS);
+    return text ? ` [${text}]` : "";
+  }
+
   private handleEvent(instance: LiveInstance, event: RuntimeEvent): void {
     if (instance !== this.current || !instance.alive) return;
     this.options.onEvent?.(event);
@@ -675,7 +879,9 @@ export class GodotWorldViewHost {
   }
 
   private applyBounds(): void {
-    const instance = this.current;
+    const instance = this.candidateVisible && this.stagedRequest ? this.pending : this.current;
+    const other = instance === this.current ? this.pending : this.current;
+    if (other) this.detachView(other.view);
     const window = this.options.window();
     if (!instance || !instance.alive || !window || window.isDestroyed()) return;
     if (!this.visible || !this.surfaceVisible) {
@@ -684,7 +890,7 @@ export class GodotWorldViewHost {
     }
     const children = window.contentView.children;
     if (!children.includes(instance.view)) window.contentView.addChildView(instance.view);
-    instance.view.setBounds(gameBounds(this.bounds));
+    instance.view.setBounds(gameBounds(this.bounds, this.candidateVisible ? WORLD_CHROME_HEIGHT + 46 : WORLD_CHROME_HEIGHT));
   }
 
   private detachView(view: WebContentsView): void {
@@ -715,6 +921,10 @@ export class GodotWorldViewHost {
         ],
       },
     });
+    // WebGL must get a real viewport before load, even for detached staging.
+    // Setting bounds neither attaches nor focuses the view.
+    const initial = gameBounds(this.bounds);
+    view.setBounds({...initial,width:initial.width || 640,height:initial.height || 360});
     // The runtime page is not a browser: no popups, no extra web contents.
     view.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
     view.webContents.ipc.on(GODOT_WORLD_MESSAGE_CHANNEL, (_event, message: unknown) => {

@@ -1,0 +1,8 @@
+{
+  "format": "craftmine.godot-asset-manifest/1",
+  "baseId": "mining-sandbox",
+  "license": "no third-party assets; terrain, player, station and HUD are drawn in code",
+  "provenance": "ASSET_SOURCES.md",
+  "regenerates": null,
+  "assets": []
+}

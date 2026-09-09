@@ -6,7 +6,7 @@
   "stateVersion": 1,
   "kind": "blank-start",
   "title": "Side-view blank start",
-  "description": "One flat room with the base runtime only: run, jump, platform collision, camera, basic attack, one checkpoint and one save file. Intended as the starting point for new side-view worlds.",
+  "description": "One flat room with the base runtime only: run, jump, platform collision, camera, basic attack and one save file. No checkpoint, no target, no reward and no ability: a new world starts with an empty progression ledger.",
   "startRoom": "start",
   "startSpawn": "spawn_start",
   "rooms": [
@@ -25,22 +25,10 @@
         { "id": "spawn_start", "x": 80, "y": 320, "facing": 1 }
       ],
       "doors": [],
-      "checkpoints": [
-        { "id": "cp_start", "x": 180, "y": 320 }
-      ],
+      "checkpoints": [],
       "abilities": [],
       "rewards": [],
-      "targets": [
-        {
-          "id": "dummy_start",
-          "kind": "dummy",
-          "x": 460,
-          "y": 320,
-          "health": 2,
-          "rewardId": "reward_blank_dummy",
-          "grants": { "counters": { "coins": 1 } }
-        }
-      ],
+      "targets": [],
       "hazards": []
     }
   ]

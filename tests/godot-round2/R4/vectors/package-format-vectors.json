@@ -1,0 +1,93 @@
+{
+  "format": "craftmine.package-vectors/1",
+  "note": "Frozen CP0 vectors shared by Rust (crates/craftmine-core/src/library/package_format.rs) and JS (plugins/craftmine-world/package-format.mjs). Both must produce the exact `canonical` string or the exact `error` code.",
+  "rules": {
+    "canonical": "RFC 8785 subset: UTF-8, no whitespace, object keys sorted by UTF-16 code unit sequence, arrays keep order, strings escape only quote, backslash and U+0000..U+001F, numbers are JSON integer literals within +/-9007199254740991, -0 normalizes to 0, duplicate keys rejected.",
+    "paths": "relative forward-slash paths only; no absolute path, drive letter, parent traversal, current segment, empty segment, backslash, device name, alternate data stream, trailing slash or empty path",
+    "kinds": "base, world, module, object, scene, raw, data"
+  },
+  "canonical": [
+    {"name": "sorts-object-keys", "input": "{\"b\":1,\"a\":2}", "canonical": "{\"a\":2,\"b\":1}"},
+    {"name": "sorts-unicode-keys-by-utf16", "input": "{\"中\":1,\"a\":2,\"😀\":3}", "canonical": "{\"a\":2,\"中\":1,\"😀\":3}"},
+    {"name": "escapes-control-character", "input": "{\"a\":\"\\u0001b\"}", "canonical": "{\"a\":\"\\u0001b\"}"},
+    {"name": "escapes-newline", "input": "{\"a\":\"line\\nbreak\"}", "canonical": "{\"a\":\"line\\nbreak\"}"},
+    {"name": "normalizes-negative-zero", "input": "{\"a\":-0}", "canonical": "{\"a\":0}"},
+    {"name": "keeps-max-safe-integer", "input": "{\"a\":9007199254740991}", "canonical": "{\"a\":9007199254740991}"},
+    {"name": "rejects-number-above-safe-range", "input": "{\"a\":9007199254740992}", "error": "PACKAGE_NUMBER_OUT_OF_RANGE"},
+    {"name": "rejects-fractional-number", "input": "{\"a\":1.5}", "error": "PACKAGE_FLOAT_NOT_CANONICAL"},
+    {"name": "rejects-exponent-literal", "input": "{\"a\":1e2}", "error": "PACKAGE_FLOAT_NOT_CANONICAL"},
+    {"name": "rejects-duplicate-key", "input": "{\"a\":1,\"a\":2}", "error": "PACKAGE_DUPLICATE_KEY"},
+    {"name": "rejects-nested-duplicate-key", "input": "{\"a\":{\"b\":1,\"b\":2}}", "error": "PACKAGE_DUPLICATE_KEY"},
+    {"name": "sorts-nested-objects", "input": "[{\"b\":[1,2,{\"d\":null}],\"a\":true}]", "canonical": "[{\"a\":true,\"b\":[1,2,{\"d\":null}]}]"},
+    {"name": "escapes-backslash", "input": "{\"a\":\"\\\\\"}", "canonical": "{\"a\":\"\\\\\"}"},
+    {"name": "keeps-empty-key", "input": "{\"\":\"empty\"}", "canonical": "{\"\":\"empty\"}"},
+    {"name": "keeps-non-ascii-raw", "input": "{\"a\":\"é\"}", "canonical": "{\"a\":\"é\"}"},
+    {"name": "sorts-ascii-before-lowercase", "input": "{\"z\":1,\"Z\":2,\"a\":3,\"A\":4}", "canonical": "{\"A\":4,\"Z\":2,\"a\":3,\"z\":1}"},
+    {"name": "keeps-empty-array", "input": "{\"a\":[]}", "canonical": "{\"a\":[]}"},
+    {"name": "sorts-latin1-after-ascii", "input": "{\"ü\":1,\"u\":2}", "canonical": "{\"u\":2,\"ü\":1}"},
+    {"name": "keeps-short-escapes", "input": "{\"a\":\"\\b\\f\\r\\t\"}", "canonical": "{\"a\":\"\\b\\f\\r\\t\"}"},
+    {"name": "keeps-empty-object", "input": "{}", "canonical": "{}"},
+    {"name": "keeps-array-order", "input": "{\"a\":[{\"b\":1},{\"a\":2}]}", "canonical": "{\"a\":[{\"b\":1},{\"a\":2}]}"},
+    {"name": "keeps-null-and-false", "input": "{\"a\":null,\"b\":false}", "canonical": "{\"a\":null,\"b\":false}"},
+    {"name": "escapes-unit-separator", "input": "{\"a\":\"\\u001f\"}", "canonical": "{\"a\":\"\\u001f\"}"},
+    {"name": "keeps-top-level-array", "input": "[3,1,2]", "canonical": "[3,1,2]"},
+    {"name": "keeps-top-level-string", "input": "\"中😀\"", "canonical": "\"中😀\""}
+  ],
+  "paths": {
+    "accept": [
+      "package.json",
+      "resources/abc/manifest.json",
+      "resources/abc/payload/a.png",
+      "resources/abc/payload/scripts/player.gd",
+      "a/b/c.txt",
+      "中文/素材.png",
+      "resources/abc/payload/console.txt"
+    ],
+    "reject": [
+      {"path": "", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "/abs.txt", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "C:/x.txt", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "a/../b.txt", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "..", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "a\\b.txt", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "a/./b.txt", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "a//b.txt", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "a/", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "CON", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "payload/NUL.json", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "payload/com1.txt", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "payload/a.txt:stream", "error": "INVALID_PACKAGE_PATH"},
+      {"path": "resources/abc/payload/PRN.png", "error": "INVALID_PACKAGE_PATH"}
+    ]
+  },
+  "kinds": {
+    "accept": ["base", "world", "module", "object", "scene", "raw", "data"],
+    "reject": [
+      {"kind": "creation", "error": "INVALID_PACKAGE_KIND"},
+      {"kind": "", "error": "INVALID_PACKAGE_KIND"},
+      {"kind": "Base", "error": "INVALID_PACKAGE_KIND"},
+      {"kind": "world-template", "error": "INVALID_PACKAGE_KIND"}
+    ]
+  },
+  "legacy": [
+    {"name": "object-stays-object", "source": {"format": "craftmine.module/1", "kind": "object"}, "kind": "object"},
+    {"name": "gameplay-becomes-module", "source": {"format": "craftmine.module/1", "kind": "gameplay"}, "kind": "module"},
+    {"name": "scene-stays-scene", "source": {"format": "craftmine.module/2", "kind": "scene"}, "kind": "scene"},
+    {"name": "raw-stays-raw", "source": {"format": "craftmine.module/3", "kind": "raw"}, "kind": "raw"},
+    {"name": "data-stays-data", "source": {"format": "craftmine.module/4", "kind": "data"}, "kind": "data"},
+    {"name": "world-template-becomes-world", "source": {"format": "craftmine.module/1", "kind": "world-template"}, "kind": "world"},
+    {"name": "base-stays-base", "source": {"format": "craftmine.module/1", "kind": "base"}, "kind": "base"},
+    {"name": "creation-needs-author-choice", "source": {"format": "craftmine.module/1", "kind": "creation"}, "ambiguous": ["module", "object", "scene", "world"]},
+    {"name": "creation-needs-author-choice-2", "source": {"format": "craftmine.module/2", "kind": "creation"}, "ambiguous": ["module", "object", "scene", "world"]},
+    {"name": "unknown-kind-refused", "source": {"format": "craftmine.module/1", "kind": "mystery"}, "error": "PACKAGE_LEGACY_FORMAT_UNKNOWN"},
+    {"name": "unknown-format-refused", "source": {"format": "craftmine.other/9", "kind": "object"}, "error": "PACKAGE_LEGACY_FORMAT_UNKNOWN"}
+  ],
+  "lock": [
+    {"name": "exact-closure", "direct": [{"id": "a", "version": 1}], "closure": [{"id": "a", "version": 1}], "graph": {}, "ok": true},
+    {"name": "transitive-closure", "direct": [{"id": "a", "version": 1}], "closure": [{"id": "a", "version": 1}, {"id": "b", "version": 2}], "graph": {"a@1": ["b@2"], "b@2": []}, "ok": true},
+    {"name": "missing-direct-dependency", "direct": [{"id": "a", "version": 1}], "closure": [], "graph": {}, "error": "PACKAGE_LOCK_MISSING_DEPENDENCY"},
+    {"name": "two-versions-of-one-asset", "direct": [{"id": "a", "version": 1}], "closure": [{"id": "a", "version": 1}, {"id": "a", "version": 2}], "graph": {}, "error": "PACKAGE_LOCK_VERSION_CONFLICT"},
+    {"name": "cycle-in-lock", "direct": [{"id": "a", "version": 1}], "closure": [{"id": "a", "version": 1}, {"id": "b", "version": 1}], "graph": {"a@1": ["b@1"], "b@1": ["a@1"]}, "error": "PACKAGE_DEPENDENCY_CYCLE"},
+    {"name": "closure-not-reachable", "direct": [{"id": "a", "version": 1}], "closure": [{"id": "a", "version": 1}, {"id": "z", "version": 1}], "graph": {"a@1": []}, "error": "PACKAGE_LOCK_UNREACHABLE_ENTRY"}
+  ]
+}

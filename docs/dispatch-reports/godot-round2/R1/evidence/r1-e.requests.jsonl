@@ -1,0 +1,5 @@
+{"params":{"targetOid":"9b8283ddf313a74131de89972156cd498953cb89","context":{"repoId":"world-a","worldId":"a","expectedProgressRevision":null,"expectedAppliedOid":null,"expectedHeadOid":"9b8283ddf313a74131de89972156cd498953cb89","operationId":"op-apply","branchId":"main"},"detail":"first apply","worldId":"a","kind":"apply"},"method":"content.apply.prepare"}
+{"params":{"operationId":"op-apply"},"method":"content.apply.advance"}
+{"params":{"operationId":"op-apply","appliedOid":"9b8283ddf313a74131de89972156cd498953cb89","detail":"host committed deployment"},"method":"content.apply.confirm"}
+{"params":{"targetOid":"9b8283ddf313a74131de89972156cd498953cb89","context":{"repoId":"world-a","worldId":"a","expectedProgressRevision":null,"expectedAppliedOid":null,"expectedHeadOid":"9b8283ddf313a74131de89972156cd498953cb89","operationId":"op-abandoned","branchId":"main"},"detail":"abandoned attempt","worldId":"a","kind":"apply"},"method":"content.apply.prepare"}
+{"params":{"worldId":"a"},"method":"content.status"}
