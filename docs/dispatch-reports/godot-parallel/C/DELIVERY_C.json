@@ -26,6 +26,7 @@
       "vendor/pi-desktop/apps/desktop/electron/preload/godot-world.ts",
       "vendor/pi-desktop/apps/desktop/electron/shared/godot-world-chrome.ts",
       "tests/godot-runtime.mjs",
+      "tests/godot-view-page.mjs",
       "tests/godot-world-view.mjs",
       "tests/godot-world-view/main.mjs",
       "tests/godot-world-view/panel.html",
@@ -52,6 +53,7 @@
   },
   "verification": [
     { "command": "node tests/godot-runtime.mjs", "result": "23/23", "evidence": "docs/dispatch-reports/godot-parallel/C/evidence/godot-runtime.json" },
+    { "command": "node tests/godot-view-page.mjs", "result": "8/8", "evidence": "docs/dispatch-reports/godot-parallel/C/evidence/godot-view-page.json" },
     { "command": "node tests/godot-world-view.mjs", "result": "24/24", "evidence": "docs/dispatch-reports/godot-parallel/C/evidence/godot-world-view.json" },
     { "command": "node tests/godot-web.mjs", "result": "33/33", "evidence": "docs/dispatch-reports/godot-parallel/C/evidence/godot-web-preview.json" },
     { "command": "node tests/godot-web-transport.mjs", "result": "21/21" },

@@ -71,6 +71,7 @@
 | 验证 | 结果 | 证据 |
 | --- | --- | --- |
 | `node tests/godot-runtime.mjs` | 23/23 | [godot-runtime.json](evidence/godot-runtime.json) |
+| `node tests/godot-view-page.mjs`（面板视图页 Godot 模式） | 8/8 | [godot-view-page.json](evidence/godot-view-page.json) |
 | `node tests/godot-world-view.mjs`（真实 Electron） | 24/24 | [godot-world-view.json](evidence/godot-world-view.json)、[electron-first-person.png](evidence/electron-first-person.png) |
 | `node tests/godot-web.mjs`（第 2 轮 33 项预览回归） | 33/33 | [godot-web-preview.json](evidence/godot-web-preview.json) |
 | `node tests/godot-web-transport.mjs` | 21/21 | 控制台输出（无文件证据） |

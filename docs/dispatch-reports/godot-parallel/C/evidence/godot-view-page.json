@@ -1,0 +1,129 @@
+{
+  "kind": "craftmine-world-view-page-godot-mode",
+  "checks": [
+    {
+      "name": "A Godot world switches the panel page to its placeholder mode",
+      "passed": true,
+      "evidence": {
+        "chrome": "76px",
+        "surfaceTop": 76,
+        "surfaceHeight": 824,
+        "frameDisplay": "none",
+        "frameSrcdoc": null,
+        "saveDisabled": true,
+        "subscribed": [
+          "appearance:changed",
+          "godot-world:state"
+        ]
+      }
+    },
+    {
+      "name": "The game area starts exactly below the reserved chrome strip",
+      "passed": true,
+      "evidence": {
+        "chrome": "76px",
+        "surfaceTop": 76,
+        "surfaceHeight": 824,
+        "frameDisplay": "none",
+        "frameSrcdoc": null,
+        "saveDisabled": true,
+        "subscribed": [
+          "appearance:changed",
+          "godot-world:state"
+        ]
+      }
+    },
+    {
+      "name": "The voxel iframe is hidden and has no document for a Godot world",
+      "passed": true,
+      "evidence": {
+        "chrome": "76px",
+        "surfaceTop": 76,
+        "surfaceHeight": 824,
+        "frameDisplay": "none",
+        "frameSrcdoc": null,
+        "saveDisabled": true,
+        "subscribed": [
+          "appearance:changed",
+          "godot-world:state"
+        ]
+      }
+    },
+    {
+      "name": "Saving is owned by the host, so the panel button is disabled",
+      "passed": true
+    },
+    {
+      "name": "Every host state is shown with a Chinese label",
+      "passed": true,
+      "evidence": {
+        "loading": "载入中",
+        "ready": "已就绪",
+        "paused": "已暂停",
+        "saving": "保存中",
+        "saved": "已保存",
+        "failed": "运行失败",
+        "closed": "已关闭",
+        "foreign": "已关闭"
+      }
+    },
+    {
+      "name": "Only ready and saved mark the world as loaded",
+      "passed": true,
+      "evidence": [
+        {
+          "state": "loading",
+          "loaded": null
+        },
+        {
+          "state": "ready",
+          "loaded": "true"
+        },
+        {
+          "state": "paused",
+          "loaded": "true"
+        },
+        {
+          "state": "saving",
+          "loaded": "true"
+        },
+        {
+          "state": "saved",
+          "loaded": "true"
+        },
+        {
+          "state": "failed",
+          "loaded": null
+        },
+        {
+          "state": "closed",
+          "loaded": null
+        },
+        {
+          "state": "foreign"
+        }
+      ]
+    },
+    {
+      "name": "A failure is shown without throwing, and another world is ignored",
+      "passed": true,
+      "evidence": {
+        "state": "failed",
+        "label": "运行失败",
+        "loaded": null,
+        "error": "引擎启动失败"
+      }
+    },
+    {
+      "name": "The page reports no unhandled error",
+      "passed": true,
+      "evidence": []
+    }
+  ],
+  "notVerified": [
+    "real Electron host broadcast",
+    "real Godot rendering"
+  ],
+  "passed": 8,
+  "total": 8
+}
