@@ -2,10 +2,9 @@
 // history) plus the shared change-intent vocabulary.
 //
 // These tools own no storage and perform no git operation: every call is
-// host-bound through an OperationContext, and a write is only ever a proposal a
+// host-bound through the current workspace, and a write is only ever a proposal a
 // player action must confirm. Method names follow the delivered M interface
-// (`content.history` / `content.version` / `content.apply.*`); they can be
-// overridden by the host when M registers the real dispatch table.
+// (`content.history` / `content.changes` / `content.operation.read`).
 'use strict';
 
 const HISTORY_FORMAT='craftmine.godot-history/1';
@@ -15,8 +14,8 @@ const EXPECTED_FIELDS=['expectedHeadOid','expectedAppliedOid','expectedProgressR
 // interchangeable: scope, identity and progress behaviour all differ.
 const CHANGE_INTENTS=['instance-only','variant','upgrade-selected','restore-content','restore-save'];
 
-const DEFAULT_METHODS={history:'content.history',version:'content.version',diff:'content.diff',
-  checkpoint:'content.checkpoint',mergeCandidate:'content.mergeCandidate',operationResult:'content.operationResult'};
+const DEFAULT_METHODS={history:'content.history',version:'content.history',diff:'content.changes',
+  checkpoint:'content.checkpoint.set',mergeCandidate:'content.branch.merge',operationResult:'content.operation.read'};
 const METHOD_OWNERS={history:'M'};
 const HASH=/^[a-f0-9]{64}$/;
 
@@ -123,21 +122,23 @@ function createHistoryService({core,context,workspace,methods={}}){
 
   async function probe(key,params){
     const method=table[key];
-    if(params.operationContext&&params.operationContext.ok===false){
-      return {format:HISTORY_FORMAT,method,available:false,reason:'OPERATION_CONTEXT_INCOMPLETE',
-        code:params.operationContext.code,missing:params.operationContext.missing,owner:METHOD_OWNERS.history,
-        nextStep:'The host must bind repository and branch identity for this world before content history can be read.'};
-    }
-    const body={...params,...(params.operationContext?{operationContext:params.operationContext.context}:{})};
-    // The OperationContext already carries the host-bound world identity; no
-    // extra worldId is sent, so a future deny_unknown_fields RPC stays valid.
-    try { return {format:HISTORY_FORMAT,method,available:true,result:await core.call(method,body)}; }
+    // These RPCs deny unknown fields. World identity is supplied only by the
+    // workspace; read operations do not require a writable branch context.
+    try { return {format:HISTORY_FORMAT,method,available:true,result:await core.call(method,{worldId,...params})}; }
     catch(error){
       if(error?.errorCode==='UNKNOWN_METHOD')return {format:HISTORY_FORMAT,method,available:false,
         reason:'DEPENDENCY_NOT_WIRED',requiredHostMethod:method,owner:METHOD_OWNERS.history,proposedName:true,
         nextStep:'The '+METHOD_OWNERS.history+' adapter must register '+method+' before this capability is usable; the model must not invent history.'};
       throw error;
     }
+  }
+
+  async function boundRefs(refs){
+    const checked=refs.map(validateContentRef);
+    const status=await core.call('content.status',{worldId});
+    if(!status.registered||!status.repoId)fail('CONTENT_REPOSITORY_UNAVAILABLE');
+    if(checked.some(ref=>ref.repoId!==status.repoId))fail('CONTENT_REF_WORLD_MISMATCH');
+    return checked;
   }
 
   function propose(key,params){
@@ -151,13 +152,26 @@ function createHistoryService({core,context,workspace,methods={}}){
 
   return {
     operationContext,
-    history:({cursor,limit=20}={})=>probe('history',{operationContext:operationContext('history-query'),cursor:cursor??null,limit}),
-    version:({contentRef}={})=>probe('version',{operationContext:operationContext('version-read'),contentRef:validateContentRef(contentRef)}),
-    diff:({from,to}={})=>probe('diff',{operationContext:operationContext('version-diff'),
-      from:validateContentRef(from),to:validateContentRef(to)}),
+    history:({cursor,limit=20}={})=>{
+      const skip=cursor==null?0:(typeof cursor==='string'&&/^\d+$/.test(cursor)?Number(cursor):cursor);
+      if(!Number.isSafeInteger(skip)||skip<0)fail('INVALID_HISTORY_CURSOR');
+      if(!Number.isSafeInteger(limit)||limit<1||limit>100)fail('INVALID_HISTORY_LIMIT');
+      return probe('history',{skip,limit});
+    },
+    version:async({contentRef}={})=>{
+      const [ref]=await boundRefs([contentRef]);
+      return probe('version',{rev:ref.commitOid,skip:0,limit:1});
+    },
+    diff:async({from,to}={})=>{
+      const [left,right]=await boundRefs([from,to]);
+      return probe('diff',{from:left.commitOid,to:right.commitOid});
+    },
     checkpoint:({contentRef,label}={})=>propose('checkpoint',{contentRef:validateContentRef(contentRef),label}),
     mergeCandidate:({from,to}={})=>propose('mergeCandidate',{from:validateContentRef(from),to:validateContentRef(to)}),
-    operationResult:({operationId}={})=>probe('operationResult',{operationContext:operationContext(operationId)})
+    operationResult:({operationId}={})=>{
+      if(typeof operationId!=='string'||!operationId.trim()||operationId.length>240)fail('INVALID_OPERATION_ID');
+      return probe('operationResult',{operationId});
+    }
   };
 }
 

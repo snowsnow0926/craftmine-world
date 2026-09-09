@@ -20,7 +20,7 @@ const staging=await mkdtemp(path.join(process.env.PI_SCRATCH_DIR||tmpdir(),'godo
 const FILES=['manifest.json','main.cjs','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
   'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs',
   'verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs',
-  'workbench-service.cjs','godot-executor.cjs'];
+  'workbench-service.cjs','godot-executor.cjs','asset-service.mjs','reuse-service.mjs'];
 for(const file of FILES)await copyFile(path.join(source,file),path.join(staging,file));
 
 const HANDSHAKE={format:'craftmine.core/1',godotProjects:true,godotBuildJobs:true,godotExecutorGate:true,

@@ -130,7 +130,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'godotProject.create':[['context','worldId','toolCallId','baseBuild','baseId','files'],[]],
       'godotProject.index':[['context','worldId'],['revision','manifestHash','offset','limit']],
       'godotProject.read':[['context','worldId','revision','manifestHash','path'],['offset','limit']],
-      'godotProject.patch':[['context','worldId','toolCallId','revision','manifestHash','operations'],[]],
+      'godotProject.patch':[['context','worldId','toolCallId','revision','manifestHash','operations'],['operation']],
       'godotProject.receipt':[['binding','worldId','toolCallId','method','request'],[]],
       'godotBuild.start':[['context','worldId','toolCallId','revision','manifestHash','mode'],[]],
       'godotBuild.read':[['worldId','jobId'],['context']],
@@ -157,9 +157,10 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'content.checkpoint.list':[['worldId','taskId'],[]],
       'content.apply.prepare':[['worldId','context','kind','targetOid','detail'],[]],
       'content.apply.advance':[['operationId'],[]],
-      'content.apply.confirm':[['operationId','appliedOid','detail'],[]],
+      'content.apply.confirm':[['operationId','applicationId','detail'],[]],
       'content.apply.rollback':[['operationId','reason'],[]],
       'content.apply.recover':[['worldId'],[]],
+      'content.operation.read':[['worldId','operationId'],[]],
       'content.reclaim.plan':[['worldId'],['keep']],
       'content.reclaim.prune':[['worldId'],['keep']],
       'content.verify':[['worldId'],['refs']],
@@ -168,13 +169,33 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'library.read':[['ref'],[]],
       'library.capture':[['operationId','applicationId','worldId','kind','resourceId','bundle','scope','tags'],[]],
       'world.list':[[],[]],
+      'workspace.endTurn':[['sessionId','turnId','status'],[]],
+      'asset.bodyPath':[['assetId','version','path'],[]],
       'world.create':[['id','title','world'],[]],
       'world.saveProgress':[['id','revision','baseBuild','snapshot'],[]],
+      'backup.exportPortable':[['operationId','archivePath'],[]],
+      'backup.inspectPortable':[['archivePath'],[]],
+      'backup.verifyPortable':[['archivePath'],[]],
+      'backup.restorePortable':[['operationId','archivePath','targetDirectory'],[]],
+      'backup.cancelPortable':[['operationId'],[]],
+      'backup.protectedRefs':[['worldId'],[]],
+      'backup.releasePortable':[['archiveId'],[]],
     };
     if(Object.hasOwn(godotRoutes,method)){
       const [required,optional]=godotRoutes[method];
       fields(params,required,optional);
-      return core.call(method,params,60000);
+      const result=await core.call(method,params,60000);
+      // The existing authorized build route performs the same dispatch as the
+      // model tool. No additional renderer or generic executor route is opened.
+      if(method==='godotBuild.start'&&result?.executionAvailable!==false&&godotExecutor){
+        const execution=await godotExecutor.enqueue(result,params.context);
+        return {...result,execution};
+      }
+      if(method==='godotBuild.cancel'&&godotExecutor){
+        const execution=await godotExecutor.cancel(params.jobId);
+        return {...result,execution};
+      }
+      return result;
     }
     if(method==='budget.configure'||method==='budget.findReceipt'){
       fields(params,['projectId','sessionId','worldId','taskId','generation','operationId','maxTokens']);

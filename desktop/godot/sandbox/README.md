@@ -248,6 +248,13 @@ requirements.
 
 ## Integration audit hardening
 
+Final integration recovery preserves task identity and logs whenever a recorded
+child cannot be proven gone/terminated, or profile removal fails. A matching
+task nonce alone does not prove that its processes have stopped. Recovery never
+widens termination to a bare PID or executable basename. The plugin requires a
+host-selected broker identity manifest before any broker recovery or run; a
+manifest found beside an arbitrary discovered executable is not a trust source.
+
 Task roots require an existing absolute ordinary parent and exclusive creation. Existing ids are refused, including previous failed runs: retry with a fresh id. Reject reparse components and reserved Windows device names. Verify pins after copy and retain the exact engine path. Managed budgets require one active process and positive time/memory. Tasks run once; startup errors become Failed. Only successful tasks hand off regular artifacts. Work/profile cleanup failures are returned.
 
 The inherited stdout file handle remains writable by the child. Its entire log is untrusted diagnostic text, not an authenticated execution receipt. The host must mint structured outcomes and independently verify artifacts. This hardening does not close loopback networking, prove hostile-project isolation, or enable product execution.

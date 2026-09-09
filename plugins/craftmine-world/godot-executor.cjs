@@ -267,7 +267,12 @@ function createGodotExecutor(core, options = {}) {
   // An explicit configuration is authoritative: a broken configured path is
   // reported as missing instead of silently falling back to a development copy.
   function configured(name) {
-    const value = process.env[name];
+    const keys = {CRAFTMINE_GODOT_BROKER_BIN:'broker', CRAFTMINE_GODOT_BROKER_IDENTITY:'brokerIdentity',
+      CRAFTMINE_GODOT_ENGINE_ROOT:'engineRoot', CRAFTMINE_GODOT_TOOLCHAIN_LOCK:'toolchainLock',
+      CRAFTMINE_GODOT_BRIDGE_PATH:'bridgePath'};
+    // Product configuration arrives only through the private host service. Once
+    // supplied, absence must not fall back to the child process environment.
+    const value = options.toolchain !== undefined ? options.toolchain?.[keys[name]] : process.env[name];
     return value ? path.resolve(value) : null;
   }
 
@@ -296,9 +301,9 @@ function createGodotExecutor(core, options = {}) {
   }
 
   function toolchainLock() {
-    const configured = process.env.CRAFTMINE_GODOT_TOOLCHAIN_LOCK;
-    const candidates = [configured, dataPath && path.join(dataPath, 'godot', 'toolchain.lock.json'),
-      path.resolve(__dirname, '..', '..', 'desktop', 'godot', 'toolchain.lock.json')].filter(Boolean);
+    const explicit = configured('CRAFTMINE_GODOT_TOOLCHAIN_LOCK');
+    const candidates = explicit ? [explicit] : [
+      path.resolve(__dirname, '..', '..', 'desktop', 'godot', 'toolchain.lock.json')];
     for (const candidate of candidates) {
       try { return {path:candidate, value:JSON.parse(fs.readFileSync(candidate, 'utf8'))}; }
       catch { /* the next candidate is tried; absence is reported, never assumed */ }
@@ -316,28 +321,24 @@ function createGodotExecutor(core, options = {}) {
   }
 
   /**
-   * The shipped broker identity. A configured hash wins, then the identity file
-   * that ships next to the broker copy (or in the plugin data directory).
-   * Absence is reported as unpinned rather than silently accepted, so a
-   * development build cannot masquerade as the pinned production one.
+   * Only the host-selected release manifest establishes a pin. An executable
+   * found in writable data cannot nominate its own adjacent identity file.
    */
   function brokerIdentity(broker) {
-    const candidates = [];
     const configuredIdentity = configured('CRAFTMINE_GODOT_BROKER_IDENTITY');
-    if (configuredIdentity) candidates.push(configuredIdentity);
-    candidates.push(path.join(path.dirname(broker), 'broker-identity.json'));
-    if (dataPath) candidates.push(path.join(dataPath, 'godot', 'broker-identity.json'));
+    const candidates = configuredIdentity ? [configuredIdentity] : [];
     for (const candidate of candidates) {
       try {
         const value = JSON.parse(fs.readFileSync(candidate, 'utf8'));
-        if (value?.format === BROKER_IDENTITY_FORMAT && typeof value.sha256 === 'string') return {source:candidate, ...value};
+        if (value?.format === BROKER_IDENTITY_FORMAT && /^[a-f0-9]{64}$/i.test(value.sha256)
+          && Number.isSafeInteger(value.bytes) && value.bytes > 0) return {...value, source:candidate};
       } catch { /* the next candidate is tried; absence is reported, never assumed */ }
     }
     return null;
   }
 
   function pinnedBroker(broker) {
-    const explicit = process.env.CRAFTMINE_GODOT_BROKER_SHA256;
+    const explicit = options.toolchain === undefined ? process.env.CRAFTMINE_GODOT_BROKER_SHA256 : null;
     if (explicit) return {sha256:String(explicit).toLowerCase(), source:'CRAFTMINE_GODOT_BROKER_SHA256', identity:null};
     const identity = brokerIdentity(broker);
     if (identity) return {sha256:String(identity.sha256).toLowerCase(), source:identity.source, identity};
@@ -347,12 +348,15 @@ function createGodotExecutor(core, options = {}) {
   async function verifyToolchain() {
     const broker = candidateBroker();
     if (!broker || !fs.existsSync(broker)) return {ok:false, reason:'GODOT_BROKER_MISSING'};
+    const pin = pinnedBroker(broker);
+    if (!pin || !/^[a-f0-9]{64}$/.test(pin.sha256)) return {ok:false, reason:'GODOT_BROKER_PIN_REQUIRED'};
+    const brokerSha256 = await sha256File(broker);
+    if (pin.sha256 !== brokerSha256 || (pin.identity && pin.identity.bytes !== fs.statSync(broker).size))
+      return {ok:false, reason:'GODOT_BROKER_MISMATCH'};
     const engineRoot = candidateEngineRoot();
     if (!engineRoot || !ordinaryDirectory(engineRoot)) return {ok:false, reason:'GODOT_ENGINE_MISSING'};
     const lock = toolchainLock();
-    const brokerSha256 = await sha256File(broker);
-    const pin = pinnedBroker(broker);
-    if (pin && pin.sha256 !== brokerSha256) return {ok:false, reason:'GODOT_BROKER_MISMATCH'};
+    if (!lock) return {ok:false, reason:'GODOT_TOOLCHAIN_LOCK_REQUIRED'};
     const measured = {};
     if (lock) {
       const editor = path.join(engineRoot, 'editor', lock.value.editor?.executable ?? '');
@@ -395,6 +399,7 @@ function createGodotExecutor(core, options = {}) {
       operation:'version', sourceBinding:{worldId:'executor-preflight', buildId:'executor-preflight', sourceRevision:0, sourceDigest:sha256('')},
       inputHash:sha256('craftmine.godot-executor/preflight'), expectedFiles:[], requestId:taskId,
       measuredBrokerSha256:verified.brokerSha256,
+      pinnedBrokerSha256:verified.brokerSha256,
     });
     if (!result.ok) {
       // Keep the broker's own diagnostics: a preparation failure must be

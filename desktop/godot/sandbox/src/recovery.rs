@@ -525,13 +525,14 @@ fn reconcile(expected_root: &Path, entry: &JournalEntry, record: &mut RecoveredT
     let sidecar = task_root.join("logs").join("process-verification.json");
     if ordinary(&sidecar).map(|metadata| metadata.is_file()).unwrap_or(false) {
         let value: serde_json::Value = serde_json::from_slice(&fs::read(&sidecar)?)?;
-        let pid = value.get("pid").and_then(serde_json::Value::as_u64);
+        let pid = value.get("pid").and_then(serde_json::Value::as_u64)
+            .and_then(|value| u32::try_from(value).ok()).filter(|value| *value > 0);
         let filetime = value.get("creationTimeFiletime").and_then(|value| value.as_str());
         match (pid, filetime) {
             (Some(pid), Some(filetime)) => {
-                record.child_pid = Some(pid as u32);
+                record.child_pid = Some(pid);
                 record.child_creation_time_filetime = Some(filetime.to_string());
-                record.child_process_state = reclaim_child(pid as u32, filetime, &task_root.join("bin"), record);
+                record.child_process_state = reclaim_child(pid, filetime, &task_root.join("bin"), record);
             }
             _ => {
                 record.skipped.push("sidecar-missing-identity".into());
@@ -540,6 +541,15 @@ fn reconcile(expected_root: &Path, entry: &JournalEntry, record: &mut RecoveredT
         }
     } else {
         record.notes.push("no-child-sidecar-recorded".into());
+    }
+
+    // The nonce proves the directory's owner, not that every process has
+    // stopped. Keep the profile, sidecar and journal for a later recovery pass
+    // whenever a recorded child cannot be proven gone or safely terminated.
+    if !child_reclamation_complete(&record.child_process_state)
+        || record.skipped.iter().any(|reason| reason == "sidecar-missing-identity") {
+        record.skipped.push("child-recovery-incomplete; resources-preserved".into());
+        return Ok(());
     }
 
     // Profile: re-derive the SID from the recorded name and require it to match
@@ -556,6 +566,10 @@ fn reconcile(expected_root: &Path, entry: &JournalEntry, record: &mut RecoveredT
         }
         Ok(_) => record.skipped.push("profile-sid-mismatch".into()),
         Err(error) => record.skipped.push(format!("profile-sid-derive-failed: {error}")),
+    }
+    if !record.profile_deleted {
+        record.notes.push("profile-recovery-incomplete; identity-and-logs-preserved".into());
+        return Ok(());
     }
 
     // Directory reclamation happens only after identity is verified.
@@ -589,6 +603,10 @@ fn reconcile(expected_root: &Path, entry: &JournalEntry, record: &mut RecoveredT
         record.skipped.push(format!("task-root-remove-failed: {error}"));
     }
     Ok(())
+}
+
+fn child_reclamation_complete(state: &str) -> bool {
+    matches!(state, "gone" | "terminated" | "pid-reused" | "not-recorded")
 }
 
 fn derive_sid(profile_name: &str) -> Result<String> {
@@ -910,5 +928,57 @@ mod tests {
         assert_eq!(process_alive(pid, &filetime), Some(true));
         assert_eq!(process_alive(pid, "1"), Some(false));
         assert_eq!(process_alive(0xFFFF_FFFE, "1"), Some(false));
+    }
+
+    #[test]
+    fn incomplete_child_recovery_preserves_profile_and_retry_evidence() {
+        assert!(!child_reclamation_complete("unknown"));
+        assert!(!child_reclamation_complete("terminate-failed"));
+        let root = temp_root("child-unknown");
+        let journal = Journal::open(&root).unwrap();
+        let nonce = new_identity_nonce();
+        let task_root = root.join("task-child");
+        fs::create_dir_all(task_root.join("logs")).unwrap();
+        fs::create_dir_all(task_root.join("bin")).unwrap();
+        write_identity(&task_root, "task-child", &nonce).unwrap();
+        let mut record = entry(&root, "task-child", &nonce);
+        dead_broker(&mut record);
+        journal.write(&record).unwrap();
+        // The current test process has a real PID/creation time but its image
+        // is outside the empty task bin. Recovery must not terminate it.
+        let (pid, filetime) = current_process_identity().unwrap();
+        let sidecar = task_root.join("logs/process-verification.json");
+        fs::write(&sidecar, serde_json::to_vec(&serde_json::json!({
+            "pid":pid,"creationTimeFiletime":filetime
+        })).unwrap()).unwrap();
+        let report = recover(&root).unwrap();
+        let recovered = &report.entries[0];
+        assert_eq!(recovered.child_process_state, "unknown");
+        assert_eq!(recovered.profile_hresult, None);
+        assert!(!recovered.task_root_removed);
+        assert!(!recovered.journal_removed);
+        assert!(sidecar.exists());
+        assert!(journal.entry_path("task-child").unwrap().exists());
+        fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn profile_identity_mismatch_preserves_task_marker_for_retry() {
+        let root = temp_root("profile-mismatch");
+        let journal = Journal::open(&root).unwrap();
+        let nonce = new_identity_nonce();
+        let task_root = root.join("task-profile");
+        fs::create_dir_all(&task_root).unwrap();
+        write_identity(&task_root, "task-profile", &nonce).unwrap();
+        let mut record = entry(&root, "task-profile", &nonce);
+        dead_broker(&mut record);
+        // entry() deliberately carries a SID that cannot match this name.
+        journal.write(&record).unwrap();
+        let report = recover(&root).unwrap();
+        assert!(!report.entries[0].profile_deleted);
+        assert!(!report.entries[0].task_root_removed);
+        assert!(read_identity(&task_root).is_ok());
+        assert!(journal.entry_path("task-profile").unwrap().exists());
+        fs::remove_dir_all(&root).unwrap();
     }
 }
