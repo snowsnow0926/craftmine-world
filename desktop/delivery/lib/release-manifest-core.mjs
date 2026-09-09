@@ -63,7 +63,7 @@ export const FORBIDDEN_PACKAGE_RULES = [
   {id: 'npmrc', kind: 'basename', value: '.npmrc', description: 'Registry credentials must never ship.'},
   {id: 'git-credentials', kind: 'basename', value: '.git-credentials', description: 'Git credentials must never ship.'},
   {id: 'ssh-private-key', kind: 'basename', value: 'id_rsa', description: 'Private key must never ship.'},
-  {id: 'private-key', kind: 'extension', value: '.pem', description: 'Private key must never ship.'},
+  {id: 'private-key', kind: 'extension', value: '.pem', except: ['cert.pem', 'cacert.pem', 'ca-bundle.pem'], description: 'Private key must never ship. A public CA bundle such as cert.pem is not a private key and is allowed.'},
   {id: 'pkcs12', kind: 'extension', value: '.p12', description: 'Signing material must never ship.'},
   {id: 'pfx', kind: 'extension', value: '.pfx', description: 'Signing material must never ship.'},
   {id: 'credentials-json', kind: 'basename', value: 'credentials.json', description: 'Credential store must never ship.'},
@@ -106,6 +106,7 @@ export function forbiddenRuleFor(relative) {
   const base = (segments.at(-1) ?? '').toLowerCase();
   const extension = path.posix.extname(base);
   for (const rule of FORBIDDEN_PACKAGE_RULES) {
+    if (rule.except && rule.except.includes(base)) continue;
     if (rule.kind === 'segment' && segments.some(segment => segment.toLowerCase() === rule.value)) return rule;
     if (rule.kind === 'basename' && base === rule.value) return rule;
     if (rule.kind === 'basenamePrefix' && (base === rule.value || base.startsWith(rule.value + '.'))) return rule;
@@ -592,7 +593,12 @@ function collectLicenses(root) {
     files.push({...file, role: 'engine-notice'});
   }
   push(entryFor(root, 'desktop/UPSTREAM.json', {role: 'provenance', packagePath: 'resources/licenses/UPSTREAM.json'}));
-  push(entryFor(root, 'desktop/windows-NOTICES.md', {role: 'product-notices', packagePath: 'resources/licenses/CRAFTMINE-NOTICES.md'}));
+  // The package notice document is the generated comprehensive notice, not the short
+  // repository summary: desktop/windows-NOTICES.md is pinned as a repo document, while
+  // the generated notices travel as resources/licenses/CRAFTMINE-NOTICES.md.
+  push(entryFor(root, 'desktop/windows-NOTICES.md', {role: 'product-notices', packagePath: null}));
+  push(entryFor(root, 'desktop/delivery/licensing/notices/CRAFTMINE-NOTICES.md', {role: 'package-notices', packagePath: 'resources/licenses/CRAFTMINE-NOTICES.md'}));
+  push(entryFor(root, 'desktop/delivery/licensing/offline-entry.json', {role: 'offline-licence-entry', packagePath: null}));
   push(entryFor(root, 'vendor/pi-desktop/LICENSE', {role: 'lgpl-text', packagePath: 'resources/licenses/PI-Desktop-LICENSE.txt'}));
   const seen = new Set();
   const unique = [];
@@ -607,8 +613,70 @@ function collectLicenses(root) {
     files: unique,
     status: unique.length ? 'verified' : 'absent',
     notes: 'desktop/godot/licenses/** (engine notices and the notice manifest), desktop/UPSTREAM.json, ' +
-      'desktop/windows-NOTICES.md and the vendor LGPL text that the package ships as ' +
+      'the generated package notices (desktop/delivery/licensing/notices/CRAFTMINE-NOTICES.md), the offline ' +
+      'licence entry, the repository notice summary and the vendor LGPL text that the package ships as ' +
       'resources/licenses/PI-Desktop-LICENSE.txt.'
+  });
+}
+
+function collectGitBundle(root, packageDirectory) {
+  const pinRelative = 'desktop/delivery/git-bundle.json';
+  const pinEntry = entryFor(root, pinRelative, {role: 'git-bundle-pin'});
+  const pin = pinEntry ? readJson(path.join(root, pinRelative)) : null;
+  let staged = null;
+  if (packageDirectory) {
+    const stagedPath = path.join(packageDirectory, 'resources/git/GIT-BUNDLE.json');
+    if (fs.existsSync(stagedPath)) {
+      try {
+        const record = readJson(stagedPath);
+        staged = {
+          fileCount: record.fileCount ?? null,
+          totalBytes: record.totalBytes ?? null,
+          versionOutput: record.versionOutput ?? null,
+          entry: record.entry ?? null
+        };
+      } catch (error) {
+        staged = {error: 'GIT-BUNDLE.json is not valid JSON: ' + error.message};
+      }
+    }
+  }
+  const notes = pin
+    ? 'Pinned ' + pin.id + ' ' + pin.version + ' (archive sha256 ' + pin.archive.sha256 + '). R1 requires a bundled Git: '
+      + 'CRAFTMINE_BUNDLED_GIT or an exe-adjacent ' + pin.layout.entry + '; without it content.gitInfo reports pathFallback. '
+      + (staged
+        ? 'A staged tree is present in the supplied package (' + staged.fileCount + ' files, ' + staged.totalBytes + ' bytes, ' + staged.versionOutput + ').'
+        : 'No staged resources/git tree was supplied with --package.')
+    : 'No git-bundle pin exists in this tree.';
+  return component('git', {
+    version: pin?.version ?? null,
+    source: {path: pin?.archive?.url ?? pinRelative, commit: null, tag: pin?.version ?? null},
+    files: pinEntry ? [pinEntry] : [],
+    status: pinEntry ? (staged ? 'verified' : 'pending-package') : 'absent',
+    notes,
+    contract: pin?.contract ?? null,
+    staged
+  });
+}
+
+function collectContentBoundaries(root) {
+  const relativePaths = [
+    'desktop/delivery/content-boundaries.json',
+    'desktop/delivery/content-boundary-check.mjs',
+    'desktop/delivery/CONTENT_BOUNDARIES.md'
+  ];
+  const files = relativePaths.map(relative => entryFor(root, relative, {role: 'content-boundary'})).filter(Boolean);
+  const spec = fs.existsSync(path.join(root, relativePaths[0])) ? readJson(path.join(root, relativePaths[0])) : null;
+  const boundaries = spec
+    ? Object.values(spec.boundaries ?? {}).map(boundary => ({id: boundary.id, kind: boundary.kind, status: boundary.status}))
+    : [];
+  return component('contentBoundaries', {
+    version: null,
+    source: {path: relativePaths[0], commit: null, tag: null},
+    files,
+    status: files.length ? 'verified' : 'absent',
+    notes: 'Client install, creation-share package, portable backup and standalone-game boundaries with the paths that must not cross them. '
+      + 'standalone-game is declared but pending: no export layout exists in the integrated trees.',
+    boundaries
   });
 }
 
@@ -655,8 +723,15 @@ function collectToolingM() {
     source: {path: 'docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md', commit: null, tag: null},
     files: [],
     status: 'pending-integration',
-    notes: 'VM0–VM4 local version management is planned, not implemented in this worktree. ' +
-      'No hash is recorded because there are no bytes to hash; a plan is not a deliverable.',
+    notes: 'VM0–VM4 content history is implemented on branch codex/godot-round2-r1-20260910 ' +
+      '(commit 62a700f13f061e1b5d8cafdc6de33ee5ec536b87) but is not integrated in this worktree. ' +
+      'No hash is recorded because those bytes are not in this tree; consume them after the main task merges R1.',
+    availableAt: {
+      branch: 'codex/godot-round2-r1-20260910',
+      commit: '62a700f13f061e1b5d8cafdc6de33ee5ec536b87',
+      report: 'docs/dispatch-reports/godot-round2/R1/REPORT.md',
+      interface: 'content.gitInfo, content.status and the content.* RPC surface'
+    },
     owner: 'M',
     expectedPaths
   });
@@ -698,8 +773,15 @@ function collectToolingN() {
     source: {path: 'docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md', commit: null, tag: null},
     files: [],
     status: 'pending-integration',
-    notes: 'AL0–AL5 local asset library, search, preview and full dependency list are planned, ' +
-      'not implemented in this worktree. No hash is recorded because there are no bytes to hash.',
+    notes: 'AL0–AL5 asset catalog, search, preview and dependency list are implemented on branch ' +
+      'codex/godot-round2-r6-20260910 (commit 64948746fa052411669d776d19e81c76ee35d518) but are not integrated ' +
+      'in this worktree. No hash is recorded because those bytes are not in this tree.',
+    availableAt: {
+      branch: 'codex/godot-round2-r6-20260910',
+      commit: '64948746fa052411669d776d19e81c76ee35d518',
+      report: 'docs/dispatch-reports/godot-round2/R6/INTERFACE_R6.md',
+      interface: 'asset.search, asset.previewBegin, asset.previewRead, asset.previewFinish'
+    },
     owner: 'N',
     expectedPaths
   });
@@ -819,6 +901,8 @@ export function createReleaseManifest(root, options = {}) {
     bridge: collectBridge(resolvedRoot),
     dependencies: collectDependencies(resolvedRoot),
     licenses: collectLicenses(resolvedRoot),
+    git: collectGitBundle(resolvedRoot, options.packageDirectory ?? null),
+    contentBoundaries: collectContentBoundaries(resolvedRoot),
     tooling: {m: collectToolingM(), n: collectToolingN()}
   };
   if (options.packageDirectory) applyPackageSnapshot(components, resolvedRoot, options.packageDirectory);
@@ -839,6 +923,8 @@ export function createReleaseManifest(root, options = {}) {
         {id: 'notice-manifest', source: 'desktop/godot/licenses/notices.manifest.json'},
         {id: 'lockfiles', source: 'bounded scan for ' + LOCKFILE_NAMES.join(', ')},
         {id: 'bridge-sources', source: BRIDGE_FILES.join(', ')},
+        {id: 'git-bundle', source: 'desktop/delivery/git-bundle.json (pinned MinGit archive url/bytes/sha256 and the R1 discovery contract)'},
+        {id: 'content-boundaries', source: 'desktop/delivery/content-boundaries.json (client, share package, portable backup, standalone game)'},
         {id: 'package-required-files', source: 'preflight-core checkPackage required list + manifest packagePath pins',
           value: [...required.keys()].sort()}
       ],
