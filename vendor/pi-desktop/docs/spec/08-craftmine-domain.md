@@ -60,7 +60,8 @@ are refused. Binary assets, runtime source validation, import/export, execution,
 OS isolation, candidate application and Godot backup/library support remain
 unavailable; legacy backups do not capture this new source authoring head.
 
-PI tools expose creation, index, read and patch through host context only; the
+PI tools `godot_project_create`, `godot_project_index`, `godot_file_read` and
+`godot_project_patch` expose creation, index, read and patch through host context only; the
 model never supplies world/session/project/turn/binding or call IDs. Index and
 read hashes provide the observations needed to form a checked patch. Storage
 success must never be reported as game behavior, model validation or deployment.
@@ -253,3 +254,15 @@ Reviews include authoritative ground/visibility semantics and distinguish module
 fixture traces from renderer observations. Agent reads include bounded failed
 assertions for repair. Receipt identity is checked on concurrent and durable
 replays; late successful provider replies cannot override cancellation.
+
+
+For a Godot mutation transport error without a structured domain error code, the
+broker performs only an internal exact receipt lookup with the captured original
+binding, call, method and parameters. This read can finish after the turn ended;
+it neither reopens a lease nor repeats a mutation. Missing/unavailable receipts
+preserve the original uncertain error. A dead core may be restarted for that
+read, which still runs normal task recovery; a live timed-out core is not restarted.
+The existing `craftmine.request/2` host snapshot marker is unchanged by the added
+Godot instructions. Six actual broker/core integration tests include commit-then-
+lost-response/ended-turn and missing-receipt fault injection. They do not certify
+arbitrary network failures or a full native PI desktop lifecycle.

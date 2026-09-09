@@ -8695,3 +8695,12 @@ legacy `verification_submit` to compile or verify the new Godot source file set.
 This scenario never starts Godot, evaluates generated source, sends input or
 focuses a window. Real model authorship, import/run sandboxing and application
 remain separate acceptance gates.
+
+
+CRAFTMINE-019 integration follow-up: `node --test tests/godot-project-tools.mjs`
+uses the actual bundled broker and Rust stdio binary with independent profiles.
+After a real source commit, inject loss of the response and end its host turn;
+require the original receipt without another mutation. Inject failure before a
+commit; require the original uncertain error when no receipt exists. Retain the
+`craftmine.request/2` snapshot protocol and run the existing batch-07 review-fixture
+regression. These fixtures do not call a real provider or run authored Godot code.

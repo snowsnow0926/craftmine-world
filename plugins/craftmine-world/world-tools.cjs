@@ -53,7 +53,21 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
         params.toolCallId=invocation.toolCallId;
         params.baseBuild=workspace.task.binding.baseBuild;
       } else if(definition.name==='godot_project_patch')params.toolCallId=invocation.toolCallId;
-      return core.call(godotMethods[definition.name],params);
+      const method=godotMethods[definition.name];
+      try {return await core.call(method,params);}
+      catch(error) {
+        if(!params.toolCallId||error?.errorCode)throw error;
+        // A transport failure cannot establish whether the commit happened.
+        // Look up only the original receipt, including after the turn ended;
+        // never reopen its lease or replay a write to discover the outcome.
+        try {
+          await core.start();
+          const receipt=await core.call('godotProject.receipt',{binding:workspace.task.binding,
+            worldId:workspace.worldId,toolCallId:params.toolCallId,method,request:params});
+          if(receipt)return receipt;
+        } catch {/* Preserve the original uncertain outcome if lookup is unavailable. */}
+        throw error;
+      }
     }
     if(definition.name==='library_search')return library.search(args);
     if(definition.name==='library_read')return library.read(args);

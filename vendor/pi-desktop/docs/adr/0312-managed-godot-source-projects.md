@@ -106,3 +106,12 @@ replace this missing evidence with a fabricated reparse object or a success clai
 Core stdio and the PI broker require independent integration checks. No test in
 this slice imports or executes model-authored Godot code, simulates user input,
 requests Pointer Lock or focuses a window.
+
+
+The broker integration now performs internal receipt reads for uncertain transport
+outcomes using the original host binding; it never retries a write to discover
+whether it committed. Actual stdio tests cover a committed write whose response
+is discarded before turn completion, and an absent receipt after a pre-commit
+failure. The snapshot wire marker remains `craftmine.request/2`; changing the
+model instruction text does not upgrade that protocol. Source tool integration
+is tested independently of the native PI host lifecycle and real inference.

@@ -39,13 +39,25 @@ async function fixture(t) {
   const world={build:{...scene,id:'v-'+scene.hash.slice(0,20)},snapshot:INITIAL_SNAPSHOT,extensions:[]};
   for(const id of ['alpha','beta'])await client.call('world.create',{id,title:id,world});
   const invocation={projectId:'project',sessionId:'session',turnId:'turn',executionId:'execution'};
-  let selectedWorld='alpha',ended=false;
+  let selectedWorld='alpha',ended=false,fault=null;
+  const calls=[];
   // Delegation still calls the real core. Only panel selection and lifecycle are fixtures.
-  const core={start:()=>client.start(),call:(method,args)=>client.call(method,args,15000)};
+  const core={start:()=>client.start(),call:async(method,args)=>{
+    calls.push(method);
+    if(fault?.method===method&&fault.beforeCommit){fault=null;throw Error('Craftmine Rust request timed out');}
+    const result=await client.call(method,args);
+    if(fault?.method===method) {
+      fault=null;
+      await client.call('workspace.endTurn',{sessionId:invocation.sessionId,turnId:invocation.turnId,status:'completed'});
+      ended=true;
+      throw Error('Craftmine Rust request timed out'); // Inject loss after the real commit.
+    }
+    return result;
+  }};
   const tools=createWorldTools(core,async()=>({activeWorldId:selectedWorld}),()=>ended);
   const call=(name,args={},extra={})=>tools.find(tool=>tool.name===name).execute(args,
     {...invocation,toolCallId:'call-'+(++sequence),...extra});
-  return {call,core,invocation,world,select:id=>{selectedWorld=id;},end:()=>{ended=true;},
+  return {call,core,invocation,world,calls,lose:(method,beforeCommit=false)=>{fault={method,beforeCommit};},select:id=>{selectedWorld=id;},end:()=>{ended=true;},
     restart:async()=>{await client.stop();client=new CoreClient(binary,directory);await client.start();}};
 }
 
@@ -117,5 +129,27 @@ test('tool catalogue exposes only source authoring for Godot',async()=>{
   for(const tool of tools)for(const key of ['worldId','context','toolCallId','baseBuild'])assert.ok(!Object.hasOwn(tool.schema.properties,key));
   assert.ok(tools.every(tool=>tool.schema.additionalProperties===false));
   assert.equal(tools.find(tool=>tool.name==='godot_project_index').schema.properties.limit.maximum,32);
+});
+
+test('lost mutation response recovers its real receipt after turn completion without another write',async t=>{
+  const f=await fixture(t);
+  await f.call('godot_project_create',{baseId:'first-person',files});
+  const index=await f.call('godot_project_index'),pin={revision:index.revision,manifestHash:index.manifestHash};
+  const file=await f.call('godot_file_read',{...pin,path:'world.gd'});
+  f.lose('godotProject.patch');
+  const result=await f.call('godot_project_patch',{...pin,operations:[{op:'put',path:'world.gd',text:file.text+'# retained\n',expectedHash:file.sha256}]});
+  assert.equal(result.revision,index.revision+1);assert.equal(result.applied,false);
+  assert.equal(f.calls.filter(m=>m==='godotProject.patch').length,1);
+  assert.equal(f.calls.filter(m=>m==='godotProject.receipt').length,1);
+  await assert.rejects(f.call('godot_project_index'),/TURN_ENDED/);
+  assert.deepEqual((await f.core.call('world.read',{id:'alpha'})).world,f.world);
+});
+
+test('a missing receipt preserves the original uncertain error and does not replay creation',async t=>{
+  const f=await fixture(t);f.lose('godotProject.create',true);
+  await assert.rejects(f.call('godot_project_create',{baseId:'first-person',files}),/Craftmine Rust request timed out/);
+  assert.equal(f.calls.filter(m=>m==='godotProject.create').length,1);
+  assert.equal(f.calls.filter(m=>m==='godotProject.receipt').length,1);
+  await assert.rejects(f.call('godot_project_index'),/GODOT_PROJECT_NOT_FOUND/);
 });
 console.log('evidence_directory='+output);
