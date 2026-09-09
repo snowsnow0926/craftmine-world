@@ -6,8 +6,9 @@ const {createVerificationJobs} = require('./verification-jobs.cjs');
 const {createReviewJobs} = require('./review-jobs.cjs');
 const {createApplications} = require('./applications.cjs');
 const {createHostRequests} = require('./host-requests.cjs');
-const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary} = require('./domain.cjs');
-let core,verifications,reviews,applications,hostRequests;
+const {createWorkbenchService} = require('./workbench-service.cjs');
+const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary,createLibraryService,createMemoryService} = require('./domain.cjs');
+let core,verifications,reviews,applications,hostRequests,workbench;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
 const importErrors={
@@ -27,7 +28,9 @@ async function onLoad() {
   reviews=createReviewJobs(core,pi.craftmine);
   verifications=createVerificationJobs(core,pi.craftmine,id=>reviews.start(id));
   applications=createApplications(core,pi.craftmine);
-  hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings()});
+  const call=(method,params)=>core.call(method,params);
+  workbench=createWorkbenchService(core,{library:createLibraryService({call}),memory:createMemoryService({call}),verifications,reviews,getSettings:()=>pi.plugin.getSettings()});
+  hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench});
   pi.services.register({id:'world-core',start:()=>core.start(),stop:()=>core.stop()});
   await pi.agent.registerTool({
     name: 'runtime_info',

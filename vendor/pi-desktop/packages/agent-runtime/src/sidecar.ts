@@ -504,7 +504,7 @@ async function handle(method: string, params: any): Promise<unknown> {
     }
     case "agent.compact": {
       const runtime = await runtimeFor(params);
-      await runtime.compactManually();
+      await runtime.compactManually(params.turnId);
       return { accepted: true };
     }
     case "agent.abort": {

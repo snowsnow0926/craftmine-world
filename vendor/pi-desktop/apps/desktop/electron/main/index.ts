@@ -18,8 +18,12 @@ import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
 import { CraftmineTurnGateway } from "./craftmine-turn-gateway";
+import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
+import { createCraftmineBackupService, type CraftmineFilePicker } from "./craftmine-backup-service";
+import { createCraftmineDiagnosticsService } from "./craftmine-diagnostics-service";
 import { CraftmineVerifier } from "./craftmine-verifier";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
+import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
 import { configureHeadlessAcceptance, installHeadlessControl } from "./craftmine-headless";
 import {
@@ -565,6 +569,7 @@ const pluginPanels = new PluginPanelHost(
 );
 const craftmineVerifier = new CraftmineVerifier();
 const plugins: PluginRuntime = new PluginRuntime({
+  craftminePanelRequest: (channel, payload) => craftminePanelRequest(channel, payload),
   craftmineVerification: craftmineVerifier,
   getWorkspacePath: () => {
     // Filled after host boots; temporary stub until services rebinding.
@@ -2323,6 +2328,76 @@ function addActiveTurnUsage(sessionId: string, usage: MessageUsage | undefined) 
 const scheduledRunsBySession = new Map<string, string>();
 /** Session currently rendered on the chat page; focus remains Main-owned. */
 let notificationViewingSessionId: string | null = null;
+const craftmineFilePicker: CraftmineFilePicker = async request => {
+  // Acceptance processes never display an OS picker or acquire focus.
+  if (headlessAcceptance) return join(headlessAcceptance.root, request.kind === "save-diagnostics" ? "diagnostics.json" : "portable-backup.json");
+  if (request.kind === "open-backup") {
+    const result = await dialog.showOpenDialog({ title: "选择 Craftmine World 备份", properties: ["openFile"], filters: [{ name: "Craftmine World 备份", extensions: ["json"] }] });
+    return result.canceled ? null : result.filePaths[0] ?? null;
+  }
+  const result = await dialog.showSaveDialog({ title: request.kind === "save-backup" ? "备份此客户端的全部世界和作品" : "导出诊断", defaultPath: request.suggestedName, filters: [{ name: "JSON", extensions: ["json"] }] });
+  return result.canceled ? null : result.filePath ?? null;
+};
+const craftmineBackup = createCraftmineBackupService({ domainCall: (method, params) => plugins.requestCraftmineHost(method, params), pickFile: craftmineFilePicker });
+const craftmineDiagnostics = createCraftmineDiagnosticsService({
+  pickFile: craftmineFilePicker,
+  snapshot: async () => {
+    const credentials = host ? await host.call("secrets.status", {}).catch(() => ({ status: "unavailable" })) : { status: "unavailable" };
+    let task: any = { status: "idle" };
+    const binding = notificationViewingSessionId && craftmineGateway.get(notificationViewingSessionId);
+    if (binding) {
+      const context = { projectId: binding.projectId, sessionId: binding.sessionId, turnId: binding.turnId };
+      const current = await plugins.requestCraftmineHost("task.context", { context }).catch(() => null) as CraftmineTaskContext | null;
+      if (current) task = { status: current.status, requestCount: current.budget.requestCount, compactionCount: current.budget.compactionCount };
+    }
+    return { build: { version: app.getVersion() }, task, credentials };
+  },
+});
+const craftminePanelRequest = createCraftminePanelGateway({
+  viewingSession: () => notificationViewingSessionId,
+  session: async id => {
+    if (!host) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
+    const result = await host.call<{ session?: any }>("session.get", { id }); return result.session;
+  },
+  activeTurn: id => activeTurns.get(id),
+  domain: (method, params) => plugins.requestCraftmineHost(method, params),
+  begin: async session => {
+    if (!host) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
+    if (activeTurns.has(session.id) || turnFinalizations.has(session.id)) throw new Error("ACTIVE_TASK_EXISTS");
+    const result = await host.call<{ turnId: string }>("session.beginTurn", { sessionId: session.id, providerId: session.providerId, modelId: session.modelId });
+    if (!result.turnId) throw new Error("HOST_TURN_REQUIRED");
+    activeTurns.set(session.id, result.turnId); return result.turnId;
+  },
+  end: (sessionId, status) => finishTurn(sessionId, status, undefined, { createNotification: false }),
+  stop: async sessionId => {
+    if (!sidecar) throw new Error("CRAFTMINE_SIDECAR_UNAVAILABLE");
+    const turnId = activeTurns.get(sessionId);
+    if (turnId) {
+      craftmineGateway.end(sessionId, turnId);
+      await plugins.endCraftmineTurn({ sessionId, turnId, status: "aborted" });
+    }
+    try { await sidecar.call("agent.abort", { sessionId }); }
+    finally { await finishTurn(sessionId, "aborted", "TURN_ABORTED", { createNotification: false }); }
+  },
+  resume: async (session, turnId, result) => {
+    if (!host || !sidecar) throw new Error("CRAFTMINE_BACKEND_UNAVAILABLE");
+    const sessionId = session.id, projectId = craftmineProjectIdentity(session, sessionId);
+    const context = { projectId, sessionId, turnId };
+    const facts = await plugins.requestCraftmineHost("task.context", { context }) as CraftmineTaskContext;
+    const content = "继续完成被中断的创作，保留已保存的改动。原任务要求：\n" + facts.requirements.slice().reverse().map(row => row.text).join("\n");
+    const userMessage = { id: crypto.randomUUID(), role: "user" as const, content, createdAt: new Date().toISOString(), status: "complete" as const };
+    await host.call("session.appendMessage", { sessionId, message: userMessage, turnId });
+    await plugins.requestCraftmineHost("task.context", { context, request: { id: userMessage.id, text: content } });
+    craftmineGateway.bind({ ...context, selectedWorld: result.workspace.worldId });
+    const settings = await host.call<any>("settings.get");
+    const launch = await resolveAgentRuntimeLaunch(sessionId, session, settings);
+    sidecar.setProjectInstructionRoot(sessionId, launch.projectPath);
+    for (const type of ["message_start", "message_end"] as const) sendToRenderer(IPC.event.agentMessage, { sessionId, turnId, ts: Date.now(), event: { type, message: userMessage } } satisfies AgentEventEnvelope);
+    await sidecar.call("agent.prompt", { ...launch.sidecarParams, craftmineWorld: true, turnId, content, userMessageId: userMessage.id });
+  },
+  backup: (channel, payload) => craftmineBackup.request(channel, payload),
+  diagnostics: (channel, payload) => craftmineDiagnostics.request(channel, payload),
+});
 /** Preserve tool metadata until the result is persisted at tool_end. Subagent
  * calls also carry their attribution, which is what lets a permission request
  * name the delegate that asked (ADR 0062). */
@@ -8017,7 +8092,20 @@ function registerIpc() {
       settings,
     );
     sidecar.setProjectInstructionRoot(req.sessionId, launch.projectPath);
-    const result = await sidecar.call("agent.compact", launch.sidecarParams);
+    const selection = plugins.getLoaded("craftmine.world")
+      ? await plugins.requestCraftmineHost("selection.read", {}) as { worldId: string | null } : null;
+    let result: unknown;
+    if (selection?.worldId && pluginActiveInProject("craftmine.world", detail.session.projectPath ?? null)) {
+      const turn = await host.call<{ turnId: string }>("session.beginTurn", { sessionId: req.sessionId, providerId: launch.providerId, modelId: launch.modelId });
+      activeTurns.set(req.sessionId, turn.turnId);
+      try {
+        const previous = detail.session.messages?.findLast((message: UiMessage) => message.role === "user");
+        const craftmineWorld = await bindCraftmineTurn(req.sessionId, turn.turnId, detail.session,
+          { id: crypto.randomUUID(), text: previous?.content || "压缩当前会话，保留世界状态和未完成的要求。" });
+        result = await sidecar.call("agent.compact", { ...launch.sidecarParams, craftmineWorld, turnId: turn.turnId });
+        await finishTurn(req.sessionId, "completed", undefined, { createNotification: false });
+      } catch (error) { await finishTurn(req.sessionId, "error", undefined, { createNotification: false }); throw error; }
+    } else result = await sidecar.call("agent.compact", launch.sidecarParams);
     logger.app("session", "info", "context compacted manually", {
       sessionId: req.sessionId,
       data: { providerId: launch.providerId, modelId: launch.modelId },
@@ -8981,6 +9069,7 @@ function registerIpc() {
   });
 }
 
+installNativeAgentAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload), active: (sessionId) => activeTurns.has(sessionId) });
 installHeadlessControl({
   window: () => mainWindow,
   world: () => pluginViews.headlessWorldContents(),

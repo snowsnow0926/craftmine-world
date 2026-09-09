@@ -5,7 +5,7 @@ const fields=(value,allowed)=>{need(value&&typeof value==='object'&&!Array.isArr
 const digest=value=>createHash('sha256').update(value).digest('hex');
 const contextOf=binding=>Object.fromEntries(['projectId','sessionId','turnId'].map(key=>[key,binding[key]]));
 const channels={
-  'workbench.capabilities':[], 'task.current':[],
+  'workbench.capabilities':[], 'task.current':[], 'task.recoverable':[],
   'library.search':['query','kind','offset','limit'], 'library.read':['ref','start','limit'],
   'library.capture':['operationId','kind','resourceId','tags','applicationId'],
   'library.install':['operationId','ref','revision','position'],
@@ -18,13 +18,14 @@ const channels={
 // viewed session and selected world; Rust remains the durable transaction owner.
 function createWorkbenchService(core,{library,memory,verifications,reviews,getSettings}) {
   const selections=new Map(),selectionRequests=new Map();
-  const owner=host=>{need(text(host?.projectId)&&text(host?.sessionId),'HOST_IDENTITY_REQUIRED');return JSON.stringify([host.projectId,host.sessionId]);};
+  const owner=host=>{need(text(host?.projectId)&&(host.sessionId===null||text(host?.sessionId)),'HOST_IDENTITY_REQUIRED');return JSON.stringify([host.projectId,host.sessionId]);};
   async function selected(host,worldId){
     owner(host);const actual=(await getSettings()).activeWorldId;
     need(text(worldId,80)&&worldId===actual&&host.selectedWorld===worldId,'SELECTED_WORLD_MISMATCH');
     return core.call('world.read',{id:worldId});
   }
   async function current(host,worldId){
+    if(!host.sessionId)return null;
     const workspace=await core.call('workspace.current',{projectId:host.projectId,sessionId:host.sessionId});
     if(!workspace||workspace.worldId!==worldId)return null;
     return core.call('task.context',{context:contextOf(workspace.task.binding)});
@@ -46,13 +47,15 @@ function createWorkbenchService(core,{library,memory,verifications,reviews,getSe
   }
   async function validatedContext(context){
     const workspace=await core.call('workspace.inspect',{context:contextOf(context)}),worldId=workspace.worldId;
-    const host={...context,selectedWorld:worldId};await selected(host,worldId);
+    // The panel may now display another world. Task memory is still bound to
+    // its original Rust workspace; a UI switch cannot invalidate or redirect it.
+    const host={...context,selectedWorld:worldId};
     const world=await core.call('world.read',{id:worldId});
     const result=await memory.search({scope:{projectId:context.projectId,worldId},sourceHashes:[workspace.task.draftHash],runtimeVersion:'craftmine-web/5',limit:50});
     const records=result.items.filter(record=>record.status==='validated'&&!record.supersededBy);
     const selection=await selectionRead(host);
     // A selection must still exist in the current draft before becoming context.
-    return {worldId,memories:records,selection:selection&&workspace.task.draft.scene.objects.some(object=>object.id===selection.objectId)?selection:null,build:{id:world.world.build.id,hash:world.world.build.hash}};
+    return {worldId,memories:records.map(record=>({id:record.id,kind:record.kind,text:record.claim,status:record.status,worldId})),selection:selection&&workspace.task.draft.scene.objects.some(object=>object.id===selection.objectId)?selection:null,build:{id:world.world.build.id,hash:world.world.build.hash}};
   }
   async function handle(channel,payload={},host={}){
     if(channel==='workbench.prepareAction'){
@@ -72,6 +75,11 @@ function createWorkbenchService(core,{library,memory,verifications,reviews,getSe
     if(selectionKey)need(selectionRequests.get(selectionKey)===selectionRequest,'STALE_SELECTION_REQUEST');
     if(channel==='workbench.capabilities')return {channels:Object.keys(channels).filter(name=>!name.startsWith('library.')||library).filter(name=>!name.startsWith('memory.')||memory).filter(name=>name!=='library.install'||verifications)};
     if(channel==='task.current')return {context:await current(host,worldId),active:host.active===true};
+    if(channel==='task.recoverable'){
+      if(!host.sessionId)return {items:[],modelReplay:false};
+      const result=await core.call('task.recoverable',{projectId:host.projectId,worldId});
+      return {...result,items:result.items.filter(item=>item.binding.sessionId===host.sessionId)};
+    }
     if(channel==='library.search')return library.search(args);
     if(channel==='library.read')return library.read(args);
     if(channel==='library.capture'){
