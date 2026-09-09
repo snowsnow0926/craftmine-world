@@ -180,6 +180,30 @@ fn receipt(
 }
 
 impl TaskJournal {
+    pub fn workspace_current(&self, args: &Value) -> Result<Value> {
+        super::durable::fields(args, &["projectId", "sessionId"])?;
+        let project = super::durable::text(args, "projectId", 240)?;
+        let session = super::durable::text(args, "sessionId", 240)?;
+        let head: Option<(String, String)> = self
+            .db
+            .query_row(
+                "SELECT project_id,head_task FROM craftmine_session_worlds WHERE session_id=?1",
+                [session],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .optional()?;
+        let Some((stored, id)) = head else {
+            return Ok(Value::Null);
+        };
+        ensure!(stored == project, "PROJECT_BINDING_MISMATCH");
+        let task = read_task(&self.db, &id)?;
+        let context = WorkspaceContext {
+            project_id: project.into(),
+            session_id: session.into(),
+            turn_id: task.binding.turn_id,
+        };
+        Ok(serde_json::to_value(inspect(&self.db, &context)?)?)
+    }
     /// The selected world is only a default for a previously unbound session.
     /// Later turns inherit a draft; old turn IDs can never reacquire its lease.
     pub fn workspace_open(
@@ -236,9 +260,16 @@ impl TaskJournal {
             .context("BUILD_ID_REQUIRED")?;
         let prior_task = prior.as_ref().map(|p| read_task(&tx, &p.2)).transpose()?;
         if let Some(previous) = &prior_task {
-            let (generation, owner, recovery) = super::durable::runtime(&tx, &previous.binding.task_id)?;
+            let (generation, owner, recovery) =
+                super::durable::runtime(&tx, &previous.binding.task_id)?;
             if let Some((expected_id, expected_generation, expected_owner)) = recovery_request {
-                ensure!(expected_id == previous.binding.task_id && expected_generation == generation && expected_owner == owner && recovery == "interrupted", "RECOVERY_CONFLICT");
+                ensure!(
+                    expected_id == previous.binding.task_id
+                        && expected_generation == generation
+                        && expected_owner == owner
+                        && recovery == "interrupted",
+                    "RECOVERY_CONFLICT"
+                );
             } else {
                 ensure!(recovery != "interrupted", "EXPLICIT_RECOVERY_REQUIRED");
             }
@@ -313,7 +344,10 @@ impl TaskJournal {
         )?;
         if let Some((old_id, generation, owner)) = recovery_request {
             tx.execute("INSERT INTO craftmine_task_runtime(task_id,generation,budget_owner,recovery) VALUES(?1,?2,?3,'none')",params![id,i64::try_from(generation.checked_add(1).context("GENERATION_LIMIT")?)?,owner])?;
-            tx.execute("UPDATE craftmine_task_runtime SET recovery='resumed' WHERE task_id=?1",[old_id])?;
+            tx.execute(
+                "UPDATE craftmine_task_runtime SET recovery='resumed' WHERE task_id=?1",
+                [old_id],
+            )?;
             let old = prior_task.as_ref().context("RECOVERY_CONFLICT")?;
             tx.execute("INSERT OR IGNORE INTO craftmine_ended_turns(session_id,turn_id,status) VALUES(?1,?2,'aborted')",params![old.binding.session_id,old.binding.turn_id])?;
             tx.execute("INSERT INTO craftmine_task_requirements(task_id,request_id,kind,text,created_at) SELECT ?2,request_id,kind,text,created_at FROM craftmine_task_requirements WHERE task_id=?1",params![old_id,id])?;

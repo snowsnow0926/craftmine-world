@@ -71,6 +71,21 @@ fn read(db: &Connection, id: &str) -> Result<Value> {
 }
 
 impl TaskJournal {
+    pub fn application_list(&self, args: &Value) -> Result<Value> {
+        super::durable::fields(args, &["worldId", "limit"])?;
+        let world_id = super::durable::text(args, "worldId", 80)?;
+        let limit = args["limit"].as_i64().unwrap_or(12);
+        ensure!((1..=50).contains(&limit), "PAGE_LIMIT");
+        let world = worlds::read(&self.db, world_id)?;
+        let ids=self.db.prepare("SELECT id FROM craftmine_applications WHERE world_id=?1 ORDER BY created_at DESC LIMIT ?2")?.query_map(params![world_id,limit],|r|r.get::<_,String>(0))?.collect::<rusqlite::Result<Vec<_>>>()?;
+        let mut items = Vec::new();
+        for id in ids {
+            let record = read(&self.db, &id)?;
+            let input = &record["input"];
+            items.push(json!({"id":id,"status":record["status"],"worldId":world_id,"verificationId":input["verificationId"],"reviewId":input["reviewId"],"buildId":input["buildId"],"current":world.world.build["id"]==input["buildId"],"createdAt":record["createdAt"]}));
+        }
+        Ok(json!({"items":items}))
+    }
     /// Private broker operation. Panel input contains IDs and its saved revision;
     /// the broker computes migration from Rust's latest snapshot, never preview state.
     pub fn application_prepare(

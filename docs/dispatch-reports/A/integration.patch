@@ -1,0 +1,11 @@
+diff --git a/plugins/craftmine-world/domain-adapter.mjs b/plugins/craftmine-world/domain-adapter.mjs
+index 95bab18..3925505 100644
+--- a/plugins/craftmine-world/domain-adapter.mjs
++++ b/plugins/craftmine-world/domain-adapter.mjs
+@@ -175,3 +175,6 @@ export async function prepareLegacyWorld(project, read) {
+     snapshot:validateSnapshot(project.snapshot),extensions,
+   };
+ }
++
++export {createLibraryService} from './library-service.mjs';
++export {createMemoryService} from './memory-service.mjs';
