@@ -1,0 +1,90 @@
+{
+  "kind": "godot-round2-readonly-audit",
+  "capturedAt": "2026-09-10T03:17:13.4772475+08:00",
+  "master": "bcebeb1f88ad9ce4660281fd442bb0abf643c0b4",
+  "goalStatus": "paused",
+  "scope": "Source, Git, archived evidence and non-mutating in-memory probes; no product end-to-end rerun",
+  "deliveries": [
+    {
+      "role": "C",
+      "worktree": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910",
+      "commit": "f35c5c7ab944cbcab54151d9bd490c905a82942e",
+      "changes": [],
+      "includedInMaster": false
+    },
+    {
+      "role": "R1",
+      "worktree": "D:\\Craftmine World-worktrees\\godot-round2-r1-20260910",
+      "commit": "62a700f13f061e1b5d8cafdc6de33ee5ec536b87",
+      "changes": [],
+      "includedInMaster": false
+    },
+    {
+      "role": "R2",
+      "worktree": "D:\\Craftmine World-worktrees\\godot-round2-r2-20260910",
+      "commit": "451033b1f0889012096452a27e7c70066c136661",
+      "changes": [
+        " M plugins/craftmine-world/view.mjs",
+        " M vendor/pi-desktop/apps/desktop/electron/main/craftmine-navigation-host.ts",
+        " M vendor/pi-desktop/apps/desktop/electron/main/index.ts",
+        " M vendor/pi-desktop/apps/desktop/electron/main/plugin-view-host.ts",
+        " M vendor/pi-desktop/apps/desktop/src/components/CraftmineNavigation.tsx",
+        " M vendor/pi-desktop/apps/desktop/src/components/craftmine/assets/AssetLibraryPanel.tsx",
+        " M vendor/pi-desktop/apps/desktop/src/lib/craftmine-aux.ts",
+        " M vendor/pi-desktop/apps/desktop/src/lib/craftmine-worlds-text.ts",
+        " M vendor/pi-desktop/apps/desktop/src/styles/craftmine.css",
+        "?? tests/godot-round2/R2/asset-navigation-ui.mjs"
+      ],
+      "includedInMaster": false
+    },
+    {
+      "role": "R3",
+      "worktree": "D:\\Craftmine World-worktrees\\godot-round2-r3-20260910",
+      "commit": "cf4704f1b20f5422346c5f6020d29b5a4a1d0ad8",
+      "changes": [],
+      "includedInMaster": false
+    },
+    {
+      "role": "R4",
+      "worktree": "D:\\Craftmine World-worktrees\\godot-round2-r4-20260910",
+      "commit": "5ee920612d94d4930aa5d9c08485e10a197bff09",
+      "changes": [],
+      "includedInMaster": false
+    },
+    {
+      "role": "R5",
+      "worktree": "D:\\Craftmine World-worktrees\\godot-round2-r5-20260910",
+      "commit": "58f44add2d0388e4bdf3c46eea6d21eab1f0478e",
+      "changes": [],
+      "includedInMaster": false
+    },
+    {
+      "role": "R6",
+      "worktree": "D:\\Craftmine World-worktrees\\godot-round2-r6-20260910",
+      "commit": "64948746fa052411669d776d19e81c76ee35d518",
+      "changes": [],
+      "includedInMaster": false
+    },
+    {
+      "role": "R7",
+      "worktree": "D:\\Craftmine World-worktrees\\godot-round2-r7-20260910",
+      "commit": "bba784724541369d1368a52ea8966a73b2184b22",
+      "changes": [],
+      "includedInMaster": false
+    },
+    {
+      "role": "R8",
+      "worktree": "D:\\Craftmine World-worktrees\\godot-round2-r8-20260910",
+      "commit": "d726ec3b2ef730e26e688242589702edbf28ff6c",
+      "changes": [],
+      "includedInMaster": false
+    },
+    {
+      "role": "R9",
+      "worktree": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910",
+      "commit": "dc6e33842d8128df27ccf739d54b3f4bee098d32",
+      "changes": [],
+      "includedInMaster": false
+    }
+  ]
+}
