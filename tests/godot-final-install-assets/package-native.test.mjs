@@ -14,3 +14,17 @@ test('source responses are projected and renderer paths cannot become authority'
 test('oversized and linked files reject without invoking a core installer',async()=>{const f=await fixture();const handle=await fs.open(f.file,'w');await handle.truncate(5*1024*1024+1);await handle.close();await assert.rejects(f.call('importSource',{operationId:'oversized-file-op'}),/TOO_LARGE/);const target=path.join(f.dir,'owned-target'),link=path.join(f.dir,'owned-link');await fs.mkdir(target);await fs.writeFile(path.join(target,'component.zip'),f.bytes);await fs.symlink(target,link,process.platform==='win32'?'junction':'dir');f.state.pick=path.join(link,'component.zip');await assert.rejects(f.call('importSource',{operationId:'linked-file-op'}),/LINK_DENIED/);assert.equal(f.state.calls.length,0);});
 test('native export saves verified bytes and returns no archive payload',async()=>{const f=await fixture();f.state.pick=path.join(f.dir,'export.zip');const result=await f.call('exportSource',{revision:1,manifestHash:'a'.repeat(64),nodePath:'Door',assetId:'door',version:1});assert.equal(result.status,'completed');assert.deepEqual(await fs.readFile(f.state.pick),f.bytes);assert.equal('archiveBase64'in result,false);f.service.dispose();await assert.rejects(f.call('sourceList'),/DISPOSED/);});
 console.log('PACKAGE_NATIVE_FIXTURE '+root);
+
+test('sourceJob queries exact world/job only and projects no source, token or private paths',async()=>{
+ const jobId='gjob-'+'b'.repeat(64),calls=[];let selected='alpha',wrong=false,status='running';
+ const service=createCraftminePackageService({selection:()=>selected,pickFile:async()=>{throw Error('picker forbidden');},domainCall:async(method,args)=>{calls.push({method,args});return{worldId:wrong?'beta':'alpha',jobId,status,source:{text:'private script'},request:{token:'private'},artifactsRoot:'private path'};}});
+ const call=(extra={})=>service.request('package.request',{worldId:'alpha',method:'sourceJob',params:{worldId:'alpha',jobId,...extra}});
+ assert.deepEqual(await call(),{worldId:'alpha',jobId,status:'running',terminal:false});
+ assert.deepEqual(calls,[{method:'godotBuild.read',args:{worldId:'alpha',jobId}}]);
+ status='blocked';assert.equal((await call()).terminal,false);
+ status='passed';assert.equal((await call()).terminal,true);
+ status='unexpected';await assert.rejects(call(),/JOB_RECEIPT_INVALID/);status='running';
+ wrong=true;await assert.rejects(call(),/JOB_RECEIPT_INVALID/);wrong=false;
+ const before=calls.length;await assert.rejects(call({jobId:'bad'}),/INVALID_PARAMS/);await assert.rejects(call({sourcePath:'x'}),/INVALID_PARAMS/);assert.equal(calls.length,before);
+ selected='beta';await assert.rejects(call(),/WORLD_CHANGED/);service.dispose();
+});
