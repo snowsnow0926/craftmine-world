@@ -8599,3 +8599,18 @@ apply from the panel, and preserve progress/next-turn base. Save real usage, fai
 and successful evidence separately. Ground y=6 and hidden drawable-mesh semantics
 must come from the runtime contract. This proves real-model review of a fixture,
 not Agent-generated code. Never export credentials or the test profile.
+
+### CRAFTMINE-BATCH07-NATIVE — Fixed creation through the real native lifecycle
+
+Run `node tests/dispatch/batch07/native/gameplay.mjs` with the explicitly authorized
+local configuration in a marked offscreen profile. Import the fixed D example,
+edit its target through real PI tool dispatch, and obtain actual model review and
+player-form application. Capture the applied creation into Rust library storage,
+install its exact reference into a fresh world, verify/review/apply again, and
+exercise actual raycast shooting, melee range/cooldown, gravity damage, extension
+healing and single rewards. Save and completely restart Electron before checking
+ammo, reload, target death, inventory, initialized stamps and extension state.
+Preserve failed attempts. Repeat on an integrity-checked packaged executable.
+Use the fixed named native preload capability; ordinary formal-world request-step
+messages remain rejected. Never use OS input, focus, visible windows or SQLite
+writes. Fixed authorship must not be presented as model-generated content.

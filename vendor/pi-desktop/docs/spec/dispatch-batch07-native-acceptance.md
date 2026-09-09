@@ -1,0 +1,9 @@
+# Batch07 native gameplay acceptance
+
+The dedicated native headless preload, installed only after isolated profile and parent IPC validation, registers a non-writable game acceptance capability. Its isolated-world observer injects one fixed script into marked game srcdoc documents before they load; renderer-owned flags do not enable this observer. The script has an exact CSP hash, with no unsafe-eval allowance. Ordinary application launches do not install it. The production parent message channel continues to reject `request-step` and `request-observe` on formal worlds.
+
+The fixed batch07 parent controller accepts named scenarios only. It cannot accept arbitrary code, events, paths, RPC methods, world data or health values. The actual runtime computes raycasts, attacks, cooldowns and landing damage; behavior and extension code runs in production Workers. Physics scenarios reposition the player to a fixed empty location and advance real gravity without operating OS input. Game progress is saved through the existing panel close/save and Rust revision boundary.
+
+Acceptance authorship is explicit: the existing D fixture is normally imported, then a real PI host tool turn edits a resource and submits production verification. Actual configured DeepSeek review must finish and the real panel form must apply before Rust library capture. The exact captured creation is installed into a new world with its immutable extension. Application and full process restart must precede persistence claims.
+
+The same runner supports actual packaged executables and validates their ASAR isolation markers and source manifest artifact hashes before launch. Development evidence is not final package evidence. Clean Windows installation, manual physical controls and performance under representative user load require separate evidence.
