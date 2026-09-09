@@ -1,0 +1,9 @@
+﻿[pass] initialize registers a pending world -> "pending"
+[pass] the identical request replays the same operation -> true/gwinit-3a378874e3383f70369c2c6586514aab2b128011af4b1d66e48c7c46d66421f9
+[pass] initStatus derives a non-playable pending phase -> pending/false
+[pass] a different initialization is refused -> WORLD_EXISTS
+[pass] exactly one world was registered -> ["world-init"]
+[pass] the initialization record survives a restart -> {"applicationId":null,"baseBuild":"base-2026.09","baseId":"first-person","candidateId":null,"createdAt":1788983691307,"formalBuildId":"base-2026.09","format":"craftmine.godot-world-init/1","initId":"gwinit-3a378874e3383f70369c2c6586514aab2b128011af4b1d66e48c7c46d66421f9","initialSnapshotHash":"b7957b91704ff3934e761804de07055bc02499431cb515291bd8f82465aa0c83","playable":false,"projectRevision":null,"reason":null,"status":"pending","title":"Init World","worldId":"world-init","worldRevision":0}
+[pass] the registered world survives a restart -> world-init
+
+SUMMARY: 7 passed, 0 failed, 7 checks

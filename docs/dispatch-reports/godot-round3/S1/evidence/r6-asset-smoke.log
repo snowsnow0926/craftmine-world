@@ -1,0 +1,22 @@
+﻿[pass] hello -> craftmine.core/1
+[pass] asset.import -> bytes=321 dedup=false
+[pass] asset.import file hash
+[pass] asset.import replay -> replayed=true
+[pass] asset.read
+[pass] asset.read state separation
+[pass] asset.versions -> total=1
+[pass] asset.scan hints -> {"newVersions":0,"unchanged":1,"unsupported":0}
+[pass] asset.scan no world update
+[pass] asset.search -> total=1
+[pass] asset.recordUsage
+[pass] asset.search current-world
+[pass] asset.annotate keeps content hash
+[pass] asset.previewBegin
+[pass] asset.bodyPath bytes match
+[pass] real decode evidence -> png 16x8
+[pass] previewable only after real evidence
+[pass] previewRead carries a thumbnail
+[pass] asset.recordCheck
+[pass] baseChecked is separate
+
+SUMMARY: 20 passed, 0 failed, 20 checks
