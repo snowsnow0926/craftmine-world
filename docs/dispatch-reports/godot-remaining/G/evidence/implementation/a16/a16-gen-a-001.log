@@ -1,0 +1,8 @@
+exit=0
+request={"format":"craftmine.godot-mining-sandbox-probe/1","commands":[{"op":"hash"}]}
+response={"baseId":"mining-sandbox","baseVersion":"1.0.0","finalSnapshot":{"baseId":"mining-sandbox","baseVersion":"1.0.0","bootError":"","chunkTiles":[16,16],"chunks":{},"editCount":0,"format":"craftmine.godot-mining-sandbox-snapshot/1","inventory":{},"mapSize":[48,24],"physical":{"overlaps":[],"solidTilesInPlayerRect":0},"player":{"equipped":"","facing":"right","health":3,"onFloor":false,"position":[104,87.5],"tile":[6,4],"toolTier":0},"rescue":{"from":[],"reason":"","resolved":false,"resolvedTiles":[],"to":[]},"save":{"lastSave":{}},"seed":424242,"stateVersion":1,"terrainHash":"831b4c81c85db2bf1fee537f9c09e54bb656a5970442a5a881f46cacea1500fe","tileSize":16,"tools":[],"worldId":"a16-gen-a","worldRevision":0},"format":"craftmine.godot-mining-sandbox-probe/1","ok":true,"results":[{"args":{},"op":"hash","result":{"hash":"831b4c81c85db2bf1fee537f9c09e54bb656a5970442a5a881f46cacea1500fe","ok":true}}],"save":{"bytes":818,"chunkHashes":{},"chunkIndex":{},"chunks":0,"ok":true,"path":"C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\a16-mining-iuXe75\\a16-gen-a-progress/worlds/6f0caee44a2662a10427905488dc60faa42e411e7556f99b62a3775d8115037a/progress.json","sha256":"8747428adba29d7ffcf2e088e4debac9096db96c6489171706ccd13c6feca58b","written":0},"worldId":"a16-gen-a"}
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+--- stderr ---

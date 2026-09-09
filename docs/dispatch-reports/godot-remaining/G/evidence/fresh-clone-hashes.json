@@ -1,0 +1,15 @@
+﻿{
+  "problems": [],
+  "facts": {
+    "world-build-blank": {
+      "files": 23,
+      "format": "craftmine.godot-world-build/1"
+    },
+    "world-build-mine-camp": {
+      "files": 23,
+      "format": "craftmine.godot-world-build/1"
+    },
+    "assetEntries": 86,
+    "gdHasCR": false
+  }
+}

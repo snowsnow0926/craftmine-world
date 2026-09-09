@@ -1,0 +1,8 @@
+exit=0
+request={"format":"craftmine.godot-mining-sandbox-probe/1","commands":[{"op":"hash"}]}
+response={"baseId":"mining-sandbox","baseVersion":"1.0.0","finalSnapshot":{"baseId":"mining-sandbox","baseVersion":"1.0.0","bootError":"","chunkTiles":[16,16],"chunks":{},"cursor":[8,8],"editCount":0,"format":"craftmine.godot-mining-sandbox-snapshot/1","inventory":{"wood":2},"lastAction":{},"mapSize":[96,48],"physical":{"overlaps":[],"solidTilesInPlayerRect":0},"player":{"equipped":"","facing":"right","health":3,"onFloor":false,"position":[136,154.5],"tile":[8,8],"toolTier":0},"rescue":{"from":[],"reason":"","resolved":false,"resolvedTiles":[{"from":[14,12],"id":"camp-forge","kind":"entity","to":[14,10]}],"to":[]},"save":{"lastSave":{}},"seed":31415926,"stateVersion":1,"terrainHash":"676353eab9ac60270840a2b37030355735f802c3e0e126e33778b1c123fa2a00","tileSize":16,"tools":[],"worldId":"a16-dig","worldRevision":0},"format":"craftmine.godot-mining-sandbox-probe/1","ok":true,"results":[{"args":{},"op":"hash","result":{"hash":"676353eab9ac60270840a2b37030355735f802c3e0e126e33778b1c123fa2a00","ok":true}}],"save":{"bytes":838,"chunkHashes":{},"chunkIndex":{},"chunks":0,"ok":true,"path":"C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\a16-mining-MDsiMb\\a16-dig-progress/worlds/9839a0711dd4776047a4685e80eeb02f5351a3c5193e480342c7f1553f59ecab/progress.json","sha256":"ea6d166f97c8d9df781f728c029e66738e6d9e8ad4de09a864fbcbd38e9a3ad2","written":0},"worldId":"a16-dig"}
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+--- stderr ---

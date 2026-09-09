@@ -1,0 +1,69 @@
+{
+  "format": "craftmine.godot-mining-sandbox-params/1",
+  "baseId": "mining-sandbox",
+  "baseVersion": "1.0.0",
+  "notes": "Single source of truth for tuning. Loaded by the runtime, by the tools and by the docs generator. Units are pixels and seconds; +Y is down, matching Godot 2D. Movement values are inherited unchanged from side-view 1.0.0 (see docs/REUSE.md); only the body size and the sandbox-specific interaction numbers are new.",
+  "inheritedFrom": {
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "paramsFormat": "craftmine.godot-sideview-params/1"
+  },
+  "movement": {
+    "gravity": 1800.0,
+    "maxFallSpeed": 1200.0,
+    "runSpeed": 260.0,
+    "groundAccel": 2400.0,
+    "groundDecel": 2600.0,
+    "airAccel": 1800.0,
+    "airDecel": 900.0,
+    "jumpVelocity": -700.0,
+    "coyoteTime": 0.1,
+    "jumpBufferTime": 0.12,
+    "jumpCutMultiplier": 0.45,
+    "upDirection": "up"
+  },
+  "body": {
+    "halfWidth": 6.0,
+    "height": 26.0,
+    "notes": "A 12x26 px body fits a one-tile-wide shaft at tileSize 16, which the side-view 10x40 body does not. This is a declared deviation, not a silent retune."
+  },
+  "camera": {
+    "smoothing": 8.0,
+    "deadzoneWidth": 96.0,
+    "deadzoneHeight": 48.0,
+    "lookAheadX": 48.0,
+    "clampToWorldBounds": true
+  },
+  "grid": {
+    "tileSize": 16,
+    "chunkTiles": [
+      16,
+      16
+    ]
+  },
+  "interaction": {
+    "reachTiles": 5.0,
+    "reachOrigin": "player-center",
+    "digCooldown": 0.12,
+    "placeCooldown": 0.12,
+    "adjacencyRequired": true,
+    "buryMarginPixels": 1.0,
+    "cancelWindowSeconds": 0.0
+  },
+  "economy": {
+    "maxStack": 999,
+    "ledgerLimit": 1024
+  },
+  "limits": {
+    "maxMapTiles": 262144,
+    "maxChunks": 1024,
+    "maxEditedCellsPerChunk": 4096,
+    "maxProgressBytes": 4194304,
+    "maxChunkBytes": 1048576
+  },
+  "world": {
+    "physicsTicksPerSecond": 60,
+    "viewportWidth": 640,
+    "viewportHeight": 360
+  }
+}
