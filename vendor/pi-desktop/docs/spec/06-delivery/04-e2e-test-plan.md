@@ -8560,3 +8560,7 @@ restart with zero input/focus violations. Inspect result and preview screenshots
 A headless test must refuse a desktop compiler containing node:child_process
 before launching it. Static parser failure, black presentation and missing runtime
 observations are real regressions, not grounds to relax the acceptance assertions.
+
+The targeted broker test injects a native cancellation transport failure: stopping
+must still reject late job success. The bundled parser test compiles top-level
+side-effect syntax without executing it and rejects malformed module syntax.
