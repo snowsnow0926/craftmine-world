@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
+import { CRAFTMINE_SYSTEM_PROMPT, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
 import {
   Agent,
   BACKGROUND_CONTEXT,
@@ -1416,7 +1416,7 @@ Delegation rules:
       // the instruction chain so the user's own AGENTS.md keeps the last word.
       ...(skillsPrompt ? [skillsPrompt] : []),
     ].join("\n\n");
-    this.baseSystemPrompt = opts.systemPrompt ?? defaultSystemPrompt;
+    this.baseSystemPrompt = opts.systemPrompt ?? (this.craftmineWorld ? CRAFTMINE_SYSTEM_PROMPT : defaultSystemPrompt);
     this.agent = new Agent({
       streamFn: (m, context, options) => {
         this.setAgentActivity({ phase: "waiting-model", since: Date.now() });
@@ -2502,7 +2502,7 @@ Delegation rules:
   }
 
   private isCoreTool(name: string): boolean {
-    if (this.craftmineWorld) return ["plugin_craftmine_world_project_inspect", "plugin_craftmine_world_capabilities_read", "new_context", "AskUserQuestion"].includes(name);
+    if (this.craftmineWorld) return ["plugin_craftmine_world_project_inspect", "plugin_craftmine_world_capabilities_read", "new_context", ASK_TOOL_NAME].includes(name);
     return (
       name === CONTEXT_COMPACTION_TOOL_NAME ||
       MODE_TRANSITION_TOOL_NAMES.has(name) ||
