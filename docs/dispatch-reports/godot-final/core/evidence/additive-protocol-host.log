@@ -1,0 +1,28 @@
+{"scope":"fixed-host-protocol","sourceRoot":"D:\\cm-godot-final-20260910","files":[{"path":"D:\\cm-godot-final-20260910\\vendor\\pi-desktop\\apps\\desktop\\electron\\main\\godot-candidate-coordinator.ts","sha256":"99cb69014855747b8a18b010e9dfd8cd59b9a5bd4b23e889b17945be7d63b819"},{"path":"D:\\cm-godot-final-20260910\\desktop\\godot\\shared\\progress-migration.mjs","sha256":"e911b970517257dbba1b2614fb991568c4689f7a84d40bec2bafb0ddbab310a2"}]}
+✔ apply re-derives from latest checkpoint instead of check-time or preview progress (4.7359ms)
+✖ candidate defaults differing from the independently bound core result cannot stage or promote (1.2856ms)
+✔ renderer cannot supply defaults or a migration proof through the candidate action (0.3159ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 139.5033
+
+✖ failing tests:
+
+test at tests\godot-final\additive-protocol-host.mjs:86:1
+✖ candidate defaults differing from the independently bound core result cannot stage or promote (1.2856ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///D:/cm-godot-final-core-20260910/tests/godot-final/additive-protocol-host.mjs:88:2)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /GODOT_APPLICATION_PREPARE_MISMATCH/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
