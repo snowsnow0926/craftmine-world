@@ -11,7 +11,10 @@
   "commits": [
     "73737f813403962684fec0827c19efea07d5f79d",
     "c15c174cfaac8b02df301228da6c0f9ac75e5a9f",
-    "2a20752de07e16865403a652818cca2ccf21ef78"
+    "2a20752de07e16865403a652818cca2ccf21ef78",
+    "29ab33ca868b03d7557f6dd6cd15834fb48758b3",
+    "176e57f2e2103c054fab36512e070dd6e15bed15",
+    "34f5c750b0b236d33969ffbe0eb4e96940773c12"
   ],
   "report": "docs/dispatch-reports/godot-remaining/G/REPORT_G.md",
   "interfaces": [
@@ -38,9 +41,9 @@
       "kind": "independent_a16_acceptance",
       "command": "$env:CRAFTMINE_GODOT_BIN='D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable\\editor\\Godot_v4.7.2-stable_win64_console.exe'; node tests/godot-remaining/G/a16-acceptance.mjs --evidence docs/dispatch-reports/godot-remaining/G/evidence/a16",
       "cwd": "D:/Craftmine World-worktrees/godot-remaining-g-20260910",
-      "sourceCommit": "73737f813403962684fec0827c19efea07d5f79d",
+      "sourceCommit": "176e57f",
       "engine": "Godot 4.7.2-stable (gl_compatibility, headless)",
-      "result": "37 passed, 0 failed (G01-G36 plus G01b)",
+      "result": "40 passed, 0 failed on three consecutive runs (G01-G36 plus G01b/G01c/G29b/G32b)",
       "evidence": "docs/dispatch-reports/godot-remaining/G/evidence/a16/report.json"
     },
     {
@@ -155,8 +158,21 @@
     "OS-level isolation of engine execution (GD0/B scope)",
     "Release preflight covering this base (asset manifest not yet copied by K)"
   ],
+  "reviewFixes": [
+    "Chunk files are content-addressed and the index is the only commit point, so a failed save can no longer make the previous save unloadable (new assertion G29b reproduces the index-stage failure for real)",
+    "auto: request ids stay out of the persistent ledger so a restart cannot swallow player actions",
+    "A tile change emits chunk_changed and rebuilds that chunk's collision plus the renderer",
+    "Saved player tile/position are bounds-checked on load and on managed restore",
+    "Recipes aggregate duplicate inputs before consuming; rejected crafts are recorded as not applied",
+    "An entity column that cannot be resolved is a boot error instead of a silent fallback",
+    "probe move resets scripted_mode; window close saves once"
+  ],
   "knownDefects": [
     "world_state.gd clone() loads res://scripts/base/world_state.gd by hard-coded path; unused today, should use get_script()",
+    "TerrainService.set_tile has no caller (dig/place commit directly); either give it a caller or remove it and restate SPEC 3",
+    "apply_chunk does not record the file hash, so snapshot.chunks[].sha256 changes form after a restart",
+    "A chunk whose edits revert to generated material drops out of the edit index and loses its revision on restart",
+    "items[].stack / economy.maxStack do not limit stacking; stack_size() is unused",
     "Terrain rendering is flat draw_rect colour blocks; no art assets are shipped",
     "Adjacency requires any non-air 4-neighbour or the map floor; a stricter support rule is not implemented"
   ],
