@@ -1,0 +1,22 @@
+Evidence: D:\cm-godot-final-core-20260910\test-results\history-panel-tvS2Wc
+D:\cm-godot-final-core-20260910\plugins\craftmine-world\core-client.cjs:29
+      if(response.error)job.reject(Object.assign(Error(response.error.message),{code:response.error.code,errorCode:response.error.code,retryable:response.error.retryable===true}));else job.resolve(response.result);
+                                                 ^
+
+Error: UNKNOWN_METHOD
+    at Interface.<anonymous> (D:\cm-godot-final-core-20260910\plugins\craftmine-world\core-client.cjs:29:50)
+    at Interface.emit (node:events:508:28)
+    at [_onLine] [as _onLine] (node:internal/readline/interface:465:12)
+    at [_normalWrite] [as _normalWrite] (node:internal/readline/interface:647:22)
+    at Socket.ondata (node:internal/readline/interface:263:23)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:563:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+    at Readable.push (node:internal/streams/readable:394:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 'UNKNOWN_METHOD',
+  errorCode: 'UNKNOWN_METHOD',
+  retryable: false
+}
+
+Node.js v24.14.0

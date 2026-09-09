@@ -1,0 +1,11 @@
+PASS forged context and cross-world selection rejected
+PASS real Git versions and source list rendered
+PASS new branch is real and selected
+PASS save changes forest while preserving main and applied
+PASS stale source cannot be checked as latest branch
+PASS check binds forest source and reports missing executor honestly
+PASS candidate entry reuses existing checks without applying refs
+PASS switch back reads main original source
+PASS no input focus pointer lock or page errors
+PASS full Rust restart restores branch edit
+Evidence: D:\cm-godot-final-core-20260910\test-results\history-panel-rWCcq8
