@@ -34,3 +34,8 @@ Every prior report is preserved. No raw SQLite write is used for acceptance.
 RPC router. Both are overlays used for development and must be integrated before
 final packaging. Guard-only source modifications are described in the native
 acceptance specification; ordinary formal preview messages remain rejected.
+
+`CRAFTMINE_BATCH07_BUDGET_ONLY=1` with an owned retry profile reopens the
+retained source session, submits the actual finite-limit and unlimited forms,
+and proves nonzero known/unknown usage and owner are preserved without model
+requests. The full library scenario performs the same UI check after install.

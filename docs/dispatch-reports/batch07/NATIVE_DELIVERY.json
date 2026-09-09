@@ -1,0 +1,34 @@
+{
+  "batch": 7,
+  "scope": "native acceptance and explicit player review-warning acknowledgement",
+  "status": "development_verified_package_pending",
+  "sourceIntegration": "b428802",
+  "productCommits": [
+    "27073c4",
+    "23a8d4a",
+    "2334796"
+  ],
+  "report": "NATIVE_REPORT.md",
+  "evidenceIndex": "native-evidence/index.json",
+  "actualAuthorship": "fixed D fixture and fixed tool author; real DeepSeek review",
+  "completed": [
+    "Rust exact library capture and cross-session install",
+    "actual verification, explicit warning acknowledgement and application",
+    "formal game and Worker combat/health/reward/extensions",
+    "full process restart and saved state",
+    "memory and native backup restore",
+    "actual finite-to-unlimited budget UI preserving unknown usage"
+  ],
+  "pending": [
+    "final rebuilt packaged executable same-scenario validation",
+    "same final package actual Agent tree reuse/recovery",
+    "clean Windows OS validation unavailable",
+    "physical player controls not tested"
+  ],
+  "safety": {
+    "physicalInput": false,
+    "visibleWindow": false,
+    "pointerLock": false,
+    "liveProfileMutation": false
+  }
+}
