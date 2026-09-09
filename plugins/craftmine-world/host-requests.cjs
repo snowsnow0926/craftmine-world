@@ -63,6 +63,14 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
       return core.call(method,{projectId:params.projectId,taskId:params.taskId,generation:params.generation});
     }
     if(method==='selection.read'){fields(params,[]);return {worldId:(await getSettings()).activeWorldId||null};}
+    if(method==='maintenance.context'){
+      fields(params,['projectId','sessionId']);
+      const workspace=await core.call('workspace.current',params);
+      if(!workspace)throw Error('CRAFTMINE_FINISHED_TASK_REQUIRED');
+      const current=await snapshot(contextOf(workspace.task.binding));
+      if(current.status!=='finished'||current.lease?.owned)throw Error('CRAFTMINE_FINISHED_TASK_REQUIRED');
+      return current;
+    }
     if(method==='turn.begin'){
       fields(params,['context','selectedWorld','request']);
       fields(params.request,['id','text'],['kind']);

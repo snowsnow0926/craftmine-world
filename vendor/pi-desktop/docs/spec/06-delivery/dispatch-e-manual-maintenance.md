@@ -1,0 +1,7 @@
+# Manual maintenance verification
+
+Given a completed domain turn with a pending verified/reviewed candidate and charged creation usage, manually summarize its PI transcript. Main must use the session's original domain binding even when another panel world is selected. Before and after, compare the full workspace, verification, review, requirements, generation and budget owner. No new workspace or domain end operation occurs. Summary usage increases the same request/token ledger; every attempt increments compaction count.
+
+Inject a failed summary after reservation and end only the PI maintenance turn. Settle the original reservation late as unknown. Preserve the original workspace and acceptance state; retain estimated charge. Deny late context/new reservation, all maintenance tool execution, creation/retry/review reservations, and tool boundaries. Direct Rust creation/tool requests on a finished task must also fail. Once a new ordinary world turn becomes current, old-summary reservation must fail stale-turn validation. No current finished domain context is an explicit error, not an implicit world creation.
+
+The targeted process test uses actual Rust and the same maintenance registry/gateway/private host router with explicitly synthetic frozen evidence and usage. It does not call a real model or display a window. The request-boundary unit test verifies finished summary context cannot be used for creation/retry and cancelled context cannot be summarized.
