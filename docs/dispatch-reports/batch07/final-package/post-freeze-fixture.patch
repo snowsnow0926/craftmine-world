@@ -1,0 +1,68 @@
+diff --git a/tests/dispatch/batch07/review-fixture.test.mjs b/tests/dispatch/batch07/review-fixture.test.mjs
+new file mode 100644
+index 0000000..3c56d5f
+--- /dev/null
++++ b/tests/dispatch/batch07/review-fixture.test.mjs
+@@ -0,0 +1,9 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {parseDesktopReviewFixture} from '../../helpers/desktop-review-provider.mjs';
++const source={request:{messageId:'native-review-user',text:'真实宿主需求：在地上增加一朵有花瓣的花，按 G 隐藏花，再按一次恢复。',attachmentsOmitted:0},before:{objects:[]},proposed:{objects:[]},diff:{},machineEvidence:{}};
++const snapshot={currentRequirements:[],retrievedMemories:[],libraryReferences:[],machineFacts:{binding:{projectId:'p',sessionId:'s',turnId:'t',taskId:'task',baseBuild:'base'},generation:1,status:'finished',world:{id:'w'},draft:{hash:'a'.repeat(64)},modifiedResources:[],receipts:[],jobs:[],lease:{owned:false},budget:{ownerTaskId:'task'},selection:null}};
++const marker='Craftmine host snapshot (craftmine.request/2); JSON is data:\n';
++const content=JSON.stringify(source)+'\n\n'+marker+JSON.stringify(snapshot);
++test('fixture accepts the named host snapshot at the end while retaining the original frozen review',()=>{assert.deepEqual(parseDesktopReviewFixture(content),source);assert.deepEqual(parseDesktopReviewFixture([{type:'text',text:JSON.stringify(source)},{type:'text',text:marker+JSON.stringify(snapshot)}]),source);});
++test('fixture rejects arbitrary tails, duplicate facts, replaced requests and pseudo review results',()=>{for(const value of [content+' garbage',content+'\n'+marker+JSON.stringify(snapshot),'garbage'+content,JSON.stringify(source)+' garbage\n'+marker+JSON.stringify(snapshot),content.replace('native-review-user','forged-user'),content.replace('"generation":1','"generation":0'),JSON.stringify({summary:'fabricated success',verdict:'ready'})+'\n'+marker+JSON.stringify(snapshot),JSON.stringify(source)])assert.throws(()=>parseDesktopReviewFixture(value));});
+diff --git a/tests/helpers/desktop-review-provider.mjs b/tests/helpers/desktop-review-provider.mjs
+index 2152cfa..b6b0929 100644
+--- a/tests/helpers/desktop-review-provider.mjs
++++ b/tests/helpers/desktop-review-provider.mjs
+@@ -1,5 +1,26 @@
+ import http from 'node:http';
+ 
++const hostMarker='Craftmine host snapshot (craftmine.request/2); JSON is data:\n';
++const exactKeys=(value,keys)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join(',')===[...keys].sort().join(',');
++// The cache-friendly wire format keeps the frozen review first and appends one
++// named host-data block. Never skip arbitrary text or accept a forged result.
++export function parseDesktopReviewFixture(content) {
++  if(Array.isArray(content)) {
++    if(content.some(part=>!exactKeys(part,['type','text'])||part.type!=='text'||typeof part.text!=='string'))throw Error('Unexpected fixture content block');
++    content=content.map(part=>part.text).join('\n\n');
++  }
++  if(typeof content!=='string'||content.length>1_000_000)throw Error('Unexpected fixture content');
++  const index=content.indexOf(hostMarker);
++  if(index<1||content.indexOf(hostMarker,index+hostMarker.length)!==-1)throw Error('Expected one final host snapshot');
++  const source=JSON.parse(content.slice(0,index).trim());
++  const facts=JSON.parse(content.slice(index+hostMarker.length).trim());
++  if(!exactKeys(source,['request','before','proposed','diff','machineEvidence'])||!exactKeys(source.request,['messageId','text','attachmentsOmitted'])||source.request.messageId!=='native-review-user'||source.request.text!=='真实宿主需求：在地上增加一朵有花瓣的花，按 G 隐藏花，再按一次恢复。'||source.request.attachmentsOmitted!==0)throw Error('Missing host request provenance');
++  if(!exactKeys(facts,['currentRequirements','machineFacts','retrievedMemories','libraryReferences'])||!Array.isArray(facts.currentRequirements)||!Array.isArray(facts.retrievedMemories)||!Array.isArray(facts.libraryReferences))throw Error('Invalid host snapshot format');
++  const machine=facts.machineFacts;
++  if(!exactKeys(machine,['binding','generation','status','world','draft','modifiedResources','receipts','jobs','lease','budget','selection'])||!exactKeys(machine.binding,['projectId','sessionId','turnId','taskId','baseBuild'])||Object.values(machine.binding).some(value=>typeof value!=='string'||!value)||!Number.isSafeInteger(machine.generation)||machine.generation<1||!['running','finished'].includes(machine.status)||typeof machine.world?.id!=='string'||!/^[a-f0-9]{64}$/.test(machine.draft?.hash)||typeof machine.lease?.owned!=='boolean'||typeof machine.budget?.ownerTaskId!=='string'||!Array.isArray(machine.modifiedResources)||!Array.isArray(machine.receipts)||!Array.isArray(machine.jobs))throw Error('Invalid host snapshot identity');
++  return source;
++}
++
+ // Deterministic provider transport for native acceptance. Never a real-model claim.
+ export async function startDesktopReviewProvider() {
+   const requests=[];
+@@ -7,8 +28,7 @@ export async function startDesktopReviewProvider() {
+     try{
+       let body='';for await(const chunk of req){body+=chunk;if(body.length>1_000_000)throw Error('fixture input too large');}
+       const input=JSON.parse(body),user=input.messages.findLast(message=>message.role==='user');
+-      const source=JSON.parse(typeof user.content==='string'?user.content:user.content.map(part=>part.text||'').join(''));
+-      if(!source.request?.messageId||!source.request?.text?.includes('真实宿主需求'))throw Error('Missing host request provenance');
++      const source=parseDesktopReviewFixture(user?.content);
+       requests.push({model:input.model,requestId:source.request.messageId,originalRequest:source.request.text});
+       const reply={summary:'检查花朵和按 G 隐藏、再次显示；颜色搭配建议仅供参考。',verdict:'block',suggestions:['可以尝试更浅的花瓣颜色，这是可选建议。'],limitations:['未评价外观美术与真实操作体验。'],
+         steps:[{label:'hide',event:{type:'key',code:'KeyG'}},{label:'show',event:{type:'key',code:'KeyG'}}],
+diff --git a/vendor/pi-desktop/docs/spec/06-delivery/04-e2e-test-plan.md b/vendor/pi-desktop/docs/spec/06-delivery/04-e2e-test-plan.md
+index 8fe9c7a..b5ffcb3 100644
+--- a/vendor/pi-desktop/docs/spec/06-delivery/04-e2e-test-plan.md
++++ b/vendor/pi-desktop/docs/spec/06-delivery/04-e2e-test-plan.md
+@@ -8643,3 +8643,7 @@ Preserve failed attempts. Repeat on an integrity-checked packaged executable.
+ Use the fixed named native preload capability; ordinary formal-world request-step
+ messages remain rejected. Never use OS input, focus, visible windows or SQLite
+ writes. Fixed authorship must not be presented as model-generated content.
++
++### CRAFTMINE-017 — Frozen review fixture with request-facts tail
++
++The external native fixed-provider fixture parses exactly the initial review JSON and one final named `Craftmine host snapshot (craftmine.request/2)` JSON data block. Require the fixed native request provenance and the expected host binding/snapshot structure. Reject garbage prefixes/tails, duplicate snapshots, substituted request IDs, invalid generation and fabricated review-result objects. Preserve all existing 40 native assertions. The batch07 package stays at its frozen commit; this runner compatibility fix is delivered after that freeze and is not a real-provider acceptance claim.

@@ -1,0 +1,360 @@
+D:\Craftmine World-worktrees\batch07-delivery-20260909\desktop\build\craftmine.world
+Prepared built-in world plugin: D:\Craftmine World-worktrees\batch07-delivery-20260909\vendor\pi-desktop\apps\desktop\resources\plugins\craftmine.world
+   Compiling cfg-if v1.0.4
+   Compiling getrandom v0.4.3
+   Compiling rand_core v0.10.1
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.24
+   Compiling typenum v1.20.1
+   Compiling quote v1.0.47
+   Compiling windows-link v0.2.1
+   Compiling memchr v2.8.3
+   Compiling cpufeatures v0.3.0
+   Compiling serde_core v1.0.229
+   Compiling find-msvc-tools v0.1.11
+   Compiling smallvec v1.15.2
+   Compiling shlex v2.0.1
+   Compiling regex-syntax v0.8.11
+   Compiling pkg-config v0.3.34
+   Compiling vcpkg v0.2.15
+   Compiling zmij v1.0.23
+   Compiling cmov v0.5.4
+   Compiling crossbeam-utils v0.8.22
+   Compiling foldhash v0.2.0
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling parking_lot_core v0.9.12
+   Compiling anyhow v1.0.104
+   Compiling log v0.4.33
+   Compiling cpubits v0.1.1
+   Compiling once_cell v1.21.4
+   Compiling windows-sys v0.61.2
+   Compiling hashbrown v0.17.1
+   Compiling crossbeam-epoch v0.9.20
+   Compiling autocfg v1.5.1
+   Compiling const-oid v0.10.2
+   Compiling tracing-core v0.1.36
+   Compiling ctutils v0.4.2
+   Compiling itoa v1.0.18
+   Compiling pin-project-lite v0.2.17
+   Compiling crossbeam-deque v0.8.7
+   Compiling scopeguard v1.2.0
+   Compiling fallible-iterator v0.3.0
+   Compiling bitflags v2.13.1
+   Compiling cc v1.4.3
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling lock_api v0.4.14
+   Compiling lazy_static v1.5.0
+   Compiling aho-corasick v1.1.5
+   Compiling bstr v1.13.1
+   Compiling thiserror v2.0.20
+   Compiling option-ext v0.2.0
+   Compiling sharded-slab v0.1.7
+   Compiling chacha20 v0.10.1
+   Compiling num-traits v0.2.19
+   Compiling thread_local v1.1.10
+   Compiling subtle v2.6.1
+   Compiling bytes v1.12.1
+   Compiling parking_lot v0.12.5
+   Compiling tracing-log v0.2.0
+   Compiling base64 v0.23.1
+   Compiling hex v0.4.3
+   Compiling rand v0.10.2
+   Compiling hybrid-array v0.4.14
+   Compiling hashlink v0.12.1
+   Compiling syn v3.0.3
+   Compiling syn v2.0.119
+   Compiling libsqlite3-sys v0.38.2
+   Compiling crypto-common v0.2.2
+   Compiling block-buffer v0.12.1
+   Compiling inout v0.2.2
+   Compiling regex-automata v0.4.18
+   Compiling digest v0.11.3
+   Compiling cipher v0.5.2
+   Compiling universal-hash v0.6.1
+   Compiling aead v0.6.1
+   Compiling polyval v0.7.3
+   Compiling sha2 v0.11.0
+   Compiling ghash v0.6.0
+   Compiling aes v0.9.2
+   Compiling ctr v0.10.1
+   Compiling uuid v1.24.0
+   Compiling aes-gcm v0.11.0
+   Compiling serde_derive v1.0.229
+   Compiling tokio-macros v2.7.2
+   Compiling thiserror-impl v2.0.20
+   Compiling tracing-attributes v0.1.31
+   Compiling matchers v0.2.0
+   Compiling globset v0.4.20
+   Compiling regex v1.13.1
+   Compiling tracing v0.1.44
+   Compiling winapi-util v0.1.11
+   Compiling socket2 v0.6.5
+   Compiling mio v1.2.2
+   Compiling nu-ansi-term v0.50.3
+   Compiling dirs-sys v0.5.0
+   Compiling same-file v1.0.6
+   Compiling dirs v6.0.0
+   Compiling tracing-subscriber v0.3.23
+   Compiling walkdir v2.5.0
+   Compiling chrono v0.4.45
+   Compiling tokio v1.53.1
+   Compiling ignore v0.4.33
+   Compiling rusqlite v0.40.2
+   Compiling craftmine-core v0.1.0 (D:\Craftmine World-worktrees\batch07-delivery-20260909\vendor\pi-desktop\crates\craftmine-core)
+   Compiling host-core v0.14.3 (D:\Craftmine World-worktrees\batch07-delivery-20260909\vendor\pi-desktop\crates\host-core)
+    Finished `release` profile [optimized] target(s) in 28.62s
+$ pnpm -r --if-present build
+Scope: 7 of 8 workspace projects
+docs build$ vitepress build .
+packages/i18n build$ tsc -p tsconfig.json
+packages/plugin-sdk build$ tsc -p tsconfig.json
+packages/shared build$ tsc -p tsconfig.json
+packages/plugin-sdk build: Done
+docs build:   vitepress v1.6.4
+docs build: - building client + server bundles...
+packages/i18n build: Done
+packages/shared build: Done
+docs build: The language 'gitignore' is not loaded, falling back to 'txt' for syntax highlighting.
+docs build: The language 'gitignore' is not loaded, falling back to 'txt' for syntax highlighting.
+docs build: The language 'gitignore' is not loaded, falling back to 'txt' for syntax highlighting.
+docs build: The language 'gitignore' is not loaded, falling back to 'txt' for syntax highlighting.
+docs build: (!) Some chunks are larger than 500 kB after minification. Consider:
+docs build: - Using dynamic import() to code-split the application
+docs build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+docs build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+docs build: The language 'gitignore' is not loaded, falling back to 'txt' for syntax highlighting.
+docs build: The language 'gitignore' is not loaded, falling back to 'txt' for syntax highlighting.
+docs build: [32m✓[0m building client + server bundles...
+docs build: - rendering pages...
+docs build: [32m✓[0m rendering pages...
+docs build: build complete in 21.23s.
+docs build: Done
+packages/agent-runtime build$ tsc -p tsconfig.json
+packages/plugin-devkit build$ tsc -p tsconfig.json
+packages/plugin-devkit build: Done
+packages/agent-runtime build: Done
+apps/desktop build$ electron-vite build
+apps/desktop build: vite v7.3.6 building ssr environment for production...
+apps/desktop build: transforming...
+apps/desktop build: ✓ 1793 modules transformed.
+apps/desktop build: rendering chunks...
+apps/desktop build: out/main/chunks/openai-prompt-cache-COP8flKD.js          0.35 kB
+apps/desktop build: out/main/chunks/node-Dt-PPnGw.js                         0.36 kB
+apps/desktop build: out/main/chunks/headers-CHRjKt3O.js                      0.49 kB
+apps/desktop build: out/main/chunks/hash-RwksDas4.js                         0.50 kB
+apps/desktop build: out/main/chunks/deferred-tools-DVRLNyoc.js               1.26 kB
+apps/desktop build: out/main/chunks/error-body-DKhVTZMw.js                   2.81 kB
+apps/desktop build: out/main/chunks/provider-retry-CLODmUJt.js               3.06 kB
+apps/desktop build: out/main/chunks/pi-messages-C9nPq8T_.js                 10.40 kB
+apps/desktop build: out/main/chunks/multipart-parser-BQvOYo6S.js            10.66 kB
+apps/desktop build: out/main/chunks/json-parse-6hu4-sZc.js                  11.55 kB
+apps/desktop build: out/main/chunks/openai-responses-BwXhVKP_.js            11.76 kB
+apps/desktop build: out/main/chunks/azure-openai-responses-DYfHqfP_.js      14.35 kB
+apps/desktop build: out/main/chunks/google-generative-ai-cpHdw10A.js        15.10 kB
+apps/desktop build: out/main/plugin-host-process.js                         15.41 kB
+apps/desktop build: out/main/chunks/google-vertex-DCnFZlni.js               17.13 kB
+apps/desktop build: out/main/chunks/transform-messages-BZ7sru6h.js          20.92 kB
+apps/desktop build: out/main/chunks/openai-responses-shared-DB1n-2F9.js     24.64 kB
+apps/desktop build: out/main/chunks/mistral-conversations-Dg1z0Ou5.js       26.05 kB
+apps/desktop build: out/main/chunks/index-KgTK8x7A.js                       39.55 kB
+apps/desktop build: out/main/chunks/openai-completions-CySE0Jjo.js          49.22 kB
+apps/desktop build: out/main/chunks/openai-codex-responses-CcE4aF2u.js      51.68 kB
+apps/desktop build: out/main/chunks/node-C3x_p3fL.js                        86.93 kB
+apps/desktop build: out/main/chunks/index-N4H3gfhu.js                      241.21 kB
+apps/desktop build: out/main/chunks/client-BjqfcAKe.js                     320.47 kB
+apps/desktop build: out/main/chunks/anthropic-messages-BOrbDCBx.js         497.46 kB
+apps/desktop build: out/main/chunks/google-shared-C1s_4_2c.js            1,261.08 kB
+apps/desktop build: out/main/index.js                                    3,023.37 kB
+apps/desktop build: ✓ built in 3.25s
+apps/desktop build: vite v7.3.6 building ssr environment for production...
+apps/desktop build: transforming...
+apps/desktop build: ✓ 34 modules transformed.
+apps/desktop build: rendering chunks...
+apps/desktop build: out/preload/craftmine-headless.cjs   1.88 kB
+apps/desktop build: out/preload/index.cjs               16.92 kB
+apps/desktop build: out/preload/plugin-panel.js         19.98 kB
+apps/desktop build: ✓ built in 36ms
+apps/desktop build: vite v7.3.6 building client environment for production...
+apps/desktop build: transforming...
+apps/desktop build: ✓ 4581 modules transformed.
+apps/desktop build: rendering chunks...
+apps/desktop build: out/renderer/index.html                                           0.72 kB
+apps/desktop build: out/renderer/assets/KaTeX_Size4-Regular-Dl5lxZxV.woff2            4.93 kB
+apps/desktop build: out/renderer/assets/KaTeX_Size2-Regular-Dy4dx90m.woff2            5.21 kB
+apps/desktop build: out/renderer/assets/KaTeX_Size1-Regular-mCD8mA8B.woff2            5.47 kB
+apps/desktop build: out/renderer/assets/KaTeX_Caligraphic-Regular-Di6jR-x-.woff2      6.91 kB
+apps/desktop build: out/renderer/assets/KaTeX_Caligraphic-Bold-Dq_IR9rO.woff2         6.91 kB
+apps/desktop build: out/renderer/assets/KaTeX_Script-Regular-D3wIWfF6.woff2           9.64 kB
+apps/desktop build: out/renderer/assets/home-mascot-still-light-P-vWa3Uv.png         10.14 kB
+apps/desktop build: out/renderer/assets/KaTeX_SansSerif-Regular-DDBCnlJ7.woff2       10.34 kB
+apps/desktop build: out/renderer/assets/KaTeX_Fraktur-Regular-CTYiF6lA.woff2         11.32 kB
+apps/desktop build: out/renderer/assets/KaTeX_Fraktur-Bold-CL6g_b3V.woff2            11.35 kB
+apps/desktop build: out/renderer/assets/KaTeX_SansSerif-Italic-C3H0VqGB.woff2        12.03 kB
+apps/desktop build: out/renderer/assets/KaTeX_SansSerif-Bold-D1sUS0GD.woff2          12.22 kB
+apps/desktop build: out/renderer/assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2      13.57 kB
+apps/desktop build: out/renderer/assets/home-mascot-light-BkHnB2PE.gif               14.53 kB
+apps/desktop build: out/renderer/assets/KaTeX_Math-BoldItalic-CZnvNsCZ.woff2         16.40 kB
+apps/desktop build: out/renderer/assets/KaTeX_Math-Italic-t53AETM-.woff2             16.44 kB
+apps/desktop build: out/renderer/assets/KaTeX_Main-BoldItalic-DxDJ3AOS.woff2         16.78 kB
+apps/desktop build: out/renderer/assets/home-mascot-still-dark-BxXodyPO.png          16.92 kB
+apps/desktop build: out/renderer/assets/KaTeX_Main-Italic-NWA7e6Wa.woff2             16.99 kB
+apps/desktop build: out/renderer/assets/KaTeX_Main-Bold-Cx986IdX.woff2               25.32 kB
+apps/desktop build: out/renderer/assets/KaTeX_Main-Regular-B22Nviop.woff2            26.27 kB
+apps/desktop build: out/renderer/assets/KaTeX_AMS-Regular-BQhdFMY1.woff2             28.08 kB
+apps/desktop build: out/renderer/assets/home-mascot-dark-BS3m6HWm.gif                36.66 kB
+apps/desktop build: out/renderer/assets/geist-Bj2R_7yk.woff2                         69.65 kB
+apps/desktop build: out/renderer/assets/inter-DiVDrmQJ.woff2                        352.24 kB
+apps/desktop build: out/renderer/assets/noto-sans-sc-DKKZoNvi.woff2               7,782.07 kB
+apps/desktop build: out/renderer/assets/lxgw-wenkai-DsLg8swP.woff2                8,016.75 kB
+apps/desktop build: out/renderer/assets/index-AnYet3Xn.css                          410.50 kB
+apps/desktop build: out/renderer/assets/channel-CjAwp4LB.js                           0.11 kB
+apps/desktop build: out/renderer/assets/init-Gi6I4Gst.js                              0.15 kB
+apps/desktop build: out/renderer/assets/chunk-2Q5K7J3B-BllzWKtw.js                    0.20 kB
+apps/desktop build: out/renderer/assets/chunk-JWPE2WC7-CVKGkRmy.js                    0.23 kB
+apps/desktop build: out/renderer/assets/chunk-XXDRQBXY-DXL0P1Oq.js                    0.24 kB
+apps/desktop build: out/renderer/assets/chunk-5VM5RSS4-k_38p-zk.js                    0.37 kB
+apps/desktop build: out/renderer/assets/stateDiagram-v2-UEYNNEHI-BBdZe9KU.js          0.46 kB
+apps/desktop build: out/renderer/assets/classDiagram-JCYQIIEL-CgfQ93bT.js             0.50 kB
+apps/desktop build: out/renderer/assets/classDiagram-v2-OCEON4UE-CgfQ93bT.js          0.50 kB
+apps/desktop build: out/renderer/assets/chunk-KBJHAD2P-D6iPd6ji.js                    0.51 kB
+apps/desktop build: out/renderer/assets/swimlanesDiagram-ULZ7WXOC-D980ftwC.js         0.58 kB
+apps/desktop build: out/renderer/assets/infoDiagram-6WML65LV-Bz95R3lX.js              0.61 kB
+apps/desktop build: out/renderer/assets/sizeCapture-X5ZJPWSS-DkyQ60SR.js              0.97 kB
+apps/desktop build: out/renderer/assets/ordinal-Cboi1Yqb.js                           1.19 kB
+apps/desktop build: out/renderer/assets/dotenv-Da5cRb03.js                            1.42 kB
+apps/desktop build: out/renderer/assets/ini-BEwlwnbL.js                               1.53 kB
+apps/desktop build: out/renderer/assets/railroadDiagram-AXF67PYL-CLYa-wm3.js          1.64 kB
+apps/desktop build: out/renderer/assets/docker-BcOcwvcX.js                            1.74 kB
+apps/desktop build: out/renderer/assets/abnfDiagram-N423BO3Z-Cso8AcE8.js              1.84 kB
+apps/desktop build: out/renderer/assets/chunk-2GRJ4B5K-CoArL-pY.js                    1.88 kB
+apps/desktop build: out/renderer/assets/pegDiagram-VL7TDLO6-DQ_bCwU7.js               1.99 kB
+apps/desktop build: out/renderer/assets/ebnfDiagram-BXEA7PRR-BUW8COsp.js              2.04 kB
+apps/desktop build: out/renderer/assets/diff-D97Zzqfu.js                              2.57 kB
+apps/desktop build: out/renderer/assets/json-Cp-IABpG.js                              2.82 kB
+apps/desktop build: out/renderer/assets/jsonl-DcaNXYhu.js                             3.01 kB
+apps/desktop build: out/renderer/assets/jsonc-Des-eS-w.js                             3.11 kB
+apps/desktop build: out/renderer/assets/arc-BXqbYiDW.js                               3.43 kB
+apps/desktop build: out/renderer/assets/PullRequestsPage-OaUQ1PNb.js                  3.65 kB
+apps/desktop build: out/renderer/assets/ScheduledPage-C0U30VVz.js                     3.96 kB
+apps/desktop build: out/renderer/assets/diagram-LBJQPF4R-BM7nwYfq.js                  4.25 kB
+apps/desktop build: out/renderer/assets/defaultLocale-DX6XiGOO.js                     4.69 kB
+apps/desktop build: out/renderer/assets/map-DxJ2ADlA.js                               5.07 kB
+apps/desktop build: out/renderer/assets/xml-sdJ4AIDG.js                               5.38 kB
+apps/desktop build: out/renderer/assets/linear-X0UEKB3V.js                            5.66 kB
+apps/desktop build: out/renderer/assets/diagram-UB23O5K3-Cx5DIi5z.js                  6.11 kB
+apps/desktop build: out/renderer/assets/pieDiagram-7S7Q4E2Y-ROLrKcfy.js               6.33 kB
+apps/desktop build: out/renderer/assets/postcss-DnzrXTVv.js                           6.41 kB
+apps/desktop build: out/renderer/assets/toml-vGWfd6FD.js                              6.43 kB
+apps/desktop build: out/renderer/assets/proto-C7zT0LnQ.js                             6.55 kB
+apps/desktop build: out/renderer/assets/ScopeControl-DFp_jgJP.js                      6.86 kB
+apps/desktop build: out/renderer/assets/chunk-RYQCIY6F-DRZV2Iwi.js                    7.08 kB
+apps/desktop build: out/renderer/assets/prisma-Vru482bI.js                            7.74 kB
+apps/desktop build: out/renderer/assets/diagram-7IWD3JNH-DAB067O2.js                  8.37 kB
+apps/desktop build: out/renderer/assets/dagre-VZM6K2ZE-DZEsi-Ol.js                    8.60 kB
+apps/desktop build: out/renderer/assets/dart-bE4Kk8sk.js                              8.62 kB
+apps/desktop build: out/renderer/assets/kotlin-BdnUsdx6.js                            8.79 kB
+apps/desktop build: out/renderer/assets/make-CHLpvVh8.js                              8.96 kB
+apps/desktop build: out/renderer/assets/hcl-BWvSN4gD.js                              10.05 kB
+apps/desktop build: out/renderer/assets/cynefinDiagram-MW4NZA55-DrCfxV0U.js          10.13 kB
+apps/desktop build: out/renderer/assets/stateDiagram-OKZ733FA-BHiWvLwD.js            10.46 kB
+apps/desktop build: out/renderer/assets/yaml-Buea-lGh.js                             10.51 kB
+apps/desktop build: out/renderer/assets/diagram-B4RE2ZJO-BJLh08LF.js                 10.75 kB
+apps/desktop build: out/renderer/assets/terraform-BETggiCN.js                        11.39 kB
+apps/desktop build: out/renderer/assets/bat-CickPsom.js                              12.89 kB
+apps/desktop build: out/renderer/assets/rust-B1yitclQ.js                             15.07 kB
+apps/desktop build: out/renderer/assets/lua-BaeVxFsk.js                              15.54 kB
+apps/desktop build: out/renderer/assets/chunk-6Q2QTUOP-DcIzJlPN.js                   15.73 kB
+apps/desktop build: out/renderer/assets/diagram-Q27KOJAE-iqBBYYM1.js                 15.99 kB
+apps/desktop build: out/renderer/assets/ishikawaDiagram-WSZJBQD7-ebvaplzJ.js         17.50 kB
+apps/desktop build: out/renderer/assets/graphql-ChdNCCLP.js                          18.00 kB
+apps/desktop build: out/renderer/assets/svelte-C71xKXYG.js                           18.25 kB
+apps/desktop build: out/renderer/assets/groovy-gcz8RCvz.js                           19.18 kB
+apps/desktop build: out/renderer/assets/powershell-BmBUJMz7.js                       20.16 kB
+apps/desktop build: out/renderer/assets/kanban-definition-27J2QSJJ--0Gw4Quf.js       20.33 kB
+apps/desktop build: out/renderer/assets/mindmap-definition-FAOFIHXS-sD6apfxi.js      23.21 kB
+apps/desktop build: out/renderer/assets/sankeyDiagram-W5VNT64P-lrYvHYa-.js           23.24 kB
+apps/desktop build: out/renderer/assets/sql-CRqJ_cUM.js                              23.43 kB
+apps/desktop build: out/renderer/assets/journeyDiagram-NVQOT4AX-DbIJZKLq.js          23.60 kB
+apps/desktop build: out/renderer/assets/graph-DOmOIIwC.js                            23.92 kB
+apps/desktop build: out/renderer/assets/astro-BrJk1R9x.js                            24.01 kB
+apps/desktop build: out/renderer/assets/one-light-C3Wv6jpd.js                        25.30 kB
+apps/desktop build: out/renderer/assets/wardleyDiagram-T6FBY63Y-BVpBvoh3.js          25.53 kB
+apps/desktop build: out/renderer/assets/vue-CHlpWS_5.js                              25.69 kB
+apps/desktop build: out/renderer/assets/erDiagram-JOGREHBK-CMNJ197W.js               27.13 kB
+apps/desktop build: out/renderer/assets/java-CylS5w8V.js                             27.22 kB
+apps/desktop build: out/renderer/assets/scala-CqE71os6.js                            28.89 kB
+apps/desktop build: out/renderer/assets/purify.es-Cz4mVeUR.js                        28.98 kB
+apps/desktop build: out/renderer/assets/gitGraphDiagram-DS77QQ5N-BvZ9Tq6N.js         29.45 kB
+apps/desktop build: out/renderer/assets/timeline-definition-Z64GVDOM-CLjXfLh-.js     30.87 kB
+apps/desktop build: out/renderer/assets/layout-D-LzfAck.js                           31.00 kB
+apps/desktop build: out/renderer/assets/requirementDiagram-LRYGKXZP-BasMG33i.js      31.03 kB
+apps/desktop build: out/renderer/assets/one-dark-pro-DVMEJ2y_.js                     33.79 kB
+apps/desktop build: out/renderer/assets/quadrantDiagram-CIZ2JOQS-BvA9IoSm.js         34.04 kB
+apps/desktop build: out/renderer/assets/nginx-BpAMiNFr.js                            35.37 kB
+apps/desktop build: out/renderer/assets/chunk-5RXB4S5H-Cl3GpTv0.js                   38.16 kB
+apps/desktop build: out/renderer/assets/shellscript-Yzrsuije.js                      41.48 kB
+apps/desktop build: out/renderer/assets/PluginsPage-CcDA1fxf.js                      41.86 kB
+apps/desktop build: out/renderer/assets/xychartDiagram-ELKLHX3M-B1IH8GU7.js          41.95 kB
+apps/desktop build: out/renderer/assets/vennDiagram-T6HMQDX7-CktC-Uy-.js             42.00 kB
+apps/desktop build: out/renderer/assets/go-C27-OAKa.js                               46.82 kB
+apps/desktop build: out/renderer/assets/css-CLj8gQPS.js                              49.04 kB
+apps/desktop build: out/renderer/assets/chunk-GF5L2VYU-BgifXUIA.js                   49.21 kB
+apps/desktop build: out/renderer/assets/ruby-B6QtyW_S.js                             54.79 kB
+apps/desktop build: out/renderer/assets/mermaid-CQcHuHx7.js                          54.81 kB
+apps/desktop build: out/renderer/assets/html-pp8916En.js                             57.25 kB
+apps/desktop build: out/renderer/assets/markdown-Cvjx9yec.js                         59.34 kB
+apps/desktop build: out/renderer/assets/flowDiagram-UKHOOZJN-CRKNPBgZ.js             60.74 kB
+apps/desktop build: out/renderer/assets/ganttDiagram-PKOTCBZU-CEw4N_SA.js            69.73 kB
+apps/desktop build: out/renderer/assets/python-B6aJPvgy.js                           69.95 kB
+apps/desktop build: out/renderer/assets/c4Diagram-5PPSVZJV-BWWnpkYO.js               69.97 kB
+apps/desktop build: out/renderer/assets/c-BIGW1oBm.js                                72.11 kB
+apps/desktop build: out/renderer/assets/blockDiagram-VBNYF7ZC-DnFw5qpt.js            73.77 kB
+apps/desktop build: out/renderer/assets/cose-bilkent-JH36ORCC-MppdCv8R.js            81.73 kB
+apps/desktop build: out/renderer/assets/swift-C2oV4EkX.js                            87.23 kB
+apps/desktop build: out/renderer/assets/csharp-DSvCPggb.js                           90.19 kB
+apps/desktop build: out/renderer/assets/php-Csjmro_R.js                             113.09 kB
+apps/desktop build: out/renderer/assets/sequenceDiagram-SI44F4Z6-DWbUKWNL.js        117.00 kB
+apps/desktop build: out/renderer/assets/swimlanes-SLNWSIFB-CP8fQp6c.js              118.87 kB
+apps/desktop build: out/renderer/assets/mdx-Cmh6b_Ma.js                             136.11 kB
+apps/desktop build: out/renderer/assets/architectureDiagram-T3A2C74G-ByUmqaS7.js    151.86 kB
+apps/desktop build: out/renderer/assets/javascript-wDzz0qaB.js                      174.83 kB
+apps/desktop build: out/renderer/assets/tsx-COt5Ahok.js                             175.54 kB
+apps/desktop build: (!) Some chunks are larger than 500 kB after minification. Consider:
+apps/desktop build: - Using dynamic import() to code-split the application
+apps/desktop build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+apps/desktop build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+apps/desktop build: out/renderer/assets/jsx-g9-lgVsj.js                             177.79 kB
+apps/desktop build: out/renderer/assets/typescript-BPQ3VLAy.js                      181.08 kB
+apps/desktop build: out/renderer/assets/SettingsPage-cwBZXvuN.js                    435.25 kB
+apps/desktop build: out/renderer/assets/cytoscape.esm-D3_iZ_3b.js                   442.92 kB
+apps/desktop build: out/renderer/assets/mermaid.core-BYlXW7D4.js                    593.62 kB
+apps/desktop build: out/renderer/assets/cynefin-VYW2F7L2-CAFiCrgq.js                687.71 kB
+apps/desktop build: out/renderer/assets/cpp-DddhVWhK.js                             796.96 kB
+apps/desktop build: out/renderer/assets/index-Cj4wf0pg.js                         2,391.22 kB
+apps/desktop build: ✓ built in 7.27s
+apps/desktop build: Done
+$ esbuild src/sidecar.ts --bundle --platform=node --format=esm --outfile=dist-bundle/sidecar.js --banner:js="import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);"
+
+  dist-bundle\sidecar.js  4.9mb
+
+Done in 186ms
+{"commit":"5ac3f1a960c7bfb3224674f05a5607f97277e7eb","sourceArchiveHash":"019c758d450a425dd381cc3023f92b734945a0fd130337a822382325f6a8584a"}
+  • electron-builder  version=26.15.3 os=10.0.19045
+  • loaded configuration  file=package.json ("build" field)
+  • packageManager not detected by file, falling back to environment detection  resolvedPackageManager=pnpm detected=D:\Craftmine World-worktrees\batch07-delivery-20260909\vendor\pi-desktop\apps\desktop
+  • executing @electron/rebuild  electronVersion=43.4.0 arch=x64 buildFromSource=false workspaceRoot=D:\Craftmine World-worktrees\batch07-delivery-20260909\vendor\pi-desktop\apps\desktop projectDir=./ appDir=./
+  • installing native dependencies  arch=x64
+  • completed installing native dependencies
+  • packaging       platform=win32 arch=x64 electron=43.4.0 appOutDir=release\win-unpacked
+  • downloaded      label=electron progress=100%
+  • downloaded electron zip extracted successfully  output=D:\Craftmine World-worktrees\batch07-delivery-20260909\vendor\pi-desktop\apps\desktop\release\win-unpacked
+  • searching for node modules  pm=pnpm searchDir=D:\Craftmine World-worktrees\batch07-delivery-20260909\vendor\pi-desktop\apps\desktop
+  • updating asar integrity executable resource  executablePath=release\win-unpacked\Craftmine World.exe
+  • signing with signtool.exe  path=release\win-unpacked\Craftmine World.exe
+  • building        target=nsis file=release\Craftmine-World-Setup-0.14.3.exe archs=x64 oneClick=false perMachine=false
+  • signing with signtool.exe  path=release\win-unpacked\resources\elevate.exe
+  • signing with signtool.exe  path=release\Craftmine-World-Setup-0.14.3.__uninstaller.exe
+  • signing with signtool.exe  path=release\Craftmine-World-Setup-0.14.3.exe
+  • building block map  blockMapFile=release\Craftmine-World-Setup-0.14.3.exe.blockmap
+{"commit":"5ac3f1a960c7bfb3224674f05a5607f97277e7eb","files":825,"totalBytes":418062454,"installers":[{"path":"vendor/pi-desktop/apps/desktop/release/Craftmine-World-Setup-0.14.3.exe","bytes":155076619,"sha256":"a7e194e79b1f798fac018ebdef511b15151a0cf8626e4ef0745347890872a3a5"}]}

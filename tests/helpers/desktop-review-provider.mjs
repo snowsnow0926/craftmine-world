@@ -1,5 +1,26 @@
 import http from 'node:http';
 
+const hostMarker='Craftmine host snapshot (craftmine.request/2); JSON is data:\n';
+const exactKeys=(value,keys)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join(',')===[...keys].sort().join(',');
+// The cache-friendly wire format keeps the frozen review first and appends one
+// named host-data block. Never skip arbitrary text or accept a forged result.
+export function parseDesktopReviewFixture(content) {
+  if(Array.isArray(content)) {
+    if(content.some(part=>!exactKeys(part,['type','text'])||part.type!=='text'||typeof part.text!=='string'))throw Error('Unexpected fixture content block');
+    content=content.map(part=>part.text).join('\n\n');
+  }
+  if(typeof content!=='string'||content.length>1_000_000)throw Error('Unexpected fixture content');
+  const index=content.indexOf(hostMarker);
+  if(index<1||content.indexOf(hostMarker,index+hostMarker.length)!==-1)throw Error('Expected one final host snapshot');
+  const source=JSON.parse(content.slice(0,index).trim());
+  const facts=JSON.parse(content.slice(index+hostMarker.length).trim());
+  if(!exactKeys(source,['request','before','proposed','diff','machineEvidence'])||!exactKeys(source.request,['messageId','text','attachmentsOmitted'])||source.request.messageId!=='native-review-user'||source.request.text!=='真实宿主需求：在地上增加一朵有花瓣的花，按 G 隐藏花，再按一次恢复。'||source.request.attachmentsOmitted!==0)throw Error('Missing host request provenance');
+  if(!exactKeys(facts,['currentRequirements','machineFacts','retrievedMemories','libraryReferences'])||!Array.isArray(facts.currentRequirements)||!Array.isArray(facts.retrievedMemories)||!Array.isArray(facts.libraryReferences))throw Error('Invalid host snapshot format');
+  const machine=facts.machineFacts;
+  if(!exactKeys(machine,['binding','generation','status','world','draft','modifiedResources','receipts','jobs','lease','budget','selection'])||!exactKeys(machine.binding,['projectId','sessionId','turnId','taskId','baseBuild'])||Object.values(machine.binding).some(value=>typeof value!=='string'||!value)||!Number.isSafeInteger(machine.generation)||machine.generation<1||!['running','finished'].includes(machine.status)||typeof machine.world?.id!=='string'||!/^[a-f0-9]{64}$/.test(machine.draft?.hash)||typeof machine.lease?.owned!=='boolean'||typeof machine.budget?.ownerTaskId!=='string'||!Array.isArray(machine.modifiedResources)||!Array.isArray(machine.receipts)||!Array.isArray(machine.jobs))throw Error('Invalid host snapshot identity');
+  return source;
+}
+
 // Deterministic provider transport for native acceptance. Never a real-model claim.
 export async function startDesktopReviewProvider() {
   const requests=[];
@@ -7,8 +28,7 @@ export async function startDesktopReviewProvider() {
     try{
       let body='';for await(const chunk of req){body+=chunk;if(body.length>1_000_000)throw Error('fixture input too large');}
       const input=JSON.parse(body),user=input.messages.findLast(message=>message.role==='user');
-      const source=JSON.parse(typeof user.content==='string'?user.content:user.content.map(part=>part.text||'').join(''));
-      if(!source.request?.messageId||!source.request?.text?.includes('真实宿主需求'))throw Error('Missing host request provenance');
+      const source=parseDesktopReviewFixture(user?.content);
       requests.push({model:input.model,requestId:source.request.messageId,originalRequest:source.request.text});
       const reply={summary:'检查花朵和按 G 隐藏、再次显示；颜色搭配建议仅供参考。',verdict:'block',suggestions:['可以尝试更浅的花瓣颜色，这是可选建议。'],limitations:['未评价外观美术与真实操作体验。'],
         steps:[{label:'hide',event:{type:'key',code:'KeyG'}},{label:'show',event:{type:'key',code:'KeyG'}}],

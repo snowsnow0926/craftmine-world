@@ -8643,3 +8643,7 @@ Preserve failed attempts. Repeat on an integrity-checked packaged executable.
 Use the fixed named native preload capability; ordinary formal-world request-step
 messages remain rejected. Never use OS input, focus, visible windows or SQLite
 writes. Fixed authorship must not be presented as model-generated content.
+
+### CRAFTMINE-017 — Frozen review fixture with request-facts tail
+
+The external native fixed-provider fixture parses exactly the initial review JSON and one final named `Craftmine host snapshot (craftmine.request/2)` JSON data block. Require the fixed native request provenance and the expected host binding/snapshot structure. Reject garbage prefixes/tails, duplicate snapshots, substituted request IDs, invalid generation and fabricated review-result objects. Preserve all existing 40 native assertions. The batch07 package stays at its frozen commit; this runner compatibility fix is delivered after that freeze and is not a real-provider acceptance claim.

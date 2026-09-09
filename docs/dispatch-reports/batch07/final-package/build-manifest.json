@@ -1,0 +1,42 @@
+{
+  "format": "craftmine.build/1",
+  "commit": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+  "sourceDate": "2026-09-09T17:09:05+08:00",
+  "appId": "world.craftmine.desktop",
+  "product": "craftmine world / 最中幻想",
+  "profileDirectory": "CraftmineWorld",
+  "updateSource": null,
+  "sourceArchiveHash": "019c758d450a425dd381cc3023f92b734945a0fd130337a822382325f6a8584a",
+  "artifacts": [
+    {
+      "path": "vendor/pi-desktop/target/release/pi-desktop-host-core.exe",
+      "sha256": "e043d6cae190410005e04e6748af4877e63295ae1c990c2695b0cb9d97ce638e",
+      "bytes": 9084416
+    },
+    {
+      "path": "vendor/pi-desktop/target/release/craftmine-core.exe",
+      "sha256": "105100e695080c0a9f4b0282fa9d955eb8087a9ff31034cfa7ba1de84ed4f60c",
+      "bytes": 3203072
+    },
+    {
+      "path": "vendor/pi-desktop/packages/agent-runtime/dist-bundle/sidecar.js",
+      "sha256": "a60faf40a495775c0d2e8e26fffc42b8fddbe71078574e26ab17895dce6c84c1",
+      "bytes": 5190147
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/manifest.json",
+      "sha256": "361485cf72ddfa8298a68986ed1edfaab8c8a6e34ab57c1367e26f6fb4446c39",
+      "bytes": 17756
+    },
+    {
+      "path": "desktop/build/CraftmineWorld-source.zip",
+      "sha256": "019c758d450a425dd381cc3023f92b734945a0fd130337a822382325f6a8584a",
+      "bytes": 39149380
+    }
+  ],
+  "toolchain": {
+    "node": "v24.14.0",
+    "cargo": "cargo 1.96.1 (356927216 2026-06-26)"
+  },
+  "reproducibility": "Pinned source and lockfiles; hashes prove this build. Byte-identical native/NSIS outputs are not claimed."
+}
