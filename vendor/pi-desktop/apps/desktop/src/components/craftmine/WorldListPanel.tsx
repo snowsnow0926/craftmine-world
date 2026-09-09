@@ -110,7 +110,13 @@ export function WorldListPanel({
                 busy={controller.busy}
                 createActionsSupported={controller.capabilities?.createActions === true}
                 onSelect={() => {
-                  if (!isWorldPlayable(entry)) return;
+                  // An unfinished world cannot be opened; asking the controller
+                  // anyway lets it show the host-independent reason instead of
+                  // silently doing nothing.
+                  if (!isWorldPlayable(entry)) {
+                    void controller.select(entry.id);
+                    return;
+                  }
                   if (entry.id !== controller.activeWorldId) void controller.select(entry.id);
                   else onOpenWorld();
                 }}

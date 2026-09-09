@@ -83,9 +83,9 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     try {
       const list = await bridge.list();
       if (!current()) return;
-      const caps = list.activeWorldId
-        ? await bridge.capabilities(list.activeWorldId).catch(() => null)
-        : null;
+      // Capabilities load even with no world yet, so the first creation can
+      // still offer the bases the host actually delivered.
+      const caps = await bridge.capabilities(list.activeWorldId).catch(() => null);
       if (!current()) return;
       const task = list.activeWorldId
         ? await bridge.activeTask(list.activeWorldId).catch(() => null)

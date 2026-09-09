@@ -177,7 +177,8 @@ export type CraftmineAuxSummary = {
 
 export type CraftmineWorldBridge = {
   list(): Promise<CraftmineWorldList>;
-  capabilities(worldId: string): Promise<CraftmineWorldCapabilities>;
+  /** `worldId` is null before any world exists; creation options still load. */
+  capabilities(worldId: string | null): Promise<CraftmineWorldCapabilities>;
   create(input: CraftmineWorldCreateInput): Promise<CraftmineWorldCreateResult>;
   /** Freezes the running world, saves it, then opens the target world. */
   switchWorld(id: string): Promise<CraftmineWorldSwitchResult>;
@@ -408,16 +409,17 @@ export function createCraftmineWorldBridge(
       return parseWorldList(await call("world.list"));
     },
     async capabilities(worldId) {
-      const [capabilities, options] = await Promise.all([
-        // The gateway rejects a call whose worldId is not the selected world.
-        call("workbench.capabilities", { worldId }).catch(() => null),
-        call("world.createOptions", { worldId }).catch(() => null),
+      // Creation options must load even before the first world exists, so they
+      // never depend on a selected world. The workbench channel does need one:
+      // the gateway rejects a call whose worldId is not the selected world.
+      const [channels, options] = await Promise.all([
+        worldId ? call("workbench.capabilities", { worldId }).catch(() => null) : null,
+        call("world.createOptions", worldId ? { worldId } : {}).catch(() => null),
       ]);
-      const parsed = parseWorldCapabilities({
-        ...asRecord(capabilities),
+      return parseWorldCapabilities({
+        ...asRecord(channels),
         ...asRecord(options),
       });
-      return parsed;
     },
     async create(input) {
       const payload: Record<string, unknown> = { title: input.title };

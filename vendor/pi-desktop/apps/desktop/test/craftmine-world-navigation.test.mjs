@@ -355,9 +355,29 @@ test("capabilities are requested for the selected world only", async () => {
     return {};
   });
   const capabilities = await bridge.capabilities("w1");
-  assert.equal(calls[0][1].worldId, "w1");
-  assert.equal(calls[1][1].worldId, "w1");
+  const workbench = calls.find(([channel]) => channel === "workbench.capabilities");
+  const options = calls.find(([channel]) => channel === "world.createOptions");
+  assert.equal(workbench[1].worldId, "w1");
+  assert.equal(options[1].worldId, "w1");
   assert.deepEqual(capabilities.bases.map((base) => base.id), ["craftmine-web/5"]);
+});
+
+test("creation options load before any world exists", async () => {
+  const calls = [];
+  const bridge = worlds.createCraftmineWorldBridge(async (pluginId, channel, payload) => {
+    calls.push([channel, payload]);
+    if (channel === "world.createOptions") return {
+      create: true,
+      bases: [{ id: "craftmine-web/5", label: "Web", delivered: true }],
+      starters: [{ id: "blank", label: "Blank", delivered: true }],
+    };
+    if (channel === "workbench.capabilities") throw Error("SELECTED_WORLD_MISMATCH");
+    return {};
+  });
+  const capabilities = await bridge.capabilities(null);
+  assert.deepEqual(calls.map(([channel]) => channel), ["world.createOptions"]);
+  assert.deepEqual(capabilities.bases.map((base) => base.id), ["craftmine-web/5"]);
+  assert.deepEqual(capabilities.starters.map((starter) => starter.id), ["blank"]);
 });
 
 test("a seam without an invoker yields no bridge instead of a broken one", () => {
