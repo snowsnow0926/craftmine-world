@@ -8862,3 +8862,8 @@ or uninstall evidence. Separately count the formal model suite at 15 categories,
 30 rounds and 141 assertions; authored worlds do not count as model acceptance.
 No real or simulated input, foreground windows, Pointer Lock or personal browser
 access is permitted in automated acceptance.
+Package imports must disable repeat while the actual check is pending, resume
+status queries on reopening the same world, ignore late responses after unmount,
+and retry a failed/blocked query without repeating the import. Verify the native
+sourceJob identity/projection contract, pure timer races and the isolated DOM
+with the three tests in docs/spec/godot-package-check-status.md.
