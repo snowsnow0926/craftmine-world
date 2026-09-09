@@ -1,0 +1,21 @@
+✔ the plan builds the complete managed set without writing anything (5.4026ms)
+✔ payload is verified against the plan lock before any write (2.9549ms)
+✔ a script without its Godot UID is refused (1.1955ms)
+✔ a global class clash is refused before writing (1.6147ms)
+✔ an existing file with a different hash is a conflict unless it is an override (3.3713ms)
+✔ a stale head and a malicious lock are refused (1.053ms)
+✔ apply writes the whole set and is idempotent per operation id (18.8278ms)
+✔ a cancelled apply restores the previous world (19.8637ms)
+✔ a legacy journal without before-images refuses destructive recovery (1.9889ms)
+✔ a scene edit becomes part of the same atomic set (23.3845ms)
+✔ declared input actions are written into project.godot in the same set (23.1454ms)
+✔ same-content targets and multiple scene edits are installed together (27.3026ms)
+✔ a second independent install retains the first instance and lock entry (37.8926ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 171.799
