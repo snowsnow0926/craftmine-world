@@ -83,23 +83,32 @@ attempt 已证明成功或已被身份核验回收时重新入队，否则置 `i
   `craftmine.sampleLiveState`；此前 `pi.craftmine.godotCheck` 会落到
   `UNSUPPORTED`，现在能到达宿主注入的实现。
 - **完成**：`main.cjs` 向 `createWorldTools` 传入第 6 参数
-  `{sampleLiveState, budget, godotExecutor, historyMethods, libraryMethods}`。
-- **未完成**：S6 的 `world-tools.cjs` 在本树仍是 5 参数版本，不消费该对象；
-  `budget` 提供者只返回空对象（所有计数保持 unknown，不编造）。
-- **未完成**：素材/作品的正式可用还缺核心方法。本树核心没有
-  `asset.read/bodyPath/previewBegin/previewFinish` 与 `package.check/install/list/
-  read/progress/grant/upgrade/uninstall/restore/export/import/usage`，因此这两个
-  服务的调用目前会收到核心自己的 UNSUPPORTED_METHOD。责任：S1 提供 RPC、S5/S3
-  提供最终服务方法；本任务已完成构造与路由。
+  `{sampleLiveState, budget, executorEnqueue, historyMethods, libraryMethods}`；
+  其中 `executorEnqueue` 与 S6 已提交的
+  `codex/godot-round3-s6-20260910`（`world-tools.cjs` 第 6 参数）契约一致：
+  `executorEnqueue({jobId,worldId,mode}, context) -> {enqueued, reason}`，
+  `budget` 是 S6 期望的提供者函数（本树返回空对象，所有计数保持 unknown）。
+- **未完成**：本树 `world-tools.cjs` 仍是 5 参数版本，不消费该对象；S6 的新
+  `world-tools.cjs`/`godot-*.cjs` 在其分支上，需由 S7 集成（或 S6 基于本分支
+  重做）后模型链路才成立。
+- **未完成（依赖已就绪）**：素材/作品的正式可用依赖核心方法。S1 已在
+  `codex/godot-round3-s1-20260910`（`b307d54`）登记
+  `asset.import/read/versions/bodyPath/search/scan/annotate/recordUsage/usage/
+  previewBegin/previewFinish/previewRead/probe/recordCheck/mapLegacy` 与
+  `package.formatCheck/planInstall/...`，并新增 `backup.*Portable` 等；本分支按派单
+  不代做 S1 的核心，待 S7 综合后这两个服务即可端到端工作。当前这两个服务的调用
+  会得到本树核心的 UNSUPPORTED_METHOD。
 
-### 1.6 模型 build/enqueue/cancel 与 firstLoad（未完成，责任已定位）
+### 1.6 模型 build/enqueue/cancel 与 firstLoad（接口已交，集成待 S7）
 
 - `godotExecutor.enqueue/cancel/status` 私有路由已就绪，宿主可驱动；
   `runJob` 会真实 claim/import/export/check/finish 并记录耐久 attempt。
-- 模型路径仍缺一环：`world-tools.cjs`（S6）在本树没有 `godotBuild.start` 之后
-  调用 `enqueue` 的钩子，核心也没有 `godotJob.pending`，因此模型启动的构建会停在
-  `blocked/queued`。执行器已实现消费 `godotJob.pending` 的 `reconcile()`，接口
-  一到位即可工作；在此之前不能声称模型链路串通。
+- **已交付接口**：`main.cjs` 按 S6 契约注入
+  `executorEnqueue({jobId,worldId,mode}, context)`；S6 分支的 `world-tools.cjs`
+  在 `godot_build_start` 之后调用它。本树尚未包含 S6 的 `world-tools.cjs`，
+  因此模型链路在本分支仍停在 `blocked/queued`，需 S7 集成后联合验证。
+- 核心仍无 `godotJob.pending`（S1 分支亦无），跨进程遗留 `queued` 作业无法自动
+  发现；已启动过的作业由本任务的耐久账本覆盖。
 - firstLoad 需 R2 在 `main/index.ts` 注入 `GodotBuildVerifier`（本任务已把
   `craftmineGodotCheck` 桥打通），双方联合验证未进行。
 

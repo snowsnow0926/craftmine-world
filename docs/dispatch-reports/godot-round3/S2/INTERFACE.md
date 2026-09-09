@@ -92,7 +92,6 @@ Only `outcome: "succeeded"` means the broker both reported success and retired
 its own journal entry.
 
 ## 5 Broker identity for packaging (S8)
-
 ```
 node desktop/godot/sandbox/broker-identity.mjs <broker.exe> --write <dir>/broker-identity.json
 ```
@@ -102,3 +101,27 @@ Place the file next to the packaged `godot-host-broker.exe`, or point
 `GODOT_BROKER_MISMATCH` before any task runs. A debug build's hash embeds its
 build directory, so the shipped pin must be generated from the canonical release
 build.
+
+## 6 Model-tool handshake (S6) and core dependencies (S1)
+
+`main.cjs` passes a sixth options object to `createWorldTools`:
+
+```js
+{
+  executorEnqueue: (job, context) => godotExecutor.enqueue(job, context), // {enqueued, reason}
+  sampleLiveState: input => pi.craftmine.sampleLiveState(input),          // host bridge, null if absent
+  budget: () => ({}),                                                     // every counter stays unknown
+  historyMethods: [...], libraryMethods: [...],
+}
+```
+
+`executorEnqueue` matches S6's committed contract in
+`codex/godot-round3-s6-20260910`. Until that `world-tools.cjs` is integrated, a
+build started by the model stays `blocked/queued` and the executor cannot see it
+(the core has no `godotJob.pending`).
+
+The asset (`asset.request`) and package (`package.request`) routes reach the
+constructed services today, but the services call core methods that only exist on
+S1's branch (`codex/godot-round3-s1-20260910`, commit `b307d54`:
+`asset.*`, `package.formatCheck/planInstall`, `backup.*Portable`). Against the
+current tree those calls return the core's own `UNSUPPORTED_METHOD`.

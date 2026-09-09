@@ -82,12 +82,16 @@ async function onLoad() {
     },
   });
   // S6 model-tool handshake. The host owns live sampling and budget accounting;
-  // the plugin passes the real host bridge and the managed executor, and leaves
-  // a counter it does not have as unknown instead of inventing a number.
+  // the plugin passes the real host bridge, the managed executor's enqueue entry
+  // and a budget provider, and leaves a counter it does not have as unknown
+  // instead of inventing a number.
   const worldToolOptions={
     sampleLiveState:typeof pi.craftmine?.sampleLiveState==='function'?input=>pi.craftmine.sampleLiveState(input):null,
     budget:()=>({}),
-    godotExecutor,
+    // S6's contract: executorEnqueue({jobId,worldId,mode}, context) ->
+    // {enqueued, reason}. A build started by the model is only executed once
+    // this reaches the managed executor.
+    executorEnqueue:(job,context)=>godotExecutor.enqueue(job,context),
     historyMethods:['content.history','content.version.list','content.checkpoint.list','content.readFile','content.diff','content.changes'],
     libraryMethods:['library.search','library.read'],
   };
