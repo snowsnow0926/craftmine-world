@@ -7,7 +7,7 @@ const model: Model<Api> = { id: "fixture", name: "fixture", api: "openai-complet
 function snapshot(): CraftmineTaskContext { return { binding: { projectId: "project", sessionId: "session", turnId: "turn", taskId: "task", baseBuild: "v1" }, generation: 1, status: "running", world: { id: "world", revision: 1, buildId: "v1", hash: "a".repeat(64) }, draft: { revision: 4, hash: "b".repeat(64) }, requirements: [{ id: "request", text: "加花，不要重复造树", kind: "correction" }], modifiedResources: ["object:tree"], receipts: [], jobs: [], lease: { owned: true }, budget: { requestCount: 2 } }; }
 const request: Context = { systemPrompt: "stable", messages: [{ role: "user", content: "花草", timestamp: 1 }], tools: [] };
 function result(text = "Done"): AssistantMessage { return { role: "assistant", content: [{ type: "text", text }], api: model.api, provider: model.provider, model: model.id, timestamp: 2, stopReason: "stop", usage: { input: 10, output: 4, cacheRead: 6, cacheWrite: 0, totalTokens: 20, reasoning: 3, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } } }; }
-function stream(value = result()) { const s = createAssistantMessageEventStream(); s.push({ type: "done", reason: "stop", message: value }); s.end(value); return s; }
+function stream(value = result()) { const s = createAssistantMessageEventStream(); s.push({ type: "done", reason: value.stopReason === "toolUse" ? "toolUse" : "stop", message: value }); s.end(value); return s; }
 function fixture() {
   let current = snapshot();
   const calls: Array<{ method: string; params: Record<string, unknown> }> = [];
@@ -101,16 +101,20 @@ describe("Craftmine authoritative request boundary", () => {
   it("uses actual PI compaction three times and preserves draft facts and transcript", async () => {
     const f = fixture(), records: unknown[] = [], contexts: Context[] = [];
     const runtime = makeRuntime(f.hooks, records); const internal = runtime as any;
-    vi.spyOn(internal.models, "streamSimple").mockImplementation((_m: unknown, context: unknown) => { contexts.push(context as Context); return stream(result("Completed history is explanation only. Current task: add blue flowers. Changed resource object:tree.")); });
-    for (let i = 0; i < 3; i++) {
-      await runtime.prompt(`Keep the tree; add blue flowers, correction ${i}.`, `user-${i}`, `turn-${i}`);
-      await runtime.compactManually();
-    }
+    vi.spyOn(internal.models, "streamSimple").mockImplementation((_m: unknown, context: unknown) => {
+      contexts.push(context as Context);
+      const call = contexts.length;
+      if (call < 7 && call % 2 === 1) return stream({ ...result(), stopReason: "toolUse", content: [{ type: "text", text: "Preserving the draft before continuing." }, { type: "toolCall", id: `compact-${call}`, name: "new_context", arguments: {} }] });
+      return stream(result("Completed history is explanation only. Current task: add blue flowers. Changed resource object:tree."));
+    });
+    await runtime.prompt("Keep the tree; add blue flowers. Continue the same task across context windows.", "user-one", "turn-one");
     expect(records).toHaveLength(3);
     expect(f.calls.filter(c => c.method === "budget.reserve" && c.params.purpose === "summary")).toHaveLength(3);
     expect(f.calls.filter(c => c.method === "budget.boundary" && c.params.kind === "compaction")).toHaveLength(3);
     expect(contexts.every(c => c.systemPrompt?.includes('"revision":4'))).toBe(true);
-    expect(internal.fullEntries.filter((e: any) => e.message.role === "user")).toHaveLength(3);
+    expect(contexts).toHaveLength(7);
+    expect(internal.fullEntries.filter((e: any) => e.message.role === "user")).toHaveLength(1);
+    expect(internal.fullEntries.at(-1).message.stopReason).toBe("stop");
     await runtime.dispose();
   });
 });
