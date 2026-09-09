@@ -3,6 +3,142 @@ use crate::godot_test_support::*;
 use std::path::Path;
 
 #[test]
+fn runtime_check_descriptor_requires_a_live_owner_and_verified_staged_bytes() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let project = create_project(&mut journal, &context)?;
+    register(&mut journal, "executor-a", json!({"import":true,"build":true,"check":true}), &digest("e"))?;
+    let job = start(&mut journal, &context, "check-preview", &project, "check")?;
+    let claimed = claim(&mut journal, &job, "token-a", "executor-a")?;
+    let files = write_artifact(&claimed, "web/index.html", b"<html>staged</html>")?;
+    let args = json!({"jobId":job["jobId"],"token":"token-a","artifacts":files});
+    let result = journal.godot_job_check_descriptor(&args)?;
+    assert_eq!(result["phase"], "check");
+    assert_eq!(result["inputHash"], claimed["inputHash"]);
+    assert_eq!(result["root"], claimed["artifactsRoot"]);
+    assert!(result["snapshot"].is_null());
+    // A descriptor is private inspection input; it never registers a candidate.
+    assert!(journal.godot_candidate_list(&json!({"worldId":"a"}))?["items"].as_array().unwrap().is_empty());
+    let mut foreign = args.clone();
+    foreign["token"] = json!("token-b");
+    failed(journal.godot_job_check_descriptor(&foreign), "GODOT_JOB_OWNER_MISMATCH");
+    let mut duplicate = args.clone();
+    duplicate["artifacts"].as_array_mut().unwrap().push(files[0].clone());
+    failed(journal.godot_job_check_descriptor(&duplicate), "GODOT_ARTIFACT_CONFLICT");
+    std::fs::write(Path::new(claimed["artifactsRoot"].as_str().unwrap()).join("web/index.html"), b"<html>changed</html>")?;
+    failed(journal.godot_job_check_descriptor(&args), "CORRUPT_GODOT_ARTIFACT");
+    journal.godot_executor_revoke(&json!({"executorId":"executor-a"}))?;
+    assert_eq!(journal.godot_executor_status()["build"], false);
+    assert_eq!(journal.godot_build_read(&json!({"worldId":"a","jobId":job["jobId"]}))?["status"], "interrupted");
+    failed(journal.godot_job_check_descriptor(&args), "GODOT_JOB_OWNER_MISMATCH");
+    Ok(())
+}
+
+#[test]
+fn executor_gate_finds_a_capable_executor_and_revocation_interrupts_only_its_jobs() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let project = create_project(&mut journal, &context)?;
+    register(&mut journal, "build-only", json!({"import":true,"build":true,"check":false}), &digest("a"))?;
+    assert_eq!(journal.godot_executor_status()["check"], false);
+    register(&mut journal, "checks", json!({"import":true,"build":true,"check":true}), &digest("b"))?;
+    assert_eq!(journal.godot_executor_status()["check"], true);
+    let job = start(&mut journal, &context, "check-revoke", &project, "check")?;
+    claim(&mut journal, &job, "owner", "checks")?;
+    assert_eq!(journal.godot_executor_revoke(&json!({"executorId":"build-only"}))?["interrupted"], 0);
+    assert_eq!(journal.godot_executor_status()["check"], true);
+    assert_eq!(journal.godot_executor_revoke(&json!({"executorId":"checks"}))?["interrupted"], 1);
+    assert_eq!(journal.godot_build_read(&json!({"worldId":"a","jobId":job["jobId"]}))?["status"], "interrupted");
+    assert_eq!(journal.godot_build_read(&json!({"worldId":"a","jobId":job["jobId"]}))?["interruptReason"], "GODOT_EXECUTOR_REVOKED");
+    failed(journal.godot_job_heartbeat(&json!({"jobId":job["jobId"],"token":"owner"})), "GODOT_JOB_OWNER_MISMATCH");
+    Ok(())
+}
+
+#[test]
+fn a_continuation_keeps_its_origin_and_refuses_a_moved_source() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let project = create_project(&mut journal, &context)?;
+    register(&mut journal, "executor-a", json!({"import":true,"build":true,"check":true}), &digest("e"))?;
+    let job = start(&mut journal, &context, "check-origin", &project, "check")?;
+    let claimed = claim(&mut journal, &job, "token-a", "executor-a")?;
+    // The executor died: the lease expires and the job says why.
+    journal.db.execute(
+        "UPDATE craftmine_godot_jobs SET lease_expires_at=1 WHERE id=?1",
+        [job["jobId"].as_str().unwrap()],
+    )?;
+    let expired = journal.godot_build_read(&json!({"worldId":"a","jobId":job["jobId"]}))?;
+    assert_eq!(expired["status"], "interrupted");
+    assert_eq!(expired["interruptReason"], "GODOT_LEASE_EXPIRED");
+    // A late result from the dead executor can never revive the job.
+    let artifacts = write_artifact(&claimed, "web/index.html", b"<html></html>")?;
+    failed(
+        finish(&mut journal, &job, "token-a", &output(&claimed, true, json!([{"id":"x","passed":true}]), artifacts, json!([]))),
+        "GODOT_JOB_INACTIVE",
+    );
+    // The saved draft continues as a new execution with a recorded origin.
+    let args = json!({"context":&context,"worldId":"a","toolCallId":"continue-one","originJobId":job["jobId"]});
+    let continued = journal.godot_job_continue(&args)?;
+    assert_eq!(continued["originJobId"], job["jobId"]);
+    assert_eq!(continued["buildId"], job["buildId"]);
+    assert_eq!(continued["status"], "queued");
+    assert_eq!(continued["replayed"], false);
+    let replay = journal.godot_job_continue(&args)?;
+    assert_eq!(replay["replayed"], true);
+    assert_eq!(replay["jobId"], continued["jobId"]);
+    // Once the source moved, the old draft is a conflict, never a silent rebase.
+    journal.godot_project_patch(&json!({"context":&context,"worldId":"a","toolCallId":"patch-one",
+        "revision":project["revision"],"manifestHash":project["manifestHash"],
+        "operations":[{"op":"put","path":"continued.gd","text":"extends Node\n","expectedHash":null}]}))?;
+    failed(
+        journal.godot_job_continue(&json!({"context":&context,"worldId":"a","toolCallId":"continue-two",
+            "originJobId":job["jobId"]})),
+        "GODOT_CONTINUATION_STALE",
+    );
+    // A job that already succeeded is not a continuable draft.
+    let head = journal.godot_project_index(&json!({"context":&context,"worldId":"a"}))?;
+    let (done, _) = run_check(&mut journal, &context, &head, "check-two", true)?;
+    failed(
+        journal.godot_job_continue(&json!({"context":&context,"worldId":"a","toolCallId":"continue-three",
+            "originJobId":done["jobId"]})),
+        "GODOT_JOB_NOT_CONTINUABLE",
+    );
+    Ok(())
+}
+
+#[test]
+fn usage_summary_reports_core_counters_and_keeps_model_counters_unknown() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let project = create_project(&mut journal, &context)?;
+    let (job, checked) = run_check(&mut journal, &context, &project, "check-one", true)?;
+    assert_eq!(checked["status"], "passed");
+    let usage = journal.godot_usage_summary(&json!({"worldId":"a","context":&context}))?;
+    assert_eq!(usage["format"], "craftmine.godot-usage/1");
+    assert_eq!(usage["items"].as_array().unwrap().len(), 1);
+    assert_eq!(usage["items"][0]["jobId"], job["jobId"]);
+    assert_eq!(usage["items"][0]["outcome"], "passed");
+    assert_eq!(usage["items"][0]["artifactBytes"], 13);
+    assert_eq!(usage["items"][0]["originJobId"], Value::Null);
+    assert!(usage["items"][0]["hostBytes"].as_i64().unwrap() > 0);
+    assert_eq!(usage["totals"]["executions"], 1);
+    assert_eq!(usage["totals"]["artifactBytes"], 13);
+    assert_eq!(
+        usage["unknown"],
+        json!(["modelTokens", "modelRequests", "compactions", "contextTokens", "serviceQuota"])
+    );
+    assert_eq!(usage["limits"]["unknown"], usage["unknown"]);
+    assert_eq!(usage["limits"]["buildFileCount"], 4096);
+    // Repeating the sweep cannot double count.
+    assert_eq!(journal.godot_usage_summary(&json!({"worldId":"a","context":&context}))?, usage);
+    Ok(())
+}
+
+#[test]
 fn a_job_cannot_run_without_an_attested_executor() -> Result<()> {
     let (_dir, path) = temp()?;
     let mut journal = setup(&path)?;

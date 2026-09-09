@@ -1,0 +1,43 @@
+
+{"kind":"renderer-console","webContents":1,"level":"warning","message":"%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged.","line":2}
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+{"kind":"renderer-console","webContents":2,"level":"info","message":"Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org","line":97}
+{"kind":"renderer-console","webContents":2,"level":"info","message":"OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL","line":97}
+{"kind":"renderer-console","webContents":2,"level":"info","message":"Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.","line":97}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-console","webContents":2,"level":"warning","message":"[.WebGL-0x196c0e496600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.","line":0}
+{"kind":"renderer-destroyed","webContents":2}
+{"kind":"renderer-destroyed","webContents":1}

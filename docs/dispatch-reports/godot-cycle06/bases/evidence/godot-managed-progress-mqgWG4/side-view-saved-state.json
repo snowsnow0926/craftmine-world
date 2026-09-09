@@ -1,0 +1,59 @@
+{
+  "baseId": "side-view",
+  "baseVersion": "1.0.0",
+  "body": {
+    "abilities": {
+      "double_jump": true
+    },
+    "activeCheckpoint": "cp_ruins",
+    "checkpoints": {
+      "cp_ruins": true
+    },
+    "counters": {
+      "coins": 5,
+      "hits": 1
+    },
+    "entities": {
+      "crate_ruins": {
+        "health": 1
+      },
+      "dummy_ruins": {
+        "health": 1
+      }
+    },
+    "format": "craftmine.godot-sideview-state/1",
+    "inventory": {
+      "coin": 5
+    },
+    "player": {
+      "facing": -1,
+      "room": "ruins",
+      "x": 143.5,
+      "y": 440
+    },
+    "rewards": {
+      "reward_ruins_cache": true
+    },
+    "rooms": {
+      "entrance": {
+        "entries": 1,
+        "visited": true
+      },
+      "ruins": {
+        "entries": 4,
+        "visited": true
+      }
+    },
+    "stateVersion": 1,
+    "vitals": {
+      "alive": true,
+      "health": 2,
+      "invulnerableRemaining": 0.8,
+      "respawnRemaining": 0
+    },
+    "worldId": "managed-side-view"
+  },
+  "format": "craftmine.godot-progress/1",
+  "stateVersion": 1,
+  "worldId": "managed-side-view"
+}

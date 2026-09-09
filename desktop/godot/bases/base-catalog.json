@@ -1,0 +1,588 @@
+{
+  "format": "craftmine.godot-base-catalog/1",
+  "generatedBy": "desktop/godot/shared/tools/build-base-catalog.mjs",
+  "contractFormat": "craftmine.godot-base-contract/1",
+  "engine": {
+    "name": "godot",
+    "version": "4.7.2-stable",
+    "language": "GDScript",
+    "renderer": "gl_compatibility"
+  },
+  "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+  "bases": [
+    {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "title": "First-person base",
+      "status": null,
+      "engine": {
+        "name": "godot",
+        "version": "4.7.2-stable",
+        "language": "gdscript",
+        "renderer": "gl_compatibility",
+        "targets": [
+          "windows-x64",
+          "web"
+        ]
+      },
+      "protocols": {
+        "world": "craftmine.godot-first-person-world/1",
+        "state": "craftmine.godot-base-state/1",
+        "progress": "craftmine.godot-progress/1",
+        "probe": "craftmine.godot-preview/1",
+        "params": null,
+        "baseProtocolVersion": 1
+      },
+      "state": {
+        "format": "craftmine.godot-base-state/1",
+        "version": 1,
+        "preserved": [
+          "playerPosition",
+          "playerLook",
+          "equipment",
+          "inventory",
+          "targets",
+          "interactables",
+          "quests"
+        ],
+        "migrations": []
+      },
+      "assets": {
+        "manifest": "assets/ASSET_MANIFEST.json",
+        "provenance": "assets/provenance/ASSET_PROVENANCE.md",
+        "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+        "generator": "tools/generate_meshes.mjs"
+      },
+      "contentHash": "c131ea79cbb7dabeeabfd553ed285f5b5b5d55282b2373367a51b793c92588e8",
+      "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+      "entityIdScheme": null,
+      "capabilities": [],
+      "templates": [
+        {
+          "id": "blank",
+          "kind": "blank-start",
+          "label": "Blank start",
+          "entryScene": "res://scenes/blank_start.tscn",
+          "description": "One room with floor, walls, player, HUD and the base runtime only. No targets, no pickups, no quest and no reward ledger.",
+          "source": "scenes/blank_start.tscn",
+          "initialState": {
+            "player": "spawn",
+            "equipment": "catalog defaults",
+            "inventory": [],
+            "targets": [],
+            "interactables": [],
+            "quests": [],
+            "rewardLedger": []
+          },
+          "create": {
+            "tool": "tools/new-world.mjs",
+            "args": [
+              "--template",
+              "blank",
+              "--world-id",
+              "<worldId>",
+              "--out",
+              "<dir>"
+            ]
+          }
+        },
+        {
+          "id": "training-range",
+          "kind": "example",
+          "label": "Training range",
+          "entryScene": "res://scenes/training_range.tscn",
+          "description": "Short playable sample: three targets, cover crates, one ammo crate, one one-time pickup and the range_basic quest.",
+          "source": "scenes/training_range.tscn",
+          "initialState": {
+            "player": "spawn",
+            "equipment": "catalog defaults",
+            "inventory": [],
+            "targets": "scene authored health",
+            "interactables": "scene authored uses",
+            "quests": [
+              {
+                "id": "range_basic",
+                "status": "inactive"
+              }
+            ],
+            "rewardLedger": []
+          },
+          "create": {
+            "tool": "tools/new-world.mjs",
+            "args": [
+              "--template",
+              "training-range",
+              "--world-id",
+              "<worldId>",
+              "--out",
+              "<dir>"
+            ]
+          }
+        }
+      ],
+      "components": [
+        "fp.ammo-crate",
+        "fp.crosshair",
+        "fp.equipment-item",
+        "fp.interactable",
+        "fp.pickup-item",
+        "fp.quest",
+        "fp.target-dummy"
+      ],
+      "managedMaterialize": {
+        "function": "materializeBase",
+        "module": "desktop/godot/shared/materialize.mjs",
+        "args": {
+          "baseId": "first-person",
+          "worldId": "<worldId>",
+          "template": "<templateId>",
+          "out": "<dir>"
+        }
+      },
+      "tools": {
+        "newWorld": "tools/new-world.mjs",
+        "generateMeshes": "tools/generate_meshes.mjs"
+      },
+      "acceptance": {
+        "headless": "tests/acceptance_headless.mjs",
+        "web": "tests/acceptance_web.mjs",
+        "modelTasks": "docs/MODEL_ACCEPTANCE_TASKS.md"
+      }
+    },
+    {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "title": "mining-sandbox",
+      "status": "delivered-example-and-blank-start",
+      "engine": {
+        "name": "godot",
+        "version": "4.7.2-stable",
+        "language": "GDScript",
+        "renderer": "gl_compatibility",
+        "targets": []
+      },
+      "protocols": {
+        "world": "craftmine.godot-mining-sandbox-world/1",
+        "state": "craftmine.godot-mining-sandbox-state/1",
+        "progress": "craftmine.godot-mining-sandbox-progress/1",
+        "probe": "craftmine.godot-mining-sandbox-probe/1",
+        "params": "craftmine.godot-mining-sandbox-params/1",
+        "baseProtocolVersion": 1
+      },
+      "state": {
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "version": 1,
+        "preserved": [
+          "worldId",
+          "player",
+          "inventory",
+          "tools",
+          "equipped",
+          "flags",
+          "chunkIndex",
+          "editCount",
+          "terrainHash",
+          "worldRevision",
+          "ledger",
+          "ledgerEvicted"
+        ],
+        "migrations": []
+      },
+      "assets": {
+        "manifest": "assets/ASSET_MANIFEST.json",
+        "provenance": "ASSET_SOURCES.md",
+        "license": "ASSET_SOURCES.md",
+        "generator": null
+      },
+      "contentHash": "8d84df6c923ed575ef508ff950a8f632077bbba15cfc53e61ba4ccacba4a9281",
+      "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+      "entityIdScheme": "stable string id declared in world data, never a node path",
+      "capabilities": [
+        "deterministic finite terrain generation",
+        "stable chunk identity with boundary chunks",
+        "reach-, target-, occupancy- and adjacency-validated dig and place",
+        "tool-tier gating per material",
+        "drops into inventory with request idempotency",
+        "material-consuming placement and crafting",
+        "no burying the player in solid tiles",
+        "per-chunk atomic persistence with index hashes",
+        "strict whole-file rejection of corrupt, missing or version-mismatched progress",
+        "atomic save with backup recovery and honest write-failure reporting",
+        "read-only snapshot and headless probe over the real gameplay code path"
+      ],
+      "templates": [
+        {
+          "id": "blank",
+          "kind": "blank-start",
+          "label": "Blank start",
+          "entryScene": "res://scenes/main.tscn",
+          "description": "Finite 48x24 generated map with dig, place, inventory and saving only. No recipes, no rewards, no tools and an empty inventory.",
+          "source": "templates/blank",
+          "initialState": {
+            "inventory": {},
+            "tools": [],
+            "edits": 0
+          },
+          "create": {
+            "tool": "tools/new-world.mjs",
+            "args": [
+              "--template",
+              "blank",
+              "--world-id",
+              "<worldId>",
+              "--out",
+              "<dir>"
+            ]
+          }
+        },
+        {
+          "id": "mine-camp",
+          "kind": "example",
+          "label": "Mining camp",
+          "entryScene": "res://scenes/main.tscn",
+          "description": "Finite 96x48 mining camp: dig soil and stone by hand, craft a stone pickaxe, mine coal and iron, smelt an iron ingot at the camp forge, craft an iron pickaxe, then build with stone bricks.",
+          "source": "templates/mine-camp",
+          "initialState": {
+            "inventory": {
+              "wood": 6
+            },
+            "tools": [],
+            "edits": 0
+          },
+          "create": {
+            "tool": "tools/new-world.mjs",
+            "args": [
+              "--template",
+              "mine-camp",
+              "--world-id",
+              "<worldId>",
+              "--out",
+              "<dir>"
+            ]
+          }
+        }
+      ],
+      "components": [
+        "ms.crafting-station",
+        "ms.material",
+        "ms.ore-vein",
+        "ms.recipe",
+        "ms.spawn-point",
+        "ms.terrain-layer"
+      ],
+      "managedMaterialize": {
+        "function": "materializeBase",
+        "module": "desktop/godot/shared/materialize.mjs",
+        "args": {
+          "baseId": "mining-sandbox",
+          "worldId": "<worldId>",
+          "template": "<templateId>",
+          "out": "<dir>"
+        }
+      },
+      "tools": {
+        "newWorld": "tools/new-world.mjs",
+        "checkSync": "tools/check-sync.mjs",
+        "verify": "tools/verify.mjs"
+      },
+      "acceptance": {
+        "headless": "tests/godot-remaining/G/a16-acceptance.mjs",
+        "smoke": "desktop/godot/bases/mining-sandbox/tools/verify.mjs",
+        "engine": "4.7.2-stable"
+      }
+    },
+    {
+      "baseId": "side-view",
+      "baseVersion": "1.0.0",
+      "title": "side-view",
+      "status": "delivered-example-and-blank-start",
+      "engine": {
+        "name": "godot",
+        "version": "4.7.2-stable",
+        "language": "GDScript",
+        "renderer": "gl_compatibility",
+        "targets": []
+      },
+      "protocols": {
+        "world": "craftmine.godot-sideview-world/1",
+        "state": "craftmine.godot-sideview-state/1",
+        "progress": "craftmine.progress/1",
+        "probe": "craftmine.godot-sideview-probe/1",
+        "params": "craftmine.godot-sideview-params/1",
+        "baseProtocolVersion": 1
+      },
+      "state": {
+        "format": "craftmine.godot-sideview-state/1",
+        "version": 1,
+        "preserved": [
+          "worldId",
+          "player",
+          "abilities",
+          "checkpoints",
+          "activeCheckpoint",
+          "rewards",
+          "rooms",
+          "counters",
+          "inventory",
+          "entities",
+          "vitals"
+        ],
+        "migrations": []
+      },
+      "assets": {
+        "manifest": "assets/ASSET_MANIFEST.json",
+        "provenance": "docs/assets-and-provenance.md",
+        "license": "docs/assets-and-provenance.md",
+        "generator": null
+      },
+      "contentHash": "7f26102435cc9d3b3fb21858fffc6d4c6ad259e9f2a8a313698c3dcac00e82ed",
+      "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+      "entityIdScheme": "stable string id declared in world data, never a node path",
+      "capabilities": [
+        "gravity",
+        "run-and-air-control",
+        "jump-with-coyote-time-and-buffer",
+        "variable-jump-height",
+        "platform-collision",
+        "room-bounded-camera",
+        "basic-attack-hitbox",
+        "checkpoint-and-respawn",
+        "hazard-death",
+        "one-time-ability-pickup",
+        "one-time-reward-pickup",
+        "room-transition-with-return-path",
+        "persistent-abilities-checkpoints-rooms-rewards",
+        "atomic-save-with-backup-recovery"
+      ],
+      "templates": [
+        {
+          "id": "blank",
+          "kind": "blank-start",
+          "label": "Blank start",
+          "entryScene": "res://scenes/main.tscn",
+          "description": "One flat room with the base runtime only: run, jump, platform collision, camera, basic attack and one save file. No checkpoint, target, reward or ability.",
+          "source": "worlds/blank",
+          "initialState": {
+            "room": "start",
+            "abilities": [],
+            "checkpoints": [],
+            "rewards": [],
+            "targets": [],
+            "counters": {},
+            "inventory": {},
+            "entities": {}
+          },
+          "create": {
+            "tool": "tools/new-world.mjs",
+            "args": [
+              "--world",
+              "blank",
+              "--world-id",
+              "<worldId>",
+              "--out",
+              "<dir>"
+            ]
+          }
+        },
+        {
+          "id": "ruins",
+          "kind": "example",
+          "label": "Small ruins",
+          "entryScene": "res://scenes/main.tscn",
+          "description": "Three connected rooms with return paths, a one-time cache, a training dummy, a breakable crate, a double-jump pickup and a 190 px high ledge that only a double jump can clear.",
+          "source": "worlds/ruins",
+          "initialState": {
+            "room": "entrance",
+            "abilities": [],
+            "checkpoints": [],
+            "rewards": [],
+            "targets": "authored health",
+            "counters": {},
+            "inventory": {},
+            "entities": {}
+          },
+          "create": {
+            "tool": "tools/new-world.mjs",
+            "args": [
+              "--world",
+              "ruins",
+              "--world-id",
+              "<worldId>",
+              "--out",
+              "<dir>"
+            ]
+          }
+        }
+      ],
+      "components": [
+        "sv.ability-pickup",
+        "sv.checkpoint",
+        "sv.hazard",
+        "sv.reward-pickup",
+        "sv.room-door",
+        "sv.spawn",
+        "sv.target"
+      ],
+      "managedMaterialize": {
+        "function": "materializeBase",
+        "module": "desktop/godot/shared/materialize.mjs",
+        "args": {
+          "baseId": "side-view",
+          "worldId": "<worldId>",
+          "template": "<templateId>",
+          "out": "<dir>"
+        }
+      },
+      "tools": {
+        "verify": "tools/verify.mjs",
+        "gateMetrics": "tools/gate-metrics.mjs",
+        "newWorld": "tools/new-world.mjs",
+        "inputPlans": "tools/plans/"
+      },
+      "acceptance": {}
+    },
+    {
+      "baseId": "top-down",
+      "baseVersion": "1.0.0",
+      "title": "top-down",
+      "status": "delivered-example-and-blank-start",
+      "engine": {
+        "name": "godot",
+        "version": "4.7.2-stable",
+        "language": "GDScript",
+        "renderer": "gl_compatibility",
+        "targets": []
+      },
+      "protocols": {
+        "world": "craftmine.godot-topdown-world/1",
+        "state": "craftmine.godot-topdown-state/1",
+        "progress": "craftmine.godot-topdown-progress/1",
+        "probe": "craftmine.godot-topdown-probe/1",
+        "params": null,
+        "baseProtocolVersion": 1
+      },
+      "state": {
+        "format": "craftmine.godot-topdown-state/1",
+        "version": 1,
+        "preserved": [
+          "worldId",
+          "sceneId",
+          "player",
+          "scenePositions",
+          "coins",
+          "inventory",
+          "shops",
+          "quests",
+          "grantedRewards",
+          "flags"
+        ],
+        "migrations": []
+      },
+      "assets": {
+        "manifest": "core/assets/ASSET_MANIFEST.json",
+        "provenance": "ASSET_SOURCES.md",
+        "license": "ASSET_SOURCES.md",
+        "generator": "tools/make-assets.mjs"
+      },
+      "contentHash": "8a49a493f37415f24c2cd776543393ad9604a87e6a8a65ec3c0de1b6b37fc83f",
+      "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+      "entityIdScheme": "stable string id declared in the scene, never a node path",
+      "capabilities": [],
+      "templates": [
+        {
+          "id": "blank",
+          "kind": "blank-start",
+          "label": "Blank start",
+          "entryScene": "res://scenes/world.tscn",
+          "description": "Empty walkable room with the base runtime only: movement, collision, camera and save.",
+          "source": "templates/blank",
+          "initialState": {
+            "coins": 0,
+            "inventory": [],
+            "shops": [],
+            "quests": [],
+            "grantedRewards": [],
+            "flags": [],
+            "sceneId": "world"
+          },
+          "create": {
+            "tool": "tools/new-world.mjs",
+            "args": [
+              "--template",
+              "blank",
+              "--world-id",
+              "<worldId>",
+              "--out",
+              "<dir>"
+            ]
+          }
+        },
+        {
+          "id": "town",
+          "kind": "example",
+          "label": "Town",
+          "entryScene": "res://scenes/overworld.tscn",
+          "description": "One road, one shop, one NPC and one collect-and-deliver quest.",
+          "source": "templates/town",
+          "initialState": {
+            "coins": 40,
+            "inventory": [],
+            "shops": [
+              {
+                "id": "general",
+                "stock": "authored counts"
+              }
+            ],
+            "quests": [
+              {
+                "id": "herb-delivery",
+                "status": "active"
+              }
+            ],
+            "grantedRewards": [],
+            "flags": [],
+            "sceneId": "overworld"
+          },
+          "create": {
+            "tool": "tools/new-world.mjs",
+            "args": [
+              "--template",
+              "town",
+              "--world-id",
+              "<worldId>",
+              "--out",
+              "<dir>"
+            ]
+          }
+        }
+      ],
+      "components": [
+        "td.door",
+        "td.gather-zone",
+        "td.interactable",
+        "td.npc-dialogue",
+        "td.player",
+        "td.quest",
+        "td.shop",
+        "td.spawn-marker"
+      ],
+      "managedMaterialize": {
+        "function": "materializeBase",
+        "module": "desktop/godot/shared/materialize.mjs",
+        "args": {
+          "baseId": "top-down",
+          "worldId": "<worldId>",
+          "template": "<templateId>",
+          "out": "<dir>"
+        }
+      },
+      "tools": {
+        "makeAssets": "tools/make-assets.mjs",
+        "newWorld": "tools/new-world.mjs",
+        "syncBase": "tools/check-sync.mjs",
+        "verify": "tools/verify.mjs"
+      },
+      "acceptance": {}
+    }
+  ]
+}

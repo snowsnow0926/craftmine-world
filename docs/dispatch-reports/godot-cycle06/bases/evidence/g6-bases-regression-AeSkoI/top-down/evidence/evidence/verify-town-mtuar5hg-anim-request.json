@@ -1,0 +1,73 @@
+{
+  "format": "craftmine.godot-topdown-probe/1",
+  "commands": [
+    {
+      "op": "set-position",
+      "args": {
+        "x": 104,
+        "y": 168,
+        "label": "place"
+      }
+    },
+    {
+      "op": "move-capture",
+      "args": {
+        "dx": 1,
+        "dy": 0,
+        "steps": 30,
+        "label": "walk"
+      }
+    },
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "right"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": 1,
+        "steps": 8,
+        "label": "down"
+      }
+    },
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "down"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": -1,
+        "dy": 0,
+        "steps": 8,
+        "label": "left"
+      }
+    },
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "left"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": -1,
+        "steps": 8,
+        "label": "up"
+      }
+    },
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "up"
+      }
+    }
+  ]
+}

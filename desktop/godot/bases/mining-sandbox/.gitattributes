@@ -1,0 +1,8 @@
+# Byte-stable hashes for this base on every platform.
+#
+# world-build.json and the release asset manifest pin a SHA-256 per file, so a
+# checkout must produce the same bytes on Windows and Unix. Without this file
+# core.autocrlf=true would rewrite every text file to CRLF and every pinned hash
+# would fail after a fresh clone.
+* text=auto eol=lf
+*.svg text eol=lf

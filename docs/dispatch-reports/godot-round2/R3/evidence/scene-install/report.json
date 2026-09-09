@@ -1,0 +1,169 @@
+{
+  "format": "craftmine.r3-scene-install/1",
+  "godot": "D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable\\editor\\Godot_v4.7.2-stable_win64_console.exe",
+  "engineRuns": 14,
+  "total": 8,
+  "passed": 8,
+  "results": [
+    {
+      "id": "R3-S01",
+      "description": "a scene-node component is written into the .tscn instead of a manual step",
+      "ok": true,
+      "detail": {
+        "receiptOk": true,
+        "appliedOnce": true,
+        "noManualStep": true,
+        "planIsSceneEdit": true,
+        "nodeWritten": true,
+        "extResourceWritten": true,
+        "originalPreserved": true,
+        "applied": [
+          {
+            "scene": "scenes/overworld.tscn",
+            "node": "door-r3-a",
+            "parent": ".",
+            "identityField": "entity_id",
+            "extResource": {
+              "type": "Script",
+              "path": "scripts/base/door_zone.gd",
+              "id": "12_door_zone"
+            }
+          }
+        ],
+        "manual": [],
+        "grew": 629
+      }
+    },
+    {
+      "id": "R3-S02",
+      "description": "installing the same component twice yields two nodes with distinct identities",
+      "ok": true,
+      "detail": {
+        "nodes": [
+          "[node name=\"door-r3-a\"",
+          "[node name=\"door-r3-b\""
+        ]
+      }
+    },
+    {
+      "id": "R3-S03",
+      "description": "the real engine loads the edited scene and reports both new identities",
+      "ok": true,
+      "detail": {
+        "status": 0,
+        "ids": [
+          "entity_id=player",
+          "spawn_id=start",
+          "spawn_id=from-shop",
+          "entity_id=npc-mira",
+          "npc_id=mira",
+          "quest_id=herb-delivery",
+          "entity_id=zone-herb-patch",
+          "zone_id=herb-patch",
+          "entity_id=door-shop",
+          "zone_id=shop-door",
+          "entity_id=door-r3-a",
+          "entity_id=door-r3-b"
+        ],
+        "tail": "reE' were leaked at exit.\r\n\nWARNING: 21 RIDs of type \"CanvasItem\" were leaked.\r\n   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2735)\r\nWARNING: 86 ObjectDB instances were leaked at exit (run with `--verbose` for details).\r\n   at: cleanup (core/object/object.cpp:2536)\r\nERROR: 20 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:822)\r\n"
+      }
+    },
+    {
+      "id": "R3-S04",
+      "description": "modifying one instance leaves the other instance untouched",
+      "ok": true,
+      "detail": {
+        "blockA": [
+          "target_spawn = \"from-vault\""
+        ],
+        "blockB": [
+          "target_spawn = \"from-shop\""
+        ],
+        "status": 0
+      }
+    },
+    {
+      "id": "R3-S05",
+      "description": "a first-person instanced component keeps its StringName identity and own overrides",
+      "ok": true,
+      "detail": {
+        "ids": [
+          "target_id=target_a",
+          "target_id=target_b",
+          "target_id=target_c",
+          "target_id=r3_dummy_a",
+          "target_id=r3_dummy_b"
+        ],
+        "status": 0
+      }
+    },
+    {
+      "id": "R3-S06",
+      "description": "a missing input action required by a component is added to project.godot",
+      "ok": true,
+      "detail": {
+        "inputsApplied": [
+          "interact"
+        ],
+        "status": 0
+      }
+    },
+    {
+      "id": "R3-S07",
+      "description": "a duplicate identity or node name is refused without touching the scene",
+      "ok": true,
+      "detail": {
+        "error": "node-name-taken: . already has a node named door-r3-a"
+      }
+    },
+    {
+      "id": "R3-S08",
+      "description": "every catalog component that declares an install mode plans a real scene edit",
+      "ok": true,
+      "detail": {
+        "plans": [
+          {
+            "componentId": "fp.ammo-crate",
+            "scene": "scenes/training_range.tscn",
+            "mode": "instance"
+          },
+          {
+            "componentId": "fp.interactable",
+            "scene": "scenes/training_range.tscn",
+            "mode": "script-node"
+          },
+          {
+            "componentId": "fp.pickup-item",
+            "scene": "scenes/training_range.tscn",
+            "mode": "instance"
+          },
+          {
+            "componentId": "fp.target-dummy",
+            "scene": "scenes/training_range.tscn",
+            "mode": "instance"
+          },
+          {
+            "componentId": "td.door",
+            "scene": "scenes/overworld.tscn",
+            "mode": "script-node"
+          },
+          {
+            "componentId": "td.gather-zone",
+            "scene": "scenes/overworld.tscn",
+            "mode": "script-node"
+          },
+          {
+            "componentId": "td.interactable",
+            "scene": "scenes/overworld.tscn",
+            "mode": "script-node"
+          },
+          {
+            "componentId": "td.spawn-marker",
+            "scene": "scenes/overworld.tscn",
+            "mode": "script-node"
+          }
+        ]
+      }
+    }
+  ]
+}

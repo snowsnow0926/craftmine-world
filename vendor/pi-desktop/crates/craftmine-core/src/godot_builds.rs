@@ -28,9 +28,9 @@ pub(super) const ASSET_BYTES: u64 = 512 * 1024;
 pub(super) const ASSET_MODEL_BYTES: usize = 96 * 1024;
 const ASSET_COUNT: i64 = 256;
 const ASSET_TOTAL: u64 = 32 * 1024 * 1024;
-const BUILD_FILE_COUNT: usize = 4096;
-const BUILD_FILE_BYTES: u64 = 4 * 1024 * 1024;
-const BUILD_TOTAL: u64 = 64 * 1024 * 1024;
+pub(super) const BUILD_FILE_COUNT: usize = 4096;
+pub(super) const BUILD_FILE_BYTES: u64 = 4 * 1024 * 1024;
+pub(super) const BUILD_TOTAL: u64 = 64 * 1024 * 1024;
 const BUILD_MANIFEST_LIMIT: usize = 2 * 1024 * 1024;
 const ENGINE_VERSION: &str = "4.7.2-stable";
 static TEMP_SEQUENCE: AtomicU64 = AtomicU64::new(0);
@@ -65,6 +65,21 @@ pub(super) struct BuildIdentity {
     pub engine_version: String,
     pub renderer: String,
     pub target: String,
+    /// Content commit for a world on the managed Git backend.
+    pub content_oid: Option<String>,
+    /// Canonical asset-lock hash for the same content.
+    pub asset_lock_hash: Option<String>,
+}
+
+/// Where a build copy reads its authored files from. The managed Git backend is
+/// the only content history for a switched world; legacy worlds keep blobs.
+pub(super) enum SourceContent<'a> {
+    Legacy,
+    Git {
+        store: &'a super::content_history::repo::RepositoryStore,
+        layout: &'a super::content_history::repo::RepoLayout,
+        commit: &'a str,
+    },
 }
 
 #[derive(Deserialize)]
@@ -111,6 +126,9 @@ struct BuildReadArgs {
     job_id: String,
     #[serde(default)]
     context: Option<WorkspaceContext>,
+    /// Optional cancellation reason code; only used by `godotBuild.cancel`.
+    #[serde(default)]
+    reason: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -142,10 +160,9 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
             engine_version TEXT NOT NULL, renderer TEXT NOT NULL, target TEXT NOT NULL,
             files INTEGER NOT NULL, bytes INTEGER NOT NULL, created_at INTEGER NOT NULL,
             PRIMARY KEY(world_id,build_id)
-        );
-        CREATE TABLE IF NOT EXISTS craftmine_godot_build_files (
+        );        CREATE TABLE IF NOT EXISTS craftmine_godot_build_files (
             world_id TEXT NOT NULL, build_id TEXT NOT NULL, path TEXT NOT NULL,
-            kind TEXT NOT NULL CHECK(kind IN ('source','asset','cache','artifact')),
+            kind TEXT NOT NULL CHECK(kind IN ('source','asset','host','cache','artifact')),
             sha256 TEXT NOT NULL, bytes INTEGER NOT NULL,
             PRIMARY KEY(world_id,build_id,path),
             FOREIGN KEY(world_id,build_id) REFERENCES craftmine_godot_builds(world_id,build_id)
@@ -155,6 +172,62 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
             request_hash TEXT NOT NULL, result TEXT NOT NULL, PRIMARY KEY(task_id,tool_call_id)
         );",
     )?;
+    // A build records the exact content commit and asset lock it was made from,
+    // so a candidate can be judged stale when the branch moved.
+    for (column, definition) in [
+        ("content_oid", "TEXT"),
+        ("asset_lock_hash", "TEXT"),
+    ] {
+        let present: bool = db.query_row(
+            "SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_builds') WHERE name=?1",
+            [column],
+            |row| row.get::<_, i64>(0),
+        )? > 0;
+        if !present {
+            db.execute_batch(&format!(
+                "ALTER TABLE craftmine_godot_builds ADD COLUMN {column} {definition}"
+            ))?;
+        }
+    }
+    // Host files were added to build copies after the first builds shipped. The
+    // original CHECK only allowed source/asset/cache/artifact, so a database
+    // created before that must be rebuilt to record `host` rows instead of
+    // failing the whole build with a constraint error.
+    let legacy: Option<String> = db
+        .query_row(
+            "SELECT sql FROM sqlite_master WHERE type='table' AND name='craftmine_godot_build_files'",
+            [],
+            |row| row.get(0),
+        )
+        .optional()?;
+    if legacy.is_some_and(|sql| !sql.contains("'host'")) {
+        // The rebuild runs with foreign keys off so a legacy orphan cannot brick
+        // startup; orphans are then rejected explicitly instead of silently kept.
+        db.execute_batch("PRAGMA foreign_keys=OFF")?;
+        let rebuild = db.execute_batch(
+            "ALTER TABLE craftmine_godot_build_files RENAME TO craftmine_godot_build_files_legacy;
+             CREATE TABLE craftmine_godot_build_files (
+                world_id TEXT NOT NULL, build_id TEXT NOT NULL, path TEXT NOT NULL,
+                kind TEXT NOT NULL CHECK(kind IN ('source','asset','host','cache','artifact')),
+                sha256 TEXT NOT NULL, bytes INTEGER NOT NULL,
+                PRIMARY KEY(world_id,build_id,path),
+                FOREIGN KEY(world_id,build_id) REFERENCES craftmine_godot_builds(world_id,build_id)
+             );
+             INSERT INTO craftmine_godot_build_files(world_id,build_id,path,kind,sha256,bytes)
+                SELECT world_id,build_id,path,kind,sha256,bytes FROM craftmine_godot_build_files_legacy;
+             DROP TABLE craftmine_godot_build_files_legacy;",
+        );
+        db.execute_batch("PRAGMA foreign_keys=ON")?;
+        rebuild?;
+        let orphans: i64 = db.query_row(
+            "SELECT COUNT(*) FROM craftmine_godot_build_files f
+             LEFT JOIN craftmine_godot_builds b ON b.world_id=f.world_id AND b.build_id=f.build_id
+             WHERE b.build_id IS NULL",
+            [],
+            |row| row.get(0),
+        )?;
+        ensure!(orphans == 0, "GODOT_BUILD_FILE_ORPHAN");
+    }
     Ok(())
 }
 
@@ -221,7 +294,9 @@ pub(super) fn build_id(identity: &BuildIdentity) -> Result<String> {
         "format":"craftmine.godot-build/1","worldId":identity.world_id,"baseId":identity.base_id,
         "baseBuild":identity.base_build,"sourceRevision":identity.source_revision,
         "manifestHash":identity.manifest_hash,"assetManifestHash":identity.asset_manifest_hash,
-        "engineVersion":identity.engine_version,"renderer":identity.renderer,"target":identity.target
+        "engineVersion":identity.engine_version,"renderer":identity.renderer,"target":identity.target,
+        "contentOid":identity.content_oid,"assetLockHash":identity.asset_lock_hash,
+        "hostResourcesHash":super::godot_host_resources::hash()
     }))?;
     ensure!(body.len() <= 4096, "INVALID_GODOT_BUILD");
     Ok(format!("gbd-{}", digest(&body)))
@@ -388,8 +463,7 @@ fn hex(bytes: &[u8]) -> String {
         .collect()
 }
 
-pub(super) fn asset_manifest(db: &Connection, world: &str) -> Result<(String, Vec<AssetRow>)> {
-    let mut statement = db.prepare(
+pub(super) fn asset_manifest(db: &Connection, world: &str) -> Result<(String, Vec<AssetRow>)> {    let mut statement = db.prepare(
         "SELECT sha256,name,path,media_type,bytes FROM craftmine_godot_assets WHERE world_id=?1 ORDER BY path",
     )?;
     let rows = statement
@@ -406,6 +480,51 @@ pub(super) fn asset_manifest(db: &Connection, world: &str) -> Result<(String, Ve
     let body = serde_json::to_string(&rows)?;
     ensure!(body.len() <= BUILD_MANIFEST_LIMIT, "GODOT_BUILD_TOO_LARGE");
     Ok((digest(&body), rows))
+}
+
+/// Canonical shared asset lock for a world's current assets.
+///
+/// The asset id is the content hash, so identical bytes installed at two paths
+/// become one pinned reference with two install locations, and no entry can
+/// reference `latest`. `None` means the world has no assets, which is a valid
+/// source-only state rather than an empty lock file.
+pub(super) fn asset_lock(
+    assets: &[AssetRow],
+) -> Result<Option<super::content_history::contract::AssetLock>> {
+    use super::content_history::contract::{AssetLock, AssetLockEntry, AssetRef, FileRef};
+    if assets.is_empty() {
+        return Ok(None);
+    }
+    let mut entries = Vec::with_capacity(assets.len());
+    for asset in assets {
+        entries.push(AssetLockEntry {
+            asset: AssetRef {
+                asset_id: asset.sha256.clone(),
+                version: "1".into(),
+                content_hash: asset.sha256.clone(),
+            },
+            install_path: asset.path.clone(),
+            files: vec![FileRef {
+                path: asset.path.clone(),
+                sha256: asset.sha256.clone(),
+                bytes: asset.bytes,
+                media_type: asset.media_type.clone(),
+            }],
+            dependencies: Vec::new(),
+            overrides: Vec::new(),
+        });
+    }
+    Ok(Some(AssetLock::new(entries)?))
+}
+
+/// Canonical asset-lock hash for a world, or the stable empty-lock hash when the
+/// world has no assets at all.
+pub(super) fn asset_lock_hash(db: &Connection, world: &str) -> Result<String> {
+    let (_, assets) = asset_manifest(db, world)?;
+    match asset_lock(&assets)? {
+        Some(lock) => lock.asset_lock_hash(),
+        None => super::content_history::contract::AssetLock::empty().asset_lock_hash(),
+    }
 }
 
 fn scope(
@@ -472,13 +591,40 @@ pub(super) fn materialize(
     identity: &BuildIdentity,
     manifest: &Manifest,
     assets: &[AssetRow],
+    source: &SourceContent<'_>,
 ) -> Result<(Vec<Value>, u64)> {
+    // The host owns these paths; a project may not declare a file that would
+    // overwrite the export preset or the bridge the product injects.
+    let host_files = super::godot_host_resources::files();
+    for (reserved, _) in &host_files {
+        ensure!(
+            !manifest
+                .files
+                .keys()
+                .any(|path| path.eq_ignore_ascii_case(reserved)),
+            "GODOT_RESERVED_HOST_PATH: {reserved}"
+        );
+    }
     let root = build_root(directory, world, &identity.build_id, true)?;
     let source_root = ensure_dirs(&root, "source", "GODOT_STORAGE_UNAVAILABLE")?;
     let mut files = Vec::new();
     let mut total = 0u64;
     for (path, entry) in &manifest.files {
-        let text = super::godot_projects::blob_read(directory, world, entry)?;
+        let text = match source {
+            SourceContent::Legacy => super::godot_projects::blob_read(directory, world, entry)?,
+            SourceContent::Git {
+                store,
+                layout,
+                commit,
+            } => {
+                let bytes = store.read_file(layout, commit, path)?;
+                ensure!(
+                    super::godot_projects::file_digest(&bytes) == entry.sha256,
+                    "CORRUPT_GODOT_BUILD"
+                );
+                String::from_utf8(bytes).context("CONTENT_NOT_UTF8")?
+            }
+        };
         let parent = match path.rsplit_once('/') {
             Some((parent, _)) => parent,
             None => "",
@@ -509,6 +655,14 @@ pub(super) fn materialize(
             .checked_add(asset.bytes)
             .context("GODOT_BUILD_TOO_LARGE")?;
         files.push(json!({"path":asset.path,"kind":"asset","sha256":asset.sha256,"bytes":asset.bytes}));
+    }
+    // Host files are fixed bytes, hashed into build identity, and written into
+    // the same source tree the executor imports.
+    for (path, text) in host_files {
+        let sha256 = digest(&text);
+        write_verified(&source_root.join(path), &sha256, text.as_bytes(), "CORRUPT_GODOT_BUILD")?;
+        total = total.checked_add(text.len() as u64).context("GODOT_BUILD_TOO_LARGE")?;
+        files.push(json!({"path":path,"kind":"host","sha256":sha256,"bytes":text.len()}));
     }
     ensure!(
         files.len() <= BUILD_FILE_COUNT && total <= BUILD_TOTAL,
@@ -697,6 +851,22 @@ impl TaskJournal {
         // Evaluate the executor gate before the write transaction so the
         // capability decision cannot depend on partially written state.
         let (queued, blocked_reason) = self.execution_gate(&args.mode);
+        let git_backed = self.is_git_backed(&args.world_id)?;
+        let git = if git_backed {
+            Some(self.content_layout(&args.world_id)?)
+        } else {
+            None
+        };
+        scope(&self.db, &args.context, &args.world_id, false)?;
+        let (manifest, manifest_hash) = self.project_manifest(&args.world_id, None)?;
+        let content_oid = if git_backed {
+            Some(
+                super::godot_projects::git_commit_for(&self.db, &args.world_id, manifest.revision)?
+                    .context("GODOT_PROJECT_REVISION_NOT_INDEXED")?,
+            )
+        } else {
+            None
+        };
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -705,7 +875,6 @@ impl TaskJournal {
         if let Some(result) = build_receipt(&tx, &task, &args.tool_call_id, &request_hash)? {
             return Ok(result);
         }
-        let (manifest, manifest_hash) = load_manifest(&tx, &args.world_id, None)?;
         ensure!(
             manifest.revision == args.revision && manifest_hash == args.manifest_hash,
             "GODOT_SOURCE_STALE"
@@ -721,6 +890,11 @@ impl TaskJournal {
             "WORLD_BUILD_CONFLICT"
         );
         let (asset_manifest_hash, assets) = asset_manifest(&tx, &args.world_id)?;
+        let asset_lock_hash = if git_backed {
+            Some(asset_lock_hash(&tx, &args.world_id)?)
+        } else {
+            None
+        };
         let mut identity = BuildIdentity {
             world_id: args.world_id.clone(),
             build_id: String::new(),
@@ -732,16 +906,53 @@ impl TaskJournal {
             engine_version: manifest.engine_version.clone(),
             renderer: manifest.renderer.clone(),
             target: manifest.target.clone(),
+            content_oid: content_oid.clone(),
+            asset_lock_hash: asset_lock_hash.clone(),
         };
         identity.build_id = build_id(&identity)?;
-        let (files, bytes) = materialize(&self.directory, &args.world_id, &identity, &manifest, &assets)?;
+        // A world's derived storage is capped so build history cannot grow
+        // without bound. Reusing an identical immutable copy costs nothing.
+        let reused: bool = tx.query_row(
+            "SELECT EXISTS(SELECT 1 FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2)",
+            params![args.world_id, identity.build_id],
+            |row| row.get(0),
+        )?;
+        if !reused {
+            let used: i64 = tx.query_row(
+                "SELECT COALESCE(SUM(bytes),0) FROM craftmine_godot_builds WHERE world_id=?1",
+                [&args.world_id],
+                |row| row.get(0),
+            )?;
+            let incoming = manifest.files.values().map(|entry| entry.bytes).sum::<u64>()
+                + assets.iter().map(|asset| asset.bytes).sum::<u64>()
+                + super::godot_host_resources::files()
+                    .iter()
+                    .map(|(_, text)| text.len() as u64)
+                    .sum::<u64>();
+            ensure!(
+                u64::try_from(used)? + incoming <= super::godot_storage::WORLD_STORAGE_TOTAL,
+                "GODOT_WORLD_STORAGE_LIMIT"
+            );
+        }
+        let source = match (&git, &content_oid) {
+            (Some((store, layout)), Some(commit)) => SourceContent::Git {
+                store,
+                layout,
+                commit,
+            },
+            _ => SourceContent::Legacy,
+        };
+        let (files, bytes) =
+            materialize(&self.directory, &args.world_id, &identity, &manifest, &assets, &source)?;
         tx.execute(
             "INSERT OR IGNORE INTO craftmine_godot_builds(world_id,build_id,source_revision,manifest_hash,
-                asset_manifest_hash,base_id,base_build,engine_version,renderer,target,files,bytes,created_at)
-             VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13)",
+                asset_manifest_hash,base_id,base_build,engine_version,renderer,target,files,bytes,created_at,
+                content_oid,asset_lock_hash)
+             VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15)",
             params![args.world_id, identity.build_id, i64::try_from(identity.source_revision)?, manifest_hash,
                 asset_manifest_hash, identity.base_id, identity.base_build, identity.engine_version,
-                identity.renderer, identity.target, files.len() as i64, bytes as i64, worlds::timestamp()?],
+                identity.renderer, identity.target, files.len() as i64, bytes as i64, worlds::timestamp()?,
+                identity.content_oid, identity.asset_lock_hash],
         )?;
         // The recorded file list is what an executor may read; it is the exact
         // set that was verified on disk above.
@@ -846,6 +1057,14 @@ impl TaskJournal {
             caller.is_none_or(|caller| caller == task),
             "GODOT_JOB_BINDING_MISMATCH"
         );
+        // Cancelling twice is a replay, not an error: the caller may have lost
+        // the first response.
+        if status == "cancelled" {
+            let mut record = super::godot_jobs::read_job(&tx, &args.job_id)?;
+            record["replayed"] = json!(true);
+            tx.commit()?;
+            return Ok(record);
+        }
         ensure!(
             matches!(
                 status.as_str(),
@@ -853,12 +1072,27 @@ impl TaskJournal {
             ),
             "GODOT_JOB_INACTIVE"
         );
+        let reason = match args.reason.as_deref() {
+            None => "GODOT_CANCELLED_BY_USER".to_string(),
+            Some(reason)
+                if !reason.is_empty()
+                    && reason.len() <= 80
+                    && reason
+                        .bytes()
+                        .all(|byte| byte.is_ascii_uppercase() || byte.is_ascii_digit() || byte == b'_') =>
+            {
+                reason.to_string()
+            }
+            Some(_) => anyhow::bail!("INVALID_INTERRUPT_REASON"),
+        };
         tx.execute(
             "UPDATE craftmine_godot_jobs SET status='cancelled',run_token=NULL,executor_id=NULL,
-                lease_expires_at=NULL,updated_at=?2 WHERE id=?1",
-            params![args.job_id, worlds::timestamp()?],
+                lease_expires_at=NULL,interrupt_reason=?3,updated_at=?2 WHERE id=?1",
+            params![args.job_id, worlds::timestamp()?, reason],
         )?;
-        let record = super::godot_jobs::read_job(&tx, &args.job_id)?;
+        super::godot_jobs::settle_usage(&tx)?;
+        let mut record = super::godot_jobs::read_job(&tx, &args.job_id)?;
+        record["replayed"] = json!(false);
         tx.commit()?;
         Ok(record)
     }

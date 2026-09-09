@@ -1,11 +1,14 @@
 import type { GodotWorldViewHost } from "./godot-world-view-host";
 import type { createGodotRuntimeAdapter } from "./godot-runtime-adapter";
+import type { createGodotWorldFactory } from "./godot-world-creation";
 
 type Options = {
   host: GodotWorldViewHost;
   adapter: ReturnType<typeof createGodotRuntimeAdapter>;
   selection: () => Promise<string | null>;
   invoke: (channel: string, payload: Record<string, unknown>) => Promise<unknown>;
+  /** Client-side Godot creation. Absent only in tests that never create worlds. */
+  creation?: (() => ReturnType<typeof createGodotWorldFactory> | null) | null;
 };
 /** Authenticated panel actions may choose a world; they never supply runtime data or paths. */
 export function createGodotPanelCoordinator(options: Options) {
@@ -15,6 +18,52 @@ export function createGodotPanelCoordinator(options: Options) {
     const current = options.host.instance;
     if (!current || payload.worldId !== current.worldId || await options.selection() !== current.worldId) throw new Error("GODOT_WORLD_CHANGED");
     return current;
+  };
+  const legacyCreateOptions = async (): Promise<Record<string, unknown>> => {
+    const value = await options.invoke("world.createOptions", {}).catch(() => ({}));
+    return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
+  };
+  const currentCreation = () => options.creation?.() ?? null;
+  /** The legacy base stays available; the Godot bases come from the catalog. */
+  const mergedCreateOptions = async (): Promise<Record<string, unknown>> => {
+    const legacy = await legacyCreateOptions();
+    const creation = currentCreation();
+    if (!creation) return legacy;
+    const legacyBases = Array.isArray(legacy.bases) ? legacy.bases as Array<Record<string, unknown>> : [];
+    return {
+      ...legacy,
+      create: true,
+      createActions: true,
+      bases: [
+        ...legacyBases,
+        ...creation.options.bases.map(base => ({
+          id: base.id, label: base.label, description: base.description, delivered: base.delivered,
+          starters: base.templates.map(template => ({
+            id: template.id, label: template.label, description: template.description, delivered: template.delivered,
+          })),
+        })),
+      ],
+      starters: [
+        ...(Array.isArray(legacy.starters) ? legacy.starters : []),
+        ...(creation.options.bases[0]?.templates ?? []).map(template => ({
+          id: template.id, label: template.label, description: template.description, delivered: template.delivered,
+        })),
+      ],
+    };
+  };
+  /** Adds the core's real initialization state to every Godot world row. */
+  const augmentWorldList = async (result: unknown): Promise<unknown> => {
+    const creation = currentCreation();
+    if (!creation || !result || typeof result !== "object" || Array.isArray(result)) return result;
+    const list = result as {worlds?: Array<Record<string, unknown>>; activeWorldId?: string | null};
+    if (!Array.isArray(list.worlds)) return result;
+    const worlds = await Promise.all(list.worlds.slice(0, 64).map(async world => {
+      if (world?.runtimeKind !== "godot" || typeof world.id !== "string") return world;
+      const status = await creation.status(world.id);
+      if (!status) return world;
+      return {...world, state: status.state, creation: status.creation};
+    }));
+    return {...list, worlds: [...worlds, ...list.worlds.slice(64)]};
   };
   return {
     async invoke(channel: string, payload: Record<string, unknown> = {}): Promise<unknown> {
@@ -34,6 +83,14 @@ export function createGodotPanelCoordinator(options: Options) {
         options.host.setSurfaceVisible(payload.visible);
         if (payload.visible) await options.host.resume(); else await options.host.pause();
         return {ok:true};
+      }
+      if (channel === "world.createOptions") return mergedCreateOptions();
+      if (channel === "world.list") return augmentWorldList(await options.invoke(channel, payload));
+      if (channel === "world.create") {
+        const creation = currentCreation();
+        const baseId = typeof payload.baseId === "string" ? payload.baseId : "";
+        // A Godot base is created here; every other base keeps the legacy path.
+        if (creation && creation.options.bases.some(base => base.id === baseId)) return creation.create(payload);
       }
       if (channel !== "world.open") return options.invoke(channel, payload);
       if (switching || typeof payload.id !== "string" || Object.keys(payload).some(key => key !== "id")) throw new Error("WORLD_BUSY");

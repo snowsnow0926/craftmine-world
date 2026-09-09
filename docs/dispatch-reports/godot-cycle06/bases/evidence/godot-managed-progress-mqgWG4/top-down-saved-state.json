@@ -1,0 +1,58 @@
+{
+  "baseId": "top-down",
+  "baseVersion": "1.0.0",
+  "body": {
+    "coins": 29,
+    "flags": {
+      "custom_flag": "kept"
+    },
+    "format": "craftmine.godot-topdown-state/1",
+    "grantedRewards": {
+      "herb-delivery": true
+    },
+    "inventory": {
+      "apple": 2,
+      "herb": 1
+    },
+    "player": {
+      "facing": "left",
+      "position": [
+        136,
+        104
+      ],
+      "sceneId": "shop-interior"
+    },
+    "quests": {
+      "herb-delivery": {
+        "delivered": 3,
+        "rewarded": true,
+        "status": "completed"
+      }
+    },
+    "scenePositions": {
+      "overworld": [
+        104,
+        168
+      ],
+      "shop-interior": [
+        136,
+        104
+      ]
+    },
+    "shops": {
+      "general": {
+        "stock": {
+          "apple": 3,
+          "bread": 3,
+          "potion": 2,
+          "rope": 1
+        }
+      }
+    },
+    "stateVersion": 1,
+    "worldId": "managed-top-down"
+  },
+  "format": "craftmine.godot-progress/1",
+  "stateVersion": 1,
+  "worldId": "managed-top-down"
+}

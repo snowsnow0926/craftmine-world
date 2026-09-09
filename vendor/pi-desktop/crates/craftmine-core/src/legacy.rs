@@ -31,6 +31,7 @@ struct Manifest {
 }
 
 pub(super) fn migrate(db: &Connection) -> Result<()> {
+    convert::migrate(db)?;
     db.execute_batch(
         "CREATE TABLE IF NOT EXISTS craftmine_legacy_imports (
       id TEXT PRIMARY KEY, manifest TEXT NOT NULL, manifest_hash TEXT NOT NULL,
@@ -39,6 +40,8 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     )?;
     Ok(())
 }
+
+mod convert;
 
 fn ordinary(path: &Path) -> Result<fs::Metadata> {
     let meta = fs::symlink_metadata(path)?;
@@ -277,6 +280,40 @@ impl TaskJournal {
         // scene format hashed JSON.stringify and was therefore order-sensitive.
         let _: Value = serde_json::from_str(&text)?;
         Ok(text)
+    }
+
+    /// Re-hashes the sealed archive so a conversion can prove it reads the
+    /// exact bytes that were captured.
+    pub(super) fn verify_archive(&self, id: &str) -> Result<()> {
+        let sealed = self.legacy_manifest(id)?;
+        let mut checked = Manifest {
+            format: sealed.format.clone(),
+            files: BTreeMap::new(),
+            directories: BTreeSet::new(),
+            bytes: 0,
+        };
+        scan(
+            &self.archive_path(id)?.join("source"),
+            Path::new(""),
+            None,
+            &mut checked,
+            0,
+        )?;
+        ensure!(sealed == checked, "CORRUPT_LEGACY_ARCHIVE");
+        Ok(())
+    }
+
+    pub(super) fn legacy_manifest_hash(&self, id: &str) -> Result<String> {
+        let (body, hash): (String, String) = self
+            .db
+            .query_row(
+                "SELECT manifest,manifest_hash FROM craftmine_legacy_imports WHERE id=?1",
+                [id],
+                |row| Ok((row.get(0)?, row.get(1)?)),
+            )
+            .context("LEGACY_IMPORT_NOT_FOUND")?;
+        ensure!(digest(&body) == hash, "CORRUPT_IMPORT_MANIFEST");
+        Ok(hash)
     }
 
     pub fn legacy_commit(

@@ -1,0 +1,27 @@
+exit=0
+request={"format":"craftmine.godot-mining-sandbox-probe/1","commands":[{"op":"save"}]}
+response={"baseId":"mining-sandbox","baseVersion":"1.0.0","finalSnapshot":{"baseId":"mining-sandbox","baseVersion":"1.0.0","bootError":"","chunkTiles":[16,16],"chunks":{},"cursor":[8,8],"editCount":0,"format":"craftmine.godot-mining-sandbox-snapshot/1","inventory":{"wood":2},"lastAction":{},"mapSize":[96,48],"physical":{"overlaps":[],"solidTilesInPlayerRect":0},"player":{"equipped":"","facing":"right","health":3,"onFloor":false,"position":[136,154.5],"tile":[8,8],"toolTier":0},"rescue":{"from":[],"reason":"","resolved":false,"resolvedTiles":[{"from":[14,12],"id":"camp-forge","kind":"entity","to":[14,10]}],"to":[]},"save":{"lastSave":{"error":"progress directory could not be created","ok":false,"stage":"directory"}},"seed":31415926,"stateVersion":1,"terrainHash":"676353eab9ac60270840a2b37030355735f802c3e0e126e33778b1c123fa2a00","tileSize":16,"tools":[],"worldId":"a16-write-fail","worldRevision":0},"format":"craftmine.godot-mining-sandbox-probe/1","ok":false,"results":[{"args":{},"op":"save","result":{"error":"progress directory could not be created","ok":false,"snapshot":{"baseId":"mining-sandbox","baseVersion":"1.0.0","bootError":"","chunkTiles":[16,16],"chunks":{},"cursor":[8,8],"editCount":0,"format":"craftmine.godot-mining-sandbox-snapshot/1","inventory":{"wood":2},"lastAction":{},"mapSize":[96,48],"physical":{"overlaps":[],"solidTilesInPlayerRect":0},"player":{"equipped":"","facing":"right","health":3,"onFloor":false,"position":[136,154.5],"tile":[8,8],"toolTier":0},"rescue":{"from":[],"reason":"","resolved":false,"resolvedTiles":[{"from":[14,12],"id":"camp-forge","kind":"entity","to":[14,10]}],"to":[]},"save":{"lastSave":{"error":"progress directory could not be created","ok":false,"stage":"directory"}},"seed":31415926,"stateVersion":1,"terrainHash":"676353eab9ac60270840a2b37030355735f802c3e0e126e33778b1c123fa2a00","tileSize":16,"tools":[],"worldId":"a16-write-fail","worldRevision":0},"stage":"directory"}}],"save":{"error":"progress directory could not be created","ok":false,"stage":"directory"},"worldId":"a16-write-fail"}
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+--- stderr ---
+ERROR: Could not create directory: 'C:/Users/WINDOWS/AppData/Local/Temp/a16-mining-MDsiMb/g29-blocker/nested'.
+   at: make_dir_recursive (core/io/dir_access.cpp:179)
+   GDScript backtrace (most recent call first):
+       [0] save (res://scripts/base/save_store.gd:68)
+       [1] save (res://scripts/base/mining_game.gd:448)
+       [2] _dispatch (res://scripts/base/probe.gd:110)
+       [3] run (res://scripts/base/probe.gd:53)
+ERROR: Could not create directory: 'C:/Users/WINDOWS/AppData/Local/Temp/a16-mining-MDsiMb/g29-blocker/nested'.
+   at: make_dir_recursive (core/io/dir_access.cpp:179)
+   GDScript backtrace (most recent call first):
+       [0] save (res://scripts/base/save_store.gd:68)
+       [1] save (res://scripts/base/mining_game.gd:448)
+       [2] run (res://scripts/base/probe.gd:73)
+ERROR: Could not create directory: 'C:/Users/WINDOWS/AppData/Local/Temp/a16-mining-MDsiMb/g29-blocker/nested'.
+   at: make_dir_recursive (core/io/dir_access.cpp:179)
+   GDScript backtrace (most recent call first):
+       [0] save (res://scripts/base/save_store.gd:68)
+       [1] save (res://scripts/base/mining_game.gd:448)
+       [2] _exit_tree (res://scripts/base/mining_game.gd:511)

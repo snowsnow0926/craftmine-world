@@ -47,9 +47,18 @@ func build(raw: Dictionary, config_value: SideViewConfig, state_value: WorldStat
 	body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body: Node2D) -> void:
-	if not _armed:
-		return
 	if not (body is SideViewPlayer):
+		return
+	# The authored gate is checked before the arming window so a refused door
+	# stays available once the player returns with the required ability.
+	if runtime != null and runtime.room_manager != null and runtime.room_manager.gate_blocks_room(target_room):
+		runtime.emit_event("gate_blocked", {
+			"doorId": door_id,
+			"targetRoom": target_room,
+			"requiredAbility": runtime.room_manager.required_ability_for(target_room),
+		})
+		return
+	if not _armed:
 		return
 	_armed = false
 	_last_body_position = body.global_position

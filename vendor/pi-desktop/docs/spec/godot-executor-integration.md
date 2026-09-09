@@ -1,0 +1,136 @@
+# Managed Godot executor integration
+
+The private builtin plugin owns the worker connection. Model tools submit a
+world/task-bound build request and read its durable result; they never supply
+an executable, local source directory, OS evidence, launch token or artifact root.
+
+## Core interfaces
+
+- `godotExecutor.status` reports the current core's live build/check availability.
+  Restart clears registrations. A capable executor is selected even if another
+  registered executor lacks the requested capability.
+- `godotExecutor.revoke {executorId}` removes that registration and interrupts
+  its claimed/running jobs, invalidating run tokens. Other executors are untouched.
+- `godotJob.checkDescriptor {jobId,token,artifacts}` requires a live claimed check
+  job and rechecks source/assets/host resources and staged artifact paths, counts,
+  sizes and hashes from the core-owned root. Entry is `web/index.html`. Duplicate
+  paths, foreign owners, revoked leases and corrupt bytes fail. Its phase `check`
+  grants neither formal progress writes nor candidate readiness. Only the private
+  verifier receives paths; the method does not register artifacts or publish.
+- `godotJob.continue {context,worldId,toolCallId,originJobId}` starts a new
+  execution of a saved draft. The origin job must be terminal without a pass
+  (`interrupted`, `cancelled` or `failed`) and belong to the same world. The new
+  job keeps the origin's immutable build copy and records `originJobId`, so the
+  original task, draft and accounting stay intact. A moved source head is
+  `GODOT_CONTINUATION_STALE`; a formal world that no longer descends from the
+  draft's base is `WORLD_BUILD_CONFLICT`. A repeated call replays the stored job.
+- `godotJob.usage {worldId,context?}` returns one record per terminal execution
+  plus totals. Core-measured values are wall-clock, source/asset/host/artifact
+  bytes, artifact count and build file count. Model-side counters (tokens,
+  requests, compactions, context tokens, service quota) are not observable here
+  and are listed under `unknown` instead of being reported as zero.
+- Godot application prepare/commit/read/abort and `world.read` are allowlisted
+  through both private broker layers for the native candidate coordinator.
+  Panel callers never receive application tokens.
+
+## Job lifecycle and expiry
+
+`expire` runs inside every job-facing transaction and records `interruptReason`
+when it ends a job: `GODOT_LEASE_EXPIRED` for a dead worker lease,
+`GODOT_QUEUE_TIMEOUT` for a queued job no executor ever claimed,
+`GODOT_EXECUTOR_REVOKED` for revocation and `GODOT_HOST_RESTART` for the startup
+sweep. `godotBuild.cancel` accepts an optional uppercase reason code and defaults
+to `GODOT_CANCELLED_BY_USER`; cancelling twice replays the stored record. A
+cancelled, interrupted or revoked job is terminal: a late executor result is
+refused with `GODOT_JOB_INACTIVE` and can never register a candidate or revive
+the job. Interrupted jobs are not re-queued automatically; the host asks for a
+new execution explicitly, either through `godotBuild.start` or `godotJob.continue`.
+
+## Host build resources
+
+New build identities include a versioned hash of the threaded Web preset, HTML
+shell and bridge. These immutable `kind: host` files accompany source without
+modifying the authored manifest. Builds reject shadowing of the three reserved
+paths. Embedded line endings are normalized before hashing. The executor copies
+the pinned bridge to `web/bridge.js` and verifies it before serving. Existing
+applied builds retain their stored identity and are not silently re-exported.
+Databases created before host files existed are migrated by rebuilding the build
+file table so `kind: host` rows can be recorded.
+
+After application, a new authoring turn may continue its source only when the
+current formal Godot world's source lineage matches the manifest. The new
+immutable source revision advances `baseBuild` to that actual applied baseline
+and keeps the real writer binding. Previous revisions retain their baseline;
+foreign lineage is refused, and source edits never mutate formal play progress.
+
+## First Godot world and world copies
+
+`godotWorld.initialize {worldId,title,baseId,baseBuild,snapshot}` creates the
+world and an initialisation record in one transaction. The snapshot must already
+be Godot progress for that world and base, so a legacy document cannot be
+smuggled in as a new Godot world. The world carries a non-formal build string and
+is not runnable; `godotRuntime.describe` answers `GODOT_WORLD_NOT_INITIALIZED`.
+The same request replays; a different base or an existing world is `WORLD_EXISTS`.
+
+`godotWorld.initStatus {worldId}` derives the state from durable rows only:
+`pending`, `drafting`, `blocked` (with the capability reason), `building`,
+`checked`, `failed` (with the job's `interruptReason`), or `confirmed`. Nothing
+accepts a caller-supplied phase, so no page or model can declare a world
+playable. `confirmed` and `playable` are set only when a real application
+committed after a verified check and a confirmed first launch; that commit
+confirms the initialisation record in the same transaction. A failed attempt
+keeps its record and reason and can be retried with a new execution.
+
+`godotWorld.copy {sourceWorldId,targetWorldId,title,progress,snapshot?}` copies a
+formal Godot world into a new identity. The applied build is shared because its
+artifacts are immutable; the project head, source blobs and asset bodies are
+copied; `progress: formal` inherits play progress (rewritten to the target world
+identity in the envelope and body) and `progress: initial` starts from the
+supplied initial state, so a copied example does not inherit rewards. Extensions
+are not copied. The origin is recorded in `craftmine_godot_world_copies`, which
+also keeps the shared build from being reclaimed while either world uses it.
+`godotRuntime.describe` resolves the shared build and the source's applied launch
+evidence for the copy and reports `copiedFromWorldId`, so a copy is runnable
+without forging an application.
+
+`godotWorld.backupSnapshot {worldId}` returns a self-contained descriptor of the
+world document, project manifest, asset rows, build file list, applied
+application and initialisation record. It reads every referenced blob, asset body
+and build file back from disk and hashes it, so the descriptor proves the live
+store rather than the rows alone. `godotWorld.verifySnapshot` recomputes it and
+compares; a mismatch is `GODOT_BACKUP_MISMATCH` and nothing is written.
+
+## Storage accounting, quota and reclamation
+
+`godotStorage.status` reports one world's storage split into source history
+(revision count and blob bytes), asset blobs, build history, exported artifacts
+and cache, plus the per-world quota. Sizes come from a bounded, symlink-refusing
+walk of the world's own directories, never from a DB estimate alone.
+
+Build history is capped per world. A new immutable build copy is refused with
+`GODOT_WORLD_STORAGE_LIMIT` when it would exceed the cap; an identical build id
+is reused and costs nothing.
+
+`godotStorage.reclaimPlan` is read-only. A build is deletable only when nothing
+durable still references it: the formal world's build, any candidate, any
+application, any job that is not `failed`/`cancelled`/`interrupted`, the newest
+builds, and every build id the caller pins (works, backups, Git history) are
+protected and reported with a reason. Directories without a build row are
+reported as `unreferencedDirectories` but are not removed automatically.
+
+`godotStorage.reclaimCommit` recomputes the plan inside an immediate
+transaction and refuses a stale one with `GODOT_RECLAIM_PLAN_STALE`, so a
+reference created between plan and commit wins. Deleted rows and the reclaim
+journal commit together; directory removal happens after and is completed by the
+startup sweep if the process dies. Only core-owned build copies are removed —
+asset bodies and Git history stay with the asset library and version store.
+
+## Execution boundary
+
+The worker is the fixed private Windows `godot-host-broker.exe run` protocol,
+with a parent-owned channel, fresh task root and exact pending build binding.
+Versioned policy and per-launch token/Job/network checks belong to that broker;
+Godot stdout cannot attest to OS permissions. The Node supervisor must validate
+responses and copied inputs/artifacts, maintain leases, propagate cancellation
+and run an isolated Web check. Core interfaces alone do not enable availability;
+an operational worker and verifier must be present and tested.
