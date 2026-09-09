@@ -267,6 +267,41 @@ refer to the V01–V15 scenarios in section 11 of the same plan.
 
 ---
 
+### E2E-M-11b: A killed process converges to a consistent restore or rollback
+
+- **Preconditions**: A portable archive of a world with a Git-backed project and
+  a selected progress; a fresh installation with an empty data directory; a test
+  harness that can end a child process abruptly at a named persistent boundary.
+- **Steps**: 1) Start the restore in its own process and end that process at
+  `after-claim` (operation row committed, staging claimed), `after-stage`
+  (bodies staged and verified), `after-content` (bodies moved into place) and
+  `after-git` (repositories materialized), then reopen the installation and run
+  startup recovery. 2) For each of those boundaries verify the target is
+  unchanged, no staging area or receipt marker remains, and a retry with the
+  same `operationId` completes. 3) Repeat with the process ended at
+  `after-commit` (database committed, receipt written before it) and verify
+  startup recovery promotes the operation to `completed`. 4) Query
+  `backup.status` for the id and call the restore again with the same id.
+  5) Request `backup.cancelPortable` for an in-flight operation. 6) Place a
+  directory named like a staging area that no operation owns inside an empty
+  target and attempt a restore.
+- **Expected**: Every pre-commit kill rolls back exactly the journaled work and
+  leaves the target as it was; the post-commit kill is promoted from the
+  pre-commit receipt and the restored world reads its project and progress; the
+  same `operationId` returns the same receipt after a lost reply; a cancel
+  request converges without touching the target; a lookalike directory that is
+  not provably owned makes the target non-empty and is never deleted.
+- **Specs linked**: `godot-portable-archive.md` sections 5 and 6;
+  `dispatch-a-durable-domain.md`
+- **Acceptance criterion**: CP-A18 and CP-A14; VM2/AL exit (durable restore)
+- **Milestone**: VM2
+- **Status**: Documented; covered by
+  `backups::portable::durability_tests` (one killed child process per
+  boundary), `backups::portable::tests::a_damaged_archive_is_refused_and_never_touches_the_target`
+  and `backups::portable::tests::a_domain_failure_leaves_no_half_populated_target`.
+
+---
+
 ## Project rule for every automated run
 
 Only independent headless or offscreen processes and pure-logic tests may be

@@ -59,27 +59,59 @@ fn seed_catalog_asset(db: &TaskJournal) -> Result<String> {
 fn seed_repository(db: &TaskJournal) -> Result<String> {
     let store = repository_store(&db.directory)?;
     let layout = store.create("repo-world-a", "sha1", None)?;
+    // The repository history must carry exactly the bytes the SQLite revision
+    // manifest describes, so a revision resolves to a commit whose files match
+    // its manifest hashes.
     let first = store.commit(
         &layout,
         MAIN_BRANCH,
         None,
-        &[ContentFile::text("project.godot", "config_version=5\n")],
+        &[
+            ContentFile::text("project.godot", PROJECT),
+            ContentFile::text("main.tscn", SCENE),
+            ContentFile::text("world.gd", SCRIPT),
+        ],
         &commit_message("req-1", "task-1", "create world", "")?,
     )?;
     let second = store.commit(
         &layout,
         MAIN_BRANCH,
         Some(&first),
-        &[ContentFile::text(
-            "project.godot",
-            "config_version=5\nname=\"town\"\n",
-        )],
+        &[
+            ContentFile::text("project.godot", "config_version=5\nname=\"town\"\n"),
+            ContentFile::text("main.tscn", SCENE),
+            ContentFile::text("world.gd", SCRIPT),
+        ],
         &commit_message("req-1", "task-1", "rename world", "AI patch")?,
     )?;
     db.db.execute(
         "INSERT INTO craftmine_content_repositories(world_id,repo_id,object_format,backend,
          legacy_head_revision,created_at,switched_at) VALUES('a','repo-world-a','sha1','git',NULL,1,1)",
         [],
+    )?;
+    // The world is Git-backed now, so the legacy revision it still carries must
+    // have a verifiable commit index - exactly what the product's own migration
+    // writes. Without it `godotProject.read` cannot resolve revision 0, and no
+    // archive can restore a usable world.
+    let tree = store
+        .git()
+        .repo(&layout.git_dir, &["rev-parse", &format!("{first}^{{tree}}")])?
+        .ensure_ok("TEST_REV_PARSE_FAILED")?
+        .trimmed()?;
+    let manifest_hash: String = db.db.query_row(
+        "SELECT hash FROM craftmine_godot_revisions WHERE world_id='a' AND revision=0",
+        [],
+        |row| row.get(0),
+    )?;
+    db.db.execute(
+        "INSERT INTO craftmine_content_revision_map(world_id,legacy_revision,commit_oid,tree_oid,
+         manifest_hash,file_count,byte_count,imported_at) VALUES('a',0,?1,?2,?3,3,?4,1)",
+        rusqlite::params![
+            first,
+            tree,
+            manifest_hash,
+            (PROJECT.len() + SCENE.len() + SCRIPT.len()) as i64
+        ],
     )?;
     Ok(second)
 }
@@ -218,10 +250,15 @@ fn portable_archive_restores_into_a_new_directory_without_the_source() -> Result
         store.read_file(&layout, &fixture.repo_head, "project.godot")?,
         b"config_version=5\nname=\"town\"\n"
     );
+    // History is queryable in the restored installation, not just present as
+    // objects: both commits are reachable from the restored branch.
+    let page = store.history(&layout, MAIN_BRANCH, 0, 10)?;
+    assert_eq!(page.total, 2);
+    assert_eq!(page.records.len(), 2);
 
     // The moved-away source is untouched by the restore.
     assert!(moved.join("tasks.sqlite").is_file());
-    assert!(!moved.join(".portable-staging").exists());
+    assert!(!moved.join(".craftmine-restore-receipt.json").exists());
     Ok(())
 }
 
@@ -343,7 +380,7 @@ fn a_damaged_archive_is_refused_and_never_touches_the_target() -> Result<()> {
         .all(|entry| !entry
             .file_name()
             .to_string_lossy()
-            .starts_with(".portable-staging")));
+            .starts_with(".craftmine-restore-")));
 
     // A truncated archive is refused as well.
     let bytes = fs::read(&archive)?;
@@ -416,7 +453,7 @@ fn a_domain_failure_leaves_no_half_populated_target() -> Result<()> {
             .unwrap()
             .file_name()
             .to_string_lossy()
-            .starts_with(".portable-staging-")
+            .starts_with(".craftmine-restore-")
     }));
     Ok(())
 }
@@ -726,6 +763,140 @@ fn every_registered_table_is_inside_the_snapshot() -> Result<()> {
     // Operational receipts describe this installation and never travel.
     assert!(!registered.contains(&"craftmine_backup_jobs".to_owned()));
     assert!(!registered.contains(&"craftmine_backup_pins".to_owned()));
+    drop(dir);
+    Ok(())
+}
+
+/// Deterministic pseudo-random body: the same bytes on every run.
+fn pseudo_random_bytes(len: usize, seed: usize) -> Vec<u8> {
+    (0..len)
+        .map(|offset| ((seed * 31 + offset * 7) % 251) as u8)
+        .collect()
+}
+
+/// High-water mark of this process's commit charge, in bytes.
+#[cfg(windows)]
+fn peak_pagefile_bytes() -> u64 {
+    #[repr(C)]
+    #[allow(dead_code)]
+    #[derive(Default)]
+    struct ProcessMemoryCountersEx {
+        cb: u32,
+        page_fault_count: u32,
+        peak_working_set_size: usize,
+        working_set_size: usize,
+        quota_peak_paged_pool_usage: usize,
+        quota_paged_pool_usage: usize,
+        quota_peak_non_paged_pool_usage: usize,
+        quota_non_paged_pool_usage: usize,
+        pagefile_usage: usize,
+        peak_pagefile_usage: usize,
+        private_usage: usize,
+    }
+    extern "system" {
+        fn GetCurrentProcess() -> isize;
+        fn K32GetProcessMemoryInfo(
+            process: isize,
+            counters: *mut ProcessMemoryCountersEx,
+            cb: u32,
+        ) -> i32;
+    }
+    let mut counters = ProcessMemoryCountersEx::default();
+    counters.cb = std::mem::size_of::<ProcessMemoryCountersEx>() as u32;
+    let ok = unsafe { K32GetProcessMemoryInfo(GetCurrentProcess(), &mut counters, counters.cb) };
+    assert!(ok != 0, "K32GetProcessMemoryInfo failed");
+    counters.peak_pagefile_usage as u64
+}
+
+/// 40 files of 2 MiB make roughly 80 MiB of `cat-file --batch` output, which is
+/// above the adapter's 64 MiB buffered stdout limit. The export can only succeed
+/// when the object bodies are streamed; the buffering path fails with
+/// `BACKUP_GIT_TRUNCATED` before this test reaches its assertions. Ignored by
+/// default because it moves a few hundred MiB through the disk; run explicitly:
+/// `cargo test -p craftmine-core --lib backups::portable -- --ignored --nocapture`.
+#[test]
+#[ignore = "writes ~80 MiB of Git objects; run explicitly with --ignored"]
+fn a_repository_larger_than_the_buffered_stdout_cap_exports_and_verifies() -> Result<()> {
+    const FILES: usize = 40;
+    const FILE_BYTES: usize = 2 * 1024 * 1024;
+    // The export must not raise the process's commit-charge high-water mark by
+    // more than this. Buffering one whole `cat-file --batch` stream would need
+    // about 80 MiB, so the bound separates streaming from buffering.
+    const MARGINAL_PEAK_LIMIT_MIB: u64 = 32;
+
+    let (dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let store = repository_store(&journal.directory)?;
+    let layout = store.create("repo-large", "sha1", None)?;
+    // Commit one 2 MiB blob at a time so the fixture itself never holds more
+    // than one blob; the repository as a whole still streams ~80 MiB out of
+    // `cat-file --batch`, which is what the export has to handle.
+    let mut parent: Option<String> = None;
+    for index in 0..FILES {
+        let files = [ContentFile {
+            path: format!("blob-{index:02}.bin"),
+            bytes: pseudo_random_bytes(FILE_BYTES, index),
+        }];
+        parent = Some(store.commit(
+            &layout,
+            MAIN_BRANCH,
+            parent.as_deref(),
+            &files,
+            &commit_message(
+                "req-large",
+                "task-large",
+                &format!("large world {index}"),
+                "",
+            )?,
+        )?);
+    }
+    journal.db.execute(
+        "INSERT INTO craftmine_content_repositories(world_id,repo_id,object_format,backend,
+         legacy_head_revision,created_at,switched_at) VALUES('a','repo-large','sha1','git',NULL,1,1)",
+        [],
+    )?;
+
+    let archives = tempfile::tempdir()?;
+    let archive = archives.path().join("large.cmarchive");
+    #[cfg(windows)]
+    let before = peak_pagefile_bytes();
+    let exported = export_to(&mut journal, &archive)?;
+    #[cfg(windows)]
+    let after = peak_pagefile_bytes();
+
+    assert_eq!(exported["status"], "completed");
+    let content_bytes = exported["manifest"]["contentBytes"].as_u64().unwrap();
+    assert!(
+        content_bytes >= (FILES * FILE_BYTES) as u64,
+        "every object body must be in the archive, got {content_bytes} bytes"
+    );
+    assert!(
+        exported["content"]["gitObjects"].as_u64().unwrap() >= (FILES + 2) as u64,
+        "the commit, its root tree and {FILES} blobs are all archived"
+    );
+
+    let verified = journal.backup_verify_portable(&json!({
+        "archivePath": archive.to_string_lossy()
+    }))?;
+    assert_eq!(verified["valid"], true);
+    assert!(verified["verifiedFiles"].as_u64().unwrap() >= (FILES + 2) as u64);
+
+    #[cfg(windows)]
+    {
+        let marginal_mib = after.saturating_sub(before) / (1024 * 1024);
+        println!(
+            "export marginal peak commit: {marginal_mib} MiB \
+             (peak before {before} bytes, peak after {after} bytes, content {content_bytes} bytes)"
+        );
+        assert!(
+            marginal_mib <= MARGINAL_PEAK_LIMIT_MIB,
+            "export raised the peak commit charge by {marginal_mib} MiB, above the \
+             {MARGINAL_PEAK_LIMIT_MIB} MiB bound"
+        );
+    }
+    #[cfg(not(windows))]
+    let _ = MARGINAL_PEAK_LIMIT_MIB;
+
     drop(dir);
     Ok(())
 }

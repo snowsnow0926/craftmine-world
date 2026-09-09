@@ -13,6 +13,8 @@ use rusqlite::{
 use serde_json::{json, Map, Value};
 
 mod complete;
+#[cfg(test)]
+mod domain_tests;
 mod portable;
 
 const LIMIT: usize = 32 * 1024 * 1024;
@@ -59,6 +61,80 @@ const TABLES: &[&str] = &[
     "craftmine_memories",
     "craftmine_memory_operations",
     "craftmine_memory_history",
+    // Godot project, build, job and world tables. Parents precede children.
+    "craftmine_godot_projects",
+    "craftmine_godot_revisions",
+    "craftmine_godot_receipts",
+    "craftmine_godot_project_commits",
+    "craftmine_godot_assets",
+    "craftmine_godot_asset_receipts",
+    "craftmine_godot_builds",
+    "craftmine_godot_build_files",
+    "craftmine_godot_build_receipts",
+    "craftmine_godot_jobs",
+    "craftmine_godot_candidates",
+    "craftmine_godot_job_usage",
+    "craftmine_godot_applications",
+    "craftmine_godot_applied_drafts",
+    "craftmine_godot_reclaims",
+    "craftmine_godot_world_init",
+    "craftmine_godot_world_copies",
+    // Content history: the managed Git repositories and their migration and
+    // operation receipts.
+    "craftmine_content_repositories",
+    "craftmine_content_revision_map",
+    "craftmine_content_migrations",
+    "craftmine_content_operations",
+    "craftmine_content_operation_receipts",
+    // Asset catalog: versioned assets, their files, blobs and previews.
+    "craftmine_asset_versions",
+    "craftmine_asset_files",
+    "craftmine_asset_blobs",
+    "craftmine_asset_metadata",
+    "craftmine_asset_operations",
+    "craftmine_asset_usage",
+    "craftmine_asset_previews",
+    "craftmine_asset_checks",
+    "craftmine_asset_legacy_map",
+    // Legacy import manifests.
+    "craftmine_legacy_imports",
+];
+/// Tables that did not exist when older domain archives were written. An older
+/// archive is padded with the exact live column list and no rows, so restoring
+/// it keeps the current shape instead of failing the whole restore.
+const ADDITIVE_TABLES: &[&str] = &[
+    "craftmine_godot_projects",
+    "craftmine_godot_revisions",
+    "craftmine_godot_receipts",
+    "craftmine_godot_project_commits",
+    "craftmine_godot_assets",
+    "craftmine_godot_asset_receipts",
+    "craftmine_godot_builds",
+    "craftmine_godot_build_files",
+    "craftmine_godot_build_receipts",
+    "craftmine_godot_jobs",
+    "craftmine_godot_candidates",
+    "craftmine_godot_job_usage",
+    "craftmine_godot_applications",
+    "craftmine_godot_applied_drafts",
+    "craftmine_godot_reclaims",
+    "craftmine_godot_world_init",
+    "craftmine_godot_world_copies",
+    "craftmine_content_repositories",
+    "craftmine_content_revision_map",
+    "craftmine_content_migrations",
+    "craftmine_content_operations",
+    "craftmine_content_operation_receipts",
+    "craftmine_asset_versions",
+    "craftmine_asset_files",
+    "craftmine_asset_blobs",
+    "craftmine_asset_metadata",
+    "craftmine_asset_operations",
+    "craftmine_asset_usage",
+    "craftmine_asset_previews",
+    "craftmine_asset_checks",
+    "craftmine_asset_legacy_map",
+    "craftmine_legacy_imports",
 ];
 pub(super) fn migrate(db: &Connection) -> Result<()> {
     db.execute_batch(
@@ -71,7 +147,10 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
  created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL,
  PRIMARY KEY(archive_id,kind,ref));
  CREATE INDEX IF NOT EXISTS craftmine_backup_pins_lookup
- ON craftmine_backup_pins(status,kind);",
+ ON craftmine_backup_pins(status,kind);
+ CREATE TABLE IF NOT EXISTS craftmine_restore_marks (
+ operation_id TEXT PRIMARY KEY,archive_hash TEXT NOT NULL,domain_hash TEXT NOT NULL,
+ committed_at INTEGER NOT NULL);",
     )?;
     Ok(())
 }
@@ -81,7 +160,35 @@ fn columns(db: &Connection, table: &str) -> Result<Vec<String>> {
         .query_map([], |r| r.get(1))?
         .collect::<rusqlite::Result<_>>()?)
 }
+/// Guards the export allowlist. Every registered `craftmine_*` table except the
+/// operational backup receipts must be listed in `TABLES`; a module that adds a
+/// table without updating the allowlist fails the export loudly instead of
+/// silently producing an incomplete archive.
+fn assert_schema_covered(db: &Connection) -> Result<()> {
+    const OPERATIONAL_TABLES: &[&str] = &[
+        "craftmine_backup_jobs",
+        "craftmine_backup_pins",
+        "craftmine_restore_marks",
+    ];
+    let mut live = db
+        .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name GLOB 'craftmine_*'")?
+        .query_map([], |r| r.get::<_, String>(0))?
+        .collect::<rusqlite::Result<Vec<_>>>()?;
+    live.retain(|name| !OPERATIONAL_TABLES.contains(&name.as_str()));
+    for name in &live {
+        if !TABLES.contains(&name.as_str()) {
+            anyhow::bail!("BACKUP_SCHEMA_DRIFT: {name}");
+        }
+    }
+    for name in TABLES {
+        if !live.iter().any(|live| live == name) {
+            anyhow::bail!("BACKUP_SCHEMA_DRIFT_UNKNOWN_TABLE: {name}");
+        }
+    }
+    Ok(())
+}
 fn snapshot(db: &Connection) -> Result<Value> {
+    assert_schema_covered(db)?;
     let mut tables = Map::new();
     let mut bytes = 0;
     for table in TABLES {
@@ -120,6 +227,20 @@ fn compatible_tables(db: &Connection, archive: &Value) -> Result<Value> {
     {
         let map = tables.as_object_mut().context("BACKUP_TABLES_REQUIRED")?;
         for table in PACKAGE_TABLES {
+            if !map.contains_key(*table) {
+                map.insert(
+                    (*table).into(),
+                    json!({"columns": columns(db, table)?, "rows": []}),
+                );
+            }
+        }
+    }
+    // Godot, content-history, asset-catalog and legacy-import tables did not
+    // exist in older archives either; pad them the same way so a restore of an
+    // older archive stays possible and simply carries no rows for them.
+    {
+        let map = tables.as_object_mut().context("BACKUP_TABLES_REQUIRED")?;
+        for table in ADDITIVE_TABLES {
             if !map.contains_key(*table) {
                 map.insert(
                     (*table).into(),

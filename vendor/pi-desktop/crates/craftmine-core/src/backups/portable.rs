@@ -37,6 +37,9 @@ use std::{
 #[cfg(test)]
 #[path = "portable_tests.rs"]
 mod tests;
+#[cfg(test)]
+#[path = "durability_tests.rs"]
+mod durability_tests;
 
 pub(super) const FORMAT: &str = "craftmine.portable-archive/1";
 pub(super) const SCHEMA_VERSION: u64 = 1;
@@ -48,9 +51,16 @@ const ENTRY_LIMIT: u64 = 4 * 1024 * 1024 * 1024;
 const TOTAL_LIMIT: u64 = 256 * 1024 * 1024 * 1024;
 const ENTRY_COUNT_LIMIT: usize = 2_000_000;
 const COPY_BUFFER: usize = 128 * 1024;
+/// Upper bound for one line of Git plumbing output (`<oid> <type> <size>` or
+/// `<oid> <path>`). Streaming reads stay bounded even against a malformed peer.
+const GIT_LINE_LIMIT: usize = 64 * 1024;
 /// Operational tables never travel inside a user archive. Receipts and
 /// protection pins describe the local installation, not the user's world.
-const OPERATIONAL_TABLES: &[&str] = &["craftmine_backup_jobs", "craftmine_backup_pins"];
+const OPERATIONAL_TABLES: &[&str] = &[
+    "craftmine_backup_jobs",
+    "craftmine_backup_pins",
+    "craftmine_restore_marks",
+];
 
 /// Caches that a restore rebuilds instead of receiving. They are declared so an
 /// operator can see exactly what was left out and why.
@@ -585,14 +595,48 @@ fn table_exists(db: &Connection, name: &str) -> Result<bool> {
     )?)
 }
 
+/// Reads one newline-terminated line of Git plumbing output into `buffer`.
+///
+/// Returns `Ok(false)` at a clean end of stream. A stream that ends inside a
+/// line, or a line longer than `GIT_LINE_LIMIT`, is refused instead of being
+/// buffered without bound.
+fn read_git_line<R: BufRead>(stream: &mut R, buffer: &mut Vec<u8>) -> Result<bool> {
+    buffer.clear();
+    loop {
+        let available = stream.fill_buf().context("BACKUP_GIT_TRUNCATED")?;
+        if available.is_empty() {
+            ensure!(buffer.is_empty(), "BACKUP_GIT_TRUNCATED");
+            return Ok(false);
+        }
+        match available.iter().position(|byte| *byte == b'\n') {
+            Some(at) => {
+                ensure!(buffer.len() + at <= GIT_LINE_LIMIT, "BACKUP_GIT_INVALID");
+                buffer.extend_from_slice(&available[..at]);
+                stream.consume(at + 1);
+                return Ok(true);
+            }
+            None => {
+                let count = available.len();
+                ensure!(buffer.len() + count <= GIT_LINE_LIMIT, "BACKUP_GIT_INVALID");
+                buffer.extend_from_slice(available);
+                stream.consume(count);
+            }
+        }
+    }
+}
+
 /// Git carriers.
 ///
 /// A bare repository is not copied file by file and no repository command
 /// outside the managed whitelist is used. Every object reachable from the
-/// snapshot's references is read with `cat-file --batch`, stored as one
-/// content-addressed entry, and recreated at restore with `hash-object -w`
+/// snapshot's references is read with a streaming `cat-file --batch`, stored as
+/// one content-addressed entry, and recreated at restore with `hash-object -w`
 /// plus `update-ref`. Recomputing each object id proves the restored history is
 /// the archived history, not a lookalike.
+///
+/// Object bodies are streamed: one header line plus one `COPY_BUFFER` chunk is
+/// held at a time, so a repository whose `cat-file --batch` output exceeds the
+/// adapter's buffered stdout limit is still archived.
 fn enumerate_repositories(
     db: &Connection,
     directory: &Path,
@@ -654,49 +698,92 @@ fn enumerate_repositories(
         if ref_names.is_empty() {
             continue;
         }
-        let listed = store
-            .git()
-            .repo(&layout.git_dir, &["rev-list", "--objects", "--all"])?
-            .ensure_ok("GIT_REV_LIST_FAILED")?;
         let mut oids: Vec<String> = Vec::new();
         let mut seen = BTreeSet::new();
-        for line in listed.stdout_text()?.lines() {
-            if let Some(oid) = line.split(' ').next().filter(|oid| !oid.is_empty()) {
-                if seen.insert(oid.to_owned()) {
-                    oids.push(oid.to_owned());
+        {
+            let mut stream = store
+                .git()
+                .repo_stream(&layout.git_dir, &["rev-list", "--objects", "--all"])?;
+            // Nothing is written to `rev-list`; closing stdin lets it run.
+            drop(stream.take_stdin());
+            let mut line = Vec::new();
+            while read_git_line(&mut stream, &mut line)? {
+                let text = std::str::from_utf8(&line).context("BACKUP_GIT_INVALID")?;
+                if let Some(oid) = text.split(' ').next().filter(|oid| !oid.is_empty()) {
+                    if seen.insert(oid.to_owned()) {
+                        oids.push(oid.to_owned());
+                    }
                 }
             }
+            stream.finish().context("GIT_REV_LIST_FAILED")?;
         }
-        let mut stdin = oids.join("\n").into_bytes();
-        stdin.push(b'\n');
-        let batch = store
+        if oids.is_empty() {
+            continue;
+        }
+        let mut stream = store
             .git()
-            .repo_stdin(&layout.git_dir, &["cat-file", "--batch"], &stdin)?
-            .ensure_ok("GIT_CAT_FILE_FAILED")?;
-        let mut cursor = 0usize;
+            .repo_stream(&layout.git_dir, &["cat-file", "--batch"])?;
+        // Object names are fed from a dedicated thread while this thread reads
+        // stdout, so a full stdin pipe can never block the process before it
+        // has produced the output being read.
+        let mut batch_stdin = stream.take_stdin().context("GIT_SPAWN_FAILED")?;
+        let mut feed = oids.join("\n").into_bytes();
+        feed.push(b'\n');
+        let feeder = std::thread::spawn(move || {
+            let _ = batch_stdin.write_all(&feed);
+            let _ = batch_stdin.flush();
+        });
+        let mut header = Vec::new();
+        let mut buffer = vec![0u8; COPY_BUFFER];
         for oid in &oids {
-            let newline = batch.stdout[cursor..]
-                .iter()
-                .position(|byte| *byte == b'\n')
-                .map(|at| cursor + at)
-                .context("BACKUP_GIT_TRUNCATED")?;
-            let header = std::str::from_utf8(&batch.stdout[cursor..newline])
-                .context("BACKUP_GIT_INVALID")?;
-            let parts: Vec<&str> = header.split(' ').collect();
-            ensure!(parts.len() == 3, "BACKUP_GIT_OBJECT_MISSING: {header}");
-            ensure!(parts[0] == oid, "BACKUP_GIT_OBJECT_MISMATCH");
-            let size: usize = parts[2].parse().context("BACKUP_GIT_INVALID")?;
-            let start = newline + 1;
-            let end = start.checked_add(size).context("BACKUP_SIZE_OVERFLOW")?;
             ensure!(
-                end < batch.stdout.len() && batch.stdout[end] == b'\n',
+                read_git_line(&mut stream, &mut header)?,
                 "BACKUP_GIT_TRUNCATED"
             );
-            let body = &batch.stdout[start..end];
+            let header_text = std::str::from_utf8(&header).context("BACKUP_GIT_INVALID")?;
+            let parts: Vec<&str> = header_text.split(' ').collect();
+            ensure!(parts.len() == 3, "BACKUP_GIT_OBJECT_MISSING: {header_text}");
+            ensure!(parts[0] == oid, "BACKUP_GIT_OBJECT_MISMATCH");
+            let size: u64 = parts[2].parse().context("BACKUP_GIT_INVALID")?;
+            ensure!(size <= ENTRY_LIMIT, "BACKUP_ENTRY_TOO_LARGE");
             let staged = staging.join(format!("object-{}", entries.len()));
-            fs::write(&staged, body).context("BACKUP_STAGING_WRITE_FAILED")?;
+            let mut output = BufWriter::with_capacity(
+                COPY_BUFFER,
+                File::create(&staged).context("BACKUP_STAGING_WRITE_FAILED")?,
+            );
+            let mut hasher = Sha256::new();
+            let mut remaining = size;
+            while remaining > 0 {
+                let want = remaining.min(buffer.len() as u64) as usize;
+                let read = stream
+                    .read(&mut buffer[..want])
+                    .context("BACKUP_GIT_TRUNCATED")?;
+                ensure!(read > 0, "BACKUP_GIT_TRUNCATED");
+                hasher.update(&buffer[..read]);
+                output
+                    .write_all(&buffer[..read])
+                    .context("BACKUP_STAGING_WRITE_FAILED")?;
+                remaining -= read as u64;
+            }
+            output.flush().context("BACKUP_STAGING_WRITE_FAILED")?;
+            output
+                .into_inner()
+                .map_err(|error| error.into_error())
+                .context("BACKUP_STAGING_WRITE_FAILED")?
+                .sync_all()
+                .context("BACKUP_STAGING_WRITE_FAILED")?;
+            // Every body is terminated by exactly one newline.
+            let mut terminator = [0u8; 1];
+            let read = stream
+                .read(&mut terminator)
+                .context("BACKUP_GIT_TRUNCATED")?;
+            ensure!(read == 1 && terminator[0] == b'\n', "BACKUP_GIT_TRUNCATED");
+            // The entry metadata describes the bytes on disk, so the streamed
+            // hash and a fresh re-hash of the staged file must agree.
             let (bytes, sha256) =
                 sha256_file(&staged).with_context(|| format!("BACKUP_OBJECT_UNREADABLE: {oid}"))?;
+            ensure!(bytes == size, "BACKUP_GIT_TRUNCATED");
+            ensure!(hex(hasher.finalize()) == sha256, "BACKUP_GIT_OBJECT_MISMATCH");
             entries.push(ContentEntry {
                 path: format!("content-history/repos/{key}/objects/{oid}"),
                 kind: "content-repo-object",
@@ -711,8 +798,9 @@ fn enumerate_repositories(
                 oid: Some(oid.clone()),
                 object_type: Some(parts[1].to_owned()),
             });
-            cursor = end + 1;
         }
+        let _ = feeder.join();
+        stream.finish().context("GIT_CAT_FILE_FAILED")?;
     }
     Ok(entries)
 }
@@ -776,6 +864,324 @@ fn mark_pins(db: &Connection, id: &str, status: &str, archive_hash: Option<&str>
     Ok(())
 }
 
+/// Staging area for one restore. The name is derived from the operation
+/// identity and the directory carries an `owner.json` record, so recovery
+/// proves ownership instead of trusting a name prefix.
+const RESTORE_STAGING_PREFIX: &str = ".craftmine-restore-";
+const RESTORE_OWNER: &str = "owner.json";
+const RESTORE_JOURNAL: &str = "journal.jsonl";
+/// Receipt written just before the database commit. Recovery compares the
+/// recorded hash with the live target, so a commit that happened is never
+/// mistaken for one that did not.
+const RESTORE_RECEIPT: &str = ".craftmine-restore-receipt.json";
+const RESTORE_OWNERSHIP_FORMAT: &str = "craftmine.restore-ownership/1";
+const RESTORE_RECEIPT_FORMAT: &str = "craftmine.restore-receipt/1";
+
+/// Durable identity of one restore operation.
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
+struct RestoreOwnership {
+    format: String,
+    operation_id: String,
+    archive_hash: String,
+    target: String,
+    in_place: bool,
+    process_id: u32,
+    created_at: i64,
+}
+
+fn restore_staging_path(target: &Path, operation_id: &str) -> PathBuf {
+    target.join(format!(
+        "{RESTORE_STAGING_PREFIX}{}",
+        &digest(operation_id)[..24]
+    ))
+}
+
+/// A symlink or a Windows reparse point can redirect a "staging" directory
+/// somewhere else entirely. Refuse it instead of following it.
+fn is_redirect(path: &Path) -> bool {
+    match fs::symlink_metadata(path) {
+        Ok(meta) => {
+            if meta.file_type().is_symlink() {
+                return true;
+            }
+            #[cfg(windows)]
+            {
+                use std::os::windows::fs::MetadataExt;
+                const FILE_ATTRIBUTE_REPARSE_POINT: u32 = 0x0400;
+                if meta.file_attributes() & FILE_ATTRIBUTE_REPARSE_POINT != 0 {
+                    return true;
+                }
+            }
+            false
+        }
+        Err(_) => false,
+    }
+}
+
+fn write_restore_owner(directory: &Path, owner: &RestoreOwnership) -> Result<()> {
+    let path = directory.join(RESTORE_OWNER);
+    fs::write(&path, serde_json::to_vec(owner)?)?;
+    sync_file(&path)?;
+    Ok(())
+}
+
+/// `File::open` is read-only, and `sync_all` on a read-only handle is refused
+/// on Windows; open for writing so the flush is a real durable barrier.
+fn sync_file(path: &Path) -> Result<()> {
+    std::fs::OpenOptions::new()
+        .write(true)
+        .open(path)?
+        .sync_all()?;
+    Ok(())
+}
+
+fn read_restore_owner(directory: &Path) -> Option<RestoreOwnership> {
+    let body = fs::read(directory.join(RESTORE_OWNER)).ok()?;
+    let owner: RestoreOwnership = serde_json::from_slice(&body).ok()?;
+    (owner.format == RESTORE_OWNERSHIP_FORMAT).then_some(owner)
+}
+
+/// True only when this directory is provably ours: it is not a redirect, its
+/// owner record names this operation, and the operation has a job row in this
+/// database. A directory that only looks similar is never removed.
+fn owns_restore_staging(db: &Connection, directory: &Path, operation_id: &str) -> bool {
+    if is_redirect(directory) {
+        return false;
+    }
+    let Some(owner) = read_restore_owner(directory) else {
+        return false;
+    };
+    if owner.operation_id != operation_id {
+        return false;
+    }
+    db.query_row(
+        "SELECT EXISTS(SELECT 1 FROM craftmine_backup_jobs WHERE id=?1 AND kind='restore-portable')",
+        [operation_id],
+        |row| row.get::<_, bool>(0),
+    )
+    .unwrap_or(false)
+}
+
+fn remove_owned_staging(db: &Connection, directory: &Path, operation_id: &str) {
+    if owns_restore_staging(db, directory, operation_id) {
+        let _ = fs::remove_dir_all(directory);
+    }
+}
+
+/// Append-only record of every filesystem action a restore takes. Each line is
+/// written before the action, so a killed process can undo exactly its own
+/// work and never has to guess.
+struct RestoreJournal {
+    writer: BufWriter<File>,
+}
+
+impl RestoreJournal {
+    fn create(directory: &Path, owner: &RestoreOwnership) -> Result<Self> {
+        let mut writer =
+            BufWriter::with_capacity(8 * 1024, File::create(directory.join(RESTORE_JOURNAL))?);
+        let mut header = serde_json::to_vec(owner)?;
+        header.push(b'\n');
+        writer.write_all(&header)?;
+        writer.flush()?;
+        Ok(Self { writer })
+    }
+
+    fn record(&mut self, entry: Value) -> Result<()> {
+        let mut line = serde_json::to_vec(&entry)?;
+        line.push(b'\n');
+        self.writer.write_all(&line)?;
+        self.writer.flush()?;
+        Ok(())
+    }
+
+    fn sync(&mut self) -> Result<()> {
+        self.writer.flush()?;
+        self.writer.get_ref().sync_all()?;
+        Ok(())
+    }
+
+    /// The recorded actions, oldest first. A missing journal means nothing was
+    /// done yet; a truncated last line is dropped.
+    fn read(directory: &Path) -> Vec<Value> {
+        let Ok(body) = fs::read_to_string(directory.join(RESTORE_JOURNAL)) else {
+            return Vec::new();
+        };
+        body.lines()
+            .filter_map(|line| serde_json::from_str::<Value>(line).ok())
+            .filter(|value| value.get("op").is_some())
+            .collect()
+    }
+}
+
+/// Undo every action the journal recorded, newest first.
+fn rollback_restore(target: &Path, staging: &Path) -> Result<()> {
+    let mut entries = RestoreJournal::read(staging);
+    entries.reverse();
+    for entry in entries {
+        match entry["op"].as_str() {
+            Some("file") => {
+                if let Some(path) = entry["path"].as_str() {
+                    let _ = fs::remove_file(path);
+                }
+            }
+            Some("dir") => {
+                if let Some(path) = entry["path"].as_str() {
+                    let _ = fs::remove_dir(path);
+                }
+            }
+            Some("repo") => {
+                let _ = fs::remove_dir_all(target.join("content-history"));
+            }
+            Some("database") => {
+                for name in ["tasks.sqlite", "tasks.sqlite-wal", "tasks.sqlite-shm"] {
+                    let _ = fs::remove_file(target.join(name));
+                }
+            }
+            _ => {}
+        }
+    }
+    let _ = fs::remove_file(restore_receipt_path(target));
+    Ok(())
+}
+
+fn restore_receipt_path(target: &Path) -> PathBuf {
+    target.join(RESTORE_RECEIPT)
+}
+
+fn write_restore_receipt(
+    target: &Path,
+    operation_id: &str,
+    archive_hash: &str,
+    receipt: &Value,
+) -> Result<()> {
+    let body = serde_json::to_vec(&json!({
+        "format": RESTORE_RECEIPT_FORMAT,
+        "operationId": operation_id,
+        "archiveHash": archive_hash,
+        "currentHash": receipt["currentHash"],
+        "receipt": receipt,
+    }))?;
+    let path = restore_receipt_path(target);
+    fs::write(&path, &body)?;
+    sync_file(&path)?;
+    Ok(())
+}
+
+fn read_restore_receipt(target: &Path) -> Option<Value> {
+    let body = fs::read(restore_receipt_path(target)).ok()?;
+    let marker: Value = serde_json::from_slice(&body).ok()?;
+    (marker["format"] == RESTORE_RECEIPT_FORMAT).then_some(marker)
+}
+
+/// Durable proof of commit: the restore inserts this mark in its own
+/// transaction, so a later write to the restored database cannot change the
+/// answer. `None` means the target database could not be read at all, which must
+/// never be treated as "not committed".
+fn restore_commit_state(db: &Connection, operation_id: &str, archive_hash: &str) -> Option<bool> {
+    db.query_row(
+        "SELECT EXISTS(SELECT 1 FROM craftmine_restore_marks
+          WHERE operation_id=?1 AND archive_hash=?2)",
+        params![operation_id, archive_hash],
+        |row| row.get::<_, bool>(0),
+    )
+    .ok()
+}
+
+fn restore_commit_state_path(
+    database: &Path,
+    operation_id: &str,
+    archive_hash: &str,
+) -> Option<bool> {
+    if !database.is_file() {
+        return Some(false);
+    }
+    match Connection::open_with_flags(database, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY) {
+        Ok(db) => restore_commit_state(&db, operation_id, archive_hash),
+        Err(_) => None,
+    }
+}
+
+/// Commit state of another operation's staging area, judged against its own
+/// recorded archive hash.
+fn staging_commit_state(
+    db: &Connection,
+    owner: &RestoreOwnership,
+    target: &Path,
+    live: &Path,
+) -> Option<bool> {
+    if target == live {
+        restore_commit_state(db, &owner.operation_id, &owner.archive_hash)
+    } else {
+        restore_commit_state_path(
+            &target.join("tasks.sqlite"),
+            &owner.operation_id,
+            &owner.archive_hash,
+        )
+    }
+}
+
+/// Test hook: a test process may ask a restore to end abruptly at a named
+/// persistent boundary so recovery is proven against a real killed process.
+fn crash_point(name: &str) {
+    if std::env::var("CRAFTMINE_S4_CRASH_AT").as_deref() == Ok(name) {
+        std::process::exit(86);
+    }
+}
+
+/// Export staging is created exclusively by one operation, but it is still
+/// removed only after its owner record proves it belongs to that operation.
+const EXPORT_OWNER: &str = "owner.json";
+const EXPORT_OWNER_FORMAT: &str = "craftmine.export-staging/1";
+
+fn write_export_owner(
+    staging: &Path,
+    operation_id: &str,
+    archive: &Path,
+    created_at: i64,
+) -> Result<()> {
+    let path = staging.join(EXPORT_OWNER);
+    fs::write(
+        &path,
+        serde_json::to_vec(&json!({
+            "format": EXPORT_OWNER_FORMAT,
+            "operationId": operation_id,
+            "archivePath": archive.to_string_lossy(),
+            "createdAt": created_at,
+        }))?,
+    )?;
+    sync_file(&path)?;
+    Ok(())
+}
+
+fn remove_export_staging(staging: &Path, operation_id: &str, archive: &Path) {
+    if is_redirect(staging) {
+        return;
+    }
+    let Ok(body) = fs::read(staging.join(EXPORT_OWNER)) else {
+        return;
+    };
+    let Ok(owner) = serde_json::from_slice::<Value>(&body) else {
+        return;
+    };
+    if owner["format"] == EXPORT_OWNER_FORMAT
+        && owner["operationId"].as_str() == Some(operation_id)
+        && owner["archivePath"].as_str() == Some(archive.to_string_lossy().as_ref())
+    {
+        let _ = fs::remove_dir_all(staging);
+    }
+}
+
+/// True when the reader has no further byte. Reads a bounded window instead of
+/// slurping the rest of a hostile archive into memory.
+fn assert_no_trailing_bytes(reader: &mut impl BufRead) -> Result<()> {
+    let mut probe = [0u8; 1];
+    ensure!(
+        reader.read(&mut probe)? == 0,
+        "BACKUP_ARCHIVE_TRAILING_BYTES"
+    );
+    Ok(())
+}
+
 impl TaskJournal {
     /// Streams a complete archive to `archivePath`. The archive is written next
     /// to the target and only renamed into place once every body verified, so a
@@ -784,8 +1190,10 @@ impl TaskJournal {
         fields(args, &["operationId", "archivePath"])?;
         let id = text(args, "operationId", 240)?.to_owned();
         let path = archive_path(args)?;
+        // Canonicalize before the containment check: `..`, a junction or a
+        // short-name alias must not hide the live database behind this path.
         ensure!(
-            !inside(&self.directory, &path),
+            !inside(&self.directory, &resolve_target(&path)),
             "BACKUP_ARCHIVE_INSIDE_DATA_DIR"
         );
         let request_hash = digest(&serde_json::to_string(args)?);
@@ -799,10 +1207,17 @@ impl TaskJournal {
             .optional()?
         {
             ensure!(old == request_hash, "REPLAY_MISMATCH");
-            ensure!(status != "streaming", "BACKUP_ALREADY_STREAMING");
             if status == "completed" {
                 return Ok(serde_json::from_str(&receipt)?);
             }
+            // A streaming row whose archive never appeared was interrupted
+            // before publication and can be retried. If the archive file is
+            // there, the export may have published it, so the id stays locked
+            // and startup recovery reconciles it.
+            ensure!(
+                status != "streaming" || !path.try_exists().unwrap_or(false),
+                "BACKUP_ALREADY_STREAMING"
+            );
             let tx = self
                 .db
                 .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -825,6 +1240,7 @@ impl TaskJournal {
             }
             fs::create_dir(&staging).context("BACKUP_STAGING_EXISTS")?;
             let created_at = worlds::timestamp()?;
+            write_export_owner(&staging, &id, &path, created_at)?;
 
             // Snapshot and protection pins commit together, before any body is
             // read. A reclaimer that runs afterwards already sees the pins.
@@ -977,7 +1393,7 @@ impl TaskJournal {
             footer["streamSha256"] = json!(stream_hash);
 
             fs::rename(&partial, &path).context("BACKUP_ARCHIVE_RENAME_FAILED")?;
-            fs::remove_dir_all(&staging).ok();
+            remove_export_staging(&staging, &id, &path);
 
             let receipt = json!({
                 "id": id,
@@ -1027,7 +1443,7 @@ impl TaskJournal {
         if result.is_err() {
             let published = path.try_exists().unwrap_or(false);
             let _ = fs::remove_file(&partial);
-            let _ = fs::remove_dir_all(&staging);
+            remove_export_staging(&staging, &id, &path);
             if published {
                 // The archive is complete on disk; keep the pins so a reclaimer
                 // cannot delete the bodies it holds. Startup recovery promotes
@@ -1078,12 +1494,17 @@ impl TaskJournal {
         Ok(report)
     }
 
-    /// Restores an archive into a data directory. The source data directory of
-    /// the archive is never opened.
+    /// Restores an archive into a data directory with a durable operation
+    /// record. The source data directory of the archive is never opened.
     ///
     /// A fresh installation may restore into its own (empty) data directory,
     /// which is the "new computer" case. Restoring anywhere else requires a
     /// separate empty directory so a live world can never be overwritten.
+    ///
+    /// The operation row is written before any body moves, every filesystem
+    /// action is journaled before it happens, and a receipt is recorded just
+    /// before the database commit. A killed process therefore either rolls
+    /// back exactly its own work or is recognized as already completed.
     pub fn backup_restore_portable(&mut self, args: &Value) -> Result<Value> {
         fields(args, &["operationId", "archivePath", "targetDirectory"])?;
         let id = text(args, "operationId", 240)?.to_owned();
@@ -1093,6 +1514,36 @@ impl TaskJournal {
         // must be compared in the same form even when it does not exist yet.
         let resolved = resolve_target(&target);
         let in_place = resolved == self.directory;
+        let request_hash = digest(&serde_json::to_string(args)?);
+
+        if let Some((old, status, receipt)) = self.restore_job(&id)? {
+            if status == "cancelled" && old == "cancelled" {
+                // The cancel arrived before the operation started, so no request
+                // was ever recorded and the id is free again.
+                self.db.execute(
+                    "DELETE FROM craftmine_backup_jobs
+                     WHERE id=?1 AND kind='restore-portable' AND status='cancelled'",
+                    [&id],
+                )?;
+            } else {
+                ensure!(old == request_hash, "REPLAY_MISMATCH");
+            match status.as_str() {
+                "completed" | "cancelled" => return Ok(serde_json::from_str(&receipt)?),
+                "restoring" | "cancel-requested" => {
+                    // A previous attempt was killed. Converge it before retrying
+                    // so a leftover staging area never blocks the same job.
+                    self.recover_restore_operation(&id)?;
+                    if let Some((_, status, receipt)) = self.restore_job(&id)? {
+                        if matches!(status.as_str(), "completed" | "cancelled") {
+                            return Ok(serde_json::from_str(&receipt)?);
+                        }
+                    }
+                }
+                _ => {}
+            }
+            }
+        }
+
         if in_place {
             ensure!(self.installation_empty()?, "BACKUP_TARGET_NOT_EMPTY");
         } else {
@@ -1101,37 +1552,346 @@ impl TaskJournal {
                 "BACKUP_TARGET_OVERLAP"
             );
             if resolved.try_exists()? {
-                // A crashed restore may have left its own staging directory.
                 for entry in fs::read_dir(&resolved)? {
                     let entry = entry?;
                     let name = entry.file_name().to_string_lossy().to_string();
-                    if name.starts_with(".portable-staging-") {
-                        fs::remove_dir_all(entry.path()).ok();
-                    } else {
-                        bail!("BACKUP_TARGET_NOT_EMPTY");
+                    let path = entry.path();
+                    // Only our own, proven staging area is reclaimed. Anything
+                    // else - including a lookalike directory - refuses the
+                    // restore instead of being deleted.
+                    let owner = name
+                        .starts_with(RESTORE_STAGING_PREFIX)
+                        .then(|| read_restore_owner(&path))
+                        .flatten()
+                        .filter(|owner| owns_restore_staging(&self.db, &path, &owner.operation_id));
+                    match owner {
+                        Some(owner) => {
+                            match staging_commit_state(&self.db, &owner, &resolved, &self.directory) {
+                                // Another operation's restore already committed
+                                // here; its data must survive, so this target is
+                                // not free.
+                                Some(true) => bail!("BACKUP_TARGET_NOT_EMPTY: {name}"),
+                                Some(false) => {
+                                    rollback_restore(&resolved, &path)?;
+                                    remove_owned_staging(&self.db, &path, &owner.operation_id);
+                                }
+                                // Cannot prove either way: delete nothing.
+                                None => bail!("BACKUP_RESTORE_STATE_UNVERIFIED: {name}"),
+                            }
+                        }
+                        None => bail!("BACKUP_TARGET_NOT_EMPTY: {name}"),
                     }
                 }
             }
         }
-        let restored = restore_archive(&target, &archive, in_place.then_some(&self.db))?;
-        let report = json!({
+
+        let archive_hash = {
+            let file = File::open(&archive).context("BACKUP_ARCHIVE_MISSING")?;
+            let mut reader = BufReader::with_capacity(COPY_BUFFER, file);
+            let (_, _, hash) = read_archive_head(&mut reader)?;
+            hash
+        };
+        let created_at = worlds::timestamp()?;
+        let ownership = RestoreOwnership {
+            format: RESTORE_OWNERSHIP_FORMAT.to_owned(),
+            operation_id: id.clone(),
+            archive_hash: archive_hash.clone(),
+            target: resolved.to_string_lossy().to_string(),
+            in_place,
+            process_id: std::process::id(),
+            created_at,
+        };
+        let job = json!({
+            "archivePath": archive.to_string_lossy(),
+            "targetDirectory": target.to_string_lossy(),
+            "inPlace": in_place,
+        });
+        let staging = restore_staging_path(&resolved, &id);
+        {
+            let tx = self
+                .db
+                .transaction_with_behavior(TransactionBehavior::Immediate)?;
+            tx.execute(
+                "DELETE FROM craftmine_backup_jobs WHERE id=?1 AND kind='restore-portable'",
+                [&id],
+            )?;
+            tx.execute(
+                "INSERT INTO craftmine_backup_jobs(id,kind,status,request_hash,receipt,archive,archive_hash,created_at)
+                 VALUES(?1,'restore-portable','restoring',?2,'{}',?3,?4,?5)",
+                params![
+                    id,
+                    request_hash,
+                    serde_json::to_string(&job)?,
+                    archive_hash,
+                    created_at
+                ],
+            )?;
+            tx.commit()?;
+        }
+        // The staging area is created only after the intent is durable and it is
+        // bound to this operation before any body is written into it.
+        if staging.try_exists()? {
+            ensure!(
+                owns_restore_staging(&self.db, &staging, &id),
+                "BACKUP_STAGING_FOREIGN"
+            );
+            rollback_restore(&resolved, &staging)?;
+            remove_owned_staging(&self.db, &staging, &id);
+        }
+        fs::create_dir_all(&resolved)?;
+        fs::create_dir(&staging).context("BACKUP_STAGING_EXISTS")?;
+        write_restore_owner(&staging, &ownership)?;
+        let mut journal = RestoreJournal::create(&staging, &ownership)?;
+        journal.sync()?;
+        crash_point("after-claim");
+
+        let outcome = {
+            // A cancel request is written by another connection; every
+            // persistent boundary checks it before doing more work.
+            let cancel = || -> Result<()> {
+                let status: String = self.db.query_row(
+                    "SELECT status FROM craftmine_backup_jobs WHERE id=?1 AND kind='restore-portable'",
+                    [&id],
+                    |row| row.get(0),
+                )?;
+                ensure!(status != "cancel-requested", "BACKUP_CANCELLED");
+                Ok(())
+            };
+            restore_archive(
+                &id,
+                &resolved,
+                &archive,
+                in_place.then_some(&self.db),
+                &staging,
+                &mut journal,
+                &cancel,
+            )
+        };
+        match outcome {
+            Ok(report) => {
+                crash_point("after-commit");
+                self.db.execute(
+                    "UPDATE craftmine_backup_jobs SET status='completed',receipt=?2,archive_hash=?3
+                     WHERE id=?1 AND kind='restore-portable'",
+                    params![
+                        id,
+                        serde_json::to_string(&report)?,
+                        report["archiveHash"].as_str()
+                    ],
+                )?;
+                let _ = fs::remove_file(restore_receipt_path(&resolved));
+                remove_owned_staging(&self.db, &staging, &id);
+                Ok(report)
+            }
+            Err(error) => {
+                let cancelled = error.to_string().contains("BACKUP_CANCELLED");
+                let _ = rollback_restore(&resolved, &staging);
+                remove_owned_staging(&self.db, &staging, &id);
+                let status = if cancelled { "cancelled" } else { "failed" };
+                let receipt = json!({
+                    "id": id,
+                    "kind": "restore-portable",
+                    "status": status,
+                    "targetDirectory": resolved.to_string_lossy(),
+                    "error": error.to_string(),
+                });
+                self.db.execute(
+                    "UPDATE craftmine_backup_jobs SET status=?2,receipt=?3 WHERE id=?1 AND kind='restore-portable'",
+                    params![id, status, serde_json::to_string(&receipt)?],
+                )?;
+                Err(error)
+            }
+        }
+    }
+
+    /// Cancels a restore operation. A request against a running restore is
+    /// recorded durably and honored at the next persistent boundary; a request
+    /// against a finished operation returns its final receipt.
+    pub fn backup_cancel_portable(&mut self, args: &Value) -> Result<Value> {
+        fields(args, &["operationId"])?;
+        let id = text(args, "operationId", 240)?.to_owned();
+        if let Some((_, status, receipt)) = self.restore_job(&id)? {
+            if matches!(status.as_str(), "completed" | "cancelled") {
+                return Ok(serde_json::from_str(&receipt)?);
+            }
+            let changed = self.db.execute(
+                "UPDATE craftmine_backup_jobs SET status='cancel-requested'
+                 WHERE id=?1 AND kind='restore-portable' AND status='restoring'",
+                [&id],
+            )?;
+            if changed == 0 {
+                // The operation is not running (failed, interrupted, or already
+                // being cancelled); report the durable status, do not invent one.
+                return Ok(serde_json::from_str(&receipt)?);
+            }
+            return Ok(json!({
+                "id": id,
+                "kind": "restore-portable",
+                "status": "cancel-requested"
+            }));
+        }
+        let receipt = json!({"id": id, "kind": "restore-portable", "status": "cancelled"});
+        self.db.execute(
+            "INSERT INTO craftmine_backup_jobs(id,kind,status,request_hash,receipt,created_at)
+             VALUES(?1,'restore-portable','cancelled','cancelled',?2,?3)",
+            params![id, serde_json::to_string(&receipt)?, worlds::timestamp()?],
+        )?;
+        Ok(receipt)
+    }
+
+    fn restore_job(&self, id: &str) -> Result<Option<(String, String, String)>> {
+        Ok(self
+            .db
+            .query_row(
+                "SELECT request_hash,status,receipt FROM craftmine_backup_jobs
+                 WHERE id=?1 AND kind='restore-portable'",
+                [id],
+                |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
+            )
+            .optional()?)
+    }
+
+    /// Converges one interrupted restore. The commit mark written inside the
+    /// restore transaction decides: `Some(true)` promotes it, `Some(false)`
+    /// undoes exactly the journaled work, and `None` (the target could not be
+    /// read) touches nothing and reports that the state is unverified.
+    fn recover_restore_operation(&mut self, id: &str) -> Result<()> {
+        let Some((_, status, _, job, archive_hash)) = self
+            .db
+            .query_row(
+                "SELECT request_hash,status,receipt,archive,archive_hash FROM craftmine_backup_jobs
+                 WHERE id=?1 AND kind='restore-portable'",
+                [id],
+                |row| {
+                    Ok((
+                        row.get::<_, String>(0)?,
+                        row.get::<_, String>(1)?,
+                        row.get::<_, String>(2)?,
+                        row.get::<_, Option<String>>(3)?,
+                        row.get::<_, Option<String>>(4)?,
+                    ))
+                },
+            )
+            .optional()?
+        else {
+            return Ok(());
+        };
+        if !matches!(status.as_str(), "restoring" | "cancel-requested") {
+            return Ok(());
+        }
+        let job: Value = job
+            .as_deref()
+            .and_then(|body| serde_json::from_str(body).ok())
+            .unwrap_or(Value::Null);
+        let Some(target) = job["targetDirectory"].as_str().map(PathBuf::from) else {
+            self.finish_restore(id, "failed", "restore target unknown")?;
+            return Ok(());
+        };
+        let resolved = resolve_target(&target);
+        let staging = restore_staging_path(&resolved, &id);
+        let archive_hash = archive_hash.unwrap_or_default();
+        let state = if resolved == self.directory {
+            restore_commit_state(&self.db, id, &archive_hash)
+        } else {
+            restore_commit_state_path(&resolved.join("tasks.sqlite"), id, &archive_hash)
+        };
+        match state {
+            Some(true) => {
+                let receipt = read_restore_receipt(&resolved)
+                    .filter(|marker| marker["operationId"].as_str() == Some(id))
+                    .map(|marker| marker["receipt"].clone())
+                    .unwrap_or_else(|| {
+                        json!({
+                            "id": id,
+                            "kind": "restore-portable",
+                            "status": "completed",
+                            "targetDirectory": resolved.to_string_lossy(),
+                            "archiveHash": archive_hash,
+                            "note": "promoted from the durable commit mark; the pre-commit receipt was gone",
+                        })
+                    });
+                self.db.execute(
+                    "UPDATE craftmine_backup_jobs SET status='completed',receipt=?2
+                     WHERE id=?1 AND kind='restore-portable'",
+                    params![id, serde_json::to_string(&receipt)?],
+                )?;
+                let _ = fs::remove_file(restore_receipt_path(&resolved));
+                remove_owned_staging(&self.db, &staging, &id);
+                Ok(())
+            }
+            Some(false) => {
+                if owns_restore_staging(&self.db, &staging, &id) {
+                    rollback_restore(&resolved, &staging)?;
+                    remove_owned_staging(&self.db, &staging, &id);
+                }
+                let next = if status == "cancel-requested" {
+                    "cancelled"
+                } else {
+                    "interrupted"
+                };
+                self.finish_restore(id, next, "restore did not reach the commit boundary")
+            }
+            None => {
+                anyhow::bail!("BACKUP_RESTORE_STATE_UNVERIFIED: {id}")
+            }
+        }
+    }
+
+    fn finish_restore(&self, id: &str, status: &str, detail: &str) -> Result<()> {
+        let receipt = json!({
             "id": id,
             "kind": "restore-portable",
-            "status": "completed",
-            "targetDirectory": target.to_string_lossy(),
-            "restoredInPlace": in_place,
-            "archiveHash": restored["archiveHash"],
-            "domainHash": restored["domainHash"],
-            "currentHash": restored["currentHash"],
-            "entries": restored["entries"],
-            "contentBytes": restored["contentBytes"],
-            "verifiedFiles": restored["verifiedFiles"],
-            "repositories": restored["repositories"],
-            "rebuildRequired": restored["rebuildRequired"],
-            "importedProvenance": true,
-            "credentialsIncluded": false,
+            "status": status,
+            "detail": detail,
         });
-        Ok(report)
+        self.db.execute(
+            "UPDATE craftmine_backup_jobs SET status=?2,receipt=?3 WHERE id=?1 AND kind='restore-portable'",
+            params![id, status, serde_json::to_string(&receipt)?],
+        )?;
+        Ok(())
+    }
+
+    /// Removes staging areas and receipt markers left by finished restores, and
+    /// converges every interrupted one. Ownership is re-verified first.
+    fn recover_restore_operations(&mut self) -> Result<usize> {
+        let jobs = self
+            .db
+            .prepare(
+                "SELECT id,status,archive FROM craftmine_backup_jobs
+                 WHERE kind='restore-portable'",
+            )?
+            .query_map([], |row| {
+                Ok((
+                    row.get::<_, String>(0)?,
+                    row.get::<_, String>(1)?,
+                    row.get::<_, Option<String>>(2)?,
+                ))
+            })?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+        let mut converged = 0;
+        for (id, status, job) in jobs {
+            if matches!(status.as_str(), "restoring" | "cancel-requested") {
+                self.recover_restore_operation(&id)?;
+                converged += 1;
+                continue;
+            }
+            let Some(target) = job
+                .as_deref()
+                .and_then(|body| serde_json::from_str::<Value>(body).ok())
+                .and_then(|value| value["targetDirectory"].as_str().map(PathBuf::from))
+            else {
+                continue;
+            };
+            let resolved = resolve_target(&target);
+            let staging = restore_staging_path(&resolved, &id);
+            remove_owned_staging(&self.db, &staging, &id);
+            if let Some(marker) = read_restore_receipt(&resolved) {
+                if marker["operationId"].as_str() == Some(id.as_str()) {
+                    let _ = fs::remove_file(restore_receipt_path(&resolved));
+                }
+            }
+        }
+        Ok(converged)
     }
 
     /// True when this installation holds no user data yet, so an in-place
@@ -1276,6 +2036,27 @@ impl TaskJournal {
             }
             mark_pins(&self.db, &archive_id, next, None)?;
         }
+        // Interrupted restores are converged in the same startup sweep: either
+        // promoted from their durable commit mark or undone from their journal.
+        self.recover_restore_operations()?;
+        // An export killed after publishing its archive leaves a `streaming`
+        // job row. The pin sweep above already decided whether the archive is
+        // real, so reconcile the row with that verdict instead of leaving the
+        // operation id wedged.
+        self.db.execute(
+            "UPDATE craftmine_backup_jobs SET status='completed'
+             WHERE kind='export-portable' AND status='streaming'
+               AND EXISTS(SELECT 1 FROM craftmine_backup_pins
+                          WHERE archive_id=craftmine_backup_jobs.id AND status='retained')",
+            [],
+        )?;
+        self.db.execute(
+            "UPDATE craftmine_backup_jobs SET status='failed'
+             WHERE kind='export-portable' AND status='streaming'
+               AND NOT EXISTS(SELECT 1 FROM craftmine_backup_pins
+                              WHERE archive_id=craftmine_backup_jobs.id AND status='retained')",
+            [],
+        )?;
         Ok(abandoned)
     }
 }
@@ -1387,9 +2168,7 @@ fn verify_archive(path: &Path) -> Result<Value> {
         header["consistency"]["snapshotHash"] == domain_entry["sha256"],
         "BACKUP_DOMAIN_HASH_MISMATCH"
     );
-    let mut extra = Vec::new();
-    reader.read_to_end(&mut extra)?;
-    ensure!(extra.is_empty(), "BACKUP_ARCHIVE_TRAILING_BYTES");
+    assert_no_trailing_bytes(&mut reader)?;
     Ok(json!({
         "format": FORMAT,
         "valid": true,
@@ -1407,19 +2186,17 @@ fn verify_archive(path: &Path) -> Result<Value> {
 /// Restores into a directory. Everything is staged and verified first; the
 /// domain is applied inside one transaction that is committed only after every
 /// body is in place, so a failure leaves the target as it was.
-fn restore_archive(target: &Path, archive: &Path, existing: Option<&Connection>) -> Result<Value> {
-    let staging = target.join(format!(
-        ".portable-staging-{}-{}",
-        std::process::id(),
-        worlds::timestamp()?
-    ));
+fn restore_archive(
+    operation_id: &str,
+    target: &Path,
+    archive: &Path,
+    existing: Option<&Connection>,
+    staging: &Path,
+    journal: &mut RestoreJournal,
+    cancel: &dyn Fn() -> Result<()>,
+) -> Result<Value> {
     let created_database = existing.is_none();
-    let mut placed: Vec<PathBuf> = Vec::new();
-    let mut created_dirs: Vec<PathBuf> = Vec::new();
-    let mut touched_repository_store = false;
     let result = (|| -> Result<Value> {
-        fs::create_dir_all(target)?;
-        fs::create_dir(&staging).context("BACKUP_STAGING_EXISTS")?;
         let file = File::open(archive).context("BACKUP_ARCHIVE_MISSING")?;
         let mut reader = BufReader::with_capacity(COPY_BUFFER, file);
         let (header, entries, archive_hash) = read_archive_head(&mut reader)?;
@@ -1516,23 +2293,28 @@ fn restore_archive(target: &Path, archive: &Path, existing: Option<&Connection>)
                 && footer["archiveHash"].as_str() == Some(archive_hash.as_str()),
             "BACKUP_FOOTER_MISMATCH"
         );
-        let mut extra = Vec::new();
-        reader.read_to_end(&mut extra)?;
-        ensure!(extra.is_empty(), "BACKUP_ARCHIVE_TRAILING_BYTES");
+        assert_no_trailing_bytes(&mut reader)?;
         let domain = domain.context("BACKUP_DOMAIN_MISSING")?;
+        crash_point("after-stage");
+        cancel()?;
 
         // The domain is written inside this transaction but committed only
         // after every body is in place, so a failure rolls the database back.
-        let journal;
+        if created_database {
+            journal.record(json!({"op": "database"}))?;
+            journal.sync()?;
+        }
+        let opened;
         let db: &Connection = match existing {
             Some(db) => db,
             None => {
-                journal = TaskJournal::open(&target.join("tasks.sqlite"))?;
-                &journal.db
+                opened = TaskJournal::open(&target.join("tasks.sqlite"))?;
+                &opened.db
             }
         };
         let tx = db.unchecked_transaction()?;
         apply_domain_rows(&tx, &domain)?;
+        cancel()?;
 
         for (name, staged_path) in &staged {
             let destination = target.join(name);
@@ -1546,18 +2328,31 @@ fn restore_archive(target: &Path, archive: &Path, existing: Option<&Connection>)
                         None => break,
                     }
                 }
-                fs::create_dir_all(parent)?;
-                missing.reverse();
-                created_dirs.extend(missing);
+                if !missing.is_empty() {
+                    missing.reverse();
+                    for directory in &missing {
+                        journal.record(json!({"op":"dir","path":directory.to_string_lossy()}))?;
+                    }
+                    journal.sync()?;
+                    fs::create_dir_all(parent)?;
+                }
             }
+            // Intent before action: a process killed between these two lines
+            // leaves a record that rollback can act on.
+            journal.record(json!({"op":"file","path":destination.to_string_lossy()}))?;
+            journal.sync()?;
             fs::rename(staged_path, &destination)
                 .with_context(|| format!("BACKUP_CONTENT_PLACE_FAILED: {name}"))?;
-            placed.push(destination);
         }
+        crash_point("after-content");
+        cancel()?;
 
         let mut repo_report = Vec::new();
-        if !repositories.is_empty() {
-            touched_repository_store = true;
+        if !repositories.is_empty() && !target.join("content-history").exists() {
+            journal.record(
+                json!({"op":"repo","path":target.join("content-history").to_string_lossy()}),
+            )?;
+            journal.sync()?;
         }
         for (repo_id, object_format, refs) in &repositories {
             let store = repository_store(target)?;
@@ -1569,14 +2364,28 @@ fn restore_archive(target: &Path, archive: &Path, existing: Option<&Connection>)
                 if owner != repo_id {
                     continue;
                 }
-                let body = fs::read(staged_path)
-                    .with_context(|| format!("BACKUP_OBJECT_STAGED_MISSING: {oid}"))?;
+                // The body is hashed straight from the staged file by path, so
+                // the largest object is never held in memory during a restore.
+                ensure!(
+                    staged_path.is_file(),
+                    "BACKUP_OBJECT_STAGED_MISSING: {oid}"
+                );
+                let staged_arg = GitAdapter::plain_path(staged_path)
+                    .to_string_lossy()
+                    .into_owned();
                 let written = store
                     .git()
-                    .repo_stdin(
+                    .repo(
                         &layout.git_dir,
-                        &["hash-object", "-w", "--stdin", "-t", object_type],
-                        &body,
+                        &[
+                            "hash-object",
+                            "--no-filters",
+                            "-w",
+                            "-t",
+                            object_type,
+                            "--",
+                            staged_arg.as_str(),
+                        ],
                     )?
                     .ensure_ok("BACKUP_OBJECT_RESTORE_FAILED")?
                     .trimmed()?;
@@ -1597,15 +2406,20 @@ fn restore_archive(target: &Path, archive: &Path, existing: Option<&Connection>)
             }));
         }
 
+        crash_point("after-git");
+        cancel()?;
         super::validate_integrity(&tx)?;
         let current_hash = fingerprint(&tx)?;
         let rebuild_required = tx
             .prepare("SELECT DISTINCT build_id FROM craftmine_godot_builds ORDER BY build_id")?
             .query_map([], |row| row.get::<_, String>(0))?
             .collect::<rusqlite::Result<Vec<_>>>()?;
-        tx.commit()?;
-        fs::remove_dir_all(&staging).ok();
-        Ok(json!({
+        let report = json!({
+            "id": operation_id,
+            "kind": "restore-portable",
+            "status": "completed",
+            "targetDirectory": target.to_string_lossy(),
+            "restoredInPlace": existing.is_some(),
             "archiveHash": footer["archiveHash"],
             "domainHash": header["consistency"]["snapshotHash"],
             "currentHash": current_hash,
@@ -1614,25 +2428,34 @@ fn restore_archive(target: &Path, archive: &Path, existing: Option<&Connection>)
             "verifiedFiles": verified,
             "repositories": repo_report,
             "rebuildRequired": rebuild_required,
-        }))
+            "importedProvenance": true,
+            "credentialsIncluded": false,
+        });
+        // The commit proof travels inside the restore transaction itself, so a
+        // later write to the restored database cannot make a committed restore
+        // look uncommitted.
+        tx.execute(
+            "INSERT OR REPLACE INTO craftmine_restore_marks(operation_id,archive_hash,domain_hash,committed_at)
+             VALUES(?1,?2,?3,?4)",
+            params![
+                operation_id,
+                footer["archiveHash"].as_str().unwrap_or_default(),
+                header["consistency"]["snapshotHash"].as_str().unwrap_or_default(),
+                worlds::timestamp()?
+            ],
+        )?;
+        // The receipt is durable before the commit, so the full report survives
+        // a kill between the commit and the job-row update.
+        write_restore_receipt(
+            target,
+            operation_id,
+            footer["archiveHash"].as_str().unwrap_or_default(),
+            &report,
+        )?;
+        crash_point("before-commit");
+        tx.commit()?;
+        Ok(report)
     })();
-    if result.is_err() {
-        for path in placed.iter().rev() {
-            let _ = fs::remove_file(path);
-        }
-        for dir in created_dirs.iter().rev() {
-            let _ = fs::remove_dir(dir);
-        }
-        if touched_repository_store {
-            let _ = fs::remove_dir_all(target.join("content-history"));
-        }
-        if created_database {
-            for name in ["tasks.sqlite", "tasks.sqlite-wal", "tasks.sqlite-shm"] {
-                let _ = fs::remove_file(target.join(name));
-            }
-        }
-        let _ = fs::remove_dir_all(&staging);
-    }
     result
 }
 
