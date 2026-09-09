@@ -301,9 +301,13 @@ export function checkBaseAssets(root, {directory = BASE_ASSETS_DIR} = {}) {
       failures.push(fail('ASSET_ENGINE_MISMATCH', label + ' targets engine ' + manifest.engine.version + ' but the lock pins ' + lock.version));
     }
     // Rights that are documented but not yet formally applied stay visible as a
-    // single warning per manifest instead of one line per file.
-    if (manifest.rightsStatus && manifest.rightsStatus !== 'applied') {
-      warnings.push('ASSET_RIGHTS_PENDING ' + label + ' rightsStatus=' + manifest.rightsStatus
+    // single warning per manifest instead of one line per file. A manifest that
+    // tracks a target licence or a rights document without declaring rightsStatus
+    // is treated as pending too, so omitting the field cannot silence the state.
+    const rightsTracked = [...(manifest.entries ?? []), ...(manifest.externalEntries ?? [])]
+      .some(entry => entry.targetLicense || entry.licenseDocument);
+    if ((manifest.rightsStatus && manifest.rightsStatus !== 'applied') || (!manifest.rightsStatus && rightsTracked)) {
+      warnings.push('ASSET_RIGHTS_PENDING ' + label + ' rightsStatus=' + (manifest.rightsStatus ?? 'undeclared')
         + (manifest.rightsDocument ? ' rightsDocument=' + manifest.rightsDocument : '')
         + (manifest.rightsNote ? ' :: ' + manifest.rightsNote : ''));
     }
