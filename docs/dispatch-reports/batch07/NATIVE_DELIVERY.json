@@ -1,8 +1,8 @@
 {
   "batch": 7,
   "scope": "native acceptance and explicit player review-warning acknowledgement",
-  "status": "development_verified_package_pending",
-  "sourceIntegration": "b428802",
+  "status": "frozen_packaged_verified_with_environment_limits",
+  "sourceIntegration": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
   "productCommits": [
     "27073c4",
     "23a8d4a",
@@ -17,11 +17,11 @@
     "formal game and Worker combat/health/reward/extensions",
     "full process restart and saved state",
     "memory and native backup restore",
-    "actual finite-to-unlimited budget UI preserving unknown usage"
+    "actual finite-to-unlimited budget UI preserving unknown usage",
+    "same final package actual Agent tree authorship and exact reuse",
+    "same final package actual task interruption/recovery retaining budget owner"
   ],
   "pending": [
-    "final rebuilt packaged executable same-scenario validation",
-    "same final package actual Agent tree reuse/recovery",
     "clean Windows OS validation unavailable",
     "physical player controls not tested"
   ],
@@ -30,5 +30,13 @@
     "visibleWindow": false,
     "pointerLock": false,
     "liveProfileMutation": false
+  },
+  "packageEvidence": "native-evidence/packaged-summary.json",
+  "finalPackage": {
+    "checks": 62,
+    "requests": 35,
+    "knownTokens": 382194,
+    "unknownEstimate": 73174,
+    "manifestSha256": "85b560c260a2d2793bc3aad46ff79bab03c7ed211106b84e84f108bfb0f74d60"
   }
 }

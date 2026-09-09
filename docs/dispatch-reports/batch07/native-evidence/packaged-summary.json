@@ -1,0 +1,757 @@
+{
+  "format": "craftmine.batch07-native-package-summary/1",
+  "sourceCommit": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+  "manifestHash": "85b560c260a2d2793bc3aad46ff79bab03c7ed211106b84e84f108bfb0f74d60",
+  "sourceArchiveHash": "019c758d450a425dd381cc3023f92b734945a0fd130337a822382325f6a8584a",
+  "cases": [
+    {
+      "name": "packaged-gameplay",
+      "profile": "desktop-native-batch07-UbOUUV",
+      "passed": true,
+      "checks": 30,
+      "elapsedMs": 150597,
+      "requests": [
+        {
+          "requestId": "request-3ce0a599-8b6b-45bf-90a0-c302c9c00211",
+          "owner": "work-b0b3193a4fa67fde2db46addfb3b6e803005a633c1834e4f048dc5e0739f76eb",
+          "generation": 1,
+          "purpose": "review",
+          "status": "known",
+          "knownTokens": 18352,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-022b0876-4ab9-45cf-9bd5-cc3cfd0afebb",
+          "owner": "work-80833aef3a6988926ce98dc1629e4b777d4fe33c4423ccb385cf8eeb86a2e7ed",
+          "generation": 1,
+          "purpose": "review",
+          "status": "known",
+          "knownTokens": 26114,
+          "retainedEstimate": 0
+        }
+      ],
+      "knownTokens": 44466,
+      "unknownEstimate": 0,
+      "review": [
+        {
+          "id": "review-42704121f9cc61671b9de67617d6f563aa473fe2ceb62045efdc458c3bc7cbd6",
+          "status": "completed",
+          "passed": false,
+          "failedAssertions": [
+            {
+              "id": "melee-damage-25",
+              "detail": "步骤「attack-melee」 training-target 的血量是 50，不满足：正好 25"
+            },
+            {
+              "id": "melee-step-effect",
+              "detail": "步骤「attack-melee」不满足：至少要有 1 处可观测变化，实际 0 处；缺少可观测变化「object:training-target」（实际变化：无）"
+            },
+            {
+              "id": "ranged-damage-20",
+              "detail": "步骤「attack-ranged-1」 training-target 的血量是 50，不满足：正好 5"
+            },
+            {
+              "id": "ranged-step-effect",
+              "detail": "步骤「attack-ranged-1」不满足：至少要有 1 处可观测变化，实际 0 处；缺少可观测变化「object:training-target」（实际变化：无）"
+            },
+            {
+              "id": "break-reward-token-2",
+              "detail": "步骤「tick-final」背包「training-token」是 1，不满足：正好 2"
+            }
+          ],
+          "usage": {
+            "cacheReadTokens": 1024,
+            "inputTokens": 6784,
+            "outputTokens": 10544,
+            "reasoningTokens": 8102,
+            "totalTokens": 18352
+          }
+        },
+        {
+          "id": "review-fe75512bee5e97b73ccf1b76c711c50cfbd91a8f9d0875b3a6dc70e1f049bb82",
+          "status": "completed",
+          "passed": false,
+          "failedAssertions": [
+            {
+              "id": "no-errors",
+              "detail": "玩法运行时报错：近战命中训练靶: REQUEST_PLAYER_BLOCKED"
+            },
+            {
+              "id": "melee-damage",
+              "detail": "轨迹里没有名为「等待近战冷却」的步骤"
+            },
+            {
+              "id": "melee-kill",
+              "detail": "轨迹里没有名为「结算击破奖励」的步骤"
+            },
+            {
+              "id": "kill-reward-token",
+              "detail": "轨迹里没有名为「结算击破奖励」的步骤"
+            }
+          ],
+          "usage": {
+            "cacheReadTokens": 1408,
+            "inputTokens": 6980,
+            "outputTokens": 17726,
+            "reasoningTokens": 14940,
+            "totalTokens": 26114
+          }
+        }
+      ],
+      "applications": [
+        {
+          "id": "apply-be10f136b24bc8c42d80c020e0f214f3e54074af5f15f710e836e0c35194bcc5",
+          "status": "applied",
+          "acknowledgeReviewWarnings": true
+        },
+        {
+          "id": "apply-bb6b31501d0527737a83f0771f11943aab6507029342f6c01eaedbdebe18ba64",
+          "status": "applied",
+          "acknowledgeReviewWarnings": true
+        }
+      ],
+      "authorUsage": {
+        "count": 0,
+        "cacheReadTokens": 0,
+        "uncachedInputTokens": 0,
+        "cacheRatio": null,
+        "requests": []
+      }
+    },
+    {
+      "name": "packaged-tree-workbench",
+      "profile": "desktop-native-f-wqez46",
+      "passed": true,
+      "checks": 20,
+      "elapsedMs": 78029,
+      "requests": [
+        {
+          "requestId": "request-73e449eb-39d6-4d2c-bc72-4778c91c09f6",
+          "owner": "work-f92799239727d6b7697e78196fa725dba1a9ed5285b92b72e796626b10efa575",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 2637,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-e5397777-d773-4fca-9a39-a53ba2ae872d",
+          "owner": "work-f92799239727d6b7697e78196fa725dba1a9ed5285b92b72e796626b10efa575",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 5174,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-38ac5d2d-d928-4548-ba46-2f84c7990f75",
+          "owner": "work-f92799239727d6b7697e78196fa725dba1a9ed5285b92b72e796626b10efa575",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 12733,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-dac36b6a-4aaf-4eb2-be38-0bdd3ec1488a",
+          "owner": "work-f92799239727d6b7697e78196fa725dba1a9ed5285b92b72e796626b10efa575",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 13037,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-595d3289-cd9c-46f5-9882-5664897e2708",
+          "owner": "work-f92799239727d6b7697e78196fa725dba1a9ed5285b92b72e796626b10efa575",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 13361,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-539bb386-88d9-4439-b9c4-9d05c195b7b2",
+          "owner": "work-f92799239727d6b7697e78196fa725dba1a9ed5285b92b72e796626b10efa575",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 13842,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-76301376-bdff-4fb5-9b98-8fe0f771c4ec",
+          "owner": "work-f92799239727d6b7697e78196fa725dba1a9ed5285b92b72e796626b10efa575",
+          "generation": 1,
+          "purpose": "review",
+          "status": "known",
+          "knownTokens": 6868,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-cb2b4c37-30e1-4f63-a758-5a376b9c75d5",
+          "owner": "work-f92799239727d6b7697e78196fa725dba1a9ed5285b92b72e796626b10efa575",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 14156,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-5cc6fc8c-d8f6-4462-8f8e-6678a060e7d3",
+          "owner": "work-f92799239727d6b7697e78196fa725dba1a9ed5285b92b72e796626b10efa575",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 16385,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-9ca7efae-26bb-4b9d-a1b2-64ea936e5c15",
+          "owner": "work-f86f88276aad582464a1cbebf16f3df1bcb204c2c4b59956b312093b9040bbf7",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 2963,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-b8ca1ff0-deb8-49cb-8486-9cbd820a88ef",
+          "owner": "work-f86f88276aad582464a1cbebf16f3df1bcb204c2c4b59956b312093b9040bbf7",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 7645,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-437699be-a598-4f3c-baa7-f3e48f5bf189",
+          "owner": "work-f86f88276aad582464a1cbebf16f3df1bcb204c2c4b59956b312093b9040bbf7",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 8686,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-33ee614c-b2d2-49ff-b9d8-8fd2e254cc16",
+          "owner": "work-f86f88276aad582464a1cbebf16f3df1bcb204c2c4b59956b312093b9040bbf7",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 10011,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-f48eeb10-bb11-40ba-8188-d0992f80c7d5",
+          "owner": "work-f86f88276aad582464a1cbebf16f3df1bcb204c2c4b59956b312093b9040bbf7",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 11500,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-1de869f5-32f6-452a-955e-9196efb27082",
+          "owner": "work-f86f88276aad582464a1cbebf16f3df1bcb204c2c4b59956b312093b9040bbf7",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 12232,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-752cf6a7-4aac-4d88-9423-b0ca7deb1ee2",
+          "owner": "work-f86f88276aad582464a1cbebf16f3df1bcb204c2c4b59956b312093b9040bbf7",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 13305,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-954d6230-1398-4476-92b7-79398b81578a",
+          "owner": "work-f86f88276aad582464a1cbebf16f3df1bcb204c2c4b59956b312093b9040bbf7",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 13811,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-bcfa87bd-1a6c-45af-8dd9-8d984622d78f",
+          "owner": "work-f86f88276aad582464a1cbebf16f3df1bcb204c2c4b59956b312093b9040bbf7",
+          "generation": 1,
+          "purpose": "review",
+          "status": "known",
+          "knownTokens": 9160,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-fcf9ddf0-d5b2-4be3-969b-b59c476fc0b6",
+          "owner": "work-f86f88276aad582464a1cbebf16f3df1bcb204c2c4b59956b312093b9040bbf7",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 14120,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-6b2ff03c-2d26-488f-8cd7-510b845b52a1",
+          "owner": "work-f86f88276aad582464a1cbebf16f3df1bcb204c2c4b59956b312093b9040bbf7",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 16618,
+          "retainedEstimate": 0
+        }
+      ],
+      "knownTokens": 218244,
+      "unknownEstimate": 0,
+      "review": [
+        {
+          "id": "review-5967899b443ff8dfda6245cd95314f087f7aefb3212480e411331ae80c936de4",
+          "status": "completed",
+          "passed": true,
+          "failedAssertions": [],
+          "usage": {
+            "cacheReadTokens": 1408,
+            "inputTokens": 1789,
+            "outputTokens": 3671,
+            "reasoningTokens": 2663,
+            "totalTokens": 6868
+          }
+        },
+        {
+          "id": "review-46b40f6129d89dff8f862034442225ff320c560dc0d5babf76ac34c3c6144722",
+          "status": "completed",
+          "passed": true,
+          "failedAssertions": [],
+          "usage": {
+            "cacheReadTokens": 1408,
+            "inputTokens": 2689,
+            "outputTokens": 5063,
+            "reasoningTokens": 3433,
+            "totalTokens": 9160
+          }
+        }
+      ],
+      "applications": [
+        {
+          "id": "apply-c1d7d842d3bf0d0e6955231dfb016f861045562a349f18cb2059886678581da7",
+          "status": "applied",
+          "acknowledgeReviewWarnings": false
+        },
+        {
+          "id": "apply-3b948d33c7ea4d2f320eac24abb6b7c33fa67497dd5a55ebee03abf05f51341d",
+          "status": "applied",
+          "acknowledgeReviewWarnings": false
+        }
+      ],
+      "authorUsage": {
+        "count": 18,
+        "cacheReadTokens": 105344,
+        "uncachedInputTokens": 90721,
+        "cacheRatio": 0.5372912044475047,
+        "requests": [
+          {
+            "messageId": "f02332d6-3b5a-4c5f-920d-b274bbc03a06",
+            "cacheReadTokens": 1664,
+            "inputTokens": 896,
+            "outputTokens": 77,
+            "reasoningTokens": 0,
+            "totalTokens": 2637
+          },
+          {
+            "messageId": "fbbdb5e2-0a41-47a0-9182-fa5a5cc9cc5b",
+            "cacheReadTokens": 1792,
+            "inputTokens": 2258,
+            "outputTokens": 1124,
+            "reasoningTokens": 984,
+            "totalTokens": 5174
+          },
+          {
+            "messageId": "b7ff581b-5e1d-4d7f-a847-4b03257f95b0",
+            "cacheReadTokens": 1536,
+            "inputTokens": 10140,
+            "outputTokens": 1057,
+            "reasoningTokens": 603,
+            "totalTokens": 12733
+          },
+          {
+            "messageId": "90b0f58e-f326-41f2-86fe-000e524995e4",
+            "cacheReadTokens": 10880,
+            "inputTokens": 2062,
+            "outputTokens": 95,
+            "reasoningTokens": 24,
+            "totalTokens": 13037
+          },
+          {
+            "messageId": "502140f0-f13b-4449-b04c-8104518d7c2a",
+            "cacheReadTokens": 1792,
+            "inputTokens": 11443,
+            "outputTokens": 126,
+            "reasoningTokens": 0,
+            "totalTokens": 13361
+          },
+          {
+            "messageId": "3d461edc-fe11-463d-8fff-f48d87fe796e",
+            "cacheReadTokens": 12288,
+            "inputTokens": 1473,
+            "outputTokens": 81,
+            "reasoningTokens": 17,
+            "totalTokens": 13842
+          },
+          {
+            "messageId": "63d7d7be-2d09-473d-930a-c69a18aa4e9b",
+            "cacheReadTokens": 1920,
+            "inputTokens": 12119,
+            "outputTokens": 117,
+            "reasoningTokens": 20,
+            "totalTokens": 14156
+          },
+          {
+            "messageId": "5361c730-aafd-4b20-9a69-cde8a144ca8a",
+            "cacheReadTokens": 13056,
+            "inputTokens": 2447,
+            "outputTokens": 882,
+            "reasoningTokens": 96,
+            "totalTokens": 16385
+          },
+          {
+            "messageId": "14c53e69-97a5-42b2-aa14-4deac665688f",
+            "cacheReadTokens": 1664,
+            "inputTokens": 1221,
+            "outputTokens": 78,
+            "reasoningTokens": 0,
+            "totalTokens": 2963
+          },
+          {
+            "messageId": "76784599-d13b-4ec2-b137-45d8e7569636",
+            "cacheReadTokens": 1920,
+            "inputTokens": 5505,
+            "outputTokens": 220,
+            "reasoningTokens": 35,
+            "totalTokens": 7645
+          },
+          {
+            "messageId": "b0e4bc9c-28e2-4f39-9f04-ffe65c3fd612",
+            "cacheReadTokens": 1664,
+            "inputTokens": 6914,
+            "outputTokens": 108,
+            "reasoningTokens": 8,
+            "totalTokens": 8686
+          },
+          {
+            "messageId": "20fe4869-df97-4746-9a05-62e8f0163f91",
+            "cacheReadTokens": 7552,
+            "inputTokens": 2256,
+            "outputTokens": 203,
+            "reasoningTokens": 63,
+            "totalTokens": 10011
+          },
+          {
+            "messageId": "04c547da-b2a0-45a1-ad9c-6a2cebd4cdb9",
+            "cacheReadTokens": 8832,
+            "inputTokens": 2405,
+            "outputTokens": 263,
+            "reasoningTokens": 63,
+            "totalTokens": 11500
+          },
+          {
+            "messageId": "e3492ea2-7753-4f49-9845-ef410633bd2a",
+            "cacheReadTokens": 10240,
+            "inputTokens": 1778,
+            "outputTokens": 214,
+            "reasoningTokens": 60,
+            "totalTokens": 12232
+          },
+          {
+            "messageId": "eb417fe4-2ab0-423f-95fd-5aee7d424148",
+            "cacheReadTokens": 1792,
+            "inputTokens": 11286,
+            "outputTokens": 227,
+            "reasoningTokens": 50,
+            "totalTokens": 13305
+          },
+          {
+            "messageId": "cfa53ce2-487d-429e-b964-9b4734367412",
+            "cacheReadTokens": 11904,
+            "inputTokens": 1833,
+            "outputTokens": 74,
+            "reasoningTokens": 11,
+            "totalTokens": 13811
+          },
+          {
+            "messageId": "cc534c39-0aa0-436d-af94-b74a613190f4",
+            "cacheReadTokens": 2048,
+            "inputTokens": 11960,
+            "outputTokens": 112,
+            "reasoningTokens": 34,
+            "totalTokens": 14120
+          },
+          {
+            "messageId": "f75fd577-fb3a-4f37-a7d2-25ce1f16f562",
+            "cacheReadTokens": 12800,
+            "inputTokens": 2725,
+            "outputTokens": 1093,
+            "reasoningTokens": 372,
+            "totalTokens": 16618
+          }
+        ]
+      }
+    },
+    {
+      "name": "packaged-recovery",
+      "profile": "desktop-native-f-6Zhumm",
+      "passed": true,
+      "checks": 12,
+      "elapsedMs": 58076,
+      "requests": [
+        {
+          "requestId": "request-0996a116-dc03-4a68-8088-bab9a003179f",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 2645,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-15f571a5-924a-40ac-ab38-b617a0bca322",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 5128,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-6f765b5c-1c94-48ed-9688-0984b4c04d53",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 6570,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-e917c738-5fcc-4fa9-a7ff-292006fc5647",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 11456,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-af997f11-aa83-46ca-8d29-f6ac2b1128c8",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 12794,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-26b3caeb-a6e4-4e3d-bbb1-768f489450b1",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 1,
+          "purpose": "creation",
+          "status": "unknown",
+          "knownTokens": null,
+          "retainedEstimate": 73174
+        },
+        {
+          "requestId": "request-e2c4cb06-41ca-46cf-9ee7-35398c1cfecb",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 2,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 10057,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-a37ada76-a944-4868-bd7c-e24e2f3083aa",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 2,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 10611,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-89ece12c-6b7a-4ef6-83b5-487bc87a4311",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 2,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 11960,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-cfe26429-0e96-4398-953c-c7a450c08850",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 2,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 12815,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-03043294-c057-4ad2-96c5-a3871574b378",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 2,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 13361,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-fe15f793-1af3-4a2d-be4a-a63393f0fd17",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 2,
+          "purpose": "review",
+          "status": "known",
+          "knownTokens": 6427,
+          "retainedEstimate": 0
+        },
+        {
+          "requestId": "request-5df8eab2-d8d5-4dc7-86eb-1db92054779d",
+          "owner": "work-8d7cbbdac05226f16316170c49e4efbb13acfb6f554beb1d5675f78b427bee05",
+          "generation": 2,
+          "purpose": "creation",
+          "status": "known",
+          "knownTokens": 15660,
+          "retainedEstimate": 0
+        }
+      ],
+      "knownTokens": 119484,
+      "unknownEstimate": 73174,
+      "review": [
+        {
+          "id": "review-a99f6d5271b934c422a0306ba94c624de7058fd6c6e2cef2b795c2dd067d62b4",
+          "status": "completed",
+          "passed": true,
+          "failedAssertions": [],
+          "usage": {
+            "cacheReadTokens": 1408,
+            "inputTokens": 1667,
+            "outputTokens": 3352,
+            "reasoningTokens": 2464,
+            "totalTokens": 6427
+          }
+        }
+      ],
+      "applications": [
+        {
+          "id": "apply-17d952c068f89e76bf442a1f71049130c376da36871fd55513dbe6c37d3ab812",
+          "status": "applied",
+          "acknowledgeReviewWarnings": false
+        }
+      ],
+      "authorUsage": {
+        "count": 11,
+        "cacheReadTokens": 66432,
+        "uncachedInputTokens": 40523,
+        "cacheRatio": 0.6211210322098079,
+        "requests": [
+          {
+            "messageId": "a58133b1-421d-416a-8d97-7ebf6999d803",
+            "cacheReadTokens": 1664,
+            "inputTokens": 903,
+            "outputTokens": 78,
+            "reasoningTokens": 0,
+            "totalTokens": 2645
+          },
+          {
+            "messageId": "67f9ab13-8314-438d-a614-ec40811fb23f",
+            "cacheReadTokens": 1792,
+            "inputTokens": 2271,
+            "outputTokens": 1065,
+            "reasoningTokens": 884,
+            "totalTokens": 5128
+          },
+          {
+            "messageId": "91f3c4a6-7979-4b96-9bdb-f7a212964901",
+            "cacheReadTokens": 2432,
+            "inputTokens": 3606,
+            "outputTokens": 532,
+            "reasoningTokens": 396,
+            "totalTokens": 6570
+          },
+          {
+            "messageId": "12c16593-689b-4a30-b581-254218c14fbd",
+            "cacheReadTokens": 2304,
+            "inputTokens": 8897,
+            "outputTokens": 255,
+            "reasoningTokens": 173,
+            "totalTokens": 11456
+          },
+          {
+            "messageId": "437d4461-785c-4370-9582-028179544af6",
+            "cacheReadTokens": 10368,
+            "inputTokens": 1130,
+            "outputTokens": 1296,
+            "reasoningTokens": 877,
+            "totalTokens": 12794
+          },
+          {
+            "messageId": "6c00cb9f-5091-4c24-a1d2-51fb81e4930c",
+            "cacheReadTokens": 3200,
+            "inputTokens": 6307,
+            "outputTokens": 550,
+            "reasoningTokens": 451,
+            "totalTokens": 10057
+          },
+          {
+            "messageId": "b57969f8-d426-4b95-8961-2415fafe1d53",
+            "cacheReadTokens": 8704,
+            "inputTokens": 1649,
+            "outputTokens": 258,
+            "reasoningTokens": 125,
+            "totalTokens": 10611
+          },
+          {
+            "messageId": "a993b00f-4122-4edd-ba5f-2603d0a57b16",
+            "cacheReadTokens": 1664,
+            "inputTokens": 9526,
+            "outputTokens": 770,
+            "reasoningTokens": 686,
+            "totalTokens": 11960
+          },
+          {
+            "messageId": "de32f3ea-ff71-4f1e-af10-f2992a4625b1",
+            "cacheReadTokens": 10368,
+            "inputTokens": 2172,
+            "outputTokens": 275,
+            "reasoningTokens": 105,
+            "totalTokens": 12815
+          },
+          {
+            "messageId": "44e613e8-0292-4d68-8361-f82ff8b5b49b",
+            "cacheReadTokens": 11648,
+            "inputTokens": 1599,
+            "outputTokens": 114,
+            "reasoningTokens": 12,
+            "totalTokens": 13361
+          },
+          {
+            "messageId": "1f16e075-dc6a-4361-82c7-931f91755732",
+            "cacheReadTokens": 12288,
+            "inputTokens": 2463,
+            "outputTokens": 909,
+            "reasoningTokens": 122,
+            "totalTokens": 15660
+          }
+        ]
+      }
+    }
+  ],
+  "totals": {
+    "requests": 35,
+    "knownTokens": 382194,
+    "unknownEstimate": 73174
+  },
+  "cacheScope": "Unique actual author transcript usage, excluding independent model review; inputTokens is uncached input. Cache fraction = cacheReadTokens / (inputTokens + cacheReadTokens). Unknown requests excluded, no rate guarantee."
+}

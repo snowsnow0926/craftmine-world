@@ -48,5 +48,25 @@
     "file": "actual-budget-ui.json",
     "bytes": 71808,
     "sha256": "3c065018bc834d6159cdfcc339b10a5e5f5d5d0227e2e6a05e33502a7a53ead6"
+  },
+  {
+    "file": "packaged-gameplay.json",
+    "bytes": 663726,
+    "sha256": "29a5db816213efb95fc5c6658fcfd843374b1dd5a14b4ae7b43bf905ace6b627"
+  },
+  {
+    "file": "packaged-tree-workbench.json",
+    "bytes": 513259,
+    "sha256": "3ffe4eff39fe8b0dd1786ef57d687f142d57049945e40ef5fb7f586b82fe3f66"
+  },
+  {
+    "file": "packaged-recovery.json",
+    "bytes": 412307,
+    "sha256": "920764c8477e6219f15ddfeda50a7b8be30ed7653c2f0d519cb65e75aca22ee1"
+  },
+  {
+    "file": "packaged-summary.json",
+    "bytes": 26157,
+    "sha256": "8c66b81c7df2b4a4b58394d98f02a5729d1982bac9d626e97b95d07dc7137f52"
   }
 ]
