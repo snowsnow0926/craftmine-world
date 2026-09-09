@@ -5,7 +5,7 @@
   "status": "ready_for_integration",
   "baseRef": "dispatch/w2-w5-v1",
   "baseCommit": "2f71e128fd9ff9c49ee4e466138f4949b6bce862",
-  "codeCommit": "cdb9ba3391b037c19d478be58adad327f320cc36",
+  "codeCommit": "1e685fd4072272386d74f046722e09c1bda51339",
   "packagedSourceCommit": "2cf0f69cb88099ca7a4545fa9d2f668b62586e88",
   "branch": "codex/parallel-e-20260909",
   "worktree": "D:/Craftmine World-worktrees/parallel-e-20260909",
@@ -14,12 +14,14 @@
     "575b000f4d91ad5067c1eb41424068e71592d436",
     "2cf0f69cb88099ca7a4545fa9d2f668b62586e88",
     "378e863ab96da5a74f3f7119f21c83936807531d",
-    "cdb9ba3391b037c19d478be58adad327f320cc36"
+    "cdb9ba3391b037c19d478be58adad327f320cc36",
+    "1e685fd4072272386d74f046722e09c1bda51339"
   ],
   "report": "docs/dispatch-reports/E/REPORT_E.md",
   "interfaces": [
     "docs/dispatch-reports/E/INTERFACE_E.md",
-    "docs/dispatch-reports/E/MEMORY_RECEIPT_ADDENDUM.md"
+    "docs/dispatch-reports/E/MEMORY_RECEIPT_ADDENDUM.md",
+    "docs/dispatch-reports/E/MAINTENANCE_ADDENDUM.md"
   ],
   "integrationPatches": [
     {
@@ -89,6 +91,41 @@
       "sourceCommit": "cdb9ba3391b037c19d478be58adad327f320cc36",
       "result": "7 passed with documented one-line host routing overlay",
       "evidence": "docs/evidence/dispatch/E/memory-process.log"
+    },
+    {
+      "kind": "actual-domain-process",
+      "command": "CRAFTMINE_CORE_BIN=<own debug binary> node --test tests/dispatch/e/maintenance-process.test.mjs",
+      "result": "1 passed",
+      "durationMs": 200.7948,
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909",
+      "sourceCommit": "1e685fd4072272386d74f046722e09c1bda51339",
+      "evidence": "docs/evidence/dispatch/E/maintenance-verification.json"
+    },
+    {
+      "kind": "runtime-unit",
+      "command": "pnpm --filter @pi-desktop/agent-runtime exec vitest run src/craftmine-context.test.ts",
+      "result": "15 passed",
+      "durationMs": 800,
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909/vendor/pi-desktop",
+      "sourceCommit": "1e685fd4072272386d74f046722e09c1bda51339",
+      "evidence": "docs/evidence/dispatch/E/maintenance-verification.json"
+    },
+    {
+      "kind": "typecheck",
+      "command": "pnpm --filter @pi-desktop/agent-runtime build && pnpm --filter @pi-desktop/desktop exec tsc -p tsconfig.json --noEmit",
+      "result": "passed",
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909/vendor/pi-desktop",
+      "sourceCommit": "1e685fd4072272386d74f046722e09c1bda51339",
+      "evidence": "docs/evidence/dispatch/E/maintenance-verification.json"
+    },
+    {
+      "kind": "rust",
+      "command": "cargo test --locked -p craftmine-core",
+      "result": "37 passed",
+      "durationMs": 930,
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909/vendor/pi-desktop",
+      "sourceCommit": "1e685fd4072272386d74f046722e09c1bda51339",
+      "evidence": "docs/evidence/dispatch/E/maintenance-verification.json"
     }
   ],
   "evidence": [
@@ -175,6 +212,11 @@
       "sha256Source": "original-worktree-bytes",
       "gitNormalizedSha256": "23099215240515820d00e8ded039a2317c21a3cdce133426935e195a770d6520",
       "description": "memory-verification.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/maintenance-verification.json",
+      "sha256": "8049d051ed1ea5af5908a34cfbd3941bb9261a8e6d94551b6a3ba2e998aef2ed",
+      "description": "Recorded actual command outcomes and source/binary hashes, not raw process log"
     }
   ],
   "dependencies": [
