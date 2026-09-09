@@ -129,3 +129,10 @@ per-tick samples and the full event log.
 - no engine-level isolation; isolation belongs to the host executor
 - the acceptance runs prove headless physics and state, not GPU rendering,
   visible composition or player feel
+
+## Integration audit persistence requirements
+
+See [the shared authored-base audit contract](../../tests/PERSISTENCE_AUDIT.md) and
+[the state-boundary decision](../../tests/ADR-0001-audit-state-boundary.md).
+Foreign or rejected progress must not mutate live state or overwrite the prior save.
+The audit regression entry point is `desktop/godot/bases/tests/audit-persistence.mjs`.

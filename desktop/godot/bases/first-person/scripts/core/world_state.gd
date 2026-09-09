@@ -76,6 +76,8 @@ func apply(state: Dictionary) -> String:
 func validate_envelope(state: Dictionary) -> String:
 	if state.is_empty():
 		return "State is empty"
+	if not state.get("worldId") is String or state.worldId != world_id:
+		return "State belongs to another world"
 	if state.get("format") != FORMAT:
 		return "State format is not supported"
 	var version = state.get("stateVersion")

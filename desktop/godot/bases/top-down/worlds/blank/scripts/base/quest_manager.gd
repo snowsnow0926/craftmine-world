@@ -73,7 +73,13 @@ static func deliver(quest_id: String, giver: Node, actor: Node) -> Dictionary:
 		}
 
 	var reward: Dictionary = quest.get("reward", {})
-	var reward_coins := int(reward.get("coins", 0))
+	var raw_coins: Variant = reward.get("coins", 0)
+	if not _nonnegative_integer(raw_coins) or not reward.get("items", []) is Array:
+		return {"ok": false, "reason": "quest_is_misconfigured", "questId": quest_id}
+	for entry in reward.get("items", []):
+		if not entry is Dictionary or not entry.get("id") is String or String(entry.id).is_empty() or not _nonnegative_integer(entry.get("count", 1)):
+			return {"ok": false, "reason": "quest_is_misconfigured", "questId": quest_id}
+	var reward_coins := int(raw_coins)
 	var granted_items: Array = []
 
 	# Single commit: consume, pay, then mark both ledgers.
@@ -108,3 +114,6 @@ static func _entity_id(node: Node) -> String:
 		return ""
 	var value: Variant = node.get("entity_id")
 	return String(value) if value is String else ""
+
+static func _nonnegative_integer(value: Variant) -> bool:
+	return (value is int or value is float) and is_finite(float(value)) and float(value) == floorf(float(value)) and float(value) >= 0 and float(value) <= 1000000000

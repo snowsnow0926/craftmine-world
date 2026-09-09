@@ -42,6 +42,11 @@ func ensure_dir() -> bool:
 ## Returns { "saved": bool, "created": bool, "error": String }
 func save(state: WorldState) -> Dictionary:
 	last_error = ""
+	if state.world_id != world_id:
+		return {"saved": false, "created": false, "error": "State belongs to another world"}
+	var problem := state.validate_dict(state.to_dict())
+	if not problem.is_empty():
+		return {"saved": false, "created": false, "error": problem}
 	if not ensure_dir():
 		return {"saved": false, "created": false, "error": last_error}
 	var target := state_path()
@@ -55,7 +60,10 @@ func save(state: WorldState) -> Dictionary:
 		return {"saved": false, "created": false, "error": last_error}
 	file.store_string(payload)
 	file.flush()
+	var write_error := file.get_error()
 	file.close()
+	if write_error != OK:
+		return {"saved": false, "created": false, "error": "Save write failed"}
 
 	var created := not FileAccess.file_exists(target)
 	if not created and FileAccess.file_exists(backup):
@@ -102,7 +110,9 @@ func load_into(fallback: WorldState) -> Dictionary:
 		# clears a player's progress.
 		last_error = "state version mismatch: save=%d base=%d" % [version, fallback.state_version]
 		return {"loaded": false, "created": false, "error": last_error, "state": fallback}
-	fallback.apply_dict(data)
+	var applied := fallback.apply_dict(data)
+	if not applied.get("ok", false):
+		return {"loaded": false, "created": false, "error": applied.error, "state": fallback}
 	return {"loaded": true, "created": source != target, "error": "", "state": fallback}
 
 func read_raw() -> String:

@@ -32,14 +32,26 @@ static func save(state: WorldState) -> Dictionary:
 	}
 	var text := JSON.stringify(payload)
 	var path := progress_path(state.world_id)
-	var file := FileAccess.open(path, FileAccess.WRITE)
+	var temporary := path + ".tmp"
+	var backup := path + ".bak"
+	var file := FileAccess.open(temporary, FileAccess.WRITE)
 	if file == null:
 		return {"ok": false, "error": "Progress could not be opened for writing"}
 	file.store_string(text)
+	file.flush()
 	var status := file.get_error()
 	file.close()
 	if status != OK:
 		return {"ok": false, "error": "Progress write failed"}
+	var previous := FileAccess.file_exists(path)
+	if previous and FileAccess.file_exists(backup) and DirAccess.remove_absolute(backup) != OK:
+		return {"ok": false, "error": "Progress backup could not be replaced"}
+	if previous and DirAccess.rename_absolute(path, backup) != OK:
+		return {"ok": false, "error": "Previous progress could not be backed up"}
+	if DirAccess.rename_absolute(temporary, path) != OK:
+		if previous:
+			DirAccess.rename_absolute(backup, path)
+		return {"ok": false, "error": "Progress could not be committed"}
 	return {
 		"ok": true,
 		"path": ProjectSettings.globalize_path(path),
@@ -50,6 +62,9 @@ static func save(state: WorldState) -> Dictionary:
 
 static func restore_into(state: WorldState) -> Dictionary:
 	var path := progress_path(state.world_id)
+	# Only recover an absent primary; never silently roll back a rejected save.
+	if not FileAccess.file_exists(path) and FileAccess.file_exists(path + ".bak"):
+		path += ".bak"
 	if not FileAccess.file_exists(path):
 		return {"ok": true, "restored": false, "reason": "no_progress"}
 	var file := FileAccess.open(path, FileAccess.READ)
@@ -79,8 +94,10 @@ static func restore_into(state: WorldState) -> Dictionary:
 
 static func erase(world_id: String) -> Dictionary:
 	var path := progress_path(world_id)
-	if not FileAccess.file_exists(path):
-		return {"ok": true, "erased": false}
-	var absolute := ProjectSettings.globalize_path(path)
-	var status := DirAccess.remove_absolute(absolute)
-	return {"ok": status == OK, "erased": status == OK, "error": "" if status == OK else "Progress could not be erased"}
+	var erased := false
+	for candidate in [path, path + ".tmp", path + ".bak"]:
+		if FileAccess.file_exists(candidate):
+			if DirAccess.remove_absolute(candidate) != OK:
+				return {"ok": false, "erased": erased, "error": "Progress could not be erased"}
+			erased = true
+	return {"ok": true, "erased": erased}

@@ -138,7 +138,10 @@ func to_persistent_dict() -> Dictionary:
 		"inventory": _sorted(inventory),
 	}
 
-func apply_dict(data: Dictionary) -> void:
+func apply_dict(data: Dictionary) -> Dictionary:
+	var problem := validate_dict(data)
+	if not problem.is_empty():
+		return {"ok": false, "error": problem}
 	world_id = str(data.get("worldId", world_id))
 	state_version = int(data.get("stateVersion", state_version))
 	abilities = _true_keys(data.get("abilities", {}))
@@ -164,6 +167,47 @@ func apply_dict(data: Dictionary) -> void:
 			"y": float(pd.get("y", 0.0)),
 			"facing": int(pd.get("facing", 1)),
 		}
+	return {"ok": true}
+
+func validate_dict(data: Dictionary) -> String:
+	if data.get("format") != FORMAT:
+		return "Unsupported state format"
+	if not data.get("worldId") is String or data.worldId != world_id:
+		return "State belongs to another world"
+	if not _integer(data.get("stateVersion")) or int(data.stateVersion) != state_version:
+		return "Unsupported state version"
+	for field in ["abilities", "checkpoints", "rewards", "rooms", "counters", "inventory", "player"]:
+		if not data.get(field) is Dictionary:
+			return "Invalid state block: " + field
+	for field in ["abilities", "checkpoints", "rewards"]:
+		for key in data[field]:
+			if not key is String or key.is_empty() or not data[field][key] is bool or not data[field][key]:
+				return "Invalid ledger: " + field
+	if not data.get("activeCheckpoint") is String:
+		return "Invalid checkpoint identity"
+	if not data.activeCheckpoint.is_empty() and not data.checkpoints.has(data.activeCheckpoint):
+		return "Active checkpoint is absent from ledger"
+	for field in ["counters", "inventory"]:
+		for key in data[field]:
+			if not key is String or key.is_empty() or not _integer(data[field][key]) or float(data[field][key]) < 0:
+				return "Invalid count: " + field
+	for key in data.rooms:
+		var entry: Variant = data.rooms[key]
+		if not key is String or not entry is Dictionary:
+			return "Invalid room"
+		if not entry.get("visited") is bool or not _integer(entry.get("entries")) or float(entry.entries) < 0:
+			return "Invalid room facts"
+	var placement: Dictionary = data.player
+	if not placement.get("room") is String or not _integer(placement.get("facing")) or not int(placement.facing) in [-1, 1]:
+		return "Invalid player identity"
+	for axis in ["x", "y"]:
+		var value: Variant = placement.get(axis)
+		if not (value is int or value is float) or not is_finite(float(value)) or absf(float(value)) > 1000000:
+			return "Invalid player position"
+	return ""
+
+static func _integer(value: Variant) -> bool:
+	return (value is int or value is float) and is_finite(float(value)) and float(value) == floorf(float(value)) and absf(float(value)) <= 9007199254740991.0
 
 static func _sorted(source: Dictionary) -> Dictionary:
 	var out := {}

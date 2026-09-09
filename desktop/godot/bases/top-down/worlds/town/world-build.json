@@ -156,8 +156,8 @@
     },
     {
       "path": "scripts/base/game.gd",
-      "bytes": 11373,
-      "sha256": "b4bcd89763551f5d730ba61682aed9972d87726a96b005b61680d1256e8020a1"
+      "bytes": 11501,
+      "sha256": "27c3212b52e9f398d234ddcce2249f27e4ab6225a09cce47451c8604b34b08df"
     },
     {
       "path": "scripts/base/gather_zone.gd",
@@ -191,13 +191,13 @@
     },
     {
       "path": "scripts/base/quest_manager.gd",
-      "bytes": 3742,
-      "sha256": "2fc3235f7c5f43e5fbc405b613b7768d0e8ad9449b4cb88817b40ecbbf0f8e76"
+      "bytes": 4426,
+      "sha256": "a38645c0447def7e56a3bef6ecaf8f904dbfde5e46b1727ca960839f4d589bf5"
     },
     {
       "path": "scripts/base/save_system.gd",
-      "bytes": 3338,
-      "sha256": "b70371e37e3ccfd2aecc7a4214cb4620e8bf5823e4b3a80398087c634be622cd"
+      "bytes": 4130,
+      "sha256": "c51809f56f2efc95a70abde4cfdeeb49889005f685516b1bce800e02d3386cff"
     },
     {
       "path": "scripts/base/shop.gd",

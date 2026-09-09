@@ -43,6 +43,7 @@ func save(state: Dictionary) -> String:
 	if file == null:
 		return "Save file could not be opened"
 	file.store_string(JSON.stringify(payload, "\t"))
+	file.flush()
 	var write_error := file.get_error()
 	file.close()
 	if write_error != OK:
@@ -50,9 +51,10 @@ func save(state: Dictionary) -> String:
 	var dir := DirAccess.open(directory())
 	if dir == null:
 		return "Save directory could not be reopened"
-	if dir.file_exists(backup_name()) and dir.remove(backup_name()) != OK:
-		return "Stale save backup could not be removed"
 	var had_previous := dir.file_exists("state.json")
+	# A backup can be the only good save after interrupted replacement.
+	if had_previous and dir.file_exists(backup_name()) and dir.remove(backup_name()) != OK:
+		return "Stale save backup could not be removed"
 	if had_previous and dir.rename("state.json", backup_name()) != OK:
 		return "Previous save could not be set aside"
 	if dir.rename("state.json.tmp", "state.json") != OK:
