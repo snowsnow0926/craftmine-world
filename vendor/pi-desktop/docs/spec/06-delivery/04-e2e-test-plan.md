@@ -8452,3 +8452,11 @@ are withdrawn with ADR 0165.
 - Expected: one draft revision and one receipt; cancellation survives restart; foreign sessions/projects cannot inspect or write the task; plugin context carries the host session, turn, tool-call and dispatch IDs.
 - Validation: `cargo test -p craftmine-core`; `node --test test/plugin-complete.test.mjs` from the desktop package. No browser or OS input simulation is required.
 - Status: targeted checks; complete application journey remains W1/W2 work.
+
+#### CRAFTMINE-002: Multiple worlds and Rust progress persistence
+
+- Preconditions: prepared Craftmine plugin, release Rust binary and an independent headless Chromium profile. Disable pointer lock and focus at initialization; never use input simulation APIs.
+- Steps: create two worlds through the real plugin process; load the world view, save the actual game snapshot on switching, then restart the plugin and Rust process. Try saving from a stale revision or with another build ID.
+- Expected: each world retains its own progress; the selected world survives restart; stale writes and page attempts to call task transactions are rejected; no source can be replaced through the progress API.
+- Validation: `cargo test -p craftmine-core` and root `node tests/desktop-worlds-browser.mjs`. The browser adapter supplies only the Electron transport; the plugin, compiler, Rust database and game runtime are real.
+- Status: 7 Rust tests and 8 headless integration checks pass. Full Electron startup and installer validation remain pending.

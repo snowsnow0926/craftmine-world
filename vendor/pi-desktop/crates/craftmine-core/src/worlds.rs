@@ -1,0 +1,287 @@
+//! Rust owns desktop worlds and progress. The trusted compatibility compiler
+//! supplies builds; no agent tool may call the unverified creation entry point.
+use anyhow::{ensure, Context, Result};
+use rusqlite::{params, Connection, TransactionBehavior};
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
+use std::time::{SystemTime, UNIX_EPOCH};
+
+use super::{digest, document, TaskJournal};
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct WorldDocument {
+    pub build: Value,
+    pub snapshot: Value,
+    pub extensions: Vec<Value>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WorldSummary {
+    pub id: String,
+    pub title: String,
+    pub revision: u64,
+    pub updated_at: u64,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WorldRecord {
+    #[serde(flatten)]
+    pub summary: WorldSummary,
+    pub world: WorldDocument,
+    pub content_hash: String,
+}
+
+pub(super) fn migrate(db: &Connection) -> Result<()> {
+    db.execute_batch(
+        "CREATE TABLE IF NOT EXISTS craftmine_worlds (
+        id TEXT PRIMARY KEY, title TEXT NOT NULL,
+        revision INTEGER NOT NULL CHECK(revision >= 0),
+        updated_at INTEGER NOT NULL, document TEXT NOT NULL, content_hash TEXT NOT NULL
+    );",
+    )?;
+    Ok(())
+}
+
+fn validate_id(id: &str) -> Result<()> {
+    ensure!(
+        !id.is_empty()
+            && id.len() <= 80
+            && id
+                .bytes()
+                .all(|c| c.is_ascii_alphanumeric() || c == b'-' || c == b'_'),
+        "INVALID_WORLD_ID"
+    );
+    Ok(())
+}
+
+fn timestamp() -> Result<i64> {
+    Ok(SystemTime::now()
+        .duration_since(UNIX_EPOCH)?
+        .as_millis()
+        .try_into()?)
+}
+
+fn validate_progress(snapshot: &Value) -> Result<()> {
+    ensure!(
+        matches!(
+            snapshot["format"].as_str(),
+            Some("craftmine.progress/1" | "craftmine.progress/2" | "craftmine.progress/3")
+        ),
+        "INVALID_PROGRESS"
+    );
+    for (name, min, max) in [
+        ("x", -47.4, 47.4),
+        ("z", -47.4, 47.4),
+        ("y", 6.0, 38.0),
+        ("yaw", -1e6, 1e6),
+        ("pitch", -1.52, 1.52),
+    ] {
+        let value = snapshot["player"][name]
+            .as_f64()
+            .context("INVALID_PLAYER")?;
+        ensure!(
+            value.is_finite() && value >= min && value <= max,
+            "INVALID_PLAYER"
+        );
+    }
+    Ok(())
+}
+
+fn encode(world: &WorldDocument) -> Result<String> {
+    ensure!(
+        world.build["id"]
+            .as_str()
+            .is_some_and(|id| !id.is_empty() && id.len() <= 240),
+        "BUILD_ID_REQUIRED"
+    );
+    ensure!(world.build["scene"].is_object(), "SCENE_REQUIRED");
+    validate_progress(&world.snapshot)?;
+    document(&serde_json::to_value(world)?)
+}
+
+fn read(db: &Connection, id: &str) -> Result<WorldRecord> {
+    validate_id(id)?;
+    let (title, revision, updated, body, hash): (String, i64, i64, String, String) = db.query_row(
+        "SELECT title,revision,updated_at,document,content_hash FROM craftmine_worlds WHERE id=?1", [id],
+        |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?, row.get(4)?)),
+    ).context("WORLD_NOT_FOUND")?;
+    ensure!(digest(&body) == hash, "CORRUPT_WORLD");
+    Ok(WorldRecord {
+        summary: WorldSummary {
+            id: id.into(),
+            title,
+            revision: revision.try_into()?,
+            updated_at: updated.try_into()?,
+        },
+        world: serde_json::from_str(&body)?,
+        content_hash: hash,
+    })
+}
+
+impl TaskJournal {
+    pub fn world_create(
+        &mut self,
+        id: &str,
+        title: &str,
+        world: &WorldDocument,
+    ) -> Result<WorldRecord> {
+        validate_id(id)?;
+        ensure!(
+            !title.trim().is_empty()
+                && title.chars().count() <= 80
+                && !title.chars().any(char::is_control),
+            "INVALID_WORLD_TITLE"
+        );
+        let body = encode(world)?;
+        self.db.execute("INSERT INTO craftmine_worlds(id,title,revision,updated_at,document,content_hash) VALUES(?1,?2,0,?3,?4,?5)", params![id,title,timestamp()?,body,digest(&body)])?;
+        read(&self.db, id)
+    }
+
+    pub fn world_list(&self) -> Result<Vec<WorldSummary>> {
+        let mut statement = self.db.prepare(
+            "SELECT id,title,revision,updated_at FROM craftmine_worlds ORDER BY updated_at DESC,id",
+        )?;
+        let rows = statement.query_map([], |row| {
+            Ok((
+                row.get::<_, String>(0)?,
+                row.get::<_, String>(1)?,
+                row.get::<_, i64>(2)?,
+                row.get::<_, i64>(3)?,
+            ))
+        })?;
+        rows.map(|row| {
+            let (id, title, revision, updated) = row?;
+            Ok(WorldSummary {
+                id,
+                title,
+                revision: revision.try_into()?,
+                updated_at: updated.try_into()?,
+            })
+        })
+        .collect()
+    }
+
+    pub fn world_read(&self, id: &str) -> Result<WorldRecord> {
+        read(&self.db, id)
+    }
+
+    /// Saving play progress cannot replace the build or extension catalogue.
+    /// Revision and build checks prevent a stale view from overwriting a newer world.
+    pub fn world_save_progress(
+        &mut self,
+        id: &str,
+        expected_revision: u64,
+        base_build: &str,
+        snapshot: &Value,
+    ) -> Result<WorldRecord> {
+        validate_progress(snapshot)?;
+        let tx = self
+            .db
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        let mut current = read(&tx, id)?;
+        ensure!(
+            current.summary.revision == expected_revision,
+            "WORLD_REVISION_CONFLICT"
+        );
+        ensure!(
+            current.world.build["id"].as_str() == Some(base_build),
+            "WORLD_BUILD_CONFLICT"
+        );
+        if current.world.snapshot == *snapshot {
+            return Ok(current);
+        }
+        current.world.snapshot = snapshot.clone();
+        let body = encode(&current.world)?;
+        let revision: i64 = current
+            .summary
+            .revision
+            .checked_add(1)
+            .context("REVISION_OVERFLOW")?
+            .try_into()?;
+        tx.execute("UPDATE craftmine_worlds SET revision=?1,updated_at=?2,document=?3,content_hash=?4 WHERE id=?5",params![revision,timestamp()?,body,digest(&body),id])?;
+        let result = read(&tx, id)?;
+        tx.commit()?;
+        Ok(result)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+    fn world() -> WorldDocument {
+        WorldDocument {
+            build: json!({"id":"build-a","scene":{"format":"craftmine.scene/3","objects":[]}}),
+            snapshot: json!({"format":"craftmine.progress/1","player":{"x":0.5,"y":6,"z":12.5,"yaw":0,"pitch":0}}),
+            extensions: vec![],
+        }
+    }
+    #[test]
+    fn progress_and_independent_worlds_survive_process_reopen() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("domain.sqlite");
+        let mut db = TaskJournal::open(&path).unwrap();
+        db.world_create("first", "First", &world()).unwrap();
+        db.world_create("second", "Second", &world()).unwrap();
+        let mut progress = world().snapshot;
+        progress["player"]["x"] = json!(8);
+        db.world_save_progress("first", 0, "build-a", &progress)
+            .unwrap();
+        drop(db);
+        let db = TaskJournal::open(&path).unwrap();
+        assert_eq!(db.world_read("first").unwrap().world.snapshot, progress);
+        assert_eq!(
+            db.world_read("second").unwrap().world.snapshot,
+            world().snapshot
+        );
+        assert_eq!(db.world_list().unwrap().len(), 2);
+    }
+    #[test]
+    fn competing_views_cannot_overwrite_newer_progress_or_builds() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("domain.sqlite");
+        let mut first = TaskJournal::open(&path).unwrap();
+        let mut other = TaskJournal::open(&path).unwrap();
+        first.world_create("world", "World", &world()).unwrap();
+        let mut progress = world().snapshot;
+        progress["player"]["x"] = json!(8);
+        first
+            .world_save_progress("world", 0, "build-a", &progress)
+            .unwrap();
+        assert!(other
+            .world_save_progress("world", 0, "build-a", &world().snapshot)
+            .unwrap_err()
+            .to_string()
+            .contains("REVISION_CONFLICT"));
+        assert!(other
+            .world_save_progress("world", 1, "wrong-build", &world().snapshot)
+            .unwrap_err()
+            .to_string()
+            .contains("BUILD_CONFLICT"));
+        assert_eq!(other.world_read("world").unwrap().world.snapshot, progress);
+    }
+    #[test]
+    fn corruption_and_invalid_progress_are_reported_without_resetting_worlds() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut db = TaskJournal::open(&dir.path().join("domain.sqlite")).unwrap();
+        db.world_create("world", "World", &world()).unwrap();
+        let mut bad = world().snapshot;
+        bad["player"]["y"] = json!(-100);
+        assert!(db.world_save_progress("world", 0, "build-a", &bad).is_err());
+        assert_eq!(db.world_read("world").unwrap().summary.revision, 0);
+        db.db
+            .execute(
+                "UPDATE craftmine_worlds SET document='{}' WHERE id='world'",
+                [],
+            )
+            .unwrap();
+        assert!(db
+            .world_read("world")
+            .unwrap_err()
+            .to_string()
+            .contains("CORRUPT_WORLD"));
+    }
+}

@@ -24,4 +24,8 @@ The world view bundles trusted local resources into a sandboxed srcdoc iframe us
 
 ## Desktop acceptance
 
+The same Rust database now owns a `craftmine_worlds` table: world identity, title, revision, timestamp, compiled document, progress and content hash. The plugin's panel bridge can list worlds, create a compiler-checked empty world, open one and save validated gameplay progress. Saving progress cannot replace a build or extension catalogue. Revision and base-build checks reject stale views; integrity failures report an error without resetting the stored world. No JavaScript ProjectStore writes this desktop database.
+
+The panel saves manually, every ten seconds while loaded, and before switching or creating another world. Restart restores the last selected world through plugin settings and re-reads its authoritative content from Rust. World switching replaces the sandboxed iframe and its nonce. Renderer shutdown is not yet an acknowledged save barrier: the explicit Save action remains necessary before closing after a recent change. Legacy import, candidate publishing, session-to-world binding and the close barrier remain W1/W2 follow-up work.
+
 Preserve project and session navigation, streaming conversations, cancellation, tool details, file and diff panels, model settings, themes and panel resizing. Add world and creation tabs, candidate preview and verification evidence using the same work-panel model. Provide Chinese defaults and an optional immersive play layout.

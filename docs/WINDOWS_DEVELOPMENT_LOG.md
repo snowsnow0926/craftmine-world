@@ -14,3 +14,9 @@
 - 进入 W1：独立产品身份与数据目录、完整 PI 界面中的世界入口、Rust 世界项目与进度存储、可重开的客户端。当前探针不等于正式客户端或安装包；W1–W5 尚未验收。
 
 自动接续 `craftmine-windows` 每 30 分钟检查本线程；开发目标保持 active。阶段交付、实质失败或需输入时汇报。所有测试继续隔离且禁止真实输入和窗口置前。
+
+## 2026-09-09：W1 世界存储第一批
+
+- Rust 负责新的桌面世界、版本号与进度，单独创建的世界不串存档；保存拒绝旧版本覆盖、错误构建 ID 和损坏内容。兼容编译器与进度校验仍使用原有 JavaScript 契约。
+- 面板可新建、切换、手动保存，每 10 秒保存一次，并在切换前保存；重新启动恢复上次选择。关闭前最后一次保存的确认屏障、旧存档迁移、实际 Electron 窗口和安装包尚未验收。
+- `cargo test --locked -p craftmine-core`：7/7。`tests/desktop-worlds-browser.mjs`：8/8，证据 `test-results/desktop-worlds-wAa9sP/report.json`。使用独立 headless Chromium、真实 PI 插件进程、Rust 二进制和实际游戏，Electron 的页面传输层由测试适配器承接。

@@ -13,6 +13,7 @@ const {build} = require('esbuild');
 await fs.mkdir(path.join(output,'views'), {recursive:true});
 for (const file of ['manifest.json','main.cjs','core-client.cjs']) await fs.copyFile(path.join(source,file),path.join(output,file));
 await fs.rm(path.join(output,'main.js'), {force:true});
+await build({entryPoints:[path.join(source,'domain-adapter.mjs')],outfile:path.join(output,'domain.cjs'),bundle:true,platform:'node',format:'cjs',target:'node22'});
 for (const file of ['game.html','game.js','game.css','runtime.js']) await fs.rm(path.join(output,'views',file),{force:true});
 const scene = {format:'craftmine.scene/3',title:'新世界',night:false,objects:[],systems:[],behaviors:[]};
 const compiled = compileScene(scene);

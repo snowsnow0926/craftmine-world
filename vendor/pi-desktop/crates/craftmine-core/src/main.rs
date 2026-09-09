@@ -3,7 +3,7 @@ use std::io::{self, BufRead, Read, Write};
 use std::path::PathBuf;
 
 use anyhow::{bail, Context, Result};
-use craftmine_core::{TaskBinding, TaskJournal};
+use craftmine_core::{TaskBinding, TaskJournal, WorldDocument};
 use serde_json::{json, Value};
 
 fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
@@ -14,6 +14,32 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
+    match method {
+        "world.list" => return Ok(serde_json::to_value(journal.world_list()?)?),
+        "world.read" => {
+            return Ok(serde_json::to_value(journal.world_read(
+                params["id"].as_str().context("WORLD_ID_REQUIRED")?,
+            )?)?)
+        }
+        "world.create" => {
+            let world: WorldDocument = serde_json::from_value(params["world"].clone())?;
+            return Ok(serde_json::to_value(journal.world_create(
+                params["id"].as_str().context("WORLD_ID_REQUIRED")?,
+                params["title"].as_str().context("TITLE_REQUIRED")?,
+                &world,
+            )?)?);
+        }
+        "world.saveProgress" => {
+            return Ok(serde_json::to_value(journal.world_save_progress(
+                params["id"].as_str().context("WORLD_ID_REQUIRED")?,
+                params["revision"].as_u64().context("REVISION_REQUIRED")?,
+                params["baseBuild"].as_str().context("BUILD_REQUIRED")?,
+                &params["snapshot"],
+            )?)?)
+        }
+        _ if !method.starts_with("task.") => bail!("UNKNOWN_METHOD"),
+        _ => {}
+    }
     let binding: TaskBinding = serde_json::from_value(params["binding"].clone())?;
     match method {
         "task.start" => Ok(serde_json::to_value(

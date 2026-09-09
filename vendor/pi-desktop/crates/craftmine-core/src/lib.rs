@@ -9,6 +9,9 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 
+mod worlds;
+pub use worlds::{WorldDocument, WorldRecord, WorldSummary};
+
 const MAX_DOCUMENT_BYTES: usize = 2_000_000;
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -126,6 +129,7 @@ impl TaskJournal {
                 task_id TEXT NOT NULL REFERENCES craftmine_tasks(id), tool_call_id TEXT NOT NULL,
                 request_hash TEXT NOT NULL, result TEXT NOT NULL, PRIMARY KEY(task_id, tool_call_id)
             );")?;
+        worlds::migrate(&db)?;
         Ok(Self { db })
     }
 

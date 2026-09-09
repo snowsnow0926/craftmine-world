@@ -8,13 +8,30 @@
   <style>
     :root { color-scheme: light dark; font-family:system-ui,'Microsoft YaHei',sans-serif; }
     * { box-sizing:border-box; } body { margin:0; height:100vh; display:flex; flex-direction:column; background:light-dark(#fafafa,#191919); color:light-dark(#242424,#dedede); }
-    header { height:40px; display:flex; align-items:center; padding:0 14px; font-size:12px; border-bottom:1px solid light-dark(#e3e3e3,#333); }
+    header { min-height:46px; display:flex; gap:8px; align-items:center; padding:7px 12px; font-size:12px; border-bottom:1px solid light-dark(#e3e3e3,#333); }
+    button,input,select { font:inherit; color:inherit; border:1px solid light-dark(#ddd,#444); border-radius:6px; background:light-dark(#fff,#242424); padding:6px 9px; }
+    button { cursor:pointer; white-space:nowrap; } button:hover { background:light-dark(#eee,#333); } button:disabled { opacity:.45; cursor:default; }
+    select { min-width:70px; max-width:220px; flex:1; } .save-state { margin-left:auto; color:light-dark(#606060,#aaa); font-size:11px; } [data-error] { color:light-dark(#a82a2a,#ef9999); }
+    #create-form { padding:10px 12px; display:flex; gap:8px; background:light-dark(#f0f0f0,#222); } #create-form[hidden] { display:none; } #world-name { min-width:0; flex:1; }
+    #error { padding:8px 12px; font-size:12px; background:light-dark(#fff1f0,#3d2020); } #error[hidden] { display:none; }
+    :focus-visible { outline:2px solid light-dark(#47795e,#9cceae); outline-offset:2px; }
     iframe { display:block; flex:1; width:100%; border:0; min-height:0; }
   </style>
   <script src="view.js" defer></script>
 </head>
 <body>
-  <header id="world-status">正在载入世界…</header>
+  <header>
+    <select id="world-list" aria-label="当前世界" disabled><option>正在载入…</option></select>
+    <button id="new-world" type="button" disabled>新建</button>
+    <span id="world-status" class="save-state" role="status">正在载入</span>
+    <button id="save-world" type="button" disabled>保存</button>
+  </header>
+  <form id="create-form" hidden>
+    <input id="world-name" name="title" aria-label="世界名称" placeholder="给世界起个名字" maxlength="80" required>
+    <button type="submit">创建空白世界</button>
+    <button id="cancel-create" type="button">取消</button>
+  </form>
+  <div id="error" role="alert" hidden></div>
   <iframe title="可游玩的世界" sandbox="allow-scripts allow-pointer-lock"></iframe>
 </body>
 </html>
