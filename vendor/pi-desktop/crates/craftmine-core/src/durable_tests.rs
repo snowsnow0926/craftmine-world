@@ -544,3 +544,119 @@ fn configured_first_request_initializes_deadline_once_without_changing_policy() 
     assert!(j.budget_call("budget.inspect", &id)?["limits"]["deadlineAt"].is_null());
     Ok(())
 }
+#[test]
+fn completed_budget_receipt_is_readable_after_head_advances_without_write_authority() -> Result<()>
+{
+    let (_dir, mut j, ctx, id) = fixture()?;
+    let config = configure(&id, "find-original", Value::Null);
+    assert!(j.budget_find_receipt(&config)?.is_null());
+    let result = j.budget_configure(&config)?;
+    j.workspace_end_turn(&ctx.session_id, &ctx.turn_id, "completed")?;
+    let mut next = ctx.clone();
+    next.turn_id = "later-player-task".into();
+    j.workspace_open(&next, "world-a")?;
+    let before = j.backup_status(&json!({}))?["currentHash"].clone();
+    assert_eq!(j.budget_find_receipt(&config)?, result);
+    assert!(j.budget_configure(&config).is_err());
+    for (key, value) in [
+        ("maxTokens", json!(300)),
+        ("sessionId", json!("other")),
+        ("worldId", json!("other")),
+        ("projectId", json!("other")),
+        ("generation", json!(2)),
+        ("unexpected", json!(true)),
+    ] {
+        let mut changed = config.clone();
+        changed[key] = value;
+        assert!(j.budget_find_receipt(&changed).is_err());
+    }
+    let mut missing = config.clone();
+    missing["operationId"] = json!("never-committed");
+    assert!(j.budget_find_receipt(&missing)?.is_null());
+    assert_eq!(j.backup_status(&json!({}))?["currentHash"], before);
+    Ok(())
+}
+#[test]
+fn malformed_backup_accounting_is_rejected_before_replacing_any_world() -> Result<()> {
+    let (_dir, mut j, ctx, id) = fixture()?;
+    j.budget_call("budget.reserve", &reserve(&id, "unknown"))?;
+    j.budget_call("budget.settle", &settle(&id, "unknown", "unknown"))?;
+    j.budget_call("budget.reserve", &reserve(&id, "known"))?;
+    let mut known = settle(&id, "known", "known");
+    known["usage"] = json!({"inputTokens":20,"outputTokens":30,"totalTokens":50});
+    j.budget_call("budget.settle", &known)?;
+    j.budget_configure(&configure(&id, "audit", Value::Null))?;
+    j.workspace_end_turn(&ctx.session_id, &ctx.turn_id, "completed")?;
+    let export = j.backup_export(&json!({"operationId":"integrity-export"}))?;
+    let original = export["archive"].clone();
+    let current = j.backup_status(&json!({}))?["currentHash"].clone();
+    let corruptions = vec![
+        (
+            "craftmine_budget_limits",
+            "limits",
+            json!(serde_json::to_string(
+                &json!({"maxTokens":null,"maxRequests":null,"maxCompactions":8,"deadlineAt":null})
+            )?),
+        ),
+        (
+            "craftmine_budget_limits",
+            "limits",
+            json!(serde_json::to_string(
+                &json!({"maxTokens":null,"maxRequests":80,"maxCompactions":false,"deadlineAt":null})
+            )?),
+        ),
+        (
+            "craftmine_budget_limits",
+            "limits",
+            json!(serde_json::to_string(
+                &json!({"maxTokens":null,"maxRequests":80,"maxCompactions":8,"deadlineAt":null,"unknown":1})
+            )?),
+        ),
+        ("craftmine_budget_requests", "estimate", json!(-1)),
+        (
+            "craftmine_budget_requests",
+            "settlement",
+            json!("{\"status\":\"unknown\",\"usage\":{\"totalTokens\":0}}"),
+        ),
+        ("craftmine_budget_requests", "status", json!("invented")),
+        (
+            "craftmine_budget_configurations",
+            "result",
+            json!("{\"operationId\":\"forged\"}"),
+        ),
+        (
+            "craftmine_budget_configurations",
+            "request",
+            json!("{\"operationId\":\"forged\"}"),
+        ),
+    ];
+    for (n, (table, column, value)) in corruptions.into_iter().enumerate() {
+        let mut archive = original.clone();
+        let index = archive["tables"][table]["columns"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .position(|v| v == column)
+            .unwrap();
+        archive["tables"][table]["rows"][0][index] = value;
+        archive["hash"] = json!(digest(&serde_json::to_string(&archive["tables"])?));
+        assert!(
+            j.backup_inspect(&json!({"archive":archive})).is_err(),
+            "corruption {n}"
+        );
+        assert!(j.backup_restore(&json!({"operationId":format!("bad-{n}"),"archive":archive,"expectedCurrentHash":current})).is_err());
+        assert_eq!(j.backup_status(&json!({}))?["currentHash"], current);
+    }
+    assert_eq!(
+        j.backup_inspect(&json!({"archive":original}))?["valid"],
+        true
+    );
+    j.backup_restore(
+        &json!({"operationId":"valid-roundtrip","archive":original,"expectedCurrentHash":current}),
+    )?;
+    let budget = j.budget_call("budget.inspect", &id)?;
+    assert_eq!(budget["reservedTokens"], 200);
+    assert_eq!(budget["unknownRequestCount"], 1);
+    assert_eq!(budget["actualTokens"], 50);
+    Ok(())
+}
