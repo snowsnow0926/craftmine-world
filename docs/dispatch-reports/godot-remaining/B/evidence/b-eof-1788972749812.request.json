@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "requestId": "b-eof-1788972749812",
+  "taskId": "b-eof-1788972749812",
+  "operation": "version",
+  "projectRoot": null,
+  "tasksRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165157947-235832\\tasks",
+  "engineRoot": "D:/Craftmine World/desktop/build/godot/4.7.2-stable",
+  "sourceBinding": {
+    "worldId": "fixed-b-synthetic-fixture",
+    "buildId": "b-eof-1788972749812",
+    "sourceRevision": 1,
+    "sourceDigest": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "inputHash": "c09eb1f912c2f046f44185c0599ecbfb8ba76da1197515349e7424213637b01d"
+}

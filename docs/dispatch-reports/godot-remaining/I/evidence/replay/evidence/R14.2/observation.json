@@ -1,0 +1,40 @@
+{
+  "format": "craftmine.i.observation/1",
+  "release": {
+    "licenseManifestMatches": true,
+    "installLifecycle": [
+      {
+        "step": "install",
+        "result": "ok"
+      },
+      {
+        "step": "upgrade",
+        "result": "ok"
+      },
+      {
+        "step": "upgrade-failure-recovery",
+        "result": "ok"
+      },
+      {
+        "step": "uninstall",
+        "result": "ok"
+      }
+    ],
+    "independentWindowsEnvironment": "missing"
+  },
+  "usage": {
+    "calls": 1,
+    "promptTokens": 800,
+    "cachedReadTokens": 0,
+    "nonCachedInputTokens": 800,
+    "outputTokens": 200,
+    "totalTokens": 1000,
+    "unknownCalls": 0
+  },
+  "failures": [],
+  "humanInterventions": [],
+  "evidence": {
+    "screenshots": [],
+    "human": []
+  }
+}

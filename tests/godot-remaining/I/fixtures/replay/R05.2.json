@@ -1,0 +1,17 @@
+{
+  "format": "craftmine.i.replay-fixture/1",
+  "roundId": "R05.2",
+  "note": "Replay fixture for world isolation. Proves the origin-world binding assertions evaluate; not a real model result.",
+  "expect": "passed",
+  "screenshots": [
+    { "assertionId": "I.R05.2.4", "name": "task-ownership.png", "base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFAAH/q842iQAAAABJRU5ErkJggg==" }
+  ],
+  "observation": {
+    "format": "craftmine.i.observation/1",
+    "isolation": { "originWorldId": "world-1", "selectedWorldId": "world-2", "taskWorldId": "world-1", "writtenWorldId": "world-1", "originalTaskStillOnOriginWorld": true },
+    "usage": { "calls": 1, "promptTokens": 900, "cachedReadTokens": 0, "nonCachedInputTokens": 900, "outputTokens": 200, "totalTokens": 1100, "unknownCalls": 0 },
+    "failures": [],
+    "humanInterventions": [],
+    "evidence": { "screenshots": [], "human": [] }
+  }
+}

@@ -46,4 +46,88 @@ if(mode==='manifest'){
   const evidence={format:'craftmine.package-evidence/1',commit:manifest.commit,sourceArchiveHash:manifest.sourceArchiveHash,files,installers,totalBytes:files.reduce((n,f)=>n+f.bytes,0),installerExecuted:false,cleanWindowsVerified:false,signature:'unsigned-local-preview'};
   await fs.writeFile(path.join(build,'package-evidence.json'),JSON.stringify(evidence,null,2)+'\n');
   console.log(JSON.stringify({commit:manifest.commit,files:files.length,totalBytes:evidence.totalBytes,installers}));
-}else throw Error('Use manifest or verify');
+}else if(mode==='pin'||mode==='stage'||mode==='diff'){
+  const {PACKAGE_REQUIRED_FILES}=await import('./delivery/lib/preflight-core.mjs');
+  const argument=name=>{const index=process.argv.indexOf('--'+name);return index===-1?null:process.argv[index+1];};
+  const flag=name=>process.argv.includes('--'+name);
+  const present=async target=>{try{await fs.lstat(target);return true;}catch{return false;}};
+  const walk=async(directory,prefix='')=>{const found=[];for(const name of(await fs.readdir(directory)).sort()){const target=path.join(directory,name),info=await fs.lstat(target),child=(prefix?prefix+'/':'')+name;
+    if(info.isSymbolicLink())throw Error('PACKAGE_LINK_DENIED: '+child);
+    if(info.isDirectory())found.push(...await walk(target,child));
+    else if(info.isFile())found.push(child);
+    else throw Error('PACKAGE_FILE_TYPE: '+child);}
+    return found;};
+  const describe=async directory=>{const files=[];for(const child of await walk(directory)){const target=path.join(directory,child),info=await fs.lstat(target);
+    files.push({path:child.replaceAll('\\','/'),bytes:info.size,sha256:await digest(target)});}
+    return files;};
+  const copyTree=async(source,destination)=>{await fs.mkdir(destination,{recursive:true});for(const name of(await fs.readdir(source)).sort()){const from=path.join(source,name),to=path.join(destination,name),info=await fs.lstat(from);
+    if(info.isSymbolicLink())throw Error('PACKAGE_LINK_DENIED: '+name);
+    if(info.isDirectory())await copyTree(from,to);
+    else if(info.isFile())await fs.copyFile(from,to);
+    else throw Error('PACKAGE_FILE_TYPE: '+name);}};
+  const copyInto=async(source,destination)=>{await fs.mkdir(path.dirname(destination),{recursive:true});await fs.copyFile(source,destination);};
+  const requiredStatus=async directory=>{const list=[];for(const child of PACKAGE_REQUIRED_FILES)list.push({path:child,present:await present(path.join(directory,child))});return list;};
+  const total=files=>files.reduce((sum,file)=>sum+file.bytes,0);
+  if(mode==='pin'){
+    const packageDirectory=argument('package');
+    if(!packageDirectory)throw Error('pin needs --package <win-unpacked>');
+    if(!await present(packageDirectory))throw Error('PACKAGE_ABSENT: '+packageDirectory);
+    const files=await describe(packageDirectory),installers=[];
+    for(const name of(await fs.readdir(packageDirectory)).sort())if(/^Craftmine-World-Setup-.*\.exe$/.test(name)){
+      const target=path.join(packageDirectory,name);installers.push({path:name,bytes:(await fs.stat(target)).size,sha256:await digest(target)});}
+    const required=await requiredStatus(packageDirectory),missing=required.filter(item=>!item.present).map(item=>item.path);
+    const manifest={format:'craftmine.package-manifest/1',generatedAt:new Date().toISOString(),commit:exe('git',['rev-parse','HEAD']),
+      package:{directory:path.resolve(packageDirectory),fileCount:files.length,totalBytes:total(files),files},installers,required,missingRequired:missing,
+      limits:['Read-only byte pin. It proves which bytes were inspected; it does not prove the package is complete, licensed or installable.',
+        'A required file that is absent is recorded as present:false and never counted as a pass.',
+        'SHA256SUMS.txt and resources/source/package-manifest.json are not part of a pinned package unless the package itself contains them.']};
+    const out=argument('out');
+    if(out){await fs.mkdir(path.dirname(path.resolve(out)),{recursive:true});await fs.writeFile(path.resolve(out),JSON.stringify(manifest,null,2)+'\n');}
+    console.log(JSON.stringify({commit:manifest.commit,files:files.length,totalBytes:manifest.package.totalBytes,installers:installers.length,missingRequired:missing,out:out?path.resolve(out):null}));
+    if(missing.length&&!flag('allow-missing'))process.exitCode=1;
+  }else if(mode==='stage'){
+    const from=argument('from'),outDirectory=argument('out');
+    if(!from||!outDirectory)throw Error('stage needs --from <win-unpacked> and --out <dir>');
+    if(!await present(from))throw Error('STAGE_SOURCE_ABSENT: '+from);
+    if(await present(outDirectory)){
+      const entries=await fs.readdir(outDirectory);
+      if(entries.length&&!flag('force'))throw Error('STAGE_OUTPUT_NOT_EMPTY: '+outDirectory+' (pass --force to replace it)');
+      if(entries.length)await fs.rm(outDirectory,{recursive:true,force:true});
+    }
+    await copyTree(from,outDirectory);
+    const inputs={sourceArchive:null,buildManifest:null,notices:null};
+    const archive=argument('source-archive');
+    if(archive){if(!await present(archive))throw Error('SOURCE_ARCHIVE_ABSENT: '+archive);
+      await copyInto(archive,path.join(outDirectory,'resources/source/CraftmineWorld-source.zip'));inputs.sourceArchive=path.resolve(archive);}
+    const buildManifest=argument('build-manifest');
+    if(buildManifest){if(!await present(buildManifest))throw Error('BUILD_MANIFEST_ABSENT: '+buildManifest);
+      await copyInto(buildManifest,path.join(outDirectory,'resources/source/build-manifest.json'));inputs.buildManifest=path.resolve(buildManifest);}
+    const notices=argument('notices');
+    if(notices){if(!await present(notices))throw Error('NOTICES_ABSENT: '+notices);
+      await copyTree(notices,path.join(outDirectory,'resources/licenses'));inputs.notices=path.resolve(notices);}
+    const files=await describe(outDirectory);
+    const required=await requiredStatus(outDirectory),missing=required.filter(item=>!item.present).map(item=>item.path);
+    const manifest={format:'craftmine.package-manifest/1',generatedAt:new Date().toISOString(),commit:exe('git',['rev-parse','HEAD']),
+      stage:{from:path.resolve(from),out:path.resolve(outDirectory),inputs},
+      package:{directory:path.resolve(outDirectory),fileCount:files.length,totalBytes:total(files),files},required,missingRequired:missing,
+      verification:{verified:false,note:'Staging records bytes only. A staged directory is not a delivery package until desktop/delivery/preflight.mjs package --package <dir> passes and desktop/delivery/release-manifest.mjs verify --manifest <file> --package <dir> matches.'},
+      limits:['The staging tool copies and hashes; it does not decide licences and does not execute the installer.',
+        'SHA256SUMS.txt and resources/source/package-manifest.json are written after the file list, so they are not listed inside it.']};
+    await fs.mkdir(path.join(outDirectory,'resources/source'),{recursive:true});
+    await fs.writeFile(path.join(outDirectory,'resources/source/package-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
+    await fs.writeFile(path.join(outDirectory,'SHA256SUMS.txt'),files.map(file=>file.sha256+'  '+file.path).sort().join('\n')+'\n');
+    console.log(JSON.stringify({commit:manifest.commit,out:manifest.stage.out,files:files.length,totalBytes:manifest.package.totalBytes,missingRequired:missing}));
+    if(missing.length)process.exitCode=1;
+  }else{
+    const first=argument('a'),second=argument('b');
+    if(!first||!second)throw Error('diff needs --a <manifest> and --b <manifest>');
+    const read=async file=>JSON.parse(await fs.readFile(file,'utf8'));
+    const index=manifest=>new Map((manifest.package?.files??[]).map(file=>[file.path,file]));
+    const left=index(await read(first)),right=index(await read(second)),added=[],removed=[],changed=[];
+    for(const [file,entry] of right){
+      if(!left.has(file))added.push(file);
+      else if(left.get(file).sha256!==entry.sha256)changed.push({path:file,bytesFrom:left.get(file).bytes,bytesTo:entry.bytes,sha256From:left.get(file).sha256,sha256To:entry.sha256});}
+    for(const file of left.keys())if(!right.has(file))removed.push(file);
+    console.log(JSON.stringify({a:path.resolve(first),b:path.resolve(second),added,removed,changed},null,2));
+  }
+}else throw Error('Use manifest, verify, pin, stage or diff');

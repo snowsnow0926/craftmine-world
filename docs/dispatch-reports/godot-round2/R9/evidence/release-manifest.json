@@ -1,0 +1,2563 @@
+{
+  "format": "craftmine.release-manifest/1",
+  "generatedAt": "2026-09-09T18:48:58.262Z",
+  "identity": {
+    "commit": "ef30cac844436e932b55c0d12f62dc2addeb71e2",
+    "shortCommit": "ef30cac",
+    "commitDate": "2026-09-10T02:34:05+08:00",
+    "dirty": true,
+    "clientVersion": "0.8.0",
+    "productName": "craftmine-world"
+  },
+  "components": {
+    "client": {
+      "id": "client",
+      "version": "0.8.0",
+      "source": {
+        "path": "package.json",
+        "commit": "ef30cac844436e932b55c0d12f62dc2addeb71e2",
+        "tag": null
+      },
+      "files": [
+        {
+          "path": "package.json",
+          "bytes": 2805,
+          "sha256": "732e944863031a5a7c0553f0e54b27d2a01172c89fc831bdf5f51d3b6690213e",
+          "present": true,
+          "role": "client-identity"
+        },
+        {
+          "path": "desktop/windows-USER_GUIDE.zh-CN.md",
+          "bytes": 7099,
+          "sha256": "5f7bf4774f016e1ae728a70d1ae705a02d771dffa893f910c9edf3b40fb7fdab",
+          "present": true,
+          "role": "client-guide",
+          "packagePath": "resources/source/USER_GUIDE.zh-CN.md"
+        },
+        {
+          "path": "desktop/windows-upgrade-guard.ps1",
+          "bytes": 7339,
+          "sha256": "1b0e312970346bab81452c3a46b90990688c4d3a734ffc05068b314bececde98",
+          "present": true,
+          "role": "client-upgrade-guard",
+          "packagePath": "resources/source/windows-upgrade-guard.ps1"
+        },
+        {
+          "path": "Craftmine World.exe",
+          "bytes": 225533440,
+          "sha256": "b43061132a84007bfdcb38f11c8ecdfd388343093709576f801e1693404706d4",
+          "present": true,
+          "role": "packaged-file",
+          "packagePath": "Craftmine World.exe",
+          "pinnedFrom": "package-snapshot",
+          "reproducible": false
+        },
+        {
+          "path": "resources/app.asar",
+          "bytes": 32890841,
+          "sha256": "fcf7c3e5c9178303f6f31e16f2c572c081f2f5edf0a6a3c72543156ac722d402",
+          "present": true,
+          "role": "packaged-file",
+          "packagePath": "resources/app.asar",
+          "pinnedFrom": "package-snapshot",
+          "reproducible": false
+        },
+        {
+          "path": "resources/bin/pi-desktop-host-core.exe",
+          "bytes": 9084416,
+          "sha256": "e043d6cae190410005e04e6748af4877e63295ae1c990c2695b0cb9d97ce638e",
+          "present": true,
+          "role": "packaged-file",
+          "packagePath": "resources/bin/pi-desktop-host-core.exe",
+          "pinnedFrom": "package-snapshot",
+          "reproducible": false
+        },
+        {
+          "path": "resources/bin/craftmine-core.exe",
+          "bytes": 3203072,
+          "sha256": "105100e695080c0a9f4b0282fa9d955eb8087a9ff31034cfa7ba1de84ed4f60c",
+          "present": true,
+          "role": "packaged-file",
+          "packagePath": "resources/bin/craftmine-core.exe",
+          "pinnedFrom": "package-snapshot",
+          "reproducible": false
+        },
+        {
+          "path": "resources/agent-runtime/sidecar.js",
+          "bytes": 5190147,
+          "sha256": "a60faf40a495775c0d2e8e26fffc42b8fddbe71078574e26ab17895dce6c84c1",
+          "present": true,
+          "role": "packaged-file",
+          "packagePath": "resources/agent-runtime/sidecar.js",
+          "pinnedFrom": "package-snapshot",
+          "reproducible": false
+        },
+        {
+          "path": "resources/plugins/craftmine.world/main.cjs",
+          "bytes": 8432,
+          "sha256": "532b571752d3ab4c449c22dfdaa60b6b9575b51341aabb3438db7deec1c11336",
+          "present": true,
+          "role": "packaged-file",
+          "packagePath": "resources/plugins/craftmine.world/main.cjs",
+          "pinnedFrom": "package-snapshot",
+          "reproducible": false
+        },
+        {
+          "path": "resources/source/CraftmineWorld-source.zip",
+          "bytes": 39149380,
+          "sha256": "019c758d450a425dd381cc3023f92b734945a0fd130337a822382325f6a8584a",
+          "present": true,
+          "role": "packaged-file",
+          "packagePath": "resources/source/CraftmineWorld-source.zip",
+          "pinnedFrom": "package-snapshot",
+          "reproducible": false
+        },
+        {
+          "path": "resources/source/build-manifest.json",
+          "bytes": 1602,
+          "sha256": "85b560c260a2d2793bc3aad46ff79bab03c7ed211106b84e84f108bfb0f74d60",
+          "present": true,
+          "role": "packaged-file",
+          "packagePath": "resources/source/build-manifest.json",
+          "pinnedFrom": "package-snapshot",
+          "reproducible": false
+        },
+        {
+          "path": "resources/git/bin/git.exe",
+          "bytes": 46480,
+          "sha256": "da240fe9bc24895b3e04150a4990b8a6ff329ecabcd8f19684c2cc310da5ef3f",
+          "present": true,
+          "role": "packaged-file",
+          "packagePath": "resources/git/bin/git.exe",
+          "pinnedFrom": "package-snapshot",
+          "reproducible": false
+        },
+        {
+          "path": "resources/git/GIT-BUNDLE.json",
+          "bytes": 65344,
+          "sha256": "052dd72f9566af92fb66ac1953b57a3f548b568d34984161924d38af630fadd9",
+          "present": true,
+          "role": "packaged-file",
+          "packagePath": "resources/git/GIT-BUNDLE.json",
+          "pinnedFrom": "package-snapshot",
+          "reproducible": false
+        },
+        {
+          "path": "resources/git/LICENSE.txt",
+          "bytes": 19125,
+          "sha256": "454649ddc02b5cc098513cea28db6592b45ac0a906386287c4d48cf8dbde651c",
+          "present": true,
+          "role": "packaged-file",
+          "packagePath": "resources/git/LICENSE.txt",
+          "pinnedFrom": "package-snapshot",
+          "reproducible": false
+        }
+      ],
+      "status": "verified",
+      "notes": "Client identity plus the packaged client documents. The Electron runtime (Craftmine World.exe, resources/app.asar) is a build output; it is pinned only when create is given --package, and those pins are package snapshots, not reproducible builds. Package snapshot pins were recorded from D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\build\\r9-restaged-preview for required package files that have no source-derived pin (pinnedFrom=package-snapshot)."
+    },
+    "engine": {
+      "id": "engine",
+      "version": "4.7.2-stable",
+      "source": {
+        "url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_win64.exe.zip",
+        "path": "desktop/godot/toolchain.lock.json",
+        "commit": null,
+        "tag": "4.7.2-stable"
+      },
+      "files": [
+        {
+          "path": "Godot_v4.7.2-stable_win64.exe.zip",
+          "bytes": 86013866,
+          "sha256": "731980f9608d61333e5baf54a2ef17210acc7a538446c0cb9969f002aca1e953",
+          "present": false,
+          "role": "editor-archive",
+          "pinnedFrom": "desktop/godot/toolchain.lock.json",
+          "cachePath": "Godot_v4.7.2-stable_win64.exe.zip",
+          "url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_win64.exe.zip"
+        },
+        {
+          "path": "editor/Godot_v4.7.2-stable_win64.exe",
+          "bytes": null,
+          "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+          "present": false,
+          "role": "editor-executable",
+          "pinnedFrom": "desktop/godot/toolchain.lock.json",
+          "cachePath": "editor/Godot_v4.7.2-stable_win64.exe"
+        }
+      ],
+      "status": "verified",
+      "notes": "Engine bytes are pinned by desktop/godot/toolchain.lock.json. The archive and executable live in the shared engine cache, never inside the repository or the package. Pass --cache <dir> to hash that cache with preflight-core checkGodotCache. Cache inspection requested: D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable",
+      "cache": {
+        "id": "godot-cache",
+        "ok": true,
+        "failures": [],
+        "warnings": [],
+        "facts": {
+          "unpackedFiles": 2,
+          "templateFiles": 4,
+          "templateVersion": "4.7.2.stable"
+        }
+      }
+    },
+    "exportTemplates": {
+      "id": "exportTemplates",
+      "version": "4.7.2-stable",
+      "source": {
+        "url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz",
+        "path": "desktop/godot/toolchain.lock.json",
+        "commit": null,
+        "tag": "4.7.2-stable"
+      },
+      "files": [
+        {
+          "path": "Godot_v4.7.2-stable_export_templates.tpz",
+          "bytes": 1281349702,
+          "sha256": "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011",
+          "present": false,
+          "role": "export-templates-archive",
+          "pinnedFrom": "desktop/godot/toolchain.lock.json",
+          "cachePath": "Godot_v4.7.2-stable_export_templates.tpz",
+          "url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz"
+        },
+        {
+          "path": "templates/web_release.zip",
+          "bytes": 10290815,
+          "sha256": "02f0dca13ed3d8343fa68f8f88ac80295562408d71aa67157e8b96ddebaa67a3",
+          "present": false,
+          "role": "web-threaded-template",
+          "pinnedFrom": "desktop/godot/toolchain.lock.json",
+          "cachePath": "templates/web_release.zip"
+        },
+        {
+          "path": "templates/web_nothreads_release.zip",
+          "bytes": 10245903,
+          "sha256": "d3ee2f08cef0cf3cf6678a6355a92a8db48ccdd35cbd2e8bfd5f0e8a0b4032a0",
+          "present": false,
+          "role": "web-single-thread-template",
+          "pinnedFrom": "desktop/godot/toolchain.lock.json",
+          "cachePath": "templates/web_nothreads_release.zip"
+        }
+      ],
+      "status": "verified",
+      "notes": "Template archives are pinned by desktop/godot/toolchain.lock.json; they live in the shared engine cache. webThreadedRelease is the preferred Web preview template (lock webPreview.preferredTemplate)."
+    },
+    "broker": {
+      "id": "broker",
+      "version": null,
+      "source": {
+        "path": "vendor/pi-desktop/target/release",
+        "commit": null,
+        "tag": null
+      },
+      "files": [],
+      "status": "absent",
+      "notes": "Native broker binaries are build outputs of vendor/pi-desktop and are absent from this tree. They are expected package files (resources/bin/*.exe) but cannot be pinned without a built binary.",
+      "packagePaths": [
+        "resources/bin/pi-desktop-host-core.exe",
+        "resources/bin/craftmine-core.exe"
+      ],
+      "probes": []
+    },
+    "bases": {
+      "first-person": {
+        "id": "base:first-person",
+        "version": "0.1.0",
+        "source": {
+          "path": "desktop/godot/bases/first-person/base_manifest.json",
+          "commit": null,
+          "tag": null
+        },
+        "files": [
+          {
+            "path": "desktop/godot/bases/first-person/.gitignore",
+            "bytes": 223,
+            "sha256": "0d396449c693021754656a7e876f2bbac9522a42cddf0da3e591b16bf239d98c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/materials/ammo_crate.tres",
+            "bytes": 123,
+            "sha256": "c24e2cdba717abce260c1e2c3cf7d05b48e14861f148ab4a539f71a61a8cbe06",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/materials/crate_wood.tres",
+            "bytes": 124,
+            "sha256": "9905461f79f608125581a290791d95c63c257ef49c5677ff95237304e84b8ce7",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/materials/pickup_kit.tres",
+            "bytes": 220,
+            "sha256": "83c19b9c7bef57f857daaed4561c8c81e60394bee0054e352b7bcabe8f19851b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/materials/pistol_body.tres",
+            "bytes": 142,
+            "sha256": "d7b39baf4f1038cc04a95e97087ab0038209a919f14772c196059ccca8b70309",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/materials/range_floor.tres",
+            "bytes": 124,
+            "sha256": "f2da6abd284c572bc3af716e996f47d3d9ebf7ab627ca2793de4a08d8d9b318e",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/materials/range_wall.tres",
+            "bytes": 125,
+            "sha256": "8f96618b4c5c60b77b2b4636d74de45994b6e3cdd28d835bdab256bf8b735f0f",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/materials/sword_blade.tres",
+            "bytes": 142,
+            "sha256": "acb6df02acf66e2530fab60dfa3294c09fbad38a6571a3384bd20c6ec0d04403",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/materials/target_plate.tres",
+            "bytes": 124,
+            "sha256": "c5edae0af7bccaceb6d8de24d334386be4f24f2ea391c8e1c9bf0eb933cfa403",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/meshes/ammo_crate.obj",
+            "bytes": 1624,
+            "sha256": "2fc6a40063be6d990328ef58ee276fadc77332abecd5d49173ebef897e19a48b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/meshes/range_crate.obj",
+            "bytes": 1169,
+            "sha256": "4d31011e2c7f077a94d1e4fe5207d62a7e51140a4901773bcd1bc8f269443d79",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/meshes/target_dummy.obj",
+            "bytes": 2999,
+            "sha256": "85733881b045534f5e250ec10bcf7379099e62c5b8ef31bb79a820a9caec5d06",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/meshes/weapon_pistol.obj",
+            "bytes": 3026,
+            "sha256": "5ed4c8dd6d283402dce43ca28953294ea48858ec9d37fa699b549067aa82d805",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/meshes/weapon_sword.obj",
+            "bytes": 2562,
+            "sha256": "cf292380be16c39ea8b092c3f81911a4feb35b9af32dceac7182889e91c23996",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/assets/provenance/ASSET_PROVENANCE.md",
+            "bytes": 2837,
+            "sha256": "3a889f7090841c72f003d22d18a017f085d9ce06459e475857fa999d8a8f3183",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/base_manifest.json",
+            "bytes": 2298,
+            "sha256": "6dc0686c87145bae47e619f833864627e30b6131ffeea3a790a9982c5a64936b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/data/balance/training_range.tres",
+            "bytes": 356,
+            "sha256": "0beff95e72cdf4c9bd4468d1acaaf5c13a5f10684399233daf8d8aaa109368b5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/data/equipment/equipment_catalog.tres",
+            "bytes": 621,
+            "sha256": "49b4dd6f09eee09deef27efbec81d64c98757deed23c699aac2dbaecde3f074c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/data/equipment/inspection_tool.tres",
+            "bytes": 773,
+            "sha256": "2513efe37e1930b973273fe04ccfd2289812f60c3ad74642919626f175defe1c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/data/equipment/pistol.tres",
+            "bytes": 1145,
+            "sha256": "7fd9521ab3ba0c4f72b05c0d0b7a1035d6041583cd2426e03a7c32ce656d9262",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/data/equipment/practice_sword.tres",
+            "bytes": 1149,
+            "sha256": "d3442c71f169f432c557cc211ace1f975aaf5c99c117e0475a296f6b962957f4",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/data/quests/range_basic.tres",
+            "bytes": 466,
+            "sha256": "573ef83a37c6c7ba3402c25a23c34d2dd3e57c73c21c3ebd282cc51a07d8dc31",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/data/ui/crosshair_melee.tres",
+            "bytes": 411,
+            "sha256": "663c80abb5ed74c00f6511fe25dd8cd069dae27225cd3f33d191b45717527b7f",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/data/ui/crosshair_precision.tres",
+            "bytes": 406,
+            "sha256": "aed9d6331d1e05d36b27d3a660ef3991c0913f2b0ac973e72be4b92059b06353",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/docs/ADR-0001-base-architecture.md",
+            "bytes": 5585,
+            "sha256": "e518069b580fb2653c1218eeeadbf2ecf7acac4c69031276792ca90b2a0f0820",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/docs/BASE_SPEC.md",
+            "bytes": 6436,
+            "sha256": "6f55d99b8b4d964baba0451570b0bdaf97bf04774e5646287b80ce0c92021e55",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/docs/MODEL_ACCEPTANCE_TASKS.md",
+            "bytes": 9074,
+            "sha256": "61f290dd155c3535659493830a8799b673049de6c25dc947831741de1372e866",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/docs/STATE_FORMAT.md",
+            "bytes": 5589,
+            "sha256": "258abdf8737d5349437305698574889e248d295f9eecd243a291d577db024fea",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/icon.svg",
+            "bytes": 525,
+            "sha256": "dea7e5179c20bcfaff795536867fe53a7bc0ce3426f7d3643ef2f2085bd86dec",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/licenses/ORIGINAL_ASSETS_LICENSE.txt",
+            "bytes": 1435,
+            "sha256": "2fddded709a512b0873dbdf7b4556f8d79c67a440571edd919810e6abe2c1825",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/project.godot",
+            "bytes": 2414,
+            "sha256": "6f6117480b5a3c25951be75f4a0fcfc66584835e4f4fa20c80e50109b97d4a50",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/README.md",
+            "bytes": 7199,
+            "sha256": "96e6b364c89aea4790eb98d9a7b33938792707fc51d46336ca5ef8f8ed99fc7b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scenes/actors/player.tscn",
+            "bytes": 1914,
+            "sha256": "eefdc2c1636b0ac4979f138e30ed3a0338244a23195e17a4a1de37bf731606fb",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scenes/actors/target_dummy.tscn",
+            "bytes": 884,
+            "sha256": "e9bec5b13ce2f79e73910f43a13f0e2c490613f4015c5cc88da94df608e1aa7e",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scenes/blank_start.tscn",
+            "bytes": 3192,
+            "sha256": "92fd0d337c86f9203ad5d9772a0d7495c818cd81de0cf9978a9785b3c1a51d3c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scenes/props/ammo_crate.tscn",
+            "bytes": 870,
+            "sha256": "53136311263bf382e71c271a037cb41e41fd43e282ba1e132f7098a7d703a6af",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scenes/props/pickup_item.tscn",
+            "bytes": 935,
+            "sha256": "6a9251f75827a9d5e2357c3aec236a9a3cada0a97c9f9174b487f289504eca5e",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scenes/props/range_crate.tscn",
+            "bytes": 694,
+            "sha256": "6a665c867014969a7e105d3b06551cb144a7b26f24ca9d939b204da83cceb051",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scenes/training_range.tscn",
+            "bytes": 7518,
+            "sha256": "a03f70a245562cfed7a5c2d91eb62ef9fa6dd3ccfcff36b49a95d97d0a597b71",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scenes/ui/hud.tscn",
+            "bytes": 2966,
+            "sha256": "dadad07a9f5d9538be0ba02e018bde72348250fe308f6c37d3bddccefe2a9fc1",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/adapters/base_ops.gd",
+            "bytes": 6394,
+            "sha256": "c1d1963b079636dccc9ffa0b2d1eb99f1fb082672919497db9402dcc969f2076",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/adapters/preview_bridge.gd",
+            "bytes": 2413,
+            "sha256": "41e4589a14433d881f1e0439bf38ac1915906149e3fcbdec5d7bc0ad1a0b36ba",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/adapters/probe_runner.gd",
+            "bytes": 3150,
+            "sha256": "ea263f8f7eac652d5b22af1a7f6f5b206e094b4fe837202b5628f946fb01486c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/aim_query.gd",
+            "bytes": 3661,
+            "sha256": "fc98091abbb02d43db75742df06453b752448b860a5b77370f99610a614f6815",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/ammo_crate.gd",
+            "bytes": 1745,
+            "sha256": "ac7d374b7835f9364a4cba57b1403238bac4fe44d57217afb35f5932636e53a5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/attack_dispatcher.gd",
+            "bytes": 2927,
+            "sha256": "6af6085ed8a5ee072e9f2b4c225775a6fe7a2bc222167dd3b95e2160ef8b5109",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/balance_profile.gd",
+            "bytes": 1012,
+            "sha256": "b9b01a5d1c5880959503e74d5cddf2b047dad3ed32c9d0aa9dcffaf12f63a527",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/base_world.gd",
+            "bytes": 7262,
+            "sha256": "6afe2d82887cc4d829f5543c44c8b038c109ee20e4212dcf417ca04de92d4966",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/camera_rig.gd",
+            "bytes": 1578,
+            "sha256": "76a8c99e34b5fae49eb7bb382708469a9ca05a564a61c582f73fd8f26cc3f36c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/equipment_catalog.gd",
+            "bytes": 1841,
+            "sha256": "9269b73c71cfe315a0ca7ebb2b0b85f6324c4bdecd3bfbbf44b26ce8f4d50780",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/equipment_definition.gd",
+            "bytes": 3420,
+            "sha256": "28a311cadc1626649a6751fe84ee86f641c92f91b761d9b800ab5e3918e313be",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/equipment_state.gd",
+            "bytes": 10700,
+            "sha256": "10c4cd49fb01d3e8dbd82ea9da93de708629cbf90e101a2dbba1d14c7072f07c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/equipment_visuals.gd",
+            "bytes": 1944,
+            "sha256": "15af90e8a20169f189996f1300f580b74afbc58a49c419b4c714657cc7f85abc",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/interactable.gd",
+            "bytes": 933,
+            "sha256": "e9bb5ef3a8137c80ba3315f6dd5dc643b55dc2ebe83af8d61d050d2d0dd59552",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/inventory.gd",
+            "bytes": 2339,
+            "sha256": "60fa6fb82dffdbb6347ba6221dddfbb3e366c2d57a935a50149fb3a50f017baf",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/melee_attack.gd",
+            "bytes": 3754,
+            "sha256": "c44c3373376c57ffb1538d576e943e2e535723f8a8f41950230ec34603c55203",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/pickup_item.gd",
+            "bytes": 1419,
+            "sha256": "80c28cd8b30245c91f14a50d9f8e8466826e29657bef44a79bea7490610ae72d",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/player_controller.gd",
+            "bytes": 5869,
+            "sha256": "bd780724d1ce8ab5bb3e07ab839711cbf33c05edccef3c741abcd81d840cc34c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/quest_definition.gd",
+            "bytes": 1292,
+            "sha256": "0607b3905a7700c9ef43c01560c9ea42af5529bd60694940135b06287de9b1af",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/quest_tracker.gd",
+            "bytes": 6041,
+            "sha256": "456f381becd6b302087b1b2e6720a44dc06e35d539cad3a6226f5966dfc83a43",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/ranged_attack.gd",
+            "bytes": 3330,
+            "sha256": "3f2ab846a28c748ca4c777ba556e760958116e3df05b86567d43e521cb5f9dd3",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/save_store.gd",
+            "bytes": 4027,
+            "sha256": "d85e1ada777a307bb45e7a089c10ad21c1d016c9eb9a2d467b54323461104ef8",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/target_dummy.gd",
+            "bytes": 4155,
+            "sha256": "30e03144b0b6953e56e1bdd878880072142e14786985aec36b588b94c28dd4b8",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/core/world_state.gd",
+            "bytes": 6982,
+            "sha256": "ca097b794611a86cbd98ce3a35073943dc98d7d9252ad84a63899d20f2bbc9bc",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/ui/crosshair_style.gd",
+            "bytes": 1312,
+            "sha256": "d6c7622573196940413b5378ee4246bb3a15a9068a40104744cc7b512d064f20",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/ui/crosshair.gd",
+            "bytes": 6057,
+            "sha256": "ac731aa902583a4ee465180ca342e114fc702633df352b6b7314747bbff8d169",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/scripts/ui/hud.gd",
+            "bytes": 7656,
+            "sha256": "c5a59d95ad98962e7bd82c58e7b6d7ab6db66dcc7b032adadb3f491ea5436956",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/tests/acceptance_headless.mjs",
+            "bytes": 27991,
+            "sha256": "a65c245090c4408473fdddf4f8c6b1efb9b5d4bf0a36f1ad5ad797943ae7b65b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/tests/acceptance_web.mjs",
+            "bytes": 19555,
+            "sha256": "aac1a9ae0b8b949f019e4d15c2f797a86e070549f304cc36d8f04da732c2ea66",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/tests/export_web.mjs",
+            "bytes": 4619,
+            "sha256": "fbf190d686f2dcaf6fcfbde5dfb9266cafe64fce551d4dff265b78c9baa81b42",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/tests/web_host/index.html",
+            "bytes": 5560,
+            "sha256": "88f7d07a84555101662c62784fdd2fc14786b032cf05ddf855866790a6a3bf0b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/first-person/tools/generate_meshes.mjs",
+            "bytes": 5918,
+            "sha256": "e27141f2b716b8467d9a054884ee53f6960e6e292f99904096af2d36969810ec",
+            "present": true,
+            "role": "base-file"
+          }
+        ],
+        "status": "verified",
+        "notes": "baseId=first-person; version=0.1.0; manifest=desktop/godot/bases/first-person/base_manifest.json; files=72. Aggregate content hash covers every regular file under the base directory (repository-relative path, bytes, sha256), sorted by path. No links inside the base directory. Delivery provenance manifest desktop/delivery/base-assets/bases-first-person.json pins the base delivery bytes.",
+        "baseId": "first-person",
+        "engine": {
+          "name": "godot",
+          "version": "4.7.2-stable",
+          "renderer": "gl_compatibility",
+          "scriptLanguage": "gdscript"
+        },
+        "fileCount": 72,
+        "aggregateSha256": "96168ce31abdf4e3bbead7278ab6526284278b4a0a19aa7179c4a42f560b1cad",
+        "links": [],
+        "provenance": {
+          "path": "desktop/delivery/base-assets/bases-first-person.json",
+          "bytes": 53157,
+          "sha256": "3d872a734c09a71fb127e19236a95a15c753ae4fac6b4876d0a9f877c2598c74",
+          "present": true,
+          "role": "delivery-provenance",
+          "declared": {
+            "format": "craftmine.base-assets/1",
+            "baseId": "first-person",
+            "sourceDirectory": "desktop/godot/bases/first-person",
+            "engine": {
+              "version": "4.7.2-stable",
+              "renderer": "gl_compatibility",
+              "language": "gdscript"
+            },
+            "sourceDirectoryFiles": 72,
+            "sourceDirectoryAggregateSha256": "96168ce31abdf4e3bbead7278ab6526284278b4a0a19aa7179c4a42f560b1cad"
+          }
+        }
+      },
+      "side-view": {
+        "id": "base:side-view",
+        "version": "1.0.0",
+        "source": {
+          "path": "desktop/godot/bases/side-view/manifest.json",
+          "commit": null,
+          "tag": null
+        },
+        "files": [
+          {
+            "path": "desktop/godot/bases/side-view/.gitignore",
+            "bytes": 126,
+            "sha256": "ba04a25a941138dd7deded088f7254c509280837bb7d7c11c2d19ee6c96c6f11",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/docs/assets-and-provenance.md",
+            "bytes": 991,
+            "sha256": "d007c9e09ae72422206f999e0a013dcf73f189d3d6a2aa81ee3ce4336307fa78",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/docs/base-spec.md",
+            "bytes": 5840,
+            "sha256": "88c8ec9da3e599fc581c41354bf4c704fb844497c2d5d2751a48af3e6ed63778",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/docs/host-integration.md",
+            "bytes": 4744,
+            "sha256": "19eb1a9e6da14cabbc72f40e4e92855975311d88d2ebe36edb78c77ce4ec7c78",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/docs/sandbox-branch-interface.md",
+            "bytes": 4033,
+            "sha256": "7b76f994be81a91ae45bf3a424cc5c82823659576cafd298ee689b619790f04b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/manifest.json",
+            "bytes": 2887,
+            "sha256": "fd09410510beae7b8b18e282332f7026c95e1298d8955ae0c0843b38b2b17cc0",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/params/side_view_params.json",
+            "bytes": 1679,
+            "sha256": "fe804eed0415ef9635d481d44ad114c7ca0d4e5cc6ec77f19a5b8595ed61de06",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/project.godot",
+            "bytes": 1251,
+            "sha256": "27c7e16e8672f7f974daac8f5d265a1c564dd10ba12bb97fe4849ea0fa9f9274",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/README.md",
+            "bytes": 4590,
+            "sha256": "12864c7e1e28dcc9099e93a0d53c6b4395eac79b24cdfa747230853363f51d39",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scenes/main.tscn",
+            "bytes": 183,
+            "sha256": "077eac171195462e4fd28cfa642f591fdfd178743281ec94325cccda9de0dea3",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/player/human_input_source.gd",
+            "bytes": 501,
+            "sha256": "b36175bbc02dcbeaee09ddf483328927c9e1735e77308ba4f859cb381f6d6597",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/player/human_input_source.gd.uid",
+            "bytes": 20,
+            "sha256": "6137e97a7ffff37e2864bfc685bc5ed9eb19652f0e5877e4148ee74ef33651e5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/player/input_source.gd",
+            "bytes": 700,
+            "sha256": "bd6a12ce4f1389a2e583bcba5970600e7fc7420452b28158de3d757981bc7cd5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/player/input_source.gd.uid",
+            "bytes": 21,
+            "sha256": "ae19fb1713364a72b714d96420f355eee84dc5302a6db0871cb3984113bb8808",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/player/scripted_input_source.gd",
+            "bytes": 3673,
+            "sha256": "d1e4a37a2fd96838165546dc2e74c6acdcb081d06047cf0a5e2fd68f5a3961c6",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/player/scripted_input_source.gd.uid",
+            "bytes": 21,
+            "sha256": "fa3467ac4e70f04d6de89acca2be42a193fc9cc0c146cd69f19aef31459313ed",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/player/side_view_player.gd",
+            "bytes": 12119,
+            "sha256": "2194ad1ce2427c86bec2219a791e0531cf4f1144a656149078a00306eaa14d05",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/player/side_view_player.gd.uid",
+            "bytes": 20,
+            "sha256": "ea46cf80192ce7309450ea42a7be2849b1a5b4e28a403616532bb43f2cde8e13",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/probe/headless_verifier.gd",
+            "bytes": 4107,
+            "sha256": "991416fa2f67d8ba60924299d835012ba9435d8693c425f89f9bee91b60b504b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/probe/headless_verifier.gd.uid",
+            "bytes": 21,
+            "sha256": "e73885eb0d20f145182ac5b1237119916f840487cbdb47df09cb0fe1a5bc79d0",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/runtime/main.gd",
+            "bytes": 5046,
+            "sha256": "52b8f3e71098691ef4f2f0d541c2e040640c03bdf965523a0bfb26b2cf7ac485",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/runtime/main.gd.uid",
+            "bytes": 20,
+            "sha256": "a049717bd025ab8ac911a2abc460c37066b6d51fee84b40d06016430dcee55c0",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/runtime/save_store.gd",
+            "bytes": 5647,
+            "sha256": "2a6e556eee230a9961ba70df4762cbeebc33463c0212fddc264714d9f7fd5867",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/runtime/save_store.gd.uid",
+            "bytes": 20,
+            "sha256": "c1d6e0ac87c23e09e9c05891c3f3a3773c1d94ac8b5d51aec26d2c2ddc8cd703",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/runtime/side_view_config.gd",
+            "bytes": 5972,
+            "sha256": "80cd3440b4855eacd55f2248ea94d324e40610b9542b8e7a4d442bfbce487b59",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/runtime/side_view_config.gd.uid",
+            "bytes": 20,
+            "sha256": "15993d3726af5c6ca95984b340ef765c0ebabcc62bf6db059090767acd665219",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/runtime/side_view_runtime.gd",
+            "bytes": 4943,
+            "sha256": "755afa8cb4a1338b49cd00fb2f3a435b31f7d4af26d90f262a58956326ee3a37",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/runtime/side_view_runtime.gd.uid",
+            "bytes": 20,
+            "sha256": "ab986782dd02723e08e08a7824587866eb170073753ce458e3272378ba425596",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/runtime/world_state.gd",
+            "bytes": 10472,
+            "sha256": "cdcb8cc761273979db8b7924f3aad838df32e534baa83fa883b8193b0529f36d",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/runtime/world_state.gd.uid",
+            "bytes": 21,
+            "sha256": "e2797796af2b39f40580ac31fad3b40f42d3103bc41487b4d810705f20e1b10f",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/checkpoint.gd",
+            "bytes": 1788,
+            "sha256": "a2375551613947ad6f6329fa9634a23452f4866e7b83f183994544b109e43055",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/checkpoint.gd.uid",
+            "bytes": 20,
+            "sha256": "c8d69134b066abf550e21523d1e2c37db005ec2a584a09b214140935ef42a4b8",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/hazard.gd",
+            "bytes": 1888,
+            "sha256": "51514404916a65d61807c43f6f3e9ef8c6ba870e3a293bee06f5f6080901c33c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/hazard.gd.uid",
+            "bytes": 21,
+            "sha256": "e1879cd684273197087e93f1310cb94b799331b71fc6d6c1f26089b908f697d3",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/pickup.gd",
+            "bytes": 2892,
+            "sha256": "c4217da4e58d8773ed5eb64608e3c09b774492fa0eb115ccb52885f99d0dba81",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/pickup.gd.uid",
+            "bytes": 21,
+            "sha256": "79720ec191558afc61892fc3e7bd1ef0e4df85ade8e795f7e6047e2b7526f9c1",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/room_door.gd",
+            "bytes": 2969,
+            "sha256": "346164484fc167798d944bba38bab01481dddc01b8c453453832f552d118bb13",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/room_door.gd.uid",
+            "bytes": 20,
+            "sha256": "65383e3004fe2e04fb41c8eb9f48cfc48a3b0d0565b21763c1116d9d6948a93b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/room_manager.gd",
+            "bytes": 6565,
+            "sha256": "e60c9f8b39bd33bcf07304755ab983194f77856ffa49326e16c947c822931172",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/room_manager.gd.uid",
+            "bytes": 20,
+            "sha256": "1200648dde348fe87fa14db53f9b33471b61afbe368327cc85199633f4d92f85",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/room.gd",
+            "bytes": 6136,
+            "sha256": "0bdb9a70ee4f449b2e42e7727eae47b9aa267d0618fbf59060bcf90a75f95a86",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/room.gd.uid",
+            "bytes": 21,
+            "sha256": "048b12e2e591bdb1312269581c418c8018a2daa2a9dfbad2d9f422d3d9c96296",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/target.gd",
+            "bytes": 3196,
+            "sha256": "bbd1b395111e3511eaa5d7a00c3ddd82edbae88059acb4d38755193f1e4bd506",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/scripts/world/target.gd.uid",
+            "bytes": 21,
+            "sha256": "64325657b3624dc87b7a1bc85c84b3fdfdf6dce4914cb74fcf3884c1513864d0",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/tools/gate-metrics.mjs",
+            "bytes": 4408,
+            "sha256": "6a5620b3173de5159535dd6f8f2e84435851796bc4be83a725915d4f1fe4b994",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/tools/new-world.mjs",
+            "bytes": 3992,
+            "sha256": "460ba27d49b945001cc8117228f0e012c408b4bc3b553c445202ed63bfb814c5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/tools/plans/attempt_vault_locked.json",
+            "bytes": 801,
+            "sha256": "661af9920a70f9cb1725ab33d6310132cc997eab8e633c012de7e00aa8711fb0",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/tools/plans/blank_basic.json",
+            "bytes": 692,
+            "sha256": "a93d1a5a67717b657ed0634bc62513e31af9f467d3e94b609104bc17c611e753",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/tools/plans/enter_vault.json",
+            "bytes": 805,
+            "sha256": "63474bb0a0396a434b5d25175cdb85e5748bbe1005ee6afc7e6d1efb272441ae",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/tools/plans/get_ability.json",
+            "bytes": 696,
+            "sha256": "11711e9ca1e29d48c251bb0180f4e1fa6fd6b5d1d90b971e75a94be43755cdb4",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/tools/plans/revisit_rooms.json",
+            "bytes": 538,
+            "sha256": "fcef010e0743167bfb9e3de5ae06574572c6baba42295133289529be436dc630",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/tools/plans/travel_to_ruins.json",
+            "bytes": 606,
+            "sha256": "aac61f15b7df87602b4119db6b5d91fe6593d1185e04c699cab670641599f68c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/tools/plans/walk_into_spikes.json",
+            "bytes": 476,
+            "sha256": "6838e06b38b1a31d71e05bc6b8e39c872224cabacb7c18ed537dc7699258e76e",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/tools/verify.mjs",
+            "bytes": 20438,
+            "sha256": "3a756247233c664640ef940a865fe04108e8b046876ce3e9e69b193bc06a6dfa",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/worlds/blank/world.json",
+            "bytes": 1549,
+            "sha256": "10bd9b19eddccab7a507de47de7eb93829efb406a7507ce58a51fa944f18ad68",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/side-view/worlds/ruins/world.json",
+            "bytes": 5771,
+            "sha256": "7ec289a8d61ade1ec345b85aa11f9c5b8e362f7a8f3080a613a764da99c75cde",
+            "present": true,
+            "role": "base-file"
+          }
+        ],
+        "status": "verified",
+        "notes": "baseId=side-view; version=1.0.0; manifest=desktop/godot/bases/side-view/manifest.json; files=56. Aggregate content hash covers every regular file under the base directory (repository-relative path, bytes, sha256), sorted by path. No links inside the base directory. Delivery provenance manifest desktop/delivery/base-assets/bases-side-view.json pins the base delivery bytes.",
+        "baseId": "side-view",
+        "engine": {
+          "name": "godot",
+          "version": "4.7.2-stable",
+          "renderer": "gl_compatibility",
+          "scriptLanguage": "GDScript"
+        },
+        "fileCount": 56,
+        "aggregateSha256": "f6f933057428d6ff3b04587b5eebeeaf83f9b9a6c38ba8edf5d22ae9047a305f",
+        "links": [],
+        "provenance": {
+          "path": "desktop/delivery/base-assets/bases-side-view.json",
+          "bytes": 41259,
+          "sha256": "e90f3e09d42792cb06e15aac1617ca70512827ff674ed1ec1bcd572e8ad85c9c",
+          "present": true,
+          "role": "delivery-provenance",
+          "declared": {
+            "format": "craftmine.base-assets/1",
+            "baseId": "side-view",
+            "sourceDirectory": "desktop/godot/bases/side-view",
+            "engine": {
+              "version": "4.7.2-stable",
+              "renderer": "gl_compatibility",
+              "language": "GDScript"
+            },
+            "sourceDirectoryFiles": 56,
+            "sourceDirectoryAggregateSha256": "f6f933057428d6ff3b04587b5eebeeaf83f9b9a6c38ba8edf5d22ae9047a305f"
+          }
+        }
+      },
+      "top-down": {
+        "id": "base:top-down",
+        "version": "1.0.0",
+        "source": {
+          "path": "desktop/godot/bases/top-down/manifest.json",
+          "commit": null,
+          "tag": null
+        },
+        "files": [
+          {
+            "path": "desktop/godot/bases/top-down/.gitattributes",
+            "bytes": 32,
+            "sha256": "23302dd90b8bb74b44d365fafef8df20f809b61cb347023951ecf60a88a29651",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/.gitignore",
+            "bytes": 112,
+            "sha256": "5088890811f580e6c308b404453abec78e48eb3c8c04b12180b06093a5bb3f59",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/ASSET_SOURCES.md",
+            "bytes": 2250,
+            "sha256": "0ef4bc2eef86c99ba67400519862776b822ffe51b5bce6c450bf723894ab9fd3",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/assets/ASSET_MANIFEST.json",
+            "bytes": 1214,
+            "sha256": "dfc311e90385b7928ddbdd4ef55266a47abdb46b52eb54b1f1895d55121101f2",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/assets/characters/npc_sheet.png",
+            "bytes": 354,
+            "sha256": "5cd5d625a5c3f6d98d79ee0ef943ebdaa80330bbd5acac8b77de1eb6d650d324",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/assets/characters/player_sheet.png",
+            "bytes": 354,
+            "sha256": "cadc92f42970367386024de6249e8f03a4c2f0ed3bb7961b2e0e09ac8a8c1c11",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/assets/characters/shopkeeper_sheet.png",
+            "bytes": 351,
+            "sha256": "f183a595fcd620e5df4959074663646835e900ae7e3b05c8df8e4b94b850bef4",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/assets/tiles/town_tiles.png",
+            "bytes": 1238,
+            "sha256": "11f1e95532e9da84855627439e88fa190538e75748c460a3919a6fcca50f7169",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/assets/tiles/town_tileset.tres",
+            "bytes": 687,
+            "sha256": "c6bf78a941f4082cc24ba665cc73fb1438d3b130df46ee6f5d1d093c6b9e5b10",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/icon.svg",
+            "bytes": 396,
+            "sha256": "9bf6bb63d15442c473f9968f394812ca6d95f84dfdefdd3b866e5876bae5431e",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/project.godot.template",
+            "bytes": 965,
+            "sha256": "be9f5736658f59c7fbf64d6e8b3a34eb9fb86d34f0e28a96d8993e01f71b0e33",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/base_contract.gd",
+            "bytes": 915,
+            "sha256": "bf5f665cf1d9568d4a5e0ce41895596095f6a28e90f1aac0c25e33636cfabb1c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/directional_sprite.gd",
+            "bytes": 1158,
+            "sha256": "d5282bdcafd8bc82a561d1922a87517f4dbfd674e5c3a735a3155f578ef95197",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/door_zone.gd",
+            "bytes": 766,
+            "sha256": "cad57353104e2ab8ddc0d109f1e83bc9d78f1093026591e582c00cd5baa74b88",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/game.gd",
+            "bytes": 15606,
+            "sha256": "5a9a85e6c4d5904debf93f7e82185fd77f33131c33677c769ac10add0d9c71ea",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/gather_zone.gd",
+            "bytes": 1195,
+            "sha256": "2032d10f3a3c6b907ba72a6a307c132371dc7075349acae4d80fc9202238ac04",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/interactable.gd",
+            "bytes": 920,
+            "sha256": "2f57eb36dc7f346c7fab8db61d654af652fd3c6eea89650102f84641395e4873",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/map_renderer.gd",
+            "bytes": 4908,
+            "sha256": "7b9f5e78fa688685bd938cf48a94ae991132afea1379e987ff1827e63d93e20f",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/npc.gd",
+            "bytes": 1273,
+            "sha256": "f46c3b930bd64bd6c065c775d0862e07828ffdd372226e9e8ed190911692213d",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/player.gd",
+            "bytes": 3017,
+            "sha256": "baa3dcf54f86b9027cfdee11ee0c82421740bdfda84b43b553da0ddc71ff06d3",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/probe.gd",
+            "bytes": 10587,
+            "sha256": "fe200494489a4f687e60732353a292023914a142366f801221b595bb1ba1dbff",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/quest_manager.gd",
+            "bytes": 4426,
+            "sha256": "a38645c0447def7e56a3bef6ecaf8f904dbfde5e46b1727ca960839f4d589bf5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/save_system.gd",
+            "bytes": 4130,
+            "sha256": "c51809f56f2efc95a70abde4cfdeeb49889005f685516b1bce800e02d3386cff",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/shop.gd",
+            "bytes": 2375,
+            "sha256": "cfcb973873967c0cf3603408c1d0dffa6742146bc6356a589fb8d78d76a283a6",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/spawn_marker.gd",
+            "bytes": 178,
+            "sha256": "4dae551e7969ce5118bd0215970f8ff4545a0eb952bb1d224e5809bdde44cfdb",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/world_root.gd",
+            "bytes": 330,
+            "sha256": "ccb5822d5fb3ed4cb437706d390b1371aafa675bf890484e89edd2088a8482a3",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/world_state.gd",
+            "bytes": 13421,
+            "sha256": "86e9ac26f99ae28b1150669522662308a1a31e355b4a11f2dab3006afc74efd0",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/core/scripts/zone.gd",
+            "bytes": 1047,
+            "sha256": "c7ba39f2fdef7d965ad9de771321d4d8c747c3459c2c11c9d4182f72203e83d6",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/docs/ADR-0001-top-down-base.md",
+            "bytes": 5803,
+            "sha256": "aceb1d0674be6f6bfe1c7ea9d8d11f30312d9d1ded993596900440836c8c3516",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/docs/ADR-0002-saved-scene-routing.md",
+            "bytes": 1505,
+            "sha256": "6e76b2d3b71f3acc4adf22885ea4ceb9adb9e7e8567b8736beca458f552511c9",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/docs/INTERFACE_BC.md",
+            "bytes": 6719,
+            "sha256": "a513bdc9bced03596eb91d79865c308a59340c5fb007289f86da858e5f5f4e42",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/docs/SPEC.md",
+            "bytes": 9545,
+            "sha256": "c32c2efb396914aa4e5045b98e21720829e896452bfae403dad387916629f868",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/manifest.json",
+            "bytes": 1258,
+            "sha256": "de322a5152b8646c31174b5f553e56187b3eb7aad53e81a19179e1a139f0ed3c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/README.md",
+            "bytes": 6317,
+            "sha256": "d865feda9b20fdbc022f2924e8184ced6e67c66b86049e75673de8f35dd77762",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/blank/data/items.json",
+            "bytes": 3,
+            "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/blank/data/maps/blank-room.json",
+            "bytes": 4287,
+            "sha256": "b38441c22e3d856f9b20f528cf8a877c385dd13031e7447b6ea5a779db53f829",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/blank/scenes/world.tscn",
+            "bytes": 2002,
+            "sha256": "5bb7ed7e95ae1239a3f3f7bbc97a4a1eebde81a287bb2a6a9a31f990f2f6ae7b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/blank/world.json.template",
+            "bytes": 623,
+            "sha256": "cb1b4bdd95b69825ca7c5db654f99dc81d6a1ebc6ca21a5515e22a26d1757e35",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/town/data/items.json",
+            "bytes": 276,
+            "sha256": "fe4f4156cc0609c60f180668dc5fe664d78f2119549dd186c02380c9c936db3c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/town/data/maps/town-overworld.json",
+            "bytes": 5999,
+            "sha256": "44a124949065af49e356ccf0d8a2ebce5f187405e5463ad635cfb97414eb44bf",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/town/data/maps/town-shop-interior.json",
+            "bytes": 3923,
+            "sha256": "ef9ce2b35408953566a3133290ee3a02e7b3849eb943d932a1a001ced7d02cc0",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/town/data/npcs/mira.json",
+            "bytes": 311,
+            "sha256": "910b028ac4356ea9c32168be455fe5fbf405cf831431463029307e74232f2d9d",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/town/data/npcs/shopkeeper.json",
+            "bytes": 166,
+            "sha256": "8b005a6327aa59b1c6de63e404f1e83dcab137ed32723a8609ea16fd723136f5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/town/data/quests/herb-delivery.json",
+            "bytes": 197,
+            "sha256": "44ce48f79d1eca1d05fbf909084896a77e0dacd5729e8e3ed402b6fbea827abc",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/town/data/shops/general.json",
+            "bytes": 253,
+            "sha256": "41749473c7da58165fa9d36b1033aa20cb1a4c89fdfc81744299fcb3776fab54",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/town/scenes/overworld.tscn",
+            "bytes": 3971,
+            "sha256": "f6900986e9ff8cd1b39cb9c37b7b3c36de8d12248d06c472de1fe4d2417487b5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/town/scenes/shop_interior.tscn",
+            "bytes": 3848,
+            "sha256": "839f1c67078f1e713d8fedc3ef1a983bb4cfde0619330eb52b22b08dff92d466",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/templates/town/world.json.template",
+            "bytes": 969,
+            "sha256": "2f9d05604f233bf1722efeb3757506e98269530b6f3a18d154d67bb3642e001b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/tools/capture-web.mjs",
+            "bytes": 12039,
+            "sha256": "935e401bf06554292f9cc947f76c17574e30eba25263e715928859b6e3b9885c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/tools/check-sync.mjs",
+            "bytes": 3518,
+            "sha256": "b82e682aa7f4459fb89d869d7033d047498e78fb2027792480362dd8081926a7",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/tools/make-assets.mjs",
+            "bytes": 15995,
+            "sha256": "e31b684c2a546fb75432ce24532bc45a96b16e79ce6ece080241d456beb88d49",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/tools/new-world.mjs",
+            "bytes": 9344,
+            "sha256": "76e561a575335ec87700108c6f3eed437149cc8658048fafe987f08249d53413",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/tools/verify.mjs",
+            "bytes": 32019,
+            "sha256": "057cc582c23e26b57eb9ede62bd95c1f1345882190caaaa961034932adc78b20",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/assets/ASSET_MANIFEST.json",
+            "bytes": 1214,
+            "sha256": "dfc311e90385b7928ddbdd4ef55266a47abdb46b52eb54b1f1895d55121101f2",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/assets/characters/npc_sheet.png",
+            "bytes": 354,
+            "sha256": "5cd5d625a5c3f6d98d79ee0ef943ebdaa80330bbd5acac8b77de1eb6d650d324",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/assets/characters/player_sheet.png",
+            "bytes": 354,
+            "sha256": "cadc92f42970367386024de6249e8f03a4c2f0ed3bb7961b2e0e09ac8a8c1c11",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/assets/characters/shopkeeper_sheet.png",
+            "bytes": 351,
+            "sha256": "f183a595fcd620e5df4959074663646835e900ae7e3b05c8df8e4b94b850bef4",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/assets/tiles/town_tiles.png",
+            "bytes": 1238,
+            "sha256": "11f1e95532e9da84855627439e88fa190538e75748c460a3919a6fcca50f7169",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/assets/tiles/town_tileset.tres",
+            "bytes": 687,
+            "sha256": "c6bf78a941f4082cc24ba665cc73fb1438d3b130df46ee6f5d1d093c6b9e5b10",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/data/items.json",
+            "bytes": 3,
+            "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/data/maps/blank-room.json",
+            "bytes": 4287,
+            "sha256": "b38441c22e3d856f9b20f528cf8a877c385dd13031e7447b6ea5a779db53f829",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/icon.svg",
+            "bytes": 396,
+            "sha256": "9bf6bb63d15442c473f9968f394812ca6d95f84dfdefdd3b866e5876bae5431e",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/project.godot",
+            "bytes": 998,
+            "sha256": "403f05c2ceac1d5231b0aba27435bd15ceb6bcaf09084ae3bdf556257b9a08c3",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scenes/world.tscn",
+            "bytes": 2002,
+            "sha256": "5bb7ed7e95ae1239a3f3f7bbc97a4a1eebde81a287bb2a6a9a31f990f2f6ae7b",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/base_contract.gd",
+            "bytes": 915,
+            "sha256": "bf5f665cf1d9568d4a5e0ce41895596095f6a28e90f1aac0c25e33636cfabb1c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/directional_sprite.gd",
+            "bytes": 1158,
+            "sha256": "d5282bdcafd8bc82a561d1922a87517f4dbfd674e5c3a735a3155f578ef95197",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/door_zone.gd",
+            "bytes": 766,
+            "sha256": "cad57353104e2ab8ddc0d109f1e83bc9d78f1093026591e582c00cd5baa74b88",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/game.gd",
+            "bytes": 15606,
+            "sha256": "5a9a85e6c4d5904debf93f7e82185fd77f33131c33677c769ac10add0d9c71ea",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/gather_zone.gd",
+            "bytes": 1195,
+            "sha256": "2032d10f3a3c6b907ba72a6a307c132371dc7075349acae4d80fc9202238ac04",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/interactable.gd",
+            "bytes": 920,
+            "sha256": "2f57eb36dc7f346c7fab8db61d654af652fd3c6eea89650102f84641395e4873",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/map_renderer.gd",
+            "bytes": 4908,
+            "sha256": "7b9f5e78fa688685bd938cf48a94ae991132afea1379e987ff1827e63d93e20f",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/npc.gd",
+            "bytes": 1273,
+            "sha256": "f46c3b930bd64bd6c065c775d0862e07828ffdd372226e9e8ed190911692213d",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/player.gd",
+            "bytes": 3017,
+            "sha256": "baa3dcf54f86b9027cfdee11ee0c82421740bdfda84b43b553da0ddc71ff06d3",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/probe.gd",
+            "bytes": 10587,
+            "sha256": "fe200494489a4f687e60732353a292023914a142366f801221b595bb1ba1dbff",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/quest_manager.gd",
+            "bytes": 4426,
+            "sha256": "a38645c0447def7e56a3bef6ecaf8f904dbfde5e46b1727ca960839f4d589bf5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/save_system.gd",
+            "bytes": 4130,
+            "sha256": "c51809f56f2efc95a70abde4cfdeeb49889005f685516b1bce800e02d3386cff",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/shop.gd",
+            "bytes": 2375,
+            "sha256": "cfcb973873967c0cf3603408c1d0dffa6742146bc6356a589fb8d78d76a283a6",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/spawn_marker.gd",
+            "bytes": 178,
+            "sha256": "4dae551e7969ce5118bd0215970f8ff4545a0eb952bb1d224e5809bdde44cfdb",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/world_root.gd",
+            "bytes": 330,
+            "sha256": "ccb5822d5fb3ed4cb437706d390b1371aafa675bf890484e89edd2088a8482a3",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/world_state.gd",
+            "bytes": 13421,
+            "sha256": "86e9ac26f99ae28b1150669522662308a1a31e355b4a11f2dab3006afc74efd0",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/scripts/base/zone.gd",
+            "bytes": 1047,
+            "sha256": "c7ba39f2fdef7d965ad9de771321d4d8c747c3459c2c11c9d4182f72203e83d6",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/world-build.json",
+            "bytes": 5387,
+            "sha256": "58f2ad6beb6a9d9e79a291825c43053788ede6abc6ad04b47177bf96f2512846",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/blank/world.json",
+            "bytes": 648,
+            "sha256": "7ffcfe9823188426ce4f8de7aff8a3b57bff8d33220c1e8c824cf1fb0f59967d",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/assets/ASSET_MANIFEST.json",
+            "bytes": 1214,
+            "sha256": "dfc311e90385b7928ddbdd4ef55266a47abdb46b52eb54b1f1895d55121101f2",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/assets/characters/npc_sheet.png",
+            "bytes": 354,
+            "sha256": "5cd5d625a5c3f6d98d79ee0ef943ebdaa80330bbd5acac8b77de1eb6d650d324",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/assets/characters/player_sheet.png",
+            "bytes": 354,
+            "sha256": "cadc92f42970367386024de6249e8f03a4c2f0ed3bb7961b2e0e09ac8a8c1c11",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/assets/characters/shopkeeper_sheet.png",
+            "bytes": 351,
+            "sha256": "f183a595fcd620e5df4959074663646835e900ae7e3b05c8df8e4b94b850bef4",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/assets/tiles/town_tiles.png",
+            "bytes": 1238,
+            "sha256": "11f1e95532e9da84855627439e88fa190538e75748c460a3919a6fcca50f7169",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/assets/tiles/town_tileset.tres",
+            "bytes": 687,
+            "sha256": "c6bf78a941f4082cc24ba665cc73fb1438d3b130df46ee6f5d1d093c6b9e5b10",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/data/items.json",
+            "bytes": 276,
+            "sha256": "fe4f4156cc0609c60f180668dc5fe664d78f2119549dd186c02380c9c936db3c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/data/maps/town-overworld.json",
+            "bytes": 5999,
+            "sha256": "44a124949065af49e356ccf0d8a2ebce5f187405e5463ad635cfb97414eb44bf",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/data/maps/town-shop-interior.json",
+            "bytes": 3923,
+            "sha256": "ef9ce2b35408953566a3133290ee3a02e7b3849eb943d932a1a001ced7d02cc0",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/data/npcs/mira.json",
+            "bytes": 311,
+            "sha256": "910b028ac4356ea9c32168be455fe5fbf405cf831431463029307e74232f2d9d",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/data/npcs/shopkeeper.json",
+            "bytes": 166,
+            "sha256": "8b005a6327aa59b1c6de63e404f1e83dcab137ed32723a8609ea16fd723136f5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/data/quests/herb-delivery.json",
+            "bytes": 197,
+            "sha256": "44ce48f79d1eca1d05fbf909084896a77e0dacd5729e8e3ed402b6fbea827abc",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/data/shops/general.json",
+            "bytes": 253,
+            "sha256": "41749473c7da58165fa9d36b1033aa20cb1a4c89fdfc81744299fcb3776fab54",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/icon.svg",
+            "bytes": 396,
+            "sha256": "9bf6bb63d15442c473f9968f394812ca6d95f84dfdefdd3b866e5876bae5431e",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/project.godot",
+            "bytes": 1039,
+            "sha256": "5e023f49f4911566d9355e02341d437f9d67d2627cfc466eff67430538e9aecc",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scenes/overworld.tscn",
+            "bytes": 3971,
+            "sha256": "f6900986e9ff8cd1b39cb9c37b7b3c36de8d12248d06c472de1fe4d2417487b5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scenes/shop_interior.tscn",
+            "bytes": 3848,
+            "sha256": "839f1c67078f1e713d8fedc3ef1a983bb4cfde0619330eb52b22b08dff92d466",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/base_contract.gd",
+            "bytes": 915,
+            "sha256": "bf5f665cf1d9568d4a5e0ce41895596095f6a28e90f1aac0c25e33636cfabb1c",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/directional_sprite.gd",
+            "bytes": 1158,
+            "sha256": "d5282bdcafd8bc82a561d1922a87517f4dbfd674e5c3a735a3155f578ef95197",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/door_zone.gd",
+            "bytes": 766,
+            "sha256": "cad57353104e2ab8ddc0d109f1e83bc9d78f1093026591e582c00cd5baa74b88",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/game.gd",
+            "bytes": 15606,
+            "sha256": "5a9a85e6c4d5904debf93f7e82185fd77f33131c33677c769ac10add0d9c71ea",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/gather_zone.gd",
+            "bytes": 1195,
+            "sha256": "2032d10f3a3c6b907ba72a6a307c132371dc7075349acae4d80fc9202238ac04",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/interactable.gd",
+            "bytes": 920,
+            "sha256": "2f57eb36dc7f346c7fab8db61d654af652fd3c6eea89650102f84641395e4873",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/map_renderer.gd",
+            "bytes": 4908,
+            "sha256": "7b9f5e78fa688685bd938cf48a94ae991132afea1379e987ff1827e63d93e20f",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/npc.gd",
+            "bytes": 1273,
+            "sha256": "f46c3b930bd64bd6c065c775d0862e07828ffdd372226e9e8ed190911692213d",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/player.gd",
+            "bytes": 3017,
+            "sha256": "baa3dcf54f86b9027cfdee11ee0c82421740bdfda84b43b553da0ddc71ff06d3",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/probe.gd",
+            "bytes": 10587,
+            "sha256": "fe200494489a4f687e60732353a292023914a142366f801221b595bb1ba1dbff",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/quest_manager.gd",
+            "bytes": 4426,
+            "sha256": "a38645c0447def7e56a3bef6ecaf8f904dbfde5e46b1727ca960839f4d589bf5",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/save_system.gd",
+            "bytes": 4130,
+            "sha256": "c51809f56f2efc95a70abde4cfdeeb49889005f685516b1bce800e02d3386cff",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/shop.gd",
+            "bytes": 2375,
+            "sha256": "cfcb973873967c0cf3603408c1d0dffa6742146bc6356a589fb8d78d76a283a6",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/spawn_marker.gd",
+            "bytes": 178,
+            "sha256": "4dae551e7969ce5118bd0215970f8ff4545a0eb952bb1d224e5809bdde44cfdb",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/world_root.gd",
+            "bytes": 330,
+            "sha256": "ccb5822d5fb3ed4cb437706d390b1371aafa675bf890484e89edd2088a8482a3",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/world_state.gd",
+            "bytes": 13421,
+            "sha256": "86e9ac26f99ae28b1150669522662308a1a31e355b4a11f2dab3006afc74efd0",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/scripts/base/zone.gd",
+            "bytes": 1047,
+            "sha256": "c7ba39f2fdef7d965ad9de771321d4d8c747c3459c2c11c9d4182f72203e83d6",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/world-build.json",
+            "bytes": 6819,
+            "sha256": "a9619203033da991addd7f76c9f3aa81a4f369625dcfa818aa470d4aa9f7a89f",
+            "present": true,
+            "role": "base-file"
+          },
+          {
+            "path": "desktop/godot/bases/top-down/worlds/town/world.json",
+            "bytes": 1167,
+            "sha256": "b3330d0e44eeff08382bf4817f92fabd329c54218bf19360c65ba3e63d9ab7ff",
+            "present": true,
+            "role": "base-file"
+          }
+        ],
+        "status": "verified",
+        "notes": "baseId=top-down; version=1.0.0; manifest=desktop/godot/bases/top-down/manifest.json; files=119. Aggregate content hash covers every regular file under the base directory (repository-relative path, bytes, sha256), sorted by path. No links inside the base directory. Delivery provenance manifest desktop/delivery/base-assets/bases-top-down.json pins the base delivery bytes.",
+        "baseId": "top-down",
+        "engine": {
+          "name": "godot",
+          "version": "4.7.2-stable",
+          "renderer": "gl_compatibility",
+          "scriptLanguage": "GDScript"
+        },
+        "fileCount": 119,
+        "aggregateSha256": "8627faffeb312d2b5d3bbda6376637242f4a66211b624e736c24b9841c699526",
+        "links": [],
+        "provenance": {
+          "path": "desktop/delivery/base-assets/bases-top-down.json",
+          "bytes": 85622,
+          "sha256": "e21a9fce26c0c311f132299868a33cebc436194722be6377521a40fb03155cb5",
+          "present": true,
+          "role": "delivery-provenance",
+          "declared": {
+            "format": "craftmine.base-assets/1",
+            "baseId": "top-down",
+            "sourceDirectory": "desktop/godot/bases/top-down",
+            "engine": {
+              "version": "4.7.2-stable",
+              "renderer": "gl_compatibility",
+              "language": "GDScript"
+            },
+            "sourceDirectoryFiles": 119,
+            "sourceDirectoryAggregateSha256": "8627faffeb312d2b5d3bbda6376637242f4a66211b624e736c24b9841c699526"
+          }
+        }
+      }
+    },
+    "bridge": {
+      "id": "bridge",
+      "version": null,
+      "source": {
+        "path": "desktop/godot/web",
+        "commit": null,
+        "tag": null
+      },
+      "files": [
+        {
+          "path": "desktop/godot/web/bridge.js",
+          "bytes": 6415,
+          "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3",
+          "present": true,
+          "role": "web-bridge"
+        },
+        {
+          "path": "desktop/godot/web/shell.html",
+          "bytes": 730,
+          "sha256": "cbbfbd2c680b9f31883d5c0b0ffa330e732ba584bc51d9b91e04ca4c710c7a4a",
+          "present": true,
+          "role": "web-bridge"
+        },
+        {
+          "path": "desktop/godot/probes/shared/web_bridge.gd",
+          "bytes": 9760,
+          "sha256": "a3752ffedf899c2061a6da35942b230c43afbaeaf58f67bd674e4a9d5361a036",
+          "present": true,
+          "role": "web-bridge"
+        }
+      ],
+      "status": "verified",
+      "notes": "Godot Web host bridge sources. bridge.js and shell.html ship in the Web export; web_bridge.gd is the shared probe interface. Files that are absent are simply not listed."
+    },
+    "dependencies": {
+      "id": "dependencies",
+      "version": null,
+      "source": {
+        "path": "desktop/godot/sandbox/Cargo.lock",
+        "commit": null,
+        "tag": null
+      },
+      "files": [
+        {
+          "path": "desktop/godot/sandbox/Cargo.lock",
+          "bytes": 2941,
+          "sha256": "ce4456d1e14b0e72f2563f1aaa4f5f66f246e2720858c913d610d8d6e2642b2f",
+          "present": true,
+          "role": "lockfile"
+        },
+        {
+          "path": "vendor/pi-desktop/Cargo.lock",
+          "bytes": 32865,
+          "sha256": "df9b004ade14b617b4293e0ec36a6653b30c71decd4d8a73a11b7978fd31540c",
+          "present": true,
+          "role": "lockfile"
+        },
+        {
+          "path": "vendor/pi-desktop/pnpm-lock.yaml",
+          "bytes": 269848,
+          "sha256": "dc5f1c747258b24b8ccd3b81048f6ad4d8f5ec9cbb135f9a3344c94f9f845254",
+          "present": true,
+          "role": "lockfile"
+        }
+      ],
+      "status": "verified",
+      "notes": "Lockfiles found by a bounded scan (node_modules/.git/target/build/dist/test-results and similar generated directories are skipped). Tool versions are read-only --version output.",
+      "tools": {
+        "node": "v24.14.0",
+        "npm": null,
+        "pnpm": null,
+        "cargo": "cargo 1.96.1 (356927216 2026-06-26)",
+        "rustc": "rustc 1.96.1 (31fca3adb 2026-06-26)"
+      }
+    },
+    "licenses": {
+      "id": "licenses",
+      "version": null,
+      "source": {
+        "path": "desktop/godot/licenses",
+        "commit": null,
+        "tag": null
+      },
+      "files": [
+        {
+          "path": "desktop/godot/licenses/GODOT_COPYRIGHT.txt",
+          "bytes": 100108,
+          "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d",
+          "present": true,
+          "role": "engine-notice"
+        },
+        {
+          "path": "desktop/godot/licenses/GODOT_LICENSE.txt",
+          "bytes": 1149,
+          "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+          "present": true,
+          "role": "engine-notice"
+        },
+        {
+          "path": "desktop/godot/licenses/notices.manifest.json",
+          "bytes": 7575,
+          "sha256": "e8e7c6406071ed4737bd42685bc21c826796eec0459ad7717d40a24a4cdbdbfb",
+          "present": true,
+          "role": "engine-notice"
+        },
+        {
+          "path": "desktop/godot/licenses/README.md",
+          "bytes": 5363,
+          "sha256": "75b17aa425c5de894adfd3cae2c0e89682181d45357b80bdbbaa12488563bae2",
+          "present": true,
+          "role": "engine-notice"
+        },
+        {
+          "path": "desktop/UPSTREAM.json",
+          "bytes": 702,
+          "sha256": "2144168932a5ad26819c256439ea517c6a7c5a6538fa292c4a912fbe06f94a38",
+          "present": true,
+          "role": "provenance",
+          "packagePath": "resources/licenses/UPSTREAM.json"
+        },
+        {
+          "path": "desktop/windows-NOTICES.md",
+          "bytes": 2180,
+          "sha256": "442e3fe9ffbe335496ee47861d2d002ed6c55663a5f7c1a9de9375918dae6ae0",
+          "present": true,
+          "role": "product-notices",
+          "packagePath": null
+        },
+        {
+          "path": "desktop/delivery/licensing/notices/CRAFTMINE-NOTICES.md",
+          "bytes": 78896,
+          "sha256": "cdfc34c24cbe7953646a8388da500af81c7f12c2ecb09e2b7440002eac8bfb80",
+          "present": true,
+          "role": "package-notices",
+          "packagePath": "resources/licenses/CRAFTMINE-NOTICES.md"
+        },
+        {
+          "path": "desktop/delivery/licensing/offline-entry.json",
+          "bytes": 11527,
+          "sha256": "781d168c17ad40c74751d1caa7bf20e12440a69dc1208c7044f0ea9b032fea58",
+          "present": true,
+          "role": "offline-licence-entry",
+          "packagePath": null
+        },
+        {
+          "path": "vendor/pi-desktop/LICENSE",
+          "bytes": 7652,
+          "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+          "present": true,
+          "role": "lgpl-text",
+          "packagePath": "resources/licenses/PI-Desktop-LICENSE.txt"
+        }
+      ],
+      "status": "verified",
+      "notes": "desktop/godot/licenses/** (engine notices and the notice manifest), desktop/UPSTREAM.json, the generated package notices (desktop/delivery/licensing/notices/CRAFTMINE-NOTICES.md), the offline licence entry, the repository notice summary and the vendor LGPL text that the package ships as resources/licenses/PI-Desktop-LICENSE.txt."
+    },
+    "git": {
+      "id": "git",
+      "version": "2.53.0.windows.1",
+      "source": {
+        "path": "https://github.com/git-for-windows/git/releases/download/v2.53.0.windows.1/MinGit-2.53.0-64-bit.zip",
+        "commit": null,
+        "tag": "2.53.0.windows.1"
+      },
+      "files": [
+        {
+          "path": "desktop/delivery/git-bundle.json",
+          "bytes": 3228,
+          "sha256": "a06e61b56a82d330fce976827cb30b0464318c9fa4a9e426e3453d2d7ff81866",
+          "present": true,
+          "role": "git-bundle-pin"
+        }
+      ],
+      "status": "verified",
+      "notes": "Pinned mingit 2.53.0.windows.1 (archive sha256 82b562c918ec87b2ef5316ed79bb199e3a25719bb871a0f10294acf21ebd08cd). R1 requires a bundled Git: CRAFTMINE_BUNDLED_GIT or an exe-adjacent bin/git.exe; without it content.gitInfo reports pathFallback. A staged tree is present in the supplied package (385 files, 109064331 bytes, git version 2.53.0.windows.1).",
+      "contract": {
+        "minimum": [
+          2,
+          38
+        ],
+        "gitInfoFormat": "craftmine.git-info/1",
+        "expectedSourceAfterStaging": "bundled",
+        "absentCode": "GIT_PROGRAM_NOT_FOUND",
+        "owner": "R1 (GitAdapter discovery); R9 pins and ships the binary"
+      },
+      "staged": {
+        "fileCount": 385,
+        "totalBytes": 109064331,
+        "versionOutput": "git version 2.53.0.windows.1",
+        "entry": "resources/git/bin/git.exe"
+      }
+    },
+    "contentBoundaries": {
+      "id": "contentBoundaries",
+      "version": null,
+      "source": {
+        "path": "desktop/delivery/content-boundaries.json",
+        "commit": null,
+        "tag": null
+      },
+      "files": [
+        {
+          "path": "desktop/delivery/content-boundaries.json",
+          "bytes": 6572,
+          "sha256": "972f4730d9fb9f0b6af37d02736c6ab1dd822daa95533fcf31207ea6b7963a0e",
+          "present": true,
+          "role": "content-boundary"
+        },
+        {
+          "path": "desktop/delivery/content-boundary-check.mjs",
+          "bytes": 6947,
+          "sha256": "bf979ec3a9aa200e4975cc1dcebbf0ed70877447de38829446a31b2d558d1b19",
+          "present": true,
+          "role": "content-boundary"
+        },
+        {
+          "path": "desktop/delivery/CONTENT_BOUNDARIES.md",
+          "bytes": 4248,
+          "sha256": "1261d81adffbba5af7fd394603be73115e704dc006df646db8f481c9b08cb61a",
+          "present": true,
+          "role": "content-boundary"
+        }
+      ],
+      "status": "verified",
+      "notes": "Client install, creation-share package, portable backup and standalone-game boundaries with the paths that must not cross them. standalone-game is declared but pending: no export layout exists in the integrated trees.",
+      "boundaries": [
+        {
+          "id": "client",
+          "kind": "directory",
+          "status": "verified"
+        },
+        {
+          "id": "share-package",
+          "kind": "zip",
+          "status": "verified"
+        },
+        {
+          "id": "portable-backup",
+          "kind": "stream",
+          "status": "verified"
+        },
+        {
+          "id": "standalone-game",
+          "kind": "directory",
+          "status": "pending"
+        }
+      ]
+    },
+    "tooling": {
+      "m": {
+        "id": "tooling:m",
+        "version": null,
+        "source": {
+          "path": "docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md",
+          "commit": null,
+          "tag": null
+        },
+        "files": [],
+        "status": "pending-integration",
+        "notes": "VM0–VM4 content history is implemented on branch codex/godot-round2-r1-20260910 (commit 62a700f13f061e1b5d8cafdc6de33ee5ec536b87) but is not integrated in this worktree. No hash is recorded because those bytes are not in this tree; consume them after the main task merges R1.",
+        "availableAt": {
+          "branch": "codex/godot-round2-r1-20260910",
+          "commit": "62a700f13f061e1b5d8cafdc6de33ee5ec536b87",
+          "report": "docs/dispatch-reports/godot-round2/R1/REPORT.md",
+          "interface": "content.gitInfo, content.status and the content.* RPC surface"
+        },
+        "owner": "M",
+        "expectedPaths": [
+          {
+            "status": "pending-integration",
+            "expectedPath": "vendor/pi-desktop/crates/craftmine-core/src/content_history/",
+            "source": "docs/dispatch-prompts/godot-remaining-20260910/M-git-content-history.md",
+            "owner": "M",
+            "capability": "config-isolation + managed Git adapter (VM0)"
+          },
+          {
+            "status": "pending-integration",
+            "expectedPath": "vendor/pi-desktop/crates/craftmine-core/src/content_history/",
+            "source": "docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md",
+            "owner": "M",
+            "capability": "source history, branches, diff and recovery (VM1/VM2/VM3)"
+          },
+          {
+            "status": "pending-integration",
+            "expectedPath": "craftmine.assets.lock.json",
+            "source": "docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md",
+            "owner": "M",
+            "capability": "shared content reference contract, format craftmine.assets-lock/1 (section 5)"
+          },
+          {
+            "status": "pending-integration",
+            "expectedPath": "tests/godot-remaining/M/",
+            "source": "docs/dispatch-prompts/godot-remaining-20260910/M-git-content-history.md",
+            "owner": "M",
+            "capability": "task tests"
+          },
+          {
+            "status": "pending-integration",
+            "expectedPath": "docs/dispatch-reports/godot-remaining/M/",
+            "source": "docs/dispatch-prompts/godot-remaining-20260910/M-git-content-history.md",
+            "owner": "M",
+            "capability": "task report and evidence"
+          }
+        ]
+      },
+      "n": {
+        "id": "tooling:n",
+        "version": null,
+        "source": {
+          "path": "docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md",
+          "commit": null,
+          "tag": null
+        },
+        "files": [],
+        "status": "pending-integration",
+        "notes": "AL0–AL5 asset catalog, search, preview and dependency list are implemented on branch codex/godot-round2-r6-20260910 (commit 64948746fa052411669d776d19e81c76ee35d518) but are not integrated in this worktree. No hash is recorded because those bytes are not in this tree.",
+        "availableAt": {
+          "branch": "codex/godot-round2-r6-20260910",
+          "commit": "64948746fa052411669d776d19e81c76ee35d518",
+          "report": "docs/dispatch-reports/godot-round2/R6/INTERFACE_R6.md",
+          "interface": "asset.search, asset.previewBegin, asset.previewRead, asset.previewFinish"
+        },
+        "owner": "N",
+        "expectedPaths": [
+          {
+            "status": "pending-integration",
+            "expectedPath": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/",
+            "source": "docs/dispatch-prompts/godot-remaining-20260910/N-assets-and-previews.md",
+            "owner": "N",
+            "capability": "asset library import, search, preview and dependency closure (AL0–AL5)"
+          },
+          {
+            "status": "pending-integration",
+            "expectedPath": "craftmine.assets.lock.json",
+            "source": "docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md",
+            "owner": "N",
+            "capability": "full pinned dependency list, format craftmine.assets-lock/1 (section 5)"
+          },
+          {
+            "status": "pending-integration",
+            "expectedPath": "tests/godot-remaining/N/",
+            "source": "docs/dispatch-prompts/godot-remaining-20260910/N-assets-and-previews.md",
+            "owner": "N",
+            "capability": "task tests"
+          },
+          {
+            "status": "pending-integration",
+            "expectedPath": "docs/dispatch-reports/godot-remaining/N/",
+            "source": "docs/dispatch-prompts/godot-remaining-20260910/N-assets-and-previews.md",
+            "owner": "N",
+            "capability": "task report and evidence"
+          }
+        ]
+      }
+    }
+  },
+  "totals": {
+    "files": 285,
+    "bytes": 1704449928,
+    "presentFiles": 280,
+    "presentBytes": 316549642,
+    "pinnedOnlyFiles": 5,
+    "pinnedOnlyBytes": 1387900286,
+    "note": "Unique file paths across every component. pinnedOnly counts lock-pinned inputs that live in the shared engine cache or as build outputs, not in the repository."
+  },
+  "reproducibility": {
+    "pinnedInputs": [
+      {
+        "id": "git-commit",
+        "source": "git rev-parse HEAD",
+        "value": "ef30cac844436e932b55c0d12f62dc2addeb71e2",
+        "dirty": true
+      },
+      {
+        "id": "toolchain-lock",
+        "source": "desktop/godot/toolchain.lock.json",
+        "sha256": "8cb609ea91659b863b7bb65f05ea27ac8f99eefa5798a78d9e847a13d7a7d288"
+      },
+      {
+        "id": "engine-and-templates",
+        "source": "desktop/godot/toolchain.lock.json",
+        "note": "editor archive/exe, tpz and both web zips are pinned by bytes+sha256"
+      },
+      {
+        "id": "base-manifests",
+        "source": "desktop/godot/bases/*/{base_manifest.json,manifest.json}"
+      },
+      {
+        "id": "base-delivery-provenance",
+        "source": "desktop/delivery/base-assets/*.json"
+      },
+      {
+        "id": "notice-manifest",
+        "source": "desktop/godot/licenses/notices.manifest.json"
+      },
+      {
+        "id": "lockfiles",
+        "source": "bounded scan for pnpm-lock.yaml, package-lock.json, Cargo.lock"
+      },
+      {
+        "id": "bridge-sources",
+        "source": "desktop/godot/web/bridge.js, desktop/godot/web/shell.html, desktop/godot/probes/shared/web_bridge.gd"
+      },
+      {
+        "id": "git-bundle",
+        "source": "desktop/delivery/git-bundle.json (pinned MinGit archive url/bytes/sha256 and the R1 discovery contract)"
+      },
+      {
+        "id": "content-boundaries",
+        "source": "desktop/delivery/content-boundaries.json (client, share package, portable backup, standalone game)"
+      },
+      {
+        "id": "package-required-files",
+        "source": "preflight-core checkPackage required list + manifest packagePath pins",
+        "value": [
+          "Craftmine World.exe",
+          "resources/agent-runtime/sidecar.js",
+          "resources/app.asar",
+          "resources/bin/craftmine-core.exe",
+          "resources/bin/pi-desktop-host-core.exe",
+          "resources/git/GIT-BUNDLE.json",
+          "resources/git/LICENSE.txt",
+          "resources/git/bin/git.exe",
+          "resources/licenses/CRAFTMINE-NOTICES.md",
+          "resources/licenses/PI-Desktop-LICENSE.txt",
+          "resources/licenses/UPSTREAM.json",
+          "resources/plugins/craftmine.world/main.cjs",
+          "resources/source/CraftmineWorld-source.zip",
+          "resources/source/USER_GUIDE.zh-CN.md",
+          "resources/source/build-manifest.json",
+          "resources/source/windows-upgrade-guard.ps1"
+        ]
+      }
+    ],
+    "limits": [
+      "Read-only: no download, no GUI, no window activation, no input, no write inside an inspected tree.",
+      "A passing development build is not a verified package. verify requires --package and reports every required file that is absent, unpinned or byte-different.",
+      "Byte-identical native/NSIS outputs are not claimed; hashes prove these bytes, not reproducibility of the compiler or installer toolchain.",
+      "Engine and export-template bytes are pinned from the lock and live in the shared cache; create only hashes them when --cache is supplied.",
+      "package-snapshot pins prove byte identity with a recorded artifact, not reproducibility from source.",
+      "Planned M/N capabilities are recorded as pending-integration and carry no hash.",
+      "No warnings."
+    ]
+  }
+}

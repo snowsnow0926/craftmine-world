@@ -1,0 +1,39 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Call to GetAdaptersAddresses failed with error 5.
+   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)
+ERROR: Method/function failed. Returning: ""
+   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)
+ERROR: Method/function failed. Returning: ""
+   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "_sock == (SOCKET)(~0)" is true. Returning: FAILED
+   at: open (drivers/windows/net_socket_winsock.cpp:238)
+ERROR: Condition "err != OK" is true. Returning: ERR_CANT_CREATE
+   at: listen (core/io/tcp_server.cpp:56)
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started 项目初始化 (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | 正在扫描文件结构……[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | 正在加载全局类名……[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | 正在校验 GDExtension……[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | 正在创建自动加载脚本……[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | 正在初始化插件……[39m[0m
+ERROR: Condition "_sock == (SOCKET)(~0)" is true. Returning: FAILED
+   at: open (drivers/windows/net_socket_winsock.cpp:238)
+   GDScript backtrace (most recent call first):
+       [0] _connect (res://sandbox_probe/probe.gd:61)
+       [1] run (res://sandbox_probe/probe.gd:42)
+       [2] _enter_tree (res://sandbox_probe/plugin.gd:9)
+ERROR: Could not create child process: "D:\Craftmine World\test-results\godot-remaining-b\test-results\broker-cases\b-20260909170224461-232408\tasks\b-live-recover-1788973344659\bin\Godot_v4.7.2-stable_win64.exe" --headless --version
+   at: create_process (platform/windows/os_windows.cpp:1589)
+   GDScript backtrace (most recent call first):
+       [0] _spawn (res://sandbox_probe/probe.gd:81)
+       [1] run (res://sandbox_probe/probe.gd:44)
+       [2] _enter_tree (res://sandbox_probe/plugin.gd:9)
+B_FIXED_SLEEP_READY

@@ -1,0 +1,229 @@
+[
+  {
+    "name": "godot_project_index",
+    "args": {},
+    "toolCallId": "call_00_PzGnlww1TaS47sqvXWn33606",
+    "turnId": "fbde40ab-7e8b-4555-b6c5-da8911b81b09",
+    "at": "2026-09-09T19:02:31.920Z",
+    "ok": false,
+    "error": "GODOT_PROJECT_NOT_FOUND",
+    "code": "GODOT_PROJECT_NOT_FOUND"
+  },
+  {
+    "name": "project_inspect",
+    "args": {},
+    "toolCallId": "call_01_zOXvtx3mzSda7eNYkHBm7019",
+    "turnId": "fbde40ab-7e8b-4555-b6c5-da8911b81b09",
+    "at": "2026-09-09T19:02:31.926Z",
+    "ok": true,
+    "result": {
+      "worldId": "6b508d1f-d403-4d07-8e90-698ff82ea746",
+      "taskId": "work-342468b0d905f0d619bced54e88bb3ee0ef59986ca3c619c4437d6af6cbacaa3",
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "title": "R8 真实模型验收世界",
+      "workspaceRevision": 0,
+      "status": "running",
+      "resumedFrom": null,
+      "resources": [],
+      "next": null,
+      "total": 0,
+      "publishingAvailable": false
+    }
+  },
+  {
+    "name": "capabilities_read",
+    "args": {
+      "section": "catalog",
+      "limit": 4000
+    },
+    "toolCallId": "call_00_z6vHvvrMjOXlYSWeqQeS7131",
+    "turnId": "fbde40ab-7e8b-4555-b6c5-da8911b81b09",
+    "at": "2026-09-09T19:02:32.877Z",
+    "ok": true,
+    "result": {
+      "section": "catalog",
+      "text": "{\n  \"format\": \"craftmine.capabilities/1\",\n  \"runtime\": \"craftmine-web/5\",\n  \"entry\": {\n    \"export\": \"step\",\n    \"signature\": \"async step({frame, params, state}) => {state, commands}\",\n    \"module\": \"ES 模块，必须导出 step\"\n  },\n  \"events\": [\n    {\n      \"type\": \"start\",\n      \"payload\": {},\n      \"note\": \"模块装载时一次，用来注册物品和面板\"\n    },\n    {\n      \"type\": \"tick\",\n      \"payload\": {\n        \"dt\": \"秒\"\n      },\n      \"note\": \"每帧一次，返回的 commands 最多 32 条\"\n    },\n    {\n      \"type\": \"interact\",\n      \"payload\": {\n        \"targetId\": \"对象 ID\"\n      },\n      \"note\": \"玩家按 E 指向声明过的目标\"\n    },\n    {\n      \"type\": \"contact\",\n      \"payload\": {\n        \"targetId\": \"对象 ID\"\n      },\n      \"note\": \"玩家接触声明过的目标\"\n    },\n    {\n      \"type\": \"attack\",\n      \"payload\": {\n        \"targetId\": \"对象 ID\"\n      },\n      \"note\": \"玩家攻击命中声明过的目标\"\n    },\n    {\n      \"type\": \"land\",\n      \"payload\": {\n        \"targetId\": \"对象 ID\"\n      },\n      \"note\": \"玩家落在声明过的目标上\"\n    },\n    {\n      \"type\": \"key\",\n      \"payload\": {\n        \"code\": \"keys 中声明过的按键代码\"\n      },\n      \"note\": \"只有模块在 keys 里声明过的按键才会触发；不要读 frame.keys\"\n    }\n  ],\n  \"keys\": [\n    \"KeyB\",\n    \"KeyC\",\n    \"KeyG\",\n    \"KeyH\",\n    \"KeyI\",\n    \"KeyJ\",\n    \"KeyK\",\n    \"KeyL\",\n    \"KeyM\",\n    \"KeyN\",\n    \"KeyO\",\n    \"KeyP\",\n    \"KeyQ\",\n    \"KeyU\",\n    \"KeyV\",\n    \"KeyX\",\n    \"KeyY\",\n    \"KeyZ\",\n    \"Digit3\",\n    \"Digit4\",\n    \"Digit5\",\n    \"Digit6\",\n    \"Digit7\",\n    \"Digit8\",\n    \"Digit9\"\n  ],\n  \"permissions\": [\n    \"objects.write\",\n    \"player.motion\",\n    \"hud.message\",\n    \"inventory.write\",\n    \"audio.play\",\n    \"targets.write\",\n    \"resources.write\",\n    \"health.write\"\n  ],\n  \"capabilities\": [\n    \"inventory.read@1\",\n    \"inventory.items@1\",\n    \"hud.panel@1\"\n  ],\n  \"requires\": [\n    \"health@1\",\n    \"ranged@1\",\n    \"melee@1\",\n    \"resource@1\"\n  ],\n  \"commands\": [\n    {\n      \"type\": \"object.patch\",\n      \"permission\": \"objects.write\",\n      \"scope\": \"声明过的 targets 里的对象\",\n      \"fields\": [\n        {\n          \"name\": \"id\",\n          \"description\": \"对象 ID\"\n        },\n        {\n          \"name\": \"position\",\n          \"description\": \"{x,y,z} 或 null；整项省略等同 null（保留原值）\"\n        },\n        {\n          \"name\": \"visible\",\n          \"description\": \"boolean 或 null\"\n        },\n        {\n          \"name\": \"solid\",\n          \"description\": \"boolean 或 null\"\n        },\n        {\n          \"name\": \"color\",\n          \"description\": \"'#RRGGBB' 或 null\"\n        },\n        {\n          \"name\": \"yaw\",\n          \"description\": \"null 或 0/90/180/270\"\n        },\n        {\n          \"name\": \"duration\",\n          \"description\": \"可选 0..5 秒，平滑移动\"\n        }\n      ],\n      \"quota\": \"每步最多 32 条命令\",\n      \"example\": \"{type:'object.patch',id:'door-1',visible:false}\",\n      \"note\": \"visible:true 不会让已死亡的目标重新生效，复活必须用 target.revive\"\n    },\n    {\n      \"type\": \"player.impulse\",\n      \"permission\": \"player.motion\",\n      \"scope\": \"当前玩家\",\n      \"fields\": [\n        {\n          \"name\": \"velocity\",\n          \"description\": \"{x,y,z}，每轴 -18..18\"\n        }\n      ],\n      \"quota\": \"每步最多 1 条\",\n      \"example\": \"{type:'player.impulse',velocity:{x:0,y:8,z:0}}\"\n    },\n    {\n      \"type\": \"hud.message\",\n      \"permission\": \"hud.message\",\n      \"scope\": \"当前玩家\",\n      \"fields\": [\n        {\n          \"name\": \"text\",\n          \"description\": \"最多 160 字纯文本\"\n        },\n        {\n          \"name\": \"tone\",\n          \"description\": \"可选 'info' | 'warn' | 'success'\"\n        },\n        {\n          \"name\": \"duration\",\n          \"description\": \"可选 1000..10000 毫秒\"\n        }\n      ],\n      \"quota\": \"每步最多 1 条\",\n      \"example\": \"{type:'hud.message',text:'门开了',tone:'success'}\"\n    },\n    {\n      \"type\": \"audio.play\",\n      \"permission\": \"audio.play\",\n      \"scope\": \"当前玩家\",\n      \"fields\": [\n        {\n          \"name\": \"sound\",\n          \"description\": \"'shoot' | 'hit' | 'open' | 'pickup' | 'error' | 'jump' | 'land' | 'step' | 'explode' | 'heal' | 'hurt' | 'unlock' | 'deny' | 'win'\"\n        },\n        {\n          \"name\": \"volume\",\n          \"description\": \"可选 0..1\"\n        }\n      ],\n      \"quot",
+      "start": 0,
+      "next": 4000,
+      "totalChars": 10295
+    }
+  },
+  {
+    "name": "memory_search",
+    "args": {
+      "query": "godot first-person crosshair weapon camera",
+      "limit": 20,
+      "includeInactive": true
+    },
+    "toolCallId": "call_01_3ymAb4YQaRBAV1HgHwIW1070",
+    "turnId": "fbde40ab-7e8b-4555-b6c5-da8911b81b09",
+    "at": "2026-09-09T19:02:32.879Z",
+    "ok": true,
+    "result": {
+      "items": [],
+      "next": null,
+      "offset": 0,
+      "total": 0
+    }
+  },
+  {
+    "name": "godot_project_index",
+    "args": {
+      "limit": 32
+    },
+    "toolCallId": "call_00_gzgEJC3l0AfQIl0fq9ba2829",
+    "turnId": "f6f7e443-94dc-4d6f-a947-52c605d3b61e",
+    "at": "2026-09-09T19:03:51.826Z",
+    "ok": false,
+    "error": "GODOT_PROJECT_NOT_FOUND",
+    "code": "GODOT_PROJECT_NOT_FOUND"
+  },
+  {
+    "name": "requirements_read",
+    "args": {},
+    "toolCallId": "call_01_Kc8Oc89WBg0xjUzSyEBY1224",
+    "turnId": "f6f7e443-94dc-4d6f-a947-52c605d3b61e",
+    "at": "2026-09-09T19:03:51.831Z",
+    "ok": true,
+    "result": {
+      "binding": {
+        "baseBuild": "v-75b99891d0c9467f8f7f",
+        "projectId": "r8-live",
+        "sessionId": "3ab2d8f5-701c-48c0-99a3-16dcab82fe71",
+        "taskId": "work-31be9d0902deaae489b01954d6d67c413214a36c46820fb7a44d7329157aee14",
+        "turnId": "f6f7e443-94dc-4d6f-a947-52c605d3b61e"
+      },
+      "items": [],
+      "next": null,
+      "start": 0,
+      "totalChars": 0,
+      "totalRecords": 0,
+      "worldId": "6b508d1f-d403-4d07-8e90-698ff82ea746"
+    }
+  },
+  {
+    "name": "project_inspect",
+    "args": {},
+    "toolCallId": "call_00_PBRAKLhS3zazR4JQ6t4q0336",
+    "turnId": "f6f7e443-94dc-4d6f-a947-52c605d3b61e",
+    "at": "2026-09-09T19:03:52.537Z",
+    "ok": true,
+    "result": {
+      "worldId": "6b508d1f-d403-4d07-8e90-698ff82ea746",
+      "taskId": "work-31be9d0902deaae489b01954d6d67c413214a36c46820fb7a44d7329157aee14",
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "title": "R8 真实模型验收世界",
+      "workspaceRevision": 0,
+      "status": "running",
+      "resumedFrom": "work-342468b0d905f0d619bced54e88bb3ee0ef59986ca3c619c4437d6af6cbacaa3",
+      "resources": [],
+      "next": null,
+      "total": 0,
+      "publishingAvailable": false
+    }
+  },
+  {
+    "name": "memory_search",
+    "args": {
+      "query": "godot project crosshair gun 准星 枪",
+      "includeInactive": true
+    },
+    "toolCallId": "call_01_3TzLQWIf6ZJ0ZX6Rw3nP0467",
+    "turnId": "f6f7e443-94dc-4d6f-a947-52c605d3b61e",
+    "at": "2026-09-09T19:03:52.538Z",
+    "ok": true,
+    "result": {
+      "items": [],
+      "next": null,
+      "offset": 0,
+      "total": 0
+    }
+  },
+  {
+    "name": "godot_asset_list",
+    "args": {},
+    "toolCallId": "call_00_Vf9tmhkpho0uFzdIVNnM4371",
+    "turnId": "f6f7e443-94dc-4d6f-a947-52c605d3b61e",
+    "at": "2026-09-09T19:03:54.790Z",
+    "ok": true,
+    "result": {
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "items": [],
+      "nextOffset": null,
+      "totalAssets": 0,
+      "worldId": "6b508d1f-d403-4d07-8e90-698ff82ea746"
+    }
+  },
+  {
+    "name": "memory_search",
+    "args": {
+      "kind": "task-history",
+      "query": "godot 工程"
+    },
+    "toolCallId": "call_01_yCTyRxUYRPQCIOXGsRQx5820",
+    "turnId": "f6f7e443-94dc-4d6f-a947-52c605d3b61e",
+    "at": "2026-09-09T19:03:54.791Z",
+    "ok": true,
+    "result": {
+      "items": [],
+      "next": null,
+      "offset": 0,
+      "total": 0
+    }
+  },
+  {
+    "name": "library_search",
+    "args": {
+      "query": "crosshair gun idle sway 准星"
+    },
+    "toolCallId": "call_02_8Y4rOjnCA1MbAezBGkpN7715",
+    "turnId": "f6f7e443-94dc-4d6f-a947-52c605d3b61e",
+    "at": "2026-09-09T19:03:54.793Z",
+    "ok": true,
+    "result": {
+      "items": [],
+      "limit": 20,
+      "next": null,
+      "offset": 0,
+      "total": 0
+    }
+  },
+  {
+    "name": "requirements_read",
+    "args": {
+      "limit": 4000
+    },
+    "toolCallId": "call_03_VYAnzH7nogzvEQGyK4Gx5920",
+    "turnId": "f6f7e443-94dc-4d6f-a947-52c605d3b61e",
+    "at": "2026-09-09T19:03:54.794Z",
+    "ok": true,
+    "result": {
+      "binding": {
+        "baseBuild": "v-75b99891d0c9467f8f7f",
+        "projectId": "r8-live",
+        "sessionId": "3ab2d8f5-701c-48c0-99a3-16dcab82fe71",
+        "taskId": "work-31be9d0902deaae489b01954d6d67c413214a36c46820fb7a44d7329157aee14",
+        "turnId": "f6f7e443-94dc-4d6f-a947-52c605d3b61e"
+      },
+      "items": [],
+      "next": null,
+      "start": 0,
+      "totalChars": 0,
+      "totalRecords": 0,
+      "worldId": "6b508d1f-d403-4d07-8e90-698ff82ea746"
+    }
+  },
+  {
+    "name": "godot_project_index",
+    "args": {
+      "limit": 32,
+      "offset": 0
+    },
+    "toolCallId": "call_00_JuuJIIBmLeUu0ZEyhdUD5501",
+    "turnId": "f6f7e443-94dc-4d6f-a947-52c605d3b61e",
+    "at": "2026-09-09T19:03:57.849Z",
+    "ok": false,
+    "error": "GODOT_PROJECT_NOT_FOUND",
+    "code": "GODOT_PROJECT_NOT_FOUND"
+  }
+]

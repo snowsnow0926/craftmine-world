@@ -1,0 +1,42 @@
+{
+  "runId": "b-20260909170346950-257632",
+  "broker": "D:\\Craftmine World\\test-results\\godot-remaining-b\\desktop\\godot\\sandbox\\target\\debug\\godot-host-broker.exe",
+  "brokerSha256": "24e940a1c07a1d39dd91f46dd1bf15716bc4828328fdd87285c4b334b4edb999",
+  "engineRoot": "D:/Craftmine World/desktop/build/godot/4.7.2-stable",
+  "pinnedInputs": [
+    {
+      "relative": "editor/Godot_v4.7.2-stable_win64.exe",
+      "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+    },
+    {
+      "relative": "templates/version.txt",
+      "sha256": "38885c88f75abbc797a1db7559719800279a00cfb9fa8b2e2868a7f6f84bad2e"
+    },
+    {
+      "relative": "templates/web_nothreads_debug.zip",
+      "sha256": "08962aefef811b603541d7951ac67ef00413aad2d978855183c28adee98f626a"
+    },
+    {
+      "relative": "templates/web_nothreads_release.zip",
+      "sha256": "d3ee2f08cef0cf3cf6678a6355a92a8db48ccdd35cbd2e8bfd5f0e8a0b4032a0"
+    },
+    {
+      "relative": "templates/web_release.zip",
+      "sha256": "02f0dca13ed3d8343fa68f8f88ac80295562408d71aa67157e8b96ddebaa67a3"
+    }
+  ],
+  "cases": [
+    "terminate"
+  ],
+  "startedAt": "2026-09-09T17:03:47.149Z",
+  "results": [
+    {
+      "case": "terminate",
+      "taskId": "b-terminate-1788973427150",
+      "passed": true,
+      "failures": []
+    }
+  ],
+  "finishedAt": "2026-09-09T17:03:55.851Z",
+  "passed": true
+}

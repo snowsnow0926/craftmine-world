@@ -1,0 +1,45 @@
+{
+  "format": "craftmine.i.observation/1",
+  "edits": [
+    {
+      "kind": "weapon-damage",
+      "applied": true
+    }
+  ],
+  "progress": {
+    "inventoryBefore": {
+      "wood": 4,
+      "coin": 12
+    },
+    "inventoryAfter": {},
+    "destroyedTargetsBefore": 2,
+    "destroyedTargetsAfter": 2,
+    "questsBefore": {
+      "camp": "done"
+    },
+    "questsAfter": {
+      "camp": "done"
+    }
+  },
+  "usage": {
+    "calls": 1,
+    "promptTokens": 700,
+    "cachedReadTokens": 0,
+    "nonCachedInputTokens": 700,
+    "outputTokens": 150,
+    "totalTokens": 850,
+    "unknownCalls": 0
+  },
+  "failures": [
+    {
+      "class": "model-wrong-behavior",
+      "stage": "apply",
+      "message": "inventory was cleared by the candidate"
+    }
+  ],
+  "humanInterventions": [],
+  "evidence": {
+    "screenshots": [],
+    "human": []
+  }
+}

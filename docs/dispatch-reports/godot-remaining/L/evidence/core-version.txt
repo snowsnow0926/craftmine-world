@@ -1,0 +1,7 @@
+﻿craftmine-core.exe : Error: usage: craftmine-core --data-dir <isolated project service directory>
+所在位置 行:1 字符: 1191
++ ... inary.txt"; & "$scratch\target\debug\craftmine-core.exe" --version 2> ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Error: usage: c...vice directory>:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

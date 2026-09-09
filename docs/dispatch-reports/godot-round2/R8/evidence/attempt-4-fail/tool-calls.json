@@ -1,0 +1,148 @@
+[
+  {
+    "name": "godot_project_index",
+    "args": {},
+    "toolCallId": "call_00_1Z2G2WxAuJmFIYIAJ3mC9186",
+    "turnId": "afc709fc-30e3-4383-85e1-64031bb4f099",
+    "at": "2026-09-09T19:04:25.271Z",
+    "ok": false,
+    "error": "GODOT_PROJECT_NOT_FOUND",
+    "code": "GODOT_PROJECT_NOT_FOUND"
+  },
+  {
+    "name": "project_inspect",
+    "args": {},
+    "toolCallId": "call_01_MY8uK4Qn17xnKYMQjaz78300",
+    "turnId": "afc709fc-30e3-4383-85e1-64031bb4f099",
+    "at": "2026-09-09T19:04:25.273Z",
+    "ok": true,
+    "result": {
+      "worldId": "6ef42c0a-406e-43a6-8db5-c976695329ab",
+      "taskId": "work-3e006f398850c82544516b7b5e08753f4a4a2c05bfde550a01dbec0b2e2329e7",
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "title": "R8 真实模型验收世界",
+      "workspaceRevision": 0,
+      "status": "running",
+      "resumedFrom": null,
+      "resources": [],
+      "next": null,
+      "total": 0,
+      "publishingAvailable": false
+    }
+  },
+  {
+    "name": "godot_project_index",
+    "args": {},
+    "toolCallId": "call_00_VqQxsIAqqxDER18CS1061624",
+    "turnId": "aed69977-f5c9-4bf6-8100-d71e0d73df25",
+    "at": "2026-09-09T19:05:46.880Z",
+    "ok": false,
+    "error": "GODOT_PROJECT_NOT_FOUND",
+    "code": "GODOT_PROJECT_NOT_FOUND"
+  },
+  {
+    "name": "project_inspect",
+    "args": {},
+    "toolCallId": "call_00_ZJrG9sSppldBppLlZhYY6424",
+    "turnId": "aed69977-f5c9-4bf6-8100-d71e0d73df25",
+    "at": "2026-09-09T19:05:47.925Z",
+    "ok": true,
+    "result": {
+      "worldId": "6ef42c0a-406e-43a6-8db5-c976695329ab",
+      "taskId": "work-4819efa12c8852ef942c0a216e342771d58eb6994d5eb44749f3401904f63486",
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "title": "R8 真实模型验收世界",
+      "workspaceRevision": 0,
+      "status": "running",
+      "resumedFrom": "work-3e006f398850c82544516b7b5e08753f4a4a2c05bfde550a01dbec0b2e2329e7",
+      "resources": [],
+      "next": null,
+      "total": 0,
+      "publishingAvailable": false
+    }
+  },
+  {
+    "name": "requirements_read",
+    "args": {},
+    "toolCallId": "call_01_I1ZAbbK4QJczXFY5SPVe6405",
+    "turnId": "aed69977-f5c9-4bf6-8100-d71e0d73df25",
+    "at": "2026-09-09T19:05:47.927Z",
+    "ok": true,
+    "result": {
+      "binding": {
+        "baseBuild": "v-75b99891d0c9467f8f7f",
+        "projectId": "r8-live",
+        "sessionId": "c3e7d714-d439-4301-892c-cf60140c6e35",
+        "taskId": "work-4819efa12c8852ef942c0a216e342771d58eb6994d5eb44749f3401904f63486",
+        "turnId": "aed69977-f5c9-4bf6-8100-d71e0d73df25"
+      },
+      "items": [],
+      "next": null,
+      "start": 0,
+      "totalChars": 0,
+      "totalRecords": 0,
+      "worldId": "6ef42c0a-406e-43a6-8db5-c976695329ab"
+    }
+  },
+  {
+    "name": "godot_asset_list",
+    "args": {},
+    "toolCallId": "call_00_e3ajqG1zxNbwwyJQ7xXA6422",
+    "turnId": "aed69977-f5c9-4bf6-8100-d71e0d73df25",
+    "at": "2026-09-09T19:05:49.567Z",
+    "ok": true,
+    "result": {
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "items": [],
+      "nextOffset": null,
+      "totalAssets": 0,
+      "worldId": "6ef42c0a-406e-43a6-8db5-c976695329ab"
+    }
+  },
+  {
+    "name": "godot_candidate_list",
+    "args": {},
+    "toolCallId": "call_01_9xXflQueIi2Q20eIL7Ta3492",
+    "turnId": "aed69977-f5c9-4bf6-8100-d71e0d73df25",
+    "at": "2026-09-09T19:05:49.569Z",
+    "ok": true,
+    "result": {
+      "items": [],
+      "nextOffset": null
+    }
+  },
+  {
+    "name": "library_search",
+    "args": {
+      "query": "crosshair weapon idle breathing first person shooter godot",
+      "limit": 10
+    },
+    "toolCallId": "call_02_dqNUFktj50CoG7DjfDE28687",
+    "turnId": "aed69977-f5c9-4bf6-8100-d71e0d73df25",
+    "at": "2026-09-09T19:05:49.570Z",
+    "ok": true,
+    "result": {
+      "items": [],
+      "limit": 10,
+      "next": null,
+      "offset": 0,
+      "total": 0
+    }
+  },
+  {
+    "name": "memory_search",
+    "args": {
+      "query": "godot project crosshair camera attachment"
+    },
+    "toolCallId": "call_03_pYTexsbqSw7Xvp73W4kn4018",
+    "turnId": "aed69977-f5c9-4bf6-8100-d71e0d73df25",
+    "at": "2026-09-09T19:05:49.571Z",
+    "ok": true,
+    "result": {
+      "items": [],
+      "next": null,
+      "offset": 0,
+      "total": 0
+    }
+  }
+]

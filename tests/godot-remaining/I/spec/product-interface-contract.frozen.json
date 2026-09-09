@@ -1,0 +1,37 @@
+{
+  "format": "craftmine.i.product-interface-contract/1",
+  "version": 1,
+  "frozenAt": "2026-09-10",
+  "status": "REQUESTED — not implemented. This is task I's read-only consumption contract for the owning modules (A/C/D/E/L/H/M/N). It is not a second world database, model loop or privileged execution path.",
+  "why": "真实模型执行等待产品接口。在接口交付前，任何 live 轮次必须登记为尚未执行，不能用夹具或固定样例代替。",
+  "inputPolicy": {
+    "mode": "no-input",
+    "forbidden": ["真实鼠标键盘", "Playwright mouse/keyboard/click/fill", "requestPointerLock", "窗口激活或置前", "tests/browser.mjs", "tests/modules-browser.mjs"],
+    "allowed": ["HTTP", "页面脚本", "进程协议", "游戏内部受限测试接口"],
+    "assertion": "identity.inputPolicy.inputEventsSent === 0 && pointerLockRequests === 0 && focusSteals === 0"
+  },
+  "discovery": {
+    "env": "CRAFTMINE_I_PRODUCT_INTERFACE",
+    "envToken": "CRAFTMINE_I_PRODUCT_INTERFACE_TOKEN (presence only; value never logged)",
+    "identityEndpoint": "GET /acceptance/identity"
+  },
+  "endpoints": [
+    { "method": "GET", "path": "/acceptance/identity", "returns": "craftmine.product-acceptance/1 身份文档：product/client/engine/base 版本、model 身份、inputPolicy、endpoints 清单", "owner": "C/D/E/L" },
+    { "method": "POST", "path": "/acceptance/session", "body": "roundId, categoryId, prompt", "returns": "sessionId + 初始世界身份", "owner": "E/D" },
+    { "method": "POST", "path": "/acceptance/request", "body": "sessionId, prompt", "returns": "taskId；必须走产品自己的模型循环与工具，不得为验收另建循环", "owner": "L/A" },
+    { "method": "GET", "path": "/acceptance/task/{taskId}", "returns": "status, attempts, draft, candidate, build, usage(含 unknown), error", "owner": "A/L" },
+    { "method": "POST", "path": "/acceptance/apply", "body": "sessionId, taskId", "returns": "applied, progressRef, appliedOnce", "owner": "A/C/D" },
+    { "method": "POST", "path": "/acceptance/observe", "body": "sessionId, ops[]", "returns": "craftmine.i.observation/1 观测文档；ops 复用产品自己的受限检查接口，不写入预期状态", "owner": "C/D/F/G" },
+    { "method": "POST", "path": "/acceptance/save", "body": "sessionId", "returns": "保存回执与进度身份", "owner": "D/A" },
+    { "method": "POST", "path": "/acceptance/restart", "body": "sessionId", "returns": "重启后的世界身份与恢复结果", "owner": "D/A" },
+    { "method": "GET", "path": "/acceptance/usage", "query": "sessionId", "returns": "创作/压缩/评审分账 token 与缓存，未上报记 unknown", "owner": "L" },
+    { "method": "POST", "path": "/acceptance/close", "body": "sessionId", "returns": "关闭与资源回收结果", "owner": "C/D" }
+  ],
+  "hardRules": [
+    "验收只能读取与驱动产品自己的构建/检查/应用/保存链路，不能绕过真实碰撞、伤害、库存与事务",
+    "观测接口只报告实际运行状态，不允许调用方直接写预期状态",
+    "模型不能切换目标世界、伪造回执或自行标记检查通过",
+    "所有观测必须带身份与用量；缺失即证据不足",
+    "缺少该接口时 live 轮次记为 blocked/尚未执行，退出码 3，绝不记为通过"
+  ]
+}

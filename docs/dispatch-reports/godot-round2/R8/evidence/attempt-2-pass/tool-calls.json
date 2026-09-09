@@ -1,0 +1,948 @@
+[
+  {
+    "name": "godot_project_index",
+    "args": {},
+    "toolCallId": "call_00_dp9FPwa1yoGUjmAROBi89677",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T18:59:01.908Z",
+    "ok": false,
+    "error": "GODOT_PROJECT_NOT_FOUND",
+    "code": "GODOT_PROJECT_NOT_FOUND"
+  },
+  {
+    "name": "project_inspect",
+    "args": {},
+    "toolCallId": "call_01_Ez5BNK9AO6crXW8ja4Dv3392",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T18:59:01.914Z",
+    "ok": true,
+    "result": {
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127",
+      "taskId": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "title": "R8 真实模型验收世界",
+      "workspaceRevision": 0,
+      "status": "running",
+      "resumedFrom": null,
+      "resources": [],
+      "next": null,
+      "total": 0,
+      "publishingAvailable": false
+    }
+  },
+  {
+    "name": "capabilities_read",
+    "args": {
+      "section": "catalog",
+      "limit": 4000
+    },
+    "toolCallId": "call_00_2lDVFgSMBzA8aE1xOp1B1960",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T18:59:03.116Z",
+    "ok": true,
+    "result": {
+      "section": "catalog",
+      "text": "{\n  \"format\": \"craftmine.capabilities/1\",\n  \"runtime\": \"craftmine-web/5\",\n  \"entry\": {\n    \"export\": \"step\",\n    \"signature\": \"async step({frame, params, state}) => {state, commands}\",\n    \"module\": \"ES 模块，必须导出 step\"\n  },\n  \"events\": [\n    {\n      \"type\": \"start\",\n      \"payload\": {},\n      \"note\": \"模块装载时一次，用来注册物品和面板\"\n    },\n    {\n      \"type\": \"tick\",\n      \"payload\": {\n        \"dt\": \"秒\"\n      },\n      \"note\": \"每帧一次，返回的 commands 最多 32 条\"\n    },\n    {\n      \"type\": \"interact\",\n      \"payload\": {\n        \"targetId\": \"对象 ID\"\n      },\n      \"note\": \"玩家按 E 指向声明过的目标\"\n    },\n    {\n      \"type\": \"contact\",\n      \"payload\": {\n        \"targetId\": \"对象 ID\"\n      },\n      \"note\": \"玩家接触声明过的目标\"\n    },\n    {\n      \"type\": \"attack\",\n      \"payload\": {\n        \"targetId\": \"对象 ID\"\n      },\n      \"note\": \"玩家攻击命中声明过的目标\"\n    },\n    {\n      \"type\": \"land\",\n      \"payload\": {\n        \"targetId\": \"对象 ID\"\n      },\n      \"note\": \"玩家落在声明过的目标上\"\n    },\n    {\n      \"type\": \"key\",\n      \"payload\": {\n        \"code\": \"keys 中声明过的按键代码\"\n      },\n      \"note\": \"只有模块在 keys 里声明过的按键才会触发；不要读 frame.keys\"\n    }\n  ],\n  \"keys\": [\n    \"KeyB\",\n    \"KeyC\",\n    \"KeyG\",\n    \"KeyH\",\n    \"KeyI\",\n    \"KeyJ\",\n    \"KeyK\",\n    \"KeyL\",\n    \"KeyM\",\n    \"KeyN\",\n    \"KeyO\",\n    \"KeyP\",\n    \"KeyQ\",\n    \"KeyU\",\n    \"KeyV\",\n    \"KeyX\",\n    \"KeyY\",\n    \"KeyZ\",\n    \"Digit3\",\n    \"Digit4\",\n    \"Digit5\",\n    \"Digit6\",\n    \"Digit7\",\n    \"Digit8\",\n    \"Digit9\"\n  ],\n  \"permissions\": [\n    \"objects.write\",\n    \"player.motion\",\n    \"hud.message\",\n    \"inventory.write\",\n    \"audio.play\",\n    \"targets.write\",\n    \"resources.write\",\n    \"health.write\"\n  ],\n  \"capabilities\": [\n    \"inventory.read@1\",\n    \"inventory.items@1\",\n    \"hud.panel@1\"\n  ],\n  \"requires\": [\n    \"health@1\",\n    \"ranged@1\",\n    \"melee@1\",\n    \"resource@1\"\n  ],\n  \"commands\": [\n    {\n      \"type\": \"object.patch\",\n      \"permission\": \"objects.write\",\n      \"scope\": \"声明过的 targets 里的对象\",\n      \"fields\": [\n        {\n          \"name\": \"id\",\n          \"description\": \"对象 ID\"\n        },\n        {\n          \"name\": \"position\",\n          \"description\": \"{x,y,z} 或 null；整项省略等同 null（保留原值）\"\n        },\n        {\n          \"name\": \"visible\",\n          \"description\": \"boolean 或 null\"\n        },\n        {\n          \"name\": \"solid\",\n          \"description\": \"boolean 或 null\"\n        },\n        {\n          \"name\": \"color\",\n          \"description\": \"'#RRGGBB' 或 null\"\n        },\n        {\n          \"name\": \"yaw\",\n          \"description\": \"null 或 0/90/180/270\"\n        },\n        {\n          \"name\": \"duration\",\n          \"description\": \"可选 0..5 秒，平滑移动\"\n        }\n      ],\n      \"quota\": \"每步最多 32 条命令\",\n      \"example\": \"{type:'object.patch',id:'door-1',visible:false}\",\n      \"note\": \"visible:true 不会让已死亡的目标重新生效，复活必须用 target.revive\"\n    },\n    {\n      \"type\": \"player.impulse\",\n      \"permission\": \"player.motion\",\n      \"scope\": \"当前玩家\",\n      \"fields\": [\n        {\n          \"name\": \"velocity\",\n          \"description\": \"{x,y,z}，每轴 -18..18\"\n        }\n      ],\n      \"quota\": \"每步最多 1 条\",\n      \"example\": \"{type:'player.impulse',velocity:{x:0,y:8,z:0}}\"\n    },\n    {\n      \"type\": \"hud.message\",\n      \"permission\": \"hud.message\",\n      \"scope\": \"当前玩家\",\n      \"fields\": [\n        {\n          \"name\": \"text\",\n          \"description\": \"最多 160 字纯文本\"\n        },\n        {\n          \"name\": \"tone\",\n          \"description\": \"可选 'info' | 'warn' | 'success'\"\n        },\n        {\n          \"name\": \"duration\",\n          \"description\": \"可选 1000..10000 毫秒\"\n        }\n      ],\n      \"quota\": \"每步最多 1 条\",\n      \"example\": \"{type:'hud.message',text:'门开了',tone:'success'}\"\n    },\n    {\n      \"type\": \"audio.play\",\n      \"permission\": \"audio.play\",\n      \"scope\": \"当前玩家\",\n      \"fields\": [\n        {\n          \"name\": \"sound\",\n          \"description\": \"'shoot' | 'hit' | 'open' | 'pickup' | 'error' | 'jump' | 'land' | 'step' | 'explode' | 'heal' | 'hurt' | 'unlock' | 'deny' | 'win'\"\n        },\n        {\n          \"name\": \"volume\",\n          \"description\": \"可选 0..1\"\n        }\n      ],\n      \"quot",
+      "start": 0,
+      "next": 4000,
+      "totalChars": 10295
+    }
+  },
+  {
+    "name": "capabilities_read",
+    "args": {
+      "section": "behaviors",
+      "limit": 4000
+    },
+    "toolCallId": "call_01_zxj8dZYyCYfbqRKgIJw49128",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T18:59:03.118Z",
+    "ok": true,
+    "result": {
+      "section": "behaviors",
+      "text": "玩法源文件必须导出同步或异步函数 step({frame,params,state})，返回 {state,commands}。state 为可保存的 JSON 对象；必须返回完整状态，不使用模块全局变量存储进度。\n改变 stateVersion 时必须同时声明数据迁移，否则旧进度会被拒绝：在模块定义里加 migrate:[{from:旧版本号,rename:{旧字段:'新字段'},keep:['要保留的字段'],add:{新字段:默认值}}]。宿主只做数据迁移（改名、丢弃、补默认值），不执行迁移代码；initialState 里缺少的字段会自动补齐。不要为了绕过迁移而把 stateVersion 改回旧值。\nframe={dt,time,event:{type,targetId,code},player:{position:{x,y,z},grounded,health},objects:[{id,position,visible,solid,health}]}。事件有 start/tick/interact/contact/attack/land/key，位置单位为米，地面 y=6。\nframe 里没有按键状态：不存在 frame.keys，也不能轮询按键。玩家按键必须用模块自己的 keys 字段声明（最多 4 个，例如 keys:['KeyG']），宿主只在引擎未占用该键时派发 {type:'key',code:'KeyG'} 事件。引擎已占用、不能声明：W/A/S/D、空格、Shift、1、2、E、F、R、T、Enter、Esc。\ncommands 每步最多32条，仅能使用声明的权限和 targets：\nobjects.write: {type:'object.patch',id,position:null或{x,y,z},visible:null或boolean,solid:null或boolean,color:null或'#RRGGBB',yaw:null或0/90/180/270,duration:可选0..5}，null表示保留原字段；position/visible/solid/color/yaw 可以整项省略，省略等同于 null。yaw 是绕对象自身原点的水平朝向，只支持 90 度整步（宿主把旋转烘焙成轴对齐包围盒，碰撞随之改变）。duration 是平滑移动的秒数：宿主把网格从旧位置插值到新位置，碰撞和存档立即使用目标位置；省略或 0 表示瞬间移动。让它“走过去”“滑过去”时用它，不要每 tick 发一串位置。\n制作后才出现的对象，也要先在场地内定义合法位置与几何；在 start 根据已保存状态返回 visible:false、solid:false 隐藏未解锁对象，解锁后才显示。不能通过把对象埋到地下、移到边界外或设为零尺寸来隐藏，否则源码执行前的场景检查就会拒绝。\nplayer.motion: {type:'player.impulse',velocity:{x,y,z}}，各轴 -18..18。\nhud.message: {type:'hud.message',text:'最多160字',tone:可选'info'|'warn'|'success',duration:可选1000..10000毫秒}。tone 决定飘字颜色，duration 决定停留时间（默认 4500 毫秒）。\naudio.play: {type:'audio.play',sound:'shoot'|'hit'|'open'|'pickup'|'error'|'jump'|'land'|'step'|'explode'|'heal'|'hurt'|'unlock'|'deny'|'win',volume:可选0..1}。宿主用内置音效合成播放，不需要素材。\ntargets.write: {type:'target.revive',id}。把该目标的血量恢复到上限并让它重新出现（用于刷新怪物）。只能用于声明过的 targets；被杀死的目标必须用它复活，object.patch 的 visible:true 不会让已死目标重新生效。\nresources.write: {type:'resource.add',id:'资源系统ID',amount:整数-10000..10000} 或 {type:'resource.set',id:'资源系统ID',value:0..10000}。id 是场景里 type 为 resource 的系统 ID（例如体力、魔法、饥饿、护甲）；结果会自动夹在 0 到该系统 max 之间。资源条会显示在屏幕左下角。\nhealth.write: {type:'health.add',amount:整数-10000..10000}。正数治疗、负数扣血，结果夹在 0 到玩家血量上限之间；需要玩家生命值系统。\ntargets.write: {type:'target.damage',id,amount:0..10000}。直接扣目标血量（用于吸血、中毒、爆炸等）；只能作用于声明过的 targets，血量归零时模型会消失，复活仍必须用 target.revive。\ninventory.write: {type:'inventory.add',item:'稳定英文ID',count:整数-100..100}。\n扩展命令：世界装载了扩展时，玩法模块可以直接发出扩展声明的命令（命令名、字段与权限见宿主能力目录的「已装载扩展」）。使用时必须把模块格式升级为 craftmine.behavior/2 或 /3，在 requires 里写上 ext:扩展ID@版本，并声明该命令要求的权限；扩展命令由宿主沙箱执行，它产出的效果仍然是上面这些内核原子效果，不会给你新的权力。\n需要共享背包读取、物品名称或持久任务时，使用 craftmine.behavior/3，保留 /2 的 requires 与 binding，并声明 capabilities（只选需要的）：\n- inventory.read@1：frame.inventory 是本步开始时的共享库存 {wood:3,...}，缺少 ID 表示 0。只读快照，修改它不能改变背包；不同模块按场景顺序依次读取最新已提交库存。配方先检查 (frame.inventory.wood||0)>=所需数量，不足时返回提示与原状态；不要尝试扣负库存，否则整步拒绝并停止模块。\n- inventory.items@1（需 inventory.write）：{type:'inventory.define',item:'wood',name:'木材',description:'最多200字'}。name 最多40字；按稳定 ID 注册显示名称，第一次已提交的定义保留，后续同 ID 定义不覆盖。可在 start 注册，不能在 start 重复发放物品；同类物品跨创作沿用同 ID，不同物品用不同 ID。\n- hud.panel@1（需 hud.message）：{type:'hud.panel',key:'quest',panel:{title:'任务名称',lines:['采集木材 1 / 3','最多6行，每行120字']}}。title 最多48字，每模块最多3个面板；panel:null 删除该面板。全部为纯文本，按 key 替换本模块面板，不能操作别的模块面板。面板随进度保存，卸载隐藏，恢复兼容版本后继续；仅状态改变时更新，不必每 tick 重发。\n扣料、对象变化、任务面板和 state 在同一步全部校验后一起提交。一次性奖励用 state 标记已领取；初始状态须兼容新增字段（例如 state.rewarded??false），不能靠 start 重置已完成任务。\n模块在 Worker 中执行，没有 DOM、开发服务、网络请求、文件访问、计时器或创建新 Worker 的能力。不得使用 import、eval、Function、fetch、全局消息接口。每步应快速结束；持续行为使用 frame.dt 与返回的 state。params 保存可调参数。源码是真正的逻辑，请用事件与状态编程实现需求，不要只返回说明文字。",
+      "start": 0,
+      "next": null,
+      "totalChars": 3437
+    }
+  },
+  {
+    "name": "godot_project_create",
+    "args": {
+      "baseId": "first-person",
+      "files": [
+        {
+          "path": "project.godot",
+          "text": "; Engine configuration file.\n; 最中幻想 · 第一人称持枪原型（纯源码工程）\n; 启动场景 scenes/main.tscn 只挂一个脚本，全部场景内容在运行时由 GDScript 搭出来。\n\nconfig_version=5\n\n[application]\n\nconfig/name=\"最中幻想 · 第一人称持枪原型\"\nconfig/description=\"第一人称视角：准星用 _draw 画在视口正中央；枪与剑挂在 Camera3D 下随视角旋转；按 1 / 2 / Q 切换武器时模型与准星同步更换。\"\nrun/main_scene=\"res://scenes/main.tscn\"\nconfig/features=PackedStringArray(\"4.7\", \"Forward Plus\")\n\n[display]\n\nwindow/size/viewport_width=1280\nwindow/size/viewport_height=720\nwindow/stretch/mode=\"canvas_items\"\nwindow/stretch/aspect=\"expand\"\n\n[physics]\n\n3d/default_gravity=18.0\n\n[rendering]\n\nrenderer/rendering_method=\"forward_plus\"\nanti_aliasing/quality/msaa_3d=2\nenvironment/defaults/default_clear_color=Color(0.09, 0.11, 0.15, 1)\n"
+        },
+        {
+          "path": "scenes/main.tscn",
+          "text": "[gd_scene load_steps=2 format=3]\n\n[ext_resource type=\"Script\" path=\"res://scripts/main.gd\" id=\"1_main\"]\n\n[node name=\"Main\" type=\"Node3D\"]\nscript = ExtResource(\"1_main\")\n"
+        },
+        {
+          "path": "scripts/main.gd",
+          "text": "extends Node3D\n## 世界入口：环境 + 地面 + 掩体 + 第一人称玩家 + HUD。\n## 整个场景在运行时用代码搭建，工程里不需要任何外部素材。\n\nconst PlayerScript: GDScript = preload(\"res://scripts/player.gd\")\nconst HudScript: GDScript = preload(\"res://scripts/hud.gd\")\n\nvar player = null\nvar hud = null\n\n\nfunc _ready() -> void:\n\t_build_environment()\n\t_build_ground()\n\t_build_props()\n\t_build_player()\n\t_build_hud()\n\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\n\nfunc _unhandled_input(event: InputEvent) -> void:\n\tif event is InputEventKey:\n\t\tvar key_event := event as InputEventKey\n\t\tif key_event.pressed and not key_event.echo and key_event.keycode == KEY_ESCAPE:\n\t\t\tif Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:\n\t\t\t\tInput.mouse_mode = Input.MOUSE_MODE_VISIBLE\n\t\t\telse:\n\t\t\t\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\t\t\treturn\n\tif event is InputEventMouseButton:\n\t\tvar button_event := event as InputEventMouseButton\n\t\tif button_event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:\n\t\t\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\n\nfunc _build_player() -> void:\n\tplayer = PlayerScript.new()\n\tplayer.name = \"Player\"\n\tplayer.position = Vector3(0.0, 0.6, 9.0)\n\tadd_child(player)\n\n\nfunc _build_hud() -> void:\n\thud = HudScript.new()\n\thud.name = \"Hud\"\n\tadd_child(hud)\n\t# HUD 需要玩家信号：武器切换 -> 换准星样式；攻击 -> 准星脉冲。\n\thud.setup(player)\n\n\nfunc _build_environment() -> void:\n\tvar world_env := WorldEnvironment.new()\n\tworld_env.name = \"WorldEnvironment\"\n\tvar env := Environment.new()\n\tenv.background_mode = Environment.BG_SKY\n\tvar sky := Sky.new()\n\tsky.radiance_size = Sky.RADIANCE_SIZE_256\n\tvar sky_mat := ProceduralSkyMaterial.new()\n\tsky_mat.sky_top_color = Color(0.22, 0.40, 0.72)\n\tsky_mat.sky_horizon_color = Color(0.66, 0.74, 0.84)\n\tsky_mat.ground_horizon_color = Color(0.52, 0.55, 0.60)\n\tsky_mat.ground_bottom_color = Color(0.14, 0.15, 0.18)\n\tsky.sky_material = sky_mat\n\tenv.sky = sky\n\tenv.ambient_light_source = Environment.AMBIENT_SOURCE_SKY\n\tenv.ambient_light_energy = 1.1\n\tenv.tonemap_mode = Environment.TONE_MAPPER_ACES\n\tenv.ssao_enabled = true\n\tworld_env.environment = env\n\tadd_child(world_env)\n\n\tvar sun := DirectionalLight3D.new()\n\tsun.name = \"Sun\"\n\tsun.rotation = Vector3(deg_to_rad(-52.0), deg_to_rad(38.0), 0.0)\n\tsun.light_energy = 1.35\n\tsun.shadow_enabled = true\n\tsun.directional_shadow_max_distance = 90.0\n\tadd_child(sun)\n\n\nfunc _build_ground() -> void:\n\t_add_block(Vector3(0.0, -0.5, 0.0), Vector3(90.0, 1.0, 90.0), Color(0.30, 0.34, 0.31))\n\t# 参考网格线：帮助肉眼确认准星是否真的压在视口正中。\n\tfor i in range(-8, 9):\n\t\tvar t := float(i) * 5.0\n\t\t_add_block(Vector3(t, 0.02, 0.0), Vector3(0.08, 0.04, 90.0), Color(0.42, 0.47, 0.44))\n\t\t_add_block(Vector3(0.0, 0.02, t), Vector3(90.0, 0.04, 0.08), Color(0.42, 0.47, 0.44))\n\n\nfunc _build_props() -> void:\n\t# 掩体、柱子、台阶：给第一人称视角一点可参照的纵深。\n\t_add_block(Vector3(-6.0, 0.9, -4.0), Vector3(3.0, 1.8, 1.0), Color(0.55, 0.42, 0.30))\n\t_add_block(Vector3(6.5, 0.6, -6.0), Vector3(4.0, 1.2, 1.2), Color(0.48, 0.36, 0.27))\n\t_add_block(Vector3(0.0, 1.4, -14.0), Vector3(10.0, 2.8, 0.8), Color(0.40, 0.42, 0.46))\n\t_add_block(Vector3(-2.0, 0.25, 2.0), Vector3(1.4, 0.5, 1.4), Color(0.62, 0.50, 0.28))\n\t_add_block(Vector3(2.4, 0.5, 3.6), Vector3(1.2, 1.0, 1.2), Color(0.58, 0.46, 0.26))\n\t_add_block(Vector3(3.2, 0.75, 4.4), Vector3(1.2, 0.5, 1.2), Color(0.58, 0.46, 0.26))\n\t_add_block(Vector3(4.0, 1.0, 5.2), Vector3(1.2, 0.5, 1.2), Color(0.58, 0.46, 0.26))\n\tfor i in 4:\n\t\tvar angle := TAU * float(i) * 0.25\n\t\tvar px := cos(angle) * 16.0\n\t\tvar pz := sin(angle) * 16.0\n\t\t_add_block(Vector3(px, 3.0, pz), Vector3(1.6, 6.0, 1.6), Color(0.44, 0.45, 0.48))\n\t# 远处靶墙，方便对准星居中做视觉校验。\n\t_add_block(Vector3(0.0, 1.5, -30.0), Vector3(12.0, 3.0, 0.6), Color(0.50, 0.24, 0.22))\n\n\nfunc _add_block(pos: Vector3, size: Vector3, color: Color, rot: Vector3 = Vector3.ZERO) -> StaticBody3D:\n\tvar body := StaticBody3D.new()\n\tbody.position = pos\n\tbody.rotation = rot\n\tadd_child(body)\n\n\tvar box := BoxMesh.new()\n\tbox.size = size\n\tvar mesh_instance := MeshInstance3D.new()\n\tmesh_instance.mesh = box\n\tvar material := StandardMaterial3D.new()\n\tmaterial.albedo_color = color\n\tmaterial.roughness = 0.9\n\tmesh_instance.material_override = material\n\tbody.add_child(mesh_instance)\n\n\tvar shape := BoxShape3D.new()\n\tshape.size = size\n\tvar collider := CollisionShape3D.new()\n\tcollider.shape = shape\n\tbody.add_child(collider)\n\treturn body\n"
+        }
+      ]
+    },
+    "toolCallId": "call_00_Px9Tbk5jUvwSnRaB8eMm2748",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:00:31.285Z",
+    "ok": true,
+    "result": {
+      "applied": false,
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "bytes": 5616,
+      "fileCount": 3,
+      "manifestHash": "f92c40fc8fd29b1133b9f561b0e1c2920f0a3b22016ba030dfcab44928aaf751",
+      "revision": 0,
+      "status": "source-only",
+      "taskId": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+      "toolCallId": "call_00_Px9Tbk5jUvwSnRaB8eMm2748",
+      "verified": false,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_project_patch",
+    "args": {
+      "revision": 0,
+      "manifestHash": "f92c40fc8fd29b1133b9f561b0e1c2920f0a3b22016ba030dfcab44928aaf751",
+      "operations": [
+        {
+          "op": "put",
+          "path": "scripts/player.gd",
+          "expectedHash": null,
+          "text": "extends CharacterBody3D\n## 第一人称玩家控制器。\n##\n## 节点结构：Player(CharacterBody3D) -> Head(Node3D，负责俯仰) -> Camera3D -> ViewModel(手持模型)\n## 视角旋转只改 Player.rotation.y 与 Head.rotation.x；ViewModel 是 Camera3D 的子节点，\n## 所以相机转到哪里，枪/剑就转到哪里，不需要每帧手动同步旋转。\n\nconst ViewModelScript: GDScript = preload(\"res://scripts/view_model.gd\")\n\nsignal weapon_changed(weapon_id: String)\nsignal attacked(weapon_id: String)\n\nconst WEAPON_GUN: String = \"gun\"\nconst WEAPON_SWORD: String = \"sword\"\n\n@export var walk_speed: float = 5.2\n@export var sprint_speed: float = 8.4\n@export var jump_velocity: float = 6.2\n@export var mouse_sensitivity: float = 0.0024\n@export var pitch_limit_deg: float = 88.0\n@export var move_blend: float = 14.0\n\nvar camera: Camera3D = null\nvar head: Node3D = null\nvar view_model: Node3D = null\n\nvar _gravity: float = 18.0\nvar _yaw: float = 0.0\nvar _pitch: float = 0.0\nvar _look_delta: Vector2 = Vector2.ZERO\nvar _weapon_id: String = WEAPON_GUN\n\n\nfunc _ready() -> void:\n\t_gravity = float(ProjectSettings.get_setting(\"physics/3d/default_gravity\", 18.0))\n\t_build_body()\n\t_weapon_id = WEAPON_GUN\n\tif view_model != null:\n\t\tview_model.equip(_weapon_id)\n\n\nfunc _build_body() -> void:\n\tvar capsule := CapsuleShape3D.new()\n\tcapsule.height = 1.8\n\tcapsule.radius = 0.35\n\tvar collider := CollisionShape3D.new()\n\tcollider.name = \"Body\"\n\tcollider.shape = capsule\n\tcollider.position = Vector3(0.0, 0.9, 0.0)\n\tadd_child(collider)\n\n\thead = Node3D.new()\n\thead.name = \"Head\"\n\thead.position = Vector3(0.0, 1.62, 0.0)\n\tadd_child(head)\n\n\tcamera = Camera3D.new()\n\tcamera.name = \"Camera3D\"\n\tcamera.near = 0.05\n\tcamera.far = 500.0\n\tcamera.fov = 78.0\n\tcamera.current = true\n\thead.add_child(camera)\n\n\t# 手持模型直接挂在相机下：这是「枪跟随视角旋转」的唯一原因。\n\tview_model = ViewModelScript.new()\n\tview_model.name = \"ViewModel\"\n\tcamera.add_child(view_model)\n\n\nfunc _unhandled_input(event: InputEvent) -> void:\n\tif event is InputEventMouseMotion:\n\t\tif Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:\n\t\t\treturn\n\t\tvar motion := event as InputEventMouseMotion\n\t\t_look_delta += motion.relative\n\t\t_yaw -= motion.relative.x * mouse_sensitivity\n\t\t_pitch -= motion.relative.y * mouse_sensitivity\n\t\tvar limit := deg_to_rad(pitch_limit_deg)\n\t\t_pitch = clampf(_pitch, -limit, limit)\n\t\trotation.y = _yaw\n\t\tif head != null:\n\t\t\thead.rotation.x = _pitch\n\t\treturn\n\n\tif event is InputEventKey:\n\t\tvar key_event := event as InputEventKey\n\t\tif not key_event.pressed or key_event.echo:\n\t\t\treturn\n\t\tmatch key_event.physical_keycode:\n\t\t\tKEY_1:\n\t\t\t\trequest_weapon(WEAPON_GUN)\n\t\t\tKEY_2:\n\t\t\t\trequest_weapon(WEAPON_SWORD)\n\t\t\tKEY_Q:\n\t\t\t\trequest_weapon(WEAPON_SWORD if _weapon_id == WEAPON_GUN else WEAPON_GUN)\n\t\treturn\n\n\tif event is InputEventMouseButton:\n\t\tif Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:\n\t\t\treturn\n\t\tvar button_event := event as InputEventMouseButton\n\t\tif not button_event.pressed:\n\t\t\treturn\n\t\tmatch button_event.button_index:\n\t\t\tMOUSE_BUTTON_WHEEL_UP:\n\t\t\t\trequest_weapon(WEAPON_GUN)\n\t\t\tMOUSE_BUTTON_WHEEL_DOWN:\n\t\t\t\trequest_weapon(WEAPON_SWORD)\n\t\t\tMOUSE_BUTTON_LEFT:\n\t\t\t\tattack()\n\n\nfunc _physics_process(delta: float) -> void:\n\tif not is_on_floor():\n\t\tvelocity.y -= _gravity * delta\n\telif Input.is_physical_key_pressed(KEY_SPACE):\n\t\tvelocity.y = jump_velocity\n\n\tvar input_dir := Vector2.ZERO\n\tif Input.is_physical_key_pressed(KEY_W):\n\t\tinput_dir.y -= 1.0\n\tif Input.is_physical_key_pressed(KEY_S):\n\t\tinput_dir.y += 1.0\n\tif Input.is_physical_key_pressed(KEY_A):\n\t\tinput_dir.x -= 1.0\n\tif Input.is_physical_key_pressed(KEY_D):\n\t\tinput_dir.x += 1.0\n\tinput_dir = input_dir.limit_length(1.0)\n\n\tvar speed := sprint_speed if Input.is_physical_key_pressed(KEY_SHIFT) else walk_speed\n\tvar basis := global_transform.basis\n\tvar wish := basis.x * input_dir.x + basis.z * input_dir.y\n\twish.y = 0.0\n\twish = wish.normalized() * speed\n\n\tvar blend := clampf(delta * move_blend, 0.0, 1.0)\n\tvelocity.x = lerpf(velocity.x, wish.x, blend)\n\tvelocity.z = lerpf(velocity.z, wish.z, blend)\n\tmove_and_slide()\n\n\nfunc _process(_delta: float) -> void:\n\tif view_model == null:\n\t\treturn\n\tview_model.set_look_delta(_look_delta)\n\t_look_delta = Vector2.ZERO\n\tview_model.set_move_speed(Vector2(velocity.x, velocity.z).length())\n\n\nfunc request_weapon(weapon_id: String) -> void:\n\tif weapon_id != WEAPON_GUN and weapon_id != WEAPON_SWORD:\n\t\treturn\n\tif weapon_id == _weapon_id:\n\t\treturn\n\t_weapon_id = weapon_id\n\tif view_model != null:\n\t\tview_model.equip(weapon_id)\n\tweapon_changed.emit(weapon_id)\n\n\nfunc get_weapon_id() -> String:\n\treturn _weapon_id\n\n\nfunc attack() -> void:\n\tif view_model != null:\n\t\tview_model.play_attack()\n\tattacked.emit(_weapon_id)\n"
+        },
+        {
+          "op": "put",
+          "path": "scripts/view_model.gd",
+          "expectedHash": null,
+          "text": "extends Node3D\n## 挂在 Camera3D 下的第一人称手持模型。\n## 枪和剑都是程序化网格拼出来的：切换武器时把整块模型换掉（不是改颜色/缩放），\n## 再配一段收枪 -> 换模型 -> 举枪的动作，并配合 HUD 换准星。\n\nconst WEAPON_GUN: String = \"gun\"\nconst WEAPON_SWORD: String = \"sword\"\n\nvar _current_id: String = \"\"\nvar _gun_model: Node3D = null\nvar _sword_model: Node3D = null\nvar _muzzle_flash: MeshInstance3D = null\nvar _muzzle_light: OmniLight3D = null\nvar _swap_tween: Tween = null\n\nvar _look_delta: Vector2 = Vector2.ZERO\nvar _move_speed: float = 0.0\nvar _sway: Vector2 = Vector2.ZERO\nvar _bob_time: float = 0.0\nvar _recoil: float = 0.0\nvar _swing: float = 0.0\nvar _flash: float = 0.0\nvar _swap_offset: Vector3 = Vector3.ZERO\n\n\nfunc _ready() -> void:\n\t_gun_model = _build_gun()\n\t_gun_model.name = \"GunModel\"\n\t_gun_model.position = Vector3(0.24, -0.20, -0.42)\n\tadd_child(_gun_model)\n\n\t_sword_model = _build_sword()\n\t_sword_model.name = \"SwordModel\"\n\t_sword_model.position = Vector3(0.30, -0.34, -0.52)\n\t_sword_model.rotation = Vector3(deg_to_rad(-14.0), deg_to_rad(-26.0), deg_to_rad(10.0))\n\t_sword_model.scale = Vector3(0.65, 0.65, 0.65)\n\tadd_child(_sword_model)\n\n\t_gun_model.visible = false\n\t_sword_model.visible = false\n\n\nfunc equip(weapon_id: String) -> void:\n\tif weapon_id == _current_id:\n\t\treturn\n\tvar first_equip := _current_id.is_empty()\n\t_current_id = weapon_id\n\tif first_equip:\n\t\t_apply_visibility()\n\t\t_swap_offset = Vector3.ZERO\n\t\treturn\n\tif _swap_tween != null and _swap_tween.is_valid():\n\t\t_swap_tween.kill()\n\t_swap_tween = create_tween()\n\t_swap_tween.set_trans(Tween.TRANS_SINE)\n\t_swap_tween.set_ease(Tween.EASE_IN_OUT)\n\t_swap_tween.tween_property(self, \"_swap_offset\", Vector3(0.0, -0.36, 0.06), 0.11)\n\t_swap_tween.tween_callback(_apply_visibility)\n\t_swap_tween.tween_property(self, \"_swap_offset\", Vector3.ZERO, 0.16)\n\n\nfunc current_weapon() -> String:\n\treturn _current_id\n\n\nfunc set_look_delta(delta: Vector2) -> void:\n\t_look_delta = delta\n\n\nfunc set_move_speed(value: float) -> void:\n\t_move_speed = value\n\n\nfunc play_attack() -> void:\n\tif _current_id == WEAPON_SWORD:\n\t\t_swing = 1.0\n\telse:\n\t\t_recoil = 1.0\n\t\t_flash = 1.0\n\n\nfunc _process(delta: float) -> void:\n\tvar sway_target := Vector2(-_look_delta.x, -_look_delta.y) * 0.0022\n\t_look_delta = Vector2.ZERO\n\t_sway = _sway.lerp(sway_target, clampf(delta * 7.0, 0.0, 1.0))\n\n\tvar speed_ratio := clampf(_move_speed / 6.0, 0.0, 1.0)\n\t_bob_time += delta * (4.0 + 7.0 * speed_ratio)\n\tvar bob := Vector2(sin(_bob_time) * 0.014, -absf(cos(_bob_time)) * 0.010) * speed_ratio\n\n\t_recoil = maxf(0.0, _recoil - delta * 5.5)\n\t_swing = maxf(0.0, _swing - delta * 3.6)\n\t_flash = maxf(0.0, _flash - delta * 14.0)\n\tif _muzzle_flash != null:\n\t\t_muzzle_flash.visible = _flash > 0.02\n\tif _muzzle_light != null:\n\t\t_muzzle_light.visible = _flash > 0.02\n\n\tvar swing_curve := sin(_swing * PI)\n\tvar base := Vector3(\n\t\t_sway.x + bob.x,\n\t\t_sway.y + bob.y - _recoil * 0.03 + swing_curve * 0.04,\n\t\t_recoil * 0.055\n\t)\n\tposition = _swap_offset + base\n\trotation = Vector3(\n\t\t-_sway.y * 0.9 - _recoil * 1.2 + swing_curve * 0.55,\n\t\t_sway.x * 1.1 + swing_curve * 0.30,\n\t\tswing_curve * 0.85\n\t)\n\n\nfunc _apply_visibility() -> void:\n\tif _gun_model != null:\n\t\t_gun_model.visible = _current_id == WEAPON_GUN\n\tif _sword_model != null:\n\t\t_sword_model.visible = _current_id == WEAPON_SWORD\n\n\nfunc _build_gun() -> Node3D:\n\tvar root := Node3D.new()\n\tvar steel := _material(Color(0.20, 0.21, 0.24), 0.75, 0.35)\n\tvar dark := _material(Color(0.09, 0.10, 0.11), 0.35, 0.55)\n\tvar grip_mat := _material(Color(0.15, 0.12, 0.10), 0.05, 0.85)\n\tvar skin := _material(Color(0.72, 0.55, 0.44), 0.0, 0.8)\n\n\t_add_box(root, Vector3(0.085, 0.105, 0.30), Vector3(0.0, 0.0, 0.02), steel)\n\t_add_box(root, Vector3(0.070, 0.075, 0.10), Vector3(0.0, -0.01, 0.20), dark)\n\t_add_box(root, Vector3(0.062, 0.150, 0.085), Vector3(0.0, -0.115, 0.075), grip_mat, Vector3(-0.30, 0.0, 0.0))\n\t_add_box(root, Vector3(0.055, 0.140, 0.070), Vector3(0.0, -0.100, -0.030), dark, Vector3(0.16, 0.0, 0.0))\n\t_add_box(root, Vector3(0.016, 0.028, 0.020), Vector3(0.0, 0.066, -0.075), dark)\n\t_add_box(root, Vector3(0.030, 0.030, 0.030), Vector3(0.0, 0.062, 0.145), dark)\n\t# 握把上的一只手，让第一人称看起来是「握着」而不是「浮着」。\n\t_add_box(root, Vector3(0.075, 0.100, 0.095), Vector3(0.0, -0.125, 0.085), skin, Vector3(-0.30, 0.0, 0.0))\n\n\tvar barrel := CylinderMesh.new()\n\tbarrel.top_radius = 0.019\n\tbarrel.bottom_radius = 0.019\n\tbarrel.height = 0.34\n\t_add_mesh(root, barrel, steel, Vector3(0.0, 0.018, -0.30), Vector3(PI * 0.5, 0.0, 0.0))\n\n\tvar muzzle := CylinderMesh.new()\n\tmuzzle.top_radius = 0.027\n\tmuzzle.bottom_radius = 0.024\n\tmuzzle.height = 0.055\n\t_add_mesh(root, muzzle, dark, Vector3(0.0, 0.018, -0.45), Vector3(PI * 0.5, 0.0, 0.0))\n\n\tvar flash_mat := _material(Color(1.0, 0.82, 0.35), 0.0, 0.4)\n\tflash_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED\n\tflash_mat.emission_enabled = true\n\tflash_mat.emission = Color(1.0, 0.72, 0.25)\n\tflash_mat.emission_energy_multiplier = 5.0\n\tvar flash_mesh := SphereMesh.new()\n\tflash_mesh.radius = 0.075\n\tflash_mesh.height = 0.15\n\t_muzzle_flash = _add_mesh(root, flash_mesh, flash_mat, Vector3(0.0, 0.018, -0.50))\n\t_muzzle_flash.visible = false\n\n\t_muzzle_light = OmniLight3D.new()\n\t_muzzle_light.light_color = Color(1.0, 0.78, 0.40)\n\t_muzzle_light.light_energy = 6.0\n\t_muzzle_light.omni_range = 6.0\n\t_muzzle_light.position = Vector3(0.0, 0.018, -0.50)\n\t_muzzle_light.visible = false\n\troot.add_child(_muzzle_light)\n\treturn root\n\n\nfunc _build_sword() -> Node3D:\n\tvar root := Node3D.new()\n\tvar blade := _material(Color(0.78, 0.81, 0.88), 0.90, 0.18)\n\tvar gold := _material(Color(0.82, 0.66, 0.28), 0.85, 0.30)\n\tvar leather := _material(Color(0.24, 0.15, 0.11), 0.05, 0.90)\n\tvar skin := _material(Color(0.72, 0.55, 0.44), 0.0, 0.8)\n\n\t_add_box(root, Vector3(0.036, 0.66, 0.014), Vector3(0.0, 0.40, 0.0), blade)\n\t_add_box(root, Vector3(0.026, 0.10, 0.014), Vector3(0.0, 0.78, 0.0), blade)\n\t_add_box(root, Vector3(0.012, 0.64, 0.008), Vector3(0.0, 0.40, 0.009), gold)\n\t_add_box(root, Vector3(0.215, 0.032, 0.048), Vector3(0.0, 0.055, 0.0), gold)\n\n\tvar grip := CylinderMesh.new()\n\tgrip.top_radius = 0.022\n\tgrip.bottom_radius = 0.024\n\tgrip.height = 0.16\n\t_add_mesh(root, grip, leather, Vector3(0.0, -0.045, 0.0))\n\n\tvar pommel := SphereMesh.new()\n\tpommel.radius = 0.030\n\tpommel.height = 0.060\n\t_add_mesh(root, pommel, gold, Vector3(0.0, -0.145, 0.0))\n\n\t_add_box(root, Vector3(0.080, 0.110, 0.085), Vector3(0.0, -0.045, 0.010), skin)\n\treturn root\n\n\nfunc _material(color: Color, metallic: float, roughness: float) -> StandardMaterial3D:\n\tvar material := StandardMaterial3D.new()\n\tmaterial.albedo_color = color\n\tmaterial.metallic = metallic\n\tmaterial.roughness = roughness\n\treturn material\n\n\nfunc _add_box(parent: Node3D, size: Vector3, pos: Vector3, material: StandardMaterial3D, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:\n\tvar box := BoxMesh.new()\n\tbox.size = size\n\treturn _add_mesh(parent, box, material, pos, rot)\n\n\nfunc _add_mesh(parent: Node3D, mesh: Mesh, material: StandardMaterial3D, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:\n\tvar instance := MeshInstance3D.new()\n\tinstance.mesh = mesh\n\tinstance.material_override = material\n\tinstance.position = pos\n\tinstance.rotation = rot\n\t# 手持模型不投影，避免近平面处的自阴影闪动。\n\tinstance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF\n\tparent.add_child(instance)\n\treturn instance\n"
+        },
+        {
+          "op": "put",
+          "path": "scripts/crosshair.gd",
+          "expectedHash": null,
+          "text": "extends Control\n## 视口正中央的准星。\n##\n## 全部用 _draw 画：中心点固定取 get_viewport_rect().get_center()，\n## 也就是视口可见区域的几何中心（配合铺满视口的锚点，等于 size * 0.5）。\n## 这样窗口缩放、分辨率变化、任何 anchor/offset 改动都不会让准星偏离正中。\n## 样式跟随武器：手枪 = 四段刻度 + 中心点；长剑 = 圆环 + 四向短刻线。\n\nconst STYLE_GUN: String = \"gun\"\nconst STYLE_SWORD: String = \"sword\"\n\nvar style_id: String = STYLE_GUN\n\nvar _target_spread: float = 0.0\nvar _spread: float = 0.0\nvar _kick: float = 0.0\nvar _flash: float = 0.0\n\n\nfunc _ready() -> void:\n\tset_anchors_preset(Control.PRESET_FULL_RECT)\n\toffset_left = 0.0\n\toffset_top = 0.0\n\toffset_right = 0.0\n\toffset_bottom = 0.0\n\tmouse_filter = Control.MOUSE_FILTER_IGNORE\n\tclip_contents = false\n\n\nfunc set_style(new_style: String) -> void:\n\tif style_id == new_style:\n\t\treturn\n\tstyle_id = new_style\n\tqueue_redraw()\n\n\nfunc set_motion(ratio: float) -> void:\n\t_target_spread = clampf(ratio, 0.0, 1.0)\n\n\nfunc pulse() -> void:\n\t_kick = 1.0\n\t_flash = 0.35\n\n\nfunc viewport_center() -> Vector2:\n\treturn get_viewport_rect().get_center()\n\n\nfunc spread_amount() -> float:\n\treturn clampf(_spread + _kick * 0.6, 0.0, 1.0)\n\n\nfunc _process(delta: float) -> void:\n\t_spread = lerpf(_spread, _target_spread, clampf(delta * 8.0, 0.0, 1.0))\n\t_kick = maxf(0.0, _kick - delta * 4.0)\n\t_flash = maxf(0.0, _flash - delta * 2.5)\n\tqueue_redraw()\n\n\nfunc _draw() -> void:\n\tvar center := viewport_center()\n\tvar color := Color(1.0, 0.88, 0.55, 0.95) if style_id == STYLE_SWORD else Color(0.97, 0.99, 1.0, 0.92)\n\tif _flash > 0.0:\n\t\tcolor = Color(1.0, 0.36, 0.32, 1.0)\n\tif style_id == STYLE_SWORD:\n\t\t_draw_sword(center, color)\n\telse:\n\t\t_draw_gun(center, color)\n\n\nfunc _draw_gun(center: Vector2, color: Color) -> void:\n\tvar gap := 5.0 + spread_amount() * 10.0\n\tvar arm := 8.0\n\tvar thickness := 2.0\n\tdraw_line(center + Vector2(0.0, -gap), center + Vector2(0.0, -gap - arm), color, thickness, true)\n\tdraw_line(center + Vector2(0.0, gap), center + Vector2(0.0, gap + arm), color, thickness, true)\n\tdraw_line(center + Vector2(-gap, 0.0), center + Vector2(-gap - arm, 0.0), color, thickness, true)\n\tdraw_line(center + Vector2(gap, 0.0), center + Vector2(gap + arm, 0.0), color, thickness, true)\n\tdraw_circle(center, 1.5, color)\n\n\nfunc _draw_sword(center: Vector2, color: Color) -> void:\n\tvar radius := 10.0 + spread_amount() * 8.0\n\tdraw_arc(center, radius, 0.0, TAU, 48, color, 1.6, true)\n\tfor i in 4:\n\t\tvar angle := TAU * float(i) * 0.25 + PI * 0.25\n\t\tvar dir := Vector2(cos(angle), sin(angle))\n\t\tdraw_line(center + dir * (radius + 3.0), center + dir * (radius + 10.0), color, 2.0, true)\n\tdraw_circle(center, 2.0, color)\n"
+        },
+        {
+          "op": "put",
+          "path": "scripts/hud.gd",
+          "expectedHash": null,
+          "text": "extends CanvasLayer\n## HUD：视口正中的准星 + 当前武器名 + 操作提示。\n## 玩家切武器时会发 weapon_changed 信号，这里同步换准星样式与文字。\n\nconst CrosshairScript: GDScript = preload(\"res://scripts/crosshair.gd\")\n\nvar crosshair: Control = null\n\nvar _player: Node = null\nvar _weapon_label: Label = null\nvar _hint_label: Label = null\n\n\nfunc _ready() -> void:\n\tlayer = 10\n\n\tcrosshair = CrosshairScript.new()\n\tcrosshair.name = \"Crosshair\"\n\tadd_child(crosshair)\n\n\t_weapon_label = Label.new()\n\t_weapon_label.name = \"WeaponLabel\"\n\t_weapon_label.text = \"\"\n\t_weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\t_weapon_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)\n\t_weapon_label.offset_left = 0.0\n\t_weapon_label.offset_top = -70.0\n\t_weapon_label.offset_right = 0.0\n\t_weapon_label.offset_bottom = -40.0\n\t_weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE\n\t_weapon_label.add_theme_font_size_override(\"font_size\", 20)\n\t_weapon_label.add_theme_color_override(\"font_color\", Color(0.93, 0.96, 1.0))\n\t_weapon_label.add_theme_color_override(\"font_shadow_color\", Color(0.0, 0.0, 0.0, 0.7))\n\t_weapon_label.add_theme_constant_override(\"shadow_offset_x\", 1)\n\t_weapon_label.add_theme_constant_override(\"shadow_offset_y\", 1)\n\tadd_child(_weapon_label)\n\n\t_hint_label = Label.new()\n\t_hint_label.name = \"HintLabel\"\n\t_hint_label.text = \"WASD 移动 · Shift 冲刺 · 空格 跳跃 · 鼠标视角 · 左键 攻击 · 1 手枪 · 2 长剑 · Q 切换 · Esc 释放鼠标\"\n\t_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT\n\t_hint_label.set_anchors_preset(Control.PRESET_TOP_WIDE)\n\t_hint_label.offset_left = 16.0\n\t_hint_label.offset_top = 12.0\n\t_hint_label.offset_right = -16.0\n\t_hint_label.offset_bottom = 44.0\n\t_hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE\n\t_hint_label.add_theme_font_size_override(\"font_size\", 15)\n\t_hint_label.add_theme_color_override(\"font_color\", Color(0.88, 0.92, 0.98, 0.85))\n\t_hint_label.add_theme_color_override(\"font_shadow_color\", Color(0.0, 0.0, 0.0, 0.7))\n\t_hint_label.add_theme_constant_override(\"shadow_offset_x\", 1)\n\t_hint_label.add_theme_constant_override(\"shadow_offset_y\", 1)\n\tadd_child(_hint_label)\n\n\nfunc setup(player: Node) -> void:\n\t_player = player\n\tif player == null:\n\t\treturn\n\tif player.has_signal(\"weapon_changed\"):\n\t\tplayer.weapon_changed.connect(_on_weapon_changed)\n\tif player.has_signal(\"attacked\"):\n\t\tplayer.attacked.connect(_on_attacked)\n\tif player.has_method(\"get_weapon_id\"):\n\t\t_on_weapon_changed(String(player.get_weapon_id()))\n\n\nfunc _process(_delta: float) -> void:\n\tif crosshair == null:\n\t\treturn\n\tvar ratio := 0.0\n\tif _player is CharacterBody3D:\n\t\tratio = (_player as CharacterBody3D).velocity.length() / 8.4\n\tcrosshair.set_motion(ratio)\n\n\nfunc _on_weapon_changed(weapon_id: String) -> void:\n\tif crosshair != null:\n\t\tcrosshair.set_style(weapon_id)\n\tif _weapon_label == null:\n\t\treturn\n\tif weapon_id == \"sword\":\n\t\t_weapon_label.text = \"长剑 · 左键挥砍\"\n\telse:\n\t\t_weapon_label.text = \"手枪 · 左键射击\"\n\n\nfunc _on_attacked(_weapon_id: String) -> void:\n\tif crosshair != null:\n\t\tcrosshair.pulse()\n"
+        }
+      ]
+    },
+    "toolCallId": "call_00_fuxyVpW80kmJ8Pswdzdv6813",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:00:47.616Z",
+    "ok": true,
+    "result": {
+      "applied": false,
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "bytes": 23695,
+      "fileCount": 7,
+      "manifestHash": "c2209ec4eb73d0ae96fe9e853f60d5a5906be75daecfb4072b58a63a5c54b208",
+      "revision": 1,
+      "status": "source-only",
+      "taskId": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+      "toolCallId": "call_00_fuxyVpW80kmJ8Pswdzdv6813",
+      "verified": false,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_project_index",
+    "args": {},
+    "toolCallId": "call_00_mlCtkfUI0KW9uFu0lizp4791",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:00:48.474Z",
+    "ok": true,
+    "result": {
+      "applied": false,
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "baseId": "first-person",
+      "binaryAssetsAvailable": false,
+      "currentTaskId": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": false,
+      "files": [
+        {
+          "bytes": 909,
+          "path": "project.godot",
+          "sha256": "141a1cfd2ceb860d2d2b7e50ed28c7b30556b86aac1403e5c4c940673ac8d360"
+        },
+        {
+          "bytes": 169,
+          "path": "scenes/main.tscn",
+          "sha256": "db057226a45ac85ab681260949f17e3eb5657b6a89cb9a64163d3215d983e292"
+        },
+        {
+          "bytes": 2743,
+          "path": "scripts/crosshair.gd",
+          "sha256": "de788f8f492b681bb35217425f5d4745085cf1e3a25c43a17d4c5effcb3f2a63"
+        },
+        {
+          "bytes": 3119,
+          "path": "scripts/hud.gd",
+          "sha256": "48612bd4137807f6d136bd7a8f57b4ba9415e2abe8541bc25f27730b484490ea"
+        },
+        {
+          "bytes": 4538,
+          "path": "scripts/main.gd",
+          "sha256": "c95755e6682ec2f9b27b3da1bdf36c1c860e89cc8f5e5e371cb9b6e7ff8ef437"
+        },
+        {
+          "bytes": 4722,
+          "path": "scripts/player.gd",
+          "sha256": "056600daf269cded3ea0f960765441abc00de387a503375c919406b7aef7ddee"
+        },
+        {
+          "bytes": 7495,
+          "path": "scripts/view_model.gd",
+          "sha256": "18f0a36da2c0e95f120064cf69b6eb3338b904aed70bce4509268bbe0d9ac863"
+        }
+      ],
+      "format": "craftmine.godot-project/1",
+      "language": "GDScript",
+      "lastWriter": {
+        "baseBuild": "v-75b99891d0c9467f8f7f",
+        "projectId": "r8-live",
+        "sessionId": "512f3ce4-5422-4ff8-8563-136ba7256a11",
+        "taskId": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+        "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef"
+      },
+      "manifestHash": "c2209ec4eb73d0ae96fe9e853f60d5a5906be75daecfb4072b58a63a5c54b208",
+      "nextOffset": null,
+      "renderer": "gl_compatibility",
+      "revision": 1,
+      "status": "source-only",
+      "target": "web",
+      "totalFiles": 7,
+      "verified": false,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "revision": 1,
+      "manifestHash": "c2209ec4eb73d0ae96fe9e853f60d5a5906be75daecfb4072b58a63a5c54b208",
+      "path": "project.godot"
+    },
+    "toolCallId": "call_00_1tvoDnqSl6XbxZ8eLN6w5538",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:00:52.224Z",
+    "ok": true,
+    "result": {
+      "bytes": 909,
+      "manifestHash": "c2209ec4eb73d0ae96fe9e853f60d5a5906be75daecfb4072b58a63a5c54b208",
+      "nextOffset": null,
+      "offset": 0,
+      "path": "project.godot",
+      "revision": 1,
+      "sha256": "141a1cfd2ceb860d2d2b7e50ed28c7b30556b86aac1403e5c4c940673ac8d360",
+      "text": "; Engine configuration file.\n; 最中幻想 · 第一人称持枪原型（纯源码工程）\n; 启动场景 scenes/main.tscn 只挂一个脚本，全部场景内容在运行时由 GDScript 搭出来。\n\nconfig_version=5\n\n[application]\n\nconfig/name=\"最中幻想 · 第一人称持枪原型\"\nconfig/description=\"第一人称视角：准星用 _draw 画在视口正中央；枪与剑挂在 Camera3D 下随视角旋转；按 1 / 2 / Q 切换武器时模型与准星同步更换。\"\nrun/main_scene=\"res://scenes/main.tscn\"\nconfig/features=PackedStringArray(\"4.7\", \"Forward Plus\")\n\n[display]\n\nwindow/size/viewport_width=1280\nwindow/size/viewport_height=720\nwindow/stretch/mode=\"canvas_items\"\nwindow/stretch/aspect=\"expand\"\n\n[physics]\n\n3d/default_gravity=18.0\n\n[rendering]\n\nrenderer/rendering_method=\"forward_plus\"\nanti_aliasing/quality/msaa_3d=2\nenvironment/defaults/default_clear_color=Color(0.09, 0.11, 0.15, 1)\n",
+      "totalCharacters": 701,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "revision": 1,
+      "manifestHash": "c2209ec4eb73d0ae96fe9e853f60d5a5906be75daecfb4072b58a63a5c54b208",
+      "path": "scripts/main.gd"
+    },
+    "toolCallId": "call_01_hRnrOQK0PISRfILPzx8f9542",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:00:52.226Z",
+    "ok": true,
+    "result": {
+      "bytes": 4538,
+      "manifestHash": "c2209ec4eb73d0ae96fe9e853f60d5a5906be75daecfb4072b58a63a5c54b208",
+      "nextOffset": null,
+      "offset": 0,
+      "path": "scripts/main.gd",
+      "revision": 1,
+      "sha256": "c95755e6682ec2f9b27b3da1bdf36c1c860e89cc8f5e5e371cb9b6e7ff8ef437",
+      "text": "extends Node3D\n## 世界入口：环境 + 地面 + 掩体 + 第一人称玩家 + HUD。\n## 整个场景在运行时用代码搭建，工程里不需要任何外部素材。\n\nconst PlayerScript: GDScript = preload(\"res://scripts/player.gd\")\nconst HudScript: GDScript = preload(\"res://scripts/hud.gd\")\n\nvar player = null\nvar hud = null\n\n\nfunc _ready() -> void:\n\t_build_environment()\n\t_build_ground()\n\t_build_props()\n\t_build_player()\n\t_build_hud()\n\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\n\nfunc _unhandled_input(event: InputEvent) -> void:\n\tif event is InputEventKey:\n\t\tvar key_event := event as InputEventKey\n\t\tif key_event.pressed and not key_event.echo and key_event.keycode == KEY_ESCAPE:\n\t\t\tif Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:\n\t\t\t\tInput.mouse_mode = Input.MOUSE_MODE_VISIBLE\n\t\t\telse:\n\t\t\t\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\t\t\treturn\n\tif event is InputEventMouseButton:\n\t\tvar button_event := event as InputEventMouseButton\n\t\tif button_event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:\n\t\t\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\n\nfunc _build_player() -> void:\n\tplayer = PlayerScript.new()\n\tplayer.name = \"Player\"\n\tplayer.position = Vector3(0.0, 0.6, 9.0)\n\tadd_child(player)\n\n\nfunc _build_hud() -> void:\n\thud = HudScript.new()\n\thud.name = \"Hud\"\n\tadd_child(hud)\n\t# HUD 需要玩家信号：武器切换 -> 换准星样式；攻击 -> 准星脉冲。\n\thud.setup(player)\n\n\nfunc _build_environment() -> void:\n\tvar world_env := WorldEnvironment.new()\n\tworld_env.name = \"WorldEnvironment\"\n\tvar env := Environment.new()\n\tenv.background_mode = Environment.BG_SKY\n\tvar sky := Sky.new()\n\tsky.radiance_size = Sky.RADIANCE_SIZE_256\n\tvar sky_mat := ProceduralSkyMaterial.new()\n\tsky_mat.sky_top_color = Color(0.22, 0.40, 0.72)\n\tsky_mat.sky_horizon_color = Color(0.66, 0.74, 0.84)\n\tsky_mat.ground_horizon_color = Color(0.52, 0.55, 0.60)\n\tsky_mat.ground_bottom_color = Color(0.14, 0.15, 0.18)\n\tsky.sky_material = sky_mat\n\tenv.sky = sky\n\tenv.ambient_light_source = Environment.AMBIENT_SOURCE_SKY\n\tenv.ambient_light_energy = 1.1\n\tenv.tonemap_mode = Environment.TONE_MAPPER_ACES\n\tenv.ssao_enabled = true\n\tworld_env.environment = env\n\tadd_child(world_env)\n\n\tvar sun := DirectionalLight3D.new()\n\tsun.name = \"Sun\"\n\tsun.rotation = Vector3(deg_to_rad(-52.0), deg_to_rad(38.0), 0.0)\n\tsun.light_energy = 1.35\n\tsun.shadow_enabled = true\n\tsun.directional_shadow_max_distance = 90.0\n\tadd_child(sun)\n\n\nfunc _build_ground() -> void:\n\t_add_block(Vector3(0.0, -0.5, 0.0), Vector3(90.0, 1.0, 90.0), Color(0.30, 0.34, 0.31))\n\t# 参考网格线：帮助肉眼确认准星是否真的压在视口正中。\n\tfor i in range(-8, 9):\n\t\tvar t := float(i) * 5.0\n\t\t_add_block(Vector3(t, 0.02, 0.0), Vector3(0.08, 0.04, 90.0), Color(0.42, 0.47, 0.44))\n\t\t_add_block(Vector3(0.0, 0.02, t), Vector3(90.0, 0.04, 0.08), Color(0.42, 0.47, 0.44))\n\n\nfunc _build_props() -> void:\n\t# 掩体、柱子、台阶：给第一人称视角一点可参照的纵深。\n\t_add_block(Vector3(-6.0, 0.9, -4.0), Vector3(3.0, 1.8, 1.0), Color(0.55, 0.42, 0.30))\n\t_add_block(Vector3(6.5, 0.6, -6.0), Vector3(4.0, 1.2, 1.2), Color(0.48, 0.36, 0.27))\n\t_add_block(Vector3(0.0, 1.4, -14.0), Vector3(10.0, 2.8, 0.8), Color(0.40, 0.42, 0.46))\n\t_add_block(Vector3(-2.0, 0.25, 2.0), Vector3(1.4, 0.5, 1.4), Color(0.62, 0.50, 0.28))\n\t_add_block(Vector3(2.4, 0.5, 3.6), Vector3(1.2, 1.0, 1.2), Color(0.58, 0.46, 0.26))\n\t_add_block(Vector3(3.2, 0.75, 4.4), Vector3(1.2, 0.5, 1.2), Color(0.58, 0.46, 0.26))\n\t_add_block(Vector3(4.0, 1.0, 5.2), Vector3(1.2, 0.5, 1.2), Color(0.58, 0.46, 0.26))\n\tfor i in 4:\n\t\tvar angle := TAU * float(i) * 0.25\n\t\tvar px := cos(angle) * 16.0\n\t\tvar pz := sin(angle) * 16.0\n\t\t_add_block(Vector3(px, 3.0, pz), Vector3(1.6, 6.0, 1.6), Color(0.44, 0.45, 0.48))\n\t# 远处靶墙，方便对准星居中做视觉校验。\n\t_add_block(Vector3(0.0, 1.5, -30.0), Vector3(12.0, 3.0, 0.6), Color(0.50, 0.24, 0.22))\n\n\nfunc _add_block(pos: Vector3, size: Vector3, color: Color, rot: Vector3 = Vector3.ZERO) -> StaticBody3D:\n\tvar body := StaticBody3D.new()\n\tbody.position = pos\n\tbody.rotation = rot\n\tadd_child(body)\n\n\tvar box := BoxMesh.new()\n\tbox.size = size\n\tvar mesh_instance := MeshInstance3D.new()\n\tmesh_instance.mesh = box\n\tvar material := StandardMaterial3D.new()\n\tmaterial.albedo_color = color\n\tmaterial.roughness = 0.9\n\tmesh_instance.material_override = material\n\tbody.add_child(mesh_instance)\n\n\tvar shape := BoxShape3D.new()\n\tshape.size = size\n\tvar collider := CollisionShape3D.new()\n\tcollider.shape = shape\n\tbody.add_child(collider)\n\treturn body\n",
+      "totalCharacters": 4264,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_project_patch",
+    "args": {
+      "manifestHash": "c2209ec4eb73d0ae96fe9e853f60d5a5906be75daecfb4072b58a63a5c54b208",
+      "revision": 1,
+      "operations": [
+        {
+          "expectedHash": "141a1cfd2ceb860d2d2b7e50ed28c7b30556b86aac1403e5c4c940673ac8d360",
+          "op": "put",
+          "path": "project.godot",
+          "text": "; Engine configuration file.\n; 最中幻想 · 第一人称持枪原型（纯源码工程）\n; 启动场景 scenes/main.tscn 只挂一个脚本，全部场景内容在运行时由 GDScript 搭出来。\n; 渲染后端跟随工程目标（web / gl_compatibility），不依赖任何外部素材。\n\nconfig_version=5\n\n[application]\n\nconfig/name=\"最中幻想 · 第一人称持枪原型\"\nconfig/description=\"第一人称视角：准星用 _draw 画在视口正中央；枪与剑挂在 Camera3D 下随视角旋转；按 1 / 2 / Q 切换武器时模型与准星同步更换。\"\nrun/main_scene=\"res://scenes/main.tscn\"\nconfig/features=PackedStringArray(\"4.7\", \"GL Compatibility\")\n\n[display]\n\nwindow/size/viewport_width=1280\nwindow/size/viewport_height=720\nwindow/stretch/mode=\"canvas_items\"\nwindow/stretch/aspect=\"expand\"\n\n[physics]\n\n3d/default_gravity=18.0\n\n[rendering]\n\nrenderer/rendering_method=\"gl_compatibility\"\nrenderer/rendering_method.mobile=\"gl_compatibility\"\nanti_aliasing/quality/msaa_3d=2\nenvironment/defaults/default_clear_color=Color(0.09, 0.11, 0.15, 1)\n"
+        },
+        {
+          "expectedHash": "c95755e6682ec2f9b27b3da1bdf36c1c860e89cc8f5e5e371cb9b6e7ff8ef437",
+          "op": "put",
+          "path": "scripts/main.gd",
+          "text": "extends Node3D\n## 世界入口：环境 + 地面 + 掩体 + 第一人称玩家 + HUD。\n## 整个场景在运行时用代码搭建，工程里不需要任何外部素材。\n\nconst PlayerScript: GDScript = preload(\"res://scripts/player.gd\")\nconst HudScript: GDScript = preload(\"res://scripts/hud.gd\")\n\nvar player = null\nvar hud = null\n\n\nfunc _ready() -> void:\n\t_build_environment()\n\t_build_ground()\n\t_build_props()\n\t_build_player()\n\t_build_hud()\n\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\n\nfunc _unhandled_input(event: InputEvent) -> void:\n\tif event is InputEventKey:\n\t\tvar key_event := event as InputEventKey\n\t\tif key_event.pressed and not key_event.echo and key_event.keycode == KEY_ESCAPE:\n\t\t\tif Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:\n\t\t\t\tInput.mouse_mode = Input.MOUSE_MODE_VISIBLE\n\t\t\telse:\n\t\t\t\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\t\t\treturn\n\tif event is InputEventMouseButton:\n\t\tvar button_event := event as InputEventMouseButton\n\t\tif button_event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:\n\t\t\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\n\nfunc _build_player() -> void:\n\tplayer = PlayerScript.new()\n\tplayer.name = \"Player\"\n\tplayer.position = Vector3(0.0, 0.6, 9.0)\n\tadd_child(player)\n\n\nfunc _build_hud() -> void:\n\thud = HudScript.new()\n\thud.name = \"Hud\"\n\tadd_child(hud)\n\t# HUD 需要玩家信号：武器切换 -> 换准星样式；攻击 -> 准星脉冲。\n\thud.setup(player)\n\n\nfunc _build_environment() -> void:\n\tvar world_env := WorldEnvironment.new()\n\tworld_env.name = \"WorldEnvironment\"\n\tvar env := Environment.new()\n\tenv.background_mode = Environment.BG_SKY\n\tvar sky := Sky.new()\n\tsky.radiance_size = Sky.RADIANCE_SIZE_256\n\tvar sky_mat := ProceduralSkyMaterial.new()\n\tsky_mat.sky_top_color = Color(0.22, 0.40, 0.72)\n\tsky_mat.sky_horizon_color = Color(0.66, 0.74, 0.84)\n\tsky_mat.ground_horizon_color = Color(0.52, 0.55, 0.60)\n\tsky_mat.ground_bottom_color = Color(0.14, 0.15, 0.18)\n\tsky.sky_material = sky_mat\n\tenv.sky = sky\n\tenv.ambient_light_source = Environment.AMBIENT_SOURCE_SKY\n\tenv.ambient_light_energy = 1.1\n\tenv.tonemap_mode = Environment.TONE_MAPPER_ACES\n\tworld_env.environment = env\n\tadd_child(world_env)\n\n\tvar sun := DirectionalLight3D.new()\n\tsun.name = \"Sun\"\n\tsun.rotation = Vector3(deg_to_rad(-52.0), deg_to_rad(38.0), 0.0)\n\tsun.light_energy = 1.35\n\tsun.shadow_enabled = true\n\tsun.directional_shadow_max_distance = 90.0\n\tadd_child(sun)\n\n\nfunc _build_ground() -> void:\n\t_add_block(Vector3(0.0, -0.5, 0.0), Vector3(90.0, 1.0, 90.0), Color(0.30, 0.34, 0.31))\n\t# 参考网格线：帮助肉眼确认准星是否真的压在视口正中。\n\tfor i in range(-8, 9):\n\t\tvar t := float(i) * 5.0\n\t\t_add_block(Vector3(t, 0.02, 0.0), Vector3(0.08, 0.04, 90.0), Color(0.42, 0.47, 0.44))\n\t\t_add_block(Vector3(0.0, 0.02, t), Vector3(90.0, 0.04, 0.08), Color(0.42, 0.47, 0.44))\n\n\nfunc _build_props() -> void:\n\t# 掩体、柱子、台阶：给第一人称视角一点可参照的纵深。\n\t_add_block(Vector3(-6.0, 0.9, -4.0), Vector3(3.0, 1.8, 1.0), Color(0.55, 0.42, 0.30))\n\t_add_block(Vector3(6.5, 0.6, -6.0), Vector3(4.0, 1.2, 1.2), Color(0.48, 0.36, 0.27))\n\t_add_block(Vector3(0.0, 1.4, -14.0), Vector3(10.0, 2.8, 0.8), Color(0.40, 0.42, 0.46))\n\t_add_block(Vector3(-2.0, 0.25, 2.0), Vector3(1.4, 0.5, 1.4), Color(0.62, 0.50, 0.28))\n\t_add_block(Vector3(2.4, 0.5, 3.6), Vector3(1.2, 1.0, 1.2), Color(0.58, 0.46, 0.26))\n\t_add_block(Vector3(3.2, 0.75, 4.4), Vector3(1.2, 0.5, 1.2), Color(0.58, 0.46, 0.26))\n\t_add_block(Vector3(4.0, 1.0, 5.2), Vector3(1.2, 0.5, 1.2), Color(0.58, 0.46, 0.26))\n\tfor i in 4:\n\t\tvar angle := TAU * float(i) * 0.25\n\t\tvar px := cos(angle) * 16.0\n\t\tvar pz := sin(angle) * 16.0\n\t\t_add_block(Vector3(px, 3.0, pz), Vector3(1.6, 6.0, 1.6), Color(0.44, 0.45, 0.48))\n\t# 远处靶墙，方便对准星居中做视觉校验。\n\t_add_block(Vector3(0.0, 1.5, -30.0), Vector3(12.0, 3.0, 0.6), Color(0.50, 0.24, 0.22))\n\n\nfunc _add_block(pos: Vector3, size: Vector3, color: Color, rot: Vector3 = Vector3.ZERO) -> StaticBody3D:\n\tvar body := StaticBody3D.new()\n\tbody.position = pos\n\tbody.rotation = rot\n\tadd_child(body)\n\n\tvar box := BoxMesh.new()\n\tbox.size = size\n\tvar mesh_instance := MeshInstance3D.new()\n\tmesh_instance.mesh = box\n\tvar material := StandardMaterial3D.new()\n\tmaterial.albedo_color = color\n\tmaterial.roughness = 0.9\n\tmesh_instance.material_override = material\n\tbody.add_child(mesh_instance)\n\n\tvar shape := BoxShape3D.new()\n\tshape.size = size\n\tvar collider := CollisionShape3D.new()\n\tcollider.shape = shape\n\tbody.add_child(collider)\n\treturn body\n"
+        }
+      ]
+    },
+    "toolCallId": "call_00_g41dSSgWDWoJDTJdCrAv6281",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:00:58.112Z",
+    "ok": true,
+    "result": {
+      "applied": false,
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "bytes": 23824,
+      "fileCount": 7,
+      "manifestHash": "5036d1b60e2605a539e646cc2cd448fdebcdb6f16585bbf3eb7ca5ee397aca90",
+      "revision": 2,
+      "status": "source-only",
+      "taskId": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+      "toolCallId": "call_00_g41dSSgWDWoJDTJdCrAv6281",
+      "verified": false,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_build_start",
+    "args": {
+      "revision": 2,
+      "manifestHash": "5036d1b60e2605a539e646cc2cd448fdebcdb6f16585bbf3eb7ca5ee397aca90",
+      "mode": "build"
+    },
+    "toolCallId": "call_00_vqF3OWKfyJVNufdNEttA8006",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:00:59.696Z",
+    "ok": true,
+    "result": {
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "baseId": "first-person",
+      "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+      "buildId": "gbd-45cf87c1042f10235b9f832936cc568c0e0e1fbc05c34c4ad12390b3d4bd019a",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": false,
+      "jobId": "gjob-e39f91f2ffaa24b337404856a035985ea7bfcbfbe58bb56c3b9b7cb37f0c884a",
+      "kind": "build",
+      "manifestHash": "5036d1b60e2605a539e646cc2cd448fdebcdb6f16585bbf3eb7ca5ee397aca90",
+      "materialized": {
+        "bytes": 31330,
+        "files": 10
+      },
+      "renderer": "gl_compatibility",
+      "replayed": false,
+      "sourceRevision": 2,
+      "status": "blocked",
+      "target": "web",
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "manifestHash": "5036d1b60e2605a539e646cc2cd448fdebcdb6f16585bbf3eb7ca5ee397aca90",
+      "path": "scripts/crosshair.gd",
+      "revision": 2
+    },
+    "toolCallId": "call_00_29ybeu7IdXekkh3Xf1Gw9665",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:01:13.955Z",
+    "ok": true,
+    "result": {
+      "bytes": 2743,
+      "manifestHash": "5036d1b60e2605a539e646cc2cd448fdebcdb6f16585bbf3eb7ca5ee397aca90",
+      "nextOffset": null,
+      "offset": 0,
+      "path": "scripts/crosshair.gd",
+      "revision": 2,
+      "sha256": "de788f8f492b681bb35217425f5d4745085cf1e3a25c43a17d4c5effcb3f2a63",
+      "text": "extends Control\n## 视口正中央的准星。\n##\n## 全部用 _draw 画：中心点固定取 get_viewport_rect().get_center()，\n## 也就是视口可见区域的几何中心（配合铺满视口的锚点，等于 size * 0.5）。\n## 这样窗口缩放、分辨率变化、任何 anchor/offset 改动都不会让准星偏离正中。\n## 样式跟随武器：手枪 = 四段刻度 + 中心点；长剑 = 圆环 + 四向短刻线。\n\nconst STYLE_GUN: String = \"gun\"\nconst STYLE_SWORD: String = \"sword\"\n\nvar style_id: String = STYLE_GUN\n\nvar _target_spread: float = 0.0\nvar _spread: float = 0.0\nvar _kick: float = 0.0\nvar _flash: float = 0.0\n\n\nfunc _ready() -> void:\n\tset_anchors_preset(Control.PRESET_FULL_RECT)\n\toffset_left = 0.0\n\toffset_top = 0.0\n\toffset_right = 0.0\n\toffset_bottom = 0.0\n\tmouse_filter = Control.MOUSE_FILTER_IGNORE\n\tclip_contents = false\n\n\nfunc set_style(new_style: String) -> void:\n\tif style_id == new_style:\n\t\treturn\n\tstyle_id = new_style\n\tqueue_redraw()\n\n\nfunc set_motion(ratio: float) -> void:\n\t_target_spread = clampf(ratio, 0.0, 1.0)\n\n\nfunc pulse() -> void:\n\t_kick = 1.0\n\t_flash = 0.35\n\n\nfunc viewport_center() -> Vector2:\n\treturn get_viewport_rect().get_center()\n\n\nfunc spread_amount() -> float:\n\treturn clampf(_spread + _kick * 0.6, 0.0, 1.0)\n\n\nfunc _process(delta: float) -> void:\n\t_spread = lerpf(_spread, _target_spread, clampf(delta * 8.0, 0.0, 1.0))\n\t_kick = maxf(0.0, _kick - delta * 4.0)\n\t_flash = maxf(0.0, _flash - delta * 2.5)\n\tqueue_redraw()\n\n\nfunc _draw() -> void:\n\tvar center := viewport_center()\n\tvar color := Color(1.0, 0.88, 0.55, 0.95) if style_id == STYLE_SWORD else Color(0.97, 0.99, 1.0, 0.92)\n\tif _flash > 0.0:\n\t\tcolor = Color(1.0, 0.36, 0.32, 1.0)\n\tif style_id == STYLE_SWORD:\n\t\t_draw_sword(center, color)\n\telse:\n\t\t_draw_gun(center, color)\n\n\nfunc _draw_gun(center: Vector2, color: Color) -> void:\n\tvar gap := 5.0 + spread_amount() * 10.0\n\tvar arm := 8.0\n\tvar thickness := 2.0\n\tdraw_line(center + Vector2(0.0, -gap), center + Vector2(0.0, -gap - arm), color, thickness, true)\n\tdraw_line(center + Vector2(0.0, gap), center + Vector2(0.0, gap + arm), color, thickness, true)\n\tdraw_line(center + Vector2(-gap, 0.0), center + Vector2(-gap - arm, 0.0), color, thickness, true)\n\tdraw_line(center + Vector2(gap, 0.0), center + Vector2(gap + arm, 0.0), color, thickness, true)\n\tdraw_circle(center, 1.5, color)\n\n\nfunc _draw_sword(center: Vector2, color: Color) -> void:\n\tvar radius := 10.0 + spread_amount() * 8.0\n\tdraw_arc(center, radius, 0.0, TAU, 48, color, 1.6, true)\n\tfor i in 4:\n\t\tvar angle := TAU * float(i) * 0.25 + PI * 0.25\n\t\tvar dir := Vector2(cos(angle), sin(angle))\n\t\tdraw_line(center + dir * (radius + 3.0), center + dir * (radius + 10.0), color, 2.0, true)\n\tdraw_circle(center, 2.0, color)\n",
+      "totalCharacters": 2533,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_project_patch",
+    "args": {
+      "manifestHash": "5036d1b60e2605a539e646cc2cd448fdebcdb6f16585bbf3eb7ca5ee397aca90",
+      "operations": [
+        {
+          "expectedHash": "de788f8f492b681bb35217425f5d4745085cf1e3a25c43a17d4c5effcb3f2a63",
+          "op": "put",
+          "path": "scripts/crosshair.gd",
+          "text": "extends Control\n## 视口正中央的准星。\n##\n## 这个 Control 用 PRESET_FULL_RECT 铺满视口（offset 全为 0），所以它的本地坐标\n## (0,0) 就是视口左上角，size 就是视口尺寸；_draw 里把中心取成 size * 0.5，\n## 画出来的就是视口几何中心 —— 窗口缩放、分辨率变化都不会偏。\n## 样式跟随武器：手枪 = 四段刻度 + 中心点；长剑 = 圆环 + 四向短刻线。\n\nconst STYLE_GUN: String = \"gun\"\nconst STYLE_SWORD: String = \"sword\"\n\nvar style_id: String = STYLE_GUN\n\nvar _target_spread: float = 0.0\nvar _spread: float = 0.0\nvar _kick: float = 0.0\nvar _flash: float = 0.0\n\n\nfunc _ready() -> void:\n\tset_anchors_preset(Control.PRESET_FULL_RECT)\n\toffset_left = 0.0\n\toffset_top = 0.0\n\toffset_right = 0.0\n\toffset_bottom = 0.0\n\tmouse_filter = Control.MOUSE_FILTER_IGNORE\n\tclip_contents = false\n\n\nfunc set_style(new_style: String) -> void:\n\tif style_id == new_style:\n\t\treturn\n\tstyle_id = new_style\n\tqueue_redraw()\n\n\nfunc set_motion(ratio: float) -> void:\n\t_target_spread = clampf(ratio, 0.0, 1.0)\n\n\nfunc pulse() -> void:\n\t_kick = 1.0\n\t_flash = 0.35\n\n\n## 视口正中的本地坐标。size 来自铺满视口的锚点，等价于视口尺寸 * 0.5。\nfunc viewport_center() -> Vector2:\n\tif size.x > 0.0 and size.y > 0.0:\n\t\treturn size * 0.5\n\treturn get_viewport_rect().size * 0.5\n\n\nfunc spread_amount() -> float:\n\treturn clampf(_spread + _kick * 0.6, 0.0, 1.0)\n\n\nfunc _process(delta: float) -> void:\n\t_spread = lerpf(_spread, _target_spread, clampf(delta * 8.0, 0.0, 1.0))\n\t_kick = maxf(0.0, _kick - delta * 4.0)\n\t_flash = maxf(0.0, _flash - delta * 2.5)\n\tqueue_redraw()\n\n\nfunc _draw() -> void:\n\tvar center := viewport_center()\n\tvar color := Color(1.0, 0.88, 0.55, 0.95) if style_id == STYLE_SWORD else Color(0.97, 0.99, 1.0, 0.92)\n\tif _flash > 0.0:\n\t\tcolor = Color(1.0, 0.36, 0.32, 1.0)\n\tif style_id == STYLE_SWORD:\n\t\t_draw_sword(center, color)\n\telse:\n\t\t_draw_gun(center, color)\n\n\nfunc _draw_gun(center: Vector2, color: Color) -> void:\n\tvar gap := 5.0 + spread_amount() * 10.0\n\tvar arm := 8.0\n\tvar thickness := 2.0\n\tdraw_line(center + Vector2(0.0, -gap), center + Vector2(0.0, -gap - arm), color, thickness, true)\n\tdraw_line(center + Vector2(0.0, gap), center + Vector2(0.0, gap + arm), color, thickness, true)\n\tdraw_line(center + Vector2(-gap, 0.0), center + Vector2(-gap - arm, 0.0), color, thickness, true)\n\tdraw_line(center + Vector2(gap, 0.0), center + Vector2(gap + arm, 0.0), color, thickness, true)\n\tdraw_circle(center, 1.5, color)\n\n\nfunc _draw_sword(center: Vector2, color: Color) -> void:\n\tvar radius := 10.0 + spread_amount() * 8.0\n\tdraw_arc(center, radius, 0.0, TAU, 48, color, 1.6, true)\n\tfor i in 4:\n\t\tvar angle := TAU * float(i) * 0.25 + PI * 0.25\n\t\tvar dir := Vector2(cos(angle), sin(angle))\n\t\tdraw_line(center + dir * (radius + 3.0), center + dir * (radius + 10.0), color, 2.0, true)\n\tdraw_circle(center, 2.0, color)\n"
+        }
+      ],
+      "revision": 2
+    },
+    "toolCallId": "call_00_3xjlTZoaw2J1j11vsB3Y0257",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:01:17.441Z",
+    "ok": true,
+    "result": {
+      "applied": false,
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "bytes": 23982,
+      "fileCount": 7,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "revision": 3,
+      "status": "source-only",
+      "taskId": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+      "toolCallId": "call_00_3xjlTZoaw2J1j11vsB3Y0257",
+      "verified": false,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "path": "scripts/view_model.gd",
+      "revision": 3
+    },
+    "toolCallId": "call_00_4Xw0dfiDY5ovCboKtZMq4345",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:01:19.471Z",
+    "ok": true,
+    "result": {
+      "bytes": 7495,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "nextOffset": null,
+      "offset": 0,
+      "path": "scripts/view_model.gd",
+      "revision": 3,
+      "sha256": "18f0a36da2c0e95f120064cf69b6eb3338b904aed70bce4509268bbe0d9ac863",
+      "text": "extends Node3D\n## 挂在 Camera3D 下的第一人称手持模型。\n## 枪和剑都是程序化网格拼出来的：切换武器时把整块模型换掉（不是改颜色/缩放），\n## 再配一段收枪 -> 换模型 -> 举枪的动作，并配合 HUD 换准星。\n\nconst WEAPON_GUN: String = \"gun\"\nconst WEAPON_SWORD: String = \"sword\"\n\nvar _current_id: String = \"\"\nvar _gun_model: Node3D = null\nvar _sword_model: Node3D = null\nvar _muzzle_flash: MeshInstance3D = null\nvar _muzzle_light: OmniLight3D = null\nvar _swap_tween: Tween = null\n\nvar _look_delta: Vector2 = Vector2.ZERO\nvar _move_speed: float = 0.0\nvar _sway: Vector2 = Vector2.ZERO\nvar _bob_time: float = 0.0\nvar _recoil: float = 0.0\nvar _swing: float = 0.0\nvar _flash: float = 0.0\nvar _swap_offset: Vector3 = Vector3.ZERO\n\n\nfunc _ready() -> void:\n\t_gun_model = _build_gun()\n\t_gun_model.name = \"GunModel\"\n\t_gun_model.position = Vector3(0.24, -0.20, -0.42)\n\tadd_child(_gun_model)\n\n\t_sword_model = _build_sword()\n\t_sword_model.name = \"SwordModel\"\n\t_sword_model.position = Vector3(0.30, -0.34, -0.52)\n\t_sword_model.rotation = Vector3(deg_to_rad(-14.0), deg_to_rad(-26.0), deg_to_rad(10.0))\n\t_sword_model.scale = Vector3(0.65, 0.65, 0.65)\n\tadd_child(_sword_model)\n\n\t_gun_model.visible = false\n\t_sword_model.visible = false\n\n\nfunc equip(weapon_id: String) -> void:\n\tif weapon_id == _current_id:\n\t\treturn\n\tvar first_equip := _current_id.is_empty()\n\t_current_id = weapon_id\n\tif first_equip:\n\t\t_apply_visibility()\n\t\t_swap_offset = Vector3.ZERO\n\t\treturn\n\tif _swap_tween != null and _swap_tween.is_valid():\n\t\t_swap_tween.kill()\n\t_swap_tween = create_tween()\n\t_swap_tween.set_trans(Tween.TRANS_SINE)\n\t_swap_tween.set_ease(Tween.EASE_IN_OUT)\n\t_swap_tween.tween_property(self, \"_swap_offset\", Vector3(0.0, -0.36, 0.06), 0.11)\n\t_swap_tween.tween_callback(_apply_visibility)\n\t_swap_tween.tween_property(self, \"_swap_offset\", Vector3.ZERO, 0.16)\n\n\nfunc current_weapon() -> String:\n\treturn _current_id\n\n\nfunc set_look_delta(delta: Vector2) -> void:\n\t_look_delta = delta\n\n\nfunc set_move_speed(value: float) -> void:\n\t_move_speed = value\n\n\nfunc play_attack() -> void:\n\tif _current_id == WEAPON_SWORD:\n\t\t_swing = 1.0\n\telse:\n\t\t_recoil = 1.0\n\t\t_flash = 1.0\n\n\nfunc _process(delta: float) -> void:\n\tvar sway_target := Vector2(-_look_delta.x, -_look_delta.y) * 0.0022\n\t_look_delta = Vector2.ZERO\n\t_sway = _sway.lerp(sway_target, clampf(delta * 7.0, 0.0, 1.0))\n\n\tvar speed_ratio := clampf(_move_speed / 6.0, 0.0, 1.0)\n\t_bob_time += delta * (4.0 + 7.0 * speed_ratio)\n\tvar bob := Vector2(sin(_bob_time) * 0.014, -absf(cos(_bob_time)) * 0.010) * speed_ratio\n\n\t_recoil = maxf(0.0, _recoil - delta * 5.5)\n\t_swing = maxf(0.0, _swing - delta * 3.6)\n\t_flash = maxf(0.0, _flash - delta * 14.0)\n\tif _muzzle_flash != null:\n\t\t_muzzle_flash.visible = _flash > 0.02\n\tif _muzzle_light != null:\n\t\t_muzzle_light.visible = _flash > 0.02\n\n\tvar swing_curve := sin(_swing * PI)\n\tvar base := Vector3(\n\t\t_sway.x + bob.x,\n\t\t_sway.y + bob.y - _recoil * 0.03 + swing_curve * 0.04,\n\t\t_recoil * 0.055\n\t)\n\tposition = _swap_offset + base\n\trotation = Vector3(\n\t\t-_sway.y * 0.9 - _recoil * 1.2 + swing_curve * 0.55,\n\t\t_sway.x * 1.1 + swing_curve * 0.30,\n\t\tswing_curve * 0.85\n\t)\n\n\nfunc _apply_visibility() -> void:\n\tif _gun_model != null:\n\t\t_gun_model.visible = _current_id == WEAPON_GUN\n\tif _sword_model != null:\n\t\t_sword_model.visible = _current_id == WEAPON_SWORD\n\n\nfunc _build_gun() -> Node3D:\n\tvar root := Node3D.new()\n\tvar steel := _material(Color(0.20, 0.21, 0.24), 0.75, 0.35)\n\tvar dark := _material(Color(0.09, 0.10, 0.11), 0.35, 0.55)\n\tvar grip_mat := _material(Color(0.15, 0.12, 0.10), 0.05, 0.85)\n\tvar skin := _material(Color(0.72, 0.55, 0.44), 0.0, 0.8)\n\n\t_add_box(root, Vector3(0.085, 0.105, 0.30), Vector3(0.0, 0.0, 0.02), steel)\n\t_add_box(root, Vector3(0.070, 0.075, 0.10), Vector3(0.0, -0.01, 0.20), dark)\n\t_add_box(root, Vector3(0.062, 0.150, 0.085), Vector3(0.0, -0.115, 0.075), grip_mat, Vector3(-0.30, 0.0, 0.0))\n\t_add_box(root, Vector3(0.055, 0.140, 0.070), Vector3(0.0, -0.100, -0.030), dark, Vector3(0.16, 0.0, 0.0))\n\t_add_box(root, Vector3(0.016, 0.028, 0.020), Vector3(0.0, 0.066, -0.075), dark)\n\t_add_box(root, Vector3(0.030, 0.030, 0.030), Vector3(0.0, 0.062, 0.145), dark)\n\t# 握把上的一只手，让第一人称看起来是「握着」而不是「浮着」。\n\t_add_box(root, Vector3(0.075, 0.100, 0.095), Vector3(0.0, -0.125, 0.085), skin, Vector3(-0.30, 0.0, 0.0))\n\n\tvar barrel := CylinderMesh.new()\n\tbarrel.top_radius = 0.019\n\tbarrel.bottom_radius = 0.019\n\tbarrel.height = 0.34\n\t_add_mesh(root, barrel, steel, Vector3(0.0, 0.018, -0.30), Vector3(PI * 0.5, 0.0, 0.0))\n\n\tvar muzzle := CylinderMesh.new()\n\tmuzzle.top_radius = 0.027\n\tmuzzle.bottom_radius = 0.024\n\tmuzzle.height = 0.055\n\t_add_mesh(root, muzzle, dark, Vector3(0.0, 0.018, -0.45), Vector3(PI * 0.5, 0.0, 0.0))\n\n\tvar flash_mat := _material(Color(1.0, 0.82, 0.35), 0.0, 0.4)\n\tflash_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED\n\tflash_mat.emission_enabled = true\n\tflash_mat.emission = Color(1.0, 0.72, 0.25)\n\tflash_mat.emission_energy_multiplier = 5.0\n\tvar flash_mesh := SphereMesh.new()\n\tflash_mesh.radius = 0.075\n\tflash_mesh.height = 0.15\n\t_muzzle_flash = _add_mesh(root, flash_mesh, flash_mat, Vector3(0.0, 0.018, -0.50))\n\t_muzzle_flash.visible = false\n\n\t_muzzle_light = OmniLight3D.new()\n\t_muzzle_light.light_color = Color(1.0, 0.78, 0.40)\n\t_muzzle_light.light_energy = 6.0\n\t_muzzle_light.omni_range = 6.0\n\t_muzzle_light.position = Vector3(0.0, 0.018, -0.50)\n\t_muzzle_light.visible = false\n\troot.add_child(_muzzle_light)\n\treturn root\n\n\nfunc _build_sword() -> Node3D:\n\tvar root := Node3D.new()\n\tvar blade := _material(Color(0.78, 0.81, 0.88), 0.90, 0.18)\n\tvar gold := _material(Color(0.82, 0.66, 0.28), 0.85, 0.30)\n\tvar leather := _material(Color(0.24, 0.15, 0.11), 0.05, 0.90)\n\tvar skin := _material(Color(0.72, 0.55, 0.44), 0.0, 0.8)\n\n\t_add_box(root, Vector3(0.036, 0.66, 0.014), Vector3(0.0, 0.40, 0.0), blade)\n\t_add_box(root, Vector3(0.026, 0.10, 0.014), Vector3(0.0, 0.78, 0.0), blade)\n\t_add_box(root, Vector3(0.012, 0.64, 0.008), Vector3(0.0, 0.40, 0.009), gold)\n\t_add_box(root, Vector3(0.215, 0.032, 0.048), Vector3(0.0, 0.055, 0.0), gold)\n\n\tvar grip := CylinderMesh.new()\n\tgrip.top_radius = 0.022\n\tgrip.bottom_radius = 0.024\n\tgrip.height = 0.16\n\t_add_mesh(root, grip, leather, Vector3(0.0, -0.045, 0.0))\n\n\tvar pommel := SphereMesh.new()\n\tpommel.radius = 0.030\n\tpommel.height = 0.060\n\t_add_mesh(root, pommel, gold, Vector3(0.0, -0.145, 0.0))\n\n\t_add_box(root, Vector3(0.080, 0.110, 0.085), Vector3(0.0, -0.045, 0.010), skin)\n\treturn root\n\n\nfunc _material(color: Color, metallic: float, roughness: float) -> StandardMaterial3D:\n\tvar material := StandardMaterial3D.new()\n\tmaterial.albedo_color = color\n\tmaterial.metallic = metallic\n\tmaterial.roughness = roughness\n\treturn material\n\n\nfunc _add_box(parent: Node3D, size: Vector3, pos: Vector3, material: StandardMaterial3D, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:\n\tvar box := BoxMesh.new()\n\tbox.size = size\n\treturn _add_mesh(parent, box, material, pos, rot)\n\n\nfunc _add_mesh(parent: Node3D, mesh: Mesh, material: StandardMaterial3D, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:\n\tvar instance := MeshInstance3D.new()\n\tinstance.mesh = mesh\n\tinstance.material_override = material\n\tinstance.position = pos\n\tinstance.rotation = rot\n\t# 手持模型不投影，避免近平面处的自阴影闪动。\n\tinstance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF\n\tparent.add_child(instance)\n\treturn instance\n",
+      "totalCharacters": 7251,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "path": "scripts/hud.gd",
+      "revision": 3
+    },
+    "toolCallId": "call_01_6hAZuOul7txqHYBEt62j6092",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:01:19.473Z",
+    "ok": true,
+    "result": {
+      "bytes": 3119,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "nextOffset": null,
+      "offset": 0,
+      "path": "scripts/hud.gd",
+      "revision": 3,
+      "sha256": "48612bd4137807f6d136bd7a8f57b4ba9415e2abe8541bc25f27730b484490ea",
+      "text": "extends CanvasLayer\n## HUD：视口正中的准星 + 当前武器名 + 操作提示。\n## 玩家切武器时会发 weapon_changed 信号，这里同步换准星样式与文字。\n\nconst CrosshairScript: GDScript = preload(\"res://scripts/crosshair.gd\")\n\nvar crosshair: Control = null\n\nvar _player: Node = null\nvar _weapon_label: Label = null\nvar _hint_label: Label = null\n\n\nfunc _ready() -> void:\n\tlayer = 10\n\n\tcrosshair = CrosshairScript.new()\n\tcrosshair.name = \"Crosshair\"\n\tadd_child(crosshair)\n\n\t_weapon_label = Label.new()\n\t_weapon_label.name = \"WeaponLabel\"\n\t_weapon_label.text = \"\"\n\t_weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\t_weapon_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)\n\t_weapon_label.offset_left = 0.0\n\t_weapon_label.offset_top = -70.0\n\t_weapon_label.offset_right = 0.0\n\t_weapon_label.offset_bottom = -40.0\n\t_weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE\n\t_weapon_label.add_theme_font_size_override(\"font_size\", 20)\n\t_weapon_label.add_theme_color_override(\"font_color\", Color(0.93, 0.96, 1.0))\n\t_weapon_label.add_theme_color_override(\"font_shadow_color\", Color(0.0, 0.0, 0.0, 0.7))\n\t_weapon_label.add_theme_constant_override(\"shadow_offset_x\", 1)\n\t_weapon_label.add_theme_constant_override(\"shadow_offset_y\", 1)\n\tadd_child(_weapon_label)\n\n\t_hint_label = Label.new()\n\t_hint_label.name = \"HintLabel\"\n\t_hint_label.text = \"WASD 移动 · Shift 冲刺 · 空格 跳跃 · 鼠标视角 · 左键 攻击 · 1 手枪 · 2 长剑 · Q 切换 · Esc 释放鼠标\"\n\t_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT\n\t_hint_label.set_anchors_preset(Control.PRESET_TOP_WIDE)\n\t_hint_label.offset_left = 16.0\n\t_hint_label.offset_top = 12.0\n\t_hint_label.offset_right = -16.0\n\t_hint_label.offset_bottom = 44.0\n\t_hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE\n\t_hint_label.add_theme_font_size_override(\"font_size\", 15)\n\t_hint_label.add_theme_color_override(\"font_color\", Color(0.88, 0.92, 0.98, 0.85))\n\t_hint_label.add_theme_color_override(\"font_shadow_color\", Color(0.0, 0.0, 0.0, 0.7))\n\t_hint_label.add_theme_constant_override(\"shadow_offset_x\", 1)\n\t_hint_label.add_theme_constant_override(\"shadow_offset_y\", 1)\n\tadd_child(_hint_label)\n\n\nfunc setup(player: Node) -> void:\n\t_player = player\n\tif player == null:\n\t\treturn\n\tif player.has_signal(\"weapon_changed\"):\n\t\tplayer.weapon_changed.connect(_on_weapon_changed)\n\tif player.has_signal(\"attacked\"):\n\t\tplayer.attacked.connect(_on_attacked)\n\tif player.has_method(\"get_weapon_id\"):\n\t\t_on_weapon_changed(String(player.get_weapon_id()))\n\n\nfunc _process(_delta: float) -> void:\n\tif crosshair == null:\n\t\treturn\n\tvar ratio := 0.0\n\tif _player is CharacterBody3D:\n\t\tratio = (_player as CharacterBody3D).velocity.length() / 8.4\n\tcrosshair.set_motion(ratio)\n\n\nfunc _on_weapon_changed(weapon_id: String) -> void:\n\tif crosshair != null:\n\t\tcrosshair.set_style(weapon_id)\n\tif _weapon_label == null:\n\t\treturn\n\tif weapon_id == \"sword\":\n\t\t_weapon_label.text = \"长剑 · 左键挥砍\"\n\telse:\n\t\t_weapon_label.text = \"手枪 · 左键射击\"\n\n\nfunc _on_attacked(_weapon_id: String) -> void:\n\tif crosshair != null:\n\t\tcrosshair.pulse()\n",
+      "totalCharacters": 2949,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_build_read",
+    "args": {
+      "jobId": "gjob-e39f91f2ffaa24b337404856a035985ea7bfcbfbe58bb56c3b9b7cb37f0c884a"
+    },
+    "toolCallId": "call_00_vTmO1UNVGqGuq1FJMsk44094",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:01:24.572Z",
+    "ok": true,
+    "result": {
+      "artifacts": [],
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "baseId": "first-person",
+      "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+      "buildId": "gbd-45cf87c1042f10235b9f832936cc568c0e0e1fbc05c34c4ad12390b3d4bd019a",
+      "candidateId": null,
+      "createdAt": 1788980459715,
+      "executorId": null,
+      "interruptReason": null,
+      "jobId": "gjob-e39f91f2ffaa24b337404856a035985ea7bfcbfbe58bb56c3b9b7cb37f0c884a",
+      "kind": "build",
+      "leaseExpiresAt": null,
+      "manifestHash": "5036d1b60e2605a539e646cc2cd448fdebcdb6f16585bbf3eb7ca5ee397aca90",
+      "originJobId": null,
+      "output": null,
+      "outputHash": null,
+      "progress": 0,
+      "sourceRevision": 2,
+      "sourceStale": true,
+      "stage": null,
+      "status": "blocked",
+      "taskId": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+      "updatedAt": 1788980459715,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_project_index",
+    "args": {},
+    "toolCallId": "call_00_A2h4rXRaRbij8lVXoc853674",
+    "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef",
+    "at": "2026-09-09T19:01:25.485Z",
+    "ok": true,
+    "result": {
+      "applied": false,
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "baseId": "first-person",
+      "binaryAssetsAvailable": false,
+      "currentTaskId": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": false,
+      "files": [
+        {
+          "bytes": 1063,
+          "path": "project.godot",
+          "sha256": "d3aab6ef9e3b931702da612f99851ae4838a0017ab4fd8d8c6bff713131daac4"
+        },
+        {
+          "bytes": 169,
+          "path": "scenes/main.tscn",
+          "sha256": "db057226a45ac85ab681260949f17e3eb5657b6a89cb9a64163d3215d983e292"
+        },
+        {
+          "bytes": 2901,
+          "path": "scripts/crosshair.gd",
+          "sha256": "6101e6f7684d0b5e1af451090738a69557d9cef2fdf9ec5f6e9886f276c01f66"
+        },
+        {
+          "bytes": 3119,
+          "path": "scripts/hud.gd",
+          "sha256": "48612bd4137807f6d136bd7a8f57b4ba9415e2abe8541bc25f27730b484490ea"
+        },
+        {
+          "bytes": 4513,
+          "path": "scripts/main.gd",
+          "sha256": "dfda20e734ae32bf8e1b716764c3cd6910a5e1ff9944c2dc91e2fd824bc631ad"
+        },
+        {
+          "bytes": 4722,
+          "path": "scripts/player.gd",
+          "sha256": "056600daf269cded3ea0f960765441abc00de387a503375c919406b7aef7ddee"
+        },
+        {
+          "bytes": 7495,
+          "path": "scripts/view_model.gd",
+          "sha256": "18f0a36da2c0e95f120064cf69b6eb3338b904aed70bce4509268bbe0d9ac863"
+        }
+      ],
+      "format": "craftmine.godot-project/1",
+      "language": "GDScript",
+      "lastWriter": {
+        "baseBuild": "v-75b99891d0c9467f8f7f",
+        "projectId": "r8-live",
+        "sessionId": "512f3ce4-5422-4ff8-8563-136ba7256a11",
+        "taskId": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+        "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef"
+      },
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "nextOffset": null,
+      "renderer": "gl_compatibility",
+      "revision": 3,
+      "status": "source-only",
+      "target": "web",
+      "totalFiles": 7,
+      "verified": false,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_project_index",
+    "args": {},
+    "toolCallId": "call_00_AXmi3WmsJDHLRPka2Qq44162",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:01:29.626Z",
+    "ok": true,
+    "result": {
+      "applied": false,
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "baseId": "first-person",
+      "binaryAssetsAvailable": false,
+      "currentTaskId": "work-cf6a3dda783917339bbf05d6499c8d0aca9737c8da2e8225d33d100894f1ed73",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": false,
+      "files": [
+        {
+          "bytes": 1063,
+          "path": "project.godot",
+          "sha256": "d3aab6ef9e3b931702da612f99851ae4838a0017ab4fd8d8c6bff713131daac4"
+        },
+        {
+          "bytes": 169,
+          "path": "scenes/main.tscn",
+          "sha256": "db057226a45ac85ab681260949f17e3eb5657b6a89cb9a64163d3215d983e292"
+        },
+        {
+          "bytes": 2901,
+          "path": "scripts/crosshair.gd",
+          "sha256": "6101e6f7684d0b5e1af451090738a69557d9cef2fdf9ec5f6e9886f276c01f66"
+        },
+        {
+          "bytes": 3119,
+          "path": "scripts/hud.gd",
+          "sha256": "48612bd4137807f6d136bd7a8f57b4ba9415e2abe8541bc25f27730b484490ea"
+        },
+        {
+          "bytes": 4513,
+          "path": "scripts/main.gd",
+          "sha256": "dfda20e734ae32bf8e1b716764c3cd6910a5e1ff9944c2dc91e2fd824bc631ad"
+        },
+        {
+          "bytes": 4722,
+          "path": "scripts/player.gd",
+          "sha256": "056600daf269cded3ea0f960765441abc00de387a503375c919406b7aef7ddee"
+        },
+        {
+          "bytes": 7495,
+          "path": "scripts/view_model.gd",
+          "sha256": "18f0a36da2c0e95f120064cf69b6eb3338b904aed70bce4509268bbe0d9ac863"
+        }
+      ],
+      "format": "craftmine.godot-project/1",
+      "language": "GDScript",
+      "lastWriter": {
+        "baseBuild": "v-75b99891d0c9467f8f7f",
+        "projectId": "r8-live",
+        "sessionId": "512f3ce4-5422-4ff8-8563-136ba7256a11",
+        "taskId": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+        "turnId": "6fe041c6-2b2b-49af-8543-a40eb73c87ef"
+      },
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "nextOffset": null,
+      "renderer": "gl_compatibility",
+      "revision": 3,
+      "status": "source-only",
+      "target": "web",
+      "totalFiles": 7,
+      "verified": false,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "project_inspect",
+    "args": {},
+    "toolCallId": "call_01_xSHjIVKAJStlcnICMRkf5137",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:01:29.629Z",
+    "ok": true,
+    "result": {
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127",
+      "taskId": "work-cf6a3dda783917339bbf05d6499c8d0aca9737c8da2e8225d33d100894f1ed73",
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "title": "R8 真实模型验收世界",
+      "workspaceRevision": 0,
+      "status": "running",
+      "resumedFrom": "work-e71dbe5d400336923aa758aa4f7b8b0e7c58ab9279371c2d7fd3e3a63fd5ea77",
+      "resources": [],
+      "next": null,
+      "total": 0,
+      "publishingAvailable": false
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "revision": 3,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "path": "scripts/crosshair.gd"
+    },
+    "toolCallId": "call_00_3qSrwPjthXNW2FXfDcfV5716",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:01:30.915Z",
+    "ok": true,
+    "result": {
+      "bytes": 2901,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "nextOffset": null,
+      "offset": 0,
+      "path": "scripts/crosshair.gd",
+      "revision": 3,
+      "sha256": "6101e6f7684d0b5e1af451090738a69557d9cef2fdf9ec5f6e9886f276c01f66",
+      "text": "extends Control\n## 视口正中央的准星。\n##\n## 这个 Control 用 PRESET_FULL_RECT 铺满视口（offset 全为 0），所以它的本地坐标\n## (0,0) 就是视口左上角，size 就是视口尺寸；_draw 里把中心取成 size * 0.5，\n## 画出来的就是视口几何中心 —— 窗口缩放、分辨率变化都不会偏。\n## 样式跟随武器：手枪 = 四段刻度 + 中心点；长剑 = 圆环 + 四向短刻线。\n\nconst STYLE_GUN: String = \"gun\"\nconst STYLE_SWORD: String = \"sword\"\n\nvar style_id: String = STYLE_GUN\n\nvar _target_spread: float = 0.0\nvar _spread: float = 0.0\nvar _kick: float = 0.0\nvar _flash: float = 0.0\n\n\nfunc _ready() -> void:\n\tset_anchors_preset(Control.PRESET_FULL_RECT)\n\toffset_left = 0.0\n\toffset_top = 0.0\n\toffset_right = 0.0\n\toffset_bottom = 0.0\n\tmouse_filter = Control.MOUSE_FILTER_IGNORE\n\tclip_contents = false\n\n\nfunc set_style(new_style: String) -> void:\n\tif style_id == new_style:\n\t\treturn\n\tstyle_id = new_style\n\tqueue_redraw()\n\n\nfunc set_motion(ratio: float) -> void:\n\t_target_spread = clampf(ratio, 0.0, 1.0)\n\n\nfunc pulse() -> void:\n\t_kick = 1.0\n\t_flash = 0.35\n\n\n## 视口正中的本地坐标。size 来自铺满视口的锚点，等价于视口尺寸 * 0.5。\nfunc viewport_center() -> Vector2:\n\tif size.x > 0.0 and size.y > 0.0:\n\t\treturn size * 0.5\n\treturn get_viewport_rect().size * 0.5\n\n\nfunc spread_amount() -> float:\n\treturn clampf(_spread + _kick * 0.6, 0.0, 1.0)\n\n\nfunc _process(delta: float) -> void:\n\t_spread = lerpf(_spread, _target_spread, clampf(delta * 8.0, 0.0, 1.0))\n\t_kick = maxf(0.0, _kick - delta * 4.0)\n\t_flash = maxf(0.0, _flash - delta * 2.5)\n\tqueue_redraw()\n\n\nfunc _draw() -> void:\n\tvar center := viewport_center()\n\tvar color := Color(1.0, 0.88, 0.55, 0.95) if style_id == STYLE_SWORD else Color(0.97, 0.99, 1.0, 0.92)\n\tif _flash > 0.0:\n\t\tcolor = Color(1.0, 0.36, 0.32, 1.0)\n\tif style_id == STYLE_SWORD:\n\t\t_draw_sword(center, color)\n\telse:\n\t\t_draw_gun(center, color)\n\n\nfunc _draw_gun(center: Vector2, color: Color) -> void:\n\tvar gap := 5.0 + spread_amount() * 10.0\n\tvar arm := 8.0\n\tvar thickness := 2.0\n\tdraw_line(center + Vector2(0.0, -gap), center + Vector2(0.0, -gap - arm), color, thickness, true)\n\tdraw_line(center + Vector2(0.0, gap), center + Vector2(0.0, gap + arm), color, thickness, true)\n\tdraw_line(center + Vector2(-gap, 0.0), center + Vector2(-gap - arm, 0.0), color, thickness, true)\n\tdraw_line(center + Vector2(gap, 0.0), center + Vector2(gap + arm, 0.0), color, thickness, true)\n\tdraw_circle(center, 1.5, color)\n\n\nfunc _draw_sword(center: Vector2, color: Color) -> void:\n\tvar radius := 10.0 + spread_amount() * 8.0\n\tdraw_arc(center, radius, 0.0, TAU, 48, color, 1.6, true)\n\tfor i in 4:\n\t\tvar angle := TAU * float(i) * 0.25 + PI * 0.25\n\t\tvar dir := Vector2(cos(angle), sin(angle))\n\t\tdraw_line(center + dir * (radius + 3.0), center + dir * (radius + 10.0), color, 2.0, true)\n\tdraw_circle(center, 2.0, color)\n",
+      "totalCharacters": 2631,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "revision": 3,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "path": "scripts/view_model.gd"
+    },
+    "toolCallId": "call_01_8t4mzJU2ODZqsm9wordH7579",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:01:30.916Z",
+    "ok": true,
+    "result": {
+      "bytes": 7495,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "nextOffset": null,
+      "offset": 0,
+      "path": "scripts/view_model.gd",
+      "revision": 3,
+      "sha256": "18f0a36da2c0e95f120064cf69b6eb3338b904aed70bce4509268bbe0d9ac863",
+      "text": "extends Node3D\n## 挂在 Camera3D 下的第一人称手持模型。\n## 枪和剑都是程序化网格拼出来的：切换武器时把整块模型换掉（不是改颜色/缩放），\n## 再配一段收枪 -> 换模型 -> 举枪的动作，并配合 HUD 换准星。\n\nconst WEAPON_GUN: String = \"gun\"\nconst WEAPON_SWORD: String = \"sword\"\n\nvar _current_id: String = \"\"\nvar _gun_model: Node3D = null\nvar _sword_model: Node3D = null\nvar _muzzle_flash: MeshInstance3D = null\nvar _muzzle_light: OmniLight3D = null\nvar _swap_tween: Tween = null\n\nvar _look_delta: Vector2 = Vector2.ZERO\nvar _move_speed: float = 0.0\nvar _sway: Vector2 = Vector2.ZERO\nvar _bob_time: float = 0.0\nvar _recoil: float = 0.0\nvar _swing: float = 0.0\nvar _flash: float = 0.0\nvar _swap_offset: Vector3 = Vector3.ZERO\n\n\nfunc _ready() -> void:\n\t_gun_model = _build_gun()\n\t_gun_model.name = \"GunModel\"\n\t_gun_model.position = Vector3(0.24, -0.20, -0.42)\n\tadd_child(_gun_model)\n\n\t_sword_model = _build_sword()\n\t_sword_model.name = \"SwordModel\"\n\t_sword_model.position = Vector3(0.30, -0.34, -0.52)\n\t_sword_model.rotation = Vector3(deg_to_rad(-14.0), deg_to_rad(-26.0), deg_to_rad(10.0))\n\t_sword_model.scale = Vector3(0.65, 0.65, 0.65)\n\tadd_child(_sword_model)\n\n\t_gun_model.visible = false\n\t_sword_model.visible = false\n\n\nfunc equip(weapon_id: String) -> void:\n\tif weapon_id == _current_id:\n\t\treturn\n\tvar first_equip := _current_id.is_empty()\n\t_current_id = weapon_id\n\tif first_equip:\n\t\t_apply_visibility()\n\t\t_swap_offset = Vector3.ZERO\n\t\treturn\n\tif _swap_tween != null and _swap_tween.is_valid():\n\t\t_swap_tween.kill()\n\t_swap_tween = create_tween()\n\t_swap_tween.set_trans(Tween.TRANS_SINE)\n\t_swap_tween.set_ease(Tween.EASE_IN_OUT)\n\t_swap_tween.tween_property(self, \"_swap_offset\", Vector3(0.0, -0.36, 0.06), 0.11)\n\t_swap_tween.tween_callback(_apply_visibility)\n\t_swap_tween.tween_property(self, \"_swap_offset\", Vector3.ZERO, 0.16)\n\n\nfunc current_weapon() -> String:\n\treturn _current_id\n\n\nfunc set_look_delta(delta: Vector2) -> void:\n\t_look_delta = delta\n\n\nfunc set_move_speed(value: float) -> void:\n\t_move_speed = value\n\n\nfunc play_attack() -> void:\n\tif _current_id == WEAPON_SWORD:\n\t\t_swing = 1.0\n\telse:\n\t\t_recoil = 1.0\n\t\t_flash = 1.0\n\n\nfunc _process(delta: float) -> void:\n\tvar sway_target := Vector2(-_look_delta.x, -_look_delta.y) * 0.0022\n\t_look_delta = Vector2.ZERO\n\t_sway = _sway.lerp(sway_target, clampf(delta * 7.0, 0.0, 1.0))\n\n\tvar speed_ratio := clampf(_move_speed / 6.0, 0.0, 1.0)\n\t_bob_time += delta * (4.0 + 7.0 * speed_ratio)\n\tvar bob := Vector2(sin(_bob_time) * 0.014, -absf(cos(_bob_time)) * 0.010) * speed_ratio\n\n\t_recoil = maxf(0.0, _recoil - delta * 5.5)\n\t_swing = maxf(0.0, _swing - delta * 3.6)\n\t_flash = maxf(0.0, _flash - delta * 14.0)\n\tif _muzzle_flash != null:\n\t\t_muzzle_flash.visible = _flash > 0.02\n\tif _muzzle_light != null:\n\t\t_muzzle_light.visible = _flash > 0.02\n\n\tvar swing_curve := sin(_swing * PI)\n\tvar base := Vector3(\n\t\t_sway.x + bob.x,\n\t\t_sway.y + bob.y - _recoil * 0.03 + swing_curve * 0.04,\n\t\t_recoil * 0.055\n\t)\n\tposition = _swap_offset + base\n\trotation = Vector3(\n\t\t-_sway.y * 0.9 - _recoil * 1.2 + swing_curve * 0.55,\n\t\t_sway.x * 1.1 + swing_curve * 0.30,\n\t\tswing_curve * 0.85\n\t)\n\n\nfunc _apply_visibility() -> void:\n\tif _gun_model != null:\n\t\t_gun_model.visible = _current_id == WEAPON_GUN\n\tif _sword_model != null:\n\t\t_sword_model.visible = _current_id == WEAPON_SWORD\n\n\nfunc _build_gun() -> Node3D:\n\tvar root := Node3D.new()\n\tvar steel := _material(Color(0.20, 0.21, 0.24), 0.75, 0.35)\n\tvar dark := _material(Color(0.09, 0.10, 0.11), 0.35, 0.55)\n\tvar grip_mat := _material(Color(0.15, 0.12, 0.10), 0.05, 0.85)\n\tvar skin := _material(Color(0.72, 0.55, 0.44), 0.0, 0.8)\n\n\t_add_box(root, Vector3(0.085, 0.105, 0.30), Vector3(0.0, 0.0, 0.02), steel)\n\t_add_box(root, Vector3(0.070, 0.075, 0.10), Vector3(0.0, -0.01, 0.20), dark)\n\t_add_box(root, Vector3(0.062, 0.150, 0.085), Vector3(0.0, -0.115, 0.075), grip_mat, Vector3(-0.30, 0.0, 0.0))\n\t_add_box(root, Vector3(0.055, 0.140, 0.070), Vector3(0.0, -0.100, -0.030), dark, Vector3(0.16, 0.0, 0.0))\n\t_add_box(root, Vector3(0.016, 0.028, 0.020), Vector3(0.0, 0.066, -0.075), dark)\n\t_add_box(root, Vector3(0.030, 0.030, 0.030), Vector3(0.0, 0.062, 0.145), dark)\n\t# 握把上的一只手，让第一人称看起来是「握着」而不是「浮着」。\n\t_add_box(root, Vector3(0.075, 0.100, 0.095), Vector3(0.0, -0.125, 0.085), skin, Vector3(-0.30, 0.0, 0.0))\n\n\tvar barrel := CylinderMesh.new()\n\tbarrel.top_radius = 0.019\n\tbarrel.bottom_radius = 0.019\n\tbarrel.height = 0.34\n\t_add_mesh(root, barrel, steel, Vector3(0.0, 0.018, -0.30), Vector3(PI * 0.5, 0.0, 0.0))\n\n\tvar muzzle := CylinderMesh.new()\n\tmuzzle.top_radius = 0.027\n\tmuzzle.bottom_radius = 0.024\n\tmuzzle.height = 0.055\n\t_add_mesh(root, muzzle, dark, Vector3(0.0, 0.018, -0.45), Vector3(PI * 0.5, 0.0, 0.0))\n\n\tvar flash_mat := _material(Color(1.0, 0.82, 0.35), 0.0, 0.4)\n\tflash_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED\n\tflash_mat.emission_enabled = true\n\tflash_mat.emission = Color(1.0, 0.72, 0.25)\n\tflash_mat.emission_energy_multiplier = 5.0\n\tvar flash_mesh := SphereMesh.new()\n\tflash_mesh.radius = 0.075\n\tflash_mesh.height = 0.15\n\t_muzzle_flash = _add_mesh(root, flash_mesh, flash_mat, Vector3(0.0, 0.018, -0.50))\n\t_muzzle_flash.visible = false\n\n\t_muzzle_light = OmniLight3D.new()\n\t_muzzle_light.light_color = Color(1.0, 0.78, 0.40)\n\t_muzzle_light.light_energy = 6.0\n\t_muzzle_light.omni_range = 6.0\n\t_muzzle_light.position = Vector3(0.0, 0.018, -0.50)\n\t_muzzle_light.visible = false\n\troot.add_child(_muzzle_light)\n\treturn root\n\n\nfunc _build_sword() -> Node3D:\n\tvar root := Node3D.new()\n\tvar blade := _material(Color(0.78, 0.81, 0.88), 0.90, 0.18)\n\tvar gold := _material(Color(0.82, 0.66, 0.28), 0.85, 0.30)\n\tvar leather := _material(Color(0.24, 0.15, 0.11), 0.05, 0.90)\n\tvar skin := _material(Color(0.72, 0.55, 0.44), 0.0, 0.8)\n\n\t_add_box(root, Vector3(0.036, 0.66, 0.014), Vector3(0.0, 0.40, 0.0), blade)\n\t_add_box(root, Vector3(0.026, 0.10, 0.014), Vector3(0.0, 0.78, 0.0), blade)\n\t_add_box(root, Vector3(0.012, 0.64, 0.008), Vector3(0.0, 0.40, 0.009), gold)\n\t_add_box(root, Vector3(0.215, 0.032, 0.048), Vector3(0.0, 0.055, 0.0), gold)\n\n\tvar grip := CylinderMesh.new()\n\tgrip.top_radius = 0.022\n\tgrip.bottom_radius = 0.024\n\tgrip.height = 0.16\n\t_add_mesh(root, grip, leather, Vector3(0.0, -0.045, 0.0))\n\n\tvar pommel := SphereMesh.new()\n\tpommel.radius = 0.030\n\tpommel.height = 0.060\n\t_add_mesh(root, pommel, gold, Vector3(0.0, -0.145, 0.0))\n\n\t_add_box(root, Vector3(0.080, 0.110, 0.085), Vector3(0.0, -0.045, 0.010), skin)\n\treturn root\n\n\nfunc _material(color: Color, metallic: float, roughness: float) -> StandardMaterial3D:\n\tvar material := StandardMaterial3D.new()\n\tmaterial.albedo_color = color\n\tmaterial.metallic = metallic\n\tmaterial.roughness = roughness\n\treturn material\n\n\nfunc _add_box(parent: Node3D, size: Vector3, pos: Vector3, material: StandardMaterial3D, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:\n\tvar box := BoxMesh.new()\n\tbox.size = size\n\treturn _add_mesh(parent, box, material, pos, rot)\n\n\nfunc _add_mesh(parent: Node3D, mesh: Mesh, material: StandardMaterial3D, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:\n\tvar instance := MeshInstance3D.new()\n\tinstance.mesh = mesh\n\tinstance.material_override = material\n\tinstance.position = pos\n\tinstance.rotation = rot\n\t# 手持模型不投影，避免近平面处的自阴影闪动。\n\tinstance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF\n\tparent.add_child(instance)\n\treturn instance\n",
+      "totalCharacters": 7251,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "revision": 3,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "path": "scenes/main.tscn"
+    },
+    "toolCallId": "call_02_CYJLHhqeI4AQMC5Mhj9S2167",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:01:30.917Z",
+    "ok": true,
+    "result": {
+      "bytes": 169,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "nextOffset": null,
+      "offset": 0,
+      "path": "scenes/main.tscn",
+      "revision": 3,
+      "sha256": "db057226a45ac85ab681260949f17e3eb5657b6a89cb9a64163d3215d983e292",
+      "text": "[gd_scene load_steps=2 format=3]\n\n[ext_resource type=\"Script\" path=\"res://scripts/main.gd\" id=\"1_main\"]\n\n[node name=\"Main\" type=\"Node3D\"]\nscript = ExtResource(\"1_main\")\n",
+      "totalCharacters": 169,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "revision": 3,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "path": "scripts/hud.gd"
+    },
+    "toolCallId": "call_03_xI4XUL0vTdj3A4Ang8rk8949",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:01:30.918Z",
+    "ok": true,
+    "result": {
+      "bytes": 3119,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "nextOffset": null,
+      "offset": 0,
+      "path": "scripts/hud.gd",
+      "revision": 3,
+      "sha256": "48612bd4137807f6d136bd7a8f57b4ba9415e2abe8541bc25f27730b484490ea",
+      "text": "extends CanvasLayer\n## HUD：视口正中的准星 + 当前武器名 + 操作提示。\n## 玩家切武器时会发 weapon_changed 信号，这里同步换准星样式与文字。\n\nconst CrosshairScript: GDScript = preload(\"res://scripts/crosshair.gd\")\n\nvar crosshair: Control = null\n\nvar _player: Node = null\nvar _weapon_label: Label = null\nvar _hint_label: Label = null\n\n\nfunc _ready() -> void:\n\tlayer = 10\n\n\tcrosshair = CrosshairScript.new()\n\tcrosshair.name = \"Crosshair\"\n\tadd_child(crosshair)\n\n\t_weapon_label = Label.new()\n\t_weapon_label.name = \"WeaponLabel\"\n\t_weapon_label.text = \"\"\n\t_weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\t_weapon_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)\n\t_weapon_label.offset_left = 0.0\n\t_weapon_label.offset_top = -70.0\n\t_weapon_label.offset_right = 0.0\n\t_weapon_label.offset_bottom = -40.0\n\t_weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE\n\t_weapon_label.add_theme_font_size_override(\"font_size\", 20)\n\t_weapon_label.add_theme_color_override(\"font_color\", Color(0.93, 0.96, 1.0))\n\t_weapon_label.add_theme_color_override(\"font_shadow_color\", Color(0.0, 0.0, 0.0, 0.7))\n\t_weapon_label.add_theme_constant_override(\"shadow_offset_x\", 1)\n\t_weapon_label.add_theme_constant_override(\"shadow_offset_y\", 1)\n\tadd_child(_weapon_label)\n\n\t_hint_label = Label.new()\n\t_hint_label.name = \"HintLabel\"\n\t_hint_label.text = \"WASD 移动 · Shift 冲刺 · 空格 跳跃 · 鼠标视角 · 左键 攻击 · 1 手枪 · 2 长剑 · Q 切换 · Esc 释放鼠标\"\n\t_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT\n\t_hint_label.set_anchors_preset(Control.PRESET_TOP_WIDE)\n\t_hint_label.offset_left = 16.0\n\t_hint_label.offset_top = 12.0\n\t_hint_label.offset_right = -16.0\n\t_hint_label.offset_bottom = 44.0\n\t_hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE\n\t_hint_label.add_theme_font_size_override(\"font_size\", 15)\n\t_hint_label.add_theme_color_override(\"font_color\", Color(0.88, 0.92, 0.98, 0.85))\n\t_hint_label.add_theme_color_override(\"font_shadow_color\", Color(0.0, 0.0, 0.0, 0.7))\n\t_hint_label.add_theme_constant_override(\"shadow_offset_x\", 1)\n\t_hint_label.add_theme_constant_override(\"shadow_offset_y\", 1)\n\tadd_child(_hint_label)\n\n\nfunc setup(player: Node) -> void:\n\t_player = player\n\tif player == null:\n\t\treturn\n\tif player.has_signal(\"weapon_changed\"):\n\t\tplayer.weapon_changed.connect(_on_weapon_changed)\n\tif player.has_signal(\"attacked\"):\n\t\tplayer.attacked.connect(_on_attacked)\n\tif player.has_method(\"get_weapon_id\"):\n\t\t_on_weapon_changed(String(player.get_weapon_id()))\n\n\nfunc _process(_delta: float) -> void:\n\tif crosshair == null:\n\t\treturn\n\tvar ratio := 0.0\n\tif _player is CharacterBody3D:\n\t\tratio = (_player as CharacterBody3D).velocity.length() / 8.4\n\tcrosshair.set_motion(ratio)\n\n\nfunc _on_weapon_changed(weapon_id: String) -> void:\n\tif crosshair != null:\n\t\tcrosshair.set_style(weapon_id)\n\tif _weapon_label == null:\n\t\treturn\n\tif weapon_id == \"sword\":\n\t\t_weapon_label.text = \"长剑 · 左键挥砍\"\n\telse:\n\t\t_weapon_label.text = \"手枪 · 左键射击\"\n\n\nfunc _on_attacked(_weapon_id: String) -> void:\n\tif crosshair != null:\n\t\tcrosshair.pulse()\n",
+      "totalCharacters": 2949,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "path": "scripts/main.gd",
+      "revision": 3
+    },
+    "toolCallId": "call_00_jgezLhV6LPsuj9Hfxhrv4789",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:01:32.731Z",
+    "ok": true,
+    "result": {
+      "bytes": 4513,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "nextOffset": null,
+      "offset": 0,
+      "path": "scripts/main.gd",
+      "revision": 3,
+      "sha256": "dfda20e734ae32bf8e1b716764c3cd6910a5e1ff9944c2dc91e2fd824bc631ad",
+      "text": "extends Node3D\n## 世界入口：环境 + 地面 + 掩体 + 第一人称玩家 + HUD。\n## 整个场景在运行时用代码搭建，工程里不需要任何外部素材。\n\nconst PlayerScript: GDScript = preload(\"res://scripts/player.gd\")\nconst HudScript: GDScript = preload(\"res://scripts/hud.gd\")\n\nvar player = null\nvar hud = null\n\n\nfunc _ready() -> void:\n\t_build_environment()\n\t_build_ground()\n\t_build_props()\n\t_build_player()\n\t_build_hud()\n\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\n\nfunc _unhandled_input(event: InputEvent) -> void:\n\tif event is InputEventKey:\n\t\tvar key_event := event as InputEventKey\n\t\tif key_event.pressed and not key_event.echo and key_event.keycode == KEY_ESCAPE:\n\t\t\tif Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:\n\t\t\t\tInput.mouse_mode = Input.MOUSE_MODE_VISIBLE\n\t\t\telse:\n\t\t\t\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\t\t\treturn\n\tif event is InputEventMouseButton:\n\t\tvar button_event := event as InputEventMouseButton\n\t\tif button_event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:\n\t\t\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED\n\n\nfunc _build_player() -> void:\n\tplayer = PlayerScript.new()\n\tplayer.name = \"Player\"\n\tplayer.position = Vector3(0.0, 0.6, 9.0)\n\tadd_child(player)\n\n\nfunc _build_hud() -> void:\n\thud = HudScript.new()\n\thud.name = \"Hud\"\n\tadd_child(hud)\n\t# HUD 需要玩家信号：武器切换 -> 换准星样式；攻击 -> 准星脉冲。\n\thud.setup(player)\n\n\nfunc _build_environment() -> void:\n\tvar world_env := WorldEnvironment.new()\n\tworld_env.name = \"WorldEnvironment\"\n\tvar env := Environment.new()\n\tenv.background_mode = Environment.BG_SKY\n\tvar sky := Sky.new()\n\tsky.radiance_size = Sky.RADIANCE_SIZE_256\n\tvar sky_mat := ProceduralSkyMaterial.new()\n\tsky_mat.sky_top_color = Color(0.22, 0.40, 0.72)\n\tsky_mat.sky_horizon_color = Color(0.66, 0.74, 0.84)\n\tsky_mat.ground_horizon_color = Color(0.52, 0.55, 0.60)\n\tsky_mat.ground_bottom_color = Color(0.14, 0.15, 0.18)\n\tsky.sky_material = sky_mat\n\tenv.sky = sky\n\tenv.ambient_light_source = Environment.AMBIENT_SOURCE_SKY\n\tenv.ambient_light_energy = 1.1\n\tenv.tonemap_mode = Environment.TONE_MAPPER_ACES\n\tworld_env.environment = env\n\tadd_child(world_env)\n\n\tvar sun := DirectionalLight3D.new()\n\tsun.name = \"Sun\"\n\tsun.rotation = Vector3(deg_to_rad(-52.0), deg_to_rad(38.0), 0.0)\n\tsun.light_energy = 1.35\n\tsun.shadow_enabled = true\n\tsun.directional_shadow_max_distance = 90.0\n\tadd_child(sun)\n\n\nfunc _build_ground() -> void:\n\t_add_block(Vector3(0.0, -0.5, 0.0), Vector3(90.0, 1.0, 90.0), Color(0.30, 0.34, 0.31))\n\t# 参考网格线：帮助肉眼确认准星是否真的压在视口正中。\n\tfor i in range(-8, 9):\n\t\tvar t := float(i) * 5.0\n\t\t_add_block(Vector3(t, 0.02, 0.0), Vector3(0.08, 0.04, 90.0), Color(0.42, 0.47, 0.44))\n\t\t_add_block(Vector3(0.0, 0.02, t), Vector3(90.0, 0.04, 0.08), Color(0.42, 0.47, 0.44))\n\n\nfunc _build_props() -> void:\n\t# 掩体、柱子、台阶：给第一人称视角一点可参照的纵深。\n\t_add_block(Vector3(-6.0, 0.9, -4.0), Vector3(3.0, 1.8, 1.0), Color(0.55, 0.42, 0.30))\n\t_add_block(Vector3(6.5, 0.6, -6.0), Vector3(4.0, 1.2, 1.2), Color(0.48, 0.36, 0.27))\n\t_add_block(Vector3(0.0, 1.4, -14.0), Vector3(10.0, 2.8, 0.8), Color(0.40, 0.42, 0.46))\n\t_add_block(Vector3(-2.0, 0.25, 2.0), Vector3(1.4, 0.5, 1.4), Color(0.62, 0.50, 0.28))\n\t_add_block(Vector3(2.4, 0.5, 3.6), Vector3(1.2, 1.0, 1.2), Color(0.58, 0.46, 0.26))\n\t_add_block(Vector3(3.2, 0.75, 4.4), Vector3(1.2, 0.5, 1.2), Color(0.58, 0.46, 0.26))\n\t_add_block(Vector3(4.0, 1.0, 5.2), Vector3(1.2, 0.5, 1.2), Color(0.58, 0.46, 0.26))\n\tfor i in 4:\n\t\tvar angle := TAU * float(i) * 0.25\n\t\tvar px := cos(angle) * 16.0\n\t\tvar pz := sin(angle) * 16.0\n\t\t_add_block(Vector3(px, 3.0, pz), Vector3(1.6, 6.0, 1.6), Color(0.44, 0.45, 0.48))\n\t# 远处靶墙，方便对准星居中做视觉校验。\n\t_add_block(Vector3(0.0, 1.5, -30.0), Vector3(12.0, 3.0, 0.6), Color(0.50, 0.24, 0.22))\n\n\nfunc _add_block(pos: Vector3, size: Vector3, color: Color, rot: Vector3 = Vector3.ZERO) -> StaticBody3D:\n\tvar body := StaticBody3D.new()\n\tbody.position = pos\n\tbody.rotation = rot\n\tadd_child(body)\n\n\tvar box := BoxMesh.new()\n\tbox.size = size\n\tvar mesh_instance := MeshInstance3D.new()\n\tmesh_instance.mesh = box\n\tvar material := StandardMaterial3D.new()\n\tmaterial.albedo_color = color\n\tmaterial.roughness = 0.9\n\tmesh_instance.material_override = material\n\tbody.add_child(mesh_instance)\n\n\tvar shape := BoxShape3D.new()\n\tshape.size = size\n\tvar collider := CollisionShape3D.new()\n\tcollider.shape = shape\n\tbody.add_child(collider)\n\treturn body\n",
+      "totalCharacters": 4239,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "path": "scripts/player.gd",
+      "revision": 3
+    },
+    "toolCallId": "call_01_DYy2ocCc4afweyu2Ps9C9534",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:01:32.732Z",
+    "ok": true,
+    "result": {
+      "bytes": 4722,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "nextOffset": null,
+      "offset": 0,
+      "path": "scripts/player.gd",
+      "revision": 3,
+      "sha256": "056600daf269cded3ea0f960765441abc00de387a503375c919406b7aef7ddee",
+      "text": "extends CharacterBody3D\n## 第一人称玩家控制器。\n##\n## 节点结构：Player(CharacterBody3D) -> Head(Node3D，负责俯仰) -> Camera3D -> ViewModel(手持模型)\n## 视角旋转只改 Player.rotation.y 与 Head.rotation.x；ViewModel 是 Camera3D 的子节点，\n## 所以相机转到哪里，枪/剑就转到哪里，不需要每帧手动同步旋转。\n\nconst ViewModelScript: GDScript = preload(\"res://scripts/view_model.gd\")\n\nsignal weapon_changed(weapon_id: String)\nsignal attacked(weapon_id: String)\n\nconst WEAPON_GUN: String = \"gun\"\nconst WEAPON_SWORD: String = \"sword\"\n\n@export var walk_speed: float = 5.2\n@export var sprint_speed: float = 8.4\n@export var jump_velocity: float = 6.2\n@export var mouse_sensitivity: float = 0.0024\n@export var pitch_limit_deg: float = 88.0\n@export var move_blend: float = 14.0\n\nvar camera: Camera3D = null\nvar head: Node3D = null\nvar view_model: Node3D = null\n\nvar _gravity: float = 18.0\nvar _yaw: float = 0.0\nvar _pitch: float = 0.0\nvar _look_delta: Vector2 = Vector2.ZERO\nvar _weapon_id: String = WEAPON_GUN\n\n\nfunc _ready() -> void:\n\t_gravity = float(ProjectSettings.get_setting(\"physics/3d/default_gravity\", 18.0))\n\t_build_body()\n\t_weapon_id = WEAPON_GUN\n\tif view_model != null:\n\t\tview_model.equip(_weapon_id)\n\n\nfunc _build_body() -> void:\n\tvar capsule := CapsuleShape3D.new()\n\tcapsule.height = 1.8\n\tcapsule.radius = 0.35\n\tvar collider := CollisionShape3D.new()\n\tcollider.name = \"Body\"\n\tcollider.shape = capsule\n\tcollider.position = Vector3(0.0, 0.9, 0.0)\n\tadd_child(collider)\n\n\thead = Node3D.new()\n\thead.name = \"Head\"\n\thead.position = Vector3(0.0, 1.62, 0.0)\n\tadd_child(head)\n\n\tcamera = Camera3D.new()\n\tcamera.name = \"Camera3D\"\n\tcamera.near = 0.05\n\tcamera.far = 500.0\n\tcamera.fov = 78.0\n\tcamera.current = true\n\thead.add_child(camera)\n\n\t# 手持模型直接挂在相机下：这是「枪跟随视角旋转」的唯一原因。\n\tview_model = ViewModelScript.new()\n\tview_model.name = \"ViewModel\"\n\tcamera.add_child(view_model)\n\n\nfunc _unhandled_input(event: InputEvent) -> void:\n\tif event is InputEventMouseMotion:\n\t\tif Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:\n\t\t\treturn\n\t\tvar motion := event as InputEventMouseMotion\n\t\t_look_delta += motion.relative\n\t\t_yaw -= motion.relative.x * mouse_sensitivity\n\t\t_pitch -= motion.relative.y * mouse_sensitivity\n\t\tvar limit := deg_to_rad(pitch_limit_deg)\n\t\t_pitch = clampf(_pitch, -limit, limit)\n\t\trotation.y = _yaw\n\t\tif head != null:\n\t\t\thead.rotation.x = _pitch\n\t\treturn\n\n\tif event is InputEventKey:\n\t\tvar key_event := event as InputEventKey\n\t\tif not key_event.pressed or key_event.echo:\n\t\t\treturn\n\t\tmatch key_event.physical_keycode:\n\t\t\tKEY_1:\n\t\t\t\trequest_weapon(WEAPON_GUN)\n\t\t\tKEY_2:\n\t\t\t\trequest_weapon(WEAPON_SWORD)\n\t\t\tKEY_Q:\n\t\t\t\trequest_weapon(WEAPON_SWORD if _weapon_id == WEAPON_GUN else WEAPON_GUN)\n\t\treturn\n\n\tif event is InputEventMouseButton:\n\t\tif Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:\n\t\t\treturn\n\t\tvar button_event := event as InputEventMouseButton\n\t\tif not button_event.pressed:\n\t\t\treturn\n\t\tmatch button_event.button_index:\n\t\t\tMOUSE_BUTTON_WHEEL_UP:\n\t\t\t\trequest_weapon(WEAPON_GUN)\n\t\t\tMOUSE_BUTTON_WHEEL_DOWN:\n\t\t\t\trequest_weapon(WEAPON_SWORD)\n\t\t\tMOUSE_BUTTON_LEFT:\n\t\t\t\tattack()\n\n\nfunc _physics_process(delta: float) -> void:\n\tif not is_on_floor():\n\t\tvelocity.y -= _gravity * delta\n\telif Input.is_physical_key_pressed(KEY_SPACE):\n\t\tvelocity.y = jump_velocity\n\n\tvar input_dir := Vector2.ZERO\n\tif Input.is_physical_key_pressed(KEY_W):\n\t\tinput_dir.y -= 1.0\n\tif Input.is_physical_key_pressed(KEY_S):\n\t\tinput_dir.y += 1.0\n\tif Input.is_physical_key_pressed(KEY_A):\n\t\tinput_dir.x -= 1.0\n\tif Input.is_physical_key_pressed(KEY_D):\n\t\tinput_dir.x += 1.0\n\tinput_dir = input_dir.limit_length(1.0)\n\n\tvar speed := sprint_speed if Input.is_physical_key_pressed(KEY_SHIFT) else walk_speed\n\tvar basis := global_transform.basis\n\tvar wish := basis.x * input_dir.x + basis.z * input_dir.y\n\twish.y = 0.0\n\twish = wish.normalized() * speed\n\n\tvar blend := clampf(delta * move_blend, 0.0, 1.0)\n\tvelocity.x = lerpf(velocity.x, wish.x, blend)\n\tvelocity.z = lerpf(velocity.z, wish.z, blend)\n\tmove_and_slide()\n\n\nfunc _process(_delta: float) -> void:\n\tif view_model == null:\n\t\treturn\n\tview_model.set_look_delta(_look_delta)\n\t_look_delta = Vector2.ZERO\n\tview_model.set_move_speed(Vector2(velocity.x, velocity.z).length())\n\n\nfunc request_weapon(weapon_id: String) -> void:\n\tif weapon_id != WEAPON_GUN and weapon_id != WEAPON_SWORD:\n\t\treturn\n\tif weapon_id == _weapon_id:\n\t\treturn\n\t_weapon_id = weapon_id\n\tif view_model != null:\n\t\tview_model.equip(weapon_id)\n\tweapon_changed.emit(weapon_id)\n\n\nfunc get_weapon_id() -> String:\n\treturn _weapon_id\n\n\nfunc attack() -> void:\n\tif view_model != null:\n\t\tview_model.play_attack()\n\tattacked.emit(_weapon_id)\n",
+      "totalCharacters": 4530,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_project_patch",
+    "args": {
+      "revision": 3,
+      "manifestHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "operations": [
+        {
+          "op": "put",
+          "path": "scripts/crosshair.gd",
+          "expectedHash": "6101e6f7684d0b5e1af451090738a69557d9cef2fdf9ec5f6e9886f276c01f66",
+          "text": "extends Control\n## 视口正中央的准星。\n##\n## 这个 Control 用 PRESET_FULL_RECT 铺满视口（offset 全为 0），所以它的本地坐标\n## (0,0) 就是视口左上角，size 就是视口尺寸；_draw 里把中心取成 size * 0.5，\n## 画出来的就是视口几何中心 —— 窗口缩放、分辨率变化都不会偏。\n## 样式跟随武器，统一改成细线：手枪 = 四段发丝刻度 + 极小中心点；\n## 长剑 = 细圆环 + 四向短刻线。每条细线下垫一层半透明暗色，亮背景也看得清。\n\nconst STYLE_GUN: String = \"gun\"\nconst STYLE_SWORD: String = \"sword\"\n\n## 细线宽度（发丝级），以及阴影垫层参数。\nconst HAIRLINE: float = 1.0\nconst SHADOW_PAD: float = 1.0\nconst SHADOW_COLOR: Color = Color(0.0, 0.0, 0.0, 0.30)\n\nvar style_id: String = STYLE_GUN\n\nvar _target_spread: float = 0.0\nvar _spread: float = 0.0\nvar _kick: float = 0.0\nvar _flash: float = 0.0\n\n\nfunc _ready() -> void:\n\tset_anchors_preset(Control.PRESET_FULL_RECT)\n\toffset_left = 0.0\n\toffset_top = 0.0\n\toffset_right = 0.0\n\toffset_bottom = 0.0\n\tmouse_filter = Control.MOUSE_FILTER_IGNORE\n\tclip_contents = false\n\n\nfunc set_style(new_style: String) -> void:\n\tif style_id == new_style:\n\t\treturn\n\tstyle_id = new_style\n\tqueue_redraw()\n\n\nfunc set_motion(ratio: float) -> void:\n\t_target_spread = clampf(ratio, 0.0, 1.0)\n\n\nfunc pulse() -> void:\n\t_kick = 1.0\n\t_flash = 0.35\n\n\n## 视口正中的本地坐标。size 来自铺满视口的锚点，等价于视口尺寸 * 0.5。\nfunc viewport_center() -> Vector2:\n\tif size.x > 0.0 and size.y > 0.0:\n\t\treturn size * 0.5\n\treturn get_viewport_rect().size * 0.5\n\n\nfunc spread_amount() -> float:\n\treturn clampf(_spread + _kick * 0.6, 0.0, 1.0)\n\n\nfunc _process(delta: float) -> void:\n\t_spread = lerpf(_spread, _target_spread, clampf(delta * 8.0, 0.0, 1.0))\n\t_kick = maxf(0.0, _kick - delta * 4.0)\n\t_flash = maxf(0.0, _flash - delta * 2.5)\n\tqueue_redraw()\n\n\nfunc _draw() -> void:\n\tvar center := viewport_center()\n\tvar color := Color(1.0, 0.88, 0.55, 0.95) if style_id == STYLE_SWORD else Color(0.97, 0.99, 1.0, 0.92)\n\tif _flash > 0.0:\n\t\tcolor = Color(1.0, 0.36, 0.32, 1.0)\n\tif style_id == STYLE_SWORD:\n\t\t_draw_sword(center, color)\n\telse:\n\t\t_draw_gun(center, color)\n\n\n## 手枪：四段细刻度 + 极小中心点。刻度比原来更长更细，中心留白仍随扩散量变化。\nfunc _draw_gun(center: Vector2, color: Color) -> void:\n\tvar gap := 6.0 + spread_amount() * 11.0\n\tvar arm := 9.0\n\tvar dirs: Array[Vector2] = [Vector2(0.0, -1.0), Vector2(0.0, 1.0), Vector2(-1.0, 0.0), Vector2(1.0, 0.0)]\n\tfor i in dirs.size():\n\t\tvar dir: Vector2 = dirs[i]\n\t\tvar from: Vector2 = center + dir * gap\n\t\tvar to: Vector2 = center + dir * (gap + arm)\n\t\tdraw_line(from, to, SHADOW_COLOR, HAIRLINE + SHADOW_PAD, true)\n\t\tdraw_line(from, to, color, HAIRLINE, true)\n\tdraw_circle(center, HAIRLINE + SHADOW_PAD * 0.6, SHADOW_COLOR)\n\tdraw_circle(center, HAIRLINE, color)\n\n\n## 长剑：细圆环 + 四向短刻线。线宽整体收细，半径仍随移动/后坐扩张。\nfunc _draw_sword(center: Vector2, color: Color) -> void:\n\tvar radius := 10.0 + spread_amount() * 8.0\n\tdraw_arc(center, radius, 0.0, TAU, 48, SHADOW_COLOR, HAIRLINE + 1.4, true)\n\tdraw_arc(center, radius, 0.0, TAU, 48, color, HAIRLINE + 0.2, true)\n\tfor i in 4:\n\t\tvar angle := TAU * float(i) * 0.25 + PI * 0.25\n\t\tvar dir := Vector2(cos(angle), sin(angle))\n\t\tvar from: Vector2 = center + dir * (radius + 3.0)\n\t\tvar to: Vector2 = center + dir * (radius + 10.0)\n\t\tdraw_line(from, to, SHADOW_COLOR, HAIRLINE + SHADOW_PAD, true)\n\t\tdraw_line(from, to, color, HAIRLINE, true)\n\tdraw_circle(center, HAIRLINE + SHADOW_PAD * 0.6, SHADOW_COLOR)\n\tdraw_circle(center, HAIRLINE, color)\n"
+        },
+        {
+          "op": "put",
+          "path": "scripts/view_model.gd",
+          "expectedHash": "18f0a36da2c0e95f120064cf69b6eb3338b904aed70bce4509268bbe0d9ac863",
+          "text": "extends Node3D\n## 挂在 Camera3D 下的第一人称手持模型。\n## 枪和剑都是程序化网格拼出来的：切换武器时把整块模型换掉（不是改颜色/缩放），\n## 再配一段收枪 -> 换模型 -> 举枪的动作，并配合 HUD 换准星。\n## 待机（几乎没动、没有后坐/挥砍、没在换武器）时，枪额外叠一层很轻的呼吸摆动，\n## 只改枪模型自己的局部变换，不动相机挂点。\n\nconst WEAPON_GUN: String = \"gun\"\nconst WEAPON_SWORD: String = \"sword\"\n\n## 枪模型的挂点，呼吸摆动以它为基准来回偏移。\nconst GUN_BASE_POSITION: Vector3 = Vector3(0.24, -0.20, -0.42)\n\nvar _current_id: String = \"\"\nvar _gun_model: Node3D = null\nvar _sword_model: Node3D = null\nvar _muzzle_flash: MeshInstance3D = null\nvar _muzzle_light: OmniLight3D = null\nvar _swap_tween: Tween = null\n\nvar _look_delta: Vector2 = Vector2.ZERO\nvar _move_speed: float = 0.0\nvar _sway: Vector2 = Vector2.ZERO\nvar _bob_time: float = 0.0\nvar _recoil: float = 0.0\nvar _swing: float = 0.0\nvar _flash: float = 0.0\nvar _swap_offset: Vector3 = Vector3.ZERO\nvar _breath_time: float = 0.0\nvar _breath_blend: float = 0.0\n\n\nfunc _ready() -> void:\n\t_gun_model = _build_gun()\n\t_gun_model.name = \"GunModel\"\n\t_gun_model.position = GUN_BASE_POSITION\n\tadd_child(_gun_model)\n\n\t_sword_model = _build_sword()\n\t_sword_model.name = \"SwordModel\"\n\t_sword_model.position = Vector3(0.30, -0.34, -0.52)\n\t_sword_model.rotation = Vector3(deg_to_rad(-14.0), deg_to_rad(-26.0), deg_to_rad(10.0))\n\t_sword_model.scale = Vector3(0.65, 0.65, 0.65)\n\tadd_child(_sword_model)\n\n\t_gun_model.visible = false\n\t_sword_model.visible = false\n\n\nfunc equip(weapon_id: String) -> void:\n\tif weapon_id == _current_id:\n\t\treturn\n\tvar first_equip := _current_id.is_empty()\n\t_current_id = weapon_id\n\tif first_equip:\n\t\t_apply_visibility()\n\t\t_swap_offset = Vector3.ZERO\n\t\treturn\n\tif _swap_tween != null and _swap_tween.is_valid():\n\t\t_swap_tween.kill()\n\t_swap_tween = create_tween()\n\t_swap_tween.set_trans(Tween.TRANS_SINE)\n\t_swap_tween.set_ease(Tween.EASE_IN_OUT)\n\t_swap_tween.tween_property(self, \"_swap_offset\", Vector3(0.0, -0.36, 0.06), 0.11)\n\t_swap_tween.tween_callback(_apply_visibility)\n\t_swap_tween.tween_property(self, \"_swap_offset\", Vector3.ZERO, 0.16)\n\n\nfunc current_weapon() -> String:\n\treturn _current_id\n\n\nfunc set_look_delta(delta: Vector2) -> void:\n\t_look_delta = delta\n\n\nfunc set_move_speed(value: float) -> void:\n\t_move_speed = value\n\n\nfunc play_attack() -> void:\n\tif _current_id == WEAPON_SWORD:\n\t\t_swing = 1.0\n\telse:\n\t\t_recoil = 1.0\n\t\t_flash = 1.0\n\n\nfunc _process(delta: float) -> void:\n\tvar sway_target := Vector2(-_look_delta.x, -_look_delta.y) * 0.0022\n\t_look_delta = Vector2.ZERO\n\t_sway = _sway.lerp(sway_target, clampf(delta * 7.0, 0.0, 1.0))\n\n\tvar speed_ratio := clampf(_move_speed / 6.0, 0.0, 1.0)\n\t_bob_time += delta * (4.0 + 7.0 * speed_ratio)\n\tvar bob := Vector2(sin(_bob_time) * 0.014, -absf(cos(_bob_time)) * 0.010) * speed_ratio\n\n\t_recoil = maxf(0.0, _recoil - delta * 5.5)\n\t_swing = maxf(0.0, _swing - delta * 3.6)\n\t_flash = maxf(0.0, _flash - delta * 14.0)\n\tif _muzzle_flash != null:\n\t\t_muzzle_flash.visible = _flash > 0.02\n\tif _muzzle_light != null:\n\t\t_muzzle_light.visible = _flash > 0.02\n\n\t_update_breath(delta, speed_ratio)\n\n\tvar swing_curve := sin(_swing * PI)\n\tvar base := Vector3(\n\t\t_sway.x + bob.x,\n\t\t_sway.y + bob.y - _recoil * 0.03 + swing_curve * 0.04,\n\t\t_recoil * 0.055\n\t)\n\tposition = _swap_offset + base\n\trotation = Vector3(\n\t\t-_sway.y * 0.9 - _recoil * 1.2 + swing_curve * 0.55,\n\t\t_sway.x * 1.1 + swing_curve * 0.30,\n\t\tswing_curve * 0.85\n\t)\n\n\n## 待机呼吸摆动：静止程度、后坐/挥砍、换武器位移三者相乘得到呼吸权重，\n## 权重平滑过渡，幅度很小（毫米级位移 + 一两度旋转），只作用在枪模型上。\nfunc _update_breath(delta: float, speed_ratio: float) -> void:\n\tvar idle := clampf(1.0 - speed_ratio * 2.2, 0.0, 1.0)\n\tidle *= clampf(1.0 - maxf(_recoil, _swing), 0.0, 1.0)\n\tidle *= clampf(1.0 - _swap_offset.length() * 3.0, 0.0, 1.0)\n\t_breath_blend = lerpf(_breath_blend, idle, clampf(delta * 3.5, 0.0, 1.0))\n\t_breath_time += delta * 1.5\n\n\tif _gun_model == null:\n\t\treturn\n\tif _breath_blend <= 0.001:\n\t\t_gun_model.position = GUN_BASE_POSITION\n\t\t_gun_model.rotation = Vector3.ZERO\n\t\treturn\n\n\tvar breath := _breath_blend\n\tvar cycle := sin(_breath_time)\n\tvar half_cycle := sin(_breath_time * 0.5)\n\t_gun_model.position = GUN_BASE_POSITION + Vector3(\n\t\thalf_cycle * 0.0045,\n\t\tcycle * 0.0075,\n\t\tcycle * 0.0035\n\t) * breath\n\t_gun_model.rotation = Vector3(\n\t\tcycle * 0.020,\n\t\thalf_cycle * 0.014,\n\t\thalf_cycle * 0.010\n\t) * breath\n\n\nfunc _apply_visibility() -> void:\n\tif _gun_model != null:\n\t\t_gun_model.visible = _current_id == WEAPON_GUN\n\tif _sword_model != null:\n\t\t_sword_model.visible = _current_id == WEAPON_SWORD\n\n\nfunc _build_gun() -> Node3D:\n\tvar root := Node3D.new()\n\tvar steel := _material(Color(0.20, 0.21, 0.24), 0.75, 0.35)\n\tvar dark := _material(Color(0.09, 0.10, 0.11), 0.35, 0.55)\n\tvar grip_mat := _material(Color(0.15, 0.12, 0.10), 0.05, 0.85)\n\tvar skin := _material(Color(0.72, 0.55, 0.44), 0.0, 0.8)\n\n\t_add_box(root, Vector3(0.085, 0.105, 0.30), Vector3(0.0, 0.0, 0.02), steel)\n\t_add_box(root, Vector3(0.070, 0.075, 0.10), Vector3(0.0, -0.01, 0.20), dark)\n\t_add_box(root, Vector3(0.062, 0.150, 0.085), Vector3(0.0, -0.115, 0.075), grip_mat, Vector3(-0.30, 0.0, 0.0))\n\t_add_box(root, Vector3(0.055, 0.140, 0.070), Vector3(0.0, -0.100, -0.030), dark, Vector3(0.16, 0.0, 0.0))\n\t_add_box(root, Vector3(0.016, 0.028, 0.020), Vector3(0.0, 0.066, -0.075), dark)\n\t_add_box(root, Vector3(0.030, 0.030, 0.030), Vector3(0.0, 0.062, 0.145), dark)\n\t# 握把上的一只手，让第一人称看起来是「握着」而不是「浮着」。\n\t_add_box(root, Vector3(0.075, 0.100, 0.095), Vector3(0.0, -0.125, 0.085), skin, Vector3(-0.30, 0.0, 0.0))\n\n\tvar barrel := CylinderMesh.new()\n\tbarrel.top_radius = 0.019\n\tbarrel.bottom_radius = 0.019\n\tbarrel.height = 0.34\n\t_add_mesh(root, barrel, steel, Vector3(0.0, 0.018, -0.30), Vector3(PI * 0.5, 0.0, 0.0))\n\n\tvar muzzle := CylinderMesh.new()\n\tmuzzle.top_radius = 0.027\n\tmuzzle.bottom_radius = 0.024\n\tmuzzle.height = 0.055\n\t_add_mesh(root, muzzle, dark, Vector3(0.0, 0.018, -0.45), Vector3(PI * 0.5, 0.0, 0.0))\n\n\tvar flash_mat := _material(Color(1.0, 0.82, 0.35), 0.0, 0.4)\n\tflash_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED\n\tflash_mat.emission_enabled = true\n\tflash_mat.emission = Color(1.0, 0.72, 0.25)\n\tflash_mat.emission_energy_multiplier = 5.0\n\tvar flash_mesh := SphereMesh.new()\n\tflash_mesh.radius = 0.075\n\tflash_mesh.height = 0.15\n\t_muzzle_flash = _add_mesh(root, flash_mesh, flash_mat, Vector3(0.0, 0.018, -0.50))\n\t_muzzle_flash.visible = false\n\n\t_muzzle_light = OmniLight3D.new()\n\t_muzzle_light.light_color = Color(1.0, 0.78, 0.40)\n\t_muzzle_light.light_energy = 6.0\n\t_muzzle_light.omni_range = 6.0\n\t_muzzle_light.position = Vector3(0.0, 0.018, -0.50)\n\t_muzzle_light.visible = false\n\troot.add_child(_muzzle_light)\n\treturn root\n\n\nfunc _build_sword() -> Node3D:\n\tvar root := Node3D.new()\n\tvar blade := _material(Color(0.78, 0.81, 0.88), 0.90, 0.18)\n\tvar gold := _material(Color(0.82, 0.66, 0.28), 0.85, 0.30)\n\tvar leather := _material(Color(0.24, 0.15, 0.11), 0.05, 0.90)\n\tvar skin := _material(Color(0.72, 0.55, 0.44), 0.0, 0.8)\n\n\t_add_box(root, Vector3(0.036, 0.66, 0.014), Vector3(0.0, 0.40, 0.0), blade)\n\t_add_box(root, Vector3(0.026, 0.10, 0.014), Vector3(0.0, 0.78, 0.0), blade)\n\t_add_box(root, Vector3(0.012, 0.64, 0.008), Vector3(0.0, 0.40, 0.009), gold)\n\t_add_box(root, Vector3(0.215, 0.032, 0.048), Vector3(0.0, 0.055, 0.0), gold)\n\n\tvar grip := CylinderMesh.new()\n\tgrip.top_radius = 0.022\n\tgrip.bottom_radius = 0.024\n\tgrip.height = 0.16\n\t_add_mesh(root, grip, leather, Vector3(0.0, -0.045, 0.0))\n\n\tvar pommel := SphereMesh.new()\n\tpommel.radius = 0.030\n\tpommel.height = 0.060\n\t_add_mesh(root, pommel, gold, Vector3(0.0, -0.145, 0.0))\n\n\t_add_box(root, Vector3(0.080, 0.110, 0.085), Vector3(0.0, -0.045, 0.010), skin)\n\treturn root\n\n\nfunc _material(color: Color, metallic: float, roughness: float) -> StandardMaterial3D:\n\tvar material := StandardMaterial3D.new()\n\tmaterial.albedo_color = color\n\tmaterial.metallic = metallic\n\tmaterial.roughness = roughness\n\treturn material\n\n\nfunc _add_box(parent: Node3D, size: Vector3, pos: Vector3, material: StandardMaterial3D, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:\n\tvar box := BoxMesh.new()\n\tbox.size = size\n\treturn _add_mesh(parent, box, material, pos, rot)\n\n\nfunc _add_mesh(parent: Node3D, mesh: Mesh, material: StandardMaterial3D, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:\n\tvar instance := MeshInstance3D.new()\n\tinstance.mesh = mesh\n\tinstance.material_override = material\n\tinstance.position = pos\n\tinstance.rotation = rot\n\t# 手持模型不投影，避免近平面处的自阴影闪动。\n\tinstance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF\n\tparent.add_child(instance)\n\treturn instance\n"
+        }
+      ]
+    },
+    "toolCallId": "call_00_L4lw0Vxrd9WIGX32sdSm3989",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:01:58.826Z",
+    "ok": true,
+    "result": {
+      "applied": false,
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "bytes": 26194,
+      "fileCount": 7,
+      "manifestHash": "c5e8d6626fb5bbd5574190c9a57297c4e20e3c1a74a96458c4a5730cb0c59fd7",
+      "revision": 4,
+      "status": "source-only",
+      "taskId": "work-cf6a3dda783917339bbf05d6499c8d0aca9737c8da2e8225d33d100894f1ed73",
+      "toolCallId": "call_00_L4lw0Vxrd9WIGX32sdSm3989",
+      "verified": false,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "manifestHash": "c5e8d6626fb5bbd5574190c9a57297c4e20e3c1a74a96458c4a5730cb0c59fd7",
+      "path": "scripts/crosshair.gd",
+      "revision": 4,
+      "offset": 1400,
+      "limit": 1800
+    },
+    "toolCallId": "call_00_RdF2WYWo070xb8n9IiYM1586",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:02:00.926Z",
+    "ok": true,
+    "result": {
+      "bytes": 3683,
+      "manifestHash": "c5e8d6626fb5bbd5574190c9a57297c4e20e3c1a74a96458c4a5730cb0c59fd7",
+      "nextOffset": null,
+      "offset": 1400,
+      "path": "scripts/crosshair.gd",
+      "revision": 4,
+      "sha256": "7c52a0bd23d5f718092cbea702aae6832763d76311bc2ff91ad1906a1f325bc9",
+      "text": "rget_spread, clampf(delta * 8.0, 0.0, 1.0))\n\t_kick = maxf(0.0, _kick - delta * 4.0)\n\t_flash = maxf(0.0, _flash - delta * 2.5)\n\tqueue_redraw()\n\n\nfunc _draw() -> void:\n\tvar center := viewport_center()\n\tvar color := Color(1.0, 0.88, 0.55, 0.95) if style_id == STYLE_SWORD else Color(0.97, 0.99, 1.0, 0.92)\n\tif _flash > 0.0:\n\t\tcolor = Color(1.0, 0.36, 0.32, 1.0)\n\tif style_id == STYLE_SWORD:\n\t\t_draw_sword(center, color)\n\telse:\n\t\t_draw_gun(center, color)\n\n\n## 手枪：四段细刻度 + 极小中心点。刻度比原来更长更细，中心留白仍随扩散量变化。\nfunc _draw_gun(center: Vector2, color: Color) -> void:\n\tvar gap := 6.0 + spread_amount() * 11.0\n\tvar arm := 9.0\n\tvar dirs: Array[Vector2] = [Vector2(0.0, -1.0), Vector2(0.0, 1.0), Vector2(-1.0, 0.0), Vector2(1.0, 0.0)]\n\tfor i in dirs.size():\n\t\tvar dir: Vector2 = dirs[i]\n\t\tvar from: Vector2 = center + dir * gap\n\t\tvar to: Vector2 = center + dir * (gap + arm)\n\t\tdraw_line(from, to, SHADOW_COLOR, HAIRLINE + SHADOW_PAD, true)\n\t\tdraw_line(from, to, color, HAIRLINE, true)\n\tdraw_circle(center, HAIRLINE + SHADOW_PAD * 0.6, SHADOW_COLOR)\n\tdraw_circle(center, HAIRLINE, color)\n\n\n## 长剑：细圆环 + 四向短刻线。线宽整体收细，半径仍随移动/后坐扩张。\nfunc _draw_sword(center: Vector2, color: Color) -> void:\n\tvar radius := 10.0 + spread_amount() * 8.0\n\tdraw_arc(center, radius, 0.0, TAU, 48, SHADOW_COLOR, HAIRLINE + 1.4, true)\n\tdraw_arc(center, radius, 0.0, TAU, 48, color, HAIRLINE + 0.2, true)\n\tfor i in 4:\n\t\tvar angle := TAU * float(i) * 0.25 + PI * 0.25\n\t\tvar dir := Vector2(cos(angle), sin(angle))\n\t\tvar from: Vector2 = center + dir * (radius + 3.0)\n\t\tvar to: Vector2 = center + dir * (radius + 10.0)\n\t\tdraw_line(from, to, SHADOW_COLOR, HAIRLINE + SHADOW_PAD, true)\n\t\tdraw_line(from, to, color, HAIRLINE, true)\n\tdraw_circle(center, HAIRLINE + SHADOW_PAD * 0.6, SHADOW_COLOR)\n\tdraw_circle(center, HAIRLINE, color)\n",
+      "totalCharacters": 3175,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_build_start",
+    "args": {
+      "manifestHash": "c5e8d6626fb5bbd5574190c9a57297c4e20e3c1a74a96458c4a5730cb0c59fd7",
+      "mode": "build",
+      "revision": 4
+    },
+    "toolCallId": "call_01_Wefl1RBH26PxxdAf1sqy8445",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:02:00.928Z",
+    "ok": true,
+    "result": {
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "baseBuild": "v-75b99891d0c9467f8f7f",
+      "baseId": "first-person",
+      "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+      "buildId": "gbd-5f91ee38f7d03f392b15cbfe0a6c301c4cddf8a1470a307069584c8fe8b12b9e",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": false,
+      "jobId": "gjob-86d8fef0b09d1d9607c7d25fdd6b69f026f59635e4c477a6f47bd7b4aa0293ed",
+      "kind": "build",
+      "manifestHash": "c5e8d6626fb5bbd5574190c9a57297c4e20e3c1a74a96458c4a5730cb0c59fd7",
+      "materialized": {
+        "bytes": 33700,
+        "files": 10
+      },
+      "renderer": "gl_compatibility",
+      "replayed": false,
+      "sourceRevision": 4,
+      "status": "blocked",
+      "target": "web",
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "limit": 1200,
+      "manifestHash": "c5e8d6626fb5bbd5574190c9a57297c4e20e3c1a74a96458c4a5730cb0c59fd7",
+      "offset": 1700,
+      "path": "scripts/view_model.gd",
+      "revision": 4
+    },
+    "toolCallId": "call_00_Mt7zfzUIHzNjKuAxKjEp3737",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:02:02.444Z",
+    "ok": true,
+    "result": {
+      "bytes": 8925,
+      "manifestHash": "c5e8d6626fb5bbd5574190c9a57297c4e20e3c1a74a96458c4a5730cb0c59fd7",
+      "nextOffset": 2900,
+      "offset": 1700,
+      "path": "scripts/view_model.gd",
+      "revision": 4,
+      "sha256": "7b5938f4cf1b3049abb996a5d5feea792da6f388279af397a413017cbc23a86c",
+      "text": "TRANS_SINE)\n\t_swap_tween.set_ease(Tween.EASE_IN_OUT)\n\t_swap_tween.tween_property(self, \"_swap_offset\", Vector3(0.0, -0.36, 0.06), 0.11)\n\t_swap_tween.tween_callback(_apply_visibility)\n\t_swap_tween.tween_property(self, \"_swap_offset\", Vector3.ZERO, 0.16)\n\n\nfunc current_weapon() -> String:\n\treturn _current_id\n\n\nfunc set_look_delta(delta: Vector2) -> void:\n\t_look_delta = delta\n\n\nfunc set_move_speed(value: float) -> void:\n\t_move_speed = value\n\n\nfunc play_attack() -> void:\n\tif _current_id == WEAPON_SWORD:\n\t\t_swing = 1.0\n\telse:\n\t\t_recoil = 1.0\n\t\t_flash = 1.0\n\n\nfunc _process(delta: float) -> void:\n\tvar sway_target := Vector2(-_look_delta.x, -_look_delta.y) * 0.0022\n\t_look_delta = Vector2.ZERO\n\t_sway = _sway.lerp(sway_target, clampf(delta * 7.0, 0.0, 1.0))\n\n\tvar speed_ratio := clampf(_move_speed / 6.0, 0.0, 1.0)\n\t_bob_time += delta * (4.0 + 7.0 * speed_ratio)\n\tvar bob := Vector2(sin(_bob_time) * 0.014, -absf(cos(_bob_time)) * 0.010) * speed_ratio\n\n\t_recoil = maxf(0.0, _recoil - delta * 5.5)\n\t_swing = maxf(0.0, _swing - delta * 3.6)\n\t_flash = maxf(0.0, _flash - delta * 14.0)\n\tif _muzzle_flash != null:\n\t\t_muzzle_flash.visible = _flash > 0.02\n\tif _muzzle_light != null:\n\t\t_muzzle_light.visible ",
+      "totalCharacters": 8393,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  },
+  {
+    "name": "godot_file_read",
+    "args": {
+      "limit": 1300,
+      "manifestHash": "c5e8d6626fb5bbd5574190c9a57297c4e20e3c1a74a96458c4a5730cb0c59fd7",
+      "offset": 2900,
+      "path": "scripts/view_model.gd",
+      "revision": 4
+    },
+    "toolCallId": "call_00_ayEJ2MYieyxbp02b8hDb7815",
+    "turnId": "658926f2-da30-465d-a941-ba7a64975439",
+    "at": "2026-09-09T19:02:03.131Z",
+    "ok": true,
+    "result": {
+      "bytes": 8925,
+      "manifestHash": "c5e8d6626fb5bbd5574190c9a57297c4e20e3c1a74a96458c4a5730cb0c59fd7",
+      "nextOffset": 4200,
+      "offset": 2900,
+      "path": "scripts/view_model.gd",
+      "revision": 4,
+      "sha256": "7b5938f4cf1b3049abb996a5d5feea792da6f388279af397a413017cbc23a86c",
+      "text": "= _flash > 0.02\n\n\t_update_breath(delta, speed_ratio)\n\n\tvar swing_curve := sin(_swing * PI)\n\tvar base := Vector3(\n\t\t_sway.x + bob.x,\n\t\t_sway.y + bob.y - _recoil * 0.03 + swing_curve * 0.04,\n\t\t_recoil * 0.055\n\t)\n\tposition = _swap_offset + base\n\trotation = Vector3(\n\t\t-_sway.y * 0.9 - _recoil * 1.2 + swing_curve * 0.55,\n\t\t_sway.x * 1.1 + swing_curve * 0.30,\n\t\tswing_curve * 0.85\n\t)\n\n\n## 待机呼吸摆动：静止程度、后坐/挥砍、换武器位移三者相乘得到呼吸权重，\n## 权重平滑过渡，幅度很小（毫米级位移 + 一两度旋转），只作用在枪模型上。\nfunc _update_breath(delta: float, speed_ratio: float) -> void:\n\tvar idle := clampf(1.0 - speed_ratio * 2.2, 0.0, 1.0)\n\tidle *= clampf(1.0 - maxf(_recoil, _swing), 0.0, 1.0)\n\tidle *= clampf(1.0 - _swap_offset.length() * 3.0, 0.0, 1.0)\n\t_breath_blend = lerpf(_breath_blend, idle, clampf(delta * 3.5, 0.0, 1.0))\n\t_breath_time += delta * 1.5\n\n\tif _gun_model == null:\n\t\treturn\n\tif _breath_blend <= 0.001:\n\t\t_gun_model.position = GUN_BASE_POSITION\n\t\t_gun_model.rotation = Vector3.ZERO\n\t\treturn\n\n\tvar breath := _breath_blend\n\tvar cycle := sin(_breath_time)\n\tvar half_cycle := sin(_breath_time * 0.5)\n\t_gun_model.position = GUN_BASE_POSITION + Vector3(\n\t\thalf_cycle * 0.0045,\n\t\tcycle * 0.0075,\n\t\tcycle * 0.0035\n\t) * breath\n\t_gun_model.rotation = Vector3(\n\t\tcycle * 0.020,\n\t\thalf_cycle * 0.014,\n\t\thalf_cycle * 0.010\n\t) * breath\n\n\nfunc _apply_visibil",
+      "totalCharacters": 8393,
+      "worldId": "151d7be9-62b9-405c-a858-a197d2cf0127"
+    }
+  }
+]

@@ -1,0 +1,42 @@
+{
+    "kind":  "craftmine.godot.round3.integration-baseline",
+    "generatedAt":  "2026-09-10T03:44:23.7620800+08:00",
+    "branch":  "codex/godot-round3-s7-20260910",
+    "commit":  "d77823c2bface9de70aa92da005b075e861a3780",
+    "tree":  "d89920924bae19f110a98684097b7c110a76c783",
+    "worktree":  "D:/Craftmine World-worktrees/godot-round3-s7-20260910",
+    "dirty":  false,
+    "trackedFiles":  4211,
+    "inventorySha256":  "acfcc015c3a16801fa72d2ff4774fe6bb980c96f5b31be424b4ff23e2fde6f63",
+    "inventoryMethod":  "sha256 over sorted \u0027git ls-tree -r \u003ccommit\u003e --format=%(objectname) %(path)\u0027",
+    "included":  {
+                     "roundTwoDocs":  "c2e592f19cd12f41e8db2d28c858407c22649cbe",
+                     "r2ClientHead":  "2fa3c7c4f55b7b7827d3313d3a0289023aafca24",
+                     "r1":  "62a700f13f061e1b5d8cafdc6de33ee5ec536b87",
+                     "cManagedExecutor":  "f35c5c7ab944cbcab54151d9bd490c905a82942e",
+                     "r3":  "cf4704f1b20f5422346c5f6020d29b5a4a1d0ad8",
+                     "r4":  "5ee920612d94d4930aa5d9c08485e10a197bff09",
+                     "r5":  "58f44add2d0388e4bdf3c46eea6d21eab1f0478e",
+                     "r6":  "64948746fa052411669d776d19e81c76ee35d518",
+                     "r7":  "bba784724541369d1368a52ea8966a73b2184b22",
+                     "r8":  "d726ec3b2ef730e26e688242589702edbf28ff6c",
+                     "r9":  "dc6e33842d8128df27ccf739d54b3f4bee098d32",
+                     "bFinalBroker":  "5cf65eb163e7213edb8a37d2e3c2be98b81da050"
+                 },
+    "pending":  {
+                    "s1":  "24edb0c875bd (baseline merge only)",
+                    "s2":  "5838ca3b826a (B merge only)",
+                    "s3":  "24edb0c875bd (baseline merge only)",
+                    "s4":  "e79dd89b0bae (baseline merge only)",
+                    "s5":  "no branch",
+                    "s6":  "no branch",
+                    "s8":  "no candidate package"
+                },
+    "hazards":  [
+                    "mechanical union merge in desktop/build-world-plugin.mjs needs S2 re-check",
+                    "plugin build list omits asset-service/library-service/memory-service/package-format/package-zip/reuse-service/workbench-ui/view.mjs/world.html",
+                    "C unsafe reapTaskProcess path present in tree, must not run or ship before S2 hardening",
+                    "inherited regressions: one R5xR1 core failure, asset scan same-name import crash"
+                ],
+    "notAccepted":  true
+}

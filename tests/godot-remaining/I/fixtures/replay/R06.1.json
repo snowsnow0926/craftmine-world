@@ -1,0 +1,17 @@
+{
+  "format": "craftmine.i.replay-fixture/1",
+  "roundId": "R06.1",
+  "note": "Replay fixture for interrupt recovery. Keeps one unknown usage call to prove unknown is preserved rather than turned into 0.",
+  "expect": "passed",
+  "screenshots": [
+    { "assertionId": "I.R06.1.5", "name": "recovered-world.png", "base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFAAH/q842iQAAAABJRU5ErkJggg==" }
+  ],
+  "observation": {
+    "format": "craftmine.i.observation/1",
+    "recovery": { "usageTraceable": true, "draftPreserved": true, "appliedOnce": true },
+    "usage": { "calls": 3, "promptTokens": 3200, "cachedReadTokens": 800, "nonCachedInputTokens": 2400, "outputTokens": 700, "totalTokens": 3900, "unknownCalls": 1 },
+    "failures": [ { "class": "timeout", "stage": "model-request", "message": "interrupted mid-request; usage unknown" } ],
+    "humanInterventions": [],
+    "evidence": { "screenshots": [], "human": [] }
+  }
+}

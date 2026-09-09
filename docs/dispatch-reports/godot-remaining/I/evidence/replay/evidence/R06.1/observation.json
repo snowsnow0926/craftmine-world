@@ -1,0 +1,36 @@
+{
+  "format": "craftmine.i.observation/1",
+  "recovery": {
+    "usageTraceable": true,
+    "draftPreserved": true,
+    "appliedOnce": true
+  },
+  "usage": {
+    "calls": 3,
+    "promptTokens": 3200,
+    "cachedReadTokens": 800,
+    "nonCachedInputTokens": 2400,
+    "outputTokens": 700,
+    "totalTokens": 3900,
+    "unknownCalls": 1
+  },
+  "failures": [
+    {
+      "class": "timeout",
+      "stage": "model-request",
+      "message": "interrupted mid-request; usage unknown"
+    }
+  ],
+  "humanInterventions": [],
+  "evidence": {
+    "screenshots": [
+      {
+        "assertionId": "I.R06.1.5",
+        "name": "recovered-world.png",
+        "sha256": "a4bcd7b80c65e14e3809783fc4c587ce66a995dcc142e25bf61c9337ef6f3443",
+        "bytes": 70
+      }
+    ],
+    "human": []
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "format": "craftmine.i.observation/1",
+  "layout": {
+    "worldColumnCentered": true,
+    "chatPanel": "right",
+    "returnToPlayWorks": true
+  },
+  "session": {
+    "reloaded": false
+  },
+  "usage": {
+    "calls": 1,
+    "promptTokens": 1180,
+    "cachedReadTokens": 0,
+    "nonCachedInputTokens": 1180,
+    "outputTokens": 260,
+    "totalTokens": 1440,
+    "unknownCalls": 0
+  },
+  "failures": [],
+  "humanInterventions": [],
+  "evidence": {
+    "screenshots": [
+      {
+        "assertionId": "I.R01.1.4",
+        "name": "default-layout.png",
+        "sha256": "a4bcd7b80c65e14e3809783fc4c587ce66a995dcc142e25bf61c9337ef6f3443",
+        "bytes": 70
+      }
+    ],
+    "human": []
+  }
+}

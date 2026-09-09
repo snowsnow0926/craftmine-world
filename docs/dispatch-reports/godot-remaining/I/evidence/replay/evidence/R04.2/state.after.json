@@ -1,0 +1,31 @@
+{
+  "format": "craftmine.i.observation/1",
+  "quest": {
+    "completedPersisted": true,
+    "rewardGrantedOnce": true,
+    "restartCount": 1,
+    "rewardCountAfterRestart": 1
+  },
+  "usage": {
+    "calls": 2,
+    "promptTokens": 2100,
+    "cachedReadTokens": 700,
+    "nonCachedInputTokens": 1400,
+    "outputTokens": 800,
+    "totalTokens": 2900,
+    "unknownCalls": 0
+  },
+  "failures": [],
+  "humanInterventions": [],
+  "evidence": {
+    "screenshots": [
+      {
+        "assertionId": "I.R04.2.5",
+        "name": "quest-after-restart.png",
+        "sha256": "a4bcd7b80c65e14e3809783fc4c587ce66a995dcc142e25bf61c9337ef6f3443",
+        "bytes": 70
+      }
+    ],
+    "human": []
+  }
+}

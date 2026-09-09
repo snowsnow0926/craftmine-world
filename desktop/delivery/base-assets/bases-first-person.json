@@ -1,0 +1,1407 @@
+{
+  "format": "craftmine.base-assets/1",
+  "baseId": "first-person",
+  "displayName": "3D first-person base (shipped base directory)",
+  "provenanceScope": "shipped-base-directory",
+  "baseVersion": "0.1.0",
+  "engine": {
+    "version": "4.7.2-stable",
+    "renderer": "gl_compatibility",
+    "language": "gdscript"
+  },
+  "sourceDirectory": "desktop/godot/bases/first-person",
+  "reviewedCommit": "e462147852e36bdfcaf897d3f915c5809fb88670",
+  "reviewedAt": "2026-09-10",
+  "rightsStatus": "pending-formal-application",
+  "rightsNote": "Every file below this base is project-authored or project-generated. The target licences are MIT for the export runtime and AGPL-3.0-only or commercial for the creation core, per docs/LICENSING_STRATEGY.md. Formal per-module application is still open and tracked in desktop/delivery/licensing/inventory.json; the rights statement is desktop/delivery/base-assets/rights/first-person.md.",
+  "rightsDocument": "desktop/delivery/base-assets/rights/first-person.md",
+  "entries": [
+    {
+      "path": ".gitignore",
+      "role": "config",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 223,
+      "sha256": "0d396449c693021754656a7e876f2bbac9522a42cddf0da3e591b16bf239d98c",
+      "notes": "Project or base configuration."
+    },
+    {
+      "path": "README.md",
+      "role": "doc",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 7199,
+      "sha256": "96e6b364c89aea4790eb98d9a7b33938792707fc51d46336ca5ef8f8ed99fc7b",
+      "notes": "Project documentation; not loaded by the running game."
+    },
+    {
+      "path": "assets/materials/ammo_crate.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 123,
+      "sha256": "c24e2cdba717abce260c1e2c3cf7d05b48e14861f148ab4a539f71a61a8cbe06",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "assets/materials/crate_wood.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 124,
+      "sha256": "9905461f79f608125581a290791d95c63c257ef49c5677ff95237304e84b8ce7",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "assets/materials/pickup_kit.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 220,
+      "sha256": "83c19b9c7bef57f857daaed4561c8c81e60394bee0054e352b7bcabe8f19851b",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "assets/materials/pistol_body.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 142,
+      "sha256": "d7b39baf4f1038cc04a95e97087ab0038209a919f14772c196059ccca8b70309",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "assets/materials/range_floor.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 124,
+      "sha256": "f2da6abd284c572bc3af716e996f47d3d9ebf7ab627ca2793de4a08d8d9b318e",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "assets/materials/range_wall.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 125,
+      "sha256": "8f96618b4c5c60b77b2b4636d74de45994b6e3cdd28d835bdab256bf8b735f0f",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "assets/materials/sword_blade.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 142,
+      "sha256": "acb6df02acf66e2530fab60dfa3294c09fbad38a6571a3384bd20c6ec0d04403",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "assets/materials/target_plate.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 124,
+      "sha256": "c5edae0af7bccaceb6d8de24d334386be4f24f2ea391c8e1c9bf0eb933cfa403",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "assets/meshes/ammo_crate.obj",
+      "role": "asset",
+      "origin": "generated",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1624,
+      "sha256": "2fc6a40063be6d990328ef58ee276fadc77332abecd5d49173ebef897e19a48b",
+      "notes": "Generated by tools/generate_meshes.mjs from authored vertex data."
+    },
+    {
+      "path": "assets/meshes/range_crate.obj",
+      "role": "asset",
+      "origin": "generated",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1169,
+      "sha256": "4d31011e2c7f077a94d1e4fe5207d62a7e51140a4901773bcd1bc8f269443d79",
+      "notes": "Generated by tools/generate_meshes.mjs from authored vertex data."
+    },
+    {
+      "path": "assets/meshes/target_dummy.obj",
+      "role": "asset",
+      "origin": "generated",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 2999,
+      "sha256": "85733881b045534f5e250ec10bcf7379099e62c5b8ef31bb79a820a9caec5d06",
+      "notes": "Generated by tools/generate_meshes.mjs from authored vertex data."
+    },
+    {
+      "path": "assets/meshes/weapon_pistol.obj",
+      "role": "asset",
+      "origin": "generated",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 3026,
+      "sha256": "5ed4c8dd6d283402dce43ca28953294ea48858ec9d37fa699b549067aa82d805",
+      "notes": "Generated by tools/generate_meshes.mjs from authored vertex data."
+    },
+    {
+      "path": "assets/meshes/weapon_sword.obj",
+      "role": "asset",
+      "origin": "generated",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 2562,
+      "sha256": "cf292380be16c39ea8b092c3f81911a4feb35b9af32dceac7182889e91c23996",
+      "notes": "Generated by tools/generate_meshes.mjs from authored vertex data."
+    },
+    {
+      "path": "assets/provenance/ASSET_PROVENANCE.md",
+      "role": "doc",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 2837,
+      "sha256": "3a889f7090841c72f003d22d18a017f085d9ce06459e475857fa999d8a8f3183",
+      "notes": "Project documentation; not loaded by the running game."
+    },
+    {
+      "path": "base_manifest.json",
+      "role": "config",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 2298,
+      "sha256": "6dc0686c87145bae47e619f833864627e30b6131ffeea3a790a9982c5a64936b",
+      "notes": "Project or base configuration."
+    },
+    {
+      "path": "data/balance/training_range.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 356,
+      "sha256": "0beff95e72cdf4c9bd4468d1acaaf5c13a5f10684399233daf8d8aaa109368b5",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "data/equipment/equipment_catalog.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 621,
+      "sha256": "49b4dd6f09eee09deef27efbec81d64c98757deed23c699aac2dbaecde3f074c",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "data/equipment/inspection_tool.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 773,
+      "sha256": "2513efe37e1930b973273fe04ccfd2289812f60c3ad74642919626f175defe1c",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "data/equipment/pistol.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1145,
+      "sha256": "7fd9521ab3ba0c4f72b05c0d0b7a1035d6041583cd2426e03a7c32ce656d9262",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "data/equipment/practice_sword.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1149,
+      "sha256": "d3442c71f169f432c557cc211ace1f975aaf5c99c117e0475a296f6b962957f4",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "data/quests/range_basic.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 466,
+      "sha256": "573ef83a37c6c7ba3402c25a23c34d2dd3e57c73c21c3ebd282cc51a07d8dc31",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "data/ui/crosshair_melee.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 411,
+      "sha256": "663c80abb5ed74c00f6511fe25dd8cd069dae27225cd3f33d191b45717527b7f",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "data/ui/crosshair_precision.tres",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 406,
+      "sha256": "aed9d6331d1e05d36b27d3a660ef3991c0913f2b0ac973e72be4b92059b06353",
+      "notes": "Hand-written Godot resource holding numeric or colour parameters only."
+    },
+    {
+      "path": "docs/ADR-0001-base-architecture.md",
+      "role": "doc",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 5585,
+      "sha256": "e518069b580fb2653c1218eeeadbf2ecf7acac4c69031276792ca90b2a0f0820",
+      "notes": "Project documentation; not loaded by the running game."
+    },
+    {
+      "path": "docs/BASE_SPEC.md",
+      "role": "doc",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 6436,
+      "sha256": "6f55d99b8b4d964baba0451570b0bdaf97bf04774e5646287b80ce0c92021e55",
+      "notes": "Project documentation; not loaded by the running game."
+    },
+    {
+      "path": "docs/MODEL_ACCEPTANCE_TASKS.md",
+      "role": "doc",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 9074,
+      "sha256": "61f290dd155c3535659493830a8799b673049de6c25dc947831741de1372e866",
+      "notes": "Project documentation; not loaded by the running game."
+    },
+    {
+      "path": "docs/STATE_FORMAT.md",
+      "role": "doc",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 5589,
+      "sha256": "258abdf8737d5349437305698574889e248d295f9eecd243a291d577db024fea",
+      "notes": "Project documentation; not loaded by the running game."
+    },
+    {
+      "path": "icon.svg",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseFile": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "licenseDocument": null,
+      "targetLicense": "MIT (applied: licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 525,
+      "sha256": "dea7e5179c20bcfaff795536867fe53a7bc0ce3426f7d3643ef2f2085bd86dec",
+      "notes": "Hand-authored SVG icon in this repository."
+    },
+    {
+      "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1435,
+      "sha256": "2fddded709a512b0873dbdf7b4556f8d79c67a440571edd919810e6abe2c1825",
+      "notes": "Project-authored content shipped with this base."
+    },
+    {
+      "path": "project.godot",
+      "role": "config",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 2414,
+      "sha256": "6f6117480b5a3c25951be75f4a0fcfc66584835e4f4fa20c80e50109b97d4a50",
+      "notes": "Project or base configuration."
+    },
+    {
+      "path": "scenes/actors/player.tscn",
+      "role": "scene",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1914,
+      "sha256": "eefdc2c1636b0ac4979f138e30ed3a0338244a23195e17a4a1de37bf731606fb",
+      "notes": "Authored scene; no third-party model, texture or audio is referenced."
+    },
+    {
+      "path": "scenes/actors/target_dummy.tscn",
+      "role": "scene",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 884,
+      "sha256": "e9bec5b13ce2f79e73910f43a13f0e2c490613f4015c5cc88da94df608e1aa7e",
+      "notes": "Authored scene; no third-party model, texture or audio is referenced."
+    },
+    {
+      "path": "scenes/blank_start.tscn",
+      "role": "scene",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 3192,
+      "sha256": "92fd0d337c86f9203ad5d9772a0d7495c818cd81de0cf9978a9785b3c1a51d3c",
+      "notes": "Authored scene; no third-party model, texture or audio is referenced."
+    },
+    {
+      "path": "scenes/props/ammo_crate.tscn",
+      "role": "scene",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 870,
+      "sha256": "53136311263bf382e71c271a037cb41e41fd43e282ba1e132f7098a7d703a6af",
+      "notes": "Authored scene; no third-party model, texture or audio is referenced."
+    },
+    {
+      "path": "scenes/props/pickup_item.tscn",
+      "role": "scene",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 935,
+      "sha256": "6a9251f75827a9d5e2357c3aec236a9a3cada0a97c9f9174b487f289504eca5e",
+      "notes": "Authored scene; no third-party model, texture or audio is referenced."
+    },
+    {
+      "path": "scenes/props/range_crate.tscn",
+      "role": "scene",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 694,
+      "sha256": "6a665c867014969a7e105d3b06551cb144a7b26f24ca9d939b204da83cceb051",
+      "notes": "Authored scene; no third-party model, texture or audio is referenced."
+    },
+    {
+      "path": "scenes/training_range.tscn",
+      "role": "scene",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 7518,
+      "sha256": "a03f70a245562cfed7a5c2d91eb62ef9fa6dd3ccfcff36b49a95d97d0a597b71",
+      "notes": "Authored scene; no third-party model, texture or audio is referenced."
+    },
+    {
+      "path": "scenes/ui/hud.tscn",
+      "role": "scene",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 2966,
+      "sha256": "dadad07a9f5d9538be0ba02e018bde72348250fe308f6c37d3bddccefe2a9fc1",
+      "notes": "Authored scene; no third-party model, texture or audio is referenced."
+    },
+    {
+      "path": "scripts/adapters/base_ops.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 6394,
+      "sha256": "c1d1963b079636dccc9ffa0b2d1eb99f1fb082672919497db9402dcc969f2076",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/adapters/preview_bridge.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 2413,
+      "sha256": "41e4589a14433d881f1e0439bf38ac1915906149e3fcbdec5d7bc0ad1a0b36ba",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/adapters/probe_runner.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 3150,
+      "sha256": "ea263f8f7eac652d5b22af1a7f6f5b206e094b4fe837202b5628f946fb01486c",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/aim_query.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 3661,
+      "sha256": "fc98091abbb02d43db75742df06453b752448b860a5b77370f99610a614f6815",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/ammo_crate.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1745,
+      "sha256": "ac7d374b7835f9364a4cba57b1403238bac4fe44d57217afb35f5932636e53a5",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/attack_dispatcher.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 2927,
+      "sha256": "6af6085ed8a5ee072e9f2b4c225775a6fe7a2bc222167dd3b95e2160ef8b5109",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/balance_profile.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1012,
+      "sha256": "b9b01a5d1c5880959503e74d5cddf2b047dad3ed32c9d0aa9dcffaf12f63a527",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/base_world.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 7262,
+      "sha256": "6afe2d82887cc4d829f5543c44c8b038c109ee20e4212dcf417ca04de92d4966",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/camera_rig.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1578,
+      "sha256": "76a8c99e34b5fae49eb7bb382708469a9ca05a564a61c582f73fd8f26cc3f36c",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/equipment_catalog.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1841,
+      "sha256": "9269b73c71cfe315a0ca7ebb2b0b85f6324c4bdecd3bfbbf44b26ce8f4d50780",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/equipment_definition.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 3420,
+      "sha256": "28a311cadc1626649a6751fe84ee86f641c92f91b761d9b800ab5e3918e313be",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/equipment_state.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 10700,
+      "sha256": "10c4cd49fb01d3e8dbd82ea9da93de708629cbf90e101a2dbba1d14c7072f07c",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/equipment_visuals.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1944,
+      "sha256": "15af90e8a20169f189996f1300f580b74afbc58a49c419b4c714657cc7f85abc",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/interactable.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 933,
+      "sha256": "e9bb5ef3a8137c80ba3315f6dd5dc643b55dc2ebe83af8d61d050d2d0dd59552",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/inventory.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 2339,
+      "sha256": "60fa6fb82dffdbb6347ba6221dddfbb3e366c2d57a935a50149fb3a50f017baf",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/melee_attack.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 3754,
+      "sha256": "c44c3373376c57ffb1538d576e943e2e535723f8a8f41950230ec34603c55203",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/pickup_item.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1419,
+      "sha256": "80c28cd8b30245c91f14a50d9f8e8466826e29657bef44a79bea7490610ae72d",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/player_controller.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 5869,
+      "sha256": "bd780724d1ce8ab5bb3e07ab839711cbf33c05edccef3c741abcd81d840cc34c",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/quest_definition.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1292,
+      "sha256": "0607b3905a7700c9ef43c01560c9ea42af5529bd60694940135b06287de9b1af",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/quest_tracker.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 6041,
+      "sha256": "456f381becd6b302087b1b2e6720a44dc06e35d539cad3a6226f5966dfc83a43",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/ranged_attack.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 3330,
+      "sha256": "3f2ab846a28c748ca4c777ba556e760958116e3df05b86567d43e521cb5f9dd3",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/save_store.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 4027,
+      "sha256": "d85e1ada777a307bb45e7a089c10ad21c1d016c9eb9a2d467b54323461104ef8",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/target_dummy.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 4155,
+      "sha256": "30e03144b0b6953e56e1bdd878880072142e14786985aec36b588b94c28dd4b8",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/world_state.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 6982,
+      "sha256": "ca097b794611a86cbd98ce3a35073943dc98d7d9252ad84a63899d20f2bbc9bc",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/ui/crosshair.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 6057,
+      "sha256": "ac731aa902583a4ee465180ca342e114fc702633df352b6b7314747bbff8d169",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/ui/crosshair_style.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1312,
+      "sha256": "d6c7622573196940413b5378ee4246bb3a15a9068a40104744cc7b512d064f20",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/ui/hud.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 7656,
+      "sha256": "c5a59d95ad98962e7bd82c58e7b6d7ab6db66dcc7b032adadb3f491ea5436956",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "tests/acceptance_headless.mjs",
+      "role": "test",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 27991,
+      "sha256": "a65c245090c4408473fdddf4f8c6b1efb9b5d4bf0a36f1ad5ad797943ae7b65b",
+      "notes": "Development-only Node script; never shipped to players."
+    },
+    {
+      "path": "tests/acceptance_web.mjs",
+      "role": "test",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 19555,
+      "sha256": "aac1a9ae0b8b949f019e4d15c2f797a86e070549f304cc36d8f04da732c2ea66",
+      "notes": "Development-only Node script; never shipped to players."
+    },
+    {
+      "path": "tests/export_web.mjs",
+      "role": "test",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 4619,
+      "sha256": "fbf190d686f2dcaf6fcfbde5dfb9266cafe64fce551d4dff265b78c9baa81b42",
+      "notes": "Development-only Node script; never shipped to players."
+    },
+    {
+      "path": "tests/web_host/index.html",
+      "role": "asset",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 5560,
+      "sha256": "88f7d07a84555101662c62784fdd2fc14786b032cf05ddf855866790a6a3bf0b",
+      "notes": "Project-authored content shipped with this base."
+    },
+    {
+      "path": "tools/generate_meshes.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 5918,
+      "sha256": "e27141f2b716b8467d9a054884ee53f6960e6e292f99904096af2d36969810ec",
+      "notes": "Development-only Node script; never shipped to players."
+    }
+  ],
+  "externalEntries": [],
+  "requiredNotices": [
+    {
+      "path": "desktop/godot/licenses/GODOT_LICENSE.txt",
+      "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+      "appliesTo": [
+        "app-bundle",
+        "user-export"
+      ],
+      "notes": "Pinned engine notice; must travel with the base and with every export."
+    },
+    {
+      "path": "desktop/godot/licenses/GODOT_COPYRIGHT.txt",
+      "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d",
+      "appliesTo": [
+        "app-bundle",
+        "user-export"
+      ],
+      "notes": "Pinned engine notice; must travel with the base and with every export."
+    },
+    {
+      "path": "desktop/godot/bases/first-person/licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "sha256": "2fddded709a512b0873dbdf7b4556f8d79c67a440571edd919810e6abe2c1825",
+      "appliesTo": [
+        "app-bundle",
+        "user-export"
+      ],
+      "notes": "MIT grant covering the original geometry, materials and icon of this base."
+    }
+  ],
+  "hashReviewNote": "Drafted from the working tree by desktop/delivery/tools/draft-base-manifest.mjs. reviewedCommit is set to the commit that introduces this manifest; bytes and hashes must be re-reviewed, not auto-blessed."
+}

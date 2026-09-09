@@ -1,0 +1,113 @@
+{
+  "format": "craftmine.content-boundaries/1",
+  "generatedAt": "2026-09-10",
+  "purpose": "One place that states what each shipped or exported artefact contains, what must never cross into it, and which notices must travel with it. Checked by desktop/delivery/content-boundary-check.mjs against a real directory or archive.",
+  "boundaries": {
+    "client": {
+      "id": "client",
+      "name": "Windows client install (win-unpacked)",
+      "kind": "directory",
+      "root": "<package>",
+      "contains": [
+        "Craftmine World.exe and Electron runtime files",
+        "resources/app.asar",
+        "resources/bin/pi-desktop-host-core.exe",
+        "resources/bin/craftmine-core.exe",
+        "resources/agent-runtime/sidecar.js",
+        "resources/plugins/craftmine.world/**",
+        "resources/git/** (pinned MinGit tree required by R1's managed Git)",
+        "resources/licenses/**",
+        "resources/source/** (build manifest, user guide, corresponding source archive)",
+        "locales/**"
+      ],
+      "mustNotContain": [
+        {"pattern": "(^|/)\\.git(/|$)", "reason": "repository internals never ship"},
+        {"pattern": "(^|/)node_modules(/|$)", "reason": "development dependencies are not part of the install"},
+        {"pattern": "(^|/)test-results(/|$)", "reason": "test evidence is not a product file"},
+        {"pattern": "(^|/)\\.env(\\.|$)", "reason": "credentials and environment secrets"},
+        {"pattern": "(^|/)secrets?(/|\\.)", "reason": "credential store must stay in the user profile, never in the package"},
+        {"pattern": "(^|/)credentials(\\.json|/|$)", "reason": "credential store must never ship"},
+        {"pattern": "(^|/)auth\\.json$", "reason": "credential store must never ship"},
+        {"pattern": "(^|/)chromium[-_]?(cache|profile)", "reason": "browser cache and profile data are user data"},
+        {"pattern": "(^|/)craftmine_?(world|data)(/|$)", "reason": "user world data lives in the profile data directory"},
+        {"pattern": "\\.(pdb|log)$", "reason": "debug symbols and logs are not delivery files"},
+        {"pattern": "(^|/)git-config(/|$)", "reason": "R1's managed git configuration is per-install user state"}
+      ],
+      "requiredNotices": [
+        "resources/licenses/PI-Desktop-LICENSE.txt",
+        "resources/licenses/CRAFTMINE-NOTICES.md",
+        "resources/licenses/UPSTREAM.json",
+        "resources/git/LICENSE.txt",
+        "resources/git/GIT-BUNDLE.json"
+      ],
+      "requiredFiles": "see desktop/delivery/lib/preflight-core.mjs PACKAGE_REQUIRED_FILES",
+      "source": ["desktop/delivery/README.md", "desktop/delivery/lib/preflight-core.mjs", "desktop/delivery/git-bundle.json"],
+      "status": "verified"
+    },
+    "share-package": {
+      "id": "share-package",
+      "name": "Creation-share package (craftmine.package/1 ZIP)",
+      "kind": "zip",
+      "root": "<archive>",
+      "contains": [
+        "package.json (root AssetRef, resources, every FileRef)",
+        "resources/<contentHash>/manifest.json",
+        "resources/<contentHash>/payload/** (scene, source, data, assets, licence files)",
+        "catalog.json",
+        "previews/** (optional)"
+      ],
+      "mustNotContain": [
+        {"pattern": "(^|/)credentials", "reason": "R4 export reports credentialsIncluded:false"},
+        {"pattern": "(^|/)sessions?(/|\\.json$)", "reason": "R4 export reports sessionIncluded:false"},
+        {"pattern": "(^|/)progress", "reason": "world progress never travels in a share package"},
+        {"pattern": "(^|/)godot-builds(/|$)", "reason": "rebuildable build cache"},
+        {"pattern": "(^|/)\\.git(/|$)", "reason": "share packages carry content, not repository internals"},
+        {"pattern": "(^|/)git-config(/|$)", "reason": "managed Git configuration is per-install state"}
+      ],
+      "requiredNotices": ["resources/<contentHash>/payload/**/LICENSE*", "resources/<contentHash>/payload/**/NOTICE*"],
+      "source": ["vendor/pi-desktop/docs/spec/godot-creation-package.md:13-27,122", "vendor/pi-desktop/docs/spec/godot-package-reuse-and-migration.md:61-62,99", "plugins/craftmine-world/package-zip.mjs:664,794"],
+      "status": "verified"
+    },
+    "portable-backup": {
+      "id": "portable-backup",
+      "name": "Full portable backup (craftmine.portable-archive/1)",
+      "kind": "stream",
+      "root": "<file>",
+      "magic": "CRAFTMINE-PORTABLE-ARCHIVE/1\n",
+      "contains": [
+        "domain.json (full snapshot of every registered craftmine_* table)",
+        "legacy-imports/**",
+        "godot-source/**",
+        "godot-assets/**",
+        "asset-catalog/blobs/**",
+        "content-history/repos/**"
+      ],
+      "mustNotContain": [
+        {"pattern": "godot-builds/", "reason": "rebuildable build cache is excluded by portable.rs REBUILDABLE"},
+        {"pattern": "content-history/repos/<repoKey>/copies", "reason": "rebuildable copies"},
+        {"pattern": "git-config", "reason": "managed Git configuration is per-install state"},
+        {"pattern": "craftmine_backup_jobs|craftmine_backup_pins", "reason": "operational tables are excluded"}
+      ],
+      "flags": {"credentialsIncluded": false, "sessionRowsIncluded": true},
+      "warning": "sessionRowsIncluded is true: the archive can contain text the user pasted into tasks. It is not a shareable, redacted diagnostic.",
+      "source": ["vendor/pi-desktop/docs/spec/godot-portable-archive.md:1,§2,§5", "vendor/pi-desktop/crates/craftmine-core/src/backups/portable.rs:41-58,723,783,1087"],
+      "status": "verified"
+    },
+    "standalone-game": {
+      "id": "standalone-game",
+      "name": "Standalone Windows game export (CP4 / CP-A17)",
+      "kind": "directory",
+      "root": "<export>",
+      "contains": [],
+      "mustNotContain": [
+        {"pattern": "(^|/)credentials", "reason": "an exported game never carries credentials"},
+        {"pattern": "(^|/)content-history(/|$)", "reason": "the creation history stays in the client"},
+        {"pattern": "(^|/)app\\.asar$", "reason": "the workbench client is not part of a standalone game"}
+      ],
+      "requiredNotices": ["licenses/GODOT_LICENSE.txt", "licenses/GODOT_COPYRIGHT.txt", "licenses/EXPORT-NOTICES.md"],
+      "source": ["docs/dispatch-prompts/godot-round2-20260910/R9-fixed-package-and-rights.md:36"],
+      "status": "pending",
+      "pendingReason": "No export output layout exists in the R4/R5/R6 trees (DELIVERY_R4 marks CP4 not started). The boundary is declared here so the first real export can be checked against it; it must not be treated as implemented."
+    }
+  }
+}
