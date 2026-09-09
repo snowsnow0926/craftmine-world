@@ -46,6 +46,8 @@ struct Evidence {
     input_hash: String,
     launch: Launch,
     player: Value,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    snapshot: Option<Value>,
 }
 
 #[derive(Deserialize)]
@@ -92,7 +94,7 @@ fn expire(db: &Connection) -> Result<()> {
     Ok(())
 }
 
-fn assert_idle(db: &Connection, world: &str) -> Result<()> {
+pub(super) fn assert_idle(db: &Connection, world: &str) -> Result<()> {
     expire(db)?;
     let active: bool = db.query_row(
         "SELECT EXISTS(SELECT 1 FROM craftmine_godot_applications WHERE world_id=?1 AND status='prepared')",
@@ -220,10 +222,12 @@ impl TaskJournal {
         let args: CommitArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.id)?;
         workspaces::call_id(&args.token)?;
-        let evidence_body = serde_json::to_string(&json!({"format":args.evidence.format,
+        let mut evidence_value = json!({"format":args.evidence.format,
             "inputHash":args.evidence.input_hash,"launch":{"passed":args.evidence.launch.passed,
             "buildId":args.evidence.launch.build_id,"instanceId":args.evidence.launch.instance_id,
-            "stateHash":args.evidence.launch.state_hash},"player":args.evidence.player}))?;
+            "stateHash":args.evidence.launch.state_hash},"player":args.evidence.player});
+        if let Some(snapshot) = &args.evidence.snapshot { evidence_value["snapshot"] = snapshot.clone(); }
+        let evidence_body = serde_json::to_string(&evidence_value)?;
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -262,7 +266,7 @@ impl TaskJournal {
             "WORLD_REVISION_CONFLICT"
         );
         ensure!(
-            args.evidence.format == "craftmine.godot-application/1"
+            matches!(args.evidence.format.as_str(), "craftmine.godot-application/1" | "craftmine.godot-application/2")
                 && args.evidence.input_hash == receipt["inputHash"],
             "APPLICATION_EVIDENCE_MISMATCH"
         );
@@ -283,6 +287,10 @@ impl TaskJournal {
             "GODOT_LAUNCH_REQUIRED"
         );
         assert_player_unchanged(&before, &input["snapshot"])?;
+        if input["snapshot"]["format"] == super::godot_runtime::PROGRESS_FORMAT {
+            ensure!(args.evidence.format == "craftmine.godot-application/2"
+                && args.evidence.snapshot.as_ref() == Some(&input["snapshot"]), "APPLICATION_PROGRESS_CHANGED");
+        }
         ensure!(
             args.evidence.player == input["snapshot"]["player"],
             "APPLICATION_PLAYER_CHANGED"

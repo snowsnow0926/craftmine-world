@@ -16,6 +16,7 @@ mod godot_applications;
 mod godot_builds;
 mod godot_jobs;
 mod godot_projects;
+mod godot_runtime;
 mod legacy;
 mod library;
 mod memories;

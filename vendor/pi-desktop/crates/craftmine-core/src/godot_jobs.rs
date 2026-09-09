@@ -368,6 +368,29 @@ fn verify_artifact(root: &std::path::Path, artifact: &Artifact) -> Result<()> {
     verify_file(root, &artifact.path, &artifact.sha256, artifact.bytes, ARTIFACT_FILE_BYTES, "CORRUPT_GODOT_ARTIFACT")
 }
 
+/// Recheck the persisted export allowlist before a trusted host serves it.
+/// No directory listing may add files that were not in the verified job result.
+pub(super) fn verified_artifacts(db: &Connection, world: &str, build: &str, root: &std::path::Path) -> Result<Vec<Value>> {
+    let files = build_files(db, world, build, "artifact")?;
+    ensure!(!files.is_empty() && files.len() <= ARTIFACT_COUNT, "GODOT_ARTIFACT_MISSING");
+    let mut total = 0u64;
+    let mut paths = std::collections::BTreeSet::new();
+    let mut result = Vec::with_capacity(files.len());
+    for file in files {
+        let artifact = Artifact {
+            path: file["path"].as_str().context("CORRUPT_GODOT_ARTIFACT")?.into(),
+            sha256: file["sha256"].as_str().context("CORRUPT_GODOT_ARTIFACT")?.into(),
+            bytes: file["bytes"].as_u64().context("CORRUPT_GODOT_ARTIFACT")?,
+        };
+        total = total.checked_add(artifact.bytes).context("GODOT_ARTIFACT_TOO_LARGE")?;
+        ensure!(total <= ARTIFACT_TOTAL_BYTES, "GODOT_ARTIFACT_TOO_LARGE");
+        ensure!(paths.insert(artifact.path.to_ascii_lowercase()), "GODOT_ARTIFACT_CONFLICT");
+        verify_artifact(root, &artifact)?;
+        result.push(serde_json::to_value(artifact)?);
+    }
+    Ok(result)
+}
+
 fn verify_project(db: &Connection, world: &str, build: &str, root: &std::path::Path) -> Result<()> {
     for kind in ["source", "asset"] {
         for file in build_files(db, world, build, kind)? {

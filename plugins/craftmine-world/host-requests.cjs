@@ -49,6 +49,14 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
   }
   return async function onHostRequest(method,params={}){
     await core.start();
+    if(method==='godotRuntime.describe'){
+      fields(params,['worldId']);
+      return core.call(method,params,60000);
+    }
+    if(method==='godotRuntime.saveProgress'){
+      fields(params,['worldId','buildId','revision','runnerReceipt','snapshot']);
+      return core.call(method,params,60000);
+    }
     if(method==='budget.configure'||method==='budget.findReceipt'){
       fields(params,['projectId','sessionId','worldId','taskId','generation','operationId','maxTokens']);
       return core.call(method,params);

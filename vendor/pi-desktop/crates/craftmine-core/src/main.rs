@@ -41,6 +41,8 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "godotApplication.commit" => return journal.godot_application_commit(params),
         "godotApplication.read" => return journal.godot_application_read(params),
         "godotApplication.abort" => return journal.godot_application_abort(params),
+        "godotRuntime.describe" => return journal.godot_runtime_describe(params),
+        "godotRuntime.saveProgress" => return journal.godot_runtime_save_progress(params),
         "godotExecutor.register" => return journal.godot_executor_register(params),
         "godotJob.claim" => return journal.godot_job_claim(params),
         "godotJob.progress" => return journal.godot_job_progress(params),

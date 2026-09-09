@@ -8731,3 +8731,26 @@ The original C fixtures alone do not satisfy those integration cases.
 ### GODOT-AUDIT-CORE: input and publication integrity
 
 Using isolated data and protocol calls without input simulation: verify claimed `projectRoot/project.godot`; corrupt source before claim and require refusal. Verify a 39,514,754-byte synthetic engine-sized artifact and reject altered bytes/over-budget declarations. Prepare with identical player pose but stale inventory/quests and require `APPLICATION_PROGRESS_CHANGED`; exact formal progress survives commit. Source or asset edits after prepare require `GODOT_CANDIDATE_STALE`, preserving the world. Optional list/read metadata must agree; unknown formats cannot default to legacy. Reusing a sandbox task directory must fail before overwrites; fresh task ids start empty. Native runtime proof and authenticated launch remain separate tests.
+
+### CRAFTMINE-GODOT-021: complete runtime progress and verified export lookup
+
+Use independent data and the real Rust stdio service. Apply an authored export
+through the existing job/candidate/application flow, then obtain the private
+runtime descriptor. World-document paths must not select files. Corrupt an
+artifact after registration and require an error; an unregistered extra file
+must never enter the manifest. A newer source draft must not stop the applied
+world. Unsupported or missing Godot data is an error, while legacy returns null.
+
+Save native base state containing inventory, quests, reward ledger, room/scene
+state and a custom gameplay field. Restart the service and compare the entire
+state. Accept Godot integral-float JSON spelling and unchanged checkpoints;
+reject world/build/revision/receipt-text/hash mismatches, schema changes, legacy
+replacement, and oversized UTF-8 state without data loss. Candidate evidence
+must include the entire restored state; null player evidence is insufficient.
+During a prepared new-format application, progress writes must be rejected.
+
+The Electron host must bind the runner instance, use only private core RPCs,
+and validate bytes when serving each allowlisted artifact. Verify this in the
+native headless harness with Pointer Lock disabled and no input/focus operations.
+Record separately whether exports came from an authored fixture or a real model
+and whether the executor result was actual or simulated.

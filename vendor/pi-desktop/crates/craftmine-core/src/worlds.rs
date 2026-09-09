@@ -73,6 +73,9 @@ pub(super) fn timestamp() -> Result<i64> {
 }
 
 pub(super) fn validate_progress(snapshot: &Value) -> Result<()> {
+    if snapshot["format"] == super::godot_runtime::PROGRESS_FORMAT {
+        return super::godot_runtime::validate_progress(snapshot);
+    }
     ensure!(
         matches!(
             snapshot["format"].as_str(),
@@ -107,6 +110,7 @@ pub(super) fn encode(world: &WorldDocument) -> Result<String> {
     );
     ensure!(world.build["scene"].is_object(), "SCENE_REQUIRED");
     validate_progress(&world.snapshot)?;
+    super::godot_runtime::validate_binding(world, None)?;
     let body = serde_json::to_string(world)?;
     ensure!(body.len() <= MAX_WORLD_BYTES, "WORLD_DOCUMENT_TOO_LARGE");
     Ok(body)
@@ -134,6 +138,7 @@ pub(super) fn read(db: &Connection, id: &str) -> Result<WorldRecord> {
     ).context("WORLD_NOT_FOUND")?;
     ensure!(digest(&body) == hash, "CORRUPT_WORLD");
     let world: WorldDocument = serde_json::from_str(&body)?;
+    super::godot_runtime::validate_binding(&world, Some(id))?;
     let (base_id, runtime_kind) = build_metadata(&world);
     Ok(WorldRecord {
         summary: WorldSummary {
@@ -167,6 +172,7 @@ impl TaskJournal {
 
 pub(super) fn insert(db: &Connection, id: &str, title: &str, world: &WorldDocument) -> Result<()> {
     validate_id(id)?;
+    super::godot_runtime::validate_binding(world, Some(id))?;
     ensure!(
         !title.trim().is_empty()
             && title.chars().count() <= 80
@@ -229,6 +235,9 @@ impl TaskJournal {
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
         let mut current = read(&tx, id)?;
         super::applications::assert_idle(&tx, id)?;
+        if current.world.snapshot["format"] == super::godot_runtime::PROGRESS_FORMAT {
+            super::godot_applications::assert_idle(&tx, id)?;
+        }
         ensure!(
             current.summary.revision == expected_revision,
             "WORLD_REVISION_CONFLICT"
@@ -240,7 +249,15 @@ impl TaskJournal {
         if current.world.snapshot == *snapshot {
             return Ok(current);
         }
+        if current.world.snapshot["format"] == super::godot_runtime::PROGRESS_FORMAT {
+            ensure!(snapshot["format"] == super::godot_runtime::PROGRESS_FORMAT,
+                "GODOT_PROGRESS_MIGRATION_REQUIRED");
+            ensure!(snapshot["baseVersion"] == current.world.snapshot["baseVersion"]
+                && snapshot["stateVersion"] == current.world.snapshot["stateVersion"],
+                "GODOT_PROGRESS_VERSION_MISMATCH");
+        }
         current.world.snapshot = snapshot.clone();
+        super::godot_runtime::validate_binding(&current.world, Some(id))?;
         let body = encode(&current.world)?;
         let revision: i64 = current
             .summary
