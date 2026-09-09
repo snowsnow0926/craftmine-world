@@ -1,0 +1,108 @@
+{
+  "format": "craftmine.install-plan-fixture/1",
+  "generatedBy": "cargo test -p craftmine-core --lib library::installer::tests::print_install_plan_fixture -- --ignored --nocapture",
+  "owner": "S3",
+  "payload": [
+    {
+      "contentHash": "64b80527a5b9552cd1efca9cd8be33e6108dd44abad80f0203e03268b63bee28",
+      "path": "payload/stone.bin",
+      "text": "stone-payload"
+    },
+    {
+      "contentHash": "4f9cf591ae6c24593d2aa199b84bafb80d791c089a31378068a06e0d139f2858",
+      "path": "data/recipes.json",
+      "text": "{}"
+    }
+  ],
+  "plan": {
+    "applied": false,
+    "assetLockHash": "0cd91fdb1e7d0c2b03abe122a1737d0dc4626660253796feedd0a045f5a4ea6d",
+    "conflicts": [],
+    "instances": [
+      {
+        "assetId": "stone",
+        "contentHash": "64b80527a5b9552cd1efca9cd8be33e6108dd44abad80f0203e03268b63bee28",
+        "dependencies": [],
+        "entityMap": {},
+        "installPath": "addons/stone",
+        "instanceId": "ins-4d7593d51ee32acac31c8ee8",
+        "kind": "raw",
+        "localOverrides": [],
+        "version": 1
+      },
+      {
+        "assetId": "recipe",
+        "contentHash": "4f9cf591ae6c24593d2aa199b84bafb80d791c089a31378068a06e0d139f2858",
+        "dependencies": [
+          "stone@1"
+        ],
+        "entityMap": {
+          "forge": "ins-ef62b9e79cd77e0e3a65c417-e0"
+        },
+        "installPath": "addons/recipe",
+        "instanceId": "ins-ef62b9e79cd77e0e3a65c417",
+        "kind": "data",
+        "localOverrides": [],
+        "version": 1
+      }
+    ],
+    "lock": {
+      "assets": [
+        {
+          "asset": {
+            "assetId": "recipe",
+            "contentHash": "4f9cf591ae6c24593d2aa199b84bafb80d791c089a31378068a06e0d139f2858",
+            "version": "1"
+          },
+          "dependencies": [
+            {
+              "assetId": "stone",
+              "contentHash": "64b80527a5b9552cd1efca9cd8be33e6108dd44abad80f0203e03268b63bee28",
+              "version": "1"
+            }
+          ],
+          "files": [
+            {
+              "bytes": 2,
+              "mediaType": "application/json",
+              "path": "data/recipes.json",
+              "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+            }
+          ],
+          "installPath": "addons/recipe",
+          "overrides": []
+        },
+        {
+          "asset": {
+            "assetId": "stone",
+            "contentHash": "64b80527a5b9552cd1efca9cd8be33e6108dd44abad80f0203e03268b63bee28",
+            "version": "1"
+          },
+          "dependencies": [],
+          "files": [
+            {
+              "bytes": 13,
+              "mediaType": "application/octet-stream",
+              "path": "payload/stone.bin",
+              "sha256": "c0e49e08fff2c8f5f601e61292634d215c288a60f3eb1792038e555f41c7f001"
+            }
+          ],
+          "installPath": "addons/stone",
+          "overrides": []
+        }
+      ],
+      "format": "craftmine.assets-lock/1"
+    },
+    "note": "plan only; the managed draft writer executes it inside a draft",
+    "ok": true,
+    "operationId": "install-fixture-1",
+    "order": [
+      "stone@1",
+      "recipe@1"
+    ],
+    "remappedInputActions": [],
+    "worldId": "world"
+  },
+  "gitHead": "9aaea0f006ad89c55a2fe64e86f23ba7847324ba",
+  "worktree": "godot-round3-s3-20260910"
+}

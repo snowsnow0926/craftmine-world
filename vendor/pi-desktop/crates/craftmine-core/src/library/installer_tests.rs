@@ -135,6 +135,50 @@ fn the_plan_lock_is_accepted_by_the_package_validator() {
     assert!(legacy.contains("ASSET_LOCK_LEGACY_SHAPE"), "{legacy}");
 }
 
+/// Regenerates the fixture the JavaScript draft installer consumes, so the
+/// plan the Rust core actually emits is exercised by the Node layer:
+///
+///   cargo test -p craftmine-core --lib \
+///     library::installer::tests::print_install_plan_fixture -- --ignored --nocapture
+#[test]
+#[ignore = "regenerates tests/godot-round3/S3/vectors/install-plan-fixture.json"]
+fn print_install_plan_fixture() {
+    let (_dir, db) = journal();
+    let stone_bytes = "stone-payload";
+    let stone_hash = digest(stone_bytes);
+    let stone_content = json!({"assetId": "stone", "version": 1, "kind": "raw",
+        "files": [{"path": "payload/stone.bin", "bytes": stone_bytes.len(),
+            "sha256": stone_hash}],        "dependencies": [], "entry": {}, "interfaces": {}, "compatibility": {},
+        "state": {}, "licenses": {}});
+    let stone = json!({"format": format::RESOURCE_FORMAT, "content": stone_content,
+        "contentHash": format::content_hash(&stone_content).unwrap()});
+    let recipe_content = json!({"assetId": "recipe", "version": 1, "kind": "data",
+        "files": [{"path": "data/recipes.json", "bytes": 2, "sha256": digest("{}")}],
+        "dependencies": [{"id": "stone", "version": 1,
+            "sha256": stone["contentHash"]}],
+        "entry": {"entities": ["forge"]}, "interfaces": {}, "compatibility": {},
+        "state": {}, "licenses": {}});
+    let recipe = json!({"format": format::RESOURCE_FORMAT, "content": recipe_content,
+        "contentHash": format::content_hash(&recipe_content).unwrap()});
+    let plan = db
+        .package_plan_install(&json!({"operationId": "install-fixture-1",
+            "resources": [recipe, stone], "target": target(inventory()),
+            "options": {"allowInputActionRemap": false}}))
+        .unwrap();
+    let fixture = json!({"format": "craftmine.install-plan-fixture/1",
+        "generatedBy": "cargo test -p craftmine-core --lib library::installer::tests::print_install_plan_fixture -- --ignored --nocapture",
+        "owner": "S3", "plan": plan,
+        "payload": [
+            {"contentHash": stone["contentHash"], "path": "payload/stone.bin",
+             "text": stone_bytes},
+            {"contentHash": recipe["contentHash"], "path": "data/recipes.json",
+             "text": "{}"}
+        ]});
+    println!("PLAN_FIXTURE_BEGIN");
+    println!("{}", serde_json::to_string_pretty(&fixture).unwrap());
+    println!("PLAN_FIXTURE_END");
+}
+
 #[test]
 fn a_dependency_with_the_wrong_hash_is_refused() {
     let (_dir, db) = journal();
