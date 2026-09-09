@@ -3,29 +3,111 @@
   "baseId": "first-person",
   "baseVersion": "0.1.0",
   "title": "First-person base",
+  "contract": {
+    "format": "craftmine.godot-base-contract/1",
+    "assets": {
+      "manifest": "assets/ASSET_MANIFEST.json",
+      "provenance": "assets/provenance/ASSET_PROVENANCE.md",
+      "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "generator": "tools/generate_meshes.mjs"
+    }
+  },
   "engine": {
     "name": "godot",
     "version": "4.7.2-stable",
     "scriptLanguage": "gdscript",
     "renderer": "gl_compatibility",
-    "targetPlatforms": ["windows-x64", "web"]
+    "targetPlatforms": [
+      "windows-x64",
+      "web"
+    ]
+  },
+  "protocols": {
+    "worldFormat": "craftmine.godot-first-person-world/1",
+    "stateFormat": "craftmine.godot-base-state/1",
+    "progressFormat": "craftmine.godot-progress/1",
+    "probeFormat": "craftmine.godot-preview/1",
+    "baseProtocolVersion": 1
   },
   "entryScenes": {
     "blank": "res://scenes/blank_start.tscn",
     "example": "res://scenes/training_range.tscn"
   },
+  "templates": [
+    {
+      "id": "blank",
+      "kind": "blank-start",
+      "label": "Blank start",
+      "entryScene": "res://scenes/blank_start.tscn",
+      "source": "scenes/blank_start.tscn",
+      "description": "One room with floor, walls, player, HUD and the base runtime only. No targets, no pickups, no quest and no reward ledger.",
+      "initialState": {
+        "player": "spawn",
+        "equipment": "catalog defaults",
+        "inventory": [],
+        "targets": [],
+        "interactables": [],
+        "quests": [],
+        "rewardLedger": []
+      }
+    },
+    {
+      "id": "training-range",
+      "kind": "example",
+      "label": "Training range",
+      "entryScene": "res://scenes/training_range.tscn",
+      "source": "scenes/training_range.tscn",
+      "description": "Short playable sample: three targets, cover crates, one ammo crate, one one-time pickup and the range_basic quest.",
+      "initialState": {
+        "player": "spawn",
+        "equipment": "catalog defaults",
+        "inventory": [],
+        "targets": "scene authored health",
+        "interactables": "scene authored uses",
+        "quests": [
+          {
+            "id": "range_basic",
+            "status": "inactive"
+          }
+        ],
+        "rewardLedger": []
+      }
+    }
+  ],
   "stateFormat": {
     "id": "craftmine.godot-base-state/1",
     "version": 1,
     "documentation": "docs/STATE_FORMAT.md",
-    "preserved": ["playerPosition", "playerLook", "equipment", "inventory", "targets", "interactables", "quests"]
+    "preserved": [
+      "playerPosition",
+      "playerLook",
+      "equipment",
+      "inventory",
+      "targets",
+      "interactables",
+      "quests"
+    ],
+    "migrations": []
   },
   "parameters": {
     "equipmentCatalog": "res://data/equipment/equipment_catalog.tres",
-    "equipment": ["res://data/equipment/pistol.tres", "res://data/equipment/practice_sword.tres"],
-    "balance": "res://data/balance/training_range.tres",
-    "crosshair": ["res://data/ui/crosshair_precision.tres", "res://data/ui/crosshair_melee.tres"],
+    "equipment": [
+      "res://data/equipment/pistol.tres",
+      "res://data/equipment/practice_sword.tres"
+    ],
+    "balance": [
+      "res://data/balance/training_range.tres",
+      "res://data/balance/blank_start.tres"
+    ],
+    "crosshair": [
+      "res://data/ui/crosshair_precision.tres",
+      "res://data/ui/crosshair_melee.tres"
+    ],
     "materials": "res://assets/materials/"
+  },
+  "tools": {
+    "newWorld": "tools/new-world.mjs",
+    "generateMeshes": "tools/generate_meshes.mjs"
   },
   "coreScripts": {
     "player": "res://scripts/core/player_controller.gd",
@@ -41,6 +123,294 @@
     "preview": "res://scripts/adapters/preview_bridge.gd",
     "probe": "res://scripts/adapters/probe_runner.gd"
   },
+  "components": [
+    {
+      "id": "fp.interactable",
+      "version": 1,
+      "kind": "entity",
+      "label": "Interactable",
+      "compatibleBases": [
+        "first-person"
+      ],
+      "identity": {
+        "scheme": "exported entity_id",
+        "field": "entity_id",
+        "fallback": "node name when entity_id is empty"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-base-state/1",
+        "fields": [
+          "interactables[].id",
+          "interactables[].enabled"
+        ],
+        "capture": "Interactable.snapshot()",
+        "restore": "Interactable.restore()"
+      },
+      "initialState": {
+        "enabled": true
+      },
+      "files": [
+        "scripts/core/interactable.gd"
+      ],
+      "install": {
+        "mode": "script-node",
+        "scene": "scenes/training_range.tscn",
+        "parent": ".",
+        "nodeType": "StaticBody3D",
+        "script": "scripts/core/interactable.gd",
+        "identityField": "entity_id",
+        "identityType": "string",
+        "exports": {
+          "enabled": true
+        },
+        "inputActions": [
+          "interact"
+        ]
+      }
+    },
+    {
+      "id": "fp.pickup-item",
+      "version": 1,
+      "kind": "entity",
+      "label": "One-time pickup",
+      "compatibleBases": [
+        "first-person"
+      ],
+      "identity": {
+        "scheme": "exported entity_id",
+        "field": "entity_id",
+        "fallback": "node name when entity_id is empty"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-base-state/1",
+        "fields": [
+          "interactables[].id",
+          "interactables[].enabled",
+          "interactables[].taken"
+        ],
+        "capture": "PickupItem.snapshot()",
+        "restore": "PickupItem.restore()"
+      },
+      "initialState": {
+        "enabled": true,
+        "taken": false
+      },
+      "files": [
+        "scripts/core/pickup_item.gd",
+        "scenes/props/pickup_item.tscn"
+      ],
+      "install": {
+        "mode": "instance",
+        "scene": "scenes/training_range.tscn",
+        "parent": "Interactables",
+        "sceneFile": "scenes/props/pickup_item.tscn",
+        "identityField": "entity_id",
+        "identityType": "string",
+        "exports": {
+          "item_id": "&\"repair_kit\""
+        },
+        "inputActions": [
+          "interact"
+        ]
+      }
+    },
+    {
+      "id": "fp.ammo-crate",
+      "version": 1,
+      "kind": "entity",
+      "label": "Ammo crate",
+      "compatibleBases": [
+        "first-person"
+      ],
+      "identity": {
+        "scheme": "exported entity_id",
+        "field": "entity_id",
+        "fallback": "node name when entity_id is empty"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-base-state/1",
+        "fields": [
+          "interactables[].id",
+          "interactables[].enabled",
+          "interactables[].usesLeft"
+        ],
+        "capture": "AmmoCrate.snapshot()",
+        "restore": "AmmoCrate.restore()"
+      },
+      "initialState": {
+        "enabled": true,
+        "usesLeft": "total_uses"
+      },
+      "files": [
+        "scripts/core/ammo_crate.gd",
+        "scenes/props/ammo_crate.tscn"
+      ],
+      "install": {
+        "mode": "instance",
+        "scene": "scenes/training_range.tscn",
+        "parent": "Interactables",
+        "sceneFile": "scenes/props/ammo_crate.tscn",
+        "identityField": "entity_id",
+        "identityType": "string",
+        "exports": {
+          "total_uses": 3
+        },
+        "inputActions": [
+          "interact"
+        ]
+      }
+    },
+    {
+      "id": "fp.target-dummy",
+      "version": 1,
+      "kind": "entity",
+      "label": "Destructible target",
+      "compatibleBases": [
+        "first-person"
+      ],
+      "identity": {
+        "scheme": "exported target_id",
+        "field": "target_id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-base-state/1",
+        "fields": [
+          "targets[].id",
+          "targets[].health",
+          "targets[].destroyed",
+          "targets[].hitCount",
+          "targets[].damageTaken"
+        ],
+        "capture": "TargetDummy.snapshot()",
+        "restore": "TargetDummy.restore()"
+      },
+      "initialState": {
+        "health": "max_health",
+        "destroyed": false,
+        "hitCount": 0,
+        "damageTaken": 0
+      },
+      "files": [
+        "scripts/core/target_dummy.gd",
+        "scenes/actors/target_dummy.tscn"
+      ],
+      "install": {
+        "mode": "instance",
+        "scene": "scenes/training_range.tscn",
+        "parent": "Targets",
+        "sceneFile": "scenes/actors/target_dummy.tscn",
+        "identityField": "target_id",
+        "identityType": "stringname",
+        "exports": {
+          "max_health": 50
+        }
+      }
+    },
+    {
+      "id": "fp.equipment-item",
+      "version": 1,
+      "kind": "system",
+      "label": "Equipment item",
+      "compatibleBases": [
+        "first-person"
+      ],
+      "identity": {
+        "scheme": "catalog item id",
+        "field": "EquipmentDefinition.id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-base-state/1",
+        "fields": [
+          "equipment.active",
+          "equipment.items[].id",
+          "equipment.items[].magazine",
+          "equipment.items[].reserve"
+        ],
+        "capture": "EquipmentState.snapshot()",
+        "restore": "EquipmentState.restore()"
+      },
+      "initialState": {
+        "magazine": "magazine_size",
+        "reserve": "reserve_at_start"
+      },
+      "files": [
+        "scripts/core/equipment_definition.gd",
+        "scripts/core/equipment_catalog.gd",
+        "scripts/core/equipment_state.gd",
+        "scripts/core/equipment_visuals.gd",
+        "data/equipment/equipment_catalog.tres",
+        "data/equipment/pistol.tres",
+        "data/equipment/practice_sword.tres",
+        "data/equipment/inspection_tool.tres"
+      ]
+    },
+    {
+      "id": "fp.quest",
+      "version": 1,
+      "kind": "system",
+      "label": "Quest and one-time reward",
+      "compatibleBases": [
+        "first-person"
+      ],
+      "identity": {
+        "scheme": "quest id",
+        "field": "QuestDefinition.id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-base-state/1",
+        "fields": [
+          "quests[].id",
+          "quests[].status",
+          "quests[].count",
+          "quests[].rewardGranted"
+        ],
+        "capture": "QuestTracker.snapshot()",
+        "restore": "QuestTracker.restore()"
+      },
+      "initialState": {
+        "status": "inactive",
+        "count": 0,
+        "rewardGranted": false
+      },
+      "files": [
+        "scripts/core/quest_definition.gd",
+        "scripts/core/quest_tracker.gd",
+        "data/quests/range_basic.tres"
+      ]
+    },
+    {
+      "id": "fp.crosshair",
+      "version": 1,
+      "kind": "ui",
+      "label": "Crosshair and style",
+      "compatibleBases": [
+        "first-person"
+      ],
+      "identity": {
+        "scheme": "crosshair style resource path",
+        "field": "EquipmentDefinition.crosshair_style",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": null,
+        "fields": [],
+        "capture": null,
+        "restore": null
+      },
+      "initialState": {
+        "visible": "from equipment definition"
+      },
+      "files": [
+        "scripts/ui/crosshair.gd",
+        "scripts/ui/crosshair_style.gd",
+        "data/ui/crosshair_precision.tres",
+        "data/ui/crosshair_melee.tres"
+      ]
+    }
+  ],
   "acceptance": {
     "headless": "tests/acceptance_headless.mjs",
     "web": "tests/acceptance_web.mjs",
@@ -51,6 +421,6 @@
     "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
     "generator": "tools/generate_meshes.mjs"
   },
-  "sharedInterfaceStatus": "unfrozen",
-  "sharedInterfaceNote": "Build/run integration is concentrated in scripts/adapters/*.gd and tests/*.mjs until tasks B and C freeze the shared build checklist and run protocol."
+  "sharedInterfaceStatus": "frozen",
+  "sharedInterfaceNote": "Frozen by the F task: craftmine.godot-base-contract/1 normalizes all three bases; shared/materialize.mjs materializes this base; shared/observation.mjs and shared/operations.mjs define the observation and bounded operation envelopes. Build/run integration still lives in scripts/adapters/*.gd and tests/*.mjs."
 }

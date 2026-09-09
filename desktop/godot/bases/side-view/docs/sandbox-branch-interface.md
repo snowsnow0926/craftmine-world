@@ -76,3 +76,29 @@ Required runtime interfaces (not present yet):
 Open a separate task with its own worktree, branch, spec and acceptance matrix.
 Do not extend the side-view base in place: the base must stay a verified,
 bounded deliverable for the ability-gate story.
+
+## 6 Task boundary for the current round
+
+The exploration (metroidvania) base and the diggable sandbox are owned by
+different tasks this round:
+
+| Item | Owner | Contract |
+| --- | --- | --- |
+| `desktop/godot/bases/side-view/**`, `desktop/godot/shared/**` | F | F is the only writer. Motion, jump, room transitions, the gate guard and the shared adapters stay here. |
+| new mining-sandbox branch (terrain edits, chunk store, material economy) | G | Separate base/branch. G must not change the side-view player controller, the room manager or the shared adapters; it adds its own runtime and its own state format. |
+| reuse of side-view capabilities | G reads | F exposes this base read-only plus the component catalog (`desktop/godot/bases/component-catalog.json`) and `desktop/godot/shared/components.mjs` for resolving files, identity and persistent fields. |
+
+What F guarantees to G, and what it does not:
+
+- **Guaranteed:** the scripts and data listed in section 1, the stable entity-id
+  scheme, the `craftmine.godot-sideview-state/1` state contract, the atomic save,
+  the component catalog entries (`sv.*`), and the real headless harness
+  (`tools/verify.mjs`, including the `I_gate_guard` refusal).
+- **Not guaranteed:** tile/region storage, material hardness or drop tables,
+  chunked persistence, an edit log, terrain mutation APIs, or any A16 evidence.
+  Those must be designed and verified in G's own branch.
+
+A sandbox branch that needs a change to side-view motion, the room lifecycle or
+a shared adapter must request a precise interface change from F (or the shared
+owner) instead of editing the file in its own delivery.
+

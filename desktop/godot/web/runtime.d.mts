@@ -44,6 +44,8 @@ export type WorldRuntime = RuntimeIdentity & {
   readonly state: RuntimeState;
   readonly requests: RuntimeRequestRecord[];
   waitReady(): Promise<RuntimeIdentity & {ops: string[]}>;
+  /** Abort a startup that can no longer succeed; false once ready/failed/exited/disposed. */
+  abortStartup(reason: string): boolean;
   attach(transport: (message: unknown) => void): () => void;
   receive(message: unknown): void;
   onEvent(listener: (event: RuntimeEvent) => void): () => void;

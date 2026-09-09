@@ -1,0 +1,67 @@
+H 首次失败与重试原始证据（未修饰）
+=====================================
+
+环境：Windows PowerShell 7 / cargo 1.96.1 / rustc 1.96.1 / node v24.14.0
+工作树：D:\Craftmine World-worktrees\godot-remaining-h-20260910
+CARGO_TARGET_DIR：C:\Users\WINDOWS\.pi-desktop\scratch\c25e2b38-659a-4d01-8149-2b84d81ffddd\cargo-target-h
+基线提交：e462147（本地 master）
+
+第 1 次编译（首次失败，test-runner 子代理执行 `cargo test -p craftmine-core --no-run`）
+------------------------------------------------------------------------------
+error: unexpected end of macro invocation
+   --> crates\craftmine-core\src\library\reuse_tests.rs:457:23
+    | .is_none()  ^ missing tokens in macro arguments
+（原因：assert_eq! 只给了一个参数）
+
+error[E0618]: expected function, found `WorldRecord`
+   --> crates\craftmine-core\src\library\reuse.rs:556:9
+（原因：package_install 中局部变量 `record` 遮蔽了同名自由函数）
+
+第 2 次编译（首次失败，本 agent 执行 `cargo test -p craftmine-core`）
+------------------------------------------------------------------------------
+error[E0277]: the trait bound `serde_json::Value: ToSql` is not satisfied
+   --> crates\craftmine-core\src\backups\complete.rs:230:13
+（原因：params! 直接传了 archive["hash"]，应为 .as_str()）
+
+warning: unused import: `crate::worlds::WorldDocument`
+warning: unused variable: `before`
+
+第 3 次运行（首次失败）
+------------------------------------------------------------------------------
+test result: FAILED. 111 passed; 7 failed; 1 ignored
+
+LIBRARY_HASH_MISMATCH（4 个 reuse 测试）
+（原因：package_register 误把 library 的 bundle hash 当作 module hash 比较；
+ 该断言已删除，精确版本校验由 library::read 完成）
+
+assertion `left == right` failed left: Number(4) right: 3
+（durable::tests::legacy_backup_missing_limits_keeps_policy_and_schema_three_keeps_audit、
+ memories::receipt_tests::backup_v2_roundtrip_preserves_receipt_and_v1_migrates_to_unverifiable）
+（原因：H 最初把 backups::SCHEMA_VERSION 从 3 提到 4，破坏了其他任务的冻结断言。
+ 处理：保持 SCHEMA_VERSION=3，改为“归档缺少新表时用实时列定义补空表”。）
+
+第 4 次运行（首次失败）
+------------------------------------------------------------------------------
+test result: FAILED. 112 passed; 6 failed
+Error: BACKUP_SCHEMA_MISMATCH
+（原因：PACKAGE_TABLES 含 craftmine_legacy_conversions 而 TABLES 未含，
+ 补表后 31 != 30。处理：把该表同时加入 TABLES。）
+
+thread panicked ... Err(PACKAGE_DEPENDENCY_MISSING: cycle-b@1)
+（原因：注册时即解析依赖闭包，无法先注册互相依赖的一对包。
+ 处理：注册只做声明，闭包在 check/install/upgrade 时解析。）
+
+thread panicked ... Err(PACKAGE_INSTANCE_REVISION_CONFLICT: 4 != 2)
+（原因：测试里写死了 revision。处理：改为读取当前 revision。）
+
+第 5 次运行（最终成功）
+------------------------------------------------------------------------------
+cargo test -p craftmine-core
+test result: ok. 120 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 2.69s
+（无 warning）
+
+node --test tests/godot-remaining/H/reuse-service.test.mjs
+tests 8 / pass 8 / fail 0
+
+未放宽任何冻结断言：durable_tests.rs、memory_receipt_tests.rs、worlds.rs 等
+其他任务的测试文件均未被修改（git show --stat 9dd3704 可核对）。

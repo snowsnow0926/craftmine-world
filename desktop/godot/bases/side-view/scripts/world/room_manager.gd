@@ -4,8 +4,10 @@
 ## the player at the named spawn, marks the room visited and saves. Nothing about
 ## the player's abilities, rewards or checkpoints is stored in the room nodes, so
 ## rebuilding a room cannot lose or duplicate them.
+## Keep rooms in the Rooms canvas subtree so their background cannot overdraw
+## the later Player sibling through a detached CanvasItem root.
 class_name SideViewRoomManager
-extends Node
+extends Node2D
 
 signal room_entered(room_id: String, spawn_id: String)
 
@@ -69,9 +71,34 @@ func request_transition(target_room: String, target_spawn: String) -> void:
 	if room_data(target_room).size() == 0:
 		push_error("SideView: transition target room not found: %s" % target_room)
 		return
+	if gate_blocks_room(target_room):
+		# The authored gate is not only a physics shape: a room unlocked by an
+		# ability is refused until the player really owns that ability, so a
+		# retuned jump height or a scripted transition cannot fake passage.
+		if runtime != null:
+			runtime.emit_event("gate_blocked", {
+				"targetRoom": target_room,
+				"requiredAbility": required_ability_for(target_room),
+				"fromRoom": state.player.get("room", ""),
+			})
+		return
 	_pending_transition = true
 	# Never build or free rooms inside the physics flush.
 	call_deferred("enter_room", target_room, target_spawn, {})
+
+## The ability the world gate requires before `room_id` can be entered, if any.
+func required_ability_for(room_id: String) -> String:
+	var gate: Dictionary = world.get("gate", {})
+	if gate.is_empty() or str(gate.get("unlocksRoom", "")) != room_id:
+		return ""
+	return str(gate.get("requiredAbility", ""))
+
+## True when the authored gate for `room_id` requires an ability the player lacks.
+func gate_blocks_room(room_id: String) -> bool:
+	var ability := required_ability_for(room_id)
+	if ability.is_empty():
+		return false
+	return not state.has_ability(ability)
 
 func enter_room(room_id: String, spawn_id: String, placement: Dictionary, restoring: bool = false) -> void:
 	switching = true

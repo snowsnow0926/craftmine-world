@@ -6,6 +6,33 @@
   "language": "GDScript",
   "renderer": "gl_compatibility",
   "status": "delivered-example-and-blank-start",
+  "contract": {
+    "format": "craftmine.godot-base-contract/1",
+    "assets": {
+      "manifest": "assets/ASSET_MANIFEST.json",
+      "provenance": "docs/assets-and-provenance.md",
+      "license": "docs/assets-and-provenance.md",
+      "generator": null
+    },
+    "state": {
+      "format": "craftmine.godot-sideview-state/1",
+      "version": 1,
+      "preserved": [
+        "worldId",
+        "player",
+        "abilities",
+        "checkpoints",
+        "activeCheckpoint",
+        "rewards",
+        "rooms",
+        "counters",
+        "inventory",
+        "entities",
+        "vitals"
+      ],
+      "migrations": []
+    }
+  },
   "entryScene": "res://scenes/main.tscn",
   "protocols": {
     "worldFormat": "craftmine.godot-sideview-world/1",
@@ -23,7 +50,7 @@
       "directory": "worlds/blank",
       "kind": "blank-start",
       "entryScene": "res://scenes/main.tscn",
-      "description": "One flat room with the base runtime only: run, jump, platform collision, camera, basic attack, one checkpoint and one save file."
+      "description": "One flat room with the base runtime only: run, jump, platform collision, camera, basic attack and one save file. No checkpoint, target, reward or ability."
     },
     "ruins": {
       "directory": "worlds/ruins",
@@ -32,6 +59,158 @@
       "description": "Three connected rooms with return paths, a one-time cache, a training dummy, a breakable crate, a double-jump pickup and a 190 px high ledge that only a double jump can clear."
     }
   },
+  "templates": [
+    {
+      "id": "blank",
+      "kind": "blank-start",
+      "label": "Blank start",
+      "entryScene": "res://scenes/main.tscn",
+      "source": "worlds/blank",
+      "description": "One flat room with the base runtime only: run, jump, platform collision, camera, basic attack and one save file. No checkpoint, target, reward or ability.",
+      "initialState": {
+        "room": "start",
+        "abilities": [],
+        "checkpoints": [],
+        "rewards": [],
+        "targets": [],
+        "counters": {},
+        "inventory": {},
+        "entities": {}
+      }
+    },
+    {
+      "id": "ruins",
+      "kind": "example",
+      "label": "Small ruins",
+      "entryScene": "res://scenes/main.tscn",
+      "source": "worlds/ruins",
+      "description": "Three connected rooms with return paths, a one-time cache, a training dummy, a breakable crate, a double-jump pickup and a 190 px high ledge that only a double jump can clear.",
+      "initialState": {
+        "room": "entrance",
+        "abilities": [],
+        "checkpoints": [],
+        "rewards": [],
+        "targets": "authored health",
+        "counters": {},
+        "inventory": {},
+        "entities": {}
+      }
+    }
+  ],
+  "components": [
+    {
+      "id": "sv.room-door",
+      "version": 1,
+      "kind": "entity",
+      "label": "Room door",
+      "compatibleBases": ["side-view"],
+      "identity": { "scheme": "id in world.json room.doors", "field": "id", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-sideview-state/1",
+        "fields": ["rooms[].visits"],
+        "capture": "WorldState.to_dict()",
+        "restore": "WorldState.apply_dict()"
+      },
+      "initialState": { "armed": false },
+      "files": ["scripts/world/room_door.gd", "worlds/ruins/world.json"]
+    },
+    {
+      "id": "sv.checkpoint",
+      "version": 1,
+      "kind": "entity",
+      "label": "Checkpoint",
+      "compatibleBases": ["side-view"],
+      "identity": { "scheme": "id in world.json room.checkpoints", "field": "id", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-sideview-state/1",
+        "fields": ["checkpoints", "activeCheckpoint"],
+        "capture": "WorldState.to_dict()",
+        "restore": "WorldState.apply_dict()"
+      },
+      "initialState": { "activated": false },
+      "files": ["scripts/world/checkpoint.gd"]
+    },
+    {
+      "id": "sv.ability-pickup",
+      "version": 1,
+      "kind": "entity",
+      "label": "Ability pickup",
+      "compatibleBases": ["side-view"],
+      "identity": { "scheme": "id in world.json room.abilities", "field": "id", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-sideview-state/1",
+        "fields": ["abilities", "rewards"],
+        "capture": "WorldState.to_dict()",
+        "restore": "WorldState.apply_dict()"
+      },
+      "initialState": { "taken": false },
+      "files": ["scripts/world/pickup.gd", "worlds/ruins/world.json"]
+    },
+    {
+      "id": "sv.reward-pickup",
+      "version": 1,
+      "kind": "entity",
+      "label": "One-time reward pickup",
+      "compatibleBases": ["side-view"],
+      "identity": { "scheme": "id in world.json room.rewards", "field": "id", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-sideview-state/1",
+        "fields": ["rewards", "counters", "inventory"],
+        "capture": "WorldState.to_dict()",
+        "restore": "WorldState.apply_dict()"
+      },
+      "initialState": { "taken": false },
+      "files": ["scripts/world/pickup.gd"]
+    },
+    {
+      "id": "sv.target",
+      "version": 1,
+      "kind": "entity",
+      "label": "Target / breakable",
+      "compatibleBases": ["side-view"],
+      "identity": { "scheme": "id in world.json room.targets", "field": "id", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-sideview-state/1",
+        "fields": ["entities[].health", "rewards", "counters", "inventory"],
+        "capture": "WorldState.to_dict()",
+        "restore": "WorldState.apply_dict()"
+      },
+      "initialState": { "health": "authored health", "rewarded": false },
+      "files": ["scripts/world/target.gd", "worlds/ruins/world.json"]
+    },
+    {
+      "id": "sv.hazard",
+      "version": 1,
+      "kind": "entity",
+      "label": "Hazard",
+      "compatibleBases": ["side-view"],
+      "identity": { "scheme": "id in world.json room.hazards", "field": "id", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-sideview-state/1",
+        "fields": ["vitals", "player"],
+        "capture": "WorldState.to_dict()",
+        "restore": "WorldState.apply_dict()"
+      },
+      "initialState": { "active": true },
+      "files": ["scripts/world/hazard.gd", "worlds/ruins/world.json"]
+    },
+    {
+      "id": "sv.spawn",
+      "version": 1,
+      "kind": "entity",
+      "label": "Spawn point",
+      "compatibleBases": ["side-view"],
+      "identity": { "scheme": "id in world.json room.spawns", "field": "id", "fallback": "none" },
+      "persistentState": {
+        "format": "craftmine.godot-sideview-state/1",
+        "fields": ["player.roomId", "player.x", "player.y"],
+        "capture": "WorldState.to_dict()",
+        "restore": "WorldState.apply_dict()"
+      },
+      "initialState": { "x": "authored", "y": "authored", "facing": 1 },
+      "files": ["scripts/world/room.gd"]
+    }
+  ],
   "capabilities": [
     "gravity",
     "run-and-air-control",

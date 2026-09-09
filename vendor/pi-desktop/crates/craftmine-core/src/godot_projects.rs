@@ -13,7 +13,10 @@ use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use super::{digest, workspaces, worlds, TaskBinding, TaskJournal, WorkspaceContext};
+use super::{
+    content_history::repo::{self, ContentFile},
+    digest, godot_builds, workspaces, worlds, TaskBinding, TaskJournal, WorkspaceContext,
+};
 
 const FILE_LIMIT: usize = 4 * 1024 * 1024;
 const PATCH_LIMIT: usize = 8 * 1024 * 1024;
@@ -98,6 +101,10 @@ struct PatchArgs {
     revision: u64,
     manifest_hash: String,
     operations: Vec<Operation>,
+    /// Required for a world on the Git backend: the host binds the exact branch
+    /// and commit the patch was prepared against.
+    #[serde(default)]
+    operation: Option<super::content_history::contract::OperationContext>,
 }
 
 #[derive(Deserialize)]
@@ -144,7 +151,8 @@ struct ReceiptArgs {
 }
 
 pub(super) fn migrate(db: &Connection) -> Result<()> {
-    db.execute_batch("CREATE TABLE IF NOT EXISTS craftmine_godot_projects (
+    db.execute_batch(
+        "CREATE TABLE IF NOT EXISTS craftmine_godot_projects (
         world_id TEXT PRIMARY KEY REFERENCES craftmine_worlds(id),
         revision INTEGER NOT NULL CHECK(revision>=0), manifest TEXT NOT NULL, hash TEXT NOT NULL
     );
@@ -156,7 +164,21 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     CREATE TABLE IF NOT EXISTS craftmine_godot_receipts (
         task_id TEXT NOT NULL REFERENCES craftmine_tasks(id), tool_call_id TEXT NOT NULL,
         request_hash TEXT NOT NULL, result TEXT NOT NULL, PRIMARY KEY(task_id,tool_call_id)
-    );")?;
+    );
+    -- Revision index for the managed Git backend: the commit is the content, the
+    -- manifest row above is only the path/hash index of the head revision.
+    CREATE TABLE IF NOT EXISTS craftmine_godot_project_commits (
+        world_id TEXT NOT NULL REFERENCES craftmine_worlds(id),
+        revision INTEGER NOT NULL CHECK(revision>=0),
+        commit_oid TEXT NOT NULL,
+        manifest_hash TEXT NOT NULL,
+        asset_lock_hash TEXT NOT NULL,
+        task_id TEXT NOT NULL,
+        tool_call_id TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        PRIMARY KEY(world_id,revision)
+    );",
+    )?;
     Ok(())
 }
 
@@ -345,7 +367,7 @@ pub(super) fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Res
     Ok(text)
 }
 
-fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text: &str) -> Result<()> {
+pub(super) fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text: &str) -> Result<()> {
     let parent = blob_directory(directory, world, true)?;
     let target = parent.join(&entry.sha256);
     if fs::symlink_metadata(&target).is_ok() {
@@ -415,13 +437,304 @@ pub(super) fn load_manifest(
     Ok((manifest, hash))
 }
 
+// ---- managed Git content backend -------------------------------------------
+//
+// A world switched to the Git backend keeps only a head index in SQLite: the
+// manifest is the path/hash/byte index and the project metadata. File bytes,
+// history, branches and versions live in the managed repository, so there is
+// exactly one content history per world.
+
+/// Commit a stored revision maps to. `None` means the revision was never
+/// committed (a legacy row that has not been migrated).
+pub(super) fn git_commit_for(
+    db: &Connection,
+    world: &str,
+    revision: u64,
+) -> Result<Option<String>> {
+    let revision = i64::try_from(revision)?;
+    let own: Option<String> = db
+        .query_row(
+            "SELECT commit_oid FROM craftmine_godot_project_commits WHERE world_id=?1 AND revision=?2",
+            params![world, revision],
+            |row| row.get(0),
+        )
+        .optional()?;
+    if own.is_some() {
+        return Ok(own);
+    }
+    // A revision imported by the legacy migration is indexed by the content
+    // history's own map; both tables are indexes into the same Git repository.
+    Ok(db
+        .query_row(
+            "SELECT commit_oid FROM craftmine_content_revision_map WHERE world_id=?1 AND legacy_revision=?2",
+            params![world, revision],
+            |row| row.get(0),
+        )
+        .optional()?)
+}
+
+fn record_git_commit(
+    db: &Connection,
+    world: &str,
+    revision: u64,
+    commit_oid: &str,
+    manifest_hash: &str,
+    asset_lock_hash: &str,
+    task_id: &str,
+    tool_call_id: &str,
+) -> Result<()> {
+    db.execute(
+        "INSERT OR REPLACE INTO craftmine_godot_project_commits(world_id,revision,commit_oid,
+            manifest_hash,asset_lock_hash,task_id,tool_call_id,created_at)
+         VALUES(?1,?2,?3,?4,?5,?6,?7,?8)",
+        params![
+            world,
+            i64::try_from(revision)?,
+            commit_oid,
+            manifest_hash,
+            asset_lock_hash,
+            task_id,
+            tool_call_id,
+            worlds::timestamp()?
+        ],
+    )?;
+    Ok(())
+}
+
+/// Commit subject and trailers for one authored revision.
+fn project_commit_message(revision: u64, request: &str, task: &str) -> String {
+    format!("Craftmine project revision {revision}\n\nCraftmine-Request: {request}\nCraftmine-Task: {task}\nCraftmine-Revision: {revision}\n")
+}
+
+/// The Git head for a world, reconciling a commit that landed before the SQLite
+/// index could record it. Git is authoritative for content, so an adopted head
+/// is re-indexed rather than overwritten.
+fn reconcile_git_head(
+    journal: &TaskJournal,
+    world: &str,
+    stored_revision: u64,
+    stored_commit: Option<&str>,
+) -> Result<Option<(u64, String)>> {
+    let (store, layout) = journal.content_layout(world)?;
+    let head = store.branch_head(&layout, repo::MAIN_BRANCH)?;
+    match (head, stored_commit) {
+        (None, None) => Ok(None),
+        (Some(head), Some(stored)) if head == stored => Ok(Some((stored_revision, head))),
+        (Some(head), _) => {
+            // The commit exists but the index did not record it (crash between
+            // the Git ref update and the SQLite commit). Adopt it.
+            let message = store.git().repo(
+                &layout.git_dir,
+                &["log", "-1", "--format=%B", &head],
+            )?;
+            ensure!(message.ok(), "GIT_LOG_FAILED: {}", message.stderr.trim());
+            let revision = message
+                .stdout_text()?
+                .lines()
+                .find_map(|line| line.strip_prefix("Craftmine-Revision: "))
+                .and_then(|value| value.trim().parse::<u64>().ok())
+                .unwrap_or(stored_revision + 1);
+            Ok(Some((revision, head)))
+        }
+        (None, Some(_)) => anyhow::bail!("GODOT_PROJECT_HEAD_MISSING"),
+    }
+}
+
+/// Exact bytes for every file of a manifest plus the canonical asset lock. Files
+/// not in `changed` are read back from the current commit and re-hashed.
+fn git_content_files(
+    store: &repo::RepositoryStore,
+    layout: &repo::RepoLayout,
+    db: &Connection,
+    world: &str,
+    manifest: &Manifest,
+    head: Option<&str>,
+    changed: &BTreeMap<String, String>,
+) -> Result<Vec<ContentFile>> {
+    let mut files = Vec::with_capacity(manifest.files.len() + 1);
+    for (path, entry) in &manifest.files {
+        let bytes = match changed.get(path) {
+            Some(text) => text.as_bytes().to_vec(),
+            None => {
+                let head = head.context("GODOT_PROJECT_HEAD_MISSING")?;
+                let bytes = store.read_file(layout, head, path)?;
+                ensure!(
+                    digest_bytes(&bytes) == entry.sha256,
+                    "CORRUPT_PROJECT_FILE"
+                );
+                bytes
+            }
+        };
+        files.push(ContentFile {
+            path: path.clone(),
+            bytes,
+        });
+    }
+    let (_, assets) = godot_builds::asset_manifest(db, world)?;
+    if let Some(lock) = godot_builds::asset_lock(&assets)? {
+        files.push(ContentFile::asset_lock(&lock)?);
+    }
+    Ok(files)
+}
+
+/// File text for a world, read from Git when the world uses the Git backend.
+fn read_project_file(
+    journal: &TaskJournal,
+    world: &str,
+    revision: u64,
+    path: &str,
+    entry: &FileEntry,
+) -> Result<String> {
+    if journal.is_git_backed(world)? {
+        let (store, layout) = journal.content_layout(world)?;
+        let commit = git_commit_for(&journal.db, world, revision)?
+            .context("GODOT_PROJECT_REVISION_NOT_INDEXED")?;
+        let bytes = store.read_file(&layout, &commit, path)?;
+        ensure!(digest_bytes(&bytes) == entry.sha256, "CORRUPT_PROJECT_FILE");
+        return String::from_utf8(bytes).context("CONTENT_NOT_UTF8");
+    }
+    blob_read(&journal.directory, world, entry)
+}
+
+fn digest_bytes(bytes: &[u8]) -> String {
+    use sha2::{Digest, Sha256};
+    Sha256::digest(bytes)
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect()
+}
+
+/// Digest of exact file bytes, shared with build materialization.
+pub(super) fn file_digest(bytes: &[u8]) -> String {
+    digest_bytes(bytes)
+}
+
+/// Persist the head index for a Git-backed revision. No `craftmine_godot_revisions`
+/// row is written: history comes from the repository, not from a parallel table.
+fn store_git_index(
+    db: &Connection,
+    manifest: &Manifest,
+    call: &str,
+    request_hash: &str,
+    commit_oid: &str,
+    asset_lock_hash: &str,
+) -> Result<Value> {
+    let body = serde_json::to_string(manifest)?;
+    ensure!(body.len() <= MANIFEST_LIMIT, "PROJECT_MANIFEST_TOO_LARGE");
+    let hash = digest(&body);
+    db.execute(
+        "INSERT INTO craftmine_godot_projects(world_id,revision,manifest,hash) VALUES(?1,?2,?3,?4)
+         ON CONFLICT(world_id) DO UPDATE SET revision=excluded.revision,manifest=excluded.manifest,hash=excluded.hash",
+        params![manifest.world_id, i64::try_from(manifest.revision)?, body, hash],
+    )?;
+    record_git_commit(
+        db,
+        &manifest.world_id,
+        manifest.revision,
+        commit_oid,
+        &hash,
+        asset_lock_hash,
+        &manifest.task.task_id,
+        call,
+    )?;
+    let result = json!({"revision":manifest.revision,"manifestHash":hash,"baseBuild":manifest.base_build,
+        "fileCount":manifest.files.len(),"currentTaskId":manifest.task.task_id,"lastWriter":manifest.task,
+        "commitOid":commit_oid,"assetLockHash":asset_lock_hash});
+    db.execute(
+        "INSERT INTO craftmine_godot_receipts(task_id,tool_call_id,request_hash,result) VALUES(?1,?2,?3,?4)",
+        params![manifest.task.task_id, call, request_hash, serde_json::to_string(&result)?],
+    )?;
+    Ok(result)
+}
+
+impl TaskJournal {
+    /// Manifest for the head (or an indexed revision) of a world, adopting a Git
+    /// commit that landed before the SQLite index could record it. Git is
+    /// authoritative for content, so the index is rebuilt from the commit rather
+    /// than the commit being overwritten.
+    pub(super) fn project_manifest(
+        &self,
+        world: &str,
+        revision: Option<u64>,
+    ) -> Result<(Manifest, String)> {
+        if !self.is_git_backed(world)? || revision.is_some() {
+            return load_manifest(&self.db, world, revision);
+        }
+        let (manifest, hash) = load_manifest(&self.db, world, None)?;
+        let stored = git_commit_for(&self.db, world, manifest.revision)?;
+        let (store, layout) = self.content_layout(world)?;
+        let head = store.branch_head(&layout, repo::MAIN_BRANCH)?;
+        if head == stored {
+            return Ok((manifest, hash));
+        }
+        let head = head.context("GODOT_PROJECT_HEAD_MISSING")?;
+        let message = store
+            .git()
+            .repo(&layout.git_dir, &["log", "-1", "--format=%B", &head])?;
+        ensure!(message.ok(), "GIT_LOG_FAILED: {}", message.stderr.trim());
+        let revision = message
+            .stdout_text()?
+            .lines()
+            .find_map(|line| line.strip_prefix("Craftmine-Revision: "))
+            .and_then(|value| value.trim().parse::<u64>().ok())
+            .unwrap_or(manifest.revision + 1);
+        let mut files = BTreeMap::new();
+        for entry in store.tree_entries(&layout, &head)? {
+            if entry.path == super::content_history::contract::ASSET_LOCK_FILE {
+                continue;
+            }
+            ensure!(
+                matches!(entry.mode.as_str(), "100644" | "100755"),
+                "CONTENT_COPY_UNSUPPORTED_ENTRY: {}",
+                entry.path
+            );
+            let bytes = store.read_file(&layout, &head, &entry.path)?;
+            files.insert(
+                entry.path,
+                FileEntry {
+                    sha256: digest_bytes(&bytes),
+                    bytes: bytes.len() as u64,
+                },
+            );
+        }
+        let mut adopted = manifest;
+        adopted.files = files;
+        adopted.revision = revision;
+        validate_manifest(&adopted)?;
+        let lock_hash = godot_builds::asset_lock_hash(&self.db, world)?;
+        store_git_index(
+            &self.db,
+            &adopted,
+            "@host:adopt-git-head",
+            &digest(&head),
+            &head,
+            &lock_hash,
+        )?;
+        let body = serde_json::to_string(&adopted)?;
+        Ok((adopted, digest(&body)))
+    }
+
+    pub(super) fn project_file_text(
+        &self,
+        world: &str,
+        revision: u64,
+        path: &str,
+        entry: &FileEntry,
+    ) -> Result<String> {
+        read_project_file(self, world, revision, path, entry)
+    }
+
+    pub(super) fn project_is_git_backed(&self, world: &str) -> Result<bool> {
+        self.is_git_backed(world)
+    }
+}
+
 fn scope(
     db: &Connection,
     ctx: &WorkspaceContext,
     world: &str,
     write: bool,
-) -> Result<workspaces::WorkspaceSnapshot> {
-    worlds::validate_id(world)?;
+) -> Result<workspaces::WorkspaceSnapshot> {    worlds::validate_id(world)?;
     let snapshot = workspaces::inspect(db, ctx)?;
     ensure!(snapshot.world_id == world, "PROJECT_WORLD_BINDING_MISMATCH");
     if write {
@@ -494,10 +807,21 @@ impl TaskJournal {
             files.values().map(|entry| entry.bytes).sum::<u64>() <= PATCH_LIMIT as u64,
             "PROJECT_REQUEST_TOO_LARGE"
         );
+        let git_backed = self.is_git_backed(&args.world_id)?;
+        let git = if git_backed {
+            Some(self.content_layout(&args.world_id)?)
+        } else {
+            None
+        };
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
         let workspace = scope(&tx, &args.context, &args.world_id, true)?;
+        if !git_backed {
+            // A world switched to the managed Git backend must not create a
+            // second, parallel source history through the legacy tables.
+            super::content_history::migration::assert_legacy_writes_allowed(&tx, &args.world_id)?;
+        }
         if let Some(result) = receipt(
             &tx,
             &workspace.task.binding.task_id,
@@ -530,15 +854,39 @@ impl TaskJournal {
             files,
         };
         validate_manifest(&manifest)?;
-        for file in args.files {
-            blob_write(
-                &self.directory,
-                &args.world_id,
-                &manifest.files[&file.path],
-                &file.text,
-            )?;
-        }
-        let result = store(&tx, &manifest, &args.tool_call_id, &request_hash)?;
+        let result = if let Some((store, layout)) = &git {
+            let changed: BTreeMap<String, String> = args
+                .files
+                .iter()
+                .map(|file| (file.path.clone(), file.text.clone()))
+                .collect();
+            let content = git_content_files(store, layout, &tx, &args.world_id, &manifest, None, &changed)?;
+            let lock_hash = godot_builds::asset_lock_hash(&tx, &args.world_id)?;
+            let message = project_commit_message(
+                0,
+                &args.tool_call_id,
+                &manifest.task.task_id,
+            );
+            let oid = store.commit(layout, repo::MAIN_BRANCH, None, &content, &message)?;
+            store_git_index(
+                &tx,
+                &manifest,
+                &args.tool_call_id,
+                &request_hash,
+                &oid,
+                &lock_hash,
+            )?
+        } else {
+            for file in args.files {
+                blob_write(
+                    &self.directory,
+                    &args.world_id,
+                    &manifest.files[&file.path],
+                    &file.text,
+                )?;
+            }
+            store(&tx, &manifest, &args.tool_call_id, &request_hash)?
+        };
         tx.commit()?;
         Ok(result)
     }
@@ -552,7 +900,7 @@ impl TaskJournal {
                 && args.revision.is_some() == args.manifest_hash.is_some(),
             "INVALID_PROJECT_PAGE"
         );
-        let (manifest, hash) = load_manifest(&self.db, &args.world_id, args.revision)?;
+        let (manifest, hash) = self.project_manifest(&args.world_id, args.revision)?;
         if let (Some(revision), Some(expected)) = (args.revision, args.manifest_hash) {
             bound_version(&manifest, &hash, revision, &expected)?;
         }
@@ -582,13 +930,13 @@ impl TaskJournal {
             args.limit > 0 && args.limit <= 16000,
             "INVALID_PROJECT_PAGE"
         );
-        let (manifest, hash) = load_manifest(&self.db, &args.world_id, Some(args.revision))?;
+        let (manifest, hash) = self.project_manifest(&args.world_id, Some(args.revision))?;
         bound_version(&manifest, &hash, args.revision, &args.manifest_hash)?;
         let entry = manifest
             .files
             .get(&args.path)
             .context("PROJECT_FILE_NOT_FOUND")?;
-        let source = blob_read(&self.directory, &args.world_id, entry)?;
+        let source = self.project_file_text(&args.world_id, manifest.revision, &args.path, entry)?;
         let total = source.chars().count();
         ensure!(args.offset <= total, "INVALID_PROJECT_PAGE");
         let text: String = source.chars().skip(args.offset).take(args.limit).collect();
@@ -607,10 +955,25 @@ impl TaskJournal {
             !args.operations.is_empty() && args.operations.len() <= 16,
             "INVALID_PROJECT_PATCH"
         );
+        let git_backed = self.is_git_backed(&args.world_id)?;
+        let git = if git_backed {
+            Some(self.content_layout(&args.world_id)?)
+        } else {
+            None
+        };
+        // Binding is checked before any content read, so a foreign world context
+        // reports the binding mismatch rather than a missing project.
+        scope(&self.db, &args.context, &args.world_id, false)?;
+        // Loading before the transaction reconciles a commit that landed before
+        // its SQLite index row; the Git CAS below is the real write guard.
+        let (mut manifest, hash) = self.project_manifest(&args.world_id, None)?;
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
         let workspace = scope(&tx, &args.context, &args.world_id, true)?;
+        if !git_backed {
+            super::content_history::migration::assert_legacy_writes_allowed(&tx, &args.world_id)?;
+        }
         if let Some(result) = receipt(
             &tx,
             &workspace.task.binding.task_id,
@@ -619,10 +982,16 @@ impl TaskJournal {
         )? {
             return Ok(result);
         }
-        let (mut manifest, hash) = load_manifest(&tx, &args.world_id, None)?;
         bound_version(&manifest, &hash, args.revision, &args.manifest_hash)?;
+        // Continuing to edit an applied world must bind the *current* formal
+        // build. The old lineage is accepted only when the world document really
+        // carries it, so a forged base string cannot unlock a foreign project.
+        let world = worlds::read(&tx, &args.world_id)?;
+        let applied_lineage = world.world.build["scene"]["format"] == "craftmine.godot-scene/1"
+            && world.world.build["id"] == workspace.task.binding.base_build
+            && world.world.build["godot"]["baseBuild"] == manifest.base_build;
         ensure!(
-            manifest.base_build == workspace.task.binding.base_build,
+            manifest.base_build == workspace.task.binding.base_build || applied_lineage,
             "WORLD_BUILD_CONFLICT"
         );
         let original_files = manifest.files.clone();
@@ -679,22 +1048,78 @@ impl TaskJournal {
         ensure!(manifest.files != original_files, "NO_CHANGE");
         manifest.revision = manifest.revision.checked_add(1).context("REVISION_LIMIT")?;
         manifest.task = workspace.task.binding;
+        // A new immutable revision records the actual applied baseline this
+        // writer used; older revisions keep their original baseline.
+        if applied_lineage {
+            manifest.base_build = manifest.task.base_build.clone();
+        }
         validate_manifest(&manifest)?;
-        // Every surviving reference is integrity checked, including unchanged files.
-        for (path, entry) in &original_files {
-            if manifest.files.get(path) == Some(entry) {
-                blob_read(&self.directory, &args.world_id, entry)?;
-            }
-        }
-        for file in text_files {
-            blob_write(
-                &self.directory,
-                &args.world_id,
-                &manifest.files[&file.path],
-                &file.text,
+        let result = if let Some((store, layout)) = &git {
+            let previous = manifest.revision - 1;
+            let head = git_commit_for(&tx, &args.world_id, previous)?
+                .context("GODOT_PROJECT_HEAD_MISSING")?;
+            // The host binds the exact commit it read; a model cannot write over
+            // a branch that moved underneath it, and only `main` is writable.
+            let operation = args
+                .operation
+                .as_ref()
+                .context("CONTENT_OPERATION_CONTEXT_REQUIRED")?;
+            operation.validate()?;
+            ensure!(
+                operation.world_id == args.world_id,
+                "CONTENT_CONTEXT_MISMATCH"
+            );
+            ensure!(
+                operation.branch_id == repo::MAIN_BRANCH,
+                "CONTENT_WRITE_BRANCH_NOT_MAIN"
+            );
+            ensure!(
+                operation.expected_head_oid.as_deref() == Some(head.as_str()),
+                "CONTENT_EXPECTED_HEAD_MISMATCH"
+            );
+            let changed: BTreeMap<String, String> = text_files
+                .iter()
+                .map(|file| (file.path.clone(), file.text.clone()))
+                .collect();
+            let content = git_content_files(store, layout, &tx, &args.world_id, &manifest, Some(&head), &changed)?;
+            let lock_hash = godot_builds::asset_lock_hash(&tx, &args.world_id)?;
+            let message = project_commit_message(
+                manifest.revision,
+                &args.tool_call_id,
+                &manifest.task.task_id,
+            );
+            let oid = store.commit(
+                layout,
+                repo::MAIN_BRANCH,
+                Some(&head),
+                &content,
+                &message,
             )?;
-        }
-        let result = store(&tx, &manifest, &args.tool_call_id, &request_hash)?;
+            store_git_index(
+                &tx,
+                &manifest,
+                &args.tool_call_id,
+                &request_hash,
+                &oid,
+                &lock_hash,
+            )?
+        } else {
+            // Every surviving reference is integrity checked, including unchanged files.
+            for (path, entry) in &original_files {
+                if manifest.files.get(path) == Some(entry) {
+                    blob_read(&self.directory, &args.world_id, entry)?;
+                }
+            }
+            for file in text_files {
+                blob_write(
+                    &self.directory,
+                    &args.world_id,
+                    &manifest.files[&file.path],
+                    &file.text,
+                )?;
+            }
+            store(&tx, &manifest, &args.tool_call_id, &request_hash)?
+        };
         tx.commit()?;
         Ok(result)
     }
@@ -728,3 +1153,4 @@ impl TaskJournal {
         .unwrap_or(Value::Null))
     }
 }
+

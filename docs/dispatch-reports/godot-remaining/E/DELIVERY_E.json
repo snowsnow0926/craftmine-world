@@ -1,0 +1,96 @@
+{
+  "task": "E",
+  "title": "World-first UI, multi-world creation and the full use flow",
+  "branch": "codex/godot-remaining-e-20260910",
+  "worktree": "D:/Craftmine World-worktrees/godot-remaining-e-20260910",
+  "baseCommit": "e462147",
+  "commits": [
+    {"hash": "651dd85", "message": "feat(craftmine-ui): track real world initialization before a world is playable"},
+    {"hash": "27b36e5", "message": "test(craftmine-ui): verify world creation against the real host and contract fixtures"},
+    {"hash": "04101e3", "message": "test(craftmine-ui): cover zoom, narrow window and resumable draft summaries"}
+  ],
+  "pushed": false,
+  "merged": false,
+  "changedFiles": [
+    "vendor/pi-desktop/apps/desktop/src/lib/craftmine-worlds.ts",
+    "vendor/pi-desktop/apps/desktop/src/lib/craftmine-worlds-text.ts",
+    "vendor/pi-desktop/apps/desktop/src/lib/craftmine-layout.ts",
+    "vendor/pi-desktop/apps/desktop/src/lib/craftmine-aux.ts",
+    "vendor/pi-desktop/apps/desktop/src/hooks/use-craftmine-worlds.ts",
+    "vendor/pi-desktop/apps/desktop/src/components/craftmine/WorldCreatePanel.tsx",
+    "vendor/pi-desktop/apps/desktop/src/components/craftmine/WorldListPanel.tsx",
+    "vendor/pi-desktop/apps/desktop/src/components/CraftmineLayoutControls.tsx",
+    "vendor/pi-desktop/apps/desktop/src/styles/craftmine.css",
+    "vendor/pi-desktop/apps/desktop/test/craftmine-world-navigation.test.mjs",
+    "tests/godot-remaining/e/world-create-e2e.mjs",
+    "tests/godot-remaining/e/create-flow-ui.mjs",
+    "docs/dispatch-reports/godot-remaining/E/E_REPORT.md",
+    "docs/dispatch-reports/godot-remaining/E/INTERFACE_REQUEST.md",
+    "docs/dispatch-reports/godot-remaining/E/ADR-E-world-creation-states.md",
+    "docs/dispatch-reports/godot-remaining/E/SPEC-E-world-creation-states.md",
+    "docs/dispatch-reports/godot-remaining/E/E2E-E-world-creation-states.md"
+  ],
+  "notChanged": [
+    "vendor/pi-desktop/apps/desktop/src/App.tsx",
+    "vendor/pi-desktop/apps/desktop/src/components/Sidebar.tsx",
+    "plugins/craftmine-world/*",
+    "vendor/pi-desktop/apps/desktop/electron/main/*",
+    "vendor/pi-desktop/crates/*",
+    "package.json",
+    "pnpm-lock.yaml"
+  ],
+  "contract": {
+    "worldListEntryAdds": ["state", "creation", "base.description", "check"],
+    "createResultAdds": ["state", "creation"],
+    "newChannel": "world.creationAction {worldId, action: retry|discard-draft}",
+    "createOptionsAdds": ["bases[].description", "starters[].description", "createActions"],
+    "readChannelRequested": "task.recoverable"
+  },
+  "validation": [
+    {
+      "name": "real product path: React panel -> navigation gateway -> retained plugin view -> plugin -> Rust core",
+      "command": "node tests/godot-remaining/e/world-create-e2e.mjs",
+      "result": "19/19 passed",
+      "evidence": "docs/dispatch-reports/godot-remaining/E/evidence/world-create-e2e.report.json"
+    },
+    {
+      "name": "creation flow contract with a fixture host (states the current host cannot produce)",
+      "command": "node tests/godot-remaining/e/create-flow-ui.mjs",
+      "result": "23/23 passed",
+      "evidence": "docs/dispatch-reports/godot-remaining/E/evidence/create-flow-ui.report.json"
+    },
+    {
+      "name": "world model and navigation unit tests",
+      "command": "node --test vendor/pi-desktop/apps/desktop/test/craftmine-world-navigation.test.mjs",
+      "result": "24/24 passed",
+      "evidence": "docs/dispatch-reports/godot-remaining/E/evidence/craftmine-world-navigation.test.txt"
+    },
+    {
+      "name": "existing layout regression",
+      "command": "node tests/batch07-desktop/layout-headless.mjs",
+      "result": "10/10 passed",
+      "evidence": "test-results/batch07-layout-*"
+    },
+    {
+      "name": "TypeScript typecheck",
+      "command": "npx tsc -p tsconfig.json --noEmit (vendor/pi-desktop/apps/desktop)",
+      "result": "0 errors"
+    }
+  ],
+  "noRealInput": true,
+  "skippedInputTests": ["tests/browser.mjs", "tests/modules-browser.mjs"],
+  "notCompleted": [
+    "Creating a real Godot world from a delivered base: blocked on A (persistent world.create/creationAction), C (createOptions/world.create/world.list passthrough), F (base and starter catalog), D/root (gateway + view.mjs must not mount a non-ready world).",
+    "world.list does not report base or check for created worlds, so the list shows 'base not reported'.",
+    "task.recoverable is not in NAVIGATION_READ_CHANNELS; the tasks row falls back to the bound task only.",
+    "Candidate preview/apply entry in the main window is D's scope; the plugin panel owns it today.",
+    "No real model call, no installer, no visible-window composition, no hands-on feel verification."
+  ],
+  "integrationOrder": [
+    "A/C: durable creation transaction and panel passthrough",
+    "D/root: world.creationAction routing and view.mjs create semantics",
+    "F: delivered base and starter catalog",
+    "re-run tests/godot-remaining/e/world-create-e2e.mjs",
+    "main task: assign ADR/E2E numbers and merge the fragments"
+  ]
+}

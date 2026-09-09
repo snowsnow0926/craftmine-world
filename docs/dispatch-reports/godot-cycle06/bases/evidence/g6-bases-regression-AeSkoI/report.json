@@ -1,0 +1,20 @@
+{
+  "out": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI",
+  "checks": [
+    {
+      "label": "sync",
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "label": "top-down",
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "label": "side-view",
+      "exitCode": 0,
+      "error": null
+    }
+  ]
+}

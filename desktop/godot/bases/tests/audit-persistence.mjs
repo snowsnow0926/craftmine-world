@@ -51,6 +51,33 @@ game._autosave()
 assert(not FileAccess.file_exists(target))
 game.free()
 `,
+  'mining-sandbox/worlds/mine-camp': `
+var state = MiningWorldState.new()
+state.world_id = "audit-own"
+var good = state.to_dict()
+assert(state.from_dict(good, "audit-own").ok)
+var before = JSON.stringify(state.to_dict())
+for field in ["worldId", "stateVersion", "inventory", "chunkIndex", "player"]:
+	var bad = good.duplicate(true)
+	bad[field] = "foreign" if field == "worldId" else "invalid"
+	assert(not state.from_dict(bad, "audit-own").ok)
+assert(JSON.stringify(state.to_dict()) == before)
+var missing = {"format": MiningWorldState.STATE_FORMAT, "worldId": "audit-own", "stateVersion": 1}
+assert(not state.from_dict(missing, "audit-own").ok)
+var revision_only = good.duplicate(true)
+revision_only.chunkIndex = {"0_0": {"revision": 2, "file": "", "sha256": "", "bytes": 0, "cells": 0}}
+assert(state.from_dict(revision_only, "audit-own").ok)
+var contradictory = good.duplicate(true)
+contradictory.chunkIndex = {"0_0": {"revision": 2, "file": "", "sha256": "", "bytes": 0, "cells": 5}}
+assert(not state.from_dict(contradictory, "audit-own").ok)
+var escaping = good.duplicate(true)
+escaping.chunkIndex = {"0_0": {"revision": 1, "file": "../escape.json", "sha256": "0".repeat(64), "bytes": 1, "cells": 1}}
+assert(not state.from_dict(escaping, "audit-own").ok)
+state.ledger_record("auto:1", "dig", {"ok": true}, true, 1024)
+assert(state.ledger_lookup("auto:1").is_empty())
+state.ledger_record("req-1", "dig", {"ok": true}, true, 1024)
+assert(not state.ledger_lookup("req-1").is_empty())
+`,
   'side-view': `
 var state = WorldState.create("audit-own", 1)
 state.grant_ability("double_jump")

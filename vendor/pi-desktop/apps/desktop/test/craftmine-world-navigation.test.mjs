@@ -25,8 +25,10 @@ test("world list parsing keeps host facts and drops malformed rows", () => {
   });
   assert.equal(parsed.activeWorldId, "w1");
   assert.equal(parsed.worlds.length, 2);
-  assert.deepEqual(parsed.worlds[0].base, { id: "craftmine-web/5", label: "Web voxel", delivered: true });
+  assert.deepEqual(parsed.worlds[0].base, { id: "craftmine-web/5", label: "Web voxel", description: "", delivered: true });
   assert.equal(parsed.worlds[0].check.status, "passed");
+  assert.equal(parsed.worlds[0].state, "ready");
+  assert.equal(parsed.worlds[0].creation, null);
   assert.equal(parsed.worlds[1].base.delivered, false);
   assert.equal(parsed.worlds[1].check, null);
   assert.equal(parsed.worlds[1].origin, "imported");
@@ -107,7 +109,7 @@ test("bridge uses the plugin channel names and reports switch failure without a 
   assert.equal(calls[0][1], "world.list");
   assert.equal(list.worlds[0].title, "One");
   assert.deepEqual(await bridge.switchWorld("w2"), { ok: false, error: "Injected save failure", activeWorldId: null });
-  assert.deepEqual(await bridge.create({ title: "Two" }), { id: "w2", title: "Two" });
+  assert.deepEqual(await bridge.create({ title: "Two" }), { id: "w2", title: "Two", state: "ready", creation: null });
 });
 
 test("create without a host identity is an error, not a silent success", async () => {
@@ -143,27 +145,50 @@ test("auxiliary sections cover the six surfaces and report missing channels", as
     aux.CRAFTMINE_AUX_SECTIONS.map((section) => section.id),
     ["works", "assets", "checks", "memory", "tasks", "backups"],
   );
-  assert.equal(aux.craftmineAuxSection("assets").channel, null);
+  assert.equal(aux.craftmineAuxSection("assets").channel, "asset.search");
+  assert.deepEqual(aux.craftmineAuxSection("assets").surface, { kind: "assets" });
   const calls = [];
   const bridge = {
     call: async (channel, payload) => {
       calls.push([channel, payload]);
       if (channel === "verification.list") return [{ status: "passed" }];
       if (channel === "library.search") return { items: [{}, {}], total: 7 };
+      if (channel === "asset.search") return { items: [{}, {}, {}], total: 12, truncated: true };
       return {};
     },
   };
-  assert.equal(await aux.loadAuxSummary(bridge, "w1", "assets"), null);
-  assert.equal(calls.length, 0);
+  assert.deepEqual(await aux.loadAuxSummary(bridge, "w1", "assets"),
+    { id: "assets", label: "\u7d20\u6750", count: 12, detail: "\u2026" });
+  assert.deepEqual(calls[0], ["asset.search", { worldId: "w1", scope: "local-library", offset: 0, limit: 5 }]);
   assert.deepEqual(await aux.loadAuxSummary(bridge, "w1", "checks"), { id: "checks", label: "\u68c0\u67e5", count: 1, detail: "passed" });
   assert.equal((await aux.loadAuxSummary(bridge, "w1", "works")).count, 7);
-  assert.equal(calls[0][1].worldId, "w1");
   assert.equal(aux.auxSummaryText(null, "en"), "Not connected");
   assert.match(aux.auxSummaryText({ id: "x", label: "x", count: 3, detail: "passed" }, "zh"), /3/);
 });
 
-test("auxiliary expansion is remembered per section and tolerates corrupt storage", () => {
-  const store = new Map();
+test("the tasks row reports real resumable drafts when the host exposes them", async () => {
+  const calls = [];
+  const bridge = {
+    call: async (channel, payload) => {
+      calls.push([channel, payload]);
+      if (channel === "task.current") return { context: { status: "interrupted", binding: { taskId: "t1" } } };
+      if (channel === "task.recoverable") return { items: [{ taskId: "t1" }, { taskId: "t2" }], modelReplay: false };
+      return {};
+    },
+  };
+  const summary = await aux.loadAuxSummary(bridge, "w1", "tasks");
+  assert.deepEqual(calls.map(([channel]) => channel), ["task.current", "task.recoverable"]);
+  assert.equal(calls[1][1].worldId, "w1");
+  assert.match(summary.detail, /interrupted/);
+  assert.match(summary.detail, /2/);
+  const silent = await aux.loadAuxSummary({ call: async (channel) => {
+    if (channel === "task.current") return { context: { status: "running", binding: { taskId: "t1" } } };
+    throw Error("PERMISSION_DENIED");
+  } }, "w1", "tasks");
+  assert.equal(silent.detail, "running");
+});
+
+test("auxiliary expansion is remembered per section and tolerates corrupt storage", () => {  const store = new Map();
   const storage = { getItem: (key) => store.get(key) ?? null, setItem: (key, value) => store.set(key, value) };
   layout.rememberCraftmineAux(storage, "checks", true);
   layout.rememberCraftmineAux(storage, "memory", true);
@@ -240,10 +265,83 @@ test("capability parsing only promotes explicitly delivered bases and start poin
   ]);
   assert.equal(parsed.switch, false);
   assert.equal(parsed.create, true);
+  assert.equal(parsed.createActions, false);
   const silent = worlds.parseWorldCapabilities({});
   assert.deepEqual(silent.bases, []);
   assert.deepEqual(silent.starters, []);
   assert.equal(silent.switch, null);
+  assert.equal(silent.createActions, false);
+});
+
+test("initialization state and stages come only from the host", () => {
+  const parsed = worlds.parseWorldList({
+    activeWorldId: null,
+    worlds: [
+      {
+        id: "w1", title: "Town", revision: 0, updatedAt: 0, state: "initializing",
+        creation: {
+          operationId: "op-1", stage: "import", progress: 42,
+          stages: [
+            { id: "materialize", label: "Copy base", status: "passed" },
+            { id: "import", label: "Import assets", status: "running" },
+            { id: "build", label: "First build", status: "pending" },
+          ],
+        },
+      },
+      {
+        id: "w2", title: "Farm", revision: 0, updatedAt: 0, state: "failed",
+        creation: {
+          operationId: "op-2", stage: "build", progress: 80,
+          stages: [{ id: "build", label: "First build", status: "failed" }],
+          error: { code: "GODOT_EXECUTION_UNAVAILABLE", message: "No executor", stage: "build", recoverable: true },
+          actions: ["retry", "discard-draft", "invented-action"],
+        },
+      },
+      { id: "w3", title: "Legacy", revision: 1, updatedAt: 3 },
+    ],
+  });
+  const [town, farm, legacy] = parsed.worlds;
+  assert.equal(town.state, "initializing");
+  assert.equal(town.creation.progress, 42);
+  assert.equal(town.creation.stages[1].status, "running");
+  assert.equal(worlds.creationStageText(town.creation, "zh"), "Import assets (2/3)");
+  assert.equal(worlds.creationProgressText(town.creation, "en"), "42%");
+  assert.equal(farm.state, "failed");
+  assert.equal(farm.creation.error.code, "GODOT_EXECUTION_UNAVAILABLE");
+  assert.equal(farm.creation.error.recoverable, true);
+  assert.deepEqual(worlds.creationActions(farm.creation), ["retry", "discard-draft"]);
+  assert.equal(worlds.creationActions(null).length, 0);
+  // A host that says nothing keeps its worlds playable; no stage is invented.
+  assert.equal(legacy.state, "ready");
+  assert.equal(legacy.creation, null);
+  assert.equal(worlds.isWorldPlayable(legacy), true);
+  assert.equal(worlds.isWorldPlayable(town), false);
+  assert.equal(worlds.isWorldPlayable(farm), false);
+  assert.equal(worlds.hasInitializingWorld(parsed.worlds), true);
+  assert.equal(worlds.hasInitializingWorld([legacy]), false);
+  assert.equal(worlds.worldStateLabel("initializing", "zh"), "\u521d\u59cb\u5316\u4e2d");
+  assert.equal(worlds.worldStateLabel("failed", "en"), "Initialization failed");
+});
+
+test("an unfinished world sorts after playable ones but before older saves", () => {
+  const entry = (id, state, updatedAt) => ({ id, title: id, revision: 0, updatedAt, base: null, origin: null, check: null, state, creation: null });
+  const sorted = worlds.sortWorldEntries(
+    [entry("new-fail", "failed", 90), entry("old-ready", "ready", 10), entry("new-ready", "ready", 80)],
+    null,
+  );
+  assert.deepEqual(sorted.map((item) => item.id), ["new-ready", "old-ready", "new-fail"]);
+});
+
+test("creation recovery dispatches only host-supported actions", async () => {
+  const calls = [];
+  const bridge = worlds.createCraftmineWorldBridge(async (pluginId, channel, payload) => {
+    calls.push([channel, payload]);
+    return {};
+  });
+  await bridge.creationAction("w1", "retry");
+  assert.deepEqual(calls[0], ["world.creationAction", { worldId: "w1", action: "retry" }]);
+  await assert.rejects(() => bridge.creationAction("w1", "invented"), /INVALID_WORLD_CREATION_ACTION/);
+  assert.equal(calls.length, 1);
 });
 
 test("duplicate host ids are dropped so rows keep stable identities", () => {
@@ -280,9 +378,29 @@ test("capabilities are requested for the selected world only", async () => {
     return {};
   });
   const capabilities = await bridge.capabilities("w1");
-  assert.equal(calls[0][1].worldId, "w1");
-  assert.equal(calls[1][1].worldId, "w1");
+  const workbench = calls.find(([channel]) => channel === "workbench.capabilities");
+  const options = calls.find(([channel]) => channel === "world.createOptions");
+  assert.equal(workbench[1].worldId, "w1");
+  assert.equal(options[1].worldId, "w1");
   assert.deepEqual(capabilities.bases.map((base) => base.id), ["craftmine-web/5"]);
+});
+
+test("creation options load before any world exists", async () => {
+  const calls = [];
+  const bridge = worlds.createCraftmineWorldBridge(async (pluginId, channel, payload) => {
+    calls.push([channel, payload]);
+    if (channel === "world.createOptions") return {
+      create: true,
+      bases: [{ id: "craftmine-web/5", label: "Web", delivered: true }],
+      starters: [{ id: "blank", label: "Blank", delivered: true }],
+    };
+    if (channel === "workbench.capabilities") throw Error("SELECTED_WORLD_MISMATCH");
+    return {};
+  });
+  const capabilities = await bridge.capabilities(null);
+  assert.deepEqual(calls.map(([channel]) => channel), ["world.createOptions"]);
+  assert.deepEqual(capabilities.bases.map((base) => base.id), ["craftmine-web/5"]);
+  assert.deepEqual(capabilities.starters.map((starter) => starter.id), ["blank"]);
 });
 
 test("a seam without an invoker yields no bridge instead of a broken one", () => {

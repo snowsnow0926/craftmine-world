@@ -68,6 +68,7 @@ export default defineConfig({
           "plugin-panel": resolve(__dirname, "electron/preload/plugin-panel.ts"),
           "craftmine-headless": resolve(__dirname, "electron/preload/craftmine-headless.ts"),
           "godot-world": resolve(__dirname, "electron/preload/godot-world.ts"),
+          "godot-check": resolve(__dirname, "electron/preload/godot-check.ts"),
         },
         output: {
           format: "cjs",

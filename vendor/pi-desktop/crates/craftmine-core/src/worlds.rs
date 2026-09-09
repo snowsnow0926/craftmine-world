@@ -255,6 +255,18 @@ impl TaskJournal {
             ensure!(snapshot["baseVersion"] == current.world.snapshot["baseVersion"]
                 && snapshot["stateVersion"] == current.world.snapshot["stateVersion"],
                 "GODOT_PROGRESS_VERSION_MISMATCH");
+            // Godot progress may only be written for a build the host actually
+            // applied after a verified check and a confirmed first launch. A
+            // world document that merely claims a build id is not enough, and
+            // there is no test-only exception for the initialising world: that
+            // path is confirmed by its own real application before it is playable.
+            let applied: bool = tx.query_row(
+                "SELECT EXISTS(SELECT 1 FROM craftmine_godot_applications
+                    WHERE world_id=?1 AND build_id=?2 AND status='applied')",
+                params![id, base_build],
+                |row| row.get(0),
+            )?;
+            ensure!(applied, "GODOT_BUILD_NOT_APPLIED");
         }
         current.world.snapshot = snapshot.clone();
         super::godot_runtime::validate_binding(&current.world, Some(id))?;

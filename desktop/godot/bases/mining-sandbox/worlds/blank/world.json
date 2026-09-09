@@ -1,0 +1,129 @@
+{
+  "format": "craftmine.godot-mining-sandbox-world/1",
+  "baseId": "mining-sandbox",
+  "baseVersion": "1.0.0",
+  "baseProtocolVersion": 1,
+  "worldId": "example-blank",
+  "displayName": "空白起点",
+  "description": "Blank mining-sandbox start: a finite 48x24 generated map with dig, place, inventory and saving only.",
+  "entryScene": "res://scenes/main.tscn",
+  "stateVersion": 1,
+  "autosaveOnExit": true,
+  "generation": {
+    "algorithm": "craftmine.deterministic-terrain/1",
+    "seed": 20260910,
+    "mapSize": [
+      48,
+      24
+    ],
+    "surface": {
+      "baseRow": 8,
+      "amplitude": 2
+    },
+    "soilDepth": 4,
+    "soilMaterial": "dirt",
+    "soilTopMaterial": "grass",
+    "rockMaterial": "stone",
+    "deepRockMaterial": "stone",
+    "deepRockRow": 24,
+    "bedrockRows": 2,
+    "ores": [],
+    "caves": {
+      "chancePerMille": 0,
+      "minRow": 0,
+      "maxRow": 0,
+      "veinSize": 0
+    }
+  },
+  "materials": [
+    {
+      "id": "grass",
+      "name": "Grass",
+      "color": "#4f8f3f",
+      "solid": true,
+      "breakable": true,
+      "requiredTier": 0,
+      "placeable": true,
+      "item": "dirt",
+      "placeCost": 1,
+      "drop": {
+        "id": "dirt",
+        "count": 1
+      }
+    },
+    {
+      "id": "dirt",
+      "name": "Dirt",
+      "color": "#6b4a2f",
+      "solid": true,
+      "breakable": true,
+      "requiredTier": 0,
+      "placeable": true,
+      "item": "dirt",
+      "placeCost": 1,
+      "drop": {
+        "id": "dirt",
+        "count": 1
+      }
+    },
+    {
+      "id": "stone",
+      "name": "Stone",
+      "color": "#6b6f7a",
+      "solid": true,
+      "breakable": true,
+      "requiredTier": 0,
+      "placeable": true,
+      "item": "stone",
+      "placeCost": 1,
+      "drop": {
+        "id": "stone",
+        "count": 1
+      }
+    },
+    {
+      "id": "bedrock",
+      "name": "Bedrock",
+      "color": "#23262d",
+      "solid": true,
+      "breakable": false,
+      "requiredTier": 0,
+      "placeable": false,
+      "item": "",
+      "placeCost": 0,
+      "drop": {
+        "id": "",
+        "count": 0
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "dirt",
+      "name": "Dirt",
+      "stack": 999,
+      "toolTier": 0
+    },
+    {
+      "id": "stone",
+      "name": "Stone",
+      "stack": 999,
+      "toolTier": 0
+    }
+  ],
+  "recipes": [],
+  "entities": [],
+  "initialProgress": {
+    "player": {
+      "tile": [
+        6,
+        4
+      ],
+      "facing": "right",
+      "health": 3
+    },
+    "inventory": [],
+    "tools": [],
+    "flags": []
+  }
+}

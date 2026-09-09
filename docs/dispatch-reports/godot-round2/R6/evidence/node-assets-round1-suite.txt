@@ -1,0 +1,211 @@
+﻿[case] AUDIO_LIMITS -> {"bytes":33554432,"frames":28800000,"channels":8}
+[case] wav16-mono -> {"probe":{"format":"wav","codec":"pcm-s16le","sampleRate":8000,"channels":1,"durationMs":100,"bitsPerSample":16,"bytes":1644},"frames":800,"peak":0.5,"rms":0.3535533905932738,"signalDigest":"5981ac797435423ca5ed386e3ba8c7ffce437c63ee9b7a1deddd3d0e29070a1c"}
+[case] wav8-mono -> {"codec":"pcm-u8","peak":0.5,"rms":0.35255935061082266}
+[case] wav24-mono -> {"codec":"pcm-s24le","peak":0.5,"rms":0.3535533905932738}
+[case] wav32f-mono -> {"codec":"pcm-f32le","peak":0.25,"rms":0.1767766952966369}
+[case] wav16-stereo -> {"frames":441,"durationMs":10,"peak":0.5,"rms":0.27919141427520416}
+[case] wav-extensible16 -> {"codec":"pcm-s16le","peak":0.5}
+[case] ogg-vorbis -> {"probe":{"format":"ogg","codec":"vorbis","sampleRate":8000,"channels":2,"durationMs":1000,"bitsPerSample":null,"bytes":109},"decoded":{"format":"ogg","codec":"vorbis","sampleRate":8000,"channels":2,"frames":8000,"durationMs":1000,"pcmDecoded":false,"peak":null,"rms":null,"signalDigest":null,"reason":"ogg-pcm-decode-not-implemented"}}
+[case] ogg-opus -> {"probe":{"format":"ogg","codec":"opus","sampleRate":48000,"channels":1,"durationMs":2000,"bitsPerSample":null,"bytes":83},"decoded":{"format":"ogg","codec":"opus","sampleRate":48000,"channels":1,"frames":96000,"durationMs":2000,"pcmDecoded":false,"peak":null,"rms":null,"signalDigest":null,"reason":"ogg-pcm-decode-not-implemented"}}
+[case] bad-non-container -> {"bytes":29,"code":"UNSUPPORTED_FORMAT"}
+[case] bad-truncated-riff -> {"bytes":8,"code":"CORRUPT_AUDIO"}
+[case] bad-wav-chunk-bounds -> {"fmtBytes":108,"dataBytes":100,"code":"CORRUPT_AUDIO"}
+[case] bad-wav-codec -> {"code":"UNSUPPORTED_FORMAT"}
+[case] bad-ogg-crc -> {"bytes":58,"code":"CORRUPT_AUDIO"}
+[case] bad-ogg-truncated -> {"bytes":53,"code":"CORRUPT_AUDIO"}
+[case] bad-ogg-no-packet -> {"bytes":27,"code":"CORRUPT_AUDIO"}
+[case] bad-ogg-codec -> {"code":"UNSUPPORTED_FORMAT"}
+[case] limit-channels -> {"channels":9,"code":"AUDIO_TOO_LARGE"}
+[case] limit-bytes -> {"bytes":33554433,"code":"AUDIO_TOO_LARGE"}
+[case] limit-max-frames -> {"maxFrames":799,"code":"AUDIO_TOO_LARGE","allowedFrames":800}
+[case] limit-deadline -> {"deadline":"now-1","code":"PREVIEW_TIMEOUT"}
+[case] limit-ogg-frames -> {"maxFrames":95999,"code":"AUDIO_TOO_LARGE"}
+✔ AUDIO_LIMITS exposes the documented hard limits (1.1383ms)
+✔ WAV 16-bit mono sine: probe + decode peak/rms/digest (2.7727ms)
+✔ WAV 8-bit unsigned mono: decode peak/rms/digest (0.6687ms)
+✔ WAV 24-bit mono: decode peak/rms/digest (1.1142ms)
+✔ WAV 32-bit float mono: decode peak/rms/digest (0.3474ms)
+✔ WAV 16-bit stereo: interleaved frames + per-channel gain (0.8832ms)
+✔ WAV WAVE_FORMAT_EXTENSIBLE 16-bit PCM decodes like plain PCM (0.2376ms)
+✔ Ogg Vorbis: container parse + granule duration + honest pcmDecoded:false (0.4858ms)
+✔ Ogg Opus: container parse + 48 kHz granule duration + honest pcmDecoded:false (0.342ms)
+✔ bad input: non-RIFF / non-Ogg header -> UNSUPPORTED_FORMAT (0.4189ms)
+✔ bad input: truncated RIFF header -> CORRUPT_AUDIO (0.151ms)
+✔ bad input: WAV chunk length out of bounds -> CORRUPT_AUDIO (0.1195ms)
+✔ bad input: unsupported WAVE codec / bit depth -> UNSUPPORTED_FORMAT (0.1453ms)
+✔ bad input: Ogg page CRC mismatch -> CORRUPT_AUDIO (0.1549ms)
+✔ bad input: truncated Ogg page -> CORRUPT_AUDIO (0.1078ms)
+✔ bad input: Ogg without a complete packet -> CORRUPT_AUDIO (0.0897ms)
+✔ bad input: unknown Ogg codec -> UNSUPPORTED_FORMAT (0.1024ms)
+✔ limits: channel count over AUDIO_LIMITS.channels -> AUDIO_TOO_LARGE (0.0967ms)
+✔ limits: byte size over AUDIO_LIMITS.bytes -> AUDIO_TOO_LARGE (0.0945ms)
+✔ limits: options.maxFrames exceeded -> AUDIO_TOO_LARGE (0.3479ms)
+✔ limits: options.deadline exceeded -> PREVIEW_TIMEOUT (0.3641ms)
+✔ limits: Ogg frame count respects maxFrames (0.2135ms)
+[case] PACKAGE_LIMITS -> {"files":4096,"fileBytes":4194304,"totalBytes":67108864,"refs":20000}
+[case] AssetPreviewError -> {"name":"AssetPreviewError","code":"SOME_CODE"}
+[case] packageKind -> {"scene":"scene","script":"script","resource":"resource","mixed":"mixed","unknown":"unknown"}
+[case] scene-missing -> {"missing":[{"code":"missing-resource","path":"scenes/player.tscn","line":5,"target":"res://art/missing.png","kind":"ext_resource"}],"ok":false,"kind":"mixed"}
+[case] scene-unresolved-ids -> {"issues":["unresolved-ext-resource:1_missing","unresolved-sub-resource:Shape_missing"]}
+[case] script-refs -> {"missing":["extends@scripts/broken.gd:2","preload@scripts/hero.gd:6","load@scripts/hero.gd:7"]}
+[case] cycle-two -> {"cycles":[["a.tscn","b.tscn"]]}
+[case] cycle-normalized -> {"two":[["a.tscn","z.tscn"]],"three":[["a.tscn","b.tscn","c.tscn"]]}
+[case] cycle-self -> {"cycles":[["s.tscn"]]}
+[case] cycle-dense-acyclic -> {"nodes":40,"edges":480,"elapsedMs":18.83,"cycles":0,"cyclesTruncated":true}
+[case] cycle-many -> {"nodes":8,"elapsedMs":6.33,"cycles":4096,"cyclesTruncated":true}
+[case] cycle-not-truncated -> {"two":false,"self":false,"acyclic":false}
+[case] path-traversal -> {"ok":false,"issues":["path-traversal"]}
+[case] path-absolute -> {"issues":["absolute-path:/etc/passwd","absolute-path:C:/Windows/evil.tscn"]}
+[case] path-reserved -> {"reserved":["assets/COM1.gd:COM1","CON.tscn:CON","lpt9.tres:lpt9"]}
+[case] path-case-collision -> {"ok":false,"collisions":["textures/hero.png","Textures/Hero.png"]}
+[case] path-duplicate -> {"duplicate":{"code":"duplicate-path","path":"./dup.tscn","other":"dup.tscn","normalized":"dup.tscn","message":"path ./dup.tscn duplicates dup.tscn after normalization"}}
+[case] path-separator -> {"issues":["invalid-separator"]}
+[case] invalid-file -> {"issues":["invalid-file"]}
+[case] unknown-extensions -> {"kind":"unknown","files":2,"bytes":9}
+[case] limit-files -> {"count":4097,"code":"PACKAGE_TOO_LARGE"}
+[case] limit-file-bytes -> {"bytes":4194305,"code":"PACKAGE_TOO_LARGE"}
+[case] limit-total-bytes -> {"files":17,"totalBytes":71303168,"code":"PACKAGE_TOO_LARGE"}
+[case] limit-refs -> {"refs":20001,"code":"PACKAGE_TOO_LARGE"}
+[case] executed-flag -> {"checked":5,"executed":[false,false,false,false,false]}
+✔ PACKAGE_LIMITS exposes the documented hard limits (1.0984ms)
+✔ AssetPreviewError carries name, code and message (0.1837ms)
+✔ packageKind classifies scene / script / resource / mixed / unknown (0.2435ms)
+✔ scene: missing res:// reference is reported with owner path and line (6.1539ms)
+✔ scene: unresolved ExtResource / SubResource ids are reported (0.3307ms)
+✔ script: preload / load / extends res:// references are all parsed (0.3532ms)
+✔ cycles: a.tscn -> b.tscn -> a.tscn is detected and normalized (0.671ms)
+✔ cycles: start is the lexicographically smallest path regardless of input order (0.2035ms)
+✔ cycles: self reference is reported as a one-element loop (0.3986ms)
+✔ cycles: dense acyclic graph returns fast, finds no cycle and reports truncation (20.0396ms)
+✔ cycles: many-cycle graph returns instead of hanging and flags truncation (6.8204ms)
+✔ cycles: small graphs finish within budget and report cyclesTruncated:false (0.687ms)
+✔ path safety: parent traversal is rejected (0.4139ms)
+✔ path safety: absolute paths are rejected (0.2191ms)
+✔ path safety: Windows reserved names are rejected (0.1695ms)
+✔ path safety: case-only collisions are rejected (0.1977ms)
+✔ path safety: duplicate paths after normalization are rejected (0.1462ms)
+✔ path safety: backslash separators are rejected (0.1331ms)
+✔ path safety: non-Uint8Array content is reported, not executed (0.0803ms)
+✔ unknown extensions are counted but never reported as errors (0.086ms)
+✔ limits: file count over PACKAGE_LIMITS.files -> PACKAGE_TOO_LARGE (1.2858ms)
+✔ limits: single file over PACKAGE_LIMITS.fileBytes -> PACKAGE_TOO_LARGE (0.1169ms)
+✔ limits: total bytes over PACKAGE_LIMITS.totalBytes -> PACKAGE_TOO_LARGE (0.1157ms)
+✔ limits: reference count over PACKAGE_LIMITS.refs -> PACKAGE_TOO_LARGE (11.8ms)
+✔ every result reports executed:false (no engine, no GDScript) (0.3946ms)
+[pass] image-limits-exact-values
+[pass] asset-preview-error-shape
+[pass] png-rgb8-exact-pixels-and-probe
+[pass] png-scanline-filters-0-1-2-3-4
+[pass] png-palette-bitdepth4-with-trns
+[pass] png-palette-without-trns-is-opaque
+[pass] png-grayscale-bitdepth1
+[pass] png-16bit-shifts-to-8bit
+[pass] png-grayscale-with-trns
+[pass] png-encode-decode-roundtrip
+[info] jpeg fixture source: System.Drawing powershell.exe -NoProfile -Command -> C:\Users\WINDOWS\AppData\Local\Temp\craftmine-al2-jpeg-EKFMlT\gradient.jpg
+[pass] jpeg-real-file-pixels
+[pass] jpeg-restart-interval-and-rst-markers
+[pass] jpeg-444-chroma-color-conversion
+[pass] jpeg-rgb-component-ids-skip-colour-conversion
+[pass] jpeg-422-chroma-upsampling-step
+[pass] jpeg-420-subsampling-block-layout
+[pass] thumbnail-maxside-keeps-aspect-ratio
+[pass] thumbnail-box-filter-averages
+[pass] options-maxside-validation
+[pass] deadline-expired-throws-preview-timeout
+[pass] error-truncated-png-is-corrupt
+[pass] error-fake-jpeg-sof-is-corrupt
+[pass] error-oversized-headers-are-too-large
+[pass] error-byte-limit-is-too-large
+[pass] error-unsupported-format
+[pass] error-truncated-jpeg-entropy-is-corrupt
+[pass] unsupported-adam7-png
+[pass] unsupported-progressive-jpeg
+--- image-decode test summary ---
+PASS image-limits-exact-values
+PASS asset-preview-error-shape
+PASS png-rgb8-exact-pixels-and-probe
+PASS png-scanline-filters-0-1-2-3-4
+PASS png-palette-bitdepth4-with-trns
+PASS png-palette-without-trns-is-opaque
+PASS png-grayscale-bitdepth1
+PASS png-16bit-shifts-to-8bit
+PASS png-grayscale-with-trns
+PASS png-encode-decode-roundtrip
+PASS jpeg-real-file-pixels
+PASS jpeg-restart-interval-and-rst-markers
+PASS jpeg-444-chroma-color-conversion
+PASS jpeg-rgb-component-ids-skip-colour-conversion
+PASS jpeg-422-chroma-upsampling-step
+PASS jpeg-420-subsampling-block-layout
+PASS thumbnail-maxside-keeps-aspect-ratio
+PASS thumbnail-box-filter-averages
+PASS options-maxside-validation
+PASS deadline-expired-throws-preview-timeout
+PASS error-truncated-png-is-corrupt
+PASS error-fake-jpeg-sof-is-corrupt
+PASS error-oversized-headers-are-too-large
+PASS error-byte-limit-is-too-large
+PASS error-unsupported-format
+PASS error-truncated-jpeg-entropy-is-corrupt
+PASS unsupported-adam7-png
+PASS unsupported-progressive-jpeg
+--- pass 28 / fail 0 / skip 0 ---
+✔ image-limits-exact-values (1.1318ms)
+✔ asset-preview-error-shape (0.1591ms)
+✔ png-rgb8-exact-pixels-and-probe (4.5019ms)
+✔ png-scanline-filters-0-1-2-3-4 (0.6624ms)
+✔ png-palette-bitdepth4-with-trns (0.4947ms)
+✔ png-palette-without-trns-is-opaque (0.3636ms)
+✔ png-grayscale-bitdepth1 (0.2964ms)
+✔ png-16bit-shifts-to-8bit (0.3536ms)
+✔ png-grayscale-with-trns (0.2606ms)
+✔ png-encode-decode-roundtrip (0.4204ms)
+✔ jpeg-real-file-pixels (481.6919ms)
+✔ jpeg-restart-interval-and-rst-markers (1.3247ms)
+✔ jpeg-444-chroma-color-conversion (0.8072ms)
+✔ jpeg-rgb-component-ids-skip-colour-conversion (0.8808ms)
+✔ jpeg-422-chroma-upsampling-step (0.4383ms)
+✔ jpeg-420-subsampling-block-layout (0.501ms)
+✔ thumbnail-maxside-keeps-aspect-ratio (11.4183ms)
+✔ thumbnail-box-filter-averages (0.4328ms)
+✔ options-maxside-validation (0.2239ms)
+✔ deadline-expired-throws-preview-timeout (0.6879ms)
+✔ error-truncated-png-is-corrupt (0.5029ms)
+✔ error-fake-jpeg-sof-is-corrupt (0.2333ms)
+✔ error-oversized-headers-are-too-large (0.4155ms)
+✔ error-byte-limit-is-too-large (0.1816ms)
+✔ error-unsupported-format (0.162ms)
+✔ error-truncated-jpeg-entropy-is-corrupt (406.3814ms)
+✔ unsupported-adam7-png (0.2811ms)
+✔ unsupported-progressive-jpeg (0.148ms)
+[case] cache-key -> {"canonical":"craftmine.asset-preview/1\ndoor-texture\n1\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nasset-preview/1\n4.7.2-stable\ndefault","sha256":"a372177f10f8030150ed62ff1543e1fc5e41c46d211a85248fc12c640ea48d42"}
+[case] shared-lock-vectors -> {"cases":["fixture-lock","empty-lock"]}
+[case] png -> {"status":"ok","facts":{"decoder":"image-decode.mjs@1","digest":"c8830066d0cee317addf1e9db1c1ba59c07e0c558e4dc70c6483927d7b2036e9","format":"png","width":8,"height":4,"thumbnailWidth":8,"thumbnailHeight":4,"thumbnailBytes":140,"thumbnailBase64":"iVBORw0KGgoAAAANSUhEUgAAAAgAAAAECAYAAACzzX7wAAAAU0lEQVR42hXKQREDMRAEsUViJIPESObZKA7JIjGhTkVvzQyewQzewQ5+gzv4BmeCJ5jgDTb4BTf48g/FU0zxFlv8ilt8/YfFs5jFu9jFb3EX3+IP/1RIQf9tSz4AAAAASUVORK5CYII=","progressive":false,"interlace":"none","picture":true,"playable":false}}
+[case] png-broken -> {"status":"failed","detail":"CORRUPT_IMAGE"}
+[case] jpeg -> {"status":"ok","facts":{"decoder":"image-decode.mjs@1","digest":"73bbe870ce3ab7c7d52ac619c2141e010449db9cd2612f9094950fbda296ea72","format":"jpeg","width":16,"height":16,"thumbnailWidth":16,"thumbnailHeight":16,"thumbnailBytes":927,"thumbnailBase64":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAADZklEQVR42gXB2VJbdQDA4TOUAg0MSx3vXIASoFAoI9iccJac/1lyAqGAL+BUwJIhINF7R5aylsUnsEOhQNkafQGHpSmbLOOdg0iRXcFH+Pl90q2kKlJTZD6+5Sc/TUdP8mOl6jxJ8tN8W6Ur2cezNIUXyVVM3fGznPSIRKrCQbLCUVoAKd2jkpVp4E0XlGQHCXoE4awgEY+gPdNhMCPASLbFTIbKQo5gw6Ozk2VxkmFxke0ipeXJpBco5OerFBYaWHkarlfQkqfQWqDTe8/PQJHGVL6P10Uqb3N9bHpVjvJ1TgpNpJwSwYflDqWlDhUVtdSVBPniYZiOEptvy0OMlln8WBFksdTglwqHnfsGv5c7XJa6XD8MIyWLz0hzHvGJ6eOeqxIQPuygyhPho8VR+MGsojco88KsZMqVWTYqSTgyB6bMX46ClBlWyakPUFwneNDoUBMWPG5waAsLOuptBsMaIw2C2bDKYqNgs0Zlt15wGhZcNjhIt1s+507Ez6dfKxS0GRjNCk7EoKlF5mlEpavFx7OIwkRzJdMRmeWmShKtMgct1RxFdKTMDp2cmKCow+LBdyFCUYvHsRBt7QbfxGwG2wOMxCxeRxWWYgYbbQo7nQYn7SYXsSBSSrcfT59Gbo+Gd8BEdGsE+02au1Va+wx6eqvpH9CZ7JGZHdBY65LZ6NM47Alw3G8hZQ4J7o46FA87lI3XUjPkUD9WS3TIpnM0xPBzk7HxIPPDBvFxh+1Bg/1Rh7Nhl6uxMFLKRDWeVzq5kzreWQtzQsedtmia0Hj6StA9qdA3E+DlSz8zMzqrE37Wp3UOJ3WOZ0yk7HmbD5Zc7i+4lP9cR3jOpfFNHdG5IJ1LtTxfdBiLh5ifN4nHXbbnTPbfuJwvuPwTDyMlrVSRkpD5aFUmb11DXa5GJAJ8ueLjq7fVfL/qo/udwk8rlUy+k/l1uZK1hMwfq9X8mdCQ0rc0snYF3m1ByX4QZ9OidjdE65ZBdNemf9tgeM9mZktlYU+wvqny267g722L8z0XKeW9jOdUJfdYxXsuMI9U3FNB85FC60mAnmM//Wcak+99zJ6prB3JbJxqHB6rHJ8ZSJmXBnevbYqvbMr+q6H2wqbhuobohUXnvy7DV4KxG4f5ywDxG5vtC4P9a4ezK5urmxD/A0yCLgv5XLMmAAAAAElFTkSuQmCC","progressive":false,"interlace":"none","picture":true,"playable":false}}
+[case] glb -> {"ok":{"decoder":"glb-decode.mjs@1","digest":"d8b87038ed2ace74ed183166f6b0a541eab77f7184d50e65edc4bca5ccb5445a","triangles":1,"vertices":3,"nodes":1,"meshes":1,"materials":0,"images":0,"accessors":2,"picture":false,"rendered":false,"renderReason":"model-render-not-implemented","playable":false},"broken":"CORRUPT_ASSET_BODY"}
+[case] audio -> {"wav":"ok","ogg":"failed","oggReason":"ogg-pcm-decode-not-implemented"}
+[case] package -> {"ok":"ok","rejected":"package rejected: res://art/missing.png"}
+[case] unsupported -> {"cacheKey":"3ed896d9f300004c81807eda160536909add8ab2d5d8df42c11e2ee3e178e6e5","status":"failed","detail":"UNSUPPORTED_MEDIA_TYPE","facts":{}}
+✔ cache key matches the frozen cross-language constant (1.0862ms)
+✔ the shared lock vectors hash identically on the Node side (0.3702ms)
+✔ PNG decodes to real pixels and a thumbnail (1.9216ms)
+✔ a corrupt PNG becomes a failed preview, never a placeholder (0.3407ms)
+✔ JPEG fixture decodes when the host can generate one (466.304ms)
+✔ GLB decodes real accessor bytes and topology (0.5329ms)
+✔ WAV decodes real PCM while OGG stays container-only (1.3474ms)
+✔ Godot package preview is static only and reports missing references (1.3424ms)
+✔ unsupported media types never report success (0.1491ms)
+[case] worker -> {"ok":"ok","timeout":"timeout"}
+[case] static-safety -> {"files":["preview-service.mjs","preview-worker.mjs","decode/image-decode.mjs","decode/audio-decode.mjs","decode/godot-package.mjs"]}
+✔ the worker isolates decoding and honours a hard timeout (32.4355ms)
+✔ the preview path contains no window, input, playback or engine calls (1.5968ms)
+ℹ tests 86
+ℹ suites 0
+ℹ pass 86
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1094.5361
