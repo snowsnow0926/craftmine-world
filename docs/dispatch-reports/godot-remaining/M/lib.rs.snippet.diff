@@ -1,0 +1,21 @@
+diff --git a/vendor/pi-desktop/crates/craftmine-core/src/lib.rs b/vendor/pi-desktop/crates/craftmine-core/src/lib.rs
+index 054bb3d..415faf2 100644
+--- a/vendor/pi-desktop/crates/craftmine-core/src/lib.rs
++++ b/vendor/pi-desktop/crates/craftmine-core/src/lib.rs
+@@ -11,6 +11,7 @@ use sha2::{Digest, Sha256};
+ 
+ mod applications;
+ mod backups;
++mod content_history;
+ mod durable;
+ mod godot_applications;
+ mod godot_builds;
+@@ -165,6 +166,8 @@ impl TaskJournal {
+         godot_builds::migrate(&db)?;
+         godot_jobs::migrate(&db)?;
+         godot_applications::migrate(&db)?;
++        content_history::migration::migrate(&db)?;
++        content_history::apply::migrate(&db)?;
+         let directory = std::fs::canonicalize(
+             path.parent()
+                 .filter(|p| !p.as_os_str().is_empty())

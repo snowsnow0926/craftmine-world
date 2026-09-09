@@ -345,7 +345,7 @@ pub(super) fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Res
     Ok(text)
 }
 
-fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text: &str) -> Result<()> {
+pub(super) fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text: &str) -> Result<()> {
     let parent = blob_directory(directory, world, true)?;
     let target = parent.join(&entry.sha256);
     if fs::symlink_metadata(&target).is_ok() {
@@ -621,8 +621,15 @@ impl TaskJournal {
         }
         let (mut manifest, hash) = load_manifest(&tx, &args.world_id, None)?;
         bound_version(&manifest, &hash, args.revision, &args.manifest_hash)?;
+        // Continuing to edit an applied world must bind the *current* formal
+        // build. The old lineage is accepted only when the world document really
+        // carries it, so a forged base string cannot unlock a foreign project.
+        let world = worlds::read(&tx, &args.world_id)?;
+        let applied_lineage = world.world.build["scene"]["format"] == "craftmine.godot-scene/1"
+            && world.world.build["id"] == workspace.task.binding.base_build
+            && world.world.build["godot"]["baseBuild"] == manifest.base_build;
         ensure!(
-            manifest.base_build == workspace.task.binding.base_build,
+            manifest.base_build == workspace.task.binding.base_build || applied_lineage,
             "WORLD_BUILD_CONFLICT"
         );
         let original_files = manifest.files.clone();
@@ -679,6 +686,11 @@ impl TaskJournal {
         ensure!(manifest.files != original_files, "NO_CHANGE");
         manifest.revision = manifest.revision.checked_add(1).context("REVISION_LIMIT")?;
         manifest.task = workspace.task.binding;
+        // A new immutable revision records the actual applied baseline this
+        // writer used; older revisions keep their original baseline.
+        if applied_lineage {
+            manifest.base_build = manifest.task.base_build.clone();
+        }
         validate_manifest(&manifest)?;
         // Every surviving reference is integrity checked, including unchanged files.
         for (path, entry) in &original_files {

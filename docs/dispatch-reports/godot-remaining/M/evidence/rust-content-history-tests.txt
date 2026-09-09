@@ -1,0 +1,105 @@
+﻿cargo : warning: variable does not need to be mutable
+所在位置 行:1 字符: 667
++ ... TEXITCODE"; cargo test -p craftmine-core --offline --lib content_hist ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (warning: variab...d to be mutable:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]
+\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `is_ancestor` is never used
+   --> crates\craftmine-core\src\content_history\git.rs:876:12
+    |
+233 | impl GitAdapter {
+    | --------------- method in this implementation
+...
+876 |     pub fn is_ancestor(&self, git_dir: &Path, ancestor: &str, descendant: &str) -> Result<bool> {
+    |            ^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `REPOSITORY_FORMAT` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:30:11
+   |
+30 | pub const REPOSITORY_FORMAT: &str = "craftmine.content-repository/1";
+   |           ^^^^^^^^^^^^^^^^^
+
+warning: method `as_str` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:42:8
+   |
+41 | impl ContentBackend {
+   | ------------------- method in this implementation
+42 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+
+warning: methods `root` and `commit_tree` are never used
+   --> crates\craftmine-core\src\content_history\repo.rs:207:12
+    |
+194 | impl RepositoryStore {
+    | -------------------- methods in this implementation
+...
+207 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+...
+731 |     pub fn commit_tree(
+    |            ^^^^^^^^^^^
+
+warning: `craftmine-core` (lib test) generated 5 warnings (run `cargo fix --lib -p craftmine-core --tests` to apply 1 s
+uggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.10s
+     Running unittests src\lib.rs (target\debug\deps\craftmine_core-13091a1caf054aaf.exe)
+
+running 42 tests
+test content_history::contract_tests::print_frozen_vectors ... ignored, prints the frozen vectors; run with --ignored --nocapture
+test content_history::contract_tests::asset_lock_rejects_mutable_versions ... ok
+test content_history::contract_tests::git_oids_are_not_assumed_to_be_forty_characters ... ok
+test content_history::contract_tests::empty_lock_has_a_stable_hash ... ok
+test content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names ... ok
+test content_history::contract_tests::asset_lock_rejects_conflicting_duplicate_versions ... ok
+test content_history::contract_tests::asset_lock_rejects_unresolved_and_cyclic_dependencies ... ok
+test content_history::contract_tests::canonical_fixture_has_the_frozen_first_bytes ... ok
+test content_history::git_tests::identity_is_derived_and_validated ... ok
+test content_history::git_tests::reference_names_are_validated ... ok
+test content_history::contract_tests::references_keep_source_progress_and_operation_identity_apart ... ok
+test content_history::contract_tests::lock_parse_requires_canonical_bytes_for_commits ... ok
+test content_history::contract_tests::canonical_fixture_matches_the_frozen_vector ... ok
+test content_history::repo_tests::repository_identity_never_becomes_a_filesystem_component ... ok
+test content_history::git_tests::dangerous_subcommands_are_refused_before_spawning ... ok
+test content_history::migration_tests::a_missing_blob_is_reported_and_blocks_the_import ... ok
+test content_history::migration_tests::plan_reads_every_revision_and_writes_nothing ... ok
+test content_history::git_tests::discovery_records_provenance_instead_of_assuming_a_bundled_git ... ok
+test content_history::apply_tests::a_lost_response_is_answered_from_the_stored_receipt ... ok
+test content_history::git_tests::hostile_repository_configuration_is_rejected ... ok
+test content_history::git_tests::user_and_system_git_configuration_is_never_read ... ok
+test content_history::repo_tests::authoring_exclusions_traversal_and_case_collisions_are_refused ... ok
+test content_history::git_tests::timeouts_are_enforced_and_kill_the_child ... ok
+test content_history::git_tests::managed_configuration_isolates_hooks_and_identity ... ok
+test content_history::git_tests::object_ids_are_not_assumed_to_be_forty_characters ... ok
+test content_history::apply_tests::operation_ids_are_idempotent_but_cannot_be_reused ... ok
+test content_history::git_tests::compare_and_swap_rejects_a_stale_reference_value ... ok
+test content_history::apply_tests::a_stale_expected_applied_value_refuses_to_move_the_reference ... ok
+test content_history::repo_tests::bulk_commit_hashes_all_files_in_one_git_invocation ... ok
+test content_history::repo_tests::changes_and_file_diffs_separate_text_from_binary ... ok
+test content_history::repo_tests::sha256_repositories_record_their_object_format_end_to_end ... ok
+test content_history::repo_tests::materialised_copy_has_no_git_metadata_and_reports_unsupported_entries ... ok
+test content_history::migration_tests::verification_reports_legacy_damage_after_the_switch ... ok
+test content_history::apply_tests::git_advance_and_database_confirmation_are_separate_durable_steps ... ok
+test content_history::apply_tests::rollback_restores_the_previous_applied_content_after_a_crash ... ok
+test content_history::apply_tests::two_writers_cannot_both_advance_the_same_world ... ok
+test content_history::repo_tests::merge_reports_clean_text_and_real_conflicts_without_reusing_parent_checks ... ok
+test content_history::repo_tests::concurrent_branch_writes_are_rejected_by_compare_and_swap ... ok
+test content_history::repo_tests::commit_branch_history_and_asset_lock_are_authoritative_in_git ... ok
+test content_history::repo_tests::bundle_reclaim_and_prune_only_touch_unreachable_objects ... ok
+test content_history::migration_tests::a_partial_import_resumes_instead_of_starting_a_second_history ... ok
+test content_history::migration_tests::every_revision_becomes_one_commit_and_the_backend_switches ... ok
+
+test result: ok. 41 passed; 0 failed; 1 ignored; 0 measured; 112 filtered out; finished in 4.07s
+
