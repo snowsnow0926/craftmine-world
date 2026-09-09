@@ -1,5 +1,19 @@
 # 04. E2E Test Plan
 
+## CRAFTMINE-008: Session-bound draft lifecycle
+
+Use independent profiles and hidden/headless processes with input disabled.
+Create two worlds and two PI sessions. First inspection binds session A to world
+A; changing the selected panel to B must not redirect it. A competing session
+cannot write A until its current turn ends. Add a resource, read and replace it
+using the returned hash. Lose the response and restart the service: replay must
+return the same receipt and leave the revision unchanged. Invalid code, stale
+revision, foreign project/session and changed replay input must preserve the
+draft. Ending a turn must reject late writes and late first inspections. A new
+turn retains the previous draft and records its source. Formal world code and
+progress must remain unchanged. These checks do not count as real-model or
+candidate-application acceptance.
+
 > Scope: MVP acceptance scenarios plus current shipped product increments for PI-Desktop
 > Status: Accepted (protocol/Electron automation is active; full desktop Playwright remains planned)
 > Cross-references: [acceptance-criteria](02-acceptance-criteria.md) · [milestones](01-mvp-milestones.md) · [ai-development-workflow](03-ai-development-workflow.md) · [change-checklist](05-change-checklist.md)

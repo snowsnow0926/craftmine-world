@@ -3,7 +3,7 @@ use std::io::{self, BufRead, Read, Write};
 use std::path::PathBuf;
 
 use anyhow::{bail, Context, Result};
-use craftmine_core::{TaskBinding, TaskJournal, WorldDocument};
+use craftmine_core::{TaskBinding, TaskJournal, WorkspaceContext, WorldDocument};
 use serde_json::{json, Value};
 
 fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
@@ -14,6 +14,49 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
+    if method == "workspace.endTurn" {
+        journal.workspace_end_turn(
+            params["sessionId"].as_str().context("SESSION_REQUIRED")?,
+            params["turnId"].as_str().context("TURN_REQUIRED")?,
+            params["status"].as_str().context("STATUS_REQUIRED")?,
+        )?;
+        return Ok(json!({"ok":true}));
+    }
+    if method.starts_with("workspace.") {
+        let ctx: WorkspaceContext = serde_json::from_value(params["context"].clone())?;
+        return match method {
+            "workspace.open" => Ok(serde_json::to_value(
+                journal.workspace_open(&ctx, params["selectedWorld"].as_str().unwrap_or(""))?,
+            )?),
+            "workspace.inspect" => Ok(serde_json::to_value(journal.workspace_inspect(&ctx)?)?),
+            "workspace.recordRead" => {
+                journal.workspace_record_read(
+                    &ctx,
+                    params["revision"].as_u64().context("REVISION_REQUIRED")?,
+                    params["key"].as_str().context("KEY_REQUIRED")?,
+                    params["hash"].as_str().context("HASH_REQUIRED")?,
+                )?;
+                Ok(json!({"ok":true}))
+            }
+            "workspace.receipt" => Ok(serde_json::to_value(journal.workspace_receipt(
+                &ctx,
+                params["toolCallId"].as_str().context("CALL_ID_REQUIRED")?,
+                &params["request"],
+            )?)?),
+            "workspace.commit" => {
+                let binding: TaskBinding = serde_json::from_value(params["binding"].clone())?;
+                Ok(serde_json::to_value(journal.workspace_commit(
+                    &ctx,
+                    &binding,
+                    params["toolCallId"].as_str().context("CALL_ID_REQUIRED")?,
+                    params["revision"].as_u64().context("REVISION_REQUIRED")?,
+                    &params["request"],
+                    &params["draft"],
+                )?)?)
+            }
+            _ => bail!("UNKNOWN_METHOD"),
+        };
+    }
     match method {
         "legacy.capture" => {
             return journal.legacy_capture(

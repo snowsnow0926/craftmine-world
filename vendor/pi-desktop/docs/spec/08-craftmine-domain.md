@@ -10,7 +10,26 @@ This is a downstream product specification. See ADR 0300.
 - A duplicate call with identical input returns its prior receipt. Reusing an ID with different content is rejected.
 - A stale revision, foreign binding, invalid document or cancelled task leaves the current draft unchanged.
 - Document size is bounded. SQLite uses full synchronous WAL transactions; file content is checked against the recorded hash.
-- The application has not yet delegated live world writes to this journal. Compiler, evidence and project lease integration are W1/W2 work; there is no model-accessible bypass that can publish an unverified draft.
+- Formal world publication remains unavailable to model tools. W2 drafts use the session and lease protocol below; there is no model-accessible bypass that can publish an unverified draft.
+
+## Session draft protocol
+
+See ADR 0306. `workspace.open` binds an unbound PI session to its initial selected
+world. Later calls and turns retain that binding despite panel changes. Host
+project identity must match. One world has one draft writer at a time, enforced
+by a SQLite transaction across service connections. A new turn copies the prior
+draft into a new task with a `resumedFrom` reference, revokes the old writer and
+rejects old turn IDs. Existing edited drafts with a changed formal build report
+a conflict instead of being dropped.
+
+`workspace.recordRead` persists the resource hash at a checked draft revision.
+`workspace.commit` atomically stores a compiler-checked draft, immutable revision
+and receipt, checking binding, current turn, lease, base build and revision.
+`workspace.receipt` recovers a lost response using the exact original request;
+different input with the same call ID is rejected. All identities come from the
+host execution context. `workspace.endTurn` records a durable terminal marker,
+including before any draft exists, and releases its lease. It does not delete
+code. Progress and formal world code are unchanged by these operations.
 
 ## Plugin execution identity
 

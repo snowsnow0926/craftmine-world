@@ -10,7 +10,9 @@ use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 
 mod legacy;
+mod workspaces;
 mod worlds;
+pub use workspaces::WorkspaceContext;
 pub use worlds::{WorldDocument, WorldRecord, WorldSummary};
 
 const MAX_DOCUMENT_BYTES: usize = 2_000_000;
@@ -133,6 +135,7 @@ impl TaskJournal {
             );")?;
         worlds::migrate(&db)?;
         legacy::migrate(&db)?;
+        workspaces::migrate(&db)?;
         let directory = std::fs::canonicalize(
             path.parent()
                 .filter(|p| !p.as_os_str().is_empty())
