@@ -2482,8 +2482,13 @@ fn restore_archive(
 /// caller's transaction. Every live table must be present in the archive, so an
 /// older archive can never silently drop a table that was added since.
 fn apply_domain_rows(db: &Connection, domain: &Value) -> Result<()> {
-    let map = domain.as_object().context("BACKUP_TABLES_REQUIRED")?;
+    let mut map = domain.as_object().context("BACKUP_TABLES_REQUIRED")?.clone();
     let live = tables(db)?;
+    for table in &live {
+        if !map.contains_key(table) && (super::ADDITIVE_TABLES.contains(&table.as_str()) || super::PACKAGE_TABLES.contains(&table.as_str())) {
+            map.insert(table.clone(),json!({"columns":columns(db,table)?,"rows":[]}));
+        }
+    }
     db.execute_batch("PRAGMA defer_foreign_keys=ON;")?;
     for table in &live {
         ensure!(
@@ -2494,7 +2499,7 @@ fn apply_domain_rows(db: &Connection, domain: &Value) -> Result<()> {
     for table in &live {
         db.execute(&format!("DELETE FROM {table}"), [])?;
     }
-    for (table, data) in map {
+    for (table, data) in &map {
         ensure!(live.contains(table), "BACKUP_SCHEMA_MISMATCH: {table}");
         let archive_columns: Vec<String> = data["columns"]
             .as_array()
@@ -2508,6 +2513,10 @@ fn apply_domain_rows(db: &Connection, domain: &Value) -> Result<()> {
             })
             .collect::<Result<Vec<_>>>()?;
         let live_columns = columns(db, table)?;
+        for column in &live_columns {
+            ensure!(archive_columns.contains(column) || super::additive_column_default(table,column).is_some(),
+                "BACKUP_COLUMNS_MISMATCH: {table}.{column} missing from archive");
+        }
         for column in &archive_columns {
             ensure!(
                 live_columns.contains(column),
