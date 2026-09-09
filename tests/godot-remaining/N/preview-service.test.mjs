@@ -98,6 +98,7 @@ function encodeGlbFixture({
   nodes = null,
   sceneNodes = null,
   material = null,
+  mode = null,
   omitPosition = false,
   omitIndices = false,
 } = {}) {
@@ -139,12 +140,17 @@ function encodeGlbFixture({
     parts.push(indexBytes);
   }
   if (material !== null) primitive.material = 0;
+  if (mode !== null) primitive.mode = mode;
   const binary = Buffer.concat(parts);
+  const nodeList = nodes === null
+    ? [node === null ? { mesh: 0, name: 'Fixture' } : { mesh: 0, ...node }]
+    : nodes;
+  const roots = sceneNodes === null ? [0] : sceneNodes;
   const json = {
     asset: { version: '2.0' },
     scene: 0,
-    scenes: [{ nodes: [0] }],
-    nodes: [node === null ? { mesh: 0, name: 'Fixture' } : { mesh: 0, ...node }],
+    scenes: [{ nodes: roots }],
+    nodes: nodeList,
     meshes: [{ primitives: [primitive] }],
     accessors,
     bufferViews,
@@ -532,6 +538,67 @@ test('GLB rendering is deterministic for identical bytes', () => {
   report('glb-deterministic', { digest: one.facts.digest.slice(0, 12), bytes: one.facts.thumbnailBytes });
 });
 
+test('GLB node/scene transforms and materials change the rendered picture', () => {
+  const request = bytes => previewAsset({
+    assetId: 'auto-door',
+    version: 1,
+    contentHash: 'd'.repeat(64),
+    mediaType: 'model/gltf-binary',
+    bytes,
+    maxSide: 64,
+    engineVersion: ENGINE,
+  });
+  const base = request(encodeGlb());
+  assert.equal(base.status, 'ok', base.detail);
+
+  const rotZ = [0, 0, Math.sin(Math.PI / 12), Math.cos(Math.PI / 12)];
+  const stretch = [1, 3, 1];
+  // Hierarchical S*R vs R*S: a flat "first transform wins" renderer would
+  // produce one identical picture for both.
+  const scaleThenRotate = encodeGlbFixture({
+    nodes: [{ scale: stretch, children: [1] }, { mesh: 0, rotation: rotZ }],
+  });
+  const rotateThenScale = encodeGlbFixture({
+    nodes: [{ rotation: rotZ, children: [1] }, { mesh: 0, scale: stretch }],
+  });
+  // A node matrix (column-major) with a non-uniform scale must be honoured too.
+  const matrixNode = encodeGlbFixture({
+    node: { matrix: [1, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] },
+  });
+  const colored = encodeGlbFixture({
+    material: { pbrMetallicRoughness: { baseColorFactor: [0.9, 0.1, 0.1, 1] } },
+  });
+
+  const results = [scaleThenRotate, rotateThenScale, matrixNode, colored].map(request);
+  for (const result of results) assert.equal(result.status, 'ok', result.detail);
+  assert.equal(results[3].facts.materials, 1);
+  const digests = [base, ...results].map(result => result.facts.digest);
+  assert.equal(new Set(digests).size, digests.length, `digests must differ: ${digests.map(d => d.slice(0, 8)).join(', ')}`);
+  report('glb-transforms', { digests: digests.map(digest => digest.slice(0, 8)) });
+});
+
+test('a parsed GLB with no rasterisable triangles stays partial, never ok', () => {
+  const lines = encodeGlbFixture({ mode: 1 });
+  const result = previewAsset({
+    assetId: 'auto-door',
+    version: 5,
+    contentHash: '8'.repeat(64),
+    mediaType: 'model/gltf-binary',
+    bytes: lines,
+    engineVersion: ENGINE,
+  });
+  assert.equal(result.status, 'partial', result.detail);
+  assert.equal(result.facts.picture, false);
+  assert.equal(result.facts.rendered, false);
+  assert.equal(result.facts.accessorParsed, true);
+  assert.equal(result.facts.renderer, GLB_RENDERER_VERSION);
+  assert.equal(result.facts.triangles, 0);
+  assert.equal(result.facts.vertices, 3);
+  assert.match(result.facts.renderReason, /RENDER_EMPTY_GEOMETRY/);
+  assert.match(result.detail, /glb structure only/);
+  report('glb-partial', { status: result.status, reason: result.facts.renderReason });
+});
+
 test('corrupt or unsupported GLB bodies fail and never report a picture', () => {
   const good = encodeGlb();
   const cases = [
@@ -749,4 +816,5 @@ test('the preview path contains no window, input, playback or engine calls', () 
       assert.equal(text.includes(forbidden), false, `${name} must not contain ${forbidden}`);
     }
   }
-  report('static-safety', { files: s
+  report('static-safety', { files: sources.map(([name]) => name) });
+});
