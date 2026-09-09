@@ -2,11 +2,9 @@
   "name": "@pi-desktop/desktop",
   "version": "0.14.3",
   "private": true,
-  "description": "PI-Desktop Electron application",
-  "homepage": "https://github.com/vastsa/PI-Desktop",
+  "description": "Craftmine World / 最中幻想 Windows creation client, derived from PI-Desktop",
   "author": {
-    "name": "vastsa",
-    "email": "hhxk666@gmail.com"
+    "name": "Craftmine World contributors (PI-Desktop upstream attribution in bundled notices)"
   },
   "main": "./out/main/index.js",
   "type": "module",
@@ -115,7 +113,7 @@
         "to": "source/CraftmineWorld-source.zip"
       },
       {
-        "from": "build/icon.png",
+        "from": "build/craftmine-icon.png",
         "to": "tray-icon.png"
       },
       {
@@ -133,6 +131,30 @@
       {
         "from": "resources/models.dev",
         "to": "models.dev"
+      },
+      {
+        "from": "../../../../desktop/windows-USER_GUIDE.zh-CN.md",
+        "to": "source/USER_GUIDE.zh-CN.md"
+      },
+      {
+        "from": "../../../../desktop/windows-NOTICES.md",
+        "to": "licenses/CRAFTMINE-NOTICES.md"
+      },
+      {
+        "from": "../../../../desktop/windows-upgrade-guard.ps1",
+        "to": "source/windows-upgrade-guard.ps1"
+      },
+      {
+        "from": "../../../../desktop/build/build-manifest.json",
+        "to": "source/build-manifest.json"
+      },
+      {
+        "from": "../../../../desktop/build/third-party",
+        "to": "licenses/third-party"
+      },
+      {
+        "from": "src/assets/fonts/licenses",
+        "to": "licenses/fonts"
       }
     ],
     "mac": {
@@ -171,7 +193,7 @@
           ]
         }
       ],
-      "icon": "build/icon.png",
+      "icon": "build/craftmine-icon.png",
       "extraResources": [
         {
           "from": "../../target/release/pi-desktop-host-core.exe",
@@ -187,7 +209,19 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "shortcutName": "craftmine world",
-      "artifactName": "Craftmine-World-Setup-${version}.${ext}"
+      "artifactName": "Craftmine-World-Setup-${version}.${ext}",
+      "runAfterFinish": false,
+      "deleteAppDataOnUninstall": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "include": "build/craftmine-installer.nsh",
+      "installerIcon": "build/craftmine-icon.ico",
+      "uninstallerIcon": "build/craftmine-icon.ico",
+      "installerLanguages": [
+        "zh_CN",
+        "en_US"
+      ],
+      "language": "2052"
     },
     "deb": {
       "packageName": "pi-desktop",
