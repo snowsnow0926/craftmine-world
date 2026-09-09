@@ -76,10 +76,13 @@ test('a lost commit reply recovers its receipt without applying twice or accepti
   const args={operationId:randomUUID(),worldId:record.id,revision:record.revision,verificationId:'fixture-check',reviewId:'fixture-review'};
   const applying=applications.apply(args);await started;
   await assert.rejects(applications.apply({...args,reviewId:'different-review'}),/REPLAY_MISMATCH/);
+  await assert.rejects(applications.apply({...args,acknowledgeReviewWarnings:true}),/REPLAY_MISMATCH/);
   release();assert.equal((await applying).status,'applied');
   current.world.snapshot.player.x=14;current.revision++;
   const recovered=await applications.apply(args);
   assert.equal(recovered.record.world.snapshot.player.x,14);
   await assert.rejects(applications.apply({...args,revision:args.revision+1}),/REPLAY_MISMATCH/);
+  await assert.rejects(applications.apply({...args,acknowledgeReviewWarnings:true}),/REPLAY_MISMATCH/);
+  await assert.rejects(applications.apply({...args,acknowledgeReviewWarnings:'true'}),/INVALID_REVIEW_ACKNOWLEDGEMENT/);
   assert.equal(loads,1);assert.equal(commits,1);
 });
