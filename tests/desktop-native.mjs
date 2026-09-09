@@ -11,7 +11,19 @@ import {ProjectStore} from '../app/store.mjs';
 
 const repository=path.resolve('.'),desktop=path.join(repository,'vendor/pi-desktop/apps/desktop');
 const require=createRequire(path.join(desktop,'package.json'));
-const electron=require('electron');
+const packaged=process.env.CRAFTMINE_PACKAGED_ROOT?path.resolve(process.env.CRAFTMINE_PACKAGED_ROOT):null;
+const electron=packaged?path.join(packaged,'Craftmine World.exe'):require('electron');
+const resources=packaged?path.join(packaged,'resources'):null;
+const readAppFile=relative=>{
+  if(!packaged)return fs.readFileSync(path.join(desktop,relative));
+  const builderRequire=createRequire(require.resolve('electron-builder'));
+  const libRequire=createRequire(builderRequire.resolve('app-builder-lib'));
+  return libRequire('@electron/asar').extractFile(path.join(resources,'app.asar'),path.normalize(relative));
+};
+// Refuse an older or unprepared build before it can show a native window.
+const mainSource=readAppFile('out/main/index.js').toString();
+for(const guard of ['configureHeadlessAcceptance()', 'focusable: !headlessAcceptance', 'offscreen: !!headlessAcceptance'])assert.ok(mainSource.includes(guard),'Refusing a build without native input isolation: '+guard);
+assert.ok(readAppFile('out/preload/craftmine-headless.cjs').length>0,'Headless preload is missing');
 fs.mkdirSync('test-results',{recursive:true});
 const directory=fs.mkdtempSync(path.resolve('test-results/desktop-native-'));
 const profile=path.join(directory,'profile'),legacySource=path.join(directory,'legacy'),token=randomUUID();
@@ -20,9 +32,9 @@ fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({form
 const legacy=new ProjectStore(path.join(legacySource,'.craftmine'));
 legacy.change(data=>{data.snapshot.player.x=8;});
 const original=fs.readFileSync(legacy.file);
-const core=process.env.CRAFTMINE_CORE_BIN||path.join(repository,'vendor/pi-desktop/target/release/craftmine-core.exe');
-const host=process.env.PI_DESKTOP_HOST_BIN||path.join(repository,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe');
-for(const file of [electron,core,host,path.join(desktop,'out/main/index.js'),path.join(desktop,'out/preload/craftmine-headless.cjs')])assert.ok(fs.existsSync(file),'Build prerequisite missing: '+file);
+const core=packaged?path.join(resources,'bin/craftmine-core.exe'):process.env.CRAFTMINE_CORE_BIN||path.join(repository,'vendor/pi-desktop/target/release/craftmine-core.exe');
+const host=packaged?path.join(resources,'bin/pi-desktop-host-core.exe'):process.env.PI_DESKTOP_HOST_BIN||path.join(repository,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe');
+for(const file of [electron,core,host])assert.ok(fs.existsSync(file),'Build prerequisite missing: '+file);
 const checks=[],evidence={};
 const check=(name,condition)=>{checks.push({name,passed:!!condition});assert.ok(condition,name);console.log('PASS '+name);};
 
@@ -30,7 +42,7 @@ function launch(label) {
   const env={...process.env,CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_HEADLESS_ROOT:directory,CRAFTMINE_DATA_DIR:profile,CRAFTMINE_HEADLESS_TOKEN:token,CRAFTMINE_CORE_BIN:core,PI_DESKTOP_HOST_BIN:host};
   delete env.ELECTRON_RUN_AS_NODE;
   for(const name of Object.keys(env))if(/^PI_DESKTOP_(CAPTURE|BOOT_PROBE|SUPERVISION_PROBE|PLAN_UI_PROBE)/.test(name))delete env[name];
-  const child=spawn(electron,[desktop],{cwd:directory,windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env});
+  const child=spawn(electron,packaged?[]:[desktop],{cwd:directory,windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env});
   const pending=new Map();let ready=false,ended=false,exitResult,exitAudit;
   const output=fs.createWriteStream(path.join(directory,label+'.log'));
   child.stdout.pipe(output,{end:false});child.stderr.pipe(output,{end:false});
@@ -134,6 +146,6 @@ finally {
   if(lock){lock.exec('ROLLBACK');lock.close();}
   if(client)await client.stop();
   const sha256=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-  fs.writeFileSync(path.join(directory,'report.json'),JSON.stringify({format:'craftmine.native-acceptance/1',time:new Date().toISOString(),passed:!evidence.failure&&checks.every(check=>check.passed),checks,evidence,binaries:{electron:sha256(electron),host:sha256(host),core:sha256(core)},limits:['离屏运行，未做可见窗口或物理双击验收','目录选择返回测试夹具，未打开系统对话框','本次不调用模型，也不证明真实 Agent 创作闭环']},null,2));
+  fs.writeFileSync(path.join(directory,'report.json'),JSON.stringify({format:'craftmine.native-acceptance/1',mode:packaged?'packaged':'development',time:new Date().toISOString(),passed:!evidence.failure&&checks.every(check=>check.passed),checks,evidence,binaries:{electron:sha256(electron),host:sha256(host),core:sha256(core)},limits:['离屏运行，未做可见窗口或物理双击验收','目录选择返回测试夹具，未打开系统对话框','桌面与世界分别离屏渲染和截图，不证明可见原生窗口的最终合成','本次不调用模型，也不证明真实 Agent 创作闭环']},null,2));
   console.log('Native acceptance report: '+path.join(directory,'report.json'));
 }
