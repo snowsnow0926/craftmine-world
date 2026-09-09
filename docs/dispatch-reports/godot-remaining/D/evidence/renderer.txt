@@ -1,0 +1,17 @@
+PASS Formal world runtime reaches ready
+PASS Formal game surface is inset by the panel chrome inside the measured bounds
+PASS Candidate 1 stages an independent instance and reaches ready
+PASS Candidate 1 keeps nonzero detached bounds and never covers the formal view
+PASS Candidate 1 discard keeps the original formal instance
+PASS Candidate 2 stages an independent instance and reaches ready
+PASS Candidate 2 keeps nonzero detached bounds and never covers the formal view
+PASS Candidate 2 discard keeps the original formal instance
+PASS Candidate 3 stages an independent instance and reaches ready
+PASS Candidate 3 keeps nonzero detached bounds and never covers the formal view
+PASS Candidate 3 discard keeps the original formal instance
+PASS Hiding the creation surface detaches the native view and showing it reattaches
+PASS A real renderer crash during candidate startup fails fast with the renderer cause
+PASS A crashed candidate leaves the original formal instance running
+PASS Renderer diagnostics name the crashed candidate instance
+PASS No pointer lock or window focus request was granted
+{"out":"D:\\Craftmine World-worktrees\\godot-remaining-d-20260910\\test-results\\godot-candidate-renderer-03MO7Q","passed":16,"completed":true}
