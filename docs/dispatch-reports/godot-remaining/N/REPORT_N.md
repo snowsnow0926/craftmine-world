@@ -65,9 +65,9 @@ godot-asset-library `11b303dad6a5b3a4347df2633a03d4338c4db063`（MIT，维护模
 | `cargo test -p craftmine-core --offline --lib asset_catalog` | 16 passed; 0 failed |
 | `node --test tests/godot-remaining/N/image-decode.test.mjs` | 28 pass / 0 fail / 0 skipped |
 | `node --test tests/godot-remaining/N/audio-decode.test.mjs` | 22 pass / 0 fail |
-| `node --test tests/godot-remaining/N/godot-package.test.mjs` | 22 pass / 0 fail |
+| `node --test tests/godot-remaining/N/godot-package.test.mjs` | 25 pass / 0 fail（含稠密无环图 40 节点/480 边 18–24 ms 返回） |
 | `node --test tests/godot-remaining/N/preview-service.test.mjs` | 10 pass / 0 fail |
-| `node --test tests/godot-remaining/N/*.test.mjs` | **82 pass / 0 fail / 0 skipped** |
+| `node --test tests/godot-remaining/N/*.test.mjs` | **85 pass / 0 fail / 0 skipped** |
 
 实测值（`cargo test ... -- --nocapture`，本机 Windows，debug 构建）：
 
@@ -125,7 +125,7 @@ M 用共享向量对齐锁哈希；E 接素材面板。
 | --- | --- | --- |
 | 高 | `asset_import` 命中"版本已存在"分支时不写操作回执，operationId 可被复用 | 该分支在事务内写回执；新增 `al1_existing_version_path_…`（重放 `replayed:true`、改请求 `OPERATION_CONFLICT`） |
 | 高 | `asset.recordCheck` 检查 operationId 却从不落库 | 改为事务内 `record_operation`；新增 `al2_record_check_is_idempotent_and_conflict_safe` |
-| 高 | Godot 包环检测在稠密无环图上指数爆炸 | 子代理加显式搜索预算与 `cyclesTruncated`，并补稠密图回归用例 |
+| 高 | Godot 包环检测在稠密无环图上指数爆炸 | 子代理加显式搜索预算（`CYCLE_SEARCH_BUDGET=200_000` 步）与 `cyclesTruncated`，并补稠密图回归用例（40 节点/480 边 18–24 ms 返回） |
 | 中 | 同正文但不同来源/许可被静默丢弃 | 新增 `ASSET_SOURCE_CONFLICT` 与断言 |
 | 中 | 失败/超时预览永远无法重试 | `previewBegin` 对 failed/timeout/cancelled 重置为 pending 并返回 `retried:true`；pending/ok/partial 仍缓存 |
 | 中 | `previewFinish` 不要求先 claim，可被任意 digest 变绿 | 无 claim 行即 `PREVIEW_NOT_CLAIMED`；新增断言 |

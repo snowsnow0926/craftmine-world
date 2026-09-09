@@ -102,6 +102,16 @@ function sceneWithRef(path) {
   ].join('\n');
 }
 
+/** A `.tres` resource that declares one `ext_resource` per referenced path. */
+function resourceWithRefs(targets) {
+  const lines = ['[gd_resource type="Resource" format=3]'];
+  targets.forEach((target, index) => {
+    lines.push(`[ext_resource type="Resource" path="res://${target}" id="1_ref${index}"]`);
+  });
+  lines.push('[resource]');
+  return lines.join('\n');
+}
+
 /* ------------------------------------------------------------------ */
 /* API surface                                                         */
 /* ------------------------------------------------------------------ */
@@ -300,6 +310,94 @@ test('cycles: self reference is reported as a one-element loop', () => {
   assert.deepEqual(result.cycles, [['s.tscn']]);
   assert.equal(result.ok, true);
   report('cycle-self', { cycles: result.cycles });
+});
+
+test('cycles: dense acyclic graph returns fast, finds no cycle and reports truncation', () => {
+  // 40 `.tres` files, each referencing the next 15: ~480 edges (well under
+  // PACKAGE_LIMITS.refs), zero cycles, but exponentially many simple paths.
+  const COUNT = 40;
+  const WIDTH = 15;
+  const files = new Map();
+  let edges = 0;
+  for (let index = 0; index < COUNT; index++) {
+    const targets = [];
+    for (let step = 1; step <= WIDTH && index + step < COUNT; step++) {
+      targets.push(`r${String(index + step).padStart(2, '0')}.tres`);
+    }
+    edges += targets.length;
+    files.set(`r${String(index).padStart(2, '0')}.tres`, encode(resourceWithRefs(targets)));
+  }
+
+  const started = performance.now();
+  const result = checkGodotPackage(files);
+  const elapsedMs = performance.now() - started;
+
+  assert.equal(result.executed, false);
+  assert.equal(result.cycles.length, 0, 'a dense acyclic graph has no elementary cycle');
+  assert.equal(typeof result.cyclesTruncated, 'boolean');
+  assert.ok(
+    elapsedMs < 2000,
+    `dense acyclic graph took ${elapsedMs.toFixed(1)}ms; the search budget must keep it under 2s`,
+  );
+  report('cycle-dense-acyclic', {
+    nodes: COUNT,
+    edges,
+    elapsedMs: Number(elapsedMs.toFixed(2)),
+    cycles: result.cycles.length,
+    cyclesTruncated: result.cyclesTruncated,
+  });
+});
+
+test('cycles: many-cycle graph returns instead of hanging and flags truncation', () => {
+  // 8 resources referencing each other pairwise: a huge number of elementary
+  // cycles, so the search must stop on its budget / collected-cycle cap.
+  const COUNT = 8;
+  const files = new Map();
+  for (let index = 0; index < COUNT; index++) {
+    const targets = [];
+    for (let other = 0; other < COUNT; other++) if (other !== index) targets.push(`n${other}.tres`);
+    files.set(`n${index}.tres`, encode(resourceWithRefs(targets)));
+  }
+
+  const started = performance.now();
+  const result = checkGodotPackage(files);
+  const elapsedMs = performance.now() - started;
+
+  assert.ok(result.cycles.length > 0, 'mutual references must yield at least one cycle');
+  assert.equal(typeof result.cyclesTruncated, 'boolean');
+  if (result.cyclesTruncated) assert.equal(result.cyclesTruncated, true);
+  assert.ok(
+    elapsedMs < 2000,
+    `many-cycle graph took ${elapsedMs.toFixed(1)}ms; the search budget must keep it under 2s`,
+  );
+  report('cycle-many', {
+    nodes: COUNT,
+    elapsedMs: Number(elapsedMs.toFixed(2)),
+    cycles: result.cycles.length,
+    cyclesTruncated: result.cyclesTruncated,
+  });
+});
+
+test('cycles: small graphs finish within budget and report cyclesTruncated:false', () => {
+  const two = checkGodotPackage(new Map([
+    ['a.tscn', encode(sceneWithRef('b.tscn'))],
+    ['b.tscn', encode(sceneWithRef('a.tscn'))],
+  ]));
+  assert.deepEqual(two.cycles, [['a.tscn', 'b.tscn']]);
+  assert.equal(two.cyclesTruncated, false);
+
+  const self = checkGodotPackage(new Map([['s.tscn', encode(sceneWithRef('s.tscn'))]]));
+  assert.deepEqual(self.cycles, [['s.tscn']]);
+  assert.equal(self.cyclesTruncated, false);
+
+  const acyclic = checkGodotPackage(scenePackage());
+  assert.deepEqual(acyclic.cycles, []);
+  assert.equal(acyclic.cyclesTruncated, false);
+  report('cycle-not-truncated', {
+    two: two.cyclesTruncated,
+    self: self.cyclesTruncated,
+    acyclic: acyclic.cyclesTruncated,
+  });
 });
 
 /* ------------------------------------------------------------------ */

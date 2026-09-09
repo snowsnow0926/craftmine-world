@@ -36,8 +36,20 @@ const PRELOAD = /\bpreload\s*\(\s*(['"])(res:\/\/[^'"]*)\1/g;
 const LOAD = /\bload\s*\(\s*(['"])(res:\/\/[^'"]*)\1/g;
 const EXTENDS = /\bextends\s+(['"])(res:\/\/[^'"]*)\1/g;
 
-/** Safety cap for elementary cycle enumeration; well above any real package. */
+/** Safety cap for the number of elementary cycles collected; well above any real package. */
 const CYCLE_LIMIT = 4096;
+
+/**
+ * Explicit search budget for the elementary-cycle search, counted in
+ * `(node, depth)` expansion steps. A dense but acyclic reference graph has
+ * exponentially many simple paths (e.g. 40 `.tres` files each referencing the
+ * next 15), so enumerating them without a budget pins a CPU core for a very long
+ * time even though zero cycles exist. When the budget is exhausted the search
+ * stops immediately and the caller is told that the reported cycles may be
+ * incomplete (`cyclesTruncated: true`). The budget is deliberately independent
+ * of how many cycles were found.
+ */
+const CYCLE_SEARCH_BUDGET = 200_000;
 
 const decoder = new TextDecoder('utf-8');
 
@@ -280,14 +292,28 @@ function nodePathOf(node) {
  * Each cycle starts at its lexicographically smallest path, so the array is a
  * canonical rotation of the loop (e.g. `a.tscn -> b.tscn -> a.tscn` becomes
  * `['a.tscn','b.tscn']`).
+ *
+ * The search is bounded by CYCLE_SEARCH_BUDGET expansion steps and by
+ * CYCLE_LIMIT collected cycles. `truncated` is true when either bound stopped
+ * the search early, i.e. the returned `cycles` list may be incomplete. The budget
+ * is a step counter, never the number of cycles already found.
+ *
+ * @returns {{cycles:string[][], truncated:boolean}}
  */
 function findCycles(nodes, adjacency) {
   const order = new Map(nodes.map((node, index) => [node, index]));
   const cycles = [];
   const seen = new Set();
+  let steps = 0;
+  let truncated = false;
 
   const visit = (start, current, path, onPath) => {
-    if (cycles.length >= CYCLE_LIMIT) return;
+    if (truncated) return;
+    if (cycles.length >= CYCLE_LIMIT || steps >= CYCLE_SEARCH_BUDGET) {
+      truncated = true;
+      return;
+    }
+    steps++;
     for (const next of adjacency.get(current) ?? []) {
       const nextIndex = order.get(next);
       // Only nodes at or after `start` participate, which makes `start` the
@@ -310,9 +336,12 @@ function findCycles(nodes, adjacency) {
     }
   };
 
-  for (const start of nodes) visit(start, start, [start], new Set([start]));
+  for (const start of nodes) {
+    visit(start, start, [start], new Set([start]));
+    if (truncated) break;
+  }
   cycles.sort((left, right) => left.join('\u0000').localeCompare(right.join('\u0000')));
-  return cycles;
+  return { cycles, truncated };
 }
 
 /* ------------------------------------------------------------------ */
@@ -345,11 +374,19 @@ export function packageKind(files) {
 /**
  * Statically check a Godot package for reference integrity.
  *
+ * `cycles` holds canonical elementary cycles (each starts at its
+ * lexicographically smallest path; a self reference is a one-element array).
+ * `cyclesTruncated` is true when the cycle search hit its explicit search budget
+ * (CYCLE_SEARCH_BUDGET expansion steps) or the collected-cycle cap (CYCLE_LIMIT),
+ * meaning the reported cycles may be incomplete; it is false when the search
+ * finished normally.
+ *
  * @param {Map<string, Uint8Array>|Record<string, Uint8Array>} files
  * @returns {{ok:boolean, kind:'scene'|'script'|'resource'|'mixed'|'unknown',
  *            executed:false, files:number, bytes:number, scenes:string[],
  *            scripts:string[], extResources:Array<object>,
- *            missing:Array<object>, cycles:string[][], issues:Array<object>}}
+ *            missing:Array<object>, cycles:string[][],
+ *            cyclesTruncated:boolean, issues:Array<object>}}
  */
 export function checkGodotPackage(files) {
   const entries = toEntries(files);
@@ -562,7 +599,7 @@ export function checkGodotPackage(files) {
   }
 
   const nodes = [...new Set([...scenes, ...records.filter((r) => r.extension === RESOURCE_EXTENSION && r.normalized).map((r) => r.normalized)])].sort();
-  const cycles = findCycles(nodes, adjacency);
+  const { cycles, truncated: cyclesTruncated } = findCycles(nodes, adjacency);
 
   scenes.sort();
   scripts.sort();
@@ -584,6 +621,7 @@ export function checkGodotPackage(files) {
     extResources,
     missing,
     cycles,
+    cyclesTruncated,
     issues,
   };
 }
