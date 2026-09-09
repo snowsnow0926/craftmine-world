@@ -1,0 +1,6 @@
+diff --git a/vendor/pi-desktop/crates/craftmine-core/src/main.rs b/vendor/pi-desktop/crates/craftmine-core/src/main.rs
+--- a/vendor/pi-desktop/crates/craftmine-core/src/main.rs
++++ b/vendor/pi-desktop/crates/craftmine-core/src/main.rs
+@@ -25,1 +25,2 @@
+         "memory.propose" => return journal.memory_propose(params),
++        "memory.findReceipt" => return journal.memory_find_receipt(params),

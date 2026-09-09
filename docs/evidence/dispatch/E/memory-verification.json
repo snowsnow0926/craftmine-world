@@ -1,0 +1,20 @@
+{
+  "format": "craftmine.memory-receipt-verification/1",
+  "sourceCommit": "cdb9ba3391b037c19d478be58adad327f320cc36",
+  "overlay": {
+    "path": "docs/dispatch-reports/E/memory-integration.patch",
+    "sha256": "78497f1cc97d8c06f2ce6eb205a343db997125fadab668f7a23611c838f2605a",
+    "mainWithOverlaySha256": "872f1ff0ccf89b581f94a68c8b4f447c1ea28099d7013fc121be37e6094f1e7c"
+  },
+  "binary": {
+    "path": "vendor/pi-desktop/target/debug/craftmine-core.exe",
+    "sha256": "b698116c772d21f2c58e2bc751a38481eb9084e7d6137d8aea6ea82f3b6028fa"
+  },
+  "tests": {
+    "rust": "37 passed",
+    "process": "7 passed (5 existing A + 2 new)"
+  },
+  "privateData": false,
+  "realModelCalls": 0,
+  "packaged": false
+}
