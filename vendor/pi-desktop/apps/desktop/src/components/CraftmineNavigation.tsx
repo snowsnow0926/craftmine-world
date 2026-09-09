@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Box } from "lucide-react";
 import { useAppStore } from "../stores/app-store";
 import { pluginWorkPanelTab } from "../lib/work-panel-tabs";
+import { CraftmineLayoutControls } from "./CraftmineLayoutControls";
+import { loadCraftmineLayout } from "../lib/craftmine-layout";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
@@ -24,7 +26,11 @@ export function CraftmineNavigation() {
     if (!ready || !available || initialized.current) return;
     initialized.current = true;
     const state = useAppStore.getState();
-    if (!state.activeSessionId && state.workPanelTabs.length === 0) state.openWorkPanelTab(WORLD);
+    if (!state.activeSessionId && state.workPanelTabs.length === 0) {
+      state.openWorkPanelTab(WORLD);
+      const layout = loadCraftmineLayout(localStorage);
+      state.setWorkPanelWidth(layout.widths[layout.mode]);
+    }
   }, [ready, available]);
   return (
     <nav className="craftmine-navigation no-drag" aria-label={chinese ? "世界创作" : "World creation"}>
@@ -33,6 +39,7 @@ export function CraftmineNavigation() {
         <span>{chinese ? "世界" : "World"}</span>
         <span className="craftmine-world-nav-hint">{chinese ? (available ? "打开工作台" : "正在载入") : (available ? "Open workspace" : "Loading")}</span>
       </button>
+      {available && <CraftmineLayoutControls />}
     </nav>
   );
 }

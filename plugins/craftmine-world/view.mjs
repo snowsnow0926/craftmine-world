@@ -1,3 +1,4 @@
+import {createWorkbench} from './workbench-ui.mjs';
 const initialWorld = CRAFTMINE_BOOT_WORLD;
 const gameDocument = CRAFTMINE_GAME_DOCUMENT;
 const frame = document.querySelector('iframe');
@@ -18,6 +19,7 @@ const previewPanel=document.getElementById('preview-panel');
 let previewFrame=null;
 let preview=null,checkOffset=0,checkWorld=null,checksLoading=false,evidenceJob=null,evidenceNext=null;
 let previewReview=null,reviewLoading=false,applicationAttempt=null;
+let workbench;
 
 function applyAppearance(appearance) {
   if(appearance?.base==='light'||appearance?.base==='dark') {
@@ -40,7 +42,7 @@ function showError(error) {
 }
 
 function controls() {
-  select.disabled=!bridge||busy||closing||!!preview||!!applicationAttempt;newButton.disabled=select.disabled;saveButton.disabled=select.disabled||!loaded;
+  select.disabled=!bridge||busy||closing||!!preview||!!applicationAttempt||!!workbench?.busy;newButton.disabled=select.disabled;saveButton.disabled=select.disabled||!loaded;
   importButton.disabled=select.disabled;
   document.getElementById('close-preview').disabled=busy||closing||!!applicationAttempt;
   document.getElementById('apply-world').disabled=busy||closing||!!applicationAttempt||!preview||!previewReview?.current||previewReview.status!=='completed'||!previewReview.acceptance?.passed;
@@ -126,12 +128,14 @@ function mount(record) {
   document.body.dataset.worldId=record.id||'';delete document.body.dataset.worldLoaded;delete document.body.dataset.worldError;
   status.textContent='正在载入';controls();
   frame.srcdoc=gameDocument.replace('__CRAFTMINE_NONCE__',nonce).replace('__CRAFTMINE_INPUT_GUARD__',globalThis.__craftmineHeadless?CRAFTMINE_INPUT_GUARD:'');
+  void workbench?.setWorld();
 }
 
 addEventListener('message',event=>{
   const message=event.data;
   if(event.source!==frame.contentWindow||message?.channel!=='craftmine-game/1'||message.nonce!==nonce)return;
-  if(message.type==='ready')send('load',current.world);
+  if(message.type==='ready')send('load',{...current.world,worldId:current.id});
+  if(message.type==='selection')void workbench?.setSelection(message);
   if(message.type==='loaded') {
     if(message.version!==current.world.build.id){showError(Error('载入版本不一致'));return;}
     loaded=true;status.textContent=bridge?'已保存':'本地预览';
@@ -146,14 +150,25 @@ addEventListener('message',event=>{
 
 // Only the trusted product panel owns this lifecycle surface. Authored code
 // lives in the opaque game iframe and cannot reach it.
-globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,showChecks:()=>setMode(true),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
+globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,showChecks:()=>setMode(true),showWorkbench:tab=>openWorkbench(tab),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
 
 const checkLabels={queued:'等待检查',running:'后台检查中',passed:'机器检查通过',failed:'检查未通过',cancelled:'已取消',interrupted:'已中断'};
 function setMode(checks) {
+  const leavingWorkbench=!!workbench?.tab;
+  void workbench?.show(null);
+  for(const item of document.querySelectorAll('[data-workbench-tab]'))item.setAttribute('aria-selected','false');
   checksPanel.hidden=!checks;
   document.getElementById('world-mode').setAttribute('aria-selected',String(!checks));
   document.getElementById('checks-mode').setAttribute('aria-selected',String(checks));
   if(checks){send('pause');void refreshChecks(true);}
+  else if(leavingWorkbench&&loaded&&!applicationAttempt&&!preview)send('resume');
+}
+function openWorkbench(tab){
+  if(busy||closing||preview||applicationAttempt)return;
+  checksPanel.hidden=true;
+  document.getElementById('world-mode').setAttribute('aria-selected','false');document.getElementById('checks-mode').setAttribute('aria-selected','false');
+  for(const item of document.querySelectorAll('[data-workbench-tab]'))item.setAttribute('aria-selected',String(item.dataset.workbenchTab===tab));
+  return workbench.show(tab);
 }
 async function refreshChecks(reset=false) {
   if(!bridge||!current?.id||checksLoading||closing)return;
@@ -189,7 +204,9 @@ async function refreshChecks(reset=false) {
   }catch(error){showError(error);}finally{checksLoading=false;}
 }
 async function showEvidence(id,start=0) {
+  const worldId=current?.id;
   const result=await bridge.invoke('verification.read',{id,start,limit:12000});
+  if(current?.id!==worldId)return;
   evidenceJob=id;evidenceNext=result.next;
   document.getElementById('check-detail').hidden=false;
   if(!start) {
@@ -306,6 +323,22 @@ document.getElementById('evidence-more').onclick=()=>void action(()=>showEvidenc
 setInterval(()=>{if(!busy&&!closing&&!checksPanel.hidden&&!preview&&checkOffset===0)void refreshChecks();},2500);
 setInterval(()=>{if(preview&&!busy&&!closing)void refreshReview();},2500);
 setInterval(()=>{if(applicationAttempt&&!busy&&!closing)void action(reconcileApplication);},2500);
+
+workbench=createWorkbench({
+  element:document.getElementById('workbench-panel'),selectionElement:document.getElementById('selection-context'),
+  request:(channel,payload)=>bridge?bridge.invoke(channel,payload):Promise.reject(Error('桌面服务尚未连接')),
+  getWorld:()=>current,pause:()=>send('pause'),isLocked:()=>busy||closing||!!applicationAttempt||!!preview,
+  onChange:controls,replaceWorld:mount,saveBeforeBackup:()=>save({freeze:true}),
+  reloadWorld:async()=>{const result=await bridge.invoke('world.list');const next=result.worlds.find(item=>item.id===result.activeWorldId)||result.worlds[0];if(next){mount(await bridge.invoke('world.open',{id:next.id}));await refreshList();}},
+  run:async fn=>{
+    if(busy||closing||applicationAttempt||preview)throw Error('请先完成当前世界操作');
+    busy=true;controls();activeOperation=Promise.resolve().then(fn);
+    try{return await activeOperation;}finally{busy=false;controls();}
+  },
+});
+for(const item of document.querySelectorAll('[data-workbench-tab]'))item.addEventListener('click',()=>void openWorkbench(item.dataset.workbenchTab));
+document.getElementById('refresh-workbench').onsubmit=event=>{event.preventDefault();if(!busy&&!closing)void workbench.refreshCapabilities();};
+setInterval(()=>{if(workbench.tab==='task'&&!busy&&!closing)void workbench.refresh();},4000);
 
 saveButton.addEventListener('click',()=>void action(save));
 newButton.addEventListener('click',()=>{form.hidden=!form.hidden;});
