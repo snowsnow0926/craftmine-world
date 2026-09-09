@@ -78,7 +78,7 @@
       "moving": false
     },
     "stateVersion": 1,
-    "worldId": "verify-town-mtu456k8"
+    "worldId": "verify-town-mtu47sdt"
   },
   "format": "craftmine.godot-topdown-probe/1",
   "ok": false,
@@ -164,7 +164,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         },
         "spawn": "from-street"
       }
@@ -251,7 +251,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -372,7 +372,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         },
         "stock": 2
       }
@@ -463,7 +463,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         },
         "stock": 1
       }
@@ -554,7 +554,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         },
         "stock": 0
       }
@@ -643,7 +643,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -752,7 +752,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -864,7 +864,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         },
         "stock": 0
       }
@@ -954,7 +954,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -1046,7 +1046,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         },
         "spawn": "from-shop"
       }
@@ -1135,7 +1135,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -1147,8 +1147,8 @@
       "result": {
         "bytes": 588,
         "ok": true,
-        "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-mtu456k8/worlds/ba53df272e0254e5d66981b6c8e46c3fa30f64a3caccefae6ea0313e411d2d5c/progress.json",
-        "sha256": "0f114d309f281224670033622a83a70ba94c402baf785f43dd7bbf64ee00e289",
+        "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-mtu47sdt/worlds/c8664e90434e4995e3b047d38e94ff220998e9ac78c1258ef25aa32166e4bb23/progress.json",
+        "sha256": "905ee611e805af72124d957de45ae3c6e18eb353cc3e90d376a1731528460c40",
         "snapshot": {
           "bootError": "",
           "coins": 7,
@@ -1226,7 +1226,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     }
@@ -1234,8 +1234,8 @@
   "save": {
     "bytes": 588,
     "ok": true,
-    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-mtu456k8/worlds/ba53df272e0254e5d66981b6c8e46c3fa30f64a3caccefae6ea0313e411d2d5c/progress.json",
-    "sha256": "0f114d309f281224670033622a83a70ba94c402baf785f43dd7bbf64ee00e289"
+    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-mtu47sdt/worlds/c8664e90434e4995e3b047d38e94ff220998e9ac78c1258ef25aa32166e4bb23/progress.json",
+    "sha256": "905ee611e805af72124d957de45ae3c6e18eb353cc3e90d376a1731528460c40"
   },
-  "worldId": "verify-town-mtu456k8"
+  "worldId": "verify-town-mtu47sdt"
 }

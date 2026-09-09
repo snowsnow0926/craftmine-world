@@ -184,10 +184,14 @@ func find_entity(entity_id: String) -> Node:
 
 
 func player() -> Node:
+	if not is_inside_tree():
+		return null
 	return get_tree().get_first_node_in_group("player")
 
 
 func _find_spawn(spawn_id: String) -> Node:
+	if not is_inside_tree():
+		return null
 	for node in get_tree().get_nodes_in_group("spawns"):
 		var value: Variant = node.get("spawn_id")
 		if value is String and String(value) == spawn_id:
@@ -293,6 +297,8 @@ func snapshot() -> Dictionary:
 
 func _map_reports() -> Dictionary:
 	var reports: Dictionary = {}
+	if not is_inside_tree():
+		return reports
 	for node in get_tree().get_nodes_in_group("maps"):
 		var value: Variant = node.get("build_report")
 		var id: Variant = node.get("map_id")
@@ -338,10 +344,10 @@ func _process(delta: float) -> void:
 
 
 func _autosave() -> void:
+	# Also runs from NOTIFICATION_PREDELETE, where the node is already outside the
+	# tree; SaveSystem only touches the filesystem, so saving there is still valid.
 	if state == null or state.world_id.is_empty():
 		return
 	if not bool(world.get("autosaveOnExit", true)):
-		return
-	if get_tree() == null:
 		return
 	save()

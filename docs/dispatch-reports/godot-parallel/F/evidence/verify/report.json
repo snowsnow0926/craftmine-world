@@ -1,6 +1,6 @@
 {
   "format": "craftmine.godot-topdown-acceptance/1",
-  "generatedAt": "2026-09-09T13:07:42.937Z",
+  "generatedAt": "2026-09-09T13:09:41.077Z",
   "godotVersion": "4.7.2.stable.official.ed1daf0bf",
   "baseId": "top-down",
   "baseVersion": "1.0.0",
@@ -11,31 +11,31 @@
   "evidenceDirectory": "D:\\Craftmine World-worktrees\\godot-parallel-f-20260909\\docs\\dispatch-reports\\godot-parallel\\F\\evidence\\verify\\evidence",
   "worlds": {
     "blank": {
-      "worldId": "verify-blank-mtu456k8",
+      "worldId": "verify-blank-mtu47sdt",
       "template": "blank",
       "directory": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\final-work\\blank",
-      "worldBuildSha256": "c45715fbdacaa29848bd02b52a0f326f30acd53808cf5e5e7aa47b4cc900dc35",
+      "worldBuildSha256": "1acf6aefd9ebece020ab2e8dfd65e66e5469e240e24fb60766923eba1b248b46",
       "entryScene": "res://scenes/world.tscn"
     },
     "town": {
-      "worldId": "verify-town-mtu456k8",
+      "worldId": "verify-town-mtu47sdt",
       "template": "town",
       "directory": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\final-work\\town",
-      "worldBuildSha256": "577ecce6cff0f734ce814f82b57f89576144890adb7459ef4d5da998f8c1fd11",
+      "worldBuildSha256": "2b4f872e8f74f429bd303cfd6726196ec7d596de3641dc6562a073d139f3b833",
       "entryScene": "res://scenes/overworld.tscn"
     },
     "town-b": {
-      "worldId": "verify-town-b-mtu456k8",
+      "worldId": "verify-town-b-mtu47sdt",
       "template": "town",
       "directory": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\final-work\\town-b",
-      "worldBuildSha256": "91f851c748a94890281be5496e481192145e55d6ec40221d5de2620ab7b5cb9f",
+      "worldBuildSha256": "313b004264b1c1e1f5a2f90b6870766aa75b1eed4ae1622ee53e33e2e51a3cd6",
       "entryScene": "res://scenes/overworld.tscn"
     },
     "town-c": {
-      "worldId": "verify-town-c-mtu456k8",
+      "worldId": "verify-town-c-mtu47sdt",
       "template": "town",
       "directory": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\final-work\\town-c",
-      "worldBuildSha256": "4ebd5213a97d6c9a1adbfd541fd0713164c4d0089aabfd4fb22fd0567b6e18a5",
+      "worldBuildSha256": "6dcaf1ddc0eaf04e8a707409bbb9c4a401c8368062d8e796ba383e1a9ac47759",
       "entryScene": "res://scenes/overworld.tscn"
     }
   },
@@ -195,7 +195,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         },
         "spawn": "from-street"
       }
@@ -279,7 +279,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -375,7 +375,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         },
         "stock": 2
       }
@@ -464,7 +464,7 @@
               "moving": false
             },
             "stateVersion": 1,
-            "worldId": "verify-town-mtu456k8"
+            "worldId": "verify-town-mtu47sdt"
           },
           "stock": 0
         },
@@ -545,7 +545,7 @@
               "moving": false
             },
             "stateVersion": 1,
-            "worldId": "verify-town-mtu456k8"
+            "worldId": "verify-town-mtu47sdt"
           }
         }
       }
@@ -631,7 +631,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -717,7 +717,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -823,7 +823,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         },
         "zoneId": "herb-patch"
       }
@@ -929,7 +929,7 @@
               "moving": false
             },
             "stateVersion": 1,
-            "worldId": "verify-town-mtu456k8"
+            "worldId": "verify-town-mtu47sdt"
           },
           "zoneId": "herb-patch"
         },
@@ -1019,7 +1019,7 @@
               "moving": false
             },
             "stateVersion": 1,
-            "worldId": "verify-town-mtu456k8"
+            "worldId": "verify-town-mtu47sdt"
           },
           "zoneId": "herb-patch"
         }
@@ -1118,7 +1118,7 @@
               "moving": false
             },
             "stateVersion": 1,
-            "worldId": "verify-town-mtu456k8"
+            "worldId": "verify-town-mtu47sdt"
           },
           "zoneId": "herb-patch"
         }
@@ -1212,7 +1212,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -1307,7 +1307,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -1414,7 +1414,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -1511,7 +1511,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -1608,7 +1608,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -1767,7 +1767,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     },
@@ -1865,7 +1865,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         },
         "stock": 1
       }
@@ -1888,8 +1888,8 @@
       "name": "the two instances keep different identities and independent progress",
       "ok": true,
       "detail": {
-        "worldId": "verify-town-b-mtu456k8",
-        "other": "verify-town-mtu456k8",
+        "worldId": "verify-town-b-mtu47sdt",
+        "other": "verify-town-mtu47sdt",
         "inventory": {
           "herb": 1
         }

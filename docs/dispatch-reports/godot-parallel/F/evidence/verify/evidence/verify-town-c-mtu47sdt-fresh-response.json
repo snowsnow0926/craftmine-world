@@ -66,7 +66,7 @@
       "moving": false
     },
     "stateVersion": 1,
-    "worldId": "verify-town-mtu456k8"
+    "worldId": "verify-town-c-mtu47sdt"
   },
   "format": "craftmine.godot-topdown-probe/1",
   "ok": true,
@@ -143,16 +143,16 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu456k8"
+          "worldId": "verify-town-c-mtu47sdt"
         }
       }
     }
   ],
   "save": {
-    "bytes": 541,
+    "bytes": 545,
     "ok": true,
-    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-mtu456k8/worlds/ba53df272e0254e5d66981b6c8e46c3fa30f64a3caccefae6ea0313e411d2d5c/progress.json",
-    "sha256": "e33d9501330952e7a94dd973a652fe4917c7e6661e41e08e7e33b0522e89be43"
+    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-c-mtu47sdt/worlds/8c265c875a89bc7fe8b536da0051ac74a208358a72ca1c91018b83bc651479bc/progress.json",
+    "sha256": "e42f2c9feb9116877df977ca3c03f55b2a7365f971563d947f074935f23a3530"
   },
-  "worldId": "verify-town-mtu456k8"
+  "worldId": "verify-town-c-mtu47sdt"
 }

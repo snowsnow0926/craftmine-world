@@ -70,7 +70,7 @@
       "moving": false
     },
     "stateVersion": 1,
-    "worldId": "verify-town-b-mtu456k8"
+    "worldId": "verify-town-b-mtu47sdt"
   },
   "format": "craftmine.godot-topdown-probe/1",
   "ok": true,
@@ -147,7 +147,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-b-mtu456k8"
+          "worldId": "verify-town-b-mtu47sdt"
         }
       }
     },
@@ -253,7 +253,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-b-mtu456k8"
+          "worldId": "verify-town-b-mtu47sdt"
         },
         "zoneId": "herb-patch"
       }
@@ -334,7 +334,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-b-mtu456k8"
+          "worldId": "verify-town-b-mtu47sdt"
         }
       }
     }
@@ -342,8 +342,8 @@
   "save": {
     "bytes": 579,
     "ok": true,
-    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-b-mtu456k8/worlds/2eec483c1a2041582c9f24467399feb4d2fae64bdcd15ad68883f6b400fd6d8e/progress.json",
-    "sha256": "a6021edad43f3418a8b72ac88e2a23eefd7b88dba72b143b5bf1bc0453ea0264"
+    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-b-mtu47sdt/worlds/907537f299fc23a26fa1465d5d811986e30b4dc99e7cde06b66d0dea03819a08/progress.json",
+    "sha256": "fb3b29209c4b2f615c8998c6848c7b97dc94729b861f49a567dea046d103c8fd"
   },
-  "worldId": "verify-town-b-mtu456k8"
+  "worldId": "verify-town-b-mtu47sdt"
 }

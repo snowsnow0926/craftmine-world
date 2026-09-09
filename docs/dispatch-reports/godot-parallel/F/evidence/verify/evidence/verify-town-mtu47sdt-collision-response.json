@@ -22,22 +22,22 @@
       }
     },
     "physical": {
-      "facing": "down",
+      "facing": "up",
       "overlaps": {
         "door-shop": false,
         "npc-mira": false,
         "zone-herb-patch": false
       },
       "playerPosition": [
-        104.0,
-        168.0
+        416.0,
+        134.000244140625
       ]
     },
     "player": {
-      "facing": "down",
+      "facing": "up",
       "position": [
-        104.0,
-        168.0
+        416.0,
+        134.000244140625
       ],
       "sceneId": "overworld"
     },
@@ -49,7 +49,12 @@
       }
     },
     "sceneId": "overworld",
-    "scenePositions": {},
+    "scenePositions": {
+      "overworld": [
+        104.0,
+        168.0
+      ]
+    },
     "shops": {
       "general": {
         "stock": {
@@ -61,19 +66,65 @@
       }
     },
     "sprite": {
-      "facing": "down",
-      "frame": 0,
+      "facing": "up",
+      "frame": 12,
       "moving": false
     },
     "stateVersion": 1,
-    "worldId": "verify-town-c-mtu456k8"
+    "worldId": "verify-town-mtu47sdt"
   },
   "format": "craftmine.godot-topdown-probe/1",
   "ok": true,
   "results": [
     {
       "args": {
-        "label": "start"
+        "facing": "up",
+        "label": "place",
+        "x": 416.0,
+        "y": 160.0
+      },
+      "op": "set-position",
+      "result": {
+        "facing": "up",
+        "ok": true,
+        "overlaps": {
+          "door-shop": false,
+          "npc-mira": false,
+          "zone-herb-patch": false
+        },
+        "position": [
+          416.0,
+          160.0
+        ]
+      }
+    },
+    {
+      "args": {
+        "dx": 0.0,
+        "dy": -1.0,
+        "label": "into-wall",
+        "steps": 60.0
+      },
+      "op": "move",
+      "result": {
+        "after": [
+          416.0,
+          134.000244140625
+        ],
+        "before": [
+          416.0,
+          160.0
+        ],
+        "blocked": false,
+        "distance": 25.999755859375,
+        "facing": "up",
+        "ok": true,
+        "steps": 60
+      }
+    },
+    {
+      "args": {
+        "label": "after"
       },
       "op": "snapshot",
       "result": {
@@ -99,22 +150,22 @@
             }
           },
           "physical": {
-            "facing": "down",
+            "facing": "up",
             "overlaps": {
               "door-shop": false,
               "npc-mira": false,
               "zone-herb-patch": false
             },
             "playerPosition": [
-              104.0,
-              168.0
+              416.0,
+              134.000244140625
             ]
           },
           "player": {
-            "facing": "down",
+            "facing": "up",
             "position": [
-              104.0,
-              168.0
+              416.0,
+              134.000244140625
             ],
             "sceneId": "overworld"
           },
@@ -126,7 +177,12 @@
             }
           },
           "sceneId": "overworld",
-          "scenePositions": {},
+          "scenePositions": {
+            "overworld": [
+              104.0,
+              168.0
+            ]
+          },
           "shops": {
             "general": {
               "stock": {
@@ -138,21 +194,21 @@
             }
           },
           "sprite": {
-            "facing": "down",
-            "frame": 0,
+            "facing": "up",
+            "frame": 12,
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-c-mtu456k8"
+          "worldId": "verify-town-mtu47sdt"
         }
       }
     }
   ],
   "save": {
-    "bytes": 545,
+    "bytes": 561,
     "ok": true,
-    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-c-mtu456k8/worlds/a2a6f0d07c1b770263aee5655774520d22881a59c46dd17e14408ea53867de90/progress.json",
-    "sha256": "e84ae675282311c3875e1483e5e7b849615ca6cd028bdb5334e0ff80dce3f292"
+    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-mtu47sdt/worlds/c8664e90434e4995e3b047d38e94ff220998e9ac78c1258ef25aa32166e4bb23/progress.json",
+    "sha256": "c12d61ca9a3f97581aedb5d3a5a9b091b5f8fc7c027a8f7814b5cd6a8e781af6"
   },
-  "worldId": "verify-town-c-mtu456k8"
+  "worldId": "verify-town-mtu47sdt"
 }

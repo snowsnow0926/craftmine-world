@@ -99,8 +99,8 @@
     },
     {
       "path": "scripts/base/game.gd",
-      "bytes": 9926,
-      "sha256": "9efeec5febecdf7ae5f0158cb2a7a289f5d7601889d3f97a8926a65e232825c8"
+      "bytes": 10177,
+      "sha256": "57f8d8ebd60ad18f40bf6204efcc2da459d7182ceab46056de70bd5fe87ff18b"
     },
     {
       "path": "scripts/base/gather_zone.gd",
