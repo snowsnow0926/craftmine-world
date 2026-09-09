@@ -5,48 +5,90 @@ use base64::{engine::general_purpose::STANDARD as B64, Engine};
 use rand::{rng, Rng};
 use sha2::{Digest, Sha256};
 use std::fs;
+use std::io::Write;
 use std::path::{Path, PathBuf};
+
+#[cfg(windows)]
+#[path = "secrets_windows.rs"]
+mod windows;
 
 pub struct SecretStore {
     dir: PathBuf,
-    key: [u8; 32],
+    key: Option<[u8; 32]>,
 }
 
 impl SecretStore {
     pub fn open(data_dir: &Path) -> Result<Self> {
         let dir = data_dir.join("secrets");
         fs::create_dir_all(&dir)?;
-        let key_path = dir.join(".machine-key");
-        let key = if key_path.exists() {
-            let bytes = fs::read(&key_path)?;
-            if bytes.len() != 32 {
-                return Err(anyhow!("invalid machine key length"));
-            }
-            let mut key = [0u8; 32];
-            key.copy_from_slice(&bytes);
-            key
+        #[cfg(windows)]
+        {
+            // An unavailable OS protector must not prevent opening worlds,
+            // create a replacement key or silently downgrade to file storage.
+            let key = windows::load_or_create_key(&dir).ok();
+            return Ok(Self { dir, key });
+        }
+        #[cfg(not(windows))]
+        {
+            let key_path = dir.join(".machine-key");
+            let key = if key_path.exists() {
+                let bytes = fs::read(&key_path)?;
+                if bytes.len() != 32 {
+                    return Err(anyhow!("invalid machine key length"));
+                }
+                let mut key = [0u8; 32];
+                key.copy_from_slice(&bytes);
+                key
+            } else {
+                let mut key = [0u8; 32];
+                rng().fill_bytes(&mut key);
+                fs::write(&key_path, key)?;
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt;
+                    let mut perms = fs::metadata(&key_path)?.permissions();
+                    perms.set_mode(0o600);
+                    fs::set_permissions(&key_path, perms)?;
+                }
+                key
+            };
+            Ok(Self {
+                dir,
+                key: Some(key),
+            })
+        }
+    }
+
+    pub fn status(&self) -> &'static str {
+        if self.key.is_none() {
+            "unavailable"
+        } else if cfg!(windows) {
+            "protected"
         } else {
-            let mut key = [0u8; 32];
-            rng().fill_bytes(&mut key);
-            fs::write(&key_path, key)?;
-            #[cfg(unix)]
-            {
-                use std::os::unix::fs::PermissionsExt;
-                let mut perms = fs::metadata(&key_path)?.permissions();
-                perms.set_mode(0o600);
-                fs::set_permissions(&key_path, perms)?;
-            }
-            key
-        };
-        Ok(Self { dir, key })
+            "fallback"
+        }
+    }
+
+    pub fn backend(&self) -> &'static str {
+        if self.key.is_none() {
+            "unavailable"
+        } else if cfg!(windows) {
+            "windows_dpapi"
+        } else {
+            "file_fallback"
+        }
     }
 
     /// AES-256-GCM under the machine key.
     ///
     /// Infallible on purpose: `Key<Aes256Gcm>` is exactly the 32 bytes `self.key`
     /// holds, so there is no length for `new_from_slice` to reject.
-    fn cipher(&self) -> Aes256Gcm {
-        Aes256Gcm::new(&self.key.into())
+    fn cipher(&self) -> Result<Aes256Gcm> {
+        let key = self
+            .key
+            .as_ref()
+            .ok_or_else(|| anyhow!("SECRET_PROTECTION_UNAVAILABLE"))?;
+        Ok(Aes256Gcm::new(key.into()))
     }
 
     fn path_for(&self, secret_ref: &str) -> PathBuf {
@@ -57,7 +99,7 @@ impl SecretStore {
     }
 
     pub fn set(&self, secret_ref: &str, value: &str) -> Result<String> {
-        let cipher = self.cipher();
+        let cipher = self.cipher()?;
         let mut nonce_bytes = [0u8; 12];
         rng().fill_bytes(&mut nonce_bytes);
         let nonce = Nonce::from(nonce_bytes);
@@ -67,8 +109,8 @@ impl SecretStore {
         let mut blob = Vec::with_capacity(12 + ciphertext.len());
         blob.extend_from_slice(&nonce_bytes);
         blob.extend_from_slice(&ciphertext);
-        fs::write(self.path_for(secret_ref), B64.encode(blob))?;
-        Ok("file_fallback".into())
+        atomic_write(&self.path_for(secret_ref), B64.encode(blob).as_bytes())?;
+        Ok(self.backend().into())
     }
 
     pub fn get(&self, secret_ref: &str) -> Result<Option<String>> {
@@ -82,7 +124,7 @@ impl SecretStore {
             return Err(anyhow!("secret blob too short"));
         }
         let (nonce_bytes, ciphertext) = blob.split_at(12);
-        let cipher = self.cipher();
+        let cipher = self.cipher()?;
         let nonce =
             Nonce::try_from(nonce_bytes).map_err(|_| anyhow!("secret nonce is not 12 bytes"))?;
         let plain = cipher
@@ -102,6 +144,33 @@ impl SecretStore {
         }
         Ok(())
     }
+}
+
+fn atomic_write(path: &Path, value: &[u8]) -> Result<()> {
+    let temporary = path.with_extension(format!("tmp-{}", uuid::Uuid::new_v4()));
+    let result = (|| -> Result<()> {
+        let mut file = fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(&temporary)?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            file.set_permissions(fs::Permissions::from_mode(0o600))?;
+        }
+        file.write_all(value)?;
+        file.sync_all()?;
+        drop(file);
+        #[cfg(windows)]
+        windows::replace_file(&temporary, path)?;
+        #[cfg(not(windows))]
+        fs::rename(&temporary, path)?;
+        Ok(())
+    })();
+    if result.is_err() {
+        let _ = fs::remove_file(&temporary);
+    }
+    result
 }
 
 pub fn secret_ref_for_provider(provider_id: &str) -> String {
