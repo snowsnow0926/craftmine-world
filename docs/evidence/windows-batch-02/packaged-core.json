@@ -1,0 +1,37 @@
+{
+  "checks": [
+    {
+      "name": "独立 Rust 服务真实启动并使用 SQLite",
+      "passed": true
+    },
+    {
+      "name": "进程重启后重复回执不会再次修改草稿",
+      "passed": true
+    },
+    {
+      "name": "其他会话不能读取任务",
+      "passed": true
+    },
+    {
+      "name": "取消后 Rust 拒绝迟到修改",
+      "passed": true
+    },
+    {
+      "name": "PI 插件宿主自动启动 Rust 常驻服务",
+      "passed": true
+    },
+    {
+      "name": "PI 工具调用连接真实 Rust 服务且保留宿主身份",
+      "passed": true
+    },
+    {
+      "name": "尚未接入的世界写入能力如实关闭",
+      "passed": true
+    },
+    {
+      "name": "插件卸载后常驻服务停止",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

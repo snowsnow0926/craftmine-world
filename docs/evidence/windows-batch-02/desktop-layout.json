@@ -1,0 +1,42 @@
+{
+  "scope": "Real React components with fixture session data and native-view transport; not Electron E2E",
+  "checks": [
+    {
+      "name": "实际 React 桌面保留会话侧栏和世界入口",
+      "passed": true
+    },
+    {
+      "name": "桌面保留聊天输入与可调工作面板",
+      "passed": true
+    },
+    {
+      "name": "无聊天会话时自动打开世界并支持收起、关闭和重开",
+      "passed": true
+    },
+    {
+      "name": "世界面板达到 560 像素且未超出窗口",
+      "passed": true
+    },
+    {
+      "name": "世界画面位于工作面板的可见表面",
+      "passed": true
+    },
+    {
+      "name": "保留深浅主题切换",
+      "passed": true
+    },
+    {
+      "name": "1200 像素桌面窄聊天栏中中文控制标签完整显示",
+      "passed": true
+    },
+    {
+      "name": "没有请求真实输入或焦点",
+      "passed": true
+    },
+    {
+      "name": "实际前端组件无未处理异常",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

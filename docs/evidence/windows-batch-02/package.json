@@ -1,0 +1,16 @@
+{
+  "format": "craftmine.windows-preview/1",
+  "builtFromCommit": "7a2376d",
+  "verificationDriverCommit": "3490f46",
+  "created": "2026-09-09T02:18:21.605Z",
+  "product": "craftmine world / 最中幻想",
+  "electron": "43.4.0",
+  "deliveryDirectory": "D:\\Craftmine World\\desktop\\build\\windows-preview-batch-02",
+  "executableSha256": "ddd29a53ae9a74778c4e52bf6483ee3fe962dc85d20e61ebfa9c86fddd7bf6f7",
+  "sourceArchiveSha256": "3b32766f3a741496bcc4e40c5e75ccdd4d831fe6d7849656f231f5b859273ef6",
+  "signatureStatus": "NotSigned",
+  "installerBuilt": false,
+  "nativePackagedChecks": "17/17",
+  "sourceMatchesImplementation": true,
+  "actualModelCalled": false
+}

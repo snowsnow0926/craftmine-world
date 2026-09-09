@@ -1,20 +1,20 @@
 {
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
-  "currentMilestone": "W1",
+  "currentMilestone": "W2",
   "baseline": "3bdf52f",
   "updated": "2026-09-09",
   "execution": {
     "scope": "current_codex_thread",
     "status": "running",
-    "reason": "用户授权按计划持续完成 W0–W5；W0 通过，W1 首批 Rust 世界存储、完整 PI 外壳适配与 Windows 打包组件验证完成。继续 W1 剩余验收及 W2 创作闭环。",
+    "reason": "第 2 批完成原生 Windows 开发版与包内 EXE 的启动、导入、保存故障重试和重启验收。持续目标仍在执行，开始 W2 真实 PI Agent 世界创作接线。",
     "activeGoal": true,
     "recurringDevelopment": true,
     "previousLiveCompactionTestStopped": true,
     "automationId": "craftmine-windows",
-    "worktree": "D:/Craftmine World-worktrees/pi-client-w1-20260909",
-    "branch": "codex/pi-client-w1-20260909",
-    "nextStep": "沿当前工作树继续 W1：关闭保存与旧存档副本导入均通过真实组件联通。下一步增加严格禁止显示、焦点和输入的 Electron 离屏验证入口，跑完整客户端的启动、保存失败重试、关闭和重启，再推进 W2。禁止重复创建目标或并发写入。",
+    "worktree": null,
+    "branch": null,
+    "nextStep": "先核对本地 master 已包含 3490f46 及 WINDOWS_BATCH_02.md；若上一批交付中断，先处理同请求的未合并工作。随后从最新本地 master 创建新的 codex/ 分支与独立 W2 工作树，接入 Rust 世界/会话绑定、草稿与作业工具、候选和作品面板，跑真实 DeepSeek 创作与复用闭环。17 项原生检查已通过，不要无改动重复开发或重复验收 W1。",
     "cleanupNote": "旧工作树已注销、分支已删除；D:/Craftmine World-worktrees/pi-client-20260909 有残留，递归删除被自动执行审核以 blocked by policy 拒绝。保留且不自动重试，不复用该目录。"
   },
   "windowsClientPlan": {
@@ -51,7 +51,7 @@
       "evidence": "test-results/windows-plan-final-snapshot-20260909.log（271 条）与 2026-09-09 晚真实端到端修复后的 272 条"
     },
     "knownGaps": [
-    "Windows 程序目录已能构建，关闭保存与旧存档导入的真实组件验证通过；完整原生 Electron 生命周期和安装流程尚待验收",
+      "W1 的开发版与包内 EXE 均通过 17 项原生离屏验收；可见窗口合成、实体双击体验、正式安装流程与产品图标/引导仍需后续验收和完善",
       "世界面板、Rust 存储与打包组件通过；PI Agent 世界工具、长时验收、作品和候选面板仍需集成",
       "真实 toolCallId 透传和 Rust 草稿恢复去重通过；仍需项目写入租约和取消跨进程接线",
       "需核实完整模型请求的上下文预算，补齐世界记忆注入与 Windows 系统保护凭据",
@@ -62,17 +62,17 @@
     ],
     "runtimeChangedInThisReview": true,
     "personalServiceOrDataChangedInThisReview": false,
-    "currentPhase": "W1",
+    "currentPhase": "W2",
     "sourceImportCommit": "2920fc7",
     "sourceBaselineVerified": true,
     "developmentLog": "docs/WINDOWS_DEVELOPMENT_LOG.md",
     "latestVerification": {
       "command": "npm test",
-    "passed": 275,
+      "passed": 276,
       "failed": 0,
       "skipped": 0,
-    "evidence": "test-results/w1-domain-tests.log",
-    "scope": "独立开发工作树；另有关闭保存 14/14、旧世界导入 14/14、扩展沙箱 14/14；评审钩子是固定测试数据，不等同真实模型完整任务通过"
+      "evidence": "test-results/windows-batch-02/w1-final-domain-tests.log",
+      "scope": "领域回归；另有 Rust 10/10、桌面定向 47/47、原生开发版与包内 EXE 各 17/17、React 布局 9/9。未调用真实模型。"
     },
     "buildVerification": {
       "dependencies": "pnpm install --frozen-lockfile: passed",
@@ -91,6 +91,24 @@
       "nativeElectronAcceptance": "pending",
       "realModelAcceptance": "pending",
       "evidenceDirectory": "docs/evidence/windows-batch-01"
+    },
+    "batch02": {
+      "report": "docs/WINDOWS_BATCH_02.md",
+      "status": "W1 runtime verified; W2 integration next",
+      "rustTests": "10/10",
+      "desktopTargetedTests": "47/47",
+      "layoutChecks": "9/9",
+      "nativeDevelopmentChecks": "17/17",
+      "nativePackagedChecks": "17/17",
+      "packagedCoreChecks": "8/8",
+      "packagedWorldChecks": "14/14",
+      "legacyImportChecks": "14/14",
+      "realModelAcceptance": "pending",
+      "evidenceDirectory": "docs/evidence/windows-batch-02",
+      "deliveryDirectory": "D:\\Craftmine World\\desktop\\build\\windows-preview-batch-02",
+      "buildCommit": "7a2376d",
+      "visibleWindowAcceptance": "pending",
+      "installerAcceptance": "pending"
     }
   },
   "liveVerification": {

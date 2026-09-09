@@ -1,0 +1,61 @@
+{
+  "checks": [
+    {
+      "name": "未通过文件夹选择不能从页面伪造导入路径",
+      "passed": true
+    },
+    {
+      "name": "真实界面导入旧世界且保留已有桌面世界",
+      "passed": true
+    },
+    {
+      "name": "大于旧 2 MB 上限的实际图片素材完整进入 Rust",
+      "passed": true
+    },
+    {
+      "name": "树、花草、源码与扩展依赖保持原有版本",
+      "passed": true
+    },
+    {
+      "name": "导入后真实 Worker 调用扩展并改变目标生命值",
+      "passed": true
+    },
+    {
+      "name": "导入和运行未更改任何原项目文件",
+      "passed": true
+    },
+    {
+      "name": "原始候选、草稿、历史模块和所有文件逐个哈希一致",
+      "passed": true
+    },
+    {
+      "name": "旧的未完成任务只保存在备份中，没有重新执行",
+      "passed": true
+    },
+    {
+      "name": "整个导入没有请求鼠标锁定或窗口焦点",
+      "passed": true
+    },
+    {
+      "name": "完整重启保留位置和扩展状态且不会重复扣血",
+      "passed": true
+    },
+    {
+      "name": "缺少扩展的旧世界拒绝导入且不覆盖当前世界",
+      "passed": true
+    },
+    {
+      "name": "Windows 链接目录不会绕过备份边界或递归复制",
+      "passed": true
+    },
+    {
+      "name": "页面传入的路径不能替换宿主刚选中的文件夹",
+      "passed": true
+    },
+    {
+      "name": "后台页面没有未处理异常",
+      "passed": true
+    }
+  ],
+  "errors": []
+}
