@@ -12,6 +12,22 @@ export const NOTICES_MANIFEST = 'desktop/godot/licenses/notices.manifest.json';
 export const BASE_ASSETS_DIR = 'desktop/delivery/base-assets';
 export const LOCK_PATH = 'desktop/godot/toolchain.lock.json';
 
+// Single source of truth for the files a built Windows package must contain.
+// desktop/windows-package-tools.mjs imports this list when staging a package so a
+// successful development directory can never be reported as a complete package.
+export const PACKAGE_REQUIRED_FILES = [
+  'Craftmine World.exe',
+  'resources/app.asar',
+  'resources/bin/pi-desktop-host-core.exe',
+  'resources/bin/craftmine-core.exe',
+  'resources/agent-runtime/sidecar.js',
+  'resources/plugins/craftmine.world/main.cjs',
+  'resources/source/CraftmineWorld-source.zip',
+  'resources/source/build-manifest.json',
+  'resources/licenses/PI-Desktop-LICENSE.txt',
+  'resources/licenses/CRAFTMINE-NOTICES.md'
+];
+
 const MAX_TEXT_SCAN = 1024 * 1024;
 const DISTRIBUTIONS = ['app-bundle', 'user-export', 'development-only'];
 const REDISTRIBUTION = ['permitted', 'permitted-with-notice', 'permitted-with-notice-and-corresponding-source', 'conditional', 'denied', 'unreviewed', 'unrevealed'];
@@ -478,18 +494,7 @@ export function checkPackage(root, packageDirectory) {
     }
   }
   if (failures.length) return {id: 'package', ok: false, failures, warnings, facts: {scannedEntries}};
-  const required = [
-    'Craftmine World.exe',
-    'resources/app.asar',
-    'resources/bin/pi-desktop-host-core.exe',
-    'resources/bin/craftmine-core.exe',
-    'resources/agent-runtime/sidecar.js',
-    'resources/plugins/craftmine.world/main.cjs',
-    'resources/source/CraftmineWorld-source.zip',
-    'resources/source/build-manifest.json',
-    'resources/licenses/PI-Desktop-LICENSE.txt',
-    'resources/licenses/CRAFTMINE-NOTICES.md'
-  ];
+  const required = PACKAGE_REQUIRED_FILES;
   for (const relative of required) {
     if (!exists(path.join(directory, relative))) failures.push(fail('PACKAGE_FILE_MISSING', 'Package is missing ' + relative));
   }
