@@ -1,0 +1,16 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running unittests src\lib.rs (desktop\godot\sandbox\target\debug\deps\craftmine_godot_sandbox_probe-8faa9ff5f3f7525c.exe)
+
+running 9 tests
+test launch::tests::environment_block_rejects_separator_injection ... ok
+test launch::tests::minimal_environment_has_no_user_secrets_and_redirects_appdata ... ok
+test task::audit_tests::task_names_reject_windows_device_aliases ... ok
+test task::tests::task_ids_are_restricted ... ok
+test task::tests::task_kinds_have_fixed_argument_sets ... ok
+test launch::tests::quotes_fixed_arguments_and_rejects_embedded_quotes ... ok
+test launch::tests::inside_rejects_paths_outside_the_root ... ok
+test task::tests::pinned_input_mismatch_is_rejected ... ok
+test task::audit_tests::a_second_task_cannot_reuse_a_directory_or_overwrite_prior_files ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -52,6 +52,7 @@ fn a_claim_hands_the_executor_absolute_isolated_paths_and_verified_inputs() -> R
         assert!(Path::new(value).is_absolute(), "{key} must be absolute");
         assert!(value.starts_with(&journal.directory.to_string_lossy().to_string()));
     }
+    assert_eq!(std::fs::read_to_string(Path::new(claimed["projectRoot"].as_str().unwrap()).join("project.godot"))?, PROJECT);
     assert_eq!(claimed["files"]["source"].as_array().unwrap().len(), 3);
     assert_eq!(claimed["files"]["asset"].as_array().unwrap().len(), 1);
     assert_eq!(claimed["engineVersion"], "4.7.2-stable");
@@ -300,5 +301,44 @@ fn progress_is_monotonic_and_heartbeats_extend_the_lease() -> Result<()> {
     let beat = journal.godot_job_heartbeat(&json!({"jobId":job["jobId"],"token":"token-a"}))?;
     assert!(beat["leaseExpiresAt"].as_i64().unwrap() >= before);
     assert!(claimed["leaseExpiresAt"].as_i64().unwrap() <= before);
+    Ok(())
+}
+
+#[test]
+fn engine_sized_artifacts_are_streamed_and_corruption_is_refused() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let created = create_project(&mut journal, &context)?;
+    register(&mut journal, "executor-a", json!({"import":true,"build":true,"check":true}), &digest("e"))?;
+    let job = start(&mut journal, &context, "large-export", &created, "build")?;
+    let claimed = claim(&mut journal, &job, "token-a", "executor-a")?;
+    // Actual size observed for the pinned Godot Web engine, beyond both old 4 MiB limits.
+    let bytes = vec![0x5au8; 39_514_754];
+    let artifact = write_artifact(&claimed, "web/index.wasm", &bytes)?;
+    let file = Path::new(claimed["artifactsRoot"].as_str().unwrap()).join("web/index.wasm");
+    { use std::io::Write; std::fs::OpenOptions::new().write(true).open(&file)?.write_all(b"changed")?; }
+    failed(finish(&mut journal, &job, "token-a", &output(&claimed, true, json!([]), artifact.clone(), json!([]))), "CORRUPT_GODOT_ARTIFACT");
+    std::fs::write(&file, &bytes)?;
+    let finished = finish(&mut journal, &job, "token-a", &output(&claimed, true, json!([]), artifact, json!([])))?;
+    assert_eq!(finished["status"], "passed");
+    assert_eq!(finished["output"]["artifacts"][0]["bytes"], 39_514_754);
+    let oversized = Artifact { path:"web/huge.wasm".into(), sha256:digest("x"), bytes:ARTIFACT_FILE_BYTES + 1 };
+    failed(verify_artifact(Path::new(claimed["artifactsRoot"].as_str().unwrap()), &oversized), "GODOT_ARTIFACT_TOO_LARGE");
+    Ok(())
+}
+
+#[test]
+fn claim_rechecks_materialized_source_before_granting_a_job() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let created = create_project(&mut journal, &context)?;
+    register(&mut journal, "executor-a", json!({"import":true,"build":true,"check":true}), &digest("e"))?;
+    let job = start(&mut journal, &context, "build-one", &created, "build")?;
+    let root = build_root(&journal.directory, "a", job["buildId"].as_str().unwrap(), false)?;
+    std::fs::write(root.join("source/world.gd"), b"corrupt materialized source")?;
+    failed(claim(&mut journal, &job, "token-a", "executor-a"), "CORRUPT_GODOT_BUILD");
+    assert_eq!(read_job(&journal.db, job["jobId"].as_str().unwrap())?["status"], "queued");
     Ok(())
 }

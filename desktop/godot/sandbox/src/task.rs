@@ -133,7 +133,20 @@ pub fn validate_task_id(task_id: &str) -> Result<()> {
     if task_id.starts_with('.') || task_id.ends_with('.') {
         return Err("Task id must not start or end with '.'".into());
     }
+    let stem = task_id.split('.').next().unwrap_or_default().to_ascii_uppercase();
+    if matches!(stem.as_str(), "CON" | "PRN" | "AUX" | "NUL") ||
+        ((stem.starts_with("COM") || stem.starts_with("LPT")) && stem.len() == 4 &&
+            matches!(stem.as_bytes()[3], b'1'..=b'9')) {
+        return Err("Reserved Windows task name".into());
+    }
     Ok(())
+}
+
+fn ordinary(path: &Path) -> Result<fs::Metadata> {
+    use std::os::windows::fs::MetadataExt;
+    let meta = fs::symlink_metadata(path)?;
+    if meta.file_attributes() & 0x400 != 0 { return Err("Task path contains a reparse point".into()); }
+    Ok(meta)
 }
 
 fn digest(path: &Path) -> Result<String> {
@@ -155,6 +168,8 @@ fn digest(path: &Path) -> Result<String> {
 }
 
 fn copy_pinned(input: &PinnedInput, destination: &Path) -> Result<()> {
+    validate_task_id(&input.file_name)?;
+    if !ordinary(&input.source)?.is_file() { return Err("Pinned input is not a regular file".into()); }
     let actual = digest(&input.source)?;
     if actual != input.sha256 {
         return Err(format!(
@@ -168,6 +183,7 @@ fn copy_pinned(input: &PinnedInput, destination: &Path) -> Result<()> {
         fs::create_dir_all(parent)?;
     }
     fs::copy(&input.source, destination)?;
+    if digest(destination)? != input.sha256 { return Err("Pinned input changed while being copied".into()); }
     Ok(())
 }
 
@@ -186,7 +202,14 @@ pub struct TaskLayout {
 impl TaskLayout {
     pub fn create(root: &Path, task_id: &str) -> Result<Self> {
         validate_task_id(task_id)?;
+        if !root.is_absolute() { return Err("Task root must be absolute".into()); }
+        for ancestor in root.ancestors() {
+            if !ordinary(ancestor)?.is_dir() { return Err("Task root ancestor is not a directory".into()); }
+        }
         let root = root.join(task_id);
+        // create_dir is exclusive: a retry must use a fresh task id, never merge
+        // new inputs into prior task files, permissions or artifacts.
+        fs::create_dir(&root)?;
         let layout = Self {
             bin: root.join("bin"),
             work: root.join("work"),
@@ -197,7 +220,6 @@ impl TaskLayout {
             root,
         };
         for path in [
-            &layout.root,
             &layout.bin,
             &layout.work,
             &layout.logs,
@@ -205,7 +227,7 @@ impl TaskLayout {
             &layout.project,
             &layout.export_dir,
         ] {
-            fs::create_dir_all(path)?;
+            fs::create_dir(path)?;
         }
         Ok(layout)
     }
@@ -222,6 +244,7 @@ pub struct Task {
     sid: String,
     status: TaskStatus,
     log: PathBuf,
+    engine: PathBuf,
 }
 
 impl Task {
@@ -238,6 +261,11 @@ impl Task {
         pins: &EnginePins,
         budget: TaskBudget,
     ) -> Result<Self> {
+        if budget.job.active_process_limit != 1 || budget.job.process_memory_bytes == 0 || budget.timeout.is_zero() {
+            return Err("Managed task requires one active process and positive memory/time limits".into());
+        }
+        validate_task_id(&pins.editor.file_name)?;
+        for template in &pins.templates { validate_task_id(&template.file_name)?; }
         let layout = TaskLayout::create(tasks_root, task_id)?;
         copy_pinned(&pins.editor, &layout.bin.join(&pins.editor.file_name))?;
         for template in &pins.templates {
@@ -278,7 +306,9 @@ impl Task {
             }
         }
         let log = layout.logs.join("task.log");
+        let engine = layout.bin.join(&pins.editor.file_name);
         Ok(Self {
+            engine,
             task_id: task_id.to_string(),
             kind,
             layout,
@@ -311,12 +341,22 @@ impl Task {
     /// cancellation flag that another thread may set at any time. Cancellation
     /// terminates the whole task job, so no task process survives.
     pub fn run(&mut self, cancel: Option<Arc<AtomicBool>>) -> Result<&TaskStatus> {
+        if self.status.state != TaskState::Prepared { return Err("Task has already been run".into()); }
+        let result = self.run_once(cancel);
+        if let Err(error) = &result {
+            self.status = TaskStatus { state: TaskState::Failed, exit_code: None, message: error.to_string() };
+        }
+        result?;
+        Ok(&self.status)
+    }
+
+    fn run_once(&mut self, cancel: Option<Arc<AtomicBool>>) -> Result<()> {
         self.status = TaskStatus {
             state: TaskState::Running,
             exit_code: None,
             message: "running".into(),
         };
-        let engine = self.engine_path()?;
+        let engine = self.engine.clone();
         let system_root = std::env::var("SystemRoot")?;
         let running = crate::launch::start(&LaunchSpec {
             executable: engine,
@@ -367,36 +407,21 @@ impl Task {
             exit_code: Some(exit),
             message: format!("{reason} exit={} job_active_processes={active:?}", crate::hex(exit)),
         };
-        Ok(&self.status)
-    }
-
-    fn engine_path(&self) -> Result<PathBuf> {
-        let mut candidates = Vec::new();
-        for entry in fs::read_dir(&self.layout.bin)? {
-            let entry = entry?;
-            let name = entry.file_name().to_string_lossy().into_owned();
-            if name.starts_with("Godot_v") && name.ends_with(".exe") && !name.contains("console") {
-                candidates.push(entry.path());
-            }
-        }
-        candidates.sort();
-        candidates
-            .into_iter()
-            .next()
-            .ok_or_else(|| "Task bin directory has no pinned engine binary".into())
+        Ok(())
     }
 
     /// Hashes every exported artifact. These files are untrusted model output;
     /// the caller must treat them as such.
     pub fn collect_artifacts(&self) -> Result<Vec<Artifact>> {
+        if self.status.state != TaskState::Succeeded { return Err("Only successful tasks can hand off artifacts".into()); }
         let mut artifacts = Vec::new();
         if !self.layout.export_dir.is_dir() {
             return Ok(artifacts);
         }
         for entry in fs::read_dir(&self.layout.export_dir)? {
             let entry = entry?;
-            if !entry.file_type()?.is_file() {
-                continue;
+            if !ordinary(&entry.path())?.is_file() {
+                return Err("Export artifact must be a regular file".into());
             }
             let path = entry.path();
             artifacts.push(Artifact {
@@ -429,7 +454,9 @@ impl Task {
     /// artifacts stay; they live outside the task's writable scope.
     pub fn finish(mut self) -> Result<i32> {
         let cleanup = self.profile.delete();
-        let _ = fs::remove_dir_all(&self.layout.work);
+        let work_cleanup = fs::remove_dir_all(&self.layout.work);
+        if cleanup < 0 { return Err(format!("Task profile cleanup failed: {cleanup:#x}").into()); }
+        work_cleanup?;
         Ok(cleanup)
     }
 }
@@ -442,11 +469,12 @@ pub fn cancel_flag() -> Arc<AtomicBool> {
 }
 
 fn copy_tree(source: &Path, destination: &Path) -> Result<()> {
+    if !ordinary(source)?.is_dir() { return Err("Project source is not a regular directory".into()); }
     fs::create_dir_all(destination)?;
     for entry in fs::read_dir(source)? {
         let entry = entry?;
-        let file_type = entry.file_type()?;
-        if file_type.is_symlink() {
+        let file_type = ordinary(&entry.path())?;
+        if file_type.file_type().is_symlink() {
             // Model-authored projects must not smuggle reparse points into the
             // task directory; only regular files and directories are copied.
             return Err(format!(
@@ -458,8 +486,10 @@ fn copy_tree(source: &Path, destination: &Path) -> Result<()> {
         let target = destination.join(entry.file_name());
         if file_type.is_dir() {
             copy_tree(&entry.path(), &target)?;
-        } else {
+        } else if file_type.is_file() {
             fs::copy(entry.path(), target)?;
+        } else {
+            return Err("Project source contains a non-regular file".into());
         }
     }
     Ok(())
@@ -519,5 +549,27 @@ mod tests {
         };
         assert!(copy_pinned(&good, &base.join("copy.exe")).is_ok());
         fs::remove_dir_all(&base).ok();
+    }
+}
+
+#[cfg(test)]
+mod audit_tests {
+    use super::*;
+    #[test]
+    fn a_second_task_cannot_reuse_a_directory_or_overwrite_prior_files() {
+        let root = std::env::temp_dir().join(format!("craftmine-task-audit-{}-{}", std::process::id(), now_unix_ms().unwrap()));
+        fs::create_dir(&root).unwrap();
+        let first = TaskLayout::create(&root, "task-one").unwrap();
+        fs::write(first.project.join("stale.gd"), b"original").unwrap();
+        assert!(TaskLayout::create(&root, "task-one").is_err());
+        assert_eq!(fs::read(first.project.join("stale.gd")).unwrap(), b"original");
+        let second = TaskLayout::create(&root, "task-two").unwrap();
+        assert!(fs::read_dir(&second.project).unwrap().next().is_none());
+        fs::remove_dir_all(&root).unwrap();
+    }
+    #[test]
+    fn task_names_reject_windows_device_aliases() {
+        for name in ["CON", "nul.txt", "COM1", "lpt9.log"] { assert!(validate_task_id(name).is_err()); }
+        assert!(validate_task_id("godot-build-1").is_ok());
     }
 }

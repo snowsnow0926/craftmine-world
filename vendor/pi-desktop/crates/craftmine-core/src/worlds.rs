@@ -27,6 +27,10 @@ pub struct WorldSummary {
     pub title: String,
     pub revision: u64,
     pub updated_at: u64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub base_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub runtime_kind: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -108,6 +112,20 @@ pub(super) fn encode(world: &WorldDocument) -> Result<String> {
     Ok(body)
 }
 
+/// Navigation metadata comes only from the persisted build format. Unknown
+/// formats remain unknown; this is not a runtime permission or readiness grant.
+fn build_metadata(world: &WorldDocument) -> (Option<String>, Option<String>) {
+    match world.build["scene"]["format"].as_str() {
+        Some("craftmine.godot-scene/1") if world.build["godot"].is_object() => {
+            let base = world.build["scene"]["baseId"].as_str()
+                .filter(|id| !id.is_empty() && id.len() <= 80).map(str::to_owned);
+            (base, Some("godot".into()))
+        }
+        Some("craftmine.scene/1" | "craftmine.scene/2" | "craftmine.scene/3") => (None, Some("legacy".into())),
+        _ => (None, None),
+    }
+}
+
 pub(super) fn read(db: &Connection, id: &str) -> Result<WorldRecord> {
     validate_id(id)?;
     let (title, revision, updated, body, hash): (String, i64, i64, String, String) = db.query_row(
@@ -115,14 +133,18 @@ pub(super) fn read(db: &Connection, id: &str) -> Result<WorldRecord> {
         |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?, row.get(4)?)),
     ).context("WORLD_NOT_FOUND")?;
     ensure!(digest(&body) == hash, "CORRUPT_WORLD");
+    let world: WorldDocument = serde_json::from_str(&body)?;
+    let (base_id, runtime_kind) = build_metadata(&world);
     Ok(WorldRecord {
         summary: WorldSummary {
             id: id.into(),
             title,
             revision: revision.try_into()?,
             updated_at: updated.try_into()?,
+            base_id,
+            runtime_kind,
         },
-        world: serde_json::from_str(&body)?,
+        world,
         content_hash: hash,
     })
 }
@@ -158,7 +180,7 @@ pub(super) fn insert(db: &Connection, id: &str, title: &str, world: &WorldDocume
 
 fn list(db: &Connection) -> Result<Vec<WorldSummary>> {
     let mut statement = db.prepare(
-        "SELECT id,title,revision,updated_at FROM craftmine_worlds ORDER BY updated_at DESC,id",
+        "SELECT id,title,revision,updated_at,document,content_hash FROM craftmine_worlds ORDER BY updated_at DESC,id",
     )?;
     let rows = statement.query_map([], |row| {
         Ok((
@@ -166,15 +188,22 @@ fn list(db: &Connection) -> Result<Vec<WorldSummary>> {
             row.get::<_, String>(1)?,
             row.get::<_, i64>(2)?,
             row.get::<_, i64>(3)?,
+            row.get::<_, String>(4)?,
+            row.get::<_, String>(5)?,
         ))
     })?;
     rows.map(|row| {
-        let (id, title, revision, updated) = row?;
+        let (id, title, revision, updated, body, hash) = row?;
+        ensure!(digest(&body) == hash, "CORRUPT_WORLD");
+        let world: WorldDocument = serde_json::from_str(&body)?;
+        let (base_id, runtime_kind) = build_metadata(&world);
         Ok(WorldSummary {
             id,
             title,
             revision: revision.try_into()?,
             updated_at: updated.try_into()?,
+            base_id,
+            runtime_kind,
         })
     })
     .collect()
@@ -301,5 +330,31 @@ mod tests {
             .unwrap_err()
             .to_string()
             .contains("CORRUPT_WORLD"));
+    }
+}
+
+#[cfg(test)]
+mod metadata_tests {
+    use super::*;
+    use serde_json::json;
+    #[test]
+    fn persisted_build_metadata_is_consistent_and_unknown_formats_stay_unknown() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let mut journal = TaskJournal::open(&dir.path().join("worlds.sqlite"))?;
+        let mut world = WorldDocument { build:json!({"id":"legacy","scene":{"format":"craftmine.scene/3"}}),
+            snapshot:json!({"format":"craftmine.progress/1","player":{"x":0,"y":6,"z":0,"yaw":0,"pitch":0}}), extensions:vec![] };
+        journal.world_create("legacy", "Legacy", &world)?;
+        world.build = json!({"id":"godot","scene":{"format":"craftmine.godot-scene/1","baseId":"top-down"},"godot":{"engineVersion":"4.7.2-stable"}});
+        journal.world_create("godot", "Godot", &world)?;
+        world.build = json!({"id":"future","scene":{"format":"unknown/1","baseId":"voxel"},"godot":{}});
+        journal.world_create("future", "Future", &world)?;
+        for summary in journal.world_list()? { assert_eq!(summary, journal.world_read(&summary.id)?.summary); }
+        assert_eq!(journal.world_read("godot")?.summary.base_id.as_deref(), Some("top-down"));
+        assert_eq!(journal.world_read("godot")?.summary.runtime_kind.as_deref(), Some("godot"));
+        assert_eq!(journal.world_read("legacy")?.summary.runtime_kind.as_deref(), Some("legacy"));
+        let unknown = serde_json::to_value(journal.world_read("future")?.summary)?;
+        assert!(unknown.get("runtimeKind").is_none());
+        assert!(unknown.get("baseId").is_none());
+        Ok(())
     }
 }

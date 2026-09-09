@@ -8727,3 +8727,7 @@ with nonzero revision, full base state preservation through save/restart/switch,
 trusted artifact lookup from B's applied build, selection rollback on failed
 candidate load, and hiding the sibling view while checks/workbench pages are open.
 The original C fixtures alone do not satisfy those integration cases.
+
+### GODOT-AUDIT-CORE: input and publication integrity
+
+Using isolated data and protocol calls without input simulation: verify claimed `projectRoot/project.godot`; corrupt source before claim and require refusal. Verify a 39,514,754-byte synthetic engine-sized artifact and reject altered bytes/over-budget declarations. Prepare with identical player pose but stale inventory/quests and require `APPLICATION_PROGRESS_CHANGED`; exact formal progress survives commit. Source or asset edits after prepare require `GODOT_CANDIDATE_STALE`, preserving the world. Optional list/read metadata must agree; unknown formats cannot default to legacy. Reusing a sandbox task directory must fail before overwrites; fresh task ids start empty. Native runtime proof and authenticated launch remain separate tests.

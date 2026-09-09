@@ -305,7 +305,7 @@ fn ensure_dirs(base: &Path, relative: &str, code: &str) -> Result<PathBuf> {
     Ok(current)
 }
 
-fn open_read(path: &Path) -> Result<std::fs::File> {
+pub(super) fn open_read(path: &Path) -> Result<std::fs::File> {
     let mut options = OpenOptions::new();
     options.read(true);
     #[cfg(windows)]
@@ -388,7 +388,7 @@ fn hex(bytes: &[u8]) -> String {
         .collect()
 }
 
-fn asset_manifest(db: &Connection, world: &str) -> Result<(String, Vec<AssetRow>)> {
+pub(super) fn asset_manifest(db: &Connection, world: &str) -> Result<(String, Vec<AssetRow>)> {
     let mut statement = db.prepare(
         "SELECT sha256,name,path,media_type,bytes FROM craftmine_godot_assets WHERE world_id=?1 ORDER BY path",
     )?;
@@ -546,10 +546,24 @@ fn write_verified(target: &Path, hash: &str, bytes: &[u8], code: &str) -> Result
         use std::os::windows::fs::OpenOptionsExt;
         options.custom_flags(0x80000000); // FILE_FLAG_WRITE_THROUGH.
     }
-    let mut file = options.open(target)?;
-    file.write_all(bytes)?;
-    file.sync_all()?;
-    Ok(())
+    let temporary = target.with_file_name(format!(".craftmine-pending-{}-{}-{}.tmp",
+        std::process::id(), worlds::timestamp()?, TEMP_SEQUENCE.fetch_add(1, Ordering::Relaxed)));
+    let result = (|| -> Result<()> {
+        let mut file = options.open(&temporary)?;
+        file.write_all(bytes)?;
+        file.sync_all()?;
+        drop(file);
+        // The SQLite IMMEDIATE transaction serializes cooperating materializers.
+        // An unexpected pre-existing target is verified, never repaired silently.
+        if fs::symlink_metadata(target).is_ok() {
+            write_verified(target, hash, bytes, code)?;
+        } else {
+            fs::rename(&temporary, target)?;
+        }
+        Ok(())
+    })();
+    if fs::symlink_metadata(&temporary).is_ok() { let _ = fs::remove_file(&temporary); }
+    result
 }
 
 fn store_receipt(
