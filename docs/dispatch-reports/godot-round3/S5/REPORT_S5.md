@@ -21,7 +21,7 @@
 | 分支 | `codex/godot-round3-s5-20260910` |
 | 工作树 | `D:/Craftmine World-worktrees/godot-round3-s5-20260910` |
 | 起点 | `f561d4b` = master `c2e592f` + R2 已提交 `2fa3c7c`（含 `957bbe4` 素材导航） |
-| 提交 | `41cbf76` `c96d8bc` `8a86e0a` `bce5bd2` `e81e137` `62ebf9c` `df08a4e` `c8e0253` `d723c94` |
+| 提交 | `41cbf76` `c96d8bc` `8a86e0a` `bce5bd2` `e81e137` `62ebf9c` `df08a4e` `c8e0253` `d723c94` `b887de7` `593bf3a` |
 | 核心二进制 | `vendor/pi-desktop/target/debug/craftmine-core.exe`，9,336,320 bytes，SHA256 `CDD50218BD20895A6A7BBF34C7170F6612FD34C1228EEE3ADB342D828047E307` |
 | 工具链 | cargo 1.96.1、node v24.14.0 |
 | 素材源码 | `crates/craftmine-core/src/asset_catalog/**`、`plugins/craftmine-world/asset-service.mjs`、`apps/desktop/electron/craftmine-assets/**`、`apps/desktop/src/components/craftmine/assets/**` |
