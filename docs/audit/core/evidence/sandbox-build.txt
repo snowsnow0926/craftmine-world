@@ -1,0 +1,2 @@
+   Compiling craftmine-godot-sandbox-probe v0.1.0 (D:\Craftmine World-worktrees\godot-audit-core-20260909\desktop\godot\sandbox)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.97s

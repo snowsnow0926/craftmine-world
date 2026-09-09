@@ -1,0 +1,21 @@
+{
+  "format": "craftmine.audit-evidence/1",
+  "baseline": "75f69fa2903e0c259bfaf5ce0cfecd190bb21545",
+  "files": [
+    {
+      "path": "evidence/core-tests.txt",
+      "bytes": 10542,
+      "sha256": "82f028b681b239a3824938de9a2dc50bfc5eb809225a4db6ef867a48747f4a50"
+    },
+    {
+      "path": "evidence/sandbox-build.txt",
+      "bytes": 203,
+      "sha256": "d8361fa189a0778841727299c4bf1326552f61b6339c0ff1c92f8b3c73801097"
+    },
+    {
+      "path": "evidence/sandbox-tests.txt",
+      "bytes": 970,
+      "sha256": "6b46b518fd5aea491f9a831bb92337d4b3fde527dfa60548c421b0fe68c3d5f8"
+    }
+  ]
+}
