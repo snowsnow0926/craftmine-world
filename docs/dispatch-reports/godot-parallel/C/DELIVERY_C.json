@@ -6,8 +6,11 @@
   "baseCommit": "46739d2",
   "commits": [
     "93d3469 feat(godot): host real Godot Web worlds in an Electron content view",
-    "0f96b13 fix(godot): close review findings in the world runtime host"
+    "0f96b13 fix(godot): close review findings in the world runtime host",
+    "4a30730 docs(godot): record task C delivery",
+    "24c554a test(godot): cover the panel view page in Godot mode"
   ],
+  "commitNote": "本文件自身的提交在列表之后；任务 C 的完整提交见 `git log codex/godot-parallel-c-20260909`.",
   "merged": false,
   "pushed": false,
   "reports": {
