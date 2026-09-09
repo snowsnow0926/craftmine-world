@@ -118,6 +118,10 @@ impl TaskJournal {
     /// Only an applied, integrity-checked build is a runnable formal world.
     /// This is not an executor attestation or proof of model-created gameplay.
     pub fn godot_runtime_describe(&self, args: &Value) -> Result<Value> {
+        self.runtime_describe_impl(args, true)
+    }
+
+    fn runtime_describe_impl(&self, args: &Value, verify_artifacts: bool) -> Result<Value> {
         let args: DescribeArgs = serde_json::from_value(args.clone())?;
         let current = worlds::read(&self.db, &args.world_id)?;
         match current.world.build["scene"]["format"].as_str() {
@@ -180,12 +184,53 @@ impl TaskJournal {
             && job["status"] == "passed" && job["outputHash"] == input["checkOutputHash"], "GODOT_BUILD_NOT_APPLIED");
         // Source head may have advanced since application. Formal builds remain
         // runnable independently of a newer draft; only their own artifacts count.
-        let mut descriptor = self.runtime_artifacts(&owner, build, &job)?;
+        let mut descriptor = if verify_artifacts { self.runtime_artifacts(&owner, build, &job)? } else { json!({}) };
         descriptor.as_object_mut().unwrap().extend(json!({"format":"craftmine.godot-runtime-descriptor/1","phase":"formal","worldId":args.world_id,
             "buildId":build,"baseId":base_id,"revision":current.summary.revision,"contentHash":current.content_hash,
             "snapshot":current.world.snapshot,"build":current.world.build,
             "copiedFromWorldId":copy}).as_object().unwrap().clone());
         Ok(descriptor)
+    }
+
+    /// Repair uses the exact applied source, never a newer unpublished head.
+    /// Skipping artifact I/O here never skips application/check integrity.
+    pub fn godot_world_rebuild_plan(&self, args: &Value) -> Result<Value> {
+        let _lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
+        let request: DescribeArgs = serde_json::from_value(args.clone())?;
+        let metadata = self.runtime_describe_impl(args, false)?;
+        ensure!(!metadata.is_null(), "GODOT_REBUILD_NOT_SUPPORTED");
+        let availability = self.godot_runtime_describe(args);
+        let reason = availability.err().map(|error| error.to_string());
+        if let Some(reason) = &reason {
+            ensure!(["GODOT_STORAGE_UNAVAILABLE", "GODOT_ARTIFACT_MISSING", "CORRUPT_GODOT_ARTIFACT",
+                "GODOT_ARTIFACT_MANIFEST_MISMATCH", "GODOT_WEB_ENTRY_MISSING"]
+                .iter().any(|code| reason.starts_with(code)), "GODOT_REBUILD_UNSAFE: {reason}");
+        }
+        let world = worlds::read(&self.db, &request.world_id)?;
+        let build = metadata["buildId"].as_str().context("INVALID_GODOT_BUILD")?;
+        let owner = metadata["copiedFromWorldId"].as_str().unwrap_or(&request.world_id);
+        let (content, branch, revision): (Option<String>, String, i64) = self.db.query_row(
+            "SELECT content_oid,branch_id,source_revision FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
+            params![owner, build], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)))?;
+        // Older applied builds predate Git. Their migration map names the exact
+        // legacy revision, unlike the repository's potentially newer main head.
+        let content_oid = match content {
+            Some(value) => value,
+            None => self.db.query_row("SELECT commit_oid FROM craftmine_content_revision_map WHERE world_id=?1 AND legacy_revision=?2",
+                params![owner, revision], |row| row.get(0)).optional()?.context("GODOT_REBUILD_SOURCE_NOT_INDEXED")?,
+        };
+        let (store, layout) = self.content_layout(&request.world_id)?;
+        let tree = store.commit_tree_oid(&layout, &content_oid).context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
+        let rebuild_branch = format!("restore-{}", &digest(&format!("{}|{build}", request.world_id))[..24]);
+        let rebuild_content = store.branch_head(&layout, &rebuild_branch)?;
+        if let Some(head) = &rebuild_content {
+            ensure!(store.commit_tree_oid(&layout, head)? == tree, "GODOT_REBUILD_BRANCH_CHANGED");
+        }
+        Ok(json!({"format":"craftmine.godot-rebuild-plan/1","worldId":request.world_id,
+            "rebuildRequired":reason.is_some(),"reason":reason,"formalBuildId":build,
+            "worldRevision":world.summary.revision,"snapshotHash":digest(&serde_json::to_string(&world.world.snapshot)?),
+            "repoId":layout.repo_id,"contentOid":content_oid,"branchId":branch,
+            "rebuildBranchId":rebuild_branch,"rebuildContentOid":rebuild_content}))
     }
 
     /// A prepared candidate may be started in a separate host-owned instance,

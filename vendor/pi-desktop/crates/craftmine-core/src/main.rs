@@ -31,6 +31,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
     match method {
         "godotProject.create" => return journal.godot_project_create(params),
         "godotProject.index" => return journal.godot_project_index(params),
+        "godotProject.sourceContext" => return journal.godot_project_source_context(params),
         "godotProject.read" => return journal.godot_project_read(params),
         "godotProject.patch" => return journal.godot_project_patch(params),
         "godotProject.applyFiles" => return journal.godot_project_apply_files(params),
@@ -62,6 +63,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "godotStorage.reclaimCommit" => return journal.godot_storage_reclaim_commit(params),
         "godotWorld.initialize" => return journal.godot_world_initialize(params),
         "godotWorld.initStatus" => return journal.godot_world_init_status(params),
+        "godotWorld.rebuildPlan" => return journal.godot_world_rebuild_plan(params),
         "godotWorld.copy" => return journal.godot_world_copy(params),
         "godotWorld.backupSnapshot" => return journal.godot_world_backup_snapshot(params),
         "godotWorld.verifySnapshot" => return journal.godot_world_verify_snapshot(params),
