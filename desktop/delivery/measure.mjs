@@ -242,13 +242,13 @@ async function suiteStartup(ctx) {
   const packageDir = ctx.packageDir;
   const humanCommand = `node desktop/delivery/measure.mjs startup --package "<package dir containing Craftmine World.exe>" --out <evidence.json>`;
   if (!packageDir) {
-    for (const name of ['startup.cold.ms', 'startup.warm.ms']) {
+    for (const name of ['startup.cold.ms', 'startup.warm.ms', 'startup.offscreenRendered.ms']) {
       skipped.push(core.skippedMetric(name, 'no packaged client found', humanCommand));
     }
     return { id: 'startup', metrics, skipped };
   }
   if (!packageSupportsHeadless(packageDir)) {
-    for (const name of ['startup.cold.ms', 'startup.warm.ms']) {
+    for (const name of ['startup.cold.ms', 'startup.warm.ms', 'startup.offscreenRendered.ms']) {
       skipped.push(core.skippedMetric(name, 'packaged client has no offscreen headless readiness channel; refusing to open a visible window', humanCommand));
     }
     return { id: 'startup', metrics, skipped };
@@ -275,6 +275,7 @@ async function suiteStartup(ctx) {
   if (cold.length === 0) {
     skipped.push(core.skippedMetric('startup.cold.ms', `packaged client did not report readiness: ${failure}`, humanCommand));
     skipped.push(core.skippedMetric('startup.warm.ms', 'cold sample failed', humanCommand));
+    skipped.push(core.skippedMetric('startup.offscreenRendered.ms', 'cold sample failed', humanCommand));
     return { id: 'startup', metrics, skipped };
   }
   metrics.push(core.metric({
@@ -296,6 +297,8 @@ async function suiteStartup(ctx) {
       threshold: core.thresholdFor(thresholds, 'startup.offscreenRendered.ms'),
       notes: 'stdout [timing] kind=boot phase=window-rendered-offscreen elapsedMs',
     }));
+  } else {
+    skipped.push(core.skippedMetric('startup.offscreenRendered.ms', 'the client never printed phase=window-rendered-offscreen; the metric is missing rather than passing', humanCommand));
   }
   return { id: 'startup', metrics, skipped };
 }
@@ -354,9 +357,13 @@ async function suiteWaits(ctx) {
         break;
       }
       const imported = runCommand(ctx.godot, ['--headless', '--path', out, '--import'], { env: isolatedEnv(out), timeoutMs: 600000 });
-      buildSamples.push(materialize.elapsedMs + imported.elapsedMs);
       fs.rmSync(out, { recursive: true, force: true });
-      if (imported.status !== 0) break;
+      if (imported.status !== 0) {
+        // A failed import must never become a fast, passing sample.
+        skipped.push(core.skippedMetric('waits.project-build.ms', `engine --import exited ${imported.status}: ${(imported.stderr || imported.stdout).slice(0, 400)}`, 'node desktop/delivery/measure.mjs waits'));
+        break;
+      }
+      buildSamples.push(materialize.elapsedMs + imported.elapsedMs);
     }
     if (buildSamples.length) {
       metrics.push(core.metric({
@@ -572,7 +579,13 @@ async function suiteSize(ctx) {
   const skipped = [];
   const packageDir = ctx.packageDir;
   if (!packageDir) {
-    skipped.push(core.skippedMetric('size.install.total.mb', 'no packaged client found', 'pass --package <dir containing Craftmine World.exe>', 'MB'));
+    // Every frozen size metric must appear in the record, otherwise a missing
+    // package would look like a clean run with nothing measured.
+    const declared = Object.keys(ctx.thresholds?.metrics ?? {}).filter(name => name.startsWith('size.'));
+    const names = declared.length ? declared : ['size.install.total.mb'];
+    for (const name of names) {
+      skipped.push(core.skippedMetric(name, 'no packaged client found', 'pass --package <dir containing Craftmine World.exe>', name === 'size.fileCount' ? 'files' : 'MB'));
+    }
     return { id: 'size', metrics, skipped };
   }
   const files = walkFiles(packageDir);
@@ -757,17 +770,16 @@ async function suiteAssets(ctx) {
   }
   for (const count of [1000, 10000]) {
     const result = measureSyntheticIndex(ctx, count);
-    const pending = { max: null, min: null, status: 'pending-real-sample' };
     metrics.push(core.metric({
       name: `assets.search.synthetic-${count}.ms`, unit: 'ms', samples: result.searchSamples, source: 'synthetic-index',
       process: 'node measure.mjs in-memory tag index over a scratch JSON index',
-      threshold: pending,
+      threshold: core.thresholdFor(ctx.thresholds, `assets.search.synthetic-${count}.ms`),
       notes: `synthetic-index tier ${count}; 40 queries; NOT product acceptance`,
     }));
     metrics.push(core.metric({
       name: `assets.preview.synthetic-${count}.ms`, unit: 'ms', samples: result.previewSamples, source: 'synthetic-index',
       process: 'node measure.mjs in-memory metadata projection',
-      threshold: pending,
+      threshold: core.thresholdFor(ctx.thresholds, `assets.preview.synthetic-${count}.ms`),
       notes: `synthetic-index tier ${count}; 8 projections per query; NOT product acceptance`,
     }));
   }
@@ -870,7 +882,13 @@ async function main() {
   if (options.json) process.stdout.write(`${JSON.stringify(record, null, 2)}\n`);
   else process.stdout.write(`${renderTable(record)}\n\nevidence: ${out}\n`);
   const failed = core.failingMetrics(record);
-  return failed.length === 0 ? 0 : 1;
+  const pending = core.pendingFrozenMetrics(record, ctx.thresholds, {requireCoverage: options.suite === 'all'});
+  if (failed.length) return 1;
+  if (pending.length) {
+    process.stderr.write(`[measure] ${pending.length} frozen metric(s) were not measured; this run is pending, not a pass:\n  ${pending.map(item => `${item.metric} (${item.state})`).join('\n  ')}\n`);
+    return 3;
+  }
+  return 0;
 }
 
 main().then(code => { process.exitCode = code; }).catch(error => {

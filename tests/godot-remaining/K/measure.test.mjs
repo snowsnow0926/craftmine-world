@@ -1,7 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+
+const REPO_ROOT = fileURLToPath(new URL('../../..', import.meta.url));
 
 const core = await import(new URL('../../../desktop/delivery/lib/measure-core.mjs', import.meta.url).href);
 const measurePath = fileURLToPath(new URL('../../../desktop/delivery/measure.mjs', import.meta.url));
@@ -35,10 +40,35 @@ test('verdict is fail over threshold, unmeasured without samples or threshold', 
   assert.equal(core.verdictFor([1, 2, 3], {max: 10}), 'pass');
   assert.equal(core.verdictFor([], {max: 1}), 'unmeasured');
   assert.equal(core.verdictFor([1], null), 'unmeasured');
-  assert.equal(core.verdictFor([1], {max: null, min: null, status: 'frozen'}), 'unmeasured');
+  // A frozen threshold with no bound is a configuration error, so it fails closed.
+  assert.equal(core.verdictFor([1], {max: null, min: null, status: 'frozen'}), 'fail');
   assert.equal(core.verdictFor([5], {max: 1, status: 'pending-real-sample'}), 'unmeasured');
   assert.equal(core.verdictFor([1, 2], {min: 5}), 'fail');
   assert.equal(core.verdictFor([5, 6], {min: 1}), 'pass');
+});
+
+test('one sample above the frozen maximum fails the metric even when p95 passes', () => {
+  const samples = [...Array(855).fill(1), ...Array(20).fill(100)];
+  assert.equal(core.summarize(samples).p95 <= 16.67, true, 'p95 alone would have passed');
+  assert.equal(core.verdictFor(samples, {max: 16.67, status: 'frozen'}), 'fail');
+});
+
+test('frozen metrics that were not measured are reported as pending, never pass', () => {
+  const thresholds = {metrics: {
+    'a.frozen.ms': {max: 10, status: 'frozen'},
+    'b.skipped.ms': {max: 10, status: 'frozen'},
+    'c.pending.ms': {max: null, status: 'pending-real-sample'},
+    'd.missing.ms': {max: 10, status: 'frozen'},
+  }};
+  const record = {suites: [
+    {id: 'a', metrics: [{name: 'a.frozen.ms', verdict: 'pass', count: 3}], skipped: [{metric: 'b.skipped.ms'}]},
+    {id: 'c', metrics: [{name: 'c.pending.ms', verdict: 'unmeasured', count: 0}], skipped: []},
+  ]};
+  assert.deepEqual(
+    core.pendingFrozenMetrics(record, thresholds, {requireCoverage: true}).map(item => item.metric + ':' + item.state).sort(),
+    ['b.skipped.ms:skipped', 'd.missing.ms:not-reported'],
+  );
+  assert.deepEqual(core.pendingFrozenMetrics(record, thresholds).map(item => item.metric), ['b.skipped.ms']);
 });
 
 test('cold/warm labelling rule is index 0 cold, later warm', () => {
@@ -122,6 +152,33 @@ test('measurement sources contain no input-simulation or window-activation calls
     const source = fs.readFileSync(file, 'utf8').toLowerCase();
     for (const token of forbidden) {
       assert.equal(source.includes(token), false, `${file} must not contain ${token}`);
+    }
+  }
+});
+
+test('a run that measures nothing exits 3, never 0', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'k-measure-cli-'));
+  try {
+    const result = spawnSync(process.execPath, [
+      measurePath, 'all', '--runs', '2',
+      '--cache', path.join(directory, 'no-such-cache'),
+      '--out', path.join(directory, 'evidence.json'),
+    ], {
+      encoding: 'utf8',
+      windowsHide: true,
+      env: {...process.env, CRAFTMINE_GODOT_CACHE_DIR: '', PI_SCRATCH_DIR: directory},
+    });
+    assert.equal(result.status, 3, `stdout=${result.stdout}\nstderr=${result.stderr}`);
+    assert.match(result.stderr, /pending, not a pass/);
+    const record = JSON.parse(fs.readFileSync(path.join(directory, 'evidence.json'), 'utf8'));
+    assert.equal(core.failingMetrics(record).length, 0);
+    assert.ok(core.pendingFrozenMetrics(record, JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'desktop/delivery/MEASUREMENT_THRESHOLDS.json'), 'utf8')), {requireCoverage: true}).length > 0);
+  } finally {
+    try {
+      fs.rmSync(directory, {recursive: true, force: true});
+    } catch {
+      // Windows can hold a transient handle from the spawned tool; the temp directory
+      // is outside the repository and the OS cleans it up.
     }
   }
 });

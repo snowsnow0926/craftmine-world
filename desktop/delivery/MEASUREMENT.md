@@ -42,8 +42,14 @@ Implemented in `desktop/delivery/lib/measure-core.mjs`, no dependencies.
 * **Verdict**:
   * `unmeasured` when there are no samples, or the threshold is `null`, or
     `status` is `pending-real-sample`;
-  * `fail` when `p95 > max` (or `min sample < min`);
+  * `fail` when **any** sample is above `max` (or below `min`), not only when
+    `p95` is; a frozen threshold with neither bound is also a `fail` (configuration
+    error, fail closed);
   * `pass` otherwise.
+* **Exit code**: `1` when any metric fails; `3` when nothing failed but at least
+  one frozen metric was not measured (unmeasured, skipped, or, for the `all`
+  suite, never reported); `0` only when every frozen metric was measured and
+  inside its bound. A run that measured nothing therefore exits `3`, never `0`.
 
 ## Cold / warm rule
 
@@ -234,9 +240,14 @@ roughly 1.2-1.7x. The limits are:
 `assets.search.ms`, `assets.preview.ms`, and the four synthetic asset tiers.
 They report `unmeasured`, never `pass`.
 
-The full suite was re-run after freezing and passed with exit code 0
-(`failed=0`). No threshold was widened after freezing; a later real sample above
-a frozen `max` is a `fail`.
+The full suite was re-run after freezing: every frozen metric has a real sample
+inside its bound (`failed=0`) and the run exits **0**. Four metrics are declared
+`pending-real-sample` (`waits.candidate-apply.ms`, `waits.install.ms`,
+`assets.search.ms`, `assets.preview.ms`) plus the four synthetic asset tiers, so
+they are reported as skipped/unmeasured and are excluded from the exit code; a
+frozen metric that is *not* measured exits **3** ("pending, not a pass"). No
+threshold was widened after freezing; a later real sample above a frozen `max`
+is a `fail`, and one such sample is enough.
 
 ## Explicit non-acceptance statement
 

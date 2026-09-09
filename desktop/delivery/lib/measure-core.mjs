@@ -91,9 +91,15 @@ export function verdictFor(samples, threshold) {
   if (count === 0) return 'unmeasured';
   const normalized = normalizeThreshold(threshold);
   if (!normalized || normalized.status === 'pending-real-sample') return 'unmeasured';
-  if (normalized.max == null && normalized.min == null) return 'unmeasured';
-  const summary = summarize(samples);
-  if (normalized.max != null && summary.p95 > normalized.max) return 'fail';
+  // A frozen threshold with no bound at all is a configuration error, not a licence
+  // to pass: fail closed instead of silently reporting unmeasured.
+  if (normalized.max == null && normalized.min == null) return 'fail';
+  const values = samples.map(Number).filter(Number.isFinite);
+  if (!values.length) return 'unmeasured';
+  // Every real sample must be inside the frozen bound, not just p95: a run with a
+  // few over-budget frames is a failure, which is what MEASUREMENT.md promises.
+  const summary = summarize(values);
+  if (normalized.max != null && summary.max > normalized.max) return 'fail';
   if (normalized.min != null && summary.min < normalized.min) return 'fail';
   return 'pass';
 }
@@ -137,6 +143,40 @@ export function thresholdFor(thresholds, name) {
   if (!thresholds || typeof thresholds !== 'object') return null;
   const metrics = thresholds.metrics ?? thresholds;
   return Object.hasOwn(metrics, name) ? metrics[name] : null;
+}
+
+/**
+ * Frozen metrics that were not actually measured: an unmeasured verdict, a skipped
+ * record, or (when requireCoverage is set) a frozen metric the record never reported.
+ * A run with any of these is pending, never a pass.
+ */
+export function pendingFrozenMetrics(record, thresholds, {requireCoverage = false} = {}) {
+  const pending = [];
+  const seen = new Set();
+  for (const suite of record?.suites ?? []) {
+    for (const item of suite.metrics ?? []) {
+      seen.add(item.name);
+      const threshold = thresholdFor(thresholds, item.name);
+      if (item.verdict === 'unmeasured' && threshold && threshold.status !== 'pending-real-sample') {
+        pending.push({suite: suite.id, metric: item.name, state: 'unmeasured'});
+      }
+    }
+    for (const item of suite.skipped ?? []) {
+      seen.add(item.metric);
+      const threshold = thresholdFor(thresholds, item.metric);
+      if (threshold && threshold.status !== 'pending-real-sample') {
+        pending.push({suite: suite.id, metric: item.metric, state: 'skipped'});
+      }
+    }
+  }
+  if (requireCoverage) {
+    const metrics = thresholds?.metrics ?? thresholds ?? {};
+    for (const [name, threshold] of Object.entries(metrics)) {
+      if (threshold?.status === 'pending-real-sample') continue;
+      if (!seen.has(name)) pending.push({suite: null, metric: name, state: 'not-reported'});
+    }
+  }
+  return pending;
 }
 
 export function failingMetrics(record) {

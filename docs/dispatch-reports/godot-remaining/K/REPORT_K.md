@@ -14,7 +14,7 @@ M/N 集成后的复测保留为未完成**，并给出可直接执行的入口�
 | --- | --- | --- |
 | 1 按实际代码修复发行预检 8 项失败 | **完成** | 重跑得到同样 8 项失败后修复数据与缺件；`preflight all` 6 项检查 0 失败 |
 | 2 固定版本/来源/哈希，建立可复现构建与同包清单 | **完成（M/N 待集成）** | `release-manifest.mjs create/verify/diff`，9 个组件，268→276 文件哈希 |
-| 3 实测冷暖启动、等待、帧时间、内存、体积，冻结阈值 | **完成（部分指标无真实样本）** | `measure.mjs`，42 项阈值冻结，实测 36 项，4 项 unmeasured、4 项 skipped |
+| 3 实测冷暖启动、等待、帧时间、内存、体积，冻结阈值 | **完成（部分指标无真实样本）** | `measure.mjs`，42 项阈值冻结，实测 34 项，4 项 unmeasured、4 项 skipped |
 | 4 逐模块来源/权利/依赖/交付清单 | **完成** | `licensing/inventory.json` 22 行；3 verified、18 pending、1 unknown |
 | 5 版权/标准许可全文/第三方声明/对应源码/离线入口 + 草稿 | **完成（正式适用待法律复核）** | 15 份官方文本含 URL/日期/哈希；两份声明；离线入口；三份草稿 |
 | 6 固定 Windows 预览/交付包 + 同包验收 + A17 | **未完成（等集成）** | 打包/固定/校验工具已完成；现有预览包校验出 1 处真实不一致；A17 无隔离机器 |
@@ -66,7 +66,7 @@ node desktop/delivery/preflight.mjs all --cache "<godot cache>" --package "<win-
 # PASS notices / assets / lgpl / godot-cache / export(skipped) / package
 # PREFLIGHT PASSED: 6 checks, 0 failures, 25 warnings
 node --test desktop/delivery/preflight-selftest.mjs   # 39 cases, 0 failed
-node --test tests/godot-remaining/K/*.test.mjs        # 43 tests, 42 pass, 1 skipped(符号链接权限)
+node --test tests/godot-remaining/K/*.test.mjs        # 46 tests, 45 pass, 1 skipped(符号链接权限)
 ```
 
 25 条警告全部是显式的“许可文本待正式适用”说明，没有被改写成通过。
@@ -142,6 +142,18 @@ verify → PACKAGE NOT VERIFIED: 0 missing, 1 mismatch, 0 unpinned, 0 forbidden,
 
 阈值在验收前一次冻结（`MEASUREMENT_THRESHOLDS.json`，`frozenAt` + 逐条 rationale），
 实测值均低于阈值；未测项保持 unmeasured/skipped，不因缺样本而通过。
+
+判定与退出码（对抗性复审后收紧）：**任一真实样本**超过冻结 `max` 即 `fail`（不再只看
+p95，避免少量超帧被平均掉）；冻结阈值没有上下界视为配置错误并 `fail`；冻结指标未实测
+→ 退出码 `3`（pending，不是通过）；全部冻结指标实测且在界内 → `0`。复审同时修掉：
+失败的引擎导入不再被计入样本、无包时所有 `size.*` 指标都写入 skipped、离屏首帧缺失
+记录 skipped、合成资产指标改用冻结阈值、每次样本越界即失败。
+
+第二轮实测（`K-measurement-final.json`，同一包与固定引擎）：冷启动 135.591 ms、
+热启动 157.928 ms、离屏首帧 p50 1311 ms、引擎导入 p50 2415.367 ms、工程构建
+p50 2440.88 ms、探针检查 p50 20869.728 ms、帧 p50 6.9 / max 7.021 ms、工作集峰值
+414.43 MB（进程树 1276.887 MB）、安装体积 546.596 MB / 828 文件、`git log` p95
+51.548 ms、`git diff --stat` p95 141.125 ms，全部在界内，退出码 0。
 
 ## 6 第 4–5 项：许可底账、文本与声明
 
