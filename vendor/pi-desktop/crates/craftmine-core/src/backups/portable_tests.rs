@@ -216,6 +216,10 @@ fn portable_archive_restores_into_a_new_directory_without_the_source() -> Result
     assert_eq!(restored["status"], "completed");
     assert_eq!(restored["restoredInPlace"], true);
     assert_eq!(restored["domainHash"], domain_hash);
+    let proof=fresh.backup_restore_proof(&json!({"operationId":"restore-1","archiveHash":restored["archiveHash"]}))?;
+    assert_eq!(proof["verified"],true);
+    assert_eq!(proof["domainHash"],restored["domainHash"]);
+    assert!(fresh.backup_restore_proof(&json!({"operationId":"another-restore","archiveHash":restored["archiveHash"]})).is_err());
     assert_eq!(restored["currentHash"], domain_hash);
 
     // Worlds, drafts, progress and source content are all back.
@@ -269,6 +273,10 @@ fn portable_archive_restores_into_a_new_directory_without_the_source() -> Result
     let page = store.history(&layout, MAIN_BRANCH, 0, 10)?;
     assert_eq!(page.total, 2);
     assert_eq!(page.records.len(), 2);
+    fresh.db.execute("UPDATE craftmine_worlds SET title='changed after restart' WHERE id='a'",[])?;
+    let after=fresh.backup_restore_proof(&json!({"operationId":"restore-1","archiveHash":restored["archiveHash"]}))?;
+    assert_eq!(after["domainHash"],proof["domainHash"]);
+    assert_ne!(after["currentHash"],proof["currentHash"]);
 
     // The moved-away source is untouched by the restore.
     assert!(moved.join("tasks.sqlite").is_file());

@@ -114,6 +114,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "backup.verifyPortable" => return journal.backup_verify_portable(params),
         "backup.restorePortable" => return journal.backup_restore_portable(params),
         "backup.cancelPortable" => return journal.backup_cancel_portable(params),
+        "backup.restoreProof" => return journal.backup_restore_proof(params),
         "backup.protectedRefs" => return journal.backup_protected_refs(params),
         "backup.releasePortable" => return journal.backup_release_portable(params),
         "backup.export-full" => return journal.backup_export_full(params),
