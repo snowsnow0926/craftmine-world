@@ -8,7 +8,7 @@
 use craftmine_godot_sandbox_probe::{
     acl::{grant_new_directory, inspect_new_work_label},
     desktop::{PrivateDesktop, StationChoice},
-    launch::{launch, minimal_environment, LaunchSpec, Redirection},
+    launch::{launch, launch_lpac_registry_diagnostic, minimal_environment, LaunchSpec, Redirection},
     profile::AppContainerProfile,
 };
 use sha2::{Digest, Sha256};
@@ -119,9 +119,14 @@ fn print_bounded(label: &str, text: &str, lines: usize) {
 
 fn run() -> Result<()> {
     let args = env::args().collect::<Vec<_>>();
-    if args.len() != 1 {
-        return Err("This fixed gate accepts no project or command arguments".into());
+    let lpac_registry = args.len() == 2 && args[1] == "--lpac-registry";
+    if args.len() != 1 && !lpac_registry {
+        return Err("This fixed gate accepts only the optional --lpac-registry diagnostic selector; no project or command arguments".into());
     }
+    println!("policy_variant={}", if lpac_registry { "lpac-registryRead-no-network-capabilities" } else { "appcontainer-no-capabilities" });
+    let launch_fixed = |spec: &LaunchSpec| {
+        if lpac_registry { launch_lpac_registry_diagnostic(spec) } else { launch(spec) }
+    };
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let parent = manifest.join("out");
     fs::create_dir_all(&parent)?;
@@ -200,6 +205,9 @@ fn run() -> Result<()> {
         println!("work_integrity_rid={level} label_modified=false");
     }
     println!("task_sid={sid}");
+    let (exemption_count, task_exempt) = unsafe { craftmine_godot_sandbox_probe::network::loopback_exemption(profile.sid())? };
+    println!("loopback_exemption_count={exemption_count} exact_task_exempt={task_exempt}");
+    if task_exempt { return Err("The fixed task SID has a loopback exemption".into()); }
 
     let system_root = env::var("SystemRoot")?;
     let environment = minimal_environment(&work, &system_root);
@@ -220,7 +228,7 @@ fn run() -> Result<()> {
 
     // 1. Fixed native boundary probe.
     let native_log = root.join("native-probe.log");
-    let native = launch(&spec_for(
+    let native = launch_fixed(&spec_for(
         probe,
         vec![
             "--native-probe".into(),
@@ -261,7 +269,7 @@ fn run() -> Result<()> {
     // 2. Real Godot: version, headless import, Web export with pinned templates.
     let engine = bin.join("Godot_v4.7.2-stable_win64.exe");
     let version_log = root.join("godot-version.log");
-    let version = launch(&spec_for(
+    let version = launch_fixed(&spec_for(
         engine.clone(),
         vec!["--headless".into(), "--version".into()],
         version_log.clone(),
@@ -274,7 +282,7 @@ fn run() -> Result<()> {
     println!("godot_version=passed");
 
     let import_log = root.join("godot-import.log");
-    let import = launch(&spec_for(
+    let import = launch_fixed(&spec_for(
         engine.clone(),
         vec![
             "--headless".into(),
@@ -302,6 +310,7 @@ fn run() -> Result<()> {
     let probe_result = fs::read_to_string(project.join("probe_result.txt"))
         .map_err(|error| format!("Editor-time probe produced no result: {error}"))?;
     println!("editor_time_probe=\n{probe_result}");
+    let mut editor_boundary_verified = true;
     for line in [
         "plugin_ran=true",
         "plugin_file_read=denied",
@@ -313,16 +322,20 @@ fn run() -> Result<()> {
         "tool_init_file_read=denied",
     ] {
         if !probe_result.contains(line) {
-            return Err(format!("Editor-time boundary evidence missing: {line}").into());
+            eprintln!("Editor-time boundary evidence missing: {line}");
+            editor_boundary_verified = false;
         }
     }
-    println!("editor_time_boundary=passed");
+    println!("editor_time_boundary_verified={editor_boundary_verified}");
+    // This is the fixed trusted fixture only. After the native boundary has
+    // passed, collect export compatibility even if a Godot API reports only a
+    // generic socket error. The final gate still fails on unknown evidence.
     println!("godot_import=passed");
 
     let export_dir = work.join("export");
     fs::create_dir_all(&export_dir)?;
     let export_log = root.join("godot-export.log");
-    let export = launch(&spec_for(
+    let export = launch_fixed(&spec_for(
         engine,
         vec![
             "--headless".into(),
@@ -369,6 +382,7 @@ fn run() -> Result<()> {
 
     let mut evidence = String::new();
     evidence.push_str(&format!("identifier={identifier}\n"));
+    evidence.push_str(&format!("lpac_registry_requested={lpac_registry}\neditor_time_boundary_verified={editor_boundary_verified}\n"));
     evidence.push_str(&format!("task_sid={sid}\n"));
     evidence.push_str(&format!("station={}\n", desktop.station_name));
     evidence.push_str(&format!("station_visible={}\n", desktop.station_visible));
@@ -379,7 +393,7 @@ fn run() -> Result<()> {
     evidence.push_str(&format!("godot_version_output={version_output:?}\n"));
     evidence.push_str(&format!("godot_import_output={import_output:?}\n"));
     evidence.push_str(&format!("godot_export_output={export_output:?}\n"));    evidence.push_str(&artifacts.join("\n"));
-    evidence.push_str("\nnot-verified=LPAC,non-loopback-network-denied-by-policy-not-routing,untrusted-model-projects,UI-interaction\n");
+    evidence.push_str("\nnot-verified=LPAC-token-query,host-verified-Godot-capability-set,untrusted-model-projects,UI-interaction,browser-runtime\n");
     fs::write(root.join("evidence.txt"), &evidence)?;
     println!("evidence={}", root.display());
 
@@ -389,6 +403,8 @@ fn run() -> Result<()> {
         "profile_cleanup_hresult={}",
         craftmine_godot_sandbox_probe::hex(cleanup as u32)
     );
+    if cleanup < 0 { return Err("Profile cleanup failed".into()); }
+    if !editor_boundary_verified { return Err("Editor-time evidence remains unknown; fixed runtime compatibility was recorded but full gate did not pass".into()); }
     Ok(())
 }
 
