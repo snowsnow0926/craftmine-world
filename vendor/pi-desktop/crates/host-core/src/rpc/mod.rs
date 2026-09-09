@@ -1082,6 +1082,7 @@ async fn handle_request(
                     "defaultMode": "agent",
                     "defaultCommandShell": tools::shell::default_shell_id(),
                     "theme": "dark",
+                    "language": "zh-CN",
                     "enterToSend": true,
                     "largePasteThreshold": DEFAULT_LARGE_PASTE_THRESHOLD,
                     "contextCompaction": {

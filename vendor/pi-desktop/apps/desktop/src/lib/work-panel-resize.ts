@@ -1,7 +1,7 @@
-// Narrower dock: the default opens a third slimmer than the original 420px, and
-// the floor scales with it so that default stays reachable.
+// The Craftmine world needs a useful initial play surface. Existing saved
+// widths and the upstream resize boundaries remain valid.
 export const WORK_PANEL_MIN_WIDTH = 244;
-export const WORK_PANEL_DEFAULT_WIDTH = 280;
+export const WORK_PANEL_DEFAULT_WIDTH = 560;
 export const WORK_PANEL_MAX_WIDTH = 720;
 export const WORK_PANEL_CHAT_MIN_WIDTH = 1040;
 export const WORK_PANEL_CHAT_MAX_WIDTH = 10000;

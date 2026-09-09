@@ -8460,3 +8460,10 @@ are withdrawn with ADR 0165.
 - Expected: each world retains its own progress; the selected world survives restart; stale writes and page attempts to call task transactions are rejected; no source can be replaced through the progress API.
 - Validation: `cargo test -p craftmine-core` and root `node tests/desktop-worlds-browser.mjs`. The browser adapter supplies only the Electron transport; the plugin, compiler, Rust database and game runtime are real.
 - Status: 7 Rust tests and 8 headless integration checks pass. Full Electron startup and installer validation remain pending.
+
+#### CRAFTMINE-003: Product profile, desktop layout and package resources
+
+- Render the real React application in an independent headless browser, with fixture session data and native-view transport. Verify the world entry, conversation input, work-panel width, visible game surface and both themes. Test failure must not open or focus an application window.
+- Verify that an inherited PI profile does not become the Craftmine data directory, and different explicit profiles use different Chromium/lock directories. No relative profile path is accepted.
+- Build an unpacked Windows directory, then rerun the plugin/core and world persistence probes using its actual resources and extracted packaged plugin-host entry. Include source archive and license resources.
+- Status: layout 7/7 and profile/branding/update/resize/language targeted checks 21/21 pass. Packaged component probes 8/8 and 9/9 pass. Native Electron IPC, process restart, close-time save and installer acceptance remain pending.

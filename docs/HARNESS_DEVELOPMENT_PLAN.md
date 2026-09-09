@@ -1,6 +1,6 @@
 # craftmine world / 最中幻想：游戏创作 Harness 项目开发计划书
 
-> 2026-09-09 最新调整：用户已取消此前的持续开发任务，并明确希望复用 PI-Desktop 建设 Windows 客户端。后续主计划见 [Windows 客户端与 PI-Desktop Harness 源码复用计划 v2](<D:/Craftmine World/docs/WINDOWS_CLIENT_REUSE_PLAN.md>)，DeepSeek Harness 转为对照资料。本文保留为历史设计与实现记录；下文旧阶段状态和“下一接点”不再作为自动执行指令，当前代码复盘以新计划为准。本轮仅修订计划，未启动迁移。
+> 2026-09-09 最新调整：用户已重新授权按 [Windows 客户端与 PI-Desktop Harness 源码复用计划 v2.1](<D:/Craftmine World/docs/WINDOWS_CLIENT_REUSE_PLAN.md>) 持续开发，并追加 Rust 核心与完整 PI 桌面体验。W0 接入探针完成，W1 正在实施，详见 [第一批报告](<D:/Craftmine World/docs/WINDOWS_BATCH_01.md>)。DeepSeek Harness 保留为对照资料；本文保留为历史设计与实现记录，下文旧阶段状态和“下一接点”不再替代新主计划。
 
 版本：1.2 · 2026-09-09  
 适用范围：用户本人在 Windows 本机使用的创作工作台。  

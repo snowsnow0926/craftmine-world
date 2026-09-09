@@ -198,12 +198,13 @@ test("check-for-updates is reachable from the application menu", () => {
   }
 });
 
-test("packaging publishes an electron-updater feed for GitHub Releases", () => {
+test("Craftmine packaging cannot publish or subscribe to upstream PI updates", () => {
   const pkg = JSON.parse(pkgSource);
   assert.ok(pkg.dependencies["electron-updater"], "electron-updater dependency");
-  assert.equal(pkg.build.publish[0].provider, "github");
-  assert.equal(pkg.build.publish[0].owner, "vastsa");
-  assert.equal(pkg.build.publish[0].repo, "PI-Desktop");
+  assert.deepEqual(pkg.build.publish, []);
+  assert.match(mainSource, /new AppUpdaterController\(\{[\s\S]*?enabled: false/);
+  assert.match(updaterSource, /options.enabled === false \? "disabled"/);
+  assert.match(updaterSource, /releasesUrl: options.enabled === false \? ""/);
   const macTargets = pkg.build.mac.target.map((entry) => entry.target);
   assert.ok(macTargets.includes("zip"), "mac zip target (Squirrel.Mac feed)");
   // electron-builder must never self-publish (implicit tag publishing would
@@ -216,7 +217,7 @@ test("packaging publishes an electron-updater feed for GitHub Releases", () => {
   assert.equal(pkg.build.deb.packageName, "pi-desktop");
   assert.ok(!pkg.build.deb.artifactName.includes("${name}"), "deb artifactName");
   // GitHub asset URLs mangle spaces; keep the NSIS artifact name space-free.
-  assert.equal(pkg.build.nsis.artifactName, "PI-Desktop-Setup-${version}.${ext}");
+  assert.equal(pkg.build.nsis.artifactName, "Craftmine-World-Setup-${version}.${ext}");
   // The upload step must carry every updater feed, and the release publishes
   // all platforms unfiltered (D126/D285).
   assert.match(releaseWorkflowSource, /release\/\*\.zip/);

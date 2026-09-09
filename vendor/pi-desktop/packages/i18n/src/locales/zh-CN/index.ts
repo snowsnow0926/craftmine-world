@@ -2,10 +2,10 @@ import type { EnglishCatalog } from "../en/index.js";
 
 export const zhCN = {
   app: {
-    name: "PI-Desktop",
-    shellName: "PI-Desktop",
-    tagline: "本地 AI 编程助手",
-    starting: "正在启动 PI-Desktop…",
+    name: "craftmine world · 最中幻想",
+    shellName: "最中幻想",
+    tagline: "让你的想法，长成一个世界",
+    starting: "正在启动最中幻想…",
     loadingView: "正在加载页面…",
     uiCrashed: "界面出现了问题",
   },
@@ -23,13 +23,13 @@ export const zhCN = {
     close: "关闭",
   },
   tray: {
-    open: "打开 PI-Desktop",
-    quit: "退出 PI-Desktop",
-    askTitle: "关闭后继续在后台运行 PI-Desktop？",
+    open: "打开最中幻想",
+    quit: "退出最中幻想",
+    askTitle: "关闭后继续在后台运行最中幻想？",
     askBody:
-      "关闭窗口后，PI-Desktop 可以继续在系统托盘中运行，避免丢失任何内容。你随时可以在设置中更改此选项。",
+      "关闭窗口后，最中幻想可以继续在系统托盘中运行。你随时可以在设置中更改此选项。",
     closeToTray: "关闭到托盘",
-    confirmQuitTitle: "确定退出 PI-Desktop？",
+    confirmQuitTitle: "确定退出最中幻想？",
     confirmQuitBody:
       "退出将停止所有正在进行的会话，未保存的内容可能会丢失。你确定要退出吗？",
     confirmQuit: "退出",
@@ -109,7 +109,7 @@ export const zhCN = {
     manualHint: "请前往发布页下载新版本。",
     error: "检查更新失败：{{message}}",
     dismiss: "忽略",
-    devDisabled: "开发版本不支持自动更新。",
+    devDisabled: "当前预览版尚未开放自动更新。",
   },
   nav: {
     home: "首页",
@@ -180,14 +180,14 @@ export const zhCN = {
     hoverCardBranchAria: "分支 {{name}}",
   },
   chat: {
-    emptyTitle: "今天想做点什么？",
+    emptyTitle: "今天，创造怎样的世界？",
     emptyTitleInProject: "今天想在 {{project}} 里做点什么？",
     emptyTitleTemporary: "临时聊点什么？",
     quickActionsTitle: "快捷操作",
     quickActionOpenProject: "打开项目",
     emptyHint: "添加服务并打开项目即可开始。",
-    placeholder: "让 PI-Desktop 帮你做任何事",
-    placeholderHome: "随便问问",
+    placeholder: "想在世界里创造什么？",
+    placeholderHome: "描述你的想法，比如在身边种一片花草…",
     placeholderHint: "输入 / 使用命令 · @ 引用文件",
     placeholderHomeHint: "输入 / 使用命令 · @ 引用文件",
     placeholderShortcut: "Shift+Enter 换行 · 点击发送提交",

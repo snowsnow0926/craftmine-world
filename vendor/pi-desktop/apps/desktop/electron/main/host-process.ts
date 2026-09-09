@@ -105,6 +105,7 @@ export class HostProcess {
     this.binaryPath = resolveHostBinary();
     const builtinPlugins = resolveBuiltinPluginsDir();
     this.child = spawn(this.binaryPath, [], {
+      windowsHide: true,
       stdio: ["pipe", "pipe", "pipe"],
       env: {
         ...stripProxyEnv(process.env),

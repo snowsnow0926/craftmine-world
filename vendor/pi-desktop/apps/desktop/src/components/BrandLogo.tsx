@@ -1,30 +1,9 @@
-import { useEffect, useState } from "react";
-// Renderer-sized copies of the brand marks. The 1024px masters in build/ are
-// installer icons for electron-builder; BrandLogo never renders above 64px.
-import brandLogoUrlLight from "../assets/brand/logo-light.png";
-import brandLogoUrlDark from "../assets/brand/logo-dark.png";
-
 export function BrandLogo({ size = 16 }: { size?: number }) {
-  const [dark, setDark] = useState(() => document.documentElement.dataset.theme !== "light");
-
-  useEffect(() => {
-    const el = document.documentElement;
-    const observer = new MutationObserver(() => {
-      setDark(el.dataset.theme !== "light");
-    });
-    observer.observe(el, { attributes: true, attributeFilter: ["data-theme"] });
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <img
-      className="brand-logo"
-      src={dark ? brandLogoUrlDark : brandLogoUrlLight}
-      alt=""
-      aria-hidden="true"
-      width={size}
-      height={size}
-      draggable={false}
-    />
+    <svg className="brand-logo" width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M16 2 29 9.5 16 17 3 9.5Z" fill="currentColor" opacity=".92" />
+      <path d="M3 12 14.5 18.7V30L3 23.3Z" fill="currentColor" opacity=".42" />
+      <path d="M29 12 17.5 18.7V30L29 23.3Z" fill="currentColor" opacity=".68" />
+    </svg>
   );
 }

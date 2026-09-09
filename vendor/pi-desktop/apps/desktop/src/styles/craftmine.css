@@ -1,0 +1,10 @@
+.craftmine-navigation { padding: 0 12px 12px; }
+.craftmine-world-nav {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 10px;
+  color: var(--ds-text-secondary); background: var(--ds-tile);
+  border: 0; border-radius: var(--radius-xs); font-size: var(--text-md); text-align: left;
+}
+.craftmine-world-nav:hover, .craftmine-world-nav.active { background: var(--ds-bg-active); color: var(--ds-text-primary); }
+.craftmine-world-nav:disabled { opacity: .55; cursor: default; }
+.craftmine-world-nav-hint { margin-left: auto; font-size: var(--text-2xs); color: var(--ds-text-muted); }
+.craftmine-world-nav:focus-visible { outline: 2px solid var(--ds-text-secondary); outline-offset: 2px; }

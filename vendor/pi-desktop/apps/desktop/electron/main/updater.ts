@@ -52,6 +52,8 @@ export type UpdaterOptions = {
   /** Overrides for tests. */
   platform?: NodeJS.Platform;
   isPackaged?: boolean;
+  /** A downstream distribution must opt out until it has its own update feed. */
+  enabled?: boolean;
 };
 
 export function resolveUpdateMode(
@@ -79,7 +81,7 @@ export class AppUpdaterController {
     this.logger = options.logger;
     this.send = options.send;
     this.getLocale = options.getLocale ?? (() => "en");
-    const mode = resolveUpdateMode(
+    const mode = options.enabled === false ? "disabled" : resolveUpdateMode(
       options.platform ?? process.platform,
       options.isPackaged ?? app.isPackaged,
     );
@@ -87,7 +89,7 @@ export class AppUpdaterController {
       mode,
       status: "idle",
       currentVersion: options.currentVersion,
-      releasesUrl: RELEASES_URL,
+      releasesUrl: options.enabled === false ? "" : RELEASES_URL,
     };
     if (mode !== "disabled") this.attachListeners();
   }
@@ -187,7 +189,7 @@ export class AppUpdaterController {
   /** User- or schedule-triggered check. Resolves with the settled state. */
   async check(options: { manual?: boolean } = {}): Promise<UpdateState> {
     if (this.state.mode === "disabled") {
-      throw new Error("updates are disabled in development builds");
+      throw new Error("updates are unavailable in this build");
     }
     if (
       this.state.status === "checking" ||
@@ -311,7 +313,8 @@ export class AppUpdaterController {
   }
 
   async openReleases(): Promise<void> {
-    const url = parseAllowedExternalUrl(RELEASES_URL);
+    if (!this.state.releasesUrl) return;
+    const url = parseAllowedExternalUrl(this.state.releasesUrl);
     if (!url) throw new Error("DISALLOWED_EXTERNAL_URL");
     await shell.openExternal(url);
   }

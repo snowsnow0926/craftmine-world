@@ -59,6 +59,7 @@ import {
   SIDEBAR_WIDTH_MIN,
 } from "../lib/sidebar-preferences";
 import { BrandLogo } from "./BrandLogo";
+import { CraftmineNavigation } from "./CraftmineNavigation";
 import { NotificationCenter } from "./NotificationCenter";
 import { ProjectRenameDialog, SessionRenameDialog } from "./SessionRenameDialog";
 import { useUpdateState } from "../hooks/use-update-state";
@@ -1782,6 +1783,7 @@ export function Sidebar({
       </div>
 
       <div className="sidebar-body no-drag">
+        <CraftmineNavigation />
 
         <section
           className="sidebar-standalone-sessions"

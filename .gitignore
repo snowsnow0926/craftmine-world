@@ -7,3 +7,4 @@ __pycache__/
 !.env.example
 *.local.json
 desktop/build/
+vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/

@@ -5,10 +5,11 @@ import {fork} from 'node:child_process';
 import {register} from 'node:module';
 import {pathToFileURL} from 'node:url';
 import coreClient from '../plugins/craftmine-world/core-client.cjs';
+import {desktopRuntimePaths} from './helpers/desktop-runtime-paths.mjs';
 
 fs.mkdirSync('test-results',{recursive:true});
 const dir=fs.mkdtempSync(path.resolve('test-results/desktop-core-'));
-const binary=path.resolve('vendor/pi-desktop/target/release/craftmine-core.exe');
+const {desktop,plugin,binary,hostEntry}=desktopRuntimePaths(dir);
 const checks=[],errors=[];
 const check=(name,value,detail)=>{checks.push({name,passed:!!value,detail});assert.ok(value,name);console.log('PASS '+name);};
 const binding={projectId:'world-a',sessionId:'session-a',turnId:'turn-a',taskId:'task-a',baseBuild:'build-a'};
@@ -33,17 +34,16 @@ try {
   await client.stop();
 
   process.env.PI_DESKTOP_DATA_DIR=path.join(dir,'pi-host');
-  const desktop=path.resolve('vendor/pi-desktop/apps/desktop');
   register(pathToFileURL(path.join(desktop,'test/helpers/ts-import-hooks.mjs')));
   const {PluginRuntime}=await import(pathToFileURL(path.join(desktop,'electron/main/plugin-runtime.ts')).href);
   runtime=new PluginRuntime({
-    hostEntry:path.join(desktop,'electron/main/plugin-host-process.mjs'),
+    hostEntry,
     spawnProcess:({entry})=>{
       const child=fork(entry,[],{windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env:{...process.env,CRAFTMINE_CORE_BIN:binary}});
       return {postMessage:message=>{if(child.connected)child.send(message);},onMessage:handler=>child.on('message',handler),onExit:handler=>child.on('exit',code=>handler(code??0)),kill:()=>child.kill()};
     },
   });
-  await runtime.loadFromPath(path.resolve('desktop/build/craftmine.world'),['ui.view','agent.tool.register','background.service']);
+  await runtime.loadFromPath(plugin,['ui.view','agent.tool.register','background.service']);
   check('PI 插件宿主自动启动 Rust 常驻服务',runtime.getServiceStates().some(service=>service.serviceId==='world-core'&&service.state==='running'));
   const tool=runtime.getTools().find(tool=>tool.name==='runtime_info');
   const result=await tool.execute({toolCallId:'forged'},{sessionId:'s',turnId:'t',toolCallId:'host-call',executionId:'dispatch'});

@@ -29,6 +29,7 @@ export function resolveOsLocale(): string {
 export function resolveAppLanguage(
   language: AppSettings["language"],
 ): AppLocale {
+  if (!language) return "zh-CN";
   if (language && language !== "auto" && isAppLocale(language)) return language;
   return resolveLocale(resolveOsLocale());
 }

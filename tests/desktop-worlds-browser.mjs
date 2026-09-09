@@ -5,19 +5,19 @@ import {fork} from 'node:child_process';
 import {register} from 'node:module';
 import {pathToFileURL} from 'node:url';
 import {playwright,browserOptions} from '../app/browser-tools.mjs';
+import {desktopRuntimePaths} from './helpers/desktop-runtime-paths.mjs';
 
 fs.mkdirSync('test-results',{recursive:true});
 const dir=fs.mkdtempSync(path.resolve('test-results/desktop-worlds-'));
-const desktop=path.resolve('vendor/pi-desktop/apps/desktop');
-const plugin=path.resolve('desktop/build/craftmine.world');
+const {desktop,plugin,binary,hostEntry}=desktopRuntimePaths(dir);
 const previous=process.env.PI_DESKTOP_DATA_DIR;
 process.env.PI_DESKTOP_DATA_DIR=path.join(dir,'pi-host');
 register(pathToFileURL(path.join(desktop,'test/helpers/ts-import-hooks.mjs')));
 const {PluginRuntime}=await import(pathToFileURL(path.join(desktop,'electron/main/plugin-runtime.ts')).href);
 const checks=[],errors=[];
 const check=(name,value)=>{checks.push({name,passed:!!value});assert.ok(value,name);console.log('PASS '+name);};
-const runtime=new PluginRuntime({hostEntry:path.join(desktop,'electron/main/plugin-host-process.mjs'),spawnProcess:({entry})=>{
-  const child=fork(entry,[],{windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env:{...process.env,CRAFTMINE_CORE_BIN:path.resolve('vendor/pi-desktop/target/release/craftmine-core.exe')}});
+const runtime=new PluginRuntime({hostEntry,spawnProcess:({entry})=>{
+  const child=fork(entry,[],{windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env:{...process.env,CRAFTMINE_CORE_BIN:binary}});
   return {postMessage:message=>{if(child.connected)child.send(message);},onMessage:handler=>child.on('message',handler),onExit:handler=>child.on('exit',code=>handler(code??0)),kill:()=>child.kill()};
 }});
 const bridge=(channel,payload={})=>runtime.invokePanelBridge('craftmine.world',channel,payload);
@@ -54,6 +54,7 @@ try {
   await loaded(first.id);
   check('切回第一个世界保留各自的进度',(await page.evaluate(()=>craftmineView.snapshot())).snapshot.player.x===8&&(await bridge('world.open',{id:secondId})).world.snapshot.player.x===0.5);
   await bridge('world.open',{id:first.id});
+  check('所有页面均未请求鼠标锁定或焦点',(await Promise.all(page.frames().map(frame=>frame.evaluate(()=>globalThis.__inputRequests||0)))).every(count=>count===0));
   await page.close();await runtime.unload('craftmine.world');
   await runtime.loadFromPath(plugin,['ui.view','agent.tool.register','background.service']);
   const state=await bridge('world.list');

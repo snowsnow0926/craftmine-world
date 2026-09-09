@@ -1,0 +1,41 @@
+{
+  "checks": [
+    {
+      "name": "世界面板通过真实 PI 插件与 Rust 读回玩家位置",
+      "passed": true
+    },
+    {
+      "name": "界面创建第二个空白世界",
+      "passed": true
+    },
+    {
+      "name": "切换前实际游戏快照已保存到 Rust",
+      "passed": true
+    },
+    {
+      "name": "切回第一个世界保留各自的进度",
+      "passed": true
+    },
+    {
+      "name": "所有页面均未请求鼠标锁定或焦点",
+      "passed": true
+    },
+    {
+      "name": "插件与 Rust 全部重启后仍保留世界和上次选择",
+      "passed": true
+    },
+    {
+      "name": "保存接口不能用额外参数替换世界源码",
+      "passed": true
+    },
+    {
+      "name": "世界页面不能调用任务事务或发布未经验证的代码",
+      "passed": true
+    },
+    {
+      "name": "后台页面没有未处理异常",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

@@ -11,6 +11,17 @@ const bridge = globalThis.pluginBridge;
 const requests = new Map();
 let current, nonce, loaded=false, busy=false, lastSaved='';
 
+function applyAppearance(appearance) {
+  if(appearance?.base==='light'||appearance?.base==='dark') {
+    document.documentElement.style.colorScheme=appearance.base;
+    document.documentElement.dataset.theme=appearance.base;
+  }
+}
+if(bridge) {
+  void bridge.invoke('app.getAppearance').then(applyAppearance).catch(()=>{});
+  bridge.on?.('appearance:changed',applyAppearance);
+}
+
 function send(type, value = {}) {
   frame.contentWindow.postMessage({channel:'craftmine-host/1',nonce,type,...value}, '*');
 }

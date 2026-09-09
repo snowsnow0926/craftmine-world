@@ -29,11 +29,11 @@ const [
     read("../src/components/HomeMascotLogo.tsx"),
   ]);
 
-test("renderer surfaces the PI-Desktop brand instead of the Codex shell brand", () => {
-  assert.match(english, /shellName:\s*"PI-Desktop"/);
-  assert.match(chinese, /shellName:\s*"PI-Desktop"/);
-  assert.match(english, /placeholder:\s*"Ask PI-Desktop to help with anything"/);
-  assert.match(chinese, /placeholder:\s*"让 PI-Desktop 帮你做任何事"/);
+test("renderer surfaces the Craftmine identity while retaining external import sources", () => {
+  assert.match(english, /shellName:\s*"craftmine world"/);
+  assert.match(chinese, /shellName:\s*"最中幻想"/);
+  assert.match(english, /placeholder:\s*"What would you like to create in your world\?"/);
+  assert.match(chinese, /placeholder:\s*"想在世界里创造什么？"/);
   assert.doesNotMatch(english, /shellName:\s*"Codex"/);
   assert.doesNotMatch(chinese, /shellName:\s*"Codex"/);
   // Codex remains a supported external import source, not the app identity.
@@ -42,12 +42,11 @@ test("renderer surfaces the PI-Desktop brand instead of the Codex shell brand", 
 });
 
 test("app chrome uses the shared brand asset without branding the composer input", async () => {
-  // Renderer-sized brand marks, not the 1024px electron-builder installer icons.
-  assert.match(brandLogo, /import brandLogoUrlLight from\s*"\.\.\/assets\/brand\/logo-light\.png"/);
-  assert.match(brandLogo, /import brandLogoUrlDark from\s*"\.\.\/assets\/brand\/logo-dark\.png"/);
+  // A scalable product mark uses the active theme's foreground.
+  assert.match(brandLogo, /<svg/);
+  assert.match(brandLogo, /fill="currentColor"/);
   assert.doesNotMatch(brandLogo, /\.\.\/\.\.\/build\//);
   assert.match(brandLogo, /export function BrandLogo/);
-  assert.match(brandLogo, /src=\{.*brandLogoUrl/);
   assert.match(icons, /export const IconNewSession/);
   assert.doesNotMatch(icons, /IconCodexHome|IconCompose|IconPiMark|IconPiHome/);
   await access(new URL("../src/assets/home-mascot-dark.gif", import.meta.url));

@@ -7,13 +7,14 @@
   "execution": {
     "scope": "current_codex_thread",
     "status": "running",
-    "reason": "用户授权按计划持续完成 W0–W5；Rust 任务服务、PI 插件身份与隔离世界面板探针通过，正在独立工作树推进 W1。",
+    "reason": "用户授权按计划持续完成 W0–W5；W0 通过，W1 首批 Rust 世界存储、完整 PI 外壳适配与 Windows 打包组件验证完成。继续 W1 剩余验收及 W2 创作闭环。",
     "activeGoal": true,
     "recurringDevelopment": true,
     "previousLiveCompactionTestStopped": true,
     "automationId": "craftmine-windows",
-    "worktree": "D:/Craftmine World-worktrees/pi-client-20260909",
-    "branch": "codex/pi-client-20260909"
+    "worktree": null,
+    "branch": null,
+    "nextStep": "第 1 批合并后创建新的 codex/ 分支和独立工作树，先完成 W1 的关闭保存屏障、旧存档副本导入、无可见窗口验收，再推进 W2。禁止重复创建目标或并发写入。"
   },
   "windowsClientPlan": {
     "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",
@@ -49,8 +50,8 @@
       "evidence": "test-results/windows-plan-final-snapshot-20260909.log（271 条）与 2026-09-09 晚真实端到端修复后的 272 条"
     },
     "knownGaps": [
-      "尚无 Windows 桌面客户端和安装包",
-      "世界面板、插件与 Rust 服务探针通过；正式客户端、长时验收和项目存储仍需集成",
+      "Windows 程序目录已能构建；完整原生窗口、安装流程、关闭保存屏障和旧存档副本导入仍未验收",
+      "世界面板、Rust 存储与打包组件通过；PI Agent 世界工具、长时验收、作品和候选面板仍需集成",
       "真实 toolCallId 透传和 Rust 草稿恢复去重通过；仍需项目写入租约和取消跨进程接线",
       "需核实完整模型请求的上下文预算，补齐世界记忆注入与 Windows 系统保护凭据",
       "自建分步工具循环默认关闭，需要显式环境开关",
@@ -77,6 +78,18 @@
       "rust": "cargo build --release --locked -p host-core: passed",
       "frontend": "pnpm build:js: passed",
       "visibleAppLaunched": false
+    },
+    "batch01": {
+      "report": "docs/WINDOWS_BATCH_01.md",
+      "status": "W0 complete; W1 partial",
+      "rustTests": "7/7",
+      "desktopTargetedTests": "21/21",
+      "layoutChecks": "7/7, actual React components with fixture transport and session data",
+      "packagedCoreChecks": "8/8",
+      "packagedWorldChecks": "9/9",
+      "nativeElectronAcceptance": "pending",
+      "realModelAcceptance": "pending",
+      "evidenceDirectory": "docs/evidence/windows-batch-01"
     }
   },
   "liveVerification": {

@@ -20,3 +20,11 @@
 - Rust 负责新的桌面世界、版本号与进度，单独创建的世界不串存档；保存拒绝旧版本覆盖、错误构建 ID 和损坏内容。兼容编译器与进度校验仍使用原有 JavaScript 契约。
 - 面板可新建、切换、手动保存，每 10 秒保存一次，并在切换前保存；重新启动恢复上次选择。关闭前最后一次保存的确认屏障、旧存档迁移、实际 Electron 窗口和安装包尚未验收。
 - `cargo test --locked -p craftmine-core`：7/7。`tests/desktop-worlds-browser.mjs`：8/8，证据 `test-results/desktop-worlds-wAa9sP/report.json`。使用独立 headless Chromium、真实 PI 插件进程、Rust 二进制和实际游戏，Electron 的页面传输层由测试适配器承接。
+
+## 2026-09-09：W1 桌面外壳与 Windows 程序目录
+
+- 独立应用名称、Windows App ID、数据目录与每个 profile 的实例锁；首次中文界面、世界侧栏入口、560px 默认工作面板和主题同步。保留 PI 桌面组件。上游应用更新关闭。
+- 定向回归 21/21，客户端类型检查与样式检查通过。实际 React 组件的 headless 布局检查 7/7，人工查看深浅截图；会话与原生窗口传输为测试适配器，不能计作完整 Electron 验收。
+- Windows `win-unpacked` 首次构建成功；实际包内插件宿主、插件与 Rust 程序的探针分别 8/8、9/9。最终构建流程增加许可证、来源与匹配源码归档，具体构建步骤见 `desktop/README.md`。
+- 本批便携证据与截图已纳入 `docs/evidence/windows-batch-01`；总结见 `docs/WINDOWS_BATCH_01.md`。原始开发证据在合并整理时保存到主目录 `test-results/windows-batch-01`。内部程序目录保存在 `desktop/build/windows-preview`。
+- 本批合并后清理自己的工作树和分支。下一轮按执行状态创建新的专用工作树继续 W1，目标与自动接续保持启用，不因本批报告完成而标记整个目标完成。

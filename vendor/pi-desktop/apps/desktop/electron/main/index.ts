@@ -15,6 +15,7 @@ import {
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { homedir } from "node:os";
+import { craftminePaths } from "./craftmine-product";
 import {
   existsSync,
   mkdirSync,
@@ -285,6 +286,14 @@ ignoreBrokenStdio();
 const processStartedAt = Date.now();
 
 app.setName(APP_NAME);
+const productPaths = craftminePaths(process.env, app.getPath("appData"));
+mkdirSync(productPaths.userData, { recursive: true });
+app.setPath("userData", productPaths.userData);
+// Upstream internals share this alias; never inherit another PI profile.
+process.env.PI_DESKTOP_DATA_DIR = productPaths.dataDir;
+process.env.CRAFTMINE_CORE_BIN = app.isPackaged
+  ? join(process.resourcesPath, "bin", "craftmine-core.exe")
+  : process.env.CRAFTMINE_CORE_BIN || join(__dirname, "../../../../target/release/craftmine-core.exe");
 if (process.platform === "win32") {
   app.setAppUserModelId(APP_ID);
 }
@@ -295,16 +304,9 @@ if (process.platform === "win32") {
 // updater are singletons of the running app — a second process fights the first
 // for every one of them and leaves the user with two shells over one database.
 //
-// Electron keeps the lock in `userData`, which is derived from the app name set
-// just above, so it is taken after `setName` and before anything else in this
-// module touches the data directory. That scope is the installation, not
-// `PI_DESKTOP_DATA_DIR`: a run pointed at its own data directory (E2E
-// harnesses, the capture rig, a side-by-side profile) shares no state with the
-// default installation and stays launchable while one is running.
-const singleInstanceRequired = !process.env.PI_DESKTOP_DATA_DIR;
-const hasSingleInstanceLock = singleInstanceRequired
-  ? app.requestSingleInstanceLock()
-  : true;
+// Every explicit profile has its own Chromium userData and instance lock.
+// Isolating a test profile must not disable locking for that profile itself.
+const hasSingleInstanceLock = app.requestSingleInstanceLock();
 if (!hasSingleInstanceLock) {
   // Nothing has booted yet: no window, no tray, no child process, no log line.
   // Quit here and let the instance that holds the lock surface itself from
@@ -932,6 +934,7 @@ const updater = new AppUpdaterController({
   currentVersion: APP_VERSION,
   isPackaged: !isDevelopmentBuild,
   getLocale: () => updaterLocale,
+  enabled: false,
 });
 
 /**

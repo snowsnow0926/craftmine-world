@@ -5,7 +5,7 @@ import { initReactI18next } from "react-i18next";
 import { catalogs, flattenCatalog, resolveLocale } from "@pi-desktop/i18n";
 import App from "./App";
 import { PluginLauncher } from "./components/PluginLauncher";
-import { initLanguageSync, resolveOsLocale } from "./lib/app-language";
+import { initLanguageSync } from "./lib/app-language";
 import { installScrollbarReveal } from "./lib/scrollbar-reveal";
 import "./styles/globals.css";
 
@@ -20,7 +20,7 @@ document.documentElement.dataset.platform =
 // element so the thumb shows while it moves, not only under the pointer.
 installScrollbarReveal(document);
 
-const locale = resolveLocale(resolveOsLocale());
+const locale = "zh-CN";
 const resources = Object.fromEntries(
   Object.entries(catalogs).map(([lng, catalog]) => [
     lng,

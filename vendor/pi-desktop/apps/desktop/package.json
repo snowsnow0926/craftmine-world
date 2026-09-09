@@ -69,18 +69,12 @@
     "zustand": "^5.0.15"
   },
   "build": {
-    "appId": "com.pi-desktop.app",
-    "productName": "PI-Desktop",
+    "appId": "world.craftmine.desktop",
+    "productName": "craftmine world",
     "directories": {
       "output": "release"
     },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "vastsa",
-        "repo": "PI-Desktop"
-      }
-    ],
+    "publish": [],
     "files": [
       "out/**/*",
       "package.json",
@@ -104,6 +98,22 @@
       "ko"
     ],
     "extraResources": [
+      {
+        "from": "../../LICENSE",
+        "to": "licenses/PI-Desktop-LICENSE.txt"
+      },
+      {
+        "from": "../../../../desktop/UPSTREAM.json",
+        "to": "licenses/UPSTREAM.json"
+      },
+      {
+        "from": "../../../../desktop/README.md",
+        "to": "source/BUILD.md"
+      },
+      {
+        "from": "../../../../desktop/build/CraftmineWorld-source.zip",
+        "to": "source/CraftmineWorld-source.zip"
+      },
       {
         "from": "build/icon.png",
         "to": "tray-icon.png"
@@ -152,7 +162,7 @@
       ]
     },
     "win": {
-      "executableName": "PI-Desktop",
+      "executableName": "Craftmine World",
       "target": [
         {
           "target": "nsis",
@@ -166,14 +176,18 @@
         {
           "from": "../../target/release/pi-desktop-host-core.exe",
           "to": "bin/pi-desktop-host-core.exe"
+        },
+        {
+          "from": "../../target/release/craftmine-core.exe",
+          "to": "bin/craftmine-core.exe"
         }
       ]
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "shortcutName": "PI-Desktop",
-      "artifactName": "PI-Desktop-Setup-${version}.${ext}"
+      "shortcutName": "craftmine world",
+      "artifactName": "Craftmine-World-Setup-${version}.${ext}"
     },
     "deb": {
       "packageName": "pi-desktop",
