@@ -9,6 +9,7 @@ export const STATIC_FILES = Object.freeze([
   ['/app/behavior-state.mjs', 'behavior-state.mjs', 'text/javascript'], ['/app/behavior-session.mjs', 'behavior-session.mjs', 'text/javascript'],
   ['/app/behavior-check.mjs', 'behavior-check.mjs', 'text/javascript'],
   ['/app/preview-probe.mjs', 'preview-probe.mjs', 'text/javascript'],
+  ['/app/craftmine-acceptance-game.mjs', 'craftmine-acceptance-game.mjs', 'text/javascript'],
   ['/app/request-plan.mjs', 'request-plan.mjs', 'text/javascript'],
   ['/app/world-runtime.mjs', 'world-runtime.mjs', 'text/javascript'],
   ['/app/behavior-binding.mjs', 'behavior-binding.mjs', 'text/javascript'],

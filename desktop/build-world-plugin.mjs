@@ -4,6 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
 import {compileScene, INITIAL_SNAPSHOT} from '../app/scene.mjs';
+import {NATIVE_ACCEPTANCE_MARKER,NATIVE_ACCEPTANCE_SOURCE} from '../vendor/pi-desktop/apps/desktop/electron/shared/craftmine-native-acceptance-source.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = path.join(root,'plugins/craftmine-world');
@@ -27,7 +28,7 @@ const runtimeCode = escapeScript(await fs.readFile(path.join(root,'world-worksho
 const gameCode = escapeScript(compiledGame.outputFiles[0].text);
 const inputGuardBuild=await build({entryPoints:[path.join(root,'vendor/pi-desktop/apps/desktop/electron/shared/craftmine-headless-input.ts')],write:false,bundle:true,platform:'browser',format:'iife',globalName:'CraftmineHeadlessGuard',footer:{js:'CraftmineHeadlessGuard.installHeadlessInputGuard();'},target:'chrome130'});
 const inputGuard=escapeScript(inputGuardBuild.outputFiles[0].text);
-const hashes = [runtimeCode,gameCode,inputGuard].map(text=>"'sha256-"+createHash('sha256').update(text).digest('base64')+"'").join(' ');
+const hashes = [runtimeCode,gameCode,inputGuard,NATIVE_ACCEPTANCE_SOURCE].map(text=>"'sha256-"+createHash('sha256').update(text).digest('base64')+"'").join(' ');
 const policy = `default-src 'none'; script-src 'self' blob: ${hashes}; worker-src blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; frame-src 'self'; connect-src 'none'; base-uri 'none'`;
 const styles = await fs.readFile(path.join(root,'app/game.css'),'utf8');
 const game = (await fs.readFile(path.join(root,'app/game.html'),'utf8'))
@@ -35,7 +36,7 @@ const game = (await fs.readFile(path.join(root,'app/game.html'),'utf8'))
   .replace('<link rel="stylesheet" href="/app/game.css">',`<style>${styles}</style>`)
   .replace('<script src="/runtime.js" defer></script>','')
   .replace('<script type="module" src="/app/game.js"></script>','')
-  .replace('</body>',`__CRAFTMINE_INPUT_GUARD__<script>${runtimeCode}</script><script>${gameCode}</script></body>`);
+  .replace('</body>',`__CRAFTMINE_INPUT_GUARD__${NATIVE_ACCEPTANCE_MARKER}<script>${runtimeCode}</script><script>${gameCode}</script></body>`);
 const view = (await fs.readFile(path.join(source,'world.html'),'utf8')).replace(/content="default-src [^"]+"/,`content="${policy}"`);
 await fs.writeFile(path.join(output,'views/world.html'),view);
 await fs.writeFile(path.join(output,'views/verify.html'),`<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${policy}"><style>body{margin:0}iframe{border:0;width:100vw;height:100vh;display:block}</style></head><body><script>${inputGuard}</script><script src="verify.js"></script></body></html>`);
