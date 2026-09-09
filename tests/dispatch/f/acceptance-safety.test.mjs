@@ -11,7 +11,7 @@ function fixture(enabled=true,env={CRAFTMINE_F_AGENT:'1'}){
   const listeners=[],sent=[],calls=[];
   const fakeProcess={env,send:message=>sent.push(message),on:(name,fn)=>listeners.push(fn)};
   const exports={};vm.runInNewContext(js,{exports,require,process:fakeProcess,Error,Object,JSON});
-  exports.installNativeAgentAcceptance({enabled,call:async(method,args)=>{calls.push({method,args});return method==='session.create'?{session:{id:'isolated'}}:{provider:{id:'provider'}};},panel:async()=>({activeWorldId:'world'}),window:()=>null,world:()=>null,active:()=>false});
+  exports.installNativeAgentAcceptance({enabled,call:async(method,args)=>{calls.push({method,args});return method==='session.create'?{session:{id:'isolated'}}:{provider:{id:'provider'}};},panel:async()=>({activeWorldId:'world'}),window:()=>({isDestroyed:()=>false,webContents:{executeJavaScript:async()=>({ok:true})}}),world:()=>null,active:()=>false});
   return {listeners,sent,calls,async request(message){listeners[0]?.({type:'craftmine-acceptance-f',id:'test',...message});await new Promise(resolve=>setTimeout(resolve,10));return sent.at(-1);}};
 }
 test('fixed native controller is absent in ordinary processes',()=>{

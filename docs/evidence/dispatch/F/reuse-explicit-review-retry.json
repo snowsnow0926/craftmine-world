@@ -1,0 +1,776 @@
+{
+  "format": "craftmine.f-review-retry/1",
+  "elapsedMs": 37721,
+  "evidence": {
+    "before": {
+      "craftmine_budget_requests": [
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-e5139c78-0330-411b-9d3a-02f312fd247b",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "973ad803f9f34c724500edbebadc8474c0d23a355f9bcf6594c5a52704fa884a",
+          "estimate": 40567,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":1653,\"outputTokens\":78,\"totalTokens\":2499}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-82b55482-5fd0-4d30-9405-87dab8666c13",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "4888a0b369a75b33caf866bad61f1bf2a6f0edc03030bd517c829789ac0fd8ca",
+          "estimate": 47254,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":2770,\"outputTokens\":151,\"totalTokens\":4073}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-69209459-849e-467e-b090-e9dc66c33716",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "da7f82c0e4e77f01eab100e16c9798505c7f562b76a906dde141dcb67fbb86df",
+          "estimate": 71746,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":9092,\"outputTokens\":324,\"totalTokens\":10568}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-a4b927b5-165f-409d-8869-5b5a7cce215b",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "5abc4563ff0469f4ef1d8e054832209a7794c5ab21056eaabd9826066d954528",
+          "estimate": 74209,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":9945,\"outputTokens\":309,\"totalTokens\":11406}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-9ffefec4-5dae-4a25-8b0c-29020091b564",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "dfb9f8959896961285408db68f7876b7200a87ed0f7a94eea9727a8ffc04f9fe",
+          "estimate": 82194,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":12140,\"outputTokens\":1631,\"totalTokens\":14923}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-e24fb976-3aec-494a-b4f9-c1eebba18744",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "9b88d981f91141957594511a28b60fd95ad462eb74db41c7073d51973a3134b5",
+          "estimate": 85683,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":14111,\"outputTokens\":267,\"totalTokens\":15402}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-d9780ee9-d4d3-4ba3-8e98-0b0be4d2d327",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "39e3c7f1835b3606ccb3b618b7a428711c54e947cbe803391c25d6753a83fcd3",
+          "estimate": 87781,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":14555,\"outputTokens\":282,\"totalTokens\":16117}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-e106bf5b-6663-4ab8-9bb5-964c8303684b",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "cd9ca9771d6373326542bb443410230fc9da75f99637b29552b3ecd5e2e1d10f",
+          "estimate": 90083,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":15455,\"outputTokens\":99,\"totalTokens\":16834}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-3635f29f-c585-4bda-b458-032907c8140c",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "review",
+          "request_hash": "e528b48c71ac4eb0607081710441c54c8b07225e82375d00b5aa7551f5a6aa8c",
+          "estimate": 39359,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":1764,\"outputTokens\":4672,\"totalTokens\":7588}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-64c75dce-eb33-4fc7-879e-ed75cace0b98",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "6a5061e1076bbd2c21f086f1da4abe4afd19aa7b0eb3b9b197b728471493c973",
+          "estimate": 94636,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":16927,\"outputTokens\":798,\"totalTokens\":19005}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-49fb9cb7-efe6-45be-8caf-c29aca8961d8",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "c82c1e9727b38c916960d3a361d1ae79a032dc3c063a5e1268b3c66f097e38f1",
+          "estimate": 40891,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":1882,\"outputTokens\":79,\"totalTokens\":2729}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-15b1a1d9-d096-4c01-a345-08ebbbd8c173",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "4838dd40682a72592916f1e35e0195a2a93573a5a52388d7f41f784cb67648d0",
+          "estimate": 56366,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":5910,\"outputTokens\":380,\"totalTokens\":7570}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-8eafe605-84bb-4c8c-94e3-de3861a38f83",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "984e70d8fa9ffd0042c0abf147ec47c3ba63e923007004540ae9f66ae8ef035b",
+          "estimate": 62036,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":7940,\"outputTokens\":129,\"totalTokens\":9349}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-0664d66c-d82c-4c8a-8550-626d8294af17",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "ccd4ccdc1aee9a54d49e3f5b59fc747f519299cd49dd4cf2ea133ef9140b2fc2",
+          "estimate": 65153,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":9067,\"outputTokens\":155,\"totalTokens\":10502}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-570d72fb-4f8e-4fb2-b4d8-e4b0745819f9",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "bb0b1ea19d6ad6888b82dcdf722327be1aabcae42f709be6610b7b35a1087060",
+          "estimate": 68473,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":10336,\"outputTokens\":308,\"totalTokens\":11924}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-dc88a0f7-268c-4449-bbe0-14bd820710e4",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "260a0dd673e3d82523c3c1832f135e9995a0207d42e86505a09bccdc6416483c",
+          "estimate": 70225,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":11187,\"outputTokens\":252,\"totalTokens\":12719}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-02f743aa-5c44-4d20-9b18-6dd18b34799b",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "0efac8ffee5d7e9968023f50665c14e3275d8054fe73836dc46adbb04fbcdea3",
+          "estimate": 73216,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":12137,\"outputTokens\":274,\"totalTokens\":13819}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-21265b8e-ee50-406c-b706-e1a97219aebc",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "c3ce4f7e00c3a9844c4e84fbe0ac1431359702c6941d402b63b86917963694a5",
+          "estimate": 74980,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":12884,\"outputTokens\":160,\"totalTokens\":14452}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-c7f0c447-97e5-485f-ba7d-f30901600c10",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "review",
+          "request_hash": "a8cee58f716a127672ba6f8bb614f05f1d38b74935fa74f0c85fb3d937e50f0d",
+          "estimate": 40233,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":2397,\"outputTokens\":4648,\"totalTokens\":8197}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-4e7db936-c7d9-4563-a65f-596d2b5941cd",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "eb075cf9de7a66a6ef8b72e73e6880a503a5920921f9173a388f561a8323887a",
+          "estimate": 79779,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":14485,\"outputTokens\":239,\"totalTokens\":16132}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-114f94d1-4f7e-47c0-9166-57a6a746b992",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "79925472ce8415a232aa2f7aac4f723bb200ecc1366cf686339fbaab2eeee014",
+          "estimate": 84787,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":16036,\"outputTokens\":769,\"totalTokens\":18341}}"
+        }
+      ],
+      "craftmine_reviews": [
+        {
+          "id": "review-ddc61b9f05bd15586525dad6913eeda616883b04907fc7f893d8ae786c8473ef",
+          "verification_id": "check-4b0cdf3370f2157e0aad3abd34a4d7003eef30319d9e52f952c2a2cf88fd4191",
+          "input": "{\"origin\":{\"modelKey\":\"69357a67-3b4c-4508-a5bf-5505faddda45/deepseek-v4.1-flash-expires-on-0910\",\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"86738e0a-3f91-4715-88b4-6cffe3da4c06\",\"text\":\"请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。\"},\"thinkingLevel\":\"high\"},\"verificationId\":\"check-4b0cdf3370f2157e0aad3abd34a4d7003eef30319d9e52f952c2a2cf88fd4191\",\"verificationInputHash\":\"1d127e8a16e534215aa4d4d533467d27af865646ef4889faac861ddf34296d7f\",\"verificationOutputHash\":\"f9500722f21424c9e269f27bbe6eb2ee0a7c1b6f5ad82acda406045e3a537a86\"}",
+          "input_hash": "4ba8bec66f21452d4b7eb1be20ac0909125a2f3e4cd1cf109646f45bc764ac20",
+          "status": "completed",
+          "token": "e3a56745-4d16-4f4f-868e-93180e2653e4",
+          "output": "{\"acceptance\":{\"assertions\":[{\"detail\":\"玩法在整个事件序列里没有报错\",\"id\":\"no-errors\",\"kind\":\"noErrors\",\"passed\":true,\"red\":\"任何加载/运行错误，或世界因部件/坐标非法而中断时报红\",\"why\":\"检查加载并运行该候选世界全程没有报错\"},{\"detail\":\"最终世界新增了 1 个符合条件的对象：native-oak\",\"id\":\"tree-added-in-region\",\"kind\":\"newObjects\",\"passed\":true,\"red\":\"未新增对象、对象被删回，或锚点被写成其它坐标（如 y=0 或 x/z 偏移）时打红\",\"why\":\"世界至少新增一个对象，且新增对象锚点落在请求位置 (10,6,4) 附近\"},{\"detail\":\"最终世界 native-oak.position = {\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4}\",\"id\":\"tree-position-exact\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"对象缺失、id 或坐标被改动（例如落到 y=0 地下或改成 x=0/z=0）时打红\",\"why\":\"native-oak 的锚点坐标必须严格等于请求的 x=10 y=6 z=4（y=6 即地面高度）\"},{\"detail\":\"最终世界 native-oak.visible = true\",\"id\":\"tree-visible\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"对象被隐藏/未恢复可见（visible=false）时打红\",\"why\":\"最终世界中这棵树对玩家是可见的，而不是被隐藏\"},{\"detail\":\"最终世界 native-oak.mesh = true\",\"id\":\"tree-has-mesh\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"对象只有源数据或逻辑存在、renderer 没有 drawable mesh（mesh=false）时打红\",\"why\":\"可观测效果：渲染器实际持有该对象的可绘制网格，说明树确实被画出来而非只有源码\"},{\"detail\":\"除 native-oak 之外，其他对象都没有变化\",\"id\":\"only-native-oak-changed\",\"kind\":\"objectsUnchanged\",\"passed\":true,\"red\":\"世界里出现新对象、原有对象字段被修改或删除（除 native-oak 外）时打红\",\"why\":\"请求要求只增加这一棵树，不得增加或改动其他物体\"}],\"baselineVersion\":\"v-4641627420193586d325\",\"passed\":true,\"scope\":\"实际游戏副本中的对象、玩法事件与状态断言；外观美术与物理操作体验仍由玩家预览判断\",\"trace\":{\"baseline\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{}},\"inventory\":{},\"items\":{},\"objects\":[],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"errors\":[],\"final\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"inventory\":{},\"items\":{},\"objects\":[{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"native-oak\",\"mesh\":true,\"position\":{\"x\":10,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true}],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5},\"start\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"inventory\":{},\"items\":{},\"objects\":[{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"native-oak\",\"mesh\":true,\"position\":{\"x\":10,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true}],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"steps\":[]},\"verificationOutputHash\":\"f9500722f21424c9e269f27bbe6eb2ee0a7c1b6f5ad82acda406045e3a537a86\"},\"advisory\":true,\"baseline\":{\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"eb8d069c86c7e454f14fb001acf7bb9e8bace44182bee6458b45136936151645\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-4641627420193586d325\"}},\"format\":\"craftmine.desktop-review/1\",\"inputHash\":\"4ba8bec66f21452d4b7eb1be20ac0909125a2f3e4cd1cf109646f45bc764ac20\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"limitations\":[\"断言字段不含部件级信息，无法证明树干 box 1×2×1 与树冠 box 3×1×3 的构成，也无法直接证明“总高度 3”；只能核对对象锚点与整体可见/网格。\",\"部件颜色 #6b4a2b（wood）与 #3f8f3a（leaves）属于外观，DSL 不能建立颜色审美，只能由玩家预览确认。\",\"对象名称“记忆松树”由 name 字段承载，但可用断言字段（position/visible/solid/mesh/health/color）不含 name，本计划未核验名称文本。\",\"部件 offset 的语义（角点或中心）与尺寸展开方式未在本计划中确定；锚点 y=6 与地形表面 y=6 一致，但“树干底部与地面接触”的视觉结论仍属玩家预览范围。\",\"behaviors 与 systems 是否为空不在断言种类覆盖范围内；只能依据 diff/machineEvidence 观察到此次未新增行为或系统。\",\"machineEvidence 的 behavior/compiler/render 检查只代表模块、编译与初始绘制通过，不等于玩家需求验收，也不代表本评审断言已通过。\"],\"modelKey\":\"69357a67-3b4c-4508-a5bf-5505faddda45/deepseek-v4.1-flash-expires-on-0910\",\"planHash\":\"63d5c0f951d1b72dca67e50b65bd85991188a05f9930f66da9c69e91409520e5\",\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"b86465f6722d4314d81ddb747ca23503673e8675005a0593e0ab296587e8a7d7\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-e423c10a719f8cde8450\"},\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"86738e0a-3f91-4715-88b4-6cffe3da4c06\",\"text\":\"请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。\"},\"suggestions\":[\"在执行冻结计划后，请玩家或后续预览确认：树干底部与 y=6 地面视觉接触、树冠水平覆盖树干、整体读数高度为 3、树干棕色与树冠绿色符合预期。\",\"本请求为静态对象创建，保持空 steps；若后续需要操作验证，应单独提出带行为的请求，不要在本任务偷偷追加玩法。\"],\"summary\":\"候选世界只新增了一个对象 native-oak（name=记忆松树），锚点 (10,6,4) 与请求坐标一致，包含 wood 树干部件与 leaves 树冠部件，behaviors/systems 均未新增，diff 显示仅该对象被 added。字面需求（id、名称承载、坐标、树干+树冠、不增加其他物体）看起来都落在候选里；但现有断言字段只能核对对象级锚点与可见/网格状态，无法核对“总高度 3”、部件几何与颜色等外观，需列为玩家预览项。\",\"text\":\"{\\\"summary\\\":\\\"候选世界只新增了一个对象 native-oak（name=记忆松树），锚点 (10,6,4) 与请求坐标一致，包含 wood 树干部件与 leaves 树冠部件，behaviors/systems 均未新增，diff 显示仅该对象被 added。字面需求（id、名称承载、坐标、树干+树冠、不增加其他物体）看起来都落在候选里；但现有断言字段只能核对对象级锚点与可见/网格状态，无法核对“总高度 3”、部件几何与颜色等外观，需列为玩家预览项。\\\",\\\"verdict\\\":\\\"ready\\\",\\\"suggestions\\\":[\\\"在执行冻结计划后，请玩家或后续预览确认：树干底部与 y=6 地面视觉接触、树冠水平覆盖树干、整体读数高度为 3、树干棕色与树冠绿色符合预期。\\\",\\\"本请求为静态对象创建，保持空 steps；若后续需要操作验证，应单独提出带行为的请求，不要在本任务偷偷追加玩法。\\\"],\\\"limitations\\\":[\\\"断言字段不含部件级信息，无法证明树干 box 1×2×1 与树冠 box 3×1×3 的构成，也无法直接证明“总高度 3”；只能核对对象锚点与整体可见/网格。\\\",\\\"部件颜色 #6b4a2b（wood）与 #3f8f3a（leaves）属于外观，DSL 不能建立颜色审美，只能由玩家预览确认。\\\",\\\"对象名称“记忆松树”由 name 字段承载，但可用断言字段（position/visible/solid/mesh/health/color）不含 name，本计划未核验名称文本。\\\",\\\"部件 offset 的语义（角点或中心）与尺寸展开方式未在本计划中确定；锚点 y=6 与地形表面 y=6 一致，但“树干底部与地面接触”的视觉结论仍属玩家预览范围。\\\",\\\"behaviors 与 systems 是否为空不在断言种类覆盖范围内；只能依据 diff/machineEvidence 观察到此次未新增行为或系统。\\\",\\\"machineEvidence 的 behavior/compiler/render 检查只代表模块、编译与初始绘制通过，不等于玩家需求验收，也不代表本评审断言已通过。\\\"],\\\"assertions\\\":[{\\\"id\\\":\\\"no-errors\\\",\\\"kind\\\":\\\"noErrors\\\",\\\"why\\\":\\\"检查加载并运行该候选世界全程没有报错\\\",\\\"red\\\":\\\"任何加载/运行错误，或世界因部件/坐标非法而中断时报红\\\"},{\\\"id\\\":\\\"tree-added-in-region\\\",\\\"kind\\\":\\\"newObjects\\\",\\\"min\\\":1,\\\"region\\\":{\\\"x\\\":[9,11],\\\"y\\\":[5,7],\\\"z\\\":[3,5]},\\\"why\\\":\\\"世界至少新增一个对象，且新增对象锚点落在请求位置 (10,6,4) 附近\\\",\\\"red\\\":\\\"未新增对象、对象被删回，或锚点被写成其它坐标（如 y=0 或 x/z 偏移）时打红\\\"},{\\\"id\\\":\\\"tree-position-exact\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"position\\\",\\\"value\\\":{\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4},\\\"why\\\":\\\"native-oak 的锚点坐标必须严格等于请求的 x=10 y=6 z=4（y=6 即地面高度）\\\",\\\"red\\\":\\\"对象缺失、id 或坐标被改动（例如落到 y=0 地下或改成 x=0/z=0）时打红\\\"},{\\\"id\\\":\\\"tree-visible\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"visible\\\",\\\"value\\\":true,\\\"why\\\":\\\"最终世界中这棵树对玩家是可见的，而不是被隐藏\\\",\\\"red\\\":\\\"对象被隐藏/未恢复可见（visible=false）时打红\\\"},{\\\"id\\\":\\\"tree-has-mesh\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"mesh\\\",\\\"value\\\":true,\\\"why\\\":\\\"可观测效果：渲染器实际持有该对象的可绘制网格，说明树确实被画出来而非只有源码\\\",\\\"red\\\":\\\"对象只有源数据或逻辑存在、renderer 没有 drawable mesh（mesh=false）时打红\\\"},{\\\"id\\\":\\\"only-native-oak-changed\\\",\\\"kind\\\":\\\"objectsUnchanged\\\",\\\"except\\\":[\\\"native-oak\\\"],\\\"why\\\":\\\"请求要求只增加这一棵树，不得增加或改动其他物体\\\",\\\"red\\\":\\\"世界里出现新对象、原有对象字段被修改或删除（除 native-oak 外）时打红\\\"}],\\\"steps\\\":[]}\",\"usage\":{\"cacheReadTokens\":1152,\"inputTokens\":1764,\"outputTokens\":4672,\"reasoningTokens\":3729,\"totalTokens\":7588},\"verdict\":\"ready\"}",
+          "output_hash": "1a3f36be18d1886e7b0b332b7a58b85945d4faf840fc52547f6c4d01f600be66",
+          "created_at": 1788938396259,
+          "updated_at": 1788938416935
+        },
+        {
+          "id": "review-32d68f0b31854b76bac054c4008c400b4c67fc0f92a61cde0d9ebf3effb48764",
+          "verification_id": "check-6f5d9761659b996c70a63c3566e52abfd8b53b7c85a11fcee28ecd265d1d603c",
+          "input": "{\"origin\":{\"modelKey\":\"ee60aabc-40ab-4d7f-8679-80f3b5974128/deepseek-v4.1-flash-expires-on-0910\",\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"d359afc9-99ea-4a8b-aa5c-a06a720f1d4e\",\"text\":\"请实际复用作品，不要重新编写树源码。先检索作品库并读取这个精确固定版本：{\\\"hash\\\":\\\"5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912\\\",\\\"id\\\":\\\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\\\",\\\"version\\\":1}。用 library_install 把它加入当前世界位置x=20 y=6 z=4，保留原来的树。不要使用latest或替换已有对象，保留模块来源。安装后实际提交验证、读取结果，若失败请修复。最终应有两棵记忆松树：原来的在(10,6,4)，固定旧版本复用的新树在(20,6,4)，两者总高3、有树干和树冠。通过后保留候选等待玩家应用。\"},\"thinkingLevel\":\"high\"},\"verificationId\":\"check-6f5d9761659b996c70a63c3566e52abfd8b53b7c85a11fcee28ecd265d1d603c\",\"verificationInputHash\":\"70509444058add4f66e9d758df0a921ed0b007f312aa975f2d711232b7e09713\",\"verificationOutputHash\":\"1bdd961f4a854172fa237fa66b51ba8ee0e2bea5eedc0b0078b4d924351b209c\"}",
+          "input_hash": "9ebc8197bb6321cad0205b0db91de53f208781a3df2ac13bfe96cc00239024df",
+          "status": "failed",
+          "token": "20ae1f88-2c90-4e65-befb-12886c56830b",
+          "output": "{\"error\":\"no-errors：断言包含不支持的字段 redNote\",\"inputHash\":\"9ebc8197bb6321cad0205b0db91de53f208781a3df2ac13bfe96cc00239024df\",\"modelKey\":\"ee60aabc-40ab-4d7f-8679-80f3b5974128/deepseek-v4.1-flash-expires-on-0910\",\"text\":\"{\\\"summary\\\":\\\"候选在场景中新增了一个复用对象 reuse-784d7b8549c0641f53dfea01-o0，名称为“记忆松树”，锚点位于 (20,6,4)，source 指向固定版本 {id: saved-3f6e11e0dc8e671ba15bf0d2965dddf0, version: 1}，且原有 native-oak 保持在 (10,6,4) 未被修改；diff 显示仅新增 1 个对象、无删除/修改，机器证据显示编译、行为与渲染检查已通过。整体与玩家要求（复用固定版本、两棵树、保留原树、不替换）一致，可进入玩家预览，但 source/部件几何等无法由断言直接证明，需以最终渲染观察确认。\\\",\\\"verdict\\\":\\\"ready\\\",\\\"suggestions\\\":[\\\"保持 source 为固定版本 {id: \\\\\\\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\\\\\\\", version: 1}，不要改成 latest、空 source 或重新编写树源码。\\\",\\\"安装后读取渲染观察：新增树必须同时 visible=true 且 mesh=true，只有对象数据存在但无网格不算复用成功。\\\",\\\"保留候选、不要应用世界，等待玩家确认后再落地。\\\",\\\"若还原固定版本或定位时报错，按错误信息修复位置/source，不要改动原有 native-oak 的字段。\\\"],\\\"limitations\\\":[\\\"断言不支持 source 字段，无法直接证明新对象的来源确为指定固定版本而非 latest 或新建对象；该点只能从候选数据与人工核对确认。\\\",\\\"没有部件级断言，无法逐步验证“总高 3、有树干和树冠”的几何构成与树干碰撞，只能通过复用库固定版本与外观字段间接保证。\\\",\\\"region 断言只检查对象锚点，不证明树冠/树干每个部件都与 y=6 地形表面视觉接触。\\\",\\\"渲染检查只覆盖初始世界加载与像素采样，不能证明玩家最终画面中两棵树的色差、形状美观等主观效果。\\\",\\\"无法断言检索过程中“未使用 latest”“未替换已有对象”等中间操作，只能从最终世界状态判断无对象被移除或修改。\\\",\\\"本评审不应用世界、不提交新验证，也不判断候选是否已被玩家接受。\\\",\\\"未包含玩家输入、音效、摄像机视角等不可由事件与断言覆盖的体验项。\\\"],\\\"assertions\\\":[{\\\"id\\\":\\\"no-errors\\\",\\\"why\\\":\\\"整个安装与场景加载过程不应出现任何报错\\\",\\\"red\\\":\\\"加载含复用对象的场景或还原固定版本源时抛出异常/运行时报错\\\",\\\"kind\\\":\\\"noErrors\\\",\\\"redNote\\\":\\\"任何过程报错即打红。\\\"},{\\\"id\\\":\\\"added-reuse-tree-region\\\",\\\"why\\\":\\\"世界在 (20,6,4) 附近新增了至少一个对象（复用安装确实生效）\\\",\\\"red\\\":\\\"新树没有出现在指定位置（例如装到别处、只改配置未真正生成对象）\\\",\\\"kind\\\":\\\"newObjects\\\",\\\"min\\\":1,\\\"region\\\":{\\\"x\\\":[19,21],\\\"y\\\":[6,6],\\\"z\\\":[3,5]}},{\\\"id\\\":\\\"reuse-tree-anchor\\\",\\\"why\\\":\\\"新增复用树的锚点精确为玩家指定的 x=20 y=6 z=4 且落在地表 y=6\\\",\\\"red\\\":\\\"位置写错（如 y=0 埋入地下、x/z 偏移）或坐标被换算成其他约定\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"reuse-784d7b8549c0641f53dfea01-o0\\\",\\\"field\\\":\\\"position\\\",\\\"value\\\":{\\\"x\\\":20,\\\"y\\\":6,\\\"z\\\":4}},{\\\"id\\\":\\\"reuse-tree-visible\\\",\\\"why\\\":\\\"新增树在最终世界中可见（未被隐藏）\\\",\\\"red\\\":\\\"对象被创建为 visible=false 或安装后仍处于隐藏状态\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"reuse-784d7b8549c0641f53dfea01-o0\\\",\\\"field\\\":\\\"visible\\\",\\\"value\\\":true},{\\\"id\\\":\\\"reuse-tree-mesh\\\",\\\"why\\\":\\\"新增树拥有实际绘制的网格，说明复用对象真正渲染而不是仅存数据\\\",\\\"red\\\":\\\"只有数据/源存在但渲染器没有该对象的可绘制网格（mesh=false）\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"reuse-784d7b8549c0641f53dfea01-o0\\\",\\\"field\\\":\\\"mesh\\\",\\\"value\\\":true},{\\\"id\\\":\\\"reuse-tree-health\\\",\\\"why\\\":\\\"复用对象作为正常世界实体存在，具备基础游戏数值\\\",\\\"red\\\":\\\"对象只留下视觉外壳、血量缺失或为 0（安装不完整）\\\",\\\"kind\\\":\\\"objectHealth\\\",\\\"object\\\":\\\"reuse-784d7b8549c0641f53dfea01-o0\\\",\\\"exact\\\":20},{\\\"id\\\":\\\"original-tree-kept\\\",\\\"why\\\":\\\"原有记忆松树未被新增操作修改或替换，保留全部字段\\\",\\\"red\\\":\\\"安装复用对象时改写了原有对象的位置/部件/血量，或把它当作替换目标\\\",\\\"kind\\\":\\\"objectsUnchanged\\\",\\\"except\\\":[\\\"reuse-784d7b8549c0641f53dfea01-o0\\\"]},{\\\"id\\\":\\\"original-tree-anchor\\\",\\\"why\\\":\\\"原来的树仍位于 (10,6,4)\\\",\\\"red\\\":\\\"原树被移动到新位置或与其他对象重叠\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"position\\\",\\\"value\\\":{\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4}},{\\\"id\\\":\\\"original-tree-visible\\\",\\\"why\\\":\\\"原来的树在最终世界仍然可见\\\",\\\"red\\\":\\\"新增对象时把原树隐藏或删除导致 visible=false\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"visible\\\",\\\"value\\\":true},{\\\"id\\\":\\\"original-tree-mesh\\\",\\\"why\\\":\\\"原来的树仍有可绘制网格，最终世界中确实存在两棵树的渲染\\\",\\\"red\\\":\\\"原树网格因安装操作被销毁（mesh=false）\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"mesh\\\",\\\"value\\\":true}],\\\"steps\\\":[]}\",\"usage\":{\"cacheReadTokens\":1152,\"inputTokens\":2397,\"outputTokens\":4648,\"reasoningTokens\":3374,\"totalTokens\":8197}}",
+          "output_hash": "dd17134cb02b8a51c0e535d7b621dd82d519272534987d148e3dedee8572bb5b",
+          "created_at": 1788938432686,
+          "updated_at": 1788938454145
+        }
+      ],
+      "craftmine_worlds": [
+        {
+          "id": "9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf",
+          "title": "我的第一个世界",
+          "revision": 2,
+          "updated_at": 1788938417818,
+          "document": "{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"e423c10a719f8cde845083da17625499a4887f430f6f85d4cfc9da2593362d9b\",\"id\":\"v-e423c10a719f8cde8450\",\"primitives\":[{\"color\":\"#6b4a2b\",\"id\":\"native-oak\",\"material\":\"wood\",\"max\":{\"x\":11,\"y\":8,\"z\":5},\"min\":{\"x\":10,\"y\":6,\"z\":4},\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8f3a\",\"id\":\"native-oak\",\"material\":\"leaves\",\"max\":{\"x\":12,\"y\":9,\"z\":6},\"min\":{\"x\":9,\"y\":8,\"z\":3},\"offset\":{\"x\":-1,\"y\":2,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6b4a2b\",\"material\":\"wood\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8f3a\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":2,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"extensions\":[]}",
+          "content_hash": "05f55082df99a1714a702b00c0c0436f3a695d509ed575167d0910e878882828"
+        }
+      ],
+      "craftmine_library": [
+        {
+          "id": "saved-3f6e11e0dc8e671ba15bf0d2965dddf0",
+          "version": 1,
+          "hash": "5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912",
+          "kind": "object",
+          "name": "记忆松树",
+          "description": "",
+          "project_id": "pi-d273efa25c4764a25db2871cc7b19fb34ba5919897e37fe712c2f11ebaa7c690",
+          "world_scope": "9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf",
+          "bundle": "{\"assets\":[],\"extensions\":[],\"format\":\"craftmine.library-bundle/1\",\"module\":{\"dependencies\":[\"geometry@2\"],\"description\":\"\",\"format\":\"craftmine.module/1\",\"hash\":\"5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912\",\"id\":\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\",\"kind\":\"object\",\"name\":\"记忆松树\",\"origin\":{\"build\":\"v-e423c10a719f8cde8450\",\"definition\":\"native-oak\",\"time\":1788938417603},\"payload\":{\"components\":{\"contactDamage\":0,\"health\":20},\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6b4a2b\",\"material\":\"wood\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8f3a\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":2,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}]},\"runtime\":\"craftmine-web/2\",\"version\":1}}",
+          "bundle_hash": "b646c02fa45c45fe4ae96079a2c4b1db2a898344c0145a555cf4d6607a176b2d",
+          "metadata": "{\"applicationId\":\"apply-e47f91aa0b4ecc432da2649ba95b6f7693a1cb2b2186384198dfb5ca90fc4c0d\",\"createdAt\":1788938418149,\"dependencies\":[\"geometry@2\"],\"description\":\"\",\"evidence\":{\"applied\":true,\"proposed\":true,\"verified\":true},\"kind\":\"object\",\"name\":\"记忆松树\",\"ref\":{\"hash\":\"5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912\",\"id\":\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\",\"version\":1},\"reviewId\":\"review-ddc61b9f05bd15586525dad6913eeda616883b04907fc7f893d8ae786c8473ef\",\"runtime\":\"craftmine-web/2\",\"scope\":{\"projectId\":\"pi-d273efa25c4764a25db2871cc7b19fb34ba5919897e37fe712c2f11ebaa7c690\",\"worldId\":\"9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf\"},\"sourceBuildHash\":\"e423c10a719f8cde845083da17625499a4887f430f6f85d4cfc9da2593362d9b\",\"sourceBuildId\":\"v-e423c10a719f8cde8450\",\"sourceWorldId\":\"9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf\",\"tags\":[\"native-f-tree\"],\"verificationId\":\"check-4b0cdf3370f2157e0aad3abd34a4d7003eef30319d9e52f952c2a2cf88fd4191\"}",
+          "created_at": 1788938418149
+        }
+      ],
+      "craftmine_applications": [
+        {
+          "id": "apply-e47f91aa0b4ecc432da2649ba95b6f7693a1cb2b2186384198dfb5ca90fc4c0d",
+          "world_id": "9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf",
+          "verification_id": "check-4b0cdf3370f2157e0aad3abd34a4d7003eef30319d9e52f952c2a2cf88fd4191",
+          "review_id": "review-ddc61b9f05bd15586525dad6913eeda616883b04907fc7f893d8ae786c8473ef",
+          "request_hash": "df237ae7d652fcf91cf020f32d85da29599243c8f41d58e04e0d058ffb0e927c",
+          "input": "{\"baseBuild\":\"v-4641627420193586d325\",\"binding\":{\"baseBuild\":\"v-4641627420193586d325\",\"projectId\":\"pi-d273efa25c4764a25db2871cc7b19fb34ba5919897e37fe712c2f11ebaa7c690\",\"sessionId\":\"810382df-8665-432f-939e-af114e19cf30\",\"taskId\":\"work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f\",\"turnId\":\"e0ec2340-f8d4-4b1b-8e4b-8069a11a8b59\"},\"buildId\":\"v-e423c10a719f8cde8450\",\"draftHash\":\"b81c247da617edb9e6a51655e59fc72a0f099e087961d4a9c003f10924453303\",\"reviewId\":\"review-ddc61b9f05bd15586525dad6913eeda616883b04907fc7f893d8ae786c8473ef\",\"reviewOutputHash\":\"1a3f36be18d1886e7b0b332b7a58b85945d4faf840fc52547f6c4d01f600be66\",\"revision\":1,\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"verificationId\":\"check-4b0cdf3370f2157e0aad3abd34a4d7003eef30319d9e52f952c2a2cf88fd4191\",\"verificationOutputHash\":\"f9500722f21424c9e269f27bbe6eb2ee0a7c1b6f5ad82acda406045e3a537a86\",\"worldHash\":\"6bb5671b71426daeb2c9ed844db2a68254a8dc928d7a59208bb502502665f806\",\"worldId\":\"9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf\"}",
+          "input_hash": "b8d07206d9dcb7c882420374bfc239bed8eb5c603f30f3ffee6ce31a65ff5263",
+          "previous_world": "{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"4641627420193586d325a99b528a245dc053fa85ec5057e982d76612fe79ea22\",\"id\":\"v-4641627420193586d325\",\"primitives\":[],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"extensions\":[]}",
+          "previous_hash": "6bb5671b71426daeb2c9ed844db2a68254a8dc928d7a59208bb502502665f806",
+          "status": "applied",
+          "token": "b8166b48-80d0-4b98-8859-56cca60bfe03",
+          "output": "{\"format\":\"craftmine.desktop-application/1\",\"inputHash\":\"b8d07206d9dcb7c882420374bfc239bed8eb5c603f30f3ffee6ce31a65ff5263\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5},\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"b86465f6722d4314d81ddb747ca23503673e8675005a0593e0ab296587e8a7d7\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-e423c10a719f8cde8450\"}}",
+          "output_hash": "57062c3a39052ee487aa8ab4aadfc782097b0acd6ef6a0107db42168d73cb547",
+          "created_at": 1788938417603,
+          "updated_at": 1788938417818
+        }
+      ]
+    },
+    "originalReportHash": "8db49f3fabb57da058ed058eea92570a3616c566df429eea913aeafd0578375a",
+    "status": {
+      "name": "craftmine world",
+      "profile": "D:\\Craftmine World-worktrees\\parallel-f-20260909\\test-results\\desktop-native-f-45T8IB\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/Craftmine%20World-worktrees/parallel-f-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    "retry": {
+      "id": "review-84db104729d792470b5b13a2a1320fdbcdb4bfaee60ae6d1fc2b4b69bd18bd05",
+      "status": "running"
+    },
+    "application": {
+      "applied": true,
+      "snapshot": {
+        "channel": "craftmine-game/1",
+        "nonce": "781df219-52f5-4fb9-bbd5-20feb0f85d4d",
+        "type": "snapshot",
+        "requestId": "1718249c-f161-426b-b211-e09c08a82217",
+        "snapshot": {
+          "format": "craftmine.progress/3",
+          "player": {
+            "pitch": 0,
+            "x": 0.5,
+            "y": 6,
+            "yaw": 0,
+            "z": 12.5
+          },
+          "gameplay": {
+            "systems": {},
+            "targets": {
+              "native-oak": {
+                "health": 20,
+                "maxHealth": 20
+              },
+              "reuse-784d7b8549c0641f53dfea01-o0": {
+                "health": 20,
+                "maxHealth": 20
+              }
+            },
+            "equipped": null,
+            "archivedTargets": {},
+            "cooldown": 0
+          },
+          "behaviors": {
+            "format": "craftmine.behavior-state/2",
+            "time": 0,
+            "modules": {},
+            "inventory": {},
+            "archive": []
+          }
+        }
+      }
+    },
+    "after": {
+      "craftmine_budget_requests": [
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-e5139c78-0330-411b-9d3a-02f312fd247b",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "973ad803f9f34c724500edbebadc8474c0d23a355f9bcf6594c5a52704fa884a",
+          "estimate": 40567,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":1653,\"outputTokens\":78,\"totalTokens\":2499}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-82b55482-5fd0-4d30-9405-87dab8666c13",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "4888a0b369a75b33caf866bad61f1bf2a6f0edc03030bd517c829789ac0fd8ca",
+          "estimate": 47254,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":2770,\"outputTokens\":151,\"totalTokens\":4073}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-69209459-849e-467e-b090-e9dc66c33716",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "da7f82c0e4e77f01eab100e16c9798505c7f562b76a906dde141dcb67fbb86df",
+          "estimate": 71746,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":9092,\"outputTokens\":324,\"totalTokens\":10568}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-a4b927b5-165f-409d-8869-5b5a7cce215b",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "5abc4563ff0469f4ef1d8e054832209a7794c5ab21056eaabd9826066d954528",
+          "estimate": 74209,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":9945,\"outputTokens\":309,\"totalTokens\":11406}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-9ffefec4-5dae-4a25-8b0c-29020091b564",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "dfb9f8959896961285408db68f7876b7200a87ed0f7a94eea9727a8ffc04f9fe",
+          "estimate": 82194,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":12140,\"outputTokens\":1631,\"totalTokens\":14923}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-e24fb976-3aec-494a-b4f9-c1eebba18744",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "9b88d981f91141957594511a28b60fd95ad462eb74db41c7073d51973a3134b5",
+          "estimate": 85683,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":14111,\"outputTokens\":267,\"totalTokens\":15402}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-d9780ee9-d4d3-4ba3-8e98-0b0be4d2d327",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "39e3c7f1835b3606ccb3b618b7a428711c54e947cbe803391c25d6753a83fcd3",
+          "estimate": 87781,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":14555,\"outputTokens\":282,\"totalTokens\":16117}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-e106bf5b-6663-4ab8-9bb5-964c8303684b",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "cd9ca9771d6373326542bb443410230fc9da75f99637b29552b3ecd5e2e1d10f",
+          "estimate": 90083,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":15455,\"outputTokens\":99,\"totalTokens\":16834}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-3635f29f-c585-4bda-b458-032907c8140c",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "review",
+          "request_hash": "e528b48c71ac4eb0607081710441c54c8b07225e82375d00b5aa7551f5a6aa8c",
+          "estimate": 39359,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":1764,\"outputTokens\":4672,\"totalTokens\":7588}}"
+        },
+        {
+          "owner": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "request_id": "request-64c75dce-eb33-4fc7-879e-ed75cace0b98",
+          "task_id": "work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "6a5061e1076bbd2c21f086f1da4abe4afd19aa7b0eb3b9b197b728471493c973",
+          "estimate": 94636,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":16927,\"outputTokens\":798,\"totalTokens\":19005}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-49fb9cb7-efe6-45be-8caf-c29aca8961d8",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "c82c1e9727b38c916960d3a361d1ae79a032dc3c063a5e1268b3c66f097e38f1",
+          "estimate": 40891,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":1882,\"outputTokens\":79,\"totalTokens\":2729}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-15b1a1d9-d096-4c01-a345-08ebbbd8c173",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "4838dd40682a72592916f1e35e0195a2a93573a5a52388d7f41f784cb67648d0",
+          "estimate": 56366,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":5910,\"outputTokens\":380,\"totalTokens\":7570}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-8eafe605-84bb-4c8c-94e3-de3861a38f83",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "984e70d8fa9ffd0042c0abf147ec47c3ba63e923007004540ae9f66ae8ef035b",
+          "estimate": 62036,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":7940,\"outputTokens\":129,\"totalTokens\":9349}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-0664d66c-d82c-4c8a-8550-626d8294af17",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "ccd4ccdc1aee9a54d49e3f5b59fc747f519299cd49dd4cf2ea133ef9140b2fc2",
+          "estimate": 65153,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":9067,\"outputTokens\":155,\"totalTokens\":10502}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-570d72fb-4f8e-4fb2-b4d8-e4b0745819f9",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "bb0b1ea19d6ad6888b82dcdf722327be1aabcae42f709be6610b7b35a1087060",
+          "estimate": 68473,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":10336,\"outputTokens\":308,\"totalTokens\":11924}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-dc88a0f7-268c-4449-bbe0-14bd820710e4",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "260a0dd673e3d82523c3c1832f135e9995a0207d42e86505a09bccdc6416483c",
+          "estimate": 70225,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":11187,\"outputTokens\":252,\"totalTokens\":12719}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-02f743aa-5c44-4d20-9b18-6dd18b34799b",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "0efac8ffee5d7e9968023f50665c14e3275d8054fe73836dc46adbb04fbcdea3",
+          "estimate": 73216,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":12137,\"outputTokens\":274,\"totalTokens\":13819}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-21265b8e-ee50-406c-b706-e1a97219aebc",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "c3ce4f7e00c3a9844c4e84fbe0ac1431359702c6941d402b63b86917963694a5",
+          "estimate": 74980,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":12884,\"outputTokens\":160,\"totalTokens\":14452}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-c7f0c447-97e5-485f-ba7d-f30901600c10",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "review",
+          "request_hash": "a8cee58f716a127672ba6f8bb614f05f1d38b74935fa74f0c85fb3d937e50f0d",
+          "estimate": 40233,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":2397,\"outputTokens\":4648,\"totalTokens\":8197}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-4e7db936-c7d9-4563-a65f-596d2b5941cd",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "eb075cf9de7a66a6ef8b72e73e6880a503a5920921f9173a388f561a8323887a",
+          "estimate": 79779,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":14485,\"outputTokens\":239,\"totalTokens\":16132}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-114f94d1-4f7e-47c0-9166-57a6a746b992",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "79925472ce8415a232aa2f7aac4f723bb200ecc1366cf686339fbaab2eeee014",
+          "estimate": 84787,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":16036,\"outputTokens\":769,\"totalTokens\":18341}}"
+        },
+        {
+          "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "request_id": "request-c1f64a99-66c4-40cd-9a36-8f6c12bdc00c",
+          "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+          "generation": 1,
+          "purpose": "review",
+          "request_hash": "24121ce14f0808e6ba9ee90482f0aa9509d8f720e82a88b810a8e2990ee3872f",
+          "estimate": 40659,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":3751,\"outputTokens\":6075,\"totalTokens\":9826}}"
+        }
+      ],
+      "craftmine_reviews": [
+        {
+          "id": "review-ddc61b9f05bd15586525dad6913eeda616883b04907fc7f893d8ae786c8473ef",
+          "verification_id": "check-4b0cdf3370f2157e0aad3abd34a4d7003eef30319d9e52f952c2a2cf88fd4191",
+          "input": "{\"origin\":{\"modelKey\":\"69357a67-3b4c-4508-a5bf-5505faddda45/deepseek-v4.1-flash-expires-on-0910\",\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"86738e0a-3f91-4715-88b4-6cffe3da4c06\",\"text\":\"请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。\"},\"thinkingLevel\":\"high\"},\"verificationId\":\"check-4b0cdf3370f2157e0aad3abd34a4d7003eef30319d9e52f952c2a2cf88fd4191\",\"verificationInputHash\":\"1d127e8a16e534215aa4d4d533467d27af865646ef4889faac861ddf34296d7f\",\"verificationOutputHash\":\"f9500722f21424c9e269f27bbe6eb2ee0a7c1b6f5ad82acda406045e3a537a86\"}",
+          "input_hash": "4ba8bec66f21452d4b7eb1be20ac0909125a2f3e4cd1cf109646f45bc764ac20",
+          "status": "completed",
+          "token": "e3a56745-4d16-4f4f-868e-93180e2653e4",
+          "output": "{\"acceptance\":{\"assertions\":[{\"detail\":\"玩法在整个事件序列里没有报错\",\"id\":\"no-errors\",\"kind\":\"noErrors\",\"passed\":true,\"red\":\"任何加载/运行错误，或世界因部件/坐标非法而中断时报红\",\"why\":\"检查加载并运行该候选世界全程没有报错\"},{\"detail\":\"最终世界新增了 1 个符合条件的对象：native-oak\",\"id\":\"tree-added-in-region\",\"kind\":\"newObjects\",\"passed\":true,\"red\":\"未新增对象、对象被删回，或锚点被写成其它坐标（如 y=0 或 x/z 偏移）时打红\",\"why\":\"世界至少新增一个对象，且新增对象锚点落在请求位置 (10,6,4) 附近\"},{\"detail\":\"最终世界 native-oak.position = {\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4}\",\"id\":\"tree-position-exact\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"对象缺失、id 或坐标被改动（例如落到 y=0 地下或改成 x=0/z=0）时打红\",\"why\":\"native-oak 的锚点坐标必须严格等于请求的 x=10 y=6 z=4（y=6 即地面高度）\"},{\"detail\":\"最终世界 native-oak.visible = true\",\"id\":\"tree-visible\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"对象被隐藏/未恢复可见（visible=false）时打红\",\"why\":\"最终世界中这棵树对玩家是可见的，而不是被隐藏\"},{\"detail\":\"最终世界 native-oak.mesh = true\",\"id\":\"tree-has-mesh\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"对象只有源数据或逻辑存在、renderer 没有 drawable mesh（mesh=false）时打红\",\"why\":\"可观测效果：渲染器实际持有该对象的可绘制网格，说明树确实被画出来而非只有源码\"},{\"detail\":\"除 native-oak 之外，其他对象都没有变化\",\"id\":\"only-native-oak-changed\",\"kind\":\"objectsUnchanged\",\"passed\":true,\"red\":\"世界里出现新对象、原有对象字段被修改或删除（除 native-oak 外）时打红\",\"why\":\"请求要求只增加这一棵树，不得增加或改动其他物体\"}],\"baselineVersion\":\"v-4641627420193586d325\",\"passed\":true,\"scope\":\"实际游戏副本中的对象、玩法事件与状态断言；外观美术与物理操作体验仍由玩家预览判断\",\"trace\":{\"baseline\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{}},\"inventory\":{},\"items\":{},\"objects\":[],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"errors\":[],\"final\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"inventory\":{},\"items\":{},\"objects\":[{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"native-oak\",\"mesh\":true,\"position\":{\"x\":10,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true}],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5},\"start\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"inventory\":{},\"items\":{},\"objects\":[{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"native-oak\",\"mesh\":true,\"position\":{\"x\":10,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true}],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"steps\":[]},\"verificationOutputHash\":\"f9500722f21424c9e269f27bbe6eb2ee0a7c1b6f5ad82acda406045e3a537a86\"},\"advisory\":true,\"baseline\":{\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"eb8d069c86c7e454f14fb001acf7bb9e8bace44182bee6458b45136936151645\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-4641627420193586d325\"}},\"format\":\"craftmine.desktop-review/1\",\"inputHash\":\"4ba8bec66f21452d4b7eb1be20ac0909125a2f3e4cd1cf109646f45bc764ac20\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"limitations\":[\"断言字段不含部件级信息，无法证明树干 box 1×2×1 与树冠 box 3×1×3 的构成，也无法直接证明“总高度 3”；只能核对对象锚点与整体可见/网格。\",\"部件颜色 #6b4a2b（wood）与 #3f8f3a（leaves）属于外观，DSL 不能建立颜色审美，只能由玩家预览确认。\",\"对象名称“记忆松树”由 name 字段承载，但可用断言字段（position/visible/solid/mesh/health/color）不含 name，本计划未核验名称文本。\",\"部件 offset 的语义（角点或中心）与尺寸展开方式未在本计划中确定；锚点 y=6 与地形表面 y=6 一致，但“树干底部与地面接触”的视觉结论仍属玩家预览范围。\",\"behaviors 与 systems 是否为空不在断言种类覆盖范围内；只能依据 diff/machineEvidence 观察到此次未新增行为或系统。\",\"machineEvidence 的 behavior/compiler/render 检查只代表模块、编译与初始绘制通过，不等于玩家需求验收，也不代表本评审断言已通过。\"],\"modelKey\":\"69357a67-3b4c-4508-a5bf-5505faddda45/deepseek-v4.1-flash-expires-on-0910\",\"planHash\":\"63d5c0f951d1b72dca67e50b65bd85991188a05f9930f66da9c69e91409520e5\",\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"b86465f6722d4314d81ddb747ca23503673e8675005a0593e0ab296587e8a7d7\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-e423c10a719f8cde8450\"},\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"86738e0a-3f91-4715-88b4-6cffe3da4c06\",\"text\":\"请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。\"},\"suggestions\":[\"在执行冻结计划后，请玩家或后续预览确认：树干底部与 y=6 地面视觉接触、树冠水平覆盖树干、整体读数高度为 3、树干棕色与树冠绿色符合预期。\",\"本请求为静态对象创建，保持空 steps；若后续需要操作验证，应单独提出带行为的请求，不要在本任务偷偷追加玩法。\"],\"summary\":\"候选世界只新增了一个对象 native-oak（name=记忆松树），锚点 (10,6,4) 与请求坐标一致，包含 wood 树干部件与 leaves 树冠部件，behaviors/systems 均未新增，diff 显示仅该对象被 added。字面需求（id、名称承载、坐标、树干+树冠、不增加其他物体）看起来都落在候选里；但现有断言字段只能核对对象级锚点与可见/网格状态，无法核对“总高度 3”、部件几何与颜色等外观，需列为玩家预览项。\",\"text\":\"{\\\"summary\\\":\\\"候选世界只新增了一个对象 native-oak（name=记忆松树），锚点 (10,6,4) 与请求坐标一致，包含 wood 树干部件与 leaves 树冠部件，behaviors/systems 均未新增，diff 显示仅该对象被 added。字面需求（id、名称承载、坐标、树干+树冠、不增加其他物体）看起来都落在候选里；但现有断言字段只能核对对象级锚点与可见/网格状态，无法核对“总高度 3”、部件几何与颜色等外观，需列为玩家预览项。\\\",\\\"verdict\\\":\\\"ready\\\",\\\"suggestions\\\":[\\\"在执行冻结计划后，请玩家或后续预览确认：树干底部与 y=6 地面视觉接触、树冠水平覆盖树干、整体读数高度为 3、树干棕色与树冠绿色符合预期。\\\",\\\"本请求为静态对象创建，保持空 steps；若后续需要操作验证，应单独提出带行为的请求，不要在本任务偷偷追加玩法。\\\"],\\\"limitations\\\":[\\\"断言字段不含部件级信息，无法证明树干 box 1×2×1 与树冠 box 3×1×3 的构成，也无法直接证明“总高度 3”；只能核对对象锚点与整体可见/网格。\\\",\\\"部件颜色 #6b4a2b（wood）与 #3f8f3a（leaves）属于外观，DSL 不能建立颜色审美，只能由玩家预览确认。\\\",\\\"对象名称“记忆松树”由 name 字段承载，但可用断言字段（position/visible/solid/mesh/health/color）不含 name，本计划未核验名称文本。\\\",\\\"部件 offset 的语义（角点或中心）与尺寸展开方式未在本计划中确定；锚点 y=6 与地形表面 y=6 一致，但“树干底部与地面接触”的视觉结论仍属玩家预览范围。\\\",\\\"behaviors 与 systems 是否为空不在断言种类覆盖范围内；只能依据 diff/machineEvidence 观察到此次未新增行为或系统。\\\",\\\"machineEvidence 的 behavior/compiler/render 检查只代表模块、编译与初始绘制通过，不等于玩家需求验收，也不代表本评审断言已通过。\\\"],\\\"assertions\\\":[{\\\"id\\\":\\\"no-errors\\\",\\\"kind\\\":\\\"noErrors\\\",\\\"why\\\":\\\"检查加载并运行该候选世界全程没有报错\\\",\\\"red\\\":\\\"任何加载/运行错误，或世界因部件/坐标非法而中断时报红\\\"},{\\\"id\\\":\\\"tree-added-in-region\\\",\\\"kind\\\":\\\"newObjects\\\",\\\"min\\\":1,\\\"region\\\":{\\\"x\\\":[9,11],\\\"y\\\":[5,7],\\\"z\\\":[3,5]},\\\"why\\\":\\\"世界至少新增一个对象，且新增对象锚点落在请求位置 (10,6,4) 附近\\\",\\\"red\\\":\\\"未新增对象、对象被删回，或锚点被写成其它坐标（如 y=0 或 x/z 偏移）时打红\\\"},{\\\"id\\\":\\\"tree-position-exact\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"position\\\",\\\"value\\\":{\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4},\\\"why\\\":\\\"native-oak 的锚点坐标必须严格等于请求的 x=10 y=6 z=4（y=6 即地面高度）\\\",\\\"red\\\":\\\"对象缺失、id 或坐标被改动（例如落到 y=0 地下或改成 x=0/z=0）时打红\\\"},{\\\"id\\\":\\\"tree-visible\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"visible\\\",\\\"value\\\":true,\\\"why\\\":\\\"最终世界中这棵树对玩家是可见的，而不是被隐藏\\\",\\\"red\\\":\\\"对象被隐藏/未恢复可见（visible=false）时打红\\\"},{\\\"id\\\":\\\"tree-has-mesh\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"mesh\\\",\\\"value\\\":true,\\\"why\\\":\\\"可观测效果：渲染器实际持有该对象的可绘制网格，说明树确实被画出来而非只有源码\\\",\\\"red\\\":\\\"对象只有源数据或逻辑存在、renderer 没有 drawable mesh（mesh=false）时打红\\\"},{\\\"id\\\":\\\"only-native-oak-changed\\\",\\\"kind\\\":\\\"objectsUnchanged\\\",\\\"except\\\":[\\\"native-oak\\\"],\\\"why\\\":\\\"请求要求只增加这一棵树，不得增加或改动其他物体\\\",\\\"red\\\":\\\"世界里出现新对象、原有对象字段被修改或删除（除 native-oak 外）时打红\\\"}],\\\"steps\\\":[]}\",\"usage\":{\"cacheReadTokens\":1152,\"inputTokens\":1764,\"outputTokens\":4672,\"reasoningTokens\":3729,\"totalTokens\":7588},\"verdict\":\"ready\"}",
+          "output_hash": "1a3f36be18d1886e7b0b332b7a58b85945d4faf840fc52547f6c4d01f600be66",
+          "created_at": 1788938396259,
+          "updated_at": 1788938416935
+        },
+        {
+          "id": "review-32d68f0b31854b76bac054c4008c400b4c67fc0f92a61cde0d9ebf3effb48764",
+          "verification_id": "check-6f5d9761659b996c70a63c3566e52abfd8b53b7c85a11fcee28ecd265d1d603c",
+          "input": "{\"origin\":{\"modelKey\":\"ee60aabc-40ab-4d7f-8679-80f3b5974128/deepseek-v4.1-flash-expires-on-0910\",\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"d359afc9-99ea-4a8b-aa5c-a06a720f1d4e\",\"text\":\"请实际复用作品，不要重新编写树源码。先检索作品库并读取这个精确固定版本：{\\\"hash\\\":\\\"5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912\\\",\\\"id\\\":\\\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\\\",\\\"version\\\":1}。用 library_install 把它加入当前世界位置x=20 y=6 z=4，保留原来的树。不要使用latest或替换已有对象，保留模块来源。安装后实际提交验证、读取结果，若失败请修复。最终应有两棵记忆松树：原来的在(10,6,4)，固定旧版本复用的新树在(20,6,4)，两者总高3、有树干和树冠。通过后保留候选等待玩家应用。\"},\"thinkingLevel\":\"high\"},\"verificationId\":\"check-6f5d9761659b996c70a63c3566e52abfd8b53b7c85a11fcee28ecd265d1d603c\",\"verificationInputHash\":\"70509444058add4f66e9d758df0a921ed0b007f312aa975f2d711232b7e09713\",\"verificationOutputHash\":\"1bdd961f4a854172fa237fa66b51ba8ee0e2bea5eedc0b0078b4d924351b209c\"}",
+          "input_hash": "9ebc8197bb6321cad0205b0db91de53f208781a3df2ac13bfe96cc00239024df",
+          "status": "failed",
+          "token": "20ae1f88-2c90-4e65-befb-12886c56830b",
+          "output": "{\"error\":\"no-errors：断言包含不支持的字段 redNote\",\"inputHash\":\"9ebc8197bb6321cad0205b0db91de53f208781a3df2ac13bfe96cc00239024df\",\"modelKey\":\"ee60aabc-40ab-4d7f-8679-80f3b5974128/deepseek-v4.1-flash-expires-on-0910\",\"text\":\"{\\\"summary\\\":\\\"候选在场景中新增了一个复用对象 reuse-784d7b8549c0641f53dfea01-o0，名称为“记忆松树”，锚点位于 (20,6,4)，source 指向固定版本 {id: saved-3f6e11e0dc8e671ba15bf0d2965dddf0, version: 1}，且原有 native-oak 保持在 (10,6,4) 未被修改；diff 显示仅新增 1 个对象、无删除/修改，机器证据显示编译、行为与渲染检查已通过。整体与玩家要求（复用固定版本、两棵树、保留原树、不替换）一致，可进入玩家预览，但 source/部件几何等无法由断言直接证明，需以最终渲染观察确认。\\\",\\\"verdict\\\":\\\"ready\\\",\\\"suggestions\\\":[\\\"保持 source 为固定版本 {id: \\\\\\\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\\\\\\\", version: 1}，不要改成 latest、空 source 或重新编写树源码。\\\",\\\"安装后读取渲染观察：新增树必须同时 visible=true 且 mesh=true，只有对象数据存在但无网格不算复用成功。\\\",\\\"保留候选、不要应用世界，等待玩家确认后再落地。\\\",\\\"若还原固定版本或定位时报错，按错误信息修复位置/source，不要改动原有 native-oak 的字段。\\\"],\\\"limitations\\\":[\\\"断言不支持 source 字段，无法直接证明新对象的来源确为指定固定版本而非 latest 或新建对象；该点只能从候选数据与人工核对确认。\\\",\\\"没有部件级断言，无法逐步验证“总高 3、有树干和树冠”的几何构成与树干碰撞，只能通过复用库固定版本与外观字段间接保证。\\\",\\\"region 断言只检查对象锚点，不证明树冠/树干每个部件都与 y=6 地形表面视觉接触。\\\",\\\"渲染检查只覆盖初始世界加载与像素采样，不能证明玩家最终画面中两棵树的色差、形状美观等主观效果。\\\",\\\"无法断言检索过程中“未使用 latest”“未替换已有对象”等中间操作，只能从最终世界状态判断无对象被移除或修改。\\\",\\\"本评审不应用世界、不提交新验证，也不判断候选是否已被玩家接受。\\\",\\\"未包含玩家输入、音效、摄像机视角等不可由事件与断言覆盖的体验项。\\\"],\\\"assertions\\\":[{\\\"id\\\":\\\"no-errors\\\",\\\"why\\\":\\\"整个安装与场景加载过程不应出现任何报错\\\",\\\"red\\\":\\\"加载含复用对象的场景或还原固定版本源时抛出异常/运行时报错\\\",\\\"kind\\\":\\\"noErrors\\\",\\\"redNote\\\":\\\"任何过程报错即打红。\\\"},{\\\"id\\\":\\\"added-reuse-tree-region\\\",\\\"why\\\":\\\"世界在 (20,6,4) 附近新增了至少一个对象（复用安装确实生效）\\\",\\\"red\\\":\\\"新树没有出现在指定位置（例如装到别处、只改配置未真正生成对象）\\\",\\\"kind\\\":\\\"newObjects\\\",\\\"min\\\":1,\\\"region\\\":{\\\"x\\\":[19,21],\\\"y\\\":[6,6],\\\"z\\\":[3,5]}},{\\\"id\\\":\\\"reuse-tree-anchor\\\",\\\"why\\\":\\\"新增复用树的锚点精确为玩家指定的 x=20 y=6 z=4 且落在地表 y=6\\\",\\\"red\\\":\\\"位置写错（如 y=0 埋入地下、x/z 偏移）或坐标被换算成其他约定\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"reuse-784d7b8549c0641f53dfea01-o0\\\",\\\"field\\\":\\\"position\\\",\\\"value\\\":{\\\"x\\\":20,\\\"y\\\":6,\\\"z\\\":4}},{\\\"id\\\":\\\"reuse-tree-visible\\\",\\\"why\\\":\\\"新增树在最终世界中可见（未被隐藏）\\\",\\\"red\\\":\\\"对象被创建为 visible=false 或安装后仍处于隐藏状态\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"reuse-784d7b8549c0641f53dfea01-o0\\\",\\\"field\\\":\\\"visible\\\",\\\"value\\\":true},{\\\"id\\\":\\\"reuse-tree-mesh\\\",\\\"why\\\":\\\"新增树拥有实际绘制的网格，说明复用对象真正渲染而不是仅存数据\\\",\\\"red\\\":\\\"只有数据/源存在但渲染器没有该对象的可绘制网格（mesh=false）\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"reuse-784d7b8549c0641f53dfea01-o0\\\",\\\"field\\\":\\\"mesh\\\",\\\"value\\\":true},{\\\"id\\\":\\\"reuse-tree-health\\\",\\\"why\\\":\\\"复用对象作为正常世界实体存在，具备基础游戏数值\\\",\\\"red\\\":\\\"对象只留下视觉外壳、血量缺失或为 0（安装不完整）\\\",\\\"kind\\\":\\\"objectHealth\\\",\\\"object\\\":\\\"reuse-784d7b8549c0641f53dfea01-o0\\\",\\\"exact\\\":20},{\\\"id\\\":\\\"original-tree-kept\\\",\\\"why\\\":\\\"原有记忆松树未被新增操作修改或替换，保留全部字段\\\",\\\"red\\\":\\\"安装复用对象时改写了原有对象的位置/部件/血量，或把它当作替换目标\\\",\\\"kind\\\":\\\"objectsUnchanged\\\",\\\"except\\\":[\\\"reuse-784d7b8549c0641f53dfea01-o0\\\"]},{\\\"id\\\":\\\"original-tree-anchor\\\",\\\"why\\\":\\\"原来的树仍位于 (10,6,4)\\\",\\\"red\\\":\\\"原树被移动到新位置或与其他对象重叠\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"position\\\",\\\"value\\\":{\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4}},{\\\"id\\\":\\\"original-tree-visible\\\",\\\"why\\\":\\\"原来的树在最终世界仍然可见\\\",\\\"red\\\":\\\"新增对象时把原树隐藏或删除导致 visible=false\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"visible\\\",\\\"value\\\":true},{\\\"id\\\":\\\"original-tree-mesh\\\",\\\"why\\\":\\\"原来的树仍有可绘制网格，最终世界中确实存在两棵树的渲染\\\",\\\"red\\\":\\\"原树网格因安装操作被销毁（mesh=false）\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"mesh\\\",\\\"value\\\":true}],\\\"steps\\\":[]}\",\"usage\":{\"cacheReadTokens\":1152,\"inputTokens\":2397,\"outputTokens\":4648,\"reasoningTokens\":3374,\"totalTokens\":8197}}",
+          "output_hash": "dd17134cb02b8a51c0e535d7b621dd82d519272534987d148e3dedee8572bb5b",
+          "created_at": 1788938432686,
+          "updated_at": 1788938454145
+        },
+        {
+          "id": "review-84db104729d792470b5b13a2a1320fdbcdb4bfaee60ae6d1fc2b4b69bd18bd05",
+          "verification_id": "check-6f5d9761659b996c70a63c3566e52abfd8b53b7c85a11fcee28ecd265d1d603c",
+          "input": "{\"origin\":{\"modelKey\":\"ee60aabc-40ab-4d7f-8679-80f3b5974128/deepseek-v4.1-flash-expires-on-0910\",\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"d359afc9-99ea-4a8b-aa5c-a06a720f1d4e\",\"text\":\"请实际复用作品，不要重新编写树源码。先检索作品库并读取这个精确固定版本：{\\\"hash\\\":\\\"5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912\\\",\\\"id\\\":\\\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\\\",\\\"version\\\":1}。用 library_install 把它加入当前世界位置x=20 y=6 z=4，保留原来的树。不要使用latest或替换已有对象，保留模块来源。安装后实际提交验证、读取结果，若失败请修复。最终应有两棵记忆松树：原来的在(10,6,4)，固定旧版本复用的新树在(20,6,4)，两者总高3、有树干和树冠。通过后保留候选等待玩家应用。\"},\"thinkingLevel\":\"high\"},\"verificationId\":\"check-6f5d9761659b996c70a63c3566e52abfd8b53b7c85a11fcee28ecd265d1d603c\",\"verificationInputHash\":\"70509444058add4f66e9d758df0a921ed0b007f312aa975f2d711232b7e09713\",\"verificationOutputHash\":\"1bdd961f4a854172fa237fa66b51ba8ee0e2bea5eedc0b0078b4d924351b209c\"}",
+          "input_hash": "9ebc8197bb6321cad0205b0db91de53f208781a3df2ac13bfe96cc00239024df",
+          "status": "completed",
+          "token": "57e3a486-7bb9-49f9-b9cf-fd626046c678",
+          "output": "{\"acceptance\":{\"assertions\":[{\"detail\":\"玩法在整个事件序列里没有报错\",\"id\":\"no-errors\",\"kind\":\"noErrors\",\"passed\":true,\"red\":\"任何加载或运行阶段抛出错误、或复用对象导致世界加载失败时会打红。\",\"why\":\"确认整个安装与加载过程没有运行时报错，复用对象后世界仍可正常运行。\"},{\"detail\":\"最终世界新增了 1 个符合条件的对象：reuse-784d7b8549c0641f53dfea01-o0\",\"id\":\"new-tree-in-place\",\"kind\":\"newObjects\",\"passed\":true,\"red\":\"复用对象被放到其它坐标、或根本没有新增对象时，该区域计数不足而打红。\",\"why\":\"确认世界在 x=20,y=6,z=4 处确实新增了对象（锚点落点）。\"},{\"detail\":\"最终世界 reuse-784d7b8549c0641f53dfea01-o0.position = {\\\"x\\\":20,\\\"y\\\":6,\\\"z\\\":4}\",\"id\":\"new-tree-anchor\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"新树锚点被写错（例如 y=7、x=19 或 z=3）时会打红。\",\"why\":\"确认复用得到的新树锚点正是请求的 (20,6,4)，即落在地表 y=6 上。\"},{\"detail\":\"最终世界 native-oak.position = {\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4}\",\"id\":\"old-tree-anchor\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"原有树被移动、删除后在别处重建时会打红。\",\"why\":\"确认原来的树仍在 (10,6,4)，没有被移动或替换位置。\"},{\"detail\":\"除 reuse-784d7b8549c0641f53dfea01-o0 之外，其他对象都没有变化\",\"id\":\"others-unchanged\",\"kind\":\"objectsUnchanged\",\"passed\":true,\"red\":\"安装过程改动了原树的部件/组件/位置，或以新对象替换已有对象时打红。\",\"why\":\"确认除新树外其它对象字段完全不变，原树被保留且没有被就地改写。\"},{\"detail\":\"最终世界 native-oak.visible = true\",\"id\":\"old-tree-visible\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"原树 visible 变为 false 时会打红。\",\"why\":\"确认安装新树后原树仍然可见，没有被隐藏。\"},{\"detail\":\"最终世界 native-oak.mesh = true\",\"id\":\"old-tree-mesh\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"原树可绘制网格丢失（mesh=false）时会打红。\",\"why\":\"确认渲染器仍持有原树的绘制网格，而不是只剩逻辑对象。\"},{\"detail\":\"最终世界 reuse-784d7b8549c0641f53dfea01-o0.visible = true\",\"id\":\"new-tree-visible\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"新树被创建为 visible=false 时会打红。\",\"why\":\"确认复用得到的新树在最终状态下逻辑可见。\"},{\"detail\":\"最终世界 reuse-784d7b8549c0641f53dfea01-o0.mesh = true\",\"id\":\"new-tree-mesh\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"新树只有数据记录而没有可绘制网格（mesh=false）时会打红。\",\"why\":\"确认新树确有可绘制网格，是真实可见效果而非仅有命令或数据条目。\"}],\"baselineVersion\":\"v-e423c10a719f8cde8450\",\"passed\":true,\"scope\":\"实际游戏副本中的对象、玩法事件与状态断言；外观美术与物理操作体验仍由玩家预览判断\",\"trace\":{\"baseline\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"inventory\":{},\"items\":{},\"objects\":[{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"native-oak\",\"mesh\":true,\"position\":{\"x\":10,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true}],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"errors\":[],\"final\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20},\"reuse-784d7b8549c0641f53dfea01-o0\":{\"health\":20,\"maxHealth\":20}}},\"inventory\":{},\"items\":{},\"objects\":[{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"native-oak\",\"mesh\":true,\"position\":{\"x\":10,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true},{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"reuse-784d7b8549c0641f53dfea01-o0\",\"mesh\":true,\"position\":{\"x\":20,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true}],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5},\"start\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20},\"reuse-784d7b8549c0641f53dfea01-o0\":{\"health\":20,\"maxHealth\":20}}},\"inventory\":{},\"items\":{},\"objects\":[{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"native-oak\",\"mesh\":true,\"position\":{\"x\":10,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true},{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"reuse-784d7b8549c0641f53dfea01-o0\",\"mesh\":true,\"position\":{\"x\":20,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true}],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"steps\":[]},\"verificationOutputHash\":\"1bdd961f4a854172fa237fa66b51ba8ee0e2bea5eedc0b0078b4d924351b209c\"},\"advisory\":true,\"baseline\":{\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"b86465f6722d4314d81ddb747ca23503673e8675005a0593e0ab296587e8a7d7\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-e423c10a719f8cde8450\"}},\"format\":\"craftmine.desktop-review/1\",\"inputHash\":\"9ebc8197bb6321cad0205b0db91de53f208781a3df2ac13bfe96cc00239024df\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"limitations\":[\"断言只能读取对象锚点与整体字段，无法逐部件验证“树干+树冠”结构、与地面完整接触或整体高度恰为 3；只能由 scene 的 parts 数据与渲染网格间接佐证。\",\"断言种类不含 source/hash 字段，因此无法自动证明新对象的模块来源与精确版本哈希 5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912 一致，也无法证明部件不是本地重写；本次判决与 machineFacts（modifiedResources 含该对象、check 作业 passed）是主要佐证，且本次提供的 libraryReferences 为空，无法据此复核库读取记录。\",\"颜色、材质观感、树冠形状比例等美学效果属于玩家预览范畴，DSL 无法建立。\",\"无法验证“安装后实际提交验证、读取结果、失败则修复”的过程本身，只能看到其产物（候选草案与已通过的检查作业）；也无法通过断言确认候选尚未被玩家应用，这由宿主状态管理。\",\"objectsUnchanged 只比较其它对象字段是否变化，不能完全排除“删除原树后同名重建出字段相同对象”的极端实现；对原树位置/可见性/网格的单独断言可部分缓解。\",\"空 steps 表示静态创建场景，不含玩家交互、音效或图形识别的验证。\"],\"modelKey\":\"ee60aabc-40ab-4d7f-8679-80f3b5974128/deepseek-v4.1-flash-expires-on-0910\",\"planHash\":\"10e9e5cd269c5ab2801132355fd72c5979bcd9ccc2ca37ff8bf3a8e5c943d9ec\",\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"b86465f6722d4314d81ddb747ca23503673e8675005a0593e0ab296587e8a7d7\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-dbf2f0b9bc4ecb72b6c3\"},\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"d359afc9-99ea-4a8b-aa5c-a06a720f1d4e\",\"text\":\"请实际复用作品，不要重新编写树源码。先检索作品库并读取这个精确固定版本：{\\\"hash\\\":\\\"5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912\\\",\\\"id\\\":\\\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\\\",\\\"version\\\":1}。用 library_install 把它加入当前世界位置x=20 y=6 z=4，保留原来的树。不要使用latest或替换已有对象，保留模块来源。安装后实际提交验证、读取结果，若失败请修复。最终应有两棵记忆松树：原来的在(10,6,4)，固定旧版本复用的新树在(20,6,4)，两者总高3、有树干和树冠。通过后保留候选等待玩家应用。\"},\"suggestions\":[\"保持新对象的 source 为 {id:\\\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\\\", version:1}，不要改为 latest、不要清空 source，也不要重新手写树源码覆盖它；哈希 5f54c1… 属于库读取阶段的固定版本信息，场景 source 只承载 id+version。\",\"保持原树 native-oak 完全不动（位置、部件、components 均不修改），新增对象使用独立 id，避免任何替换或覆盖已有对象的写法。\",\"“总高 3、有树干和树冠”在预览中提示玩家人工确认；自动断言只能验证锚点、可见性与网格存在，不需要为此新增行为模块。\",\"沿用当前候选并保持未应用状态，等待玩家显式应用，不要自行提交应用或继续追加额外对象。\"],\"summary\":\"候选与请求基本一致：原树 native-oak 保持在 (10,6,4) 且部件/组件未变，新增对象 reuse-784d7b8549c0641f53dfea01-o0 位于 (20,6,4) 并带有 source {id: saved-3f6e11e0dc8e671ba15bf0d2965dddf0, version: 1}（固定为 version 1，未使用 latest），其部件与复用来源一致（树干 1×2×1 + 树冠 3×1×3，锚点落地 y=6，整体高度 3）。机器证据显示编译、渲染与检查作业均通过，候选已保留等待玩家应用，未自行应用。场景与断言能覆盖“新增可见对象、锚点位置正确、原树保留、其它对象不变”，但 source/provenance、精确哈希、树干树冠形状与高度比例无法由 DSL 断言建立，只能作为限制列出；这属于验证手段的边界，不构成对候选的阻断。\",\"text\":\"{\\\"summary\\\":\\\"候选与请求基本一致：原树 native-oak 保持在 (10,6,4) 且部件/组件未变，新增对象 reuse-784d7b8549c0641f53dfea01-o0 位于 (20,6,4) 并带有 source {id: saved-3f6e11e0dc8e671ba15bf0d2965dddf0, version: 1}（固定为 version 1，未使用 latest），其部件与复用来源一致（树干 1×2×1 + 树冠 3×1×3，锚点落地 y=6，整体高度 3）。机器证据显示编译、渲染与检查作业均通过，候选已保留等待玩家应用，未自行应用。场景与断言能覆盖“新增可见对象、锚点位置正确、原树保留、其它对象不变”，但 source/provenance、精确哈希、树干树冠形状与高度比例无法由 DSL 断言建立，只能作为限制列出；这属于验证手段的边界，不构成对候选的阻断。\\\",\\\"verdict\\\":\\\"ready\\\",\\\"suggestions\\\":[\\\"保持新对象的 source 为 {id:\\\\\\\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\\\\\\\", version:1}，不要改为 latest、不要清空 source，也不要重新手写树源码覆盖它；哈希 5f54c1… 属于库读取阶段的固定版本信息，场景 source 只承载 id+version。\\\",\\\"保持原树 native-oak 完全不动（位置、部件、components 均不修改），新增对象使用独立 id，避免任何替换或覆盖已有对象的写法。\\\",\\\"“总高 3、有树干和树冠”在预览中提示玩家人工确认；自动断言只能验证锚点、可见性与网格存在，不需要为此新增行为模块。\\\",\\\"沿用当前候选并保持未应用状态，等待玩家显式应用，不要自行提交应用或继续追加额外对象。\\\"],\\\"limitations\\\":[\\\"断言只能读取对象锚点与整体字段，无法逐部件验证“树干+树冠”结构、与地面完整接触或整体高度恰为 3；只能由 scene 的 parts 数据与渲染网格间接佐证。\\\",\\\"断言种类不含 source/hash 字段，因此无法自动证明新对象的模块来源与精确版本哈希 5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912 一致，也无法证明部件不是本地重写；本次判决与 machineFacts（modifiedResources 含该对象、check 作业 passed）是主要佐证，且本次提供的 libraryReferences 为空，无法据此复核库读取记录。\\\",\\\"颜色、材质观感、树冠形状比例等美学效果属于玩家预览范畴，DSL 无法建立。\\\",\\\"无法验证“安装后实际提交验证、读取结果、失败则修复”的过程本身，只能看到其产物（候选草案与已通过的检查作业）；也无法通过断言确认候选尚未被玩家应用，这由宿主状态管理。\\\",\\\"objectsUnchanged 只比较其它对象字段是否变化，不能完全排除“删除原树后同名重建出字段相同对象”的极端实现；对原树位置/可见性/网格的单独断言可部分缓解。\\\",\\\"空 steps 表示静态创建场景，不含玩家交互、音效或图形识别的验证。\\\"],\\\"assertions\\\":[{\\\"id\\\":\\\"no-errors\\\",\\\"kind\\\":\\\"noErrors\\\",\\\"why\\\":\\\"确认整个安装与加载过程没有运行时报错，复用对象后世界仍可正常运行。\\\",\\\"red\\\":\\\"任何加载或运行阶段抛出错误、或复用对象导致世界加载失败时会打红。\\\"},{\\\"id\\\":\\\"new-tree-in-place\\\",\\\"kind\\\":\\\"newObjects\\\",\\\"min\\\":1,\\\"region\\\":{\\\"x\\\":[20,20],\\\"y\\\":[6,6],\\\"z\\\":[4,4]},\\\"why\\\":\\\"确认世界在 x=20,y=6,z=4 处确实新增了对象（锚点落点）。\\\",\\\"red\\\":\\\"复用对象被放到其它坐标、或根本没有新增对象时，该区域计数不足而打红。\\\"},{\\\"id\\\":\\\"new-tree-anchor\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"reuse-784d7b8549c0641f53dfea01-o0\\\",\\\"field\\\":\\\"position\\\",\\\"value\\\":{\\\"x\\\":20,\\\"y\\\":6,\\\"z\\\":4},\\\"why\\\":\\\"确认复用得到的新树锚点正是请求的 (20,6,4)，即落在地表 y=6 上。\\\",\\\"red\\\":\\\"新树锚点被写错（例如 y=7、x=19 或 z=3）时会打红。\\\"},{\\\"id\\\":\\\"old-tree-anchor\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"position\\\",\\\"value\\\":{\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4},\\\"why\\\":\\\"确认原来的树仍在 (10,6,4)，没有被移动或替换位置。\\\",\\\"red\\\":\\\"原有树被移动、删除后在别处重建时会打红。\\\"},{\\\"id\\\":\\\"others-unchanged\\\",\\\"kind\\\":\\\"objectsUnchanged\\\",\\\"except\\\":[\\\"reuse-784d7b8549c0641f53dfea01-o0\\\"],\\\"why\\\":\\\"确认除新树外其它对象字段完全不变，原树被保留且没有被就地改写。\\\",\\\"red\\\":\\\"安装过程改动了原树的部件/组件/位置，或以新对象替换已有对象时打红。\\\"},{\\\"id\\\":\\\"old-tree-visible\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"visible\\\",\\\"value\\\":true,\\\"why\\\":\\\"确认安装新树后原树仍然可见，没有被隐藏。\\\",\\\"red\\\":\\\"原树 visible 变为 false 时会打红。\\\"},{\\\"id\\\":\\\"old-tree-mesh\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"mesh\\\",\\\"value\\\":true,\\\"why\\\":\\\"确认渲染器仍持有原树的绘制网格，而不是只剩逻辑对象。\\\",\\\"red\\\":\\\"原树可绘制网格丢失（mesh=false）时会打红。\\\"},{\\\"id\\\":\\\"new-tree-visible\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"reuse-784d7b8549c0641f53dfea01-o0\\\",\\\"field\\\":\\\"visible\\\",\\\"value\\\":true,\\\"why\\\":\\\"确认复用得到的新树在最终状态下逻辑可见。\\\",\\\"red\\\":\\\"新树被创建为 visible=false 时会打红。\\\"},{\\\"id\\\":\\\"new-tree-mesh\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"reuse-784d7b8549c0641f53dfea01-o0\\\",\\\"field\\\":\\\"mesh\\\",\\\"value\\\":true,\\\"why\\\":\\\"确认新树确有可绘制网格，是真实可见效果而非仅有命令或数据条目。\\\",\\\"red\\\":\\\"新树只有数据记录而没有可绘制网格（mesh=false）时会打红。\\\"}],\\\"steps\\\":[]}\",\"usage\":{\"inputTokens\":3751,\"outputTokens\":6075,\"reasoningTokens\":4636,\"totalTokens\":9826},\"verdict\":\"ready\"}",
+          "output_hash": "98ac1d5542283743b59c1c851267d0a177a3879e25b4c59d2ae8933cd9a43068",
+          "created_at": 1788938931795,
+          "updated_at": 1788938963318
+        }
+      ],
+      "craftmine_worlds": [
+        {
+          "id": "9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf",
+          "title": "我的第一个世界",
+          "revision": 3,
+          "updated_at": 1788938964333,
+          "document": "{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"dbf2f0b9bc4ecb72b6c38de852191fe719d2eb3301cfac5dfd893a705790d87c\",\"id\":\"v-dbf2f0b9bc4ecb72b6c3\",\"primitives\":[{\"color\":\"#6b4a2b\",\"id\":\"native-oak\",\"material\":\"wood\",\"max\":{\"x\":11,\"y\":8,\"z\":5},\"min\":{\"x\":10,\"y\":6,\"z\":4},\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8f3a\",\"id\":\"native-oak\",\"material\":\"leaves\",\"max\":{\"x\":12,\"y\":9,\"z\":6},\"min\":{\"x\":9,\"y\":8,\"z\":3},\"offset\":{\"x\":-1,\"y\":2,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false},{\"color\":\"#6b4a2b\",\"id\":\"reuse-784d7b8549c0641f53dfea01-o0\",\"material\":\"wood\",\"max\":{\"x\":21,\"y\":8,\"z\":5},\"min\":{\"x\":20,\"y\":6,\"z\":4},\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8f3a\",\"id\":\"reuse-784d7b8549c0641f53dfea01-o0\",\"material\":\"leaves\",\"max\":{\"x\":22,\"y\":9,\"z\":6},\"min\":{\"x\":19,\"y\":8,\"z\":3},\"offset\":{\"x\":-1,\"y\":2,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6b4a2b\",\"material\":\"wood\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8f3a\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":2,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null},{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"reuse-784d7b8549c0641f53dfea01-o0\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6b4a2b\",\"material\":\"wood\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8f3a\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":2,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}],\"position\":{\"x\":20,\"y\":6,\"z\":4},\"source\":{\"id\":\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\",\"version\":1}}],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20},\"reuse-784d7b8549c0641f53dfea01-o0\":{\"health\":20,\"maxHealth\":20}}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"extensions\":[]}",
+          "content_hash": "0c08f5beb958468b2d2229b3596471f45727c069a3e302f3d193fac8f0cefc88"
+        }
+      ],
+      "craftmine_library": [
+        {
+          "id": "saved-3f6e11e0dc8e671ba15bf0d2965dddf0",
+          "version": 1,
+          "hash": "5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912",
+          "kind": "object",
+          "name": "记忆松树",
+          "description": "",
+          "project_id": "pi-d273efa25c4764a25db2871cc7b19fb34ba5919897e37fe712c2f11ebaa7c690",
+          "world_scope": "9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf",
+          "bundle": "{\"assets\":[],\"extensions\":[],\"format\":\"craftmine.library-bundle/1\",\"module\":{\"dependencies\":[\"geometry@2\"],\"description\":\"\",\"format\":\"craftmine.module/1\",\"hash\":\"5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912\",\"id\":\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\",\"kind\":\"object\",\"name\":\"记忆松树\",\"origin\":{\"build\":\"v-e423c10a719f8cde8450\",\"definition\":\"native-oak\",\"time\":1788938417603},\"payload\":{\"components\":{\"contactDamage\":0,\"health\":20},\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6b4a2b\",\"material\":\"wood\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8f3a\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":2,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}]},\"runtime\":\"craftmine-web/2\",\"version\":1}}",
+          "bundle_hash": "b646c02fa45c45fe4ae96079a2c4b1db2a898344c0145a555cf4d6607a176b2d",
+          "metadata": "{\"applicationId\":\"apply-e47f91aa0b4ecc432da2649ba95b6f7693a1cb2b2186384198dfb5ca90fc4c0d\",\"createdAt\":1788938418149,\"dependencies\":[\"geometry@2\"],\"description\":\"\",\"evidence\":{\"applied\":true,\"proposed\":true,\"verified\":true},\"kind\":\"object\",\"name\":\"记忆松树\",\"ref\":{\"hash\":\"5f54c104e38ccf5e259c6b7346df4a3a353d26b5a213b7c2536e5cb26b1b9912\",\"id\":\"saved-3f6e11e0dc8e671ba15bf0d2965dddf0\",\"version\":1},\"reviewId\":\"review-ddc61b9f05bd15586525dad6913eeda616883b04907fc7f893d8ae786c8473ef\",\"runtime\":\"craftmine-web/2\",\"scope\":{\"projectId\":\"pi-d273efa25c4764a25db2871cc7b19fb34ba5919897e37fe712c2f11ebaa7c690\",\"worldId\":\"9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf\"},\"sourceBuildHash\":\"e423c10a719f8cde845083da17625499a4887f430f6f85d4cfc9da2593362d9b\",\"sourceBuildId\":\"v-e423c10a719f8cde8450\",\"sourceWorldId\":\"9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf\",\"tags\":[\"native-f-tree\"],\"verificationId\":\"check-4b0cdf3370f2157e0aad3abd34a4d7003eef30319d9e52f952c2a2cf88fd4191\"}",
+          "created_at": 1788938418149
+        }
+      ],
+      "craftmine_applications": [
+        {
+          "id": "apply-e47f91aa0b4ecc432da2649ba95b6f7693a1cb2b2186384198dfb5ca90fc4c0d",
+          "world_id": "9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf",
+          "verification_id": "check-4b0cdf3370f2157e0aad3abd34a4d7003eef30319d9e52f952c2a2cf88fd4191",
+          "review_id": "review-ddc61b9f05bd15586525dad6913eeda616883b04907fc7f893d8ae786c8473ef",
+          "request_hash": "df237ae7d652fcf91cf020f32d85da29599243c8f41d58e04e0d058ffb0e927c",
+          "input": "{\"baseBuild\":\"v-4641627420193586d325\",\"binding\":{\"baseBuild\":\"v-4641627420193586d325\",\"projectId\":\"pi-d273efa25c4764a25db2871cc7b19fb34ba5919897e37fe712c2f11ebaa7c690\",\"sessionId\":\"810382df-8665-432f-939e-af114e19cf30\",\"taskId\":\"work-8168965cee648032fdbda990a8dd2fc47f006dcedcce4b4c3184b7ae35b9e50f\",\"turnId\":\"e0ec2340-f8d4-4b1b-8e4b-8069a11a8b59\"},\"buildId\":\"v-e423c10a719f8cde8450\",\"draftHash\":\"b81c247da617edb9e6a51655e59fc72a0f099e087961d4a9c003f10924453303\",\"reviewId\":\"review-ddc61b9f05bd15586525dad6913eeda616883b04907fc7f893d8ae786c8473ef\",\"reviewOutputHash\":\"1a3f36be18d1886e7b0b332b7a58b85945d4faf840fc52547f6c4d01f600be66\",\"revision\":1,\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"verificationId\":\"check-4b0cdf3370f2157e0aad3abd34a4d7003eef30319d9e52f952c2a2cf88fd4191\",\"verificationOutputHash\":\"f9500722f21424c9e269f27bbe6eb2ee0a7c1b6f5ad82acda406045e3a537a86\",\"worldHash\":\"6bb5671b71426daeb2c9ed844db2a68254a8dc928d7a59208bb502502665f806\",\"worldId\":\"9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf\"}",
+          "input_hash": "b8d07206d9dcb7c882420374bfc239bed8eb5c603f30f3ffee6ce31a65ff5263",
+          "previous_world": "{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"4641627420193586d325a99b528a245dc053fa85ec5057e982d76612fe79ea22\",\"id\":\"v-4641627420193586d325\",\"primitives\":[],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"extensions\":[]}",
+          "previous_hash": "6bb5671b71426daeb2c9ed844db2a68254a8dc928d7a59208bb502502665f806",
+          "status": "applied",
+          "token": "b8166b48-80d0-4b98-8859-56cca60bfe03",
+          "output": "{\"format\":\"craftmine.desktop-application/1\",\"inputHash\":\"b8d07206d9dcb7c882420374bfc239bed8eb5c603f30f3ffee6ce31a65ff5263\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5},\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"b86465f6722d4314d81ddb747ca23503673e8675005a0593e0ab296587e8a7d7\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-e423c10a719f8cde8450\"}}",
+          "output_hash": "57062c3a39052ee487aa8ab4aadfc782097b0acd6ef6a0107db42168d73cb547",
+          "created_at": 1788938417603,
+          "updated_at": 1788938417818
+        },
+        {
+          "id": "apply-94e85943bfaff277f2a00aab6560d0afcd6055436fd160e2275f4571eba8635e",
+          "world_id": "9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf",
+          "verification_id": "check-6f5d9761659b996c70a63c3566e52abfd8b53b7c85a11fcee28ecd265d1d603c",
+          "review_id": "review-84db104729d792470b5b13a2a1320fdbcdb4bfaee60ae6d1fc2b4b69bd18bd05",
+          "request_hash": "b27385927edf0dd460f832d98b0fe20558a00b70d53c2d33f86228c7b150b011",
+          "input": "{\"baseBuild\":\"v-e423c10a719f8cde8450\",\"binding\":{\"baseBuild\":\"v-e423c10a719f8cde8450\",\"projectId\":\"pi-360ea74fc2067844063334c44358655ea703fcdddc3952dea1738331de26268f\",\"sessionId\":\"34373967-826f-4ce7-9901-76e5d60a757b\",\"taskId\":\"work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50\",\"turnId\":\"ae86526c-b81c-4c76-abbc-9c8913fb3fac\"},\"buildId\":\"v-dbf2f0b9bc4ecb72b6c3\",\"draftHash\":\"01db8e2d1791f37b8cdfd9f92993403619cc3bc7afa48a4a13ce4c2a0dbabe77\",\"reviewId\":\"review-84db104729d792470b5b13a2a1320fdbcdb4bfaee60ae6d1fc2b4b69bd18bd05\",\"reviewOutputHash\":\"98ac1d5542283743b59c1c851267d0a177a3879e25b4c59d2ae8933cd9a43068\",\"revision\":2,\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20},\"reuse-784d7b8549c0641f53dfea01-o0\":{\"health\":20,\"maxHealth\":20}}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"verificationId\":\"check-6f5d9761659b996c70a63c3566e52abfd8b53b7c85a11fcee28ecd265d1d603c\",\"verificationOutputHash\":\"1bdd961f4a854172fa237fa66b51ba8ee0e2bea5eedc0b0078b4d924351b209c\",\"worldHash\":\"05f55082df99a1714a702b00c0c0436f3a695d509ed575167d0910e878882828\",\"worldId\":\"9a3c8ed3-36f7-496f-88f2-8b5d7d0749bf\"}",
+          "input_hash": "6d68ea21599363befbe94e4d834133d03ea27a48e7c4f2bec57c8fc500b475a2",
+          "previous_world": "{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"e423c10a719f8cde845083da17625499a4887f430f6f85d4cfc9da2593362d9b\",\"id\":\"v-e423c10a719f8cde8450\",\"primitives\":[{\"color\":\"#6b4a2b\",\"id\":\"native-oak\",\"material\":\"wood\",\"max\":{\"x\":11,\"y\":8,\"z\":5},\"min\":{\"x\":10,\"y\":6,\"z\":4},\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8f3a\",\"id\":\"native-oak\",\"material\":\"leaves\",\"max\":{\"x\":12,\"y\":9,\"z\":6},\"min\":{\"x\":9,\"y\":8,\"z\":3},\"offset\":{\"x\":-1,\"y\":2,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6b4a2b\",\"material\":\"wood\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8f3a\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":2,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"extensions\":[]}",
+          "previous_hash": "05f55082df99a1714a702b00c0c0436f3a695d509ed575167d0910e878882828",
+          "status": "applied",
+          "token": "b90bd9e3-36bf-450d-92c8-58d6004cb6a8",
+          "output": "{\"format\":\"craftmine.desktop-application/1\",\"inputHash\":\"6d68ea21599363befbe94e4d834133d03ea27a48e7c4f2bec57c8fc500b475a2\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5},\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"b86465f6722d4314d81ddb747ca23503673e8675005a0593e0ab296587e8a7d7\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-dbf2f0b9bc4ecb72b6c3\"}}",
+          "output_hash": "6aac38a19fb6da38c5b3a1b5ec61a3b87b6e29c0145f5ce4b99b64b2622485dc",
+          "created_at": 1788938964098,
+          "updated_at": 1788938964333
+        }
+      ]
+    },
+    "newRequests": [
+      {
+        "owner": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+        "request_id": "request-c1f64a99-66c4-40cd-9a36-8f6c12bdc00c",
+        "task_id": "work-55cb34cf853bc4aa72aae4dd9066082b57711fbe1a510ee293405216845a6b50",
+        "generation": 1,
+        "purpose": "review",
+        "request_hash": "24121ce14f0808e6ba9ee90482f0aa9509d8f720e82a88b810a8e2990ee3872f",
+        "estimate": 40659,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":3751,\"outputTokens\":6075,\"totalTokens\":9826}}"
+      }
+    ],
+    "passed": true,
+    "guards": [
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/parallel-f-20260909/vendor/pi-desktop/apps/desktop/out/renderer/index.html"
+      },
+      {
+        "bridge": "object",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/parallel-f-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+      },
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "about:srcdoc"
+      }
+    ],
+    "audit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": []
+    }
+  }
+}

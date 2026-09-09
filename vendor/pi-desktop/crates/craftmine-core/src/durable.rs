@@ -391,7 +391,31 @@ impl TaskJournal {
                 }
             }
         }
-        let requirements=self.db.prepare("SELECT request_id,kind,text FROM craftmine_task_requirements WHERE task_id=?1 ORDER BY created_at DESC LIMIT 4")?.query_map([&task.binding.task_id],|r|Ok(json!({"id":r.get::<_,String>(0)?,"kind":r.get::<_,String>(1)?,"text":r.get::<_,String>(2)?.chars().take(1000).collect::<String>(),"truncated":r.get::<_,String>(2)?.chars().count()>1000})))?.collect::<rusqlite::Result<Vec<_>>>()?;
+        // Keep the original goal even after many corrections. The timestamp/ID
+        // order also survives recovery, which copies rows into a new task.
+        let requirements = self
+            .db
+            .prepare(
+                "SELECT request_id,kind,text FROM craftmine_task_requirements
+             WHERE task_id=?1 AND (
+               request_id=(SELECT request_id FROM craftmine_task_requirements
+                 WHERE task_id=?1 AND kind='request'
+                 ORDER BY created_at ASC,request_id ASC LIMIT 1)
+               OR request_id IN (SELECT request_id FROM craftmine_task_requirements
+                 WHERE task_id=?1 AND kind='correction'
+                 ORDER BY created_at DESC,request_id DESC LIMIT 3))
+             ORDER BY CASE kind WHEN 'request' THEN 0 ELSE 1 END,
+               created_at DESC,request_id DESC",
+            )?
+            .query_map([&task.binding.task_id], |row| {
+                let body: String = row.get(2)?;
+                Ok(
+                    json!({"id":row.get::<_,String>(0)?,"kind":row.get::<_,String>(1)?,
+                "text":body.chars().take(1000).collect::<String>(),
+                "truncated":body.chars().count()>1000}),
+                )
+            })?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
         let receipts=self.db.prepare("SELECT result FROM craftmine_receipts WHERE task_id=?1 ORDER BY rowid DESC LIMIT 12")?.query_map([&task.binding.task_id],|r|r.get::<_,String>(0))?.map(|r|Ok(serde_json::from_str::<Value>(&r?)?)).collect::<Result<Vec<_>>>()?;
         let jobs=self.db.prepare("SELECT id,status FROM craftmine_verifications WHERE task_id=?1 ORDER BY created_at DESC LIMIT 8")?.query_map([&task.binding.task_id],|r|Ok(json!({"id":r.get::<_,String>(0)?,"status":r.get::<_,String>(1)?})))?.collect::<rusqlite::Result<Vec<_>>>()?;
         let owned: bool = self.db.query_row(
@@ -401,6 +425,87 @@ impl TaskJournal {
         )?;
         Ok(
             json!({"binding":task.binding,"generation":generation,"status":task.status,"recovery":recovery,"world":{"id":snapshot.world_id,"revision":world.summary.revision,"buildId":world.world.build["id"],"hash":world.content_hash},"draft":{"revision":task.revision,"hash":task.draft_hash},"modifiedResources":modified,"requirements":requirements,"receipts":receipts,"jobs":jobs,"lease":{"owned":owned},"budget":budget(&self.db,&owner)?}),
+        )
+    }
+    /// Read original host-journaled requirements for this exact workspace.
+    /// Offsets count Unicode scalar values across the filtered journal; this
+    /// preserves code points and permits bounded reads of every original tail.
+    pub fn task_read_requirements(&self, args: &Value) -> Result<Value> {
+        fields(args, &["context", "requestId", "start", "limit"])?;
+        let ctx: WorkspaceContext = serde_json::from_value(args["context"].clone())?;
+        let snapshot = workspaces::inspect(&self.db, &ctx)?;
+        let task_id = &snapshot.task.binding.task_id;
+        let request_id = if args.get("requestId").is_some() {
+            Some(text(args, "requestId", 240)?)
+        } else {
+            None
+        };
+        let start = if args.get("start").is_some() {
+            number(args, "start", i64::MAX as u64)?
+        } else {
+            0
+        };
+        let limit = if args.get("limit").is_some() {
+            number(args, "limit", 4000)?
+        } else {
+            4000
+        };
+        ensure!(limit > 0, "INVALID_PAGE_LIMIT");
+        let (total_records, total_chars): (i64, i64) = self.db.query_row(
+            "SELECT COUNT(*),COALESCE(SUM(length(text)),0)
+             FROM craftmine_task_requirements WHERE task_id=?1
+             AND (?2 IS NULL OR request_id=?2)",
+            params![task_id, request_id],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        )?;
+        let total_chars = u64::try_from(total_chars).context("INVALID_REQUIREMENT_LENGTH")?;
+        ensure!(
+            request_id.is_none() || total_records > 0,
+            "REQUIREMENT_NOT_FOUND"
+        );
+        ensure!(start <= total_chars, "INVALID_PAGE_START");
+        let mut statement = self.db.prepare(
+            "SELECT request_id,kind,length(text) FROM craftmine_task_requirements
+             WHERE task_id=?1 AND (?2 IS NULL OR request_id=?2)
+             ORDER BY created_at ASC,request_id ASC",
+        )?;
+        let rows = statement.query_map(params![task_id, request_id], |row| {
+            Ok((
+                row.get::<_, String>(0)?,
+                row.get::<_, String>(1)?,
+                row.get::<_, i64>(2)?,
+            ))
+        })?;
+        let (mut skip, mut remaining, mut cursor) = (start, limit, start);
+        let mut items = Vec::new();
+        for row in rows {
+            if remaining == 0 || items.len() == 32 {
+                break;
+            }
+            let (id, kind, length) = row?;
+            let length = u64::try_from(length).context("INVALID_REQUIREMENT_LENGTH")?;
+            if skip >= length {
+                skip -= length;
+                continue;
+            }
+            let taken = remaining.min(length - skip);
+            let body: String = self.db.query_row(
+                "SELECT substr(text,?3,?4) FROM craftmine_task_requirements
+                 WHERE task_id=?1 AND request_id=?2",
+                params![task_id, id, i64::try_from(skip + 1)?, i64::try_from(taken)?],
+                |row| row.get(0),
+            )?;
+            items.push(json!({"id":id,"kind":kind,"text":body,"start":skip,
+                "totalChars":length,"truncated":skip > 0 || taken < length}));
+            cursor += taken;
+            remaining -= taken;
+            skip = 0;
+        }
+        let next = (cursor < total_chars).then_some(cursor);
+        Ok(
+            json!({"binding":snapshot.task.binding,"worldId":snapshot.world_id,
+            "items":items,"start":start,"next":next,
+            "totalChars":total_chars,"totalRecords":total_records}),
         )
     }
     pub fn task_record_context(&mut self, args: &Value) -> Result<Value> {
@@ -419,7 +524,16 @@ impl TaskJournal {
         if let Some((old_kind, old_body)) = prior {
             ensure!(old_kind == kind && old_body == body, "REPLAY_MISMATCH");
         } else {
-            self.db.execute("INSERT INTO craftmine_task_requirements(task_id,request_id,kind,text,created_at) VALUES(?1,?2,?3,?4,?5)",params![task.task.binding.task_id,id,kind,body,worlds::timestamp()?])?;
+            // Monotonic per-task times retain actual insertion order for fast
+            // corrections and remain stable after task recovery. No schema change.
+            let previous: Option<i64> = self.db.query_row(
+                "SELECT MAX(created_at) FROM craftmine_task_requirements WHERE task_id=?1",
+                [&task.task.binding.task_id],
+                |row| row.get(0),
+            )?;
+            let created_at =
+                worlds::timestamp()?.max(previous.map_or(0, |at| at.saturating_add(1)));
+            self.db.execute("INSERT INTO craftmine_task_requirements(task_id,request_id,kind,text,created_at) VALUES(?1,?2,?3,?4,?5)",params![task.task.binding.task_id,id,kind,body,created_at])?;
         }
         Ok(json!({"id":id,"recorded":true}))
     }

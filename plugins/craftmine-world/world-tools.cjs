@@ -2,6 +2,7 @@
 const {fields,inspectDraft,readDraftResource,patchDraft,readCapabilities,readVerification,draftPackages,createLibraryService,createMemoryService}=require('./domain.cjs');
 
 function hostContext(context) {
+  if(context?.toolCallId?.startsWith('@host:'))throw Error('RESERVED_HOST_RECEIPT');
   for(const key of ['projectId','sessionId','turnId','toolCallId','executionId']) {
     const value=context?.[key];
     if(typeof value!=='string'||!value.trim()||value.length>240||/[\x00-\x1f]/.test(value))throw Error('HOST_IDENTITY_REQUIRED: 世界工具需要有效的 PI 会话');
@@ -23,6 +24,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     const allowed=Object.keys(definition.schema.properties);
     fields(args,definition.schema.required||[],allowed.filter(key=>!(definition.schema.required||[]).includes(key)));
     await core.start();
+    if(definition.name==='requirements_read')return core.call('task.readRequirements',{context,...args});
     if(definition.name==='verification_read') {
       const job=await core.call('verification.read',{context,id:args.id});
       return {...readVerification(job,args),reviews:await core.call('review.list',{verificationId:args.id}).then(records=>records.slice(0,1).map(record=>{
