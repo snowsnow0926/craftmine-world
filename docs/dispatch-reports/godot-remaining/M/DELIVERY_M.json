@@ -8,6 +8,7 @@
   "worktree": "D:\\Craftmine World-worktrees\\godot-remaining-m-20260910",
   "pushed": false,
   "mergedToMaster": false,
+  "finalDeliveryCommit": "c9b7e9f (first commit containing this record; later edits only update this file)",
   "libRsModified": false,
   "libRsWiringSnippet": "docs/dispatch-reports/godot-remaining/M/lib.rs.snippet.diff",
   "commits": [
