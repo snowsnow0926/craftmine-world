@@ -33,6 +33,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "godotProject.index" => return journal.godot_project_index(params),
         "godotProject.read" => return journal.godot_project_read(params),
         "godotProject.patch" => return journal.godot_project_patch(params),
+        "godotProject.applyFiles" => return journal.godot_project_apply_files(params),
         "godotProject.receipt" => return journal.godot_project_receipt(params),
         "godotAsset.put" => return journal.godot_asset_put(params),
         "godotAsset.list" => return journal.godot_asset_list(params),

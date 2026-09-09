@@ -9,6 +9,7 @@ use std::{
 };
 
 use anyhow::{ensure, Context, Result};
+use base64::{engine::general_purpose::STANDARD, Engine};
 use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -73,6 +74,13 @@ struct CreateArgs {
 #[derive(Deserialize)]
 #[serde(tag = "op", rename_all = "camelCase", deny_unknown_fields)]
 enum Operation {
+    PutBytes {
+        path: String,
+        #[serde(rename = "bytesBase64")]
+        bytes_base64: String,
+        #[serde(rename = "expectedHash", deserialize_with = "required_optional_hash")]
+        expected_hash: Option<String>,
+    },
     Put {
         path: String,
         text: String,
@@ -179,6 +187,8 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
         PRIMARY KEY(world_id,revision)
     );",
     )?;
+    let has_manifest: bool=db.query_row("SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_project_commits') WHERE name='manifest'",[],|row|Ok(row.get::<_,i64>(0)?>0))?;
+    if !has_manifest { db.execute_batch("ALTER TABLE craftmine_godot_project_commits ADD COLUMN manifest TEXT")?; }
     Ok(())
 }
 
@@ -237,6 +247,7 @@ fn source_path(path: &str) -> Result<()> {
                 | "obj"
                 | "mtl"
                 | "uid"
+                | "png" | "jpg" | "jpeg" | "webp" | "wav" | "ogg" | "glb"
         ),
         "UNSUPPORTED_PROJECT_FILE"
     );
@@ -343,6 +354,10 @@ fn blob_directory(directory: &Path, world: &str, create: bool) -> Result<PathBuf
 }
 
 pub(super) fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Result<String> {
+    String::from_utf8(blob_read_bytes(directory,world,entry)?).context("CONTENT_NOT_UTF8")
+}
+
+pub(super) fn blob_read_bytes(directory: &Path, world: &str, entry: &FileEntry) -> Result<Vec<u8>> {
     valid_hash(&entry.sha256)?;
     let path = blob_directory(directory, world, false)?.join(&entry.sha256);
     let meta = ordinary(&path, "PROJECT_STORAGE_UNAVAILABLE")?;
@@ -357,24 +372,28 @@ pub(super) fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Res
         use std::os::windows::fs::OpenOptionsExt;
         options.custom_flags(0x00200000); // FILE_FLAG_OPEN_REPARSE_POINT.
     }
-    let mut text = String::new();
+    let mut text = Vec::new();
     options
         .open(path)?
         .take(FILE_LIMIT as u64 + 1)
-        .read_to_string(&mut text)
+        .read_to_end(&mut text)
         .context("CORRUPT_PROJECT_FILE")?;
     ensure!(
-        text.len() as u64 == entry.bytes && digest(&text) == entry.sha256,
+        text.len() as u64 == entry.bytes && digest_bytes(&text) == entry.sha256,
         "CORRUPT_PROJECT_FILE"
     );
     Ok(text)
 }
 
 pub(super) fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text: &str) -> Result<()> {
+    blob_write_bytes(directory,world,entry,text.as_bytes())
+}
+
+pub(super) fn blob_write_bytes(directory: &Path, world: &str, entry: &FileEntry, text: &[u8]) -> Result<()> {
     let parent = blob_directory(directory, world, true)?;
     let target = parent.join(&entry.sha256);
     if fs::symlink_metadata(&target).is_ok() {
-        blob_read(directory, world, entry)?;
+        blob_read_bytes(directory, world, entry)?;
         return Ok(());
     }
     let temporary = parent.join(format!(
@@ -392,13 +411,13 @@ pub(super) fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text:
             options.custom_flags(0x80000000); // FILE_FLAG_WRITE_THROUGH.
         }
         let mut file = options.open(&temporary)?;
-        file.write_all(text.as_bytes())?;
+        file.write_all(text)?;
         file.sync_all()?;
         drop(file);
         // The immediate SQLite transaction serializes writers across connections.
         // Existing immutable data is verified, never overwritten to repair corruption.
         if fs::symlink_metadata(&target).is_ok() {
-            blob_read(directory, world, entry)?;
+            blob_read_bytes(directory, world, entry)?;
         } else {
             fs::rename(&temporary, &target)?;
         }
@@ -406,7 +425,7 @@ pub(super) fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text:
         {
             fs::File::open(&parent)?.sync_all()?;
         }
-        blob_read(directory, world, entry)?;
+        blob_read_bytes(directory, world, entry)?;
         Ok(())
     })();
     if temporary.try_exists().unwrap_or(false) {
@@ -552,12 +571,12 @@ fn git_content_files(
     world: &str,
     manifest: &Manifest,
     head: Option<&str>,
-    changed: &BTreeMap<String, String>,
+    changed: &BTreeMap<String, Vec<u8>>,
 ) -> Result<Vec<ContentFile>> {
     let mut files = Vec::with_capacity(manifest.files.len() + 1);
     for (path, entry) in &manifest.files {
         let bytes = match changed.get(path) {
-            Some(text) => text.as_bytes().to_vec(),
+            Some(text) => text.clone(),
             None => {
                 let head = head.context("GODOT_PROJECT_HEAD_MISSING")?;
                 let bytes = store.read_file(layout, head, path)?;
@@ -574,10 +593,20 @@ fn git_content_files(
         });
     }
     let (_, assets) = godot_builds::asset_manifest(db, world)?;
-    if let Some(lock) = godot_builds::asset_lock(&assets)? {
+    if let Some(file) = files.iter().find(|file| file.path == super::content_history::contract::ASSET_LOCK_FILE) {
+        let lock: super::content_history::contract::AssetLock = serde_json::from_slice(&file.bytes)?;
+        ensure!(lock.canonical_bytes()? == file.bytes, "INVALID_ASSET_LOCK");
+    } else if let Some(lock) = godot_builds::asset_lock(&assets)? {
         files.push(ContentFile::asset_lock(&lock)?);
     }
     Ok(files)
+}
+
+fn committed_lock_hash(files:&[ContentFile])->Result<String> {
+    if let Some(file)=files.iter().find(|file|file.path==super::content_history::contract::ASSET_LOCK_FILE) {
+        let lock:super::content_history::contract::AssetLock=serde_json::from_slice(&file.bytes)?;
+        lock.asset_lock_hash()
+    } else { super::content_history::contract::AssetLock::empty().asset_lock_hash() }
 }
 
 /// Exact bytes for a world, read from Git when the world uses the Git backend.
@@ -604,15 +633,19 @@ pub(super) fn read_indexed_file(
     path: &str,
     entry: &FileEntry,
 ) -> Result<String> {
+    String::from_utf8(read_indexed_bytes(journal,world,revision,path,entry)?).context("CONTENT_NOT_UTF8")
+}
+
+pub(super) fn read_indexed_bytes(journal: &TaskJournal,world: &str,revision: u64,path: &str,entry: &FileEntry) -> Result<Vec<u8>> {
     if journal.is_git_backed(world)? {
         let (store, layout) = journal.content_layout(world)?;
         let commit = git_commit_for(&journal.db, world, revision)?
             .context("GODOT_PROJECT_REVISION_NOT_INDEXED")?;
         let bytes = store.read_file(&layout, &commit, path)?;
         ensure!(digest_bytes(&bytes) == entry.sha256, "CORRUPT_PROJECT_FILE");
-        return String::from_utf8(bytes).context("CONTENT_NOT_UTF8");
+        return Ok(bytes);
     }
-    blob_read(&journal.directory, world, entry)
+    blob_read_bytes(&journal.directory, world, entry)
 }
 
 /// Every indexed file of a manifest with its exact text, using the backend the
@@ -621,10 +654,10 @@ pub(super) fn read_manifest_files(
     journal: &TaskJournal,
     world: &str,
     manifest: &Manifest,
-) -> Result<Vec<(String, FileEntry, String)>> {
+) -> Result<Vec<(String, FileEntry, Vec<u8>)>> {
     let mut files = Vec::with_capacity(manifest.files.len());
     for (path, entry) in &manifest.files {
-        let text = read_indexed_file(journal, world, manifest.revision, path, entry)?;
+        let text = read_indexed_bytes(journal, world, manifest.revision, path, entry)?;
         files.push((path.clone(), entry.clone(), text));
     }
     Ok(files)
@@ -671,6 +704,8 @@ fn store_git_index(
         &manifest.task.task_id,
         call,
     )?;
+    db.execute("UPDATE craftmine_godot_project_commits SET manifest=?3 WHERE world_id=?1 AND revision=?2",
+        params![manifest.world_id,i64::try_from(manifest.revision)?,body])?;
     let result = json!({"revision":manifest.revision,"manifestHash":hash,"baseBuild":manifest.base_build,
         "fileCount":manifest.files.len(),"currentTaskId":manifest.task.task_id,"lastWriter":manifest.task,
         "commitOid":commit_oid,"assetLockHash":asset_lock_hash});
@@ -691,10 +726,24 @@ impl TaskJournal {
         world: &str,
         revision: Option<u64>,
     ) -> Result<(Manifest, String)> {
-        if !self.is_git_backed(world)? || revision.is_some() {
+        if !self.is_git_backed(world)? {
             return load_manifest(&self.db, world, revision);
         }
         let (manifest, hash) = load_manifest(&self.db, world, None)?;
+        if let Some(revision)=revision {
+            if revision==manifest.revision { return Ok((manifest,hash)); }
+            let indexed:Option<(String,String)>=self.db.query_row(
+                "SELECT manifest,manifest_hash FROM craftmine_godot_project_commits WHERE world_id=?1 AND revision=?2 AND manifest IS NOT NULL",
+                params![world,i64::try_from(revision)?],|row|Ok((row.get(0)?,row.get(1)?))).optional()?;
+            if let Some((body,hash))=indexed {
+                ensure!(digest(&body)==hash,"CORRUPT_PROJECT_MANIFEST");
+                let manifest:Manifest=serde_json::from_str(&body)?;
+                validate_manifest(&manifest)?;
+                ensure!(manifest.world_id==world && manifest.revision==revision,"CORRUPT_PROJECT_MANIFEST");
+                return Ok((manifest,hash));
+            }
+            return load_manifest(&self.db,world,Some(revision));
+        }
         let stored = git_commit_for(&self.db, world, manifest.revision)?;
         let (store, layout) = self.content_layout(world)?;
         let head = store.branch_head(&layout, repo::MAIN_BRANCH)?;
@@ -714,9 +763,6 @@ impl TaskJournal {
             .unwrap_or(manifest.revision + 1);
         let mut files = BTreeMap::new();
         for entry in store.tree_entries(&layout, &head)? {
-            if entry.path == super::content_history::contract::ASSET_LOCK_FILE {
-                continue;
-            }
             ensure!(
                 matches!(entry.mode.as_str(), "100644" | "100755"),
                 "CONTENT_COPY_UNSUPPORTED_ENTRY: {}",
@@ -890,13 +936,13 @@ impl TaskJournal {
         };
         validate_manifest(&manifest)?;
         let result = if let Some((store, layout)) = &git {
-            let changed: BTreeMap<String, String> = args
+            let changed: BTreeMap<String, Vec<u8>> = args
                 .files
                 .iter()
-                .map(|file| (file.path.clone(), file.text.clone()))
+                .map(|file| (file.path.clone(), file.text.as_bytes().to_vec()))
                 .collect();
             let content = git_content_files(store, layout, &tx, &args.world_id, &manifest, None, &changed)?;
-            let lock_hash = godot_builds::asset_lock_hash(&tx, &args.world_id)?;
+            let lock_hash = committed_lock_hash(&content)?;
             let message = project_commit_message(
                 0,
                 &args.tool_call_id,
@@ -971,6 +1017,14 @@ impl TaskJournal {
             .files
             .get(&args.path)
             .context("PROJECT_FILE_NOT_FOUND")?;
+        if matches!(args.path.rsplit('.').next(),Some("png"|"jpg"|"jpeg"|"webp"|"wav"|"ogg"|"glb")) {
+            let bytes=read_indexed_bytes(self,&args.world_id,manifest.revision,&args.path,entry)?;
+            ensure!(args.offset<=bytes.len(),"INVALID_PROJECT_PAGE");
+            let end=(args.offset+args.limit).min(bytes.len());
+            return Ok(json!({"worldId":args.world_id,"revision":manifest.revision,"manifestHash":hash,"path":args.path,
+                "sha256":entry.sha256,"bytes":entry.bytes,"offset":args.offset,"encoding":"base64",
+                "bytesBase64":STANDARD.encode(&bytes[args.offset..end]),"totalBytes":bytes.len(),"nextOffset":(end<bytes.len()).then_some(end)}));
+        }
         let source = self.project_file_text(&args.world_id, manifest.revision, &args.path, entry)?;
         let total = source.chars().count();
         ensure!(args.offset <= total, "INVALID_PROJECT_PAGE");
@@ -983,12 +1037,32 @@ impl TaskJournal {
     }
 
     pub fn godot_project_patch(&mut self, args: &Value) -> Result<Value> {
+        self.project_patch_bytes(args, &request_hash("godotProject.patch", args)?, 16)
+    }
+
+    /// Private host installation transaction; bytes keep their project paths.
+    pub fn godot_project_apply_files(&mut self, args: &Value) -> Result<Value> {
+        #[derive(Deserialize)]
+        #[serde(rename_all="camelCase",deny_unknown_fields)]
+        struct File {path:String,bytes_base64:String,#[serde(deserialize_with="required_optional_hash")] expected_hash:Option<String>}
+        #[derive(Deserialize)]
+        #[serde(rename_all="camelCase",deny_unknown_fields)]
+        struct Args { context: WorkspaceContext,world_id:String,tool_call_id:String,revision:u64,manifest_hash:String,
+            operation:Option<super::content_history::contract::OperationContext>,files:Vec<File> }
+        let hash=request_hash("godotProject.applyFiles",args)?;
+        let parsed:Args=serde_json::from_value(args.clone())?;
+        let operations:Vec<Value>=parsed.files.into_iter().map(|file|json!({"op":"putBytes","path":file.path,
+            "bytesBase64":file.bytes_base64,"expectedHash":file.expected_hash})).collect();
+        self.project_patch_bytes(&json!({"context":parsed.context,"worldId":parsed.world_id,"toolCallId":parsed.tool_call_id,
+            "revision":parsed.revision,"manifestHash":parsed.manifest_hash,"operation":parsed.operation,"operations":operations}),&hash,FILE_COUNT)
+    }
+
+    fn project_patch_bytes(&mut self, args:&Value, request_hash:&str, operation_limit:usize) -> Result<Value> {
         let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
-        let request_hash = request_hash("godotProject.patch", args)?;
         let args: PatchArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.tool_call_id)?;
         ensure!(
-            !args.operations.is_empty() && args.operations.len() <= 16,
+            !args.operations.is_empty() && args.operations.len() <= operation_limit,
             "INVALID_PROJECT_PATCH"
         );
         let git_backed = self.is_git_backed(&args.world_id)?;
@@ -1032,15 +1106,32 @@ impl TaskJournal {
         );
         let original_files = manifest.files.clone();
         let mut touched = BTreeSet::new();
-        let mut text_files = Vec::new();
+        let mut text_files: BTreeMap<String,Vec<u8>> = BTreeMap::new();
         for operation in args.operations {
+            let operation = match operation {
+                Operation::Put{path,text,expected_hash} => {
+                    source_entry(&path,&text)?;
+                    Operation::PutBytes{path,bytes_base64:STANDARD.encode(text.as_bytes()),expected_hash}
+                },
+                other=>other,
+            };
             match operation {
-                Operation::Put {
+                Operation::PutBytes {
                     path,
-                    text,
+                    bytes_base64,
                     expected_hash,
                 } => {
-                    let entry = source_entry(&path, &text)?;
+                    source_path(&path)?;
+                    let bytes=STANDARD.decode(bytes_base64).context("INVALID_PROJECT_BASE64")?;
+                    ensure!(bytes.len()<=FILE_LIMIT,"PROJECT_FILE_TOO_LARGE");
+                    if !matches!(path.rsplit('.').next(),Some("png"|"jpg"|"jpeg"|"webp"|"wav"|"ogg"|"glb")) {
+                        source_entry(&path,std::str::from_utf8(&bytes).context("CONTENT_NOT_UTF8")?)?;
+                    }
+                    let entry=FileEntry{sha256:digest_bytes(&bytes),bytes:bytes.len() as u64};
+                    if path==super::content_history::contract::ASSET_LOCK_FILE {
+                        let lock:super::content_history::contract::AssetLock=serde_json::from_slice(&bytes)?;
+                        ensure!(lock.canonical_bytes()?==bytes,"INVALID_ASSET_LOCK");
+                    }
                     ensure!(
                         touched.insert(path.to_ascii_lowercase()),
                         "PROJECT_PATH_COLLISION"
@@ -1054,7 +1145,7 @@ impl TaskJournal {
                         "PROJECT_FILE_CONFLICT"
                     );
                     manifest.files.insert(path.clone(), entry);
-                    text_files.push(SourceFile { path, text });
+                    text_files.insert(path,bytes);
                 }
                 Operation::Remove {
                     path,
@@ -1075,10 +1166,11 @@ impl TaskJournal {
                     );
                     manifest.files.remove(&path);
                 }
+                Operation::Put{..}=>unreachable!(),
             }
         }
         ensure!(
-            text_files.iter().map(|file| file.text.len()).sum::<usize>() <= PATCH_LIMIT,
+            text_files.values().map(|file| file.len()).sum::<usize>() <= PATCH_LIMIT,
             "PROJECT_REQUEST_TOO_LARGE"
         );
         ensure!(manifest.files != original_files, "NO_CHANGE");
@@ -1113,12 +1205,9 @@ impl TaskJournal {
                 operation.expected_head_oid.as_deref() == Some(head.as_str()),
                 "CONTENT_EXPECTED_HEAD_MISMATCH"
             );
-            let changed: BTreeMap<String, String> = text_files
-                .iter()
-                .map(|file| (file.path.clone(), file.text.clone()))
-                .collect();
+            let changed = text_files.clone();
             let content = git_content_files(store, layout, &tx, &args.world_id, &manifest, Some(&head), &changed)?;
-            let lock_hash = godot_builds::asset_lock_hash(&tx, &args.world_id)?;
+            let lock_hash = committed_lock_hash(&content)?;
             let message = project_commit_message(
                 manifest.revision,
                 &args.tool_call_id,
@@ -1143,15 +1232,15 @@ impl TaskJournal {
             // Every surviving reference is integrity checked, including unchanged files.
             for (path, entry) in &original_files {
                 if manifest.files.get(path) == Some(entry) {
-                    blob_read(&self.directory, &args.world_id, entry)?;
+                    blob_read_bytes(&self.directory, &args.world_id, entry)?;
                 }
             }
-            for file in text_files {
-                blob_write(
+            for (path,bytes) in text_files {
+                blob_write_bytes(
                     &self.directory,
                     &args.world_id,
-                    &manifest.files[&file.path],
-                    &file.text,
+                    &manifest.files[&path],
+                    &bytes,
                 )?;
             }
             store(&tx, &manifest, &args.tool_call_id, &request_hash)?
@@ -1168,7 +1257,7 @@ impl TaskJournal {
         ensure!(
             matches!(
                 args.method.as_str(),
-                "godotProject.create" | "godotProject.patch"
+                "godotProject.create" | "godotProject.patch" | "godotProject.applyFiles"
             ),
             "INVALID_PROJECT_METHOD"
         );
