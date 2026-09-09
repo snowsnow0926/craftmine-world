@@ -279,7 +279,7 @@ export const en = {
     usageThroughputUnavailable: "—",
     usageProviderUsage: "Provider usage",
     usageExact: "reported",
-    usageInput: "Input",
+    usageInput: "Uncached input",
     usageOutput: "Output",
     usageCacheRead: "Cache read",
     usageCacheRate: "Cache hit rate",

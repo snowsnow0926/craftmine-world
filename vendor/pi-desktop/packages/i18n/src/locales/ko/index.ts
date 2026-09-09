@@ -281,7 +281,7 @@ export const ko = {
     usageThroughputUnavailable: "—",
     usageProviderUsage: "프로바이더 사용량",
     usageExact: "보고됨",
-    usageInput: "입력",
+    usageInput: "캐시되지 않은 입력",
     usageOutput: "출력",
     usageCacheRead: "캐시 읽기",
     usageCacheRate: "캐시 적중률",

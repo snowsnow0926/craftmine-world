@@ -270,7 +270,7 @@ export const fr = {
     "usageThroughputUnavailable": "—",
     "usageProviderUsage": "Utilisation du fournisseur",
     "usageExact": "signalé",
-    "usageInput": "Entrée",
+    "usageInput": "Entrée non mise en cache",
     "usageOutput": "Sortie",
     "usageCacheRead": "Lecture du cache",
     "usageCacheRate": "Taux de réussite du cache",

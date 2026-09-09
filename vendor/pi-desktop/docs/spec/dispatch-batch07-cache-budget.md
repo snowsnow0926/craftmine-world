@@ -16,6 +16,8 @@ The prompt cache is a provider optimization, not local memory or proof of a
 successful task. Cached input remains in the provider total; reasoning is not
 added to completion tokens twice. The pinned PI transport already maps DeepSeek
 prompt cache hits to cacheRead and subtracts them from uncached input.
+The usage inspector names that input portion explicitly as uncached input;
+cache-read tokens remain separately visible and the hit-rate denominator uses both.
 
 Local cumulative token, request, compaction and deadline limits are terminal
 task errors, not transient provider errors. Retry wrappers cannot spend another

@@ -270,7 +270,7 @@ export const es = {
     "usageThroughputUnavailable": "—",
     "usageProviderUsage": "Uso del proveedor",
     "usageExact": "reportado",
-    "usageInput": "Entrada",
+    "usageInput": "Entrada sin caché",
     "usageOutput": "Salida",
     "usageCacheRead": "Lectura de caché",
     "usageCacheRate": "Tasa de aciertos de caché",

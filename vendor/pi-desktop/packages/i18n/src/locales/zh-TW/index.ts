@@ -274,7 +274,7 @@ export const zhTW = {
     usageThroughputUnavailable: "—",
     usageProviderUsage: "模型用量",
     usageExact: "已上報",
-    usageInput: "輸入",
+    usageInput: "未快取輸入",
     usageOutput: "輸出",
     usageCacheRead: "快取讀取",
     usageCacheRate: "快取命中率",

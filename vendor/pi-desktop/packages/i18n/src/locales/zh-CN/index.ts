@@ -274,7 +274,7 @@ export const zhCN = {
     usageThroughputUnavailable: "—",
     usageProviderUsage: "模型用量",
     usageExact: "已上报",
-    usageInput: "输入",
+    usageInput: "未缓存输入",
     usageOutput: "输出",
     usageCacheRead: "缓存读取",
     usageCacheRate: "缓存命中率",

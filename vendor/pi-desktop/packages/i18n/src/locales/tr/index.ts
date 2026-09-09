@@ -281,7 +281,7 @@ export const tr = {
     usageThroughputUnavailable: "—",
     usageProviderUsage: "Servis kullanımı",
     usageExact: "raporlanan",
-    usageInput: "Girdi",
+    usageInput: "Önbelleksiz girdi",
     usageOutput: "Çıktı",
     usageCacheRead: "Önbellek okuma",
     usageCacheRate: "Önbellek isabet oranı",
