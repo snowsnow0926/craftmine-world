@@ -18,7 +18,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     await refreshPending();
     const result=await call('workbench.execute',{operationId:prepared.operationId});
     if(channel==='library.install'&&!result?.receipt)throw Error('安装回执尚未确认，请查询任务后重试。');
-    await call('workbench.acknowledge',{operationId:prepared.operationId});await refreshPending();return result;
+    await refreshPending();return result;
   }
   const pages={},notice=text('p','','workbench-notice');notice.setAttribute('role','status');element.append(notice);
   const pendingArea=document.createElement('section');pendingArea.className='workbench-pending';pendingArea.hidden=true;element.append(pendingArea);
@@ -36,7 +36,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
       if(item.channel==='backup.restore'&&item.state!=='completed')row.append(text('p','继续恢复将替换此客户端的全部世界资料。授权过期时须重新选择备份。','workbench-meta'));
       const control=button(item.state==='completed'?'确认已完成':'查询并继续原操作',()=>action(async()=>{
         const result=await call('workbench.execute',{operationId:item.operationId});
-        await call('workbench.acknowledge',{operationId:item.operationId});
+        if(item.state==='completed')await call('workbench.acknowledge',{operationId:item.operationId});
         if(item.channel==='backup.restore'&&result.status==='completed')await reloadWorld();
         await refreshPending();await refreshTask();
         status(item.channel==='library.install'?'作品已加入原草稿，仍需检查、评审并应用。':item.channel==='draft.recheck'?'草稿检查已提交，请查看检查记录。':result.status==='cancelled'?'这项操作已取消。':'原操作结果已确认。');
@@ -114,7 +114,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
         await refreshTask();if(active)throw Error('请等当前创作任务结束后再安装作品。');
         const result=await durableCall('library.install',{ref,...(context?.draft?{revision:context.draft.revision}:{})},{ref});
         if(!result.receipt)throw Error('安装回执尚未确认，请查询任务后再继续。');
-        status('已加入草稿，仍需检查、评审并应用到世界。');await refreshTask();
+        status(result.verificationStatus==='retry-required'?'作品已加入草稿，但检查提交尚未确认。请在任务页重新检查已保存草稿。':'已加入草稿，仍需检查、评审并应用到世界。');await refreshTask();
       }));install.control.disabled=active||!has('library.install');libraryDetail.append(install.form);
     }
     const code=libraryDetail.querySelector('[data-library-source]');code.textContent=start?code.textContent+result.source.text:result.source.text;
@@ -246,5 +246,5 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     epoch++;pendingArea.replaceChildren();pendingArea.hidden=true;capabilities.clear();capabilitiesReady=false;pendingSelection=null;context=null;active=false;selected=null;selectionRevision=0;inspection=null;libraryDetail.hidden=true;renderSelection();
     await refreshCapabilities();
   }
-  return {show,setWorld,setSelection,refreshCapabilities,get busy(){return pending>0;},get tab(){return currentTab;},refresh:()=>currentTab?show(currentTab):refreshTask(),clearView(){epoch++;selected=null;renderSelection();}};
+  return {show,setWorld,setSelection,refreshCapabilities,refreshPending:()=>!pending&&!isLocked()?refreshPending().catch(()=>{pendingArea.replaceChildren();pendingArea.hidden=true;}):Promise.resolve(),get busy(){return pending>0;},get tab(){return currentTab;},refresh:()=>currentTab?show(currentTab):refreshTask(),clearView(){epoch++;selected=null;renderSelection();}};
 }
