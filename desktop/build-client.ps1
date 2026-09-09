@@ -30,8 +30,12 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Desktop build failed' }
         pnpm --filter @pi-desktop/agent-runtime bundle
         if ($LASTEXITCODE -ne 0) { throw 'Agent bundle failed' }
+        node (Join-Path $craftmineRoot 'desktop/windows-package-tools.mjs') manifest
+        if ($LASTEXITCODE -ne 0) { throw 'Build manifest failed' }
         if ($Installer) { pnpm --filter @pi-desktop/desktop exec electron-builder --win --publish never }
         else { pnpm --filter @pi-desktop/desktop exec electron-builder --win --dir --publish never }
         if ($LASTEXITCODE -ne 0) { throw 'Windows packaging failed' }
+        node (Join-Path $craftmineRoot 'desktop/windows-package-tools.mjs') verify
+        if ($LASTEXITCODE -ne 0) { throw 'Package integrity verification failed' }
     } finally { Pop-Location }
 } finally { Pop-Location }
