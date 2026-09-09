@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/equipment_definition.gd" id="1_script"]
+[ext_resource type="Mesh" path="res://assets/meshes/weapon_pistol.obj" id="2_mesh"]
+[ext_resource type="Material" path="res://assets/materials/pistol_body.tres" id="3_material"]
+[ext_resource type="Resource" path="res://data/ui/crosshair_precision.tres" id="4_crosshair"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"pistol"
+display_name = "Service pistol"
+description = "Six round sidearm. Straight ray shot with a short cooldown."
+attack_mode = 1
+damage = 12.0
+cooldown_seconds = 0.35
+range_meters = 60.0
+pellets = 1
+spread_degrees = 0.0
+melee_arc_degrees = 70.0
+hit_mask = 3
+magazine_size = 6
+reload_seconds = 1.1
+starting_ammo = 6
+starting_reserve = 12
+display_mesh = ExtResource("2_mesh")
+display_material = ExtResource("3_material")
+mount_offset = Vector3(0.24, -0.2, -0.42)
+mount_rotation_degrees = Vector3(0, 0, 0)
+display_scale = Vector3(1, 1, 1)
+crosshair_visible = true
+crosshair_style = ExtResource("4_crosshair")

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/equipment_definition.gd" id="1_script"]
+[ext_resource type="Mesh" path="res://assets/meshes/weapon_sword.obj" id="2_mesh"]
+[ext_resource type="Material" path="res://assets/materials/sword_blade.tres" id="3_material"]
+[ext_resource type="Resource" path="res://data/ui/crosshair_melee.tres" id="4_crosshair"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"practice_sword"
+display_name = "Practice sword"
+description = "Short reach melee weapon. No ammunition and no ranged reticle."
+attack_mode = 2
+damage = 20.0
+cooldown_seconds = 0.6
+range_meters = 2.6
+pellets = 1
+spread_degrees = 0.0
+melee_arc_degrees = 80.0
+hit_mask = 2
+magazine_size = 0
+reload_seconds = 0.0
+starting_ammo = 0
+starting_reserve = 0
+display_mesh = ExtResource("2_mesh")
+display_material = ExtResource("3_material")
+mount_offset = Vector3(0.3, -0.34, -0.5)
+mount_rotation_degrees = Vector3(-8, 4, 0)
+display_scale = Vector3(1, 1, 1)
+crosshair_visible = false
+crosshair_style = ExtResource("4_crosshair")

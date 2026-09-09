@@ -1,0 +1,87 @@
+; Engine configuration for the editable first-person base.
+;
+; This project is source, not a packaged demo: scenes, scripts, resources and
+; parameters are plain text and can be read, edited and re-saved. See README.md
+; and base_manifest.json for the contract other tasks consume.
+
+config_version=5
+
+[application]
+
+config/name="Craftmine First-Person Base"
+config/description="Editable first-person base: blank starting point and training range."
+config/version="0.1.0"
+run/main_scene="res://scenes/training_range.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/resizable=true
+
+[input]
+
+move_forward={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":87), Object(InputEventKey,"physical_keycode":4194320)]
+}
+move_back={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":83), Object(InputEventKey,"physical_keycode":4194322)]
+}
+move_left={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":65), Object(InputEventKey,"physical_keycode":4194319)]
+}
+move_right={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":68), Object(InputEventKey,"physical_keycode":4194321)]
+}
+jump={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":32)]
+}
+attack={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"button_index":1)]
+}
+reload={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":82)]
+}
+interact={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":69)]
+}
+equip_primary={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":49)]
+}
+equip_secondary={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":50)]
+}
+equip_next={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":81)]
+}
+quicksave={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":4194336)]
+}
+
+[layer_names]
+
+3d_physics/layer_1="world"
+3d_physics/layer_2="damageable"
+3d_physics/layer_3="interactable"
+3d_physics/layer_4="player"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_3d=1
+environment/defaults/default_clear_color=Color(0.11, 0.13, 0.16, 1)

@@ -1,0 +1,56 @@
+{
+  "format": "craftmine.godot-base-manifest/1",
+  "baseId": "first-person",
+  "baseVersion": "0.1.0",
+  "title": "First-person base",
+  "engine": {
+    "name": "godot",
+    "version": "4.7.2-stable",
+    "scriptLanguage": "gdscript",
+    "renderer": "gl_compatibility",
+    "targetPlatforms": ["windows-x64", "web"]
+  },
+  "entryScenes": {
+    "blank": "res://scenes/blank_start.tscn",
+    "example": "res://scenes/training_range.tscn"
+  },
+  "stateFormat": {
+    "id": "craftmine.godot-base-state/1",
+    "version": 1,
+    "documentation": "docs/STATE_FORMAT.md",
+    "preserved": ["playerPosition", "playerLook", "health", "equipment", "inventory", "targets", "quests"]
+  },
+  "parameters": {
+    "equipmentCatalog": "res://data/equipment/equipment_catalog.tres",
+    "equipment": ["res://data/equipment/pistol.tres", "res://data/equipment/practice_sword.tres"],
+    "balance": "res://data/balance/training_range.tres",
+    "crosshair": ["res://data/ui/crosshair_precision.tres", "res://data/ui/crosshair_melee.tres"],
+    "materials": "res://assets/materials/"
+  },
+  "coreScripts": {
+    "player": "res://scripts/core/player_controller.gd",
+    "cameraRig": "res://scripts/core/camera_rig.gd",
+    "equipmentState": "res://scripts/core/equipment_state.gd",
+    "attackDispatcher": "res://scripts/core/attack_dispatcher.gd",
+    "aimQuery": "res://scripts/core/aim_query.gd",
+    "worldState": "res://scripts/core/world_state.gd",
+    "saveStore": "res://scripts/core/save_store.gd",
+    "crosshair": "res://scripts/ui/crosshair.gd"
+  },
+  "adapters": {
+    "preview": "res://scripts/adapters/preview_bridge.gd",
+    "probe": "res://scripts/adapters/probe_runner.gd"
+  },
+  "acceptance": {
+    "headless": "tests/acceptance_headless.mjs",
+    "web": "tests/acceptance_web.mjs",
+    "modelTasks": "docs/MODEL_ACCEPTANCE_TASKS.md"
+  },
+  "assets": {
+    "provenance": "assets/provenance/ASSET_PROVENANCE.md",
+    "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+    "generator": "tools/generate_meshes.mjs"
+  },
+  "sharedInterfaceStatus": "unfrozen",
+  "sharedInterfaceNote": "Build/run integration is concentrated in scripts/adapters/*.gd and tests/*.mjs until tasks B and C freeze the shared build checklist and run protocol."
+}

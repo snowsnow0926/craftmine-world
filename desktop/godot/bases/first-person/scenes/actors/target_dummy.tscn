@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/target_dummy.gd" id="1_script"]
+[ext_resource type="Mesh" path="res://assets/meshes/target_dummy.obj" id="2_mesh"]
+[ext_resource type="Material" path="res://assets/materials/target_plate.tres" id="3_material"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_target"]
+size = Vector3(1.24, 2.1, 0.4)
+
+[node name="TargetDummy" type="StaticBody3D"]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_script")
+target_id = &"target"
+display_name = "Target"
+max_health = 50.0
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = ExtResource("2_mesh")
+material_override = ExtResource("3_material")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+shape = SubResource("BoxShape3D_target")
