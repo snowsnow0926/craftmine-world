@@ -94,8 +94,8 @@
     },
     {
       "path": "scripts/base/door_zone.gd",
-      "bytes": 766,
-      "sha256": "cad57353104e2ab8ddc0d109f1e83bc9d78f1093026591e582c00cd5baa74b88"
+      "bytes": 940,
+      "sha256": "67baa8e1769f6864a27a47c3f585f44a072e7697c12fb2c1dce9a7df4a38fe0f"
     },
     {
       "path": "scripts/base/game.gd",
@@ -129,8 +129,8 @@
     },
     {
       "path": "scripts/base/probe.gd",
-      "bytes": 10587,
-      "sha256": "fe200494489a4f687e60732353a292023914a142366f801221b595bb1ba1dbff"
+      "bytes": 10871,
+      "sha256": "a1ce89b4ae6d87bd46312e06f72d1cc3aad1f681a50e401d54f62c2857b8f60c"
     },
     {
       "path": "scripts/base/quest_manager.gd",

@@ -4,8 +4,10 @@
 ## the player at the named spawn, marks the room visited and saves. Nothing about
 ## the player's abilities, rewards or checkpoints is stored in the room nodes, so
 ## rebuilding a room cannot lose or duplicate them.
+## Keep rooms in the Rooms canvas subtree so their background cannot overdraw
+## the later Player sibling through a detached CanvasItem root.
 class_name SideViewRoomManager
-extends Node
+extends Node2D
 
 signal room_entered(room_id: String, spawn_id: String)
 

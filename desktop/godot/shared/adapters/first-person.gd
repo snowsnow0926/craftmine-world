@@ -27,6 +27,9 @@ func restore(body: Dictionary) -> String:
 		return "Unsupported native state field: " + omitted + ("; rollback: " + rollback if not rollback.is_empty() else "")
 	return ""
 
+func observe() -> Dictionary:
+	return world().snapshot()
+
 func command(op: String, args: Dictionary) -> Dictionary:
 	if op in ["set-world-id", "restore"]:
 		return {"error": "Managed identity and progress are controlled by the host"}

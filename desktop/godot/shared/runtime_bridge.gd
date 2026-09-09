@@ -2,7 +2,7 @@ extends Node
 
 const Guard = preload("res://craftmine_shared/state_guard.gd")
 const PROTOCOL := "craftmine.godot-runtime/2"
-const OPS := ["capabilities", "load", "restore-state", "snapshot", "save", "pause", "resume", "acknowledge", "exit"]
+const OPS := ["capabilities", "observe", "load", "restore-state", "snapshot", "save", "pause", "resume", "acknowledge", "exit"]
 var adapter: RefCounted
 var browser: JavaScriptObject
 var receiver: JavaScriptObject
@@ -82,6 +82,8 @@ func handle_request(request: Dictionary) -> Dictionary:
 			loaded = true
 			latest_runner_receipt = {}
 			return {"result": {"loaded": true, "snapshot": snapshot()}}
+		"observe":
+			return {"result": adapter.observe()}
 		"snapshot":
 			var current := snapshot()
 			var failure := Guard.validate(current.state, scope.worldId, adapter.BASE_ID, adapter.BASE_VERSION)
