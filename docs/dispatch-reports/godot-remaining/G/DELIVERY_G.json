@@ -13,9 +13,9 @@
     "c15c174cfaac8b02df301228da6c0f9ac75e5a9f",
     "2a20752de07e16865403a652818cca2ccf21ef78",
     "29ab33ca868b03d7557f6dd6cd15834fb48758b3",
-    "176e57f2e2103c054fab36512e070dd6e15bed15",
-    "34f5c750b0b236d33969ffbe0eb4e96940773c12"
+    "176e57f2e2103c054fab36512e070dd6e15bed15"
   ],
+  "deliveryRecordCommit": "the commit that adds this file; run `git log --format=%H -1 -- docs/dispatch-reports/godot-remaining/G/DELIVERY_G.json`",
   "report": "docs/dispatch-reports/godot-remaining/G/REPORT_G.md",
   "interfaces": [
     "docs/dispatch-reports/godot-remaining/G/INTERFACE_G.md",
