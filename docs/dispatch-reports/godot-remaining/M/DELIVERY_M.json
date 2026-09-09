@@ -1,0 +1,143 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "task": "M",
+  "title": "Player creation Git content history, branches and recovery (VM0-VM2, local Git layer)",
+  "date": "2026-09-10",
+  "baselineCommit": "e462147852e36bdfcaf897d3f915c5809fb88670",
+  "branch": "codex/godot-remaining-m-20260910",
+  "worktree": "D:\\Craftmine World-worktrees\\godot-remaining-m-20260910",
+  "pushed": false,
+  "mergedToMaster": false,
+  "libRsModified": false,
+  "libRsWiringSnippet": "docs/dispatch-reports/godot-remaining/M/lib.rs.snippet.diff",
+  "commits": [
+    {
+      "hash": "58b2942",
+      "subject": "feat(content-history): managed Git content history for player worlds (VM0/VM1)",
+      "files": 13,
+      "insertions": 6155
+    },
+    {
+      "hash": "2820586",
+      "subject": "docs(content-history): spec, ADR and E2E fragment for VM0/VM1 (task M)"
+    },
+    {
+      "hash": "016b97c",
+      "subject": "docs(dispatch-m): interface, report, evidence and lib.rs wiring snippet"
+    }
+  ],
+  "scope": {
+    "implemented": [
+      "VM0 managed Git adapter: bundled-path-then-PATH discovery with version and SHA-256 provenance, MINIMUM_GIT=(2,38), argument arrays only, managed config dir, neutral child cwd, hooks/filters/fsmonitor/pager/credential/network disabled, 29 forbidden config prefixes rejected, 30-subcommand allowlist, host identity without player email, enforced timeout",
+      "VM0/AL0 frozen shared contract: AssetRef, FileRef, ContentRef, BuildRef, ProgressRef, OperationContext, AssetLock/AssetLockEntry/AssetOverrideRef, craftmine.assets-lock/1 canonical form, variable-length Git OID validation, SHA-256 namespace separation, path and collision rules, shared test vectors",
+      "VM1 managed bare repositories: hashed repo keys, repo.json object-format record, CAS branch updates through update-ref --stdin, one-process bulk blob hashing, history paging with request/task/legacy trailers, checkpoints, drafts, annotated named versions, applied reference, protected reference listing",
+      "VM1 build copies materialised from committed objects without .git, hooks or filters; symlink/submodule entries reported instead of skipped",
+      "VM1 text diff, binary diff separation, three-way merge-tree with conflict reporting (clean Git merge is not a gameplay pass)",
+      "VM1 legacy migration: read-only preflight, byte-verified one-commit-per-revision import with source-only trailers, mapping table, protected migration tags, backend switch, interrupted-import adoption after re-verification, post-switch verification",
+      "VM2 Git reference transaction: durable prepare/advance/confirm/rollback/recover state machine plus durable receipts; recover never reports an application as successful",
+      "VM4 primitives: named offline versions, git bundle create/verify, reclaim plan separating true garbage from objects protected by other references, prune of garbage only"
+    ],
+    "notImplemented": [
+      "VM2 real application (real build, candidate instance, state migration, instance promotion) - depends on A/C/D/H",
+      "VM3 semantic and gameplay conflict classification, partial undo, cherry-pick - depends on C/I verifier",
+      "VM4 fork / new-world copy and end-to-end offline work package export - primitives only",
+      "VM5 remote sync and VM6 community collaboration - not implemented, not authorised; network protocols blocked by protocol.allow=never",
+      "Performance measurement at the 1k/10k file and commit tiers, history/diff P50/P95, cancel latency, migration and backup timings"
+    ]
+  },
+  "frozenContract": {
+    "owner": "M (single definition); N is co-owner of the shared vectors",
+    "definitionFile": "vendor/pi-desktop/crates/craftmine-core/src/content_history/contract.rs",
+    "lockFile": "craftmine.assets.lock.json",
+    "lockFormat": "craftmine.assets-lock/1",
+    "canonicalRules": "pretty JSON, 2-space indent, LF, exactly one trailing newline; assetLockHash = SHA-256 of exactly those bytes",
+    "goldenHashes": {
+      "fixtureLockHash": "b95794a2afd498e782e6ec64ec84f1a595d9b56ac723ee4c997a15bbcaad9f0b",
+      "emptyLockHash": "70396c0e7b3582530fb2765684ae9a8bbc6579c93066539e5ed83ce0db5a4809"
+    },
+    "vectors": "tests/godot-remaining/M/contract/asset-lock-vectors.json (2 vectors, 25 error vectors, 12 rules, regeneratedByTest=true)",
+    "awaitingNConfirmation": [
+      "dependency closure semantics (all dependencies must be entries in assets[])",
+      "whether one asset may have several install paths",
+      "mediaType value table",
+      "override scope naming convention",
+      "N's dependency-cycle/path/hash cases with expected error codes for a joint re-freeze"
+    ]
+  },
+  "verification": {
+    "commands": [
+      "cd vendor/pi-desktop; cargo test -p craftmine-core --offline",
+      "cd vendor/pi-desktop; cargo test -p craftmine-core --offline --lib content_history",
+      "cd vendor/pi-desktop; cargo test -p craftmine-core --lib content_history::contract_tests::print_frozen_vectors -- --ignored --nocapture"
+    ],
+    "results": {
+      "fullCrate": "152 passed; 0 failed; 2 ignored (exit 0)",
+      "contentHistory": "41 passed; 0 failed; 1 ignored (exit 0)",
+      "cargoCheckDeliveredTree": "cargo check -p craftmine-core --offline -> Finished, exit 0 (content_history is not declared in lib.rs, so it is not compiled in the delivered tree)"
+    },
+    "verificationCaveat": "The module tests require 'mod content_history;' plus two migrate calls in lib.rs, which belongs to agent A. The registration was applied temporarily to run the 41 tests and then reverted before committing. The delivered branch therefore does NOT compile the module; the snippet must be applied by A and the tests re-run.",
+    "notRun": [
+      "tests/browser.mjs and tests/modules-browser.mjs (forbidden by project policy)",
+      "any real mouse/keyboard/focus/window/browser interaction",
+      "real Godot executor, real model creation, real application, real full-backup restore",
+      "performance tier measurements"
+    ]
+  },
+  "gitProvenance": {
+    "measured": "git version 2.53.0.windows.1",
+    "path": "C:\\Program Files\\Git\\mingw64\\bin\\git.exe",
+    "sha256": "d09a1324132aa9da4b4c2b14242dcac893539a735fab288136b101156434a55a",
+    "source": "pathFallback",
+    "note": "No bundled Git binary exists yet; VM0's pinned bundled binary, licence and hash must come from K. This record must not be reported as a bundled Git."
+  },
+  "tablesAdded": [
+    "craftmine_content_repositories",
+    "craftmine_content_revision_map",
+    "craftmine_content_migrations",
+    "craftmine_content_operations",
+    "craftmine_content_operation_receipts"
+  ],
+  "interfacesNeededFromOthers": [
+    {
+      "owner": "A",
+      "need": "apply lib.rs.snippet.diff; call content_history::migration::assert_legacy_writes_allowed(&tx, &world_id) before any legacy godotProject.create/patch write; decide whether to register content.* RPC methods in main.rs"
+    },
+    {
+      "owner": "N",
+      "need": "confirm the five frozen-contract items and contribute dependency-cycle/path/hash cases with expected error codes for a joint re-freeze"
+    },
+    {
+      "owner": "H",
+      "need": "add the five craftmine_content_* tables to backups.rs TABLES and include content-history/repos/** in full backup and restore; use store.bundle() for the Git carrier"
+    },
+    {
+      "owner": "C/D",
+      "need": "real build/execute/check and instance promotion on top of store.materialize() (Git-metadata-free build inputs)"
+    },
+    {
+      "owner": "I",
+      "need": "real model acceptance for generate/modify/restore/branch-apply; unit tests cannot substitute"
+    },
+    {
+      "owner": "K",
+      "need": "pinned bundled Git binary, version, hash and licence material"
+    }
+  ],
+  "knownGaps": [
+    "No real application, no real backup restore, no real model acceptance",
+    "Semantic/gameplay merge conflicts are not classified",
+    "Fork and offline work-package export are primitives only",
+    "Remote sync and community collaboration untouched and unauthorised",
+    "No performance numbers",
+    "Delivered branch does not compile the module until A applies the snippet"
+  ],
+  "evidence": [
+    "docs/dispatch-reports/godot-remaining/M/evidence/rust-full-crate-tests.txt",
+    "docs/dispatch-reports/godot-remaining/M/evidence/rust-content-history-tests.txt",
+    "docs/dispatch-reports/godot-remaining/M/evidence/git-provenance.txt",
+    "docs/dispatch-reports/godot-remaining/M/INTERFACE_M.md",
+    "docs/dispatch-reports/godot-remaining/M/REPORT_M.md"
+  ],
+  "noRealInput": true,
+  "privateDataIncluded": false
+}
