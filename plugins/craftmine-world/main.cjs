@@ -188,7 +188,7 @@ async function onPanelInvoke(channel, payload={}) {
     return {record,archive:{id:archive.id,files:archive.files,bytes:archive.bytes,manifestHash:archive.manifestHash},preserved:{candidate:!!archive.project.candidate,modules:archive.project.library?.length||0,tasks:archive.project.tasks?.length||0}};
   }
   if(channel==='world.list') {
-    const labels={'first-person':'Godot 第一人称','top-down':'Godot 俯视','side-view':'Godot 横版'};
+    const labels={'first-person':'Godot 第一人称','top-down':'Godot 俯视','side-view':'Godot 横版','mining-sandbox':'Godot 采矿沙盒'};
     const worlds=(await core.call('world.list')).map(record=>({
       ...record,
       ...(record.runtimeKind==='legacy'?{base:{id:'craftmine-web/5',label:'网页体素',delivered:true}}:
