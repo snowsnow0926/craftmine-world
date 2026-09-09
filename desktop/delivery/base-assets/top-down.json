@@ -21,7 +21,10 @@
       "license": "project-authored",
       "licenseFile": null,
       "redistribution": "permitted",
-      "distribution": ["app-bundle", "user-export"],
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
       "bytes": 355,
       "sha256": "738984f4c383d343d4c17ffd6ae12e1af0d9fe3c9bf138c6e8803dea3a4a569d",
       "outstanding": "Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
@@ -36,7 +39,10 @@
       "license": "project-authored",
       "licenseFile": null,
       "redistribution": "permitted",
-      "distribution": ["app-bundle", "user-export"],
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
       "bytes": 172,
       "sha256": "5b158f34800530c5012beadcb882317ee618840f1821514afcdb2c2ca8357635",
       "outstanding": "Same authored-code licence decision as project.godot.",
@@ -51,7 +57,10 @@
       "license": "project-authored",
       "licenseFile": null,
       "redistribution": "permitted",
-      "distribution": ["app-bundle", "user-export"],
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
       "bytes": 4897,
       "sha256": "66ae70334a1882d3cac6ee023f73402d6b081f80238957dbb8f0049c5a353a58",
       "outstanding": "Same authored-code licence decision as project.godot.",
@@ -68,9 +77,12 @@
       "license": "project-authored",
       "licenseFile": null,
       "redistribution": "permitted",
-      "distribution": ["app-bundle", "user-export"],
-      "bytes": 2556,
-      "sha256": "7b24e102f1ed91e311ec23a315914a95ef4a883da4d79af524051f7235b42de4",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 9760,
+      "sha256": "a3752ffedf899c2061a6da35942b230c43afbaeaf58f67bd674e4a9d5361a036",
       "outstanding": "Same authored-code licence decision as project.godot.",
       "notes": "Copied into every exported probe project by desktop/godot/export-probes.mjs."
     },
@@ -83,9 +95,11 @@
       "license": "project-authored",
       "licenseFile": null,
       "redistribution": "permitted",
-      "distribution": ["user-export"],
-      "bytes": 3447,
-      "sha256": "a051ad9c4080386aeb5cf04587238b80b32354f5ff0561f2f2fccf508ce4ccfd",
+      "distribution": [
+        "user-export"
+      ],
+      "bytes": 5903,
+      "sha256": "2e0beb1afa6cdf3f5229201e371f2d4b883779d46199b82f351c2b3c62b1d5c4",
       "outstanding": "Same authored-code licence decision as project.godot.",
       "notes": "Host-side bridge script shipped beside the exported Web build."
     },
@@ -98,7 +112,9 @@
       "license": "project-authored",
       "licenseFile": null,
       "redistribution": "permitted",
-      "distribution": ["user-export"],
+      "distribution": [
+        "user-export"
+      ],
       "bytes": 730,
       "sha256": "cbbfbd2c680b9f31883d5c0b0ffa330e732ba584bc51d9b91e04ca4c710c7a4a",
       "outstanding": "Same authored-code licence decision as project.godot.",
@@ -109,14 +125,19 @@
     {
       "path": "desktop/godot/licenses/GODOT_LICENSE.txt",
       "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
-      "appliesTo": ["user-export"],
+      "appliesTo": [
+        "user-export"
+      ],
       "notes": "Copied into the export directory by desktop/godot/export-probes.mjs."
     },
     {
       "path": "desktop/godot/licenses/GODOT_COPYRIGHT.txt",
       "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d",
-      "appliesTo": ["user-export"],
+      "appliesTo": [
+        "user-export"
+      ],
       "notes": "Aggregate third-party notices for the exported engine."
     }
-  ]
+  ],
+  "hashReviewNote": "Only the shared bridge byte/hash pins were refreshed against task C commit 86c4a3e4623ab28ba86690dc5a2ee6ba3d8a7891; all license and distribution declarations are unchanged."
 }

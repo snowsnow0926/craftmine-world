@@ -29,9 +29,8 @@ const test = (name, body) => {
 const digest = buffer => createHash('sha256').update(buffer).digest('hex');
 const codes = result => result.failures.map(failure => failure.code);
 
-const workRoot = path.resolve(REPO_ROOT, 'test-results/delivery-preflight-selftest');
-fs.rmSync(workRoot, {recursive: true, force: true});
-fs.mkdirSync(workRoot, {recursive: true});
+fs.mkdirSync(path.join(REPO_ROOT, 'test-results'), {recursive: true});
+const workRoot = fs.mkdtempSync(path.join(REPO_ROOT, 'test-results/delivery-preflight-selftest-'));
 let sequence = 0;
 function fixture() {
   const root = path.join(workRoot, 'fixture-' + ++sequence);
@@ -345,9 +344,74 @@ test('package bundling an engine with correct Godot notices passes', () => {
   assert.deepEqual(checkPackage(root, directory).failures, []);
 });
 
+
+// Integration audit regressions: old probe green does not cover newly shipped bases.
+test('every new base directory requires its own manifest despite matching probe IDs', () => {
+  const {root, write} = fixture();
+  for (const name of ['first-person', 'top-down', 'side-view']) write('desktop/godot/bases/' + name + '/project.godot', 'synthetic project');
+  const result = checkBaseAssets(root);
+  assert.equal(result.failures.filter(item => item.code === 'ASSET_BASE_MANIFEST_MISSING').length, 3);
+  assert.equal(result.ok, false);
+});
+for (const value of ['unrevealed', 'unreviewed']) test(value + ' asset redistribution is rejected', () => {
+  const {root, readAssets, writeAssets} = fixture();
+  const manifest = readAssets('shared-web.json'); manifest.entries[0].redistribution = value; writeAssets('shared-web.json', manifest);
+  assert.ok(codes(checkBaseAssets(root)).includes('ASSET_REDISTRIBUTION_DENIED'));
+});
+for (const value of ['unrevealed', 'unreviewed']) test(value + ' notice redistribution is rejected', () => {
+  const {root, readManifest, writeManifest} = fixture();
+  const manifest = readManifest(); manifest.entries[0].redistribution = value; writeManifest(manifest);
+  assert.ok(codes(checkNotices(root)).includes('NOTICE_REDISTRIBUTION_DENIED'));
+});
+test('deeply nested Godot executable cannot bypass package notice checks', () => {
+  const {root} = fixture(), directory = makePackage(root), nested = path.join(directory, 'a/b/c/d/e/f/g');
+  fs.mkdirSync(nested, {recursive: true});fs.writeFileSync(path.join(nested, 'godot.exe'), 'synthetic engine');
+  assert.ok(codes(checkPackage(root, directory)).includes('PACKAGE_GODOT_NOTICE_MISSING'));
+});
+test('renamed engine is recognized by the locked executable hash', () => {
+  const {root, readLock, writeLock} = fixture(), directory = makePackage(root), bytes = Buffer.from('synthetic locked executable');
+  const lock = readLock(); lock.editor.executableSha256 = digest(bytes); writeLock(lock);
+  fs.writeFileSync(path.join(directory, 'innocent.dat'), bytes);
+  const result = checkPackage(root, directory);
+  assert.equal(result.facts.godotEngineBinary, 'innocent.dat');
+  assert.ok(codes(result).includes('PACKAGE_GODOT_NOTICE_MISSING'));
+});
+test('Web WASM and PCK without native executable still require Godot notices', () => {
+  const {root} = fixture(), directory = makePackage(root);
+  fs.writeFileSync(path.join(directory, 'renamed.wasm'), 'synthetic wasm');fs.writeFileSync(path.join(directory, 'differently-named.pck'), 'synthetic pack');
+  assert.ok(codes(checkPackage(root, directory)).includes('PACKAGE_GODOT_NOTICE_MISSING'));
+});
+test('unknown WASM needs an exact reviewed runtime declaration', () => {
+  const {root} = fixture(), directory = makePackage(root), bytes = Buffer.from('unknown wasm');
+  fs.writeFileSync(path.join(directory, 'runtime.wasm'), bytes);
+  assert.ok(codes(checkPackage(root, directory)).includes('PACKAGE_WASM_RUNTIME_UNDECLARED'));
+  const entry = {path: 'runtime.wasm', sha256: digest(bytes), runtime: 'other', license: 'test-only', redistribution: 'unrevealed'};
+  const save = () => fs.writeFileSync(path.join(directory, 'resources/runtime-manifest.json'), JSON.stringify({format: 'craftmine.package-runtimes/1', entries: [entry]}));
+  save();assert.ok(codes(checkPackage(root, directory)).includes('PACKAGE_WASM_RUNTIME_UNDECLARED'));
+  entry.redistribution = 'permitted';save();assert.equal(checkPackage(root, directory).ok, true);
+  fs.appendFileSync(path.join(directory, 'runtime.wasm'), 'changed');assert.ok(codes(checkPackage(root, directory)).includes('PACKAGE_WASM_RUNTIME_UNDECLARED'));
+});
+
+
+test('package link rejection happens before traversing its target', () => {
+  const {root} = fixture(), directory = makePackage(root), link = path.join(directory, 'pretend-junction');
+  fs.mkdirSync(link);
+  const lstat = fs.lstatSync, readdir = fs.readdirSync;
+  // Deterministic control-flow test; does not claim an OS junction fixture.
+  fs.lstatSync = function(file, ...args) { const info = lstat.call(fs, file, ...args); if (file === link) info.isSymbolicLink = () => true; return info; };
+  fs.readdirSync = function(file, ...args) { assert.notEqual(file, link, 'link target was traversed'); return readdir.call(fs, file, ...args); };
+  try { assert.ok(codes(checkPackage(root, directory)).includes('PACKAGE_LINK_DENIED')); }
+  finally { fs.lstatSync = lstat; fs.readdirSync = readdir; }
+});
+test('missing locked executable identity cannot certify no runtime', () => {
+  const {root, readLock, writeLock} = fixture(), directory = makePackage(root), lock = readLock();
+  delete lock.editor.executableSha256; writeLock(lock);
+  assert.ok(codes(checkPackage(root, directory)).includes('PACKAGE_ENGINE_HASH_UNAVAILABLE'));
+});
+
 const failed = results.filter(result => !result.passed);
 fs.mkdirSync(path.join(REPO_ROOT, 'test-results'), {recursive: true});
-const reportPath = path.join(REPO_ROOT, 'test-results/delivery-preflight-selftest.json');
+const reportPath = path.join(workRoot, 'report.json');
 fs.writeFileSync(reportPath, JSON.stringify({format: 'craftmine.delivery-preflight-selftest/1', generatedAt: new Date().toISOString(), total: results.length, failed: failed.length, results}, null, 2) + '\n');
 console.log((failed.length ? 'SELFTEST FAILED' : 'SELFTEST PASSED') + ': ' + results.length + ' cases, ' + failed.length + ' failed');
 console.log('Evidence: ' + reportPath);

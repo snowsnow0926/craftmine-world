@@ -132,3 +132,46 @@ and no installer was executed.
   skipped and reported as such.
 - Godot notices are required only when an engine binary is actually present in the
   package, because the pinned toolchain is still `gd0-candidate-not-production-bundled`.
+
+## Integration audit hardening (2026-09-09)
+
+`assets` discovers every immediate directory under `desktop/godot/bases/` and
+requires a manifest with that exact `sourceDirectory`. A same-name historical
+probe manifest cannot cover a new base. New code/assets without a rights entry
+remain explicit failures; preflight does not assign their licenses.
+
+The canonical pending redistribution value is `unreviewed`. The earlier typo
+`unrevealed` is recognized only as a legacy pending value and is also rejected.
+Both asset shipping declarations and notice declarations fail for denied or
+pending redistribution. Existing approved rights metadata is not rewritten.
+
+`package` scans unpacked files at every level, with limits of 64 directory levels,
+100,000 entries and 8 GiB of streamed hash input. Exceeding a limit is
+`PACKAGE_SCAN_INCOMPLETE`, never evidence of no engine. Links (including a linked
+package root) are rejected before file reads and are not traversed. Runtime
+classification includes Godot executable names, the toolchain lock's exact
+executable SHA256 even after renaming, and WASM with a PCK in the same directory.
+Those cases require the pinned Godot notices.
+
+Other WASM requires `resources/runtime-manifest.json`:
+
+```json
+{"format":"craftmine.package-runtimes/1","entries":[{
+  "path":"resources/example/runtime.wasm","sha256":"<64 lowercase hex>",
+  "runtime":"other","license":"<reviewed license identifier>",
+  "redistribution":"permitted-with-notice"
+}]}
+```
+
+Only an exact path/hash and explicit reviewed redistribution value classify the
+WASM. `runtime:"godot"` activates the Godot notice checks. `runtime:"other"` is a
+human-reviewed declaration, not a claim that this scanner identified an unknown
+binary or verified all third-party obligations. Pending/unknown values and
+changed bytes fail. Archive/ASAR extraction, renamed unknown engine formats,
+concurrent native filesystem races and legal sufficiency remain outside this
+bounded inspection; package authors must supply an accurate inventory.
+
+Self-tests now create a unique `test-results/delivery-preflight-selftest-*`
+directory and place their `report.json` there. They never delete or overwrite an
+older run. The suite currently has 34 cases, including the integration negative
+cases. A simulated link tests rejection control flow, not OS junction behavior.

@@ -14,7 +14,7 @@ export const LOCK_PATH = 'desktop/godot/toolchain.lock.json';
 
 const MAX_TEXT_SCAN = 1024 * 1024;
 const DISTRIBUTIONS = ['app-bundle', 'user-export', 'development-only'];
-const REDISTRIBUTION = ['permitted', 'permitted-with-notice', 'permitted-with-notice-and-corresponding-source', 'conditional', 'denied', 'unrevealed'];
+const REDISTRIBUTION = ['permitted', 'permitted-with-notice', 'permitted-with-notice-and-corresponding-source', 'conditional', 'denied', 'unreviewed', 'unrevealed'];
 const SHIPPED = ['app-bundle', 'user-export'];
 // Licences that need no separate notice text because the project owns the file or
 // the licence imposes no attribution. Anything else must point at a notice file.
@@ -31,6 +31,12 @@ const fail = (code, message, extra = {}) => ({code, message, ...extra});
 function statFile(root, relativePath) {
   const target = path.resolve(root, relativePath);
   if (!target.startsWith(root + path.sep) && target !== root) return {target, escaped: true};
+  // Inspect each existing component without following links, including junctions.
+  let component = path.parse(target).root;
+  for (const name of target.slice(component.length).split(path.sep).filter(Boolean)) {
+    component = path.join(component, name);
+    if (exists(component) && fs.lstatSync(component).isSymbolicLink()) return {target, escaped: true};
+  }
   return {target, escaped: false};
 }
 
@@ -80,6 +86,7 @@ export function checkNotices(root) {
     if (typeof entry.license !== 'string' || !entry.license) failures.push(fail('NOTICE_LICENSE', entry.id + ' has no declared licence'));
     if (!Array.isArray(entry.appliesTo) || !entry.appliesTo.length) failures.push(fail('NOTICE_SCOPE', entry.id + ' does not declare what it applies to'));
     if (!REDISTRIBUTION.includes(entry.redistribution)) failures.push(fail('NOTICE_REDISTRIBUTION', entry.id + ' has an unknown redistribution condition: ' + entry.redistribution));
+    if (['denied', 'unreviewed', 'unrevealed'].includes(entry.redistribution)) failures.push(fail('NOTICE_REDISTRIBUTION_DENIED', entry.id + ' has not been cleared for redistribution'));
     if (typeof entry.noticeRequired !== 'boolean') failures.push(fail('NOTICE_REQUIRED_FLAG', entry.id + ' must state noticeRequired explicitly'));
     if (entry.noticeRequired) {
       const pinned = {bytes: entry.noticeBytes, sha256: entry.noticeSha256};
@@ -207,7 +214,7 @@ function validateBaseEntry(root, manifest, entry, fileDirectory, failures) {
   for (const value of entry.distribution) if (!DISTRIBUTIONS.includes(value)) failures.push(fail('ASSET_DISTRIBUTION', label + ' has an unknown distribution: ' + value));
   if (!REDISTRIBUTION.includes(entry.redistribution)) failures.push(fail('ASSET_REDISTRIBUTION', label + ' has an unknown redistribution condition: ' + entry.redistribution));
   const shipped = entry.distribution.some(value => SHIPPED.includes(value));
-  if (shipped && ['denied', 'unreviewed'].includes(entry.redistribution)) {
+  if (shipped && ['denied', 'unreviewed', 'unrevealed'].includes(entry.redistribution)) {
     failures.push(fail('ASSET_REDISTRIBUTION_DENIED', label + ' is distributed but redistribution is ' + entry.redistribution));
   }
   if (shipped && entry.redistribution === 'conditional' && !entry.conditions) {
@@ -242,6 +249,7 @@ export function checkBaseAssets(root, {directory = BASE_ASSETS_DIR} = {}) {
   const inventory = {};
   const assetsDirectory = path.join(root, directory);
   if (!exists(assetsDirectory)) return {id: 'assets', ok: false, failures: [fail('ASSETS_DIRECTORY_MISSING', 'Base asset manifest directory is absent: ' + directory)], warnings, facts: {}};
+  if (statFile(root, directory).escaped) return {id: 'assets', ok: false, failures: [fail('ASSET_LINK_DENIED', 'Manifest directory escapes the root or contains a link')], warnings, facts: {}};
   const manifests = fs.readdirSync(assetsDirectory).filter(name => name.endsWith('.json')).sort();
   if (!manifests.length) failures.push(fail('ASSETS_EMPTY', 'No base asset manifest was found in ' + directory));
   let lock = null;
@@ -250,8 +258,10 @@ export function checkBaseAssets(root, {directory = BASE_ASSETS_DIR} = {}) {
   } catch (error) {
     failures.push(fail('LOCK_INVALID', 'Toolchain lock is not valid JSON: ' + error.message));
   }
+  const coveredDirectories = new Set();
   for (const name of manifests) {
     let manifest;
+    if (fs.lstatSync(path.join(assetsDirectory, name)).isSymbolicLink()) { failures.push(fail('ASSET_LINK_DENIED', 'Manifest is a link: ' + name)); continue; }
     try {
       manifest = readJson(path.join(assetsDirectory, name));
     } catch (error) {
@@ -262,7 +272,10 @@ export function checkBaseAssets(root, {directory = BASE_ASSETS_DIR} = {}) {
     if (manifest.format !== 'craftmine.base-assets/1') failures.push(fail('ASSET_FORMAT', label + ' has an unsupported format: ' + manifest.format));
     if (!manifest.baseId) failures.push(fail('ASSET_BASE_ID', name + ' has no baseId'));
     if (!manifest.sourceDirectory) { failures.push(fail('ASSET_SOURCE_DIRECTORY', label + ' has no sourceDirectory')); continue; }
-    const baseDirectory = path.join(root, manifest.sourceDirectory);
+    const baseDirectory = path.resolve(root, manifest.sourceDirectory);
+    if (statFile(root, manifest.sourceDirectory).escaped || !baseDirectory.startsWith(path.resolve(root) + path.sep)) { failures.push(fail('ASSET_SOURCE_ESCAPE', label + ' source directory escapes the root')); continue; }
+    if (exists(baseDirectory) && fs.lstatSync(baseDirectory).isSymbolicLink()) { failures.push(fail('ASSET_LINK_DENIED', label + ' source directory is a link')); continue; }
+    if (manifest.format === 'craftmine.base-assets/1') coveredDirectories.add(baseDirectory);
     if (!exists(baseDirectory)) { failures.push(fail('ASSET_SOURCE_MISSING', label + ' source directory is absent: ' + manifest.sourceDirectory)); continue; }
     if (lock && manifest.engine?.version && manifest.engine.version !== lock.version) {
       failures.push(fail('ASSET_ENGINE_MISMATCH', label + ' targets engine ' + manifest.engine.version + ' but the lock pins ' + lock.version));
@@ -283,7 +296,9 @@ export function checkBaseAssets(root, {directory = BASE_ASSETS_DIR} = {}) {
       for (const child of fs.readdirSync(current).sort()) {
         const childPath = path.join(current, child);
         const relative = (prefix ? prefix + '/' : '') + child;
-        if (fs.lstatSync(childPath).isDirectory()) walk(childPath, relative);
+        const info = fs.lstatSync(childPath);
+        if (info.isSymbolicLink()) failures.push(fail('ASSET_LINK_DENIED', label + ' contains a link: ' + relative));
+        else if (info.isDirectory()) walk(childPath, relative);
         else if (!declared.has(relative)) failures.push(fail('ASSET_UNDECLARED_FILE', label + ' has an undeclared file: ' + manifest.sourceDirectory + '/' + relative));
       }
     };
@@ -306,7 +321,20 @@ export function checkBaseAssets(root, {directory = BASE_ASSETS_DIR} = {}) {
     }
     inventory[label] = bucket;
   }
-  return {id: 'assets', ok: failures.length === 0, failures, warnings, facts: {manifests: manifests.length, inventory}};
+  // A probe with the same baseId does not cover the shipped base directory.
+  const basesRoot = path.join(root, 'desktop/godot/bases');
+  const discoveredBases = [];
+  if (exists(basesRoot)) {
+    if (fs.lstatSync(basesRoot).isSymbolicLink()) failures.push(fail('ASSET_LINK_DENIED', 'Base root is a link'));
+    else for (const name of fs.readdirSync(basesRoot).sort()) {
+      const target = path.join(basesRoot, name), info = fs.lstatSync(target);
+      if (info.isSymbolicLink()) { failures.push(fail('ASSET_LINK_DENIED', 'Base is a link: ' + name)); continue; }
+      if (!info.isDirectory()) continue;
+      discoveredBases.push(name);
+      if (!coveredDirectories.has(path.resolve(target))) failures.push(fail('ASSET_BASE_MANIFEST_MISSING', 'No asset manifest covers desktop/godot/bases/' + name));
+    }
+  }
+  return {id: 'assets', ok: failures.length === 0, failures, warnings, facts: {manifests: manifests.length, discoveredBases, inventory}};
 }
 
 /** Pinned engine cache: archive, unpacked executable, selected Web templates. */
@@ -419,6 +447,23 @@ export function checkPackage(root, packageDirectory) {
   if (!packageDirectory) return {id: 'package', ok: true, failures, warnings: ['No package directory was supplied; package bytes were not verified.'], facts: {skipped: true}};
   const directory = path.resolve(packageDirectory);
   if (!exists(directory)) return {id: 'package', ok: false, failures: [fail('PACKAGE_DIRECTORY_MISSING', 'Package directory is absent: ' + directory)], warnings, facts: {}};
+  const packageFiles = [];
+  const pendingDirectories = [{directory, depth: 0}];
+  let scannedEntries = 0;
+  if (statFile(directory, '.').escaped) failures.push(fail('PACKAGE_LINK_DENIED', 'Package root contains a link'));
+  while (pendingDirectories.length && !failures.length) {
+    const current = pendingDirectories.pop();
+    if (current.depth > 64) { failures.push(fail('PACKAGE_SCAN_INCOMPLETE', 'Package nesting exceeds the audited scan bound')); break; }
+    for (const child of fs.readdirSync(current.directory)) {
+      if (++scannedEntries > 100000) { failures.push(fail('PACKAGE_SCAN_INCOMPLETE', 'Package entry limit exceeded')); break; }
+      const target = path.join(current.directory, child), info = fs.lstatSync(target);
+      if (info.isSymbolicLink()) { failures.push(fail('PACKAGE_LINK_DENIED', 'Package contains a link: ' + rel(directory, target))); continue; }
+      if (info.isDirectory()) pendingDirectories.push({directory: target, depth: current.depth + 1});
+      else if (info.isFile()) packageFiles.push(target);
+      else failures.push(fail('PACKAGE_FILE_TYPE', 'Package contains a non-regular file: ' + rel(directory, target)));
+    }
+  }
+  if (failures.length) return {id: 'package', ok: false, failures, warnings, facts: {scannedEntries}};
   const required = [
     'Craftmine World.exe',
     'resources/app.asar',
@@ -516,40 +561,57 @@ export function checkPackage(root, packageDirectory) {
     };
     walk(licensesDirectory);
   }
-  // Conditional Godot obligation: only required when an engine binary is actually present.
-  let engineBinary = null;
-  const findEngine = (current, depth) => {
-    if (depth > 4 || engineBinary) return;
-    for (const child of fs.readdirSync(current)) {
-      if (engineBinary) return;
-      const childPath = path.join(current, child);
-      const info = fs.lstatSync(childPath);
-      if (info.isSymbolicLink()) continue;
-      if (info.isDirectory()) findEngine(childPath, depth + 1);
-      else if (/^godot.*\.exe$/i.test(child)) engineBinary = rel(directory, childPath);
-    }
-  };
-  findEngine(directory, 0);
-  facts.godotEngineBundled = Boolean(engineBinary);
-  facts.godotEngineBinary = engineBinary;
-  if (engineBinary) {
-    let lock;
+  // Classify every unpacked file by locked content, filename and Web companions.
+  // Unknown WASM is not proof of absence: require a pinned explicit runtime declaration.
+  let lock;
+  try { lock = loadLock(root); }
+  catch (error) { failures.push(fail('LOCK_INVALID', 'Cannot classify packaged runtime: ' + error.message)); }
+  if (!/^[a-f0-9]{64}$/.test(lock?.editor?.executableSha256 ?? '')) failures.push(fail('PACKAGE_ENGINE_HASH_UNAVAILABLE', 'A valid locked executable hash is required to classify renamed runtimes'));
+  let declarations = [];
+  const runtimeManifest = path.join(directory, 'resources/runtime-manifest.json');
+  if (exists(runtimeManifest)) {
     try {
-      lock = loadLock(root);
-    } catch (error) {
-      failures.push(fail('LOCK_INVALID', 'Toolchain lock is not valid JSON: ' + error.message));
-    }
+      const manifest = readJson(runtimeManifest);
+      if (manifest.format !== 'craftmine.package-runtimes/1' || !Array.isArray(manifest.entries)) throw Error('invalid runtime declaration format');
+      declarations = manifest.entries;
+    } catch (error) { failures.push(fail('PACKAGE_RUNTIME_MANIFEST_INVALID', error.message)); }
+  }
+  const hashes = new Map();
+  let scannedBytes = 0;
+  for (const file of packageFiles) {
+    const size = fs.lstatSync(file).size;
+    if ((scannedBytes += size) > 8 * 1024 ** 3) { failures.push(fail('PACKAGE_SCAN_INCOMPLETE', 'Package hashing exceeds the audited byte bound')); break; }
+    const hash = createHash('sha256'), buffer = Buffer.allocUnsafe(65536), fd = fs.openSync(file, 'r');
+    try { for (;;) { const length = fs.readSync(fd, buffer, 0, buffer.length, null); if (!length) break; hash.update(buffer.subarray(0, length)); } }
+    finally { fs.closeSync(fd); }
+    hashes.set(file, hash.digest('hex'));
+  }
+  const engineFiles = [];
+  const packDirectories = new Set(packageFiles.filter(file => path.extname(file).toLowerCase() === '.pck').map(file => path.dirname(file).toLowerCase()));
+  for (const file of packageFiles) {
+    const relative = rel(directory, file), hash = hashes.get(file);
+    if (!hash) continue;
+    if (/^godot.*\.exe$/i.test(path.basename(file)) || hash === lock?.editor?.executableSha256) engineFiles.push(relative);
+    if (path.extname(file).toLowerCase() !== '.wasm') continue;
+    const declaration = declarations.find(entry => entry?.path === relative && entry.sha256 === hash &&
+      ['godot', 'other'].includes(entry.runtime) && typeof entry.license === 'string' && entry.license.trim() &&
+      ['permitted', 'permitted-with-notice', 'permitted-with-notice-and-corresponding-source'].includes(entry.redistribution));
+    if (packDirectories.has(path.dirname(file).toLowerCase()) || declaration?.runtime === 'godot') engineFiles.push(relative);
+    else if (!declaration) failures.push(fail('PACKAGE_WASM_RUNTIME_UNDECLARED', 'WASM runtime needs an explicit hash-bound reviewed declaration: ' + relative));
+  }
+  facts.godotEngineBundled = engineFiles.length > 0;
+  facts.godotEngineBinary = engineFiles[0] ?? null;
+  facts.godotRuntimeFiles = [...new Set(engineFiles)];
+  facts.scannedEntries = scannedEntries;
+  facts.scannedBytes = scannedBytes;
+  if (engineFiles.length) {
     for (const locked of lock?.licenses ?? []) {
-      const name = path.basename(locked.file);
-      const target = path.join(licensesDirectory, 'godot', name);
-      if (!exists(target)) failures.push(fail('PACKAGE_GODOT_NOTICE_MISSING', 'Package bundles an engine but has no resources/licenses/godot/' + name));
+      const name = path.basename(locked.file), target = path.join(licensesDirectory, 'godot', name);
+      if (!exists(target)) failures.push(fail('PACKAGE_GODOT_NOTICE_MISSING', 'Package bundles a runtime but has no resources/licenses/godot/' + name));
       else if (sha256(target) !== locked.sha256) failures.push(fail('PACKAGE_GODOT_NOTICE_HASH', 'Packaged Godot notice differs from the lock: ' + name));
     }
     const notices = path.join(directory, 'resources/licenses/CRAFTMINE-NOTICES.md');
-    if (exists(notices)) {
-      const text = readText(notices);
-      if (!/Godot/.test(text) || !/MIT/.test(text)) failures.push(fail('PACKAGE_GODOT_NOTICE_UNDECLARED', 'Package bundles an engine but CRAFTMINE-NOTICES.md does not state the Godot MIT coverage'));
-    }
+    if (exists(notices) && (!/Godot/.test(readText(notices)) || !/MIT/.test(readText(notices)))) failures.push(fail('PACKAGE_GODOT_NOTICE_UNDECLARED', 'Package bundles a runtime but notices do not state the Godot MIT coverage'));
   }
   // Build inputs must be reconstructable from pinned files.
   for (const relative of ['vendor/pi-desktop/pnpm-lock.yaml', 'vendor/pi-desktop/Cargo.lock', 'desktop/godot/toolchain.lock.json']) {
