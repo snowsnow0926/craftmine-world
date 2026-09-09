@@ -14,31 +14,31 @@ const GODOT_METHODS={godot_project_create:'godotProject.create',godot_project_in
 // core handshake must report true for the tool to be usable; `reachable` is only
 // used for a tool that does not depend on a flag.
 const LOCAL_TOOLS={
-  godot_docs:{owner:'L',hostMethod:null,needs:[]},
-  godot_project_query:{owner:'L',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
-  godot_runtime_state:{owner:'L',hostMethod:'godotRuntime.describe',needs:['godotProjects']},
-  godot_project_facts:{owner:'L',hostMethod:'godotProject.index+godotCandidate.list+godotRuntime.describe',needs:['godotProjects']},
-  godot_capability_report:{owner:'L',hostMethod:'hello',needs:[]},
-  godot_history:{owner:'L',hostMethod:'content.*',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
-  godot_jobs:{owner:'L',hostMethod:'godotExecutor.status+godotJob.usage+godotJob.continue',needs:[]},
-  godot_draft_recovery:{owner:'L',hostMethod:'task.recoverable+task.resume',needs:['sessionDrafts']},
-  asset_library:{owner:'L',hostMethod:'asset.search+asset.read+asset.versions',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
-  package_library:{owner:'L',hostMethod:'package.check+package.read+package.list',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
+  godot_docs:{owner:'S6',hostMethod:null,needs:[]},
+  godot_project_query:{owner:'S6',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
+  godot_runtime_state:{owner:'S6',hostMethod:'godotRuntime.describe',needs:['godotProjects']},
+  godot_project_facts:{owner:'S6',hostMethod:'godotProject.index+godotCandidate.list+godotRuntime.describe',needs:['godotProjects']},
+  godot_capability_report:{owner:'S6',hostMethod:'hello',needs:[]},
+  godot_history:{owner:'S6',hostMethod:'content.*',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED',blockedOwner:'S1'},
+  godot_jobs:{owner:'S6',hostMethod:'godotExecutor.status+godotJob.usage+godotJob.continue',needs:[]},
+  godot_draft_recovery:{owner:'S6',hostMethod:'task.recoverable+task.resume',needs:['sessionDrafts']},
+  asset_library:{owner:'S5',hostMethod:'asset.search+asset.read+asset.versions',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
+  package_library:{owner:'S3',hostMethod:'package.check+package.read+package.list',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
   // Pre-existing world tools. They are advertised by the same catalogue, so the
   // inventory must report them truthfully instead of as unwired.
-  project_inspect:{owner:'C',hostMethod:'workspace.open+inspect',needs:['sessionDrafts']},
-  capabilities_read:{owner:'C',hostMethod:'world.read+capabilities',needs:['sessionDrafts']},
-  resource_read:{owner:'C',hostMethod:'workspace.recordRead',needs:['sessionDrafts']},
-  workspace_patch:{owner:'C',hostMethod:'workspace.commit',needs:['sessionDrafts']},
-  requirements_read:{owner:'C',hostMethod:'task.readRequirements',needs:['sessionDrafts']},
-  verification_submit:{owner:'C',hostMethod:'verification.submit',needs:['verificationJobs']},
-  verification_read:{owner:'C',hostMethod:'verification.read',needs:['verificationJobs']},
-  verification_cancel:{owner:'C',hostMethod:'verification.cancel',needs:['verificationJobs']},
-  library_search:{owner:'H',hostMethod:'library.search',needs:['publishesWorlds']},
-  library_read:{owner:'H',hostMethod:'library.read',needs:['publishesWorlds']},
-  library_install:{owner:'H',hostMethod:'library.capture',needs:['publishesWorlds']},
-  memory_search:{owner:'J',hostMethod:'memory.search',needs:['advisoryReviews']},
-  memory_propose:{owner:'J',hostMethod:'memory.propose',needs:['advisoryReviews']}};
+  project_inspect:{owner:'S1',hostMethod:'workspace.open+inspect',needs:['sessionDrafts']},
+  capabilities_read:{owner:'S1',hostMethod:'world.read+capabilities',needs:['sessionDrafts']},
+  resource_read:{owner:'S1',hostMethod:'workspace.recordRead',needs:['sessionDrafts']},
+  workspace_patch:{owner:'S1',hostMethod:'workspace.commit',needs:['sessionDrafts']},
+  requirements_read:{owner:'S1',hostMethod:'task.readRequirements',needs:['sessionDrafts']},
+  verification_submit:{owner:'S1',hostMethod:'verification.submit',needs:['verificationJobs']},
+  verification_read:{owner:'S1',hostMethod:'verification.read',needs:['verificationJobs']},
+  verification_cancel:{owner:'S1',hostMethod:'verification.cancel',needs:['verificationJobs']},
+  library_search:{owner:'S1',hostMethod:'library.search',needs:['publishesWorlds']},
+  library_read:{owner:'S1',hostMethod:'library.read',needs:['publishesWorlds']},
+  library_install:{owner:'S1',hostMethod:'library.capture',needs:['publishesWorlds']},
+  memory_search:{owner:'S1',hostMethod:'memory.search',needs:['advisoryReviews']},
+  memory_propose:{owner:'S1',hostMethod:'memory.propose',needs:['advisoryReviews']}};
 
 // Only these calls change durable state; a discussion turn must not run them.
 // Cancelling a job also mutates durable state and is included.

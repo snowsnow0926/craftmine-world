@@ -191,11 +191,16 @@ export type PluginHostServices = {
    */
   craftmineAssetPreview?: (input: unknown, options?: unknown) => Promise<unknown>;
   /**
-   * Host-owned live gameplay sampling (current world/build/instance). S6's model
-   * tools read it through the injected `sampleLiveState` option; the plugin
-   * never invents a sample when the host has none.
+   * Live observation of the running Godot instance. The plugin may ask for a
+   * sample of the world it is bound to; the host supplies the instance identity
+   * and refuses any other world, build or instance. Returns null when no formal
+   * instance is running, so "not running" is never reported as an empty sample.
    */
-  craftmineLiveSample?: (input: unknown) => Promise<unknown>;
+  craftmineLiveSample?: (input: {
+    worldId?: string | null;
+    buildId?: string | null;
+    instanceId?: string | null;
+  }) => Promise<Record<string, unknown> | null>;
   getWorkspacePath: () => string | null;
   getLocale?: () => string;
   getAppVersion?: () => string;
@@ -1506,6 +1511,16 @@ export class PluginRuntime {
       case "craftmine.sampleLiveState": {
         if (pluginId !== "craftmine.world" || !this.services.craftmineLiveSample) throw apiError("UNSUPPORTED", "Live gameplay sampling unavailable");
         return this.services.craftmineLiveSample(args[0]);
+      }
+      case "craftmine.godotLiveState": {
+        if (pluginId !== "craftmine.world" || !this.services.craftmineLiveSample) throw apiError("UNSUPPORTED", "Live Godot observation unavailable");
+        const input = (args[0] ?? {}) as { worldId?: unknown; buildId?: unknown; instanceId?: unknown };
+        const idOrNull = (value: unknown): string | null => (typeof value === "string" && value.length > 0 ? value : null);
+        return this.services.craftmineLiveSample({
+          worldId: idOrNull(input.worldId),
+          buildId: idOrNull(input.buildId),
+          instanceId: idOrNull(input.instanceId),
+        });
       }
       case "commands.register": {
         const descriptor = (args[0] ?? {}) as {

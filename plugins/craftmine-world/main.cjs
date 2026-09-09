@@ -11,6 +11,7 @@ const {createGodotExecutor} = require('./godot-executor.cjs');
 const {createAssetService} = require('./asset-service.mjs');
 const {createReuseService} = require('./reuse-service.mjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary,createLibraryService,createMemoryService} = require('./domain.cjs');
+const {createHostProviders,createCoreBudgetProvider} = require('./tool-services.cjs');
 let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor,assetService,reuseService;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
@@ -81,21 +82,25 @@ async function onLoad() {
       };
     },
   });
-  // S6 model-tool handshake. The host owns live sampling and budget accounting;
-  // the plugin passes the real host bridge, the managed executor's enqueue entry
-  // and a budget provider, and leaves a counter it does not have as unknown
-  // instead of inventing a number.
-  const worldToolOptions={
-    sampleLiveState:typeof pi.craftmine?.sampleLiveState==='function'?input=>pi.craftmine.sampleLiveState(input):null,
-    budget:()=>({}),
-    // S6's contract: executorEnqueue({jobId,worldId,mode}, context) ->
-    // {enqueued, reason}. A build started by the model is only executed once
-    // this reaches the managed executor.
+  // Model-tool service wiring (task S6). Each provider is optional at the
+  // contract level, but production must supply every one of them: an unwired
+  // provider makes the tool report an explicit gap with its owner instead of
+  // substituting a task-start snapshot, a saved value or a zero counter.
+  const hostProviders=createHostProviders((method,params)=>{
+    if(method==='godotLiveState'&&typeof pi.craftmine?.godotLiveState==='function')return pi.craftmine.godotLiveState(params);
+    throw Object.assign(Error('HOST_PROVIDER_NOT_WIRED'),{errorCode:'HOST_PROVIDER_NOT_WIRED'});
+  });
+  const toolServices={
+    ...hostProviders,
+    // The seven-kind limit ledger is read through this process's core client.
+    budget:createCoreBudgetProvider(core),
+    // The managed executor lives in this process: its own status is the gate,
+    // and it is the service that actually runs a queued build or check job.
+    executorStatus:()=>godotExecutor.status(),
     executorEnqueue:(job,context)=>godotExecutor.enqueue(job,context),
-    historyMethods:['content.history','content.version.list','content.checkpoint.list','content.readFile','content.diff','content.changes'],
-    libraryMethods:['library.search','library.read'],
+    executorCancel:jobId=>godotExecutor.cancel(jobId),
   };
-  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context)),verifications,reviews,worldToolOptions))await pi.agent.registerTool(tool);
+  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context)),verifications,reviews,toolServices))await pi.agent.registerTool(tool);
 }
 
 // Private parent-process lifecycle. There is no panel channel for this method.

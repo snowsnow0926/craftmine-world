@@ -1,0 +1,2 @@
+﻿HEAD=6c0b05a
+ M docs/dispatch-reports/godot-round3/S6/evidence/source-hashes.txt

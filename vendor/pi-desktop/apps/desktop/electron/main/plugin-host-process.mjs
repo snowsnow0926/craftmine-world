@@ -114,6 +114,9 @@ function buildApi() {
       // the decoder, the window or a progress write path.
       assetPreview: (input, options) => call("craftmine.assetPreview", [input, options]),
       sampleLiveState: (input) => call("craftmine.sampleLiveState", [input]),
+      // Live observation of the running instance (task S6). Returns the host's
+      // observation envelope, or null when no formal instance is running.
+      godotLiveState: (input) => call("craftmine.godotLiveState", [input]),
     } } : {}),
     app: {
       getVersion: () => call("app.getVersion"),

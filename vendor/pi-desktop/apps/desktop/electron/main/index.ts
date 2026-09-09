@@ -182,6 +182,7 @@ import { PluginPanelHost } from "./plugin-panel-host";
 import { PluginViewHost, pluginViewKey } from "./plugin-view-host";
 import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
 import { GodotWorldViewHost } from "./godot-world-view-host";
+import { createCraftmineLiveSampler } from "./craftmine-live-sample";
 import { createGodotRuntimeAdapter } from "./godot-runtime-adapter";
 import { createGodotCandidateCoordinator } from "./godot-candidate-coordinator";
 import {
@@ -908,6 +909,10 @@ const godotWorld: GodotWorldViewHost = new GodotWorldViewHost({
   progress: godotAdapter.progress,
   onState: state => pluginViews.broadcast("godot-world:state", state),
 });
+// Live observation for the model tools (task S6). The sampler reads the formal
+// instance only, and every envelope carries the host's own world/build/instance
+// identity; the plugin may narrow the request but never redirect it.
+plugins.setServices({ craftmineLiveSample: createCraftmineLiveSampler(() => godotWorld) });
 const godotCandidates = createGodotCandidateCoordinator({
   host: godotWorld, adapter: godotAdapter, selection: godotSelection,
   domain: (method, params) => plugins.requestCraftmineHost(method, params),

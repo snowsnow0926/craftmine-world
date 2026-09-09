@@ -23,63 +23,85 @@ const GAP_CATEGORIES={
   'undetermined':{label:'Not yet determined',action:'Collect the required evidence before classifying.',playerEffect:'An explicit "unknown so far", not a false capability claim.'}
 };
 
-// Owner and reachability of every host method a world tool may call. The owner
-// is the single write-responsible agent for that subsystem; a gap report must
-// route to that owner rather than leave the model guessing.
+// Owner and reachability of every host method a world tool may call. `owner` is
+// the round-three agent responsible for the method's implementation or
+// registration (see docs/dispatch-prompts/godot-round3-20260910/README.md §3);
+// a gap report must route to that owner rather than leave the model guessing.
 const HOST_METHODS={
-  'godotProject.create':{owner:'A',capability:'godotProjects',kind:'write'},
-  'godotProject.index':{owner:'A',capability:'godotProjects',kind:'read'},
-  'godotProject.read':{owner:'A',capability:'godotProjects',kind:'read'},
-  'godotProject.patch':{owner:'A',capability:'godotProjects',kind:'write'},
-  'godotProject.receipt':{owner:'A',capability:'godotProjects',kind:'receipt'},
-  'godotAsset.put':{owner:'A',capability:'godotProjects',kind:'write'},
-  'godotAsset.list':{owner:'A',capability:'godotProjects',kind:'read'},
-  'godotBuild.start':{owner:'C',capability:'godotBuildJobs',kind:'write'},
-  'godotBuild.read':{owner:'C',capability:'godotBuildJobs',kind:'read'},
-  'godotBuild.cancel':{owner:'C',capability:'godotBuildJobs',kind:'write'},
-  'godotBuild.receipt':{owner:'C',capability:'godotBuildJobs',kind:'receipt'},
-  'godotCandidate.read':{owner:'C',capability:'godotBuildJobs',kind:'read'},
-  'godotCandidate.list':{owner:'C',capability:'godotBuildJobs',kind:'read'},
-  'godotApplication.prepare':{owner:'C',capability:'playerApplications',kind:'write'},
-  'godotApplication.commit':{owner:'C',capability:'playerApplications',kind:'write'},
-  'godotApplication.read':{owner:'C',capability:'playerApplications',kind:'read'},
-  'godotApplication.abort':{owner:'C',capability:'playerApplications',kind:'write'},
-  'godotRuntime.describe':{owner:'C',capability:'godotProjects',kind:'read'},
-  'godotRuntime.describeCandidate':{owner:'C',capability:'playerApplications',kind:'read',requiresHostToken:true},
-  'godotRuntime.saveProgress':{owner:'C',capability:'godotProjects',kind:'write'},
-  'godotExecutor.register':{owner:'C',capability:'godotExecutorGate',kind:'write'},
-  'godotJob.claim':{owner:'C',capability:'godotExecutorGate',kind:'write'},
-  'godotJob.progress':{owner:'C',capability:'godotExecutorGate',kind:'write'},
-  'godotJob.heartbeat':{owner:'C',capability:'godotExecutorGate',kind:'write'},
-  'godotJob.finish':{owner:'C',capability:'godotExecutorGate',kind:'write'},
-  'library.search':{owner:'H',capability:'publishesWorlds',kind:'read'},
-  'library.read':{owner:'H',capability:'publishesWorlds',kind:'read'},
-  'library.capture':{owner:'H',capability:'publishesWorlds',kind:'write'},
-  'memory.search':{owner:'J',capability:'advisoryReviews',kind:'read'},
-  'memory.propose':{owner:'J',capability:'advisoryReviews',kind:'write'},
-  'verification.submit':{owner:'C',capability:'verificationJobs',kind:'write'},
-  'verification.read':{owner:'C',capability:'verificationJobs',kind:'read'},
-  'verification.cancel':{owner:'C',capability:'verificationJobs',kind:'write'},
-  'workspace.open':{owner:'C',capability:'sessionDrafts',kind:'read'},
-  'workspace.commit':{owner:'C',capability:'sessionDrafts',kind:'write'},
-  'workspace.receipt':{owner:'C',capability:'sessionDrafts',kind:'receipt'},
-  'task.readRequirements':{owner:'C',capability:'sessionDrafts',kind:'read'},
-  'task.context':{owner:'C',capability:'sessionDrafts',kind:'read'},
-  'task.recoverable':{owner:'C',capability:'sessionDrafts',kind:'read'},
-  'task.resume':{owner:'C',capability:'sessionDrafts',kind:'write'},
-  'backup.export':{owner:'H',capability:'publishesWorlds',kind:'write'},
-  'backup.inspect':{owner:'H',capability:'publishesWorlds',kind:'read'},
-  'backup.restore':{owner:'H',capability:'publishesWorlds',kind:'write'},
-  'backup.status':{owner:'H',capability:'publishesWorlds',kind:'read'},
-  'backup.cancel':{owner:'H',capability:'publishesWorlds',kind:'write'}
+  'godotProject.create':{owner:'S1',capability:'godotProjects',kind:'write'},
+  'godotProject.index':{owner:'S1',capability:'godotProjects',kind:'read'},
+  'godotProject.read':{owner:'S1',capability:'godotProjects',kind:'read'},
+  'godotProject.patch':{owner:'S1',capability:'godotProjects',kind:'write'},
+  'godotProject.receipt':{owner:'S1',capability:'godotProjects',kind:'receipt'},
+  'godotAsset.put':{owner:'S1',capability:'godotProjects',kind:'write'},
+  'godotAsset.list':{owner:'S1',capability:'godotProjects',kind:'read'},
+  'godotBuild.start':{owner:'S1',capability:'godotBuildJobs',kind:'write',service:'S2'},
+  'godotBuild.read':{owner:'S1',capability:'godotBuildJobs',kind:'read'},
+  'godotBuild.cancel':{owner:'S1',capability:'godotBuildJobs',kind:'write',service:'S2'},
+  'godotBuild.receipt':{owner:'S1',capability:'godotBuildJobs',kind:'receipt'},
+  'godotCandidate.read':{owner:'S1',capability:'godotBuildJobs',kind:'read'},
+  'godotCandidate.list':{owner:'S1',capability:'godotBuildJobs',kind:'read'},
+  'godotApplication.prepare':{owner:'S1',capability:'playerApplications',kind:'write'},
+  'godotApplication.commit':{owner:'S1',capability:'playerApplications',kind:'write'},
+  'godotApplication.read':{owner:'S1',capability:'playerApplications',kind:'read'},
+  'godotApplication.abort':{owner:'S1',capability:'playerApplications',kind:'write'},
+  'godotRuntime.describe':{owner:'S1',capability:'godotProjects',kind:'read'},
+  'godotRuntime.describeCandidate':{owner:'S1',capability:'playerApplications',kind:'read',requiresHostToken:true},
+  'godotRuntime.saveProgress':{owner:'S1',capability:'godotProjects',kind:'write'},
+  'godotExecutor.register':{owner:'S2',capability:'godotExecutorGate',kind:'write'},
+  'godotExecutor.status':{owner:'S2',capability:'godotExecutorGate',kind:'read'},
+  'godotJob.usage':{owner:'S1',capability:'godotBuildJobs',kind:'read'},
+  'godotJob.continue':{owner:'S1',capability:'godotBuildJobs',kind:'write',service:'S2'},
+  'godotJob.claim':{owner:'S2',capability:'godotExecutorGate',kind:'write'},
+  'godotJob.progress':{owner:'S2',capability:'godotExecutorGate',kind:'write'},
+  'godotJob.heartbeat':{owner:'S2',capability:'godotExecutorGate',kind:'write'},
+  'godotJob.finish':{owner:'S2',capability:'godotExecutorGate',kind:'write'},
+  'library.search':{owner:'S1',capability:'publishesWorlds',kind:'read'},
+  'library.read':{owner:'S1',capability:'publishesWorlds',kind:'read'},
+  'library.capture':{owner:'S1',capability:'publishesWorlds',kind:'write'},
+  'memory.search':{owner:'S1',capability:'advisoryReviews',kind:'read'},
+  'memory.propose':{owner:'S1',capability:'advisoryReviews',kind:'write'},
+  'verification.submit':{owner:'S1',capability:'verificationJobs',kind:'write'},
+  'verification.read':{owner:'S1',capability:'verificationJobs',kind:'read'},
+  'verification.cancel':{owner:'S1',capability:'verificationJobs',kind:'write'},
+  'workspace.open':{owner:'S1',capability:'sessionDrafts',kind:'read'},
+  'workspace.commit':{owner:'S1',capability:'sessionDrafts',kind:'write'},
+  'workspace.receipt':{owner:'S1',capability:'sessionDrafts',kind:'receipt'},
+  'task.readRequirements':{owner:'S1',capability:'sessionDrafts',kind:'read'},
+  'task.context':{owner:'S1',capability:'sessionDrafts',kind:'read'},
+  'task.recoverable':{owner:'S1',capability:'sessionDrafts',kind:'read'},
+  'task.resume':{owner:'S1',capability:'sessionDrafts',kind:'write'},
+  'backup.export':{owner:'S4',capability:'publishesWorlds',kind:'write'},
+  'backup.inspect':{owner:'S4',capability:'publishesWorlds',kind:'read'},
+  'backup.restore':{owner:'S4',capability:'publishesWorlds',kind:'write'},
+  'backup.status':{owner:'S4',capability:'publishesWorlds',kind:'read'},
+  'backup.cancel':{owner:'S4',capability:'publishesWorlds',kind:'write'},
+  // Round-three domain adapters the model tools are already bound to. They are
+  // listed so a missing registration is reported against the exact owner.
+  'asset.search':{owner:'S5',capability:'publishesWorlds',kind:'read'},
+  'asset.read':{owner:'S5',capability:'publishesWorlds',kind:'read'},
+  'asset.versions':{owner:'S5',capability:'publishesWorlds',kind:'read'},
+  'package.check':{owner:'S3',capability:'playerApplications',kind:'read'},
+  'package.read':{owner:'S3',capability:'playerApplications',kind:'read'},
+  'package.list':{owner:'S3',capability:'playerApplications',kind:'read'},
+  'package.install':{owner:'S3',capability:'playerApplications',kind:'write'},
+  'package.register':{owner:'S3',capability:'playerApplications',kind:'write'},
+  'package.upgrade':{owner:'S3',capability:'playerApplications',kind:'write'},
+  'package.restore':{owner:'S3',capability:'playerApplications',kind:'write'},
+  'content.history':{owner:'S1',capability:'sessionDrafts',kind:'read'},
+  'content.version':{owner:'S1',capability:'sessionDrafts',kind:'read'},
+  'content.diff':{owner:'S1',capability:'sessionDrafts',kind:'read'},
+  'content.operationResult':{owner:'S1',capability:'sessionDrafts',kind:'read'},
+  'content.checkpoint':{owner:'S1',capability:'sessionDrafts',kind:'write'},
+  'content.mergeCandidate':{owner:'S1',capability:'sessionDrafts',kind:'write'},
+  'budget.inspect':{owner:'S1',capability:'sessionDrafts',kind:'read'}
 };
 
 // Methods the core advertises but no agent tool reaches today. This is the
 // "engine can do it, the AI cannot" list that the model must be told about.
 const UNREACHABLE_METHODS=['godotRuntime.describeCandidate','godotApplication.prepare','godotApplication.commit',
   'godotApplication.read','godotApplication.abort','godotJob.claim','godotJob.progress','godotJob.heartbeat',
-  'godotJob.finish','library.capture','backup.export','backup.inspect','backup.restore','backup.status','backup.cancel',
-  'task.context','task.recoverable'];
+  'godotJob.finish','library.capture','backup.export','backup.inspect','backup.restore','backup.status','backup.cancel'];
 
 function capabilityState(method,handshake){
   const entry=HOST_METHODS[method];
@@ -182,13 +204,18 @@ function classifyGap({request,evidence=[]}={}){
       :'Open a separate development item and preserve the existing world and draft.'};
 }
 
-function capabilityReport({manifest,routing,handshake,localTools,gaps,limits}={}){
+function capabilityReport({manifest,routing,handshake,localTools,gaps,limits,services}={}){
   const inventory=buildInventory({manifest,routing,handshake,localTools});
   return {format:INVENTORY_FORMAT,...inventory,
     gapClassifications:(gaps||[]).map(gap=>classifyGap(gap)),
     limits:limits||{available:false,reason:'BUDGET_PROVIDER_NOT_WIRED'},
+    // Which host providers this process actually received. A missing provider is
+    // the audited defect this report must expose, not a silent degradation.
+    services:services||{format:'craftmine.tool-services/1',wired:[],missing:[],complete:false,
+      reason:'SERVICE_DESCRIPTION_UNAVAILABLE'},
     guidance:['Tools in this inventory define what is actually available; do not claim a capability outside it.',
       'A wired tool whose capability flag is false is disabled, not broken: report the reason and the owner.',
+      'services.missing names a provider this process did not receive; its value is unknown, never zero or saved state.',
       'Ordinary gameplay, scenes, UI and GDScript are developable without a new host command.',
       'Engine internals, sandbox rules and the verification standard are not changeable by a world task.']};
 }
