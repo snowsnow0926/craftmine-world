@@ -1,4 +1,4 @@
-// Actual native PI Agent authorship; strictly isolated, offscreen, no input simulation.
+// Native lifecycle acceptance with fixed authorship and real model review.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -41,6 +41,7 @@ import {execFileSync} from 'node:child_process';
 import {isDeepStrictEqual} from 'node:util';
 const gameOnly=process.env.CRAFTMINE_BATCH07_GAME_ONLY==='1';
 const stateOnly=process.env.CRAFTMINE_BATCH07_STATE_ONLY==='1';
+const budgetOnly=process.env.CRAFTMINE_BATCH07_BUDGET_ONLY==='1';
 const config=process.env.CRAFTMINE_LIVE_CONFIG;
 assert.ok(config&&path.isAbsolute(config),'Explicit authorized config required');loadLocalConfig(config);
 assert.equal(modelProvider(),'deepseek');assert.ok(deepseekKey());
@@ -53,8 +54,10 @@ if(resume)assert.ok(resume.startsWith(path.resolve('test-results')+path.sep+'des
 const directory=resume||fs.mkdtempSync(path.resolve('test-results/desktop-native-batch07-')),profile=path.join(directory,'profile'),legacySource=path.join(directory,'legacy');
 const previous=resume?JSON.parse(fs.readFileSync(path.join(directory,'report.json'))):null;
 const continueInstall=!!(previous?.capture?.ref&&previous?.newWorld&&!previous?.install);
-if(resume)assert.ok(previous.success===false&&previous.identity?.sessionId&&(!previous.retryOf||continueInstall||(stateOnly&&previous.install&&previous.afterRestart)),'Only one explicit review retry, captured installation or verified state continuation allowed');
+if(resume)assert.ok((budgetOnly&&previous.identity?.sessionId&&(previous.finalLedger||previous.failureLedger)?.craftmine_budget_requests.length>0)||(previous.success===false&&previous.identity?.sessionId&&(!previous.retryOf||continueInstall||(stateOnly&&previous.install&&previous.afterRestart))),'Only one explicit review retry, captured installation or verified state continuation allowed');
 assert.ok(!stateOnly||resume,'State-only requires retained owned evidence');
+assert.ok(!budgetOnly||resume,'Budget-only requires retained owned evidence');
+const budgetSource=budgetOnly?JSON.parse(fs.readFileSync(path.join(directory,'failed-review-report.json'))).identity:null;
 const token=resume?JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'))).token:randomUUID();
 if(!resume){fs.mkdirSync(profile);fs.mkdirSync(legacySource);
 fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));
@@ -71,6 +74,7 @@ function ledger(){const db=new DatabaseSync(path.join(profile,'plugins/data/craf
 function launch(label){
   const env={...process.env,CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_HEADLESS_ROOT:directory,CRAFTMINE_DATA_DIR:profile,CRAFTMINE_HEADLESS_TOKEN:token,CRAFTMINE_CORE_BIN:core,PI_DESKTOP_HOST_BIN:host,CRAFTMINE_BATCH07_NATIVE:'1',CRAFTMINE_F_MODEL:modelId(),CRAFTMINE_F_KEY:deepseekKey(),CRAFTMINE_F_THINKING:thinkingEnabled()?reasoningEffort():'off'};
   if(previous)env.CRAFTMINE_BATCH07_SESSION=evidence.identity?.sessionId||previous.identity.sessionId;
+  if(budgetOnly)env.CRAFTMINE_BATCH07_SESSION=budgetSource.sessionId;
   if(continueInstall)env.CRAFTMINE_BATCH07_CAPTURE_REF=JSON.stringify(previous.capture.ref);
   delete env.ELECTRON_RUN_AS_NODE;for(const key of Object.keys(env))if(/^PI_DESKTOP_(CAPTURE|BOOT_PROBE|SUPERVISION_PROBE|PLAN_UI_PROBE)/.test(key))delete env[key];
   const child=spawn(electron,packaged?[]:[desktop],{cwd:directory,windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env});
@@ -95,6 +99,13 @@ const health=value=>target(value)?.health;
 try{
   console.log('Evidence directory: '+directory);client=launch(resume?'retry-review':'author');await ready();
   evidence.isolation=await client.rpc('status','craftmine-headless');check('Isolated offscreen unfocusable windows',evidence.isolation.violations.length===0&&evidence.isolation.windows.every(w=>w.offscreen&&!w.visible&&!w.focusable&&!w.focused));
+  if(budgetOnly){
+    evidence.identity=await client.rpc('initialize');evidence.sourceWorld=await client.rpc('sourceWorld');
+    evidence.budget=await client.rpc('budget','craftmine-acceptance-batch07',30000);
+    const before=evidence.budget.before.context.budget,after=evidence.budget.after.context.budget;
+    check('Actual budget form preserves nonzero provider usage and owner while removing cumulative cap',before.requestCount>0&&(before.actualTokens+before.reservedTokens)>0&&after.actualTokens===before.actualTokens&&after.requestCount===before.requestCount&&after.reservedTokens===before.reservedTokens&&after.ownerTaskId===before.ownerTaskId&&after.limits.maxTokens===null);
+    evidence.finalLedger=ledger();check('Budget-only UI continuation makes zero additional model requests',evidence.finalLedger.craftmine_budget_requests.length===(previous.finalLedger||previous.failureLedger).craftmine_budget_requests.length);
+  }else{
   if(!resume){evidence.import=await client.rpc('importLegacy','craftmine-headless',100000);await ready();}
   evidence.gameOnly=gameOnly;
   evidence.stateOnly=stateOnly;
@@ -111,6 +122,9 @@ try{
   evidence.install=await client.rpc('install','craftmine-acceptance-batch07',30000);save();
   check('Exact captured package installs all objects and fixed extension',evidence.install.ref.hash===evidence.capture.ref.hash&&Object.keys(evidence.install.idMap.objects).length===4&&evidence.install.dependencies.extensions[0].id==='training-drain');
   await reviewedApply('installed');targetId=evidence.install.idMap.objects['training-target'];
+  evidence.budget=await client.rpc('budget','craftmine-acceptance-batch07',30000);
+  const originalBudget=evidence.budget.before.context.budget,afterBudget=evidence.budget.after.context.budget;
+  check('Actual workbench changes finite token allowance to unlimited without clearing owner or usage',originalBudget.requestCount>0&&afterBudget.ownerTaskId===originalBudget.ownerTaskId&&afterBudget.actualTokens===originalBudget.actualTokens&&afterBudget.reservedTokens===originalBudget.reservedTokens&&afterBudget.requestCount===originalBudget.requestCount&&afterBudget.limits.maxTokens===null);
   }
   let value=await step('observe');check('Native instance starts once with full target health',health(value)===60&&value.inventory['training-token']===1);
   value=await step('fall');check('Actual physics fall reduces player health',value.playerHealth===50);
@@ -149,6 +163,7 @@ try{
   if(stateOnly)check('State-only continuation makes zero additional model requests',evidence.finalLedger.craftmine_budget_requests.length===previous.failureLedger.craftmine_budget_requests.length);
   check('No focus, pointer lock or physical input across all game frames',evidence.finalStatus.violations.length===0&&evidence.guards.every(f=>f.guard?.pointerLock===0&&f.guard?.focus===0));
   check(gameOnly?'Game-only scenario makes zero model requests':'Real reviews stay inside bounded model allowance',evidence.finalLedger.craftmine_budget_requests.length<=(gameOnly?0:evidence.limits.requests)&&Date.now()-start<evidence.limits.timeoutMs);
+  }
   evidence.success=true;
 }catch(error){evidence.success=false;evidence.error=error.stack;try{evidence.failureLedger=ledger();}catch{}process.exitCode=1;console.error(error.stack);}
 finally{await client?.stop();evidence.lastExitAudit=client?.audit;evidence.elapsedMs=Date.now()-start;save();console.log('Evidence: '+directory);}

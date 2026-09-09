@@ -74,6 +74,13 @@ export function installBatch07NativeAcceptance(access:Access):void {
     if(method==="save")return page("craftmineView.prepareClose()");
     if(method==="snapshot")return {worldId:await page("document.body.dataset.worldId"),snapshot:await page("craftmineView.snapshot()")};
     if(!sessionId)throw Error("Initialize first");
+    if(method==="sourceWorld"){
+      const list=await panel('world.list'),source=list.worlds.find((world:any)=>world.title==='花园训练场');
+      if(!source)throw Error('Fixed source world missing');
+      if(await page("document.body.dataset.worldId")===source.id){worldId=source.id;return {id:worldId,unchanged:true};}
+      await page(`(()=>{const select=document.getElementById('world-list');select.value=${JSON.stringify(source.id)};select.dispatchEvent(new Event('change'));})()`);
+      const deadline=Date.now()+15000;while(Date.now()<deadline){const state=await page("({id:document.body.dataset.worldId,loaded:document.body.dataset.worldLoaded,busy:document.getElementById('world-list').disabled})");if(state.id===source.id&&state.loaded==='true'&&!state.busy){worldId=state.id;return state;}await new Promise(r=>setTimeout(r,100));}throw Error('Source world switch timed out');
+    }
     if(method==="author"){
       const turn=await access.call("session.beginTurn",{sessionId});turnId=turn.turnId;access.begin(sessionId,turnId);
       await access.call("session.appendMessage",{sessionId,turnId,message:{id:randomUUID(),role:"user",content:"保留已导入花园训练场的树、花草、射击近战生命值、击破训练靶奖励和按G吸血的玩法。只把 training-target 名称改为复用训练靶。验证所有已有玩法仍可运行，然后保留候选让我应用。",createdAt:new Date().toISOString(),status:"complete"}});
@@ -83,6 +90,25 @@ export function installBatch07NativeAcceptance(access:Access):void {
       return {inspected,patch,verification,sessionId,turnId};
     }
     if(method==="jobs")return {verifications:await panel("verification.list",{limit:16}),context:await panel("task.current")};
+    if(method==="budget")return page(`(async()=>{
+      const before=await pluginBridge.invoke('task.current',{worldId:document.body.dataset.worldId});
+      if(!before.context)throw Error('Actual current task missing');
+      await craftmineView.showWorkbench('task');
+      const deadline=Date.now()+20000;
+      const find=label=>[...document.querySelectorAll('[data-workbench-page="task"] button')].find(button=>button.textContent===label);
+      while(!find('保存累计额度')&&Date.now()<deadline)await new Promise(r=>setTimeout(r,50));
+      const saveButton=find('保存累计额度');if(!saveButton||saveButton.disabled)throw Error('Actual budget control unavailable: '+document.querySelector('[data-workbench-page="task"]')?.textContent);
+      saveButton.form.querySelector('input[type="number"]').value='100';saveButton.form.requestSubmit(saveButton);
+      let limited;
+      while(Date.now()<deadline){limited=await pluginBridge.invoke('task.current',{worldId:document.body.dataset.worldId});if(limited.context?.budget.limits.maxTokens===100)break;await new Promise(r=>setTimeout(r,100));}
+      if(limited?.context?.budget.limits.maxTokens!==100)throw Error('Actual finite budget did not persist');
+      while((!find('解除本地累计 token 上限')||find('解除本地累计 token 上限').disabled)&&Date.now()<deadline)await new Promise(r=>setTimeout(r,50));
+      const unlimited=find('解除本地累计 token 上限');if(!unlimited||unlimited.disabled)throw Error('Actual unlimited control unavailable');unlimited.form.requestSubmit(unlimited);
+      let after;
+      while(Date.now()<deadline){after=await pluginBridge.invoke('task.current',{worldId:document.body.dataset.worldId});if(after.context?.budget.limits.maxTokens===null)break;await new Promise(r=>setTimeout(r,100));}
+      if(after?.context?.budget.limits.maxTokens!==null)throw Error('Actual unlimited budget did not persist');
+      return {before,limited,after,text:document.querySelector('[data-workbench-page="task"]').textContent};
+    })()`);
     if(method==="retryReview"){
       const jobs=await panel("verification.list",{limit:16}),job=(Array.isArray(jobs)?jobs:jobs.items).find((j:any)=>j.current&&j.status==="passed");
       if(!job)throw Error("No current passed verification");

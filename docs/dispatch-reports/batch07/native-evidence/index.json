@@ -43,5 +43,10 @@
     "file": "formal-gameplay-zero-model.json",
     "bytes": 158743,
     "sha256": "9f5f1fc098b1600ff5636d54e25c4279527cc4f35b1ff3d2f5f787dc9768dfa0"
+  },
+  {
+    "file": "actual-budget-ui.json",
+    "bytes": 71808,
+    "sha256": "3c065018bc834d6159cdfcc339b10a5e5f5d5d0227e2e6a05e33502a7a53ead6"
   }
 ]

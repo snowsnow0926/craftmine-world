@@ -19,6 +19,8 @@
 
 主要证据位于 `native-evidence/development-report.json` 及其 `prior-attempt` 前序文件。末段记忆/备份采用零新增模型的状态续验，未重复作者、安装或玩法来制造新通过。独立 `formal-gameplay-zero-model.json` 也通过 25 项正式游戏/存档/备份检查，但它只证明固定导入玩法，不能替代作品库链证据。
 
+实际工作台额度表单另已验通：在保留的真实超时任务上，通过 DOM requestSubmit 将累计额度设为 100，再明确解除为不限。Rust 中原 owner、1 次请求和 47,298 unknown 预估用量均保持不变；没有额外模型请求。证据为 `native-evidence/actual-budget-ui.json`，它证明 Main → 私有网关 → Rust 的真实链路，且没有把未知用量写成实际已知用量。
+
 ## 修复与保留的失败
 
 1. **产品缺口：应用丢失新扩展。** Rust prepare 正确使用已验证扩展，commit 却使用目标世界的旧列表。现在最终存档使用相同已验证 artifact 中的精确扩展；新增持久化回归覆盖重开数据库。
@@ -30,7 +32,7 @@
 
 ## 测试类型与版本
 
-产品提交 `27073c4`；原生入口与测试 `23a8d4a`；续验会话修复 `2334796`。开发实际运行使用报告里的 main/core/host 二进制 SHA-256，公共 index/main.rs 临时接线内容在两份 integration.patch 中。最终交付需要把这些接线并入正式源码再重新打包。
+产品提交 `27073c4`；原生入口与测试 `23a8d4a`；续验会话修复 `2334796`。开发实际运行使用报告里的 main/core/host 二进制 SHA-256，公共 index/main.rs 临时接线内容在两份 integration.patch 中。G 在 `b428802` 已将接线正式集成；新增额度实测在该集成开发版上完成。最终交付仍需重新打包复验。
 
 - 本组实际运行：Rust core 全库 45 项；其中应用 9 项覆盖 acknowledgement、绑定、回放、伪造加载、失败机器验证及扩展存档。
 - 本组实际运行：JS 应用 4 项、原生入口拒绝 3 项、静态导入 3 项、desktop TypeScript 检查及构建。
