@@ -4,3 +4,5 @@
 desktop/godot/probes/** text eol=lf
 desktop/godot/licenses/** -text
 docs/evidence/godot-cycle-*/** -text whitespace=cr-at-eol
+
+desktop/godot/sandbox/evidence/** -text whitespace=cr-at-eol

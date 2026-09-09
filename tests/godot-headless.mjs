@@ -2,49 +2,17 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import {createHash} from 'node:crypto';
-import {execFile} from 'node:child_process';
-import {promisify} from 'node:util';
-const runFile=promisify(execFile);
+import {createGodotProbeEnvironment,godotLock as lock} from '../desktop/godot/toolchain.mjs';
 const root=path.resolve('.');
-const readJson=file=>JSON.parse(fs.readFileSync(file,'utf8').replace(/^\uFEFF/,''));
-const lock=readJson(path.join(root,'desktop/godot/toolchain.lock.json'));
-assert.equal(process.platform,'win32','This pinned GD0 toolchain is for Windows x64');
-const cache=path.join(root,'desktop/build/godot',lock.version);
-const unpacked=readJson(path.join(cache,'unpacked-files.json'));
-assert.equal(unpacked.archiveSha256,lock.editor.sha256);
-const digest=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-assert.equal(digest(path.join(cache,lock.editor.file)),lock.editor.sha256,'Editor archive integrity');
-const source=path.join(cache,'editor',lock.editor.executable);
-const expected=unpacked.files.find(file=>file.path===lock.editor.executable);
-assert.ok(expected,'Verified executable entry');
-assert.equal(digest(source),expected.sha256,'Editor executable integrity');
 fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
 const out=fs.mkdtempSync(path.join(root,'test-results/godot-headless-'));
-const engine=path.join(out,'engine');fs.mkdirSync(engine);
-const executable=path.join(engine,lock.editor.executable);
-fs.copyFileSync(source,executable);fs.writeFileSync(path.join(engine,'_sc_'),'');
-const env={};
-for(const key of ['SystemRoot','WINDIR','COMSPEC'])if(process.env[key])env[key]=process.env[key];
-env.PATH=path.join(process.env.SystemRoot,'System32');
-for(const key of ['APPDATA','LOCALAPPDATA','USERPROFILE','TEMP','TMP']){
-  env[key]=path.join(out,'profile',key.toLowerCase());fs.mkdirSync(env[key],{recursive:true});
-}
-for(const folder of ['Desktop','Documents','Downloads','Music','Pictures','Videos'])fs.mkdirSync(path.join(env.USERPROFILE,folder));
-const report={kind:'fixed-authored-native-headless-godot',version:lock.version,engineSha256:expected.sha256,checks:[],runs:[],errors:[],notVerified:['model-authored creation','rendered crosshair appearance','central native embedding','web export','untrusted-code OS isolation']};
+let environment;
+const report={kind:'fixed-authored-native-headless-godot',version:lock.version,engineSha256:lock.editor.executableSha256,checks:[],runs:[],errors:[],notVerified:['model-authored creation','rendered crosshair appearance','central native embedding','web export','untrusted-code OS isolation']};
 const check=(name,value)=>{report.checks.push({name,passed:!!value});assert.ok(value,name);console.log('PASS '+name);};
-async function run(label,args){
-  const started=performance.now();
-  try{
-    const result=await runFile(executable,['--headless',...args],{cwd:out,env,windowsHide:true,timeout:45000,maxBuffer:1024*1024});
-    fs.writeFileSync(path.join(out,label+'.log'),result.stdout+result.stderr);
-    assert.ok(!/(?:SCRIPT ERROR|Parse Error|ERROR:)/.test(result.stdout+result.stderr),label+' engine errors');
-    report.runs.push({label,elapsedMs:Math.round(performance.now()-started),exitCode:0});
-    return result.stdout;
-  }catch(error){fs.appendFileSync(path.join(out,label+'.log'),String(error.stdout??'')+String(error.stderr??'')+'\n'+String(error));throw error;}
-}
 try{
-  const version=(await run('version',['--version'])).trim();
+  environment=await createGodotProbeEnvironment(out);
+  const {run}=environment;report.runs=environment.runs;
+  const version=environment.actualVersion;
   check('Pinned real engine starts without a window',version.startsWith(lock.version.replace('-stable','.stable')));
   report.actualVersion=version;
   for(const base of ['first-person','top-down']){

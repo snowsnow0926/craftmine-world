@@ -10,13 +10,24 @@
     "url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_win64.exe.zip",
     "bytes": 86013866,
     "sha256": "731980f9608d61333e5baf54a2ef17210acc7a538446c0cb9969f002aca1e953",
-    "executable": "Godot_v4.7.2-stable_win64.exe"
+    "executable": "Godot_v4.7.2-stable_win64.exe",
+    "executableSha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
   },
   "exportTemplates": {
     "file": "Godot_v4.7.2-stable_export_templates.tpz",
     "url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz",
     "bytes": 1281349702,
-    "sha256": "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011"
+    "sha256": "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011",
+    "webRelease": {
+      "file": "web_nothreads_release.zip",
+      "bytes": 10245903,
+      "sha256": "d3ee2f08cef0cf3cf6678a6355a92a8db48ccdd35cbd2e8bfd5f0e8a0b4032a0"
+    },
+    "webThreadedRelease": {
+      "file": "web_release.zip",
+      "bytes": 10290815,
+      "sha256": "02f0dca13ed3d8343fa68f8f88ac80295562408d71aa67157e8b96ddebaa67a3"
+    }
   },
   "verifiedAt": "2026-09-09",
   "digestSource": "https://api.github.com/repos/godotengine/godot-builds/releases/tags/4.7.2-stable",
@@ -32,5 +43,11 @@
       "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d"
     }
   ],
-  "status": "gd0-candidate-not-production-bundled"
+  "status": "gd0-candidate-not-production-bundled",
+  "webPreview": {
+    "preferredTemplate": "webThreadedRelease",
+    "status": "gd0-candidate",
+    "singleThreadStatus": "rejected-exit-worker-group-error",
+    "decision": "docs/GODOT_INTEGRATION_DECISION.md"
+  }
 }

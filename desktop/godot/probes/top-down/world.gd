@@ -26,6 +26,8 @@ func _ready() -> void:
 	add_child(shop)
 	shop.position = Vector2(160, 150)
 	add_shape(shop, Color(0.7, 0.35, 0.25))
+	if OS.has_feature("web"):
+		add_child(load("res://web_bridge.gd").new())
 	if OS.get_cmdline_user_args().has("--restore"):
 		var file := FileAccess.open("user://progress.json", FileAccess.READ)
 		if file == null:
@@ -51,6 +53,54 @@ func buy() -> bool:
 	coins -= price
 	apples += 1
 	return true
+
+func web_snapshot() -> Dictionary:
+	var viewport_size := get_viewport().get_visible_rect().size
+	return {"base": "top-down", "state": {"coins": coins, "apples": apples, "position": [player.position.x, player.position.y]},
+		"physicalShopOverlap": shop.overlaps_body(player), "price": price, "viewportSize": [viewport_size.x, viewport_size.y], "persistentStorage": OS.is_userfs_persistent()}
+
+
+func finite_number(value: Variant, minimum: float, maximum: float, integer := false) -> bool:
+	return (value is float or value is int) and is_finite(float(value)) and float(value) >= minimum and float(value) <= maximum and (not integer or float(value) == floorf(float(value)))
+
+func restore_web_state(saved: Variant) -> Dictionary:
+	if not saved is Dictionary or not finite_number(saved.get("coins"), 0, 20, true) or not finite_number(saved.get("apples"), 0, 4, true) or not saved.get("position") is Array or saved.position.size() != 2:
+		return {"error": "Progress is invalid"}
+	if not finite_number(saved.position[0], 0, 800) or not finite_number(saved.position[1], 0, 600):
+		return {"error": "Progress is invalid"}
+	coins = int(saved.coins)
+	apples = int(saved.apples)
+	player.position = Vector2(saved.position[0], saved.position[1])
+	for step in range(3):
+		await get_tree().physics_frame
+	return {"result": web_snapshot()}
+
+func web_command(op: String, args: Dictionary) -> Dictionary:
+	match op:
+		"snapshot":
+			return {"result": web_snapshot()}
+		"approach":
+			approach_shop = true
+			for step in range(48):
+				await get_tree().physics_frame
+			approach_shop = false
+		"buy":
+			return {"result": {"purchased": buy(), "snapshot": web_snapshot()}}
+		"save":
+			var failure: String = get_node("WebBridge").write_progress(web_snapshot().state)
+			if not failure.is_empty():
+				return {"error": failure}
+			return {"result": {"written": true, "snapshot": web_snapshot()}}
+		"restore":
+			var loaded: Dictionary = get_node("WebBridge").read_progress()
+			if loaded.has("error"):
+				return loaded
+			return await restore_web_state(loaded.state)
+		"restore-state":
+			return await restore_web_state(args.get("state"))
+		_:
+			return {"error": "Unsupported probe operation: " + op}
+	return {"result": web_snapshot()}
 
 func run_probe() -> void:
 	await get_tree().physics_frame
