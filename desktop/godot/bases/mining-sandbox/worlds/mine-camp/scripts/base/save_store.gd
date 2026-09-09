@@ -73,6 +73,7 @@ func save(state: MiningWorldState, terrain: MiningTerrainService) -> Dictionary:
 
 	var index: Dictionary = {}
 	var hashes: Dictionary = {}
+	var keep: Dictionary = {}
 	var written := 0
 	for chunk_id in terrain.edited_chunk_ids():
 		var coords := chunk_store.parse_chunk_id(String(chunk_id))
@@ -82,23 +83,29 @@ func save(state: MiningWorldState, terrain: MiningTerrainService) -> Dictionary:
 		if cells.is_empty():
 			continue
 		var revision := terrain.chunk_revision(coords.x, coords.y)
-		var needs_write := terrain.is_dirty(coords.x, coords.y) or not FileAccess.file_exists(chunk_store.path_in(chunk_directory, coords.x, coords.y))
+		var previous_entry: Variant = state.chunk_index.get(String(chunk_id), {})
+		var previous: Dictionary = previous_entry if previous_entry is Dictionary else {}
+		var previous_file := String(previous.get("file", chunk_store.file_name(coords.x, coords.y)))
+		var needs_write := terrain.is_dirty(coords.x, coords.y) or not FileAccess.file_exists(chunk_directory.path_join(previous_file))
+		var file := previous_file
 		var sha := ""
 		var bytes := 0
 		if needs_write:
 			var outcome := chunk_store.write_chunk(chunk_directory, coords.x, coords.y, revision, cells, material_ids)
 			if not bool(outcome.get("ok", false)):
 				return {"ok": false, "stage": String(outcome.get("stage", "chunk")), "error": String(outcome.get("error", "chunk write failed"))}
+			file = String(outcome.file)
 			sha = String(outcome.sha256)
 			bytes = int(outcome.bytes)
 			written += 1
 		else:
-			sha = _file_sha(chunk_store.path_in(chunk_directory, coords.x, coords.y))
-			bytes = _file_bytes(chunk_store.path_in(chunk_directory, coords.x, coords.y))
+			sha = _file_sha(chunk_directory.path_join(file))
+			bytes = _file_bytes(chunk_directory.path_join(file))
 			if sha.is_empty():
 				return {"ok": false, "stage": "verify", "error": "chunk file could not be re-read"}
-		index[String(chunk_id)] = {"revision": revision, "sha256": sha, "bytes": bytes, "cells": cells.size()}
+		index[String(chunk_id)] = {"revision": revision, "file": file, "sha256": sha, "bytes": bytes, "cells": cells.size()}
 		hashes[String(chunk_id)] = sha
+		keep[file] = true
 
 	var state_dict := state.to_dict()
 	state_dict["chunkIndex"] = index.duplicate(true)
@@ -125,7 +132,8 @@ func save(state: MiningWorldState, terrain: MiningTerrainService) -> Dictionary:
 	var verify := _verify_file(path, sha)
 	if not verify.is_empty():
 		return {"ok": false, "stage": "verify", "error": verify}
-	_prune_chunk_files(chunk_directory, index)
+	# The index is committed: only now are superseded chunk files removed.
+	_prune_chunk_files(chunk_directory, keep)
 	return {
 		"ok": true,
 		"path": ProjectSettings.globalize_path(path),
@@ -138,19 +146,18 @@ func save(state: MiningWorldState, terrain: MiningTerrainService) -> Dictionary:
 	}
 
 
-## An unmodified chunk must not leave a file behind (SPEC 5.1), so any chunk file
-## that the freshly committed index does not reference is removed.
-func _prune_chunk_files(directory: String, index: Dictionary) -> void:
+## A chunk file that the freshly committed index does not reference is removed, so
+## an unmodified chunk leaves no file behind (SPEC 5.1) and a superseded revision
+## does not accumulate.
+func _prune_chunk_files(directory: String, keep: Dictionary) -> void:
 	var handle := DirAccess.open(directory)
 	if handle == null:
 		return
 	handle.list_dir_begin()
 	var name := handle.get_next()
 	while not name.is_empty():
-		if not handle.current_is_dir() and name.ends_with(".json"):
-			var chunk_id := name.substr(0, name.length() - 5)
-			if not index.has(chunk_id):
-				DirAccess.remove_absolute(directory.path_join(name))
+		if not handle.current_is_dir() and name.ends_with(".json") and not keep.has(name):
+			DirAccess.remove_absolute(directory.path_join(name))
 		elif not handle.current_is_dir() and name.ends_with(".json.tmp"):
 			DirAccess.remove_absolute(directory.path_join(name))
 		name = handle.get_next()
@@ -271,7 +278,10 @@ func restore_into(state: MiningWorldState, terrain: MiningTerrainService) -> Dic
 		if not entry is Dictionary:
 			return _reject("bad_state", "chunk index entry %s is invalid" % chunk_id, path)
 		var expected_sha := String(entry.get("sha256", ""))
-		var outcome := chunk_store.read_chunk(chunk_store.path_in(chunks_dir(), coords.x, coords.y), coords.x, coords.y, expected_sha, material_ids)
+		var file := String(entry.get("file", chunk_store.file_name(coords.x, coords.y)))
+		if file.is_empty() or file.contains("/") or file.contains("\\"):
+			return _reject("bad_state", "chunk index entry %s has an invalid file name" % chunk_id, path)
+		var outcome := chunk_store.read_chunk(chunks_dir().path_join(file), coords.x, coords.y, expected_sha, material_ids)
 		if not bool(outcome.get("ok", false)):
 			return _reject(String(outcome.get("reason", "chunk_corrupt")), String(outcome.get("detail", "")), path)
 		var cells: Array = outcome.cells
@@ -283,6 +293,12 @@ func restore_into(state: MiningWorldState, terrain: MiningTerrainService) -> Dic
 	var rescue := _resolve_saved_player(candidate.player_tile(), overrides)
 	if not bool(rescue.get("ok", false)):
 		return _reject("bad_state", String(rescue.get("detail", "player tile could not be resolved")), path)
+	var saved_position := candidate.player_position()
+	var map_pixels := Vector2(generator.map_size * params.tile_size())
+	var margin := float(params.tile_size())
+	var top_margin := margin * float(PLAYER_TILE_MARGIN)
+	if saved_position.x < -margin or saved_position.y < -top_margin or saved_position.x > map_pixels.x + margin or saved_position.y > map_pixels.y + margin:
+		return _reject("bad_state", "saved player position is outside the map", path)
 	var restored_hash := _hash_with_overrides(overrides)
 	if not candidate.terrain_hash.is_empty() and candidate.terrain_hash != restored_hash:
 		return _reject("bad_state", "terrain hash does not match the restored chunks", path)
@@ -327,9 +343,16 @@ func restore_into(state: MiningWorldState, terrain: MiningTerrainService) -> Dic
 	}
 
 
+const PLAYER_TILE_MARGIN := 8
+
 ## Saved player tile resolution (SPEC 5.8): the nearest free tile above inside
-## the same chunk, with enough head-room for the 12x26 body.
+## the same chunk, with enough head-room for the 12x26 body. A tile outside the
+## map is rejected outright — `_material_at` would otherwise report air for it and
+## the player would be restored off-map. A small band above the top row is legal
+## (the player can stand on the surface edge), anything further is not.
 func _resolve_saved_player(tile: Vector2i, overrides: Dictionary) -> Dictionary:
+	if tile.x < 0 or tile.x >= generator.map_size.x or tile.y < -PLAYER_TILE_MARGIN or tile.y >= generator.map_size.y:
+		return {"ok": false, "detail": "saved player tile %d,%d is outside the map" % [tile.x, tile.y]}
 	var material := _material_at(tile.x, tile.y, overrides)
 	if not _is_solid(material):
 		return {"ok": true, "resolved": false, "from": [tile.x, tile.y], "to": [tile.x, tile.y], "reason": ""}

@@ -57,8 +57,10 @@ func count_of(item_id: String) -> int:
 # -------------------------------------------------------------------- ledger
 
 ## Returns the recorded entry for a request id, or an empty dictionary.
+## `auto:` ids are generated per process and must never be deduplicated across
+## restarts (SPEC 4), so they are not stored in the persistent ledger at all.
 func ledger_lookup(request_id: String) -> Dictionary:
-	if request_id.is_empty() or not ledger.has(request_id):
+	if request_id.is_empty() or request_id.begins_with("auto:") or not ledger.has(request_id):
 		return {}
 	var entry: Variant = ledger[request_id]
 	return entry if entry is Dictionary else {}
@@ -67,7 +69,7 @@ func ledger_lookup(request_id: String) -> Dictionary:
 ## FIFO-bounded ledger. Re-recording an id refreshes its position so that the
 ## bound evicts genuinely stale ids first; evictions are counted for the save.
 func ledger_record(request_id: String, op: String, result: Dictionary, applied: bool, limit: int) -> void:
-	if request_id.is_empty():
+	if request_id.is_empty() or request_id.begins_with("auto:"):
 		return
 	if ledger.has(request_id):
 		ledger.erase(request_id)

@@ -33,6 +33,15 @@ func file_name(cx: int, cy: int) -> String:
 	return "%d_%d.json" % [cx, cy]
 
 
+## Chunk files are content-addressed so a save is a real two-phase commit: the
+## file name is derived from the payload hash, the index that references it is
+## committed last, and only then are superseded files pruned. A failure before the
+## index commit therefore leaves the previous save fully loadable, because the new
+## payload cannot have overwritten a file the old index points at.
+func versioned_file_name(cx: int, cy: int, content_sha: String) -> String:
+	return "%d_%d.%s.json" % [cx, cy, content_sha.substr(0, 16)]
+
+
 func path_in(directory: String, cx: int, cy: int) -> String:
 	return directory.path_join(file_name(cx, cy))
 
@@ -50,8 +59,10 @@ func parse_chunk_id(value: String) -> Vector2i:
 	return Vector2i(int(parts[0]), int(parts[1]))
 
 
-## Writes one chunk file. Returns {ok, sha256, bytes, path} or
-## {ok:false, error, stage} where stage is "chunk" or "verify".
+## Writes one chunk file under its content-addressed name. Returns
+## {ok, sha256, bytes, path, file} or {ok:false, error, stage} where stage is
+## "chunk" or "verify". The payload carries no timestamp so identical cells always
+## produce identical bytes and therefore the same file name.
 func write_chunk(directory: String, cx: int, cy: int, revision: int, cells: Array, material_ids: Dictionary) -> Dictionary:
 	var payload := {
 		"format": CHUNK_FORMAT,
@@ -61,7 +72,6 @@ func write_chunk(directory: String, cx: int, cy: int, revision: int, cells: Arra
 		"chunk": [cx, cy],
 		"chunkSize": [chunk_tiles.x, chunk_tiles.y],
 		"revision": revision,
-		"savedAt": Time.get_datetime_string_from_system(true),
 		"cells": cells,
 	}
 	var text := JSON.stringify(payload, "  ")
@@ -69,14 +79,15 @@ func write_chunk(directory: String, cx: int, cy: int, revision: int, cells: Arra
 	if bytes > max_bytes:
 		return {"ok": false, "stage": "chunk", "error": "chunk file exceeds maxChunkBytes"}
 	var sha := text.sha256_text()
-	var path := path_in(directory, cx, cy)
+	var file := versioned_file_name(cx, cy, sha)
+	var path := directory.path_join(file)
 	var written := _write_atomic(path, text)
 	if not written.is_empty():
 		return {"ok": false, "stage": "chunk", "error": written}
 	var verify := _verify(path, sha)
 	if not verify.is_empty():
 		return {"ok": false, "stage": "verify", "error": verify}
-	return {"ok": true, "path": path, "sha256": sha, "bytes": bytes}
+	return {"ok": true, "path": path, "file": file, "sha256": sha, "bytes": bytes}
 
 
 ## Reads and validates one chunk file against the index entry. Whole-reject:

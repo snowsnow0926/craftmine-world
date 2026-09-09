@@ -184,8 +184,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 7471,
-      "sha256": "55797c5fe89b8fdb8789ebc8ed3a3685a2097b0b2622f2a49a582ad72b2a366b",
+      "bytes": 8165,
+      "sha256": "65f8013ffb87c585e688bcc4232b07632889aa35b9eb2aa3be737fb12e9803fa",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -202,8 +202,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 4908,
-      "sha256": "a993c0dedf476cf04ab75d1d56cdbff90eea4a707bc8b1c70fb50b109895c639",
+      "bytes": 5408,
+      "sha256": "79ba696622e8025dc1457c0b89cbaec26526420f2c748d59add04c4b67ae4a7f",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -274,8 +274,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 25738,
-      "sha256": "f8c28b4d9c6255fde11021117ba0b698f40c7127baf41c67b96e7740fa5e8655",
+      "bytes": 26869,
+      "sha256": "60fd842535af4617c9a050c3804059aa02860817c854ac807c2ca2c0e08a1374",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -328,8 +328,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 8233,
-      "sha256": "22f3c5322f72bac15a7d48f31c0de6de50e26f44484d67a940ddaf7138900faa",
+      "bytes": 8387,
+      "sha256": "ed357a8a7364a8e899478d824f8424ac254489b2c097d530808d6c4a57147e99",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -346,8 +346,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 17675,
-      "sha256": "3e93873cee30e506565f961a0ef19752438ffbc77522932b50edbabb141f67d9",
+      "bytes": 19204,
+      "sha256": "a269fde060ecab2afec14ffd949b42b8ecdc0f11ae082c5d05bcdb44851c097d",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -454,8 +454,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 12202,
-      "sha256": "7cb4f1523745fe7444097cf34d92b691dad98cc2b203105bae922d6d76c1b75f",
+      "bytes": 12625,
+      "sha256": "3d2a46c92999129b7dce1d6f1df842d362051466c8104a807998758c9ec7ccbb",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -472,8 +472,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 11577,
-      "sha256": "257ecf0ad7398123e6528041b205b7801b481f4f208838f05b1610560b93b59b",
+      "bytes": 11804,
+      "sha256": "2f59041ba96aaea7802cd80635058340c68f22161df9ee29c95b8508b176ec61",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -506,8 +506,8 @@
       "distribution": [
         "development-only"
       ],
-      "bytes": 6353,
-      "sha256": "210a8a10775ddb6d692e03f8190b5c5bcf31f314e92f72b45d126abe4277c990",
+      "bytes": 6983,
+      "sha256": "74f48f862a6f6da0efe7f16a538d8ca4c32a10c2af5d5e6d916e9229461f04cc",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -523,8 +523,8 @@
       "distribution": [
         "development-only"
       ],
-      "bytes": 8638,
-      "sha256": "f814ae34da4e53b80287451257f869411c490027b4982d272acd15b26077dc87",
+      "bytes": 9108,
+      "sha256": "d20d6561452822e36601909fd5c1642277ed9e66d736a6233a17097a1b6ceead",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -557,8 +557,8 @@
       "distribution": [
         "development-only"
       ],
-      "bytes": 20381,
-      "sha256": "3deae46f3da6d6ac05c8ef02e5c0a8b0a0c217014398a7017e5ae9ffbc9522a1",
+      "bytes": 21514,
+      "sha256": "348db61462cd9b249e8645dd5800fc94ef0705ed62423c85d398aa160ccd40db",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -788,8 +788,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 7471,
-      "sha256": "55797c5fe89b8fdb8789ebc8ed3a3685a2097b0b2622f2a49a582ad72b2a366b",
+      "bytes": 8165,
+      "sha256": "65f8013ffb87c585e688bcc4232b07632889aa35b9eb2aa3be737fb12e9803fa",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -806,8 +806,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 4908,
-      "sha256": "a993c0dedf476cf04ab75d1d56cdbff90eea4a707bc8b1c70fb50b109895c639",
+      "bytes": 5408,
+      "sha256": "79ba696622e8025dc1457c0b89cbaec26526420f2c748d59add04c4b67ae4a7f",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -878,8 +878,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 25738,
-      "sha256": "f8c28b4d9c6255fde11021117ba0b698f40c7127baf41c67b96e7740fa5e8655",
+      "bytes": 26869,
+      "sha256": "60fd842535af4617c9a050c3804059aa02860817c854ac807c2ca2c0e08a1374",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -932,8 +932,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 8233,
-      "sha256": "22f3c5322f72bac15a7d48f31c0de6de50e26f44484d67a940ddaf7138900faa",
+      "bytes": 8387,
+      "sha256": "ed357a8a7364a8e899478d824f8424ac254489b2c097d530808d6c4a57147e99",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -950,8 +950,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 17675,
-      "sha256": "3e93873cee30e506565f961a0ef19752438ffbc77522932b50edbabb141f67d9",
+      "bytes": 19204,
+      "sha256": "a269fde060ecab2afec14ffd949b42b8ecdc0f11ae082c5d05bcdb44851c097d",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -1058,8 +1058,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 12202,
-      "sha256": "7cb4f1523745fe7444097cf34d92b691dad98cc2b203105bae922d6d76c1b75f",
+      "bytes": 12625,
+      "sha256": "3d2a46c92999129b7dce1d6f1df842d362051466c8104a807998758c9ec7ccbb",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -1076,8 +1076,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 11577,
-      "sha256": "257ecf0ad7398123e6528041b205b7801b481f4f208838f05b1610560b93b59b",
+      "bytes": 11804,
+      "sha256": "2f59041ba96aaea7802cd80635058340c68f22161df9ee29c95b8508b176ec61",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -1095,7 +1095,7 @@
         "user-export"
       ],
       "bytes": 4653,
-      "sha256": "5b5a1347c11588b39ece34126302b3f2f56d44ae78d5eca9d64203f34f0cc3ad",
+      "sha256": "d0126d074754b0077c978ce94da87cd9828ad96887322939a44aa857089e0e01",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -1220,8 +1220,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 7471,
-      "sha256": "55797c5fe89b8fdb8789ebc8ed3a3685a2097b0b2622f2a49a582ad72b2a366b",
+      "bytes": 8165,
+      "sha256": "65f8013ffb87c585e688bcc4232b07632889aa35b9eb2aa3be737fb12e9803fa",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -1238,8 +1238,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 4908,
-      "sha256": "a993c0dedf476cf04ab75d1d56cdbff90eea4a707bc8b1c70fb50b109895c639",
+      "bytes": 5408,
+      "sha256": "79ba696622e8025dc1457c0b89cbaec26526420f2c748d59add04c4b67ae4a7f",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -1310,8 +1310,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 25738,
-      "sha256": "f8c28b4d9c6255fde11021117ba0b698f40c7127baf41c67b96e7740fa5e8655",
+      "bytes": 26869,
+      "sha256": "60fd842535af4617c9a050c3804059aa02860817c854ac807c2ca2c0e08a1374",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -1364,8 +1364,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 8233,
-      "sha256": "22f3c5322f72bac15a7d48f31c0de6de50e26f44484d67a940ddaf7138900faa",
+      "bytes": 8387,
+      "sha256": "ed357a8a7364a8e899478d824f8424ac254489b2c097d530808d6c4a57147e99",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -1382,8 +1382,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 17675,
-      "sha256": "3e93873cee30e506565f961a0ef19752438ffbc77522932b50edbabb141f67d9",
+      "bytes": 19204,
+      "sha256": "a269fde060ecab2afec14ffd949b42b8ecdc0f11ae082c5d05bcdb44851c097d",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -1490,8 +1490,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 12202,
-      "sha256": "7cb4f1523745fe7444097cf34d92b691dad98cc2b203105bae922d6d76c1b75f",
+      "bytes": 12625,
+      "sha256": "3d2a46c92999129b7dce1d6f1df842d362051466c8104a807998758c9ec7ccbb",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -1508,8 +1508,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 11577,
-      "sha256": "257ecf0ad7398123e6528041b205b7801b481f4f208838f05b1610560b93b59b",
+      "bytes": 11804,
+      "sha256": "2f59041ba96aaea7802cd80635058340c68f22161df9ee29c95b8508b176ec61",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },
@@ -1527,7 +1527,7 @@
         "user-export"
       ],
       "bytes": 4727,
-      "sha256": "b9743cd0a510361491fd4ce258f7b667dd6808ce8e5129f23a0948df536b5fc0",
+      "sha256": "9f62a1c0f9618e039ec1cace3c0447656e83e6a7512a0d5bb132a75c0f13446c",
       "outstanding": "The project owns this file; formal licence text and per-module application are still pending the review recorded in docs/LICENSING_STRATEGY.md.",
       "notes": ""
     },

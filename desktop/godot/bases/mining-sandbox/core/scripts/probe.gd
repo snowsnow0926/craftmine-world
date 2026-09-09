@@ -151,6 +151,9 @@ static func _move(game: Node, args: Dictionary) -> Dictionary:
 		await game.get_tree().physics_frame
 	actor.scripted_input = Vector2.ZERO
 	await game.get_tree().physics_frame
+	# Hand control back so a later human-input path in the same process is not
+	# silently locked out by a previous probe move.
+	actor.scripted_mode = false
 	var after: Vector2 = actor.position
 	return _ok({
 		"before": [before.x, before.y],

@@ -162,7 +162,7 @@ user://worlds/<sha256(worldId)>/chunks/<cx>_<cy>.json
   "format": "craftmine.godot-mining-sandbox-progress/1",
   "worldId": "my-mine", "stateVersion": 1, "savedAt": "2026-09-10T12:00:00",
   "seed": 20260910, "mapSize": [96, 48], "worldRevision": 12,
-  "chunks": { "0_0": { "revision": 3, "sha256": "...", "bytes": 214, "cells": 5 } },
+  "chunks": { "0_0": { "revision": 3, "file": "0_0.r3.json", "sha256": "...", "bytes": 214, "cells": 5 } },
   "ledgerEvicted": 0,
   "state": { "format": "craftmine.godot-mining-sandbox-state/1", "stateVersion": 1, ... }
 }
@@ -173,14 +173,14 @@ health}`, `inventory: {itemId: count}`, `tools: [itemId]`, `equipped: itemId`,
 `flags: {id: value}`, `chunkIndex` (mirror of the top-level `chunks` map),
 `editCount`, `terrainHash`.
 
-`chunks/<cx>_<cy>.json`:
+`chunks/<cx>_<cy>.<sha16>.json` (content-addressed):
 
 ```json
 {
   "format": "craftmine.godot-mining-sandbox-chunk/1",
   "worldId": "my-mine", "stateVersion": 1, "seed": 20260910,
   "chunk": [0, 0], "chunkSize": [16, 16], "revision": 3,
-  "savedAt": "...", "cells": [[3, 7, "air"], [4, 7, "stone_brick"]]
+  "cells": [[3, 7, "air"], [4, 7, "stone_brick"]]
 }
 ```
 
@@ -191,9 +191,16 @@ Rules:
    `"edited": false` for it.
 2. `cells` holds only the tiles that differ from generated terrain, as absolute
    tile coordinates sorted ascending by `(ty, tx)`.
-3. Chunk files are written atomically (temp file, `fsync`-equivalent flush, then
-   rename) **before** `progress.json`; `progress.json` is written atomically last
-   and is the commit point.
+3. Chunk file names are **content-addressed** (`<cx>_<cy>.<sha16>.json`, where
+   `sha16` is the first 16 hex characters of the payload SHA-256) and the index
+   stores the exact file name. A save is a two-phase commit: every new chunk file
+   is written first under a name that cannot collide with a file the previous
+   index references, `progress.json` is written atomically last and is the only
+   commit point, and superseded chunk files are pruned only after the index
+   commit and verification succeeded. A failure before the index commit therefore
+   leaves the previous index **and** its chunk files byte-identical and loadable.
+   The payload carries no timestamp, so identical cells always produce identical
+   bytes and the same file name.
 4. Every write is verified by re-reading the file and comparing its SHA-256 with
    the value stored in the index.
 5. `save()` returns `{"ok": true, "path", "bytes", "sha256", "chunks": n}` or
@@ -205,7 +212,7 @@ Rules:
    `missing_progress` (absent file is not an error: fresh start), `bad_json`,
    `bad_format`, `bad_state_version`, `bad_world_id`, `bad_seed`, `bad_map_size`,
    `bad_state`, `missing_chunk`, `chunk_corrupt`, `chunk_hash_mismatch`,
-   `chunk_out_of_range`, `chunk_world_mismatch`, `index_hash_mismatch`.
+   `chunk_out_of_range`, `chunk_world_mismatch`.
    The previous in-memory state is preserved on rejection.
 7. A version change (`stateVersion` != 1, or an unknown `format`) is rejected with
    `bad_state_version` / `bad_format` and never partially applied.
@@ -213,7 +220,9 @@ Rules:
    runtime resolves it to the nearest free tile above within the same chunk and
    reports `snapshot.rescue = {resolved: true, from, to, reason}`. If no free tile
    exists the load fails with `bad_state`. Placement can never create the overlap
-   in the first place (`would_bury_player`).
+   in the first place (`would_bury_player`). A saved tile or position outside the
+   map (beyond a small legal band above the top row, `PLAYER_TILE_MARGIN = 8`) is
+   rejected with `bad_state` instead of restoring the player off-map.
 9. The progress root can be redirected for failure tests only through the
    documented env var `CRAFTMINE_MINING_SANDBOX_PROGRESS_ROOT`; when unset the
    path above is used. No test may fake a write failure in another way.
@@ -305,6 +314,8 @@ assertion gets a new id, an existing id is never redefined.
 | Id | Assertion |
 | --- | --- |
 | G01 | Two fresh worlds with the same `generation` block have equal `terrainHash`. |
+| G01b | The engine's sampled tiles equal the independent JavaScript terrain reference. |
+| G01c | The engine's full `terrainHash` equals the JavaScript reference on a world with ore veins and caves. |
 | G02 | Two fresh worlds with different seeds have different `terrainHash`. |
 | G03 | Tile-to-chunk mapping matches `"<tx/16>_<ty/16>"` for interior, edge and partial-boundary tiles. |
 | G04 | The grid is finite: a tile outside `mapSize` is rejected with `out_of_bounds` and no mutation. |
@@ -333,9 +344,11 @@ assertion gets a new id, an existing id is never redefined.
 | G27 | An indexed but missing chunk file is rejected with `missing_chunk`. |
 | G28 | A changed `stateVersion` or `format` is rejected with `bad_state_version` / `bad_format`. |
 | G29 | A real write failure returns `ok:false` with a `stage`, and the previous save stays loadable. |
+| G29b | A failure at the index stage leaves the previous index and its chunk files loadable. |
 | G30 | Placement never buries the player, and a saved overlap is rescued and reported. |
 | G31 | `snapshot()` is read-only: `terrainHash`, inventory and player do not change. |
 | G32 | Every probe op is visible through `snapshot()` and no probe op writes a result directly (source scan). |
+| G32b | A probe mutation is visible in the same run's `finalSnapshot`. |
 | G33 | `world-build.json` declares base id/version/protocols/engine and a SHA-256 for every shipped file. |
 | G34 | `manifest.json` declares the side-view 1.0.0 reuse with source hashes in `docs/REUSE.md`. |
 | G35 | The blank template has an empty inventory, no recipes and no rewards. |

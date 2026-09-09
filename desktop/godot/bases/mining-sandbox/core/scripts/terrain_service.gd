@@ -9,6 +9,10 @@ extends RefCounted
 
 const AIR := "air"
 
+## Emitted after every committed tile change. Collision and rendering listen to it
+## so a dug or placed tile is visible and physical immediately.
+signal chunk_changed(cx: int, cy: int)
+
 var generator: MiningTerrainGenerator
 var state: MiningWorldState
 var inventory: MiningInventoryService
@@ -273,6 +277,9 @@ func _commit(tx: int, ty: int, material_id: String) -> int:
 	_dirty[chunk_id] = true
 	if state != null:
 		state.world_revision += 1
+	# Collision and rendering are rebuilt from the signal, so a dug tile stops
+	# blocking the player immediately instead of at the next chunk crossing.
+	chunk_changed.emit(int(chunk_id.get_slice("_", 0)), int(chunk_id.get_slice("_", 1)))
 	return int(_revisions[chunk_id])
 
 

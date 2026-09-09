@@ -1,8 +1,0 @@
-exit=0
-request={"format":"craftmine.godot-mining-sandbox-probe/1","commands":[{"op":"craft","args":{"recipeId":"stone-pickaxe","requestId":"g18-craft"}},{"op":"inventory"}],"saveOnExit":false}
-response={"baseId":"mining-sandbox","baseVersion":"1.0.0","finalSnapshot":{"baseId":"mining-sandbox","baseVersion":"1.0.0","bootError":"","chunkTiles":[16,16],"chunks":{},"cursor":[8,8],"editCount":0,"format":"craftmine.godot-mining-sandbox-snapshot/1","inventory":{"coal":1,"iron_ore":3,"stone":1,"stone_pickaxe":1,"wood":2},"lastAction":{},"mapSize":[96,48],"physical":{"overlaps":[],"solidTilesInPlayerRect":0},"player":{"equipped":"stone_pickaxe","facing":"right","health":3,"onFloor":false,"position":[136,158],"tile":[8,9],"toolTier":1},"rescue":{"from":[],"reason":"","resolved":false,"resolvedTiles":[{"from":[14,12],"id":"camp-forge","kind":"entity","to":[14,10]}],"to":[]},"save":{"lastSave":{}},"seed":31415926,"stateVersion":1,"terrainHash":"676353eab9ac60270840a2b37030355735f802c3e0e126e33778b1c123fa2a00","tileSize":16,"tools":["stone_pickaxe"],"worldId":"a16-craft","worldRevision":0},"format":"craftmine.godot-mining-sandbox-probe/1","ok":true,"results":[{"args":{"recipeId":"stone-pickaxe","requestId":"g18-craft"},"op":"craft","result":{"consumed":[{"count":3,"id":"stone"},{"count":2,"id":"wood"}],"ok":true,"op":"craft","output":{"count":1,"id":"stone_pickaxe"},"recipeId":"stone-pickaxe","station":""}},{"args":{},"op":"inventory","result":{"coal":1,"deepstone":0,"dirt":0,"iron_ingot":0,"iron_ore":3,"iron_pickaxe":0,"ok":true,"stone":1,"stone_brick":0,"stone_pickaxe":1,"wood":2}}],"worldId":"a16-craft"}
---- stdout ---
-Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
-
-
---- stderr ---

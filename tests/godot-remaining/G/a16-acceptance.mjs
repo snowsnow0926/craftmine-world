@@ -346,6 +346,10 @@ function run() {
   // ---- G05/G06/G07/G08/G09/G10/G11: dig rules
   const mine = makeWorld('mine-camp', 'a16-dig');
   const terrain = referenceTerrain(mine.world.generation);
+  const mineHash = single(mine, { op: 'hash' }).result;
+  check('G01c', 'the engine matches the JS reference on a world with ore veins and caves',
+    mineHash && mineHash.hash === terrain.terrainHash,
+    { engine: mineHash && mineHash.hash, reference: terrain.terrainHash });
   const stone = findDiggable(terrain, 'stone');
   const coal = findDiggable(terrain, 'coal_ore');
   const deep = findDiggable(terrain, 'deepstone');
@@ -598,8 +602,9 @@ function run() {
   const chunkFiles = existsSync(chunksDir(persist)) ? readdirSync(chunksDir(persist)) : [];
   const expectedChunks = [chunkIdOf(firstTarget.tx, firstTarget.ty), chunkIdOf(secondTarget.tx, secondTarget.ty), chunkIdOf(thirdTarget.tx, thirdTarget.ty)];
   const uniqueExpected = [...new Set(expectedChunks)];
-  // A chunk that was never edited must have no file, and a tile inside it must
-  // still equal the generated terrain after the restart.
+  const indexEntry = (id) => (progressFile && progressFile.data.chunks && progressFile.data.chunks[id]) || {};
+  // A chunk that was never edited must have no file at all, must report
+  // edited:false, and its tiles must still equal the generated terrain.
   const untouched = (() => {
     for (let cy = 0; cy < Math.ceil(persistTerrain.height / 16); cy += 1) {
       for (let cx = 0; cx < Math.ceil(persistTerrain.width / 16); cx += 1) {
@@ -613,22 +618,32 @@ function run() {
     return null;
   })();
   const untouchedTile = untouched ? single(persist, { op: 'tile', args: { tx: untouched.tx, ty: untouched.ty } }).result : null;
-  check('G22', 'an unmodified chunk has no chunk file and regenerates after restart',
+  const untouchedChunk = untouched
+    ? single(persist, { op: 'chunk', args: { cx: Number(untouched.id.split('_')[0]), cy: Number(untouched.id.split('_')[1]) } }).result
+    : null;
+  check('G22', 'an unmodified chunk has no file, reports edited:false and regenerates after restart',
     progressFile !== null
-      && uniqueExpected.every((id) => chunkFiles.includes(`${id}.json`))
-      && Object.keys(progressFile.data.chunks).every((id) => uniqueExpected.includes(id))
+      && uniqueExpected.every((id) => {
+        const entry = indexEntry(id);
+        return Boolean(entry.file) && chunkFiles.includes(entry.file) && Number(entry.cells) >= 1;
+      })
+      && chunkFiles.length === uniqueExpected.length
       && untouched !== null
-      && !chunkFiles.includes(`${untouched.id}.json`)
+      && !chunkFiles.some((name) => name.startsWith(`${untouched.id}.`))
+      && untouchedChunk && untouchedChunk.edited === false && Number(untouchedChunk.cells) === 0
       && untouchedTile && untouchedTile.material === persistTerrain.get(untouched.tx, untouched.ty),
-    { chunkFiles, expected: uniqueExpected, untouched, untouchedTile });
+    { chunkFiles, expected: uniqueExpected, untouched, untouchedTile, untouchedChunk });
 
   const restoredChunks = uniqueExpected.map((id) => {
     const probe = single(persist, { op: 'chunk', args: { cx: Number(id.split('_')[0]), cy: Number(id.split('_')[1]) } });
     return probe.result;
   });
-  check('G23', 'every modified chunk is restored with its revision and cell count',
-    restoredChunks.every((entry) => entry && entry.edited === true && entry.revision >= 1 && entry.cells >= 1),
-    { restoredChunks });
+  check('G23', 'every modified chunk is restored with exactly its saved revision and cell count',
+    restoredChunks.every((entry, index) => {
+      const saved = indexEntry(uniqueExpected[index]);
+      return entry && entry.edited === true && entry.revision === Number(saved.revision) && entry.cells === Number(saved.cells);
+    }),
+    { restoredChunks, saved: uniqueExpected.map((id) => indexEntry(id)) });
 
   const partialChunk = uniqueExpected.find((id) => Number(id.split('_')[0]) === Math.floor((persistTerrain.width - 1) / 16));
   let partialOk = false;
@@ -685,7 +700,8 @@ function run() {
     { op: 'dig', args: { tx: ccTarget.tx, ty: ccTarget.ty, requestId: 'g26-dig' } },
     { op: 'save' },
   ], { saveOnExit: false });
-  const ccFile = join(chunksDir(corruptChunk), `${chunkIdOf(ccTarget.tx, ccTarget.ty)}.json`);
+  const ccEntry = readProgress(corruptChunk).data.chunks[chunkIdOf(ccTarget.tx, ccTarget.ty)];
+  const ccFile = join(chunksDir(corruptChunk), ccEntry.file);
   const ccText = readFileSync(ccFile, 'utf8');
   writeFileSync(ccFile, ccText.replace('"revision"', '"revisionXX"'));
   const ccRun = runProbe(corruptChunk, [{ op: 'restore' }], { saveOnExit: false });
@@ -701,7 +717,8 @@ function run() {
     { op: 'dig', args: { tx: mcTarget.tx, ty: mcTarget.ty, requestId: 'g27-dig' } },
     { op: 'save' },
   ], { saveOnExit: false });
-  rmSync(join(chunksDir(missingChunk), `${chunkIdOf(mcTarget.tx, mcTarget.ty)}.json`), { force: true });
+  const mcEntry = readProgress(missingChunk).data.chunks[chunkIdOf(mcTarget.tx, mcTarget.ty)];
+  rmSync(join(chunksDir(missingChunk), mcEntry.file), { force: true });
   const mcRun = runProbe(missingChunk, [{ op: 'restore' }], { saveOnExit: false });
   check('G27', 'an indexed but missing chunk file is rejected with missing_chunk',
     resultOf(mcRun, 0) && resultOf(mcRun, 0).reason === 'missing_chunk', { result: resultOf(mcRun, 0) });
@@ -748,6 +765,42 @@ function run() {
       && reloaded && reloaded.terrainHash === goodSnapshot.terrainHash
       && JSON.stringify(reloaded.inventory) === JSON.stringify(goodSnapshot.inventory),
     { save: failSave.result, reloadedHash: reloaded && reloaded.terrainHash, expectedHash: goodSnapshot.terrainHash });
+
+  // ---- G29b: a failure at the index stage must keep the previous commit loadable
+  const indexWorld = makeWorld('mine-camp', 'a16-index-fail');
+  const indexTerrain = referenceTerrain(indexWorld.world.generation);
+  const iTarget = findDiggable(indexTerrain, 'stone');
+  const iFeet = playerFeetForTile(iTarget.tx, iTarget.ty);
+  const firstSave = runProbe(indexWorld, [
+    { op: 'set-position', args: { x: iFeet.x, y: iFeet.y } },
+    { op: 'dig', args: { tx: iTarget.tx, ty: iTarget.ty, requestId: 'g29b-dig-1' } },
+    { op: 'save' },
+  ], { saveOnExit: false });
+  const afterFirst = snapshotOf(indexWorld);
+  const indexDir = dirname(readProgress(indexWorld).path);
+  // A directory at the index temp path makes the commit fail for real while the
+  // previously committed progress.json and its chunks stay untouched.
+  mkdirSync(join(indexDir, 'progress.json.tmp'), { recursive: true });
+  const iSecond = findDiggable(indexTerrain, 'dirt');
+  const iSecondFeet = playerFeetForTile(iSecond.tx, iSecond.ty);
+  const secondSave = runProbe(indexWorld, [
+    { op: 'set-position', args: { x: iSecondFeet.x, y: iSecondFeet.y } },
+    { op: 'dig', args: { tx: iSecond.tx, ty: iSecond.ty, requestId: 'g29b-dig-2' } },
+    { op: 'save' },
+  ], { saveOnExit: false });
+  rmSync(join(indexDir, 'progress.json.tmp'), { recursive: true, force: true });
+  const reloadedAfterIndexFailure = snapshotOf(indexWorld);
+  check('G29b', 'a failure at the index stage leaves the previous commit loadable',
+    resultOf(firstSave, 2)?.ok === true
+      && resultOf(secondSave, 2)?.ok === false && resultOf(secondSave, 2).stage === 'index'
+      && reloadedAfterIndexFailure.terrainHash === afterFirst.terrainHash
+      && JSON.stringify(reloadedAfterIndexFailure.inventory) === JSON.stringify(afterFirst.inventory),
+    {
+      first: resultOf(firstSave, 2),
+      second: resultOf(secondSave, 2),
+      reloaded: reloadedAfterIndexFailure && reloadedAfterIndexFailure.terrainHash,
+      expected: afterFirst && afterFirst.terrainHash,
+    });
 
   // ---- G30: no burying, and a saved overlap is rescued
   const rescue = makeWorld('mine-camp', 'a16-rescue', { inventory: [{ id: 'stone_brick', count: 2 }] });
@@ -800,6 +853,24 @@ function run() {
   check('G32', 'probe ops call the real gameplay methods and the probe only writes its response file',
     opCoverage.length === opCalls.length && writeSites === 1 && !forbidden[2].test(probeSource),
     { opCoverage, writeSites, hasInlineOk: forbidden[2].test(probeSource) });
+
+  // ---- G32b: a probe mutation is visible in the same run's finalSnapshot
+  const visWorld = makeWorld('mine-camp', 'a16-visible', { inventory: [{ id: 'dirt', count: 2 }] });
+  const visTerrain = referenceTerrain(visWorld.world.generation);
+  const visTarget = findDiggable(visTerrain, 'stone');
+  const visFeet = playerFeetForTile(visTarget.tx, visTarget.ty);
+  const visibleRun = runProbe(visWorld, [
+    { op: 'set-position', args: { x: visFeet.x, y: visFeet.y } },
+    { op: 'dig', args: { tx: visTarget.tx, ty: visTarget.ty, requestId: 'g32-dig' } },
+    { op: 'place', args: { tx: visTarget.tx, ty: visTarget.ty, materialId: 'dirt', requestId: 'g32-place' } },
+  ], { saveOnExit: false });
+  const visibleFinal = visibleRun.response && visibleRun.response.finalSnapshot;
+  const visibleChunk = visibleFinal && visibleFinal.chunks[chunkIdOf(visTarget.tx, visTarget.ty)];
+  check('G32b', 'a probe mutation is visible in the same run finalSnapshot',
+    resultOf(visibleRun, 1)?.ok === true && resultOf(visibleRun, 2)?.ok === true
+      && visibleChunk && Number(visibleChunk.cells) >= 1 && Number(visibleChunk.edited === true ? 1 : 0) === 1
+      && visibleFinal.inventory.dirt === 1 && visibleFinal.inventory.stone === 1,
+    { dig: resultOf(visibleRun, 1), place: resultOf(visibleRun, 2), chunk: visibleChunk, inventory: visibleFinal && visibleFinal.inventory });
 
   // ---- G33: build receipt
   const receipt = JSON.parse(readFileSync(join(BASE, 'worlds', 'mine-camp', 'world-build.json'), 'utf8'));
@@ -855,13 +926,32 @@ function run() {
   // changes the state, not a save left behind by the capture run.
   rmSync(managed.progressRoot, { recursive: true, force: true });
   mkdirSync(managed.progressRoot, { recursive: true });
-  const tampered = JSON.parse(JSON.stringify(managedBody));
-  const tamperedChunk = Object.keys(tampered.chunks)[0];
-  tampered.chunks[tamperedChunk].cells[0][2] = 'unobtainium';
-  const tamperedRun = runProbe(managed, [
-    { op: 'restore-managed', args: { body: tampered } },
-    { op: 'snapshot' },
-  ], { saveOnExit: false });
+  const tamperVariants = [
+    ['unknown material', (body) => { body.chunks[Object.keys(body.chunks)[0]].cells[0][2] = 'unobtainium'; }],
+    ['foreign world id', (body) => { body.worldId = 'someone-else'; }],
+    ['wrong seed', (body) => { body.seed = 123456; }],
+    ['wrong map size', (body) => { body.mapSize = [1, 1]; }],
+    ['cell outside the map', (body) => { body.chunks[Object.keys(body.chunks)[0]].cells[0][0] = 9999; }],
+    ['player tile outside the map', (body) => { body.state.player.tile = [9999, 9999]; }],
+    ['unsupported state version', (body) => { body.stateVersion = 99; }],
+  ];
+  const tamperResults = [];
+  for (const [name, mutate] of tamperVariants) {
+    const body = JSON.parse(JSON.stringify(managedBody));
+    mutate(body);
+    rmSync(managed.progressRoot, { recursive: true, force: true });
+    mkdirSync(managed.progressRoot, { recursive: true });
+    const run = runProbe(managed, [
+      { op: 'restore-managed', args: { body } },
+      { op: 'snapshot' },
+    ], { saveOnExit: false });
+    tamperResults.push({
+      name,
+      rejected: Boolean(resultOf(run, 0) && resultOf(run, 0).ok === false),
+      reason: resultOf(run, 0) && resultOf(run, 0).reason,
+      hashAfter: resultOf(run, 1) && resultOf(run, 1).terrainHash,
+    });
+  }
   rmSync(managed.progressRoot, { recursive: true, force: true });
   mkdirSync(managed.progressRoot, { recursive: true });
   const restoreRun = runProbe(managed, [
@@ -869,19 +959,18 @@ function run() {
     { op: 'snapshot' },
   ], { saveOnExit: false });
   const restored = resultOf(restoreRun, 1);
-  check('G36', 'capture_managed / restore_managed round-trip state and terrain edits and reject a tampered body',
+  check('G36', 'capture_managed / restore_managed round-trip state and terrain edits and reject every tampered body',
     managedBody && !managedBody.error && managedBody.format === 'craftmine.godot-mining-sandbox-managed/1'
       && Object.keys(managedBody.chunks).length >= 1
-      && resultOf(tamperedRun, 0) && resultOf(tamperedRun, 0).ok === false
-      && resultOf(tamperedRun, 1).terrainHash === managedTerrain.terrainHash
+      && tamperResults.length === tamperVariants.length
+      && tamperResults.every((entry) => entry.rejected && entry.hashAfter === managedTerrain.terrainHash)
       && resultOf(restoreRun, 0) && resultOf(restoreRun, 0).ok === true
       && restored && capturedSnapshot && restored.terrainHash === capturedSnapshot.terrainHash
       && JSON.stringify(restored.inventory) === JSON.stringify(capturedSnapshot.inventory)
       && JSON.stringify(restored.player.tile) === JSON.stringify(capturedSnapshot.player.tile),
     {
       bodyChunks: managedBody && Object.keys(managedBody.chunks || {}),
-      tampered: resultOf(tamperedRun, 0),
-      tamperedHash: resultOf(tamperedRun, 1) && resultOf(tamperedRun, 1).terrainHash,
+      tamperResults,
       generatedHash: managedTerrain.terrainHash,
       restored: restored && { hash: restored.terrainHash, inventory: restored.inventory, tile: restored.player.tile },
       captured: capturedSnapshot && { hash: capturedSnapshot.terrainHash, inventory: capturedSnapshot.inventory, tile: capturedSnapshot.player.tile },

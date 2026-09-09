@@ -58,14 +58,15 @@ node desktop/godot/bases/mining-sandbox/tools/new-world.mjs `
 - Exit codes: `0` ran and wrote the response, `64` missing arguments, `65`
   unreadable request, `66` response not written. Gameplay pass/fail is decided by
   the caller from the response file, so expected rejections never fail the process.
-- Progress layout: `progress.json` (commit point) plus `chunks/<cx>_<cy>.json`.
-  Chunks are written first and atomically; the index is written last and stores
-  each chunk's SHA-256 and byte count.
+- Progress layout: `progress.json` (the only commit point) plus
+  `chunks/<cx>_<cy>.r<revision>.json`. Chunk files are revision-versioned and the
+  index stores the exact file name, so a save is a two-phase commit: new chunks
+  first, index last, superseded files pruned only after the commit. The index
+  stores each chunk's SHA-256 and byte count.
 - Loading is whole-reject. Reason codes: `missing_progress` (fresh start, not an
   error), `bad_json`, `bad_format`, `bad_state_version`, `bad_world_id`,
   `bad_seed`, `bad_map_size`, `bad_state`, `missing_chunk`, `chunk_corrupt`,
-  `chunk_hash_mismatch`, `chunk_out_of_range`, `chunk_world_mismatch`,
-  `index_hash_mismatch`.
+  `chunk_hash_mismatch`, `chunk_out_of_range`, `chunk_world_mismatch`.
 - **Read the progress only after the instance has stopped.** The base has no
   cross-process file lock; two writers to one world is last-writer-wins.
 - `capture_managed()` / `restore_managed(body)` implement the shared
@@ -92,8 +93,13 @@ Four edits, all in F's ownership. Nothing else in `desktop/godot/shared/**` chan
 ```
 
    The base uses the same `tools/new-world.mjs` argument shape as `top-down`
-   (`--template <t> --world-id <w> --name <w> --out`), so route it through that
-   branch; no new branch logic is needed.
+   (`--template <t> --world-id <w> --name <w> --out`), so it must be routed
+   through that branch. The current routing condition is
+   `baseId === 'top-down' ? [...--template...] : [...--world...]`, so F must
+   extend it to include `mining-sandbox` (for example
+   `['top-down', 'mining-sandbox'].includes(baseId)`); adding the `configs` entry
+   alone would send the base down the `--world` branch and `new-world.mjs` would
+   exit with `--template is required`.
 3. `desktop/godot/shared/tests/progress.mjs` — add
    `['mining-sandbox', 'mine-camp']` to the base/template matrix and add one
    base-specific bad state (`{format: '...sandbox-state/1', stateVersion: 99}`)

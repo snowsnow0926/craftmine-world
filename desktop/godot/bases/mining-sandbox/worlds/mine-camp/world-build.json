@@ -69,13 +69,13 @@
     },
     {
       "path": "scripts/base/chunk_store.gd",
-      "bytes": 7471,
-      "sha256": "55797c5fe89b8fdb8789ebc8ed3a3685a2097b0b2622f2a49a582ad72b2a366b"
+      "bytes": 8165,
+      "sha256": "65f8013ffb87c585e688bcc4232b07632889aa35b9eb2aa3be737fb12e9803fa"
     },
     {
       "path": "scripts/base/crafting_service.gd",
-      "bytes": 4908,
-      "sha256": "a993c0dedf476cf04ab75d1d56cdbff90eea4a707bc8b1c70fb50b109895c639"
+      "bytes": 5408,
+      "sha256": "79ba696622e8025dc1457c0b89cbaec26526420f2c748d59add04c4b67ae4a7f"
     },
     {
       "path": "scripts/base/human_input_source.gd",
@@ -94,8 +94,8 @@
     },
     {
       "path": "scripts/base/mining_game.gd",
-      "bytes": 25738,
-      "sha256": "f8c28b4d9c6255fde11021117ba0b698f40c7127baf41c67b96e7740fa5e8655"
+      "bytes": 26869,
+      "sha256": "60fd842535af4617c9a050c3804059aa02860817c854ac807c2ca2c0e08a1374"
     },
     {
       "path": "scripts/base/mining_params.gd",
@@ -109,13 +109,13 @@
     },
     {
       "path": "scripts/base/probe.gd",
-      "bytes": 8233,
-      "sha256": "22f3c5322f72bac15a7d48f31c0de6de50e26f44484d67a940ddaf7138900faa"
+      "bytes": 8387,
+      "sha256": "ed357a8a7364a8e899478d824f8424ac254489b2c097d530808d6c4a57147e99"
     },
     {
       "path": "scripts/base/save_store.gd",
-      "bytes": 17675,
-      "sha256": "3e93873cee30e506565f961a0ef19752438ffbc77522932b50edbabb141f67d9"
+      "bytes": 19204,
+      "sha256": "a269fde060ecab2afec14ffd949b42b8ecdc0f11ae082c5d05bcdb44851c097d"
     },
     {
       "path": "scripts/base/scripted_input_source.gd",
@@ -144,13 +144,13 @@
     },
     {
       "path": "scripts/base/terrain_service.gd",
-      "bytes": 12202,
-      "sha256": "7cb4f1523745fe7444097cf34d92b691dad98cc2b203105bae922d6d76c1b75f"
+      "bytes": 12625,
+      "sha256": "3d2a46c92999129b7dce1d6f1df842d362051466c8104a807998758c9ec7ccbb"
     },
     {
       "path": "scripts/base/world_state.gd",
-      "bytes": 11577,
-      "sha256": "257ecf0ad7398123e6528041b205b7801b481f4f208838f05b1610560b93b59b"
+      "bytes": 11804,
+      "sha256": "2f59041ba96aaea7802cd80635058340c68f22161df9ee29c95b8508b176ec61"
     },
     {
       "path": "world.json",

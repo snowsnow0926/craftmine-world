@@ -261,7 +261,7 @@
       "ok": true,
       "detail": {
         "chunkFiles": [
-          "0_0.json"
+          "0_0.f5979e5e630ce7f7.json"
         ]
       }
     },
@@ -273,7 +273,7 @@
           "detail": "progress file is not valid JSON",
           "error": "bad_json: progress file is not valid JSON",
           "ok": false,
-          "path": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\ms-verify-PKOf3n\\verify-corrupt-progress/worlds/38680315ea83e557d0dc74558b5860b9525124a871878f15429e6e8e94678e97/progress.json",
+          "path": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\ms-verify-YyToiy\\verify-corrupt-progress/worlds/38680315ea83e557d0dc74558b5860b9525124a871878f15429e6e8e94678e97/progress.json",
           "reason": "bad_json",
           "snapshot": {
             "baseId": "mining-sandbox",

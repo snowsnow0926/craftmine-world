@@ -56,7 +56,7 @@
 
 - E：创建入口用 `tools/new-world.mjs`（或 F 的物化器）；底座无独立 UI。
 - K：复制 `docs/dispatch-reports/godot-remaining/G/delivery/base-assets.mining-sandbox.json`
-  → `desktop/delivery/base-assets/mining-sandbox.json`（85 条 entries + 2 份引擎声明）。
+  → `desktop/delivery/base-assets/mining-sandbox.json`（86 条 entries + 2 份引擎声明）。
   另需在 `desktop/delivery/preflight-selftest.mjs` 的夹具列表与底座数组加 `mining-sandbox`。
 - 产品枚举：`plugins/craftmine-world/manifest.json` 的 `godot_project_create.baseId.enum`
   加 `"mining-sandbox"`；`plugins/craftmine-world/main.cjs` 的 `labels` 加

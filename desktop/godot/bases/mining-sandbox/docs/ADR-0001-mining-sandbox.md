@@ -124,3 +124,8 @@ Any change to `base_contract.gd` constants, the reason codes in SPEC sections 3-
 the probe op table or the frozen assertion ids is a protocol change: bump
 `baseVersion`, record it here, and update `manifest.json` and
 `docs/INTERFACE_BC.md` in the same commit.
+
+| Date | Change | Reason |
+| --- | --- | --- |
+| 2026-09-10 | Chunk files are content-addressed (`<cx>_<cy>.<sha16>.json`, no timestamp) and the index stores `file` | A review found that overwriting chunk files before committing the index could leave a failed save unrecoverable; a content-addressed name makes the save a real two-phase commit and cannot collide with a file the previous index references. Same `baseVersion`, because no shipped save existed yet. |
+| 2026-09-10 | Removed the unreachable `index_hash_mismatch` reason code | The code had no producer; a chunk/index mismatch is reported as `chunk_hash_mismatch`. |

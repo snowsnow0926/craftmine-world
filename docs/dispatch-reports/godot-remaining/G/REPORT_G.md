@@ -13,9 +13,13 @@
 ## 1 结论
 
 底座可真实运行、可挖掘/放置/制作、分块持久化，并且由**独立**验收矩阵逐条检查：
-`37/37` 条 A16 断言通过，底座自带冒烟 `14/14` 通过，`check-sync` 确认两个提交的世界与
-模板/核心/参数逐字节一致。全部使用独立 headless 进程与独立数据目录，没有真实鼠标键盘、
-没有窗口置前、没有 Pointer Lock。
+`40/40` 条 A16 断言通过（含 3 次连续复跑无抖动），底座自带冒烟 `14/14` 通过，
+`check-sync` 确认两个提交的世界与模板/核心/参数逐字节一致。全部使用独立 headless
+进程与独立数据目录，没有真实鼠标键盘、没有窗口置前、没有 Pointer Lock。
+
+第一轮交付后做了一次只读对抗性审查，发现并修复了 4 个真实缺陷（见 5.1 节），
+其中「失败保存可能让上一次存档不可加载」属于数据安全级问题，已用两阶段提交消除，
+并新增 `G29b` 断言专门验证它。
 
 **但本条不能算“整条完成”**：产品侧接入（F 的共享适配器、K 的发行清单、A/H 的存储与
 备份登记、E 的创建入口）尚未落地，真实模型创作验收（I）未执行。下面第 6 节逐项列出。
@@ -78,14 +82,30 @@ node desktop/godot/bases/mining-sandbox/tools/check-sync.mjs
 
 # 4 发行清单生成（给 K）
 node desktop/godot/bases/mining-sandbox/delivery/make-base-assets.mjs
+
+# 5 发行预检现状（本底座尚未被覆盖，见第 6 节）
+node desktop/delivery/preflight.mjs --evidence docs/dispatch-reports/godot-remaining/G/evidence/preflight-g.json
+
+# 6 跨检出哈希可移植性（全新克隆后校验每个钉住哈希）
+git clone --branch codex/godot-remaining-g-20260910 --single-branch <工作树> <临时目录>
+node <scratch>/verify-clone.mjs <临时目录>
 ```
 
+结果：
+
+| 验证 | 结果 | 说明 |
+| --- | --- | --- |
+| A16 独立矩阵 | **40/40 通过** | `evidence/a16/report.json`（G01–G36 + G01b/G01c/G29b/G32b） |
+| 底座冒烟 | **14/14 通过** | `evidence/verify/report.json` |
+| 世界/模板一致性 | 2 个世界逐字节一致 | `check-sync.mjs` |
+| 全新克隆哈希 | 0 处不符 | 23+23 个 world-build 哈希、86 条发行清单哈希全部匹配，文本为 LF（`evidence/fresh-clone-hashes.json`） |
+| 发行预检 | **本底座未覆盖** | `ASSET_BASE_MANIFEST_MISSING: desktop/godot/bases/mining-sandbox`；同时 first-person/side-view/top-down 也未覆盖，预检本来就失败（`evidence/preflight-g.json`） |
+
 原始证据：`evidence/a16/`（`report.json` + 每次探针的请求/响应/进程输出）、
-`evidence/verify/`、`evidence/implementation/`（实现阶段的迭代日志，含首次失败）。
+`evidence/verify/`、`evidence/implementation/`（实现阶段的迭代日志，含首次失败）、
+`evidence/preflight-g.json`、`evidence/fresh-clone-hashes.json`。
 
-## 5 实现要点（可被 AI 继续改动）
-
-- **生成**：`terrain_generator.gd` 的 `hash3(x,y,salt)` 是唯一的随机来源，全部为 64 位
+## 5 实现要点（可被 AI 继续改动）- **生成**：`terrain_generator.gd` 的 `hash3(x,y,salt)` 是唯一的随机来源，全部为 64 位
   整数运算；地表行、矿脉、洞穴按 SPEC 2 的固定顺序求值。改 `world.json` 的 `generation`
   即可得到不同但可复现的地图；`terrain_hash()` 是确定性指纹。
 - **存档**：只写与生成结果不同的格子，按 `(ty,tx)` 排序，每块一个文件，索引最后落盘并
@@ -99,6 +119,26 @@ node desktop/godot/bases/mining-sandbox/delivery/make-base-assets.mjs
   `state_guard` 1 MiB 限制，超限报 `managed_body_too_large` 而不是截断），`restore_managed()`
   整体校验后原子应用。
 
+## 5.1 对抗性审查发现与修复
+
+第一轮交付后由独立审查子代理（只读）逐文件对照 SPEC 审查，发现以下真实缺陷，已全部修复并复验：
+
+| 缺陷 | 影响 | 修复 | 验证 |
+| --- | --- | --- | --- |
+| 分块文件在索引提交前被**原地覆盖** | 索引写入失败时，旧索引指向的分块已被改写 → 上一次存档不可加载（数据安全级） | 分块文件改为**内容寻址**命名 `<cx>_<cy>.<sha16>.json`（载荷去掉时间戳），新内容不可能与旧索引引用的文件同名；索引是唯一提交点，提交并校验后才清理旧文件 | 新增 `G29b`：用真实目录占用索引临时路径制造索引阶段失败，断言旧存档仍可加载（修复前该用例真实失败，日志保留在 `evidence/implementation`） |
+| 幂等账本跨重启与自动请求 id 冲突 | 重启后人类操作生成 `auto:1` 命中已持久化的账本 → 前几次操作被静默吞掉 | `auto:` 前缀的请求 id 不再进入持久账本（与 SPEC 4「不跨重启去重」一致） | G10/G11/G20 + `verify.mjs` 的重复请求用例 |
+| 挖掘/放置后碰撞体与画面不刷新 | 挖开的格子仍然挡人、放下的砖不是地面，直到跨块才更新 | `TerrainService` 增加 `chunk_changed` 信号，`mining_game` 据此重建该块碰撞并重绘 | G16/G30 的 `physical.solidTilesInPlayerRect` + G32b 同轮快照可见性 |
+| 存档里的玩家坐标无边界校验 | 被篡改的 tile/position 可把玩家恢复到地图外 | 载入与 `restore_managed` 都校验 tile/position，超出地图（含允许的地图上方 8 格安全带）整体拒绝 | G36 新增 `player tile outside the map` 变体；G30 覆盖救援 |
+| 制作配方重复列出同一物品 | 可能用不足的库存换到产物 | 先按物品聚合总需求再校验，一次性原子扣除 | G18/G19 |
+| 被拒绝的 craft 在账本里记为已应用 | 账本字段不实 | `_record` 增加 `applied` 参数 | G20 |
+| 实体列全实心时静默回退到声明坐标 | 与 SPEC「无法放置即 `bad_state`」不符 | 置 `boot_error` 并记录 | 代码审查 + 启动路径 |
+| `probe move` 后 `scripted_mode` 永不复位 | 同进程后续人类输入失效 | `move` 结束后复位 | G32 |
+| 关窗时重复保存 | 双写 | `_exit_saved` 幂等保护 | — |
+
+其余审查意见（`set_tile` 无调用者、`apply_chunk` 不写 `_saved_sha` 导致快照哈希在重启后变化、
+编辑回退成生成值时 revision 归零、`stack_size` 未使用、`quit` 不真正退出）作为**已知限制**
+保留在第 6 节，没有放宽任何断言掩盖它们。
+
 ## 6 未完成与依赖（不得当成已完成）
 
 | 项 | 归属 | 现状 | 下一步入口 |
@@ -108,7 +148,7 @@ node desktop/godot/bases/mining-sandbox/delivery/make-base-assets.mjs
 | `shared/tests/progress.mjs` 底座矩阵 | F | **未落地** | 加 `['mining-sandbox','mine-camp']` 与一个专属坏状态 |
 | 托管进度在真实宿主中的端到端验证 | A/C/D | **未执行** | 底座侧 body 已通过 G36；需真实 broker/宿主跑一次 `craftmine.godot-progress/1` |
 | 产品底座枚举 `plugins/craftmine-world/manifest.json`、`main.cjs` | C/L/root | **未登记** | INTERFACE_BC §6 的两行片段 |
-| 发行/许可清单 `desktop/delivery/base-assets/mining-sandbox.json` | K | **未落地** | 复制 `docs/dispatch-reports/godot-remaining/G/delivery/base-assets.mining-sandbox.json`（85 条 + 2 份引擎声明，哈希已核对）；另需 `preflight-selftest.mjs` 的夹具与底座数组 |
+| 发行/许可清单 `desktop/delivery/base-assets/mining-sandbox.json` | K | **未落地** | 复制 `docs/dispatch-reports/godot-remaining/G/delivery/base-assets.mining-sandbox.json`（86 条 + 2 份引擎声明，哈希已核对）；另需 `preflight-selftest.mjs` 的夹具与底座数组。落地后 `ASSET_BASE_MANIFEST_MISSING: mining-sandbox` 即消失（其余三个底座的同类缺失与本次无关） |
 | `desktop/godot/bases/tests/audit-persistence.mjs` 的沙盒用例 | F/H | **未登记** | 按 side-view 段的写法加一段断言块 |
 | 作品复用/备份/迁移 | H | **未接入** | 分块地形属于进度不是源码；复制世界必须换 `worldId`（INTERFACE_BC §5） |
 | Git 内容历史与素材固定引用 | M/N | **未接入** | 世界源码进 Git、地形进度不进；贴图无第三方素材（`ASSET_SOURCES.md`） |
@@ -120,10 +160,18 @@ node desktop/godot/bases/mining-sandbox/delivery/make-base-assets.mjs
 1. `world_state.gd` 的 `clone()` 用 `load("res://scripts/base/world_state.gd")` 硬编码世界
    工程路径，在底座目录内直接调用会失败（世界工程内正常）。当前无调用点依赖它，但应改为
    `get_script()` 或去掉。
-2. 地形渲染是 `draw_rect` 纯色块（无美术素材）。视觉质量不是本任务验收项，但真实玩家
+2. `TerrainService.set_tile()` 目前没有调用者（`dig`/`place` 直接走 `_commit`）。它是
+   契约里的「唯一变更路径」，但实际唯一入口是 `dig`/`place`；要么给它加调用方（例如探针的
+   直接设块），要么在下一版把它删掉并在 SPEC 改述，避免文档与实现不一致。
+3. `terrain.apply_chunk()` 不写 `_saved_sha`，因此 `snapshot.chunks[].sha256` 在保存后是
+   文件哈希、重启后变成 `JSON(cells)` 的哈希，观察面不稳定（不影响正确性）。
+4. 一个块被挖回生成材质时该块从 `edited_chunk_ids()` 消失，其 revision 不再落盘，
+   重启后归 0；块级 revision 因此只在「仍有编辑」时有意义。
+5. `items[].stack` / `economy.maxStack` 未实际限制堆叠数量；`stack_size()` 无调用者。
+6. 地形渲染是 `draw_rect` 纯色块（无美术素材）。视觉质量不是本任务验收项，但真实玩家
    体验需要美术或至少更好的程序化绘制。
-3. 相邻规则只要求 4 邻域任一非空气或位于地图底部，没有实现"必须有支撑"的更严格结构规则。
-4. 光照、液体、无限世界、多人均未实现（计划内非目标）。
+7. 相邻规则只要求 4 邻域任一非空气或位于地图底部，没有实现"必须有支撑"的更严格结构规则。
+8. 光照、液体、无限世界、多人均未实现（计划内非目标）。
 
 ## 7 记账区分
 

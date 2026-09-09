@@ -40,6 +40,7 @@ var _auto_request_counter: int = 0
 var cursor_tile: Vector2i = Vector2i.ZERO
 var _cursor_initialized: bool = false
 var last_action: Dictionary = {}
+var _exit_saved: bool = false
 
 
 func _ready() -> void:
@@ -165,7 +166,11 @@ func _build_nodes() -> void:
 		if entry.get("tile") is Array and entry.tile.size() == 2:
 			declared_tile = Vector2i(int(entry.tile[0]), int(entry.tile[1]))
 		var resolved := _resolve_spawn_tile(declared_tile)
-		var resolved_tile: Vector2i = resolved.tile if bool(resolved.get("ok", false)) else declared_tile
+		if not bool(resolved.get("ok", false)):
+			boot_error = "entity %s cannot be placed: %s" % [entity_id, String(resolved.get("detail", ""))]
+			push_error("mining-sandbox %s" % boot_error)
+			continue
+		var resolved_tile: Vector2i = resolved.tile
 		if bool(resolved.get("moved", false)):
 			rescue["resolvedTiles"].append({
 				"kind": "entity",
@@ -184,6 +189,15 @@ func _build_nodes() -> void:
 	player.name = "Player"
 	player.setup(self, params, state, Vector2(generator.map_size * params.tile_size()))
 	world_root.add_child(player)
+	terrain.chunk_changed.connect(_on_chunk_changed)
+
+
+## A tile change must be reflected in physics and on screen right away.
+func _on_chunk_changed(cx: int, cy: int) -> void:
+	if collider != null:
+		collider.invalidate(cx, cy)
+	if renderer != null:
+		renderer.invalidate()
 
 
 func _restore_on_boot() -> void:
@@ -485,6 +499,9 @@ func request_id(explicit: String) -> String:
 
 
 func _exit_tree() -> void:
+	if _exit_saved:
+		return
+	_exit_saved = true
 	if state == null or state.world_id.is_empty():
 		return
 	if not bool(world.get("autosaveOnExit", true)):
@@ -504,6 +521,9 @@ func _notification(what: int) -> void:
 
 const MANAGED_FORMAT := "craftmine.godot-mining-sandbox-managed/1"
 const MANAGED_LIMIT := 1048576  # shared state_guard body limit
+## A saved player tile may sit this many rows above the top row: the player can
+## legitimately stand on the surface edge, but must not be restored far off-map.
+const PLAYER_TILE_MARGIN := 8
 
 var _paused: bool = false
 
@@ -653,6 +673,11 @@ func restore_managed(body: Dictionary) -> Dictionary:
 	var raw_state: Variant = body.get("state", {})
 	if not raw_state is Dictionary:
 		return _managed_reject("bad_state", "Managed body state is missing")
+	var raw_tile: Variant = (raw_state as Dictionary).get("player", {}).get("tile", []) if (raw_state as Dictionary).get("player") is Dictionary else []
+	if not raw_tile is Array or raw_tile.size() != 2 \
+			or int(raw_tile[0]) < 0 or int(raw_tile[0]) >= generator.map_size.x \
+			or int(raw_tile[1]) < -PLAYER_TILE_MARGIN or int(raw_tile[1]) >= generator.map_size.y:
+		return _managed_reject("bad_state", "Managed player tile is outside the map")
 	# WorldState.from_dict validates every field before it assigns anything.
 	var applied := state.from_dict(raw_state, state.world_id)
 	if not bool(applied.get("ok", false)):

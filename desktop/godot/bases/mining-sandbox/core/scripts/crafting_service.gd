@@ -51,7 +51,11 @@ func craft(recipe_id: String, request_id: String, station_id: String) -> Diction
 		if not _within_station_reach(station):
 			return _reject(rid, "out_of_range", {"recipeId": recipe_id, "station": required_station})
 	var inputs: Array = recipe.get("inputs", []) if recipe.get("inputs") is Array else []
-	var consumed: Array = []
+	# Aggregate the requirement per item first: a recipe that lists the same item
+	# twice must be checked against the total, otherwise it could consume more
+	# than the inventory holds and still grant the output.
+	var required: Dictionary = {}
+	var order: Array = []
 	for entry in inputs:
 		if not entry is Dictionary:
 			return _reject(rid, "unknown_recipe", {"recipeId": recipe_id})
@@ -59,9 +63,15 @@ func craft(recipe_id: String, request_id: String, station_id: String) -> Diction
 		var needed := int(entry.get("count", 0))
 		if item_id.is_empty() or needed <= 0:
 			return _reject(rid, "unknown_recipe", {"recipeId": recipe_id})
-		if inventory.count(item_id) < needed:
-			return _reject(rid, "insufficient_materials", {"recipeId": recipe_id, "itemId": item_id, "required": needed, "held": inventory.count(item_id)})
-		consumed.append({"id": item_id, "count": needed})
+		if not required.has(item_id):
+			order.append(item_id)
+		required[item_id] = int(required.get(item_id, 0)) + needed
+	var consumed: Array = []
+	for item_id in order:
+		var total: int = int(required[item_id])
+		if inventory.count(String(item_id)) < total:
+			return _reject(rid, "insufficient_materials", {"recipeId": recipe_id, "itemId": item_id, "required": total, "held": inventory.count(String(item_id))})
+		consumed.append({"id": String(item_id), "count": total})
 	# All inputs present: consume atomically, then grant the output once.
 	for entry in consumed:
 		inventory._apply_consume(String(entry.id), int(entry.count))
@@ -81,7 +91,7 @@ func craft(recipe_id: String, request_id: String, station_id: String) -> Diction
 		"consumed": consumed,
 		"output": {"id": output_id, "count": output_count},
 	}
-	_record(rid, result)
+	_record(rid, result, true)
 	return result
 
 
@@ -113,10 +123,10 @@ func _gate(rid: String) -> Dictionary:
 	return out
 
 
-func _record(rid: String, result: Dictionary) -> void:
+func _record(rid: String, result: Dictionary, applied: bool) -> void:
 	if rid.is_empty() or state == null:
 		return
-	state.ledger_record(rid, "craft", result, true, params.ledger_limit())
+	state.ledger_record(rid, "craft", result, applied, params.ledger_limit())
 
 
 func _reject(rid: String, reason: String, extra: Dictionary = {}) -> Dictionary:
@@ -125,5 +135,5 @@ func _reject(rid: String, reason: String, extra: Dictionary = {}) -> Dictionary:
 		out[key] = extra[key]
 	if not rid.is_empty():
 		out["requestId"] = rid
-		_record(rid, out.duplicate(true))
+		_record(rid, out.duplicate(true), false)
 	return out
