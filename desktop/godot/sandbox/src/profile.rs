@@ -52,8 +52,11 @@ impl AppContainerProfile {
         if self.deleted {
             return 0;
         }
-        self.deleted = true;
-        unsafe { DeleteAppContainerProfile(self.name.as_ptr()) }
+        let result = unsafe { DeleteAppContainerProfile(self.name.as_ptr()) };
+        // A failed deletion remains pending. A repeated explicit call (or Drop)
+        // must retry rather than falsely return success for a leaked profile.
+        self.deleted = result >= 0;
+        result
     }
 }
 

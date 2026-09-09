@@ -358,7 +358,7 @@ impl Task {
         };
         let engine = self.engine.clone();
         let system_root = std::env::var("SystemRoot")?;
-        let running = crate::launch::start(&LaunchSpec {
+        let running = start_unless_cancelled(cancel.as_deref(), || crate::launch::start(&LaunchSpec {
             executable: engine,
             args: self.kind.args(&self.layout.project, &self.layout.export_dir),
             cwd: self.layout.work.clone(),
@@ -371,7 +371,12 @@ impl Task {
             environment: Some(minimal_environment(&self.layout.work, &system_root)),
             timeout: self.budget.timeout,
             diagnose: false,
-        })?;
+        }))?;
+        let Some(running) = running else {
+            self.status = TaskStatus { state: TaskState::Cancelled, exit_code: None,
+                message: "cancelled before process creation; no task process started".into() };
+            return Ok(());
+        };
         let started = std::time::Instant::now();
         let outcome = loop {
             if let Some(exit) = running.wait(Duration::from_millis(200))? {
@@ -466,6 +471,30 @@ impl Task {
 /// `Cancelled`.
 pub fn cancel_flag() -> Arc<AtomicBool> {
     Arc::new(AtomicBool::new(false))
+}
+
+fn start_unless_cancelled<T>(cancel: Option<&AtomicBool>, start: impl FnOnce() -> Result<T>) -> Result<Option<T>> {
+    if cancel.is_some_and(|flag| flag.load(std::sync::atomic::Ordering::SeqCst)) {
+        return Ok(None);
+    }
+    start().map(Some)
+}
+
+#[cfg(test)]
+mod cancellation_tests {
+    use super::*;
+    #[test]
+    fn preexisting_cancellation_never_calls_process_creation() {
+        let cancel = AtomicBool::new(true);
+        let result = start_unless_cancelled::<()> (Some(&cancel), || panic!("process creation must not be reached"));
+        assert!(matches!(result, Ok(None)));
+    }
+    #[test]
+    fn uncancelled_launch_error_is_preserved() {
+        let cancel = AtomicBool::new(false);
+        let result = start_unless_cancelled::<()>(Some(&cancel), || Err("creation denied".into()));
+        assert_eq!(result.unwrap_err().to_string(), "creation denied");
+    }
 }
 
 fn copy_tree(source: &Path, destination: &Path) -> Result<()> {

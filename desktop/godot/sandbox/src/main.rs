@@ -239,6 +239,7 @@ fn run() -> Result<()> {
         "probe.denied_interactive_station_error=Some(5)",
         "probe.child_station_visible=false",
         "probe.net_external_connect_error=Some(10013)",
+        "probe.net_loopback_connect_error=Some(10013)",
         "probe.native_boundary_probe=passed",
     ];
     for line in required {
