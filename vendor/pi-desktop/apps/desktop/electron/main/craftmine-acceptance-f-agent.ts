@@ -94,7 +94,7 @@ export function installNativeAgentAcceptance(access: Access): void {
     }
     if (method === "restoreBackup") {
       if (!backupGrant?.grantId) throw Error("Inspect the real selected backup first");
-      return panel("backup.restore", { operationId: "f-backup-restore-0001", grantId: backupGrant.grantId, expectedCurrentHash: backupGrant.expectedCurrentHash });
+      return panel("backup.restore", { operationId: "f-restore-" + backupGrant.grantId, grantId: backupGrant.grantId, expectedCurrentHash: backupGrant.expectedCurrentHash });
     }
     if (method === "retryReview") {
       const list = await access.panel("verification.list", { worldId, limit: 16 });

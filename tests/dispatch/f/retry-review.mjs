@@ -15,6 +15,7 @@ assert.ok(path.basename(directory).startsWith('desktop-native-f-'));
 const original=JSON.parse(fs.readFileSync(path.join(directory,'report.json'),'utf8'));
 assert.equal(original.passed,false,'Only a retained failed native profile may be retried');
 const reuse=!!original.evidence.reuseIdentity;
+const stateOnly=process.env.CRAFTMINE_F_STATE_ONLY==='1';
 const identity=original.evidence.reuseIdentity||original.evidence.identity;assert.ok(identity?.sessionId,'Expected a real failed native session');
 const profile=path.join(directory,'profile'),marker=JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'),'utf8'));
 assert.equal(marker.format,'craftmine.headless-profile/1');
@@ -37,10 +38,15 @@ const read=()=>{const db=new DatabaseSync(path.join(profile,'plugins/data/craftm
 const evidence={before:read(),originalReportHash:createHash('sha256').update(fs.readFileSync(path.join(directory,'report.json'))).digest('hex')},started=Date.now();
 try{
   const deadline=Date.now()+60000;while(!ready&&Date.now()<deadline&&!ended)await delay(200);assert.ok(ready);
+  let loaded=false;
+  while(Date.now()<deadline&&!ended){try{const world=await rpc('worldState','craftmine-headless');if(world.loaded&&!world.disabled){loaded=true;break;}}catch{}await delay(200);}
+  assert.ok(loaded,'The actual world view must finish startup before session setup');
   await rpc('initialize');evidence.status=await rpc('status','craftmine-headless');
   assert.ok(evidence.status.windows.every(w=>w.offscreen&&!w.visible&&!w.focused&&!w.focusable));
-  evidence.retry=await rpc('retryReview');
-  evidence.application=await rpc('apply','craftmine-acceptance-f',210000);
+  if(!stateOnly){
+    evidence.retry=await rpc('retryReview');
+    evidence.application=await rpc('apply','craftmine-acceptance-f',210000);
+  }
   evidence.after=read();
   const world=JSON.parse(evidence.after.craftmine_worlds.find(w=>w.id===identity.worldId).document);
   const reference=original.evidence.capture?.ref;
@@ -49,7 +55,7 @@ try{
   if(reuse)assert.ok(world.build.scene.objects.some(o=>o.source?.id===reference.id&&o.source.version===reference.version&&o.position.x===20));
   const previous=new Set(evidence.before.craftmine_budget_requests.map(r=>r.request_id));
   const added=evidence.after.craftmine_budget_requests.filter(r=>!previous.has(r.request_id));
-  assert.ok(added.length>=1&&added.length<=2&&added.every(r=>r.purpose==='review'),'Only the explicit bounded real review may request the provider');
+  assert.ok(stateOnly?added.length===0:added.length>=1&&added.length<=2&&added.every(r=>r.purpose==='review'),'Only the explicit bounded real review may request the provider');
   evidence.newRequests=added;
   if(original.evidence.scenario.recovery){
     const before=original.evidence.interruptedLedger.craftmine_budget_requests,after=evidence.after.craftmine_budget_requests;
@@ -82,6 +88,7 @@ finally{
   if(!ended){try{evidence.guards=await rpc('guards','craftmine-headless');await rpc('quit','craftmine-headless',3000);}catch{}await Promise.race([exit,delay(7000)]);if(!ended){child.kill();await exit;}}
   evidence.audit=audit;
   if(!audit||audit.violations.length||audit.pageErrors.length){evidence.passed=false;process.exitCode=1;}
-  fs.writeFileSync(path.join(directory,'explicit-review-retry.json'),JSON.stringify({format:'craftmine.f-review-retry/1',elapsedMs:Date.now()-started,evidence},null,2));
-  console.log(JSON.stringify({passed:evidence.passed===true,failure:evidence.failure,report:path.join(directory,'explicit-review-retry.json')}));
+  const output=path.join(directory,stateOnly?'post-application-state.json':'explicit-review-retry.json');
+  fs.writeFileSync(output,JSON.stringify({format:'craftmine.f-review-retry/1',stateOnly,elapsedMs:Date.now()-started,evidence},null,2));
+  console.log(JSON.stringify({passed:evidence.passed===true,failure:evidence.failure,report:output}));
 }
