@@ -90,7 +90,14 @@
     "delivery": "docs/dispatch-reports/batch07/DELIVERY_REPORT.md",
     "review": "docs/dispatch-reports/batch07/FINAL_REVIEW.md"
   },
-  "localMerge": "Ready; finalized after local master merge, no remote push",
+  "localMerge": {
+    "implementationCommit": "7af2e41bd9a60b6ab19c47d2bbc3a1eb979ba9a2",
+    "branch": "master",
+    "status": "fast_forward_merged",
+    "verifiedClean": true,
+    "pushed": false,
+    "deliveredPayloadHashesVerifiedAfterMerge": true
+  },
   "scopes": {
     "fixedAuthorship": "Native gameplay fixture",
     "realAuthorship": "Tree workbench, recovery and three-compaction scenarios",
@@ -103,5 +110,9 @@
     "liveProfileWrites": false,
     "installerExecuted": false,
     "remotePush": false
-  }
+  },
+  "outerDeliveryNotes": [
+    "交付说明.md",
+    "最新使用说明.md"
+  ]
 }
