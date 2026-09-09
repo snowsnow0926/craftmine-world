@@ -345,7 +345,7 @@ pub(super) fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Res
     Ok(text)
 }
 
-fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text: &str) -> Result<()> {
+pub(super) fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text: &str) -> Result<()> {
     let parent = blob_directory(directory, world, true)?;
     let target = parent.join(&entry.sha256);
     if fs::symlink_metadata(&target).is_ok() {

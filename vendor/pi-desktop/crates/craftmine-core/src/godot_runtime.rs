@@ -122,7 +122,16 @@ impl TaskJournal {
         let current = worlds::read(&self.db, &args.world_id)?;
         match current.world.build["scene"]["format"].as_str() {
             Some("craftmine.scene/1" | "craftmine.scene/2" | "craftmine.scene/3") => return Ok(Value::Null),
-            Some("craftmine.godot-scene/1") => {},
+            Some("craftmine.godot-scene/1") => {
+                // A world created through the initialisation transaction is not
+                // runnable until a real application confirmed its first launch.
+                if let Some(init) = super::godot_worlds::read(&self.db, &args.world_id)? {
+                    ensure!(
+                        init["status"] == "confirmed",
+                        "GODOT_WORLD_NOT_INITIALIZED"
+                    );
+                }
+            }
             _ => return Err(anyhow::anyhow!("UNSUPPORTED_WORLD_RUNTIME")),
         }
         ensure!(current.world.snapshot["format"] == PROGRESS_FORMAT, "GODOT_PROGRESS_MIGRATION_REQUIRED");

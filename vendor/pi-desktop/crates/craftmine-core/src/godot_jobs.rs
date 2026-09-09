@@ -19,7 +19,7 @@ use super::{
 const LEASE_MILLIS: i64 = 120_000;
 const QUEUE_TIMEOUT_MILLIS: i64 = 600_000;
 // Exported engine wasm is substantially larger than a project source file.
-const ARTIFACT_FILE_BYTES: u64 = 256 * 1024 * 1024;
+pub(super) const ARTIFACT_FILE_BYTES: u64 = 256 * 1024 * 1024;
 const ARTIFACT_TOTAL_BYTES: u64 = 512 * 1024 * 1024;
 const ARTIFACT_COUNT: usize = 4096;
 
@@ -442,7 +442,7 @@ fn artifact_path(path: &str) -> Result<()> {
     Ok(())
 }
 
-fn verify_file(root: &std::path::Path, path: &str, hash: &str, bytes: u64, limit: u64, code: &str) -> Result<()> {
+pub(super) fn verify_file(root: &std::path::Path, path: &str, hash: &str, bytes: u64, limit: u64, code: &str) -> Result<()> {
     artifact_path(path)?;
     super::godot_projects::valid_hash(hash)?;
     ensure!(bytes <= limit, "{code}");

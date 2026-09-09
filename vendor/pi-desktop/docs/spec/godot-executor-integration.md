@@ -63,6 +63,39 @@ immutable source revision advances `baseBuild` to that actual applied baseline
 and keeps the real writer binding. Previous revisions retain their baseline;
 foreign lineage is refused, and source edits never mutate formal play progress.
 
+## First Godot world and world copies
+
+`godotWorld.initialize {worldId,title,baseId,baseBuild,snapshot}` creates the
+world and an initialisation record in one transaction. The snapshot must already
+be Godot progress for that world and base, so a legacy document cannot be
+smuggled in as a new Godot world. The world carries a non-formal build string and
+is not runnable; `godotRuntime.describe` answers `GODOT_WORLD_NOT_INITIALIZED`.
+The same request replays; a different base or an existing world is `WORLD_EXISTS`.
+
+`godotWorld.initStatus {worldId}` derives the state from durable rows only:
+`pending`, `drafting`, `blocked` (with the capability reason), `building`,
+`checked`, `failed` (with the job's `interruptReason`), or `confirmed`. Nothing
+accepts a caller-supplied phase, so no page or model can declare a world
+playable. `confirmed` and `playable` are set only when a real application
+committed after a verified check and a confirmed first launch; that commit
+confirms the initialisation record in the same transaction. A failed attempt
+keeps its record and reason and can be retried with a new execution.
+
+`godotWorld.copy {sourceWorldId,targetWorldId,title,progress,snapshot?}` copies a
+formal Godot world into a new identity. The applied build is shared because its
+artifacts are immutable; the project head, source blobs and asset bodies are
+copied; `progress: formal` inherits play progress and `progress: initial` starts
+from the supplied initial state, so a copied example does not inherit rewards.
+Extensions are not copied. The origin is recorded in
+`craftmine_godot_world_copies`.
+
+`godotWorld.backupSnapshot {worldId}` returns a self-contained descriptor of the
+world document, project manifest, asset rows, build file list, applied
+application and initialisation record. It reads every referenced blob, asset body
+and build file back from disk and hashes it, so the descriptor proves the live
+store rather than the rows alone. `godotWorld.verifySnapshot` recomputes it and
+compares; a mismatch is `GODOT_BACKUP_MISMATCH` and nothing is written.
+
 ## Storage accounting, quota and reclamation
 
 `godotStorage.status` reports one world's storage split into source history
