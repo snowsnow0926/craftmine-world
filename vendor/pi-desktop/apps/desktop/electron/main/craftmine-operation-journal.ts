@@ -60,7 +60,7 @@ function projection(record: StoredOperation): PendingOperation {
 }
 function receipt(result: any) {
   if (!plain(result) || Buffer.byteLength(canonical(result)) > 65536) fail("INVALID_OPERATION_RECEIPT");
-  const keys = ["budget", "receipt", "ref", "packageHash", "metadata", "idMap", "dependencies", "applied", "verificationId", "verificationStatus", "replayed", "id", "operationId", "status", "archiveHash", "bytes", "scope", "currentHash", "modelReplay", "credentialsIncluded", "format", "kind", "claim", "sourceRefs", "tags", "appliesTo", "supersedes", "supersededBy", "createdAt", "lastVerifiedAt", "retiredReason", "generation", "draftHash", "revision", "summary", "current", "inputHash", "outputHash", "publishingAvailable", "taskId", "workspaceRevision", "baseBuild"];
+  const keys = ["budget", "previousMaxTokens", "receipt", "ref", "packageHash", "metadata", "idMap", "dependencies", "applied", "verificationId", "verificationStatus", "replayed", "id", "operationId", "status", "archiveHash", "bytes", "scope", "currentHash", "modelReplay", "credentialsIncluded", "format", "kind", "claim", "sourceRefs", "tags", "appliesTo", "supersedes", "supersededBy", "createdAt", "lastVerifiedAt", "retiredReason", "generation", "draftHash", "revision", "summary", "current", "inputHash", "outputHash", "publishingAvailable", "taskId", "workspaceRevision", "baseBuild"];
   if (Object.keys(result).some(key => !keys.includes(key))) fail("INVALID_OPERATION_RECEIPT");
   return structuredClone(result);
 }

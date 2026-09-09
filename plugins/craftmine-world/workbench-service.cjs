@@ -91,7 +91,7 @@ function createWorkbenchService(core,{library,memory,verifications,reviews,getSe
       } while(start!==null&&start!==undefined);
       requestText ||= '重新检查当前已保存草稿。';
       const origin=host.origin?.modelKey?{...host.origin,request:{messageId:first?.id||args.operationId,text:requestText}}:null;
-      const existing=await core.call('verification.list',{worldId,offset:0,limit:50});
+      const existing=await core.call('verification.list',{worldId,offset:0,limit:32});
       const queued=existing.find(job=>job.current&&job.taskId===task.binding.taskId&&job.draftHash===args.draftHash&&job.workspaceRevision===args.revision&&['queued','running'].includes(job.status));
       const job=queued||await core.call('verification.retry',{context,toolCallId:args.operationId,revision:args.revision,draftHash:args.draftHash,summary:'重新检查当前已保存草稿',origin});
       verifications.enqueue(job,context);return {verificationId:job.id,status:job.status,revision:args.revision,draftHash:args.draftHash,applied:false};
