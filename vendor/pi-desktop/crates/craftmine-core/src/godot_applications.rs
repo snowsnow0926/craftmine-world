@@ -257,6 +257,7 @@ impl TaskJournal {
     /// Prepare an application against the current formal world. Nothing is
     /// published here: the candidate must first prove itself in a new instance.
     pub fn godot_application_prepare(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock=crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: PrepareArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.id)?;
         workspaces::call_id(&args.token)?;
@@ -264,6 +265,13 @@ impl TaskJournal {
         let request = json!({"candidateId":args.candidate_id,"worldId":args.world_id,
             "revision":args.revision,"snapshot":args.snapshot});
         let request_hash = digest(&serde_json::to_string(&request)?);
+        let replay:bool=self.db.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_godot_applications WHERE id=?1)",[&args.id],|r|r.get(0))?;
+        if !replay {
+            let candidate=super::godot_jobs::read_candidate(&self.db,&args.candidate_id)?;
+            if let Some(branch)=candidate["content"]["branchId"].as_str() {
+                self.project_manifest_for(&args.world_id,None,branch)?;
+            }
+        }
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -323,6 +331,7 @@ impl TaskJournal {
     /// Commit only after a real new instance confirmed this exact build. The
     /// previous world document and its progress stay recoverable.
     pub fn godot_application_commit(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock=crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: CommitArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.id)?;
         workspaces::call_id(&args.token)?;
@@ -332,6 +341,13 @@ impl TaskJournal {
             "stateHash":args.evidence.launch.state_hash},"player":args.evidence.player});
         if let Some(snapshot) = &args.evidence.snapshot { evidence_value["snapshot"] = snapshot.clone(); }
         let evidence_body = serde_json::to_string(&evidence_value)?;
+        let previous=read(&self.db,&args.id)?;
+        if previous["status"]!="applied" {
+            let world=previous["input"]["worldId"].as_str().context("INVALID_WORLD_ID")?;
+            let candidate_id=previous["input"]["candidateId"].as_str().context("INVALID_GODOT_CANDIDATE")?;
+            let candidate=super::godot_jobs::read_candidate(&self.db,candidate_id)?;
+            if let Some(branch)=candidate["content"]["branchId"].as_str(){self.project_manifest_for(world,None,branch)?;}
+        }
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;

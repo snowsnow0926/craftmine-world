@@ -55,6 +55,7 @@ pub(super) struct AssetRow {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(super) struct BuildIdentity {
+    pub branch_id:String,
     pub world_id: String,
     pub build_id: String,
     pub base_id: String,
@@ -111,6 +112,8 @@ fn asset_limit() -> usize {
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct BuildStartArgs {
+    #[serde(default="super::godot_projects::main_branch")]
+    branch_id:String,
     context: WorkspaceContext,
     world_id: String,
     tool_call_id: String,
@@ -177,6 +180,7 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     for (column, definition) in [
         ("content_oid", "TEXT"),
         ("asset_lock_hash", "TEXT"),
+        ("branch_id", "TEXT NOT NULL DEFAULT 'main'"),
     ] {
         let present: bool = db.query_row(
             "SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_builds') WHERE name=?1",
@@ -843,6 +847,7 @@ impl TaskJournal {
     /// The per-build copy is materialized here; import/compile/check run in the
     /// registered isolated executor, never in this process.
     pub fn godot_build_start(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock=crate::operation_lock::OperationLock::domain(&self.directory)?;
         let request_hash = request_hash("godotBuild.start", args)?;
         let args: BuildStartArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.tool_call_id)?;
@@ -858,7 +863,7 @@ impl TaskJournal {
             None
         };
         scope(&self.db, &args.context, &args.world_id, false)?;
-        let (manifest, manifest_hash) = self.project_manifest(&args.world_id, None)?;
+        let (manifest, manifest_hash) = self.project_manifest_for(&args.world_id, None,&args.branch_id)?;
         let content_oid = if git_backed {
             Some(
                 super::godot_projects::git_commit_for(&self.db, &args.world_id, manifest.revision)?
@@ -898,6 +903,7 @@ impl TaskJournal {
             None
         };
         let mut identity = BuildIdentity {
+            branch_id:args.branch_id.clone(),
             world_id: args.world_id.clone(),
             build_id: String::new(),
             base_id: manifest.base_id.clone(),
@@ -949,12 +955,12 @@ impl TaskJournal {
         tx.execute(
             "INSERT OR IGNORE INTO craftmine_godot_builds(world_id,build_id,source_revision,manifest_hash,
                 asset_manifest_hash,base_id,base_build,engine_version,renderer,target,files,bytes,created_at,
-                content_oid,asset_lock_hash)
-             VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15)",
+                content_oid,asset_lock_hash,branch_id)
+             VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16)",
             params![args.world_id, identity.build_id, i64::try_from(identity.source_revision)?, manifest_hash,
                 asset_manifest_hash, identity.base_id, identity.base_build, identity.engine_version,
                 identity.renderer, identity.target, files.len() as i64, bytes as i64, worlds::timestamp()?,
-                identity.content_oid, identity.asset_lock_hash],
+                identity.content_oid, identity.asset_lock_hash,identity.branch_id],
         )?;
         // The recorded file list is what an executor may read; it is the exact
         // set that was verified on disk above.
@@ -1012,14 +1018,8 @@ impl TaskJournal {
             record["worldId"] == args.world_id,
             "PROJECT_WORLD_BINDING_MISMATCH"
         );
-        let current: Option<(i64, String)> = self
-            .db
-            .query_row(
-                "SELECT revision,hash FROM craftmine_godot_projects WHERE world_id=?1",
-                [&args.world_id],
-                |row| Ok((row.get(0)?, row.get(1)?)),
-            )
-            .optional()?;
+        let current = super::godot_projects::branch_head_manifest(&self.db,&args.world_id,record["branchId"].as_str().unwrap_or("main"))
+            .ok().map(|(manifest,hash)|(manifest.revision as i64,hash));
         let source_stale = current.as_ref().is_none_or(|(revision, hash)| {
             i64::try_from(record["sourceRevision"].as_u64().unwrap_or(u64::MAX)).ok() != Some(*revision)
                 || record["manifestHash"].as_str() != Some(hash.as_str())

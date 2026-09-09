@@ -118,6 +118,8 @@ struct PatchArgs {
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct IndexArgs {
+    #[serde(default="main_branch")]
+    branch_id:String,
     context: WorkspaceContext,
     world_id: String,
     revision: Option<u64>,
@@ -134,6 +136,8 @@ fn index_limit() -> usize {
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct ReadArgs {
+    #[serde(default="main_branch")]
+    branch_id:String,
     context: WorkspaceContext,
     world_id: String,
     revision: u64,
@@ -147,6 +151,7 @@ struct ReadArgs {
 fn text_limit() -> usize {
     16000
 }
+pub(super) fn main_branch()->String { repo::MAIN_BRANCH.to_owned() }
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -189,6 +194,8 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     )?;
     let has_manifest: bool=db.query_row("SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_project_commits') WHERE name='manifest'",[],|row|Ok(row.get::<_,i64>(0)?>0))?;
     if !has_manifest { db.execute_batch("ALTER TABLE craftmine_godot_project_commits ADD COLUMN manifest TEXT")?; }
+    let has_branch: bool=db.query_row("SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_project_commits') WHERE name='branch_id'",[],|row|Ok(row.get::<_,i64>(0)?>0))?;
+    if !has_branch { db.execute_batch("ALTER TABLE craftmine_godot_project_commits ADD COLUMN branch_id TEXT NOT NULL DEFAULT 'main'")?; }
     Ok(())
 }
 
@@ -685,15 +692,16 @@ fn store_git_index(
     request_hash: &str,
     commit_oid: &str,
     asset_lock_hash: &str,
+    branch: &str,
 ) -> Result<Value> {
     let body = serde_json::to_string(manifest)?;
     ensure!(body.len() <= MANIFEST_LIMIT, "PROJECT_MANIFEST_TOO_LARGE");
     let hash = digest(&body);
-    db.execute(
+    if branch==repo::MAIN_BRANCH { db.execute(
         "INSERT INTO craftmine_godot_projects(world_id,revision,manifest,hash) VALUES(?1,?2,?3,?4)
          ON CONFLICT(world_id) DO UPDATE SET revision=excluded.revision,manifest=excluded.manifest,hash=excluded.hash",
         params![manifest.world_id, i64::try_from(manifest.revision)?, body, hash],
-    )?;
+    )?; }
     record_git_commit(
         db,
         &manifest.world_id,
@@ -704,11 +712,11 @@ fn store_git_index(
         &manifest.task.task_id,
         call,
     )?;
-    db.execute("UPDATE craftmine_godot_project_commits SET manifest=?3 WHERE world_id=?1 AND revision=?2",
-        params![manifest.world_id,i64::try_from(manifest.revision)?,body])?;
+    db.execute("UPDATE craftmine_godot_project_commits SET manifest=?3,branch_id=?4 WHERE world_id=?1 AND revision=?2",
+        params![manifest.world_id,i64::try_from(manifest.revision)?,body,branch])?;
     let result = json!({"revision":manifest.revision,"manifestHash":hash,"baseBuild":manifest.base_build,
         "fileCount":manifest.files.len(),"currentTaskId":manifest.task.task_id,"lastWriter":manifest.task,
-        "commitOid":commit_oid,"assetLockHash":asset_lock_hash});
+        "commitOid":commit_oid,"assetLockHash":asset_lock_hash,"branchId":branch});
     db.execute(
         "INSERT INTO craftmine_godot_receipts(task_id,tool_call_id,request_hash,result) VALUES(?1,?2,?3,?4)",
         params![manifest.task.task_id, call, request_hash, serde_json::to_string(&result)?],
@@ -726,14 +734,51 @@ impl TaskJournal {
         world: &str,
         revision: Option<u64>,
     ) -> Result<(Manifest, String)> {
+        self.project_manifest_for(world,revision,repo::MAIN_BRANCH)
+    }
+
+    pub(super) fn project_manifest_for(&self, world:&str,revision:Option<u64>,branch:&str)->Result<(Manifest,String)> {
+        super::content_history::contract::validate_identifier(branch,"INVALID_BRANCH_ID")?;
         if !self.is_git_backed(world)? {
+            ensure!(branch==repo::MAIN_BRANCH,"CONTENT_BRANCH_REQUIRES_GIT");
             return load_manifest(&self.db, world, revision);
+        }
+        if branch!=repo::MAIN_BRANCH {
+            let (store,layout)=self.content_layout(world)?;
+            let head=store.branch_head(&layout,branch)?.context("CONTENT_BRANCH_NOT_FOUND")?;
+            let indexed:Option<(String,String,String)>=self.db.query_row(
+                "SELECT manifest,manifest_hash,commit_oid FROM craftmine_godot_project_commits WHERE world_id=?1 AND branch_id=?2 AND manifest IS NOT NULL AND (?3 IS NULL OR revision=?3) ORDER BY revision DESC LIMIT 1",
+                params![world,branch,revision.map(i64::try_from).transpose()?],|row|Ok((row.get(0)?,row.get(1)?,row.get(2)?))).optional()?;
+            if let Some((body,hash,oid))=&indexed {
+                if revision.is_some() || oid==&head {
+                    ensure!(digest(body)==*hash,"CORRUPT_PROJECT_MANIFEST");
+                    let manifest:Manifest=serde_json::from_str(body)?; validate_manifest(&manifest)?;
+                    return Ok((manifest,hash.clone()));
+                }
+            }
+            ensure!(revision.is_none(),"GODOT_PROJECT_REVISION_NOT_INDEXED");
+            let mut manifest=if let Some((body,_,_))=indexed {serde_json::from_str::<Manifest>(&body)?}else{load_manifest(&self.db,world,None)?.0};
+            manifest.revision=next_git_revision(&self.db,world)?;
+            manifest.files.clear();
+            for entry in store.tree_entries(&layout,&head)? {
+                ensure!(matches!(entry.mode.as_str(),"100644"|"100755"),"CONTENT_COPY_UNSUPPORTED_ENTRY");
+                source_path(&entry.path)?;
+                let bytes=store.read_file(&layout,&head,&entry.path)?;
+                manifest.files.insert(entry.path,FileEntry{sha256:digest_bytes(&bytes),bytes:bytes.len() as u64});
+            }
+            validate_manifest(&manifest)?;
+            let body=serde_json::to_string(&manifest)?; let hash=digest(&body);
+            let lock=store.asset_lock(&layout,&head)?.unwrap_or_else(super::content_history::contract::AssetLock::empty);
+            record_git_commit(&self.db,world,manifest.revision,&head,&hash,&lock.asset_lock_hash()?,&manifest.task.task_id,"branch-index")?;
+            self.db.execute("UPDATE craftmine_godot_project_commits SET manifest=?3,branch_id=?4 WHERE world_id=?1 AND revision=?2",
+                params![world,i64::try_from(manifest.revision)?,body,branch])?;
+            return Ok((manifest,hash));
         }
         let (manifest, hash) = load_manifest(&self.db, world, None)?;
         if let Some(revision)=revision {
             if revision==manifest.revision { return Ok((manifest,hash)); }
             let indexed:Option<(String,String)>=self.db.query_row(
-                "SELECT manifest,manifest_hash FROM craftmine_godot_project_commits WHERE world_id=?1 AND revision=?2 AND manifest IS NOT NULL",
+                "SELECT manifest,manifest_hash FROM craftmine_godot_project_commits WHERE world_id=?1 AND revision=?2 AND branch_id='main' AND manifest IS NOT NULL",
                 params![world,i64::try_from(revision)?],|row|Ok((row.get(0)?,row.get(1)?))).optional()?;
             if let Some((body,hash))=indexed {
                 ensure!(digest(&body)==hash,"CORRUPT_PROJECT_MANIFEST");
@@ -755,12 +800,15 @@ impl TaskJournal {
             .git()
             .repo(&layout.git_dir, &["log", "-1", "--format=%B", &head])?;
         ensure!(message.ok(), "GIT_LOG_FAILED: {}", message.stderr.trim());
-        let revision = message
+        let mut revision = message
             .stdout_text()?
             .lines()
             .find_map(|line| line.strip_prefix("Craftmine-Revision: "))
             .and_then(|value| value.trim().parse::<u64>().ok())
-            .unwrap_or(manifest.revision + 1);
+            .unwrap_or(next_git_revision(&self.db,world)?);
+        let collision:bool=self.db.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_godot_project_commits WHERE world_id=?1 AND revision=?2 AND (commit_oid<>?3 OR branch_id<>'main'))",
+            params![world,i64::try_from(revision)?,head],|r|r.get(0))?;
+        if collision {revision=next_git_revision(&self.db,world)?;}
         let mut files = BTreeMap::new();
         for entry in store.tree_entries(&layout, &head)? {
             ensure!(
@@ -785,10 +833,11 @@ impl TaskJournal {
         store_git_index(
             &self.db,
             &adopted,
-            "@host:adopt-git-head",
+            &format!("@host:adopt-{head}"),
             &digest(&head),
             &head,
             &lock_hash,
+            repo::MAIN_BRANCH,
         )?;
         let body = serde_json::to_string(&adopted)?;
         Ok((adopted, digest(&body)))
@@ -807,6 +856,18 @@ impl TaskJournal {
     pub(super) fn project_is_git_backed(&self, world: &str) -> Result<bool> {
         self.is_git_backed(world)
     }
+}
+
+fn next_git_revision(db:&Connection,world:&str)->Result<u64> {
+    let max:i64=db.query_row("SELECT MAX(revision) FROM (SELECT revision FROM craftmine_godot_projects WHERE world_id=?1 UNION ALL SELECT revision FROM craftmine_godot_project_commits WHERE world_id=?1)",[world],|row|row.get(0))?;
+    u64::try_from(max.checked_add(1).context("REVISION_LIMIT")?).context("REVISION_LIMIT")
+}
+
+pub(super) fn branch_head_manifest(db:&Connection,world:&str,branch:&str)->Result<(Manifest,String)> {
+    if branch==repo::MAIN_BRANCH {return load_manifest(db,world,None)}
+    let (body,hash):(String,String)=db.query_row("SELECT manifest,manifest_hash FROM craftmine_godot_project_commits WHERE world_id=?1 AND branch_id=?2 AND manifest IS NOT NULL ORDER BY revision DESC LIMIT 1",params![world,branch],|r|Ok((r.get(0)?,r.get(1)?))).context("CONTENT_BRANCH_NOT_INDEXED")?;
+    ensure!(digest(&body)==hash,"CORRUPT_PROJECT_MANIFEST");
+    let manifest=serde_json::from_str(&body)?;validate_manifest(&manifest)?;Ok((manifest,hash))
 }
 
 fn scope(
@@ -956,6 +1017,7 @@ impl TaskJournal {
                 &request_hash,
                 &oid,
                 &lock_hash,
+                repo::MAIN_BRANCH,
             )?
         } else {
             for file in args.files {
@@ -973,6 +1035,7 @@ impl TaskJournal {
     }
 
     pub fn godot_project_index(&self, args: &Value) -> Result<Value> {
+        let _operation_lock=crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: IndexArgs = serde_json::from_value(args.clone())?;
         let workspace = scope(&self.db, &args.context, &args.world_id, false)?;
         ensure!(
@@ -981,7 +1044,7 @@ impl TaskJournal {
                 && args.revision.is_some() == args.manifest_hash.is_some(),
             "INVALID_PROJECT_PAGE"
         );
-        let (manifest, hash) = self.project_manifest(&args.world_id, args.revision)?;
+        let (manifest, hash) = self.project_manifest_for(&args.world_id, args.revision,&args.branch_id)?;
         if let (Some(revision), Some(expected)) = (args.revision, args.manifest_hash) {
             bound_version(&manifest, &hash, revision, &expected)?;
         }
@@ -1004,6 +1067,7 @@ impl TaskJournal {
     }
 
     pub fn godot_project_read(&self, args: &Value) -> Result<Value> {
+        let _operation_lock=crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: ReadArgs = serde_json::from_value(args.clone())?;
         scope(&self.db, &args.context, &args.world_id, false)?;
         source_path(&args.path)?;
@@ -1011,7 +1075,7 @@ impl TaskJournal {
             args.limit > 0 && args.limit <= 16000,
             "INVALID_PROJECT_PAGE"
         );
-        let (manifest, hash) = self.project_manifest(&args.world_id, Some(args.revision))?;
+        let (manifest, hash) = self.project_manifest_for(&args.world_id, Some(args.revision),&args.branch_id)?;
         bound_version(&manifest, &hash, args.revision, &args.manifest_hash)?;
         let entry = manifest
             .files
@@ -1076,7 +1140,8 @@ impl TaskJournal {
         scope(&self.db, &args.context, &args.world_id, false)?;
         // Loading before the transaction reconciles a commit that landed before
         // its SQLite index row; the Git CAS below is the real write guard.
-        let (mut manifest, hash) = self.project_manifest(&args.world_id, None)?;
+        let branch=args.operation.as_ref().map(|op|op.branch_id.as_str()).unwrap_or(repo::MAIN_BRANCH);
+        let (mut manifest, hash) = self.project_manifest_for(&args.world_id, None,branch)?;
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -1174,7 +1239,8 @@ impl TaskJournal {
             "PROJECT_REQUEST_TOO_LARGE"
         );
         ensure!(manifest.files != original_files, "NO_CHANGE");
-        manifest.revision = manifest.revision.checked_add(1).context("REVISION_LIMIT")?;
+        let previous_revision=manifest.revision;
+        manifest.revision = if git_backed {next_git_revision(&tx,&args.world_id)?} else {manifest.revision.checked_add(1).context("REVISION_LIMIT")?};
         manifest.task = workspace.task.binding;
         // A new immutable revision records the actual applied baseline this
         // writer used; older revisions keep their original baseline.
@@ -1183,7 +1249,7 @@ impl TaskJournal {
         }
         validate_manifest(&manifest)?;
         let result = if let Some((store, layout)) = &git {
-            let previous = manifest.revision - 1;
+            let previous = previous_revision;
             let head = git_commit_for(&tx, &args.world_id, previous)?
                 .context("GODOT_PROJECT_HEAD_MISSING")?;
             // The host binds the exact commit it read; a model cannot write over
@@ -1197,10 +1263,7 @@ impl TaskJournal {
                 operation.world_id == args.world_id,
                 "CONTENT_CONTEXT_MISMATCH"
             );
-            ensure!(
-                operation.branch_id == repo::MAIN_BRANCH,
-                "CONTENT_WRITE_BRANCH_NOT_MAIN"
-            );
+            ensure!(operation.repo_id==layout.repo_id,"CONTENT_CONTEXT_MISMATCH");
             ensure!(
                 operation.expected_head_oid.as_deref() == Some(head.as_str()),
                 "CONTENT_EXPECTED_HEAD_MISMATCH"
@@ -1215,7 +1278,7 @@ impl TaskJournal {
             );
             let oid = store.commit(
                 layout,
-                repo::MAIN_BRANCH,
+                branch,
                 Some(&head),
                 &content,
                 &message,
@@ -1227,6 +1290,7 @@ impl TaskJournal {
                 &request_hash,
                 &oid,
                 &lock_hash,
+                branch,
             )?
         } else {
             // Every surviving reference is integrity checked, including unchanged files.
