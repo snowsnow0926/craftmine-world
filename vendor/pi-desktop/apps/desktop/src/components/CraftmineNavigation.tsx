@@ -1,20 +1,35 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Box } from "lucide-react";
 import { useAppStore } from "../stores/app-store";
 import { pluginWorkPanelTab } from "../lib/work-panel-tabs";
 import { CraftmineLayoutControls } from "./CraftmineLayoutControls";
 import { loadCraftmineLayout } from "../lib/craftmine-layout";
+import { craftmineLang } from "../lib/craftmine-worlds";
+import { CRAFTMINE_WORLD_TEXT } from "../lib/craftmine-worlds-text";
+import type { CraftmineAuxSurface } from "../lib/craftmine-aux";
+import { useCraftmineWorlds } from "../hooks/use-craftmine-worlds";
+import { WorldListPanel } from "./craftmine/WorldListPanel";
+import { WorldAuxSections } from "./craftmine/WorldAuxSections";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
+/**
+ * Left-column world navigation: the world list, the session bound to the
+ * current world, and the auxiliary surfaces on demand. The existing session and
+ * project navigation below it is untouched, so nothing is lost by switching.
+ */
 export function CraftmineNavigation() {
   const { i18n } = useTranslation();
-  const chinese = i18n.language.startsWith("zh");
+  const lang = craftmineLang(i18n.language);
   const ready = useAppStore((s) => s.ready);
   const available = useAppStore((s) => s.pluginViews.some((view) => view.ref === WORLD.resource));
   const active = useAppStore((s) => s.page === "chat" && s.workPanelOpen && s.activeWorkPanelTabId === WORLD.id);
+  const activeSessionId = useAppStore((s) => s.activeSessionId);
+  const sessions = useAppStore((s) => s.sessions);
   const initialized = useRef(false);
+  const controller = useCraftmineWorlds(lang);
+
   const open = () => {
     const state = useAppStore.getState();
     state.setPage("chat");
@@ -32,14 +47,53 @@ export function CraftmineNavigation() {
       state.setWorkPanelWidth(layout.widths[layout.mode]);
     }
   }, [ready, available]);
+
+  const sessionTitle = useMemo(() => {
+    if (!activeSessionId) return "";
+    return sessions.find((session) => session.id === activeSessionId)?.title ?? "";
+  }, [sessions, activeSessionId]);
+
+  // The deep surface lives inside the world view. Opening the world tab is a
+  // real action; the host routes the section request to the view.
+  const openSurface = (surface: CraftmineAuxSurface, section: string) => {
+    open();
+    window.dispatchEvent(new CustomEvent("craftmine-aux-open", { detail: { surface, section } }));
+  };
+
   return (
-    <nav className="craftmine-navigation no-drag" aria-label={chinese ? "世界创作" : "World creation"}>
-      <button type="button" className={`craftmine-world-nav ${active ? "active" : ""}`} onClick={open} disabled={!available} data-nav="world" aria-current={active ? "page" : undefined}>
+    <nav className="craftmine-navigation no-drag" aria-label={CRAFTMINE_WORLD_TEXT.worldsTitle[lang]}>
+      <button
+        type="button"
+        className={`craftmine-world-nav ${active ? "active" : ""}`}
+        onClick={open}
+        disabled={!available}
+        data-nav="world"
+        aria-current={active ? "page" : undefined}
+      >
         <Box size={16} aria-hidden />
-        <span>{chinese ? "世界" : "World"}</span>
-        <span className="craftmine-world-nav-hint">{chinese ? (available ? "打开工作台" : "正在载入") : (available ? "Open workspace" : "Loading")}</span>
+        <span>{CRAFTMINE_WORLD_TEXT.worldsTitle[lang]}</span>
+        <span className="craftmine-world-nav-hint">
+          {available ? CRAFTMINE_WORLD_TEXT.openWorld[lang] : CRAFTMINE_WORLD_TEXT.loading[lang]}
+        </span>
       </button>
-      {available && <CraftmineLayoutControls />}
+
+      {available && (
+        <>
+          <WorldListPanel controller={controller} lang={lang} onOpenWorld={open} />
+
+          {activeSessionId && (
+            <div className="craftmine-world-session" data-world-session={activeSessionId}>
+              <span className="craftmine-world-session-label">{CRAFTMINE_WORLD_TEXT.sessionTitle[lang]}</span>
+              <span className="craftmine-world-session-title" title={sessionTitle || activeSessionId}>
+                {sessionTitle || activeSessionId}
+              </span>
+            </div>
+          )}
+
+          <WorldAuxSections controller={controller} lang={lang} onOpenSurface={openSurface} />
+          <CraftmineLayoutControls />
+        </>
+      )}
     </nav>
   );
 }
