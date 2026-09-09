@@ -120,6 +120,8 @@ import {
   enhancePromptDraft,
   summarizeSessionTitle,
   completeOneShot,
+  createCraftmineRequestHooks,
+  type CraftmineTaskContext,
   loadComposerTemplates,
   globalInstructionPath,
   loadInstructionChain,
@@ -700,6 +702,12 @@ const plugins: PluginRuntime = new PluginRuntime({
     if (!host) {
       throw Object.assign(new Error("host unavailable"), { code: "UNSUPPORTED" });
     }
+    const reviewId = input.craftmineReviewId;
+    const reviewOwner = reviewId
+      ? await plugins.requestCraftmineHost("review.context", { reviewId }) as CraftmineTaskContext & { review: { modelKey: string } }
+      : undefined;
+    if (reviewOwner && reviewOwner.review.modelKey !== input.modelKey) throw new Error("CRAFTMINE_REVIEW_MODEL_MISMATCH");
+    const ownerSessionId = reviewOwner?.binding.sessionId ?? input.sessionId;
     const parsed = parsePluginModelKey(input.modelKey);
     if (!parsed) {
       throw Object.assign(new Error("modelKey must be providerId/modelId"), {
@@ -708,9 +716,9 @@ const plugins: PluginRuntime = new PluginRuntime({
     }
     const thinkingLevel = asPluginThinkingLevel(input.thinkingLevel);
     const settings = await host.call<any>("settings.get");
-    const launchSessionId = input.sessionId || `plugin-complete:${crypto.randomUUID()}`;
-    const session = input.sessionId
-      ? (await host.call<{ session?: any }>("session.get", { id: input.sessionId })).session
+    const launchSessionId = ownerSessionId || `plugin-complete:${crypto.randomUUID()}`;
+    const session = ownerSessionId
+      ? (await host.call<{ session?: any }>("session.get", { id: ownerSessionId })).session
       : {};
     const launch = await resolveAgentRuntimeLaunch(launchSessionId, session ?? {}, settings, {
       mode: "agent",
@@ -743,7 +751,18 @@ const plugins: PluginRuntime = new PluginRuntime({
       runtimeProvider,
       context,
       launch.sidecarParams.thinkingLevel,
-      { signal: input.signal, sessionId: launchSessionId },
+      { signal: input.signal, sessionId: launchSessionId,
+        ...(reviewId ? {
+          craftminePurpose: "review" as const,
+          craftmineHooks: createCraftmineRequestHooks({
+            getContext: async () => plugins.requestCraftmineHost("review.context", { reviewId }) as Promise<CraftmineTaskContext>,
+            domainCall: async <T>(method: string, params: Record<string, unknown>) => {
+              if (!['budget.reserve', 'budget.settle'].includes(method)) throw new Error("CRAFTMINE_REVIEW_METHOD_DENIED");
+              return plugins.requestCraftmineHost(method.replace(/^budget\./, "review."), { ...params, reviewId }) as Promise<T>;
+            },
+          }),
+        } : {}),
+      },
     );
     return {
       text: result.text,
