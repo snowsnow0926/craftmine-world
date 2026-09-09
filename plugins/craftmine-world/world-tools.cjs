@@ -1,5 +1,5 @@
 // PI owns the agent loop. This broker exposes bounded domain operations only.
-const {fields,inspectDraft,readDraftResource,patchDraft,readCapabilities,readVerification}=require('./domain.cjs');
+const {fields,inspectDraft,readDraftResource,patchDraft,readCapabilities,readVerification,draftPackages}=require('./domain.cjs');
 
 function hostContext(context) {
   for(const key of ['projectId','sessionId','turnId','toolCallId','executionId']) {
@@ -49,7 +49,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       return result;
     }
     const record=await core.call('world.read',{id:workspace.worldId});
-    if(definition.name==='capabilities_read')return readCapabilities(args,record.world.extensions,workspace.task.draft.scene);
+    if(definition.name==='capabilities_read')return readCapabilities(args,draftPackages(workspace.task.draft,record.world).extensions,workspace.task.draft.scene);
     if(definition.name==='workspace_patch') {
       const params={context,toolCallId:invocation.toolCallId,request:args};
       const previous=await core.call('workspace.receipt',params);
