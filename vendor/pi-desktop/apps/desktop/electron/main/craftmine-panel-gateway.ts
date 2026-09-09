@@ -1,4 +1,5 @@
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
+import { PERSISTENT_WORKBENCH_CHANNELS, type CraftmineOperationJournal, type OperationOwner, type PendingOperation } from "./craftmine-operation-journal";
 
 export const CRAFTMINE_PANEL_CHANNELS = new Set([
   "workbench.capabilities", "task.current", "task.recoverable", "task.resume", "task.discard", "task.stop",
@@ -6,6 +7,7 @@ export const CRAFTMINE_PANEL_CHANNELS = new Set([
   "memory.search", "memory.propose", "memory.retire", "selection.set", "selection.clear",
   "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel",
   "diagnostics.status", "diagnostics.export",
+  "workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge", "draft.recheck", "task.budget",
 ]);
 type Domain = (method: string, params: Record<string, any>) => Promise<any>;
 type Owner = { sessionId: string | null; projectId: string; selectedWorld: string; active: boolean; context?: Record<string, string>; origin?: unknown; previous?: any };
@@ -23,9 +25,11 @@ export function createCraftminePanelGateway(options: {
   interrupt: (context: Record<string, string>, reason: string) => Promise<void>;
   backup: (channel: string, payload: Record<string, any>) => Promise<any>;
   diagnostics: (channel: string, payload: Record<string, any>) => Promise<any>;
+  operations?: CraftmineOperationJournal;
 }) {
   const inFlight = new Map<string, Promise<any>>();
-  return async function request(channel: string, payload: Record<string, any> = {}): Promise<any> {
+  const internal = Symbol("host-operation");
+  async function request(channel: string, payload: Record<string, any> = {}, permit?: { token: symbol; owner: OperationOwner }): Promise<any> {
     if (!CRAFTMINE_PANEL_CHANNELS.has(channel)) throw new Error("UNSUPPORTED_WORKBENCH_CHANNEL");
     if (!payload || Array.isArray(payload) || ["context", "host", "sessionId", "turnId", "projectId", "binding", "origin"].some(key => Object.hasOwn(payload, key))) throw new Error("HOST_IDENTITY_REQUIRED");
     const selection = await options.domain("selection.read", {});
@@ -34,10 +38,40 @@ export function createCraftminePanelGateway(options: {
     const sessionId = options.viewingSession();
     const session = sessionId ? await options.session(sessionId) : null;
     const owner: Owner = { sessionId, projectId: sessionId ? craftmineProjectIdentity(session, sessionId) : `world-${worldId}`, selectedWorld: worldId, active: !!(sessionId && options.activeTurn(sessionId)) };
+    const operationOwner = { projectId: owner.projectId, sessionId, worldId };
+    if (permit && (permit.token !== internal || JSON.stringify(permit.owner) !== JSON.stringify(operationOwner))) throw new Error("OPERATION_OWNER_CHANGED");
     const workbench = (name: string, input: Record<string, any> = payload, host: Owner = owner) => options.domain("workbench.request", { channel: name, payload: input, host });
+    const executeStored = async (record: PendingOperation) => {
+      if (record.channel === "backup.restore") {
+        // A main-process restart loses its picker grant. Resolve an already
+        // committed restore before attempting to consume that grant again.
+        let result: any;
+        try { result = await options.backup("backup.status", { operationId: record.operationId }); } catch { /* A missing receipt is not success. */ }
+        if (result?.status === "completed" || result?.status === "cancelled") return { operationId: record.operationId, status: result.status, ...(result.currentHash ? { currentHash: result.currentHash } : {}), scope: "profile", modelReplay: false };
+      }
+      return request(record.channel, { ...record.payload, worldId, operationId: record.operationId }, { token: internal, owner: operationOwner });
+    };
+    if (["workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge"].includes(channel)) {
+      if (!options.operations) throw new Error("OPERATION_JOURNAL_UNAVAILABLE");
+      const fields = channel === "workbench.prepare" ? ["worldId", "channel", "payload"] : channel === "workbench.operations" ? ["worldId"] : ["worldId", "operationId"];
+      if (Object.keys(payload).some(key => !fields.includes(key))) throw new Error("INVALID_OPERATION_PARAMS");
+      if (channel === "workbench.operations") return { items: await options.operations.list(operationOwner) };
+      if (channel === "workbench.prepare") {
+        if (!PERSISTENT_WORKBENCH_CHANNELS.has(payload.channel)) throw new Error("UNSUPPORTED_DURABLE_OPERATION");
+        if (["library.install", "memory.propose", "draft.recheck", "task.budget"].includes(payload.channel) && !sessionId) throw new Error("HOST_SESSION_REQUIRED");
+        return options.operations.prepare(operationOwner, payload.channel, payload.payload);
+      }
+      if (channel === "workbench.acknowledge") return options.operations.acknowledge(operationOwner, payload.operationId);
+      return options.operations.execute(operationOwner, payload.operationId, executeStored);
+    }
+    if (options.operations && PERSISTENT_WORKBENCH_CHANNELS.has(channel) && !permit) {
+      const { worldId: _worldId, operationId, ...input } = payload;
+      const record = await options.operations.prepare(operationOwner, channel, input, operationId);
+      return options.operations.execute(operationOwner, record.operationId, executeStored);
+    }
     if (channel === "workbench.capabilities") {
       const available = await workbench(channel);
-      return { channels: [...new Set([...available.channels, "task.resume", "task.discard", "task.stop", ...[...CRAFTMINE_PANEL_CHANNELS].filter(name => /^(backup|diagnostics)\./.test(name))])] };
+      return { channels: [...new Set([...available.channels, "task.resume", "task.discard", "task.stop", "task.budget", ...(options.operations ? ["workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge"] : []), ...[...CRAFTMINE_PANEL_CHANNELS].filter(name => /^(backup|diagnostics)\./.test(name))])] };
     }
     if (channel.startsWith("backup.")) {
       const { worldId: _worldId, ...input } = payload;
@@ -47,7 +81,7 @@ export function createCraftminePanelGateway(options: {
       const { worldId: _worldId, ...input } = payload;
       return options.diagnostics(channel, input);
     }
-    if (!["library.install", "memory.propose", "task.resume", "task.discard", "task.stop"].includes(channel)) return workbench(channel);
+    if (!["library.install", "memory.propose", "task.resume", "task.discard", "task.stop", "draft.recheck", "task.budget"].includes(channel)) return workbench(channel);
     if (!sessionId || !session) throw new Error("请先创建或打开一个创作任务，再执行此操作。");
     const current = await workbench("task.current", { worldId });
     if (channel === "task.stop") {
@@ -55,6 +89,17 @@ export function createCraftminePanelGateway(options: {
       await options.stop(sessionId); return { stopped: true };
     }
     if (owner.active) throw new Error("ACTIVE_TASK_EXISTS");
+    if (channel === "task.budget") {
+      const bound = current.context;
+      if (!bound || bound.binding.taskId !== payload.taskId || bound.generation !== payload.generation) throw new Error("STALE_TASK");
+      if (Object.keys(payload).some(key => !["worldId", "operationId", "taskId", "generation", "maxTokens"].includes(key))) throw new Error("INVALID_OPERATION_PARAMS");
+      return options.domain("budget.configure", { projectId: owner.projectId, sessionId, worldId, taskId: payload.taskId, generation: payload.generation, operationId: payload.operationId, maxTokens: payload.maxTokens });
+    }
+    if (channel === "draft.recheck") {
+      const bound = current.context;
+      if (!bound || bound.status !== "finished" || bound.binding.taskId !== payload.taskId || bound.generation !== payload.generation || bound.draft.revision !== payload.revision || bound.draft.hash !== payload.draftHash) throw new Error("STALE_DRAFT");
+      return workbench(channel, payload, { ...owner, context: { projectId: owner.projectId, sessionId, turnId: bound.binding.turnId }, origin: { modelKey: session.providerId && session.modelId ? `${session.providerId}/${session.modelId}` : null, thinkingLevel: session.thinkingLevel } });
+    }
     if (channel === "task.discard") return options.domain("task.discard", { projectId: owner.projectId, sessionId, worldId, taskId: payload.taskId, generation: payload.generation });
     if (channel === "library.install" || channel === "memory.propose") {
       const previous = await workbench("workbench.prepareAction", { channel, payload });
@@ -94,5 +139,6 @@ export function createCraftminePanelGateway(options: {
     })();
     inFlight.set(key, action);
     try { return await action; } finally { inFlight.delete(key); }
-  };
+  }
+  return (channel: string, payload: Record<string, any> = {}) => request(channel, payload);
 }

@@ -11,16 +11,38 @@ const dependency=ref=>({'geometry@2':'基础造型','health@1':'生命值','rang
 export function createWorkbench({element,selectionElement,request,getWorld,run=fn=>fn(),pause=()=>{},saveBeforeBackup=async()=>{},reloadWorld=async()=>{},replaceWorld=()=>{},onChange=()=>{},isLocked=()=>false}){
   let epoch=0,currentTab=null,capabilities=new Set(),pending=0,context=null,active=false,selected=null,selectionRevision=0,selectionRequest=0,inspection=null,libraryOffset=0,memoryOffset=0;
   let capabilitiesReady=false,pendingSelection=null;
-  const unresolvedOperations=new Map();
   async function durableCall(channel,payload,identity=payload){
-    const key=JSON.stringify([getWorld().id,channel,identity]);
-    let request=unresolvedOperations.get(key);
-    if(!request){if(unresolvedOperations.size>=100)throw Error('有过多结果未确认的操作，请先查询任务状态。');request={...payload,operationId:crypto.randomUUID()};unresolvedOperations.set(key,request);}
-    const result=await call(channel,request);
+    void identity;
+    if(!has('workbench.prepare'))throw Error('操作恢复服务尚未连接，请更新桌面服务后再写入。');
+    const prepared=await call('workbench.prepare',{channel,payload});
+    await refreshPending();
+    const result=await call('workbench.execute',{operationId:prepared.operationId});
     if(channel==='library.install'&&!result?.receipt)throw Error('安装回执尚未确认，请查询任务后重试。');
-    unresolvedOperations.delete(key);return result;
+    await call('workbench.acknowledge',{operationId:prepared.operationId});await refreshPending();return result;
   }
   const pages={},notice=text('p','','workbench-notice');notice.setAttribute('role','status');element.append(notice);
+  const pendingArea=document.createElement('section');pendingArea.className='workbench-pending';pendingArea.hidden=true;element.append(pendingArea);
+  async function refreshPending(){
+    if(!has('workbench.operations')){pendingArea.hidden=true;return;}
+    const response=await call('workbench.operations');pendingArea.replaceChildren();pendingArea.hidden=!response.items?.length;
+    if(pendingArea.hidden)return;
+    pendingArea.append(text('h2','待确认操作'),text('p','这些操作保留了原来的编号和参数。继续前会核对原任务与世界。','workbench-meta'));
+    for(const item of response.items){
+      const row=document.createElement('article');row.className='workbench-card';row.dataset.pendingOperation=item.operationId;
+      row.append(text('h3',({'library.install':'加入作品草稿','library.capture':'保存作品','memory.propose':'保存创作记忆','backup.export':'导出全部世界和作品','backup.restore':'恢复全部世界和作品','draft.recheck':'重新检查草稿','task.budget':'设置任务累计额度'})[item.channel]||'待确认操作'));
+      if(item.channel==='memory.propose')row.append(text('p',item.payload.claim));
+      if(item.payload.ref)row.append(text('p',`${item.payload.ref.id} · v${item.payload.ref.version}`));
+      row.append(text('p',item.state==='completed'?'服务已返回完成结果，等待你确认。':'结果尚未确认；重启不会自动再次写入。','workbench-meta'));
+      if(item.channel==='backup.restore'&&item.state!=='completed')row.append(text('p','继续恢复将替换此客户端的全部世界资料。授权过期时须重新选择备份。','workbench-meta'));
+      const control=button(item.state==='completed'?'确认已完成':'查询并继续原操作',()=>action(async()=>{
+        const result=await call('workbench.execute',{operationId:item.operationId});
+        await call('workbench.acknowledge',{operationId:item.operationId});
+        if(item.channel==='backup.restore'&&result.status==='completed')await reloadWorld();
+        await refreshPending();await refreshTask();
+        status(item.channel==='library.install'?'作品已加入原草稿，仍需检查、评审并应用。':item.channel==='draft.recheck'?'草稿检查已提交，请查看检查记录。':result.status==='cancelled'?'这项操作已取消。':'原操作结果已确认。');
+      }));control.control.disabled=item.state!=='completed'&&active;row.append(control.form);pendingArea.append(row);
+    }
+  }
   for(const [key,name]of Object.entries({library:'作品库',memory:'创作记忆',task:'任务与预算',backup:'备份与诊断'})){
     const section=document.createElement('section');section.dataset.workbenchPage=key;section.setAttribute('aria-label',name);section.hidden=true;pages[key]=section;element.append(section);
   }
@@ -145,9 +167,26 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
       card.append(text('p',`草稿 ${context.draft?.revision??'未知'} · 已修改 ${(context.modifiedResources||[]).length} 项`,'workbench-meta'));
       const budget=context.budget||{};card.append(text('p',`模型请求 ${count(budget.requestCount)} / ${count(budget.limits?.maxRequests)} · 压缩 ${count(budget.compactionCount)} / ${count(budget.limits?.maxCompactions)}`));
       card.append(text('p',`实际用量 ${count(budget.actualTokens)} · 预留 ${count(budget.reservedTokens)} · 结果待确认 ${count(budget.unknownRequestCount)} 次`));
-      card.append(text('p',`可用预算 ${count(budget.remainingTokens)} tokens`,'workbench-meta'));
+      card.append(text('p',`任务累计 token 上限：${budget.limits?.maxTokens===null?'不限':count(budget.limits?.maxTokens)} · 剩余额度：${budget.remainingTokens===null?'不限':count(budget.remainingTokens)}`,'workbench-meta'));
+      card.append(text('p','这是整个任务的累计用量，不是模型一次能读取的上下文容量。解除累计上限仍保留请求次数、压缩次数、截止时间和模型单次限制。','workbench-meta'));
+      if(has('task.budget')){
+        const configure=async maxTokens=>action(async()=>{
+          const target={taskId:context.binding.taskId,generation:context.generation};
+          await durableCall('task.budget',{...target,maxTokens});await showTask();status('累计额度已更新；已发生用量与待确认占额保留。中断任务请点恢复继续。');
+        });
+        const unlimited=button('解除本地累计 token 上限',()=>configure(null));unlimited.control.disabled=active||budget.limits?.maxTokens===null;card.append(unlimited.form);
+        const maximum=field('自定义任务累计 token 额度');maximum.control.type='number';maximum.control.min='1';maximum.control.max=String(Number.MAX_SAFE_INTEGER);maximum.control.step='1';maximum.control.required=true;
+        const custom=button('保存累计额度',()=>{const value=Number(maximum.control.value);if(!Number.isSafeInteger(value)||value<1){status('请输入正整数额度。',true);return;}return configure(value);});custom.control.disabled=active;custom.form.prepend(maximum.wrapper);card.append(custom.form);
+      }
       if(active&&has('task.stop'))card.append(button('停止当前任务',()=>action(async()=>{await call('task.stop',{taskId:context.binding.taskId,generation:context.generation});status('停止请求已提交，等待任务状态确认。');await showTask();})).form);
       pages.task.append(card);
+      if(context.status==='finished'&&has('draft.recheck')){
+        const retry=button('重新检查已保存草稿',()=>action(async()=>{
+          await refreshTask();if(!context||active||context.status!=='finished')throw Error('请等待当前任务结束后再检查草稿。');
+          const result=await durableCall('draft.recheck',{taskId:context.binding.taskId,generation:context.generation,revision:context.draft.revision,draftHash:context.draft.hash});
+          status(result.status==='queued'||result.status==='running'?'原草稿检查已提交，请查看检查记录。':'检查结果：'+(result.status||'待确认'));
+        }));retry.control.disabled=active;pages.task.append(retry.form,text('p','只检查当前草稿，不会重复加入作品或重新创建任务。','workbench-meta'));
+      }
     }else pages.task.append(text('p','没有正在创作的任务。世界和已保存草稿仍然保留。','workbench-empty'));
     if(has('task.recoverable')){
       const response=await call('task.recoverable');const entries=Array.isArray(response)?response:response.items||response.tasks||[];
@@ -160,7 +199,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     await refreshTask();
     pages.backup.replaceChildren(text('h2','备份与恢复'));
     pages.backup.append(text('p','备份包含此客户端的全部世界、作品与进度。模型密钥和浏览器档案不会打包。','workbench-meta'));
-    const exportButton=button('导出全部世界和作品',()=>action(async()=>{await saveBeforeBackup();const result=await call('backup.export',{operationId:crypto.randomUUID()});status(result?.cancelled||result?.status==='cancelled'?'已取消导出':result?.status==='completed'||result?.exported?'备份已导出。':'已提交导出，请查看作业状态。');}));exportButton.control.disabled=!has('backup.export');pages.backup.append(exportButton.form);
+    const exportButton=button('导出全部世界和作品',()=>action(async()=>{await saveBeforeBackup();const result=await durableCall('backup.export',{});status(result?.cancelled||result?.status==='cancelled'?'已取消导出':result?.status==='completed'||result?.exported?'备份已导出。':'已提交导出，请查看作业状态。');}));exportButton.control.disabled=!has('backup.export');pages.backup.append(exportButton.form);
   const inspectButton=button('选择备份并查看内容',()=>action(async()=>{
       await saveBeforeBackup();
       const result=await call('backup.inspect');if(result?.cancelled||result?.status==='cancelled'){status('已取消选择');return;}
@@ -184,24 +223,19 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     const confirmation=field('我已核对备份内容');confirmation.control.type='checkbox';confirmation.control.required=true;
     const form=button('确认恢复这份备份',()=>action(async()=>{
       if(!confirmation.control.checked)throw Error('请先核对并确认备份内容。');
-      inspection.operationId??=crypto.randomUUID();
       renderInspection();
-      const result=await call('backup.restore',{grantId:inspection.grantId,expectedCurrentHash:inspection.expectedCurrentHash,operationId:inspection.operationId});
+      const result=await durableCall('backup.restore',{grantId:inspection.grantId,expectedCurrentHash:inspection.expectedCurrentHash});
       if(result?.record)replaceWorld(result.record);
       status(result?.status==='completed'||result?.restored?'备份已恢复。':'恢复结果尚未确认，请刷新状态。');
       if(result?.status==='completed'||result?.restored){inspection=null;await reloadWorld();}
     }));form.control.disabled=!has('backup.restore')||!inspection.grantId||active;form.form.prepend(confirmation.wrapper);area.append(form.form);
     if(active)area.append(text('p','创作任务仍在运行，请先停止或等待完成，再恢复备份。','workbench-meta'));
-    if(inspection.operationId&&has('backup.status'))area.append(button('查询恢复结果',()=>action(async()=>{
-      const result=await call('backup.status',{operationId:inspection.operationId});
-      if(result?.status==='completed'){inspection=null;await reloadWorld();status('备份已恢复。');}
-      else status(result?.status==='failed'?'恢复未完成，原资料保留。':'恢复状态：'+(result?.status||'尚未确认'),result?.status==='failed');
-    })).form);
+
   }
   async function show(tab){
     currentTab=tab;element.hidden=!tab;for(const [key,page]of Object.entries(pages))page.hidden=key!==tab;
     if(!tab)return;pause();status('正在读取…');
-    await action(()=>tab==='library'?searchLibrary(true):tab==='memory'?searchMemory(true):tab==='task'?showTask():showBackup());
+    await action(async()=>{await refreshPending();return tab==='library'?searchLibrary(true):tab==='memory'?searchMemory(true):tab==='task'?showTask():showBackup();});
   }
   async function refreshCapabilities(){
     const generation=epoch;const worldId=getWorld()?.id;if(!worldId)return;
@@ -209,7 +243,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     catch(error){if(generation===epoch){status('扩展工作台尚未连接：'+safeError(error),true);if(currentTab)empty(pages[currentTab],'这个功能尚未连接，现有世界的保存与检查仍可使用。');}}
   }
   async function setWorld(){
-    epoch++;capabilities.clear();capabilitiesReady=false;pendingSelection=null;context=null;active=false;selected=null;selectionRevision=0;inspection=null;libraryDetail.hidden=true;renderSelection();
+    epoch++;pendingArea.replaceChildren();pendingArea.hidden=true;capabilities.clear();capabilitiesReady=false;pendingSelection=null;context=null;active=false;selected=null;selectionRevision=0;inspection=null;libraryDetail.hidden=true;renderSelection();
     await refreshCapabilities();
   }
   return {show,setWorld,setSelection,refreshCapabilities,get busy(){return pending>0;},get tab(){return currentTab;},refresh:()=>currentTab?show(currentTab):refreshTask(),clearView(){epoch++;selected=null;renderSelection();}};

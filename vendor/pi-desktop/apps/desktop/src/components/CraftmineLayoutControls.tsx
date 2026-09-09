@@ -27,8 +27,8 @@ export function CraftmineLayoutControls() {
   };
   return (
     <div className="craftmine-layout-controls no-drag" role="group" aria-label={chinese ? "工作台布局" : "Workspace layout"}>
-      <form onSubmit={(event) => { event.preventDefault(); choose("create"); }}><button type="submit" aria-pressed={layout.mode === "create"} title={chinese ? "保留聊天与作品工作面板" : "Chat and world side by side"}>{chinese ? "创作" : "Create"}</button></form>
-      <form onSubmit={(event) => { event.preventDefault(); choose("play"); }}><button type="submit" aria-pressed={layout.mode === "play"} title={chinese ? "扩大世界画面；进入操作仍由你决定" : "Larger world; controls remain opt-in"}>{chinese ? "游玩" : "Play"}</button></form>
+      <form onSubmit={(event) => { event.preventDefault(); choose("create"); }}><button type="submit" aria-pressed={layout.mode === "create"} title={chinese ? "保留聊天与作品工作面板" : "Chat and world side by side"}>{layout.mode === "play" ? (chinese ? "回到创作" : "Back to create") : (chinese ? "创作" : "Create")}</button></form>
+      <form onSubmit={(event) => { event.preventDefault(); choose("play"); }}><button type="submit" aria-pressed={layout.mode === "play"} title={chinese ? "世界占满工作区；保留当前对话与标签" : "Fill the workspace; preserve your conversation and tabs"}>{chinese ? "游玩" : "Play"}</button></form>
     </div>
   );
 }

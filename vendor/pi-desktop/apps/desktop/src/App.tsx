@@ -31,6 +31,7 @@ import { ChatSurface } from "./components/ChatSurface";
 import { SearchDialog } from "./components/SearchDialog";
 import { ToastHost } from "./components/Toast";
 import { UpdateBanner } from "./components/UpdateBanner";
+import { useCraftmineImmersion } from "./lib/use-craftmine-immersion";
 import { WindowControls } from "./components/WindowControls";
 import { useAppStore } from "./stores/app-store";
 import type { ToastOptions } from "./stores/app-store";
@@ -183,6 +184,7 @@ function AppShell() {
   const subagentPanel = useAppStore((s) => s.subagentPanel);
   const closeSubagentPanel = useAppStore((s) => s.closeSubagentPanel);
   const workPanelOpen = useAppStore((s) => s.workPanelOpen);
+  const activeWorkPanelTabId = useAppStore((s) => s.activeWorkPanelTabId);
   const subagentPanelOpen = Boolean(
     page === "chat" &&
       subagentPanel &&
@@ -240,6 +242,7 @@ function AppShell() {
   }, [sidebarExiting]);
   const [presentedWorkPanelOpen, setPresentedWorkPanelOpen] = useState(false);
   const [workPanelExiting, setWorkPanelExiting] = useState(false);
+  const craftmineImmersive = useCraftmineImmersion(page, presentedWorkPanelOpen && workPanelOpen, activeWorkPanelTabId, subagentPanelOpen);
   const workPanelReservationRequest = useRef(0);
   const workPanelExitGeneration = useRef(0);
   const workPanelExitClosing = useRef(false);
@@ -1843,6 +1846,7 @@ function AppShell() {
             />
           ) : null}
 
+          {craftmineImmersive && <WindowControls />}
           <section className="main-pane">
             <WindowControls contained />
             {page === "chat" ? (
@@ -1948,6 +1952,7 @@ function AppShell() {
     <div
       className={cx(
         "app-shell",
+        craftmineImmersive && "craftmine-play",
         !ready && "app-shell-boot",
         page === "settings" && ready && "settings-mode",
         sidebarCollapsed && "sidebar-collapsed",
