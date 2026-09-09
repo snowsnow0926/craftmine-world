@@ -37,7 +37,7 @@ export function createGodotPackageUI({element,request,getWorldId,action=run=>run
     }
     exporter.button.disabled=!choices.control.options.length;
     if(!result.items?.length)list.append(text('p','入口场景中还没有可复用的独立对象。创建带稳定身份的门、箱子或目标后可在这里导出。'));
-    notice.textContent=`已读取源码版本 ${result.revision}。导出不会包含玩家当前进度。`;
+    notice.textContent=`已读取源码版本 ${result.revision}。导出不会包含玩家当前进度。${result.truncated?'当前只列出前 512 个对象。':''}`;
   }
   return {async show(){generation++;source=null;grant=null;attempt=null;repeat.button.disabled=true;element.replaceChildren(text('h2','Godot 作品'),text('p','导出一个对象及其子节点，或把作品 ZIP 加入当前源码。安装后需检查、预览并应用。'),notice,importer.form,repeat.form,refresh.form,list,exporter.form);await refreshSource();},clear(){generation++;source=null;grant=null;attempt=null;},refresh:refreshSource};
 }

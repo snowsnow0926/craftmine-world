@@ -90,12 +90,13 @@ export function createManagedPackageSourceService({call,bind}) {
   return {
     async listSource(args) {
       fields(args,['worldId']);const {identity,files,mainScene}=await read(args),classes=classIndex(files),items=[];
+      let truncated=false;
       for(const node of parseScene(files.get(mainScene).toString('utf8')).nodes) {
         if(node.parent===null)continue;const entity=identityFor(files,mainScene,node,classes);if(!entity)continue;
         let supported=true,reason;try{extractSubtree(files.get(mainScene).toString('utf8'),nodePath(node));}catch(error){supported=false;reason=error.code;}
-        items.push({nodePath:nodePath(node),name:node.name,entityId:entity.id,supported,...(reason?{reason}:{})});
+        if(items.length>=512){truncated=true;break;}items.push({nodePath:nodePath(node),name:node.name,entityId:entity.id,supported,...(reason?{reason}:{})});
       }
-      return {worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,mainScene,items};
+      return {worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,mainScene,items,truncated};
     },
     async exportSource(args) {
       const {packStaticPackage}=await import('./package-zip.mjs');
