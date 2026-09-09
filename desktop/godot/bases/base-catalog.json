@@ -53,7 +53,7 @@
         "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
         "generator": "tools/generate_meshes.mjs"
       },
-      "contentHash": "9e4a3472b8850ef014192ed07268a7e72598d25e6c83489eac52c39f6036cc86",
+      "contentHash": "7a1e5dc9483e062200000a4810f5642e3f809b4323e900089e6e7c0343b2671a",
       "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
       "entityIdScheme": null,
       "capabilities": [],
@@ -139,7 +139,10 @@
           "out": "<dir>"
         }
       },
-      "tools": {},
+      "tools": {
+        "newWorld": "tools/new-world.mjs",
+        "generateMeshes": "tools/generate_meshes.mjs"
+      },
       "acceptance": {
         "headless": "tests/acceptance_headless.mjs",
         "web": "tests/acceptance_web.mjs",

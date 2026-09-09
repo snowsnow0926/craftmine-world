@@ -183,8 +183,8 @@
       "files": [
         {
           "path": "scripts/core/interactable.gd",
-          "bytes": 933,
-          "sha256": "e9bb5ef3a8137c80ba3315f6dd5dc643b55dc2ebe83af8d61d050d2d0dd59552"
+          "bytes": 1085,
+          "sha256": "5493aed7a2eefcf53f3d0af3658d67de999a42af37a3e18eab2b1f74c1f26d31"
         }
       ]
     },

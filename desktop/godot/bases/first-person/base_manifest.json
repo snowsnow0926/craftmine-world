@@ -76,9 +76,13 @@
   "parameters": {
     "equipmentCatalog": "res://data/equipment/equipment_catalog.tres",
     "equipment": ["res://data/equipment/pistol.tres", "res://data/equipment/practice_sword.tres"],
-    "balance": "res://data/balance/training_range.tres",
+    "balance": ["res://data/balance/training_range.tres", "res://data/balance/blank_start.tres"],
     "crosshair": ["res://data/ui/crosshair_precision.tres", "res://data/ui/crosshair_melee.tres"],
     "materials": "res://assets/materials/"
+  },
+  "tools": {
+    "newWorld": "tools/new-world.mjs",
+    "generateMeshes": "tools/generate_meshes.mjs"
   },
   "coreScripts": {
     "player": "res://scripts/core/player_controller.gd",
