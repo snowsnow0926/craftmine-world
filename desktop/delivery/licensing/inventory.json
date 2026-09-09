@@ -842,12 +842,14 @@
       "noticeKey": "npm-inventory.json",
       "licenseTextIds": [
         "third-party-inventory",
-        "mit",
+        "mit-canonical",
         "apache-2.0",
         "isc",
         "bsd-3-clause",
         "bsd-2-clause",
-        "mpl-2.0"
+        "mpl-2.0",
+        "cc0-1.0",
+        "wtfpl"
       ],
       "packageProbe": [
         "resources/licenses/third-party/npm-inventory.json"
@@ -893,7 +895,7 @@
       "noticeKey": "Cargo",
       "licenseTextIds": [
         "cargo-third-party-notices",
-        "mit",
+        "mit-canonical",
         "apache-2.0",
         "mpl-2.0",
         "bsd-3-clause",

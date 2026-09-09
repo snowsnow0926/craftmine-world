@@ -233,7 +233,23 @@ function checkEntries(entries, offline, scans) {
         const expected = path.join(root, mapping.file);
         const relativeExpected = section.root + '/' + mapping.file;
         if (mapping.status === 'conditional') {
-          reasons.push('conditional text ' + textId + ' (' + relativeExpected + ')');
+          if (mapping.condition === 'covered-entries-verified') {
+            // A licence text may only be required once the project can actually grant
+            // that licence: if every covered entry is still pending, shipping the text
+            // would assert an unestablished right. The moment one covered entry becomes
+            // verified, the text becomes mandatory.
+            const covered = entries.filter(candidate => (mapping.covers ?? []).includes(candidate.id));
+            const applied = covered.filter(candidate => candidate.status === 'verified');
+            if (applied.length && !fs.existsSync(expected)) {
+              fail('LICENCE_TEXT_ABSENT', entry.id + ' requires ' + relativeExpected + ' because covered entry ' + applied[0].id + ' is verified but the text is absent', entry.id);
+              reasons.push('absent ' + relativeExpected);
+            } else {
+              reasons.push('conditional text ' + textId + ' (' + relativeExpected + '): '
+                + (applied.length ? 'a covered entry is verified' : 'all ' + covered.length + ' covered entries are still pending-rights-review'));
+            }
+          } else {
+            reasons.push('conditional text ' + textId + ' (' + relativeExpected + ')');
+          }
           continue;
         }
         if (mapping.status === 'required-when-engine-bundled' && !engineBundled) {

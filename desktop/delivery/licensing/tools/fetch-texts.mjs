@@ -34,7 +34,9 @@ export const SOURCES = [
   {id: '0BSD', spdx: '0BSD', file: 'LICENSE-0BSD.txt', url: 'https://raw.githubusercontent.com/spdx/license-list-data/main/text/0BSD.txt', note: 'SPDX plain text.'},
   {id: 'Unlicense', spdx: 'Unlicense', file: 'LICENSE-Unlicense.txt', url: 'https://raw.githubusercontent.com/spdx/license-list-data/main/text/Unlicense.txt', note: 'SPDX plain text.'},
   {id: 'BlueOak-1.0.0', spdx: 'BlueOak-1.0.0', file: 'LICENSE-BlueOak-1.0.0.txt', url: 'https://raw.githubusercontent.com/spdx/license-list-data/main/text/BlueOak-1.0.0.txt', note: 'SPDX plain text.'},
-  {id: 'Python-2.0', spdx: 'Python-2.0', file: 'LICENSE-Python-2.0.txt', url: 'https://raw.githubusercontent.com/spdx/license-list-data/main/text/Python-2.0.txt', note: 'SPDX plain text.'}
+  {id: 'Python-2.0', spdx: 'Python-2.0', file: 'LICENSE-Python-2.0.txt', url: 'https://raw.githubusercontent.com/spdx/license-list-data/main/text/Python-2.0.txt', note: 'SPDX plain text.'},
+  {id: 'CC0-1.0', spdx: 'CC0-1.0', file: 'LICENSE-CC0-1.0.txt', url: 'https://raw.githubusercontent.com/spdx/license-list-data/main/text/CC0-1.0.txt', note: 'Public-domain dedication; no attribution is required, the text is bundled for completeness.'},
+  {id: 'WTFPL', spdx: 'WTFPL', file: 'LICENSE-WTFPL.txt', url: 'https://raw.githubusercontent.com/spdx/license-list-data/main/text/WTFPL.txt', note: 'Short permissive licence used by one installed npm package that ships no licence file.'}
 ];
 
 const only = new Set(process.argv.slice(2).filter((value, index, all) => all[index - 1] === '--only'));
