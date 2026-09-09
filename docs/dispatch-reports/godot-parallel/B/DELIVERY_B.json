@@ -1,0 +1,107 @@
+{
+  "task": "B",
+  "title": "Managed Godot build, check, candidate and application pipeline",
+  "date": "2026-09-09",
+  "baseCommit": "46739d222ceefc654b596725c96288a4087993b3",
+  "branch": "codex/godot-parallel-b-20260909",
+  "worktree": "D:/Craftmine World-worktrees/godot-parallel-b-20260909",
+  "commits": [
+    {"hash": "301872d", "subject": "docs(godot): publish managed build, job, candidate and application interfaces"},
+    {"hash": "379ca2f", "subject": "feat(godot): manage isolated build, check and candidate transactions"},
+    {"hash": "62d1841", "subject": "feat(godot): expose managed build and candidate tools through PI"}
+  ],
+  "interfaces": {
+    "published": "docs/dispatch-reports/godot-parallel/B/INTERFACE_B.md",
+    "adr": "vendor/pi-desktop/docs/adr/0313-managed-godot-build-jobs.md",
+    "spec": "vendor/pi-desktop/docs/spec/dispatch-managed-godot-build.md"
+  },
+  "scope": {
+    "rust": [
+      "vendor/pi-desktop/crates/craftmine-core/src/godot_builds.rs",
+      "vendor/pi-desktop/crates/craftmine-core/src/godot_jobs.rs",
+      "vendor/pi-desktop/crates/craftmine-core/src/godot_applications.rs",
+      "vendor/pi-desktop/crates/craftmine-core/src/godot_test_support.rs",
+      "vendor/pi-desktop/crates/craftmine-core/src/godot_builds_tests.rs",
+      "vendor/pi-desktop/crates/craftmine-core/src/godot_jobs_tests.rs",
+      "vendor/pi-desktop/crates/craftmine-core/src/godot_applications_tests.rs",
+      "vendor/pi-desktop/crates/craftmine-core/src/lib.rs",
+      "vendor/pi-desktop/crates/craftmine-core/src/main.rs",
+      "vendor/pi-desktop/crates/craftmine-core/src/godot_projects.rs",
+      "vendor/pi-desktop/crates/craftmine-core/src/applications.rs",
+      "vendor/pi-desktop/crates/craftmine-core/src/worlds.rs",
+      "vendor/pi-desktop/crates/craftmine-core/Cargo.toml"
+    ],
+    "plugin": [
+      "plugins/craftmine-world/manifest.json",
+      "plugins/craftmine-world/world-tools.cjs",
+      "plugins/craftmine-world/main.cjs"
+    ],
+    "tests": ["tests/godot-build-tools.mjs", "tests/godot-project-tools.mjs"],
+    "notModified": [
+      "desktop/electron world view and layout",
+      "base projects and example content",
+      "task A isolation implementation",
+      "docs/DEVELOPMENT_STATUS.json",
+      "global goal and master plan"
+    ]
+  },
+  "tools": [
+    "godot_asset_put", "godot_asset_list", "godot_build_start", "godot_build_read",
+    "godot_build_cancel", "godot_candidate_read", "godot_candidate_list"
+  ],
+  "coreMethods": [
+    "godotAsset.put", "godotAsset.list", "godotBuild.start", "godotBuild.read",
+    "godotBuild.cancel", "godotBuild.receipt", "godotCandidate.read", "godotCandidate.list",
+    "godotApplication.prepare", "godotApplication.commit", "godotApplication.read",
+    "godotApplication.abort", "godotExecutor.register", "godotJob.claim", "godotJob.progress",
+    "godotJob.heartbeat", "godotJob.finish"
+  ],
+  "verification": [
+    {
+      "command": "cargo test -p craftmine-core --offline",
+      "result": "96 passed, 0 failed, 1 ignored",
+      "note": "the ignored test is the pre-existing Windows junction fixture, not introduced here",
+      "evidence": "docs/dispatch-reports/godot-parallel/B/evidence/rust-core-tests.txt"
+    },
+    {
+      "command": "node --test tests/godot-build-tools.mjs tests/godot-project-tools.mjs",
+      "result": "12 passed, 0 failed",
+      "note": "real broker bundle + real Rust binary + isolated data dir + simulated executor over the process protocol",
+      "evidence": "docs/dispatch-reports/godot-parallel/B/evidence/pi-plugin-integration-tests.txt"
+    }
+  ],
+  "acceptanceCovered": [
+    "cross-world and ended-turn rejection",
+    "stale source revision rejection",
+    "real compile errors fail the job despite a claimed pass",
+    "duplicate call replay and replay mismatch",
+    "lost response recovered from the committed receipt without a second write",
+    "late result after cancellation rejected with no candidate",
+    "core restart interrupts running jobs and prepared applications",
+    "corrupt asset and build copies reported, never repaired",
+    "failed candidate cannot replace the formal world",
+    "no registered isolated executor means blocked and unclaimable"
+  ],
+  "notRun": [
+    "pnpm build:js and desktop tsc --noEmit: node_modules are absent in this worktree and offline install is unavailable",
+    "real Godot import/compile/check: requires task A's isolated executor; this round used a protocol-level simulated executor",
+    "cargo test -p host-core: 13 pre-existing Windows path-format failures; host-core has no dependency on craftmine-core",
+    "tests/browser.mjs and tests/modules-browser.mjs: forbidden; no real input, Pointer Lock or window activation was used"
+  ],
+  "openItems": [
+    "task A isolated executor and its real isolation evidence",
+    "shared import cache across builds and its size/cleanup policy",
+    "retention quota and garbage collection for assets and build copies",
+    "asset removal/replacement tooling",
+    "list-jobs tool for a world",
+    "panel UI, preview and player interaction for candidates (task C)",
+    "real model creation, visual and feel acceptance, packaging (separate accounts)"
+  ],
+  "needsFromOthers": {
+    "A": "isolated executor implementing godotExecutor.register and godotJob.*, writing artifacts into artifactsRoot and echoing inputHash",
+    "C": "panel usage of the godot.* channels; base labels from build.scene.baseId; apply at end of turn; legacy runner must ignore craftmine.godot-scene/1",
+    "E": "package the executor binary and CRAFTMINE_GODOT_EXECUTOR; exclude godot-builds/*/cache and artifacts from backups",
+    "F_G": "use INTERFACE_B.md sections 4 and 6 as the assertion source for native and integration acceptance",
+    "I": "no further wiring needed; task B owns main.cjs and manifest.json and already exposed the interfaces"
+  }
+}
