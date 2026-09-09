@@ -81,7 +81,7 @@ try {
         try { $craftmineStreams[$craftmineIndex].CopyTo($craftmineOutput); $craftmineOutput.Flush($true) } finally { $craftmineOutput.Dispose() }
         $craftmineFiles += @{ path = $craftmineRelative.Replace('\','/'); bytes = (Get-Item -LiteralPath $craftmineTarget).Length; sha256 = (Get-CraftmineFileHash $craftmineTarget) }
     }
-    $craftmineManifest = @{format='craftmine.offline-upgrade/1';schemaVersion=1;targetBuild=$BuildId;createdAt=[DateTime]::UtcNow.ToString('o');credentialsIncluded=$false;files=@($craftmineFiles);modelReplay=$false}
+    $craftmineManifest = @{format='craftmine.offline-upgrade/1';schemaVersion=1;targetBuild=$BuildId;createdAt=[DateTime]::UtcNow.ToString('o');credentialStoreIncluded=$false;files=@($craftmineFiles);modelReplay=$false}
     $craftmineManifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $craftmineBackupRoot 'manifest.json') -Encoding UTF8
     Write-Output 'UPGRADE_BACKUP_CREATED'
 } catch {
@@ -91,3 +91,4 @@ try {
 } finally {
     foreach ($craftmineStream in $craftmineStreams) { $craftmineStream.Dispose() }
 }
+
