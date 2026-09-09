@@ -49,6 +49,7 @@ func setup(config_value: SideViewConfig, state_value: WorldState, runtime_node: 
 	state = state_value
 	runtime = runtime_node
 	health = config.max_health()
+	restore_vitals()
 
 func _ready() -> void:
 	_build_nodes()
@@ -103,6 +104,7 @@ func _physics_process(delta: float) -> void:
 	on_ground = is_on_floor()
 	if not alive:
 		_tick_death(delta)
+		sync_vitals()
 		return
 
 	_tick_timers(delta)
@@ -128,6 +130,7 @@ func _sync_state_placement() -> void:
 	state.player["x"] = position.x
 	state.player["y"] = position.y
 	state.player["facing"] = facing
+	sync_vitals()
 
 func _tick_timers(delta: float) -> void:
 	_coyote_timer = maxf(0.0, _coyote_timer - delta)
@@ -260,6 +263,7 @@ func take_damage(amount: int, cause: String = "unknown") -> void:
 		runtime.emit_event("player_damaged", {"amount": amount, "cause": cause, "health": maxi(health, 0)})
 	if health <= 0:
 		_die(cause)
+	sync_vitals()
 
 func _die(cause: String) -> void:
 	if not alive:
@@ -272,6 +276,7 @@ func _die(cause: String) -> void:
 	if runtime != null:
 		runtime.state.add_counter("deaths", 1)
 		runtime.emit_event("player_died", {"cause": cause})
+		sync_vitals()
 		runtime.save_now("death")
 	died.emit(cause)
 
@@ -290,6 +295,7 @@ func _do_respawn() -> void:
 	place_at(point, facing)
 	if runtime != null:
 		runtime.emit_event("player_respawned", {"checkpointId": checkpoint_id, "x": point.x, "y": point.y})
+		sync_vitals()
 		runtime.save_now("respawn")
 	respawned.emit(checkpoint_id)
 
@@ -336,3 +342,20 @@ func snapshot() -> Dictionary:
 		"doubleJumpUnlocked": has_double_jump(),
 		"doubleJumpAvailable": double_jump_available,
 	}
+
+func sync_vitals() -> void:
+	state.vitals = {"health": health, "alive": alive, "invulnerableRemaining": _invulnerable_timer, "respawnRemaining": maxf(0.0, _respawn_timer)}
+
+func restore_vitals() -> void:
+	if state.vitals.is_empty():
+		health = config.max_health()
+		alive = true
+		_invulnerable_timer = 0.0
+		_respawn_timer = 0.0
+	else:
+		health = int(state.vitals.health)
+		alive = state.vitals.alive
+		_invulnerable_timer = float(state.vitals.invulnerableRemaining)
+		_respawn_timer = float(state.vitals.respawnRemaining)
+	visible = alive
+	sync_vitals()

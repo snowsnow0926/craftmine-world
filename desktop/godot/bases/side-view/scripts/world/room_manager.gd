@@ -73,7 +73,7 @@ func request_transition(target_room: String, target_spawn: String) -> void:
 	# Never build or free rooms inside the physics flush.
 	call_deferred("enter_room", target_room, target_spawn, {})
 
-func enter_room(room_id: String, spawn_id: String, placement: Dictionary) -> void:
+func enter_room(room_id: String, spawn_id: String, placement: Dictionary, restoring: bool = false) -> void:
 	switching = true
 	_pending_transition = false
 	if current_room != null:
@@ -111,7 +111,8 @@ func enter_room(room_id: String, spawn_id: String, placement: Dictionary) -> voi
 	state.player["x"] = point.x
 	state.player["y"] = point.y
 	state.player["facing"] = facing
-	state.mark_room_visited(room_id)
+	if not restoring:
+		state.mark_room_visited(room_id)
 	_update_camera_limits()
 
 	if runtime != null:
@@ -123,7 +124,8 @@ func enter_room(room_id: String, spawn_id: String, placement: Dictionary) -> voi
 			"y": point.y,
 			"visited": state.room_visited(room_id),
 		})
-		runtime.save_now("room_entered")
+		if not restoring:
+			runtime.save_now("room_entered")
 	room_entered.emit(room_id, spawn_id)
 	switching = false
 	_arm_doors_soon()

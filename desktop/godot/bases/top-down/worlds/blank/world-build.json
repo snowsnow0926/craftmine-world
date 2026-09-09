@@ -99,8 +99,8 @@
     },
     {
       "path": "scripts/base/game.gd",
-      "bytes": 13229,
-      "sha256": "d4522a9ecf31b1069450e5e71680efb868cd7ed29d5477d09c2de5328e833401"
+      "bytes": 15606,
+      "sha256": "5a9a85e6c4d5904debf93f7e82185fd77f33131c33677c769ac10add0d9c71ea"
     },
     {
       "path": "scripts/base/gather_zone.gd",
@@ -114,8 +114,8 @@
     },
     {
       "path": "scripts/base/map_renderer.gd",
-      "bytes": 4798,
-      "sha256": "3c856e484521a0bf0ace28195ca61144c30da581d06f0da4d90c6cd5c1358e3c"
+      "bytes": 4908,
+      "sha256": "7b9f5e78fa688685bd938cf48a94ae991132afea1379e987ff1827e63d93e20f"
     },
     {
       "path": "scripts/base/npc.gd",

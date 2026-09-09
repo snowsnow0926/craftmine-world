@@ -1,0 +1,68 @@
+{
+  "checks": [
+    {
+      "base": "side-view-materializer",
+      "passed": true,
+      "distinctInstanceIds": [
+        "1ee58745-ca32-433a-abe7-a33aa35891cd",
+        "fc0e50f6-bc97-44c5-b2f7-5b140f0381e2"
+      ]
+    },
+    {
+      "base": "first-person",
+      "passed": true
+    },
+    {
+      "base": "top-down/worlds/town",
+      "passed": true
+    },
+    {
+      "base": "side-view",
+      "passed": true
+    },
+    {
+      "base": "side-view-rejected-boot",
+      "passed": true,
+      "exitCode": 3
+    }
+  ],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 78,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-import",
+      "elapsedMs": 2305,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-state",
+      "elapsedMs": 245,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-import",
+      "elapsedMs": 2024,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-state",
+      "elapsedMs": 242,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-import",
+      "elapsedMs": 1832,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-state",
+      "elapsedMs": 153,
+      "exitCode": 0
+    }
+  ],
+  "realModelCalls": 0,
+  "knownImportDiagnostics": []
+}

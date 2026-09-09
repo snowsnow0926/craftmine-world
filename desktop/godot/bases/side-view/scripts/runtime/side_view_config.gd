@@ -20,13 +20,14 @@ var world: Dictionary = {}
 var gates: Dictionary = {}
 var load_error: String = ""
 
-static func load_default() -> SideViewConfig:
-	var config := SideViewConfig.new()
+# Avoid a self-typed static factory: Godot 4.7.2 retains the script at editor exit.
+static func load_default():
+	var config = load("res://scripts/runtime/side_view_config.gd").new()
 	config._read(PARAMS_PATH)
 	return config
 
-static func load_from(path: String) -> SideViewConfig:
-	var config := SideViewConfig.new()
+static func load_from(path: String):
+	var config = load("res://scripts/runtime/side_view_config.gd").new()
 	config._read(path)
 	return config
 

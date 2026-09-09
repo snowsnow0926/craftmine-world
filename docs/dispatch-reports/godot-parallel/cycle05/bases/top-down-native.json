@@ -1,0 +1,172 @@
+{
+  "format": "craftmine.native-base-evidence-summary/1",
+  "source": {
+    "path": "test-results/gd5-native-Cig5lQ/top-down/report.json",
+    "bytes": 71200,
+    "sha256": "e12210d123173d9a48932d809735c2d3b91e7ea735d896475828c991986452a6"
+  },
+  "checks": [
+    {
+      "name": "blank start builds a real tilemap with real collision",
+      "passed": true
+    },
+    {
+      "name": "player moves through real physics and faces the travel direction",
+      "passed": true
+    },
+    {
+      "name": "blank start has no inherited progress",
+      "passed": true
+    },
+    {
+      "name": "town ships initial progress with an unclaimed quest",
+      "passed": true
+    },
+    {
+      "name": "real collision stops the player at the building wall",
+      "passed": true
+    },
+    {
+      "name": "scene switch into the shop interior binds the new scene",
+      "passed": true
+    },
+    {
+      "name": "buying outside the counter range is rejected",
+      "passed": true
+    },
+    {
+      "name": "the counter is the focused interactable at the counter",
+      "passed": true
+    },
+    {
+      "name": "a quest cannot be handed in to an NPC that is not its declared giver",
+      "passed": true
+    },
+    {
+      "name": "buying at the counter moves coins, inventory and stock together",
+      "passed": true
+    },
+    {
+      "name": "stock is a hard boundary and never goes below zero",
+      "passed": true
+    },
+    {
+      "name": "leaving the counter range blocks further purchases",
+      "passed": true
+    },
+    {
+      "name": "insufficient coins are rejected without changing state",
+      "passed": true
+    },
+    {
+      "name": "returning to the overworld keeps coins, items and stock",
+      "passed": true
+    },
+    {
+      "name": "gathering outside the patch is rejected",
+      "passed": true
+    },
+    {
+      "name": "walking into the patch creates a real physics overlap",
+      "passed": true
+    },
+    {
+      "name": "gathering inside the patch yields items and consumes charges",
+      "passed": true
+    },
+    {
+      "name": "leaving the patch clears the overlap and blocks gathering",
+      "passed": true
+    },
+    {
+      "name": "delivery outside NPC range is rejected",
+      "passed": true
+    },
+    {
+      "name": "delivering an unknown quest id is rejected",
+      "passed": true
+    },
+    {
+      "name": "dialogue reports the active quest before delivery",
+      "passed": true
+    },
+    {
+      "name": "the first delivery consumes the herbs and pays the reward once",
+      "passed": true
+    },
+    {
+      "name": "the second delivery is rejected and pays nothing",
+      "passed": true
+    },
+    {
+      "name": "dialogue and quest status show completion after delivery",
+      "passed": true
+    },
+    {
+      "name": "directional animation follows movement in all four directions",
+      "passed": true
+    },
+    {
+      "name": "the walk cycle advances while moving in one direction",
+      "passed": true
+    },
+    {
+      "name": "a full process restart restores coins, inventory, stock and quest state",
+      "passed": true
+    },
+    {
+      "name": "the quest reward stays one-shot after a full restart",
+      "passed": true
+    },
+    {
+      "name": "shopping still works after a full restart",
+      "passed": true
+    },
+    {
+      "name": "gather charges persist across a full restart",
+      "passed": true
+    },
+    {
+      "name": "a second town instance starts from its own initial state",
+      "passed": true
+    },
+    {
+      "name": "the two instances keep different identities and independent progress",
+      "passed": true
+    },
+    {
+      "name": "a world created after the example was finished inherits no rewards",
+      "passed": true
+    },
+    {
+      "name": "save captures a real shop purchase and non-spawn placement facing up",
+      "passed": true
+    },
+    {
+      "name": "a new process restores shop scene, exact position and visible facing without setup commands",
+      "passed": true
+    },
+    {
+      "name": "room restoration preserves inventory, shop stock and every reward ledger",
+      "passed": true
+    },
+    {
+      "name": "unavailable or mismatched saved scene refuses autosave and preserves disk bytes",
+      "passed": true
+    },
+    {
+      "name": "unavailable or mismatched saved scene refuses autosave and preserves disk bytes",
+      "passed": true
+    },
+    {
+      "name": "entry-scene restart restores a non-default position and left-facing sprite with all progress",
+      "passed": true
+    },
+    {
+      "name": "the create-world guard accepts an initial-progress template and rejects author progress",
+      "passed": true
+    }
+  ],
+  "passed": 40,
+  "failed": 0
+}

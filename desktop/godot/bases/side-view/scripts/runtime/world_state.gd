@@ -25,6 +25,10 @@ var rooms: Dictionary = {}
 var counters: Dictionary = {}
 ## item_id -> count. Awarded by rewards; kept separate from counters.
 var inventory: Dictionary = {}
+## Stable target id -> remaining health; empty on legacy saves.
+var entities: Dictionary = {}
+## Health and death recovery survive a paused save and a complete restart.
+var vitals: Dictionary = {}
 ## Last known player placement, used to restore on restart.
 var player: Dictionary = {
 	"room": "",
@@ -33,8 +37,9 @@ var player: Dictionary = {
 	"facing": 1,
 }
 
-static func create(world_id_value: String, state_version_value: int) -> WorldState:
-	var state := WorldState.new()
+# Avoid a self-typed static factory: Godot 4.7.2 retains the script at editor exit.
+static func create(world_id_value: String, state_version_value: int):
+	var state = load("res://scripts/runtime/world_state.gd").new()
 	state.world_id = world_id_value
 	state.state_version = state_version_value
 	return state
@@ -112,6 +117,8 @@ func to_dict() -> Dictionary:
 		"rooms": _sorted_rooms(),
 		"counters": _sorted(counters),
 		"inventory": _sorted(inventory),
+		"entities": _sorted(entities),
+		"vitals": vitals.duplicate(true),
 		"player": {
 			"room": str(player.get("room", "")),
 			"x": float(player.get("x", 0.0)),
@@ -136,6 +143,7 @@ func to_persistent_dict() -> Dictionary:
 		"rewards": _sorted(rewards),
 		"counters": _sorted(counters),
 		"inventory": _sorted(inventory),
+		"entities": _sorted(entities),
 	}
 
 func apply_dict(data: Dictionary) -> Dictionary:
@@ -158,6 +166,8 @@ func apply_dict(data: Dictionary) -> Dictionary:
 			}
 	counters = _int_dict(data.get("counters", {}))
 	inventory = _int_dict(data.get("inventory", {}))
+	entities = data.get("entities", {}).duplicate(true)
+	vitals = data.get("vitals", {}).duplicate(true)
 	var player_data: Variant = data.get("player", {})
 	if typeof(player_data) == TYPE_DICTIONARY:
 		var pd: Dictionary = player_data
@@ -197,6 +207,22 @@ func validate_dict(data: Dictionary) -> String:
 			return "Invalid room"
 		if not entry.get("visited") is bool or not _integer(entry.get("entries")) or float(entry.entries) < 0:
 			return "Invalid room facts"
+	if not data.get("entities", {}) is Dictionary or not data.get("vitals", {}) is Dictionary:
+		return "Invalid entity or vital state"
+	for id in data.get("entities", {}):
+		var entity: Variant = data.entities[id]
+		if not id is String or id.is_empty() or not entity is Dictionary or not _integer(entity.get("health")) or entity.health < 0 or entity.size() != 1:
+			return "Invalid target health"
+	var vital: Dictionary = data.get("vitals", {})
+	if not vital.is_empty():
+		if vital.size() != 4:
+			return "Unsupported player vital field"
+		if not _integer(vital.get("health")) or vital.health < 0 or not vital.get("alive") is bool or vital.alive != (vital.health > 0):
+			return "Invalid player vitals"
+		for field in ["invulnerableRemaining", "respawnRemaining"]:
+			var timer: Variant = vital.get(field)
+			if not (timer is int or timer is float) or not is_finite(float(timer)) or float(timer) < 0 or float(timer) > 3600:
+				return "Invalid player vital timer"
 	var placement: Dictionary = data.player
 	if not placement.get("room") is String or not _integer(placement.get("facing")) or not int(placement.facing) in [-1, 1]:
 		return "Invalid player identity"

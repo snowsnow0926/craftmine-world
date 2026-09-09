@@ -1,0 +1,333 @@
+{
+  "format": "craftmine.native-base-evidence-summary/1",
+  "source": {
+    "path": "test-results/gd5-native-Cig5lQ/side-view/verify-report.json",
+    "bytes": 22676,
+    "sha256": "28d26f6a76dd1724f9a987097aad95959d0154bb140bb5db457dbe9eea86588b"
+  },
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "checks": [
+    {
+      "name": "engine.version",
+      "passed": true
+    },
+    {
+      "name": "project.importClean",
+      "passed": true
+    },
+    {
+      "name": "gate.singleJumpBlocked",
+      "passed": true
+    },
+    {
+      "name": "gate.doubleJumpPasses",
+      "passed": true
+    },
+    {
+      "name": "guard.playerPositionWritesOnlyInPlaceAt",
+      "passed": true
+    },
+    {
+      "name": "guard.verifierCannotWriteState",
+      "passed": true
+    },
+    {
+      "name": "guard.placeAtCallSites",
+      "passed": true
+    },
+    {
+      "name": "A.exit0",
+      "passed": true
+    },
+    {
+      "name": "A.traceWritten",
+      "passed": true
+    },
+    {
+      "name": "A.noTeleportX",
+      "passed": true
+    },
+    {
+      "name": "A.noTeleportY",
+      "passed": true
+    },
+    {
+      "name": "A.roomIsRuins",
+      "passed": true
+    },
+    {
+      "name": "A.checkpointActive",
+      "passed": true
+    },
+    {
+      "name": "A.cacheRewardCollected",
+      "passed": true
+    },
+    {
+      "name": "A.coinsFromCache",
+      "passed": true
+    },
+    {
+      "name": "A.noAbilityYet",
+      "passed": true
+    },
+    {
+      "name": "A.doorUsed",
+      "passed": true
+    },
+    {
+      "name": "B.exit0",
+      "passed": true
+    },
+    {
+      "name": "B.traceWritten",
+      "passed": true
+    },
+    {
+      "name": "B.noTeleportX",
+      "passed": true
+    },
+    {
+      "name": "B.noTeleportY",
+      "passed": true
+    },
+    {
+      "name": "B.neverEnteredVault",
+      "passed": true
+    },
+    {
+      "name": "B.noVaultDoor",
+      "passed": true
+    },
+    {
+      "name": "B.noAbility",
+      "passed": true
+    },
+    {
+      "name": "B.neverAboveLedgeTop",
+      "passed": true
+    },
+    {
+      "name": "C.exit0",
+      "passed": true
+    },
+    {
+      "name": "C.traceWritten",
+      "passed": true
+    },
+    {
+      "name": "C.noTeleportX",
+      "passed": true
+    },
+    {
+      "name": "C.noTeleportY",
+      "passed": true
+    },
+    {
+      "name": "C.abilityGained",
+      "passed": true
+    },
+    {
+      "name": "C.abilityFromPickup",
+      "passed": true
+    },
+    {
+      "name": "C.abilityPersisted",
+      "passed": true
+    },
+    {
+      "name": "C.saveFileHasAbility",
+      "passed": true
+    },
+    {
+      "name": "C.gainedOnPlatform",
+      "passed": true
+    },
+    {
+      "name": "D.exit0",
+      "passed": true
+    },
+    {
+      "name": "D.traceWritten",
+      "passed": true
+    },
+    {
+      "name": "D.noTeleportX",
+      "passed": true
+    },
+    {
+      "name": "D.noTeleportY",
+      "passed": true
+    },
+    {
+      "name": "D.bootLoadedSave",
+      "passed": true
+    },
+    {
+      "name": "D.abilitySurvivedRestart",
+      "passed": true
+    },
+    {
+      "name": "D.enteredVault",
+      "passed": true
+    },
+    {
+      "name": "D.usedDoubleJump",
+      "passed": true
+    },
+    {
+      "name": "D.roseAboveLedge",
+      "passed": true
+    },
+    {
+      "name": "D.vaultOnlyAfterUnlock",
+      "passed": true
+    },
+    {
+      "name": "E.exit0",
+      "passed": true
+    },
+    {
+      "name": "E.traceWritten",
+      "passed": true
+    },
+    {
+      "name": "E.noTeleportX",
+      "passed": true
+    },
+    {
+      "name": "E.noTeleportY",
+      "passed": true
+    },
+    {
+      "name": "E.abilityKept",
+      "passed": true
+    },
+    {
+      "name": "E.coinsUnchanged",
+      "passed": true
+    },
+    {
+      "name": "E.noDuplicateRewards",
+      "passed": true
+    },
+    {
+      "name": "E.revisitedRooms",
+      "passed": true
+    },
+    {
+      "name": "E.checkpointKept",
+      "passed": true
+    },
+    {
+      "name": "F.exit0",
+      "passed": true
+    },
+    {
+      "name": "F.traceWritten",
+      "passed": true
+    },
+    {
+      "name": "F.noTeleportX",
+      "passed": true
+    },
+    {
+      "name": "F.noTeleportY",
+      "passed": true
+    },
+    {
+      "name": "F.diedOnHazard",
+      "passed": true
+    },
+    {
+      "name": "F.respawnedAtCheckpoint",
+      "passed": true
+    },
+    {
+      "name": "F.checkpointSaved",
+      "passed": true
+    },
+    {
+      "name": "F.deathCounted",
+      "passed": true
+    },
+    {
+      "name": "G.exit0",
+      "passed": true
+    },
+    {
+      "name": "G.traceWritten",
+      "passed": true
+    },
+    {
+      "name": "G.noTeleportX",
+      "passed": true
+    },
+    {
+      "name": "G.noTeleportY",
+      "passed": true
+    },
+    {
+      "name": "G.jumped",
+      "passed": true
+    },
+    {
+      "name": "G.attackedDummy",
+      "passed": true
+    },
+    {
+      "name": "G.defeatedDummy",
+      "passed": true
+    },
+    {
+      "name": "G.rewardOnce",
+      "passed": true
+    },
+    {
+      "name": "G.noAbilityInBlank",
+      "passed": true
+    },
+    {
+      "name": "H.materializeExits0",
+      "passed": true
+    },
+    {
+      "name": "H.materializeReceipt",
+      "passed": true
+    },
+    {
+      "name": "H.materializeDefaultPointer",
+      "passed": true
+    },
+    {
+      "name": "H.materializedImportClean",
+      "passed": true
+    },
+    {
+      "name": "H.exit0",
+      "passed": true
+    },
+    {
+      "name": "H.traceWritten",
+      "passed": true
+    },
+    {
+      "name": "H.noTeleportX",
+      "passed": true
+    },
+    {
+      "name": "H.noTeleportY",
+      "passed": true
+    },
+    {
+      "name": "H.materializedReachesRuins",
+      "passed": true
+    },
+    {
+      "name": "H.materializedEntryScene",
+      "passed": true
+    }
+  ],
+  "passed": 80,
+  "failed": 0
+}

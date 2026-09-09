@@ -25,6 +25,8 @@ var captured := false
 var _gravity := 9.8
 var _override_axis := Vector2.ZERO
 var _override_remaining := 0
+# Preserve the last sampled contact while paused; real physics refreshes it on resume.
+var _restored_floor: Variant = null
 
 
 func _ready() -> void:
@@ -62,6 +64,7 @@ func _physics_process(delta: float) -> void:
 	velocity.x = move_toward(velocity.x, target.x, rate * delta)
 	velocity.z = move_toward(velocity.z, target.z, rate * delta)
 	move_and_slide()
+	_restored_floor = null
 
 
 ## Movement axis for this physics frame. A scripted override wins, otherwise the
@@ -123,7 +126,7 @@ func snapshot() -> Dictionary:
 		"position": [global_position.x, global_position.y, global_position.z],
 		"yaw": camera_rig.yaw if camera_rig != null else 0.0,
 		"pitch": camera_rig.pitch if camera_rig != null else 0.0,
-		"onFloor": is_on_floor(),
+		"onFloor": is_on_floor() if _restored_floor == null else _restored_floor,
 	}
 
 
@@ -141,6 +144,9 @@ func restore(data: Dictionary) -> String:
 		return "Player yaw is invalid"
 	if not (pitch is float or pitch is int) or not is_finite(float(pitch)) or absf(float(pitch)) > PI:
 		return "Player pitch is invalid"
+	if data.has("onFloor") and not data.onFloor is bool:
+		return "Player floor contact is invalid"
+	_restored_floor = data.get("onFloor")
 	global_position = Vector3(float(position[0]), float(position[1]), float(position[2]))
 	velocity = Vector3.ZERO
 	set_look(float(yaw), float(pitch))

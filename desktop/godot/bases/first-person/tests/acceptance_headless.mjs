@@ -13,7 +13,7 @@ import {createGodotProbeEnvironment,godotLock} from '../../../../../desktop/godo
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const baseDirectory = path.resolve(here, '..');
-const root = path.resolve(baseDirectory, '../../../../..');
+const root = path.resolve(baseDirectory, '../../../..');
 const resultsDirectory = path.join(root, 'test-results');
 fs.mkdirSync(resultsDirectory, {recursive: true});
 const out = fs.mkdtempSync(path.join(resultsDirectory, 'godot-first-person-base-'));

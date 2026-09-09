@@ -88,6 +88,9 @@ func build() -> Dictionary:
 # A map smaller than the viewport still shows background around it, which is
 # expected and visible in the blank start world.
 func _apply_camera_limits(width_px: int, height_px: int) -> void:
+	# A managed restore may replace this scene before the deferred call runs.
+	if not is_inside_tree():
+		return
 	if width_px <= 0 or height_px <= 0:
 		return
 	for node in get_tree().get_nodes_in_group("camera"):
