@@ -1,0 +1,500 @@
+{
+  "format": "craftmine.module/4",
+  "runtime": "craftmine-web/5",
+  "id": "garden-training",
+  "version": 1,
+  "kind": "creation",
+  "hash": "f167066bd400eb8cc34fb817346def0527908b6b0bc8f06b75c1e2f791326ca4",
+  "name": "花园训练场",
+  "description": "花草、生命值、近战、射击、奖励和固定版本吸血扩展的组合示例。",
+  "dependencies": [
+    "behavior@3",
+    "damageable@1",
+    "ext:training-drain@1",
+    "geometry@2",
+    "health@1",
+    "inventory.items@1",
+    "inventory.read@1",
+    "inventory@1",
+    "melee@1",
+    "ranged@1"
+  ],
+  "payload": {
+    "name": "花园训练场",
+    "anchor": {
+      "x": -0.03,
+      "y": 6,
+      "z": 1.62
+    },
+    "objects": [
+      {
+        "key": "wild-flower",
+        "name": "粉色野花",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "parts": [
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0.25,
+              "y": 0,
+              "z": 0.25
+            },
+            "size": {
+              "x": 0.05,
+              "y": 0.6,
+              "z": 0.05
+            },
+            "color": "#4d934c",
+            "solid": false,
+            "material": "solid"
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0.05,
+              "y": 0.3,
+              "z": 0.25
+            },
+            "size": {
+              "x": 0.24,
+              "y": 0.13,
+              "z": 0.04
+            },
+            "color": "#73ad53",
+            "solid": false,
+            "material": "solid"
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0.29,
+              "y": 0.19,
+              "z": 0.25
+            },
+            "size": {
+              "x": 0.22,
+              "y": 0.12,
+              "z": 0.04
+            },
+            "color": "#5b9a48",
+            "solid": false,
+            "material": "solid"
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0.08,
+              "y": 0.58,
+              "z": 0.23
+            },
+            "size": {
+              "x": 0.19,
+              "y": 0.09,
+              "z": 0.13
+            },
+            "color": "#f5a0b8",
+            "solid": false,
+            "material": "solid"
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0.29,
+              "y": 0.58,
+              "z": 0.23
+            },
+            "size": {
+              "x": 0.19,
+              "y": 0.09,
+              "z": 0.13
+            },
+            "color": "#f5a0b8",
+            "solid": false,
+            "material": "solid"
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0.21,
+              "y": 0.58,
+              "z": 0.04
+            },
+            "size": {
+              "x": 0.14,
+              "y": 0.09,
+              "z": 0.2
+            },
+            "color": "#f5a0b8",
+            "solid": false,
+            "material": "solid"
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0.21,
+              "y": 0.58,
+              "z": 0.36
+            },
+            "size": {
+              "x": 0.14,
+              "y": 0.09,
+              "z": 0.2
+            },
+            "color": "#f5a0b8",
+            "solid": false,
+            "material": "solid"
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0.23,
+              "y": 0.64,
+              "z": 0.24
+            },
+            "size": {
+              "x": 0.09,
+              "y": 0.07,
+              "z": 0.09
+            },
+            "color": "#f2cb64",
+            "solid": false,
+            "material": "solid"
+          }
+        ],
+        "components": {
+          "health": 0,
+          "contactDamage": 0
+        }
+      },
+      {
+        "key": "thin-grass",
+        "name": "细叶草丛",
+        "position": {
+          "x": 2.3,
+          "y": 0,
+          "z": 0
+        },
+        "parts": [
+          {
+            "shape": "blade",
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "size": {
+              "x": 0.18,
+              "y": 0.46,
+              "z": 0.13
+            },
+            "color": "#68a94c",
+            "solid": false,
+            "material": "solid"
+          },
+          {
+            "shape": "blade",
+            "offset": {
+              "x": 0.15,
+              "y": 0,
+              "z": 0.1
+            },
+            "size": {
+              "x": 0.15,
+              "y": 0.32,
+              "z": 0.18
+            },
+            "color": "#82b654",
+            "solid": false,
+            "material": "solid"
+          },
+          {
+            "shape": "blade",
+            "offset": {
+              "x": 0.3,
+              "y": 0,
+              "z": -0.05
+            },
+            "size": {
+              "x": 0.16,
+              "y": 0.52,
+              "z": 0.16
+            },
+            "color": "#589044",
+            "solid": false,
+            "material": "solid"
+          }
+        ],
+        "components": {
+          "health": 0,
+          "contactDamage": 0
+        }
+      },
+      {
+        "key": "oak-tree",
+        "name": "小橡树",
+        "position": {
+          "x": -1.9,
+          "y": 0,
+          "z": -3
+        },
+        "parts": [
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "size": {
+              "x": 0.5,
+              "y": 3,
+              "z": 0.5
+            },
+            "color": "#ffffff",
+            "solid": true,
+            "material": "wood"
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": -0.8,
+              "y": 2,
+              "z": -0.8
+            },
+            "size": {
+              "x": 2.2,
+              "y": 1.5,
+              "z": 2.2
+            },
+            "color": "#9ccc78",
+            "solid": false,
+            "material": "leaves"
+          },
+          {
+            "shape": "box",
+            "offset": {
+              "x": -0.4,
+              "y": 3.3,
+              "z": -0.4
+            },
+            "size": {
+              "x": 1.4,
+              "y": 0.7,
+              "z": 1.4
+            },
+            "color": "#afd28c",
+            "solid": false,
+            "material": "leaves"
+          }
+        ],
+        "components": {
+          "health": 0,
+          "contactDamage": 0
+        }
+      },
+      {
+        "key": "training-target",
+        "name": "训练靶",
+        "position": {
+          "x": 1.1,
+          "y": 0,
+          "z": -2
+        },
+        "parts": [
+          {
+            "shape": "box",
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "size": {
+              "x": 0.7,
+              "y": 2,
+              "z": 0.4
+            },
+            "color": "#bfa365",
+            "solid": true,
+            "material": "solid"
+          }
+        ],
+        "components": {
+          "health": 60,
+          "contactDamage": 0
+        }
+      }
+    ],
+    "scripts": [
+      {
+        "key": "training-rewards",
+        "definition": {
+          "format": "craftmine.behavior/3",
+          "id": "training-rewards",
+          "name": "花园训练场",
+          "description": "启动赠送一枚训练币，击破目标再奖励一枚。",
+          "stateVersion": 1,
+          "initialState": {
+            "claimed": false
+          },
+          "params": {},
+          "targets": [
+            "wild-flower",
+            "thin-grass",
+            "oak-tree",
+            "training-target"
+          ],
+          "permissions": [
+            "inventory.write"
+          ],
+          "capabilities": [
+            "inventory.read@1",
+            "inventory.items@1"
+          ],
+          "requires": [
+            "health@1",
+            "ranged@1",
+            "melee@1"
+          ],
+          "keys": [],
+          "code": "export function step({frame,state}) {\n      if(frame.event.type==='start')return {state,commands:[{type:'inventory.define',item:'training-token',name:'训练币',description:'花园训练奖励'},{type:'inventory.add',item:'training-token',count:1}]};\n      const target=frame.objects.find(o=>o.id==='training-target');\n      if(!state.claimed&&target?.health===0)return {state:{...state,claimed:true},commands:[{type:'inventory.add',item:'training-token',count:1}]};\n      return {state,commands:[]};\n    }",
+          "binding": null
+        },
+        "translation": {
+          "x": 1.1,
+          "y": -6,
+          "z": -8
+        },
+        "objects": [
+          {
+            "local": "wild-flower",
+            "object": "wild-flower"
+          },
+          {
+            "local": "thin-grass",
+            "object": "thin-grass"
+          },
+          {
+            "local": "oak-tree",
+            "object": "oak-tree"
+          },
+          {
+            "local": "training-target",
+            "object": "training-target"
+          }
+        ]
+      },
+      {
+        "key": "training-drain-key",
+        "definition": {
+          "format": "craftmine.behavior/3",
+          "id": "training-drain-key",
+          "name": "训练吸血",
+          "description": "按 G 从训练靶吸取最多十点生命。",
+          "stateVersion": 1,
+          "initialState": {},
+          "params": {},
+          "targets": [
+            "training-target"
+          ],
+          "permissions": [
+            "targets.write",
+            "health.write"
+          ],
+          "capabilities": [],
+          "requires": [
+            "health@1",
+            "ext:training-drain@1"
+          ],
+          "keys": [
+            "KeyG"
+          ],
+          "code": "export function step({frame,state}) {return {state,commands:frame.event.type==='key'&&frame.event.code==='KeyG'?[{type:'training.drain',targetId:'training-target',amount:10}]:[]};}",
+          "binding": null
+        },
+        "translation": {
+          "x": 1.1,
+          "y": -6,
+          "z": -8
+        },
+        "objects": [
+          {
+            "local": "wild-flower",
+            "object": "wild-flower"
+          },
+          {
+            "local": "thin-grass",
+            "object": "thin-grass"
+          },
+          {
+            "local": "oak-tree",
+            "object": "oak-tree"
+          },
+          {
+            "local": "training-target",
+            "object": "training-target"
+          }
+        ]
+      }
+    ],
+    "systems": [
+      {
+        "id": "health-system",
+        "type": "health",
+        "name": "生命值",
+        "config": {
+          "maxHealth": 100,
+          "fallDamage": 5,
+          "regenPerSecond": 0
+        },
+        "source": null
+      },
+      {
+        "id": "ranged-system",
+        "type": "ranged",
+        "name": "训练枪",
+        "config": {
+          "damage": 20,
+          "range": 30,
+          "cooldown": 0.2,
+          "magazine": 3,
+          "reloadSeconds": 0.4
+        },
+        "source": null
+      },
+      {
+        "id": "melee-system",
+        "type": "melee",
+        "name": "训练剑",
+        "config": {
+          "damage": 25,
+          "range": 2,
+          "cooldown": 0.3
+        },
+        "source": null
+      }
+    ],
+    "tests": {
+      "format": "craftmine.creation-tests/1",
+      "scope": "interface",
+      "events": [
+        "start",
+        "tick",
+        "interact",
+        "interact",
+        "contact",
+        "attack",
+        "land",
+        "restore"
+      ]
+    }
+  },
+  "origin": {
+    "build": "09bb46d3491fa419bda44e64b5c3c0ef408e8780b18f9af900b51210a18c26cb",
+    "definition": "training-rewards",
+    "time": 0
+  }
+}

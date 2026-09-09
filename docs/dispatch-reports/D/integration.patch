@@ -1,0 +1,12 @@
+diff --git a/app/harness/kernel.mjs b/app/harness/kernel.mjs
+--- a/app/harness/kernel.mjs
++++ b/app/harness/kernel.mjs
+@@ -32,7 +32,7 @@
+   'app/harness/judge.mjs': '9ee5f7b593c40acc7baa6bf640eee56b55cce5230183f8667c2915c73e0d0763',
+   'app/harness/metrics.mjs': 'ceccfdc7991b174af56a1a7ad76711e2379f9af3c06cda896c9dc0d9935c3a44',
+   'app/harness/extension.mjs': '10de8886a682148592262e4bb7908e4c79994a3d9430cf7045d888351df3e32e',
+-  'app/harness/extension-loader.mjs': 'a76d414edbc7359472de5e82ff6fcdca241326191853081cf33b7565904a2244',
++  'app/harness/extension-loader.mjs': '202de91cc63f0f0a8b12a47574fbd84f849071a4a0bc720eb6c44e1719155798',
+   'app/store.mjs': '2469fad89532cc3642ecf74e09746d622773fc57de632a22129bfac120118f7a',
+   'app/behavior-contracts.mjs': '536bd8616330610221a4f7d9f679b5c4e215c8813319bc896bc281068cb2b6de',
+   'app/canonical.mjs': '788dee7dbae8231382b35952b20052db73e9e064bd85ea34603f1f00a5e03779',

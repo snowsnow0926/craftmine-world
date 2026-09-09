@@ -1,0 +1,28 @@
+PASS real worker startup creates exactly one inventory reward
+PASS flower and grass have thin geometry at y=6 with no collision
+PASS actual raycast hit deals damage and consumes ammo
+PASS cooldown stops repeated attack
+PASS ray miss consumes ammo without damage
+PASS empty magazine cannot damage
+PASS reload really starts
+PASS restart preserves reload and does not repeat startup reward
+PASS reload completes, actual kill removes mesh and grants reward once
+PASS death inventory and reward survive restart
+PASS melee out of range does not hit
+PASS melee in range deals actual damage
+PASS restart does not erase weapon cooldown
+PASS actual restricted extension worker damages and heals
+PASS actual extension state persists across worker recreation
+PASS same fixed extension executes inside remapped creation instance
+PASS installed instance lifecycle and extension state survive restart
+PASS production behavior verifier accepts remapped extension dependencies
+PASS production verifier rejects missing fixed extension
+PASS real raycast cannot damage a target behind solid cover
+PASS persisted player death rejects actual weapon fire
+PASS actual extension self-test is green and actual noop is red
+PASS worker timeout and unauthorized effects reject without host death
+PASS selection comes from actual raycast with bound world and build
+PASS formal world rejects acceptance events
+PASS zero pointer lock and focus requests
+PASS no page errors or host failure
+Evidence: D:\Craftmine World-worktrees\parallel-d-20260909\test-results\dispatch-d-6L0g1e

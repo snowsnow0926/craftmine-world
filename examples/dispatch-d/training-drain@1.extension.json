@@ -1,0 +1,84 @@
+{
+  "format": "craftmine.extension/1",
+  "id": "training-drain",
+  "name": "训练吸血",
+  "version": 1,
+  "description": "按实际伤害恢复生命，保存每个玩法实例的施放次数。",
+  "requires": [],
+  "capabilities": [],
+  "permissions": [
+    "targets.write",
+    "health.write"
+  ],
+  "targets": [
+    "training-target"
+  ],
+  "provides": {
+    "commands": [
+      {
+        "type": "training.drain",
+        "permission": "targets.write",
+        "fields": [
+          {
+            "name": "targetId",
+            "description": "已绑定的目标 ID"
+          },
+          {
+            "name": "amount",
+            "description": "伤害 1–20"
+          }
+        ]
+      }
+    ],
+    "events": []
+  },
+  "code": "export function apply({command,world,state}) {\n    const target=world.objects.find(o=>o.id===command.targetId);\n    const amount=Math.min(target?.health||0,Math.max(1,Math.min(20,Number(command.amount)||1)));\n    return {state:{calls:(state?.calls||0)+1},effects:amount?[{type:'target.damage',id:command.targetId,amount},{type:'health.add',amount}]:[]};\n  }",
+  "selfTests": [
+    {
+      "name": "只吸取实际伤害",
+      "world": {
+        "playerHealth": 50,
+        "objects": [
+          {
+            "id": "training-target",
+            "position": {
+              "x": 0,
+              "y": 6,
+              "z": 0
+            },
+            "health": 5,
+            "visible": true,
+            "mesh": true,
+            "solid": true
+          }
+        ]
+      },
+      "state": {},
+      "commands": [
+        {
+          "type": "training.drain",
+          "targetId": "training-target",
+          "amount": 10
+        }
+      ],
+      "expect": [
+        {
+          "id": "drain.damage",
+          "kind": "objectHealth",
+          "object": "training-target",
+          "exact": 0,
+          "why": "目标实际失去五点生命",
+          "red": "没有伤害的空实现"
+        },
+        {
+          "id": "drain.heal",
+          "kind": "playerHealth",
+          "min": 55,
+          "max": 55,
+          "why": "只恢复五点实际伤害",
+          "red": "按请求量恢复十点"
+        }
+      ]
+    }
+  ]
+}
