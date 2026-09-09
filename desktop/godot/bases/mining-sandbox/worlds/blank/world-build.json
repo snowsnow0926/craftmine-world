@@ -69,8 +69,8 @@
     },
     {
       "path": "scripts/base/crafting_service.gd",
-      "bytes": 5408,
-      "sha256": "79ba696622e8025dc1457c0b89cbaec26526420f2c748d59add04c4b67ae4a7f"
+      "bytes": 5805,
+      "sha256": "67f396e8dd898db861067c5fb3871de0b3cccd5f51013c8e1203df0712789050"
     },
     {
       "path": "scripts/base/human_input_source.gd",
@@ -84,13 +84,13 @@
     },
     {
       "path": "scripts/base/inventory_service.gd",
-      "bytes": 5900,
-      "sha256": "d397173bff69a6dcba44b109b379d07990749c8e9b76a8b7e5d03f67a07527e1"
+      "bytes": 6566,
+      "sha256": "4caa05659fdc5e0f8b564c11f3659ef67091273d2b2f5bcaa6b0c6b0bd2e6280"
     },
     {
       "path": "scripts/base/mining_game.gd",
-      "bytes": 26869,
-      "sha256": "60fd842535af4617c9a050c3804059aa02860817c854ac807c2ca2c0e08a1374"
+      "bytes": 26867,
+      "sha256": "bf7e1b3aeac60640614926ff8004ed54859ef4453760f9995b2ba40843a42dc0"
     },
     {
       "path": "scripts/base/mining_params.gd",
@@ -109,8 +109,8 @@
     },
     {
       "path": "scripts/base/save_store.gd",
-      "bytes": 19204,
-      "sha256": "a269fde060ecab2afec14ffd949b42b8ecdc0f11ae082c5d05bcdb44851c097d"
+      "bytes": 20358,
+      "sha256": "8fc74bf656e2025003e5befd44863e6a4e3a96d26e04821ff97c795960877558"
     },
     {
       "path": "scripts/base/scripted_input_source.gd",
@@ -139,13 +139,13 @@
     },
     {
       "path": "scripts/base/terrain_service.gd",
-      "bytes": 12625,
-      "sha256": "3d2a46c92999129b7dce1d6f1df842d362051466c8104a807998758c9ec7ccbb"
+      "bytes": 13492,
+      "sha256": "fa6ccba603908a3379e2af1607a76dfb1e2ccd18ed1857b0afdc9b9dfe54b543"
     },
     {
       "path": "scripts/base/world_state.gd",
-      "bytes": 11804,
-      "sha256": "2f59041ba96aaea7802cd80635058340c68f22161df9ee29c95b8508b176ec61"
+      "bytes": 12251,
+      "sha256": "24e4526ad4c479024e2500f6ebfdc9901a294295ca10809f2f999278438b6381"
     },
     {
       "path": "world.json",

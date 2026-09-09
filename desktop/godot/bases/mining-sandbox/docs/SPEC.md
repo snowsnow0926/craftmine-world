@@ -129,6 +129,11 @@ chunk revision is incremented and the chunk is marked dirty.
 - `world.json` `items[]` declares `id`, `name`, `stack` (default `maxStack`),
   `toolTier` (default 0). `tools` in progress is the owned tool list; the equipped
   tool tier is `max(toolTier of owned tools)`.
+- **Stack limits are enforced.** A grant never raises a count above
+  `min(items[].stack, economy.maxStack)`. The part that does not fit is reported
+  as `overflow` (with `reason: "stack_full"`), the granted part is applied, and
+  the ledger records the partial result. A craft whose output would not fit is
+  rejected with `stack_full` **before** any input is consumed.
 - Crafting: `CraftingService.craft(recipeId, requestId, stationId)` reads
   `recipes[]` from `world.json`. A recipe is `{id, station, inputs: [{id, count}],
   output: {id, count}}`. `station` empty means hand-crafting; otherwise the player
@@ -162,7 +167,7 @@ user://worlds/<sha256(worldId)>/chunks/<cx>_<cy>.json
   "format": "craftmine.godot-mining-sandbox-progress/1",
   "worldId": "my-mine", "stateVersion": 1, "savedAt": "2026-09-10T12:00:00",
   "seed": 20260910, "mapSize": [96, 48], "worldRevision": 12,
-  "chunks": { "0_0": { "revision": 3, "file": "0_0.r3.json", "sha256": "...", "bytes": 214, "cells": 5 } },
+  "chunks": { "0_0": { "revision": 3, "file": "0_0.<sha16>.json", "sha256": "...", "bytes": 214, "cells": 5 } },
   "ledgerEvicted": 0,
   "state": { "format": "craftmine.godot-mining-sandbox-state/1", "stateVersion": 1, ... }
 }
@@ -188,7 +193,10 @@ Rules:
 
 1. **Only dirty chunks are written.** An unmodified chunk has no file and is
    regenerated deterministically on load; `snapshot.chunks` reports
-   `"edited": false` for it.
+   `"edited": false` for it. A chunk whose edits were all reverted to generated
+   terrain keeps its `revision` in the index with `"file": ""`, `"cells": 0` and
+   no file at all, so the revision survives a restart without leaving a file
+   behind.
 2. `cells` holds only the tiles that differ from generated terrain, as absolute
    tile coordinates sorted ascending by `(ty, tx)`.
 3. Chunk file names are **content-addressed** (`<cx>_<cy>.<sha16>.json`, where
@@ -353,6 +361,11 @@ assertion gets a new id, an existing id is never redefined.
 | G34 | `manifest.json` declares the side-view 1.0.0 reuse with source hashes in `docs/REUSE.md`. |
 | G35 | The blank template has an empty inventory, no recipes and no rewards. |
 | G36 | `capture_managed()` / `restore_managed()` round-trip the full state and terrain edits, and reject a tampered body whole. |
+| G37 | A grant beyond the declared stack caps at the limit and reports `overflow`; the ledger records the partial grant. |
+| G38 | A craft whose output stack is full is rejected with `stack_full` and consumes nothing. |
+| G39 | A chunk whose edits are all reverted keeps its revision after a restart and leaves no file. |
+| G40 | `snapshot.chunks[].sha256` is identical before and after a restart. |
+| G41 | After a save, the world project directory contains no progress or chunk files: play state lives only under the progress root. |
 
 ## 9 Host integration surface
 

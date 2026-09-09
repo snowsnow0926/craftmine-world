@@ -21,11 +21,20 @@ task: no file under `desktop/godot/bases/side-view/**` or
 | `desktop/godot/bases/side-view/scripts/player/scripted_input_source.gd` | `d1e4a37a2fd96838165546dc2e74c6acdcb081d06047cf0a5e2fd68f5a3961c6` | scripted input source shape used by the probe |
 | `desktop/godot/bases/side-view/scripts/runtime/side_view_config.gd` | `80cd3440b4855eacd55f2248ea94d324e40610b9542b8e7a4d442bfbce487b59` | typed parameter loading from a single JSON source |
 | `desktop/godot/bases/side-view/params/side_view_params.json` | `fe804eed0415ef9635d481d44ad114c7ca0d4e5cc6ec77f19a5b8595ed61de06` | the movement numbers inherited unchanged |
-| `desktop/godot/bases/side-view/manifest.json` | `fd09410510beae7b8b18e282332f7026c95e1298d8955ae0c0843b38b2b17cc0` | base manifest conventions (`craftmine.godot-base/1`) |
+| `desktop/godot/bases/side-view/manifest.json` | `15296f040a56501a2227a18ad8d3f7bebcefa97383c365dde717aab612178873` | base manifest conventions (`craftmine.godot-base/1`) |
 | `desktop/godot/bases/side-view/project.godot` | `27c7e16e8672f7f974daac8f5d265a1c564dd10ba12bb97fe4849ea0fa9f9274` | project settings conventions (viewport, physics tick, renderer) |
 
 `tests/godot-remaining/G/a16-acceptance.mjs` (assertion G34) re-hashes these
 files on every run, so this table cannot silently rot.
+
+**Round-2 pin (2026-09-10).** The table above is re-pinned against the tree that
+merges F's `d7db302` (the round-1 base/component delivery) on top of `bcebeb1`.
+F's merge changed only `side-view/manifest.json` (it gained the `contract`,
+`protocols`, `templates` and `components` blocks); the movement model, input
+abstraction, typed parameter loader, parameter values and project settings are
+byte-identical to the round-1 pin. The declared dependency therefore stays
+`side-view` `1.0.0`: F did not bump `baseVersion`, and the files this base
+actually reuses did not change.
 
 ## What is reused verbatim
 

@@ -362,7 +362,7 @@ func snapshot() -> Dictionary:
 	var player_tile: Array = state.player.tile.duplicate()
 	var position: Array = state.player.position.duplicate()
 	var chunks: Dictionary = {}
-	for chunk_id in terrain.edited_chunk_ids():
+	for chunk_id in terrain.known_chunk_ids():
 		var coords := chunk_store.parse_chunk_id(String(chunk_id))
 		var report := terrain.chunk_report(coords.x, coords.y)
 		chunks[String(chunk_id)] = {
@@ -596,7 +596,7 @@ func capture_managed() -> Dictionary:
 	if terrain == null or state == null or generator == null:
 		return {"error": "Mining sandbox is not ready"}
 	var chunks: Dictionary = {}
-	for chunk_id in terrain.edited_chunk_ids():
+	for chunk_id in terrain.known_chunk_ids():
 		var coords: Vector2i = chunk_store.parse_chunk_id(String(chunk_id))
 		chunks[String(chunk_id)] = {
 			"revision": terrain.chunk_revision(coords.x, coords.y),

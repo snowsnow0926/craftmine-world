@@ -35,8 +35,10 @@ func item_data(item_id: String) -> Dictionary:
 	return entry if entry is Dictionary else {}
 
 
+## Declared per-item stack size, never above the world's `economy.maxStack`.
 func stack_size(item_id: String) -> int:
-	return int(item_data(item_id).get("stack", max_stack))
+	var declared := int(item_data(item_id).get("stack", max_stack))
+	return clampi(declared, 1, max_stack)
 
 
 func tool_tier_of(item_id: String) -> int:
@@ -81,9 +83,21 @@ func grant(item_id: String, amount: int, request_id: String) -> Dictionary:
 		return prior
 	if amount <= 0:
 		return _reject(rid, "grant", "invalid_count", {"itemId": item_id})
-	var result := {"ok": true, "op": "grant", "itemId": item_id, "count": amount, "total": count(item_id) + amount}
-	_apply_grant(item_id, amount)
-	result["total"] = count(item_id)
+	if item_data(item_id).is_empty():
+		return _reject(rid, "grant", "unknown_item", {"itemId": item_id})
+	var overflow := _apply_grant(item_id, amount)
+	var result := {
+		"ok": true,
+		"op": "grant",
+		"itemId": item_id,
+		"count": amount,
+		"granted": amount - overflow,
+		"overflow": overflow,
+		"stackLimit": stack_size(item_id),
+		"total": count(item_id),
+	}
+	if overflow > 0:
+		result["reason"] = "stack_full"
 	_record(rid, "grant", result, true)
 	return result
 
@@ -117,13 +131,19 @@ func cancel(request_id: String) -> Dictionary:
 
 # ------------------------------------------------------------ internal apply
 
-func _apply_grant(item_id: String, amount: int) -> void:
+## Grants what fits the stack and returns the amount that did not fit, so a caller
+## reports it instead of silently discarding items. `items[].stack` and the world's
+## `economy.maxStack` are both enforced here.
+func _apply_grant(item_id: String, amount: int) -> int:
 	if state == null or item_id.is_empty() or amount <= 0:
-		return
-	state.inventory[item_id] = count(item_id) + amount
+		return 0
+	var held := count(item_id)
+	var next := mini(held + amount, stack_size(item_id))
+	state.inventory[item_id] = next
 	if tool_tier_of(item_id) > 0 and not state.tools.has(item_id):
 		state.tools.append(item_id)
 		_refresh_equipped()
+	return held + amount - next
 
 
 func _apply_consume(item_id: String, amount: int) -> bool:

@@ -975,6 +975,100 @@ function run() {
       restored: restored && { hash: restored.terrainHash, inventory: restored.inventory, tile: restored.player.tile },
       captured: capturedSnapshot && { hash: capturedSnapshot.terrainHash, inventory: capturedSnapshot.inventory, tile: capturedSnapshot.player.tile },
     });
+
+  // ---- G37/G38: stack limits are enforced, not decorative
+  const stackWorld = makeWorld('mine-camp', 'a16-stack', {
+    mutate: (world) => { world.items.find((item) => item.id === 'stone').stack = 2; },
+  });
+  const stackTerrain = referenceTerrain(stackWorld.world.generation);
+  const stoneTiles = [];
+  for (let ty = 4; ty < stackTerrain.height - 2 && stoneTiles.length < 3; ty += 1) {
+    for (let tx = 2; tx < stackTerrain.width - 2 && stoneTiles.length < 3; tx += 1) {
+      if (stackTerrain.get(tx, ty) === 'stone'
+        && stackTerrain.get(tx, ty - 1) === 'air' && stackTerrain.get(tx, ty - 2) === 'air') {
+        stoneTiles.push({ tx, ty });
+      }
+    }
+  }
+  const stackCommands = [];
+  for (const [index, tile] of stoneTiles.entries()) {
+    const feet = playerFeetForTile(tile.tx, tile.ty);
+    stackCommands.push({ op: 'set-position', args: { x: feet.x, y: feet.y } });
+    stackCommands.push({ op: 'dig', args: { tx: tile.tx, ty: tile.ty, requestId: `g37-dig-${index}` } });
+  }
+  stackCommands.push({ op: 'inventory' });
+  const stackRun = runProbe(stackWorld, stackCommands, { saveOnExit: false });
+  const stackDrops = stoneTiles.map((_, index) => resultOf(stackRun, index * 2 + 1)?.dropped);
+  const stackInventory = resultOf(stackRun, stackCommands.length - 1);
+  check('G37', 'a grant beyond the declared stack caps at the limit and reports overflow',
+    stackDrops.length === 3
+      && stackDrops[0]?.count === 1 && stackDrops[0]?.overflow === undefined
+      && stackDrops[1]?.count === 1
+      && stackDrops[2]?.overflow === 1 && stackDrops[2]?.count === 0
+      && stackInventory?.stone === 2,
+    { drops: stackDrops, inventory: stackInventory });
+
+  const stackCraft = makeWorld('mine-camp', 'a16-stack-craft', {
+    inventory: [{ id: 'stone', count: 2 }, { id: 'stone_brick', count: 1 }],
+    mutate: (world) => { world.items.find((item) => item.id === 'stone_brick').stack = 1; },
+  });
+  const craftFull = single(stackCraft, { op: 'craft', args: { recipeId: 'stone-brick', requestId: 'g38-craft' } }, { saveOnExit: false });
+  const craftFullInventory = single(stackCraft, { op: 'inventory' }, { saveOnExit: false });
+  check('G38', 'a craft whose output stack is full is rejected with stack_full and consumes nothing',
+    craftFull.result?.reason === 'stack_full'
+      && craftFullInventory.result?.stone === 2 && craftFullInventory.result?.stone_brick === 1,
+    { craft: craftFull.result, inventory: craftFullInventory.result });
+
+  // ---- G39: a fully reverted chunk keeps its revision and leaves no file
+  const revert = makeWorld('mine-camp', 'a16-revert');
+  const revertTerrain = referenceTerrain(revert.world.generation);
+  const revertTarget = findDiggable(revertTerrain, 'stone');
+  const revertFeet = playerFeetForTile(revertTarget.tx, revertTarget.ty);
+  const revertChunk = { cx: Math.floor(revertTarget.tx / 16), cy: Math.floor(revertTarget.ty / 16) };
+  const revertRun = runProbe(revert, [
+    { op: 'set-position', args: { x: revertFeet.x, y: revertFeet.y } },
+    { op: 'dig', args: { tx: revertTarget.tx, ty: revertTarget.ty, requestId: 'g39-dig' } },
+    { op: 'place', args: { tx: revertTarget.tx, ty: revertTarget.ty, materialId: 'stone', requestId: 'g39-place' } },
+    { op: 'chunk', args: revertChunk },
+    { op: 'save' },
+  ], { saveOnExit: false });
+  const revertedChunk = resultOf(revertRun, 3);
+  const revertEntry = readProgress(revert).data.chunks[chunkIdOf(revertTarget.tx, revertTarget.ty)];
+  const revertChunkFiles = existsSync(chunksDir(revert)) ? readdirSync(chunksDir(revert)) : [];
+  const revertedAfterRestart = single(revert, { op: 'chunk', args: revertChunk }).result;
+  check('G39', 'a chunk whose edits are all reverted keeps its revision and leaves no file',
+    revertedChunk && revertedChunk.edited === false && revertedChunk.revision === 2 && revertedChunk.cells === 0
+      && revertEntry && revertEntry.revision === 2 && revertEntry.file === '' && revertEntry.cells === 0
+      && !revertChunkFiles.some((name) => name.startsWith(`${chunkIdOf(revertTarget.tx, revertTarget.ty)}.`))
+      && revertedAfterRestart && revertedAfterRestart.edited === false && revertedAfterRestart.revision === 2,
+    { before: revertedChunk, index: revertEntry, files: revertChunkFiles, after: revertedAfterRestart });
+
+  // ---- G40/G41: the observation surface and the source/play-state boundary
+  const savedChunks = saved.snapshot.chunks;
+  const restartedChunks = after.chunks;
+  check('G40', 'snapshot.chunks[].sha256 is identical before and after a restart',
+    Object.keys(savedChunks).length > 0
+      && Object.entries(savedChunks).every(([id, entry]) => restartedChunks[id] && restartedChunks[id].sha256 === entry.sha256),
+    { saved: savedChunks, restarted: restartedChunks });
+
+  const walkWorld = (dir) => {
+    const found = [];
+    const visit = (current) => {
+      for (const name of readdirSync(current)) {
+        const full = join(current, name);
+        if (statSync(full).isDirectory()) visit(full);
+        else found.push(full.slice(persist.dir.length + 1).replace(/\\/g, '/'));
+      }
+    };
+    visit(dir);
+    return found;
+  };
+  const worldFiles = walkWorld(persist.dir);
+  check('G41', 'after a save the world project contains no progress or chunk files',
+    worldFiles.length > 0
+      && !worldFiles.some((name) => name.endsWith('progress.json') || name.includes('progress.json.') || name.startsWith('chunks/'))
+      && !persist.progressRoot.startsWith(`${persist.dir}/`) && !persist.progressRoot.startsWith(`${persist.dir}\\`),
+    { progressLike: worldFiles.filter((name) => name.includes('progress') || name.includes('chunk')), count: worldFiles.length });
 }
 
 let failure = null;
