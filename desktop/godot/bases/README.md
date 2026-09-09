@@ -23,6 +23,7 @@ must enforce:
 | Base | Version | Blank | Example |
 | --- | --- | --- | --- |
 | `first-person` | 0.1.0 | `blank` | `training-range` |
+| `mining-sandbox` | 1.0.0 | `blank` | `mine-camp` |
 | `top-down` | 1.0.0 | `blank` | `town` |
 | `side-view` | 1.0.0 | `blank` | `ruins` |
 
@@ -46,16 +47,17 @@ Rules the catalog and the tools enforce:
 
 ## Component catalog
 
-22 components are declared across the three bases: door, interactable, NPC
+28 components are declared across the four bases: door, interactable, NPC
 dialogue, shop, quest, gather zone, spawn marker, player, checkpoint, ability
-pickup, reward pickup, target, hazard, equipment item, crosshair and more. Each
-declares:
+pickup, reward pickup, target, hazard, equipment item, crosshair, terrain
+material, ore vein, crafting recipe, crafting station and more. Each declares:
 
 - `identity` — the stable field saved state is keyed by (never a node path);
 - `persistentState` — the state format, the exact fields, and the capture/restore
   functions that own them;
 - `initialState` — what a brand new instance starts with;
-- `files` — every file the component needs, with byte count and SHA-256.
+- `files` — every file the component needs, with byte count and SHA-256;
+- `install` — how the component is materialized into a world (see below).
 
 `desktop/godot/shared/components.mjs` is the library:
 
@@ -72,16 +74,53 @@ applyInstallation({ catalog, plan, sourceDir: 'desktop/godot/bases/side-view', p
 Installation always assigns a **new** entity id and starts from the component's
 initial state, so copying a component never copies the source author's progress.
 Data-driven components (side-view entities in `world.json`, top-down
-`data/**` resources) are written by the tool. Scene-node components are returned
-as an explicit `sceneEdits` step: the library never rewrites a `.tscn`.
+`data/**` resources) are written by the tool.
+
+### Scene components are materialized, not described
+
+A scene-node component declares an `install` block and is written into a real
+`.tscn` by `desktop/godot/shared/scene_materializer.mjs`:
+
+```jsonc
+"install": {
+  "mode": "script-node",              // or "instance" when the component ships a scene
+  "scene": "scenes/overworld.tscn",   // default target; the caller may pass `scene`
+  "parent": ".",                      // node path inside the scene
+  "nodeType": "Area2D",               // base class for script-node mode
+  "script": "scripts/base/door_zone.gd",
+  "identityField": "entity_id",
+  "identityType": "string",           // or "stringname"
+  "groups": ["entities"],
+  "exports": { "target_scene": "\"\"", "target_spawn": "\"\"" },
+  "inputActions": ["interact"]
+}
+```
+
+The materializer:
+
+- allocates a deterministic `ext_resource` id and writes `type` before `parent`,
+  the ordering Godot's scene parser expects;
+- reuses the script's real `uid://` when the base ships a `.gd.uid`;
+- quotes plain strings as GDScript literals;
+- refuses a duplicate node name or identity value **before** writing anything;
+- appends only: existing ext_resources, nodes and author edits are preserved;
+- adds a missing required input action to `project.godot`.
+
+Scene paths in `install` are relative to a materialized world project, which is
+why top-down scripts appear as `scripts/base/*.gd` (the base's `core/scripts` are
+copied there by `tools/new-world.mjs`).
 
 ## Verification
 
 ```powershell
 node --test tests/godot-remaining/F/contracts.test.mjs tests/godot-remaining/F/components.test.mjs tests/godot-remaining/F/observation.test.mjs tests/godot-remaining/F/base-creation.test.mjs
+node tests/godot-round2/R3/scene-install.mjs                             # real engine: scene materialization
+node desktop/godot/shared/tests/progress.mjs                             # real engine: managed lifecycle, 4 bases
+node desktop/godot/bases/tests/audit-persistence.mjs                     # real engine: native save rejection, 4 bases
 node desktop/godot/bases/first-person/tests/acceptance_headless.mjs      # real engine
 node desktop/godot/bases/top-down/tools/verify.mjs --godot <pinned-engine> # real engine
 node desktop/godot/bases/side-view/tools/verify.mjs                       # real engine
+node tests/godot-remaining/G/a16-acceptance.mjs                           # real engine: mining sandbox, 45 assertions
 ```
 
 Set `CRAFTMINE_GODOT_CACHE_DIR` to the pinned 4.7.2 cache for the first-person

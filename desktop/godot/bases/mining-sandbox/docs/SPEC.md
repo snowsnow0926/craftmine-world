@@ -301,7 +301,7 @@ a result directly.
 | `chunk` | `cx, cy` | chunk report: `edited`, `revision`, `cells`, `hash` |
 | `hash` | — | `terrain_hash()` |
 | `save` | — | `save()` + snapshot |
-| `capture-managed` | — | `capture_managed()` for the shared progress receipt |
+| `capture-managed` | — | `capture_managed()` for the shared progress receipt; the probe returns `{"ok": true, "body": <managed body>}` and never adds envelope fields to the body itself |
 | `restore-managed` | `body` | `restore_managed(body)`, whole-reject |
 | `restore` | — | re-reads progress from disk, whole-reject |
 | `reset-to-initial` | — | clears edits and returns to initial progress |

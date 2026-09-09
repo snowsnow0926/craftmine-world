@@ -89,8 +89,8 @@
     },
     {
       "path": "scripts/base/mining_game.gd",
-      "bytes": 26867,
-      "sha256": "bf7e1b3aeac60640614926ff8004ed54859ef4453760f9995b2ba40843a42dc0"
+      "bytes": 29710,
+      "sha256": "3922042a90ac28d9cd69911cb6f153cced2e627e4020cd83cfa1a122ec8c9979"
     },
     {
       "path": "scripts/base/mining_params.gd",
@@ -104,8 +104,8 @@
     },
     {
       "path": "scripts/base/probe.gd",
-      "bytes": 8387,
-      "sha256": "ed357a8a7364a8e899478d824f8424ac254489b2c097d530808d6c4a57147e99"
+      "bytes": 8456,
+      "sha256": "1dd6e9b2f36c1035847dbd566f991dc54f4b5503d2b01adf1e1478009236bf69"
     },
     {
       "path": "scripts/base/save_store.gd",
