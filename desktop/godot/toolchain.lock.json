@@ -1,0 +1,36 @@
+{
+  "format": "craftmine.godot-toolchain/1",
+  "version": "4.7.2-stable",
+  "releaseUrl": "https://github.com/godotengine/godot-builds/releases/tag/4.7.2-stable",
+  "platform": "windows-x86_64",
+  "language": "GDScript",
+  "renderer": "gl_compatibility",
+  "editor": {
+    "file": "Godot_v4.7.2-stable_win64.exe.zip",
+    "url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_win64.exe.zip",
+    "bytes": 86013866,
+    "sha256": "731980f9608d61333e5baf54a2ef17210acc7a538446c0cb9969f002aca1e953",
+    "executable": "Godot_v4.7.2-stable_win64.exe"
+  },
+  "exportTemplates": {
+    "file": "Godot_v4.7.2-stable_export_templates.tpz",
+    "url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz",
+    "bytes": 1281349702,
+    "sha256": "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011"
+  },
+  "verifiedAt": "2026-09-09",
+  "digestSource": "https://api.github.com/repos/godotengine/godot-builds/releases/tags/4.7.2-stable",
+  "licenses": [
+    {
+      "file": "licenses/GODOT_LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/LICENSE.txt",
+      "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80"
+    },
+    {
+      "file": "licenses/GODOT_COPYRIGHT.txt",
+      "url": "https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/COPYRIGHT.txt",
+      "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d"
+    }
+  ],
+  "status": "gd0-candidate-not-production-bundled"
+}

@@ -1,3 +1,5 @@
 # Runtime integrity hashes use the same source bytes on Windows and Unix.
 *.mjs text eol=lf
 *.js text eol=lf
+desktop/godot/probes/** text eol=lf
+desktop/godot/licenses/** -text

@@ -1,0 +1,14 @@
+config_version=5
+
+[application]
+config/name="Craftmine GD0 Top Down"
+run/main_scene="res://world.tscn"
+
+[display]
+window/size/viewport_width=800
+window/size/viewport_height=600
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.15, 0.25, 0.18, 1)
