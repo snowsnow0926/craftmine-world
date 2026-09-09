@@ -1,0 +1,53 @@
+﻿{
+    "format":  "craftmine.windows-lifecycle/1",
+    "generatedAt":  "2026-09-09T13:03:48.8242316Z",
+    "a17Status":  "not-verified",
+    "installationExecuted":  false,
+    "environment":  {
+                        "osVersion":  "10.0.19045.0",
+                        "architecture":  "X64",
+                        "isWindows":  true,
+                        "elevated":  false,
+                        "ephemeralRunner":  false,
+                        "markers":  {
+                                        "githubActions":  null,
+                                        "runnerEnvironment":  null,
+                                        "runnerTemp":  null,
+                                        "craftmineLifecycleIsolated":  null,
+                                        "craftmineLifecycleRoot":  null
+                                    }
+                    },
+    "inputs":  {
+                   "installer":  null,
+                   "installerSha256":  null,
+                   "previousInstaller":  null,
+                   "previousInstallerSha256":  null,
+                   "installDirectory":  null,
+                   "profileDirectory":  null,
+                   "secondUserName":  "",
+                   "secondUserProfile":  ""
+               },
+    "checks":  [
+
+               ],
+    "notVerified":  [
+                        "A17 first install",
+                        "A17 upgrade",
+                        "A17 upgrade failure recovery",
+                        "A17 uninstall",
+                        "A17 cross-user data separation"
+                    ],
+    "requirements":  [
+                         "A Windows x64 machine that is not the developer client, with no Craftmine World installation and no running instance.",
+                         "Two fixed packages: a previous release and the release under test, each with a published SHA-256.",
+                         "A disposable local account or VM that can be reverted; the script must not be pointed at a personal profile.",
+                         "For the cross-user part: a second local Windows account and the absolute path of that account profile directory.",
+                         "For upgrade-failure recovery: the previous package must be reinstalled by the operator, because this script never restores a production install automatically."
+                     ],
+    "limits":  [
+                   "A GitHub-hosted ephemeral runner contains development tools; it is not a clean-OS claim.",
+                   "Only silent installer, upgrade, blocked-upgrade, uninstall and synthetic profile preservation are observed.",
+                   "No user profile, credential store, VM, account or security setting is created or changed by this script.",
+                   "Visible-window composition and physical input feel are out of scope and remain separately unverified."
+               ]
+}
