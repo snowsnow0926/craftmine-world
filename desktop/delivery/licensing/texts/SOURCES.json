@@ -1,0 +1,172 @@
+{
+  "format": "craftmine.license-texts/1",
+  "retrievedAt": "2026-09-09T16:55:14.966Z",
+  "texts": [
+    {
+      "id": "AGPL-3.0",
+      "spdx": "AGPL-3.0-only",
+      "file": "texts/LICENSE-AGPL-3.0.txt",
+      "url": "https://www.gnu.org/licenses/agpl-3.0.txt",
+      "retrievedAt": "2026-09-09T16:55:15.988Z",
+      "bytes": 34523,
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "httpStatus": 200,
+      "note": "GNU Affero GPL v3 plain text (gnu.org)."
+    },
+    {
+      "id": "LGPL-3.0",
+      "spdx": "LGPL-3.0-or-later",
+      "file": "texts/LICENSE-LGPL-3.0.txt",
+      "url": "https://www.gnu.org/licenses/lgpl-3.0.txt",
+      "retrievedAt": "2026-09-09T16:55:16.257Z",
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "httpStatus": 200,
+      "note": "GNU Lesser GPL v3 supplement; it incorporates GPL-3 by reference."
+    },
+    {
+      "id": "GPL-3.0",
+      "spdx": "GPL-3.0-only",
+      "file": "texts/LICENSE-GPL-3.0.txt",
+      "url": "https://www.gnu.org/licenses/gpl-3.0.txt",
+      "retrievedAt": "2026-09-09T16:55:16.543Z",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "httpStatus": 200,
+      "note": "GNU GPL v3 plain text (gnu.org)."
+    },
+    {
+      "id": "MIT",
+      "spdx": "MIT",
+      "file": "texts/LICENSE-MIT.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/MIT.txt",
+      "retrievedAt": "2026-09-09T16:55:17.007Z",
+      "bytes": 1078,
+      "sha256": "b05785f9f18e6716bab63424b11454513b9943a222595b70411009202fc592b5",
+      "httpStatus": 200,
+      "note": "SPDX plain text. https://opensource.org/license/mit returns HTML, not plain text."
+    },
+    {
+      "id": "OFL-1.1",
+      "spdx": "OFL-1.1",
+      "file": "texts/LICENSE-OFL-1.1.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/OFL-1.1.txt",
+      "retrievedAt": "2026-09-09T16:55:17.334Z",
+      "bytes": 4016,
+      "sha256": "8eea8287e5876b539670cadb82e99f9a7afddec6f6730811be1daf25d2e9bcfd",
+      "httpStatus": 200,
+      "note": "SIL Open Font License 1.1 (fonts bundled by upstream PI-Desktop)."
+    },
+    {
+      "id": "Apache-2.0",
+      "spdx": "Apache-2.0",
+      "file": "texts/LICENSE-Apache-2.0.txt",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+      "retrievedAt": "2026-09-09T16:55:17.641Z",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "httpStatus": 200,
+      "note": "Apache License 2.0 plain text."
+    },
+    {
+      "id": "BSD-3-Clause",
+      "spdx": "BSD-3-Clause",
+      "file": "texts/LICENSE-BSD-3-Clause.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/BSD-3-Clause.txt",
+      "retrievedAt": "2026-09-09T16:55:18.431Z",
+      "bytes": 1460,
+      "sha256": "5a93d5831e1297ab10fe643e1a631e83be392896da14ee2951285a79012df69d",
+      "httpStatus": 200,
+      "note": "SPDX plain text."
+    },
+    {
+      "id": "BSD-2-Clause",
+      "spdx": "BSD-2-Clause",
+      "file": "texts/LICENSE-BSD-2-Clause.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/BSD-2-Clause.txt",
+      "retrievedAt": "2026-09-09T16:55:18.729Z",
+      "bytes": 1267,
+      "sha256": "f32fb3b417a194167cfad068223fc975ba96c5960513a10f66a3c28720aec1df",
+      "httpStatus": 200,
+      "note": "SPDX plain text."
+    },
+    {
+      "id": "ISC",
+      "spdx": "ISC",
+      "file": "texts/LICENSE-ISC.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/ISC.txt",
+      "retrievedAt": "2026-09-09T16:55:19.042Z",
+      "bytes": 737,
+      "sha256": "521c6f0ed8e64736684f89843d16a4df6b4b7449acbcfc6ca6630a3037ca8c53",
+      "httpStatus": 200,
+      "note": "SPDX plain text."
+    },
+    {
+      "id": "MPL-2.0",
+      "spdx": "MPL-2.0",
+      "file": "texts/LICENSE-MPL-2.0.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/MPL-2.0.txt",
+      "retrievedAt": "2026-09-09T16:55:19.608Z",
+      "bytes": 16727,
+      "sha256": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172",
+      "httpStatus": 200,
+      "note": "SPDX plain text."
+    },
+    {
+      "id": "Zlib",
+      "spdx": "Zlib",
+      "file": "texts/LICENSE-Zlib.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/Zlib.txt",
+      "retrievedAt": "2026-09-09T16:55:19.890Z",
+      "bytes": 838,
+      "sha256": "bfb1112d49db5b1daecdfef24bd7e2f3ea0bafb33aa67aa0ab51e2bf8407c03d",
+      "httpStatus": 200,
+      "note": "SPDX plain text."
+    },
+    {
+      "id": "0BSD",
+      "spdx": "0BSD",
+      "file": "texts/LICENSE-0BSD.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/0BSD.txt",
+      "retrievedAt": "2026-09-09T16:55:20.250Z",
+      "bytes": 643,
+      "sha256": "e3f18c71e10d673590eb9856c1d79dd3b4b0d65404efb5e8584dbede7edd608b",
+      "httpStatus": 200,
+      "note": "SPDX plain text."
+    },
+    {
+      "id": "Unlicense",
+      "spdx": "Unlicense",
+      "file": "texts/LICENSE-Unlicense.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/Unlicense.txt",
+      "retrievedAt": "2026-09-09T16:55:21.070Z",
+      "bytes": 1211,
+      "sha256": "0bdebfeda07d45dada625ae1317c6f833186e798b171d0db640bcf32e92a8240",
+      "httpStatus": 200,
+      "note": "SPDX plain text."
+    },
+    {
+      "id": "BlueOak-1.0.0",
+      "spdx": "BlueOak-1.0.0",
+      "file": "texts/LICENSE-BlueOak-1.0.0.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/BlueOak-1.0.0.txt",
+      "retrievedAt": "2026-09-09T16:55:21.588Z",
+      "bytes": 1552,
+      "sha256": "8a1af140fdfbf5afd3df27f7e662f989c5b963a300020dfafce42033cae9e004",
+      "httpStatus": 200,
+      "note": "SPDX plain text."
+    },
+    {
+      "id": "Python-2.0",
+      "spdx": "Python-2.0",
+      "file": "texts/LICENSE-Python-2.0.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/Python-2.0.txt",
+      "retrievedAt": "2026-09-09T16:55:21.910Z",
+      "bytes": 9411,
+      "sha256": "893c2bafbb8133f7aa97e1f79a3ee3241ebca7025f56278e9e1f72bb98592f9d",
+      "httpStatus": 200,
+      "note": "SPDX plain text."
+    }
+  ],
+  "failures": []
+}

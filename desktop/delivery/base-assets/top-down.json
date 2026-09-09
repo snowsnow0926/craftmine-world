@@ -98,8 +98,8 @@
       "distribution": [
         "user-export"
       ],
-      "bytes": 5903,
-      "sha256": "2e0beb1afa6cdf3f5229201e371f2d4b883779d46199b82f351c2b3c62b1d5c4",
+      "bytes": 6415,
+      "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3",
       "outstanding": "Same authored-code licence decision as project.godot.",
       "notes": "Host-side bridge script shipped beside the exported Web build."
     },
@@ -139,5 +139,5 @@
       "notes": "Aggregate third-party notices for the exported engine."
     }
   ],
-  "hashReviewNote": "Only the shared bridge byte/hash pins were refreshed against task C commit 86c4a3e4623ab28ba86690dc5a2ee6ba3d8a7891; all license and distribution declarations are unchanged."
+  "hashReviewNote": "Only the shared bridge byte/hash pins were refreshed against the integrated tree at e4621478 (bridge.js 5903 -> 6415 bytes); all license and distribution declarations are unchanged. The shipped base directory itself is covered by desktop/delivery/base-assets/bases-top-down.json."
 }

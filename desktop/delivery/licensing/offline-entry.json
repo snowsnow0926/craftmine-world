@@ -1,0 +1,52 @@
+{
+  "format": "craftmine.offline-license-entry/1",
+  "generatedAt": "2026-09-10",
+  "generatedBy": "hand-curated (desktop/delivery/licensing/OFFLINE_LICENSE_ENTRY.md); machine-checked by desktop/delivery/licensing-check.mjs",
+  "purpose": "Machine-checkable map of where a user opens licence texts offline inside the packaged client and inside an exported game. Paths are relative to the scan root. status values: required (must be present), required-when-engine-bundled (must be present only if the engine is actually bundled), conditional (must be present only if the named code is included), missing (not present today; a real gap), reference (repo-side official text, not expected in the package).",
+  "package": {
+    "root": "resources/licenses",
+    "entryDocument": "CRAFTMINE-NOTICES.md",
+    "sourceOffer": "resources/source/CraftmineWorld-source.zip",
+    "required": [
+      {"id": "lgpl-3.0", "file": "PI-Desktop-LICENSE.txt", "covers": ["pi-desktop-upstream", "pi-desktop-modifications", "craftmine-core"], "status": "required", "repoText": "desktop/delivery/licensing/texts/LICENSE-LGPL-3.0.txt", "note": "Byte-identical copy of vendor/pi-desktop/LICENSE (the LGPL-3 supplement). SHA-256 e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118."},
+      {"id": "gpl-3.0", "file": "GPL-3.0.txt", "covers": ["pi-desktop-upstream"], "status": "missing", "repoText": "desktop/delivery/licensing/texts/LICENSE-GPL-3.0.txt", "reason": "LGPL-3 incorporates GPL-3 by reference; the full GPL-3 text is not bundled in the package. Whether it must be is an open legal question."},
+      {"id": "agpl-3.0", "file": "CRAFTMINE-LICENSE-AGPL-3.0.txt", "covers": ["app-creation-core", "plugin-craftmine-world", "craftmine-core"], "status": "missing", "repoText": "desktop/delivery/licensing/texts/LICENSE-AGPL-3.0.txt", "reason": "The AGPL-3.0-only target is not applied; no AGPL text is placed in the package yet."},
+      {"id": "mit", "file": "CRAFTMINE-MIT.txt", "covers": ["godot-web-bridge-runtime", "godot-probes", "base-first-person", "base-top-down", "base-side-view", "audio-models"], "status": "missing", "repoText": "desktop/delivery/licensing/texts/LICENSE-MIT.txt", "reason": "The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet."},
+      {"id": "godot-mit", "file": "godot/GODOT_LICENSE.txt", "covers": ["godot-engine"], "status": "required-when-engine-bundled", "repoText": "desktop/delivery/licensing/texts/LICENSE-MIT.txt", "note": "Must be byte-identical to desktop/godot/licenses/GODOT_LICENSE.txt (SHA-256 b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80)."},
+      {"id": "godot-copyright", "file": "godot/GODOT_COPYRIGHT.txt", "covers": ["godot-third-party-components"], "status": "required-when-engine-bundled", "repoText": null, "note": "Aggregate third-party notices; must be byte-identical to desktop/godot/licenses/GODOT_COPYRIGHT.txt."},
+      {"id": "ofl-geist", "file": "fonts/OFL-Geist.txt", "covers": ["bundled-fonts"], "status": "required", "repoText": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-Geist.txt", "note": "Byte-identical to the upstream font licence."},
+      {"id": "ofl-inter", "file": "fonts/OFL-Inter.txt", "covers": ["bundled-fonts"], "status": "required", "repoText": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-Inter.txt", "note": "Byte-identical to the upstream font licence."},
+      {"id": "ofl-notosanssc", "file": "fonts/OFL-NotoSansSC.txt", "covers": ["bundled-fonts"], "status": "required", "repoText": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt", "note": "Byte-identical to the upstream font licence."},
+      {"id": "ofl-lxgwwenkai", "file": "fonts/OFL-LXGWWenKai.txt", "covers": ["bundled-fonts"], "status": "required", "repoText": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-LXGWWenKai.txt", "note": "Byte-identical to the upstream font licence."},
+      {"id": "third-party-inventory", "file": "third-party/npm-inventory.json", "covers": ["npm-third-party-dependencies"], "status": "required", "repoText": "desktop/delivery/licensing/evidence/npm-licenses.json", "note": "Package-time inventory of installed npm packages; every listed licence file must exist beside it."},
+      {"id": "mit-canonical", "file": "third-party/LICENSE-MIT.txt", "covers": ["npm-third-party-dependencies"], "status": "missing", "repoText": "desktop/delivery/licensing/texts/LICENSE-MIT.txt", "reason": "Canonical MIT text is not bundled as a third-party text; per-package copies exist only where the package ships one."},
+      {"id": "apache-2.0", "file": "third-party/LICENSE-Apache-2.0.txt", "covers": ["npm-third-party-dependencies", "cargo-third-party-dependencies"], "status": "missing", "repoText": "desktop/delivery/licensing/texts/LICENSE-Apache-2.0.txt", "reason": "Canonical Apache-2.0 text is not bundled."},
+      {"id": "isc", "file": "third-party/LICENSE-ISC.txt", "covers": ["npm-third-party-dependencies"], "status": "missing", "repoText": "desktop/delivery/licensing/texts/LICENSE-ISC.txt", "reason": "Canonical ISC text is not bundled."},
+      {"id": "bsd-3-clause", "file": "third-party/LICENSE-BSD-3-Clause.txt", "covers": ["npm-third-party-dependencies", "cargo-third-party-dependencies"], "status": "missing", "repoText": "desktop/delivery/licensing/texts/LICENSE-BSD-3-Clause.txt", "reason": "Canonical BSD-3-Clause text is not bundled."},
+      {"id": "bsd-2-clause", "file": "third-party/LICENSE-BSD-2-Clause.txt", "covers": ["npm-third-party-dependencies"], "status": "missing", "repoText": "desktop/delivery/licensing/texts/LICENSE-BSD-2-Clause.txt", "reason": "Canonical BSD-2-Clause text is not bundled."},
+      {"id": "mpl-2.0", "file": "third-party/LICENSE-MPL-2.0.txt", "covers": ["npm-third-party-dependencies", "cargo-third-party-dependencies"], "status": "missing", "repoText": "desktop/delivery/licensing/texts/LICENSE-MPL-2.0.txt", "reason": "Canonical MPL-2.0 text is not bundled; the MPL-2.0 dependencies' source-availability conditions are unreviewed."},
+      {"id": "zlib", "file": "third-party/LICENSE-Zlib.txt", "covers": ["cargo-third-party-dependencies"], "status": "missing", "repoText": "desktop/delivery/licensing/texts/LICENSE-Zlib.txt", "reason": "Canonical Zlib text is not bundled."},
+      {"id": "cargo-third-party-notices", "file": "third-party/CARGO-NOTICES.md", "covers": ["cargo-third-party-dependencies"], "status": "missing", "repoText": null, "reason": "No consolidated Rust third-party notice file is generated yet; MIT/Apache-2.0 attribution for the 140 crates is therefore absent."}
+    ]
+  },
+  "export": {
+    "root": "licenses",
+    "entryDocument": "EXPORT-NOTICES.md",
+    "required": [
+      {"id": "godot-mit", "file": "GODOT_LICENSE.txt", "covers": ["godot-engine"], "status": "required", "repoText": "desktop/delivery/licensing/texts/LICENSE-MIT.txt", "note": "Copied into every export by desktop/godot/export-probes.mjs; must stay byte-identical to desktop/godot/licenses/GODOT_LICENSE.txt."},
+      {"id": "godot-copyright", "file": "GODOT_COPYRIGHT.txt", "covers": ["godot-third-party-components"], "status": "required", "repoText": null, "note": "Aggregate engine third-party notices."},
+      {"id": "export-notices", "file": "EXPORT-NOTICES.md", "covers": ["godot-web-bridge-runtime", "godot-probes", "base-first-person", "base-top-down", "base-side-view", "user-created-content", "ai-generated-output"], "status": "required", "repoText": "desktop/delivery/licensing/notices/EXPORT-NOTICES.md", "note": "Player-facing explanation of what may be done with an export and what must travel with it."},
+      {"id": "mit", "file": "CRAFTMINE-MIT.txt", "covers": ["godot-web-bridge-runtime", "godot-probes", "base-first-person", "base-top-down", "base-side-view"], "status": "missing", "repoText": "desktop/delivery/licensing/texts/LICENSE-MIT.txt", "reason": "The project MIT text for export runtime/example code is not written or applied."},
+      {"id": "agpl-3.0", "file": "CRAFTMINE-LICENSE-AGPL-3.0.txt", "covers": ["app-creation-core", "plugin-craftmine-world", "craftmine-core"], "status": "conditional", "repoText": "desktop/delivery/licensing/texts/LICENSE-AGPL-3.0.txt", "reason": "Required only if AGPL-licensed code is actually included in the exported game; that inclusion must be decided by the export pipeline, not assumed."},
+      {"id": "lgpl-3.0", "file": "LGPL-3.0.txt", "covers": ["pi-desktop-upstream", "pi-desktop-modifications"], "status": "conditional", "repoText": "desktop/delivery/licensing/texts/LICENSE-LGPL-3.0.txt", "reason": "Required only if LGPL-licensed code is actually included in the exported game; the current export pipeline does not include the client."}
+    ]
+  },
+  "rules": [
+    "A text with status required must exist at root/file in the scanned tree.",
+    "required-when-engine-bundled is enforced only when the scan finds an engine binary or the engine notice path.",
+    "conditional is reported, never silently treated as satisfied or violated.",
+    "missing is a recorded gap: the check fails when a shipped component names it, and the report states the exact path a human must create.",
+    "reference entries are repo-side official texts under desktop/delivery/licensing/texts/ and are verified to exist there; they are not expected inside the package or export.",
+    "No path may be absolute or escape the scan root."
+  ]
+}

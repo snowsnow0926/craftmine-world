@@ -69,6 +69,8 @@ function fixture() {
     'desktop/godot/probes/shared/web_bridge.gd',
     'desktop/godot/web/bridge.js',
     'desktop/godot/web/host.mjs',
+    'desktop/godot/web/runtime.mjs',
+    'desktop/godot/web/runtime.d.mts',
     'desktop/godot/web/shell.html',
     'desktop/delivery/base-assets/first-person.json',
     'desktop/delivery/base-assets/top-down.json',
@@ -291,6 +293,7 @@ function makePackage(root) {
     write(relative, 'synthetic ' + relative);
   }
   write('resources/source/CraftmineWorld-source.zip', 'synthetic source archive');
+  write('resources/source/USER_GUIDE.zh-CN.md', 'synthetic user guide');
   write('resources/licenses/PI-Desktop-LICENSE.txt', fs.readFileSync(path.join(REPO_ROOT, 'vendor/pi-desktop/LICENSE')));
   write('resources/licenses/CRAFTMINE-NOTICES.md', 'LGPL-3.0-or-later obligations are documented here.\n');
   for (const name of ['OFL-Geist.txt', 'OFL-Inter.txt', 'OFL-NotoSansSC.txt', 'OFL-LXGWWenKai.txt']) write('resources/licenses/fonts/' + name, 'SIL OPEN FONT LICENSE');
@@ -415,6 +418,45 @@ test('shared base tests are not a base, but cannot hide a world project', () => 
   assert.ok(!codes(checkBaseAssets(root)).includes('ASSET_BASE_MANIFEST_MISSING'));
   write('desktop/godot/bases/tests/project.godot', 'config_version=5');
   assert.ok(codes(checkBaseAssets(root)).includes('ASSET_BASE_MANIFEST_MISSING'));
+});
+
+test('a rights document that does not exist is a failure, not a silent pass', () => {
+  const {root, readAssets, writeAssets} = fixture();
+  const manifest = readAssets('shared-web.json');
+  manifest.entries[0].outstanding = undefined;
+  manifest.entries[0].licenseDocument = 'desktop/delivery/base-assets/rights/does-not-exist.md';
+  writeAssets('shared-web.json', manifest);
+  assert.ok(codes(checkBaseAssets(root)).includes('ASSET_LICENSE_DOCUMENT_MISSING'));
+});
+
+test('an unapplied rights status is always reported, even when the field is omitted', () => {
+  const {root, readAssets, writeAssets, write} = fixture();
+  const manifest = readAssets('shared-web.json');
+  delete manifest.rightsStatus;
+  manifest.entries[0].outstanding = undefined;
+  manifest.entries[0].licenseDocument = 'desktop/delivery/base-assets/rights/shared-web.md';
+  manifest.entries[0].targetLicense = 'MIT (pending)';
+  writeAssets('shared-web.json', manifest);
+  write('desktop/delivery/base-assets/rights/shared-web.md', '# rights statement\n');
+  const result = checkBaseAssets(root);
+  assert.deepEqual(result.failures, []);
+  assert.ok(result.warnings.some(warning => warning.startsWith('ASSET_RIGHTS_PENDING')), result.warnings.join(' | '));
+});
+
+test('a development-only file inside a package is refused', () => {
+  const {root} = fixture(), directory = makePackage(root);
+  const copied = path.join(directory, 'resources/copied/desktop/godot/web/host.mjs');
+  fs.mkdirSync(path.dirname(copied), {recursive: true});
+  fs.writeFileSync(copied, '// development-only transport');
+  assert.ok(codes(checkPackage(root, directory)).includes('DEVELOPMENT_ONLY_FILE_SHIPPED'));
+});
+
+test('a file whose basename merely collides with a development-only file is not refused', () => {
+  const {root} = fixture(), directory = makePackage(root);
+  const collision = path.join(directory, 'resources/plugins/example/renderer/index.html');
+  fs.mkdirSync(path.dirname(collision), {recursive: true});
+  fs.writeFileSync(collision, '<!doctype html>');
+  assert.deepEqual(checkPackage(root, directory).failures, []);
 });
 
 const failed = results.filter(result => !result.passed);

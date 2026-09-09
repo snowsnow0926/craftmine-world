@@ -1,0 +1,302 @@
+{
+  "format": "craftmine.measurement-thresholds/1",
+  "frozenAt": "2026-09-09T17:05:00.000Z",
+  "method": "verdict = fail when measured p95 > max (or min sample < min); unmeasured when there are no samples or the threshold is null / status=pending-real-sample. Percentiles are nearest-rank, rounded half-away-from-zero to 3 decimals. See desktop/delivery/MEASUREMENT.md.",
+  "rationale": "Frozen once, before acceptance, from real measurements taken on 2026-09-09 in D:/Craftmine World-worktrees/godot-remaining-k-20260910 with the pinned Godot 4.7.2-stable cache and the real windows-preview-batch-07 package. Latency limits carry roughly 2-5x headroom over the observed p95 so that normal machine variance does not flip the verdict; size and memory limits carry roughly 1.2-1.7x. No threshold may be widened to make a later failing sample pass.",
+  "metrics": {
+    "startup.cold.ms": {
+      "unit": "ms",
+      "max": 1000,
+      "min": null,
+      "status": "frozen",
+      "rationale": "First launch in the measurement process (this process has not warmed the package file cache). Observed 149-196 ms in two runs; 1000 ms keeps a user-visible cold-start budget."
+    },
+    "startup.warm.ms": {
+      "unit": "ms",
+      "max": 800,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Second launch in the same process. Observed 161-162 ms."
+    },
+    "startup.offscreenRendered.ms": {
+      "unit": "ms",
+      "max": 5000,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Boot phase window-rendered-offscreen (offscreen compositor first paint). Observed 1407-1568 ms."
+    },
+    "waits.engine-import.ms": {
+      "unit": "ms",
+      "max": 8000,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Godot headless --import of a fresh scratch copy of the top-down blank world. Observed p95 3004 ms."
+    },
+    "waits.project-build.ms": {
+      "unit": "ms",
+      "max": 8000,
+      "min": null,
+      "status": "frozen",
+      "rationale": "new-world.mjs materialisation plus engine import. Observed p95 3113 ms."
+    },
+    "waits.probe-check.ms": {
+      "unit": "ms",
+      "max": 60000,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Full top-down base acceptance script driven through headless probes. Observed p95 23159 ms."
+    },
+    "waits.candidate-apply.ms": {
+      "unit": "ms",
+      "max": null,
+      "min": null,
+      "status": "pending-real-sample",
+      "rationale": "No real broker/apply timing is exposed in this tree. A product apply must be executed and captured before a number is frozen."
+    },
+    "waits.install.ms": {
+      "unit": "ms",
+      "max": null,
+      "min": null,
+      "status": "pending-real-sample",
+      "rationale": "Installer execution needs a disposable clean Windows VM; not run on this machine."
+    },
+    "frame.time.ms": {
+      "unit": "ms",
+      "max": 16.67,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Per-frame headless engine delta from the real top-down base main scene. 16.67 ms is the 60 fps frame budget; observed p95 6.99 ms over 900 frames."
+    },
+    "memory.workingSet.peak.mb": {
+      "unit": "MB",
+      "max": 1024,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Root client process working set peak over a 12 s window after readiness. Observed 603 MB."
+    },
+    "memory.workingSet.steady.mb": {
+      "unit": "MB",
+      "max": 512,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Root client process working set p50 over the last half of the window. Observed 269 MB."
+    },
+    "memory.privateBytes.peak.mb": {
+      "unit": "MB",
+      "max": 1024,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Root client process private bytes peak. Observed 557 MB."
+    },
+    "memory.privateBytes.steady.mb": {
+      "unit": "MB",
+      "max": 512,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Root client process private bytes p50 over the last half of the window. Observed 222 MB."
+    },
+    "memory.treeWorkingSet.peak.mb": {
+      "unit": "MB",
+      "max": 2560,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Sum of working set over the whole client process tree (main, renderer, GPU, utility). Observed 1519 MB."
+    },
+    "memory.treePrivateBytes.peak.mb": {
+      "unit": "MB",
+      "max": 2048,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Sum of private page count over the whole client process tree. Observed 1240 MB."
+    },
+    "size.install.total.mb": {
+      "unit": "MB",
+      "max": 700,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Sum of all file bytes in windows-preview-batch-07. Observed 546.6 MB including the NSIS installer."
+    },
+    "size.fileCount": {
+      "unit": "files",
+      "max": 1200,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Regular files under the package root. Observed 828."
+    },
+    "size.resources.bin.mb": {
+      "unit": "MB",
+      "max": 32,
+      "min": null,
+      "status": "frozen",
+      "rationale": "resources/bin (craftmine-core.exe, pi-desktop-host-core.exe). Observed 11.7 MB."
+    },
+    "size.resources.agent-runtime.mb": {
+      "unit": "MB",
+      "max": 16,
+      "min": null,
+      "status": "frozen",
+      "rationale": "resources/agent-runtime. Observed 4.95 MB."
+    },
+    "size.resources.plugins.mb": {
+      "unit": "MB",
+      "max": 8,
+      "min": null,
+      "status": "frozen",
+      "rationale": "resources/plugins. Observed 1.51 MB."
+    },
+    "size.resources.licenses.mb": {
+      "unit": "MB",
+      "max": 8,
+      "min": null,
+      "status": "frozen",
+      "rationale": "resources/licenses. Observed 1.79 MB."
+    },
+    "size.resources.source.mb": {
+      "unit": "MB",
+      "max": 128,
+      "min": null,
+      "status": "frozen",
+      "rationale": "resources/source (corresponding source material). Observed 37.36 MB."
+    },
+    "size.resources.other.mb": {
+      "unit": "MB",
+      "max": 128,
+      "min": null,
+      "status": "frozen",
+      "rationale": "resources/* not in a named bucket (app.asar, models.dev, skills). Observed 35.78 MB."
+    },
+    "size.exe-dll.mb": {
+      "unit": "MB",
+      "max": 400,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Root executables and DLLs excluding the NSIS installer. Observed 300.67 MB."
+    },
+    "size.locales.mb": {
+      "unit": "MB",
+      "max": 32,
+      "min": null,
+      "status": "frozen",
+      "rationale": "locales/. Observed 4.94 MB."
+    },
+    "size.other.mb": {
+      "unit": "MB",
+      "max": 16,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Package files outside the named buckets. Observed 0 MB."
+    },
+    "size.installer.nsis.mb": {
+      "unit": "MB",
+      "max": 250,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Craftmine-World-Setup-0.14.3.exe. Observed 147.89 MB."
+    },
+    "git.log.ms": {
+      "unit": "ms",
+      "max": 500,
+      "min": null,
+      "status": "frozen",
+      "rationale": "git log --oneline -n 500 over 30 samples in this repository. Observed p95 81.6 ms."
+    },
+    "git.log.cold.ms": {
+      "unit": "ms",
+      "max": 500,
+      "min": null,
+      "status": "frozen",
+      "rationale": "First git log in the measurement process. Observed 57.4 ms."
+    },
+    "git.log.warm.ms": {
+      "unit": "ms",
+      "max": 500,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Subsequent git log runs. Observed p95 81.6 ms."
+    },
+    "git.diffStat.ms": {
+      "unit": "ms",
+      "max": 1000,
+      "min": null,
+      "status": "frozen",
+      "rationale": "git diff --stat HEAD~50..HEAD over 30 samples. Observed p95 236.4 ms."
+    },
+    "git.diffStat.cold.ms": {
+      "unit": "ms",
+      "max": 1000,
+      "min": null,
+      "status": "frozen",
+      "rationale": "First git diff in the measurement process; includes cold object reads. Observed 481.3 ms."
+    },
+    "git.diffStat.warm.ms": {
+      "unit": "ms",
+      "max": 600,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Subsequent git diff runs. Observed p95 200.6 ms."
+    },
+    "git.largeFileDiff.ms": {
+      "unit": "ms",
+      "max": 500,
+      "min": null,
+      "status": "frozen",
+      "rationale": "git diff of the largest file changed in HEAD~50..HEAD. Observed p95 44.5 ms."
+    },
+    "git.largeFileDiff.cold.ms": {
+      "unit": "ms",
+      "max": 500,
+      "min": null,
+      "status": "frozen",
+      "rationale": "First large-file diff in the measurement process. Observed 39.2 ms."
+    },
+    "git.largeFileDiff.warm.ms": {
+      "unit": "ms",
+      "max": 500,
+      "min": null,
+      "status": "frozen",
+      "rationale": "Subsequent large-file diff runs. Observed p95 44.5 ms."
+    },
+    "assets.search.ms": {
+      "unit": "ms",
+      "max": null,
+      "min": null,
+      "status": "pending-real-sample",
+      "rationale": "AL2 asset catalog search is not integrated in this tree (vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/ absent). No product number may be frozen from the synthetic index."
+    },
+    "assets.preview.ms": {
+      "unit": "ms",
+      "max": null,
+      "min": null,
+      "status": "pending-real-sample",
+      "rationale": "AL2 asset preview is not integrated in this tree. No product number may be frozen from the synthetic index."
+    },
+    "assets.search.synthetic-1000.ms": {
+      "unit": "ms",
+      "max": null,
+      "min": null,
+      "status": "pending-real-sample",
+      "rationale": "Synthetic in-memory index tier 1000; exercises percentile math and the tier, not product acceptance."
+    },
+    "assets.preview.synthetic-1000.ms": {
+      "unit": "ms",
+      "max": null,
+      "min": null,
+      "status": "pending-real-sample",
+      "rationale": "Synthetic in-memory preview tier 1000; not product acceptance."
+    },
+    "assets.search.synthetic-10000.ms": {
+      "unit": "ms",
+      "max": null,
+      "min": null,
+      "status": "pending-real-sample",
+      "rationale": "Synthetic in-memory index tier 10000; exercises percentile math and the tier, not product acceptance."
+    },
+    "assets.preview.synthetic-10000.ms": {
+      "unit": "ms",
+      "max": null,
+      "min": null,
+      "status": "pending-real-sample",
+      "rationale": "Synthetic in-memory preview tier 10000; not product acceptance."
+    }
+  }
+}
