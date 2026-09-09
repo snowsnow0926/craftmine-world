@@ -701,13 +701,15 @@ pub fn verify(
         }
     }
     let head = store.branch_head(&layout, MAIN_BRANCH)?;
-    let expected = mapping
-        .last_key_value()
-        .map(|(_, row)| row.commit_oid.clone());
-    if head != expected {
-        problems.push(format!(
-            "main head {head:?} does not match the newest mapped revision {expected:?}"
-        ));
+    let newest = mapping.last_key_value().map(|(_, row)| row.commit_oid.clone());
+    if let (Some(head), Some(newest)) = (&head, &newest) {
+        // Later authoring commits are expected and correct. The migrated history
+        // must still be an ancestor of the current head, never rewritten away.
+        if head != newest && !store.git().is_ancestor(&layout.git_dir, newest, head)? {
+            problems.push(format!(
+                "main head {head} no longer descends from the newest mapped revision {newest}"
+            ));
+        }
     }
     Ok(problems)
 }

@@ -65,6 +65,21 @@ pub(super) struct BuildIdentity {
     pub engine_version: String,
     pub renderer: String,
     pub target: String,
+    /// Content commit for a world on the managed Git backend.
+    pub content_oid: Option<String>,
+    /// Canonical asset-lock hash for the same content.
+    pub asset_lock_hash: Option<String>,
+}
+
+/// Where a build copy reads its authored files from. The managed Git backend is
+/// the only content history for a switched world; legacy worlds keep blobs.
+pub(super) enum SourceContent<'a> {
+    Legacy,
+    Git {
+        store: &'a super::content_history::repo::RepositoryStore,
+        layout: &'a super::content_history::repo::RepoLayout,
+        commit: &'a str,
+    },
 }
 
 #[derive(Deserialize)]
@@ -145,8 +160,7 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
             engine_version TEXT NOT NULL, renderer TEXT NOT NULL, target TEXT NOT NULL,
             files INTEGER NOT NULL, bytes INTEGER NOT NULL, created_at INTEGER NOT NULL,
             PRIMARY KEY(world_id,build_id)
-        );
-        CREATE TABLE IF NOT EXISTS craftmine_godot_build_files (
+        );        CREATE TABLE IF NOT EXISTS craftmine_godot_build_files (
             world_id TEXT NOT NULL, build_id TEXT NOT NULL, path TEXT NOT NULL,
             kind TEXT NOT NULL CHECK(kind IN ('source','asset','host','cache','artifact')),
             sha256 TEXT NOT NULL, bytes INTEGER NOT NULL,
@@ -158,6 +172,23 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
             request_hash TEXT NOT NULL, result TEXT NOT NULL, PRIMARY KEY(task_id,tool_call_id)
         );",
     )?;
+    // A build records the exact content commit and asset lock it was made from,
+    // so a candidate can be judged stale when the branch moved.
+    for (column, definition) in [
+        ("content_oid", "TEXT"),
+        ("asset_lock_hash", "TEXT"),
+    ] {
+        let present: bool = db.query_row(
+            "SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_builds') WHERE name=?1",
+            [column],
+            |row| row.get::<_, i64>(0),
+        )? > 0;
+        if !present {
+            db.execute_batch(&format!(
+                "ALTER TABLE craftmine_godot_builds ADD COLUMN {column} {definition}"
+            ))?;
+        }
+    }
     // Host files were added to build copies after the first builds shipped. The
     // original CHECK only allowed source/asset/cache/artifact, so a database
     // created before that must be rebuilt to record `host` rows instead of
@@ -264,6 +295,7 @@ pub(super) fn build_id(identity: &BuildIdentity) -> Result<String> {
         "baseBuild":identity.base_build,"sourceRevision":identity.source_revision,
         "manifestHash":identity.manifest_hash,"assetManifestHash":identity.asset_manifest_hash,
         "engineVersion":identity.engine_version,"renderer":identity.renderer,"target":identity.target,
+        "contentOid":identity.content_oid,"assetLockHash":identity.asset_lock_hash,
         "hostResourcesHash":super::godot_host_resources::hash()
     }))?;
     ensure!(body.len() <= 4096, "INVALID_GODOT_BUILD");
@@ -485,6 +517,16 @@ pub(super) fn asset_lock(
     Ok(Some(AssetLock::new(entries)?))
 }
 
+/// Canonical asset-lock hash for a world, or the stable empty-lock hash when the
+/// world has no assets at all.
+pub(super) fn asset_lock_hash(db: &Connection, world: &str) -> Result<String> {
+    let (_, assets) = asset_manifest(db, world)?;
+    match asset_lock(&assets)? {
+        Some(lock) => lock.asset_lock_hash(),
+        None => super::content_history::contract::AssetLock::empty().asset_lock_hash(),
+    }
+}
+
 fn scope(
     db: &Connection,
     ctx: &WorkspaceContext,
@@ -549,6 +591,7 @@ pub(super) fn materialize(
     identity: &BuildIdentity,
     manifest: &Manifest,
     assets: &[AssetRow],
+    source: &SourceContent<'_>,
 ) -> Result<(Vec<Value>, u64)> {
     // The host owns these paths; a project may not declare a file that would
     // overwrite the export preset or the bridge the product injects.
@@ -567,7 +610,21 @@ pub(super) fn materialize(
     let mut files = Vec::new();
     let mut total = 0u64;
     for (path, entry) in &manifest.files {
-        let text = super::godot_projects::blob_read(directory, world, entry)?;
+        let text = match source {
+            SourceContent::Legacy => super::godot_projects::blob_read(directory, world, entry)?,
+            SourceContent::Git {
+                store,
+                layout,
+                commit,
+            } => {
+                let bytes = store.read_file(layout, commit, path)?;
+                ensure!(
+                    super::godot_projects::file_digest(&bytes) == entry.sha256,
+                    "CORRUPT_GODOT_BUILD"
+                );
+                String::from_utf8(bytes).context("CONTENT_NOT_UTF8")?
+            }
+        };
         let parent = match path.rsplit_once('/') {
             Some((parent, _)) => parent,
             None => "",
@@ -794,6 +851,22 @@ impl TaskJournal {
         // Evaluate the executor gate before the write transaction so the
         // capability decision cannot depend on partially written state.
         let (queued, blocked_reason) = self.execution_gate(&args.mode);
+        let git_backed = self.is_git_backed(&args.world_id)?;
+        let git = if git_backed {
+            Some(self.content_layout(&args.world_id)?)
+        } else {
+            None
+        };
+        scope(&self.db, &args.context, &args.world_id, false)?;
+        let (manifest, manifest_hash) = self.project_manifest(&args.world_id, None)?;
+        let content_oid = if git_backed {
+            Some(
+                super::godot_projects::git_commit_for(&self.db, &args.world_id, manifest.revision)?
+                    .context("GODOT_PROJECT_REVISION_NOT_INDEXED")?,
+            )
+        } else {
+            None
+        };
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -802,7 +875,6 @@ impl TaskJournal {
         if let Some(result) = build_receipt(&tx, &task, &args.tool_call_id, &request_hash)? {
             return Ok(result);
         }
-        let (manifest, manifest_hash) = load_manifest(&tx, &args.world_id, None)?;
         ensure!(
             manifest.revision == args.revision && manifest_hash == args.manifest_hash,
             "GODOT_SOURCE_STALE"
@@ -818,6 +890,11 @@ impl TaskJournal {
             "WORLD_BUILD_CONFLICT"
         );
         let (asset_manifest_hash, assets) = asset_manifest(&tx, &args.world_id)?;
+        let asset_lock_hash = if git_backed {
+            Some(asset_lock_hash(&tx, &args.world_id)?)
+        } else {
+            None
+        };
         let mut identity = BuildIdentity {
             world_id: args.world_id.clone(),
             build_id: String::new(),
@@ -829,6 +906,8 @@ impl TaskJournal {
             engine_version: manifest.engine_version.clone(),
             renderer: manifest.renderer.clone(),
             target: manifest.target.clone(),
+            content_oid: content_oid.clone(),
+            asset_lock_hash: asset_lock_hash.clone(),
         };
         identity.build_id = build_id(&identity)?;
         // A world's derived storage is capped so build history cannot grow
@@ -855,14 +934,25 @@ impl TaskJournal {
                 "GODOT_WORLD_STORAGE_LIMIT"
             );
         }
-        let (files, bytes) = materialize(&self.directory, &args.world_id, &identity, &manifest, &assets)?;
+        let source = match (&git, &content_oid) {
+            (Some((store, layout)), Some(commit)) => SourceContent::Git {
+                store,
+                layout,
+                commit,
+            },
+            _ => SourceContent::Legacy,
+        };
+        let (files, bytes) =
+            materialize(&self.directory, &args.world_id, &identity, &manifest, &assets, &source)?;
         tx.execute(
             "INSERT OR IGNORE INTO craftmine_godot_builds(world_id,build_id,source_revision,manifest_hash,
-                asset_manifest_hash,base_id,base_build,engine_version,renderer,target,files,bytes,created_at)
-             VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13)",
+                asset_manifest_hash,base_id,base_build,engine_version,renderer,target,files,bytes,created_at,
+                content_oid,asset_lock_hash)
+             VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15)",
             params![args.world_id, identity.build_id, i64::try_from(identity.source_revision)?, manifest_hash,
                 asset_manifest_hash, identity.base_id, identity.base_build, identity.engine_version,
-                identity.renderer, identity.target, files.len() as i64, bytes as i64, worlds::timestamp()?],
+                identity.renderer, identity.target, files.len() as i64, bytes as i64, worlds::timestamp()?,
+                identity.content_oid, identity.asset_lock_hash],
         )?;
         // The recorded file list is what an executor may read; it is the exact
         // set that was verified on disk above.
