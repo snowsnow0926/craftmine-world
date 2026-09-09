@@ -8,9 +8,9 @@
 
 **真实 core → 固定 broker → 固定 Godot 导入/导出 → 独立 Electron 运行检查 →
 core 候选**这条链路已经跑通，并留下可复算的原始证据：正常路径 23/23 通过
-（`evidence/full-chain-report.json`），失败/取消/进程中断/恢复 22/22 通过
+（`evidence/full-chain-report.json`），失败/取消/进程中断/恢复/清理 27/27 通过
 （`evidence/failures-report.json`），协议级单元 15/15 通过
-（`evidence/executor-protocol.log`）。执行器与检查器已分成两个提交交付给
+（`evidence/executor-protocol.log`）。执行器与检查器已分成提交交付给
 R1/R2/R7 消费。
 
 仍未完成的关键依赖见第 6 节：A 的 `godotExecutor.status/revoke`、
@@ -53,7 +53,7 @@ $env:CRAFTMINE_GODOT_ENGINE_ROOT="D:\Craftmine World\desktop\build\godot\4.7.2-s
 node tests/godot-remaining/C/full-chain.mjs                      -> 23/23（run godot-remaining-c-full-chain-JaCjsg）
 
 # 失败/取消/进程中断/恢复
-node tests/godot-remaining/C/failures.mjs                        -> 22/22（run godot-remaining-c-failures-CHeWpy）
+node tests/godot-remaining/C/failures.mjs                        -> 27/27（run godot-remaining-c-failures-46VQgq）
 
 # 页面加载诊断（静态正常画面 vs 加载页 vs 停滞）
 node tests/godot-remaining/C/load-probe.mjs <artifacts-dir>      -> ready/coi/canvas 证据
@@ -73,7 +73,7 @@ node tests/godot-remaining/C/load-probe.mjs <artifacts-dir>      -> ready/coi/ca
 | 3 区分固定引擎原生隔离诊断与脚本/编译失败 | 完成 | 窄规则按“完整消息 + 引擎位置”匹配 5 条实测诊断；未知 ERROR / GDScript 回溯一律失败。真实解析错误记录为 `SCRIPT ERROR: Parse Error: Expected parameter name.` + `Failed to load script "res://main.gd"` |
 | 4 产物复制到核心管理目录再独立验哈希，补宿主固定 bridge，拒绝逃逸/重复/不完整/伪造 | 完成 | 复制后逐个重算 sha256、拒绝未列出文件、`web/index.html` 必需、`web/bridge.js` 强制为宿主 pin 版本（`failures`/`full-chain` 均验证）；协议测试覆盖 `../` 逃逸、未列出、哈希篡改 |
 | 5 私有 checkDescriptor 启动独立 Electron 检查：无焦点、非零尺寸、独立 session、严格边界、禁输入抢占；检查 ready/画面/错误/快照/恢复，不写正式进度 | 完成 | `isolation={offscreen:true,focusable:false,visible:false,guard:{focus:0,pointerLock:0},sessionCleared:true}`；3 帧非空 960×640；快照与正式进度 `expectedHash==actualHash`；检查只发 `snapshot`，从不 `save/acknowledge` |
-| 6 真实 core → B → Godot → Electron → core 候选全链路，跑正常/语法错误/运行错误/伪造回包/取消/进程中断 | 正常、语法错误、伪造回包、取消、进程中断已完成；“运行错误（游戏内异常）”未单独构造 | `failures-report.json` 四个场景 + 恢复；伪造回包在协议级覆盖。**运行期异常用例待补** |
+| 6 真实 core → B → Godot → Electron → core 候选全链路，跑正常/语法错误/运行错误/伪造回包/取消/进程中断 | 正常、语法错误、伪造回包、取消、进程中断、恢复与清理已完成；“运行错误（游戏内异常）”未单独构造 | `failures-report.json` 27 项：真实解析错误、取消、硬杀 broker（引擎停在固定导入标记后中断）、两次恢复、记录子进程身份核验与消失确认；伪造回包在协议级覆盖。**运行期异常用例待补** |
 | 7 支持 A/E 第一次新建 Godot 世界的工程构建与检查，初始快照来自 F 的正式契约 | 部分 | 执行器对任意世界/工程按同一接口工作，`full-chain` 用的就是“新建世界→建工程→建作业”的路径；与 D 的首次加载确认/失败清理对接未做（D 的宿主归 D） |
 
 ### 5.2 第二轮补充要求（1–6 条）
@@ -119,6 +119,7 @@ node tests/godot-remaining/C/load-probe.mjs <artifacts-dir>      -> ready/coi/ca
 | 5 | `isolated check observed real frames` 失败（frames=3, distinct=1） | 静止但正确的场景本就画出相同帧；引擎活性已由 `snapshot` 操作证明 | 取消“至少两帧不同”的通过条件，仅保留 3 帧非空 + 真实尺寸，`distinctFrames` 仍记录为证据 |
 | 6 | 检查 30 秒超时 | 38 MB wasm 在软件渲染下首次启动超过 30 秒 | 检查预算可配置（默认 30 秒，验收用 180 秒）；未放宽任何断言 |
 | 7 | Electron 在检查窗口销毁后提前退出 | Electron 默认在所有窗口关闭时退出 | 验收宿主保留进程；产品路径主窗口常驻，不受影响 |
+| 8 | 硬杀 broker 后可能留下引擎子进程 | broker 被强杀时 Job 句柄未必来得及回收子进程（协议已注明“不保证清理”） | 执行器在每次非成功回包后读取 broker 记录的 `process-verification.json`，按记录镜像名核对并在必要时 `taskkill /T /F` 该 pid，把结果记入 `status().reaps`；验收断言记录 pid 已消失 |
 
 首次失败日志：`evidence/full-chain-electron.log`、`evidence/failures-electron.log`
 （含修复后重跑）；`load-probe.log` 保留“Not found → ready”的页面状态对比。
@@ -140,7 +141,8 @@ node tests/godot-remaining/C/load-probe.mjs <artifacts-dir>      -> ready/coi/ca
 | --- | --- |
 | `evidence/full-chain-report.json` | 正常链路 23 项检查、运行检查完整证据、执行器日志 |
 | `evidence/full-chain-electron.log` | 同上原始 stdout/stderr |
-| `evidence/failures-report.json` | 失败/取消/中断/恢复 22 项检查与核心状态 |
+| `evidence/failures-report.json` | 失败/取消/中断/恢复 27 项检查与核心状态、子进程核验记录 |
 | `evidence/failures-electron.log` | 同上原始 stdout/stderr |
 | `evidence/executor-protocol.log` | 协议级 15 项单元原始输出 |
-| `evidence/load-probe.log` | 导出页在隔离窗口中的 ready/coi/canvas/引擎事件 |
+| `evidence/load-probe.log` | 导出页在隔离窗口中的 ready/coi/canvas/引擎事件（真实呈现） |
+| `evidence/load-probe-empty.log` | 空导出页的负向对照：`game=undefined`、无 canvas、`waitReady ok=false` |

@@ -67,7 +67,7 @@ async function main() {
   check('executor registered after a real preflight', started.available === true, started.reason ?? started.state);
 
   /** Create one world, project and blocked job; returns the job identity. */
-  async function prepare(id, { mainSource = fixture('main.gd') } = {}) {
+  async function prepare(id, { mainSource = fixture('main.gd'), extraFiles = {} } = {}) {
     const snapshot = { format:'craftmine.godot-progress/1', worldId:id, baseId:'first-person', baseVersion:'1.0.0',
       stateVersion:1, body:{ coins:7 } };
     await core.call('world.create', { id, title:id, world:{
@@ -84,6 +84,7 @@ async function main() {
         { path:'main.gd', text:mainSource },
         { path:'shell.txt', text:shell },
         { path:'export_presets.cfg', text:exportPreset },
+        ...Object.entries(extraFiles).map(([name, text]) => ({ path:name, text })),
       ] });
     const job = await core.call('godotBuild.start', { context:worldContext, worldId:id, toolCallId:'check-' + id,
       revision:project.revision, manifestHash:project.manifestHash, mode:'check' });
@@ -125,9 +126,28 @@ async function main() {
   check('the recovered job produced a ready candidate', typeof recoveredJob.candidateId === 'string', recoveredJob.candidateId);
 
   // 4. Broker process interruption: a killed broker must never look like a pass.
-  const interrupted = await prepare('c-interrupt');
+  // The project holds the engine inside its import so the kill is deterministic.
+  const interrupted = await prepare('c-interrupt', { extraFiles:{
+    'slow_resource.gd':'@tool\nextends Resource\n\nfunc _init() -> void:\n\tprint("C_SLOW_IMPORT_READY")\n\tOS.delay_msec(25000)\n',
+    'slow_resource.tres':'[gd_resource type="Resource" load_steps=2 format=3]\n\n[ext_resource type="Script" path="res://slow_resource.gd" id="1_slow"]\n\n[resource]\nscript = ExtResource("1_slow")\n',
+  } });
+  const tasksDir = path.join(dataDir, 'godot', 'tasks');
+  const knownTasks = new Set(fs.existsSync(tasksDir) ? fs.readdirSync(tasksDir) : []);
   executor.enqueue({ jobId:interrupted.job.jobId, worldId:interrupted.worldId, mode:'check' });
-  await new Promise(resolve => setTimeout(resolve, 2500));
+  // Wait until the pinned engine itself reports the marker, then interrupt.
+  let markerTask = null;
+  const markerDeadline = Date.now() + 120000;
+  while (Date.now() < markerDeadline && markerTask === null) {
+    for (const entry of fs.readdirSync(tasksDir)) {
+      if (knownTasks.has(entry)) continue;
+      const taskLog = path.join(tasksDir, entry, 'logs', 'task.log');
+      if (fs.existsSync(taskLog) && fs.readFileSync(taskLog, 'utf8').includes('C_SLOW_IMPORT_READY')) { markerTask = entry; break; }
+    }
+    if (markerTask === null) await new Promise(resolve => setTimeout(resolve, 200));
+  }
+  check('the pinned engine reached the fixed import marker', markerTask !== null, markerTask);
+  const sidecar = path.join(tasksDir, markerTask, 'logs', 'process-verification.json');
+  check('the broker recorded the engine child identity before the interruption', fs.existsSync(sidecar), sidecar);
   const killed = await new Promise(resolve => execFile('taskkill', ['/F','/IM','godot-host-broker.exe'], error => resolve(error ? String(error.message) : 'killed')));
   report.evidence.brokerKill = killed;
   const interruptedJob = await settle(core, interrupted.worldId, interrupted.job.jobId);
@@ -135,6 +155,17 @@ async function main() {
     import:interruptedJob.output?.import?.passed, errors:interruptedJob.output?.compile?.errors };
   check('an interrupted broker is recorded as a failure', interruptedJob.status === 'failed', interruptedJob.status);
   check('an interrupted broker never records a passing import', interruptedJob.output?.passed === false, interruptedJob.output?.passed);
+  const reaps = executor.status().reaps ?? [];
+  report.evidence.reaps = reaps;
+  check('the recorded engine child identity is checked after the interruption', reaps.some(entry => entry.checked === true), reaps);
+  check('a surviving engine child would be terminated', reaps.every(entry => entry.alive !== true || entry.killed === true), reaps);
+  // Only the broker's own recorded child is in scope: other engine processes on
+  // the machine belong to other sessions and are never touched.
+  const recordedChild = JSON.parse(fs.readFileSync(sidecar, 'utf8'));
+  const survivorList = await new Promise(resolve => execFile('tasklist', ['/FI', `PID eq ${recordedChild.pid}`, '/FO','CSV','/NH'],
+    (_error, stdout) => resolve(String(stdout ?? ''))));
+  check('the recorded engine process is gone after the interruption', !survivorList.includes(String(recordedChild.pid)),
+    { pid:recordedChild.pid, listing:survivorList.slice(0, 200) });
 
   // 5. Recovery after the interruption, and the formal world stays untouched.
   const after = await prepare('c-after');

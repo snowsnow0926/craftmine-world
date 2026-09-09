@@ -1,28 +1,36 @@
 
-[executor] 18:24:22.132 [godot-executor] registered craftmine-windows-broker-v1 evidence e0eaadaae6d80bdf promoted 0
+[executor] 18:36:42.089 [godot-executor] registered craftmine-windows-broker-v1 evidence e0eaadaae6d80bdf promoted 0
 PASS executor registered after a real preflight :: "registered"
 PASS broken project starts runnable :: "queued"
 PASS the broken job was accepted by the executor :: {"enqueued":true,"jobId":"gjob-ad2259d3b14608d8e6fe0c5db5d7a177b2b41132b020dc833168b8240cd84f55"}
-[executor] 18:24:31.185 [godot-executor] job finished gjob-ad2259d3b14608d8e6fe0c5db5d7a177b2b41132b020dc833168b8240cd84f55 failed reason=GODOT_COMPILE_FAILED
+[executor] 18:36:49.458 [godot-executor] job finished gjob-ad2259d3b14608d8e6fe0c5db5d7a177b2b41132b020dc833168b8240cd84f55 failed reason=GODOT_COMPILE_FAILED
 PASS a real parse error fails the job :: "failed"
 PASS the parse error is recorded, not ignored :: ["SCRIPT ERROR: Parse Error: Expected parameter name.","ERROR: Failed to load script \"res://main.gd\" with error \"Parse error\"."]
 PASS a failed check produces no ready candidate :: "gcan-af624db63169ef75fdbdd1f9d871e442d62dabc9604e6c234b2e2fbd83c66071"
 PASS a failed job records no artifacts :: []
 PASS cancel target starts runnable :: "queued"
-[executor] 18:24:32.878 WARN [godot-executor] import cancelled: gjob-35b46ea9f234ba26a79f87338c9558cb1e09a64f8bf3b4f5649676e56323d15f acceptance cancel
+[executor] 18:36:51.099 WARN [godot-executor] import cancelled: gjob-35b46ea9f234ba26a79f87338c9558cb1e09a64f8bf3b4f5649676e56323d15f acceptance cancel
 PASS cancel is accepted for a running job :: {"cancelled":true}
-[executor] 18:24:36.706 WARN [godot-executor] job abandoned: gjob-35b46ea9f234ba26a79f87338c9558cb1e09a64f8bf3b4f5649676e56323d15f GODOT_JOB_CANCELLED
+[executor] 18:36:55.351 [godot-executor] reap: task identity unavailable D:\Craftmine World-worktrees\godot-remaining-c-20260910\test-results\godot-remaining-c-failures-46VQgq\core-data\godot\tasks\im-0150a4d95f5d4d84b50dfa3c\logs\process-verification.json exists=false tasksRoot=D:\Craftmine World-worktrees\godot-remaining-c-20260910\test-results\godot-remaining-c-failures-46VQgq\core-data\godot\tasks
+[executor] 18:36:55.351 WARN [godot-executor] job abandoned: gjob-35b46ea9f234ba26a79f87338c9558cb1e09a64f8bf3b4f5649676e56323d15f GODOT_JOB_CANCELLED
 PASS a cancelled job is recorded as cancelled :: "cancelled"
 PASS a cancelled job records no result :: "cancelled"
-[executor] 18:24:54.578 [godot-executor] staged 10 artifacts into \\?\D:\Craftmine World-worktrees\godot-remaining-c-20260910\test-results\godot-remaining-c-failures-CHeWpy\core-data\godot-builds\298e8c88610428a9fd7a782e666884fd8610fe1802ac8c00bda34eedb58e403a\gbd-81681eb9f3d74476a12297471b0697302523a1e365af4072e6f8f759cdf4d313\artifacts
-[executor] 18:24:55.770 [godot-executor] job finished gjob-a1426bd165c1537439c7fd7cf8c350d089254c45d646e5ff8aa32a41ec3d1570 passed 
+[executor] 18:37:12.039 [godot-executor] staged 10 artifacts into \\?\D:\Craftmine World-worktrees\godot-remaining-c-20260910\test-results\godot-remaining-c-failures-46VQgq\core-data\godot-builds\298e8c88610428a9fd7a782e666884fd8610fe1802ac8c00bda34eedb58e403a\gbd-81681eb9f3d74476a12297471b0697302523a1e365af4072e6f8f759cdf4d313\artifacts
+[executor] 18:37:13.391 [godot-executor] job finished gjob-a1426bd165c1537439c7fd7cf8c350d089254c45d646e5ff8aa32a41ec3d1570 passed 
 PASS the executor completes a normal job after a failure and a cancellation :: []
 PASS the recovered job produced a ready candidate :: "gcan-4e95505c3c01bf4a80e90e428e257ce696a1b8c173e08c0e977b90acc1f4742d"
-[executor] 18:25:01.154 [godot-executor] job finished gjob-d9e6e816a42cffe233c5563c1c5f8d45c2d0c602b9c68d68676482df916a1573 failed reason=GODOT_BROKER_RESPONSE_INVALID
+PASS the pinned engine reached the fixed import marker :: "ex-06499fbf9cfb41f696bd3edd"
+PASS the broker recorded the engine child identity before the interruption :: "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-46VQgq\\core-data\\godot\\tasks\\ex-06499fbf9cfb41f696bd3edd\\logs\\process-verification.json"
+[executor] 18:37:30.810 [godot-executor] reap checking recorded child 254644 for task ex-06499fbf9cfb41f696bd3edd
+[executor] 18:37:33.527 [godot-executor] reap outcome {"checked":true,"alive":false,"pid":254644}
+[executor] 18:37:33.530 [godot-executor] job finished gjob-d9e6e816a42cffe233c5563c1c5f8d45c2d0c602b9c68d68676482df916a1573 failed reason=GODOT_BROKER_RESPONSE_INVALID
 PASS an interrupted broker is recorded as a failure :: "failed"
 PASS an interrupted broker never records a passing import :: false
-[executor] 18:25:17.762 [godot-executor] staged 10 artifacts into \\?\D:\Craftmine World-worktrees\godot-remaining-c-20260910\test-results\godot-remaining-c-failures-CHeWpy\core-data\godot-builds\711929151dda82a5ac9c446d6edf0282c2286acc0f70014e27b9fa68fc2fb1b0\gbd-cf366f0a40d30ce8dc72b18e4110e9bddd78a41c1c3caf757a7b7999ed5c0528\artifacts
-[executor] 18:25:18.845 [godot-executor] job finished gjob-5262258f1cfbee1570867bf119f700c1c7a404a9331ea8d835f221f7528760e9 passed 
+PASS the recorded engine child identity is checked after the interruption :: [{"checked":true,"alive":false,"pid":254644,"at":"2026-09-09T18:37:33.527Z"}]
+PASS a surviving engine child would be terminated :: [{"checked":true,"alive":false,"pid":254644,"at":"2026-09-09T18:37:33.527Z"}]
+PASS the recorded engine process is gone after the interruption :: {"pid":254644,"listing":"��Ϣ: û�����е�����ƥ��ָ����׼��\r\n"}
+[executor] 18:37:53.071 [godot-executor] staged 10 artifacts into \\?\D:\Craftmine World-worktrees\godot-remaining-c-20260910\test-results\godot-remaining-c-failures-46VQgq\core-data\godot-builds\711929151dda82a5ac9c446d6edf0282c2286acc0f70014e27b9fa68fc2fb1b0\gbd-cf366f0a40d30ce8dc72b18e4110e9bddd78a41c1c3caf757a7b7999ed5c0528\artifacts
+[executor] 18:37:54.286 [godot-executor] job finished gjob-5262258f1cfbee1570867bf119f700c1c7a404a9331ea8d835f221f7528760e9 passed 
 PASS the executor completes a normal job after a broker interruption :: []
 PASS formal progress of c-broken is unchanged :: "{\"baseId\":\"first-person\",\"baseVersion\":\"1.0.0\",\"body\":{\"coins\":7},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"c-broken\"}"
 PASS formal progress of c-cancel is unchanged :: "{\"baseId\":\"first-person\",\"baseVersion\":\"1.0.0\",\"body\":{\"coins\":7},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"c-cancel\"}"
@@ -30,4 +38,4 @@ PASS formal progress of c-recover is unchanged :: "{\"baseId\":\"first-person\",
 PASS formal progress of c-interrupt is unchanged :: "{\"baseId\":\"first-person\",\"baseVersion\":\"1.0.0\",\"body\":{\"coins\":7},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"c-interrupt\"}"
 PASS formal progress of c-after is unchanged :: "{\"baseId\":\"first-person\",\"baseVersion\":\"1.0.0\",\"body\":{\"coins\":7},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"c-after\"}"
 PASS stopping the executor reports its revocation state honestly :: {"revoked":false,"revokeReason":"GODOT_EXECUTOR_REVOKE_UNSUPPORTED","revokeSupported":false}
-{"passed":true,"checks":22,"out":"D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-CHeWpy"}
+{"passed":true,"checks":27,"out":"D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-46VQgq"}

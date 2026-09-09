@@ -38,7 +38,8 @@ await executor.reconcile();       // pending：依赖 godotJob.pending
   "bridge":{"sha256":"<64hex>"},
   "preflight":{"processVerified":true,"networkVerified":true,"cleanupVerified":true,
     "networkChecks":[{"name":"tcp4","ok":false,"rawOsError":10013}, ...]},
-  "jobs":["gjob-..."] }
+  "jobs":["gjob-..."], "tasksRoot":"<broker 任务根>",
+  "reaps":[{"checked":true,"alive":false,"pid":254644,"at":"..."}] }
 ```
 
 `runtime_info` 的 `godotBuildAvailable` 现在等于 `status().available`，
