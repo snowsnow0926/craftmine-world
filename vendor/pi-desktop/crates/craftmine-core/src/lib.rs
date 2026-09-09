@@ -12,6 +12,9 @@ use sha2::{Digest, Sha256};
 mod applications;
 mod backups;
 mod durable;
+mod godot_applications;
+mod godot_builds;
+mod godot_jobs;
 mod godot_projects;
 mod legacy;
 mod library;
@@ -21,6 +24,8 @@ mod reviews;
 mod verification;
 mod workspaces;
 mod worlds;
+#[cfg(test)]
+mod godot_test_support;
 pub use workspaces::WorkspaceContext;
 pub use worlds::{WorldDocument, WorldRecord, WorldSummary};
 
@@ -78,6 +83,9 @@ pub struct DraftReceipt {
 pub struct TaskJournal {
     db: Connection,
     directory: std::path::PathBuf,
+    /// Live isolation attestations of registered executors. Deliberately not
+    /// durable: a restarted core requires the executor to prove itself again.
+    pub(crate) executors: std::collections::BTreeMap<String, godot_jobs::Executor>,
 }
 
 fn document(value: &Value) -> Result<String> {
@@ -153,12 +161,19 @@ impl TaskJournal {
         memories::migrate(&db)?;
         backups::migrate(&db)?;
         godot_projects::migrate(&db)?;
+        godot_builds::migrate(&db)?;
+        godot_jobs::migrate(&db)?;
+        godot_applications::migrate(&db)?;
         let directory = std::fs::canonicalize(
             path.parent()
                 .filter(|p| !p.as_os_str().is_empty())
                 .unwrap_or(Path::new(".")),
         )?;
-        Ok(Self { db, directory })
+        Ok(Self {
+            db,
+            directory,
+            executors: std::collections::BTreeMap::new(),
+        })
     }
 
     /// Duplicate starts are rejected rather than resetting an existing task.

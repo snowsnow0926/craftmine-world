@@ -44,25 +44,31 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     await verifications?.cancelOtherTurns(context);
     await reviews?.cancelOtherTurns(context);
     const godotMethods={godot_project_create:'godotProject.create',godot_project_index:'godotProject.index',
-      godot_file_read:'godotProject.read',godot_project_patch:'godotProject.patch'};
+      godot_file_read:'godotProject.read',godot_project_patch:'godotProject.patch',
+      godot_asset_put:'godotAsset.put',godot_asset_list:'godotAsset.list',
+      godot_build_start:'godotBuild.start',godot_build_read:'godotBuild.read',godot_build_cancel:'godotBuild.cancel',
+      godot_candidate_read:'godotCandidate.read',godot_candidate_list:'godotCandidate.list'};
+    // Only these calls are idempotent writes; they always carry the host call id
+    // so a lost response can be answered from the durable receipt.
+    const godotWrites={godot_project_create:true,godot_project_patch:true,godot_asset_put:true,godot_build_start:true};
+    const godotReceipts={'godotProject.create':'godotProject.receipt','godotProject.patch':'godotProject.receipt',
+      'godotAsset.put':'godotBuild.receipt','godotBuild.start':'godotBuild.receipt'};
     if(Object.hasOwn(godotMethods,definition.name)) {
       assertActive();
       // Project identity and receipts always come from the durable host binding.
       const params={...args,context,worldId:workspace.worldId};
-      if(definition.name==='godot_project_create') {
-        params.toolCallId=invocation.toolCallId;
-        params.baseBuild=workspace.task.binding.baseBuild;
-      } else if(definition.name==='godot_project_patch')params.toolCallId=invocation.toolCallId;
+      if(godotWrites[definition.name])params.toolCallId=invocation.toolCallId;
+      if(definition.name==='godot_project_create')params.baseBuild=workspace.task.binding.baseBuild;
       const method=godotMethods[definition.name];
       try {return await core.call(method,params);}
       catch(error) {
-        if(!params.toolCallId||error?.errorCode)throw error;
+        if(!godotWrites[definition.name]||error?.errorCode)throw error;
         // A transport failure cannot establish whether the commit happened.
         // Look up only the original receipt, including after the turn ended;
         // never reopen its lease or replay a write to discover the outcome.
         try {
           await core.start();
-          const receipt=await core.call('godotProject.receipt',{binding:workspace.task.binding,
+          const receipt=await core.call(godotReceipts[method],{binding:workspace.task.binding,
             worldId:workspace.worldId,toolCallId:params.toolCallId,method,request:params});
           if(receipt)return receipt;
         } catch {/* Preserve the original uncertain outcome if lookup is unavailable. */}

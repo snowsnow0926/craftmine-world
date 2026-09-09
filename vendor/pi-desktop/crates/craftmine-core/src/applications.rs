@@ -41,9 +41,13 @@ pub(super) fn assert_idle(db: &Connection, world: &str) -> Result<()> {
     Ok(())
 }
 
+/// Both the legacy scene-draft application and a managed Godot build application
+/// supersede the authoring draft; a later turn must not resume a stale scene
+/// against a build it no longer matches.
 pub(super) fn was_applied(db: &Connection, task: &str, hash: &str) -> Result<bool> {
     Ok(db.query_row(
-        "SELECT EXISTS(SELECT 1 FROM craftmine_applied_drafts WHERE task_id=?1 AND draft_hash=?2)",
+        "SELECT EXISTS(SELECT 1 FROM craftmine_applied_drafts WHERE task_id=?1 AND draft_hash=?2)
+            OR EXISTS(SELECT 1 FROM craftmine_godot_applied_drafts WHERE task_id=?1 AND draft_hash=?2)",
         params![task, hash],
         |r| r.get(0),
     )?)

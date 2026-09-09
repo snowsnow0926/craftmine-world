@@ -28,25 +28,25 @@ mod tests;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct FileEntry {
-    sha256: String,
-    bytes: u64,
+pub(super) struct FileEntry {
+    pub(super) sha256: String,
+    pub(super) bytes: u64,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct Manifest {
-    format: String,
-    world_id: String,
-    base_build: String,
-    base_id: String,
-    engine_version: String,
-    language: String,
-    renderer: String,
-    target: String,
-    revision: u64,
-    task: TaskBinding,
-    files: BTreeMap<String, FileEntry>,
+pub(super) struct Manifest {
+    pub(super) format: String,
+    pub(super) world_id: String,
+    pub(super) base_build: String,
+    pub(super) base_id: String,
+    pub(super) engine_version: String,
+    pub(super) language: String,
+    pub(super) renderer: String,
+    pub(super) target: String,
+    pub(super) revision: u64,
+    pub(super) task: TaskBinding,
+    pub(super) files: BTreeMap<String, FileEntry>,
 }
 
 #[derive(Deserialize)]
@@ -160,7 +160,7 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     Ok(())
 }
 
-fn valid_hash(hash: &str) -> Result<()> {
+pub(super) fn valid_hash(hash: &str) -> Result<()> {
     ensure!(
         hash.len() == 64
             && hash
@@ -283,19 +283,13 @@ fn validate_manifest(manifest: &Manifest) -> Result<()> {
     Ok(())
 }
 
-fn ordinary(path: &Path) -> Result<fs::Metadata> {
-    let meta = fs::symlink_metadata(path).context("PROJECT_STORAGE_UNAVAILABLE")?;
-    ensure!(
-        !meta.file_type().is_symlink(),
-        "PROJECT_STORAGE_LINK_REFUSED"
-    );
+pub(super) fn ordinary(path: &Path, code: &str) -> Result<fs::Metadata> {
+    let meta = fs::symlink_metadata(path).context(code.to_string())?;
+    ensure!(!meta.file_type().is_symlink(), "{code}");
     #[cfg(windows)]
     {
         use std::os::windows::fs::MetadataExt;
-        ensure!(
-            meta.file_attributes() & 0x400 == 0,
-            "PROJECT_STORAGE_LINK_REFUSED"
-        );
+        ensure!(meta.file_attributes() & 0x400 == 0, "{code}");
     }
     Ok(meta)
 }
@@ -304,7 +298,7 @@ fn blob_directory(directory: &Path, world: &str, create: bool) -> Result<PathBuf
     worlds::validate_id(world)?;
     // Only Rust-computed identifiers become filesystem components. Source paths
     // are virtual manifest entries and never passed to OpenOptions.
-    ensure!(ordinary(directory)?.is_dir(), "PROJECT_STORAGE_UNAVAILABLE");
+    ensure!(ordinary(directory, "PROJECT_STORAGE_UNAVAILABLE")?.is_dir(), "PROJECT_STORAGE_UNAVAILABLE");
     let mut current = directory.to_path_buf();
     // SQLite world IDs are case-sensitive; Windows directory names are not.
     // Hash the full identity rather than aliasing worlds such as "a" and "A".
@@ -318,15 +312,15 @@ fn blob_directory(directory: &Path, world: &str, create: bool) -> Result<PathBuf
                 Err(error) => return Err(error.into()),
             }
         }
-        ensure!(ordinary(&current)?.is_dir(), "PROJECT_STORAGE_UNAVAILABLE");
+        ensure!(ordinary(&current, "PROJECT_STORAGE_UNAVAILABLE")?.is_dir(), "PROJECT_STORAGE_UNAVAILABLE");
     }
     Ok(current)
 }
 
-fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Result<String> {
+pub(super) fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Result<String> {
     valid_hash(&entry.sha256)?;
     let path = blob_directory(directory, world, false)?.join(&entry.sha256);
-    let meta = ordinary(&path)?;
+    let meta = ordinary(&path, "PROJECT_STORAGE_UNAVAILABLE")?;
     ensure!(
         meta.is_file() && meta.len() == entry.bytes && meta.len() <= FILE_LIMIT as u64,
         "CORRUPT_PROJECT_FILE"
@@ -396,7 +390,7 @@ fn blob_write(directory: &Path, world: &str, entry: &FileEntry, text: &str) -> R
     result
 }
 
-fn load_manifest(
+pub(super) fn load_manifest(
     db: &Connection,
     world: &str,
     revision: Option<u64>,

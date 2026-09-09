@@ -1,0 +1,858 @@
+//! Isolated-executor gate, durable build/check jobs and candidate records.
+//!
+//! The core never starts Godot itself. A job can only be claimed after an
+//! executor registered an isolation attestation for the locked engine version.
+//! Without that registration the job is `blocked` and reports why.
+use anyhow::{ensure, Context, Result};
+use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
+
+use super::{
+    digest,
+    godot_builds::{self, build_root, engine_version},
+    workspaces, worlds, TaskJournal, WorkspaceContext,
+};
+
+const LEASE_MILLIS: i64 = 120_000;
+const QUEUE_TIMEOUT_MILLIS: i64 = 600_000;
+
+#[cfg(test)]
+#[path = "godot_jobs_tests.rs"]
+mod tests;
+
+/// Live isolation attestation of one executor process. It is intentionally not
+/// durable: a restarted core requires the executor to prove itself again.
+#[derive(Clone, Debug)]
+pub(crate) struct Executor {
+    pub(crate) engine_version: String,
+    pub(crate) isolation: String,
+    pub(crate) evidence_hash: String,
+    pub(crate) capabilities: Value,
+    pub(crate) registered_at: i64,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct RegisterArgs {
+    executor_id: String,
+    attestation: Attestation,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct Attestation {
+    format: String,
+    isolation: String,
+    evidence_hash: String,
+    engine_version: String,
+    capabilities: Capabilities,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct Capabilities {
+    import: bool,
+    build: bool,
+    check: bool,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ClaimArgs {
+    job_id: String,
+    token: String,
+    executor_id: String,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProgressArgs {
+    job_id: String,
+    token: String,
+    stage: String,
+    percent: u8,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct TokenArgs {
+    job_id: String,
+    token: String,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct FinishArgs {
+    job_id: String,
+    token: String,
+    output: JobResult,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct JobResult {
+    format: String,
+    input_hash: String,
+    passed: bool,
+    import: StageResult,
+    compile: CompileResult,
+    check: CheckResult,
+    artifacts: Vec<Artifact>,
+    engine: EngineResult,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct StageResult {
+    passed: bool,
+    #[serde(default)]
+    log: Option<String>,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct CompileResult {
+    passed: bool,
+    #[serde(default)]
+    errors: Vec<String>,
+    #[serde(default)]
+    warnings: Vec<String>,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct CheckResult {
+    passed: bool,
+    #[serde(default)]
+    assertions: Vec<Assertion>,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct Assertion {
+    id: String,
+    passed: bool,
+    #[serde(default)]
+    detail: Option<String>,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct Artifact {
+    path: String,
+    sha256: String,
+    bytes: u64,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct EngineResult {
+    version: String,
+    isolation: String,
+    evidence_hash: String,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct CandidateReadArgs {
+    world_id: String,
+    candidate_id: String,
+    #[serde(default)]
+    context: Option<WorkspaceContext>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct CandidateListArgs {
+    world_id: String,
+    #[serde(default)]
+    context: Option<WorkspaceContext>,
+    #[serde(default)]
+    offset: usize,
+    #[serde(default = "candidate_limit")]
+    limit: usize,
+}
+fn candidate_limit() -> usize {
+    16
+}
+
+pub(super) fn migrate(db: &Connection) -> Result<()> {
+    db.execute_batch(
+        "CREATE TABLE IF NOT EXISTS craftmine_godot_jobs (
+            id TEXT PRIMARY KEY, world_id TEXT NOT NULL REFERENCES craftmine_worlds(id),
+            task_id TEXT NOT NULL REFERENCES craftmine_tasks(id), tool_call_id TEXT NOT NULL,
+            kind TEXT NOT NULL CHECK(kind IN ('build','check')), build_id TEXT NOT NULL,
+            source_revision INTEGER NOT NULL, manifest_hash TEXT NOT NULL,
+            asset_manifest_hash TEXT NOT NULL, base_id TEXT NOT NULL, base_build TEXT NOT NULL,
+            request_hash TEXT NOT NULL,
+            status TEXT NOT NULL CHECK(status IN ('blocked','queued','claimed','running','passed','failed','cancelled','interrupted')),
+            blocked_reason TEXT, executor_id TEXT, run_token TEXT, stage TEXT,
+            progress INTEGER NOT NULL DEFAULT 0, lease_expires_at INTEGER,
+            output TEXT, output_hash TEXT, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL,
+            UNIQUE(task_id,tool_call_id)
+        );
+        CREATE INDEX IF NOT EXISTS craftmine_godot_jobs_world ON craftmine_godot_jobs(world_id,created_at);
+        CREATE TABLE IF NOT EXISTS craftmine_godot_candidates (
+            id TEXT PRIMARY KEY, world_id TEXT NOT NULL REFERENCES craftmine_worlds(id),
+            build_id TEXT NOT NULL, source_revision INTEGER NOT NULL, manifest_hash TEXT NOT NULL,
+            asset_manifest_hash TEXT NOT NULL, base_id TEXT NOT NULL, base_build TEXT NOT NULL,
+            check_job_id TEXT NOT NULL REFERENCES craftmine_godot_jobs(id), check_output_hash TEXT,
+            status TEXT NOT NULL CHECK(status IN ('draft','ready','rejected','superseded','applied','failed')),
+            created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS craftmine_godot_candidates_world ON craftmine_godot_candidates(world_id,created_at);",
+    )?;
+    Ok(())
+}
+
+fn valid_job_id(id: &str) -> Result<()> {
+    ensure!(
+        id.len() == 69 && id.starts_with("gjob-") && id[5..].bytes().all(|b| b.is_ascii_hexdigit()),
+        "INVALID_GODOT_JOB"
+    );
+    Ok(())
+}
+
+pub(super) fn valid_candidate_id(id: &str) -> Result<()> {
+    ensure!(
+        id.len() == 69 && id.starts_with("gcan-") && id[5..].bytes().all(|b| b.is_ascii_hexdigit()),
+        "INVALID_GODOT_CANDIDATE"
+    );
+    Ok(())
+}
+
+/// Reclaim leases whose executor died, and stop waiting forever for an executor
+/// that never registered.
+pub(super) fn expire(db: &Connection) -> Result<()> {
+    let now = worlds::timestamp()?;
+    db.execute(
+        "UPDATE craftmine_godot_jobs SET status='interrupted',run_token=NULL,executor_id=NULL,
+            lease_expires_at=NULL,updated_at=?1
+         WHERE status IN ('claimed','running') AND lease_expires_at IS NOT NULL AND lease_expires_at < ?1",
+        [now],
+    )?;
+    db.execute(
+        "UPDATE craftmine_godot_jobs SET status='blocked',blocked_reason='GODOT_EXECUTOR_TIMEOUT',updated_at=?1
+         WHERE status='queued' AND created_at < ?2",
+        params![now, now - QUEUE_TIMEOUT_MILLIS],
+    )?;
+    Ok(())
+}
+
+pub(super) fn read_job(db: &Connection, id: &str) -> Result<Value> {
+    valid_job_id(id)?;
+    let (world_id, task_id, kind, build_id, revision, manifest, assets, base_id, base_build, status,
+        blocked, executor, stage, progress, lease, output, output_hash, created, updated): (
+        String, String, String, String, i64, String, String, String, String, String,
+        Option<String>, Option<String>, Option<String>, i64, Option<i64>, Option<String>,
+        Option<String>, i64, i64,
+    ) = db
+        .query_row(
+            "SELECT world_id,task_id,kind,build_id,source_revision,manifest_hash,asset_manifest_hash,
+                base_id,base_build,status,blocked_reason,executor_id,stage,progress,lease_expires_at,
+                output,output_hash,created_at,updated_at FROM craftmine_godot_jobs WHERE id=?1",
+            [id],
+            |row| {
+                Ok((
+                    row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?, row.get(4)?, row.get(5)?,
+                    row.get(6)?, row.get(7)?, row.get(8)?, row.get(9)?, row.get(10)?, row.get(11)?,
+                    row.get(12)?, row.get(13)?, row.get(14)?, row.get(15)?, row.get(16)?, row.get(17)?,
+                    row.get(18)?,
+                ))
+            },
+        )
+        .context("GODOT_JOB_NOT_FOUND")?;
+    let output: Option<Value> = output
+        .map(|body| {
+            ensure!(
+                Some(digest(&body)) == output_hash,
+                "CORRUPT_GODOT_JOB_OUTPUT"
+            );
+            Ok(serde_json::from_str(&body)?)
+        })
+        .transpose()?;
+    let candidate: Option<String> = db
+        .query_row(
+            "SELECT id FROM craftmine_godot_candidates WHERE check_job_id=?1",
+            [id],
+            |row| row.get(0),
+        )
+        .optional()?;
+    Ok(json!({"jobId":id,"worldId":world_id,"taskId":task_id,"kind":kind,"buildId":build_id,
+        "sourceRevision":revision,"manifestHash":manifest,"assetManifestHash":assets,"baseId":base_id,
+        "baseBuild":base_build,"status":status,"blockedReason":blocked,"executorId":executor,
+        "stage":stage,"progress":progress,"leaseExpiresAt":lease,"output":output,
+        "outputHash":output_hash,"candidateId":candidate,"createdAt":created,"updatedAt":updated}))
+}
+
+pub(super) fn build_files(
+    db: &Connection,
+    world: &str,
+    build_id: &str,
+    kind: &str,
+) -> Result<Vec<Value>> {
+    let mut statement = db.prepare(
+        "SELECT path,kind,sha256,bytes FROM craftmine_godot_build_files WHERE world_id=?1 AND build_id=?2 AND kind=?3 ORDER BY path",
+    )?;
+    let rows = statement.query_map(params![world, build_id, kind], |row| {
+        Ok(json!({"path":row.get::<_,String>(0)?,"kind":row.get::<_,String>(1)?,
+            "sha256":row.get::<_,String>(2)?,"bytes":row.get::<_,i64>(3)?}))
+    })?;
+    Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+}
+
+fn artifact_path(path: &str) -> Result<()> {
+    ensure!(
+        !path.is_empty()
+            && path.len() <= 240
+            && path.split('/').count() <= 16
+            && !path.starts_with('/')
+            && !path.contains('\\'),
+        "INVALID_GODOT_ARTIFACT"
+    );
+    for part in path.split('/') {
+        ensure!(
+            !part.is_empty()
+                && part != "."
+                && part != ".."
+                && part.len() <= 80
+                && part
+                    .bytes()
+                    .all(|c| c.is_ascii_alphanumeric() || matches!(c, b'_' | b'-' | b'.')),
+            "INVALID_GODOT_ARTIFACT"
+        );
+    }
+    Ok(())
+}
+
+fn verify_artifact(root: &std::path::Path, artifact: &Artifact) -> Result<()> {
+    artifact_path(&artifact.path)?;
+    super::godot_projects::valid_hash(&artifact.sha256)?;
+    ensure!(
+        artifact.bytes <= godot_builds::ASSET_BYTES * 8,
+        "GODOT_ARTIFACT_TOO_LARGE"
+    );
+    let mut current = root.to_path_buf();
+    for part in artifact.path.split('/') {
+        current.push(part);
+    }
+    let meta = super::godot_projects::ordinary(&current, "GODOT_ARTIFACT_MISSING")?;
+    ensure!(
+        meta.is_file() && meta.len() == artifact.bytes,
+        "CORRUPT_GODOT_ARTIFACT"
+    );
+    godot_builds::binary_read(&current, &artifact.sha256, artifact.bytes)
+        .map_err(|_| anyhow::anyhow!("CORRUPT_GODOT_ARTIFACT"))?;
+    Ok(())
+}
+
+fn record_artifact(db: &Connection, world: &str, build_id: &str, artifact: &Artifact) -> Result<()> {
+    let prior: Option<String> = db
+        .query_row(
+            "SELECT sha256 FROM craftmine_godot_build_files WHERE world_id=?1 AND build_id=?2 AND path=?3",
+            params![world, build_id, artifact.path],
+            |row| row.get(0),
+        )
+        .optional()?;
+    if let Some(hash) = prior {
+        ensure!(hash == artifact.sha256, "GODOT_ARTIFACT_CONFLICT");
+        return Ok(());
+    }
+    db.execute(
+        "INSERT INTO craftmine_godot_build_files(world_id,build_id,path,kind,sha256,bytes) VALUES(?1,?2,?3,'artifact',?4,?5)",
+        params![world, build_id, artifact.path, artifact.sha256, i64::try_from(artifact.bytes)?],
+    )?;
+    Ok(())
+}
+
+pub(super) fn read_candidate(db: &Connection, id: &str) -> Result<Value> {
+    valid_candidate_id(id)?;
+    let (world_id, build_id, revision, manifest, assets, base_id, base_build, check_job, check_hash,
+        status, created, updated): (String, String, i64, String, String, String, String, String,
+        Option<String>, String, i64, i64) = db
+        .query_row(
+            "SELECT world_id,build_id,source_revision,manifest_hash,asset_manifest_hash,base_id,
+                base_build,check_job_id,check_output_hash,status,created_at,updated_at
+             FROM craftmine_godot_candidates WHERE id=?1",
+            [id],
+            |row| {
+                Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?, row.get(4)?, row.get(5)?,
+                    row.get(6)?, row.get(7)?, row.get(8)?, row.get(9)?, row.get(10)?, row.get(11)?))
+            },
+        )
+        .context("GODOT_CANDIDATE_NOT_FOUND")?;
+    let (files, bytes): (i64, i64) = db.query_row(
+        "SELECT COUNT(*),COALESCE(SUM(bytes),0) FROM craftmine_godot_build_files WHERE world_id=?1 AND build_id=?2",
+        params![world_id, build_id],
+        |row| Ok((row.get(0)?, row.get(1)?)),
+    )?;
+    Ok(json!({"candidateId":id,"worldId":world_id,"buildId":build_id,"sourceRevision":revision,
+        "manifestHash":manifest,"assetManifestHash":assets,"baseId":base_id,"baseBuild":base_build,
+        "checkJobId":check_job,"checkOutputHash":check_hash,"status":status,"buildFiles":files,
+        "buildBytes":bytes,"createdAt":created,"updatedAt":updated}))
+}
+
+/// A candidate is only applicable while its exact source revision is still the
+/// project head; a newer patch makes it stale instead of silently applicable.
+pub(super) fn require_ready_candidate(
+    db: &Connection,
+    id: &str,
+    world_id: &str,
+) -> Result<Value> {
+    let candidate = read_candidate(db, id)?;
+    ensure!(
+        candidate["worldId"] == world_id,
+        "PROJECT_WORLD_BINDING_MISMATCH"
+    );
+    ensure!(candidate["status"] == "ready", "GODOT_CANDIDATE_NOT_READY");
+    let job = read_job(db, candidate["checkJobId"].as_str().context("INVALID_GODOT_JOB")?)?;
+    ensure!(
+        job["status"] == "passed" && job["outputHash"] == candidate["checkOutputHash"],
+        "GODOT_CANDIDATE_NOT_READY"
+    );
+    let current: Option<(i64, String)> = db
+        .query_row(
+            "SELECT revision,hash FROM craftmine_godot_projects WHERE world_id=?1",
+            [world_id],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        )
+        .optional()?;
+    let (revision, hash) = current.context("GODOT_CANDIDATE_STALE")?;
+    ensure!(
+        i64::try_from(candidate["sourceRevision"].as_u64().unwrap_or(u64::MAX)).ok() == Some(revision)
+            && candidate["manifestHash"].as_str() == Some(hash.as_str()),
+        "GODOT_CANDIDATE_STALE"
+    );
+    Ok(candidate)
+}
+
+impl TaskJournal {
+    /// Capability gate. Only an attested, matching executor may run a job.
+    pub(super) fn execution_gate(&self, kind: &str) -> (bool, Option<&'static str>) {
+        let Some(executor) = self
+            .executors
+            .values()
+            .find(|executor| executor.engine_version == engine_version())
+        else {
+            return (false, Some("GODOT_EXECUTION_UNAVAILABLE"));
+        };
+        let capability = match kind {
+            "check" => executor.capabilities["check"] == json!(true),
+            _ => executor.capabilities["build"] == json!(true),
+        };
+        if !capability || executor.capabilities["import"] != json!(true) {
+            return (false, Some("GODOT_EXECUTOR_CAPABILITY_MISSING"));
+        }
+        (true, None)
+    }
+
+    pub fn godot_executor_register(&mut self, args: &Value) -> Result<Value> {
+        let args: RegisterArgs = serde_json::from_value(args.clone())?;
+        workspaces::call_id(&args.executor_id)?;
+        ensure!(
+            args.attestation.format == "craftmine.godot-executor/1"
+                && !args.attestation.isolation.trim().is_empty()
+                && args.attestation.isolation.len() <= 60
+                && args.attestation.engine_version == engine_version(),
+            "INVALID_EXECUTOR_ATTESTATION"
+        );
+        ensure!(
+            args.attestation.evidence_hash.len() == 64
+                && args
+                    .attestation
+                    .evidence_hash
+                    .bytes()
+                    .all(|byte| byte.is_ascii_hexdigit()),
+            "INVALID_EXECUTOR_ATTESTATION"
+        );
+        let now = worlds::timestamp()?;
+        let attestation_hash = digest(&serde_json::to_string(&json!({
+            "format":args.attestation.format,"isolation":args.attestation.isolation,
+            "evidenceHash":args.attestation.evidence_hash,"engineVersion":args.attestation.engine_version,
+            "capabilities":{"import":args.attestation.capabilities.import,
+                "build":args.attestation.capabilities.build,"check":args.attestation.capabilities.check}
+        }))?);
+        self.executors.insert(
+            args.executor_id.clone(),
+            Executor {
+                engine_version: args.attestation.engine_version.clone(),
+                isolation: args.attestation.isolation.clone(),
+                evidence_hash: args.attestation.evidence_hash.clone(),
+                capabilities: json!({"import":args.attestation.capabilities.import,
+                    "build":args.attestation.capabilities.build,"check":args.attestation.capabilities.check}),
+                registered_at: now,
+            },
+        );
+        // Jobs that were blocked only because no executor existed become runnable.
+        let promoted = self.db.execute(
+            "UPDATE craftmine_godot_jobs SET status='queued',blocked_reason=NULL,updated_at=?1
+             WHERE status='blocked' AND blocked_reason='GODOT_EXECUTION_UNAVAILABLE'",
+            [now],
+        )?;
+        Ok(json!({"executorId":args.executor_id,"registered":true,"executionAvailable":true,
+            "attestationHash":attestation_hash,"isolation":args.attestation.isolation,
+            "engineVersion":args.attestation.engine_version,
+            "registeredAt":self.executors.get(&args.executor_id).map(|executor| executor.registered_at).unwrap_or(now),
+            "promotedJobs":promoted}))
+    }
+
+    pub fn godot_job_claim(&mut self, args: &Value) -> Result<Value> {
+        let args: ClaimArgs = serde_json::from_value(args.clone())?;
+        workspaces::call_id(&args.token)?;
+        let executor = self
+            .executors
+            .get(&args.executor_id)
+            .cloned()
+            .context("GODOT_EXECUTOR_UNAVAILABLE")?;
+        ensure!(
+            executor.engine_version == engine_version(),
+            "GODOT_EXECUTOR_UNAVAILABLE"
+        );
+        let tx = self
+            .db
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        expire(&tx)?;
+        let record = read_job(&tx, &args.job_id)?;
+        ensure!(
+            record["status"] == "queued",
+            if record["status"] == "blocked" {
+                "GODOT_EXECUTION_UNAVAILABLE"
+            } else {
+                "GODOT_JOB_INACTIVE"
+            }
+        );
+        let kind = record["kind"].as_str().context("INVALID_GODOT_JOB")?;
+        ensure!(
+            match kind {
+                "check" => executor.capabilities["check"] == json!(true),
+                _ => executor.capabilities["build"] == json!(true),
+            } && executor.capabilities["import"] == json!(true),
+            "GODOT_EXECUTOR_CAPABILITY_MISSING"
+        );
+        let world = record["worldId"].as_str().context("INVALID_GODOT_JOB")?;
+        let build = record["buildId"].as_str().context("INVALID_GODOT_JOB")?;
+        let root = build_root(&self.directory, world, build, false)?;
+        let cache = build_root(&self.directory, world, build, true)?.join("cache");
+        let artifacts = build_root(&self.directory, world, build, true)?.join("artifacts");
+        for path in [&cache, &artifacts] {
+            if !path.try_exists()? {
+                match std::fs::create_dir(path) {
+                    Ok(()) => {}
+                    Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {}
+                    Err(error) => return Err(error.into()),
+                }
+            }
+            ensure!(
+                super::godot_projects::ordinary(path, "GODOT_STORAGE_UNAVAILABLE")?.is_dir(),
+                "GODOT_STORAGE_UNAVAILABLE"
+            );
+        }
+        let now = worlds::timestamp()?;
+        let lease = now + LEASE_MILLIS;
+        tx.execute(
+            "UPDATE craftmine_godot_jobs SET status='claimed',run_token=?2,executor_id=?3,
+                stage='claimed',lease_expires_at=?4,updated_at=?5 WHERE id=?1 AND status='queued'",
+            params![args.job_id, args.token, args.executor_id, lease, now],
+        )?;
+        let mut description = read_job(&tx, &args.job_id)?;
+        description["projectRoot"] = json!(root.to_string_lossy());
+        description["cacheRoot"] = json!(cache.to_string_lossy());
+        description["artifactsRoot"] = json!(artifacts.to_string_lossy());
+        description["token"] = json!(args.token);
+        description["engineVersion"] = json!(executor.engine_version);
+        description["isolation"] = json!(executor.isolation);
+        description["evidenceHash"] = json!(executor.evidence_hash);
+        description["inputHash"] = json!(tx.query_row(
+            "SELECT request_hash FROM craftmine_godot_jobs WHERE id=?1",
+            [&args.job_id],
+            |row| row.get::<_, String>(0),
+        )?);
+        description["files"] = json!({
+            "source":build_files(&tx, world, build, "source")?,
+            "asset":build_files(&tx, world, build, "asset")?
+        });
+        tx.commit()?;
+        Ok(description)
+    }
+
+    pub fn godot_job_progress(&mut self, args: &Value) -> Result<Value> {
+        let args: ProgressArgs = serde_json::from_value(args.clone())?;
+        workspaces::call_id(&args.token)?;
+        ensure!(
+            !args.stage.is_empty() && args.stage.len() <= 60 && args.percent <= 100,
+            "INVALID_GODOT_PROGRESS"
+        );
+        let tx = self
+            .db
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        expire(&tx)?;
+        let (_, _, record) = owned_job(&tx, &args.job_id, &args.token)?;
+        ensure!(
+            matches!(record["status"].as_str(), Some("claimed" | "running")),
+            "GODOT_JOB_INACTIVE"
+        );
+        let previous = record["progress"].as_u64().unwrap_or(0);
+        ensure!(
+            u64::from(args.percent) >= previous,
+            "INVALID_GODOT_PROGRESS"
+        );
+        let now = worlds::timestamp()?;
+        tx.execute(
+            "UPDATE craftmine_godot_jobs SET status='running',stage=?2,progress=?3,
+                lease_expires_at=?4,updated_at=?5 WHERE id=?1",
+            params![args.job_id, args.stage, i64::from(args.percent), now + LEASE_MILLIS, now],
+        )?;
+        let updated = read_job(&tx, &args.job_id)?;
+        tx.commit()?;
+        Ok(json!({"jobId":args.job_id,"status":updated["status"],"stage":args.stage,
+            "progress":args.percent,"leaseExpiresAt":updated["leaseExpiresAt"]}))
+    }
+
+    pub fn godot_job_heartbeat(&mut self, args: &Value) -> Result<Value> {
+        let args: TokenArgs = serde_json::from_value(args.clone())?;
+        workspaces::call_id(&args.token)?;
+        let tx = self
+            .db
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        expire(&tx)?;
+        let (_, _, record) = owned_job(&tx, &args.job_id, &args.token)?;
+        ensure!(
+            matches!(record["status"].as_str(), Some("claimed" | "running")),
+            "GODOT_JOB_INACTIVE"
+        );
+        let lease = worlds::timestamp()? + LEASE_MILLIS;
+        tx.execute(
+            "UPDATE craftmine_godot_jobs SET lease_expires_at=?2,updated_at=?3 WHERE id=?1",
+            params![args.job_id, lease, worlds::timestamp()?],
+        )?;
+        tx.commit()?;
+        Ok(json!({"jobId":args.job_id,"status":record["status"],"leaseExpiresAt":lease}))
+    }
+
+    /// Record the executor's real result. A cancelled or interrupted job rejects
+    /// the late result instead of reviving itself or touching the world. The
+    /// claiming token is retained so a lost response can be answered from the
+    /// stored receipt without re-running anything.
+    pub fn godot_job_finish(&mut self, args: &Value) -> Result<Value> {
+        let args: FinishArgs = serde_json::from_value(args.clone())?;
+        workspaces::call_id(&args.token)?;
+        ensure!(
+            args.output.format == "craftmine.godot-job-result/1",
+            "INVALID_GODOT_JOB_RESULT"
+        );
+        let tx = self
+            .db
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        expire(&tx)?;
+        // A cancelled or interrupted job reports its own state; a late result
+        // must never be able to discover the outcome as an owner mismatch.
+        let status = read_job(&tx, &args.job_id)?["status"].clone();
+        ensure!(
+            matches!(
+                status.as_str(),
+                Some("claimed" | "running" | "passed" | "failed")
+            ),
+            "GODOT_JOB_INACTIVE"
+        );
+        let (world, build, record) = owned_job(&tx, &args.job_id, &args.token)?;
+        let kind = record["kind"].as_str().context("INVALID_GODOT_JOB")?.to_string();
+        let task = record["taskId"].as_str().context("INVALID_GODOT_JOB")?.to_string();
+        if matches!(
+            record["status"].as_str(),
+            Some("passed" | "failed")
+        ) {
+            let body = serde_json::to_string(&args.output)?;
+            ensure!(
+                record["outputHash"].as_str() == Some(digest(&body).as_str()),
+                "REPLAY_MISMATCH"
+            );
+            return Ok(record);
+        }
+        ensure!(
+            matches!(record["status"].as_str(), Some("claimed" | "running")),
+            "GODOT_JOB_INACTIVE"
+        );
+        let request_hash: String = tx.query_row(
+            "SELECT request_hash FROM craftmine_godot_jobs WHERE id=?1",
+            [&args.job_id],
+            |row| row.get(0),
+        )?;
+        ensure!(
+            args.output.input_hash == request_hash,
+            "GODOT_JOB_INPUT_MISMATCH"
+        );
+        let executor = self
+            .executors
+            .get(record["executorId"].as_str().unwrap_or_default())
+            .cloned()
+            .context("GODOT_EXECUTOR_UNAVAILABLE")?;
+        ensure!(
+            args.output.engine.version == executor.engine_version
+                && args.output.engine.evidence_hash == executor.evidence_hash
+                && !args.output.engine.isolation.trim().is_empty(),
+            "GODOT_EXECUTOR_MISMATCH"
+        );
+        if kind == "check" {
+            ensure!(
+                !args.output.check.assertions.is_empty(),
+                "GODOT_CHECK_ASSERTIONS_REQUIRED"
+            );
+        }
+        let passed = args.output.passed
+            && args.output.import.passed
+            && args.output.compile.passed
+            && args.output.compile.errors.is_empty()
+            && args.output.check.passed
+            && args.output.check.assertions.iter().all(|assertion| assertion.passed);
+        let artifacts_root = build_root(&self.directory, &world, &build, false)?.join("artifacts");
+        for artifact in &args.output.artifacts {
+            verify_artifact(&artifacts_root, artifact)?;
+        }
+        for artifact in &args.output.artifacts {
+            record_artifact(&tx, &world, &build, artifact)?;
+        }
+        let body = serde_json::to_string(&args.output)?;
+        ensure!(body.len() <= 2 * 1024 * 1024, "GODOT_JOB_OUTPUT_TOO_LARGE");
+        let now = worlds::timestamp()?;
+        let status = if passed { "passed" } else { "failed" };
+        tx.execute(
+            "UPDATE craftmine_godot_jobs SET status=?2,output=?3,output_hash=?4,
+                lease_expires_at=NULL,stage=?5,progress=100,updated_at=?6 WHERE id=?1",
+            params![args.job_id, status, body, digest(&body), status, now],
+        )?;
+        let mut candidate_id = None;
+        if kind == "check" {
+            let id = format!(
+                "gcan-{}",
+                digest(&format!(
+                    "craftmine.godot-candidate/1|{}|{}|{}",
+                    world, build, args.job_id
+                ))
+            );
+            tx.execute(
+                "INSERT OR IGNORE INTO craftmine_godot_candidates(id,world_id,build_id,source_revision,
+                    manifest_hash,asset_manifest_hash,base_id,base_build,check_job_id,check_output_hash,
+                    status,created_at,updated_at) VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?12)",
+                params![id, world, build, record["sourceRevision"].as_i64().unwrap_or(0),
+                    record["manifestHash"].as_str().unwrap_or_default(),
+                    record["assetManifestHash"].as_str().unwrap_or_default(),
+                    record["baseId"].as_str().unwrap_or_default(),
+                    record["baseBuild"].as_str().unwrap_or_default(), args.job_id, digest(&body),
+                    if passed { "ready" } else { "rejected" }, now],
+            )?;
+            if passed {
+                tx.execute(
+                    "UPDATE craftmine_godot_candidates SET status='superseded',updated_at=?2
+                     WHERE world_id=?1 AND status='ready' AND id<>?3",
+                    params![world, now, id],
+                )?;
+            }
+            candidate_id = Some(id);
+        }
+        let mut result = read_job(&tx, &args.job_id)?;
+        result["candidateId"] = json!(candidate_id);
+        result["taskId"] = json!(task);
+        tx.commit()?;
+        Ok(result)
+    }
+
+    pub fn godot_candidate_read(&self, args: &Value) -> Result<Value> {
+        let args: CandidateReadArgs = serde_json::from_value(args.clone())?;
+        world_scope(&self.db, &args.world_id, args.context.as_ref())?;
+        let candidate = read_candidate(&self.db, &args.candidate_id)?;
+        ensure!(
+            candidate["worldId"] == args.world_id,
+            "PROJECT_WORLD_BINDING_MISMATCH"
+        );
+        let job = read_job(&self.db, candidate["checkJobId"].as_str().context("INVALID_GODOT_JOB")?)?;
+        Ok(json!({"candidate":candidate,"check":job["output"]["check"],"job":job["output"],
+            "checkStatus":job["status"],"buildId":candidate["buildId"]}))
+    }
+
+    pub fn godot_candidate_list(&self, args: &Value) -> Result<Value> {
+        let args: CandidateListArgs = serde_json::from_value(args.clone())?;
+        world_scope(&self.db, &args.world_id, args.context.as_ref())?;
+        ensure!(args.limit > 0 && args.limit <= 32, "INVALID_PROJECT_PAGE");
+        let ids: Vec<String> = self
+            .db
+            .prepare("SELECT id FROM craftmine_godot_candidates WHERE world_id=?1 ORDER BY created_at DESC,id DESC LIMIT ?2 OFFSET ?3")?
+            .query_map(params![args.world_id, i64::try_from(args.limit)?, i64::try_from(args.offset)?], |row| row.get(0))?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+        let items = ids
+            .iter()
+            .map(|id| read_candidate(&self.db, id))
+            .collect::<Result<Vec<_>>>()?;
+        Ok(json!({"items":items,"nextOffset":(items.len()==args.limit).then_some(args.offset+items.len())}))
+    }
+
+    /// Startup sweep: leases cannot survive the process that owned them, and a
+    /// late result from an interrupted job must never be applied.
+    pub fn godot_recover(&mut self) -> Result<usize> {
+        self.executors.clear();
+        let changed = self.db.execute(
+            "UPDATE craftmine_godot_jobs SET status='interrupted',run_token=NULL,executor_id=NULL,
+                lease_expires_at=NULL,updated_at=?1 WHERE status IN ('claimed','running')",
+            [worlds::timestamp()?],
+        )?;
+        Ok(changed)
+    }
+}
+
+/// Shared owner check for executor-facing job operations. A stale token cannot
+/// observe or mutate a job it does not own.
+fn owned_job(db: &Connection, id: &str, token: &str) -> Result<(String, String, Value)> {
+    let record = read_job(db, id)?;
+    let owner: Option<String> = db.query_row(
+        "SELECT run_token FROM craftmine_godot_jobs WHERE id=?1",
+        [id],
+        |row| row.get(0),
+    )?;
+    ensure!(
+        owner.as_deref() == Some(token),
+        "GODOT_JOB_OWNER_MISMATCH"
+    );
+    let world = record["worldId"]
+        .as_str()
+        .context("INVALID_GODOT_JOB")?
+        .to_string();
+    let build = record["buildId"]
+        .as_str()
+        .context("INVALID_GODOT_JOB")?
+        .to_string();
+    Ok((world, build, record))
+}
+
+fn scope(
+    db: &Connection,
+    ctx: &WorkspaceContext,
+    world: &str,
+    write: bool,
+) -> Result<workspaces::WorkspaceSnapshot> {
+    worlds::validate_id(world)?;
+    let snapshot = workspaces::inspect(db, ctx)?;
+    ensure!(snapshot.world_id == world, "PROJECT_WORLD_BINDING_MISMATCH");
+    if write {
+        workspaces::assert_live(db, &snapshot)?;
+    }
+    Ok(snapshot)
+}
+
+/// Model tool calls always carry the durable workspace context and are bound to
+/// its world. Trusted host panel reads may omit it, but then only the world
+/// identity is checked and no lease is implied.
+pub(super) fn world_scope(
+    db: &Connection,
+    world: &str,
+    context: Option<&WorkspaceContext>,
+) -> Result<()> {
+    match context {
+        Some(ctx) => {
+            scope(db, ctx, world, false)?;
+        }
+        None => {
+            worlds::read(db, world)?;
+        }
+    }
+    Ok(())
+}

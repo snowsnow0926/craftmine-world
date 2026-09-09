@@ -68,7 +68,7 @@ pub(super) fn timestamp() -> Result<i64> {
         .try_into()?)
 }
 
-fn validate_progress(snapshot: &Value) -> Result<()> {
+pub(super) fn validate_progress(snapshot: &Value) -> Result<()> {
     ensure!(
         matches!(
             snapshot["format"].as_str(),
