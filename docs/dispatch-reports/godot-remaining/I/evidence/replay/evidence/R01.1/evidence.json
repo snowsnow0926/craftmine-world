@@ -1,0 +1,105 @@
+{
+  "format": "craftmine.i.evidence/1",
+  "roundId": "R01.1",
+  "mode": "replay",
+  "verdict": "passed",
+  "reasons": [],
+  "notes": null,
+  "identity": {
+    "format": "craftmine.i.identity/1",
+    "runId": "5b05498d-8a53-4893-ba3f-a6fc1d70eed5",
+    "mode": "replay",
+    "startedAt": "2026-09-09T17:06:03.170Z",
+    "product": {
+      "version": "replay-fixture",
+      "clientVersion": "replay-fixture",
+      "commit": null
+    },
+    "engine": {
+      "name": "godot",
+      "version": "replay-fixture",
+      "binarySha256": null,
+      "renderer": null
+    },
+    "base": {
+      "id": null,
+      "version": "replay-fixture",
+      "commit": null
+    },
+    "project": {
+      "path": null,
+      "treeHash": "replay-fixture",
+      "fileCount": null
+    },
+    "model": {
+      "provider": "replay",
+      "modelId": "replay-fixture",
+      "thinking": null,
+      "reasoningEffort": null
+    },
+    "dataDir": "D:\\Craftmine World-worktrees\\godot-remaining-i-20260910\\docs\\dispatch-reports\\godot-remaining\\I\\evidence\\replay",
+    "input": {
+      "format": "craftmine.i.input-guard/1",
+      "inputEventsSent": 0,
+      "pointerLockRequests": 0,
+      "focusSteals": 0,
+      "windowActivations": 0,
+      "blockedInputAttempts": [],
+      "pointerLockDisabled": false,
+      "headless": null
+    },
+    "artifacts": [],
+    "digest": "3a42a400c48be0dfe6a9e2ad8ef38e4d3a1dd6106c21d707e1ad64e67a176fb0"
+  },
+  "usage": {
+    "format": "craftmine.i.usage/1",
+    "stage": "creation",
+    "calls": 1,
+    "promptTokens": 1180,
+    "cachedReadTokens": 0,
+    "nonCachedInputTokens": 1180,
+    "outputTokens": 260,
+    "totalTokens": 1440,
+    "unknownCalls": 0,
+    "reportedBy": [
+      "replay-fixture"
+    ]
+  },
+  "failures": [],
+  "interventions": [],
+  "artifacts": [
+    {
+      "path": "default-layout.png",
+      "bytes": 70,
+      "sha256": "a4bcd7b80c65e14e3809783fc4c587ce66a995dcc142e25bf61c9337ef6f3443"
+    }
+  ],
+  "files": [
+    {
+      "path": "default-layout.png",
+      "sha256": "a4bcd7b80c65e14e3809783fc4c587ce66a995dcc142e25bf61c9337ef6f3443",
+      "bytes": 70
+    },
+    {
+      "path": "observation.json",
+      "sha256": "f15e3154f4a7a27b2d07ca16c9ee754692e5380dbec4b79c2eaf0e017c1c9966",
+      "bytes": 694
+    },
+    {
+      "path": "round.json",
+      "sha256": "396aba30bb89cd7de7078e7c618801bf0eda62fe5129ffbb0f5246006a43c38f",
+      "bytes": 551
+    },
+    {
+      "path": "state.after.json",
+      "sha256": "f15e3154f4a7a27b2d07ca16c9ee754692e5380dbec4b79c2eaf0e017c1c9966",
+      "bytes": 694
+    },
+    {
+      "path": "state.before.json",
+      "sha256": "38e0b9de817f645c4bec37c0d4a3e58baecccb040f5718dc069a72c7385a0bed",
+      "bytes": 5
+    }
+  ],
+  "sealedAt": "2026-09-09T17:06:03.180Z"
+}
