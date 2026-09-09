@@ -1,0 +1,138 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "task": "G",
+  "title": "Godot 横版底座与最小能力解锁探索样例",
+  "baseline": "46739d2",
+  "branch": "codex/godot-parallel-g-20260909",
+  "worktree": "D:/Craftmine World-worktrees/godot-parallel-g-20260909",
+  "implementationCommit": "5e0161f1540c28f8df97ec2566ac99b0679e2134",
+  "implementationCommitSubject": "feat(godot): add side-view base with a real double-jump ability gate",
+  "merged": false,
+  "pushed": false,
+  "registeredAsDeliveredBase": false,
+  "registrationBlocker": "统一工作台集成与验收未完成；按分工要求不得注册为产品已交付底座，未修改 DEVELOPMENT_STATUS.json。",
+  "ownedPaths": [
+    "desktop/godot/bases/side-view/**",
+    "docs/dispatch-reports/godot-parallel/G/**"
+  ],
+  "untouched": [
+    "docs/DEVELOPMENT_STATUS.json",
+    "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md",
+    "docs/GODOT_DEVELOPMENT_LOG.md",
+    "app/**",
+    "desktop/godot/sandbox/**",
+    "desktop/godot/bases/top-down/**",
+    "Rust 核心与共享协议"
+  ],
+  "base": {
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "stateVersion": 1,
+    "engine": "4.7.2-stable",
+    "language": "GDScript",
+    "renderer": "gl_compatibility",
+    "entryScene": "res://scenes/main.tscn",
+    "worlds": {
+      "blank": "worlds/blank/world.json",
+      "ruins": "worlds/ruins/world.json"
+    },
+    "params": "params/side_view_params.json",
+    "manifest": "desktop/godot/bases/side-view/manifest.json"
+  },
+  "capabilities": [
+    "gravity",
+    "jump with coyote time and buffer",
+    "variable jump height",
+    "platform collision",
+    "room-bounded camera",
+    "attack hitbox with real overlap resolution",
+    "checkpoint and hazard respawn",
+    "double-jump ability gate",
+    "room transitions with return paths",
+    "persistent abilities, checkpoints, room state and one-time rewards",
+    "atomic save with backup recovery"
+  ],
+  "gate": {
+    "id": "gate_vault_ledge",
+    "requiredRise": 190.0,
+    "singleJumpRise": 136.111,
+    "doubleJumpTotalRise": 249.889,
+    "singleJumpMargin": 53.889,
+    "doubleJumpMargin": 59.889,
+    "verifiedBy": [
+      "tools/gate-metrics.mjs arithmetic check",
+      "tools/verify.mjs headless physics runs"
+    ]
+  },
+  "verification": {
+    "command": "node tools/gate-metrics.mjs ; node tools/verify.mjs",
+    "engine": "Godot_v4.7.2-stable_win64_console.exe (4.7.2.stable.official.ed1daf0bf)",
+    "mode": "--headless --fixed-fps 60, isolated save directory per scenario",
+    "checksPassed": 80,
+    "checksTotal": 80,
+    "deterministicAcrossRuns": 2,
+    "scenarios": [
+      "A_reach_ruins: real room transition, checkpoint, one-time cache reward",
+      "B_gate_locked: full-height single jumps never reach the ledge or the vault",
+      "C_get_ability: ability granted by the real pickup on the platform, written to disk",
+      "D_enter_vault: fresh process, ability survived restart, double jump clears the ledge, vault entered",
+      "E_revisit: return trip keeps state, no duplicate rewards",
+      "F_hazard_respawn: hazard death respawns at the real checkpoint",
+      "G_blank_basic: blank start movement, jump, attack, no ability",
+      "H_materialized: new-world.mjs output imports and runs standalone"
+    ],
+    "antiCheat": [
+      "per-tick displacement limits (no teleport)",
+      "player position written only by place_at, called only from room manager and respawn",
+      "headless verifier cannot write player state (source scan)",
+      "ability only via ability_gained{source:pickup}",
+      "restart scenario runs in a separate process"
+    ],
+    "notVerified": [
+      "GPU rendering and visible window composition",
+      "player feel, audio and animation",
+      "native Electron world view",
+      "host build/apply wiring"
+    ],
+    "evidence": [
+      "docs/dispatch-reports/godot-parallel/G/evidence/verify-report.json",
+      "docs/dispatch-reports/godot-parallel/G/evidence/gate-metrics.json",
+      "docs/dispatch-reports/godot-parallel/G/evidence/run-facts.json"
+    ],
+    "sourceTreeHash": "cfe96726e1621d530d672f9d7d24395f151089e36bd33ca87a522c6e2f13db60"
+  },
+  "assets": {
+    "thirdPartyAssets": 0,
+    "note": "All visuals are generated in code (Polygon2D / ImageTexture). No images, audio, models, fonts or tilesets. See desktop/godot/bases/side-view/docs/assets-and-provenance.md."
+  },
+  "hostIntegration": {
+    "document": "docs/dispatch-reports/godot-parallel/G/INTERFACE_G.md",
+    "probeFormat": "craftmine.godot-sideview-probe/1",
+    "progressFormat": "craftmine.progress/1",
+    "materialize": "node tools/new-world.mjs --world <blank|ruins> --out <dir>",
+    "saveRoot": "CRAFTMINE_SIDEVIEW_SAVE_DIR or user://save/<worldId>",
+    "importRequiredOnce": true
+  },
+  "branchProposals": {
+    "digSandbox": {
+      "document": "desktop/godot/bases/side-view/docs/sandbox-branch-interface.md",
+      "status": "proposal-only-not-implemented",
+      "a16Claimed": false
+    }
+  },
+  "requests": [
+    {
+      "to": "B",
+      "request": "accept baseId=side-view in build input and scene record; confirm whether the launch receipt needs a base-emitted instance marker"
+    },
+    {
+      "to": "C",
+      "request": "pass the per-world save root; show the base label from build.scene.baseId; surface checkpoint/ability summary from the probe"
+    },
+    {
+      "to": "I",
+      "request": "run this base's acceptance matrix inside the unified workbench before registering it as delivered"
+    }
+  ],
+  "cleanup": "No merge, no push, no worktree cleanup. The branch and worktree are left in place for integration."
+}
