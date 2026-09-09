@@ -1,0 +1,11 @@
+﻿ M desktop/build-world-plugin.mjs
+ M plugins/craftmine-world/manifest.json
+ M plugins/craftmine-world/world-tools.cjs
+?? docs/dispatch-reports/godot-remaining/
+?? plugins/craftmine-world/godot-capability.cjs
+?? plugins/craftmine-world/godot-docs.cjs
+?? plugins/craftmine-world/godot-history.cjs
+?? plugins/craftmine-world/godot-observe.cjs
+?? plugins/craftmine-world/godot-query.cjs
+?? plugins/craftmine-world/godot-routing.cjs
+?? tests/godot-remaining/

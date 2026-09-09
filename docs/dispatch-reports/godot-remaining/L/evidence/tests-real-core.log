@@ -1,0 +1,14 @@
+﻿real core evidence: C:\Users\WINDOWS\.pi-desktop\scratch\166165e4-0276-4562-aff4-9253f9a88d12\target\debug\craftmine-core.exe
+✔ the real core advertises the Godot capability flags the inventory reports (163.3669ms)
+✔ the real project store answers the structured query (69.9419ms)
+✔ an unapplied project has no formal runtime, and the tool says so (71.7134ms)
+✔ the runtime descriptor RPC rejects a model-supplied context (76.5495ms)
+✔ the history and asset adapters are genuinely absent in the real core (72.6973ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 559.8662
