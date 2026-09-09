@@ -98,6 +98,15 @@ describe("Craftmine authoritative request boundary", () => {
     const blocked = await internal.beforeToolCall({ toolCall: { id: "forged", name: "Write" }, assistantMessage: { content: [] } });
     expect(blocked.block).toBe(true); await runtime.dispose();
   });
+  it("uses domain authoring guidance and the actual PI question tool in world scope", async () => {
+    const runtime = makeRuntime(fixture().hooks), internal = runtime as any;
+    expect(internal.agent.state.systemPrompt).toContain("plugin_craftmine_world_project_inspect");
+    expect(internal.agent.state.systemPrompt).not.toContain("prefer the Read, Grep, and Glob");
+    expect(internal.agent.state.systemPrompt).not.toContain("Use Edit for one small");
+    expect(internal.toolCatalog.has("asktool")).toBe(true);
+    expect(internal.toolCatalog.has("AskUserQuestion")).toBe(false);
+    await runtime.dispose();
+  });
   it("uses actual PI compaction three times and preserves draft facts and transcript", async () => {
     const f = fixture(), records: unknown[] = [], contexts: Context[] = [];
     const runtime = makeRuntime(f.hooks, records); const internal = runtime as any;
@@ -119,7 +128,7 @@ describe("Craftmine authoritative request boundary", () => {
   });
 });
 function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, records: unknown[] = []) {
-  return new DesktopAgentRuntime({ craftmineWorld: true, craftmineHooks: hooks, sessionId: "session", turnId: "turn", mode: "agent", thinkingLevel: "off", systemPrompt: "World fixture policy", commandShell: { id: "bash", label: "Bash", dialect: "posix", available: true, isDefault: true },
+  return new DesktopAgentRuntime({ craftmineWorld: true, craftmineHooks: hooks, sessionId: "session", turnId: "turn", mode: "agent", thinkingLevel: "off", commandShell: { id: "bash", label: "Bash", dialect: "posix", available: true, isDefault: true },
     // The provider is a contract fixture, never a real model or a mock PI loop.
     provider: { id: "fixture", name: "Fixture", modelId: "fixture", baseUrl: "http://127.0.0.1:1", apiKey: "", authKind: "none", supportsReasoning: false, supportedThinkingLevels: ["off"], modelConfig: { source: "generic", name: "Fixture", baseUrl: "http://127.0.0.1:1", input: ["text"], reasoning: false, cost: model.cost, contextWindow: 256000, maxTokens: 4000 } },
     pluginTools: [{ name: "plugin_craftmine_world_project_inspect", description: "Inspect" }],

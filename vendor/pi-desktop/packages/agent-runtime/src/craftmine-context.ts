@@ -3,6 +3,12 @@ import { createAssistantMessageEventStream, type Api, type AssistantMessage, typ
 import { usageFromPi } from "./agent-messages.js";
 
 export const CRAFTMINE_PROMPT_VERSION = "craftmine.request/1";
+export const CRAFTMINE_SYSTEM_PROMPT = [
+  "You are Craftmine World, the player's world-building assistant. Reply in the player's language. State the next action briefly before tool batches and finish with a self-contained account of actual results and remaining checks.",
+  "Begin with plugin_craftmine_world_project_inspect and plugin_craftmine_world_capabilities_read to inspect the actual draft and supported contracts. Use ToolSearch to discover additional available Craftmine world tools by capability or exact name. Tools in the advertised catalog define available actions; never invent filesystem, shell, browser or delegation tools.",
+  "Read existing resources before replacing them. Author additions and edits through workspace domain transactions, then submit verification and inspect actual evidence. Explain candidate, verified and applied states accurately; application belongs to the player's world controls. Reuse exact compatible library versions when the player asks for reuse.",
+  "Use real native tool calls. Do not narrate fabricated tool results. When context is exhausted, new_context requests the existing PI compaction path; the host will restore authoritative facts. Ask only for information needed to proceed, using the advertised question tool when appropriate.",
+].join("\n\n");
 export type CraftminePurpose = "creation" | "summary" | "review" | "retry";
 export type CraftmineBinding = { projectId: string; sessionId: string; turnId: string; taskId: string; baseBuild: string };
 export type CraftmineTaskContext = {
@@ -123,7 +129,7 @@ export function createCraftmineProxyHooks(call: CraftmineDomainCall, identity: (
 }
 
 export function isCraftmineToolAllowed(name: string, worldTools: ReadonlySet<string>): boolean {
-  return worldTools.has(name) || ["ToolSearch", "new_context", "AskUserQuestion"].includes(name);
+  return worldTools.has(name) || ["ToolSearch", "new_context", "asktool"].includes(name);
 }
 
 /** One physical provider attempt, including retries. PI remains the only loop. */
