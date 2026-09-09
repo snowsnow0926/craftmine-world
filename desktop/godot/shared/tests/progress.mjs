@@ -7,6 +7,7 @@ import {materializeBase} from '../materialize.mjs';
 import {createGodotProbeEnvironment} from '../../toolchain.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'../../../..');
+fs.mkdirSync(path.join(repo,'test-results'),{recursive:true});
 const out=fs.mkdtempSync(path.join(repo,'test-results/godot-managed-progress-'));
 const engine=await createGodotProbeEnvironment(out);
 const checks=[];
@@ -14,7 +15,7 @@ function check(name,fn){fn();checks.push(name);console.log('PASS '+name);}
 const clone=x=>structuredClone(x);
 // Compare every field: no timestamp/contact normalization is allowed.
 const comparable=state=>state;
-for(const [baseId,template] of [['first-person','training-range'],['top-down','town'],['side-view','ruins']]){
+for(const [baseId,template] of [['first-person','training-range'],['top-down','town'],['side-view','ruins'],['mining-sandbox','mine-camp']]){
  const project=path.join(out,baseId),worldId='managed-'+baseId;
  materializeBase({baseId,worldId,template,out:project});
  fs.copyFileSync(path.join(here,'driver.gd'),path.join(project,'driver.gd'));
@@ -30,6 +31,9 @@ for(const [baseId,template] of [['first-person','training-range'],['top-down','t
  }else if(baseId==='top-down'){
   body.coins=29;body.inventory={apple:2,herb:1};body.shops.general.stock.apple=3;body.quests['herb-delivery']={delivered:3,status:'completed',rewarded:true};body.grantedRewards={'herb-delivery':true};body.flags={'custom_flag':'kept'};
   body.player={sceneId:'shop-interior',position:[136,104],facing:'left'};body.scenePositions['shop-interior']=[136,104];
+ }else if(baseId==='mining-sandbox'){
+  body.state.inventory={stone:7,dirt:2};body.state.tools=['stone_pickaxe'];body.state.equipped='stone_pickaxe';body.state.flags={custom_flag:'kept'};
+  body.state.player={tile:[9,12],position:[152,208],facing:'left',health:3};body.state.worldRevision=5;
  }else{
   body.player={room:'ruins',x:143.5,y:440,facing:-1};body.abilities={double_jump:true};body.checkpoints={cp_ruins:true};body.activeCheckpoint='cp_ruins';body.rewards={reward_ruins_cache:true};body.inventory={coin:5};body.counters={coins:5};body.rooms.ruins={visited:true,entries:4};
  }
@@ -45,7 +49,8 @@ for(const [baseId,template] of [['first-person','training-range'],['top-down','t
  const acks=await run('acknowledgement',[req('load',{snapshot:expected}),req('save'),{fixture:'ack',override:{instanceId:'foreign'}},{fixture:'ack',override:{snapshotSha256:'0'.repeat(64)}},{fixture:'ack'},req('restore-state',{state:expected}),{fixture:'ack'}]);
  check(baseId+' durable acknowledgement binds latest runner hash and instance',()=>{assert(acks[2].error);assert(acks[3].error);assert(acks[4].result.acknowledged);assert(acks[6].error);});
  const badStates=[];
- for(const change of [s=>s.worldId='foreign',s=>s.body.worldId='foreign',s=>s.baseId='foreign',s=>s.baseVersion='future',s=>s.stateVersion=99,s=>s.body.modelExtension={must:'not disappear'},s=>s.body.player='invalid',s=>s.extra='future',s=>s.body.player.modelField='future',s=>s.body.padding='x'.repeat(1048576)]){const bad=clone(expected);change(bad);badStates.push(bad);}
+ for(const change of [s=>s.worldId='foreign',s=>s.body.worldId='foreign',s=>s.baseId='foreign',s=>s.baseVersion='future',s=>s.stateVersion=99,s=>s.body.modelExtension={must:'not disappear'},s=>s.body.player='invalid',s=>s.extra='future',s=>{if(s.body.player&&typeof s.body.player==='object')s.body.player.modelField='future';},s=>s.body.padding='x'.repeat(1048576)]){const bad=clone(expected);change(bad);if(JSON.stringify(bad)!==JSON.stringify(expected))badStates.push(bad);}
+ if(baseId==='mining-sandbox')for(const change of [s=>s.body.state.player.modelField='future',s=>s.body.chunks['0_0']={revision:1,cells:[[9999,9999,'stone']]},s=>s.body.terrainHash='0'.repeat(64),s=>s.body.state.chunkIndex['0_0']={revision:1,file:'../escape.json',sha256:'0'.repeat(64),bytes:1,cells:1}]){const bad=clone(expected);change(bad);if(JSON.stringify(bad)!==JSON.stringify(expected))badStates.push(bad);}
  if(baseId==='side-view')for(const change of [s=>s.body.vitals.health=99,s=>s.body.entities.dummy_ruins.extra=1,s=>s.body.entities.dummy_ruins.health=0,s=>s.body.player.room='missing']){const bad=clone(expected);change(bad);badStates.push(bad);}
  if(baseId==='top-down'){const bad=clone(expected);bad.body.player.sceneId='missing';badStates.push(bad);}
  const requests=[req('load',{snapshot:expected}),req('save')];for(const bad of badStates)requests.push(req('restore-state',{state:bad}),req('save'));

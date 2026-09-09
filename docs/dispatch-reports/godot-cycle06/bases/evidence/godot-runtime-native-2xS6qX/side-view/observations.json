@@ -1,0 +1,1781 @@
+{
+  "commands": [
+    {
+      "op": "control",
+      "args": {
+        "segments": [
+          {
+            "ticks": 15,
+            "move": 1,
+            "jump": true
+          },
+          {
+            "ticks": 15,
+            "move": 1
+          },
+          {
+            "ticks": 15,
+            "move": 1,
+            "jump": true
+          },
+          {
+            "ticks": 15,
+            "move": 1
+          },
+          {
+            "ticks": 15,
+            "move": 1,
+            "jump": true
+          },
+          {
+            "ticks": 15,
+            "move": 1
+          },
+          {
+            "ticks": 15,
+            "move": 1,
+            "jump": true
+          },
+          {
+            "ticks": 15,
+            "move": 1
+          },
+          {
+            "ticks": 15,
+            "move": 1,
+            "jump": true
+          },
+          {
+            "ticks": 15,
+            "move": 1
+          },
+          {
+            "ticks": 150
+          }
+        ]
+      },
+      "result": {
+        "after": {
+          "player": {
+            "alive": true,
+            "doubleJumpAvailable": false,
+            "doubleJumpUnlocked": false,
+            "facing": 1,
+            "health": 3,
+            "onFloor": true,
+            "room": "ruins",
+            "vx": 0,
+            "vy": 0,
+            "x": 238.456741333008,
+            "y": 439.925140380859
+          },
+          "roomId": "ruins",
+          "targets": [
+            {
+              "health": 2,
+              "id": "dummy_ruins",
+              "maxHealth": 2
+            },
+            {
+              "health": 1,
+              "id": "crate_ruins",
+              "maxHealth": 1
+            }
+          ],
+          "tick": 306,
+          "visual": {
+            "playerVisible": true,
+            "screenX": 238.456741333008,
+            "screenY": 299.925140380859,
+            "textureHeight": 40,
+            "textureWidth": 20,
+            "visible": true
+          }
+        },
+        "appliedTicks": 300,
+        "before": {
+          "player": {
+            "alive": true,
+            "doubleJumpAvailable": false,
+            "doubleJumpUnlocked": false,
+            "facing": 1,
+            "health": 3,
+            "onFloor": true,
+            "room": "entrance",
+            "vx": 0,
+            "vy": 0,
+            "x": 120,
+            "y": 320
+          },
+          "roomId": "entrance",
+          "targets": [],
+          "tick": 6,
+          "visual": {
+            "playerVisible": true,
+            "screenX": 120,
+            "screenY": 300,
+            "textureHeight": 40,
+            "textureWidth": 20,
+            "visible": true
+          }
+        }
+      }
+    },
+    {
+      "op": "observe",
+      "args": {},
+      "result": {
+        "player": {
+          "alive": true,
+          "doubleJumpAvailable": false,
+          "doubleJumpUnlocked": false,
+          "facing": 1,
+          "health": 3,
+          "onFloor": true,
+          "room": "ruins",
+          "vx": 0,
+          "vy": 0,
+          "x": 238.456741333008,
+          "y": 439.925140380859
+        },
+        "roomId": "ruins",
+        "targets": [
+          {
+            "health": 2,
+            "id": "dummy_ruins",
+            "maxHealth": 2
+          },
+          {
+            "health": 1,
+            "id": "crate_ruins",
+            "maxHealth": 1
+          }
+        ],
+        "tick": 307,
+        "visual": {
+          "playerVisible": true,
+          "screenX": 238.456741333008,
+          "screenY": 299.925140380859,
+          "textureHeight": 40,
+          "textureWidth": 20,
+          "visible": true
+        }
+      }
+    },
+    {
+      "op": "control",
+      "args": {
+        "segments": [
+          {
+            "ticks": 10,
+            "move": 1
+          },
+          {
+            "ticks": 15,
+            "move": 1,
+            "jump": true
+          },
+          {
+            "ticks": 275,
+            "move": 1
+          },
+          {
+            "ticks": 120
+          }
+        ]
+      },
+      "result": {
+        "after": {
+          "player": {
+            "alive": true,
+            "doubleJumpAvailable": true,
+            "doubleJumpUnlocked": true,
+            "facing": 1,
+            "health": 3,
+            "onFloor": true,
+            "room": "ruins",
+            "vx": 0,
+            "vy": 0,
+            "x": 809.924987792969,
+            "y": 439.925262451172
+          },
+          "roomId": "ruins",
+          "targets": [
+            {
+              "health": 2,
+              "id": "dummy_ruins",
+              "maxHealth": 2
+            },
+            {
+              "health": 1,
+              "id": "crate_ruins",
+              "maxHealth": 1
+            }
+          ],
+          "tick": 728,
+          "visual": {
+            "playerVisible": true,
+            "screenX": 329.924987792969,
+            "screenY": 299.925262451172,
+            "textureHeight": 40,
+            "textureWidth": 20,
+            "visible": true
+          }
+        },
+        "appliedTicks": 420,
+        "before": {
+          "player": {
+            "alive": true,
+            "doubleJumpAvailable": false,
+            "doubleJumpUnlocked": false,
+            "facing": 1,
+            "health": 3,
+            "onFloor": true,
+            "room": "ruins",
+            "vx": 0,
+            "vy": 0,
+            "x": 238.456741333008,
+            "y": 439.925140380859
+          },
+          "roomId": "ruins",
+          "targets": [
+            {
+              "health": 2,
+              "id": "dummy_ruins",
+              "maxHealth": 2
+            },
+            {
+              "health": 1,
+              "id": "crate_ruins",
+              "maxHealth": 1
+            }
+          ],
+          "tick": 308,
+          "visual": {
+            "playerVisible": true,
+            "screenX": 238.456741333008,
+            "screenY": 299.925140380859,
+            "textureHeight": 40,
+            "textureWidth": 20,
+            "visible": true
+          }
+        }
+      }
+    },
+    {
+      "op": "observe",
+      "args": {},
+      "result": {
+        "player": {
+          "alive": true,
+          "doubleJumpAvailable": true,
+          "doubleJumpUnlocked": true,
+          "facing": 1,
+          "health": 3,
+          "onFloor": true,
+          "room": "ruins",
+          "vx": 0,
+          "vy": 0,
+          "x": 809.924987792969,
+          "y": 439.925262451172
+        },
+        "roomId": "ruins",
+        "targets": [
+          {
+            "health": 2,
+            "id": "dummy_ruins",
+            "maxHealth": 2
+          },
+          {
+            "health": 1,
+            "id": "crate_ruins",
+            "maxHealth": 1
+          }
+        ],
+        "tick": 730,
+        "visual": {
+          "playerVisible": true,
+          "screenX": 329.924987792969,
+          "screenY": 299.925262451172,
+          "textureHeight": 40,
+          "textureWidth": 20,
+          "visible": true
+        }
+      }
+    },
+    {
+      "op": "control",
+      "args": {
+        "segments": [
+          {
+            "ticks": 51,
+            "move": -1
+          },
+          {
+            "ticks": 35
+          }
+        ]
+      },
+      "result": {
+        "after": {
+          "player": {
+            "alive": true,
+            "doubleJumpAvailable": true,
+            "doubleJumpUnlocked": true,
+            "facing": -1,
+            "health": 3,
+            "onFloor": true,
+            "room": "ruins",
+            "vx": 0,
+            "vy": 0,
+            "x": 590.092529296875,
+            "y": 439.924041748047
+          },
+          "roomId": "ruins",
+          "targets": [
+            {
+              "health": 2,
+              "id": "dummy_ruins",
+              "maxHealth": 2
+            },
+            {
+              "health": 1,
+              "id": "crate_ruins",
+              "maxHealth": 1
+            }
+          ],
+          "tick": 817,
+          "visual": {
+            "playerVisible": true,
+            "screenX": 319.680419921875,
+            "screenY": 299.924041748047,
+            "textureHeight": 40,
+            "textureWidth": 20,
+            "visible": true
+          }
+        },
+        "appliedTicks": 86,
+        "before": {
+          "player": {
+            "alive": true,
+            "doubleJumpAvailable": true,
+            "doubleJumpUnlocked": true,
+            "facing": 1,
+            "health": 3,
+            "onFloor": true,
+            "room": "ruins",
+            "vx": 0,
+            "vy": 0,
+            "x": 809.924987792969,
+            "y": 439.925262451172
+          },
+          "roomId": "ruins",
+          "targets": [
+            {
+              "health": 2,
+              "id": "dummy_ruins",
+              "maxHealth": 2
+            },
+            {
+              "health": 1,
+              "id": "crate_ruins",
+              "maxHealth": 1
+            }
+          ],
+          "tick": 731,
+          "visual": {
+            "playerVisible": true,
+            "screenX": 329.924987792969,
+            "screenY": 299.925262451172,
+            "textureHeight": 40,
+            "textureWidth": 20,
+            "visible": true
+          }
+        }
+      }
+    },
+    {
+      "op": "control",
+      "args": {
+        "segments": [
+          {
+            "ticks": 1,
+            "move": -1
+          },
+          {
+            "ticks": 1,
+            "attack": true
+          },
+          {
+            "ticks": 60
+          }
+        ]
+      },
+      "result": {
+        "after": {
+          "player": {
+            "alive": true,
+            "doubleJumpAvailable": true,
+            "doubleJumpUnlocked": true,
+            "facing": -1,
+            "health": 3,
+            "onFloor": true,
+            "room": "ruins",
+            "vx": 0,
+            "vy": 0,
+            "x": 589.425842285156,
+            "y": 439.924041748047
+          },
+          "roomId": "ruins",
+          "targets": [
+            {
+              "health": 1,
+              "id": "dummy_ruins",
+              "maxHealth": 2
+            },
+            {
+              "health": 1,
+              "id": "crate_ruins",
+              "maxHealth": 1
+            }
+          ],
+          "tick": 880,
+          "visual": {
+            "playerVisible": true,
+            "screenX": 319.999816894531,
+            "screenY": 299.924041748047,
+            "textureHeight": 40,
+            "textureWidth": 20,
+            "visible": true
+          }
+        },
+        "appliedTicks": 62,
+        "before": {
+          "player": {
+            "alive": true,
+            "doubleJumpAvailable": true,
+            "doubleJumpUnlocked": true,
+            "facing": -1,
+            "health": 3,
+            "onFloor": true,
+            "room": "ruins",
+            "vx": 0,
+            "vy": 0,
+            "x": 590.092529296875,
+            "y": 439.924041748047
+          },
+          "roomId": "ruins",
+          "targets": [
+            {
+              "health": 2,
+              "id": "dummy_ruins",
+              "maxHealth": 2
+            },
+            {
+              "health": 1,
+              "id": "crate_ruins",
+              "maxHealth": 1
+            }
+          ],
+          "tick": 818,
+          "visual": {
+            "playerVisible": true,
+            "screenX": 319.723022460938,
+            "screenY": 299.924041748047,
+            "textureHeight": 40,
+            "textureWidth": 20,
+            "visible": true
+          }
+        }
+      }
+    },
+    {
+      "op": "observe",
+      "args": {},
+      "result": {
+        "player": {
+          "alive": true,
+          "doubleJumpAvailable": true,
+          "doubleJumpUnlocked": true,
+          "facing": -1,
+          "health": 3,
+          "onFloor": true,
+          "room": "ruins",
+          "vx": 0,
+          "vy": 0,
+          "x": 589.425842285156,
+          "y": 439.924041748047
+        },
+        "roomId": "ruins",
+        "targets": [
+          {
+            "health": 1,
+            "id": "dummy_ruins",
+            "maxHealth": 2
+          },
+          {
+            "health": 1,
+            "id": "crate_ruins",
+            "maxHealth": 1
+          }
+        ],
+        "tick": 881,
+        "visual": {
+          "playerVisible": true,
+          "screenX": 319.999816894531,
+          "screenY": 299.924041748047,
+          "textureHeight": 40,
+          "textureWidth": 20,
+          "visible": true
+        }
+      }
+    },
+    {
+      "op": "control",
+      "args": {
+        "segments": [
+          {
+            "ticks": 601,
+            "move": 1
+          }
+        ]
+      },
+      "error": "Error: Error: Control is limited to 600 physics ticks\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:1226:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "side-view",
+          "baseVersion": "1.0.0",
+          "body": {
+            "abilities": {
+              "double_jump": true
+            },
+            "activeCheckpoint": "cp_ruins",
+            "checkpoints": {
+              "cp_ruins": true
+            },
+            "counters": {
+              "coins": 5,
+              "hits": 1
+            },
+            "entities": {
+              "crate_ruins": {
+                "health": 1
+              },
+              "dummy_ruins": {
+                "health": 1
+              }
+            },
+            "format": "craftmine.godot-sideview-state/1",
+            "inventory": {
+              "coin": 5
+            },
+            "player": {
+              "facing": -1,
+              "room": "ruins",
+              "x": 589.425842285156,
+              "y": 439.924041748047
+            },
+            "rewards": {
+              "reward_ruins_cache": true
+            },
+            "rooms": {
+              "entrance": {
+                "entries": 1,
+                "visited": true
+              },
+              "ruins": {
+                "entries": 1,
+                "visited": true
+              }
+            },
+            "stateVersion": 1,
+            "vitals": {
+              "alive": true,
+              "health": 3,
+              "invulnerableRemaining": 0,
+              "respawnRemaining": 0
+            },
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "foreign"
+        }
+      },
+      "error": "Error: Error: Progress identity or base version does not match\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:1226:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "side-view",
+          "baseVersion": "1.0.0",
+          "body": {
+            "abilities": {
+              "double_jump": true
+            },
+            "activeCheckpoint": "cp_ruins",
+            "checkpoints": {
+              "cp_ruins": true
+            },
+            "counters": {
+              "coins": 5,
+              "hits": 1
+            },
+            "entities": {
+              "crate_ruins": {
+                "health": 1
+              },
+              "dummy_ruins": {
+                "health": 1
+              }
+            },
+            "format": "craftmine.godot-sideview-state/1",
+            "inventory": {
+              "coin": 5
+            },
+            "player": {
+              "facing": -1,
+              "room": "ruins",
+              "x": 589.425842285156,
+              "y": 439.924041748047
+            },
+            "rewards": {
+              "reward_ruins_cache": true
+            },
+            "rooms": {
+              "entrance": {
+                "entries": 1,
+                "visited": true
+              },
+              "ruins": {
+                "entries": 1,
+                "visited": true
+              }
+            },
+            "stateVersion": 1,
+            "vitals": {
+              "alive": true,
+              "health": 3,
+              "invulnerableRemaining": 0,
+              "respawnRemaining": 0
+            },
+            "worldId": "foreign"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "alpha"
+        }
+      },
+      "error": "Error: Error: Native progress belongs to another world\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:1226:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "side-view",
+          "baseVersion": "1.0.0",
+          "body": {
+            "abilities": {
+              "double_jump": true
+            },
+            "activeCheckpoint": "cp_ruins",
+            "checkpoints": {
+              "cp_ruins": true
+            },
+            "counters": {
+              "coins": 5,
+              "hits": 1
+            },
+            "entities": {
+              "crate_ruins": {
+                "health": 1
+              },
+              "dummy_ruins": {
+                "health": 1
+              }
+            },
+            "format": "craftmine.godot-sideview-state/1",
+            "inventory": {
+              "coin": 5
+            },
+            "player": {
+              "facing": -1,
+              "room": "ruins",
+              "x": 589.425842285156,
+              "y": 439.924041748047
+            },
+            "rewards": {
+              "reward_ruins_cache": true
+            },
+            "rooms": {
+              "entrance": {
+                "entries": 1,
+                "visited": true
+              },
+              "ruins": {
+                "entries": 1,
+                "visited": true
+              }
+            },
+            "stateVersion": 1,
+            "vitals": {
+              "alive": true,
+              "health": 3,
+              "invulnerableRemaining": 0,
+              "respawnRemaining": 0
+            },
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 99,
+          "worldId": "alpha"
+        }
+      },
+      "error": "Error: Error: Unsupported progress state version or body\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:1226:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "side-view",
+          "baseVersion": "1.0.0",
+          "body": {
+            "abilities": {
+              "double_jump": true
+            },
+            "activeCheckpoint": "cp_ruins",
+            "checkpoints": {
+              "cp_ruins": true
+            },
+            "counters": {
+              "coins": 5,
+              "hits": 1
+            },
+            "entities": {
+              "crate_ruins": {
+                "health": 1
+              },
+              "dummy_ruins": {
+                "health": 1
+              }
+            },
+            "format": "craftmine.godot-sideview-state/1",
+            "inventory": {
+              "coin": 5
+            },
+            "player": "invalid",
+            "rewards": {
+              "reward_ruins_cache": true
+            },
+            "rooms": {
+              "entrance": {
+                "entries": 1,
+                "visited": true
+              },
+              "ruins": {
+                "entries": 1,
+                "visited": true
+              }
+            },
+            "stateVersion": 1,
+            "vitals": {
+              "alive": true,
+              "health": 3,
+              "invulnerableRemaining": 0,
+              "respawnRemaining": 0
+            },
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "alpha"
+        }
+      },
+      "error": "Error: Error: Invalid state block: player\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\app\\main\\index.cjs:1226:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    }
+  ],
+  "initial": {
+    "baseId": "side-view",
+    "format": "craftmine.godot-progress/1",
+    "state": {
+      "baseId": "side-view",
+      "baseVersion": "1.0.0",
+      "body": {
+        "abilities": {},
+        "activeCheckpoint": "",
+        "checkpoints": {},
+        "counters": {},
+        "entities": {},
+        "format": "craftmine.godot-sideview-state/1",
+        "inventory": {},
+        "player": {
+          "facing": 1,
+          "room": "entrance",
+          "x": 120,
+          "y": 320
+        },
+        "rewards": {},
+        "rooms": {
+          "entrance": {
+            "entries": 1,
+            "visited": true
+          }
+        },
+        "stateVersion": 1,
+        "vitals": {
+          "alive": true,
+          "health": 3,
+          "invulnerableRemaining": 0,
+          "respawnRemaining": 0
+        },
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    }
+  },
+  "before": {
+    "base": "side-view",
+    "state": {
+      "baseId": "side-view",
+      "baseVersion": "1.0.0",
+      "body": {
+        "abilities": {},
+        "activeCheckpoint": "",
+        "checkpoints": {},
+        "counters": {},
+        "entities": {},
+        "format": "craftmine.godot-sideview-state/1",
+        "inventory": {},
+        "player": {
+          "facing": 1,
+          "room": "entrance",
+          "x": 120,
+          "y": 320
+        },
+        "rewards": {},
+        "rooms": {
+          "entrance": {
+            "entries": 1,
+            "visited": true
+          }
+        },
+        "stateVersion": 1,
+        "vitals": {
+          "alive": true,
+          "health": 3,
+          "invulnerableRemaining": 0,
+          "respawnRemaining": 0
+        },
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "played": {
+    "base": "side-view",
+    "state": {
+      "baseId": "side-view",
+      "baseVersion": "1.0.0",
+      "body": {
+        "abilities": {
+          "double_jump": true
+        },
+        "activeCheckpoint": "cp_ruins",
+        "checkpoints": {
+          "cp_ruins": true
+        },
+        "counters": {
+          "coins": 5,
+          "hits": 1
+        },
+        "entities": {
+          "crate_ruins": {
+            "health": 1
+          },
+          "dummy_ruins": {
+            "health": 1
+          }
+        },
+        "format": "craftmine.godot-sideview-state/1",
+        "inventory": {
+          "coin": 5
+        },
+        "player": {
+          "facing": -1,
+          "room": "ruins",
+          "x": 589.425842285156,
+          "y": 439.924041748047
+        },
+        "rewards": {
+          "reward_ruins_cache": true
+        },
+        "rooms": {
+          "entrance": {
+            "entries": 1,
+            "visited": true
+          },
+          "ruins": {
+            "entries": 1,
+            "visited": true
+          }
+        },
+        "stateVersion": 1,
+        "vitals": {
+          "alive": true,
+          "health": 3,
+          "invulnerableRemaining": 0,
+          "respawnRemaining": 0
+        },
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "saved": {
+    "status": "persisted",
+    "runnerReceipt": {
+      "buildId": "gbd-432487e71c017b76a364eae9c938814548ee12b654e51b8f752a1514b264c01b",
+      "bytes": 713,
+      "format": "craftmine.godot-runner-receipt/1",
+      "instanceId": "b4cba609fb7690c7e1d58b03",
+      "snapshotSha256": "ada68d4e42b7f88037b991c636294eb627e786340072a9bc8a704270f8455565",
+      "snapshotText": "{\"baseId\":\"side-view\",\"baseVersion\":\"1.0.0\",\"body\":{\"abilities\":{\"double_jump\":true},\"activeCheckpoint\":\"cp_ruins\",\"checkpoints\":{\"cp_ruins\":true},\"counters\":{\"coins\":5,\"hits\":1},\"entities\":{\"crate_ruins\":{\"health\":1},\"dummy_ruins\":{\"health\":1}},\"format\":\"craftmine.godot-sideview-state/1\",\"inventory\":{\"coin\":5},\"player\":{\"facing\":-1,\"room\":\"ruins\",\"x\":589.425842285156,\"y\":439.924041748047},\"rewards\":{\"reward_ruins_cache\":true},\"rooms\":{\"entrance\":{\"entries\":1,\"visited\":true},\"ruins\":{\"entries\":1,\"visited\":true}},\"stateVersion\":1,\"vitals\":{\"alive\":true,\"health\":3,\"invulnerableRemaining\":0.0,\"respawnRemaining\":0.0},\"worldId\":\"alpha\"},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"alpha\"}",
+      "worldId": "alpha"
+    },
+    "receipt": {
+      "buildId": "gbd-432487e71c017b76a364eae9c938814548ee12b654e51b8f752a1514b264c01b",
+      "contentHash": "67fb4ea6688beb30dba8f580bec458f284570a637fc170b654e00c2e6f4bb9ba",
+      "format": "craftmine.godot-progress-receipt/1",
+      "instanceId": "b4cba609fb7690c7e1d58b03",
+      "persistedAt": 1788970333077,
+      "revision": 2,
+      "snapshotHash": "82f12e35c9c10a7ad4a95d28a4b35349b0a6899f5123a592fdc79d70808e4f18",
+      "snapshotSha256": "ada68d4e42b7f88037b991c636294eb627e786340072a9bc8a704270f8455565",
+      "worldId": "alpha"
+    },
+    "snapshot": {
+      "baseId": "side-view",
+      "baseVersion": "1.0.0",
+      "body": {
+        "abilities": {
+          "double_jump": true
+        },
+        "activeCheckpoint": "cp_ruins",
+        "checkpoints": {
+          "cp_ruins": true
+        },
+        "counters": {
+          "coins": 5,
+          "hits": 1
+        },
+        "entities": {
+          "crate_ruins": {
+            "health": 1
+          },
+          "dummy_ruins": {
+            "health": 1
+          }
+        },
+        "format": "craftmine.godot-sideview-state/1",
+        "inventory": {
+          "coin": 5
+        },
+        "player": {
+          "facing": -1,
+          "room": "ruins",
+          "x": 589.425842285156,
+          "y": 439.924041748047
+        },
+        "rewards": {
+          "reward_ruins_cache": true
+        },
+        "rooms": {
+          "entrance": {
+            "entries": 1,
+            "visited": true
+          },
+          "ruins": {
+            "entries": 1,
+            "visited": true
+          }
+        },
+        "stateVersion": 1,
+        "vitals": {
+          "alive": true,
+          "health": 3,
+          "invulnerableRemaining": 0,
+          "respawnRemaining": 0
+        },
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    }
+  },
+  "image": {
+    "isolation": {
+      "isolated": true,
+      "node": "undefined",
+      "origin": "http://127.0.0.1:64621",
+      "statusHidden": true,
+      "statusText": "Loading world…"
+    },
+    "guardCounts": {
+      "pointer-lock": 0,
+      "window-focus": 0
+    },
+    "consoleMessages": [
+      {
+        "level": 2,
+        "message": "%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged."
+      },
+      {
+        "level": 1,
+        "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+      },
+      {
+        "level": 1,
+        "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+      },
+      {
+        "level": 1,
+        "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0x9640db6ac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 1,
+        "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+      },
+      {
+        "level": 1,
+        "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+      },
+      {
+        "level": 1,
+        "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bufferSubData: no buffer"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bufferSubData: no buffer"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bufferSubData: no buffer"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bufferSubData: no buffer"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bufferSubData: no buffer"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bufferSubData: no buffer"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bufferSubData: no buffer"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bufferSubData: no buffer"
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "level": 2,
+        "message": "[.WebGL-0xa3c0e18d400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"
+      },
+      {
+        "level": 2,
+        "message": "WebGL: INVALID_OPERATION: bufferSubData: no buffer"
+      }
+    ],
+    "attached": 1,
+    "width": 1280,
+    "height": 860,
+    "pixels": {
+      "colorCounts": [
+        3200
+      ],
+      "colors": 9,
+      "sampled": 8215,
+      "nonDominant": 2855
+    }
+  },
+  "restored": {
+    "base": "side-view",
+    "state": {
+      "baseId": "side-view",
+      "baseVersion": "1.0.0",
+      "body": {
+        "abilities": {
+          "double_jump": true
+        },
+        "activeCheckpoint": "cp_ruins",
+        "checkpoints": {
+          "cp_ruins": true
+        },
+        "counters": {
+          "coins": 5,
+          "hits": 1
+        },
+        "entities": {
+          "crate_ruins": {
+            "health": 1
+          },
+          "dummy_ruins": {
+            "health": 1
+          }
+        },
+        "format": "craftmine.godot-sideview-state/1",
+        "inventory": {
+          "coin": 5
+        },
+        "player": {
+          "facing": -1,
+          "room": "ruins",
+          "x": 589.425842285156,
+          "y": 439.924041748047
+        },
+        "rewards": {
+          "reward_ruins_cache": true
+        },
+        "rooms": {
+          "entrance": {
+            "entries": 1,
+            "visited": true
+          },
+          "ruins": {
+            "entries": 1,
+            "visited": true
+          }
+        },
+        "stateVersion": 1,
+        "vitals": {
+          "alive": true,
+          "health": 3,
+          "invulnerableRemaining": 0,
+          "respawnRemaining": 0
+        },
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  }
+}

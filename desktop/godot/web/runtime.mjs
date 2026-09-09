@@ -378,6 +378,16 @@ export async function createWorldRuntime(options) {
     waitReady() {
       return readyPromise;
     },
+    /**
+     * Abort a startup that can no longer succeed (page load failure, renderer
+     * crash). A ready/exited/disposed runtime is unaffected, so a late event can
+     * never overwrite a finished startup.
+     */
+    abortStartup(reason) {
+      if (disposed || ready || exited || state === 'error') return false;
+      fail(typeof reason === 'string' && reason ? reason.slice(0, 500) : 'Godot runtime failed to start');
+      return true;
+    },
     attach(transport) {
       if (deliver) throw Error('Runtime transport is already attached');
       if (typeof transport !== 'function') throw Error('Runtime transport must be a function');

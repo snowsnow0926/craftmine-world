@@ -6,6 +6,32 @@
   "language": "GDScript",
   "renderer": "gl_compatibility",
   "status": "delivered-example-and-blank-start",
+  "contract": {
+    "format": "craftmine.godot-base-contract/1",
+    "assets": {
+      "manifest": "core/assets/ASSET_MANIFEST.json",
+      "provenance": "ASSET_SOURCES.md",
+      "license": "ASSET_SOURCES.md",
+      "generator": "tools/make-assets.mjs"
+    },
+    "state": {
+      "format": "craftmine.godot-topdown-state/1",
+      "version": 1,
+      "preserved": [
+        "worldId",
+        "sceneId",
+        "player",
+        "scenePositions",
+        "coins",
+        "inventory",
+        "shops",
+        "quests",
+        "grantedRewards",
+        "flags"
+      ],
+      "migrations": []
+    }
+  },
   "protocols": {
     "worldFormat": "craftmine.godot-topdown-world/1",
     "stateFormat": "craftmine.godot-topdown-state/1",
@@ -27,10 +53,345 @@
       "description": "One road, one shop, one NPC and one collect-and-deliver quest."
     }
   },
+  "templates": [
+    {
+      "id": "blank",
+      "kind": "blank-start",
+      "label": "Blank start",
+      "entryScene": "res://scenes/world.tscn",
+      "source": "templates/blank",
+      "description": "Empty walkable room with the base runtime only: movement, collision, camera and save.",
+      "initialState": {
+        "coins": 0,
+        "inventory": [],
+        "shops": [],
+        "quests": [],
+        "grantedRewards": [],
+        "flags": [],
+        "sceneId": "world"
+      }
+    },
+    {
+      "id": "town",
+      "kind": "example",
+      "label": "Town",
+      "entryScene": "res://scenes/overworld.tscn",
+      "source": "templates/town",
+      "description": "One road, one shop, one NPC and one collect-and-deliver quest.",
+      "initialState": {
+        "coins": 40,
+        "inventory": [],
+        "shops": [
+          {
+            "id": "general",
+            "stock": "authored counts"
+          }
+        ],
+        "quests": [
+          {
+            "id": "herb-delivery",
+            "status": "active"
+          }
+        ],
+        "grantedRewards": [],
+        "flags": [],
+        "sceneId": "overworld"
+      }
+    }
+  ],
+  "components": [
+    {
+      "id": "td.door",
+      "version": 1,
+      "kind": "entity",
+      "label": "Door / scene link",
+      "compatibleBases": [
+        "top-down"
+      ],
+      "identity": {
+        "scheme": "exported entity_id",
+        "field": "entity_id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-topdown-state/1",
+        "fields": [
+          "sceneId",
+          "scenePositions"
+        ],
+        "capture": "WorldState.snapshot()",
+        "restore": "WorldState.apply()"
+      },
+      "initialState": {
+        "targetScene": "res://scenes/...",
+        "targetSpawn": "spawn id"
+      },
+      "files": [
+        "core/scripts/door_zone.gd"
+      ],
+      "install": {
+        "mode": "script-node",
+        "scene": "scenes/overworld.tscn",
+        "parent": ".",
+        "nodeType": "Area2D",
+        "script": "scripts/base/door_zone.gd",
+        "identityField": "entity_id",
+        "identityType": "string",
+        "exports": {
+          "target_scene": "\"\"",
+          "target_spawn": "\"\""
+        }
+      }
+    },
+    {
+      "id": "td.interactable",
+      "version": 1,
+      "kind": "entity",
+      "label": "Interactable",
+      "compatibleBases": [
+        "top-down"
+      ],
+      "identity": {
+        "scheme": "exported entity_id",
+        "field": "entity_id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-topdown-state/1",
+        "fields": [],
+        "capture": null,
+        "restore": null
+      },
+      "initialState": {
+        "enabled": true
+      },
+      "files": [
+        "core/scripts/interactable.gd"
+      ],
+      "install": {
+        "mode": "script-node",
+        "scene": "scenes/overworld.tscn",
+        "parent": ".",
+        "nodeType": "Area2D",
+        "script": "scripts/base/interactable.gd",
+        "identityField": "entity_id",
+        "identityType": "string",
+        "exports": {}
+      }
+    },
+    {
+      "id": "td.npc-dialogue",
+      "version": 1,
+      "kind": "entity",
+      "label": "NPC and dialogue",
+      "compatibleBases": [
+        "top-down"
+      ],
+      "identity": {
+        "scheme": "npc_id plus exported entity_id",
+        "field": "npc_id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-topdown-state/1",
+        "fields": [
+          "quests[].status"
+        ],
+        "capture": "WorldState.snapshot()",
+        "restore": "WorldState.apply()"
+      },
+      "initialState": {
+        "questStatus": "inactive"
+      },
+      "files": [
+        "core/scripts/npc.gd",
+        "templates/town/data/npcs/mira.json",
+        "templates/town/data/npcs/shopkeeper.json"
+      ]
+    },
+    {
+      "id": "td.shop",
+      "version": 1,
+      "kind": "entity",
+      "label": "Shop",
+      "compatibleBases": [
+        "top-down"
+      ],
+      "identity": {
+        "scheme": "exported shop_id",
+        "field": "shop_id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-topdown-state/1",
+        "fields": [
+          "shops[].stock"
+        ],
+        "capture": "WorldState.snapshot()",
+        "restore": "WorldState.apply()"
+      },
+      "initialState": {
+        "stock": "authored counts"
+      },
+      "files": [
+        "core/scripts/shop.gd",
+        "templates/town/data/shops/general.json",
+        "templates/town/data/items.json"
+      ]
+    },
+    {
+      "id": "td.quest",
+      "version": 1,
+      "kind": "system",
+      "label": "Quest and one-time reward",
+      "compatibleBases": [
+        "top-down"
+      ],
+      "identity": {
+        "scheme": "quest id",
+        "field": "quest id in data/quests",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-topdown-state/1",
+        "fields": [
+          "quests[].status",
+          "quests[].delivered",
+          "quests[].rewarded",
+          "grantedRewards"
+        ],
+        "capture": "WorldState.snapshot()",
+        "restore": "WorldState.apply()"
+      },
+      "initialState": {
+        "status": "inactive",
+        "delivered": 0,
+        "rewarded": false
+      },
+      "files": [
+        "core/scripts/quest_manager.gd",
+        "templates/town/data/quests/herb-delivery.json"
+      ]
+    },
+    {
+      "id": "td.gather-zone",
+      "version": 1,
+      "kind": "entity",
+      "label": "Gather zone",
+      "compatibleBases": [
+        "top-down"
+      ],
+      "identity": {
+        "scheme": "exported zone_id",
+        "field": "zone_id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-topdown-state/1",
+        "fields": [
+          "grantedRewards[zone.<zone_id>.gathered]"
+        ],
+        "capture": "WorldState.snapshot()",
+        "restore": "WorldState.apply()"
+      },
+      "initialState": {
+        "chargesLeft": "max_charges"
+      },
+      "files": [
+        "core/scripts/gather_zone.gd"
+      ],
+      "install": {
+        "mode": "script-node",
+        "scene": "scenes/overworld.tscn",
+        "parent": ".",
+        "nodeType": "Area2D",
+        "script": "scripts/base/gather_zone.gd",
+        "identityField": "entity_id",
+        "identityType": "string",
+        "exports": {
+          "zone_id": "\"\"",
+          "max_charges": 5
+        }
+      }
+    },
+    {
+      "id": "td.spawn-marker",
+      "version": 1,
+      "kind": "entity",
+      "label": "Spawn marker",
+      "compatibleBases": [
+        "top-down"
+      ],
+      "identity": {
+        "scheme": "exported spawn_id",
+        "field": "spawn_id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-topdown-state/1",
+        "fields": [
+          "scenePositions"
+        ],
+        "capture": "WorldState.snapshot()",
+        "restore": "WorldState.apply()"
+      },
+      "initialState": {
+        "position": "authored"
+      },
+      "files": [
+        "core/scripts/spawn_marker.gd"
+      ],
+      "install": {
+        "mode": "script-node",
+        "scene": "scenes/overworld.tscn",
+        "parent": ".",
+        "nodeType": "Marker2D",
+        "script": "scripts/base/spawn_marker.gd",
+        "identityField": "spawn_id",
+        "identityType": "string",
+        "groups": [
+          "spawns"
+        ],
+        "exports": {}
+      }
+    },
+    {
+      "id": "td.player",
+      "version": 1,
+      "kind": "entity",
+      "label": "Player controller",
+      "compatibleBases": [
+        "top-down"
+      ],
+      "identity": {
+        "scheme": "exported entity_id (single player)",
+        "field": "entity_id",
+        "fallback": "none"
+      },
+      "persistentState": {
+        "format": "craftmine.godot-topdown-state/1",
+        "fields": [
+          "player",
+          "scenePositions",
+          "sceneId"
+        ],
+        "capture": "WorldState.snapshot()",
+        "restore": "WorldState.apply()"
+      },
+      "initialState": {
+        "position": "spawn",
+        "facing": "down"
+      },
+      "files": [
+        "core/scripts/player.gd",
+        "core/scripts/directional_sprite.gd"
+      ]
+    }
+  ],
   "tools": {
     "makeAssets": "tools/make-assets.mjs",
     "newWorld": "tools/new-world.mjs",
-    "syncBase": "tools/sync-base.mjs",
+    "syncBase": "tools/check-sync.mjs",
     "verify": "tools/verify.mjs"
   },
   "stateVersion": 1,

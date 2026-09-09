@@ -1,0 +1,25 @@
+{
+  "note": "Generated blank and training-range worlds booted on the pinned engine and answered a real probe.",
+  "blank": {
+    "worldId": "f-blank-world",
+    "base": "first-person",
+    "targets": 0,
+    "interactables": 0,
+    "quests": 0
+  },
+  "trainingRange": {
+    "worldId": "f-range-world",
+    "base": "first-person",
+    "targets": 3,
+    "interactables": 2,
+    "quests": 1
+  },
+  "managedFirstPerson": {
+    "format": "craftmine.managed-base-source/1",
+    "baseId": "first-person",
+    "baseVersion": "0.1.0",
+    "worldId": "f-managed-check",
+    "template": "blank",
+    "files": 68
+  }
+}

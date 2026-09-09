@@ -61,7 +61,7 @@ function main() {
     process.exit(2);
   }
   const worldId = args.worldId || randomUUID();
-  if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,127}$/.test(worldId)) throw Error('Invalid world instance identity');
+  if (!/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId)) throw Error('World identity must be a portable lowercase id (2-48 chars)');
   if (fs.existsSync(args.out) && !args.force) {
     console.error(`Output directory already exists: ${args.out} (pass --force to overwrite)`);
     process.exit(2);
@@ -82,12 +82,20 @@ function main() {
     path.join(args.out, 'worlds', 'default.json'),
     `${JSON.stringify({ format: 'craftmine.godot-sideview-default/1', worldId: args.world, instanceId: worldId }, null, 2)}\n`,
   );
-  const world = JSON.parse(fs.readFileSync(path.join(args.out, 'worlds', args.world, 'world.json'), 'utf8'));
+  // The copied world data records the new world identity and the template it
+  // came from, so two worlds created from the same template are never confused.
+  const worldFile = path.join(args.out, 'worlds', args.world, 'world.json');
+  const world = JSON.parse(fs.readFileSync(worldFile, 'utf8'));
+  world.worldId = worldId;
+  world.templateId = args.world;
+  fs.writeFileSync(worldFile, `${JSON.stringify(world, null, 2)}\n`);
+  const manifest = JSON.parse(fs.readFileSync(path.join(baseDir, 'manifest.json'), 'utf8'));
   const receipt = {
     format: 'craftmine.godot-sideview-materialize/1',
     baseId: 'side-view',
-    baseVersion: '1.0.0',
+    baseVersion: manifest.baseVersion,
     worldId,
+    instanceId: worldId,
     templateId: args.world,
     worldKind: world.kind,
     stateVersion: world.stateVersion,

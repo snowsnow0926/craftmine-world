@@ -1,0 +1,352 @@
+{
+  "format": "craftmine.godot-mining-sandbox-world/1",
+  "baseId": "mining-sandbox",
+  "baseVersion": "1.0.0",
+  "baseProtocolVersion": 1,
+  "worldId": "__WORLD_ID__",
+  "displayName": "__WORLD_NAME__",
+  "description": "Mining camp: a finite 96x48 generated map. Dig soil and stone by hand, craft a stone pickaxe, mine coal and iron, smelt an iron ingot at the camp forge, craft an iron pickaxe, then build with stone bricks.",
+  "entryScene": "res://scenes/main.tscn",
+  "stateVersion": 1,
+  "autosaveOnExit": true,
+  "generation": {
+    "algorithm": "craftmine.deterministic-terrain/1",
+    "seed": 31415926,
+    "mapSize": [
+      96,
+      48
+    ],
+    "surface": {
+      "baseRow": 12,
+      "amplitude": 3
+    },
+    "soilDepth": 4,
+    "soilMaterial": "dirt",
+    "soilTopMaterial": "grass",
+    "rockMaterial": "stone",
+    "deepRockMaterial": "deepstone",
+    "deepRockRow": 34,
+    "bedrockRows": 2,
+    "ores": [
+      {
+        "material": "coal_ore",
+        "minRow": 12,
+        "maxRow": 45,
+        "chancePerMille": 110,
+        "veinSize": 3,
+        "hostMaterials": [
+          "stone",
+          "deepstone"
+        ]
+      },
+      {
+        "material": "iron_ore",
+        "minRow": 20,
+        "maxRow": 45,
+        "chancePerMille": 80,
+        "veinSize": 2,
+        "hostMaterials": [
+          "stone",
+          "deepstone"
+        ]
+      }
+    ],
+    "caves": {
+      "chancePerMille": 90,
+      "minRow": 16,
+      "maxRow": 45,
+      "veinSize": 2
+    }
+  },
+  "materials": [
+    {
+      "id": "grass",
+      "name": "Grass",
+      "color": "#4f8f3f",
+      "solid": true,
+      "breakable": true,
+      "requiredTier": 0,
+      "placeable": true,
+      "item": "dirt",
+      "placeCost": 1,
+      "drop": {
+        "id": "dirt",
+        "count": 1
+      }
+    },
+    {
+      "id": "dirt",
+      "name": "Dirt",
+      "color": "#6b4a2f",
+      "solid": true,
+      "breakable": true,
+      "requiredTier": 0,
+      "placeable": true,
+      "item": "dirt",
+      "placeCost": 1,
+      "drop": {
+        "id": "dirt",
+        "count": 1
+      }
+    },
+    {
+      "id": "stone",
+      "name": "Stone",
+      "color": "#6b6f7a",
+      "solid": true,
+      "breakable": true,
+      "requiredTier": 0,
+      "placeable": true,
+      "item": "stone",
+      "placeCost": 1,
+      "drop": {
+        "id": "stone",
+        "count": 1
+      }
+    },
+    {
+      "id": "coal_ore",
+      "name": "Coal Ore",
+      "color": "#3b3f4a",
+      "solid": true,
+      "breakable": true,
+      "requiredTier": 1,
+      "placeable": false,
+      "item": "",
+      "placeCost": 0,
+      "drop": {
+        "id": "coal",
+        "count": 1
+      }
+    },
+    {
+      "id": "iron_ore",
+      "name": "Iron Ore",
+      "color": "#a08a72",
+      "solid": true,
+      "breakable": true,
+      "requiredTier": 1,
+      "placeable": false,
+      "item": "",
+      "placeCost": 0,
+      "drop": {
+        "id": "iron_ore",
+        "count": 1
+      }
+    },
+    {
+      "id": "deepstone",
+      "name": "Deepstone",
+      "color": "#4a4d58",
+      "solid": true,
+      "breakable": true,
+      "requiredTier": 2,
+      "placeable": true,
+      "item": "deepstone",
+      "placeCost": 1,
+      "drop": {
+        "id": "deepstone",
+        "count": 1
+      }
+    },
+    {
+      "id": "bedrock",
+      "name": "Bedrock",
+      "color": "#23262d",
+      "solid": true,
+      "breakable": false,
+      "requiredTier": 0,
+      "placeable": false,
+      "item": "",
+      "placeCost": 0,
+      "drop": {
+        "id": "",
+        "count": 0
+      }
+    },
+    {
+      "id": "stone_brick",
+      "name": "Stone Brick",
+      "color": "#8d93a1",
+      "solid": true,
+      "breakable": true,
+      "requiredTier": 0,
+      "placeable": true,
+      "item": "stone_brick",
+      "placeCost": 1,
+      "drop": {
+        "id": "stone_brick",
+        "count": 1
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "dirt",
+      "name": "Dirt",
+      "stack": 999,
+      "toolTier": 0
+    },
+    {
+      "id": "stone",
+      "name": "Stone",
+      "stack": 999,
+      "toolTier": 0
+    },
+    {
+      "id": "coal",
+      "name": "Coal",
+      "stack": 999,
+      "toolTier": 0
+    },
+    {
+      "id": "iron_ore",
+      "name": "Iron Ore",
+      "stack": 999,
+      "toolTier": 0
+    },
+    {
+      "id": "deepstone",
+      "name": "Deepstone",
+      "stack": 999,
+      "toolTier": 0
+    },
+    {
+      "id": "wood",
+      "name": "Wood",
+      "stack": 999,
+      "toolTier": 0
+    },
+    {
+      "id": "iron_ingot",
+      "name": "Iron Ingot",
+      "stack": 999,
+      "toolTier": 0
+    },
+    {
+      "id": "stone_pickaxe",
+      "name": "Stone Pickaxe",
+      "stack": 1,
+      "toolTier": 1
+    },
+    {
+      "id": "iron_pickaxe",
+      "name": "Iron Pickaxe",
+      "stack": 1,
+      "toolTier": 2
+    },
+    {
+      "id": "stone_brick",
+      "name": "Stone Brick",
+      "stack": 999,
+      "toolTier": 0
+    }
+  ],
+  "recipes": [
+    {
+      "id": "stone-pickaxe",
+      "name": "Stone Pickaxe",
+      "station": "",
+      "inputs": [
+        {
+          "id": "stone",
+          "count": 3
+        },
+        {
+          "id": "wood",
+          "count": 2
+        }
+      ],
+      "output": {
+        "id": "stone_pickaxe",
+        "count": 1
+      }
+    },
+    {
+      "id": "stone-brick",
+      "name": "Stone Brick",
+      "station": "",
+      "inputs": [
+        {
+          "id": "stone",
+          "count": 2
+        }
+      ],
+      "output": {
+        "id": "stone_brick",
+        "count": 1
+      }
+    },
+    {
+      "id": "iron-ingot",
+      "name": "Iron Ingot",
+      "station": "camp-forge",
+      "inputs": [
+        {
+          "id": "iron_ore",
+          "count": 3
+        },
+        {
+          "id": "coal",
+          "count": 1
+        }
+      ],
+      "output": {
+        "id": "iron_ingot",
+        "count": 1
+      }
+    },
+    {
+      "id": "iron-pickaxe",
+      "name": "Iron Pickaxe",
+      "station": "camp-forge",
+      "inputs": [
+        {
+          "id": "iron_ingot",
+          "count": 2
+        },
+        {
+          "id": "wood",
+          "count": 2
+        }
+      ],
+      "output": {
+        "id": "iron_pickaxe",
+        "count": 1
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "camp-forge",
+      "type": "crafting_station",
+      "name": "Camp Forge",
+      "tile": [
+        14,
+        12
+      ],
+      "recipes": [
+        "iron-ingot",
+        "iron-pickaxe"
+      ]
+    }
+  ],
+  "initialProgress": {
+    "player": {
+      "tile": [
+        8,
+        8
+      ],
+      "facing": "right",
+      "health": 3
+    },
+    "inventory": [
+      {
+        "id": "wood",
+        "count": 2
+      }
+    ],
+    "tools": [],
+    "flags": []
+  }
+}

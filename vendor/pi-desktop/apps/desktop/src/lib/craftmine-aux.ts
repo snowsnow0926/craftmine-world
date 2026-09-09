@@ -15,7 +15,8 @@ import type {
 export type CraftmineAuxSurface =
   | { kind: "workbench"; tab: string }
   | { kind: "checks" }
-  | { kind: "world" };
+  | { kind: "world" }
+  | { kind: "assets" };
 
 export type CraftmineAuxSection = {
   id: CraftmineAuxSectionId;
@@ -38,11 +39,11 @@ export const CRAFTMINE_AUX_SECTIONS: CraftmineAuxSection[] = [
   {
     id: "assets",
     label: { zh: "素材", en: "Assets" },
-    surface: { kind: "world" },
-    channel: null,
+    surface: { kind: "assets" },
+    channel: "asset.search",
     note: {
-      zh: "素材清单接口尚未接入，当前只在世界中显示。",
-      en: "No asset inventory channel yet; assets are shown in the world only.",
+      zh: "本地素材库：按版本浏览、预览与导入，不自动应用世界。",
+      en: "Local asset library: browse, preview and import by version; never applied automatically.",
     },
   },
   {
@@ -64,7 +65,10 @@ export const CRAFTMINE_AUX_SECTIONS: CraftmineAuxSection[] = [
     label: { zh: "任务", en: "Tasks" },
     surface: { kind: "workbench", tab: "task" },
     channel: "task.current",
-    note: { zh: "当前会话绑定的创作任务。", en: "The creation task bound to this session." },
+    note: {
+      zh: "当前会话绑定的创作任务，以及可重新接续的中断草稿。",
+      en: "The task bound to this session and any interrupted drafts that can be resumed.",
+    },
   },
   {
     id: "backups",
@@ -108,6 +112,11 @@ export async function loadAuxSummary(
     payload.offset = 0;
     payload.limit = 5;
   }
+  if (section.channel === "asset.search") {
+    payload.scope = "local-library";
+    payload.offset = 0;
+    payload.limit = 5;
+  }
   const result = await bridge.call(section.channel, payload);
   const raw = record(result);
   const items = list(raw.items ?? result);
@@ -115,6 +124,11 @@ export async function loadAuxSummary(
     case "works": {
       const count = typeof raw.total === "number" ? raw.total : items.length;
       return { id, label: section.label.zh, count, detail: `${count}` };
+    }
+    case "assets": {
+      const count = typeof raw.total === "number" ? raw.total : items.length;
+      const truncated = raw.truncated === true;
+      return { id, label: section.label.zh, count, detail: truncated ? "…" : `${count}` };
     }
     case "checks": {
       const first = record(items[0]);
@@ -129,7 +143,17 @@ export async function loadAuxSummary(
       const context = record(raw.context ?? raw);
       const status = text(context.status);
       const taskId = text(record(context.binding).taskId) || text(context.taskId);
-      return { id, label: section.label.zh, count: taskId ? 1 : 0, detail: status || (taskId ? "bound" : "") };
+      // A recoverable draft list is a separate real read. When the host does
+      // not expose it, the row keeps reporting only the bound task.
+      const recoverable = await bridge.call("task.recoverable", { worldId }).catch(() => null);
+      const drafts = list(record(recoverable).items);
+      const resumable = drafts.length > 0 ? `可接续 ${drafts.length} 项草稿` : "";
+      return {
+        id,
+        label: section.label.zh,
+        count: taskId ? 1 : 0,
+        detail: [status || (taskId ? "bound" : ""), resumable].filter(Boolean).join(" · "),
+      };
     }
     case "backups": {
       const status = text(raw.status) || text(raw.state);

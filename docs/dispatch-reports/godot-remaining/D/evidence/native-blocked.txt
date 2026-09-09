@@ -1,0 +1,30 @@
+{"out":"D:\\Craftmine World-worktrees\\godot-remaining-d-20260910\\test-results\\godot-candidate-native-uDp1yW","passed":0,"completed":false}
+node : node:internal/modules/run_main:107
+所在位置 行:5 字符: 1
++ node tests/godot-remaining/D/godot-candidate-native.mjs *> "$ev\nativ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (node:internal/modules/run_main:107:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+    triggerUncaughtException(
+    ^
+
+Error: Error: WORLD_BUILD_CONFLICT
+    at Interface.<anonymous> (D:\Craftmine World-worktrees\godot-remaining-d-20260910\test-results\godot-candidate-nati
+ve-uDp1yW\app\main\index.cjs:95:56)
+    at Interface.emit (node:events:509:28)
+    at [_onLine] [as _onLine] (node:internal/readline/interface:465:12)
+    at [_normalWrite] [as _normalWrite] (node:internal/readline/interface:647:22)
+    at Socket.ondata (node:internal/readline/interface:263:23)
+    at Socket.emit (node:events:509:28)
+    at addChunk (node:internal/streams/readable:563:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+    at Readable.push (node:internal/streams/readable:394:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+    at ChildProcess.<anonymous> (file:///D:/Craftmine%20World-worktrees/godot-remaining-d-20260910/tests/godot-remainin
+g/D/godot-candidate-native.mjs:29:259)
+    at ChildProcess.emit (node:events:508:28)
+    at emit (node:internal/child_process:948:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)
+
+Node.js v24.14.0

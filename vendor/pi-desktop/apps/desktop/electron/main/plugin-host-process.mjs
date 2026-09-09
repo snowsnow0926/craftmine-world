@@ -107,6 +107,8 @@ function buildApi() {
       cancelVerification: (id) => call("craftmine.cancelVerification", [id]),
       complete: (id, input) => call("craftmine.complete", [id, input]),
       cancelComplete: (id) => call("craftmine.cancelComplete", [id]),
+      godotCheck: (input) => call("craftmine.godotCheck", [input]),
+      cancelGodotCheck: (id) => call("craftmine.cancelGodotCheck", [id]),
     } } : {}),
     app: {
       getVersion: () => call("app.getVersion"),

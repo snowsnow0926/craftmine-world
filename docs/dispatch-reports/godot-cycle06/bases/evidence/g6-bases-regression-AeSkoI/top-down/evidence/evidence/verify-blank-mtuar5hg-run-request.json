@@ -1,0 +1,26 @@
+{
+  "format": "craftmine.godot-topdown-probe/1",
+  "commands": [
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "start"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": -1,
+        "steps": 30,
+        "label": "up"
+      }
+    },
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "after"
+      }
+    }
+  ]
+}

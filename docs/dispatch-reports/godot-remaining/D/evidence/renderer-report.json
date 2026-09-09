@@ -1,0 +1,496 @@
+{
+  "kind": "real-electron-godot-candidate-renderer-lifecycle",
+  "out": "D:\\Craftmine World-worktrees\\godot-remaining-d-20260910\\test-results\\godot-candidate-renderer-03MO7Q",
+  "checks": [
+    {
+      "name": "Formal world runtime reaches ready",
+      "passed": true,
+      "detail": {
+        "worldId": "alpha",
+        "buildId": "formal-build",
+        "instanceId": "87efd4ff7d4e07557a86c3cf",
+        "state": "ready"
+      }
+    },
+    {
+      "name": "Formal game surface is inset by the panel chrome inside the measured bounds",
+      "passed": true,
+      "detail": {
+        "children": 1,
+        "views": [
+          {
+            "attached": true,
+            "bounds": {
+              "x": 0,
+              "y": 76,
+              "width": 1200,
+              "height": 724
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Candidate 1 stages an independent instance and reaches ready",
+      "passed": true,
+      "detail": {
+        "buildId": "candidate-1",
+        "elapsedMs": 5374,
+        "state": {
+          "worldId": "alpha",
+          "buildId": "candidate-1",
+          "instanceId": "98d7e5425216a6c51e9f5d20",
+          "state": "paused"
+        },
+        "instance": {
+          "worldId": "alpha",
+          "buildId": "candidate-1",
+          "instanceId": "98d7e5425216a6c51e9f5d20"
+        },
+        "formal": {
+          "worldId": "alpha",
+          "buildId": "formal-build",
+          "instanceId": "87efd4ff7d4e07557a86c3cf",
+          "url": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html"
+        }
+      }
+    },
+    {
+      "name": "Candidate 1 keeps nonzero detached bounds and never covers the formal view",
+      "passed": true,
+      "detail": {
+        "children": 1,
+        "views": [
+          {
+            "attached": true,
+            "bounds": {
+              "x": 0,
+              "y": 76,
+              "width": 1200,
+              "height": 724
+            }
+          },
+          {
+            "attached": false,
+            "bounds": {
+              "x": 0,
+              "y": 76,
+              "width": 1200,
+              "height": 724
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Candidate 1 discard keeps the original formal instance",
+      "passed": true,
+      "detail": {
+        "instance": {
+          "worldId": "alpha",
+          "buildId": "formal-build",
+          "instanceId": "87efd4ff7d4e07557a86c3cf",
+          "url": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html"
+        },
+        "candidate": null
+      }
+    },
+    {
+      "name": "Candidate 2 stages an independent instance and reaches ready",
+      "passed": true,
+      "detail": {
+        "buildId": "candidate-2",
+        "elapsedMs": 5787,
+        "state": {
+          "worldId": "alpha",
+          "buildId": "candidate-2",
+          "instanceId": "efa144301876c1975f1498e8",
+          "state": "paused"
+        },
+        "instance": {
+          "worldId": "alpha",
+          "buildId": "candidate-2",
+          "instanceId": "efa144301876c1975f1498e8"
+        },
+        "formal": {
+          "worldId": "alpha",
+          "buildId": "formal-build",
+          "instanceId": "87efd4ff7d4e07557a86c3cf",
+          "url": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html"
+        }
+      }
+    },
+    {
+      "name": "Candidate 2 keeps nonzero detached bounds and never covers the formal view",
+      "passed": true,
+      "detail": {
+        "children": 1,
+        "views": [
+          {
+            "attached": true,
+            "bounds": {
+              "x": 0,
+              "y": 76,
+              "width": 1200,
+              "height": 724
+            }
+          },
+          {
+            "attached": false,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          {
+            "attached": false,
+            "bounds": {
+              "x": 0,
+              "y": 76,
+              "width": 1200,
+              "height": 724
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Candidate 2 discard keeps the original formal instance",
+      "passed": true,
+      "detail": {
+        "instance": {
+          "worldId": "alpha",
+          "buildId": "formal-build",
+          "instanceId": "87efd4ff7d4e07557a86c3cf",
+          "url": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html"
+        },
+        "candidate": null
+      }
+    },
+    {
+      "name": "Candidate 3 stages an independent instance and reaches ready",
+      "passed": true,
+      "detail": {
+        "buildId": "candidate-3",
+        "elapsedMs": 6079,
+        "state": {
+          "worldId": "alpha",
+          "buildId": "candidate-3",
+          "instanceId": "3d395fd011d0212b27514b7f",
+          "state": "paused"
+        },
+        "instance": {
+          "worldId": "alpha",
+          "buildId": "candidate-3",
+          "instanceId": "3d395fd011d0212b27514b7f"
+        },
+        "formal": {
+          "worldId": "alpha",
+          "buildId": "formal-build",
+          "instanceId": "87efd4ff7d4e07557a86c3cf",
+          "url": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html"
+        }
+      }
+    },
+    {
+      "name": "Candidate 3 keeps nonzero detached bounds and never covers the formal view",
+      "passed": true,
+      "detail": {
+        "children": 1,
+        "views": [
+          {
+            "attached": true,
+            "bounds": {
+              "x": 0,
+              "y": 76,
+              "width": 1200,
+              "height": 724
+            }
+          },
+          {
+            "attached": false,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          {
+            "attached": false,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          {
+            "attached": false,
+            "bounds": {
+              "x": 0,
+              "y": 76,
+              "width": 1200,
+              "height": 724
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Candidate 3 discard keeps the original formal instance",
+      "passed": true,
+      "detail": {
+        "instance": {
+          "worldId": "alpha",
+          "buildId": "formal-build",
+          "instanceId": "87efd4ff7d4e07557a86c3cf",
+          "url": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html"
+        },
+        "candidate": null
+      }
+    },
+    {
+      "name": "Hiding the creation surface detaches the native view and showing it reattaches",
+      "passed": true,
+      "detail": {
+        "hidden": {
+          "children": 0,
+          "attached": 0
+        },
+        "shown": {
+          "children": 1,
+          "attached": 1
+        }
+      }
+    },
+    {
+      "name": "A real renderer crash during candidate startup fails fast with the renderer cause",
+      "passed": true,
+      "detail": {
+        "crashed": {
+          "crashed": true,
+          "starting": true,
+          "views": 5
+        },
+        "settled": {
+          "ok": false,
+          "error": "World renderer stopped: crashed (2) [fault=render-process-gone crashed 2; requests=13/13] (previous world kept running)"
+        }
+      }
+    },
+    {
+      "name": "A crashed candidate leaves the original formal instance running",
+      "passed": true,
+      "detail": {
+        "formal": {
+          "worldId": "alpha",
+          "buildId": "formal-build",
+          "instanceId": "87efd4ff7d4e07557a86c3cf",
+          "url": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html"
+        },
+        "candidate": null,
+        "state": {
+          "worldId": "alpha",
+          "buildId": "formal-build",
+          "instanceId": "87efd4ff7d4e07557a86c3cf",
+          "state": "ready",
+          "error": "World renderer stopped: crashed (2)"
+        }
+      }
+    },
+    {
+      "name": "Renderer diagnostics name the crashed candidate instance",
+      "passed": true,
+      "detail": {
+        "worldId": "alpha",
+        "buildId": "formal-build",
+        "instanceId": "87efd4ff7d4e07557a86c3cf",
+        "alive": true,
+        "console": [
+          {
+            "at": 1788973537884,
+            "level": "info",
+            "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+          },
+          {
+            "at": 1788973538016,
+            "level": "info",
+            "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+          },
+          {
+            "at": 1788973538181,
+            "level": "info",
+            "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+          },
+          {
+            "at": 1788973538523,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+          },
+          {
+            "at": 1788973538523,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+          },
+          {
+            "at": 1788973538523,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+          },
+          {
+            "at": 1788973538528,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+          },
+          {
+            "at": 1788973538529,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+          },
+          {
+            "at": 1788973538532,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+          },
+          {
+            "at": 1788973538533,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+          },
+          {
+            "at": 1788973538548,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+          },
+          {
+            "at": 1788973538548,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+          },
+          {
+            "at": 1788973539097,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+          },
+          {
+            "at": 1788973539097,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+          },
+          {
+            "at": 1788973539190,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+          },
+          {
+            "at": 1788973539280,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+          },
+          {
+            "at": 1788973539378,
+            "level": "warning",
+            "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+          }
+        ],
+        "faults": [],
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/w/*/index.html",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.js",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/bridge.js",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.wasm",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.pck",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.js",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.js",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.js",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.js",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.js",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.js",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.js",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.js",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.audio.position.worklet.js",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/w/*/index.audio.worklet.js",
+            "status": 200
+          }
+        ]
+      }
+    },
+    {
+      "name": "No pointer lock or window focus request was granted",
+      "passed": true,
+      "detail": {
+        "pointer-lock": 0,
+        "window-focus": 0
+      }
+    }
+  ],
+  "limits": [
+    "Fixed repository-owned Web export; software offscreen rendering",
+    "Host class only: no Rust application transaction, no model, no player input or feel"
+  ],
+  "webglWarnings": 25,
+  "rendererFaults": [],
+  "passed": true,
+  "passedChecks": 16
+}
