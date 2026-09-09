@@ -62,6 +62,10 @@ N 的独占范围：`vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/*
 `lib.rs` 的 `mod asset_catalog;` 与 `asset_catalog::migrate(&db)?;` 已在 R6 分支存在（合入 R1 后无冲突）。
 `hello` 响应建议追加 `"assetCatalog":true,"assetPreview":true`。
 
+登记后的验收命令（真实进程、无 mock）：
+`node tests/godot-round2/R6/core-rpc-smoke.mjs`（退出码 0 表示 20 项全通过；
+未登记时退出码 2 并打印 `ASSET_RPC_NOT_REGISTERED`）。
+
 ## 3. 给 R2（宿主与导航）
 
 1. `electron/main/craftmine-navigation-host.ts` 通道白名单加入：

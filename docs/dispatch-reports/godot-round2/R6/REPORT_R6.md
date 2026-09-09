@@ -137,7 +137,40 @@ asset.previewFinish`；`cancel` 写 cancelled。worker 为独立线程、硬超�
    base64 字符集与 ≤700 KB 上限，并只在 `picture===true` 时返回
    （`thumbnailSrc only accepts a bounded, well-formed base64 payload`）。
 
-## 6. 诚实边界
+## 6. 端到端协议验证（真实核心进程）
+
+`tests/godot-round2/R6/core-rpc-smoke.mjs` 用真实 `craftmine-core` 进程、真实 PNG 字节、
+真实 Node 解码器跑完整链路（无 mock）：`hello → import → replay → read → versions →
+scan → search → recordUsage → current-world search → annotate → previewBegin → bodyPath →
+真实解码 → previewFinish → previewRead → recordCheck`。
+
+当前主线与 R1 分支（`62a700f`）的 `main.rs` **都没有 `asset.*` 分发**，所以直接跑得到：
+
+```
+[pass] hello -> craftmine.core/1
+ASSET_RPC_NOT_REGISTERED: UNKNOWN_METHOD
+EXIT=2
+```
+
+为确认“只差登记”这一件事，我在本地**临时**加入 `INTERFACE_R6.md` 第 2 节的 16 行分发
+（**未提交、验证后已 `git checkout` 丢弃**，交付树里没有这处改动），重建后同一脚本结果：
+
+```
+SUMMARY: 20 passed, 0 failed, 20 checks
+```
+
+其中包含 `asset.import`（321 字节真实 PNG、文件哈希一致、重放 `replayed:true`）、
+`asset.scan`（`unchanged:1`、`worldUpdated:false`）、`asset.bodyPath` 字节与哈希一致、
+`real decode evidence -> png 16x8`、`previewable only after real evidence`、
+`previewRead carries a thumbnail`、`baseChecked is separate`。
+
+两份原始输出均已提交：
+`evidence/node-core-rpc-smoke.txt`（当前交付树）与
+`evidence/node-core-rpc-smoke-with-temp-dispatch.txt`（临时登记后的通过结果）。
+
+R1 登记后，用 `node tests/godot-round2/R6/core-rpc-smoke.mjs` 即可复验，退出码 0 表示通过。
+
+## 7. 诚实边界
 
 - 所有自动验证都是逻辑/离线验证：没有真实 Godot 引擎、没有真实客户端窗口、没有真实模型调用。
 - 音频不播放；OGG 只做容器解析且明确不可播放；GLB 只有结构解析，没有画面。
