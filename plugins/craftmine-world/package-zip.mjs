@@ -162,8 +162,7 @@ function getCrcTable() {
   return crcTable;
 }
 
-export function crc32(buffer) {
-  const data = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer ?? []);
+export function crc32(buffer) {  const data = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer ?? []);
   const table = getCrcTable();
   let crc = 0xffffffff;
   for (let i = 0; i < data.length; i += 1) {
@@ -665,6 +664,56 @@ function fileReference(path, bytes) {
   return { path, bytes: bytes.length, sha256: sha256Hex(bytes) };
 }
 
+// ---------------------------------------------------------------------------
+// Share-package privacy
+// ---------------------------------------------------------------------------
+
+// A share package carries static content, never credentials or private play
+// progress (creation-package plan section 8). This is a documented deny-list
+// applied to every payload path on export and on import, not a heuristic on
+// file content.
+const PRIVATE_PATH_PATTERNS = Object.freeze([
+  /(^|\/)\.env(\.|$)/i,
+  /(^|\/)(credential|credentials|secret|secrets)(\.|\/|$)/i,
+  /\.(pem|p12|pfx|key)$/i,
+  /(^|\/)id_(rsa|ed25519)(\.pub)?$/i,
+  /(^|\/)progress\.json$/i,
+  /(^|\/)chunks?(\/|$)/i,
+  /(^|\/)saves?(\/|$)/i,
+  /(^|\/)\.git(\/|$)/i,
+]);
+
+/** Refuse a path that would leak credentials or private progress. */
+export function assertShareablePath(path) {
+  for (const pattern of PRIVATE_PATH_PATTERNS) {
+    if (pattern.test(path)) throw fail('PACKAGE_PRIVATE_FILE_REFUSED', path);
+  }
+  return path;
+}
+
+/**
+ * One version per assetId. Identical duplicates collapse; a different content
+ * hash for the same assetId@version is a conflict, never a silent pick.
+ */
+export function uniqueAssetVersions(items, identify) {
+  const byLabel = new Map();
+  for (const item of items) {
+    const {assetId, version, contentHash} = identify(item);
+    const label = `${assetId}@${version}`;
+    const previous = byLabel.get(label);
+    if (previous && previous !== contentHash) throw fail('PACKAGE_VERSION_CONFLICT', label);
+    byLabel.set(label, contentHash);
+  }
+  const keep = new Set(byLabel.keys());
+  return items.filter((item) => {
+    const {assetId, version} = identify(item);
+    const label = `${assetId}@${version}`;
+    if (!keep.has(label)) return false;
+    keep.delete(label);
+    return true;
+  });
+}
+
 export function packStaticPackage({ root, resources, catalog, previews = {} } = {}) {
   if (!isPlainObject(root)) throw fail('PACKAGE_MISSING_DEPENDENCY', 'root');
   const rootId = typeof root.id === 'string' ? root.id : root.assetId;
@@ -704,18 +753,27 @@ export function packStaticPackage({ root, resources, catalog, previews = {} } = 
       if (bytes.length !== reference.bytes || sha256Hex(bytes) !== referenceSha256(reference.sha256)) {
         throw fail('PACKAGE_FILE_HASH_MISMATCH', reference.path);
       }
+      assertShareablePath(reference.path);
       payloads.push({ path: reference.path, bytes });
     }
     return { manifest, content, contentHash, payloads };
   });
 
-  const rootResource = packed.find((item) => item.content.assetId === rootId);
+  // One version per assetId. Identical duplicates collapse; a different content
+  // hash for the same assetId@version is a conflict, never a silent pick.
+  const unique = uniqueAssetVersions(packed, (item) => ({
+    assetId: item.content.assetId,
+    version: item.content.version,
+    contentHash: item.contentHash,
+  }));
+
+  const rootResource = unique.find((item) => item.content.assetId === rootId);
   if (!rootResource || rootResource.content.version !== rootVersion) {
     throw fail('PACKAGE_MISSING_DEPENDENCY', `${rootId}@${rootVersion}`);
   }
-  for (const item of packed) {
+  for (const item of unique) {
     for (const dependency of item.content.dependencies || []) {
-      const found = packed.find((other) => other.content.assetId === dependency.id
+      const found = unique.find((other) => other.content.assetId === dependency.id
         && other.content.version === dependency.version);
       if (!found) throw fail('PACKAGE_MISSING_DEPENDENCY', `${dependency.id}@${dependency.version}`);
       const expected = referenceSha256(dependency.sha256);
@@ -729,7 +787,7 @@ export function packStaticPackage({ root, resources, catalog, previews = {} } = 
   const declaredFiles = [];
   const resourceSummaries = [];
 
-  for (const item of [...packed].sort((left, right) => left.contentHash.localeCompare(right.contentHash))) {
+  for (const item of [...unique].sort((left, right) => left.contentHash.localeCompare(right.contentHash))) {
     const prefix = `resources/${item.contentHash}/`;
     const manifestBytes = Buffer.from(formatCanonical(item.manifest), 'utf8');
     const manifestPath = `${prefix}manifest.json`;
@@ -841,13 +899,22 @@ export function unpackStaticPackage(bytes, limits = DEFAULT_LIMITS) {
       if (data.length !== reference.bytes || sha256Hex(data) !== referenceSha256(reference.sha256)) {
         throw fail('PACKAGE_FILE_HASH_MISMATCH', entryName);
       }
+      assertShareablePath(reference.path);
       files.set(reference.path, data);
     }
     resources.push({ contentHash, manifest, files });
   }
 
+  // One version per assetId; a different content hash for the same
+  // assetId@version is refused instead of letting a later entry win.
+  const uniqueResources = uniqueAssetVersions(resources, (resource) => ({
+    assetId: resource.manifest.content.assetId,
+    version: resource.manifest.content.version,
+    contentHash: resource.contentHash,
+  }));
+
   const rootReference = isPlainObject(packageJson.root) ? packageJson.root : {};
-  const rootResource = resources.find((resource) => resource.manifest.content.assetId === rootReference.id
+  const rootResource = uniqueResources.find((resource) => resource.manifest.content.assetId === rootReference.id
     && resource.manifest.content.version === rootReference.version);
   if (!rootResource) throw fail('PACKAGE_MISSING_DEPENDENCY', `${rootReference.id}@${rootReference.version}`);
 
@@ -859,7 +926,7 @@ export function unpackStaticPackage(bytes, limits = DEFAULT_LIMITS) {
     if (visited.has(label)) continue;
     visited.add(label);
     for (const dependency of current.manifest.content.dependencies || []) {
-      const found = resources.find((resource) => resource.manifest.content.assetId === dependency.id
+      const found = uniqueResources.find((resource) => resource.manifest.content.assetId === dependency.id
         && resource.manifest.content.version === dependency.version);
       if (!found) throw fail('PACKAGE_MISSING_DEPENDENCY', `${dependency.id}@${dependency.version}`);
       stack.push(found);
@@ -882,7 +949,7 @@ export function unpackStaticPackage(bytes, limits = DEFAULT_LIMITS) {
   const identity = archiveIdentity(archive);
   return {
     packageJson,
-    resources,
+    resources: uniqueResources,
     catalog,
     previews,
     archiveSha256: identity.archiveSha256,
