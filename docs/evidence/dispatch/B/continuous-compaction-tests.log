@@ -7,7 +7,7 @@
 [timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=1 streamMs=0 thinkingLevel=off outcome=ok
 
  Test Files  1 passed (1)
-      Tests  12 passed (12)
-   Start at  14:34:43
-   Duration  777ms (transform 246ms, setup 0ms, import 589ms, tests 40ms, environment 0ms)
+      Tests  13 passed (13)
+   Start at  14:38:40
+   Duration  779ms (transform 252ms, setup 0ms, import 594ms, tests 37ms, environment 0ms)
 

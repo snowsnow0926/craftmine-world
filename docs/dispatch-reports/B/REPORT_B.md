@@ -25,7 +25,7 @@
 | 停止、晚到回复、结算失败不释放工具调用 | 通过契约检查 | 宿主后台评审/沙箱取消仍需联合验证 |
 | 大世界聚焦评审 | 3/3 通过 | 省略对象的完整几何明确未覆盖 |
 | 原有 PI 运行器回归 | 321/321 通过 | 代码 de3b9c8；后续仅强化单任务压缩测试 |
-| 最终类型检查与 B 定向检查 | 类型通过，12/12 | 代码 7a5bc7d |
+| 最终类型检查与 B 定向检查 | 类型通过，13/13 | 代码 d0d9cfa |
 | 原生程序、安装包、人工体验 | 未运行 | 不宣称通过 |
 
 ## 3. Git 交付
@@ -35,7 +35,8 @@
 - 基线：`dispatch/w2-w5-v1` / `2f71e128fd9ff9c49ee4e466138f4949b6bce862`。
 - `eeb8d445e234ec7ad747b22933b7f8e566c47d14`：PI 请求/预算/工具边界与规范。
 - `de3b9c864bd90c598e67688d3b7c71034f7231e1`：有来源的大世界聚焦评审。
-- 最终实现提交：`7a5bc7d2948493fea2d5ba78b09be8eabafc17f9`，将压缩测试强化为单次连续任务。
+- `7a5bc7d2948493fea2d5ba78b09be8eabafc17f9`：将压缩测试强化为单次连续任务。
+- 最终实现提交：`d0d9cfa48986b84307322fdd71471b56cf9f995e`：根据 G 评审改为世界专用工具指引，并保留真实 PI asktool。
 - 本报告和证据随后单独提交。最终 HEAD 在回传消息中给出，避免自引用哈希。
 - 未修改共同入口；`integration.patch` 仅建议打包时增加 context-review.cjs。已通过基线 `git apply --check`，未使用 overlay。
 - 未合并主分支、未推送、未删除工作树。交协调者验收。
@@ -49,8 +50,8 @@
 | `pnpm --dir vendor/pi-desktop --filter @pi-desktop/agent-runtime typecheck` | de3b9c8 | 通过 | typecheck.log |
 | `pnpm --dir vendor/pi-desktop --filter @pi-desktop/agent-runtime test` | de3b9c8 | 321/321，4.45 秒 | runtime-tests.log |
 | `node --test tests/dispatch/b/review-context.test.mjs` | de3b9c8 | 3/3，约 0.11 秒 | review-tests.log |
-| `pnpm --dir vendor/pi-desktop --filter @pi-desktop/agent-runtime typecheck` | 7a5bc7d | 通过 | final-typecheck.log |
-| `pnpm --dir vendor/pi-desktop --filter @pi-desktop/agent-runtime exec vitest run src/craftmine-context.test.ts` | 7a5bc7d | 12/12，0.777 秒 | continuous-compaction-tests.log |
+| `pnpm --dir vendor/pi-desktop --filter @pi-desktop/agent-runtime typecheck` | d0d9cfa | 通过 | final-typecheck.log |
+| `pnpm --dir vendor/pi-desktop --filter @pi-desktop/agent-runtime exec vitest run src/craftmine-context.test.ts` | d0d9cfa | 13/13，0.779 秒 | continuous-compaction-tests.log |
 
 证据目录：`docs/evidence/dispatch/B/`。开发中出现的类型错误和初版补丁校验失败已如实记在 `development-failures.md`，修正后复验通过。
 

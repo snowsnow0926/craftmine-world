@@ -31,7 +31,7 @@ PI preflight → inspectRequest (fresh context, no reservation) → existing inl
 
 ## Tool boundary
 
-B filters to host-provided `plugin_craftmine_world_*` definitions plus runtime-local ToolSearch/new_context/AskUserQuestion. Only project_inspect and capabilities_read world tools are initially core; other world tools are discovered normally. G must independently validate exact built-in Craftmine plugin ownership in tools.execute before local tools/host forwarding. Prefix filtering alone cannot authorize an arbitrary plugin. Existing PI sessions remain unrestricted by this world-only policy. This does not establish an OS sandbox for plugin processes.
+B filters to host-provided `plugin_craftmine_world_*` definitions plus runtime-local ToolSearch/new_context/asktool. Only project_inspect and capabilities_read world tools are initially core; other world tools are discovered normally. G must independently validate exact built-in Craftmine plugin ownership in tools.execute before local tools/host forwarding. Prefix filtering alone cannot authorize an arbitrary plugin. Existing PI sessions remain unrestricted by this world-only policy. This does not establish an OS sandbox for plugin processes.
 
 ## Large review and packaging
 
