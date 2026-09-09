@@ -12,6 +12,11 @@ use sha2::{Digest, Sha256};
 mod applications;
 mod asset_catalog;
 mod backups;
+// Registered so the portable archive can carry Git objects through the managed
+// repository store. R1 owns the module registration and the remaining wiring;
+// until that lands, parts of this module are still unused inside the crate.
+#[allow(dead_code)]
+mod content_history;
 mod durable;
 mod godot_applications;
 mod godot_builds;
@@ -164,6 +169,11 @@ impl TaskJournal {
         durable::migrate(&db)?;
         library::migrate(&db)?;
         asset_catalog::migrate(&db)?;
+        // Required committed dependency of the portable archive: the Git
+        // carrier reads the managed repository rows. R1 owns the final
+        // registration order.
+        content_history::migration::migrate(&db)?;
+        content_history::apply::migrate(&db)?;
         memories::migrate(&db)?;
         backups::migrate(&db)?;
         godot_projects::migrate(&db)?;
