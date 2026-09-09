@@ -1,0 +1,114 @@
+$ vitest run
+
+ RUN  v4.1.10 D:/Craftmine World-worktrees/parallel-g-20260909/vendor/pi-desktop/packages/agent-runtime
+
+[timing] kind=tool tool=Bash toolCallId=tool-failed sessionId=session-1 hostRttMs=0 ok=false errorCode=TOOL_FAILED
+[timing] kind=tool tool=Edit toolCallId=edit-1 sessionId=session-1 hostRttMs=0 instructionResolveMs=1 instructionCacheHit=false ok=false errorCode=TOOL_FAILED mutationFailureKind=edit mutationFailureAttempt=1
+[timing] kind=tool tool=Edit toolCallId=edit-2 sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=true ok=false errorCode=TOOL_FAILED mutationFailureKind=edit mutationFailureAttempt=2 terminate=true
+[timing] kind=tool tool=Bash toolCallId=patch-1 sessionId=session-1 hostRttMs=0 ok=false errorCode=TOOL_FAILED mutationFailureKind=patch-command mutationFailureAttempt=1
+[timing] kind=tool tool=Bash toolCallId=patch-2 sessionId=session-1 hostRttMs=0 ok=false errorCode=TOOL_FAILED mutationFailureKind=patch-command mutationFailureAttempt=2 terminate=true
+[timing] kind=tool tool=Edit toolCallId=edit-1 sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=false errorCode=EDIT_TAG_MISMATCH mutationFailureKind=edit mutationFailureGrace=true
+[timing] kind=tool tool=Edit toolCallId=edit-2 sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=true ok=false errorCode=EDIT_LINES_UNSEEN mutationFailureKind=edit mutationFailureGrace=true
+[timing] kind=tool tool=Edit toolCallId=edit-3 sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=true ok=false errorCode=EDIT_TAG_MISMATCH mutationFailureKind=edit mutationFailureAttempt=1
+[timing] kind=tool tool=Edit toolCallId=edit-4 sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=true ok=false errorCode=EDIT_TAG_MISMATCH mutationFailureKind=edit mutationFailureAttempt=2 terminate=true
+[timing] kind=tool tool=Edit toolCallId=edit-1 sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=false errorCode=EDIT_PARSE_FAILED mutationFailureKind=edit mutationFailureAttempt=1
+[timing] kind=tool tool=Edit toolCallId=edit-2 sessionId=session-1 hostRttMs=0 instructionResolveMs=2 instructionCacheHit=true ok=true
+[timing] kind=tool tool=Edit toolCallId=edit-3 sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=true ok=false errorCode=EDIT_PARSE_FAILED mutationFailureKind=edit mutationFailureAttempt=1
+[timing] kind=tool tool=Edit toolCallId=edit-1 sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=false errorCode=EDIT_PARSE_FAILED mutationFailureKind=edit mutationFailureAttempt=1
+[timing] kind=tool tool=Edit toolCallId=edit-2 sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=true ok=false errorCode=EDIT_PARSE_FAILED mutationFailureKind=edit mutationFailureAttempt=2 terminate=true
+[timing] kind=model model=local-model providerId=local sessionId=session-1 outcome=error errorCode=MUTATION_RETRY_BUDGET_EXHAUSTED
+[timing] kind=tool tool=Read toolCallId=tool-1 sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=true
+[timing] kind=tool tool=Read toolCallId=tool-Read sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=true
+[timing] kind=tool tool=Write toolCallId=tool-Write sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=true
+[timing] kind=tool tool=Edit toolCallId=tool-Edit sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=true
+[timing] kind=tool tool=BrowserPreview toolCallId=tool-BrowserPreview sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=true
+[timing] kind=tool tool=Read toolCallId=tool-a sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=true
+[timing] kind=tool tool=Read toolCallId=tool-b sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=true
+[timing] kind=tool tool=Read toolCallId=tool-a sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=true
+[timing] kind=tool tool=Read toolCallId=tool-b sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=true ok=true
+[timing] kind=tool tool=Read toolCallId=tool-a sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false instructionFallback=base ok=true
+[timing] kind=tool tool=Read toolCallId=tool-b sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=true instructionFallback=base ok=true
+[timing] kind=tool tool=Read toolCallId=tool-a sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=true
+[timing] kind=tool tool=Read toolCallId=tool-b sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false instructionFallback=base ok=true
+[timing] kind=tool tool=Bash toolCallId=bash-default sessionId=session-1 hostRttMs=0 ok=true
+[timing] kind=tool tool=Bash toolCallId=bash-timeout sessionId=session-1 hostRttMs=0 ok=true
+[timing] kind=tool tool=Bash toolCallId=bash-min sessionId=session-1 hostRttMs=0 ok=true
+[timing] kind=tool tool=Bash toolCallId=bash-max sessionId=session-1 hostRttMs=0 ok=true
+[timing] kind=tool tool=Bash toolCallId=bash-half-hour sessionId=session-1 hostRttMs=0 ok=true
+[timing] kind=tool tool=Bash toolCallId=bash-ms sessionId=session-1 hostRttMs=0 ok=true
+[timing] kind=tool tool=Bash toolCallId=bash-ms-half-hour sessionId=session-1 hostRttMs=0 ok=true
+[timing] kind=tool tool=Bash toolCallId=bash-ms-over sessionId=session-1 hostRttMs=0 ok=true
+[timing] kind=tool tool=Read toolCallId=read-alias sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=true
+[timing] kind=tool tool=Grep toolCallId=grep-alias sessionId=session-1 hostRttMs=0 ok=true
+[timing] kind=tool tool=Read toolCallId=read-both sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=true ok=true
+[timing] kind=tool tool=Bash toolCallId=bash-progress sessionId=session-1 hostRttMs=100 ok=false errorCode=TOOL_ABORTED
+[timing] kind=tool tool=Bash toolCallId=bash-host-death sessionId=session-1 hostRttMs=200 ok=true
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=execution-turn-silent providerWaitMs=0 streamMs=0 thinkingLevel=medium outcome=silent thinkingOnly=true
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=execution-turn-silent providerWaitMs=0 streamMs=0 thinkingLevel=medium outcome=ok
+[timing] kind=model model=local-model providerId=local sessionId=session-1 streamMs=0 thinkingLevel=medium outcome=ok
+[timing] kind=model model=local-model providerId=local sessionId=session-1 streamMs=1 thinkingLevel=medium outcome=error errorCode=CONTEXT_TOO_LARGE
+[timing] kind=model model=local-model providerId=local sessionId=session-1 streamMs=0 thinkingLevel=medium outcome=error errorCode=CONTEXT_TOO_LARGE
+[timing] kind=model model=local-model providerId=local sessionId=session-1 streamMs=1 thinkingLevel=medium outcome=error errorCode=MODEL_NOT_CONFIGURED
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=be6b148f-e92e-4c01-ac2e-77aab1647739 providerWaitMs=0 streamMs=1 thinkingLevel=medium outcome=retry errorCode=STREAM_FAILED retryAttempt=1
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=2 streamMs=1 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=2 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=1 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=1 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=be6b148f-e92e-4c01-ac2e-77aab1647739 providerWaitMs=1012 streamMs=0 thinkingLevel=medium outcome=ok retryAttempt=1
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=7171381f-8e46-4f9f-a53a-b534c8a1ec3e providerWaitMs=0 streamMs=0 thinkingLevel=medium outcome=retry errorCode=PROVIDER_RATE_LIMITED retryAttempt=1 providerStatus=429
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=7171381f-8e46-4f9f-a53a-b534c8a1ec3e providerWaitMs=2134 streamMs=0 thinkingLevel=medium outcome=ok providerStatus=429 retryAttempt=1
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=0316e338-c2c1-450e-a923-788e39562df9 providerWaitMs=0 streamMs=0 thinkingLevel=medium outcome=retry errorCode=PROVIDER_ERROR retryAttempt=1
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=0316e338-c2c1-450e-a923-788e39562df9 providerWaitMs=1000 streamMs=0 thinkingLevel=medium outcome=retry errorCode=PROVIDER_ERROR retryAttempt=2
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=0316e338-c2c1-450e-a923-788e39562df9 providerWaitMs=2000 streamMs=0 thinkingLevel=medium outcome=retry errorCode=PROVIDER_ERROR retryAttempt=3
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=0316e338-c2c1-450e-a923-788e39562df9 providerWaitMs=4000 streamMs=0 thinkingLevel=medium outcome=retry errorCode=PROVIDER_ERROR retryAttempt=4
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=0316e338-c2c1-450e-a923-788e39562df9 providerWaitMs=8000 streamMs=0 thinkingLevel=medium outcome=error errorCode=PROVIDER_ERROR retryAttempt=4
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=76d44c4c-a41b-4d79-a688-f4ddee8ee9d0 providerWaitMs=0 streamMs=0 thinkingLevel=medium outcome=retry errorCode=PROVIDER_RATE_LIMITED retryAttempt=1
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=76d44c4c-a41b-4d79-a688-f4ddee8ee9d0 providerWaitMs=2133 streamMs=0 thinkingLevel=medium outcome=retry errorCode=PROVIDER_RATE_LIMITED retryAttempt=2
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=76d44c4c-a41b-4d79-a688-f4ddee8ee9d0 providerWaitMs=4159 streamMs=0 thinkingLevel=medium outcome=retry errorCode=PROVIDER_RATE_LIMITED retryAttempt=3
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=76d44c4c-a41b-4d79-a688-f4ddee8ee9d0 providerWaitMs=8695 streamMs=0 thinkingLevel=medium outcome=retry errorCode=PROVIDER_RATE_LIMITED retryAttempt=4
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=76d44c4c-a41b-4d79-a688-f4ddee8ee9d0 providerWaitMs=16080 streamMs=0 thinkingLevel=medium outcome=retry errorCode=PROVIDER_RATE_LIMITED retryAttempt=5
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=76d44c4c-a41b-4d79-a688-f4ddee8ee9d0 providerWaitMs=30000 streamMs=0 thinkingLevel=medium outcome=error errorCode=PROVIDER_RATE_LIMITED retryAttempt=5
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=53ed195d-629f-40ec-889c-4a0fa53c73f4 providerWaitMs=0 streamMs=0 thinkingLevel=medium outcome=silent thinkingOnly=true
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=53ed195d-629f-40ec-889c-4a0fa53c73f4 providerWaitMs=0 streamMs=0 thinkingLevel=medium outcome=ok
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=79c419fd-214f-4a02-9491-05ce6165d4aa providerWaitMs=0 streamMs=0 thinkingLevel=medium outcome=silent thinkingOnly=false
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=79c419fd-214f-4a02-9491-05ce6165d4aa providerWaitMs=0 streamMs=0 thinkingLevel=medium outcome=error errorCode=EMPTY_MODEL_RESPONSE
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=a0fa1a47-651c-4274-9747-aad4909e5cd3 providerWaitMs=0 streamMs=0 thinkingLevel=medium outcome=ok
+[timing] kind=model model=local-model providerId=local sessionId=session-1 outcome=error errorCode=NETWORK_ERROR
+[timing] kind=model model=local-model providerId=local sessionId=session-1 outcome=aborted
+[timing] kind=subagent agent=explorer delegationId=del-1 sessionId=session-1 status=completed turns=1 toolCalls=0 durationMs=0
+[timing] kind=model model=local-model providerId=local sessionId=session-1 thinkingLevel=medium outcome=ok
+[timing] kind=model model=local-model providerId=local sessionId=session-1 turnId=fb697359-fb48-4ef8-9e5e-9e181cf71dd0 providerWaitMs=0 outcome=error errorCode=CONTEXT_COMPACTION_FAILED
+[timing] kind=tool tool=Skill toolCallId=call-1 sessionId=session-1 hostRttMs=0 ok=true
+[timing] kind=subagent agent=explorer delegationId=39bd0ce7-494c-4693-ab6b-efa88a471a7f sessionId=session-1 status=completed turns=1 toolCalls=0 durationMs=0
+[timing] kind=subagent agent=reviewer delegationId=3cfe06d4-865f-4a08-a389-f6207b3507d7 sessionId=session-1 status=completed turns=2 toolCalls=3 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=0241c208-3f42-4a3a-b2fa-a737e0c83180 sessionId=session-1 status=failed turns=1 toolCalls=0 durationMs=0 errorCode=NETWORK_ERROR
+[timing] kind=subagent agent=explorer delegationId=60401e20-1b05-4df8-95e5-eb7e9a075e98 sessionId=session-1 status=truncated turns=6 toolCalls=6 durationMs=0
+[timing] kind=subagent agent=explorer delegationId=b57a6033-9dbf-4761-acc8-4874d1134d62 sessionId=session-1 status=timed_out turns=2 toolCalls=1 durationMs=0 errorCode=SUBAGENT_IDLE_TIMEOUT
+[timing] kind=subagent agent=explorer delegationId=351339ad-cce1-49e9-89de-89b4de5ebd41 sessionId=session-1 status=completed turns=1 toolCalls=2 durationMs=0
+[timing] kind=subagent agent=explorer delegationId=621ef392-a82b-4ead-858f-b2b975e47e55 sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=a9466a5a-39c6-4697-aaa2-5e44a8e5209a sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=73bddbe2-6c59-4f4d-95c9-c44e55380f93 sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=f14789a9-f912-462a-b302-6bc6bcede96b sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=1a946fb6-a7c2-4461-b0b0-b2e662490c42 sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=d6afbb04-d471-4f42-951f-eb1d0e135b82 sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=8d0c48aa-9efa-4161-a3a2-f5d6aaa4e5bd sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=f1172dae-ad10-4ec8-acde-1750b34f80af sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=73e82233-5917-4809-9d35-b85a55765acc sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=4ee37d84-63ff-4dce-8d5a-bf83c2f0e24d sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=fdf5a096-b94c-4c8e-914d-2c9ddbd0b2c7 sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=2fc6e872-d640-4004-a8a3-c18643694ea2 sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=0
+[timing] kind=subagent agent=explorer delegationId=31033ea7-d9d6-487b-ac58-97db45252d03 sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=0
+[timing] kind=subagent agent=explorer delegationId=056a1b60-2a19-4048-aa68-0874903c02c0 sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=0
+[timing] kind=model model=local-model providerId=local sessionId=session-1 streamMs=0 thinkingLevel=medium outcome=error errorCode=PROVIDER_RATE_LIMITED
+[timing] kind=subagent agent=explorer delegationId=64484842-4ee9-4e8f-a4fe-fcbb1f51516b sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=0
+[timing] kind=subagent agent=explorer delegationId=baa4ba92-294e-46f9-b88c-9ae520ef8238 sessionId=session-1 status=completed turns=2 toolCalls=3 durationMs=0
+[timing] kind=subagent agent=explorer delegationId=d3f89472-1e5c-49b5-a3a9-db044137ff57 sessionId=session-1 status=aborted turns=0 toolCalls=0 durationMs=1
+[timing] kind=subagent agent=explorer delegationId=3967bc3c-227f-455e-a9f0-2d01c1720d67 sessionId=session-1 status=timed_out turns=2 toolCalls=1 durationMs=0 errorCode=SUBAGENT_IDLE_TIMEOUT
+[timing] kind=tool tool=Read toolCallId=read-1 sessionId=session-1 hostRttMs=0 instructionResolveMs=0 instructionCacheHit=false ok=true
+[timing] kind=subagent agent=explorer delegationId=f7e829f6-c129-486a-a3f5-1663880fd07e sessionId=session-1 status=timed_out turns=2 toolCalls=1 durationMs=0 errorCode=SUBAGENT_IDLE_TIMEOUT
+
+ Test Files  25 passed (25)
+      Tests  324 passed (324)
+   Start at  15:39:26
+   Duration  4.49s (transform 5.30s, setup 0ms, import 12.18s, tests 4.69s, environment 2ms)
+

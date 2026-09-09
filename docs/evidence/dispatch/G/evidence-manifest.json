@@ -1,0 +1,57 @@
+{
+  "format": "craftmine.evidence-manifest/1",
+  "productFreeze": "0f6eaa87742b05a1b2d10c97e22b3dd3d7281fc3",
+  "notes": "Exact preserved original bytes; native-workbench report is earlier 1e3fcfe integrated development evidence, not the final package. Final package reports are in E/F.",
+  "files": [
+    {
+      "path": "delivery-copy.json",
+      "bytes": 159695,
+      "sha256": "1f3aed1af54a7b93ff9a6019f1497ecd172106e7d64ef1f538345fe6cedf8ee0"
+    },
+    {
+      "path": "domain-tests-final.log",
+      "bytes": 26946,
+      "sha256": "81d5b2828a42739c872627cf6b7448bf90e3e97a9ecb666966b1a2968433ed21"
+    },
+    {
+      "path": "final-bridge.log",
+      "bytes": 1237,
+      "sha256": "8287a8333ab3cfe62c63580335440f3d903d773d5d60a041e784facc29174c23"
+    },
+    {
+      "path": "integration-tests.log",
+      "bytes": 2796,
+      "sha256": "29d1733f8007ce495d77e7617bf64d2c9ca0bb0ee35e6775c50b503c12e0b1eb"
+    },
+    {
+      "path": "native-desktop.png",
+      "bytes": 47492,
+      "sha256": "8114e5356e395712f68359e5b8796bacb37259a479e202bc3bb905f1a5cdf696"
+    },
+    {
+      "path": "native-workbench-report.json",
+      "bytes": 47282,
+      "sha256": "29a3c6e25829d4c1d2caf3f4490046f229536da60184180dceed93b0a0307fae"
+    },
+    {
+      "path": "native-workbench.log",
+      "bytes": 3202,
+      "sha256": "b68cc4856c4794bb714bc463fc4c0dbd13d7ec65e23e1362b9f9a0bd3ad372cd"
+    },
+    {
+      "path": "native-world.png",
+      "bytes": 202210,
+      "sha256": "74dff082bcdafb5d714d64b8319ee26579a64dfea9b85e2b5dbe15ca81c98c97"
+    },
+    {
+      "path": "pi-tests-final.log",
+      "bytes": 17422,
+      "sha256": "876ef9581bce01242fdcfdae948bd15e5cfc4a0c087a9de541e12fb29afad79a"
+    },
+    {
+      "path": "rust-tests-final.log",
+      "bytes": 4683,
+      "sha256": "c4a7ba99d850baceca2fe7810bc574a1b382b333ad4ea20710cbe237ca745c43"
+    }
+  ]
+}

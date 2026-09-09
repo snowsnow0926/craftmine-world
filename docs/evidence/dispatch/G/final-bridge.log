@@ -1,0 +1,19 @@
+✔ actual completed draft keeps verification, review and ledger through successful and failed maintenance (111.1467ms)
+✔ world turn gates host tools even with forged mode and arbitrary plugin names (0.7981ms)
+✔ turn scope is immutable and stale finalization cannot erase a successor (0.2084ms)
+✔ private model context rejects forged identity and stale reply after stop (0.4085ms)
+✔ stopped request may settle its exact reservation but cannot create another request (0.1873ms)
+✔ real Rust host bridge records corrections, forbids identity/limit forgery and settles stopped requests (79.3756ms)
+✔ library draft extension survives compilation, later edits and application preparation (89.3992ms)
+✔ immutable extension version conflicts and missing transitive dependencies reject before verification (0.4175ms)
+✔ actual Rust panel integration preserves draft identity, exact receipts and bound context after world switches (123.4259ms)
+✔ invalid review is retained before exactly one schema repair (16.0014ms)
+✔ a second malformed response stops without weakening the schema (14.558ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 366.6494

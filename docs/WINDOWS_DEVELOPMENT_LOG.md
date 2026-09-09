@@ -92,3 +92,14 @@
 - 报告 WINDOWS_BATCH_05.md，证据 docs/evidence/windows-batch-05。保留 PI 完整桌面，Rust 创作核心继续推进。当前六阶段中 W0 与 W1 核心运行已过自动验收，W2 仍缺作品库/跨会话复用和原生 Agent 完整创作验收；W3–W5 未完成，W1 可见窗口和物理双击体验仍待验证。第 5 批是迭代批次编号，计划阶段当前为 W2。
 
 - 第 5 批交付报告 b3ff0fc 及全部实现已合并本地 master，未推送。工作树登记与开发分支已删除。Git 清理返回 Directory not empty；对本批 pi-apply-20260909 残留的递归清理被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不重试删除或复用，前四个例外目录也不动。本记录通过独立轻量工作树完成。
+
+## 2026-09-09：第 6 批 A–F 实际并行开发与 G 集成
+
+- 用户追加授权由协调者启动多个子 Agent，覆盖此前手工派发安排。使用独立 parallel-a 到 parallel-g 工作树，从 dispatch/w2-w5-v1 / 2f71e128 开始；三个执行槽先 A/B/D，再 C/E/F，G处理公共入口和验收。没有恢复定时自动任务。
+- Rust接管不可变作品、来源校验的类型化记忆、显式恢复、统一预算、原始需求分页和备份事务；PI仍是唯一Agent循环，主进程提供真实身份与工具白名单。新增完整工作台、布局、备份/诊断与Windows DPAPI/NSIS交付。
+- 修复最终载荷转义预算、草稿扩展丢失、换世界影响原任务上下文、跨短任务重复回执、手动压缩重置任务、恢复启动失败丢恢复入口、重启重复发奖励及评审JSON格式错误。坏评审保存后最多一次严格格式纠错；冻结断言没有放宽。
+- 产品冻结0f6eaa87742b05a1b2d10c97e22b3dd3d7281fc3；构建aaa5dc7da06a7f160537f720460056a94389cafd只多两份E报告。最终领域276、Rust42、PI324、G接线11通过。E包内固定40通过；F同包实际Agent三次压缩/四次修改/评审应用/完整重启通过，独立持久审计13通过。F开发侧跨会话复用、崩溃恢复、原生记忆/备份链也通过，失败评审与辅助器错误原记录保留。
+- F全部开发和最终包共86条持久请求，773514已知provider totalTokens，1条unknown保持66274估计预留；模型保持deepseek-v4.1-flash-expires-on-0910/high。最终包单任务22请求174584tokens，79.840秒。
+- 825原包文件416871430字节逐个复制核对至主目录desktop/build/windows-preview-batch-06；NSIS154098909字节，SHA256 b73c0b3feeb626698e337bc0d6eac03503b81bebf92814f1efecdaa0912f4624。对应源码ZIP SHA2568f2dc35576bca18c1e7ab1f812c3c155e972997d08fcad78304f90462ac9a155；NotSigned。额外外层交付/最新指南勘误，不修改原测试包。
+- 完整报告WINDOWS_BATCH_06.md、docs/dispatch-reports/G/REPORT_G.md和ACCEPTANCE_MATRIX.md。整体W0–W5未完成：最终原生组合库安装链、干净Windows安装/升级、实际可见试玩、性能和少数故障体验仍待办。
+- 全程独立headless/offscreen目录，无真实鼠标键盘、Pointer Lock、窗口显示/置前或用户浏览器操作。未更改正式世界或现用服务。各组代码和失败档案保留，不删除本批工作树，不动五个历史清理被拒目录；不推送远端。

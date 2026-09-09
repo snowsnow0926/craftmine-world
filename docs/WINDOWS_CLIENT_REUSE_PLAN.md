@@ -2,7 +2,7 @@
 
 版本：2.1 · 2026-09-09。**本版以 PI-Desktop 为首选底座，替代 v1 的 DeepSeek Harness 桌面端方案。**
 
-状态：W0–W5 仍为项目开发范围；用户已暂停此前自动循环，改为 [A–F 并行派工、回传后统一验收](parallel-w2-w5/00_README.md)。本轮只生成派工文档。W0 接入探针与 W1 核心运行自动验收已通过。第 5 批已接通 W2 的 PI 评审、真实需求断言、正式应用事务和失败修复信息；包内 EXE 固定场景 40 项、真实 DeepSeek 评审场景 33 项通过。真实评审使用固定草稿，原生 Agent 自动生成到应用、重启和跨会话作品复用仍待完成。以 DEVELOPMENT_STATUS.json、WINDOWS_DEVELOPMENT_LOG.md 和 WINDOWS_BATCH_05.md 为准。前端继续保留并强化完整 PI 桌面，Rust 管理创作核心。
+状态（第 6 批，2026-09-09）：用户追加授权由本线程启动子 Agent，[A–F 派工](parallel-w2-w5/00_README.md)已实际并行实现并由 G 集成。真实原生 Agent 创作、跨会话固定作品复用、中断恢复均已走到应用；最终 Windows 包内一个真实任务连续三次压缩、四次修改后应用并重启成功，另有包内固定场景 40/40。Rust 管理作品、记忆、恢复、预算与备份，保留 PI 完整桌面及单一 Agent 循环。**W0–W5 整体尚未完成**：W4 最终原生组合库安装链，W5 干净 Windows 安装/升级、可见试玩与性能基准仍待验。最新状态以 [第 6 批报告](WINDOWS_BATCH_06.md)、[G 验收矩阵](dispatch-reports/G/ACCEPTANCE_MATRIX.md)及 DEVELOPMENT_STATUS.json 为准；下文研究与初始基线保留为历史依据。
 
 ## 1. 本版的核心决定
 

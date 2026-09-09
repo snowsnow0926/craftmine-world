@@ -1,0 +1,58 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "agent": "G",
+  "status": "verified_integrated_preview_plan_partial",
+  "baseCommit": "2f71e128fd9ff9c49ee4e466138f4949b6bce862",
+  "productFreeze": "0f6eaa87742b05a1b2d10c97e22b3dd3d7281fc3",
+  "buildCommit": "aaa5dc7da06a7f160537f720460056a94389cafd",
+  "report": "docs/dispatch-reports/G/REPORT_G.md",
+  "userReport": "docs/WINDOWS_BATCH_06.md",
+  "acceptanceMatrix": "docs/dispatch-reports/G/ACCEPTANCE_MATRIX.md",
+  "deliveryDirectory": "D:/Craftmine World/desktop/build/windows-preview-batch-06",
+  "executable": "D:\\Craftmine World\\desktop\\build\\windows-preview-batch-06\\Craftmine World.exe",
+  "installer": {
+    "path": "Craftmine-World-Setup-0.14.3.exe",
+    "bytes": 154098909,
+    "sha256": "b73c0b3feeb626698e337bc0d6eac03503b81bebf92814f1efecdaa0912f4624"
+  },
+  "packageFileCount": 825,
+  "packageBytes": 416871430,
+  "copyVerified": true,
+  "copyEvidence": "docs/evidence/dispatch/G/delivery-copy.json",
+  "sourceArchiveHash": "8f2dc35576bca18c1e7ab1f812c3c155e972997d08fcad78304f90462ac9a155",
+  "validation": {
+    "domain": 276,
+    "rust": 42,
+    "pi": 324,
+    "bridge": 11,
+    "packagedFixture": 40,
+    "packagedActualAgent": {
+      "passed": true,
+      "compactions": 3,
+      "edits": 4,
+      "requests": 22,
+      "knownTokens": 174584,
+      "durableAudit": 13,
+      "applied": true,
+      "restarted": true
+    }
+  },
+  "input": {
+    "physicalMouse": 0,
+    "physicalKeyboard": 0,
+    "pointerLock": 0,
+    "shownWindows": 0,
+    "focus": 0,
+    "userBrowserControlled": false
+  },
+  "remotePush": false,
+  "installerExecuted": false,
+  "signature": "NotSigned",
+  "remaining": [
+    "W4：真实原生作品库安装生命/射击/近战/扩展组合，正式应用及重启整链待验",
+    "W5：干净Windows首装、覆盖升级、失败恢复、卸载及跨用户凭据待验",
+    "可见窗口合成、物理双击和真实游玩手感、完整PI入口与性能基准待验",
+    "renderer重启后的待确认操作ID恢复、安装已提交后的检查补交体验待完善",
+    "扩展多命令整步原子性和通用状态迁移仍有边界；草稿保持2MB上限"
+  ]
+}

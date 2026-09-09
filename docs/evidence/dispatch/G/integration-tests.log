@@ -1,0 +1,36 @@
+✔ real Rust process: immutable tree capture, restart, cross-session/world exact install and replay (131.7997ms)
+✔ real Rust process: second broker cannot recover another live broker leases (77.7714ms)
+✔ real Rust process: creation code, local target bindings and fixed extension travel together (292.8431ms)
+✔ real Rust process: user-backed scoped memory, false evidence, staleness and retirement (50.4607ms)
+✔ real Rust process: consistent backup, corrupt input, CAS, cancelled restore and portable trust (162.6298ms)
+Isolated Rust evidence directory: D:\Craftmine World-worktrees\parallel-g-20260909\test-results\dispatch-c-service-uZrt6Q
+✔ actual Rust workbench service enforces scope, provenance, exact reuse and validated context (134.7113ms)
+✔ export uses a native choice and restores only a content-bound opaque grant (9.3961ms)
+✔ renderer paths and raw archives cannot become filesystem authority (0.7188ms)
+✔ file replacement after preview and stale world hash prevent restore (4.7178ms)
+✔ lost restore receipt can be explicitly retried using the same operation id (3.2708ms)
+✔ cancelled picker cannot start export and expired grants cannot restore (1.2902ms)
+✔ corrupt and oversized selected files fail without leaking their paths (3.1873ms)
+✔ diagnostics is an allowlist with measured counters and no secrets/source/private paths (5.2993ms)
+✔ failed export file write is not confused with a completed domain snapshot (1.0756ms)
+✔ diagnostic export errors omit selected private paths (0.7476ms)
+✔ offline upgrade guard copies synthetic data and verifies corruption without touching originals (1299.0842ms)
+✔ offline upgrade guard refuses a profile with an open database file (395.5268ms)
+✔ fixed native controller is absent in ordinary processes (1.7069ms)
+✔ fixed native controller rejects arbitrary fields before any call (21.1331ms)
+✔ fixed native controller refuses missing authorized provider and premature commands (30.4357ms)
+✔ initialization response never includes the provider credential (31.1858ms)
+✔ world turn gates host tools even with forged mode and arbitrary plugin names (0.788ms)
+✔ turn scope is immutable and stale finalization cannot erase a successor (0.2041ms)
+✔ private model context rejects forged identity and stale reply after stop (0.3606ms)
+✔ stopped request may settle its exact reservation but cannot create another request (0.1677ms)
+✔ library draft extension survives compilation, later edits and application preparation (97.2428ms)
+✔ immutable extension version conflicts and missing transitive dependencies reject before verification (0.4006ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1895.4218
