@@ -6,6 +6,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash,randomUUID} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
+import {readGitSnapshot} from './delivery/lib/source-bytes.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const OWNER='.craftmine-runtime-stage.json';
@@ -66,9 +67,13 @@ async function verifyArchive(file,pin){
   if(!stat.isFile()||stat.isSymbolicLink()||stat.size!==pin.bytes||await fileHash(file)!==pin.sha256)throw Error('RUNTIME_ARCHIVE_PIN_MISMATCH:'+file);
 }
 async function copyTracked(relative,target){
-  const files=command('git',['ls-files','-z','--',relative]).split('\0').filter(Boolean);
-  if(!files.length)throw Error('RUNTIME_TRACKED_SOURCE_MISSING:'+relative);
-  for(const file of files){safeResourcePath(file);await verifiedCopy(path.join(root,file),path.join(target,path.relative(relative,file)));}
+  const files=readGitSnapshot(root,sourceCommit(),[relative]);
+  if(!files.size)throw Error('RUNTIME_TRACKED_SOURCE_MISSING:'+relative);
+  for(const [file,entry]of files){
+    safeResourcePath(file);const destination=path.join(target,path.relative(relative,file));
+    await fs.mkdir(path.dirname(destination),{recursive:true});await fs.writeFile(destination,entry.bytes);
+    if(await fileHash(destination)!==entry.sha256)throw Error('RUNTIME_SOURCE_COPY_CHANGED:'+file);
+  }
 }
 async function replaceOwned(staging,output,commit){
   const build=path.resolve(root,'desktop/build');

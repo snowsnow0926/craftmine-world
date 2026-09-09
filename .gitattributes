@@ -1,6 +1,14 @@
 # Runtime integrity hashes use the same source bytes on Windows and Unix.
 *.mjs text eol=lf
 *.js text eol=lf
+# Release source pins refer to the exact Git blob bytes, including line endings.
+desktop/godot/bases/** text=auto eol=lf
+desktop/godot/shared/** text=auto eol=lf
+desktop/godot/web/** text=auto eol=lf
+desktop/godot/bases/**/*.png binary
+desktop/godot/bases/**/*.jpg binary
+desktop/godot/bases/**/*.ogg binary
+desktop/godot/bases/**/*.wav binary
 desktop/godot/probes/** text eol=lf
 desktop/godot/licenses/** -text
 desktop/delivery/licensing/texts/** -text
