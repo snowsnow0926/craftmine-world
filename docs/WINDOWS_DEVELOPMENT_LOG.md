@@ -28,3 +28,5 @@
 - Windows `win-unpacked` 首次构建成功；实际包内插件宿主、插件与 Rust 程序的探针分别 8/8、9/9。最终构建流程增加许可证、来源与匹配源码归档，具体构建步骤见 `desktop/README.md`。
 - 本批便携证据与截图已纳入 `docs/evidence/windows-batch-01`；总结见 `docs/WINDOWS_BATCH_01.md`。原始开发证据在合并整理时保存到主目录 `test-results/windows-batch-01`。内部程序目录保存在 `desktop/build/windows-preview`。
 - 本批合并后清理自己的工作树和分支。下一轮按执行状态创建新的专用工作树继续 W1，目标与自动接续保持启用，不因本批报告完成而标记整个目标完成。
+- 合并完成：主分支已有 `90034d1` 及全部实现提交，合并后 274/274。程序与源码包移至 `desktop/build/windows-preview`，原始证据移至 `test-results/windows-batch-01`，Rust 构建缓存移至主项目 vendor 的 target。
+- 清理例外：开发分支已删除，Git 工作树登记已移除；旧目录仍有残留，递归清理被自动执行审核以 “blocked by policy” 拒绝。保留残留，不以替代工具绕过，不自动重试。此事不阻断 W1/W2；下一批创建新的独立工作树。
