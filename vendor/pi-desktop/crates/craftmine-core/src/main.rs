@@ -14,6 +14,9 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
+    if method == "budget.configure" {
+        return journal.budget_configure(params);
+    }
     if method.starts_with("budget.") {
         return journal.budget_call(method, params);
     }
@@ -77,7 +80,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
     if method.starts_with("application.") {
         let id = || params["id"].as_str().context("APPLICATION_ID_REQUIRED");
         return match method {
-            "application.prepare" => journal.application_prepare(
+            "application.prepare" => journal.application_prepare_with_review_warnings(
                 id()?,
                 params["token"].as_str().context("TOKEN_REQUIRED")?,
                 params["verificationId"]
@@ -87,6 +90,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
                 params["worldId"].as_str().context("WORLD_ID_REQUIRED")?,
                 params["revision"].as_u64().context("REVISION_REQUIRED")?,
                 &params["snapshot"],
+                params.get("acknowledgeReviewWarnings").map(|value| value.as_bool().context("INVALID_REVIEW_ACKNOWLEDGEMENT")).transpose()?.unwrap_or(false),
             ),
             "application.commit" => journal.application_commit(
                 id()?,
@@ -105,6 +109,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
             .transpose()?;
         let id = || params["id"].as_str().context("VERIFICATION_ID_REQUIRED");
         return match method {
+            "verification.retry" => journal.verification_retry(params),
             "verification.submit" => journal.verification_submit_with_origin(
                 ctx.as_ref().context("HOST_IDENTITY_REQUIRED")?,
                 params["toolCallId"].as_str().context("CALL_ID_REQUIRED")?,
