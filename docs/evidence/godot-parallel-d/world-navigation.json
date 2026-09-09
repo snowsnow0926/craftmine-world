@@ -1,0 +1,121 @@
+{
+  "kind": "real-react-world-navigation-with-real-plugin-and-rust-core",
+  "sourceCommit": "9acc93caede451df96713ea8336f0b2b3bd0786e",
+  "plugin": "desktop/build/craftmine.world",
+  "coreBinary": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\08a13417-7bd5-485f-96c5-4825a4f14525\\cargo-target\\release\\craftmine-core.exe",
+  "checks": [
+    {
+      "name": "real world panel mounted the host world",
+      "passed": true
+    },
+    {
+      "name": "left column lists the real host worlds with their titles",
+      "passed": true
+    },
+    {
+      "name": "the host-reported active world is marked and sorted first",
+      "passed": true
+    },
+    {
+      "name": "an unreported base is shown as unreported, never as a delivered base",
+      "passed": true
+    },
+    {
+      "name": "save recency comes from the host timestamp",
+      "passed": true
+    },
+    {
+      "name": "create offers only the delivered blank start and no invented base",
+      "passed": true
+    },
+    {
+      "name": "the create form submits through the real host",
+      "passed": true
+    },
+    {
+      "name": "creating a world persists it in Rust and opens it",
+      "passed": true
+    },
+    {
+      "name": "the world panel shows the world created from the left column",
+      "passed": true
+    },
+    {
+      "name": "a failed create keeps the previous world and shows the full host error",
+      "passed": true
+    },
+    {
+      "name": "a long host error wraps instead of breaking the narrow column",
+      "passed": true
+    },
+    {
+      "name": "a created world that cannot be opened keeps the previous world active everywhere ({\"error\":\"切换失败，仍停留在原世界。 Injected switch failure\",\"active\":\"82ed60a2-0347-4b4f-a34a-40dce40fbc66\",\"count\":4,\"formOpen\":true} host 82ed60a2-0347-4b4f-a34a-40dce40fbc66 expected 82ed60a2-0347-4b4f-a34a-40dce40fbc66)",
+      "passed": true
+    },
+    {
+      "name": "a failed save keeps the previous world active in the UI and in Rust",
+      "passed": true
+    },
+    {
+      "name": "the failed switch reports the real host error",
+      "passed": true
+    },
+    {
+      "name": "switching while a task runs states that the task keeps its world",
+      "passed": true
+    },
+    {
+      "name": "switching worlds issues no task or session mutation from the left column",
+      "passed": true
+    },
+    {
+      "name": "auxiliary surfaces start collapsed",
+      "passed": true
+    },
+    {
+      "name": "expanding checks reads its real host summary",
+      "passed": true
+    },
+    {
+      "name": "the section request opens the world panel and carries the section id",
+      "passed": true
+    },
+    {
+      "name": "auxiliary expansion is remembered after a reload",
+      "passed": true
+    },
+    {
+      "name": "play mode hides the world list and chat but keeps both mounted instances",
+      "passed": true
+    },
+    {
+      "name": "returning to creation restores the same input and world list",
+      "passed": true
+    },
+    {
+      "name": "a narrow window keeps the chat input reachable and the column inside the viewport",
+      "passed": true
+    },
+    {
+      "name": "the world list stays readable at the 240px sidebar minimum",
+      "passed": true
+    },
+    {
+      "name": "the world list stays legible in the light theme",
+      "passed": true
+    },
+    {
+      "name": "without the host channel the panel says so and shows no invented worlds",
+      "passed": true
+    },
+    {
+      "name": "no pointer lock, focus or real input was requested",
+      "passed": true
+    },
+    {
+      "name": "no unhandled page errors in the real components or the world panel",
+      "passed": true
+    }
+  ],
+  "errors": []
+}
