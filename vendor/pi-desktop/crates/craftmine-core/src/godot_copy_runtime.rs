@@ -69,10 +69,12 @@ fn transform(files: &mut BTreeMap<String,Vec<u8>>, base: &str, old: &str, new: &
     files.insert("project.godot".into(),result.into_bytes());
     match base {
         "first-person"=>{},
-        "top-down"=>{
+        "top-down"|"mining-sandbox"=>{
             // Only the shipped root metadata schema grants an identity edit.
             let value:Value=serde_json::from_slice(files.get("world.json").context("GODOT_COPY_METADATA_REQUIRED")?)?;
-            ensure!(value["format"]=="craftmine.godot-topdown-world/1","GODOT_COPY_METADATA_UNSUPPORTED");
+            let format=if base=="mining-sandbox" {"craftmine.godot-mining-sandbox-world/1"} else {"craftmine.godot-topdown-world/1"};
+            ensure!(value["format"]==format,"GODOT_COPY_METADATA_UNSUPPORTED");
+            if base=="mining-sandbox" {ensure!(value["baseId"]==base,"GODOT_COPY_METADATA_UNSUPPORTED");}
             let bytes=files.get("world.json").unwrap();
             files.insert("world.json".into(),json_identity(bytes,"worldId",old,new)?);
         },
@@ -190,13 +192,14 @@ impl TaskJournal {
 mod tests {
     use super::*;
     #[test]
-    fn fixed_rebinding_preserves_every_other_byte_in_three_bases() -> Result<()> {
-        for base in ["first-person","top-down","side-view"] {
+    fn fixed_rebinding_preserves_every_other_byte_in_four_bases() -> Result<()> {
+        for base in ["first-person","top-down","side-view","mining-sandbox"] {
             let config=b"config_version=5\r\n[craftmine]\r\nruntime/world_id=\"source\"\r\nruntime/enabled=true\r\n";
             let mut files=BTreeMap::from([("project.godot".into(),config.to_vec()),
                 ("script.gd".into(),b"# source must remain source\n".to_vec()),
                 ("art.png".into(),vec![137,80,78,71,0,255])]);
             if base=="top-down" {files.insert("world.json".into(),br#"{ "format":"craftmine.godot-topdown-world/1", "worldId" : "source", "quest":{"worldId":"source"} }"#.to_vec());}
+            if base=="mining-sandbox" {files.insert("world.json".into(),br#"{ "format":"craftmine.godot-mining-sandbox-world/1", "baseId":"mining-sandbox", "worldId" : "source", "entities":[{"id":"source"}], "notes":"source" }"#.to_vec());}
             if base=="side-view" {
                 files.insert("worlds/default.json".into(),br#"{"format":"craftmine.godot-sideview-default/1","worldId":"ruins","instanceId":"source"}"#.to_vec());
                 files.insert("worlds/ruins/world.json".into(),br#"{"format":"craftmine.godot-sideview-world/1","worldId":"source","rooms":[{"id":"source"}]}"#.to_vec());
@@ -206,6 +209,7 @@ mod tests {
             assert_eq!(files["script.gd"],original["script.gd"]);assert_eq!(files["art.png"],original["art.png"]);
             assert_eq!(std::str::from_utf8(&files["project.godot"])?,std::str::from_utf8(config)?.replace("world_id=\"source\"","world_id=\"target\""));
             if base=="top-down" {assert_eq!(files["world.json"],br#"{ "format":"craftmine.godot-topdown-world/1", "worldId" : "target", "quest":{"worldId":"source"} }"#);}
+            if base=="mining-sandbox" {assert_eq!(files["world.json"],br#"{ "format":"craftmine.godot-mining-sandbox-world/1", "baseId":"mining-sandbox", "worldId" : "target", "entities":[{"id":"source"}], "notes":"source" }"#);}
             if base=="side-view" {
                 let pointer:Value=serde_json::from_slice(&files["worlds/default.json"])?;
                 assert_eq!(pointer["worldId"],"ruins");assert_eq!(pointer["instanceId"],"target");
