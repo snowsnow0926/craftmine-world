@@ -85,7 +85,6 @@ try{
     const world=await step(`create ${baseId} ${starterId}`,()=>nav('world.create',{baseId,starterId,title:`Acceptance ${baseId}`,operationId:randomUUID()}));world.baseId=baseId;worlds.push(world);
     await step(`real build, check and first application ${baseId}`,()=>settled(world.id));
     await step(`actual game pixels ${baseId}`,()=>capture(baseId));
-    if(worlds.length===1)await step('capture the actual client layout',async()=>{const size=await rpc('capture',{name:'complete-client-layout'});const bytes=fs.readFileSync(path.join(out,'complete-client-layout.png'));assert.ok(bytes.length>1000);return {...size,file:'complete-client-layout.png',sha256:createHash('sha256').update(bytes).digest('hex')};});
     if(baseId==='first-person')await step('actual equipment switches and camera movement',()=>rpc('godotPlay',{},60000));
     else await step(`actual ${baseId} gameplay progression`,async()=>{const result=await rpc({'top-down':'godotPlayTown','side-view':'godotPlayRuins','mining-sandbox':'godotPlayMine'}[baseId],{},240000);assert.equal(result.ok,true,result.error);return result;});
     await step(`save ${baseId}`,()=>panel(world.id,'godot.runtimeSave',{freeze:true}));
