@@ -7,13 +7,91 @@ use anyhow::{ensure, Context, Result};
 use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde_json::{json, Value};
 
+#[cfg(test)]
+#[path = "memory_receipt_tests.rs"]
+mod receipt_tests;
+
 pub(super) fn migrate(db: &Connection) -> Result<()> {
     db.execute_batch("CREATE TABLE IF NOT EXISTS craftmine_memories (
  scope_key TEXT NOT NULL,id TEXT NOT NULL,world_id TEXT,project_id TEXT NOT NULL,
  record TEXT NOT NULL,source_hash TEXT NOT NULL,created_at INTEGER NOT NULL,PRIMARY KEY(scope_key,id));
  CREATE TABLE IF NOT EXISTS craftmine_memory_operations (operation_id TEXT PRIMARY KEY,request_hash TEXT NOT NULL,result TEXT NOT NULL);
  CREATE TABLE IF NOT EXISTS craftmine_memory_history (scope_key TEXT NOT NULL,id TEXT NOT NULL,record TEXT NOT NULL,reason TEXT NOT NULL,created_at INTEGER NOT NULL);")?;
+    let has_request: bool = db
+        .prepare("PRAGMA table_info(craftmine_memory_operations)")?
+        .query_map([], |row| row.get::<_, String>(1))?
+        .collect::<rusqlite::Result<Vec<_>>>()?
+        .iter()
+        .any(|name| name == "request_json");
+    if !has_request {
+        db.execute_batch("ALTER TABLE craftmine_memory_operations ADD COLUMN request_json TEXT;")?;
+    }
     Ok(())
+}
+fn business_request(record: &Value) -> Result<Value> {
+    let kind = text(record, "kind", 40)?;
+    ensure!(
+        matches!(
+            kind,
+            "project-rule" | "verified-experience" | "task-history" | "workflow"
+        ),
+        "INVALID_MEMORY_KIND"
+    );
+    let claim = text(record, "claim", 1600)?.trim();
+    ensure!(
+        !claim.is_empty() && claim.chars().count() <= 400,
+        "MEMORY_CLAIM_LIMIT"
+    );
+    let mut request = json!({"kind":kind,"claim":claim});
+    for (field, limit) in [("tags", 12), ("supersedes", 8)] {
+        let array = record.get(field).cloned().unwrap_or_else(|| json!([]));
+        let values = array.as_array().context("MEMORY_ARRAY_REQUIRED")?;
+        ensure!(
+            values.len() <= limit
+                && values
+                    .iter()
+                    .all(|v| v.as_str().is_some_and(|s| !s.is_empty() && s.len() <= 128)),
+            "MEMORY_ARRAY_LIMIT"
+        );
+        request[field] = array;
+    }
+    Ok(request)
+}
+pub(super) fn validate_receipts(db: &Connection) -> Result<()> {
+    let rows = db.prepare("SELECT operation_id,request_hash,request_json,result FROM craftmine_memory_operations WHERE request_json IS NOT NULL")?
+        .query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?, r.get::<_, String>(3)?)))?
+        .collect::<rusqlite::Result<Vec<_>>>()?;
+    for (operation, hash, request, result) in rows {
+        validate_receipt(&operation, &hash, &request, &result)?;
+    }
+    Ok(())
+}
+fn validate_receipt(
+    operation: &str,
+    hash: &str,
+    request: &str,
+    result: &str,
+) -> Result<(Value, Value)> {
+    ensure!(super::digest(request) == hash, "MEMORY_RECEIPT_CORRUPT");
+    let original: Value = serde_json::from_str(request)?;
+    fields(&original, &["context", "operationId", "record"])?;
+    let ctx: WorkspaceContext = serde_json::from_value(original["context"].clone())?;
+    ctx.validate()?;
+    let saved: Value = serde_json::from_str(result)?;
+    safe_record(&original["record"])?;
+    safe_record(&saved)?;
+    ensure!(
+        original["operationId"] == operation
+            && original["record"]["id"] == saved["id"]
+            && original["record"]["scope"]["projectId"] == ctx.project_id
+            && saved["scope"]["projectId"] == ctx.project_id
+            && original["record"]["scope"]["worldId"]
+                .as_str()
+                .is_none_or(|world| saved["scope"]["worldId"] == world)
+            && business_request(&original["record"])? == business_request(&saved)?,
+        "MEMORY_RECEIPT_CORRUPT"
+    );
+    Ok((original, saved))
 }
 fn scope_key(scope: &Value) -> Result<String> {
     fields(scope, &["projectId", "worldId", "moduleId"])?;
@@ -160,6 +238,45 @@ fn validated_claim(db: &Connection, record: &Value, task: &str) -> Result<bool> 
     Ok(false)
 }
 impl TaskJournal {
+    /// Read an already committed result without reopening its completed turn.
+    pub fn memory_find_receipt(&self, args: &Value) -> Result<Value> {
+        fields(
+            args,
+            &[
+                "projectId",
+                "sessionId",
+                "worldId",
+                "operationId",
+                "request",
+            ],
+        )?;
+        let project = text(args, "projectId", 240)?;
+        let session = text(args, "sessionId", 240)?;
+        let world = text(args, "worldId", 240)?;
+        worlds::validate_id(world)?;
+        let operation = text(args, "operationId", 240)?;
+        fields(&args["request"], &["kind", "claim", "tags", "supersedes"])?;
+        let business = business_request(&args["request"])?;
+        let previous: Option<(String, Option<String>, String)> = self.db.query_row(
+            "SELECT request_hash,request_json,result FROM craftmine_memory_operations WHERE operation_id=?1",
+            [operation], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?))).optional()?;
+        let Some((hash, request, result)) = previous else {
+            return Ok(Value::Null);
+        };
+        let request = request.context("MEMORY_RECEIPT_UNVERIFIABLE")?;
+        let (original, saved) = validate_receipt(operation, &hash, &request, &result)?;
+        ensure!(
+            original["context"]["projectId"] == project
+                && original["context"]["sessionId"] == session
+                && saved["scope"]["worldId"] == world,
+            "MEMORY_RECEIPT_OWNER_MISMATCH"
+        );
+        ensure!(
+            business_request(&original["record"])? == business,
+            "REPLAY_MISMATCH"
+        );
+        Ok(saved)
+    }
     pub fn memory_propose(&mut self, args: &Value) -> Result<Value> {
         fields(args, &["context", "operationId", "record"])?;
         let ctx: WorkspaceContext = serde_json::from_value(args["context"].clone())?;
@@ -170,7 +287,8 @@ impl TaskJournal {
             input["status"].is_null() || input["status"] == "proposed",
             "MODEL_CANNOT_VALIDATE_MEMORY"
         );
-        let request_hash = super::digest(&serde_json::to_string(args)?);
+        let request_json = serde_json::to_string(args)?;
+        let request_hash = super::digest(&request_json);
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -258,7 +376,7 @@ impl TaskJournal {
             )?;
         }
         tx.execute("INSERT INTO craftmine_memories(scope_key,id,world_id,project_id,record,source_hash,created_at) VALUES(?1,?2,?3,?4,?5,?6,?7)",params![scope,id,snapshot.world_id,ctx.project_id,body,source_hash,worlds::timestamp()?])?;
-        tx.execute("INSERT INTO craftmine_memory_operations(operation_id,request_hash,result) VALUES(?1,?2,?3)",params![operation,request_hash,body])?;
+        tx.execute("INSERT INTO craftmine_memory_operations(operation_id,request_hash,result,request_json) VALUES(?1,?2,?3,?4)",params![operation,request_hash,body,request_json])?;
         tx.commit()?;
         Ok(record)
     }
