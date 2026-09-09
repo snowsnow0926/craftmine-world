@@ -24,7 +24,9 @@
       "description": "Copy required review helper into packaged plugin",
       "baseBlob": "4ea6016295c4c4fc9f220ef94b61aba41e6cbc9d",
       "applyCheck": "passed",
-      "overlayApplied": false
+      "overlayApplied": false,
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "cd640dbf62dfe8be2ac4a7263659867794fcee33cb6d1c9b4bbe907daf713077"
     }
   ],
   "tests": [
@@ -65,32 +67,44 @@
     {
       "path": "docs/evidence/dispatch/B/continuous-compaction-tests.log",
       "sha256": "9ad52b51c2a9f1968bd59e9becccbf66470ecfb602a50a11ecb5b9d3f5b5b157",
-      "description": "continuous-compaction-tests.log"
+      "description": "continuous-compaction-tests.log",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "cee58d437fee0f3d6a75d018a5eacde3f12da8dffb1a53c3651c63e887eeb2df"
     },
     {
       "path": "docs/evidence/dispatch/B/development-failures.md",
       "sha256": "e6dadf14943d21a44e3f90b14657bc23c113d5e9c576182a866014242ee9560f",
-      "description": "development-failures.md"
+      "description": "development-failures.md",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "e6dadf14943d21a44e3f90b14657bc23c113d5e9c576182a866014242ee9560f"
     },
     {
       "path": "docs/evidence/dispatch/B/final-typecheck.log",
       "sha256": "d66548006c5c7c54f315f252a8864713f539323f6c6187c23bb7db83274361fa",
-      "description": "final-typecheck.log"
+      "description": "final-typecheck.log",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "38ac890c60e7f38d59ddfb410325cdfb5fca83c9411765c5481754e01c021630"
     },
     {
       "path": "docs/evidence/dispatch/B/review-tests.log",
       "sha256": "9aa05bc36eee1c79cfc6891b4ffbc355cb8ebdec79ff4428d7e85eeb08bdfa3e",
-      "description": "review-tests.log"
+      "description": "review-tests.log",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "db43abe159275451b5c951e0f6d951f93324a45e0c0f60564facf6c9107f2829"
     },
     {
       "path": "docs/evidence/dispatch/B/runtime-tests.log",
       "sha256": "5b6eb86e187fdbfbb969e7a1139e984b8d7a3e15c944f9938464376d9a28f07d",
-      "description": "runtime-tests.log"
+      "description": "runtime-tests.log",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "02af093c401091bfa9ff9d2b299a423fa58e1ecb85a4e200cf25a7dd2f5f59ea"
     },
     {
       "path": "docs/evidence/dispatch/B/typecheck.log",
       "sha256": "d66548006c5c7c54f315f252a8864713f539323f6c6187c23bb7db83274361fa",
-      "description": "typecheck.log"
+      "description": "typecheck.log",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "38ac890c60e7f38d59ddfb410325cdfb5fca83c9411765c5481754e01c021630"
     }
   ],
   "dependencies": [
