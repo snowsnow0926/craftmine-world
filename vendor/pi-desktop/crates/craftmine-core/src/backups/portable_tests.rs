@@ -14,6 +14,7 @@ fn portable_columns_require_explicit_migrations_and_never_default_missing_user_f
     let names=tables(&journal.db)?;
     let mut domain=snapshot(&journal.db,&names)?;
     domain["craftmine_godot_builds"]["columns"].as_array_mut().unwrap().retain(|value|value!="branch_id");
+    domain["craftmine_godot_jobs"]["columns"].as_array_mut().unwrap().retain(|value|value!="check_input" && value!="check_input_hash");
     let tx=journal.db.transaction()?;
     apply_domain_rows(&tx,&domain)?;tx.rollback()?;
     domain["craftmine_worlds"]["columns"].as_array_mut().unwrap().retain(|value|value!="title");

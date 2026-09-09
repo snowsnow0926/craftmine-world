@@ -1,0 +1,49 @@
+   Compiling craftmine-core v0.1.0 (D:\cm-godot-final-core-20260910\vendor\pi-desktop\crates\craftmine-core)
+error[E0603]: function `verify_proof` is private
+    --> crates\craftmine-core\src\godot_jobs.rs:1200:63
+     |
+1200 |                 super::godot_applications::additive_progress::verify_proof(&descriptor["snapshot"], defaults, proof)?;
+     |                                                               ^^^^^^^^^^^^ private function
+     |
+note: the function `verify_proof` is defined here
+    --> crates\craftmine-core\src\godot_additive_progress.rs:57:1
+     |
+  57 | pub(super) fn verify_proof(previous: &Value, defaults: &Value, proof: &Value) -> Result<()> {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0603]: function `validate_prepared` is private
+   --> crates\craftmine-core\src\godot_runtime.rs:303:55
+    |
+303 |         super::godot_applications::additive_progress::validate_prepared(&self.db, &candidate, &current, input)?;
+    |                                                       ^^^^^^^^^^^^^^^^^ private function
+    |
+note: the function `validate_prepared` is defined here
+   --> crates\craftmine-core\src\godot_additive_progress.rs:78:1
+    |
+ 78 | pub(super) fn validate_prepared(db: &Connection, candidate: &Value, before: &worlds::WorldRecord, input: &Value) -> Result<()> {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `load_manifest`
+  --> crates\craftmine-core\src\godot_builds.rs:21:22
+   |
+21 |     godot_projects::{load_manifest, ordinary, valid_hash, Manifest},
+   |                      ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+For more information about this error, try `rustc --explain E0603`.
+warning: `craftmine-core` (lib) generated 1 warning
+error: could not compile `craftmine-core` (lib) due to 2 previous errors; 1 warning emitted
+warning: build failed, waiting for other jobs to finish...
+warning: variable does not need to be mutable
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `craftmine-core` (lib test) generated 2 warnings (1 duplicate)
+error: could not compile `craftmine-core` (lib test) due to 2 previous errors; 2 warnings emitted
