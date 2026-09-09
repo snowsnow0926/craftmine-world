@@ -49,6 +49,8 @@
 - 世界目录名用 `sha256(worldId)`，避免 Windows 大小写折叠导致 `a`/`A` 互相覆盖（沿用源码 blob 的做法）。
 - 物化是幂等的：重复调用校验既有文件哈希后返回同一 `buildId`，不覆盖、不“修复”已有内容。
 - 物化是同步且有界的（文件数 / 单文件 / 总量见 §8），不启动任何 Godot 进程；真正的导入、编译、检查是后台作业。
+- 资产按“世界 + 路径”唯一：同一路径不能换成不同内容（`GODOT_ASSET_CONFLICT`），同一内容不能换名。因此历史构建副本的内容永不被悄悄改写。
+- 世界基线的判定：源码清单的 `baseBuild` 必须等于当前任务基线，**或**等于当前世界文档 `build.godot.baseBuild`（即该世界当前是一个同源 Godot 构建）。应用候选后仍可继续开发，不会被自己的构建身份挡住。
 
 ## 3 模型工具（PI，`plugins/craftmine-world`）
 
@@ -61,10 +63,27 @@
 | `godot_build_start` | `godotBuild.start` | medium | `revision`, `manifestHash`, `mode`(`build`\|`check`) | `jobId`, `buildId`, `status`, `executionAvailable`, `blockedReason`, `materialized` |
 | `godot_build_read` | `godotBuild.read` | low | `jobId` | 作业记录 + `currentSource` |
 | `godot_build_cancel` | `godotBuild.cancel` | low | `jobId` | 作业记录 |
-| `godot_candidate_read` | `godotCandidate.read` | low | `candidateId` | 候选 + 构建身份 + 检查摘要 |
+| `godot_candidate_read` | `godotCandidate.read` | low | `candidateId` | 候选 + 构建身份 + `check.assertions` 与完整 `job.output` |
 | `godot_candidate_list` | `godotCandidate.list` | low | `offset`, `limit` | 候选列表 |
 
-`godot_build_start` / `godot_asset_put` 是幂等写操作：同一 `toolCallId` 重放返回同一回执，不同请求体返回 `REPLAY_MISMATCH`；传输失败后由 broker 用 `godotBuild.receipt` / `godotAsset.receipt` 恢复，不重放写入。
+`godot_build_start` / `godot_asset_put` 是幂等写操作：同一 `toolCallId` 重放返回同一回执，不同请求体返回 `REPLAY_MISMATCH`；传输失败后由 broker 用 `godotBuild.receipt` / `godotProject.receipt` 恢复，不重放写入。
+
+### 3.1 面板 / 宿主通道（非模型工具）
+
+`main.cjs` 暴露以下通道供 C 的世界视图使用，参数只含世界 / 作业身份，玩家令牌由宿主生成：
+
+| 通道 | 参数 | 核心方法 |
+| --- | --- | --- |
+| `godot.buildRead` | `worldId`, `jobId` | `godotBuild.read` |
+| `godot.buildCancel` | `worldId`, `jobId` | `godotBuild.cancel` |
+| `godot.candidateList` | `worldId`, `offset`, `limit` | `godotCandidate.list` |
+| `godot.candidateRead` | `worldId`, `candidateId` | `godotCandidate.read` |
+| `godot.applicationPrepare` | `worldId`, `candidateId`, `revision`, `snapshot`, 可选 `id` | `godotApplication.prepare`（返回含宿主生成的 `token`） |
+| `godot.applicationCommit` | `id`, `token`, `evidence` | `godotApplication.commit` |
+| `godot.applicationRead` | `id` | `godotApplication.read` |
+| `godot.applicationAbort` | `id` | `godotApplication.abort` |
+
+只读通道（`godotBuild.read`、`godotCandidate.read/list`）可不带 turn 上下文；模型工具始终带宿主上下文并强制世界绑定。**应用提交后该轮任务被关闭**（与旧应用事务一致），同一轮后续工具调用会收到 `TASK_INACTIVE`。
 
 ## 4 作业状态机
 

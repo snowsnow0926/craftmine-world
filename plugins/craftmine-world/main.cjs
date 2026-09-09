@@ -44,7 +44,12 @@ async function onLoad() {
       worldWritesAvailable: false,
       draftToolsAvailable: info.sessionDrafts===true,
       godotSourceToolsAvailable: info.godotProjects===true,
-      godotBuildAvailable: false,
+      godotBuildJobsAvailable: info.godotBuildJobs===true,
+      godotExecutorGate: info.godotExecutorGate===true,
+      // The core never runs the engine itself; a registered isolated executor
+      // is required before a build job can leave the blocked state.
+      godotBuildAvailable: info.godotBuildJobs===true,
+      godotExecutionInCore: info.godotExecution===true,
       verificationJobsAvailable: info.verificationJobs===true,
       playerApplicationsAvailable: info.playerApplications===true,
       core: info,
@@ -84,6 +89,25 @@ async function onPanelInvoke(channel, payload={}) {
   if(channel==='verification.cancel') {
     const result=await core.call('verification.cancel',{id:payload.id});
     await verifications.cancel(payload.id);return result;
+  }
+  // Managed Godot build, candidate and application panel channels. They carry
+  // only world/job identity; the player-facing apply flow stays host-driven.
+  if(channel==='godot.buildRead')return core.call('godotBuild.read',{worldId:payload.worldId,jobId:payload.jobId});
+  if(channel==='godot.buildCancel')return core.call('godotBuild.cancel',{worldId:payload.worldId,jobId:payload.jobId});
+  if(channel==='godot.candidateList')return core.call('godotCandidate.list',{worldId:payload.worldId,offset:payload.offset??0,limit:payload.limit??16});
+  if(channel==='godot.candidateRead')return core.call('godotCandidate.read',{worldId:payload.worldId,candidateId:payload.candidateId});
+  if(channel==='godot.applicationRead')return core.call('godotApplication.read',{id:payload.id});
+  if(channel==='godot.applicationAbort')return core.call('godotApplication.abort',{id:payload.id});
+  if(channel==='godot.applicationPrepare') {
+    // The player's panel supplies the candidate and its saved revision. The
+    // launch token and evidence are minted by the host, never by the page.
+    const id=payload.id||randomUUID();
+    const token=randomUUID();
+    return {...await core.call('godotApplication.prepare',{id,token,candidateId:payload.candidateId,
+      worldId:payload.worldId,revision:payload.revision,snapshot:payload.snapshot}),token};
+  }
+  if(channel==='godot.applicationCommit') {
+    return core.call('godotApplication.commit',{id:payload.id,token:payload.token,evidence:payload.evidence});
   }
 
   if(channel==='world.importLegacy') {

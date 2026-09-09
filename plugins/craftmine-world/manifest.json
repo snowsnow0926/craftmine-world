@@ -243,6 +243,180 @@
         }
       },
       {
+        "name": "godot_asset_put",
+        "description": "Store one binary or text asset for the bound world's Godot project. sha256 is the hash of the decoded payload and must match it exactly; bytesBase64 must decode to at most 98304 bytes. Existing assets are never overwritten: the same path with different content is refused. Assets are listed by godot_asset_list and are copied into every managed build. Returns the asset identity and the world asset manifest hash; nothing is built, imported or applied.",
+        "risk": "medium",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "mediaType": {
+              "type": "string",
+              "enum": [
+                "image/png",
+                "image/jpeg",
+                "image/webp",
+                "image/svg+xml",
+                "model/gltf-binary",
+                "model/gltf+json",
+                "audio/ogg",
+                "audio/wav",
+                "font/ttf",
+                "font/otf",
+                "application/octet-stream"
+              ]
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "bytesBase64": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 131136
+            }
+          },
+          "required": [
+            "name",
+            "mediaType",
+            "sha256",
+            "bytesBase64"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "godot_asset_list",
+        "description": "List the bound world's managed Godot assets with their hashes, byte sizes and media types, plus the asset manifest hash used by every build. Paginated; no build or execution occurs.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 32
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "godot_build_start",
+        "description": "Create a managed build or check job for the exact source revision and manifest hash from godot_project_index. mode build imports and compiles; mode check additionally runs frozen assertions and, when it passes, produces a candidate the player may preview. The call returns a durable job id immediately and never blocks on the engine: a long import/compile runs in a separate isolated executor. If no attested executor is registered, the job is blocked and executionAvailable is false; read godot_build_read for the reason. Nothing is applied to the formal world here.",
+        "risk": "medium",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "revision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "manifestHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "build",
+                "check"
+              ]
+            }
+          },
+          "required": [
+            "revision",
+            "manifestHash",
+            "mode"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "godot_build_read",
+        "description": "Read one managed Godot job: status, stage, progress, blocked reason, executor, the exact build identity and, once terminal, the real import/compile/check output and recorded artifacts. sourceStale reports whether the job was built from a source revision that is no longer the project head. Reading never starts or resumes the engine.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "jobId": {
+              "type": "string",
+              "pattern": "^gjob-[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "jobId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "godot_build_cancel",
+        "description": "Cancel a queued, claimed or running managed Godot job. A cancelled job rejects any late executor result and can never produce a candidate. The formal world is never modified by cancellation.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "jobId": {
+              "type": "string",
+              "pattern": "^gjob-[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "jobId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "godot_candidate_read",
+        "description": "Read one candidate produced by a passing check job: its exact build identity, source revision, asset manifest and the real check assertions. A candidate is applicable only while its source revision is still the project head; otherwise it is reported stale.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "candidateId": {
+              "type": "string",
+              "pattern": "^gcan-[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "candidateId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "godot_candidate_list",
+        "description": "List the bound world's Godot candidates, newest first, with status (ready, rejected, superseded, applied) and build identity. Listing does not apply anything; only the player can apply a ready candidate.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 32
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
         "name": "project_inspect",
         "description": "Inspect the actual Craftmine world draft before creating or editing it. The first world tool binds this PI session to the selected world; changing the panel afterwards does not redirect it. Returns revision and a paginated resource index. Use capabilities_read for contracts, workspace_patch to edit, then verification_submit to check the finished draft in the background. A saved or machine-checked draft is not yet applied to the world.",
         "risk": "low",

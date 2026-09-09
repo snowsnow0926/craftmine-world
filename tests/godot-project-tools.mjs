@@ -122,10 +122,14 @@ test('broker rejects forged identity, ended turns and oversized content before m
   assert.deepEqual((await f.core.call('world.read',{id:'alpha'})).world,f.world);
 });
 
-test('tool catalogue exposes only source authoring for Godot',async()=>{
+test('tool catalogue declares the Godot tool surface without host identity',async()=>{
   const manifest=JSON.parse(await readFile(path.join(root,'plugins/craftmine-world/manifest.json'),'utf8'));
   const tools=manifest.contributes.agentTools.filter(tool=>tool.name.startsWith('godot_'));
-  assert.equal(tools.length,4);
+  assert.equal(tools.length,11);
+  for(const name of ['godot_project_create','godot_project_index','godot_file_read','godot_project_patch',
+    'godot_asset_put','godot_asset_list','godot_build_start','godot_build_read','godot_build_cancel',
+    'godot_candidate_read','godot_candidate_list'])
+    assert.ok(tools.some(tool=>tool.name===name),`missing ${name}`);
   for(const tool of tools)for(const key of ['worldId','context','toolCallId','baseBuild'])assert.ok(!Object.hasOwn(tool.schema.properties,key));
   assert.ok(tools.every(tool=>tool.schema.additionalProperties===false));
   assert.equal(tools.find(tool=>tool.name==='godot_project_index').schema.properties.limit.maximum,32);
