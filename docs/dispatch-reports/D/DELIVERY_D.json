@@ -92,8 +92,13 @@
   ],
   "evidence": [
     {
+      "path": "docs/evidence/dispatch/D/.gitattributes",
+      "sha256": "7846b37551c23529eb00c68fbb5a435390e922d9db2625cb88681c31746b289e",
+      "description": ".gitattributes"
+    },
+    {
       "path": "docs/evidence/dispatch/D/domain-regression.log",
-      "sha256": "3c0232ff9a92889ccaa21ea45464388e51d13b208981e306835ad4aedcd33457",
+      "sha256": "04d9298a49cfef0d8dcf33a31917025f8c7bfc8b71cb16520c1c0c58b48c6d1d",
       "description": "domain-regression.log"
     },
     {
@@ -113,12 +118,12 @@
     },
     {
       "path": "docs/evidence/dispatch/D/headless-final.log",
-      "sha256": "ddafb2f0bf4eb6bf41b7d31f0bf08ddb67e3057a25a604ac4f23f5140bed3441",
+      "sha256": "c9de707294a1b878a3b8b1f5805ada0d4af2ef812f113ca5e4979d2ba665ac31",
       "description": "headless-final.log"
     },
     {
       "path": "docs/evidence/dispatch/D/targeted-final.log",
-      "sha256": "9b8dc7a3256d1431f4a55b38a204b32d10e71334d5f9b2ee4faa846403ee14f7",
+      "sha256": "694e8162337b1bcee651327702be0192022846e5b72cdd2ac111a0bf7650d314",
       "description": "targeted-final.log"
     }
   ],
