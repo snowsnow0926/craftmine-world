@@ -2,6 +2,7 @@
 // identity, and a bounded operation may never install state directly.
 
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import test from 'node:test';
 import {
   BOUNDED_OPERATIONS,
@@ -13,6 +14,7 @@ import {
   validateOperation,
 } from '../../../desktop/godot/shared/observation.mjs';
 
+const SHARED = 'desktop/godot/shared';
 const identity = {
   worldId: 'world-alpha',
   buildId: 'build-7',
@@ -105,4 +107,49 @@ test('read-only operations are marked and build a request without mutation', () 
     () => buildOperationRequest({ id: 8, ...identity, baseId: 'top-down', op: 'set-coins', args: { value: 999 } }),
     /forbidden-state-operation/,
   );
+});
+
+test('the Godot bridge registers the additive observe-envelope op', () => {
+  const bridge = fs.readFileSync(`${SHARED}/runtime_bridge.gd`, 'utf8');
+  assert.match(bridge, /"observe-envelope"/);
+  for (const field of ['format', 'worldId', 'buildId', 'instanceId', 'baseId', 'baseVersion', 'sampledAt', 'payload']) {
+    assert.match(bridge, new RegExp(`"${field}":`), `bridge envelope declares ${field}`);
+  }
+  assert.match(bridge, /craftmine\.godot-observation\/1/);
+  // The existing observe shape is untouched, so cycle-06 consumers keep working.
+  assert.match(bridge, /"observe":\s*\r?\n\s*return \{"result": adapter\.observe\(\)\}/);
+});
+
+test('each base adapter allowlist matches the shared bounded operation schema', () => {
+  const adapters = {
+    'first-person': `${SHARED}/adapters/first-person.gd`,
+    'top-down': `${SHARED}/adapters/top-down.gd`,
+    'side-view': `${SHARED}/adapters/side-view.gd`,
+  };
+  const declaredOps = (text) => {
+    const allowed = /ALLOWED_OPERATIONS\s*:=\s*(\[[^\]]*\])/.exec(text);
+    if (allowed) return JSON.parse(allowed[1]);
+    const inList = /op in \[([^\]]*)\]/.exec(text);
+    if (inList) {
+      return inList[1]
+        .split(',')
+        .map((token) => token.trim().replace(/^"|"$/g, ''))
+        .filter(Boolean);
+    }
+    if (/"control"/.test(text)) return ['control'];
+    return [];
+  };
+  for (const [baseId, file] of Object.entries(adapters)) {
+    const text = fs.readFileSync(file, 'utf8');
+    const schema = BOUNDED_OPERATIONS[baseId];
+    // `snapshot` is intercepted by the runtime bridge, so it is a valid shared
+    // read-only operation but never reaches the per-base adapter.
+    const bridgeOps = ['snapshot'];
+    const allowed = [...schema.readOnly, ...Object.keys(schema.mutating)].filter((op) => !bridgeOps.includes(op)).sort();
+    const declared = declaredOps(text).filter((op) => !bridgeOps.includes(op)).sort();
+    assert.deepEqual(declared, allowed, `${baseId} adapter allowlist drifted from the shared schema`);
+    for (const op of FORBIDDEN_OPERATIONS) {
+      assert.ok(!declared.includes(op), `${baseId} adapter must not declare ${op}`);
+    }
+  }
 });

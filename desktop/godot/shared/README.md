@@ -42,3 +42,49 @@ The fixture deliberately supplies rich native state to exercise every ledger. Si
 `node tests/godot-runtime-native.mjs` runs all three authored bases through actual Web export, isolated offscreen Electron, the production host/adapter and Rust durability. `--base first-person|top-down|side-view` selects one. Supply `CRAFTMINE_NATIVE_DEPENDENCY_ROOT`, `CRAFTMINE_ELECTRON_BIN`, `CRAFTMINE_CORE_BIN` and the pinned Godot cache when dependencies live outside the worktree. `CRAFTMINE_GODOT_HOST_ROOT` is an explicit read-only host source override for integration work; the report records its source hash and the core binary hash. The test performs real gameplay, compares every persisted field across full process restart, rejects bad snapshots, retains state after storage failure and captures nonempty rendered pixels. G also asserts that the living player actually appears in the captured image: keeping RoomManager in the Node2D canvas subtree prevents its background covering the Player sibling. It uses fixed authored projects and test-only executor/application registration, not real-model authoring or release approval. Renderer diagnostics and any software WebGL warnings remain in raw evidence.
 
 Side-view editor shutdown previously leaked three script resources through static factories with self-typed returns and direct self-class construction. Factories now avoid both references; callers that need static typing declare it locally. Persistence fixtures retain the real res://scripts/runtime resource paths. Full imports are checked for errors and leaks rather than filtering these diagnostics.
+
+## Versioned base contract
+
+`base_contract.mjs` normalizes the three base manifests into one
+`craftmine.godot-base-contract/1` view: pinned engine, world/state/progress/probe
+formats, one blank-start and one example template, preserved state fields and
+migration table, asset manifest/licence, and the declared components. It also
+provides the creation guard `assertTemplateInitialState`, which rejects a blank
+start that ships a completed quest, a claimed reward, a checkpoint, a target or
+an ability.
+
+`tools/build-base-catalog.mjs` generates `bases/base-catalog.json` (creation
+manifest) and `bases/component-catalog.json` (packaging inputs) from the
+manifests, hashing every declared file. `--check` fails when either file is
+stale. See `desktop/godot/bases/README.md`.
+
+## Component library
+
+`components.mjs` lists and resolves components, builds a package input
+(`componentPackageInput`), extracts a real instance from a materialized world
+(`extractInstance`) and plans/applies an installation
+(`planInstallation`/`applyInstallation`) that assigns a new entity id and starts
+from the component's initial state. Data-driven components are written by the
+tool; scene-node components are returned as an explicit `sceneEdits` step, so a
+component can never silently rewrite a `.tscn`.
+
+## Observation and bounded operations
+
+`observation.mjs` defines `craftmine.godot-observation/1`:
+
+    {format, worldId, buildId, instanceId, baseId, baseVersion, sampledAt, payload}
+
+`runtime_bridge.gd` exposes it through the additive `observe-envelope` op (the
+existing `observe` shape is unchanged). The same module declares the bounded
+operation schema per base, matching the real adapters, and refuses every
+state-installing operation (`restore-state`, `set-world-id`, `teleport`,
+`set-health`, `grant-reward`, ...). The first-person managed adapter now uses the
+same explicit allowlist as the other two bases instead of forwarding every
+`BaseOps` operation; `walk`/`wait` are bounded to 600 physics ticks.
+
+Verify the frozen layer with:
+
+```powershell
+node --test tests/godot-remaining/F/contracts.test.mjs tests/godot-remaining/F/components.test.mjs tests/godot-remaining/F/observation.test.mjs tests/godot-remaining/F/base-creation.test.mjs
+```
+

@@ -160,6 +160,28 @@ test('a scene-node component is planned but never written into a .tscn', () => {
   assert.equal(fs.readFileSync(path.join(project, 'scenes', 'world.tscn'), 'utf8'), before);
 });
 
+test('a top-down data component installs its data file with a new identity', () => {
+  const project = path.join(tempDir(), 'world');
+  fs.cpSync(path.join(BASES_DIR, 'top-down', 'worlds', 'blank'), project, { recursive: true });
+  const plan = planInstallation({
+    catalog: CATALOG,
+    componentId: 'td.quest',
+    projectDir: project,
+    entityId: 'f-courier',
+    overrides: { giver: 'npc-mira', requires: { itemId: 'herb', count: 1 }, reward: { coins: 5 } },
+  });
+  assert.deepEqual(plan.sceneEdits, []);
+  assert.equal(plan.dataPatches[0].kind, 'data-file');
+  assert.equal(plan.dataPatches[0].file, 'data/quests/f-courier.json');
+  const receipt = applyInstallation({ catalog: CATALOG, plan, sourceDir: path.join(BASES_DIR, 'top-down'), projectDir: project });
+  assert.equal(receipt.ok, true, receipt.error);
+  const quest = JSON.parse(fs.readFileSync(path.join(project, 'data', 'quests', 'f-courier.json'), 'utf8'));
+  assert.equal(quest.id, 'f-courier');
+  assert.equal(quest.giver, 'npc-mira');
+  assert.ok(!('rewarded' in quest), 'a new quest starts unrewarded');
+  assert.ok(!('status' in quest), 'a new quest does not ship a completed status');
+});
+
 test('unknown components are rejected instead of silently resolved', () => {
   assert.throws(() => getComponent(CATALOG, 'nope.nothing'), /unknown component/);
   assert.throws(() => componentPackageInput(CATALOG, { componentId: 'sv.target', baseId: 'top-down' }), /unknown component/);
