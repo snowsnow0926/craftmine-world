@@ -43,6 +43,8 @@ async function onLoad() {
       view: 'world',
       worldWritesAvailable: false,
       draftToolsAvailable: info.sessionDrafts===true,
+      godotSourceToolsAvailable: info.godotProjects===true,
+      godotBuildAvailable: false,
       verificationJobsAvailable: info.verificationJobs===true,
       playerApplicationsAvailable: info.playerApplications===true,
       core: info,

@@ -40,8 +40,21 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     const selectedWorld=(await getSettings()).activeWorldId;
     assertActive();
     const workspace=await core.call('workspace.open',{context,selectedWorld});
+    assertActive();
     await verifications?.cancelOtherTurns(context);
     await reviews?.cancelOtherTurns(context);
+    const godotMethods={godot_project_create:'godotProject.create',godot_project_index:'godotProject.index',
+      godot_file_read:'godotProject.read',godot_project_patch:'godotProject.patch'};
+    if(Object.hasOwn(godotMethods,definition.name)) {
+      assertActive();
+      // Project identity and receipts always come from the durable host binding.
+      const params={...args,context,worldId:workspace.worldId};
+      if(definition.name==='godot_project_create') {
+        params.toolCallId=invocation.toolCallId;
+        params.baseBuild=workspace.task.binding.baseBuild;
+      } else if(definition.name==='godot_project_patch')params.toolCallId=invocation.toolCallId;
+      return core.call(godotMethods[definition.name],params);
+    }
     if(definition.name==='library_search')return library.search(args);
     if(definition.name==='library_read')return library.read(args);
     if(definition.name==='library_install'){
