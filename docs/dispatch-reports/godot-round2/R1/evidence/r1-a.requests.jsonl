@@ -1,0 +1,9 @@
+{"params":{},"method":"hello"}
+{"params":{"title":"A","world":{"snapshot":{"player":{"y":7.6,"pitch":0,"yaw":0,"z":0.5,"x":0.5},"format":"craftmine.progress/1"},"build":{"id":"base-a","scene":{"objects":[],"format":"craftmine.scene/3"}},"extensions":[]},"id":"a"},"method":"world.create"}
+{"params":{"binding":{"sessionId":"session-r1","turnId":"turn-r1","baseBuild":"base-a","taskId":"task-r1","projectId":"project-r1"},"draft":{}},"method":"task.start"}
+{"params":{"selectedWorld":"a","context":{"sessionId":"session-r1","turnId":"turn-r1","projectId":"project-r1"}},"method":"workspace.open"}
+{"params":{"worldId":"a","files":[{"text":"config_version=5\n[application]\nrun/main_scene=\"res://main.tscn\"\n","path":"project.godot"},{"text":"[gd_scene load_steps=2 format=3]\n[node name=\"Main\" type=\"Node3D\"]\n","path":"main.tscn"},{"text":"extends Node3D\nvar damage := 12\n","path":"world.gd"}],"toolCallId":"create-1","context":{"sessionId":"session-r1","turnId":"turn-r1","projectId":"project-r1"},"baseBuild":"base-a","baseId":"first-person"},"method":"godotProject.create"}
+{"params":{"worldId":"a"},"method":"content.migrate.plan"}
+{"params":{"worldId":"a"},"method":"content.migrate.apply"}
+{"params":{"worldId":"a"},"method":"content.status"}
+{"params":{"context":{"sessionId":"session-r1","turnId":"turn-r1","projectId":"project-r1"},"worldId":"a","limit":32},"method":"godotProject.index"}
