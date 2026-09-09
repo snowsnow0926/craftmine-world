@@ -80,4 +80,5 @@
 - 程序目录：D:/Craftmine World/desktop/build/windows-preview-batch-04，附 PI 许可证、静态解析器许可证、对应源码 ZIP 和构建说明。
 - EXE SHA256：52db7aaa2a8e77e4b2924ba6f56e4fed29e7d325b532d65afe6194213ae1c3be。
 - 源码 ZIP SHA256：d941f6fced8c5833b5439550e082337a8aecb97a3601c123191eff772c4f111b。
-- 合并与清理：交付记录提交后合入本地 master；随后记录实际清理结果。未推送远程，未修改个人 PI、模型配置或世界。
+- 合并结果：f784a19 及全部本批实现已合入本地 master；未推送远程，未修改个人 PI、模型配置或世界。
+- 清理结果：开发分支与工作树登记已移除。Git 删除返回 Directory not empty；自动执行审核随后拒绝本批残留目录的递归清理，原因仅为 blocked by policy。保留 pi-candidates-20260909，不自动重试删除或复用；不影响交付与后续开发。清理记录使用单独的轻量工作树提交。

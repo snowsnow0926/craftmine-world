@@ -79,3 +79,5 @@
 - 领域 276/276、Rust 22/22、插件草稿 16/16、共享 HTTP 检查 3/3、取消/解析 2/2、画面检查 1/1；原生开发版与包内 EXE 各 31/31。构建/类型检查通过。本批没有调用模型。
 - 程序基于 2566c4f，复制到主目录 desktop/build/windows-preview-batch-04；58 个文件逐个哈希一致，约 393 MiB，未签名程序目录，附许可证、源码 ZIP 和构建说明。
 - 完整报告 WINDOWS_BATCH_04.md；便携证据 docs/evidence/windows-batch-04，原始记录已保存主目录 test-results/windows-batch-04。当前继续 W2 的评审、正式应用事务、作品检索和真实桌面模型全流程，之后 W3–W5；不改变目标。
+
+- 第 4 批合并完成：f784a19 及所有实现提交已在本地 master，未推送。开发分支和工作树登记已删除；Git 即使启用长路径也返回 Directory not empty，后续针对本批残留的递归清理被自动执行审核以 blocked by policy 拒绝，未给出更具体原因。保留 D:/Craftmine World-worktrees/pi-candidates-20260909，不自动重试删除或复用；先前三个拒绝清理的目录也不变。该状态记录在独立轻量工作树完成。

@@ -3,7 +3,7 @@
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "W2",
   "baseline": "3bdf52f",
-  "updated": "2026-09-09T04:07:45.682Z",
+  "updated": "2026-09-09T04:11:48.421Z",
   "execution": {
     "scope": "current_codex_thread",
     "status": "running",
@@ -12,10 +12,10 @@
     "recurringDevelopment": true,
     "previousLiveCompactionTestStopped": true,
     "automationId": "craftmine-windows",
-    "worktree": "D:/Craftmine World-worktrees/pi-candidates-20260909",
-    "branch": "codex/pi-candidates-20260909",
-    "nextStep": "先完成第 4 批报告、证据和源码的本地合并与交付记录，再从最新 master 建立新 W2 工作树。复用已完成的 verification.* 作业和 PI 预览，接入必须执行但只作建议的模型评审、需求验收和 Rust 候选应用事务；保存最新玩家进度、处理位置/状态/版本冲突，应用后正确推进草稿基准。随后完成作品检索/固定版本复用和真实桌面模型设置闭环。不要重写已通过的草稿与后台检查，也不要把机器通过当成玩家应用。",
-    "cleanupNote": "三批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909 留有文件：Git 删除返回 Directory not empty；随后各批针对自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未给出更具体原因。保留这三个目录，不自动重试删除，也不复用。不阻断后续开发。"
+    "worktree": null,
+    "branch": null,
+    "nextStep": "第 4 批 f784a19 及实现 1a497f8、2f12573、2566c4f 已合并本地 master；先确认本交付状态记录也已合并，再创建新的 codex/ 分支和独立 W2 工作树。复用已通过的 Rust verification.* 作业和 PI 检查/预览；接入必须执行但只作建议的模型评审、玩家需求验收与 Rust 正式应用事务。应用时保存最新玩家进度，处理位置/状态/版本冲突并正确推进草稿基准。随后完成作品检索/固定版本复用及真实桌面模型设置全流程。不要重做草稿、后台检查或无改动重复 W1；不要将机器检查通过当成已经应用。",
+    "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。"
   },
   "windowsClientPlan": {
     "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",
@@ -160,8 +160,8 @@
       "sourceZipSha256": "d941f6fced8c5833b5439550e082337a8aecb97a3601c123191eff772c4f111b",
       "copyVerified": true,
       "signature": "NotSigned",
-      "merge": "pending",
-      "cleanup": "pending"
+      "merge": "f784a19 and all implementation commits merged into local master",
+      "cleanup": "Merged branch and worktree registration removed. Residual directory retained after automatic approval review rejected recursive cleanup (blocked by policy). Do not retry deletion or reuse."
     }
   },
   "liveVerification": {
@@ -384,7 +384,7 @@
       ]
     }
   ],
-  "nextAction": "先完成第 4 批报告、证据和源码的本地合并与交付记录，再从最新 master 建立新 W2 工作树。复用已完成的 verification.* 作业和 PI 预览，接入必须执行但只作建议的模型评审、需求验收和 Rust 候选应用事务；保存最新玩家进度、处理位置/状态/版本冲突，应用后正确推进草稿基准。随后完成作品检索/固定版本复用和真实桌面模型设置闭环。不要重写已通过的草稿与后台检查，也不要把机器通过当成玩家应用。",
+  "nextAction": "第 4 批 f784a19 及实现 1a497f8、2f12573、2566c4f 已合并本地 master；先确认本交付状态记录也已合并，再创建新的 codex/ 分支和独立 W2 工作树。复用已通过的 Rust verification.* 作业和 PI 检查/预览；接入必须执行但只作建议的模型评审、玩家需求验收与 Rust 正式应用事务。应用时保存最新玩家进度，处理位置/状态/版本冲突并正确推进草稿基准。随后完成作品检索/固定版本复用及真实桌面模型设置全流程。不要重做草稿、后台检查或无改动重复 W1；不要将机器检查通过当成已经应用。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",
