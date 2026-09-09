@@ -36,6 +36,11 @@ reported under `excluded` with `unresolved-content`, `engine-mismatch`,
 `base-mismatch`, `state-format-mismatch`, `base-version-incompatible` or
 `tag-miss`.
 
+`query({ allowUnverified: true })` is the single documented escape hatch: with no
+resolver attached it returns entries marked `verified: false` instead of
+excluding them. It exists for offline index preparation only and must not be used
+when feeding a real creation task.
+
 ## Experiment contract
 
 ```js

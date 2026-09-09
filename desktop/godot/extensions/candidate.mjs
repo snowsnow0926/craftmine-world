@@ -58,7 +58,7 @@ export function evaluateCandidate(dossier, { resolveEvidence = null } = {}) {
   const baselineOk = isPlain(baseline) && Number.isFinite(baseline.value) && BUDGET_SOURCES.includes(baseline.source);
   add('当前基线实测', baselineOk, isPlain(baseline)
     ? `metric=${baseline.metric} value=${baseline.value} source=${baseline.source}`
-    : '缺少 currentBaseline（必须来自真实测量，不能填零）');
+    : '缺少 currentBaseline（必须是真实测量得到的数值，未测量就留空而不是填占位值）');
 
   const budget = dossier?.budget;
   const budgetOk = isPlain(budget) && ['frameMsP95', 'memoryBytes', 'packageBytes'].some(key => Number.isFinite(budget[key]));

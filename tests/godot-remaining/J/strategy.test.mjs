@@ -241,3 +241,34 @@ test('comparison reports improvement, regression and refusal to overclaim', asyn
   const noChange = await runPair({ candidateFirstSuccess: () => true, baselineFirstSuccess: () => true });
   assert.equal(compareRuns(noChange.baseline, noChange.candidate).verdict, 'no-improvement');
 });
+
+test('an adapter that throws leaves the task in the denominator and disables the rate', async () => {
+  const run = await runExperiment({
+    taskSet: taskSetOf(3),
+    armIds: ['baseline', 'candidate'],
+    evidence: 'logic-only',
+    runAttempt: async ({ task, arm }) => {
+      if (task.taskId === 'task-02' && arm === 'candidate') throw new Error('adapter crashed');
+      return { success: true };
+    },
+  });
+  assert.equal(run.status, 'completed');
+  const candidate = run.arms.find(arm => arm.arm === 'candidate');
+  assert.equal(candidate.attempts, 2);
+  assert.equal(candidate.completionRate, null);
+  assert.equal(candidate.rateStatus, 'unknown');
+  assert.equal(candidate.failures, 1, '未执行的任务必须留在分母里');
+  assert.deepEqual(candidate.errors, [{ taskId: 'task-02', error: 'adapter crashed' }]);
+  const comparison = compareRuns(run, run);
+  assert.equal(comparison.status, 'refused');
+  assert.equal(comparison.reason, 'incomplete-run');
+});
+
+test('allowUnverified is the only escape hatch and marks entries unverified', () => {
+  const index = createRetrievalIndex({ entries: [entryOf()] });
+  assert.equal(index.query({ ...CONTEXT }).items.length, 0);
+  const loose = index.query({ ...CONTEXT, allowUnverified: true });
+  assert.equal(loose.items.length, 1);
+  assert.equal(loose.items[0].verified, false);
+  assert.equal(loose.excluded.length, 0);
+});

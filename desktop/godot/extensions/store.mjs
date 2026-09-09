@@ -2,8 +2,9 @@
 //
 // Everything the store writes is either fully written or not written at all
 // (write to a temporary file, then rename). The journal is append-only and is
-// the record a human reads when a part misbehaves; the index is derived state
-// that can be rebuilt from packages + journal.
+// the record a human reads when a part misbehaves; `index.json` is the current
+// active/installed view and must be backed up together with `packages/**`
+// (there is no rebuild command in this layer).
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
@@ -96,21 +97,33 @@ export function createPartStore({ root }) {
     return fs.readFileSync(file);
   }
 
-  /** Re-hash every declared file on disk. Detects tampering and truncation. */
-  function verifyPackage(partId, version) {
+  /**
+   * Re-hash every declared file on disk. Detects tampering and truncation.
+   *
+   * Pass `expectedDigest` (the digest recorded at install time) to also detect a
+   * package whose manifest itself was rewritten: recomputing hashes from a
+   * tampered manifest would otherwise look internally consistent.
+   */
+  function verifyPackage(partId, version, { expectedDigest = null } = {}) {
     const manifest = readManifest(partId, version);
-    if (!manifest) return { passed: false, entries: [], summary: `部件 ${partId}@${version} 未安装` };
+    if (!manifest) return { passed: false, entries: [], digest: null, digestMatches: false, summary: `部件 ${partId}@${version} 未安装` };
     const entries = manifest.files.map(file => {
       const bytes = readFileBytes(partId, version, file.path);
       const actual = bytes === null ? 'missing' : createHash('sha256').update(bytes).digest('hex');
       return { path: file.path, expected: file.sha256, actual, bytes: bytes === null ? null : bytes.length, ok: actual === file.sha256 };
     });
     const changed = entries.filter(entry => !entry.ok);
+    const digest = manifestDigest(manifest);
+    const digestMatches = expectedDigest === null || expectedDigest === digest;
+    const problems = [];
+    if (changed.length) problems.push(`文件与清单不符：${changed.map(entry => entry.path).join('、')}`);
+    if (!digestMatches) problems.push(`清单摘要与安装记录不符：期望 ${expectedDigest}，实际 ${digest}`);
     return {
-      passed: changed.length === 0,
+      passed: problems.length === 0,
       entries,
-      digest: manifestDigest(manifest),
-      summary: changed.length ? `文件与清单不符：${changed.map(entry => entry.path).join('、')}` : `${entries.length} 个文件哈希一致`,
+      digest,
+      digestMatches,
+      summary: problems.length ? problems.join('；') : `${entries.length} 个文件哈希一致`,
     };
   }
 

@@ -8,11 +8,12 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 
 import {
   HOST_PART_API_VERSION, PART_KINDS,
   buildPartPackage, checkPartCompatibility, createPartManager, createPartStore, evaluateCandidate,
-  hashContent, licenseReady, measureBudget, resolveContentRef, summarizeBudgets,
+  hashContent, licenseReady, measureBudget, readPackageFromDirectory, resolveContentRef, summarizeBudgets,
   validateContentRef, validatePartManifest,
 } from '../../../desktop/godot/extensions/index.mjs';
 
@@ -98,6 +99,7 @@ test('compatibility gate refuses engine, base, state-format and native gaps', ()
   assert.equal(checkPartCompatibility(pkg.manifest, { ...TARGET, baseVersion: '2.0.0' }).passed, false);
   assert.equal(checkPartCompatibility(pkg.manifest, { ...TARGET, stateFormat: 'craftmine.godot-topdown-state/2' }).passed, false);
   assert.equal(checkPartCompatibility(pkg.manifest, { ...TARGET, apiVersion: 2 }).passed, false);
+  assert.equal(checkPartCompatibility(pkg.manifest, { ...TARGET, apiVersion: undefined }).passed, false, '省略 ABI 版本不能绕过检查');
 
   const nativeManifest = packageOf({ native: true, entry: { script: 'res://addons/tile_batch_renderer/part.gdextension', language: 'gdextension' } }).manifest;
   assert.equal(checkPartCompatibility(nativeManifest, TARGET).passed, false, '原生部件没有专项验证必须被拒绝');
@@ -105,9 +107,19 @@ test('compatibility gate refuses engine, base, state-format and native gaps', ()
   assert.equal(withRecord.passed, true);
 });
 
+test('a non-native package cannot smuggle a native library through files[]', () => {
+  assert.throws(
+    () => buildPartPackage({ manifest: manifestOf(), sources: { 'addons/tile_batch_renderer/part.gd': 'extends Node\n', 'addons/tile_batch_renderer/libhelper.so': 'binary' } }),
+    /原生库文件/,
+  );
+});
+
 test('license must be resolved before a part may ship', () => {
   assert.equal(licenseReady({ license: { spdx: 'MIT' } }), true);
+  assert.equal(licenseReady({ license: { spdx: 'AGPL-3.0-only' } }), true);
   assert.equal(licenseReady({ license: { spdx: 'NOASSERTION' } }), false);
+  assert.equal(licenseReady({ license: { spdx: 'TBD' } }), false, '占位写法不能当许可');
+  assert.equal(licenseReady({ license: { spdx: 'proprietary' } }), false, '非 SPDX 写法不能当已确认许可');
   const pkg = packageOf({ license: { spdx: 'NOASSERTION', source: 'unknown' } });
   assert.equal(checkPartCompatibility(pkg.manifest, TARGET, { requireLicense: true }).passed, false);
   assert.equal(checkPartCompatibility(pkg.manifest, TARGET, { requireLicense: false }).passed, true);
@@ -125,6 +137,7 @@ test('content references must resolve to a hash right now', () => {
   assert.equal(resolveContentRef(ref, () => ({ found: true, bytes: 'other' })).reason, 'hash-mismatch');
   assert.equal(resolveContentRef(ref, () => ({ found: false })).reason, 'missing-content');
   assert.equal(resolveContentRef(ref, null).reason, 'no-resolver');
+  assert.equal(resolveContentRef(ref, async () => ({ found: true, bytes })).reason, 'async-resolver-unsupported', '异步解析器必须报明确原因，而不是"内容不存在"');
 });
 
 test('install refuses tampered bytes before writing anything', () => {
@@ -209,12 +222,22 @@ test('budget accounting never turns "unmeasured" into "passed"', () => {
   const declared = { frameMsP95: 1.0, memoryBytes: 1024, packageBytes: null, measured: false };
   assert.equal(measureBudget({ declared }).status, 'unknown');
   assert.equal(measureBudget({ declared, measured: { samplesMs: [] } }).status, 'unknown');
-  assert.equal(measureBudget({ declared, measured: { samplesMs: [0.4, 0.5, 0.6], source: 'engine-headless' } }).status, 'pass');
-  assert.equal(measureBudget({ declared, measured: { samplesMs: [0.4, 2.4], source: 'engine-headless' } }).status, 'fail');
+
+  // Declaring a memory budget without measuring memory is still "unmeasured":
+  // a frame-only sample must not produce an overall pass.
+  const partial = measureBudget({ declared, measured: { samplesMs: [0.4, 0.5, 0.6], source: 'engine-headless' } });
+  assert.equal(partial.status, 'unknown');
+  assert.deepEqual(partial.unmeasured, ['memoryBytes']);
+  assert.doesNotMatch(partial.summary, /nullms/);
+
+  assert.equal(measureBudget({ declared, measured: { samplesMs: [0.4, 0.5, 0.6], memoryBytes: 512, source: 'engine-headless' } }).status, 'pass');
+  assert.equal(measureBudget({ declared, measured: { samplesMs: [0.4, 2.4], memoryBytes: 512, source: 'engine-headless' } }).status, 'fail');
   assert.equal(measureBudget({ declared, measured: { samplesMs: [0.4], memoryBytes: 4096, source: 'engine-headless' } }).status, 'fail');
   assert.equal(measureBudget({ declared: { frameMsP95: null, memoryBytes: null, packageBytes: null, measured: false }, measured: { samplesMs: [0.1] } }).status, 'unknown');
 
-  const report = measureBudget({ declared, measured: { samplesMs: [0.1, 0.2, 0.3], source: 'release-package' } });
+  const frameOnly = { frameMsP95: 1.0, memoryBytes: null, packageBytes: null, measured: false };
+  const report = measureBudget({ declared: frameOnly, measured: { samplesMs: [0.1, 0.2, 0.3], source: 'release-package' } });
+  assert.equal(report.status, 'pass');
   assert.equal(report.source, 'release-package');
   const summary = summarizeBudgets([report, measureBudget({ declared })]);
   assert.equal(summary.passed, 1);
@@ -267,4 +290,70 @@ test('a fully evidenced candidate passes, an unresolvable one does not', () => {
   assert.equal(unresolved.status, 'not-ready');
   assert.match(unresolved.summary, /证据可确认/);
   assert.equal(evaluateCandidate({ ...dossier, status: 'rejected' }, { resolveEvidence: () => ({ ok: true }) }).status, 'rejected');
+});
+
+test('a tampered manifest cannot hide tampered bytes: the install digest is re-checked at activation', () => {
+  const root = tempDir('manifest-tamper');
+  const manager = managerFor(root);
+  manager.install(packageOf(), { target: TARGET });
+  const file = path.join(root, 'packages', 'tile-batch-renderer', '0.1.0', 'files', 'addons', 'tile_batch_renderer', 'part.gd');
+  fs.writeFileSync(file, 'extends Node\n# tampered\n');
+  const manifestFile = path.join(root, 'packages', 'tile-batch-renderer', '0.1.0', 'manifest.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  manifest.files[0].sha256 = createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+  fs.writeFileSync(manifestFile, JSON.stringify(manifest, null, 2));
+  const activation = manager.activate('tile-batch-renderer', '0.1.0');
+  assert.equal(activation.status, 'rejected', '文件与清单同时被改也必须被拦住');
+  assert.match(activation.error, /清单摘要/);
+});
+
+test('install cannot silently replace the bytes of the active version', () => {
+  const root = tempDir('active-overwrite');
+  const manager = managerFor(root);
+  manager.install(packageOf(), { target: TARGET });
+  manager.activate('tile-batch-renderer', '0.1.0');
+  const again = manager.install(packageOf({ version: '0.1.0' }, { 'addons/tile_batch_renderer/part.gd': 'extends Node\n# different\n' }), { target: TARGET });
+  assert.equal(again.status, 'rejected');
+  assert.match(again.error, /正在生效/);
+});
+
+test('rollback refuses to restore a tampered or removed previous version', () => {
+  const root = tempDir('rollback-integrity');
+  const manager = managerFor(root);
+  manager.install(packageOf({ version: '0.1.0' }), { target: TARGET });
+  manager.activate('tile-batch-renderer', '0.1.0');
+  manager.upgrade(packageOf({ version: '0.2.0' }, { 'addons/tile_batch_renderer/part.gd': 'extends Node\n# v2\n' }), { target: TARGET });
+
+  const v1File = path.join(root, 'packages', 'tile-batch-renderer', '0.1.0', 'files', 'addons', 'tile_batch_renderer', 'part.gd');
+  fs.writeFileSync(v1File, 'extends Node\n# tampered v1\n');
+  const skippedRollback = manager.rollback('renderPass');
+  assert.equal(skippedRollback.builtin, true, '被篡改的旧版本不能被回退成生效版本');
+  assert.deepEqual(skippedRollback.skipped, [{ partId: 'tile-batch-renderer', version: '0.1.0', reason: '文件与清单不符：addons/tile_batch_renderer/part.gd' }]);
+});
+
+test('uninstalling a version prunes it from the rollback history', () => {
+  const root = tempDir('history-prune');
+  const manager = managerFor(root);
+  manager.install(packageOf({ version: '0.1.0' }), { target: TARGET });
+  manager.activate('tile-batch-renderer', '0.1.0');
+  manager.upgrade(packageOf({ version: '0.2.0' }, { 'addons/tile_batch_renderer/part.gd': 'extends Node\n# v2\n' }), { target: TARGET });
+  assert.equal(manager.history('renderPass').length, 1);
+  assert.equal(manager.uninstall('tile-batch-renderer', '0.1.0').status, 'uninstalled');
+  assert.deepEqual(manager.history('renderPass'), [], '已卸载的版本不能留在回退历史里');
+  const rolled = manager.rollback('renderPass');
+  assert.equal(rolled.builtin, true);
+  assert.deepEqual(rolled.skipped, []);
+});
+
+test('the manager fills the host ABI when a target omits it', () => {
+  const manager = managerFor(tempDir('host-abi'));
+  const result = manager.install(packageOf(), { target: { ...TARGET, apiVersion: undefined } });
+  assert.equal(result.status, 'installed');
+});
+
+test('readPackageFromDirectory refuses paths that escape the package', () => {
+  const dir = tempDir('pkg-read');
+  fs.mkdirSync(path.join(dir, 'files'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify({ files: [{ path: '../outside.txt', sha256: 'x', bytes: 1 }] }));
+  assert.throws(() => readPackageFromDirectory(dir), /不安全|逃逸/);
 });

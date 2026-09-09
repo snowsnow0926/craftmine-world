@@ -62,9 +62,19 @@ export function createPartManager({ root, host, now = () => new Date().toISOStri
       journal({ op: 'install', partId: manifest.partId, version: manifest.version, result: 'rejected', detail: error });
       return { status: 'rejected', partId: manifest.partId, version: manifest.version, error, checks: [] };
     }
+    // Overwriting the bytes of a version that is currently active would change
+    // running behaviour with no activation record. Refuse it explicitly.
+    const existing = index();
+    const activeNow = existing.active[manifest.partKind];
+    if (activeNow && activeNow.partId === manifest.partId && activeNow.version === manifest.version) {
+      const error = `部件 ${manifest.partId}@${manifest.version} 正在生效，不能覆盖；请先回退或使用新的版本号`;
+      journal({ op: 'install', partId: manifest.partId, version: manifest.version, result: 'rejected', detail: error });
+      return { status: 'rejected', partId: manifest.partId, version: manifest.version, error, checks: [] };
+    }
 
     const bytesReport = verifyProvidedFiles(manifest, files);
-    const compat = checkPartCompatibility(manifest, target, { nativeValidation, resolveContent, requireLicense });
+    const compatTarget = { ...target, apiVersion: target?.apiVersion ?? host.apiVersion ?? HOST_PART_API_VERSION };
+    const compat = checkPartCompatibility(manifest, compatTarget, { nativeValidation, resolveContent, requireLicense });
     const checks = [
       { name: '清单格式', passed: true, detail: `digest ${manifestDigest(manifest).slice(0, 12)}` },
       { name: '包内容哈希', passed: bytesReport.passed, detail: bytesReport.summary },
@@ -104,7 +114,7 @@ export function createPartManager({ root, host, now = () => new Date().toISOStri
       journal({ op: 'activate', partId, version, result: 'rejected', detail: '未安装' });
       return { status: 'rejected', error: `部件 ${partId}@${version} 未安装` };
     }
-    const verification = store.verifyPackage(partId, version);
+    const verification = store.verifyPackage(partId, version, { expectedDigest: record.digest });
     if (!verification.passed) {
       journal({ op: 'activate', partId, version, result: 'rejected', detail: verification.summary });
       return { status: 'rejected', error: verification.summary };
@@ -140,22 +150,35 @@ export function createPartManager({ root, host, now = () => new Date().toISOStri
     if (!PART_KINDS.includes(kind)) return { status: 'rejected', error: `未知部件类型：${kind}` };
     const state = index();
     const history = state.history[kind] || [];
-    if (history.length) {
-      const previous = history[history.length - 1];
-      state.history[kind] = history.slice(0, -1);
+    // A history entry only counts if the package is still installed AND still
+    // passes its integrity check. Otherwise rolling back would be a way around
+    // the activation gate, or would point at a package that no longer exists.
+    const skipped = [];
+    let previous = null;
+    while (history.length) {
+      const candidate = history[history.length - 1];
+      const record = installedRecord(candidate.partId, candidate.version);
+      const verification = record ? store.verifyPackage(candidate.partId, candidate.version, { expectedDigest: record.digest }) : null;
+      if (record && verification.passed) { previous = candidate; history.pop(); break; }
+      skipped.push({ partId: candidate.partId, version: candidate.version, reason: record ? verification.summary : '已卸载' });
+      history.pop();
+    }
+    state.history[kind] = history;
+    if (previous) {
       state.active[kind] = previous;
       store.writeIndex(state);
-      journal({ op: 'rollback', partId: previous.partId, version: previous.version, partKind: kind, result: 'rolled-back', to: `${previous.partId}@${previous.version}` });
-      return { status: 'rolled-back', partKind: kind, to: previous, builtin: false };
+      journal({ op: 'rollback', partId: previous.partId, version: previous.version, partKind: kind, result: 'rolled-back', to: `${previous.partId}@${previous.version}`, detail: skipped.length ? `跳过 ${skipped.length} 个不可用版本` : null });
+      return { status: 'rolled-back', partKind: kind, to: previous, builtin: false, skipped };
     }
     if (!state.active[kind]) {
+      store.writeIndex(state);
       journal({ op: 'rollback', partKind: kind, result: 'rejected', detail: '没有可回退的版本' });
-      return { status: 'rejected', error: `部件类型 ${kind} 没有可回退的版本` };
+      return { status: 'rejected', error: `部件类型 ${kind} 没有可回退的版本`, skipped };
     }
     delete state.active[kind];
     store.writeIndex(state);
-    journal({ op: 'rollback', partKind: kind, result: 'rolled-back', to: `${kind}:${BUILTIN_PART_ID}`, builtin: true });
-    return { status: 'rolled-back', partKind: kind, to: { partId: BUILTIN_PART_ID, version: null }, builtin: true };
+    journal({ op: 'rollback', partKind: kind, result: 'rolled-back', to: `${kind}:${BUILTIN_PART_ID}`, builtin: true, detail: skipped.length ? `跳过 ${skipped.length} 个不可用版本` : null });
+    return { status: 'rolled-back', partKind: kind, to: { partId: BUILTIN_PART_ID, version: null }, builtin: true, skipped };
   }
 
   function uninstall(partId, version) {
@@ -169,6 +192,9 @@ export function createPartManager({ root, host, now = () => new Date().toISOStri
     }
     store.removePackage(partId, version);
     state.installed = state.installed.filter(item => !(item.partId === partId && item.version === version));
+    for (const key of Object.keys(state.history)) {
+      state.history[key] = (state.history[key] || []).filter(entry => !(entry.partId === partId && entry.version === version));
+    }
     store.writeIndex(state);
     journal({ op: 'uninstall', partId, version, partKind: record.partKind, result: 'uninstalled' });
     return { status: 'uninstalled', partId, version };
@@ -198,7 +224,8 @@ export function createPartManager({ root, host, now = () => new Date().toISOStri
   }
 
   function verify(partId, version) {
-    return store.verifyPackage(partId, version);
+    const record = installedRecord(partId, version);
+    return store.verifyPackage(partId, version, { expectedDigest: record?.digest ?? null });
   }
 
   return {

@@ -29,7 +29,7 @@ export function checkPartCompatibility(manifest, target, { nativeValidation = nu
   const engineOk = isPlain(target) && target.engineVersion === manifest?.engine?.version;
   add('引擎版本一致', engineOk, `部件要求 ${manifest?.engine?.version}，目标 ${target?.engineVersion}`);
 
-  const apiOk = target?.apiVersion === undefined || target.apiVersion === manifest?.apiVersion;
+  const apiOk = Number.isInteger(target?.apiVersion) && target.apiVersion === manifest?.apiVersion;
   add('宿主 ABI 版本一致', apiOk, `部件要求 ${manifest?.apiVersion}，目标 ${target?.apiVersion ?? '未声明'}`);
 
   const bases = Array.isArray(manifest?.compatibleBases) ? manifest.compatibleBases : [];

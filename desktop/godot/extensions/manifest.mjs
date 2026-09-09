@@ -99,6 +99,11 @@ export function validatePartManifest(raw) {
       if (typeof file.path !== 'string' || !SAFE_RELATIVE_PATH.test(file.path)) fail(`files[${index}].path 不是安全的相对路径：${file.path}`);
       else if (seen.has(file.path)) fail(`files[${index}].path 重复：${file.path}`);
       else seen.add(file.path);
+      // A package that ships native binaries is native, whatever the flag says:
+      // otherwise `native: false` would be a way around the B/C/K validation gate.
+      if (!native && typeof file.path === 'string' && isNativeEntry(file.path)) {
+        fail(`files[${index}] 是原生库文件，但 native 为 false：${file.path}`);
+      }
       if (!SHA256_PATTERN.test(String(file.sha256 ?? ''))) fail(`files[${index}].sha256 必须是 64 位小写十六进制`);
       if (!Number.isInteger(file.bytes) || file.bytes < 0) fail(`files[${index}].bytes 必须是非负整数`);
     });
@@ -196,8 +201,15 @@ export function requiresNativeValidation(manifest) {
   return manifest?.native === true;
 }
 
+// Placeholders that are not a licence. A part carrying one of these may exist in
+// a local development store, but it must not reach a release package. Final
+// confirmation of the actual rights still belongs to the licensing owner (K).
+const LICENSE_PLACEHOLDERS = new Set(['NOASSERTION', 'NONE', 'UNKNOWN', 'TBD', 'UNLICENSED', 'PROPRIETARY', 'OTHER', 'PENDING']);
+const SPDX_ID = /^[A-Za-z0-9][A-Za-z0-9.+-]{0,63}$/;
+
 /** True when a release package may ship this part (license must be resolved). */
 export function licenseReady(manifest) {
-  const spdx = String(manifest?.license?.spdx ?? '').trim().toUpperCase();
-  return spdx.length > 0 && spdx !== 'NOASSERTION' && spdx !== 'UNKNOWN';
+  const spdx = String(manifest?.license?.spdx ?? '').trim();
+  if (!SPDX_ID.test(spdx)) return false;
+  return !LICENSE_PLACEHOLDERS.has(spdx.toUpperCase());
 }

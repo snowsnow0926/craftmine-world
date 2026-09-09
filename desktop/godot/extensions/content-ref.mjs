@@ -72,6 +72,11 @@ export function resolveContentRef(ref, resolver) {
   } catch (error) {
     return { ok: false, reason: 'resolver-error', detail: error.message };
   }
+  // An async resolver is a wiring mistake, not "the content is missing": saying
+  // so avoids reporting every reference as nonexistent.
+  if (resolved && typeof resolved.then === 'function') {
+    return { ok: false, reason: 'async-resolver-unsupported', detail: '内容解析器必须是同步的；异步解析会得到未决 Promise' };
+  }
   if (!isPlain(resolved) || resolved.found !== true) {
     return { ok: false, reason: 'missing-content', detail: `内容 ${validation.ref.contentId}@${validation.ref.contentVersion} 在库中不存在` };
   }

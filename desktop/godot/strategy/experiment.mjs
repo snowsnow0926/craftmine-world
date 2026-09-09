@@ -102,25 +102,36 @@ export async function runExperiment({ taskSet, armIds = ARM_IDS, runAttempt = nu
   for (const arm of armList) {
     const attempts = [];
     for (const task of taskSet.tasks) {
-      const first = normalizeAttempt(await runAttempt({ task, arm, attempt: 1 }));
+      // An adapter that throws on one task must not abort the whole run: the
+      // task stays in the denominator as "not attempted", which makes the rate
+      // unavailable rather than silently perfect.
+      let first = null;
       let repair = null;
-      if (!first.success) repair = normalizeAttempt(await runAttempt({ task, arm, attempt: 2 }));
+      let error = null;
+      try {
+        first = normalizeAttempt(await runAttempt({ task, arm, attempt: 1 }));
+        if (!first.success) repair = normalizeAttempt(await runAttempt({ task, arm, attempt: 2 }));
+      } catch (thrown) {
+        error = thrown?.message ?? String(thrown);
+      }
+      const attempted = first !== null;
       attempts.push({
-        taskId: task.taskId, arm,
-        firstAttemptSuccess: first.success,
-        successAfterRepairs: first.success || repair?.success === true,
-        repairs: first.repairs + (repair?.repairs ?? 0),
-        humanInterventions: first.humanInterventions + (repair?.humanInterventions ?? 0),
-        tokens: (() => { const total = emptyTokens(); addTokens(total, first.tokens); if (repair) addTokens(total, repair.tokens); return total; })(),
-        cacheHits: first.cacheHits + (repair?.cacheHits ?? 0),
-        durationMs: (first.durationMs ?? 0) + (repair?.durationMs ?? 0),
-        regressions: [...first.regressions, ...(repair?.regressions ?? [])],
-        notes: [first.notes, repair?.notes].filter(Boolean).join(' | '),
-        toolSelection: first.toolSelection,
+        taskId: task.taskId, arm, attempted,
+        firstAttemptSuccess: attempted && first.success,
+        successAfterRepairs: attempted && (first.success || repair?.success === true),
+        repairs: (first?.repairs ?? 0) + (repair?.repairs ?? 0),
+        humanInterventions: (first?.humanInterventions ?? 0) + (repair?.humanInterventions ?? 0),
+        tokens: (() => { const total = emptyTokens(); if (first) addTokens(total, first.tokens); if (repair) addTokens(total, repair.tokens); return total; })(),
+        cacheHits: (first?.cacheHits ?? 0) + (repair?.cacheHits ?? 0),
+        durationMs: (first?.durationMs ?? 0) + (repair?.durationMs ?? 0),
+        regressions: [...(first?.regressions ?? []), ...(repair?.regressions ?? [])],
+        notes: [first?.notes, repair?.notes].filter(Boolean).join(' | '),
+        toolSelection: first?.toolSelection ?? null,
+        error,
       });
     }
-    const attempted = attempts.filter(item => item.taskId).length;
-    const everyTaskAttempted = attempted === taskSet.tasks.length;
+    const attemptedCount = attempts.filter(item => item.attempted).length;
+    const everyTaskAttempted = attemptedCount === taskSet.tasks.length;
     const firstSuccess = attempts.filter(item => item.firstAttemptSuccess).length;
     const afterRepairs = attempts.filter(item => item.successAfterRepairs).length;
     const tokens = emptyTokens();
@@ -129,7 +140,7 @@ export async function runExperiment({ taskSet, armIds = ARM_IDS, runAttempt = nu
     runs.push({
       arm,
       tasks: taskSet.tasks.length,
-      attempts: attempted,
+      attempts: attemptedCount,
       firstAttemptSuccess: firstSuccess,
       successAfterRepairs: afterRepairs,
       failures: taskSet.tasks.length - afterRepairs,
@@ -140,6 +151,7 @@ export async function runExperiment({ taskSet, armIds = ARM_IDS, runAttempt = nu
       cacheHits: attempts.reduce((total, item) => total + item.cacheHits, 0),
       durationMs: { median: median(durations), p95: p95(durations), samples: durations.length },
       regressions: attempts.flatMap(item => item.regressions.map(note => ({ taskId: item.taskId, note }))),
+      errors: attempts.filter(item => item.error).map(item => ({ taskId: item.taskId, error: item.error })),
       details: attempts,
     });
   }
@@ -184,6 +196,12 @@ export function compareRuns(baselineRun, candidateRun, { minTasks = MIN_FROZEN_T
   const baseline = baselineRun.arms.find(arm => arm.arm === 'baseline');
   const candidate = candidateRun.arms.find(arm => arm.arm === 'candidate');
   if (!baseline || !candidate) return refused('missing-arm', '缺少 baseline 或 candidate 分支');
+  // Do not trust a record's self-declared rateStatus: re-derive completeness.
+  const consistent = [baseline, candidate].every(arm => Number.isInteger(arm.attempts)
+    && arm.attempts === arm.tasks
+    && arm.firstAttemptSuccess <= arm.attempts
+    && arm.successAfterRepairs <= arm.attempts);
+  if (!consistent) return refused('incomplete-run', '运行记录里有任务没有真正执行，成功率不可用');
 
   const taskCount = baselineRun.taskSet.tasks;
   const deltas = {

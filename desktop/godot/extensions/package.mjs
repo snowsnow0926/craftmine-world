@@ -51,10 +51,12 @@ export function readPackageFromDirectory(dir) {
   const manifestFile = path.join(dir, 'manifest.json');
   if (!fs.existsSync(manifestFile)) throw new Error(`目录里没有 manifest.json：${dir}`);
   const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
-  const filesDir = path.join(dir, 'files');
+  const filesDir = path.resolve(path.join(dir, 'files'));
   const files = {};
   for (const file of manifest.files || []) {
-    const target = path.join(filesDir, file.path);
+    if (!SAFE_RELATIVE_PATH.test(String(file.path ?? ''))) throw new Error(`包清单里的文件路径不安全：${file.path}`);
+    const target = path.resolve(path.join(filesDir, file.path));
+    if (!target.startsWith(filesDir + path.sep)) throw new Error(`文件路径逃逸包目录：${file.path}`);
     if (!fs.existsSync(target)) throw new Error(`包缺少文件：${file.path}`);
     files[file.path] = fs.readFileSync(target);
   }
