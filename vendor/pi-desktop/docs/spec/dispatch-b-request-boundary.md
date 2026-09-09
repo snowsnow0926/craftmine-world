@@ -1,0 +1,15 @@
+# Craftmine request boundary
+
+Craftmine world sessions opt into a host-owned `craftmineWorld` scope. Ordinary PI sessions retain their existing tools, recovery and provider behavior. PI remains the only Agent and compaction loop.
+
+Before the first request and every subsequent physical request, the runtime queries authoritative task context. Prompt version `craftmine.request/1` separates product rules, current requirements/corrections, machine facts, scoped validated reference memories and exact library references. Source and quoted instructions never define identity or permission. The full transcript remains in PI; summaries do not become domain storage.
+
+The read-only preflight includes system, messages, complete tool schemas, attachments, output allowance and a tool-result reserve. UTF-8 byte estimates are conservative, not provider tokenization. At 85% of the selected window the existing inline PI compaction path is used. Final provider serialization is checked again, including earlier payload transformations. Unexpected growth fails closed. Unknown or expired model errors do not select another model. Opaque output-limit repair is disabled for budgeted tasks because it would drop the reserved output ceiling.
+
+Every physical attempt reserves through Rust `budget.reserve` and settles through `budget.settle`; creation, summary and review use the same task owner. Provider total tokens are authoritative and reasoning/cache are not added twice. Unknown/cancelled calls retain their reservation. A failed settlement suppresses terminal success and tool execution. Requests abort after 120 seconds, and a provider ignoring abort cannot deliver late tool calls. Actual billing on cancelled calls can remain unknown.
+
+Compaction attempts and tool calls are counted using idempotent Rust boundaries. World tasks retain drafts and fail when context rebuilding or summarization fails; they cannot silently roll over to an ungrounded context. Resume requires a host player action and a new domain generation. Normal finished turns may be reviewed without restoring a write lease, only while the exact verification remains current.
+
+World task catalogs expose necessary world tools first and discover further world tools through PI ToolSearch. Runtime catalog filtering and before-tool checks deny generic filesystem, shell and delegation tools. Electron must independently gate actual tools.execute against captured ownership, including direct forged calls. This is a domain tool boundary, not an OS sandbox for the plugin process.
+
+Large review prompts retain changed resources, all behavior/system definitions and their object reference closure. Unchanged omitted objects retain names, anchors and source hashes. The review explicitly disclaims omitted geometry coverage. Global scene changes require full geometry. If the complete dependency slice exceeds the original 180k character bound, review fails rather than truncating code.

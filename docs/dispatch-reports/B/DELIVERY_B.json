@@ -1,0 +1,139 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "agent": "B",
+  "promptVersion": "w2-w5-v1",
+  "status": "ready_for_integration",
+  "baseRef": "dispatch/w2-w5-v1",
+  "baseCommit": "2f71e128fd9ff9c49ee4e466138f4949b6bce862",
+  "codeCommit": "7a5bc7d2948493fea2d5ba78b09be8eabafc17f9",
+  "branch": "codex/parallel-b-20260909",
+  "worktree": "D:/Craftmine World-worktrees/parallel-b-20260909",
+  "commits": [
+    "eeb8d445e234ec7ad747b22933b7f8e566c47d14",
+    "de3b9c864bd90c598e67688d3b7c71034f7231e1",
+    "7a5bc7d2948493fea2d5ba78b09be8eabafc17f9"
+  ],
+  "report": "docs/dispatch-reports/B/REPORT_B.md",
+  "interfaces": [
+    "docs/dispatch-reports/B/INTERFACE_B.md"
+  ],
+  "integrationPatches": [
+    {
+      "path": "docs/dispatch-reports/B/integration.patch",
+      "sha256": "cd640dbf62dfe8be2ac4a7263659867794fcee33cb6d1c9b4bbe907daf713077",
+      "description": "Copy required review helper into packaged plugin",
+      "baseBlob": "4ea6016295c4c4fc9f220ef94b61aba41e6cbc9d",
+      "applyCheck": "passed",
+      "overlayApplied": false,
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "cd640dbf62dfe8be2ac4a7263659867794fcee33cb6d1c9b4bbe907daf713077"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "typecheck",
+      "command": "pnpm --dir vendor/pi-desktop --filter @pi-desktop/agent-runtime typecheck",
+      "cwd": "D:/Craftmine World-worktrees/parallel-b-20260909",
+      "sourceCommit": "7a5bc7d2948493fea2d5ba78b09be8eabafc17f9",
+      "result": "passed",
+      "evidence": "docs/evidence/dispatch/B/final-typecheck.log"
+    },
+    {
+      "kind": "runtime regression",
+      "command": "pnpm --dir vendor/pi-desktop --filter @pi-desktop/agent-runtime test",
+      "cwd": "D:/Craftmine World-worktrees/parallel-b-20260909",
+      "sourceCommit": "de3b9c864bd90c598e67688d3b7c71034f7231e1",
+      "result": "321/321 passed",
+      "evidence": "docs/evidence/dispatch/B/runtime-tests.log"
+    },
+    {
+      "kind": "PI loop/provider and domain fixture",
+      "command": "pnpm --dir vendor/pi-desktop --filter @pi-desktop/agent-runtime exec vitest run src/craftmine-context.test.ts",
+      "cwd": "D:/Craftmine World-worktrees/parallel-b-20260909",
+      "sourceCommit": "7a5bc7d2948493fea2d5ba78b09be8eabafc17f9",
+      "result": "12/12 passed; 3 real PI compactions in one fixture prompt",
+      "evidence": "docs/evidence/dispatch/B/continuous-compaction-tests.log"
+    },
+    {
+      "kind": "logic",
+      "command": "node --test tests/dispatch/b/review-context.test.mjs",
+      "cwd": "D:/Craftmine World-worktrees/parallel-b-20260909",
+      "sourceCommit": "de3b9c864bd90c598e67688d3b7c71034f7231e1",
+      "result": "3/3 passed",
+      "evidence": "docs/evidence/dispatch/B/review-tests.log"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/evidence/dispatch/B/continuous-compaction-tests.log",
+      "sha256": "9ad52b51c2a9f1968bd59e9becccbf66470ecfb602a50a11ecb5b9d3f5b5b157",
+      "description": "continuous-compaction-tests.log",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "cee58d437fee0f3d6a75d018a5eacde3f12da8dffb1a53c3651c63e887eeb2df"
+    },
+    {
+      "path": "docs/evidence/dispatch/B/development-failures.md",
+      "sha256": "e6dadf14943d21a44e3f90b14657bc23c113d5e9c576182a866014242ee9560f",
+      "description": "development-failures.md",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "e6dadf14943d21a44e3f90b14657bc23c113d5e9c576182a866014242ee9560f"
+    },
+    {
+      "path": "docs/evidence/dispatch/B/final-typecheck.log",
+      "sha256": "d66548006c5c7c54f315f252a8864713f539323f6c6187c23bb7db83274361fa",
+      "description": "final-typecheck.log",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "38ac890c60e7f38d59ddfb410325cdfb5fca83c9411765c5481754e01c021630"
+    },
+    {
+      "path": "docs/evidence/dispatch/B/review-tests.log",
+      "sha256": "9aa05bc36eee1c79cfc6891b4ffbc355cb8ebdec79ff4428d7e85eeb08bdfa3e",
+      "description": "review-tests.log",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "db43abe159275451b5c951e0f6d951f93324a45e0c0f60564facf6c9107f2829"
+    },
+    {
+      "path": "docs/evidence/dispatch/B/runtime-tests.log",
+      "sha256": "5b6eb86e187fdbfbb969e7a1139e984b8d7a3e15c944f9938464376d9a28f07d",
+      "description": "runtime-tests.log",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "02af093c401091bfa9ff9d2b299a423fa58e1ecb85a4e200cf25a7dd2f5f59ea"
+    },
+    {
+      "path": "docs/evidence/dispatch/B/typecheck.log",
+      "sha256": "d66548006c5c7c54f315f252a8864713f539323f6c6187c23bb7db83274361fa",
+      "description": "typecheck.log",
+      "sha256Source": "original-worktree-bytes",
+      "gitBlobSha256": "38ac890c60e7f38d59ddfb410325cdfb5fca83c9411765c5481754e01c021630"
+    }
+  ],
+  "dependencies": [
+    {
+      "group": "A",
+      "contractVersion": "w2-w5-v1 plus agreed Unix millisecond deadline",
+      "usesFixture": true,
+      "missingWork": "G actual task context and persistent ledger integration; scoped memory projection"
+    },
+    {
+      "group": "G",
+      "contractVersion": "INTERFACE_B",
+      "usesFixture": false,
+      "missingWork": "Host scope, exact ownership gate, reverse proxy, one-shot review hooks and bundler helper"
+    },
+    {
+      "group": "F",
+      "contractVersion": "w2-w5-v1",
+      "usesFixture": false,
+      "missingWork": "Native real-model completion after three compactions"
+    }
+  ],
+  "unverified": [
+    "Real Rust and native bridge integration",
+    "Real-model long-task green finish",
+    "Native Windows desktop and packaged executable",
+    "Cancellation across main queued review/native verifier jobs"
+  ],
+  "privateDataIncluded": false,
+  "mergedToPrimary": false,
+  "pushed": false
+}

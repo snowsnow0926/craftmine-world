@@ -123,6 +123,8 @@ export type ProviderResponseSnapshot = {
 };
 
 export type ProviderRetryController = {
+  /** Task ledgers require a bounded output allowance on every attempt. */
+  allowOutputLimitRepair?: boolean;
   /** Claim one retry in the shared logical-turn budget. */
   claim: (
     error: ClassifiedAgentError,
@@ -414,7 +416,7 @@ export function createProviderRetryStream(
             errorMessage,
             controller.status?.(),
           );
-          if (!limitRepairTried && isOpaqueBadRequest(error)) {
+          if (controller.allowOutputLimitRepair !== false && !limitRepairTried && isOpaqueBadRequest(error)) {
             opaqueLimitRejection = error;
             break;
           }

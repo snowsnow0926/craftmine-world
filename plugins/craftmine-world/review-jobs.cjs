@@ -1,5 +1,6 @@
 const {createHash,randomUUID}=require('node:crypto');
 const {reviewPrompt,parseReview}=require('./domain.cjs');
+const {focusedReviewPrompt}=require('./context-review.cjs');
 
 function createReviewJobs(core,service) {
   const jobs=new Map();let stopped=false;
@@ -8,7 +9,7 @@ function createReviewJobs(core,service) {
     const job=await core.call('verification.read',{id:verificationId});
     const existing=await core.call('review.list',{verificationId});
     if(!retry&&existing.length)return existing[0];
-    const prompt=reviewPrompt(job);
+    const prompt=focusedReviewPrompt(job,reviewPrompt);
     const id='review-'+createHash('sha256').update(randomUUID()).digest('hex'),token=randomUUID();
     const record=await core.call('review.start',{id,token,verificationId});
     const entry={binding:job.input.binding,cancelled:false,promise:null};jobs.set(id,entry);

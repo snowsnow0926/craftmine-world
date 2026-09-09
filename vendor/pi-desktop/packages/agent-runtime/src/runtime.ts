@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
 import {
   Agent,
   BACKGROUND_CONTEXT,
@@ -604,6 +605,9 @@ export type PluginToolDef = {
 };
 
 export type AgentRuntimeOptions = {
+  /** Set exclusively by the desktop host for a bound world task. */
+  craftmineWorld?: boolean;
+  craftmineHooks?: CraftmineRequestHooks;
   host: HostClient;
   sessionId: string;
   mode: Mode;
@@ -653,6 +657,7 @@ export type AgentRuntimeOptions = {
 };
 
 export type RuntimeMatchConfig = {
+  craftmineWorld?: boolean;
   mode: Mode;
   provider: RuntimeProviderConfig;
   thinkingLevel: ThinkingLevel;
@@ -1301,8 +1306,15 @@ export class DesktopAgentRuntime {
   private activeToolProgressCleanups = new Set<(flush: boolean) => void>();
   private hostCloseUnsubscribe?: () => void;
   private turnSubagentUsage?: MessageUsage;
+  private readonly craftmineWorld: boolean;
+  private readonly craftmineHooks?: CraftmineRequestHooks;
 
   constructor(opts: AgentRuntimeOptions) {
+    this.craftmineWorld = opts.craftmineWorld === true;
+    this.craftmineHooks = opts.craftmineHooks ?? (this.craftmineWorld ? createCraftmineProxyHooks(
+      (method, params) => opts.host.call(method, params),
+      () => ({ sessionId: this.sessionId, turnId: this.hostTurnId }),
+    ) : undefined);
     this.sessionId = opts.sessionId;
     this.hostTurnId = opts.turnId;
     this.turnId = opts.turnId;
@@ -1443,12 +1455,15 @@ Delegation rules:
             this.provider.headers,
           ),
         );
+        let providerAttempt = 0;
         return createProviderRetryStream(
           m,
           context,
           requestOptions,
-          (retryOptions) => models.streamSimple(m, context, retryOptions),
+          (retryOptions) => craftmineGuardedStream(m, context, retryOptions, this.craftmineHooks, providerAttempt++ === 0 ? "creation" : "retry",
+            (boundedContext, boundedOptions) => models.streamSimple(m, boundedContext, boundedOptions)),
           {
+            allowOutputLimitRepair: !this.craftmineHooks,
             claim: (error, phase) => this.claimProviderRetry(error, phase),
             headers: () => this.providerRetryHeaders,
             status: () => this.providerResponseStatus,
@@ -1571,6 +1586,10 @@ Delegation rules:
   private async beforeToolCall(
     context: BeforeToolCallContext,
   ): Promise<BeforeToolCallResult | undefined> {
+    if (this.craftmineWorld && !isCraftmineToolAllowed(context.toolCall.name, this.craftmineToolNames())) {
+      return { block: true, reason: "CRAFTMINE_TOOL_SCOPE_DENIED: use the world domain tools." };
+    }
+    if (this.craftmineHooks) await this.craftmineHooks.onBoundary({ kind: "tool", eventId: context.toolCall.id });
     const toolCalls = (context.assistantMessage.content as Array<{ type?: string }>).filter(
       (block) => block.type === "toolCall",
     );
@@ -1643,6 +1662,7 @@ Delegation rules:
       .join(",");
     return (
       !this.disposed &&
+      this.craftmineWorld === (config.craftmineWorld === true) &&
       this.provider.id === config.provider.id &&
       this.provider.modelId === config.provider.modelId &&
       (this.provider.baseUrl ?? "") === (config.provider.baseUrl ?? "") &&
@@ -2433,6 +2453,7 @@ Delegation rules:
   private rebuildToolCatalog(): void {
     const catalog = new Map<string, AgentTool>();
     for (const tool of this.buildToolDefinitions()) {
+      if (this.craftmineWorld && !isCraftmineToolAllowed(tool.name, this.craftmineToolNames())) continue;
       if (!this.isToolAllowedInMode(tool.name)) continue;
       // The execution mode is decided here, in one place, so no tool can grow
       // an accidental parallel batch: everything is sequential except `Task`.
@@ -2481,6 +2502,7 @@ Delegation rules:
   }
 
   private isCoreTool(name: string): boolean {
+    if (this.craftmineWorld) return ["plugin_craftmine_world_project_inspect", "plugin_craftmine_world_capabilities_read", "new_context", "AskUserQuestion"].includes(name);
     return (
       name === CONTEXT_COMPACTION_TOOL_NAME ||
       MODE_TRANSITION_TOOL_NAMES.has(name) ||
@@ -2515,6 +2537,12 @@ Delegation rules:
           this.activeDeferredToolNames.has(name),
       )
       .map(([, tool]) => tool);
+  }
+
+  private craftmineToolNames(): ReadonlySet<string> {
+    // Host tooling independently checks actual plugin ownership. This runtime
+    // catalog only accepts tool definitions delivered by that host.
+    return new Set(this.pluginTools.filter(tool => tool.name.startsWith("plugin_craftmine_world_")).map(tool => tool.name));
   }
 
   private optionalToolsPrompt(): string {
@@ -4291,7 +4319,7 @@ Delegation rules:
     }
 
     const budget = this.contextBudget(context.messages);
-    const hardLimitReached = budget.tokens >= budget.hardLimit;
+    const hardLimitReached = budget.tokens >= budget.hardLimit || await this.craftmineCompactionNeeded(context.messages, _signal);
     // Codex's `should_roll_over`: either the model asked for a new window or
     // the limit forces one. A model request that fails to compact is not fatal
     // — nothing is over the boundary yet — so only the limit throws.
@@ -4312,7 +4340,7 @@ Delegation rules:
       retentionMode,
     );
     if (!compacted) {
-      if (!hardLimitReached) return { context };
+      if (!hardLimitReached && !this.craftmineHooks) return { context };
       // Continuing would immediately issue the provider request that this
       // guard exists to prevent. The Agent wrapper converts this failure to
       // the normal error/agent_end event sequence.
@@ -4322,12 +4350,22 @@ Delegation rules:
     }
     context = this.rebuiltAgentContext();
     const postCompactionBudget = this.contextBudget(context.messages);
-    if (postCompactionBudget.tokens >= postCompactionBudget.hardLimit) {
+    if (postCompactionBudget.tokens >= postCompactionBudget.hardLimit || await this.craftmineCompactionNeeded(context.messages, _signal)) {
       throw new Error(
         "CONTEXT_COMPACTION_FAILED: checkpoint remained above the safe model context budget",
       );
     }
     return { context };
+  }
+
+  private async craftmineCompactionNeeded(messages: AgentMessage[], signal?: AbortSignal): Promise<boolean> {
+    if (!this.craftmineHooks?.inspectRequest) return false;
+    const estimate = await this.craftmineHooks.inspectRequest({ requestId: "preflight", purpose: "creation", model: this.model,
+      context: { systemPrompt: this.agent.state.systemPrompt, messages: convertToLlm(messages), tools: this.activeTools() },
+      maxOutputTokens: this.model.maxTokens, signal });
+    // Leave summary/framing headroom; the final physical request is measured
+    // again after reminders, context refresh and provider retry preparation.
+    return estimate.total >= Math.floor(this.model.contextWindow * 0.85);
   }
 
   /**
@@ -4698,9 +4736,16 @@ Delegation rules:
     preparation: ShapedPreparation,
     signal: AbortSignal,
   ): Promise<Awaited<ReturnType<typeof compact>>> {
+    const models: Models = this.craftmineHooks ? new Proxy(this.models, {
+      get: (target, property, receiver) => property === "completeSimple"
+        ? (model: Model<Api>, context: import("@earendil-works/pi-ai").Context, options?: SimpleStreamOptions) =>
+          craftmineGuardedStream(model, context, options, this.craftmineHooks, "summary",
+            (boundedContext, boundedOptions) => target.streamSimple(model, boundedContext, boundedOptions)).result()
+        : Reflect.get(target, property, receiver),
+    }) : this.models;
     return compact(
       preparation,
-      this.models,
+      models,
       this.model,
       undefined,
       this.thinkingLevel,
@@ -4899,6 +4944,7 @@ Delegation rules:
     willRetry: boolean,
     retentionMode: CompactionRetentionMode,
   ): Promise<boolean> {
+    if (this.craftmineHooks) await this.craftmineHooks.onBoundary({ kind: "compaction", eventId: `compaction-${randomUUID()}` });
     this.emit({ type: "compaction_start", reason });
     this.compactionAbort = new AbortController();
     let build: CheckpointBuild;
@@ -4908,6 +4954,12 @@ Delegation rules:
       this.compactionAbort = undefined;
     }
     if (!build.ok) {
+      // World tasks must not silently replace failed authoritative context or
+      // a failed summary with a context-free retained-tail window.
+      if (this.craftmineHooks) {
+        this.emitCompactionFailure(reason, build.tokensBefore, build.message);
+        return false;
+      }
       if (!build.recoverable) {
         this.emitCompactionFailure(reason, build.tokensBefore, build.message);
         return false;
@@ -5599,7 +5651,7 @@ Delegation rules:
         content,
         timestamp: Date.now(),
       };
-      if (this.automaticCompactionNeeded([incomingUserMessage])) {
+      if (this.automaticCompactionNeeded([incomingUserMessage]) || await this.craftmineCompactionNeeded([...this.agent.state.messages, incomingUserMessage])) {
         const compacted = await this.runCompaction("threshold", false);
         if (!compacted) {
           this.failBeforeProviderRequest(incomingUserMessage, {
@@ -5609,7 +5661,7 @@ Delegation rules:
           });
           return { turnId: this.turnId };
         }
-        if (this.automaticCompactionNeeded([incomingUserMessage])) {
+        if (this.automaticCompactionNeeded([incomingUserMessage]) || await this.craftmineCompactionNeeded([...this.agent.state.messages, incomingUserMessage])) {
           this.failBeforeProviderRequest(incomingUserMessage, {
             code: "CONTEXT_TOO_LARGE",
             message:
@@ -5664,6 +5716,7 @@ Delegation rules:
     this.agent.abort();
     this.providerRetryAbort?.abort();
     this.compactionAbort?.abort();
+    await this.craftmineHooks?.onBoundary({ kind: "stop", eventId: `stop-${randomUUID()}` });
   }
 
   /** Ask pi-agent-core to stop after the current assistant/tool turn. */
