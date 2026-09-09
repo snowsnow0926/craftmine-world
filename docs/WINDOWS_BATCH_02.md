@@ -103,6 +103,6 @@ Rust 正在实际管理世界、玩家进度、任务草稿、调用回执和导
 - `780e6bc`：原生插件的 Rust 程序路径。
 - `7a2376d`、`3490f46`：原生与包内 EXE 无输入验收。
 
-本批交付合并到本地 `master`；远程未推送。合并及工作树清理结果在交付消息中说明。更早那批被自动审核拒绝清理的残留目录仍保留，没有再次尝试删除。
+本批提交已随 `a5779f2` 合并到本地 `master`；远程未推送。工作树登记与开发分支已移除。Git 删除目录时报告 `Directory not empty`，随后自动执行审核以 `blocked by policy` 拒绝递归清理，没有提供更具体原因。因此 `D:/Craftmine World-worktrees/pi-client-w1-20260909` 的残留文件保留，不再自动删除或复用；更早那批的残留也保持不动。程序、源码与验收数据已经另存到主目录。
 
 证据在 [第 2 批证据目录](evidence/windows-batch-02/)，原始运行数据与日志在 `D:/Craftmine World/test-results/windows-batch-02`。目标和定期接续保持启用。

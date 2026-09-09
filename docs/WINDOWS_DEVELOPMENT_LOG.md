@@ -56,3 +56,4 @@
 - 构建实现提交 `7a2376d`；包内 EXE 验收脚本提交 `3490f46`。未签名程序目录保存到主目录 `desktop/build/windows-preview-batch-02`，带来源、许可证、源码归档与构建说明。EXE SHA256 `ddd29a53ae9a74778c4e52bf6483ee3fe962dc85d20e61ebfa9c86fddd7bf6f7`；源码 ZIP SHA256 `3b32766f3a741496bcc4e40c5e75ccdd4d831fe6d7849656f231f5b859273ef6`。
 - 完整报告 `docs/WINDOWS_BATCH_02.md`，便携证据 `docs/evidence/windows-batch-02`，原始运行目录已保存到主项目 `test-results/windows-batch-02`。
 - W1 核心运行自动验收通过，进入 W2 接线。仍未验收可见窗口合成、物理双击、安装器和新桌面的真实模型创作；没有复制个人凭据或操作用户世界。作品检索、候选界面和压缩后绿色收尾继续待办。
+- 合并完成：`a5779f2` 及全部本批提交已进入本地 `master`。工作树登记与开发分支已删除；Git 删除目录返回 `Directory not empty`，随后针对本批残留的递归清理被自动执行审核以 `blocked by policy` 拒绝，未提供更具体原因。保留 `D:/Craftmine World-worktrees/pi-client-w1-20260909` 残留，不再自动删除或复用；不触碰先前已被拒绝清理的旧残留。此状态记录使用单独的轻量工作树提交，不在主目录直接开发。
