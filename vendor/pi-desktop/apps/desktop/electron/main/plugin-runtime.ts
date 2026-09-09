@@ -902,6 +902,7 @@ export class PluginRuntime {
   /** Private orchestrator-to-domain bridge; no renderer/third-party API maps here. */
   async requestCraftmineHost(method: string, params: Record<string, unknown>): Promise<unknown> {
     const allowed = new Set(["selection.read", "maintenance.context", "turn.begin", "task.context", "budget.configure", "budget.reserve", "budget.settle", "budget.boundary", "review.context", "review.reserve", "review.settle", "workbench.request", "task.resume", "task.interrupt", "task.discard", "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel"]);
+    allowed.add("budget.findReceipt");
     if (!allowed.has(method)) throw apiError("UNSUPPORTED", "Unsupported Craftmine host request");
     const loaded = this.loaded.get("craftmine.world");
     if (!loaded?.child) throw apiError("UNSUPPORTED", "Craftmine world service unavailable");
