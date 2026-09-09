@@ -42,6 +42,7 @@ pub const DRAFT_REF_PREFIX: &str = "refs/craftmine/draft/";
 pub const VERSION_REF_PREFIX: &str = "refs/craftmine/version/";
 pub const APPLIED_REF_PREFIX: &str = "refs/craftmine/applied/";
 pub const COPIED_FORMAL_REF_PREFIX: &str = "refs/craftmine/copied-formal/";
+pub const COPIED_RUNTIME_REF_PREFIX: &str = "refs/craftmine/copied-runtime/";
 pub const DEFAULT_OBJECT_FORMAT: &str = "sha1";
 
 /// References that must survive reclaim, cache cleanup and backup pruning.
@@ -52,6 +53,7 @@ pub const PROTECTED_REF_PREFIXES: &[&str] = &[
     VERSION_REF_PREFIX,
     APPLIED_REF_PREFIX,
     COPIED_FORMAL_REF_PREFIX,
+    COPIED_RUNTIME_REF_PREFIX,
 ];
 
 /// Authoring paths that never belong in a world repository, even if a caller

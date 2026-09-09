@@ -3,6 +3,98 @@ use crate::godot_test_support::*;
 use crate::WorkspaceContext;
 
 #[test]
+fn copied_runtime_rebind_is_exact_persistent_and_requires_independent_application() -> Result<()> {
+    let (source_dir,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let mut files=project_files();
+    let source_config=format!("{PROJECT}\n[craftmine]\nruntime/world_id=\"g1\"\nruntime/enabled=true\n");
+    files[0]["text"]=json!(source_config);
+    applied_world_files(&mut journal,"g1",files)?;
+    journal.content_migrate_apply(&json!({"worldId":"g1"}))?;
+    journal.godot_world_copy(&json!({"sourceWorldId":"g1","targetWorldId":"g2","title":"Independent copy","progress":"formal"}))?;
+    let before=journal.world_read("g2")?;
+    failed(journal.godot_runtime_describe(&json!({"worldId":"g2"})),"GODOT_COPY_REBUILD_REQUIRED");
+    let initial=journal.godot_world_rebuild_plan(&json!({"worldId":"g2"}))?;
+    assert_eq!(initial["identityRebindRequired"],true);
+    let rebound=journal.godot_world_prepare_copy_runtime(&json!({"worldId":"g2"}))?;
+    assert_eq!(rebound["copied"],true);assert_eq!(rebound["replayed"],false);
+    let replay=journal.godot_world_prepare_copy_runtime(&json!({"worldId":"g2"}))?;
+    assert_eq!(replay["replayed"],true);assert_eq!(replay["contentOid"],rebound["contentOid"]);
+    assert_eq!(journal.world_read("g2")?.world.snapshot,before.world.snapshot);
+    let plan=journal.godot_world_rebuild_plan(&json!({"worldId":"g2"}))?;
+    assert_eq!(plan["identityRebindRequired"],false);assert_eq!(plan["sourceParentOid"],initial["contentOid"]);
+    assert_ne!(plan["contentOid"],initial["contentOid"]);
+    let (store,layout)=journal.content_layout("g2")?;
+    assert_eq!(store.read_file(&layout,plan["contentOid"].as_str().unwrap(),"project.godot")?,source_config.replace("world_id=\"g1\"","world_id=\"g2\"").as_bytes());
+    assert_eq!(store.read_file(&layout,plan["contentOid"].as_str().unwrap(),"world.gd")?,SCRIPT.as_bytes());
+    assert_eq!(store.branch_head(&layout,"main")?.as_deref(),plan["contentOid"].as_str(),"fresh main must carry target identity for normal authoring");
+    // Invalid child refs cannot substitute a draft or lose exact parentage.
+    let reference=crate::godot_copy_runtime::runtime_ref("g2",before.world.build["id"].as_str().unwrap());
+    store.git().update_ref(&layout.git_dir,&reference,initial["contentOid"].as_str().unwrap(),Some(plan["contentOid"].as_str().unwrap()))?;
+    assert_eq!(journal.godot_world_rebuild_plan(&json!({"worldId":"g2"}))?["identityRebindRequired"],true,"an interrupted ref at parent is not transformed");
+    let repaired=journal.godot_world_prepare_copy_runtime(&json!({"worldId":"g2"}))?;
+    let plan=journal.godot_world_rebuild_plan(&json!({"worldId":"g2"}))?;
+    assert_eq!(repaired["contentOid"],plan["contentOid"]);
+    // Existing copied drafts must keep their own content; only fixed identity
+    // tokens change. Their child is never selected as the formal rebuild tree.
+    journal.godot_world_copy(&json!({"sourceWorldId":"g1","targetWorldId":"g4","title":"Old copied draft","progress":"formal"}))?;
+    let (draft_store,draft_layout)=journal.content_layout("g4")?;
+    let parent=draft_store.branch_head(&draft_layout,"main")?.unwrap();
+    let mut draft_files=Vec::new();
+    for entry in draft_store.tree_entries(&draft_layout,&parent)? {
+        let bytes=if entry.path=="world.gd"{b"extends Node3D\nvar damage := 99\n".to_vec()}else{draft_store.read_file(&draft_layout,&parent,&entry.path)?};
+        draft_files.push(crate::content_history::repo::ContentFile{path:entry.path,bytes});
+    }
+    let draft_head=draft_store.commit_ref(&draft_layout,"refs/heads/main",Some(&parent),&draft_files,"Preserved user draft")?;
+    let draft_bound=journal.godot_world_prepare_copy_runtime(&json!({"worldId":"g4"}))?;
+    assert_eq!(draft_bound["draftTransform"]["sourceParentOid"],draft_head);
+    assert_ne!(draft_bound["draftTransform"]["contentOid"],draft_bound["contentOid"]);
+    let rebound_main=draft_store.branch_head(&draft_layout,"main")?.unwrap();
+    assert_eq!(draft_store.read_file(&draft_layout,&rebound_main,"world.gd")?,b"extends Node3D\nvar damage := 99\n");
+    assert_eq!(draft_store.read_file(&draft_layout,draft_bound["contentOid"].as_str().unwrap(),"world.gd")?,SCRIPT.as_bytes());
+    assert!(String::from_utf8(draft_store.read_file(&draft_layout,&rebound_main,"project.godot")?)?.contains("world_id=\"g4\""));
+    assert_eq!(journal.godot_world_prepare_copy_runtime(&json!({"worldId":"g4"}))?["draftTransform"]["alreadyBound"],true);
+    assert_eq!(draft_store.branch_head(&draft_layout,"main")?,Some(rebound_main));
+    let archive_dir=tempfile::tempdir()?;let archive=archive_dir.path().join("copied.cmarchive");
+    journal.backup_export_portable(&json!({"operationId":"copy-export","archivePath":archive.to_string_lossy()}))?;
+    drop(journal);
+    let hidden=tempfile::tempdir()?;std::fs::rename(source_dir.path(),hidden.path().join("unavailable"))?;
+    let target=tempfile::tempdir()?;let target_path=target.path().join("data");
+    let mut journal=TaskJournal::open(&target_path.join("tasks.sqlite"))?;
+    journal.backup_restore_portable(&json!({"operationId":"copy-restore","archivePath":archive.to_string_lossy(),"targetDirectory":target_path.to_string_lossy()}))?;
+    assert_eq!(journal.godot_world_rebuild_plan(&json!({"worldId":"g2"}))?["identityTransform"],plan["identityTransform"]);
+    assert_eq!(journal.world_read("g2")?.world.snapshot,before.world.snapshot);
+    journal.content_branch_create(&json!({"worldId":"g2","branchId":plan["rebuildBranchId"],"fromRev":plan["contentOid"]}))?;
+    let context=WorkspaceContext{project_id:"copy-rebuild".into(),session_id:"copy-rebuild".into(),turn_id:"copy-rebuild".into()};
+    journal.workspace_open(&context,"g2")?;
+    register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("copy restored fixture"))?;
+    let index=journal.godot_project_index(&json!({"context":context,"worldId":"g2","branchId":plan["rebuildBranchId"]}))?;
+    let job=journal.godot_build_start(&json!({"context":context,"worldId":"g2","branchId":plan["rebuildBranchId"],"toolCallId":"copy-check","revision":index["revision"],"manifestHash":index["manifestHash"],"mode":"check"}))?;
+    let claimed=claim(&mut journal,&job,"copy-token","executor-a")?;
+    let artifacts=write_artifact(&claimed,"web/index.html",b"<html>independent copy synthetic fixture</html>")?;
+    let checked=finish(&mut journal,&job,"copy-token",&output(&claimed,true,json!([{"id":"synthetic-copy-check","passed":true,"detail":"core fixture only"}]),artifacts,json!([])))?;
+    failed(journal.godot_runtime_describe(&json!({"worldId":"g2"})),"GODOT_COPY_REBUILD_REQUIRED");
+    let current=journal.world_read("g2")?;
+    let prepared=journal.godot_application_prepare(&json!({"id":"copy-apply","token":"copy-apply-token","worldId":"g2","candidateId":checked["candidateId"],"revision":current.summary.revision,"snapshot":current.world.snapshot}))?;
+    let status=journal.content_status(&json!({"worldId":"g2"}))?;
+    let branch=journal.godot_world_rebuild_plan(&json!({"worldId":"g2"}))?;
+    let operation=json!({"operationId":"copy-apply","worldId":"g2","repoId":status["repoId"],"branchId":branch["rebuildBranchId"],"expectedHeadOid":branch["rebuildContentOid"],"expectedAppliedOid":status["appliedOid"],"expectedProgressRevision":current.summary.revision});
+    journal.content_apply_prepare(&json!({"worldId":"g2","context":operation,"kind":"apply","targetOid":branch["rebuildContentOid"],"detail":"independent copy check"}))?;
+    journal.content_apply_advance(&json!({"operationId":"copy-apply"}))?;
+    journal.godot_application_commit(&json!({"id":"copy-apply","token":"copy-apply-token","evidence":{"format":"craftmine.godot-application/2","inputHash":prepared["inputHash"],"launch":{"passed":true,"buildId":prepared["buildId"],"instanceId":"copy-fixture","stateHash":digest("synthetic")},"player":null,"snapshot":current.world.snapshot}}))?;
+    journal.content_apply_confirm(&json!({"operationId":"copy-apply","applicationId":"copy-apply","detail":"independent copy confirmed"}))?;
+    let descriptor=journal.godot_runtime_describe(&json!({"worldId":"g2"}))?;
+    assert!(descriptor["copiedFromWorldId"].is_null());
+    assert_eq!(descriptor["snapshot"],before.world.snapshot);
+    assert_ne!(descriptor["buildId"],before.world.build["id"]);
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g2"}))?["playable"],true);
+    // Copying an independently applied copy starts from that copy's identity.
+    journal.godot_world_copy(&json!({"sourceWorldId":"g2","targetWorldId":"g3","title":"Next independent copy","progress":"formal"}))?;
+    let next=journal.godot_world_prepare_copy_runtime(&json!({"worldId":"g3"}))?;
+    assert_eq!(next["proof"]["sourceWorldId"],"g2");
+    Ok(())
+}
+
+#[test]
 fn portable_restore_rebuilds_applied_source_without_losing_progress_or_drafts() -> Result<()> {
     let (source_dir, path) = temp()?;
     let mut journal = TaskJournal::open(&path)?;
@@ -296,11 +388,16 @@ fn start_in(
 
 /// Full initialisation of one world up to a confirmed application.
 fn applied_world(journal: &mut TaskJournal, world: &str) -> Result<()> {
+    applied_world_files(journal,world,project_files())
+}
+
+fn applied_world_files(journal: &mut TaskJournal, world: &str, files: Value) -> Result<()> {
     initialize(journal, world, "base-a")?;
     let context = ctx("one");
     journal.workspace_open(&context, world)?;
     register(journal, "executor-a", json!({"import":true,"build":true,"check":true}), &digest("e"))?;
-    let project = create_project_in(journal, &context, world, "create-one")?;
+    let project = journal.godot_project_create(&json!({"context":context,"worldId":world,"toolCallId":"create-one",
+        "baseBuild":"base-a","baseId":"first-person","files":files}))?;
     let checked = check_to_candidate(journal, &context, world, &project, "check-one")?;
     let snapshot = journal.world_read(world)?.world.snapshot;
     let prepare = journal.godot_application_prepare(&json!({"id":"apply-one","token":"token-apply",
@@ -368,8 +465,8 @@ fn copying_a_formal_world_keeps_identity_separate_and_can_start_from_initial_sta
             "progress":"initial","snapshot":progress("g9")})),
         "GODOT_PROGRESS_BASE_MISMATCH",
     );
-    // A formal copy shares the immutable build, carries the target identity in
-    // its progress, and stays runnable through the source's launch evidence.
+    // The inherited source build is lineage evidence, not a runnable target
+    // identity. A target must independently rebind, check and apply.
     let formal = journal.godot_world_copy(&json!({"sourceWorldId":"g1","targetWorldId":"g6",
         "title":"Formal Copy","progress":"formal"}))?;
     assert_eq!(formal["progressMode"], "formal");
@@ -377,7 +474,9 @@ fn copying_a_formal_world_keeps_identity_separate_and_can_start_from_initial_sta
     assert_eq!(inherited["worldId"], "g6");
     assert_eq!(inherited["body"]["worldId"], "g6");
     assert_eq!(inherited["body"]["inventory"], json!({"ore":9}));
-    let descriptor = journal.godot_runtime_describe(&json!({"worldId":"g6"}))?;
+    failed(journal.godot_runtime_describe(&json!({"worldId":"g6"})),"GODOT_COPY_REBUILD_REQUIRED");
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g6"}))?["playable"],false);
+    let descriptor = journal.runtime_describe_impl(&json!({"worldId":"g6"}),false)?;
     assert_eq!(descriptor["phase"], "formal");
     assert_eq!(descriptor["copiedFromWorldId"], "g1");
     assert_eq!(descriptor["buildId"], build);

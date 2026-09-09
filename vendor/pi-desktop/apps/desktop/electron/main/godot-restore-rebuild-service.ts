@@ -24,7 +24,9 @@ export function createGodotRestoreRebuildService(options: Options) {
     const content = await domain("content.status", { worldId });
     if (content.backend !== "git") await domain("content.migrate.apply", { worldId });
     await domain("godotWorld.prepareRebuildSource", { worldId });
+    await domain("godotWorld.prepareCopyRuntime", { worldId });
     let plan = await domain("godotWorld.rebuildPlan", { worldId });
+    if (plan.identityRebindRequired) throw Error("GODOT_COPY_IDENTITY_REBIND_REQUIRED");
     if (!plan.rebuildRequired) {
       await domain("godotRuntime.describe", { worldId });
       return state(worldId, { status: "ready", buildId: plan.formalBuildId, rebuilt: false });
