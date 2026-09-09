@@ -73,6 +73,8 @@ test('bounds match the real adapters', () => {
   assert.equal(validateOperation({ baseId: 'first-person', op: 'walk', args: { right: 2, frames: 30 } }).ok, false);
   assert.equal(validateOperation({ baseId: 'first-person', op: 'wait', args: { frames: 0 } }).ok, false);
   assert.equal(validateOperation({ baseId: 'first-person', op: 'equip', args: { value: 'pistol' } }).ok, true);
+  assert.equal(validateOperation({ baseId: 'first-person', op: 'equip', args: { id: 'pistol' } }).ok, true);
+  assert.equal(validateOperation({ baseId: 'first-person', op: 'equip', args: {} }).ok, false);
   assert.equal(validateOperation({ baseId: 'top-down', op: 'move', args: { dx: 1, dy: -1, steps: 600 } }).ok, true);
   assert.equal(validateOperation({ baseId: 'top-down', op: 'move', args: { steps: 601 } }).ok, false);
   assert.equal(validateOperation({ baseId: 'top-down', op: 'gather', args: { zoneId: 'HerbPatch' } }).ok, true);
