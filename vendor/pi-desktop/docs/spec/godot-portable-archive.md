@@ -114,9 +114,11 @@ The archive never copies a directory tree "as it happens to look".
 4. **Staging and verification.** Bodies are staged and hash-verified first.
 5. **Apply.** Bodies move into place, repositories are materialized, and the
    domain rows are written inside one transaction.
-6. **Receipt before commit.** The final receipt is written to
-   `<target>/.craftmine-restore-receipt.json` (including the resulting domain
-   fingerprint) and flushed *before* the database commit.
+6. **Receipt and commit mark before commit.** The final receipt is written to
+   `<target>/.craftmine-restore-receipt.json` and flushed *before* the database
+   commit, and the same transaction inserts a `craftmine_restore_marks` row
+   (operation id, archive hash, domain hash) so the commit proof lives *inside*
+   the restored database and cannot be invalidated by a later write.
 7. **Commit and finish.** The database commits, the job row is marked
    `completed` with that receipt, the marker is removed and the staging area is
    removed after ownership is re-verified.
@@ -126,9 +128,16 @@ Consequences:
 * A process killed before step 7's commit leaves the transaction uncommitted
   (SQLite rolls it back) and recovery replays the journal in reverse, so the
   target is exactly as it was.
-* A process killed after the commit is recognized because the live target
-  fingerprint equals the fingerprint recorded in the pre-commit receipt; the
-  restore is promoted to `completed` instead of being rolled back.
+* A process killed after the commit is recognized because the restored database
+  contains the commit mark for that operation and archive hash; the restore is
+  promoted to `completed` instead of being rolled back. A later write to the
+  restored database cannot change that answer.
+* Recovery never guesses: when the target database cannot be read (locked, or a
+  `-wal` that cannot be recovered), it deletes nothing and reports
+  `BACKUP_RESTORE_STATE_UNVERIFIED`. Only a target that is readable *and* lacks
+  the mark is rolled back.
+* Another operation may not roll back a committed restore: its staging area is
+  left alone and the target is reported as not empty.
 * A lost reply is not a lost result: the same `operationId` returns the stored
   receipt, and `backup.status` with that id returns the same receipt. A retry
   after an interrupted attempt converges instead of failing on leftover state.

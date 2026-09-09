@@ -17,8 +17,16 @@ use serde_json::{json, Value};
 use super::RESTORE_STAGING_PREFIX;
 use crate::{digest, godot_test_support::*, TaskJournal, WorkspaceContext};
 
-/// Boundary names understood by the restore implementation.
-const BEFORE_COMMIT: &[&str] = &["after-claim", "after-stage", "after-content", "after-git"];
+/// Boundary names understood by the restore implementation. `before-commit` is
+/// the case the receipt design rests on: the marker exists, the commit did not
+/// happen.
+const BEFORE_COMMIT: &[&str] = &[
+    "after-claim",
+    "after-stage",
+    "after-content",
+    "after-git",
+    "before-commit",
+];
 
 /// Builds a source installation with a world, a project and an archive.
 fn build_source(root: &Path) -> Result<(TaskJournal, PathBuf)> {
@@ -230,6 +238,35 @@ fn a_restored_installation_keeps_authoring_new_revisions() -> Result<()> {
         "manifestHash": patched["manifestHash"], "path": "world.gd"
     }))?;
     assert_eq!(read["text"], "extends Node3D\nvar damage := 99\n");
+    Ok(())
+}
+
+#[test]
+fn a_committed_restore_is_never_rolled_back_by_another_operation() -> Result<()> {
+    // The first restore committed and its process died before the job row was
+    // updated, so its staging area is still on disk. A second operation that
+    // wants the same target must not undo that committed work.
+    let (root, install) = crash_at("after-commit")?;
+    let other = root.path().join("other");
+    let mut other_journal = TaskJournal::open(&other.join("tasks.sqlite"))?;
+    let archive = root.path().join("world.cmarchive");
+    let error = other_journal
+        .backup_restore_portable(&json!({
+            "operationId": "restore-second",
+            "archivePath": archive.to_string_lossy(),
+            "targetDirectory": install.to_string_lossy(),
+        }))
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("BACKUP_TARGET_NOT_EMPTY"), "{error}");
+
+    // The committed restore's data is intact and still recoverable.
+    let mut journal = TaskJournal::open(&install.join("tasks.sqlite"))?;
+    assert_eq!(journal.world_list()?.len(), 2);
+    assert_eq!(project_text(&journal)?, PROJECT);
+    journal.backup_recover()?;
+    assert_eq!(job_status(&journal, "restore-durability")?, "completed");
+    assert!(restore_leftovers(&install).is_empty());
     Ok(())
 }
 

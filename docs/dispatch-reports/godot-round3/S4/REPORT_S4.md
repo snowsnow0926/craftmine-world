@@ -50,13 +50,16 @@ dropping it; a listed table that no longer exists fails with
 a `craftmine_backup_jobs` row (`kind='restore-portable'`, status `restoring`,
 request hash, archive hash, target) is committed before any body moves; every
 filesystem action is appended to `journal.jsonl` in the staging area before it
-happens; the final receipt (including the resulting domain fingerprint) is
-flushed to `<target>/.craftmine-restore-receipt.json` before the database
-commit; the job row is marked `completed` with that receipt afterwards.
-Startup `backup_recover()` converges interrupted restores: the receipt decides
-(promote if the live target matches the recorded fingerprint, otherwise roll
-back exactly the journaled work). A retry with the same id converges, a lost
+happens; the final receipt is flushed to
+`<target>/.craftmine-restore-receipt.json` before the database commit; and the
+same transaction inserts a `craftmine_restore_marks` row so the commit proof
+lives inside the restored database. Startup `backup_recover()` converges
+interrupted restores from that mark: present → promote, absent and readable →
+roll back exactly the journaled work, unreadable → delete nothing and report
+`BACKUP_RESTORE_STATE_UNVERIFIED`. A retry with the same id converges, a lost
 reply returns the stored receipt, and `backup.status` returns the same receipt.
+Another operation's committed-but-unrecovered staging area is never rolled back;
+the target is simply reported as not empty.
 
 ### 3.3 Proven staging ownership
 
@@ -140,9 +143,7 @@ The fixture now records the revision index exactly as the migration does and
 its repository history carries the bytes the manifest describes, so the test
 proves a real Git-backed restore instead of an impossible state.
 
-### 5.2 Memory measurement
-
-Fixture: one managed repository with 40 commits of one 2 MiB pseudo-random blob
+### 5.2 Memory measurementFixture: one managed repository with 40 commits of one 2 MiB pseudo-random blob
 each, committed one at a time so the fixture itself stays small; the export
 streams 83,910,649 bytes of archive content. Peak commit charge before and after
 the export: 7,626,752 bytes both times (delta 0 bytes); the child process peak
@@ -154,6 +155,23 @@ Measured tier: this is a **single-repository ~80 MB object stream** measurement
 on this machine. It is not a claim about multi-gigabyte worlds; the declared
 caps remain 4 GiB per body, 256 GiB total, 2,000,000 entries, and the object id
 list is still resident and bounded by that entry cap.
+
+### 5.3 Adversarial review and the fixes it produced
+
+An independent read-only review of the change found that the first version
+proved a commit by comparing the *live* database fingerprint with the
+pre-commit receipt. That is unsound: any later write to the restored database
+invalidates the fingerprint, and an unreadable database was treated as "not
+committed", which is the destructive branch. Three high-severity scenarios
+(a committed restore rolled back by its own retry, by a new operation id, or by
+an unreadable target) were fixed by moving the proof into the restore
+transaction itself (`craftmine_restore_marks`) and by adding an explicit
+unverified branch that deletes nothing. The export path guard now canonicalizes
+the archive path before the containment check, an interrupted export no longer
+wedges its operation id, and a cancel request reports the durable status instead
+of claiming one. Two new tests cover the boundaries the review named as missing:
+a kill between the receipt and the commit, and a second operation that must not
+undo a committed restore. The review's remaining findings are listed in §7.
 
 ## 6. Completion conditions
 
@@ -186,6 +204,21 @@ list is still resident and bounded by that entry cap.
 6. **Disk-full and lock-file behaviour** — not measured; error injection
    (damaged archive, truncated body, schema mismatch, domain failure) is covered
    by tests instead. Unknown, not claimed.
+7. **No cross-process exclusion** — two restores with different ids into one
+   target are serialized only by SQLite locking; a same-id retry while the first
+   process is still alive is not detected by a live-process check. The review
+   rated this medium-high. Not fixed here.
+8. **Portable restore column subset** — `apply_domain_rows` accepts an archive
+   whose columns are a subset of the live table (missing columns take defaults)
+   and rejects an archive missing a whole table instead of padding it with
+   `ADDITIVE_TABLES`. The domain path requires exact columns. Not changed here
+   because it interacts with cross-version compatibility; documented as a risk.
+9. **Remaining buffering** — the domain snapshot is still one in-memory JSON
+   document (32 MiB cap in the domain path, 1 GiB `DOMAIN_LIMIT` in the portable
+   path), the entry table is one `Vec<Value>`/`Vec<String>`, and the object id
+   list is resident. Only the content bodies and Git objects are streamed.
+10. **`craftmine_backup_jobs` growth** — portable operations do not go through
+    the domain `job_capacity` check, so the operational table is not bounded.
 
 ## 8. Reproduction notes
 

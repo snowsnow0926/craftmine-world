@@ -56,7 +56,11 @@ const COPY_BUFFER: usize = 128 * 1024;
 const GIT_LINE_LIMIT: usize = 64 * 1024;
 /// Operational tables never travel inside a user archive. Receipts and
 /// protection pins describe the local installation, not the user's world.
-const OPERATIONAL_TABLES: &[&str] = &["craftmine_backup_jobs", "craftmine_backup_pins"];
+const OPERATIONAL_TABLES: &[&str] = &[
+    "craftmine_backup_jobs",
+    "craftmine_backup_pins",
+    "craftmine_restore_marks",
+];
 
 /// Caches that a restore rebuilds instead of receiving. They are declared so an
 /// operator can see exactly what was left out and why.
@@ -1069,21 +1073,50 @@ fn read_restore_receipt(target: &Path) -> Option<Value> {
     (marker["format"] == RESTORE_RECEIPT_FORMAT).then_some(marker)
 }
 
-/// The database state the receipt claims, computed from the live target. Only a
-/// target that already holds that exact state proves the commit happened.
-fn target_matches_receipt(db: &Connection, marker: &Value) -> bool {
-    let expected = marker["currentHash"].as_str().unwrap_or_default();
-    !expected.is_empty() && fingerprint(db).map(|hash| hash == expected).unwrap_or(false)
+/// Durable proof of commit: the restore inserts this mark in its own
+/// transaction, so a later write to the restored database cannot change the
+/// answer. `None` means the target database could not be read at all, which must
+/// never be treated as "not committed".
+fn restore_commit_state(db: &Connection, operation_id: &str, archive_hash: &str) -> Option<bool> {
+    db.query_row(
+        "SELECT EXISTS(SELECT 1 FROM craftmine_restore_marks
+          WHERE operation_id=?1 AND archive_hash=?2)",
+        params![operation_id, archive_hash],
+        |row| row.get::<_, bool>(0),
+    )
+    .ok()
 }
 
-/// Same proof for a target that is not the open installation.
-fn target_matches_receipt_path(database: &Path, marker: &Value) -> bool {
+fn restore_commit_state_path(
+    database: &Path,
+    operation_id: &str,
+    archive_hash: &str,
+) -> Option<bool> {
     if !database.is_file() {
-        return false;
+        return Some(false);
     }
     match Connection::open_with_flags(database, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY) {
-        Ok(db) => target_matches_receipt(&db, marker),
-        Err(_) => false,
+        Ok(db) => restore_commit_state(&db, operation_id, archive_hash),
+        Err(_) => None,
+    }
+}
+
+/// Commit state of another operation's staging area, judged against its own
+/// recorded archive hash.
+fn staging_commit_state(
+    db: &Connection,
+    owner: &RestoreOwnership,
+    target: &Path,
+    live: &Path,
+) -> Option<bool> {
+    if target == live {
+        restore_commit_state(db, &owner.operation_id, &owner.archive_hash)
+    } else {
+        restore_commit_state_path(
+            &target.join("tasks.sqlite"),
+            &owner.operation_id,
+            &owner.archive_hash,
+        )
     }
 }
 
@@ -1157,8 +1190,10 @@ impl TaskJournal {
         fields(args, &["operationId", "archivePath"])?;
         let id = text(args, "operationId", 240)?.to_owned();
         let path = archive_path(args)?;
+        // Canonicalize before the containment check: `..`, a junction or a
+        // short-name alias must not hide the live database behind this path.
         ensure!(
-            !inside(&self.directory, &path),
+            !inside(&self.directory, &resolve_target(&path)),
             "BACKUP_ARCHIVE_INSIDE_DATA_DIR"
         );
         let request_hash = digest(&serde_json::to_string(args)?);
@@ -1172,10 +1207,17 @@ impl TaskJournal {
             .optional()?
         {
             ensure!(old == request_hash, "REPLAY_MISMATCH");
-            ensure!(status != "streaming", "BACKUP_ALREADY_STREAMING");
             if status == "completed" {
                 return Ok(serde_json::from_str(&receipt)?);
             }
+            // A streaming row whose archive never appeared was interrupted
+            // before publication and can be retried. If the archive file is
+            // there, the export may have published it, so the id stays locked
+            // and startup recovery reconciles it.
+            ensure!(
+                status != "streaming" || !path.try_exists().unwrap_or(false),
+                "BACKUP_ALREADY_STREAMING"
+            );
             let tx = self
                 .db
                 .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -1475,7 +1517,16 @@ impl TaskJournal {
         let request_hash = digest(&serde_json::to_string(args)?);
 
         if let Some((old, status, receipt)) = self.restore_job(&id)? {
-            ensure!(old == request_hash, "REPLAY_MISMATCH");
+            if status == "cancelled" && old == "cancelled" {
+                // The cancel arrived before the operation started, so no request
+                // was ever recorded and the id is free again.
+                self.db.execute(
+                    "DELETE FROM craftmine_backup_jobs
+                     WHERE id=?1 AND kind='restore-portable' AND status='cancelled'",
+                    [&id],
+                )?;
+            } else {
+                ensure!(old == request_hash, "REPLAY_MISMATCH");
             match status.as_str() {
                 "completed" | "cancelled" => return Ok(serde_json::from_str(&receipt)?),
                 "restoring" | "cancel-requested" => {
@@ -1489,6 +1540,7 @@ impl TaskJournal {
                     }
                 }
                 _ => {}
+            }
             }
         }
 
@@ -1507,15 +1559,25 @@ impl TaskJournal {
                     // Only our own, proven staging area is reclaimed. Anything
                     // else - including a lookalike directory - refuses the
                     // restore instead of being deleted.
-                    let owned = name
+                    let owner = name
                         .starts_with(RESTORE_STAGING_PREFIX)
-                        .then(|| read_restore_owner(&path).map(|owner| owner.operation_id))
+                        .then(|| read_restore_owner(&path))
                         .flatten()
-                        .filter(|owner_id| owns_restore_staging(&self.db, &path, owner_id));
-                    match owned {
-                        Some(owner_id) => {
-                            rollback_restore(&resolved, &path)?;
-                            remove_owned_staging(&self.db, &path, &owner_id);
+                        .filter(|owner| owns_restore_staging(&self.db, &path, &owner.operation_id));
+                    match owner {
+                        Some(owner) => {
+                            match staging_commit_state(&self.db, &owner, &resolved, &self.directory) {
+                                // Another operation's restore already committed
+                                // here; its data must survive, so this target is
+                                // not free.
+                                Some(true) => bail!("BACKUP_TARGET_NOT_EMPTY: {name}"),
+                                Some(false) => {
+                                    rollback_restore(&resolved, &path)?;
+                                    remove_owned_staging(&self.db, &path, &owner.operation_id);
+                                }
+                                // Cannot prove either way: delete nothing.
+                                None => bail!("BACKUP_RESTORE_STATE_UNVERIFIED: {name}"),
+                            }
                         }
                         None => bail!("BACKUP_TARGET_NOT_EMPTY: {name}"),
                     }
@@ -1652,11 +1714,16 @@ impl TaskJournal {
             if matches!(status.as_str(), "completed" | "cancelled") {
                 return Ok(serde_json::from_str(&receipt)?);
             }
-            self.db.execute(
+            let changed = self.db.execute(
                 "UPDATE craftmine_backup_jobs SET status='cancel-requested'
                  WHERE id=?1 AND kind='restore-portable' AND status='restoring'",
                 [&id],
             )?;
+            if changed == 0 {
+                // The operation is not running (failed, interrupted, or already
+                // being cancelled); report the durable status, do not invent one.
+                return Ok(serde_json::from_str(&receipt)?);
+            }
             return Ok(json!({
                 "id": id,
                 "kind": "restore-portable",
@@ -1684,14 +1751,15 @@ impl TaskJournal {
             .optional()?)
     }
 
-    /// Converges one interrupted restore. The receipt written before the commit
-    /// decides: a target that already holds the recorded state is promoted to
-    /// completed, anything else is undone exactly as the journal recorded it.
+    /// Converges one interrupted restore. The commit mark written inside the
+    /// restore transaction decides: `Some(true)` promotes it, `Some(false)`
+    /// undoes exactly the journaled work, and `None` (the target could not be
+    /// read) touches nothing and reports that the state is unverified.
     fn recover_restore_operation(&mut self, id: &str) -> Result<()> {
-        let Some((_, status, _, job)) = self
+        let Some((_, status, _, job, archive_hash)) = self
             .db
             .query_row(
-                "SELECT request_hash,status,receipt,archive FROM craftmine_backup_jobs
+                "SELECT request_hash,status,receipt,archive,archive_hash FROM craftmine_backup_jobs
                  WHERE id=?1 AND kind='restore-portable'",
                 [id],
                 |row| {
@@ -1700,6 +1768,7 @@ impl TaskJournal {
                         row.get::<_, String>(1)?,
                         row.get::<_, String>(2)?,
                         row.get::<_, Option<String>>(3)?,
+                        row.get::<_, Option<String>>(4)?,
                     ))
                 },
             )
@@ -1720,15 +1789,27 @@ impl TaskJournal {
         };
         let resolved = resolve_target(&target);
         let staging = restore_staging_path(&resolved, &id);
-        if let Some(marker) = read_restore_receipt(&resolved) {
-            let same = marker["operationId"].as_str() == Some(id);
-            let committed = if resolved == self.directory {
-                same && target_matches_receipt(&self.db, &marker)
-            } else {
-                same && target_matches_receipt_path(&resolved.join("tasks.sqlite"), &marker)
-            };
-            if committed {
-                let receipt = marker["receipt"].clone();
+        let archive_hash = archive_hash.unwrap_or_default();
+        let state = if resolved == self.directory {
+            restore_commit_state(&self.db, id, &archive_hash)
+        } else {
+            restore_commit_state_path(&resolved.join("tasks.sqlite"), id, &archive_hash)
+        };
+        match state {
+            Some(true) => {
+                let receipt = read_restore_receipt(&resolved)
+                    .filter(|marker| marker["operationId"].as_str() == Some(id))
+                    .map(|marker| marker["receipt"].clone())
+                    .unwrap_or_else(|| {
+                        json!({
+                            "id": id,
+                            "kind": "restore-portable",
+                            "status": "completed",
+                            "targetDirectory": resolved.to_string_lossy(),
+                            "archiveHash": archive_hash,
+                            "note": "promoted from the durable commit mark; the pre-commit receipt was gone",
+                        })
+                    });
                 self.db.execute(
                     "UPDATE craftmine_backup_jobs SET status='completed',receipt=?2
                      WHERE id=?1 AND kind='restore-portable'",
@@ -1736,20 +1817,24 @@ impl TaskJournal {
                 )?;
                 let _ = fs::remove_file(restore_receipt_path(&resolved));
                 remove_owned_staging(&self.db, &staging, &id);
-                return Ok(());
+                Ok(())
+            }
+            Some(false) => {
+                if owns_restore_staging(&self.db, &staging, &id) {
+                    rollback_restore(&resolved, &staging)?;
+                    remove_owned_staging(&self.db, &staging, &id);
+                }
+                let next = if status == "cancel-requested" {
+                    "cancelled"
+                } else {
+                    "interrupted"
+                };
+                self.finish_restore(id, next, "restore did not reach the commit boundary")
+            }
+            None => {
+                anyhow::bail!("BACKUP_RESTORE_STATE_UNVERIFIED: {id}")
             }
         }
-        if owns_restore_staging(&self.db, &staging, &id) {
-            rollback_restore(&resolved, &staging)?;
-            remove_owned_staging(&self.db, &staging, &id);
-        }
-        let next = if status == "cancel-requested" {
-            "cancelled"
-        } else {
-            "interrupted"
-        };
-        self.finish_restore(id, next, "restore did not reach the commit boundary")?;
-        Ok(())
     }
 
     fn finish_restore(&self, id: &str, status: &str, detail: &str) -> Result<()> {
@@ -1952,8 +2037,26 @@ impl TaskJournal {
             mark_pins(&self.db, &archive_id, next, None)?;
         }
         // Interrupted restores are converged in the same startup sweep: either
-        // promoted from their pre-commit receipt or undone from their journal.
+        // promoted from their durable commit mark or undone from their journal.
         self.recover_restore_operations()?;
+        // An export killed after publishing its archive leaves a `streaming`
+        // job row. The pin sweep above already decided whether the archive is
+        // real, so reconcile the row with that verdict instead of leaving the
+        // operation id wedged.
+        self.db.execute(
+            "UPDATE craftmine_backup_jobs SET status='completed'
+             WHERE kind='export-portable' AND status='streaming'
+               AND EXISTS(SELECT 1 FROM craftmine_backup_pins
+                          WHERE archive_id=craftmine_backup_jobs.id AND status='retained')",
+            [],
+        )?;
+        self.db.execute(
+            "UPDATE craftmine_backup_jobs SET status='failed'
+             WHERE kind='export-portable' AND status='streaming'
+               AND NOT EXISTS(SELECT 1 FROM craftmine_backup_pins
+                              WHERE archive_id=craftmine_backup_jobs.id AND status='retained')",
+            [],
+        )?;
         Ok(abandoned)
     }
 }
@@ -2328,15 +2431,28 @@ fn restore_archive(
             "importedProvenance": true,
             "credentialsIncluded": false,
         });
-        // The receipt is durable before the commit. Recovery compares it with
-        // the live target, so a commit that happened is never rolled back and a
-        // commit that did not happen is never promoted.
+        // The commit proof travels inside the restore transaction itself, so a
+        // later write to the restored database cannot make a committed restore
+        // look uncommitted.
+        tx.execute(
+            "INSERT OR REPLACE INTO craftmine_restore_marks(operation_id,archive_hash,domain_hash,committed_at)
+             VALUES(?1,?2,?3,?4)",
+            params![
+                operation_id,
+                footer["archiveHash"].as_str().unwrap_or_default(),
+                header["consistency"]["snapshotHash"].as_str().unwrap_or_default(),
+                worlds::timestamp()?
+            ],
+        )?;
+        // The receipt is durable before the commit, so the full report survives
+        // a kill between the commit and the job-row update.
         write_restore_receipt(
             target,
             operation_id,
             footer["archiveHash"].as_str().unwrap_or_default(),
             &report,
         )?;
+        crash_point("before-commit");
         tx.commit()?;
         Ok(report)
     })();

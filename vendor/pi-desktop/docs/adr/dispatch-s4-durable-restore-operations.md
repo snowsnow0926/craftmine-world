@@ -40,17 +40,18 @@ A directory that merely looks similar makes the target non-empty and is left
 untouched. Export staging got the same owner record, so no deletion path in the
 backup module depends on a name prefix.
 
-### 3. Journal before acting, receipt before committing
+### 3. Journal before acting, receipt and commit mark before committing
 
 Every filesystem action is appended to `journal.jsonl` inside the staging area
 before it happens, so recovery replays the journal in reverse and undoes exactly
-this operation's work. The final receipt (including the resulting domain
-fingerprint) is written and flushed to
-`<target>/.craftmine-restore-receipt.json` *before* the database commit. After a
-kill, the live target fingerprint is compared with that receipt: equal means the
-commit happened and the restore is promoted to `completed`; different means it
-did not and the journal is rolled back. A commit is never rolled back and an
-uncommitted restore is never promoted.
+this operation's work. The final receipt is written and flushed to
+`<target>/.craftmine-restore-receipt.json` *before* the database commit, and the
+same transaction inserts a `craftmine_restore_marks` row (operation id, archive
+hash, domain hash). After a kill, recovery reads that mark from the target
+database: present means the commit happened and the restore is promoted;
+absent *and the database readable* means it did not and the journal is rolled
+back; unreadable means nothing is deleted and the state is reported unverified.
+A commit is never rolled back and an uncommitted restore is never promoted.
 
 ### 4. Cancellation is cooperative and durable
 

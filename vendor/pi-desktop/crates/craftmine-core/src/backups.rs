@@ -147,7 +147,10 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
  created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL,
  PRIMARY KEY(archive_id,kind,ref));
  CREATE INDEX IF NOT EXISTS craftmine_backup_pins_lookup
- ON craftmine_backup_pins(status,kind);",
+ ON craftmine_backup_pins(status,kind);
+ CREATE TABLE IF NOT EXISTS craftmine_restore_marks (
+ operation_id TEXT PRIMARY KEY,archive_hash TEXT NOT NULL,domain_hash TEXT NOT NULL,
+ committed_at INTEGER NOT NULL);",
     )?;
     Ok(())
 }
@@ -162,7 +165,11 @@ fn columns(db: &Connection, table: &str) -> Result<Vec<String>> {
 /// table without updating the allowlist fails the export loudly instead of
 /// silently producing an incomplete archive.
 fn assert_schema_covered(db: &Connection) -> Result<()> {
-    const OPERATIONAL_TABLES: &[&str] = &["craftmine_backup_jobs", "craftmine_backup_pins"];
+    const OPERATIONAL_TABLES: &[&str] = &[
+        "craftmine_backup_jobs",
+        "craftmine_backup_pins",
+        "craftmine_restore_marks",
+    ];
     let mut live = db
         .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name GLOB 'craftmine_*'")?
         .query_map([], |r| r.get::<_, String>(0))?
