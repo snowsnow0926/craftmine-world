@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/equipment_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"inspection_tool"
+display_name = "Inspection tool"
+description = "Utility item with no attack, no model and no reticle. Also proves the no-attack path."
+attack_mode = 0
+damage = 0.0
+cooldown_seconds = 0.0
+range_meters = 1.0
+pellets = 1
+spread_degrees = 0.0
+melee_arc_degrees = 70.0
+hit_mask = 3
+magazine_size = 0
+reload_seconds = 0.0
+starting_ammo = 0
+starting_reserve = 0
+mount_offset = Vector3(0.24, -0.2, -0.42)
+mount_rotation_degrees = Vector3(0, 0, 0)
+display_scale = Vector3(1, 1, 1)
+crosshair_visible = false

@@ -46,10 +46,14 @@ diagnosis and ignored on load.
                                {"id": "practice_sword", "magazine": 0, "reserve": 0}]}
 ```
 
-Every catalog item must be present exactly once. `magazine` is clamped to the
-item's authored `magazine_size`; `reserve` is `0..99999`. An unknown id, a
-missing item or an out-of-range count rejects the whole state. Cooldown and
-reload progress are not saved.
+Every catalog item must be present exactly once. `magazine` is an integer
+`0..99999` and is **clamped** to the item's authored `magazine_size`; `reserve`
+is an integer `0..99999`. An unknown id, a missing item or a non-integer count
+rejects the whole state. Cooldown and reload progress are not saved.
+
+Authored maxima (`magazine_size`, `max_health`, `total_uses`) are source and may
+shrink between builds, so a saved value above the current maximum is clamped
+rather than rejected: a source edit must not discard the player's progress.
 
 ### `inventory`
 
@@ -67,9 +71,10 @@ An array matching the scene's `base_targets` group, ordered by node name:
 [{"id": "target_a", "health": 50.0, "destroyed": false, "hitCount": 0, "damageTaken": 0.0}]
 ```
 
-`health` is `0..max_health`. `destroyed` must agree with `health == 0`. The array
-length must equal the number of targets in the scene; a mismatch is rejected so a
-save cannot be applied to a different level.
+`health` is a finite number `>= 0`, clamped to `max_health`. `destroyed` must
+agree with `health == 0`. The array length must equal the number of state nodes
+in the scene and each entry's `id` must equal the node's `state_id()`, so a save
+cannot be applied to a different level or to the wrong target.
 
 ### `interactables`
 

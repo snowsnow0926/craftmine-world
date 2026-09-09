@@ -41,7 +41,7 @@ func interact() -> Dictionary:
 
 
 func snapshot() -> Dictionary:
-	return {"id": name, "enabled": enabled, "taken": taken}
+	return {"id": state_id(), "enabled": enabled, "taken": taken}
 
 
 func restore(data: Dictionary) -> String:

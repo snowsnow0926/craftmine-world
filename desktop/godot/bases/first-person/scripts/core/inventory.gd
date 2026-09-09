@@ -27,9 +27,14 @@ func add(id: StringName, amount: int) -> int:
 		return 0
 	if not stacks.has(id) and stacks.size() >= capacity:
 		return 0
-	stacks[id] = count(id) + amount
+	# The state format stores 1..9999 per slot, so the live stack is clamped to
+	# the same range. Otherwise a save could be written that its own loader rejects.
+	var added := mini(amount, 9999 - count(id))
+	if added <= 0:
+		return 0
+	stacks[id] = count(id) + added
 	changed.emit()
-	return amount
+	return added
 
 
 func remove(id: StringName, amount: int) -> bool:

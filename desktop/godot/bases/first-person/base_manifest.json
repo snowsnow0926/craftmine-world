@@ -18,7 +18,7 @@
     "id": "craftmine.godot-base-state/1",
     "version": 1,
     "documentation": "docs/STATE_FORMAT.md",
-    "preserved": ["playerPosition", "playerLook", "health", "equipment", "inventory", "targets", "quests"]
+    "preserved": ["playerPosition", "playerLook", "equipment", "inventory", "targets", "interactables", "quests"]
   },
   "parameters": {
     "equipmentCatalog": "res://data/equipment/equipment_catalog.tres",

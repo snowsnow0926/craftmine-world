@@ -23,3 +23,5 @@ func apply_to(world: BaseWorld) -> void:
 	for target in world.get_tree().get_nodes_in_group("base_targets"):
 		if target.get("hit_flash_seconds") != null:
 			target.hit_flash_seconds = hit_flash_seconds
+	if world.crosshair != null:
+		world.crosshair.hit_flash_seconds = hit_flash_seconds

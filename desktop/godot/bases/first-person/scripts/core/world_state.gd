@@ -63,7 +63,9 @@ func apply(state: Dictionary) -> String:
 	var backup := capture()
 	var failure := _apply_inner(migrated)
 	if not failure.is_empty():
-		_apply_inner(backup)
+		var rollback := _apply_inner(backup)
+		if not rollback.is_empty():
+			return failure + " (and the world could not be rolled back: " + rollback + ")"
 		return failure
 	state_applied.emit()
 	return ""
@@ -93,6 +95,8 @@ func validate_envelope(state: Dictionary) -> String:
 		return "State has no inventory block"
 	if not state.get("targets") is Array:
 		return "State has no target block"
+	if not state.get("interactables") is Array:
+		return "State has no interactable block"
 	if not state.get("quests") is Dictionary:
 		return "State has no quest block"
 	return ""
@@ -126,19 +130,27 @@ func _apply_inner(state: Dictionary) -> String:
 
 func collect(group: StringName) -> Array:
 	var entries := []
-	var nodes := get_tree().get_nodes_in_group(group)
-	nodes.sort_custom(func(a, b): return String(a.name) < String(b.name))
-	for node in nodes:
-		if node.has_method("snapshot"):
-			entries.append(node.snapshot())
+	for node in _state_nodes(group):
+		entries.append(node.snapshot())
 	return entries
+
+
+## Nodes that participate in saved state, in a stable, unique order. Sorting by
+## scene path (not by node name) keeps two same-named nodes from different
+## parents in a consistent order across processes.
+func _state_nodes(group: StringName) -> Array:
+	var nodes: Array = []
+	for node in get_tree().get_nodes_in_group(group):
+		if node.has_method("snapshot") and node.has_method("restore"):
+			nodes.append(node)
+	nodes.sort_custom(func(a, b): return String(a.get_path()) < String(b.get_path()))
+	return nodes
 
 
 func _apply_collection(group: StringName, entries) -> String:
 	if not entries is Array:
 		return "Saved " + group + " block is not an array"
-	var nodes := get_tree().get_nodes_in_group(group)
-	nodes.sort_custom(func(a, b): return String(a.name) < String(b.name))
+	var nodes := _state_nodes(group)
 	if entries.size() != nodes.size():
 		return "Saved " + group + " block does not match the scene"
 	for index in nodes.size():
@@ -146,8 +158,8 @@ func _apply_collection(group: StringName, entries) -> String:
 		var entry = entries[index]
 		if not entry is Dictionary:
 			return "Saved " + group + " entry is not an object"
-		if not node.has_method("restore"):
-			return "Scene node cannot restore " + group
+		if node.has_method("state_id") and str(entry.get("id", "")) != String(node.state_id()):
+			return "Saved " + group + " entry does not match scene node " + String(node.name)
 		var problem: String = node.restore(entry)
 		if not problem.is_empty():
 			return problem
@@ -161,6 +173,4 @@ func _migrate(state: Dictionary) -> Dictionary:
 	var version := int(state.get("stateVersion", 0))
 	if version == STATE_VERSION:
 		return state
-	if version < 1 or version > STATE_VERSION:
-		return {"error": "State version cannot be migrated"}
-	return state
+	return {"error": "State version cannot be migrated"}

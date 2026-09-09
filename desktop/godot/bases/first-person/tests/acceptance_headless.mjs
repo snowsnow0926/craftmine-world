@@ -253,6 +253,84 @@ try {
   // ------------------------------------------------------------------ asset source
   const meshCheck = await run(environment, 'base-mesh-check', writeScript('mesh-check', [{op: 'snapshot'}]), ['--base-world-id=fresh-world']);
   check('Equipment models resolve to the authored OBJ assets in this project', meshCheck.results[0].result.display.meshPath.startsWith('res://assets/meshes/'), meshCheck.results[0].result.display.meshPath);
+  // ------------------------------------------------- attack block reasons and reticle colour
+  const sameColor = (a, b, tolerance = 0.01) => Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((value, index) => Math.abs(value - b[index]) <= tolerance);
+  const STYLE_COLOR = [1, 1, 1, 0.92];
+  const HIT_COLOR = [1, 0.45, 0.3, 1];
+  const COOLDOWN_COLOR = [1, 0.8, 0.35, 0.9];
+  const blocksA = await run(environment, 'base-blocks-a', writeScript('blocks-a', [
+    {op: 'snapshot'},
+    {op: 'attack'},
+    {op: 'attack'},
+    {op: 'wait', args: {frames: 12}},
+    {op: 'snapshot'},
+    {op: 'wait', args: {frames: 25}},
+    {op: 'reload'},
+    {op: 'attack'},
+    {op: 'wait', args: {frames: 90}},
+    {op: 'snapshot'},
+  ]), ['--base-world-id=blocks-world']);
+  report.observations.blocksA = blocksA;
+  check('A ready weapon shows the style colour before any attack', sameColor(blocksA.results[0].result.crosshair.color, STYLE_COLOR), blocksA.results[0].result.crosshair.color);
+  check('A confirmed hit turns the reticle to the hit colour', sameColor(blocksA.results[1].result.snapshot.crosshair.color, HIT_COLOR), blocksA.results[1].result.snapshot.crosshair.color);
+  check('A second attack is refused while cooling down', blocksA.results[2].result.fired === false && blocksA.results[2].result.reason === 'cooling-down', blocksA.results[2].result.reason);
+  check('The reticle shows the cooldown colour while the item is cooling down', sameColor(blocksA.results[4].result.crosshair.color, COOLDOWN_COLOR), blocksA.results[4].result.crosshair.color);
+  check('An attack is refused while reloading', blocksA.results[7].result.fired === false && blocksA.results[7].result.reason === 'reloading', blocksA.results[7].result.reason);
+  check('After the reload the reticle returns to the style colour and the magazine is full', sameColor(blocksA.results[9].result.crosshair.color, STYLE_COLOR) && blocksA.results[9].result.equipment.magazine === 6 && blocksA.results[9].result.equipment.reserve === 11, {color: blocksA.results[9].result.crosshair.color, equipment: blocksA.results[9].result.equipment});
+
+  const blocksB = await run(environment, 'base-blocks-b', writeScript('blocks-b', [
+    {op: 'attack'}, {op: 'snapshot'}, {op: 'wait', args: {frames: 25}}, {op: 'snapshot'},
+    {op: 'attack'}, {op: 'wait', args: {frames: 25}},
+    {op: 'attack'}, {op: 'wait', args: {frames: 25}},
+    {op: 'attack'}, {op: 'wait', args: {frames: 25}},
+    {op: 'attack'}, {op: 'wait', args: {frames: 25}},
+    {op: 'attack'},
+    {op: 'snapshot'},
+    {op: 'wait', args: {frames: 25}},
+    {op: 'attack'},
+    {op: 'equip', args: {value: 'inspection_tool'}},
+    {op: 'snapshot'},
+    {op: 'attack'},
+  ]), ['--base-world-id=blocks-world']);
+  report.observations.blocksB = blocksB;
+  check('An empty magazine refuses the next attack with the empty reason', blocksB.results[13].result.equipment.magazine === 0 && blocksB.results[15].result.fired === false && blocksB.results[15].result.reason === 'empty', {magazine: blocksB.results[13].result.equipment.magazine, reason: blocksB.results[15].result.reason});
+  const tool = blocksB.results[17].result;
+  check('A no-attack item shows no model and no reticle from the same state', tool.equipment.active === 'inspection_tool' && tool.equipment.attackMode === 'NONE' && tool.crosshair.visible === false && tool.display.visible === false, {equipment: tool.equipment, crosshair: tool.crosshair.visible, display: tool.display.visible});
+  check('A no-attack item refuses an attack with the no-attack reason', blocksB.results[18].result.fired === false && blocksB.results[18].result.reason === 'no-attack', blocksB.results[18].result.reason);
+
+  // ------------------------------------------------ rollback after a mid-apply failure
+  const rollbackState = {
+    format: 'craftmine.godot-base-state/1',
+    stateVersion: 1,
+    base: 'first-person',
+    player: {position: [7.5, 0.9, -3.25], yaw: 1.0, pitch: 0.0},
+    equipment: {active: 'pistol', items: [
+      {id: 'pistol', magazine: 1, reserve: 3},
+      {id: 'practice_sword', magazine: 0, reserve: 0},
+      {id: 'inspection_tool', magazine: 0, reserve: 0},
+    ]},
+    inventory: {slots: [{id: 'bogus_item', count: 1}]},
+    targets: [],
+    interactables: [],
+    quests: {quests: [{id: 'range_basic', status: 1, count: 0, rewardGranted: false}]},
+  };
+  const rollback = await run(environment, 'base-rollback', writeScript('rollback', [
+    {op: 'snapshot'},
+    {op: 'restore-state', args: {state: rollbackState}},
+    {op: 'snapshot'},
+  ]), ['--base-world-id=rollback-world']);
+  report.observations.rollback = rollback;
+  check('A state that fails on a later block is rejected with a concrete reason', typeof rollback.results[1].error === 'string' && rollback.results[1].error.length > 0, rollback.results[1].error);
+  check('Blocks applied before the failure are rolled back completely', JSON.stringify(rollback.results[0].result) === JSON.stringify(rollback.results[2].result), {before: rollback.results[0].result.player, after: rollback.results[2].result.player, inventory: rollback.results[2].result.inventory});
+
+  // ------------------------------------------------------------- world identity isolation
+  const isolation = await run(environment, 'base-isolation', writeScript('isolation', [
+    {op: 'snapshot'},
+    {op: 'restore'},
+  ]), ['--base-world-id=a-world-with-no-save']);
+  report.observations.isolation = isolation;
+  check('A world with no save of its own cannot read another world progress', typeof isolation.results[1].error === 'string' && isolation.results[1].error.includes('missing') && isolation.results[0].result.worldId === 'a-world-with-no-save', isolation.results[1].error);
+
   // ------------------------------------- change damage in source, keep the progress
   // This mutates the project source, so it runs last.
   const weaponFile = path.join(project, 'data/equipment/pistol.tres');

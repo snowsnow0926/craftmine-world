@@ -25,7 +25,7 @@ func _on_equipment_changed(_id: StringName, definition: EquipmentDefinition) -> 
 	if _mesh_instance != null:
 		_mesh_instance.queue_free()
 		_mesh_instance = null
-	if definition == null:
+	if definition == null or definition.display_mesh == null:
 		return
 	_mesh_instance = MeshInstance3D.new()
 	_mesh_instance.name = "DisplayModel"

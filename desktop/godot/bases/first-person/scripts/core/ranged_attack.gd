@@ -50,10 +50,20 @@ func execute(definition: EquipmentDefinition) -> Dictionary:
 	return {"fired": true, "reason": "", "hits": hits, "damage": total_damage, "hit": not hits.is_empty()}
 
 
+## A deviation of at most `degrees` from the aim direction, chosen uniformly over
+## a disc, so the parameter really is the maximum spread and the basis does not
+## degenerate when the aim points straight up.
 func _spread(direction: Vector3, degrees: float, rng: RandomNumberGenerator) -> Vector3:
-	var basis := Basis.looking_at(direction, Vector3.UP)
-	var angle := deg_to_rad(degrees)
-	return (basis * Vector3(tan(rng.randf_range(-angle, angle)), tan(rng.randf_range(-angle, angle)), -1.0)).normalized()
+	var limit := deg_to_rad(clampf(degrees, 0.0, 45.0))
+	if limit <= 0.0:
+		return direction
+	var up := Vector3.UP if absf(direction.dot(Vector3.UP)) < 0.99 else Vector3.RIGHT
+	var right := direction.cross(up).normalized()
+	var perpendicular := right.cross(direction).normalized()
+	var angle := limit * sqrt(rng.randf())
+	var azimuth := rng.randf_range(0.0, TAU)
+	var offset := right * (sin(angle) * cos(azimuth)) + perpendicular * (sin(angle) * sin(azimuth))
+	return (direction * cos(angle) + offset).normalized()
 
 
 func _apply_damage(collider: Object, damage: float, point: Vector3, direction: Vector3) -> float:

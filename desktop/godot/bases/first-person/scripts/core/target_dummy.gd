@@ -85,10 +85,14 @@ func snapshot() -> Dictionary:
 	}
 
 
+func state_id() -> String:
+	return String(target_id)
+
+
 ## Returns "" on success, otherwise why the saved target was rejected.
 func restore(data: Dictionary) -> String:
 	var saved_health = data.get("health")
-	if not (saved_health is float or saved_health is int) or not is_finite(float(saved_health)) or float(saved_health) < 0.0 or float(saved_health) > max_health:
+	if not (saved_health is float or saved_health is int) or not is_finite(float(saved_health)) or float(saved_health) < 0.0:
 		return String(target_id) + ": saved health is invalid"
 	var saved_destroyed = data.get("destroyed")
 	if not saved_destroyed is bool:
@@ -97,11 +101,12 @@ func restore(data: Dictionary) -> String:
 		return String(target_id) + ": saved health and destroyed flag disagree"
 	var saved_hits = data.get("hitCount", 0)
 	var saved_damage = data.get("damageTaken", 0.0)
-	if not (saved_hits is float or saved_hits is int) or float(saved_hits) < 0.0:
+	if not (saved_hits is float or saved_hits is int) or not is_finite(float(saved_hits)) or float(saved_hits) != floorf(float(saved_hits)) or float(saved_hits) < 0.0:
 		return String(target_id) + ": saved hit count is invalid"
 	if not (saved_damage is float or saved_damage is int) or not is_finite(float(saved_damage)) or float(saved_damage) < 0.0:
 		return String(target_id) + ": saved damage total is invalid"
-	health = float(saved_health)
+	# max_health is source and may be lowered; clamp instead of discarding progress.
+	health = minf(float(saved_health), max_health)
 	is_destroyed = bool(saved_destroyed)
 	hit_count = int(saved_hits)
 	damage_taken = float(saved_damage)

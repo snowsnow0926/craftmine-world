@@ -93,6 +93,17 @@ func camera_rig() -> CameraRig:
 	return player.camera_rig if player != null else null
 
 
+## True when `node` sits anywhere under `ancestor`. Used to prove the displayed
+## model really hangs off the active camera rather than merely being near it.
+static func _is_descendant_of(node: Node, ancestor: Node) -> bool:
+	var current: Node = node
+	while current != null:
+		if current == ancestor:
+			return true
+		current = current.get_parent()
+	return false
+
+
 func snapshot() -> Dictionary:
 	var display := {"visible": false, "meshPath": "", "local": [0.0, 0.0, 0.0]}
 	var attached := false
@@ -105,7 +116,7 @@ func snapshot() -> Dictionary:
 		display = equipment_visuals.snapshot()
 		var model := equipment_visuals.model()
 		if model != null and rig != null:
-			attached = model.global_transform.is_equal_approx(rig.camera.global_transform * model.transform)
+			attached = _is_descendant_of(model, rig.camera)
 			forward_dot = model.global_transform.basis.z.dot(rig.camera_basis().z)
 			aligned = forward_dot > 0.99
 			weapon_global = [model.global_position.x, model.global_position.y, model.global_position.z]

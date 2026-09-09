@@ -76,12 +76,16 @@ func execute(definition: EquipmentDefinition) -> Dictionary:
 
 
 ## Direction is measured towards the body of the target, not towards its scene
-## origin, which for a standing character sits on the floor.
+## origin, which for a standing character sits on the floor. Every collision
+## shape in the subtree counts, so a nested model-authored hierarchy works too.
 func _aim_point(collider: Node3D) -> Vector3:
-	for child in collider.get_children():
-		if child is CollisionShape3D:
-			return child.global_position
-	return collider.global_position
+	var shapes := collider.find_children("*", "CollisionShape3D", true, false)
+	if shapes.is_empty():
+		return collider.global_position
+	var centre := Vector3.ZERO
+	for shape in shapes:
+		centre += (shape as CollisionShape3D).global_position
+	return centre / float(shapes.size())
 
 
 func _apply_damage(collider: Object, damage: float, point: Vector3, direction: Vector3) -> float:

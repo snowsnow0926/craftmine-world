@@ -42,15 +42,16 @@ func interact() -> Dictionary:
 
 
 func snapshot() -> Dictionary:
-	return {"id": name, "enabled": enabled, "usesLeft": uses_left}
+	return {"id": state_id(), "enabled": enabled, "usesLeft": uses_left}
 
 
 func restore(data: Dictionary) -> String:
 	var saved_uses = data.get("usesLeft")
-	if not (saved_uses is float or saved_uses is int) or float(saved_uses) < 0.0 or float(saved_uses) > float(total_uses):
+	if not (saved_uses is float or saved_uses is int) or not is_finite(float(saved_uses)) or float(saved_uses) != floorf(float(saved_uses)) or float(saved_uses) < 0.0:
 		return name + ": saved uses are invalid"
 	var base_problem := super.restore(data)
 	if not base_problem.is_empty():
 		return base_problem
-	uses_left = int(saved_uses)
+	# total_uses is source and may be lowered; clamp instead of discarding progress.
+	uses_left = mini(int(saved_uses), total_uses)
 	return ""

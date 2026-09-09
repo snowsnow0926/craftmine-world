@@ -17,7 +17,7 @@ returned `EquipmentDefinition`:
 | `Crosshair` | `crosshair_visible`, `crosshair_style` (shape, size, gap, thickness, colours) |
 | `AttackDispatcher` | `attack_mode`, `damage`, `cooldown_seconds`, `range_meters`, `pellets`, `spread_degrees`, `melee_arc_degrees`, `hit_mask` |
 | `Hud` | `display_name`, `attack_mode`, `magazine_size` |
-| `AimQuery` | `hit_mask` (world / damageable / interactable) |
+| `AimQuery` | nothing: pointing interaction uses its own `collision_mask` (world / damageable / interactable) so the player can aim at a crate while a weapon with a restrictive `hit_mask` is equipped |
 
 Rules:
 

@@ -98,6 +98,7 @@ Both write a `report.json` with per-check evidence under `test-results/`.
 | objective kind, required count, one-time reward | `data/quests/range_basic.tres` |
 | target health, flash time | `scenes/actors/target_dummy.tscn` instance properties |
 | crate payload and uses | `scenes/props/ammo_crate.tscn` instance properties |
+| add or remove equipment, switch order | `data/equipment/equipment_catalog.tres` (the shipped catalog also carries an `inspection_tool` with no attack, no model and no reticle) |
 
 ## Shared interfaces
 

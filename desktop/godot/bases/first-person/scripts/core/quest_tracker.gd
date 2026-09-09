@@ -34,7 +34,15 @@ func bind_world(world: BaseWorld) -> void:
 	attack_dispatcher = world.attack_dispatcher
 	if attack_dispatcher != null and not attack_dispatcher.damage_dealt.is_connected(_on_damage_dealt):
 		attack_dispatcher.damage_dealt.connect(_on_damage_dealt)
+	if not get_tree().node_added.is_connected(_on_node_added):
+		get_tree().node_added.connect(_on_node_added)
 	call_deferred("_connect_targets")
+
+
+## Targets authored later (or spawned by gameplay) must still count.
+func _on_node_added(node: Node) -> void:
+	if node.is_in_group("base_targets") and node.has_signal("destroyed") and not node.destroyed.is_connected(_on_target_destroyed):
+		node.destroyed.connect(_on_target_destroyed)
 
 
 func _connect_targets() -> void:
@@ -73,14 +81,24 @@ func record(objective: QuestDefinition.Objective, amount: float) -> void:
 
 
 func _complete(definition: QuestDefinition, entry: Dictionary) -> void:
-	entry.status = STATUS_COMPLETED
-	if bool(entry.rewardGranted):
+	# Grant first, complete second. If a reward cannot be stored (full bag, no
+	# ammunition item available) the quest stays active and will be retried on the
+	# next matching event, instead of silently losing the reward.
+	var granted := true
+	if definition.reward_reserve_rounds > 0:
+		if equipment_state == null:
+			granted = false
+		elif equipment_state.add_reserve(definition.reward_reserve_rounds) <= 0:
+			granted = false
+	if not definition.reward_item.is_empty():
+		if inventory == null:
+			granted = false
+		elif inventory.add(definition.reward_item, definition.reward_item_amount) <= 0:
+			granted = false
+	if not granted:
 		return
+	entry.status = STATUS_COMPLETED
 	entry.rewardGranted = true
-	if definition.reward_reserve_rounds > 0 and equipment_state != null:
-		equipment_state.add_reserve(definition.reward_reserve_rounds)
-	if not definition.reward_item.is_empty() and inventory != null:
-		inventory.add(definition.reward_item, definition.reward_item_amount)
 	quest_completed.emit(definition.id, entry.duplicate(true))
 
 

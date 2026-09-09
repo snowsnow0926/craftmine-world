@@ -18,6 +18,11 @@ func interaction_prompt() -> String:
 	return prompt if can_interact() else ""
 
 
+## Stable identity used by saved state, independent of node name uniqueness.
+func state_id() -> String:
+	return name
+
+
 func interact() -> Dictionary:
 	return {"handled": false, "reason": "not-implemented"}
 

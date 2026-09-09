@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Craftmine Web acceptance host</title>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+  iframe { position: fixed; inset: 0; display: block; width: 100%; height: 100%; border: 0; }
+</style>
+</head>
+<body>
+<iframe id="game" title="Godot world" sandbox="allow-scripts allow-same-origin" allow="autoplay; cross-origin-isolated"></iframe>
+<script>
+// Minimal plain-HTML host on its own HTTP origin. It owns no engine, no focus
+// and no pointer lock: it only relays craftmine.godot-preview/1 requests over a
+// transferred MessageChannel and records what the game reports back.
+(() => {
+  'use strict';
+  const protocol = 'craftmine.godot-preview/1';
+  const wireLimit = 65536;
+  const requestTimeoutMs = 30000;
+  const identityPattern = /^[a-zA-Z0-9._-]{1,128}$/;
+  const params = new URL(location.href).searchParams;
+  const gameUrl = params.get('game') || '';
+  const worldId = params.get('worldId') || '';
+  const buildId = params.get('buildId') || '';
+  const frame = document.getElementById('game');
+  const errors = [];
+  const pending = new Map();
+  let loads = 0, sequence = 0, port = null, available = false, closed = false, readyReceived = false;
+
+  let resolveReady, rejectReady;
+  const ready = new Promise((resolve, reject) => { resolveReady = resolve; rejectReady = reject; });
+  ready.catch(() => {});
+  const startupTimer = setTimeout(() => failStartup('Godot startup timed out'), requestTimeoutMs);
+  const scope = {protocol, worldId, buildId, session: crypto.randomUUID()};
+
+  function failStartup(message) {
+    clearTimeout(startupTimer);
+    rejectReady(Error(message));
+  }
+  function settle(id, error, result) {
+    const entry = pending.get(id);
+    if (!entry) return;
+    pending.delete(id);
+    clearTimeout(entry.timer);
+    if (error) entry.reject(Error(error)); else entry.resolve(result);
+  }
+  function dispose(reason = 'Preview closed') {
+    if (closed) return;
+    closed = true;
+    available = false;
+    clearTimeout(startupTimer);
+    rejectReady(Error(reason));
+    for (const id of [...pending.keys()]) settle(id, reason);
+    if (port) port.close();
+  }
+  function receive(event) {
+    const message = event.data;
+    if (closed || !message || typeof message !== 'object') return;
+    if (Object.entries(scope).some(([key, value]) => message[key] !== value)) return;
+    // MessagePort carries values JSON cannot represent; validate before clearing
+    // the request timer so a cyclic/BigInt response cannot orphan a Promise.
+    try {
+      if (JSON.stringify(message).length > wireLimit) throw Error('Oversized runtime response');
+    } catch (error) {
+      settle(message.id, error.message === 'Oversized runtime response' ? error.message : 'Invalid runtime response');
+      return;
+    }
+    if (message.type === 'ready' && !readyReceived) {
+      readyReceived = true;
+      available = true;
+      clearTimeout(startupTimer);
+      resolveReady();
+    }
+    if (message.type === 'runtime-error') {
+      errors.push(typeof message.error === 'string' ? message.error.slice(0, 2000) : 'Invalid runtime diagnostic');
+      if (errors.length > 32) errors.shift();
+    }
+    if (message.type === 'response') settle(message.id, typeof message.error === 'string' ? message.error : null, message.result);
+    if (message.type === 'exited') dispose('Godot runtime exited');
+  }
+  function connect() {
+    loads += 1;
+    if (port || closed) return;
+    const channel = new MessageChannel();
+    port = channel.port1;
+    port.onmessage = receive;
+    port.start();
+    frame.contentWindow.postMessage({...scope, type: 'connect'}, new URL(frame.src).origin, [channel.port2]);
+  }
+
+  try {
+    const url = new URL(gameUrl, location.href);
+    if (!/^https?:$/.test(url.protocol)) throw Error('Game URL must be HTTP(S)');
+    if (url.origin === location.origin) throw Error('Game must be a separate HTTP origin');
+    if (!identityPattern.test(worldId) || !identityPattern.test(buildId)) throw Error('Invalid world/build identity');
+    frame.addEventListener('load', connect);
+    frame.src = url.href;
+  } catch (error) {
+    failStartup(error.message);
+  }
+
+  const api = Object.freeze({
+    worldId,
+    buildId,
+    ready,
+    get errors() { return [...errors]; },
+    get loads() { return loads; },
+    dispose,
+    request(op, args = {}) {
+      if (closed || !available) return Promise.reject(Error('Preview is not ready'));
+      if (pending.size >= 16) return Promise.reject(Error('Too many preview requests'));
+      const id = ++sequence;
+      const message = {...scope, type: 'request', id, op, args};
+      try {
+        if (typeof op !== 'string' || op.length > 64 || JSON.stringify(message).length > wireLimit) throw Error('Invalid preview request');
+      } catch {
+        return Promise.reject(Error('Invalid preview request'));
+      }
+      return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => settle(id, 'Runtime request timed out: ' + op), requestTimeoutMs);
+        pending.set(id, {resolve, reject, timer});
+        try { port.postMessage(message); } catch { settle(id, 'Invalid preview request'); }
+      });
+    },
+  });
+  Object.defineProperty(window, 'base', {value: api, writable: false, configurable: false});
+})();
+</script>
+</body>
+</html>

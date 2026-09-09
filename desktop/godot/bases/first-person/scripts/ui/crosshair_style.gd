@@ -8,7 +8,8 @@ extends Resource
 enum Shape { CROSS, DOT, CIRCLE, CROSS_DOT }
 
 @export var shape: Shape = Shape.CROSS
-## Full arm length of a cross, or diameter of a circle/dot, in pixels.
+## Full arm length of a cross, or diameter of a circle/dot, in pixels. For a
+## cross this is the total span, so each arm is half of it.
 @export var size_px: float = 14.0
 @export var thickness_px: float = 2.0
 ## Empty space between the centre and the start of each cross arm.

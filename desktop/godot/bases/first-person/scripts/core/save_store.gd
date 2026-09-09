@@ -27,6 +27,10 @@ func has_state() -> bool:
 
 
 ## Returns "" on success, otherwise why the save was refused.
+##
+## Commit order: keep the previous save as `state.json.bak`, move the validated
+## temporary file into place, and only then delete the backup. A crash between
+## any two steps leaves either the previous or the new save, never neither.
 func save(state: Dictionary) -> String:
 	var problem := validate(state)
 	if not problem.is_empty():
@@ -46,20 +50,38 @@ func save(state: Dictionary) -> String:
 	var dir := DirAccess.open(directory())
 	if dir == null:
 		return "Save directory could not be reopened"
-	if dir.file_exists("state.json"):
-		var remove_error := dir.remove("state.json")
-		if remove_error != OK:
-			return "Previous save could not be replaced"
+	if dir.file_exists(backup_name()) and dir.remove(backup_name()) != OK:
+		return "Stale save backup could not be removed"
+	var had_previous := dir.file_exists("state.json")
+	if had_previous and dir.rename("state.json", backup_name()) != OK:
+		return "Previous save could not be set aside"
 	if dir.rename("state.json.tmp", "state.json") != OK:
+		if had_previous:
+			dir.rename(backup_name(), "state.json")
 		return "Save file could not be committed"
+	if dir.file_exists(backup_name()):
+		dir.remove(backup_name())
 	return ""
+
+
+func backup_name() -> String:
+	return "state.json.bak"
 
 
 ## Returns {"state": {...}} on success or {"error": "..."}.
 func load_state() -> Dictionary:
-	if not has_state():
+	for candidate in ["state.json", backup_name()]:
+		var result := _read(candidate)
+		if result.has("state"):
+			return result
+	return {"error": "Progress is missing"}
+
+
+func _read(file_name: String) -> Dictionary:
+	var path := directory() + "/" + file_name
+	if not FileAccess.file_exists(path):
 		return {"error": "Progress is missing"}
-	var file := FileAccess.open(state_file(), FileAccess.READ)
+	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		return {"error": "Progress could not be read"}
 	var text := file.get_as_text()
