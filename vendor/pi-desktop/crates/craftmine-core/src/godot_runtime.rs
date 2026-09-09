@@ -184,6 +184,7 @@ impl TaskJournal {
             && job["status"] == "passed" && job["outputHash"] == input["checkOutputHash"], "GODOT_BUILD_NOT_APPLIED");
         // Source head may have advanced since application. Formal builds remain
         // runnable independently of a newer draft; only their own artifacts count.
+        ensure!(!verify_artifacts || copy.is_none(), "GODOT_COPY_REBUILD_REQUIRED");
         let mut descriptor = if verify_artifacts { self.runtime_artifacts(&owner, build, &job)? } else { json!({}) };
         descriptor.as_object_mut().unwrap().extend(json!({"format":"craftmine.godot-runtime-descriptor/1","phase":"formal","worldId":args.world_id,
             "buildId":build,"baseId":base_id,"revision":current.summary.revision,"contentHash":current.content_hash,
@@ -203,14 +204,17 @@ impl TaskJournal {
         let reason = availability.err().map(|error| error.to_string());
         if let Some(reason) = &reason {
             ensure!(["GODOT_STORAGE_UNAVAILABLE", "GODOT_ARTIFACT_MISSING", "CORRUPT_GODOT_ARTIFACT",
-                "GODOT_ARTIFACT_MANIFEST_MISMATCH", "GODOT_WEB_ENTRY_MISSING"]
+                "GODOT_ARTIFACT_MANIFEST_MISMATCH", "GODOT_WEB_ENTRY_MISSING", "GODOT_COPY_REBUILD_REQUIRED"]
                 .iter().any(|code| reason.starts_with(code)), "GODOT_REBUILD_UNSAFE: {reason}");
         }
         let world = worlds::read(&self.db, &request.world_id)?;
         let build = metadata["buildId"].as_str().context("INVALID_GODOT_BUILD")?;
         let source = self.runtime_formal_source(&request.world_id, &metadata)?;
+        let parent = source["contentOid"].as_str().context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
+        let copied = metadata["copiedFromWorldId"].is_string();
+        let transform = if copied { self.verified_copy_runtime(&request.world_id, &metadata, parent)? } else { None };
         let (store, layout) = self.content_layout(&request.world_id)?;
-        let content_oid = source["contentOid"].as_str().context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
+        let content_oid = transform.as_ref().and_then(|v|v["contentOid"].as_str()).unwrap_or(parent);
         let tree = store.commit_tree_oid(&layout, content_oid).context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
         let rebuild_branch = format!("restore-{}", &digest(&format!("{}|{build}", request.world_id))[..24]);
         let rebuild_content = store.branch_head(&layout, &rebuild_branch)?;
@@ -221,6 +225,8 @@ impl TaskJournal {
             "rebuildRequired":reason.is_some(),"reason":reason,"formalBuildId":build,
             "worldRevision":world.summary.revision,"snapshotHash":digest(&serde_json::to_string(&world.world.snapshot)?),
             "repoId":layout.repo_id,"contentOid":content_oid,"branchId":source["branchId"],
+            "identityRebindRequired":copied && transform.is_none(),"sourceParentOid":if copied {Some(parent)} else {None},
+            "identityTransform":transform,
             "rebuildBranchId":rebuild_branch,"rebuildContentOid":rebuild_content}))
     }
 
