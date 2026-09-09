@@ -7,12 +7,13 @@
 - D:/Craftmine World/docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md（主目录有尚未提交的最新内容，必须只读这里的版本）。
 - D:/Craftmine World/docs/PROGRESS_REPORT_2026-09-10.md、docs/GODOT_CYCLE_05.md。
 - 涉及 vendor/pi-desktop 时，再读该目录 AGENTS.md 和相关 spec/ADR。
+- 再读主目录 docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md 与 docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md，二者已加入总计划；内容历史与素材引用按 M/N 共同契约接入。未加前缀的 A01–A17 指 Godot 总计划；素材库验收写成 AL-A01–AL-A17，版本管理写 V01–V16，避免同号混淆。
 - 许可与导出有关工作另读主目录 docs/LICENSING_STRATEGY.md，不把决策记录当作已完成的许可适用。
 
 共同执行约定：
 1. 启动时核对最新本地 master、Git 状态和工作树。分发时 master 是 92c98b2，实际开发以最新已集成提交为准。新建自己唯一的 codex/ 分支及独立工作树；禁止在主目录或别人的工作树开发。不要让多个 agent 并行 pull、合并或清理主目录，统一由主任务集成。
 2. 下文旧树只作为只读交接来源。已有提交保留提交历史；尚未提交的成果，确认源已停止修改后，仅在自己的新树接续被明确分给你的文件差异及新增文件，记录来源、文件哈希和基线。不要整树覆盖、遗漏未跟踪源码或把缓存/数据一并带入；不得修改、删除旧树。稳定交接未齐时先完成不依赖它的工作。
-3. 主目录 README.md、docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md 和 docs/LICENSING_STRATEGY.md 属于其他任务的现存修改，禁止覆盖或顺手提交。不要操作历史残留工作树、用户存档、共享引擎缓存或正在使用的客户端。
+3. 主目录 README.md、docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md、docs/LICENSING_STRATEGY.md 以及其他现存未提交文件（包括新增版本管理、素材库计划）属于其他任务的工作，禁止覆盖或顺手提交。不要操作历史残留工作树、用户存档、共享引擎缓存或正在使用的客户端。
 4. 自动验证仅使用独立 headless/offscreen 进程及独立数据目录，初始化禁止 requestPointerLock 和抢焦点。禁止真实鼠标键盘、Playwright mouse/keyboard/click/fill、激活窗口或操控用户浏览器；禁止运行 tests/browser.mjs、tests/modules-browser.mjs。通过页面脚本、HTTP、纯逻辑或受限测试接口验证；不能直接写“预期状态”冒充真实玩法执行。
 5. 每个模块只保留一位写入负责人。跨范围需求提交精确接口说明或小补丁建议给对应负责人。共享主入口 electron/main/index.ts、plugins/craftmine-world/view.mjs、全局依赖锁文件以及总 E2E 文档由主任务合并接线；你提供可合并片段和调用示例，不在自己的交付中夹带另一位 agent 的整份修改。Rust main.rs/lib.rs 由 A 管理。不得另建一套世界数据库、模型循环或宽权限执行路径。
 6. 本轮任务报告放 docs/dispatch-reports/godot-remaining/<你的字母>/，专属测试优先放 tests/godot-remaining/<你的字母>/。行为变化同步独立 spec，架构/协议变化写独立 ADR；vendor 内文档、代码注释和提交信息使用英文。ADR/E2E 用唯一任务标识准备片段，主任务统一编号和汇入总表。
@@ -35,5 +36,7 @@
 6. 按 A/F/H 的统一协议接入正式运行和保存，向 E/K 提供真实交付 manifest 与入口；未接入时清楚标记，不能用孤立 demo 宣布 A16 完成。
 
 验收核心：玩家通过实际规则挖掘、获得材料、制作、放置，保存并重启后地形、数量和位置一致；非法距离、材料不足、重复消息、保存失败有明确结果。先独立开发，最终用 C/D/I 的真实链路联测。
+
+新增配套计划的接口分工：沙盒模板和素材也接 M/N 的固定引用，源码版本与可变地形进度分开。不要把分块地形存档提交进 Git 内容历史；分支合并不能合并背包或地形游玩进度。
 
 交付判定：逐条对照以上任务，不以“测试很多”“接口已定义”或“已写完报告”代替实现。确实未完成的条目逐项保留，并给出下一步可执行入口。先交付可消费的接口和逻辑提交，最终再给完整报告。
