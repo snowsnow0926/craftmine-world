@@ -49,7 +49,7 @@
 | 项 | 原因 | 入口 |
 | --- | --- | --- |
 | 真实模型联合验收（运行观察→修改→编译→应用→再修改；三次真实压缩；重启接续） | 由 S7 统一安排 | 用本分支的 35 工具插件 + 正式客户端 + 真实模型 |
-| 真实运行实例的采样端到端 | 需要引擎/窗口与真实世界实例 | 启动正式客户端，`godot_runtime_state scope=live` 应返回 `provenance:'host-instance-sample'` |
+| 真实运行实例的采样端到端 | 需要引擎/窗口与真实世界实例 | 启动正式客户端，`godot_runtime_state scope=live` 应返回 `provenance:'live-instance-sample'` |
 | 插件进程重启后回收已排队作业 | 核心无 `godotJob.pending`，`godot-executor.cjs:reconcile()` 因此永远空转 | S1 登记 `godotJob.pending`，或 S2 改 reconcile 的数据源 |
 | `isDiscussionOnly` 宿主谓词 | 需要 R2 提供同步会话状态；当前用插件设置回落路径 | R2 传 `isDiscussionOnly` 或保持设置写入 |
 | 真实核心回归 | 本会话未构建 Rust 二进制 | `CRAFTMINE_CORE_BIN=<built> node --test tests/godot-round2/R7/real-core-recovery.test.mjs` 等 |
