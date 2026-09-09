@@ -1733,3 +1733,175 @@ fn al2_search_and_import_measurements_are_recorded() -> Result<()> {
     println!("MEASURED import 64MiB+1 rejected: ASSET_FILE_TOO_LARGE");
     Ok(())
 }
+
+/// A Windows sharing violation must not look like a missing or corrupt source:
+/// the player gets a dedicated code, and no partial row or blob survives.
+#[cfg(windows)]
+#[test]
+fn al1_locked_source_reports_a_dedicated_code() -> Result<()> {
+    use std::os::windows::fs::OpenOptionsExt;
+
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let bytes = png_header(8, 8);
+    let file = write_source(&root, "door.png", &bytes)?;
+    let locked = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .share_mode(0)
+        .open(&file)?;
+
+    let error = journal
+        .asset_import(&import_args(
+            &root,
+            &file,
+            "op-locked",
+            "door-texture",
+            1,
+            "textures/door.png",
+            "image/png",
+            "image",
+        ))
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("ASSET_SOURCE_LOCKED"), "{error}");
+    assert!(
+        !error.contains("ASSET_SOURCE_UNREADABLE"),
+        "a sharing violation must not be reported as unreadable: {error}"
+    );
+
+    let read = journal
+        .asset_read(&json!({"assetId":"door-texture","version":1}))
+        .unwrap_err()
+        .to_string();
+    assert!(read.contains("ASSET_NOT_FOUND"), "{read}");
+
+    let blobs = store::blob_root(&journal.directory, false)?;
+    let entries = walk(&blobs)?;
+    assert!(entries.is_empty(), "locked import left blobs: {entries:?}");
+    drop(locked);
+    Ok(())
+}
+
+/// One locked file must be reported as an issue; the rest of the authorized
+/// directory keeps being scanned.
+#[cfg(windows)]
+#[test]
+fn al1_scan_reports_a_locked_file_and_keeps_scanning() -> Result<()> {
+    use std::os::windows::fs::OpenOptionsExt;
+
+    let (dir, _path, journal) = journal()?;
+    let root = source_root(dir.path())?;
+    std::fs::write(root.join("a.png"), png_header(4, 4))?;
+    let locked_path = root.join("b.png");
+    std::fs::write(&locked_path, png_header(8, 8))?;
+    let locked = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .share_mode(0)
+        .open(&locked_path)?;
+
+    let scan = journal.asset_scan(&json!({"sourceRoot": root.to_string_lossy()}))?;
+    assert_eq!(scan["truncated"], false);
+    let items = scan["items"].as_array().unwrap();
+    assert!(
+        items.iter().any(|item| item["path"] == "a.png"),
+        "readable file missing from items: {items:?}"
+    );
+    let issues = scan["issues"].as_array().unwrap();
+    assert!(
+        issues
+            .iter()
+            .any(|issue| issue["path"] == "b.png" && issue["code"] == "SOURCE_LOCKED"),
+        "locked file not reported: {issues:?}"
+    );
+    drop(locked);
+    Ok(())
+}
+
+/// A refused import must not leave the just-streamed body behind as an orphan.
+#[test]
+fn al1_conflicting_import_leaves_no_orphan_blob() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let first_bytes = deterministic_bytes(4096);
+    let second_bytes = deterministic_bytes(8192);
+    let first = write_source(&root, "door-a.png", &first_bytes)?;
+    let second = write_source(&root, "door-b.png", &second_bytes)?;
+
+    let stored = journal.asset_import(&import_args(
+        &root,
+        &first,
+        "op-conflict-a",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+    assert_eq!(stored["existing"], false);
+
+    let error = journal
+        .asset_import(&import_args(
+            &root,
+            &second,
+            "op-conflict-b",
+            "door-texture",
+            1,
+            "textures/door.png",
+            "image/png",
+            "image",
+        ))
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("ASSET_VERSION_CONFLICT"), "{error}");
+
+    let blobs = store::blob_root(&journal.directory, false)?;
+    let entries = walk(&blobs)?;
+    assert_eq!(entries.len(), 1, "conflict left extra blobs: {entries:?}");
+    let expected_name = store::digest_bytes(&first_bytes);
+    assert_eq!(
+        entries[0].file_name().and_then(|name| name.to_str()),
+        Some(expected_name.as_str()),
+        "the surviving blob must be the first body"
+    );
+    Ok(())
+}
+
+/// Body access re-verifies the stored bytes, so on-disk tampering is refused.
+#[test]
+fn al2_body_path_reverifies_the_blob() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let bytes = deterministic_bytes(4096);
+    let file = write_source(&root, "door.png", &bytes)?;
+    journal.asset_import(&import_args(
+        &root,
+        &file,
+        "op-body",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+
+    let blobs = store::blob_root(&journal.directory, false)?;
+    let on_disk = store::blob_path(&blobs, &store::digest_bytes(&bytes))?;
+    assert!(on_disk.is_file());
+    let mut tampered = bytes.clone();
+    tampered[0] ^= 0xff;
+    assert_eq!(tampered.len(), bytes.len());
+    std::fs::write(&on_disk, &tampered)?;
+
+    let error = journal
+        .asset_body_path(&json!({
+            "assetId": "door-texture",
+            "version": 1,
+            "path": "textures/door.png",
+        }))
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("CORRUPT_ASSET_BLOB"), "{error}");
+    Ok(())
+}
