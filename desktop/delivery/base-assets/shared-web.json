@@ -9,7 +9,7 @@
     "language": "GDScript"
   },
   "sourceDirectory": "desktop/godot/web",
-  "reviewedCommit": "46739d222ceefc654b596725c96288a4087993b3",
+  "reviewedCommit": "86c4a3e4623ab28ba86690dc5a2ee6ba3d8a7891",
   "reviewedAt": "2026-09-09",
   "entries": [
     {
@@ -21,7 +21,9 @@
       "license": "project-authored",
       "licenseFile": null,
       "redistribution": "permitted",
-      "distribution": ["user-export"],
+      "distribution": [
+        "user-export"
+      ],
       "bytes": 730,
       "sha256": "cbbfbd2c680b9f31883d5c0b0ffa330e732ba584bc51d9b91e04ca4c710c7a4a",
       "outstanding": "Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
@@ -36,9 +38,11 @@
       "license": "project-authored",
       "licenseFile": null,
       "redistribution": "permitted",
-      "distribution": ["user-export"],
-      "bytes": 3447,
-      "sha256": "a051ad9c4080386aeb5cf04587238b80b32354f5ff0561f2f2fccf508ce4ccfd",
+      "distribution": [
+        "user-export"
+      ],
+      "bytes": 5903,
+      "sha256": "2e0beb1afa6cdf3f5229201e371f2d4b883779d46199b82f351c2b3c62b1d5c4",
       "outstanding": "Same authored-code licence decision as shell.html.",
       "notes": "Copied beside the exported index.html; registers the Godot callback and drains accepted actions."
     },
@@ -51,7 +55,9 @@
       "license": "project-authored",
       "licenseFile": null,
       "redistribution": "permitted",
-      "distribution": ["development-only"],
+      "distribution": [
+        "development-only"
+      ],
       "bytes": 3881,
       "sha256": "3baf4d329afa40b42e22c428b872dacb2d96887f4ff71db01652de32f52ac553",
       "outstanding": "Same authored-code licence decision as shell.html.",
@@ -68,9 +74,12 @@
       "license": "project-authored",
       "licenseFile": null,
       "redistribution": "permitted",
-      "distribution": ["app-bundle", "user-export"],
-      "bytes": 2556,
-      "sha256": "7b24e102f1ed91e311ec23a315914a95ef4a883da4d79af524051f7235b42de4",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 9760,
+      "sha256": "a3752ffedf899c2061a6da35942b230c43afbaeaf58f67bd674e4a9d5361a036",
       "outstanding": "Same authored-code licence decision as shell.html.",
       "notes": "Authored GDScript adapter executed by the exported project."
     }
@@ -79,14 +88,19 @@
     {
       "path": "desktop/godot/licenses/GODOT_LICENSE.txt",
       "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
-      "appliesTo": ["user-export"],
+      "appliesTo": [
+        "user-export"
+      ],
       "notes": "Copied into the export directory by desktop/godot/export-probes.mjs."
     },
     {
       "path": "desktop/godot/licenses/GODOT_COPYRIGHT.txt",
       "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d",
-      "appliesTo": ["user-export"],
+      "appliesTo": [
+        "user-export"
+      ],
       "notes": "Aggregate third-party notices for the exported engine."
     }
-  ]
+  ],
+  "hashReviewNote": "Byte hashes refreshed against the integrated task C source at 86c4a3e; existing license, redistribution and distribution fields are unchanged. New runtime.mjs/runtime.d.mts have no rights entry yet and remain preflight failures."
 }
