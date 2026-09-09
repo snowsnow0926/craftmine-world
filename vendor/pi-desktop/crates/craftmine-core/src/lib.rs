@@ -11,6 +11,9 @@ use sha2::{Digest, Sha256};
 
 mod applications;
 mod asset_catalog;
+// The asset catalog's RPC entry point. Task S5 owns `asset_catalog/**`; this
+// re-export is the two-line hook task S1 keeps in the core entry point.
+pub use asset_catalog::dispatch as asset_catalog_dispatch;
 mod backups;
 // The portable archive carries Git objects through the managed repository
 // store; R1 owns the module registration and the remaining wiring.

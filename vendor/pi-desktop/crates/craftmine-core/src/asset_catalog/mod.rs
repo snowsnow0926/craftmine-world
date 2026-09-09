@@ -15,6 +15,7 @@ use rusqlite::Connection;
 
 mod budget;
 mod contract;
+mod dispatch;
 mod import;
 mod index;
 mod lock;
@@ -24,6 +25,8 @@ mod store;
 #[cfg(test)]
 #[path = "asset_catalog_tests.rs"]
 mod tests;
+
+pub use dispatch::dispatch;
 
 pub(super) fn migrate(db: &Connection) -> Result<()> {
     store::migrate(db)
