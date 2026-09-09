@@ -5,7 +5,7 @@
   "worktree": "D:/Craftmine World-worktrees/godot-round2-r4-20260910",
   "baseCommit": "bcebeb1",
   "inheritedCommit": "da41621",
-  "codeCommit": "c54ad86cdd4144e5e01b59d621d7239608f3af6b",
+  "codeCommit": "0bb0e71",
   "pushed": false,
   "ownedFiles": [
     "vendor/pi-desktop/crates/craftmine-core/src/library.rs",
