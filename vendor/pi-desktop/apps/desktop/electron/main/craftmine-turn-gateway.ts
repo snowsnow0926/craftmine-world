@@ -27,7 +27,8 @@ export class CraftmineTurnGateway {
 
   constructor(private readonly activeTurn: (sessionId: string) => string | undefined,
     private readonly allowedTools: () => ReadonlySet<string>,
-    private readonly request: (method: string, params: Record<string, unknown>, binding: CraftmineTurnBinding) => Promise<unknown>) {}
+    private readonly request: (method: string, params: Record<string, unknown>, binding: CraftmineTurnBinding) => Promise<unknown>,
+    private readonly readOnlyTurn: (sessionId: string, turnId: string) => boolean = () => false) {}
 
   bind(binding: CraftmineTurnBinding): void {
     if (!Object.values(binding).every(identity) || this.activeTurn(binding.sessionId) !== binding.turnId) {
@@ -61,6 +62,7 @@ export class CraftmineTurnGateway {
   assertTool(params: Record<string, unknown>): void {
     const binding = this.bindings.get(String(params.sessionId ?? ""));
     if (!binding) return;
+    if (this.readOnlyTurn(binding.sessionId, String(params.turnId ?? ""))) throw denied("CRAFTMINE_MAINTENANCE_SCOPE_DENIED");
     if (params.turnId !== binding.turnId || this.ended.get(binding.sessionId) === binding.turnId || this.activeTurn(binding.sessionId) !== binding.turnId) {
       throw denied("CRAFTMINE_ACTIVE_TURN_REQUIRED");
     }

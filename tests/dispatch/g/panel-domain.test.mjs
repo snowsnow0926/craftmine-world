@@ -31,7 +31,7 @@ test('actual Rust panel integration preserves draft identity, exact receipts and
   const panel=createCraftminePanelGateway({viewingSession:()=>sessionId,session:async id=>({id,providerId:'fixture',modelId:'fixture'}),activeTurn:id=>active.get(id),domain,
     begin:async session=>{const turn='action-'+(++sequence);active.set(session.id,turn);return turn;},
     end:async(id,status)=>{await core.call('workspace.endTurn',{sessionId:id,turnId:active.get(id),status});active.delete(id);},
-    resume:async()=>{throw Error('No model in this explicit host fixture');},stop:async()=>{},backup:async(channel,payload)=>{assert.equal(Object.hasOwn(payload,'worldId'),false);return {channel,...payload};},diagnostics:async()=>({})});
+    resume:async()=>{throw Error('No model in this explicit host fixture');},interrupt:async(context,reason)=>{await domain('task.interrupt',{context,reason});},stop:async()=>{},backup:async(channel,payload)=>{assert.equal(Object.hasOwn(payload,'worldId'),false);return {channel,...payload};},diagnostics:async()=>({})});
   const empty=upgradeScene({format:'craftmine.scene/1',title:'Fixture',night:false,objects:[]});
   const source=upgradeScene({...empty,format:'craftmine.scene/1',objects:[{id:'oak-tree',name:'树',position:{x:0,y:6,z:0},parts:[{offset:{x:0,y:0,z:0},size:{x:1,y:3,z:1},material:'wood'}]}]});
   const compile=scene=>{const result=compileScene(scene);return {...result,behaviors:result.behaviors||[],id:'v-'+result.hash.slice(0,20)};};
@@ -62,4 +62,24 @@ test('actual Rust panel integration preserves draft identity, exact receipts and
   assert.equal((await workbench.validatedContext(context)).selection,null);
   assert.equal((await domain('task.context',{context})).memories[0].text,memoryArgs.claim);
   await assert.rejects(panel('memory.search',{worldId:'target'}),/SELECTED_WORLD_CHANGED/);
+  selectedWorld='target';
+  const interruptedContext={...context,turnId:'interrupted-fixture-turn'};
+  active.set(sessionId,interruptedContext.turnId);
+  const interrupted=await domain('turn.begin',{context:interruptedContext,selectedWorld,request:{id:'recovery-original-request',text:'保留原来的树，继续种花'}});
+  const owned={context:interruptedContext,binding:interrupted.binding,generation:interrupted.generation};
+  await domain('budget.reserve',{...owned,requestId:'request-before-interruption',purpose:'creation',estimatedInputTokens:100,maxOutputTokens:50});
+  await domain('task.interrupt',{context:interruptedContext,reason:'HOST_INTERRUPTED'});
+  await call('workspace.endTurn',{sessionId,turnId:interruptedContext.turnId,status:'error'});active.delete(sessionId);
+  const before=(await panel('task.current',{worldId:selectedWorld})).context;
+  assert.equal(before.recovery,'interrupted');
+  await assert.rejects(panel('task.resume',{worldId:selectedWorld,taskId:before.binding.taskId,generation:before.generation}),/No model in this explicit host fixture/);
+  const after=(await panel('task.current',{worldId:selectedWorld})).context;
+  assert.equal(after.recovery,'interrupted');assert.equal(after.generation,before.generation+1);
+  assert.equal(after.budget.ownerTaskId,before.budget.ownerTaskId);
+  assert.equal(after.budget.requestCount,before.budget.requestCount);
+  assert.equal(after.budget.reservedTokens,before.budget.reservedTokens);
+  assert.deepEqual(after.draft,before.draft);assert.equal(active.size,0);
+  const recoverable=await panel('task.recoverable',{worldId:selectedWorld});
+  assert.ok(recoverable.items.some(item=>item.generation===after.generation));
+  await assert.rejects(domain('turn.begin',{context:{...context,turnId:'must-not-reset-budget'},selectedWorld,request:{id:'bypass-recovery',text:'新任务'}}),/EXPLICIT_RECOVERY/);
 });

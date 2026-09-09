@@ -48,6 +48,12 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
   }
   return async function onHostRequest(method,params={}){
     await core.start();
+    if(method==='task.interrupt'){
+      fields(params,['context','reason']);
+      const result=await core.call(method,params);
+      await verifications?.cancelTurn(params.context);await reviews?.cancelTurn(params.context);
+      return result;
+    }
     if(method==='workbench.request'){
       fields(params,['channel','payload','host']);
       if(!workbench)throw Error('WORKBENCH_UNAVAILABLE');
@@ -63,6 +69,14 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
       return core.call(method,{projectId:params.projectId,taskId:params.taskId,generation:params.generation});
     }
     if(method==='selection.read'){fields(params,[]);return {worldId:(await getSettings()).activeWorldId||null};}
+    if(method==='maintenance.context'){
+      fields(params,['projectId','sessionId']);
+      const workspace=await core.call('workspace.current',params);
+      if(!workspace)return null;
+      const current=await snapshot(contextOf(workspace.task.binding));
+      if(current.status!=='finished'||current.lease?.owned)throw Error('CRAFTMINE_FINISHED_TASK_REQUIRED');
+      return current;
+    }
     if(method==='turn.begin'){
       fields(params,['context','selectedWorld','request']);
       fields(params.request,['id','text'],['kind']);
