@@ -1,32 +1,35 @@
 {
   "format": "craftmine.development/1",
   "objective": "按 Godot 多底座计划循环开发：中央世界、右侧对话、真实工程创作、多底座、保存恢复、作品复用与 Windows 交付",
-  "currentMilestone": "Godot 第1轮：GD1核心布局已验证，GD0固定引擎与3D/2D无窗口探针通过；继续导出、呈现和隔离验证",
-  "baseline": "65daadd",
-  "updated": "2026-09-09T10:44:13Z",
+  "currentMilestone": "Godot 第2轮：多线程Web实际中央预览33项、通信21项与原生逻辑13项通过；OS隔离初始化尚未通过，继续GD0/GD2",
+  "baseline": "e56ff66",
+  "updated": "2026-09-09T11:46:23Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "godot_goal_active_cycle01_merged_next_cycle_ready",
+    "status": "godot_goal_active_cycle02_ready_to_merge",
     "reason": "用户明确要求将 GODOT_MULTIBASE_DEVELOPMENT_PLAN.md 设为 Goal 并开始循环开发。已创建 active Goal，没有 token 总预算；按阶段实现、验证、修复并记录。",
     "activeGoal": true,
     "recurringDevelopment": true,
     "executionMode": "goal",
     "previousLiveCompactionTestStopped": true,
     "automationId": null,
-    "worktree": null,
-    "branch": null,
+    "worktree": "D:\\Craftmine World\\test-results\\worktrees\\godot-cycle02",
+    "branch": "codex/godot-cycle-02-20260909",
     "godotCycle01Cleanup": "76c192a 已快进合并到本地 master；工作树登记和本轮分支已移除。Git 删除返回 Directory not empty，随后对已验证目标 D:/cw-gd-20260909-01 的 PowerShell 递归清理被自动审批以 blocked by policy 拒绝，未给出更具体原因。保留残留目录，不自动重试删除或复用；不阻断新轮次开发。",
-    "nextStep": "继续 GD0：匹配的 Web 导出、中央呈现、状态桥接和操作系统隔离；随后推进 GD2 工程事务。",
+    "nextStep": "定位受限进程初始化与Godot导入隔离；推进GD2工程/构建/进度模型，随后接入真实PI/Rust工具与原生Electron预览。",
     "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。",
     "previousAutomationId": "craftmine-windows",
-    "currentWorktrees": "当前 Godot Goal 没有活动开发工作树；下一轮创建新目录。batch07-g/native/desktop/delivery及此前parallel工作树保留追溯。历史被拒清理目录及 D:/cw-gd-20260909-01 不删除、不复用。",
+    "currentWorktrees": "Godot第2轮专用工作树位于 D:/Craftmine World/test-results/worktrees/godot-cycle02；历史任务工作树与被拒清理目录均保持。",
     "localMerge": {
-      "implementationCommit": "76c192a",
+      "implementationCommits": [
+        "15124da",
+        "0e282b5"
+      ],
       "branch": "master",
-      "status": "fast_forward_merged",
-      "verifiedClean": true,
+      "status": "pending",
+      "verifiedClean": false,
       "pushed": false,
-      "evidenceHashesVerifiedAfterMerge": true,
+      "evidenceHashesVerifiedAfterMerge": false,
       "newDistributionBuilt": false
     }
   },
@@ -34,15 +37,42 @@
     "document": "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md",
     "developmentLog": "docs/GODOT_DEVELOPMENT_LOG.md",
     "status": "active",
-    "cycle": 1,
-    "currentStages": ["GD0", "GD1"],
-    "implementationCommits": ["213bba7", "409e9ab"],
-    "evidenceDirectory": "docs/evidence/godot-cycle-01",
+    "cycle": 2,
+    "currentStages": [
+      "GD0",
+      "GD1"
+    ],
+    "implementationCommits": [
+      "213bba7",
+      "409e9ab",
+      "15124da",
+      "0e282b5"
+    ],
+    "evidenceDirectory": "docs/evidence/godot-cycle-02",
     "godotVersion": "4.7.2.stable.official.ed1daf0bf",
-    "checks": {"reactLayout": 15, "legacyLayout": 10, "nativeLifecycle": 17, "godotHeadless": 13, "panelUnit": 22},
+    "checks": {
+      "webPreview": 33,
+      "godotHeadless": 13,
+      "transport": 21
+    },
     "actualModelCalls": 0,
     "newDistributionBuilt": false,
-    "remaining": ["GD0 Web/原生呈现对照和OS隔离", "GD1按底座组织的世界列表与辅助入口", "GD2真实工程工具与应用事务", "GD3至GD8适用实现和验收"]
+    "remaining": [
+      "GD0操作系统隔离、原生呈现接线/对照及完整性能测量",
+      "GD1按底座组织的世界列表与辅助入口",
+      "GD2真实工程工具、稳定世界来源和主机应用事务",
+      "GD3至GD8适用实现与验收"
+    ],
+    "decisionDocument": "docs/GODOT_INTEGRATION_DECISION.md",
+    "isolation": {
+      "prototypeCompiled": true,
+      "runtimePassed": false,
+      "attempts": 2,
+      "exitCode": "0xC0000142",
+      "boundaryChecksExecuted": false,
+      "godotExecuted": false,
+      "temporaryProfilesRemoved": true
+    }
   },
   "windowsClientPlan": {
     "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",

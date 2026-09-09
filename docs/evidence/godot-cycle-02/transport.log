@@ -1,0 +1,22 @@
+PASS Same privileged origin is rejected
+PASS Invalid timeout bounds are rejected
+PASS Invalid world/build identity types and values are rejected
+PASS Startup timeout terminates an unready connection
+PASS Native request and response preserve a cloned payload
+PASS Wrong world response is ignored
+PASS Wrong build response is ignored
+PASS Wrong session response is ignored
+PASS Wrong protocol response is ignored
+PASS cyclic response rejects explicitly and preserves subsequent requests
+PASS BigInt response rejects explicitly and preserves subsequent requests
+PASS oversized response rejects explicitly and preserves subsequent requests
+PASS cyclic request rejects explicitly without consuming pending capacity
+PASS BigInt request rejects explicitly without consuming pending capacity
+PASS oversized request rejects explicitly without consuming pending capacity
+PASS uncloneable function request rejects explicitly without consuming pending capacity
+PASS Diagnostics retain at most 32 entries and do not stop requests
+PASS Exit promptly rejects every outstanding request
+PASS Disposal rejects outstanding requests and later use
+PASS Request timeout releases capacity and accepts subsequent requests
+PASS Sixteen pending requests are bounded and can all complete
+{"kind":"native-message-channel-godot-preview","passed":21,"total":21}

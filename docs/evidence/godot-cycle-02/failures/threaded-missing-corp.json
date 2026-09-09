@@ -1,0 +1,281 @@
+{
+  "kind": "real-godot-web-in-react-fixture",
+  "checks": [
+    {
+      "name": "Pinned engine exports actual 3D and 2D Web builds",
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 1059,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-initial-import",
+      "elapsedMs": 2029,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-initial-export",
+      "elapsedMs": 1929,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-initial-import",
+      "elapsedMs": 1836,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-initial-export",
+      "elapsedMs": 1926,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-changed-import",
+      "elapsedMs": 1834,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-changed-export",
+      "elapsedMs": 1928,
+      "exitCode": 0
+    }
+  ],
+  "loads": [],
+  "builds": [
+    {
+      "base": "first-person",
+      "revision": "initial",
+      "buildId": "8bfaedc83a82de6f41c17d001a43a1595a8dd8a9fbcfb7fab60f41365dfd2f72",
+      "threads": true,
+      "output": "D:\\Craftmine World\\test-results\\worktrees\\godot-cycle02\\test-results\\godot-web-5iSzfr\\exports\\first-person-initial",
+      "files": [
+        {
+          "path": "bridge.js",
+          "bytes": 3447,
+          "sha256": "a051ad9c4080386aeb5cf04587238b80b32354f5ff0561f2f2fccf508ce4ccfd"
+        },
+        {
+          "path": "index.apple-touch-icon.png",
+          "bytes": 11944,
+          "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+        },
+        {
+          "path": "index.audio.position.worklet.js",
+          "bytes": 2973,
+          "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+        },
+        {
+          "path": "index.audio.worklet.js",
+          "bytes": 7298,
+          "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+        },
+        {
+          "path": "index.html",
+          "bytes": 963,
+          "sha256": "5f89201887254c79414f507f53e2a3a687e7977bd10c9ce3d8845fa03d472c6d"
+        },
+        {
+          "path": "index.icon.png",
+          "bytes": 5700,
+          "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+        },
+        {
+          "path": "index.js",
+          "bytes": 314653,
+          "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+        },
+        {
+          "path": "index.pck",
+          "bytes": 11188,
+          "sha256": "6408354ebc1c0790820e31fb31d3ba28786dd87f7b1472148ae09ae663e130ab"
+        },
+        {
+          "path": "index.png",
+          "bytes": 21443,
+          "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+        },
+        {
+          "path": "index.wasm",
+          "bytes": 38820072,
+          "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+        },
+        {
+          "path": "licenses/GODOT_COPYRIGHT.txt",
+          "bytes": 100108,
+          "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d"
+        },
+        {
+          "path": "licenses/GODOT_LICENSE.txt",
+          "bytes": 1149,
+          "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80"
+        }
+      ],
+      "bytes": 39300938,
+      "godotVersion": "4.7.2.stable.official.ed1daf0bf"
+    },
+    {
+      "base": "top-down",
+      "revision": "initial",
+      "buildId": "0835d482b4eed6d3dfb19fe8b95589fa304c34ece32946f173b55272ab1186c8",
+      "threads": true,
+      "output": "D:\\Craftmine World\\test-results\\worktrees\\godot-cycle02\\test-results\\godot-web-5iSzfr\\exports\\top-down-initial",
+      "files": [
+        {
+          "path": "bridge.js",
+          "bytes": 3447,
+          "sha256": "a051ad9c4080386aeb5cf04587238b80b32354f5ff0561f2f2fccf508ce4ccfd"
+        },
+        {
+          "path": "index.apple-touch-icon.png",
+          "bytes": 11944,
+          "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+        },
+        {
+          "path": "index.audio.position.worklet.js",
+          "bytes": 2973,
+          "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+        },
+        {
+          "path": "index.audio.worklet.js",
+          "bytes": 7298,
+          "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+        },
+        {
+          "path": "index.html",
+          "bytes": 958,
+          "sha256": "16b7367ffc10582f22936f14bd8851233b9ff37e852ea51bd11733c130483ee2"
+        },
+        {
+          "path": "index.icon.png",
+          "bytes": 5700,
+          "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+        },
+        {
+          "path": "index.js",
+          "bytes": 314653,
+          "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+        },
+        {
+          "path": "index.pck",
+          "bytes": 8976,
+          "sha256": "caec886cc9ce2269ffc231474a68781a33672dfcb6f9855c748ebb66db8aab4d"
+        },
+        {
+          "path": "index.png",
+          "bytes": 21443,
+          "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+        },
+        {
+          "path": "index.wasm",
+          "bytes": 38820072,
+          "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+        },
+        {
+          "path": "licenses/GODOT_COPYRIGHT.txt",
+          "bytes": 100108,
+          "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d"
+        },
+        {
+          "path": "licenses/GODOT_LICENSE.txt",
+          "bytes": 1149,
+          "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80"
+        }
+      ],
+      "bytes": 39298721,
+      "godotVersion": "4.7.2.stable.official.ed1daf0bf"
+    },
+    {
+      "base": "first-person",
+      "revision": "changed",
+      "buildId": "c18e155ba5b19f95325e6661bd5d9a0c7bf1254538a89d2379073f37382d7c53",
+      "threads": true,
+      "output": "D:\\Craftmine World\\test-results\\worktrees\\godot-cycle02\\test-results\\godot-web-5iSzfr\\exports\\first-person-changed",
+      "files": [
+        {
+          "path": "bridge.js",
+          "bytes": 3447,
+          "sha256": "a051ad9c4080386aeb5cf04587238b80b32354f5ff0561f2f2fccf508ce4ccfd"
+        },
+        {
+          "path": "index.apple-touch-icon.png",
+          "bytes": 11944,
+          "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+        },
+        {
+          "path": "index.audio.position.worklet.js",
+          "bytes": 2973,
+          "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+        },
+        {
+          "path": "index.audio.worklet.js",
+          "bytes": 7298,
+          "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+        },
+        {
+          "path": "index.html",
+          "bytes": 963,
+          "sha256": "26f498ca9cf4269cc79a740a0c4cbc91ce839030f230ad1697443a4876fda173"
+        },
+        {
+          "path": "index.icon.png",
+          "bytes": 5700,
+          "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+        },
+        {
+          "path": "index.js",
+          "bytes": 314653,
+          "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+        },
+        {
+          "path": "index.pck",
+          "bytes": 11204,
+          "sha256": "502a9c4e335eafe226f1e37f39b8fce3237f57c30fa937d7ecb529a039723c52"
+        },
+        {
+          "path": "index.png",
+          "bytes": 21443,
+          "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+        },
+        {
+          "path": "index.wasm",
+          "bytes": 38820072,
+          "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+        },
+        {
+          "path": "licenses/GODOT_COPYRIGHT.txt",
+          "bytes": 100108,
+          "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d"
+        },
+        {
+          "path": "licenses/GODOT_LICENSE.txt",
+          "bytes": 1149,
+          "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80"
+        }
+      ],
+      "bytes": 39300954,
+      "godotVersion": "4.7.2.stable.official.ed1daf0bf"
+    }
+  ],
+  "console": [
+    {
+      "type": "warning",
+      "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('http://127.0.0.1:53330') does not match the recipient window's origin ('null')."
+    }
+  ],
+  "errors": [
+    "page.evaluate: Error: Godot startup timed out\n    at dispose (http://127.0.0.1:53329/shell.js:294772:19)\n    at http://127.0.0.1:53329/shell.js:294758:37\n    at open (D:\\Craftmine World\\test-results\\worktrees\\godot-cycle02\\tests\\godot-web.mjs:43:14)\n    at D:\\Craftmine World\\test-results\\worktrees\\godot-cycle02\\tests\\godot-web.mjs:86:19"
+  ],
+  "notVerified": [
+    "product PI/Rust project transactions",
+    "real model authorship",
+    "native Godot embedding",
+    "untrusted project import isolation",
+    "GPU/player feel",
+    "new Windows distribution"
+  ],
+  "threads": true,
+  "inputRequests": []
+}

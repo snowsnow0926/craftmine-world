@@ -1,0 +1,147 @@
+{
+  "format": "craftmine.godot-evidence/1",
+  "cycle": 2,
+  "checks": {
+    "web": 33,
+    "nativeHeadless": 13,
+    "transport": 21
+  },
+  "actualModelCalls": 0,
+  "files": [
+    {
+      "path": "appcontainer-build.log",
+      "bytes": 204,
+      "sha256": "c67f05140470289fbce868b6e752da5b25e5d4767a4a0337e39fbce2981cb4cb"
+    },
+    {
+      "path": "build-js.log",
+      "bytes": 19653,
+      "sha256": "8822f81b4988b45af4fb45ba802473849074e92aa700665afabcda2dcfe6ecd2"
+    },
+    {
+      "path": "desktop-godot.png",
+      "bytes": 50859,
+      "sha256": "327933b6b0d102802d804a630d1b24cb9d41e9f60dfb191412d538e80db739fa"
+    },
+    {
+      "path": "desktop-top-down.png",
+      "bytes": 38153,
+      "sha256": "f9af8ddc4bcf01974e7356a62abc2bda4636ae5af44b82c8b5272d6408b70fc2"
+    },
+    {
+      "path": "engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "path": "failures/appcontainer.json",
+      "bytes": 1385,
+      "sha256": "be1c813f2285e838adb09a20c59afeb48cb9e354d27235850ad65a65ff43c30d"
+    },
+    {
+      "path": "failures/export-preset-missing-filters.log",
+      "bytes": 2034,
+      "sha256": "6c57d5e8fc83d790b627e8b027b2dc078722d3224a3a87bc353ed0f0738090e6"
+    },
+    {
+      "path": "failures/moved-dependency-links.json",
+      "bytes": 9610,
+      "sha256": "dc4ecb19809e648066944f228c6e3772c0b968dc92e2aab4b3906da64e0a728b"
+    },
+    {
+      "path": "failures/pixel-sample-hit-text.json",
+      "bytes": 14002,
+      "sha256": "2459b1cf50f1ea94d07585a469b2f8961b182cd489927167f62c7a6729c97351"
+    },
+    {
+      "path": "failures/README.md",
+      "bytes": 1882,
+      "sha256": "7aeb8ffff9b72a0f7fe524df657e13235b0acd7570daa390d5f014ea87d8f47f"
+    },
+    {
+      "path": "failures/single-thread-exit.json",
+      "bytes": 24418,
+      "sha256": "459111b33c4cc5117a780671d755120fd968c3a6fb0633fbf2848573b183cceb"
+    },
+    {
+      "path": "failures/threaded-before-draw-readiness.json",
+      "bytes": 18675,
+      "sha256": "004ad1225b766f31acddcb75ab9f47d0789596f7d4fb4df2f02497ce3916b923"
+    },
+    {
+      "path": "failures/threaded-before-draw-readiness.png",
+      "bytes": 48637,
+      "sha256": "296f77a3a2a59880979b3c3b23b4b96edf5bc8f4f4b3aa96a481b3728a83926c"
+    },
+    {
+      "path": "failures/threaded-missing-corp.json",
+      "bytes": 9288,
+      "sha256": "35ccff9c814c56c21e1375b20b08d4b49058e558596350c547cdf7251650118b"
+    },
+    {
+      "path": "first-person-changed-export.log",
+      "bytes": 1809,
+      "sha256": "424985db26f0a160b134bc8dbb9b4ac4a2cded41b888a09472816025bdd3dec7"
+    },
+    {
+      "path": "first-person-changed-import.log",
+      "bytes": 1374,
+      "sha256": "385ebbb396f9b4ea81ba23d968534a9a27b4f82ac7fc8baa27329986ac304322"
+    },
+    {
+      "path": "first-person-expanded.png",
+      "bytes": 25888,
+      "sha256": "9aecfe66305184eef9691e286905b333aed21137a9c32fef1e6b7d3fa7404060"
+    },
+    {
+      "path": "first-person-gun.png",
+      "bytes": 15920,
+      "sha256": "d9df55f3334fe791cf5ca95c04cddd3ebddc40f1cd06bdba774e7b2f6f4c3ddd"
+    },
+    {
+      "path": "first-person-initial-export.log",
+      "bytes": 1809,
+      "sha256": "424985db26f0a160b134bc8dbb9b4ac4a2cded41b888a09472816025bdd3dec7"
+    },
+    {
+      "path": "first-person-initial-import.log",
+      "bytes": 1374,
+      "sha256": "385ebbb396f9b4ea81ba23d968534a9a27b4f82ac7fc8baa27329986ac304322"
+    },
+    {
+      "path": "first-person-sword.png",
+      "bytes": 11772,
+      "sha256": "af23b24573fe40d23eccf2b0a994a010d3f04e116a7e976a5716d57ef5c55920"
+    },
+    {
+      "path": "native-headless.json",
+      "bytes": 3922,
+      "sha256": "9443afecb77f21ec10b7d58d5d5f0bf5be505a4077df48a7253bc05f99f60286"
+    },
+    {
+      "path": "top-down-initial-export.log",
+      "bytes": 1648,
+      "sha256": "49c69ea8695bcf4da606761061e99134764a24685fba9563dd6c68f694510333"
+    },
+    {
+      "path": "top-down-initial-import.log",
+      "bytes": 1315,
+      "sha256": "97d3a98b638bde96129f72c0aa2c73756b531bcc790e7a75a73508fdf8f980e1"
+    },
+    {
+      "path": "top-down-shop.png",
+      "bytes": 4137,
+      "sha256": "9ceb106e6bff3d2e52c838978ba279a4f77821c5ccc2cb1a93698876049fb4d2"
+    },
+    {
+      "path": "transport.log",
+      "bytes": 1354,
+      "sha256": "5bdc4d85e7caa7f63cfe7454928bc9913f7a387d62567d0f5b0fffceb39e7b1d"
+    },
+    {
+      "path": "web-preview.json",
+      "bytes": 20441,
+      "sha256": "ccf950ea331b7f42d51f4171b85c1a15ab70c63d338122edd51ee37c0c04f64e"
+    }
+  ]
+}
