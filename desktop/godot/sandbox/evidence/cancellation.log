@@ -1,0 +1,7 @@
+cancel_pid=231256
+cancel_timed_out=true
+cancel_exit=0x5c
+cancel_job_active_processes=Some(0)
+cancel_pid_alive_after=false
+cancel_no_leftover_process=passed
+profile_cleanup_hresult=0x0

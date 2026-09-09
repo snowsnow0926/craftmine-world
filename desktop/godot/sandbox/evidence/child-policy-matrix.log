@@ -1,0 +1,72 @@
+variant=baseline appcontainer=true desktop=true exit=0x0 reached_main=true log_bytes=0 child_report_exit=0
+    pid=231828
+    cwd=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\baseline\work
+    token_user=S-1-5-21-1392768779-1612535133-923713144-1004
+    token_integrity_rid=4096
+    token_is_appcontainer=1
+    token_is_elevated=0
+    token_session_id=1
+    token_group_count=14
+    token_logon_sid=S-1-5-5-0-376832
+    token_restricted_sids=[]
+    station_name=Service-0x0-5c54a$
+    station_visible=false
+    desktop_name=baseline-254400
+    env_SystemRoot=C:\Windows
+    env_TEMP=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\baseline\work\Packages\craftmine.gd1.diag.baseline.254400\AC\Temp
+    env_USERPROFILE=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\baseline\work
+    env_APPDATA=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\baseline\work
+    open_winsta0_all_error=Some(5)
+    child_report=ok profile_cleanup_hresult=0x0
+
+variant=no-job appcontainer=true desktop=true exit=0x0 reached_main=true log_bytes=0 child_report_exit=0
+    pid=23452
+    cwd=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\no-job\work
+    token_user=S-1-5-21-1392768779-1612535133-923713144-1004
+    token_integrity_rid=4096
+    token_is_appcontainer=1
+    token_is_elevated=0
+    token_session_id=1
+    token_group_count=14
+    token_logon_sid=S-1-5-5-0-376832
+    token_restricted_sids=[]
+    station_name=Service-0x0-5c54a$
+    station_visible=false
+    desktop_name=no-job-254400
+    env_SystemRoot=C:\Windows
+    env_TEMP=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\no-job\work\Packages\craftmine.gd1.diag.no-job.254400\AC\Temp
+    env_USERPROFILE=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\no-job\work
+    env_APPDATA=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\no-job\work
+    open_winsta0_all_error=Some(5)
+    child_report=ok profile_cleanup_hresult=0x0
+
+variant=child-policy-1-with-job appcontainer=true desktop=true exit=0xc0000142 reached_main=false log_bytes=0 profile_cleanup_hresult=0x0
+
+variant=child-policy-1-no-job appcontainer=true desktop=true exit=0xc0000142 reached_main=false log_bytes=0 profile_cleanup_hresult=0x0
+
+variant=child-policy-1-normal-token appcontainer=false desktop=true exit=0xc0000142 reached_main=false log_bytes=0
+
+variant=child-policy-1-normal-token-job appcontainer=false desktop=true exit=0xc0000142 reached_main=false log_bytes=0
+
+variant=child-policy-2-with-job appcontainer=true desktop=true exit=0x0 reached_main=true log_bytes=0 child_report_exit=0
+    pid=264588
+    cwd=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\child-policy-2-with-job\work
+    token_user=S-1-5-21-1392768779-1612535133-923713144-1004
+    token_integrity_rid=4096
+    token_is_appcontainer=1
+    token_is_elevated=0
+    token_session_id=1
+    token_group_count=14
+    token_logon_sid=S-1-5-5-0-376832
+    token_restricted_sids=[]
+    station_name=Service-0x0-5c54a$
+    station_visible=false
+    desktop_name=child-policy-2-with-job-254400
+    env_SystemRoot=C:\Windows
+    env_TEMP=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\child-policy-2-with-job\work\Packages\craftmine.gd1.diag.child-policy-2-with-job.254400\AC\Temp
+    env_USERPROFILE=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\child-policy-2-with-job\work
+    env_APPDATA=D:\Craftmine World-worktrees\godot-parallel-a-20260909\desktop\godot\sandbox\out\matrix3-20260909-210154\child-policy-2-with-job\work
+    open_winsta0_all_error=Some(5)
+    child_report=ok profile_cleanup_hresult=0x0
+
+variant=child-policy-1-cmd appcontainer=true desktop=true exit=0xc0000142 reached_main=false log_bytes=0 profile_cleanup_hresult=0x0
