@@ -8,19 +8,21 @@
 //! restricted child cannot write.
 //!
 //! Ownership evidence, in order:
-//! 1. the journal entry lives in a parent-owned directory outside the granted
+//! 1. the broker that wrote the entry must no longer run (PID *and* creation
+//!    FILETIME are recorded in the entry itself);
+//! 2. the journal entry lives in a parent-owned directory outside the granted
 //!    scope and records the exact `tasksRoot` it was created for;
-//! 2. `tasksRoot/<taskId>/task-identity.json` carries the same random nonce as
+//! 3. `tasksRoot/<taskId>/task-identity.json` carries the same random nonce as
 //!    the journal entry; the task root itself is never granted to the task SID;
-//! 3. the AppContainer profile SID is re-derived from the recorded profile name
+//! 4. the AppContainer profile SID is re-derived from the recorded profile name
 //!    and must equal the SID measured at creation;
-//! 4. a surviving process is only touched when its PID *and* creation FILETIME
+//! 5. a surviving process is only touched when its PID *and* creation FILETIME
 //!    match the host-written pre-resume sidecar and its image sits in the task's
 //!    own `bin` directory.
 //!
-//! Anything that fails a check is reported as skipped, never deleted. A
-//! recovery pass never claims `cleanup.verified`: it is by definition a run
-//! without a final broker response.
+//! Anything that fails a check is reported as skipped, never deleted, and the
+//! journal entry is kept so a later pass can retry. A recovery pass never claims
+//! `cleanup.verified`: it is by definition a run without a final broker response.
 use crate::{report::sid_to_string, win, Result};
 use serde::{Deserialize, Serialize};
 use std::{
@@ -34,8 +36,8 @@ use windows_sys::Win32::{
     Security::Isolation::{DeleteAppContainerProfile, DeriveAppContainerSidFromAppContainerName},
     Security::{FreeSid, PSID},
     System::Threading::{
-        GetExitCodeProcess, GetProcessTimes, OpenProcess, QueryFullProcessImageNameW, TerminateProcess,
-        WaitForSingleObject, PROCESS_QUERY_LIMITED_INFORMATION,
+        GetCurrentProcess, GetExitCodeProcess, GetProcessTimes, OpenProcess, QueryFullProcessImageNameW,
+        TerminateProcess, WaitForSingleObject, PROCESS_QUERY_LIMITED_INFORMATION,
     },
 };
 
@@ -49,6 +51,7 @@ const PROCESS_TERMINATE: u32 = 0x0001;
 /// `SYNCHRONIZE`, not re-exported by the pinned `windows-sys` feature set.
 const SYNCHRONIZE_ACCESS: u32 = 0x0010_0000;
 const WAIT_OBJECT_0: u32 = 0;
+const WAIT_TIMEOUT: u32 = 258;
 
 static NONCE_COUNTER: AtomicU64 = AtomicU64::new(0);
 
@@ -63,6 +66,66 @@ fn ordinary(path: &Path) -> Result<fs::Metadata> {
 
 fn now_unix_ms() -> Result<u128> {
     Ok(SystemTime::now().duration_since(UNIX_EPOCH)?.as_millis())
+}
+
+fn filetime_string(value: FILETIME) -> String {
+    (((value.dwHighDateTime as u64) << 32) | value.dwLowDateTime as u64).to_string()
+}
+
+/// PID and creation FILETIME of the calling process. Used to decide whether the
+/// broker that wrote a journal entry is still running.
+pub fn current_process_identity() -> Result<(u32, String)> {
+    let mut created = FILETIME::default();
+    let mut exited = created;
+    let mut kernel = created;
+    let mut user = created;
+    unsafe {
+        win(
+            GetProcessTimes(GetCurrentProcess(), &mut created, &mut exited, &mut kernel, &mut user),
+            "GetProcessTimes(self)",
+        )?;
+    }
+    Ok((std::process::id(), filetime_string(created)))
+}
+
+/// `Some(true)` alive, `Some(false)` gone, `None` cannot be determined. An
+/// undetermined broker is treated as alive by callers: never reclaim on doubt.
+/// A terminated-but-not-yet-reaped process still opens and keeps its creation
+/// time, so the exit status decides.
+fn process_alive(pid: u32, expected_filetime: &str) -> Option<bool> {
+    let handle: HANDLE = unsafe { OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, 0, pid) };
+    if handle.is_null() {
+        let error = unsafe { GetLastError() };
+        return match error {
+            ERROR_INVALID_PARAMETER => Some(false),
+            _ => None,
+        };
+    }
+    let guard = CloseOnDrop(handle);
+    let mut created = FILETIME::default();
+    let mut exited = created;
+    let mut kernel = created;
+    let mut user = created;
+    unsafe {
+        if win(
+            GetProcessTimes(guard.0, &mut created, &mut exited, &mut kernel, &mut user),
+            "GetProcessTimes(peer)",
+        )
+        .is_err()
+        {
+            return None;
+        }
+    }
+    if filetime_string(created) != expected_filetime {
+        return Some(false);
+    }
+    let mut exit_code = 0u32;
+    unsafe {
+        if win(GetExitCodeProcess(guard.0, &mut exit_code), "GetExitCodeProcess(peer)").is_err() {
+            return None;
+        }
+    }
+    Some(exit_code as i32 == STILL_ACTIVE)
 }
 
 /// Task identity nonce. It only has to be unguessable by the restricted child,
@@ -132,12 +195,18 @@ pub struct JournalEntry {
     pub profile_name: String,
     pub profile_sid: String,
     pub identity_nonce: String,
+    /// The broker that owns this task. Recovery refuses to touch a task while
+    /// this process still runs with the recorded creation time.
+    pub broker_pid: u32,
+    pub broker_creation_time_filetime: String,
     pub started_at_unix_ms: u128,
-    /// `prepared` until the broker produced its final response.
+    /// `prepared` until the broker retires the entry after reclaiming its own
+    /// resources.
     pub state: String,
 }
 
 impl JournalEntry {
+    #[allow(clippy::too_many_arguments)]
     pub fn prepared(
         task_id: &str,
         request_id: &str,
@@ -148,6 +217,7 @@ impl JournalEntry {
         profile_sid: &str,
         identity_nonce: &str,
     ) -> Result<Self> {
+        let (broker_pid, broker_creation_time_filetime) = current_process_identity()?;
         Ok(Self {
             schema_version: 1,
             policy_version: JOURNAL_POLICY_VERSION.into(),
@@ -159,6 +229,8 @@ impl JournalEntry {
             profile_name: profile_name.to_string(),
             profile_sid: profile_sid.to_string(),
             identity_nonce: identity_nonce.to_string(),
+            broker_pid,
+            broker_creation_time_filetime,
             started_at_unix_ms: now_unix_ms()?,
             state: "prepared".into(),
         })
@@ -218,30 +290,49 @@ impl Journal {
         Ok(path)
     }
 
-    /// Removes the entry only after the broker produced its final response.
+    /// Removes the entry. A missing file counts as removed; any other failure is
+    /// reported, never swallowed.
     pub fn clear(&self, task_id: &str) -> Result<()> {
         let path = self.entry_path(task_id)?;
-        if path.exists() {
-            fs::remove_file(path)?;
+        match fs::remove_file(&path) {
+            Ok(()) => Ok(()),
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(()),
+            Err(error) => Err(error.into()),
         }
-        Ok(())
     }
 
-    pub fn entries(&self) -> Result<Vec<(PathBuf, JournalEntry)>> {
+    /// Reads every entry, keeping unreadable files visible instead of aborting
+    /// the whole pass. A broker killed mid-write leaves a truncated file.
+    pub fn entries(&self) -> Result<(Vec<(PathBuf, JournalEntry)>, Vec<UnreadableEntry>)> {
         let mut entries: Vec<(PathBuf, JournalEntry)> = Vec::new();
+        let mut unreadable = Vec::new();
         for item in fs::read_dir(&self.root)? {
             let path = item?.path();
-            if !ordinary(&path)?.is_file() {
-                continue;
-            }
             if path.extension().and_then(|value| value.to_str()) != Some("json") {
                 continue;
             }
-            entries.push((path.clone(), serde_json::from_slice(&fs::read(&path)?)?));
+            if !ordinary(&path).map(|metadata| metadata.is_file()).unwrap_or(false) {
+                unreadable.push(UnreadableEntry { file: path.to_string_lossy().into_owned(), error: "not a regular file".into() });
+                continue;
+            }
+            match fs::read(&path).map_err(|error| error.to_string()).and_then(|bytes| {
+                serde_json::from_slice::<JournalEntry>(&bytes).map_err(|error| error.to_string())
+            }) {
+                Ok(entry) => entries.push((path, entry)),
+                Err(error) => unreadable.push(UnreadableEntry { file: path.to_string_lossy().into_owned(), error }),
+            }
         }
         entries.sort_by(|left, right| left.1.task_id.cmp(&right.1.task_id));
-        Ok(entries)
+        unreadable.sort_by(|left, right| left.file.cmp(&right.file));
+        Ok((entries, unreadable))
     }
+}
+
+#[derive(Clone, Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UnreadableEntry {
+    pub file: String,
+    pub error: String,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -252,6 +343,8 @@ pub struct RecoveredTask {
     pub identity_verified: bool,
     /// Always false: this pass exists because no final broker response arrived.
     pub final_receipt_observed: bool,
+    pub broker_pid: u32,
+    pub broker_still_running: Option<bool>,
     pub child_pid: Option<u32>,
     pub child_creation_time_filetime: Option<String>,
     pub child_process_state: String,
@@ -272,6 +365,8 @@ impl RecoveredTask {
             operation: entry.operation.clone(),
             identity_verified: false,
             final_receipt_observed: false,
+            broker_pid: entry.broker_pid,
+            broker_still_running: None,
             child_pid: None,
             child_creation_time_filetime: None,
             child_process_state: "not-recorded".into(),
@@ -286,11 +381,19 @@ impl RecoveredTask {
         }
     }
 
-    /// True only when the task identity was verified and the journal entry was
-    /// retired. It never means "the build succeeded" or "cleanup was verified
-    /// by the task".
+    /// True only when the task identity was verified, every reclaim action
+    /// succeeded and the journal entry was actually retired. It never means the
+    /// build succeeded or that the task itself verified cleanup.
     pub fn reconciled(&self) -> bool {
         self.identity_verified && self.journal_removed
+    }
+
+    /// A leftover entry is retirable only when nothing was left unresolved.
+    fn retire_eligible(&self) -> bool {
+        self.identity_verified
+            && self.task_root_removed
+            && self.profile_deleted
+            && !matches!(self.child_process_state.as_str(), "unknown" | "terminate-failed")
     }
 }
 
@@ -301,6 +404,7 @@ pub struct RecoveryReport {
     pub tasks_root: String,
     pub journal_root: String,
     pub entries: Vec<RecoveredTask>,
+    pub unreadable: Vec<UnreadableEntry>,
     pub reconciled_count: usize,
     pub skipped_count: usize,
 }
@@ -310,23 +414,30 @@ pub struct RecoveryReport {
 pub fn recover(tasks_root: &Path) -> Result<RecoveryReport> {
     let journal = Journal::open(tasks_root)?;
     let expected_root = tasks_root.canonicalize()?;
+    let (entries, unreadable) = journal.entries()?;
     let mut report = RecoveryReport {
         policy_version: JOURNAL_POLICY_VERSION.into(),
         tasks_root: expected_root.to_string_lossy().into_owned(),
         journal_root: journal.dir().to_string_lossy().into_owned(),
         entries: Vec::new(),
+        unreadable,
         reconciled_count: 0,
         skipped_count: 0,
     };
-    for (path, entry) in journal.entries()? {
+    for (path, entry) in entries {
         let mut record = RecoveredTask::new(&entry);
         if let Err(error) = reconcile(&expected_root, &entry, &mut record) {
             record.skipped.push(format!("error: {error}"));
         }
+        if record.retire_eligible() {
+            match fs::remove_file(&path) {
+                Ok(()) => record.journal_removed = true,
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => record.journal_removed = true,
+                Err(error) => record.skipped.push(format!("journal-remove-failed: {error}")),
+            }
+        }
         if record.reconciled() {
             report.reconciled_count += 1;
-            let _ = fs::remove_file(&path);
-            record.journal_removed = true;
         } else {
             report.skipped_count += 1;
         }
@@ -341,6 +452,21 @@ fn reconcile(expected_root: &Path, entry: &JournalEntry, record: &mut RecoveredT
         return Ok(());
     }
     crate::task::validate_task_id(&entry.task_id)?;
+    // Never touch a task whose owning broker may still be running. The broker
+    // records its own PID and creation time in the entry it wrote.
+    match process_alive(entry.broker_pid, &entry.broker_creation_time_filetime) {
+        Some(true) => {
+            record.broker_still_running = Some(true);
+            record.skipped.push("broker-still-running".into());
+            return Ok(());
+        }
+        Some(false) => record.broker_still_running = Some(false),
+        None => {
+            record.broker_still_running = None;
+            record.skipped.push("broker-liveness-unknown".into());
+            return Ok(());
+        }
+    }
     // Cross-root protection: an entry may only ever reclaim inside the tasks
     // root it was created for.
     if Path::new(&entry.tasks_root).canonicalize()? != expected_root {
@@ -357,17 +483,16 @@ fn reconcile(expected_root: &Path, entry: &JournalEntry, record: &mut RecoveredT
         && recorded.file_name().and_then(|name| name.to_str()) == Some(entry.task_id.as_str())
         && recorded.parent().and_then(|parent| parent.canonicalize().ok()) == Some(expected_root.to_path_buf());
     let recorded_matches = recorded_is_child
-        && (!task_root.is_dir()
-            || recorded.canonicalize().ok() == task_root.canonicalize().ok());
+        && (!task_root.is_dir() || recorded.canonicalize().ok() == task_root.canonicalize().ok());
     if !recorded_matches {
         record.skipped.push("task-root-mismatch".into());
         return Ok(());
     }
     if !task_root.is_dir() {
-        record.notes.push("task-root-already-absent".into());
-        record.task_root_removed = true;
-        record.identity_verified = true;
-        record.journal_removed = true;
+        // The directory is gone, so ownership cannot be re-verified. Report it
+        // and keep the entry; the profile is left for an explicit host action
+        // rather than deleted on a name alone.
+        record.skipped.push("task-root-already-absent; identity-unverifiable".into());
         return Ok(());
     }
     for ancestor in task_root.ancestors() {
@@ -406,8 +531,7 @@ fn reconcile(expected_root: &Path, entry: &JournalEntry, record: &mut RecoveredT
             (Some(pid), Some(filetime)) => {
                 record.child_pid = Some(pid as u32);
                 record.child_creation_time_filetime = Some(filetime.to_string());
-                record.child_process_state =
-                    reclaim_child(pid as u32, filetime, &task_root.join("bin"), record);
+                record.child_process_state = reclaim_child(pid as u32, filetime, &task_root.join("bin"), record);
             }
             _ => {
                 record.skipped.push("sidecar-missing-identity".into());
@@ -461,7 +585,6 @@ fn reconcile(expected_root: &Path, entry: &JournalEntry, record: &mut RecoveredT
     }
     if removed {
         record.task_root_removed = true;
-        record.journal_removed = true;
     } else if let Some(error) = last_error {
         record.skipped.push(format!("task-root-remove-failed: {error}"));
     }
@@ -504,14 +627,14 @@ fn reclaim_child(
         record.notes.push(format!("open-process-error-{error}"));
         return "unknown".into();
     }
-    let _guard = CloseOnDrop(handle);
+    let guard = CloseOnDrop(handle);
     let mut created = FILETIME::default();
     let mut exited = created;
     let mut kernel = created;
     let mut user = created;
     unsafe {
         if win(
-            GetProcessTimes(handle, &mut created, &mut exited, &mut kernel, &mut user),
+            GetProcessTimes(guard.0, &mut created, &mut exited, &mut kernel, &mut user),
             "GetProcessTimes",
         )
         .is_err()
@@ -520,8 +643,7 @@ fn reclaim_child(
             return "unknown".into();
         }
     }
-    let actual = ((created.dwHighDateTime as u64) << 32) | created.dwLowDateTime as u64;
-    if actual.to_string() != expected_filetime {
+    if filetime_string(created) != expected_filetime {
         record.notes.push("recorded-pid-now-belongs-to-another-process".into());
         return "pid-reused".into();
     }
@@ -529,7 +651,7 @@ fn reclaim_child(
     // zombie handle still opens, so exit status decides before any termination.
     let mut exit_code = 0u32;
     unsafe {
-        if win(GetExitCodeProcess(handle, &mut exit_code), "GetExitCodeProcess").is_err() {
+        if win(GetExitCodeProcess(guard.0, &mut exit_code), "GetExitCodeProcess").is_err() {
             record.notes.push("get-exit-code-failed".into());
             return "unknown".into();
         }
@@ -543,7 +665,7 @@ fn reclaim_child(
     let mut length = buffer.len() as u32;
     unsafe {
         if win(
-            QueryFullProcessImageNameW(handle, 0, buffer.as_mut_ptr(), &mut length),
+            QueryFullProcessImageNameW(guard.0, 0, buffer.as_mut_ptr(), &mut length),
             "QueryFullProcessImageNameW",
         )
         .is_err()
@@ -559,21 +681,22 @@ fn reclaim_child(
         return "unknown".into();
     }
     unsafe {
-        if win(TerminateProcess(handle, 91), "TerminateProcess").is_err() {
+        if win(TerminateProcess(guard.0, 91), "TerminateProcess").is_err() {
             record.notes.push("terminate-process-failed".into());
             return "unknown".into();
         }
     }
-    let waited = unsafe { WaitForSingleObject(handle, 5000) };
+    let waited = unsafe { WaitForSingleObject(guard.0, 5000) };
     if waited != WAIT_OBJECT_0 {
         record.notes.push(format!("wait-for-terminated-child-returned-{waited}"));
         return "terminate-failed".into();
     }
     let mut final_code = 0u32;
     unsafe {
-        let _ = GetExitCodeProcess(handle, &mut final_code);
+        let _ = GetExitCodeProcess(guard.0, &mut final_code);
     }
     record.notes.push(format!("terminated-exit-{}", crate::hex(final_code)));
+    let _ = WAIT_TIMEOUT;
     "terminated".into()
 }
 
@@ -604,6 +727,7 @@ mod tests {
     }
 
     fn entry(root: &Path, task_id: &str, nonce: &str) -> JournalEntry {
+        let (broker_pid, broker_creation_time_filetime) = current_process_identity().unwrap();
         JournalEntry {
             schema_version: 1,
             policy_version: JOURNAL_POLICY_VERSION.into(),
@@ -615,9 +739,18 @@ mod tests {
             profile_name: format!("craftmine.godot.task.{task_id}"),
             profile_sid: "S-1-15-2-0".into(),
             identity_nonce: nonce.into(),
+            broker_pid,
+            broker_creation_time_filetime,
             started_at_unix_ms: 1,
             state: "prepared".into(),
         }
+    }
+
+    /// A dead broker is simulated by a PID that cannot exist with the recorded
+    /// creation time.
+    fn dead_broker(record: &mut JournalEntry) {
+        record.broker_pid = 0xFFFF_FFFE;
+        record.broker_creation_time_filetime = "1".into();
     }
 
     #[test]
@@ -628,9 +761,26 @@ mod tests {
         journal.write(&record).unwrap();
         assert!(journal.write(&record).is_err(), "a journal entry is never overwritten");
         let reopened = Journal::open(&root).unwrap();
-        let entries = reopened.entries().unwrap();
+        let (entries, unreadable) = reopened.entries().unwrap();
         assert_eq!(entries.len(), 1);
+        assert!(unreadable.is_empty());
         assert_eq!(entries[0].1.task_id, "task-one");
+        fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn recovery_refuses_to_touch_a_task_whose_broker_is_still_running() {
+        let root = temp_root("live");
+        let journal = Journal::open(&root).unwrap();
+        let nonce = new_identity_nonce();
+        let task_root = root.join("task-live");
+        fs::create_dir_all(&task_root).unwrap();
+        write_identity(&task_root, "task-live", &nonce).unwrap();
+        journal.write(&entry(&root, "task-live", &nonce)).unwrap();
+        let report = recover(&root).unwrap();
+        assert_eq!(report.reconciled_count, 0);
+        assert!(report.entries[0].skipped.iter().any(|reason| reason == "broker-still-running"));
+        assert!(task_root.exists(), "a live task is never reclaimed");
         fs::remove_dir_all(&root).unwrap();
     }
 
@@ -641,7 +791,9 @@ mod tests {
         let task_root = root.join("task-two");
         fs::create_dir_all(task_root.join("work")).unwrap();
         fs::write(task_root.join("work").join("stale.txt"), b"keep").unwrap();
-        journal.write(&entry(&root, "task-two", &"a".repeat(64))).unwrap();
+        let mut record = entry(&root, "task-two", &"a".repeat(64));
+        dead_broker(&mut record);
+        journal.write(&record).unwrap();
         let report = recover(&root).unwrap();
         assert_eq!(report.reconciled_count, 0);
         assert_eq!(report.skipped_count, 1);
@@ -659,7 +811,9 @@ mod tests {
         fs::create_dir_all(&task_root).unwrap();
         let nonce = new_identity_nonce();
         write_identity(&task_root, "task-three", &nonce).unwrap();
-        journal.write(&entry(&other, "task-three", &nonce)).unwrap();
+        let mut record = entry(&other, "task-three", &nonce);
+        dead_broker(&mut record);
+        journal.write(&record).unwrap();
         let report = recover(&root).unwrap();
         assert_eq!(report.reconciled_count, 0);
         assert!(report.entries[0].skipped.iter().any(|reason| reason == "tasks-root-mismatch"));
@@ -679,11 +833,54 @@ mod tests {
         let mut record = entry(&root, "task-five", &nonce);
         // A substituted task root: the recorded path no longer resolves there.
         record.task_root = root.join("task-other").to_string_lossy().into_owned();
+        dead_broker(&mut record);
         journal.write(&record).unwrap();
         let report = recover(&root).unwrap();
         assert_eq!(report.reconciled_count, 0);
         assert!(report.entries[0].skipped.iter().any(|reason| reason == "task-root-mismatch"));
         assert!(task_root.exists());
+        fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn recovery_keeps_an_entry_when_the_task_root_is_already_absent() {
+        let root = temp_root("absent");
+        let journal = Journal::open(&root).unwrap();
+        let mut record = entry(&root, "task-six", &"b".repeat(64));
+        dead_broker(&mut record);
+        journal.write(&record).unwrap();
+        let report = recover(&root).unwrap();
+        assert_eq!(report.reconciled_count, 0);
+        assert!(!report.entries[0].identity_verified);
+        assert!(report.entries[0].skipped.iter().any(|reason| reason.contains("already-absent")));
+        assert!(journal.entry_path("task-six").unwrap().exists(), "unverifiable entries are kept");
+        fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn recovery_reports_a_truncated_entry_instead_of_aborting() {
+        let root = temp_root("truncated");
+        let journal = Journal::open(&root).unwrap();
+        fs::write(journal.dir().join("task-bad.json"), b"{\"schemaVersion\":1").unwrap();
+        let record = entry(&root, "task-good", &"c".repeat(64));
+        journal.write(&record).unwrap();
+        let report = recover(&root).unwrap();
+        assert_eq!(report.unreadable.len(), 1);
+        assert!(report.unreadable[0].file.contains("task-bad"));
+        assert_eq!(report.entries.len(), 1);
+        fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn journal_clear_reports_a_real_removal() {
+        let root = temp_root("clear");
+        let journal = Journal::open(&root).unwrap();
+        let record = entry(&root, "task-seven", &"d".repeat(64));
+        journal.write(&record).unwrap();
+        assert!(journal.entry_path("task-seven").unwrap().exists());
+        journal.clear("task-seven").unwrap();
+        assert!(!journal.entry_path("task-seven").unwrap().exists());
+        journal.clear("task-seven").unwrap();
         fs::remove_dir_all(&root).unwrap();
     }
 
@@ -705,5 +902,13 @@ mod tests {
         let second = new_identity_nonce();
         assert_eq!(first.len(), 64);
         assert_ne!(first, second);
+    }
+
+    #[test]
+    fn own_process_is_reported_alive_and_a_missing_pid_is_not() {
+        let (pid, filetime) = current_process_identity().unwrap();
+        assert_eq!(process_alive(pid, &filetime), Some(true));
+        assert_eq!(process_alive(pid, "1"), Some(false));
+        assert_eq!(process_alive(0xFFFF_FFFE, "1"), Some(false));
     }
 }

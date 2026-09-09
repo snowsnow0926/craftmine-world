@@ -6,14 +6,14 @@ hand-written; failures from intermediate builds are kept on purpose.
 
 ## Final run
 
-`index-b-20260909165157947-235832.json` is the single run in which all eight
+`index-b-20260909170609698-173804.json` is the single run in which all nine
 cases passed on one binary:
 
-- broker SHA-256 `7442d7cfd8a219daec27286fc5e77c659604afc84f55cd021d782ddbc92b8b31`
+- broker SHA-256 `76932e6909665321fd061e2a8a8e3c6cd7527de03259b15f282018730b892258`
 - engine `D:/Craftmine World/desktop/build/godot/4.7.2-stable`, editor and all
   four templates re-hashed before the run
 - cases: `version`, `import`, `exportWeb`, `eof`, `cancel`, `terminate`,
-  `adversarial`, `inflation`
+  `live-recover`, `adversarial`, `inflation`
 
 Per case, `<taskId>.request.json` is the exact request frame,
 `<taskId>.stdout.json` the final private response (empty for `terminate`),
@@ -33,6 +33,9 @@ Runs before the final index document real defects and their fixes:
 - `b-20260909165040922-235968` (adversarial) — the runtime watchdog failed the
   task with `os error 2` because the directory walk treated a file that vanished
   mid-walk as fatal. The walk now ignores transient `NotFound` entries.
+- the first `live-recover` runs — recovery classified a hard-killed broker as
+  still running, because a terminated-but-not-yet-reaped process still opens and
+  keeps its creation time. Liveness now also requires `STILL_ACTIVE`.
 
 ## What is not evidence here
 

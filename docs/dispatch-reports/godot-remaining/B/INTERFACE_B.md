@@ -11,7 +11,7 @@
 | 源 | `desktop/godot/sandbox`（Rust crate `craftmine-godot-sandbox-probe`，`#![cfg(windows)]`） |
 | 构建 | `cargo build --offline --manifest-path desktop/godot/sandbox/Cargo.toml` |
 | 二进制 | `desktop/godot/sandbox/target/debug/godot-host-broker.exe` |
-| 已验证 SHA-256 | `7442d7cfd8a219daec27286fc5e77c659604afc84f55cd021d782ddbc92b8b31` |
+| 已验证 SHA-256 | `76932e6909665321fd061e2a8a8e3c6cd7527de03259b15f282018730b892258` |
 | 引擎 | `Godot_v4.7.2-stable_win64.exe`，SHA-256 `ab1824f8…b22424`（broker 内编译期固定） |
 | 模板 | `version.txt`、`web_nothreads_debug.zip`、`web_nothreads_release.zip`、`web_release.zip`，四个哈希均编译期固定 |
 
@@ -60,11 +60,13 @@ broker 在物化后立即重算一次并比对；不一致直接失败。C 必�
   `work` 目录已移除。
 - 强杀路径：**没有**最终回包，也**没有** `cleanup`。C 必须调用
   `recover <tasksRoot>`，并只在报告里 `identityVerified=true` 且
-  `journalRemoved=true` 时认为该任务已被回收。
+  `journalRemoved=true` 时认为该任务已被回收。该命令在 `skippedCount>0` 或存在
+  `unreadable` 条目时退出 1；对仍在运行的 broker 的任务会报
+  `broker-still-running` 并保持原样，这不是错误。
 - 恢复报告永远含 `finalReceiptObserved:false`，永远不含 `cleanup.verified`。
   不得把恢复成功当作"该次构建成功"。
-- 任务完成后 `recoveryJournal.cleared=true`；若为 false，说明账本未退休，
-  后续恢复仍会尝试处理该任务。
+- 任务完成后 `recoveryJournal.cleared=true`；若为 false，说明账本未退休
+  （清理未验证或删除失败），后续恢复仍会尝试处理该任务。
 
 ## 6 资源与网络结论的边界
 

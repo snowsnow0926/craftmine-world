@@ -29,6 +29,13 @@ fn run() -> Result<()> {
             std::fs::write(path, &text)?;
         }
         println!("{text}");
+        std::io::stdout().flush()?;
+        // Exit 1 when anything was left unreconciled so an automated caller can
+        // detect a partial pass without parsing the report. A live broker whose
+        // task is skipped on purpose also exits 1.
+        if report.skipped_count > 0 || !report.unreadable.is_empty() {
+            std::process::exit(1);
+        }
         return Ok(());
     }
     if args.len() != 2 || args[1] != "run" { return Err("Expected private broker run command".into()); }

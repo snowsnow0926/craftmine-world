@@ -51,8 +51,8 @@
 ### 1.3 最终固定二进制上的 version/import/exportWeb/EOF + 取消/强杀/恶意插件（**完成**）
 
 最终二进制 SHA-256
-`7442d7cfd8a219daec27286fc5e77c659604afc84f55cd021d782ddbc92b8b31`，单次运行八例全过
-（`evidence/index-b-20260909165157947-235832.json`）：
+`76932e6909665321fd061e2a8a8e3c6cd7527de03259b15f282018730b892258`，单次运行九例全过
+（`evidence/index-b-20260909170609698-173804.json`）：
 
 | 用例 | 结果 |
 | --- | --- |
@@ -62,8 +62,9 @@
 | EOF | `cancelled`（预检前），无进程回执，cleanup verified |
 | cancel 运行中 | `cancelled` 退出码 `0x5d`，进程回执 verified、resume=1，子进程 PID 消失 |
 | terminate 强杀 | 无最终回包；恢复验证身份、删除 profile（HRESULT 0）、回收任务根 |
+| live-recover 运行中恢复 | 恢复报 `broker-still-running`，任务根与子进程保持，随后正常取消 |
 | adversarial `@tool`/插件 | 哨兵读写与同级逃逸 denied、spawn `denied(error=-1)`、外部与回环 `unknown(error=1)`、宿主回环监听收到 0 连接 |
-| inflation | 采样预算触发终止（1 075 151 147 / 1 073 741 824 字节） |
+| inflation | 采样预算触发终止（1 074 226 570 / 1 073 741 824 字节，86 次采样） |
 
 恶意用例只访问该任务新建的合成哨兵；不读取任何用户世界、凭据或真实工程。
 
@@ -85,14 +86,17 @@
 
 ### 1.5 运行期磁盘/资源控制（**部分完成，缺口显式**）
 
-- 实现：运行中每 200 ms 采样任务 `work` 字节数与继承日志大小，超过 1 GiB / 4 MiB
-  即终止整个 Job，任务 `failed`，响应记录实测最大值、采样次数与原因。
-- 工程物化另设 4096 文件 / 单文件 256 MiB / 合计 512 MiB 上限，在任何进程启动前生效。
+- 实现：运行中每 50 ms 采样任务 `work` 字节数与继承日志大小，超过 1 GiB / 4 MiB
+  即终止整个 Job，任务 `failed`，响应记录实测最大值、采样次数与原因。命名 NTFS
+  数据流用 `FindFirstStreamW` 计入，目录数同样限额。
+- 工程物化另设 4096 文件 / 8192 目录 / 单文件 256 MiB / 合计 512 MiB 上限，在任何
+  进程启动前生效。
 - 诚实标注：`hardFilesystemQuota:false`，`scope` 说明是外部采样预算。
-- **保留的缺口**：不是真正的文件系统配额，越界幅度约 1.4 MiB；CPU/GPU 速率限制
-  未实现。Windows 没有可对 AppContainer 单目录施加、且无需改动全机策略的硬配额，
-  本项目禁止修改全机策略，因此不伪造硬限制。下一步入口：需要硬配额时在卷级
-  （NTFS 磁盘配额）或容器级（独立卷 + 配额）实现，并把它作为新的 ADR 决策。
+- **保留的缺口**：不是真正的文件系统配额；越界幅度由采样间隔决定，实测 474 KiB
+  （50 ms 间隔），不承诺固定字节上限。CPU/GPU 速率限制未实现。Windows 没有可对
+  AppContainer 单目录施加、且无需改动全机策略的硬配额，本项目禁止修改全机策略，
+  因此不伪造硬限制。下一步入口：需要硬配额时在卷级（NTFS 磁盘配额）或容器级
+  （独立卷 + 配额）实现，并把它作为新的 ADR 决策。
 
 ### 1.6 向 C 提供稳定接口（**完成**）
 
@@ -111,11 +115,14 @@
 | 子进程 | `plugin_spawn=denied(error=-1)`；Job 活动进程上限 1 |
 | 输出膨胀 | inflation 用例触发采样预算并终止 |
 | 取消 | EOF 与运行中 `{"cancel":true}` 两例，子进程 PID 消失 |
+| 恢复不误伤 | `live-recover`：运行中恢复被拒绝，任务与子进程保持 |
 | 宿主崩溃恢复 | terminate 用例：强杀 broker → `recover` 回收并可核验 |
-| 失败原文 | `evidence/` 保留全部中间失败（含两个真实缺陷） |
+| 失败原文 | `evidence/` 保留全部中间失败（含全部已修复缺陷） |
 | 未放宽 | 未修改任何冻结断言、未改全机防火墙/审计/配额、未扩大普通工程权限 |
 
 ## 3 过程中发现并修复的真实缺陷
+
+前四项由实现与首轮验收暴露，其余由提交前的独立代码评审（`code-reviewer`）发现：
 
 1. **恢复对已退出子进程误报 os error 5**：先查映像路径再判退出，导致
    `QueryFullProcessImageNameW` 在僵尸进程上失败并中断整轮恢复。改为先读退出码，
@@ -126,6 +133,28 @@
    使正常导入以 `os error 2` 失败。改为跳过消失条目与 reparse 点。
 4. **物化无上限**（交接遗留）：`copy_tree` 原本无文件数/字节上限，可先写满卷再启动
    任务；已加限额与单元测试。
+5. **恢复会杀掉正在运行的任务**：账本在任务开始时写入且没有存活标记，运行中执行
+   `recover` 会终止子进程并删除任务根。账本现记录写入它的 broker 的 PID 与创建
+   时间，恢复对存活 broker 直接报 `broker-still-running` 并跳过；新增
+   `live-recover` 用例覆盖。
+6. **存活判定用"能否打开进程"**：被强杀但尚未回收的进程仍可打开且保持创建时间，
+   导致强杀任务被误判为"仍在运行"而永不回收。存活判定现在同时要求退出码仍为
+   `STILL_ACTIVE`。
+7. **账本清理与任务清理脱钩**：`Journal::clear` 用 `path.exists()` 判断，元数据读取
+   失败时静默返回成功；且 `task.finish()` 失败后仍会删除账本，使泄漏的 profile
+   再也无法恢复。现在只有在全部回收动作成功后才删除账本，且 `cleared` 反映真实
+   删除结果。
+8. **单个损坏账本中止整轮恢复**：被强杀在写入中途的截断文件会让每次 `recover` 直接
+   失败。现在报告为 `unreadable` 并继续处理其余条目。
+9. **账本存在前的物化失败无归属**：`Task::prepare` 在账本写入前失败会留下任务根。
+   现在 `TaskRootGuard` 在失败时移除刚创建的任务根，保证"没有账本就没有任务根"。
+10. **命名数据流可绕过预算**：`metadata.len()` 只统计未命名流。现在用
+    `FindFirstStreamW` 计入命名流，并限额目录数（8192）。
+11. **越界幅度被过度声称**：原文档声称"上限 + 单次写入块"，实测取决于采样间隔。
+    采样间隔改为 50 ms，实测 474 KiB，并在 spec/协议/README 如实标注为
+    "由采样间隔决定"。任务根已不存在时也不再声称身份已验证（保留账本与 profile）。
+
+以上均保留首次失败原文；`evidence/README.md` 列出对应运行目录。
 
 ## 4 未完成项与下一步入口
 
@@ -140,11 +169,11 @@
 ## 5 验证命令（可复现）
 
 ```powershell
-# 构建与单元测试（26 项）
+# 构建与单元测试（32 项：30 library + 2 native）
 cargo build --offline --manifest-path desktop/godot/sandbox/Cargo.toml
 cargo test  --offline --manifest-path desktop/godot/sandbox/Cargo.toml
 
-# 全部八个真实用例（headless，无真实输入，独立数据目录）
+# 全部九个真实用例（headless，无真实输入，独立数据目录）
 node tests/godot-remaining/B/run_broker_cases.mjs
 
 # 单个用例

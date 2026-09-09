@@ -109,22 +109,35 @@ granted to the task SID, so the restricted child cannot forge or delete them.
 | tasksRoot, taskRoot | absolute paths the entry is allowed to reclaim |
 | profileName, profileSid | AppContainer profile and the SID measured at creation |
 | identityNonce | must equal the nonce in the task's identity marker |
-| startedAtUnixMs, state | `prepared` until the final response retires the entry |
+| brokerPid, brokerCreationTimeFiletime | the broker that owns the task; recovery refuses while this process still runs |
+| startedAtUnixMs, state | `prepared` until the broker retires the entry after reclaiming its own resources |
 
 `godot-host-broker.exe recover <absolute tasksRoot> [--json-out <path>]` is the
 host-owned pass for a broker that died without a final response. It reclaims a
 task only when all of the following hold, and otherwise reports the task under
 `skipped` without deleting anything:
 
-1. the entry's `tasksRoot` canonicalises to the root passed on the command line;
-2. the recorded task root is exactly `tasksRoot/<taskId>`, has no reparse
-   component, and canonicalises to the same directory;
-3. `task-identity.json` matches both the task id and the journal nonce;
-4. a surviving process is only terminated when the PID *and* the creation
+1. the owning broker recorded in the entry is no longer running: a process with
+   that PID whose creation FILETIME matches is treated as live and the entry is
+   skipped as `broker-still-running`. A terminated-but-not-yet-reaped process is
+   `gone`, because the exit status decides;
+2. the entry's `tasksRoot` canonicalises to the root passed on the command line;
+3. the recorded task root is exactly `tasksRoot/<taskId>`, has no reparse
+   component, and canonicalises to the same directory. If the directory is
+   already absent the entry is skipped as `task-root-already-absent;
+   identity-unverifiable` and kept, because ownership can no longer be measured;
+4. `task-identity.json` matches both the task id and the journal nonce;
+5. a surviving process is only terminated when the PID *and* the creation
    FILETIME match the host-written pre-resume sidecar and its image sits in the
    task's own `bin`; a reused PID is reported as `pid-reused` and left alone;
-5. the profile SID re-derived from the recorded name equals the recorded SID
+6. the profile SID re-derived from the recorded name equals the recorded SID
    before `DeleteAppContainerProfile` is called.
+
+The entry is retired only when identity was verified and every reclaim action
+succeeded (directory removed, profile deleted, no unresolved live child).
+Anything else is reported under `skipped`, the entry is kept for a later pass,
+and the command exits 1. Truncated or unparseable entry files (a broker killed
+mid-write) are reported under `unreadable` instead of aborting the pass.
 
 The report echoes `finalReceiptObserved:false` for every entry: a recovery pass
 is by definition a run without a final broker response and never asserts
@@ -135,14 +148,15 @@ because a just-terminated child can still be releasing handles.
 
 Every task samples its own writable `work` directory and its inherited log file
 while the child runs. The defaults are 1 GiB of work bytes, 4 MiB of log bytes
-and a 200 ms sampling interval. A breach terminates the whole job and the task
+and a 50 ms sampling interval. A breach terminates the whole job and the task
 ends `failed` with `resourceEnforcement.enforced:true`, the reason string and
-the maximum observed counters.
+the maximum observed counters. Named NTFS streams are enumerated and charged to
+the budget, so `metadata.len()` alone cannot hide bytes.
 
 `resourceEnforcement.scope` and `hardFilesystemQuota:false` are part of the
 contract: this is a sampled budget enforced by an external parent, not a
 per-directory filesystem quota. A task can overshoot by up to one sampling
-interval plus one write burst; the measured overshoot in the fixed inflation
-case is about 1.4 MiB. Hosts that need a hard quota must supply a volume-level
-mechanism outside this crate. Project materialisation is separately bounded to
-4096 files, 256 MiB per file and 512 MiB total before any process starts.
+interval of writes; the fixed inflation case measured 474 KiB above the limit.
+Hosts that need a hard quota must supply a volume-level mechanism outside this
+crate. Project materialisation is separately bounded to 4096 files, 8192
+directories, 256 MiB per file and 512 MiB total before any process starts.

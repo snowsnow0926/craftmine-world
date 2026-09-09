@@ -22,17 +22,19 @@
 | 编号 | 要求 | 可执行断言 |
 | --- | --- | --- |
 | B-R1 | 任何受限进程启动**之前**，必须已落盘一条独占创建的账本记录，并 flush。 | 强杀后账本文件存在；同一 taskId 二次写入被拒绝 |
-| B-R2 | 账本记录必须包含 tasksRoot、任务根、profile 名与创建时测得 SID、身份 nonce。 | 账本 JSON 字段完整且 `deny_unknown_fields` |
+| B-R2 | 账本记录必须包含 tasksRoot、任务根、profile 名与创建时测得 SID、身份 nonce，以及写入它的 broker 的 PID 与创建时间。 | 账本 JSON 字段完整且 `deny_unknown_fields` |
 | B-R3 | 任务根必须有不被授权目录覆盖的身份标记，内容含 taskId 与同一 nonce。 | 标记文件位于任务根，非 bin/work 内 |
-| B-R4 | 只有 broker 产出最终回包后才可删除账本记录。 | 正常回包含 `recoveryJournal.cleared=true`；强杀后仍存在 |
-| B-R5 | 恢复只允许回收 canonical 化后等于命令行传入 tasksRoot 的记录。 | 跨 tasksRoot 记录报 `tasks-root-mismatch` 且不删除 |
-| B-R6 | 恢复只允许回收路径恰为 `tasksRoot/<taskId>` 且无 reparse 组件的任务根。 | 置换路径报 `task-root-mismatch` 且保留原目录 |
-| B-R7 | 身份标记的 taskId 与 nonce 必须与账本一致，否则不删除任何内容。 | 标记缺失/不匹配报 `identity-marker-*`，目录保留 |
-| B-R8 | 只有从记录名重新推导出的 SID 等于创建时记录的 SID，才可删除 profile。 | 不匹配报 `profile-sid-mismatch` |
-| B-R9 | 只有 PID **与**创建 FILETIME 同时匹配父进程写入的预恢复 sidecar，且映像位于本任务 `bin`，才可终止进程。 | PID 复用报 `pid-reused` 且不终止；已退出报 `gone` |
-| B-R10 | 未通过任何检查的条目只报告、不删除；恢复报告必须含 `finalReceiptObserved:false`。 | 报告字段恒为 false；`skipped` 列出原因 |
-| B-R11 | 恢复**不得**声称 `cleanup.verified`。 | 恢复报告没有该字段；只有执行响应有 |
-| B-R12 | 目录删除对刚终止的子进程做有界重试。 | 报告中出现 `task-root-removed-after-N-retries` 或成功 |
+| B-R4 | 只有该任务的全部回收动作成功后才可删除账本记录；清理失败时必须保留以便重试。 | 正常回包含 `recoveryJournal.cleared=true`；`cleanup.verified=false` 时 `cleared=false` |
+| B-R5 | 恢复不得触碰 broker 仍在运行的任务。 | 运行中恢复报 `broker-still-running`，任务根与子进程保持 |
+| B-R6 | 恢复只允许回收 canonical 化后等于命令行传入 tasksRoot 的记录。 | 跨 tasksRoot 记录报 `tasks-root-mismatch` 且不删除 |
+| B-R7 | 恢复只允许回收路径恰为 `tasksRoot/<taskId>` 且无 reparse 组件的任务根。 | 置换路径报 `task-root-mismatch` 且保留原目录 |
+| B-R8 | 身份标记的 taskId 与 nonce 必须与账本一致，否则不删除任何内容。 | 标记缺失/不匹配报 `identity-marker-*`，目录保留 |
+| B-R9 | 任务根已不存在时不得声称身份已验证，也不得仅凭名字删除 profile。 | 报 `task-root-already-absent; identity-unverifiable` 并保留账本 |
+| B-R10 | 只有从记录名重新推导出的 SID 等于创建时记录的 SID，才可删除 profile。 | 不匹配报 `profile-sid-mismatch` |
+| B-R11 | 只有 PID **与**创建 FILETIME 同时匹配父进程写入的预恢复 sidecar，且映像位于本任务 `bin`，才可终止进程。 | PID 复用报 `pid-reused` 且不终止；已退出报 `gone` |
+| B-R12 | 未通过任何检查的条目只报告、不删除；恢复报告必须含 `finalReceiptObserved:false` 且不得含 `cleanup` 判定。 | 报告字段恒为 false；`skipped` 列出原因 |
+| B-R13 | 截断/不可解析的账本文件必须报告为 `unreadable`，不得中止整轮恢复。 | 单元测试 `recovery_reports_a_truncated_entry_instead_of_aborting` |
+| B-R14 | 目录删除对刚终止的子进程做有界重试；有任何未回收项时进程退出码非 0。 | 报告中出现 `task-root-removed-after-N-retries`；`skippedCount>0` 时退出 1 |
 
 ## 3 运行期资源预算（B-Q）
 
@@ -42,9 +44,10 @@
 | B-Q2 | 超过上限时必须终止整个任务 Job，任务终态为 failed，并记录原因。 | `enforced=true`、`reason` 含实测值、`job_active_processes=0` |
 | B-Q3 | 采样必须容忍运行中文件消失，不得因瞬时 NotFound 使任务失败。 | 对抗/膨胀用例中任务不会以 `os error 2` 失败 |
 | B-Q4 | 必须如实标注范围：这是外部采样预算，不是文件系统配额。 | `hardFilesystemQuota=false`，`scope` 明示 |
-| B-Q5 | 越界幅度必须有界：不超过上限 + 单次写入块量级。 | 实测 1 075 151 147 / 1 073 741 824（约 1.4 MiB） |
-| B-Q6 | 工程物化必须在任何进程启动前限额：4096 文件 / 单文件 256 MiB / 合计 512 MiB。 | `copy_tree_bounded` 单元测试三种越界均拒绝 |
-| B-Q7 | 进程内存与活动进程上限继续由 Job 强制（4 GiB / 1）。 | 既有 B9 断言不变 |
+| B-Q5 | 越界幅度由采样间隔决定，必须实测记录而不是声称固定字节上限。 | 实测 1 074 226 570 / 1 073 741 824（474 KiB，50 ms 间隔，86 次采样） |
+| B-Q6 | 工程物化必须在任何进程启动前限额：4096 文件 / 8192 目录 / 单文件 256 MiB / 合计 512 MiB。 | `copy_tree_bounded` 单元测试四种越界均拒绝 |
+| B-Q7 | 命名 NTFS 数据流必须计入预算，不能只统计 `metadata.len()`。 | 单元测试 `directory_bytes_counts_alternate_data_streams` |
+| B-Q8 | 进程内存与活动进程上限继续由 Job 强制（4 GiB / 1）。 | 既有 B9 断言不变 |
 
 ## 4 明确不覆盖
 
@@ -58,12 +61,15 @@
 
 | 断言 | 证据 |
 | --- | --- |
-| B-R1..B-R4 | `b-terminate-*` 强杀运行：账本存在 → 无回包 → 恢复后 `journalRemoved=true` |
-| B-R5..B-R8 | `src/recovery.rs` 单元测试 4 项（跨根、置换、标记不符、SID 推导） |
-| B-R9 | 强杀运行报告 `childProcessState=gone`，PID/creationTime 与 sidecar 一致 |
-| B-R10, B-R11 | 恢复报告 `finalReceiptObserved:false`、无 `cleanup` 字段 |
-| B-R12 | 强杀运行报告 `task-root-removed-after-1-retries` |
-| B-Q1..B-Q5 | `b-inflation-*`：22 次采样，1 075 151 147 字节触发，退出码 0x5b |
+| B-R1..B-R4 | `b-terminate-*` 强杀运行：账本存在 → 无回包 → 恢复后 `journalRemoved=true`；正常回包 `cleared=true` |
+| B-R5 | `b-live-recover-*`：运行中恢复报 `broker-still-running`，任务根与子进程保持，任务随后正常取消 |
+| B-R6..B-R8 | `src/recovery.rs` 单元测试（跨根、置换、标记不符、存活 broker） |
+| B-R9 | 单元测试 `recovery_keeps_an_entry_when_the_task_root_is_already_absent` |
+| B-R10, B-R11 | 强杀运行报告 `childProcessState=gone`，PID/creationTime 与 sidecar 一致 |
+| B-R12, B-R13 | 强杀报告 `finalReceiptObserved:false` 且不含 `cleanup`；`recovery_reports_a_truncated_entry_instead_of_aborting` |
+| B-R14 | 强杀报告 `task-root-removed-after-1-retries`；`recover` 在 `skippedCount>0` 时退出 1 |
+| B-Q1..B-Q5 | `b-inflation-*`：86 次采样，1 074 226 570 字节触发，退出码 91 |
 | B-Q6 | `task::tests::materialization_budget_rejects_an_oversized_source_tree` |
+| B-Q7 | `task::tests::directory_bytes_counts_alternate_data_streams` |
 | B-Q3 | `task::tests::directory_bytes_is_capped_and_ignores_missing_roots` |
-| 全部 | `docs/dispatch-reports/godot-remaining/B/evidence/` |
+| 全部 | `docs/dispatch-reports/godot-remaining/B/evidence/`（最终索引见该目录 README） |

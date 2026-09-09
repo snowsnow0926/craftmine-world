@@ -120,21 +120,26 @@ Neither path is inside a directory granted to the task SID. The entry is retired
 only after the broker produced its final response.
 
 `godot-host-broker.exe recover <absolute tasksRoot> [--json-out <path>]` reclaims
-a task only when the journal root, the task root, the identity nonce, the
-AppContainer SID re-derived from the recorded profile name, and (when a child
+a task only when the owning broker no longer runs (the entry records the broker
+PID and creation FILETIME), the journal root, the task root, the identity nonce,
+the AppContainer SID re-derived from the recorded profile name, and (when a child
 still runs) the PID *plus* creation FILETIME all match host-written evidence.
 A reused PID is reported and left alone; anything unverifiable is reported under
-`skipped` and never deleted. The report always states `finalReceiptObserved:false`
-and never claims `cleanup.verified`, because by definition no final response
-arrived.
+`skipped` and never deleted, and the entry is kept so a later pass can retry.
+Truncated entries are reported under `unreadable` instead of aborting the pass,
+and the command exits 1 when anything was left unreconciled. The report always
+states `finalReceiptObserved:false` and never claims `cleanup.verified`, because
+by definition no final response arrived.
 
 While a task runs, the parent samples the task's `work` directory and its
-inherited log file every 200 ms against a 1 GiB / 4 MiB budget and terminates the
+inherited log file every 50 ms against a 1 GiB / 4 MiB budget and terminates the
 whole job on breach. `resourceEnforcement.hardFilesystemQuota` is `false` on
 purpose: this is an externally sampled budget, not a per-directory filesystem
-quota. The fixed inflation case measured a 1.4 MiB overshoot above the limit.
-Project materialisation is separately bounded to 4096 files, 256 MiB per file and
-512 MiB total before any process starts.
+quota. The overshoot is bounded by one sampling interval of writes; the fixed
+inflation case measured 474 KiB above the limit. Named NTFS streams are counted
+(`FindFirstStreamW`), so `metadata.len()` cannot hide bytes. Project
+materialisation is separately bounded to 4096 files, 8192 directories, 256 MiB
+per file and 512 MiB total before any process starts.
 
 ## Verified on 2026-09-09
 
@@ -167,7 +172,7 @@ Raw evidence: `evidence/gate-run1.txt`, `evidence/gate-run2.txt`,
 
 ## Verified on the final broker binary (2026-09-10)
 
-Broker SHA-256 `7442d7cfd8a219daec27286fc5e77c659604afc84f55cd021d782ddbc92b8b31`.
+Broker SHA-256 `76932e6909665321fd061e2a8a8e3c6cd7527de03259b15f282018730b892258`.
 Raw request/response/log/recovery files:
 `docs/dispatch-reports/godot-remaining/B/evidence/`, driven by
 `tests/godot-remaining/B/run_broker_cases.mjs` (headless, no real input).
@@ -180,8 +185,9 @@ Raw request/response/log/recovery files:
 | `eof` (immediate stdin close) | `cancelled` before preflight, no process receipt, cleanup verified |
 | `cancel` mid-run | `cancelled` exit `0x5d`, process receipt verified, resume count 1, child PID gone, cleanup verified |
 | `terminate` (broker killed) | no final response; recovery verified identity, profile deleted (HRESULT 0), task root reclaimed, child `gone` |
+| `live-recover` (recovery during a live task) | recovery refused with `broker-still-running`, task root and child untouched, task then cancelled normally |
 | `adversarial` `@tool`/editor plugin | sentinel read/write and sibling write denied, spawn denied, external and loopback connect `unknown(error=1)`, host loopback listener received 0 connections |
-| `inflation` | sampled work budget enforced at 1,075,151,147 bytes over a 1,073,741,824 limit (1.4 MiB overshoot), job terminated, cleanup verified |
+| `inflation` | sampled work budget enforced at 1,074,226,570 bytes over a 1,073,741,824 limit (474 KiB overshoot, 86 samples), job terminated, cleanup verified |
 
 ## Not verified
 

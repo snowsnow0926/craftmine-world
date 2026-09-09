@@ -1,0 +1,172 @@
+{
+  "case": "version",
+  "taskId": "b-version-1788973440071",
+  "operation": "version",
+  "startedAt": "2026-09-09T17:04:00.071Z",
+  "transportExit": 0,
+  "finalResponse": {
+    "schemaVersion": 1,
+    "requestId": "b-version-1788973440071",
+    "taskId": "b-version-1788973440071",
+    "operation": "version",
+    "sourceBinding": {
+      "worldId": "fixed-b-synthetic-fixture",
+      "buildId": "b-version-1788973440071",
+      "sourceRevision": 1,
+      "sourceDigest": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "inputHash": "4011def8cfc95e913c053c257c224417ca3c0ed17fc0e8fbe61036d9ab1022bf",
+    "sourceSnapshotDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "sourceFiles": [],
+    "state": "succeeded",
+    "exitCode": 0,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "processVerification": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "pid": 245716,
+      "creationTimeFiletime": "134334470452933389",
+      "imagePath": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909170359926-23212\\tasks\\b-version-1788973440071\\bin\\Godot_v4.7.2-stable_win64.exe",
+      "appContainerSid": "S-1-15-2-3994421343-1433103118-613913553-154794718-3961180223-3538372986-1395431045",
+      "capabilitySids": [
+        "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+      ],
+      "integrityRid": 4096,
+      "isAppContainer": true,
+      "lpacQueryValue": null,
+      "lpacQueryError": 87,
+      "lpacCreationAttribute": true,
+      "jobMembershipVerified": true,
+      "jobLimitFlags": 8456,
+      "activeProcessLimit": 1,
+      "processMemoryBytes": 4294967296,
+      "verifiedBeforeResume": true,
+      "resumePreviousCount": 1
+    },
+    "networkPreflight": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "hostPositiveControls": [
+        "tcp4Echo",
+        "tcp6Echo",
+        "udp4Echo",
+        "udp6Echo"
+      ],
+      "hostReceivedCounts": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "exactTaskExempt": false,
+      "processVerification": {
+        "verified": true,
+        "policyVersion": "craftmine.windows.lpac-registry.v1",
+        "pid": 273940,
+        "creationTimeFiletime": "134334470450859780",
+        "imagePath": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909170359926-23212\\tasks\\b-version-1788973440071\\bin\\broker-preflight.exe",
+        "appContainerSid": "S-1-15-2-3994421343-1433103118-613913553-154794718-3961180223-3538372986-1395431045",
+        "capabilitySids": [
+          "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+        ],
+        "integrityRid": 4096,
+        "isAppContainer": true,
+        "lpacQueryValue": null,
+        "lpacQueryError": 87,
+        "lpacCreationAttribute": true,
+        "jobMembershipVerified": true,
+        "jobLimitFlags": 8456,
+        "activeProcessLimit": 1,
+        "processMemoryBytes": 4294967296,
+        "verifiedBeforeResume": true,
+        "resumePreviousCount": 1
+      },
+      "observation": {
+        "winsockStartup": 0,
+        "checks": [
+          {
+            "name": "tcp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          }
+        ]
+      }
+    },
+    "resourceEnforcement": {
+      "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+      "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+      "hardFilesystemQuota": false,
+      "workBytesLimit": 1073741824,
+      "logBytesLimit": 4194304,
+      "sampleIntervalMs": 200,
+      "samples": 0,
+      "maxObservedWorkBytes": 0,
+      "maxObservedLogBytes": 0,
+      "enforced": false,
+      "reason": null
+    },
+    "artifacts": [],
+    "artifactsRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909170359926-23212\\tasks\\b-version-1788973440071\\artifacts",
+    "logsRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909170359926-23212\\tasks\\b-version-1788973440071\\logs",
+    "logs": [
+      {
+        "path": "preflight.json",
+        "bytes": 508,
+        "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+      },
+      {
+        "path": "task.log",
+        "bytes": 33,
+        "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+      }
+    ],
+    "cleanup": {
+      "verified": true,
+      "profileHresult": 0,
+      "workRemoved": true,
+      "error": null
+    },
+    "recoveryJournal": {
+      "path": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909170359926-23212\\tasks\\.recovery-journal\\b-version-1788973440071.json",
+      "policyVersion": "craftmine.windows.recovery-journal.v1",
+      "cleared": true,
+      "error": null
+    },
+    "error": null,
+    "brokerSha256": "24e940a1c07a1d39dd91f46dd1bf15716bc4828328fdd87285c4b334b4edb999"
+  },
+  "passed": true,
+  "failures": [],
+  "finishedAt": "2026-09-09T17:04:05.532Z"
+}

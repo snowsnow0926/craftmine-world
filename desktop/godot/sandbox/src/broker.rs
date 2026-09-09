@@ -195,15 +195,21 @@ pub fn execute(request: Request, cancel: Arc<AtomicBool>) -> Result<Response> {
         Err(error) => response.cleanup.error = Some(error.to_string()),
     }
     if !response.cleanup.verified { response.state = "failed".into(); }
-    // The journal entry is retired only now: the broker has produced its final
-    // response, so a later recovery pass must not reclaim this task again.
-    match journal.clear(&task_id) {
-        Ok(()) => {
-            if let Some(state) = response.recovery_journal.as_mut() { state.cleared = true; }
+    // The entry is retired only after every reclaim action of this task
+    // succeeded. If cleanup failed, the entry must stay so a later recovery
+    // pass can reclaim the leaked profile or directory.
+    if response.cleanup.verified {
+        match journal.clear(&task_id) {
+            Ok(()) => {
+                if let Some(state) = response.recovery_journal.as_mut() { state.cleared = true; }
+            }
+            Err(error) => {
+                response.state = "failed".into();
+                if let Some(state) = response.recovery_journal.as_mut() { state.error = Some(error.to_string()); }
+            }
         }
-        Err(error) => {
-            if let Some(state) = response.recovery_journal.as_mut() { state.error = Some(error.to_string()); }
-        }
+    } else if let Some(state) = response.recovery_journal.as_mut() {
+        state.error = Some("journal kept because task cleanup was not verified".into());
     }
     Ok(response)
 }

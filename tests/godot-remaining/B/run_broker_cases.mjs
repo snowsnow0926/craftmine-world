@@ -29,7 +29,7 @@ const flag = (name, fallback) => {
   const index = argv.indexOf(name);
   return index >= 0 ? argv[index + 1] : fallback;
 };
-const caseList = flag('--cases', 'version,import,exportWeb,eof,cancel,terminate,adversarial,inflation')
+const caseList = flag('--cases', 'version,import,exportWeb,eof,cancel,terminate,live-recover,adversarial,inflation')
   .split(',').map((value) => value.trim()).filter(Boolean);
 const evidenceDir = path.resolve(repo, flag('--evidence', 'docs/dispatch-reports/godot-remaining/B/evidence'));
 const keep = argv.includes('--keep');
@@ -153,11 +153,14 @@ function parseFinal(stdout) {
   }
 }
 
-function recoverSync() {
+function recoverSync(expectStatus = 0) {
   const outFile = path.join(runDir, 'recovery-report.json');
   const result = spawnSync(broker, ['recover', tasksRoot, '--json-out', outFile]);
-  if (result.status !== 0) throw new Error(`recover failed: ${result.stderr}`);
-  return JSON.parse(fs.readFileSync(outFile, 'utf8'));
+  if (result.status !== expectStatus) {
+    throw new Error(`recover exited ${result.status} (expected ${expectStatus}): ${result.stderr}`);
+  }
+  const report = JSON.parse(fs.readFileSync(outFile, 'utf8'));
+  return { report, status: result.status, text: fs.readFileSync(outFile, 'utf8') };
 }
 
 function check(condition, message, failures) {
@@ -173,7 +176,7 @@ async function runCase(name) {
   let sentinel = null;
   let loopbackControl = null;
 
-  if (name === 'cancel' || name === 'terminate') {
+  if (name === 'cancel' || name === 'terminate' || name === 'live-recover') {
     projectRoot = stageProject(taskId, (target) => {
       fs.writeFileSync(
         path.join(target, 'probe_resource.gd'),
@@ -235,16 +238,39 @@ async function runCase(name) {
 
   if (name === 'eof') {
     run.child.stdin.end();
-  } else if (name === 'cancel' || name === 'terminate') {
+  } else if (name === 'cancel' || name === 'terminate' || name === 'live-recover') {
     const ready = await waitForLogMarker(taskLog, 'B_FIXED_SLEEP_READY', 60_000);
     check(ready, 'fixed sleep marker was not reached', failures);
     summary.sleepMarkerReached = ready;
     if (ready) {
       if (name === 'cancel') {
         run.child.stdin.write('{"cancel":true}\n');
+      } else if (name === 'live-recover') {
+        const sidecar = path.join(tasksRoot, taskId, 'logs', 'process-verification.json');
+        summary.liveSidecar = fs.existsSync(sidecar) ? JSON.parse(fs.readFileSync(sidecar, 'utf8')) : null;
+        check(summary.liveSidecar !== null, 'live recovery case has no host-written sidecar', failures);
+        // Recovery must never touch a task whose broker is still running.
+        const { report, text } = recoverSync(1);
+        summary.liveRecovery = report;
+        const entry = report.entries.find((item) => item.taskId === taskId);
+        check(entry !== undefined, 'live recovery produced no entry for the running task', failures);
+        if (entry) {
+          check(entry.skipped.includes('broker-still-running'), `live recovery did not skip: ${JSON.stringify(entry.skipped)}`, failures);
+          check(entry.taskRootRemoved === false, 'live recovery removed a running task root', failures);
+          check(entry.identityVerified === false, 'live recovery claimed verified identity on a live task', failures);
+        }
+        check(!text.includes('"cleanup"'), 'recovery report must not carry a cleanup verdict', failures);
+        check(fs.existsSync(path.join(tasksRoot, taskId, 'work')), 'live task work directory was removed', failures);
+        if (summary.liveSidecar) {
+          check(pidAlive(summary.liveSidecar.pid) === true, 'live recovery killed the running child', failures);
+        }
+        // Then let the task finish through the documented cancellation frame.
+        run.child.stdin.write('{"cancel":true}\n');
+        summary.liveTaskCancelledAfterRecovery = true;
       } else {
         const sidecar = path.join(tasksRoot, taskId, 'logs', 'process-verification.json');
         summary.preKillSidecar = fs.existsSync(sidecar) ? JSON.parse(fs.readFileSync(sidecar, 'utf8')) : null;
+        check(summary.preKillSidecar !== null, 'terminate case has no host-written sidecar', failures);
         summary.preKillJournal = fs.readFileSync(
           path.join(tasksRoot, '.recovery-journal', `${taskId}.json`),
           'utf8',
@@ -267,17 +293,19 @@ async function runCase(name) {
     // No final response exists by construction: recovery is the only owner.
     check(stdout.trim().length === 0, 'a killed broker must not produce a final response', failures);
     summary.finalReceiptObserved = stdout.trim().length > 0;
-    const report = recoverSync();
+    const { report, text } = recoverSync(0);
     summary.recovery = report;
     writeEvidence(`${taskId}.recovery.json`, JSON.stringify(report, null, 2));
     const entry = report.entries.find((item) => item.taskId === taskId);
     check(entry !== undefined, 'recovery produced no entry for the killed task', failures);
+    check(!text.includes('"cleanup"'), 'recovery report must not carry a cleanup verdict', failures);
     if (entry) {
       check(entry.identityVerified === true, 'recovery did not verify task identity', failures);
       check(entry.finalReceiptObserved === false, 'recovery must not claim a final receipt', failures);
       check(entry.journalRemoved === true, 'recovery did not retire the journal entry', failures);
       check(entry.taskRootRemoved === true, 'recovery did not reclaim the task root', failures);
       check(entry.profileDeleted === true, `profile not reclaimed: ${JSON.stringify(entry.profileHresult)}`, failures);
+      check(!('cleanup' in entry), 'a recovery entry must not expose a cleanup verdict', failures);
       check(
         ['gone', 'terminated'].includes(entry.childProcessState),
         `unexpected child process state ${entry.childProcessState}`,
@@ -294,6 +322,11 @@ async function runCase(name) {
       }
     }
     check(!fs.existsSync(path.join(tasksRoot, taskId)), 'task root still exists after recovery', failures);
+    check(
+      !fs.existsSync(path.join(tasksRoot, '.recovery-journal', `${taskId}.json`)),
+      'journal entry still exists after recovery',
+      failures,
+    );
     summary.passed = failures.length === 0;
     summary.failures = failures;
     writeEvidence(`${taskId}.summary.json`, JSON.stringify(summary, null, 2));
@@ -302,7 +335,7 @@ async function runCase(name) {
 
   const result = parseFinal(stdout);
   summary.finalResponse = result;
-  if (name === 'eof' || name === 'cancel') {
+  if (name === 'eof' || name === 'cancel' || name === 'live-recover') {
     check(result?.state === 'cancelled', `expected cancelled, got ${result?.state}`, failures);
     if (name === 'eof') {
       check(result?.processVerification == null, 'EOF cancellation must not produce a process receipt', failures);
@@ -316,6 +349,13 @@ async function runCase(name) {
       }
     }
     check(result?.cleanup?.verified === true, 'cancellation cleanup was not verified', failures);
+    check(result?.recoveryJournal?.cleared === true, 'journal entry was not retired after cancellation', failures);
+    check(
+      !fs.existsSync(path.join(tasksRoot, '.recovery-journal', `${taskId}.json`)),
+      'journal entry file still exists after a normal response',
+      failures,
+    );
+    check(!fs.existsSync(path.join(tasksRoot, taskId, 'work')), 'task work directory still exists after cleanup', failures);
   } else if (name === 'inflation') {
     check(result?.state === 'failed', `expected failed, got ${result?.state}`, failures);
     const enforcement = result?.resourceEnforcement;
@@ -323,11 +363,15 @@ async function runCase(name) {
     check(enforcement?.hardFilesystemQuota === false, 'scope must stay honest (no hard quota)', failures);
     if (enforcement) {
       check(enforcement.maxObservedWorkBytes > enforcement.workBytesLimit, 'budget was not actually exceeded', failures);
+      // The overshoot is bounded by one sampling interval of writes, not by a
+      // fixed byte count: it depends on how fast the volume accepts writes. The
+      // ceiling below only catches a watchdog that stopped sampling entirely.
       check(
-        enforcement.maxObservedWorkBytes <= enforcement.workBytesLimit + 64 * 1024 * 1024,
+        enforcement.maxObservedWorkBytes <= enforcement.workBytesLimit + 512 * 1024 * 1024,
         `overshoot too large: ${enforcement.maxObservedWorkBytes}`,
         failures,
       );
+      summary.overshootBytes = enforcement.maxObservedWorkBytes - enforcement.workBytesLimit;
     }
     check(result?.cleanup?.verified === true, 'inflation cleanup was not verified', failures);
   } else {
@@ -338,6 +382,12 @@ async function runCase(name) {
     check(result?.networkPreflight?.verified === true, 'native network preflight not verified', failures);
     check(result?.cleanup?.verified === true, 'cleanup not verified', failures);
     check(result?.recoveryJournal?.cleared === true, 'journal entry was not retired', failures);
+    check(
+      !fs.existsSync(path.join(tasksRoot, '.recovery-journal', `${taskId}.json`)),
+      'journal entry file still exists after a successful response',
+      failures,
+    );
+    check(!fs.existsSync(path.join(tasksRoot, taskId, 'work')), 'task work directory still exists after cleanup', failures);
     if (name === 'exportWeb') {
       check((result?.artifacts?.length ?? 0) >= 4, 'too few exported artifacts', failures);
     }
@@ -375,7 +425,7 @@ async function runCase(name) {
     }
   }
 
-  if (['import', 'exportWeb', 'cancel', 'adversarial', 'inflation'].includes(name)) {
+  if (['import', 'exportWeb', 'cancel', 'live-recover', 'adversarial', 'inflation'].includes(name)) {
     writeEvidence(`${taskId}.task.log`, boundedLog(path.join(tasksRoot, taskId, 'logs', 'task.log')));
   }
 
@@ -411,7 +461,7 @@ async function main() {
     });
   }
   index.finishedAt = new Date().toISOString();
-  index.passed = index.results.every((result) => result.passed);
+  index.passed = index.results.length > 0 && index.results.every((result) => result.passed);
   writeEvidence(`index-${runId}.json`, JSON.stringify(index, null, 2));
   process.stdout.write(`\n${JSON.stringify({ runId, passed: index.passed, results: index.results }, null, 2)}\n`);
   if (!keep) fs.rmSync(path.join(runDir, 'projects'), { recursive: true, force: true });

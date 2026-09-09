@@ -104,7 +104,9 @@ impl Default for ResourceBudget {
         Self {
             work_bytes: 1024 * 1024 * 1024,
             log_bytes: 4 * 1024 * 1024,
-            sample_interval: Duration::from_millis(200),
+            // A shorter interval directly reduces the bounded overshoot, because
+            // the breach is only observed at the next sample.
+            sample_interval: Duration::from_millis(50),
         }
     }
 }
@@ -147,6 +149,54 @@ impl ResourceEnforcement {
 
 pub const RESOURCE_POLICY_VERSION: &str = "craftmine.windows.sampled-work-budget.v1";
 
+/// Total bytes of every stream of a file. `metadata.len()` counts only the
+/// unnamed stream, so a task could otherwise hide data in an alternate data
+/// stream and stay under the budget. Falls back to the unnamed size when stream
+/// enumeration is unavailable.
+fn file_total_bytes(path: &Path, unnamed: u64) -> u64 {
+    use windows_sys::Win32::{
+        Foundation::{CloseHandle, INVALID_HANDLE_VALUE},
+        Storage::FileSystem::{
+            FindFirstStreamW, FindNextStreamW, FindStreamInfoStandard, WIN32_FIND_STREAM_DATA,
+        },
+    };
+    const MAX_STREAMS: usize = 64;
+    let wide = crate::wide(path);
+    let mut data = WIN32_FIND_STREAM_DATA::default();
+    let handle = unsafe {
+        FindFirstStreamW(
+            wide.as_ptr(),
+            FindStreamInfoStandard,
+            (&mut data as *mut WIN32_FIND_STREAM_DATA).cast(),
+            0,
+        )
+    };
+    if handle == INVALID_HANDLE_VALUE || handle.is_null() {
+        return unnamed;
+    }
+    let mut total = 0u64;
+    let mut count = 0usize;
+    loop {
+        total = total.saturating_add(data.StreamSize.max(0) as u64);
+        count += 1;
+        if count >= MAX_STREAMS {
+            break;
+        }
+        let more = unsafe { FindNextStreamW(handle, (&mut data as *mut WIN32_FIND_STREAM_DATA).cast()) };
+        if more == 0 {
+            break;
+        }
+    }
+    unsafe {
+        CloseHandle(handle);
+    }
+    if total == 0 {
+        unnamed
+    } else {
+        total
+    }
+}
+
 /// Bounded recursive byte count. Stops as soon as the cap is exceeded so a
 /// hostile task cannot make the parent walk an unbounded tree, and ignores
 /// entries that vanish mid-walk: the Godot editor creates and deletes files
@@ -174,7 +224,7 @@ fn directory_bytes(root: &Path, cap: u64) -> Result<u64> {
             if metadata.is_dir() {
                 visit(&path, cap, total);
             } else if metadata.is_file() {
-                *total = total.saturating_add(metadata.len());
+                *total = total.saturating_add(file_total_bytes(&path, metadata.len()));
             }
         }
     }
@@ -339,6 +389,27 @@ impl TaskLayout {
     }
 }
 
+/// Removes a freshly created task root if preparation fails before the broker
+/// writes its journal entry. Disarmed once the task is fully constructed.
+struct TaskRootGuard {
+    root: PathBuf,
+    armed: bool,
+}
+
+impl TaskRootGuard {
+    fn disarm(&mut self) {
+        self.armed = false;
+    }
+}
+
+impl Drop for TaskRootGuard {
+    fn drop(&mut self) {
+        if self.armed {
+            let _ = fs::remove_dir_all(&self.root);
+        }
+    }
+}
+
 /// One managed build task.
 pub struct Task {
     pub task_id: String,
@@ -381,6 +452,10 @@ impl Task {
         validate_task_id(&pins.editor.file_name)?;
         for template in &pins.templates { validate_task_id(&template.file_name)?; }
         let layout = TaskLayout::create(tasks_root, task_id)?;
+        // A task root must never exist without a journal entry: the broker writes
+        // the entry after `prepare` succeeds. If preparation fails, remove the
+        // directory we just created so nothing is left outside recovery's view.
+        let mut guard = TaskRootGuard { root: layout.root.clone(), armed: true };
         copy_pinned(&pins.editor, &layout.bin.join(&pins.editor.file_name))?;
         for template in &pins.templates {
             let target = layout
@@ -424,6 +499,7 @@ impl Task {
         }
         let log = layout.logs.join("task.log");
         let engine = layout.bin.join(&pins.editor.file_name);
+        guard.disarm();
         Ok(Self {
             process_verification: None,
             network_preflight: None,
@@ -691,13 +767,16 @@ mod cancellation_tests {
 /// Materialization bounds. These match the broker's snapshot limits so a
 /// hostile project cannot exhaust the tasks volume before any job limit applies.
 const MAX_SOURCE_FILES: usize = 4096;
+const MAX_SOURCE_DIRS: usize = 8192;
 const MAX_SOURCE_FILE_BYTES: u64 = 256 * 1024 * 1024;
 const MAX_SOURCE_TOTAL_BYTES: u64 = 512 * 1024 * 1024;
 
 struct CopyBudget {
     files: usize,
+    dirs: usize,
     total: u64,
     max_files: usize,
+    max_dirs: usize,
     max_file_bytes: u64,
     max_total_bytes: u64,
 }
@@ -706,8 +785,10 @@ impl CopyBudget {
     fn new() -> Self {
         Self {
             files: 0,
+            dirs: 0,
             total: 0,
             max_files: MAX_SOURCE_FILES,
+            max_dirs: MAX_SOURCE_DIRS,
             max_file_bytes: MAX_SOURCE_FILE_BYTES,
             max_total_bytes: MAX_SOURCE_TOTAL_BYTES,
         }
@@ -735,6 +816,10 @@ fn copy_tree_bounded(source: &Path, destination: &Path, budget: &mut CopyBudget)
         }
         let target = destination.join(entry.file_name());
         if file_type.is_dir() {
+            budget.dirs += 1;
+            if budget.dirs > budget.max_dirs {
+                return Err("Project source exceeds the materialization budget".into());
+            }
             copy_tree_bounded(&entry.path(), &target, budget)?;
         } else if file_type.is_file() {
             budget.files += 1;
@@ -834,7 +919,7 @@ mod tests {
             now_unix_ms().unwrap()
         ));
         let source = base.join("source");
-        fs::create_dir_all(&source).unwrap();
+        fs::create_dir_all(source.join("nested")).unwrap();
         fs::write(source.join("one.bin"), vec![0u8; 2048]).unwrap();
         let mut tight = CopyBudget::new();
         tight.max_file_bytes = 1024;
@@ -845,8 +930,40 @@ mod tests {
         let mut total = CopyBudget::new();
         total.max_total_bytes = 1024;
         assert!(copy_tree_bounded(&source, &base.join("c"), &mut total).is_err());
+        // Directory flooding is bounded too, not only file counts and bytes.
+        let mut dirs = CopyBudget::new();
+        dirs.max_dirs = 0;
+        assert!(copy_tree_bounded(&source, &base.join("e"), &mut dirs).is_err());
         // The default budget accepts the same tree.
         assert!(copy_tree_bounded(&source, &base.join("d"), &mut CopyBudget::new()).is_ok());
+        fs::remove_dir_all(&base).unwrap();
+    }
+
+    #[test]
+    fn directory_bytes_counts_alternate_data_streams() {
+        let base = std::env::temp_dir().join(format!(
+            "cm-ads-{}-{}",
+            std::process::id(),
+            now_unix_ms().unwrap()
+        ));
+        fs::create_dir_all(&base).unwrap();
+        let file = base.join("streams.bin");
+        fs::write(&file, vec![0u8; 1024]).unwrap();
+        let unnamed = fs::metadata(&file).unwrap().len();
+        assert_eq!(file_total_bytes(&file, unnamed), unnamed);
+        {
+            use std::io::Write;
+            let mut stream = fs::OpenOptions::new()
+                .write(true)
+                .create(true)
+                .open(format!("{}:hidden", file.display()))
+                .unwrap();
+            stream.write_all(&vec![7u8; 4096]).unwrap();
+        }
+        // A named stream must be charged to the budget, otherwise the task could
+        // hide bytes outside `metadata.len()`.
+        assert!(file_total_bytes(&file, unnamed) >= unnamed + 4096);
+        assert!(directory_bytes(&base, u64::MAX).unwrap() >= unnamed + 4096);
         fs::remove_dir_all(&base).unwrap();
     }
 }
