@@ -29,7 +29,7 @@
 
 | 项 | 值 |
 | --- | --- |
-| 分支 / 提交 | `codex/godot-round3-s3-20260910` / `0190ec7`（功能提交 `d775df6`、`9aaea0f`、`b294216`、`0190ec7`） |
+| 分支 / 提交 | `codex/godot-round3-s3-20260910`；功能提交 `d775df6`、`9aaea0f`、`b294216`、`0190ec7`，本报告为同一分支的后续 docs 提交 |
 | 基线 | `24edb0c`（祖先已核对：含 R2 `2fa3c7c`，其中含 R3/R4/C/R1/R5/R6 主体） |
 | 引擎 | `D:\Craftmine World\desktop\build\godot\4.7.2-stable\editor\Godot_v4.7.2-stable_win64.exe`，180,858,888 字节，SHA-256 `ab1824f85bfd8e0e…` |
 | 工具链锁定 | `desktop/godot/toolchain.lock.json` = `4.7.2-stable` |
