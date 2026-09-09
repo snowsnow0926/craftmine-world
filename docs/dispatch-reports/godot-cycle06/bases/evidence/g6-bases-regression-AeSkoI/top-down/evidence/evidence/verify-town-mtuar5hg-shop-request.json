@@ -1,0 +1,135 @@
+{
+  "format": "craftmine.godot-topdown-probe/1",
+  "commands": [
+    {
+      "op": "change-scene",
+      "args": {
+        "scene": "res://scenes/shop_interior.tscn",
+        "spawn": "from-street",
+        "label": "enter"
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "bread",
+        "label": "buy-away"
+      }
+    },
+    {
+      "op": "set-position",
+      "args": {
+        "x": 160,
+        "y": 108,
+        "label": "at-counter"
+      }
+    },
+    {
+      "op": "focus",
+      "args": {
+        "label": "focus"
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "bread",
+        "label": "buy-1"
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "bread",
+        "label": "buy-2"
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "bread",
+        "label": "buy-3"
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "bread",
+        "label": "buy-4"
+      }
+    },
+    {
+      "op": "set-position",
+      "args": {
+        "x": 160,
+        "y": 180,
+        "label": "leave"
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "bread",
+        "label": "buy-left"
+      }
+    },
+    {
+      "op": "set-position",
+      "args": {
+        "x": 160,
+        "y": 108,
+        "label": "back"
+      }
+    },
+    {
+      "op": "deliver",
+      "args": {
+        "npcId": "npc-shopkeeper",
+        "questId": "herb-delivery",
+        "label": "deliver-wrong-giver"
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "rope",
+        "label": "buy-rope"
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "potion",
+        "label": "buy-poor"
+      }
+    },
+    {
+      "op": "change-scene",
+      "args": {
+        "scene": "res://scenes/overworld.tscn",
+        "spawn": "from-shop",
+        "label": "exit"
+      }
+    },
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "after-exit"
+      }
+    },
+    {
+      "op": "save",
+      "args": {
+        "label": "save"
+      }
+    }
+  ]
+}

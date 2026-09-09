@@ -1,0 +1,22 @@
+(node:75924) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ staged runtime retains old identity and blocks formal saves/departure/quit (5.6304ms)
+✔ promotion requires matching committed artifacts and revision; only then disposes previous (2.0466ms)
+✔ bad candidate startup leaves original running object available for recovery (1.519ms)
+✔ candidate commands target pending runtime rather than formal request path (1.4299ms)
+✔ renderer crash during candidate startup fails fast with the renderer cause and keeps the original (20.9813ms)
+✔ main-frame load failure during candidate startup fails fast and keeps the original (15.2081ms)
+✔ first instance stages and promotes with no formal world, and refuses while one is running (1.8093ms)
+✔ first staging is refused once a formal instance is alive (0.9139ms)
+✔ a discarded first instance leaves no instance and can be staged again (1.0549ms)
+✔ diagnostics report bounded renderer evidence with the exact instance identity (0.8802ms)
+✔ diagnostics keep a bounded console tail and redact the instance origin token (1.0368ms)
+✔ renderer console control characters never reach the startup error text (8.7288ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 220.2126

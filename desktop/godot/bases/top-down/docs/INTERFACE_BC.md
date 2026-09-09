@@ -36,7 +36,7 @@ node tools/new-world.mjs --template town|blank --world-id <id> --name "<名称>"
 
 ### 2.2 构建回执 `world-build.json`
 
-每个世界工程根目录都有 `world-build.json`，格式 `craftmine.godot-topdown-build/1`
+每个世界工程根目录都有 `world-build.json`，格式 `craftmine.godot-world-build/1`
 （写在 `new-world.mjs` 里，字段以实际文件为准）：
 
 ```json
@@ -134,7 +134,7 @@ node tools/new-world.mjs --template town|blank --world-id <id> --name "<名称>"
 独立验收起点：
 
 ```powershell
-node tools/verify.mjs          # 30 项行为检查，含商店边界、一次性奖励、重启、双实例
+node tools/verify.mjs          # 40 项行为检查，含商店边界、一次性奖励、重启、双实例
 node tools/check-sync.mjs      # 确认 worlds/ 与模板一致
 ```
 

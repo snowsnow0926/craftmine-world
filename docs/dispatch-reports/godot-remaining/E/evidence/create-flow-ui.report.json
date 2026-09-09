@@ -1,0 +1,188 @@
+{
+  "kind": "real-react-creation-panel-with-contract-fixture-host",
+  "sourceCommit": "04101e39bb912b3735275be492c097f49348f6eb",
+  "checks": [
+    {
+      "name": "规划中的底座显示但不可选",
+      "passed": true,
+      "detail": [
+        {
+          "id": "craftmine-web/5",
+          "delivered": "true",
+          "disabled": false
+        },
+        {
+          "id": "godot.top-down",
+          "delivered": "false",
+          "disabled": true
+        },
+        {
+          "id": "godot.side-view",
+          "delivered": "false",
+          "disabled": true
+        }
+      ]
+    },
+    {
+      "name": "规划中的起点显示但不可选",
+      "passed": true,
+      "detail": [
+        {
+          "id": "blank",
+          "delivered": "true",
+          "disabled": false
+        },
+        {
+          "id": "blank",
+          "delivered": "true",
+          "disabled": false
+        },
+        {
+          "id": "town",
+          "delivered": "false",
+          "disabled": true
+        }
+      ]
+    },
+    {
+      "name": "底座带主机说明文字",
+      "passed": true
+    },
+    {
+      "name": "空名称不会发出创建请求",
+      "passed": true
+    },
+    {
+      "name": "初始化中的世界登记后立即出现在列表中",
+      "passed": true,
+      "detail": {
+        "id": "w-init",
+        "state": "initializing",
+        "playable": "false",
+        "active": "false",
+        "disabled": false,
+        "stage": "import",
+        "text": "海边小镇底座未标注初始化中 · 导入资源 (3/4) · 已进行 40%"
+      }
+    },
+    {
+      "name": "初始化中的世界显示主机步骤与进度",
+      "passed": true,
+      "detail": {
+        "id": "w-init",
+        "state": "initializing",
+        "playable": "false",
+        "active": "false",
+        "disabled": false,
+        "stage": "import",
+        "text": "海边小镇底座未标注初始化中 · 导入资源 (3/4) · 已进行 40%"
+      }
+    },
+    {
+      "name": "初始化中的世界不可游玩",
+      "passed": true
+    },
+    {
+      "name": "初始化中的世界不会被切换进去",
+      "passed": true
+    },
+    {
+      "name": "轮询到主机完成初始化后才变为可游玩",
+      "passed": true
+    },
+    {
+      "name": "完成初始化后仍不自动切换世界",
+      "passed": true
+    },
+    {
+      "name": "创建失败时保留表单并显示主机错误",
+      "passed": true
+    },
+    {
+      "name": "创建失败不会登记世界",
+      "passed": true
+    },
+    {
+      "name": "初始化失败的世界显示失败原因",
+      "passed": true,
+      "detail": {
+        "id": "w-broken",
+        "state": "failed",
+        "playable": "false",
+        "active": "false",
+        "disabled": false,
+        "stage": "build",
+        "text": "未完成的世界底座未标注初始化失败 · 首次构建 (4/4) · 已进行 75%没有可用的构建执行器重试初始化丢弃草稿查看详情"
+      }
+    },
+    {
+      "name": "恢复按钮只来自主机报告的动作",
+      "passed": true,
+      "detail": {
+        "actions": [
+          "retry",
+          "discard-draft",
+          "details"
+        ],
+        "error": "没有可用的构建执行器"
+      }
+    },
+    {
+      "name": "重试初始化调用真实恢复通道",
+      "passed": true
+    },
+    {
+      "name": "详情展开主机报告的阶段与错误码",
+      "passed": true
+    },
+    {
+      "name": "主机不支持恢复动作时不显示按钮",
+      "passed": true
+    },
+    {
+      "name": "点击未完成的世界只提示不切换",
+      "passed": true
+    },
+    {
+      "name": "可游玩世界仍通过受管理切换打开",
+      "passed": true
+    },
+    {
+      "name": "窄窗下长中文标题不撑破列宽",
+      "passed": true,
+      "detail": {
+        "width": 276,
+        "overflow": 0,
+        "resetVisible": true
+      }
+    },
+    {
+      "name": "窄窗下布局与恢复默认入口仍可达",
+      "passed": true
+    },
+    {
+      "name": "150% 缩放下列表与入口仍完整",
+      "passed": true,
+      "detail": {
+        "overflow": 0,
+        "rows": 3,
+        "reset": true
+      }
+    },
+    {
+      "name": "没有请求鼠标锁定或焦点",
+      "passed": true
+    },
+    {
+      "name": "页面没有未处理异常",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Fixture host: exercises the documented contract, not the real plugin or Rust core.",
+    "The real create/switch path is covered by tests/godot-remaining/e/world-create-e2e.mjs.",
+    "No real model call and no visible-window composition."
+  ]
+}

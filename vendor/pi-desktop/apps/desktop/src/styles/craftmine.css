@@ -108,6 +108,31 @@
 .craftmine-world-item-task { color: var(--ds-text-primary); font-weight: 500; }
 .craftmine-world-item-check.is-ok { color: var(--ds-text-secondary); }
 .craftmine-world-item-check.is-bad { color: var(--ds-danger, #e5534b); }
+.craftmine-world-item-wrap { display: flex; flex-direction: column; min-width: 0; }
+.craftmine-world-item-icon.is-failed { color: var(--ds-danger, #e5534b); }
+.craftmine-world-item-icon.is-busy { color: var(--ds-text-secondary); }
+.craftmine-world-item-creation { overflow-wrap: anywhere; }
+.craftmine-world-item-creation.is-initializing { color: var(--ds-text-secondary); }
+.craftmine-world-item-creation.is-failed { color: var(--ds-danger, #e5534b); }
+.craftmine-world-item-recovery {
+  display: flex; flex-direction: column; gap: 4px; margin: 0 0 4px 16px; padding: 6px 8px;
+  background: var(--ds-tile); border-radius: var(--radius-xs); min-width: 0;
+}
+.craftmine-world-item-actions { display: flex; flex-wrap: wrap; gap: 4px; }
+.craftmine-world-item-actions button {
+  padding: 3px 7px; font-size: var(--text-2xs); color: var(--ds-text-secondary);
+  background: var(--ds-bg); border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-xs);
+}
+.craftmine-world-item-actions button:hover:not(:disabled) { color: var(--ds-text-primary); }
+.craftmine-world-item-actions button:disabled { opacity: .55; cursor: default; }
+.craftmine-world-creation-detail {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 6px; margin: 0;
+  font-size: var(--text-2xs); color: var(--ds-text-muted); min-width: 0;
+}
+.craftmine-world-creation-detail dt { color: var(--ds-text-secondary); }
+.craftmine-world-creation-detail dd { margin: 0; overflow-wrap: anywhere; }
+.craftmine-world-creation-steps { margin: 0; padding-left: 14px; list-style: disc; }
+.craftmine-world-creation-steps li { overflow-wrap: anywhere; }
 .craftmine-world-note, .craftmine-world-notice, .craftmine-world-error {
   margin: 2px 0 0; padding: 6px 8px; border-radius: var(--radius-xs);
   font-size: var(--text-2xs); line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap;
@@ -124,9 +149,12 @@
 .craftmine-world-create-title { font-size: var(--text-2xs); color: var(--ds-text-muted); }
 .craftmine-world-create-group { display: flex; flex-direction: column; gap: 3px; margin: 0; padding: 0; border: 0; min-width: 0; }
 .craftmine-world-create-group legend { padding: 0; font-size: var(--text-2xs); color: var(--ds-text-muted); }
-.craftmine-world-choice { display: flex; align-items: center; gap: 5px; font-size: var(--text-2xs); min-width: 0; }
+.craftmine-world-choice { display: flex; align-items: flex-start; gap: 5px; font-size: var(--text-2xs); min-width: 0; }
 .craftmine-world-choice > span { overflow-wrap: anywhere; }
-.craftmine-world-choice input { flex: none; }
+.craftmine-world-choice input { flex: none; margin-top: 2px; }
+.craftmine-world-choice-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.craftmine-world-choice-label { overflow-wrap: anywhere; }
+.craftmine-world-choice-desc { color: var(--ds-text-muted); line-height: 1.35; overflow-wrap: anywhere; }
 .craftmine-world-tag { padding: 0 4px; border: 1px solid var(--ds-border-subtle); border-radius: 999px; font-size: var(--text-2xs); }
 .craftmine-world-create-field { display: flex; flex-direction: column; gap: 3px; font-size: var(--text-2xs); }
 .craftmine-world-create-field input {

@@ -1,0 +1,1338 @@
+{
+  "commands": [
+    {
+      "op": "gather",
+      "args": {
+        "zoneId": "zone-herb-patch"
+      },
+      "error": "Error: Error: out_of_range\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "set-position",
+      "args": {
+        "x": 96,
+        "y": 248
+      },
+      "error": "Error: Error: Unsupported managed top-down operation\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": 1,
+        "steps": 55
+      },
+      "result": {
+        "after": [
+          104,
+          247.199615478516
+        ],
+        "before": [
+          104,
+          168
+        ],
+        "blocked": false,
+        "distance": 79.1996154785156,
+        "facing": "down",
+        "ok": true,
+        "sceneId": "overworld",
+        "steps": 55
+      }
+    },
+    {
+      "op": "observe",
+      "args": {},
+      "result": {
+        "bootError": "",
+        "coins": 40,
+        "duplicateEntityIds": [],
+        "flags": {},
+        "format": "craftmine.godot-topdown-snapshot/1",
+        "grantedRewards": {},
+        "inventory": {},
+        "maps": {
+          "town-overworld": {
+            "collisionShapes": 48,
+            "effectiveHeight": 22,
+            "effectiveWidth": 40,
+            "height": 22,
+            "mapId": "town-overworld",
+            "ok": true,
+            "solidCells": 145,
+            "tileSize": 16,
+            "tiles": 893,
+            "width": 40
+          }
+        },
+        "physical": {
+          "facing": "down",
+          "overlaps": {
+            "door-shop": false,
+            "npc-mira": false,
+            "zone-herb-patch": true
+          },
+          "playerPosition": [
+            104,
+            247.199615478516
+          ]
+        },
+        "player": {
+          "facing": "down",
+          "position": [
+            104,
+            247.199615478516
+          ],
+          "sceneId": "overworld"
+        },
+        "quests": {
+          "herb-delivery": {
+            "delivered": 0,
+            "rewarded": false,
+            "status": "active"
+          }
+        },
+        "sceneId": "overworld",
+        "scenePositions": {
+          "overworld": [
+            104,
+            168
+          ]
+        },
+        "shops": {
+          "general": {
+            "stock": {
+              "apple": 5,
+              "bread": 3,
+              "potion": 2,
+              "rope": 1
+            }
+          }
+        },
+        "sprite": {
+          "facing": "down",
+          "frame": 0,
+          "moving": false
+        },
+        "stateVersion": 1,
+        "worldId": "alpha"
+      }
+    },
+    {
+      "op": "gather",
+      "args": {
+        "zoneId": "zone-herb-patch"
+      },
+      "result": {
+        "amount": 1,
+        "chargesLeft": 4,
+        "inventory": 1,
+        "itemId": "herb",
+        "ok": true,
+        "snapshot": {
+          "bootError": "",
+          "coins": 40,
+          "duplicateEntityIds": [],
+          "flags": {
+            "zone.herb-patch.gathered": 1
+          },
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {},
+          "inventory": {
+            "herb": 1
+          },
+          "maps": {
+            "town-overworld": {
+              "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
+              "height": 22,
+              "mapId": "town-overworld",
+              "ok": true,
+              "solidCells": 145,
+              "tileSize": 16,
+              "tiles": 893,
+              "width": 40
+            }
+          },
+          "physical": {
+            "facing": "down",
+            "overlaps": {
+              "door-shop": false,
+              "npc-mira": false,
+              "zone-herb-patch": true
+            },
+            "playerPosition": [
+              104,
+              247.199615478516
+            ]
+          },
+          "player": {
+            "facing": "down",
+            "position": [
+              104,
+              247.199615478516
+            ],
+            "sceneId": "overworld"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 0,
+              "rewarded": false,
+              "status": "active"
+            }
+          },
+          "sceneId": "overworld",
+          "scenePositions": {
+            "overworld": [
+              104,
+              168
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 3,
+                "potion": 2,
+                "rope": 1
+              }
+            }
+          },
+          "sprite": {
+            "facing": "down",
+            "frame": 0,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "alpha"
+        },
+        "zoneId": "herb-patch"
+      }
+    },
+    {
+      "op": "gather",
+      "args": {
+        "zoneId": "zone-herb-patch"
+      },
+      "result": {
+        "amount": 1,
+        "chargesLeft": 3,
+        "inventory": 2,
+        "itemId": "herb",
+        "ok": true,
+        "snapshot": {
+          "bootError": "",
+          "coins": 40,
+          "duplicateEntityIds": [],
+          "flags": {
+            "zone.herb-patch.gathered": 2
+          },
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {},
+          "inventory": {
+            "herb": 2
+          },
+          "maps": {
+            "town-overworld": {
+              "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
+              "height": 22,
+              "mapId": "town-overworld",
+              "ok": true,
+              "solidCells": 145,
+              "tileSize": 16,
+              "tiles": 893,
+              "width": 40
+            }
+          },
+          "physical": {
+            "facing": "down",
+            "overlaps": {
+              "door-shop": false,
+              "npc-mira": false,
+              "zone-herb-patch": true
+            },
+            "playerPosition": [
+              104,
+              247.199615478516
+            ]
+          },
+          "player": {
+            "facing": "down",
+            "position": [
+              104,
+              247.199615478516
+            ],
+            "sceneId": "overworld"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 0,
+              "rewarded": false,
+              "status": "active"
+            }
+          },
+          "sceneId": "overworld",
+          "scenePositions": {
+            "overworld": [
+              104,
+              168
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 3,
+                "potion": 2,
+                "rope": 1
+              }
+            }
+          },
+          "sprite": {
+            "facing": "down",
+            "frame": 0,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "alpha"
+        },
+        "zoneId": "herb-patch"
+      }
+    },
+    {
+      "op": "gather",
+      "args": {
+        "zoneId": "zone-herb-patch"
+      },
+      "result": {
+        "amount": 1,
+        "chargesLeft": 2,
+        "inventory": 3,
+        "itemId": "herb",
+        "ok": true,
+        "snapshot": {
+          "bootError": "",
+          "coins": 40,
+          "duplicateEntityIds": [],
+          "flags": {
+            "zone.herb-patch.gathered": 3
+          },
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {},
+          "inventory": {
+            "herb": 3
+          },
+          "maps": {
+            "town-overworld": {
+              "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
+              "height": 22,
+              "mapId": "town-overworld",
+              "ok": true,
+              "solidCells": 145,
+              "tileSize": 16,
+              "tiles": 893,
+              "width": 40
+            }
+          },
+          "physical": {
+            "facing": "down",
+            "overlaps": {
+              "door-shop": false,
+              "npc-mira": false,
+              "zone-herb-patch": true
+            },
+            "playerPosition": [
+              104,
+              247.199615478516
+            ]
+          },
+          "player": {
+            "facing": "down",
+            "position": [
+              104,
+              247.199615478516
+            ],
+            "sceneId": "overworld"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 0,
+              "rewarded": false,
+              "status": "active"
+            }
+          },
+          "sceneId": "overworld",
+          "scenePositions": {
+            "overworld": [
+              104,
+              168
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 3,
+                "potion": 2,
+                "rope": 1
+              }
+            }
+          },
+          "sprite": {
+            "facing": "down",
+            "frame": 0,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "alpha"
+        },
+        "zoneId": "herb-patch"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": -1,
+        "steps": 55
+      },
+      "result": {
+        "after": [
+          104,
+          168
+        ],
+        "before": [
+          104,
+          247.199615478516
+        ],
+        "blocked": false,
+        "distance": 79.1996154785156,
+        "facing": "up",
+        "ok": true,
+        "sceneId": "overworld",
+        "steps": 55
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 1,
+        "dy": 0,
+        "steps": 65
+      },
+      "result": {
+        "after": [
+          197.866333007812,
+          168
+        ],
+        "before": [
+          104,
+          168
+        ],
+        "blocked": false,
+        "distance": 93.8663330078125,
+        "facing": "right",
+        "ok": true,
+        "sceneId": "overworld",
+        "steps": 65
+      }
+    },
+    {
+      "op": "deliver",
+      "args": {
+        "npcId": "npc-mira",
+        "questId": "herb-delivery"
+      },
+      "result": {
+        "coins": 70,
+        "consumed": {
+          "count": 3,
+          "id": "herb"
+        },
+        "grantedItems": [
+          {
+            "count": 1,
+            "id": "apple"
+          }
+        ],
+        "ok": true,
+        "questId": "herb-delivery",
+        "questStatus": "completed",
+        "rewardCoins": 30,
+        "rewardId": "herb-delivery#reward",
+        "snapshot": {
+          "bootError": "",
+          "coins": 70,
+          "duplicateEntityIds": [],
+          "flags": {
+            "zone.herb-patch.gathered": 3
+          },
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {
+            "herb-delivery#reward": true
+          },
+          "inventory": {
+            "apple": 1
+          },
+          "maps": {
+            "town-overworld": {
+              "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
+              "height": 22,
+              "mapId": "town-overworld",
+              "ok": true,
+              "solidCells": 145,
+              "tileSize": 16,
+              "tiles": 893,
+              "width": 40
+            }
+          },
+          "physical": {
+            "facing": "right",
+            "overlaps": {
+              "door-shop": false,
+              "npc-mira": true,
+              "zone-herb-patch": false
+            },
+            "playerPosition": [
+              197.866333007812,
+              168
+            ]
+          },
+          "player": {
+            "facing": "right",
+            "position": [
+              197.866333007812,
+              168
+            ],
+            "sceneId": "overworld"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 1,
+              "rewarded": true,
+              "status": "completed"
+            }
+          },
+          "sceneId": "overworld",
+          "scenePositions": {
+            "overworld": [
+              104,
+              168
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 3,
+                "potion": 2,
+                "rope": 1
+              }
+            }
+          },
+          "sprite": {
+            "facing": "right",
+            "frame": 8,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "alpha"
+        }
+      }
+    },
+    {
+      "op": "deliver",
+      "args": {
+        "npcId": "npc-mira",
+        "questId": "herb-delivery"
+      },
+      "error": "Error: Error: already_rewarded\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 1,
+        "dy": 0,
+        "steps": 180
+      },
+      "result": {
+        "after": [
+          460.400512695312,
+          168
+        ],
+        "before": [
+          197.866333007812,
+          168
+        ],
+        "blocked": false,
+        "distance": 262.5341796875,
+        "facing": "right",
+        "ok": true,
+        "sceneId": "overworld",
+        "steps": 180
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": -1,
+        "steps": 32
+      },
+      "result": {
+        "after": [
+          160,
+          168
+        ],
+        "before": [
+          460.400512695312,
+          168
+        ],
+        "blocked": false,
+        "distance": 300.400512695312,
+        "facing": "down",
+        "ok": true,
+        "sceneId": "shop-interior",
+        "steps": 32
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "bread"
+      },
+      "error": "Error: Error: out_of_range\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": -1,
+        "steps": 38
+      },
+      "result": {
+        "after": [
+          160,
+          113.733520507812
+        ],
+        "before": [
+          160,
+          168
+        ],
+        "blocked": false,
+        "distance": 54.2664794921875,
+        "facing": "up",
+        "ok": true,
+        "sceneId": "shop-interior",
+        "steps": 38
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "bread"
+      },
+      "result": {
+        "coins": 64,
+        "inventory": 1,
+        "itemId": "bread",
+        "ok": true,
+        "price": 6,
+        "shopId": "general",
+        "snapshot": {
+          "bootError": "",
+          "coins": 64,
+          "duplicateEntityIds": [],
+          "flags": {
+            "zone.herb-patch.gathered": 3
+          },
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {
+            "herb-delivery#reward": true
+          },
+          "inventory": {
+            "apple": 1,
+            "bread": 1
+          },
+          "maps": {
+            "town-shop-interior": {
+              "collisionShapes": 32,
+              "effectiveHeight": 14,
+              "effectiveWidth": 20,
+              "height": 14,
+              "mapId": "town-shop-interior",
+              "ok": true,
+              "solidCells": 78,
+              "tileSize": 16,
+              "tiles": 280,
+              "width": 20
+            }
+          },
+          "physical": {
+            "facing": "up",
+            "overlaps": {
+              "door-exit": false,
+              "npc-shopkeeper": true,
+              "shop-general": true
+            },
+            "playerPosition": [
+              160,
+              113.733520507812
+            ]
+          },
+          "player": {
+            "facing": "up",
+            "position": [
+              160,
+              113.733520507812
+            ],
+            "sceneId": "shop-interior"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 1,
+              "rewarded": true,
+              "status": "completed"
+            }
+          },
+          "sceneId": "shop-interior",
+          "scenePositions": {
+            "overworld": [
+              460.400512695312,
+              131.333511352539
+            ],
+            "shop-interior": [
+              160,
+              168
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 2,
+                "potion": 2,
+                "rope": 1
+              }
+            }
+          },
+          "sprite": {
+            "facing": "up",
+            "frame": 12,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "alpha"
+        },
+        "stock": 2
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": -1,
+        "dy": 0,
+        "steps": 8
+      },
+      "result": {
+        "after": [
+          149.733383178711,
+          113.733520507812
+        ],
+        "before": [
+          160,
+          113.733520507812
+        ],
+        "blocked": false,
+        "distance": 10.2666168212891,
+        "facing": "left",
+        "ok": true,
+        "sceneId": "shop-interior",
+        "steps": 8
+      }
+    },
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "top-down",
+          "baseVersion": "1.0.0",
+          "body": {
+            "coins": 64,
+            "flags": {
+              "zone.herb-patch.gathered": 3
+            },
+            "format": "craftmine.godot-topdown-state/1",
+            "grantedRewards": {
+              "herb-delivery#reward": true
+            },
+            "inventory": {
+              "apple": 1,
+              "bread": 1
+            },
+            "player": {
+              "facing": "left",
+              "position": [
+                149.733383178711,
+                113.733520507812
+              ],
+              "sceneId": "shop-interior"
+            },
+            "quests": {
+              "herb-delivery": {
+                "delivered": 1,
+                "rewarded": true,
+                "status": "completed"
+              }
+            },
+            "scenePositions": {
+              "overworld": [
+                460.400512695312,
+                131.333511352539
+              ],
+              "shop-interior": [
+                149.733383178711,
+                113.733520507812
+              ]
+            },
+            "shops": {
+              "general": {
+                "stock": {
+                  "apple": 5,
+                  "bread": 2,
+                  "potion": 2,
+                  "rope": 1
+                }
+              }
+            },
+            "stateVersion": 1,
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "foreign"
+        }
+      },
+      "error": "Error: Error: Progress identity or base version does not match\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "top-down",
+          "baseVersion": "1.0.0",
+          "body": {
+            "coins": 64,
+            "flags": {
+              "zone.herb-patch.gathered": 3
+            },
+            "format": "craftmine.godot-topdown-state/1",
+            "grantedRewards": {
+              "herb-delivery#reward": true
+            },
+            "inventory": {
+              "apple": 1,
+              "bread": 1
+            },
+            "player": {
+              "facing": "left",
+              "position": [
+                149.733383178711,
+                113.733520507812
+              ],
+              "sceneId": "shop-interior"
+            },
+            "quests": {
+              "herb-delivery": {
+                "delivered": 1,
+                "rewarded": true,
+                "status": "completed"
+              }
+            },
+            "scenePositions": {
+              "overworld": [
+                460.400512695312,
+                131.333511352539
+              ],
+              "shop-interior": [
+                149.733383178711,
+                113.733520507812
+              ]
+            },
+            "shops": {
+              "general": {
+                "stock": {
+                  "apple": 5,
+                  "bread": 2,
+                  "potion": 2,
+                  "rope": 1
+                }
+              }
+            },
+            "stateVersion": 1,
+            "worldId": "foreign"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "alpha"
+        }
+      },
+      "error": "Error: Error: Native progress belongs to another world\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "top-down",
+          "baseVersion": "1.0.0",
+          "body": {
+            "coins": 64,
+            "flags": {
+              "zone.herb-patch.gathered": 3
+            },
+            "format": "craftmine.godot-topdown-state/1",
+            "grantedRewards": {
+              "herb-delivery#reward": true
+            },
+            "inventory": {
+              "apple": 1,
+              "bread": 1
+            },
+            "player": {
+              "facing": "left",
+              "position": [
+                149.733383178711,
+                113.733520507812
+              ],
+              "sceneId": "shop-interior"
+            },
+            "quests": {
+              "herb-delivery": {
+                "delivered": 1,
+                "rewarded": true,
+                "status": "completed"
+              }
+            },
+            "scenePositions": {
+              "overworld": [
+                460.400512695312,
+                131.333511352539
+              ],
+              "shop-interior": [
+                149.733383178711,
+                113.733520507812
+              ]
+            },
+            "shops": {
+              "general": {
+                "stock": {
+                  "apple": 5,
+                  "bread": 2,
+                  "potion": 2,
+                  "rope": 1
+                }
+              }
+            },
+            "stateVersion": 1,
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 99,
+          "worldId": "alpha"
+        }
+      },
+      "error": "Error: Error: Unsupported progress state version or body\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "top-down",
+          "baseVersion": "1.0.0",
+          "body": {
+            "coins": 64,
+            "flags": {
+              "zone.herb-patch.gathered": 3
+            },
+            "format": "craftmine.godot-topdown-state/1",
+            "grantedRewards": {
+              "herb-delivery#reward": true
+            },
+            "inventory": {
+              "apple": 1,
+              "bread": 1
+            },
+            "player": "invalid",
+            "quests": {
+              "herb-delivery": {
+                "delivered": 1,
+                "rewarded": true,
+                "status": "completed"
+              }
+            },
+            "scenePositions": {
+              "overworld": [
+                460.400512695312,
+                131.333511352539
+              ],
+              "shop-interior": [
+                149.733383178711,
+                113.733520507812
+              ]
+            },
+            "shops": {
+              "general": {
+                "stock": {
+                  "apple": 5,
+                  "bread": 2,
+                  "potion": 2,
+                  "rope": 1
+                }
+              }
+            },
+            "stateVersion": 1,
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "alpha"
+        }
+      },
+      "error": "Error: Error: Player state is invalid\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    }
+  ],
+  "initial": {
+    "baseId": "top-down",
+    "format": "craftmine.godot-progress/1",
+    "state": {
+      "baseId": "top-down",
+      "baseVersion": "1.0.0",
+      "body": {
+        "coins": 40,
+        "flags": {},
+        "format": "craftmine.godot-topdown-state/1",
+        "grantedRewards": {},
+        "inventory": {},
+        "player": {
+          "facing": "down",
+          "position": [
+            104,
+            168
+          ],
+          "sceneId": "overworld"
+        },
+        "quests": {
+          "herb-delivery": {
+            "delivered": 0,
+            "rewarded": false,
+            "status": "active"
+          }
+        },
+        "scenePositions": {
+          "overworld": [
+            104,
+            168
+          ]
+        },
+        "shops": {
+          "general": {
+            "stock": {
+              "apple": 5,
+              "bread": 3,
+              "potion": 2,
+              "rope": 1
+            }
+          }
+        },
+        "stateVersion": 1,
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    }
+  },
+  "before": {
+    "base": "top-down",
+    "state": {
+      "baseId": "top-down",
+      "baseVersion": "1.0.0",
+      "body": {
+        "coins": 40,
+        "flags": {},
+        "format": "craftmine.godot-topdown-state/1",
+        "grantedRewards": {},
+        "inventory": {},
+        "player": {
+          "facing": "down",
+          "position": [
+            104,
+            168
+          ],
+          "sceneId": "overworld"
+        },
+        "quests": {
+          "herb-delivery": {
+            "delivered": 0,
+            "rewarded": false,
+            "status": "active"
+          }
+        },
+        "scenePositions": {
+          "overworld": [
+            104,
+            168
+          ]
+        },
+        "shops": {
+          "general": {
+            "stock": {
+              "apple": 5,
+              "bread": 3,
+              "potion": 2,
+              "rope": 1
+            }
+          }
+        },
+        "stateVersion": 1,
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "played": {
+    "base": "top-down",
+    "state": {
+      "baseId": "top-down",
+      "baseVersion": "1.0.0",
+      "body": {
+        "coins": 64,
+        "flags": {
+          "zone.herb-patch.gathered": 3
+        },
+        "format": "craftmine.godot-topdown-state/1",
+        "grantedRewards": {
+          "herb-delivery#reward": true
+        },
+        "inventory": {
+          "apple": 1,
+          "bread": 1
+        },
+        "player": {
+          "facing": "left",
+          "position": [
+            149.733383178711,
+            113.733520507812
+          ],
+          "sceneId": "shop-interior"
+        },
+        "quests": {
+          "herb-delivery": {
+            "delivered": 1,
+            "rewarded": true,
+            "status": "completed"
+          }
+        },
+        "scenePositions": {
+          "overworld": [
+            460.400512695312,
+            131.333511352539
+          ],
+          "shop-interior": [
+            149.733383178711,
+            113.733520507812
+          ]
+        },
+        "shops": {
+          "general": {
+            "stock": {
+              "apple": 5,
+              "bread": 2,
+              "potion": 2,
+              "rope": 1
+            }
+          }
+        },
+        "stateVersion": 1,
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "saved": {
+    "status": "persisted",
+    "runnerReceipt": {
+      "buildId": "gbd-3400894d9148dc649a86b1e4708ac3b503ae8dc625cb5bb9d4f53a6d5306391f",
+      "bytes": 705,
+      "format": "craftmine.godot-runner-receipt/1",
+      "instanceId": "5b17f801cc1a4f6c780f1852",
+      "snapshotSha256": "8279272366c1d3b5cd7c8035e201344a000ba56ac3ff85d4f05754492e486c26",
+      "snapshotText": "{\"baseId\":\"top-down\",\"baseVersion\":\"1.0.0\",\"body\":{\"coins\":64,\"flags\":{\"zone.herb-patch.gathered\":3},\"format\":\"craftmine.godot-topdown-state/1\",\"grantedRewards\":{\"herb-delivery#reward\":true},\"inventory\":{\"apple\":1,\"bread\":1},\"player\":{\"facing\":\"left\",\"position\":[149.733383178711,113.733520507812],\"sceneId\":\"shop-interior\"},\"quests\":{\"herb-delivery\":{\"delivered\":1,\"rewarded\":true,\"status\":\"completed\"}},\"scenePositions\":{\"overworld\":[460.400512695312,131.333511352539],\"shop-interior\":[149.733383178711,113.733520507812]},\"shops\":{\"general\":{\"stock\":{\"apple\":5,\"bread\":2,\"potion\":2,\"rope\":1}}},\"stateVersion\":1,\"worldId\":\"alpha\"},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"alpha\"}",
+      "worldId": "alpha"
+    },
+    "receipt": {
+      "buildId": "gbd-3400894d9148dc649a86b1e4708ac3b503ae8dc625cb5bb9d4f53a6d5306391f",
+      "contentHash": "62bc95a4f1f909783c54a235c148ae18cbf863d672f275b84dc3f9d87e8c1c28",
+      "format": "craftmine.godot-progress-receipt/1",
+      "instanceId": "5b17f801cc1a4f6c780f1852",
+      "persistedAt": 1788969581426,
+      "revision": 2,
+      "snapshotHash": "8279272366c1d3b5cd7c8035e201344a000ba56ac3ff85d4f05754492e486c26",
+      "snapshotSha256": "8279272366c1d3b5cd7c8035e201344a000ba56ac3ff85d4f05754492e486c26",
+      "worldId": "alpha"
+    },
+    "snapshot": {
+      "baseId": "top-down",
+      "baseVersion": "1.0.0",
+      "body": {
+        "coins": 64,
+        "flags": {
+          "zone.herb-patch.gathered": 3
+        },
+        "format": "craftmine.godot-topdown-state/1",
+        "grantedRewards": {
+          "herb-delivery#reward": true
+        },
+        "inventory": {
+          "apple": 1,
+          "bread": 1
+        },
+        "player": {
+          "facing": "left",
+          "position": [
+            149.733383178711,
+            113.733520507812
+          ],
+          "sceneId": "shop-interior"
+        },
+        "quests": {
+          "herb-delivery": {
+            "delivered": 1,
+            "rewarded": true,
+            "status": "completed"
+          }
+        },
+        "scenePositions": {
+          "overworld": [
+            460.400512695312,
+            131.333511352539
+          ],
+          "shop-interior": [
+            149.733383178711,
+            113.733520507812
+          ]
+        },
+        "shops": {
+          "general": {
+            "stock": {
+              "apple": 5,
+              "bread": 2,
+              "potion": 2,
+              "rope": 1
+            }
+          }
+        },
+        "stateVersion": 1,
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    }
+  },
+  "image": {
+    "isolation": {
+      "isolated": true,
+      "node": "undefined",
+      "origin": "http://127.0.0.1:62203"
+    },
+    "guardCounts": {
+      "pointer-lock": 0,
+      "window-focus": 0
+    },
+    "attached": 1,
+    "width": 1280,
+    "height": 860,
+    "pixels": {
+      "colors": 31,
+      "sampled": 8215,
+      "nonDominant": 3724
+    }
+  },
+  "restored": {
+    "base": "top-down",
+    "state": {
+      "baseId": "top-down",
+      "baseVersion": "1.0.0",
+      "body": {
+        "coins": 64,
+        "flags": {
+          "zone.herb-patch.gathered": 3
+        },
+        "format": "craftmine.godot-topdown-state/1",
+        "grantedRewards": {
+          "herb-delivery#reward": true
+        },
+        "inventory": {
+          "apple": 1,
+          "bread": 1
+        },
+        "player": {
+          "facing": "left",
+          "position": [
+            149.733383178711,
+            113.733520507812
+          ],
+          "sceneId": "shop-interior"
+        },
+        "quests": {
+          "herb-delivery": {
+            "delivered": 1,
+            "rewarded": true,
+            "status": "completed"
+          }
+        },
+        "scenePositions": {
+          "overworld": [
+            460.400512695312,
+            131.333511352539
+          ],
+          "shop-interior": [
+            149.733383178711,
+            113.733520507812
+          ]
+        },
+        "shops": {
+          "general": {
+            "stock": {
+              "apple": 5,
+              "bread": 2,
+              "potion": 2,
+              "rope": 1
+            }
+          }
+        },
+        "stateVersion": 1,
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  }
+}

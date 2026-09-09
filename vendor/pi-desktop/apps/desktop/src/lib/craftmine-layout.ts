@@ -13,6 +13,15 @@ const KEY = "craftmine.desktop.layout.v1";
 export const CRAFTMINE_CHAT_MIN_WIDTH = 360;
 export const CRAFTMINE_CHAT_MAX_WIDTH = 640;
 export const CRAFTMINE_CHAT_DEFAULT_WIDTH = 400;
+export const CRAFTMINE_CREATE_DEFAULT_WIDTH = 480;
+export const CRAFTMINE_PLAY_DEFAULT_WIDTH = 720;
+/** Defaults for "reset layout"; also the shape used when storage is corrupt. */
+export const CRAFTMINE_LAYOUT_DEFAULTS: CraftmineLayout = {
+  mode: "create",
+  widths: { create: CRAFTMINE_CREATE_DEFAULT_WIDTH, play: CRAFTMINE_PLAY_DEFAULT_WIDTH },
+  chatWidth: CRAFTMINE_CHAT_DEFAULT_WIDTH,
+  aux: {},
+};
 export function clampCraftmineChatWidth(value: unknown): number {
   return typeof value === "number" && Number.isFinite(value)
     ? Math.min(CRAFTMINE_CHAT_MAX_WIDTH, Math.max(CRAFTMINE_CHAT_MIN_WIDTH, Math.round(value)))
@@ -40,17 +49,36 @@ export function loadCraftmineLayout(storage: Pick<Storage, "getItem">): Craftmin
       chatWidth: clampCraftmineChatWidth(value?.chatWidth),
       aux: parseAux(value?.aux),
       widths: {
-        create: boundedWidth(value?.widths?.create, 480),
-        play: boundedWidth(value?.widths?.play, 720),
+        create: boundedWidth(value?.widths?.create, CRAFTMINE_CREATE_DEFAULT_WIDTH),
+        play: boundedWidth(value?.widths?.play, CRAFTMINE_PLAY_DEFAULT_WIDTH),
       },
     };
   } catch {
-    return { mode: "create", widths: { create: 480, play: 720 }, chatWidth: CRAFTMINE_CHAT_DEFAULT_WIDTH, aux: {} };
+    return { ...CRAFTMINE_LAYOUT_DEFAULTS, widths: { ...CRAFTMINE_LAYOUT_DEFAULTS.widths } };
   }
 }
 
 export function saveCraftmineLayout(storage: Pick<Storage, "setItem">, value: CraftmineLayout): void {
   try { storage.setItem(KEY, JSON.stringify(value)); } catch { /* Optional display preference only. */ }
+}
+
+/**
+ * Writes the documented defaults and returns them. The caller keeps the mode
+ * it is currently in, so resetting a dragged width does not also flip the
+ * workspace out of play mode.
+ */
+export function resetCraftmineLayout(
+  storage: Pick<Storage, "setItem">,
+  mode: CraftmineLayout["mode"] = "create",
+): CraftmineLayout {
+  const value: CraftmineLayout = {
+    ...CRAFTMINE_LAYOUT_DEFAULTS,
+    mode,
+    widths: { ...CRAFTMINE_LAYOUT_DEFAULTS.widths },
+    aux: {},
+  };
+  saveCraftmineLayout(storage, value);
+  return value;
 }
 
 export function changeCraftmineLayout(value: CraftmineLayout, mode: CraftmineLayout["mode"], currentWidth: number): CraftmineLayout {

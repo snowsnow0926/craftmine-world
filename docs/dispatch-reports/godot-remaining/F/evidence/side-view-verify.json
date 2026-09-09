@@ -1,0 +1,450 @@
+{
+  "format": "craftmine.godot-sideview-acceptance/1",
+  "checks": [
+    {
+      "id": "engine.version",
+      "passed": true,
+      "detail": "4.7.2.stable.official.ed1daf0bf"
+    },
+    {
+      "id": "project.importClean",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": "gate.singleJumpBlocked",
+      "passed": true,
+      "detail": "margin=53.889"
+    },
+    {
+      "id": "gate.doubleJumpPasses",
+      "passed": true,
+      "detail": "margin=59.889"
+    },
+    {
+      "id": "guard.playerPositionWritesOnlyInPlaceAt",
+      "passed": true,
+      "detail": "[{\"func\":\"place_at\",\"line\":304,\"text\":\"position = point\"}]"
+    },
+    {
+      "id": "guard.verifierCannotWriteState",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": "guard.placeAtCallSites",
+      "passed": true,
+      "detail": "[{\"file\":\"scripts/player/side_view_player.gd\",\"line\":295},{\"file\":\"scripts/world/room_manager.gd\",\"line\":135}]"
+    },
+    {
+      "id": "A.exit0",
+      "passed": true,
+      "detail": "exit=0"
+    },
+    {
+      "id": "A.traceWritten",
+      "passed": true,
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\31265dc6-0e60-4295-822b-b9c95d5708c0\\f-sideview-verify\\runs\\A_reach_ruins.json"
+    },
+    {
+      "id": "A.noTeleportX",
+      "passed": true,
+      "detail": "max dx/tick=4.334"
+    },
+    {
+      "id": "A.noTeleportY",
+      "passed": true,
+      "detail": "max dy/tick=11.739"
+    },
+    {
+      "id": "A.roomIsRuins",
+      "passed": true,
+      "detail": "ruins"
+    },
+    {
+      "id": "A.checkpointActive",
+      "passed": true,
+      "detail": "cp_ruins"
+    },
+    {
+      "id": "A.cacheRewardCollected",
+      "passed": true,
+      "detail": "{\"reward_ruins_cache\":true}"
+    },
+    {
+      "id": "A.coinsFromCache",
+      "passed": true,
+      "detail": "{\"coins\":5}"
+    },
+    {
+      "id": "A.noAbilityYet",
+      "passed": true,
+      "detail": "{}"
+    },
+    {
+      "id": "A.doorUsed",
+      "passed": true,
+      "detail": "door_used event"
+    },
+    {
+      "id": "B.exit0",
+      "passed": true,
+      "detail": "exit=0"
+    },
+    {
+      "id": "B.traceWritten",
+      "passed": true,
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\31265dc6-0e60-4295-822b-b9c95d5708c0\\f-sideview-verify\\runs\\B_gate_locked.json"
+    },
+    {
+      "id": "B.noTeleportX",
+      "passed": true,
+      "detail": "max dx/tick=4.333"
+    },
+    {
+      "id": "B.noTeleportY",
+      "passed": true,
+      "detail": "max dy/tick=11.667"
+    },
+    {
+      "id": "B.neverEnteredVault",
+      "passed": true,
+      "detail": "room_entered vault"
+    },
+    {
+      "id": "B.noVaultDoor",
+      "passed": true,
+      "detail": "door_used vault"
+    },
+    {
+      "id": "B.noAbility",
+      "passed": true,
+      "detail": "{}"
+    },
+    {
+      "id": "B.neverAboveLedgeTop",
+      "passed": true,
+      "detail": "highest feet y=298.00 (ledge top 250)"
+    },
+    {
+      "id": "C.exit0",
+      "passed": true,
+      "detail": "exit=0"
+    },
+    {
+      "id": "C.traceWritten",
+      "passed": true,
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\31265dc6-0e60-4295-822b-b9c95d5708c0\\f-sideview-verify\\runs\\C_get_ability.json"
+    },
+    {
+      "id": "C.noTeleportX",
+      "passed": true,
+      "detail": "max dx/tick=4.334"
+    },
+    {
+      "id": "C.noTeleportY",
+      "passed": true,
+      "detail": "max dy/tick=11.668"
+    },
+    {
+      "id": "C.abilityGained",
+      "passed": true,
+      "detail": "ability_gained event"
+    },
+    {
+      "id": "C.abilityFromPickup",
+      "passed": true,
+      "detail": "{\"abilityId\":\"double_jump\",\"source\":\"pickup\",\"x\":490,\"y\":330}"
+    },
+    {
+      "id": "C.abilityPersisted",
+      "passed": true,
+      "detail": "{\"double_jump\":true}"
+    },
+    {
+      "id": "C.saveFileHasAbility",
+      "passed": true,
+      "detail": "{\"double_jump\":true}"
+    },
+    {
+      "id": "C.gainedOnPlatform",
+      "passed": true,
+      "detail": "y=329.9"
+    },
+    {
+      "id": "D.exit0",
+      "passed": true,
+      "detail": "exit=0"
+    },
+    {
+      "id": "D.traceWritten",
+      "passed": true,
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\31265dc6-0e60-4295-822b-b9c95d5708c0\\f-sideview-verify\\runs\\D_enter_vault.json"
+    },
+    {
+      "id": "D.noTeleportX",
+      "passed": true,
+      "detail": "max dx/tick=4.333"
+    },
+    {
+      "id": "D.noTeleportY",
+      "passed": true,
+      "detail": "max dy/tick=10.667"
+    },
+    {
+      "id": "D.bootLoadedSave",
+      "passed": true,
+      "detail": "{\"loadError\":\"\",\"loaded\":true,\"recoveredFromBackup\":false,\"stateVersion\":1,\"worldId\":\"ruins\"}"
+    },
+    {
+      "id": "D.abilitySurvivedRestart",
+      "passed": true,
+      "detail": "doubleJumpUnlocked=true"
+    },
+    {
+      "id": "D.enteredVault",
+      "passed": true,
+      "detail": "room_entered vault"
+    },
+    {
+      "id": "D.usedDoubleJump",
+      "passed": true,
+      "detail": "double jump event"
+    },
+    {
+      "id": "D.roseAboveLedge",
+      "passed": true,
+      "detail": "highest feet y=202.26 (ledge top 250)"
+    },
+    {
+      "id": "D.vaultOnlyAfterUnlock",
+      "passed": true,
+      "detail": "ability tick=57 (previous process), vault tick=52 (this process)"
+    },
+    {
+      "id": "E.exit0",
+      "passed": true,
+      "detail": "exit=0"
+    },
+    {
+      "id": "E.traceWritten",
+      "passed": true,
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\31265dc6-0e60-4295-822b-b9c95d5708c0\\f-sideview-verify\\runs\\E_revisit.json"
+    },
+    {
+      "id": "E.noTeleportX",
+      "passed": true,
+      "detail": "max dx/tick=4.333"
+    },
+    {
+      "id": "E.noTeleportY",
+      "passed": true,
+      "detail": "max dy/tick=13.500"
+    },
+    {
+      "id": "E.abilityKept",
+      "passed": true,
+      "detail": "{\"double_jump\":true}"
+    },
+    {
+      "id": "E.coinsUnchanged",
+      "passed": true,
+      "detail": "15 -> 15"
+    },
+    {
+      "id": "E.noDuplicateRewards",
+      "passed": true,
+      "detail": "0 reward events on the return trip"
+    },
+    {
+      "id": "E.revisitedRooms",
+      "passed": true,
+      "detail": "{\"entrance\":{\"entries\":2,\"visited\":true},\"ruins\":{\"entries\":4,\"visited\":true},\"vault\":{\"entries\":2,\"visited\":true}}"
+    },
+    {
+      "id": "E.checkpointKept",
+      "passed": true,
+      "detail": "cp_ruins"
+    },
+    {
+      "id": "F.exit0",
+      "passed": true,
+      "detail": "exit=0"
+    },
+    {
+      "id": "F.traceWritten",
+      "passed": true,
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\31265dc6-0e60-4295-822b-b9c95d5708c0\\f-sideview-verify\\runs\\F_hazard_respawn.json"
+    },
+    {
+      "id": "F.noTeleportX",
+      "passed": true,
+      "detail": "max dx/tick=4.333"
+    },
+    {
+      "id": "F.noTeleportY",
+      "passed": true,
+      "detail": "max dy/tick=5.000"
+    },
+    {
+      "id": "F.diedOnHazard",
+      "passed": true,
+      "detail": "{\"cause\":\"hazard:spikes_entrance\"}"
+    },
+    {
+      "id": "F.respawnedAtCheckpoint",
+      "passed": true,
+      "detail": "{\"checkpointId\":\"cp_entrance\",\"x\":200,\"y\":320}"
+    },
+    {
+      "id": "F.checkpointSaved",
+      "passed": true,
+      "detail": "cp_entrance"
+    },
+    {
+      "id": "F.deathCounted",
+      "passed": true,
+      "detail": "{\"deaths\":4}"
+    },
+    {
+      "id": "G.exit0",
+      "passed": true,
+      "detail": "exit=0"
+    },
+    {
+      "id": "G.traceWritten",
+      "passed": true,
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\31265dc6-0e60-4295-822b-b9c95d5708c0\\f-sideview-verify\\runs\\G_blank_basic.json"
+    },
+    {
+      "id": "G.noTeleportX",
+      "passed": true,
+      "detail": "max dx/tick=4.333"
+    },
+    {
+      "id": "G.noTeleportY",
+      "passed": true,
+      "detail": "max dy/tick=11.668"
+    },
+    {
+      "id": "G.jumped",
+      "passed": true,
+      "detail": "ground jump"
+    },
+    {
+      "id": "G.attacked",
+      "passed": true,
+      "detail": "attack_started"
+    },
+    {
+      "id": "G.noRewards",
+      "passed": true,
+      "detail": "{}"
+    },
+    {
+      "id": "G.noCoins",
+      "passed": true,
+      "detail": "{}"
+    },
+    {
+      "id": "G.noCheckpoints",
+      "passed": true,
+      "detail": "{\"activated\":{},\"active\":\"\"}"
+    },
+    {
+      "id": "G.noAbilityInBlank",
+      "passed": true,
+      "detail": "{}"
+    },
+    {
+      "id": "I.exit0",
+      "passed": true,
+      "detail": "exit=0"
+    },
+    {
+      "id": "I.traceWritten",
+      "passed": true,
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\31265dc6-0e60-4295-822b-b9c95d5708c0\\f-sideview-verify\\runs\\I_gate_guard.json"
+    },
+    {
+      "id": "I.noTeleportX",
+      "passed": true,
+      "detail": "max dx/tick=0.000"
+    },
+    {
+      "id": "I.noTeleportY",
+      "passed": true,
+      "detail": "max dy/tick=0.000"
+    },
+    {
+      "id": "I.gateProbeRan",
+      "passed": true,
+      "detail": "{\"playerRoom\":\"entrance\",\"roomAfter\":\"entrance\",\"targetRoom\":\"vault\"}"
+    },
+    {
+      "id": "I.gateBlocked",
+      "passed": true,
+      "detail": "[{\"data\":{\"fromRoom\":\"entrance\",\"requiredAbility\":\"double_jump\",\"targetRoom\":\"vault\"},\"name\":\"gate_blocked\",\"tick\":10}]"
+    },
+    {
+      "id": "I.stayedOutOfVault",
+      "passed": true,
+      "detail": "{\"playerRoom\":\"entrance\",\"roomAfter\":\"entrance\",\"targetRoom\":\"vault\"}"
+    },
+    {
+      "id": "I.noAbility",
+      "passed": true,
+      "detail": "{}"
+    },
+    {
+      "id": "H.materializeExits0",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": "H.materializeReceipt",
+      "passed": true,
+      "detail": "MATERIALIZED.json"
+    },
+    {
+      "id": "H.materializeDefaultPointer",
+      "passed": true,
+      "detail": "worlds/default.json"
+    },
+    {
+      "id": "H.materializedImportClean",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": "H.exit0",
+      "passed": true,
+      "detail": "exit=0"
+    },
+    {
+      "id": "H.traceWritten",
+      "passed": true,
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\31265dc6-0e60-4295-822b-b9c95d5708c0\\f-sideview-verify\\runs\\H_materialized.json"
+    },
+    {
+      "id": "H.noTeleportX",
+      "passed": true,
+      "detail": "max dx/tick=4.334"
+    },
+    {
+      "id": "H.noTeleportY",
+      "passed": true,
+      "detail": "max dy/tick=11.739"
+    },
+    {
+      "id": "H.materializedReachesRuins",
+      "passed": true,
+      "detail": "room_entered ruins"
+    },
+    {
+      "id": "H.materializedEntryScene",
+      "passed": true,
+      "detail": "side-view"
+    }
+  ]
+}

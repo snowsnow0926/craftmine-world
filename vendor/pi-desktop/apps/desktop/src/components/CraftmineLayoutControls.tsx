@@ -2,13 +2,20 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "../stores/app-store";
 import { pluginWorkPanelTab } from "../lib/work-panel-tabs";
-import { changeCraftmineLayout, loadCraftmineLayout, saveCraftmineLayout } from "../lib/craftmine-layout";
+import {
+  changeCraftmineLayout,
+  loadCraftmineLayout,
+  resetCraftmineLayout,
+  saveCraftmineLayout,
+} from "../lib/craftmine-layout";
+import { CRAFTMINE_WORLD_TEXT } from "../lib/craftmine-worlds-text";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
 export function CraftmineLayoutControls() {
   const { i18n } = useTranslation();
   const chinese = i18n.language.startsWith("zh");
+  const lang = chinese ? "zh" : "en";
   const [layout, setLayout] = useState(() => loadCraftmineLayout(localStorage));
   useEffect(() => {
     const sync = () => setLayout(loadCraftmineLayout(localStorage));
@@ -25,10 +32,27 @@ export function CraftmineLayoutControls() {
     setLayout(next);
     window.dispatchEvent(new CustomEvent("craftmine-layout-changed"));
   };
+  // Reset returns every remembered width and expansion to the documented
+  // defaults, and keeps the workspace in the mode the player is already in.
+  const reset = () => {
+    const state = useAppStore.getState();
+    const next = resetCraftmineLayout(localStorage, layout.mode);
+    state.setWorkPanelWidth(next.widths[next.mode]);
+    setLayout(next);
+    window.dispatchEvent(new CustomEvent("craftmine-layout-changed"));
+  };
   return (
-    <div className="craftmine-layout-controls no-drag" role="group" aria-label={chinese ? "工作台布局" : "Workspace layout"}>
+    <div
+      className="craftmine-layout-controls no-drag"
+      role="group"
+      aria-label={chinese ? "工作台布局" : "Workspace layout"}
+      data-craftmine-layout={layout.mode}
+    >
       <form onSubmit={(event) => { event.preventDefault(); choose("create"); }}><button type="submit" aria-pressed={layout.mode === "create"} title={chinese ? "保留聊天与作品工作面板" : "Chat and world side by side"}>{layout.mode === "play" ? (chinese ? "回到创作" : "Back to create") : (chinese ? "创作" : "Create")}</button></form>
       <form onSubmit={(event) => { event.preventDefault(); choose("play"); }}><button type="submit" aria-pressed={layout.mode === "play"} title={chinese ? "世界占满工作区；保留当前对话与标签" : "Fill the workspace; preserve your conversation and tabs"}>{chinese ? "游玩" : "Play"}</button></form>
+      <button type="button" data-action="reset-layout" onClick={reset} title={CRAFTMINE_WORLD_TEXT.layoutReset[lang]}>
+        {CRAFTMINE_WORLD_TEXT.layoutReset[lang]}
+      </button>
     </div>
   );
 }
