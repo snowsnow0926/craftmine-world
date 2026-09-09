@@ -165,7 +165,7 @@ export function buildInitialProgress(input: {
     baseId: input.baseId,
     baseVersion: input.baseVersion,
     stateVersion: input.stateVersion,
-    body: input.body,
+    body: {...input.body, worldId: input.worldId},
   };
 }
 
@@ -176,9 +176,9 @@ export function buildInitialProgress(input: {
  */
 export function readBaseInitialBody(projectDir: string): Record<string, unknown> {
   const candidates = [
+    path.join(projectDir, "craftmine_initial_state.json"),
     path.join(projectDir, "world-build.json"),
     path.join(projectDir, "world.json"),
-    path.join(projectDir, "craftmine_initial_state.json"),
   ];
   for (const file of candidates) {
     const document = readJson(file);
@@ -262,6 +262,7 @@ export type GodotCreationDependencies = {
   domain: (method: string, params: Record<string, unknown>) => Promise<any>;
   materialize: (input: {baseId: string; worldId: string; template: string; out: string}) => unknown;
   makeWorldId?: () => string;
+  initialization?: {start: (worldId: string) => Promise<void>; error: (worldId: string) => string | null; running: (worldId: string) => boolean};
 };
 
 /**
@@ -301,10 +302,18 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       const projectDir = path.join(deps.worldsRoot, worldId);
       // Only a directory this operation created may be cleaned up on failure.
       const ownsProjectDir = !fs.existsSync(projectDir);
-      if (!ownsProjectDir) throw new Error("WORLD_EXISTS");
+      if (!ownsProjectDir) {
+        const owner = readJson(path.join(projectDir, ".creation-owner.json"));
+        if (owner?.operationId !== request.operationId || owner?.worldId !== worldId || owner?.baseId !== request.baseId || owner?.templateId !== request.templateId || owner?.title !== request.title) throw new Error("WORLD_EXISTS");
+        const existing = await deps.domain("godotWorld.initStatus", {worldId});
+        if (!existing.playable) void deps.initialization?.start(worldId);
+        const mapped = initStatusToCreation(existing);
+        return {id: worldId, title: request.title, state: mapped.state, creation: mapped.creation};
+      }
       fs.mkdirSync(path.dirname(projectDir), {recursive: true});
       try {
         deps.materialize({baseId: request.baseId, worldId, template: request.templateId, out: projectDir});
+        fs.writeFileSync(path.join(projectDir, ".creation-owner.json"), JSON.stringify({...request, worldId}), {flag: "wx"});
         const body = readBaseInitialBody(projectDir);
         const snapshot = buildInitialProgress({
           worldId, baseId: request.baseId, baseVersion: base.baseVersion,
@@ -316,6 +325,7 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
           snapshot,
         });
         const mapped = initStatusToCreation(result?.init ?? null);
+        void deps.initialization?.start(worldId);
         return {id: worldId, title: request.title, state: mapped.state, creation: mapped.creation};
       } catch (error) {
         // A transport failure can hide a committed transaction. Ask the core
@@ -348,10 +358,16 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
     /** Real initialization status for one world, or null when the core is silent. */
     async status(worldId: string): Promise<{state: string; creation: WorldCreation | null} | null> {
       try {
-        return initStatusToCreation(await deps.domain("godotWorld.initStatus", {worldId}));
+        const status = await deps.domain("godotWorld.initStatus", {worldId});
+        const mapped = initStatusToCreation(status);
+        const failure = deps.initialization?.error(worldId);
+        if (failure && mapped.creation) return {state: "failed", creation: {...mapped.creation, error: {code: "GODOT_INITIALIZATION_FAILED", message: failure, stage: mapped.creation.stage, recoverable: true}, actions: ["retry", "details"]}};
+        if (!status.playable && !deps.initialization?.running(worldId) && fs.existsSync(path.join(deps.worldsRoot, worldId, ".creation-owner.json"))) void deps.initialization?.start(worldId);
+        return mapped;
       } catch {
         return null;
       }
     },
+    retry(worldId: string) { return deps.initialization?.start(worldId) ?? Promise.resolve(); },
   };
 }

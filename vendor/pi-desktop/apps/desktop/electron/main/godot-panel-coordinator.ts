@@ -86,11 +86,27 @@ export function createGodotPanelCoordinator(options: Options) {
       }
       if (channel === "world.createOptions") return mergedCreateOptions();
       if (channel === "world.list") return augmentWorldList(await options.invoke(channel, payload));
+      if (channel === "world.creationRetry") {
+        if (typeof payload.worldId !== "string" || Object.keys(payload).some(key => key !== "worldId")) throw Error("INVALID_GODOT_PANEL_ACTION");
+        void currentCreation()?.retry(payload.worldId);
+        return {status: "running", worldId: payload.worldId};
+      }
       if (channel === "world.create") {
         const creation = currentCreation();
         const baseId = typeof payload.baseId === "string" ? payload.baseId : "";
         // A Godot base is created here; every other base keeps the legacy path.
-        if (creation && creation.options.bases.some(base => base.id === baseId)) return creation.create(payload);
+        if (creation && creation.options.bases.some(base => base.id === baseId)) {
+          if (switching) throw Error("WORLD_BUSY");
+          switching = true;
+          let release: (() => void) | undefined;
+          try {
+            release = await options.host.holdSelectionSync();
+            const result = await creation.create(payload);
+            await options.host.switchWorld(null);
+            await options.invoke("world.open", {id: result.id});
+            return result;
+          } finally { release?.(); switching = false; }
+        }
       }
       if (channel !== "world.open") return options.invoke(channel, payload);
       if (switching || typeof payload.id !== "string" || Object.keys(payload).some(key => key !== "id")) throw new Error("WORLD_BUSY");

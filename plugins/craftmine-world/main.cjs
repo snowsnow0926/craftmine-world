@@ -9,7 +9,7 @@ const {createHostRequests} = require('./host-requests.cjs');
 const {createWorkbenchService} = require('./workbench-service.cjs');
 const {createGodotExecutor} = require('./godot-executor.cjs');
 const {createAssetService} = require('./asset-service.mjs');
-const {createReuseService} = require('./reuse-service.mjs');
+const {createReuseService,createManagedPackageInstaller} = require('./reuse-service.mjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary,createLibraryService,createMemoryService} = require('./domain.cjs');
 const {createHostProviders,createCoreBudgetProvider} = require('./tool-services.cjs');
 let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor,assetService,reuseService;
@@ -46,7 +46,21 @@ async function onLoad() {
       ?pi.craftmine.cancelAssetPreview(input)
       :Promise.reject(Error('ASSET_PREVIEW_HOST_UNAVAILABLE'))});
   // S3 works/package service: domain validation over the core's package routes.
-  reuseService=createReuseService({call});
+  const installSource=createManagedPackageInstaller({call,
+    stagingRoot:require('node:path').join(await pi.plugin.getDataPath(),'package-source-installs'),
+    enqueue:(job,context)=>godotExecutor.enqueue(job,context),
+    bind:async(worldId,operationId)=>{
+      if((await pi.plugin.getSettings()).activeWorldId!==worldId)throw Error('GODOT_WORLD_CHANGED');
+      const worldRecord=await call('world.read',{id:worldId});
+      if(worldRecord.runtimeKind!=='godot')throw Error('GODOT_WORLD_REQUIRED');
+      const context={projectId:'craftmine-package-install',sessionId:'package-'+worldId,turnId:operationId};
+      await call('turn.begin',{context,selectedWorld:worldId,request:{id:operationId,text:'Install this selected package into the world draft, then check it.'}});
+      let status=await call('content.status',{worldId});
+      if(status.backend!=='git'){await call('content.migrate.apply',{worldId});status=await call('content.status',{worldId});}
+      return {context,worldRecord,operation:{operationId,worldId,repoId:status.repoId,branchId:'main',
+        expectedHeadOid:status.headOid,expectedAppliedOid:status.appliedOid,expectedProgressRevision:worldRecord.revision}};
+    }});
+  reuseService=createReuseService({call,installSource});
   // The managed executor owns the pinned engine. It registers only after a real
   // broker preflight, so the reported capability always comes from live state.
   const toolchain=typeof pi.craftmine?.getGodotToolchain==='function'?await pi.craftmine.getGodotToolchain():null;

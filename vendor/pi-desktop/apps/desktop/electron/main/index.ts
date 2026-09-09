@@ -189,6 +189,8 @@ import { createGodotCandidateCoordinator } from "./godot-candidate-coordinator";
 import {
   createGodotWorldFactory, loadMaterializer, resolveGodotRoot, type GodotCreationDependencies,
 } from "./godot-world-creation";
+import {createGodotWorldInitializer} from "./godot-world-initialization";
+import {createAssetPreviewHost} from "../craftmine-assets/host-service.mjs";
 import { createGodotPanelCoordinator } from "./godot-panel-coordinator";
 import { pathToFileURL } from "node:url";
 import { parseAllowedExternalUrl } from "./safe-open-external";
@@ -932,6 +934,19 @@ const godotRoot = resolveGodotRoot({
   startDir: __dirname,
   override: process.env.CRAFTMINE_GODOT_BASES,
 });
+const godotToolchainRoot = app.isPackaged ? join(process.resourcesPath, "godot") : join(godotRoot, "..", "build", "runtime-resources", "godot");
+plugins.setServices({craftmineGodotToolchain: {
+  broker: join(godotToolchainRoot, "broker", "godot-host-broker.exe"),
+  brokerIdentity: join(godotToolchainRoot, "broker", "broker-identity.json"),
+  engineRoot: join(godotToolchainRoot, "engine", "4.7.2-stable"),
+  toolchainLock: join(godotToolchainRoot, "toolchain.lock.json"),
+  bridgePath: join(godotToolchainRoot, "web", "bridge.js"),
+}});
+const assetPreviews = createAssetPreviewHost({resolveBody: (input: Record<string, unknown>) => plugins.requestCraftmineHost("asset.bodyPath", input)});
+plugins.setServices({
+  craftmineAssetPreview: (input) => assetPreviews.preview(input),
+  craftmineCancelAssetPreview: (input) => assetPreviews.cancel(input),
+});
 let materializeBase: GodotCreationDependencies["materialize"] | null = null;
 void loadMaterializer(join(godotRoot, "shared", "materialize.mjs"))
   .then(fn => { materializeBase = fn; })
@@ -1021,6 +1036,12 @@ godotCreation = createGodotWorldFactory({
   catalogFile: join(godotRoot, "bases", "base-catalog.json"),
   basesRoot: join(godotRoot, "bases"),
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
+  initialization: createGodotWorldInitializer({
+    worldsRoot: join(dataDir, "godot-worlds"),
+    domain: (method, params) => plugins.requestCraftmineHost(method, params),
+    selection: godotSelection,
+    firstLoad: (worldId, candidateId) => godotCandidates.firstLoad(worldId, candidateId),
+  }),
   materialize: input => {
     if (!materializeBase) throw new Error("GODOT_MATERIALIZER_UNAVAILABLE");
     return materializeBase(input);

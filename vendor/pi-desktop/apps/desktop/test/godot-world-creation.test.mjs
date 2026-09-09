@@ -48,7 +48,7 @@ test("initial progress comes from the base and never from the client", () => {
   assert.deepEqual(body, {coins: 0, sceneId: "world"});
   const envelope = creation.buildInitialProgress({worldId: "world-a1", baseId: "top-down", baseVersion: "1.0.0", stateVersion: 1, body});
   assert.deepEqual(envelope, {format: "craftmine.godot-progress/1", worldId: "world-a1", baseId: "top-down",
-    baseVersion: "1.0.0", stateVersion: 1, body: {coins: 0, sceneId: "world"}});
+    baseVersion: "1.0.0", stateVersion: 1, body: {coins: 0, sceneId: "world", worldId: "world-a1"}});
   assert.throws(() => creation.buildInitialProgress({worldId: "world-a1", baseId: "top-down", stateVersion: 0, body}), /INVALID_GODOT_PROGRESS/);
   assert.throws(() => creation.buildInitialProgress({worldId: "world-a1", baseId: "top-down", stateVersion: 1, body: []}), /INVALID_GODOT_PROGRESS/);
 });
@@ -90,7 +90,10 @@ test("the shipped materializer loads from an absolute path exactly once", async 
   const out = path.join(tmp(), "world-materialized");
   materialize({baseId: "top-down", worldId: "world-mat1", template: "blank", out});
   assert.equal(fs.existsSync(path.join(out, "project.godot")), true, "the real module materialized a project");
-  assert.deepEqual(Object.keys(creation.readBaseInitialBody(out)).sort(), ["coins", "flags", "inventory", "playerFacing", "playerPosition", "quests", "sceneId", "shops"]);
+  const captured = JSON.parse(fs.readFileSync(path.join(root, "desktop/godot/shared/initial-states/top-down-blank.json"), "utf8"));
+  const {worldId: _authoredId, ...expected} = captured.snapshot.body;
+  assert.deepEqual(creation.readBaseInitialBody(out), expected);
+  assert.equal(JSON.parse(fs.readFileSync(path.join(out, "craftmine_initial_state.json"), "utf8")).initialProgress.worldId, "world-mat1");
 });
 
 test("the main process passes a path, never a pre-converted URL", async () => {
@@ -244,6 +247,7 @@ test("the shipped Godot root resolves from the compiled main process directory",
 test("the panel coordinator serves Godot bases, creation and real world state", async () => {
   const forwarded = [];
   const host = {instance: null, state: {state: "closed"}, setSurfaceVisible: () => {}, resume: async () => {}, pause: async () => {},
+    holdSelectionSync: async () => () => {}, switchWorld: async (value) => {forwarded.push(["switchWorld", value]);},
     save: async () => ({status: "persisted", receipt: {}}), checkpoint: async () => ({status: "persisted", receipt: {}})};
   const adapter = {allowedRoots: () => [], describe: async () => null, progress: async () => null, describeCandidate: async () => null};
   const factory = {
@@ -272,6 +276,7 @@ test("the panel coordinator serves Godot bases, creation and real world state", 
   const created = await coordinator.invoke("world.create", {title: "小镇", baseId: "top-down", starterId: "blank"});
   assert.equal(created.id, "world-x");
   assert.equal(forwarded.some(([channel]) => channel === "create"), true);
+  assert.ok(forwarded.some(([channel, value]) => channel === "world.open" && value.id === created.id));
   await coordinator.invoke("world.create", {title: "旧世界", baseId: "craftmine-web/5"});
   assert.equal(forwarded.at(-1)[0], "world.create", "the legacy base still goes to the plugin");
 
