@@ -5910,6 +5910,7 @@ function registerIpc() {
     return invokeCraftmineNavigation(payload, {
       invoke: (channel, params) => plugins.invokePanelBridge("craftmine.world", channel, params),
       navigate: (request) => pluginViews.navigateCraftmine(request),
+      showSurface: (request) => pluginViews.showCraftmineSurface(request),
     });
   });
 

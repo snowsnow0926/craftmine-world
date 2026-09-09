@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Box } from "lucide-react";
 import { useAppStore } from "../stores/app-store";
 import { pluginWorkPanelTab } from "../lib/work-panel-tabs";
 import { CraftmineLayoutControls } from "./CraftmineLayoutControls";
 import { loadCraftmineLayout } from "../lib/craftmine-layout";
-import { craftmineLang } from "../lib/craftmine-worlds";
+import { craftmineLang, worldErrorMessage } from "../lib/craftmine-worlds";
 import { CRAFTMINE_WORLD_TEXT } from "../lib/craftmine-worlds-text";
 import type { CraftmineAuxSurface } from "../lib/craftmine-aux";
 import { useCraftmineWorlds } from "../hooks/use-craftmine-worlds";
@@ -54,11 +54,20 @@ export function CraftmineNavigation() {
   }, [sessions, activeSessionId]);
 
   // The deep surface lives inside the world view. Opening the world tab is a
-  // real action; the section request is delivered through the documented event
-  // the host must route to the view (INTERFACE_REQUEST.md section 2).
+  // real action; the surface request is sent over the documented navigation
+  // channel, which the host routes into the retained view.
+  const [surfaceError, setSurfaceError] = useState<string | null>(null);
   const openSurface = (surface: CraftmineAuxSurface, section: string) => {
     open();
-    window.dispatchEvent(new CustomEvent("craftmine-aux-open", { detail: { surface, section } }));
+    setSurfaceError(null);
+    const bridge = controller.bridge;
+    if (!bridge) {
+      setSurfaceError(CRAFTMINE_WORLD_TEXT.unavailable[lang]);
+      return;
+    }
+    void bridge
+      .call("world.surface", { surface, section })
+      .catch((failure) => setSurfaceError(worldErrorMessage(failure, lang)));
   };
 
   return (
@@ -92,6 +101,9 @@ export function CraftmineNavigation() {
           )}
 
           <WorldAuxSections controller={controller} lang={lang} onOpenSurface={openSurface} />
+          {surfaceError && (
+            <p className="craftmine-world-error" role="alert" data-surface-error="true">{surfaceError}</p>
+          )}
           <CraftmineLayoutControls />
         </>
       )}

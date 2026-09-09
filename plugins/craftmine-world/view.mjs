@@ -225,7 +225,22 @@ addEventListener('message',event=>{
 
 // Only the trusted product panel owns this lifecycle surface. Authored code
 // lives in the opaque game iframe and cannot reach it.
-globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,navigate,showChecks:()=>setMode(true),showWorkbench:tab=>openWorkbench(tab),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
+globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,navigate,showSurface,showChecks:()=>setMode(true),showWorkbench:tab=>openWorkbench(tab),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
+
+// Surfaces requested by the left column. Only surfaces this page can actually
+// show are accepted; an unknown workbench tab is refused instead of silently
+// falling back to another panel.
+async function showSurface(request) {
+  const surface=request?.surface;
+  if(!surface||typeof surface!=='object')throw Error('INVALID_SURFACE_REQUEST');
+  if(surface.kind==='checks'){setMode(true);return {ok:true,shown:'checks'};}
+  if(surface.kind==='world'){setMode(false);return {ok:true,shown:'world'};}
+  if(surface.kind!=='workbench'||typeof surface.tab!=='string'||!surface.tab)throw Error('INVALID_SURFACE_REQUEST');
+  if(!document.querySelector(`[data-workbench-tab="${surface.tab}"]`))throw Error('UNKNOWN_WORKBENCH_TAB');
+  await openWorkbench(surface.tab);
+  if(workbench?.tab!==surface.tab)throw Error('WORLD_BUSY');
+  return {ok:true,shown:'workbench',tab:surface.tab};
+}
 
 // Both navigation columns use the same live-view save sequence. Reject busy
 // requests explicitly; action() deliberately absorbs errors for DOM handlers.
