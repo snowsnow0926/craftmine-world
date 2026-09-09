@@ -1,0 +1,156 @@
+{
+  "format": "craftmine.godot-world-build/1",
+  "baseId": "mining-sandbox",
+  "baseVersion": "1.0.0",
+  "baseProtocolVersion": 1,
+  "worldFormat": "craftmine.godot-mining-sandbox-world/1",
+  "stateFormat": "craftmine.godot-mining-sandbox-state/1",
+  "progressFormat": "craftmine.godot-mining-sandbox-progress/1",
+  "chunkFormat": "craftmine.godot-mining-sandbox-chunk/1",
+  "probeFormat": "craftmine.godot-mining-sandbox-probe/1",
+  "godotVersion": "4.7.2-stable",
+  "worldId": "example-blank",
+  "template": "blank",
+  "entryScene": "res://scenes/main.tscn",
+  "stateVersion": 1,
+  "seed": 20260910,
+  "mapSize": [
+    48,
+    24
+  ],
+  "chunkTiles": [
+    16,
+    16
+  ],
+  "initialProgress": {
+    "player": {
+      "tile": [
+        6,
+        4
+      ],
+      "facing": "right",
+      "health": 3
+    },
+    "inventory": [],
+    "tools": [],
+    "flags": []
+  },
+  "userDirName": "craftmine-mining-sandbox-example-blank",
+  "files": [
+    {
+      "path": "icon.svg",
+      "bytes": 699,
+      "sha256": "55253ce29a79806ddc89b5b09e2d10f0906be42ec739ee339bdfe91d5c7c0a0b"
+    },
+    {
+      "path": "params/mining_sandbox_params.json",
+      "bytes": 1928,
+      "sha256": "b2ff7d5c713ab86dc85ff429b1a8362df71ce05e84abaa7dc489361376554762"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 1233,
+      "sha256": "28ea43c859c3def0ae4d6d734d558ad1ba383548e0a5d951b5c174c9d0829fab"
+    },
+    {
+      "path": "scenes/main.tscn",
+      "bytes": 181,
+      "sha256": "38ef7ae271d02f636a4c122b6d908fbfec257fc2da1074d062df83499bccda66"
+    },
+    {
+      "path": "scripts/base/base_contract.gd",
+      "bytes": 1292,
+      "sha256": "cc5c6c0adfc0c87d4574a4bd05092c1950a8d69dff5178d45465379453d29a06"
+    },
+    {
+      "path": "scripts/base/chunk_store.gd",
+      "bytes": 7471,
+      "sha256": "55797c5fe89b8fdb8789ebc8ed3a3685a2097b0b2622f2a49a582ad72b2a366b"
+    },
+    {
+      "path": "scripts/base/crafting_service.gd",
+      "bytes": 4908,
+      "sha256": "a993c0dedf476cf04ab75d1d56cdbff90eea4a707bc8b1c70fb50b109895c639"
+    },
+    {
+      "path": "scripts/base/human_input_source.gd",
+      "bytes": 475,
+      "sha256": "789fa4e2758d196017888eba814073af486da5ecf6d3a0571d6762ab432adbd7"
+    },
+    {
+      "path": "scripts/base/input_source.gd",
+      "bytes": 581,
+      "sha256": "9d0178838ac126dabcffa8b519c4f538d5cb6ba56a7cf6d3d4aa8bc6a6701235"
+    },
+    {
+      "path": "scripts/base/inventory_service.gd",
+      "bytes": 5900,
+      "sha256": "d397173bff69a6dcba44b109b379d07990749c8e9b76a8b7e5d03f67a07527e1"
+    },
+    {
+      "path": "scripts/base/mining_game.gd",
+      "bytes": 25738,
+      "sha256": "f8c28b4d9c6255fde11021117ba0b698f40c7127baf41c67b96e7740fa5e8655"
+    },
+    {
+      "path": "scripts/base/mining_params.gd",
+      "bytes": 6690,
+      "sha256": "2daaf039260d19f824627be79e44c0b6943f3e89591aeb2bf3cc66d9d786a359"
+    },
+    {
+      "path": "scripts/base/player.gd",
+      "bytes": 7244,
+      "sha256": "aad03577ecf467fe695fd97620178ee56c3d2d8e285ec597417e80e1a1b115fb"
+    },
+    {
+      "path": "scripts/base/probe.gd",
+      "bytes": 8233,
+      "sha256": "22f3c5322f72bac15a7d48f31c0de6de50e26f44484d67a940ddaf7138900faa"
+    },
+    {
+      "path": "scripts/base/save_store.gd",
+      "bytes": 17675,
+      "sha256": "3e93873cee30e506565f961a0ef19752438ffbc77522932b50edbabb141f67d9"
+    },
+    {
+      "path": "scripts/base/scripted_input_source.gd",
+      "bytes": 697,
+      "sha256": "aef79f51254d3f8f9c5c9eb815f16f5eb71d34ab3ef6a1499e655635cc883906"
+    },
+    {
+      "path": "scripts/base/station.gd",
+      "bytes": 1319,
+      "sha256": "43eb858d6a49b766d2b1af8537c8cf6ad8777ba0964cc6dfd2a5155bbe1cbe38"
+    },
+    {
+      "path": "scripts/base/terrain_collider.gd",
+      "bytes": 3344,
+      "sha256": "5fe11d928078e0d2b36a946233b81aaf4ea0982d97b95aaa1d03c3b216af7284"
+    },
+    {
+      "path": "scripts/base/terrain_generator.gd",
+      "bytes": 8013,
+      "sha256": "e8953ae90eabee6dc0234d6cf708ee4c14e78fa8a30f56278507d466114f2ce8"
+    },
+    {
+      "path": "scripts/base/terrain_renderer.gd",
+      "bytes": 3082,
+      "sha256": "58b5063cdd9a6689135309411e1ee664a56c219444b012dd290f30f9230a985f"
+    },
+    {
+      "path": "scripts/base/terrain_service.gd",
+      "bytes": 12202,
+      "sha256": "7cb4f1523745fe7444097cf34d92b691dad98cc2b203105bae922d6d76c1b75f"
+    },
+    {
+      "path": "scripts/base/world_state.gd",
+      "bytes": 11577,
+      "sha256": "257ecf0ad7398123e6528041b205b7801b481f4f208838f05b1610560b93b59b"
+    },
+    {
+      "path": "world.json",
+      "bytes": 2539,
+      "sha256": "4f5e91cdd921cdb41664d6a5728fccb23ce83d2af7bd08792d816289a4801be6"
+    }
+  ]
+}

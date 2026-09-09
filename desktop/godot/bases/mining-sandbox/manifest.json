@@ -1,0 +1,89 @@
+{
+  "format": "craftmine.godot-base/1",
+  "baseId": "mining-sandbox",
+  "baseVersion": "1.0.0",
+  "godotVersion": "4.7.2-stable",
+  "language": "GDScript",
+  "renderer": "gl_compatibility",
+  "status": "delivered-example-and-blank-start",
+  "entryScene": "res://scenes/main.tscn",
+  "stage": {
+    "plan": "GD5",
+    "story": "A16",
+    "scope": "finite-map side-view dig/place sandbox with chunked terrain persistence",
+    "notInScope": [
+      "infinite or procedurally unbounded worlds",
+      "liquids, lighting propagation, multiplayer, physics materials",
+      "reusing the side-view ability-gate acceptance matrix as sandbox evidence"
+    ]
+  },
+  "protocols": {
+    "worldFormat": "craftmine.godot-mining-sandbox-world/1",
+    "stateFormat": "craftmine.godot-mining-sandbox-state/1",
+    "progressFormat": "craftmine.godot-mining-sandbox-progress/1",
+    "chunkFormat": "craftmine.godot-mining-sandbox-chunk/1",
+    "paramsFormat": "craftmine.godot-mining-sandbox-params/1",
+    "probeFormat": "craftmine.godot-mining-sandbox-probe/1",
+    "snapshotFormat": "craftmine.godot-mining-sandbox-snapshot/1",
+    "buildFormat": "craftmine.godot-world-build/1",
+    "baseProtocolVersion": 1
+  },
+  "reuses": {
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "baseProtocolVersion": 1,
+    "declaredIn": "docs/REUSE.md",
+    "reused": [
+      "movement model (gravity, run/air acceleration, coyote time, jump buffer, variable jump height)",
+      "character body conventions (origin at the feet, up_direction = up, MOTION_MODE_GROUNDED)",
+      "camera smoothing and world-bound clamping",
+      "input source abstraction (human and scripted input share one path)"
+    ],
+    "notReused": [
+      "room_manager one-room-at-a-time lifecycle (the sandbox streams finite chunks instead)",
+      "ability gates and the side-view acceptance matrix"
+    ]
+  },
+  "worlds": {
+    "blank": {
+      "directory": "worlds/blank",
+      "kind": "blank-start",
+      "entryScene": "res://scenes/main.tscn",
+      "description": "Finite 48x24 authored-generator map, dig/place/inventory/save only, no recipes and no rewards."
+    },
+    "mine-camp": {
+      "directory": "worlds/mine-camp",
+      "kind": "example",
+      "entryScene": "res://scenes/main.tscn",
+      "description": "Finite 96x48 mining camp: dig soil, stone, coal and iron, craft a stone pickaxe, then an iron ingot and an iron pickaxe at the camp station, and build with stone bricks."
+    }
+  },
+  "capabilities": [
+    "deterministic finite terrain generation",
+    "stable chunk identity with boundary chunks",
+    "reach-, target-, occupancy- and adjacency-validated dig and place",
+    "tool-tier gating per material",
+    "drops into inventory with request idempotency",
+    "material-consuming placement and crafting",
+    "no burying the player in solid tiles",
+    "per-chunk atomic persistence with index hashes",
+    "strict whole-file rejection of corrupt, missing or version-mismatched progress",
+    "atomic save with backup recovery and honest write-failure reporting",
+    "read-only snapshot and headless probe over the real gameplay code path"
+  ],
+  "tools": {
+    "newWorld": "tools/new-world.mjs",
+    "checkSync": "tools/check-sync.mjs",
+    "verify": "tools/verify.mjs"
+  },
+  "stateVersion": 1,
+  "entityIdScheme": "stable string id declared in world data, never a node path",
+  "chunkScheme": "chunk id is \"<cx>_<cy>\" with cx = floor(tileX / chunkTiles[0]); the last chunk of each axis is partial when mapSize is not a multiple of chunkTiles",
+  "hostBoundary": {
+    "writesOutsideSaveDirectory": false,
+    "startsGodotProcesses": false,
+    "buildsOrExports": false,
+    "readsHostCredentials": false,
+    "testInterface": "probe is dormant unless --probe and both --probe-request/--probe-response are passed; it drives the same methods the game uses and cannot write expected results"
+  }
+}
