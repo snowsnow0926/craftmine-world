@@ -1,4 +1,5 @@
 // Presentation only. All durable facts and authority come from the host bridge.
+import {createGodotPackageUI} from './godot-package-ui.mjs';
 const labels={proposed:'待核实',validated:'已验证',needs_revalidation:'需要复验',retired:'已停用',running:'进行中',interrupted:'已中断',cancelled:'已停止',completed:'已完成',finished:'已完成'};
 const kinds={object:'物体',gameplay:'基础玩法',creation:'组合作品','project-rule':'创作规则','verified-experience':'验证经验','task-history':'任务历史',workflow:'创作流程'};
 const text=(tag,value,className)=>{const element=document.createElement(tag);element.textContent=value??'';if(className)element.className=className;return element;};
@@ -46,6 +47,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
   for(const [key,name]of Object.entries({library:'作品库',memory:'创作记忆',task:'任务与预算',backup:'备份与诊断'})){
     const section=document.createElement('section');section.dataset.workbenchPage=key;section.setAttribute('aria-label',name);section.hidden=true;pages[key]=section;element.append(section);
   }
+  const godotPackages=createGodotPackageUI({element:pages.library,request,getWorldId:()=>getWorld()?.id,action});
   function status(message,error=false){notice.textContent=message;notice.dataset.error=String(error);}
   function has(channel){return capabilities.has(channel);}
   async function call(channel,payload={}){
@@ -88,6 +90,8 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
   const libraryMore=button('更多作品',()=>action(()=>searchLibrary(false)));
   libraryForm.onsubmit=event=>{event.preventDefault();void action(()=>searchLibrary(true));};
   async function searchLibrary(reset=true){
+    const world=getWorld()?.world;
+    if(world?.build?.engine?.kind==='godot-web'||world?.build?.scene?.format==='craftmine.godot-scene/1')return godotPackages.show();
     if(!has('library.search')){empty(pages.library,'作品库服务尚未连接。已保存的世界仍可使用。');return;}
     if(reset)libraryOffset=0;
     await refreshTask();
@@ -243,6 +247,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     catch(error){if(generation===epoch){status('扩展工作台尚未连接：'+safeError(error),true);if(currentTab)empty(pages[currentTab],'这个功能尚未连接，现有世界的保存与检查仍可使用。');}}
   }
   async function setWorld(){
+    godotPackages.clear();
     epoch++;pendingArea.replaceChildren();pendingArea.hidden=true;capabilities.clear();capabilitiesReady=false;pendingSelection=null;context=null;active=false;selected=null;selectionRevision=0;inspection=null;libraryDetail.hidden=true;renderSelection();
     await refreshCapabilities();
   }
