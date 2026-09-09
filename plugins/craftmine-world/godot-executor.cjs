@@ -258,6 +258,8 @@ function createGodotExecutor(core, options = {}) {
   let stopped = false;
   let registered = false;
   let starting = null;
+  let stopping = null;
+  let lifecycleGeneration = 0;
 
   const log = (...args) => { try { logger.log('[godot-executor]', ...args); } catch {} };
   const warn = (...args) => { try { logger.warn('[godot-executor]', ...args); } catch {} };
@@ -1176,16 +1178,22 @@ function createGodotExecutor(core, options = {}) {
   // ---------------------------------------------------------------- lifecycle
 
   async function start() {
+    if (stopping) { await stopping; return start(); }
     if (starting) return starting;
+    if (registered && !stopped) return status();
+    const generation = ++lifecycleGeneration;
+    const current = () => generation === lifecycleGeneration && !stopped;
+    stopped = false;
     starting = (async () => {
-      stopped = false;
       let verified;
       try { verified = await verifyToolchain(); }
       catch (error) {
+        if (!current()) return status();
         Object.assign(discovery, {state:'unavailable', reason:'GODOT_EXECUTOR_DISCOVERY_FAILED', detail:String(error?.message ?? error)});
         warn('discovery failed:', String(error?.message ?? error));
         return status();
       }
+      if (!current()) return status();
       if (!verified.ok) {
         Object.assign(discovery, {state:'unavailable', reason:verified.reason, broker:null, engineRoot:null, lock:null, evidenceHash:null, preflight:null});
         warn('executor unavailable:', verified.reason);
@@ -1196,6 +1204,7 @@ function createGodotExecutor(core, options = {}) {
         measuredBrokerSha256:verified.brokerSha256, brokerPin:verified.brokerPin});
       tasksRoot = path.join(dataPath ?? path.dirname(verified.broker), 'godot', 'tasks');
       await fsp.mkdir(tasksRoot, {recursive:true});
+      if (!current()) return status();
       if (!ordinaryDirectory(tasksRoot)) {
         Object.assign(discovery, {state:'unavailable', reason:'GODOT_STORAGE_UNAVAILABLE'});
         return status();
@@ -1203,8 +1212,11 @@ function createGodotExecutor(core, options = {}) {
       // Restart reconciliation, phase 1: reclaim any task whose broker died
       // without a final response before a fresh preflight creates new tasks.
       await loadLedger();
+      if (!current()) return status();
       discovery.startupRecovery = await recoverTasks('startup');
+      if (!current()) return status();
       const preflightResult = await preflight(verified);
+      if (!current()) return status();
       if (!preflightResult.ok) {
         Object.assign(discovery, {state:'unavailable', reason:preflightResult.reason, detail:preflightResult.detail ?? null, preflight:preflightResult.receipt ?? null});
         warn('preflight failed:', preflightResult.reason);
@@ -1218,6 +1230,9 @@ function createGodotExecutor(core, options = {}) {
           engineVersion:ENGINE_VERSION, capabilities:{import:true, build:true, check:true},
         }}, 30000);
         registered = registration?.registered === true;
+        // A stop may have arrived while this RPC committed. Retain the flag
+        // for stop's revoke, but never promote jobs from this obsolete start.
+        if (!current()) return status();
         discovery.state = registered ? 'registered' : 'unavailable';
         discovery.reason = registered ? null : 'GODOT_REGISTRATION_REFUSED';
         discovery.attestationHash = registration?.attestationHash ?? null;
@@ -1225,6 +1240,7 @@ function createGodotExecutor(core, options = {}) {
         log('registered', EXECUTOR_ID, 'evidence', discovery.evidenceHash.slice(0, 16), 'promoted', discovery.promotedJobs);
       } catch (error) {
         registered = false;
+        if (!current()) return status();
         discovery.state = 'unavailable';
         discovery.reason = 'GODOT_REGISTRATION_REFUSED';
         warn('registration refused:', String(error?.message ?? error));
@@ -1233,6 +1249,7 @@ function createGodotExecutor(core, options = {}) {
       // Restart reconciliation, phase 2: a job may only be started again once
       // the executor is registered, so this runs after registration.
       discovery.restartReconciliation = await reconcileAfterRestart(discovery.startupRecovery);
+      if (!current()) return status();
       await reconcile();
       return status();
     })().finally(() => { starting = null; });
@@ -1240,7 +1257,18 @@ function createGodotExecutor(core, options = {}) {
   }
 
   async function stop() {
+    if (stopping) return stopping;
     stopped = true;
+    ++lifecycleGeneration;
+    const pendingStart = starting;
+    stopping = stopInner(pendingStart).finally(() => { stopping = null; });
+    return stopping;
+  }
+
+  async function stopInner(pendingStart) {
+    // Finish the bounded broker preflight/registration before recovery or a
+    // core-directory switch. Its generation is already invalidated above.
+    await pendingStart?.catch(error => warn('startup drained during stop:', String(error?.message ?? error)));
     await Promise.all([...jobs.keys()].map(jobId => cancel(jobId, 'executor stopping')));
     await Promise.all([...jobs.values()].map(entry => entry.promise));
     // Nothing is running any more, so any journal entry left behind belongs to

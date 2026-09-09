@@ -19,7 +19,7 @@ test('staging covers every Web template required by the real native broker',asyn
 });
 async function fixture(){
   const directory=await fs.mkdtemp(path.join(tmpdir(),'craftmine-runtime-manifest-'));
-  for(const relative of ['git/bin/git.exe','godot/broker/godot-host-broker.exe','licenses/godot/LICENSE.txt']){
+  for(const relative of ['git/bin/git.exe','godot/broker/godot-host-broker.exe','licenses/godot/LICENSE.txt','licenses/gpl/GPL-3.0.txt']){
     await fs.mkdir(path.dirname(path.join(directory,relative)),{recursive:true});await fs.writeFile(path.join(directory,relative),relative);
   }
   const files=await resourceInventory(directory);
@@ -33,7 +33,7 @@ test('resource names reject traversal, alternate streams and Windows aliases',()
 test('resource inventory hashes real bytes and verifies the exact source commit',async()=>{
   const directory=await fixture();
   assert.equal(await fileHash(path.join(directory,'git/bin/git.exe')),digest('git/bin/git.exe'));
-  assert.equal((await verifyRuntimeResources(directory,'commit')).files.length,3);
+  assert.equal((await verifyRuntimeResources(directory,'commit')).files.length,4);
   await assert.rejects(verifyRuntimeResources(directory,'other'),/SOURCE_IDENTITY/);
 });
 test('tampered, missing and unexpected runtime files fail verification',async()=>{
@@ -48,7 +48,7 @@ test('tampered, missing and unexpected runtime files fail verification',async()=
 test('packaged mode permits other app resources but detects extra files inside managed trees',async()=>{
   const directory=await fixture();
   await fs.writeFile(path.join(directory,'app.asar'),'separately verified application');
-  assert.equal((await verifyRuntimeResources(directory,'commit',{packaged:true})).files.length,3);
+  assert.equal((await verifyRuntimeResources(directory,'commit',{packaged:true})).files.length,4);
   await fs.writeFile(path.join(directory,'git/extra.dll'),'unexpected');
   await assert.rejects(verifyRuntimeResources(directory,'commit',{packaged:true}),/RESOURCE_HASH_MISMATCH/);
 });
