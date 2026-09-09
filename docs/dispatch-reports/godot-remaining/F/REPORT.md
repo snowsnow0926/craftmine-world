@@ -62,7 +62,7 @@
 
 | 验证 | 结果 | 性质 |
 | --- | --- | --- |
-| `node --test tests/godot-remaining/F/*.test.mjs` | **31/31** | 纯逻辑：契约、目录漂移、组件提取/安装、观察与有界操作、创建工具 |
+| `node --test tests/godot-remaining/F/*.test.mjs` | **32/32** | 纯逻辑：契约、目录漂移、组件提取/安装、观察与有界操作、创建工具 |
 | `node desktop/godot/bases/first-person/tests/acceptance_headless.mjs` | **52/52，退出 0** | 真实引擎：导入、准星居中、持枪挂点、射击/冷却/换弹/伤害、任务一次性奖励、空白起点、跨进程恢复、世界隔离、源码修改保留进度 |
 | `node desktop/godot/bases/top-down/tools/verify.mjs --godot <console.exe>` | **40/40** | 真实引擎：商店边界、采集、一次性任务奖励、方向动画、跨进程重启、双实例独立、空白起点无继承、场景位置恢复 |
 | `node desktop/godot/bases/side-view/tools/verify.mjs` | **89/89**（A–I 九场景） | 真实引擎：房间切换、门槛物理、能力拾取、跨进程二段跳进 vault、回访不重复奖励、危险重生、空白起点为空、**I 门槛运行时拒绝** |

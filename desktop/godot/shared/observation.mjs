@@ -71,7 +71,7 @@ export const BOUNDED_OPERATIONS = Object.freeze({
       },
       wait: { frames: argSpec('integer', { min: 1, max: 600 }) },
       look: { yaw: argSpec('number', { optional: true }), pitch: argSpec('number', { optional: true }) },
-      equip: { value: argSpec('string'), id: argSpec('string', { optional: true }) },
+      equip: { value: argSpec('string', { optional: true }), id: argSpec('string', { optional: true }) },
       'next-equipment': {},
       attack: {},
       fire: {},
@@ -206,6 +206,10 @@ export function validateOperation({ baseId, op, args = {} }) {
       }
       validateArg(name, args[name], argSpecValue, issues);
     }
+  }
+  // The real first-person adapter accepts either spelling of the equip target.
+  if (baseId === 'first-person' && op === 'equip' && !('value' in args) && !('id' in args)) {
+    issues.push({ code: 'missing-argument', at: 'args.value', message: 'equip requires value or id' });
   }
   return { ok: issues.length === 0, issues, readOnly, mutating: !readOnly };
 }
