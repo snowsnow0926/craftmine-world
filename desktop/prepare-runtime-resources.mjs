@@ -6,6 +6,8 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash,randomUUID} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
+import {readGitSnapshot} from './delivery/lib/source-bytes.mjs';
+import {loadRuntimeDistribution,stageRuntimeSourceSnapshot} from './delivery/lib/runtime-distribution.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const OWNER='.craftmine-runtime-stage.json';
@@ -66,9 +68,13 @@ async function verifyArchive(file,pin){
   if(!stat.isFile()||stat.isSymbolicLink()||stat.size!==pin.bytes||await fileHash(file)!==pin.sha256)throw Error('RUNTIME_ARCHIVE_PIN_MISMATCH:'+file);
 }
 async function copyTracked(relative,target){
-  const files=command('git',['ls-files','-z','--',relative]).split('\0').filter(Boolean);
-  if(!files.length)throw Error('RUNTIME_TRACKED_SOURCE_MISSING:'+relative);
-  for(const file of files){safeResourcePath(file);await verifiedCopy(path.join(root,file),path.join(target,path.relative(relative,file)));}
+  const files=readGitSnapshot(root,sourceCommit(),[relative]);
+  if(!files.size)throw Error('RUNTIME_TRACKED_SOURCE_MISSING:'+relative);
+  for(const [file,entry]of files){
+    safeResourcePath(file);const destination=path.join(target,path.relative(relative,file));
+    await fs.mkdir(path.dirname(destination),{recursive:true});await fs.writeFile(destination,entry.bytes);
+    if(await fileHash(destination)!==entry.sha256)throw Error('RUNTIME_SOURCE_COPY_CHANGED:'+file);
+  }
 }
 async function replaceOwned(staging,output,commit){
   const build=path.resolve(root,'desktop/build');
@@ -110,7 +116,13 @@ export async function prepareRuntimeResources({godotCache,gitZip,brokerBin}){
     env:{...process.env,CRAFTMINE_BROKER_PROFILE:'release',CRAFTMINE_BROKER_SOURCE_COMMIT:commit}}));
   brokerIdentity.builtFrom=path.resolve(brokerBin);
   await fs.writeFile(path.join(staging,'godot/broker/broker-identity.json'),JSON.stringify(brokerIdentity,null,2)+'\n');
-  for(const relative of ['bases','shared','web','licenses'])await copyTracked('desktop/godot/'+relative,path.join(staging,'godot',relative));
+  // Engine/broker already live in godot/, so build the validated source subset
+  // separately before moving only these three managed source directories.
+  const sourceStage=path.join(staging,'managed-source');
+  const sourceDistribution=stageRuntimeSourceSnapshot(readGitSnapshot(root,commit,['desktop/godot/bases','desktop/godot/shared','desktop/godot/web']),sourceStage,loadRuntimeDistribution(root));
+  for(const relative of ['bases','shared','web'])await fs.rename(path.join(sourceStage,relative),path.join(staging,'godot',relative));
+  await fs.rmdir(sourceStage);
+  await copyTracked('desktop/godot/licenses',path.join(staging,'godot','licenses'));
   for(const pin of lock.licenses)if(await fileHash(path.join(staging,'godot',pin.file))!==pin.sha256)throw Error('GODOT_NOTICE_PIN_MISMATCH');
   await copyTracked('desktop/godot/licenses',path.join(staging,'licenses/godot'));
   await verifiedCopy(path.join(root,'desktop/godot/toolchain.lock.json'),path.join(staging,'godot/toolchain.lock.json'));
@@ -128,6 +140,7 @@ export async function prepareRuntimeResources({godotCache,gitZip,brokerBin}){
     totalBytes:gitFiles.reduce((sum,file)=>sum+file.bytes,0)},null,2)+'\n');
   const files=await resourceInventory(staging);
   const manifest={format:FORMAT,sourceCommit:commit,sourceDate:command('git',['show','-s','--format=%cI','HEAD']),
+    sourceDistribution,
     toolchain:{godot:lock.version,templatesArchiveSha256:lock.exportTemplates.sha256,git:git.version,gitArchiveSha256:git.archive.sha256,
       brokerSha256:brokerIdentity.sha256,brokerSourceDigest:brokerIdentity.sourceDigest},
     files,filesDigest:hash(JSON.stringify(files)),totalBytes:files.reduce((sum,file)=>sum+file.bytes,0),
