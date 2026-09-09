@@ -37,6 +37,9 @@ use std::{
 #[cfg(test)]
 #[path = "portable_tests.rs"]
 mod tests;
+#[cfg(test)]
+#[path = "durability_tests.rs"]
+mod durability_tests;
 
 pub(super) const FORMAT: &str = "craftmine.portable-archive/1";
 pub(super) const SCHEMA_VERSION: u64 = 1;
