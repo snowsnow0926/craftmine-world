@@ -313,7 +313,8 @@ impl TaskJournal {
             )?;
             result["repoId"] = json!(repo_id);
             result["backend"] = json!(backend);
-            result["gitDir"] = json!(layout.git_dir.to_string_lossy());
+            result["gitDir"] = json!(content_history::git::GitAdapter::plain_path(&layout.git_dir)
+                .to_string_lossy());
             result["headOid"] = json!(head);
             result["appliedOid"] = json!(applied);
             result["branches"] = serde_json::to_value(store.branches(&layout)?)?;

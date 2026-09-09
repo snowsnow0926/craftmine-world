@@ -1,0 +1,6 @@
+{"params":{"title":"idea one","worldId":"a","fromRev":"9b8283ddf313a74131de89972156cd498953cb89","branchId":"idea-one"},"method":"content.branch.create"}
+{"params":{"title":"idea two","worldId":"a","fromRev":"9b8283ddf313a74131de89972156cd498953cb89","branchId":"idea-two"},"method":"content.branch.create"}
+{"params":{"worldId":"a"},"method":"content.branch.list"}
+{"params":{"path":"world.gd","rev":"idea-one","worldId":"a"},"method":"content.readFile"}
+{"params":{"worldId":"a"},"method":"content.verify"}
+{"params":{"worldId":"a"},"method":"content.reclaim.plan"}
