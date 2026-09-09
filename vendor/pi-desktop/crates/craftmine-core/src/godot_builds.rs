@@ -784,6 +784,30 @@ impl TaskJournal {
             target: manifest.target.clone(),
         };
         identity.build_id = build_id(&identity)?;
+        // A world's derived storage is capped so build history cannot grow
+        // without bound. Reusing an identical immutable copy costs nothing.
+        let reused: bool = tx.query_row(
+            "SELECT EXISTS(SELECT 1 FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2)",
+            params![args.world_id, identity.build_id],
+            |row| row.get(0),
+        )?;
+        if !reused {
+            let used: i64 = tx.query_row(
+                "SELECT COALESCE(SUM(bytes),0) FROM craftmine_godot_builds WHERE world_id=?1",
+                [&args.world_id],
+                |row| row.get(0),
+            )?;
+            let incoming = manifest.files.values().map(|entry| entry.bytes).sum::<u64>()
+                + assets.iter().map(|asset| asset.bytes).sum::<u64>()
+                + super::godot_host_resources::files()
+                    .iter()
+                    .map(|(_, text)| text.len() as u64)
+                    .sum::<u64>();
+            ensure!(
+                u64::try_from(used)? + incoming <= super::godot_storage::WORLD_STORAGE_TOTAL,
+                "GODOT_WORLD_STORAGE_LIMIT"
+            );
+        }
         let (files, bytes) = materialize(&self.directory, &args.world_id, &identity, &manifest, &assets)?;
         tx.execute(
             "INSERT OR IGNORE INTO craftmine_godot_builds(world_id,build_id,source_revision,manifest_hash,

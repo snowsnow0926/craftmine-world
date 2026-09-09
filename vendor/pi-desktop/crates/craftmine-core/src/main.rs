@@ -51,6 +51,9 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "godotJob.continue" => return journal.godot_job_continue(params),
         "godotJob.usage" => return journal.godot_usage_summary(params),
         "godotJob.claim" => return journal.godot_job_claim(params),
+        "godotStorage.status" => return journal.godot_storage_status(params),
+        "godotStorage.reclaimPlan" => return journal.godot_storage_reclaim_plan(params),
+        "godotStorage.reclaimCommit" => return journal.godot_storage_reclaim_commit(params),
         "godotJob.progress" => return journal.godot_job_progress(params),
         "godotJob.heartbeat" => return journal.godot_job_heartbeat(params),
         "godotJob.finish" => return journal.godot_job_finish(params),
@@ -307,6 +310,7 @@ fn main() -> Result<()> {
     journal.application_recover()?;
     journal.godot_application_recover()?;
     journal.godot_recover()?;
+    journal.godot_storage_recover()?;
     journal.task_recover()?;
     let mut input = io::stdin().lock();
     let mut output = io::stdout().lock();

@@ -63,6 +63,31 @@ immutable source revision advances `baseBuild` to that actual applied baseline
 and keeps the real writer binding. Previous revisions retain their baseline;
 foreign lineage is refused, and source edits never mutate formal play progress.
 
+## Storage accounting, quota and reclamation
+
+`godotStorage.status` reports one world's storage split into source history
+(revision count and blob bytes), asset blobs, build history, exported artifacts
+and cache, plus the per-world quota. Sizes come from a bounded, symlink-refusing
+walk of the world's own directories, never from a DB estimate alone.
+
+Build history is capped per world. A new immutable build copy is refused with
+`GODOT_WORLD_STORAGE_LIMIT` when it would exceed the cap; an identical build id
+is reused and costs nothing.
+
+`godotStorage.reclaimPlan` is read-only. A build is deletable only when nothing
+durable still references it: the formal world's build, any candidate, any
+application, any job that is not `failed`/`cancelled`/`interrupted`, the newest
+builds, and every build id the caller pins (works, backups, Git history) are
+protected and reported with a reason. Directories without a build row are
+reported as `unreferencedDirectories` but are not removed automatically.
+
+`godotStorage.reclaimCommit` recomputes the plan inside an immediate
+transaction and refuses a stale one with `GODOT_RECLAIM_PLAN_STALE`, so a
+reference created between plan and commit wins. Deleted rows and the reclaim
+journal commit together; directory removal happens after and is completed by the
+startup sweep if the process dies. Only core-owned build copies are removed —
+asset bodies and Git history stay with the asset library and version store.
+
 ## Execution boundary
 
 The worker is the fixed private Windows `godot-host-broker.exe run` protocol,
