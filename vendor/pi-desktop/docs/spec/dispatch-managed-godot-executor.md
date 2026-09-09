@@ -85,6 +85,12 @@ and cancels the core job; the result is never recorded. A broker that exits
 without a valid receipt, or is killed, fails the job. Job budgets, plugin unload
 and late replies all resolve to a recorded terminal state, never a pass.
 
+After any run that did not report success, the host reads the broker's recorded
+`process-verification.json` for that task, confirms the recorded engine process
+is gone, and terminates it by pid when it survived a hard broker kill. The
+outcome is recorded in `status().reaps`; a surviving engine child can never be
+mistaken for a clean finish.
+
 ## 4 Log classification
 
 The restricted AppContainer environment produces fixed native diagnostics before
@@ -117,8 +123,9 @@ returned for failure analysis and never influence `passed`.
 
 ## 6 Known limits
 
-- A hard broker kill cannot guarantee AppContainer profile cleanup; the broker
-  protocol requires a host-owned recovery journal, which is not implemented here.
+- A hard broker kill can still leak an AppContainer profile; the host reaps a
+  surviving engine child by its recorded identity, but profile removal needs the
+  host-owned recovery journal the broker protocol describes.
 - `godotExecutor.revoke` is **pending** in the integrated core. Without it,
   `stop()` reports `revokeReason: GODOT_EXECUTOR_REVOKE_UNSUPPORTED` and the core
   keeps a stale capability flag until it restarts; no job can be claimed by a

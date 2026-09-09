@@ -1,6 +1,6 @@
 {
   "kind": "real-core-broker-godot-failure-cancel-recovery",
-  "out": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-CHeWpy",
+  "out": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-46VQgq",
   "checks": [
     {
       "name": "executor registered after a real preflight",
@@ -76,6 +76,16 @@
       "detail": "gcan-4e95505c3c01bf4a80e90e428e257ce696a1b8c173e08c0e977b90acc1f4742d"
     },
     {
+      "name": "the pinned engine reached the fixed import marker",
+      "passed": true,
+      "detail": "ex-06499fbf9cfb41f696bd3edd"
+    },
+    {
+      "name": "the broker recorded the engine child identity before the interruption",
+      "passed": true,
+      "detail": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-46VQgq\\core-data\\godot\\tasks\\ex-06499fbf9cfb41f696bd3edd\\logs\\process-verification.json"
+    },
+    {
       "name": "an interrupted broker is recorded as a failure",
       "passed": true,
       "detail": "failed"
@@ -84,6 +94,38 @@
       "name": "an interrupted broker never records a passing import",
       "passed": true,
       "detail": false
+    },
+    {
+      "name": "the recorded engine child identity is checked after the interruption",
+      "passed": true,
+      "detail": [
+        {
+          "checked": true,
+          "alive": false,
+          "pid": 254644,
+          "at": "2026-09-09T18:37:33.527Z"
+        }
+      ]
+    },
+    {
+      "name": "a surviving engine child would be terminated",
+      "passed": true,
+      "detail": [
+        {
+          "checked": true,
+          "alive": false,
+          "pid": 254644,
+          "at": "2026-09-09T18:37:33.527Z"
+        }
+      ]
+    },
+    {
+      "name": "the recorded engine process is gone after the interruption",
+      "passed": true,
+      "detail": {
+        "pid": 254644,
+        "listing": "��Ϣ: û�����е�����ƥ��ָ����׼��\r\n"
+      }
     },
     {
       "name": "the executor completes a normal job after a broker interruption",
@@ -127,15 +169,18 @@
   ],
   "evidence": {
     "executorLog": [
-      "18:24:22.132 [godot-executor] registered craftmine-windows-broker-v1 evidence e0eaadaae6d80bdf promoted 0",
-      "18:24:31.185 [godot-executor] job finished gjob-ad2259d3b14608d8e6fe0c5db5d7a177b2b41132b020dc833168b8240cd84f55 failed reason=GODOT_COMPILE_FAILED",
-      "18:24:32.878 WARN [godot-executor] import cancelled: gjob-35b46ea9f234ba26a79f87338c9558cb1e09a64f8bf3b4f5649676e56323d15f acceptance cancel",
-      "18:24:36.706 WARN [godot-executor] job abandoned: gjob-35b46ea9f234ba26a79f87338c9558cb1e09a64f8bf3b4f5649676e56323d15f GODOT_JOB_CANCELLED",
-      "18:24:54.578 [godot-executor] staged 10 artifacts into \\\\?\\D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-CHeWpy\\core-data\\godot-builds\\298e8c88610428a9fd7a782e666884fd8610fe1802ac8c00bda34eedb58e403a\\gbd-81681eb9f3d74476a12297471b0697302523a1e365af4072e6f8f759cdf4d313\\artifacts",
-      "18:24:55.770 [godot-executor] job finished gjob-a1426bd165c1537439c7fd7cf8c350d089254c45d646e5ff8aa32a41ec3d1570 passed ",
-      "18:25:01.154 [godot-executor] job finished gjob-d9e6e816a42cffe233c5563c1c5f8d45c2d0c602b9c68d68676482df916a1573 failed reason=GODOT_BROKER_RESPONSE_INVALID",
-      "18:25:17.762 [godot-executor] staged 10 artifacts into \\\\?\\D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-CHeWpy\\core-data\\godot-builds\\711929151dda82a5ac9c446d6edf0282c2286acc0f70014e27b9fa68fc2fb1b0\\gbd-cf366f0a40d30ce8dc72b18e4110e9bddd78a41c1c3caf757a7b7999ed5c0528\\artifacts",
-      "18:25:18.845 [godot-executor] job finished gjob-5262258f1cfbee1570867bf119f700c1c7a404a9331ea8d835f221f7528760e9 passed "
+      "18:36:42.089 [godot-executor] registered craftmine-windows-broker-v1 evidence e0eaadaae6d80bdf promoted 0",
+      "18:36:49.458 [godot-executor] job finished gjob-ad2259d3b14608d8e6fe0c5db5d7a177b2b41132b020dc833168b8240cd84f55 failed reason=GODOT_COMPILE_FAILED",
+      "18:36:51.099 WARN [godot-executor] import cancelled: gjob-35b46ea9f234ba26a79f87338c9558cb1e09a64f8bf3b4f5649676e56323d15f acceptance cancel",
+      "18:36:55.351 [godot-executor] reap: task identity unavailable D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-46VQgq\\core-data\\godot\\tasks\\im-0150a4d95f5d4d84b50dfa3c\\logs\\process-verification.json exists=false tasksRoot=D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-46VQgq\\core-data\\godot\\tasks",
+      "18:36:55.351 WARN [godot-executor] job abandoned: gjob-35b46ea9f234ba26a79f87338c9558cb1e09a64f8bf3b4f5649676e56323d15f GODOT_JOB_CANCELLED",
+      "18:37:12.039 [godot-executor] staged 10 artifacts into \\\\?\\D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-46VQgq\\core-data\\godot-builds\\298e8c88610428a9fd7a782e666884fd8610fe1802ac8c00bda34eedb58e403a\\gbd-81681eb9f3d74476a12297471b0697302523a1e365af4072e6f8f759cdf4d313\\artifacts",
+      "18:37:13.391 [godot-executor] job finished gjob-a1426bd165c1537439c7fd7cf8c350d089254c45d646e5ff8aa32a41ec3d1570 passed ",
+      "18:37:30.810 [godot-executor] reap checking recorded child 254644 for task ex-06499fbf9cfb41f696bd3edd",
+      "18:37:33.527 [godot-executor] reap outcome {\"checked\":true,\"alive\":false,\"pid\":254644}",
+      "18:37:33.530 [godot-executor] job finished gjob-d9e6e816a42cffe233c5563c1c5f8d45c2d0c602b9c68d68676482df916a1573 failed reason=GODOT_BROKER_RESPONSE_INVALID",
+      "18:37:53.071 [godot-executor] staged 10 artifacts into \\\\?\\D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-failures-46VQgq\\core-data\\godot-builds\\711929151dda82a5ac9c446d6edf0282c2286acc0f70014e27b9fa68fc2fb1b0\\gbd-cf366f0a40d30ce8dc72b18e4110e9bddd78a41c1c3caf757a7b7999ed5c0528\\artifacts",
+      "18:37:54.286 [godot-executor] job finished gjob-5262258f1cfbee1570867bf119f700c1c7a404a9331ea8d835f221f7528760e9 passed "
     ],
     "brokenJob": {
       "status": "failed",
@@ -164,12 +209,18 @@
     "brokerKill": "killed",
     "interruptedJob": {
       "status": "failed",
-      "candidateId": "gcan-cf99dbb2a79a759ead708f32ba771a5e9156297d947e5e5e0c84fa8d34bf453b",
-      "import": false,
-      "errors": [
-        "GODOT_BROKER_RESPONSE_INVALID"
-      ]
+      "candidateId": "gcan-92a8ac3a5c2bc7421dfa07484b2f87ad0b4c46aa66af632c6282102f8b1ea6d6",
+      "import": true,
+      "errors": []
     },
+    "reaps": [
+      {
+        "checked": true,
+        "alive": false,
+        "pid": 254644,
+        "at": "2026-09-09T18:37:33.527Z"
+      }
+    ],
     "stop": {
       "revoked": false,
       "revokeReason": "GODOT_EXECUTOR_REVOKE_UNSUPPORTED",

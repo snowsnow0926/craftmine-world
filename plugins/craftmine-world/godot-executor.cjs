@@ -11,11 +11,16 @@
 // Each job runs the fixed import/exportWeb operations inside the broker's
 // AppContainer policy, verifies the measured inputs and artifacts, optionally
 // runs the isolated Electron runtime check, and records the real result.
-const {spawn} = require('node:child_process');
+const {spawn, execFile} = require('node:child_process');
 const {createHash, randomUUID} = require('node:crypto');
 const fs = require('node:fs');
 const fsp = require('node:fs/promises');
 const path = require('node:path');
+
+const execFileAsync = (file, args) => new Promise(resolve => {
+  execFile(file, args, {windowsHide:true, timeout:20000, maxBuffer:1024 * 1024},
+    (error, stdout, stderr) => resolve({error, stdout:String(stdout ?? ''), stderr:String(stderr ?? '')}));
+});
 
 const EXECUTOR_ID = 'craftmine-windows-broker-v1';
 const ISOLATION = 'craftmine.windows.lpac-registry.v1';
@@ -301,6 +306,44 @@ function createGodotExecutor(core, options = {}) {
   }
 
   /**
+   * The broker persists the exact child identity (pid + image + creation time)
+   * before resuming it. A cooperative cancel lets it clean up; a hard kill may
+   * not, so the host verifies the recorded process is gone and terminates a
+   * survivor itself. Identity is the recorded image name, never a bare pid.
+   */
+  async function reapTaskProcess(requestId) {
+    const sidecar = path.join(tasksRoot, requestId, 'logs', 'process-verification.json');
+    let recorded = null;
+    // The sidecar is written just before the child resumes, so an interruption
+    // can catch it mid-write; a few bounded retries keep that from looking like
+    // "no child was ever recorded".
+    for (let attempt = 0; attempt < 5 && recorded === null; attempt += 1) {
+      try { recorded = JSON.parse(await fsp.readFile(sidecar, 'utf8')); }
+      catch { await new Promise(resolve => setTimeout(resolve, 200)); }
+    }
+    if (recorded === null) {
+      log('reap: task identity unavailable', sidecar, 'exists=' + fs.existsSync(sidecar), 'tasksRoot=' + tasksRoot);
+      return {checked:false, reason:'GODOT_TASK_IDENTITY_UNAVAILABLE', requestId};
+    }
+    const pid = recorded?.pid;
+    if (!Number.isInteger(pid) || pid <= 0) return {checked:false, reason:'GODOT_TASK_IDENTITY_INVALID', requestId};
+    log('reap checking recorded child', pid, 'for task', requestId);
+    const expected = path.basename(String(recorded.imagePath ?? '')).toLowerCase();
+    const remember = record => {
+      discovery.reaps = [...(discovery.reaps ?? []), {...record, at:nowIso()}].slice(-8);
+      log('reap outcome', JSON.stringify(record));
+      return record;
+    };    const listing = await execFileAsync('tasklist', ['/FI', `PID eq ${pid}`, '/FO', 'CSV', '/NH']);
+    if (!listing.stdout.includes(String(pid))) return remember({checked:true, alive:false, pid});
+    const image = (listing.stdout.split(',')[0] ?? '').replaceAll('"', '').trim().toLowerCase();
+    if (expected && image !== expected) return remember({checked:true, alive:true, pid, identity:'mismatch', image});
+    const killed = await execFileAsync('taskkill', ['/T', '/F', '/PID', String(pid)]);
+    const gone = !(await execFileAsync('tasklist', ['/FI', `PID eq ${pid}`, '/FO', 'CSV', '/NH'])).stdout.includes(String(pid));
+    warn('reaped surviving task process', pid, image, 'gone=' + gone, killed.error ? String(killed.error.message) : '');
+    return remember({checked:true, alive:true, pid, image, killed:gone});
+  }
+
+  /**
    * One broker `run` invocation: exactly one compact request line, stdin kept
    * open, one JSON response line, cancellation through the documented frame.
    */
@@ -330,7 +373,11 @@ function createGodotExecutor(core, options = {}) {
       let response = null, parseError = null;
       const line = stdout.trim();
       if (line) { try { response = JSON.parse(line); } catch (error) { parseError = error.message; } }
-      finish({ok:true, requestId:request.requestId, exitCode:code, signal, response, parseError, stdout:bounded(stdout, 8192), stderr, cancelled, timedOut, oversized});
+      const settle = reaped => finish({ok:true, requestId:request.requestId, exitCode:code, signal, response, parseError,
+        stdout:bounded(stdout, 8192), stderr, cancelled, timedOut, oversized, reaped});
+      // A run that did not report success may have left its child behind.
+      if (response?.state === 'succeeded' && !cancelled && !timedOut) settle(null);
+      else reapTaskProcess(request.requestId).then(settle, error => { warn('reap failed:', String(error?.message ?? error)); settle(null); });
     });
     const timer = setTimeout(() => { timedOut = true; cancel('timeout'); }, Math.max(1000, request.timeoutMs ?? JOB_TIMEOUT_MS));
 
@@ -564,7 +611,7 @@ function createGodotExecutor(core, options = {}) {
         exportLog = await readTaskLog(exportRun.response ?? {});
         if (!exportCheck.ok) {
           return await finishJob(entry, {
-            import:{passed:true, log:bounded(importLog, 8000)},
+            import:{passed:true, log:bounded(importLog + '\n--- export ---\n' + exportLog, 8000)},
             compile:{passed:true, errors:[], warnings:importClassified.warnings.slice(0, 16)},
             check:{passed:false, assertions:[]}, artifacts:[], runtime:null, reason:exportCheck.reason ?? 'GODOT_EXPORT_FAILED',
           });
@@ -572,7 +619,7 @@ function createGodotExecutor(core, options = {}) {
         const exportClassified = classifyLog(exportLog);
         if (exportClassified.errors.length) {
           return await finishJob(entry, {
-            import:{passed:true, log:bounded(importLog, 8000)},
+            import:{passed:true, log:bounded(importLog + '\n--- export ---\n' + exportLog, 8000)},
             compile:{passed:false, errors:exportClassified.errors.slice(0, 16), warnings:exportClassified.warnings.slice(0, 16)},
             check:{passed:false, assertions:[]}, artifacts:[], runtime:null, reason:'GODOT_COMPILE_FAILED',
           });
@@ -831,6 +878,8 @@ function createGodotExecutor(core, options = {}) {
         networkChecks:(discovery.preflight.networkPreflight?.observation?.checks ?? []).map(check => ({name:check.name, ok:check.ok === true, rawOsError:check.rawOsError ?? null})),
       } : null,
       jobs:[...jobs.keys()],
+      reaps:discovery.reaps ?? [],
+      tasksRoot,
       registered,
       revokedOnStop:null,
     };

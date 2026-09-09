@@ -1,6 +1,6 @@
 {
   "kind": "real-core-broker-godot-electron-candidate-chain",
-  "out": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-JaCjsg",
+  "out": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-D99FzE",
   "checks": [
     {
       "name": "core binary configured",
@@ -289,7 +289,7 @@
       "name": "staged export exists on disk under the core data directory",
       "passed": true,
       "detail": [
-        "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-JaCjsg\\core-data\\godot-builds\\773f63ad38bae69abf4afd818a1417967103334f80dab89d61bb04c5b333847b\\gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35\\artifacts\\web\\index.html"
+        "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-D99FzE\\core-data\\godot-builds\\773f63ad38bae69abf4afd818a1417967103334f80dab89d61bb04c5b333847b\\gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35\\artifacts\\web\\index.html"
       ]
     },
     {
@@ -314,7 +314,7 @@
   "evidence": {
     "executorLog": [
       "[godot-executor] registered craftmine-windows-broker-v1 evidence e0eaadaae6d80bdf promoted 1",
-      "[godot-executor] staged 10 artifacts into \\\\?\\D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-JaCjsg\\core-data\\godot-builds\\773f63ad38bae69abf4afd818a1417967103334f80dab89d61bb04c5b333847b\\gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35\\artifacts",
+      "[godot-executor] staged 10 artifacts into \\\\?\\D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-D99FzE\\core-data\\godot-builds\\773f63ad38bae69abf4afd818a1417967103334f80dab89d61bb04c5b333847b\\gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35\\artifacts",
       "[godot-executor] job finished gjob-fba0fa734b1bb1cde26b022016c04382d91668b37d46eb8361d82543e9fbdd27 passed "
     ],
     "runtimeCheck": {
@@ -325,8 +325,8 @@
       "worldId": "c-e2e-world",
       "inputHash": "9ee00a87bdcad5375e75598ac90a6f05379d778145f1f520e9063d044d827a91",
       "passed": true,
-      "startedAt": "2026-09-09T18:26:06.929Z",
-      "elapsedMs": 1257,
+      "startedAt": "2026-09-09T18:38:20.963Z",
+      "elapsedMs": 1277,
       "ready": {
         "ok": true,
         "ops": [
@@ -340,8 +340,8 @@
           "cancel",
           "exit"
         ],
-        "instanceId": "f104cd04803a071295f9262d",
-        "elapsedMs": 704
+        "instanceId": "8fe3b69224f4fbabdd3a6a45",
+        "elapsedMs": 681
       },
       "render": {
         "ok": true,
@@ -441,10 +441,10 @@
         "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
         "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
         "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
-        "[warning] [.WebGL-0x7b9c0e29ac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
-        "[warning] [.WebGL-0x7b9c0e29ac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
-        "[warning] [.WebGL-0x7b9c0e29ac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
-        "[warning] [.WebGL-0x7b9c0e29ac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+        "[warning] [.WebGL-0x5e8c0e20a600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+        "[warning] [.WebGL-0x5e8c0e20a600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+        "[warning] [.WebGL-0x5e8c0e20a600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+        "[warning] [.WebGL-0x5e8c0e20a600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
       ],
       "error": null
     },
@@ -491,7 +491,7 @@
         {
           "path": "web/index.pck",
           "bytes": 3400,
-          "sha256": "d07b32399b187615ca25a62a35f5af366d0d171fe6ed81b98b21beaa704d08e5"
+          "sha256": "75cb7704b37a23da858a3e33316018733f3727468df7fef2a8ae4372a6b292a3"
         },
         {
           "path": "web/index.png",
@@ -544,11 +544,11 @@
     },
     "stagedWasm": [
       {
-        "file": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-JaCjsg\\core-data\\godot\\tasks\\ex-9bdaa6afe6e6401ca6c275f9\\artifacts\\index.wasm",
+        "file": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-D99FzE\\core-data\\godot\\tasks\\ex-236321c2168b4f16a950aa5c\\artifacts\\index.wasm",
         "bytes": 38820072
       },
       {
-        "file": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-JaCjsg\\core-data\\godot-builds\\773f63ad38bae69abf4afd818a1417967103334f80dab89d61bb04c5b333847b\\gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35\\artifacts\\web\\index.wasm",
+        "file": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-D99FzE\\core-data\\godot-builds\\773f63ad38bae69abf4afd818a1417967103334f80dab89d61bb04c5b333847b\\gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35\\artifacts\\web\\index.wasm",
         "bytes": 38820072
       }
     ],
@@ -563,12 +563,12 @@
         "buildId": "gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35",
         "candidateId": "gcan-66f38b43df32bd1fc885ed42e2eed3bf9420dd727594886e9cfe8c2f7abe4b7a",
         "checkJobId": "gjob-fba0fa734b1bb1cde26b022016c04382d91668b37d46eb8361d82543e9fbdd27",
-        "checkOutputHash": "7ebb315553659aca68f46273cb3c88b1d61a7c67b9254ddcaf245ca1103f70dc",
-        "createdAt": 1788978368209,
+        "checkOutputHash": "327c7228af6709aef1b6f0a756a409657d8f4163325f6f5b43ba430ebac6d5e0",
+        "createdAt": 1788979102267,
         "manifestHash": "5a18a5da5c5119e4e87800ef8f94243bc2412c871b2a0a3378109cfe1632fada",
         "sourceRevision": 0,
         "status": "ready",
-        "updatedAt": 1788978368209,
+        "updatedAt": 1788979102267,
         "worldId": "c-e2e-world"
       },
       "check": {
@@ -647,7 +647,7 @@
           {
             "bytes": 3400,
             "path": "web/index.pck",
-            "sha256": "d07b32399b187615ca25a62a35f5af366d0d171fe6ed81b98b21beaa704d08e5"
+            "sha256": "75cb7704b37a23da858a3e33316018733f3727468df7fef2a8ae4372a6b292a3"
           },
           {
             "bytes": 21443,
