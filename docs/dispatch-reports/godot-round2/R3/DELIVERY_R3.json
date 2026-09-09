@@ -1,0 +1,152 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "agent": "R3",
+  "promptVersion": "godot-round2-20260910",
+  "status": "ready_for_integration_with_declared_gaps",
+  "baseCommit": "bcebeb1",
+  "branch": "codex/godot-round2-r3-20260910",
+  "worktree": "D:/Craftmine World-worktrees/godot-round2-r3-20260910",
+  "inherited": [
+    { "from": "G", "commit": "c906f3e", "mergeCommit": "d20af00" },
+    { "from": "F", "commit": "d7db302", "mergeCommit": "aaabf58", "note": "includes F's inherited 564e43a" }
+  ],
+  "commits": [
+    "d20af00",
+    "aaabf58",
+    "f913feb",
+    "bf48b25",
+    "95de732",
+    "6d8578b"
+  ],
+  "deliveryRecordCommit": "the commit that adds this file; run `git log --format=%H -1 -- docs/dispatch-reports/godot-round2/R3/DELIVERY_R3.json`",
+  "report": "docs/dispatch-reports/godot-round2/R3/REPORT_R3.md",
+  "interfaces": [
+    "docs/dispatch-reports/godot-round2/R3/INTERFACE_R3.md",
+    "desktop/godot/bases/README.md",
+    "desktop/godot/shared/README.md",
+    "desktop/godot/bases/mining-sandbox/docs/SPEC.md",
+    "desktop/godot/bases/mining-sandbox/docs/INTERFACE_BC.md"
+  ],
+  "scope": [
+    "desktop/godot/bases/**",
+    "desktop/godot/shared/**",
+    "tests/godot-round2/R3/**"
+  ],
+  "notTouched": [
+    "electron/**",
+    "plugins/**",
+    "vendor/pi-desktop/crates/**",
+    "global lock files"
+  ],
+  "tests": [
+    {
+      "kind": "scene_component_materialization",
+      "command": "$env:CRAFTMINE_GODOT_BIN='D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable\\editor\\Godot_v4.7.2-stable_win64_console.exe'; node tests/godot-round2/R3/scene-install.mjs",
+      "result": "8/8 passed, 14 real engine runs",
+      "evidence": "docs/dispatch-reports/godot-round2/R3/evidence/scene-install/report.json"
+    },
+    {
+      "kind": "managed_progress_lifecycle",
+      "command": "$env:CRAFTMINE_GODOT_CACHE_DIR='D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable'; node desktop/godot/shared/tests/progress.mjs",
+      "result": "26/26 passed across first-person, top-down, side-view and mining-sandbox",
+      "evidence": "docs/dispatch-reports/godot-round2/R3/evidence/regression/07-managed-progress.log"
+    },
+    {
+      "kind": "native_persistence_audit",
+      "command": "node desktop/godot/bases/tests/audit-persistence.mjs",
+      "result": "4/4 bases passed, including mining-sandbox",
+      "evidence": "docs/dispatch-reports/godot-round2/R3/evidence/regression/06-audit-persistence.log"
+    },
+    {
+      "kind": "mining_sandbox_acceptance",
+      "command": "node tests/godot-remaining/G/a16-acceptance.mjs",
+      "result": "45/45 passed (G01-G41)",
+      "evidence": "docs/dispatch-reports/godot-round2/R3/evidence/a16/report.json"
+    },
+    {
+      "kind": "base_contract_and_component_tests",
+      "command": "node --test tests/godot-remaining/F/*.test.mjs",
+      "result": "32/32 passed with mining-sandbox registered",
+      "evidence": "docs/dispatch-reports/godot-round2/R3/evidence/regression/05-f-tests.log"
+    },
+    {
+      "kind": "first_person_acceptance",
+      "command": "node desktop/godot/bases/first-person/tests/acceptance_headless.mjs",
+      "result": "exit 0, 52 checks",
+      "evidence": "docs/dispatch-reports/godot-round2/R3/evidence/regression/01-first-person-acceptance_headless.log"
+    },
+    {
+      "kind": "top_down_acceptance",
+      "command": "node desktop/godot/bases/top-down/tools/verify.mjs --godot <pinned engine>",
+      "result": "40/40 passed",
+      "evidence": "docs/dispatch-reports/godot-round2/R3/evidence/regression/03-top-down-verify.log"
+    },
+    {
+      "kind": "side_view_acceptance",
+      "command": "node desktop/godot/bases/side-view/tools/verify.mjs",
+      "result": "89/89 passed (a concurrent run produced a transient importClean failure; the isolated rerun and this log pass)",
+      "evidence": "docs/dispatch-reports/godot-round2/R3/evidence/regression/02-side-view-verify.log"
+    },
+    {
+      "kind": "mining_sandbox_smoke_and_sync",
+      "command": "node desktop/godot/bases/mining-sandbox/tools/verify.mjs && node .../check-sync.mjs",
+      "result": "14/14 and 2 worlds byte-identical",
+      "evidence": "docs/dispatch-reports/godot-round2/R3/evidence/mining-smoke/report.json"
+    }
+  ],
+  "deliverables": {
+    "sceneMaterializer": "desktop/godot/shared/scene_materializer.mjs",
+    "managedAdapter": "desktop/godot/shared/adapters/mining-sandbox.gd",
+    "catalogs": ["desktop/godot/bases/base-catalog.json", "desktop/godot/bases/component-catalog.json"],
+    "catalogBases": 4,
+    "catalogComponents": 28,
+    "componentsWithSceneInstall": 8,
+    "miningSandboxSpec": "desktop/godot/bases/mining-sandbox/docs/SPEC.md"
+  },
+  "dependencies": [
+    {
+      "group": "R1",
+      "missingWork": "Rust content/history and shared database registration are not in this tree; the same-version native chain needs R2's integrated tree and a rebuilt craftmine-core"
+    },
+    {
+      "group": "R2",
+      "missingWork": "Consume this branch's R3 commits (R2 currently carries only the round-one mining-sandbox snapshot); host/preview run of a mining-sandbox world is R2's"
+    },
+    {
+      "group": "C",
+      "missingWork": "godot-build-verifier / executor commits are not in this tree; the executor path must be consumed by commit id"
+    },
+    {
+      "group": "R4",
+      "missingWork": "Joint acceptance of a complete new-directory package round-trip using the install blocks"
+    },
+    {
+      "group": "R7",
+      "missingWork": "Real consumption of observe() / observe-envelope for the mining sandbox"
+    },
+    {
+      "group": "R8",
+      "missingWork": "Real model creation and gameplay acceptance on the bases"
+    },
+    {
+      "group": "R9",
+      "missingWork": "Copy the mining-sandbox base-assets manifest and extend preflight-selftest"
+    }
+  ],
+  "unverified": [
+    "Full Web export -> isolated Electron -> host adapter -> Rust durability chain on the same commit set",
+    "Product-side creation and play of a mining-sandbox world through the client",
+    "R4 package round-trip through a new directory",
+    "Real model authoring (R8)",
+    "Visible window rendering, GPU composition and hand-feel"
+  ],
+  "knownDefects": [
+    "world_state.gd clone() resolves res://scripts/base/world_state.gd by path; it works in every materialized world but would break if the script were moved",
+    "Terrain rendering is flat draw_rect colour blocks; no art assets are shipped",
+    "Adjacency requires any non-air 4-neighbour or the map floor; a stricter support rule is not implemented",
+    "The side-view parallel run showed a transient project.importClean failure caused by concurrent imports of the same cache; not reproducible in isolation"
+  ],
+  "privateDataIncluded": false,
+  "mergedToPrimary": false,
+  "pushed": false
+}

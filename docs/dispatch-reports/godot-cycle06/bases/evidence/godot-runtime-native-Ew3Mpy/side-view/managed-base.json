@@ -1,0 +1,237 @@
+{
+  "format": "craftmine.managed-base-source/1",
+  "baseId": "side-view",
+  "baseVersion": "1.0.0",
+  "worldId": "alpha",
+  "template": "ruins",
+  "protocol": "craftmine.godot-runtime/2",
+  "progressFormat": "craftmine.godot-progress/1",
+  "stateVersion": 1,
+  "files": [
+    {
+      "path": "MATERIALIZED.json",
+      "bytes": 366,
+      "sha256": "96ef8349474319ed4f756709cd527d6f3a1123687fab620e10576aa159f5a516"
+    },
+    {
+      "path": "craftmine_shared/base_adapter.gd",
+      "bytes": 4931,
+      "sha256": "75d64503525dc3da5b80c41bcf7fea13af41a39850dd293bf45e6eea758b2474"
+    },
+    {
+      "path": "craftmine_shared/runtime_bridge.gd",
+      "bytes": 5813,
+      "sha256": "9cf3104703345907b0968df39b73bd3b2145f560919d52008f81a338865eed01"
+    },
+    {
+      "path": "craftmine_shared/state_guard.gd",
+      "bytes": 1800,
+      "sha256": "9b3bb64b8515b0937e9e884999cfe10684d16d4a2b0af53140cc2a81dcc11293"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 2887,
+      "sha256": "fd09410510beae7b8b18e282332f7026c95e1298d8955ae0c0843b38b2b17cc0"
+    },
+    {
+      "path": "params/side_view_params.json",
+      "bytes": 1679,
+      "sha256": "fe804eed0415ef9635d481d44ad114c7ca0d4e5cc6ec77f19a5b8595ed61de06"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 1428,
+      "sha256": "e5a1222b81e7ef751a986f12621c56e3ecdcc6d69fbffbbeb3f8d0ef180e3ec8"
+    },
+    {
+      "path": "scenes/main.tscn",
+      "bytes": 183,
+      "sha256": "077eac171195462e4fd28cfa642f591fdfd178743281ec94325cccda9de0dea3"
+    },
+    {
+      "path": "scripts/player/human_input_source.gd",
+      "bytes": 501,
+      "sha256": "b36175bbc02dcbeaee09ddf483328927c9e1735e77308ba4f859cb381f6d6597"
+    },
+    {
+      "path": "scripts/player/human_input_source.gd.uid",
+      "bytes": 20,
+      "sha256": "6137e97a7ffff37e2864bfc685bc5ed9eb19652f0e5877e4148ee74ef33651e5"
+    },
+    {
+      "path": "scripts/player/input_source.gd",
+      "bytes": 700,
+      "sha256": "bd6a12ce4f1389a2e583bcba5970600e7fc7420452b28158de3d757981bc7cd5"
+    },
+    {
+      "path": "scripts/player/input_source.gd.uid",
+      "bytes": 21,
+      "sha256": "ae19fb1713364a72b714d96420f355eee84dc5302a6db0871cb3984113bb8808"
+    },
+    {
+      "path": "scripts/player/managed_input_source.gd",
+      "bytes": 772,
+      "sha256": "a5fbdb5b0be6042e13d5b51389a1f057c7b0f8b2eac00e187d98d161fd42ca3b"
+    },
+    {
+      "path": "scripts/player/scripted_input_source.gd",
+      "bytes": 3673,
+      "sha256": "d1e4a37a2fd96838165546dc2e74c6acdcb081d06047cf0a5e2fd68f5a3961c6"
+    },
+    {
+      "path": "scripts/player/scripted_input_source.gd.uid",
+      "bytes": 21,
+      "sha256": "fa3467ac4e70f04d6de89acca2be42a193fc9cc0c146cd69f19aef31459313ed"
+    },
+    {
+      "path": "scripts/player/side_view_player.gd",
+      "bytes": 12119,
+      "sha256": "2194ad1ce2427c86bec2219a791e0531cf4f1144a656149078a00306eaa14d05"
+    },
+    {
+      "path": "scripts/player/side_view_player.gd.uid",
+      "bytes": 20,
+      "sha256": "ea46cf80192ce7309450ea42a7be2849b1a5b4e28a403616532bb43f2cde8e13"
+    },
+    {
+      "path": "scripts/probe/headless_verifier.gd",
+      "bytes": 4107,
+      "sha256": "991416fa2f67d8ba60924299d835012ba9435d8693c425f89f9bee91b60b504b"
+    },
+    {
+      "path": "scripts/probe/headless_verifier.gd.uid",
+      "bytes": 21,
+      "sha256": "e73885eb0d20f145182ac5b1237119916f840487cbdb47df09cb0fe1a5bc79d0"
+    },
+    {
+      "path": "scripts/runtime/main.gd",
+      "bytes": 5046,
+      "sha256": "52b8f3e71098691ef4f2f0d541c2e040640c03bdf965523a0bfb26b2cf7ac485"
+    },
+    {
+      "path": "scripts/runtime/main.gd.uid",
+      "bytes": 20,
+      "sha256": "a049717bd025ab8ac911a2abc460c37066b6d51fee84b40d06016430dcee55c0"
+    },
+    {
+      "path": "scripts/runtime/save_store.gd",
+      "bytes": 5647,
+      "sha256": "2a6e556eee230a9961ba70df4762cbeebc33463c0212fddc264714d9f7fd5867"
+    },
+    {
+      "path": "scripts/runtime/save_store.gd.uid",
+      "bytes": 20,
+      "sha256": "c1d6e0ac87c23e09e9c05891c3f3a3773c1d94ac8b5d51aec26d2c2ddc8cd703"
+    },
+    {
+      "path": "scripts/runtime/side_view_config.gd",
+      "bytes": 5972,
+      "sha256": "80cd3440b4855eacd55f2248ea94d324e40610b9542b8e7a4d442bfbce487b59"
+    },
+    {
+      "path": "scripts/runtime/side_view_config.gd.uid",
+      "bytes": 20,
+      "sha256": "15993d3726af5c6ca95984b340ef765c0ebabcc62bf6db059090767acd665219"
+    },
+    {
+      "path": "scripts/runtime/side_view_runtime.gd",
+      "bytes": 4943,
+      "sha256": "755afa8cb4a1338b49cd00fb2f3a435b31f7d4af26d90f262a58956326ee3a37"
+    },
+    {
+      "path": "scripts/runtime/side_view_runtime.gd.uid",
+      "bytes": 20,
+      "sha256": "ab986782dd02723e08e08a7824587866eb170073753ce458e3272378ba425596"
+    },
+    {
+      "path": "scripts/runtime/world_state.gd",
+      "bytes": 10472,
+      "sha256": "cdcb8cc761273979db8b7924f3aad838df32e534baa83fa883b8193b0529f36d"
+    },
+    {
+      "path": "scripts/runtime/world_state.gd.uid",
+      "bytes": 21,
+      "sha256": "e2797796af2b39f40580ac31fad3b40f42d3103bc41487b4d810705f20e1b10f"
+    },
+    {
+      "path": "scripts/world/checkpoint.gd",
+      "bytes": 1788,
+      "sha256": "a2375551613947ad6f6329fa9634a23452f4866e7b83f183994544b109e43055"
+    },
+    {
+      "path": "scripts/world/checkpoint.gd.uid",
+      "bytes": 20,
+      "sha256": "c8d69134b066abf550e21523d1e2c37db005ec2a584a09b214140935ef42a4b8"
+    },
+    {
+      "path": "scripts/world/hazard.gd",
+      "bytes": 1888,
+      "sha256": "51514404916a65d61807c43f6f3e9ef8c6ba870e3a293bee06f5f6080901c33c"
+    },
+    {
+      "path": "scripts/world/hazard.gd.uid",
+      "bytes": 21,
+      "sha256": "e1879cd684273197087e93f1310cb94b799331b71fc6d6c1f26089b908f697d3"
+    },
+    {
+      "path": "scripts/world/pickup.gd",
+      "bytes": 2892,
+      "sha256": "c4217da4e58d8773ed5eb64608e3c09b774492fa0eb115ccb52885f99d0dba81"
+    },
+    {
+      "path": "scripts/world/pickup.gd.uid",
+      "bytes": 21,
+      "sha256": "79720ec191558afc61892fc3e7bd1ef0e4df85ade8e795f7e6047e2b7526f9c1"
+    },
+    {
+      "path": "scripts/world/room.gd",
+      "bytes": 6136,
+      "sha256": "0bdb9a70ee4f449b2e42e7727eae47b9aa267d0618fbf59060bcf90a75f95a86"
+    },
+    {
+      "path": "scripts/world/room.gd.uid",
+      "bytes": 21,
+      "sha256": "048b12e2e591bdb1312269581c418c8018a2daa2a9dfbad2d9f422d3d9c96296"
+    },
+    {
+      "path": "scripts/world/room_door.gd",
+      "bytes": 2969,
+      "sha256": "346164484fc167798d944bba38bab01481dddc01b8c453453832f552d118bb13"
+    },
+    {
+      "path": "scripts/world/room_door.gd.uid",
+      "bytes": 20,
+      "sha256": "65383e3004fe2e04fb41c8eb9f48cfc48a3b0d0565b21763c1116d9d6948a93b"
+    },
+    {
+      "path": "scripts/world/room_manager.gd",
+      "bytes": 6709,
+      "sha256": "94fc1198bc4e5b4050d088192b6ee98867e57b886d738138daf920dcff57771b"
+    },
+    {
+      "path": "scripts/world/room_manager.gd.uid",
+      "bytes": 20,
+      "sha256": "1200648dde348fe87fa14db53f9b33471b61afbe368327cc85199633f4d92f85"
+    },
+    {
+      "path": "scripts/world/target.gd",
+      "bytes": 3196,
+      "sha256": "bbd1b395111e3511eaa5d7a00c3ddd82edbae88059acb4d38755193f1e4bd506"
+    },
+    {
+      "path": "scripts/world/target.gd.uid",
+      "bytes": 21,
+      "sha256": "64325657b3624dc87b7a1bc85c84b3fdfdf6dce4914cb74fcf3884c1513864d0"
+    },
+    {
+      "path": "worlds/default.json",
+      "bytes": 100,
+      "sha256": "4f3e90ea8ae805ef10af0cf4e7c23a73a9f8c304d9a69d09b7a33b3bc885a265"
+    },
+    {
+      "path": "worlds/ruins/world.json",
+      "bytes": 5771,
+      "sha256": "7ec289a8d61ade1ec345b85aa11f9c5b8e362f7a8f3080a613a764da99c75cde"
+    }
+  ]
+}

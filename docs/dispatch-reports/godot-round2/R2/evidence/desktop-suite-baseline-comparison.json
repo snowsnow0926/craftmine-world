@@ -1,0 +1,22 @@
+{
+  "baseline": 14,
+  "r2": 14,
+  "newRegressions": [],
+  "fixedByR2": [],
+  "failing": [
+    "compaction runs inline at the hard boundary, never ahead of it",
+    "Windows packages pin PI-Desktop executable and shortcut names",
+    "macOS release finalization staples the generated DMG",
+    "macOS release verification requires a notarized Developer ID app and DMG",
+    "macOS release verification rejects a Developer ID app without notarization",
+    "renderer output keeps its size controls",
+    "packaging keeps only shipped locales and excludes non-runtime artifacts",
+    "a symlink inside the workspace cannot carry a read out of it",
+    "the write ledger lets a plugin delete its own output without a prompt",
+    "main, plugins, preview, and updater share the allowlist before openExternal",
+    "a run with its own data directory keeps the current start behavior",
+    "crash and empty-home title copy is catalog-backed in English and Chinese",
+    "Windows/Linux explicit minimize paths use the native taskbar",
+    "background panel updates do not replace or resize the visible session"
+  ]
+}

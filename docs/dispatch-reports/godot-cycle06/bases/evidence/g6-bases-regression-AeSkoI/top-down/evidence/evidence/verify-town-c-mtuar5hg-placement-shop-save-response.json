@@ -1,0 +1,443 @@
+{
+  "baseId": "top-down",
+  "baseVersion": "1.0.0",
+  "finalSnapshot": {
+    "bootError": "",
+    "coins": 34,
+    "duplicateEntityIds": [],
+    "flags": {},
+    "format": "craftmine.godot-topdown-snapshot/1",
+    "grantedRewards": {},
+    "inventory": {
+      "bread": 1
+    },
+    "maps": {
+      "town-shop-interior": {
+        "collisionShapes": 32,
+        "effectiveHeight": 14,
+        "effectiveWidth": 20,
+        "height": 14,
+        "mapId": "town-shop-interior",
+        "ok": true,
+        "solidCells": 78,
+        "tileSize": 16,
+        "tiles": 280,
+        "width": 20
+      }
+    },
+    "physical": {
+      "facing": "up",
+      "overlaps": {
+        "door-exit": false,
+        "npc-shopkeeper": true,
+        "shop-general": true
+      },
+      "playerPosition": [
+        148.266723632813,
+        104.933517456055
+      ]
+    },
+    "player": {
+      "facing": "up",
+      "position": [
+        148.266723632813,
+        104.933517456055
+      ],
+      "sceneId": "shop-interior"
+    },
+    "quests": {
+      "herb-delivery": {
+        "delivered": 0,
+        "rewarded": false,
+        "status": "active"
+      }
+    },
+    "sceneId": "shop-interior",
+    "scenePositions": {
+      "overworld": [
+        104.0,
+        168.0
+      ],
+      "shop-interior": [
+        148.266723632813,
+        104.933517456055
+      ]
+    },
+    "shops": {
+      "general": {
+        "stock": {
+          "apple": 5,
+          "bread": 2,
+          "potion": 2,
+          "rope": 1
+        }
+      }
+    },
+    "sprite": {
+      "facing": "up",
+      "frame": 12,
+      "moving": false
+    },
+    "stateVersion": 1,
+    "worldId": "verify-town-c-mtuar5hg"
+  },
+  "format": "craftmine.godot-topdown-probe/1",
+  "ok": true,
+  "results": [
+    {
+      "args": {
+        "label": "enter",
+        "scene": "res://scenes/shop_interior.tscn",
+        "spawn": "from-street"
+      },
+      "op": "change-scene",
+      "result": {
+        "ok": true,
+        "sceneId": "shop-interior",
+        "scenePath": "res://scenes/shop_interior.tscn",
+        "snapshot": {
+          "bootError": "",
+          "coins": 40,
+          "duplicateEntityIds": [],
+          "flags": {},
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {},
+          "inventory": {},
+          "maps": {
+            "town-shop-interior": {
+              "collisionShapes": 32,
+              "effectiveHeight": 14,
+              "effectiveWidth": 20,
+              "height": 14,
+              "mapId": "town-shop-interior",
+              "ok": true,
+              "solidCells": 78,
+              "tileSize": 16,
+              "tiles": 280,
+              "width": 20
+            }
+          },
+          "physical": {
+            "facing": "down",
+            "overlaps": {
+              "door-exit": false,
+              "npc-shopkeeper": false,
+              "shop-general": false
+            },
+            "playerPosition": [
+              160.0,
+              168.0
+            ]
+          },
+          "player": {
+            "facing": "down",
+            "position": [
+              160.0,
+              168.0
+            ],
+            "sceneId": "shop-interior"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 0,
+              "rewarded": false,
+              "status": "active"
+            }
+          },
+          "sceneId": "shop-interior",
+          "scenePositions": {
+            "overworld": [
+              104.0,
+              168.0
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 3,
+                "potion": 2,
+                "rope": 1
+              }
+            }
+          },
+          "sprite": {
+            "facing": "down",
+            "frame": 0,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "verify-town-c-mtuar5hg"
+        },
+        "spawn": "from-street"
+      }
+    },
+    {
+      "args": {
+        "dx": 0.0,
+        "dy": -1.0,
+        "label": "walk-counter",
+        "steps": 40.0
+      },
+      "op": "move",
+      "result": {
+        "after": [
+          160.0,
+          109.333518981934
+        ],
+        "before": [
+          160.0,
+          168.0
+        ],
+        "blocked": false,
+        "distance": 58.6664810180664,
+        "facing": "up",
+        "ok": true,
+        "sceneId": "shop-interior",
+        "steps": 40
+      }
+    },
+    {
+      "args": {
+        "itemId": "bread",
+        "label": "buy",
+        "shopId": "shop-general"
+      },
+      "op": "buy",
+      "result": {
+        "coins": 34,
+        "inventory": 1,
+        "itemId": "bread",
+        "ok": true,
+        "price": 6,
+        "shopId": "general",
+        "snapshot": {
+          "bootError": "",
+          "coins": 34,
+          "duplicateEntityIds": [],
+          "flags": {},
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {},
+          "inventory": {
+            "bread": 1
+          },
+          "maps": {
+            "town-shop-interior": {
+              "collisionShapes": 32,
+              "effectiveHeight": 14,
+              "effectiveWidth": 20,
+              "height": 14,
+              "mapId": "town-shop-interior",
+              "ok": true,
+              "solidCells": 78,
+              "tileSize": 16,
+              "tiles": 280,
+              "width": 20
+            }
+          },
+          "physical": {
+            "facing": "up",
+            "overlaps": {
+              "door-exit": false,
+              "npc-shopkeeper": true,
+              "shop-general": true
+            },
+            "playerPosition": [
+              160.0,
+              109.333518981934
+            ]
+          },
+          "player": {
+            "facing": "up",
+            "position": [
+              160.0,
+              109.333518981934
+            ],
+            "sceneId": "shop-interior"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 0,
+              "rewarded": false,
+              "status": "active"
+            }
+          },
+          "sceneId": "shop-interior",
+          "scenePositions": {
+            "overworld": [
+              104.0,
+              168.0
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 2,
+                "potion": 2,
+                "rope": 1
+              }
+            }
+          },
+          "sprite": {
+            "facing": "up",
+            "frame": 12,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "verify-town-c-mtuar5hg"
+        },
+        "stock": 2
+      }
+    },
+    {
+      "args": {
+        "dx": -1.0,
+        "dy": 0.0,
+        "label": "walk-left",
+        "steps": 8.0
+      },
+      "op": "move",
+      "result": {
+        "after": [
+          148.266723632813,
+          109.333518981934
+        ],
+        "before": [
+          160.0,
+          109.333518981934
+        ],
+        "blocked": false,
+        "distance": 11.7332763671875,
+        "facing": "left",
+        "ok": true,
+        "sceneId": "shop-interior",
+        "steps": 8
+      }
+    },
+    {
+      "args": {
+        "dx": 0.0,
+        "dy": -1.0,
+        "label": "face-up",
+        "steps": 3.0
+      },
+      "op": "move",
+      "result": {
+        "after": [
+          148.266723632813,
+          104.933517456055
+        ],
+        "before": [
+          148.266723632813,
+          109.333518981934
+        ],
+        "blocked": false,
+        "distance": 4.40000152587891,
+        "facing": "up",
+        "ok": true,
+        "sceneId": "shop-interior",
+        "steps": 3
+      }
+    },
+    {
+      "args": {
+        "label": "save"
+      },
+      "op": "save",
+      "result": {
+        "bytes": 630,
+        "ok": true,
+        "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-c-mtuar5hg/worlds/eed2a75940d3354caffd9d605bf27125fa3218968022028e38a9d2fc1695d2ff/progress.json",
+        "sha256": "bb7437f287882f712e2ae71eee6c46d21e7f70e39fefdfc346795a7c07fdd76e",
+        "snapshot": {
+          "bootError": "",
+          "coins": 34,
+          "duplicateEntityIds": [],
+          "flags": {},
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {},
+          "inventory": {
+            "bread": 1
+          },
+          "maps": {
+            "town-shop-interior": {
+              "collisionShapes": 32,
+              "effectiveHeight": 14,
+              "effectiveWidth": 20,
+              "height": 14,
+              "mapId": "town-shop-interior",
+              "ok": true,
+              "solidCells": 78,
+              "tileSize": 16,
+              "tiles": 280,
+              "width": 20
+            }
+          },
+          "physical": {
+            "facing": "up",
+            "overlaps": {
+              "door-exit": false,
+              "npc-shopkeeper": true,
+              "shop-general": true
+            },
+            "playerPosition": [
+              148.266723632813,
+              104.933517456055
+            ]
+          },
+          "player": {
+            "facing": "up",
+            "position": [
+              148.266723632813,
+              104.933517456055
+            ],
+            "sceneId": "shop-interior"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 0,
+              "rewarded": false,
+              "status": "active"
+            }
+          },
+          "sceneId": "shop-interior",
+          "scenePositions": {
+            "overworld": [
+              104.0,
+              168.0
+            ],
+            "shop-interior": [
+              148.266723632813,
+              104.933517456055
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 2,
+                "potion": 2,
+                "rope": 1
+              }
+            }
+          },
+          "sprite": {
+            "facing": "up",
+            "frame": 12,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "verify-town-c-mtuar5hg"
+        }
+      }
+    }
+  ],
+  "save": {
+    "bytes": 630,
+    "ok": true,
+    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-c-mtuar5hg/worlds/eed2a75940d3354caffd9d605bf27125fa3218968022028e38a9d2fc1695d2ff/progress.json",
+    "sha256": "bb7437f287882f712e2ae71eee6c46d21e7f70e39fefdfc346795a7c07fdd76e"
+  },
+  "worldId": "verify-town-c-mtuar5hg"
+}

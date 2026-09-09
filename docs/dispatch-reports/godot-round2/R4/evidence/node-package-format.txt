@@ -1,0 +1,17 @@
+﻿✔ format constants (1.7123ms)
+✔ canonical vectors (2.1651ms)
+✔ path vectors (1.1867ms)
+✔ kind vectors (0.3407ms)
+✔ legacy vectors (0.4172ms)
+✔ lock vectors (0.502ms)
+✔ validateEntries rejects case collisions (1.1407ms)
+✔ validateResourceManifest rejects content hash mismatch (1.2673ms)
+✔ validatePackageJson rejects an unlisted entry (0.8754ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 162.3805

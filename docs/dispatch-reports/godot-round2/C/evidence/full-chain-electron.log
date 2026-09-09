@@ -1,0 +1,28 @@
+
+PASS core binary configured :: "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\vendor\\pi-desktop\\target\\release\\craftmine-core.exe"
+PASS real Rust core started :: {"advisoryReviews":true,"agentPublishesWorlds":false,"format":"craftmine.core/1","godotBuildJobs":true,"godotExecution":false,"godotExecutorGate":true,"godotProjects":true,"playerApplications":true,"publishesWorlds":true,"sessionDrafts":true,"storage":"sqlite","verificationJobs":true,"version":"0.1.0"}
+PASS source project stored :: {"revision":0}
+PASS build job blocked without a registered executor :: "GODOT_EXECUTION_UNAVAILABLE"
+[executor] [godot-executor] registered craftmine-windows-broker-v1 evidence e0eaadaae6d80bdf promoted 1
+PASS executor registered after real preflight :: "registered"
+PASS preflight proves process, network and cleanup :: {"policyVersion":"craftmine.windows.lpac-registry.v1","processVerified":true,"networkVerified":true,"cleanupVerified":true,"networkChecks":[{"name":"tcp4","ok":false,"rawOsError":10013},{"name":"tcp6","ok":false,"rawOsError":10013},{"name":"tcpExternal","ok":false,"rawOsError":10013},{"name":"udp4","ok":false,"rawOsError":10013},{"name":"udp6","ok":false,"rawOsError":10013},{"name":"udpExternal","ok":false,"rawOsError":10013}]}
+PASS restricted network is denied with real OS errors :: [{"name":"tcp4","ok":false,"rawOsError":10013},{"name":"tcp6","ok":false,"rawOsError":10013},{"name":"tcpExternal","ok":false,"rawOsError":10013},{"name":"udp4","ok":false,"rawOsError":10013},{"name":"udp6","ok":false,"rawOsError":10013},{"name":"udpExternal","ok":false,"rawOsError":10013}]
+PASS job enqueued to the executor :: null
+[executor] [godot-executor] staged 10 artifacts into \\?\D:\Craftmine World-worktrees\godot-remaining-c-20260910\test-results\godot-remaining-c-full-chain-D99FzE\core-data\godot-builds\773f63ad38bae69abf4afd818a1417967103334f80dab89d61bb04c5b333847b\gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35\artifacts
+[executor] [godot-executor] job finished gjob-fba0fa734b1bb1cde26b022016c04382d91668b37d46eb8361d82543e9fbdd27 passed 
+PASS real Godot import and export produced a passing job :: []
+PASS export staged the web entry under the core artifacts root :: ["web/bridge.js","web/index.apple-touch-icon.png","web/index.audio.position.worklet.js","web/index.audio.worklet.js","web/index.html","web/index.icon.png","web/index.js","web/index.pck","web/index.png","web/index.wasm"]
+PASS host-pinned bridge replaced the authored copy :: null
+PASS isolated Electron check ran and passed :: null
+PASS isolated check observed real rendered frames :: {"ok":true,"frames":3,"distinctFrames":1,"captures":[{"sha256":"e64e90a315377b21b9f3b9e035c378238d3c48e790e07b3f424a48322afdddbb","width":960,"height":640,"coloredSamples":35,"samples":35},{"sha256":"e64e90a315377b21b9f3b9e035c378238d3c48e790e07b3f424a48322afdddbb","width":960,"height":640,"coloredSamples":35,"samples":35},{"sha256":"e64e90a315377b21b9f3b9e035c378238d3c48e790e07b3f424a48322afdddbb","width":960,"height":640,"coloredSamples":35,"samples":35}]}
+PASS isolated check proved the input guard and no Node bridge :: {"ok":true,"offscreen":true,"focusable":false,"visible":false,"guard":{"focus":0,"pointerLock":0},"networkBlocked":0,"navigationBlocked":0,"popupsBlocked":0,"sessionCleared":true}
+PASS isolated check matched the formal progress snapshot :: {"ok":true,"equal":true,"expectedHash":"b544a090c62842753623324fe76fc830e2fcffb9ce9d028bfdd5c548b6aa2d8e","actualHash":"b544a090c62842753623324fe76fc830e2fcffb9ce9d028bfdd5c548b6aa2d8e","keys":["baseId","baseVersion","body","format","stateVersion","worldId"]}
+PASS isolated check cleaned up :: {"ok":true,"gracefulExit":true,"windowDestroyed":true,"serverClosed":true}
+PASS runtime assertions are recorded separately from gameplay acceptance :: [{"detail":"ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit","id":"runtime.ready","passed":true},{"detail":"frames=3 distinct=1","id":"runtime.frame","passed":true},{"detail":null,"id":"runtime.no-errors","passed":true},{"detail":"formal progress unchanged","id":"runtime.snapshot","passed":true},{"detail":"guard={\"focus\":0,\"pointerLock\":0}","id":"runtime.isolation","passed":true},{"detail":"graceful=true","id":"runtime.recovery","passed":true}]
+PASS passing check created a candidate :: "gcan-66f38b43df32bd1fc885ed42e2eed3bf9420dd727594886e9cfe8c2f7abe4b7a"
+PASS candidate is ready with real check evidence :: {"status":"ready","checkStatus":"passed","assertions":6}
+PASS staged export exists on disk under the core data directory :: ["D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-D99FzE\\core-data\\godot-builds\\773f63ad38bae69abf4afd818a1417967103334f80dab89d61bb04c5b333847b\\gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35\\artifacts\\web\\index.html"]
+PASS staged entry hash equals the recorded artifact hash :: "5a374fb17352893488c797a4d5406b9fe0904ff6aeef5e5e639953e67a44d8b5"
+PASS formal progress was not written by the check :: {"expected":"{\"baseId\":\"first-person\",\"baseVersion\":\"1.0.0\",\"body\":{\"coins\":7,\"hp\":3,\"quests\":[\"range_basic\"]},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"c-e2e-world\"}","actual":"{\"baseId\":\"first-person\",\"baseVersion\":\"1.0.0\",\"body\":{\"coins\":7,\"hp\":3,\"quests\":[\"range_basic\"]},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"c-e2e-world\"}"}
+PASS stopping the executor keeps the recorded result :: "passed"
+{"passed":true,"checks":23,"out":"D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-D99FzE"}

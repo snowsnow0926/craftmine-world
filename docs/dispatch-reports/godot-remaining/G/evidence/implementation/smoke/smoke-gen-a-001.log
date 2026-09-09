@@ -1,0 +1,8 @@
+exit=0
+request={"format":"craftmine.godot-mining-sandbox-probe/1","commands":[{"op":"hash"}]}
+response={"baseId":"mining-sandbox","baseVersion":"1.0.0","finalSnapshot":{"baseId":"mining-sandbox","baseVersion":"1.0.0","bootError":"","chunkTiles":[16,16],"chunks":{},"editCount":0,"format":"craftmine.godot-mining-sandbox-snapshot/1","inventory":{},"mapSize":[48,24],"physical":{"overlaps":[],"solidTilesInPlayerRect":0},"player":{"equipped":"","facing":"right","health":3,"onFloor":false,"position":[104,90.5],"tile":[6,4],"toolTier":0},"rescue":{"from":[],"reason":"","resolved":false,"resolvedTiles":[],"to":[]},"save":{"lastSave":{}},"seed":424242,"stateVersion":1,"terrainHash":"831b4c81c85db2bf1fee537f9c09e54bb656a5970442a5a881f46cacea1500fe","tileSize":16,"tools":[],"worldId":"smoke-gen-a","worldRevision":0},"format":"craftmine.godot-mining-sandbox-probe/1","ok":true,"results":[{"args":{},"op":"hash","result":{"hash":"831b4c81c85db2bf1fee537f9c09e54bb656a5970442a5a881f46cacea1500fe","ok":true}}],"save":{"bytes":822,"chunkHashes":{},"chunkIndex":{},"chunks":0,"ok":true,"path":"C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\77625097-b737-4349-ba15-59c808e5a95c\\g-impl-smoke\\smoke-gSzXsc\\smoke-gen-a-progress/worlds/7490ee8d2566725b2359642fb12ff78274d44a49348a651836fe582254ca3d5d/progress.json","sha256":"e2accc105376587935fc362b07547eff0f96c46ae4de704cc8693928dba260ea","written":0},"worldId":"smoke-gen-a"}
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+--- stderr ---

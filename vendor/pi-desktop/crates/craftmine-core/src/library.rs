@@ -8,7 +8,14 @@ use anyhow::{ensure, Context, Result};
 use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde_json::{json, Value};
 
+mod installer;
+mod package_format;
+mod packages;
+mod reuse;
+
 pub(super) fn migrate(db: &Connection) -> Result<()> {
+    packages::migrate(db)?;
+    reuse::migrate(db)?;
     db.execute_batch("CREATE TABLE IF NOT EXISTS craftmine_library (
       id TEXT NOT NULL,version INTEGER NOT NULL,hash TEXT NOT NULL,kind TEXT NOT NULL,
       name TEXT NOT NULL,description TEXT NOT NULL,project_id TEXT NOT NULL,world_scope TEXT,

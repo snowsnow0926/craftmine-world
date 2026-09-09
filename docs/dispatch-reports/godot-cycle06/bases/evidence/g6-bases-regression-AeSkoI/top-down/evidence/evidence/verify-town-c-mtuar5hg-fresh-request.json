@@ -1,0 +1,11 @@
+{
+  "format": "craftmine.godot-topdown-probe/1",
+  "commands": [
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "start"
+      }
+    }
+  ]
+}

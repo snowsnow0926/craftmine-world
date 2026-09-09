@@ -1,0 +1,4 @@
+PASS  blank: D:\Craftmine World\test-results\g6-bases\desktop\godot\bases\top-down\worlds\blank matches the generator
+PASS  town: D:\Craftmine World\test-results\g6-bases\desktop\godot\bases\top-down\worlds\town matches the generator
+
+all example worlds are in sync

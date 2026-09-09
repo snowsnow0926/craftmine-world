@@ -1,16 +1,17 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Box } from "lucide-react";
 import { useAppStore } from "../stores/app-store";
 import { pluginWorkPanelTab } from "../lib/work-panel-tabs";
 import { CraftmineLayoutControls } from "./CraftmineLayoutControls";
 import { loadCraftmineLayout } from "../lib/craftmine-layout";
-import { craftmineLang } from "../lib/craftmine-worlds";
+import { craftmineLang, worldErrorMessage } from "../lib/craftmine-worlds";
 import { CRAFTMINE_WORLD_TEXT } from "../lib/craftmine-worlds-text";
 import type { CraftmineAuxSurface } from "../lib/craftmine-aux";
 import { useCraftmineWorlds } from "../hooks/use-craftmine-worlds";
 import { WorldListPanel } from "./craftmine/WorldListPanel";
 import { WorldAuxSections } from "./craftmine/WorldAuxSections";
+import { AssetLibraryPanel } from "./craftmine/assets/AssetLibraryPanel";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
@@ -54,11 +55,26 @@ export function CraftmineNavigation() {
   }, [sessions, activeSessionId]);
 
   // The deep surface lives inside the world view. Opening the world tab is a
-  // real action; the section request is delivered through the documented event
-  // the host must route to the view (INTERFACE_REQUEST.md section 2).
+  // real action; the surface request is sent over the documented navigation
+  // channel, which the host routes into the retained view.
+  const [surfaceError, setSurfaceError] = useState<string | null>(null);
+  const [assetsOpen, setAssetsOpen] = useState(false);
   const openSurface = (surface: CraftmineAuxSurface, section: string) => {
     open();
-    window.dispatchEvent(new CustomEvent("craftmine-aux-open", { detail: { surface, section } }));
+    setSurfaceError(null);
+    // The asset library is a main-window panel, not a plugin-panel tab.
+    if (surface.kind === "assets") {
+      setAssetsOpen(true);
+      return;
+    }
+    const bridge = controller.bridge;
+    if (!bridge) {
+      setSurfaceError(CRAFTMINE_WORLD_TEXT.unavailable[lang]);
+      return;
+    }
+    void bridge
+      .call("world.surface", { surface, section })
+      .catch((failure) => setSurfaceError(worldErrorMessage(failure, lang)));
   };
 
   return (
@@ -92,7 +108,35 @@ export function CraftmineNavigation() {
           )}
 
           <WorldAuxSections controller={controller} lang={lang} onOpenSurface={openSurface} />
+          {surfaceError && (
+            <p className="craftmine-world-error" role="alert" data-surface-error="true">{surfaceError}</p>
+          )}
           <CraftmineLayoutControls />
+          {assetsOpen && (
+            <div className="craftmine-asset-sheet" role="dialog" aria-modal="true"
+              aria-label={CRAFTMINE_WORLD_TEXT.assetsTitle[lang]} data-asset-sheet="true">
+              <div className="craftmine-asset-sheet-head">
+                <span>{CRAFTMINE_WORLD_TEXT.assetsTitle[lang]}</span>
+                <button type="button" data-asset-sheet-close="true" onClick={() => setAssetsOpen(false)}>
+                  {CRAFTMINE_WORLD_TEXT.assetsClose[lang]}
+                </button>
+              </div>
+              <AssetLibraryPanel
+                bridge={controller.bridge}
+                lang={lang}
+                worldId={controller.activeWorldId}
+                onImportRequest={async () => {
+                  const bridge = controller.bridge;
+                  if (!bridge) return null;
+                  // The retained trusted view owns the native directory grant,
+                  // exactly like the legacy import picker.
+                  const picked = await bridge.call("world.pickDirectory", {}) as {sourceRoot?: unknown} | null;
+                  const sourceRoot = typeof picked?.sourceRoot === "string" ? picked.sourceRoot : "";
+                  return sourceRoot ? {sourceRoot, sourcePath: ""} : null;
+                }}
+              />
+            </div>
+          )}
         </>
       )}
     </nav>

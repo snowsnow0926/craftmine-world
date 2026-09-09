@@ -1,0 +1,28 @@
+(node:253896) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ preview independently stages without writing formal state and cancel retains original native identity (2.4219ms)
+✔ apply discards played preview, checkpoints latest formal state and launches fresh exact state before commit (0.5761ms)
+✔ preview descriptor failure retains original and releases locks (0.4986ms)
+✔ preview load failure retains original and releases locks (0.2805ms)
+✔ preview state failure retains original and releases locks (0.2202ms)
+✔ preview prepare failure retains original and releases locks (0.1217ms)
+✔ apply storage failure never replaces formal instance (0.218ms)
+✔ apply commit-before failure never replaces formal instance (0.3615ms)
+✔ lost committed reply is recovered by matching original receipt without second commit (0.3393ms)
+✔ unknown commit keeps both instances paused; later read reconciles exact commit once (0.5519ms)
+✔ foreign committed instance proof cannot authorize promotion (0.3796ms)
+✔ page cannot supply token/evidence/snapshot or target another world (0.1841ms)
+✔ two overlapping page invokes cannot both enter the coordinator (1.7321ms)
+✔ a completed candidate superseded by a later build reports closed instead of a mismatch (0.2495ms)
+✔ lost panel reply recovers the completed exact candidate and never a different candidate (0.6932ms)
+✔ first load confirms a world with no formal runtime and never requires a preview (0.2384ms)
+✔ first load refuses a live instance for the same world and releases locks (0.0681ms)
+✔ first load refuses a world that already has a formal build but no live instance (0.0558ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 154.2812
