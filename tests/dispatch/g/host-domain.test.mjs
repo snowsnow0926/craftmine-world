@@ -22,7 +22,7 @@ test('real Rust host bridge records corrections, forbids identity/limit forgery 
   const start=await call('turn.begin',{context,selectedWorld:'first',request:{id:'r1',text:'请生成一棵树'}});
   assert.equal(start.requirements[0].text,'请生成一棵树');
   const revised=await call('task.context',{context,request:{id:'r2',text:'树要矮一点，保留已有花草'}});
-  assert.equal(revised.requirements[0].kind,'correction');assert.equal(revised.requirements.length,2);
+  assert.equal(revised.requirements.find(row=>row.id==='r2').kind,'correction');assert.equal(revised.requirements[0].id,'r1');assert.equal(revised.requirements.length,2);
   selected='other';assert.equal((await call('task.context',{context})).world.id,'first');
   assert.equal((await call('selection.read',{})).worldId,'other');
   await assert.rejects(call('task.context',{context,request:{id:'r2',text:'伪造重试'}}),/REPLAY_MISMATCH/);

@@ -502,6 +502,31 @@
           ],
           "additionalProperties": false
         }
+      },
+      {
+        "name": "requirements_read",
+        "description": "Read original requirements and corrections from the current task's durable journal. The context projection retains the first request and three recent corrections; when truncated or earlier corrections matter, read the full text here. Optionally choose an existing requestId. Follow next to continue; offsets count Unicode scalar characters. The host supplies all task/world identities.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4000
+            }
+          },
+          "additionalProperties": false
+        }
       }
     ]
   },
