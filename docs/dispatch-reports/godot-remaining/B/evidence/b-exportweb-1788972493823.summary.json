@@ -1,0 +1,264 @@
+{
+  "case": "exportWeb",
+  "taskId": "b-exportweb-1788972493823",
+  "operation": "exportWeb",
+  "startedAt": "2026-09-09T16:48:13.823Z",
+  "transportExit": 0,
+  "finalResponse": {
+    "schemaVersion": 1,
+    "requestId": "b-exportweb-1788972493823",
+    "taskId": "b-exportweb-1788972493823",
+    "operation": "exportWeb",
+    "sourceBinding": {
+      "worldId": "fixed-b-synthetic-fixture",
+      "buildId": "b-exportweb-1788972493823",
+      "sourceRevision": 1,
+      "sourceDigest": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "inputHash": "698731858452e2e684187e8d6e994eb2da3dc9970607858031ef3fba885a24c9",
+    "sourceSnapshotDigest": "43cf363b5b2c0b76c3347f7f82c2ff4c95ecdd9467a8d0c557927c036f193785",
+    "sourceFiles": [
+      {
+        "path": "export_presets.cfg",
+        "bytes": 1089,
+        "sha256": "edc17f833c9365619cea23c47153d9d70854a9507d9428ccb687ba7efaaf561d"
+      },
+      {
+        "path": "main.gd",
+        "bytes": 204,
+        "sha256": "46ff831a188e1749c0caaab754d10e4f884abcb26a6d9ef8de743407b5e306c9"
+      },
+      {
+        "path": "main.tscn",
+        "bytes": 195,
+        "sha256": "2c14bbae599bac887e0596b7287ccab6b4e1e4f3495d22241df8c2f245f63599"
+      },
+      {
+        "path": "probe_resource.gd",
+        "bytes": 210,
+        "sha256": "78a7f6f8cd034a99968d03b30867e5d95a62240b6b7987268c049803d6eb7830"
+      },
+      {
+        "path": "probe_resource.tres",
+        "bytes": 205,
+        "sha256": "f68bd3e948523c7f691b266e5df0d7d01cfccd1fa0049ed223b4321d52578475"
+      },
+      {
+        "path": "project.godot",
+        "bytes": 473,
+        "sha256": "e644cf55524fe1659086eb5eff83fbab9239a6cb55d55871592b9b27d5f1f3cd"
+      },
+      {
+        "path": "sandbox_probe/plugin.cfg",
+        "bytes": 208,
+        "sha256": "d83c581063dc538025e79f6609d48cb2dcb0257b3bb18cf3e86fbc11e049492e"
+      },
+      {
+        "path": "sandbox_probe/plugin.gd",
+        "bytes": 428,
+        "sha256": "6ef054b9435543b90034d80c4b28fa735972c83634e59a50ddf108a265b4c47d"
+      },
+      {
+        "path": "sandbox_probe/probe.gd",
+        "bytes": 3440,
+        "sha256": "429989d7d40954ebaed7f2db4c51830761039042b3986f84ea3a8fe589ce2034"
+      }
+    ],
+    "state": "succeeded",
+    "exitCode": 0,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "processVerification": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "pid": 238012,
+      "creationTimeFiletime": "134334460995368411",
+      "imagePath": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909164805004-245784\\tasks\\b-exportweb-1788972493823\\bin\\Godot_v4.7.2-stable_win64.exe",
+      "appContainerSid": "S-1-15-2-1948979280-4193581976-3867139601-3677176589-1202128549-1150648467-2792489595",
+      "capabilitySids": [
+        "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+      ],
+      "integrityRid": 4096,
+      "isAppContainer": true,
+      "lpacQueryValue": null,
+      "lpacQueryError": 87,
+      "lpacCreationAttribute": true,
+      "jobMembershipVerified": true,
+      "jobLimitFlags": 8456,
+      "activeProcessLimit": 1,
+      "processMemoryBytes": 4294967296,
+      "verifiedBeforeResume": true,
+      "resumePreviousCount": 1
+    },
+    "networkPreflight": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "hostPositiveControls": [
+        "tcp4Echo",
+        "tcp6Echo",
+        "udp4Echo",
+        "udp6Echo"
+      ],
+      "hostReceivedCounts": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "exactTaskExempt": false,
+      "processVerification": {
+        "verified": true,
+        "policyVersion": "craftmine.windows.lpac-registry.v1",
+        "pid": 175536,
+        "creationTimeFiletime": "134334460993299122",
+        "imagePath": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909164805004-245784\\tasks\\b-exportweb-1788972493823\\bin\\broker-preflight.exe",
+        "appContainerSid": "S-1-15-2-1948979280-4193581976-3867139601-3677176589-1202128549-1150648467-2792489595",
+        "capabilitySids": [
+          "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+        ],
+        "integrityRid": 4096,
+        "isAppContainer": true,
+        "lpacQueryValue": null,
+        "lpacQueryError": 87,
+        "lpacCreationAttribute": true,
+        "jobMembershipVerified": true,
+        "jobLimitFlags": 8456,
+        "activeProcessLimit": 1,
+        "processMemoryBytes": 4294967296,
+        "verifiedBeforeResume": true,
+        "resumePreviousCount": 1
+      },
+      "observation": {
+        "winsockStartup": 0,
+        "checks": [
+          {
+            "name": "tcp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          }
+        ]
+      }
+    },
+    "resourceEnforcement": {
+      "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+      "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+      "hardFilesystemQuota": false,
+      "workBytesLimit": 1073741824,
+      "logBytesLimit": 4194304,
+      "sampleIntervalMs": 200,
+      "samples": 16,
+      "maxObservedWorkBytes": 73904876,
+      "maxObservedLogBytes": 6777,
+      "enforced": false,
+      "reason": null
+    },
+    "artifacts": [
+      {
+        "path": "index.apple-touch-icon.png",
+        "bytes": 11944,
+        "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+      },
+      {
+        "path": "index.audio.position.worklet.js",
+        "bytes": 2973,
+        "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+      },
+      {
+        "path": "index.audio.worklet.js",
+        "bytes": 7298,
+        "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+      },
+      {
+        "path": "index.html",
+        "bytes": 5447,
+        "sha256": "21520f7bfafb89462c42d6557c7703dd5930e985c1e826ab019c4387879981b1"
+      },
+      {
+        "path": "index.icon.png",
+        "bytes": 5700,
+        "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+      },
+      {
+        "path": "index.js",
+        "bytes": 279815,
+        "sha256": "33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba"
+      },
+      {
+        "path": "index.pck",
+        "bytes": 6784,
+        "sha256": "274099309d31b9657c603d36c211b9a94201eefa710ad5ed8f9e1260b865813d"
+      },
+      {
+        "path": "index.png",
+        "bytes": 21443,
+        "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+      },
+      {
+        "path": "index.wasm",
+        "bytes": 39514754,
+        "sha256": "fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0"
+      }
+    ],
+    "artifactsRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909164805004-245784\\tasks\\b-exportweb-1788972493823\\artifacts",
+    "logsRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909164805004-245784\\tasks\\b-exportweb-1788972493823\\logs",
+    "logs": [
+      {
+        "path": "preflight.json",
+        "bytes": 508,
+        "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+      },
+      {
+        "path": "task.log",
+        "bytes": 6777,
+        "sha256": "e41295c7a376e18c3ed04f49a1dfbf84c5eb8812018c137291a88c25ba73852e"
+      }
+    ],
+    "cleanup": {
+      "verified": true,
+      "profileHresult": 0,
+      "workRemoved": true,
+      "error": null
+    },
+    "recoveryJournal": {
+      "path": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909164805004-245784\\tasks\\.recovery-journal\\b-exportweb-1788972493823.json",
+      "policyVersion": "craftmine.windows.recovery-journal.v1",
+      "cleared": true,
+      "error": null
+    },
+    "error": null,
+    "brokerSha256": "ca04aa18c3b492e2f7ec1bb471617b03dfdda2f4ec1e7482b333ff4a1ac0c9ad"
+  },
+  "passed": true,
+  "failures": [],
+  "finishedAt": "2026-09-09T16:48:25.081Z"
+}

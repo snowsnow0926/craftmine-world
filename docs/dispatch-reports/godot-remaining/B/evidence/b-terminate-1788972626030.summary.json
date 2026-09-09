@@ -1,0 +1,68 @@
+{
+  "case": "terminate",
+  "taskId": "b-terminate-1788972626030",
+  "operation": "import",
+  "startedAt": "2026-09-09T16:50:26.030Z",
+  "sleepMarkerReached": true,
+  "preKillSidecar": {
+    "verified": true,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "pid": 270948,
+    "creationTimeFiletime": "134334462316229029",
+    "imagePath": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165025806-95036\\tasks\\b-terminate-1788972626030\\bin\\Godot_v4.7.2-stable_win64.exe",
+    "appContainerSid": "S-1-15-2-1369142098-1687446167-4060329955-14236428-2311281935-4114624086-3999721528",
+    "capabilitySids": [
+      "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+    ],
+    "integrityRid": 4096,
+    "isAppContainer": true,
+    "lpacQueryValue": null,
+    "lpacQueryError": 87,
+    "lpacCreationAttribute": true,
+    "jobMembershipVerified": true,
+    "jobLimitFlags": 8456,
+    "activeProcessLimit": 1,
+    "processMemoryBytes": 4294967296,
+    "verifiedBeforeResume": true,
+    "resumePreviousCount": 0
+  },
+  "preKillJournal": "{\"schemaVersion\":1,\"policyVersion\":\"craftmine.windows.recovery-journal.v1\",\"taskId\":\"b-terminate-1788972626030\",\"requestId\":\"b-terminate-1788972626030\",\"operation\":\"import\",\"tasksRoot\":\"D:\\\\Craftmine World\\\\test-results\\\\godot-remaining-b\\\\test-results\\\\broker-cases\\\\b-20260909165025806-95036\\\\tasks\",\"taskRoot\":\"D:\\\\Craftmine World\\\\test-results\\\\godot-remaining-b\\\\test-results\\\\broker-cases\\\\b-20260909165025806-95036\\\\tasks\\\\b-terminate-1788972626030\",\"profileName\":\"craftmine.godot.task.b-terminate-1788972626030\",\"profileSid\":\"S-1-15-2-1369142098-1687446167-4060329955-14236428-2311281935-4114624086-3999721528\",\"identityNonce\":\"f9e6039a865336f3c9318db1b816ea8c1bc8b7523c382d5b67317c80debf8b8d\",\"startedAtUnixMs\":1788972631350,\"state\":\"prepared\"}",
+  "transportExit": -1,
+  "finalReceiptObserved": false,
+  "recovery": {
+    "policyVersion": "craftmine.windows.recovery-journal.v1",
+    "tasksRoot": "\\\\?\\D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165025806-95036\\tasks",
+    "journalRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165025806-95036\\tasks\\.recovery-journal",
+    "entries": [
+      {
+        "taskId": "b-terminate-1788972626030",
+        "operation": "import",
+        "identityVerified": true,
+        "finalReceiptObserved": false,
+        "childPid": 270948,
+        "childCreationTimeFiletime": "134334462316229029",
+        "childProcessState": "gone",
+        "profileName": "craftmine.godot.task.b-terminate-1788972626030",
+        "profileDeleted": true,
+        "profileHresult": 0,
+        "taskRootRemoved": true,
+        "journalRemoved": true,
+        "reclaimed": [
+          "work",
+          "bin",
+          "logs",
+          "artifacts"
+        ],
+        "skipped": [],
+        "notes": [
+          "recorded-child-already-exited-0x0",
+          "task-root-removed-after-1-retries"
+        ]
+      }
+    ],
+    "reconciledCount": 1,
+    "skippedCount": 0
+  },
+  "passed": true,
+  "failures": []
+}

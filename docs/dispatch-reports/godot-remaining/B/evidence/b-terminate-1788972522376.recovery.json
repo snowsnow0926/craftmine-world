@@ -1,0 +1,28 @@
+{
+  "policyVersion": "craftmine.windows.recovery-journal.v1",
+  "tasksRoot": "\\\\?\\D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909164833583-252068\\tasks",
+  "journalRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909164833583-252068\\tasks\\.recovery-journal",
+  "entries": [
+    {
+      "taskId": "b-terminate-1788972522376",
+      "operation": "import",
+      "identityVerified": true,
+      "finalReceiptObserved": false,
+      "childPid": 105764,
+      "childCreationTimeFiletime": "134334461275971733",
+      "childProcessState": "not-recorded",
+      "profileName": "craftmine.godot.task.b-terminate-1788972522376",
+      "profileDeleted": false,
+      "profileHresult": null,
+      "taskRootRemoved": false,
+      "journalRemoved": false,
+      "reclaimed": [],
+      "skipped": [
+        "error: QueryFullProcessImageNameW: 拒绝访问。 (os error 5)"
+      ],
+      "notes": []
+    }
+  ],
+  "reconciledCount": 0,
+  "skippedCount": 1
+}

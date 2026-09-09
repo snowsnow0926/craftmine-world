@@ -1,0 +1,218 @@
+{
+  "case": "inflation",
+  "taskId": "b-inflation-1788972784814",
+  "operation": "import",
+  "startedAt": "2026-09-09T16:53:04.814Z",
+  "transportExit": 0,
+  "finalResponse": {
+    "schemaVersion": 1,
+    "requestId": "b-inflation-1788972784814",
+    "taskId": "b-inflation-1788972784814",
+    "operation": "import",
+    "sourceBinding": {
+      "worldId": "fixed-b-synthetic-fixture",
+      "buildId": "b-inflation-1788972784814",
+      "sourceRevision": 1,
+      "sourceDigest": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "inputHash": "426eb9d2e47f8b960f9a1336540b30b295ac340f250235a879c96f9ccbbce9bd",
+    "sourceSnapshotDigest": "4d216ba229eb87985e770f041630fab70e91eef3abebe3ace26d0370edba63b9",
+    "sourceFiles": [
+      {
+        "path": "export_presets.cfg",
+        "bytes": 1089,
+        "sha256": "edc17f833c9365619cea23c47153d9d70854a9507d9428ccb687ba7efaaf561d"
+      },
+      {
+        "path": "main.gd",
+        "bytes": 204,
+        "sha256": "46ff831a188e1749c0caaab754d10e4f884abcb26a6d9ef8de743407b5e306c9"
+      },
+      {
+        "path": "main.tscn",
+        "bytes": 195,
+        "sha256": "2c14bbae599bac887e0596b7287ccab6b4e1e4f3495d22241df8c2f245f63599"
+      },
+      {
+        "path": "probe_resource.gd",
+        "bytes": 410,
+        "sha256": "27c1b1f00216a412fdd2debf30628c2b2be79db43a180cf8fa02bdb20499bd5d"
+      },
+      {
+        "path": "probe_resource.tres",
+        "bytes": 205,
+        "sha256": "f68bd3e948523c7f691b266e5df0d7d01cfccd1fa0049ed223b4321d52578475"
+      },
+      {
+        "path": "project.godot",
+        "bytes": 473,
+        "sha256": "e644cf55524fe1659086eb5eff83fbab9239a6cb55d55871592b9b27d5f1f3cd"
+      },
+      {
+        "path": "sandbox_probe/plugin.cfg",
+        "bytes": 208,
+        "sha256": "d83c581063dc538025e79f6609d48cb2dcb0257b3bb18cf3e86fbc11e049492e"
+      },
+      {
+        "path": "sandbox_probe/plugin.gd",
+        "bytes": 428,
+        "sha256": "6ef054b9435543b90034d80c4b28fa735972c83634e59a50ddf108a265b4c47d"
+      },
+      {
+        "path": "sandbox_probe/probe.gd",
+        "bytes": 3440,
+        "sha256": "429989d7d40954ebaed7f2db4c51830761039042b3986f84ea3a8fe589ce2034"
+      }
+    ],
+    "state": "failed",
+    "exitCode": 91,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "processVerification": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "pid": 261832,
+      "creationTimeFiletime": "134334463915559780",
+      "imagePath": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165157947-235832\\tasks\\b-inflation-1788972784814\\bin\\Godot_v4.7.2-stable_win64.exe",
+      "appContainerSid": "S-1-15-2-250106441-964247988-386233801-2265207985-3170688713-3069191880-1379491068",
+      "capabilitySids": [
+        "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+      ],
+      "integrityRid": 4096,
+      "isAppContainer": true,
+      "lpacQueryValue": null,
+      "lpacQueryError": 87,
+      "lpacCreationAttribute": true,
+      "jobMembershipVerified": true,
+      "jobLimitFlags": 8456,
+      "activeProcessLimit": 1,
+      "processMemoryBytes": 4294967296,
+      "verifiedBeforeResume": true,
+      "resumePreviousCount": 1
+    },
+    "networkPreflight": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "hostPositiveControls": [
+        "tcp4Echo",
+        "tcp6Echo",
+        "udp4Echo",
+        "udp6Echo"
+      ],
+      "hostReceivedCounts": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "exactTaskExempt": false,
+      "processVerification": {
+        "verified": true,
+        "policyVersion": "craftmine.windows.lpac-registry.v1",
+        "pid": 270916,
+        "creationTimeFiletime": "134334463914197120",
+        "imagePath": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165157947-235832\\tasks\\b-inflation-1788972784814\\bin\\broker-preflight.exe",
+        "appContainerSid": "S-1-15-2-250106441-964247988-386233801-2265207985-3170688713-3069191880-1379491068",
+        "capabilitySids": [
+          "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+        ],
+        "integrityRid": 4096,
+        "isAppContainer": true,
+        "lpacQueryValue": null,
+        "lpacQueryError": 87,
+        "lpacCreationAttribute": true,
+        "jobMembershipVerified": true,
+        "jobLimitFlags": 8456,
+        "activeProcessLimit": 1,
+        "processMemoryBytes": 4294967296,
+        "verifiedBeforeResume": true,
+        "resumePreviousCount": 1
+      },
+      "observation": {
+        "winsockStartup": 0,
+        "checks": [
+          {
+            "name": "tcp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          }
+        ]
+      }
+    },
+    "resourceEnforcement": {
+      "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+      "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+      "hardFilesystemQuota": false,
+      "workBytesLimit": 1073741824,
+      "logBytesLimit": 4194304,
+      "sampleIntervalMs": 200,
+      "samples": 22,
+      "maxObservedWorkBytes": 1075151147,
+      "maxObservedLogBytes": 2629,
+      "enforced": true,
+      "reason": "work directory bytes 1075151147 exceed the sampled limit 1073741824"
+    },
+    "artifacts": [],
+    "artifactsRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165157947-235832\\tasks\\b-inflation-1788972784814\\artifacts",
+    "logsRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165157947-235832\\tasks\\b-inflation-1788972784814\\logs",
+    "logs": [
+      {
+        "path": "preflight.json",
+        "bytes": 508,
+        "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+      },
+      {
+        "path": "task.log",
+        "bytes": 2629,
+        "sha256": "c0fff128da72589d0468798dfc255390a4bbe9c3c33a0e431c1b9660e7d4d65a"
+      }
+    ],
+    "cleanup": {
+      "verified": true,
+      "profileHresult": 0,
+      "workRemoved": true,
+      "error": null
+    },
+    "recoveryJournal": {
+      "path": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165157947-235832\\tasks\\.recovery-journal\\b-inflation-1788972784814.json",
+      "policyVersion": "craftmine.windows.recovery-journal.v1",
+      "cleared": true,
+      "error": null
+    },
+    "error": "work directory bytes 1075151147 exceed the sampled limit 1073741824 exit=0x5b job_active_processes=Some(0)",
+    "brokerSha256": "7442d7cfd8a219daec27286fc5e77c659604afc84f55cd021d782ddbc92b8b31"
+  },
+  "passed": true,
+  "failures": [],
+  "finishedAt": "2026-09-09T16:53:17.186Z"
+}
