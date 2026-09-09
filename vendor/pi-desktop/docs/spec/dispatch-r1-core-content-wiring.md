@@ -122,3 +122,10 @@ a crashed portable export is reconciled before a reclaimer trusts the pin set.
 frozen code and both positive vectors must reproduce their golden hash and
 canonical text. A vector without a runner fails the test, so R4/R6 consumers and
 this crate cannot drift apart.
+
+The vector set also rejects the three competing shapes of the same format
+identifier: the installer's `direct`/`closure` string arrays, the package
+validator's `direct`/`closure` object arrays and a numeric `AssetRef.version`.
+All three are `INVALID_ASSET_LOCK`, so `craftmine.assets-lock/1` has exactly one
+meaning and a consumer with legacy data must migrate it explicitly instead of
+reading a second dialect.
