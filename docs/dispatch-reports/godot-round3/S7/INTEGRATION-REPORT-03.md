@@ -85,7 +85,38 @@ services main.cjs constructs" (5/5 pass). Fix belongs in S6's staging list.
 3. Re-run the frozen set and the joint suites after every further integration.
 4. Freeze the functional candidate and hand it to S8; re-verify from the package.
 
-## 6. Reproduce
+## 6. Handoff: the Electron create -> apply harness (next S7 step, not yet built)
+
+An attempt to have a delegate build it ran out of turns during exploration, so nothing was
+committed for it. The design that follows is the shortest path and reuses existing, working
+pieces:
+
+1. Entry: a small Electron main under `tests/godot-round3/S7/fixtures/` modelled on
+   `tests/godot-round3/S2/fixtures/check-hook-electron.mjs` (hidden, `show:false`,
+   `focusable:false`, `offscreen:true`, own partition, permissions denied,
+   `disableHardwareAcceleration`).
+2. Inside that process, build the real dependencies: a real core client over
+   `vendor/pi-desktop/target/release/craftmine-core.exe` (stdio JSON-lines, see
+   `tests/godot-round2/R2/creation-contract-core.mjs`), the real plugin runtime
+   (`plugin-runtime.ts` `loadFromPath` + `plugin-host-process.mjs`), the real
+   `GodotBuildVerifier`, and the real `createGodotWorldFactory` from
+   `electron/main/godot-world-creation.ts` with
+   `domain: (method, params) => plugins.requestCraftmineHost(method, params)`.
+3. Call `plugins.setServices({godotVerification: verifier, craftmineAssetPreview, craftmineLiveSample})`,
+   then drive the factory: `create({baseId:'first-person', title})`, then
+   `godotBuild.start(mode:'check')` through the plugin tool, poll `godotBuild.read` until terminal,
+   `godotCandidate.read`, then the private `godotApplication.prepare` + `commit` route, then read
+   the applied state back.
+4. Provision the executor toolchain into the isolated plugin data dir exactly as
+   `probe-product.mjs --provision-executor` does (broker + editor/templates copy + bridge + lock).
+5. Assert: candidate accepted, application committed once, no input events / pointer-lock
+   requests / focus steals, and a second identical request is idempotent.
+
+That harness is the gate for the real-model requirement; until it exists and passes, the
+create -> check -> candidate -> apply chain and every frozen runtime round that depends on it stay
+`not-run` rather than passed.
+
+## 7. Reproduce
 
 ```powershell
 $wt = 'D:\Craftmine World-worktrees\godot-round3-s7-20260910'; cd $wt
