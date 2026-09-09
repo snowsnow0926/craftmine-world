@@ -8712,3 +8712,18 @@ the caller, and no world is created. Reject concurrent operations, raw progress
 writes, non-main-window senders and Godot application credentials. Reject
 undelivered base IDs before creating data. Use independent headless data and
 no real input, focus or Pointer Lock.
+
+### Godot host lifecycle integration follow-up
+
+Run `node tests/godot-host-lifecycle.mjs` for the deterministic fault cases in
+`godot-host-lifecycle-audit.md`: a failed save or temporary descriptor read keeps
+the existing instance; malformed receipts never authorize exit; a failed candidate
+resumes the old world; successful switches use the durable revision and persist
+before replacing. This suite covers the real host class with fixture transport
+and storage callbacks, not an integrated Rust/Electron product.
+
+Before enabling the product Godot descriptor, also verify a real Rust transaction
+with nonzero revision, full base state preservation through save/restart/switch,
+trusted artifact lookup from B's applied build, selection rollback on failed
+candidate load, and hiding the sibling view while checks/workbench pages are open.
+The original C fixtures alone do not satisfy those integration cases.

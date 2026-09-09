@@ -1,0 +1,27 @@
+(node:257640) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ switch freezes and persists exact durable revision before starting replacement (3.5423ms)
+✔ save failure preserves and resumes old instance; no new runner starts (1.5531ms)
+✔ failed candidate resumes the saved old instance without destroying it (1.2005ms)
+✔ temporary descriptor failure never closes or saves current world (0.8955ms)
+✔ null descriptor safely checkpoints then departs; failure keeps old world (0.9409ms)
+✔ explicit checkpoint is reused only while paused (0.8872ms)
+✔ invalid hash cannot authorize quit (1.2335ms)
+✔ invalid identity cannot authorize quit (0.6498ms)
+✔ invalid revision cannot authorize quit (0.7229ms)
+✔ invalid pause cannot authorize quit (0.7344ms)
+✔ concurrent startup rejected before runtime async creation completes (0.8425ms)
+✔ dispose during startup cannot resurrect the world (0.6881ms)
+✔ missing revision is rejected instead of guessed zero (0.4489ms)
+✔ concurrent save requests share one persistence transaction (0.7083ms)
+✔ outside canonical build root is rejected before a runtime starts (0.7764ms)
+✔ checkpoint waits for earlier save then takes a fresh snapshot after pause (0.9848ms)
+✔ B formal build metadata is recognized without trusting document filesystem paths (0.4374ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20.7883
