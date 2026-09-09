@@ -1,0 +1,18 @@
+✔ actual Rust panel integration preserves draft identity, exact receipts and bound context after world switches (180.7742ms)
+✔ lost budget receipt survives Rust and Main restart after recovery advances the task head (97.7069ms)
+✔ real error lifecycle permits player unlimited budget and same-owner recovery without manual interrupt (99.0726ms)
+✔ actual gateway and filesystem journal bind replay to Main session/world and original args (13.7263ms)
+✔ backup restart resolves actual receipt before expired grant and stale recheck never creates a turn (27.6431ms)
+✔ budget receipt lookup completes an old intent before current-head or active-turn checks (7.1015ms)
+✔ real filesystem journal survives pending/completed restart with exact original install revision (12.6598ms)
+✔ real persisted owner and params reject session/world/identity injection (2.8381ms)
+✔ concurrent execution is deduplicated and uncertain operation retries original ID (46.0767ms)
+✔ interrupted running records load uncertain and corrupt journal fails closed (4.7774ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 508.6208

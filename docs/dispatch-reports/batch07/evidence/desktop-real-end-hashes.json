@@ -1,0 +1,10 @@
+{
+  "routerOverlay": false,
+  "files": {
+    "vendor/pi-desktop/crates/craftmine-core/src/workspaces.rs": "04b1643039cbcd4e6bef56d3de47eb9a97f4420d6ac2bd58b0366ae4c873ff84",
+    "vendor/pi-desktop/crates/craftmine-core/src/recovery.rs": "7ea78d4267cd409b294b155994588e32a483a8ea92b006eb17e23541ee768d5e",
+    "vendor/pi-desktop/crates/craftmine-core/src/recovery_tests.rs": "9b77a7b74ca8ccf1f3a07a6c2889ed75b4cc364da080d073af0f5e72b0e62b15",
+    "tests/batch07-desktop/domain.test.mjs": "4949daf3fa491ddcc4076455f9356437378e1d33fcdca16ebef1c40ccdec606f",
+    "test-results/batch07-desktop-rust-target/debug/craftmine-core.exe": "a037e1e3a8c6168a801c123afd6021fadc7dd938fef49ab074ff238ff0426321"
+  }
+}
