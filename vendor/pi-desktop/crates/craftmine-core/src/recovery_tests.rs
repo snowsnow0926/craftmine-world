@@ -203,3 +203,193 @@ fn interrupt_revokes_only_its_jobs_and_lease_and_rejects_untrusted_reason_text()
     assert_eq!(unaffected["budget"]["reservedTokens"], 100);
     Ok(())
 }
+#[test]
+fn real_error_end_preserves_exhausted_task_and_resumes_after_player_removes_limit() -> Result<()> {
+    let (directory, mut journal, context) = fixture()?;
+    journal.task_record_context(&json!({"context":context,"requestId":"goal","kind":"request","text":"Keep the tree and original goal"}))?;
+    let work = journal.workspace_inspect(&context)?;
+    journal.workspace_commit(
+        &context,
+        &work.task.binding,
+        "tree-edit",
+        0,
+        &json!({"add":"tree"}),
+        &json!({"scene":{"title":"World A","objects":[{"id":"tree"}]}}),
+    )?;
+    let facts = journal.task_context(&json!({"context":context}))?;
+    let configuration = json!({"projectId":context.project_id,"sessionId":context.session_id,"worldId":"world-a","taskId":facts["binding"]["taskId"],"generation":1,"operationId":"finite-limit","maxTokens":120});
+    journal.budget_configure(&configuration)?;
+    reserve(&mut journal, &context, "known-request")?;
+    journal.budget_call("budget.settle",&json!({"binding":facts["binding"],"generation":1,"requestId":"known-request","status":"known","usage":{"inputTokens":15,"outputTokens":5}}))?;
+    reserve(&mut journal, &context, "pending-request")?;
+    assert!(reserve(&mut journal, &context, "over-limit")
+        .unwrap_err()
+        .to_string()
+        .contains("TOKEN_BUDGET_EXHAUSTED"));
+    // This is the actual host ending path; no task.interrupt setup shortcut.
+    journal.workspace_end_turn(&context.session_id, &context.turn_id, "error")?;
+    let ended = journal.task_context(&json!({"context":context}))?;
+    assert_eq!(ended["status"], "cancelled");
+    assert_eq!(ended["recovery"], "interrupted");
+    let next = WorkspaceContext {
+        turn_id: "explicit-resume".into(),
+        ..context.clone()
+    };
+    assert!(journal
+        .workspace_open(&next, "world-a")
+        .unwrap_err()
+        .to_string()
+        .contains("EXPLICIT_RECOVERY_REQUIRED"));
+    assert_eq!(
+        journal
+            .db
+            .query_row("SELECT COUNT(*) FROM craftmine_world_leases", [], |row| row
+                .get::<_, i64>(0))?,
+        0
+    );
+    drop(journal);
+    let mut journal = TaskJournal::open(&directory.path().join("tasks.sqlite"))?;
+    journal.task_recover()?;
+    let recovered = journal.task_context(&json!({"context":context}))?;
+    assert_eq!(recovered["budget"]["actualTokens"], 20);
+    assert_eq!(recovered["budget"]["reservedTokens"], 100);
+    assert_eq!(recovered["budget"]["unknownRequestCount"], 1);
+    let mut unlimited = configuration;
+    unlimited["operationId"] = json!("remove-limit");
+    unlimited["maxTokens"] = Value::Null;
+    journal.budget_configure(&unlimited)?;
+    journal
+        .task_resume(&json!({"context":next,"taskId":facts["binding"]["taskId"],"generation":1}))?;
+    let resumed = journal.task_context(&json!({"context":next}))?;
+    assert_eq!(
+        resumed["budget"]["ownerTaskId"],
+        recovered["budget"]["ownerTaskId"]
+    );
+    assert_eq!(resumed["budget"]["actualTokens"], 20);
+    assert_eq!(resumed["budget"]["reservedTokens"], 100);
+    assert_eq!(resumed["budget"]["unknownRequestCount"], 1);
+    assert_eq!(resumed["budget"]["limits"]["maxTokens"], Value::Null);
+    assert_eq!(resumed["draft"]["hash"], facts["draft"]["hash"]);
+    assert_eq!(resumed["requirements"], facts["requirements"]);
+    assert_eq!(resumed["generation"], 2);
+    Ok(())
+}
+
+#[test]
+fn startup_repairs_only_proven_legacy_failed_current_heads() -> Result<()> {
+    for scenario in [
+        "error",
+        "aborted",
+        "completed",
+        "discarded",
+        "old-head",
+        "no-ended-row",
+    ] {
+        let (directory, mut journal, context) = fixture()?;
+        let id = journal.workspace_inspect(&context)?.task.binding.task_id;
+        journal.task_context(&json!({"context":context}))?;
+        if scenario == "no-ended-row" {
+            journal.db.execute(
+                "UPDATE craftmine_tasks SET status='cancelled' WHERE id=?1",
+                [&id],
+            )?;
+            journal
+                .db
+                .execute("DELETE FROM craftmine_world_leases WHERE task_id=?1", [&id])?;
+        } else {
+            journal.workspace_end_turn(
+                &context.session_id,
+                &context.turn_id,
+                if scenario == "completed" {
+                    "completed"
+                } else if scenario == "aborted" {
+                    "aborted"
+                } else {
+                    "error"
+                },
+            )?;
+            if scenario == "discarded" {
+                journal.task_discard(
+                    &json!({"projectId":context.project_id,"taskId":id,"generation":1}),
+                )?;
+            } else {
+                // Reproduce the previous release's persisted cancelled+none gap.
+                journal.db.execute(
+                    "UPDATE craftmine_task_runtime SET recovery='none' WHERE task_id=?1",
+                    [&id],
+                )?;
+            }
+            if scenario == "old-head" {
+                let next = WorkspaceContext {
+                    turn_id: "new-head".into(),
+                    ..context.clone()
+                };
+                journal.workspace_open(&next, "world-a")?;
+                journal.workspace_end_turn(&next.session_id, &next.turn_id, "completed")?;
+            }
+        }
+        let original = read_task(&journal.db, &id)?;
+        drop(journal);
+        let mut journal = TaskJournal::open(&directory.path().join("tasks.sqlite"))?;
+        let recovered = journal.task_recover()?;
+        let should_recover = matches!(scenario, "error" | "aborted");
+        assert_eq!(
+            recovered["interruptedTasks"]
+                .as_array()
+                .unwrap()
+                .contains(&json!(id)),
+            should_recover,
+            "{scenario}"
+        );
+        assert_eq!(
+            runtime(&journal.db, &id)?.2,
+            if should_recover {
+                "interrupted"
+            } else if scenario == "discarded" {
+                "discarded"
+            } else {
+                "none"
+            },
+            "{scenario}"
+        );
+        assert_eq!(read_task(&journal.db, &id)?.draft_hash, original.draft_hash);
+        assert_eq!(journal.task_recover()?["interruptedTasks"], json!([]));
+    }
+    Ok(())
+}
+
+#[test]
+fn first_end_result_is_idempotent_and_completed_tasks_do_not_revive() -> Result<()> {
+    for status in ["completed", "error", "aborted"] {
+        let (_directory, mut journal, context) = fixture()?;
+        journal.workspace_end_turn(&context.session_id, &context.turn_id, status)?;
+        journal.workspace_end_turn(
+            &context.session_id,
+            &context.turn_id,
+            if status == "completed" {
+                "error"
+            } else {
+                "completed"
+            },
+        )?;
+        journal.task_recover()?;
+        let result = journal.task_context(&json!({"context":context}))?;
+        assert_eq!(
+            result["status"],
+            if status == "completed" {
+                "finished"
+            } else {
+                "cancelled"
+            }
+        );
+        assert_eq!(
+            result["recovery"],
+            if status == "completed" {
+                "none"
+            } else {
+                "interrupted"
+            }
+        );
+    }
+    Ok(())
+}

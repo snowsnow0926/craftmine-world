@@ -152,3 +152,35 @@ test('lost budget receipt survives Rust and Main restart after recovery advances
   assert.equal(await core.call('budget.findReceipt',{...exact,operationId:unknown.operationId,maxTokens:5000}),null);
   await assert.rejects(panel('workbench.execute',{worldId:selectedWorld,operationId:unknown.operationId}),/STALE_TASK/);assert.equal(configurations,1);
 });
+
+test('real error lifecycle permits player unlimited budget and same-owner recovery without manual interrupt',async t=>{
+  await mkdir(path.join(root,'test-results'),{recursive:true});const directory=await mkdtemp(path.join(root,'test-results/batch07-real-error-'));
+  const core=new CoreClient(process.env.CRAFTMINE_CORE_BIN||path.join(root,'desktop/build/rust-target/debug/craftmine-core.exe'),directory);t.after(()=>core.stop());await core.start();
+  const sessionId='errored-player-session',worldId='errored-world';
+  const projectId='pi-'+createHash('sha256').update(JSON.stringify(['session',sessionId])).digest('hex'),context={projectId,sessionId,turnId:'original-turn'};
+  await core.call('world.create',{id:worldId,title:'Error recovery',world:emptyWorld('Error recovery')});
+  const call=(method,args)=>core.call(method,args),workbench=createWorkbenchService(core,{library:createLibraryService({call}),memory:createMemoryService({call}),getSettings:async()=>({activeWorldId:worldId})});
+  const domain=createHostRequests(core,{workbench,getSettings:async()=>({activeWorldId:worldId})});
+  let activeTurn=context.turnId,begins=0,continued=0;
+  const options={viewingSession:()=>sessionId,session:async id=>({id}),activeTurn:()=>activeTurn,domain,
+    begin:async()=>{begins++;activeTurn='resumed-player-turn';return activeTurn;},
+    end:async(id,status)=>{await core.call('workspace.endTurn',{sessionId:id,turnId:activeTurn,status});activeTurn=undefined;},
+    resume:async()=>{continued++;},stop:async()=>{},interrupt:async()=>{throw Error('Manual interruption must not be used');},backup:async()=>{},diagnostics:async()=>{}};
+  const started=await domain('turn.begin',{context,selectedWorld:worldId,request:{id:'original-goal',text:'Keep the original tree and movement'}});
+  const scene=upgradeScene({format:'craftmine.scene/1',title:'Error recovery',night:false,objects:[{id:'tree',name:'Original tree',position:{x:0,y:6,z:0},parts:[{offset:{x:0,y:0,z:0},size:{x:1,y:3,z:1},material:'wood'}]}]});
+  await core.call('workspace.commit',{context,binding:started.binding,toolCallId:'tree-edit',revision:0,request:{add:'tree'},draft:{scene}});
+  const configuration={projectId,sessionId,worldId,taskId:started.binding.taskId,generation:started.generation,operationId:'set-finite-budget',maxTokens:120};await domain('budget.configure',configuration);
+  const reserve=id=>domain('budget.reserve',{context,binding:started.binding,generation:started.generation,requestId:id,purpose:'creation',estimatedInputTokens:70,maxOutputTokens:30});
+  await reserve('known-first');await domain('budget.settle',{context,binding:started.binding,generation:started.generation,requestId:'known-first',status:'known',usage:{inputTokens:15,outputTokens:5}});await reserve('pending-second');
+  await assert.rejects(reserve('over-limit'),/TOKEN_BUDGET_EXHAUSTED/);
+  await options.end(sessionId,'error');
+  let panel=createCraftminePanelGateway({...options,operations:createCraftmineOperationJournal(path.join(directory,'pending'))});
+  const ended=(await panel('task.current',{worldId})).context;assert.equal(ended.status,'cancelled');assert.equal(ended.recovery,'interrupted');
+  await assert.rejects(domain('turn.begin',{context:{...context,turnId:'ordinary-bypass'},selectedWorld:worldId,request:{id:'bypass',text:'Must not clear usage'}}),/EXPLICIT_RECOVERY_REQUIRED/);
+  await core.stop();await core.start();panel=createCraftminePanelGateway({...options,operations:createCraftmineOperationJournal(path.join(directory,'pending'))});
+  const interrupted=(await panel('task.current',{worldId})).context;assert.equal(interrupted.budget.actualTokens,20);assert.equal(interrupted.budget.reservedTokens,100);assert.equal(interrupted.budget.unknownRequestCount,1);
+  const listing=await panel('task.recoverable',{worldId});assert.ok(listing.items.some(item=>item.taskId===ended.binding.taskId));
+  await panel('task.budget',{worldId,operationId:'remove-exhausted-budget',taskId:ended.binding.taskId,generation:ended.generation,maxTokens:null});assert.equal(begins,0);
+  const resumed=await panel('task.resume',{worldId,taskId:ended.binding.taskId,generation:ended.generation});assert.equal(resumed.continuation,'running');assert.equal(continued,1);assert.equal(begins,1);
+  const after=(await panel('task.current',{worldId})).context;assert.equal(after.generation,ended.generation+1);assert.equal(after.budget.ownerTaskId,ended.budget.ownerTaskId);assert.equal(after.budget.actualTokens,20);assert.equal(after.budget.reservedTokens,100);assert.equal(after.budget.unknownRequestCount,1);assert.equal(after.budget.limits.maxTokens,null);assert.equal(after.draft.hash,ended.draft.hash);assert.deepEqual(after.requirements,ended.requirements);
+});

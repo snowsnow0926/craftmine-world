@@ -183,22 +183,34 @@ impl TaskJournal {
     /// Recover a trusted desktop action's receipt after its short turn ended.
     /// Scope is the original host session and world; this never opens a lease.
     pub fn workspace_find_receipt(&self, args: &Value) -> Result<Value> {
-        super::durable::fields(args, &["projectId", "sessionId", "worldId", "toolCallId", "request"])?;
+        super::durable::fields(
+            args,
+            &["projectId", "sessionId", "worldId", "toolCallId", "request"],
+        )?;
         let project = super::durable::text(args, "projectId", 240)?;
         let session = super::durable::text(args, "sessionId", 240)?;
         let world = super::durable::text(args, "worldId", 240)?;
         let call = super::durable::text(args, "toolCallId", 240)?;
         call_id(call)?;
-        let task: Option<String> = self.db.query_row(
-            "SELECT t.id FROM craftmine_receipts r JOIN craftmine_tasks t ON t.id=r.task_id
+        let task: Option<String> = self
+            .db
+            .query_row(
+                "SELECT t.id FROM craftmine_receipts r JOIN craftmine_tasks t ON t.id=r.task_id
              JOIN craftmine_workspaces w ON w.task_id=t.id
              WHERE r.tool_call_id=?1 AND w.world_id=?2
              AND json_extract(t.binding,'$.projectId')=?3
              AND json_extract(t.binding,'$.sessionId')=?4 LIMIT 1",
-            params![call,world,project,session], |row| row.get(0),
-        ).optional()?;
+                params![call, world, project, session],
+                |row| row.get(0),
+            )
+            .optional()?;
         match task {
-            Some(id) => Ok(serde_json::to_value(receipt(&self.db, &id, call, &args["request"])?)?),
+            Some(id) => Ok(serde_json::to_value(receipt(
+                &self.db,
+                &id,
+                call,
+                &args["request"],
+            )?)?),
             None => Ok(Value::Null),
         }
     }
@@ -484,6 +496,13 @@ impl TaskJournal {
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
         tx.execute("INSERT OR IGNORE INTO craftmine_ended_turns(session_id,turn_id,status) VALUES(?1,?2,?3)",params![session,turn,status])?;
+        // The first host lifecycle result is authoritative on repeated delivery.
+        let recorded: String = tx.query_row(
+            "SELECT status FROM craftmine_ended_turns WHERE session_id=?1 AND turn_id=?2",
+            params![session, turn],
+            |row| row.get(0),
+        )?;
+        let status = recorded.as_str();
         let id = WorkspaceContext {
             project_id: String::new(),
             session_id: session.into(),
@@ -491,6 +510,19 @@ impl TaskJournal {
         }
         .task_id();
         if status != "completed" {
+            let recoverable: bool = tx.query_row(
+                "SELECT EXISTS(SELECT 1 FROM craftmine_tasks t
+                 JOIN craftmine_session_worlds s ON s.head_task=t.id
+                   AND s.session_id=json_extract(t.binding,'$.sessionId')
+                   AND s.project_id=json_extract(t.binding,'$.projectId')
+                 LEFT JOIN craftmine_task_runtime r ON r.task_id=t.id
+                 WHERE t.id=?1 AND t.status='running' AND COALESCE(r.recovery,'none')='none')",
+                [&id],
+                |row| row.get(0),
+            )?;
+            if recoverable {
+                super::recovery::preserve_interrupted(&tx, &id)?;
+            }
             super::verification::cancel_task(&tx, &id)?;
         }
         tx.execute(

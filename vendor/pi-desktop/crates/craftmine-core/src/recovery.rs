@@ -5,12 +5,29 @@ use super::{
     read_task, workspaces, worlds, TaskJournal, WorkspaceContext,
 };
 use anyhow::{ensure, Result};
-use rusqlite::{params, OptionalExtension, TransactionBehavior};
+use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde_json::{json, Value};
 
 #[cfg(test)]
 #[path = "recovery_tests.rs"]
 mod tests;
+
+/// Call only after checking the current head and eligible recovery state.
+/// The surrounding transaction owns the lifecycle event, leases and ledger.
+pub(super) fn preserve_interrupted(db: &Connection, id: &str) -> Result<()> {
+    runtime(db, id)?;
+    db.execute("UPDATE craftmine_task_runtime SET recovery='interrupted' WHERE task_id=?1 AND recovery='none'", [id])?;
+    db.execute(
+        "UPDATE craftmine_tasks SET status='cancelled' WHERE id=?1 AND status='running'",
+        [id],
+    )?;
+    super::verification::cancel_task(db, id)?;
+    let now = worlds::timestamp()?;
+    db.execute("UPDATE craftmine_reviews SET status='cancelled',token=NULL,updated_at=?2 WHERE status='running' AND verification_id IN (SELECT id FROM craftmine_verifications WHERE task_id=?1)", params![id,now])?;
+    db.execute("UPDATE craftmine_applications SET status='aborted',token=NULL,updated_at=?2 WHERE status='prepared' AND verification_id IN (SELECT id FROM craftmine_verifications WHERE task_id=?1)", params![id,now])?;
+    db.execute("DELETE FROM craftmine_world_leases WHERE task_id=?1", [id])?;
+    Ok(())
+}
 
 impl TaskJournal {
     /// The host calls this before ending a resumed turn whose launch failed.
@@ -102,21 +119,23 @@ impl TaskJournal {
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
-        let tasks = tx
-            .prepare("SELECT task_id FROM craftmine_world_leases")?
-            .query_map([], |r| r.get::<_, String>(0))?
-            .collect::<rusqlite::Result<Vec<_>>>()?;
+        // Repair only current heads. Legacy errored turns released their lease
+        // before recording recovery; their durable ended-turn row is the proof.
+        let tasks = tx.prepare(
+            "SELECT t.id FROM craftmine_tasks t
+             JOIN craftmine_workspaces w ON w.task_id=t.id
+             JOIN craftmine_session_worlds s ON s.head_task=t.id AND s.world_id=w.world_id
+               AND s.session_id=json_extract(t.binding,'$.sessionId')
+               AND s.project_id=json_extract(t.binding,'$.projectId')
+             LEFT JOIN craftmine_task_runtime r ON r.task_id=t.id
+             WHERE COALESCE(r.recovery,'none')='none' AND (
+               (t.status='running' AND EXISTS(SELECT 1 FROM craftmine_world_leases l WHERE l.task_id=t.id AND l.world_id=w.world_id))
+               OR (t.status='cancelled' AND EXISTS(SELECT 1 FROM craftmine_ended_turns e
+                   WHERE e.session_id=s.session_id AND e.turn_id=json_extract(t.binding,'$.turnId') AND e.status IN ('error','aborted'))))
+             ORDER BY t.id"
+        )?.query_map([], |row|row.get::<_,String>(0))?.collect::<rusqlite::Result<Vec<_>>>()?;
         for task in &tasks {
-            runtime(&tx, task)?;
-            tx.execute(
-                "UPDATE craftmine_task_runtime SET recovery='interrupted' WHERE task_id=?1",
-                [task],
-            )?;
-            tx.execute(
-                "UPDATE craftmine_tasks SET status='cancelled' WHERE id=?1 AND status='running'",
-                [task],
-            )?;
-            super::verification::cancel_task(&tx, task)?;
+            preserve_interrupted(&tx, task)?;
         }
         tx.execute("DELETE FROM craftmine_world_leases", [])?;
         tx.execute("UPDATE craftmine_budget_requests SET status='unknown',settlement=json_object('status','unknown','errorCode','HOST_INTERRUPTED') WHERE status='reserved'",[])?;

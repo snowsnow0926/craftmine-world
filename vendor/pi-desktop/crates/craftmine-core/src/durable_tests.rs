@@ -139,11 +139,16 @@ fn cancelled_task_accepts_only_reserved_settlement_and_discard_keeps_code() -> R
         .is_err());
     let mut next = ctx.clone();
     next.turn_id = "next".into();
-    j.workspace_open(&next, "world-a")?;
+    assert!(j
+        .workspace_open(&next, "world-a")
+        .unwrap_err()
+        .to_string()
+        .contains("EXPLICIT_RECOVERY_REQUIRED"));
+    j.task_resume(&json!({"context":next,"taskId":id["binding"]["taskId"],"generation":1}))?;
     let task = j.workspace_inspect(&next)?.task;
     j.task_recover()?;
     j.task_discard(
-        &json!({"taskId":task.binding.task_id,"projectId":ctx.project_id,"generation":1}),
+        &json!({"taskId":task.binding.task_id,"projectId":ctx.project_id,"generation":2}),
     )?;
     assert_eq!(j.inspect(&task.binding)?.draft, task.draft);
     next.turn_id = "fresh".into();
