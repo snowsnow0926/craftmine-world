@@ -1,5 +1,15 @@
 # 04. E2E Test Plan
 
+## CRAFTMINE-024: Atomic extension validation (batch 07)
+
+See [the staged-step contract](../dispatch-batch07-extension-transactions.md).
+Use independent fixtures/headless game processes, never physical input. A second
+extension failure must retain prior module, inventory, health and extension
+state and publish no partial message or movement. A successful sequence sees
+staged predecessor state and publishes once. Entering staged geometry during
+an asynchronous call or disposing the session rejects the unpublished step.
+Re-run actual game/Worker and final native combination checks on the same code.
+
 ## CRAFTMINE-008: Session-bound draft lifecycle
 
 Use independent profiles and hidden/headless processes with input disabled.

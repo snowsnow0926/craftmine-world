@@ -127,6 +127,11 @@ export class BehaviorState {
     record.state=checked.state;
     return this.finalize(next,changed,effects,frame);
   }
+  fork(){
+    const draft=Object.assign(Object.create(BehaviorState.prototype),this);
+    draft.value=structuredClone(this.value);
+    return draft;
+  }
   // 扩展命令的落地效果由宿主按扩展声明的权限校验，但归属到发起调用的模块。
   applyExtensionEffects(moduleId,extension,commands,frame){
     if(!Array.isArray(commands)||!commands.length)return {changed:[],effects:[]};
