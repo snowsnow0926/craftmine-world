@@ -224,6 +224,23 @@ test("the create panel keeps one stable operation id for retries", () => {
   assert.match(gateway, /operationId: payload\.operationId/);
 });
 
+test("the shipped Godot root resolves from the compiled main process directory", () => {
+  const compiledMain = path.join(desktop, "out/main");
+  const resolved = creation.resolveGodotRoot({startDir: compiledMain});
+  assert.equal(resolved, path.join(root, "desktop/godot"));
+  assert.equal(fs.existsSync(path.join(resolved, "bases/base-catalog.json")), true);
+  assert.throws(() => creation.resolveGodotRoot({startDir: tmp()}), /GODOT_BASES_UNAVAILABLE/);
+  // A packaged build carries the same tree under resources/godot.
+  const resources = tmp();
+  fs.mkdirSync(path.join(resources, "godot/bases"), {recursive: true});
+  fs.writeFileSync(path.join(resources, "godot/bases/base-catalog.json"), "{}");
+  assert.equal(creation.resolveGodotRoot({resourcesPath: resources, startDir: tmp()}), path.join(resources, "godot"));
+  const override = tmp();
+  fs.mkdirSync(path.join(override, "bases"), {recursive: true});
+  fs.writeFileSync(path.join(override, "bases/base-catalog.json"), "{}");
+  assert.equal(creation.resolveGodotRoot({resourcesPath: resources, startDir: tmp(), override}), override);
+});
+
 test("the panel coordinator serves Godot bases, creation and real world state", async () => {
   const forwarded = [];
   const host = {instance: null, state: {state: "closed"}, setSurfaceVisible: () => {}, resume: async () => {}, pause: async () => {},

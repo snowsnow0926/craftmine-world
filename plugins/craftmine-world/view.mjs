@@ -19,6 +19,7 @@ const previewPanel=document.getElementById('preview-panel');
 let previewFrame=null;
 let preview=null,checkOffset=0,checkWorld=null,checksLoading=false,evidenceJob=null,evidenceNext=null;
 let previewReview=null,reviewLoading=false,applicationAttempt=null;
+let godotIdentity=null;
 let workbench;
 // Height in CSS pixels that the Electron host reserves at the top of the panel
 // for this page's chrome (header + modes bar). A sibling WebContentsView with
@@ -50,6 +51,9 @@ if(bridge) {
 // State is broadcast by the Electron host; this page never infers it.
 function onGodotState(payload) {
   if(!godot||!payload||payload.worldId!==current?.id)return;
+  // The live instance identity is host-owned; keep the last one so readers can
+  // see exactly which world/build/instance they observed.
+  if(typeof payload.instanceId==='string')godotIdentity={worldId:payload.worldId,buildId:String(payload.buildId||''),instanceId:payload.instanceId};
   const state=String(payload.state||'');
   const label=godotStateLabels[state]||state;
   document.body.dataset.godotState=state;
@@ -106,7 +110,8 @@ function action(run) {
 
 function snapshot({freeze=false}={}) {
   // Kept callable for Godot worlds: the host snapshots the running game itself.
-  if(godot)return Promise.resolve({godot:true,snapshot:null});
+  // The identity is the host-reported live instance, never inferred here.
+  if(godot)return Promise.resolve({godot:true,snapshot:null,identity:godotIdentity});
   if(!loaded)return Promise.reject(Error('世界仍在载入'));
   return new Promise((resolve,reject)=>{
     const requestId=crypto.randomUUID();
@@ -172,6 +177,7 @@ async function refreshList() {
 
 function mount(record) {
   closePreview(false);
+  godotIdentity=null;
   checkWorld=null;checkOffset=0;document.getElementById('check-detail').hidden=true;
   document.getElementById('checks-list').replaceChildren();setMode(false,{notify:false});
   for(const pending of requests.values()){clearTimeout(pending.timer);pending.reject(Error('世界已切换'));}requests.clear();
