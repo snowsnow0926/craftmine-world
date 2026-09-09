@@ -49,7 +49,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
   }
   return async function onHostRequest(method,params={}){
     await core.start();
-    if(method==='budget.configure'){
+    if(method==='budget.configure'||method==='budget.findReceipt'){
       fields(params,['projectId','sessionId','worldId','taskId','generation','operationId','maxTokens']);
       return core.call(method,params);
     }

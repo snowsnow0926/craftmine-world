@@ -227,6 +227,7 @@ fn restore_tables(db: &Connection, tables: &Value) -> Result<()> {
     Ok(())
 }
 fn validate_integrity(db: &Connection) -> Result<()> {
+    super::durable::validate_ledger(db)?;
     memories::validate_receipts(db)?;
     let foreign: Option<String> = db
         .prepare("PRAGMA foreign_key_check")?
