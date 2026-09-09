@@ -1,6 +1,6 @@
 # Agent F 原生验收报告
 
-日期：2026-09-09。状态：**ready_for_integration；最终整包代表性真实任务等待打包后补验**。
+日期：2026-09-09。状态：**ready_for_integration；最终整包代表性真实任务已通过**。
 
 这批已证明“桌面里的真实 Agent 能创作、压缩后继续、重启后复用作品、意外中断后显式恢复”。测试始终使用独立隐藏窗口和测试目录，没有抢鼠标、发送键盘事件、锁定鼠标或打开用户正在使用的浏览器。**这不是 W2–W5 全部完成的声明**，完整边界在 [ACCEPTANCE_MATRIX.md](ACCEPTANCE_MATRIX.md)。
 
@@ -18,7 +18,7 @@
 | 花草、真实射线射击、近战、冷却、弹药、死亡奖励、扩展 Worker 和重启 | 27 项真实游戏/Worker 检查通过；另7项运行时测试通过 | `gameplay-headless.json`；`garden.png`；工具执行记录 |
 | Rust 作品/作用域记忆/备份/单写者/固定扩展 | F 在最新复制的实际 Rust 进程上重新运行5项测试通过；验证/应用前置证据使用明确夹具 | `tests/dispatch/a/domain-process.test.mjs` 本次工具执行记录 |
 | 控制器隔离/拒绝任意参数/不泄露凭据 | 4 项契约测试通过 | `tests/dispatch/f/acceptance-safety.test.mjs` |
-| 最终整包真实 Agent 与3次压缩 | runner 已提供真实包模式；等待 E 最终包后实测 | 待追加，不能引用开发运行冒充 |
+| 最终整包真实 Agent 与3次压缩 | 通过；真正的打包EXE，3次持久摘要、4次修改、真实评审应用、完整重启；约79.84秒，独立审计13/13 | `packaged-three-compactions.json`；`packaged-durable-audit.json`；`packaged-agent-applied.png` |
 
 ## 2. 这次真跑发现并保留的问题
 
@@ -32,7 +32,7 @@
 
 供应商 DeepSeek；模型 `deepseek-v4.1-flash-expires-on-0910`；思考强度 high；未换模型。开发客户端阶段共 **64 条持久模型请求、598930 个已知供应商 totalTokens，另1条结果未知请求保持66274估算预留**。64条包括摘要、首次失败评审和两次明确纠错评审；没有把缓存/推理重复加进总量。备份和记忆复验没有新增模型请求。这里报告用量，不推算价格。
 
-每条新创作链最多20分钟/80请求，真实账本另有30分钟 deadline、8次压缩及100万token限制。失败档案重试沿用旧任务剩余额度，没有重置预算。最终包代表性任务用量将单独追加。
+每条新创作链最多20分钟/80请求，真实账本另有30分钟 deadline、8次压缩及100万token限制。失败档案重试沿用旧任务剩余额度，没有重置预算。最终包另有 **22条请求、174584个供应商totalTokens，全部known**，包含18次创作、3次摘要、1次评审。本组开发与最终包合计 **86条请求、773514个已知供应商totalTokens**，前述1条未知预留保持不变。
 
 ## 4. 源码、构建与可复现命令
 
@@ -64,4 +64,16 @@ node tests/dispatch/f/audit-native.mjs <new-isolated-profile>
 
 所有进程在结束时关闭，仅进程中断场景有计划地终止自有 Electron。测试profile、实际生成源码、SQLite、会话和原始日志保留在本工作树 `test-results/`；可携带非凭据成绩单在 `docs/evidence/dispatch/F/`。真实配置文件只读用于已有授权模型入口，不打印/提交密钥；不修改主项目 `.craftmine`、端口8787或用户浏览器。
 
-开发侧几条核心链已经闭合，但最终包、干净Windows安装、可见窗口合成、真实走动、完整PI桌面回归、所有故障时点和模型切换仍须按矩阵分别验收。F未合并master、未推送、未清理别人的目录。源代码入口已交G；最终包代表性任务将在同一冻结包上补验并追加独立证据。
+开发侧几条核心链和最终包代表性链已经闭合；干净Windows安装、可见窗口合成、真实走动、完整PI桌面回归、所有故障时点和模型切换仍须按矩阵分别验收。F未合并master、未推送、未清理别人的目录。最终交付源码 `03bc3948eb75e2a326d4fc90c844a417273f357a` 包含G冻结产品和额外F包拒绝测试，此后仅追加报告和证据。
+
+## 6. 最终包实测记录
+
+E 的真实包目录：`D:/Craftmine World-worktrees/parallel-e-20260909/vendor/pi-desktop/apps/desktop/release/win-unpacked`。manifest源码提交 `aaa5dc7da06a7f160537f720460056a94389cafd`，与产品冻结 `0f6eaa87742b05a1b2d10c97e22b3dd3d7281fc3` 的差异仅是E两份报告文档，F已用git核对。源码ZIP SHA256：`8f2dc35576bca18c1e7ab1f812c3c155e972997d08fcad78304f90462ac9a155`。
+
+F 从实际 `resources/app.asar` 检查输入隔离入口和preload，校验包内core/host/sidecar/plugin/sourceZIP的manifest hash，启动真正 `Craftmine World.exe`，没有启动开发Electron或借用本地out目录。实际EXE SHA256：`2d5655149489bce2cad6d8d97c2c0cbb4eafcf0a605d4d9c037ba2b3bc3d708f`；core：`53b657cf91394386503f4862560257f11bdb5b45e7f4bb8b15cc4a6afe78a34c`；host：`18d7b0003f23673683030b6926f7d8181221eef1b0c43916458963e824f7527a`。
+
+实际命令：设置上述 `CRAFTMINE_PACKAGED_ROOT`、既有授权 `CRAFTMINE_LIVE_CONFIG`、`CRAFTMINE_F_COMPACTIONS=3`，执行 `node tests/dispatch/f/native-agent.mjs`；随后执行 `node tests/dispatch/f/audit-native.mjs test-results/desktop-native-f-0DYn41`。一次运行绿色，没有重写需求或重新抽样模型。actual task revision最终4、status finished；原需求、四个版本和回执保留；3条PI摘要和3条Rust压缩事件同账本；最后高度/位置/名称独立检查通过；退出/重启都是零输入与零页面异常。
+
+F实际查看了世界截图，树在用户指定位置，对应画面右侧；截图不代表可见原生窗口最终合成或艺术质量认可。最终包的这条链没有包含组合玩法的原生作品库安装；不能用D的浏览器/Worker测试替代该缺项。
+
+短时资源观测保留在 `packaged-process-memory-samples.json`：4个样本、每次15个自有进程（包含测试驱动），同时工作集最高1,618,178,048字节。E同期运行另一独立夹具，这不是串行稳定基准、整个运行峰值或FPS结论。早先0样本的失败测量仍保留。性能建议阈值和未测项目见矩阵。

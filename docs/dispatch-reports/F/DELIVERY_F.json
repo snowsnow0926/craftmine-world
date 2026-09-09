@@ -132,6 +132,19 @@
         "docs/dispatch-reports/F/REPORT_F.md"
       ],
       "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909"
+    },
+    {
+      "kind": "packaged-native-real-model",
+      "command": "CRAFTMINE_PACKAGED_ROOT=D:/Craftmine World-worktrees/parallel-e-20260909/vendor/pi-desktop/apps/desktop/release/win-unpacked CRAFTMINE_F_COMPACTIONS=3 CRAFTMINE_LIVE_CONFIG=<authorized local config> node tests/dispatch/f/native-agent.mjs; node tests/dispatch/f/audit-native.mjs test-results/desktop-native-f-0DYn41",
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909",
+      "sourceCommit": "aaa5dc7da06a7f160537f720460056a94389cafd",
+      "testCodeCommit": "03bc3948eb75e2a326d4fc90c844a417273f357a",
+      "result": "passed once;22 known requests/3 actual summaries/4 edits/real review and application/full restart/13 durable checks",
+      "evidence": [
+        "docs/evidence/dispatch/F/packaged-three-compactions.json",
+        "docs/evidence/dispatch/F/packaged-durable-audit.json",
+        "docs/evidence/dispatch/F/packaged-agent-applied.png"
+      ]
     }
   ],
   "evidence": [
@@ -164,6 +177,26 @@
       "path": "docs/evidence/dispatch/F/native-three-compactions.json",
       "sha256": "b25612f2f6a5e752e07491b6756e4e136e2c8139543868a9a75488359516c24a",
       "description": "native-three-compactions.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/packaged-agent-applied.png",
+      "sha256": "6a3d1bb4c765183bd4ec288e88d35840420ced12ef1c7a43bb6d7616b69e3890",
+      "description": "packaged-agent-applied.png"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/packaged-durable-audit.json",
+      "sha256": "ffd1f84feb4c6b07878f4e4f37196a784ffd78f43c3e1ab7903bd4ee7884d312",
+      "description": "packaged-durable-audit.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/packaged-process-memory-samples.json",
+      "sha256": "bb378cf5d7f157299d1c1ec5395548d0382fe1667cbcef1a582e6675036415e4",
+      "description": "packaged-process-memory-samples.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/packaged-three-compactions.json",
+      "sha256": "4bb85790ec8126273f45cd97eb8b11f51425164ed5c05f1e99cf90c754734d88",
+      "description": "packaged-three-compactions.json"
     },
     {
       "path": "docs/evidence/dispatch/F/process-memory-sample.json",
@@ -240,12 +273,26 @@
       "group": "E",
       "contractVersion": "actual DPAPI host, file grants and schema-2 backup",
       "usesFixture": false,
-      "missingWork": "Final integrated package representative pending; clean OS unavailable"
+      "missingWork": "Clean Windows unavailable; final package representative passed, complete desktop/gameplay-library matrix not repeated"
     }
   ],
   "finalPackage": {
-    "status": "pending_final_package",
-    "productFreezeCommit": "0f6eaa87742b05a1b2d10c97e22b3dd3d7281fc3"
+    "status": "passed_representative_native_scenario",
+    "sourceCommit": "aaa5dc7da06a7f160537f720460056a94389cafd",
+    "productFreezeCommit": "0f6eaa87742b05a1b2d10c97e22b3dd3d7281fc3",
+    "sourceDifference": "Only docs/dispatch-reports/E/DELIVERY_E.json and MAINTENANCE_ADDENDUM.md differ",
+    "elapsedMs": 79840,
+    "requests": 22,
+    "compactions": 3,
+    "providerTotalTokens": 174584,
+    "independentDurableChecks": 13,
+    "binaries": {
+      "electron": "2d5655149489bce2cad6d8d97c2c0cbb4eafcf0a605d4d9c037ba2b3bc3d708f",
+      "core": "53b657cf91394386503f4862560257f11bdb5b45e7f4bb8b15cc4a6afe78a34c",
+      "host": "18d7b0003f23673683030b6926f7d8181221eef1b0c43916458963e824f7527a",
+      "main": "cd432d7253d25239d96b85502fd7b2cc00600e146c9768fc5afdf916fc43626a"
+    },
+    "scope": "one real same-task author/three-summary/four-edit/review/application/full-restart chain; not all desktop, gameplay-library or clean-Windows scenarios"
   },
   "modelUsage": {
     "provider": "deepseek",
@@ -254,17 +301,25 @@
     "developmentRequests": 64,
     "knownProviderTotalTokens": 598930,
     "unknownRequests": 1,
-    "unknownReservedTokens": 66274
+    "unknownReservedTokens": 66274,
+    "packagedRequests": 22,
+    "packagedKnownProviderTotalTokens": 174584,
+    "totalRequests": 86,
+    "totalKnownProviderTotalTokens": 773514
   },
   "unverified": [
     "Clean Windows installer/upgrade",
     "Visible-window composition and physical movement",
-    "Final frozen package representative (pending E artifact)",
     "Stable peak-memory/frame/performance gates",
     "Actual native two-world/project switch during a model run",
-    "Crash at every verification/application/save substage"
+    "Crash at every verification/application/save substage",
+    "Native final-package gameplay creation library installation"
   ],
   "privateDataIncluded": false,
   "mergedToPrimary": false,
-  "pushed": false
+  "pushed": false,
+  "credentialScan": {
+    "files": 19,
+    "actualAuthorizedCredentialFound": false
+  }
 }

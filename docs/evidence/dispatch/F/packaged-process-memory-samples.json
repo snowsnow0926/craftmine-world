@@ -1,0 +1,396 @@
+{
+  "kind": "four_samples_of_one_owned_packaged_process_tree",
+  "rootPid": 172972,
+  "simultaneousOtherFixtureRunning": true,
+  "notSequentialPerformanceAcceptance": true,
+  "samples": [
+    {
+      "timestamp": "2026-09-09T15:42:35.4526147+08:00",
+      "processCount": 15,
+      "simultaneousWorkingSetBytes": 1258590208.0,
+      "processes": [
+        {
+          "id": 172972,
+          "name": "node",
+          "workingSetBytes": 59052032,
+          "lifetimePeakWorkingSetBytes": 112877568
+        },
+        {
+          "id": 238492,
+          "name": "Craftmine World",
+          "workingSetBytes": 265510912,
+          "lifetimePeakWorkingSetBytes": 685219840
+        },
+        {
+          "id": 242556,
+          "name": "Craftmine World",
+          "workingSetBytes": 191512576,
+          "lifetimePeakWorkingSetBytes": 195358720
+        },
+        {
+          "id": 151284,
+          "name": "Craftmine World",
+          "workingSetBytes": 50454528,
+          "lifetimePeakWorkingSetBytes": 51793920
+        },
+        {
+          "id": 263852,
+          "name": "pi-desktop-host-core",
+          "workingSetBytes": 15593472,
+          "lifetimePeakWorkingSetBytes": 16572416
+        },
+        {
+          "id": 273520,
+          "name": "conhost",
+          "workingSetBytes": 12173312,
+          "lifetimePeakWorkingSetBytes": 12214272
+        },
+        {
+          "id": 249072,
+          "name": "Craftmine World",
+          "workingSetBytes": 94318592,
+          "lifetimePeakWorkingSetBytes": 103419904
+        },
+        {
+          "id": 273240,
+          "name": "Craftmine World",
+          "workingSetBytes": 74117120,
+          "lifetimePeakWorkingSetBytes": 77877248
+        },
+        {
+          "id": 13952,
+          "name": "craftmine-core",
+          "workingSetBytes": 6463488,
+          "lifetimePeakWorkingSetBytes": 6508544
+        },
+        {
+          "id": 216124,
+          "name": "conhost",
+          "workingSetBytes": 12185600,
+          "lifetimePeakWorkingSetBytes": 12226560
+        },
+        {
+          "id": 111592,
+          "name": "Craftmine World",
+          "workingSetBytes": 71606272,
+          "lifetimePeakWorkingSetBytes": 73330688
+        },
+        {
+          "id": 117748,
+          "name": "Craftmine World",
+          "workingSetBytes": 68841472,
+          "lifetimePeakWorkingSetBytes": 70549504
+        },
+        {
+          "id": 104520,
+          "name": "Craftmine World",
+          "workingSetBytes": 127193088,
+          "lifetimePeakWorkingSetBytes": 131473408
+        },
+        {
+          "id": 235400,
+          "name": "Craftmine World",
+          "workingSetBytes": 99667968,
+          "lifetimePeakWorkingSetBytes": 100143104
+        },
+        {
+          "id": 258832,
+          "name": "Craftmine World",
+          "workingSetBytes": 109899776,
+          "lifetimePeakWorkingSetBytes": 131440640
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-09T15:42:42.7524774+08:00",
+      "processCount": 15,
+      "simultaneousWorkingSetBytes": 1488125952.0,
+      "processes": [
+        {
+          "id": 172972,
+          "name": "node",
+          "workingSetBytes": 59523072,
+          "lifetimePeakWorkingSetBytes": 112877568
+        },
+        {
+          "id": 238492,
+          "name": "Craftmine World",
+          "workingSetBytes": 467714048,
+          "lifetimePeakWorkingSetBytes": 685219840
+        },
+        {
+          "id": 242556,
+          "name": "Craftmine World",
+          "workingSetBytes": 210317312,
+          "lifetimePeakWorkingSetBytes": 226283520
+        },
+        {
+          "id": 151284,
+          "name": "Craftmine World",
+          "workingSetBytes": 51326976,
+          "lifetimePeakWorkingSetBytes": 51793920
+        },
+        {
+          "id": 263852,
+          "name": "pi-desktop-host-core",
+          "workingSetBytes": 16306176,
+          "lifetimePeakWorkingSetBytes": 17399808
+        },
+        {
+          "id": 273520,
+          "name": "conhost",
+          "workingSetBytes": 12173312,
+          "lifetimePeakWorkingSetBytes": 12214272
+        },
+        {
+          "id": 249072,
+          "name": "Craftmine World",
+          "workingSetBytes": 98902016,
+          "lifetimePeakWorkingSetBytes": 103419904
+        },
+        {
+          "id": 273240,
+          "name": "Craftmine World",
+          "workingSetBytes": 74612736,
+          "lifetimePeakWorkingSetBytes": 77877248
+        },
+        {
+          "id": 13952,
+          "name": "craftmine-core",
+          "workingSetBytes": 6598656,
+          "lifetimePeakWorkingSetBytes": 6639616
+        },
+        {
+          "id": 216124,
+          "name": "conhost",
+          "workingSetBytes": 12185600,
+          "lifetimePeakWorkingSetBytes": 12226560
+        },
+        {
+          "id": 111592,
+          "name": "Craftmine World",
+          "workingSetBytes": 71606272,
+          "lifetimePeakWorkingSetBytes": 73330688
+        },
+        {
+          "id": 117748,
+          "name": "Craftmine World",
+          "workingSetBytes": 68841472,
+          "lifetimePeakWorkingSetBytes": 70549504
+        },
+        {
+          "id": 104520,
+          "name": "Craftmine World",
+          "workingSetBytes": 127873024,
+          "lifetimePeakWorkingSetBytes": 131473408
+        },
+        {
+          "id": 235400,
+          "name": "Craftmine World",
+          "workingSetBytes": 99790848,
+          "lifetimePeakWorkingSetBytes": 100143104
+        },
+        {
+          "id": 258832,
+          "name": "Craftmine World",
+          "workingSetBytes": 110354432,
+          "lifetimePeakWorkingSetBytes": 131440640
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-09T15:42:49.9795444+08:00",
+      "processCount": 15,
+      "simultaneousWorkingSetBytes": 1305509888.0,
+      "processes": [
+        {
+          "id": 172972,
+          "name": "node",
+          "workingSetBytes": 58781696,
+          "lifetimePeakWorkingSetBytes": 112877568
+        },
+        {
+          "id": 238492,
+          "name": "Craftmine World",
+          "workingSetBytes": 215240704,
+          "lifetimePeakWorkingSetBytes": 685219840
+        },
+        {
+          "id": 242556,
+          "name": "Craftmine World",
+          "workingSetBytes": 223232000,
+          "lifetimePeakWorkingSetBytes": 227057664
+        },
+        {
+          "id": 151284,
+          "name": "Craftmine World",
+          "workingSetBytes": 51744768,
+          "lifetimePeakWorkingSetBytes": 51793920
+        },
+        {
+          "id": 263852,
+          "name": "pi-desktop-host-core",
+          "workingSetBytes": 16306176,
+          "lifetimePeakWorkingSetBytes": 17526784
+        },
+        {
+          "id": 273520,
+          "name": "conhost",
+          "workingSetBytes": 12173312,
+          "lifetimePeakWorkingSetBytes": 12214272
+        },
+        {
+          "id": 249072,
+          "name": "Craftmine World",
+          "workingSetBytes": 99262464,
+          "lifetimePeakWorkingSetBytes": 103419904
+        },
+        {
+          "id": 273240,
+          "name": "Craftmine World",
+          "workingSetBytes": 74186752,
+          "lifetimePeakWorkingSetBytes": 77877248
+        },
+        {
+          "id": 13952,
+          "name": "craftmine-core",
+          "workingSetBytes": 6606848,
+          "lifetimePeakWorkingSetBytes": 6639616
+        },
+        {
+          "id": 216124,
+          "name": "conhost",
+          "workingSetBytes": 12185600,
+          "lifetimePeakWorkingSetBytes": 12226560
+        },
+        {
+          "id": 111592,
+          "name": "Craftmine World",
+          "workingSetBytes": 70991872,
+          "lifetimePeakWorkingSetBytes": 73330688
+        },
+        {
+          "id": 117748,
+          "name": "Craftmine World",
+          "workingSetBytes": 68239360,
+          "lifetimePeakWorkingSetBytes": 70549504
+        },
+        {
+          "id": 104520,
+          "name": "Craftmine World",
+          "workingSetBytes": 126238720,
+          "lifetimePeakWorkingSetBytes": 131473408
+        },
+        {
+          "id": 235400,
+          "name": "Craftmine World",
+          "workingSetBytes": 101875712,
+          "lifetimePeakWorkingSetBytes": 103264256
+        },
+        {
+          "id": 258832,
+          "name": "Craftmine World",
+          "workingSetBytes": 168443904,
+          "lifetimePeakWorkingSetBytes": 191774720
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-09T15:42:57.4321232+08:00",
+      "processCount": 15,
+      "simultaneousWorkingSetBytes": 1618178048.0,
+      "processes": [
+        {
+          "id": 172972,
+          "name": "node",
+          "workingSetBytes": 58851328,
+          "lifetimePeakWorkingSetBytes": 112877568
+        },
+        {
+          "id": 238492,
+          "name": "Craftmine World",
+          "workingSetBytes": 488927232,
+          "lifetimePeakWorkingSetBytes": 777359360
+        },
+        {
+          "id": 242556,
+          "name": "Craftmine World",
+          "workingSetBytes": 241864704,
+          "lifetimePeakWorkingSetBytes": 244674560
+        },
+        {
+          "id": 151284,
+          "name": "Craftmine World",
+          "workingSetBytes": 51290112,
+          "lifetimePeakWorkingSetBytes": 52109312
+        },
+        {
+          "id": 263852,
+          "name": "pi-desktop-host-core",
+          "workingSetBytes": 16306176,
+          "lifetimePeakWorkingSetBytes": 17526784
+        },
+        {
+          "id": 273520,
+          "name": "conhost",
+          "workingSetBytes": 12173312,
+          "lifetimePeakWorkingSetBytes": 12214272
+        },
+        {
+          "id": 249072,
+          "name": "Craftmine World",
+          "workingSetBytes": 99262464,
+          "lifetimePeakWorkingSetBytes": 103419904
+        },
+        {
+          "id": 273240,
+          "name": "Craftmine World",
+          "workingSetBytes": 74469376,
+          "lifetimePeakWorkingSetBytes": 77877248
+        },
+        {
+          "id": 13952,
+          "name": "craftmine-core",
+          "workingSetBytes": 6664192,
+          "lifetimePeakWorkingSetBytes": 6807552
+        },
+        {
+          "id": 216124,
+          "name": "conhost",
+          "workingSetBytes": 12185600,
+          "lifetimePeakWorkingSetBytes": 12226560
+        },
+        {
+          "id": 111592,
+          "name": "Craftmine World",
+          "workingSetBytes": 70975488,
+          "lifetimePeakWorkingSetBytes": 73330688
+        },
+        {
+          "id": 117748,
+          "name": "Craftmine World",
+          "workingSetBytes": 68231168,
+          "lifetimePeakWorkingSetBytes": 70549504
+        },
+        {
+          "id": 104520,
+          "name": "Craftmine World",
+          "workingSetBytes": 126246912,
+          "lifetimePeakWorkingSetBytes": 131473408
+        },
+        {
+          "id": 235400,
+          "name": "Craftmine World",
+          "workingSetBytes": 103174144,
+          "lifetimePeakWorkingSetBytes": 103518208
+        },
+        {
+          "id": 258832,
+          "name": "Craftmine World",
+          "workingSetBytes": 187555840,
+          "lifetimePeakWorkingSetBytes": 191774720
+        }
+      ]
+    }
+  ]
+}
