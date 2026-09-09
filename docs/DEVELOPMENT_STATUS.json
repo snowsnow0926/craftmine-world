@@ -3,18 +3,18 @@
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "W2",
   "baseline": "3bdf52f",
-  "updated": "2026-09-09T05:26:52.754Z",
+  "updated": "2026-09-09T05:34:38.315Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "running",
-    "reason": "第 5 批核心实现已通过：Rust 28 项，原生固定服务 39 项，原生真实 DeepSeek 评审 33 项；正在生成并验收新的 Windows 程序目录。",
+    "status": "finishing_batch",
+    "reason": "第 5 批实现已合并本地 master，程序包及真实评审验收通过，正在合并交付报告并清理本批工作树。",
     "activeGoal": true,
     "recurringDevelopment": true,
     "previousLiveCompactionTestStopped": true,
     "automationId": "craftmine-windows",
     "worktree": "D:/Craftmine World-worktrees/pi-apply-20260909",
     "branch": "codex/pi-apply-20260909",
-    "nextStep": "完成 pi-apply-20260909 的程序包固定/真实模型验收、证据报告和本地合并。随后新建工作树继续 W2 作品库与原生 Agent 自动创作闭环。",
+    "nextStep": "第 5 批合并清理后新建独立工作树，继续 W2：Rust 固定版本作品库、中文搜索/读取/安装、应用证据与世界作用域；接着跑原生实际 PI Agent 生成树→修改→检查评审→面板应用→重启→新会话复用。W2 完整通过后继续 W3–W5。不要把固定草稿的真实评审当作 Agent 自动创作验收。",
     "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。"
   },
   "windowsClientPlan": {
@@ -66,12 +66,10 @@
     "sourceBaselineVerified": true,
     "developmentLog": "docs/WINDOWS_DEVELOPMENT_LOG.md",
     "latestVerification": {
-      "command": "npm test",
-      "passed": 276,
-      "failed": 0,
-      "skipped": 0,
-      "evidence": "test-results/windows-batch-04/w2-verification-domain-tests.log",
-      "scope": "另有 Rust 22、插件草稿 16、共享 HTTP 验收 3、取消/静态解析 2、画面采样 1、原生开发版及包内 EXE 各 31 项通过；无本批真实模型调用。"
+      "command": "npm test; cargo test --locked -p craftmine-core; desktop targeted tests; native packaged acceptance",
+      "passed": true,
+      "evidence": "docs/evidence/windows-batch-05",
+      "scope": "领域 276、Rust 28、定向 8、开发版固定 39/真实评审 33、包内 EXE 固定 40/真实评审 33。真实模型仅评审固定草稿；输入/焦点/页面错误为 0。"
     },
     "buildVerification": {
       "dependencies": "pnpm install --frozen-lockfile: passed",
@@ -164,7 +162,7 @@
       "cleanup": "Merged branch and worktree registration removed. Residual directory retained after automatic approval review rejected recursive cleanup (blocked by policy). Do not retry deletion or reuse."
     },
     "batch05": {
-      "status": "packaging",
+      "status": "implemented_packaged_verified",
       "rustTests": 28,
       "nativeFixtureDevelopment": 39,
       "nativeRealReviewDevelopment": 33,
@@ -173,7 +171,26 @@
       "realDraftAuthorship": "fixed-native-fixture",
       "requestAssertions": 14,
       "evidence": "docs/evidence/windows-batch-05",
-      "remaining": "程序包验收和本批交付；W2 作品检索与原生 Agent 自动创作仍未完成"
+      "remaining": "W2 作品库/跨会话复用与原生 Agent 自动创作；随后 W3–W5",
+      "report": "docs/WINDOWS_BATCH_05.md",
+      "targetedChecks": 8,
+      "nativeFixturePackaged": 40,
+      "nativeRealReviewPackaged": 33,
+      "packagedRequestAssertions": 8,
+      "realReviewTokensTotal": 23296,
+      "buildCommit": "0a5667f9d8e968e15e4fcf5950a7f187e69c59ad",
+      "sourceCommits": [
+        "75dbc0e",
+        "0a5667f"
+      ],
+      "deliveryDirectory": "D:/Craftmine World/desktop/build/windows-preview-batch-05",
+      "fileCount": 60,
+      "totalBytes": 412854922,
+      "copyVerified": true,
+      "signature": "NotSigned",
+      "executableSha256": "dc5ad95867bbc61901950d487e56a2f9c942b4da90c64705e184969853a91fa9",
+      "sourceZipSha256": "0ee33ac16e4c7ba4ddb80d212b7575b7b6942725aab831e6d632783ae733f099",
+      "merge": "75dbc0e and 0a5667f fast-forward merged into local master; delivery report merge and cleanup pending"
     }
   },
   "liveVerification": {
@@ -396,7 +413,7 @@
       ]
     }
   ],
-  "nextAction": "完成 pi-apply-20260909 的程序包固定/真实模型验收、证据报告和本地合并。随后新建工作树继续 W2 作品库与原生 Agent 自动创作闭环。",
+  "nextAction": "第 5 批合并清理后新建独立工作树，继续 W2：Rust 固定版本作品库、中文搜索/读取/安装、应用证据与世界作用域；接着跑原生实际 PI Agent 生成树→修改→检查评审→面板应用→重启→新会话复用。W2 完整通过后继续 W3–W5。不要把固定草稿的真实评审当作 Agent 自动创作验收。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",
@@ -414,7 +431,7 @@
       "allPreviousFieldsUnchanged": true,
       "projectFileBytesUnchanged": true,
       "migration": "No project migration; all project bytes unchanged. Asset index is created only on explicit import.",
-      "observationStatus": "Historical observation; not rechecked or modified in Windows batch 04"
+      "observationStatus": "Historical observation; not rechecked or modified in Windows batch 05"
     },
     "lastReadOnlyCheck": {
       "date": "2026-09-08T16:02:55.917Z",
@@ -425,9 +442,9 @@
       "applying": null
     },
     "windowsPreview": {
-      "directory": "D:/Craftmine World/desktop/build/windows-preview-batch-04",
-      "buildCommit": "2566c4f",
-      "scope": "Unpacked Windows preview; machine verification and independent draft preview; application and real model desktop flow pending"
+      "directory": "D:/Craftmine World/desktop/build/windows-preview-batch-05",
+      "buildCommit": "0a5667f9d8e968e15e4fcf5950a7f187e69c59ad",
+      "scope": "Unpacked Windows preview: PI request review, native request acceptance and player application; full native Agent creation and library reuse pending"
     }
   },
   "capabilityRoadmap": {

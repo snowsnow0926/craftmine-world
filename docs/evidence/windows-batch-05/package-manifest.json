@@ -1,0 +1,312 @@
+{
+  "format": "craftmine.windows-delivery/1",
+  "buildCommit": "0a5667f9d8e968e15e4fcf5950a7f187e69c59ad",
+  "time": "2026-09-09T05:30:13.539Z",
+  "directory": "D:/Craftmine World/desktop/build/windows-preview-batch-05",
+  "signature": "NotSigned",
+  "copyVerified": true,
+  "fileCount": 60,
+  "totalBytes": 412854922,
+  "files": [
+    {
+      "path": "chrome_100_percent.pak",
+      "bytes": 119905,
+      "sha256": "d76fe8fa3a14cd73e4c858746e2ab2d2fa6f2df38a906fa5814b50a8a895fc96"
+    },
+    {
+      "path": "chrome_200_percent.pak",
+      "bytes": 197089,
+      "sha256": "b74ad439f3d3762657f3ba533a6af3ac63315c838ed46519891366f43d834a0e"
+    },
+    {
+      "path": "Craftmine World.exe",
+      "bytes": 225573376,
+      "sha256": "dc5ad95867bbc61901950d487e56a2f9c942b4da90c64705e184969853a91fa9"
+    },
+    {
+      "path": "d3dcompiler_47.dll",
+      "bytes": 4741488,
+      "sha256": "a05f99734f7c4822fefc12b367af21fd0976ed6608752fb1e1e80b6ece7ecbbb"
+    },
+    {
+      "path": "dxcompiler.dll",
+      "bytes": 25616384,
+      "sha256": "36c6f0af0cd7ff8585cea0a6090f1c2ce5db044d16b366074b2e9f85ef2e2629"
+    },
+    {
+      "path": "dxil.dll",
+      "bytes": 1509760,
+      "sha256": "77e039c905030a641e53658a008b74e90635a5ea9b6b79eabd0f2003bdfca59a"
+    },
+    {
+      "path": "ffmpeg.dll",
+      "bytes": 3067904,
+      "sha256": "e3b958ec29f381d9872f1f19e5c29661693f6aeaf382f969f97d5c6a9da53cca"
+    },
+    {
+      "path": "icudtl.dat",
+      "bytes": 10876560,
+      "sha256": "bd8c145abdf3f8383276ce01dfa4ae48709bef9fef1c0711eb7c3fab4f6eb7c2"
+    },
+    {
+      "path": "libEGL.dll",
+      "bytes": 474624,
+      "sha256": "700bde9f10d03c37bec6fef9471f5016650c2b8a3c7229060e996c232fa19bdc"
+    },
+    {
+      "path": "libGLESv2.dll",
+      "bytes": 8033792,
+      "sha256": "1811383343e2c4efd7f5275787188ae12ab9d059067032bc57d511fd25e03d70"
+    },
+    {
+      "path": "LICENSE.electron.txt",
+      "bytes": 1096,
+      "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d"
+    },
+    {
+      "path": "LICENSES.chromium.html",
+      "bytes": 20313957,
+      "sha256": "b911161e6594ec76b872498b423c54406168f2974e0d407a847f7de1e5ff94dd"
+    },
+    {
+      "path": "locales/de.pak",
+      "bytes": 693302,
+      "sha256": "6201f0c314340a272e6cd7b57e13c4e20e3bc64f053f2c6f8e98f1cf52840908"
+    },
+    {
+      "path": "locales/en-US.pak",
+      "bytes": 566095,
+      "sha256": "74404352908184e834397df60b238f23462e77d69ac4136b4f20af2db6191436"
+    },
+    {
+      "path": "locales/es.pak",
+      "bytes": 679701,
+      "sha256": "9ff88eabacab95f8bbef9e95f63d3619fa8d640ec03523d80abb26243b059a65"
+    },
+    {
+      "path": "locales/fr.pak",
+      "bytes": 738341,
+      "sha256": "dcd5c008c6b74000c2d95b6193059c9435b417d54e6991283e92bafcc5fbcc50"
+    },
+    {
+      "path": "locales/ko.pak",
+      "bytes": 694027,
+      "sha256": "ee01af13e4e4b804e48d7126a38a059e210c7f4fba0c37fd2dfa9ef4c106b9d3"
+    },
+    {
+      "path": "locales/tr.pak",
+      "bytes": 672677,
+      "sha256": "37619e7084337a839d8ccf7915381cf9975d0ffc9451bd37d210bc7322645219"
+    },
+    {
+      "path": "locales/zh-CN.pak",
+      "bytes": 571748,
+      "sha256": "0386ef8bf3ce4e24c604ee039273e452d12f8b1d6e5ac7e746995e8b39fab379"
+    },
+    {
+      "path": "locales/zh-TW.pak",
+      "bytes": 564377,
+      "sha256": "740c2da1eedff44b57d8700b6f81f1acf17e67bdf534220553b448da42f62b66"
+    },
+    {
+      "path": "resources/agent-runtime/sidecar.js",
+      "bytes": 5171629,
+      "sha256": "8eb57f1edcb3f054cc3dfbf5b70084eb12bb08d7e82f42799a176533fc0960f2"
+    },
+    {
+      "path": "resources/app.asar",
+      "bytes": 32771387,
+      "sha256": "0b518e5f79e332fd67059a665d6e1399ab8fbbf5aaf077c07d32ae463f38e570"
+    },
+    {
+      "path": "resources/bin/craftmine-core.exe",
+      "bytes": 2588672,
+      "sha256": "ef3c4e253e4c960687b497d4298c45027f354f80b12a85749482f25ec7ae0d57"
+    },
+    {
+      "path": "resources/bin/pi-desktop-host-core.exe",
+      "bytes": 9070592,
+      "sha256": "45916ae9afe294971519c840652082731c5828ab6c8bef8e0ed9e0c1e97ce35d"
+    },
+    {
+      "path": "resources/licenses/PI-Desktop-LICENSE.txt",
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+    },
+    {
+      "path": "resources/licenses/UPSTREAM.json",
+      "bytes": 702,
+      "sha256": "2144168932a5ad26819c256439ea517c6a7c5a6538fa292c4a912fbe06f94a38"
+    },
+    {
+      "path": "resources/models.dev/api.json",
+      "bytes": 4503690,
+      "sha256": "877e9e0c4dd81f1c44ba9ffc2f0a1887077b215d6934d7ccad81e3c7de280eb2"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/applications.cjs",
+      "bytes": 3360,
+      "sha256": "39a5e5e3c7aca3ef1da54ab6c591ba1ec46e4ecb6655a5f1fb1cfebef9e85961"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/BABEL_PARSER_LICENSE.txt",
+      "bytes": 1086,
+      "sha256": "2e97627cb278aa7556fb9e8817368302301a595b6c7582512b8d74c57b773652"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/core-client.cjs",
+      "bytes": 2616,
+      "sha256": "5449d1d2172284f038511c4248ca8920cc1b88201c2602e1fc473c1f2d9394c7"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/domain.cjs",
+      "bytes": 736092,
+      "sha256": "258ac2580210eaa0029f52e891319065bcf6d5b242802d9392823bc87d262fa0"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/main.cjs",
+      "bytes": 7777,
+      "sha256": "ab82c0bd26e0b8613d8bf2c1a895c6fbbdca523d150ce7c9627801ffd5ca671c"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/manifest.json",
+      "bytes": 9191,
+      "sha256": "782fbe5ae65e619b579f2861afa25a5e1cf9e3642f8a7e8174534d1d80310817"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/review-jobs.cjs",
+      "bytes": 3888,
+      "sha256": "39c9e3fca82dc813cd38608892d2132d5015775e26f1dd8372af0206c86b3e48"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/verification-jobs.cjs",
+      "bytes": 3340,
+      "sha256": "8cca7c48f90ef37fd79b22b7ae0168ec7c6e8df78458e74fbfcd9119162f08ee"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/views/verify.html",
+      "bytes": 2544,
+      "sha256": "07232530d3aaf1b9fdbc20f68088b2be2820ecf47a4a056659006e73f2f0fa3d"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/views/verify.js",
+      "bytes": 330492,
+      "sha256": "611ea6da77c60ec4ebfeb8b5fb7b2985f832207f69cc256c0209734fbbdde828"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/views/view.js",
+      "bytes": 239562,
+      "sha256": "7901029a30577a977f11ea0ded1547360b127bac5f2d8089f56688dfc1e64af2"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/views/world.html",
+      "bytes": 6952,
+      "sha256": "9495448aa37f28ee0c4341aa7f1c5c45679216c090460be63949fd77740b3d05"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/world-tools.cjs",
+      "bytes": 4513,
+      "sha256": "1b758f2b3eca184949a5e3f73a3c65fe107bc19fbda555bb6ec60c03b165ef01"
+    },
+    {
+      "path": "resources/plugins/pi.advisor/main.js",
+      "bytes": 4938,
+      "sha256": "242f571d49753a385c94dda60b118bee898d930de9bbf917f13531b51ad11a42"
+    },
+    {
+      "path": "resources/plugins/pi.advisor/manifest.json",
+      "bytes": 2227,
+      "sha256": "dd6c200aec004f812bf22adc4a034b931deb22da2d2a2a2e1d85c2b9f01ac455"
+    },
+    {
+      "path": "resources/plugins/pi.advisor/renderer/index.html",
+      "bytes": 6251,
+      "sha256": "86d0d743d3d31d11d8eb23eebe68eac44411fa01db17a58bd05a71635b7e71e8"
+    },
+    {
+      "path": "resources/plugins/pi.advisor/skills/advisor.md",
+      "bytes": 678,
+      "sha256": "99c9925b969ea79214a6edbd05c6db6cf1454a7fa8a353d3584f336b32cd70a6"
+    },
+    {
+      "path": "resources/plugins/pi.browser/main.js",
+      "bytes": 4350,
+      "sha256": "ff9a5799706c038d06eb5288820187afe7e981c83f39cffaf2b7a99bf0216574"
+    },
+    {
+      "path": "resources/plugins/pi.browser/manifest.json",
+      "bytes": 601,
+      "sha256": "d928cc723ab73d4e3f3bc3339fb612d19f720f9ad93c01e297fe2d0e0b9812f1"
+    },
+    {
+      "path": "resources/plugins/pi.browser/views/browser.html",
+      "bytes": 9944,
+      "sha256": "cb536c399b02a6800800b073bea7a0314ab63f5737dba02ff7aba6825347d3fe"
+    },
+    {
+      "path": "resources/plugins/pi.files/main.js",
+      "bytes": 526,
+      "sha256": "8d0c60d37b7bea6a3680e90f18024addecf1a7b04a070fcbaba6a76d2b5c931c"
+    },
+    {
+      "path": "resources/plugins/pi.files/manifest.json",
+      "bytes": 639,
+      "sha256": "05278c280bb23c0440095b32bad28fc0f6de41ec59e690348d8bd1a355451363"
+    },
+    {
+      "path": "resources/plugins/pi.files/views/tree.html",
+      "bytes": 47452,
+      "sha256": "57d2b6e7d1a97ecdc07e28015255c0e34d628e06a492a1fc646d0220a1b79444"
+    },
+    {
+      "path": "resources/skills/plugin-development.md",
+      "bytes": 9158,
+      "sha256": "9cc2be95543ea9c656ade58f400cd2dde867c86da0fd4ea60508d879fdb0678c"
+    },
+    {
+      "path": "resources/source/BUILD.md",
+      "bytes": 7465,
+      "sha256": "28b2e57813a6ad64979eeb0a96abba9a9496275621029a0574e8beed23f50c70"
+    },
+    {
+      "path": "resources/source/CraftmineWorld-source.zip",
+      "bytes": 36583472,
+      "sha256": "0ee33ac16e4c7ba4ddb80d212b7575b7b6942725aab831e6d632783ae733f099"
+    },
+    {
+      "path": "resources/tray-icon.png",
+      "bytes": 229936,
+      "sha256": "38f15643433637d96b986a0eb4a86dae03a411fb02633ce711dcb948e5429968"
+    },
+    {
+      "path": "resources.pak",
+      "bytes": 7236935,
+      "sha256": "7b0b402a23db7660a01a14f8db3a08efeab4076b3cf1bbee86e9cb46248ee2b7"
+    },
+    {
+      "path": "snapshot_blob.bin",
+      "bytes": 365488,
+      "sha256": "dafdbbd280832732b550196282099b1417228f86f1b1f55dea24b7beda63a997"
+    },
+    {
+      "path": "v8_context_snapshot.bin",
+      "bytes": 740048,
+      "sha256": "1692cefb5b02afb917fdbd53e99a9b8309cead8e91e3590a9f4608832df86c39"
+    },
+    {
+      "path": "vk_swiftshader.dll",
+      "bytes": 5502464,
+      "sha256": "292eb353e8a0bf89806f951483bb6df890a638d6f17dd692baae96ca80fe5719"
+    },
+    {
+      "path": "vk_swiftshader_icd.json",
+      "bytes": 106,
+      "sha256": "32d83ff113fef532a9f97e0d2831f8656628ab1c99e9060f0332b1532839afd9"
+    },
+    {
+      "path": "vulkan-1.dll",
+      "bytes": 930304,
+      "sha256": "3f482a27a955eef4921bfb796a043dd338363eea285efae34d299aef0fee6afe"
+    }
+  ]
+}
