@@ -126,7 +126,18 @@ asset.previewFinish`；`cancel` 写 cancelled。worker 为独立线程、硬超�
 - 真实 Godot 引擎导入、真实模型创作、新目录包恢复不在 R6 范围。
 - `asset-library.css` 由组件直接 import；若要改成 `globals.css` 统一入口，需 R2 加一行。
 
-## 5. 诚实边界
+## 5. 自查修复
+
+只读评审子代理在 50 轮上限内未产出报告，改为定向自查并修复了两处真实缺陷（均有回归测试）：
+
+1. **UI 竞态**：`use-asset-library.ts` 原本没有请求代际保护，玩家切换范围/世界后，旧
+   `asset.search` 的迟到响应会覆盖当前列表。现引入单调 `generation`，迟到的分页与搜索响应
+   一律丢弃（`a late search response for a previous scope never overwrites the list`）。
+2. **缩略图注入面**：`thumbnailSrc` 原先直接拼接 `data:image/png;base64,`，现校验
+   base64 字符集与 ≤700 KB 上限，并只在 `picture===true` 时返回
+   （`thumbnailSrc only accepts a bounded, well-formed base64 payload`）。
+
+## 6. 诚实边界
 
 - 所有自动验证都是逻辑/离线验证：没有真实 Godot 引擎、没有真实客户端窗口、没有真实模型调用。
 - 音频不播放；OGG 只做容器解析且明确不可播放；GLB 只有结构解析，没有画面。

@@ -751,7 +751,9 @@ export function thumbnailSrc(preview: AssetPreview | null | undefined): string |
   if (!described.picture) return null;
   const facts = (preview?.facts ?? {}) as AssetPreviewFacts;
   const base64 = factText(facts, "thumbnailBase64");
-  if (!base64) return null;
+  if (!base64 || base64.length > 700_000) return null;
+  // Only a bounded, well-formed base64 payload may become a data URL.
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(base64)) return null;
   return `data:image/png;base64,${base64}`;
 }
 

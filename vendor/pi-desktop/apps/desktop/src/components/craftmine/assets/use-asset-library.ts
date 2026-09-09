@@ -429,6 +429,10 @@ export function createAssetLibraryController(
     for (const listener of [...listeners]) listener();
   };
 
+  // Monotonic query generation: a response for a previous scope/world must
+  // never overwrite the current list after the player switches.
+  let generation = 0;
+
   const run = async <T>(work: () => Promise<T>): Promise<T> => {
     if (!call) {
       const failure = new Error("ASSET_LIBRARY_UNAVAILABLE");
@@ -449,10 +453,13 @@ export function createAssetLibraryController(
 
   const search = async (input: AssetSearchInput): Promise<AssetSearchResult> => {
     const request = buildSearchRequest(input);
+    const mine = ++generation;
     return run(async () => {
       const page = parseSearchResult(
         await call!("asset.search", request as unknown as Record<string, unknown>),
       );
+      // A late response for a previous scope/world is dropped, not shown.
+      if (mine !== generation) return page;
       emit({
         cards: page.items,
         total: page.total,
@@ -469,10 +476,12 @@ export function createAssetLibraryController(
     const request = state.request;
     if (!request || state.nextOffset === null) return null;
     const next: AssetSearchRequest = { ...request, offset: state.nextOffset };
+    const mine = generation;
     return run(async () => {
       const page = parseSearchResult(
         await call!("asset.search", next as unknown as Record<string, unknown>),
       );
+      if (mine !== generation) return page;
       const merged = mergePage(
         {
           items: state.cards,

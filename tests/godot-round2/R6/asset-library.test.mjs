@@ -701,3 +701,53 @@ test("asset UI sources contain no pointer-lock, click or focus emulation", () =>
   assert.match(panel, /<audio/);
   assert.equal(typeof hookModule.useAssetLibrary, "function");
 });
+
+test("a late search response for a previous scope never overwrites the list", async () => {
+  let releaseStale;
+  let issued = 0;
+  const host = fakeHost({
+    "asset.search": () => {
+      issued += 1;
+      if (issued === 1) {
+        return new Promise(resolve => {
+          releaseStale = () =>
+            resolve({ items: [card("stale", 1)], total: 1, truncated: false, nextOffset: null });
+        });
+      }
+      return { items: [card("fresh", 1)], total: 1, truncated: false, nextOffset: null };
+    },
+  });
+  const controller = createAssetLibraryController(host.call);
+  const stale = controller.search({ scope: "local-library" });
+  await controller.search({ scope: "import-source" });
+  releaseStale();
+  await stale;
+  assert.deepEqual(
+    controller.snapshot().cards.map(item => item.assetId),
+    ["fresh"],
+    "the stale page must be dropped",
+  );
+  assert.equal(controller.snapshot().request.scope, "import-source");
+});
+
+test("thumbnailSrc only accepts a bounded, well-formed base64 payload", () => {
+  const ok = {
+    status: "ok",
+    detail: "",
+    facts: { picture: true, thumbnailBase64: "iVBORw0KGgo=" },
+    createdAt: 1,
+  };
+  assert.equal(model.thumbnailSrc(ok), "data:image/png;base64,iVBORw0KGgo=");
+  assert.equal(
+    model.thumbnailSrc({ ...ok, facts: { picture: true, thumbnailBase64: "<script>alert(1)</script>" } }),
+    null,
+  );
+  assert.equal(
+    model.thumbnailSrc({ ...ok, facts: { picture: true, thumbnailBase64: "A".repeat(700_001) } }),
+    null,
+  );
+  assert.equal(
+    model.thumbnailSrc({ ...ok, facts: { picture: false, thumbnailBase64: "iVBORw0KGgo=" } }),
+    null,
+  );
+});
