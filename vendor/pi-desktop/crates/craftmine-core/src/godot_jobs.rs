@@ -7,6 +7,8 @@ use anyhow::{ensure, Context, Result};
 use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use sha2::{Digest, Sha256};
+use std::io::Read;
 
 use super::{
     digest,
@@ -16,6 +18,10 @@ use super::{
 
 const LEASE_MILLIS: i64 = 120_000;
 const QUEUE_TIMEOUT_MILLIS: i64 = 600_000;
+// Exported engine wasm is substantially larger than a project source file.
+const ARTIFACT_FILE_BYTES: u64 = 256 * 1024 * 1024;
+const ARTIFACT_TOTAL_BYTES: u64 = 512 * 1024 * 1024;
+const ARTIFACT_COUNT: usize = 4096;
 
 #[cfg(test)]
 #[path = "godot_jobs_tests.rs"]
@@ -326,24 +332,51 @@ fn artifact_path(path: &str) -> Result<()> {
     Ok(())
 }
 
-fn verify_artifact(root: &std::path::Path, artifact: &Artifact) -> Result<()> {
-    artifact_path(&artifact.path)?;
-    super::godot_projects::valid_hash(&artifact.sha256)?;
-    ensure!(
-        artifact.bytes <= godot_builds::ASSET_BYTES * 8,
-        "GODOT_ARTIFACT_TOO_LARGE"
-    );
+fn verify_file(root: &std::path::Path, path: &str, hash: &str, bytes: u64, limit: u64, code: &str) -> Result<()> {
+    artifact_path(path)?;
+    super::godot_projects::valid_hash(hash)?;
+    ensure!(bytes <= limit, "{code}");
     let mut current = root.to_path_buf();
-    for part in artifact.path.split('/') {
+    ensure!(super::godot_projects::ordinary(&current, code)?.is_dir(), "{code}");
+    let parts: Vec<_> = path.split('/').collect();
+    for (index, part) in parts.iter().enumerate() {
         current.push(part);
+        let meta = super::godot_projects::ordinary(&current, code)?;
+        if index + 1 < parts.len() { ensure!(meta.is_dir(), "{code}"); }
+        else { ensure!(meta.is_file() && meta.len() == bytes, "{code}"); }
     }
-    let meta = super::godot_projects::ordinary(&current, "GODOT_ARTIFACT_MISSING")?;
-    ensure!(
-        meta.is_file() && meta.len() == artifact.bytes,
-        "CORRUPT_GODOT_ARTIFACT"
-    );
-    godot_builds::binary_read(&current, &artifact.sha256, artifact.bytes)
-        .map_err(|_| anyhow::anyhow!("CORRUPT_GODOT_ARTIFACT"))?;
+    let mut file = godot_builds::open_read(&current)?.take(bytes + 1);
+    let mut actual = Sha256::new();
+    let mut buffer = [0u8; 65536];
+    let mut total = 0u64;
+    loop {
+        let count = file.read(&mut buffer)?;
+        if count == 0 { break; }
+        total += count as u64;
+        actual.update(&buffer[..count]);
+    }
+    let digest: String = actual.finalize().iter().map(|byte| format!("{byte:02x}")).collect();
+    ensure!(total == bytes && digest == hash, "{code}");
+    Ok(())
+}
+
+fn verify_artifact(root: &std::path::Path, artifact: &Artifact) -> Result<()> {
+    ensure!(artifact.bytes <= ARTIFACT_FILE_BYTES, "GODOT_ARTIFACT_TOO_LARGE");
+    artifact_path(&artifact.path)?;
+    let target = root.join(&artifact.path);
+    super::godot_projects::ordinary(&target, "GODOT_ARTIFACT_MISSING")?;
+    verify_file(root, &artifact.path, &artifact.sha256, artifact.bytes, ARTIFACT_FILE_BYTES, "CORRUPT_GODOT_ARTIFACT")
+}
+
+fn verify_project(db: &Connection, world: &str, build: &str, root: &std::path::Path) -> Result<()> {
+    for kind in ["source", "asset"] {
+        for file in build_files(db, world, build, kind)? {
+            verify_file(root, file["path"].as_str().context("CORRUPT_GODOT_BUILD")?,
+                file["sha256"].as_str().context("CORRUPT_GODOT_BUILD")?,
+                file["bytes"].as_u64().context("CORRUPT_GODOT_BUILD")?,
+                4 * 1024 * 1024, "CORRUPT_GODOT_BUILD")?;
+        }
+    }
     Ok(())
 }
 
@@ -424,6 +457,8 @@ pub(super) fn require_ready_candidate(
             && candidate["manifestHash"].as_str() == Some(hash.as_str()),
         "GODOT_CANDIDATE_STALE"
     );
+    let (assets, _) = godot_builds::asset_manifest(db, world_id)?;
+    ensure!(candidate["assetManifestHash"] == assets, "GODOT_CANDIDATE_STALE");
     Ok(candidate)
 }
 
@@ -532,7 +567,8 @@ impl TaskJournal {
         );
         let world = record["worldId"].as_str().context("INVALID_GODOT_JOB")?;
         let build = record["buildId"].as_str().context("INVALID_GODOT_JOB")?;
-        let root = build_root(&self.directory, world, build, false)?;
+        let root = build_root(&self.directory, world, build, false)?.join("source");
+        verify_project(&tx, world, build, &root)?;
         let cache = build_root(&self.directory, world, build, true)?.join("cache");
         let artifacts = build_root(&self.directory, world, build, true)?.join("artifacts");
         for path in [&cache, &artifacts] {
@@ -706,6 +742,14 @@ impl TaskJournal {
             && args.output.check.passed
             && args.output.check.assertions.iter().all(|assertion| assertion.passed);
         let artifacts_root = build_root(&self.directory, &world, &build, false)?.join("artifacts");
+        ensure!(args.output.artifacts.len() <= ARTIFACT_COUNT, "GODOT_ARTIFACT_TOO_LARGE");
+        let mut total = 0u64;
+        let mut paths = std::collections::HashSet::new();
+        for artifact in &args.output.artifacts {
+            total = total.checked_add(artifact.bytes).context("GODOT_ARTIFACT_TOO_LARGE")?;
+            ensure!(total <= ARTIFACT_TOTAL_BYTES, "GODOT_ARTIFACT_TOO_LARGE");
+            ensure!(paths.insert(artifact.path.to_ascii_lowercase()), "GODOT_ARTIFACT_CONFLICT");
+        }
         for artifact in &args.output.artifacts {
             verify_artifact(&artifacts_root, artifact)?;
         }

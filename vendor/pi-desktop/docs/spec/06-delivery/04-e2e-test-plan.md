@@ -8704,3 +8704,8 @@ require the original receipt without another mutation. Inject failure before a
 commit; require the original uncertain error when no receipt exists. Retain the
 `craftmine.request/2` snapshot protocol and run the existing batch-07 review-fixture
 regression. These fixtures do not call a real provider or run authored Godot code.
+
+
+### GODOT-AUDIT-CORE: input and publication integrity
+
+Using isolated data and protocol calls without input simulation: verify claimed `projectRoot/project.godot`; corrupt source before claim and require refusal. Verify a 39,514,754-byte synthetic engine-sized artifact and reject altered bytes/over-budget declarations. Prepare with identical player pose but stale inventory/quests and require `APPLICATION_PROGRESS_CHANGED`; exact formal progress survives commit. Source or asset edits after prepare require `GODOT_CANDIDATE_STALE`, preserving the world. Optional list/read metadata must agree; unknown formats cannot default to legacy. Reusing a sandbox task directory must fail before overwrites; fresh task ids start empty. Native runtime proof and authenticated launch remain separate tests.

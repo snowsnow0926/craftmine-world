@@ -241,3 +241,55 @@ fn a_rejected_candidate_cannot_replace_the_formal_world() -> Result<()> {
     assert_eq!(journal.world_read("a")?.summary.revision, 0);
     Ok(())
 }
+
+#[test]
+fn matching_player_does_not_authorize_replacing_other_formal_progress() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let created = create_project(&mut journal, &context)?;
+    let (job, finished) = run_check(&mut journal, &context, &created, "check-one", true)?;
+    let mut formal = world();
+    formal.snapshot["inventory"] = json!({"coins":37,"apples":2});
+    formal.snapshot["quests"] = json!({"shop":"completed"});
+    journal.world_save_progress("a", 0, "base-a", &formal.snapshot)?;
+    let before = journal.world_read("a")?;
+    failed(prepare(&mut journal, finished["candidateId"].as_str().unwrap(), before.summary.revision), "APPLICATION_PROGRESS_CHANGED");
+    assert_eq!(journal.world_read("a")?.world.snapshot, formal.snapshot);
+    let prepared = journal.godot_application_prepare(&json!({"id":"apply-one","token":"token-a",
+        "candidateId":finished["candidateId"],"worldId":"a","revision":before.summary.revision,"snapshot":formal.snapshot}))?;
+    journal.godot_application_commit(&evidence(&prepared, job["buildId"].as_str().unwrap(), &formal.snapshot["player"]))?;
+    assert_eq!(journal.world_read("a")?.world.snapshot, formal.snapshot);
+    Ok(())
+}
+
+#[test]
+fn source_edits_after_prepare_revoke_publication() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let created = create_project(&mut journal, &context)?;
+    let (job, finished) = run_check(&mut journal, &context, &created, "check-one", true)?;
+    let prepared = prepare(&mut journal, finished["candidateId"].as_str().unwrap(), 0)?;
+    journal.godot_project_patch(&json!({"context":&context,"worldId":"a","toolCallId":"patch-after-prepare",
+        "revision":created["revision"],"manifestHash":created["manifestHash"],
+        "operations":[{"op":"put","path":"world.gd","expectedHash":digest(SCRIPT),"text":"extends Node3D\nvar damage := 7\n"}]}))?;
+    failed(journal.godot_application_commit(&evidence(&prepared, job["buildId"].as_str().unwrap(), &world().snapshot["player"])), "GODOT_CANDIDATE_STALE");
+    assert_eq!(journal.world_read("a")?.world.build["id"], "base-a");
+    assert_eq!(journal.world_read("a")?.summary.revision, 0);
+    Ok(())
+}
+
+#[test]
+fn asset_edits_after_prepare_revoke_publication() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let created = create_project(&mut journal, &context)?;
+    let (job, finished) = run_check(&mut journal, &context, &created, "check-one", true)?;
+    let prepared = prepare(&mut journal, finished["candidateId"].as_str().unwrap(), 0)?;
+    put_asset(&mut journal, &context, "new-asset", "new.png", "image/png", b"new resource")?;
+    failed(journal.godot_application_commit(&evidence(&prepared, job["buildId"].as_str().unwrap(), &world().snapshot["player"])), "GODOT_CANDIDATE_STALE");
+    assert_eq!(journal.world_read("a")?.world.build["id"], "base-a");
+    Ok(())
+}

@@ -143,3 +143,13 @@ Real Godot import/export commands, OS isolation and its evidence belong to task 
 World view, layout and base projects belong to C/E. Model authorship, visual
 acceptance and packaging are separate accounts. Nothing here claims that a fixed
 author sample or a simulated executor proves real model creation.
+
+
+## Integration audit corrections (2026-09-09)
+
+- `godotJob.claim.projectRoot` is the `source/` directory containing `project.godot`. Each recorded source/asset is verified again before claim; corruption leaves the job queued.
+- Export artifacts have streaming SHA-256 verification, separate from source/asset budgets: 256 MiB per file, 512 MiB per result, 4096 paths. Duplicate case-folded paths and reparse components are rejected. These acceptance limits are not disk quotas.
+- Materialization flushes unique temporary files before publishing final filenames. Existing corrupt finals remain errors. Abruptly orphaned temporary files still need garbage collection.
+- Application prepare requires the complete supplied snapshot to equal latest formal progress, including inventory/quests. Player mismatch retains `APPLICATION_PLAYER_CHANGED`; other mismatch uses `APPLICATION_PROGRESS_CHANGED`. Commit saves the formal snapshot and rechecks current source and asset identities (`GODOT_CANDIDATE_STALE`).
+- World list/read summaries add optional `baseId` and `runtimeKind` derived from verified persisted builds. Known Godot scene + Godot metadata yields `runtimeKind: godot` and scene baseId. Known legacy scene formats yield `runtimeKind: legacy`, without an invented baseId. Unknown formats omit both. Metadata never grants launch permission.
+- No executor is enabled. Host registration is an assertion, not an OS proof. Loopback isolation and host-authenticated new-instance evidence remain product gates.

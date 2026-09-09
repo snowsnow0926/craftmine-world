@@ -12,7 +12,7 @@ use serde_json::{json, Value};
 use super::{
     digest,
     godot_builds::valid_build_id,
-    godot_jobs::{read_candidate, read_job, require_ready_candidate},
+    godot_jobs::require_ready_candidate,
     workspaces, worlds, TaskJournal,
 };
 
@@ -143,6 +143,7 @@ fn assert_player_unchanged(before: &worlds::WorldRecord, snapshot: &Value) -> Re
         snapshot["player"] == before.world.snapshot["player"],
         "APPLICATION_PLAYER_CHANGED"
     );
+    ensure!(snapshot == &before.world.snapshot, "APPLICATION_PROGRESS_CHANGED");
     Ok(())
 }
 
@@ -183,7 +184,7 @@ impl TaskJournal {
         let build_id = candidate["buildId"].as_str().context("INVALID_GODOT_BUILD")?;
         let prepared = worlds::WorldDocument {
             build: godot_build_document(&tx, &candidate)?,
-            snapshot: args.snapshot.clone(),
+            snapshot: before.world.snapshot.clone(),
             extensions: before.world.extensions.clone(),
         };
         // Encoding proves the resulting world document is valid before anything
@@ -249,20 +250,11 @@ impl TaskJournal {
         );
         let input = receipt["input"].clone();
         let world_id = input["worldId"].as_str().context("WORLD_ID_REQUIRED")?;
-        let candidate = read_candidate(
+        let candidate = require_ready_candidate(
             &tx,
             input["candidateId"].as_str().context("INVALID_GODOT_CANDIDATE")?,
+            world_id,
         )?;
-        ensure!(candidate["status"] == "ready", "GODOT_CANDIDATE_NOT_READY");
-        let check = read_job(
-            &tx,
-            candidate["checkJobId"].as_str().context("INVALID_GODOT_JOB")?,
-        )?;
-        ensure!(
-            check["status"] == "passed"
-                && Some(check["outputHash"].clone()) == Some(candidate["checkOutputHash"].clone()),
-            "GODOT_CANDIDATE_NOT_READY"
-        );
         let before = worlds::read(&tx, world_id)?;
         ensure!(
             input["revision"] == before.summary.revision
@@ -297,7 +289,7 @@ impl TaskJournal {
         );
         let world = worlds::WorldDocument {
             build: godot_build_document(&tx, &candidate)?,
-            snapshot: input["snapshot"].clone(),
+            snapshot: before.world.snapshot.clone(),
             extensions: before.world.extensions.clone(),
         };
         let body = worlds::encode(&world)?;
