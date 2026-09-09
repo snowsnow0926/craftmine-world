@@ -65,16 +65,20 @@ export function PluginViewTab({
     const surface = surfaceRef.current;
     if (!surface || failed) return;
     let frame = 0;
+    // A collapsed panel must not move the game view to 0x0: the runtime keeps
+    // the last real rect so resizing the panel never reloads the world.
+    let last = { x: 0, y: 0, width: 0, height: 0 };
     const report = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const rect = surface.getBoundingClientRect();
-        void api.pluginViewSetBounds({
-          x: rect.x,
-          y: rect.y,
-          width: rect.width,
-          height: rect.height,
-        });
+        if (rect.width < 1 || rect.height < 1) {
+          surface.dataset.surfaceMeasured = "collapsed";
+          return;
+        }
+        last = { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+        surface.dataset.surfaceMeasured = "ready";
+        void api.pluginViewSetBounds(last);
       });
     };
     const observer = new ResizeObserver(report);

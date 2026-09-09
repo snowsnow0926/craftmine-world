@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>Godot world acceptance panel</title>
+    <style>
+      html, body { margin: 0; height: 100%; font: 13px system-ui, sans-serif; background: #191919; color: #dedede; }
+      /* Mirrors the creation panel: a fixed chrome strip above the game area. */
+      .chrome { height: 76px; display: flex; align-items: center; gap: 8px; padding: 0 12px; box-sizing: border-box; border-bottom: 1px solid #333; }
+      #game { position: absolute; left: 0; right: 0; top: 76px; bottom: 0; }
+    </style>
+  </head>
+  <body>
+    <header class="chrome"><span>世界</span><span id="status">载入中</span></header>
+    <div id="game"></div>
+  </body>
+</html>

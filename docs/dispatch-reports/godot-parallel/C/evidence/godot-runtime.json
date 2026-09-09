@@ -1,0 +1,332 @@
+{
+  "kind": "real-godot-web-runtime-host",
+  "out": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-runtime-BNU5Kh",
+  "checks": [
+    {
+      "name": "Pinned engine exported a real threaded Web build",
+      "passed": true,
+      "evidence": {
+        "buildId": "76247bd5ff9477531ac546ffd2bf55a03ad87536c5b3ff60b1b62490cb5ab6e9",
+        "bytes": 39307665
+      }
+    },
+    {
+      "name": "Build identity is the content hash of the export directory",
+      "passed": true
+    },
+    {
+      "name": "Each runtime instance gets its own loopback origin and path token",
+      "passed": true,
+      "evidence": "http://127.0.0.1:57229/w/99585a5d595e53279384130cb847d828b0931c8e4ba2f7820aa80b9975db40b4/index.html"
+    },
+    {
+      "name": "Two worlds never share an origin",
+      "passed": true,
+      "evidence": {
+        "first": "http://127.0.0.1:57229",
+        "second": "http://127.0.0.1:57230"
+      }
+    },
+    {
+      "name": "Real Godot runtime reports ready over the loopback origin",
+      "passed": true
+    },
+    {
+      "name": "Multi-threaded page is cross-origin isolated",
+      "passed": true
+    },
+    {
+      "name": "Top-level document carries COOP/COEP/CORP and a deny-by-default CSP",
+      "passed": true,
+      "evidence": {
+        "cache-control": "no-store",
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; media-src 'self' blob:; frame-src 'none'; child-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'",
+        "content-type": "text/html; charset=utf-8",
+        "cross-origin-embedder-policy": "require-corp",
+        "cross-origin-opener-policy": "same-origin",
+        "cross-origin-resource-policy": "cross-origin",
+        "date": "Wed, 09 Sep 2026 13:21:10 GMT",
+        "keep-alive": "timeout=1",
+        "referrer-policy": "no-referrer",
+        "transfer-encoding": "chunked",
+        "x-content-type-options": "nosniff"
+      }
+    },
+    {
+      "name": "CSP keeps the engine's wasm and worker needs explicit",
+      "passed": true
+    },
+    {
+      "name": "Engine assets are served with the correct type and no caching",
+      "passed": true,
+      "evidence": {
+        "transfer-encoding": "chunked",
+        "content-security-policy": "default-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; media-src 'self' blob:; frame-src 'none'; child-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'",
+        "cache-control": "no-store",
+        "cross-origin-opener-policy": "same-origin",
+        "cross-origin-resource-policy": "cross-origin",
+        "connection": "keep-alive",
+        "referrer-policy": "no-referrer",
+        "x-content-type-options": "nosniff",
+        "cross-origin-embedder-policy": "require-corp",
+        "keep-alive": "timeout=1",
+        "date": "Wed, 09 Sep 2026 13:21:10 GMT",
+        "content-type": "application/wasm"
+      }
+    },
+    {
+      "name": "Path traversal, foreign tokens and unknown asset types are refused",
+      "passed": true,
+      "evidence": [
+        {
+          "suffix": "../runtime.mjs",
+          "status": 404
+        },
+        {
+          "suffix": "..%2Fruntime.mjs",
+          "status": 400
+        },
+        {
+          "suffix": "..%20/runtime.mjs",
+          "status": 400
+        },
+        {
+          "suffix": "%2e%2e/runtime.mjs",
+          "status": 404
+        },
+        {
+          "suffix": "/w/0000000000000000000000000000000000000000000000000000000000000000/index.html",
+          "status": 404
+        },
+        {
+          "suffix": "index.exe",
+          "status": 404
+        }
+      ]
+    },
+    {
+      "name": "Snapshot returns real engine state and viewport",
+      "passed": true,
+      "evidence": {
+        "base": "first-person",
+        "cameraAttachment": true,
+        "crosshairSize": [
+          1280,
+          720
+        ],
+        "crosshairVisible": true,
+        "damage": 12,
+        "persistentStorage": true,
+        "state": {
+          "ammo": 6,
+          "equipped": "gun",
+          "targetHealth": 50,
+          "yaw": 0
+        },
+        "viewportSize": [
+          1280,
+          720
+        ],
+        "weaponGlobal": [
+          0.25,
+          1.37999999523163,
+          3.34999990463257
+        ],
+        "weaponLocal": [
+          0.25,
+          -0.219999998807907,
+          -0.649999976158142
+        ],
+        "weaponVisible": true
+      }
+    },
+    {
+      "name": "Runtime advertises the unified operation set and its identity",
+      "passed": true,
+      "evidence": {
+        "buildId": "76247bd5ff9477531ac546ffd2bf55a03ad87536c5b3ff60b1b62490cb5ab6e9",
+        "instanceId": "f5e69ac06873e2b5b840f0d6",
+        "ops": [
+          "capabilities",
+          "load",
+          "snapshot",
+          "save",
+          "pause",
+          "resume",
+          "acknowledge",
+          "cancel",
+          "exit"
+        ],
+        "paused": false,
+        "persistentStorage": true,
+        "protocol": "craftmine.godot-runtime/2",
+        "worldId": "weapon-world"
+      }
+    },
+    {
+      "name": "Base gameplay operations reach the running world",
+      "passed": true,
+      "evidence": {
+        "ammo": 5,
+        "equipped": "gun",
+        "targetHealth": 38,
+        "yaw": 0
+      }
+    },
+    {
+      "name": "A paused world still answers snapshots",
+      "passed": true
+    },
+    {
+      "name": "Save separates the runner confirmation from the durable receipt",
+      "passed": true,
+      "evidence": {
+        "buildId": "76247bd5ff9477531ac546ffd2bf55a03ad87536c5b3ff60b1b62490cb5ab6e9",
+        "bytes": 270,
+        "format": "craftmine.godot-progress/2",
+        "instanceId": "f5e69ac06873e2b5b840f0d6",
+        "path": "user://worlds/90413b4be402f8934bb69c4ca8d1431e30bb80b210147b8218459e1b7948ff6f/progress.json",
+        "savedAt": 1788960071.414,
+        "sha256": "bc38c1af9d0de6490f8f6078a1a11fcd6cdc3a2022796663651d308adb74fd39",
+        "worldId": "weapon-world"
+      }
+    },
+    {
+      "name": "Runner accepts a durable receipt for its own world",
+      "passed": true,
+      "evidence": {
+        "acknowledged": true,
+        "receipt": {
+          "buildId": "76247bd5ff9477531ac546ffd2bf55a03ad87536c5b3ff60b1b62490cb5ab6e9",
+          "format": "craftmine.progress-receipt/1",
+          "revision": 7,
+          "worldId": "weapon-world"
+        }
+      }
+    },
+    {
+      "name": "Runner refuses a durable receipt for another world",
+      "passed": true,
+      "evidence": "Persisted receipt belongs to another world"
+    },
+    {
+      "name": "Cancel is acknowledged for the target request",
+      "passed": true,
+      "evidence": {
+        "cancelled": 1
+      }
+    },
+    {
+      "name": "An invalid restore is rejected without changing state",
+      "passed": true,
+      "evidence": {
+        "ammo": 5,
+        "equipped": "gun",
+        "targetHealth": 38,
+        "yaw": 0
+      }
+    },
+    {
+      "name": "Messages from another world or a stale instance are ignored",
+      "passed": true
+    },
+    {
+      "name": "Exit returns the engine exit code",
+      "passed": true,
+      "evidence": {
+        "exitCode": 0
+      }
+    },
+    {
+      "name": "No page error was reported by the real engine",
+      "passed": true,
+      "evidence": []
+    },
+    {
+      "name": "A disposed runtime origin stops serving the build",
+      "passed": true,
+      "evidence": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:57229/w/99585a5d595e53279384130cb847d828b0931c8e4ba2f7820aa80b9975db40b4/index.html\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:57229/w/99585a5d595e53279384130cb847d828b0931c8e4ba2f7820aa80b9975db40b4/index.html\", waiting until \"load\"\u001b[22m\n"
+    }
+  ],
+  "notVerified": [
+    "Electron content view",
+    "real model authorship",
+    "GPU/player feel"
+  ],
+  "builds": [
+    {
+      "base": "first-person",
+      "revision": "initial",
+      "buildId": "76247bd5ff9477531ac546ffd2bf55a03ad87536c5b3ff60b1b62490cb5ab6e9",
+      "threads": true,
+      "output": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-runtime-BNU5Kh\\exports\\first-person-initial",
+      "files": [
+        {
+          "path": "bridge.js",
+          "bytes": 5903,
+          "sha256": "2e0beb1afa6cdf3f5229201e371f2d4b883779d46199b82f351c2b3c62b1d5c4"
+        },
+        {
+          "path": "index.apple-touch-icon.png",
+          "bytes": 11944,
+          "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+        },
+        {
+          "path": "index.audio.position.worklet.js",
+          "bytes": 2973,
+          "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+        },
+        {
+          "path": "index.audio.worklet.js",
+          "bytes": 7298,
+          "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+        },
+        {
+          "path": "index.html",
+          "bytes": 978,
+          "sha256": "63c3fa77d47f8c31f4e5b2a80a9f51264019699776f6e85e4f4f980ed75195f0"
+        },
+        {
+          "path": "index.icon.png",
+          "bytes": 5700,
+          "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+        },
+        {
+          "path": "index.js",
+          "bytes": 314653,
+          "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+        },
+        {
+          "path": "index.pck",
+          "bytes": 15444,
+          "sha256": "20167c57bf36b143dd66234920b1b04043be053ad0eb44962b02aa48dc945afe"
+        },
+        {
+          "path": "index.png",
+          "bytes": 21443,
+          "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+        },
+        {
+          "path": "index.wasm",
+          "bytes": 38820072,
+          "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+        },
+        {
+          "path": "licenses/GODOT_COPYRIGHT.txt",
+          "bytes": 100108,
+          "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d"
+        },
+        {
+          "path": "licenses/GODOT_LICENSE.txt",
+          "bytes": 1149,
+          "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80"
+        }
+      ],
+      "bytes": 39307665,
+      "godotVersion": "4.7.2.stable.official.ed1daf0bf"
+    }
+  ],
+  "passed": 23,
+  "total": 23
+}
