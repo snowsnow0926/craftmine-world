@@ -22,6 +22,16 @@ if (scope) {
   contextBridge.exposeInMainWorld("craftmineRuntime", {
     scope,
     post(message: unknown) {
+      try {
+        if (new TextEncoder().encode(JSON.stringify(message)).byteLength > 8 * 1024 * 1024) throw new Error("wire limit");
+      } catch {
+        const id = (message as { id?: unknown } | null)?.id;
+        ipcRenderer.send(GODOT_WORLD_MESSAGE_CHANNEL, { ...scope,
+          type: Number.isSafeInteger(id) ? "response" : "runtime-error", id,
+          error: "Invalid or oversized runtime message",
+        });
+        return;
+      }
       ipcRenderer.send(GODOT_WORLD_MESSAGE_CHANNEL, message);
     },
     on(handler: (message: unknown) => void) {

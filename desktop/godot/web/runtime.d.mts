@@ -64,6 +64,7 @@ export type WorldRuntimeOptions = {
   worldId: string;
   buildId: string;
   root: string;
+  artifacts?: Array<{path: string; sha256: string; bytes: number}>;
   entry?: string;
   threads?: boolean;
   timeoutMs?: number;

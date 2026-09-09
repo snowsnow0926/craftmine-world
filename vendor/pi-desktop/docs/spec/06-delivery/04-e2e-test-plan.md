@@ -8758,3 +8758,26 @@ and validate bytes when serving each allowlisted artifact. Verify this in the
 native headless harness with Pointer Lock disabled and no input/focus operations.
 Record separately whether exports came from an authored fixture or a real model
 and whether the executor result was actual or simulated.
+
+## CRAFTMINE-GODOT-022 — Formal native host and complete durable progress
+
+Run `tests/godot-runtime-boundaries.mjs`, `tests/godot-host-lifecycle.mjs`,
+`tests/godot-host-typecheck.mjs`, and with a current Rust core binary,
+`tests/godot-runtime-adapter-core.mjs`. Then run
+`tests/godot-runtime-native.mjs` with the fixed managed base/toolchain and isolated
+Electron dependency paths. Keep the generated unique report/log directories.
+
+Verify a formal descriptor resolves only Rust-applied artifacts; extra/changed
+assets are not served; runner world/build/instance/exact snapshot hash bind the
+real receipt; full non-voxel equipment/inventory/quest state survives a real Rust
+and Electron restart. Verify same-revision no-op, lost reply recovery, stale
+messages, malformed/oversized wire values and storage failure. A save failure
+must block switch/quit; a failed selection write followed by failed restoration
+must hide/pause the uncertain view and report both errors. Checks/workbench must
+detach the native sibling. Runtime identity cannot come from page state or paths.
+
+No actual input, focus activation, Pointer Lock or user browser is permitted.
+Fixed source/executor/application fixtures prove transport and persistence only;
+record separately whether the actual product entry was built/exercised. Do not
+claim arbitrary model execution, OS sandbox, candidate UI application or packaged
+asset licensing from these checks.

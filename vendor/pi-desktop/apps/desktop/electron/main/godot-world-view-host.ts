@@ -40,6 +40,7 @@ export type GodotWorldOpenRequest = {
   revision: number;
   /** Absolute path to the built Web export directory. */
   root: string;
+  artifacts: Array<{path: string; sha256: string; bytes: number}>;
   entry?: string;
   threads?: boolean;
   /** Snapshot the host loaded from durable progress; replayed after ready. */
@@ -128,6 +129,7 @@ export class GodotWorldViewHost {
   private pending: LiveInstance | null = null;
   private bounds: GodotWorldBounds = { x: 0, y: 0, width: 0, height: 0 };
   private visible = false;
+  private surfaceVisible = true;
   private currentState: GodotWorldState | null = null;
   private revision: number | null = null;
   private transitioning = false;
@@ -135,6 +137,7 @@ export class GodotWorldViewHost {
   private savePromise: Promise<GodotWorldSaveResult> | null = null;
   private checkpointPromise: Promise<GodotWorldSaveResult> | null = null;
   private frozen: { instance: LiveInstance; result: GodotWorldSaveResult } | null = null;
+  private syncHolds = 0;
   private syncing = false;
   private syncPromise: Promise<GodotWorldState | null> = Promise.resolve(null);
   private lastSync = 0;
@@ -190,6 +193,7 @@ export class GodotWorldViewHost {
     if (this.pending) throw new Error("A world instance is already starting");
     const worldId = requireId("world identity", request.worldId);
     const buildId = requireId("build identity", request.buildId);
+    if (!Array.isArray(request.artifacts) || request.artifacts.length < 1) throw new Error("GODOT_RUNTIME_ARTIFACT_MANIFEST_REQUIRED");
     const allowed = this.options.allowedRoots?.() ?? [];
     if (!Number.isSafeInteger(request.revision) || request.revision < 0) throw new Error("Durable world revision is required");
     const root = await realpath(resolve(request.root ?? ""));
@@ -228,6 +232,7 @@ export class GodotWorldViewHost {
       worldId,
       buildId,
       root,
+      artifacts: request.artifacts,
       entry: request.entry,
       threads: request.threads,
       timeoutMs: request.timeoutMs,
@@ -272,6 +277,8 @@ export class GodotWorldViewHost {
         const loaded = await runtime.load({ build: request.build ?? null, snapshot: request.snapshot ?? null });
         if (loaded.error) throw new Error(loaded.error);
       }
+      const resumed = await runtime.resume();
+      if (resumed.error) throw new Error(resumed.error);
     } catch (error) {
       this.pending = null;
       instance.alive = false;
@@ -344,7 +351,7 @@ export class GodotWorldViewHost {
    * throttled so a resize drag cannot hammer the plugin process.
    */
   async sync({ force = false }: { force?: boolean } = {}): Promise<GodotWorldState | null> {
-    if (this.disposed) return this.currentState;
+    if (this.disposed || this.syncHolds) return this.currentState;
     if (!this.options.descriptor) return this.currentState;
     if (this.syncing) return this.syncPromise;
     const now = Date.now();
@@ -358,6 +365,7 @@ export class GodotWorldViewHost {
         if (this.current) this.publish({ ...this.identityOf(this.current), state: this.currentState?.state ?? "ready", error: String(error) });
         return this.currentState;
       }
+      if (this.syncHolds) return this.currentState;
       if (!request) {
         await this.switchWorld(null).catch((error) => {
           if (this.current) this.publish({ ...this.identityOf(this.current), state: this.currentState?.state ?? "ready", error: String(error) });
@@ -379,10 +387,29 @@ export class GodotWorldViewHost {
     return this.syncPromise;
   }
 
+  /** Keep selection polling outside the host's explicit world-open transaction. */
+  async holdSelectionSync(): Promise<() => void> {
+    ++this.syncHolds;
+    try { await this.syncPromise; }
+    catch (error) { --this.syncHolds; throw error; }
+    let released = false;
+    return () => {
+      if (released) return;
+      released = true;
+      --this.syncHolds;
+      if (this.visible) this.startPolling();
+    };
+  }
+
   setBounds(bounds: GodotWorldBounds): void {
     this.bounds = bounds;
     this.applyBounds();
     void this.sync();
+  }
+
+  setSurfaceVisible(visible: boolean): void {
+    this.surfaceVisible = visible;
+    this.applyBounds();
   }
 
   setVisible(visible: boolean): void {
@@ -466,8 +493,8 @@ export class GodotWorldViewHost {
       return { status: "failed", error, runnerReceipt };
     }
     const receipt = persisted.receipt as GodotWorldPersistedReceipt | undefined;
-    if (!receipt || receipt.format !== "craftmine.progress-receipt/1" || receipt.worldId !== instance.worldId || receipt.buildId !== instance.buildId ||
-        !Number.isSafeInteger(receipt.revision) || receipt.revision <= baseRevision || !/^[a-f0-9]{64}$/.test(receipt.contentHash ?? "")) {
+    if (!receipt || !["craftmine.progress-receipt/1", "craftmine.godot-progress-receipt/1"].includes(receipt.format) || receipt.worldId !== instance.worldId || receipt.buildId !== instance.buildId ||
+        !Number.isSafeInteger(receipt.revision) || receipt.revision < baseRevision || !/^[a-f0-9]{64}$/.test(receipt.contentHash ?? "")) {
       const error = "Host progress transaction returned no durable receipt";
       await instance.runtime.acknowledge({ failed: true, error }).catch(() => undefined);
       this.publish({ ...this.identityOf(instance), state: "failed", error });
@@ -651,7 +678,7 @@ export class GodotWorldViewHost {
     const instance = this.current;
     const window = this.options.window();
     if (!instance || !instance.alive || !window || window.isDestroyed()) return;
-    if (!this.visible) {
+    if (!this.visible || !this.surfaceVisible) {
       this.detachView(instance.view);
       return;
     }

@@ -6,7 +6,7 @@
 // drives. The production wiring of the same module into
 // `electron/main/index.ts` is task I's integration step (see INTEGRATION_C.md).
 import { app, BrowserWindow, ipcMain, session, WebContentsView } from "electron";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, readdirSync, readFileSync, lstatSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { GodotWorldViewHost } from "../../vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host";
@@ -92,7 +92,11 @@ async function main() {
 
 const commands = {
   async open(request) {
-    const state = await host.ensure({ revision: 0, ...request });
+    const artifacts = readdirSync(request.root, {recursive:true}).filter(name => lstatSync(join(request.root,name)).isFile()).map(name => {
+      const bytes=readFileSync(join(request.root,name));
+      return {path:name.replaceAll('\\','/'),bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
+    });
+    const state = await host.ensure({ revision: 0, ...request, artifacts });
     if (request.bounds) host.setBounds(request.bounds);
     if (request.visible !== false) host.setVisible(true);
     return { state, instance: host.instance };

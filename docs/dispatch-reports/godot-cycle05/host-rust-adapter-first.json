@@ -1,0 +1,46 @@
+{
+  "kind": "real-rust-godot-runtime-adapter",
+  "binary": "D:\\cm-gd5-core\\vendor\\pi-desktop\\target\\debug\\craftmine-core.exe",
+  "checks": [
+    {
+      "name": "descriptor comes from real applied artifact store",
+      "passed": true
+    },
+    {
+      "name": "real core saves complete non-voxel state over 64 KiB",
+      "passed": true
+    },
+    {
+      "name": "no-op save accepts same real durable revision",
+      "passed": true
+    },
+    {
+      "name": "old native instance denied before persistence",
+      "passed": true
+    },
+    {
+      "name": "selected world cannot redirect instance-bound save",
+      "passed": true
+    },
+    {
+      "name": "lost save reply recovered by exact real describe without replay",
+      "passed": true
+    },
+    {
+      "name": "full state survives actual core process restart",
+      "passed": true
+    },
+    {
+      "name": "other world progress unchanged",
+      "passed": true
+    },
+    {
+      "name": "changed artifact blocks trusted descriptor",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "authored artifact/executor/application fixture; no real model or OS-isolated builder claim",
+    "native Electron validation is separate"
+  ]
+}

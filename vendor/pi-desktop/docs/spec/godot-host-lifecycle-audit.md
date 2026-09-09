@@ -1,5 +1,8 @@
 # Godot host lifecycle audit repair
 
+Historical audit contract: the Cycle 5 adapter and production integration
+superseding its outstanding gaps is in `godot-formal-runtime-host.md`.
+
 This contract supersedes the lifecycle and descriptor examples in task C's original
 `INTEGRATION_C.md` / `integration.patch`. Those examples are not product wiring.
 
