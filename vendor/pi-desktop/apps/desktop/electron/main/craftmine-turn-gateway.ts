@@ -46,6 +46,12 @@ export class CraftmineTurnGateway {
     return this.bindings.get(sessionId);
   }
 
+  /** Only after all turns and their final accounting have drained. */
+  resetForProfileRestore(): void {
+    if ([...this.bindings.keys()].some(id => this.activeTurn(id))) throw denied("ACTIVE_TASK_EXISTS");
+    this.bindings.clear(); this.ended.clear(); this.reservations.clear();
+  }
+
   end(sessionId: string, turnId: string): void {
     // A delayed completion from the preceding turn cannot clear its successor.
     if (this.bindings.get(sessionId)?.turnId === turnId) this.ended.set(sessionId, turnId);

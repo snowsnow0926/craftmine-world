@@ -670,7 +670,7 @@ pub(super) fn read_manifest_files(
     Ok(files)
 }
 
-fn digest_bytes(bytes: &[u8]) -> String {
+pub(super) fn digest_bytes(bytes: &[u8]) -> String {
     use sha2::{Digest, Sha256};
     Sha256::digest(bytes)
         .iter()
@@ -725,6 +725,28 @@ fn store_git_index(
 }
 
 impl TaskJournal {
+    /// Return an existing world-bound session head for trusted source readers.
+    /// This does not create a task, acquire a write lease, or mutate Git.
+    pub fn godot_project_source_context(&self, args: &Value) -> Result<Value> {
+        #[derive(Deserialize)]
+        #[serde(rename_all="camelCase", deny_unknown_fields)]
+        struct Args { world_id: String }
+        let args: Args=serde_json::from_value(args.clone())?;
+        worlds::read(&self.db,&args.world_id)?;
+        let exists: bool=self.db.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_godot_projects WHERE world_id=?1)",
+            [&args.world_id],|row|row.get(0))?;
+        ensure!(exists,"GODOT_PROJECT_NOT_FOUND");
+        let binding: Option<String>=self.db.query_row(
+            "SELECT t.binding FROM craftmine_session_worlds s JOIN craftmine_tasks t ON t.id=s.head_task
+             JOIN craftmine_workspaces w ON w.task_id=t.id AND w.world_id=s.world_id
+             WHERE s.world_id=?1 ORDER BY t.rowid DESC LIMIT 1",[&args.world_id],|row|row.get(0)).optional()?;
+        let binding: TaskBinding=serde_json::from_str(&binding.context("GODOT_SOURCE_CONTEXT_UNAVAILABLE")?)?;
+        let context=WorkspaceContext {project_id:binding.project_id,session_id:binding.session_id,turn_id:binding.turn_id};
+        let snapshot=workspaces::inspect(&self.db,&context)?;
+        ensure!(snapshot.world_id==args.world_id,"PROJECT_WORLD_BINDING_MISMATCH");
+        Ok(json!({"context":context}))
+    }
+
     /// Manifest for the head (or an indexed revision) of a world, adopting a Git
     /// commit that landed before the SQLite index could record it. Git is
     /// authoritative for content, so the index is rebuilt from the commit rather

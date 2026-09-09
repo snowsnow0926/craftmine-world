@@ -22,6 +22,9 @@ import { CraftmineMaintenanceContexts } from "./craftmine-maintenance-context";
 import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
 import { createCraftmineOperationJournal } from "./craftmine-operation-journal";
 import { createCraftmineBackupService, type CraftmineFilePicker } from "./craftmine-backup-service";
+import { createGodotHistoryPanelService } from "./godot-history-panel-service";
+import { createCraftminePackageService } from "./craftmine-package-service";
+import { createGodotRestoreRebuildService } from "./godot-restore-rebuild-service";
 import { createCraftmineDiagnosticsService } from "./craftmine-diagnostics-service";
 import { createCraftmineTelemetry } from "./craftmine-telemetry";
 import { readCraftmineBuildIdentity } from "./craftmine-build-identity";
@@ -572,6 +575,7 @@ async function safeOpenExternal(rawUrl: unknown): Promise<void> {
 
 const pluginPanels = new PluginPanelHost(
   async (pluginId, channel, payload) => {
+    if (profileRestore && pluginId === "craftmine.world" && /^(?:world\.(?:create|open|saveProgress|importLegacy)|godot\.(?:candidate|runtimeSave|runtimeResume)|package\.)/.test(channel)) throw Error("PROFILE_RESTORE_IN_PROGRESS");
     const result = pluginId === "craftmine.world"
       ? await (channel.startsWith("godot.candidate") && !["godot.candidateList", "godot.candidateRead"].includes(channel)
         ? godotCandidates.invoke(channel, payload ?? {})
@@ -958,7 +962,15 @@ const godotCreationFactory = () => godotCreation;
 const godotPanel = createGodotPanelCoordinator({
   host: godotWorld, adapter: godotAdapter, selection: godotSelection,
   creation: godotCreationFactory,
+  resumeRestored: async worldId => {
+    const init = await plugins.requestCraftmineHost("godotWorld.initStatus", {worldId}) as any;
+    if (init.rebuildRequired) await godotRestores.start(worldId);
+  },
   invoke: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload),
+});
+const godotHistory = createGodotHistoryPanelService({
+  domain: (method, params) => plugins.requestCraftmineHost(method, params),
+  selection: godotSelection,
 });
 pluginPanels.addSenderResolver((senderId) => pluginViews.pluginIdForSender(senderId));
 const browserHost = new BrowserHost({
@@ -1031,17 +1043,29 @@ const logger = new Logger(
   process.env.NODE_ENV === "production" ? "info" : "debug",
 );
 // Managed project sources for worlds created in this client.
+const godotInitializer = createGodotWorldInitializer({
+  worldsRoot: join(dataDir, "godot-worlds"), domain: (method, params) => plugins.requestCraftmineHost(method, params),
+  selection: godotSelection, firstLoad: (worldId, candidateId) => godotCandidates.firstLoad(worldId, candidateId),
+});
+const godotRestores = createGodotRestoreRebuildService({
+  domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
+  restoreLoad: (worldId, candidateId) => godotCandidates.restoreLoad(worldId, candidateId),
+});
 godotCreation = createGodotWorldFactory({
   worldsRoot: join(dataDir, "godot-worlds"),
   catalogFile: join(godotRoot, "bases", "base-catalog.json"),
   basesRoot: join(godotRoot, "bases"),
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
-  initialization: createGodotWorldInitializer({
-    worldsRoot: join(dataDir, "godot-worlds"),
-    domain: (method, params) => plugins.requestCraftmineHost(method, params),
-    selection: godotSelection,
-    firstLoad: (worldId, candidateId) => godotCandidates.firstLoad(worldId, candidateId),
-  }),
+  initialization: {
+    start: async worldId => {
+      const init = await plugins.requestCraftmineHost("godotWorld.initStatus", {worldId}) as any;
+      if (init.rebuildRequired) {
+        if (await godotSelection() === worldId) await godotRestores.start(worldId).catch(() => undefined);
+      } else await godotInitializer.start(worldId);
+    },
+    running: worldId => godotInitializer.running(worldId) || godotRestores.running(worldId),
+    error: worldId => godotRestores.status(worldId)?.status === "failed" ? godotRestores.status(worldId)!.reason : godotInitializer.error(worldId),
+  },
   materialize: input => {
     if (!materializeBase) throw new Error("GODOT_MATERIALIZER_UNAVAILABLE");
     return materializeBase(input);
@@ -2460,15 +2484,81 @@ const scheduledRunsBySession = new Map<string, string>();
 let notificationViewingSessionId: string | null = null;
 const craftmineFilePicker: CraftmineFilePicker = async request => {
   // Acceptance processes never display an OS picker or acquire focus.
-  if (headlessAcceptance) return join(headlessAcceptance.root, request.kind === "save-diagnostics" ? "diagnostics.json" : "portable-backup.json");
+  if (headlessAcceptance) return join(headlessAcceptance.root, request.kind === "save-diagnostics" ? "diagnostics.json" : "portable-backup.craftmine");
   if (request.kind === "open-backup") {
-    const result = await dialog.showOpenDialog({ title: "选择 Craftmine World 备份", properties: ["openFile"], filters: [{ name: "Craftmine World 备份", extensions: ["json"] }] });
+    const result = await dialog.showOpenDialog({ title: "选择 Craftmine World 备份", properties: ["openFile"], filters: [{ name: "Craftmine World 备份", extensions: ["craftmine"] }] });
     return result.canceled ? null : result.filePaths[0] ?? null;
   }
-  const result = await dialog.showSaveDialog({ title: request.kind === "save-backup" ? "备份此客户端的全部世界和作品" : "导出诊断", defaultPath: request.suggestedName, filters: [{ name: "JSON", extensions: ["json"] }] });
+  const result = await dialog.showSaveDialog({ title: request.kind === "save-backup" ? "备份此客户端的全部世界和作品" : "导出诊断", defaultPath: request.suggestedName, filters: [{ name: request.kind === "save-backup" ? "Craftmine World 备份" : "JSON", extensions: [request.kind === "save-backup" ? "craftmine" : "json"] }] });
   return result.canceled ? null : result.filePath ?? null;
 };
-const craftmineBackup = createCraftmineBackupService({ domainCall: (method, params) => plugins.requestCraftmineHost(method, params), pickFile: craftmineFilePicker });
+type ProfileRestoreOperation = {operationId: string; previous: string | null; release: () => void};
+let profileRestore: ProfileRestoreOperation | null = null;
+const craftmineBackup = createCraftmineBackupService({
+  domainCall: (method, params) => plugins.requestCraftmineHost(method, params), pickFile: craftmineFilePicker,
+  beforeRestore: async ({operationId}) => {
+    if (profileRestore || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy) throw Error("ACTIVE_TASK_EXISTS");
+    const operation: ProfileRestoreOperation = {operationId, previous: null, release: () => undefined};
+    profileRestore = operation;
+    try {
+      operation.previous = await godotSelection();
+      operation.release = await godotWorld.holdSelectionSync();
+      await pluginViews.restoreCraftmine("begin", {operationId});
+      await godotWorld.switchWorld(null);
+    } catch (error) {
+      profileRestore = null; operation.release();
+      if (operation.previous && !godotWorld.instance) {
+        await godotWorld.switchWorld(await godotAdapter.describe(operation.previous)).catch(() => undefined);
+      }
+      await pluginViews.restoreCraftmine("finish", {operationId}).catch(() => undefined);
+      throw error;
+    }
+  },
+  afterRestore: async ({operationId}) => {
+    const operation = profileRestore;
+    if (!operation || operation.operationId !== operationId) throw Error("RESTORE_OPERATION_CHANGED");
+    let record: any, knownEmpty = false;
+    try {
+      // Read the actually active core even when the activation reply was lost.
+      // A failed transport is not proof that the old domain is still active.
+      const worlds = await plugins.requestCraftmineHost("world.list", {}) as any[];
+      knownEmpty = worlds.length === 0;
+      const next = worlds.find(world => world.id === operation.previous) ?? worlds[0];
+      craftmineGateway.resetForProfileRestore(); craftmineMaintenanceContexts.resetForProfileRestore();
+      if (next) {
+        await plugins.invokePanelBridge("craftmine.world", "world.open", {id: next.id});
+        record = await plugins.requestCraftmineHost("world.read", {id: next.id});
+        if (next.runtimeKind === "godot") {
+          record = await plugins.requestCraftmineHost("world.read", {id: next.id});
+          await godotRestores.start(next.id);
+          if (!godotWorld.instance) await godotWorld.switchWorld(await godotAdapter.describe(next.id));
+        }
+        record = await plugins.requestCraftmineHost("world.read", {id: next.id});
+      }
+    } finally {
+      if (record || knownEmpty) {
+        profileRestore = null; operation.release();
+        await pluginViews.restoreCraftmine("finish", {operationId, ...(record ? {record} : {empty: true})});
+        sendToRenderer(IPC.event.craftmineWorldChanged, {});
+      } else {
+        // A restart reopens the core through its verified activation pointer.
+        logger.app("plugin", "error", "Portable restore reconciliation pending; old world remains paused", {data: {operationId}});
+      }
+    }
+  },
+});
+const craftminePackages = createCraftminePackageService({
+  domainCall: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
+  pickFile: async request => {
+    if (headlessAcceptance) return join(headlessAcceptance.root, "component.zip");
+    if (request.kind === "open-source") {
+      const result = await dialog.showOpenDialog({title: "选择要加入世界的作品", properties: ["openFile"], filters: [{name: "Craftmine 作品", extensions: ["zip"]}]});
+      return result.canceled ? null : result.filePaths[0] ?? null;
+    }
+    const result = await dialog.showSaveDialog({title: "导出这件作品", defaultPath: request.suggestedName, filters: [{name: "Craftmine 作品", extensions: ["zip"]}]});
+    return result.canceled ? null : result.filePath ?? null;
+  },
+});
 const craftmineBuildIdentity = readCraftmineBuildIdentity(process.resourcesPath);
 const craftmineDiagnostics = createCraftmineDiagnosticsService({
   pickFile: craftmineFilePicker,
@@ -2496,6 +2586,7 @@ const craftminePanelRequest = createCraftminePanelGateway({
   activeTurn: id => activeTurns.get(id),
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
   begin: async session => {
+    if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
     if (!host) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
     if (activeTurns.has(session.id) || turnFinalizations.has(session.id)) throw new Error("ACTIVE_TASK_EXISTS");
     const result = await host.call<{ turnId: string }>("session.beginTurn", { sessionId: session.id, providerId: session.providerId, modelId: session.modelId });
@@ -2534,6 +2625,7 @@ const craftminePanelRequest = createCraftminePanelGateway({
     await sidecar.call("agent.prompt", { ...launch.sidecarParams, craftmineWorld: true, turnId, content, userMessageId: userMessage.id });
   },
   backup: (channel, payload) => craftmineBackup.request(channel, payload),
+  packages: (channel, payload) => craftminePackages.request(channel, payload),
   diagnostics: (channel, payload) => craftmineDiagnostics.request(channel, payload),
 });
 /** Preserve tool metadata until the result is persisted at tool_end. Subagent
@@ -5972,8 +6064,10 @@ function registerIpc() {
 
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
+    if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
     return invokeCraftmineNavigation(payload, {
-      invoke: (channel, params) => godotPanel.invoke(channel, params),
+      invoke: (channel, params) => channel.startsWith("godot.history")
+        ? godotHistory.invoke(channel, params) : godotPanel.invoke(channel, params),
       navigate: async (request) => {
         // World creation from the main sidebar also works before its work panel
         // has mounted. The retained view still owns the save/switch sequence.
@@ -7947,6 +8041,7 @@ function registerIpc() {
   });
 
   handle(IPC.invoke.agentPrompt, async (req: AgentPromptRequest) => {
+    if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
     if (!host || !sidecar) throw new Error("backend unavailable");
     // Install the renderer's prompt-time snapshot before any asynchronous
     // setup. This closes the gap where a fast completion could beat the

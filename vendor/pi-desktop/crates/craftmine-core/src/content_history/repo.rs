@@ -41,6 +41,7 @@ pub const CHECKPOINT_REF_PREFIX: &str = "refs/craftmine/checkpoint/";
 pub const DRAFT_REF_PREFIX: &str = "refs/craftmine/draft/";
 pub const VERSION_REF_PREFIX: &str = "refs/craftmine/version/";
 pub const APPLIED_REF_PREFIX: &str = "refs/craftmine/applied/";
+pub const COPIED_FORMAL_REF_PREFIX: &str = "refs/craftmine/copied-formal/";
 pub const DEFAULT_OBJECT_FORMAT: &str = "sha1";
 
 /// References that must survive reclaim, cache cleanup and backup pruning.
@@ -50,6 +51,7 @@ pub const PROTECTED_REF_PREFIXES: &[&str] = &[
     DRAFT_REF_PREFIX,
     VERSION_REF_PREFIX,
     APPLIED_REF_PREFIX,
+    COPIED_FORMAL_REF_PREFIX,
 ];
 
 /// Authoring paths that never belong in a world repository, even if a caller
@@ -322,6 +324,11 @@ impl RepositoryStore {
     ) -> Result<String> {
         validate_identifier(branch_id, "INVALID_BRANCH_ID")?;
         let branch = format!("refs/heads/{branch_id}");
+        self.commit_ref(layout, &branch, expected_head, files, message)
+    }
+
+    /// Internal host-owned references use the same bounded byte transaction.
+    pub(crate) fn commit_ref(&self, layout: &RepoLayout, branch: &str, expected_head: Option<&str>, files: &[ContentFile], message: &str) -> Result<String> {
         validate_ref_name(&branch)?;
         ensure!(
             !files.is_empty() && files.len() <= MAX_COMMIT_FILES,
@@ -1102,4 +1109,3 @@ pub fn group_by_request(records: &[CommitRecord]) -> BTreeMap<String, Vec<&Commi
     }
     groups
 }
-

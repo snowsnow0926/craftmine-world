@@ -7,14 +7,14 @@ function boundedText(value,max){if(typeof value!=='string'||!value.trim()||Buffe
 function assertIdentity(input,snapshot){
   if(!sameBinding(input.binding,snapshot.binding)||input.generation!==snapshot.generation)throw Error('CRAFTMINE_BUDGET_BINDING_MISMATCH');
 }
-function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService}){
+function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService,portableRestore}){
   const reservations=new Map();
   // The bounded surface of the S5 asset service and the S3 works/package
   // service. The router forwards a method name, never an arbitrary core call.
   const ASSET_METHODS=new Set(['search','read','versions','usage','annotate','scan','importAsset','previewRead','probe',
     'resolveLegacy','recordUsage','recordCheck','preview','cancel']);
   const PACKAGE_METHODS=new Set(['check','install','list','read','progress','grant','upgrade','uninstall','restore',
-    'exportPackage','importPackage','installSource','usage','backupFull','backupVerify','backupRestoreFull','legacyConvert','explain']);
+    'exportPackage','importPackage','installSource','sourceList','exportSource','usage','backupFull','backupVerify','backupRestoreFull','legacyConvert','explain']);
   const keyOf=(context,id)=>JSON.stringify([context.projectId,context.sessionId,context.turnId,id]);
   async function snapshot(context){
     const value=await core.call('task.context',{context});
@@ -55,7 +55,18 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
   }
   return async function onHostRequest(method,params={}){
     await core.start();
+    if(method==='backup.restorePortableActive'){
+      fields(params,['operationId','archivePath','archiveHash','expectedCurrentHash']);
+      if(!portableRestore)throw Error('BACKUP_LIFECYCLE_UNAVAILABLE');
+      await godotExecutor?.stop();
+      try{return await portableRestore.restore(params);}
+      finally{await godotExecutor?.start();}
+    }
     if(method==='godotRuntime.describe'){
+      fields(params,['worldId']);
+      return core.call(method,params,60000);
+    }
+    if(method==='godotWorld.rebuildPlan'||method==='godotWorld.prepareRebuildSource'){
       fields(params,['worldId']);
       return core.call(method,params,60000);
     }
@@ -124,6 +135,10 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     const godotRoutes={
       'godotWorld.initialize':[['worldId','title','baseId','baseBuild','snapshot'],[]],
       'godotWorld.initStatus':[['worldId'],[]],
+      'content.branch.create':[['worldId','branchId','fromRev'],['requestId','taskId','title']],
+      'content.migrate.plan':[['worldId'],[]],
+      'content.migrate.apply':[['worldId'],[]],
+      'content.migrate.verify':[['worldId'],[]],
       'godotWorld.copy':[['sourceWorldId','targetWorldId','title','progress'],['snapshot','context']],
       'godotWorld.backupSnapshot':[['worldId'],['context']],
       'godotWorld.verifySnapshot':[['worldId','snapshot'],['context']],
@@ -185,7 +200,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     if(Object.hasOwn(godotRoutes,method)){
       const [required,optional]=godotRoutes[method];
       fields(params,required,optional);
-      const result=await core.call(method,params,60000);
+      const result=await core.call(method,params,method.startsWith('backup.')?120000:60000);
       // The existing authorized build route performs the same dispatch as the
       // model tool. No additional renderer or generic executor route is opened.
       if(method==='godotBuild.start'&&result?.executionAvailable!==false&&godotExecutor){

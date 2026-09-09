@@ -1105,6 +1105,10 @@ function createGodotExecutor(core, options = {}) {
       requestId:request.requestId, finishedAt:nowIso(),
       transport:run.response?.state ?? null,
       journalRetired:run.response?.recoveryJournal?.cleared === true,
+      failure:cleanSuccess ? null : {exitCode:run.exitCode??null,engineExitCode:run.response?.exitCode??null,
+        error:run.response?.error??run.reason??null,parseError:run.parseError??null,
+        cleanup:run.response?.cleanup??null,resources:run.response?.resourceEnforcement??null,
+        stderr:bounded(run.stderr??'',8192)},
       // "succeeded" is reserved for a run that reported success and proved its
       // own cleanup; journal retirement is recorded separately.
       outcome:cleanSuccess ? 'succeeded'

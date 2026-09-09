@@ -198,6 +198,12 @@ function AppShell() {
   const projectPath = useAppStore((s) => s.workspace?.path ?? null);
 
   const [searchOpen, setSearchOpen] = useState(false);
+  const [craftmineSheetOpen, setCraftmineSheetOpen] = useState(false);
+  useEffect(() => {
+    const update = (event: Event) => setCraftmineSheetOpen((event as CustomEvent).detail?.open === true);
+    window.addEventListener("craftmine-sheet-visibility", update);
+    return () => window.removeEventListener("craftmine-sheet-visibility", update);
+  }, []);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(() => loadSidebarWidth());
   const [sidebarExiting, setSidebarExiting] = useState(false);
@@ -1936,7 +1942,7 @@ function AppShell() {
 
           {(presentedWorkPanelOpen || workPanelExiting) && (
             <WorkPanel
-              panelBlocked={searchOpen}
+              panelBlocked={searchOpen || craftmineSheetOpen}
               exiting={workPanelExiting}
               onExitAnimationEnd={() =>
                 finishWorkPanelExit(workPanelExitGeneration.current)

@@ -79,6 +79,12 @@ export function installHeadlessControl(access: {
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
       switch (request.method) {
+        case "godotObserve":
+          if (!access.godotGameplay) throw Error("Actual Godot host unavailable");
+          return access.godotGameplay.observe();
+        case "godotCaptureView":
+          if (!access.godotGameplay) throw Error("Actual Godot host unavailable");
+          return access.godotGameplay.capture(1280, 720);
         case "godotPlay":
         case "godotCapture720":
         case "godotCapture600":
@@ -107,6 +113,10 @@ export function installHeadlessControl(access: {
           return window.webContents.executeJavaScript(
             `[...document.querySelectorAll(".craftmine-world-item")].map(row=>({id:row.dataset.worldId,active:row.dataset.worldActive==="true",text:row.innerText}))`, false,
           );
+        }
+        case "worldPanel": {
+          if (!new Set(["godot.runtimeSave", "godot.runtimeResume", "godot.runtimeState", "godot.candidatePreview", "godot.candidateApply", "godot.candidateClose", "godot.candidateState", "godot.candidateList", "godot.candidateRead", "package.request", "backup.export", "backup.inspect", "backup.restore", "backup.status", "workbench.capabilities", "workbench.prepare", "workbench.execute", "workbench.operations", "diagnostics.status", "diagnostics.export"]).has(request.channel ?? "")) throw Error("Unsupported product panel acceptance channel");
+          return evaluateWorld(`globalThis.pluginBridge.invoke(${JSON.stringify(request.channel)},${JSON.stringify(request.payload ?? {})})`);
         }
         case "draftProbe": return access.draftProbe();
         case "guards": {

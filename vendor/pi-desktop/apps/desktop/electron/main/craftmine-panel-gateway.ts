@@ -11,6 +11,7 @@ export const CRAFTMINE_PANEL_CHANNELS = new Set([
   // Asset library reads (R6's contract). Writes stay in the player import flow.
   "asset.search", "asset.read", "asset.versions", "asset.usage", "asset.scan",
   "asset.probe", "asset.previewRead",
+  "package.request",
 ]);
 type Domain = (method: string, params: Record<string, any>) => Promise<any>;
 type Owner = { sessionId: string | null; projectId: string; selectedWorld: string; active: boolean; context?: Record<string, string>; origin?: unknown; previous?: any };
@@ -28,6 +29,7 @@ export function createCraftminePanelGateway(options: {
   interrupt: (context: Record<string, string>, reason: string) => Promise<void>;
   backup: (channel: string, payload: Record<string, any>) => Promise<any>;
   diagnostics: (channel: string, payload: Record<string, any>) => Promise<any>;
+  packages?: (channel: string, payload: Record<string, any>) => Promise<any>;
   operations?: CraftmineOperationJournal;
 }) {
   const inFlight = new Map<string, Promise<any>>();
@@ -83,7 +85,12 @@ export function createCraftminePanelGateway(options: {
     }
     if (channel === "workbench.capabilities") {
       const available = await workbench(channel);
-      return { channels: [...new Set([...available.channels, "task.resume", "task.discard", "task.stop", "task.budget", ...(options.operations ? ["workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge"] : []), ...[...CRAFTMINE_PANEL_CHANNELS].filter(name => /^(backup|diagnostics)\./.test(name))])] };
+      return { channels: [...new Set([...available.channels, "task.resume", "task.discard", "task.stop", "task.budget", ...(options.packages ? ["package.request"] : []), ...(options.operations ? ["workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge"] : []), ...[...CRAFTMINE_PANEL_CHANNELS].filter(name => /^(backup|diagnostics)\./.test(name))])] };
+    }
+    if (channel === "package.request") {
+      if (!options.packages) throw Error("PACKAGE_SERVICE_UNAVAILABLE");
+      if (owner.active) throw Error("ACTIVE_TASK_EXISTS");
+      return options.packages(channel, payload);
     }
     if (channel.startsWith("backup.")) {
       const { worldId: _worldId, ...input } = payload;

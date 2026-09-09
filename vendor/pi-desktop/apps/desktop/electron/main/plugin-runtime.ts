@@ -951,7 +951,7 @@ export class PluginRuntime {
     // methods the trusted orchestrator may reach at all. Enqueue/cancel/revoke
     // stay off this list so a renderer can never start or stop engine execution.
     for (const operation of [
-      "godotWorld.initialize", "godotWorld.initStatus", "godotWorld.copy",
+      "godotWorld.initialize", "godotWorld.initStatus", "godotWorld.copy", "godotWorld.rebuildPlan", "godotWorld.prepareRebuildSource",
       "godotWorld.backupSnapshot", "godotWorld.verifySnapshot",
       "godotProject.create", "godotProject.index", "godotProject.read", "godotProject.patch", "godotProject.receipt",
       "godotProject.applyFiles",
@@ -961,10 +961,11 @@ export class PluginRuntime {
       "godotStorage.status", "godotStorage.reclaimPlan", "godotStorage.reclaimCommit",
       "godotAsset.put", "godotAsset.list",
       "content.status", "content.gitInfo", "content.history", "content.changes", "content.diff", "content.readFile",
-      "content.branch.list", "content.version.list", "content.checkpoint.set", "content.checkpoint.list",
+      "content.migrate.plan", "content.migrate.apply", "content.migrate.verify",
+      "content.branch.list", "content.branch.create", "content.version.list", "content.checkpoint.set", "content.checkpoint.list",
       "content.apply.prepare", "content.apply.advance", "content.apply.confirm", "content.apply.rollback", "content.apply.recover",
       "content.operation.read",
-      "backup.exportPortable", "backup.inspectPortable", "backup.verifyPortable", "backup.restorePortable",
+      "backup.exportPortable", "backup.inspectPortable", "backup.verifyPortable", "backup.restorePortable", "backup.restorePortableActive",
       "backup.cancelPortable", "backup.protectedRefs", "backup.releasePortable",
       "content.reclaim.plan", "content.reclaim.prune", "content.verify", "content.bundle",
       "library.search", "library.read", "library.capture",
@@ -978,7 +979,7 @@ export class PluginRuntime {
     const longRunning = ["backup.", "godotRuntime.", "godotApplication.", "godotWorld.", "godotProject.", "godotBuild.",
       "godotJob.", "godotStorage.", "godotAsset.", "content.", "library.", "world."]
       .some(prefix => method.startsWith(prefix)) || method === "workbench.request";
-    return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, longRunning ? 60_000 : 15_000);
+    return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, method.startsWith("backup.") ? 130_000 : longRunning ? 60_000 : 15_000);
   }
 
   /**
@@ -1389,7 +1390,7 @@ export class PluginRuntime {
       case "browser.cdp":
         return this.invokeBrowser(loaded, "cdp", payload);
       default:
-        if (pluginId === "craftmine.world" && /^(?:workbench|task|draft|library|memory|selection|backup|diagnostics)\./.test(channel)) {
+        if (pluginId === "craftmine.world" && /^(?:workbench|task|draft|library|memory|selection|backup|diagnostics|package)\./.test(channel)) {
           if (!this.services.craftminePanelRequest) throw apiError("UNSUPPORTED", "Craftmine desktop service unavailable");
           return this.services.craftminePanelRequest(channel, payload ?? {});
         }

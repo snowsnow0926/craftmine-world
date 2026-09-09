@@ -220,6 +220,16 @@ export class PluginViewHost {
     await this.prepareEntries([...this.views.values()]);
   }
 
+  /** Restore owns an in-flight panel request, so it must not await prepareClose. */
+  async restoreCraftmine(phase: "begin" | "finish", request: Record<string, unknown>): Promise<unknown> {
+    const entry = this.views.get(pluginViewKey("craftmine.world", "world"));
+    if (!entry || entry.view.webContents.isDestroyed()) return {absent: true};
+    const method = phase === "begin" ? "beginRestore" : "finishRestore";
+    return entry.view.webContents.executeJavaScript(
+      `globalThis.craftmineView.${method}(${JSON.stringify(request)})`, false,
+    );
+  }
+
   async navigateCraftmine(request: Record<string, unknown>): Promise<unknown> {
     const entry = this.views.get(pluginViewKey("craftmine.world", "world"));
     if (!entry) throw new Error("WORLD_VIEW_NOT_CREATED");

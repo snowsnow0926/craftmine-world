@@ -1,0 +1,11 @@
+PASS forged context and cross-world selection rejected
+Evidence: D:\cm-godot-final-core-20260910\test-results\history-panel-vJ5rsn
+file:///D:/cm-godot-final-core-20260910/tests/godot-history-panel.mjs:57
+  browser=await playwright.chromium.launchPersistentContext(path.join(out,'profile'),{...browserOptions(),viewport:{width:900,height:850}});
+                                    ^
+
+TypeError: Cannot read properties of undefined (reading 'launchPersistentContext')
+    at file:///D:/cm-godot-final-core-20260910/tests/godot-history-panel.mjs:57:37
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+Node.js v24.14.0

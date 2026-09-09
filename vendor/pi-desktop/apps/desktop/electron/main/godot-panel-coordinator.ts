@@ -9,6 +9,7 @@ type Options = {
   invoke: (channel: string, payload: Record<string, unknown>) => Promise<unknown>;
   /** Client-side Godot creation. Absent only in tests that never create worlds. */
   creation?: (() => ReturnType<typeof createGodotWorldFactory> | null) | null;
+  resumeRestored?: (worldId: string) => Promise<void>;
 };
 /** Authenticated panel actions may choose a world; they never supply runtime data or paths. */
 export function createGodotPanelCoordinator(options: Options) {
@@ -67,7 +68,14 @@ export function createGodotPanelCoordinator(options: Options) {
   };
   return {
     async invoke(channel: string, payload: Record<string, unknown> = {}): Promise<unknown> {
-      if (channel === "godot.runtimeState") { await requireCurrent(payload, ["worldId"]); return options.host.state; }
+      if (channel === "godot.runtimeState") {
+        if (Object.keys(payload).some(key => key !== "worldId") || typeof payload.worldId !== "string") throw Error("INVALID_GODOT_PANEL_ACTION");
+        if (!options.host.instance && await options.selection() === payload.worldId) {
+          const initialization = await currentCreation()?.status(payload.worldId);
+          if (initialization && initialization.state !== "ready") return {worldId: payload.worldId, state: "loading", initializing: true};
+        }
+        await requireCurrent(payload, ["worldId"]); return options.host.state;
+      }
       if (channel === "godot.runtimeSave") {
         await requireCurrent(payload, ["worldId", "freeze"]);
         if (switching || typeof payload.freeze !== "boolean") throw new Error("WORLD_BUSY");
@@ -119,6 +127,8 @@ export function createGodotPanelCoordinator(options: Options) {
         const initializing = await currentCreation()?.status(payload.id);
         if (initializing && initializing.state !== "ready") {
           await options.host.switchWorld(null);
+          await options.invoke("world.open", {id: payload.id});
+          await options.resumeRestored?.(payload.id);
           return options.invoke("world.open", {id: payload.id});
         }
         // The descriptor resolves only a verified applied artifact; errors are

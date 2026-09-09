@@ -19,6 +19,74 @@ const BASES: [&str; 3] = ["first-person", "top-down", "side-view"];
 /// One backup descriptor stays well below the archive budget.
 const BACKUP_BYTES: usize = 8 * 1024 * 1024;
 
+pub(super) fn copied_formal_ref(world: &str, build: &str) -> String {
+    format!("{}{}",super::content_history::repo::COPIED_FORMAL_REF_PREFIX,digest(&format!("{world}|{build}")))
+}
+
+impl TaskJournal {
+    pub(super) fn verify_copied_formal_source(&self, owner: &str, build: &str,
+        store: &super::content_history::repo::RepositoryStore, layout: &super::content_history::repo::RepoLayout, commit: &str) -> Result<()> {
+        let expected=super::godot_jobs::build_files(&self.db,owner,build,"source")?;
+        ensure!(!expected.is_empty(),"GODOT_REBUILD_SOURCE_NOT_AVAILABLE");
+        let entries=store.tree_entries(layout,commit)?;
+        ensure!(entries.len()==expected.len(),"GODOT_COPIED_SOURCE_MISMATCH");
+        for file in expected {
+            let path=file["path"].as_str().context("GODOT_COPIED_SOURCE_MISMATCH")?;
+            let bytes=store.read_file(layout,commit,path)?;
+            ensure!(file["bytes"].as_u64()==Some(bytes.len() as u64)
+                && file["sha256"]==super::godot_projects::digest_bytes(&bytes),"GODOT_COPIED_SOURCE_MISMATCH");
+        }
+        Ok(())
+    }
+
+    /// Called while the shared content/export/GC lock is held. Only the copy's
+    /// recorded formal build determines the imported files; no caller chooses an OID.
+    fn prepare_copied_rebuild_source(&self, world: &str) -> Result<Value> {
+        let metadata=self.runtime_describe_impl(&json!({"worldId":world}),false)?;
+        let Some(owner)=metadata["copiedFromWorldId"].as_str() else {return Ok(json!({"worldId":world,"copied":false}));};
+        let build=metadata["buildId"].as_str().context("INVALID_GODOT_BUILD")?;
+        let (store,layout)=self.content_layout(world)?;
+        let reference=copied_formal_ref(world,build);
+        if let Some(commit)=store.git().ref_value(&layout.git_dir,&reference)? {
+            self.verify_copied_formal_source(owner,build,&store,&layout,&commit)?;
+            return Ok(json!({"worldId":world,"copied":true,"replayed":true,"contentOid":commit}));
+        }
+        // New copies already migrated the exact formal file set. Older copies
+        // may also have kept it. Adopt only after verifying every file against
+        // the original build's immutable index, never merely because it is main.
+        if let Some(head)=store.branch_head(&layout,super::content_history::repo::MAIN_BRANCH)? {
+            if self.verify_copied_formal_source(owner,build,&store,&layout,&head).is_ok() {
+                store.git().update_ref(&layout.git_dir,&reference,&head,None)?;
+                return Ok(json!({"worldId":world,"copied":true,"replayed":false,"adopted":true,"contentOid":head}));
+            }
+        }
+        let (revision,branch):(i64,String)=self.db.query_row(
+            "SELECT source_revision,branch_id FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
+            params![owner,build],|row|Ok((row.get(0)?,row.get(1)?)))?;
+        let (manifest,_)=self.project_manifest_for(owner,Some(u64::try_from(revision)?),&branch)
+            .context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
+        let source=super::godot_projects::read_manifest_files(self,owner,&manifest)
+            .context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
+        let expected=super::godot_jobs::build_files(&self.db,owner,build,"source")?;
+        ensure!(source.len()==expected.len()&&!source.is_empty(),"GODOT_COPIED_SOURCE_MISMATCH");
+        for (path,entry,_) in &source {
+            ensure!(expected.iter().any(|file|file["path"]==*path && file["sha256"]==entry.sha256 && file["bytes"]==entry.bytes),"GODOT_COPIED_SOURCE_MISMATCH");
+        }
+        let files=source.into_iter().map(|(path,_,bytes)|super::content_history::repo::ContentFile {path,bytes}).collect::<Vec<_>>();
+        let message=super::content_history::repo::commit_message("copy-formal","native-copy",
+            "Preserve exact copied formal source",&format!("source world {owner}; formal build {build}"))?;
+        let commit=store.commit_ref(&layout,&reference,None,&files,&message)?;
+        self.verify_copied_formal_source(owner,build,&store,&layout,&commit)?;
+        Ok(json!({"worldId":world,"copied":true,"replayed":false,"contentOid":commit}))
+    }
+
+    pub fn godot_world_prepare_rebuild_source(&self,args:&Value)->Result<Value> {
+        let _lock=crate::operation_lock::OperationLock::domain(&self.directory)?;
+        let args:StatusArgs=serde_json::from_value(args.clone())?;
+        self.prepare_copied_rebuild_source(&args.world_id)
+    }
+}
+
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct InitializeArgs {
@@ -205,6 +273,20 @@ impl TaskJournal {
     /// accepts a caller-supplied phase, so a world cannot be declared playable.
     pub fn godot_world_init_status(&mut self, args: &Value) -> Result<Value> {
         let args: StatusArgs = serde_json::from_value(args.clone())?;
+        if read(&self.db,&args.world_id)?.is_none() {
+            // Copied worlds have formal deployment evidence but no creation
+            // row. They still need honest artifact availability after restore.
+            let metadata=self.runtime_describe_impl(&json!({"worldId":args.world_id}),false)?;
+            ensure!(!metadata.is_null(),"GODOT_WORLD_NOT_INITIALIZING");
+            let world=worlds::read(&self.db,&args.world_id)?;
+            let reason=self.godot_runtime_describe(&json!({"worldId":args.world_id})).err().map(|error|error.to_string());
+            let copy_id:Option<String>=self.db.query_row("SELECT id FROM craftmine_godot_world_copies WHERE target_world_id=?1",[&args.world_id],|row|row.get(0)).optional()?;
+            return Ok(json!({"format":"craftmine.godot-world-init/1","initId":copy_id,"worldId":args.world_id,
+                "title":world.summary.title,"baseId":metadata["baseId"],"baseBuild":world.world.build["godot"]["baseBuild"],
+                "status":"confirmed","reason":reason,"playable":reason.is_none(),"rebuildRequired":reason.is_some(),
+                "applicationId":null,"candidateId":null,"worldRevision":world.summary.revision,
+                "formalBuildId":world.world.build["id"],"initialSnapshotHash":null}));
+        }
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -274,7 +356,7 @@ impl TaskJournal {
             && world.world.build["id"]
                 .as_str()
                 .is_some_and(|id| godot_builds::valid_build_id(id).is_ok());
-        let result = json!({
+        let mut result = json!({
             "format":"craftmine.godot-world-init/1","initId":init["initId"],"worldId":args.world_id,
             "title":init["title"],"baseId":init["baseId"],"baseBuild":init["baseBuild"],
             "status":status,"reason":reason,"playable":playable,
@@ -284,6 +366,13 @@ impl TaskJournal {
             "initialSnapshotHash":init["initialSnapshotHash"],"createdAt":init["createdAt"]
         });
         tx.commit()?;
+        if playable {
+            if let Err(error) = self.godot_runtime_describe(&json!({"worldId":args.world_id})) {
+                result["playable"] = json!(false);
+                result["reason"] = json!(error.to_string());
+                result["rebuildRequired"] = json!(true);
+            }
+        }
         Ok(result)
     }
 
@@ -293,6 +382,7 @@ impl TaskJournal {
     /// progress or starts from the initial state. The origin is recorded for
     /// works, migration and backup.
     pub fn godot_world_copy(&mut self, args: &Value) -> Result<Value> {
+        let _lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: CopyArgs = serde_json::from_value(args.clone())?;
         worlds::validate_id(&args.source_world_id)?;
         worlds::validate_id(&args.target_world_id)?;
@@ -321,11 +411,15 @@ impl TaskJournal {
             godot_builds::valid_build_id(pre_build).is_ok(),
             "GODOT_WORLD_NOT_COPIABLE"
         );
-        let (pre_manifest, pre_hash) =
-            super::godot_projects::load_manifest(&self.db, &args.source_world_id, None)?;
+        let validated = self.runtime_describe_impl(&json!({"worldId":args.source_world_id}), false)?;
+        let build_owner = validated["copiedFromWorldId"].as_str().unwrap_or(&args.source_world_id).to_string();
+        let (source_revision, source_branch): (i64, String) = self.db.query_row(
+            "SELECT source_revision,branch_id FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
+            params![build_owner,pre_build], |row| Ok((row.get(0)?,row.get(1)?)))?;
+        let (pre_manifest, pre_hash) = self.project_manifest_for(&build_owner, Some(u64::try_from(source_revision)?), &source_branch)?;
         let source_files = super::godot_projects::read_manifest_files(
             self,
-            &args.source_world_id,
+            &build_owner,
             &pre_manifest,
         )?;
         let tx = self
@@ -355,7 +449,7 @@ impl TaskJournal {
             .query_row(
                 "SELECT id FROM craftmine_godot_applications WHERE world_id=?1 AND build_id=?2
                  AND status='applied' ORDER BY updated_at DESC LIMIT 1",
-                params![args.source_world_id, build],
+                params![build_owner, build],
                 |row| row.get(0),
             )
             .optional()?;
@@ -388,12 +482,9 @@ impl TaskJournal {
             extensions: vec![],
         };
         worlds::insert(&tx, &args.target_world_id, &args.title, &world)?;
-        let (mut manifest, manifest_hash) =
-            super::godot_projects::load_manifest(&tx, &args.source_world_id, None)?;
-        ensure!(
-            manifest.revision == pre_manifest.revision && manifest_hash == pre_hash,
-            "GODOT_SOURCE_STALE"
-        );
+        ensure!(build == pre_build,"GODOT_SOURCE_STALE");
+        let mut manifest = pre_manifest;
+        let manifest_hash = pre_hash;
         manifest.world_id = args.target_world_id.clone();
         for (path, entry, text) in &source_files {
             ensure!(
@@ -447,11 +538,14 @@ impl TaskJournal {
             "INSERT INTO craftmine_godot_world_copies(id,source_world_id,target_world_id,
                 source_build_id,source_revision,manifest_hash,asset_manifest_hash,progress_mode,created_at)
              VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9)",
-            params![id, args.source_world_id, args.target_world_id, build,
+            params![id, build_owner, args.target_world_id, build,
                 i64::try_from(manifest.revision)?, manifest_hash, asset_hash, args.progress, now],
         )?;
         let record = worlds::read(&tx, &args.target_world_id)?;
         tx.commit()?;
+        let store = self.content_store()?;
+        super::content_history::migration::apply(&mut self.db,&self.directory,&store,&args.target_world_id)?;
+        self.prepare_copied_rebuild_source(&args.target_world_id)?;
         Ok(json!({"format":"craftmine.godot-world-copy/1","copyId":id,
             "sourceWorldId":args.source_world_id,"targetWorldId":args.target_world_id,
             "buildId":build,"sourceRevision":manifest.revision,"manifestHash":hash,

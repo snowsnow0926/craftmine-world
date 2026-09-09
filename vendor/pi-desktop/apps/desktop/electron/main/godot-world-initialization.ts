@@ -66,6 +66,11 @@ export function createGodotWorldInitializer(options: {
         ...(content.backend === "git" ? {operation: {operationId, worldId, repoId: content.repoId, branchId: "main",
           expectedHeadOid: content.headOid, expectedAppliedOid: content.appliedOid, expectedProgressRevision: null}} : {})});
     }
+    const contentStatus = await domain("content.status", {worldId});
+    if (contentStatus.backend !== "git") {
+      await domain("content.migrate.apply", {worldId});
+      project = await domain("godotProject.index", {context, worldId});
+    }
     const candidates = await domain("godotCandidate.list", {worldId});
     let candidateId = (candidates.items ?? []).find((item: Data) => item.status === "ready" && item.manifestHash === project.manifestHash)?.candidateId;
     if (!candidateId) {
@@ -94,6 +99,7 @@ export function createGodotWorldInitializer(options: {
     }
   }
   return {
+    get busy() { return running.size > 0; },
     start(worldId: string) {
       if (!running.has(worldId)) {
         failures.delete(worldId);

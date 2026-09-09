@@ -1,0 +1,14 @@
+PACKAGE_NATIVE_FIXTURE C:\Users\WINDOWS\AppData\Local\Temp\package-native-gZpFi9
+✔ lost import result retries exact bytes and operation without opening another picker (7.1283ms)
+✔ world, hash and expiration grants reject before another install (3.8617ms)
+✔ source responses are projected and renderer paths cannot become authority (0.8365ms)
+✔ oversized and linked files reject without invoking a core installer (4.4712ms)
+✔ native export saves verified bytes and returns no archive payload (4.0784ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23.0216

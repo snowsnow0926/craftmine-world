@@ -2,6 +2,123 @@ use super::*;
 use crate::godot_test_support::*;
 use crate::WorkspaceContext;
 
+#[test]
+fn portable_restore_rebuilds_applied_source_without_losing_progress_or_drafts() -> Result<()> {
+    let (source_dir, path) = temp()?;
+    let mut journal = TaskJournal::open(&path)?;
+    applied_world(&mut journal, "g1")?;
+    journal.content_migrate_apply(&json!({"worldId":"g1"}))?;
+    let mut saved = journal.world_read("g1")?;
+    saved.world.snapshot["body"]["inventory"] = json!({"ore":17,"seed":4});
+    saved.world.snapshot["body"]["quests"] = json!({"intro":"finished"});
+    journal.world_save_progress("g1",saved.summary.revision,saved.world.build["id"].as_str().unwrap(),&saved.world.snapshot)?;
+    let original_plan = journal.godot_world_rebuild_plan(&json!({"worldId":"g1"}))?;
+    assert_eq!(original_plan["rebuildRequired"], false);
+    let context = ctx("draft-after-apply");
+    journal.workspace_open(&context,"g1")?;
+    let source = journal.godot_project_index(&json!({"context":context,"worldId":"g1"}))?;
+    let status = journal.content_status(&json!({"worldId":"g1"}))?;
+    let file = source["files"].as_array().unwrap().iter().find(|file|file["path"]=="world.gd").unwrap();
+    let draft = journal.godot_project_patch(&json!({"context":context,"worldId":"g1","toolCallId":"unpublished",
+        "revision":source["revision"],"manifestHash":source["manifestHash"],
+        "operation":{"operationId":"unpublished","worldId":"g1","repoId":status["repoId"],"branchId":"main",
+            "expectedHeadOid":status["headOid"],"expectedAppliedOid":status["appliedOid"],"expectedProgressRevision":null},
+        "operations":[{"op":"put","path":"world.gd","expectedHash":file["sha256"],"text":"extends Node3D\nvar damage := 99\n"}]}))?;
+    journal.workspace_end_turn(&context.session_id,&context.turn_id,"completed")?;
+    let copied=journal.godot_world_copy(&json!({"sourceWorldId":"g1","targetWorldId":"g2","title":"Exact formal copy","progress":"formal"}))?;
+    assert_eq!(copied["sourceRevision"],0,"copy must not inherit unpublished revision 1");
+    let copy_context=WorkspaceContext {project_id:"copy".into(),session_id:"copy".into(),turn_id:"copy".into()};
+    journal.workspace_open(&copy_context,"g2")?;
+    let copy_index=journal.godot_project_index(&json!({"worldId":"g2","context":copy_context}))?;
+    assert_eq!(journal.godot_project_read(&json!({"worldId":"g2","context":copy_context,"revision":copy_index["revision"],"manifestHash":copy_index["manifestHash"],"path":"world.gd"}))?["text"],SCRIPT);
+    // A copy of a copy resolves the original formal build owner correctly.
+    journal.godot_world_copy(&json!({"sourceWorldId":"g2","targetWorldId":"g3","title":"Second copy","progress":"formal"}))?;
+    let g3_plan=journal.godot_world_rebuild_plan(&json!({"worldId":"g3"}))?;
+    // Simulate an older copied world: it has an unpublished main draft and no
+    // dedicated formal-source ref. Recovery must transfer from the source's
+    // old formal revision, not either world's newer head.
+    let g2_status=journal.content_status(&json!({"worldId":"g2"}))?;
+    let (store,layout)=journal.content_layout("g2")?;
+    let reference=copied_formal_ref("g2",copied["buildId"].as_str().unwrap());
+    let retained=store.git().ref_value(&layout.git_dir,&reference)?.unwrap();
+    assert!(store.protected_refs(&layout)?.iter().any(|entry|entry.name==reference));
+    store.git().delete_ref(&layout.git_dir,&reference,&retained)?;
+    let g2_file=copy_index["files"].as_array().unwrap().iter().find(|file|file["path"]=="world.gd").unwrap();
+    let g2_draft=journal.godot_project_patch(&json!({"context":copy_context,"worldId":"g2","toolCallId":"old-copy-draft",
+        "revision":copy_index["revision"],"manifestHash":copy_index["manifestHash"],
+        "operation":{"operationId":"old-copy-draft","worldId":"g2","repoId":g2_status["repoId"],"branchId":"main","expectedHeadOid":g2_status["headOid"],"expectedAppliedOid":g2_status["appliedOid"],"expectedProgressRevision":null},
+        "operations":[{"op":"put","path":"world.gd","expectedHash":g2_file["sha256"],"text":"extends Node3D\nvar damage := 73\n"}]}))?;
+    journal.workspace_end_turn(&copy_context.session_id,&copy_context.turn_id,"completed")?;
+    let saved = journal.world_read("g1")?;
+    let copied_progress=journal.world_read("g2")?.world.snapshot;
+    let archives = tempfile::tempdir()?;
+    let archive = archives.path().join("restore.cmarchive");
+    journal.backup_export_portable(&json!({"operationId":"export-rebuild","archivePath":archive.to_string_lossy()}))?;
+    drop(journal);
+    let unavailable = tempfile::tempdir()?;
+    std::fs::rename(source_dir.path(),unavailable.path().join("moved"))?;
+    assert!(!path.exists());
+    let target_root=tempfile::tempdir()?;let target=target_root.path().join("data");
+    let mut restored=TaskJournal::open(&target.join("tasks.sqlite"))?;
+    restored.backup_restore_portable(&json!({"operationId":"restore-rebuild","archivePath":archive.to_string_lossy(),"targetDirectory":target.to_string_lossy()}))?;
+    assert!(!target.join("godot-builds").exists());
+    assert_eq!(restored.world_read("g1")?.world.snapshot,saved.world.snapshot);
+    assert_eq!(restored.world_read("g2")?.world.snapshot,copied_progress);
+    assert_eq!(restored.godot_world_init_status(&json!({"worldId":"g2"}))?["playable"],false);
+    assert_eq!(restored.godot_world_init_status(&json!({"worldId":"g2"}))?["rebuildRequired"],true);
+    failed(restored.godot_world_rebuild_plan(&json!({"worldId":"g2"})),"GODOT_REBUILD_SOURCE_TRANSFER_REQUIRED");
+    assert_eq!(restored.godot_world_rebuild_plan(&json!({"worldId":"g3"}))?["contentOid"],g3_plan["contentOid"]);
+    let (_,source_layout)=restored.content_layout("g1")?;
+    let held_git=target.join("source-git-unavailable");
+    std::fs::rename(&source_layout.git_dir,&held_git)?;
+    failed(restored.godot_world_prepare_rebuild_source(&json!({"worldId":"g2"})),"GODOT_REBUILD_SOURCE_NOT_AVAILABLE");
+    // A preserved target ref is independent of the original source Git files.
+    assert_eq!(restored.godot_world_prepare_rebuild_source(&json!({"worldId":"g3"}))?["replayed"],true);
+    assert_eq!(restored.godot_world_rebuild_plan(&json!({"worldId":"g3"}))?["contentOid"],g3_plan["contentOid"]);
+    let (copy_store,copy_layout)=restored.content_layout("g3")?;
+    let copy_ref=copied_formal_ref("g3",copied["buildId"].as_str().unwrap());
+    copy_store.git().delete_ref(&copy_layout.git_dir,&copy_ref,g3_plan["contentOid"].as_str().unwrap())?;
+    assert_eq!(restored.godot_world_prepare_rebuild_source(&json!({"worldId":"g3"}))?["adopted"],true);
+    std::fs::rename(&held_git,&source_layout.git_dir)?;
+    restored.godot_world_prepare_rebuild_source(&json!({"worldId":"g2"}))?;
+    let recovered_copy=restored.godot_world_rebuild_plan(&json!({"worldId":"g2"}))?;
+    assert_eq!(recovered_copy["rebuildRequired"],true);
+    let (store,layout)=restored.content_layout("g2")?;
+    assert_eq!(store.read_file(&layout,recovered_copy["contentOid"].as_str().unwrap(),"world.gd")?,SCRIPT.as_bytes());
+    assert_eq!(restored.godot_project_index(&json!({"context":copy_context,"worldId":"g2"}))?["manifestHash"],g2_draft["manifestHash"]);
+    let init=restored.godot_world_init_status(&json!({"worldId":"g1"}))?;
+    assert_eq!(init["playable"],false);assert_eq!(init["rebuildRequired"],true);
+    let plan=restored.godot_world_rebuild_plan(&json!({"worldId":"g1"}))?;
+    assert_eq!(plan["rebuildRequired"],true);assert_eq!(plan["contentOid"],original_plan["contentOid"]);
+    assert_ne!(plan["contentOid"],restored.content_status(&json!({"worldId":"g1"}))?["headOid"]);
+    restored.content_branch_create(&json!({"worldId":"g1","branchId":plan["rebuildBranchId"],"fromRev":plan["contentOid"]}))?;
+    let plan=restored.godot_world_rebuild_plan(&json!({"worldId":"g1"}))?;
+    let context=ctx("restore-rebuild");restored.workspace_open(&context,"g1")?;
+    let index=restored.godot_project_index(&json!({"context":context,"worldId":"g1","branchId":plan["rebuildBranchId"]}))?;
+    let read=restored.godot_project_read(&json!({"context":context,"worldId":"g1","branchId":plan["rebuildBranchId"],"revision":index["revision"],"manifestHash":index["manifestHash"],"path":"world.gd"}))?;
+    assert_eq!(read["text"],SCRIPT);
+    register(&mut restored,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("restore fixture"))?;
+    let job=restored.godot_build_start(&json!({"context":context,"worldId":"g1","branchId":plan["rebuildBranchId"],"toolCallId":"rebuild","revision":index["revision"],"manifestHash":index["manifestHash"],"mode":"check"}))?;
+    let claimed=claim(&mut restored,&job,"token-a","executor-a")?;
+    let artifacts=write_artifact(&claimed,"web/index.html",b"<html>rebuilt fixture</html>")?;
+    let checked=finish(&mut restored,&job,"token-a",&output(&claimed,true,json!([{"id":"restore-fixture","passed":true,"detail":"synthetic core transaction fixture"}]),artifacts,json!([])))?;
+    let current=restored.world_read("g1")?;
+    assert_eq!(current.world.snapshot,saved.world.snapshot);
+    let prepared=restored.godot_application_prepare(&json!({"id":"apply-rebuilt","token":"rebuild-token","worldId":"g1","candidateId":checked["candidateId"],"revision":current.summary.revision,"snapshot":current.world.snapshot}))?;
+    let status=restored.content_status(&json!({"worldId":"g1"}))?;
+    let operation=json!({"operationId":"apply-rebuilt","worldId":"g1","repoId":status["repoId"],"branchId":plan["rebuildBranchId"],"expectedHeadOid":plan["rebuildContentOid"],"expectedAppliedOid":status["appliedOid"],"expectedProgressRevision":current.summary.revision});
+    restored.content_apply_prepare(&json!({"worldId":"g1","context":operation,"kind":"apply","targetOid":plan["rebuildContentOid"],"detail":"restore fixture"}))?;
+    restored.content_apply_advance(&json!({"operationId":"apply-rebuilt"}))?;
+    restored.godot_application_commit(&json!({"id":"apply-rebuilt","token":"rebuild-token","evidence":{"format":"craftmine.godot-application/2","inputHash":prepared["inputHash"],"launch":{"passed":true,"buildId":prepared["buildId"],"instanceId":"restore-fixture","stateHash":digest("fixture")},"player":null,"snapshot":current.world.snapshot}}))?;
+    restored.content_apply_confirm(&json!({"operationId":"apply-rebuilt","applicationId":"apply-rebuilt","detail":"restore fixture confirmed"}))?;
+    assert_eq!(restored.godot_world_init_status(&json!({"worldId":"g1"}))?["playable"],true);
+    assert_eq!(restored.godot_runtime_describe(&json!({"worldId":"g1"}))?["snapshot"],saved.world.snapshot);
+    assert_eq!(restored.godot_project_index(&json!({"context":context,"worldId":"g1"}))?["manifestHash"],draft["manifestHash"]);
+    drop(restored);let restored=TaskJournal::open(&target.join("tasks.sqlite"))?;
+    assert_eq!(restored.godot_runtime_describe(&json!({"worldId":"g1"}))?["snapshot"],saved.world.snapshot);
+    Ok(())
+}
+
 fn progress(world: &str) -> Value {
     json!({"format":godot_runtime::PROGRESS_FORMAT,"worldId":world,"baseId":"first-person",
         "baseVersion":"0.1.0","stateVersion":1,

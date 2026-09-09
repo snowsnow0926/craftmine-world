@@ -21,6 +21,7 @@ export class CraftmineMaintenanceContexts {
   }
 
   has(sessionId: string, turnId: string): boolean { return this.contexts.has(this.key(sessionId, turnId)); }
+  resetForProfileRestore(): void { this.contexts.clear(); }
 
   async request(host: CraftmineTurnBinding, operation: string, input: Record<string, any>, call: DomainCall): Promise<any> {
     const context = this.contexts.get(this.key(host.sessionId, host.turnId));

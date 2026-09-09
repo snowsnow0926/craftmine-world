@@ -3,7 +3,7 @@
 export type GodotGameplayAccess = {
   observe: () => Promise<any>;
   action: (op: string, args: Record<string, unknown>) => Promise<any>;
-  capture: (width: number, height: number) => Promise<{ pngBase64: string; width: number; height: number }>;
+  capture: (width: number, height: number) => Promise<{ pngBase64: string; width: number; height: number; viewportObservation?: unknown }>;
 };
 
 export function createGodotGameplayAcceptance(access: GodotGameplayAccess) {
@@ -13,8 +13,8 @@ export function createGodotGameplayAcceptance(access: GodotGameplayAccess) {
     if (busy) throw Error("A fixed gameplay evidence operation is already running");
     busy = true;
     let identity: any = null;
-    const observe = async () => {
-      const value = await access.observe();
+    const observe = async (captured?: unknown) => {
+      const value: any = captured ?? await access.observe();
       if (value?.format !== "craftmine.godot-observation/1" || value.baseId !== "first-person" || !value.worldId || !value.buildId || !value.instanceId) throw Error("Actual first-person runtime observation required");
       const current = JSON.stringify([value.worldId, value.buildId, value.instanceId]);
       if (identity !== null && identity !== current) throw Error("Runtime identity changed during gameplay evidence");
@@ -24,7 +24,7 @@ export function createGodotGameplayAcceptance(access: GodotGameplayAccess) {
     const capture = async (width: number, height: number) => {
       const image = await access.capture(width, height);
       if (image.width !== width || image.height !== height || typeof image.pngBase64 !== "string" || !image.pngBase64.startsWith("iVBORw0KGgo")) throw Error("Actual Godot capture does not match requested viewport");
-      const observation = await observe();
+      const observation = await observe(image.viewportObservation);
       if (JSON.stringify(observation.payload?.viewportSize) !== JSON.stringify([width, height])) throw Error("Runtime viewport does not match captured surface");
       return { image, observation };
     };

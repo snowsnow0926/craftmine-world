@@ -1,6 +1,7 @@
 // Reuse service: thin, strictly validated wrappers over the host RPC channels
 // for packages, full backups and legacy conversion. Pure helpers at the bottom
 // (explain / compatibilityMatrix / migrationReport) never touch the host.
+export {createManagedPackageSourceService} from './godot-package-source.mjs';
 const requireValue=(condition,code)=>{if(!condition)throw Error(code);};
 const exactKeys=(value,allowed)=>{requireValue(value&&typeof value==='object'&&!Array.isArray(value),'OBJECT_REQUIRED');requireValue(Object.keys(value).every(key=>allowed.includes(key)),'UNKNOWN_FIELD');};
 const isObject=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
@@ -15,10 +16,12 @@ const archive=value=>requireValue(isObject(value),'OBJECT_REQUIRED');
 const checkRef=ref=>{exactKeys(ref,['id','version','hash']);requireValue(text(ref.id,80)&&integer(ref.version,1,100000)&&isHash(ref.hash),'INVALID_REFERENCE');};
 const placement=position=>{exactKeys(position,['x','y','z']);requireValue(['x','y','z'].every(key=>Number.isFinite(position[key])&&Math.abs(position[key])<=80),'INVALID_PLACEMENT');};
 
-export function createReuseService({call,installSource}) {
+export function createReuseService({call,installSource,sourceList,exportSource}) {
   requireValue(typeof call==='function','DOMAIN_CALL_REQUIRED');
   return {
     async installSource(args){requireValue(typeof installSource==='function','PACKAGE_INSTALL_HOST_UNAVAILABLE');return installSource(args);},
+    async sourceList(args){requireValue(typeof sourceList==='function','PACKAGE_SOURCE_HOST_UNAVAILABLE');return sourceList(args);},
+    async exportSource(args){requireValue(typeof exportSource==='function','PACKAGE_SOURCE_HOST_UNAVAILABLE');return exportSource(args);},
     async check(args){
       exactKeys(args,['ref','target']);checkRef(args.ref);exactKeys(args.target,['base','baseVersion','engine','stateFormat']);
       // target describes the reference environment, so invalid text is INVALID_REFERENCE.
@@ -161,7 +164,7 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot}) {
     const previous=active.get(key);if(previous){requireValue(previous.requestHash===requestHash,'OPERATION_CONFLICT');return previous.promise;}
     const entry={requestHash};active.set(key,entry);
     entry.promise=(async()=>{
-      const {unpackStaticPackage}=await import('./package-zip.mjs');
+      const {unpackStaticPackage,DEFAULT_LIMITS}=await import('./package-zip.mjs');
       const {planDraftInstall}=await import('../../desktop/godot/shared/draft_install.mjs');
       const {planSceneInsertion,applySceneInsertion,parseScene}=await import('../../desktop/godot/shared/scene_materializer.mjs');
       const directory=path.join(stagingRoot,key),intentFile=path.join(directory,'intent.json');
@@ -173,7 +176,7 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot}) {
         const bound=await bind(args.worldId,args.operationId);
         requireValue(bound?.worldRecord?.id===args.worldId&&bound.operation?.worldId===args.worldId&&bound.operation?.operationId===args.operationId&&isObject(bound.context),'PACKAGE_BINDING_MISMATCH');
         const context=bound.context,world=bound.worldRecord.world;
-        const archive=unpackStaticPackage(Buffer.from(args.archiveBase64,'base64'));
+        const archive=unpackStaticPackage(Buffer.from(args.archiveBase64,'base64'),{...DEFAULT_LIMITS,maxEntryBytes:4*1024*1024,maxTotalBytes:6*1024*1024,maxCompressedBytes:6*1024*1024,maxEntries:1024});
         const projectDir=await fs.mkdtemp(path.join(directory,'source-'));
         const safe=relative=>{requireValue(typeof relative==='string'&&!relative.includes('\\')&&!relative.includes(':')&&!relative.split('/').some(s=>!s||s==='.'||s==='..'),'PACKAGE_SOURCE_PATH_REFUSED');const full=path.resolve(projectDir,relative);requireValue(full.startsWith(projectDir+path.sep),'PACKAGE_SOURCE_PATH_REFUSED');return full;};
         let offset=0,index,identity,sourceBytes=0;const originals=new Map(),sourceFiles=new Map();
@@ -202,8 +205,14 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot}) {
           for(const line of lines){if(line.startsWith('[')){inside=line==='['+section+']';continue;}if(inside){const match=/^([A-Za-z_][A-Za-z0-9_]*)\s*=/.exec(line);if(match)inventory[key].push(match[1]);}}
         }
         const target={worldId:args.worldId,base:identity.baseId,baseVersion:world.snapshot?.baseVersion??'1.0.0',engine:identity.engineVersion,stateFormat:world.snapshot?.format??'craftmine.godot-progress/1',inventory};
+        for(const resource of archive.resources) {
+          const requirements=resource.manifest.content.entry?.sourceRequirements??[];requireValue(Array.isArray(requirements)&&requirements.length<=256,'PACKAGE_BASE_REQUIREMENTS_INVALID');
+          for(const required of requirements) {
+          exactKeys(required,['path','sha256']);requireValue(isHash(required.sha256)&&originals.get(required.path)===required.sha256,'PACKAGE_BASE_SOURCE_MISMATCH');
+          }
+        }
         const plan=await call('package.planInstall',{operationId:args.operationId,resources:archive.resources.map(r=>r.manifest),target,options:{allowInputActionRemap:false}});
-        requireValue(plan.ok===true,'PACKAGE_PLAN_CONFLICT');
+        if(plan.ok!==true)throw Object.assign(Error('PACKAGE_PLAN_CONFLICT: '+JSON.stringify(plan.conflicts??[])),{code:'PACKAGE_PLAN_CONFLICT',conflicts:plan.conflicts??[]});
         const payload=[],sceneEdits=[],inputActions=[],scenes=new Map();
         for(const resource of archive.resources){
           for(const [file,bytes]of resource.files)payload.push({contentHash:resource.contentHash,path:file,bytes});
@@ -218,7 +227,7 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot}) {
           const edit=planSceneInsertion({sceneText:current,scenePath:scene,spec:linked,entityId:ids[0]});requireValue(edit.ok,'PACKAGE_SCENE_MATERIALIZATION_FAILED');
           sceneEdits.push(edit.edit);scenes.set(scene,applySceneInsertion(current,edit.edit));inputActions.push(...(spec.inputActions??[]));
         }
-        const draft=planDraftInstall({plan,payload,projectDir,sceneEdits,inputActions});requireValue(draft.ok,'PACKAGE_DRAFT_CONFLICT');
+        const draft=planDraftInstall({plan,payload,projectDir,sceneEdits,inputActions});if(!draft.ok)throw Object.assign(Error('PACKAGE_DRAFT_CONFLICT: '+JSON.stringify(draft.errors??draft.conflicts??draft.reason??draft)),{code:'PACKAGE_DRAFT_CONFLICT'});
         const files=draft.files.filter(f=>originals.get(f.path)!==f.sha256).map(f=>({path:f.path,bytesBase64:f.bytes.toString('base64'),expectedHash:originals.get(f.path)??null}));
         requireValue(files.length>0,'PACKAGE_NO_CHANGES');
         const toolCallId='package-'+key.slice(0,40);

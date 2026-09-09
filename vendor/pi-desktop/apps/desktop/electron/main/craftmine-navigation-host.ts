@@ -7,6 +7,10 @@ export const NAVIGATION_READ_CHANNELS = new Set([
   "asset.search", "asset.read", "asset.versions", "asset.usage", "asset.scan",
   "asset.probe", "asset.previewRead",
 ]);
+const HISTORY_CHANNELS = new Set([
+  "godot.historyLoad", "godot.historyCreateBranch", "godot.historyReadSource",
+  "godot.historySaveSource", "godot.historyCheck", "godot.historyJob",
+]);
 
 type Request = { pluginId?: unknown; channel?: unknown; payload?: unknown };
 type Dependencies = {
@@ -31,7 +35,7 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
   }
   const payload = (input.payload ?? {}) as Record<string, unknown>;
   const channel = input.channel;
-  if (NAVIGATION_READ_CHANNELS.has(channel)) return deps.invoke(channel, payload);
+  if (NAVIGATION_READ_CHANNELS.has(channel) || HISTORY_CHANNELS.has(channel)) return deps.invoke(channel, payload);
   if (channel === "world.surface") {
     const surface = payload.surface as Record<string, unknown> | undefined;
     if (!surface || typeof surface !== "object" || Array.isArray(surface)
