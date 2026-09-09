@@ -138,7 +138,8 @@ pub(super) fn stream_blob(root: &Path, source: &Path, limits: &ImportLimits) -> 
         meta.len() <= limits.file_bytes,
         "ASSET_FILE_TOO_LARGE"
     );
-    let mut reader = super::super::godot_builds::open_read(source)?;
+    let mut reader = super::super::godot_builds::open_read(source)
+        .map_err(|error| super::source_io_error(source, error))?;
     let temporary = root.join(format!(
         "pending-{}-{}-{}",
         std::process::id(),

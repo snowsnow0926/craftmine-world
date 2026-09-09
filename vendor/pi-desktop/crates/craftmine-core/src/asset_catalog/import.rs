@@ -199,22 +199,28 @@ impl TaskJournal {
         let content_hash = store::content_hash(&files)?;
 
         if let Some(existing) = store::version_row(&self.db, &asset_id, version)? {
-            ensure!(
-                existing.content_hash == content_hash,
-                "ASSET_VERSION_CONFLICT"
-            );
-            // The same bytes re-imported under a different licence, author or
-            // display name is not the same logical version: refuse instead of
-            // silently keeping the old provenance.
-            ensure!(
-                existing.kind == kind.as_str()
-                    && existing.display_name == display_name
-                    && existing.origin == source.origin
-                    && existing.author == source.author
-                    && existing.license == source.license
-                    && existing.license_status == source.license_status,
-                "ASSET_SOURCE_CONFLICT"
-            );
+            // A conflict must not leave the just-streamed body behind. The blob
+            // is only discarded when no version references it, so a genuinely
+            // deduplicated body is kept.
+            let conflict = if existing.content_hash != content_hash {
+                Some("ASSET_VERSION_CONFLICT")
+            } else if !(existing.kind == kind.as_str()
+                && existing.display_name == display_name
+                && existing.origin == source.origin
+                && existing.author == source.author
+                && existing.license == source.license
+                && existing.license_status == source.license_status)
+            {
+                Some("ASSET_SOURCE_CONFLICT")
+            } else {
+                None
+            };
+            if let Some(code) = conflict {
+                if !streamed.deduplicated {
+                    let _ = store::discard_blob(&self.db, &blobs, &streamed.sha256);
+                }
+                anyhow::bail!(code);
+            }
             let existing_files = store::files_of(&self.db, &asset_id, version)?;
             let result = json!({
                 "operationId": operation_id,
