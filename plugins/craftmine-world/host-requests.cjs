@@ -33,10 +33,11 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
     if(method==='budget.reserve'){
       if(args.limits!==undefined)throw Error('CRAFTMINE_HOST_LIMITS_REQUIRED');
       const limits=current.budget.limits;
-      // Initialize one persistent deadline. Compaction and review reuse it.
-      const deadlineAt=limits.deadlineAt??(Date.now()+30*60*1000);
-      const request={...args,binding:current.binding,generation:current.generation,limits:{...limits,deadlineAt}};
       const previous=reservations.get(key);
+      // Initialize only before the first physical request. An old null policy
+      // stays null after consumption; retrying a lost reply keeps its clock.
+      const deadlineAt=limits.deadlineAt??(current.budget.requestCount===0?(previous?.request.limits.deadlineAt??Date.now()+30*60*1000):null);
+      const request={...args,binding:current.binding,generation:current.generation,limits:{...limits,deadlineAt}};
       if(previous&&JSON.stringify(previous.request)!==JSON.stringify(request))throw Error('CRAFTMINE_RESERVATION_REPLAY_MISMATCH');
       // Record before awaiting the durable call: a lost reply must still allow
       // an exact-owner settlement (Rust rejects a reservation that never existed).
@@ -48,6 +49,10 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
   }
   return async function onHostRequest(method,params={}){
     await core.start();
+    if(method==='budget.configure'){
+      fields(params,['projectId','sessionId','worldId','taskId','generation','operationId','maxTokens']);
+      return core.call(method,params);
+    }
     if(method==='task.interrupt'){
       fields(params,['context','reason']);
       const result=await core.call(method,params);

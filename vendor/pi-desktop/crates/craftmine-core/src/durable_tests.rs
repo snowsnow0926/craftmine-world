@@ -505,3 +505,42 @@ fn legacy_backup_missing_limits_keeps_policy_and_schema_three_keeps_audit() -> R
         .contains("VERSION_UNSUPPORTED"));
     Ok(())
 }
+#[test]
+fn configured_first_request_initializes_deadline_once_without_changing_policy() -> Result<()> {
+    let (_dir, mut j, _ctx, id) = fixture()?;
+    j.budget_configure(&configure(&id, "before-first", Value::Null))?;
+    let mut request = reserve(&id, "first");
+    let at = worlds::timestamp()? + 60_000;
+    request["limits"] = json!({"maxTokens":null,"deadlineAt":at});
+    let first = j.budget_call("budget.reserve", &request)?;
+    assert_eq!(first["budget"]["limits"]["deadlineAt"], at);
+    j.budget_call("budget.settle", &settle(&id, "first", "unknown"))?;
+    let mut second = reserve(&id, "second");
+    second["limits"] = json!({"maxTokens":null,"deadlineAt":at+1});
+    assert!(j
+        .budget_call("budget.reserve", &second)
+        .unwrap_err()
+        .to_string()
+        .contains("LIMITS_IMMUTABLE"));
+    second["limits"] = json!({"maxTokens":null,"deadlineAt":at,"maxRequests":999});
+    assert!(j
+        .budget_call("budget.reserve", &second)
+        .unwrap_err()
+        .to_string()
+        .contains("LIMITS_IMMUTABLE"));
+    let after = j.budget_call("budget.inspect", &id)?;
+    assert_eq!(after["reservedTokens"], 200);
+    assert_eq!(after["unknownRequestCount"], 1);
+    assert_eq!(after["requestCount"], 1);
+    let (_dir, mut j, _ctx, id) = fixture()?;
+    j.budget_call("budget.reserve", &reserve(&id, "without-clock"))?;
+    let mut later = reserve(&id, "cannot-start-clock");
+    later["limits"] = json!({"deadlineAt":at});
+    assert!(j
+        .budget_call("budget.reserve", &later)
+        .unwrap_err()
+        .to_string()
+        .contains("LIMITS_IMMUTABLE"));
+    assert!(j.budget_call("budget.inspect", &id)?["limits"]["deadlineAt"].is_null());
+    Ok(())
+}

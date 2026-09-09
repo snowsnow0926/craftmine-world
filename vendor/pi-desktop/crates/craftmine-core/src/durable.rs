@@ -321,10 +321,29 @@ impl TaskJournal {
                         )
                         .optional()?;
                     if let Some(old) = prior {
-                        ensure!(
-                            serde_json::from_str::<Value>(&old)? == normalized,
-                            "BUDGET_LIMITS_IMMUTABLE"
-                        );
+                        let old: Value = serde_json::from_str(&old)?;
+                        if old != normalized {
+                            // Player configuration may precede the first model request.
+                            // Initialize its clock once without replacing any policy.
+                            let count: i64 = tx.query_row(
+                                "SELECT COUNT(*) FROM craftmine_budget_requests WHERE owner=?1",
+                                [&owner],
+                                |r| r.get(0),
+                            )?;
+                            ensure!(
+                                count == 0
+                                    && old["deadlineAt"].is_null()
+                                    && normalized["deadlineAt"].as_i64().is_some()
+                                    && ["maxRequests", "maxTokens", "maxCompactions"]
+                                        .iter()
+                                        .all(|key| old[*key] == normalized[*key]),
+                                "BUDGET_LIMITS_IMMUTABLE"
+                            );
+                            tx.execute(
+                                "UPDATE craftmine_budget_limits SET limits=?2 WHERE owner=?1",
+                                params![owner, serde_json::to_string(&normalized)?],
+                            )?;
+                        }
                     } else {
                         tx.execute(
                             "INSERT INTO craftmine_budget_limits(owner,limits) VALUES(?1,?2)",
