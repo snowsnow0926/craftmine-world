@@ -200,8 +200,20 @@ impl TaskJournal {
                 existing.content_hash == content_hash,
                 "ASSET_VERSION_CONFLICT"
             );
+            // The same bytes re-imported under a different licence, author or
+            // display name is not the same logical version: refuse instead of
+            // silently keeping the old provenance.
+            ensure!(
+                existing.kind == kind.as_str()
+                    && existing.display_name == display_name
+                    && existing.origin == source.origin
+                    && existing.author == source.author
+                    && existing.license == source.license
+                    && existing.license_status == source.license_status,
+                "ASSET_SOURCE_CONFLICT"
+            );
             let existing_files = store::files_of(&self.db, &asset_id, version)?;
-            return Ok(json!({
+            let result = json!({
                 "operationId": operation_id,
                 "method": IMPORT_METHOD,
                 "assetId": asset_id,
@@ -215,7 +227,19 @@ impl TaskJournal {
                 "preview": {"state": "cached"},
                 "version_": version_json(&existing, &existing_files),
                 "state": state_json(&self.db, &existing)?,
-            }));
+            });
+            let tx =
+                rusqlite::Transaction::new_unchecked(&self.db, TransactionBehavior::Immediate)?;
+            store::record_operation(
+                &tx,
+                &operation_id,
+                IMPORT_METHOD,
+                &request_hash,
+                &result,
+                crate::worlds::timestamp()?,
+            )?;
+            tx.commit()?;
+            return Ok(result);
         }
 
         let created_at = crate::worlds::timestamp()?;
@@ -252,31 +276,43 @@ impl TaskJournal {
             "state": {"indexed": true, "previewable": false, "baseChecked": null, "appliedToSource": null},
         });
 
-        let tx = rusqlite::Transaction::new_unchecked(&self.db, TransactionBehavior::Immediate)?;
-        store::record_blob(
-            &tx,
-            &streamed.sha256,
-            streamed.bytes,
-            media_kind.as_str(),
-            created_at,
-        )?;
-        store::insert_version(&tx, &row, &files)?;
-        if !tags.is_empty() {
-            tx.execute(
-                "INSERT OR IGNORE INTO craftmine_asset_metadata(asset_id,display_name,tags,favorite,notes,updated_at)
-                 VALUES(?1,NULL,?2,0,'',?3)",
-                params![asset_id, serde_json::to_string(&tags)?, created_at],
+        let registration = (|| -> Result<()> {
+            let tx =
+                rusqlite::Transaction::new_unchecked(&self.db, TransactionBehavior::Immediate)?;
+            store::record_blob(
+                &tx,
+                &streamed.sha256,
+                streamed.bytes,
+                media_kind.as_str(),
+                created_at,
             )?;
+            store::insert_version(&tx, &row, &files)?;
+            if !tags.is_empty() {
+                tx.execute(
+                    "INSERT OR IGNORE INTO craftmine_asset_metadata(asset_id,display_name,tags,favorite,notes,updated_at)
+                     VALUES(?1,NULL,?2,0,'',?3)",
+                    params![asset_id, serde_json::to_string(&tags)?, created_at],
+                )?;
+            }
+            store::record_operation(
+                &tx,
+                &operation_id,
+                IMPORT_METHOD,
+                &request_hash,
+                &result,
+                created_at,
+            )?;
+            tx.commit()?;
+            Ok(())
+        })();
+        if let Err(error) = registration {
+            // The body was already renamed into place; a failed registration
+            // must not leave an unreferenced blob behind.
+            if !streamed.deduplicated {
+                let _ = store::discard_blob(&self.db, &blobs, &streamed.sha256);
+            }
+            return Err(error);
         }
-        store::record_operation(
-            &tx,
-            &operation_id,
-            IMPORT_METHOD,
-            &request_hash,
-            &result,
-            created_at,
-        )?;
-        tx.commit()?;
         Ok(result)
     }
 

@@ -35,8 +35,9 @@
 1. `assets` 按 `(assetId, version)` 排序；`dependencies` 同序去重；`overrides` 字典序去重。
 2. 完全相同的重复引用合并；同一 `(assetId, version)` 内容哈希不同 → `ASSET_LOCK_CONFLICT`，绝不覆盖。
 3. `installPath` 大小写不敏感唯一，重复即 `ASSET_LOCK_PATH_CONFLICT`。
-4. 路径规则：相对路径、`/` 分隔、≤240 字节、≤16 段、无 `.`/`..` 段、无 Windows 保留名、
-   无控制字符、段尾无空格或点 → `INVALID_ASSET_PATH`。
+4. 路径规则：相对路径、`/` 分隔、≤240 字节、≤16 段、每段 ≤80 字节且不以 `.` 开头、
+   无 `.`/`..` 段、无 Windows 保留名、无控制字符、段尾无空格或点 → `INVALID_ASSET_PATH`
+   （因此 `.gitignore` 一类隐藏文件会被拒绝）。
 5. 规范 JSON：紧凑分隔符、结构体字段顺序、无尾随换行、UTF-8。
 6. `assetLockHash = SHA-256(规范 JSON 字节)`。
 7. 内容哈希 `contentHash = SHA-256("craftmine.asset-content/1\n" + 每文件一行

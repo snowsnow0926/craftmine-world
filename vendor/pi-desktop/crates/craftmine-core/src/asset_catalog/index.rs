@@ -253,11 +253,17 @@ impl TaskJournal {
         {
             items.push(item_json(&self.db, &candidate)?);
         }
+        let indexed: i64 = self
+            .db
+            .query_row("SELECT COUNT(*) FROM craftmine_asset_versions", [], |row| {
+                row.get(0)
+            })?;
         Ok(json!({
             "method": SEARCH_METHOD,
             "scope": args["scope"],
             "items": items,
             "total": total,
+            "truncated": indexed as usize > super::budget::SEARCH_SCAN_LIMIT,
             "nextOffset": if (offset as usize) + (limit as usize) < total { Some(offset + limit) } else { None },
         }))
     }

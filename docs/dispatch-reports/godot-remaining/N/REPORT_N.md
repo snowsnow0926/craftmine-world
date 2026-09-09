@@ -61,8 +61,8 @@ godot-asset-library `11b303dad6a5b3a4347df2633a03d4338c4db063`（MIT，维护模
 
 | 命令 | 结果 |
 | --- | --- |
-| `cargo test -p craftmine-core --offline` | **122 passed; 0 failed; 1 ignored**（既有 111 + 新增 11；忽略项是仓库原有的 Windows junction 测试），0 warning |
-| `cargo test -p craftmine-core --offline --lib asset_catalog` | 11 passed; 0 failed |
+| `cargo test -p craftmine-core --offline` | **127 passed; 0 failed; 1 ignored**（既有 111 + 新增 16；忽略项是仓库原有的 Windows junction 测试），0 warning |
+| `cargo test -p craftmine-core --offline --lib asset_catalog` | 16 passed; 0 failed |
 | `node --test tests/godot-remaining/N/image-decode.test.mjs` | 28 pass / 0 fail / 0 skipped |
 | `node --test tests/godot-remaining/N/audio-decode.test.mjs` | 22 pass / 0 fail |
 | `node --test tests/godot-remaining/N/godot-package.test.mjs` | 22 pass / 0 fail |
@@ -104,12 +104,11 @@ godot-asset-library `11b303dad6a5b3a4347df2633a03d4338c4db063`（MIT，维护模
 
 必须继续（N 范围内）：
 
-1. **目录扫描与监听（AL-A15 主缺口）**：只在玩家授权目录递归扫描，处理中文、大小写、
-   链接/外链、文件锁、磁盘满；变化只产生"新版本提示"，不隐式更新世界。当前只有导入时的
-   单文件授权根校验。
+1. **目录监听（AL-A15 剩余部分）**：扫描已实现（`asset.scan`）；OS 级文件系统事件监听尚未实现，
+   当前由宿主重复调用扫描来发现变化。变化只产生"新版本提示"，不隐式更新世界。
 2. **进程中断注入（AL-A02）**：在流式写入各持久边界杀进程，证明无伪完整资源。
 3. **迟到/取消的宿主侧验证（AL-A16）**：切世界后旧预览任务的结果不得写入新世界。
-4. **1 万资源与 1/16/64 MiB 全档位测量**：当前只测到 1000 资源与 16 MiB。
+4. **1 万资源与 1/64 MiB 全档位测量**：当前测到 1000 资源与 16 MiB。
 5. **素材 UI 子目录**：数据契约已定（`INTERFACE_N.md`），组件与导航由 E 接线。
 6. **产品接线**：`asset.*` RPC 登记（A 的 `main.rs`）、插件工具声明与转发（L）、
    宿主预览调用（C/D）；片段已给出，未接线。
@@ -118,7 +117,29 @@ godot-asset-library `11b303dad6a5b3a4347df2633a03d4338c4db063`（MIT，维护模
 L 加三个只读工具；C/D 接 `asset.previewBegin/Finish` + worker；H 用 `asset.bodyPath` 做备份正文；
 M 用共享向量对齐锁哈希；E 接素材面板。
 
-## 5. 诚实边界
+## 6. 只读评审发现与修复
+
+首轮实现后由只读评审逐条核对，以下缺陷已修复并补测试：
+
+| 严重度 | 缺陷 | 修复 |
+| --- | --- | --- |
+| 高 | `asset_import` 命中"版本已存在"分支时不写操作回执，operationId 可被复用 | 该分支在事务内写回执；新增 `al1_existing_version_path_…`（重放 `replayed:true`、改请求 `OPERATION_CONFLICT`） |
+| 高 | `asset.recordCheck` 检查 operationId 却从不落库 | 改为事务内 `record_operation`；新增 `al2_record_check_is_idempotent_and_conflict_safe` |
+| 高 | Godot 包环检测在稠密无环图上指数爆炸 | 子代理加显式搜索预算与 `cyclesTruncated`，并补稠密图回归用例 |
+| 中 | 同正文但不同来源/许可被静默丢弃 | 新增 `ASSET_SOURCE_CONFLICT` 与断言 |
+| 中 | 失败/超时预览永远无法重试 | `previewBegin` 对 failed/timeout/cancelled 重置为 pending 并返回 `retried:true`；pending/ok/partial 仍缓存 |
+| 中 | `previewFinish` 不要求先 claim，可被任意 digest 变绿 | 无 claim 行即 `PREVIEW_NOT_CLAIMED`；新增断言 |
+| 中 | >1 MiB blob 探测只校验长度不校验哈希 | `blob_read_prefix` 先整块校验；新增篡改 blob 后探测失败的用例 |
+| 中 | 注册事务失败会留下孤儿 blob | 新增 `discard_blob`（有引用绝不删），失败路径调用；新增直接单元测试 |
+| 低 | 同一路径重复出现在清单里会改变 contentHash | 重复路径一律 `ASSET_CONTENT_PATH_CONFLICT` |
+| 低 | 检索静默截断 2 万行 | 响应新增 `truncated` 字段 |
+| 低 | `probe_package` 对任意 UTF-8 都判通过 | 必须含 `[gd_scene`/`[gd_resource` 或脚本标记 |
+| 低 | 包摘要只由计数组成，不同内容同摘要 | 摘要改为对包内路径+字节求哈希 |
+| 低 | `audioMaxFrames` 设置不生效 | 传入 `decodeAudio` 的 `maxFrames` |
+| 低 | `baseChecked` 同毫秒记录不确定 | `ORDER BY created_at DESC, target DESC, checker_version DESC` |
+| 低 | 扫描对非 UTF-8 文件名整体失败、大目录先全量入内存 | 非 UTF-8 记为 issue，目录列举按 `maxFiles` 截断 |
+
+
 
 - 所有自动验证都是**逻辑/离线**验证：没有真实 Godot 引擎、没有真实客户端、没有真实模型调用。
 - 音频不播放；OGG 只有容器级结果（`partial`），Vorbis/Opus → PCM 未实现。

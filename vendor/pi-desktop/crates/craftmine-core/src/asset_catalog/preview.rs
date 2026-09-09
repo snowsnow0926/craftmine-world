@@ -48,7 +48,7 @@ pub(super) fn check_json(
             "SELECT base_id,base_version,engine_version,target,checker_version,status,detail,created_at
              FROM craftmine_asset_checks
              WHERE asset_id=?1 AND version=?2 AND content_hash=?3
-             ORDER BY created_at DESC LIMIT 1",
+             ORDER BY created_at DESC, target DESC, checker_version DESC LIMIT 1",
             params![asset_id, version as i64, content_hash],
             |row| {
                 Ok((
@@ -255,15 +255,18 @@ fn probe_ogg(bytes: &[u8]) -> Value {
 }
 
 fn probe_package(bytes: &[u8]) -> Value {
-    let text = std::str::from_utf8(bytes);
-    match text {
+    match std::str::from_utf8(bytes) {
         Ok(text) => {
+            let scene = text.contains("[gd_scene") || text.contains("[gd_resource");
+            let script = text.contains("extends ") || text.contains("preload(") || text.contains("load(");
             let ext = text.matches("[ext_resource").count();
-            let script = text.matches("preload(").count() + text.matches("load(").count();
+            let loads = text.matches("preload(").count() + text.matches("load(").count();
+            let ok = scene || script;
             json!({
-                "probeOk": true,
+                "probeOk": ok,
                 "format": "godot-package",
-                "facts": {"extResources": ext, "scriptLoads": script, "executed": false},
+                "facts": {"extResources": ext, "scriptLoads": loads, "executed": false},
+                "reason": if ok { Value::Null } else { json!("NOT_A_GODOT_PACKAGE") },
             })
         }
         Err(_) => json!({"probeOk": false, "reason": "CORRUPT_ASSET_BODY"}),
@@ -294,12 +297,44 @@ impl TaskJournal {
         let row = store::version_row(&self.db, &asset_id, version)?.context("ASSET_NOT_FOUND")?;
         let key = cache_key(&asset_id, version, &row.content_hash, &settings_hash);
         if let Some(existing) = preview_row(&self.db, &asset_id, version, &settings_hash)? {
+            let status = existing["status"].as_str().unwrap_or("").to_string();
+            if matches!(status.as_str(), "ok" | "partial" | "pending") {
+                // A pending claim is resumed rather than restarted, so two
+                // hosts cannot run the same decode twice.
+                return Ok(json!({
+                    "jobId": format!("apv-{key}"),
+                    "cacheKey": key,
+                    "cached": true,
+                    "retried": false,
+                    "timeoutMs": PREVIEW_TIMEOUT_MS,
+                    "preview": existing,
+                }));
+            }
+            // failed/timeout/cancelled are re-runnable: one transient decode
+            // timeout must not lock the version out of preview forever.
+            let created_at = crate::worlds::timestamp()?;
+            self.db.execute(
+                "INSERT OR REPLACE INTO craftmine_asset_previews(asset_id,version,content_hash,
+                    previewer_version,engine_version,settings_hash,status,detail,facts,created_at)
+                 VALUES(?1,?2,?3,?4,?5,?6,'pending','', '{}',?7)",
+                params![
+                    asset_id,
+                    version as i64,
+                    row.content_hash,
+                    PREVIEWER_VERSION,
+                    engine_version(),
+                    settings_hash,
+                    created_at
+                ],
+            )?;
             return Ok(json!({
                 "jobId": format!("apv-{key}"),
                 "cacheKey": key,
-                "cached": true,
+                "cached": false,
+                "retried": true,
+                "previousStatus": status,
                 "timeoutMs": PREVIEW_TIMEOUT_MS,
-                "preview": existing,
+                "preview": {"status": "pending", "detail": "", "facts": {}, "createdAt": created_at},
             }));
         }
         let created_at = crate::worlds::timestamp()?;
@@ -367,6 +402,12 @@ impl TaskJournal {
         }
         let row = store::version_row(&self.db, &asset_id, version)?.context("ASSET_NOT_FOUND")?;
         let key = cache_key(&asset_id, version, &row.content_hash, &settings_hash);
+        // A finish without a claimed begin would let any caller mark a version
+        // previewable with an arbitrary digest.
+        ensure!(
+            preview_row(&self.db, &asset_id, version, &settings_hash)?.is_some(),
+            "PREVIEW_NOT_CLAIMED"
+        );
         let created_at = crate::worlds::timestamp()?;
         let result = json!({
             "operationId": operation_id,
@@ -503,7 +544,17 @@ impl TaskJournal {
         let detail = text(args, "detail", 240)?.to_string();
         let row = store::version_row(&self.db, &asset_id, version)?.context("ASSET_NOT_FOUND")?;
         let created_at = crate::worlds::timestamp()?;
-        self.db.execute(
+        let result = json!({
+            "operationId": operation_id,
+            "method": "asset.recordCheck",
+            "assetId": asset_id,
+            "version": version,
+            "contentHash": row.content_hash,
+            "status": status,
+            "replayed": false,
+        });
+        let tx = rusqlite::Transaction::new_unchecked(&self.db, TransactionBehavior::Immediate)?;
+        tx.execute(
             "INSERT OR REPLACE INTO craftmine_asset_checks(asset_id,version,content_hash,base_id,
                 base_version,engine_version,target,checker_version,status,detail,created_at)
              VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11)",
@@ -521,12 +572,15 @@ impl TaskJournal {
                 created_at
             ],
         )?;
-        Ok(json!({
-            "operationId": operation_id,
-            "assetId": asset_id,
-            "version": version,
-            "contentHash": row.content_hash,
-            "status": status,
-        }))
+        store::record_operation(
+            &tx,
+            &operation_id,
+            "asset.recordCheck",
+            &request_hash,
+            &result,
+            created_at,
+        )?;
+        tx.commit()?;
+        Ok(result)
     }
 }

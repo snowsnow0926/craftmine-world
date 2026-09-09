@@ -189,7 +189,7 @@ export function previewAsset(request) {
     }
     if (mediaType === 'audio/wav' || mediaType === 'audio/ogg') {
       const probe = probeAudio(bytes);
-      const decoded = decodeAudio(bytes, { deadline });
+      const decoded = decodeAudio(bytes, { deadline, maxFrames: PREVIEW_SETTINGS.audioMaxFrames });
       const containerOnly = decoded.pcmDecoded === false;
       return {
         cacheKey: cache,
@@ -218,15 +218,17 @@ export function previewAsset(request) {
     if (mediaType === 'application/x-godot-package') {
       const files = packageFiles(request);
       const checked = checkGodotPackage(files);
+      // The digest must depend on the actual package bytes, otherwise two
+      // different packages with the same counts would share one "evidence".
+      const ordered = [...files.entries()].sort((left, right) =>
+        left[0] < right[0] ? -1 : left[0] > right[0] ? 1 : 0);
       const facts = {
         decoder: PACKAGE_DECODER,
-        digest: sha256(Buffer.from(JSON.stringify({
-          kind: checked.kind,
-          files: checked.files,
-          extResources: checked.extResources.length,
-          missing: checked.missing.length,
-          issues: checked.issues.length,
-        }))),
+        digest: sha256(Buffer.concat(ordered.map(([name, content]) => Buffer.concat([
+          Buffer.from(name, 'utf8'),
+          Buffer.from([0]),
+          Buffer.from(content),
+        ])))),
         kind: checked.kind,
         executed: false,
         files: checked.files,

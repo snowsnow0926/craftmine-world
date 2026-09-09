@@ -228,6 +228,26 @@ pub(super) fn blob_read(root: &Path, sha256: &str, bytes: u64) -> Result<Vec<u8>
     Ok(content)
 }
 
+/// Removes a blob that no version row references, used when a registration
+/// transaction fails after the body was already renamed into place. A blob that
+/// any version still references is never deleted.
+pub(super) fn discard_blob(db: &Connection, root: &Path, sha256: &str) -> Result<()> {
+    contract::valid_hash(sha256, "INVALID_ASSET_HASH")?;
+    let referenced: bool = db.query_row(
+        "SELECT EXISTS(SELECT 1 FROM craftmine_asset_files WHERE sha256=?1)",
+        [sha256],
+        |row| row.get(0),
+    )?;
+    if referenced {
+        return Ok(());
+    }
+    let path = blob_path(root, sha256)?;
+    if path.try_exists()? {
+        fs::remove_file(&path)?;
+    }
+    Ok(())
+}
+
 /// Reads a verified prefix for structural probing. The full blob hash is still
 /// verified when the blob is smaller than the prefix limit.
 pub(super) fn blob_read_prefix(
@@ -238,8 +258,9 @@ pub(super) fn blob_read_prefix(
 ) -> Result<Vec<u8>> {
     ensure!(limit > 0, "INVALID_PROBE_LIMIT");
     let path = blob_path(root, sha256)?;
-    let meta = super::super::godot_projects::ordinary(&path, "CORRUPT_ASSET_BLOB")?;
-    ensure!(meta.is_file() && meta.len() == bytes, "CORRUPT_ASSET_BLOB");
+    // A probe must never report facts derived from bytes that do not match the
+    // requested content identity, so the full blob hash is verified first.
+    verify_blob(&path, sha256, bytes)?;
     let mut content = Vec::new();
     super::super::godot_builds::open_read(&path)?
         .take(limit)
@@ -259,9 +280,10 @@ pub(super) fn content_hash(files: &[FileRef]) -> Result<String> {
     for file in &sorted {
         file.validate()?;
         let key = file.path.to_ascii_lowercase();
-        if let Some(other) = seen.insert(key, file.path.as_str()) {
-            ensure!(other == file.path, "ASSET_CONTENT_PATH_CONFLICT");
-        }
+        ensure!(
+            seen.insert(key, file.path.as_str()).is_none(),
+            "ASSET_CONTENT_PATH_CONFLICT"
+        );
         canonical.push_str(&file.path);
         canonical.push('\n');
         canonical.push_str(&file.sha256);

@@ -612,6 +612,7 @@ fn al2_probe_and_preview_states_never_conflate() -> Result<()> {
         "image/png",
         "image",
     ))?;
+    journal.asset_preview_begin(&json!({"assetId":"door-texture","version":2}))?;
     journal.asset_preview_finish(&json!({
         "operationId": "op-preview-fail",
         "assetId": "door-texture",
@@ -722,6 +723,214 @@ fn al2_preview_cache_key_matches_the_shared_vector() -> Result<()> {
         case["sha256"].as_str().unwrap(),
         "the frozen canonical string must hash to the frozen value"
     );
+    Ok(())
+}
+
+#[test]
+fn al1_existing_version_path_records_receipts_and_refuses_new_provenance() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let file = write_source(&root, "door.png", &deterministic_bytes(4096))?;
+    let args = import_args(
+        &root,
+        &file,
+        "op-existing",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    );
+    journal.asset_import(&args)?;
+
+    // Same content, same provenance, new operation id: this hits the
+    // existing-version branch, which must still write a receipt.
+    let mut again = args.clone();
+    again["operationId"] = json!("op-existing-2");
+    let second = journal.asset_import(&again)?;
+    assert_eq!(second["existing"], true);
+    let mut tampered = again.clone();
+    tampered["displayName"] = json!("renamed");
+    let error = journal.asset_import(&tampered).unwrap_err().to_string();
+    assert!(error.contains("OPERATION_CONFLICT"), "{error}");
+    let replay = journal.asset_import(&again)?;
+    assert_eq!(replay["replayed"], true);
+
+    // Same bytes under a different licence is not the same logical version.
+    let mut relicensed = args.clone();
+    relicensed["operationId"] = json!("op-existing-3");
+    relicensed["source"]["license"] = json!("CC0-1.0");
+    relicensed["source"]["licenseStatus"] = json!("verified");
+    let error = journal.asset_import(&relicensed).unwrap_err().to_string();
+    assert!(error.contains("ASSET_SOURCE_CONFLICT"), "{error}");
+    Ok(())
+}
+
+#[test]
+fn al2_preview_claim_and_retry_are_enforced() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let image = write_source(&root, "door.png", &png_header(8, 8))?;
+    journal.asset_import(&import_args(
+        &root,
+        &image,
+        "op-claim",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+
+    // A finish without a claimed begin is refused.
+    let error = journal
+        .asset_preview_finish(&json!({
+            "operationId": "op-finish-unclaimed",
+            "assetId": "door-texture",
+            "version": 1,
+            "status": "ok",
+            "detail": "x",
+            "facts": {"decoder": "image-decode.mjs@1", "digest": store::digest_bytes(b"x")},
+        }))
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("PREVIEW_NOT_CLAIMED"), "{error}");
+
+    journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
+    journal.asset_preview_finish(&json!({
+        "operationId": "op-preview-timeout",
+        "assetId": "door-texture",
+        "version": 1,
+        "status": "timeout",
+        "detail": "slow",
+        "facts": {},
+    }))?;
+    let retry = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(retry["cached"], false);
+    assert_eq!(retry["retried"], true);
+    assert_eq!(retry["previousStatus"], "timeout");
+
+    journal.asset_preview_finish(&json!({
+        "operationId": "op-preview-ok",
+        "assetId": "door-texture",
+        "version": 1,
+        "status": "ok",
+        "detail": "decoded",
+        "facts": {"decoder": "image-decode.mjs@1", "digest": store::digest_bytes(&png_header(8, 8))},
+    }))?;
+    let cached = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(cached["cached"], true);
+    assert_eq!(cached["retried"], false);
+    let state = journal.asset_read(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(state["state"]["previewable"], true);
+    Ok(())
+}
+
+#[test]
+fn al2_record_check_is_idempotent_and_conflict_safe() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let image = write_source(&root, "door.png", &png_header(4, 4))?;
+    journal.asset_import(&import_args(
+        &root,
+        &image,
+        "op-check-import",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+    let check = json!({
+        "operationId": "op-check-1",
+        "assetId": "door-texture",
+        "version": 1,
+        "baseId": "first-person",
+        "baseVersion": 1,
+        "engineVersion": "4.7.2-stable",
+        "target": "desktop",
+        "checkerVersion": "asset-probe/1",
+        "status": "passed",
+        "detail": "静态引用完整",
+    });
+    journal.asset_record_check(&check)?;
+    let replay = journal.asset_record_check(&check)?;
+    assert_eq!(replay["replayed"], true);
+    let mut tampered = check.clone();
+    tampered["status"] = json!("failed");
+    let error = journal.asset_record_check(&tampered).unwrap_err().to_string();
+    assert!(error.contains("OPERATION_CONFLICT"), "{error}");
+    Ok(())
+}
+
+#[test]
+fn al1_content_hash_refuses_duplicate_paths_and_discard_keeps_referenced_blobs() -> Result<()> {
+    let duplicate = FileRef {
+        path: "textures/door.png".into(),
+        sha256: store::digest_bytes(b"a"),
+        bytes: 1,
+        media_type: "image/png".into(),
+    };
+    let error = store::content_hash(&[duplicate.clone(), duplicate.clone()])
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("ASSET_CONTENT_PATH_CONFLICT"), "{error}");
+
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let bytes = deterministic_bytes(2048);
+    let file = write_source(&root, "door.png", &bytes)?;
+    journal.asset_import(&import_args(
+        &root,
+        &file,
+        "op-discard",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+    let blobs = store::blob_root(&journal.directory, false)?;
+    let referenced = store::blob_path(&blobs, &store::digest_bytes(&bytes))?;
+    assert!(referenced.is_file());
+    store::discard_blob(&journal.db, &blobs, &store::digest_bytes(&bytes))?;
+    assert!(referenced.is_file(), "referenced blobs must never be discarded");
+
+    let orphan = store::digest_bytes(b"orphan-body");
+    let orphan_path = store::blob_path(&blobs, &orphan)?;
+    std::fs::create_dir_all(orphan_path.parent().unwrap())?;
+    std::fs::write(&orphan_path, b"orphan-body")?;
+    store::discard_blob(&journal.db, &blobs, &orphan)?;
+    assert!(!orphan_path.exists(), "unreferenced blobs are removed");
+    Ok(())
+}
+
+#[test]
+fn al2_probe_verifies_the_whole_blob_even_beyond_the_prefix() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let bytes = deterministic_bytes(2 * 1024 * 1024);
+    let file = write_source(&root, "big.png", &bytes)?;
+    journal.asset_import(&import_args(
+        &root,
+        &file,
+        "op-big",
+        "big-texture",
+        1,
+        "textures/big.png",
+        "image/png",
+        "image",
+    ))?;
+    let blobs = store::blob_root(&journal.directory, false)?;
+    let path = store::blob_path(&blobs, &store::digest_bytes(&bytes))?;
+    let mut tampered = bytes.clone();
+    tampered[0] ^= 0xff;
+    std::fs::write(&path, &tampered)?;
+    let error = journal
+        .asset_probe(&json!({"assetId":"big-texture","version":1}))
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("CORRUPT_ASSET_BLOB"), "{error}");
     Ok(())
 }
 

@@ -107,6 +107,12 @@ impl Walk {
         let mut entries: Vec<PathBuf> = Vec::new();
         for entry in std::fs::read_dir(directory).context("ASSET_SCAN_UNAVAILABLE")? {
             entries.push(entry?.path());
+            // Bound memory for very large directories; the walk is already
+            // budget-limited, so a partial listing is reported as truncated.
+            if entries.len() as u64 > self.max_files {
+                self.truncated = true;
+                break;
+            }
         }
         entries.sort();
         for path in entries {
@@ -139,7 +145,16 @@ impl Walk {
                 .and_then(|value| value.to_str())
                 .unwrap_or("")
                 .to_string();
-            let relative_path = relative(&self.root, &path)?;
+            let relative_path = match relative(&self.root, &path) {
+                Ok(value) => value,
+                Err(_) => {
+                    self.issues.push(json!({
+                        "path": Value::Null,
+                        "code": "NON_UTF8_PATH",
+                    }));
+                    continue;
+                }
+            };
             let media_type = media_type_of(&name);
             let mut item = json!({
                 "path": relative_path,

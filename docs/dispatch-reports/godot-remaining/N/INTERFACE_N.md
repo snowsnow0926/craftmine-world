@@ -28,10 +28,11 @@
 错误码：`INVALID_ASSET_ID`、`INVALID_ASSET_PATH`、`INVALID_ASSET_HASH`、`INVALID_MEDIA_TYPE`、
 `UNSUPPORTED_MEDIA_TYPE`、`MEDIA_KIND_MISMATCH`、`ASSET_SOURCE_UNAVAILABLE`、
 `ASSET_SOURCE_OUTSIDE_ROOT`、`ASSET_FILE_TOO_LARGE`、`ASSET_VERSION_CONFLICT`、
-`OPERATION_CONFLICT`、`ASSET_NOT_FOUND`、`ASSET_FILE_NOT_FOUND`、`CORRUPT_ASSET_BLOB`、
-`ASSET_LOCK_CONFLICT`、`ASSET_LOCK_PATH_CONFLICT`、`ASSET_DEPENDENCY_MISSING`、
-`ASSET_DEPENDENCY_CYCLE`、`INVALID_PREVIEW_STATUS`、`PREVIEW_EVIDENCE_REQUIRED`、
-`LEGACY_MAPPING_CONFLICT`。
+`ASSET_SOURCE_CONFLICT`、`OPERATION_CONFLICT`、`ASSET_NOT_FOUND`、`ASSET_FILE_NOT_FOUND`、
+`CORRUPT_ASSET_BLOB`、`ASSET_CONTENT_PATH_CONFLICT`、`ASSET_LOCK_CONFLICT`、
+`ASSET_LOCK_PATH_CONFLICT`、`ASSET_NOT_IN_LOCK`、`ASSET_DEPENDENCY_MISSING`、
+`ASSET_DEPENDENCY_CYCLE`、`INVALID_PREVIEW_STATUS`、`PREVIEW_NOT_CLAIMED`、
+`PREVIEW_EVIDENCE_REQUIRED`、`LEGACY_MAPPING_CONFLICT`、`NON_UTF8_PATH`（扫描 issue）。
 
 ## 2. lib.rs 注册（A 拥有；N 分支内已加，作为合并片段）
 
@@ -139,16 +140,18 @@ import { runPreviewInWorker } from '../electron/craftmine-assets/preview-worker.
 
 const begun = await call('asset.previewBegin', { assetId, version });
 if (!begun.cached || begun.preview.status === 'pending') {
+  const record = await call('asset.read', { assetId, version });
+  const contentHash = record.version_.contentHash;   // 版本身份，不是单文件哈希
   const body = await call('asset.bodyPath', { assetId, version, path });
   const bytes = await fs.promises.readFile(body.blobPath);
   const evidence = await runPreviewInWorker({
     assetId, version,
-    contentHash: body.sha256,        // 宿主传入确切内容身份
+    contentHash,
     mediaType: body.mediaType,
     path: body.path,
     bytes,
     engineVersion,
-    settingsHash: begun.cacheKey ? 'default' : 'default',
+    settingsHash: 'default',
   }, { timeoutMs: begun.timeoutMs });
   await call('asset.previewFinish', {
     operationId: `preview-${begun.cacheKey}`,
