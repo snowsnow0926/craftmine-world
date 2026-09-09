@@ -23,6 +23,7 @@ export function createGodotRestoreRebuildService(options: Options) {
     state(worldId, { status: "restoring", stage: "source" });
     const content = await domain("content.status", { worldId });
     if (content.backend !== "git") await domain("content.migrate.apply", { worldId });
+    await domain("godotWorld.prepareRebuildSource", { worldId });
     let plan = await domain("godotWorld.rebuildPlan", { worldId });
     if (!plan.rebuildRequired) {
       await domain("godotRuntime.describe", { worldId });

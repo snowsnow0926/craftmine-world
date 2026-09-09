@@ -121,7 +121,7 @@ impl TaskJournal {
         self.runtime_describe_impl(args, true)
     }
 
-    fn runtime_describe_impl(&self, args: &Value, verify_artifacts: bool) -> Result<Value> {
+    pub(super) fn runtime_describe_impl(&self, args: &Value, verify_artifacts: bool) -> Result<Value> {
         let args: DescribeArgs = serde_json::from_value(args.clone())?;
         let current = worlds::read(&self.db, &args.world_id)?;
         match current.world.build["scene"]["format"].as_str() {
@@ -214,12 +214,17 @@ impl TaskJournal {
             params![owner, build], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)))?;
         // Older applied builds predate Git. Their migration map names the exact
         // legacy revision, unlike the repository's potentially newer main head.
-        let content_oid = match content {
+        let (store, layout) = self.content_layout(&request.world_id)?;
+        let content_oid = if owner != request.world_id {
+            let copied = store.git().ref_value(&layout.git_dir, &super::godot_worlds::copied_formal_ref(&request.world_id, build))?
+                .context("GODOT_REBUILD_SOURCE_TRANSFER_REQUIRED")?;
+            self.verify_copied_formal_source(owner, build, &store, &layout, &copied)?;
+            copied
+        } else { match content {
             Some(value) => value,
             None => self.db.query_row("SELECT commit_oid FROM craftmine_content_revision_map WHERE world_id=?1 AND legacy_revision=?2",
                 params![owner, revision], |row| row.get(0)).optional()?.context("GODOT_REBUILD_SOURCE_NOT_INDEXED")?,
-        };
-        let (store, layout) = self.content_layout(&request.world_id)?;
+        }};
         let tree = store.commit_tree_oid(&layout, &content_oid).context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
         let rebuild_branch = format!("restore-{}", &digest(&format!("{}|{build}", request.world_id))[..24]);
         let rebuild_content = store.branch_head(&layout, &rebuild_branch)?;
