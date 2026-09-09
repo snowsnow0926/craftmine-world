@@ -12,10 +12,10 @@
     "recurringDevelopment": true,
     "previousLiveCompactionTestStopped": true,
     "automationId": "craftmine-windows",
-    "worktree": "D:/Craftmine World-worktrees/pi-client-w2-20260909",
-    "branch": "codex/pi-client-w2-20260909",
-    "nextStep": "先核对第 3 批提交 bc5ff3a、b360559、d526ebb 和 WINDOWS_BATCH_03.md 是否已合入 master；未合并只续作本批工作树，已合并则从最新 master 创建新的 W2 候选开发工作树。接入 Rust 验收作业/证据和候选事务，补 PI 候选差异/预览/应用面板，再接最小作品检索与真实桌面模型闭环。不要重复已经通过的草稿接线；目标 W0–W5 仍未完成。",
-    "cleanupNote": "两批实现已合并，工作树登记与开发分支均已移除。D:/Craftmine World-worktrees/pi-client-20260909 和 D:/Craftmine World-worktrees/pi-client-w1-20260909 留有文件：Git 删除报告 Directory not empty，随后递归清理分别被自动执行审核以 blocked by policy 拒绝，未给出更具体原因。保留且不自动重试，不复用这两个目录。"
+    "worktree": null,
+    "branch": null,
+    "nextStep": "第 3 批 5de1c7c（含 bc5ff3a、b360559、d526ebb）已合并本地 master。先确认交付状态记录也已合并，然后从最新 master 创建新的 codex/ 分支和独立 W2 候选工作树。实现 Rust 验收作业、不可变证据和候选事务；接 PI 候选差异/验收/预览/玩家应用面板，再接最小作品检索与真实桌面模型设置闭环。不要重做已通过的会话草稿工具或无改动重复 W1 检查。",
+    "cleanupNote": "三批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909 留有文件：Git 删除返回 Directory not empty；随后各批针对自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未给出更具体原因。保留这三个目录，不自动重试删除，也不复用。不阻断后续开发。"
   },
   "windowsClientPlan": {
     "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",
@@ -132,7 +132,9 @@
         "bc5ff3a",
         "b360559",
         "d526ebb"
-      ]
+      ],
+      "mergedCommit": "5de1c7c",
+      "cleanup": "Merged branch and worktree registration removed; residual directory retained after automatic approval review rejected recursive cleanup."
     }
   },
   "liveVerification": {

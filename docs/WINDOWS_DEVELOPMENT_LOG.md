@@ -67,3 +67,5 @@
 - 真实 pi-agent-core/pi-ai 0.85.1 + DeepSeek 完成创建树、重启后保留树干放大树冠。首跑发现 appearance 格式混用和悬空树；修正契约并补接地检查后 6/6，11 次模型请求、10 次工具调用、0 次工具报错。两版几何在实际游戏沙箱渲染并检查截图。
 - 本次真实模型使用隔离调用会话，不算实际桌面模型配置到应用的整条验收。候选、验收作业和作品复用继续待办；本批未更新 EXE 包，持续目标仍是 W0–W5。
 - 完整报告 WINDOWS_BATCH_03.md，便携证据 docs/evidence/windows-batch-03，原始运行目录已复制到主项目 test-results/windows-batch-03。未操作真实输入、置前窗口或修改个人世界；未推送远程。
+
+- 第 3 批合并完成：5de1c7c 及全部实现提交已进入本地 master，未推送。工作树登记与开发分支已移除；Git 删除返回 Directory not empty，针对本批残留的递归清理被自动执行审核以 blocked by policy 拒绝，未给出更具体原因。保留 D:/Craftmine World-worktrees/pi-client-w2-20260909，不再自动删除或复用；先前两个被拒绝清理的目录也保持不动。本次状态记录使用单独的轻量工作树提交。

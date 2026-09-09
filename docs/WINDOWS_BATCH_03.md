@@ -78,3 +78,5 @@ PI 的项目/会话侧栏、流式聊天、工具记录、文件审阅、模型�
 随后才进入 W3 的强制压缩与恢复、W4 的玩法组合、W5 的安装器和备份交付。持续目标保持开启。
 
 本批实现提交：`bc5ff3a`（Rust 会话草稿）、`b360559`（PI 工具与原生接线）、`d526ebb`（真实生成后的契约修复）。使用分支 `codex/pi-client-w2-20260909` 和独立工作树开发；合并与清理结果记录在 `WINDOWS_DEVELOPMENT_LOG.md`。未推送远程。本批没有创建新的程序包；便携证据在 `docs/evidence/windows-batch-03`，完整隔离运行记录在主项目 `test-results/windows-batch-03`。
+
+交付结果：5de1c7c 及本批实现已合入本地 master，开发分支和工作树登记已移除，未推送远程。Git 删除工作目录返回 Directory not empty；自动执行审核随后拒绝了该目录的递归清理，理由仅为 blocked by policy。D:/Craftmine World-worktrees/pi-client-w2-20260909 的残留保留且不再重试，不影响后续开发。
