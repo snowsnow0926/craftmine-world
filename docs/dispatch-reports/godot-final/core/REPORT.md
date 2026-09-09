@@ -19,7 +19,7 @@
 
 ## Remaining integration boundary
 
-The inspected integration tree has no Godot content-history/branch-selection renderer. `plugins/craftmine-world/view.mjs` lines 326, 383 and 438 show legacy check/review history; `world-tools.cjs` lines 202–209 expose model history operations, not user branch controls. The core now supports branch authoring, and the candidate coordinator consumes candidate branch identity, but a user-facing selector still needs to bind branch context to source browsing/editing/building. No unsupported renderer route was invented in this change.
+The initially inspected integration tree had no Godot content-history/branch-selection renderer. The subsequent authorized `GodotHistoryPanel` and private service now provide that source workflow; see `HISTORY-PANEL.md` for the exact routing and real React/private-router/Rust/Git evidence. Electron main navigation wiring, native-sheet composition and actual executor/model acceptance remain the integration owner's final checks. The existing candidate surface continues to own preview and confirmation.
 
 The integration owner must register the private `backup.restoreProof` route and consume it after restarting a restored core. Mill's native restore test also exposed Windows Git path-length failure under deeply nested staging paths; the caller shortened its owned layout, but this is not proof that arbitrary Windows profile/path lengths work. Keep the raw failure and do not claim that platform limitation is closed.
 

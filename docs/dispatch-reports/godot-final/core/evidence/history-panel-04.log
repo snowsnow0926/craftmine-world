@@ -1,0 +1,14 @@
+PASS forged context and cross-world selection rejected
+PASS real Git versions and source list rendered
+Evidence: D:\cm-godot-final-core-20260910\test-results\history-panel-2ZfvTV
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 30000ms exceeded.
+    at D:\cm-godot-final-core-20260910\tests\godot-history-panel.mjs:66:14 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.14.0
