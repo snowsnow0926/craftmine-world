@@ -1,0 +1,47 @@
+﻿licensing-check: inventory=D:\Craftmine World-worktrees\godot-round2-r9-20260910\desktop\delivery\licensing\inventory.json
+  package=D:\Craftmine World\desktop\build\windows-preview-batch-07 files=828
+FAIL MISSING_LICENCE_TEXT x57
+  - npm-third-party-dependencies needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet.
+  - npm-third-party-dependencies needs resources/licenses/third-party/LICENSE-Apache-2.0.txt (offline-entry id apache-2.0): Canonical Apache-2.0 text is not bundled.
+  - npm-third-party-dependencies needs resources/licenses/third-party/LICENSE-ISC.txt (offline-entry id isc): Canonical ISC text is not bundled.
+  - npm-third-party-dependencies needs resources/licenses/third-party/LICENSE-BSD-3-Clause.txt (offline-entry id bsd-3-clause): Canonical BSD-3-Clause text is not bundled.
+  - npm-third-party-dependencies needs resources/licenses/third-party/LICENSE-BSD-2-Clause.txt (offline-entry id bsd-2-clause): Canonical BSD-2-Clause text is not bundled.
+  - npm-third-party-dependencies needs resources/licenses/third-party/LICENSE-MPL-2.0.txt (offline-entry id mpl-2.0): Canonical MPL-2.0 text is not bundled; the MPL-2.0 dependencies' source-availability conditions are unreviewed.
+  - cargo-third-party-dependencies needs resources/licenses/third-party/CARGO-NOTICES.md (offline-entry id cargo-third-party-notices): No consolidated Rust third-party notice file is generated yet; MIT/Apache-2.0 attribution for the 140 crates is therefore absent.
+  - cargo-third-party-dependencies needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet.
+  - cargo-third-party-dependencies needs resources/licenses/third-party/LICENSE-Apache-2.0.txt (offline-entry id apache-2.0): Canonical Apache-2.0 text is not bundled.
+  - cargo-third-party-dependencies needs resources/licenses/third-party/LICENSE-MPL-2.0.txt (offline-entry id mpl-2.0): Canonical MPL-2.0 text is not bundled; the MPL-2.0 dependencies' source-availability conditions are unreviewed.
+  ... 47 more
+FAIL TARGET_LICENCE_TEXT_MISSING x8
+  - pi-desktop-upstream needs resources/licenses/GPL-3.0.txt (offline-entry id gpl-3.0): LGPL-3 incorporates GPL-3 by reference; the full GPL-3 text is not bundled in the package. Whether it must be is an open legal question.
+  - craftmine-core needs resources/licenses/CRAFTMINE-LICENSE-AGPL-3.0.txt (offline-entry id agpl-3.0): The AGPL-3.0-only target is not applied; no AGPL text is placed in the package yet.
+  - app-creation-core needs resources/licenses/CRAFTMINE-LICENSE-AGPL-3.0.txt (offline-entry id agpl-3.0): The AGPL-3.0-only target is not applied; no AGPL text is placed in the package yet.
+  - plugin-craftmine-world needs resources/licenses/CRAFTMINE-LICENSE-AGPL-3.0.txt (offline-entry id agpl-3.0): The AGPL-3.0-only target is not applied; no AGPL text is placed in the package yet.
+  - godot-web-bridge-runtime needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet.
+  - base-first-person needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet.
+  - base-top-down needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet.
+  - base-side-view needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet.
+FAIL NOTICE_ENTRY_MISSING x2
+  - package notice document does not mention Cargo (entry cargo-third-party-dependencies)
+  - package notice document does not mention OFL (entry bundled-fonts)
+PENDING pi-desktop-upstream (pending-rights-review) — not a pass
+PENDING pi-desktop-modifications (pending-rights-review) — not a pass
+PENDING craftmine-core (pending-rights-review) — not a pass
+PENDING app-creation-core (pending-rights-review) — not a pass
+PENDING plugin-craftmine-world (pending-rights-review) — not a pass
+PENDING world-workshop-3d (pending-rights-review) — not a pass
+PENDING godot-web-bridge-runtime (pending-rights-review) — not a pass
+PENDING godot-probes (pending-rights-review) — not a pass
+PENDING base-first-person (pending-rights-review) — not a pass
+PENDING base-top-down (pending-rights-review) — not a pass
+PENDING base-side-view (pending-rights-review) — not a pass
+PENDING godot-third-party-components (pending-rights-review) — not a pass
+PENDING npm-third-party-dependencies (pending-rights-review) — not a pass
+PENDING cargo-third-party-dependencies (pending-rights-review) — not a pass
+PENDING desktop-delivery-tooling (pending-rights-review) — not a pass
+PENDING project-examples (pending-rights-review) — not a pass
+PENDING godot-sandbox-probe (pending-rights-review) — not a pass
+PENDING user-created-content (pending-rights-review) — not a pass
+PENDING ai-generated-output (unknown-rightsholder) — not a pass
+FAILED: entries=22 shipped=16 verified=2 pending=19 failures=67
+Evidence: D:\Craftmine World-worktrees\godot-round2-r9-20260910\docs\dispatch-reports\godot-round2\R9\evidence\licensing-check-batch07.json

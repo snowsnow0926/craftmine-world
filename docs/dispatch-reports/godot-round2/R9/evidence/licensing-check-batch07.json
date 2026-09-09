@@ -1,0 +1,676 @@
+{
+  "format": "craftmine.licensing-check/1",
+  "generatedAt": "2026-09-09T18:34:37.854Z",
+  "inventory": {
+    "path": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\inventory.json",
+    "format": "craftmine.license-inventory/1",
+    "entries": 22
+  },
+  "offlineEntry": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\offline-entry.json",
+  "scans": {
+    "package": {
+      "directory": "D:\\Craftmine World\\desktop\\build\\windows-preview-batch-07",
+      "files": 828,
+      "links": 0
+    },
+    "export": null
+  },
+  "ok": false,
+  "status": "fail",
+  "counts": {
+    "entries": 22,
+    "shippedByInventory": 16,
+    "verified": 2,
+    "pending": 19,
+    "unknownRightsShipped": 0,
+    "failures": 67
+  },
+  "entries": [
+    {
+      "id": "pi-desktop-upstream",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "shippedByInventory": true,
+      "reasons": [
+        "missing resources/licenses/GPL-3.0.txt"
+      ]
+    },
+    {
+      "id": "pi-desktop-modifications",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "shippedByInventory": true,
+      "reasons": []
+    },
+    {
+      "id": "craftmine-core",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "shippedByInventory": true,
+      "reasons": [
+        "missing resources/licenses/CRAFTMINE-LICENSE-AGPL-3.0.txt"
+      ]
+    },
+    {
+      "id": "app-creation-core",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "shippedByInventory": true,
+      "reasons": [
+        "missing resources/licenses/CRAFTMINE-LICENSE-AGPL-3.0.txt"
+      ]
+    },
+    {
+      "id": "plugin-craftmine-world",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "shippedByInventory": true,
+      "reasons": [
+        "missing resources/licenses/CRAFTMINE-LICENSE-AGPL-3.0.txt"
+      ]
+    },
+    {
+      "id": "world-workshop-3d",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "shippedByInventory": false,
+      "reasons": []
+    },
+    {
+      "id": "godot-web-bridge-runtime",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "shippedByInventory": true,
+      "reasons": [
+        "missing resources/licenses/CRAFTMINE-MIT.txt"
+      ]
+    },
+    {
+      "id": "godot-probes",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "shippedByInventory": true,
+      "reasons": []
+    },
+    {
+      "id": "base-first-person",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "shippedByInventory": true,
+      "reasons": [
+        "missing resources/licenses/CRAFTMINE-MIT.txt"
+      ]
+    },
+    {
+      "id": "base-top-down",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "shippedByInventory": true,
+      "reasons": [
+        "missing resources/licenses/CRAFTMINE-MIT.txt"
+      ]
+    },
+    {
+      "id": "base-side-view",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "shippedByInventory": true,
+      "reasons": [
+        "missing resources/licenses/CRAFTMINE-MIT.txt"
+      ]
+    },
+    {
+      "id": "godot-engine",
+      "status": "verified",
+      "verdict": "verified",
+      "shippedByInventory": true,
+      "reasons": []
+    },
+    {
+      "id": "godot-third-party-components",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "shippedByInventory": true,
+      "reasons": []
+    },
+    {
+      "id": "npm-third-party-dependencies",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "shippedByInventory": true,
+      "reasons": [
+        "missing resources/licenses/CRAFTMINE-MIT.txt",
+        "missing resources/licenses/third-party/LICENSE-Apache-2.0.txt",
+        "missing resources/licenses/third-party/LICENSE-ISC.txt",
+        "missing resources/licenses/third-party/LICENSE-BSD-3-Clause.txt",
+        "missing resources/licenses/third-party/LICENSE-BSD-2-Clause.txt",
+        "missing resources/licenses/third-party/LICENSE-MPL-2.0.txt"
+      ]
+    },
+    {
+      "id": "cargo-third-party-dependencies",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "shippedByInventory": true,
+      "reasons": [
+        "notice entry missing",
+        "missing resources/licenses/third-party/CARGO-NOTICES.md",
+        "missing resources/licenses/CRAFTMINE-MIT.txt",
+        "missing resources/licenses/third-party/LICENSE-Apache-2.0.txt",
+        "missing resources/licenses/third-party/LICENSE-MPL-2.0.txt",
+        "missing resources/licenses/third-party/LICENSE-BSD-3-Clause.txt",
+        "missing resources/licenses/third-party/LICENSE-Zlib.txt"
+      ]
+    },
+    {
+      "id": "bundled-fonts",
+      "status": "verified",
+      "verdict": "fail",
+      "shippedByInventory": true,
+      "reasons": [
+        "notice entry missing"
+      ]
+    },
+    {
+      "id": "audio-models",
+      "status": "verified",
+      "verdict": "verified",
+      "shippedByInventory": true,
+      "reasons": []
+    },
+    {
+      "id": "desktop-delivery-tooling",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "shippedByInventory": false,
+      "reasons": []
+    },
+    {
+      "id": "project-examples",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "shippedByInventory": false,
+      "reasons": []
+    },
+    {
+      "id": "godot-sandbox-probe",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "shippedByInventory": false,
+      "reasons": []
+    },
+    {
+      "id": "user-created-content",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "shippedByInventory": false,
+      "reasons": []
+    },
+    {
+      "id": "ai-generated-output",
+      "status": "unknown-rightsholder",
+      "verdict": "pending",
+      "shippedByInventory": false,
+      "reasons": []
+    }
+  ],
+  "pending": [
+    {
+      "id": "pi-desktop-upstream",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "reason": "Which upstream files are copyright of which contributor or entity is not enumerated; the upstream project's own contribution records were not audited."
+    },
+    {
+      "id": "pi-desktop-modifications",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "reason": "Whether each added file was authored in this repository or copied from an unrecorded source cannot be proved from the diff alone."
+    },
+    {
+      "id": "craftmine-core",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "reason": "The crate currently declares LGPL-3.0-or-later while the decision record targets AGPL-3.0-only plus commercial; the change is not applied and needs a rights determination first."
+    },
+    {
+      "id": "app-creation-core",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "reason": "No licence declaration exists today; adding AGPL-3.0-only requires a rights determination and is deliberately not done in this task."
+    },
+    {
+      "id": "plugin-craftmine-world",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "reason": "No licence declaration; applying AGPL-3.0-only needs the same rights review as app/."
+    },
+    {
+      "id": "world-workshop-3d",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "reason": "Whether any code or sample was copied from third-party tutorials, samples or another prototype is unrecorded."
+    },
+    {
+      "id": "godot-web-bridge-runtime",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "reason": "The formal MIT text and copyright-holder string for the export runtime are not written; the rights entry is 'pending per-module review' and is a preflight warning."
+    },
+    {
+      "id": "godot-probes",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "reason": "Formal MIT text and copyright holder are not written; the rights entry is 'pending per-module review'."
+    },
+    {
+      "id": "base-first-person",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "reason": "Per-file authorship confirmation before the MIT grant is applied to export-runtime files is still open."
+    },
+    {
+      "id": "base-top-down",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "reason": "The formal MIT text and copyright-holder string are not written."
+    },
+    {
+      "id": "base-side-view",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "reason": "Formal MIT text and copyright-holder string are not written."
+    },
+    {
+      "id": "godot-third-party-components",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "reason": "The aggregate file has not been decomposed into per-component licence identifiers and obligations (for example permissive vs notice-bearing vs copyleft)."
+    },
+    {
+      "id": "npm-third-party-dependencies",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "reason": "45 installed packages have no copied licence text; for those the notice obligation is recorded but not satisfied by a bundled text."
+    },
+    {
+      "id": "cargo-third-party-dependencies",
+      "status": "pending-rights-review",
+      "verdict": "fail",
+      "reason": "No consolidated third-party Rust notice file is generated yet; MIT/Apache-2.0 attribution texts are not bundled for the Rust dependencies."
+    },
+    {
+      "id": "desktop-delivery-tooling",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "reason": "Contributor and employer rights are unrecorded."
+    },
+    {
+      "id": "project-examples",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "reason": "Whether these examples ship in the client or in exports is not decided; the target MIT text is not written."
+    },
+    {
+      "id": "godot-sandbox-probe",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "reason": "Contributor rights are unrecorded."
+    },
+    {
+      "id": "user-created-content",
+      "status": "pending-rights-review",
+      "verdict": "pending",
+      "reason": "The project makes no warranty about the provenance or rights of content a user imports."
+    },
+    {
+      "id": "ai-generated-output",
+      "status": "unknown-rightsholder",
+      "verdict": "pending",
+      "reason": "Copyright status of AI-generated output depends on jurisdiction and the provider's terms and has not been determined."
+    }
+  ],
+  "failures": [
+    {
+      "code": "TARGET_LICENCE_TEXT_MISSING",
+      "entryId": "pi-desktop-upstream",
+      "message": "pi-desktop-upstream needs resources/licenses/GPL-3.0.txt (offline-entry id gpl-3.0): LGPL-3 incorporates GPL-3 by reference; the full GPL-3 text is not bundled in the package. Whether it must be is an open legal question."
+    },
+    {
+      "code": "TARGET_LICENCE_TEXT_MISSING",
+      "entryId": "craftmine-core",
+      "message": "craftmine-core needs resources/licenses/CRAFTMINE-LICENSE-AGPL-3.0.txt (offline-entry id agpl-3.0): The AGPL-3.0-only target is not applied; no AGPL text is placed in the package yet."
+    },
+    {
+      "code": "TARGET_LICENCE_TEXT_MISSING",
+      "entryId": "app-creation-core",
+      "message": "app-creation-core needs resources/licenses/CRAFTMINE-LICENSE-AGPL-3.0.txt (offline-entry id agpl-3.0): The AGPL-3.0-only target is not applied; no AGPL text is placed in the package yet."
+    },
+    {
+      "code": "TARGET_LICENCE_TEXT_MISSING",
+      "entryId": "plugin-craftmine-world",
+      "message": "plugin-craftmine-world needs resources/licenses/CRAFTMINE-LICENSE-AGPL-3.0.txt (offline-entry id agpl-3.0): The AGPL-3.0-only target is not applied; no AGPL text is placed in the package yet."
+    },
+    {
+      "code": "TARGET_LICENCE_TEXT_MISSING",
+      "entryId": "godot-web-bridge-runtime",
+      "message": "godot-web-bridge-runtime needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet."
+    },
+    {
+      "code": "TARGET_LICENCE_TEXT_MISSING",
+      "entryId": "base-first-person",
+      "message": "base-first-person needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet."
+    },
+    {
+      "code": "TARGET_LICENCE_TEXT_MISSING",
+      "entryId": "base-top-down",
+      "message": "base-top-down needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet."
+    },
+    {
+      "code": "TARGET_LICENCE_TEXT_MISSING",
+      "entryId": "base-side-view",
+      "message": "base-side-view needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet."
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "npm-third-party-dependencies",
+      "message": "npm-third-party-dependencies needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet."
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "npm-third-party-dependencies",
+      "message": "npm-third-party-dependencies needs resources/licenses/third-party/LICENSE-Apache-2.0.txt (offline-entry id apache-2.0): Canonical Apache-2.0 text is not bundled."
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "npm-third-party-dependencies",
+      "message": "npm-third-party-dependencies needs resources/licenses/third-party/LICENSE-ISC.txt (offline-entry id isc): Canonical ISC text is not bundled."
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "npm-third-party-dependencies",
+      "message": "npm-third-party-dependencies needs resources/licenses/third-party/LICENSE-BSD-3-Clause.txt (offline-entry id bsd-3-clause): Canonical BSD-3-Clause text is not bundled."
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "npm-third-party-dependencies",
+      "message": "npm-third-party-dependencies needs resources/licenses/third-party/LICENSE-BSD-2-Clause.txt (offline-entry id bsd-2-clause): Canonical BSD-2-Clause text is not bundled."
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "npm-third-party-dependencies",
+      "message": "npm-third-party-dependencies needs resources/licenses/third-party/LICENSE-MPL-2.0.txt (offline-entry id mpl-2.0): Canonical MPL-2.0 text is not bundled; the MPL-2.0 dependencies' source-availability conditions are unreviewed."
+    },
+    {
+      "code": "NOTICE_ENTRY_MISSING",
+      "entryId": "cargo-third-party-dependencies",
+      "message": "package notice document does not mention Cargo (entry cargo-third-party-dependencies)"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "cargo-third-party-dependencies",
+      "message": "cargo-third-party-dependencies needs resources/licenses/third-party/CARGO-NOTICES.md (offline-entry id cargo-third-party-notices): No consolidated Rust third-party notice file is generated yet; MIT/Apache-2.0 attribution for the 140 crates is therefore absent."
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "cargo-third-party-dependencies",
+      "message": "cargo-third-party-dependencies needs resources/licenses/CRAFTMINE-MIT.txt (offline-entry id mit): The MIT target for project export runtime/example code is not applied; no project MIT text with a copyright-holder string is written yet."
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "cargo-third-party-dependencies",
+      "message": "cargo-third-party-dependencies needs resources/licenses/third-party/LICENSE-Apache-2.0.txt (offline-entry id apache-2.0): Canonical Apache-2.0 text is not bundled."
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "cargo-third-party-dependencies",
+      "message": "cargo-third-party-dependencies needs resources/licenses/third-party/LICENSE-MPL-2.0.txt (offline-entry id mpl-2.0): Canonical MPL-2.0 text is not bundled; the MPL-2.0 dependencies' source-availability conditions are unreviewed."
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "cargo-third-party-dependencies",
+      "message": "cargo-third-party-dependencies needs resources/licenses/third-party/LICENSE-BSD-3-Clause.txt (offline-entry id bsd-3-clause): Canonical BSD-3-Clause text is not bundled."
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": "cargo-third-party-dependencies",
+      "message": "cargo-third-party-dependencies needs resources/licenses/third-party/LICENSE-Zlib.txt (offline-entry id zlib): Canonical Zlib text is not bundled."
+    },
+    {
+      "code": "NOTICE_ENTRY_MISSING",
+      "entryId": "bundled-fonts",
+      "message": "package notice document does not mention OFL (entry bundled-fonts)"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @algolia/autocomplete-core@1.17.7"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @algolia/autocomplete-plugin-algolia-insights@1.17.7"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @algolia/autocomplete-preset-algolia@1.17.7"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @algolia/autocomplete-shared@1.17.7"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @aws-sdk/credential-provider-http@3.972.62"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @aws-sdk/credential-provider-login@3.972.67"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @aws-sdk/nested-clients@3.997.34"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @docsearch/css@3.8.2"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @docsearch/js@3.8.2"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @docsearch/react@3.8.2"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @earendil-works/chord@0.85.1"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @earendil-works/pi-agent-core@0.85.1"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @earendil-works/pi-ai@0.85.1"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @earendil-works/pi-telemetry@0.85.1"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @electron-internal/extract-zip@1.0.5"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @esbuild/win32-x64@0.25.12"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @esbuild/win32-x64@0.28.1"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @iconify-json/simple-icons@1.2.93"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @rollup/rollup-win32-x64-gnu@4.62.2"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: @rollup/rollup-win32-x64-msvc@4.62.2"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: app-builder-lib@26.15.3"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: chromium-pickle-js@0.2.0"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: compare-version@0.1.2"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: cross-dirname@0.1.0"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: data-uri-to-buffer@4.0.1"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: dmg-builder@26.15.3"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: emoji-regex@8.0.0"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: err-code@2.0.3"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: filelist@1.0.6"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: ignore@7.0.5"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: isarray@1.0.0"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: jake@10.9.4"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: jsesc@3.1.0"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: keyv@4.5.4"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: lazy-val@1.0.5"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: node-api-version@0.2.1"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: read-binary-file-arch@1.0.6"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: rehype-katex@7.0.1"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: remark-math@6.0.0"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: stackback@0.0.2"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: standardwebhooks@1.1.1"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: temp-file@3.4.0"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: tiny-async-pool@1.3.0"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: tmp-promise@3.0.3"
+    },
+    {
+      "code": "MISSING_LICENCE_TEXT",
+      "entryId": null,
+      "message": "Installed package has no bundled licence text: truncate-utf8-bytes@1.0.2"
+    }
+  ],
+  "limits": [
+    "Read-only: nothing inside the scanned package or export is modified.",
+    "Pending-rights-review and unknown-rightsholder entries are reported as pending and are never a pass.",
+    "A present licence text proves the file exists at the declared path; it is not a legal sufficiency opinion.",
+    "Skipped scans are not verified and are listed explicitly."
+  ]
+}
