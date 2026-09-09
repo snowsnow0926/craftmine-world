@@ -498,6 +498,9 @@ impl TaskJournal {
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
         let workspace = scope(&tx, &args.context, &args.world_id, true)?;
+        // A world switched to the managed Git backend must not create a second,
+        // parallel source history through the legacy tables.
+        super::content_history::migration::assert_legacy_writes_allowed(&tx, &args.world_id)?;
         if let Some(result) = receipt(
             &tx,
             &workspace.task.binding.task_id,
@@ -611,6 +614,7 @@ impl TaskJournal {
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
         let workspace = scope(&tx, &args.context, &args.world_id, true)?;
+        super::content_history::migration::assert_legacy_writes_allowed(&tx, &args.world_id)?;
         if let Some(result) = receipt(
             &tx,
             &workspace.task.binding.task_id,
