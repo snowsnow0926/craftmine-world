@@ -310,6 +310,15 @@ try {
   });
   check("窄窗下长中文标题不撑破列宽", narrow.width <= 300 && narrow.overflow <= 0, narrow);
   check("窄窗下布局与恢复默认入口仍可达", narrow.resetVisible);
+  await page.setViewportSize({width: 900, height: 900});
+  await page.evaluate(() => { document.body.style.zoom = "1.5"; });
+  const zoomed = await page.evaluate(() => ({
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    rows: document.querySelectorAll("[data-world-id]").length,
+    reset: !!document.querySelector("[data-action='reset-layout']"),
+  }));
+  await page.evaluate(() => { document.body.style.zoom = ""; });
+  check("150% 缩放下列表与入口仍完整", zoomed.overflow <= 0 && zoomed.rows >= 2 && zoomed.reset, zoomed);
   check("没有请求鼠标锁定或焦点", await page.evaluate(() => __audit.lock === 0 && __audit.focus === 0));
   check("页面没有未处理异常", pageErrors.length === 0, pageErrors);
   await page.screenshot({path: path.join(out, "creation-flow.png")});

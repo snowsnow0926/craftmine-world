@@ -164,8 +164,29 @@ test("auxiliary sections cover the six surfaces and report missing channels", as
   assert.match(aux.auxSummaryText({ id: "x", label: "x", count: 3, detail: "passed" }, "zh"), /3/);
 });
 
-test("auxiliary expansion is remembered per section and tolerates corrupt storage", () => {
-  const store = new Map();
+test("the tasks row reports real resumable drafts when the host exposes them", async () => {
+  const calls = [];
+  const bridge = {
+    call: async (channel, payload) => {
+      calls.push([channel, payload]);
+      if (channel === "task.current") return { context: { status: "interrupted", binding: { taskId: "t1" } } };
+      if (channel === "task.recoverable") return { items: [{ taskId: "t1" }, { taskId: "t2" }], modelReplay: false };
+      return {};
+    },
+  };
+  const summary = await aux.loadAuxSummary(bridge, "w1", "tasks");
+  assert.deepEqual(calls.map(([channel]) => channel), ["task.current", "task.recoverable"]);
+  assert.equal(calls[1][1].worldId, "w1");
+  assert.match(summary.detail, /interrupted/);
+  assert.match(summary.detail, /2/);
+  const silent = await aux.loadAuxSummary({ call: async (channel) => {
+    if (channel === "task.current") return { context: { status: "running", binding: { taskId: "t1" } } };
+    throw Error("PERMISSION_DENIED");
+  } }, "w1", "tasks");
+  assert.equal(silent.detail, "running");
+});
+
+test("auxiliary expansion is remembered per section and tolerates corrupt storage", () => {  const store = new Map();
   const storage = { getItem: (key) => store.get(key) ?? null, setItem: (key, value) => store.set(key, value) };
   layout.rememberCraftmineAux(storage, "checks", true);
   layout.rememberCraftmineAux(storage, "memory", true);
