@@ -1,0 +1,148 @@
+<style>
+#cw-layout-proposal{--cw-bg:light-dark(#fafafa,#171717);--cw-side:light-dark(#f1f1f1,#101010);--cw-panel:light-dark(#ffffff,#1c1c1c);--cw-soft:light-dark(#e9e9e9,#292929);--cw-line:light-dark(#d8d8d8,#353535);--cw-text:light-dark(#202020,#f0f0f0);--cw-muted:light-dark(#626262,#ababab);--cw-accent:light-dark(#355a46,#b5dbc2);--cw-sky:light-dark(#bad6d5,#77999c);--cw-grass:light-dark(#82a769,#62894f);--cw-tree:light-dark(#47734b,#416545);--cw-leaf:light-dark(#638e51,#5a7d4d);--cw-wood:light-dark(#886144,#78573f);--cw-path:light-dark(#d4b993,#ae956f);--cw-water:light-dark(#7daab3,#557f8d);--cw-stone:light-dark(#89918a,#5c696a);--cw-night:light-dark(#53667a,#354153);--cw-chat:310px;color:var(--cw-text);font-family:'Segoe UI','Microsoft YaHei',sans-serif;font-size:14px;line-height:1.5;width:100%;background:var(--cw-bg);border:1px solid var(--cw-line);border-radius:10px;overflow:hidden;box-sizing:border-box;container-type:inline-size}
+#cw-layout-proposal *{box-sizing:border-box}
+#cw-layout-proposal [hidden]{display:none!important}
+#cw-layout-proposal button,#cw-layout-proposal textarea{font:inherit;color:inherit}
+#cw-layout-proposal button{cursor:pointer;background:transparent;border:0;border-radius:6px;padding:7px 10px;display:inline-flex;align-items:center;justify-content:center;gap:7px;text-align:left}
+#cw-layout-proposal button:hover{background:var(--cw-soft)}
+#cw-layout-proposal button[aria-pressed=true]{background:var(--cw-soft);color:var(--cw-text)}
+#cw-layout-proposal button:disabled{cursor:default;opacity:.5}
+#cw-layout-proposal .cw-icon{padding:7px;flex-shrink:0}
+#cw-layout-proposal .cw-titlebar{min-height:42px;padding:7px 14px;border-bottom:1px solid var(--cw-line);display:flex;gap:12px;align-items:center;background:var(--cw-panel)}
+#cw-layout-proposal .cw-brand{font-weight:500;display:flex;gap:8px;align-items:center}
+#cw-layout-proposal .cw-note{color:var(--cw-muted);font-size:12px}
+#cw-layout-proposal .cw-end{margin-left:auto}
+#cw-layout-proposal .cw-layout{display:grid;grid-template-columns:148px minmax(0,1fr) var(--cw-chat);min-height:518px}
+#cw-layout-proposal .cw-sidebar{background:var(--cw-side);padding:13px 9px;display:flex;flex-direction:column;gap:6px;border-right:1px solid var(--cw-line);min-width:0}
+#cw-layout-proposal .cw-section-label{font-size:12px;color:var(--cw-muted);padding:7px 8px}
+#cw-layout-proposal .cw-world-item{display:flex;width:100%;justify-content:flex-start;padding:10px 8px;gap:8px}
+#cw-layout-proposal .cw-world-item span{display:block;min-width:0;overflow-wrap:anywhere}
+#cw-layout-proposal .cw-world-item small{display:block;font-size:11px;color:var(--cw-muted);margin-top:3px}
+#cw-layout-proposal .cw-sidebar-foot{margin-top:auto;border-top:1px solid var(--cw-line);padding:10px 8px 0;color:var(--cw-muted);font-size:12px}
+#cw-layout-proposal .cw-workspace{min-width:0;display:flex;flex-direction:column}
+#cw-layout-proposal .cw-worldbar{padding:10px 13px;border-bottom:1px solid var(--cw-line);display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-height:58px}
+#cw-layout-proposal .cw-world-title{font-weight:500;overflow-wrap:anywhere}
+#cw-layout-proposal .cw-mode{display:flex;gap:3px;margin-left:auto;font-size:12px}
+#cw-layout-proposal .cw-stage{position:relative;min-height:366px;flex:1;isolation:isolate;background:var(--cw-sky)}
+#cw-layout-proposal .cw-scene{position:absolute;inset:0;width:100%;height:100%}
+#cw-layout-proposal .cw-scene-note{position:absolute;top:12px;left:12px;padding:5px 8px;background:var(--cw-panel);border-radius:5px;font-size:11px;color:var(--cw-muted)}
+#cw-layout-proposal .cw-world-action{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);max-width:calc(100% - 24px);background:var(--cw-panel);padding:9px 16px;border-radius:7px;text-align:center;white-space:nowrap}
+#cw-layout-proposal .cw-world-action strong{font-weight:500;display:block}
+#cw-layout-proposal .cw-world-action span{font-size:11px;color:var(--cw-muted)}
+#cw-layout-proposal .cw-world-footer{min-height:54px;display:flex;gap:4px;align-items:center;flex-wrap:wrap;padding:8px 10px;background:var(--cw-panel);font-size:12px}
+#cw-layout-proposal .cw-world-footer span{padding:5px 7px;color:var(--cw-muted)}
+#cw-layout-proposal .cw-chat{min-width:0;display:flex;flex-direction:column;border-left:1px solid var(--cw-line);background:var(--cw-panel)}
+#cw-layout-proposal .cw-chatbar{padding:13px 14px;border-bottom:1px solid var(--cw-line);display:flex;align-items:center;gap:8px;min-height:58px}
+#cw-layout-proposal .cw-chatbody{padding:17px 16px;display:flex;flex-direction:column;gap:18px;flex:1}
+#cw-layout-proposal .cw-user-message{background:var(--cw-soft);border-radius:9px;padding:11px 13px;margin-left:18px;overflow-wrap:anywhere}
+#cw-layout-proposal .cw-reply{padding:0 2px;overflow-wrap:anywhere}
+#cw-layout-proposal .cw-reply p{margin:0 0 9px}
+#cw-layout-proposal .cw-result{display:flex;align-items:center;gap:6px;color:var(--cw-accent);font-size:12px;margin-bottom:10px}
+#cw-layout-proposal .cw-details{font-size:12px;color:var(--cw-muted)}
+#cw-layout-proposal .cw-details summary{cursor:pointer}
+#cw-layout-proposal .cw-details p{margin:8px 0 0}
+#cw-layout-proposal .cw-compose{margin:0 12px 12px;background:var(--cw-soft);border:1px solid var(--cw-line);border-radius:11px;padding:11px}
+#cw-layout-proposal textarea{width:100%;resize:vertical;min-height:66px;max-height:160px;border:0;background:transparent;padding:0;font-size:14px}
+#cw-layout-proposal textarea::placeholder{color:var(--cw-muted)}
+#cw-layout-proposal .cw-composebar{display:flex;gap:6px;align-items:center;font-size:11px;color:var(--cw-muted)}
+#cw-layout-proposal .cw-composebar button{margin-left:auto;background:var(--cw-panel)}
+#cw-layout-proposal[data-play=true] .cw-layout{grid-template-columns:minmax(0,1fr)}
+#cw-layout-proposal[data-play=true] .cw-sidebar,#cw-layout-proposal[data-play=true] .cw-chat{display:none}
+#cw-layout-proposal[data-compact=true] .cw-layout{grid-template-columns:64px minmax(0,1fr) var(--cw-chat)}
+#cw-layout-proposal[data-compact=true] .cw-sidebar .cw-world-item span,#cw-layout-proposal[data-compact=true] .cw-section-label,#cw-layout-proposal[data-compact=true] .cw-sidebar-foot{display:none}
+#cw-layout-proposal[data-compact=true] .cw-world-item{justify-content:center;padding:12px 7px}
+#cw-layout-proposal[data-play=true] .cw-layout{grid-template-columns:minmax(0,1fr)}
+@container(max-width:850px){#cw-layout-proposal .cw-layout{grid-template-columns:60px minmax(0,1fr) 280px}#cw-layout-proposal .cw-sidebar .cw-world-item span,#cw-layout-proposal .cw-section-label,#cw-layout-proposal .cw-sidebar-foot{display:none}#cw-layout-proposal .cw-world-item{justify-content:center;padding:12px 7px}#cw-layout-proposal[data-compact=true] .cw-layout{grid-template-columns:60px minmax(0,1fr) 280px}}
+@container(max-width:620px){#cw-layout-proposal .cw-layout,#cw-layout-proposal[data-compact=true] .cw-layout{display:flex;flex-direction:column}#cw-layout-proposal .cw-sidebar{flex-direction:row;border-right:0;border-bottom:1px solid var(--cw-line);padding:6px;gap:4px}#cw-layout-proposal .cw-world-item{width:auto;flex:1}#cw-layout-proposal .cw-sidebar .cw-world-item span{display:block;font-size:12px}#cw-layout-proposal .cw-sidebar .cw-world-item small{display:none}#cw-layout-proposal .cw-stage{min-height:300px}#cw-layout-proposal .cw-chat{border-left:0;border-top:1px solid var(--cw-line)}#cw-layout-proposal .cw-titlebar{flex-wrap:wrap}#cw-layout-proposal .cw-chatbody{gap:12px}#cw-layout-proposal .cw-titlebar .cw-end{margin-left:0}#cw-layout-proposal .cw-worldbar{padding:9px}}
+@media(pointer:coarse){#cw-layout-proposal button{min-height:44px}#cw-layout-proposal textarea{font-size:16px}}
+</style>
+<div id="cw-layout-proposal" data-play="false" data-compact="false" aria-label="世界居中、对话居右的客户端布局方案">
+  <div class="cw-titlebar"><span class="cw-brand"><i data-lucide="box" aria-hidden="true"></i>最中幻想</span><span class="cw-note">布局提案</span><span class="cw-note cw-end">2D 底座为规划示意</span></div>
+  <div class="cw-layout">
+    <nav class="cw-sidebar" aria-label="世界示例">
+      <div class="cw-section-label">世界</div>
+      <button class="cw-world-item" type="button" data-world="3d" aria-pressed="true" aria-label="我的第一个世界，3D 第一人称"><i data-lucide="box" aria-hidden="true"></i><span>我的第一个世界<small>3D 第一人称</small></span></button>
+      <button class="cw-world-item" type="button" data-world="topdown" aria-pressed="false" aria-label="像素小镇，2D 俯视角方案"><i data-lucide="grid-2x2" aria-hidden="true"></i><span>像素小镇<small>2D 俯视 · 方案</small></span></button>
+      <button class="cw-world-item" type="button" data-world="side" aria-pressed="false" aria-label="横版遗迹，2D 横版方案"><i data-lucide="mountain" aria-hidden="true"></i><span>横版遗迹<small>2D 横版 · 方案</small></span></button>
+      <div class="cw-sidebar-foot">每个世界保留自己的对话与进度</div>
+    </nav>
+    <main class="cw-workspace">
+      <div class="cw-worldbar"><span class="cw-world-title" data-world-title>我的第一个世界</span><div class="cw-mode" aria-label="工作区模式"><button type="button" data-mode="create" aria-pressed="true">创作</button><button type="button" data-mode="play" aria-pressed="false">游玩</button></div></div>
+      <div class="cw-stage" aria-label="场景布局示意">
+        <svg class="cw-scene" data-scene="3d" viewBox="0 0 600 430" preserveAspectRatio="xMidYMid slice" role="img" aria-label="3D 草地与树木场景示意">
+          <rect width="600" height="430" fill="var(--cw-sky)"/>
+          <path d="M0 158H600V430H0Z" fill="var(--cw-grass)"/>
+          <g stroke="var(--cw-leaf)" stroke-width="1" opacity=".48"><path d="M300 158L-180 430M300 158L0 430M300 158L150 430M300 158L300 430M300 158L450 430M300 158L600 430M300 158L780 430M0 181H600M0 211H600M0 254H600M0 314H600M0 395H600"/></g>
+          <path d="M182 143H204V212H182Z" fill="var(--cw-wood)"/>
+          <path d="M132 103L184 84L242 108L194 129Z" fill="var(--cw-leaf)"/><path d="M132 103V155L194 181V129Z" fill="var(--cw-tree)"/><path d="M194 129L242 108V158L194 181Z" fill="var(--cw-leaf)"/>
+          <path d="M415 152H429V196H415Z" fill="var(--cw-wood)"/><path d="M381 126L417 110L457 127L421 142Z" fill="var(--cw-leaf)"/><path d="M381 126V160L421 180V142Z" fill="var(--cw-tree)"/><path d="M421 142L457 127V162L421 180Z" fill="var(--cw-leaf)"/>
+          <path d="M242 284L332 275L373 319L269 333Z" fill="none" stroke="var(--cw-panel)" stroke-width="2"/>
+          <path d="M301 220H313M307 214V226" stroke="var(--cw-panel)" stroke-width="2"/>
+        </svg>
+        <svg class="cw-scene" data-scene="topdown" viewBox="0 0 600 430" preserveAspectRatio="xMidYMid slice" role="img" aria-label="2D 俯视小镇的规划示意" hidden>
+          <defs><pattern id="cw-tile-grid" width="32" height="32" patternUnits="userSpaceOnUse"><rect width="32" height="32" fill="var(--cw-grass)"/><path d="M2 32H32V2" fill="none" stroke="var(--cw-leaf)" stroke-opacity=".22"/></pattern></defs>
+          <rect width="600" height="430" fill="url(#cw-tile-grid)"/>
+          <path d="M0 220H600V268H0ZM280 0H328V430H280Z" fill="var(--cw-path)"/>
+          <path d="M454 0H600V173H517V133H454Z" fill="var(--cw-water)"/>
+          <path d="M128 103H240V196H128Z" fill="var(--cw-path)"/><path d="M110 94H254V150H110Z" fill="var(--cw-wood)"/><path d="M124 83H240V104H124Z" fill="var(--cw-wood)"/>
+          <rect x="174" y="167" width="29" height="29" fill="var(--cw-wood)"/>
+          <g fill="var(--cw-tree)"><rect x="70" y="58" width="42" height="42"/><rect x="61" y="69" width="60" height="23"/><rect x="355" y="64" width="47" height="45"/><rect x="50" y="319" width="48" height="40"/></g>
+          <rect x="364" y="296" width="135" height="72" fill="var(--cw-wood)"/>
+          <g fill="var(--cw-leaf)"><rect x="378" y="306" width="16" height="12"/><rect x="415" y="306" width="16" height="12"/><rect x="452" y="306" width="16" height="12"/><rect x="378" y="339" width="16" height="12"/><rect x="415" y="339" width="16" height="12"/><rect x="452" y="339" width="16" height="12"/></g>
+          <rect x="296" y="213" width="17" height="16" fill="var(--cw-path)"/><rect x="292" y="229" width="25" height="25" fill="var(--cw-panel)"/><path d="M294 254V262M313 254V262" stroke="var(--cw-wood)" stroke-width="7"/>
+        </svg>
+        <svg class="cw-scene" data-scene="side" viewBox="0 0 600 430" preserveAspectRatio="xMidYMid slice" role="img" aria-label="横版遗迹与平台的规划示意" hidden>
+          <rect width="600" height="430" fill="var(--cw-night)"/>
+          <g fill="var(--cw-stone)" opacity=".32"><rect x="47" y="85" width="33" height="255"/><rect x="223" y="44" width="33" height="296"/><rect x="415" y="85" width="33" height="255"/><rect x="20" y="83" width="500" height="18"/></g>
+          <path d="M0 333H227V430H0ZM318 333H600V430H318ZM194 263H308V283H194ZM336 209H457V229H336ZM469 157H600V177H469Z" fill="var(--cw-stone)"/>
+          <path d="M0 333H227M318 333H600M194 263H308M336 209H457M469 157H600" stroke="var(--cw-leaf)" stroke-width="7"/>
+          <rect x="133" y="288" width="18" height="17" fill="var(--cw-path)"/><rect x="128" y="305" width="28" height="21" fill="var(--cw-panel)"/><path d="M132 326V333M153 326V333" stroke="var(--cw-wood)" stroke-width="7"/>
+          <path d="M501 102H539V154H528V113H512V154H501Z" fill="var(--cw-path)"/>
+          <path d="M380 171L386 181L380 191L374 181Z" fill="var(--cw-path)"/>
+        </svg>
+        <span class="cw-scene-note" data-scene-label>3D 第一人称 · 场景示意</span>
+      </div>
+      <div class="cw-world-footer" aria-label="世界辅助工作区示意"><span>作品与素材</span><span>检查记录</span><span>历史与备份</span><span class="cw-end">按需展开</span></div>
+    </main>
+    <aside class="cw-chat" aria-label="当前世界的创作对话">
+      <div class="cw-chatbar"><i data-lucide="messages-square" aria-hidden="true"></i><span>创作对话</span></div>
+      <div class="cw-chatbody" aria-live="polite">
+        <div class="cw-note" data-chat-world>我的第一个世界 · 对话示意</div>
+        <div class="cw-user-message" data-prompt>在树旁种一些小花，留出一条可以走的小路。</div>
+        <div class="cw-reply"><div class="cw-result"><i data-lucide="sparkles" aria-hidden="true"></i>创作方案</div><p data-reply>沿两棵树之间留出通道，小花分布在道路两侧。</p><details class="cw-details"><summary>修改范围</summary><p data-scope>花草与道路布局。</p></details></div>
+      </div>
+      <div class="cw-compose"><textarea aria-label="创作输入区示意" placeholder="想在这个世界里创造什么？"></textarea><div class="cw-composebar"><span>讨论 / 创作</span><button type="button" disabled aria-label="发送按钮，布局示意不发送请求"><i data-lucide="arrow-up" aria-hidden="true"></i></button></div></div>
+    </aside>
+  </div>
+</div>
+<script>
+(()=>{
+  const root=document.getElementById('cw-layout-proposal');
+  const settings={chatWidth:310,compactSidebar:false};
+  const worlds={
+    '3d':{title:'我的第一个世界',label:'3D 第一人称 · 场景示意',prompt:'在树旁种一些小花，留出一条可以走的小路。',reply:'沿两棵树之间留出通道，小花分布在道路两侧。',scope:'花草与道路布局。'},
+    topdown:{title:'像素小镇',label:'2D 俯视 · 规划示意',prompt:'在小镇里加一家杂货店，让店主可以买卖物品。',reply:'把小路旁的房子改成杂货店，加入店主、商品和买卖对话。',scope:'房屋用途、店主与商店规则。'},
+    side:{title:'横版遗迹',label:'2D 横版 · 规划示意',prompt:'让我获得二段跳后，能回到这里到达上方的门。',reply:'保留回到这里的路线，调整上方平台高度，让新能力能打开新的探索区域。',scope:'平台高度、能力解锁与通路。'}
+  };
+  function selectWorld(id){
+    const world=worlds[id];if(!world)return;
+    root.dataset.world=id;
+    root.querySelector('[data-world-title]').textContent=world.title;
+    root.querySelector('[data-chat-world]').textContent=world.title+' · 对话示意';
+    root.querySelector('[data-prompt]').textContent=world.prompt;
+    root.querySelector('[data-reply]').textContent=world.reply;
+    root.querySelector('[data-scope]').textContent=world.scope;
+    root.querySelector('[data-scene-label]').textContent=world.label;
+    root.querySelectorAll('[data-world]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.world===id)));
+    root.querySelectorAll('[data-scene]').forEach(el=>el.toggleAttribute('hidden',el.dataset.scene!==id));
+  }
+  root.querySelectorAll('button[data-world]').forEach(el=>el.addEventListener('click',()=>selectWorld(el.dataset.world)));
+  root.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>{
+    const playing=el.dataset.mode==='play';root.dataset.play=String(playing);
+    root.querySelectorAll('[data-mode]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn===el)));
+  }));
+  function renderSettings(){root.style.setProperty('--cw-chat',settings.chatWidth+'px');root.dataset.compact=String(settings.compactSidebar);}
+  selectWorld('3d');renderSettings();
+  if(globalThis.Tweak){const tweak=new Tweak({container:root,onChange:renderSettings});tweak.addSlider(settings,'chatWidth',{label:'对话栏宽度',min:280,max:380,step:10,unit:'px'});tweak.addToggle(settings,'compactSidebar',{label:'收起左侧世界列表'});}
+})();
+</script>
