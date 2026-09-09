@@ -1,0 +1,153 @@
+{
+  "format": "craftmine.dispatch-plan/1",
+  "version": "w2-w5-v1",
+  "createdAt": "2026-09-09T06:06:58.278Z",
+  "product": "craftmine world / 最中幻想",
+  "codeBaseline": "07969ec5cf5a821b7e5d491f0ce51fbbb4dc8fcd",
+  "dispatchRef": "dispatch/w2-w5-v1",
+  "execution": "manual_user_dispatch_no_agents_started",
+  "primaryBranch": "master",
+  "commonDocuments": [
+    "00_README.md",
+    "01_COMMON_RULES.md",
+    "02_HANDOFF_CONTRACTS.md",
+    "03_REPORT_TEMPLATE.md"
+  ],
+  "tasks": [
+    {
+      "id": "A",
+      "prompt": "A_RUST_DOMAIN.md",
+      "objective": "Rust 作品记忆、任务事实、预算和备份事务",
+      "milestones": [
+        "W2",
+        "W3",
+        "W5"
+      ],
+      "canStartInFirstWave": true,
+      "integrationDependencies": [],
+      "status": "not_dispatched",
+      "report": "docs/dispatch-reports/A/REPORT_A.md",
+      "delivery": "docs/dispatch-reports/A/DELIVERY_A.json",
+      "interfaces": "docs/dispatch-reports/A/INTERFACE_A.md"
+    },
+    {
+      "id": "B",
+      "prompt": "B_HARNESS_CONTEXT.md",
+      "objective": "PI 请求上下文、预算、压缩和恢复",
+      "milestones": [
+        "W2",
+        "W3"
+      ],
+      "canStartInFirstWave": true,
+      "integrationDependencies": [
+        "A"
+      ],
+      "status": "not_dispatched",
+      "report": "docs/dispatch-reports/B/REPORT_B.md",
+      "delivery": "docs/dispatch-reports/B/DELIVERY_B.json",
+      "interfaces": "docs/dispatch-reports/B/INTERFACE_B.md"
+    },
+    {
+      "id": "C",
+      "prompt": "C_DESKTOP_EXPERIENCE.md",
+      "objective": "完整 PI 桌面与世界创作界面",
+      "milestones": [
+        "W1",
+        "W2",
+        "W3",
+        "W5"
+      ],
+      "canStartInFirstWave": true,
+      "integrationDependencies": [
+        "A",
+        "B",
+        "D",
+        "E"
+      ],
+      "status": "not_dispatched",
+      "report": "docs/dispatch-reports/C/REPORT_C.md",
+      "delivery": "docs/dispatch-reports/C/DELIVERY_C.json",
+      "interfaces": "docs/dispatch-reports/C/INTERFACE_C.md"
+    },
+    {
+      "id": "D",
+      "prompt": "D_GAMEPLAY_EXTENSIONS.md",
+      "objective": "花草、组合玩法和扩展实际验收",
+      "milestones": [
+        "W2",
+        "W4"
+      ],
+      "canStartInFirstWave": true,
+      "integrationDependencies": [
+        "A"
+      ],
+      "status": "not_dispatched",
+      "report": "docs/dispatch-reports/D/REPORT_D.md",
+      "delivery": "docs/dispatch-reports/D/DELIVERY_D.json",
+      "interfaces": "docs/dispatch-reports/D/INTERFACE_D.md"
+    },
+    {
+      "id": "E",
+      "prompt": "E_WINDOWS_DELIVERY.md",
+      "objective": "Windows 凭据、安装升级、诊断和发行材料",
+      "milestones": [
+        "W5"
+      ],
+      "canStartInFirstWave": true,
+      "integrationDependencies": [
+        "A"
+      ],
+      "status": "not_dispatched",
+      "report": "docs/dispatch-reports/E/REPORT_E.md",
+      "delivery": "docs/dispatch-reports/E/DELIVERY_E.json",
+      "interfaces": "docs/dispatch-reports/E/INTERFACE_E.md"
+    },
+    {
+      "id": "F",
+      "prompt": "F_NATIVE_ACCEPTANCE.md",
+      "objective": "原生真实模型与恢复、玩法、程序包验收准备",
+      "milestones": [
+        "W2",
+        "W3",
+        "W4",
+        "W5"
+      ],
+      "canStartInFirstWave": true,
+      "integrationDependencies": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ],
+      "status": "not_dispatched",
+      "report": "docs/dispatch-reports/F/REPORT_F.md",
+      "delivery": "docs/dispatch-reports/F/DELIVERY_F.json",
+      "interfaces": "docs/dispatch-reports/F/INTERFACE_F.md"
+    },
+    {
+      "id": "G",
+      "prompt": "G_INTEGRATION_ACCEPTANCE.md",
+      "objective": "回传后的统一集成与最终验收",
+      "milestones": [
+        "W2",
+        "W3",
+        "W4",
+        "W5"
+      ],
+      "canStartInFirstWave": false,
+      "integrationDependencies": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "status": "not_dispatched",
+      "report": "docs/dispatch-reports/G/REPORT_G.md",
+      "delivery": "docs/dispatch-reports/G/DELIVERY_G.json",
+      "interfaces": null
+    }
+  ]
+}
