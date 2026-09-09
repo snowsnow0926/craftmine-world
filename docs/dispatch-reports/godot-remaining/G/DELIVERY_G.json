@@ -1,0 +1,166 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "agent": "G",
+  "promptVersion": "godot-remaining-20260910",
+  "status": "ready_for_integration_with_declared_gaps",
+  "baseRef": "e462147852e36bdfcaf897d3f915c5809fb88670",
+  "baseCommit": "e462147852e36bdfcaf897d3f915c5809fb88670",
+  "codeCommit": "73737f813403962684fec0827c19efea07d5f79d",
+  "branch": "codex/godot-remaining-g-20260910",
+  "worktree": "D:/Craftmine World-worktrees/godot-remaining-g-20260910",
+  "commits": [
+    "73737f813403962684fec0827c19efea07d5f79d",
+    "c15c174cfaac8b02df301228da6c0f9ac75e5a9f",
+    "2a20752de07e16865403a652818cca2ccf21ef78"
+  ],
+  "report": "docs/dispatch-reports/godot-remaining/G/REPORT_G.md",
+  "interfaces": [
+    "docs/dispatch-reports/godot-remaining/G/INTERFACE_G.md",
+    "desktop/godot/bases/mining-sandbox/docs/INTERFACE_BC.md",
+    "desktop/godot/bases/mining-sandbox/docs/SPEC.md",
+    "desktop/godot/bases/mining-sandbox/docs/ADR-0001-mining-sandbox.md",
+    "desktop/godot/bases/mining-sandbox/docs/REUSE.md"
+  ],
+  "deliverables": {
+    "base": "desktop/godot/bases/mining-sandbox",
+    "baseFiles": 86,
+    "worlds": [
+      "desktop/godot/bases/mining-sandbox/worlds/blank",
+      "desktop/godot/bases/mining-sandbox/worlds/mine-camp"
+    ],
+    "sharedAdapterForF": "desktop/godot/bases/mining-sandbox/contracts/shared-adapter.mining-sandbox.gd",
+    "releaseManifestForK": "docs/dispatch-reports/godot-remaining/G/delivery/base-assets.mining-sandbox.json",
+    "releaseManifestEntries": 86,
+    "acceptanceMatrix": "tests/godot-remaining/G/a16-acceptance.mjs"
+  },
+  "tests": [
+    {
+      "kind": "independent_a16_acceptance",
+      "command": "$env:CRAFTMINE_GODOT_BIN='D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable\\editor\\Godot_v4.7.2-stable_win64_console.exe'; node tests/godot-remaining/G/a16-acceptance.mjs --evidence docs/dispatch-reports/godot-remaining/G/evidence/a16",
+      "cwd": "D:/Craftmine World-worktrees/godot-remaining-g-20260910",
+      "sourceCommit": "73737f813403962684fec0827c19efea07d5f79d",
+      "engine": "Godot 4.7.2-stable (gl_compatibility, headless)",
+      "result": "37 passed, 0 failed (G01-G36 plus G01b)",
+      "evidence": "docs/dispatch-reports/godot-remaining/G/evidence/a16/report.json"
+    },
+    {
+      "kind": "base_smoke_suite",
+      "command": "$env:CRAFTMINE_GODOT_BIN='D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable\\editor\\Godot_v4.7.2-stable_win64_console.exe'; node desktop/godot/bases/mining-sandbox/tools/verify.mjs --evidence docs/dispatch-reports/godot-remaining/G/evidence/verify",
+      "cwd": "D:/Craftmine World-worktrees/godot-remaining-g-20260910",
+      "sourceCommit": "73737f813403962684fec0827c19efea07d5f79d",
+      "engine": "Godot 4.7.2-stable (gl_compatibility, headless)",
+      "result": "14 passed, 0 failed",
+      "evidence": "docs/dispatch-reports/godot-remaining/G/evidence/verify/report.json"
+    },
+    {
+      "kind": "world_template_sync",
+      "command": "node desktop/godot/bases/mining-sandbox/tools/check-sync.mjs",
+      "cwd": "D:/Craftmine World-worktrees/godot-remaining-g-20260910",
+      "sourceCommit": "73737f813403962684fec0827c19efea07d5f79d",
+      "result": "2 committed worlds match their templates byte for byte",
+      "evidence": "docs/dispatch-reports/godot-remaining/G/REPORT_G.md section 4"
+    },
+    {
+      "kind": "fresh_clone_hash_portability",
+      "command": "git clone --branch codex/godot-remaining-g-20260910 --single-branch <worktree> <temp>; node <scratch>/verify-clone.mjs <temp>",
+      "cwd": "D:/Craftmine World-worktrees/godot-remaining-g-20260910",
+      "sourceCommit": "2a20752de07e16865403a652818cca2ccf21ef78",
+      "result": "0 problems; 23+23 world-build hashes and 86 asset-manifest hashes match a fresh checkout; base text files are LF",
+      "evidence": "docs/dispatch-reports/godot-remaining/G/evidence/fresh-clone-hashes.json"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/dispatch-reports/godot-remaining/G/evidence/a16/report.json",
+      "description": "Machine-readable A16 result: 37/37, per-assertion detail"
+    },
+    {
+      "path": "docs/dispatch-reports/godot-remaining/G/evidence/a16",
+      "description": "Raw probe requests, responses and process output for every A16 run"
+    },
+    {
+      "path": "docs/dispatch-reports/godot-remaining/G/evidence/verify/report.json",
+      "description": "Base smoke result: 14/14"
+    },
+    {
+      "path": "docs/dispatch-reports/godot-remaining/G/evidence/implementation",
+      "description": "Implementation-phase iteration logs including first failures and probe exit codes"
+    },
+    {
+      "path": "docs/dispatch-reports/godot-remaining/G/evidence/fresh-clone-hashes.json",
+      "description": "Fresh-clone hash portability check output"
+    }
+  ],
+  "reusedFoundation": {
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "declaredIn": "desktop/godot/bases/mining-sandbox/docs/REUSE.md",
+    "verifiedBy": "A16 assertion G34 re-hashes the seven source files on every run"
+  },
+  "dependencies": [
+    {
+      "group": "F",
+      "contractVersion": "baseProtocolVersion 1 / SPEC 5.10 + 9",
+      "usesFixture": false,
+      "missingWork": "shared/adapters/mining-sandbox.gd, materialize.mjs config entry, shared/tests/progress.mjs matrix entry"
+    },
+    {
+      "group": "A",
+      "contractVersion": "craftmine.godot-progress/1 body",
+      "usesFixture": false,
+      "missingWork": "Real Rust-side registration and managed progress end-to-end; the base side is proven by G36"
+    },
+    {
+      "group": "C",
+      "contractVersion": "probe protocol craftmine.godot-mining-sandbox-probe/1",
+      "usesFixture": false,
+      "missingWork": "Real executor/verifier run through the product chain"
+    },
+    {
+      "group": "D",
+      "contractVersion": "host lifecycle",
+      "usesFixture": false,
+      "missingWork": "Real Electron view/preview of a mining-sandbox world"
+    },
+    {
+      "group": "H",
+      "contractVersion": "progress-vs-source split (VM 5)",
+      "usesFixture": false,
+      "missingWork": "World copy/migration/backup of a mining-sandbox world"
+    },
+    {
+      "group": "E",
+      "contractVersion": "new-world entry",
+      "usesFixture": false,
+      "missingWork": "Product creation entry and base selection label"
+    },
+    {
+      "group": "K",
+      "contractVersion": "craftmine.base-assets/1",
+      "usesFixture": false,
+      "missingWork": "Copy the delivered manifest into desktop/delivery/base-assets and extend preflight-selftest"
+    },
+    {
+      "group": "I",
+      "contractVersion": "frozen A16 assertions G01-G36",
+      "usesFixture": false,
+      "missingWork": "Real model creation and modification acceptance on this base"
+    }
+  ],
+  "unverified": [
+    "Product-side creation of a mining-sandbox world through the Electron client",
+    "Managed progress end-to-end through the real Rust/host receipt path",
+    "Real model creation or modification of this base",
+    "Visible window rendering, GPU composition and player hand-feel",
+    "OS-level isolation of engine execution (GD0/B scope)",
+    "Release preflight covering this base (asset manifest not yet copied by K)"
+  ],
+  "knownDefects": [
+    "world_state.gd clone() loads res://scripts/base/world_state.gd by hard-coded path; unused today, should use get_script()",
+    "Terrain rendering is flat draw_rect colour blocks; no art assets are shipped",
+    "Adjacency requires any non-air 4-neighbour or the map floor; a stricter support rule is not implemented"
+  ],
+  "privateDataIncluded": false,
+  "mergedToPrimary": false,
+  "pushed": false
+}
