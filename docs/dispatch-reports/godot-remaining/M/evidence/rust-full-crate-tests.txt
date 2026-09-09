@@ -1,0 +1,1274 @@
+﻿cargo : warning: enum `OperationKind` is never used
+所在位置 行:1 字符: 537
++ ... h $ev | Out-Null; cargo test -p craftmine-core --offline 2>&1 | Out-F ...
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (warning: enum `...` is never used:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  --> crates\craftmine-core\src\content_history\apply.rs:31:10
+   |
+31 | pub enum OperationKind {
+   |          ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated items `as_str` and `parse` are never used
+  --> crates\craftmine-core\src\content_history\apply.rs:38:8
+   |
+37 | impl OperationKind {
+   | ------------------ associated items in this implementation
+38 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+...
+46 |     fn parse(value: &str) -> Result<Self> {
+   |        ^^^^^
+
+warning: enum `OperationState` is never used
+  --> crates\craftmine-core\src\content_history\apply.rs:58:10
+   |
+58 | pub enum OperationState {
+   |          ^^^^^^^^^^^^^^
+
+warning: associated items `as_str` and `parse` are never used
+  --> crates\craftmine-core\src\content_history\apply.rs:70:8
+   |
+69 | impl OperationState {
+   | ------------------- associated items in this implementation
+70 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+...
+79 |     fn parse(value: &str) -> Result<Self> {
+   |        ^^^^^
+
+warning: struct `ReferenceIntent` is never constructed
+  --> crates\craftmine-core\src\content_history\apply.rs:92:12
+   |
+92 | pub struct ReferenceIntent {
+   |            ^^^^^^^^^^^^^^^
+
+warning: enum `RecoveryAction` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:112:10
+    |
+112 | pub enum RecoveryAction {
+    |          ^^^^^^^^^^^^^^
+
+warning: struct `RecoveryReport` is never constructed
+   --> crates\craftmine-core\src\content_history\apply.rs:134:12
+    |
+134 | pub struct RecoveryReport {
+    |            ^^^^^^^^^^^^^^
+
+warning: function `applied_ref` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:168:4
+    |
+168 | fn applied_ref(world: &str) -> Result<String> {
+    |    ^^^^^^^^^^^
+
+warning: function `load` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:173:4
+    |
+173 | fn load(db: &Connection, operation_id: &str) -> Result<ReferenceIntent> {
+    |    ^^^^
+
+warning: function `prepare` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:219:8
+    |
+219 | pub fn prepare(
+    |        ^^^^^^^
+
+warning: function `advance` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:278:8
+    |
+278 | pub fn advance(
+    |        ^^^^^^^
+
+warning: function `finish_advance` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:319:4
+    |
+319 | fn finish_advance(db: &mut Connection, operation_id: &str, detail: &str) -> Result<ReferenceIntent> {
+    |    ^^^^^^^^^^^^^^
+
+warning: function `confirm` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:333:8
+    |
+333 | pub fn confirm(
+    |        ^^^^^^^
+
+warning: function `abort` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:371:8
+    |
+371 | pub fn abort(db: &mut Connection, operation_id: &str, reason: &str) -> Result<ReferenceIntent> {    let intent = 
+load(db, operation...
+    |        ^^^^^
+
+warning: function `rollback` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:390:8
+    |
+390 | pub fn rollback(
+    |        ^^^^^^^^
+
+warning: function `recover` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:432:8
+    |
+432 | pub fn recover(
+    |        ^^^^^^^
+
+warning: function `receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:492:8
+    |
+492 | pub fn receipt(
+    |        ^^^^^^^
+
+warning: function `store_receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:518:8
+    |
+518 | pub fn store_receipt(
+    |        ^^^^^^^^^^^^^
+
+warning: constant `ASSET_LOCK_FILE` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:30:11
+   |
+30 | pub const ASSET_LOCK_FILE: &str = "craftmine.assets.lock.json";
+   |           ^^^^^^^^^^^^^^^
+
+warning: constant `ASSET_LOCK_FORMAT` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:32:11
+   |
+32 | pub const ASSET_LOCK_FORMAT: &str = "craftmine.assets-lock/1";
+   |           ^^^^^^^^^^^^^^^^^
+
+warning: constant `PATH_BYTE_LIMIT` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:34:11
+   |
+34 | pub const PATH_BYTE_LIMIT: usize = 240;
+   |           ^^^^^^^^^^^^^^^
+
+warning: constant `PATH_SEGMENT_LIMIT` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:36:11
+   |
+36 | pub const PATH_SEGMENT_LIMIT: usize = 16;
+   |           ^^^^^^^^^^^^^^^^^^
+
+warning: constant `PATH_PART_LIMIT` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:38:11
+   |
+38 | pub const PATH_PART_LIMIT: usize = 80;
+   |           ^^^^^^^^^^^^^^^
+
+warning: constant `OID_LIMIT` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:40:11
+   |
+40 | pub const OID_LIMIT: usize = 64;
+   |           ^^^^^^^^^
+
+warning: function `is_lower_hex` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:42:4
+   |
+42 | fn is_lower_hex(value: &str) -> bool {
+   |    ^^^^^^^^^^^^
+
+warning: function `validate_oid` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:50:8
+   |
+50 | pub fn validate_oid(oid: &str) -> Result<()> {
+   |        ^^^^^^^^^^^^
+
+warning: function `validate_sha256` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:59:8
+   |
+59 | pub fn validate_sha256(hash: &str) -> Result<()> {
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `validate_identifier` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:65:8
+   |
+65 | pub fn validate_identifier(value: &str, code: &str) -> Result<()> {
+   |        ^^^^^^^^^^^^^^^^^^^
+
+warning: function `reserved_device_name` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:78:4
+   |
+78 | fn reserved_device_name(part: &str) -> bool {
+   |    ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `validate_relative_path` is never used
+  --> crates\craftmine-core\src\content_history\contract.rs:97:8
+   |
+97 | pub fn validate_relative_path(path: &str) -> Result<()> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `detect_path_collisions` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:141:8
+    |
+141 | pub fn detect_path_collisions<'a>(paths: impl IntoIterator<Item = &'a str>) -> Result<()> {
+    |        ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `detect_scoped_path_collisions` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:154:8
+    |
+154 | pub fn detect_scoped_path_collisions<'a>(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `AssetRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:171:12
+    |
+171 | pub struct AssetRef {
+    |            ^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:179:12
+    |
+178 | impl AssetRef {
+    | ------------- method in this implementation
+179 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `FileRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:194:12
+    |
+194 | pub struct FileRef {
+    |            ^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:202:12
+    |
+201 | impl FileRef {
+    | ------------ method in this implementation
+202 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `ContentRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:219:12
+    |
+219 | pub struct ContentRef {
+    |            ^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:226:12
+    |
+225 | impl ContentRef {
+    | --------------- method in this implementation
+226 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `BuildRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:236:12
+    |
+236 | pub struct BuildRef {
+    |            ^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:246:12
+    |
+245 | impl BuildRef {
+    | ------------- method in this implementation
+246 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `ProgressRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:260:12
+    |
+260 | pub struct ProgressRef {
+    |            ^^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:270:12
+    |
+269 | impl ProgressRef {
+    | ---------------- method in this implementation
+270 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `OperationContext` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:282:12
+    |
+282 | pub struct OperationContext {
+    |            ^^^^^^^^^^^^^^^^
+
+warning: function `required_option` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:299:4
+    |
+299 | fn required_option<'de, D, T>(deserializer: D) -> std::result::Result<Option<T>, D::Error>
+    |    ^^^^^^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:308:12
+    |
+307 | impl OperationContext {
+    | --------------------- method in this implementation
+308 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `AssetOverrideRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:326:12
+    |
+326 | pub struct AssetOverrideRef {
+    |            ^^^^^^^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:333:12
+    |
+332 | impl AssetOverrideRef {
+    | --------------------- method in this implementation
+333 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `AssetLockEntry` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:344:12
+    |
+344 | pub struct AssetLockEntry {
+    |            ^^^^^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:356:12
+    |
+355 | impl AssetLockEntry {
+    | ------------------- method in this implementation
+356 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `AssetLock` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:383:12
+    |
+383 | pub struct AssetLock {
+    |            ^^^^^^^^^
+
+warning: multiple associated items are never used
+   --> crates\craftmine-core\src\content_history\contract.rs:390:12
+    |
+388 | impl AssetLock {
+    | -------------- associated items in this implementation
+389 |     /// Build a lock document from arbitrary input and canonicalize it.
+390 |     pub fn new(mut entries: Vec<AssetLockEntry>) -> Result<Self> {
+    |            ^^^
+...
+399 |     pub fn empty() -> Self {
+    |            ^^^^^
+...
+406 |     fn key(asset: &AssetRef) -> (String, String) {
+    |        ^^^
+...
+412 |     pub fn canonicalize(&mut self) -> Result<()> {
+    |            ^^^^^^^^^^^^
+...
+452 |     fn assert_dependencies_closed(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+475 |     fn visit(
+    |        ^^^^^
+...
+506 |     pub fn canonical_text(&self) -> Result<String> {
+    |            ^^^^^^^^^^^^^^
+...
+512 |     pub fn canonical_bytes(&self) -> Result<Vec<u8>> {
+    |            ^^^^^^^^^^^^^^^
+...
+517 |     pub fn asset_lock_hash(&self) -> Result<String> {
+    |            ^^^^^^^^^^^^^^^
+...
+525 |     pub fn parse(bytes: &[u8]) -> Result<Self> {
+    |            ^^^^^
+...
+535 |     pub fn parse_canonical(bytes: &[u8]) -> Result<Self> {
+    |            ^^^^^^^^^^^^^^^
+
+warning: constant `MINIMUM_GIT` is never used
+  --> crates\craftmine-core\src\content_history\git.rs:34:11
+   |
+34 | pub const MINIMUM_GIT: (u32, u32) = (2, 38);
+   |           ^^^^^^^^^^^
+
+warning: constant `STDOUT_LIMIT` is never used
+  --> crates\craftmine-core\src\content_history\git.rs:35:7
+   |
+35 | const STDOUT_LIMIT: usize = 64 * 1024 * 1024;
+   |       ^^^^^^^^^^^^
+
+warning: constant `STDERR_LIMIT` is never used
+  --> crates\craftmine-core\src\content_history\git.rs:36:7
+   |
+36 | const STDERR_LIMIT: usize = 1024 * 1024;
+   |       ^^^^^^^^^^^^
+
+warning: constant `DEFAULT_TIMEOUT` is never used
+  --> crates\craftmine-core\src\content_history\git.rs:37:7
+   |
+37 | const DEFAULT_TIMEOUT: Duration = Duration::from_secs(120);
+   |       ^^^^^^^^^^^^^^^
+
+warning: constant `ALLOWED_SUBCOMMANDS` is never used
+  --> crates\craftmine-core\src\content_history\git.rs:40:7
+   |
+40 | const ALLOWED_SUBCOMMANDS: &[&str] = &[
+   |       ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `FORBIDDEN_CONFIG_PREFIXES` is never used
+  --> crates\craftmine-core\src\content_history\git.rs:76:7
+   |
+76 | const FORBIDDEN_CONFIG_PREFIXES: &[&str] = &[
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `GitSource` is never used
+   --> crates\craftmine-core\src\content_history\git.rs:109:10
+    |
+109 | pub enum GitSource {
+    |          ^^^^^^^^^
+
+warning: struct `GitProgramInfo` is never constructed
+   --> crates\craftmine-core\src\content_history\git.rs:119:12
+    |
+119 | pub struct GitProgramInfo {
+    |            ^^^^^^^^^^^^^^
+
+warning: struct `GitIdentity` is never constructed
+   --> crates\craftmine-core\src\content_history\git.rs:131:12
+    |
+131 | pub struct GitIdentity {
+    |            ^^^^^^^^^^^
+
+warning: associated function `local` is never used
+   --> crates\craftmine-core\src\content_history\git.rs:137:12
+    |
+136 | impl GitIdentity {
+    | ---------------- associated function in this implementation
+137 |     pub fn local(display_name: &str, stable_id: &str) -> Result<Self> {
+    |            ^^^^^
+
+warning: struct `GitOutput` is never constructed
+   --> crates\craftmine-core\src\content_history\git.rs:159:12
+    |
+159 | pub struct GitOutput {
+    |            ^^^^^^^^^
+
+warning: methods `ok`, `stdout_text`, `trimmed`, and `ensure_ok` are never used
+   --> crates\craftmine-core\src\content_history\git.rs:166:12
+    |
+165 | impl GitOutput {
+    | -------------- methods in this implementation
+166 |     pub fn ok(&self) -> bool {
+    |            ^^
+...
+170 |     pub fn stdout_text(&self) -> Result<String> {
+    |            ^^^^^^^^^^^
+...
+174 |     pub fn trimmed(&self) -> Result<String> {
+    |            ^^^^^^^
+...
+178 |     pub(crate) fn ensure_ok(self, code: &str) -> Result<Self> {
+    |                   ^^^^^^^^^
+
+warning: struct `TreeEntry` is never constructed
+   --> crates\craftmine-core\src\content_history\git.rs:191:12
+    |
+191 | pub struct TreeEntry {
+    |            ^^^^^^^^^
+
+warning: struct `RefEntry` is never constructed
+   --> crates\craftmine-core\src\content_history\git.rs:199:12
+    |
+199 | pub struct RefEntry {
+    |            ^^^^^^^^
+
+warning: struct `CommitRecord` is never constructed
+   --> crates\craftmine-core\src\content_history\git.rs:208:12
+    |
+208 | pub struct CommitRecord {
+    |            ^^^^^^^^^^^^
+
+warning: struct `GitAdapter` is never constructed
+   --> crates\craftmine-core\src\content_history\git.rs:226:12
+    |
+226 | pub struct GitAdapter {
+    |            ^^^^^^^^^^
+
+warning: multiple associated items are never used
+   --> crates\craftmine-core\src\content_history\git.rs:239:12
+    |
+233 | impl GitAdapter {
+    | --------------- associated items in this implementation
+...
+239 |     pub fn discover(config_dir: &Path, bundled: &[PathBuf], identity: GitIdentity) -> Result<Self> {
+    |            ^^^^^^^^
+...
+252 |     fn locate(bundled: &[PathBuf]) -> Result<(PathBuf, GitSource)> {
+    |        ^^^^^^
+...
+270 |     fn probe(path: &Path, source: GitSource) -> Result<GitProgramInfo> {
+    |        ^^^^^
+...
+318 |     fn prepare_configuration(&self) -> Result<()> {
+    |        ^^^^^^^^^^^^^^^^^^^^^
+...
+350 |     pub fn info(&self) -> &GitProgramInfo {
+    |            ^^^^
+...
+354 |     pub fn identity(&self) -> &GitIdentity {
+    |            ^^^^^^^^
+...
+358 |     pub fn config_dir(&self) -> &Path {
+    |            ^^^^^^^^^^
+...
+362 |     pub fn with_timeout(mut self, timeout: Duration) -> Self {
+    |            ^^^^^^^^^^^^
+...
+367 |     fn hooks_dir(&self) -> PathBuf {
+    |        ^^^^^^^^^
+...
+371 |     fn home_dir(&self) -> PathBuf {
+    |        ^^^^^^^^
+...
+378 |     fn work_dir(&self) -> PathBuf {
+    |        ^^^^^^^^
+...
+384 |     fn overrides(&self) -> Vec<String> {
+    |        ^^^^^^^^^
+...
+411 |     fn build_command(&self, args: &[String], envs: &[(String, String)]) -> Result<Command> {
+    |        ^^^^^^^^^^^^^
+...
+452 |     pub fn raw(&self, args: &[&str]) -> Result<GitOutput> {
+    |            ^^^
+...
+458 |     pub fn repo(&self, git_dir: &Path, args: &[&str]) -> Result<GitOutput> {
+    |            ^^^^
+...
+462 |     pub fn repo_stdin(&self, git_dir: &Path, args: &[&str], stdin: &[u8]) -> Result<GitOutput> {
+    |            ^^^^^^^^^^
+...
+466 |     fn repo_stdin_env(
+    |        ^^^^^^^^^^^^^^
+...
+478 |     fn execute(
+    |        ^^^^^^^
+...
+566 |     pub fn init_bare(&self, git_dir: &Path, object_format: &str) -> Result<String> {
+    |            ^^^^^^^^^
+...
+591 |     pub fn object_format(&self, git_dir: &Path) -> Result<String> {
+    |            ^^^^^^^^^^^^^
+...
+598 |     pub fn hash_object(&self, git_dir: &Path, bytes: &[u8]) -> Result<String> {
+    |            ^^^^^^^^^^^
+...
+607 |     pub fn object_type(&self, git_dir: &Path, oid: &str) -> Result<String> {
+    |            ^^^^^^^^^^^
+...
+615 |     pub fn cat_object(&self, git_dir: &Path, oid: &str) -> Result<Vec<u8>> {
+    |            ^^^^^^^^^^
+...
+623 |     pub fn write_tree(&self, git_dir: &Path, entries: &[TreeEntry]) -> Result<String> {
+    |            ^^^^^^^^^^
+...
+659 |     pub fn commit_tree(
+    |            ^^^^^^^^^^^
+...
+701 |     pub fn update_ref(
+    |            ^^^^^^^^^^
+...
+712 |     pub fn update_refs(&self, git_dir: &Path, updates: &[(&str, &str, Option<&str>)]) -> Result<()> {
+    |            ^^^^^^^^^^^
+...
+735 |     pub fn delete_ref(&self, git_dir: &Path, name: &str, expected: &str) -> Result<()> {
+    |            ^^^^^^^^^^
+...
+748 |     pub fn ref_value(&self, git_dir: &Path, name: &str) -> Result<Option<String>> {
+    |            ^^^^^^^^^
+...
+762 |     pub fn list_refs(&self, git_dir: &Path, prefix: &str) -> Result<Vec<RefEntry>> {
+    |            ^^^^^^^^^
+...
+796 |     pub fn resolve(&self, git_dir: &Path, rev: &str) -> Result<String> {
+    |            ^^^^^^^
+...
+805 |     pub fn log_page(
+    |            ^^^^^^^^
+...
+869 |     pub fn commit_count(&self, git_dir: &Path, rev: &str) -> Result<u64> {
+    |            ^^^^^^^^^^^^
+...
+876 |     pub fn is_ancestor(&self, git_dir: &Path, ancestor: &str, descendant: &str) -> Result<bool> {
+    |            ^^^^^^^^^^^
+...
+888 |     pub fn bundle_create(&self, git_dir: &Path, target: &Path, refs: &[String]) -> Result<()> {
+    |            ^^^^^^^^^^^^^
+...
+903 |     pub fn bundle_verify(&self, git_dir: &Path, bundle: &Path) -> Result<Vec<String>> {
+    |            ^^^^^^^^^^^^^
+...
+916 |     pub fn fsck(&self, git_dir: &Path, refs: &[String]) -> Result<GitOutput> {
+    |            ^^^^
+...
+929 |     pub fn assert_managed_config(&self, git_dir: &Path) -> Result<()> {
+    |            ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `trailer` is never used
+   --> crates\craftmine-core\src\content_history\git.rs:975:4
+    |
+975 | fn trailer(value: &str) -> Option<String> {
+    |    ^^^^^^^
+
+warning: function `validate_ref_name` is never used
+   --> crates\craftmine-core\src\content_history\git.rs:981:8
+    |
+981 | pub fn validate_ref_name(name: &str) -> Result<()> {
+    |        ^^^^^^^^^^^^^^^^^
+
+warning: constant `REPOSITORY_FORMAT` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:30:11
+   |
+30 | pub const REPOSITORY_FORMAT: &str = "craftmine.content-repository/1";
+   |           ^^^^^^^^^^^^^^^^^
+
+warning: enum `ContentBackend` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:34:10
+   |
+34 | pub enum ContentBackend {
+   |          ^^^^^^^^^^^^^^
+
+warning: associated items `as_str` and `parse` are never used
+  --> crates\craftmine-core\src\content_history\migration.rs:42:8
+   |
+41 | impl ContentBackend {
+   | ------------------- associated items in this implementation
+42 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+...
+49 |     fn parse(value: &str) -> Result<Self> {
+   |        ^^^^^
+
+warning: struct `LegacyRevisionSummary` is never constructed
+  --> crates\craftmine-core\src\content_history\migration.rs:60:12
+   |
+60 | pub struct LegacyRevisionSummary {
+   |            ^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `MigrationPlan` is never constructed
+  --> crates\craftmine-core\src\content_history\migration.rs:70:12
+   |
+70 | pub struct MigrationPlan {
+   |            ^^^^^^^^^^^^^
+
+warning: struct `MigrationReport` is never constructed
+  --> crates\craftmine-core\src\content_history\migration.rs:84:12
+   |
+84 | pub struct MigrationReport {
+   |            ^^^^^^^^^^^^^^^
+
+warning: struct `LegacyMapping` is never constructed
+   --> crates\craftmine-core\src\content_history\migration.rs:100:12
+    |
+100 | pub struct LegacyMapping {
+    |            ^^^^^^^^^^^^^
+
+warning: struct `BackendState` is never constructed
+   --> crates\craftmine-core\src\content_history\migration.rs:111:12
+    |
+111 | pub struct BackendState {
+    |            ^^^^^^^^^^^^
+
+warning: function `repo_id_for` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:156:8
+    |
+156 | pub fn repo_id_for(world: &str) -> Result<String> {
+    |        ^^^^^^^^^^^
+
+warning: function `backend` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:171:8
+    |
+171 | pub fn backend(db: &Connection, world: &str) -> Result<Option<BackendState>> {
+    |        ^^^^^^^
+
+warning: function `is_git_backed` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:209:8
+    |
+209 | pub fn is_git_backed(db: &Connection, world: &str) -> Result<bool> {
+    |        ^^^^^^^^^^^^^
+
+warning: function `assert_legacy_writes_allowed` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:216:8
+    |
+216 | pub fn assert_legacy_writes_allowed(db: &Connection, world: &str) -> Result<()> {
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `legacy_revisions` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:224:4
+    |
+224 | fn legacy_revisions(db: &Connection, world: &str) -> Result<Vec<(u64, String, String)>> {
+    |    ^^^^^^^^^^^^^^^^
+
+warning: function `source_digest` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:244:4
+    |
+244 | fn source_digest(
+    |    ^^^^^^^^^^^^^
+
+warning: function `plan` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:265:8
+    |
+265 | pub fn plan(db: &Connection, directory: &Path, world: &str) -> Result<MigrationPlan> {
+    |        ^^^^
+
+warning: function `existing_mapping` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:318:4
+    |
+318 | fn existing_mapping(db: &Connection, world: &str) -> Result<BTreeMap<u64, LegacyMapping>> {
+    |    ^^^^^^^^^^^^^^^^
+
+warning: function `apply` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:357:8
+    |
+357 | pub fn apply(
+    |        ^^^^^
+
+warning: function `record_mapping` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:569:4
+    |
+569 | fn record_mapping(
+    |    ^^^^^^^^^^^^^^
+
+warning: function `ensure_migration_tag` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:598:4
+    |
+598 | fn ensure_migration_tag(
+    |    ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `find_committed_revision` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:624:4
+    |
+624 | fn find_committed_revision(
+    |    ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `legacy_message` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:653:4
+    |
+653 | fn legacy_message(summary: &LegacyRevisionSummary, task_id: &str) -> Result<String> {
+    |    ^^^^^^^^^^^^^^
+
+warning: function `verify` is never used
+   --> crates\craftmine-core\src\content_history\migration.rs:665:8
+    |
+665 | pub fn verify(
+    |        ^^^^^^
+
+warning: constant `MAIN_BRANCH` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:38:11
+   |
+38 | pub const MAIN_BRANCH: &str = "main";
+   |           ^^^^^^^^^^^
+
+warning: constant `MIGRATION_REF_PREFIX` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:39:11
+   |
+39 | pub const MIGRATION_REF_PREFIX: &str = "refs/craftmine/migration/";
+   |           ^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CHECKPOINT_REF_PREFIX` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:40:11
+   |
+40 | pub const CHECKPOINT_REF_PREFIX: &str = "refs/craftmine/checkpoint/";
+   |           ^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `DRAFT_REF_PREFIX` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:41:11
+   |
+41 | pub const DRAFT_REF_PREFIX: &str = "refs/craftmine/draft/";
+   |           ^^^^^^^^^^^^^^^^
+
+warning: constant `VERSION_REF_PREFIX` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:42:11
+   |
+42 | pub const VERSION_REF_PREFIX: &str = "refs/craftmine/version/";
+   |           ^^^^^^^^^^^^^^^^^^
+
+warning: constant `APPLIED_REF_PREFIX` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:43:11
+   |
+43 | pub const APPLIED_REF_PREFIX: &str = "refs/craftmine/applied/";
+   |           ^^^^^^^^^^^^^^^^^^
+
+warning: constant `DEFAULT_OBJECT_FORMAT` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:44:11
+   |
+44 | pub const DEFAULT_OBJECT_FORMAT: &str = "sha1";
+   |           ^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `PROTECTED_REF_PREFIXES` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:47:11
+   |
+47 | pub const PROTECTED_REF_PREFIXES: &[&str] = &[
+   |           ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `AUTHORING_DENY_PREFIXES` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:58:7
+   |
+58 | const AUTHORING_DENY_PREFIXES: &[&str] = &[
+   |       ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `AUTHORING_DENY_EXACT` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:68:7
+   |
+68 | const AUTHORING_DENY_EXACT: &[&str] = &[".env", ".git", "credentials", "secrets"];
+   |       ^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `MAX_COMMIT_FILES` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:70:7
+   |
+70 | const MAX_COMMIT_FILES: usize = 100_000;
+   |       ^^^^^^^^^^^^^^^^
+
+warning: constant `MAX_FILE_BYTES` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:71:7
+   |
+71 | const MAX_FILE_BYTES: u64 = 64 * 1024 * 1024;
+   |       ^^^^^^^^^^^^^^
+
+warning: constant `MAX_COMMIT_BYTES` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:72:7
+   |
+72 | const MAX_COMMIT_BYTES: u64 = 512 * 1024 * 1024;
+   |       ^^^^^^^^^^^^^^^^
+
+warning: constant `MAX_HISTORY_PAGE` is never used
+  --> crates\craftmine-core\src\content_history\repo.rs:73:7
+   |
+73 | const MAX_HISTORY_PAGE: usize = 200;
+   |       ^^^^^^^^^^^^^^^^
+
+warning: struct `RepoMetadata` is never constructed
+  --> crates\craftmine-core\src\content_history\repo.rs:77:12
+   |
+77 | pub struct RepoMetadata {
+   |            ^^^^^^^^^^^^
+
+warning: struct `RepoLayout` is never constructed
+  --> crates\craftmine-core\src\content_history\repo.rs:88:12
+   |
+88 | pub struct RepoLayout {
+   |            ^^^^^^^^^^
+
+warning: struct `ContentFile` is never constructed
+  --> crates\craftmine-core\src\content_history\repo.rs:98:12
+   |
+98 | pub struct ContentFile {
+   |            ^^^^^^^^^^^
+
+warning: associated functions `text` and `asset_lock` are never used
+   --> crates\craftmine-core\src\content_history\repo.rs:104:12
+    |
+103 | impl ContentFile {
+    | ---------------- associated functions in this implementation
+104 |     pub fn text(path: &str, text: &str) -> Self {
+    |            ^^^^
+...
+112 |     pub fn asset_lock(lock: &AssetLock) -> Result<Self> {
+    |            ^^^^^^^^^^
+
+warning: struct `HistoryPage` is never constructed
+   --> crates\craftmine-core\src\content_history\repo.rs:122:12
+    |
+122 | pub struct HistoryPage {
+    |            ^^^^^^^^^^^
+
+warning: struct `ChangeEntry` is never constructed
+   --> crates\craftmine-core\src\content_history\repo.rs:132:12
+    |
+132 | pub struct ChangeEntry {
+    |            ^^^^^^^^^^^
+
+warning: enum `FileDiff` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:139:10
+    |
+139 | pub enum FileDiff {
+    |          ^^^^^^^^
+
+warning: struct `MergeOutcome` is never constructed
+   --> crates\craftmine-core\src\content_history\repo.rs:155:12
+    |
+155 | pub struct MergeOutcome {
+    |            ^^^^^^^^^^^^
+
+warning: struct `MaterializedCopy` is never constructed
+   --> crates\craftmine-core\src\content_history\repo.rs:167:12
+    |
+167 | pub struct MaterializedCopy {
+    |            ^^^^^^^^^^^^^^^^
+
+warning: struct `ReclaimPlan` is never constructed
+   --> crates\craftmine-core\src\content_history\repo.rs:176:12
+    |
+176 | pub struct ReclaimPlan {
+    |            ^^^^^^^^^^^
+
+warning: struct `RepositoryStore` is never constructed
+   --> crates\craftmine-core\src\content_history\repo.rs:189:12
+    |
+189 | pub struct RepositoryStore {
+    |            ^^^^^^^^^^^^^^^
+
+warning: multiple associated items are never used
+    --> crates\craftmine-core\src\content_history\repo.rs:195:12
+     |
+ 194 | impl RepositoryStore {
+     | -------------------- associated items in this implementation
+ 195 |     pub fn open(root: &Path, git: GitAdapter) -> Result<Self> {
+     |            ^^^^
+...
+ 203 |     pub fn git(&self) -> &GitAdapter {
+     |            ^^^
+...
+ 207 |     pub fn root(&self) -> &Path {
+     |            ^^^^
+...
+ 212 |     pub fn repo_key(repo_id: &str) -> Result<String> {
+     |            ^^^^^^^^
+...
+ 223 |     pub fn layout(&self, repo_id: &str) -> Result<RepoLayout> {
+     |            ^^^^^^
+...
+ 236 |     pub fn create(
+     |            ^^^^^^
+...
+ 271 |     pub fn open_existing(&self, repo_id: &str) -> Result<RepoLayout> {
+     |            ^^^^^^^^^^^^^
+...
+ 281 |     pub fn read_metadata(&self, layout: &RepoLayout) -> Result<RepoMetadata> {
+     |            ^^^^^^^^^^^^^
+...
+ 293 |     fn assert_authoring_path(path: &str) -> Result<()> {
+     |        ^^^^^^^^^^^^^^^^^^^^^
+...
+ 315 |     pub fn commit(
+     |            ^^^^^^
+...
+ 375 |     fn hash_blobs(&self, layout: &RepoLayout, files: &[ContentFile]) -> Result<Vec<String>> {
+     |        ^^^^^^^^^^
+...
+ 427 |     pub fn branch_head(&self, layout: &RepoLayout, branch_id: &str) -> Result<Option<String>> {
+     |            ^^^^^^^^^^^
+...
+ 433 |     pub fn branches(&self, layout: &RepoLayout) -> Result<Vec<RefEntry>> {
+     |            ^^^^^^^^
+...
+ 439 |     pub fn asset_lock(&self, layout: &RepoLayout, oid: &str) -> Result<Option<AssetLock>> {
+     |            ^^^^^^^^^^
+...
+ 450 |     pub fn content_ref(&self, layout: &RepoLayout, oid: &str) -> Result<ContentRef> {
+     |            ^^^^^^^^^^^
+...
+ 461 |     pub fn tree_entries(&self, layout: &RepoLayout, oid: &str) -> Result<Vec<TreeEntry>> {
+     |            ^^^^^^^^^^^^
+...
+ 494 |     pub fn read_file(&self, layout: &RepoLayout, oid: &str, path: &str) -> Result<Vec<u8>> {
+     |            ^^^^^^^^^
+...
+ 509 |     pub fn materialize(
+     |            ^^^^^^^^^^^
+...
+ 548 |     pub fn history(
+     |            ^^^^^^^
+...
+ 572 |     pub fn changes(&self, layout: &RepoLayout, from: &str, to: &str) -> Result<Vec<ChangeEntry>> {
+     |            ^^^^^^^
+...
+ 597 |     pub fn file_diff(
+     |            ^^^^^^^^^
+...
+ 649 |     fn blob_size(&self, layout: &RepoLayout, rev: &str, path: &str) -> Result<Option<u64>> {
+     |        ^^^^^^^^^
+...
+ 664 |     pub fn merge(
+     |            ^^^^^
+...
+ 731 |     pub fn commit_tree(
+     |            ^^^^^^^^^^^
+...
+ 753 |     pub fn set_checkpoint(
+     |            ^^^^^^^^^^^^^^
+...
+ 783 |     pub fn checkpoints(&self, layout: &RepoLayout, task_id: &str) -> Result<Vec<RefEntry>> {
+     |            ^^^^^^^^^^^
+...
+ 791 |     pub fn set_draft(
+     |            ^^^^^^^^^
+...
+ 806 |     pub fn draft(&self, layout: &RepoLayout, branch_id: &str) -> Result<Option<String>> {
+     |            ^^^^^
+...
+ 814 |     pub fn create_version(
+     |            ^^^^^^^^^^^^^^
+...
+ 857 |     pub fn versions(&self, layout: &RepoLayout) -> Result<Vec<RefEntry>> {
+     |            ^^^^^^^^
+...
+ 864 |     pub fn set_applied(
+     |            ^^^^^^^^^^^
+...
+ 880 |     pub fn applied(&self, layout: &RepoLayout, world_key: &str) -> Result<Option<String>> {
+     |            ^^^^^^^
+...
+ 886 |     pub fn protected_refs(&self, layout: &RepoLayout) -> Result<Vec<RefEntry>> {
+     |            ^^^^^^^^^^^^^^
+...
+ 898 |     pub fn verify(&self, layout: &RepoLayout, refs: &[String]) -> Result<Vec<String>> {
+     |            ^^^^^^
+...
+ 920 |     pub fn bundle(&self, layout: &RepoLayout, target: &Path, refs: &[String]) -> Result<()> {
+     |            ^^^^^^
+...
+ 931 |     pub fn reclaim_plan(&self, layout: &RepoLayout, keep: &[String]) -> Result<ReclaimPlan> {
+     |            ^^^^^^^^^^^^
+...
+ 982 |     fn all_objects(&self, layout: &RepoLayout) -> Result<BTreeMap<String, u64>> {
+     |        ^^^^^^^^^^^
+...
+1012 |     pub fn prune(&self, layout: &RepoLayout, keep: &[String]) -> Result<ReclaimPlan> {
+     |            ^^^^^
+
+warning: function `parse_object_ids` is never used
+    --> crates\craftmine-core\src\content_history\repo.rs:1025:4
+     |
+1025 | fn parse_object_ids(stdout: &[u8]) -> Result<BTreeSet<String>> {
+     |    ^^^^^^^^^^^^^^^^
+
+warning: function `timestamp` is never used
+    --> crates\craftmine-core\src\content_history\repo.rs:1039:4
+     |
+1039 | fn timestamp() -> String {
+     |    ^^^^^^^^^
+
+warning: function `git_timestamp` is never used
+    --> crates\craftmine-core\src\content_history\repo.rs:1044:4
+     |
+1044 | fn git_timestamp() -> String {
+     |    ^^^^^^^^^^^^^
+
+warning: function `commit_message` is never used
+    --> crates\craftmine-core\src\content_history\repo.rs:1054:8
+     |
+1054 | pub fn commit_message(request_id: &str, task_id: &str, title: &str, detail: &str) -> Result<String> {
+     |        ^^^^^^^^^^^^^^
+
+warning: function `group_by_request` is never used
+    --> crates\craftmine-core\src\content_history\repo.rs:1076:8
+     |
+1076 | pub fn group_by_request(records: &[CommitRecord]) -> BTreeMap<String, Vec<&CommitRecord>> {
+     |        ^^^^^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]
+\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `is_ancestor` is never used
+   --> crates\craftmine-core\src\content_history\git.rs:876:12
+    |
+233 | impl GitAdapter {
+    | --------------- method in this implementation
+...
+876 |     pub fn is_ancestor(&self, git_dir: &Path, ancestor: &str, descendant: &str) -> Result<bool> {
+    |            ^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:42:8
+   |
+41 | impl ContentBackend {
+   | ------------------- method in this implementation
+42 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+
+warning: methods `root` and `commit_tree` are never used
+   --> crates\craftmine-core\src\content_history\repo.rs:207:12
+    |
+194 | impl RepositoryStore {
+    | -------------------- methods in this implementation
+...
+207 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+...
+731 |     pub fn commit_tree(
+    |            ^^^^^^^^^^^
+
+warning: `craftmine-core` (lib) generated 123 warnings
+warning: `craftmine-core` (lib test) generated 5 warnings (1 duplicate) (run `cargo fix --lib -p craftmine-core --tests
+` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.40s
+     Running unittests src\lib.rs (target\debug\deps\craftmine_core-13091a1caf054aaf.exe)
+
+running 154 tests
+test content_history::contract_tests::print_frozen_vectors ... ignored, prints the frozen vectors; run with --ignored --nocapture
+test content_history::contract_tests::git_oids_are_not_assumed_to_be_forty_characters ... ok
+test content_history::contract_tests::asset_lock_rejects_mutable_versions ... ok
+test content_history::contract_tests::empty_lock_has_a_stable_hash ... ok
+test content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names ... ok
+test content_history::contract_tests::asset_lock_rejects_conflicting_duplicate_versions ... ok
+test content_history::contract_tests::asset_lock_rejects_unresolved_and_cyclic_dependencies ... ok
+test content_history::contract_tests::canonical_fixture_has_the_frozen_first_bytes ... ok
+test content_history::contract_tests::references_keep_source_progress_and_operation_identity_apart ... ok
+test content_history::git_tests::identity_is_derived_and_validated ... ok
+test content_history::git_tests::reference_names_are_validated ... ok
+test content_history::contract_tests::canonical_fixture_matches_the_frozen_vector ... ok
+test content_history::contract_tests::lock_parse_requires_canonical_bytes_for_commits ... ok
+test content_history::git_tests::dangerous_subcommands_are_refused_before_spawning ... ok
+test applications::tests::application_is_atomic_replayable_and_advances_only_consumed_drafts ... ok
+test applications::tests::preparing_excludes_writes_and_abort_preserves_draft_and_progress ... ok
+test applications::tests::uncommitted_draft_is_never_reset_by_an_unrelated_application ... ok
+test applications::tests::explicit_player_acknowledgement_is_bound_and_never_changes_failed_review ... ok
+test applications::tests::review_requires_exact_model_input_and_persists_machine_failures ... ok
+test applications::tests::acknowledgement_cannot_bypass_machine_status_or_review_binding ... ok
+test applications::tests::application_publishes_exact_extensions_from_verified_draft ... ok
+test applications::tests::restart_timeout_and_cancel_revoke_pending_publication ... ok
+test applications::tests::missing_review_failed_request_and_forged_load_cannot_publish ... ok
+test content_history::git_tests::discovery_records_provenance_instead_of_assuming_a_bundled_git ... ok
+test durable::tests::accounting_is_idempotent_and_unknown_usage_remains_charged ... ok
+test content_history::git_tests::hostile_repository_configuration_is_rejected ... ok
+test content_history::apply_tests::a_lost_response_is_answered_from_the_stored_receipt ... ok
+test content_history::migration_tests::a_missing_blob_is_reported_and_blocks_the_import ... ok
+test durable::tests::cancelled_task_accepts_only_reserved_settlement_and_discard_keeps_code ... ok
+test content_history::migration_tests::plan_reads_every_revision_and_writes_nothing ... ok
+test content_history::git_tests::user_and_system_git_configuration_is_never_read ... ok
+test content_history::repo_tests::repository_identity_never_becomes_a_filesystem_component ... ok
+test durable::tests::completed_budget_receipt_is_readable_after_head_advances_without_write_authority ... ok
+test durable::tests::existing_owners_keep_policy_across_atomic_migration_and_reopen ... ok
+test durable::tests::legacy_backup_missing_limits_keeps_policy_and_schema_three_keeps_audit ... ok
+test durable::tests::player_removes_exhausted_limit_with_durable_bound_receipt_and_model_denial ... ok
+test durable::tests::request_limits_deadline_generation_and_unknown_fields_are_enforced ... ok
+test durable::tests::configured_first_request_initializes_deadline_once_without_changing_policy ... ok
+test content_history::repo_tests::authoring_exclusions_traversal_and_case_collisions_are_refused ... ok
+test durable::tests::requirements_keep_original_goal_and_three_latest_corrections ... ok
+test durable::tests::requirements_survive_explicit_recovery_but_do_not_enter_ordinary_new_tasks ... ok
+test durable::tests::malformed_backup_accounting_is_rejected_before_replacing_any_world ... ok
+test durable::tests::requirement_pages_bound_characters_segments_and_reject_forged_inputs ... ok
+test durable::tests::three_compactions_retain_ledger_and_requirements_across_explicit_recovery ... ok
+test durable::tests::unlimited_budget_keeps_other_boundaries_and_never_clears_usage ... ok
+test godot_applications::tests::a_rejected_candidate_cannot_replace_the_formal_world ... ok
+test content_history::git_tests::timeouts_are_enforced_and_kill_the_child ... ok
+test godot_applications::tests::a_verified_candidate_publishes_only_after_a_real_new_instance_launch ... ok
+test godot_applications::tests::a_restarted_core_never_applies_an_unconfirmed_candidate ... ok
+test godot_applications::tests::asset_edits_after_prepare_revoke_publication ... ok
+test godot_applications::tests::commit_is_replay_safe_and_a_wrong_token_is_refused ... ok
+test godot_applications::tests::launch_evidence_must_prove_the_exact_candidate_build ... ok
+test godot_applications::tests::matching_player_does_not_authorize_replacing_other_formal_progress ... ok
+test godot_applications::tests::newer_formal_progress_cannot_be_overwritten_by_a_prepared_application ... ok
+test content_history::git_tests::managed_configuration_isolates_hooks_and_identity ... ok
+test godot_applications::tests::prepare_rejects_a_progress_change_and_a_second_application ... ok
+test godot_builds::tests::a_binary_asset_over_the_model_limit_is_rejected_without_a_second_store ... ok
+test godot_applications::tests::the_previous_world_and_its_progress_stay_recoverable ... ok
+test godot_builds::tests::a_forged_asset_hash_never_writes_anything ... ok
+test godot_applications::tests::source_edits_after_prepare_revoke_publication ... ok
+test content_history::git_tests::object_ids_are_not_assumed_to_be_forty_characters ... ok
+test godot_builds::tests::a_stale_source_revision_cannot_start_a_build ... ok
+test godot_builds::tests::a_corrupt_asset_blob_is_reported_and_never_repaired_silently ... ok
+test godot_builds::tests::a_build_copy_is_materialized_verified_and_reused_without_touching_source ... ok
+test godot_builds::tests::assets_are_content_addressed_listed_and_isolated_per_world ... ok
+test godot_builds::tests::cross_world_and_ended_turns_cannot_start_builds ... ok
+test godot_builds::tests::build_identity_changes_with_source_assets_and_base ... ok
+test godot_jobs::tests::a_cancelled_job_rejects_a_late_result_and_creates_no_candidate ... ok
+test godot_jobs::tests::a_check_without_assertions_proves_nothing ... ok
+test godot_jobs::tests::a_claim_hands_the_executor_absolute_isolated_paths_and_verified_inputs ... ok
+test godot_jobs::tests::a_job_cannot_run_without_an_attested_executor ... ok
+test godot_jobs::tests::a_result_from_another_job_is_rejected_by_the_input_hash ... ok
+test godot_jobs::tests::a_restart_interrupts_a_running_job_and_refuses_its_late_result ... ok
+test godot_jobs::tests::a_wrong_token_cannot_observe_or_finish_a_job ... ok
+test godot_projects::tests::filesystem_directory_links_cannot_redirect_managed_blob_reads ... ignored, Windows junction fixture setup was denied/timed out under the managed test runner; run explicitly only when fixture creation is available
+test godot_jobs::tests::an_artifact_that_does_not_match_its_declared_hash_is_rejected ... ok
+test content_history::git_tests::compare_and_swap_rejects_a_stale_reference_value ... ok
+test godot_jobs::tests::claim_rechecks_materialized_source_before_granting_a_job ... ok
+test godot_jobs::tests::a_passing_check_creates_a_ready_candidate_and_supersedes_the_older_one ... ok
+test godot_projects::tests::all_path_aliases_collisions_unknown_fields_and_missing_config_are_rejected ... ok
+test godot_projects::tests::corrupt_existing_blob_is_rejected_on_read_reuse_and_unrelated_patch ... ok
+test godot_projects::tests::manifest_hash_and_stored_revision_mismatch_are_not_reset ... ok
+test godot_jobs::tests::real_compile_errors_fail_the_job_even_when_the_executor_claims_success ... ok
+test godot_jobs::tests::progress_is_monotonic_and_heartbeats_extend_the_lease ... ok
+test godot_projects::tests::case_distinct_world_ids_have_separate_physical_files_on_windows ... ok
+test godot_projects::tests::paginated_index_and_unicode_reads_remain_bound_to_an_immutable_revision ... ok
+test godot_projects::tests::panel_selection_foreign_context_and_stale_turn_cannot_redirect_files ... ok
+test godot_projects::tests::deleting_a_source_preserves_history_and_file_sets_are_world_scoped ... ok
+test godot_projects::tests::project_files_are_durable_and_independent_of_legacy_world_and_draft ... ok
+test godot_projects::tests::optimistic_version_and_file_hash_conflicts_leave_the_head_unchanged ... ok
+test content_history::migration_tests::verification_reports_legacy_damage_after_the_switch ... ok
+test content_history::apply_tests::operation_ids_are_idempotent_but_cannot_be_reused ... ok
+test godot_runtime::tests::progress_limits_count_utf8_and_do_not_truncate_custom_state ... ok
+test godot_projects::tests::replay_is_exact_and_receipts_survive_turn_completion_and_restart ... ok
+test content_history::repo_tests::sha256_repositories_record_their_object_format_end_to_end ... ok
+test godot_runtime::tests::base_and_schema_changes_need_explicit_migration_not_plain_save ... ok
+test godot_runtime::tests::full_progress_is_lossless_across_restart_and_noop_save ... ok
+test godot_runtime::tests::godot_integral_floats_match_javascript_json_without_large_integer_aliases ... ok
+test godot_runtime::tests::legacy_returns_null_but_unverified_godot_is_an_error ... ok
+test godot_runtime::tests::receipt_tampering_and_cross_world_saves_leave_formal_progress_intact ... ok
+test godot_projects::tests::sqlite_failure_cannot_publish_a_partial_file_set_or_receipt ... ok
+test legacy::tests::captures_every_file_without_mutating_or_restarting_legacy_tasks ... ok
+test godot_runtime::tests::applied_progress_requires_full_launch_state_and_prepared_world_is_frozen ... ok
+test content_history::apply_tests::a_stale_expected_applied_value_refuses_to_move_the_reference ... ok
+test godot_runtime::tests::descriptor_rehashes_exports_and_ignores_world_document_paths ... ok
+test legacy::tests::corrupt_archives_and_paths_cannot_escape_or_publish ... ok
+test content_history::repo_tests::changes_and_file_diffs_separate_text_from_binary ... ok
+test memories::receipt_tests::committed_receipt_survives_end_turn_and_process_reopen ... ok
+test memories::receipt_tests::corrupted_original_request_is_rejected_by_lookup_and_backup ... ok
+test godot_runtime::tests::descriptor_uses_only_applied_store_and_survives_newer_source_head ... ok
+test memories::receipt_tests::backup_v2_roundtrip_preserves_receipt_and_v1_migrates_to_unverifiable ... ok
+test memories::receipt_tests::legacy_schema_migrates_without_inventing_receipt_ownership ... ok
+test content_history::apply_tests::rollback_restores_the_previous_applied_content_after_a_crash ... ok
+test content_history::repo_tests::materialised_copy_has_no_git_metadata_and_reports_unsupported_entries ... ok
+test content_history::apply_tests::git_advance_and_database_confirmation_are_separate_durable_steps ... ok
+test memories::receipt_tests::receipt_checks_full_request_owner_and_unknown_fields ... ok
+test recovery::tests::failed_resume_launch_can_resume_again_without_resetting_budget_draft_or_goal ... ok
+test recovery::tests::interrupt_revokes_only_its_jobs_and_lease_and_rejects_untrusted_reason_text ... ok
+test tests::binding_and_replay_conflicts_cannot_change_the_draft ... ok
+test tests::cancelled_task_stays_cancelled_and_late_writes_are_rejected ... ok
+test tests::independent_connections_observe_revision_conflicts_atomically ... ok
+test godot_projects::tests::source_files_over_two_megabytes_do_not_use_the_legacy_json_limit ... ok
+test recovery::tests::real_error_end_preserves_exhausted_task_and_resumes_after_player_removes_limit ... ok
+test tests::lost_response_is_recovered_without_repeating_edit_after_restart ... ok
+test verification::tests::a_lost_worker_receipt_expires_instead_of_running_forever ... ok
+test verification::tests::stale_and_empty_drafts_cannot_queue_checks ... ok
+test verification::tests::failed_checks_and_tampered_storage_are_distinguished ... ok
+test verification::tests::finished_draft_retry_rejects_active_stale_foreign_and_extra_fields ... ok
+test verification::tests::forged_success_and_foreign_identity_are_rejected ... ok
+test verification::tests::finished_draft_retry_keeps_task_and_replays_after_restart ... ok
+test verification::tests::input_receipt_and_evidence_survive_restart ... ok
+test content_history::apply_tests::two_writers_cannot_both_advance_the_same_world ... ok
+test workspaces::tests::cancelled_before_first_tool_cannot_create_a_draft ... ok
+test workspaces::tests::a_resumed_revision_zero_draft_is_not_discarded_when_the_world_base_changes ... ok
+test workspaces::tests::committed_reads_and_receipts_survive_restart_and_old_turns_cannot_write ... ok
+test worlds::tests::corruption_and_invalid_progress_are_reported_without_resetting_worlds ... ok
+test workspaces::tests::draft_revision_conflicts_and_foreign_bindings_leave_history_unchanged ... ok
+test worlds::metadata_tests::persisted_build_metadata_is_consistent_and_unknown_formats_stay_unknown ... ok
+test worlds::tests::competing_views_cannot_overwrite_newer_progress_or_builds ... ok
+test workspaces::tests::exclusive_world_drafts_survive_connections_and_release_at_turn_end ... ok
+test workspaces::tests::selection_changes_never_redirect_an_existing_session ... ok
+test recovery::tests::first_end_result_is_idempotent_and_completed_tasks_do_not_revive ... ok
+test worlds::tests::progress_and_independent_worlds_survive_process_reopen ... ok
+test verification::tests::edits_abort_and_recovery_revoke_completion ... ok
+test content_history::repo_tests::concurrent_branch_writes_are_rejected_by_compare_and_swap ... ok
+test recovery::tests::startup_repairs_only_proven_legacy_failed_current_heads ... ok
+test content_history::repo_tests::merge_reports_clean_text_and_real_conflicts_without_reusing_parent_checks ... ok
+test legacy::tests::import_commit_is_atomic_and_replay_does_not_reset_play_progress ... ok
+test content_history::repo_tests::bulk_commit_hashes_all_files_in_one_git_invocation ... ok
+test content_history::repo_tests::commit_branch_history_and_asset_lock_are_authoritative_in_git ... ok
+test content_history::repo_tests::bundle_reclaim_and_prune_only_touch_unreachable_objects ... ok
+test content_history::migration_tests::a_partial_import_resumes_instead_of_starting_a_second_history ... ok
+test godot_jobs::tests::engine_sized_artifacts_are_streamed_and_corruption_is_refused ... ok
+test content_history::migration_tests::every_revision_becomes_one_commit_and_the_backend_switches ... ok
+
+test result: ok. 152 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 4.70s
+
+     Running unittests src\main.rs (target\debug\deps\craftmine_core-d51d032be1083c22.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests craftmine_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
