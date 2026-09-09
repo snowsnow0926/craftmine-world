@@ -1,0 +1,65 @@
+{
+  "format": "craftmine.godot-topdown-probe/1",
+  "commands": [
+    {
+      "op": "set-position",
+      "args": {
+        "x": 200,
+        "y": 240,
+        "label": "far"
+      }
+    },
+    {
+      "op": "deliver",
+      "args": {
+        "npcId": "npc-mira",
+        "questId": "herb-delivery",
+        "label": "deliver-far"
+      }
+    },
+    {
+      "op": "set-position",
+      "args": {
+        "x": 200,
+        "y": 176,
+        "label": "near"
+      }
+    },
+    {
+      "op": "talk",
+      "args": {
+        "npcId": "npc-mira",
+        "label": "talk-before"
+      }
+    },
+    {
+      "op": "deliver",
+      "args": {
+        "npcId": "npc-mira",
+        "questId": "herb-delivery",
+        "label": "deliver-1"
+      }
+    },
+    {
+      "op": "deliver",
+      "args": {
+        "npcId": "npc-mira",
+        "questId": "herb-delivery",
+        "label": "deliver-2"
+      }
+    },
+    {
+      "op": "talk",
+      "args": {
+        "npcId": "npc-mira",
+        "label": "talk-after"
+      }
+    },
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "after"
+      }
+    }
+  ]
+}

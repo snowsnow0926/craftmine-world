@@ -1,0 +1,7 @@
+{
+  "id": "shopkeeper",
+  "name": "店主老陈",
+  "lines": [
+    { "when": "always", "text": "要买点什么吗？价格和库存都写在柜台上了。" }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "format": "craftmine.godot-topdown-probe/1",
+  "commands": [
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "loaded"
+      }
+    },
+    {
+      "op": "set-position",
+      "args": {
+        "x": 200,
+        "y": 176,
+        "label": "near-npc"
+      }
+    },
+    {
+      "op": "deliver",
+      "args": {
+        "npcId": "npc-mira",
+        "questId": "herb-delivery",
+        "label": "deliver-again"
+      }
+    },
+    {
+      "op": "change-scene",
+      "args": {
+        "scene": "res://scenes/shop_interior.tscn",
+        "spawn": "from-street",
+        "label": "enter"
+      }
+    },
+    {
+      "op": "set-position",
+      "args": {
+        "x": 160,
+        "y": 108,
+        "label": "counter"
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "potion",
+        "label": "buy-potion"
+      }
+    },
+    {
+      "op": "save",
+      "args": {
+        "label": "save"
+      }
+    }
+  ]
+}

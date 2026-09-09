@@ -1,0 +1,12 @@
+exit=0
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+--- stderr ---
+ERROR: Parameter "data.tree" is null.
+   at: get_tree (scene/main/node.h:559)
+   GDScript backtrace (most recent call first):
+       [0] _autosave (res://scripts/base/game.gd:345)
+       [1] _notification (res://scripts/base/game.gd:321)
+

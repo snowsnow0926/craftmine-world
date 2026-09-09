@@ -1,0 +1,7 @@
+[
+  { "id": "bread", "name": "面包", "stackMax": 20 },
+  { "id": "potion", "name": "药水", "stackMax": 10 },
+  { "id": "apple", "name": "苹果", "stackMax": 20 },
+  { "id": "rope", "name": "绳子", "stackMax": 5 },
+  { "id": "herb", "name": "草药", "stackMax": 20 }
+]

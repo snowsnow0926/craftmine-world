@@ -1,0 +1,56 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/base/world_root.gd" id="1_root"]
+[ext_resource type="Script" path="res://scripts/base/map_renderer.gd" id="2_map"]
+[ext_resource type="TileSet" path="res://assets/tiles/town_tileset.tres" id="3_tileset"]
+[ext_resource type="Script" path="res://scripts/base/player.gd" id="4_player"]
+[ext_resource type="Script" path="res://scripts/base/directional_sprite.gd" id="5_sprite"]
+[ext_resource type="Texture2D" path="res://assets/characters/player_sheet.png" id="6_player_tex"]
+[ext_resource type="Script" path="res://scripts/base/spawn_marker.gd" id="7_spawn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(10, 12)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_range"]
+radius = 22.0
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_root")
+scene_id = "world"
+
+[node name="Map" type="Node2D" parent="."]
+script = ExtResource("2_map")
+map_id = "blank-room"
+tile_set_path = "res://assets/tiles/town_tileset.tres"
+
+[node name="Tiles" type="TileMapLayer" parent="Map"]
+tile_set = ExtResource("3_tileset")
+
+[node name="Collision" type="StaticBody2D" parent="Map"]
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(192, 128)
+script = ExtResource("4_player")
+entity_id = "player"
+move_speed = 88.0
+
+[node name="Sprite" type="Sprite2D" parent="Player"]
+texture = ExtResource("6_player_tex")
+script = ExtResource("5_sprite")
+
+[node name="Shape" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_player")
+
+[node name="InteractRange" type="Area2D" parent="Player"]
+collision_layer = 8
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape2D" parent="Player/InteractRange"]
+shape = SubResource("CircleShape2D_range")
+
+[node name="Camera" type="Camera2D" parent="Player" groups=["camera"]]
+
+[node name="SpawnStart" type="Marker2D" parent="."]
+position = Vector2(192, 128)
+script = ExtResource("7_spawn")
+spawn_id = "start"

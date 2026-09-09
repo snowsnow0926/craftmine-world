@@ -1,0 +1,176 @@
+{
+  "format": "craftmine.godot-world-build/1",
+  "baseId": "top-down",
+  "baseVersion": "1.0.0",
+  "baseProtocolVersion": 1,
+  "worldFormat": "craftmine.godot-topdown-world/1",
+  "stateFormat": "craftmine.godot-topdown-state/1",
+  "progressFormat": "craftmine.godot-topdown-progress/1",
+  "probeFormat": "craftmine.godot-topdown-probe/1",
+  "godotVersion": "4.7.2-stable",
+  "worldId": "example-blank",
+  "template": "blank",
+  "entryScene": "res://scenes/world.tscn",
+  "stateVersion": 1,
+  "initialProgress": {
+    "coins": 0,
+    "sceneId": "world",
+    "playerPosition": [
+      192,
+      128
+    ],
+    "playerFacing": "down",
+    "inventory": [],
+    "shops": [],
+    "quests": [],
+    "flags": []
+  },
+  "userDirName": "craftmine-topdown-example-blank",
+  "files": [
+    {
+      "path": "assets/ASSET_MANIFEST.json",
+      "bytes": 1214,
+      "sha256": "dfc311e90385b7928ddbdd4ef55266a47abdb46b52eb54b1f1895d55121101f2"
+    },
+    {
+      "path": "assets/characters/npc_sheet.png",
+      "bytes": 354,
+      "sha256": "5cd5d625a5c3f6d98d79ee0ef943ebdaa80330bbd5acac8b77de1eb6d650d324"
+    },
+    {
+      "path": "assets/characters/player_sheet.png",
+      "bytes": 354,
+      "sha256": "cadc92f42970367386024de6249e8f03a4c2f0ed3bb7961b2e0e09ac8a8c1c11"
+    },
+    {
+      "path": "assets/characters/shopkeeper_sheet.png",
+      "bytes": 351,
+      "sha256": "f183a595fcd620e5df4959074663646835e900ae7e3b05c8df8e4b94b850bef4"
+    },
+    {
+      "path": "assets/tiles/town_tiles.png",
+      "bytes": 1238,
+      "sha256": "11f1e95532e9da84855627439e88fa190538e75748c460a3919a6fcca50f7169"
+    },
+    {
+      "path": "assets/tiles/town_tileset.tres",
+      "bytes": 687,
+      "sha256": "c6bf78a941f4082cc24ba665cc73fb1438d3b130df46ee6f5d1d093c6b9e5b10"
+    },
+    {
+      "path": "data/items.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "data/maps/blank-room.json",
+      "bytes": 4287,
+      "sha256": "b38441c22e3d856f9b20f528cf8a877c385dd13031e7447b6ea5a779db53f829"
+    },
+    {
+      "path": "icon.svg",
+      "bytes": 396,
+      "sha256": "9bf6bb63d15442c473f9968f394812ca6d95f84dfdefdd3b866e5876bae5431e"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 998,
+      "sha256": "403f05c2ceac1d5231b0aba27435bd15ceb6bcaf09084ae3bdf556257b9a08c3"
+    },
+    {
+      "path": "scenes/world.tscn",
+      "bytes": 2002,
+      "sha256": "5bb7ed7e95ae1239a3f3f7bbc97a4a1eebde81a287bb2a6a9a31f990f2f6ae7b"
+    },
+    {
+      "path": "scripts/base/base_contract.gd",
+      "bytes": 915,
+      "sha256": "bf5f665cf1d9568d4a5e0ce41895596095f6a28e90f1aac0c25e33636cfabb1c"
+    },
+    {
+      "path": "scripts/base/directional_sprite.gd",
+      "bytes": 1158,
+      "sha256": "d5282bdcafd8bc82a561d1922a87517f4dbfd674e5c3a735a3155f578ef95197"
+    },
+    {
+      "path": "scripts/base/door_zone.gd",
+      "bytes": 766,
+      "sha256": "cad57353104e2ab8ddc0d109f1e83bc9d78f1093026591e582c00cd5baa74b88"
+    },
+    {
+      "path": "scripts/base/game.gd",
+      "bytes": 9926,
+      "sha256": "9efeec5febecdf7ae5f0158cb2a7a289f5d7601889d3f97a8926a65e232825c8"
+    },
+    {
+      "path": "scripts/base/gather_zone.gd",
+      "bytes": 1195,
+      "sha256": "2032d10f3a3c6b907ba72a6a307c132371dc7075349acae4d80fc9202238ac04"
+    },
+    {
+      "path": "scripts/base/interactable.gd",
+      "bytes": 920,
+      "sha256": "2f57eb36dc7f346c7fab8db61d654af652fd3c6eea89650102f84641395e4873"
+    },
+    {
+      "path": "scripts/base/map_renderer.gd",
+      "bytes": 4331,
+      "sha256": "dfb5f533c50e226af194739ee9cd0f531c8ae1f87ddd1c9fd11861ca48c30358"
+    },
+    {
+      "path": "scripts/base/npc.gd",
+      "bytes": 1273,
+      "sha256": "f46c3b930bd64bd6c065c775d0862e07828ffdd372226e9e8ed190911692213d"
+    },
+    {
+      "path": "scripts/base/player.gd",
+      "bytes": 3017,
+      "sha256": "baa3dcf54f86b9027cfdee11ee0c82421740bdfda84b43b553da0ddc71ff06d3"
+    },
+    {
+      "path": "scripts/base/probe.gd",
+      "bytes": 9351,
+      "sha256": "7788efbbe4d57bc9d5f3f26a3b4507da99195a787153b6fbc6d1d559378ccb76"
+    },
+    {
+      "path": "scripts/base/quest_manager.gd",
+      "bytes": 2720,
+      "sha256": "d08d9eff49c38f071b1b27610e065785bdf9533678001ce6acc743d5ce57b90e"
+    },
+    {
+      "path": "scripts/base/save_system.gd",
+      "bytes": 3338,
+      "sha256": "b70371e37e3ccfd2aecc7a4214cb4620e8bf5823e4b3a80398087c634be622cd"
+    },
+    {
+      "path": "scripts/base/shop.gd",
+      "bytes": 2375,
+      "sha256": "cfcb973873967c0cf3603408c1d0dffa6742146bc6356a589fb8d78d76a283a6"
+    },
+    {
+      "path": "scripts/base/spawn_marker.gd",
+      "bytes": 178,
+      "sha256": "4dae551e7969ce5118bd0215970f8ff4545a0eb952bb1d224e5809bdde44cfdb"
+    },
+    {
+      "path": "scripts/base/world_root.gd",
+      "bytes": 330,
+      "sha256": "ccb5822d5fb3ed4cb437706d390b1371aafa675bf890484e89edd2088a8482a3"
+    },
+    {
+      "path": "scripts/base/world_state.gd",
+      "bytes": 12638,
+      "sha256": "11832fb46205f7199b34354480d7fbcc81657fd7bb50c7b246e18febab544621"
+    },
+    {
+      "path": "scripts/base/zone.gd",
+      "bytes": 1047,
+      "sha256": "c7ba39f2fdef7d965ad9de771321d4d8c747c3459c2c11c9d4182f72203e83d6"
+    },
+    {
+      "path": "world.json",
+      "bytes": 590,
+      "sha256": "14519e1b07f6a2fb07fb8437f83276940e40c2b606613df6523da291f07cf12a"
+    }
+  ]
+}

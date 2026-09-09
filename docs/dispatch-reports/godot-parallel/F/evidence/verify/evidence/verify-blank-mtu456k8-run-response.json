@@ -1,0 +1,201 @@
+{
+  "baseId": "top-down",
+  "baseVersion": "1.0.0",
+  "finalSnapshot": {
+    "bootError": "",
+    "coins": 0,
+    "duplicateEntityIds": [],
+    "flags": {},
+    "format": "craftmine.godot-topdown-snapshot/1",
+    "grantedRewards": {},
+    "inventory": {},
+    "maps": {
+      "blank-room": {
+        "collisionShapes": 37,
+        "height": 16,
+        "mapId": "blank-room",
+        "ok": true,
+        "solidCells": 93,
+        "tileSize": 16,
+        "tiles": 385,
+        "width": 24
+      }
+    },
+    "physical": {
+      "facing": "up",
+      "overlaps": {},
+      "playerPosition": [
+        192.0,
+        83.9999847412109
+      ]
+    },
+    "player": {
+      "facing": "up",
+      "position": [
+        192.0,
+        83.9999847412109
+      ],
+      "sceneId": "world"
+    },
+    "quests": {},
+    "sceneId": "world",
+    "scenePositions": {},
+    "shops": {},
+    "sprite": {
+      "facing": "up",
+      "frame": 12,
+      "moving": false
+    },
+    "stateVersion": 1,
+    "worldId": "verify-blank-mtu456k8"
+  },
+  "format": "craftmine.godot-topdown-probe/1",
+  "ok": true,
+  "results": [
+    {
+      "args": {
+        "label": "start"
+      },
+      "op": "snapshot",
+      "result": {
+        "ok": true,
+        "snapshot": {
+          "bootError": "",
+          "coins": 0,
+          "duplicateEntityIds": [],
+          "flags": {},
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {},
+          "inventory": {},
+          "maps": {
+            "blank-room": {
+              "collisionShapes": 37,
+              "height": 16,
+              "mapId": "blank-room",
+              "ok": true,
+              "solidCells": 93,
+              "tileSize": 16,
+              "tiles": 385,
+              "width": 24
+            }
+          },
+          "physical": {
+            "facing": "down",
+            "overlaps": {},
+            "playerPosition": [
+              192.0,
+              128.0
+            ]
+          },
+          "player": {
+            "facing": "down",
+            "position": [
+              192.0,
+              128.0
+            ],
+            "sceneId": "world"
+          },
+          "quests": {},
+          "sceneId": "world",
+          "scenePositions": {},
+          "shops": {},
+          "sprite": {
+            "facing": "down",
+            "frame": 0,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "verify-blank-mtu456k8"
+        }
+      }
+    },
+    {
+      "args": {
+        "dx": 0.0,
+        "dy": -1.0,
+        "label": "up",
+        "steps": 30.0
+      },
+      "op": "move",
+      "result": {
+        "after": [
+          192.0,
+          83.9999847412109
+        ],
+        "before": [
+          192.0,
+          128.0
+        ],
+        "blocked": false,
+        "distance": 44.0000152587891,
+        "facing": "up",
+        "ok": true,
+        "steps": 30
+      }
+    },
+    {
+      "args": {
+        "label": "after"
+      },
+      "op": "snapshot",
+      "result": {
+        "ok": true,
+        "snapshot": {
+          "bootError": "",
+          "coins": 0,
+          "duplicateEntityIds": [],
+          "flags": {},
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {},
+          "inventory": {},
+          "maps": {
+            "blank-room": {
+              "collisionShapes": 37,
+              "height": 16,
+              "mapId": "blank-room",
+              "ok": true,
+              "solidCells": 93,
+              "tileSize": 16,
+              "tiles": 385,
+              "width": 24
+            }
+          },
+          "physical": {
+            "facing": "up",
+            "overlaps": {},
+            "playerPosition": [
+              192.0,
+              83.9999847412109
+            ]
+          },
+          "player": {
+            "facing": "up",
+            "position": [
+              192.0,
+              83.9999847412109
+            ],
+            "sceneId": "world"
+          },
+          "quests": {},
+          "sceneId": "world",
+          "scenePositions": {},
+          "shops": {},
+          "sprite": {
+            "facing": "up",
+            "frame": 12,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "verify-blank-mtu456k8"
+        }
+      }
+    }
+  ],
+  "save": {
+    "bytes": 427,
+    "ok": true,
+    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-blank-mtu456k8/worlds/29a829c53cfecf6a973ce66046167734fbedb128ffc3eb9569ed677ac7680eb8/progress.json",
+    "sha256": "b8ac64de890c91b71ccca8f7daf2948ac76be940c91c0c520390baee3f2484a1"
+  },
+  "worldId": "verify-blank-mtu456k8"
+}
