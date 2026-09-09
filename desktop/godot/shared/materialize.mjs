@@ -29,7 +29,7 @@ export function materializeBase({baseId,worldId,template='blank',out}) {
     if(template==='blank') fs.writeFileSync(project,fs.readFileSync(project,'utf8').replace('res://scenes/training_range.tscn','res://scenes/blank_start.tscn'));
   } else {
     const args=TEMPLATE_BASES.includes(baseId)?['--template',template,'--world-id',worldId,'--name',worldId]:['--world',template,'--world-id',worldId];
-    const result=spawnSync(process.execPath,[path.join(bases,baseId,'tools/new-world.mjs'),...args,'--out',out],{encoding:'utf8',windowsHide:true});
+    const result=spawnSync(process.execPath,[path.join(bases,baseId,'tools/new-world.mjs'),...args,'--out',out],{encoding:'utf8',windowsHide:true,env:{...process.env,ELECTRON_RUN_AS_NODE:'1'}});
     if(result.status!==0) throw Error(result.stderr||result.stdout||'Base materialization failed');
   }
   const shared=path.join(out,'craftmine_shared');
