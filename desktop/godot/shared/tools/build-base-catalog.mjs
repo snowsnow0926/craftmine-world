@@ -172,6 +172,7 @@ export function buildCatalogs({ basesDir = BASES_DIR } = {}) {
         identity: component.identity,
         persistentState: component.persistentState,
         initialState: component.initialState,
+        install: component.install ?? null,
         files: component.files.map((file) => {
           const rel = typeof file === 'string' ? file : file.path;
           const absolute = path.join(baseDir, rel);

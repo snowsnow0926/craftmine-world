@@ -194,7 +194,7 @@
         "license": "ASSET_SOURCES.md",
         "generator": null
       },
-      "contentHash": "2b8836852638b54d49e1471ae6b9225b7dcb7732b0a2dc7a8760670839bf45d8",
+      "contentHash": "8d84df6c923ed575ef508ff950a8f632077bbba15cfc53e61ba4ccacba4a9281",
       "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
       "entityIdScheme": "stable string id declared in world data, never a node path",
       "capabilities": [
