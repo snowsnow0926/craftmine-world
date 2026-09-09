@@ -127,20 +127,87 @@ impl TaskJournal {
         description: &str,
         origin: &Value,
     ) -> Result<Value> {
+        self.verification_submit_bound(ctx, call, revision, description, origin, None)
+    }
+
+    /// Host-only retry of the exact finished current draft. This does not
+    /// create a turn, reacquire its writer lease or change the budget owner.
+    pub fn verification_retry(&mut self, args: &Value) -> Result<Value> {
+        super::durable::fields(
+            args,
+            &[
+                "context",
+                "toolCallId",
+                "revision",
+                "draftHash",
+                "summary",
+                "origin",
+            ],
+        )?;
+        let ctx: WorkspaceContext = serde_json::from_value(args["context"].clone())?;
+        let call = super::durable::text(args, "toolCallId", 240)?;
+        let revision = super::durable::number(args, "revision", i64::MAX as u64)?;
+        let hash = super::durable::text(args, "draftHash", 64)?;
+        ensure!(
+            hash.len() == 64 && hash.bytes().all(|byte| byte.is_ascii_hexdigit()),
+            "INVALID_DRAFT_HASH"
+        );
+        let description = super::durable::text(args, "summary", 3200)?;
+        self.verification_submit_bound(
+            &ctx,
+            call,
+            revision,
+            description,
+            args.get("origin").unwrap_or(&Value::Null),
+            Some(hash),
+        )
+    }
+
+    fn verification_submit_bound(
+        &mut self,
+        ctx: &WorkspaceContext,
+        call: &str,
+        revision: u64,
+        description: &str,
+        origin: &Value,
+        retry_hash: Option<&str>,
+    ) -> Result<Value> {
         workspaces::call_id(call)?;
         ensure!(
             !description.trim().is_empty() && description.chars().count() <= 800,
             "INVALID_SUMMARY"
         );
-        let request_hash = digest(&document(
-            &json!({"revision":revision,"summary":description,"origin":origin}),
-        )?);
+        let mut request = json!({"revision":revision,"summary":description,"origin":origin});
+        if let Some(hash) = retry_hash {
+            request["retryDraftHash"] = json!(hash);
+        }
+        let request_hash = digest(&document(&request)?);
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
         expire(&tx)?;
         let workspace = workspaces::inspect(&tx, ctx)?;
-        workspaces::assert_live(&tx, &workspace)?;
+        if let Some(hash) = retry_hash {
+            ensure!(
+                workspace.task.status == "finished",
+                "FINISHED_CURRENT_DRAFT_REQUIRED"
+            );
+            ensure!(workspace.task.draft_hash == hash, "STALE_DRAFT_HASH");
+            super::applications::assert_idle(&tx, &workspace.world_id)?;
+            let leased: bool = tx.query_row(
+                "SELECT EXISTS(SELECT 1 FROM craftmine_world_leases WHERE world_id=?1)",
+                [&workspace.world_id],
+                |row| row.get(0),
+            )?;
+            ensure!(!leased, "WORLD_LEASE_BUSY");
+            let world = worlds::read(&tx, &workspace.world_id)?;
+            ensure!(
+                world.world.build["id"].as_str() == Some(&workspace.task.binding.base_build),
+                "WORLD_BUILD_CONFLICT"
+            );
+        } else {
+            workspaces::assert_live(&tx, &workspace)?;
+        }
         let binding = &workspace.task.binding;
         let prior: Option<(String,String)> = tx.query_row(
             "SELECT id,request_hash FROM craftmine_verifications WHERE task_id=?1 AND tool_call_id=?2",

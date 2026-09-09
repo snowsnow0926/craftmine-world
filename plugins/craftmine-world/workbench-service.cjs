@@ -12,6 +12,7 @@ const channels={
   'memory.search':['query','includeInactive','offset','limit'],
   'memory.propose':['operationId','kind','claim','tags','replaceId'], 'memory.retire':['id','reason'],
   'selection.set':['build','objectId','selectionRevision'], 'selection.clear':[],
+  'draft.recheck':['operationId','taskId','generation','revision','draftHash'],
 };
 
 // Presentation requests carry no authority. The plugin main supplies the real
@@ -73,8 +74,28 @@ function createWorkbenchService(core,{library,memory,verifications,reviews,getSe
     if(selectionKey)selectionRequests.set(selectionKey,selectionRequest);
     const world=await selected(host,payload.worldId),{worldId,...args}=payload;
     if(selectionKey)need(selectionRequests.get(selectionKey)===selectionRequest,'STALE_SELECTION_REQUEST');
-    if(channel==='workbench.capabilities')return {channels:Object.keys(channels).filter(name=>!name.startsWith('library.')||library).filter(name=>!name.startsWith('memory.')||memory).filter(name=>name!=='library.install'||verifications)};
+    if(channel==='workbench.capabilities')return {channels:Object.keys(channels).filter(name=>!name.startsWith('library.')||library).filter(name=>!name.startsWith('memory.')||memory).filter(name=>!['library.install','draft.recheck'].includes(name)||verifications)};
     if(channel==='task.current')return {context:await current(host,worldId),active:host.active===true};
+    if(channel==='draft.recheck'){
+      need(!host.active&&host.context&&host.context.projectId===host.projectId&&host.context.sessionId===host.sessionId,'HOST_ACTION_CONTEXT_REQUIRED');
+      const context=contextOf(host.context),task=await current(host,worldId);
+      need(task&&task.status==='finished'&&task.binding.taskId===args.taskId&&task.generation===args.generation&&task.draft.revision===args.revision&&task.draft.hash===args.draftHash,'STALE_DRAFT');
+      need(text(args.operationId),'OPERATION_ID_REQUIRED');
+      const first=task.requirements.find(requirement=>requirement.kind==='request');
+      let requestText='',start=0;
+      if(first)do {
+        const source=await core.call('task.readRequirements',{context,requestId:first.id,start,limit:4000});
+        requestText+=source.items.map(item=>item.text).join('');
+        need(requestText.length<=16000,'REQUIREMENT_TOO_LARGE');
+        start=source.next;
+      } while(start!==null&&start!==undefined);
+      requestText ||= '重新检查当前已保存草稿。';
+      const origin=host.origin?.modelKey?{...host.origin,request:{messageId:first?.id||args.operationId,text:requestText}}:null;
+      const existing=await core.call('verification.list',{worldId,offset:0,limit:50});
+      const queued=existing.find(job=>job.current&&job.taskId===task.binding.taskId&&job.draftHash===args.draftHash&&job.workspaceRevision===args.revision&&['queued','running'].includes(job.status));
+      const job=queued||await core.call('verification.retry',{context,toolCallId:args.operationId,revision:args.revision,draftHash:args.draftHash,summary:'重新检查当前已保存草稿',origin});
+      verifications.enqueue(job,context);return {verificationId:job.id,status:job.status,revision:args.revision,draftHash:args.draftHash,applied:false};
+    }
     if(channel==='task.recoverable'){
       if(!host.sessionId)return {items:[],modelReplay:false};
       const result=await core.call('task.recoverable',{projectId:host.projectId,worldId});
@@ -95,9 +116,15 @@ function createWorkbenchService(core,{library,memory,verifications,reviews,getSe
       need(args.revision===undefined||args.revision===(host.previous?.draft?.revision??0),'STALE_DRAFT');
       need(workspace.task.revision===0,'ACTION_DRAFT_NOT_FRESH');
       const result=await library.install(contextOf(host.context),args.operationId,{ref:args.ref,revision:0,...(args.position?{position:args.position}:{})});
-      await verifications.cancelTurn?.(host.context);await reviews?.cancelTurn?.(host.context);
-      const job=await core.call('verification.submit',{context:contextOf(host.context),toolCallId:'check-'+digest(args.operationId),revision:result.receipt.revision,summary:'检查已加入草稿的固定版本作品',origin:host.origin||null});
-      verifications.enqueue(job,contextOf(host.context));return {...result,verificationId:job.id,applied:false};
+      try {
+        await verifications.cancelTurn?.(host.context);await reviews?.cancelTurn?.(host.context);
+        const job=await core.call('verification.submit',{context:contextOf(host.context),toolCallId:'check-'+digest(args.operationId),revision:result.receipt.revision,summary:'检查已加入草稿的固定版本作品',origin:host.origin||null});
+        verifications.enqueue(job,contextOf(host.context));return {...result,verificationId:job.id,applied:false};
+      } catch {
+        // The committed draft must stay usable even when the check receipt or
+        // broker handoff fails. No invented verification evidence is returned.
+        return {...result,applied:false,verificationStatus:'retry-required'};
+      }
     }
     if(channel==='memory.search'){
       const task=await current(host,worldId);
