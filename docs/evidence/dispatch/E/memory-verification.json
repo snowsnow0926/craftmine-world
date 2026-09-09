@@ -3,7 +3,7 @@
   "sourceCommit": "cdb9ba3391b037c19d478be58adad327f320cc36",
   "overlay": {
     "path": "docs/dispatch-reports/E/memory-integration.patch",
-    "sha256": "78497f1cc97d8c06f2ce6eb205a343db997125fadab668f7a23611c838f2605a",
+    "sha256": "9be3edbd53a3376c78767de2499e65b00385d19f7be1ea9b0f2a0b32a1a36589",
     "mainWithOverlaySha256": "872f1ff0ccf89b581f94a68c8b4f447c1ea28099d7013fc121be37e6094f1e7c"
   },
   "binary": {

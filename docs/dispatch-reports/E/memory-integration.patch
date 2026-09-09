@@ -1,6 +1,12 @@
 diff --git a/vendor/pi-desktop/crates/craftmine-core/src/main.rs b/vendor/pi-desktop/crates/craftmine-core/src/main.rs
 --- a/vendor/pi-desktop/crates/craftmine-core/src/main.rs
 +++ b/vendor/pi-desktop/crates/craftmine-core/src/main.rs
-@@ -25,1 +25,2 @@
+@@ -22,7 +22,8 @@
+         "library.read" => return journal.library_read(params),
+         "library.capture" => return journal.library_capture(params),
+         "memory.search" => return journal.memory_search(params),
          "memory.propose" => return journal.memory_propose(params),
 +        "memory.findReceipt" => return journal.memory_find_receipt(params),
+         "memory.retire" => return journal.memory_retire(params),
+         "backup.export" => return journal.backup_export(params),
+         "backup.inspect" => return journal.backup_inspect(params),
