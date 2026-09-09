@@ -1,5 +1,16 @@
 # 04. E2E Test Plan
 
+## CRAFTMINE-026: Local token limits and stable request prefixes
+
+On an isolated profile, exhaust a small cumulative task token budget while the
+model context has room. Require a local-limit error, no automatic provider retry
+and preserved draft/accounting. Change only the current task token cap through
+player controls and resume the same budget owner. Capture consecutive actual
+serialized requests: system, unchanged history and tool-call reasoning remain
+stable; fresh host facts appear only at the tail. Real-provider cache rates must
+come from returned usage, with fixtures clearly separated. Never use physical
+input or foreground a window during automated acceptance.
+
 ## CRAFTMINE-025: Automatic context and resume provenance (batch 07)
 
 See [the context boundary checks](../dispatch-batch07-context-boundaries.md).

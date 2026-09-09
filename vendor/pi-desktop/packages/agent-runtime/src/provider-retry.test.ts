@@ -221,10 +221,7 @@ describe("provider rate-limit retry", () => {
     const events: string[] = [];
     for await (const event of stream) events.push(event.type);
 
-    expect(claim).toHaveBeenCalledWith(
-      expect.objectContaining({ code: "PROVIDER_UNAUTHORIZED", retriable: false }),
-      "request",
-    );
+    expect(claim).not.toHaveBeenCalled();
     expect(events).toEqual(["error"]);
   });
 
@@ -326,6 +323,17 @@ describe("provider rate-limit retry", () => {
 });
 
 describe("bounded transient provider retry", () => {
+  it("does not retry a local task budget failure or promote it using stale 429 headers", async () => {
+    let attempts = 0;
+    const claim = vi.fn(() => 1), sleep = vi.fn(async () => {});
+    const output = createProviderRetryStream(model, context, {}, () => {
+      attempts++;
+      return failedStream({ errorMessage: "TOKEN_BUDGET_EXHAUSTED" });
+    }, { claim, sleep, headers: () => ({ "retry-after": "1" }), status: () => 429 });
+    const answer = await output.result();
+    expect(answer.errorMessage).toBe("TOKEN_BUDGET_EXHAUSTED");
+    expect(attempts).toBe(1); expect(claim).not.toHaveBeenCalled(); expect(sleep).not.toHaveBeenCalled();
+  });
   it("admits only the transport/gateway codes into the shared budget", () => {
     for (const code of [
       "NETWORK_ERROR",
@@ -621,12 +629,8 @@ describe("opaque bad-request repair", () => {
     const result = await stream.result();
     expect(result.stopReason).toBe("error");
     expect(result.errorMessage).toBe("400 status code (no body)");
-    // Only the failed repair reaches the budget; the opaque first failure never did.
-    expect(claim).toHaveBeenCalledTimes(1);
-    expect(claim).toHaveBeenCalledWith(
-      expect.objectContaining({ code: "PROVIDER_ERROR", retriable: false }),
-      "request",
-    );
+    // The failed repair is terminal and cannot consume a transient retry.
+    expect(claim).not.toHaveBeenCalled();
   });
 
   it("surfaces descriptive 400 bodies without attempting a repair", async () => {
@@ -655,12 +659,8 @@ describe("opaque bad-request repair", () => {
 
     expect(attempts).toBe(1);
     expect(events).toEqual(["error"]);
-    // A descriptive body is terminal, and the budget is consulted and refuses it.
-    expect(claim).toHaveBeenCalledTimes(1);
-    expect(claim).toHaveBeenCalledWith(
-      expect.objectContaining({ code: "PROVIDER_ERROR", retriable: false }),
-      "request",
-    );
+    // A descriptive body is terminal before consulting a retry controller.
+    expect(claim).not.toHaveBeenCalled();
   });
 
   it("strips only the output-limit fields", () => {

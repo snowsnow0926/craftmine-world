@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { CRAFTMINE_SYSTEM_PROMPT, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
+import { CRAFTMINE_SYSTEM_PROMPT, appendCraftmineRequestData, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
 import {
   Agent,
   BACKGROUND_CONTEXT,
@@ -4381,6 +4381,7 @@ Delegation rules:
     const remaining = Math.max(0, budget.hardLimit - budget.tokens);
     const reminder = this.claimContextBudgetReminder(remaining, budget);
     if (!reminder) return context;
+    if (this.craftmineWorld) return { ...context, messages: appendCraftmineRequestData({ messages: convertToLlm(context.messages) }, reminder).messages };
     return {
       ...context,
       systemPrompt: `${context.systemPrompt}\n\n${reminder}`,

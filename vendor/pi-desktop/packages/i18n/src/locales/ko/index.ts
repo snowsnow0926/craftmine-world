@@ -1815,6 +1815,12 @@ export const ko = {
     justNow: "방금",
   },
   errors: {
+    TOKEN_BUDGET_EXHAUSTED: "로컬 작업 토큰 예산을 모두 사용했습니다. 월드 작업대에서 예산을 조정하고 저장된 작업을 재개하세요.",
+    REQUEST_BUDGET_EXHAUSTED: "작업 요청 횟수 제한에 도달했습니다. 월드 작업대에서 작업을 확인하세요.",
+    COMPACTION_BUDGET_EXHAUSTED: "작업 압축 횟수 제한에 도달했습니다. 월드 작업대에서 작업을 확인하세요.",
+    TASK_DEADLINE_EXCEEDED: "작업 시간 제한에 도달했습니다. 월드 작업대에서 작업을 확인하세요.",
+    CRAFTMINE_REQUEST_TOO_LARGE: "요청이 모델 컨텍스트 또는 예약된 출력 용량을 초과했습니다. 컨텍스트를 복구하세요.",
+    CRAFTMINE_TASK_STATE_CHANGED: "저장된 작업 상태가 변경되었습니다. 월드 작업대를 새로 고치세요.",
     HOST_UNAVAILABLE: "로컬 서비스를 사용할 수 없습니다",
     MODEL_NOT_CONFIGURED: "이 모델이 설정되지 않았거나 AI 프로바이더에서 제공하지 않습니다.",
     TOOL_DENIED: "이 작업에 대한 권한이 거부되었습니다",

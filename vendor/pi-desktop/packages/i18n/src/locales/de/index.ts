@@ -1775,6 +1775,12 @@ export const de = {
     "justNow": "Gerade eben"
   },
   "errors": {
+    TOKEN_BUDGET_EXHAUSTED: "Das lokale Token-Budget der Aufgabe ist aufgebraucht. Passen Sie es in der Welt-Werkbank an und setzen Sie die gespeicherte Aufgabe fort.",
+    REQUEST_BUDGET_EXHAUSTED: "Das Anfrage-Limit der Aufgabe wurde erreicht. Prüfen Sie die Aufgabe in der Welt-Werkbank.",
+    COMPACTION_BUDGET_EXHAUSTED: "Das Komprimierungslimit der Aufgabe wurde erreicht. Prüfen Sie die Aufgabe in der Welt-Werkbank.",
+    TASK_DEADLINE_EXCEEDED: "Das Zeitlimit der Aufgabe wurde erreicht. Prüfen Sie die Aufgabe in der Welt-Werkbank.",
+    CRAFTMINE_REQUEST_TOO_LARGE: "Die Anfrage überschreitet den Modellkontext oder die reservierte Ausgabe. Stellen Sie den Kontext wieder her.",
+    CRAFTMINE_TASK_STATE_CHANGED: "Der gespeicherte Aufgabenstatus wurde geändert. Aktualisieren Sie die Welt-Werkbank.",
     "HOST_UNAVAILABLE": "Der lokale Dienst ist nicht verfügbar",
     "MODEL_NOT_CONFIGURED": "Dieses Modell ist nicht eingerichtet oder der KI-Anbieter bietet es nicht an.",
     "TOOL_DENIED": "Die Berechtigung für diese Aktion wurde verweigert.",
