@@ -2,7 +2,7 @@
 
 任务：`godot-round3-s2-20260910`。分支 `codex/godot-round3-s2-20260910`，
 工作树 `D:/Craftmine World-worktrees/godot-round3-s2-20260910`。
-本文件是进行中的交付记录，未完成项逐条保留；每次提交后刷新。
+本文件是进行中的交付记录，未完成项逐条保留。
 
 ## 0 基线与接续
 
@@ -12,7 +12,8 @@
 | 综合基线 | 尚未由 S7 提供（无 `codex/godot-round3-s7-*` 分支），按派单保留历史地合入 R2 已提交基线 |
 | 合入 | `2fa3c7c`（R2 综合，含 R1/R3/R4/R5/R6 与 C `f35c5c7`）→ `0645454`；B 最终沙箱 `5cf65eb` → `5838ca3` |
 | 祖先核对 | 两次合并均无冲突，未复制旧树、未改写贡献历史；旧工作树只读 |
-| 未触碰 | 主目录 `README.md`、`docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md` 及未提交文档；R2 树；任何运行中的二进制与共享缓存 |
+| 提交 | `d692917` 执行器恢复与账本；`ec777f1` 私有路由与服务接线 |
+| 未触碰 | 主目录 `README.md`、`docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md` 及未提交文档；R2 树；运行中的二进制与共享缓存（只读复用 `D:\cm-g6-root` 的依赖目录，以 junction 挂入工作树且被 gitignore） |
 
 旧 C 的回收路径与 B 的 `recover` 同时存在于合入结果中，本轮按派单"合并接手旧 C 与 B
 的范围，避免两个清理器并存"处理：C 的弱路径已删除，只保留 B 的 host-owned 恢复。
@@ -21,88 +22,148 @@
 
 ### 1.1 用最终恢复协议替换 PID+映像文件名清理（完成）
 
-- `plugins/craftmine-world/godot-executor.cjs` 删除 `reapTaskProcess`
-  （`tasklist` + `taskkill /T /F`）与 sidecar 读取，改为唯一入口
-  `godot-host-broker.exe recover <tasksRoot>`。
-- 只有 `identityVerified === true && journalRemoved === true` 记为 `reclaimed`；
-  `skipped`（含 `broker-still-running`、`pid-reused`）保持原样不动；
-  `unreadable` 单独列出。
-- 恢复报告恒有 `finalReceiptObserved:false`；若报告声称有最终回包，标记
-  `finalReceiptClaimed` 并作为矛盾暴露，不采信。
+- `godot-executor.cjs` 删除 `reapTaskProcess`（`tasklist` + `taskkill /T /F`）与
+  sidecar 读取，改为唯一入口 `godot-host-broker.exe recover <tasksRoot>`。
+- 只有 `identityVerified && journalRemoved` 记为 `reclaimed`；`skipped`
+  （`broker-still-running`、`pid-reused`）原样保留；`unreadable` 单独列出；
+  报告若声称有最终回包，标记 `finalReceiptClaimed` 并作为矛盾暴露。
 - 静态断言：执行器源码不含 `tasklist`/`taskkill`。
-- 证据：`tests/godot-round3/S2/recovery-protocol.mjs` 12/12（脚本 broker）、
-  `tests/godot-round3/S2/recovery-real-broker.mjs` 4/4（真实 broker CLI）、
-  C 协议回归 15/15。原始输出见 `evidence/`。
+- 证据：`recovery-protocol` 12/12、`recovery-real-broker` 4/4、C 协议回归 15/15。
 
 ### 1.2 在启动、异常退出、取消、重启对账中实际调用 recover（完成）
 
-触发点（单飞链，避免并发争抢同一 journal 目录）：`startup`、`broker-exit`
-（任何未同时满足"成功 + 自己退休 journal"的运行）、`cancel`、`reconcile`、
-`stop`。区分"无最终回包后回收"与"成功完成"：
+触发点（单飞链）：`startup`、`broker-exit`、`cancel`、`reconcile`、`stop`。
+只有 `state:succeeded && cleanup.verified && recoveryJournal.cleared` 记为
+`succeeded`；否则 `reclaimed-without-final-receipt` / `no-final-receipt:<原因>`。
+耐久账本 `<data>/godot/executor-ledger.json` 原子写入，逐 attempt 记录
+requestId/transport/outcome。重启对账只在核心报 `queued`/`blocked` 且每个历史
+attempt 已证明成功或已被身份核验回收时重新入队，否则置 `interrupted`
+（`GODOT_RESTART_IDENTITY_UNVERIFIED`），同一作业不因观察等待超时被重复启动。
 
-- 只有 `state:succeeded && cleanup.verified && recoveryJournal.cleared` 记为
-  `succeeded`；否则记为 `reclaimed-without-final-receipt` 或
-  `no-final-receipt:<原因>`。
-- 耐久账本 `<data>/godot/executor-ledger.json` 原子写入，逐 attempt 记录
-  requestId / transport / outcome。
-- 重启对账：只有在核心报告 `queued`/`blocked` 且每个历史 attempt 都已证明成功或已被
-  身份核验回收时才重新入队；否则置 `interrupted`
-  （`GODOT_RESTART_IDENTITY_UNVERIFIED`），不重复启动同一作业。
+### 1.3 固定 broker 协议与二进制身份（完成机制，release pin 待打包）
 
-### 1.3 固定 broker 协议与二进制身份（部分完成）
+- `broker-identity.mjs` 记录二进制 sha256、协议/恢复策略版本、源码摘要；
+  `broker-identity.json` 已生成（profile `debug`，sha256
+  `93d35cc8…4038c4`，源码摘要 `32ba0402…03501`，sourceCommit `5cf65eb`）。
+- 执行器按 `CRAFTMINE_GODOT_BROKER_SHA256` → 二进制旁的
+  `broker-identity.json` → `<data>/godot/broker-identity.json` 解析 pin；不符即
+  `GODOT_BROKER_MISMATCH`，不注册。未配置 pin 时如实报告 `broker.pinned:false`。
+- taskId/profile 长度：`craftmine.godot.task.<taskId>` ≤ 64，执行器生成
+  `<pf|im|ex>-<24hex>` 并在启动前校验，测试覆盖上限常量。
 
-- 已实现 pin 机制与 `broker-identity.mjs` 记录器；身份文件包含协议/恢复策略版本、
-  源码摘要、二进制 sha256。
-- 本树已生成 `desktop/godot/sandbox/broker-identity.json`
-  （profile `debug`，sha256 `93d35cc8…4038c4`，源码摘要 `32ba0402…03501`，
-  sourceCommit `5cf65eb`）。
-- 未完成：发行用的 release 身份需由打包步骤从规范构建重新生成（debug 哈希含绝对
-  路径）。见第 3 节。
-- 任务 ID / profile 长度：`craftmine.godot.task.<taskId>` ≤ 64，执行器生成
-  `<pf|im|ex>-<24hex>`（27 字符）并在启动前校验；测试覆盖上限常量。
+### 1.4 正式私有路由（完成）
 
-### 1.4–1.8 正式路由、服务构造、模型链路、运行期异常、资源边界、打包
+`host-requests.cjs` 新增字段级白名单表并同时登记到
+`plugin-runtime.ts` 的私有方法白名单（有测试保证两边同步）：
 
-见第 2 节进行中清单。
+- `godotWorld.initialize/initStatus/copy/backupSnapshot/verifySnapshot`
+- `godotProject.create/index/read/patch/receipt`
+- `godotBuild.start/read/cancel/receipt`、`godotJob.continue/usage`
+- `godotCandidate.list/read`、`godotStorage.status/reclaimPlan/reclaimCommit`
+- `godotAsset.put/list`
+- `content.status/gitInfo/history/changes/diff/readFile/branch.list/version.list/
+  checkpoint.set/checkpoint.list/apply.prepare/advance/confirm/rollback/recover/
+  reclaim.plan/reclaim.prune/verify/bundle`（历史与恢复）
+- `library.search/read/capture`、`world.list/create/saveProgress`、`asset.request`、
+  `package.request`
+- 原有 `backup.export/inspect/restore/status/cancel`（portable backup）
 
-## 2 进行中与未完成
+路由只转发列出的字段，未列字段在到达核心前被拒绝；模型/页面无法到达这些方法
+（`godotExecutor.enqueue/cancel/revoke` 不在白名单中，只有宿主可用）。
 
-| 派单条目 | 状态 | 说明 |
-| --- | --- | --- |
-| 4 正式私有路由 `godotWorld.initialize/initStatus` 等 | 进行中 | 核心已提供 `godotWorld.*`（godot_worlds.rs）；插件 router 尚未开放 |
-| 5 main.cjs 构造 S5 素材服务 / S3 作品服务 / S6 采样预算 | 未完成 | `createAssetService`、`createReuseService` 目前无生产构造；S6 的 `sampleLiveState`/budget 参数在本树 `world-tools.cjs` 中尚不存在（S6 未交付） |
-| 6 模型 build/enqueue/cancel、firstLoad 证据串通 | 未完成 | 依赖 S6 工具层与 R2 注入 |
-| 7 运行期异常、加载页/空画面/静态有效画面、崩溃/丢回包 | 部分 | 加载页/空画面/静态帧区分与快照已由 C 的 verifier 覆盖；游戏内未捕获 JS 异常待补 |
-| 8 插件与检查 preload 实际打包 | 未完成 | `godot-check` 已在 electron-vite preload 输入中；本树无 `node_modules`，尚未实际打包 |
+### 1.5 main.cjs 构造并注入服务（部分完成）
 
-## 3 已定位但未解决
+- **完成**：`createAssetService({call, runPreview, readFile})` 与
+  `createReuseService({call})` 在 `onLoad` 中真实构造，并注入 host router；
+  `asset.request`/`package.request` 按服务自身的有界方法面转发。
+  `asset-service.mjs`、`reuse-service.mjs` 已加入 `build-world-plugin.mjs`
+  拷贝列表，打包产物已实际生成并验证。
+- **完成**：`plugin-runtime.ts` / `plugin-host-process.mjs` 暴露宿主桥
+  `craftmine.godotCheck`、`craftmine.cancelGodotCheck`、`craftmine.assetPreview`、
+  `craftmine.sampleLiveState`；此前 `pi.craftmine.godotCheck` 会落到
+  `UNSUPPORTED`，现在能到达宿主注入的实现。
+- **完成**：`main.cjs` 向 `createWorldTools` 传入第 6 参数
+  `{sampleLiveState, budget, godotExecutor, historyMethods, libraryMethods}`。
+- **未完成**：S6 的 `world-tools.cjs` 在本树仍是 5 参数版本，不消费该对象；
+  `budget` 提供者只返回空对象（所有计数保持 unknown，不编造）。
+- **未完成**：素材/作品的正式可用还缺核心方法。本树核心没有
+  `asset.read/bodyPath/previewBegin/previewFinish` 与 `package.check/install/list/
+  read/progress/grant/upgrade/uninstall/restore/export/import/usage`，因此这两个
+  服务的调用目前会收到核心自己的 UNSUPPORTED_METHOD。责任：S1 提供 RPC、S5/S3
+  提供最终服务方法；本任务已完成构造与路由。
 
-1. **release broker 身份**：debug 构建哈希含构建目录，发行 pin 必须由 S8 的规范
-   release 构建生成；本树提供记录器与格式，未生成 release pin。
-2. **S6 采样/预算参数缺失**：`world-tools.cjs` 在本树只有 5 个参数，没有
-   `sampleLiveState`/`budget` 注入点（审计报告指向 R7/L 分支的 6 参数变体）。
-   需要 S6 交付后由本任务接线，不能在本任务内发明该接口。
-3. **核心缺少 `godotJob.pending`**：跨进程遗留 `queued` 作业的自动重入队仍不可用；
-   本任务用自身耐久账本 + 可信调用方覆盖已启动过的作业，未启动过的 `queued` 作业
-   需要 S1 提供该接口。
-4. **`asset.*` / `library.install|planInstall|formatCheck` / `portable.*` 不是核心
-   路由**：素材与作品服务的生产接线需要 S1/S5/S3 的真实方法名；不得为省接线开放任意
-   core RPC。
+### 1.6 模型 build/enqueue/cancel 与 firstLoad（未完成，责任已定位）
 
-## 4 身份
+- `godotExecutor.enqueue/cancel/status` 私有路由已就绪，宿主可驱动；
+  `runJob` 会真实 claim/import/export/check/finish 并记录耐久 attempt。
+- 模型路径仍缺一环：`world-tools.cjs`（S6）在本树没有 `godotBuild.start` 之后
+  调用 `enqueue` 的钩子，核心也没有 `godotJob.pending`，因此模型启动的构建会停在
+  `blocked/queued`。执行器已实现消费 `godotJob.pending` 的 `reconcile()`，接口
+  一到位即可工作；在此之前不能声称模型链路串通。
+- firstLoad 需 R2 在 `main/index.ts` 注入 `GodotBuildVerifier`（本任务已把
+  `craftmineGodotCheck` 桥打通），双方联合验证未进行。
+
+### 1.7 运行期异常、画面区分、快照、崩溃/丢回包（完成本任务范围）
+
+- **新补**：`electron/preload/godot-check.ts` 在 main world 安装
+  `error`/`unhandledrejection` 钩子，把被授权脚本抛出的异常以 `runtime-error`
+  帧上报宿主；此前只有引擎 `onPrintError` 与 console 通道能发现错误。
+  真实 Electron 离屏隐藏窗口验证：`uncaught-error: … S2 in-game boom` 与
+  `unhandled-rejection: … S2 unhandled rejection` 均到达宿主（`check-error-hooks`）。
+- 加载页/空画面/静态有效画面区分与快照一致性由 C 的 verifier 负责（
+  `BLANK_GAME_FRAME`、3 帧非空、`snapshot.expectedHash==actualHash`），C 协议回归
+  15/15 覆盖未破坏。
+- 崩溃/丢回包/清理由本任务的恢复协议与耐久账本覆盖（见 1.1/1.2）。
+
+### 1.8 资源与执行边界、打包（部分完成）
+
+- `resourceEnforcement` 与硬配额分开报告：receipt 报 `enforced:true` 时作业失败为
+  `GODOT_RESOURCE_BUDGET_EXCEEDED`；`status().resources` 如实标注
+  `hardFilesystemQuota:false` 与采样 scope，不声称文件系统配额。
+- **完成**：`desktop/build-world-plugin.mjs` 实际执行成功，产物包含
+  `godot-executor.cjs`、`asset-service.mjs`、`reuse-service.mjs`、`domain.cjs`；
+  打包后的 `main.cjs`/`host-requests.cjs` 可加载，入口存在（`plugin-routes` 断言）。
+- **完成**：`godot-check` preload 用与 electron-vite 相同的参数实际编译成功，产物
+  含输入守卫与错误钩子，并在真实 Electron 中运行通过。
+- **未完成**：完整 `electron-vite build`（main+renderer）未在本树运行；依赖目录
+  `D:\cm-g6-root` 的工作区包没有 `dist`，直接 `tsc --noEmit` 有 252 个既有
+  解析错误（全部为缺 `@pi-desktop/*` 类型，与本次改动无关，`godot-check.ts` 与
+  `godot-build-verifier.ts` 零错误）。规范构建由 S7/S8 在综合基线上执行。
+- **未完成**：源码导入、包脚本/预览、Git hooks/filter 的宿主权限边界本轮只做了
+  路由收敛（只转发白名单字段、服务自身校验），未做合成资源的输入/剪贴板边界实测。
+
+## 2 身份
 
 | 项 | 值 |
 | --- | --- |
-| 源码 | `codex/godot-round3-s2-20260910`，基线提交见第 0 节 |
+| 源码 | `codex/godot-round3-s2-20260910`：`d692917`（恢复）、`ec777f1`（接线） |
 | broker 二进制 | `desktop/godot/sandbox`（`cargo build --offline`），sha256 `93d35cc881887fa632dd2bc02502141c1b9670353d6a6536590c36e2824038c4`，profile `debug` |
 | broker 协议 | `BROKER_PROTOCOL_V1.md`，`schemaVersion:1`，`craftmine.windows.lpac-registry.v1`，恢复策略 `craftmine.windows.recovery-journal.v1` |
 | Godot 引擎 | 4.7.2-stable（`desktop/build/godot/4.7.2-stable`，编辑器 sha256 `ab1824f8…b22424`） |
 | 宿主 bridge | `desktop/godot/web/bridge.js` |
+| Electron | 43.4.0（`D:\cm-g6-root` 只读依赖） |
 
-## 5 证据
+## 3 证据
 
 | 文件 | 内容 |
 | --- | --- |
-| `evidence/recovery-protocol.log` | 12/12，脚本 broker，含异常退出/取消/停止/重启对账 |
+| `evidence/recovery-protocol.log` | 12/12，脚本 broker：异常退出/取消/停止/重启对账/身份不可验证不重启 |
 | `evidence/recovery-real-broker.log` | 4/4，真实 `godot-host-broker.exe recover` |
-| `evidence/c-executor-protocol-regression.log` | 15/15，C 的协议回归未被破坏 |
+| `evidence/c-executor-protocol-regression.log` | 15/15，C 协议回归 |
+| `evidence/plugin-routes.log` | 5/5，打包后的 router：字段白名单、服务转发、白名单同步、打包产物入口 |
+| `evidence/check-error-hooks.log` | 1/1，真实 Electron 离屏窗口中的未捕获异常与未处理 rejection |
+
+## 4 已定位但仍未解决
+
+1. **release broker pin**：debug 哈希含构建目录，发行 pin 必须由 S8 的规范 release
+   构建用 `broker-identity.mjs` 重新生成。
+2. **核心缺 `asset.*` 与 `package.*`**：S5/S3 服务已构造并路由，但调用会得到核心
+   UNSUPPORTED_METHOD；责任 S1（RPC）+ S5/S3（最终方法）。
+3. **核心缺 `godotJob.pending`**：跨进程遗留 `queued` 作业无法自动发现；已启动过的
+   作业由本任务的耐久账本覆盖，未启动过的需要 S1 该接口。
+4. **S6 `world-tools.cjs` 未消费第 6 参数**：采样桥与 budget 提供者已注入，接口
+   由 S6 实现；budget 计数在提供者返回空对象时保持 unknown。
+5. **模型→构建→检查→应用→firstLoad 的联合串通**：需 S6 工具钩子 + R2 注入
+   verifier 后联合验证，本任务不代替验收者。
+6. **完整 electron-vite 构建与同包验收**：依赖工作区包 `dist`，由 S7/S8 在综合
+   基线上完成。

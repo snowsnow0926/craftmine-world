@@ -127,6 +127,13 @@ known diagnostic.
   runtime/window/session teardown;
 - never sends `save`, `acknowledge` or `cancel`, so a check cannot write progress.
 
+In-game failure detection: the engine bridge reports Godot's own
+`onPrintError` output as `runtime-error` frames, and the check preload installs
+main-world `error` and `unhandledrejection` hooks at document start so an
+exception thrown by authored game script (or a promise it leaves rejected) is
+reported on the same channel. Without those hooks a page whose script throws
+immediately could still look "error free" because the engine never saw it.
+
 Diagnostics (bounded page console lines and a periodic page-state probe) are
 returned for failure analysis and never influence `passed`.
 
