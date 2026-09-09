@@ -299,3 +299,48 @@ fn backup_descriptor_verifies_the_live_store_and_detects_tampering() -> Result<(
     );
     Ok(())
 }
+
+/// A Git-backed world has no blob store: its commit is the content. Copying it
+/// and describing it for backup must read that commit, not a blob that was
+/// never written.
+#[test]
+fn a_git_backed_world_can_be_copied_and_described_from_its_commit() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = TaskJournal::open(&path)?;
+    applied_world(&mut journal, "g1")?;
+    journal.content_migrate_apply(&json!({"worldId":"g1"}))?;
+    let status = journal.content_status(&json!({"worldId":"g1"}))?;
+    assert_eq!(status["backend"], "git");
+    assert!(status["headOid"].as_str().is_some_and(|oid| oid.len() >= 40));
+
+    // Copy the Git-backed world. Its project bytes must come from the commit.
+    let copied = journal.godot_world_copy(&json!({"sourceWorldId":"g1","targetWorldId":"g2",
+        "title":"Git Copy","progress":"formal"}))?;
+    assert_eq!(copied["sourceRevision"], 0);
+    let copy_context = WorkspaceContext {
+        project_id: "project-a".into(),
+        session_id: "session-copy".into(),
+        turn_id: "two".into(),
+    };
+    journal.workspace_open(&copy_context, "g2")?;
+    let index = journal.godot_project_index(&json!({"context":&copy_context,"worldId":"g2"}))?;
+    assert_eq!(index["revision"], 0);
+    assert!(index["files"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|file| file["path"] == "project.godot"));
+    let read = journal.godot_project_read(&json!({"context":&copy_context,"worldId":"g2",
+        "revision":0,"manifestHash":index["manifestHash"],"path":"project.godot"}))?;
+    assert_eq!(read["text"], PROJECT);
+
+    // The backup descriptor of the Git-backed source proves the live commit.
+    let snapshot =
+        journal.godot_world_backup_snapshot(&json!({"worldId":"g1","context":ctx("one")}))?;
+    assert_eq!(snapshot["project"]["revision"], 0);
+    assert!(snapshot["project"]["files"].as_array().unwrap().len() >= 3);
+    let verified = journal.godot_world_verify_snapshot(&json!({"worldId":"g1","context":ctx("one"),
+        "snapshot":snapshot}))?;
+    assert_eq!(verified["matches"], true);
+    Ok(())
+}

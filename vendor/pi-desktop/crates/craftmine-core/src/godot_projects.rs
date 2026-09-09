@@ -577,8 +577,24 @@ fn git_content_files(
     Ok(files)
 }
 
-/// File text for a world, read from Git when the world uses the Git backend.
+/// Exact bytes for a world, read from Git when the world uses the Git backend.
 fn read_project_file(
+    journal: &TaskJournal,
+    world: &str,
+    revision: u64,
+    path: &str,
+    entry: &FileEntry,
+) -> Result<String> {
+    read_indexed_file(journal, world, revision, path, entry)
+}
+
+/// Exact text of one indexed file at one revision.
+///
+/// A Git-backed world has no blob store: the commit is the content, so the file
+/// is read from the commit and its digest re-checked. A legacy world reads the
+/// immutable blob. Consumers that materialize a copy or a backup descriptor use
+/// this instead of assuming the blob store exists.
+pub(super) fn read_indexed_file(
     journal: &TaskJournal,
     world: &str,
     revision: u64,
@@ -594,6 +610,21 @@ fn read_project_file(
         return String::from_utf8(bytes).context("CONTENT_NOT_UTF8");
     }
     blob_read(&journal.directory, world, entry)
+}
+
+/// Every indexed file of a manifest with its exact text, using the backend the
+/// world really uses. Returned in path order so a copy is deterministic.
+pub(super) fn read_manifest_files(
+    journal: &TaskJournal,
+    world: &str,
+    manifest: &Manifest,
+) -> Result<Vec<(String, FileEntry, String)>> {
+    let mut files = Vec::with_capacity(manifest.files.len());
+    for (path, entry) in &manifest.files {
+        let text = read_indexed_file(journal, world, manifest.revision, path, entry)?;
+        files.push((path.clone(), entry.clone(), text));
+    }
+    Ok(files)
 }
 
 fn digest_bytes(bytes: &[u8]) -> String {

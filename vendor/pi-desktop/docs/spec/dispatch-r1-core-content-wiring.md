@@ -42,6 +42,10 @@ switch is recorded in `craftmine_content_repositories`. For a Git-backed world:
   from the commit. `project_manifest` reconciles a commit that landed before its
   index row: Git is authoritative, so the index is rebuilt from the tree and the
   `Craftmine-Revision` trailer, never the other way round.
+- `godotWorld.copy` and `godotWorld.backupSnapshot` read every indexed file from
+  the commit through `read_indexed_file`; a Git-backed world has no blob store,
+  so assuming one would fail or read stale bytes. A copy materializes its own
+  legacy blob store and stays indexable, readable and buildable.
 
 ## Builds and candidates
 
