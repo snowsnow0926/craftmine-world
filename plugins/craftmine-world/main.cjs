@@ -44,7 +44,7 @@ async function onPanelInvoke(channel, payload={}) {
       return core.call(method,params,Math.min(remaining,60000)).catch(error=>{throw Error(importErrors[error.message]||error.message);});
     };
     const archive=await call('legacy.capture',{id:randomUUID(),source:payload.source});
-    const world=await prepareLegacyWorld(archive.project,path=>call('legacy.read',{id:archive.id,path}));
+    const world=await prepareLegacyWorld(archive.project,async path=>JSON.parse(await call('legacy.readText',{id:archive.id,path})));
     const record=await call('legacy.commit',{id:archive.id,title:world.build.scene.title,world});
     await pi.plugin.setSettings({activeWorldId:record.id});
     return {record,archive:{id:archive.id,files:archive.files,bytes:archive.bytes,manifestHash:archive.manifestHash},preserved:{candidate:!!archive.project.candidate,modules:archive.project.library?.length||0,tasks:archive.project.tasks?.length||0}};

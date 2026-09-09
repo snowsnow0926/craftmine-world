@@ -27,6 +27,12 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
                 params["path"].as_str().context("ARCHIVE_PATH_REQUIRED")?,
             )
         }
+        "legacy.readText" => {
+            return Ok(Value::String(journal.legacy_read_text(
+                params["id"].as_str().context("IMPORT_ID_REQUIRED")?,
+                params["path"].as_str().context("ARCHIVE_PATH_REQUIRED")?,
+            )?))
+        }
         "legacy.commit" => {
             let world: WorldDocument = serde_json::from_value(params["world"].clone())?;
             return Ok(serde_json::to_value(journal.legacy_commit(

@@ -250,6 +250,10 @@ impl TaskJournal {
     }
 
     pub fn legacy_read(&self, id: &str, name: &str) -> Result<Value> {
+        Ok(serde_json::from_str(&self.legacy_read_text(id, name)?)?)
+    }
+
+    pub fn legacy_read_text(&self, id: &str, name: &str) -> Result<String> {
         let relative = relative_path(name)?;
         let manifest = self.legacy_manifest(id)?;
         let record = manifest
@@ -268,7 +272,11 @@ impl TaskJournal {
             record.bytes == bytes.len() as u64 && record.hash == bytes_hash(&bytes),
             "CORRUPT_LEGACY_FILE"
         );
-        Ok(serde_json::from_slice(&bytes)?)
+        let text = String::from_utf8(bytes)?;
+        // Validate JSON without changing the original property order. The first
+        // scene format hashed JSON.stringify and was therefore order-sensitive.
+        let _: Value = serde_json::from_str(&text)?;
+        Ok(text)
     }
 
     pub fn legacy_commit(
@@ -339,6 +347,12 @@ mod tests {
         assert_eq!(result["files"], 2);
         assert_eq!(result["project"]["tasks"][0]["status"], "running");
         assert_eq!(fs::read(source.join("project.json")).unwrap(), before);
+        assert_eq!(
+            db.legacy_read_text("import-1", "project.json")
+                .unwrap()
+                .as_bytes(),
+            before
+        );
         drop(db);
         let db = TaskJournal::open(&dir.path().join("desktop/tasks.sqlite")).unwrap();
         assert_eq!(

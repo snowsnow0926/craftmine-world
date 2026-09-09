@@ -1,4 +1,4 @@
-import {compileScene, INITIAL_SNAPSHOT, validateSnapshot} from '../../app/scene.mjs';
+import {compileScene, INITIAL_SNAPSHOT, validateSnapshot, upgradeScene} from '../../app/scene.mjs';
 import {validatePackedAssets} from '../../app/asset-packages.mjs';
 import {sceneAssetReferences} from '../../app/asset-binding.mjs';
 import {validateExtension, extensionRequirement} from '../../app/harness/extension.mjs';
@@ -29,6 +29,10 @@ export async function prepareLegacyWorld(project, read) {
   const stored=await read(`builds/${project.current}/build.json`);
   const compiled=compileScene(stored.scene,{extensions:requirements});
   if(stored.hash!==compiled.hash||project.current!=='v-'+compiled.hash.slice(0,20))throw Error('旧世界源码与版本哈希不一致');
+  // Format 1 hashes depend on insertion order, which JSON object transports
+  // cannot promise. Verify the original bytes first, then migrate the playable
+  // copy to the existing order-independent format. The archive retains v1.
+  const playable=compiled.scene.format==='craftmine.scene/1'?compileScene(upgradeScene(compiled.scene)):compiled;
   const assets=[];
   for(const ref of sceneAssetReferences(compiled.scene)) {
     const entry=project.assets?.find(asset=>asset.id===ref.id)?.versions.find(item=>item.version===ref.version);
@@ -37,7 +41,7 @@ export async function prepareLegacyWorld(project, read) {
   }
   const checkedAssets=validatePackedAssets(compiled.scene,assets);
   return {
-    build:{...compiled,id:project.current,...(checkedAssets.length?{assets:checkedAssets}:{})},
+    build:{...playable,id:'v-'+playable.hash.slice(0,20),...(checkedAssets.length?{assets:checkedAssets}:{})},
     snapshot:validateSnapshot(project.snapshot),extensions,
   };
 }
