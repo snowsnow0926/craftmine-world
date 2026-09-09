@@ -1,0 +1,11 @@
+{
+  "reason": "product-interface-not-configured",
+  "detail": "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet.",
+  "blockedBy": [
+    "E",
+    "F",
+    "L",
+    "C"
+  ],
+  "command": "set CRAFTMINE_I_PRODUCT_INTERFACE=<product acceptance base url> then: node tests/godot-remaining/I/run.mjs --mode live --confirm-live"
+}

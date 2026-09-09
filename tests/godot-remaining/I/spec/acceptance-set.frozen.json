@@ -1,0 +1,425 @@
+{
+  "format": "craftmine.i.acceptance-set/1",
+  "version": 1,
+  "frozenAt": "2026-09-10",
+  "frozenBy": "task-I",
+  "rule": "冻结后不得放宽断言、不得改通过标准、不得删失败分母。任何修改必须重新冻结并记录原因。",
+  "scope": {
+    "whatThisIs": "真实产品模型通过已接入工具完成需求的验收集合。它证明的是产品模型能力，不是手写样例能跑。",
+    "whatThisIsNot": "不是固定作者工程的运行登记，不是逻辑测试，不是预制样例回放。",
+    "inputPolicy": "no-input",
+    "identityRequired": ["product.version", "engine.version", "base.version", "project.treeHash", "model.provider", "model.modelId", "input.inputEventsSent"],
+    "observationFormat": "craftmine.i.observation/1"
+  },
+  "observationSchema": {
+    "layout": "worldColumnCentered, chatPanel, narrowWindowInputWorks, returnToPlayWorks, narrowWidthPx, walkable",
+    "session": "preserved, reloaded, worldIdBefore, worldIdAfter",
+    "equipment": "active, attackMode, magazine, reserve, cooldownSeconds, modelPath, crosshairVisible, crosshairShape, itemIds, attachedToCamera, followsViewRotation, switchTrace[{consistent}]",
+    "crosshair": "offsets[{offsetFromViewportCenter}], segments, color, visible, boundingBoxPx, drawnByHudText",
+    "combat": "fired, hits, appliedDamage, targetId, cooldownBlocked, emptyBlocked, reloadApplied, ammoConsumed, meleeDamage, meleeAmmoConsumed, firedAfterEdits",
+    "edits": "[{kind, applied}]",
+    "progress": "inventoryBefore, inventoryAfter, questsBefore, questsAfter, destroyedTargetsBefore, destroyedTargetsAfter, playerHealthBefore, playerHealthAfter",
+    "shop": "npcInteracted, goldBefore, goldAfter, itemsBefore, itemsAfter, priceAdjusted, stockAdjusted",
+    "quest": "rewardGrantedOnce, completedPersisted, restartCount, rewardCountAfterRestart",
+    "reuse": "fixedVersion, instanceIdIndependent, stateIndependent, sourceWorldUnchanged",
+    "isolation": "originWorldId, selectedWorldId, taskWorldId, writtenWorldId, originalTaskStillOnOriginWorld",
+    "recovery": "draftPreserved, appliedOnce, usageTraceable, compactionCount, buildRecheckPassed, resumeOriginPreserved, cumulativeLedgerPreserved, expiryReasonRecorded",
+    "migration": "supportedKept, unsupportedListed, sourceWorldUnchanged, roundTripEquivalent",
+    "protection": "failureReproducible, oldWorldIntact, lastConfirmedProgressKept, candidateRejected, incompatibleRejected, loadErrorReported, silentWipe",
+    "capability": "newPathReachable, oldQuestKept, oldCheckpointKept, normalJumpCannotPass",
+    "sandbox": "terrainDigestBefore, terrainDigestAfter, materialsBefore, materialsAfter, positionConsistent, reopenConsistent",
+    "extensions": "authored[], installed[], prefabOnly, independentChecks, antiFakeRed, upgraded, uninstalled, uninstallBrokeWorld, savedRestarted, secondWorldReuse",
+    "history": "restored, branchApplied, crashWindowRecovered, missingBodyReported, newRecoveryRecord, commitCount",
+    "assets": "retrieved, refFixed, modifiedFromExisting, doorParts[{present}], v1StillRuns, v2PreviewIndependent, upgradeKeptState, twoInstancesIndependent, exportComplete, portable, containsCredentials, containsPrivateProgress, missingBodyReported",
+    "release": "packageMatchesSource, storiesRerunInPackage[], licenseManifestMatches, installLifecycle[{result}], independentWindowsEnvironment",
+    "performance": "stages, memoryMb, frameMs, installBytes, sampleCount",
+    "usage": "calls, promptTokens, cachedReadTokens, nonCachedInputTokens, outputTokens, totalTokens, unknownCalls, byStage",
+    "failures": "[{class, stage, message}]",
+    "humanInterventions": "[{kind, note}]",
+    "evidence": "screenshots[{assertionId, sha256, bytes}], human[{assertionId, reviewer, verdict}]"
+  },
+  "categories": [
+    {
+      "id": "R01",
+      "title": "客户端布局、游玩返回与会话保持",
+      "stories": ["A01", "A02"],
+      "rounds": [
+        {
+          "id": "R01.1",
+          "phase": "initial",
+          "prompt": "打开客户端进入默认世界时，我要的是世界在中间、对话在右边；请把默认布局调整成世界居中、右侧对话，并确认返回游玩入口真实可用，不要只改样式文本。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["默认世界在窗口中居中，对话面板在右侧", "点击返回游玩后真正进入可玩世界，不是只显示文字", "同一会话内世界实例没有被意外重建"],
+          "visualEvidence": ["截图：默认布局", "截图：返回游玩后的世界"],
+          "assertions": ["I.R01.1.1", "I.R01.1.2", "I.R01.1.3", "I.R01.1.4", "I.R01.1.5"],
+          "blockedBy": ["E", "D"]
+        },
+        {
+          "id": "R01.2",
+          "phase": "follow-up",
+          "prompt": "继续刚才的世界，把窗口拉窄到手机上那种宽度，仍然要能输入对话并返回游玩；世界、玩家进度和原来的会话都不能丢，也不要偷偷重新加载整个客户端。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["窄窗下对话输入框仍可用", "窄窗下仍能返回游玩", "世界与玩家进度保持", "原会话未被重建"],
+          "visualEvidence": ["截图：窄窗布局"],
+          "assertions": ["I.R01.2.1", "I.R01.2.2", "I.R01.2.3", "I.R01.2.4", "I.R01.2.5"],
+          "blockedBy": ["E", "D"]
+        }
+      ]
+    },
+    {
+      "id": "R02",
+      "title": "真实模型 3D 武器创作：准星、持枪、装备切换与开火",
+      "stories": ["A03", "A04"],
+      "rounds": [
+        {
+          "id": "R02.1",
+          "phase": "initial",
+          "prompt": "从这个第一人称工程开始，让模型自己做出中央准星和第一人称持枪：准星必须在屏幕正中并随真实视角移动，枪要挂在右手挂点上跟随相机旋转，切到剑时模型和准星要跟着换，不许用 HUD 文字或固定屏幕坐标糊弄。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["准星位于视口中心，偏移在 0.5px 内（1280x720/800x600/1920x1080）", "持枪跟随实际相机旋转", "切换到剑后模型与准星同步变化", "文字替代准星不得通过"],
+          "visualEvidence": ["截图：持枪视角", "截图：切剑视角"],
+          "assertions": ["I.R02.1.1", "I.R02.1.2", "I.R02.1.3", "I.R02.1.4", "I.R02.1.5", "I.R02.1.6"],
+          "blockedBy": ["L", "F", "C"]
+        },
+        {
+          "id": "R02.2",
+          "phase": "follow-up",
+          "prompt": "继续这个武器世界：让枪能开火命中目标并扣弹药、进冷却，切到剑时近战伤害生效且不消耗弹药；然后用对话把枪的外观和伤害改一版，再让准星可以隐藏，改完必须还能正常开火。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["开火产生真实射线命中并结算伤害", "弹药减少且冷却期间拒绝再次开火", "切剑后近战生效且弹药不变", "对话修改外观/伤害/准星显隐真实生效"],
+          "visualEvidence": ["截图：修改后的武器外观"],
+          "assertions": ["I.R02.2.1", "I.R02.2.2", "I.R02.2.3", "I.R02.2.4", "I.R02.2.5", "I.R02.2.6"],
+          "blockedBy": ["L", "F", "C"]
+        }
+      ]
+    },
+    {
+      "id": "R03",
+      "title": "连续修改已玩的武器世界并保留进度",
+      "stories": ["A05"],
+      "rounds": [
+        {
+          "id": "R03.1",
+          "phase": "initial",
+          "prompt": "我已经在武器世界里打过一轮：背包里有东西、击破过目标、任务有进度。现在继续让模型改这个世界的武器参数，改完不能清空我的背包、击破记录和任务进度。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["修改真实生效", "背包内容保持", "已击破目标保持", "任务进度保持"],
+          "visualEvidence": ["截图：修改后回到世界"],
+          "assertions": ["I.R03.1.1", "I.R03.1.2", "I.R03.1.3", "I.R03.1.4", "I.R03.1.5"],
+          "blockedBy": ["A", "D", "H", "L"]
+        },
+        {
+          "id": "R03.2",
+          "phase": "follow-up",
+          "prompt": "再改一次同一个世界，把武器伤害调低一点并加一个新目标，然后完整重启客户端，确认我的进度、刚加的目标和上一轮修改都还在。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["第二次修改叠加而不是覆盖", "重启后进度与两次修改都保持", "没有重复应用或重复发奖"],
+          "visualEvidence": ["截图：重启后的世界"],
+          "assertions": ["I.R03.2.1", "I.R03.2.2", "I.R03.2.3", "I.R03.2.4", "I.R03.2.5"],
+          "blockedBy": ["A", "D", "H", "L"]
+        }
+      ]
+    },
+    {
+      "id": "R04",
+      "title": "俯视世界、商店与任务奖励",
+      "stories": ["A06", "A07"],
+      "rounds": [
+        {
+          "id": "R04.1",
+          "phase": "initial",
+          "prompt": "新建一个俯视视角的小镇世界，让模型自己加上一个商店 NPC：可以走过去交互、买一件商品、金币和物品真实变化；再把价格和库存调一版。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["俯视世界可走动", "NPC 交互真实发生", "金币与物品变化", "价格/库存修改生效"],
+          "visualEvidence": ["截图：俯视小镇与商店交互"],
+          "assertions": ["I.R04.1.1", "I.R04.1.2", "I.R04.1.3", "I.R04.1.4", "I.R04.1.5"],
+          "blockedBy": ["E", "F", "L", "C"]
+        },
+        {
+          "id": "R04.2",
+          "phase": "follow-up",
+          "prompt": "给这个小镇加一个采集交付任务：交付条件满足后只发一次奖励，然后完整重启客户端，确认任务完成状态还在、奖励没有重复发。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["任务可完成", "奖励只发一次", "重启后完成状态保持", "重启后不重复发奖"],
+          "visualEvidence": ["截图：任务完成与重启后"],
+          "assertions": ["I.R04.2.1", "I.R04.2.2", "I.R04.2.3", "I.R04.2.4", "I.R04.2.5"],
+          "blockedBy": ["F", "A", "D", "L"]
+        }
+      ]
+    },
+    {
+      "id": "R05",
+      "title": "第二世界复用与切世界任务隔离",
+      "stories": ["A08", "A09"],
+      "rounds": [
+        {
+          "id": "R05.1",
+          "phase": "initial",
+          "prompt": "把刚才那个作品用固定兼容版本放进第二个世界，新实例的身份和进度必须独立，第一个世界不许被改动。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["复用固定版本", "新实例身份独立", "新实例状态独立", "源世界未变"],
+          "visualEvidence": ["截图：第二个世界"],
+          "assertions": ["I.R05.1.1", "I.R05.1.2", "I.R05.1.3", "I.R05.1.4"],
+          "blockedBy": ["H", "A", "E", "L"]
+        },
+        {
+          "id": "R05.2",
+          "phase": "follow-up",
+          "prompt": "在第一个世界发起一个创作任务，任务跑着的时候切到第二个世界，然后回来：原任务必须仍然属于第一个世界，结果不能写进当前界面选中的世界。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["任务归属原世界", "切换期间结果不写入选中世界", "回来后原任务仍可继续"],
+          "visualEvidence": ["截图：切世界后的任务归属"],
+          "assertions": ["I.R05.2.1", "I.R05.2.2", "I.R05.2.3", "I.R05.2.4"],
+          "blockedBy": ["A", "E", "L", "D"]
+        }
+      ]
+    },
+    {
+      "id": "R06",
+      "title": "进程中断恢复、连续压缩与草稿接续",
+      "stories": ["A10", "A11", "A12"],
+      "rounds": [
+        {
+          "id": "R06.1",
+          "phase": "initial",
+          "prompt": "在一个长创作任务跑到一半时杀掉客户端进程再启动：草稿、构建、回执和用量都要能追溯，不能重复应用，也不能丢已经确认的进度。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["中断现场可追溯", "草稿保留", "不重复应用", "用量记录保留 unknown"],
+          "visualEvidence": ["截图：恢复后的世界"],
+          "assertions": ["I.R06.1.1", "I.R06.1.2", "I.R06.1.3", "I.R06.1.4", "I.R06.1.5"],
+          "blockedBy": ["A", "B", "C", "D", "L"]
+        },
+        {
+          "id": "R06.2",
+          "phase": "follow-up",
+          "prompt": "把上下文上限调小，让同一个任务连续压缩三次以后继续改这个工程，再做一次检查和应用；另外让一个任务过期后再接续草稿，来源和累计账目要保留，过期原因要写清楚。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["压缩次数至少三次", "压缩后正确重建工程上下文", "压缩后检查与应用完成", "过期草稿可接续且来源/账目保留"],
+          "visualEvidence": ["截图：压缩后继续修改的结果"],
+          "assertions": ["I.R06.2.1", "I.R06.2.2", "I.R06.2.3", "I.R06.2.4", "I.R06.2.5", "I.R06.2.6"],
+          "blockedBy": ["L", "A", "E"]
+        }
+      ]
+    },
+    {
+      "id": "R07",
+      "title": "旧世界转换副本与导入导出",
+      "stories": ["A13"],
+      "rounds": [
+        {
+          "id": "R07.1",
+          "phase": "initial",
+          "prompt": "把一个旧世界转换成新底座的副本：支持的特性要保留语义，不支持的要列出来，源世界必须保持原样。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["支持项语义保留", "未支持项明确列出", "源世界未变"],
+          "visualEvidence": ["截图：转换后的副本"],
+          "assertions": ["I.R07.1.1", "I.R07.1.2", "I.R07.1.3", "I.R07.1.4"],
+          "blockedBy": ["H", "F", "A", "E"]
+        },
+        {
+          "id": "R07.2",
+          "phase": "follow-up",
+          "prompt": "把这个作品导出到另一个目录再导回来，验证内容完整、不依赖原机器缓存，也不要带上私有进度或凭据。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["导出内容完整", "导入后语义一致", "不含凭据或私有进度"],
+          "visualEvidence": ["截图：导入后的世界"],
+          "assertions": ["I.R07.2.1", "I.R07.2.2", "I.R07.2.3", "I.R07.2.4"],
+          "blockedBy": ["H", "F", "A", "E"]
+        }
+      ]
+    },
+    {
+      "id": "R08",
+      "title": "坏候选、不兼容迁移与加载失败保护",
+      "stories": ["A14"],
+      "rounds": [
+        {
+          "id": "R08.1",
+          "phase": "initial",
+          "prompt": "让模型生成一个故意不成立的候选（例如引用了不存在的资源），然后走一遍完整流程：失败必须可复现，旧世界和最新确认进度必须保持。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["失败可复现", "候选被拒绝", "旧世界完整", "最新确认进度保持"],
+          "visualEvidence": ["截图：拒绝后的世界"],
+          "assertions": ["I.R08.1.1", "I.R08.1.2", "I.R08.1.3", "I.R08.1.4"],
+          "blockedBy": ["A", "B", "C", "D", "H"]
+        },
+        {
+          "id": "R08.2",
+          "phase": "follow-up",
+          "prompt": "再试一次不兼容的旧存档迁移和一次损坏的加载：都要给出明确失败，不能静默清空，也不能把坏状态当成新正式进度。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["不兼容迁移明确失败", "加载失败有明确错误", "没有静默清空", "旧进度保持"],
+          "visualEvidence": ["截图：失败后的世界"],
+          "assertions": ["I.R08.2.1", "I.R08.2.2", "I.R08.2.3", "I.R08.2.4"],
+          "blockedBy": ["A", "B", "C", "D", "H"]
+        }
+      ]
+    },
+    {
+      "id": "R09",
+      "title": "横版能力门槛与挖掘放置",
+      "stories": ["A15", "A16"],
+      "rounds": [
+        {
+          "id": "R09.1",
+          "phase": "initial",
+          "prompt": "在横版沙盒里做出能力门槛：获得二段跳/冲刺后能回到旧房间的新通路，旧任务和检查点保持，普通跳跃不能假装通过。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["新通路真实可达", "旧任务与检查点保持", "普通跳跃无法通过"],
+          "visualEvidence": ["截图：能力解锁后的通路"],
+          "assertions": ["I.R09.1.1", "I.R09.1.2", "I.R09.1.3", "I.R09.1.4"],
+          "blockedBy": ["F", "G"]
+        },
+        {
+          "id": "R09.2",
+          "phase": "follow-up",
+          "prompt": "在这个沙盒里挖掉几块地形再放回去，保存后重开：地形变化、材料数量和位置都要一致，并且只能在已交付的沙盒范围内。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["地形变化保存一致", "材料数量一致", "位置一致", "不越出沙盒范围"],
+          "visualEvidence": ["截图：重开后的地形"],
+          "assertions": ["I.R09.2.1", "I.R09.2.2", "I.R09.2.3", "I.R09.2.4"],
+          "blockedBy": ["G", "F", "H", "A"]
+        }
+      ]
+    },
+    {
+      "id": "R10",
+      "title": "模型自写 L2 扩展（三种用途）",
+      "stories": [],
+      "extraRequirements": ["三个模型自写 L2 扩展（不同用途）"],
+      "rounds": [
+        {
+          "id": "R10.1",
+          "phase": "initial",
+          "prompt": "让模型自己写三个用途不同的 L2 扩展（例如资源转换、状态效果、事件触发各一），每个都要通过独立检查、自带测试和反造假，然后安装进世界并真实调用一次。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["三个扩展用途不同且非预制包", "独立检查通过", "自带测试对空实现变红", "安装后真实调用生效"],
+          "visualEvidence": ["截图：扩展生效后的世界"],
+          "assertions": ["I.R10.1.1", "I.R10.1.2", "I.R10.1.3", "I.R10.1.4", "I.R10.1.5"],
+          "blockedBy": ["L", "A", "C"]
+        },
+        {
+          "id": "R10.2",
+          "phase": "follow-up",
+          "prompt": "把其中一个扩展升级到新版本、再卸载另一个，保存重启后在第二个世界复用剩下的那个，确认升级保留状态、卸载不影响已有世界。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["升级保留状态", "卸载不破坏已有世界", "保存重启后可用", "第二世界复用成功"],
+          "visualEvidence": ["截图：升级与复用后的世界"],
+          "assertions": ["I.R10.2.1", "I.R10.2.2", "I.R10.2.3", "I.R10.2.4", "I.R10.2.5"],
+          "blockedBy": ["L", "A", "C", "H"]
+        }
+      ]
+    },
+    {
+      "id": "R11",
+      "title": "版本管理：真实模型再修改、恢复旧版、分支应用与崩溃窗口",
+      "stories": [],
+      "extraRequirements": ["V01–V16 的真实模型与崩溃窗口路径"],
+      "rounds": [
+        {
+          "id": "R11.1",
+          "phase": "initial",
+          "prompt": "让模型生成一件武器，再用对话改一版，然后从历史里恢复上一版：恢复要产生新的恢复记录，兼容的进度要保留，后续历史仍能找回旧内容。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["生成与再修改进入历史", "恢复旧版生成新记录", "兼容进度保留", "旧内容仍可找回"],
+          "visualEvidence": ["截图：恢复旧版后的武器"],
+          "assertions": ["I.R11.1.1", "I.R11.1.2", "I.R11.1.3", "I.R11.1.4"],
+          "blockedBy": ["M", "A", "C", "D", "H"]
+        },
+        {
+          "id": "R11.2",
+          "phase": "follow-up",
+          "prompt": "再建一个分支把改动应用上去，然后在 Git 引用更新和数据库提交之间强退，重启后按日志恢复；另外试一次素材缺正文的情况，必须明确报告缺项而不是拼出伪完整作品。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["分支应用独立且原分支保留", "崩溃窗口后 Git/DB/存档一致", "缺正文明确报告", "不生成伪完整作品"],
+          "visualEvidence": ["截图：崩溃恢复后的世界"],
+          "assertions": ["I.R11.2.1", "I.R11.2.2", "I.R11.2.3", "I.R11.2.4"],
+          "blockedBy": ["M", "A", "C", "D", "H"]
+        }
+      ]
+    },
+    {
+      "id": "R12",
+      "title": "素材库：真实模型检索复用、旧版改造、升级保留与导出",
+      "stories": [],
+      "extraRequirements": ["AL-A01–AL-A17 的真实模型检索/改造/复用/升级路径"],
+      "rounds": [
+        {
+          "id": "R12.1",
+          "phase": "initial",
+          "prompt": "让模型从本地素材库里检索一个自动门并复用进世界，再基于已有版本改造一版；工具必须记录真实固定引用，不能伪造资源存在或检查通过。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["检索到真实素材", "固定引用被记录", "改造基于旧版而不是从零", "外观/碰撞/源码/声音/交互真实存在"],
+          "visualEvidence": ["截图：复用后的自动门"],
+          "assertions": ["I.R12.1.1", "I.R12.1.2", "I.R12.1.3", "I.R12.1.4"],
+          "blockedBy": ["N", "H", "L", "C", "D"]
+        },
+        {
+          "id": "R12.2",
+          "phase": "follow-up",
+          "prompt": "把同一个作品放到第二个世界复用，升级其中一个实例并只改其中一个的局部，确认 v1 仍在运行、升级保留状态、两个实例身份与进度独立；最后导出到新目录验证正文齐全。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["v1 继续运行", "升级保留状态且奖励不重复", "两实例局部改动独立", "导出正文齐全"],
+          "visualEvidence": ["截图：第二世界复用与导出结果"],
+          "assertions": ["I.R12.2.1", "I.R12.2.2", "I.R12.2.3", "I.R12.2.4", "I.R12.2.5"],
+          "blockedBy": ["N", "H", "M", "A", "C", "D"]
+        }
+      ]
+    },
+    {
+      "id": "R13",
+      "title": "性能、成本与人工介入账目",
+      "stories": [],
+      "extraRequirements": ["性能/成本/人工介入分别记账"],
+      "rounds": [
+        {
+          "id": "R13.1",
+          "phase": "initial",
+          "prompt": "对同一批固定需求，分开记录模型、导入、构建、检查、应用各阶段的端到端耗时，以及创作/压缩/评审各自的 token 与缓存，未上报的调用必须记为 unknown。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["五个阶段耗时分别记录", "token 按创作/压缩/评审分账", "缓存命中不当作所有调用的保证", "未上报记为 unknown 而不是 0"],
+          "visualEvidence": [],
+          "assertions": ["I.R13.1.1", "I.R13.1.2", "I.R13.1.3", "I.R13.1.4"],
+          "blockedBy": ["L", "A", "C"]
+        },
+        {
+          "id": "R13.2",
+          "phase": "follow-up",
+          "prompt": "把这一轮的失败、重试和人工介入逐条记账：每次改提示、改实现、重跑都要留档，失败分类要区分模型问题、接口缺失、引擎边界和验收器缺陷。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["失败与重试逐条留档", "人工介入单独记账", "失败分类可核对", "失败分母不删"],
+          "visualEvidence": [],
+          "assertions": ["I.R13.2.1", "I.R13.2.2", "I.R13.2.3", "I.R13.2.4"],
+          "blockedBy": ["A", "L", "C", "D"]
+        }
+      ]
+    },
+    {
+      "id": "R14",
+      "title": "固定发行包、许可清单与独立 Windows 安装",
+      "stories": ["A17"],
+      "rounds": [
+        {
+          "id": "R14.1",
+          "phase": "initial",
+          "prompt": "在同一个固定发行包上重跑适用的故事，确认包内二进制与仓库版本一致，功能结果可复现。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["包与源码身份一致", "适用故事在同一包内复跑", "结果可复现"],
+          "visualEvidence": ["截图：发行包内运行"],
+          "assertions": ["I.R14.1.1", "I.R14.1.2", "I.R14.1.3"],
+          "blockedBy": ["K", "root"]
+        },
+        {
+          "id": "R14.2",
+          "phase": "follow-up",
+          "prompt": "核对实际打包资源与许可清单是否一致，并在独立 Windows 环境里验证首装、升级、升级失败恢复和卸载；环境缺失时明确保留未验收。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["实际资源与许可清单一致", "首装/升级/失败恢复/卸载有结果", "无独立环境时保留未验收", "不把清单自测当作分发合格"],
+          "visualEvidence": ["截图：安装与升级结果"],
+          "assertions": ["I.R14.2.1", "I.R14.2.2", "I.R14.2.3", "I.R14.2.4"],
+          "blockedBy": ["K", "root"]
+        }
+      ]
+    }
+  ]
+}

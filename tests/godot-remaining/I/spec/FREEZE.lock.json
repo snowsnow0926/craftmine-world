@@ -1,0 +1,42 @@
+{
+  "format": "craftmine.i.freeze-lock/1",
+  "frozenAt": "2026-09-09T16:55:05.575Z",
+  "sourceRoot": "D:\\Craftmine World",
+  "sourceRootAvailable": true,
+  "files": {
+    "spec/acceptance-set.frozen.json": "2959a7ad33870a60806e58b7dc8e184febcc0405a197e33e07a8c1f6e0a70c94",
+    "spec/assertions.frozen.json": "88b62983bdce90b5e91054f6fbbf6ed20c416eafeccf40ba886964d108585b82",
+    "spec/scoring.frozen.json": "909f4de7fa8006d0f6e3bcd8cadd1c6cf9a3514bbd94b76869484521d30f3e3f",
+    "spec/failure-classes.frozen.json": "be2d0874676269f8191c248bbcfe7705a226ce12f13a48382c3dfb0b7e237942",
+    "spec/ledger.a01-a17.frozen.json": "c9507d81fdeea845d61af440de73c73cc0b1e242a961df22ddf6083919395755",
+    "spec/ledger.v01-v16.frozen.json": "d7fefa90d1669dd0d1671529783887ec898ee992d332811deaae4ac014f4a70f",
+    "spec/ledger.al-a01-a17.frozen.json": "d24ea764e07c24e1e80ebc4b6671e33d3ac18c222d333e9fca902965d7b23821",
+    "spec/product-interface-contract.frozen.json": "514134ca56c547593078d1f3423b3983e6cbab8a10e94034853c2078c2c93a0c"
+  },
+  "sources": {
+    "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md": {
+      "sha256": "06a677b61167691988095713c098dbb3079b87e5f35f55ad7898687d529c2893",
+      "bytes": 47845
+    },
+    "docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md": {
+      "sha256": "38f23826e5c4b09db706eb6ac4faeaaf8f2ce05c2eba78a789d3860f5a2d3d68",
+      "bytes": 21204
+    },
+    "docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md": {
+      "sha256": "05f5f7d9396064a61717da0562196e843ea0ee3d742973f0f728c11026fb1a41",
+      "bytes": 23137
+    },
+    "docs/dispatch-prompts/godot-remaining-20260910/I-real-model-acceptance.md": {
+      "sha256": "4223e76e77c15d71ab48c746a9c7309fef03fa8e196c435c69b99a84171faa2d",
+      "bytes": 7871
+    },
+    "docs/dispatch-prompts/godot-remaining-20260910/README.md": {
+      "sha256": "779b7c1cc59ce0c64b02f1e417b1ba7677d24ecb34c55a136108ff57928df4d3",
+      "bytes": 12068
+    },
+    "desktop/godot/bases/first-person/docs/MODEL_ACCEPTANCE_TASKS.md": {
+      "sha256": "61f290dd155c3535659493830a8799b673049de6c25dc947831741de1372e866",
+      "bytes": 9074
+    }
+  }
+}

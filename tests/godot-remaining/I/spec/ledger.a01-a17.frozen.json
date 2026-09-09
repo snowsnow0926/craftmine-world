@@ -1,0 +1,29 @@
+{
+  "format": "craftmine.i.ledger/1",
+  "version": 1,
+  "frozenAt": "2026-09-10",
+  "group": "godot",
+  "source": "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md §15.1 (A01–A17)",
+  "statusVocabulary": ["已证实", "失败", "尚未执行", "证据不足"],
+  "rule": "每条按精确版本登记；不能用总通过数字抵消单条硬失败。状态由运行结果推导，不手写。",
+  "initialStatus": "尚未执行",
+  "items": [
+    { "id": "A01", "title": "打开客户端并进入世界", "mustObserve": "默认世界居中、对话在右，窄窗仍能输入和返回游玩", "owner": "I", "collaborators": ["E", "D"], "rounds": ["R01.1", "R01.2"], "blockedReason": "等待 E/D 交付界面与返回游玩入口" },
+    { "id": "A02", "title": "展开游玩再返回创作", "mustObserve": "世界、玩家进度和原会话保持，未意外重载", "owner": "I", "collaborators": ["D", "E"], "rounds": ["R01.2"], "blockedReason": "等待 D 的保存生命周期" },
+    { "id": "A03", "title": "真实模型开发准星和持枪", "mustObserve": "准星位置正确，持枪跟随实际视角，文字替代无法通过", "owner": "I", "collaborators": ["L", "F", "C"], "rounds": ["R02.1"], "blockedReason": "等待 L/F/C 的武器与工具接口" },
+    { "id": "A04", "title": "切换枪与剑并攻击", "mustObserve": "当前装备、模型、准星、攻击、弹药和伤害同步", "owner": "I", "collaborators": ["F", "L"], "rounds": ["R02.2"], "blockedReason": "等待 F 的装备与攻击契约" },
+    { "id": "A05", "title": "连续修改已玩的武器世界", "mustObserve": "修改生效，原背包、已击破目标和任务进度不被清空", "owner": "I", "collaborators": ["A", "D", "H", "L"], "rounds": ["R03.1", "R03.2"], "blockedReason": "等待 A/D/H/L 的应用与进度保留" },
+    { "id": "A06", "title": "创建俯视世界并增加商店", "mustObserve": "NPC 交互、买卖、金币和物品变化真实发生", "owner": "I", "collaborators": ["E", "F", "L", "C"], "rounds": ["R04.1"], "blockedReason": "等待 E/F 的俯视底座与创建入口" },
+    { "id": "A07", "title": "创建任务并完成后重启", "mustObserve": "奖励仅发一次，重启后仍记住完成状态", "owner": "I", "collaborators": ["F", "A", "D", "L"], "rounds": ["R04.2"], "blockedReason": "等待 F/A/D/L 的任务与重启链路" },
+    { "id": "A08", "title": "在第二个世界复用作品", "mustObserve": "使用固定兼容版本，新实例身份与状态独立", "owner": "I", "collaborators": ["H", "A", "E", "L"], "rounds": ["R05.1"], "blockedReason": "等待 H 的作品包与复用链路" },
+    { "id": "A09", "title": "创作期间切换到另一世界", "mustObserve": "原任务仍归原世界，结果不会写入当前界面选中的世界", "owner": "I", "collaborators": ["A", "E", "L", "D"], "rounds": ["R05.2"], "blockedReason": "等待 A/E/L/D 的世界绑定" },
+    { "id": "A10", "title": "进程中断后恢复任务", "mustObserve": "草稿、构建、回执和用量可追溯，无重复应用", "owner": "I", "collaborators": ["A", "B", "C", "D", "L"], "rounds": ["R06.1"], "blockedReason": "等待 A/B/C 的中断与恢复" },
+    { "id": "A11", "title": "连续三次压缩后继续修改", "mustObserve": "正确重建工程上下文并完成检查和应用", "owner": "I", "collaborators": ["L", "A"], "rounds": ["R06.2"], "blockedReason": "等待 L/A 的上下文恢复" },
+    { "id": "A12", "title": "结束或过期任务后接续草稿", "mustObserve": "原草稿可重新接续，来源与累计账目保持，过期原因明确", "owner": "I", "collaborators": ["A", "L", "E"], "rounds": ["R06.2"], "blockedReason": "等待 A/L/E 的草稿接续" },
+    { "id": "A13", "title": "转换旧世界副本并导出导入", "mustObserve": "支持项保持语义，未支持项列明，源世界未变", "owner": "I", "collaborators": ["H", "F", "A", "E"], "rounds": ["R07.1", "R07.2"], "blockedReason": "等待 H/F 的迁移与导出" },
+    { "id": "A14", "title": "坏候选、不兼容迁移或加载失败", "mustObserve": "失败可复现，旧世界和最新确认进度保持", "owner": "I", "collaborators": ["A", "B", "C", "D", "H"], "rounds": ["R08.1", "R08.2"], "blockedReason": "等待 A/B/C/D/H 的失败保护" },
+    { "id": "A15", "title": "横版获得能力后回访旧房间", "mustObserve": "新通路可达，旧任务与检查点保持，普通跳跃无法假通过", "owner": "I", "collaborators": ["F"], "rounds": ["R09.1"], "blockedReason": "等待 F/G 的横版能力门槛" },
+    { "id": "A16", "title": "挖掘和放置后保存重开", "mustObserve": "地形变化、材料数量和位置一致，限于已交付沙盒范围", "owner": "I", "collaborators": ["G", "F", "H", "A"], "rounds": ["R09.2"], "blockedReason": "等待 G/F/H/A 的沙盒与保存" },
+    { "id": "A17", "title": "安装升级和失败恢复", "mustObserve": "固定包可重建，用户数据保留，失败后旧版本可恢复", "owner": "K", "collaborators": ["root"], "rounds": ["R14.1", "R14.2"], "blockedReason": "需要独立 Windows 环境；缺失时保留未验收", "priorEvidence": "第 5 轮发行预检 8 项失败（bridge 字节数、runtime 未声明、底座缺清单），不构成本轮通过依据" }
+  ]
+}

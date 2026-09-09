@@ -1,0 +1,105 @@
+{
+  "format": "craftmine.i.evidence/1",
+  "roundId": "R06.1",
+  "mode": "replay",
+  "verdict": "passed",
+  "reasons": [],
+  "notes": null,
+  "identity": {
+    "format": "craftmine.i.identity/1",
+    "runId": "1d70f12c-6697-442c-af08-b6aec8df940e",
+    "mode": "replay",
+    "startedAt": "2026-09-09T16:57:54.938Z",
+    "product": {
+      "version": "replay-fixture",
+      "clientVersion": "replay-fixture",
+      "commit": null
+    },
+    "engine": {
+      "name": "godot",
+      "version": "replay-fixture",
+      "binarySha256": null,
+      "renderer": null
+    },
+    "base": {
+      "id": null,
+      "version": "replay-fixture",
+      "commit": null
+    },
+    "project": {
+      "path": null,
+      "treeHash": "replay-fixture",
+      "fileCount": null
+    },
+    "model": {
+      "provider": "replay",
+      "modelId": "replay-fixture",
+      "thinking": null,
+      "reasoningEffort": null
+    },
+    "dataDir": "D:\\Craftmine World-worktrees\\godot-remaining-i-20260910\\docs\\dispatch-reports\\godot-remaining\\I\\evidence\\replay",
+    "input": {
+      "format": "craftmine.i.input-guard/1",
+      "inputEventsSent": 0,
+      "pointerLockRequests": 0,
+      "focusSteals": 0,
+      "windowActivations": 0,
+      "blockedInputAttempts": [],
+      "pointerLockDisabled": false,
+      "headless": null
+    },
+    "artifacts": [],
+    "digest": "3a42a400c48be0dfe6a9e2ad8ef38e4d3a1dd6106c21d707e1ad64e67a176fb0"
+  },
+  "usage": {
+    "format": "craftmine.i.usage/1",
+    "stage": "creation",
+    "calls": 1,
+    "promptTokens": 3200,
+    "cachedReadTokens": 800,
+    "nonCachedInputTokens": 2400,
+    "outputTokens": 700,
+    "totalTokens": 3900,
+    "unknownCalls": 0,
+    "reportedBy": [
+      "replay-fixture"
+    ]
+  },
+  "failures": [],
+  "interventions": [],
+  "artifacts": [
+    {
+      "path": "recovered-world.png",
+      "bytes": 70,
+      "sha256": "40087985a06038eb4f94d9719c922dff198bb3ab924724b2300e3c735d68624f"
+    }
+  ],
+  "files": [
+    {
+      "path": "observation.json",
+      "sha256": "9c317f0c7f041944089f40e29a71a54364bc0f8ec62d093e60d700fd115ac6d8",
+      "bytes": 779
+    },
+    {
+      "path": "recovered-world.png",
+      "sha256": "a4bcd7b80c65e14e3809783fc4c587ce66a995dcc142e25bf61c9337ef6f3443",
+      "bytes": 70
+    },
+    {
+      "path": "round.json",
+      "sha256": "5b4403ed219ddef93016072435545903fc103d2dbfe0c4f56a3cb5c697ab56db",
+      "bytes": 456
+    },
+    {
+      "path": "state.after.json",
+      "sha256": "9c317f0c7f041944089f40e29a71a54364bc0f8ec62d093e60d700fd115ac6d8",
+      "bytes": 779
+    },
+    {
+      "path": "state.before.json",
+      "sha256": "38e0b9de817f645c4bec37c0d4a3e58baecccb040f5718dc069a72c7385a0bed",
+      "bytes": 5
+    }
+  ],
+  "sealedAt": "2026-09-09T16:57:54.960Z"
+}

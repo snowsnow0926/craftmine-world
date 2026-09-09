@@ -1,0 +1,1591 @@
+{
+  "format": "craftmine.i.report/1",
+  "generatedAt": "2026-09-09T16:57:55.309Z",
+  "mode": "live",
+  "identity": {
+    "format": "craftmine.i.identity/1",
+    "runId": "4fd57203-e811-4ed1-a72c-ddbd97abb5e9",
+    "mode": "live",
+    "startedAt": "2026-09-09T16:57:55.250Z",
+    "product": {
+      "version": null,
+      "clientVersion": null,
+      "commit": null
+    },
+    "engine": {
+      "name": "godot",
+      "version": null,
+      "binarySha256": null,
+      "renderer": null
+    },
+    "base": {
+      "id": null,
+      "version": null,
+      "commit": null
+    },
+    "project": {
+      "path": null,
+      "treeHash": null,
+      "fileCount": null
+    },
+    "model": {
+      "provider": null,
+      "modelId": null,
+      "thinking": null,
+      "reasoningEffort": null,
+      "maxTokens": "[redacted]",
+      "contextCap": null,
+      "harnessSteps": null,
+      "credentialPresent": "[redacted]",
+      "credentialValue": "[redacted]"
+    },
+    "dataDir": "D:\\Craftmine World-worktrees\\godot-remaining-i-20260910\\docs\\dispatch-reports\\godot-remaining\\I\\evidence\\live-blocked",
+    "input": {
+      "format": "craftmine.i.input-guard/1",
+      "inputEventsSent": 0,
+      "pointerLockRequests": 0,
+      "focusSteals": 0,
+      "windowActivations": 0,
+      "blockedInputAttempts": [],
+      "pointerLockDisabled": false,
+      "headless": null
+    },
+    "artifacts": [],
+    "digest": "a8ef2b9b82fd251c767b0bf13e8ffbef1e5590e6b5fd5ec61498b2781ad1e1c1"
+  },
+  "freeze": {
+    "ok": true,
+    "reason": "ok",
+    "lockedAt": "2026-09-09T16:55:05.575Z",
+    "mismatched": [],
+    "missing": [],
+    "changedSources": []
+  },
+  "headline": {
+    "rounds": 28,
+    "passed": 0,
+    "failed": 0,
+    "insufficient": 0,
+    "notRun": 28,
+    "modelCalls": 0,
+    "unknownUsageCalls": 0,
+    "humanInterventions": 0,
+    "verifiedStories": 0,
+    "failedStories": 0,
+    "notRunStories": 50,
+    "insufficientStories": 0
+  },
+  "rounds": [
+    {
+      "id": "R01.1",
+      "categoryId": "R01",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R01.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "E",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R01.2",
+      "categoryId": "R01",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R01.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "E",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R02.1",
+      "categoryId": "R02",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R02.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "L",
+        "F",
+        "C"
+      ],
+      "command": null
+    },
+    {
+      "id": "R02.2",
+      "categoryId": "R02",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R02.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "L",
+        "F",
+        "C"
+      ],
+      "command": null
+    },
+    {
+      "id": "R03.1",
+      "categoryId": "R03",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R03.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "A",
+        "D",
+        "H",
+        "L"
+      ],
+      "command": null
+    },
+    {
+      "id": "R03.2",
+      "categoryId": "R03",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R03.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "A",
+        "D",
+        "H",
+        "L"
+      ],
+      "command": null
+    },
+    {
+      "id": "R04.1",
+      "categoryId": "R04",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R04.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "E",
+        "F",
+        "L",
+        "C"
+      ],
+      "command": null
+    },
+    {
+      "id": "R04.2",
+      "categoryId": "R04",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R04.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "F",
+        "A",
+        "D",
+        "L"
+      ],
+      "command": null
+    },
+    {
+      "id": "R05.1",
+      "categoryId": "R05",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R05.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "H",
+        "A",
+        "E",
+        "L"
+      ],
+      "command": null
+    },
+    {
+      "id": "R05.2",
+      "categoryId": "R05",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R05.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "A",
+        "E",
+        "L",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R06.1",
+      "categoryId": "R06",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R06.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "L"
+      ],
+      "command": null
+    },
+    {
+      "id": "R06.2",
+      "categoryId": "R06",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R06.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "L",
+        "A",
+        "E"
+      ],
+      "command": null
+    },
+    {
+      "id": "R07.1",
+      "categoryId": "R07",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R07.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "H",
+        "F",
+        "A",
+        "E"
+      ],
+      "command": null
+    },
+    {
+      "id": "R07.2",
+      "categoryId": "R07",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R07.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "H",
+        "F",
+        "A",
+        "E"
+      ],
+      "command": null
+    },
+    {
+      "id": "R08.1",
+      "categoryId": "R08",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R08.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "H"
+      ],
+      "command": null
+    },
+    {
+      "id": "R08.2",
+      "categoryId": "R08",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R08.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "H"
+      ],
+      "command": null
+    },
+    {
+      "id": "R09.1",
+      "categoryId": "R09",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R09.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "F",
+        "G"
+      ],
+      "command": null
+    },
+    {
+      "id": "R09.2",
+      "categoryId": "R09",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R09.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "G",
+        "F",
+        "H",
+        "A"
+      ],
+      "command": null
+    },
+    {
+      "id": "R10.1",
+      "categoryId": "R10",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R10.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "L",
+        "A",
+        "C"
+      ],
+      "command": null
+    },
+    {
+      "id": "R10.2",
+      "categoryId": "R10",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R10.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "L",
+        "A",
+        "C",
+        "H"
+      ],
+      "command": null
+    },
+    {
+      "id": "R11.1",
+      "categoryId": "R11",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R11.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "M",
+        "A",
+        "C",
+        "D",
+        "H"
+      ],
+      "command": null
+    },
+    {
+      "id": "R11.2",
+      "categoryId": "R11",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R11.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "M",
+        "A",
+        "C",
+        "D",
+        "H"
+      ],
+      "command": null
+    },
+    {
+      "id": "R12.1",
+      "categoryId": "R12",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R12.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "N",
+        "H",
+        "L",
+        "C",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R12.2",
+      "categoryId": "R12",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R12.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "N",
+        "H",
+        "M",
+        "A",
+        "C",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R13.1",
+      "categoryId": "R13",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R13.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "L",
+        "A",
+        "C"
+      ],
+      "command": null
+    },
+    {
+      "id": "R13.2",
+      "categoryId": "R13",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R13.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "A",
+        "L",
+        "C",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R14.1",
+      "categoryId": "R14",
+      "phase": "initial",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R14.1",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "K",
+        "root"
+      ],
+      "command": null
+    },
+    {
+      "id": "R14.2",
+      "categoryId": "R14",
+      "phase": "follow-up",
+      "verdict": "blocked",
+      "reasons": [
+        "product interface unavailable: product-interface-not-configured",
+        "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+      ],
+      "evidenceDir": "evidence/R14.2",
+      "assertions": [],
+      "failures": [],
+      "blockedBy": [
+        "K",
+        "root"
+      ],
+      "command": null
+    }
+  ],
+  "hardFailures": [],
+  "pending": [
+    {
+      "id": "R01.1",
+      "category": "R01",
+      "blockedBy": [
+        "E",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R01.2",
+      "category": "R01",
+      "blockedBy": [
+        "E",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R02.1",
+      "category": "R02",
+      "blockedBy": [
+        "L",
+        "F",
+        "C"
+      ],
+      "command": null
+    },
+    {
+      "id": "R02.2",
+      "category": "R02",
+      "blockedBy": [
+        "L",
+        "F",
+        "C"
+      ],
+      "command": null
+    },
+    {
+      "id": "R03.1",
+      "category": "R03",
+      "blockedBy": [
+        "A",
+        "D",
+        "H",
+        "L"
+      ],
+      "command": null
+    },
+    {
+      "id": "R03.2",
+      "category": "R03",
+      "blockedBy": [
+        "A",
+        "D",
+        "H",
+        "L"
+      ],
+      "command": null
+    },
+    {
+      "id": "R04.1",
+      "category": "R04",
+      "blockedBy": [
+        "E",
+        "F",
+        "L",
+        "C"
+      ],
+      "command": null
+    },
+    {
+      "id": "R04.2",
+      "category": "R04",
+      "blockedBy": [
+        "F",
+        "A",
+        "D",
+        "L"
+      ],
+      "command": null
+    },
+    {
+      "id": "R05.1",
+      "category": "R05",
+      "blockedBy": [
+        "H",
+        "A",
+        "E",
+        "L"
+      ],
+      "command": null
+    },
+    {
+      "id": "R05.2",
+      "category": "R05",
+      "blockedBy": [
+        "A",
+        "E",
+        "L",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R06.1",
+      "category": "R06",
+      "blockedBy": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "L"
+      ],
+      "command": null
+    },
+    {
+      "id": "R06.2",
+      "category": "R06",
+      "blockedBy": [
+        "L",
+        "A",
+        "E"
+      ],
+      "command": null
+    },
+    {
+      "id": "R07.1",
+      "category": "R07",
+      "blockedBy": [
+        "H",
+        "F",
+        "A",
+        "E"
+      ],
+      "command": null
+    },
+    {
+      "id": "R07.2",
+      "category": "R07",
+      "blockedBy": [
+        "H",
+        "F",
+        "A",
+        "E"
+      ],
+      "command": null
+    },
+    {
+      "id": "R08.1",
+      "category": "R08",
+      "blockedBy": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "H"
+      ],
+      "command": null
+    },
+    {
+      "id": "R08.2",
+      "category": "R08",
+      "blockedBy": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "H"
+      ],
+      "command": null
+    },
+    {
+      "id": "R09.1",
+      "category": "R09",
+      "blockedBy": [
+        "F",
+        "G"
+      ],
+      "command": null
+    },
+    {
+      "id": "R09.2",
+      "category": "R09",
+      "blockedBy": [
+        "G",
+        "F",
+        "H",
+        "A"
+      ],
+      "command": null
+    },
+    {
+      "id": "R10.1",
+      "category": "R10",
+      "blockedBy": [
+        "L",
+        "A",
+        "C"
+      ],
+      "command": null
+    },
+    {
+      "id": "R10.2",
+      "category": "R10",
+      "blockedBy": [
+        "L",
+        "A",
+        "C",
+        "H"
+      ],
+      "command": null
+    },
+    {
+      "id": "R11.1",
+      "category": "R11",
+      "blockedBy": [
+        "M",
+        "A",
+        "C",
+        "D",
+        "H"
+      ],
+      "command": null
+    },
+    {
+      "id": "R11.2",
+      "category": "R11",
+      "blockedBy": [
+        "M",
+        "A",
+        "C",
+        "D",
+        "H"
+      ],
+      "command": null
+    },
+    {
+      "id": "R12.1",
+      "category": "R12",
+      "blockedBy": [
+        "N",
+        "H",
+        "L",
+        "C",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R12.2",
+      "category": "R12",
+      "blockedBy": [
+        "N",
+        "H",
+        "M",
+        "A",
+        "C",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R13.1",
+      "category": "R13",
+      "blockedBy": [
+        "L",
+        "A",
+        "C"
+      ],
+      "command": null
+    },
+    {
+      "id": "R13.2",
+      "category": "R13",
+      "blockedBy": [
+        "A",
+        "L",
+        "C",
+        "D"
+      ],
+      "command": null
+    },
+    {
+      "id": "R14.1",
+      "category": "R14",
+      "blockedBy": [
+        "K",
+        "root"
+      ],
+      "command": null
+    },
+    {
+      "id": "R14.2",
+      "category": "R14",
+      "blockedBy": [
+        "K",
+        "root"
+      ],
+      "command": null
+    }
+  ],
+  "metrics": {
+    "modelCalls": 0,
+    "unknownUsageCalls": 0,
+    "humanInterventions": 0,
+    "replayFixtures": 7
+  },
+  "ledger": [
+    {
+      "group": "godot",
+      "id": "A01",
+      "title": "打开客户端并进入世界",
+      "status": "尚未执行",
+      "rounds": [
+        "R01.1",
+        "R01.2"
+      ],
+      "reasons": [
+        "等待 E/D 交付界面与返回游玩入口"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A02",
+      "title": "展开游玩再返回创作",
+      "status": "尚未执行",
+      "rounds": [
+        "R01.2"
+      ],
+      "reasons": [
+        "等待 D 的保存生命周期"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A03",
+      "title": "真实模型开发准星和持枪",
+      "status": "尚未执行",
+      "rounds": [
+        "R02.1"
+      ],
+      "reasons": [
+        "等待 L/F/C 的武器与工具接口"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A04",
+      "title": "切换枪与剑并攻击",
+      "status": "尚未执行",
+      "rounds": [
+        "R02.2"
+      ],
+      "reasons": [
+        "等待 F 的装备与攻击契约"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A05",
+      "title": "连续修改已玩的武器世界",
+      "status": "尚未执行",
+      "rounds": [
+        "R03.1",
+        "R03.2"
+      ],
+      "reasons": [
+        "等待 A/D/H/L 的应用与进度保留"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A06",
+      "title": "创建俯视世界并增加商店",
+      "status": "尚未执行",
+      "rounds": [
+        "R04.1"
+      ],
+      "reasons": [
+        "等待 E/F 的俯视底座与创建入口"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A07",
+      "title": "创建任务并完成后重启",
+      "status": "尚未执行",
+      "rounds": [
+        "R04.2"
+      ],
+      "reasons": [
+        "等待 F/A/D/L 的任务与重启链路"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A08",
+      "title": "在第二个世界复用作品",
+      "status": "尚未执行",
+      "rounds": [
+        "R05.1"
+      ],
+      "reasons": [
+        "等待 H 的作品包与复用链路"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A09",
+      "title": "创作期间切换到另一世界",
+      "status": "尚未执行",
+      "rounds": [
+        "R05.2"
+      ],
+      "reasons": [
+        "等待 A/E/L/D 的世界绑定"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A10",
+      "title": "进程中断后恢复任务",
+      "status": "尚未执行",
+      "rounds": [
+        "R06.1"
+      ],
+      "reasons": [
+        "等待 A/B/C 的中断与恢复"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A11",
+      "title": "连续三次压缩后继续修改",
+      "status": "尚未执行",
+      "rounds": [
+        "R06.2"
+      ],
+      "reasons": [
+        "等待 L/A 的上下文恢复"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A12",
+      "title": "结束或过期任务后接续草稿",
+      "status": "尚未执行",
+      "rounds": [
+        "R06.2"
+      ],
+      "reasons": [
+        "等待 A/L/E 的草稿接续"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A13",
+      "title": "转换旧世界副本并导出导入",
+      "status": "尚未执行",
+      "rounds": [
+        "R07.1",
+        "R07.2"
+      ],
+      "reasons": [
+        "等待 H/F 的迁移与导出"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A14",
+      "title": "坏候选、不兼容迁移或加载失败",
+      "status": "尚未执行",
+      "rounds": [
+        "R08.1",
+        "R08.2"
+      ],
+      "reasons": [
+        "等待 A/B/C/D/H 的失败保护"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A15",
+      "title": "横版获得能力后回访旧房间",
+      "status": "尚未执行",
+      "rounds": [
+        "R09.1"
+      ],
+      "reasons": [
+        "等待 F/G 的横版能力门槛"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A16",
+      "title": "挖掘和放置后保存重开",
+      "status": "尚未执行",
+      "rounds": [
+        "R09.2"
+      ],
+      "reasons": [
+        "等待 G/F/H/A 的沙盒与保存"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "godot",
+      "id": "A17",
+      "title": "安装升级和失败恢复",
+      "status": "尚未执行",
+      "rounds": [
+        "R14.1",
+        "R14.2"
+      ],
+      "reasons": [
+        "需要独立 Windows 环境；缺失时保留未验收"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V01",
+      "title": "连续三次创作与重启",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V02",
+      "title": "创建两个方案并切换界面",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V03",
+      "title": "草稿未检查或检查失败",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V04",
+      "title": "生成期间继续获得金币再应用武器修改",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V05",
+      "title": "恢复旧武器内容",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V06",
+      "title": "旧内容不支持新增状态字段",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V07",
+      "title": "准备后正式基线或素材锁变化",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V08",
+      "title": "Git 引用更新与 DB 提交之间退出",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V09",
+      "title": "提交完成后丢失回包",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V10",
+      "title": "文本无冲突但玩法冲突",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V11",
+      "title": "同素材两个版本、场景删除引用、二进制冲突",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V12",
+      "title": "历史缺素材、坏 blob、未知旧检查状态",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V13",
+      "title": "完整备份与全新目录恢复",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V14",
+      "title": "清理缓存和取消任务",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V15",
+      "title": "中文/长路径、大小写、链接及恶意 Git 配置",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "version",
+      "id": "V16",
+      "title": "远程只收到 Git、缺少大文件正文",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [
+        "VM5/VM6 远程同步尚未实现，本次不授权部署或绑定外部账号"
+      ],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A01",
+      "title": "导入支持格式的真实文件",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A02",
+      "title": "大文件与分块中断",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A03",
+      "title": "同版不同内容、重复操作和相同正文",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A04",
+      "title": "坏图、模型引用缺失、预览超时",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A05",
+      "title": "当前世界引用 v1，库里新增 v2",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A06",
+      "title": "同一模板放两个实例，只改其中一个",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A07",
+      "title": "自动门保存后跨世界复用",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A08",
+      "title": "商店/战斗区的传递依赖和版本冲突",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A09",
+      "title": "升级宝箱、商店或任务作品",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A10",
+      "title": "目标世界已有本地覆盖",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A11",
+      "title": "归档、卸载和清理",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A12",
+      "title": "导出到新目录或另一台环境",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A13",
+      "title": "旧 Web 包与 Godot 存储迁移",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A14",
+      "title": "AI 检索并安装旧作品",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A15",
+      "title": "目录监听、路径碰撞、链接与外链文件",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A16",
+      "title": "切世界时旧搜索/预览请求返回",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A17",
+      "title": "实际打包资源与许可清单不一致",
+      "status": "尚未执行",
+      "rounds": [
+        "R14.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "依赖产品接口未接通"
+    }
+  ],
+  "notes": [
+    "冻结校验：通过；来源文档漂移 0 项。",
+    "覆盖检查：14 类 / 28 轮 / 128 条断言。",
+    "产品接口未接通，全部轮次记为尚未执行。待执行命令：set CRAFTMINE_I_PRODUCT_INTERFACE=<product acceptance base url> then: node tests/godot-remaining/I/run.mjs --mode live --confirm-live"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "format": "craftmine.i.observation/1",
+  "crosshair": {
+    "offsets": [
+      {
+        "resolution": "1280x720",
+        "offsetFromViewportCenter": 0.2
+      },
+      {
+        "resolution": "800x600",
+        "offsetFromViewportCenter": 0.3
+      },
+      {
+        "resolution": "1920x1080",
+        "offsetFromViewportCenter": 4
+      }
+    ],
+    "drawnByHudText": false,
+    "visible": true
+  },
+  "equipment": {
+    "attachedToCamera": false,
+    "followsViewRotation": false,
+    "switchTrace": [
+      {
+        "step": "pistol",
+        "consistent": true
+      },
+      {
+        "step": "sword",
+        "consistent": true
+      }
+    ]
+  },
+  "usage": {
+    "calls": 1,
+    "promptTokens": 640,
+    "cachedReadTokens": 0,
+    "nonCachedInputTokens": 640,
+    "outputTokens": 120,
+    "totalTokens": 760,
+    "unknownCalls": 0
+  },
+  "failures": [
+    {
+      "class": "model-wrong-behavior",
+      "stage": "observe",
+      "message": "reticle drawn at a fixed screen coordinate"
+    }
+  ],
+  "humanInterventions": [],
+  "evidence": {
+    "screenshots": [],
+    "human": []
+  }
+}

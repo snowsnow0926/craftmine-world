@@ -1,0 +1,97 @@
+{
+  "format": "craftmine.i.evidence/1",
+  "roundId": "R03.1",
+  "mode": "replay",
+  "verdict": "failed",
+  "reasons": [
+    "I.R03.1.2: expected {} to equal progress.inventoryBefore ({\"wood\":4,\"coin\":12})",
+    "missing evidence: I.R03.1.5/screenshot"
+  ],
+  "notes": null,
+  "identity": {
+    "format": "craftmine.i.identity/1",
+    "runId": "2a760ac5-6eaf-4eae-bf0c-c8a6a69b9a80",
+    "mode": "replay",
+    "startedAt": "2026-09-09T16:57:55.066Z",
+    "product": {
+      "version": "replay-fixture",
+      "clientVersion": "replay-fixture",
+      "commit": null
+    },
+    "engine": {
+      "name": "godot",
+      "version": "replay-fixture",
+      "binarySha256": null,
+      "renderer": null
+    },
+    "base": {
+      "id": null,
+      "version": "replay-fixture",
+      "commit": null
+    },
+    "project": {
+      "path": null,
+      "treeHash": "replay-fixture",
+      "fileCount": null
+    },
+    "model": {
+      "provider": "replay",
+      "modelId": "replay-fixture",
+      "thinking": null,
+      "reasoningEffort": null
+    },
+    "dataDir": "D:\\Craftmine World-worktrees\\godot-remaining-i-20260910\\docs\\dispatch-reports\\godot-remaining\\I\\evidence\\negative",
+    "input": {
+      "format": "craftmine.i.input-guard/1",
+      "inputEventsSent": 0,
+      "pointerLockRequests": 0,
+      "focusSteals": 0,
+      "windowActivations": 0,
+      "blockedInputAttempts": [],
+      "pointerLockDisabled": false,
+      "headless": null
+    },
+    "artifacts": [],
+    "digest": "3a42a400c48be0dfe6a9e2ad8ef38e4d3a1dd6106c21d707e1ad64e67a176fb0"
+  },
+  "usage": {
+    "format": "craftmine.i.usage/1",
+    "stage": "creation",
+    "calls": 1,
+    "promptTokens": 700,
+    "cachedReadTokens": 0,
+    "nonCachedInputTokens": 700,
+    "outputTokens": 150,
+    "totalTokens": 850,
+    "unknownCalls": 0,
+    "reportedBy": [
+      "replay-fixture"
+    ]
+  },
+  "failures": [],
+  "interventions": [],
+  "artifacts": [],
+  "files": [
+    {
+      "path": "observation.json",
+      "sha256": "8b5db61914cc47faca70b3cb048345880a2773018e341a8fe74e96651a6b2fe0",
+      "bytes": 835
+    },
+    {
+      "path": "round.json",
+      "sha256": "457741c2a76e92d9f7a7ae559aecb941407324d97e5f1553ebfe70a69fc08298",
+      "bytes": 484
+    },
+    {
+      "path": "state.after.json",
+      "sha256": "8b5db61914cc47faca70b3cb048345880a2773018e341a8fe74e96651a6b2fe0",
+      "bytes": 835
+    },
+    {
+      "path": "state.before.json",
+      "sha256": "38e0b9de817f645c4bec37c0d4a3e58baecccb040f5718dc069a72c7385a0bed",
+      "bytes": 5
+    }
+  ],
+  "sealedAt": "2026-09-09T16:57:55.081Z"
+}
