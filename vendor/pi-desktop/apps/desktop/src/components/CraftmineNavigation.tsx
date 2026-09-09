@@ -61,6 +61,11 @@ export function CraftmineNavigation() {
   const [surfaceError, setSurfaceError] = useState<string | null>(null);
   const [assetsOpen, setAssetsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  useEffect(() => {
+    const open = assetsOpen || historyOpen;
+    window.dispatchEvent(new CustomEvent("craftmine-sheet-visibility", {detail: {open}}));
+    return () => { window.dispatchEvent(new CustomEvent("craftmine-sheet-visibility", {detail: {open: false}})); };
+  }, [assetsOpen, historyOpen]);
   const openSurface = (surface: CraftmineAuxSurface, section: string) => {
     open();
     setSurfaceError(null);

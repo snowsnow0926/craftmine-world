@@ -5,7 +5,7 @@ import {writeSelectedFile,desktopServiceError,type CraftmineDomainCall} from './
 
 const MAX_ZIP=5*1024*1024;
 const hash=(bytes:Buffer|string)=>createHash('sha256').update(bytes).digest('hex');
-const failure=(code:string):never=>{throw desktopServiceError(code);};
+function failure(code:string):never {throw desktopServiceError(code);}
 const fields=(value:any,allowed:string[])=>{if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(key=>!allowed.includes(key)))failure('INVALID_PARAMS');};
 const identifier=(value:any)=>{if(typeof value!=='string'||!/^[a-zA-Z0-9_-]{8,100}$/.test(value))failure('INVALID_OPERATION_ID');return value as string;};
 const canonical=(value:any):string=>JSON.stringify(value,Object.keys(value).sort());

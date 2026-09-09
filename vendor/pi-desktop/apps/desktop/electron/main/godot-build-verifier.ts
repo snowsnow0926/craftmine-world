@@ -549,8 +549,6 @@ export class GodotBuildVerifier {
       }
       const loaded = await bounded(activeRuntime.load({ build: null, snapshot: descriptor.snapshot ?? null }));
       if (loaded.error) throw new Error(`GODOT_CHECK_LOAD_FAILED: ${loaded.error}`);
-      const resumed = await bounded(activeRuntime.resume());
-      if (resumed.error) throw new Error(`GODOT_CHECK_RESUME_FAILED: ${resumed.error}`);
       assertRunning();
 
       // Isolation proof: the guard is installed in the main world of every
@@ -574,7 +572,13 @@ export class GodotBuildVerifier {
       // formal world progress can never be changed by a check.
       const observed = await bounded(activeRuntime.snapshot());
       if (observed.error) throw new Error(`GODOT_CHECK_SNAPSHOT_FAILED: ${observed.error}`);
-      const actual = observed.result ?? null;
+      const returned = observed.result ?? null;
+      // Managed bases return a transport wrapper around the persisted progress
+      // envelope. Compare the native round trip before advancing simulation.
+      const actual = isRecord(descriptor.snapshot) && descriptor.snapshot.format === "craftmine.godot-progress/1"
+        ? isRecord(returned) && returned.worldId === descriptor.worldId && isRecord(returned.state)
+          ? returned.state : null
+        : returned;
       const actualHash = actual === null ? null : hashJson(actual);
       const expectedHash = descriptor.snapshot === null ? null : hashJson(descriptor.snapshot);
       snapshot.expectedHash = expectedHash;
@@ -585,6 +589,9 @@ export class GodotBuildVerifier {
       snapshot.equal = expectedHash === null ? actualHash !== null : expectedHash === actualHash;
       snapshot.ok = actualHash !== null && snapshot.equal;
       if (!snapshot.ok) throw new Error("GODOT_CHECK_SNAPSHOT_MISMATCH");
+
+      const resumed = await bounded(activeRuntime.resume());
+      if (resumed.error) throw new Error(`GODOT_CHECK_RESUME_FAILED: ${resumed.error}`);
 
       // Render proof: real pixels, spaced in time, and at least two distinct
       // frames so a frozen or blank canvas cannot pass.

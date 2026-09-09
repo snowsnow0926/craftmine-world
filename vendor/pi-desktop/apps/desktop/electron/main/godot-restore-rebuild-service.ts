@@ -81,6 +81,7 @@ export function createGodotRestoreRebuildService(options: Options) {
     }
   }
   return {
+    get busy() { return running.size > 0; },
     start(worldId: string): Promise<Data> {
       if (typeof worldId !== "string" || !worldId || worldId.length > 128) return Promise.reject(Error("INVALID_WORLD_ID"));
       const existing = running.get(worldId); if (existing) return existing;

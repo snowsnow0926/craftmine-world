@@ -54,7 +54,8 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     if(!has(channel))throw Error('这个功能尚未连接，请完成桌面服务更新后重试。');
     const generation=epoch,worldId=getWorld()?.id;if(!worldId)throw Error('请先打开世界');
     const result=await request(channel,{worldId,...payload});
-    if(generation!==epoch||getWorld()?.id!==worldId)throw Error('WORLD_CHANGED');return result;
+    const restored=channel==='workbench.execute'&&result?.scope==='profile'&&result?.status==='completed'&&result?.activated===true;
+    if(!restored&&(generation!==epoch||getWorld()?.id!==worldId))throw Error('WORLD_CHANGED');return result;
   }
   async function action(fn){
     if(pending||isLocked())return;const generation=epoch;pending++;onChange();status('处理中…');
