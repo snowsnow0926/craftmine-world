@@ -7,6 +7,10 @@
   "displayName": "小镇示例",
   "description": "One road, one shop, one NPC and one collect-and-deliver quest.",
   "entryScene": "res://scenes/overworld.tscn",
+  "scenes": {
+    "overworld": "res://scenes/overworld.tscn",
+    "shop-interior": "res://scenes/shop_interior.tscn"
+  },
   "stateVersion": 1,
   "autosaveOnExit": true,
   "initialProgress": {
