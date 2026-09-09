@@ -69,6 +69,14 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
         if(channel!=='package.request')failure('UNKNOWN_PACKAGE_CHANNEL');fields(input,['worldId','method','params']);
         const {worldId,method}=input,args=input.params??{};if(typeof worldId!=='string'||!worldId||args.worldId!==worldId)failure('PACKAGE_WORLD_MISMATCH');
         await selected(worldId);prune();
+        if(method==='sourceJob') {
+          fields(args,['worldId','jobId']);
+          if(typeof args.jobId!=='string'||!/^gjob-[a-f0-9]{64}$/.test(args.jobId))failure('INVALID_PARAMS');
+          const result=await options.domainCall<any>('godotBuild.read',{worldId,jobId:args.jobId});await selected(worldId);
+          const statuses=['blocked','queued','claimed','running','passed','failed','cancelled','interrupted'];
+          if(result.worldId!==worldId||result.jobId!==args.jobId||!statuses.includes(result.status))failure('PACKAGE_JOB_RECEIPT_INVALID');
+          return {worldId,jobId:args.jobId,status:result.status,terminal:['passed','failed','cancelled','interrupted'].includes(result.status)};
+        }
         if(method==='sourceList') {fields(args,['worldId']);const result=await privateCall('sourceList',{worldId});await selected(worldId);if(result.worldId!==worldId||!Array.isArray(result.items))failure('PACKAGE_SOURCE_RECEIPT_INVALID');return {worldId,revision:result.revision,manifestHash:result.manifestHash,mainScene:result.mainScene,items:result.items.slice(0,512).map((item:any)=>({nodePath:item.nodePath,name:item.name,entityId:item.entityId,supported:item.supported===true,...(item.reason?{reason:item.reason}:{})})),truncated:result.truncated===true||result.items.length>512};}
         if(method==='exportSource') {
           fields(args,['worldId','revision','manifestHash','nodePath','assetId','version']);
