@@ -138,10 +138,235 @@ fn limits(db: &Connection, owner: &str) -> Result<Value> {
             |r| r.get(0),
         )
         .optional()?;
-    Ok(stored
+    let value = stored
         .map(|s| serde_json::from_str(&s))
         .transpose()?
-        .unwrap_or(json!({"maxRequests":80,"maxTokens":null,"maxCompactions":8,"deadlineAt":null})))
+        .unwrap_or(json!({"maxRequests":80,"maxTokens":null,"maxCompactions":8,"deadlineAt":null}));
+    validate_limits(&value)?;
+    Ok(value)
+}
+fn validate_limits(value: &Value) -> Result<()> {
+    fields(
+        value,
+        &["maxRequests", "maxTokens", "maxCompactions", "deadlineAt"],
+    )?;
+    ensure!(
+        number(value, "maxRequests", 10000)? > 0 && number(value, "maxCompactions", 100)? > 0,
+        "INVALID_BUDGET_LIMIT"
+    );
+    token_limit(value.get("maxTokens").context("MAX_TOKENS_REQUIRED")?)?;
+    let deadline = value.get("deadlineAt").context("DEADLINE_REQUIRED")?;
+    if !deadline.is_null() {
+        number(value, "deadlineAt", i64::MAX as u64)?;
+    }
+    Ok(())
+}
+fn validate_settlement(value: &Value, status: &str) -> Result<()> {
+    fields(value, &["status", "usage", "errorCode"])?;
+    ensure!(
+        value["status"] == status && ["known", "unknown", "cancelled"].contains(&status),
+        "CORRUPT_SETTLEMENT"
+    );
+    if status == "known" {
+        fields(
+            &value["usage"],
+            &["inputTokens", "outputTokens", "totalTokens"],
+        )?;
+        let input = number(&value["usage"], "inputTokens", 100_000_000)?;
+        let output = number(&value["usage"], "outputTokens", 100_000_000)?;
+        let total = number(&value["usage"], "totalTokens", 200_000_000)?;
+        ensure!(total >= input && total >= output, "INVALID_USAGE_TOTAL");
+    } else {
+        ensure!(
+            value.get("usage").is_none_or(Value::is_null),
+            "UNKNOWN_USAGE_MUST_BE_ABSENT"
+        );
+    }
+    if value.get("errorCode").is_some() {
+        text(value, "errorCode", 120)?;
+    }
+    Ok(())
+}
+fn configuration_identity(db: &Connection, args: &Value) -> Result<(String, String)> {
+    fields(
+        args,
+        &[
+            "projectId",
+            "sessionId",
+            "worldId",
+            "taskId",
+            "generation",
+            "operationId",
+            "maxTokens",
+        ],
+    )?;
+    let operation = text(args, "operationId", 240)?.to_owned();
+    let task_id = text(args, "taskId", 240)?;
+    token_limit(args.get("maxTokens").context("MAX_TOKENS_REQUIRED")?)?;
+    let task = read_task(db, task_id)?;
+    ensure!(
+        args["projectId"] == task.binding.project_id
+            && args["sessionId"] == task.binding.session_id,
+        "TASK_BINDING_MISMATCH"
+    );
+    let world: String = db.query_row(
+        "SELECT world_id FROM craftmine_workspaces WHERE task_id=?1",
+        [task_id],
+        |r| r.get(0),
+    )?;
+    ensure!(args["worldId"] == world, "WORLD_BINDING_MISMATCH");
+    let runtime: Option<(i64, String)> = db
+        .query_row(
+            "SELECT generation,budget_owner FROM craftmine_task_runtime WHERE task_id=?1",
+            [task_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .optional()?;
+    let (generation, owner) = runtime.unwrap_or((1, task_id.to_owned()));
+    ensure!(
+        generation > 0 && args["generation"].as_i64() == Some(generation),
+        "STALE_GENERATION"
+    );
+    Ok((owner, operation))
+}
+fn validate_configuration_result(
+    db: &Connection,
+    request: &Value,
+    result: &Value,
+    owner: &str,
+) -> Result<()> {
+    fields(result, &["operationId", "budget", "previousMaxTokens"])?;
+    ensure!(
+        result["operationId"] == request["operationId"],
+        "CORRUPT_CONFIGURATION_RECEIPT"
+    );
+    token_limit(
+        result
+            .get("previousMaxTokens")
+            .context("CORRUPT_CONFIGURATION_RECEIPT")?,
+    )?;
+    let value = &result["budget"];
+    fields(
+        value,
+        &[
+            "ownerTaskId",
+            "requestCount",
+            "toolCallCount",
+            "compactionCount",
+            "actualTokens",
+            "reservedTokens",
+            "unknownRequestCount",
+            "chargedTokens",
+            "remainingTokens",
+            "limits",
+        ],
+    )?;
+    ensure!(
+        value["ownerTaskId"] == owner && value["limits"]["maxTokens"] == request["maxTokens"],
+        "CORRUPT_CONFIGURATION_RECEIPT"
+    );
+    validate_limits(&value["limits"])?;
+    let current = budget(db, owner)?;
+    for key in [
+        "requestCount",
+        "toolCallCount",
+        "compactionCount",
+        "actualTokens",
+    ] {
+        ensure!(
+            number(value, key, MAX_TOKEN_LIMIT)? <= number(&current, key, MAX_TOKEN_LIMIT)?,
+            "CORRUPT_CONFIGURATION_RECEIPT"
+        );
+    }
+    for key in [
+        "requestCount",
+        "toolCallCount",
+        "compactionCount",
+        "actualTokens",
+        "reservedTokens",
+        "unknownRequestCount",
+        "chargedTokens",
+    ] {
+        number(value, key, MAX_TOKEN_LIMIT)?;
+    }
+    ensure!(
+        value["unknownRequestCount"].as_u64() <= value["requestCount"].as_u64(),
+        "CORRUPT_CONFIGURATION_RECEIPT"
+    );
+    let charged = value["actualTokens"]
+        .as_u64()
+        .unwrap()
+        .checked_add(value["reservedTokens"].as_u64().unwrap())
+        .context("CORRUPT_CONFIGURATION_RECEIPT")?;
+    ensure!(
+        value["chargedTokens"].as_u64() == Some(charged)
+            && value.get("remainingTokens")
+                == Some(&json!(token_limit(&value["limits"]["maxTokens"])?
+                    .map(|max| max.saturating_sub(charged)))),
+        "CORRUPT_CONFIGURATION_RECEIPT"
+    );
+    Ok(())
+}
+/// Validate imported accounting before replacement, not on the next model call.
+pub(super) fn validate_ledger(db: &Connection) -> Result<()> {
+    let owners=db.prepare("SELECT budget_owner FROM craftmine_task_runtime UNION SELECT owner FROM craftmine_budget_limits UNION SELECT owner FROM craftmine_budget_requests UNION SELECT owner FROM craftmine_budget_events UNION SELECT owner FROM craftmine_budget_configurations UNION SELECT owner FROM craftmine_budget_settlement_history")?.query_map([],|r|r.get::<_,String>(0))?.collect::<rusqlite::Result<Vec<_>>>()?;
+    for owner in owners {
+        read_task(db, &owner)?;
+        budget(db, &owner)?;
+    }
+    for row in db
+        .prepare("SELECT owner,task_id,generation,purpose FROM craftmine_budget_requests")?
+        .query_map([], |r| {
+            Ok((
+                r.get::<_, String>(0)?,
+                r.get::<_, String>(1)?,
+                r.get::<_, i64>(2)?,
+                r.get::<_, String>(3)?,
+            ))
+        })?
+    {
+        let (owner, task, generation, purpose) = row?;
+        read_task(db, &task)?;
+        let stored: (i64, String) = db.query_row(
+            "SELECT generation,budget_owner FROM craftmine_task_runtime WHERE task_id=?1",
+            [task],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )?;
+        ensure!(
+            generation > 0
+                && stored == (generation, owner)
+                && ["creation", "summary", "review", "retry"].contains(&purpose.as_str()),
+            "CORRUPT_BUDGET_BINDING"
+        );
+    }
+    for kind in db
+        .prepare("SELECT kind FROM craftmine_budget_events")?
+        .query_map([], |r| r.get::<_, String>(0))?
+    {
+        ensure!(
+            ["compaction", "tool"].contains(&kind?.as_str()),
+            "CORRUPT_BUDGET_EVENT"
+        );
+    }
+    for row in db.prepare("SELECT owner,operation_id,request,result,created_at FROM craftmine_budget_configurations")?.query_map([],|r|Ok((r.get::<_,String>(0)?,r.get::<_,String>(1)?,r.get::<_,String>(2)?,r.get::<_,String>(3)?,r.get::<_,i64>(4)?)))? {
+        let (owner,operation,request,result,created)=row?;
+        let request: Value=serde_json::from_str(&request)?;
+        ensure!(configuration_identity(db,&request)?==(owner.clone(),operation) && created>=0,"CORRUPT_CONFIGURATION_RECEIPT");
+        validate_configuration_result(db,&request,&serde_json::from_str(&result)?,&owner)?;
+    }
+    for previous in db
+        .prepare("SELECT previous FROM craftmine_budget_settlement_history")?
+        .query_map([], |r| r.get::<_, String>(0))?
+    {
+        let value: Value = serde_json::from_str(&previous?)?;
+        let status = value["status"].as_str().context("CORRUPT_SETTLEMENT")?;
+        ensure!(
+            ["unknown", "cancelled"].contains(&status),
+            "CORRUPT_SETTLEMENT"
+        );
+        validate_settlement(&value, status)?;
+    }
+    Ok(())
 }
 pub(super) fn budget(db: &Connection, owner: &str) -> Result<Value> {
     let mut requests = db.prepare(
@@ -158,6 +383,21 @@ pub(super) fn budget(db: &Connection, owner: &str) -> Result<Value> {
     for row in rows {
         let (status, estimate, settlement) = row?;
         let estimate = u64::try_from(estimate).context("CORRUPT_BUDGET")?;
+        ensure!(estimate > 0 && estimate <= 200_000_000, "CORRUPT_BUDGET");
+        ensure!(
+            ["known", "reserved", "unknown", "cancelled"].contains(&status.as_str()),
+            "CORRUPT_BUDGET"
+        );
+        if status == "reserved" {
+            ensure!(settlement.is_none(), "CORRUPT_SETTLEMENT");
+        } else {
+            validate_settlement(
+                &serde_json::from_str::<Value>(
+                    settlement.as_deref().context("CORRUPT_SETTLEMENT")?,
+                )?,
+                &status,
+            )?;
+        }
         count += 1;
         if status == "known" {
             let value: Value = serde_json::from_str(&settlement.context("CORRUPT_BUDGET")?)?;
@@ -184,6 +424,18 @@ pub(super) fn budget(db: &Connection, owner: &str) -> Result<Value> {
     )
 }
 impl TaskJournal {
+    /// Resolve a committed player receipt without authorizing another mutation.
+    pub fn budget_find_receipt(&self, args: &Value) -> Result<Value> {
+        let (owner, operation) = configuration_identity(&self.db, args)?;
+        let row: Option<(String,String)> = self.db.query_row("SELECT request,result FROM craftmine_budget_configurations WHERE owner=?1 AND operation_id=?2",params![owner,operation],|r|Ok((r.get(0)?,r.get(1)?))).optional()?;
+        let Some((request, result)) = row else {
+            return Ok(Value::Null);
+        };
+        ensure!(request == document(args)?, "REPLAY_MISMATCH");
+        let result: Value = serde_json::from_str(&result)?;
+        validate_configuration_result(&self.db, args, &result, &owner)?;
+        Ok(result)
+    }
     /// Player-only entry point, deliberately absent from the model budget dispatcher.
     pub fn budget_configure(&mut self, args: &Value) -> Result<Value> {
         fields(
