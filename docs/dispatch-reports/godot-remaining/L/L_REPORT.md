@@ -212,11 +212,11 @@ $env:CRAFTMINE_CORE_BIN="<built craftmine-core.exe>"
 node --test tests/godot-remaining/L/broker-real-core.test.mjs
 ```
 
-结果：**56 项通过，0 失败，0 跳过**。
+结果：**67 项通过，0 失败，0 跳过**（含审查修复后新增的 11 项）。
 
 | 账目 | 内容 | 证据 |
 | --- | --- | --- |
-| 纯逻辑 | 语料/解析/归一化/分类/契约 51 项 | `evidence/tests-logic-and-broker.log` |
+| 纯逻辑 | 语料/解析/归一化/分类/契约 62 项 | `evidence/tests-logic-and-broker.log` |
 | 真实核心 | 真实 Rust 存储上的工程查询、运行时描述、缺失适配器探测 5 项 | `evidence/tests-real-core.log` |
 | 核心身份 | 自建 debug 二进制 SHA-256 | `evidence/core-binary.txt` |
 | 能力快照 | 真实握手 + 工具可达性 + 语料信息 | `evidence/tool-surface.json` |
@@ -234,7 +234,37 @@ broker 路由测试用私有副本 + 桩 `domain.cjs`，只证明本任务新增
 未运行 `tests/browser.mjs`、`tests/modules-browser.mjs`；未发送真实鼠标键盘、
 未请求 Pointer Lock、未激活窗口、未操作用户浏览器。核心测试使用独立临时数据目录。
 
+## 4.1 独立审查与修复
+
+提交 `1d1d081` 经 code-reviewer 只读审查后，修复了以下真实缺陷（第二轮提交）：
+
+| 缺陷 | 修复 |
+| --- | --- |
+| `scope=live` 回包里带出完整保存快照（含装备/任务），与工具自身声明矛盾 | 活体分支剥离 `descriptor.durableProgress`，只保留 `{source,savedAt}`；新增断言：活体响应中不得出现已保存装备 |
+| 讨论模式开关只在传入 `options` 时生效，生产调用点未传 → 守卫实际未生效 | 无谓词时回退到宿主已传入的 `getSettings()`，识别 `discussionOnly`/`readOnlyTurn`；新增“仅靠 settings 也拦截写入”的测试 |
+| 能力清单把 13 个既有世界工具报成 `wired:false` | 路由/本地工具表补齐全部已注册工具及其负责人；新增断言“没有任何 `wired:false`” |
+| `unreachableMethods[].reachable` 误用能力位（多数为 true） | 固定 `reachable:false`，能力位另用 `capabilityEnabled` 表达 |
+| `godot_project_query.reachable` 硬编码 true | 改为按 `godotProjects` 能力位推导 |
+| 运行时描述遇到未映射错误码会抛掉已收集的工程/候选事实 | `projectFacts` 包住调用，返回 `RUNTIME_DESCRIBE_FAILED` |
+| 多页工程索引未固定版本，可能跨 revision | 后续页固定首页 `revision`+`manifestHash`，并加单调偏移守卫 |
+| `find` 静默跳过超长脚本，看起来像“符号不存在” | 返回 `skipped[]` 与 `complete` |
+| 活体样本缺自身 worldId/buildId 仍被当作当前状态 | 新增 `LIVE_IDENTITY_UNVERIFIED` |
+| 安装提案用 `worldId` 伪造默认实例选择 | 改为 `selection??[]`，缺选择时明确拒绝 |
+| `@export_group` 等段标记被当成导出注解 | 注解判定排除 `_group/_category/_subgroup` |
+| `preload` 与运行时 `load` 混为一谈 | 分为 `preloads` 与 `runtimeLoads` |
+| 同场景第二个无父节点会顶替根节点 | 记为 `EXTRA_SCENE_ROOT` 警告 |
+| `.gdshaderinc` 被当作未知类型 | 归入 `shader`；移除内核不接受的 `.cs` |
+| 取消类工具未列入讨论模式写入集 | 加入 `godot_build_cancel`/`verification_cancel` |
+| `godot_docs` 需要核心启动才能用 | 文档分支前移到 `core.start()` 之前 |
+| `checkEngineVersion` 无调用点 | 接入 `godot_runtime_state` 与 `godot_project_facts` 输出 |
+| `resources()` 重复拉取索引 | 复用同一次 `allFiles()` |
+| 文档搜索上限 20 与 schema 上限 16000 不一致 | 工具描述明确“search 最多 20 条” |
+
+未修复（按未完成记录）：`main.cjs` 未传第六参数（属 C 的服务生命周期，已给出零签名改动的 settings 方案）；
+`tests/godot-project-tools.mjs`/`tests/godot-build-tools.mjs` 的 11 项计数需 A/主任务同步（精确补丁见接口说明）。
+
 ## 5 跨范围接口与待接线项（交主任务/对应负责人）
+
 
 1. **活体采样器（root + F/D）**：把运行实例的 `snapshot` 操作（协议
    `craftmine.godot-runtime/2`，`RUNTIME_OPS` 含 `snapshot`）接到

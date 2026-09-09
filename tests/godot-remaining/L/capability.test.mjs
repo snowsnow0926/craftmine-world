@@ -51,10 +51,36 @@ test('host methods with no agent tool are listed with their owner',()=>{
   assert.equal(prepare.owner,'C');
   assert.equal(prepare.kind,'write');
   assert.equal(prepare.reason,'NO_AGENT_TOOL_ROUTES_THIS_METHOD');
+  // Reachability of an unreachable method is always false; the capability flag
+  // is reported separately so it cannot be read as an available ability.
+  assert.equal(prepare.reachable,false);
+  assert.equal(prepare.capabilityEnabled,true);
   assert.ok(UNREACHABLE_METHODS.includes('backup.export'));
   assert.equal(inventory.unreachableMethods.find(entry=>entry.method==='backup.export').owner,'H');
+  assert.ok(inventory.unreachableMethods.every(entry=>entry.reachable===false));
   // Every declared owner must be a real subsystem owner, not a guess.
   for(const [method,entry] of Object.entries(HOST_METHODS))assert.ok(entry.owner&&entry.capability,method);
+});
+
+test('pre-existing world tools are reported as wired, not as unwired',()=>{
+  const inventory=buildInventory({manifest,routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake:HANDSHAKE});
+  for(const name of ['project_inspect','capabilities_read','resource_read','workspace_patch','verification_submit',
+    'verification_read','verification_cancel','library_search','library_read','library_install','memory_search',
+    'memory_propose','requirements_read']){
+    const tool=inventory.tools.find(entry=>entry.name===name);
+    assert.equal(tool.wired,true,`${name} must be wired`);
+    assert.equal(tool.reachable,true,`${name} must be reachable with a healthy handshake`);
+  }
+  assert.equal(inventory.tools.filter(tool=>tool.wired===false).length,0);
+});
+
+test('a plugin tool follows the capability flag it depends on',()=>{
+  const disabled=buildInventory({manifest,routing:GODOT_METHODS,localTools:LOCAL_TOOLS,
+    handshake:{...HANDSHAKE,godotProjects:false}});
+  const query=disabled.tools.find(tool=>tool.name==='godot_project_query');
+  assert.equal(query.reachable,false);
+  assert.equal(query.blockedBy,'CAPABILITY_DISABLED');
+  assert.equal(disabled.tools.find(tool=>tool.name==='godot_docs').reachable,true,'docs need no flag');
 });
 
 test('the history/asset contract is advertised but blocked until its adapter lands',()=>{

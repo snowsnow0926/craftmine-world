@@ -29,16 +29,25 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     // Reject forged identity/unknown fields before acquiring any draft lease.
     const allowed=Object.keys(definition.schema.properties);
     fields(args,definition.schema.required||[],allowed.filter(key=>!(definition.schema.required||[]).includes(key)));
-    // Discussion-only turns may read anything and change nothing.
-    if(WRITE_TOOLS.has(definition.name)&&typeof options.isDiscussionOnly==='function'&&options.isDiscussionOnly())throw Error('DISCUSSION_MODE_READ_ONLY');
-    await core.start();
-    // Documentation and the capability inventory need no world binding.
+    // Documentation needs neither the runtime nor a world binding.
     if(definition.name==='godot_docs') {
       if(args.mode==='info')return docs.docsInfo();
       if(args.mode==='search')return docs.searchDocs(args);
       if(args.mode==='read')return docs.readDoc(args);
       throw Error('INVALID_DOCS_MODE');
     }
+    // Discussion-only turns may read anything and change nothing. The host may
+    // pass a predicate, or expose discussionOnly/readOnlyTurn through settings;
+    // either way the refusal happens before any host call.
+    if(WRITE_TOOLS.has(definition.name)) {
+      let blocked=typeof options.isDiscussionOnly==='function'&&options.isDiscussionOnly();
+      if(!blocked) {
+        const settings=await getSettings();
+        blocked=settings?.discussionOnly===true||settings?.readOnlyTurn===true;
+      }
+      if(blocked)throw Error('DISCUSSION_MODE_READ_ONLY');
+    }
+    await core.start();
     if(definition.name==='godot_capability_report') {
       const handshake=await core.start();
       const gaps=args.request||Array.isArray(args.evidence)?[{request:args.request||null,evidence:args.evidence||[]}]:[];
@@ -77,9 +86,13 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     }
     if(definition.name==='godot_runtime_state') {
       const descriptor=await describeRuntime(core,{worldId:workspace.worldId});
-      if(args.scope==='build')return descriptor;
+      // The saved snapshot body must never travel inside a live response.
+      const {durableProgress,...descriptorOnly}=descriptor;
+      const docsCompatibility=docs.checkEngineVersion(descriptor.engineVersion);
+      if(args.scope==='build')return {...descriptorOnly,docsCompatibility};
       if(args.scope!=='live')throw Error('INVALID_SCOPE');
-      if(!descriptor.available)return {scope:'live',descriptor,live:{available:false,reason:descriptor.reason},
+      if(!descriptor.available)return {format:'craftmine.godot-runtime-state/1',scope:'live',descriptor:descriptorOnly,
+        live:{available:false,reason:descriptor.reason},docsCompatibility,
         note:'No durable runnable build is recorded for this world, so there is nothing to sample.'};
       let sample=null,failure=null;
       if(typeof options.sampleLiveState==='function'){
@@ -91,12 +104,13 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
         : {available:false,reason:'LIVE_OBSERVATION_NOT_WIRED',
            dependency:'host live sampler for the running Godot instance',
            note:'Camera, equipment, entities and quests below are unknown, not empty. Do not use the last saved progress as the current equipment.'});
-      return {format:'craftmine.godot-runtime-state/1',scope:'live',descriptor,live,
-        durableProgress:descriptor.available?{source:'last-confirmed-save',savedAt:descriptor.durableProgress?.savedAt??null}:null};
+      return {format:'craftmine.godot-runtime-state/1',scope:'live',descriptor:descriptorOnly,live,docsCompatibility,
+        durableProgress:{source:'last-confirmed-save',savedAt:durableProgress?.savedAt??null}};
     }
     if(definition.name==='godot_project_facts') {
       const facts=await projectFacts({core,context,worldId:workspace.worldId,sampler:options.sampleLiveState});
       facts.limits=limitAccounting(options.budget);
+      facts.docsCompatibility=docs.checkEngineVersion(facts.runtime?.engineVersion??facts.project?.engineVersion);
       return facts;
     }
     if(definition.name==='godot_history') {

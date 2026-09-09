@@ -102,7 +102,7 @@ test('a proposal is never an application and never performs git',()=>{
   const calls=[];
   const core={call:async(method,params)=>{calls.push({method,params});return {};}};
   const service=createHistoryService({core,context:CONTEXT,workspace:workspace()});
-  const proposal=service.assetInstallProposal({ref:{assetId:'shop-kit',version:2,contentHash:HASH}});
+  const proposal=service.assetInstallProposal({ref:{assetId:'shop-kit',version:2,contentHash:HASH},selection:['alpha']});
   assert.equal(proposal.applies,false);
   assert.equal(proposal.requiresPlayerAction,true);
   assert.equal(proposal.gitWriteOwner,'N');
@@ -110,6 +110,13 @@ test('a proposal is never an application and never performs git',()=>{
   assert.equal(proposal.operationContext.operationId,'proposal-assetInstallProposal');
   assert.deepEqual(calls,[],'a proposal must not call the host at all');
   for(const method of calls.map(call=>call.method))assert.ok(!/^(git|shell|exec)/.test(method));
+});
+
+test('a proposal without an explicit instance is refused instead of fabricated',()=>{
+  const core={call:async()=>({})};
+  const service=createHistoryService({core,context:CONTEXT,workspace:workspace()});
+  assert.throws(()=>service.assetInstallProposal({ref:{assetId:'shop-kit',version:2,contentHash:HASH}}),
+    /INSTANCE_ONLY_REQUIRES_EXACTLY_ONE_INSTANCE/);
 });
 
 test('an invalid reference is rejected before any host call',async()=>{

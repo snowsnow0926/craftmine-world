@@ -7,7 +7,6 @@ Nothing here was applied by task L.
 
 `createWorldTools(core, getSettings, isEnded, verifications, reviews, options)`
 now accepts a sixth argument. Wire:
-
 ```js
 createWorldTools(core,getSettings,isEnded,verifications,reviews,{
   sampleLiveState: async ({worldId,buildId}) => {
@@ -33,6 +32,15 @@ all of these from `base_world.gd:snapshot()`; no game-side change is required.
 Until this is wired, `godot_runtime_state scope=live` and the `live` section of
 `godot_project_facts` return `LIVE_OBSERVATION_NOT_WIRED`. That is the correct
 state: unknown, not empty.
+
+**The discussion-only guard does not need this call site to change.** If no
+`isDiscussionOnly` predicate is passed, the broker falls back to the settings
+object it already receives from `getSettings()` and refuses writes when
+`settings.discussionOnly === true` or `settings.readOnlyTurn === true`
+(`world-tools.cjs`, `WRITE_TOOLS`). So C/root only needs to expose that flag in
+plugin settings; no signature change in `main.cjs` is required for the guard.
+The live sampler and budget provider do still need the sixth argument (or an
+equivalent settings/DI hook).
 
 ## 2 Per-request fact block (owner: C / root)
 

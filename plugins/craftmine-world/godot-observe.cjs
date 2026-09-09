@@ -61,6 +61,8 @@ function normalizeLiveSample(sample,identity={}){
   const mismatches=[];
   if(identity.worldId&&worldId&&identity.worldId!==worldId)mismatches.push('LIVE_WORLD_MISMATCH');
   if(identity.buildId&&buildId&&identity.buildId!==buildId)mismatches.push('LIVE_BUILD_MISMATCH');
+  // A sample that omits identity cannot be proven to belong to this world.
+  if((identity.worldId&&!worldId)||(identity.buildId&&!buildId))mismatches.push('LIVE_IDENTITY_UNVERIFIED');
   const display=sample.display&&typeof sample.display==='object'?sample.display:null;
   const player=sample.player&&typeof sample.player==='object'?sample.player:null;
   const camera=display&&display.cameraGlobal?{global:display.cameraGlobal,
@@ -110,7 +112,9 @@ async function projectFacts({core,context,worldId,observation,sampler}){
     facts.candidates=missing('CANDIDATE_READ_FAILED',{errorCode:error?.errorCode||null});
   }
 
-  const descriptor=await describeRuntime(core,{worldId});
+  let descriptor;
+  try { descriptor=await describeRuntime(core,{worldId}); }
+  catch(error){ descriptor=missing('RUNTIME_DESCRIBE_FAILED',{errorCode:error?.errorCode||null}); }
   facts.runtime=descriptor.available
     ? {available:true,phase:descriptor.phase,buildId:descriptor.buildId,baseId:descriptor.baseId,revision:descriptor.revision,
        engineVersion:descriptor.engineVersion,renderer:descriptor.renderer,target:descriptor.target,entry:descriptor.entry,

@@ -219,3 +219,72 @@ test('query service reports a missing file rather than inventing content',async(
   const query=createProjectQuery({core,context:{projectId:'p',sessionId:'s',turnId:'t'},worldId:'alpha'});
   await assert.rejects(query.scene({path:'missing.tscn'}),/PROJECT_FILE_NOT_FOUND/);
 });
+
+test('parseScript separates section annotations from real exports',()=>{
+  const script=parseScript('@export_group "Weapons"\n@export var damage: float = 1.0\n@export_category "Misc"\nvar plain: int = 2\n');
+  assert.deepEqual(script.exports.map(entry=>entry.name),['damage']);
+  assert.equal(script.variables.find(variable=>variable.name==='plain').exported,false);
+});
+
+test('parseScript distinguishes preload from run-time load',()=>{
+  const script=parseScript('var a := preload("res://a.tres")\nvar b := load("res://b.tres")\n');
+  assert.deepEqual(script.preloads.map(entry=>entry.path),['res://a.tres']);
+  assert.deepEqual(script.runtimeLoads.map(entry=>entry.path),['res://b.tres']);
+});
+
+test('scene query reports its own format and keeps the parse format',async()=>{
+  const {core}=fakeCore(FIXTURE);
+  const query=createProjectQuery({core,context:{projectId:'p',sessionId:'s',turnId:'t'},worldId:'alpha'});
+  const scene=await query.scene({path:'world.tscn'});
+  assert.equal(scene.format,'craftmine.godot-scene-query/1');
+  assert.equal(scene.parseFormat,'craftmine.scene-parse/1');
+});
+
+test('a second parentless node is reported instead of adopting the root children',()=>{
+  const scene=parseScene('[gd_scene format=3]\n[node name="A" type="Node"]\n[node name="B" type="Node"]\n[node name="C" type="Node" parent="."]\n');
+  assert.ok(scene.warnings.some(warning=>warning.reason==='EXTRA_SCENE_ROOT:B'));
+  assert.equal(scene.tree[0].children.length,1);
+  assert.equal(scene.tree[0].children[0].name,'C');
+});
+
+test('multi-page project listing stays pinned to the first revision',async()=>{
+  const calls=[];
+  const files=Array.from({length:40},(_,index)=>({path:'f'+index+'.gd',sha256:'a'.repeat(64),bytes:1}));
+  const core={call:async(method,params)=>{
+    calls.push({method,params});
+    if(method!=='godotProject.index')throw Object.assign(Error('UNKNOWN_METHOD'),{errorCode:'UNKNOWN_METHOD'});
+    const offset=params.offset||0,limit=params.limit||32;
+    const page=files.slice(offset,offset+limit);
+    return {worldId:'alpha',revision:5,manifestHash:'b'.repeat(64),baseId:'first-person',engineVersion:'4.7.2-stable',
+      renderer:'gl_compatibility',target:'web',files:page,totalFiles:files.length,
+      nextOffset:offset+page.length<files.length?offset+page.length:null,status:'source-only',verified:false,applied:false};
+  }};
+  const query=createProjectQuery({core,context:{projectId:'p',sessionId:'s',turnId:'t'},worldId:'alpha'});
+  const {identity,files:listed}=await query.allFiles();
+  assert.equal(identity.revision,5);
+  assert.equal(listed.length,40);
+  const pages=calls.filter(call=>call.method==='godotProject.index');
+  assert.equal(pages.length,2);
+  assert.equal(pages[0].params.revision,undefined);
+  assert.equal(pages[1].params.revision,5);
+  assert.equal(pages[1].params.manifestHash,'b'.repeat(64));
+  assert.equal(pages[1].params.offset,32);
+});
+
+test('find reports scripts it could not read instead of reporting no match',async()=>{
+  const long='var x = 1\n'.repeat(2000);
+  const files=[{path:'big.gd',sha256:'a'.repeat(64),bytes:long.length}];
+  const core={call:async(method,params)=>{
+    if(method==='godotProject.index')return {worldId:'alpha',revision:1,manifestHash:'b'.repeat(64),baseId:'first-person',
+      engineVersion:'4.7.2-stable',renderer:'gl_compatibility',target:'web',files,totalFiles:1,nextOffset:null,
+      status:'source-only',verified:false,applied:false};
+    if(method==='godotProject.read')return {worldId:'alpha',revision:1,manifestHash:'b'.repeat(64),path:'big.gd',
+      sha256:'a'.repeat(64),bytes:long.length,offset:0,text:long.slice(0,16000),totalCharacters:long.length,nextOffset:16000};
+    throw Object.assign(Error('UNKNOWN_METHOD'),{errorCode:'UNKNOWN_METHOD'});
+  }};
+  const query=createProjectQuery({core,context:{projectId:'p',sessionId:'s',turnId:'t'},worldId:'alpha'});
+  const result=await query.find({name:'x'});
+  assert.deepEqual(result.matches,[]);
+  assert.deepEqual(result.skipped,[{path:'big.gd',reason:'FILE_EXCEEDS_READ_CAP'}]);
+  assert.equal(result.complete,false);
+});

@@ -90,13 +90,29 @@ function capabilityState(method,handshake){
   return {known:true,reachable:flag===true,reason:flag===true?null:'CAPABILITY_DISABLED',owner:entry.owner,capability:entry.capability};
 }
 
+// Resolves a tool that does not map 1:1 to a single host method.
+function localState(local,handshake){
+  if(local.reachable!==undefined&&!local.needs)return {reachable:local.reachable,blockedBy:local.blockedBy||null};
+  const needs=local.needs||[];
+  let reachable=true,blockedBy=null;
+  for(const flag of needs){
+    const value=handshake?.[flag];
+    if(value===undefined){reachable=null;blockedBy='CAPABILITY_FLAG_UNKNOWN';break;}
+    if(value!==true){reachable=false;blockedBy='CAPABILITY_DISABLED';}
+  }
+  if(local.reachable===false)return {reachable:false,blockedBy:local.blockedBy||'DEPENDENCY_NOT_WIRED'};
+  return {reachable,blockedBy};
+}
+
 function buildInventory({manifest,routing={},handshake=null,localTools={}}={}){
   const definitions=(manifest?.contributes?.agentTools||[]).filter(tool=>tool.name!=='runtime_info');
   const tools=definitions.map(definition=>{
     const local=localTools[definition.name];
-    if(local)return {name:definition.name,risk:definition.risk||'unknown',hostMethod:local.hostMethod||null,advertised:true,
-      wired:true,reachable:local.reachable===undefined?null:local.reachable,blockedBy:local.blockedBy||null,
-      owner:local.owner||null,local:true};
+    if(local){
+      const state=localState(local,handshake);
+      return {name:definition.name,risk:definition.risk||'unknown',hostMethod:local.hostMethod||null,advertised:true,
+        wired:true,reachable:state.reachable,blockedBy:state.blockedBy,owner:local.owner||null,local:true};
+    }
     const method=routing[definition.name]||null;
     const state=method?capabilityState(method,handshake):{known:false};
     return {name:definition.name,risk:definition.risk||'unknown',hostMethod:method,advertised:true,
@@ -104,9 +120,13 @@ function buildInventory({manifest,routing={},handshake=null,localTools={}}={}){
       blockedBy:method&&state.reachable===false?state.reason:null,
       owner:method?(HOST_METHODS[method]?.owner||null):null};
   });
-  const unreachable=UNREACHABLE_METHODS.map(method=>({method,owner:HOST_METHODS[method]?.owner||null,
-    kind:HOST_METHODS[method]?.kind||null,reachable:capabilityState(method,handshake).reachable,
-    reason:capabilityState(method,handshake).reason||'NO_AGENT_TOOL_ROUTES_THIS_METHOD'}));
+  // These methods are genuinely not reachable from any agent tool today. The
+  // capability flag is reported separately so `reachable` cannot be misread.
+  const unreachable=UNREACHABLE_METHODS.map(method=>{
+    const state=capabilityState(method,handshake);
+    return {method,owner:HOST_METHODS[method]?.owner||null,kind:HOST_METHODS[method]?.kind||null,
+      reachable:false,capabilityEnabled:state.reachable,reason:'NO_AGENT_TOOL_ROUTES_THIS_METHOD'};
+  });
   return {format:INVENTORY_FORMAT,toolCount:tools.length,tools,
     handshake:handshake?{...handshake}:{available:false,reason:'CORE_HANDSHAKE_UNAVAILABLE'},
     unreachableMethods:unreachable,

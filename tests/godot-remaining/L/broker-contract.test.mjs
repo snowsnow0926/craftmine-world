@@ -52,7 +52,7 @@ const HANDSHAKE={format:'craftmine.core/1',godotProjects:true,godotExecution:fal
   publishesWorlds:true,agentPublishesWorlds:false};
 
 let sequence=0;
-function fixture({discussionOnly=false,sampler,historyMethods}={}){
+function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false}={}){
   const calls=[];
   const core={start:async()=>HANDSHAKE,call:async(method,params)=>{
     calls.push({method,params});
@@ -86,7 +86,7 @@ function fixture({discussionOnly=false,sampler,historyMethods}={}){
     throw Object.assign(Error('UNKNOWN_METHOD'),{errorCode:'UNKNOWN_METHOD'});
   }};
   const invocation={projectId:'project',sessionId:'session',turnId:'turn',executionId:'execution'};
-  const tools=createWorldTools(core,async()=>({activeWorldId:'alpha'}),()=>false,undefined,undefined,
+  const tools=createWorldTools(core,async()=>({activeWorldId:'alpha',...(settingsFlag?{discussionOnly:true}:{})}),()=>false,undefined,undefined,
     {isDiscussionOnly:()=>discussionOnly,sampleLiveState:sampler,
       budget:()=>({tokens:{limit:1000,used:1000},requests:{used:2},context:{limit:80000,used:900}}),historyMethods});
   const call=(name,args={},extra={})=>tools.find(tool=>tool.name===name).execute(args,
@@ -124,7 +124,12 @@ test('godot_capability_report advertises what is really reachable',async()=>{
   assert.equal(report.handshake.godotBuildJobs,true);
   assert.equal(report.handshake.godotExecution,false);
   assert.equal(report.tools.length,30,'all advertised world tools except runtime_info');
+  assert.equal(report.tools.filter(tool=>tool.wired===false).length,0);
+  assert.equal(report.tools.find(tool=>tool.name==='workspace_patch').reachable,true);
   assert.equal(report.tools.find(tool=>tool.name==='godot_build_start').reachable,true);
+  const unreachable=report.unreachableMethods.find(entry=>entry.method==='godotApplication.prepare');
+  assert.equal(unreachable.reachable,false);
+  assert.equal(unreachable.capabilityEnabled,true);
   assert.ok(report.unreachableMethods.some(entry=>entry.method==='godotApplication.prepare'));
   const classified=await f.call('godot_capability_report',{request:'add a minimap',
     evidence:[{kind:'ordinary-gdscript-sufficient',source:'Control + Camera2D'}]});
@@ -140,6 +145,17 @@ test('discussion-only turns may read but never write',async()=>{
   await assert.rejects(f.call('godot_project_patch',{revision:1,manifestHash:'a'.repeat(64),operations:[]}),
     /DISCUSSION_MODE_READ_ONLY/);
   assert.ok(!f.calls.some(entry=>entry.method==='godotProject.create'),'no write may reach the store');
+});
+
+test('a host settings flag blocks writes even when no options predicate is passed',async()=>{
+  const f=fixture({settingsFlag:true});
+  for(const [name,args] of [['godot_project_patch',{revision:1,manifestHash:'a'.repeat(64),operations:[]}],
+    ['godot_build_cancel',{jobId:'job-1'}],['verification_cancel',{id:'verify-1'}],
+    ['workspace_patch',{workspaceRevision:1,operations:[]}]]){
+    await assert.rejects(f.call(name,args),/DISCUSSION_MODE_READ_ONLY/,name);
+  }
+  await f.call('godot_project_query',{mode:'summary'});
+  assert.ok(!f.calls.some(entry=>/^(godotProject\.patch|godotBuild\.cancel|verification\.cancel|workspace\.commit)$/.test(entry.method)));
 });
 
 test('godot_project_query reads the real project shape through the broker',async()=>{
@@ -164,6 +180,11 @@ test('live observation refuses to substitute saved progress for current state',a
   assert.equal(state.live.reason,'LIVE_OBSERVATION_NOT_WIRED');
   assert.equal(state.durableProgress.source,'last-confirmed-save');
   assert.equal(state.durableProgress.savedAt,'2026-09-09T00:00:00Z');
+  // The saved snapshot body must never travel inside a live response.
+  assert.equal(state.descriptor.durableProgress,undefined);
+  assert.deepEqual(Object.keys(state.durableProgress).sort(),['savedAt','source']);
+  assert.ok(!JSON.stringify(state).includes('pistol'),'saved equipment must not appear in a live response');
+  assert.equal(state.docsCompatibility.compatible,true);
   const wired=fixture({sampler:async()=>({sampledAt:'2026-09-10T12:00:00Z',worldId:'alpha',buildId:'gbd-1',
     base:'first-person',equipment:{active:'rifle'},display:{cameraGlobal:[1,2,3]},targets:[],interactables:[]})});
   const live=await wired.call('godot_runtime_state',{scope:'live'});
@@ -173,6 +194,7 @@ test('live observation refuses to substitute saved progress for current state',a
   const build=await wired.call('godot_runtime_state',{scope:'build'});
   assert.equal(build.phase,'formal');
   assert.ok(!('live' in build));
+  assert.equal(build.durableProgress,undefined);
 });
 
 test('godot_project_facts rebuilds durable facts and preserves unknown limits',async()=>{

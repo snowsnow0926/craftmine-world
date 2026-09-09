@@ -132,6 +132,13 @@ test('limit accounting preserves unknown counters instead of reporting zero',()=
   assert.equal(partial.kinds.wallClock.known,false);
 });
 
+test('a live sample without its own identity is not trusted as current',()=>{
+  const live=normalizeLiveSample({sampledAt:'2026-09-10T10:00:00Z',equipment:{active:'sword'}},{worldId:'alpha',buildId:'gbd-1'});
+  assert.equal(live.available,true);
+  assert.equal(live.stale,true);
+  assert.deepEqual(live.mismatches,['LIVE_IDENTITY_UNVERIFIED']);
+});
+
 test('renderFactsBlock is stable and never expands live payloads',()=>{
   const facts={project:{available:false,reason:'GODOT_PROJECT_NOT_FOUND'},runtime:{available:false,reason:'NO_APPLIED_BUILD'},
     candidates:{available:false,reason:'CANDIDATE_READ_FAILED'},durableProgress:{available:false,reason:'NO_APPLIED_BUILD'},

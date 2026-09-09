@@ -143,7 +143,7 @@ function createHistoryService({core,context,workspace,methods={}}){
       engineVersion:engineVersion??null,limit}),
     assetRead:({ref}={})=>probe('assetRead',{ref:validateAssetRef(ref)}),
     assetInstallProposal:({ref,intent='instance-only',selection,target}={})=>propose('assetInstallProposal',
-      {ref:validateAssetRef(ref),change:validateChangeIntent({intent,selection:selection??[worldId],target})}),
+      {ref:validateAssetRef(ref),change:validateChangeIntent({intent,selection:selection??[],target})}),
     assetUpgradeProposal:({ref,selection,intent='upgrade-selected',target}={})=>propose('assetUpgradeProposal',
       {ref:validateAssetRef(ref),change:validateChangeIntent({intent,selection,target})})
   };
