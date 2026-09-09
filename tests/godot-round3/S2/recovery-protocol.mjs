@@ -278,7 +278,53 @@ test('a broker success that did not retire its journal entry still triggers reco
     throw Error(error.message + ' entry=' + JSON.stringify(executor.ledger.jobs['gjob-' + 'd'.repeat(64)])
       + ' core=' + JSON.stringify(core.state) + ' status=' + JSON.stringify(executor.status().reason));
   }
+  // A valid build is not failed for a leftover journal entry, but the host must
+  // say so: the attempt records the missing retirement and a recovery pass runs.
+  assert.equal(core.state.output?.passed, true);
   assert.ok(triggers(executor).includes('broker-exit'));
+  const attempts = executor.ledger.jobs['gjob-' + 'd'.repeat(64)].attempts;
+  assert.deepEqual(attempts.map(attempt => attempt.outcome), ['succeeded', 'succeeded']);
+  assert.deepEqual(attempts.map(attempt => attempt.journalRetired), [false, false]);
+  await executor.stop();
+});
+
+test('a failing recovery pass cannot change a job result', async () => {
+  const env = environment();
+  setScenario(env, {delayMs:1500});
+  const recovery = async () => { throw Error('recovery runner exploded'); };
+  const core = fakeCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot});
+  const executor = makeExecutor({env, core, runRecovery:recovery});
+  await executor.start();
+  const jobId = 'gjob-' + '2'.repeat(64);
+  executor.enqueue({jobId, worldId:'world-s2', mode:'check'});
+  await waitFor(() => core.state.status === 'running', 20000, 'claim');
+  await executor.cancel(jobId, 'test cancel');
+  await waitFor(() => !executor.status().jobs.includes(jobId), 20000, 'cancel settle');
+  const status = executor.status();
+  assert.equal(status.state, 'registered');
+  assert.ok((status.recoveries ?? []).every(entry => entry.ok === false), 'a failed pass must be reported as not ok');
+  assert.equal(executor.ledger.jobs[jobId].outcome, 'cancelled');
+  await executor.stop();
+});
+
+test('a damaged ledger entry cannot stop the executor from starting', async () => {
+  const env = environment();
+  const jobId = 'gjob-' + '3'.repeat(64);
+  fs.mkdirSync(path.join(env.dataPath, 'godot'), {recursive:true});
+  fs.writeFileSync(path.join(env.dataPath, 'godot', 'executor-ledger.json'), JSON.stringify({
+    format:'craftmine.godot-executor-ledger/1', updatedAt:null,
+    // No `attempts` array and an unknown state, as an older version could write.
+    jobs:{[jobId]:{jobId, worldId:'world-s2', mode:'check', state:'running'}},
+  }));
+  const recovery = recoveryRunner({entries:[]});
+  const core = fakeCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot});
+  const executor = makeExecutor({env, core, runRecovery:recovery});
+  const status = await executor.start();
+  assert.equal(status.available, true);
+  assert.deepEqual(executor.ledger.jobs[jobId].attempts, []);
+  // Nothing was ever started for this entry, so re-enqueueing it is safe.
+  assert.equal(executor.ledger.jobs[jobId].state, 'enqueued');
+  assert.ok(status.restartReconciliation.requeued.includes(jobId));
   await executor.stop();
 });
 

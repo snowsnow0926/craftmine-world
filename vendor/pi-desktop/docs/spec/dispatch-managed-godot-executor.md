@@ -166,6 +166,13 @@ response: every entry carries `finalReceiptObserved:false` and the pass never
 asserts `cleanup.verified`. The executor surfaces a report that claims a final
 receipt as a contradiction (`finalReceiptClaimed`) rather than trusting it.
 
+Journal retirement is host bookkeeping, not build correctness: a run that
+reported `succeeded` with `cleanup.verified` is recorded as a succeeded attempt
+even when `recoveryJournal.cleared` is false. The leftover entry is still
+recovered, and the attempt records `journalRetired:false`, so the two facts are
+never conflated. `status().ledger.error` reports a ledger that could not be
+written or read.
+
 `status().recoveries` keeps the last eight passes with their `reclaimed`,
 `skipped` (with the broker's own reason strings such as `broker-still-running`,
 `pid-reused`) and `unreadable` entries.

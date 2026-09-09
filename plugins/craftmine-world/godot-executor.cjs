@@ -205,8 +205,12 @@ function summarizeRecovery(report, meta = {}) {
     parseError:meta.parseError ?? null,
     timedOut:meta.timedOut === true,
     stderr:typeof meta.stderr === 'string' ? meta.stderr.slice(0, 400) : null,
-    reconciledCount:report?.reconciledCount ?? reclaimed.length,
-    skippedCount:report?.skippedCount ?? skipped.length,
+    reconciledCount:reclaimed.length,
+    skippedCount:skipped.length,
+    // The broker's own counts are kept for comparison; a mismatch means a report
+    // and its entries disagree, which is surfaced rather than hidden.
+    reportedReconciledCount:typeof report?.reconciledCount === 'number' ? report.reconciledCount : null,
+    reportedSkippedCount:typeof report?.skippedCount === 'number' ? report.skippedCount : null,
     reclaimed, skipped, unreadable,
     // A report that claims a final receipt would contradict the protocol;
     // surface it instead of silently trusting it.
@@ -461,7 +465,11 @@ function createGodotExecutor(core, options = {}) {
         policyVersion:RECOVERY_POLICY_VERSION, tasksRoot:tasksRoot ?? null, journalRoot:null,
         reconciledCount:0, skippedCount:0, reclaimed:[], skipped:[], unreadable:[], finalReceiptClaimed:false};
     }
-    const summary = await runRecoveryPass({broker:discovery.broker, tasksRoot, run:runRecovery, trigger});
+    const summary = await runRecoveryPass({broker:discovery.broker, tasksRoot, run:runRecovery, trigger}).catch(error => ({
+      format:'craftmine.godot-recovery-summary/1', trigger, ok:false, reason:'GODOT_RECOVERY_FAILED',
+      error:String(error?.message ?? error), policyVersion:RECOVERY_POLICY_VERSION, tasksRoot, journalRoot:null,
+      reconciledCount:0, skippedCount:0, reclaimed:[], skipped:[], unreadable:[], finalReceiptClaimed:false,
+    }));
     discovery.recoveries = [...(discovery.recoveries ?? []), summary].slice(-8);
     if (summary.reclaimed.length) warn('recovered tasks without a final receipt:', trigger, summary.reclaimed.map(entry => entry.taskId).join(','));
     if (summary.skipped.length || summary.unreadable.length) {
@@ -495,21 +503,29 @@ function createGodotExecutor(core, options = {}) {
       if (Buffer.byteLength(stdout) > BROKER_RESPONSE_BYTES) { oversized = true; cancel('response too large'); }
     });
     child.stderr.on('data', chunk => { stderr = bounded(stderr + chunk, 8192); });
-    child.on('error', error => finish({ok:false, reason:'GODOT_BROKER_SPAWN_FAILED', error:error.message, requestId:request.requestId, stdout, stderr}));
+    child.on('error', error => {
+      // A failed kill or transport error can leave a live broker holding a task
+      // root, so this path recovers like any other non-clean ending.
+      const failed = recovery => finish({ok:false, reason:'GODOT_BROKER_SPAWN_FAILED', error:error.message,
+        requestId:request.requestId, stdout, stderr, journalRetired:false, recovery});
+      recoverTasks('broker-error').then(failed, () => failed(null));
+    });
     child.on('exit', (code, signal) => {
       let response = null, parseError = null;
       const line = stdout.trim();
       if (line) { try { response = JSON.parse(line); } catch (error) { parseError = error.message; } }
-      // Only a run that reported success *and* proved both cleanup and journal
-      // retirement needs no recovery pass.
+      // A run is clean when it reported success and proved its own cleanup. A
+      // journal entry that was not retired is still recovered below, but it does
+      // not turn a valid build into a failure.
       const cleanSuccess = response?.state === 'succeeded' && !cancelled && !timedOut
-        && response?.cleanup?.verified === true && response?.recoveryJournal?.cleared === true;
+        && response?.cleanup?.verified === true;
+      const journalRetired = response?.recoveryJournal?.cleared === true;
       const settle = recovery => finish({ok:true, requestId:request.requestId, exitCode:code, signal, response, parseError,
-        stdout:bounded(stdout, 8192), stderr, cancelled, timedOut, oversized, recovery});
+        stdout:bounded(stdout, 8192), stderr, cancelled, timedOut, oversized, journalRetired, recovery});
       // Any other ending may have left a task root, an AppContainer profile or a
       // surviving child. The host-owned recovery pass re-proves the recorded
       // identity before it reclaims anything; it is the only cleanup path.
-      if (cleanSuccess) settle(null);
+      if (cleanSuccess && journalRetired) settle(null);
       else recoverTasks('broker-exit').then(settle, error => { warn('recovery pass failed:', String(error?.message ?? error)); settle(null); });
     });
     const timer = setTimeout(() => { timedOut = true; cancel('timeout'); }, Math.max(1000, request.timeoutMs ?? JOB_TIMEOUT_MS));
@@ -520,7 +536,13 @@ function createGodotExecutor(core, options = {}) {
       try { child.stdin.write('{"cancel":true}\n'); } catch {}
       const grace = setTimeout(() => { try { child.kill('SIGKILL'); } catch {} }, CANCEL_GRACE_MS);
       grace.unref?.();
-      child.once('exit', () => clearTimeout(grace));
+      // A broker that ignores the cancel frame and survives SIGKILL must not
+      // leave the job hanging forever; the recovery pass decides cleanup.
+      const hard = setTimeout(() => finish({ok:false, reason:'GODOT_BROKER_UNRESPONSIVE',
+        requestId:request.requestId, stdout:bounded(stdout, 8192), stderr, cancelled, timedOut, oversized,
+        journalRetired:false, recovery:null}), CANCEL_GRACE_MS + 5000);
+      hard.unref?.();
+      child.once('exit', () => { clearTimeout(grace); clearTimeout(hard); });
       request.onCancel?.(reason);
     }
 
@@ -836,13 +858,16 @@ function createGodotExecutor(core, options = {}) {
     try {
       const record = await core.call('godotJob.finish', {jobId, token, output}, 30000);
       log('job finished', jobId, record?.status, result.reason ? 'reason=' + result.reason : '');
+      const status = record?.status ?? 'unknown';
       const durable = ledgerEntry(jobId);
-      durable.state = record?.status === 'failed' ? 'failed' : 'finished';
-      durable.outcome = record?.status ?? 'unknown';
+      // Only a core-confirmed pass is terminal-success; anything else stays
+      // retryable so a lost or refused finish cannot look like a completion.
+      durable.state = status === 'passed' ? 'finished' : (status === 'failed' || status === 'cancelled') ? status : 'unconfirmed';
+      durable.outcome = status;
       durable.finishedAt = nowIso();
       durable.reason = result.reason ?? null;
       persistLedger();
-      return {status:record?.status ?? 'unknown', candidateId:record?.candidateId ?? null, reason:result.reason ?? null};
+      return {status, candidateId:record?.candidateId ?? null, reason:result.reason ?? null};
     } catch (error) {
       warn('finish refused:', jobId, String(error?.message ?? error), result.reason ?? '');
       const durable = ledgerEntry(jobId);
@@ -857,17 +882,21 @@ function createGodotExecutor(core, options = {}) {
 
   async function abandon(entry, reason) {
     warn('job abandoned:', entry.jobId, reason);
-    try { await core.call('godotBuild.cancel', {worldId:entry.worldId, jobId:entry.jobId}, 20000); } catch {}
+    let cancelError = null;
+    try { await core.call('godotBuild.cancel', {worldId:entry.worldId, jobId:entry.jobId}, 20000); }
+    catch (error) { cancelError = String(error?.message ?? error); }
     const durable = ledgerEntry(entry.jobId);
-    durable.state = 'cancelled';
-    durable.outcome = 'cancelled';
+    // An unconfirmed core cancel leaves the job retryable instead of claiming a
+    // clean cancellation the core never accepted.
+    durable.state = cancelError ? 'cancelling' : 'cancelled';
+    durable.outcome = cancelError ? 'cancel-unconfirmed' : 'cancelled';
     durable.finishedAt = nowIso();
-    durable.reason = reason;
+    durable.reason = cancelError ? reason + '; core cancel unconfirmed: ' + cancelError : reason;
     persistLedger();
     // A cancelled broker run has already been followed by a recovery pass in
     // runBroker; this covers a cancel that never reached the broker.
     await recoverTasks('cancel');
-    return {status:'cancelled', candidateId:null, reason};
+    return {status:'cancelled', candidateId:null, reason, coreCancelConfirmed:!cancelError};
   }
 
   function enqueue(job, context = {}) {
@@ -887,7 +916,14 @@ function createGodotExecutor(core, options = {}) {
     persistLedger();
     entry.promise = new Promise(resolve => setImmediate(resolve))
       .then(() => waitForQueued(entry))
-      .then(queued => queued ? runJob(entry) : (jobs.delete(jobId), settleWithoutRun(entry, 'blocked', 'GODOT_EXECUTION_UNAVAILABLE')))
+      .then(queued => {
+        if (queued) return runJob(entry);
+        jobs.delete(jobId);
+        // A cancel that arrived while the job was still blocked must reach the
+        // core, not be recorded as an unavailable execution.
+        return entry.cancelled ? abandon(entry, 'GODOT_JOB_CANCELLED')
+          : settleWithoutRun(entry, 'blocked', 'GODOT_EXECUTION_UNAVAILABLE');
+      })
       .catch(error => { jobs.delete(jobId); settleWithoutRun(entry, 'failed', error.message);
         warn('job worker failed:', jobId, error.message); return {status:'failed', candidateId:null, reason:error.message}; });
     return {enqueued:true, jobId};
@@ -972,16 +1008,38 @@ function createGodotExecutor(core, options = {}) {
   // observation wait timed out.
   let ledger = {format:LEDGER_FORMAT, executorId:EXECUTOR_ID, updatedAt:null, jobs:{}};
   let ledgerWrite = Promise.resolve();
+  let ledgerError = null;
 
   const ledgerFile = () => dataPath ? path.join(dataPath, 'godot', 'executor-ledger.json') : null;
 
   async function loadLedger() {
     const file = ledgerFile();
     if (!file) return;
+    // Never read while a write is still in flight, or the older on-disk content
+    // would replace newer in-memory state and be written back over it.
+    await ledgerWrite;
     try {
       const value = JSON.parse(await fsp.readFile(file, 'utf8'));
-      if (value?.format === LEDGER_FORMAT && value.jobs && typeof value.jobs === 'object') ledger = value;
-    } catch { /* a missing or unreadable ledger is rebuilt from live state */ }
+      if (value?.format !== LEDGER_FORMAT || !value.jobs || typeof value.jobs !== 'object') return;
+      // A ledger written by another version (or a partially damaged one) must not
+      // break start(): normalize every entry to the shape this build uses.
+      const jobs = {};
+      for (const [jobId, entry] of Object.entries(value.jobs)) {
+        if (!entry || typeof entry !== 'object') continue;
+        jobs[jobId] = {jobId, worldId:entry.worldId ?? null, mode:entry.mode ?? null,
+          state:typeof entry.state === 'string' ? entry.state : 'enqueued',
+          attempts:Array.isArray(entry.attempts) ? entry.attempts.filter(attempt => attempt && typeof attempt === 'object') : [],
+          startedAt:entry.startedAt ?? null, finishedAt:entry.finishedAt ?? null,
+          outcome:entry.outcome ?? null, reason:entry.reason ?? null};
+      }
+      ledger = {format:LEDGER_FORMAT, executorId:EXECUTOR_ID, updatedAt:value.updatedAt ?? null, jobs};
+    } catch (error) {
+      // A missing ledger is normal; an unreadable one is reported, never hidden.
+      if (error?.code !== 'ENOENT') {
+        ledgerError = 'GODOT_LEDGER_UNREADABLE:' + String(error?.message ?? error);
+        warn('ledger unreadable:', ledgerError);
+      }
+    }
   }
 
   function persistLedger() {
@@ -990,11 +1048,17 @@ function createGodotExecutor(core, options = {}) {
     ledger.updatedAt = nowIso();
     const text = JSON.stringify(ledger, null, 2);
     ledgerWrite = ledgerWrite.then(async () => {
-      const temporary = file + '.tmp';
+      // A unique temporary name keeps two writers (or a retried write) from
+      // truncating each other's file before the rename.
+      const temporary = file + '.' + randomUUID().replace(/-/g, '').slice(0, 12) + '.tmp';
       await fsp.mkdir(path.dirname(file), {recursive:true});
       await fsp.writeFile(temporary, text, 'utf8');
       await fsp.rename(temporary, file);
-    }).catch(error => warn('ledger write failed:', String(error?.message ?? error)));
+      ledgerError = null;
+    }).catch(error => {
+      ledgerError = 'GODOT_LEDGER_WRITE_FAILED:' + String(error?.message ?? error);
+      warn('ledger write failed:', ledgerError);
+    });
     return ledgerWrite;
   }
 
@@ -1029,12 +1093,13 @@ function createGodotExecutor(core, options = {}) {
         maxObservedWorkBytes:observed.maxObservedWorkBytes ?? null, maxObservedLogBytes:observed.maxObservedLogBytes ?? null,
         samples:observed.samples ?? null, reason:observed.reason ?? null, at:nowIso()};
     }
-    const cleanSuccess = run.response?.state === 'succeeded' && run.response?.cleanup?.verified === true
-      && run.response?.recoveryJournal?.cleared === true;
+    const cleanSuccess = run.response?.state === 'succeeded' && run.response?.cleanup?.verified === true;
     recordAttempt(entry.jobId, {
       requestId:request.requestId, finishedAt:nowIso(),
       transport:run.response?.state ?? null,
-      // "succeeded" is reserved for a run that retired its own journal entry.
+      journalRetired:run.response?.recoveryJournal?.cleared === true,
+      // "succeeded" is reserved for a run that reported success and proved its
+      // own cleanup; journal retirement is recorded separately.
       outcome:cleanSuccess ? 'succeeded'
         : attemptReclaimed(run.recovery, request.requestId) ? 'reclaimed-without-final-receipt'
         : 'no-final-receipt:' + (run.parseError ?? run.response?.state ?? run.reason ?? 'transport'),
@@ -1071,16 +1136,19 @@ function createGodotExecutor(core, options = {}) {
         entry.finishedAt = nowIso();
         entry.reason = 'GODOT_RESTART_TERMINAL:' + jobState;
         result.terminal.push({jobId:entry.jobId, status:jobState});
-      } else if (jobState === 'queued' && !unverified) {
-        entry.state = 'enqueued';
-        entry.reason = 'GODOT_RESTART_REQUEUED';
-        result.requeued.push(entry.jobId);
-        enqueue({jobId:entry.jobId, worldId:entry.worldId, mode:entry.mode});
-      } else if (jobState === 'blocked' && entry.attempts.length === 0) {
-        entry.state = 'enqueued';
-        entry.reason = 'GODOT_RESTART_BLOCKED';
-        result.requeued.push(entry.jobId);
-        enqueue({jobId:entry.jobId, worldId:entry.worldId, mode:entry.mode});
+      } else if ((jobState === 'queued' && !unverified) || (jobState === 'blocked' && entry.attempts.length === 0)) {
+        const started = enqueue({jobId:entry.jobId, worldId:entry.worldId, mode:entry.mode});
+        if (started?.enqueued === true) {
+          entry.state = 'enqueued';
+          entry.reason = 'GODOT_RESTART_REQUEUED';
+          result.requeued.push(entry.jobId);
+        } else {
+          // Busy or unavailable: leave the entry non-terminal so a later
+          // reconcile can pick it up, and report why it did not start.
+          entry.state = 'interrupted';
+          entry.reason = 'GODOT_RESTART_NOT_ENQUEUED:' + (started?.reason ?? 'UNKNOWN');
+          result.interrupted.push({jobId:entry.jobId, status:jobState, reason:started?.reason ?? null});
+        }
       } else if (unverified) {
         // No final receipt and no re-proved identity: never restart it.
         entry.state = 'interrupted';
@@ -1170,6 +1238,8 @@ function createGodotExecutor(core, options = {}) {
     // a task that never reported a final receipt. Reclaim it with re-proved
     // identity; never delete by name or bare pid.
     discovery.stopRecovery = await recoverTasks('stop');
+    // Do not report a clean stop while a ledger write is still in flight.
+    await ledgerWrite;
     let revoked = false;
     let revokeReason = null;
     if (registered) {
@@ -1230,7 +1300,7 @@ function createGodotExecutor(core, options = {}) {
       jobs:[...jobs.keys()],
       ledger:{jobs:Object.keys(ledger.jobs).length,
         active:Object.values(ledger.jobs).filter(entry => !['finished', 'failed', 'cancelled'].includes(entry.state)).length,
-        updatedAt:ledger.updatedAt},
+        updatedAt:ledger.updatedAt, error:ledgerError},
       tasksRoot,
       registered,
       revokedOnStop:null,
