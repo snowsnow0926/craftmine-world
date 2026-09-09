@@ -15,7 +15,7 @@ use anyhow::Result;
 use serde_json::{json, Value};
 
 use super::RESTORE_STAGING_PREFIX;
-use crate::{digest, godot_test_support::*, TaskJournal};
+use crate::{digest, godot_test_support::*, TaskJournal, WorkspaceContext};
 
 /// Boundary names understood by the restore implementation.
 const BEFORE_COMMIT: &[&str] = &["after-claim", "after-stage", "after-content", "after-git"];
@@ -187,6 +187,49 @@ fn a_kill_after_the_commit_is_promoted_from_the_precommit_receipt() -> Result<()
     assert_eq!(again["currentHash"], receipt["currentHash"]);
     let status = journal.backup_status(&json!({"id": "restore-durability"}))?;
     assert_eq!(status["currentHash"], receipt["currentHash"]);
+    Ok(())
+}
+
+#[test]
+fn a_restored_installation_keeps_authoring_new_revisions() -> Result<()> {
+    let source_root = tempfile::tempdir()?;
+    let (_source, archive) = build_source(source_root.path())?;
+    let root = tempfile::tempdir()?;
+    let install = root.path().join("install");
+    let mut journal = TaskJournal::open(&install.join("tasks.sqlite"))?;
+    let restored = journal.backup_restore_portable(&restore_args(&archive, &install))?;
+    assert_eq!(restored["status"], "completed");
+
+    // The restored world loads and its project reads.
+    assert_eq!(journal.world_read("a")?.world.snapshot, world().snapshot);
+    assert_eq!(project_text(&journal)?, PROJECT);
+
+    // Continue creating in the restored installation: a new project and a new
+    // revision on the world that did not carry one before the restore.
+    let authoring = WorkspaceContext {
+        project_id: "project-a".into(),
+        session_id: "session-b".into(),
+        turn_id: "one".into(),
+    };
+    assert_eq!(journal.workspace_open(&authoring, "b")?.world_id, "b");
+    let created = journal.godot_project_create(&json!({
+        "context": &authoring, "worldId": "b", "toolCallId": "create-b",
+        "baseBuild": "base-a", "baseId": "first-person", "files": project_files()
+    }))?;
+    let patched = journal.godot_project_patch(&json!({
+        "context": &authoring, "worldId": "b", "toolCallId": "patch-b",
+        "revision": created["revision"], "manifestHash": created["manifestHash"],
+        "operations": [{
+            "op": "put", "path": "world.gd", "expectedHash": digest(SCRIPT),
+            "text": "extends Node3D\nvar damage := 99\n"
+        }]
+    }))?;
+    assert_eq!(patched["revision"], 1);
+    let read = journal.godot_project_read(&json!({
+        "worldId": "b", "context": &authoring, "revision": patched["revision"],
+        "manifestHash": patched["manifestHash"], "path": "world.gd"
+    }))?;
+    assert_eq!(read["text"], "extends Node3D\nvar damage := 99\n");
     Ok(())
 }
 
