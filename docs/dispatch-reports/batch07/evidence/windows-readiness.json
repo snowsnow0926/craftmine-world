@@ -1,0 +1,29 @@
+{
+    "format":  "craftmine.windows-readiness/1",
+    "checkedAt":  "2026-09-09T08:12:11.3734614Z",
+    "windowsVersion":  "10.0.19045.0",
+    "architecture":  "X64",
+    "windowsSandboxExecutablePresent":  false,
+    "hyperVServicePresent":  false,
+    "virtualMachinePlatformServicePresent":  false,
+    "currentUserCodeSigning":  {
+                                   "checked":  true,
+                                   "available":  0
+                               },
+    "localMachineCodeSigning":  {
+                                    "checked":  true,
+                                    "available":  0
+                                },
+    "signingCredentialConfigured":  false,
+    "userReportsNoIsolatedMachine":  true,
+    "cleanWindowsVerified":  false,
+    "installationExecuted":  false,
+    "changesMade":  [
+
+                    ],
+    "limits":  [
+                   "Read-only inventory does not prove a VM can boot.",
+                   "Certificate inventory does not validate an external signing service.",
+                   "No OS feature, certificate, account or installation was changed."
+               ]
+}
