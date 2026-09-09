@@ -22,7 +22,7 @@ export type CraftmineTaskContext = {
   library?: Array<{ id: string; version: number; hash: string; name?: string }>;
 };
 export type CraftmineUsage = { inputTokens: number; outputTokens: number; totalTokens: number };
-export type CraftmineEstimate = { system: number; messages: number; tools: number; attachments: number; output: number; toolResults: number; input: number; total: number; method: string };
+export type CraftmineEstimate = { system: number; messages: number; tools: number; attachments: number; framing: number; output: number; toolResults: number; input: number; total: number; method: string };
 export type CraftmineBeforeInput = { requestId: string; purpose: CraftminePurpose; model: Model<Api>; context: Context; maxOutputTokens: number; signal?: AbortSignal };
 export type CraftmineReservation = { binding: CraftmineBinding; generation: number; requestId: string; context: Context; estimate: CraftmineEstimate; maxOutputTokens: number };
 export type CraftmineBoundary = { kind: "compaction" | "tool" | "stop" | "resume" | "model-change" | "world-change"; eventId: string };
@@ -52,9 +52,13 @@ export function estimateCraftmineRequest(context: Context, output: number, toolR
       return { type: "image", mimeType: block.mimeType };
     }) };
   });
-  const parts = { system: tokens(context.systemPrompt ?? ""), messages: tokens(messages), tools: tokens(context.tools ?? []), attachments, output, toolResults };
-  const input = parts.system + parts.messages + parts.tools + parts.attachments + 128;
-  return { ...parts, input, total: input + output + toolResults, method: "utf8-half-plus-framing/1" };
+  // System text becomes a JSON string on the wire, just like message content.
+  // Quotes, slashes and newlines in schema/review prompts must be reserved too.
+  // The separate framing allowance covers provider/model/stream/reasoning keys;
+  // the final onPayload check still refuses larger unreserved transformations.
+  const parts = { system: tokens(JSON.stringify(context.systemPrompt ?? "")), messages: tokens(messages), tools: tokens(context.tools ?? []), attachments, framing: 1024, output, toolResults };
+  const input = parts.system + parts.messages + parts.tools + parts.attachments + parts.framing;
+  return { ...parts, input, total: input + output + toolResults, method: "utf8-half-json-escaped-framing/2" };
 }
 
 export function craftmineContextBlocks(snapshot: CraftmineTaskContext, purpose: CraftminePurpose = "creation"): string {

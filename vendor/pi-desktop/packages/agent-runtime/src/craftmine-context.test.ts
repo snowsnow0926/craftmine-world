@@ -58,6 +58,21 @@ describe("Craftmine authoritative request boundary", () => {
     }).result();
     expect(answer.stopReason).toBe("error"); expect(answer.errorMessage).toContain("FINAL_PAYLOAD_BUDGET");
   });
+  it("reserves JSON escaping and provider framing for a real review-shaped wire payload", async () => {
+    const f = fixture();
+    const context = { ...request, systemPrompt: 'Schema: "value"\n'.repeat(2500) };
+    const answer = await craftmineGuardedStream(model, context, {}, f.hooks, "review", (prepared, options) => {
+      const output = createAssistantMessageEventStream();
+      const payload = JSON.parse(JSON.stringify({ model: model.id, stream: true, max_completion_tokens: 4000,
+        stream_options: { include_usage: true }, messages: [{ role: "system", content: prepared.systemPrompt }, { role: "user", content: "花草" }] }));
+      void Promise.resolve(options.onPayload?.(payload, model)).then(() => output.end(result())).catch(error => {
+        const failed = { ...result(), stopReason: "error" as const, errorMessage: error.message }; output.push({ type: "error", reason: "error", error: failed }); output.end(failed);
+      });
+      return output;
+    }).result();
+    expect(answer.stopReason).toBe("stop");
+    expect(f.calls.filter(call => call.method === "budget.reserve")).toHaveLength(1);
+  });
   it("does not release terminal tool calls after ledger settlement fails", async () => {
     const f = fixture(); f.hooks.afterRequest = async () => { throw Error("LEDGER_UNAVAILABLE"); };
     const answer = await craftmineGuardedStream(model, request, {}, f.hooks, "creation", () => stream({ ...result(), stopReason: "toolUse", content: [{ type: "toolCall", id: "danger", name: "workspace_patch", arguments: {} }] })).result();

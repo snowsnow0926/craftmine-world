@@ -9032,9 +9032,19 @@ installHeadlessControl({
             craftmineView.showChecks(); await craftmineView.preview(${JSON.stringify(id)});
             return {loaded:document.body.dataset.previewLoaded==='true',playerPreserved:JSON.stringify(before)===JSON.stringify((await craftmineView.snapshot()).snapshot.player)};
           })()`, false);
-          const capture = await contents.capturePage();
-          result.pixels = checkCraftmineFrame(capture);
-          result.image = capture.toPNG().toString("base64");
+          const paintDeadline = Date.now() + 2500;
+          for (let attempt = 1; ; attempt++) {
+            contents.invalidate();
+            const capture = await contents.capturePage();
+            try {
+              result.pixels = { ...checkCraftmineFrame(capture), attempts: attempt };
+              result.image = capture.toPNG().toString("base64");
+              break;
+            } catch (error) {
+              if (!(error instanceof Error) || error.message !== "BLANK_GAME_FRAME" || Date.now() >= paintDeadline) throw error;
+              await new Promise(resolve => setTimeout(resolve, 50));
+            }
+          }
           result.reviewImage = reviewImage;
           result.guards = await Promise.all(contents.mainFrame.framesInSubtree.map(frame => frame.executeJavaScript("globalThis.__craftmineHeadless||null", false)));
           await contents.executeJavaScript("craftmineView.closePreview()", false);

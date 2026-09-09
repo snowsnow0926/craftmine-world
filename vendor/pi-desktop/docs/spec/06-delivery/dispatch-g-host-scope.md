@@ -17,6 +17,14 @@ observe the original binding; stop/replace a turn during context retrieval and
 reject its late response. Logic coverage lives in `tests/dispatch/g/gateway.test.mjs`.
 Actual native integration evidence must separately identify its source version.
 
+Native integration exposed two readiness/accounting defects. A plugin preview's
+loaded signal precedes compositor paint; the bounded 2.5-second capture retry
+retains the nonblank-pixel requirement and never shows or focuses a window.
+Request estimates now account for JSON escaping in system text and a separate
+1,024-token provider framing allowance. The final serialized payload must still
+fit both its reserved input and model window. Review/summary instructions retain
+their own purpose while receiving the same authoritative task facts.
+
 The built-in plugin accepts a private parent lifecycle request, separate from
 panel invocation. It reads Rust task context and validates full binding and
 generation claims for each budget reservation. The host initializes a 30-minute
