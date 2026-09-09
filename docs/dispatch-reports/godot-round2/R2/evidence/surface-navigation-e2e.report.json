@@ -1,6 +1,6 @@
 {
   "kind": "real-gateway-and-retained-view-surface-navigation",
-  "sourceCommit": "36603abb4a60532ad8ed2a9d6b496af32e6d6237",
+  "sourceCommit": "6b08407d97c37b66f6fd367c4ebed40bce12814b",
   "checks": [
     {
       "name": "作品入口打开真实工作台标签",
@@ -74,6 +74,6 @@
     "Panel surfaces only; no candidate build, no model call, no visible-window composition."
   ],
   "engine": {
-    "coreSha256": "665d61c01aff5012048f69c86917ba1ba30fe35c176b66a9f1bf9ec150dc9398"
+    "coreSha256": "d7c1e1b78eec252bff88bbb481d6a258dc2a73344055690f9386b9d986ef2bdc"
   }
 }
