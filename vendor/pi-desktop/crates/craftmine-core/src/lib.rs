@@ -10,6 +10,7 @@ use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 
 mod applications;
+mod asset_catalog;
 mod backups;
 mod content;
 mod content_history;
@@ -168,6 +169,7 @@ impl TaskJournal {
         applications::migrate(&db)?;
         durable::migrate(&db)?;
         library::migrate(&db)?;
+        asset_catalog::migrate(&db)?;
         memories::migrate(&db)?;
         backups::migrate(&db)?;
         godot_projects::migrate(&db)?;

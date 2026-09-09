@@ -1,0 +1,499 @@
+{
+  "format": "craftmine.assets-lock-vectors/1",
+  "frozen": {
+    "lockFormat": "craftmine.assets-lock/1",
+    "contentFormat": "craftmine.asset-content/1",
+    "hash": "sha256 over canonical UTF-8 JSON bytes, compact separators, struct field order, no trailing newline",
+    "pathRule": "relative, forward slashes, <=240 bytes, <=16 segments, no dot segments, no reserved Windows names, no control characters"
+  },
+  "canonical": [
+    {
+      "name": "sorted-and-deduped",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "auto-door",
+              "version": 1,
+              "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "kind": "object",
+            "installPath": "objects/auto-door.tscn",
+            "dependencies": [
+              {
+                "assetId": "door-texture",
+                "version": 1,
+                "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "assetId": "door-texture",
+                "version": 1,
+                "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "overrides": [
+              "overrides/b.tscn",
+              "overrides/a.tscn"
+            ]
+          },
+          {
+            "asset": {
+              "assetId": "door-texture",
+              "version": 1,
+              "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "kind": "raw",
+            "installPath": "textures/door.png",
+            "dependencies": [],
+            "overrides": []
+          },
+          {
+            "asset": {
+              "assetId": "auto-door",
+              "version": 1,
+              "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "kind": "object",
+            "installPath": "objects/auto-door.tscn",
+            "dependencies": [
+              {
+                "assetId": "door-texture",
+                "version": 1,
+                "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "assetId": "door-texture",
+                "version": 1,
+                "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "overrides": [
+              "overrides/b.tscn",
+              "overrides/a.tscn"
+            ]
+          }
+        ]
+      },
+      "canonical": "{\"format\":\"craftmine.assets-lock/1\",\"assets\":[{\"asset\":{\"assetId\":\"auto-door\",\"version\":1,\"contentHash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"},\"kind\":\"object\",\"installPath\":\"objects/auto-door.tscn\",\"dependencies\":[{\"assetId\":\"door-texture\",\"version\":1,\"contentHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"overrides\":[\"overrides/a.tscn\",\"overrides/b.tscn\"]},{\"asset\":{\"assetId\":\"door-texture\",\"version\":1,\"contentHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"kind\":\"raw\",\"installPath\":\"textures/door.png\",\"dependencies\":[],\"overrides\":[]}]}",
+      "sha256": "5c89016cfd0133083c36d8469a98025e0e234ccabe5689ee2c33458e6639fb2d"
+    },
+    {
+      "name": "single-asset",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door-texture",
+              "version": 1,
+              "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "kind": "raw",
+            "installPath": "textures/door.png",
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      },
+      "canonical": "{\"format\":\"craftmine.assets-lock/1\",\"assets\":[{\"asset\":{\"assetId\":\"door-texture\",\"version\":1,\"contentHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"kind\":\"raw\",\"installPath\":\"textures/door.png\",\"dependencies\":[],\"overrides\":[]}]}",
+      "sha256": "4432f6875b31b8bdd8a6ddec26fbb49c296201024631fa85f986f983b274d0ee"
+    },
+    {
+      "name": "multi-version",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "auto-door",
+              "version": 2,
+              "contentHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            },
+            "kind": "object",
+            "installPath": "objects/auto-door-v2.tscn",
+            "dependencies": [
+              {
+                "assetId": "door-texture",
+                "version": 1,
+                "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "overrides": []
+          },
+          {
+            "asset": {
+              "assetId": "auto-door",
+              "version": 1,
+              "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "kind": "object",
+            "installPath": "objects/auto-door.tscn",
+            "dependencies": [
+              {
+                "assetId": "door-texture",
+                "version": 1,
+                "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "overrides": []
+          }
+        ]
+      },
+      "canonical": "{\"format\":\"craftmine.assets-lock/1\",\"assets\":[{\"asset\":{\"assetId\":\"auto-door\",\"version\":1,\"contentHash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"},\"kind\":\"object\",\"installPath\":\"objects/auto-door.tscn\",\"dependencies\":[{\"assetId\":\"door-texture\",\"version\":1,\"contentHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"overrides\":[]},{\"asset\":{\"assetId\":\"auto-door\",\"version\":2,\"contentHash\":\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"},\"kind\":\"object\",\"installPath\":\"objects/auto-door-v2.tscn\",\"dependencies\":[{\"assetId\":\"door-texture\",\"version\":1,\"contentHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"overrides\":[]}]}",
+      "sha256": "ee9d10c6fcfd2b3257743648de43239c2c17f9987173fea478ac5583b2a299a7"
+    }
+  ],
+  "lockErrors": [
+    {
+      "name": "same-version-different-content",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "auto-door",
+              "version": 1,
+              "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "kind": "object",
+            "installPath": "objects/auto-door.tscn",
+            "dependencies": [],
+            "overrides": []
+          },
+          {
+            "asset": {
+              "assetId": "auto-door",
+              "version": 1,
+              "contentHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+            },
+            "kind": "object",
+            "installPath": "objects/auto-door.tscn",
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      },
+      "code": "ASSET_LOCK_CONFLICT"
+    },
+    {
+      "name": "install-path-collision",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "auto-door",
+              "version": 1,
+              "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "kind": "object",
+            "installPath": "objects/auto-door.tscn",
+            "dependencies": [],
+            "overrides": []
+          },
+          {
+            "asset": {
+              "assetId": "door-texture",
+              "version": 1,
+              "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "kind": "raw",
+            "installPath": "objects/auto-door.tscn",
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      },
+      "code": "ASSET_LOCK_PATH_CONFLICT"
+    },
+    {
+      "name": "path-traversal",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door-texture",
+              "version": 1,
+              "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "kind": "raw",
+            "installPath": "../textures/door.png",
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      },
+      "code": "INVALID_ASSET_PATH"
+    },
+    {
+      "name": "reserved-windows-name",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door-texture",
+              "version": 1,
+              "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "kind": "raw",
+            "installPath": "textures/CON.png",
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      },
+      "code": "INVALID_ASSET_PATH"
+    },
+    {
+      "name": "wrong-format",
+      "lock": {
+        "format": "craftmine.assets-lock/2",
+        "assets": []
+      },
+      "code": "ASSET_LOCK_FORMAT"
+    },
+    {
+      "name": "dependency-version-conflict",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "auto-door",
+              "version": 1,
+              "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "kind": "object",
+            "installPath": "objects/auto-door.tscn",
+            "dependencies": [
+              {
+                "assetId": "door-texture",
+                "version": 1,
+                "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "assetId": "door-texture",
+                "version": 1,
+                "contentHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+              }
+            ],
+            "overrides": []
+          }
+        ]
+      },
+      "code": "ASSET_LOCK_CONFLICT"
+    }
+  ],
+  "closureOk": [
+    {
+      "name": "transitive-closure",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "shop",
+              "version": 1,
+              "contentHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            "kind": "creation",
+            "installPath": "creations/shop.tscn",
+            "dependencies": [
+              {
+                "assetId": "auto-door",
+                "version": 1,
+                "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+              }
+            ],
+            "overrides": []
+          },
+          {
+            "asset": {
+              "assetId": "auto-door",
+              "version": 1,
+              "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "kind": "object",
+            "installPath": "objects/auto-door.tscn",
+            "dependencies": [
+              {
+                "assetId": "door-texture",
+                "version": 1,
+                "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "overrides": []
+          },
+          {
+            "asset": {
+              "assetId": "door-texture",
+              "version": 1,
+              "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "kind": "raw",
+            "installPath": "textures/door.png",
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      },
+      "roots": [
+        {
+          "assetId": "shop",
+          "version": 1,
+          "contentHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "resolved": [
+        {
+          "assetId": "auto-door",
+          "version": 1,
+          "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        {
+          "assetId": "door-texture",
+          "version": 1,
+          "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "assetId": "shop",
+          "version": 1,
+          "contentHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ]
+    }
+  ],
+  "closureErrors": [
+    {
+      "name": "missing-dependency",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "auto-door",
+              "version": 1,
+              "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "kind": "object",
+            "installPath": "objects/auto-door.tscn",
+            "dependencies": [
+              {
+                "assetId": "door-texture",
+                "version": 1,
+                "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "overrides": []
+          }
+        ]
+      },
+      "roots": [
+        {
+          "assetId": "auto-door",
+          "version": 1,
+          "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      ],
+      "code": "ASSET_DEPENDENCY_MISSING"
+    },
+    {
+      "name": "dependency-cycle",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "a",
+              "version": 1,
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "kind": "creation",
+            "installPath": "creations/a.tscn",
+            "dependencies": [
+              {
+                "assetId": "b",
+                "version": 1,
+                "contentHash": "2222222222222222222222222222222222222222222222222222222222222222"
+              }
+            ],
+            "overrides": []
+          },
+          {
+            "asset": {
+              "assetId": "b",
+              "version": 1,
+              "contentHash": "2222222222222222222222222222222222222222222222222222222222222222"
+            },
+            "kind": "creation",
+            "installPath": "creations/b.tscn",
+            "dependencies": [
+              {
+                "assetId": "a",
+                "version": 1,
+                "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+              }
+            ],
+            "overrides": []
+          }
+        ]
+      },
+      "roots": [
+        {
+          "assetId": "a",
+          "version": 1,
+          "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      ],
+      "code": "ASSET_DEPENDENCY_CYCLE"
+    },
+    {
+      "name": "self-reference",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "a",
+              "version": 1,
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "kind": "creation",
+            "installPath": "creations/a.tscn",
+            "dependencies": [
+              {
+                "assetId": "a",
+                "version": 1,
+                "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+              }
+            ],
+            "overrides": []
+          }
+        ]
+      },
+      "roots": [
+        {
+          "assetId": "a",
+          "version": 1,
+          "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      ],
+      "code": "ASSET_DEPENDENCY_CYCLE"
+    }
+  ],
+  "previewCache": {
+    "input": {
+      "assetId": "door-texture",
+      "version": 1,
+      "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "previewerVersion": "asset-preview/1",
+      "engineVersion": "4.7.2-stable",
+      "settingsHash": "default"
+    },
+    "canonical": "craftmine.asset-preview/1\ndoor-texture\n1\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nasset-preview/1\n4.7.2-stable\ndefault",
+    "sha256": "a372177f10f8030150ed62ff1543e1fc5e41c46d211a85248fc12c640ea48d42"
+  }
+}
