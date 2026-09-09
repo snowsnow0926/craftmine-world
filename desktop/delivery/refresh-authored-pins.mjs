@@ -19,6 +19,8 @@ const NEW_AUTHORED=new Set([
   'desktop/godot/bases/side-view/scripts/player/managed_input_source.gd.uid',
   'desktop/godot/shared/standalone_bootstrap.gd',
   'desktop/godot/shared/windows-export.cfg',
+  'desktop/godot/shared/initial-states/mining-sandbox-blank.json',
+  'desktop/godot/shared/initial-states/mining-sandbox-mine-camp.json',
 ]);
 export function authored(entry){return entry.author==='Craftmine World project'&&['authored','generated'].includes(entry.origin)&&['project-authored','MIT'].includes(entry.license);}
 function newEntry(relative,manifest){

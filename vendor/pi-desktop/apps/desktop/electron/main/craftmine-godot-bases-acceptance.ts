@@ -93,7 +93,8 @@ export function createGodotBasesAcceptance(access: GodotBasesAcceptanceAccess) {
       check(label + ": capture dimensions and PNG", image.width === 1280 && image.height === 720 && typeof image.pngBase64 === "string" && image.pngBase64.startsWith("iVBORw0KGgo"));
       const observation = await observe(image.viewportObservation);
       evidence.captures.at(-1).observation = observation;
-      check(label + ": live viewport matches capture", JSON.stringify(observation.payload?.viewportSize) === "[1280,720]");
+      check(label + ": live output surface matches capture", JSON.stringify(observation.payload?.surfaceSize) === "[1280,720]");
+      check(label + ": logical viewport is measured", Array.isArray(observation.payload?.logicalViewportSize) && observation.payload.logicalViewportSize.length === 2 && observation.payload.logicalViewportSize.every((v: unknown) => typeof v === "number" && Number.isFinite(v) && v > 0));
     };
     try {
       evidence.before = await observe();

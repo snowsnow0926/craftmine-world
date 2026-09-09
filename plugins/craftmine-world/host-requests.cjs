@@ -62,11 +62,11 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       try{return await portableRestore.restore(params);}
       finally{await godotExecutor?.start();}
     }
-    if(method==='godotRuntime.describe'){
+    if(method==='godotRuntime.describe'||method==='godotRuntime.exportSource'){
       fields(params,['worldId']);
       return core.call(method,params,60000);
     }
-    if(method==='godotWorld.rebuildPlan'||method==='godotWorld.prepareRebuildSource'){
+    if(method==='godotWorld.rebuildPlan'||method==='godotWorld.prepareRebuildSource'||method==='godotWorld.prepareCopyRuntime'){
       fields(params,['worldId']);
       return core.call(method,params,60000);
     }
@@ -113,7 +113,12 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       fields(params,['method'],['args']);
       if(!reuseService)throw Error('PACKAGE_SERVICE_UNAVAILABLE');
       if(!PACKAGE_METHODS.has(params.method))throw Error('UNSUPPORTED_PACKAGE_OPERATION');
-      return reuseService[params.method](params.args??{});
+      try { return await reuseService[params.method](params.args??{}); }
+      catch(error) {
+        if (!error.code && /^[A-Z][A-Z0-9_]{0,100}$/.test(error.message??'')) error.code=error.message;
+        if (!error.code) console.warn('Package operation failed:',params.method,String(error.message??error));
+        throw error;
+      }
     }
     const applicationFields={
       'godotJob.checkDescriptor':['jobId','token','artifacts'],
@@ -135,6 +140,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     const godotRoutes={
       'godotWorld.initialize':[['worldId','title','baseId','baseBuild','snapshot'],[]],
       'godotWorld.initStatus':[['worldId'],[]],
+      'godotWorld.copyStatus':[['worldId'],['sourceWorldId']],
       'content.branch.create':[['worldId','branchId','fromRev'],['requestId','taskId','title']],
       'content.migrate.plan':[['worldId'],[]],
       'content.migrate.apply':[['worldId'],[]],

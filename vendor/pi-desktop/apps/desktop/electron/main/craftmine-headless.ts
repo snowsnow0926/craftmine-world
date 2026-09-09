@@ -3,6 +3,8 @@ import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { readHeadlessProfile } from "./craftmine-headless-profile";
 import { createGodotGameplayAcceptance, type GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance";
+import { createGodotBasesAcceptance } from "./craftmine-godot-bases-acceptance";
+import { createGodotMiningAcceptance } from "./craftmine-godot-mining-acceptance";
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
 const violations: string[] = [];
@@ -65,9 +67,12 @@ export function installHeadlessControl(access: {
   runtime: () => unknown;
   draftProbe: () => Promise<unknown>;
   godotGameplay?: GodotGameplayAccess;
+  godotSave?: () => Promise<any>;
 }): void {
   if (!profile) return;
   const godotGameplay = access.godotGameplay ? createGodotGameplayAcceptance(access.godotGameplay) : null;
+  const godotBases = access.godotGameplay ? createGodotBasesAcceptance({...access.godotGameplay, save: access.godotSave}) : null;
+  const godotMining = access.godotGameplay && access.godotSave ? createGodotMiningAcceptance({...access.godotGameplay, save: access.godotSave}) : null;
   const configuration = profile;
   const evaluateWorld = (script: string) => {
     const view = access.world();
@@ -79,12 +84,22 @@ export function installHeadlessControl(access: {
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
       switch (request.method) {
+        case "godotPlayMine":
+          if (Object.keys(request).sort().join(",") !== "id,method,type" || !godotMining) throw Error("Unsupported fixed mining gameplay request");
+          return godotMining(request.method);
         case "godotObserve":
           if (!access.godotGameplay) throw Error("Actual Godot host unavailable");
           return access.godotGameplay.observe();
+        case "godotSnapshot":
+          if (!access.godotGameplay) throw Error("Actual Godot host unavailable");
+          return access.godotGameplay.action("snapshot", {});
         case "godotCaptureView":
           if (!access.godotGameplay) throw Error("Actual Godot host unavailable");
           return access.godotGameplay.capture(1280, 720);
+        case "godotPlayTown":
+        case "godotPlayRuins":
+          if (Object.keys(request).sort().join(",") !== "id,method,type" || !godotBases) throw Error("Unsupported fixed base gameplay request");
+          return godotBases(request.method);
         case "godotPlay":
         case "godotCapture720":
         case "godotCapture600":
@@ -98,6 +113,7 @@ export function installHeadlessControl(access: {
           world: access.world()?.getURL() || null,
         };
         case "worldState": return evaluateWorld(`(async()=>({loaded:document.body.dataset.worldLoaded==='true',id:document.body.dataset.worldId,error:document.getElementById('error').textContent,status:document.getElementById('world-status').textContent,disabled:document.getElementById('save-world').disabled,guard:globalThis.__craftmineHeadless,snapshot:document.body.dataset.worldLoaded==='true'?(await craftmineView.snapshot()).snapshot:null}))()`);
+        case "worldNavigationReady": return evaluateWorld(`({worldId:document.body.dataset.worldId,ready:!document.getElementById('world-list').disabled})`);
         case "desktopState": {
           const window = access.window(); if (!window) throw new Error("Window is not ready");
           return window.webContents.executeJavaScript(`(async()=>({title:document.title,text:document.body.innerText,version:globalThis.piDesktop?await piDesktop.invoke(piDesktop.channels.invoke.appGetVersion):null,guard:globalThis.__craftmineHeadless}))()`, false);
@@ -115,7 +131,7 @@ export function installHeadlessControl(access: {
           );
         }
         case "worldPanel": {
-          if (!new Set(["godot.runtimeSave", "godot.runtimeResume", "godot.runtimeState", "godot.candidatePreview", "godot.candidateApply", "godot.candidateClose", "godot.candidateState", "godot.candidateList", "godot.candidateRead", "package.request", "backup.export", "backup.inspect", "backup.restore", "backup.status", "workbench.capabilities", "workbench.prepare", "workbench.execute", "workbench.operations", "diagnostics.status", "diagnostics.export"]).has(request.channel ?? "")) throw Error("Unsupported product panel acceptance channel");
+          if (!new Set(["godot.exportWindows", "godot.exportWindows.status", "godot.exportWindows.cancel", "godot.runtimeSave", "godot.runtimeResume", "godot.runtimeState", "godot.candidatePreview", "godot.candidateApply", "godot.candidateClose", "godot.candidateState", "godot.candidateList", "godot.candidateRead", "package.request", "backup.export", "backup.inspect", "backup.restore", "backup.status", "workbench.capabilities", "workbench.prepare", "workbench.execute", "workbench.operations", "diagnostics.status", "diagnostics.export"]).has(request.channel ?? "")) throw Error("Unsupported product panel acceptance channel");
           return evaluateWorld(`globalThis.pluginBridge.invoke(${JSON.stringify(request.channel)},${JSON.stringify(request.payload ?? {})})`);
         }
         case "draftProbe": return access.draftProbe();

@@ -48,7 +48,12 @@ export function materializeBase({baseId,worldId,template='blank',out}) {
   if(fs.existsSync(initialFile)) {
     const initial=JSON.parse(fs.readFileSync(initialFile,'utf8'));
     if(initial.format!=='craftmine.authored-initial-state/1'||initial.baseId!==baseId||initial.template!==template||!initial.snapshot?.body)throw Error('Invalid authored initial state');
-    const body={...initial.snapshot.body,worldId};
+    const body=structuredClone(initial.snapshot.body);
+    body.worldId=worldId;
+    if(baseId==='mining-sandbox') {
+      if(body.state?.worldId!==initial.worldId)throw Error('Invalid authored mining state identity');
+      body.state.worldId=worldId;
+    }
     fs.writeFileSync(path.join(out,'craftmine_initial_state.json'),JSON.stringify({
       format:'craftmine.materialized-initial-state/1',baseId,template,worldId,
       sourceDigest:initial.sourceDigest,engine:initial.engine,initialProgress:body,

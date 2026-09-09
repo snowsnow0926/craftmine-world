@@ -1,0 +1,56 @@
+{
+  "format": "craftmine.authored-initial-state/1",
+  "baseId": "mining-sandbox",
+  "template": "blank",
+  "worldId": "authored-mining-sandbox-blank",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "sourceDigest": "657c85af2a4746f0f9a25706898bffc105a6ca57b297496f7510d0e4f4e30b25",
+  "snapshot": {
+    "baseId": "mining-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "chunks": {},
+      "format": "craftmine.godot-mining-sandbox-managed/1",
+      "mapSize": [
+        48,
+        24
+      ],
+      "seed": 20260910,
+      "state": {
+        "chunkIndex": {},
+        "editCount": 0,
+        "equipped": "",
+        "flags": {},
+        "format": "craftmine.godot-mining-sandbox-state/1",
+        "inventory": {},
+        "ledger": {},
+        "ledgerEvicted": 0,
+        "player": {
+          "facing": "right",
+          "health": 3,
+          "position": [
+            104,
+            90.5
+          ],
+          "tile": [
+            6,
+            4
+          ]
+        },
+        "stateVersion": 1,
+        "terrainHash": "",
+        "tools": [],
+        "worldId": "authored-mining-sandbox-blank",
+        "worldRevision": 0
+      },
+      "stateVersion": 1,
+      "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+      "worldId": "authored-mining-sandbox-blank"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "authored-mining-sandbox-blank"
+  }
+}

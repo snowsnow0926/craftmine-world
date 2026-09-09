@@ -14,6 +14,7 @@ import {
 } from "electron";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
@@ -25,6 +26,8 @@ import { createCraftmineBackupService, type CraftmineFilePicker } from "./craftm
 import { createGodotHistoryPanelService } from "./godot-history-panel-service";
 import { createCraftminePackageService } from "./craftmine-package-service";
 import { createGodotRestoreRebuildService } from "./godot-restore-rebuild-service";
+import { createGodotWorldCopyService } from "./godot-world-copy-service";
+import { createGodotWindowsExportService } from "./godot-windows-export-service.mjs";
 import { createCraftmineDiagnosticsService } from "./craftmine-diagnostics-service";
 import { createCraftmineTelemetry } from "./craftmine-telemetry";
 import { readCraftmineBuildIdentity } from "./craftmine-build-identity";
@@ -575,6 +578,21 @@ async function safeOpenExternal(rawUrl: unknown): Promise<void> {
 
 const pluginPanels = new PluginPanelHost(
   async (pluginId, channel, payload) => {
+    if (pluginId === "craftmine.world" && ["godot.exportWindows", "godot.exportWindows.status", "godot.exportWindows.cancel"].includes(channel)) {
+      if (channel !== "godot.exportWindows") return godotExports.request(channel, payload as any);
+      if (profileRestore || godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy) throw Error("ACTIVE_TASK_EXISTS");
+      godotExportBusy = true;
+      try { mkdirSync(godotExportStaging, {recursive:true}); return await godotExports.request(channel, payload as any); }
+      finally { godotExportBusy = false; }
+    }
+    if (godotExportBusy && pluginId === "craftmine.world" && /^(?:world\.(?:create|open|copy|saveProgress|importLegacy)|godot\.(?:candidate|runtimeResume)|package\.|backup\.)/.test(channel)) throw Error("GODOT_EXPORT_BUSY");
+    if (pluginId === "craftmine.world" && channel === "world.copy") {
+      if (profileRestore || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy) throw Error("ACTIVE_TASK_EXISTS");
+      const result = await godotCopies.copy(payload);
+      sendToRenderer(IPC.event.craftmineWorldChanged, {});
+      return result;
+    }
+    if (godotCopies.busy && pluginId === "craftmine.world" && /^(?:world\.(?:create|open|saveProgress|importLegacy)|godot\.(?:candidate|runtimeSave|runtimeResume)|package\.|backup\.)/.test(channel)) throw Error("GODOT_COPY_BUSY");
     if (profileRestore && pluginId === "craftmine.world" && /^(?:world\.(?:create|open|saveProgress|importLegacy)|godot\.(?:candidate|runtimeSave|runtimeResume)|package\.)/.test(channel)) throw Error("PROFILE_RESTORE_IN_PROGRESS");
     const result = pluginId === "craftmine.world"
       ? await (channel.startsWith("godot.candidate") && !["godot.candidateList", "godot.candidateRead"].includes(channel)
@@ -1050,6 +1068,34 @@ const godotInitializer = createGodotWorldInitializer({
 const godotRestores = createGodotRestoreRebuildService({
   domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
   restoreLoad: (worldId, candidateId) => godotCandidates.restoreLoad(worldId, candidateId),
+});
+const godotCopies = createGodotWorldCopyService({
+  domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
+  checkpoint: () => godotWorld.checkpoint(),
+  open: async worldId => {
+    const release = await godotWorld.holdSelectionSync();
+    try { await godotWorld.switchWorld(null); return await plugins.invokePanelBridge("craftmine.world", "world.open", {id: worldId}); }
+    finally { release(); }
+  },
+  start: worldId => godotRestores.start(worldId),
+});
+let godotExportBusy = false;
+const godotExportStaging = join(app.getPath("temp"), "cwx-" + createHash("sha256").update(dataDir).digest("hex").slice(0, 12));
+const godotExports = createGodotWindowsExportService({
+  domainCall: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
+  checkpoint: async worldId => {
+    if (godotWorld.instance?.worldId !== worldId) throw Error("GODOT_WORLD_CHANGED");
+    const saved = await godotWorld.checkpoint();
+    if (saved.status !== "persisted") throw Error(saved.error);
+    return saved;
+  },
+  pickDirectory: async () => {
+    if (headlessAcceptance) { const directory = join(headlessAcceptance.root, "windows-exports"); mkdirSync(directory, {recursive:true}); return directory; }
+    const picked = await dialog.showOpenDialog({title:"选择 Windows 游戏导出目录", properties:["openDirectory", "createDirectory"]});
+    return picked.canceled ? null : picked.filePaths[0] ?? null;
+  },
+  stagingRoot: godotExportStaging, resourcesRoot: godotRoot,
+  toolchain: {broker:join(godotToolchainRoot,"broker/godot-host-broker.exe"), brokerIdentity:join(godotToolchainRoot,"broker/broker-identity.json"), engineRoot:join(godotToolchainRoot,"engine/4.7.2-stable")},
 });
 godotCreation = createGodotWorldFactory({
   worldsRoot: join(dataDir, "godot-worlds"),
@@ -2497,7 +2543,7 @@ let profileRestore: ProfileRestoreOperation | null = null;
 const craftmineBackup = createCraftmineBackupService({
   domainCall: (method, params) => plugins.requestCraftmineHost(method, params), pickFile: craftmineFilePicker,
   beforeRestore: async ({operationId}) => {
-    if (profileRestore || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy) throw Error("ACTIVE_TASK_EXISTS");
+    if (profileRestore || godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy) throw Error("ACTIVE_TASK_EXISTS");
     const operation: ProfileRestoreOperation = {operationId, previous: null, release: () => undefined};
     profileRestore = operation;
     try {
@@ -2587,6 +2633,7 @@ const craftminePanelRequest = createCraftminePanelGateway({
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
   begin: async session => {
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
+    if (godotCopies.busy || godotExportBusy) throw Error("ACTIVE_TASK_EXISTS");
     if (!host) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
     if (activeTurns.has(session.id) || turnFinalizations.has(session.id)) throw new Error("ACTIVE_TASK_EXISTS");
     const result = await host.call<{ turnId: string }>("session.beginTurn", { sessionId: session.id, providerId: session.providerId, modelId: session.modelId });
@@ -6066,7 +6113,7 @@ function registerIpc() {
     assertMainWindowSender(event);
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
     return invokeCraftmineNavigation(payload, {
-      invoke: (channel, params) => channel.startsWith("godot.history")
+      invoke: (channel, params) => channel === "world.copyStatus" ? Promise.resolve(godotCopies.status(params)) : channel.startsWith("godot.history")
         ? godotHistory.invoke(channel, params) : godotPanel.invoke(channel, params),
       navigate: async (request) => {
         // World creation from the main sidebar also works before its work panel
@@ -8042,6 +8089,7 @@ function registerIpc() {
 
   handle(IPC.invoke.agentPrompt, async (req: AgentPromptRequest) => {
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
+    if (godotCopies.busy || godotExportBusy) throw Error("ACTIVE_TASK_EXISTS");
     if (!host || !sidecar) throw new Error("backend unavailable");
     // Install the renderer's prompt-time snapshot before any asynchronous
     // setup. This closes the gap where a fast completion could beat the
@@ -9343,9 +9391,12 @@ installHeadlessControl({
   world: () => pluginViews.headlessWorldContents(),
   godotGameplay: {
     observe: () => godotWorld.request("observe-envelope", {}),
-    action: (op, args) => op === "resume" ? godotWorld.resume().then(() => ({status: "ready"})) : godotWorld.request(op, args),
+    action: (op, args) => op === "resume" ? godotWorld.resume().then(() => ({status: "ready"}))
+      : op === "pause" ? godotWorld.pause().then(() => ({status: "paused"}))
+      : op === "snapshot" ? godotWorld.snapshot() : godotWorld.request(op, args),
     capture: (width, height) => godotWorld.headlessCapture(width, height),
   },
+  godotSave: () => godotWorld.checkpoint(),
   runtime: () => ({ hostAvailable: !!host?.isAvailable(), plugins: plugins.listLoaded().map(plugin => plugin.manifest.id) }),
   draftProbe: async () => {
     if (!headlessAcceptance || !host) throw new Error("Native draft acceptance is unavailable");
@@ -9673,6 +9724,7 @@ app.on("before-quit", (event) => {
   if (!craftmineQuitPrepared) {
     if (craftmineQuitPreparation) return;
     craftmineQuitPreparation = (async () => {
+      await godotExports.dispose();
       await godotCandidates.closeForDeparture();
       godotVerifier.cancelAll();
       await pluginViews.prepareCraftmineForQuit();

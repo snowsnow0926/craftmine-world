@@ -47,3 +47,12 @@ test('interrupted running records load uncertain and corrupt journal fails close
  data.operations[0].payload={path:'forbidden'};await writeFile(file,JSON.stringify(data));await assert.rejects(create(dir).list(owner),/INVALID_OPERATION_PARAMS/);
  await writeFile(file,'{malformed private content');await assert.rejects(create(dir).list(owner),/INVALID_OPERATION_JOURNAL/);
 });
+
+test('activated portable restore receipt survives restart without replaying restoration',async()=>{
+ const dir=await directory(),j=create(dir),p=await j.prepare(owner,'backup.restore',{grantId:'file-grant',expectedCurrentHash:'a'.repeat(64)});
+ const result={id:p.operationId,operationId:p.operationId,status:'completed',activated:true,currentHash:'b'.repeat(64),rebuildRequired:['gbd-'+'c'.repeat(64)],modelReplay:false,scope:'profile'};
+ assert.deepEqual(await j.execute(owner,p.operationId,async()=>result),result);
+ assert.deepEqual(await create(dir).execute(owner,p.operationId,async()=>{throw Error('Already activated restore must not execute twice');}),result);
+ const next=await j.prepare(owner,'backup.restore',{grantId:'new-grant',expectedCurrentHash:'c'.repeat(64)});
+ await assert.rejects(j.execute(owner,next.operationId,async()=>({...result,rebuildRequired:['C:/private/engine.exe']})),/INVALID_OPERATION_RECEIPT/);
+});

@@ -87,7 +87,12 @@ func handle_request(request: Dictionary) -> Dictionary:
 		"observe-envelope":
 			# Read-only observation with the identity and sampling time that make it
 			# trustworthy. Additive: the plain "observe" shape is unchanged.
-			return {"result": {"format": "craftmine.godot-observation/1", "worldId": scope.worldId, "buildId": scope.buildId, "instanceId": scope.instanceId, "baseId": adapter.BASE_ID, "baseVersion": adapter.BASE_VERSION, "sampledAt": Time.get_datetime_string_from_system(true) + "Z", "protocol": PROTOCOL, "payload": adapter.observe()}}
+			var payload: Dictionary = adapter.observe().duplicate(true)
+			var surface_size: Vector2i = DisplayServer.window_get_size()
+			var logical_size: Vector2 = get_viewport().get_visible_rect().size
+			payload["surfaceSize"] = [surface_size.x, surface_size.y]
+			payload["logicalViewportSize"] = [logical_size.x, logical_size.y]
+			return {"result": {"format": "craftmine.godot-observation/1", "worldId": scope.worldId, "buildId": scope.buildId, "instanceId": scope.instanceId, "baseId": adapter.BASE_ID, "baseVersion": adapter.BASE_VERSION, "sampledAt": Time.get_datetime_string_from_system(true) + "Z", "protocol": PROTOCOL, "payload": payload}}
 		"snapshot":
 			var current := snapshot()
 			var failure := Guard.validate(current.state, scope.worldId, adapter.BASE_ID, adapter.BASE_VERSION)

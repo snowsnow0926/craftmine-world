@@ -497,10 +497,16 @@ export class GodotWorldViewHost {
       throw new Error("GODOT_HEADLESS_CAPTURE_REFUSED");
     }
     const previous = instance.view.getBounds();
+    const owner = this.options.window();
+    if (!owner || owner.isDestroyed() || owner.isVisible() || owner.isFocusable() || !owner.webContents.isOffscreen()) throw Error("GODOT_CAPTURE_OWNER_NOT_ISOLATED");
+    const previousSize = owner.getContentSize(), minimumSize = owner.getMinimumSize();
     if (this.captureBounds) throw Error("GODOT_CAPTURE_ALREADY_RUNNING");
     this.captureBounds = {x: 0, y: 0, width, height};
     ++this.syncHolds;
     try {
+      // Electron's offscreen child compositor follows its owning window's
+      // viewport. Resize this hidden test window as well as the game view.
+      owner.setMinimumSize(1, 1); owner.setContentSize(width, height, false);
       instance.view.setBounds({x: 0, y: 0, width, height});
       await new Promise(resolve => setTimeout(resolve, 350));
       if (this.current !== instance || !instance.alive) throw new Error("GODOT_WORLD_CHANGED");
@@ -513,6 +519,7 @@ export class GodotWorldViewHost {
       return {pngBase64: screenshot.toPNG().toString("base64"), ...screenshot.getSize(), pixelStats: {bytes: pixels.length, sampledColors: colors.size}, viewportObservation};
     } finally {
       this.captureBounds = null;
+      if (!owner.isDestroyed()) { owner.setContentSize(previousSize[0], previousSize[1], false); owner.setMinimumSize(minimumSize[0], minimumSize[1]); }
       if (instance.alive && !instance.view.webContents.isDestroyed()) instance.view.setBounds(previous);
       --this.syncHolds;
       this.applyBounds();
@@ -523,7 +530,10 @@ export class GodotWorldViewHost {
   async request(op: string, args: Record<string, unknown> = {}): Promise<Record<string, unknown> | null> {
     const instance = this.current;
     if (!instance?.alive) throw new Error("No world runtime is running");
-    if (this.pending || this.transitioning || this.checkpointPromise || this.frozen) throw new Error("WORLD_BUSY");
+    // A completed checkpoint freezes mutations, while core observation stays
+    // available for recovery verification without resuming the simulation.
+    const frozenRead = op === "observe-envelope" || op === "snapshot";
+    if (this.pending || this.transitioning || this.checkpointPromise || (this.frozen && !frozenRead)) throw new Error("WORLD_BUSY");
     const response = await instance.runtime.request(op, args);
     if (response.error) throw new Error(response.error);
     return (response.result ?? null) as Record<string, unknown> | null;
