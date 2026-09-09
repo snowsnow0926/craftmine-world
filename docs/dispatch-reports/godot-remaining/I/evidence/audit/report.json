@@ -1,12 +1,12 @@
 {
   "format": "craftmine.i.report/1",
-  "generatedAt": "2026-09-09T16:59:11.832Z",
+  "generatedAt": "2026-09-09T17:06:03.045Z",
   "mode": "audit",
   "identity": {
     "format": "craftmine.i.identity/1",
-    "runId": "9d112218-c8fc-4fa8-b078-7812a5f5459c",
+    "runId": "ac3726bc-c5cc-48e1-81a6-8db6455676e7",
     "mode": "audit",
-    "startedAt": "2026-09-09T16:59:11.830Z",
+    "startedAt": "2026-09-09T17:06:03.043Z",
     "product": {
       "version": null,
       "clientVersion": null,
@@ -55,11 +55,14 @@
   },
   "freeze": {
     "ok": true,
+    "sourcesOk": true,
     "reason": "ok",
-    "lockedAt": "2026-09-09T16:55:05.575Z",
+    "lockedAt": "2026-09-09T17:03:24.962Z",
+    "sourceRoot": "D:\\Craftmine World",
     "mismatched": [],
     "missing": [],
-    "changedSources": []
+    "changedSources": [],
+    "missingSources": []
   },
   "headline": {
     "rounds": 28,
@@ -909,6 +912,7 @@
   "metrics": {
     "modelCalls": 0,
     "unknownUsageCalls": 0,
+    "usageCalls": 0,
     "humanInterventions": 0,
     "replayFixtures": 7
   },
@@ -1556,7 +1560,7 @@
     }
   ],
   "notes": [
-    "冻结校验：通过；来源文档漂移 0 项。",
+    "冻结校验：通过；来源文档漂移 0 项，缺失 0 项（来源根 D:\\Craftmine World）。",
     "覆盖检查：14 类 / 28 轮 / 128 条断言。"
   ]
 }

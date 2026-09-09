@@ -101,6 +101,39 @@ export async function runSelfCheck({ root = ROOT, env = {} } = {}) {
     return `${redCases.length} 个反例全部判红`;
   });
 
+  check(checks, '缺失引用与空集合不会让断言真空通过', () => {
+    // Regression: equalsPath/unchangedFrom/notEqualsPath used to pass when both
+    // sides resolved to undefined.
+    for (const op of ['equalsPath', 'unchangedFrom', 'notEqualsPath', 'changedFrom']) {
+      const result = evaluateCheck({ path: 'after.x', op, value: 'before.x' }, { after: { x: 1 } });
+      expect(result.passed === false, `${op} passed with a missing reference`);
+    }
+    // Regression: `every` over an empty array used to pass ("nothing done" == "all done").
+    expect(evaluateCheck({ path: 'edits', op: 'every', check: { path: 'applied', op: 'eq', value: true } }, { edits: [] }).passed === false, 'every over an empty array passed');
+    expect(evaluateCheck({ path: 'items', op: 'some', check: { path: 'ok', op: 'eq', value: true } }, { items: [] }).passed === false, 'some over an empty array passed');
+    return '缺失引用、空集合全部判失败';
+  });
+
+  check(checks, '证据类断言必须指向证据包里的真实工件', () => {
+    const byId = indexAssertions(spec.assertions);
+    const round = roundsOf(spec.set).find(item => item.id === 'R14.2');
+    const base = {
+      release: {
+        licenseManifestMatches: true,
+        installLifecycle: [{ step: 'install', result: 'ok' }],
+        independentWindowsEnvironment: 'missing',
+      },
+      usage: { calls: 1, unknownCalls: 0 },
+      evidence: { screenshots: [], human: [{ assertionId: 'I.R14.2.4', reviewer: 'self-claimed', verdict: 'pass', record: 'note.txt' }] },
+    };
+    const assertions = round.assertions.map(id => byId.get(id));
+    const withoutArtifact = evaluateRound({ round, assertions, observation: base, identity: completeIdentity(), mode: 'live', artifacts: [] });
+    expect(withoutArtifact.verdict === 'insufficient', `self-claimed human review passed without an artifact (${withoutArtifact.verdict})`);
+    const withArtifact = evaluateRound({ round, assertions, observation: base, identity: completeIdentity(), mode: 'live', artifacts: [{ path: 'note.txt', bytes: 12, sha256: 'x'.repeat(64) }] });
+    expect(withArtifact.verdict === 'passed', `human review with a real artifact should pass, got ${withArtifact.verdict}`);
+    return '人工记录必须对应真实文件';
+  });
+
   check(checks, 'visual/human/accounting 断言不能由 machine 判定通过', () => {
     for (const kind of ['visual', 'human', 'accounting']) {
       const result = evaluateAssertion({ id: `x-${kind}`, round: 'R01.1', kind, hard: true, statement: 'x' }, {});
@@ -136,6 +169,26 @@ export async function runSelfCheck({ root = ROOT, env = {} } = {}) {
     expectThrows(() => assertNoInput(blocked), /violated/, 'assertNoInput missed a blocked input attempt');
     expect(assertNoInput(createInputLedger()) === true, 'a clean ledger must pass');
     return '禁用真实输入并记录拦截次数';
+  });
+
+  check(checks, '观测缺少断言所需的分区时判证据不足', () => {
+    const byId = indexAssertions(spec.assertions);
+    const round = roundsOf(spec.set).find(item => item.id === 'R05.2');
+    const assertions = round.assertions.map(id => byId.get(id));
+    const full = {
+      isolation: { originWorldId: 'world-1', selectedWorldId: 'world-2', taskWorldId: 'world-1', writtenWorldId: 'world-1', originalTaskStillOnOriginWorld: true },
+      usage: { calls: 1, unknownCalls: 0 },
+      evidence: { screenshots: [{ assertionId: 'I.R05.2.4', name: 'shot.png', sha256: 'x'.repeat(64) }], human: [] },
+    };
+    const artifacts = [{ path: 'shot.png', bytes: 8, sha256: 'x'.repeat(64) }];
+    expect(evaluateRound({ round, assertions, observation: full, identity: completeIdentity(), mode: 'live', artifacts }).verdict === 'passed', 'complete observation should pass');
+    const { isolation, ...withoutIsolation } = full;
+    const result = evaluateRound({ round, assertions, observation: withoutIsolation, identity: completeIdentity(), mode: 'live', artifacts });
+    // Either the assertion fails on the missing reference or the section check
+    // reports it — what matters is that it can never pass.
+    expect(result.verdict !== 'passed', `missing section must not pass, got ${result.verdict}`);
+    expect(result.reasons.some(reason => String(reason).includes('isolation')), `missing section not reported: ${result.reasons.join(' | ')}`);
+    return `缺少分区 → ${result.verdict}`;
   });
 
   check(checks, '台账规则：无证据不得判已证实，单条硬失败不能被抵消', () => {
@@ -209,6 +262,32 @@ export async function runSelfCheck({ root = ROOT, env = {} } = {}) {
     passed: live.exitCode === 3 && live.report.headline.notRun === 28 && live.report.headline.modelCalls === 0 && live.report.headline.passed === 0,
     detail: `exit=${live.exitCode} notRun=${live.report.headline.notRun} modelCalls=${live.report.headline.modelCalls}`,
   });
+
+  const forgedOut = await tempDir('forged');
+  const forgedFixtures = await tempDir('forged-fixtures');
+  fs.writeFileSync(path.join(forgedFixtures, 'R14.2.json'), JSON.stringify({
+    format: 'craftmine.i.replay-fixture/1',
+    roundId: 'R14.2',
+    humanReviews: [{ assertionId: 'I.R14.2.4', reviewer: 'forged', verdict: 'pass', record: 'note.txt' }],
+    screenshots: [{ assertionId: 'I.R14.2.4', name: 'note.txt', base64: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFAAH/q842iQAAAABJRU5ErkJggg==' }],
+    observation: {
+      release: { licenseManifestMatches: true, installLifecycle: [{ step: 'install', result: 'ok' }], independentWindowsEnvironment: 'missing' },
+      usage: { calls: 1, unknownCalls: 0 },
+      evidence: { screenshots: [], human: [] },
+    },
+  }, null, 2));
+  const forged = await runAcceptance({ argv: ['--mode', 'replay', '--fixtures', forgedFixtures, '--round', 'R14.2', '--out', forgedOut], env });
+  checks.push({
+    name: '夹具不能伪造人工试玩记录',
+    passed: forged.report.headline.passed === 0 && forged.report.headline.insufficient === 1,
+    detail: `passed=${forged.report.headline.passed} insufficient=${forged.report.headline.insufficient}`,
+  });
+  checks.push({
+    name: '反例报告保留硬失败条目（不被总通过数抵消）',
+    passed: negative.report.hardFailures.length >= 2 && negative.report.hardFailures.every(failure => failure.class === 'model-wrong-behavior'),
+    detail: negative.report.hardFailures.map(failure => `${failure.round}:${failure.class}`).join(', '),
+  });
+  for (const dir of [forgedOut, forgedFixtures]) fs.rmSync(dir, { recursive: true, force: true });
 
   checks.push({
     name: '落盘的报告与证据不含凭据形状的值',

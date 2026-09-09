@@ -4,14 +4,14 @@
   "mode": "replay",
   "verdict": "insufficient",
   "reasons": [
-    "missing evidence: I.R14.2.4/human-review"
+    "missing evidence: I.R14.2.4/human-review-record"
   ],
   "notes": null,
   "identity": {
     "format": "craftmine.i.identity/1",
-    "runId": "e2bb98fb-5b61-4126-9210-f242fb4f20b5",
+    "runId": "5b05498d-8a53-4893-ba3f-a6fc1d70eed5",
     "mode": "replay",
-    "startedAt": "2026-09-09T16:59:11.944Z",
+    "startedAt": "2026-09-09T17:06:03.170Z",
     "product": {
       "version": "replay-fixture",
       "clientVersion": "replay-fixture",
@@ -92,5 +92,5 @@
       "bytes": 5
     }
   ],
-  "sealedAt": "2026-09-09T16:59:11.969Z"
+  "sealedAt": "2026-09-09T17:06:03.196Z"
 }

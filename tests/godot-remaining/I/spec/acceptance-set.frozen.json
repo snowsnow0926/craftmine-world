@@ -159,7 +159,7 @@
           "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
           "mustObserve": ["复用固定版本", "新实例身份独立", "新实例状态独立", "源世界未变"],
           "visualEvidence": ["截图：第二个世界"],
-          "assertions": ["I.R05.1.1", "I.R05.1.2", "I.R05.1.3", "I.R05.1.4"],
+          "assertions": ["I.R05.1.1", "I.R05.1.2", "I.R05.1.3", "I.R05.1.4", "I.R05.1.5"],
           "blockedBy": ["H", "A", "E", "L"]
         },
         {

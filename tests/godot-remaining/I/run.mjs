@@ -17,7 +17,7 @@ import { loadFrozenSpec, roundsOf, indexAssertions, ROOT } from './lib/frozen.mj
 import { checkCoverage } from './lib/coverage.mjs';
 import { scanSources, createInputLedger, assertNoInput } from './lib/input-guard.mjs';
 import { captureIdentity, modelIdentityFromEnv } from './lib/identity.mjs';
-import { createEvidenceBundle } from './lib/evidence.mjs';
+import { createEvidenceBundle, hashTree } from './lib/evidence.mjs';
 import { evaluateRound, blockedRound } from './lib/verdict.mjs';
 import { initialState, refresh, ledgerRows } from './lib/ledger.mjs';
 import { buildReport, writeReport } from './lib/report.mjs';
@@ -75,6 +75,15 @@ async function runLiveRound({ round, transport, evidence, identity }) {
   const applied = await transport.apply(session.sessionId, request.taskId);
   evidence.writeJson('apply.json', applied);
   const observation = await transport.observe(session.sessionId, [{ op: 'round-observation', roundId: round.id }]);
+  // Screenshots must become real files in the bundle before the round is judged.
+  for (const shot of observation?.evidence?.screenshots ?? []) {
+    if (typeof shot.base64 !== 'string') continue;
+    const buffer = Buffer.from(shot.base64, 'base64');
+    evidence.screenshot(shot.name, buffer);
+    shot.sha256 = crypto.createHash('sha256').update(buffer).digest('hex');
+    shot.bytes = buffer.length;
+    delete shot.base64;
+  }
   const usage = await transport.usage(session.sessionId).catch(() => null);
   if (usage) {
     evidence.usage({ stage: 'compaction', source: 'product-interface', ...(usage.compaction ?? {}) });
@@ -102,6 +111,10 @@ export async function runAcceptance({ argv = process.argv.slice(2), env = proces
   const hardStop = [];
   if (!coverage.ok) hardStop.push(...coverage.problems.map(problem => `coverage: ${problem}`));
   if (sourceFindings.length) hardStop.push(...sourceFindings.map(finding => `input-guard: ${finding.file} uses ${finding.rule} (${finding.why})`));
+  // A live result must be tied to the requirement documents it was frozen from.
+  if (args.mode === 'live' && !spec.verdict.sourcesOk) {
+    hardStop.push(`frozen provenance unavailable: ${[...spec.verdict.missingSources, ...spec.verdict.changedSources.map(entry => entry.file)].join(', ') || 'source root missing'}; set CRAFTMINE_I_SOURCE_ROOT to the tree that holds the requirement documents`);
+  }
   if (hardStop.length) {
     const report = { format: 'craftmine.i.report/1', generatedAt: new Date().toISOString(), mode: args.mode, refused: true, reasons: hardStop };
     const written = writeReport(outRoot, report);
@@ -126,7 +139,7 @@ export async function runAcceptance({ argv = process.argv.slice(2), env = proces
     product: { version: probe.identity?.product?.version ?? (replay ? 'replay-fixture' : null), clientVersion: probe.identity?.product?.clientVersion ?? (replay ? 'replay-fixture' : null) },
     engine: probe.identity?.engine ?? (replay ? { version: 'replay-fixture' } : {}),
     base: probe.identity?.base ?? (replay ? { version: 'replay-fixture' } : {}),
-    project: { treeHash: replay ? 'replay-fixture' : null },
+    project: probe.identity?.project ?? { treeHash: replay ? 'replay-fixture' : null },
     model: probe.identity?.model ?? (replay ? { provider: 'replay', modelId: 'replay-fixture' } : modelIdentityFromEnv(env)),
     dataDir: outRoot,
     inputLedger,
@@ -168,14 +181,16 @@ export async function runAcceptance({ argv = process.argv.slice(2), env = proces
           evidence.screenshot(shot.name, buffer);
           observation.evidence.screenshots.push({ assertionId: shot.assertionId, name: shot.name, sha256: crypto.createHash('sha256').update(buffer).digest('hex'), bytes: buffer.length });
         }
-        for (const review of fixture.humanReviews ?? []) observation.evidence.human.push(review);
+        // Replay cannot satisfy a human-review assertion: a player record must be
+        // a real file in the bundle, which a fixture cannot produce. Fixtures are
+        // therefore not allowed to inject human reviews at all.
         openEvidence().before(observation.before ?? null);
         evidence.after(observation.after ?? observation);
         evidence.writeJson('observation.json', observation);
         for (const usage of observation.usage ? [observation.usage] : []) evidence.usage({ stage: 'creation', source: 'replay-fixture', ...usage });
         for (const failure of replayed.failures) evidence.failure(failure);
         for (const intervention of replayed.interventions ?? []) evidence.intervention(intervention);
-        verdict = evaluateRound({ round, assertions: round.assertions.map(id => byId.get(id)), observation, identity, mode: 'replay' });
+        verdict = evaluateRound({ round, assertions: round.assertions.map(id => byId.get(id)), observation, identity, mode: 'replay', artifacts: hashTree(evidence.dir) });
       }
     } else {
       if (!transport) {
@@ -185,7 +200,7 @@ export async function runAcceptance({ argv = process.argv.slice(2), env = proces
         try {
           const live = await runLiveRound({ round, transport, evidence: openEvidence(), identity });
           verdict = live.observation
-            ? { ...evaluateRound({ round, assertions: round.assertions.map(id => byId.get(id)), observation: live.observation, identity, mode: 'live' }), modelCalls: live.modelCalls }
+            ? { ...evaluateRound({ round, assertions: round.assertions.map(id => byId.get(id)), observation: live.observation, identity, mode: 'live', artifacts: hashTree(evidence.dir) }), modelCalls: live.modelCalls }
             : { roundId: round.id, mode: 'live', verdict: 'failed', reasons: live.reasons, assertions: [], hardFailures: [], missingEvidence: [], identityMissing: [], modelCalls: live.modelCalls };
         } catch (error) {
           const blocked = error instanceof ProductInterfaceUnavailable;
@@ -198,7 +213,14 @@ export async function runAcceptance({ argv = process.argv.slice(2), env = proces
     }
 
     const sealed = evidence ? evidence.finalize({ verdict: verdict.verdict, reasons: verdict.reasons ?? [] }) : null;
-    results.push({ ...round, ...verdict, evidenceDir: sealed ? path.relative(outRoot, sealed.dir).split(path.sep).join('/') : null });
+    results.push({
+      ...round,
+      ...verdict,
+      evidenceDir: sealed ? path.relative(outRoot, sealed.dir).split(path.sep).join('/') : null,
+      unknownUsageCalls: sealed?.usage?.unknownCalls ?? 0,
+      usageCalls: sealed?.usage?.calls ?? 0,
+      humanInterventions: sealed?.interventions?.length ?? 0,
+    });
   }
 
   assertNoInput(inputLedger);
@@ -208,7 +230,8 @@ export async function runAcceptance({ argv = process.argv.slice(2), env = proces
   const metrics = {
     modelCalls: results.reduce((sum, round) => sum + (round.modelCalls ?? 0), 0),
     unknownUsageCalls: results.reduce((sum, round) => sum + (round.unknownUsageCalls ?? 0), 0),
-    humanInterventions: results.reduce((sum, round) => sum + (round.failures ?? []).filter(failure => failure.class === 'human-intervention').length, 0),
+    usageCalls: results.reduce((sum, round) => sum + (round.usageCalls ?? 0), 0),
+    humanInterventions: results.reduce((sum, round) => sum + (round.humanInterventions ?? 0), 0),
     replayFixtures: listFixtures(args.fixtures ?? path.join(ROOT, 'fixtures', 'replay')).length,
   };
 
@@ -220,7 +243,7 @@ export async function runAcceptance({ argv = process.argv.slice(2), env = proces
     ledger,
     metrics,
     notes: [
-      `冻结校验：${spec.verdict.ok ? '通过' : '失败'}；来源文档漂移 ${spec.verdict.changedSources.length} 项。`,
+      `冻结校验：${spec.verdict.ok ? '通过' : '失败'}；来源文档漂移 ${spec.verdict.changedSources.length} 项，缺失 ${spec.verdict.missingSources.length} 项（来源根 ${spec.verdict.sourceRoot}）。`,
       `覆盖检查：${coverage.categories} 类 / ${coverage.rounds} 轮 / ${coverage.assertions} 条断言。`,
       args.mode === 'replay' ? 'replay 只证明验收器本身；它不构成任何真实模型结论。' : null,
       args.mode === 'live' && !transport ? `产品接口未接通，全部轮次记为尚未执行。待执行命令：${LIVE_COMMAND}` : null,
@@ -230,10 +253,13 @@ export async function runAcceptance({ argv = process.argv.slice(2), env = proces
   fs.writeFileSync(path.join(outRoot, 'ledger-state.json'), `${JSON.stringify({ format: 'craftmine.i.ledger-state/1', generatedAt: report.generatedAt, mode: args.mode, freeze: report.freeze, items: ledgerRows(ledger) }, null, 2)}\n`);
 
   const hardFailed = results.filter(round => round.verdict === 'failed').length;
+  const insufficient = results.filter(round => round.verdict === 'insufficient').length;
   const blocked = results.filter(round => round.verdict === 'blocked' || round.verdict === 'not-run').length;
   let exitCode = EXIT.OK;
   if (hardFailed) exitCode = EXIT.HARD_FAILURE;
-  else if (args.mode === 'live' && blocked === results.length && results.length) exitCode = EXIT.BLOCKED;
+  // 证据不足不是通过：live 模式下有 insufficient 就必须非 0 结束。
+  else if (args.mode === 'live' && insufficient > 0) exitCode = EXIT.HARD_FAILURE;
+  else if (args.mode === 'live' && blocked > 0) exitCode = EXIT.BLOCKED;
 
   return { exitCode, report, written, ledgerRows: ledgerRows(ledger), outRoot };
 }

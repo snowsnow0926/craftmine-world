@@ -1,6 +1,6 @@
 # 真实模型验收报告（任务 I）
 
-- 生成时间：2026-09-09T16:59:12.209Z
+- 生成时间：2026-09-09T17:06:03.455Z
 - 模式：live
 - 冻结校验：通过（ok）
 - 身份摘要：product=unknown engine=unknown base=unknown model=unknown
@@ -133,6 +133,6 @@
 
 ## 备注
 
-- 冻结校验：通过；来源文档漂移 0 项。
+- 冻结校验：通过；来源文档漂移 0 项，缺失 0 项（来源根 D:\Craftmine World）。
 - 覆盖检查：14 类 / 28 轮 / 128 条断言。
 - 产品接口未接通，全部轮次记为尚未执行。待执行命令：set CRAFTMINE_I_PRODUCT_INTERFACE=<product acceptance base url> then: node tests/godot-remaining/I/run.mjs --mode live --confirm-live

@@ -1,12 +1,12 @@
 {
   "format": "craftmine.i.report/1",
-  "generatedAt": "2026-09-09T16:59:12.082Z",
+  "generatedAt": "2026-09-09T17:06:03.313Z",
   "mode": "replay",
   "identity": {
     "format": "craftmine.i.identity/1",
-    "runId": "2c9cb66a-ead3-4277-afd1-913af3116590",
+    "runId": "461c6bff-a3cb-43dd-912b-feaa31ea8cb8",
     "mode": "replay",
-    "startedAt": "2026-09-09T16:59:12.065Z",
+    "startedAt": "2026-09-09T17:06:03.299Z",
     "product": {
       "version": "replay-fixture",
       "clientVersion": "replay-fixture",
@@ -50,11 +50,14 @@
   },
   "freeze": {
     "ok": true,
+    "sourcesOk": true,
     "reason": "ok",
-    "lockedAt": "2026-09-09T16:55:05.575Z",
+    "lockedAt": "2026-09-09T17:03:24.962Z",
+    "sourceRoot": "D:\\Craftmine World",
     "mismatched": [],
     "missing": [],
-    "changedSources": []
+    "changedSources": [],
+    "missingSources": []
   },
   "headline": {
     "rounds": 28,
@@ -114,7 +117,7 @@
         "I.R02.1.1: element 2 failed: expected <= 0.5, got 4",
         "I.R02.1.2: expected true, got false",
         "I.R02.1.3: expected length >= 4, got 2",
-        "missing evidence: I.R02.1.5/screenshot"
+        "missing evidence: I.R02.1.5/screenshot-artifact"
       ],
       "evidenceDir": "evidence/R02.1",
       "assertions": [
@@ -161,7 +164,20 @@
           "reason": "accounting evidence is required and cannot be satisfied by the assertion evaluator"
         }
       ],
-      "failures": [],
+      "failures": [
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R02.1.1: element 2 failed: expected <= 0.5, got 4"
+        },
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R02.1.2: expected true, got false"
+        },
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R02.1.3: expected length >= 4, got 2"
+        }
+      ],
       "blockedBy": [
         "L",
         "F",
@@ -194,7 +210,7 @@
       "verdict": "failed",
       "reasons": [
         "I.R03.1.2: expected {} to equal progress.inventoryBefore ({\"wood\":4,\"coin\":12})",
-        "missing evidence: I.R03.1.5/screenshot"
+        "missing evidence: I.R03.1.5/screenshot-artifact"
       ],
       "evidenceDir": "evidence/R03.1",
       "assertions": [
@@ -234,7 +250,12 @@
           "reason": "visual evidence is required and cannot be satisfied by the assertion evaluator"
         }
       ],
-      "failures": [],
+      "failures": [
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R03.1.2: expected {} to equal progress.inventoryBefore ({\"wood\":4,\"coin\":12})"
+        }
+      ],
       "blockedBy": [
         "A",
         "D",
@@ -680,7 +701,28 @@
       "command": null
     }
   ],
-  "hardFailures": [],
+  "hardFailures": [
+    {
+      "round": "R02.1",
+      "class": "model-wrong-behavior",
+      "message": "I.R02.1.1: element 2 failed: expected <= 0.5, got 4"
+    },
+    {
+      "round": "R02.1",
+      "class": "model-wrong-behavior",
+      "message": "I.R02.1.2: expected true, got false"
+    },
+    {
+      "round": "R02.1",
+      "class": "model-wrong-behavior",
+      "message": "I.R02.1.3: expected length >= 4, got 2"
+    },
+    {
+      "round": "R03.1",
+      "class": "model-wrong-behavior",
+      "message": "I.R03.1.2: expected {} to equal progress.inventoryBefore ({\"wood\":4,\"coin\":12})"
+    }
+  ],
   "pending": [
     {
       "id": "R01.1",
@@ -966,6 +1008,7 @@
   "metrics": {
     "modelCalls": 0,
     "unknownUsageCalls": 0,
+    "usageCalls": 2,
     "humanInterventions": 0,
     "replayFixtures": 2
   },
@@ -1613,7 +1656,7 @@
     }
   ],
   "notes": [
-    "冻结校验：通过；来源文档漂移 0 项。",
+    "冻结校验：通过；来源文档漂移 0 项，缺失 0 项（来源根 D:\\Craftmine World）。",
     "覆盖检查：14 类 / 28 轮 / 128 条断言。",
     "replay 只证明验收器本身；它不构成任何真实模型结论。"
   ]

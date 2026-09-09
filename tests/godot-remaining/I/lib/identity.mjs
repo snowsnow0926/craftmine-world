@@ -7,7 +7,7 @@ import { sha256Text } from './frozen.mjs';
 export const IDENTITY_FORMAT = 'craftmine.i.identity/1';
 
 const SECRET_KEY = /(api[_-]?key|token|secret|password|authorization|credential|cookie|session[_-]?key)/i;
-const SECRET_VALUE = /\b(sk-[A-Za-z0-9_-]{8,}|[A-Za-z0-9_-]{32,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,})\b/g;
+const SECRET_VALUE = /\b(sk-[A-Za-z0-9_-]{8,}|[A-Za-z0-9_-]{32,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]{16,})\b/g;
 
 export function redact(value) {
   if (Array.isArray(value)) return value.map(redact);

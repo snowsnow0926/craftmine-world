@@ -55,7 +55,7 @@ export function refresh(state, { rounds, ledgers, requireLive = true }) {
       const item = state.items[frozen.id];
       if (!item) continue;
       const linked = frozen.rounds ?? [];
-      const hardFailures = linked.flatMap(roundId => roundsById.get(roundId)?.failures ?? []).filter(failure => failure.class && failure.class !== 'human-intervention');
+      const hardFailures = linked.flatMap(roundId => roundsById.get(roundId)?.hardFailures ?? []).filter(failure => failure.class && failure.class !== 'human-intervention');
       const derived = deriveStatus({ ...item, rounds: linked }, { roundsById, hardFailures, requireLive });
       item.status = derived.status;
       item.reason = derived.reason;

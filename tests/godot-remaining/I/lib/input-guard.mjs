@@ -5,7 +5,8 @@
 // lock, and must never activate or raise a window. This module makes that rule
 // executable instead of aspirational:
 //   1. it scans the acceptance runner's own sources for forbidden input APIs;
-//   2. it wraps any browser page so forbidden methods throw;
+//   2. it wraps any browser page (and its nested input containers and locators)
+//      so forbidden methods throw;
 //   3. it carries a ledger that every evidence bundle must record.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -13,13 +14,15 @@ import { fileURLToPath } from 'node:url';
 
 export const INPUT_GUARD_FORMAT = 'craftmine.i.input-guard/1';
 
+const SELF_FILE = fileURLToPath(import.meta.url);
+
 export const FORBIDDEN_PATTERNS = Object.freeze([
   { id: 'playwright-mouse', pattern: /\bpage\s*\.\s*mouse\b/, why: 'real mouse input' },
   { id: 'playwright-keyboard', pattern: /\bpage\s*\.\s*keyboard\b/, why: 'real keyboard input' },
-  { id: 'playwright-click', pattern: /\bpage\s*\.\s*click\s*\(/, why: 'real click input' },
-  { id: 'playwright-fill', pattern: /\bpage\s*\.\s*fill\s*\(/, why: 'real keyboard input' },
-  { id: 'playwright-press', pattern: /\bpage\s*\.\s*press\s*\(/, why: 'real key input' },
-  { id: 'locator-click', pattern: /\b(locator|frameLocator)\s*\([^)]*\)\s*\.\s*(click|fill|press|hover|type|check|selectOption)\s*\(/, why: 'real input via locator' },
+  { id: 'playwright-click', pattern: /\bpage\s*\.\s*(click|dblclick|tap)\s*\(/, why: 'real click input' },
+  { id: 'playwright-fill', pattern: /\bpage\s*\.\s*(fill|type|setInputFiles)\s*\(/, why: 'real keyboard or file input' },
+  { id: 'playwright-press', pattern: /\bpage\s*\.\s*(press|hover|check|uncheck|selectOption|dragAndDrop)\s*\(/, why: 'real pointer or key input' },
+  { id: 'locator-input', pattern: /\.(locator|getBy\w+|frameLocator)\s*\([^)]*\)\s*\.\s*(click|dblclick|fill|press|type|hover|check|uncheck|selectOption|tap|dragAndDrop|setInputFiles|focus)\s*\(/, why: 'real input via locator' },
   { id: 'pointer-lock', pattern: /requestPointerLock/, why: 'pointer lock request' },
   { id: 'focus-steal', pattern: /\b(browserWindow|win|window)\s*\.\s*(focus|show|moveTop)\s*\(/, why: 'window activation' },
   { id: 'always-on-top', pattern: /alwaysOnTop\s*[:=]\s*true/, why: 'window raised above the user' },
@@ -28,7 +31,26 @@ export const FORBIDDEN_PATTERNS = Object.freeze([
   { id: 'child-input', pattern: /child_process[\s\S]{0,80}(SendKeys|WScript\.Shell)/, why: 'OS level input' },
 ]);
 
-export const GUARDED_METHODS = Object.freeze(['mouse', 'keyboard', 'click', 'fill', 'press', 'hover', 'type', 'check', 'uncheck', 'selectOption', 'tap', 'dragAndDrop', 'focus']);
+// Direct input entry points on a page/context.
+export const GUARDED_METHODS = Object.freeze(['click', 'dblclick', 'fill', 'press', 'type', 'hover', 'check', 'uncheck', 'selectOption', 'tap', 'dragAndDrop', 'setInputFiles', 'focus', 'dispatchEvent']);
+// Nested containers that expose input methods.
+export const GUARDED_CONTAINERS = Object.freeze(['mouse', 'keyboard', 'touchscreen']);
+// Factories that return objects which themselves expose input methods.
+export const GUARDED_FACTORIES = Object.freeze(['locator', 'getByRole', 'getByText', 'getByTestId', 'getByLabel', 'getByPlaceholder', 'getByTitle', 'getByAltText', 'frameLocator']);
+export const GUARDED_LOCATOR_METHODS = Object.freeze(['click', 'dblclick', 'fill', 'press', 'type', 'hover', 'check', 'uncheck', 'selectOption', 'tap', 'dragAndDrop', 'setInputFiles', 'focus', 'clear', 'selectText']);
+
+function methodNames(object) {
+  const names = new Set();
+  let current = object;
+  while (current && current !== Object.prototype && current !== Function.prototype) {
+    for (const name of Object.getOwnPropertyNames(current)) {
+      if (name === 'constructor') continue;
+      if (typeof object[name] === 'function') names.add(name);
+    }
+    current = Object.getPrototypeOf(current);
+  }
+  return [...names];
+}
 
 export function scanSources(dir, { skip = ['fixtures'] } = {}) {
   const findings = [];
@@ -38,9 +60,10 @@ export function scanSources(dir, { skip = ['fixtures'] } = {}) {
       const full = path.join(current, entry.name);
       if (entry.isDirectory()) { walk(full); continue; }
       if (!/\.(mjs|cjs|js|ts)$/.test(entry.name)) continue;
+      // Only this module is allowed to contain the patterns; identified by path,
+      // not by a string marker that any file could copy.
+      if (path.resolve(full) === path.resolve(SELF_FILE)) continue;
       const text = fs.readFileSync(full, 'utf8');
-      // This module defines the patterns; it is not an input caller.
-      if (text.includes('craftmine.i.input-guard/1')) continue;
       for (const rule of FORBIDDEN_PATTERNS) {
         const match = rule.pattern.exec(text);
         if (match) findings.push({ file: path.relative(dir, full), rule: rule.id, why: rule.why, excerpt: text.slice(Math.max(0, match.index - 40), match.index + 60).replace(/\s+/g, ' ') });
@@ -59,21 +82,33 @@ export class InputGuardError extends Error {
 }
 
 // Wrap a browser page/context so that any real input call throws immediately.
-// The returned object is the same page, so existing page-script based code keeps
-// working while real input is impossible.
+// The returned object is the same page, so page-script based code keeps working
+// while real input is impossible.
 export function guardPage(page, ledger = createInputLedger()) {
   if (!page || typeof page !== 'object') throw new InputGuardError('guardPage needs a page object');
   const blocker = method => () => {
     ledger.blockedInputAttempts.push({ method, at: new Date().toISOString() });
     throw new InputGuardError(`real input is forbidden in acceptance runs: ${method}()`);
   };
-  for (const method of GUARDED_METHODS) {
-    const value = page[method];
-    if (typeof value === 'function') { page[method] = blocker(method); continue; }
-    // Nested input containers such as page.mouse.move / page.keyboard.press.
-    if (value && typeof value === 'object') {
-      for (const key of Object.keys(value)) if (typeof value[key] === 'function') value[key] = blocker(`${method}.${key}`);
+  const guardObject = (object, names, prefix) => {
+    for (const name of methodNames(object)) {
+      if (!names.includes(name)) continue;
+      object[name] = blocker(prefix ? `${prefix}.${name}` : name);
     }
+  };
+  guardObject(page, GUARDED_METHODS, '');
+  for (const container of GUARDED_CONTAINERS) {
+    const value = page[container];
+    if (value && typeof value === 'object') guardObject(value, methodNames(value), container);
+  }
+  for (const factory of GUARDED_FACTORIES) {
+    if (typeof page[factory] !== 'function') continue;
+    const original = page[factory].bind(page);
+    page[factory] = (...args) => {
+      const locator = original(...args);
+      if (locator && typeof locator === 'object') guardObject(locator, GUARDED_LOCATOR_METHODS, factory);
+      return locator;
+    };
   }
   return page;
 }

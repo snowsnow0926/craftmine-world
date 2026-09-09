@@ -19,6 +19,7 @@ export const FAILURE_CLASSES = Object.freeze({
   'human-intervention': { zh: '人工介入', blame: 'process', note: '人工改了提示/实现/标准，必须单独记账' },
   'evidence-insufficient': { zh: '证据不足', blame: 'process', note: '缺少身份/哈希/画面/前后状态，不能判通过' },
   'assertion-invalid': { zh: '断言无效', blame: 'harness', note: '断言无法被判红或与需求不符' },
+  unclassified: { zh: '未归类', blame: 'process', note: '自动分类未命中；必须人工归类，未归类会让 R13.2 判失败' },
 });
 
 export const FAILURE_CLASS_IDS = Object.freeze(Object.keys(FAILURE_CLASSES));
@@ -37,7 +38,7 @@ export function classifyFailure({ stage = 'unknown', message = '', error = null 
     [/engine|godot .*error|gdscript .*parse/, 'engine-limit'],
     [/harness|assertion .*invalid|assertion evaluator/, 'harness-bug'],
   ].find(([pattern]) => pattern.test(text));
-  return { class: match ? match[1] : 'timeout', stage, message: message || error?.message || '', defined: FAILURE_CLASS_IDS.includes(match ? match[1] : 'timeout') };
+  return { class: match ? match[1] : 'unclassified', stage, message: message || error?.message || '', defined: FAILURE_CLASS_IDS.includes(match ? match[1] : 'unclassified') };
 }
 
 export function summarizeFailures(failures = []) {

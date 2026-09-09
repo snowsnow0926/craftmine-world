@@ -1,12 +1,12 @@
 {
   "format": "craftmine.i.report/1",
-  "generatedAt": "2026-09-09T16:59:12.209Z",
+  "generatedAt": "2026-09-09T17:06:03.455Z",
   "mode": "live",
   "identity": {
     "format": "craftmine.i.identity/1",
-    "runId": "802ebd3a-ae43-4082-9619-17b4dfb81a60",
+    "runId": "01b122f0-e4b9-4fea-9bb4-424b7d83a546",
     "mode": "live",
-    "startedAt": "2026-09-09T16:59:12.179Z",
+    "startedAt": "2026-09-09T17:06:03.412Z",
     "product": {
       "version": null,
       "clientVersion": null,
@@ -55,11 +55,14 @@
   },
   "freeze": {
     "ok": true,
+    "sourcesOk": true,
     "reason": "ok",
-    "lockedAt": "2026-09-09T16:55:05.575Z",
+    "lockedAt": "2026-09-09T17:03:24.962Z",
+    "sourceRoot": "D:\\Craftmine World",
     "mismatched": [],
     "missing": [],
-    "changedSources": []
+    "changedSources": [],
+    "missingSources": []
   },
   "headline": {
     "rounds": 28,
@@ -937,6 +940,7 @@
   "metrics": {
     "modelCalls": 0,
     "unknownUsageCalls": 0,
+    "usageCalls": 0,
     "humanInterventions": 0,
     "replayFixtures": 7
   },
@@ -1584,7 +1588,7 @@
     }
   ],
   "notes": [
-    "冻结校验：通过；来源文档漂移 0 项。",
+    "冻结校验：通过；来源文档漂移 0 项，缺失 0 项（来源根 D:\\Craftmine World）。",
     "覆盖检查：14 类 / 28 轮 / 128 条断言。",
     "产品接口未接通，全部轮次记为尚未执行。待执行命令：set CRAFTMINE_I_PRODUCT_INTERFACE=<product acceptance base url> then: node tests/godot-remaining/I/run.mjs --mode live --confirm-live"
   ]

@@ -2,7 +2,7 @@
 // These run before any round: a set that silently lost a story, an assertion or
 // a second round must fail loudly instead of reporting a smaller denominator.
 import { indexAssertions, roundsOf } from './frozen.mjs';
-import { OP_NAMES } from './assert-dsl.mjs';
+import { OP_NAMES, SET_OPS, ASSERTION_KINDS } from './assert-dsl.mjs';
 
 export const COVERAGE_FORMAT = 'craftmine.i.coverage/1';
 
@@ -18,7 +18,11 @@ function checkCheck(check, problems, assertionId) {
     return;
   }
   if (check.not) { checkCheck(check.not, problems, assertionId); return; }
-  if (check.check) { checkCheck(check.check, problems, assertionId); return; }
+  if (check.check) {
+    if (!SET_OPS.includes(check.op)) problems.push(`${assertionId}: set op must be one of ${SET_OPS.join('/')}, got ${JSON.stringify(check.op)}`);
+    checkCheck(check.check, problems, assertionId);
+    return;
+  }
   if (!OP_NAMES.includes(check.op)) problems.push(`${assertionId}: unknown op ${JSON.stringify(check.op)}`);
   if (typeof check.path !== 'string' || check.path.length === 0) problems.push(`${assertionId}: missing path`);
 }
@@ -40,14 +44,20 @@ export function checkCoverage({ set, assertions, ledgers, scoring }) {
         const assertion = byId.get(id);
         if (!assertion) { problems.push(`${round.id}: unknown assertion ${id}`); continue; }
         if (assertion.round !== round.id) problems.push(`${assertion.id}: round mismatch (${assertion.round} vs ${round.id})`);
+        if (!ASSERTION_KINDS.includes(assertion.kind ?? 'machine')) problems.push(`${assertion.id}: unknown kind ${JSON.stringify(assertion.kind)}`);
         if ((assertion.kind ?? 'machine') === 'machine') checkCheck(assertion.check, problems, assertion.id);
         if (assertion.source && !assertion.source.length) problems.push(`${assertion.id}: empty source`);
       }
     }
   }
 
-  const orphan = assertions.assertions.filter(assertion => !rounds.some(round => round.id === assertion.round));
-  for (const assertion of orphan) problems.push(`orphan assertion ${assertion.id} (round ${assertion.round})`);
+  // Reverse check: an assertion belonging to a round must be listed by that
+  // round, otherwise it silently stops participating in the verdict.
+  for (const assertion of assertions.assertions) {
+    const round = rounds.find(item => item.id === assertion.round);
+    if (!round) { problems.push(`orphan assertion ${assertion.id} (round ${assertion.round})`); continue; }
+    if (!(round.assertions ?? []).includes(assertion.id)) problems.push(`${assertion.id}: not listed by its round ${assertion.round}`);
+  }
 
   // Every Godot story A01–A17 must be covered by at least one round.
   const coveredStories = new Set(set.categories.flatMap(category => category.stories ?? []));

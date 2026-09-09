@@ -1,6 +1,6 @@
 # 真实模型验收报告（任务 I）
 
-- 生成时间：2026-09-09T16:59:12.082Z
+- 生成时间：2026-09-09T17:06:03.313Z
 - 模式：replay
 - 冻结校验：通过（ok）
 - 身份摘要：product=replay-fixture engine=replay-fixture base=replay-fixture model=replay-fixture
@@ -18,9 +18,9 @@
 | --- | --- | --- | --- | --- |
 | R01.1 | R01 | not-run | no replay fixture at tests\godot-remaining\I\fixtures\negative\R01.1.json | — |
 | R01.2 | R01 | not-run | no replay fixture at tests\godot-remaining\I\fixtures\negative\R01.2.json | — |
-| R02.1 | R02 | failed | I.R02.1.1: element 2 failed: expected <= 0.5, got 4; I.R02.1.2: expected true, got false; I.R02.1.3: expected length >= 4, got 2; missing evidence: I.R02.1.5/screenshot | evidence/R02.1 |
+| R02.1 | R02 | failed | I.R02.1.1: element 2 failed: expected <= 0.5, got 4; I.R02.1.2: expected true, got false; I.R02.1.3: expected length >= 4, got 2; missing evidence: I.R02.1.5/screenshot-artifact | evidence/R02.1 |
 | R02.2 | R02 | not-run | no replay fixture at tests\godot-remaining\I\fixtures\negative\R02.2.json | — |
-| R03.1 | R03 | failed | I.R03.1.2: expected {} to equal progress.inventoryBefore ({"wood":4,"coin":12}); missing evidence: I.R03.1.5/screenshot | evidence/R03.1 |
+| R03.1 | R03 | failed | I.R03.1.2: expected {} to equal progress.inventoryBefore ({"wood":4,"coin":12}); missing evidence: I.R03.1.5/screenshot-artifact | evidence/R03.1 |
 | R03.2 | R03 | not-run | no replay fixture at tests\godot-remaining\I\fixtures\negative\R03.2.json | — |
 | R04.1 | R04 | not-run | no replay fixture at tests\godot-remaining\I\fixtures\negative\R04.1.json | — |
 | R04.2 | R04 | not-run | no replay fixture at tests\godot-remaining\I\fixtures\negative\R04.2.json | — |
@@ -44,6 +44,13 @@
 | R13.2 | R13 | not-run | no replay fixture at tests\godot-remaining\I\fixtures\negative\R13.2.json | — |
 | R14.1 | R14 | not-run | no replay fixture at tests\godot-remaining\I\fixtures\negative\R14.1.json | — |
 | R14.2 | R14 | not-run | no replay fixture at tests\godot-remaining\I\fixtures\negative\R14.2.json | — |
+
+## 硬失败（不能被其他通过抵消）
+
+- R02.1 · model-wrong-behavior: I.R02.1.1: element 2 failed: expected <= 0.5, got 4
+- R02.1 · model-wrong-behavior: I.R02.1.2: expected true, got false
+- R02.1 · model-wrong-behavior: I.R02.1.3: expected length >= 4, got 2
+- R03.1 · model-wrong-behavior: I.R03.1.2: expected {} to equal progress.inventoryBefore ({"wood":4,"coin":12})
 
 ## 尚未执行 / 被依赖阻断
 
@@ -131,6 +138,6 @@
 
 ## 备注
 
-- 冻结校验：通过；来源文档漂移 0 项。
+- 冻结校验：通过；来源文档漂移 0 项，缺失 0 项（来源根 D:\Craftmine World）。
 - 覆盖检查：14 类 / 28 轮 / 128 条断言。
 - replay 只证明验收器本身；它不构成任何真实模型结论。

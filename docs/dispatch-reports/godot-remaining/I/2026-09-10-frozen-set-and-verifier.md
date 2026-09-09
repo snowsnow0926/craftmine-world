@@ -56,15 +56,15 @@
 | 命令 | 结果 | 证据 |
 | --- | --- | --- |
 | `node tools/freeze.mjs` | 8 个冻结文件，覆盖 14 类/28 轮/128 断言 | `spec/FREEZE.lock.json` |
-| `node tests/godot-remaining/I/selfcheck.mjs` | **16/16 PASS**，退出 0 | 见下节清单 |
-| `node --test tests/godot-remaining/I/acceptance-runner.test.mjs` | **7/7 pass** | 终端输出 |
+| `node tests/godot-remaining/I/selfcheck.mjs` | **21/21 PASS**，退出 0 | 见下节清单 |
+| `node --test tests/godot-remaining/I/acceptance-runner.test.mjs` | **9/9 pass** | 终端输出 |
 | `node run.mjs --mode audit` | 28 轮全部尚未执行，无模型调用 | `evidence/audit/report.{json,md}` |
 | `node run.mjs --mode replay` | 28 轮：通过 6、证据不足 1、未执行 21；**已证实故事 0** | `evidence/replay/report.{json,md}` + 每轮 `evidence/replay/evidence/<round>/` |
 | `node run.mjs --mode replay --fixtures fixtures/negative` | **2 轮判失败，退出码 1**（证明断言会判红） | `evidence/negative/report.{json,md}` |
 | `node run.mjs --mode live --confirm-live` | **28 轮全部尚未执行，模型调用 0，退出码 3** | `evidence/live-blocked/report.{json,md}` + 每轮 `blocked.json` |
 | `node run.mjs --mode live`（未加 `--confirm-live`） | 拒绝执行，退出码 2 | — |
 
-自检 16 项：冻结完整性、覆盖（≥10 类、每类两轮、A01–A17 全覆盖）、断言可求值、**判红能力（8 个反例全部判红）**、visual/human/accounting 不能被 machine 判通过、缺证据判证据不足、**禁用真实输入（源码扫描 + 页面守卫 + 账目断言）**、台账四种状态、replay 不能判已证实、身份字段缺失识别、凭据拦截、live 探针、replay/反例/live 退出码、报告不含凭据、报告头不把未执行计入通过。
+自检 21 项：冻结完整性、覆盖（≥10 类、每类两轮、A01–A17 全覆盖）、断言可求值、**判红能力（8 个反例全部判红）**、**缺失引用/空集合不会真空通过**、**证据类断言必须指向证据包里的真实工件**、visual/human/accounting 不能被 machine 判通过、缺证据判证据不足、**观测缺分区不得通过**、**禁用真实输入（源码扫描 + 页面/嵌套容器/Locator 守卫 + 账目断言）**、台账四种状态、replay 不能判已证实、身份字段缺失识别、凭据拦截、live 探针、replay/反例/live 退出码、**夹具不能伪造人工试玩**、**反例报告保留硬失败**、报告不含凭据、报告头不把未执行计入通过。
 
 `replay` 夹具只是**验收器证据**，报告 `mode=replay` 明示；它不构成任何真实模型结论，也无法让任何故事变成已证实。
 
@@ -125,7 +125,32 @@ node tests/godot-remaining/I/run.mjs --mode live --confirm-live --out test-resul
    "test:i-selfcheck": "node tests/godot-remaining/I/selfcheck.mjs"
    ```
 
-## 8. 复现命令
+## 8. 对抗性复核与修复（独立 code-reviewer 只读复核后）
+
+复核发现并已修复的缺陷（每条都补了回归测试）：
+
+| 级别 | 缺陷 | 修复 |
+| --- | --- | --- |
+| 阻断 | `equalsPath`/`unchangedFrom` 两侧路径都缺失时真空通过（会让「进度保持」类断言假通过） | 引用路径缺失直接判失败 |
+| 阻断 | `every` 对空数组返回真（模型什么都没做也通过） | 空集合下 `every` 判失败，`some` 保持语义 |
+| 阻断 | 报告读 `round.failures`，而判定产出的是 `hardFailures`，硬失败在报告里消失 | 统一为 `hardFailures`，反例报告现在保留 4 条硬失败 |
+| 重要 | 证据类断言（visual/human/accounting）被当成硬失败，会污染台账 | 只有 machine 断言能造成硬失败 |
+| 重要 | live 身份漏用产品返回的 `project`，导致永远无法判已证实 | 改用 `probe.identity.project` |
+| 重要 | `unknownUsageCalls` 恒为 0 | 从证据包用量账目回写并累加 |
+| 重要 | 截图/人工记录只信自报字段，夹具可伪造人工试玩 | 必须对应证据包里真实存在的工件；删除夹具注入人工记录的入口 |
+| 重要 | 来源文档缺失时仍打印「冻结校验通过」 | 新增 `sourcesOk`；live 模式下来源不可用直接拒绝执行 |
+| 重要 | live 模式存在证据不足仍退出 0 | live 下 `insufficient > 0` 退出 1；有 blocked 退出 3 |
+| 次要 | `guardPage` 只包装自有属性，真实 Playwright 原型方法漏拦 | 遍历原型链，并包装 Locator 工厂返回值 |
+| 次要 | 扫描靠字符串标记跳过自身，可被伪造 | 改为按绝对路径跳过 |
+| 次要 | 截图工件哈希按 base64 文本计算 | 改按原始字节 |
+| 次要 | 断言从轮次列表移除后静默失效 | 覆盖检查增加反向校验 |
+| 次要 | 不校验断言 `kind` 与集合 op | 覆盖检查增加白名单 |
+| 次要 | 重新冻结静默盖章 | 冻结文件变化时必须 `--accept-change "<reason>"` |
+| 次要 | 观测整体缺分区仍可通过 | 断言读取的顶层分区必须存在，否则不得通过 |
+
+仍未做的（明确保留）：`mustObserve` 的散文条目没有被机器逐条比对（只保证它非空），真实运行时应由人工复核清单；live 传输的端到端行为在产品接口出现前无法验证。
+
+## 9. 复现命令
 
 ```powershell
 cd D:\Craftmine World-worktrees\godot-remaining-i-20260910

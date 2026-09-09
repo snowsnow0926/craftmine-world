@@ -18,6 +18,7 @@
     { "id": "flaky", "zh": "不稳定", "blame": "unknown" },
     { "id": "human-intervention", "zh": "人工介入", "blame": "process" },
     { "id": "evidence-insufficient", "zh": "证据不足", "blame": "process" },
-    { "id": "assertion-invalid", "zh": "断言无效", "blame": "harness" }
+    { "id": "assertion-invalid", "zh": "断言无效", "blame": "harness" },
+    { "id": "unclassified", "zh": "未归类", "blame": "process" }
   ]
 }

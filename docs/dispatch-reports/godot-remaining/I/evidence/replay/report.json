@@ -1,12 +1,12 @@
 {
   "format": "craftmine.i.report/1",
-  "generatedAt": "2026-09-09T16:59:11.970Z",
+  "generatedAt": "2026-09-09T17:06:03.197Z",
   "mode": "replay",
   "identity": {
     "format": "craftmine.i.identity/1",
-    "runId": "e2bb98fb-5b61-4126-9210-f242fb4f20b5",
+    "runId": "5b05498d-8a53-4893-ba3f-a6fc1d70eed5",
     "mode": "replay",
-    "startedAt": "2026-09-09T16:59:11.944Z",
+    "startedAt": "2026-09-09T17:06:03.170Z",
     "product": {
       "version": "replay-fixture",
       "clientVersion": "replay-fixture",
@@ -50,11 +50,14 @@
   },
   "freeze": {
     "ok": true,
+    "sourcesOk": true,
     "reason": "ok",
-    "lockedAt": "2026-09-09T16:55:05.575Z",
+    "lockedAt": "2026-09-09T17:03:24.962Z",
+    "sourceRoot": "D:\\Craftmine World",
     "mismatched": [],
     "missing": [],
-    "changedSources": []
+    "changedSources": [],
+    "missingSources": []
   },
   "headline": {
     "rounds": 28,
@@ -63,7 +66,7 @@
     "insufficient": 1,
     "notRun": 21,
     "modelCalls": 0,
-    "unknownUsageCalls": 0,
+    "unknownUsageCalls": 1,
     "humanInterventions": 0,
     "verifiedStories": 0,
     "failedStories": 0,
@@ -789,7 +792,7 @@
       "phase": "follow-up",
       "verdict": "insufficient",
       "reasons": [
-        "missing evidence: I.R14.2.4/human-review"
+        "missing evidence: I.R14.2.4/human-review-record"
       ],
       "evidenceDir": "evidence/R14.2",
       "assertions": [
@@ -1061,7 +1064,8 @@
   ],
   "metrics": {
     "modelCalls": 0,
-    "unknownUsageCalls": 0,
+    "unknownUsageCalls": 1,
+    "usageCalls": 7,
     "humanInterventions": 0,
     "replayFixtures": 7
   },
@@ -1709,7 +1713,7 @@
     }
   ],
   "notes": [
-    "冻结校验：通过；来源文档漂移 0 项。",
+    "冻结校验：通过；来源文档漂移 0 项，缺失 0 项（来源根 D:\\Craftmine World）。",
     "覆盖检查：14 类 / 28 轮 / 128 条断言。",
     "replay 只证明验收器本身；它不构成任何真实模型结论。"
   ]

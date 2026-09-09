@@ -87,7 +87,7 @@ export function writeLock(root = ROOT, { frozenAt = new Date().toISOString(), en
 // callers decide whether a mismatch is fatal.
 export function verifyLock(root = ROOT, env = process.env) {
   const file = path.join(root, 'spec', 'FREEZE.lock.json');
-  if (!fs.existsSync(file)) return { ok: false, reason: 'FREEZE.lock.json is missing', mismatched: [], missing: FROZEN_FILES.slice(), changedSources: [], missingSources: [], sourceRoot: null, sourceRootAvailable: false };
+  if (!fs.existsSync(file)) return { ok: false, sourcesOk: false, reason: 'FREEZE.lock.json is missing', mismatched: [], missing: FROZEN_FILES.slice(), changedSources: [], missingSources: [], sourceRoot: null, sourceRootAvailable: false };
   const lock = readJson(file);
   // Verify provenance against the root recorded at freeze time unless overridden.
   const current = computeLock(root, { env, docsRoot: env[SOURCE_ROOT_ENV] ? null : (lock.sourceRoot ?? null) });
@@ -106,8 +106,10 @@ export function verifyLock(root = ROOT, env = process.env) {
     if (locked !== now) changedSources.push({ file: relative, locked, current: now });
   }
   const unknown = Object.keys(lock.files ?? {}).filter(relative => !FROZEN_FILES.includes(relative));
+  const sourcesOk = missingSources.length === 0 && changedSources.length === 0;
   return {
     ok: missing.length === 0 && mismatched.length === 0,
+    sourcesOk,
     reason: missing.length || mismatched.length ? 'frozen artefacts changed after freezing' : 'ok',
     lockedAt: lock.frozenAt ?? null,
     sourceRoot: lock.sourceRoot ?? current.sourceRoot,

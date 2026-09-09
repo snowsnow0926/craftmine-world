@@ -8,14 +8,24 @@ export const REPORT_FORMAT = 'craftmine.i.report/1';
 
 export function buildReport({ mode, identity, freeze, rounds, ledger, metrics = {}, generatedAt = new Date().toISOString(), notes = [] }) {
   const verdictCounts = rounds.reduce((acc, round) => ({ ...acc, [round.verdict]: (acc[round.verdict] ?? 0) + 1 }), {});
-  const hardFailures = rounds.flatMap(round => (round.failures ?? []).map(failure => ({ round: round.id, ...failure })));
+  const hardFailures = rounds.flatMap(round => (round.hardFailures ?? []).map(failure => ({ round: round.id, ...failure })));
   const pending = rounds.filter(round => round.verdict === 'not-run' || round.verdict === 'blocked').map(round => ({ id: round.id, category: round.categoryId, blockedBy: round.blockedBy ?? [], command: round.command ?? null }));
   return {
     format: REPORT_FORMAT,
     generatedAt,
     mode,
     identity,
-    freeze: { ok: freeze.ok, reason: freeze.reason, lockedAt: freeze.lockedAt ?? null, mismatched: freeze.mismatched, missing: freeze.missing, changedSources: freeze.changedSources },
+    freeze: {
+      ok: freeze.ok,
+      sourcesOk: freeze.sourcesOk ?? (freeze.changedSources?.length === 0 && freeze.missingSources?.length === 0),
+      reason: freeze.reason,
+      lockedAt: freeze.lockedAt ?? null,
+      sourceRoot: freeze.sourceRoot ?? null,
+      mismatched: freeze.mismatched,
+      missing: freeze.missing,
+      changedSources: freeze.changedSources,
+      missingSources: freeze.missingSources ?? [],
+    },
     headline: {
       rounds: rounds.length,
       passed: verdictCounts.passed ?? 0,
@@ -38,7 +48,7 @@ export function buildReport({ mode, identity, freeze, rounds, ledger, metrics = 
       reasons: round.reasons ?? [],
       evidenceDir: round.evidenceDir ?? null,
       assertions: round.assertions ?? [],
-      failures: round.failures ?? [],
+      failures: round.hardFailures ?? [],
       blockedBy: round.blockedBy ?? [],
       command: round.command ?? null,
     })),

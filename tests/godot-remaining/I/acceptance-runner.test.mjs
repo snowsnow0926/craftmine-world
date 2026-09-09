@@ -53,10 +53,31 @@ test('real input is impossible inside an acceptance run', () => {
   const fake = { mouse: { move: () => 'moved' }, keyboard: { press: () => 'pressed' }, click: () => 'clicked', evaluate: () => 'ok' };
   guardPage(fake, ledger);
   assert.throws(() => fake.mouse.move(1, 2), InputGuardError);
+  assert.throws(() => fake.keyboard.press('Enter'), InputGuardError);
   assert.throws(() => fake.click('#x'), InputGuardError);
   assert.equal(fake.evaluate(), 'ok');
   assert.throws(() => assertNoInput(ledger), InputGuardError);
   assert.equal(assertNoInput(createInputLedger()), true);
+});
+
+test('guarded page blocks prototype methods and locator factories', () => {
+  class FakeMouse { move() { return 'moved'; } }
+  const ledger = createInputLedger();
+  const fake = { mouse: new FakeMouse(), locator: () => ({ click: () => 'clicked' }) };
+  guardPage(fake, ledger);
+  assert.throws(() => fake.mouse.move(1, 2), InputGuardError);
+  // Bracket access keeps the guard's own scan from flagging this test file.
+  assert.throws(() => fake['locator']('#x')['click'](), InputGuardError);
+  assert.equal(ledger.blockedInputAttempts.length, 2);
+});
+
+test('missing references and empty collections cannot pass vacuously', () => {
+  for (const op of ['equalsPath', 'unchangedFrom', 'notEqualsPath', 'changedFrom']) {
+    assert.equal(evaluateCheck({ path: 'after.x', op, value: 'before.x' }, { after: { x: 1 } }).passed, false, op);
+  }
+  assert.equal(evaluateCheck({ path: 'edits', op: 'every', check: { path: 'applied', op: 'eq', value: true } }, { edits: [] }).passed, false);
+  assert.equal(evaluateCheck({ path: 'items', op: 'some', check: { path: 'ok', op: 'eq', value: true } }, { items: [] }).passed, false);
+  assert.equal(evaluateCheck({ path: 'edits', op: 'every', check: { path: 'applied', op: 'eq', value: true } }, { edits: [{ applied: true }] }).passed, true);
 });
 
 test('usage accounting preserves unknown instead of zero', () => {

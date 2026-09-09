@@ -4,7 +4,7 @@
 // failures, human interventions and a sha256 of every file it contains.
 import fs from 'node:fs';
 import path from 'node:path';
-import { sha256File, sha256Text } from './frozen.mjs';
+import { sha256File, sha256Text, sha256Buffer } from './frozen.mjs';
 import { secretLeaks } from './identity.mjs';
 import { classifyFailure, summarizeFailures } from './classify.mjs';
 
@@ -38,7 +38,10 @@ export function usageAccounting(records = []) {
     for (const [from, to] of [['promptTokens', 'promptTokens'], ['cachedReadTokens', 'cachedReadTokens'], ['nonCachedInputTokens', 'nonCachedInputTokens'], ['outputTokens', 'outputTokens'], ['totalTokens', 'totalTokens']]) {
       if (typeof record[from] === 'number' && Number.isFinite(record[from])) { totals[to] += record[from]; any = true; }
     }
-    if (!any) totals.unknownCalls += 1;
+    // An explicit unknown count from the source is authoritative; otherwise an
+    // unreported call counts as one unknown call.
+    if (typeof record.unknownCalls === 'number' && Number.isFinite(record.unknownCalls)) totals.unknownCalls += record.unknownCalls;
+    else if (!any) totals.unknownCalls += 1;
   }
   return { format: 'craftmine.i.usage/1', stage, ...totals, reportedBy: records.map(record => record.source ?? 'model-usage').filter(Boolean) };
 }
@@ -64,7 +67,7 @@ export function createEvidenceBundle({ root, roundId, mode, identity }) {
     const file = path.join(dir, name);
     ensure(path.dirname(file));
     fs.writeFileSync(file, buffer);
-    artifacts.push({ path: path.relative(dir, file).split(path.sep).join('/'), bytes: buffer.length, sha256: sha256Text(buffer.toString('base64')) });
+    artifacts.push({ path: path.relative(dir, file).split(path.sep).join('/'), bytes: buffer.length, sha256: sha256Buffer(buffer) });
     files.push(path.relative(dir, file).split(path.sep).join('/'));
     return file;
   };

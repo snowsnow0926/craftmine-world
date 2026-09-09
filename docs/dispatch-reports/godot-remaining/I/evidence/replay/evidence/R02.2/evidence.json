@@ -7,9 +7,9 @@
   "notes": null,
   "identity": {
     "format": "craftmine.i.identity/1",
-    "runId": "e2bb98fb-5b61-4126-9210-f242fb4f20b5",
+    "runId": "5b05498d-8a53-4893-ba3f-a6fc1d70eed5",
     "mode": "replay",
-    "startedAt": "2026-09-09T16:59:11.944Z",
+    "startedAt": "2026-09-09T17:06:03.170Z",
     "product": {
       "version": "replay-fixture",
       "clientVersion": "replay-fixture",
@@ -71,7 +71,7 @@
     {
       "path": "edited-weapon.png",
       "bytes": 70,
-      "sha256": "40087985a06038eb4f94d9719c922dff198bb3ab924724b2300e3c735d68624f"
+      "sha256": "a4bcd7b80c65e14e3809783fc4c587ce66a995dcc142e25bf61c9337ef6f3443"
     }
   ],
   "files": [
@@ -101,5 +101,5 @@
       "bytes": 5
     }
   ],
-  "sealedAt": "2026-09-09T16:59:11.958Z"
+  "sealedAt": "2026-09-09T17:06:03.183Z"
 }

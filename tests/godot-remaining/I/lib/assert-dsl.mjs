@@ -2,6 +2,8 @@
 // Pure logic only: no I/O, no model calls, no input simulation.
 // An assertion is data; a passing verdict must be reproducible from evidence.
 export const ASSERTION_DSL_FORMAT = 'craftmine.i.assertion-dsl/1';
+export const ASSERTION_KINDS = Object.freeze(['machine', 'visual', 'human', 'accounting']);
+export const SET_OPS = Object.freeze(['every', 'some']);
 
 const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const finite = value => typeof value === 'number' && Number.isFinite(value);
@@ -58,12 +60,28 @@ export const OPS = Object.freeze({
   lengthLte: (a, b) => (sizeOf(a) ?? Number.POSITIVE_INFINITY) <= b || `expected length <= ${b}, got ${sizeOf(a)}`,
   in: (a, b) => (Array.isArray(b) && b.some(v => deepEqual(v, a))) || `expected ${JSON.stringify(a)} to be one of ${JSON.stringify(b)}`,
   notIn: (a, b) => !(Array.isArray(b) && b.some(v => deepEqual(v, a))) || `expected ${JSON.stringify(a)} not to be one of ${JSON.stringify(b)}`,
-  equalsPath: (a, b, c) => deepEqual(a, resolvePath(c.observation, b)) || `expected ${JSON.stringify(a)} to equal ${b} (${JSON.stringify(resolvePath(c.observation, b))})`,
-  notEqualsPath: (a, b, c) => !deepEqual(a, resolvePath(c.observation, b)) || `expected ${JSON.stringify(a)} to differ from ${b}`,
+  equalsPath: (a, b, c) => {
+    const reference = resolvePath(c.observation, b);
+    if (reference === undefined) return `reference ${b} is missing from the observation`;
+    return deepEqual(a, reference) || `expected ${JSON.stringify(a)} to equal ${b} (${JSON.stringify(reference)})`;
+  },
+  notEqualsPath: (a, b, c) => {
+    const reference = resolvePath(c.observation, b);
+    if (reference === undefined) return `reference ${b} is missing from the observation`;
+    return !deepEqual(a, reference) || `expected ${JSON.stringify(a)} to differ from ${b}`;
+  },
   lessThanPath: (a, b, c) => (finite(a) && finite(resolvePath(c.observation, b)) && a < resolvePath(c.observation, b)) || `expected ${JSON.stringify(a)} < ${b} (${JSON.stringify(resolvePath(c.observation, b))})`,
   greaterThanPath: (a, b, c) => (finite(a) && finite(resolvePath(c.observation, b)) && a > resolvePath(c.observation, b)) || `expected ${JSON.stringify(a)} > ${b} (${JSON.stringify(resolvePath(c.observation, b))})`,
-  changedFrom: (a, b, c) => !deepEqual(a, resolvePath(c.observation, b)) || `expected a change from ${b}`,
-  unchangedFrom: (a, b, c) => deepEqual(a, resolvePath(c.observation, b)) || `expected no change from ${b} (${JSON.stringify(resolvePath(c.observation, b))})`,
+  changedFrom: (a, b, c) => {
+    const reference = resolvePath(c.observation, b);
+    if (reference === undefined) return `reference ${b} is missing from the observation`;
+    return !deepEqual(a, reference) || `expected a change from ${b}`;
+  },
+  unchangedFrom: (a, b, c) => {
+    const reference = resolvePath(c.observation, b);
+    if (reference === undefined) return `reference ${b} is missing from the observation`;
+    return deepEqual(a, reference) || `expected no change from ${b} (${JSON.stringify(reference)})`;
+  },
 });
 
 export const OP_NAMES = Object.freeze(Object.keys(OPS));
@@ -108,6 +126,9 @@ export function evaluateCheck(check, observation = {}) {
   if (isObject(check.check)) {
     const items = resolvePath(observation, check.path);
     if (!Array.isArray(items)) return { passed: false, op: check.op, path: check.path, reason: `expected an array at ${check.path}` };
+    // An empty collection must not satisfy `every`: "nothing was done" is not
+    // "everything was done". `some` keeps normal semantics.
+    if (check.op !== 'some' && items.length === 0) return { passed: false, op: check.op, path: check.path, reason: `expected a non-empty array at ${check.path}` };
     const results = items.map((item, index) => ({ index, ...evaluateCheck(check.check, item) }));
     const wanted = check.op === 'some' ? results.some(r => r.passed) : results.every(r => r.passed);
     const bad = results.find(r => (check.op === 'some' ? r.passed : !r.passed));
@@ -126,6 +147,9 @@ export function evaluateCheck(check, observation = {}) {
 // cannot pass by machine; they need their own recorded artefact.
 export function evaluateAssertion(assertion, observation = {}) {
   const base = { id: assertion.id, round: assertion.round, kind: assertion.kind ?? 'machine', hard: assertion.hard !== false, statement: assertion.statement };
+  if (!ASSERTION_KINDS.includes(base.kind)) {
+    return { ...base, passed: false, invalid: true, reason: `unknown assertion kind ${JSON.stringify(base.kind)}` };
+  }
   if (base.kind !== 'machine') {
     return { ...base, passed: false, notMachineCheckable: true, reason: `${base.kind} evidence is required and cannot be satisfied by the assertion evaluator` };
   }
@@ -141,6 +165,7 @@ export function evaluateAssertions(assertions = [], observation = {}) {
     machine: results.filter(result => result.kind === 'machine').length,
     failed: results.filter(result => !result.passed),
     hardFailed: hard.filter(result => !result.passed),
+    invalid: results.filter(result => result.invalid),
     pendingEvidence: results.filter(result => result.notMachineCheckable),
     passed: hard.every(result => result.passed) && results.filter(r => !r.hard).every(r => r.passed),
   };
