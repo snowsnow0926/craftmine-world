@@ -1,0 +1,163 @@
+{"level":2,"message":"%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged."}
+{"level":1,"message":"Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"}
+{"level":1,"message":"OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"}
+{"level":1,"message":"Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x39040e2cda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":1,"message":"Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"}
+{"level":1,"message":"OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"}
+{"level":1,"message":"Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bufferSubData: no buffer"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bufferSubData: no buffer"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bufferSubData: no buffer"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bufferSubData: no buffer"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bufferSubData: no buffer"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bufferSubData: no buffer"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bufferSubData: no buffer"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bufferSubData: no buffer"}
+{"level":2,"message":"[.WebGL-0x5940e3b9400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."}
+{"level":2,"message":"[.WebGL-0x5940e3b9400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"}
+{"level":2,"message":"[.WebGL-0x5940e3b9400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"}
+{"level":2,"message":"[.WebGL-0x5940e3b9400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"}
+{"level":2,"message":"[.WebGL-0x5940e3b9400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target"}
+{"level":2,"message":"WebGL: INVALID_OPERATION: bufferSubData: no buffer"}

@@ -19,8 +19,11 @@ func interaction_prompt() -> String:
 
 
 ## Stable identity used by saved state, independent of node name uniqueness.
+## Empty by default so existing scenes keep their node-name identity.
+@export var entity_id: String = ""
+
 func state_id() -> String:
-	return name
+	return entity_id if not entity_id.is_empty() else name
 
 
 func interact() -> Dictionary:

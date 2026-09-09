@@ -59,6 +59,13 @@ jump from the floor beside it.
 world data and fails if either condition stops holding. That is a separate,
 arithmetic proof; the headless runs then confirm it in real physics.
 
+The gate is also enforced in the runtime, not only by geometry:
+`SideViewRoomManager.gate_blocks_room(room)` refuses a transition into a room
+the world gate unlocks while the required ability is missing, and emits
+`gate_blocked`. A retuned jump height or a scripted transition therefore cannot
+fake passage; the player must really own the ability. `I_gate_guard` asks the
+room manager directly for the vault without the ability and asserts the refusal.
+
 ## 4 Combat
 
 `attackCooldown 0.35 s`, active window `0.12 s`, reach `34 px`, height `30 px`,

@@ -7,6 +7,7 @@ import {materializeBase} from '../materialize.mjs';
 import {createGodotProbeEnvironment} from '../../toolchain.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'../../../..');
+fs.mkdirSync(path.join(repo,'test-results'),{recursive:true});
 const out=fs.mkdtempSync(path.join(repo,'test-results/godot-managed-progress-'));
 const engine=await createGodotProbeEnvironment(out);
 const checks=[];

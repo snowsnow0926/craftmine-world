@@ -1,0 +1,1070 @@
+{
+  "format": "craftmine.raw-evidence-index/1",
+  "root": "D:\\Craftmine World\\test-results\\g6-bases\\docs\\dispatch-reports\\godot-cycle06\\bases",
+  "scope": "cycle06 bases authored acceptance",
+  "modelCalls": 0,
+  "files": [
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-k5Essp\\engine-version.log",
+      "archive": "evidence/godot-runtime-native-k5Essp/engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-k5Essp\\report.json",
+      "archive": "evidence/godot-runtime-native-k5Essp/report.json",
+      "bytes": 16490,
+      "sha256": "d2fd27ad4296217b3589a65e19e0e0d92cd83c941aec77b5cd2acbdfdf1c102b"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-k5Essp\\top-down-managed-export.log",
+      "archive": "evidence/godot-runtime-native-k5Essp/top-down-managed-export.log",
+      "bytes": 7828,
+      "sha256": "3f0a61cffd299b437c41d732e4c9011b12c1e04da4224f4ed1db8a004d5bebb6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-k5Essp\\top-down-managed-import.log",
+      "archive": "evidence/godot-runtime-native-k5Essp/top-down-managed-import.log",
+      "bytes": 4201,
+      "sha256": "c74bafa42ce413d5153231effeb9176870de1cb931b590e7505646eb7045a0df"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-k5Essp\\top-down\\first.log",
+      "archive": "evidence/godot-runtime-native-k5Essp/top-down/first.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-k5Essp\\top-down\\project\\managed-base.json",
+      "archive": "evidence/godot-runtime-native-k5Essp/top-down/managed-base.json",
+      "bytes": 6508,
+      "sha256": "b9ccf30198f649a9e854db6d9d387344833903dd1bc58ce42633b48544c7f1cf"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\engine-version.log",
+      "archive": "evidence/godot-runtime-native-ALHp5q/engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\report.json",
+      "archive": "evidence/godot-runtime-native-ALHp5q/report.json",
+      "bytes": 46778,
+      "sha256": "fb420ca269521b3931d2185740439c045a22bbf5d6f6e03688337756c09ccf5e"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down-managed-export.log",
+      "archive": "evidence/godot-runtime-native-ALHp5q/top-down-managed-export.log",
+      "bytes": 7828,
+      "sha256": "3f0a61cffd299b437c41d732e4c9011b12c1e04da4224f4ed1db8a004d5bebb6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down-managed-import.log",
+      "archive": "evidence/godot-runtime-native-ALHp5q/top-down-managed-import.log",
+      "bytes": 4201,
+      "sha256": "c74bafa42ce413d5153231effeb9176870de1cb931b590e7505646eb7045a0df"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\first.log",
+      "archive": "evidence/godot-runtime-native-ALHp5q/top-down/first.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\native-world.png",
+      "archive": "evidence/godot-runtime-native-ALHp5q/top-down/native-world.png",
+      "bytes": 13594,
+      "sha256": "e3b7d31e6c6cc1cae2a9cc288c079da07966111eacf1840e22d69933d7156265"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\observations.json",
+      "archive": "evidence/godot-runtime-native-ALHp5q/top-down/observations.json",
+      "bytes": 38634,
+      "sha256": "077bbf7c826042966b0b38d8932a79bcec78f4c32eae1759f39250e6f59b640b"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\restart.log",
+      "archive": "evidence/godot-runtime-native-ALHp5q/top-down/restart.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-ALHp5q\\top-down\\project\\managed-base.json",
+      "archive": "evidence/godot-runtime-native-ALHp5q/top-down/managed-base.json",
+      "bytes": 6508,
+      "sha256": "b9ccf30198f649a9e854db6d9d387344833903dd1bc58ce42633b48544c7f1cf"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-HxdpAV\\engine-version.log",
+      "archive": "evidence/godot-runtime-native-HxdpAV/engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-HxdpAV\\report.json",
+      "archive": "evidence/godot-runtime-native-HxdpAV/report.json",
+      "bytes": 35470,
+      "sha256": "f4621e0f42053e857e67be03f48e2c913ceb0e89e987da1102f0fb84b91cf075"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-HxdpAV\\side-view-managed-export.log",
+      "archive": "evidence/godot-runtime-native-HxdpAV/side-view-managed-export.log",
+      "bytes": 5987,
+      "sha256": "922cb70fc3571297ada09c7614383e46df0393db08d23cd9a93bbd72e24c16d3"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-HxdpAV\\side-view-managed-import.log",
+      "archive": "evidence/godot-runtime-native-HxdpAV/side-view-managed-import.log",
+      "bytes": 2651,
+      "sha256": "c87f7c39832bcd740f2a3c3bd15381cb38e237b2224807a0a2525dfadf3dd2b4"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-HxdpAV\\side-view\\first.log",
+      "archive": "evidence/godot-runtime-native-HxdpAV/side-view/first.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-HxdpAV\\side-view\\native-world.png",
+      "archive": "evidence/godot-runtime-native-HxdpAV/side-view/native-world.png",
+      "bytes": 5253,
+      "sha256": "5b279699c3b25a6814b8567ed1fafb3ae923c042c88893efafef3071e14d5289"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-HxdpAV\\side-view\\observations.json",
+      "archive": "evidence/godot-runtime-native-HxdpAV/side-view/observations.json",
+      "bytes": 28744,
+      "sha256": "0113ebb29d08b76ab8bdb1f83669175693530f311f4b1b4908994135d68a6c1f"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-HxdpAV\\side-view\\restart.log",
+      "archive": "evidence/godot-runtime-native-HxdpAV/side-view/restart.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-HxdpAV\\side-view\\project\\managed-base.json",
+      "archive": "evidence/godot-runtime-native-HxdpAV/side-view/managed-base.json",
+      "bytes": 7642,
+      "sha256": "ffc7465986a92be3182fc409b724f324ab8e75479d20f5218ac81dcc0797ce9b"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\engine-version.log",
+      "archive": "evidence/godot-runtime-native-qRqcMv/engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person-managed-export.log",
+      "archive": "evidence/godot-runtime-native-qRqcMv/first-person-managed-export.log",
+      "bytes": 14531,
+      "sha256": "2a4e7dcd7740df7aeee0bda377ba7e4760bd91b907616b007bb8fb89a60d8a35"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person-managed-import.log",
+      "archive": "evidence/godot-runtime-native-qRqcMv/first-person-managed-import.log",
+      "bytes": 5130,
+      "sha256": "4e052a215df562fa90037d9230362f0ae506d723995d79ee88d50722f175d97b"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\report.json",
+      "archive": "evidence/godot-runtime-native-qRqcMv/report.json",
+      "bytes": 31659,
+      "sha256": "03f461ce35ecc5bc820fc3bf7094c9d26a307558e5660a6e3580183dc45fd8a3"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\first.log",
+      "archive": "evidence/godot-runtime-native-qRqcMv/first-person/first.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\native-world.png",
+      "archive": "evidence/godot-runtime-native-qRqcMv/first-person/native-world.png",
+      "bytes": 282361,
+      "sha256": "9bc9452dba08ded340a032942979d20208a737728fe77dc8dcdf4e6560bc2959"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\observations.json",
+      "archive": "evidence/godot-runtime-native-qRqcMv/first-person/observations.json",
+      "bytes": 25831,
+      "sha256": "11015c027a607fc944847f0b30beeb066458a4bf133d29ea8f6d65fb932589a3"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\restart.log",
+      "archive": "evidence/godot-runtime-native-qRqcMv/first-person/restart.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\project\\managed-base.json",
+      "archive": "evidence/godot-runtime-native-qRqcMv/first-person/managed-base.json",
+      "bytes": 11052,
+      "sha256": "e2b519ea7adef73648f39f884c3c2c59cf58198c4b9c420ef4838cb5651852d3"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-27FDal\\engine-version.log",
+      "archive": "evidence/godot-runtime-native-27FDal/engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-27FDal\\report.json",
+      "archive": "evidence/godot-runtime-native-27FDal/report.json",
+      "bytes": 68396,
+      "sha256": "05967e66813802ea252347514d7b70efb478d456a869f0f8210e54b6d7da2b79"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-27FDal\\side-view-managed-export.log",
+      "archive": "evidence/godot-runtime-native-27FDal/side-view-managed-export.log",
+      "bytes": 5987,
+      "sha256": "922cb70fc3571297ada09c7614383e46df0393db08d23cd9a93bbd72e24c16d3"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-27FDal\\side-view-managed-import.log",
+      "archive": "evidence/godot-runtime-native-27FDal/side-view-managed-import.log",
+      "bytes": 2651,
+      "sha256": "c87f7c39832bcd740f2a3c3bd15381cb38e237b2224807a0a2525dfadf3dd2b4"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-27FDal\\side-view\\first.log",
+      "archive": "evidence/godot-runtime-native-27FDal/side-view/first.log",
+      "bytes": 148,
+      "sha256": "182a78621c32b8fb63fe80c9de526ccecde3a3c49052cfc9c8979aa8c1bc3511"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-27FDal\\side-view\\native-world.png",
+      "archive": "evidence/godot-runtime-native-27FDal/side-view/native-world.png",
+      "bytes": 5253,
+      "sha256": "5b279699c3b25a6814b8567ed1fafb3ae923c042c88893efafef3071e14d5289"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-27FDal\\side-view\\renderer-console.jsonl",
+      "archive": "evidence/godot-runtime-native-27FDal/side-view/renderer-console.jsonl",
+      "bytes": 23429,
+      "sha256": "2ec72632b3d0230f177a749a0001676746945f39c10eb7bd06551e2e25f5be2c"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-27FDal\\side-view\\project\\managed-base.json",
+      "archive": "evidence/godot-runtime-native-27FDal/side-view/managed-base.json",
+      "bytes": 7642,
+      "sha256": "f4a773cd2fb5550e630f9da029c38ba8f76ac0c6fad251c3f0d5c1125bf7bcf0"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-Ew3Mpy\\engine-version.log",
+      "archive": "evidence/godot-runtime-native-Ew3Mpy/engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-Ew3Mpy\\report.json",
+      "archive": "evidence/godot-runtime-native-Ew3Mpy/report.json",
+      "bytes": 91343,
+      "sha256": "b354c32e60dc057694a2bd9684c7dc2abfc96c3c196a4ca4adf6f41c5064192d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-Ew3Mpy\\side-view-managed-export.log",
+      "archive": "evidence/godot-runtime-native-Ew3Mpy/side-view-managed-export.log",
+      "bytes": 5987,
+      "sha256": "922cb70fc3571297ada09c7614383e46df0393db08d23cd9a93bbd72e24c16d3"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-Ew3Mpy\\side-view-managed-import.log",
+      "archive": "evidence/godot-runtime-native-Ew3Mpy/side-view-managed-import.log",
+      "bytes": 2651,
+      "sha256": "c87f7c39832bcd740f2a3c3bd15381cb38e237b2224807a0a2525dfadf3dd2b4"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-Ew3Mpy\\side-view\\first.log",
+      "archive": "evidence/godot-runtime-native-Ew3Mpy/side-view/first.log",
+      "bytes": 148,
+      "sha256": "182a78621c32b8fb63fe80c9de526ccecde3a3c49052cfc9c8979aa8c1bc3511"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-Ew3Mpy\\side-view\\native-world.png",
+      "archive": "evidence/godot-runtime-native-Ew3Mpy/side-view/native-world.png",
+      "bytes": 5270,
+      "sha256": "0bf924bbfb27c69420a5f970958b3bd7cbfaecf1e4f105cb1e46467688c49740"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-Ew3Mpy\\side-view\\observations.json",
+      "archive": "evidence/godot-runtime-native-Ew3Mpy/side-view/observations.json",
+      "bytes": 79695,
+      "sha256": "39e1622ef9381167bc2380812cfec4df25f5ca854c3467c11f2459bcdfd8faac"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-Ew3Mpy\\side-view\\renderer-console.jsonl",
+      "archive": "evidence/godot-runtime-native-Ew3Mpy/side-view/renderer-console.jsonl",
+      "bytes": 44852,
+      "sha256": "fc06e0bac7d2c2015a39687a9c2f026b528b05516e566fbcca538ddcbc06fb93"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-Ew3Mpy\\side-view\\restart.log",
+      "archive": "evidence/godot-runtime-native-Ew3Mpy/side-view/restart.log",
+      "bytes": 148,
+      "sha256": "182a78621c32b8fb63fe80c9de526ccecde3a3c49052cfc9c8979aa8c1bc3511"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-Ew3Mpy\\side-view\\project\\managed-base.json",
+      "archive": "evidence/godot-runtime-native-Ew3Mpy/side-view/managed-base.json",
+      "bytes": 7642,
+      "sha256": "e5309ec365404e4938fc15b309c4eac24d449f9a466fcc4a3640502123f1b8e8"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-b9ri2m\\engine-version.log",
+      "archive": "evidence/godot-runtime-native-b9ri2m/engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-b9ri2m\\report.json",
+      "archive": "evidence/godot-runtime-native-b9ri2m/report.json",
+      "bytes": 77746,
+      "sha256": "0ffa37894a0db663afb36d38ffa66492ed2a4f0734ba4206fc06cabb65947829"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-b9ri2m\\top-down-managed-export.log",
+      "archive": "evidence/godot-runtime-native-b9ri2m/top-down-managed-export.log",
+      "bytes": 7828,
+      "sha256": "3f0a61cffd299b437c41d732e4c9011b12c1e04da4224f4ed1db8a004d5bebb6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-b9ri2m\\top-down-managed-import.log",
+      "archive": "evidence/godot-runtime-native-b9ri2m/top-down-managed-import.log",
+      "bytes": 4201,
+      "sha256": "c74bafa42ce413d5153231effeb9176870de1cb931b590e7505646eb7045a0df"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-b9ri2m\\top-down\\first.log",
+      "archive": "evidence/godot-runtime-native-b9ri2m/top-down/first.log",
+      "bytes": 148,
+      "sha256": "182a78621c32b8fb63fe80c9de526ccecde3a3c49052cfc9c8979aa8c1bc3511"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-b9ri2m\\top-down\\native-world.png",
+      "archive": "evidence/godot-runtime-native-b9ri2m/top-down/native-world.png",
+      "bytes": 9079,
+      "sha256": "3318a861c36b035143a00a08075614b64f09b3829fcca780b7dad7f0f8519524"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-b9ri2m\\top-down\\observations.json",
+      "archive": "evidence/godot-runtime-native-b9ri2m/top-down/observations.json",
+      "bytes": 67001,
+      "sha256": "2f65e7ec08eda820b8831ae1ee2e2540cea4433f9fae2be91b4bc9b5933d197f"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-b9ri2m\\top-down\\renderer-console.jsonl",
+      "archive": "evidence/godot-runtime-native-b9ri2m/top-down/renderer-console.jsonl",
+      "bytes": 26607,
+      "sha256": "6a1648dd3d30a5bfa81959aa40f811e30e106f26f99547a89dbbee26f1d05040"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-b9ri2m\\top-down\\restart.log",
+      "archive": "evidence/godot-runtime-native-b9ri2m/top-down/restart.log",
+      "bytes": 148,
+      "sha256": "182a78621c32b8fb63fe80c9de526ccecde3a3c49052cfc9c8979aa8c1bc3511"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-b9ri2m\\top-down\\project\\managed-base.json",
+      "archive": "evidence/godot-runtime-native-b9ri2m/top-down/managed-base.json",
+      "bytes": 6508,
+      "sha256": "026a75a8d1e8ea9a7244562e54660b704f4130de713eb7ff5db691ba68a165fc"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\engine-version.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\first-person-managed-export.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/first-person-managed-export.log",
+      "bytes": 14531,
+      "sha256": "2a4e7dcd7740df7aeee0bda377ba7e4760bd91b907616b007bb8fb89a60d8a35"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\first-person-managed-import.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/first-person-managed-import.log",
+      "bytes": 5130,
+      "sha256": "4e052a215df562fa90037d9230362f0ae506d723995d79ee88d50722f175d97b"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\report.json",
+      "archive": "evidence/godot-runtime-native-2xS6qX/report.json",
+      "bytes": 201286,
+      "sha256": "46a4817fa0b8cb8c31f942b24f252c68d27bfdbcfa5d19ffe99309f79de25e1d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view-managed-export.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/side-view-managed-export.log",
+      "bytes": 5987,
+      "sha256": "922cb70fc3571297ada09c7614383e46df0393db08d23cd9a93bbd72e24c16d3"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view-managed-import.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/side-view-managed-import.log",
+      "bytes": 2651,
+      "sha256": "c87f7c39832bcd740f2a3c3bd15381cb38e237b2224807a0a2525dfadf3dd2b4"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\top-down-managed-export.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/top-down-managed-export.log",
+      "bytes": 7828,
+      "sha256": "3f0a61cffd299b437c41d732e4c9011b12c1e04da4224f4ed1db8a004d5bebb6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\top-down-managed-import.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/top-down-managed-import.log",
+      "bytes": 4201,
+      "sha256": "c74bafa42ce413d5153231effeb9176870de1cb931b590e7505646eb7045a0df"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\first-person\\first.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/first-person/first.log",
+      "bytes": 148,
+      "sha256": "182a78621c32b8fb63fe80c9de526ccecde3a3c49052cfc9c8979aa8c1bc3511"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\first-person\\native-world.png",
+      "archive": "evidence/godot-runtime-native-2xS6qX/first-person/native-world.png",
+      "bytes": 282361,
+      "sha256": "9bc9452dba08ded340a032942979d20208a737728fe77dc8dcdf4e6560bc2959"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\first-person\\observations.json",
+      "archive": "evidence/godot-runtime-native-2xS6qX/first-person/observations.json",
+      "bytes": 46307,
+      "sha256": "c3d620931f39a64b0bbc18933516361512defbd88e0cc75ce6aeecfb0eb62eb8"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\first-person\\renderer-console.jsonl",
+      "archive": "evidence/godot-runtime-native-2xS6qX/first-person/renderer-console.jsonl",
+      "bytes": 19478,
+      "sha256": "ee7f3cadc91a49f6183733c5b51e4135a36723c32b097aff6460f59e4376607b"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\first-person\\restart.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/first-person/restart.log",
+      "bytes": 148,
+      "sha256": "182a78621c32b8fb63fe80c9de526ccecde3a3c49052cfc9c8979aa8c1bc3511"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\first-person\\project\\managed-base.json",
+      "archive": "evidence/godot-runtime-native-2xS6qX/first-person/managed-base.json",
+      "bytes": 11052,
+      "sha256": "e2b519ea7adef73648f39f884c3c2c59cf58198c4b9c420ef4838cb5651852d3"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\top-down\\first.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/top-down/first.log",
+      "bytes": 148,
+      "sha256": "182a78621c32b8fb63fe80c9de526ccecde3a3c49052cfc9c8979aa8c1bc3511"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\top-down\\native-world.png",
+      "archive": "evidence/godot-runtime-native-2xS6qX/top-down/native-world.png",
+      "bytes": 9079,
+      "sha256": "3318a861c36b035143a00a08075614b64f09b3829fcca780b7dad7f0f8519524"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\top-down\\observations.json",
+      "archive": "evidence/godot-runtime-native-2xS6qX/top-down/observations.json",
+      "bytes": 66452,
+      "sha256": "42d4539d1ede73c7d1318b1467ec4b64378c02551a9b1836dad66fda4e5e0fbf"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\top-down\\renderer-console.jsonl",
+      "archive": "evidence/godot-runtime-native-2xS6qX/top-down/renderer-console.jsonl",
+      "bytes": 26160,
+      "sha256": "e23e0831254796f5c57bc943f124844a7f1797b5bacf9bc4076b859440aa3ef1"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\top-down\\restart.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/top-down/restart.log",
+      "bytes": 148,
+      "sha256": "182a78621c32b8fb63fe80c9de526ccecde3a3c49052cfc9c8979aa8c1bc3511"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\top-down\\project\\managed-base.json",
+      "archive": "evidence/godot-runtime-native-2xS6qX/top-down/managed-base.json",
+      "bytes": 6508,
+      "sha256": "026a75a8d1e8ea9a7244562e54660b704f4130de713eb7ff5db691ba68a165fc"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\first.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/side-view/first.log",
+      "bytes": 148,
+      "sha256": "182a78621c32b8fb63fe80c9de526ccecde3a3c49052cfc9c8979aa8c1bc3511"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\native-world.png",
+      "archive": "evidence/godot-runtime-native-2xS6qX/side-view/native-world.png",
+      "bytes": 5270,
+      "sha256": "0bf924bbfb27c69420a5f970958b3bd7cbfaecf1e4f105cb1e46467688c49740"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\observations.json",
+      "archive": "evidence/godot-runtime-native-2xS6qX/side-view/observations.json",
+      "bytes": 60907,
+      "sha256": "0c8d0a9fbc309bf66f8d86194a98d4c2c53935051683304d4a40a33c74ec161d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\renderer-console.jsonl",
+      "archive": "evidence/godot-runtime-native-2xS6qX/side-view/renderer-console.jsonl",
+      "bytes": 29532,
+      "sha256": "bd4ce728ad76ecbdab217983fe7eff7939c8a32b83bb697498768de6d7fa57b4"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\restart.log",
+      "archive": "evidence/godot-runtime-native-2xS6qX/side-view/restart.log",
+      "bytes": 148,
+      "sha256": "182a78621c32b8fb63fe80c9de526ccecde3a3c49052cfc9c8979aa8c1bc3511"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-2xS6qX\\side-view\\project\\managed-base.json",
+      "archive": "evidence/godot-runtime-native-2xS6qX/side-view/managed-base.json",
+      "bytes": 7642,
+      "sha256": "0c181528d8a0690870aaaa5d9c9a00eed2c220446e452e9977a1349e76237859"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\engine-version.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\first-person-acknowledgement.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/first-person-acknowledgement.log",
+      "bytes": 6531,
+      "sha256": "959d001909deffeb6f4b26e87036d29628257e75471ddf752e2c3e09ce38dbaf"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\first-person-enriched.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/first-person-enriched.log",
+      "bytes": 5103,
+      "sha256": "34beb615efccd0ab723a6493c3b1484f27d980621ec8118255d07becdfbd60e6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\first-person-fresh.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/first-person-fresh.log",
+      "bytes": 5213,
+      "sha256": "de18109449fe2f1948f60463b5c84bc9f31dd6d1f146d832bff91cd288306a5f"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\first-person-import.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/first-person-import.log",
+      "bytes": 41513,
+      "sha256": "2d8479a6437ea3e3e77774f578e6da8acafb7b3b416879915d9087a4db6cafb0"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\first-person-live-restore.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/first-person-live-restore.log",
+      "bytes": 7446,
+      "sha256": "047c3e5f893d9a4577874f2489e892c7132829c61ca832715a660bfe276d18f8"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\first-person-restart-and-reject.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/first-person-restart-and-reject.log",
+      "bytes": 43633,
+      "sha256": "7deb513c3377f85b1777ea0ebd18393477064ee6905db09879a0cafb4fcf76da"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\first-person-saved-state.json",
+      "archive": "evidence/godot-managed-progress-mqgWG4/first-person-saved-state.json",
+      "bytes": 1864,
+      "sha256": "ce526bf4099cc15f67fc1cc161d99f06961d3e19cb5f44538d17bcd55811b56f"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\report.json",
+      "archive": "evidence/godot-managed-progress-mqgWG4/report.json",
+      "bytes": 3293,
+      "sha256": "406b3a5332c1f41a0fee962a39865f5bdedeffb149369f8497a6ba3cc5ffca4b"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\side-view-acknowledgement.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/side-view-acknowledgement.log",
+      "bytes": 4617,
+      "sha256": "4bd8f30b16e7363e8cb68fb9804ad4e05fe46122a09fbafa72892371f7c5c8a2"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\side-view-enriched.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/side-view-enriched.log",
+      "bytes": 3573,
+      "sha256": "eed0c997d9a4a3c5dc851f694f1920fca9bb505f6b76e1b0dcc25848448ac080"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\side-view-fresh.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/side-view-fresh.log",
+      "bytes": 2885,
+      "sha256": "3c6f992822f7c0aee3487328b8c936b15d067b8024b53f3bba85922eaee0a421"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\side-view-import.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/side-view-import.log",
+      "bytes": 5990,
+      "sha256": "8b75401603900cecd18500114187067f8b2379ddc0d0dde22ef4a7649a2917db"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\side-view-live-restore.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/side-view-live-restore.log",
+      "bytes": 5151,
+      "sha256": "2d44e8d0ed2f0ad599d30948e60b621071304a850d8152819dc7fc88b4c65792"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\side-view-restart-and-reject.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/side-view-restart-and-reject.log",
+      "bytes": 41089,
+      "sha256": "83f7a862fa6c950980064e97a36e50c00821ca6168eb8d7753041ab0e7fe3c29"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\side-view-saved-state.json",
+      "archive": "evidence/godot-managed-progress-mqgWG4/side-view-saved-state.json",
+      "bytes": 1094,
+      "sha256": "a5ee7afe6482c0dd71c81001ed607dff6c914448241b4a9c32f768d865968726"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\top-down-acknowledgement.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/top-down-acknowledgement.log",
+      "bytes": 4250,
+      "sha256": "41e180901a292999a95f14e23494d1d72967f96786d0133c476486085c24cc47"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\top-down-enriched.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/top-down-enriched.log",
+      "bytes": 3266,
+      "sha256": "beae2344447e2253263381d7aaf43a63d546161e4a562f9fe2e1a47b9ac34a02"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\top-down-fresh.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/top-down-fresh.log",
+      "bytes": 2948,
+      "sha256": "82aefa2f1a52652d53e5a3b524ad54bf3b341097d15aee9e3f05abf046cd5c3b"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\top-down-import.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/top-down-import.log",
+      "bytes": 10647,
+      "sha256": "8816aef562999d4109ef8a3c0374b225fef10800a9666dd8dd424f02dd540e6b"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\top-down-live-restore.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/top-down-live-restore.log",
+      "bytes": 4721,
+      "sha256": "07d186def6499d7c6b2a5ccdc2a2164882cba9ea3fc54e175f058846d62bc44e"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\top-down-restart-and-reject.log",
+      "archive": "evidence/godot-managed-progress-mqgWG4/top-down-restart-and-reject.log",
+      "bytes": 30323,
+      "sha256": "56d6cb1f981108a378165139a38ffb49e7fe8d3414c3e8adb7e603865eba3e8d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-managed-progress-mqgWG4\\top-down-saved-state.json",
+      "archive": "evidence/godot-managed-progress-mqgWG4/top-down-saved-state.json",
+      "bytes": 1036,
+      "sha256": "be62d2330dab04511bab9c8dd12827ef58c0a26083c7f09b1efc3701de7fab29"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\engine-version.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\report.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/report.json",
+      "bytes": 358,
+      "sha256": "d762a5d88f590354789faa52ddc0ad7d9a8a02ee832c35075d35e0a057e8d279"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\side-view.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/side-view.log",
+      "bytes": 4793,
+      "sha256": "8d779f6dc21c4f634d04f28f604db02697dafc8fdd1f786bf3cccc04f21b7035"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\sync.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/sync.log",
+      "bytes": 266,
+      "sha256": "27008e6cfcf7322d2f609ac51014c0fcefc93a75a4b24f92b8a8a5ed5d2b4c71"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down.log",
+      "bytes": 3207,
+      "sha256": "46c5df77ebc3fe02bf713407c2857d3ef04c13dae5770c12cf3c00bcffca4b7f"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-blank-mtuar5hg-import.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-blank-mtuar5hg-import.log",
+      "bytes": 4158,
+      "sha256": "5546ff0b556c8465d9fd412c2544df745d735945f589d498a6409bdc6afee206"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-blank-mtuar5hg-run-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-blank-mtuar5hg-run-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-blank-mtuar5hg-run-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-blank-mtuar5hg-run-request.json",
+      "bytes": 377,
+      "sha256": "54cb1fb5d74fc268ce8ab87d7cc5443f8a8570d4dc9e56872c463048573b1175"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-blank-mtuar5hg-run-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-blank-mtuar5hg-run-response.json",
+      "bytes": 4871,
+      "sha256": "284d9333d6645c17ccf7f2da1b98234dee7c8dded773280f2c87c237cfea6ae8"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-b-mtuar5hg-import.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-b-mtuar5hg-import.log",
+      "bytes": 4158,
+      "sha256": "5546ff0b556c8465d9fd412c2544df745d735945f589d498a6409bdc6afee206"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-b-mtuar5hg-isolated-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-b-mtuar5hg-isolated-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-b-mtuar5hg-isolated-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-b-mtuar5hg-isolated-request.json",
+      "bytes": 489,
+      "sha256": "f9a45ac416faa011996e787300b586b45c0535a703d1b4b7a61951376bc6a6ed"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-b-mtuar5hg-isolated-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-b-mtuar5hg-isolated-response.json",
+      "bytes": 8455,
+      "sha256": "5d67f7c5da03bdbc2b6a896ebd52120b93d7405df15ccac19b0a108d573772b0"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-fresh-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-fresh-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-fresh-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-fresh-request.json",
+      "bytes": 156,
+      "sha256": "a69dd7efad1283827b6250fce9c7730dcd8d09c8c2bd0f0eb070729784cc3e02"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-fresh-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-fresh-response.json",
+      "bytes": 3805,
+      "sha256": "6e7ca8da8d249bbfd1c9715942461e9b5815ae57e02fae25eaa0de15ebc9a56a"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-import.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-import.log",
+      "bytes": 4158,
+      "sha256": "5546ff0b556c8465d9fd412c2544df745d735945f589d498a6409bdc6afee206"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-mismatch-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-mismatch-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-mismatch-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-mismatch-request.json",
+      "bytes": 164,
+      "sha256": "9ee611e8da6f70f38003764c3f3dced24c2f5604a753d5f7ad04f2ef6f1e6524"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-mismatch-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-mismatch-response.json",
+      "bytes": 3946,
+      "sha256": "35683c4b3936984d321b2bd17cb8ebcbb004cb9bb79cb256d99859b4b541b513"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-missing-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-missing-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-missing-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-missing-request.json",
+      "bytes": 164,
+      "sha256": "9ee611e8da6f70f38003764c3f3dced24c2f5604a753d5f7ad04f2ef6f1e6524"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-missing-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-missing-response.json",
+      "bytes": 3937,
+      "sha256": "d176b21fce9e9007612cefb5932621af4a5fb99431b401dc24906da8835924af"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-shop-restart-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-shop-restart-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-shop-restart-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-shop-restart-request.json",
+      "bytes": 165,
+      "sha256": "169148bdb8d42eaa9e7edace835c78531e605e4a89c53a380b392463a20840cd"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-shop-restart-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-shop-restart-response.json",
+      "bytes": 4330,
+      "sha256": "736ff4ac43f957c16353bac50f12fffc301d0f7dbea047dc2f5271bd9cb124c5"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-shop-save-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-shop-save-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-shop-save-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-shop-save-request.json",
+      "bytes": 890,
+      "sha256": "ea8d248276bf65e95917e9dbdacaed7c2d48f992eca9bcf0683178070d42ca04"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-shop-save-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-shop-save-response.json",
+      "bytes": 10634,
+      "sha256": "95821bb51243d1c35a0ad25492136886c9aee074ea3fde18152d88e17a83cb19"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-street-restart-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-street-restart-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-street-restart-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-street-restart-request.json",
+      "bytes": 165,
+      "sha256": "169148bdb8d42eaa9e7edace835c78531e605e4a89c53a380b392463a20840cd"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-street-restart-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-street-restart-response.json",
+      "bytes": 4280,
+      "sha256": "9ec57f12d9073da968df2e7ef87107488f8ac3729d6f1e3304c8edfe09ccb277"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-street-save-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-street-save-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-street-save-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-street-save-request.json",
+      "bytes": 460,
+      "sha256": "d00d741b2d41fc5d62bc850712eef4c6ab1cd329d9cb2db90d97c4ffb4275ffb"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-c-mtuar5hg-placement-street-save-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-c-mtuar5hg-placement-street-save-response.json",
+      "bytes": 7390,
+      "sha256": "2b7ea40df74b5b32eb87c62652065654fe6a97642640b1b9cfbc6575fadf3528"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-anim-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-anim-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-anim-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-anim-request.json",
+      "bytes": 1084,
+      "sha256": "44316ab39b800c7cbcf4bcbd9fe2c2f9b764861e562d5cadfdddb0ce613a9812"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-anim-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-anim-response.json",
+      "bytes": 14058,
+      "sha256": "6249a03f5307ae38588910ec38f62c03ab4877be91701737db059d07dffabd45"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-collision-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-collision-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-collision-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-collision-request.json",
+      "bytes": 448,
+      "sha256": "5083aeacb87d6825203c3f2c9cbcf52364f079ee7cecdd375290c82a219ddf7d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-collision-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-collision-response.json",
+      "bytes": 4876,
+      "sha256": "cd807fb63171978693af7ade3a11373cdfac49c92d74b78acbca9ebdc1a41cbc"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-gather-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-gather-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-gather-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-gather-request.json",
+      "bytes": 1277,
+      "sha256": "5815bdc2dc63e98e1808086746106e031802ff3b4ae218bc2fc3379cf15a801f"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-gather-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-gather-response.json",
+      "bytes": 19736,
+      "sha256": "1b8365fccee0cb83b42eb97c9fbe6b0d0ec63bf45fdd2e997bbb1cbcaed9d2c6"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-import.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-import.log",
+      "bytes": 4158,
+      "sha256": "5546ff0b556c8465d9fd412c2544df745d735945f589d498a6409bdc6afee206"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-initial-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-initial-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-initial-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-initial-request.json",
+      "bytes": 156,
+      "sha256": "a69dd7efad1283827b6250fce9c7730dcd8d09c8c2bd0f0eb070729784cc3e02"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-initial-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-initial-response.json",
+      "bytes": 3797,
+      "sha256": "e4ff5ff93bbb64192ddf7c34b668acfbc789409c618acd76df389d2cd853fc96"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-quest-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-quest-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-quest-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-quest-request.json",
+      "bytes": 1262,
+      "sha256": "904d75d2b05b4723ba6634d0556084e68aadbcf6d42ddadaf67a7124760985c1"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-quest-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-quest-response.json",
+      "bytes": 20264,
+      "sha256": "4a48e7cf04cce0d6b618fa0c2cdfacb6943d9bde3a28ede9e70e7759d0de4bfa"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-restart-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-restart-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-restart-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-restart-request.json",
+      "bytes": 1236,
+      "sha256": "8fbeffeaa87cb13f2ff2d951d74c28550a4bbfe37bb878ddf237ca2491f61276"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-restart-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-restart-response.json",
+      "bytes": 18520,
+      "sha256": "fddc2750ebd4281e3a3b3519a1cb4bad99996bd29db6b0b1d8b12e0f579764d7"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-shop-process.log",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-shop-process.log",
+      "bytes": 114,
+      "sha256": "7be70192c6e4de02cf3eac209c3a2febb8e0cd599f49c56819cddf075444961d"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-shop-request.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-shop-request.json",
+      "bytes": 2366,
+      "sha256": "796722d3548987a4fd0cf46ca4fe2de10c889af12120c9ee24146277bed3186b"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\evidence\\verify-town-mtuar5hg-shop-response.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/evidence/verify-town-mtuar5hg-shop-response.json",
+      "bytes": 33044,
+      "sha256": "e5dfadb75963aadcc0435e66d4c56920648f3f01b9efcff96aaca909cecdc60e"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\top-down\\evidence\\report.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/top-down/evidence/report.json",
+      "bytes": 71500,
+      "sha256": "9429a664671d718de3e7ad2fa4f7ea0b24de9c63c6393ccc45d370bd71dca534"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\side-view\\report.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/side-view/report.json",
+      "bytes": 23036,
+      "sha256": "dd5d694a71e3a6373d9728788aa1d1007bbdfd96c23bd362f773bb55af563cb3"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\side-view\\runs\\A_reach_ruins.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/side-view/runs/A_reach_ruins.json",
+      "bytes": 28809,
+      "sha256": "68e166f5c096906303ca624f149633b41cf5606118fae1040241e01e0d941c6c"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\side-view\\runs\\B_gate_locked.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/side-view/runs/B_gate_locked.json",
+      "bytes": 47606,
+      "sha256": "a3e20f8e0544eaac7e206c2eef71f98eac337bbb16a12fc687d31656ef638338"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\side-view\\runs\\C_get_ability.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/side-view/runs/C_get_ability.json",
+      "bytes": 35637,
+      "sha256": "1f78d64c6ac5a43231b56c28605caf256835150f8ae2dd5ba16ce59c52d351cc"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\side-view\\runs\\D_enter_vault.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/side-view/runs/D_enter_vault.json",
+      "bytes": 34827,
+      "sha256": "49c158792bd95d3d1a9db16eaf3b49716f1419b4dba9ba3f7d6dc236eb80ea1c"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\side-view\\runs\\E_revisit.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/side-view/runs/E_revisit.json",
+      "bytes": 72343,
+      "sha256": "41f8b0640f14b8943bd5cda4fe78e5efba2eccde3b9ec6c7623ca7a9c8bfbceb"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\side-view\\runs\\F_hazard_respawn.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/side-view/runs/F_hazard_respawn.json",
+      "bytes": 39286,
+      "sha256": "5af5f5ae336dcf5b6dd25b53439755fe55605fc109de7b186f7d19c824508e9c"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\side-view\\runs\\G_blank_basic.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/side-view/runs/G_blank_basic.json",
+      "bytes": 44389,
+      "sha256": "096481799d318708a71ecc1b9336c7deb4e20d5a7b665e3e43c3b96309b0fb80"
+    },
+    {
+      "source": "D:\\Craftmine World\\test-results\\g6-bases\\test-results\\g6-bases-regression-AeSkoI\\side-view\\runs\\H_materialized.json",
+      "archive": "evidence/g6-bases-regression-AeSkoI/side-view/runs/H_materialized.json",
+      "bytes": 28996,
+      "sha256": "205341e5a71eb2995effc9c06dd060a48fe0755d2df0ba16ce5a8eb86544b74e"
+    }
+  ]
+}
