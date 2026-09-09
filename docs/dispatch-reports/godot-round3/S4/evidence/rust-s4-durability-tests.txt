@@ -1,0 +1,89 @@
+warning: unused import: `load_manifest`
+  --> crates\craftmine-core\src\godot_builds.rs:21:22
+   |
+21 |     godot_projects::{load_manifest, ordinary, valid_hash, Manifest},
+   |                      ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `content_files` is never used
+   --> crates\craftmine-core\src\content.rs:573:19
+    |
+234 | impl TaskJournal {
+    | ---------------- method in this implementation
+...
+573 |     pub(crate) fn content_files(
+    |                   ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `REPOSITORY_FORMAT` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:30:11
+   |
+30 | pub const REPOSITORY_FORMAT: &str = "craftmine.content-repository/1";
+   |           ^^^^^^^^^^^^^^^^^
+
+warning: method `as_str` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:42:8
+   |
+41 | impl ContentBackend {
+   | ------------------- method in this implementation
+42 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+
+warning: method `root` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:207:12
+    |
+194 | impl RepositoryStore {
+    | -------------------- method in this implementation
+...
+207 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+
+warning: function `reconcile_git_head` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:512:4
+    |
+512 | fn reconcile_git_head(
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: method `project_is_git_backed` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:727:19
+    |
+650 | impl TaskJournal {
+    | ---------------- method in this implementation
+...
+727 |     pub(super) fn project_is_git_backed(&self, world: &str) -> Result<bool> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `VECTORS_JSON` should have a snake case name
+   --> crates\craftmine-core\src\content_history\contract_vectors_tests.rs:110:4
+    |
+110 | fn VECTORS_JSON() -> Result<Value> {
+    |    ^^^^^^^^^^^^ help: convert the identifier to snake case: `vectors_json`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `craftmine-core` (lib test) generated 9 warnings (run `cargo fix --lib -p craftmine-core --tests` to apply 2 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests src\lib.rs (C:\Users\WINDOWS\.pi-desktop\scratch\1f91bbf7-ffcc-4e6e-ae40-74f28e0d2433\cargo-target-s4\debug\deps\craftmine_core-13091a1caf054aaf.exe)
+
+running 6 tests
+test backups::portable::durability_tests::crash_helper ... ignored, crash helper: driven by S4_CRASH_ROOT and CRAFTMINE_S4_CRASH_AT
+test backups::portable::durability_tests::a_lookalike_staging_directory_is_refused_and_never_deleted ... ok
+test backups::portable::durability_tests::a_cancel_request_converges_and_removes_only_owned_staging ... ok
+test backups::portable::durability_tests::a_kill_after_the_commit_is_promoted_from_the_precommit_receipt ... ok
+test backups::portable::durability_tests::a_restored_installation_keeps_authoring_new_revisions ... ok
+test backups::portable::durability_tests::a_kill_before_the_commit_is_undone_and_the_same_operation_can_retry ... ok
+
+test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 233 filtered out; finished in 1.70s
+

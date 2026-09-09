@@ -1,0 +1,7 @@
+commit=e8f3d2d58cdba7cb357e510ec55a3006ff9f288d
+branch=codex/godot-round3-s4-20260910
+rustc=rustc 1.96.1 (31fca3adb 2026-06-26)
+cargo=cargo 1.96.1 (356927216 2026-06-26)
+engine=none (no Godot engine in this bundle)
+broker=none (core crate only)
+plugin=none (core crate only)

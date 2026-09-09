@@ -21,8 +21,8 @@ $env:CARGO_TARGET_DIR = $target
 Push-Location $crate
 try {
     @(
-        "commit=$(git -C '$root' rev-parse HEAD)",
-        "branch=$(git -C '$root' rev-parse --abbrev-ref HEAD)",
+        "commit=$(git -C $root rev-parse HEAD)",
+        "branch=$(git -C $root rev-parse --abbrev-ref HEAD)",
         "rustc=$(rustc --version)",
         "cargo=$(cargo --version)",
         "engine=none (no Godot engine in this bundle)",

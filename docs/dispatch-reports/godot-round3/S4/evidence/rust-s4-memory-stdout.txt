@@ -1,0 +1,7 @@
+
+running 1 test
+test backups::portable::tests::a_repository_larger_than_the_buffered_stdout_cap_exports_and_verifies ... export marginal peak commit: 0 MiB (peak before 7626752 bytes, peak after 7626752 bytes, content 83910649 bytes)
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 238 filtered out; finished in 21.67s
+
