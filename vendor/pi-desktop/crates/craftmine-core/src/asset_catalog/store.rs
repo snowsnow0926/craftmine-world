@@ -65,6 +65,8 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
             previewer_version TEXT NOT NULL, engine_version TEXT NOT NULL,
             settings_hash TEXT NOT NULL, status TEXT NOT NULL, detail TEXT NOT NULL,
             facts TEXT NOT NULL, created_at INTEGER NOT NULL,
+            attempt INTEGER NOT NULL DEFAULT 0, claim_id TEXT NOT NULL DEFAULT '',
+            claim_owner TEXT NOT NULL DEFAULT '', claim_deadline INTEGER NOT NULL DEFAULT 0,
             PRIMARY KEY(asset_id,version,content_hash,previewer_version,engine_version,settings_hash)
         );
         CREATE TABLE IF NOT EXISTS craftmine_asset_checks (
@@ -82,6 +84,16 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
         CREATE INDEX IF NOT EXISTS craftmine_asset_versions_by_kind
             ON craftmine_asset_versions(kind,media_kind,asset_id);",
     )?;
+    // Attempt identity for preview slots. A database written before the claim
+    // columns existed keeps its rows; `duplicate column name` means migrated.
+    for statement in [
+        "ALTER TABLE craftmine_asset_previews ADD COLUMN attempt INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE craftmine_asset_previews ADD COLUMN claim_id TEXT NOT NULL DEFAULT ''",
+        "ALTER TABLE craftmine_asset_previews ADD COLUMN claim_owner TEXT NOT NULL DEFAULT ''",
+        "ALTER TABLE craftmine_asset_previews ADD COLUMN claim_deadline INTEGER NOT NULL DEFAULT 0",
+    ] {
+        let _ = db.execute(statement, []);
+    }
     Ok(())
 }
 

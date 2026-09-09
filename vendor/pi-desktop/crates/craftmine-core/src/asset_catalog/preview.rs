@@ -18,6 +18,10 @@ use super::store;
 pub(super) const PREVIEWER_VERSION: &str = "asset-preview/1";
 const PROBE_DECODER: &str = "rust-probe/1";
 const PROBE_PREFIX_BYTES: u64 = 1024 * 1024;
+/// A claim outlives the worker timeout with a margin, so a slow-but-live decode
+/// is never stolen. Once it passes, the attempt is dead: the host timed out,
+/// crashed or restarted, and the version must not stay pending forever.
+pub(super) const PREVIEW_CLAIM_TTL_MS: i64 = 4 * 60 * 1000;
 
 fn engine_version() -> &'static str {
     crate::godot_builds::engine_version()
@@ -79,23 +83,86 @@ pub(super) fn check_json(
     })
 }
 
-fn preview_row(db: &Connection, asset_id: &str, version: u64, key: &str) -> Result<Option<Value>> {
-    let row: Option<(String, String, String, i64)> = db
+/// One preview slot's durable state, including the attempt identity that binds
+/// a begin, its decoder run, a cancel and a retry.
+struct PreviewState {
+    status: String,
+    detail: String,
+    facts: Value,
+    created_at: i64,
+    attempt: u64,
+    claim_id: String,
+    claim_owner: String,
+    claim_deadline: i64,
+}
+
+impl PreviewState {
+    fn active(&self, now: i64) -> bool {
+        self.status == "pending" && !self.claim_id.is_empty() && self.claim_deadline > now
+    }
+
+    fn json(&self, now: i64) -> Value {
+        let active = self.status == "pending" && !self.claim_id.is_empty();
+        json!({
+            "status": self.status,
+            "detail": self.detail,
+            "facts": self.facts,
+            "createdAt": self.created_at,
+            "attempt": self.attempt,
+            "activeClaim": active,
+            "claimExpired": active && self.claim_deadline > 0 && self.claim_deadline < now,
+        })
+    }
+}
+
+fn preview_state(
+    db: &Connection,
+    asset_id: &str,
+    version: u64,
+    key: &str,
+) -> Result<Option<PreviewState>> {
+    let row: Option<(String, String, String, i64, i64, String, String, i64)> = db
         .query_row(
-            "SELECT status,detail,facts,created_at FROM craftmine_asset_previews
+            "SELECT status,detail,facts,created_at,attempt,claim_id,claim_owner,claim_deadline
+             FROM craftmine_asset_previews
              WHERE asset_id=?1 AND version=?2 AND settings_hash=?3 AND previewer_version=?4 AND engine_version=?5",
             params![asset_id, version as i64, key, PREVIEWER_VERSION, engine_version()],
-            |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?)),
+            |row| {
+                Ok((
+                    row.get(0)?,
+                    row.get(1)?,
+                    row.get(2)?,
+                    row.get(3)?,
+                    row.get(4)?,
+                    row.get(5)?,
+                    row.get(6)?,
+                    row.get(7)?,
+                ))
+            },
         )
         .optional()?;
-    Ok(row.map(|(status, detail, facts, created_at)| {
-        json!({
-            "status": status,
-            "detail": detail,
-            "facts": serde_json::from_str::<Value>(&facts).unwrap_or(Value::Null),
-            "createdAt": created_at,
-        })
-    }))
+    Ok(row.map(
+        |(status, detail, facts, created_at, attempt, claim_id, claim_owner, claim_deadline)| {
+            PreviewState {
+                status,
+                detail,
+                facts: serde_json::from_str::<Value>(&facts).unwrap_or(Value::Null),
+                created_at,
+                attempt: attempt.max(0) as u64,
+                claim_id,
+                claim_owner,
+                claim_deadline,
+            }
+        },
+    ))
+}
+
+/// The core, not the caller, issues the claim. It is unique per attempt, so a
+/// retry can never be mistaken for a replay of the previous run.
+fn new_claim(asset_id: &str, version: u64, settings_hash: &str, attempt: u64, now: i64) -> String {
+    crate::digest(&format!(
+        "craftmine.asset-preview-claim/1\n{asset_id}\n{version}\n{settings_hash}\n{attempt}\n{now}"
+    ))
 }
 
 fn read_prefix(root: &std::path::Path, file: &FileRef) -> Result<Vec<u8>> {
@@ -286,83 +353,177 @@ fn probe(media_type: &str, bytes: &[u8]) -> Value {
 }
 
 impl TaskJournal {
-    /// Claims a preview slot for one exact content hash. Re-opening the same
-    /// key returns the cached state instead of re-running the decoder.
+    /// Closes claims whose owner can no longer report: the host timed out,
+    /// crashed or restarted. A version never stays pending forever.
+    pub fn asset_preview_sweep(&self) -> Result<usize> {
+        let now = crate::worlds::timestamp()?;
+        Ok(self.db.execute(
+            "UPDATE craftmine_asset_previews
+                SET status='failed', detail='PREVIEW_CLAIM_EXPIRED',
+                    claim_id='', claim_owner='', claim_deadline=0
+              WHERE status='pending' AND claim_id<>'' AND claim_deadline>0 AND claim_deadline<?1",
+            params![now],
+        )?)
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn write_preview_claim(
+        &self,
+        asset_id: &str,
+        version: u64,
+        content_hash: &str,
+        settings_hash: &str,
+        attempt: u64,
+        claim_id: &str,
+        owner: &str,
+        deadline: i64,
+        now: i64,
+    ) -> Result<()> {
+        self.db.execute(
+            "INSERT OR REPLACE INTO craftmine_asset_previews(asset_id,version,content_hash,
+                previewer_version,engine_version,settings_hash,status,detail,facts,created_at,
+                attempt,claim_id,claim_owner,claim_deadline)
+             VALUES(?1,?2,?3,?4,?5,?6,'pending','','{}',?7,?8,?9,?10,?11)",
+            params![
+                asset_id,
+                version as i64,
+                content_hash,
+                PREVIEWER_VERSION,
+                engine_version(),
+                settings_hash,
+                now,
+                attempt as i64,
+                claim_id,
+                owner,
+                deadline
+            ],
+        )?;
+        Ok(())
+    }
+
+    /// Claims a preview slot for one exact content hash and issues the attempt
+    /// identity. The cache key is the content identity; the claim is the
+    /// execution identity. Re-opening a live claim resumes the same attempt
+    /// instead of starting a second decoder run.
     pub fn asset_preview_begin(&mut self, args: &Value) -> Result<Value> {
-        fields(args, &["assetId", "version", "settingsHash"])?;
+        fields(
+            args,
+            &["assetId", "version", "settingsHash", "owner", "force"],
+        )?;
         let asset_id = text(args, "assetId", contract::MAX_ID_BYTES)?.to_string();
         let version = number(args, "version", contract::MAX_VERSION)?;
         let settings_hash = args["settingsHash"].as_str().unwrap_or("default").to_string();
         contract::validate_identifier(&settings_hash, "INVALID_SETTINGS_HASH")?;
+        let owner = args["owner"].as_str().unwrap_or("").to_string();
+        ensure!(owner.len() <= 120, "INVALID_CLAIM_OWNER");
+        let force = args["force"].as_bool().unwrap_or(false);
         let row = store::version_row(&self.db, &asset_id, version)?.context("ASSET_NOT_FOUND")?;
         let key = cache_key(&asset_id, version, &row.content_hash, &settings_hash);
-        if let Some(existing) = preview_row(&self.db, &asset_id, version, &settings_hash)? {
-            let status = existing["status"].as_str().unwrap_or("").to_string();
-            if matches!(status.as_str(), "ok" | "partial" | "pending") {
-                // A pending claim is resumed rather than restarted, so two
-                // hosts cannot run the same decode twice.
-                return Ok(json!({
-                    "jobId": format!("apv-{key}"),
-                    "cacheKey": key,
-                    "cached": true,
-                    "retried": false,
-                    "timeoutMs": PREVIEW_TIMEOUT_MS,
-                    "preview": existing,
-                }));
-            }
-            // failed/timeout/cancelled are re-runnable: one transient decode
-            // timeout must not lock the version out of preview forever.
-            let created_at = crate::worlds::timestamp()?;
-            self.db.execute(
-                "INSERT OR REPLACE INTO craftmine_asset_previews(asset_id,version,content_hash,
-                    previewer_version,engine_version,settings_hash,status,detail,facts,created_at)
-                 VALUES(?1,?2,?3,?4,?5,?6,'pending','', '{}',?7)",
-                params![
-                    asset_id,
-                    version as i64,
-                    row.content_hash,
-                    PREVIEWER_VERSION,
-                    engine_version(),
-                    settings_hash,
-                    created_at
-                ],
+        self.asset_preview_sweep()?;
+        let now = crate::worlds::timestamp()?;
+        let claim = |attempt: u64, claim_id: String, deadline: i64| {
+            json!({
+                "attempt": attempt,
+                "claimId": claim_id,
+                "owner": owner,
+                "deadline": deadline,
+            })
+        };
+        let Some(state) = preview_state(&self.db, &asset_id, version, &settings_hash)? else {
+            let claim_id = new_claim(&asset_id, version, &settings_hash, 1, now);
+            let deadline = now + PREVIEW_CLAIM_TTL_MS;
+            self.write_preview_claim(
+                &asset_id,
+                version,
+                &row.content_hash,
+                &settings_hash,
+                1,
+                &claim_id,
+                &owner,
+                deadline,
+                now,
             )?;
             return Ok(json!({
                 "jobId": format!("apv-{key}"),
                 "cacheKey": key,
                 "cached": false,
-                "retried": true,
-                "previousStatus": status,
+                "retried": false,
+                "resumed": false,
+                "previousStatus": Value::Null,
+                "staleClaim": false,
                 "timeoutMs": PREVIEW_TIMEOUT_MS,
-                "preview": {"status": "pending", "detail": "", "facts": {}, "createdAt": created_at},
+                "claim": claim(1, claim_id, deadline),
+                "preview": {
+                    "status": "pending", "detail": "", "facts": {}, "createdAt": now, "attempt": 1,
+                },
+            }));
+        };
+        if state.active(now) && !force {
+            // Only one valid execution per claim: a second caller resumes it.
+            return Ok(json!({
+                "jobId": format!("apv-{key}"),
+                "cacheKey": key,
+                "cached": true,
+                "retried": false,
+                "resumed": true,
+                "previousStatus": "pending",
+                "staleClaim": false,
+                "timeoutMs": PREVIEW_TIMEOUT_MS,
+                "claim": claim(state.attempt, state.claim_id.clone(), state.claim_deadline),
+                "preview": state.json(now),
             }));
         }
-        let created_at = crate::worlds::timestamp()?;
-        self.db.execute(
-            "INSERT OR REPLACE INTO craftmine_asset_previews(asset_id,version,content_hash,
-                previewer_version,engine_version,settings_hash,status,detail,facts,created_at)
-             VALUES(?1,?2,?3,?4,?5,?6,'pending','', '{}',?7)",
-            params![
-                asset_id,
-                version as i64,
-                row.content_hash,
-                PREVIEWER_VERSION,
-                engine_version(),
-                settings_hash,
-                created_at
-            ],
+        if matches!(state.status.as_str(), "ok" | "partial") && !force {
+            return Ok(json!({
+                "jobId": format!("apv-{key}"),
+                "cacheKey": key,
+                "cached": true,
+                "retried": false,
+                "resumed": false,
+                "previousStatus": state.status,
+                "staleClaim": false,
+                "timeoutMs": PREVIEW_TIMEOUT_MS,
+                "claim": Value::Null,
+                "preview": state.json(now),
+            }));
+        }
+        // failed / timeout / cancelled, an expired claim, or an explicit force:
+        // a new attempt with a new claim. The old attempt is dead and any late
+        // result for it is rejected by the attempt check in `finish`.
+        let attempt = state.attempt.saturating_add(1).max(1);
+        let claim_id = new_claim(&asset_id, version, &settings_hash, attempt, now);
+        let deadline = now + PREVIEW_CLAIM_TTL_MS;
+        self.write_preview_claim(
+            &asset_id,
+            version,
+            &row.content_hash,
+            &settings_hash,
+            attempt,
+            &claim_id,
+            &owner,
+            deadline,
+            now,
         )?;
         Ok(json!({
             "jobId": format!("apv-{key}"),
             "cacheKey": key,
             "cached": false,
+            "retried": true,
+            "resumed": false,
+            "previousStatus": state.status,
+            "staleClaim": state.status == "pending",
             "timeoutMs": PREVIEW_TIMEOUT_MS,
-            "preview": {"status": "pending", "detail": "", "facts": {}, "createdAt": created_at},
+            "claim": claim(attempt, claim_id, deadline),
+            "preview": {
+                "status": "pending", "detail": "", "facts": {}, "createdAt": now, "attempt": attempt,
+            },
         }))
     }
 
-    /// Records the real decoder result. `ok` requires decoder evidence: a
-    /// placeholder never becomes a successful preview.
+    /// Records the real decoder result for the attempt that owns the live
+    /// claim. A late result from a cancelled or superseded attempt is reported
+    /// as stale and never overwrites the current state. `ok` requires decoder
+    /// evidence: a placeholder never becomes a successful preview.
     pub fn asset_preview_finish(&mut self, args: &Value) -> Result<Value> {
         fields(
             args,
@@ -374,6 +535,8 @@ impl TaskJournal {
                 "status",
                 "detail",
                 "facts",
+                "claimId",
+                "attempt",
             ],
         )?;
         let operation_id = text(args, "operationId", 240)?.to_string();
@@ -386,6 +549,8 @@ impl TaskJournal {
         let asset_id = text(args, "assetId", contract::MAX_ID_BYTES)?.to_string();
         let version = number(args, "version", contract::MAX_VERSION)?;
         let settings_hash = args["settingsHash"].as_str().unwrap_or("default").to_string();
+        let claim_id = text(args, "claimId", 120)?.to_string();
+        let attempt = number(args, "attempt", contract::MAX_VERSION)?;
         let status = text(args, "status", 16)?.to_string();
         ensure!(
             matches!(status.as_str(), "ok" | "partial" | "failed" | "timeout" | "cancelled"),
@@ -394,6 +559,33 @@ impl TaskJournal {
         let detail = args["detail"].as_str().unwrap_or("").to_string();
         ensure!(detail.len() <= 240, "INVALID_PREVIEW_DETAIL");
         let facts = args["facts"].clone();
+        let row = store::version_row(&self.db, &asset_id, version)?.context("ASSET_NOT_FOUND")?;
+        let key = cache_key(&asset_id, version, &row.content_hash, &settings_hash);
+        self.asset_preview_sweep()?;
+        let now = crate::worlds::timestamp()?;
+        // A finish without a claimed begin would let any caller mark a version
+        // previewable with an arbitrary digest.
+        let state = preview_state(&self.db, &asset_id, version, &settings_hash)?
+            .context("PREVIEW_NOT_CLAIMED")?;
+        if state.claim_id != claim_id || state.attempt != attempt || state.status != "pending" {
+            // The attempt is no longer current (cancelled, superseded by a
+            // retry, or already finished). This is not a conflict: the caller
+            // gets an explicit "not applied" result and the state is untouched.
+            return Ok(json!({
+                "operationId": operation_id,
+                "method": "asset.previewFinish",
+                "assetId": asset_id,
+                "version": version,
+                "cacheKey": key,
+                "status": state.status,
+                "detail": state.detail,
+                "attempt": state.attempt,
+                "applied": false,
+                "stale": true,
+                "reason": "STALE_PREVIEW_ATTEMPT",
+                "replayed": false,
+            }));
+        }
         if matches!(status.as_str(), "ok" | "partial") {
             let decoder = facts["decoder"].as_str().unwrap_or("");
             let digest = facts["digest"].as_str().unwrap_or("");
@@ -413,15 +605,6 @@ impl TaskJournal {
                 );
             }
         }
-        let row = store::version_row(&self.db, &asset_id, version)?.context("ASSET_NOT_FOUND")?;
-        let key = cache_key(&asset_id, version, &row.content_hash, &settings_hash);
-        // A finish without a claimed begin would let any caller mark a version
-        // previewable with an arbitrary digest.
-        ensure!(
-            preview_row(&self.db, &asset_id, version, &settings_hash)?.is_some(),
-            "PREVIEW_NOT_CLAIMED"
-        );
-        let created_at = crate::worlds::timestamp()?;
         let result = json!({
             "operationId": operation_id,
             "method": "asset.previewFinish",
@@ -430,33 +613,40 @@ impl TaskJournal {
             "cacheKey": key,
             "status": status,
             "detail": detail,
+            "attempt": attempt,
+            "applied": true,
+            "stale": false,
             "replayed": false,
         });
         let tx = rusqlite::Transaction::new_unchecked(&self.db, TransactionBehavior::Immediate)?;
-        tx.execute(
-            "INSERT OR REPLACE INTO craftmine_asset_previews(asset_id,version,content_hash,
-                previewer_version,engine_version,settings_hash,status,detail,facts,created_at)
-             VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10)",
+        let updated = tx.execute(
+            "UPDATE craftmine_asset_previews
+                SET status=?1, detail=?2, facts=?3, created_at=?4,
+                    claim_id='', claim_owner='', claim_deadline=0
+              WHERE asset_id=?5 AND version=?6 AND settings_hash=?7 AND previewer_version=?8
+                AND engine_version=?9 AND attempt=?10 AND claim_id=?11",
             params![
-                asset_id,
-                version as i64,
-                row.content_hash,
-                PREVIEWER_VERSION,
-                engine_version(),
-                settings_hash,
                 status,
                 detail,
                 serde_json::to_string(&facts)?,
-                created_at
+                now,
+                asset_id,
+                version as i64,
+                settings_hash,
+                PREVIEWER_VERSION,
+                engine_version(),
+                attempt as i64,
+                claim_id
             ],
         )?;
+        ensure!(updated == 1, "STALE_PREVIEW_ATTEMPT");
         store::record_operation(
             &tx,
             &operation_id,
             "asset.previewFinish",
             &request_hash,
             &result,
-            created_at,
+            now,
         )?;
         tx.commit()?;
         Ok(result)
@@ -467,20 +657,30 @@ impl TaskJournal {
         let asset_id = text(args, "assetId", contract::MAX_ID_BYTES)?;
         let version = number(args, "version", contract::MAX_VERSION)?;
         store::version_row(&self.db, asset_id, version)?.context("ASSET_NOT_FOUND")?;
+        self.asset_preview_sweep()?;
+        let now = crate::worlds::timestamp()?;
         let mut statement = self.db.prepare(
-            "SELECT previewer_version,engine_version,settings_hash,status,detail,facts,created_at
+            "SELECT previewer_version,engine_version,settings_hash,status,detail,facts,created_at,
+                    attempt,claim_id,claim_owner,claim_deadline
              FROM craftmine_asset_previews WHERE asset_id=?1 AND version=?2
              ORDER BY created_at DESC",
         )?;
         let rows = statement.query_map(params![asset_id, version as i64], |row| {
+            let status: String = row.get(3)?;
+            let claim_id: String = row.get(8)?;
+            let deadline: i64 = row.get(10)?;
+            let active = status == "pending" && !claim_id.is_empty();
             Ok(json!({
                 "previewerVersion": row.get::<_, String>(0)?,
                 "engineVersion": row.get::<_, String>(1)?,
                 "settingsHash": row.get::<_, String>(2)?,
-                "status": row.get::<_, String>(3)?,
+                "status": status,
                 "detail": row.get::<_, String>(4)?,
                 "facts": serde_json::from_str::<Value>(&row.get::<_, String>(5)?).unwrap_or(Value::Null),
                 "createdAt": row.get::<_, i64>(6)?,
+                "attempt": row.get::<_, i64>(7)?.max(0) as u64,
+                "activeClaim": active,
+                "claimExpired": active && deadline > 0 && deadline < now,
             }))
         })?;
         let mut items = Vec::new();

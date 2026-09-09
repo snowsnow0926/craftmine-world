@@ -22,6 +22,12 @@ import {
   checkGodotPackage,
   packageKind,
 } from './decode/godot-package.mjs';
+import {
+  GLB_RENDERER_VERSION,
+  glbGeometryDigest,
+  parseGlb,
+  renderGlbStatic,
+} from './decode/glb-render.mjs';
 
 export const PREVIEWER_VERSION = 'asset-preview/1';
 export const PREVIEW_SETTINGS = Object.freeze({ maxSide: 256, audioMaxFrames: 48000 * 60 });
@@ -57,70 +63,34 @@ export function cacheKey(parts) {
   return sha256(Buffer.from(cacheKeyInput(parts), 'utf8'));
 }
 
-/** Minimal static GLB decode: real accessor bytes, bounds and topology counts. */
+/**
+ * Structural GLB decode: real accessor bytes, bounds and topology counts.
+ * Kept as a separate entry point so accessor parsing is always distinguishable
+ * from the rendered picture produced by `renderGlbStatic`.
+ */
 export function decodeGlb(bytes) {
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  if (bytes.byteLength < 20) throw new Error('CORRUPT_ASSET_BODY');
-  if (view.getUint32(0, true) !== 0x46546c67) throw new Error('CORRUPT_ASSET_BODY'); // "glTF"
-  if (view.getUint32(4, true) !== 2) throw new Error('UNSUPPORTED_GLB_VERSION');
-  const declared = view.getUint32(8, true);
-  if (declared !== bytes.byteLength) throw new Error('CORRUPT_ASSET_BODY');
-  let offset = 12;
-  let json = null;
-  let bin = null;
-  while (offset + 8 <= bytes.byteLength) {
-    const length = view.getUint32(offset, true);
-    const type = view.getUint32(offset + 4, true);
-    const body = offset + 8;
-    if (body + length > bytes.byteLength) throw new Error('CORRUPT_ASSET_BODY');
-    if (type === 0x4e4f534a) {
-      json = JSON.parse(new TextDecoder().decode(bytes.subarray(body, body + length)));
-    } else if (type === 0x004e4942) {
-      bin = bytes.subarray(body, body + length);
-    }
-    offset = body + length + ((4 - (length % 4)) % 4);
-  }
-  if (!json) throw new Error('CORRUPT_ASSET_BODY');
-  const accessors = json.accessors || [];
-  const views = json.bufferViews || [];
-  const meshes = json.meshes || [];
-  let triangles = 0;
-  let vertices = 0;
-  const positionSlices = [];
-  for (const mesh of meshes) {
-    for (const primitive of mesh.primitives || []) {
-      const position = primitive.attributes?.POSITION;
-      if (position === undefined) throw new Error('MISSING_POSITION');
-      const accessor = accessors[position];
-      if (!accessor || accessor.type !== 'VEC3') throw new Error('MISSING_POSITION');
-      vertices += accessor.count;
-      if (primitive.indices !== undefined) {
-        const indices = accessors[primitive.indices];
-        if (!indices) throw new Error('CORRUPT_ASSET_BODY');
-        triangles += Math.floor(indices.count / 3);
-      }
-      const bufferView = views[accessor.bufferView];
-      if (!bufferView || !bin) throw new Error('CORRUPT_ASSET_BODY');
-      const start = (bufferView.byteOffset || 0) + (accessor.byteOffset || 0);
-      const end = start + accessor.count * 12;
-      if (end > bin.byteLength) throw new Error('CORRUPT_ASSET_BODY');
-      positionSlices.push(bin.subarray(start, end));
-    }
-  }
-  if (!positionSlices.length) throw new Error('MISSING_POSITION');
-  const digest = sha256(Buffer.concat(positionSlices.map(slice => Buffer.from(slice))));
+  const parsed = parseGlb(bytes);
   return {
     decoder: GLB_DECODER,
-    digest,
-    triangles,
-    vertices,
-    nodes: (json.nodes || []).length,
-    meshes: meshes.length,
-    materials: (json.materials || []).length,
-    images: (json.images || []).length,
-    accessors: accessors.length,
+    digest: glbGeometryDigest(parsed),
+    triangles: parsed.triangles,
+    vertices: parsed.vertices,
+    nodes: parsed.nodes.length,
+    meshes: parsed.meshes.length,
+    materials: parsed.materials.length,
+    images: parsed.images.length,
+    accessors: parsed.accessors.length,
   };
 }
+
+/** Renderer failures that mean the asset itself is unusable, not just unrenderable. */
+const FATAL_GLB_RENDER_CODES = new Set([
+  'CORRUPT_ASSET_BODY',
+  'UNSUPPORTED_GLB_VERSION',
+  'MISSING_POSITION',
+  'PREVIEW_TIMEOUT',
+  'INVALID_OPTION',
+]);
 
 function packageFiles(request) {
   if (request.files instanceof Map) return request.files;
@@ -182,19 +152,61 @@ export function previewAsset(request) {
       };
     }
     if (mediaType === 'model/gltf-binary') {
+      // Stage 1: structural accessor parsing. It must stay independently
+      // observable, so its facts are recorded even when the picture fails.
       const facts = decodeGlb(bytes);
+      const structureFacts = {
+        decoder: facts.decoder,
+        geometryDigest: facts.digest,
+        triangles: facts.triangles,
+        vertices: facts.vertices,
+        nodes: facts.nodes,
+        meshes: facts.meshes,
+        materials: facts.materials,
+        images: facts.images,
+        accessors: facts.accessors,
+        accessorParsed: true,
+      };
+      // Stage 2: a real offscreen software raster. No GPU, no window, no input.
+      let render;
+      try {
+        render = renderGlbStatic(bytes, { maxSide, deadline });
+      } catch (error) {
+        const code = error?.code || error?.message || 'GLB_RENDER_FAILED';
+        if (FATAL_GLB_RENDER_CODES.has(code)) throw error;
+        return {
+          cacheKey: cache,
+          status: 'partial',
+          detail: `glb structure only: ${facts.triangles} tris / ${facts.nodes} nodes`,
+          facts: {
+            ...structureFacts,
+            picture: false,
+            rendered: false,
+            renderer: GLB_RENDERER_VERSION,
+            renderReason: String(code).slice(0, 200),
+            playable: false,
+          },
+        };
+      }
       return {
         cacheKey: cache,
-        status: 'partial',
-        detail: `glb structure only: ${facts.triangles} tris / ${facts.nodes} nodes`,
+        status: 'ok',
+        detail: `glb ${facts.triangles} tris / ${facts.nodes} nodes rendered ${render.width}x${render.height}`,
         facts: {
-          ...facts,
-          // The accessor bytes were really parsed, but no offscreen renderer
-          // produced a picture. The UI must not present this as a rendered
-          // model preview.
-          picture: false,
-          rendered: false,
-          renderReason: 'model-render-not-implemented',
+          ...structureFacts,
+          // The digest is the rendered RGBA framebuffer, so two different
+          // models can never share one preview evidence record.
+          digest: render.pixelDigest,
+          picture: true,
+          rendered: true,
+          renderer: GLB_RENDERER_VERSION,
+          renderWidth: render.width,
+          renderHeight: render.height,
+          thumbnailBytes: render.png.length,
+          thumbnailBase64: Buffer.from(render.png).toString('base64'),
+          cameraYawDeg: render.camera.yawDeg,
+          cameraPitchDeg: render.camera.pitchDeg,
+          cameraScale: render.camera.scale,
           playable: false,
         },
       };
