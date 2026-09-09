@@ -42,7 +42,7 @@ try{
       if(channel==='task.current')return {active:state.active,context:{binding:{taskId:'task-a'},generation:1,status:state.active?'running':'finished',draft:{revision:3},requirements:[{kind:'correction',text:'花草可以穿行'}],modifiedResources:['object:flower'],budget:{requestCount:4,compactionCount:3,actualTokens:1000,reservedTokens:200,unknownRequestCount:1,remainingTokens:8800,limits:{maxRequests:80,maxCompactions:8}}}};
       if(channel==='library.search')return {items:state.empty?[]:[1,2].map(version=>({ref:ref(version),name:'旧树 <script>不执行</script>',kind:'object',description:'可复用树的固定版本',dependencies:['geometry@2'],scope:{worldId:'world-a'},evidence:{applied:version===1,verified:true}})),next:null,total:2};
       if(channel==='library.read')return {ref:args.ref,name:'旧树',dependencies:['geometry@2','ext:tree-growth@1'],scope:{worldId:'source-world'},evidence:{applied:true},source:{text:'export function step() { return { state: {}, commands: [] }; }',next:null,start:0}};
-      if(channel==='library.install'){if(state.active)throw Error('TASK_ACTIVE');return {receipt:{id:'receipt-install'},applied:false};}
+      if(channel==='library.install'){if(state.active)throw Error('TASK_ACTIVE');if(state.loseInstallReply){state.loseInstallReply=false;throw Error('REPLY_LOST');}return {receipt:{id:'receipt-install'},applied:false};}
       if(channel==='library.capture')return {ref:ref(3)};
       if(channel==='memory.search')return {items:[{format:'craftmine.memory/1',id:'rule-a',kind:'project-rule',claim:'花草不阻挡移动',status:state.memoryStatus,scope:{projectId:'p',worldId:args.worldId},sourceRefs:['user:request-1']}],next:null};
       if(channel==='memory.retire'){state.memoryStatus='retired';return {retired:true};}
@@ -75,6 +75,8 @@ try{
   await submitByText('查看固定版本');check('exact source version exposes bounded source and dependencies',(await page.locator('.workbench-detail').textContent()).includes('ext:tree-growth@1'));
   await submitByText('加入当前草稿');check('install says draft rather than applied',(await page.locator('.workbench-notice').textContent()).includes('仍需检查'));
   const installation=await page.evaluate(()=>__state.calls.find(c=>c.channel==='library.install'));check('installation sends exact version hash and no renderer owner identity',installation.args.ref.version===1&&installation.args.ref.hash==='a'.repeat(64)&&!('sessionId'in installation.args)&&installation.args.worldId==='world-a');
+  await page.evaluate(()=>{__state.loseInstallReply=true;});await submitByText('加入当前草稿');await submitByText('加入当前草稿');
+  check('lost install reply retries identical operation and revision',await page.evaluate(()=>{const calls=__state.calls.filter(call=>call.channel==='library.install').slice(-2);return JSON.stringify(calls[0].args)===JSON.stringify(calls[1].args);}));
   await page.screenshot({path:path.join(out,'library-dark-wide.png')});
   await page.evaluate(()=>{__state.active=true;});await open('library');await submitByText('查看固定版本');check('active model task disables manual install',await page.getByText('加入当前草稿',{exact:true}).isDisabled());
   await open('task');check('task shows actual reservations and unknown results',(await page.locator('[data-workbench-page="task"]').textContent()).includes('结果待确认 1 次'));

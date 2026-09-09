@@ -1126,6 +1126,13 @@ async fn handle_request(
             serde_json::to_value(catalog).map_err(|e| rpc_err(1000, e.to_string(), "INTERNAL"))
         }
 
+        "secrets.status" => {
+            if params.as_object().is_none_or(|fields| !fields.is_empty()) {
+                return Err(rpc_err(1002, "No parameters allowed", "INVALID_PARAMS"));
+            }
+            let st = state.lock().await;
+            Ok(json!({ "status": st.secrets.status(), "backend": st.secrets.backend() }))
+        }
         "secrets.set" => {
             let secret_ref = params
                 .get("secretRef")

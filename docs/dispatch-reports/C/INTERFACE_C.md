@@ -61,3 +61,19 @@ view.mjs 在正式游戏 load 增加 host 当前 record.id 的 worldId。接收�
 `tests/dispatch/c/ui-headless.mjs` 使用实际构建 world.html/view.js + 真实 game iframe，bridge 为明确的领域响应夹具；不声称新 Rust 通道已接入。selection 测试由隔离 game frame 发消息，是 UI 消息协议测试，实际 raycast 已由 D 覆盖。
 
 `tests/dispatch/c/layout-headless.mjs` 渲染实际 React 布局组件，store/i18n 为夹具，验证选择模式、宽度保存和 session/tab 保留契约。整个可见桌面合成、模型流式停止、所有 PI 对话入口与真实 A/E/G 联合验收仍由 G/F 执行。
+
+## 真实业务服务（G 授权扩展）
+
+`workbench-service.cjs` 导出 `createWorkbenchService(core,{library,memory,verifications,reviews,getSettings})`，返回 `{handle,validatedContext,selectionRead}`。library/memory 为 A 真实工厂结果；core 为现有 Rust CoreClient。main 从真实查看会话注入 `host:{projectId,sessionId,selectedWorld,active,context?,previous?,origin?}`，不允许 renderer 任意构造 host。
+
+`handle(channel,payload,host)` 拒绝未声明的字段，要求 worldId 同时等于 getSettings().activeWorldId 和 host.selectedWorld。任务当前值从 workspace.current/task.context 获取。作品检索属于整个本机作品库，允许跨世界复用；记忆严格使用当前世界 scope。capture 要求当前构建的实际 applied 回执，注入其 binding.projectId，A 再核验 artifact 来源。selectionRead 每次再次核对正式 world/build/object，validatedContext 只提供当前 draft 仍存在的选中对象及 validated、未被替代的记忆。
+
+main 对 library.install/memory.propose 先执行私有 `handle('workbench.prepareAction',{channel,payload:原请求},host)`，有回执则直接返回；否则新建宿主拥有的实际短 action turn 后调用正常 channel。不得把 prepareAction 注册为 renderer 能力。library 使用旧 task.context 放入 host.previous 校验 UI revision，新 action workspace revision 必须为 0；真实编译和提交后 enqueue verification，origin 由宿主注入。提交回执重放会返回 verificationStatus=query-required，不能假设模型评审或检查已完成。
+
+memory.prepareAction 依赖 E/G 新增 Rust `memory.findReceipt({projectId,sessionId,worldId,operationId,request:{kind,claim,tags,supersedes}})`。普通 propose 把玩家此次按钮操作中的原文 claim 记录到 task.recordContext，再调用 A memory.propose，sourceRefs 使用实际 requestId。只有 project-rule 的字面用户来源能验证；workflow 仍为 proposed。替代使用 supersedes 的原子校验，没有先行 retire。main 必须阻止模型活跃期间插入这些手工 action turn；service 自身对 capture/retire 的 host.active 也拒绝。
+
+`validatedContext(context) -> {worldId,memories,selection,build}` 供 B 请求上下文使用；context 必须由宿主提供，且当前选中世界等于其 workspace 世界。`selectionRead(host)` 用于当前宿主会话的选中对象展示，失效返回 null。
+
+本服务 capabilities 只列自己的实际方法。G 需合并已经接通的 task.recoverable/resume/discard/stop 与 E backup/diagnostics，不能默认全部可用。resume 支持 `{continuation:'running'}` 显示正在续作，以及 send-message 显示等待玩家对话；两者都不自动重放旧 provider 请求。
+
+`tests/dispatch/c/service-domain.test.mjs` 调用真实 A 服务、编译器和独立 Rust 进程。起始应用来源使用明确的 durable evidence fixture，未运行模型/评审/渲染器；后续 capture、跨世界 install、receipt 重放、记忆验证/替代/停用均是真实实现。临时复制 G 的二进制与 domain bundle，SHA256 见 DELIVERY_C；没有修改共享文件或共享测试 profile。

@@ -1,0 +1,1490 @@
+{
+  "format": "craftmine.f-native-agent/1",
+  "passed": true,
+  "elapsedMs": 40588,
+  "checks": [
+    {
+      "name": "Native isolation active",
+      "passed": true
+    },
+    {
+      "name": "Blank world before real Agent authorship",
+      "passed": true
+    },
+    {
+      "name": "Production renderer prompt accepted",
+      "passed": true
+    },
+    {
+      "name": "Actual native Agent finished before deadline",
+      "passed": true
+    },
+    {
+      "name": "Real PI transcript records authored tool calls",
+      "passed": true
+    },
+    {
+      "name": "Actual PI compaction checkpoints meet scenario",
+      "passed": true
+    },
+    {
+      "name": "Actual panel applied reviewed candidate",
+      "passed": true
+    },
+    {
+      "name": "Real applied tree retains requested identity and position",
+      "passed": true
+    },
+    {
+      "name": "Zero input and focus across desktop and world frames",
+      "passed": true
+    },
+    {
+      "name": "Complete native restart retains authored tree",
+      "passed": true
+    }
+  ],
+  "evidence": {
+    "model": {
+      "id": "deepseek-v4.1-flash-expires-on-0910",
+      "thinking": "high",
+      "authorship": "actual-native-PI-Agent"
+    },
+    "scenario": {
+      "compactions": 0,
+      "timeoutMs": 1200000,
+      "maxRequests": 80
+    },
+    "initialStatus": {
+      "name": "craftmine world",
+      "profile": "D:\\Craftmine World-worktrees\\parallel-f-20260909\\test-results\\desktop-native-f-9KZCYv\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/Craftmine%20World-worktrees/parallel-f-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    "identity": {
+      "sessionId": "5d3375bb-529a-4cf3-9236-765575c29992",
+      "worldId": "47143ed8-f237-4c13-a8cb-864a1fd3e23a",
+      "modelId": "deepseek-v4.1-flash-expires-on-0910"
+    },
+    "prompt": {
+      "ok": true,
+      "data": {
+        "accepted": true,
+        "turnId": "928fb0d6-b71e-488b-8d73-1ec7e471702a"
+      }
+    },
+    "finalSession": {
+      "sessionId": "5d3375bb-529a-4cf3-9236-765575c29992",
+      "worldId": "47143ed8-f237-4c13-a8cb-864a1fd3e23a",
+      "active": false,
+      "record": {
+        "session": {
+          "createdAt": "2026-09-09T07:09:27.122Z",
+          "id": "5d3375bb-529a-4cf3-9236-765575c29992",
+          "messageCount": 16,
+          "messages": [
+            {
+              "content": "请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。",
+              "createdAt": "2026-09-09T07:09:27.149Z",
+              "id": "05147201-d4d6-4997-a6d0-14d4832c478f",
+              "role": "user",
+              "status": "complete"
+            },
+            {
+              "content": "I'll start by inspecting the actual draft and reading the supported contracts.",
+              "createdAt": "2026-09-09T07:09:27.377Z",
+              "id": "08aafb81-7c56-4135-928c-7b4ec89e95d2",
+              "modelId": "deepseek-v4.1-flash-expires-on-0910",
+              "providerId": "07659910-3edd-4075-8c78-735f320d1a5f",
+              "responseDurationMs": 458,
+              "role": "assistant",
+              "status": "complete",
+              "usage": {
+                "inputTokens": 2397,
+                "outputTokens": 78,
+                "reasoningTokens": 0,
+                "totalTokens": 2475
+              }
+            },
+            {
+              "content": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"baseBuild\\\": \\\"v-4641627420193586d325\\\",\\n  \\\"next\\\": null,\\n  \\\"publishingAvailable\\\": false,\\n  \\\"resources\\\": [],\\n  \\\"resumedFrom\\\": null,\\n  \\\"status\\\": \\\"running\\\",\\n  \\\"taskId\\\": \\\"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\\\",\\n  \\\"title\\\": \\\"我的第一个世界\\\",\\n  \\\"total\\\": 0,\\n  \\\"workspaceRevision\\\": 0,\\n  \\\"worldId\\\": \\\"47143ed8-f237-4c13-a8cb-864a1fd3e23a\\\"\\n}\"}],\"details\":{\"baseBuild\":\"v-4641627420193586d325\",\"next\":null,\"publishingAvailable\":false,\"resources\":[],\"resumedFrom\":null,\"status\":\"running\",\"taskId\":\"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\",\"title\":\"我的第一个世界\",\"total\":0,\"workspaceRevision\":0,\"worldId\":\"47143ed8-f237-4c13-a8cb-864a1fd3e23a\"},\"isError\":false}",
+              "createdAt": "2026-09-09T07:09:27.835Z",
+              "id": "call_00_ET_vfYowohmTcavSpMnsDo81768",
+              "role": "tool",
+              "status": "complete",
+              "toolArgs": {},
+              "toolCallId": "call_00_ET_vfYowohmTcavSpMnsDo81768",
+              "toolCompletedAt": "2026-09-09T07:09:27.848Z",
+              "toolDurationMs": 13,
+              "toolName": "plugin_craftmine_world_project_inspect",
+              "toolResult": {
+                "content": [
+                  {
+                    "text": "{\n  \"baseBuild\": \"v-4641627420193586d325\",\n  \"next\": null,\n  \"publishingAvailable\": false,\n  \"resources\": [],\n  \"resumedFrom\": null,\n  \"status\": \"running\",\n  \"taskId\": \"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\",\n  \"title\": \"我的第一个世界\",\n  \"total\": 0,\n  \"workspaceRevision\": 0,\n  \"worldId\": \"47143ed8-f237-4c13-a8cb-864a1fd3e23a\"\n}",
+                    "type": "text"
+                  }
+                ],
+                "details": {
+                  "baseBuild": "v-4641627420193586d325",
+                  "next": null,
+                  "publishingAvailable": false,
+                  "resources": [],
+                  "resumedFrom": null,
+                  "status": "running",
+                  "taskId": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+                  "title": "我的第一个世界",
+                  "total": 0,
+                  "workspaceRevision": 0,
+                  "worldId": "47143ed8-f237-4c13-a8cb-864a1fd3e23a"
+                },
+                "isError": false
+              },
+              "toolStatus": "success"
+            },
+            {
+              "content": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"next\\\": null,\\n  \\\"section\\\": \\\"objects\\\",\\n  \\\"start\\\": 0,\\n  \\\"text\\\": \\\"{\\\\n  \\\\\\\"format\\\\\\\": \\\\\\\"craftmine.scene/3\\\\\\\",\\\\n  \\\\\\\"groundY\\\\\\\": 6,\\\\n  \\\\\\\"instructions\\\\\\\": [\\\\n    \\\\\\\"Use workspace_patch to add or replace one complete resource. The schema below matches the current world format; do not add fields from another format.\\\\\\\",\\\\n    \\\\\\\"Coordinates are in meters. Each part offset is its MINIMUM corner relative to object.position, not its center. Minimum world corner = position + offset; maximum = position + offset + size.\\\\\\\",\\\\n    \\\\\\\"For a rooted tree at position.y=6, the trunk bottom has offset.y=0. Center a canopy on the trunk by subtracting half its size from its desired center. Keep trunk, branches and canopy connected.\\\\\\\",\\\\n    \\\\\\\"Small plants use thin non-solid parts, not full-sized building blocks. Leaves normally use solid:false so players can move through foliage.\\\\\\\"\\\\n  ],\\\\n  \\\\\\\"schema\\\\\\\": {\\\\n    \\\\\\\"type\\\\\\\": \\\\\\\"array\\\\\\\",\\\\n    \\\\\\\"items\\\\\\\": {\\\\n      \\\\\\\"type\\\\\\\": \\\\\\\"object\\\\\\\",\\\\n      \\\\\\\"properties\\\\\\\": {\\\\n        \\\\\\\"id\\\\\\\": {\\\\n          \\\\\\\"type\\\\\\\": \\\\\\\"string\\\\\\\"\\\\n        },\\\\n        \\\\\\\"name\\\\\\\": {\\\\n          \\\\\\\"type\\\\\\\": \\\\\\\"string\\\\\\\"\\\\n        },\\\\n        \\\\\\\"position\\\\\\\": {\\\\n          \\\\\\\"type\\\\\\\": \\\\\\\"object\\\\\\\",\\\\n          \\\\\\\"properties\\\\\\\": {\\\\n            \\\\\\\"x\\\\\\\": {\\\\n              \\\\\\\"type\\\\\\\": \\\\\\\"number\\\\\\\"\\\\n            },\\\\n            \\\\\\\"y\\\\\\\": {\\\\n              \\\\\\\"type\\\\\\\": \\\\\\\"number\\\\\\\"\\\\n            },\\\\n            \\\\\\\"z\\\\\\\": {\\\\n              \\\\\\\"type\\\\\\\": \\\\\\\"number\\\\\\\"\\\\n            }\\\\n          },\\\\n          \\\\\\\"required\\\\\\\": [\\\\n            \\\\\\\"x\\\\\\\",\\\\n            \\\\\\\"y\\\\\\\",\\\\n            \\\\\\\"z\\\\\\\"\\\\n          ],\\\\n          \\\\\\\"additionalProperties\\\\\\\": false\\\\n        },\\\\n        \\\\\\\"source\\\\\\\": {\\\\n          \\\\\\\"anyOf\\\\\\\": [\\\\n            {\\\\n              \\\\\\\"type\\\\\\\": \\\\\\\"null\\\\\\\"\\\\n            },\\\\n            {\\\\n              \\\\\\\"type\\\\\\\": \\\\\\\"object\\\\\\\",\\\\n              \\\\\\\"properties\\\\\\\": {\\\\n                \\\\\\\"id\\\\\\\": {\\\\n                  \\\\\\\"type\\\\\\\": \\\\\\\"string\\\\\\\"\\\\n                },\\\\n                \\\\\\\"version\\\\\\\": {\\\\n                  \\\\\\\"type\\\\\\\": \\\\\\\"integer\\\\\\\"\\\\n                }\\\\n              },\\\\n              \\\\\\\"required\\\\\\\": [\\\\n                \\\\\\\"id\\\\\\\",\\\\n                \\\\\\\"version\\\\\\\"\\\\n              ],\\\\n              \\\\\\\"additionalProperties\\\\\\\": false\\\\n            }\\\\n          ]\\\\n        },\\\\n        \\\\\\\"components\\\\\\\": {\\\\n          \\\\\\\"type\\\\\\\": \\\\\\\"object\\\\\\\",\\\\n          \\\\\\\"properties\\\\\\\": {\\\\n            \\\\\\\"health\\\\\\\": {\\\\n              \\\\\\\"type\\\\\\\": \\\\\\\"number\\\\\\\"\\\\n            },\\\\n            \\\\\\\"contactDamage\\\\\\\": {\\\\n              \\\\\\\"type\\\\\\\": \\\\\\\"number\\\\\\\"\\\\n            }\\\\n          },\\\\n          \\\\\\\"required\\\\\\\": [\\\\n            \\\\\\\"health\\\\\\\",\\\\n            \\\\\\\"contactDamage\\\\\\\"\\\\n          ],\\\\n          \\\\\\\"additionalProperties\\\\\\\": false\\\\n        },\\\\n        \\\\\\\"parts\\\\\\\": {\\\\n          \\\\\\\"type\\\\\\\": \\\\\\\"array\\\\\\\",\\\\n          \\\\\\\"items\\\\\\\": {\\\\n            \\\\\\\"type\\\\\\\": \\\\\\\"object\\\\\\\",\\\\n            \\\\\\\"properties\\\\\\\": {\\\\n              \\\\\\\"shape\\\\\\\": {\\\\n                \\\\\\\"type\\\\\\\": \\\\\\\"string\\\\\\\",\\\\n                \\\\\\\"enum\\\\\\\": [\\\\n                  \\\\\\\"box\\\\\\\",\\\\n                  \\\\\\\"blade\\\\\\\"\\\\n                ]\\\\n              },\\\\n              \\\\\\\"offset\\\\\\\": {\\\\n                \\\\\\\"type\\\\\\\": \\\\\\\"object\\\\\\\",\\\\n                \\\\\\\"properties\\\\\\\": {\\\\n                  \\\\\\\"x\\\\\\\": {\\\\n                    \\\\\\\"type\\\\\\\": \\\\\\\"number\\\\\\\"\\\\n                  },\\\\n                  \\\\\\\"y\\\\\\\": {\\\\n                    \\\\\\\"type\\\\\\\": \\\\\\\"number\\\\\\\"\\\\n                  },\\\\n                  \\\\\\\"z\\\\\\\": {\\\\n                    \\\\\\\"type\\\\\\\": \\\\\\\"number\\\\\\\"\\\\n                  }\\\\n                },\\\\n                \\\\\\\"required\\\\\\\": [\\\\n                  \\\\\\\"x\\\\\\\",\\\\n                  \\\\\\\"y\\\\\\\",\\\\n                  \\\\\\\"z\\\\\\\"\\\\n                ],\\\\n                \\\\\\\"additionalProperties\\\\\\\": false\\\\n              },\\\\n              \\\\\\\"size\\\\\\\": {\\\\n                \\\\\\\"type\\\\\\\": \\\\\\\"object\\\\\\\",\\\\n                \\\\\\\"properties\\\\\\\": {\\\\n                  \\\\\\\"x\\\\\\\": {\\\\n                    \\\\\\\"type\\\\\\\": \\\\\\\"number\\\\\\\"\\\\n                  },\\\\n                  \\\\\\\"y\\\\\\\": {\\\\n                    \\\\\\\"type\\\\\\\": \\\\\\\"number\\\\\\\"\\\\n                  },\\\\n                  \\\\\\\"z\\\\\\\": {\\\\n                    \\\\\\\"type\\\\\\\": \\\\\\\"number\\\\\\\"\\\\n                  }\\\\n                },\\\\n                \\\\\\\"required\\\\\\\": [\\\\n                  \\\\\\\"x\\\\\\\",\\\\n                  \\\\\\\"y\\\\\\\",\\\\n                  \\\\\\\"z\\\\\\\"\\\\n                ],\\\\n                \\\\\\\"additionalProperties\\\\\\\": false\\\\n              },\\\\n              \\\\\\\"material\\\\\\\": {\\\\n                \\\\\\\"type\\\\\\\": \\\\\\\"string\\\\\\\",\\\\n                \\\\\\\"enum\\\\\\\": [\\\\n                  \\\\\\\"grass\\\\\\\",\\\\n                  \\\\\\\"dirt\\\\\\\",\\\\n                  \\\\\\\"stone\\\\\\\",\\\\n                  \\\\\\\"wood\\\\\\\",\\\\n                  \\\\\\\"leaves\\\\\\\",\\\\n                  \\\\\\\"planks\\\\\\\",\\\\n                  \\\\\\\"sand\\\\\\\",\\\\n                  \\\\\\\"brick\\\\\\\",\\\\n                  \\\\\\\"light\\\\\\\",\\\\n                  \\\\\\\"glass\\\\\\\",\\\\n                  \\\\\\\"solid\\\\\\\"\\\\n                ]\\\\n              },\\\\n              \\\\\\\"color\\\\\\\": {\\\\n                \\\\\\\"type\\\\\\\": \\\\\\\"string\\\\\\\"\\\\n              },\\\\n              \\\\\\\"solid\\\\\\\": {\\\\n                \\\\\\\"type\\\\\\\": \\\\\\\"boolean\\\\\\\"\\\\n              }\\\\n            },\\\\n            \\\\\\\"required\\\\\\\": [\\\\n              \\\\\\\"shape\\\\\\\",\\\\n              \\\\\\\"offset\\\\\\\",\\\\n              \\\\\\\"size\\\\\\\",\\\\n              \\\\\\\"material\\\\\\\",\\\\n              \\\\\\\"color\\\\\\\",\\\\n              \\\\\\\"solid\\\\\\\"\\\\n            ],\\\\n            \\\\\\\"additionalProperties\\\\\\\": false\\\\n          }\\\\n        }\\\\n      },\\\\n      \\\\\\\"required\\\\\\\": [\\\\n        \\\\\\\"id\\\\\\\",\\\\n        \\\\\\\"name\\\\\\\",\\\\n        \\\\\\\"position\\\\\\\",\\\\n        \\\\\\\"source\\\\\\\",\\\\n        \\\\\\\"components\\\\\\\",\\\\n        \\\\\\\"parts\\\\\\\"\\\\n      ],\\\\n      \\\\\\\"additionalProperties\\\\\\\": false\\\\n    }\\\\n  }\\\\n}\\\",\\n  \\\"totalChars\\\": 4697\\n}\"}],\"details\":{\"next\":null,\"section\":\"objects\",\"start\":0,\"text\":\"{\\n  \\\"format\\\": \\\"craftmine.scene/3\\\",\\n  \\\"groundY\\\": 6,\\n  \\\"instructions\\\": [\\n    \\\"Use workspace_patch to add or replace one complete resource. The schema below matches the current world format; do not add fields from another format.\\\",\\n    \\\"Coordinates are in meters. Each part offset is its MINIMUM corner relative to object.position, not its center. Minimum world corner = position + offset; maximum = position + offset + size.\\\",\\n    \\\"For a rooted tree at position.y=6, the trunk bottom has offset.y=0. Center a canopy on the trunk by subtracting half its size from its desired center. Keep trunk, branches and canopy connected.\\\",\\n    \\\"Small plants use thin non-solid parts, not full-sized building blocks. Leaves normally use solid:false so players can move through foliage.\\\"\\n  ],\\n  \\\"schema\\\": {\\n    \\\"type\\\": \\\"array\\\",\\n    \\\"items\\\": {\\n      \\\"type\\\": \\\"object\\\",\\n      \\\"properties\\\": {\\n        \\\"id\\\": {\\n          \\\"type\\\": \\\"string\\\"\\n        },\\n        \\\"name\\\": {\\n          \\\"type\\\": \\\"string\\\"\\n        },\\n        \\\"position\\\": {\\n          \\\"type\\\": \\\"object\\\",\\n          \\\"properties\\\": {\\n            \\\"x\\\": {\\n              \\\"type\\\": \\\"number\\\"\\n            },\\n            \\\"y\\\": {\\n              \\\"type\\\": \\\"number\\\"\\n            },\\n            \\\"z\\\": {\\n              \\\"type\\\": \\\"number\\\"\\n            }\\n          },\\n          \\\"required\\\": [\\n            \\\"x\\\",\\n            \\\"y\\\",\\n            \\\"z\\\"\\n          ],\\n          \\\"additionalProperties\\\": false\\n        },\\n        \\\"source\\\": {\\n          \\\"anyOf\\\": [\\n            {\\n              \\\"type\\\": \\\"null\\\"\\n            },\\n            {\\n              \\\"type\\\": \\\"object\\\",\\n              \\\"properties\\\": {\\n                \\\"id\\\": {\\n                  \\\"type\\\": \\\"string\\\"\\n                },\\n                \\\"version\\\": {\\n                  \\\"type\\\": \\\"integer\\\"\\n                }\\n              },\\n              \\\"required\\\": [\\n                \\\"id\\\",\\n                \\\"version\\\"\\n              ],\\n              \\\"additionalProperties\\\": false\\n            }\\n          ]\\n        },\\n        \\\"components\\\": {\\n          \\\"type\\\": \\\"object\\\",\\n          \\\"properties\\\": {\\n            \\\"health\\\": {\\n              \\\"type\\\": \\\"number\\\"\\n            },\\n            \\\"contactDamage\\\": {\\n              \\\"type\\\": \\\"number\\\"\\n            }\\n          },\\n          \\\"required\\\": [\\n            \\\"health\\\",\\n            \\\"contactDamage\\\"\\n          ],\\n          \\\"additionalProperties\\\": false\\n        },\\n        \\\"parts\\\": {\\n          \\\"type\\\": \\\"array\\\",\\n          \\\"items\\\": {\\n            \\\"type\\\": \\\"object\\\",\\n            \\\"properties\\\": {\\n              \\\"shape\\\": {\\n                \\\"type\\\": \\\"string\\\",\\n                \\\"enum\\\": [\\n                  \\\"box\\\",\\n                  \\\"blade\\\"\\n                ]\\n              },\\n              \\\"offset\\\": {\\n                \\\"type\\\": \\\"object\\\",\\n                \\\"properties\\\": {\\n                  \\\"x\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  },\\n                  \\\"y\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  },\\n                  \\\"z\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  }\\n                },\\n                \\\"required\\\": [\\n                  \\\"x\\\",\\n                  \\\"y\\\",\\n                  \\\"z\\\"\\n                ],\\n                \\\"additionalProperties\\\": false\\n              },\\n              \\\"size\\\": {\\n                \\\"type\\\": \\\"object\\\",\\n                \\\"properties\\\": {\\n                  \\\"x\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  },\\n                  \\\"y\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  },\\n                  \\\"z\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  }\\n                },\\n                \\\"required\\\": [\\n                  \\\"x\\\",\\n                  \\\"y\\\",\\n                  \\\"z\\\"\\n                ],\\n                \\\"additionalProperties\\\": false\\n              },\\n              \\\"material\\\": {\\n                \\\"type\\\": \\\"string\\\",\\n                \\\"enum\\\": [\\n                  \\\"grass\\\",\\n                  \\\"dirt\\\",\\n                  \\\"stone\\\",\\n                  \\\"wood\\\",\\n                  \\\"leaves\\\",\\n                  \\\"planks\\\",\\n                  \\\"sand\\\",\\n                  \\\"brick\\\",\\n                  \\\"light\\\",\\n                  \\\"glass\\\",\\n                  \\\"solid\\\"\\n                ]\\n              },\\n              \\\"color\\\": {\\n                \\\"type\\\": \\\"string\\\"\\n              },\\n              \\\"solid\\\": {\\n                \\\"type\\\": \\\"boolean\\\"\\n              }\\n            },\\n            \\\"required\\\": [\\n              \\\"shape\\\",\\n              \\\"offset\\\",\\n              \\\"size\\\",\\n              \\\"material\\\",\\n              \\\"color\\\",\\n              \\\"solid\\\"\\n            ],\\n            \\\"additionalProperties\\\": false\\n          }\\n        }\\n      },\\n      \\\"required\\\": [\\n        \\\"id\\\",\\n        \\\"name\\\",\\n        \\\"position\\\",\\n        \\\"source\\\",\\n        \\\"components\\\",\\n        \\\"parts\\\"\\n      ],\\n      \\\"additionalProperties\\\": false\\n    }\\n  }\\n}\",\"totalChars\":4697},\"isError\":false}",
+              "createdAt": "2026-09-09T07:09:27.848Z",
+              "id": "call_01_ET_IhddSYH8xVEk8ZwyOnmh1450",
+              "role": "tool",
+              "status": "complete",
+              "toolArgs": {
+                "section": "objects"
+              },
+              "toolCallId": "call_01_ET_IhddSYH8xVEk8ZwyOnmh1450",
+              "toolCompletedAt": "2026-09-09T07:09:27.861Z",
+              "toolDurationMs": 13,
+              "toolName": "plugin_craftmine_world_capabilities_read",
+              "toolResult": {
+                "content": [
+                  {
+                    "text": "{\n  \"next\": null,\n  \"section\": \"objects\",\n  \"start\": 0,\n  \"text\": \"{\\n  \\\"format\\\": \\\"craftmine.scene/3\\\",\\n  \\\"groundY\\\": 6,\\n  \\\"instructions\\\": [\\n    \\\"Use workspace_patch to add or replace one complete resource. The schema below matches the current world format; do not add fields from another format.\\\",\\n    \\\"Coordinates are in meters. Each part offset is its MINIMUM corner relative to object.position, not its center. Minimum world corner = position + offset; maximum = position + offset + size.\\\",\\n    \\\"For a rooted tree at position.y=6, the trunk bottom has offset.y=0. Center a canopy on the trunk by subtracting half its size from its desired center. Keep trunk, branches and canopy connected.\\\",\\n    \\\"Small plants use thin non-solid parts, not full-sized building blocks. Leaves normally use solid:false so players can move through foliage.\\\"\\n  ],\\n  \\\"schema\\\": {\\n    \\\"type\\\": \\\"array\\\",\\n    \\\"items\\\": {\\n      \\\"type\\\": \\\"object\\\",\\n      \\\"properties\\\": {\\n        \\\"id\\\": {\\n          \\\"type\\\": \\\"string\\\"\\n        },\\n        \\\"name\\\": {\\n          \\\"type\\\": \\\"string\\\"\\n        },\\n        \\\"position\\\": {\\n          \\\"type\\\": \\\"object\\\",\\n          \\\"properties\\\": {\\n            \\\"x\\\": {\\n              \\\"type\\\": \\\"number\\\"\\n            },\\n            \\\"y\\\": {\\n              \\\"type\\\": \\\"number\\\"\\n            },\\n            \\\"z\\\": {\\n              \\\"type\\\": \\\"number\\\"\\n            }\\n          },\\n          \\\"required\\\": [\\n            \\\"x\\\",\\n            \\\"y\\\",\\n            \\\"z\\\"\\n          ],\\n          \\\"additionalProperties\\\": false\\n        },\\n        \\\"source\\\": {\\n          \\\"anyOf\\\": [\\n            {\\n              \\\"type\\\": \\\"null\\\"\\n            },\\n            {\\n              \\\"type\\\": \\\"object\\\",\\n              \\\"properties\\\": {\\n                \\\"id\\\": {\\n                  \\\"type\\\": \\\"string\\\"\\n                },\\n                \\\"version\\\": {\\n                  \\\"type\\\": \\\"integer\\\"\\n                }\\n              },\\n              \\\"required\\\": [\\n                \\\"id\\\",\\n                \\\"version\\\"\\n              ],\\n              \\\"additionalProperties\\\": false\\n            }\\n          ]\\n        },\\n        \\\"components\\\": {\\n          \\\"type\\\": \\\"object\\\",\\n          \\\"properties\\\": {\\n            \\\"health\\\": {\\n              \\\"type\\\": \\\"number\\\"\\n            },\\n            \\\"contactDamage\\\": {\\n              \\\"type\\\": \\\"number\\\"\\n            }\\n          },\\n          \\\"required\\\": [\\n            \\\"health\\\",\\n            \\\"contactDamage\\\"\\n          ],\\n          \\\"additionalProperties\\\": false\\n        },\\n        \\\"parts\\\": {\\n          \\\"type\\\": \\\"array\\\",\\n          \\\"items\\\": {\\n            \\\"type\\\": \\\"object\\\",\\n            \\\"properties\\\": {\\n              \\\"shape\\\": {\\n                \\\"type\\\": \\\"string\\\",\\n                \\\"enum\\\": [\\n                  \\\"box\\\",\\n                  \\\"blade\\\"\\n                ]\\n              },\\n              \\\"offset\\\": {\\n                \\\"type\\\": \\\"object\\\",\\n                \\\"properties\\\": {\\n                  \\\"x\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  },\\n                  \\\"y\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  },\\n                  \\\"z\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  }\\n                },\\n                \\\"required\\\": [\\n                  \\\"x\\\",\\n                  \\\"y\\\",\\n                  \\\"z\\\"\\n                ],\\n                \\\"additionalProperties\\\": false\\n              },\\n              \\\"size\\\": {\\n                \\\"type\\\": \\\"object\\\",\\n                \\\"properties\\\": {\\n                  \\\"x\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  },\\n                  \\\"y\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  },\\n                  \\\"z\\\": {\\n                    \\\"type\\\": \\\"number\\\"\\n                  }\\n                },\\n                \\\"required\\\": [\\n                  \\\"x\\\",\\n                  \\\"y\\\",\\n                  \\\"z\\\"\\n                ],\\n                \\\"additionalProperties\\\": false\\n              },\\n              \\\"material\\\": {\\n                \\\"type\\\": \\\"string\\\",\\n                \\\"enum\\\": [\\n                  \\\"grass\\\",\\n                  \\\"dirt\\\",\\n                  \\\"stone\\\",\\n                  \\\"wood\\\",\\n                  \\\"leaves\\\",\\n                  \\\"planks\\\",\\n                  \\\"sand\\\",\\n                  \\\"brick\\\",\\n                  \\\"light\\\",\\n                  \\\"glass\\\",\\n                  \\\"solid\\\"\\n                ]\\n              },\\n              \\\"color\\\": {\\n                \\\"type\\\": \\\"string\\\"\\n              },\\n              \\\"solid\\\": {\\n                \\\"type\\\": \\\"boolean\\\"\\n              }\\n            },\\n            \\\"required\\\": [\\n              \\\"shape\\\",\\n              \\\"offset\\\",\\n              \\\"size\\\",\\n              \\\"material\\\",\\n              \\\"color\\\",\\n              \\\"solid\\\"\\n            ],\\n            \\\"additionalProperties\\\": false\\n          }\\n        }\\n      },\\n      \\\"required\\\": [\\n        \\\"id\\\",\\n        \\\"name\\\",\\n        \\\"position\\\",\\n        \\\"source\\\",\\n        \\\"components\\\",\\n        \\\"parts\\\"\\n      ],\\n      \\\"additionalProperties\\\": false\\n    }\\n  }\\n}\",\n  \"totalChars\": 4697\n}",
+                    "type": "text"
+                  }
+                ],
+                "details": {
+                  "next": null,
+                  "section": "objects",
+                  "start": 0,
+                  "text": "{\n  \"format\": \"craftmine.scene/3\",\n  \"groundY\": 6,\n  \"instructions\": [\n    \"Use workspace_patch to add or replace one complete resource. The schema below matches the current world format; do not add fields from another format.\",\n    \"Coordinates are in meters. Each part offset is its MINIMUM corner relative to object.position, not its center. Minimum world corner = position + offset; maximum = position + offset + size.\",\n    \"For a rooted tree at position.y=6, the trunk bottom has offset.y=0. Center a canopy on the trunk by subtracting half its size from its desired center. Keep trunk, branches and canopy connected.\",\n    \"Small plants use thin non-solid parts, not full-sized building blocks. Leaves normally use solid:false so players can move through foliage.\"\n  ],\n  \"schema\": {\n    \"type\": \"array\",\n    \"items\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"id\": {\n          \"type\": \"string\"\n        },\n        \"name\": {\n          \"type\": \"string\"\n        },\n        \"position\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"x\": {\n              \"type\": \"number\"\n            },\n            \"y\": {\n              \"type\": \"number\"\n            },\n            \"z\": {\n              \"type\": \"number\"\n            }\n          },\n          \"required\": [\n            \"x\",\n            \"y\",\n            \"z\"\n          ],\n          \"additionalProperties\": false\n        },\n        \"source\": {\n          \"anyOf\": [\n            {\n              \"type\": \"null\"\n            },\n            {\n              \"type\": \"object\",\n              \"properties\": {\n                \"id\": {\n                  \"type\": \"string\"\n                },\n                \"version\": {\n                  \"type\": \"integer\"\n                }\n              },\n              \"required\": [\n                \"id\",\n                \"version\"\n              ],\n              \"additionalProperties\": false\n            }\n          ]\n        },\n        \"components\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"health\": {\n              \"type\": \"number\"\n            },\n            \"contactDamage\": {\n              \"type\": \"number\"\n            }\n          },\n          \"required\": [\n            \"health\",\n            \"contactDamage\"\n          ],\n          \"additionalProperties\": false\n        },\n        \"parts\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"shape\": {\n                \"type\": \"string\",\n                \"enum\": [\n                  \"box\",\n                  \"blade\"\n                ]\n              },\n              \"offset\": {\n                \"type\": \"object\",\n                \"properties\": {\n                  \"x\": {\n                    \"type\": \"number\"\n                  },\n                  \"y\": {\n                    \"type\": \"number\"\n                  },\n                  \"z\": {\n                    \"type\": \"number\"\n                  }\n                },\n                \"required\": [\n                  \"x\",\n                  \"y\",\n                  \"z\"\n                ],\n                \"additionalProperties\": false\n              },\n              \"size\": {\n                \"type\": \"object\",\n                \"properties\": {\n                  \"x\": {\n                    \"type\": \"number\"\n                  },\n                  \"y\": {\n                    \"type\": \"number\"\n                  },\n                  \"z\": {\n                    \"type\": \"number\"\n                  }\n                },\n                \"required\": [\n                  \"x\",\n                  \"y\",\n                  \"z\"\n                ],\n                \"additionalProperties\": false\n              },\n              \"material\": {\n                \"type\": \"string\",\n                \"enum\": [\n                  \"grass\",\n                  \"dirt\",\n                  \"stone\",\n                  \"wood\",\n                  \"leaves\",\n                  \"planks\",\n                  \"sand\",\n                  \"brick\",\n                  \"light\",\n                  \"glass\",\n                  \"solid\"\n                ]\n              },\n              \"color\": {\n                \"type\": \"string\"\n              },\n              \"solid\": {\n                \"type\": \"boolean\"\n              }\n            },\n            \"required\": [\n              \"shape\",\n              \"offset\",\n              \"size\",\n              \"material\",\n              \"color\",\n              \"solid\"\n            ],\n            \"additionalProperties\": false\n          }\n        }\n      },\n      \"required\": [\n        \"id\",\n        \"name\",\n        \"position\",\n        \"source\",\n        \"components\",\n        \"parts\"\n      ],\n      \"additionalProperties\": false\n    }\n  }\n}",
+                  "totalChars": 4697
+                },
+                "isError": false
+              },
+              "toolStatus": "success"
+            },
+            {
+              "content": "Draft is empty (0 resources). Now let me activate the patch and verification tools.",
+              "createdAt": "2026-09-09T07:09:27.961Z",
+              "id": "36c26b7c-16fe-4711-9037-5c4357a242e4",
+              "modelId": "deepseek-v4.1-flash-expires-on-0910",
+              "providerId": "07659910-3edd-4075-8c78-735f320d1a5f",
+              "responseDurationMs": 2381,
+              "role": "assistant",
+              "status": "complete",
+              "thinking": "The draft is empty (total 0 resources). The object schema is given. I need to create a tree with id native-oak, name \"记忆松树\", position x=10 y=6 z=4, total height 3. Trunk and canopy. Canopy must be centered on trunk. Total height 3 means from y=6 to y=9.\n\nLet me design: trunk: offset {x:-0.25,y:0,z:-0.25} size {x:0.5,y:1.5,z:0.5}, material wood, color some brown, solid true.\n\nCanopy: total height 3, trunk top at 1.5. Canopy height 1.5, from y=1.5 to 3.0. Size x:2, y:1.5, z:2. Centered on trunk: offset x = -1, z = -1, y=1.5. Material leaves, solid false.\n\nColors: trunk \"#6b4a2b\" or similar. Leaves \"#3f7a34\" (pine-ish green? name says 记忆松树 = memory pine tree). Let's use a pine-like dark green \"#2f6b3a\".\n\nLet me check the catalog/behaviors section? Not needed for a pure object; but let me read catalog briefly to confirm the patch contract. Actually workspace_patch is a tool; I need ToolSearch for it. Let me search.\n\nAlso should I read behaviors? Not needed—no gameplay. But I should at least know the patch op format. Let's search for the tool.\n\nLet me do ToolSearch for workspace_patch.",
+              "usage": {
+                "cacheReadTokens": 1152,
+                "inputTokens": 2737,
+                "outputTokens": 452,
+                "reasoningTokens": 349,
+                "totalTokens": 4341
+              }
+            },
+            {
+              "content": "{\"content\":[{\"type\":\"text\",\"text\":\"Activated on-demand tools: plugin_craftmine_world_workspace_patch. They are available on the next model turn.\"}],\"details\":{\"query\":\"plugin_craftmine_world_workspace_patch\",\"matches\":[\"plugin_craftmine_world_workspace_patch\"],\"activated\":[\"plugin_craftmine_world_workspace_patch\"]},\"addedToolNames\":[\"plugin_craftmine_world_workspace_patch\"]}",
+              "createdAt": "2026-09-09T07:09:30.342Z",
+              "id": "call_00_QcGyAeCGAzP3wvfVZgLK6603",
+              "role": "tool",
+              "status": "complete",
+              "toolArgs": {
+                "query": "plugin_craftmine_world_workspace_patch"
+              },
+              "toolCallId": "call_00_QcGyAeCGAzP3wvfVZgLK6603",
+              "toolCompletedAt": "2026-09-09T07:09:30.352Z",
+              "toolDurationMs": 10,
+              "toolName": "ToolSearch",
+              "toolResult": {
+                "addedToolNames": [
+                  "plugin_craftmine_world_workspace_patch"
+                ],
+                "content": [
+                  {
+                    "text": "Activated on-demand tools: plugin_craftmine_world_workspace_patch. They are available on the next model turn.",
+                    "type": "text"
+                  }
+                ],
+                "details": {
+                  "activated": [
+                    "plugin_craftmine_world_workspace_patch"
+                  ],
+                  "matches": [
+                    "plugin_craftmine_world_workspace_patch"
+                  ],
+                  "query": "plugin_craftmine_world_workspace_patch"
+                }
+              },
+              "toolStatus": "success"
+            },
+            {
+              "content": "{\"content\":[{\"type\":\"text\",\"text\":\"Activated on-demand tools: plugin_craftmine_world_verification_submit. They are available on the next model turn.\"}],\"details\":{\"query\":\"plugin_craftmine_world_verification_submit\",\"matches\":[\"plugin_craftmine_world_verification_submit\"],\"activated\":[\"plugin_craftmine_world_verification_submit\"]},\"addedToolNames\":[\"plugin_craftmine_world_verification_submit\"]}",
+              "createdAt": "2026-09-09T07:09:30.352Z",
+              "id": "call_01_e0JbGUfFSE7X3qBhuGlb9564",
+              "role": "tool",
+              "status": "complete",
+              "toolArgs": {
+                "query": "plugin_craftmine_world_verification_submit"
+              },
+              "toolCallId": "call_01_e0JbGUfFSE7X3qBhuGlb9564",
+              "toolCompletedAt": "2026-09-09T07:09:30.358Z",
+              "toolDurationMs": 6,
+              "toolName": "ToolSearch",
+              "toolResult": {
+                "addedToolNames": [
+                  "plugin_craftmine_world_verification_submit"
+                ],
+                "content": [
+                  {
+                    "text": "Activated on-demand tools: plugin_craftmine_world_verification_submit. They are available on the next model turn.",
+                    "type": "text"
+                  }
+                ],
+                "details": {
+                  "activated": [
+                    "plugin_craftmine_world_verification_submit"
+                  ],
+                  "matches": [
+                    "plugin_craftmine_world_verification_submit"
+                  ],
+                  "query": "plugin_craftmine_world_verification_submit"
+                }
+              },
+              "toolStatus": "success"
+            },
+            {
+              "content": "",
+              "createdAt": "2026-09-09T07:09:30.663Z",
+              "id": "cc943c67-d3ac-4f91-b753-c0546cda2733",
+              "modelId": "deepseek-v4.1-flash-expires-on-0910",
+              "providerId": "07659910-3edd-4075-8c78-735f320d1a5f",
+              "responseDurationMs": 650,
+              "role": "assistant",
+              "status": "complete",
+              "thinking": "Now let me also activate verification_read and resource_read (may not need resource_read since adding new). Let me activate verification_read.\n\nThen patch: add object native-oak.\n\nWait — one consideration: \"总高度3\" total height 3. Trunk 1.5 + canopy 1.5 = 3. Good.\n\nLet me submit patch.",
+              "usage": {
+                "cacheReadTokens": 1152,
+                "inputTokens": 3718,
+                "outputTokens": 120,
+                "reasoningTokens": 73,
+                "totalTokens": 4990
+              }
+            },
+            {
+              "content": "{\"content\":[{\"type\":\"text\",\"text\":\"Activated on-demand tools: plugin_craftmine_world_verification_read. They are available on the next model turn.\"}],\"details\":{\"query\":\"plugin_craftmine_world_verification_read\",\"matches\":[\"plugin_craftmine_world_verification_read\"],\"activated\":[\"plugin_craftmine_world_verification_read\"]},\"addedToolNames\":[\"plugin_craftmine_world_verification_read\"]}",
+              "createdAt": "2026-09-09T07:09:31.313Z",
+              "id": "call_00_eo1bzwNSMPAK9yKFtTt06795",
+              "role": "tool",
+              "status": "complete",
+              "toolArgs": {
+                "query": "plugin_craftmine_world_verification_read"
+              },
+              "toolCallId": "call_00_eo1bzwNSMPAK9yKFtTt06795",
+              "toolCompletedAt": "2026-09-09T07:09:31.321Z",
+              "toolDurationMs": 8,
+              "toolName": "ToolSearch",
+              "toolResult": {
+                "addedToolNames": [
+                  "plugin_craftmine_world_verification_read"
+                ],
+                "content": [
+                  {
+                    "text": "Activated on-demand tools: plugin_craftmine_world_verification_read. They are available on the next model turn.",
+                    "type": "text"
+                  }
+                ],
+                "details": {
+                  "activated": [
+                    "plugin_craftmine_world_verification_read"
+                  ],
+                  "matches": [
+                    "plugin_craftmine_world_verification_read"
+                  ],
+                  "query": "plugin_craftmine_world_verification_read"
+                }
+              },
+              "toolStatus": "success"
+            },
+            {
+              "content": "Now I'll author the tree as a single object resource in the draft.",
+              "createdAt": "2026-09-09T07:09:31.479Z",
+              "id": "76cad98b-158b-4e99-8535-e195eb04fe19",
+              "modelId": "deepseek-v4.1-flash-expires-on-0910",
+              "providerId": "07659910-3edd-4075-8c78-735f320d1a5f",
+              "responseDurationMs": 2081,
+              "role": "assistant",
+              "status": "complete",
+              "thinking": "Now author the object and patch.\n\nDesign details:\n- id: \"native-oak\"\n- name: \"记忆松树\"\n- position: {x:10, y:6, z:4}\n- source: null\n- components: {health: 20, contactDamage: 0}\n- parts:\n  - trunk: shape box, offset {x:-0.25, y:0, z:-0.25}, size {x:0.5, y:1.5, z:0.5}, material \"wood\", color \"#6B4A2B\", solid true\n  - canopy: shape box, offset {x:-1, y:1.5, z:-1}, size {x:2, y:1.5, z:2}, material \"leaves\", color \"#2F6B3A\", solid false\n\nTotal height = 3 exactly (0→3). Canopy centered on trunk axis (trunk center x=0,z=0; canopy center x=0,z=0). Good.\n\nSubmit with workspaceRevision 0, expectedHash null.\n\nLet's do the patch and then submit verification after. Actually the patch must complete first. Do patch alone.",
+              "usage": {
+                "cacheReadTokens": 1152,
+                "inputTokens": 4034,
+                "outputTokens": 581,
+                "reasoningTokens": 254,
+                "totalTokens": 5767
+              }
+            },
+            {
+              "content": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"changed\\\": [\\n    \\\"object:native-oak\\\"\\n  ],\\n  \\\"draftHash\\\": \\\"ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526\\\",\\n  \\\"publishingAvailable\\\": false,\\n  \\\"replayed\\\": false,\\n  \\\"workspaceRevision\\\": 1\\n}\"}],\"details\":{\"changed\":[\"object:native-oak\"],\"draftHash\":\"ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526\",\"publishingAvailable\":false,\"replayed\":false,\"workspaceRevision\":1},\"isError\":false}",
+              "createdAt": "2026-09-09T07:09:33.560Z",
+              "id": "call_00_WOqUyEYBOyBeOCHsTRUo6597",
+              "role": "tool",
+              "status": "complete",
+              "toolArgs": {
+                "operations": [
+                  {
+                    "expectedHash": null,
+                    "id": "native-oak",
+                    "kind": "object",
+                    "op": "add",
+                    "value": {
+                      "components": {
+                        "contactDamage": 0,
+                        "health": 20
+                      },
+                      "id": "native-oak",
+                      "name": "记忆松树",
+                      "parts": [
+                        {
+                          "color": "#6B4A2B",
+                          "material": "wood",
+                          "offset": {
+                            "x": -0.25,
+                            "y": 0,
+                            "z": -0.25
+                          },
+                          "shape": "box",
+                          "size": {
+                            "x": 0.5,
+                            "y": 1.5,
+                            "z": 0.5
+                          },
+                          "solid": true
+                        },
+                        {
+                          "color": "#2F6B3A",
+                          "material": "leaves",
+                          "offset": {
+                            "x": -1,
+                            "y": 1.5,
+                            "z": -1
+                          },
+                          "shape": "box",
+                          "size": {
+                            "x": 2,
+                            "y": 1.5,
+                            "z": 2
+                          },
+                          "solid": false
+                        }
+                      ],
+                      "position": {
+                        "x": 10,
+                        "y": 6,
+                        "z": 4
+                      },
+                      "source": null
+                    }
+                  }
+                ],
+                "workspaceRevision": 0
+              },
+              "toolCallId": "call_00_WOqUyEYBOyBeOCHsTRUo6597",
+              "toolCompletedAt": "2026-09-09T07:09:33.577Z",
+              "toolDurationMs": 17,
+              "toolName": "plugin_craftmine_world_workspace_patch",
+              "toolResult": {
+                "content": [
+                  {
+                    "text": "{\n  \"changed\": [\n    \"object:native-oak\"\n  ],\n  \"draftHash\": \"ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526\",\n  \"publishingAvailable\": false,\n  \"replayed\": false,\n  \"workspaceRevision\": 1\n}",
+                    "type": "text"
+                  }
+                ],
+                "details": {
+                  "changed": [
+                    "object:native-oak"
+                  ],
+                  "draftHash": "ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526",
+                  "publishingAvailable": false,
+                  "replayed": false,
+                  "workspaceRevision": 1
+                },
+                "isError": false
+              },
+              "toolStatus": "success"
+            },
+            {
+              "content": "Draft saved at revision 1. Submitting it for actual machine verification.",
+              "createdAt": "2026-09-09T07:09:33.699Z",
+              "id": "a89a3d9c-427b-44ae-9cd8-db0059c45d59",
+              "modelId": "deepseek-v4.1-flash-expires-on-0910",
+              "providerId": "07659910-3edd-4075-8c78-735f320d1a5f",
+              "responseDurationMs": 1136,
+              "role": "assistant",
+              "status": "complete",
+              "thinking": "Draft revision 1, hash ba56fb13... matches machineFacts receipt. Now submit verification.",
+              "usage": {
+                "cacheReadTokens": 1152,
+                "inputTokens": 4823,
+                "outputTokens": 178,
+                "reasoningTokens": 22,
+                "totalTokens": 6153
+              }
+            },
+            {
+              "content": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"baseBuild\\\": \\\"v-4641627420193586d325\\\",\\n  \\\"createdAt\\\": 1788937774849,\\n  \\\"current\\\": true,\\n  \\\"draftHash\\\": \\\"ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526\\\",\\n  \\\"id\\\": \\\"check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21\\\",\\n  \\\"inputHash\\\": \\\"54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea\\\",\\n  \\\"outputHash\\\": null,\\n  \\\"publishingAvailable\\\": false,\\n  \\\"status\\\": \\\"queued\\\",\\n  \\\"summary\\\": \\\"Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.\\\",\\n  \\\"taskId\\\": \\\"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\\\",\\n  \\\"updatedAt\\\": 1788937774849,\\n  \\\"workspaceRevision\\\": 1,\\n  \\\"worldId\\\": \\\"47143ed8-f237-4c13-a8cb-864a1fd3e23a\\\"\\n}\"}],\"details\":{\"baseBuild\":\"v-4641627420193586d325\",\"createdAt\":1788937774849,\"current\":true,\"draftHash\":\"ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526\",\"id\":\"check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21\",\"inputHash\":\"54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea\",\"outputHash\":null,\"publishingAvailable\":false,\"status\":\"queued\",\"summary\":\"Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.\",\"taskId\":\"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\",\"updatedAt\":1788937774849,\"workspaceRevision\":1,\"worldId\":\"47143ed8-f237-4c13-a8cb-864a1fd3e23a\"},\"isError\":false}",
+              "createdAt": "2026-09-09T07:09:34.835Z",
+              "id": "call_00_RSCVOmoolSmvLhwOVy1N0200",
+              "role": "tool",
+              "status": "complete",
+              "toolArgs": {
+                "summary": "Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.",
+                "workspaceRevision": 1
+              },
+              "toolCallId": "call_00_RSCVOmoolSmvLhwOVy1N0200",
+              "toolCompletedAt": "2026-09-09T07:09:34.870Z",
+              "toolDurationMs": 35,
+              "toolName": "plugin_craftmine_world_verification_submit",
+              "toolResult": {
+                "content": [
+                  {
+                    "text": "{\n  \"baseBuild\": \"v-4641627420193586d325\",\n  \"createdAt\": 1788937774849,\n  \"current\": true,\n  \"draftHash\": \"ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526\",\n  \"id\": \"check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21\",\n  \"inputHash\": \"54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea\",\n  \"outputHash\": null,\n  \"publishingAvailable\": false,\n  \"status\": \"queued\",\n  \"summary\": \"Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.\",\n  \"taskId\": \"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\",\n  \"updatedAt\": 1788937774849,\n  \"workspaceRevision\": 1,\n  \"worldId\": \"47143ed8-f237-4c13-a8cb-864a1fd3e23a\"\n}",
+                    "type": "text"
+                  }
+                ],
+                "details": {
+                  "baseBuild": "v-4641627420193586d325",
+                  "createdAt": 1788937774849,
+                  "current": true,
+                  "draftHash": "ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526",
+                  "id": "check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21",
+                  "inputHash": "54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea",
+                  "outputHash": null,
+                  "publishingAvailable": false,
+                  "status": "queued",
+                  "summary": "Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.",
+                  "taskId": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+                  "updatedAt": 1788937774849,
+                  "workspaceRevision": 1,
+                  "worldId": "47143ed8-f237-4c13-a8cb-864a1fd3e23a"
+                },
+                "isError": false
+              },
+              "toolStatus": "success"
+            },
+            {
+              "content": "Check queued. Reading its actual results now.",
+              "createdAt": "2026-09-09T07:09:34.991Z",
+              "id": "45b045c6-f9f2-4f0c-907d-f19a026b3980",
+              "modelId": "deepseek-v4.1-flash-expires-on-0910",
+              "providerId": "07659910-3edd-4075-8c78-735f320d1a5f",
+              "responseDurationMs": 503,
+              "role": "assistant",
+              "status": "complete",
+              "usage": {
+                "cacheReadTokens": 1280,
+                "inputTokens": 5296,
+                "outputTokens": 91,
+                "reasoningTokens": 0,
+                "totalTokens": 6667
+              }
+            },
+            {
+              "content": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"createdAt\\\": 1788937774849,\\n  \\\"current\\\": true,\\n  \\\"id\\\": \\\"check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21\\\",\\n  \\\"inputHash\\\": \\\"54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea\\\",\\n  \\\"next\\\": null,\\n  \\\"outputHash\\\": \\\"83129172f54855fb60658c99cb07b636d2dfa6d8ff00fc7de3672b1becfdf464\\\",\\n  \\\"overview\\\": {\\n    \\\"changes\\\": [\\n      {\\n        \\\"behaviors\\\": 0,\\n        \\\"name\\\": \\\"新增\\\",\\n        \\\"objects\\\": 1,\\n        \\\"systems\\\": 0\\n      },\\n      {\\n        \\\"behaviors\\\": 0,\\n        \\\"name\\\": \\\"修改\\\",\\n        \\\"objects\\\": 0,\\n        \\\"systems\\\": 0\\n      },\\n      {\\n        \\\"behaviors\\\": 0,\\n        \\\"name\\\": \\\"移除\\\",\\n        \\\"objects\\\": 0,\\n        \\\"systems\\\": 0\\n      }\\n    ],\\n    \\\"checks\\\": [\\n      {\\n        \\\"name\\\": \\\"场景编译\\\",\\n        \\\"passed\\\": true\\n      },\\n      {\\n        \\\"name\\\": \\\"玩法事件\\\",\\n        \\\"passed\\\": true\\n      },\\n      {\\n        \\\"name\\\": \\\"游戏画面\\\",\\n        \\\"passed\\\": true\\n      }\\n    ],\\n    \\\"error\\\": null\\n  },\\n  \\\"publishingAvailable\\\": false,\\n  \\\"reviews\\\": [\\n    {\\n      \\\"advisory\\\": true,\\n      \\\"failedAssertions\\\": [],\\n      \\\"failedCount\\\": 0,\\n      \\\"id\\\": \\\"review-e75b05e3d2b914212987486f82613134abbcc9a2ac61566c98b2965d94eb5003\\\",\\n      \\\"status\\\": \\\"running\\\"\\n    }\\n  ],\\n  \\\"start\\\": 0,\\n  \\\"status\\\": \\\"passed\\\",\\n  \\\"summary\\\": \\\"Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.\\\",\\n  \\\"taskId\\\": \\\"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\\\",\\n  \\\"text\\\": \\\"{\\\\n  \\\\\\\"evidence\\\\\\\": {\\\\n    \\\\\\\"behaviors\\\\\\\": {\\\\n      \\\\\\\"build\\\\\\\": \\\\\\\"b8e8b50fc2e1451a1ede47a8ae3c8e3707cc43c7b7bc3fbb0f96fcfc5032beae\\\\\\\",\\\\n      \\\\\\\"format\\\\\\\": \\\\\\\"craftmine.behavior-check/1\\\\\\\",\\\\n      \\\\\\\"modules\\\\\\\": [],\\\\n      \\\\\\\"passed\\\\\\\": true,\\\\n      \\\\\\\"scope\\\\\\\": \\\\\\\"接口与事件序列检查；不等同于玩家需求验收\\\\\\\"\\\\n    },\\\\n    \\\\\\\"compiler\\\\\\\": {\\\\n      \\\\\\\"passed\\\\\\\": true\\\\n    },\\\\n    \\\\\\\"format\\\\\\\": \\\\\\\"craftmine.desktop-check/1\\\\\\\",\\\\n    \\\\\\\"isolation\\\\\\\": {\\\\n      \\\\\\\"focusable\\\\\\\": false,\\\\n      \\\\\\\"frames\\\\\\\": [\\\\n        {\\\\n          \\\\\\\"bridge\\\\\\\": \\\\\\\"undefined\\\\\\\",\\\\n          \\\\\\\"guard\\\\\\\": {\\\\n            \\\\\\\"focus\\\\\\\": 0,\\\\n            \\\\\\\"pointerLock\\\\\\\": 0\\\\n          },\\\\n          \\\\\\\"node\\\\\\\": \\\\\\\"undefined\\\\\\\"\\\\n        },\\\\n        {\\\\n          \\\\\\\"bridge\\\\\\\": \\\\\\\"undefined\\\\\\\",\\\\n          \\\\\\\"guard\\\\\\\": {\\\\n            \\\\\\\"focus\\\\\\\": 0,\\\\n            \\\\\\\"pointerLock\\\\\\\": 0\\\\n          },\\\\n          \\\\\\\"node\\\\\\\": \\\\\\\"undefined\\\\\\\"\\\\n        }\\\\n      ],\\\\n      \\\\\\\"offscreen\\\\\\\": true,\\\\n      \\\\\\\"visible\\\\\\\": false\\\\n    },\\\\n    \\\\\\\"passed\\\\\\\": true,\\\\n    \\\\\\\"render\\\\\\\": {\\\\n      \\\\\\\"capture\\\\\\\": {\\\\n        \\\\\\\"attempts\\\\\\\": 1,\\\\n        \\\\\\\"coloredSamples\\\\\\\": 35,\\\\n        \\\\\\\"height\\\\\\\": 640,\\\\n        \\\\\\\"samples\\\\\\\": 35,\\\\n        \\\\\\\"sha256\\\\\\\": \\\\\\\"0e5f02d14101463e32dac96f1de347284cd64d43609abd10fed269a60bf690af\\\\\\\",\\\\n        \\\\\\\"width\\\\\\\": 960\\\\n      },\\\\n      \\\\\\\"passed\\\\\\\": true,\\\\n      \\\\\\\"renderer\\\\\\\": \\\\\\\"WebGL\\\\\\\",\\\\n      \\\\\\\"version\\\\\\\": \\\\\\\"v-b8e8b50fc2e1451a1ede\\\\\\\"\\\\n    },\\\\n    \\\\\\\"scope\\\\\\\": \\\\\\\"接口、事件与实际绘制检查；玩家需求验收与评审尚未完成\\\\\\\"\\\\n  },\\\\n  \\\\\\\"diff\\\\\\\": {\\\\n    \\\\\\\"added\\\\\\\": [\\\\n      \\\\\\\"记忆松树\\\\\\\"\\\\n    ],\\\\n    \\\\\\\"behaviors\\\\\\\": {\\\\n      \\\\\\\"added\\\\\\\": [],\\\\n      \\\\\\\"changed\\\\\\\": [],\\\\n      \\\\\\\"removed\\\\\\\": []\\\\n    },\\\\n    \\\\\\\"changed\\\\\\\": [],\\\\n    \\\\\\\"details\\\\\\\": {\\\\n      \\\\\\\"format\\\\\\\": \\\\\\\"craftmine.diff/1\\\\\\\",\\\\n      \\\\\\\"items\\\\\\\": [\\\\n        {\\\\n          \\\\\\\"beforeName\\\\\\\": null,\\\\n          \\\\\\\"change\\\\\\\": \\\\\\\"added\\\\\\\",\\\\n          \\\\\\\"fields\\\\\\\": [\\\\n            \\\\\\\"components\\\\\\\",\\\\n            \\\\\\\"name\\\\\\\",\\\\n            \\\\\\\"parts\\\\\\\",\\\\n            \\\\\\\"position\\\\\\\",\\\\n            \\\\\\\"source\\\\\\\",\\\\n            \\\\\\\"appearance\\\\\\\"\\\\n          ],\\\\n          \\\\\\\"id\\\\\\\": \\\\\\\"native-oak\\\\\\\",\\\\n          \\\\\\\"kind\\\\\\\": \\\\\\\"object\\\\\\\",\\\\n          \\\\\\\"name\\\\\\\": \\\\\\\"记忆松树\\\\\\\"\\\\n        }\\\\n      ]\\\\n    },\\\\n    \\\\\\\"environment\\\\\\\": false,\\\\n    \\\\\\\"removed\\\\\\\": [],\\\\n    \\\\\\\"systems\\\\\\\": {\\\\n      \\\\\\\"added\\\\\\\": [],\\\\n      \\\\\\\"changed\\\\\\\": [],\\\\n      \\\\\\\"removed\\\\\\\": []\\\\n    }\\\\n  }\\\\n}\\\",\\n  \\\"totalChars\\\": 1931,\\n  \\\"updatedAt\\\": 1788937775095,\\n  \\\"workspaceRevision\\\": 1,\\n  \\\"worldId\\\": \\\"47143ed8-f237-4c13-a8cb-864a1fd3e23a\\\"\\n}\"}],\"details\":{\"createdAt\":1788937774849,\"current\":true,\"id\":\"check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21\",\"inputHash\":\"54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea\",\"next\":null,\"outputHash\":\"83129172f54855fb60658c99cb07b636d2dfa6d8ff00fc7de3672b1becfdf464\",\"overview\":{\"changes\":[{\"behaviors\":0,\"name\":\"新增\",\"objects\":1,\"systems\":0},{\"behaviors\":0,\"name\":\"修改\",\"objects\":0,\"systems\":0},{\"behaviors\":0,\"name\":\"移除\",\"objects\":0,\"systems\":0}],\"checks\":[{\"name\":\"场景编译\",\"passed\":true},{\"name\":\"玩法事件\",\"passed\":true},{\"name\":\"游戏画面\",\"passed\":true}],\"error\":null},\"publishingAvailable\":false,\"reviews\":[{\"advisory\":true,\"failedAssertions\":[],\"failedCount\":0,\"id\":\"review-e75b05e3d2b914212987486f82613134abbcc9a2ac61566c98b2965d94eb5003\",\"status\":\"running\"}],\"start\":0,\"status\":\"passed\",\"summary\":\"Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.\",\"taskId\":\"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\",\"text\":\"{\\n  \\\"evidence\\\": {\\n    \\\"behaviors\\\": {\\n      \\\"build\\\": \\\"b8e8b50fc2e1451a1ede47a8ae3c8e3707cc43c7b7bc3fbb0f96fcfc5032beae\\\",\\n      \\\"format\\\": \\\"craftmine.behavior-check/1\\\",\\n      \\\"modules\\\": [],\\n      \\\"passed\\\": true,\\n      \\\"scope\\\": \\\"接口与事件序列检查；不等同于玩家需求验收\\\"\\n    },\\n    \\\"compiler\\\": {\\n      \\\"passed\\\": true\\n    },\\n    \\\"format\\\": \\\"craftmine.desktop-check/1\\\",\\n    \\\"isolation\\\": {\\n      \\\"focusable\\\": false,\\n      \\\"frames\\\": [\\n        {\\n          \\\"bridge\\\": \\\"undefined\\\",\\n          \\\"guard\\\": {\\n            \\\"focus\\\": 0,\\n            \\\"pointerLock\\\": 0\\n          },\\n          \\\"node\\\": \\\"undefined\\\"\\n        },\\n        {\\n          \\\"bridge\\\": \\\"undefined\\\",\\n          \\\"guard\\\": {\\n            \\\"focus\\\": 0,\\n            \\\"pointerLock\\\": 0\\n          },\\n          \\\"node\\\": \\\"undefined\\\"\\n        }\\n      ],\\n      \\\"offscreen\\\": true,\\n      \\\"visible\\\": false\\n    },\\n    \\\"passed\\\": true,\\n    \\\"render\\\": {\\n      \\\"capture\\\": {\\n        \\\"attempts\\\": 1,\\n        \\\"coloredSamples\\\": 35,\\n        \\\"height\\\": 640,\\n        \\\"samples\\\": 35,\\n        \\\"sha256\\\": \\\"0e5f02d14101463e32dac96f1de347284cd64d43609abd10fed269a60bf690af\\\",\\n        \\\"width\\\": 960\\n      },\\n      \\\"passed\\\": true,\\n      \\\"renderer\\\": \\\"WebGL\\\",\\n      \\\"version\\\": \\\"v-b8e8b50fc2e1451a1ede\\\"\\n    },\\n    \\\"scope\\\": \\\"接口、事件与实际绘制检查；玩家需求验收与评审尚未完成\\\"\\n  },\\n  \\\"diff\\\": {\\n    \\\"added\\\": [\\n      \\\"记忆松树\\\"\\n    ],\\n    \\\"behaviors\\\": {\\n      \\\"added\\\": [],\\n      \\\"changed\\\": [],\\n      \\\"removed\\\": []\\n    },\\n    \\\"changed\\\": [],\\n    \\\"details\\\": {\\n      \\\"format\\\": \\\"craftmine.diff/1\\\",\\n      \\\"items\\\": [\\n        {\\n          \\\"beforeName\\\": null,\\n          \\\"change\\\": \\\"added\\\",\\n          \\\"fields\\\": [\\n            \\\"components\\\",\\n            \\\"name\\\",\\n            \\\"parts\\\",\\n            \\\"position\\\",\\n            \\\"source\\\",\\n            \\\"appearance\\\"\\n          ],\\n          \\\"id\\\": \\\"native-oak\\\",\\n          \\\"kind\\\": \\\"object\\\",\\n          \\\"name\\\": \\\"记忆松树\\\"\\n        }\\n      ]\\n    },\\n    \\\"environment\\\": false,\\n    \\\"removed\\\": [],\\n    \\\"systems\\\": {\\n      \\\"added\\\": [],\\n      \\\"changed\\\": [],\\n      \\\"removed\\\": []\\n    }\\n  }\\n}\",\"totalChars\":1931,\"updatedAt\":1788937775095,\"workspaceRevision\":1,\"worldId\":\"47143ed8-f237-4c13-a8cb-864a1fd3e23a\"},\"isError\":false}",
+              "createdAt": "2026-09-09T07:09:35.494Z",
+              "id": "call_00_ET_L3aJgvG3vcDfxwlPnnDc6702",
+              "role": "tool",
+              "status": "complete",
+              "toolArgs": {
+                "id": "check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21"
+              },
+              "toolCallId": "call_00_ET_L3aJgvG3vcDfxwlPnnDc6702",
+              "toolCompletedAt": "2026-09-09T07:09:35.510Z",
+              "toolDurationMs": 16,
+              "toolName": "plugin_craftmine_world_verification_read",
+              "toolResult": {
+                "content": [
+                  {
+                    "text": "{\n  \"createdAt\": 1788937774849,\n  \"current\": true,\n  \"id\": \"check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21\",\n  \"inputHash\": \"54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea\",\n  \"next\": null,\n  \"outputHash\": \"83129172f54855fb60658c99cb07b636d2dfa6d8ff00fc7de3672b1becfdf464\",\n  \"overview\": {\n    \"changes\": [\n      {\n        \"behaviors\": 0,\n        \"name\": \"新增\",\n        \"objects\": 1,\n        \"systems\": 0\n      },\n      {\n        \"behaviors\": 0,\n        \"name\": \"修改\",\n        \"objects\": 0,\n        \"systems\": 0\n      },\n      {\n        \"behaviors\": 0,\n        \"name\": \"移除\",\n        \"objects\": 0,\n        \"systems\": 0\n      }\n    ],\n    \"checks\": [\n      {\n        \"name\": \"场景编译\",\n        \"passed\": true\n      },\n      {\n        \"name\": \"玩法事件\",\n        \"passed\": true\n      },\n      {\n        \"name\": \"游戏画面\",\n        \"passed\": true\n      }\n    ],\n    \"error\": null\n  },\n  \"publishingAvailable\": false,\n  \"reviews\": [\n    {\n      \"advisory\": true,\n      \"failedAssertions\": [],\n      \"failedCount\": 0,\n      \"id\": \"review-e75b05e3d2b914212987486f82613134abbcc9a2ac61566c98b2965d94eb5003\",\n      \"status\": \"running\"\n    }\n  ],\n  \"start\": 0,\n  \"status\": \"passed\",\n  \"summary\": \"Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.\",\n  \"taskId\": \"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\",\n  \"text\": \"{\\n  \\\"evidence\\\": {\\n    \\\"behaviors\\\": {\\n      \\\"build\\\": \\\"b8e8b50fc2e1451a1ede47a8ae3c8e3707cc43c7b7bc3fbb0f96fcfc5032beae\\\",\\n      \\\"format\\\": \\\"craftmine.behavior-check/1\\\",\\n      \\\"modules\\\": [],\\n      \\\"passed\\\": true,\\n      \\\"scope\\\": \\\"接口与事件序列检查；不等同于玩家需求验收\\\"\\n    },\\n    \\\"compiler\\\": {\\n      \\\"passed\\\": true\\n    },\\n    \\\"format\\\": \\\"craftmine.desktop-check/1\\\",\\n    \\\"isolation\\\": {\\n      \\\"focusable\\\": false,\\n      \\\"frames\\\": [\\n        {\\n          \\\"bridge\\\": \\\"undefined\\\",\\n          \\\"guard\\\": {\\n            \\\"focus\\\": 0,\\n            \\\"pointerLock\\\": 0\\n          },\\n          \\\"node\\\": \\\"undefined\\\"\\n        },\\n        {\\n          \\\"bridge\\\": \\\"undefined\\\",\\n          \\\"guard\\\": {\\n            \\\"focus\\\": 0,\\n            \\\"pointerLock\\\": 0\\n          },\\n          \\\"node\\\": \\\"undefined\\\"\\n        }\\n      ],\\n      \\\"offscreen\\\": true,\\n      \\\"visible\\\": false\\n    },\\n    \\\"passed\\\": true,\\n    \\\"render\\\": {\\n      \\\"capture\\\": {\\n        \\\"attempts\\\": 1,\\n        \\\"coloredSamples\\\": 35,\\n        \\\"height\\\": 640,\\n        \\\"samples\\\": 35,\\n        \\\"sha256\\\": \\\"0e5f02d14101463e32dac96f1de347284cd64d43609abd10fed269a60bf690af\\\",\\n        \\\"width\\\": 960\\n      },\\n      \\\"passed\\\": true,\\n      \\\"renderer\\\": \\\"WebGL\\\",\\n      \\\"version\\\": \\\"v-b8e8b50fc2e1451a1ede\\\"\\n    },\\n    \\\"scope\\\": \\\"接口、事件与实际绘制检查；玩家需求验收与评审尚未完成\\\"\\n  },\\n  \\\"diff\\\": {\\n    \\\"added\\\": [\\n      \\\"记忆松树\\\"\\n    ],\\n    \\\"behaviors\\\": {\\n      \\\"added\\\": [],\\n      \\\"changed\\\": [],\\n      \\\"removed\\\": []\\n    },\\n    \\\"changed\\\": [],\\n    \\\"details\\\": {\\n      \\\"format\\\": \\\"craftmine.diff/1\\\",\\n      \\\"items\\\": [\\n        {\\n          \\\"beforeName\\\": null,\\n          \\\"change\\\": \\\"added\\\",\\n          \\\"fields\\\": [\\n            \\\"components\\\",\\n            \\\"name\\\",\\n            \\\"parts\\\",\\n            \\\"position\\\",\\n            \\\"source\\\",\\n            \\\"appearance\\\"\\n          ],\\n          \\\"id\\\": \\\"native-oak\\\",\\n          \\\"kind\\\": \\\"object\\\",\\n          \\\"name\\\": \\\"记忆松树\\\"\\n        }\\n      ]\\n    },\\n    \\\"environment\\\": false,\\n    \\\"removed\\\": [],\\n    \\\"systems\\\": {\\n      \\\"added\\\": [],\\n      \\\"changed\\\": [],\\n      \\\"removed\\\": []\\n    }\\n  }\\n}\",\n  \"totalChars\": 1931,\n  \"updatedAt\": 1788937775095,\n  \"workspaceRevision\": 1,\n  \"worldId\": \"47143ed8-f237-4c13-a8cb-864a1fd3e23a\"\n}",
+                    "type": "text"
+                  }
+                ],
+                "details": {
+                  "createdAt": 1788937774849,
+                  "current": true,
+                  "id": "check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21",
+                  "inputHash": "54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea",
+                  "next": null,
+                  "outputHash": "83129172f54855fb60658c99cb07b636d2dfa6d8ff00fc7de3672b1becfdf464",
+                  "overview": {
+                    "changes": [
+                      {
+                        "behaviors": 0,
+                        "name": "新增",
+                        "objects": 1,
+                        "systems": 0
+                      },
+                      {
+                        "behaviors": 0,
+                        "name": "修改",
+                        "objects": 0,
+                        "systems": 0
+                      },
+                      {
+                        "behaviors": 0,
+                        "name": "移除",
+                        "objects": 0,
+                        "systems": 0
+                      }
+                    ],
+                    "checks": [
+                      {
+                        "name": "场景编译",
+                        "passed": true
+                      },
+                      {
+                        "name": "玩法事件",
+                        "passed": true
+                      },
+                      {
+                        "name": "游戏画面",
+                        "passed": true
+                      }
+                    ],
+                    "error": null
+                  },
+                  "publishingAvailable": false,
+                  "reviews": [
+                    {
+                      "advisory": true,
+                      "failedAssertions": [],
+                      "failedCount": 0,
+                      "id": "review-e75b05e3d2b914212987486f82613134abbcc9a2ac61566c98b2965d94eb5003",
+                      "status": "running"
+                    }
+                  ],
+                  "start": 0,
+                  "status": "passed",
+                  "summary": "Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.",
+                  "taskId": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+                  "text": "{\n  \"evidence\": {\n    \"behaviors\": {\n      \"build\": \"b8e8b50fc2e1451a1ede47a8ae3c8e3707cc43c7b7bc3fbb0f96fcfc5032beae\",\n      \"format\": \"craftmine.behavior-check/1\",\n      \"modules\": [],\n      \"passed\": true,\n      \"scope\": \"接口与事件序列检查；不等同于玩家需求验收\"\n    },\n    \"compiler\": {\n      \"passed\": true\n    },\n    \"format\": \"craftmine.desktop-check/1\",\n    \"isolation\": {\n      \"focusable\": false,\n      \"frames\": [\n        {\n          \"bridge\": \"undefined\",\n          \"guard\": {\n            \"focus\": 0,\n            \"pointerLock\": 0\n          },\n          \"node\": \"undefined\"\n        },\n        {\n          \"bridge\": \"undefined\",\n          \"guard\": {\n            \"focus\": 0,\n            \"pointerLock\": 0\n          },\n          \"node\": \"undefined\"\n        }\n      ],\n      \"offscreen\": true,\n      \"visible\": false\n    },\n    \"passed\": true,\n    \"render\": {\n      \"capture\": {\n        \"attempts\": 1,\n        \"coloredSamples\": 35,\n        \"height\": 640,\n        \"samples\": 35,\n        \"sha256\": \"0e5f02d14101463e32dac96f1de347284cd64d43609abd10fed269a60bf690af\",\n        \"width\": 960\n      },\n      \"passed\": true,\n      \"renderer\": \"WebGL\",\n      \"version\": \"v-b8e8b50fc2e1451a1ede\"\n    },\n    \"scope\": \"接口、事件与实际绘制检查；玩家需求验收与评审尚未完成\"\n  },\n  \"diff\": {\n    \"added\": [\n      \"记忆松树\"\n    ],\n    \"behaviors\": {\n      \"added\": [],\n      \"changed\": [],\n      \"removed\": []\n    },\n    \"changed\": [],\n    \"details\": {\n      \"format\": \"craftmine.diff/1\",\n      \"items\": [\n        {\n          \"beforeName\": null,\n          \"change\": \"added\",\n          \"fields\": [\n            \"components\",\n            \"name\",\n            \"parts\",\n            \"position\",\n            \"source\",\n            \"appearance\"\n          ],\n          \"id\": \"native-oak\",\n          \"kind\": \"object\",\n          \"name\": \"记忆松树\"\n        }\n      ]\n    },\n    \"environment\": false,\n    \"removed\": [],\n    \"systems\": {\n      \"added\": [],\n      \"changed\": [],\n      \"removed\": []\n    }\n  }\n}",
+                  "totalChars": 1931,
+                  "updatedAt": 1788937775095,
+                  "workspaceRevision": 1,
+                  "worldId": "47143ed8-f237-4c13-a8cb-864a1fd3e23a"
+                },
+                "isError": false
+              },
+              "toolStatus": "success"
+            },
+            {
+              "content": "已完成实际创作与验证，草稿通过机器检查并保留为候选。\n\n**实际执行与结果**\n\n1. **读取规范**：`project_inspect` 显示该世界草稿为空（0 个资源，`workspaceRevision` 0，groundY=6）；`capabilities_read` 的 objects 段给出 `craftmine.scene/3` 契约，其中明确要求 part 的 `offset` 是最小角（不是中心），且树冠需以树干轴线居中。\n\n2. **创作**（`workspace_patch`，add，`expectedHash:null`）新增唯一资源 `object:native-oak`：\n   - `id`: `native-oak`，`name`: `记忆松树`，`position`: x=10, y=6, z=4，`source`: null\n   - 树干：box，offset (x −0.25, y 0, z −0.25)，size 0.5×1.5×0.5，材质 wood，实心\n   - 树冠：box，offset (x −1, y 1.5, z −1)，size 2×1.5×2，材质 leaves，非实心（可穿行）\n   - 树干从 y=0 起、树冠止于 y=3，**总高度正好 3**；树冠中心与树干轴线均为 x=0/z=0，完全对齐相连。\n   - 返回：`changed: [\"object:native-oak\"]`，`draftHash` `ba56fb13…4526`，`workspaceRevision` 1。\n\n3. **验证**（`verification_submit` → `verification_read`）：作业 `check-a46fc896…61f21` 状态 **passed**，三项机器检查全部通过——场景编译 passed、玩法事件 passed（behaviors 模块为空，符合“不增加玩法”）、真实渲染 passed（WebGL 实际出图，960×640，35 个有效着色采样）。diff 确认仅 **added: [\"记忆松树\"]**，behaviors/systems 均为空、无移除项。\n\n**当前状态与剩余事项**\n\n- 状态：**已验证的候选**（verified candidate），并非已应用。`publishingAvailable: false`，世界 `revision` 仍为 0；草稿 revision 1 已保留等待你在世界控件中自行应用（应用属于玩家侧操作，我不会代提交）。\n- 未增加任何其他物体、行为或系统，符合你的约束。\n- 一条 `review-…` 评审记录仍为 running，属建议性（advisory）后台评审，不影响上述通过结论。",
+              "createdAt": "2026-09-09T07:09:35.648Z",
+              "id": "2d19dc1f-3211-4c97-9630-a899eb6d4bc5",
+              "modelId": "deepseek-v4.1-flash-expires-on-0910",
+              "providerId": "07659910-3edd-4075-8c78-735f320d1a5f",
+              "responseDurationMs": 3511,
+              "role": "assistant",
+              "status": "complete",
+              "thinking": "Verification passed: compiler, behavior events, render. Diff: added one object native-oak named 记忆松树, no behaviors/systems.\n\nNow the draft candidate is retained waiting for the player to apply. I should not apply — application belongs to player's world controls (publishingAvailable false).\n\nReport. Also note the name \"记忆松树\" vs id \"native-oak\" — as requested (odd but requested).\n\nI should mention remaining checks: the draft is not applied; player must apply in world controls. Also a review job is still running (advisory), not blocking.\n\nI could optionally propose a memory, but the request says don't add other objects or gameplay — memory proposal isn't a world object, but it's optional. Skip to be safe; keep it minimal. Actually memory proposal is not world content; but the request says don't add anything else. I'll skip.\n\nFinal report.",
+              "usage": {
+                "cacheReadTokens": 1280,
+                "inputTokens": 6769,
+                "outputTokens": 772,
+                "reasoningTokens": 186,
+                "totalTokens": 8821
+              }
+            }
+          ],
+          "mode": "agent",
+          "modelId": "deepseek-v4.1-flash-expires-on-0910",
+          "permissionMode": "auto",
+          "projectPath": null,
+          "providerId": "07659910-3edd-4075-8c78-735f320d1a5f",
+          "thinkingLevel": "high",
+          "title": "F native Agent acceptance",
+          "updatedAt": "2026-09-09T07:09:39.163Z"
+        }
+      },
+      "verifications": [
+        {
+          "baseBuild": "v-4641627420193586d325",
+          "createdAt": 1788937774849,
+          "current": true,
+          "draftHash": "ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526",
+          "id": "check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21",
+          "inputHash": "54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea",
+          "outputHash": "83129172f54855fb60658c99cb07b636d2dfa6d8ff00fc7de3672b1becfdf464",
+          "publishingAvailable": false,
+          "status": "passed",
+          "summary": "Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.",
+          "taskId": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "updatedAt": 1788937775095,
+          "workspaceRevision": 1,
+          "worldId": "47143ed8-f237-4c13-a8cb-864a1fd3e23a"
+        }
+      ]
+    },
+    "beforeApplyLedger": {
+      "craftmine_tasks": [
+        {
+          "id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "binding": "{\"projectId\":\"pi-a247758d540af99033260687ee0b0f9314ff3a3cb43c924fd90f35909e114e62\",\"sessionId\":\"5d3375bb-529a-4cf3-9236-765575c29992\",\"turnId\":\"928fb0d6-b71e-488b-8d73-1ec7e471702a\",\"taskId\":\"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\",\"baseBuild\":\"v-4641627420193586d325\"}",
+          "status": "finished",
+          "revision": 1,
+          "draft": "{\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6B4A2B\",\"material\":\"wood\",\"offset\":{\"x\":-0.25,\"y\":0,\"z\":-0.25},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":1.5,\"z\":0.5},\"solid\":true},{\"color\":\"#2F6B3A\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":1.5,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":2,\"y\":1.5,\"z\":2},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"}}",
+          "draft_hash": "ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526"
+        }
+      ],
+      "craftmine_task_runtime": [
+        {
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "budget_owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "recovery": "none"
+        }
+      ],
+      "craftmine_budget_requests": [
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-e29bf5c6-530b-4f4d-8dff-4e2e0f159e3e",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "10c197488c8efe051ee41caa2f4f5d362cddb41e60cba815ef89238a1aaaf980",
+          "estimate": 40558,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":2397,\"outputTokens\":78,\"totalTokens\":2475}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-cbbdc71f-25e4-4408-8075-08b3ede7ea84",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "b0794d71cfabd9506d39e5d5536102a5a6a72f3b87f0a865dcc01df0f285fa75",
+          "estimate": 47244,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":2737,\"outputTokens\":452,\"totalTokens\":4341}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-a94612e4-7b53-4453-bfd9-a91fe15c938c",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "3663e5191064f9003a8e2a81b08dd8e15d573d9078d01eb4d79e0f7036ee71d5",
+          "estimate": 49753,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":3718,\"outputTokens\":120,\"totalTokens\":4990}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-111dca45-c129-48a1-ac03-3f52be0e48a5",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "19dafb8d2e5d872aaafb1fd68871a33f9fd7630dfde3603fd520559bb8b843ce",
+          "estimate": 50828,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":4034,\"outputTokens\":581,\"totalTokens\":5767}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-755773e9-bfea-4308-9fe4-0df86fe8939e",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "42f20fd1436a32451040e101b64cd658fb3c3d542dbe66d2335cb053bfb1a3b4",
+          "estimate": 52275,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":4823,\"outputTokens\":178,\"totalTokens\":6153}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-d65a3389-730d-4881-b247-2af857c10a55",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "49fe1a718b17d8283eee9abe311d5cb57ec63386729eb50f33c33659990e71f2",
+          "estimate": 53824,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":5296,\"outputTokens\":91,\"totalTokens\":6667}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-c10ac739-58db-4373-8f88-b7effb84adf5",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "review",
+          "request_hash": "1fb8f5a5f4473ef6cc836e776a50dd0dc5de51861c4260f291b7f815394f3374",
+          "estimate": 39357,
+          "status": "reserved",
+          "settlement": null
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-f2830022-d34b-4204-b58d-49dec4e7a938",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "f3435349039efaaed07b8979af9cc7e1965b8a430e340917cbfe01707b6de6b3",
+          "estimate": 58388,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":6769,\"outputTokens\":772,\"totalTokens\":8821}}"
+        }
+      ],
+      "craftmine_budget_events": [
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_ET_vfYowohmTcavSpMnsDo81768",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_01_ET_IhddSYH8xVEk8ZwyOnmh1450",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_QcGyAeCGAzP3wvfVZgLK6603",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_01_e0JbGUfFSE7X3qBhuGlb9564",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_eo1bzwNSMPAK9yKFtTt06795",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_WOqUyEYBOyBeOCHsTRUo6597",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_RSCVOmoolSmvLhwOVy1N0200",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_ET_L3aJgvG3vcDfxwlPnnDc6702",
+          "kind": "tool"
+        }
+      ],
+      "craftmine_task_requirements": [
+        {
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "05147201-d4d6-4997-a6d0-14d4832c478f",
+          "kind": "request",
+          "text": "请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。",
+          "created_at": 1788937767165
+        }
+      ],
+      "craftmine_workspaces": [
+        {
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "world_id": "47143ed8-f237-4c13-a8cb-864a1fd3e23a",
+          "resumed_from": null
+        }
+      ],
+      "craftmine_worlds": [
+        {
+          "id": "47143ed8-f237-4c13-a8cb-864a1fd3e23a",
+          "title": "我的第一个世界",
+          "revision": 1,
+          "updated_at": 1788937776806,
+          "document": "{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"4641627420193586d325a99b528a245dc053fa85ec5057e982d76612fe79ea22\",\"id\":\"v-4641627420193586d325\",\"primitives\":[],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"extensions\":[]}",
+          "content_hash": "6bb5671b71426daeb2c9ed844db2a68254a8dc928d7a59208bb502502665f806"
+        }
+      ],
+      "craftmine_applications": [],
+      "craftmine_verifications": [
+        {
+          "id": "check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21",
+          "world_id": "47143ed8-f237-4c13-a8cb-864a1fd3e23a",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "tool_call_id": "call_00_RSCVOmoolSmvLhwOVy1N0200",
+          "request_hash": "a91117fdb7def4052fe00e2d68be51418ff9cd33a55ded619916576172604395",
+          "status": "passed",
+          "input": "{\"binding\":{\"baseBuild\":\"v-4641627420193586d325\",\"projectId\":\"pi-a247758d540af99033260687ee0b0f9314ff3a3cb43c924fd90f35909e114e62\",\"sessionId\":\"5d3375bb-529a-4cf3-9236-765575c29992\",\"taskId\":\"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\",\"turnId\":\"928fb0d6-b71e-488b-8d73-1ec7e471702a\"},\"draft\":{\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6B4A2B\",\"material\":\"wood\",\"offset\":{\"x\":-0.25,\"y\":0,\"z\":-0.25},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":1.5,\"z\":0.5},\"solid\":true},{\"color\":\"#2F6B3A\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":1.5,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":2,\"y\":1.5,\"z\":2},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"}},\"draftHash\":\"ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526\",\"origin\":{\"modelKey\":\"07659910-3edd-4075-8c78-735f320d1a5f/deepseek-v4.1-flash-expires-on-0910\",\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"05147201-d4d6-4997-a6d0-14d4832c478f\",\"text\":\"请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。\"},\"thinkingLevel\":\"high\"},\"summary\":\"Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.\",\"workspaceRevision\":1,\"world\":{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"4641627420193586d325a99b528a245dc053fa85ec5057e982d76612fe79ea22\",\"id\":\"v-4641627420193586d325\",\"primitives\":[],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"extensions\":[],\"snapshot\":{\"format\":\"craftmine.progress/1\",\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}}},\"worldId\":\"47143ed8-f237-4c13-a8cb-864a1fd3e23a\"}",
+          "input_hash": "54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea",
+          "run_token": "671b59a9-1e5f-4092-98fa-0f80dc162cb1",
+          "output": "{\"artifact\":{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"b8e8b50fc2e1451a1ede47a8ae3c8e3707cc43c7b7bc3fbb0f96fcfc5032beae\",\"id\":\"v-b8e8b50fc2e1451a1ede\",\"primitives\":[{\"color\":\"#6B4A2B\",\"id\":\"native-oak\",\"material\":\"wood\",\"max\":{\"x\":10.25,\"y\":7.5,\"z\":4.25},\"min\":{\"x\":9.75,\"y\":6,\"z\":3.75},\"offset\":{\"x\":-0.25,\"y\":0,\"z\":-0.25},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":1.5,\"z\":0.5},\"solid\":true},{\"color\":\"#2F6B3A\",\"id\":\"native-oak\",\"material\":\"leaves\",\"max\":{\"x\":11,\"y\":9,\"z\":5},\"min\":{\"x\":9,\"y\":7.5,\"z\":3},\"offset\":{\"x\":-1,\"y\":1.5,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":2,\"y\":1.5,\"z\":2},\"solid\":false}],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6B4A2B\",\"material\":\"wood\",\"offset\":{\"x\":-0.25,\"y\":0,\"z\":-0.25},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":1.5,\"z\":0.5},\"solid\":true},{\"color\":\"#2F6B3A\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":1.5,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":2,\"y\":1.5,\"z\":2},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"diff\":{\"added\":[\"记忆松树\"],\"behaviors\":{\"added\":[],\"changed\":[],\"removed\":[]},\"changed\":[],\"details\":{\"format\":\"craftmine.diff/1\",\"items\":[{\"beforeName\":null,\"change\":\"added\",\"fields\":[\"components\",\"name\",\"parts\",\"position\",\"source\",\"appearance\"],\"id\":\"native-oak\",\"kind\":\"object\",\"name\":\"记忆松树\"}]},\"environment\":false,\"removed\":[],\"systems\":{\"added\":[],\"changed\":[],\"removed\":[]}},\"extensions\":[],\"snapshot\":{\"format\":\"craftmine.progress/1\",\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}}},\"evidence\":{\"behaviors\":{\"build\":\"b8e8b50fc2e1451a1ede47a8ae3c8e3707cc43c7b7bc3fbb0f96fcfc5032beae\",\"format\":\"craftmine.behavior-check/1\",\"modules\":[],\"passed\":true,\"scope\":\"接口与事件序列检查；不等同于玩家需求验收\"},\"compiler\":{\"passed\":true},\"format\":\"craftmine.desktop-check/1\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"passed\":true,\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"0e5f02d14101463e32dac96f1de347284cd64d43609abd10fed269a60bf690af\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-b8e8b50fc2e1451a1ede\"},\"scope\":\"接口、事件与实际绘制检查；玩家需求验收与评审尚未完成\"},\"inputHash\":\"54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea\"}",
+          "output_hash": "83129172f54855fb60658c99cb07b636d2dfa6d8ff00fc7de3672b1becfdf464",
+          "created_at": 1788937774849,
+          "updated_at": 1788937775095
+        }
+      ],
+      "craftmine_reviews": [
+        {
+          "id": "review-e75b05e3d2b914212987486f82613134abbcc9a2ac61566c98b2965d94eb5003",
+          "verification_id": "check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21",
+          "input": "{\"origin\":{\"modelKey\":\"07659910-3edd-4075-8c78-735f320d1a5f/deepseek-v4.1-flash-expires-on-0910\",\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"05147201-d4d6-4997-a6d0-14d4832c478f\",\"text\":\"请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。\"},\"thinkingLevel\":\"high\"},\"verificationId\":\"check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21\",\"verificationInputHash\":\"54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea\",\"verificationOutputHash\":\"83129172f54855fb60658c99cb07b636d2dfa6d8ff00fc7de3672b1becfdf464\"}",
+          "input_hash": "ddb385eccebfba5c6be9e8787b34f01841adddba535135739ab37956505cee9e",
+          "status": "running",
+          "token": "46d502c5-e6a8-4535-9367-d9c726c4d1c9",
+          "output": null,
+          "output_hash": null,
+          "created_at": 1788937775098,
+          "updated_at": 1788937775098
+        }
+      ]
+    },
+    "applied": {
+      "applied": true,
+      "snapshot": {
+        "channel": "craftmine-game/1",
+        "nonce": "d014cb84-4d61-4dab-8f26-e5db0a4d8e53",
+        "type": "snapshot",
+        "requestId": "ac1a18c2-9d31-45ae-8765-7dbf529c4292",
+        "snapshot": {
+          "format": "craftmine.progress/3",
+          "player": {
+            "pitch": 0,
+            "x": 0.5,
+            "y": 6,
+            "yaw": 0,
+            "z": 12.5
+          },
+          "gameplay": {
+            "systems": {},
+            "targets": {
+              "native-oak": {
+                "health": 20,
+                "maxHealth": 20
+              }
+            },
+            "equipped": null,
+            "archivedTargets": {},
+            "cooldown": 0
+          },
+          "behaviors": {
+            "format": "craftmine.behavior-state/2",
+            "time": 0,
+            "modules": {},
+            "inventory": {},
+            "archive": []
+          }
+        }
+      }
+    },
+    "appliedWorld": {
+      "loaded": true,
+      "id": "47143ed8-f237-4c13-a8cb-864a1fd3e23a",
+      "error": "",
+      "status": "已保存",
+      "disabled": false,
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      },
+      "snapshot": {
+        "format": "craftmine.progress/3",
+        "player": {
+          "pitch": 0,
+          "x": 0.5,
+          "y": 6,
+          "yaw": 0,
+          "z": 12.5
+        },
+        "gameplay": {
+          "systems": {},
+          "targets": {
+            "native-oak": {
+              "health": 20,
+              "maxHealth": 20
+            }
+          },
+          "equipped": null,
+          "archivedTargets": {},
+          "cooldown": 0
+        },
+        "behaviors": {
+          "format": "craftmine.behavior-state/2",
+          "time": 0,
+          "modules": {},
+          "inventory": {},
+          "archive": []
+        }
+      }
+    },
+    "appliedDocument": {
+      "build": {
+        "behaviors": [],
+        "format": "craftmine.build/3",
+        "hash": "b8e8b50fc2e1451a1ede47a8ae3c8e3707cc43c7b7bc3fbb0f96fcfc5032beae",
+        "id": "v-b8e8b50fc2e1451a1ede",
+        "primitives": [
+          {
+            "color": "#6B4A2B",
+            "id": "native-oak",
+            "material": "wood",
+            "max": {
+              "x": 10.25,
+              "y": 7.5,
+              "z": 4.25
+            },
+            "min": {
+              "x": 9.75,
+              "y": 6,
+              "z": 3.75
+            },
+            "offset": {
+              "x": -0.25,
+              "y": 0,
+              "z": -0.25
+            },
+            "shape": "box",
+            "size": {
+              "x": 0.5,
+              "y": 1.5,
+              "z": 0.5
+            },
+            "solid": true
+          },
+          {
+            "color": "#2F6B3A",
+            "id": "native-oak",
+            "material": "leaves",
+            "max": {
+              "x": 11,
+              "y": 9,
+              "z": 5
+            },
+            "min": {
+              "x": 9,
+              "y": 7.5,
+              "z": 3
+            },
+            "offset": {
+              "x": -1,
+              "y": 1.5,
+              "z": -1
+            },
+            "shape": "box",
+            "size": {
+              "x": 2,
+              "y": 1.5,
+              "z": 2
+            },
+            "solid": false
+          }
+        ],
+        "scene": {
+          "behaviors": [],
+          "format": "craftmine.scene/3",
+          "night": false,
+          "objects": [
+            {
+              "components": {
+                "contactDamage": 0,
+                "health": 20
+              },
+              "id": "native-oak",
+              "name": "记忆松树",
+              "parts": [
+                {
+                  "color": "#6B4A2B",
+                  "material": "wood",
+                  "offset": {
+                    "x": -0.25,
+                    "y": 0,
+                    "z": -0.25
+                  },
+                  "shape": "box",
+                  "size": {
+                    "x": 0.5,
+                    "y": 1.5,
+                    "z": 0.5
+                  },
+                  "solid": true
+                },
+                {
+                  "color": "#2F6B3A",
+                  "material": "leaves",
+                  "offset": {
+                    "x": -1,
+                    "y": 1.5,
+                    "z": -1
+                  },
+                  "shape": "box",
+                  "size": {
+                    "x": 2,
+                    "y": 1.5,
+                    "z": 2
+                  },
+                  "solid": false
+                }
+              ],
+              "position": {
+                "x": 10,
+                "y": 6,
+                "z": 4
+              },
+              "source": null
+            }
+          ],
+          "systems": [],
+          "title": "我的第一个世界"
+        },
+        "voxels": []
+      },
+      "snapshot": {
+        "behaviors": {
+          "archive": [],
+          "format": "craftmine.behavior-state/2",
+          "inventory": {},
+          "modules": {},
+          "time": 0
+        },
+        "format": "craftmine.progress/3",
+        "gameplay": {
+          "archivedTargets": {},
+          "cooldown": 0,
+          "equipped": null,
+          "systems": {},
+          "targets": {
+            "native-oak": {
+              "health": 20,
+              "maxHealth": 20
+            }
+          }
+        },
+        "player": {
+          "pitch": 0,
+          "x": 0.5,
+          "y": 6,
+          "yaw": 0,
+          "z": 12.5
+        }
+      },
+      "extensions": []
+    },
+    "guards": [
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/parallel-f-20260909/vendor/pi-desktop/apps/desktop/out/renderer/index.html"
+      },
+      {
+        "bridge": "object",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/parallel-f-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+      },
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "about:srcdoc"
+      }
+    ],
+    "finalStatus": {
+      "name": "craftmine world",
+      "profile": "D:\\Craftmine World-worktrees\\parallel-f-20260909\\test-results\\desktop-native-f-9KZCYv\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/Craftmine%20World-worktrees/parallel-f-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    "image": {
+      "width": 1200,
+      "height": 800
+    },
+    "firstExit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": []
+    },
+    "restored": {
+      "loaded": true,
+      "id": "47143ed8-f237-4c13-a8cb-864a1fd3e23a",
+      "error": "",
+      "status": "已保存",
+      "disabled": false,
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      },
+      "snapshot": {
+        "format": "craftmine.progress/3",
+        "player": {
+          "pitch": 0,
+          "x": 0.5,
+          "y": 6,
+          "yaw": 0,
+          "z": 12.5
+        },
+        "gameplay": {
+          "systems": {},
+          "targets": {
+            "native-oak": {
+              "health": 20,
+              "maxHealth": 20
+            }
+          },
+          "equipped": null,
+          "archivedTargets": {},
+          "cooldown": 0
+        },
+        "behaviors": {
+          "format": "craftmine.behavior-state/2",
+          "time": 0,
+          "modules": {},
+          "inventory": {},
+          "archive": []
+        }
+      }
+    },
+    "statusAtExit": {
+      "name": "craftmine world",
+      "profile": "D:\\Craftmine World-worktrees\\parallel-f-20260909\\test-results\\desktop-native-f-9KZCYv\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/Craftmine%20World-worktrees/parallel-f-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    "guardsAtExit": [
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/parallel-f-20260909/vendor/pi-desktop/apps/desktop/out/renderer/index.html"
+      },
+      {
+        "bridge": "object",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/parallel-f-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+      },
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "about:srcdoc"
+      }
+    ],
+    "finalLedger": {
+      "craftmine_tasks": [
+        {
+          "id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "binding": "{\"projectId\":\"pi-a247758d540af99033260687ee0b0f9314ff3a3cb43c924fd90f35909e114e62\",\"sessionId\":\"5d3375bb-529a-4cf3-9236-765575c29992\",\"turnId\":\"928fb0d6-b71e-488b-8d73-1ec7e471702a\",\"taskId\":\"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\",\"baseBuild\":\"v-4641627420193586d325\"}",
+          "status": "finished",
+          "revision": 1,
+          "draft": "{\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6B4A2B\",\"material\":\"wood\",\"offset\":{\"x\":-0.25,\"y\":0,\"z\":-0.25},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":1.5,\"z\":0.5},\"solid\":true},{\"color\":\"#2F6B3A\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":1.5,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":2,\"y\":1.5,\"z\":2},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"}}",
+          "draft_hash": "ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526"
+        }
+      ],
+      "craftmine_task_runtime": [
+        {
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "budget_owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "recovery": "none"
+        }
+      ],
+      "craftmine_budget_requests": [
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-e29bf5c6-530b-4f4d-8dff-4e2e0f159e3e",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "10c197488c8efe051ee41caa2f4f5d362cddb41e60cba815ef89238a1aaaf980",
+          "estimate": 40558,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":2397,\"outputTokens\":78,\"totalTokens\":2475}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-cbbdc71f-25e4-4408-8075-08b3ede7ea84",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "b0794d71cfabd9506d39e5d5536102a5a6a72f3b87f0a865dcc01df0f285fa75",
+          "estimate": 47244,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":2737,\"outputTokens\":452,\"totalTokens\":4341}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-a94612e4-7b53-4453-bfd9-a91fe15c938c",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "3663e5191064f9003a8e2a81b08dd8e15d573d9078d01eb4d79e0f7036ee71d5",
+          "estimate": 49753,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":3718,\"outputTokens\":120,\"totalTokens\":4990}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-111dca45-c129-48a1-ac03-3f52be0e48a5",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "19dafb8d2e5d872aaafb1fd68871a33f9fd7630dfde3603fd520559bb8b843ce",
+          "estimate": 50828,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":4034,\"outputTokens\":581,\"totalTokens\":5767}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-755773e9-bfea-4308-9fe4-0df86fe8939e",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "42f20fd1436a32451040e101b64cd658fb3c3d542dbe66d2335cb053bfb1a3b4",
+          "estimate": 52275,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":4823,\"outputTokens\":178,\"totalTokens\":6153}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-d65a3389-730d-4881-b247-2af857c10a55",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "49fe1a718b17d8283eee9abe311d5cb57ec63386729eb50f33c33659990e71f2",
+          "estimate": 53824,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":5296,\"outputTokens\":91,\"totalTokens\":6667}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-c10ac739-58db-4373-8f88-b7effb84adf5",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "review",
+          "request_hash": "1fb8f5a5f4473ef6cc836e776a50dd0dc5de51861c4260f291b7f815394f3374",
+          "estimate": 39357,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":1879,\"outputTokens\":3812,\"totalTokens\":6715}}"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "request-f2830022-d34b-4204-b58d-49dec4e7a938",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "generation": 1,
+          "purpose": "creation",
+          "request_hash": "f3435349039efaaed07b8979af9cc7e1965b8a430e340917cbfe01707b6de6b3",
+          "estimate": 58388,
+          "status": "known",
+          "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":6769,\"outputTokens\":772,\"totalTokens\":8821}}"
+        }
+      ],
+      "craftmine_budget_events": [
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_ET_vfYowohmTcavSpMnsDo81768",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_01_ET_IhddSYH8xVEk8ZwyOnmh1450",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_QcGyAeCGAzP3wvfVZgLK6603",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_01_e0JbGUfFSE7X3qBhuGlb9564",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_eo1bzwNSMPAK9yKFtTt06795",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_WOqUyEYBOyBeOCHsTRUo6597",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_RSCVOmoolSmvLhwOVy1N0200",
+          "kind": "tool"
+        },
+        {
+          "owner": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "event_id": "call_00_ET_L3aJgvG3vcDfxwlPnnDc6702",
+          "kind": "tool"
+        }
+      ],
+      "craftmine_task_requirements": [
+        {
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "request_id": "05147201-d4d6-4997-a6d0-14d4832c478f",
+          "kind": "request",
+          "text": "请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。",
+          "created_at": 1788937767165
+        }
+      ],
+      "craftmine_workspaces": [
+        {
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "world_id": "47143ed8-f237-4c13-a8cb-864a1fd3e23a",
+          "resumed_from": null
+        }
+      ],
+      "craftmine_worlds": [
+        {
+          "id": "47143ed8-f237-4c13-a8cb-864a1fd3e23a",
+          "title": "我的第一个世界",
+          "revision": 2,
+          "updated_at": 1788937797233,
+          "document": "{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"b8e8b50fc2e1451a1ede47a8ae3c8e3707cc43c7b7bc3fbb0f96fcfc5032beae\",\"id\":\"v-b8e8b50fc2e1451a1ede\",\"primitives\":[{\"color\":\"#6B4A2B\",\"id\":\"native-oak\",\"material\":\"wood\",\"max\":{\"x\":10.25,\"y\":7.5,\"z\":4.25},\"min\":{\"x\":9.75,\"y\":6,\"z\":3.75},\"offset\":{\"x\":-0.25,\"y\":0,\"z\":-0.25},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":1.5,\"z\":0.5},\"solid\":true},{\"color\":\"#2F6B3A\",\"id\":\"native-oak\",\"material\":\"leaves\",\"max\":{\"x\":11,\"y\":9,\"z\":5},\"min\":{\"x\":9,\"y\":7.5,\"z\":3},\"offset\":{\"x\":-1,\"y\":1.5,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":2,\"y\":1.5,\"z\":2},\"solid\":false}],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6B4A2B\",\"material\":\"wood\",\"offset\":{\"x\":-0.25,\"y\":0,\"z\":-0.25},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":1.5,\"z\":0.5},\"solid\":true},{\"color\":\"#2F6B3A\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":1.5,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":2,\"y\":1.5,\"z\":2},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"extensions\":[]}",
+          "content_hash": "2ad967b73c54ec8c94426ce9f4f35834f22bcb3d4a55b6975ee7266c6eb5107c"
+        }
+      ],
+      "craftmine_applications": [
+        {
+          "id": "apply-ae1f7d3cf98e921ba716e117e67474969b5fc00a5470065a78fe7b623f5f3963",
+          "world_id": "47143ed8-f237-4c13-a8cb-864a1fd3e23a",
+          "verification_id": "check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21",
+          "review_id": "review-e75b05e3d2b914212987486f82613134abbcc9a2ac61566c98b2965d94eb5003",
+          "request_hash": "a2ae4b0eac5145b0d6fe7760919f52df16b5337b4e696cf585ff8baee2fd153e",
+          "input": "{\"baseBuild\":\"v-4641627420193586d325\",\"binding\":{\"baseBuild\":\"v-4641627420193586d325\",\"projectId\":\"pi-a247758d540af99033260687ee0b0f9314ff3a3cb43c924fd90f35909e114e62\",\"sessionId\":\"5d3375bb-529a-4cf3-9236-765575c29992\",\"taskId\":\"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\",\"turnId\":\"928fb0d6-b71e-488b-8d73-1ec7e471702a\"},\"buildId\":\"v-b8e8b50fc2e1451a1ede\",\"draftHash\":\"ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526\",\"reviewId\":\"review-e75b05e3d2b914212987486f82613134abbcc9a2ac61566c98b2965d94eb5003\",\"reviewOutputHash\":\"19ee4ecf0ae2d0969f0755ff1e10c5012fd3f80e73026e85800df9b62dc0ee1f\",\"revision\":1,\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"verificationId\":\"check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21\",\"verificationOutputHash\":\"83129172f54855fb60658c99cb07b636d2dfa6d8ff00fc7de3672b1becfdf464\",\"worldHash\":\"6bb5671b71426daeb2c9ed844db2a68254a8dc928d7a59208bb502502665f806\",\"worldId\":\"47143ed8-f237-4c13-a8cb-864a1fd3e23a\"}",
+          "input_hash": "a6afe37835e47357d871cceabd79c990b8a280247b1475e94e30c81c92ac9c89",
+          "previous_world": "{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"4641627420193586d325a99b528a245dc053fa85ec5057e982d76612fe79ea22\",\"id\":\"v-4641627420193586d325\",\"primitives\":[],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"extensions\":[]}",
+          "previous_hash": "6bb5671b71426daeb2c9ed844db2a68254a8dc928d7a59208bb502502665f806",
+          "status": "applied",
+          "token": "087a9fc8-6b22-4c8f-ab2f-246735e0f586",
+          "output": "{\"format\":\"craftmine.desktop-application/1\",\"inputHash\":\"a6afe37835e47357d871cceabd79c990b8a280247b1475e94e30c81c92ac9c89\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5},\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"0e5f02d14101463e32dac96f1de347284cd64d43609abd10fed269a60bf690af\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-b8e8b50fc2e1451a1ede\"}}",
+          "output_hash": "0acbbf040db2efb1ec4e04179226a579285977c4863bc282339183fdc0b4739e",
+          "created_at": 1788937796984,
+          "updated_at": 1788937797233
+        }
+      ],
+      "craftmine_verifications": [
+        {
+          "id": "check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21",
+          "world_id": "47143ed8-f237-4c13-a8cb-864a1fd3e23a",
+          "task_id": "work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7",
+          "tool_call_id": "call_00_RSCVOmoolSmvLhwOVy1N0200",
+          "request_hash": "a91117fdb7def4052fe00e2d68be51418ff9cd33a55ded619916576172604395",
+          "status": "passed",
+          "input": "{\"binding\":{\"baseBuild\":\"v-4641627420193586d325\",\"projectId\":\"pi-a247758d540af99033260687ee0b0f9314ff3a3cb43c924fd90f35909e114e62\",\"sessionId\":\"5d3375bb-529a-4cf3-9236-765575c29992\",\"taskId\":\"work-9094c19e5839dd30e2077a6e831cee57885fb5aeaf29a214624605763a9909d7\",\"turnId\":\"928fb0d6-b71e-488b-8d73-1ec7e471702a\"},\"draft\":{\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6B4A2B\",\"material\":\"wood\",\"offset\":{\"x\":-0.25,\"y\":0,\"z\":-0.25},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":1.5,\"z\":0.5},\"solid\":true},{\"color\":\"#2F6B3A\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":1.5,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":2,\"y\":1.5,\"z\":2},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"}},\"draftHash\":\"ba56fb139088f0b373d741a5b66106a00afe278d94e89245e0fdc41f98594526\",\"origin\":{\"modelKey\":\"07659910-3edd-4075-8c78-735f320d1a5f/deepseek-v4.1-flash-expires-on-0910\",\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"05147201-d4d6-4997-a6d0-14d4832c478f\",\"text\":\"请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。\"},\"thinkingLevel\":\"high\"},\"summary\":\"Add one tree object native-oak (name 记忆松树) at x=10 y=6 z=4, total height 3: wood trunk 0.5x1.5x0.5 at offset y=0 and leaf canopy 2x1.5x2 centered on the trunk at offset y=1.5. No other objects or gameplay.\",\"workspaceRevision\":1,\"world\":{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"4641627420193586d325a99b528a245dc053fa85ec5057e982d76612fe79ea22\",\"id\":\"v-4641627420193586d325\",\"primitives\":[],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"extensions\":[],\"snapshot\":{\"format\":\"craftmine.progress/1\",\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}}},\"worldId\":\"47143ed8-f237-4c13-a8cb-864a1fd3e23a\"}",
+          "input_hash": "54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea",
+          "run_token": "671b59a9-1e5f-4092-98fa-0f80dc162cb1",
+          "output": "{\"artifact\":{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"b8e8b50fc2e1451a1ede47a8ae3c8e3707cc43c7b7bc3fbb0f96fcfc5032beae\",\"id\":\"v-b8e8b50fc2e1451a1ede\",\"primitives\":[{\"color\":\"#6B4A2B\",\"id\":\"native-oak\",\"material\":\"wood\",\"max\":{\"x\":10.25,\"y\":7.5,\"z\":4.25},\"min\":{\"x\":9.75,\"y\":6,\"z\":3.75},\"offset\":{\"x\":-0.25,\"y\":0,\"z\":-0.25},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":1.5,\"z\":0.5},\"solid\":true},{\"color\":\"#2F6B3A\",\"id\":\"native-oak\",\"material\":\"leaves\",\"max\":{\"x\":11,\"y\":9,\"z\":5},\"min\":{\"x\":9,\"y\":7.5,\"z\":3},\"offset\":{\"x\":-1,\"y\":1.5,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":2,\"y\":1.5,\"z\":2},\"solid\":false}],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6B4A2B\",\"material\":\"wood\",\"offset\":{\"x\":-0.25,\"y\":0,\"z\":-0.25},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":1.5,\"z\":0.5},\"solid\":true},{\"color\":\"#2F6B3A\",\"material\":\"leaves\",\"offset\":{\"x\":-1,\"y\":1.5,\"z\":-1},\"shape\":\"box\",\"size\":{\"x\":2,\"y\":1.5,\"z\":2},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"diff\":{\"added\":[\"记忆松树\"],\"behaviors\":{\"added\":[],\"changed\":[],\"removed\":[]},\"changed\":[],\"details\":{\"format\":\"craftmine.diff/1\",\"items\":[{\"beforeName\":null,\"change\":\"added\",\"fields\":[\"components\",\"name\",\"parts\",\"position\",\"source\",\"appearance\"],\"id\":\"native-oak\",\"kind\":\"object\",\"name\":\"记忆松树\"}]},\"environment\":false,\"removed\":[],\"systems\":{\"added\":[],\"changed\":[],\"removed\":[]}},\"extensions\":[],\"snapshot\":{\"format\":\"craftmine.progress/1\",\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}}},\"evidence\":{\"behaviors\":{\"build\":\"b8e8b50fc2e1451a1ede47a8ae3c8e3707cc43c7b7bc3fbb0f96fcfc5032beae\",\"format\":\"craftmine.behavior-check/1\",\"modules\":[],\"passed\":true,\"scope\":\"接口与事件序列检查；不等同于玩家需求验收\"},\"compiler\":{\"passed\":true},\"format\":\"craftmine.desktop-check/1\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"passed\":true,\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"0e5f02d14101463e32dac96f1de347284cd64d43609abd10fed269a60bf690af\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-b8e8b50fc2e1451a1ede\"},\"scope\":\"接口、事件与实际绘制检查；玩家需求验收与评审尚未完成\"},\"inputHash\":\"54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea\"}",
+          "output_hash": "83129172f54855fb60658c99cb07b636d2dfa6d8ff00fc7de3672b1becfdf464",
+          "created_at": 1788937774849,
+          "updated_at": 1788937775095
+        }
+      ],
+      "craftmine_reviews": [
+        {
+          "id": "review-e75b05e3d2b914212987486f82613134abbcc9a2ac61566c98b2965d94eb5003",
+          "verification_id": "check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21",
+          "input": "{\"origin\":{\"modelKey\":\"07659910-3edd-4075-8c78-735f320d1a5f/deepseek-v4.1-flash-expires-on-0910\",\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"05147201-d4d6-4997-a6d0-14d4832c478f\",\"text\":\"请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。\"},\"thinkingLevel\":\"high\"},\"verificationId\":\"check-a46fc8966edceddd088d591270aefba4e6d1a691e1a439362b9df9568e861f21\",\"verificationInputHash\":\"54dfe5ab3c80e7e9b86b549166c59b049df7c05ecbcf6ffe0d0ef4ed791619ea\",\"verificationOutputHash\":\"83129172f54855fb60658c99cb07b636d2dfa6d8ff00fc7de3672b1becfdf464\"}",
+          "input_hash": "ddb385eccebfba5c6be9e8787b34f01841adddba535135739ab37956505cee9e",
+          "status": "completed",
+          "token": "46d502c5-e6a8-4535-9367-d9c726c4d1c9",
+          "output": "{\"acceptance\":{\"assertions\":[{\"detail\":\"玩法在整个事件序列里没有报错\",\"id\":\"no-runtime-errors\",\"kind\":\"noErrors\",\"passed\":true,\"red\":\"任何编译、加载或运行时抛错都会打红，例如部件字段非法、solid 类型错误导致渲染失败。\",\"why\":\"检查加载与整个验收过程中没有报错，世界能正常初始化。\"},{\"detail\":\"最终世界新增了 1 个符合条件的对象：native-oak\",\"id\":\"tree-object-created\",\"kind\":\"newObjects\",\"passed\":true,\"red\":\"没有创建任何对象，或把树创建在别的位置（如 y=0 地下、x/z 偏离），都会打红。\",\"why\":\"在空世界里新增至少 1 个对象，且其锚点位于要求的 x=10/y=6/z=4 附近。\"},{\"detail\":\"最终世界 native-oak.position = {\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4}\",\"id\":\"native-oak-anchor-position\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"锚点被写成默认 (0,0,0)、y 用了 0/7 之类高度、或 x/z 抄错都会打红。\",\"why\":\"对象 id 为 native-oak 的锚点必须精确等于玩家指定的 (10,6,4)，地表高度为 y=6。\"},{\"detail\":\"最终世界 native-oak.visible = true\",\"id\":\"native-oak-visible\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"对象被设为隐藏、visible=false，或根本没有该对象时打红。\",\"why\":\"可观测效果：树在最终世界里必须是可见的，而不是被隐藏。\"},{\"detail\":\"最终世界 native-oak.mesh = true\",\"id\":\"native-oak-mesh-present\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"对象无 drawable mesh（未被渲染、部件数据被丢弃导致空网格）时打红。\",\"why\":\"可观测效果：渲染器实际持有该对象的可绘制网格，而不只是数据里存在。\"},{\"detail\":\"除 native-oak 之外，其他对象都没有变化\",\"id\":\"no-other-objects-changed\",\"kind\":\"objectsUnchanged\",\"passed\":true,\"red\":\"额外生成草地、石头、第二个树对象，或改动既有对象字段（本次为空世界）时打红。\",\"why\":\"玩家要求别增加其他物体或玩法，除 native-oak 外不应有任何对象被新增或改动。\"}],\"baselineVersion\":\"v-4641627420193586d325\",\"passed\":true,\"scope\":\"实际游戏副本中的对象、玩法事件与状态断言；外观美术与物理操作体验仍由玩家预览判断\",\"trace\":{\"baseline\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{}},\"inventory\":{},\"items\":{},\"objects\":[],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"errors\":[],\"final\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"inventory\":{},\"items\":{},\"objects\":[{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"native-oak\",\"mesh\":true,\"position\":{\"x\":10,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true}],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5},\"start\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"inventory\":{},\"items\":{},\"objects\":[{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"native-oak\",\"mesh\":true,\"position\":{\"x\":10,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true}],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"steps\":[]},\"verificationOutputHash\":\"83129172f54855fb60658c99cb07b636d2dfa6d8ff00fc7de3672b1becfdf464\"},\"advisory\":true,\"baseline\":{\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"eb8d069c86c7e454f14fb001acf7bb9e8bace44182bee6458b45136936151645\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-4641627420193586d325\"}},\"format\":\"craftmine.desktop-review/1\",\"inputHash\":\"ddb385eccebfba5c6be9e8787b34f01841adddba535135739ab37956505cee9e\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"limitations\":[\"部件级几何无法用断言验证：树干/树冠各自的 offset+size、颜色、叶片材质只能从世界数据核对（树干 0→1.5、树冠 1.5→3.0，总高 3），观测事实只能给出整对象 mesh/visible 与像素截图。\",\"区域断言只检查对象锚点 (10,6,4)，不能证明树干底面与 y=6 地表在视觉上完全贴合，也不能证明每个部件都接地；需玩家预览确认。\",\"对象名称字符串“记忆松树”没有对应的断言字段，只能依赖世界数据比对。\",\"render 证据（960×640、35 个着色采样）只能说明有像素被绘制，不能区分树干与树冠两个可辨识形状，也不能判定绿色/棕色的观感是否像松树。\",\"对象附加的 components.health=20、contactDamage=0 未纳入断言；若玩家认为这构成“额外玩法”，需另行判断。\",\"机器证据中的 behaviors 模块为空、passed=true 只代表接口/事件序列自检，不代表玩家需求已验收。\"],\"modelKey\":\"07659910-3edd-4075-8c78-735f320d1a5f/deepseek-v4.1-flash-expires-on-0910\",\"planHash\":\"9161fe6cb02203efe87c9d37d3d2f558c61fe3ec93fd085bc2d1757cae69fb0c\",\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"0e5f02d14101463e32dac96f1de347284cd64d43609abd10fed269a60bf690af\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-b8e8b50fc2e1451a1ede\"},\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"05147201-d4d6-4997-a6d0-14d4832c478f\",\"text\":\"请实际创作，不要只解释。读取世界工具规范，在空世界增加一棵有树干和树冠的树，id为native-oak，名称记忆松树，位置x=10 y=6 z=4，总高度3。提交草稿，实际提交验证并读取结果，若失败请修复。通过后保留候选等待玩家应用，别增加其他物体或玩法。\"},\"suggestions\":[\"名称写的是“记忆松树”，但当前树冠是 2×1.5×2 的方形阔叶块（#2F6B3A），若玩家期望圆锥/针叶轮廓，请在预览后让其自行确认或提出修改；这属于外观偏好，不作为验收硬条件。\",\"保留候选、未应用的处理是对的（世界 revision 0、draft revision 1、check 回执 passed），无需再提交或应用。\",\"对象带有 components.health=20 与 contactDamage=0，玩家未明确要求；当前无任何 behaviors/systems，不会自行触发伤害，如玩家严格禁止任何玩法组件可考虑移除。\",\"验收只用整对象的 position/visible/mesh 与“无其他对象变动”作为判据，不要额外发明冷却、颜色或平衡硬限制。\"],\"summary\":\"候选在空世界中只新增了一个对象 native-oak（名称“记忆松树”），锚点 (10,6,4)，树干部件相对高度 0→1.5、树冠 1.5→3.0，合计正好 3，树干底面正好落在地表 y=6；behaviors/systems 均为空，世界 revision 仍为 0、草稿 revision 为 1 且有已通过的 check 回执，符合“保留候选等待玩家应用、不增加其他物体或玩法”。渲染与像素证据只证明整对象被绘制，树干/树冠的分件形状与“松树”外观需玩家预览确认。\",\"text\":\"{\\\"summary\\\":\\\"候选在空世界中只新增了一个对象 native-oak（名称“记忆松树”），锚点 (10,6,4)，树干部件相对高度 0→1.5、树冠 1.5→3.0，合计正好 3，树干底面正好落在地表 y=6；behaviors/systems 均为空，世界 revision 仍为 0、草稿 revision 为 1 且有已通过的 check 回执，符合“保留候选等待玩家应用、不增加其他物体或玩法”。渲染与像素证据只证明整对象被绘制，树干/树冠的分件形状与“松树”外观需玩家预览确认。\\\",\\\"verdict\\\":\\\"ready\\\",\\\"suggestions\\\":[\\\"名称写的是“记忆松树”，但当前树冠是 2×1.5×2 的方形阔叶块（#2F6B3A），若玩家期望圆锥/针叶轮廓，请在预览后让其自行确认或提出修改；这属于外观偏好，不作为验收硬条件。\\\",\\\"保留候选、未应用的处理是对的（世界 revision 0、draft revision 1、check 回执 passed），无需再提交或应用。\\\",\\\"对象带有 components.health=20 与 contactDamage=0，玩家未明确要求；当前无任何 behaviors/systems，不会自行触发伤害，如玩家严格禁止任何玩法组件可考虑移除。\\\",\\\"验收只用整对象的 position/visible/mesh 与“无其他对象变动”作为判据，不要额外发明冷却、颜色或平衡硬限制。\\\"],\\\"limitations\\\":[\\\"部件级几何无法用断言验证：树干/树冠各自的 offset+size、颜色、叶片材质只能从世界数据核对（树干 0→1.5、树冠 1.5→3.0，总高 3），观测事实只能给出整对象 mesh/visible 与像素截图。\\\",\\\"区域断言只检查对象锚点 (10,6,4)，不能证明树干底面与 y=6 地表在视觉上完全贴合，也不能证明每个部件都接地；需玩家预览确认。\\\",\\\"对象名称字符串“记忆松树”没有对应的断言字段，只能依赖世界数据比对。\\\",\\\"render 证据（960×640、35 个着色采样）只能说明有像素被绘制，不能区分树干与树冠两个可辨识形状，也不能判定绿色/棕色的观感是否像松树。\\\",\\\"对象附加的 components.health=20、contactDamage=0 未纳入断言；若玩家认为这构成“额外玩法”，需另行判断。\\\",\\\"机器证据中的 behaviors 模块为空、passed=true 只代表接口/事件序列自检，不代表玩家需求已验收。\\\"],\\\"assertions\\\":[{\\\"id\\\":\\\"no-runtime-errors\\\",\\\"kind\\\":\\\"noErrors\\\",\\\"why\\\":\\\"检查加载与整个验收过程中没有报错，世界能正常初始化。\\\",\\\"red\\\":\\\"任何编译、加载或运行时抛错都会打红，例如部件字段非法、solid 类型错误导致渲染失败。\\\"},{\\\"id\\\":\\\"tree-object-created\\\",\\\"kind\\\":\\\"newObjects\\\",\\\"min\\\":1,\\\"region\\\":{\\\"x\\\":[9.5,10.5],\\\"y\\\":[5.5,6.5],\\\"z\\\":[3.5,4.5]},\\\"why\\\":\\\"在空世界里新增至少 1 个对象，且其锚点位于要求的 x=10/y=6/z=4 附近。\\\",\\\"red\\\":\\\"没有创建任何对象，或把树创建在别的位置（如 y=0 地下、x/z 偏离），都会打红。\\\"},{\\\"id\\\":\\\"native-oak-anchor-position\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"position\\\",\\\"value\\\":{\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4},\\\"why\\\":\\\"对象 id 为 native-oak 的锚点必须精确等于玩家指定的 (10,6,4)，地表高度为 y=6。\\\",\\\"red\\\":\\\"锚点被写成默认 (0,0,0)、y 用了 0/7 之类高度、或 x/z 抄错都会打红。\\\"},{\\\"id\\\":\\\"native-oak-visible\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"visible\\\",\\\"value\\\":true,\\\"why\\\":\\\"可观测效果：树在最终世界里必须是可见的，而不是被隐藏。\\\",\\\"red\\\":\\\"对象被设为隐藏、visible=false，或根本没有该对象时打红。\\\"},{\\\"id\\\":\\\"native-oak-mesh-present\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"mesh\\\",\\\"value\\\":true,\\\"why\\\":\\\"可观测效果：渲染器实际持有该对象的可绘制网格，而不只是数据里存在。\\\",\\\"red\\\":\\\"对象无 drawable mesh（未被渲染、部件数据被丢弃导致空网格）时打红。\\\"},{\\\"id\\\":\\\"no-other-objects-changed\\\",\\\"kind\\\":\\\"objectsUnchanged\\\",\\\"except\\\":[\\\"native-oak\\\"],\\\"why\\\":\\\"玩家要求别增加其他物体或玩法，除 native-oak 外不应有任何对象被新增或改动。\\\",\\\"red\\\":\\\"额外生成草地、石头、第二个树对象，或改动既有对象字段（本次为空世界）时打红。\\\"}],\\\"steps\\\":[]}\",\"usage\":{\"cacheReadTokens\":1024,\"inputTokens\":1879,\"outputTokens\":3812,\"reasoningTokens\":2736,\"totalTokens\":6715},\"verdict\":\"ready\"}",
+          "output_hash": "19ee4ecf0ae2d0969f0755ff1e10c5012fd3f80e73026e85800df9b62dc0ee1f",
+          "created_at": 1788937775098,
+          "updated_at": 1788937795630
+        }
+      ]
+    },
+    "exitAudit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": []
+    }
+  },
+  "binaries": {
+    "electron": "bab31519ee1bc5b490caf7844e2b1dbcd4f7bb49a13039103952ab381c02ade4",
+    "core": "a1513083b411fb4c2e186916f391ce6678a11f8b269b2636b9c98dee72509bb7",
+    "host": "a2dd0c35dfea4097d54fccbc645340cc6b1f23d4a139a045ba9d3065bc6fee02",
+    "main": "35501b9fa9f51674f22e44b753a277719a58db48342517adfcb75d2e4de6f259"
+  },
+  "limits": [
+    "No visible-window or clean-Windows installation validation",
+    "No library reuse claim from tree persistence alone",
+    "No measured performance threshold during concurrent builds"
+  ]
+}

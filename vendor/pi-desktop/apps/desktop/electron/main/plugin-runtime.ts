@@ -170,6 +170,8 @@ export type PluginFsConsentRequest = {
 export type PluginFsConsentAnswer = "once" | "session" | "deny";
 
 export type PluginHostServices = {
+  /** Explicit builtin business channels. The main process supplies identity. */
+  craftminePanelRequest?: (channel: string, payload: Record<string, unknown>) => Promise<unknown>;
   craftmineVerification?: {
     verify: (input: unknown, pluginPath: string) => Promise<unknown>;
     cancel: (id: string) => void;
@@ -899,11 +901,11 @@ export class PluginRuntime {
 
   /** Private orchestrator-to-domain bridge; no renderer/third-party API maps here. */
   async requestCraftmineHost(method: string, params: Record<string, unknown>): Promise<unknown> {
-    const allowed = new Set(["selection.read", "turn.begin", "task.context", "budget.reserve", "budget.settle", "budget.boundary", "review.context", "review.reserve", "review.settle"]);
+    const allowed = new Set(["selection.read", "turn.begin", "task.context", "budget.reserve", "budget.settle", "budget.boundary", "review.context", "review.reserve", "review.settle", "workbench.request", "task.resume", "task.discard", "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel"]);
     if (!allowed.has(method)) throw apiError("UNSUPPORTED", "Unsupported Craftmine host request");
     const loaded = this.loaded.get("craftmine.world");
     if (!loaded?.child) throw apiError("UNSUPPORTED", "Craftmine world service unavailable");
-    return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, 15_000);
+    return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, method.startsWith("backup.") || method === "workbench.request" ? 60_000 : 15_000);
   }
 
   /**
@@ -1314,6 +1316,10 @@ export class PluginRuntime {
       case "browser.cdp":
         return this.invokeBrowser(loaded, "cdp", payload);
       default:
+        if (pluginId === "craftmine.world" && /^(?:workbench|task|library|memory|selection|backup|diagnostics)\./.test(channel)) {
+          if (!this.services.craftminePanelRequest) throw apiError("UNSUPPORTED", "Craftmine desktop service unavailable");
+          return this.services.craftminePanelRequest(channel, payload ?? {});
+        }
         // The panel is the plugin's own UI: any channel the host does not
         // implement itself is forwarded to the plugin's onPanelInvoke so
         // plugins can define their own panel↔main-process channels

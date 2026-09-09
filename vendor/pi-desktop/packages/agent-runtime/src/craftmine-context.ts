@@ -20,6 +20,7 @@ export type CraftmineTaskContext = {
   lease: { owned: boolean }; budget: Record<string, unknown>;
   memories?: Array<{ id: string; kind: string; text: string; status: string; worldId?: string; projectId?: string }>;
   library?: Array<{ id: string; version: number; hash: string; name?: string }>;
+  selection?: { worldId: string; objectId: string; build?: { id: string; hash: string }; selectionRevision?: number } | null;
 };
 export type CraftmineUsage = { inputTokens: number; outputTokens: number; totalTokens: number };
 export type CraftmineEstimate = { system: number; messages: number; tools: number; attachments: number; framing: number; output: number; toolResults: number; input: number; total: number; method: string };
@@ -70,6 +71,7 @@ export function craftmineContextBlocks(snapshot: CraftmineTaskContext, purpose: 
     binding: snapshot.binding, generation: snapshot.generation, status: snapshot.status,
     world: snapshot.world, draft: snapshot.draft, modifiedResources: snapshot.modifiedResources,
     receipts: snapshot.receipts, jobs: snapshot.jobs, lease: snapshot.lease, budget: snapshot.budget,
+    selection: snapshot.selection?.worldId === snapshot.world.id ? snapshot.selection : null,
   };
   const data = JSON.stringify({ currentRequirements: snapshot.requirements, machineFacts: facts, retrievedMemories: memories, libraryReferences: snapshot.library ?? [] });
   if (Buffer.byteLength(data) > 48000) fail("CRAFTMINE_CONTEXT_TOO_LARGE");

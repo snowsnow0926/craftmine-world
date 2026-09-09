@@ -7,10 +7,15 @@ function boundedText(value,max){if(typeof value!=='string'||!value.trim()||Buffe
 function assertIdentity(input,snapshot){
   if(!sameBinding(input.binding,snapshot.binding)||input.generation!==snapshot.generation)throw Error('CRAFTMINE_BUDGET_BINDING_MISMATCH');
 }
-function createHostRequests(core,{verifications,reviews,getSettings}){
+function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
   const reservations=new Map();
   const keyOf=(context,id)=>JSON.stringify([context.projectId,context.sessionId,context.turnId,id]);
-  async function snapshot(context){return core.call('task.context',{context});}
+  async function snapshot(context){
+    const value=await core.call('task.context',{context});
+    if(!workbench)return value;
+    const supplemental=await workbench.validatedContext(context);
+    return {...value,memories:supplemental.memories,selection:supplemental.selection};
+  }
   async function reviewContext(id){
     const review=await core.call('review.read',{id});
     if(review.status!=='running'||!review.current)throw Error('CURRENT_RUNNING_REVIEW_REQUIRED');
@@ -43,6 +48,20 @@ function createHostRequests(core,{verifications,reviews,getSettings}){
   }
   return async function onHostRequest(method,params={}){
     await core.start();
+    if(method==='workbench.request'){
+      fields(params,['channel','payload','host']);
+      if(!workbench)throw Error('WORKBENCH_UNAVAILABLE');
+      return workbench.handle(params.channel,params.payload,params.host);
+    }
+    if(['backup.export','backup.inspect','backup.restore','backup.status','backup.cancel'].includes(method))return core.call(method,params,60000);
+    if(method==='task.resume'||method==='task.discard'){
+      fields(params,method==='task.resume'?['context','worldId','taskId','generation']:['projectId','sessionId','worldId','taskId','generation']);
+      const context=params.context||params;
+      const candidates=await core.call('task.recoverable',{projectId:context.projectId,worldId:params.worldId});
+      if(!candidates.items.some(row=>row.taskId===params.taskId&&row.generation===params.generation&&row.binding.sessionId===context.sessionId))throw Error('STALE_RECOVERY_SELECTION');
+      if(method==='task.resume')return core.call(method,{context:params.context,taskId:params.taskId,generation:params.generation});
+      return core.call(method,{projectId:params.projectId,taskId:params.taskId,generation:params.generation});
+    }
     if(method==='selection.read'){fields(params,[]);return {worldId:(await getSettings()).activeWorldId||null};}
     if(method==='turn.begin'){
       fields(params,['context','selectedWorld','request']);

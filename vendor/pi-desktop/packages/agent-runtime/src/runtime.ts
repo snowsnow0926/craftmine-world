@@ -4977,12 +4977,16 @@ Delegation rules:
     return await this.installCheckpoint(build, reason, willRetry, retentionMode);
   }
 
-  async compactManually(): Promise<void> {
+  async compactManually(durableTurnId?: string): Promise<void> {
     if (this.disposed) throw new Error("runtime disposed");
     if (this.agent.state.isStreaming || this.compactionInProgress) {
       throw Object.assign(new Error("session already has an active turn"), {
         errorCode: "AGENT_BUSY",
       });
+    }
+    if (this.craftmineWorld) {
+      if (!durableTurnId?.trim()) throw new Error("CRAFTMINE_HOST_TURN_REQUIRED");
+      this.hostTurnId = durableTurnId;
     }
     const ok = await this.runCompaction("manual", false);
     if (!ok) {

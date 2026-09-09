@@ -11,6 +11,15 @@ const dependency=ref=>({'geometry@2':'基础造型','health@1':'生命值','rang
 export function createWorkbench({element,selectionElement,request,getWorld,run=fn=>fn(),pause=()=>{},saveBeforeBackup=async()=>{},reloadWorld=async()=>{},replaceWorld=()=>{},onChange=()=>{},isLocked=()=>false}){
   let epoch=0,currentTab=null,capabilities=new Set(),pending=0,context=null,active=false,selected=null,selectionRevision=0,selectionRequest=0,inspection=null,libraryOffset=0,memoryOffset=0;
   let capabilitiesReady=false,pendingSelection=null;
+  const unresolvedOperations=new Map();
+  async function durableCall(channel,payload,identity=payload){
+    const key=JSON.stringify([getWorld().id,channel,identity]);
+    let request=unresolvedOperations.get(key);
+    if(!request){if(unresolvedOperations.size>=100)throw Error('有过多结果未确认的操作，请先查询任务状态。');request={...payload,operationId:crypto.randomUUID()};unresolvedOperations.set(key,request);}
+    const result=await call(channel,request);
+    if(channel==='library.install'&&!result?.receipt)throw Error('安装回执尚未确认，请查询任务后重试。');
+    unresolvedOperations.delete(key);return result;
+  }
   const pages={},notice=text('p','','workbench-notice');notice.setAttribute('role','status');element.append(notice);
   for(const [key,name]of Object.entries({library:'作品库',memory:'创作记忆',task:'任务与预算',backup:'备份与诊断'})){
     const section=document.createElement('section');section.dataset.workbenchPage=key;section.setAttribute('aria-label',name);section.hidden=true;pages[key]=section;element.append(section);
@@ -81,7 +90,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
       source.append(text('p',(result.dependencies||[]).join('、'),'workbench-hash'));
       const install=button('加入当前草稿',()=>action(async()=>{
         await refreshTask();if(active)throw Error('请等当前创作任务结束后再安装作品。');
-        const result=await call('library.install',{ref,...(context?.draft?{revision:context.draft.revision}:{}),operationId:crypto.randomUUID()});
+        const result=await durableCall('library.install',{ref,...(context?.draft?{revision:context.draft.revision}:{})},{ref});
         if(!result.receipt)throw Error('安装回执尚未确认，请查询任务后再继续。');
         status('已加入草稿，仍需检查、评审并应用到世界。');await refreshTask();
       }));install.control.disabled=active||!has('library.install');libraryDetail.append(install.form);
@@ -99,7 +108,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     const submit=text('button','保存作品');submit.type='submit';submit.disabled=!resource.control.options.length||active;form.append(resource.wrapper,tags.wrapper,submit);
     form.onsubmit=event=>{event.preventDefault();void action(async()=>{
       const [kind,resourceId]=resource.control.value.split(':');const application=context?.receipts?.find(r=>r.status==='applied'||r.type==='application');
-      await call('library.capture',{operationId:crypto.randomUUID(),kind,resourceId,tags:tags.control.value.split(/[,，]/).map(v=>v.trim()).filter(Boolean).slice(0,8),...(application?.id?{applicationId:application.id}:{})});status('已保存作品，可按固定版本复用。');
+      await durableCall('library.capture',{kind,resourceId,tags:tags.control.value.split(/[,，]/).map(v=>v.trim()).filter(Boolean).slice(0,8),...(application?.id?{applicationId:application.id}:{})});status('已保存作品，可按固定版本复用。');
     });};detail.append(form);return detail;
   }
   const memorySearch=field('搜索规则与经验');memorySearch.control.maxLength=120;const inactive=field('包含已停用记录');inactive.control.type='checkbox';
@@ -121,11 +130,11 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     memoryOffset=result.next;memoryMore.form.hidden=result.next===null||result.next===undefined;pages.memory.replaceChildren(memoryForm,memoryList,memoryMore.form,memoryEditor);status('已读取当前作用域的记忆。');
   }
   const memoryEditor=document.createElement('details');memoryEditor.append(text('summary','添加规则或用户纠正'));
-  const memoryClaim=field('规则内容','textarea');memoryClaim.control.maxLength=2000;memoryClaim.control.required=true;
+  const memoryClaim=field('规则内容','textarea');memoryClaim.control.maxLength=400;memoryClaim.control.required=true;
   const memoryKind=field('记忆类型','select');for(const [value,label]of [['project-rule','创作规则 / 用户纠正'],['workflow','创作流程']]){const option=text('option',label);option.value=value;memoryKind.control.append(option);}
-  const memoryAdd=document.createElement('form');memoryAdd.className='workbench-form';const memorySave=text('button','保存为待核实记忆');memorySave.type='submit';memoryAdd.append(memoryKind.wrapper,memoryClaim.wrapper,text('p','仅用于当前世界；验证状态由实际来源决定。替代规则通过来源核验后才会取代旧规则。','workbench-meta'),memorySave);memoryEditor.append(memoryAdd);
+  const memoryAdd=document.createElement('form');memoryAdd.className='workbench-form';const memorySave=text('button','保存记忆');memorySave.type='submit';memoryAdd.append(memoryKind.wrapper,memoryClaim.wrapper,text('p','仅用于当前世界；验证状态由实际来源决定。替代规则通过来源核验后才会取代旧规则。','workbench-meta'),memorySave);memoryEditor.append(memoryAdd);
   memoryAdd.onsubmit=event=>{event.preventDefault();void action(async()=>{
-    await call('memory.propose',{operationId:crypto.randomUUID(),kind:memoryKind.control.value,claim:memoryClaim.control.value,tags:[],...(memoryClaim.control.dataset.replaceId?{replaceId:memoryClaim.control.dataset.replaceId}:{})});
+    await durableCall('memory.propose',{kind:memoryKind.control.value,claim:memoryClaim.control.value.trim(),tags:[],...(memoryClaim.control.dataset.replaceId?{replaceId:memoryClaim.control.dataset.replaceId}:{})});
     memoryClaim.control.value='';delete memoryClaim.control.dataset.replaceId;await searchMemory(true);status('记忆已保存，是否验证通过以来源核验结果为准。');
   });};
   async function showTask(){
@@ -143,7 +152,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     if(has('task.recoverable')){
       const response=await call('task.recoverable');const entries=Array.isArray(response)?response:response.items||response.tasks||[];
       for(const item of entries){const row=document.createElement('article');row.className='workbench-card';row.append(text('h3','可恢复的创作'),text('p',item.summary||item.reason||'任务中断，已有草稿已保存。'),text('p','继续前将核对世界版本；不会自动重放旧模型请求。','workbench-meta'));
-        for(const [operation,label]of [['resume','继续创作'],['discard','结束此草稿任务']])if(has('task.'+operation)){const control=button(label,()=>action(async()=>{await call('task.'+operation,{taskId:item.taskId||item.id,generation:item.generation});await showTask();status(operation==='resume'?'草稿已恢复，请在对话中继续创作。':'已结束该任务，正式世界保持原状。');}));control.control.disabled=active;row.append(control.form);}pages.task.append(row);
+        for(const [operation,label]of [['resume','继续创作'],['discard','结束此草稿任务']])if(has('task.'+operation)){const control=button(label,()=>action(async()=>{const result=await call('task.'+operation,{taskId:item.taskId||item.id,generation:item.generation});await showTask();status(operation==='resume'?(result?.continuation==='running'?'草稿已恢复，正在继续创作。':'草稿已恢复，请在对话中继续创作。'):'已结束该任务，正式世界保持原状。');}));control.control.disabled=active;row.append(control.form);}pages.task.append(row);
       }
     }
   }
