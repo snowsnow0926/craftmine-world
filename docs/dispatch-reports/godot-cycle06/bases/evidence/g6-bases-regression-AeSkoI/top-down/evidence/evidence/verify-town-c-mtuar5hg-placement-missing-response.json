@@ -1,0 +1,174 @@
+{
+  "baseId": "top-down",
+  "baseVersion": "1.0.0",
+  "finalSnapshot": {
+    "bootError": "Saved scene is unavailable in the world scene catalog",
+    "coins": 34,
+    "duplicateEntityIds": [],
+    "flags": {},
+    "format": "craftmine.godot-topdown-snapshot/1",
+    "grantedRewards": {},
+    "inventory": {
+      "bread": 1
+    },
+    "maps": {
+      "town-overworld": {
+        "collisionShapes": 48,
+        "effectiveHeight": 22,
+        "effectiveWidth": 40,
+        "height": 22,
+        "mapId": "town-overworld",
+        "ok": true,
+        "solidCells": 145,
+        "tileSize": 16,
+        "tiles": 893,
+        "width": 40
+      }
+    },
+    "physical": {
+      "facing": "down",
+      "overlaps": {},
+      "playerPosition": [
+        104.0,
+        168.0
+      ]
+    },
+    "player": {
+      "facing": "up",
+      "position": [
+        148.266723632813,
+        104.933517456055
+      ],
+      "sceneId": "shop-interior"
+    },
+    "quests": {
+      "herb-delivery": {
+        "delivered": 0,
+        "rewarded": false,
+        "status": "active"
+      }
+    },
+    "sceneId": "",
+    "scenePositions": {
+      "overworld": [
+        104.0,
+        168.0
+      ],
+      "shop-interior": [
+        148.266723632813,
+        104.933517456055
+      ]
+    },
+    "shops": {
+      "general": {
+        "stock": {
+          "apple": 5,
+          "bread": 2,
+          "potion": 2,
+          "rope": 1
+        }
+      }
+    },
+    "sprite": {
+      "facing": "down",
+      "frame": 0,
+      "moving": false
+    },
+    "stateVersion": 1,
+    "worldId": "verify-town-c-mtuar5hg"
+  },
+  "format": "craftmine.godot-topdown-probe/1",
+  "ok": true,
+  "results": [
+    {
+      "args": {
+        "label": "rejected-boot"
+      },
+      "op": "snapshot",
+      "result": {
+        "ok": true,
+        "snapshot": {
+          "bootError": "Saved scene is unavailable in the world scene catalog",
+          "coins": 34,
+          "duplicateEntityIds": [],
+          "flags": {},
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {},
+          "inventory": {
+            "bread": 1
+          },
+          "maps": {
+            "town-overworld": {
+              "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
+              "height": 22,
+              "mapId": "town-overworld",
+              "ok": true,
+              "solidCells": 145,
+              "tileSize": 16,
+              "tiles": 893,
+              "width": 40
+            }
+          },
+          "physical": {
+            "facing": "down",
+            "overlaps": {},
+            "playerPosition": [
+              104.0,
+              168.0
+            ]
+          },
+          "player": {
+            "facing": "up",
+            "position": [
+              148.266723632813,
+              104.933517456055
+            ],
+            "sceneId": "shop-interior"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 0,
+              "rewarded": false,
+              "status": "active"
+            }
+          },
+          "sceneId": "",
+          "scenePositions": {
+            "overworld": [
+              104.0,
+              168.0
+            ],
+            "shop-interior": [
+              148.266723632813,
+              104.933517456055
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 2,
+                "potion": 2,
+                "rope": 1
+              }
+            }
+          },
+          "sprite": {
+            "facing": "down",
+            "frame": 0,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "verify-town-c-mtuar5hg"
+        }
+      }
+    }
+  ],
+  "save": {
+    "error": "Saved scene is unavailable in the world scene catalog",
+    "ok": false
+  },
+  "worldId": "verify-town-c-mtuar5hg"
+}

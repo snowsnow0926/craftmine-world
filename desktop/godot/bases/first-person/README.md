@@ -76,6 +76,22 @@ $env:CRAFTMINE_GODOT_CACHE_DIR = 'D:\Craftmine World\desktop\build\godot\4.7.2-s
 Controls: `WASD` move, `Space` jump, left mouse attack, `R` reload, `E` interact,
 `1` / `2` / `Q` switch equipment, `F5` save, `Esc` release the mouse. The mouse is
 captured only after a real click, so an automated run never requests pointer lock.
+Every action above is bound in `BaseWorld._unhandled_input` and drives the same
+real systems the scripted operations use (`EquipmentState.request_reload()`,
+`AimQuery.interact()`, `EquipmentState.equip*()`, `BaseWorld.quicksave()`).
+
+## Creating a world from this base
+
+```powershell
+node tools/new-world.mjs --template blank --world-id my-blank --out D:/tmp/my-blank --force
+node tools/new-world.mjs --template training-range --world-id my-range --out D:/tmp/my-range --force
+node tools/new-world.mjs --check-template blank   # refuses a template that ships progress
+```
+
+The tool copies the base source, selects the template entry scene and writes
+`world.json` (`craftmine.godot-first-person-world/1`) and `world-build.json`
+(`craftmine.godot-world-build/1`, every file hashed) — the same creation
+contract the top-down and side-view bases write.
 
 Automated acceptance (headless engine, isolated profile, no input simulation):
 
@@ -94,7 +110,7 @@ Both write a `report.json` with per-check evidence under `test-results/`.
 | damage, cooldown, range, spread, magazine, reload time, mount transform, crosshair style | `data/equipment/pistol.tres`, `data/equipment/practice_sword.tres` |
 | equipment list and switch order | `data/equipment/equipment_catalog.tres` |
 | reticle shape, size, colours | `data/ui/crosshair_precision.tres`, `data/ui/crosshair_melee.tres` |
-| move speed, jump, sensitivity, gravity, hit flash | `data/balance/training_range.tres` |
+| move speed, jump, sensitivity, gravity, hit flash | `data/balance/training_range.tres` (the blank start uses `data/balance/blank_start.tres`) |
 | objective kind, required count, one-time reward | `data/quests/range_basic.tres` |
 | target health, flash time | `scenes/actors/target_dummy.tscn` instance properties |
 | crate payload and uses | `scenes/props/ammo_crate.tscn` instance properties |
@@ -102,8 +118,10 @@ Both write a `report.json` with per-check evidence under `test-results/`.
 
 ## Shared interfaces
 
-The build checklist (task B) and the run protocol (task C) are not frozen yet, so
-all coupling lives in two thin adapters and nowhere else:
+The authored-base contract is frozen as `craftmine.godot-base-contract/1`; the
+manifest declares the engine, world/state/progress/probe formats, the two
+templates and the reusable components. All transport coupling still lives in two
+thin adapters and nowhere else:
 
 - `scripts/adapters/base_ops.gd` — the operation set, implemented once.
 - `scripts/adapters/preview_bridge.gd` — Web transport adapter

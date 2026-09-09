@@ -139,6 +139,110 @@ pub(super) fn read(db: &Connection, id: &str) -> Result<Value> {
         "createdAt":created,"updatedAt":updated}))
 }
 
+/// Resolve the trusted deployment evidence for one applied application.
+///
+/// This is the only producer of [`DeploymentEvidence`]: it re-reads the durable
+/// application, launch evidence, the checked candidate and the Git commit the
+/// build was made from, so a caller cannot self-attest an application.
+pub(super) fn applied_deployment(
+    db: &rusqlite::Connection,
+    application_id: &str,
+    world_id: &str,
+    expected_revision: Option<u64>,
+) -> Result<super::content_history::apply::DeploymentEvidence> {
+    let record = read(db, application_id)?;
+    ensure!(
+        record["status"] == "applied",
+        "GODOT_APPLICATION_NOT_APPLIED: {application_id}"
+    );
+    let input = &record["input"];
+    ensure!(
+        input["worldId"].as_str() == Some(world_id),
+        "PROJECT_WORLD_BINDING_MISMATCH"
+    );
+    let input_revision = input["revision"].as_u64().context("INVALID_REVISION")?;
+    if let Some(expected) = expected_revision {
+        ensure!(
+            input_revision == expected,
+            "CONTENT_PROGRESS_CONFLICT: deployment prepared at revision {input_revision} but the operation expected {expected}"
+        );
+    }
+    let output = record
+        .get("output")
+        .filter(|value| !value.is_null())
+        .context("GODOT_APPLICATION_NOT_APPLIED")?;
+    let launch = &output["launch"];
+    ensure!(launch["passed"] == true, "GODOT_LAUNCH_REQUIRED");
+    let instance_id = launch["instanceId"]
+        .as_str()
+        .context("GODOT_LAUNCH_REQUIRED")?
+        .to_string();
+    ensure!(
+        !instance_id.trim().is_empty() && instance_id.len() <= 240,
+        "GODOT_LAUNCH_REQUIRED"
+    );
+    let state_hash = launch["stateHash"]
+        .as_str()
+        .context("GODOT_LAUNCH_REQUIRED")?;
+    ensure!(
+        state_hash.len() == 64 && state_hash.bytes().all(|byte| byte.is_ascii_hexdigit()),
+        "GODOT_LAUNCH_REQUIRED"
+    );
+    let build_id = record["buildId"]
+        .as_str()
+        .context("INVALID_GODOT_BUILD")?
+        .to_string();
+    let candidate_id = record["candidateId"]
+        .as_str()
+        .context("INVALID_GODOT_CANDIDATE")?
+        .to_string();
+    // The check result the deployment consumed: a checked candidate whose job
+    // passed with exactly the recorded output hash.
+    let (candidate_status, check_job_id, check_output_hash): (String, String, Option<String>) = db
+        .query_row(
+            "SELECT status,check_job_id,check_output_hash FROM craftmine_godot_candidates
+             WHERE id=?1 AND world_id=?2",
+            params![candidate_id, world_id],
+            |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
+        )
+        .context("GODOT_CANDIDATE_NOT_FOUND")?;
+    ensure!(
+        matches!(candidate_status.as_str(), "ready" | "applied"),
+        "GODOT_CANDIDATE_NOT_READY: {candidate_status}"
+    );
+    let check_output_hash = check_output_hash.context("GODOT_CANDIDATE_NOT_READY")?;
+    let job_status: String = db
+        .query_row(
+            "SELECT status FROM craftmine_godot_jobs WHERE id=?1",
+            [&check_job_id],
+            |row| row.get(0),
+        )
+        .context("GODOT_JOB_NOT_FOUND")?;
+    ensure!(job_status == "passed", "GODOT_CANDIDATE_NOT_READY");
+    // Git content: the commit the published build was materialized from.
+    let content_oid: Option<String> = db
+        .query_row(
+            "SELECT content_oid FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
+            params![world_id, build_id],
+            |row| row.get(0),
+        )
+        .optional()?
+        .flatten();
+    let content_oid = content_oid.context("GODOT_BUILD_CONTENT_UNKNOWN")?;
+    let world_revision = worlds::read(db, world_id)?.summary.revision;
+    Ok(super::content_history::apply::DeploymentEvidence {
+        application_id: application_id.to_string(),
+        build_id,
+        content_oid,
+        candidate_id,
+        check_job_id,
+        check_output_hash,
+        input_revision,
+        world_revision,
+        instance_id,
+    })
+}
+
 /// Progress from the formal world, never from a preview or panel copy.
 fn assert_player_unchanged(before: &worlds::WorldRecord, snapshot: &Value) -> Result<()> {
     ensure!(
@@ -323,6 +427,9 @@ impl TaskJournal {
                 now
             ],
         )?;
+        // The first real application is what turns an initialising world into a
+        // playable formal world; the initialisation record is confirmed here.
+        super::godot_worlds::confirm(&tx, world_id, &args.id)?;
         // The authoring draft is superseded by the applied build; otherwise the
         // next turn would resume a scene draft against a different base build.
         let author = input["authorTaskId"].as_str().context("TASK_REQUIRED")?;

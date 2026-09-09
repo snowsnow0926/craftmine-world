@@ -1,0 +1,135 @@
+{
+  "format": "craftmine.godot-asset-manifest/1",
+  "baseId": "first-person",
+  "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+  "provenance": "assets/provenance/ASSET_PROVENANCE.md",
+  "regenerates": "tools/generate_meshes.mjs",
+  "assets": [
+    {
+      "path": "assets/meshes/weapon_pistol.obj",
+      "kind": "mesh",
+      "format": "obj",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 3026,
+      "sha256": "5ed4c8dd6d283402dce43ca28953294ea48858ec9d37fa699b549067aa82d805"
+    },
+    {
+      "path": "assets/meshes/weapon_sword.obj",
+      "kind": "mesh",
+      "format": "obj",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 2562,
+      "sha256": "cf292380be16c39ea8b092c3f81911a4feb35b9af32dceac7182889e91c23996"
+    },
+    {
+      "path": "assets/meshes/target_dummy.obj",
+      "kind": "mesh",
+      "format": "obj",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 2999,
+      "sha256": "85733881b045534f5e250ec10bcf7379099e62c5b8ef31bb79a820a9caec5d06"
+    },
+    {
+      "path": "assets/meshes/ammo_crate.obj",
+      "kind": "mesh",
+      "format": "obj",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 1624,
+      "sha256": "2fc6a40063be6d990328ef58ee276fadc77332abecd5d49173ebef897e19a48b"
+    },
+    {
+      "path": "assets/meshes/range_crate.obj",
+      "kind": "mesh",
+      "format": "obj",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 1169,
+      "sha256": "4d31011e2c7f077a94d1e4fe5207d62a7e51140a4901773bcd1bc8f269443d79"
+    },
+    {
+      "path": "assets/materials/ammo_crate.tres",
+      "kind": "material",
+      "format": "tres",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 123,
+      "sha256": "c24e2cdba717abce260c1e2c3cf7d05b48e14861f148ab4a539f71a61a8cbe06"
+    },
+    {
+      "path": "assets/materials/crate_wood.tres",
+      "kind": "material",
+      "format": "tres",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 124,
+      "sha256": "9905461f79f608125581a290791d95c63c257ef49c5677ff95237304e84b8ce7"
+    },
+    {
+      "path": "assets/materials/pickup_kit.tres",
+      "kind": "material",
+      "format": "tres",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 220,
+      "sha256": "83c19b9c7bef57f857daaed4561c8c81e60394bee0054e352b7bcabe8f19851b"
+    },
+    {
+      "path": "assets/materials/pistol_body.tres",
+      "kind": "material",
+      "format": "tres",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 142,
+      "sha256": "d7b39baf4f1038cc04a95e97087ab0038209a919f14772c196059ccca8b70309"
+    },
+    {
+      "path": "assets/materials/range_floor.tres",
+      "kind": "material",
+      "format": "tres",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 124,
+      "sha256": "f2da6abd284c572bc3af716e996f47d3d9ebf7ab627ca2793de4a08d8d9b318e"
+    },
+    {
+      "path": "assets/materials/range_wall.tres",
+      "kind": "material",
+      "format": "tres",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 125,
+      "sha256": "8f96618b4c5c60b77b2b4636d74de45994b6e3cdd28d835bdab256bf8b735f0f"
+    },
+    {
+      "path": "assets/materials/sword_blade.tres",
+      "kind": "material",
+      "format": "tres",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 142,
+      "sha256": "acb6df02acf66e2530fab60dfa3294c09fbad38a6571a3384bd20c6ec0d04403"
+    },
+    {
+      "path": "assets/materials/target_plate.tres",
+      "kind": "material",
+      "format": "tres",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 124,
+      "sha256": "c5edae0af7bccaceb6d8de24d334386be4f24f2ea391c8e1c9bf0eb933cfa403"
+    },
+    {
+      "path": "icon.svg",
+      "kind": "icon",
+      "format": "svg",
+      "origin": "authored in this repository",
+      "license": "MIT (licenses/ORIGINAL_ASSETS_LICENSE.txt)",
+      "bytes": 525,
+      "sha256": "dea7e5179c20bcfaff795536867fe53a7bc0ce3426f7d3643ef2f2085bd86dec"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+﻿cargo : crates\craftmine-core\src\content_history\migration_tests.rs:142:9: warning: variable does not need to be mutab
+le
+所在位置 行:1 字符: 687
++ ... dence.txt"; cargo test -p craftmine-core --lib backups::portable 2>&1 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (crates\craftmin...d to be mutable:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warning: `craftmine-core` (lib test) generated 1 warning (run `cargo fix --lib -p craftmine-core --tests` to apply 1 su
+ggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests src\lib.rs (C:\Users\WINDOWS\.pi-desktop\scratch\3d732e51-6eac-42ff-8487-568e244b45de\cargo-targ
+et-r5\debug\deps\craftmine_core-13091a1caf054aaf.exe)
+
+running 11 tests
+test backups::portable::tests::evidence_archive_manifest_and_restore_state ... ignored, evidence generator; requires R5_EVIDENCE_DIR
+test backups::portable::tests::archive_paths_cannot_escape_the_target_directory ... ok
+test backups::portable::tests::an_interrupted_export_keeps_no_retained_protection ... ok
+test backups::portable::tests::every_registered_table_is_inside_the_snapshot ... ok
+test backups::portable::tests::a_domain_failure_leaves_no_half_populated_target ... ok
+test backups::portable::tests::retained_archives_protect_content_from_the_reclaimer ... ok
+test backups::portable::tests::an_entry_cannot_write_outside_the_root_of_its_kind ... ok
+test backups::portable::tests::restore_refuses_a_target_that_already_holds_a_world ... ok
+test backups::portable::tests::a_damaged_archive_is_refused_and_never_touches_the_target ... ok
+test backups::portable::tests::restore_into_a_separate_empty_directory_creates_a_new_database ... ok
+test backups::portable::tests::portable_archive_restores_into_a_new_directory_without_the_source ... ok
+
+test result: ok. 10 passed; 0 failed; 1 ignored; 0 measured; 196 filtered out; finished in 1.49s
+

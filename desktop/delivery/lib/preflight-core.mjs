@@ -12,6 +12,28 @@ export const NOTICES_MANIFEST = 'desktop/godot/licenses/notices.manifest.json';
 export const BASE_ASSETS_DIR = 'desktop/delivery/base-assets';
 export const LOCK_PATH = 'desktop/godot/toolchain.lock.json';
 
+// Single source of truth for the files a built Windows package must contain.
+// desktop/windows-package-tools.mjs imports this list when staging a package so a
+// successful development directory can never be reported as a complete package.
+export const PACKAGE_REQUIRED_FILES = [
+  'Craftmine World.exe',
+  'resources/app.asar',
+  'resources/bin/pi-desktop-host-core.exe',
+  'resources/bin/craftmine-core.exe',
+  'resources/agent-runtime/sidecar.js',
+  'resources/plugins/craftmine.world/main.cjs',
+  'resources/source/CraftmineWorld-source.zip',
+  'resources/source/build-manifest.json',
+  'resources/source/USER_GUIDE.zh-CN.md',
+  'resources/licenses/PI-Desktop-LICENSE.txt',
+  'resources/licenses/CRAFTMINE-NOTICES.md',
+  // R1's managed Git must not depend on the user's PATH, so the pinned Git tree and
+  // its bundle record are part of a delivery package.
+  'resources/git/bin/git.exe',
+  'resources/git/GIT-BUNDLE.json',
+  'resources/git/LICENSE.txt'
+];
+
 const MAX_TEXT_SCAN = 1024 * 1024;
 const DISTRIBUTIONS = ['app-bundle', 'user-export', 'development-only'];
 const REDISTRIBUTION = ['permitted', 'permitted-with-notice', 'permitted-with-notice-and-corresponding-source', 'conditional', 'denied', 'unreviewed', 'unrevealed'];
@@ -23,6 +45,15 @@ const NO_NOTICE_LICENCES = ['project-authored', 'public-domain', 'CC0-1.0', 'Unl
 export const sha256 = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 export const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const exists = file => fs.existsSync(file);
+// A notice or rights document must be a real regular file: a symlink or a directory
+// must not satisfy a licence claim.
+const isRegularFile = file => {
+  try {
+    return fs.lstatSync(file).isFile();
+  } catch {
+    return false;
+  }
+};
 const readText = file => fs.readFileSync(file).subarray(0, MAX_TEXT_SCAN).toString('utf8');
 const rel = (root, file) => path.relative(root, file).replaceAll('\\', '/');
 
@@ -225,11 +256,15 @@ function validateBaseEntry(root, manifest, entry, fileDirectory, failures) {
     if (!entry.licenseFile) failures.push(fail('ASSET_LICENSE_FILE_MISSING', label + ' needs a notice file for licence ' + entry.license));
     else {
       const resolved = path.isAbsolute(entry.licenseFile) ? entry.licenseFile : path.resolve(fileDirectory, entry.licenseFile);
-      if (!exists(resolved)) failures.push(fail('ASSET_LICENSE_FILE_MISSING', label + ' notice file is absent: ' + rel(root, resolved)));
+      if (!isRegularFile(resolved)) failures.push(fail('ASSET_LICENSE_FILE_MISSING', label + ' notice file is absent or is not a regular file: ' + rel(root, resolved)));
     }
   }
   if (entry.license === 'project-authored' && !entry.outstanding && !entry.licenseDocument) {
     failures.push(fail('ASSET_AUTHORED_LICENSE_UNDECLARED', label + ' is project-authored but neither a licence text nor an explicit outstanding reason is recorded'));
+  }
+  if (entry.licenseDocument) {
+    const resolved = path.isAbsolute(entry.licenseDocument) ? entry.licenseDocument : path.resolve(root, entry.licenseDocument);
+    if (!isRegularFile(resolved)) failures.push(fail('ASSET_LICENSE_DOCUMENT_MISSING', label + ' rights document is absent or is not a regular file: ' + entry.licenseDocument));
   }
   if (entry.distribution.includes('user-export') && entry.redistribution === 'denied') {
     failures.push(fail('ASSET_EXPORT_DENIED', label + ' is marked user-export but redistribution is denied'));
@@ -279,6 +314,17 @@ export function checkBaseAssets(root, {directory = BASE_ASSETS_DIR} = {}) {
     if (!exists(baseDirectory)) { failures.push(fail('ASSET_SOURCE_MISSING', label + ' source directory is absent: ' + manifest.sourceDirectory)); continue; }
     if (lock && manifest.engine?.version && manifest.engine.version !== lock.version) {
       failures.push(fail('ASSET_ENGINE_MISMATCH', label + ' targets engine ' + manifest.engine.version + ' but the lock pins ' + lock.version));
+    }
+    // Rights that are documented but not yet formally applied stay visible as a
+    // single warning per manifest instead of one line per file. A manifest that
+    // tracks a target licence or a rights document without declaring rightsStatus
+    // is treated as pending too, so omitting the field cannot silence the state.
+    const rightsTracked = [...(manifest.entries ?? []), ...(manifest.externalEntries ?? [])]
+      .some(entry => entry.targetLicense || entry.licenseDocument);
+    if ((manifest.rightsStatus && manifest.rightsStatus !== 'applied') || (!manifest.rightsStatus && rightsTracked)) {
+      warnings.push('ASSET_RIGHTS_PENDING ' + label + ' rightsStatus=' + (manifest.rightsStatus ?? 'undeclared')
+        + (manifest.rightsDocument ? ' rightsDocument=' + manifest.rightsDocument : '')
+        + (manifest.rightsNote ? ' :: ' + manifest.rightsNote : ''));
     }
     const entries = Array.isArray(manifest.entries) ? manifest.entries : [];
     const external = Array.isArray(manifest.externalEntries) ? manifest.externalEntries : [];
@@ -431,18 +477,73 @@ export function checkExport(root, exportDirectory) {
     }
     facts.manifestFiles = checked;
   }
+  const exportFiles = [];
   const walk = current => {
     for (const child of fs.readdirSync(current)) {
       const childPath = path.join(current, child);
       if (fs.lstatSync(childPath).isSymbolicLink()) { failures.push(fail('EXPORT_LINK_DENIED', 'Exported build contains a link: ' + rel(directory, childPath))); continue; }
       if (fs.statSync(childPath).isDirectory()) walk(childPath);
+      else exportFiles.push(childPath);
     }
   };
   walk(directory);
+  facts.developmentOnlyFiles = checkDevelopmentOnlyFiles(root, directory, exportFiles, failures);
   return {id: 'export', ok: failures.length === 0, failures, warnings: [], facts};
 }
 
 /** Built Windows package: required files, source manifest, third-party texts and offline entry. */
+/**
+ * Files a provenance manifest declares development-only. The spec says they must
+ * never ship or export, so the package and export checks look for them explicitly.
+ * An entry that carries a shipping distribution value as well is not included,
+ * because the shipping value is authoritative.
+ *
+ * Matching is by declared repository path (exact or as a suffix), never by bare
+ * basename: a basename such as index.html is shared by shipped and development-only
+ * files, and flagging it would produce false failures. The limitation is recorded in
+ * docs/dispatch-reports/godot-remaining/K/SPEC_K_BASE_MANIFEST_DELTA.md.
+ */
+function developmentOnlyIndex(root) {
+  const paths = new Set();
+  const directory = path.join(root, BASE_ASSETS_DIR);
+  if (!exists(directory)) return paths;
+  for (const name of fs.readdirSync(directory).filter(entry => entry.endsWith('.json')).sort()) {
+    let manifest;
+    try {
+      manifest = readJson(path.join(directory, name));
+    } catch {
+      continue;
+    }
+    const record = (entry, repositoryPath) => {
+      const distribution = entry.distribution ?? [];
+      if (!distribution.includes('development-only')) return;
+      if (distribution.some(value => SHIPPED.includes(value))) return;
+      paths.add(String(repositoryPath).replaceAll('\\', '/'));
+    };
+    for (const entry of manifest.entries ?? []) record(entry, (manifest.sourceDirectory ? manifest.sourceDirectory + '/' : '') + entry.path);
+    for (const entry of manifest.externalEntries ?? []) record(entry, entry.path);
+  }
+  return paths;
+}
+
+/** Report every shipped file whose path matches a development-only declaration. */
+function checkDevelopmentOnlyFiles(root, directory, files, failures) {
+  const declared = developmentOnlyIndex(root);
+  if (!declared.size) return 0;
+  let found = 0;
+  for (const file of files) {
+    const relativePath = rel(directory, file);
+    for (const candidate of declared) {
+      if (relativePath === candidate || relativePath.endsWith('/' + candidate)) {
+        failures.push(fail('DEVELOPMENT_ONLY_FILE_SHIPPED', 'Development-only file must not ship: ' + relativePath));
+        found++;
+        break;
+      }
+    }
+  }
+  return found;
+}
+
 export function checkPackage(root, packageDirectory) {
   const failures = [];
   const warnings = [];
@@ -467,21 +568,11 @@ export function checkPackage(root, packageDirectory) {
     }
   }
   if (failures.length) return {id: 'package', ok: false, failures, warnings, facts: {scannedEntries}};
-  const required = [
-    'Craftmine World.exe',
-    'resources/app.asar',
-    'resources/bin/pi-desktop-host-core.exe',
-    'resources/bin/craftmine-core.exe',
-    'resources/agent-runtime/sidecar.js',
-    'resources/plugins/craftmine.world/main.cjs',
-    'resources/source/CraftmineWorld-source.zip',
-    'resources/source/build-manifest.json',
-    'resources/licenses/PI-Desktop-LICENSE.txt',
-    'resources/licenses/CRAFTMINE-NOTICES.md'
-  ];
+  const required = PACKAGE_REQUIRED_FILES;
   for (const relative of required) {
     if (!exists(path.join(directory, relative))) failures.push(fail('PACKAGE_FILE_MISSING', 'Package is missing ' + relative));
   }
+  facts.developmentOnlyFiles = checkDevelopmentOnlyFiles(root, directory, packageFiles, failures);
   const manifestPath = path.join(directory, 'resources/source/build-manifest.json');
   if (exists(manifestPath)) {
     const manifest = readJson(manifestPath);

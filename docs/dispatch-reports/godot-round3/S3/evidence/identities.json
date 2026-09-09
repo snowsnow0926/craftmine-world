@@ -1,0 +1,55 @@
+{
+  "format": "craftmine.s3-identities/1",
+  "generatedAt": "2026-09-09T19:57:29.153Z",
+  "codeHead": "0190ec74b17026c0dc6c1d0c5e60534598851285",
+  "codeHeadNote": "last code commit; the report commit is the docs commit after it on this branch",
+  "gitBranch": "codex/godot-round3-s3-20260910",
+  "toolchain": "4.7.2-stable",
+  "engine": {
+    "path": "D:/Craftmine World/desktop/build/godot/4.7.2-stable/editor/Godot_v4.7.2-stable_win64.exe",
+    "bytes": 180858888,
+    "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  "modules": {
+    "plugins/craftmine-world/asset-lock.mjs": {
+      "bytes": 16881,
+      "sha256": "d162cb09bc8f5c3d859ddad313c2452847d780238cd7fd0fc08adb4dbe4f56db"
+    },
+    "plugins/craftmine-world/package-format.mjs": {
+      "bytes": 15954,
+      "sha256": "53c6c43d6be80e9ab62f9b0ee1b6234c1cdc96a09854ead5db4ec80dd4da455d"
+    },
+    "plugins/craftmine-world/package-zip.mjs": {
+      "bytes": 37774,
+      "sha256": "9268a98ffcdb0156d7e5cb57afc508314b07a9306217bdb48362f3d270d0d455"
+    },
+    "desktop/godot/shared/scene_materializer.mjs": {
+      "bytes": 15057,
+      "sha256": "195f5343401cf74ce354f0b36c5229e50d375fb7c802f09b6e8b1242e7b89fb3"
+    },
+    "desktop/godot/shared/components.mjs": {
+      "bytes": 16837,
+      "sha256": "ddc61f00c53d19554dd43ef34c042cfb2c181c664dfe9ea17bfe30a465f8bc7a"
+    },
+    "desktop/godot/shared/draft_install.mjs": {
+      "bytes": 18708,
+      "sha256": "8d80c6176a97252bcc801fe992ca354427e883fdbfd6c76727b7858fd4387b36"
+    },
+    "vendor/pi-desktop/crates/craftmine-core/src/library/package_format.rs": {
+      "bytes": 28226,
+      "sha256": "14a12901ebf1480790da11c85c5ae12e949ed053aab999d74285fc0bb40698a0"
+    },
+    "vendor/pi-desktop/crates/craftmine-core/src/library/installer.rs": {
+      "bytes": 14521,
+      "sha256": "fb9c2724603030f9e0a5b5fa9173fd401a5d867b99a2f65da5383b4875f374c6"
+    },
+    "tests/godot-round3/S3/vectors/asset-lock-vectors.json": {
+      "bytes": 15573,
+      "sha256": "2566924dacc7b548f97bd8d7b2cde7c2fee9c4e477d273ad7bc92701af942d74"
+    },
+    "tests/godot-round3/S3/vectors/install-plan-fixture.json": {
+      "bytes": 3317,
+      "sha256": "78e283a3e3e8500148edc2742153879b08759a96f1d77d66f659713d4a0a0c81"
+    }
+  }
+}

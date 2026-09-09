@@ -1,0 +1,1 @@
+﻿{"commit":"ef30cac844436e932b55c0d12f62dc2addeb71e2","files":828,"totalBytes":573147733,"installers":1,"missingRequired":[],"out":"D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\docs\\dispatch-reports\\godot-round2\\R9\\evidence\\package-pin-batch07.json"}

@@ -136,6 +136,7 @@ pub struct RunningProcess {
     pub pid: u32,
     pub appcontainer: bool,
     pub log: Option<PathBuf>,
+    pub verification: Option<crate::verification::ProcessVerification>,
 }
 
 impl RunningProcess {
@@ -211,11 +212,21 @@ fn environment_block(environment: &Option<Vec<(String, String)>>) -> Result<Vec<
 
 /// Creates the restricted process. Returns as soon as the process exists.
 pub fn start(spec: &LaunchSpec) -> Result<RunningProcess> {
-    start_policy(spec, false, false)
+    start_policy(spec, false, false, false)
+}
+
+/// Fixed production candidate: inspect the actual process while suspended and
+/// resume only after every required host-side policy check passes.
+pub fn start_verified(spec: &LaunchSpec) -> Result<RunningProcess> {
+    if spec.job.is_none_or(|job| job.process_memory_bytes != crate::verification::MEMORY_BYTES)
+        || spec.child_process_policy.is_some() || spec.environment.is_none() || spec.diagnose {
+        return Err("Verified launch requires the fixed policy recipe".into());
+    }
+    start_policy(spec, true, true, true)
 }
 
 // LPAC is a fixed diagnostic variant, not a product policy selection API.
-fn start_policy(spec: &LaunchSpec, lpac: bool, registry_read: bool) -> Result<RunningProcess> {
+fn start_policy(spec: &LaunchSpec, lpac: bool, registry_read: bool, verify_before_resume: bool) -> Result<RunningProcess> {
     if lpac && (spec.appcontainer.is_none() || spec.job.is_none()
         || spec.job.is_some_and(|job| job.active_process_limit != 1)
         || spec.desktop.is_none() || !spec.handle_list) {
@@ -415,6 +426,7 @@ fn start_policy(spec: &LaunchSpec, lpac: bool, registry_read: bool) -> Result<Ru
                 EXTENDED_STARTUPINFO_PRESENT
                     | CREATE_NO_WINDOW
                     | CREATE_UNICODE_ENVIRONMENT
+                    | if verify_before_resume { CREATE_SUSPENDED } else { 0 }
                     | if spec.diagnose { DEBUG_ONLY_THIS_PROCESS } else { 0 },
                 environment_pointer,
                 cwd.as_ptr(),
@@ -424,7 +436,7 @@ fn start_policy(spec: &LaunchSpec, lpac: bool, registry_read: bool) -> Result<Ru
             "CreateProcessW restricted task",
         )?;
         let process = Handle(information.hProcess);
-        let _thread = Handle(information.hThread);
+        let thread = Handle(information.hThread);
 
         let mut appcontainer = false;
         if spec.appcontainer.is_some() {
@@ -457,6 +469,30 @@ fn start_policy(spec: &LaunchSpec, lpac: bool, registry_read: bool) -> Result<Ru
             appcontainer = true;
         }
 
+        let verification = if verify_before_resume {
+            let mut result = crate::verification::verify(process.0, job.as_ref().ok_or("Missing verified Job")?.handle,
+                spec.appcontainer.ok_or("Missing verified package SID")?, registry_capability.as_ref().ok_or("Missing registry capability")?.0,
+                &spec.executable, information.dwProcessId)?;
+            // Persist immutable pre-resume identity for crash/termination
+            // diagnosis. resumePreviousCount remains 0 in this file; only the
+            // private final response can assert that ResumeThread returned 1.
+            if let Redirection::LogFile(log) = &spec.redirection {
+                let name = if log.file_name().and_then(|name| name.to_str()) == Some("task.log") {
+                    "process-verification.json"
+                } else { "native-verification.json" };
+                use std::io::Write;
+                let mut receipt = fs::OpenOptions::new().write(true).create_new(true).open(log.with_file_name(name))?;
+                receipt.write_all(&serde_json::to_vec(&result)?)?;
+                receipt.sync_all()?;
+            }
+            let previous = ResumeThread(thread.0);
+            if previous != 1 {
+                let _ = job.as_ref().unwrap().terminate(91);
+                return Err(format!("Unexpected initial ResumeThread count {previous}").into());
+            }
+            result.resume_previous_count = previous;
+            Some(result)
+        } else { None };
         if spec.diagnose {
             crate::loader::trace(process.0, information.dwProcessId)?;
         }
@@ -466,6 +502,7 @@ fn start_policy(spec: &LaunchSpec, lpac: bool, registry_read: bool) -> Result<Ru
             job,
             pid: information.dwProcessId,
             appcontainer,
+            verification,
             log: match &spec.redirection {
                 Redirection::LogFile(path) => Some(path.clone()),
                 Redirection::None => None,
@@ -501,7 +538,7 @@ pub fn launch_lpac_registry_diagnostic(spec: &LaunchSpec) -> Result<Outcome> {
 }
 
 fn launch_policy(spec: &LaunchSpec, lpac: bool, registry_read: bool) -> Result<Outcome> {
-    let running = start_policy(spec, lpac, registry_read)?;
+    let running = start_policy(spec, lpac, registry_read, false)?;
     let exit = match running.wait(spec.timeout)? {
         Some(exit) => exit,
         None => {

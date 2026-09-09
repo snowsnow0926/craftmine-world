@@ -1,0 +1,87 @@
+{
+  "format": "craftmine.measurement/1",
+  "generatedAt": "2026-09-09T18:48:50.773Z",
+  "commit": "ef30cac844436e932b55c0d12f62dc2addeb71e2",
+  "environment": {
+    "os": "win32 10.0.19045 (x64)",
+    "node": "v24.14.0",
+    "cpu": "Intel(R) Core(TM) i7-14700KF",
+    "logicalCpus": 28,
+    "totalRamBytes": 34163752960
+  },
+  "suites": [
+    {
+      "id": "product",
+      "metrics": [
+        {
+          "name": "product.hello.ms",
+          "unit": "ms",
+          "samples": [
+            16.347
+          ],
+          "count": 1,
+          "p50": 16.347,
+          "p95": 16.347,
+          "min": 16.347,
+          "max": 16.347,
+          "source": "real-rpc",
+          "process": "D:\\Craftmine World-worktrees\\godot-round2-r6-20260910\\vendor\\pi-desktop\\target\\debug\\craftmine-core.exe (stdio JSON-RPC, isolated data dir)",
+          "threshold": {
+            "max": null,
+            "min": null,
+            "status": "pending-real-sample"
+          },
+          "verdict": "unmeasured",
+          "notes": "capabilities: {\"advisoryReviews\":true,\"agentPublishesWorlds\":false,\"contentHistory\":true,\"format\":\"craftmine.core/1\",\"godotBuildJobs\":true,\"godotExecution\":false,\"godotExecutorGate\":true,\"godotProjects\":true,\"managedGit\":true,\"playerApplications\":true,\"publishesWorlds\":true,\"sessionDrafts\":true,\"storage\":\"sqlite\",\"verificationJobs\":true,\"version\":\"0.1.0\"}"
+        },
+        {
+          "name": "product.gitInfo.ms",
+          "unit": "ms",
+          "samples": [
+            68.06,
+            0.222,
+            0.123,
+            0.094,
+            0.098,
+            0.098,
+            0.056,
+            0.097,
+            0.1,
+            0.055
+          ],
+          "count": 10,
+          "p50": 0.098,
+          "p95": 68.06,
+          "min": 0.055,
+          "max": 68.06,
+          "source": "real-rpc",
+          "process": "D:\\Craftmine World-worktrees\\godot-round2-r6-20260910\\vendor\\pi-desktop\\target\\debug\\craftmine-core.exe content.gitInfo (R1 managed Git)",
+          "threshold": {
+            "max": null,
+            "min": null,
+            "status": "pending-real-sample"
+          },
+          "verdict": "unmeasured",
+          "notes": "round-trip wall time; advertised=true; the response also carries the Git source (bundled|pathFallback)"
+        }
+      ],
+      "skipped": [
+        {
+          "metric": "product.assetSearch.ms",
+          "unit": "ms",
+          "reason": "asset.search error: {\"code\":\"UNKNOWN_METHOD\",\"message\":\"UNKNOWN_METHOD\",\"retryable\":false}",
+          "howToEnable": "node desktop/delivery/measure.mjs product --core \"<integrated craftmine-core.exe>\" --runs 30"
+        }
+      ],
+      "durationMs": 94
+    }
+  ],
+  "limits": [
+    "Every latency percentile uses nearest-rank (no interpolation), rounded half-away-from-zero to 3 decimals at serialization time.",
+    "Cold/warm is per measurement process: index 0 = cold, index >= 1 = warm. The OS file cache is never purged.",
+    "Frame numbers come from a headless Godot main loop; there is no rendered-frame or GPU number in this report.",
+    "Memory numbers are sampled after readiness with Get-Process / Get-CimInstance; the client is never shown or focused.",
+    "Synthetic asset-index numbers are NOT product acceptance and their thresholds stay pending-real-sample.",
+    "candidate-apply and install waits were not executed; see the skipped records for the exact human command."
+  ]
+}

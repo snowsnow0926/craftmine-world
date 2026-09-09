@@ -1,0 +1,58 @@
+===== STDOUT =====
+PASS Pinned real engine imports the base project headlessly
+PASS Base starts headless with a real viewport and no captured input
+PASS Crosshair is a full-rect control centred on the real viewport
+PASS Crosshair stays centred across real resolution changes
+PASS Resolution changes really reach the engine viewport
+PASS Held model keeps its camera-local mount after a real look
+PASS Held model moves and turns in world space with the camera
+PASS Sword state swaps the model and hides the crosshair from the same state
+PASS Sword attack executes melee, uses no ammunition and respects real reach
+PASS Switching back restores the gun model, reticle and untouched ammunition
+PASS Forward movement is real and the body stays on the floor
+PASS Real aim ray hits the centre target with the authored damage
+PASS A second immediate shot is blocked by the real cooldown
+PASS After the cooldown expires the next shot fires and damages the target
+PASS Reload moves real rounds from the reserve into the magazine
+PASS Saving writes progress through the real filesystem
+PASS Sliding into the range wall stops movement instead of passing through it
+PASS A brand new process starts from authored defaults
+PASS Restore across a full process restart recovers ammo, equipment and target damage
+PASS Restored player position and look match the saved state
+PASS A restored world reports the same save on disk
+PASS Walking with the sword equipped closes the real distance to the target
+PASS Aimed sword melee reports the target inside real reach
+PASS Sword melee damages a target inside its real reach
+PASS Destroying two targets completes the authored quest
+PASS Quest completion grants the reserve and inventory reward exactly once
+PASS The HUD shows the live quest and inventory from the same state
+PASS Quest progress and the one-time reward survive a full restart
+PASS Blank start runs as its own real scene with no targets or interactables
+PASS Blank start moves with real physics and fires with no target present
+PASS Blank start saves and restores its own world identity
+PASS Pointing at the crate produces a real aim result and prompt
+PASS Interacting adds real reserve ammunition through EquipmentState
+PASS Interactable state and the granted ammunition survive a restart
+PASS An incomplete state is rejected with a concrete reason
+PASS A newer state version is rejected instead of being guessed at
+PASS Rejected states leave the live world completely unchanged
+PASS Equipment models resolve to the authored OBJ assets in this project
+PASS A ready weapon shows the style colour before any attack
+PASS A confirmed hit turns the reticle to the hit colour
+PASS A second attack is refused while cooling down
+PASS The reticle shows the cooldown colour while the item is cooling down
+PASS An attack is refused while reloading
+PASS After the reload the reticle returns to the style colour and the magazine is full
+PASS An empty magazine refuses the next attack with the empty reason
+PASS A no-attack item shows no model and no reticle from the same state
+PASS A no-attack item refuses an attack with the no-attack reason
+PASS A state that fails on a later block is rejected with a concrete reason
+PASS Blocks applied before the failure are rolled back completely
+PASS A world with no save of its own cannot read another world progress
+PASS Edited source damage applies without discarding saved progress
+PASS The edited damage drives the next real hit
+Evidence: D:\Craftmine World-worktrees\godot-round2-r3-20260910\test-results\godot-first-person-base-sJ4fgI
+
+===== STDERR =====
+
+===== EXIT CODE: 0 =====

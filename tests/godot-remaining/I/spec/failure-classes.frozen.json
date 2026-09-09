@@ -1,0 +1,24 @@
+{
+  "format": "craftmine.i.failure-classes/1",
+  "version": 1,
+  "frozenAt": "2026-09-10",
+  "rule": "每个失败必须归类；模型问题不得记成引擎边界，接口缺失不得记成模型无能，人工介入必须单列。",
+  "classes": [
+    { "id": "model-format", "zh": "模型格式不合规", "blame": "model" },
+    { "id": "model-omission", "zh": "模型漏做要求", "blame": "model" },
+    { "id": "model-wrong-behavior", "zh": "模型实现行为错误", "blame": "model" },
+    { "id": "model-fabrication", "zh": "模型伪造结果", "blame": "model" },
+    { "id": "tool-interface-missing", "zh": "产品工具接口缺失", "blame": "product" },
+    { "id": "tool-interface-misleading", "zh": "工具接口描述误导", "blame": "product" },
+    { "id": "engine-limit", "zh": "引擎能力边界", "blame": "engine" },
+    { "id": "harness-bug", "zh": "验收器缺陷", "blame": "harness" },
+    { "id": "environment-permission", "zh": "环境权限拒绝", "blame": "environment" },
+    { "id": "product-interface-unavailable", "zh": "产品接口未接通", "blame": "dependency" },
+    { "id": "timeout", "zh": "超时", "blame": "unknown" },
+    { "id": "flaky", "zh": "不稳定", "blame": "unknown" },
+    { "id": "human-intervention", "zh": "人工介入", "blame": "process" },
+    { "id": "evidence-insufficient", "zh": "证据不足", "blame": "process" },
+    { "id": "assertion-invalid", "zh": "断言无效", "blame": "harness" },
+    { "id": "unclassified", "zh": "未归类", "blame": "process" }
+  ]
+}

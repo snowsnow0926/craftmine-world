@@ -1,0 +1,113 @@
+{
+  "format": "craftmine.i.evidence/1",
+  "roundId": "R15.1",
+  "mode": "live",
+  "verdict": "failed",
+  "reasons": [
+    "I.R15.1.1: expected length >= 2, got 0",
+    "I.R15.1.2: expected a non-empty array at project.files",
+    "I.R15.1.3: expected true, got undefined",
+    "I.R15.1.4: expected true, got undefined",
+    "I.R15.1.5: expected true, got undefined",
+    "I.R15.1.6: expected >= 1, got 0",
+    "identity incomplete: base.version, project.treeHash"
+  ],
+  "notes": null,
+  "identity": {
+    "product": {
+      "version": "core@33620215ecd7",
+      "clientVersion": "plugin@0.1.0",
+      "commit": "67ba7ff6785651e61398af6189d9f0ec9bb519f5"
+    },
+    "engine": {
+      "name": "godot",
+      "version": "4.7.2-stable",
+      "renderer": "gl_compatibility"
+    },
+    "base": {
+      "id": "first-person",
+      "version": null,
+      "commit": null
+    },
+    "project": {
+      "treeHash": null,
+      "path": "godot-project",
+      "fileCount": 0
+    },
+    "model": {
+      "provider": "deepseek",
+      "modelId": "deepseek-v4.1-flash-expires-on-0910",
+      "thinking": "high"
+    },
+    "input": {
+      "kind": "no-input",
+      "inputEventsSent": 0,
+      "pointerLockRequests": 0,
+      "focusSteals": 0,
+      "browserLaunched": false
+    },
+    "dataDir": "D:\\Craftmine World-worktrees\\godot-round2-r8-20260910\\test-results\\r8-real-isb5Z2"
+  },
+  "usage": {
+    "format": "craftmine.i.usage/1",
+    "stage": "creation",
+    "calls": 1,
+    "promptTokens": 406,
+    "cachedReadTokens": 10240,
+    "nonCachedInputTokens": -9834,
+    "outputTokens": 32920,
+    "totalTokens": 43566,
+    "unknownCalls": 0,
+    "reportedBy": [
+      "model-usage"
+    ]
+  },
+  "failures": [
+    {
+      "class": "unclassified",
+      "stage": "tool:godot_project_index",
+      "message": "GODOT_PROJECT_NOT_FOUND",
+      "defined": true
+    }
+  ],
+  "interventions": [],
+  "artifacts": [],
+  "files": [
+    {
+      "path": "assertions.json",
+      "sha256": "d0eacc1a757b9ad956a58990a22670357648b9fab814c5a22228d367143fcaab",
+      "bytes": 1039
+    },
+    {
+      "path": "observation.json",
+      "sha256": "f5f3e0489f7ccb144d2fc9ee63a04f36b40279b96eaba8a594ac4787a46884a1",
+      "bytes": 1182
+    },
+    {
+      "path": "project-files.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3
+    },
+    {
+      "path": "request.raw.txt",
+      "sha256": "dc4b31bed29f87cd2ba6890cd26f47a173246d424b0af99582a7d44d4970994b",
+      "bytes": 370
+    },
+    {
+      "path": "response.raw.txt",
+      "sha256": "1770b79ce5c70fe31283c77da78ae0f9bae7b6133fc64246ce5f36acf571a490",
+      "bytes": 1211
+    },
+    {
+      "path": "round.json",
+      "sha256": "102b68bb4fb941dd0e407d0d33854a9bbd4afab19438c2d4d2c7a4d7bea3bb06",
+      "bytes": 903
+    },
+    {
+      "path": "turn.json",
+      "sha256": "21b5fb3ef6d32c4a9623820c16fbc9c34b2178f2152f04e54b438c9dea8f6570",
+      "bytes": 51
+    }
+  ],
+  "sealedAt": "2026-09-09T19:05:46.518Z"
+}

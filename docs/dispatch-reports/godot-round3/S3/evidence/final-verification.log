@@ -1,0 +1,50 @@
+﻿=== git ===
+d777426 docs(godot): keep the S3 report commit reference hash-agnostic
+5e8e235 docs(godot): report S3 delivery, evidence and registration handoff
+0190ec7 fix(godot): refuse same-version packages and private data on export
+b294216 feat(godot): install a package as one managed draft file set
+9aaea0f fix(godot): refuse identity overrides and parse CRLF scenes correctly
+d775df6 feat(godot): unify the asset lock on the canonical contract
+=== rust library ===
+
+test library::installer::tests::print_install_plan_fixture ... ignored, regenerates tests/godot-round3/S3/vectors/insta
+ll-plan-fixture.json
+test library::package_format::tests::package_dependency_metadata_converts_into_an_asset_ref ... ok
+test library::package_format::tests::entry_collisions_and_unverified_normalization_are_refused ... ok
+test library::package_format::tests::kind_vectors_are_shared_with_javascript ... ok
+test library::package_format::tests::package_index_refuses_unlisted_and_missing_entries ... ok
+test library::package_format::tests::resource_manifest_identity_is_recomputed_not_trusted ... ok
+test library::package_format::tests::path_vectors_are_shared_with_javascript ... ok
+test library::package_format::tests::legacy_kinds_are_mapped_or_refused_never_guessed ... ok
+test library::package_format::tests::canonical_vectors_are_shared_with_javascript ... ok
+test library::package_format::tests::media_type_table_is_shared_with_javascript ... ok
+test library::package_format::tests::frozen_contract_lock_vector_is_reproduced ... ok
+test library::package_format::tests::lock_vectors_are_shared_with_javascript ... ok
+test library::installer::tests::the_plan_lock_is_accepted_by_the_package_validator ... ok
+test library::installer::tests::plans_dependencies_first_and_allocates_new_identity ... ok
+test library::installer::tests::conflicts_are_reported_and_never_silently_overwritten ... ok
+test library::installer::tests::missing_dependency_and_cycle_are_refused_without_a_plan ... ok
+test library::installer::tests::a_dependency_with_the_wrong_hash_is_refused ... ok
+test library::installer::tests::incompatible_base_is_reported_as_a_conflict ... ok
+test library::reuse::tests::uninstall_keeps_progress_and_restore_is_reversible ... ok
+test library::reuse::tests::two_worlds_reuse_the_same_version_with_independent_identity_and_progress ... ok
+test library::reuse::tests::fixed_version_closure_and_explicit_failures ... ok
+test library::reuse::tests::upgrade_is_declarative_and_never_drops_progress_or_repeats_rewards ... ok
+test library::reuse::tests::offline_package_round_trip_carries_no_credentials_or_progress ... ok
+test result: ok. 22 passed; 0 failed; 1 ignored; 0 measured; 213 filtered out; finished in 0.35s
+
+
+=== node S3 ===
+
+ℹ tests 35
+ℹ pass 35
+ℹ fail 0
+
+
+=== node regression ===
+
+ℹ tests 54
+ℹ pass 54
+ℹ fail 0
+
+

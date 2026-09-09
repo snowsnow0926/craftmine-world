@@ -1,0 +1,80 @@
+﻿node : [measure] suite startup done in 4264 ms
+所在位置 行:1 字符: 370
++ ... /evidence'; node desktop/delivery/measure.mjs all --package 'D:\Craft ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([measure] suite startup done in 4264 ms:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[measure] suite waits done in 57578 ms
+[measure] suite frame done in 9268 ms
+[measure] suite memory done in 15826 ms
+[measure] suite size done in 61 ms
+[measure] suite git done in 6611 ms
+[measure] suite assets done in 36 ms
+format      craftmine.measurement/1
+generatedAt 2026-09-09T18:36:13.859Z
+commit      ef30cac844436e932b55c0d12f62dc2addeb71e2
+environment win32 10.0.19045 (x64) | node v24.14.0 | 28 logical CPUs | 31.8 GiB RAM
+
+metric	unit	n	p50	p95	min	max	threshold	verdict	source
+startup.cold.ms	ms	1	157.791	157.791	157.791	157.791	max<=1000	pass	real-client
+startup.warm.ms	ms	1	141.57	141.57	141.57	141.57	max<=800	pass	real-client
+startup.offscreenRendered.ms	ms	2	1455	2099	1455	2099	max<=5000	pass	real-client
+waits.engine-import.ms	ms	3	2530.121	2742.261	2519.153	2742.261	max<=8000	pass	real-engine
+waits.project-build.ms	ms	3	2387.631	2472.327	2373.901	2472.327	max<=8000	pass	real-engine
+waits.probe-check.ms	ms	2	20964.833	21417.685	20964.833	21417.685	max<=60000	pass	real-engine
+waits.candidate-apply.ms	ms	0	-	-	-	-	-	skipped	skipped
+waits.install.ms	ms	0	-	-	-	-	-	skipped	skipped
+frame.time.ms	ms	900	6.9	6.968	0.018	7	max<=16.67	pass	real-engine
+memory.workingSet.peak.mb	MB	1	473.406	473.406	473.406	473.406	max<=1024	pass	real-process
+memory.workingSet.steady.mb	MB	1	215.008	215.008	215.008	215.008	max<=512	pass	real-process
+memory.privateBytes.peak.mb	MB	1	424.617	424.617	424.617	424.617	max<=1024	pass	real-process
+memory.privateBytes.steady.mb	MB	1	164.902	164.902	164.902	164.902	max<=512	pass	real-process
+memory.treeWorkingSet.peak.mb	MB	1	1329.191	1329.191	1329.191	1329.191	max<=2560	pass	real-process
+memory.treePrivateBytes.peak.mb	MB	1	971.203	971.203	971.203	971.203	max<=2048	pass	real-process
+size.install.total.mb	MB	1	546.596	546.596	546.596	546.596	max<=700	pass	real-filesystem
+size.fileCount	files	1	828	828	828	828	max<=1200	pass	real-filesystem
+size.resources.bin.mb	MB	1	11.718	11.718	11.718	11.718	max<=32	pass	real-filesystem
+size.resources.agent-runtime.mb	MB	1	4.95	4.95	4.95	4.95	max<=16	pass	real-filesystem
+size.resources.plugins.mb	MB	1	1.508	1.508	1.508	1.508	max<=8	pass	real-filesystem
+size.resources.licenses.mb	MB	1	1.786	1.786	1.786	1.786	max<=8	pass	real-filesystem
+size.resources.source.mb	MB	1	37.359	37.359	37.359	37.359	max<=128	pass	real-filesystem
+size.resources.other.mb	MB	1	35.777	35.777	35.777	35.777	max<=128	pass	real-filesystem
+size.exe-dll.mb	MB	1	300.665	300.665	300.665	300.665	max<=400	pass	real-filesystem
+size.locales.mb	MB	1	4.94	4.94	4.94	4.94	max<=32	pass	real-filesystem
+size.other.mb	MB	1	0	0	0	0	max<=16	pass	real-filesystem
+size.installer.nsis.mb	MB	1	147.893	147.893	147.893	147.893	max<=250	pass	real-filesystem
+git.log.ms	ms	30	37.761	41.616	36.273	43.694	max<=500	pass	real-git
+git.log.cold.ms	ms	1	39.875	39.875	39.875	39.875	max<=500	pass	real-git
+git.log.warm.ms	ms	29	37.761	41.616	36.273	43.694	max<=500	pass	real-git
+git.diffStat.ms	ms	30	138.471	148.052	132.512	178.583	max<=1000	pass	real-git
+git.diffStat.cold.ms	ms	1	148.052	148.052	148.052	148.052	max<=1000	pass	real-git
+git.diffStat.warm.ms	ms	29	138.471	147.053	132.512	178.583	max<=600	pass	real-git
+git.largeFileDiff.ms	ms	30	35.668	39.605	34.159	40.892	max<=500	pass	real-git
+git.largeFileDiff.cold.ms	ms	1	36.432	36.432	36.432	36.432	max<=500	pass	real-git
+git.largeFileDiff.warm.ms	ms	29	35.668	39.605	34.159	40.892	max<=500	pass	real-git
+assets.search.synthetic-1000.ms	ms	40	0.085	0.105	0.045	0.142	max<=-	unmeasured	synthetic-index
+assets.preview.synthetic-1000.ms	ms	40	0.006	0.01	0.004	0.059	max<=-	unmeasured	synthetic-index
+assets.search.synthetic-10000.ms	ms	40	0.363	0.42	0.308	0.576	max<=-	unmeasured	synthetic-index
+assets.preview.synthetic-10000.ms	ms	40	0.004	0.007	0.003	0.012	max<=-	unmeasured	synthetic-index
+assets.search.ms	ms	0	-	-	-	-	-	skipped	skipped
+assets.preview.ms	ms	0	-	-	-	-	-	skipped	skipped
+
+failed=0 unmeasured=4 skipped=4
+UNMEASURED assets:assets.search.synthetic-1000.ms (threshold pending-real-sample)
+UNMEASURED assets:assets.preview.synthetic-1000.ms (threshold pending-real-sample)
+UNMEASURED assets:assets.search.synthetic-10000.ms (threshold pending-real-sample)
+UNMEASURED assets:assets.preview.synthetic-10000.ms (threshold pending-real-sample)
+SKIPPED waits:waits.candidate-apply.ms :: no real broker/apply timing is exposed in the current tree; no product apply path was run :: Run a real candidate apply through the product host, capture its [timing] phase=apply line, then re-run: node desktop/delivery/measure.mjs waits --out <evidence.json>
+SKIPPED waits:waits.install.ms :: running the NSIS installer changes the machine and was not executed :: On a disposable clean Windows VM: powershell -File desktop/delivery/windows-lifecycle-acceptance.ps1 -Installer "<package>\Craftmine-World-Setup-0.14.3.exe"
+SKIPPED assets:assets.search.ms :: pending-integration: vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/ does not exist in this tree :: implement library.search (AL2 catalog search); library.read (asset version read / source preview); preview service for PNG/JPEG, static GLB, WAV/OGG and checked Godot scene/script packs (ASSET_LIBRARY_DEVELOPMENT_PLAN.md section 6) per docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md sections 5-7; dispatch task N owns src/asset_catalog/** and the import/scan/index/preview service, then re-run node desktop/delivery/measure.mjs assets
+SKIPPED assets:assets.preview.ms :: pending-integration: vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/ does not exist in this tree :: implement library.search (AL2 catalog search); library.read (asset version read / source preview); preview service for PNG/JPEG, static GLB, WAV/OGG and checked Godot scene/script packs (ASSET_LIBRARY_DEVELOPMENT_PLAN.md section 6) per docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md sections 5-7; dispatch task N owns src/asset_catalog/** and the import/scan/index/preview service, then re-run node desktop/delivery/measure.mjs assets
+
+LIMIT Every latency percentile uses nearest-rank (no interpolation), rounded half-away-from-zero to 3 decimals at serialization time.
+LIMIT Cold/warm is per measurement process: index 0 = cold, index >= 1 = warm. The OS file cache is never purged.
+LIMIT Frame numbers come from a headless Godot main loop; there is no rendered-frame or GPU number in this report.
+LIMIT Memory numbers are sampled after readiness with Get-Process / Get-CimInstance; the client is never shown or focused.
+LIMIT Synthetic asset-index numbers are NOT product acceptance and their thresholds stay pending-real-sample.
+LIMIT candidate-apply and install waits were not executed; see the skipped records for the exact human command.
+
+evidence: D:\Craftmine World-worktrees\godot-round2-r9-20260910\docs\dispatch-reports\godot-round2\R9\evidence\measurement-final.json

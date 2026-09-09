@@ -1,0 +1,2264 @@
+{
+  "kind": "craftmine.godot.round3.s7.product-probe/1",
+  "startedAt": "2026-09-09T20:15:09.224Z",
+  "source": {
+    "commit": "b09144fa06c7a8f0daff561830c00d3d9acd0119",
+    "tree": "0278dc1097f3a1af4584055fb05af35e61f45baf",
+    "worktree": "D:\\Craftmine World-worktrees\\godot-round3-s7-20260910"
+  },
+  "prerequisites": {
+    "coreBin": "D:\\Craftmine World-worktrees\\godot-round3-s7-20260910\\vendor\\pi-desktop\\target\\release\\craftmine-core.exe",
+    "coreSha256": "11add5d3b56b014bfb063a9664b0e8fdbc6c9bcd797749257229e1762e51be00",
+    "plugin": "D:\\Craftmine World-worktrees\\godot-round3-s7-20260910\\desktop\\build\\craftmine.world",
+    "broker": "D:\\Craftmine World-worktrees\\godot-round3-s7-20260910\\desktop\\godot\\sandbox\\target\\debug\\godot-host-broker.exe",
+    "brokerSha256": "c6f3c78f84027b46c20b831bcdf88bbab9d4fa3cb49001a9e2fe910d21907fb4",
+    "engineRoot": "D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable",
+    "secretsConfigured": true,
+    "dataDir": "D:\\Craftmine World-worktrees\\godot-round3-s7-20260910\\test-results\\s7-probe-int2-ashipped\\product-data",
+    "packaging": {
+      "installsBroker": false,
+      "referencingFiles": [],
+      "checkedFiles": [
+        "desktop/build-client.ps1",
+        "desktop/prepare-client.mjs",
+        "desktop/windows-package-tools.mjs",
+        "desktop/build-world-plugin.mjs"
+      ]
+    }
+  },
+  "identity": {
+    "model": {
+      "provider": "deepseek",
+      "modelId": "deepseek-v4.1-flash-expires-on-0910",
+      "thinking": "high"
+    },
+    "engine": {
+      "name": "godot",
+      "version": "4.7.2-stable",
+      "renderer": "gl_compatibility"
+    },
+    "core": {
+      "binary": "craftmine-core.exe",
+      "sha256": "11add5d3b56b014bfb063a9664b0e8fdbc6c9bcd797749257229e1762e51be00"
+    },
+    "plugin": {
+      "path": "desktop/build/craftmine.world"
+    },
+    "inputPolicy": {
+      "kind": "no-input",
+      "inputEventsSent": 0,
+      "pointerLockRequests": 0,
+      "focusSteals": 0,
+      "browserLaunched": false
+    }
+  },
+  "tools": [
+    "runtime_info",
+    "godot_project_create",
+    "godot_project_index",
+    "godot_file_read",
+    "godot_project_patch",
+    "godot_asset_put",
+    "godot_asset_list",
+    "godot_build_start",
+    "godot_build_read",
+    "godot_build_cancel",
+    "godot_candidate_read",
+    "godot_candidate_list",
+    "godot_docs",
+    "godot_project_query",
+    "godot_runtime_state",
+    "godot_project_facts",
+    "godot_capability_report",
+    "godot_history",
+    "godot_jobs",
+    "godot_draft_recovery",
+    "asset_library",
+    "package_library",
+    "project_inspect",
+    "capabilities_read",
+    "resource_read",
+    "workspace_patch",
+    "verification_submit",
+    "verification_read",
+    "verification_cancel",
+    "library_search",
+    "library_read",
+    "library_install",
+    "memory_search",
+    "memory_propose",
+    "requirements_read"
+  ],
+  "executor": {
+    "runtimeInfo": {
+      "format": "craftmine.desktop-runtime/1",
+      "view": "world",
+      "worldWritesAvailable": false,
+      "draftToolsAvailable": true,
+      "godotSourceToolsAvailable": true,
+      "godotBuildJobsAvailable": true,
+      "godotExecutorGate": true,
+      "godotBuildAvailable": false,
+      "godotCheckAvailable": false,
+      "godotExecutor": {
+        "state": "unavailable",
+        "reason": "GODOT_BROKER_MISSING",
+        "engineVersion": "4.7.2-stable",
+        "isolation": "craftmine.windows.lpac-registry.v1",
+        "evidenceHash": null,
+        "brokerSha256": null,
+        "bridgeSha256": null,
+        "preflight": null,
+        "jobs": []
+      },
+      "godotExecutionInCore": false,
+      "verificationJobsAvailable": true,
+      "playerApplicationsAvailable": true,
+      "core": {
+        "advisoryReviews": true,
+        "agentPublishesWorlds": false,
+        "assetCatalog": true,
+        "assetPreview": true,
+        "contentHistory": true,
+        "creationPackages": true,
+        "format": "craftmine.core/1",
+        "godotBuildJobs": true,
+        "godotExecution": false,
+        "godotExecutorGate": true,
+        "godotProjects": true,
+        "managedGit": true,
+        "playerApplications": true,
+        "portableBackup": true,
+        "publishesWorlds": true,
+        "sessionDrafts": true,
+        "storage": "sqlite",
+        "verificationJobs": true,
+        "version": "0.1.0"
+      },
+      "invocation": {
+        "sessionId": "f448e5ca-ac46-4099-a56f-ccea50db861f",
+        "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+        "toolCallId": "r8-9d98c07b-2d4e-4f13-802c-f4e3aafab46c"
+      }
+    },
+    "gate": {
+      "format": "craftmine.godot-jobs/1",
+      "scope": "executor",
+      "status": {
+        "format": "craftmine.godot-executor-status/1",
+        "executorId": "craftmine-windows-broker-v1",
+        "engineVersion": "4.7.2-stable",
+        "isolation": "craftmine.windows.lpac-registry.v1",
+        "state": "unavailable",
+        "available": false,
+        "buildAvailable": false,
+        "checkAvailable": false,
+        "reason": "GODOT_BROKER_MISSING",
+        "broker": null,
+        "engineRoot": null,
+        "lock": null,
+        "evidenceHash": null,
+        "bridge": {
+          "sha256": null
+        },
+        "preflight": null,
+        "recoveries": [],
+        "startupRecovery": null,
+        "restartReconciliation": null,
+        "stopRecovery": null,
+        "resources": {
+          "sampled": true,
+          "hardFilesystemQuota": false,
+          "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+          "lastObserved": null
+        },
+        "jobs": [],
+        "ledger": {
+          "jobs": 0,
+          "active": 0,
+          "updatedAt": null,
+          "error": null
+        },
+        "tasksRoot": null,
+        "registered": false,
+        "revokedOnStop": null
+      },
+      "source": "live-executor",
+      "tokenGatedMethods": [
+        "godotJob.claim",
+        "godotJob.progress",
+        "godotJob.heartbeat",
+        "godotJob.finish",
+        "godotJob.checkDescriptor",
+        "godotExecutor.register",
+        "godotExecutor.revoke"
+      ]
+    }
+  },
+  "steps": [
+    {
+      "name": "product session starts (real plugin host + real core)",
+      "passed": true,
+      "ms": 613,
+      "detail": {
+        "tools": 35,
+        "dataDir": "D:\\Craftmine World-worktrees\\godot-round3-s7-20260910\\test-results\\s7-probe-int2-ashipped\\product-data",
+        "core": "11add5d3b56b014b"
+      }
+    },
+    {
+      "name": "runtime_info reports the connected runtime",
+      "passed": true,
+      "ms": 1,
+      "detail": {
+        "format": "craftmine.desktop-runtime/1",
+        "view": "world",
+        "worldWritesAvailable": false,
+        "draftToolsAvailable": true,
+        "godotSourceToolsAvailable": true,
+        "godotBuildJobsAvailable": true,
+        "godotExecutorGate": true,
+        "godotBuildAvailable": false,
+        "godotCheckAvailable": false,
+        "godotExecutor": {
+          "state": "unavailable",
+          "reason": "GODOT_BROKER_MISSING",
+          "engineVersion": "4.7.2-stable",
+          "isolation": "craftmine.windows.lpac-registry.v1",
+          "evidenceHash": null,
+          "brokerSha256": null,
+          "bridgeSha256": null,
+          "preflight": null,
+          "jobs": []
+        },
+        "godotExecutionInCore": false,
+        "verificationJobsAvailable": true,
+        "playerApplicationsAvailable": true,
+        "core": {
+          "advisoryReviews": true,
+          "agentPublishesWorlds": false,
+          "assetCatalog": true,
+          "assetPreview": true,
+          "contentHistory": true,
+          "creationPackages": true,
+          "format": "craftmine.core/1",
+          "godotBuildJobs": true,
+          "godotExecution": false,
+          "godotExecutorGate": true,
+          "godotProjects": true,
+          "managedGit": true,
+          "playerApplications": true,
+          "portableBackup": true,
+          "publishesWorlds": true,
+          "sessionDrafts": true,
+          "storage": "sqlite",
+          "verificationJobs": true,
+          "version": "0.1.0"
+        },
+        "invocation": {
+          "sessionId": "f448e5ca-ac46-4099-a56f-ccea50db861f",
+          "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+          "toolCallId": "r8-9d98c07b-2d4e-4f13-802c-f4e3aafab46c"
+        }
+      }
+    },
+    {
+      "name": "godot_jobs status exposes the real executor gate",
+      "passed": true,
+      "ms": 1,
+      "detail": {
+        "format": "craftmine.godot-jobs/1",
+        "scope": "executor",
+        "status": {
+          "format": "craftmine.godot-executor-status/1",
+          "executorId": "craftmine-windows-broker-v1",
+          "engineVersion": "4.7.2-stable",
+          "isolation": "craftmine.windows.lpac-registry.v1",
+          "state": "unavailable",
+          "available": false,
+          "buildAvailable": false,
+          "checkAvailable": false,
+          "reason": "GODOT_BROKER_MISSING",
+          "broker": null,
+          "engineRoot": null,
+          "lock": null,
+          "evidenceHash": null,
+          "bridge": {
+            "sha256": null
+          },
+          "preflight": null,
+          "recoveries": [],
+          "startupRecovery": null,
+          "restartReconciliation": null,
+          "stopRecovery": null,
+          "resources": {
+            "sampled": true,
+            "hardFilesystemQuota": false,
+            "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+            "lastObserved": null
+          },
+          "jobs": [],
+          "ledger": {
+            "jobs": 0,
+            "active": 0,
+            "updatedAt": null,
+            "error": null
+          },
+          "tasksRoot": null,
+          "registered": false,
+          "revokedOnStop": null
+        },
+        "source": "live-executor",
+        "tokenGatedMethods": [
+          "godotJob.claim",
+          "godotJob.progress",
+          "godotJob.heartbeat",
+          "godotJob.finish",
+          "godotJob.checkDescriptor",
+          "godotExecutor.register",
+          "godotExecutor.revoke"
+        ]
+      }
+    },
+    {
+      "name": "godot_capability_report lists advertised tools and host methods",
+      "passed": true,
+      "ms": 0,
+      "detail": {
+        "format": "craftmine.godot-capability/1",
+        "toolCount": 34,
+        "tools": [
+          {
+            "name": "godot_project_create",
+            "risk": "medium",
+            "hostMethod": "godotProject.create",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_project_index",
+            "risk": "low",
+            "hostMethod": "godotProject.index",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_file_read",
+            "risk": "low",
+            "hostMethod": "godotProject.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_project_patch",
+            "risk": "medium",
+            "hostMethod": "godotProject.patch",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_asset_put",
+            "risk": "medium",
+            "hostMethod": "godotAsset.put",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_asset_list",
+            "risk": "low",
+            "hostMethod": "godotAsset.list",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_build_start",
+            "risk": "medium",
+            "hostMethod": "godotBuild.start",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_build_read",
+            "risk": "low",
+            "hostMethod": "godotBuild.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_build_cancel",
+            "risk": "low",
+            "hostMethod": "godotBuild.cancel",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_candidate_read",
+            "risk": "low",
+            "hostMethod": "godotCandidate.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_candidate_list",
+            "risk": "low",
+            "hostMethod": "godotCandidate.list",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_docs",
+            "risk": "low",
+            "hostMethod": null,
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_project_query",
+            "risk": "low",
+            "hostMethod": "godotProject.index+godotProject.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_runtime_state",
+            "risk": "low",
+            "hostMethod": "godotRuntime.describe",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_project_facts",
+            "risk": "low",
+            "hostMethod": "godotProject.index+godotCandidate.list+godotRuntime.describe",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_capability_report",
+            "risk": "low",
+            "hostMethod": "hello",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_history",
+            "risk": "low",
+            "hostMethod": "content.*",
+            "advertised": true,
+            "wired": true,
+            "reachable": false,
+            "blockedBy": "DEPENDENCY_NOT_WIRED",
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_jobs",
+            "risk": "medium",
+            "hostMethod": "godotExecutor.status+godotJob.usage+godotJob.continue",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_draft_recovery",
+            "risk": "medium",
+            "hostMethod": "task.recoverable+task.resume",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "asset_library",
+            "risk": "low",
+            "hostMethod": "asset.search+asset.read+asset.versions",
+            "advertised": true,
+            "wired": true,
+            "reachable": false,
+            "blockedBy": "DEPENDENCY_NOT_WIRED",
+            "owner": "S5",
+            "local": true
+          },
+          {
+            "name": "package_library",
+            "risk": "low",
+            "hostMethod": "package.check+package.read+package.list",
+            "advertised": true,
+            "wired": true,
+            "reachable": false,
+            "blockedBy": "DEPENDENCY_NOT_WIRED",
+            "owner": "S3",
+            "local": true
+          },
+          {
+            "name": "project_inspect",
+            "risk": "low",
+            "hostMethod": "workspace.open+inspect",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "capabilities_read",
+            "risk": "low",
+            "hostMethod": "world.read+capabilities",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "resource_read",
+            "risk": "low",
+            "hostMethod": "workspace.recordRead",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "workspace_patch",
+            "risk": "medium",
+            "hostMethod": "workspace.commit",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "verification_submit",
+            "risk": "medium",
+            "hostMethod": "verification.submit",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "verification_read",
+            "risk": "low",
+            "hostMethod": "verification.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "verification_cancel",
+            "risk": "low",
+            "hostMethod": "verification.cancel",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "library_search",
+            "risk": "low",
+            "hostMethod": "library.search",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "library_read",
+            "risk": "low",
+            "hostMethod": "library.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "library_install",
+            "risk": "medium",
+            "hostMethod": "library.capture",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "memory_search",
+            "risk": "low",
+            "hostMethod": "memory.search",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "memory_propose",
+            "risk": "medium",
+            "hostMethod": "memory.propose",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "requirements_read",
+            "risk": "low",
+            "hostMethod": "task.readRequirements",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          }
+        ],
+        "handshake": {
+          "advisoryReviews": true,
+          "agentPublishesWorlds": false,
+          "assetCatalog": true,
+          "assetPreview": true,
+          "contentHistory": true,
+          "creationPackages": true,
+          "format": "craftmine.core/1",
+          "godotBuildJobs": true,
+          "godotExecution": false,
+          "godotExecutorGate": true,
+          "godotProjects": true,
+          "managedGit": true,
+          "playerApplications": true,
+          "portableBackup": true,
+          "publishesWorlds": true,
+          "sessionDrafts": true,
+          "storage": "sqlite",
+          "verificationJobs": true,
+          "version": "0.1.0"
+        },
+        "unreachableMethods": [
+          {
+            "method": "godotRuntime.describeCandidate",
+            "owner": "S1",
+            "kind": "read",
+            "reachable": false,
+            "capabilityEnabled": false,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotApplication.prepare",
+            "owner": "S1",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotApplication.commit",
+            "owner": "S1",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotApplication.read",
+            "owner": "S1",
+            "kind": "read",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotApplication.abort",
+            "owner": "S1",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotJob.claim",
+            "owner": "S2",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotJob.progress",
+            "owner": "S2",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotJob.heartbeat",
+            "owner": "S2",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotJob.finish",
+            "owner": "S2",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "library.capture",
+            "owner": "S1",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "backup.export",
+            "owner": "S4",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "backup.inspect",
+            "owner": "S4",
+            "kind": "read",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "backup.restore",
+            "owner": "S4",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "backup.status",
+            "owner": "S4",
+            "kind": "read",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "backup.cancel",
+            "owner": "S4",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          }
+        ],
+        "note": "reachable=null means the capability flag is unknown; it is never reported as available.",
+        "gapClassifications": [],
+        "limits": {
+          "available": false,
+          "reason": "BUDGET_READ_FAILED",
+          "errorCode": "WORKSPACE_NOT_OPEN",
+          "owner": "S1",
+          "requiredHostMethod": "budget.inspect",
+          "kinds": [
+            "tokens",
+            "context",
+            "requests",
+            "compactions",
+            "service",
+            "wallClock",
+            "resource"
+          ],
+          "note": "The durable ledger could not be read; every counter is unknown."
+        },
+        "services": {
+          "format": "craftmine.tool-services/1",
+          "wired": [
+            {
+              "key": "sampleLiveState",
+              "owner": "R2",
+              "hostMethod": "godotLiveState",
+              "requiredFor": [
+                "godot_runtime_state scope=live",
+                "godot_project_facts.live"
+              ],
+              "provides": "a timestamped sample of the running instance: world, build, instance, camera, equipment, entities, quests",
+              "kind": "function"
+            },
+            {
+              "key": "budget",
+              "owner": "R2+S1",
+              "hostMethod": "budgetSnapshot",
+              "requiredFor": [
+                "godot_capability_report.limits",
+                "godot_project_facts.limits"
+              ],
+              "provides": "the seven limit kinds (tokens, context, requests, compactions, service, wallClock, resource) from the durable ledger",
+              "kind": "function"
+            },
+            {
+              "key": "executorStatus",
+              "owner": "S2",
+              "hostMethod": null,
+              "requiredFor": [
+                "godot_jobs mode=status",
+                "godot_project_facts.executor"
+              ],
+              "provides": "the live managed-executor gate and the registered executors of this process",
+              "kind": "function"
+            },
+            {
+              "key": "executorEnqueue",
+              "owner": "S2",
+              "hostMethod": null,
+              "requiredFor": [
+                "godot_build_start",
+                "godot_jobs mode=resume"
+              ],
+              "provides": "hands a queued core build/check job to the live managed executor",
+              "kind": "function"
+            },
+            {
+              "key": "executorCancel",
+              "owner": "S2",
+              "hostMethod": null,
+              "requiredFor": [
+                "godot_build_cancel"
+              ],
+              "provides": "cancels the executor-side worker for one job id",
+              "kind": "function"
+            }
+          ],
+          "missing": [],
+          "optionalMissing": [
+            {
+              "key": "isDiscussionOnly",
+              "owner": "R2",
+              "hostMethod": null,
+              "requiredFor": [
+                "discussion-mode write refusal"
+              ],
+              "provides": "whether the current turn is discussion-only, from the session the host actually owns",
+              "kind": "function",
+              "reason": "NOT_WIRED",
+              "note": "Optional override or tuning value; the tool uses its documented default.",
+              "optional": true
+            },
+            {
+              "key": "historyMethods",
+              "owner": "S1",
+              "hostMethod": "content.*",
+              "requiredFor": [
+                "godot_history"
+              ],
+              "provides": "the registered content-history method names",
+              "kind": "object",
+              "reason": "NOT_WIRED",
+              "note": "Optional override or tuning value; the tool uses its documented default.",
+              "optional": true
+            },
+            {
+              "key": "libraryMethods",
+              "owner": "S1+S3+S5",
+              "hostMethod": "asset.*/package.*",
+              "requiredFor": [
+                "asset_library",
+                "package_library"
+              ],
+              "provides": "the registered asset and package method names",
+              "kind": "object",
+              "reason": "NOT_WIRED",
+              "note": "Optional override or tuning value; the tool uses its documented default.",
+              "optional": true
+            },
+            {
+              "key": "maxSampleAgeMs",
+              "owner": "R2",
+              "hostMethod": null,
+              "requiredFor": [
+                "godot_runtime_state scope=live staleness"
+              ],
+              "provides": "the freshness window the host accepts for a live sample",
+              "kind": "number",
+              "reason": "NOT_WIRED",
+              "note": "Optional override or tuning value; the tool uses its documented default.",
+              "optional": true
+            }
+          ],
+          "complete": true,
+          "note": "wired lists the providers this process actually received; missing names the exact owner and host method for a required one; optionalMissing has a working default."
+        },
+        "guidance": [
+          "Tools in this inventory define what is actually available; do not claim a capability outside it.",
+          "A wired tool whose capability flag is false is disabled, not broken: report the reason and the owner.",
+          "services.missing names a provider this process did not receive; its value is unknown, never zero or saved state.",
+          "Ordinary gameplay, scenes, UI and GDScript are developable without a new host command.",
+          "Engine internals, sandbox rules and the verification standard are not changeable by a world task."
+        ]
+      }
+    },
+    {
+      "name": "panel bridge creates a world",
+      "passed": true,
+      "ms": 2,
+      "detail": {
+        "worldId": "869ecdd4-d239-4fde-bdf4-00c1a6c74ada",
+        "title": "S7 集成探针世界"
+      }
+    },
+    {
+      "name": "godot_project_create stores source through the product tool",
+      "passed": true,
+      "ms": 10,
+      "detail": {
+        "applied": false,
+        "baseBuild": "v-b3af5624b1cb26865971",
+        "bytes": 367,
+        "fileCount": 3,
+        "manifestHash": "aca0b5dc73ea957168fd36f9a1b7cc9e41756995be3f7da9dfac2fac96673eda",
+        "revision": 0,
+        "status": "source-only",
+        "taskId": "work-bfab4414d4a1c38748eaabda7a1d35ef90222b10d505507c64facb8c24ab24c4",
+        "toolCallId": "r8-77b775f6-6786-4e50-92fa-c650e1e9654a",
+        "verified": false,
+        "worldId": "869ecdd4-d239-4fde-bdf4-00c1a6c74ada"
+      }
+    },
+    {
+      "name": "godot_project_index reads the stored project back",
+      "passed": true,
+      "ms": 1,
+      "detail": {
+        "revision": 0,
+        "manifestHash": "aca0b5dc73ea957168fd36f9a1b7cc9e41756995be3f7da9dfac2fac96673eda",
+        "files": 3
+      }
+    },
+    {
+      "name": "godot_file_read reads one stored source file",
+      "passed": true,
+      "ms": 1,
+      "detail": {
+        "bytes": 146,
+        "sha256": "b5bf87a959bf2e923283e4a357e0fb62842dabbe8bd9c9aa839e9adca12cb9cf"
+      }
+    },
+    {
+      "name": "godot_project_patch writes a real source change",
+      "passed": true,
+      "ms": 5,
+      "detail": {
+        "applied": false,
+        "baseBuild": "v-b3af5624b1cb26865971",
+        "bytes": 415,
+        "fileCount": 4,
+        "manifestHash": "250fabaeb4c86e6fa96c7ea8a634e463a41978fe84b99fcc5b0fac4afe203b02",
+        "revision": 1,
+        "status": "source-only",
+        "taskId": "work-bfab4414d4a1c38748eaabda7a1d35ef90222b10d505507c64facb8c24ab24c4",
+        "toolCallId": "r8-0512c2b3-9436-484a-80e6-f9560030d8d9",
+        "verified": false,
+        "worldId": "869ecdd4-d239-4fde-bdf4-00c1a6c74ada"
+      }
+    },
+    {
+      "name": "godot_project_index reflects the patch as the new head",
+      "passed": true,
+      "ms": 1,
+      "detail": {
+        "revision": 1,
+        "manifestHash": "250fabaeb4c86e6fa96c7ea8a634e463a41978fe84b99fcc5b0fac4afe203b02",
+        "patchedFile": "probe_note.gd"
+      }
+    },
+    {
+      "name": "managed executor registers after a real broker preflight",
+      "passed": false,
+      "ms": 1,
+      "error": "executor unavailable: GODOT_BROKER_MISSING {}",
+      "code": null
+    },
+    {
+      "name": "godot_build_start creates a managed check job",
+      "passed": true,
+      "ms": 16,
+      "detail": {
+        "jobId": "gjob-fb0e73fad9ebd60821993d7795dada8f6f011bda4b25e1634f673929c6ced698",
+        "executionAvailable": false,
+        "raw": {
+          "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "baseBuild": "v-b3af5624b1cb26865971",
+          "baseId": "first-person",
+          "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+          "buildId": "gbd-4c32483d7a07b86b60a41fecbd5536f787f59f0c805cb12c29815c8e15025994",
+          "engineVersion": "4.7.2-stable",
+          "executionAvailable": false,
+          "jobId": "gjob-fb0e73fad9ebd60821993d7795dada8f6f011bda4b25e1634f673929c6ced698",
+          "kind": "check",
+          "manifestHash": "250fabaeb4c86e6fa96c7ea8a634e463a41978fe84b99fcc5b0fac4afe203b02",
+          "materialized": {
+            "bytes": 7921,
+            "files": 7
+          },
+          "renderer": "gl_compatibility",
+          "replayed": false,
+          "sourceRevision": 1,
+          "status": "blocked",
+          "target": "web",
+          "worldId": "869ecdd4-d239-4fde-bdf4-00c1a6c74ada",
+          "execution": {
+            "enqueued": false,
+            "reason": "GODOT_EXECUTION_UNAVAILABLE",
+            "owner": "S2",
+            "skipped": true
+          }
+        }
+      }
+    },
+    {
+      "name": "godot_build_read reaches a terminal state",
+      "passed": true,
+      "ms": 2,
+      "detail": {
+        "state": "blocked",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "executor": null,
+        "build": null,
+        "artifacts": [],
+        "candidateId": null,
+        "sourceStale": false
+      }
+    },
+    {
+      "name": "godot_candidate_read reads the produced candidate",
+      "passed": false,
+      "skipped": true,
+      "error": "no candidate id was reported by the terminal job",
+      "ms": 0
+    },
+    {
+      "name": "executor gate is re-read after the job",
+      "passed": true,
+      "ms": 0,
+      "detail": {
+        "format": "craftmine.godot-jobs/1",
+        "scope": "executor",
+        "status": {
+          "format": "craftmine.godot-executor-status/1",
+          "executorId": "craftmine-windows-broker-v1",
+          "engineVersion": "4.7.2-stable",
+          "isolation": "craftmine.windows.lpac-registry.v1",
+          "state": "unavailable",
+          "available": false,
+          "buildAvailable": false,
+          "checkAvailable": false,
+          "reason": "GODOT_BROKER_MISSING",
+          "broker": null,
+          "engineRoot": null,
+          "lock": null,
+          "evidenceHash": null,
+          "bridge": {
+            "sha256": null
+          },
+          "preflight": null,
+          "recoveries": [],
+          "startupRecovery": null,
+          "restartReconciliation": null,
+          "stopRecovery": null,
+          "resources": {
+            "sampled": true,
+            "hardFilesystemQuota": false,
+            "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+            "lastObserved": null
+          },
+          "jobs": [],
+          "ledger": {
+            "jobs": 0,
+            "active": 0,
+            "updatedAt": null,
+            "error": null
+          },
+          "tasksRoot": null,
+          "registered": false,
+          "revokedOnStop": null
+        },
+        "source": "live-executor",
+        "tokenGatedMethods": [
+          "godotJob.claim",
+          "godotJob.progress",
+          "godotJob.heartbeat",
+          "godotJob.finish",
+          "godotJob.checkDescriptor",
+          "godotExecutor.register",
+          "godotExecutor.revoke"
+        ]
+      }
+    }
+  ],
+  "toolCalls": [
+    {
+      "name": "godot_jobs",
+      "args": {
+        "mode": "status"
+      },
+      "at": "2026-09-09T20:15:09.883Z",
+      "toolCallId": "r8-aaacc018-d116-4a6f-9f1e-8f7df4692edb",
+      "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+      "ok": true,
+      "result": {
+        "format": "craftmine.godot-jobs/1",
+        "scope": "executor",
+        "status": {
+          "format": "craftmine.godot-executor-status/1",
+          "executorId": "craftmine-windows-broker-v1",
+          "engineVersion": "4.7.2-stable",
+          "isolation": "craftmine.windows.lpac-registry.v1",
+          "state": "unavailable",
+          "available": false,
+          "buildAvailable": false,
+          "checkAvailable": false,
+          "reason": "GODOT_BROKER_MISSING",
+          "broker": null,
+          "engineRoot": null,
+          "lock": null,
+          "evidenceHash": null,
+          "bridge": {
+            "sha256": null
+          },
+          "preflight": null,
+          "recoveries": [],
+          "startupRecovery": null,
+          "restartReconciliation": null,
+          "stopRecovery": null,
+          "resources": {
+            "sampled": true,
+            "hardFilesystemQuota": false,
+            "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+            "lastObserved": null
+          },
+          "jobs": [],
+          "ledger": {
+            "jobs": 0,
+            "active": 0,
+            "updatedAt": null,
+            "error": null
+          },
+          "tasksRoot": null,
+          "registered": false,
+          "revokedOnStop": null
+        },
+        "source": "live-executor",
+        "tokenGatedMethods": [
+          "godotJob.claim",
+          "godotJob.progress",
+          "godotJob.heartbeat",
+          "godotJob.finish",
+          "godotJob.checkDescriptor",
+          "godotExecutor.register",
+          "godotExecutor.revoke"
+        ]
+      }
+    },
+    {
+      "name": "godot_capability_report",
+      "args": {},
+      "at": "2026-09-09T20:15:09.884Z",
+      "toolCallId": "r8-9db74991-0bc0-47d3-8095-6ce3881acf32",
+      "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+      "ok": true,
+      "result": {
+        "format": "craftmine.godot-capability/1",
+        "toolCount": 34,
+        "tools": [
+          {
+            "name": "godot_project_create",
+            "risk": "medium",
+            "hostMethod": "godotProject.create",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_project_index",
+            "risk": "low",
+            "hostMethod": "godotProject.index",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_file_read",
+            "risk": "low",
+            "hostMethod": "godotProject.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_project_patch",
+            "risk": "medium",
+            "hostMethod": "godotProject.patch",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_asset_put",
+            "risk": "medium",
+            "hostMethod": "godotAsset.put",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_asset_list",
+            "risk": "low",
+            "hostMethod": "godotAsset.list",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_build_start",
+            "risk": "medium",
+            "hostMethod": "godotBuild.start",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_build_read",
+            "risk": "low",
+            "hostMethod": "godotBuild.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_build_cancel",
+            "risk": "low",
+            "hostMethod": "godotBuild.cancel",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_candidate_read",
+            "risk": "low",
+            "hostMethod": "godotCandidate.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_candidate_list",
+            "risk": "low",
+            "hostMethod": "godotCandidate.list",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1"
+          },
+          {
+            "name": "godot_docs",
+            "risk": "low",
+            "hostMethod": null,
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_project_query",
+            "risk": "low",
+            "hostMethod": "godotProject.index+godotProject.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_runtime_state",
+            "risk": "low",
+            "hostMethod": "godotRuntime.describe",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_project_facts",
+            "risk": "low",
+            "hostMethod": "godotProject.index+godotCandidate.list+godotRuntime.describe",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_capability_report",
+            "risk": "low",
+            "hostMethod": "hello",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_history",
+            "risk": "low",
+            "hostMethod": "content.*",
+            "advertised": true,
+            "wired": true,
+            "reachable": false,
+            "blockedBy": "DEPENDENCY_NOT_WIRED",
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_jobs",
+            "risk": "medium",
+            "hostMethod": "godotExecutor.status+godotJob.usage+godotJob.continue",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "godot_draft_recovery",
+            "risk": "medium",
+            "hostMethod": "task.recoverable+task.resume",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S6",
+            "local": true
+          },
+          {
+            "name": "asset_library",
+            "risk": "low",
+            "hostMethod": "asset.search+asset.read+asset.versions",
+            "advertised": true,
+            "wired": true,
+            "reachable": false,
+            "blockedBy": "DEPENDENCY_NOT_WIRED",
+            "owner": "S5",
+            "local": true
+          },
+          {
+            "name": "package_library",
+            "risk": "low",
+            "hostMethod": "package.check+package.read+package.list",
+            "advertised": true,
+            "wired": true,
+            "reachable": false,
+            "blockedBy": "DEPENDENCY_NOT_WIRED",
+            "owner": "S3",
+            "local": true
+          },
+          {
+            "name": "project_inspect",
+            "risk": "low",
+            "hostMethod": "workspace.open+inspect",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "capabilities_read",
+            "risk": "low",
+            "hostMethod": "world.read+capabilities",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "resource_read",
+            "risk": "low",
+            "hostMethod": "workspace.recordRead",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "workspace_patch",
+            "risk": "medium",
+            "hostMethod": "workspace.commit",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "verification_submit",
+            "risk": "medium",
+            "hostMethod": "verification.submit",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "verification_read",
+            "risk": "low",
+            "hostMethod": "verification.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "verification_cancel",
+            "risk": "low",
+            "hostMethod": "verification.cancel",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "library_search",
+            "risk": "low",
+            "hostMethod": "library.search",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "library_read",
+            "risk": "low",
+            "hostMethod": "library.read",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "library_install",
+            "risk": "medium",
+            "hostMethod": "library.capture",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "memory_search",
+            "risk": "low",
+            "hostMethod": "memory.search",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "memory_propose",
+            "risk": "medium",
+            "hostMethod": "memory.propose",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          },
+          {
+            "name": "requirements_read",
+            "risk": "low",
+            "hostMethod": "task.readRequirements",
+            "advertised": true,
+            "wired": true,
+            "reachable": true,
+            "blockedBy": null,
+            "owner": "S1",
+            "local": true
+          }
+        ],
+        "handshake": {
+          "advisoryReviews": true,
+          "agentPublishesWorlds": false,
+          "assetCatalog": true,
+          "assetPreview": true,
+          "contentHistory": true,
+          "creationPackages": true,
+          "format": "craftmine.core/1",
+          "godotBuildJobs": true,
+          "godotExecution": false,
+          "godotExecutorGate": true,
+          "godotProjects": true,
+          "managedGit": true,
+          "playerApplications": true,
+          "portableBackup": true,
+          "publishesWorlds": true,
+          "sessionDrafts": true,
+          "storage": "sqlite",
+          "verificationJobs": true,
+          "version": "0.1.0"
+        },
+        "unreachableMethods": [
+          {
+            "method": "godotRuntime.describeCandidate",
+            "owner": "S1",
+            "kind": "read",
+            "reachable": false,
+            "capabilityEnabled": false,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotApplication.prepare",
+            "owner": "S1",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotApplication.commit",
+            "owner": "S1",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotApplication.read",
+            "owner": "S1",
+            "kind": "read",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotApplication.abort",
+            "owner": "S1",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotJob.claim",
+            "owner": "S2",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotJob.progress",
+            "owner": "S2",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotJob.heartbeat",
+            "owner": "S2",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "godotJob.finish",
+            "owner": "S2",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "library.capture",
+            "owner": "S1",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "backup.export",
+            "owner": "S4",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "backup.inspect",
+            "owner": "S4",
+            "kind": "read",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "backup.restore",
+            "owner": "S4",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "backup.status",
+            "owner": "S4",
+            "kind": "read",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          },
+          {
+            "method": "backup.cancel",
+            "owner": "S4",
+            "kind": "write",
+            "reachable": false,
+            "capabilityEnabled": true,
+            "reason": "NO_AGENT_TOOL_ROUTES_THIS_METHOD"
+          }
+        ],
+        "note": "reachable=null means the capability flag is unknown; it is never reported as available.",
+        "gapClassifications": [],
+        "limits": {
+          "available": false,
+          "reason": "BUDGET_READ_FAILED",
+          "errorCode": "WORKSPACE_NOT_OPEN",
+          "owner": "S1",
+          "requiredHostMethod": "budget.inspect",
+          "kinds": [
+            "tokens",
+            "context",
+            "requests",
+            "compactions",
+            "service",
+            "wallClock",
+            "resource"
+          ],
+          "note": "The durable ledger could not be read; every counter is unknown."
+        },
+        "services": {
+          "format": "craftmine.tool-services/1",
+          "wired": [
+            {
+              "key": "sampleLiveState",
+              "owner": "R2",
+              "hostMethod": "godotLiveState",
+              "requiredFor": [
+                "godot_runtime_state scope=live",
+                "godot_project_facts.live"
+              ],
+              "provides": "a timestamped sample of the running instance: world, build, instance, camera, equipment, entities, quests",
+              "kind": "function"
+            },
+            {
+              "key": "budget",
+              "owner": "R2+S1",
+              "hostMethod": "budgetSnapshot",
+              "requiredFor": [
+                "godot_capability_report.limits",
+                "godot_project_facts.limits"
+              ],
+              "provides": "the seven limit kinds (tokens, context, requests, compactions, service, wallClock, resource) from the durable ledger",
+              "kind": "function"
+            },
+            {
+              "key": "executorStatus",
+              "owner": "S2",
+              "hostMethod": null,
+              "requiredFor": [
+                "godot_jobs mode=status",
+                "godot_project_facts.executor"
+              ],
+              "provides": "the live managed-executor gate and the registered executors of this process",
+              "kind": "function"
+            },
+            {
+              "key": "executorEnqueue",
+              "owner": "S2",
+              "hostMethod": null,
+              "requiredFor": [
+                "godot_build_start",
+                "godot_jobs mode=resume"
+              ],
+              "provides": "hands a queued core build/check job to the live managed executor",
+              "kind": "function"
+            },
+            {
+              "key": "executorCancel",
+              "owner": "S2",
+              "hostMethod": null,
+              "requiredFor": [
+                "godot_build_cancel"
+              ],
+              "provides": "cancels the executor-side worker for one job id",
+              "kind": "function"
+            }
+          ],
+          "missing": [],
+          "optionalMissing": [
+            {
+              "key": "isDiscussionOnly",
+              "owner": "R2",
+              "hostMethod": null,
+              "requiredFor": [
+                "discussion-mode write refusal"
+              ],
+              "provides": "whether the current turn is discussion-only, from the session the host actually owns",
+              "kind": "function",
+              "reason": "NOT_WIRED",
+              "note": "Optional override or tuning value; the tool uses its documented default.",
+              "optional": true
+            },
+            {
+              "key": "historyMethods",
+              "owner": "S1",
+              "hostMethod": "content.*",
+              "requiredFor": [
+                "godot_history"
+              ],
+              "provides": "the registered content-history method names",
+              "kind": "object",
+              "reason": "NOT_WIRED",
+              "note": "Optional override or tuning value; the tool uses its documented default.",
+              "optional": true
+            },
+            {
+              "key": "libraryMethods",
+              "owner": "S1+S3+S5",
+              "hostMethod": "asset.*/package.*",
+              "requiredFor": [
+                "asset_library",
+                "package_library"
+              ],
+              "provides": "the registered asset and package method names",
+              "kind": "object",
+              "reason": "NOT_WIRED",
+              "note": "Optional override or tuning value; the tool uses its documented default.",
+              "optional": true
+            },
+            {
+              "key": "maxSampleAgeMs",
+              "owner": "R2",
+              "hostMethod": null,
+              "requiredFor": [
+                "godot_runtime_state scope=live staleness"
+              ],
+              "provides": "the freshness window the host accepts for a live sample",
+              "kind": "number",
+              "reason": "NOT_WIRED",
+              "note": "Optional override or tuning value; the tool uses its documented default.",
+              "optional": true
+            }
+          ],
+          "complete": true,
+          "note": "wired lists the providers this process actually received; missing names the exact owner and host method for a required one; optionalMissing has a working default."
+        },
+        "guidance": [
+          "Tools in this inventory define what is actually available; do not claim a capability outside it.",
+          "A wired tool whose capability flag is false is disabled, not broken: report the reason and the owner.",
+          "services.missing names a provider this process did not receive; its value is unknown, never zero or saved state.",
+          "Ordinary gameplay, scenes, UI and GDScript are developable without a new host command.",
+          "Engine internals, sandbox rules and the verification standard are not changeable by a world task."
+        ]
+      }
+    },
+    {
+      "name": "godot_project_create",
+      "args": {
+        "baseId": "first-person",
+        "files": [
+          {
+            "path": "project.godot",
+            "text": "config_version=5\n\n[application]\nconfig/name=\"S7 probe\"\nrun/main_scene=\"res://main.tscn\"\n\n[rendering]\nrenderer/rendering_method=\"gl_compatibility\"\n"
+          },
+          {
+            "path": "main.tscn",
+            "text": "[gd_scene load_steps=2 format=3]\n\n[ext_resource type=\"Script\" path=\"res://main.gd\" id=\"1\"]\n\n[node name=\"Main\" type=\"Node3D\"]\nscript = ExtResource(\"1\")\n"
+          },
+          {
+            "path": "main.gd",
+            "text": "extends Node3D\n\nfunc _ready() -> void:\n\tprint(\"s7 probe world ready\")\n"
+          }
+        ]
+      },
+      "at": "2026-09-09T20:15:09.887Z",
+      "toolCallId": "r8-77b775f6-6786-4e50-92fa-c650e1e9654a",
+      "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+      "ok": true,
+      "result": {
+        "applied": false,
+        "baseBuild": "v-b3af5624b1cb26865971",
+        "bytes": 367,
+        "fileCount": 3,
+        "manifestHash": "aca0b5dc73ea957168fd36f9a1b7cc9e41756995be3f7da9dfac2fac96673eda",
+        "revision": 0,
+        "status": "source-only",
+        "taskId": "work-bfab4414d4a1c38748eaabda7a1d35ef90222b10d505507c64facb8c24ab24c4",
+        "toolCallId": "r8-77b775f6-6786-4e50-92fa-c650e1e9654a",
+        "verified": false,
+        "worldId": "869ecdd4-d239-4fde-bdf4-00c1a6c74ada"
+      }
+    },
+    {
+      "name": "godot_project_index",
+      "args": {},
+      "at": "2026-09-09T20:15:09.898Z",
+      "toolCallId": "r8-167632b5-e44a-4f66-83ef-c2ee4ab63d0d",
+      "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+      "ok": true,
+      "result": {
+        "applied": false,
+        "baseBuild": "v-b3af5624b1cb26865971",
+        "baseId": "first-person",
+        "binaryAssetsAvailable": false,
+        "currentTaskId": "work-bfab4414d4a1c38748eaabda7a1d35ef90222b10d505507c64facb8c24ab24c4",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "files": [
+          {
+            "bytes": 70,
+            "path": "main.gd",
+            "sha256": "07083a00b73b4456b3d715fbbf21af732b964442f30454b93deee70a8f3074a4"
+          },
+          {
+            "bytes": 151,
+            "path": "main.tscn",
+            "sha256": "182b3989c0f1b29435d36fa0ac4bb525b93596d2f092514c2f361bf4a7790299"
+          },
+          {
+            "bytes": 146,
+            "path": "project.godot",
+            "sha256": "b5bf87a959bf2e923283e4a357e0fb62842dabbe8bd9c9aa839e9adca12cb9cf"
+          }
+        ],
+        "format": "craftmine.godot-project/1",
+        "language": "GDScript",
+        "lastWriter": {
+          "baseBuild": "v-b3af5624b1cb26865971",
+          "projectId": "r8-live",
+          "sessionId": "f448e5ca-ac46-4099-a56f-ccea50db861f",
+          "taskId": "work-bfab4414d4a1c38748eaabda7a1d35ef90222b10d505507c64facb8c24ab24c4",
+          "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2"
+        },
+        "manifestHash": "aca0b5dc73ea957168fd36f9a1b7cc9e41756995be3f7da9dfac2fac96673eda",
+        "nextOffset": null,
+        "renderer": "gl_compatibility",
+        "revision": 0,
+        "status": "source-only",
+        "target": "web",
+        "totalFiles": 3,
+        "verified": false,
+        "worldId": "869ecdd4-d239-4fde-bdf4-00c1a6c74ada"
+      }
+    },
+    {
+      "name": "godot_file_read",
+      "args": {
+        "path": "project.godot",
+        "revision": 0,
+        "manifestHash": "aca0b5dc73ea957168fd36f9a1b7cc9e41756995be3f7da9dfac2fac96673eda",
+        "offset": 0,
+        "limit": 16000
+      },
+      "at": "2026-09-09T20:15:09.899Z",
+      "toolCallId": "r8-399f2659-02ec-48a2-862b-2781648551aa",
+      "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+      "ok": true,
+      "result": {
+        "bytes": 146,
+        "manifestHash": "aca0b5dc73ea957168fd36f9a1b7cc9e41756995be3f7da9dfac2fac96673eda",
+        "nextOffset": null,
+        "offset": 0,
+        "path": "project.godot",
+        "revision": 0,
+        "sha256": "b5bf87a959bf2e923283e4a357e0fb62842dabbe8bd9c9aa839e9adca12cb9cf",
+        "text": "config_version=5\n\n[application]\nconfig/name=\"S7 probe\"\nrun/main_scene=\"res://main.tscn\"\n\n[rendering]\nrenderer/rendering_method=\"gl_compatibility\"\n",
+        "totalCharacters": 146,
+        "worldId": "869ecdd4-d239-4fde-bdf4-00c1a6c74ada"
+      }
+    },
+    {
+      "name": "godot_project_patch",
+      "args": {
+        "revision": 0,
+        "manifestHash": "aca0b5dc73ea957168fd36f9a1b7cc9e41756995be3f7da9dfac2fac96673eda",
+        "operations": [
+          {
+            "op": "put",
+            "path": "probe_note.gd",
+            "text": "extends Node\n\n# written by the S7 product probe\n",
+            "expectedHash": null
+          }
+        ]
+      },
+      "at": "2026-09-09T20:15:09.900Z",
+      "toolCallId": "r8-0512c2b3-9436-484a-80e6-f9560030d8d9",
+      "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+      "ok": true,
+      "result": {
+        "applied": false,
+        "baseBuild": "v-b3af5624b1cb26865971",
+        "bytes": 415,
+        "fileCount": 4,
+        "manifestHash": "250fabaeb4c86e6fa96c7ea8a634e463a41978fe84b99fcc5b0fac4afe203b02",
+        "revision": 1,
+        "status": "source-only",
+        "taskId": "work-bfab4414d4a1c38748eaabda7a1d35ef90222b10d505507c64facb8c24ab24c4",
+        "toolCallId": "r8-0512c2b3-9436-484a-80e6-f9560030d8d9",
+        "verified": false,
+        "worldId": "869ecdd4-d239-4fde-bdf4-00c1a6c74ada"
+      }
+    },
+    {
+      "name": "godot_project_index",
+      "args": {},
+      "at": "2026-09-09T20:15:09.905Z",
+      "toolCallId": "r8-52962e88-1fcd-46f4-896f-f50c6f7a69dc",
+      "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+      "ok": true,
+      "result": {
+        "applied": false,
+        "baseBuild": "v-b3af5624b1cb26865971",
+        "baseId": "first-person",
+        "binaryAssetsAvailable": false,
+        "currentTaskId": "work-bfab4414d4a1c38748eaabda7a1d35ef90222b10d505507c64facb8c24ab24c4",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "files": [
+          {
+            "bytes": 70,
+            "path": "main.gd",
+            "sha256": "07083a00b73b4456b3d715fbbf21af732b964442f30454b93deee70a8f3074a4"
+          },
+          {
+            "bytes": 151,
+            "path": "main.tscn",
+            "sha256": "182b3989c0f1b29435d36fa0ac4bb525b93596d2f092514c2f361bf4a7790299"
+          },
+          {
+            "bytes": 48,
+            "path": "probe_note.gd",
+            "sha256": "e51d57ab7d6014f50f6a0fa4d9571db9ab9665a643960fcc226a9bb61ceaa843"
+          },
+          {
+            "bytes": 146,
+            "path": "project.godot",
+            "sha256": "b5bf87a959bf2e923283e4a357e0fb62842dabbe8bd9c9aa839e9adca12cb9cf"
+          }
+        ],
+        "format": "craftmine.godot-project/1",
+        "language": "GDScript",
+        "lastWriter": {
+          "baseBuild": "v-b3af5624b1cb26865971",
+          "projectId": "r8-live",
+          "sessionId": "f448e5ca-ac46-4099-a56f-ccea50db861f",
+          "taskId": "work-bfab4414d4a1c38748eaabda7a1d35ef90222b10d505507c64facb8c24ab24c4",
+          "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2"
+        },
+        "manifestHash": "250fabaeb4c86e6fa96c7ea8a634e463a41978fe84b99fcc5b0fac4afe203b02",
+        "nextOffset": null,
+        "renderer": "gl_compatibility",
+        "revision": 1,
+        "status": "source-only",
+        "target": "web",
+        "totalFiles": 4,
+        "verified": false,
+        "worldId": "869ecdd4-d239-4fde-bdf4-00c1a6c74ada"
+      }
+    },
+    {
+      "name": "godot_build_start",
+      "args": {
+        "revision": 1,
+        "manifestHash": "250fabaeb4c86e6fa96c7ea8a634e463a41978fe84b99fcc5b0fac4afe203b02",
+        "mode": "check"
+      },
+      "at": "2026-09-09T20:15:09.907Z",
+      "toolCallId": "r8-f9064822-59f7-4467-8406-455913f16572",
+      "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+      "ok": true,
+      "result": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "v-b3af5624b1cb26865971",
+        "baseId": "first-person",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "buildId": "gbd-4c32483d7a07b86b60a41fecbd5536f787f59f0c805cb12c29815c8e15025994",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "jobId": "gjob-fb0e73fad9ebd60821993d7795dada8f6f011bda4b25e1634f673929c6ced698",
+        "kind": "check",
+        "manifestHash": "250fabaeb4c86e6fa96c7ea8a634e463a41978fe84b99fcc5b0fac4afe203b02",
+        "materialized": {
+          "bytes": 7921,
+          "files": 7
+        },
+        "renderer": "gl_compatibility",
+        "replayed": false,
+        "sourceRevision": 1,
+        "status": "blocked",
+        "target": "web",
+        "worldId": "869ecdd4-d239-4fde-bdf4-00c1a6c74ada",
+        "execution": {
+          "enqueued": false,
+          "reason": "GODOT_EXECUTION_UNAVAILABLE",
+          "owner": "S2",
+          "skipped": true
+        }
+      }
+    },
+    {
+      "name": "godot_build_read",
+      "args": {
+        "jobId": "gjob-fb0e73fad9ebd60821993d7795dada8f6f011bda4b25e1634f673929c6ced698"
+      },
+      "at": "2026-09-09T20:15:09.924Z",
+      "toolCallId": "r8-020d01bb-941f-4492-8760-b7dedac03203",
+      "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+      "ok": true,
+      "result": {
+        "artifacts": [],
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "v-b3af5624b1cb26865971",
+        "baseId": "first-person",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "buildId": "gbd-4c32483d7a07b86b60a41fecbd5536f787f59f0c805cb12c29815c8e15025994",
+        "candidateId": null,
+        "createdAt": 1788984909923,
+        "executorId": null,
+        "interruptReason": null,
+        "jobId": "gjob-fb0e73fad9ebd60821993d7795dada8f6f011bda4b25e1634f673929c6ced698",
+        "kind": "check",
+        "leaseExpiresAt": null,
+        "manifestHash": "250fabaeb4c86e6fa96c7ea8a634e463a41978fe84b99fcc5b0fac4afe203b02",
+        "originJobId": null,
+        "output": null,
+        "outputHash": null,
+        "progress": 0,
+        "sourceRevision": 1,
+        "sourceStale": false,
+        "stage": null,
+        "status": "blocked",
+        "taskId": "work-bfab4414d4a1c38748eaabda7a1d35ef90222b10d505507c64facb8c24ab24c4",
+        "updatedAt": 1788984909923,
+        "worldId": "869ecdd4-d239-4fde-bdf4-00c1a6c74ada"
+      }
+    },
+    {
+      "name": "godot_jobs",
+      "args": {
+        "mode": "status"
+      },
+      "at": "2026-09-09T20:15:09.925Z",
+      "toolCallId": "r8-cc6c9926-53ab-4e28-8fc8-7d2ba4104f6f",
+      "turnId": "0598989c-a760-4b7d-9c7b-5e6e526b99a2",
+      "ok": true,
+      "result": {
+        "format": "craftmine.godot-jobs/1",
+        "scope": "executor",
+        "status": {
+          "format": "craftmine.godot-executor-status/1",
+          "executorId": "craftmine-windows-broker-v1",
+          "engineVersion": "4.7.2-stable",
+          "isolation": "craftmine.windows.lpac-registry.v1",
+          "state": "unavailable",
+          "available": false,
+          "buildAvailable": false,
+          "checkAvailable": false,
+          "reason": "GODOT_BROKER_MISSING",
+          "broker": null,
+          "engineRoot": null,
+          "lock": null,
+          "evidenceHash": null,
+          "bridge": {
+            "sha256": null
+          },
+          "preflight": null,
+          "recoveries": [],
+          "startupRecovery": null,
+          "restartReconciliation": null,
+          "stopRecovery": null,
+          "resources": {
+            "sampled": true,
+            "hardFilesystemQuota": false,
+            "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+            "lastObserved": null
+          },
+          "jobs": [],
+          "ledger": {
+            "jobs": 0,
+            "active": 0,
+            "updatedAt": null,
+            "error": null
+          },
+          "tasksRoot": null,
+          "registered": false,
+          "revokedOnStop": null
+        },
+        "source": "live-executor",
+        "tokenGatedMethods": [
+          "godotJob.claim",
+          "godotJob.progress",
+          "godotJob.heartbeat",
+          "godotJob.finish",
+          "godotJob.checkDescriptor",
+          "godotExecutor.register",
+          "godotExecutor.revoke"
+        ]
+      }
+    }
+  ],
+  "limits": [
+    "No model request is made by this probe; it only exercises product startup and the managed executor path.",
+    "A passing build/check here is not acceptance: the frozen runtime assertions and the real-model requirement are separate ledgers."
+  ],
+  "finishedAt": "2026-09-09T20:15:09.925Z",
+  "failedSteps": [
+    "managed executor registers after a real broker preflight"
+  ],
+  "skippedSteps": [
+    "godot_candidate_read reads the produced candidate"
+  ]
+}

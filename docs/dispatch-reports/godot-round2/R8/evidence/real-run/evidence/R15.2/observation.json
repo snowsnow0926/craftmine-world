@@ -1,0 +1,107 @@
+{
+  "format": "craftmine.i.observation/1",
+  "project": {
+    "files": [],
+    "baseId": null,
+    "status": null,
+    "manifestHash": null,
+    "revision": null,
+    "fileCount": 0,
+    "error": "GODOT_PROJECT_NOT_FOUND"
+  },
+  "build": {
+    "executorState": "unavailable",
+    "executorReason": "GODOT_BROKER_MISSING",
+    "available": false,
+    "checked": false
+  },
+  "writes": {
+    "attempted": 0,
+    "failed": 0,
+    "names": []
+  },
+  "toolCalls": [
+    {
+      "name": "godot_project_index",
+      "ok": false,
+      "code": "GODOT_PROJECT_NOT_FOUND",
+      "error": "GODOT_PROJECT_NOT_FOUND"
+    },
+    {
+      "name": "requirements_read",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "project_inspect",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "memory_search",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_asset_list",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "memory_search",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "library_search",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "requirements_read",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_project_index",
+      "ok": false,
+      "code": "GODOT_PROJECT_NOT_FOUND",
+      "error": "GODOT_PROJECT_NOT_FOUND"
+    }
+  ],
+  "usage": {
+    "calls": 8,
+    "promptTokens": 3462,
+    "cachedReadTokens": 45311,
+    "nonCachedInputTokens": -41849,
+    "outputTokens": 35706,
+    "totalTokens": 84479,
+    "unknownCalls": 0
+  },
+  "failures": [
+    {
+      "class": "unclassified",
+      "stage": "tool:godot_project_index",
+      "message": "GODOT_PROJECT_NOT_FOUND",
+      "defined": true
+    },
+    {
+      "class": "unclassified",
+      "stage": "tool:godot_project_index",
+      "message": "GODOT_PROJECT_NOT_FOUND",
+      "defined": true
+    }
+  ],
+  "humanInterventions": [],
+  "evidence": {
+    "screenshots": [],
+    "human": []
+  }
+}

@@ -1,0 +1,142 @@
+﻿[
+ {
+  "name": "runtime_info",
+  "risk": "low"
+ },
+ {
+  "name": "godot_project_create",
+  "risk": "medium"
+ },
+ {
+  "name": "godot_project_index",
+  "risk": "low"
+ },
+ {
+  "name": "godot_file_read",
+  "risk": "low"
+ },
+ {
+  "name": "godot_project_patch",
+  "risk": "medium"
+ },
+ {
+  "name": "godot_asset_put",
+  "risk": "medium"
+ },
+ {
+  "name": "godot_asset_list",
+  "risk": "low"
+ },
+ {
+  "name": "godot_build_start",
+  "risk": "medium"
+ },
+ {
+  "name": "godot_build_read",
+  "risk": "low"
+ },
+ {
+  "name": "godot_build_cancel",
+  "risk": "low"
+ },
+ {
+  "name": "godot_candidate_read",
+  "risk": "low"
+ },
+ {
+  "name": "godot_candidate_list",
+  "risk": "low"
+ },
+ {
+  "name": "godot_docs",
+  "risk": "low"
+ },
+ {
+  "name": "godot_project_query",
+  "risk": "low"
+ },
+ {
+  "name": "godot_runtime_state",
+  "risk": "low"
+ },
+ {
+  "name": "godot_project_facts",
+  "risk": "low"
+ },
+ {
+  "name": "godot_capability_report",
+  "risk": "low"
+ },
+ {
+  "name": "godot_history",
+  "risk": "low"
+ },
+ {
+  "name": "godot_jobs",
+  "risk": "medium"
+ },
+ {
+  "name": "godot_draft_recovery",
+  "risk": "medium"
+ },
+ {
+  "name": "asset_library",
+  "risk": "low"
+ },
+ {
+  "name": "package_library",
+  "risk": "low"
+ },
+ {
+  "name": "project_inspect",
+  "risk": "low"
+ },
+ {
+  "name": "capabilities_read",
+  "risk": "low"
+ },
+ {
+  "name": "resource_read",
+  "risk": "low"
+ },
+ {
+  "name": "workspace_patch",
+  "risk": "medium"
+ },
+ {
+  "name": "verification_submit",
+  "risk": "medium"
+ },
+ {
+  "name": "verification_read",
+  "risk": "low"
+ },
+ {
+  "name": "verification_cancel",
+  "risk": "low"
+ },
+ {
+  "name": "library_search",
+  "risk": "low"
+ },
+ {
+  "name": "library_read",
+  "risk": "low"
+ },
+ {
+  "name": "library_install",
+  "risk": "medium"
+ },
+ {
+  "name": "memory_search",
+  "risk": "low"
+ },
+ {
+  "name": "memory_propose",
+  "risk": "medium"
+ },
+ {
+  "name": "requirements_read",
+  "risk": "low"
+ }
+]

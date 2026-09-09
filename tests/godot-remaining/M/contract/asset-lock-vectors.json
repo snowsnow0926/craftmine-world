@@ -1,0 +1,247 @@
+{
+  "format": "craftmine.contract-vectors/1",
+  "generatedBy": "cargo test -p craftmine-core --lib content_history::contract_tests::print_frozen_vectors -- --ignored --nocapture",
+  "regeneratedByTest": true,
+  "gitHead": "e462147852e36bdfcaf897d3f915c5809fb88670",
+  "worktree": "godot-remaining-m-20260910",
+  "owner": "task M (content history); co-owner N (asset catalog) for the shared reference contract",
+  "canonicalRules": [
+    "Lock file name is craftmine.assets.lock.json (ASSET_LOCK_FILE); the format identifier is craftmine.assets-lock/1 (ASSET_LOCK_FORMAT).",
+    "Canonical text is the pretty JSON serialization of AssetLock with two-space indentation, LF line endings and exactly one trailing newline. No CR, no BOM, no trailing spaces.",
+    "assetLockHash is the SHA-256 of exactly those canonical bytes, written as 64 lowercase hex characters.",
+    "Sort order: assets by (assetId, version) byte order then installPath; files by path; dependencies by (assetId, version); overrides by (scope, path). Exact duplicates are collapsed.",
+    "The same (assetId, version) with a different AssetRef is rejected as ASSET_LOCK_VERSION_CONFLICT; an identical duplicate entry is collapsed.",
+    "Every dependency must resolve to an entry inside assets[] (ASSET_LOCK_DEPENDENCY_UNRESOLVED); dependency cycles are rejected (ASSET_LOCK_DEPENDENCY_CYCLE) instead of being resolved silently.",
+    "Bytes committed to Git must already be canonical: AssetLock::parse_canonical rejects a schema-valid but re-serialized document with ASSET_LOCK_NOT_CANONICAL, while AssetLock::parse alone accepts it.",
+    "Git object IDs are validated as 4..=64 lowercase hex characters (validate_oid). A 64-character lowercase hex string IS a valid object ID and is never assumed to be 40 characters; a 64-character uppercase hex string is rejected. The repository object format is recorded in repo.json (craftmine.content-repository/1).",
+    "Asset content hashes use a separate namespace: validate_sha256 requires exactly 64 lowercase hex characters. A 40-character Git OID is not a SHA-256 hash and a SHA-256 hash is not validated as an OID.",
+    "Stored paths are relative, forward-slash separated, at most 240 bytes, at most 16 segments and at most 80 bytes per segment. Traversal, '.', absolute paths, drive letters, backslashes, control characters, Windows device names, '.git' components and case-insensitive collisions are rejected.",
+    "Unicode NFC normalization is the producer's responsibility; the hash always covers the stored bytes, so the contract never normalizes implicitly.",
+    "Lock documents larger than 8 MiB are rejected as ASSET_LOCK_TOO_LARGE; non-UTF-8 bytes are rejected as ASSET_LOCK_NOT_UTF8.",
+    "There is exactly one lock document shape: {format, assets[]} with a string AssetRef.version. The installer's legacy direct/closure string arrays, the package validator's direct/closure object arrays and a numeric version are all rejected as INVALID_ASSET_LOCK, so the same format identifier can never carry three different semantics; a consumer with legacy data must migrate it explicitly."
+  ],
+  "vectors": [
+    {
+      "name": "fixture-lock",
+      "description": "Two-entry fixture from contract_tests::fixture(): base-stone/1.0.0 (files model/block.glb and textures/granite.png, one dependency on palette-core/2.1.0, one override in scope world:town) and palette-core/2.1.0. Input is deliberately out of order; canonicalization sorts it.",
+      "assetLockHash": "b95794a2afd498e782e6ec64ec84f1a595d9b56ac723ee4c997a15bbcaad9f0b",
+      "sha256OfLockText": "b95794a2afd498e782e6ec64ec84f1a595d9b56ac723ee4c997a15bbcaad9f0b",
+      "lockBytes": 1688,
+      "verifiedBy": [
+        "content_history::contract_tests::canonical_fixture_matches_the_frozen_vector",
+        "content_history::contract_tests::canonical_fixture_has_the_frozen_first_bytes"
+      ],
+      "lockText": "{\n  \"format\": \"craftmine.assets-lock/1\",\n  \"assets\": [\n    {\n      \"asset\": {\n        \"assetId\": \"base-stone\",\n        \"version\": \"1.0.0\",\n        \"contentHash\": \"848dc1b555c49e706e43a5f5b8ac550a5a0fdff8b636a4cc0f4cdc49f514b319\"\n      },\n      \"installPath\": \"assets/base/stone\",\n      \"files\": [\n        {\n          \"path\": \"model/block.glb\",\n          \"sha256\": \"947f4def6be949505720f95960bff815cbd6246989629c20ae649659732d1488\",\n          \"bytes\": 8192,\n          \"mediaType\": \"model/gltf-binary\"\n        },\n        {\n          \"path\": \"textures/granite.png\",\n          \"sha256\": \"03deab969654378128489a94db93e642f4a5f4e3384dff512a4619040b05180d\",\n          \"bytes\": 2048,\n          \"mediaType\": \"image/png\"\n        }\n      ],\n      \"dependencies\": [\n        {\n          \"assetId\": \"palette-core\",\n          \"version\": \"2.1.0\",\n          \"contentHash\": \"c4576d3573053fbdeb1b0f4f71cfea38a5140c218df76280a68428797ce5d0a7\"\n        }\n      ],\n      \"overrides\": [\n        {\n          \"scope\": \"world:town\",\n          \"path\": \"textures/granite.png\",\n          \"contentHash\": \"90533b4a78fccad7241cb480802c8862c98f44793082cfc68dc45e0d460f9fef\"\n        }\n      ]\n    },\n    {\n      \"asset\": {\n        \"assetId\": \"palette-core\",\n        \"version\": \"2.1.0\",\n        \"contentHash\": \"c4576d3573053fbdeb1b0f4f71cfea38a5140c218df76280a68428797ce5d0a7\"\n      },\n      \"installPath\": \"assets/core/palette\",\n      \"files\": [\n        {\n          \"path\": \"palette.json\",\n          \"sha256\": \"de98bf0ae6a74d809dd0ed5cc6a0e053fb76bbc84cbbdb2e3853f997a3c5eaec\",\n          \"bytes\": 512,\n          \"mediaType\": \"application/json\"\n        }\n      ],\n      \"dependencies\": [],\n      \"overrides\": []\n    }\n  ]\n}\n"
+    },
+    {
+      "name": "empty-lock",
+      "description": "AssetLock::empty() with no assets. Used as the stable empty-world lock.",
+      "assetLockHash": "70396c0e7b3582530fb2765684ae9a8bbc6579c93066539e5ed83ce0db5a4809",
+      "sha256OfLockText": "70396c0e7b3582530fb2765684ae9a8bbc6579c93066539e5ed83ce0db5a4809",
+      "lockBytes": 58,
+      "verifiedBy": [
+        "content_history::contract_tests::empty_lock_has_a_stable_hash"
+      ],
+      "lockText": "{\n  \"format\": \"craftmine.assets-lock/1\",\n  \"assets\": []\n}\n",
+      "lockTextDebugVerbatim": "\"{\\n  \\\"format\\\": \\\"craftmine.assets-lock/1\\\",\\n  \\\"assets\\\": []\\n}\\n\""
+    }
+  ],
+  "errorVectors": [
+    {
+      "name": "forty-character-git-oid-is-not-a-sha256-hash",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "call": "validate_sha256",
+      "expectedError": "INVALID_SHA256",
+      "verifiedBy": "content_history::contract_tests::git_oids_are_not_assumed_to_be_forty_characters"
+    },
+    {
+      "name": "sha256-shaped-uppercase-hex-rejected-as-git-oid",
+      "input": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "call": "validate_oid",
+      "expectedError": "INVALID_GIT_OID",
+      "verifiedBy": "contract.rs validate_oid / is_lower_hex (a 64-character LOWERCASE hex string is valid; uppercase is not)"
+    },
+    {
+      "name": "git-oid-longer-than-64-characters",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "call": "validate_oid",
+      "expectedError": "INVALID_GIT_OID",
+      "verifiedBy": "content_history::contract_tests::git_oids_are_not_assumed_to_be_forty_characters"
+    },
+    {
+      "name": "uppercase-git-oid",
+      "input": "ABCDEF",
+      "call": "validate_oid",
+      "expectedError": "INVALID_GIT_OID",
+      "verifiedBy": "content_history::contract_tests::git_oids_are_not_assumed_to_be_forty_characters"
+    },
+    {
+      "name": "non-hexadecimal-git-oid",
+      "input": "abcxyz",
+      "call": "validate_oid",
+      "expectedError": "INVALID_GIT_OID",
+      "verifiedBy": "content_history::contract_tests::git_oids_are_not_assumed_to_be_forty_characters"
+    },
+    {
+      "name": "mutable-version-latest",
+      "input": "AssetRef { assetId: \"base-stone\", version: \"latest\", contentHash: <64 hex> }",
+      "call": "AssetLockEntry::validate / AssetRef::validate",
+      "expectedError": "ASSET_LOCK_MUTABLE_VERSION",
+      "verifiedBy": "content_history::contract_tests::asset_lock_rejects_mutable_versions"
+    },
+    {
+      "name": "mutable-version-head",
+      "input": "AssetRef { assetId: \"base-stone\", version: \"head\", contentHash: <64 hex> }",
+      "call": "AssetRef::validate",
+      "expectedError": "ASSET_LOCK_MUTABLE_VERSION",
+      "verifiedBy": "contract.rs AssetRef::validate (eq_ignore_ascii_case(\"head\"))"
+    },
+    {
+      "name": "conflicting-duplicate-asset-version",
+      "input": "two entries base-stone/1.0.0 with different contentHash values",
+      "call": "AssetLock::new / AssetLock::canonicalize",
+      "expectedError": "ASSET_LOCK_VERSION_CONFLICT: base-stone/1.0.0",
+      "verifiedBy": "content_history::contract_tests::asset_lock_rejects_conflicting_duplicate_versions"
+    },
+    {
+      "name": "unresolved-dependency",
+      "input": "entry base-stone/1.0.0 depending on missing/1.0.0, which is absent from assets[]",
+      "call": "AssetLock::new / AssetLock::canonicalize",
+      "expectedError": "ASSET_LOCK_DEPENDENCY_UNRESOLVED: missing/1.0.0",
+      "verifiedBy": "content_history::contract_tests::asset_lock_rejects_unresolved_and_cyclic_dependencies"
+    },
+    {
+      "name": "dependency-cycle",
+      "input": "a/1 depends on b/1 and b/1 depends on a/1",
+      "call": "AssetLock::new / AssetLock::canonicalize",
+      "expectedError": "ASSET_LOCK_DEPENDENCY_CYCLE: a/1 -> b/1 -> a/1",
+      "verifiedBy": "content_history::contract_tests::asset_lock_rejects_unresolved_and_cyclic_dependencies"
+    },
+    {
+      "name": "path-traversal",
+      "input": "../escape.gd",
+      "call": "validate_relative_path",
+      "expectedError": "PATH_TRAVERSAL",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "nested-path-traversal",
+      "input": "a/../../b.gd",
+      "call": "validate_relative_path",
+      "expectedError": "PATH_TRAVERSAL",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "dot-git-component",
+      "input": "a/.git/config",
+      "call": "validate_relative_path",
+      "expectedError": "PATH_TRAVERSAL",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "absolute-path",
+      "input": "/abs/path.gd",
+      "call": "validate_relative_path",
+      "expectedError": "PATH_NOT_RELATIVE",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "drive-letter-path",
+      "input": "C:/windows.gd",
+      "call": "validate_relative_path",
+      "expectedError": "PATH_NOT_RELATIVE",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "backslash-path",
+      "input": "a\\b.gd",
+      "call": "validate_relative_path",
+      "expectedError": "PATH_NOT_RELATIVE",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "windows-device-name",
+      "input": "con.gd",
+      "call": "validate_relative_path",
+      "expectedError": "PATH_RESERVED_NAME",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "windows-device-name-in-subdirectory",
+      "input": "dir/COM1.txt",
+      "call": "validate_relative_path",
+      "expectedError": "PATH_RESERVED_NAME",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "empty-path",
+      "input": "",
+      "call": "validate_relative_path",
+      "expectedError": "INVALID_RELATIVE_PATH",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "trailing-separator",
+      "input": "trailing /",
+      "call": "validate_relative_path",
+      "expectedError": "INVALID_RELATIVE_PATH",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "segment-ending-in-dot",
+      "input": "dot./file.gd",
+      "call": "validate_relative_path",
+      "expectedError": "INVALID_RELATIVE_PATH",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "case-collision-across-paths",
+      "input": "[\"Assets/A.png\", \"assets/a.png\"]",
+      "call": "detect_path_collisions",
+      "expectedError": "PATH_COLLISION",
+      "verifiedBy": "content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names"
+    },
+    {
+      "name": "non-canonical-lock-bytes",
+      "input": "canonical fixture text re-indented with six spaces per level",
+      "call": "AssetLock::parse_canonical",
+      "expectedError": "ASSET_LOCK_NOT_CANONICAL",
+      "verifiedBy": "content_history::contract_tests::lock_parse_requires_canonical_bytes_for_commits"
+    },
+    {
+      "name": "invalid-lock-json",
+      "input": "not json",
+      "call": "AssetLock::parse",
+      "expectedError": "INVALID_ASSET_LOCK",
+      "verifiedBy": "content_history::contract_tests::lock_parse_requires_canonical_bytes_for_commits"
+    },
+    {
+      "name": "lock-format-mismatch",
+      "input": "AssetLock { format: \"craftmine.assets-lock/2\", assets: [] }",
+      "call": "AssetLock::canonicalize",
+      "expectedError": "ASSET_LOCK_FORMAT_MISMATCH",
+      "verifiedBy": "contract.rs AssetLock::canonicalize (first ensure!)"
+    },
+    {
+      "name": "legacy-direct-closure-lock-shape",
+      "input": "{\"format\":\"craftmine.assets-lock/1\",\"direct\":[\"door@1\"],\"closure\":[\"door@1\"],\"graph\":{\"door@1\":[]}}",
+      "call": "AssetLock::parse",
+      "expectedError": "INVALID_ASSET_LOCK",
+      "verifiedBy": "content_history::contract_vectors_tests (the installer's legacy direct/closure shape is not a lock document)"
+    },
+    {
+      "name": "legacy-direct-object-lock-shape",
+      "input": "{\"format\":\"craftmine.assets-lock/1\",\"direct\":[{\"id\":\"door\",\"version\":1}],\"closure\":[{\"id\":\"door\",\"version\":1}]}",
+      "call": "AssetLock::parse",
+      "expectedError": "INVALID_ASSET_LOCK",
+      "verifiedBy": "content_history::contract_vectors_tests (the package validator's object shape is not a lock document either)"
+    },
+    {
+      "name": "numeric-asset-version-in-lock",
+      "input": "{\"format\":\"craftmine.assets-lock/1\",\"assets\":[{\"asset\":{\"assetId\":\"door\",\"version\":1,\"contentHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"installPath\":\"assets/door\"}]}",
+      "call": "AssetLock::parse",
+      "expectedError": "INVALID_ASSET_LOCK",
+      "verifiedBy": "content_history::contract_vectors_tests (AssetRef.version is a string; a numeric version is a different format)"
+    }
+  ]
+}

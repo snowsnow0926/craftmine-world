@@ -1,0 +1,57 @@
+{
+  "format": "craftmine.i.scoring/1",
+  "version": 1,
+  "frozenAt": "2026-09-10",
+  "rule": "评分与通过条件在本文件冻结。I 不能为了让某条通过而修改它；J 也不能改 I 的评分来证明效果。",
+  "hardConditions": [
+    "数据正确性：状态、库存、进度、任务与奖励必须真实一致，不能用文字或假数据替代",
+    "需求必需断言：本轮冻结的 machine 断言全部通过，缺一即失败",
+    "隔离：独立进程与独立数据目录，无真实输入、无 pointer lock、无窗口激活",
+    "应用事务：应用要么完整生效要么完整回退，不重复应用、不静默清空"
+  ],
+  "verdictRules": {
+    "round": {
+      "failed": "任一 hard machine 断言失败",
+      "insufficient": "machine 通过但缺少截图/人工/账目证据，或身份字段不完整",
+      "passed": "machine 全部通过 + 所有声明证据齐备 + 身份完整",
+      "blocked": "依赖的产品接口未接通，明确记为尚未执行",
+      "not-run": "本轮未执行且无阻断原因记录（视为缺陷）"
+    },
+    "story": {
+      "已证实": "全部关联轮次 passed",
+      "失败": "任一关联轮次 failed，或存在未分类硬失败",
+      "证据不足": "存在 insufficient 轮次",
+      "尚未执行": "存在 blocked/not-run 且无失败"
+    },
+    "forbidden": [
+      "用总通过数抵消单条硬失败",
+      "把 blocked/not-run 计入通过",
+      "删除失败分母或重跑覆盖首次失败",
+      "在失败后临时放宽冻结断言",
+      "把作者固定工程的运行登记冒充产品模型创作",
+      "把离屏逻辑测试当作画面、手感或独立 Windows 安装通过"
+    ]
+  },
+  "metrics": [
+    { "id": "first-pass-rate", "sampling": "至少 10 类固定需求，各两轮，失败保留在分母", "usage": "初始基线与同条件对照，不作为长期成功率保证" },
+    { "id": "repair-rate", "sampling": "每个失败记录修复轮次与是否成功", "usage": "区分模型自身修复与人工改实现" },
+    { "id": "human-intervention", "sampling": "每次改提示、改实现、重跑均留档", "usage": "找出需要补接口或改善模型策略的具体问题" },
+    { "id": "end-to-end-latency", "sampling": "模型、导入、构建、检查、应用分阶段计时", "usage": "比较中位数与较慢样本，不混淆等待来源" },
+    { "id": "token-and-cache", "sampling": "创作、压缩、评审分别统计，保留 unknown", "usage": "跟踪成本，不把缓存命中当作所有调用的保证" },
+    { "id": "startup-load-restore", "sampling": "固定机器与场景，记录样本数与冷暖状态", "usage": "GD0 建基线，首发前同环境复验" },
+    { "id": "memory-frame-install", "sampling": "区分正式游戏、预览、构建进程与打包产物", "usage": "判断呈现路线与资源管理是否合适" }
+  ],
+  "noNormalization": [
+    "存档字段不一致必须原样保留，不得归一化掉",
+    "缓存命中率不得折算成总成本下降",
+    "耗时不得用平均值掩盖超时样本",
+    "unknown 用量不得写成 0",
+    "失败样本不得因后续成功而移出分母"
+  ],
+  "evidenceRules": {
+    "screenshot": "必须来自真实运行的离屏截图，禁止合成或手写",
+    "human": "必须由真实玩家试玩后记录 reviewer 与结论；离屏测试不能代替",
+    "accounting": "每次模型调用都要有 usage 记录；未上报记为 unknown",
+    "identity": "每条结论必须绑定 product/engine/base/project/model/input 身份"
+  }
+}

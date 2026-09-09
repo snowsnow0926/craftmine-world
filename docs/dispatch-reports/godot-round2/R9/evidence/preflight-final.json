@@ -1,0 +1,326 @@
+{
+  "format": "craftmine.delivery-preflight/1",
+  "generatedAt": "2026-09-09T18:48:56.201Z",
+  "command": "all",
+  "root": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910",
+  "commit": "ef30cac844436e932b55c0d12f62dc2addeb71e2",
+  "ok": true,
+  "checks": [
+    {
+      "id": "notices",
+      "ok": true,
+      "failures": [],
+      "warnings": [],
+      "facts": {
+        "entries": 7,
+        "requiredEntries": 7
+      }
+    },
+    {
+      "id": "assets",
+      "ok": true,
+      "failures": [],
+      "warnings": [
+        "ASSET_RIGHTS_PENDING first-person rightsStatus=pending-formal-application rightsDocument=desktop/delivery/base-assets/rights/first-person.md :: Every file below this base is project-authored or project-generated. The target licences are MIT for the export runtime and AGPL-3.0-only or commercial for the creation core, per docs/LICENSING_STRATEGY.md. Formal per-module application is still open and tracked in desktop/delivery/licensing/inventory.json; the rights statement is desktop/delivery/base-assets/rights/first-person.md.",
+        "ASSET_RIGHTS_PENDING side-view rightsStatus=pending-formal-application rightsDocument=desktop/delivery/base-assets/rights/side-view.md :: Every file below this base is project-authored or project-generated. The target licences are MIT for the export runtime and AGPL-3.0-only or commercial for the creation core, per docs/LICENSING_STRATEGY.md. Formal per-module application is still open and tracked in desktop/delivery/licensing/inventory.json; the rights statement is desktop/delivery/base-assets/rights/side-view.md.",
+        "ASSET_RIGHTS_PENDING top-down rightsStatus=pending-formal-application rightsDocument=desktop/delivery/base-assets/rights/top-down.md :: Every file below this base is project-authored or project-generated. The target licences are MIT for the export runtime and AGPL-3.0-only or commercial for the creation core, per docs/LICENSING_STRATEGY.md. Formal per-module application is still open and tracked in desktop/delivery/licensing/inventory.json; the rights statement is desktop/delivery/base-assets/rights/top-down.md.",
+        "first-person desktop/godot/probes/first-person/project.godot: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+        "first-person desktop/godot/probes/first-person/world.tscn: Same authored-code licence decision as project.godot.",
+        "first-person desktop/godot/probes/first-person/world.gd: Same authored-code licence decision as project.godot.",
+        "first-person desktop/godot/probes/first-person/crosshair.gd: Same authored-code licence decision as project.godot.",
+        "first-person desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as project.godot.",
+        "first-person desktop/godot/web/bridge.js: Same authored-code licence decision as project.godot.",
+        "first-person desktop/godot/web/shell.html: Same authored-code licence decision as project.godot.",
+        "shared-web desktop/godot/web/shell.html: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+        "shared-web desktop/godot/web/bridge.js: Same authored-code licence decision as shell.html.",
+        "shared-web desktop/godot/web/runtime.mjs: Formal licence text pending the per-module review in docs/LICENSING_STRATEGY.md (see desktop/delivery/licensing/inventory.json); the project owns this file. Target: creation-core path (AGPL-3.0-only or commercial).",
+        "shared-web desktop/godot/web/runtime.d.mts: Formal licence text pending the per-module review in docs/LICENSING_STRATEGY.md (see desktop/delivery/licensing/inventory.json); the project owns this file.",
+        "shared-web desktop/godot/web/host.mjs: Same authored-code licence decision as shell.html.",
+        "shared-web desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as shell.html.",
+        "top-down desktop/godot/probes/top-down/project.godot: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+        "top-down desktop/godot/probes/top-down/world.tscn: Same authored-code licence decision as project.godot.",
+        "top-down desktop/godot/probes/top-down/world.gd: Same authored-code licence decision as project.godot.",
+        "top-down desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as project.godot.",
+        "top-down desktop/godot/web/bridge.js: Same authored-code licence decision as project.godot.",
+        "top-down desktop/godot/web/shell.html: Same authored-code licence decision as project.godot."
+      ],
+      "facts": {
+        "manifests": 6,
+        "discoveredBases": [
+          "first-person",
+          "side-view",
+          "top-down"
+        ],
+        "inventory": {
+          "first-person": {
+            "appBundle": [
+              "desktop/godot/probes/first-person/project.godot",
+              "desktop/godot/probes/first-person/world.tscn",
+              "desktop/godot/probes/first-person/world.gd",
+              "desktop/godot/probes/first-person/crosshair.gd",
+              "desktop/godot/probes/shared/web_bridge.gd"
+            ],
+            "userExport": [
+              "desktop/godot/probes/first-person/project.godot",
+              "desktop/godot/probes/first-person/world.tscn",
+              "desktop/godot/probes/first-person/world.gd",
+              "desktop/godot/probes/first-person/crosshair.gd",
+              "desktop/godot/probes/shared/web_bridge.gd",
+              "desktop/godot/web/bridge.js",
+              "desktop/godot/web/shell.html"
+            ],
+            "developmentOnly": []
+          },
+          "side-view": {
+            "appBundle": [
+              "desktop/godot/bases/side-view/manifest.json",
+              "desktop/godot/bases/side-view/params/side_view_params.json",
+              "desktop/godot/bases/side-view/project.godot",
+              "desktop/godot/bases/side-view/scenes/main.tscn",
+              "desktop/godot/bases/side-view/scripts/player/human_input_source.gd",
+              "desktop/godot/bases/side-view/scripts/player/human_input_source.gd.uid",
+              "desktop/godot/bases/side-view/scripts/player/input_source.gd",
+              "desktop/godot/bases/side-view/scripts/player/input_source.gd.uid",
+              "desktop/godot/bases/side-view/scripts/player/scripted_input_source.gd",
+              "desktop/godot/bases/side-view/scripts/player/scripted_input_source.gd.uid",
+              "desktop/godot/bases/side-view/scripts/player/side_view_player.gd",
+              "desktop/godot/bases/side-view/scripts/player/side_view_player.gd.uid",
+              "desktop/godot/bases/side-view/scripts/probe/headless_verifier.gd",
+              "desktop/godot/bases/side-view/scripts/probe/headless_verifier.gd.uid",
+              "desktop/godot/bases/side-view/scripts/runtime/main.gd",
+              "desktop/godot/bases/side-view/scripts/runtime/main.gd.uid",
+              "desktop/godot/bases/side-view/scripts/runtime/save_store.gd",
+              "desktop/godot/bases/side-view/scripts/runtime/save_store.gd.uid",
+              "desktop/godot/bases/side-view/scripts/runtime/side_view_config.gd",
+              "desktop/godot/bases/side-view/scripts/runtime/side_view_config.gd.uid",
+              "desktop/godot/bases/side-view/scripts/runtime/side_view_runtime.gd",
+              "desktop/godot/bases/side-view/scripts/runtime/side_view_runtime.gd.uid",
+              "desktop/godot/bases/side-view/scripts/runtime/world_state.gd",
+              "desktop/godot/bases/side-view/scripts/runtime/world_state.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/checkpoint.gd",
+              "desktop/godot/bases/side-view/scripts/world/checkpoint.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/hazard.gd",
+              "desktop/godot/bases/side-view/scripts/world/hazard.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/pickup.gd",
+              "desktop/godot/bases/side-view/scripts/world/pickup.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/room.gd",
+              "desktop/godot/bases/side-view/scripts/world/room.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/room_door.gd",
+              "desktop/godot/bases/side-view/scripts/world/room_door.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/room_manager.gd",
+              "desktop/godot/bases/side-view/scripts/world/room_manager.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/target.gd",
+              "desktop/godot/bases/side-view/scripts/world/target.gd.uid",
+              "desktop/godot/bases/side-view/worlds/blank/world.json",
+              "desktop/godot/bases/side-view/worlds/ruins/world.json"
+            ],
+            "userExport": [
+              "desktop/godot/bases/side-view/manifest.json",
+              "desktop/godot/bases/side-view/params/side_view_params.json",
+              "desktop/godot/bases/side-view/project.godot",
+              "desktop/godot/bases/side-view/scenes/main.tscn",
+              "desktop/godot/bases/side-view/scripts/player/human_input_source.gd",
+              "desktop/godot/bases/side-view/scripts/player/human_input_source.gd.uid",
+              "desktop/godot/bases/side-view/scripts/player/input_source.gd",
+              "desktop/godot/bases/side-view/scripts/player/input_source.gd.uid",
+              "desktop/godot/bases/side-view/scripts/player/scripted_input_source.gd",
+              "desktop/godot/bases/side-view/scripts/player/scripted_input_source.gd.uid",
+              "desktop/godot/bases/side-view/scripts/player/side_view_player.gd",
+              "desktop/godot/bases/side-view/scripts/player/side_view_player.gd.uid",
+              "desktop/godot/bases/side-view/scripts/probe/headless_verifier.gd",
+              "desktop/godot/bases/side-view/scripts/probe/headless_verifier.gd.uid",
+              "desktop/godot/bases/side-view/scripts/runtime/main.gd",
+              "desktop/godot/bases/side-view/scripts/runtime/main.gd.uid",
+              "desktop/godot/bases/side-view/scripts/runtime/save_store.gd",
+              "desktop/godot/bases/side-view/scripts/runtime/save_store.gd.uid",
+              "desktop/godot/bases/side-view/scripts/runtime/side_view_config.gd",
+              "desktop/godot/bases/side-view/scripts/runtime/side_view_config.gd.uid",
+              "desktop/godot/bases/side-view/scripts/runtime/side_view_runtime.gd",
+              "desktop/godot/bases/side-view/scripts/runtime/side_view_runtime.gd.uid",
+              "desktop/godot/bases/side-view/scripts/runtime/world_state.gd",
+              "desktop/godot/bases/side-view/scripts/runtime/world_state.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/checkpoint.gd",
+              "desktop/godot/bases/side-view/scripts/world/checkpoint.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/hazard.gd",
+              "desktop/godot/bases/side-view/scripts/world/hazard.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/pickup.gd",
+              "desktop/godot/bases/side-view/scripts/world/pickup.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/room.gd",
+              "desktop/godot/bases/side-view/scripts/world/room.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/room_door.gd",
+              "desktop/godot/bases/side-view/scripts/world/room_door.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/room_manager.gd",
+              "desktop/godot/bases/side-view/scripts/world/room_manager.gd.uid",
+              "desktop/godot/bases/side-view/scripts/world/target.gd",
+              "desktop/godot/bases/side-view/scripts/world/target.gd.uid",
+              "desktop/godot/bases/side-view/worlds/blank/world.json",
+              "desktop/godot/bases/side-view/worlds/ruins/world.json"
+            ],
+            "developmentOnly": [
+              "desktop/godot/bases/side-view/.gitignore",
+              "desktop/godot/bases/side-view/README.md",
+              "desktop/godot/bases/side-view/docs/assets-and-provenance.md",
+              "desktop/godot/bases/side-view/docs/base-spec.md",
+              "desktop/godot/bases/side-view/docs/host-integration.md",
+              "desktop/godot/bases/side-view/docs/sandbox-branch-interface.md",
+              "desktop/godot/bases/side-view/tools/gate-metrics.mjs",
+              "desktop/godot/bases/side-view/tools/new-world.mjs",
+              "desktop/godot/bases/side-view/tools/plans/attempt_vault_locked.json",
+              "desktop/godot/bases/side-view/tools/plans/blank_basic.json",
+              "desktop/godot/bases/side-view/tools/plans/enter_vault.json",
+              "desktop/godot/bases/side-view/tools/plans/get_ability.json",
+              "desktop/godot/bases/side-view/tools/plans/revisit_rooms.json",
+              "desktop/godot/bases/side-view/tools/plans/travel_to_ruins.json",
+              "desktop/godot/bases/side-view/tools/plans/walk_into_spikes.json",
+              "desktop/godot/bases/side-view/tools/verify.mjs"
+            ]
+          },
+          "top-down": {
+            "appBundle": [
+              "desktop/godot/probes/top-down/project.godot",
+              "desktop/godot/probes/top-down/world.tscn",
+              "desktop/godot/probes/top-down/world.gd",
+              "desktop/godot/probes/shared/web_bridge.gd"
+            ],
+            "userExport": [
+              "desktop/godot/probes/top-down/project.godot",
+              "desktop/godot/probes/top-down/world.tscn",
+              "desktop/godot/probes/top-down/world.gd",
+              "desktop/godot/probes/shared/web_bridge.gd",
+              "desktop/godot/web/bridge.js",
+              "desktop/godot/web/shell.html"
+            ],
+            "developmentOnly": []
+          },
+          "shared-web": {
+            "appBundle": [
+              "desktop/godot/web/runtime.mjs",
+              "desktop/godot/probes/shared/web_bridge.gd"
+            ],
+            "userExport": [
+              "desktop/godot/web/shell.html",
+              "desktop/godot/web/bridge.js",
+              "desktop/godot/probes/shared/web_bridge.gd"
+            ],
+            "developmentOnly": [
+              "desktop/godot/web/runtime.d.mts",
+              "desktop/godot/web/host.mjs"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "lgpl",
+      "ok": true,
+      "failures": [],
+      "warnings": [
+        "vendor/pi-desktop/LICENSE references GPL-3 but does not bundle the full GPL-3 text; confirm the required notice set with counsel."
+      ],
+      "facts": {
+        "licenseSha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+        "upstreamLicense": "LGPL-3.0-or-later",
+        "upstreamCommit": "ed0a75414e775eef4b4ee6c985cc9ddfe146ced2",
+        "sourceArchiveBytes": 39149380
+      }
+    },
+    {
+      "id": "godot-cache",
+      "ok": true,
+      "failures": [],
+      "warnings": [],
+      "facts": {
+        "unpackedFiles": 2,
+        "templateFiles": 4,
+        "templateVersion": "4.7.2.stable"
+      }
+    },
+    {
+      "id": "export",
+      "ok": true,
+      "failures": [],
+      "warnings": [
+        "No export directory was supplied; exported bytes were not verified."
+      ],
+      "facts": {
+        "skipped": true
+      }
+    },
+    {
+      "id": "package",
+      "ok": true,
+      "failures": [],
+      "warnings": [],
+      "facts": {
+        "developmentOnlyFiles": 0,
+        "commit": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+        "toolchain": {
+          "node": "v24.14.0",
+          "cargo": "cargo 1.96.1 (356927216 2026-06-26)"
+        },
+        "artifactsVerified": 5,
+        "inventoryPackages": 796,
+        "inventoryWithoutText": 0,
+        "godotEngineBundled": false,
+        "godotEngineBinary": null,
+        "godotRuntimeFiles": [],
+        "scannedEntries": 1330,
+        "scannedBytes": 682749827
+      }
+    }
+  ],
+  "failures": [],
+  "warnings": [
+    "ASSET_RIGHTS_PENDING first-person rightsStatus=pending-formal-application rightsDocument=desktop/delivery/base-assets/rights/first-person.md :: Every file below this base is project-authored or project-generated. The target licences are MIT for the export runtime and AGPL-3.0-only or commercial for the creation core, per docs/LICENSING_STRATEGY.md. Formal per-module application is still open and tracked in desktop/delivery/licensing/inventory.json; the rights statement is desktop/delivery/base-assets/rights/first-person.md.",
+    "ASSET_RIGHTS_PENDING side-view rightsStatus=pending-formal-application rightsDocument=desktop/delivery/base-assets/rights/side-view.md :: Every file below this base is project-authored or project-generated. The target licences are MIT for the export runtime and AGPL-3.0-only or commercial for the creation core, per docs/LICENSING_STRATEGY.md. Formal per-module application is still open and tracked in desktop/delivery/licensing/inventory.json; the rights statement is desktop/delivery/base-assets/rights/side-view.md.",
+    "ASSET_RIGHTS_PENDING top-down rightsStatus=pending-formal-application rightsDocument=desktop/delivery/base-assets/rights/top-down.md :: Every file below this base is project-authored or project-generated. The target licences are MIT for the export runtime and AGPL-3.0-only or commercial for the creation core, per docs/LICENSING_STRATEGY.md. Formal per-module application is still open and tracked in desktop/delivery/licensing/inventory.json; the rights statement is desktop/delivery/base-assets/rights/top-down.md.",
+    "first-person desktop/godot/probes/first-person/project.godot: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+    "first-person desktop/godot/probes/first-person/world.tscn: Same authored-code licence decision as project.godot.",
+    "first-person desktop/godot/probes/first-person/world.gd: Same authored-code licence decision as project.godot.",
+    "first-person desktop/godot/probes/first-person/crosshair.gd: Same authored-code licence decision as project.godot.",
+    "first-person desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as project.godot.",
+    "first-person desktop/godot/web/bridge.js: Same authored-code licence decision as project.godot.",
+    "first-person desktop/godot/web/shell.html: Same authored-code licence decision as project.godot.",
+    "shared-web desktop/godot/web/shell.html: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+    "shared-web desktop/godot/web/bridge.js: Same authored-code licence decision as shell.html.",
+    "shared-web desktop/godot/web/runtime.mjs: Formal licence text pending the per-module review in docs/LICENSING_STRATEGY.md (see desktop/delivery/licensing/inventory.json); the project owns this file. Target: creation-core path (AGPL-3.0-only or commercial).",
+    "shared-web desktop/godot/web/runtime.d.mts: Formal licence text pending the per-module review in docs/LICENSING_STRATEGY.md (see desktop/delivery/licensing/inventory.json); the project owns this file.",
+    "shared-web desktop/godot/web/host.mjs: Same authored-code licence decision as shell.html.",
+    "shared-web desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as shell.html.",
+    "top-down desktop/godot/probes/top-down/project.godot: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+    "top-down desktop/godot/probes/top-down/world.tscn: Same authored-code licence decision as project.godot.",
+    "top-down desktop/godot/probes/top-down/world.gd: Same authored-code licence decision as project.godot.",
+    "top-down desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as project.godot.",
+    "top-down desktop/godot/web/bridge.js: Same authored-code licence decision as project.godot.",
+    "top-down desktop/godot/web/shell.html: Same authored-code licence decision as project.godot.",
+    "vendor/pi-desktop/LICENSE references GPL-3 but does not bundle the full GPL-3 text; confirm the required notice set with counsel.",
+    "No export directory was supplied; exported bytes were not verified."
+  ],
+  "inputs": {
+    "cache": "D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable",
+    "export": null,
+    "package": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\build\\r9-restaged-preview"
+  },
+  "facts": {
+    "commit": "ef30cac844436e932b55c0d12f62dc2addeb71e2",
+    "sourceDate": "2026-09-10T02:34:05+08:00",
+    "lockVersion": "4.7.2-stable",
+    "lockStatus": "gd0-candidate-not-production-bundled",
+    "node": "v24.14.0",
+    "pnpm": null,
+    "cargo": "cargo 1.96.1 (356927216 2026-06-26)",
+    "editorSha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    "webTemplate": "webThreadedRelease",
+    "package": {
+      "commit": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+      "sourceDate": "2026-09-09T17:09:05+08:00",
+      "sourceArchiveHash": "019c758d450a425dd381cc3023f92b734945a0fd130337a822382325f6a8584a",
+      "appId": "world.craftmine.desktop"
+    }
+  },
+  "limits": [
+    "Read-only: no download, no installer, no window and no write inside the inspected tree.",
+    "Hash equality proves these bytes, not that a licence is legally sufficient for a specific business use.",
+    "Skipped inputs are not verified and are listed explicitly."
+  ]
+}

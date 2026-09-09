@@ -1,0 +1,7 @@
+{"method":"hello"}
+{"params":{"title":"RPC World","snapshot":{"body":{"inventory":{},"player":{"position":[0,0,0]},"worldId":"g1"},"worldId":"g1","stateVersion":1,"baseId":"first-person","baseVersion":"0.1.0","format":"craftmine.godot-progress/1"},"worldId":"g1","baseBuild":"base-a","baseId":"first-person"},"method":"godotWorld.initialize"}
+{"params":{"worldId":"g1"},"method":"godotWorld.initStatus"}
+{"params":{"worldId":"g1"},"method":"godotRuntime.describe"}
+{"params":{},"method":"godotExecutor.status"}
+{"params":{"worldId":"g1"},"method":"godotWorld.backupSnapshot"}
+{"params":{"worldId":"g1"},"method":"godotStorage.status"}

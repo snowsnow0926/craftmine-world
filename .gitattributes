@@ -3,6 +3,7 @@
 *.js text eol=lf
 desktop/godot/probes/** text eol=lf
 desktop/godot/licenses/** -text
+desktop/delivery/licensing/texts/** -text
 docs/evidence/godot-cycle-*/** -text whitespace=cr-at-eol
 
 desktop/godot/sandbox/evidence/** -text whitespace=cr-at-eol

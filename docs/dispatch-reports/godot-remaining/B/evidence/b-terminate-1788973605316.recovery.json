@@ -1,0 +1,37 @@
+{
+  "policyVersion": "craftmine.windows.recovery-journal.v1",
+  "tasksRoot": "\\\\?\\D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909170609698-173804\\tasks",
+  "journalRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909170609698-173804\\tasks\\.recovery-journal",
+  "entries": [
+    {
+      "taskId": "b-terminate-1788973605316",
+      "operation": "import",
+      "identityVerified": true,
+      "finalReceiptObserved": false,
+      "brokerPid": 234356,
+      "brokerStillRunning": false,
+      "childPid": 272216,
+      "childCreationTimeFiletime": "134334472105199625",
+      "childProcessState": "gone",
+      "profileName": "craftmine.godot.task.b-terminate-1788973605316",
+      "profileDeleted": true,
+      "profileHresult": 0,
+      "taskRootRemoved": true,
+      "journalRemoved": true,
+      "reclaimed": [
+        "work",
+        "bin",
+        "logs",
+        "artifacts"
+      ],
+      "skipped": [],
+      "notes": [
+        "recorded-child-already-exited-0x0",
+        "task-root-removed-after-1-retries"
+      ]
+    }
+  ],
+  "unreadable": [],
+  "reconciledCount": 1,
+  "skippedCount": 0
+}

@@ -7,8 +7,12 @@ const {createReviewJobs} = require('./review-jobs.cjs');
 const {createApplications} = require('./applications.cjs');
 const {createHostRequests} = require('./host-requests.cjs');
 const {createWorkbenchService} = require('./workbench-service.cjs');
+const {createGodotExecutor} = require('./godot-executor.cjs');
+const {createAssetService} = require('./asset-service.mjs');
+const {createReuseService} = require('./reuse-service.mjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary,createLibraryService,createMemoryService} = require('./domain.cjs');
-let core,verifications,reviews,applications,hostRequests,workbench;
+const {createHostProviders,createCoreBudgetProvider} = require('./tool-services.cjs');
+let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor,assetService,reuseService;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
 const importErrors={
@@ -30,14 +34,30 @@ async function onLoad() {
   applications=createApplications(core,pi.craftmine);
   const call=(method,params)=>core.call(method,params);
   workbench=createWorkbenchService(core,{library:createLibraryService({call}),memory:createMemoryService({call}),verifications,reviews,getSettings:()=>pi.plugin.getSettings()});
-  hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench});
+  // S5 asset service. Decoding is a host capability (pi.craftmine.assetPreview)
+  // and asset bytes come from the host file bridge, so the plugin never holds a
+  // decoder and never fabricates a preview: a missing host runner rejects the
+  // call with its own reason.
+  assetService=createAssetService({call,
+    runPreview:(input,options)=>typeof pi.craftmine?.assetPreview==='function'
+      ?pi.craftmine.assetPreview(input,options)
+      :Promise.reject(Error('ASSET_PREVIEW_HOST_UNAVAILABLE')),
+    readFile:target=>pi.fs.readPreview(target)});
+  // S3 works/package service: domain validation over the core's package routes.
+  reuseService=createReuseService({call});
+  // The managed executor owns the pinned engine. It registers only after a real
+  // broker preflight, so the reported capability always comes from live state.
+  godotExecutor=createGodotExecutor(core,{dataPath:await pi.plugin.getDataPath(),verifier:pi.craftmine,logger:console});
+  hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService});
   pi.services.register({id:'world-core',start:()=>core.start(),stop:()=>core.stop()});
+  pi.services.register({id:'godot-executor',start:()=>godotExecutor.start(),stop:()=>godotExecutor.stop()});
   await pi.agent.registerTool({
     name: 'runtime_info',
     description: 'Inspect the connected Craftmine runtime and available integration capabilities.',
     risk: 'low', schema: {type:'object',properties:{},additionalProperties:false},
     execute: async (_args, context) => {
       const info=await core.start();
+      const executor=godotExecutor?.status()??{state:'unavailable',available:false,reason:'GODOT_EXECUTOR_UNAVAILABLE'};
       return {
       format: 'craftmine.desktop-runtime/1',
       view: 'world',
@@ -46,9 +66,14 @@ async function onLoad() {
       godotSourceToolsAvailable: info.godotProjects===true,
       godotBuildJobsAvailable: info.godotBuildJobs===true,
       godotExecutorGate: info.godotExecutorGate===true,
-      // The core never runs the engine itself; a registered isolated executor
-      // is required before a build job can leave the blocked state.
-      godotBuildAvailable: false,
+      // Live state of the managed executor, never a constant: a missing broker,
+      // engine, template or failed preflight reports its own reason.
+      godotBuildAvailable: executor.available===true,
+      godotCheckAvailable: executor.checkAvailable===true,
+      godotExecutor: {state:executor.state,reason:executor.reason,engineVersion:executor.engineVersion,
+        isolation:executor.isolation,evidenceHash:executor.evidenceHash?executor.evidenceHash.slice(0,16):null,
+        brokerSha256:executor.broker?.sha256??null,bridgeSha256:executor.bridge?.sha256??null,
+        preflight:executor.preflight??null,jobs:executor.jobs??[]},
       godotExecutionInCore: info.godotExecution===true,
       verificationJobsAvailable: info.verificationJobs===true,
       playerApplicationsAvailable: info.playerApplications===true,
@@ -57,7 +82,25 @@ async function onLoad() {
       };
     },
   });
-  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context)),verifications,reviews))await pi.agent.registerTool(tool);
+  // Model-tool service wiring (task S6). Each provider is optional at the
+  // contract level, but production must supply every one of them: an unwired
+  // provider makes the tool report an explicit gap with its owner instead of
+  // substituting a task-start snapshot, a saved value or a zero counter.
+  const hostProviders=createHostProviders((method,params)=>{
+    if(method==='godotLiveState'&&typeof pi.craftmine?.godotLiveState==='function')return pi.craftmine.godotLiveState(params);
+    throw Object.assign(Error('HOST_PROVIDER_NOT_WIRED'),{errorCode:'HOST_PROVIDER_NOT_WIRED'});
+  });
+  const toolServices={
+    ...hostProviders,
+    // The seven-kind limit ledger is read through this process's core client.
+    budget:createCoreBudgetProvider(core),
+    // The managed executor lives in this process: its own status is the gate,
+    // and it is the service that actually runs a queued build or check job.
+    executorStatus:()=>godotExecutor.status(),
+    executorEnqueue:(job,context)=>godotExecutor.enqueue(job,context),
+    executorCancel:jobId=>godotExecutor.cancel(jobId),
+  };
+  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context)),verifications,reviews,toolServices))await pi.agent.registerTool(tool);
 }
 
 // Private parent-process lifecycle. There is no panel channel for this method.
@@ -155,6 +198,7 @@ async function onPanelInvoke(channel, payload={}) {
 }
 
 async function onUnload() {
+  await godotExecutor?.stop();
   await verifications?.stop();
   await reviews?.stop();
   await core?.stop();

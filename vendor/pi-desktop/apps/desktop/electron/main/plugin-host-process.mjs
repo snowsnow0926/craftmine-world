@@ -107,6 +107,16 @@ function buildApi() {
       cancelVerification: (id) => call("craftmine.cancelVerification", [id]),
       complete: (id, input) => call("craftmine.complete", [id, input]),
       cancelComplete: (id) => call("craftmine.cancelComplete", [id]),
+      godotCheck: (input) => call("craftmine.godotCheck", [input]),
+      cancelGodotCheck: (id) => call("craftmine.cancelGodotCheck", [id]),
+      // Isolated asset preview decoding and live gameplay sampling are host
+      // capabilities: the plugin child asks for a bounded result and never gets
+      // the decoder, the window or a progress write path.
+      assetPreview: (input, options) => call("craftmine.assetPreview", [input, options]),
+      sampleLiveState: (input) => call("craftmine.sampleLiveState", [input]),
+      // Live observation of the running instance (task S6). Returns the host's
+      // observation envelope, or null when no formal instance is running.
+      godotLiveState: (input) => call("craftmine.godotLiveState", [input]),
     } } : {}),
     app: {
       getVersion: () => call("app.getVersion"),

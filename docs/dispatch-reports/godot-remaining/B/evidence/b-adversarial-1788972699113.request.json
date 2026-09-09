@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "requestId": "b-adversarial-1788972699113",
+  "taskId": "b-adversarial-1788972699113",
+  "operation": "import",
+  "projectRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165138871-266180\\projects\\b-adversarial-1788972699113",
+  "tasksRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165138871-266180\\tasks",
+  "engineRoot": "D:/Craftmine World/desktop/build/godot/4.7.2-stable",
+  "sourceBinding": {
+    "worldId": "fixed-b-synthetic-fixture",
+    "buildId": "b-adversarial-1788972699113",
+    "sourceRevision": 1,
+    "sourceDigest": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "inputHash": "9f220ea9fb8c0c1c3bba988e5628c72f818df935e78be49769457f7163492a35"
+}

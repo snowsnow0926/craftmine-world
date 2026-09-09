@@ -1,0 +1,216 @@
+{
+  "format": "craftmine.godot-tool-surface/1",
+  "count": 35,
+  "tools": [
+    {
+      "name": "runtime_info",
+      "risk": "low",
+      "hostMethod": null,
+      "local": false
+    },
+    {
+      "name": "godot_project_create",
+      "risk": "medium",
+      "hostMethod": "godotProject.create",
+      "local": false
+    },
+    {
+      "name": "godot_project_index",
+      "risk": "low",
+      "hostMethod": "godotProject.index",
+      "local": false
+    },
+    {
+      "name": "godot_file_read",
+      "risk": "low",
+      "hostMethod": "godotProject.read",
+      "local": false
+    },
+    {
+      "name": "godot_project_patch",
+      "risk": "medium",
+      "hostMethod": "godotProject.patch",
+      "local": false
+    },
+    {
+      "name": "godot_asset_put",
+      "risk": "medium",
+      "hostMethod": "godotAsset.put",
+      "local": false
+    },
+    {
+      "name": "godot_asset_list",
+      "risk": "low",
+      "hostMethod": "godotAsset.list",
+      "local": false
+    },
+    {
+      "name": "godot_build_start",
+      "risk": "medium",
+      "hostMethod": "godotBuild.start",
+      "local": false
+    },
+    {
+      "name": "godot_build_read",
+      "risk": "low",
+      "hostMethod": "godotBuild.read",
+      "local": false
+    },
+    {
+      "name": "godot_build_cancel",
+      "risk": "low",
+      "hostMethod": "godotBuild.cancel",
+      "local": false
+    },
+    {
+      "name": "godot_candidate_read",
+      "risk": "low",
+      "hostMethod": "godotCandidate.read",
+      "local": false
+    },
+    {
+      "name": "godot_candidate_list",
+      "risk": "low",
+      "hostMethod": "godotCandidate.list",
+      "local": false
+    },
+    {
+      "name": "godot_docs",
+      "risk": "low",
+      "hostMethod": null,
+      "local": true
+    },
+    {
+      "name": "godot_project_query",
+      "risk": "low",
+      "hostMethod": "godotProject.index+godotProject.read",
+      "local": true
+    },
+    {
+      "name": "godot_runtime_state",
+      "risk": "low",
+      "hostMethod": "godotRuntime.describe",
+      "local": true
+    },
+    {
+      "name": "godot_project_facts",
+      "risk": "low",
+      "hostMethod": "godotProject.index+godotCandidate.list+godotRuntime.describe",
+      "local": true
+    },
+    {
+      "name": "godot_capability_report",
+      "risk": "low",
+      "hostMethod": "hello",
+      "local": true
+    },
+    {
+      "name": "godot_history",
+      "risk": "low",
+      "hostMethod": "content.*",
+      "local": true
+    },
+    {
+      "name": "godot_jobs",
+      "risk": "medium",
+      "hostMethod": "godotExecutor.status+godotJob.usage+godotJob.continue",
+      "local": true
+    },
+    {
+      "name": "godot_draft_recovery",
+      "risk": "medium",
+      "hostMethod": "task.recoverable+task.resume",
+      "local": true
+    },
+    {
+      "name": "asset_library",
+      "risk": "low",
+      "hostMethod": "asset.search+asset.read+asset.versions",
+      "local": true
+    },
+    {
+      "name": "package_library",
+      "risk": "low",
+      "hostMethod": "package.check+package.read+package.list",
+      "local": true
+    },
+    {
+      "name": "project_inspect",
+      "risk": "low",
+      "hostMethod": "workspace.open+inspect",
+      "local": true
+    },
+    {
+      "name": "capabilities_read",
+      "risk": "low",
+      "hostMethod": "world.read+capabilities",
+      "local": true
+    },
+    {
+      "name": "resource_read",
+      "risk": "low",
+      "hostMethod": "workspace.recordRead",
+      "local": true
+    },
+    {
+      "name": "workspace_patch",
+      "risk": "medium",
+      "hostMethod": "workspace.commit",
+      "local": true
+    },
+    {
+      "name": "verification_submit",
+      "risk": "medium",
+      "hostMethod": "verification.submit",
+      "local": true
+    },
+    {
+      "name": "verification_read",
+      "risk": "low",
+      "hostMethod": "verification.read",
+      "local": true
+    },
+    {
+      "name": "verification_cancel",
+      "risk": "low",
+      "hostMethod": "verification.cancel",
+      "local": true
+    },
+    {
+      "name": "library_search",
+      "risk": "low",
+      "hostMethod": "library.search",
+      "local": true
+    },
+    {
+      "name": "library_read",
+      "risk": "low",
+      "hostMethod": "library.read",
+      "local": true
+    },
+    {
+      "name": "library_install",
+      "risk": "medium",
+      "hostMethod": "library.capture",
+      "local": true
+    },
+    {
+      "name": "memory_search",
+      "risk": "low",
+      "hostMethod": "memory.search",
+      "local": true
+    },
+    {
+      "name": "memory_propose",
+      "risk": "medium",
+      "hostMethod": "memory.propose",
+      "local": true
+    },
+    {
+      "name": "requirements_read",
+      "risk": "low",
+      "hostMethod": "task.readRequirements",
+      "local": true
+    }
+  ]
+}

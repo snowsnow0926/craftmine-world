@@ -1,0 +1,323 @@
+{
+  "kind": "real-core-godot-world-initialization-contract",
+  "sourceCommit": "bfbb5ee4ff6766b7d6d0b90acf9650a3ac2269d7",
+  "engine": {
+    "coreBinary": "craftmine-core.exe",
+    "coreSha256": "8925d553a987f7bd4ca61709013fddfd66279cca9c676a9b8c008cc8736cca98",
+    "godotEngine": {
+      "name": "godot",
+      "version": "4.7.2-stable",
+      "language": "GDScript",
+      "renderer": "gl_compatibility"
+    }
+  },
+  "checks": [
+    {
+      "name": "真实核心报告 Godot 工程能力",
+      "passed": true,
+      "detail": {
+        "advisoryReviews": true,
+        "agentPublishesWorlds": false,
+        "contentHistory": true,
+        "format": "craftmine.core/1",
+        "godotBuildJobs": true,
+        "godotExecution": false,
+        "godotExecutorGate": true,
+        "godotProjects": true,
+        "managedGit": true,
+        "playerApplications": true,
+        "publishesWorlds": true,
+        "sessionDrafts": true,
+        "storage": "sqlite",
+        "verificationJobs": true,
+        "version": "0.1.0"
+      }
+    },
+    {
+      "name": "客户端只提供已交付的 Godot 底座",
+      "passed": true,
+      "detail": [
+        [
+          "first-person",
+          [
+            "blank",
+            "training-range"
+          ]
+        ],
+        [
+          "side-view",
+          [
+            "blank",
+            "ruins"
+          ]
+        ],
+        [
+          "top-down",
+          [
+            "blank",
+            "town"
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "客户端创建的 Godot 世界经真实核心登记",
+      "passed": true,
+      "detail": {
+        "id": "world-r2contract",
+        "title": "契约世界",
+        "state": "initializing",
+        "creation": {
+          "operationId": "gwinit-f431bafd6b0f682658dd4fee6dccf48013fdc15e2065167fc3d2549fbfbf1228",
+          "stage": "project",
+          "stages": [
+            {
+              "id": "materialize",
+              "label": "复制底座与登记世界",
+              "status": "passed"
+            },
+            {
+              "id": "project",
+              "label": "建立工程源码",
+              "status": "running"
+            },
+            {
+              "id": "build",
+              "label": "首次构建",
+              "status": "pending"
+            },
+            {
+              "id": "confirm",
+              "label": "确认可加载",
+              "status": "pending"
+            }
+          ],
+          "progress": 25,
+          "error": null,
+          "actions": [
+            "details"
+          ]
+        }
+      }
+    },
+    {
+      "name": "登记后世界带有真实初始化步骤而不是假进度",
+      "passed": true,
+      "detail": {
+        "operationId": "gwinit-f431bafd6b0f682658dd4fee6dccf48013fdc15e2065167fc3d2549fbfbf1228",
+        "stage": "project",
+        "stages": [
+          {
+            "id": "materialize",
+            "label": "复制底座与登记世界",
+            "status": "passed"
+          },
+          {
+            "id": "project",
+            "label": "建立工程源码",
+            "status": "running"
+          },
+          {
+            "id": "build",
+            "label": "首次构建",
+            "status": "pending"
+          },
+          {
+            "id": "confirm",
+            "label": "确认可加载",
+            "status": "pending"
+          }
+        ],
+        "progress": 25,
+        "error": null,
+        "actions": [
+          "details"
+        ]
+      }
+    },
+    {
+      "name": "核心中是世界记录且标记为 Godot 初始化中",
+      "passed": true,
+      "detail": {
+        "godot": {
+          "baseBuild": "top-down-1.0.0",
+          "initializing": true
+        },
+        "id": "top-down-1.0.0",
+        "scene": {
+          "baseId": "top-down",
+          "format": "craftmine.godot-scene/1"
+        }
+      }
+    },
+    {
+      "name": "初始进度来自底座自己发布的初始状态",
+      "passed": true,
+      "detail": {
+        "coins": 0,
+        "flags": [],
+        "inventory": [],
+        "playerFacing": "down",
+        "playerPosition": [
+          192,
+          128
+        ],
+        "quests": [],
+        "sceneId": "world",
+        "shops": []
+      }
+    },
+    {
+      "name": "真实 initStatus 报告不可游玩",
+      "passed": true,
+      "detail": {
+        "applicationId": null,
+        "baseBuild": "top-down-1.0.0",
+        "baseId": "top-down",
+        "candidateId": null,
+        "createdAt": 1788983244303,
+        "formalBuildId": "top-down-1.0.0",
+        "format": "craftmine.godot-world-init/1",
+        "initId": "gwinit-f431bafd6b0f682658dd4fee6dccf48013fdc15e2065167fc3d2549fbfbf1228",
+        "initialSnapshotHash": "9981c06dc3f2ad07a78ba868eafee215b24c0ce1f00add8755841ff3b2374f24",
+        "playable": false,
+        "projectRevision": null,
+        "reason": null,
+        "status": "pending",
+        "title": "契约世界",
+        "worldId": "world-r2contract",
+        "worldRevision": 0
+      }
+    },
+    {
+      "name": "客户端把真实状态映射为初始化中且不切换",
+      "passed": true,
+      "detail": {
+        "state": "initializing",
+        "creation": {
+          "operationId": "gwinit-f431bafd6b0f682658dd4fee6dccf48013fdc15e2065167fc3d2549fbfbf1228",
+          "stage": "project",
+          "stages": [
+            {
+              "id": "materialize",
+              "label": "复制底座与登记世界",
+              "status": "passed"
+            },
+            {
+              "id": "project",
+              "label": "建立工程源码",
+              "status": "running"
+            },
+            {
+              "id": "build",
+              "label": "首次构建",
+              "status": "pending"
+            },
+            {
+              "id": "confirm",
+              "label": "确认可加载",
+              "status": "pending"
+            }
+          ],
+          "progress": 25,
+          "error": null,
+          "actions": [
+            "details"
+          ]
+        }
+      }
+    },
+    {
+      "name": "未完成初始化的世界不能被描述为可运行",
+      "passed": true,
+      "detail": {
+        "describeError": "GODOT_WORLD_NOT_INITIALIZED",
+        "describe": null
+      }
+    },
+    {
+      "name": "重复初始化是幂等重放而不是第二个世界",
+      "passed": true,
+      "detail": {
+        "init": {
+          "applicationId": null,
+          "baseBuild": "top-down-1.0.0",
+          "baseId": "top-down",
+          "createdAt": 1788983244303,
+          "format": "craftmine.godot-world-init/1",
+          "initId": "gwinit-f431bafd6b0f682658dd4fee6dccf48013fdc15e2065167fc3d2549fbfbf1228",
+          "initialSnapshotHash": "9981c06dc3f2ad07a78ba868eafee215b24c0ce1f00add8755841ff3b2374f24",
+          "reason": null,
+          "status": "pending",
+          "title": "契约世界",
+          "worldId": "world-r2contract"
+        },
+        "replayed": true,
+        "world": {
+          "baseId": "top-down",
+          "contentHash": "d8c55c9e55ed9478459df72a4a1fc803f2d6ee1216049603ca98d43aca6b9a7e",
+          "id": "world-r2contract",
+          "revision": 0,
+          "runtimeKind": "godot",
+          "title": "契约世界",
+          "updatedAt": 1788983244303,
+          "world": {
+            "build": {
+              "godot": {
+                "baseBuild": "top-down-1.0.0",
+                "initializing": true
+              },
+              "id": "top-down-1.0.0",
+              "scene": {
+                "baseId": "top-down",
+                "format": "craftmine.godot-scene/1"
+              }
+            },
+            "extensions": [],
+            "snapshot": {
+              "baseId": "top-down",
+              "baseVersion": "1.0.0",
+              "body": {
+                "coins": 0,
+                "flags": [],
+                "inventory": [],
+                "playerFacing": "down",
+                "playerPosition": [
+                  192,
+                  128
+                ],
+                "quests": [],
+                "sceneId": "world",
+                "shops": []
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "world-r2contract"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "未交付底座、未知起点和空名称都被拒绝",
+      "passed": true
+    },
+    {
+      "name": "缺少初始状态发布的底座不会被伪造创建",
+      "passed": true,
+      "detail": "BASE_INITIAL_STATE_MISSING"
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Proves the client payload against the real core; the panel route from Electron main is still requested from C.",
+    "No first build, no candidate, no visible game window: initialization stops at the durable pending record."
+  ],
+  "firstPersonBase": {
+    "id": "first-person",
+    "templates": [
+      "blank",
+      "training-range"
+    ]
+  }
+}

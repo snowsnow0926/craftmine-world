@@ -1,0 +1,119 @@
+{
+  "format": "craftmine.evidence-provenance/1",
+  "note": "Every archived file lists the exact command that produced it and the scope it proves. Commands ran in D:/Craftmine World-worktrees/godot-round2-r9-20260910 on Windows. The inspected package and engine cache live outside the repository and are identified by path and hash in the records themselves. The restaged package desktop/build/r9-restaged-preview is a copy of the round-one build with corrected licences and a bundled Git tree; it is NOT a build of the integrated round-two code.",
+  "files": {
+    "preflight-baseline.json": {
+      "command": "node desktop/delivery/preflight.mjs all --evidence <file>   (run at commit e4621478, before the task K repairs)",
+      "proves": "The eight real preflight failures recorded in docs/GODOT_CYCLE_05.md reproduce exactly at e4621478: 3 bridge byte drifts, 2 undeclared runtime files, 3 missing base manifests.",
+      "limits": "Package and engine cache inputs were not supplied in this baseline run.",
+      "sourceCommit": "e462147852e36bdfcaf897d3f915c5809fb88670"
+    },
+    "preflight-final.json": {
+      "command": "node desktop/delivery/preflight.mjs all --cache \"D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable\" --package desktop/build/r9-restaged-preview --evidence <file>",
+      "proves": "Notices, base assets, LGPL provenance, engine cache bytes and the restaged package pass with 0 failures; the warnings are the documented pending-licence notes.",
+      "limits": "Export check skipped (no export directory). A pass means these bytes are consistent with the manifests, not that the package is a delivery build."
+    },
+    "preflight-final.txt": {
+      "command": "same as preflight-final.json, console output",
+      "proves": "Human-readable summary.",
+      "limits": "Text log; the JSON record is authoritative."
+    },
+    "release-manifest.json": {
+      "command": "node desktop/delivery/release-manifest.mjs create --root . --cache <cache> --package desktop/build/r9-restaged-preview --out <file>",
+      "proves": "Client, engine, export templates, broker, bases, bridge, dependencies, licences, the pinned Git bundle and the content-boundary declaration are pinned with real bytes and SHA-256; tooling:m/tooling:n record the R1/R6 branch commits without inventing a hash.",
+      "limits": "A pin of this tree plus a snapshot of the restaged package; not a build attestation."
+    },
+    "release-manifest-create.txt": {
+      "command": "same as release-manifest.json, console output",
+      "proves": "Component-by-component summary of what was pinned.",
+      "limits": "Text log."
+    },
+    "release-manifest-verify.txt": {
+      "command": "node desktop/delivery/release-manifest.mjs verify --manifest <release-manifest.json> --package desktop/build/r9-restaged-preview",
+      "proves": "The restaged package matches the manifest: 0 missing, 0 mismatch, 0 unpinned, 0 forbidden, 0 links, exit 0.",
+      "limits": "The manifest was created with --package, so the package files are pinned from this artefact; it proves byte identity with the recorded snapshot, not reproducibility from source."
+    },
+    "package-pin-batch07.json": {
+      "command": "node desktop/windows-package-tools.mjs pin --package \"D:\\Craftmine World\\desktop\\build\\windows-preview-batch-07\" --out <file>",
+      "proves": "Read-only byte pin of the original round-one package: 828 files, 573147733 bytes, 1 installer, missing required files listed (it predates the Git requirement).",
+      "limits": "Pinning proves which bytes exist; it does not prove installability or licence completeness."
+    },
+    "package-pin.txt": {
+      "command": "same as package-pin-batch07.json, console output",
+      "proves": "One-line summary of the pin.",
+      "limits": "Text log."
+    },
+    "licensing-check-batch07.json": {
+      "command": "node desktop/delivery/licensing-check.mjs --inventory desktop/delivery/licensing/inventory.json --package \"D:\\Craftmine World\\desktop\\build\\windows-preview-batch-07\" --evidence <file>",
+      "proves": "The original round-one package fails with 67 licence failures and 19 pending entries; this is the starting point that round two had to classify.",
+      "limits": "Describes that package, not the current staging pipeline."
+    },
+    "licensing-check.txt": {
+      "command": "same as licensing-check-batch07.json, console output",
+      "proves": "Human-readable failure summary of the original package.",
+      "limits": "Text log."
+    },
+    "licensing-check-repaired.json": {
+      "command": "node desktop/delivery/licensing-check.mjs --inventory desktop/delivery/licensing/inventory.json --package desktop/build/r9-restaged-preview --evidence <file>",
+      "proves": "After desktop/delivery/licensing/tools/apply-package-licences.mjs, the restaged package has 0 licence failures; 19 entries remain pending-rights-review / unknown-rightsholder and the exit code is 3 (PENDING, not a pass).",
+      "limits": "0 failures means the notices and texts the offline entry requires are present; it does not mean the pending rights are resolved."
+    },
+    "licensing-check-repaired.txt": {
+      "command": "same as licensing-check-repaired.json, console output",
+      "proves": "Readable pending list and the final PENDING — NOT A PASS line.",
+      "limits": "Text log."
+    },
+    "licence-repair.json": {
+      "command": "node desktop/delivery/licensing/tools/apply-package-licences.mjs --package desktop/build/r9-restaged-preview --guide desktop/windows-USER_GUIDE.zh-CN.md   (report copied out of the package)",
+      "proves": "Exactly which texts were installed, generated or kept: 45 npm packages without a bundled licence text now point at the canonical text, the GPL-3 and canonical third-party texts were installed, the Rust notice file was generated, the stale user guide was replaced, 0 unresolved, 0 failures.",
+      "limits": "It repairs the licence directory and the packaged guide only; no binary changes and no licence is applied to project code."
+    },
+    "git-bundle-verify.json": {
+      "command": "node desktop/delivery/tools/git-bundle.mjs verify --zip <MinGit-2.53.0-64-bit.zip>",
+      "proves": "The pinned MinGit archive matches the official GitHub asset digest 82b562c9…, the wrapper reports git version 2.53.0.windows.1, and LICENSE.txt (GPL-2.0) is present.",
+      "limits": "Verifies the archive and the version string; it does not prove the integrated client reports content.gitInfo.source=bundled."
+    },
+    "git-bundle-stage.json": {
+      "command": "node desktop/delivery/tools/git-bundle.mjs stage --package desktop/build/r9-restaged-preview --zip <MinGit-2.53.0-64-bit.zip>",
+      "proves": "The MinGit tree was laid out as resources/git/** with bin/git.exe for R1's exe-adjacent candidate: 385 files, 109064331 bytes, and a per-file hash record in resources/git/GIT-BUNDLE.json.",
+      "limits": "Staging proves the layout and hashes; the runtime discovery (bundled vs pathFallback) still needs an integrated client."
+    },
+    "boundary-client.json": {
+      "command": "node desktop/delivery/content-boundary-check.mjs --boundary client --path desktop/build/r9-restaged-preview --json",
+      "proves": "The restaged package satisfies the client content boundary: 1233 entries, required notices present, no forbidden path (no credentials, node_modules, .git, logs, user data).",
+      "limits": "The check reads names and sizes only; it does not open payload files."
+    },
+    "size-with-git.json": {
+      "command": "node desktop/delivery/measure.mjs size --package desktop/build/r9-restaged-preview --out <file>",
+      "proves": "Real size after bundling Git: total 651.121 MB, 1233 files, resources/git 104.074 MB, all inside the frozen caps.",
+      "limits": "Filesystem measurement of one package; not a claim about installer compression."
+    },
+    "size-with-git.txt": {
+      "command": "same as size-with-git.json, console output",
+      "proves": "Readable per-bucket size table.",
+      "limits": "Text log."
+    },
+    "measurement-final.json": {
+      "command": "node desktop/delivery/measure.mjs all --package \"D:\\Craftmine World\\desktop\\build\\windows-preview-batch-07\" --cache \"D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable\" --out <file>",
+      "proves": "Real cold/warm start, offscreen first frame, engine import/build/probe waits, 900 headless frames, process memory, package and installer size, git log/diff P50/P95 over 30 runs and synthetic 1k/10k asset-index calibration, each with threshold and verdict.",
+      "limits": "Measured against the round-one package, before the Git tree was bundled; candidate-apply, install and product asset search/preview are skipped."
+    },
+    "measurement.txt": {
+      "command": "same as measurement-final.json, console output",
+      "proves": "Readable metric table plus skipped/unmeasured reasons.",
+      "limits": "Text log."
+    },
+    "product-rpc-r1.json": {
+      "command": "node desktop/delivery/measure.mjs product --core \"D:\\Craftmine World-worktrees\\godot-round2-r1-20260910\\vendor\\pi-desktop\\target\\debug\\craftmine-core.exe\" --runs 10 --out <file>",
+      "proves": "The measurement wiring works against a real R1 debug build over stdio JSON-RPC: hello round trip and 10 content.gitInfo round trips (p50 ~0.11 ms, p95 ~65 ms). asset.search returns UNKNOWN_METHOD there.",
+      "limits": "R1 is not integrated and this is a debug build of a task branch; the numbers are calibration and their thresholds stay pending-real-sample."
+    },
+    "product-rpc-r1.txt": { "command": "same as product-rpc-r1.json, console output", "proves": "Readable table plus the skipped asset.search reason.", "limits": "Text log." },
+    "product-rpc-r6.json": {
+      "command": "node desktop/delivery/measure.mjs product --core \"D:\\Craftmine World-worktrees\\godot-round2-r6-20260910\\vendor\\pi-desktop\\target\\debug\\craftmine-core.exe\" --runs 10 --out <file>",
+      "proves": "The same wiring against R6's debug build: hello and 10 content.gitInfo round trips; asset.search is UNKNOWN_METHOD in that build too, so the product asset path stays pending.",
+      "limits": "Task-branch debug build, not integrated; calibration only."
+    },
+    "product-rpc-r6.txt": { "command": "same as product-rpc-r6.json, console output", "proves": "Readable table plus the skipped asset.search reason.", "limits": "Text log." }
+  }
+}

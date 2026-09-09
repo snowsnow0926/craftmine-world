@@ -1,0 +1,16 @@
+﻿✔ every service method forwards to its dotted channel with the exact args object (1.9158ms)
+✔ unknown fields are rejected before any host call (0.4056ms)
+✔ install modes require or forbid the source instance (0.1548ms)
+✔ refs, placements, pages, packages and hashes are strictly validated (0.2761ms)
+✔ explain is pure offline Chinese text and strips the detail suffix (0.2022ms)
+✔ compatibilityMatrix reports each dimension plus the dependency count (0.2542ms)
+✔ migrationReport counts applied operations and warns when the once-ledger is empty (0.2153ms)
+✔ service surface is pure logic and helpers never touch the host channel (0.1386ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 99.2176

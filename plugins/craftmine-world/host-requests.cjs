@@ -7,8 +7,14 @@ function boundedText(value,max){if(typeof value!=='string'||!value.trim()||Buffe
 function assertIdentity(input,snapshot){
   if(!sameBinding(input.binding,snapshot.binding)||input.generation!==snapshot.generation)throw Error('CRAFTMINE_BUDGET_BINDING_MISMATCH');
 }
-function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
+function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService}){
   const reservations=new Map();
+  // The bounded surface of the S5 asset service and the S3 works/package
+  // service. The router forwards a method name, never an arbitrary core call.
+  const ASSET_METHODS=new Set(['search','read','versions','usage','annotate','scan','importAsset','previewRead','probe',
+    'resolveLegacy','recordUsage','recordCheck','preview','cancel']);
+  const PACKAGE_METHODS=new Set(['check','install','list','read','progress','grant','upgrade','uninstall','restore',
+    'exportPackage','importPackage','usage','backupFull','backupVerify','backupRestoreFull','legacyConvert','explain']);
   const keyOf=(context,id)=>JSON.stringify([context.projectId,context.sessionId,context.turnId,id]);
   async function snapshot(context){
     const value=await core.call('task.context',{context});
@@ -61,6 +67,115 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
       fields(params,['worldId','buildId','revision','runnerReceipt','snapshot']);
       return core.call(method,params,60000);
     }
+    // Managed executor lifecycle. The executor process owns the pinned engine;
+    // this router only reports its live state, drives the optional core
+    // interfaces, and forwards enqueue/cancel from the trusted host.
+    if(method==='godotExecutor.status'){
+      fields(params,[]);
+      return godotExecutor?.status()??{format:'craftmine.godot-executor-status/1',state:'unavailable',available:false,buildAvailable:false,checkAvailable:false,reason:'GODOT_EXECUTOR_UNAVAILABLE',jobs:[]};
+    }
+    if(method==='godotExecutor.revoke'){
+      fields(params,['executorId']);
+      const result=await core.call(method,params,60000);
+      if(godotExecutor)await godotExecutor.stop();
+      return result;
+    }
+    if(method==='godotExecutor.enqueue'){
+      fields(params,['jobId','worldId','mode'],['kind','status']);
+      if(!godotExecutor)throw Error('GODOT_EXECUTOR_UNAVAILABLE');
+      return godotExecutor.enqueue(params);
+    }
+    if(method==='godotExecutor.cancel'){
+      fields(params,['jobId']);
+      return godotExecutor?.cancel(params.jobId)??{cancelled:false};
+    }
+    // S5 asset service and S3 works/package service. Only a method name from the
+    // service's own bounded surface is forwarded; the service owns its field
+    // validation, operation identity and idempotency.
+    if(method==='asset.request'){
+      fields(params,['method'],['args']);
+      if(!assetService)throw Error('ASSET_SERVICE_UNAVAILABLE');
+      if(!ASSET_METHODS.has(params.method))throw Error('UNSUPPORTED_ASSET_OPERATION');
+      return assetService[params.method](params.args??{});
+    }
+    if(method==='package.request'){
+      fields(params,['method'],['args']);
+      if(!reuseService)throw Error('PACKAGE_SERVICE_UNAVAILABLE');
+      if(!PACKAGE_METHODS.has(params.method))throw Error('UNSUPPORTED_PACKAGE_OPERATION');
+      return reuseService[params.method](params.args??{});
+    }
+    const applicationFields={
+      'godotJob.checkDescriptor':['jobId','token','artifacts'],
+      'godotApplication.prepare':['id','token','candidateId','worldId','revision','snapshot'],
+      'godotApplication.commit':['id','token','evidence'],
+      'godotApplication.read':['id'],
+      'godotApplication.abort':['id'],
+      'world.read':['id'],
+    };
+    if(Object.hasOwn(applicationFields,method)){
+      fields(params,applicationFields[method]);
+      return core.call(method,params,60000);
+    }
+    // Godot world, project, job, history, asset and storage routes. Each entry
+    // is [required, optional]; the router forwards nothing that is not listed,
+    // and only the trusted host orchestrator can reach this table - no panel
+    // channel and no model tool exposes it. Routes that the core does not
+    // implement are deliberately absent rather than opened as generic RPC.
+    const godotRoutes={
+      'godotWorld.initialize':[['worldId','title','baseId','baseBuild','snapshot'],[]],
+      'godotWorld.initStatus':[['worldId'],[]],
+      'godotWorld.copy':[['sourceWorldId','targetWorldId','title','progress'],['snapshot','context']],
+      'godotWorld.backupSnapshot':[['worldId'],['context']],
+      'godotWorld.verifySnapshot':[['worldId','snapshot'],['context']],
+      'godotProject.create':[['context','worldId','toolCallId','baseBuild','baseId','files'],[]],
+      'godotProject.index':[['context','worldId'],['revision','manifestHash','offset','limit']],
+      'godotProject.read':[['context','worldId','revision','manifestHash','path'],['offset','limit']],
+      'godotProject.patch':[['context','worldId','toolCallId','revision','manifestHash','operations'],[]],
+      'godotProject.receipt':[['binding','worldId','toolCallId','method','request'],[]],
+      'godotBuild.start':[['context','worldId','toolCallId','revision','manifestHash','mode'],[]],
+      'godotBuild.read':[['worldId','jobId'],['context']],
+      'godotBuild.cancel':[['worldId','jobId'],['context']],
+      'godotBuild.receipt':[['binding','worldId','toolCallId','method','request'],[]],
+      'godotJob.continue':[['jobId','token'],[]],
+      'godotJob.usage':[['worldId'],['context']],
+      'godotCandidate.list':[['worldId'],['offset','limit']],
+      'godotCandidate.read':[['worldId','candidateId'],[]],
+      'godotStorage.status':[['worldId'],['context']],
+      'godotStorage.reclaimPlan':[['worldId'],['context','protectedBuilds','keepRecentBuilds']],
+      'godotStorage.reclaimCommit':[['worldId','planId','planHash'],['context','protectedBuilds','keepRecentBuilds']],
+      'godotAsset.put':[['context','worldId','toolCallId','name','mediaType','sha256','bytesBase64'],[]],
+      'godotAsset.list':[['context','worldId'],['offset','limit']],
+      'content.status':[['worldId'],[]],
+      'content.gitInfo':[['worldId'],[]],
+      'content.history':[['worldId'],['rev','skip','limit']],
+      'content.changes':[['worldId','from','to'],[]],
+      'content.diff':[['worldId','from','to','path'],[]],
+      'content.readFile':[['worldId','rev','path'],['encoding']],
+      'content.branch.list':[['worldId'],[]],
+      'content.version.list':[['worldId'],[]],
+      'content.checkpoint.set':[['worldId','taskId','sequence','rev'],[]],
+      'content.checkpoint.list':[['worldId','taskId'],[]],
+      'content.apply.prepare':[['worldId','context','kind','targetOid','detail'],[]],
+      'content.apply.advance':[['operationId'],[]],
+      'content.apply.confirm':[['operationId','appliedOid','detail'],[]],
+      'content.apply.rollback':[['operationId','reason'],[]],
+      'content.apply.recover':[['worldId'],[]],
+      'content.reclaim.plan':[['worldId'],['keep']],
+      'content.reclaim.prune':[['worldId'],['keep']],
+      'content.verify':[['worldId'],['refs']],
+      'content.bundle':[['worldId','target'],['refs']],
+      'library.search':[[],['query','kind','tags','scope','offset','limit']],
+      'library.read':[['ref'],[]],
+      'library.capture':[['operationId','applicationId','worldId','kind','resourceId','bundle','scope','tags'],[]],
+      'world.list':[[],[]],
+      'world.create':[['id','title','world'],[]],
+      'world.saveProgress':[['id','revision','baseBuild','snapshot'],[]],
+    };
+    if(Object.hasOwn(godotRoutes,method)){
+      const [required,optional]=godotRoutes[method];
+      fields(params,required,optional);
+      return core.call(method,params,60000);
+    }
     if(method==='budget.configure'||method==='budget.findReceipt'){
       fields(params,['projectId','sessionId','worldId','taskId','generation','operationId','maxTokens']);
       return core.call(method,params);
@@ -69,6 +184,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
       fields(params,['context','reason']);
       const result=await core.call(method,params);
       await verifications?.cancelTurn(params.context);await reviews?.cancelTurn(params.context);
+      await godotExecutor?.cancelTurn(params.context);
       return result;
     }
     if(method==='workbench.request'){

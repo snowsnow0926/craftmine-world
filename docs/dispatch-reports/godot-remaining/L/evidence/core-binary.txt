@@ -1,0 +1,6 @@
+﻿
+Algorithm       Hash                                                                   Path                            
+---------       ----                                                                   ----                            
+SHA256          E9444C02C4C50C96BF6EEF6A7D4B5E73B225FBD6C842065126E087F347371C28       C:\Users\WINDOWS\.pi-desktop\...
+
+

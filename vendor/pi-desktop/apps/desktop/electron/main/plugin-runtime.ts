@@ -176,6 +176,38 @@ export type PluginHostServices = {
     verify: (input: unknown, pluginPath: string) => Promise<unknown>;
     cancel: (id: string) => void;
   };
+  /**
+   * Isolated Godot build check. The main process owns the offscreen renderer
+   * window; the plugin host only supplies the bounded descriptor.
+   */
+  godotVerification?: {
+    check: (input: unknown) => Promise<unknown>;
+    cancel: (id: string) => void;
+  };
+  /**
+   * Compatibility alias for the same verifier under the name the plugin's
+   * private bridge calls it by. Exactly one of the two is supplied.
+   */
+  craftmineGodotCheck?: {
+    check: (input: unknown) => Promise<unknown>;
+    cancel: (id: string) => void;
+  };
+  /**
+   * Host-owned asset preview decoding. The plugin's asset service calls it and
+   * receives evidence only; the decoder itself stays in the host.
+   */
+  craftmineAssetPreview?: (input: unknown, options?: unknown) => Promise<unknown>;
+  /**
+   * Live observation of the running Godot instance. The plugin may ask for a
+   * sample of the world it is bound to; the host supplies the instance identity
+   * and refuses any other world, build or instance. Returns null when no formal
+   * instance is running, so "not running" is never reported as an empty sample.
+   */
+  craftmineLiveSample?: (input: {
+    worldId?: string | null;
+    buildId?: string | null;
+    instanceId?: string | null;
+  }) => Promise<Record<string, unknown> | null>;
   getWorkspacePath: () => string | null;
   getLocale?: () => string;
   getAppVersion?: () => string;
@@ -904,10 +936,39 @@ export class PluginRuntime {
     const allowed = new Set(["selection.read", "maintenance.context", "turn.begin", "task.context", "budget.configure", "budget.reserve", "budget.settle", "budget.boundary", "review.context", "review.reserve", "review.settle", "workbench.request", "task.resume", "task.interrupt", "task.discard", "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel"]);
     allowed.add("budget.findReceipt");
     for (const operation of ["godotRuntime.describe", "godotRuntime.describeCandidate", "godotRuntime.saveProgress"]) allowed.add(operation);
+    // Read-only live executor state for diagnostics. Enqueue/revoke stay private
+    // to the host: the renderer can never start or stop engine execution.
+    allowed.add("godotExecutor.status");
+    for (const operation of ["godotApplication.prepare", "godotApplication.commit", "godotApplication.read", "godotApplication.abort", "world.read"]) allowed.add(operation);
+    allowed.add("godotJob.checkDescriptor");
+    // Godot world/project/job/history/asset/storage routes. The plugin router
+    // validates every field for each method; this set only decides which private
+    // methods the trusted orchestrator may reach at all. Enqueue/cancel/revoke
+    // stay off this list so a renderer can never start or stop engine execution.
+    for (const operation of [
+      "godotWorld.initialize", "godotWorld.initStatus", "godotWorld.copy",
+      "godotWorld.backupSnapshot", "godotWorld.verifySnapshot",
+      "godotProject.create", "godotProject.index", "godotProject.read", "godotProject.patch", "godotProject.receipt",
+      "godotBuild.start", "godotBuild.read", "godotBuild.cancel", "godotBuild.receipt",
+      "godotJob.continue", "godotJob.usage",
+      "godotCandidate.list", "godotCandidate.read",
+      "godotStorage.status", "godotStorage.reclaimPlan", "godotStorage.reclaimCommit",
+      "godotAsset.put", "godotAsset.list",
+      "content.status", "content.gitInfo", "content.history", "content.changes", "content.diff", "content.readFile",
+      "content.branch.list", "content.version.list", "content.checkpoint.set", "content.checkpoint.list",
+      "content.apply.prepare", "content.apply.advance", "content.apply.confirm", "content.apply.rollback", "content.apply.recover",
+      "content.reclaim.plan", "content.reclaim.prune", "content.verify", "content.bundle",
+      "library.search", "library.read", "library.capture",
+      "world.list", "world.create", "world.saveProgress",
+      "asset.request", "package.request",
+    ]) allowed.add(operation);
     if (!allowed.has(method)) throw apiError("UNSUPPORTED", "Unsupported Craftmine host request");
     const loaded = this.loaded.get("craftmine.world");
     if (!loaded?.child) throw apiError("UNSUPPORTED", "Craftmine world service unavailable");
-    return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, method.startsWith("backup.") || method.startsWith("godotRuntime.") || method === "workbench.request" ? 60_000 : 15_000);
+    const longRunning = ["backup.", "godotRuntime.", "godotApplication.", "godotWorld.", "godotProject.", "godotBuild.",
+      "godotJob.", "godotStorage.", "godotAsset.", "content.", "library.", "world."]
+      .some(prefix => method.startsWith(prefix)) || method === "workbench.request";
+    return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, longRunning ? 60_000 : 15_000);
   }
 
   /**
@@ -1440,6 +1501,34 @@ export class PluginRuntime {
         if (pluginId !== "craftmine.world" || !this.services.craftmineVerification) throw apiError("UNSUPPORTED", "Built-in verifier unavailable");
         if (api === "craftmine.cancelVerification") return this.services.craftmineVerification.cancel(String(args[0] ?? ""));
         return this.services.craftmineVerification.verify(args[0], loaded.path);
+      }
+      case "craftmine.godotCheck":
+      case "craftmine.cancelGodotCheck": {
+        // The isolated runtime check runs in the host process only: it owns the
+        // hidden window, the ephemeral session and the input guard. The plugin
+        // child never gets the window, the origin or a progress write path.
+        const verifier = this.services.godotVerification ?? this.services.craftmineGodotCheck;
+        if (pluginId !== "craftmine.world" || !verifier) throw apiError("UNSUPPORTED", "Isolated Godot check unavailable");
+        if (api === "craftmine.cancelGodotCheck") return verifier.cancel(String(args[0] ?? ""));
+        return verifier.check(args[0]);
+      }
+      case "craftmine.assetPreview": {
+        if (pluginId !== "craftmine.world" || !this.services.craftmineAssetPreview) throw apiError("UNSUPPORTED", "Isolated asset preview unavailable");
+        return this.services.craftmineAssetPreview(args[0], args[1]);
+      }
+      case "craftmine.sampleLiveState": {
+        if (pluginId !== "craftmine.world" || !this.services.craftmineLiveSample) throw apiError("UNSUPPORTED", "Live gameplay sampling unavailable");
+        return this.services.craftmineLiveSample(args[0]);
+      }
+      case "craftmine.godotLiveState": {
+        if (pluginId !== "craftmine.world" || !this.services.craftmineLiveSample) throw apiError("UNSUPPORTED", "Live Godot observation unavailable");
+        const input = (args[0] ?? {}) as { worldId?: unknown; buildId?: unknown; instanceId?: unknown };
+        const idOrNull = (value: unknown): string | null => (typeof value === "string" && value.length > 0 ? value : null);
+        return this.services.craftmineLiveSample({
+          worldId: idOrNull(input.worldId),
+          buildId: idOrNull(input.buildId),
+          instanceId: idOrNull(input.instanceId),
+        });
       }
       case "commands.register": {
         const descriptor = (args[0] ?? {}) as {

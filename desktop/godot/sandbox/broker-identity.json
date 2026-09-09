@@ -1,0 +1,59 @@
+{
+  "format": "craftmine.godot-broker-identity/1",
+  "profile": "debug",
+  "protocolVersion": 1,
+  "policyVersion": "craftmine.windows.lpac-registry.v1",
+  "recoveryPolicyVersion": "craftmine.windows.recovery-journal.v1",
+  "sourceCommit": "5cf65eb163e7213edb8a37d2e3c2be98b81da050",
+  "sourceDigest": "32ba0402cde96a5b6a10ed832a6a7b74f9887d8fb3557fe445059fd7b7d03501",
+  "sourceFiles": [
+    {
+      "path": "Cargo.lock",
+      "sha256": "b3e9eb87fa6d402ab1f41f3c36e899fc19bd44705ca8647a88891e210b64d5b6"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "bce6f8f59da66950c7345d35cab1365cd7a4ef02323e74ab9ad7e42bcee23900"
+    },
+    {
+      "path": "src/bin/godot-host-broker.rs",
+      "sha256": "e63386868f409c496c759a665ba1c61abd4f9db97984f042a80f923d98d3cb91"
+    },
+    {
+      "path": "src/broker.rs",
+      "sha256": "ee1ce271d15c6dda280619d0b780dd979f85123358127c00d4c0c248d7d45fe6"
+    },
+    {
+      "path": "src/desktop.rs",
+      "sha256": "5bcf058af201dfa22c2c58c6393c2431bc483c797c3ec2940a80bb7601bf43a3"
+    },
+    {
+      "path": "src/launch.rs",
+      "sha256": "5ac7afa5a0a619550595dd298b215e8ff6f66de2b98f3b90d098b16441b1bb65"
+    },
+    {
+      "path": "src/lib.rs",
+      "sha256": "166f42c23d96f45f902ab0c0b1ca10174dd3845677809cc0ebe7e54cc08b47c0"
+    },
+    {
+      "path": "src/preflight.rs",
+      "sha256": "d77c0eda730298065462c8412729486284ebc00d1eeaaec4aec37b768b7b5528"
+    },
+    {
+      "path": "src/recovery.rs",
+      "sha256": "36d4d4ca0e133357960700b22c7f4e4f103b7acbdb6aa1ddc3dedf577c086453"
+    },
+    {
+      "path": "src/task.rs",
+      "sha256": "5586d5aee268d744378d695ef1f620299a058f2fdf80b613ff581b6731548a64"
+    },
+    {
+      "path": "src/verification.rs",
+      "sha256": "ba0aa85e6e6a406046f57fe99aab59f6465a474ac2149a66e37f56b27ae82b76"
+    }
+  ],
+  "sha256": "93d35cc881887fa632dd2bc02502141c1b9670353d6a6536590c36e2824038c4",
+  "bytes": 1585664,
+  "builtFrom": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\5c4f8949-1365-46ba-b47d-5a9e23a7b093\\cargo-target-s2\\debug\\godot-host-broker.exe",
+  "recordedAt": "2026-09-09T19:51:21.275Z"
+}

@@ -4,6 +4,8 @@ import type { GodotWorldOpenRequest, GodotWorldProgressCall, GodotWorldProgressR
 const HASH = /^[a-f0-9]{64}$/;
 export type RuntimeArtifact = { path: string; sha256: string; bytes: number };
 export type GodotRuntimeDescriptor = GodotWorldOpenRequest & { format: "craftmine.godot-runtime-descriptor/1"; phase: "formal"; baseId: string; contentHash: string; artifactManifestHash: string; artifacts: RuntimeArtifact[] };
+export type GodotCandidateDescriptor = Omit<GodotRuntimeDescriptor,"phase"> & {phase:"candidate";applicationId:string;applicationInputHash:string};
+
 type Domain = (method: string, params: Record<string, unknown>) => Promise<unknown>;
 const object = (value: unknown): value is Record<string, any> => !!value && typeof value === "object" && !Array.isArray(value);
 const hash = (text: string) => createHash("sha256").update(text, "utf8").digest("hex");
@@ -13,9 +15,9 @@ export function createGodotRuntimeAdapter(options: {
   instance: () => { worldId: string; buildId: string; instanceId: string } | null;
 }) {
   const roots = new Set<string>();
-  function descriptor(value: unknown, worldId: string): GodotRuntimeDescriptor | null {
+  function descriptor(value: unknown, worldId: string, phase = "formal"): GodotRuntimeDescriptor | null {
     if (value === null) return null;
-    if (!object(value) || value.format !== "craftmine.godot-runtime-descriptor/1" || value.phase !== "formal" || value.worldId !== worldId ||
+    if (!object(value) || value.format !== "craftmine.godot-runtime-descriptor/1" || value.phase !== phase || value.worldId !== worldId ||
         typeof value.buildId !== "string" || !Number.isSafeInteger(value.revision) || value.revision < 0 ||
         !HASH.test(value.contentHash) || !HASH.test(value.artifactManifestHash) || typeof value.root !== "string" ||
         value.entry !== "web/index.html" || !Array.isArray(value.artifacts) || value.artifacts.length < 1 || value.artifacts.length > 4096) throw new Error("INVALID_GODOT_RUNTIME_DESCRIPTOR");
@@ -38,6 +40,13 @@ export function createGodotRuntimeAdapter(options: {
   };
   return {
     allowedRoots: () => [...roots], describe,
+    async describeCandidate(worldId: string, applicationId: string, token: string): Promise<GodotCandidateDescriptor> {
+      const value = await options.domain("godotRuntime.describeCandidate", {worldId, applicationId, token});
+      if (!object(value) || value.applicationId !== applicationId || !HASH.test(value.applicationInputHash)) throw new Error("INVALID_GODOT_CANDIDATE_DESCRIPTOR");
+      const result = descriptor(value, worldId, "candidate");
+      if (!result) throw new Error("GODOT_CANDIDATE_UNAVAILABLE");
+      return result as unknown as GodotCandidateDescriptor;
+    },
     async descriptor() { const id = await options.selection(); return id ? describe(id) : null; },
     async progress(call: GodotWorldProgressCall): Promise<GodotWorldProgressResult> {
       const current = options.instance(), receipt = call.runnerReceipt;

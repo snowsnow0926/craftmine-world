@@ -1,0 +1,49 @@
+{
+  "format": "craftmine.i.observation/1",
+  "combat": {
+    "fired": true,
+    "hits": 2,
+    "appliedDamage": 20,
+    "ammoConsumed": 1,
+    "cooldownBlocked": true,
+    "meleeDamage": 12,
+    "meleeAmmoConsumed": 0,
+    "firedAfterEdits": true
+  },
+  "edits": [
+    {
+      "kind": "appearance",
+      "applied": true
+    },
+    {
+      "kind": "damage",
+      "applied": true
+    },
+    {
+      "kind": "crosshair-visibility",
+      "applied": true
+    }
+  ],
+  "usage": {
+    "calls": 2,
+    "promptTokens": 2400,
+    "cachedReadTokens": 1200,
+    "nonCachedInputTokens": 1200,
+    "outputTokens": 900,
+    "totalTokens": 3300,
+    "unknownCalls": 0
+  },
+  "failures": [],
+  "humanInterventions": [],
+  "evidence": {
+    "screenshots": [
+      {
+        "assertionId": "I.R02.2.6",
+        "name": "edited-weapon.png",
+        "sha256": "a4bcd7b80c65e14e3809783fc4c587ce66a995dcc142e25bf61c9337ef6f3443",
+        "bytes": 70
+      }
+    ],
+    "human": []
+  }
+}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   CRAFTMINE_WORLD_TITLE_MAX,
   normalizeWorldTitle,
@@ -11,7 +11,10 @@ import type { CraftmineWorldsController } from "../../hooks/use-craftmine-worlds
 /**
  * Create flow: base, start point, name. Only options the host reports as
  * delivered are selectable; planned or unreported choices stay visible but
- * disabled so the screen never promises an unavailable base.
+ * disabled so the screen never promises an unavailable base. Submitting a base
+ * that needs initialization closes the form once the host registered the world;
+ * the world list then shows the host's real initialization progress, and the
+ * world is opened only after the host reports it ready.
  */
 export function WorldCreatePanel({
   controller,
@@ -28,7 +31,13 @@ export function WorldCreatePanel({
   const [starterId, setStarterId] = useState("");
   const [title, setTitle] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
+  // One stable identity for this dialog. Retrying after a lost reply targets
+  // the same world instead of creating a second one.
+  const operationId = useRef<string>(
+    globalThis.crypto?.randomUUID?.() ?? `create-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  );
 
+  const deliveredBase = bases.some((base) => base.delivered);
   const submit = async () => {
     const invalid = validateWorldTitle(title, lang);
     if (invalid) {
@@ -44,6 +53,7 @@ export function WorldCreatePanel({
     const chosenStarter = starters.find((starter) => starter.id === starterId && starter.delivered)?.id ?? "";
     const created = await controller.create({
       title: normalizeWorldTitle(title),
+      operationId: operationId.current,
       ...(chosenBase ? { baseId: chosenBase } : {}),
       ...(chosenStarter ? { starterId: chosenStarter } : {}),
     });
@@ -69,7 +79,12 @@ export function WorldCreatePanel({
           </p>
         ) : (
           bases.map((base) => (
-            <label key={base.id} className="craftmine-world-choice" data-world-base-option={base.id}>
+            <label
+              key={base.id}
+              className="craftmine-world-choice"
+              data-world-base-option={base.id}
+              data-world-base-delivered={base.delivered ? "true" : "false"}
+            >
               <input
                 type="radio"
                 name="craftmine-world-base"
@@ -78,10 +93,18 @@ export function WorldCreatePanel({
                 disabled={!base.delivered}
                 onChange={() => setBaseId(base.id)}
               />
-              <span>{base.label}</span>
+              <span className="craftmine-world-choice-text">
+                <span className="craftmine-world-choice-label">{base.label}</span>
+                {base.description && <span className="craftmine-world-choice-desc">{base.description}</span>}
+              </span>
               {!base.delivered && <span className="craftmine-world-tag">{CRAFTMINE_WORLD_TEXT.planned[lang]}</span>}
             </label>
           ))
+        )}
+        {bases.length > 0 && !deliveredBase && (
+          <p className="craftmine-world-note-hint" data-world-create="base-none-delivered">
+            {CRAFTMINE_WORLD_TEXT.createBaseMissing[lang]}
+          </p>
         )}
       </fieldset>
 
@@ -98,7 +121,12 @@ export function WorldCreatePanel({
           <span>{CRAFTMINE_WORLD_TEXT.createStarterBlank[lang]}</span>
         </label>
         {starters.map((starter) => (
-          <label key={starter.id} className="craftmine-world-choice" data-world-starter-option={starter.id}>
+          <label
+            key={starter.id}
+            className="craftmine-world-choice"
+            data-world-starter-option={starter.id}
+            data-world-starter-delivered={starter.delivered ? "true" : "false"}
+          >
             <input
               type="radio"
               name="craftmine-world-starter"
@@ -107,7 +135,12 @@ export function WorldCreatePanel({
               disabled={!starter.delivered}
               onChange={() => setStarterId(starter.id)}
             />
-            <span>{starter.label}</span>
+            <span className="craftmine-world-choice-text">
+              <span className="craftmine-world-choice-label">{starter.label}</span>
+              {starter.description && (
+                <span className="craftmine-world-choice-desc">{starter.description}</span>
+              )}
+            </span>
             {!starter.delivered && <span className="craftmine-world-tag">{CRAFTMINE_WORLD_TEXT.planned[lang]}</span>}
           </label>
         ))}
@@ -129,10 +162,14 @@ export function WorldCreatePanel({
         />
       </label>
 
-      {localError && <p className="craftmine-world-error" role="alert">{localError}</p>}
+      {localError && <p className="craftmine-world-error" role="alert" data-world-create="validation">{localError}</p>}
 
       <div className="craftmine-world-create-actions">
-        <button type="submit" data-world-create="submit" disabled={controller.busy}>
+        <button
+          type="submit"
+          data-world-create="submit"
+          disabled={controller.busy || (bases.length > 0 && !deliveredBase)}
+        >
           {controller.busy ? CRAFTMINE_WORLD_TEXT.creating[lang] : CRAFTMINE_WORLD_TEXT.createSubmit[lang]}
         </button>
         <button type="button" onClick={onClose} disabled={controller.busy}>

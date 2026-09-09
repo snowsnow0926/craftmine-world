@@ -1,0 +1,44 @@
+[
+  {
+    "id": "I.R15.2.1",
+    "kind": "machine",
+    "hard": true,
+    "passed": true,
+    "reason": "ok"
+  },
+  {
+    "id": "I.R15.2.2",
+    "kind": "machine",
+    "hard": true,
+    "passed": true,
+    "reason": "ok"
+  },
+  {
+    "id": "I.R15.2.3",
+    "kind": "machine",
+    "hard": true,
+    "passed": true,
+    "reason": "ok"
+  },
+  {
+    "id": "I.R15.2.4",
+    "kind": "machine",
+    "hard": true,
+    "passed": true,
+    "reason": "ok"
+  },
+  {
+    "id": "I.R15.2.5",
+    "kind": "machine",
+    "hard": true,
+    "passed": true,
+    "reason": "ok"
+  },
+  {
+    "id": "I.R15.2.6",
+    "kind": "accounting",
+    "hard": true,
+    "passed": false,
+    "reason": "accounting evidence is required and cannot be satisfied by the assertion evaluator"
+  }
+]

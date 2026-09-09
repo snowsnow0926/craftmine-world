@@ -1,0 +1,391 @@
+/*
+  Asset library surface (agent R6). Layout only — colour, type and radius all
+  come from the token scales in tokens.css, and no raw typography or radius
+  literal is allowed here (scripts/check-style-tokens.mjs enforces that).
+*/
+
+.asset-library {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.asset-library-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.asset-library-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--text-2xs);
+  color: var(--ds-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.asset-library-note,
+.asset-library-error {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: var(--radius-xs);
+  background: var(--ds-tile);
+  color: var(--ds-text-muted);
+  font-size: var(--text-2xs);
+  line-height: var(--leading-body);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.asset-library-note p {
+  margin: 0;
+}
+
+.asset-library-error {
+  color: var(--ds-error);
+}
+
+.asset-library-body {
+  display: grid;
+  grid-template-columns: minmax(0, 200px) minmax(0, 1fr) minmax(0, 280px);
+  gap: 8px;
+  min-width: 0;
+}
+
+.asset-library-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.asset-library-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.asset-library-field-label {
+  font-size: var(--text-2xs);
+  color: var(--ds-text-muted);
+}
+
+.asset-library-field-hint {
+  font-size: var(--text-2xs);
+  color: var(--ds-text-muted);
+  line-height: var(--leading-body);
+  overflow-wrap: anywhere;
+}
+
+.asset-library-check {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  font-size: var(--text-2xs);
+  color: var(--ds-text-secondary);
+}
+
+.asset-library-check input {
+  flex: none;
+}
+
+.asset-library-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.asset-library-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 52vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.asset-library-card {
+  display: flex;
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+  padding: 7px 8px;
+  text-align: left;
+  color: var(--ds-text-secondary);
+  background: transparent;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: var(--radius-xs);
+}
+
+.asset-library-card:hover {
+  background: var(--ds-tile);
+  color: var(--ds-text-primary);
+}
+
+.asset-library-card.is-active {
+  background: var(--ds-bg-active);
+  color: var(--ds-text-primary);
+  border-left-color: var(--ds-focus);
+}
+
+.asset-library-card:focus-visible {
+  outline: 2px solid var(--ds-text-secondary);
+  outline-offset: -1px;
+}
+
+/* Status bar: one strip per state, so a card can never imply "all good". */
+.asset-library-card-state {
+  flex: none;
+  width: 4px;
+  border-radius: var(--radius-full);
+  background: var(--ds-border-subtle);
+}
+
+.asset-library-card-state[data-indexed="true"] {
+  background: var(--ds-text-muted);
+}
+
+.asset-library-card-state[data-previewable="true"] {
+  background: var(--ds-success);
+}
+
+.asset-library-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.asset-library-card-name {
+  font-size: var(--text-md);
+  line-height: var(--leading-compact-plus);
+  overflow-wrap: anywhere;
+}
+
+.asset-library-card-meta,
+.asset-library-file-meta {
+  font-size: var(--text-2xs);
+  color: var(--ds-text-muted);
+  line-height: var(--leading-body);
+  overflow-wrap: anywhere;
+}
+
+.asset-library-card-badges,
+.asset-library-detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 5px;
+  margin: 0;
+}
+
+.asset-library-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.asset-library-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* Beats the `.btn` display from ui-kit.css regardless of bundle order. */
+.asset-library .asset-library-back {
+  display: none;
+}
+
+.asset-library-detail-name {
+  margin: 0;
+  font-size: var(--text-md);
+  color: var(--ds-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.asset-library-section {
+  margin: 2px 0 0;
+  font-size: var(--text-2xs);
+  color: var(--ds-text-muted);
+}
+
+.asset-library-source {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 8px;
+  margin: 0;
+  font-size: var(--text-2xs);
+}
+
+.asset-library-source dt {
+  color: var(--ds-text-muted);
+}
+
+.asset-library-source dd {
+  margin: 0;
+  color: var(--ds-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.asset-library-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 7px 8px;
+  border-left: 2px solid var(--ds-border-subtle);
+  border-radius: var(--radius-xs);
+  background: var(--ds-tile);
+}
+
+.asset-library-preview[data-preview-tone="success"] {
+  border-left-color: var(--ds-success);
+}
+
+.asset-library-preview[data-preview-tone="warning"] {
+  border-left-color: var(--ds-warning);
+}
+
+.asset-library-preview[data-preview-tone="error"] {
+  border-left-color: var(--ds-error);
+}
+
+.asset-library-preview-label {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--ds-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.asset-library-preview-detail {
+  margin: 0;
+  font-size: var(--text-2xs);
+  color: var(--ds-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.asset-library-thumb {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  background: var(--ds-tile-hover);
+}
+
+.asset-library-audio {
+  width: 100%;
+}
+
+.asset-library-preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.asset-library-files,
+.asset-library-versions,
+.asset-library-usage,
+.asset-library-scan {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+
+.asset-library-files li,
+.asset-library-usage li {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.asset-library-file-path {
+  font-size: var(--text-2xs);
+  color: var(--ds-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.asset-library-version {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  padding: 4px 6px;
+  text-align: left;
+  font-size: var(--text-2xs);
+  color: var(--ds-text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-xs);
+}
+
+.asset-library-version:hover {
+  background: var(--ds-tile);
+  color: var(--ds-text-primary);
+}
+
+.asset-library-version.is-active {
+  background: var(--ds-bg-active);
+  color: var(--ds-text-primary);
+}
+
+.asset-library-version:focus-visible {
+  outline: 2px solid var(--ds-text-secondary);
+  outline-offset: -1px;
+}
+
+.asset-library-import {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border-radius: var(--radius-xs);
+  background: var(--ds-tile);
+  min-width: 0;
+}
+
+.asset-library-import-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 6px;
+  align-items: end;
+}
+
+/* Narrow windows switch between the list and the selected version. */
+@media (max-width: 980px) {
+  .asset-library-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .asset-library-cards {
+    max-height: 40vh;
+  }
+
+  .asset-library .asset-library-back {
+    display: inline-flex;
+  }
+
+  .asset-library[data-view="list"] .asset-library-detail {
+    display: none;
+  }
+
+  .asset-library[data-view="detail"] .asset-library-list,
+  .asset-library[data-view="detail"] .asset-library-filters {
+    display: none;
+  }
+}

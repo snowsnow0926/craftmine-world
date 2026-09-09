@@ -1,0 +1,302 @@
+{
+  "format": "craftmine.measurement/1",
+  "generatedAt": "2026-09-09T18:48:50.341Z",
+  "commit": "ef30cac844436e932b55c0d12f62dc2addeb71e2",
+  "environment": {
+    "os": "win32 10.0.19045 (x64)",
+    "node": "v24.14.0",
+    "cpu": "Intel(R) Core(TM) i7-14700KF",
+    "logicalCpus": 28,
+    "totalRamBytes": 34163752960
+  },
+  "suites": [
+    {
+      "id": "size",
+      "metrics": [
+        {
+          "name": "size.install.total.mb",
+          "unit": "MB",
+          "samples": [
+            651.121
+          ],
+          "count": 1,
+          "p50": 651.121,
+          "p95": 651.121,
+          "min": 651.121,
+          "max": 651.121,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 700,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": "sum of 1233 file bytes under D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\build\\r9-restaged-preview"
+        },
+        {
+          "name": "size.fileCount",
+          "unit": "files",
+          "samples": [
+            1233
+          ],
+          "count": 1,
+          "p50": 1233,
+          "p95": 1233,
+          "min": 1233,
+          "max": 1233,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 1400,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": "regular files under the package root"
+        },
+        {
+          "name": "size.resources.bin.mb",
+          "unit": "MB",
+          "samples": [
+            11.718
+          ],
+          "count": 1,
+          "p50": 11.718,
+          "p95": 11.718,
+          "min": 11.718,
+          "max": 11.718,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 32,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": null
+        },
+        {
+          "name": "size.resources.agent-runtime.mb",
+          "unit": "MB",
+          "samples": [
+            4.95
+          ],
+          "count": 1,
+          "p50": 4.95,
+          "p95": 4.95,
+          "min": 4.95,
+          "max": 4.95,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 16,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": null
+        },
+        {
+          "name": "size.resources.plugins.mb",
+          "unit": "MB",
+          "samples": [
+            1.508
+          ],
+          "count": 1,
+          "p50": 1.508,
+          "p95": 1.508,
+          "min": 1.508,
+          "max": 1.508,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 8,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": null
+        },
+        {
+          "name": "size.resources.licenses.mb",
+          "unit": "MB",
+          "samples": [
+            1.976
+          ],
+          "count": 1,
+          "p50": 1.976,
+          "p95": 1.976,
+          "min": 1.976,
+          "max": 1.976,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 8,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": null
+        },
+        {
+          "name": "size.resources.source.mb",
+          "unit": "MB",
+          "samples": [
+            37.522
+          ],
+          "count": 1,
+          "p50": 37.522,
+          "p95": 37.522,
+          "min": 37.522,
+          "max": 37.522,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 128,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": null
+        },
+        {
+          "name": "size.resources.git.mb",
+          "unit": "MB",
+          "samples": [
+            104.074
+          ],
+          "count": 1,
+          "p50": 104.074,
+          "p95": 104.074,
+          "min": 104.074,
+          "max": 104.074,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 128,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": null
+        },
+        {
+          "name": "size.resources.other.mb",
+          "unit": "MB",
+          "samples": [
+            35.777
+          ],
+          "count": 1,
+          "p50": 35.777,
+          "p95": 35.777,
+          "min": 35.777,
+          "max": 35.777,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 128,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": null
+        },
+        {
+          "name": "size.exe-dll.mb",
+          "unit": "MB",
+          "samples": [
+            300.763
+          ],
+          "count": 1,
+          "p50": 300.763,
+          "p95": 300.763,
+          "min": 300.763,
+          "max": 300.763,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 400,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": null
+        },
+        {
+          "name": "size.locales.mb",
+          "unit": "MB",
+          "samples": [
+            4.94
+          ],
+          "count": 1,
+          "p50": 4.94,
+          "p95": 4.94,
+          "min": 4.94,
+          "max": 4.94,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 32,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": null
+        },
+        {
+          "name": "size.other.mb",
+          "unit": "MB",
+          "samples": [
+            0
+          ],
+          "count": 1,
+          "p50": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 16,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": "everything not in a named bucket"
+        },
+        {
+          "name": "size.installer.nsis.mb",
+          "unit": "MB",
+          "samples": [
+            147.893
+          ],
+          "count": 1,
+          "p50": 147.893,
+          "p95": 147.893,
+          "min": 147.893,
+          "max": 147.893,
+          "source": "real-filesystem",
+          "process": "node measure.mjs fs walk",
+          "threshold": {
+            "max": 250,
+            "min": null,
+            "status": "frozen"
+          },
+          "verdict": "pass",
+          "notes": "largest Setup*.exe present in the package root"
+        }
+      ],
+      "skipped": [],
+      "durationMs": 35
+    }
+  ],
+  "limits": [
+    "Every latency percentile uses nearest-rank (no interpolation), rounded half-away-from-zero to 3 decimals at serialization time.",
+    "Cold/warm is per measurement process: index 0 = cold, index >= 1 = warm. The OS file cache is never purged.",
+    "Frame numbers come from a headless Godot main loop; there is no rendered-frame or GPU number in this report.",
+    "Memory numbers are sampled after readiness with Get-Process / Get-CimInstance; the client is never shown or focused.",
+    "Synthetic asset-index numbers are NOT product acceptance and their thresholds stay pending-real-sample.",
+    "candidate-apply and install waits were not executed; see the skipped records for the exact human command."
+  ]
+}

@@ -130,16 +130,24 @@ static func _move(game: Node, args: Dictionary) -> Dictionary:
 	actor.scripted_input = direction
 	for index in range(steps):
 		await game.get_tree().physics_frame
-	actor.scripted_input = Vector2.ZERO
+		if not is_instance_valid(actor) or not actor.is_inside_tree():
+			break
+	if is_instance_valid(actor):
+		actor.scripted_input = Vector2.ZERO
+	await game.get_tree().process_frame
 	await game.get_tree().physics_frame
-	var after: Vector2 = actor.global_position
+	var current: Node = game.player()
+	if current == null:
+		return {"ok": false, "reason": "scene_not_bound"}
+	var after: Vector2 = current.global_position
 	return {
 		"ok": true,
 		"before": [before.x, before.y],
 		"after": [after.x, after.y],
 		"distance": before.distance_to(after),
 		"blocked": before.distance_to(after) <= 0.01,
-		"facing": actor.facing,
+		"facing": current.facing,
+		"sceneId": game.scene_id(),
 		"steps": steps,
 	}
 

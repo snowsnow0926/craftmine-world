@@ -1,0 +1,284 @@
+    Checking cfg-if v1.0.4
+    Checking rand_core v0.10.1
+   Compiling getrandom v0.4.3
+   Compiling proc-macro2 v1.0.107
+    Checking typenum v1.20.1
+   Compiling quote v1.0.47
+    Checking windows-link v0.2.1
+    Checking memchr v2.8.3
+    Checking cpufeatures v0.3.0
+    Checking smallvec v1.15.2
+    Checking regex-syntax v0.8.11
+   Compiling crossbeam-utils v0.8.22
+    Checking cmov v0.5.4
+    Checking foldhash v0.2.0
+   Compiling parking_lot_core v0.9.12
+    Checking log v0.4.33
+    Checking cpubits v0.1.1
+   Compiling crossbeam-epoch v0.9.20
+    Checking once_cell v1.21.4
+   Compiling autocfg v1.5.1
+    Checking const-oid v0.10.2
+    Checking itoa v1.0.18
+    Checking serde_core v1.0.229
+    Checking zmij v1.0.23
+    Checking fallible-streaming-iterator v0.1.9
+   Compiling crossbeam-deque v0.8.7
+    Checking fallible-iterator v0.3.0
+    Checking libsqlite3-sys v0.38.2
+    Checking windows-sys v0.61.2
+    Checking scopeguard v1.2.0
+    Checking pin-project-lite v0.2.17
+    Checking bitflags v2.13.1
+    Checking lock_api v0.4.14
+    Checking anyhow v1.0.104
+   Compiling thiserror v2.0.20
+    Checking hashbrown v0.17.1
+    Checking base64 v0.23.1
+    Checking lazy_static v1.5.0
+    Checking option-ext v0.2.0
+    Checking chacha20 v0.10.1
+    Checking thread_local v1.1.10
+    Checking tracing-core v0.1.36
+    Checking bytes v1.12.1
+    Checking subtle v2.6.1
+    Checking hex v0.4.3
+    Checking sharded-slab v0.1.7
+    Checking ctutils v0.4.2
+   Compiling num-traits v0.2.19
+    Checking aho-corasick v1.1.5
+    Checking bstr v1.13.1
+    Checking tracing-log v0.2.0
+    Checking rand v0.10.2
+    Checking parking_lot v0.12.5
+    Checking hashlink v0.12.1
+    Checking hybrid-array v0.4.14
+    Checking rusqlite v0.40.2
+    Checking regex-automata v0.4.18
+   Compiling syn v3.0.3
+   Compiling syn v2.0.119
+    Checking crypto-common v0.2.2
+    Checking block-buffer v0.12.1
+    Checking inout v0.2.2
+    Checking serde_json v1.0.151
+    Checking uuid v1.24.0
+    Checking universal-hash v0.6.1
+    Checking digest v0.11.3
+    Checking cipher v0.5.2
+    Checking aead v0.6.1
+    Checking polyval v0.7.3
+    Checking sha2 v0.11.0
+    Checking ctr v0.10.1
+    Checking aes v0.9.2
+    Checking ghash v0.6.0
+    Checking aes-gcm v0.11.0
+    Checking globset v0.4.20
+    Checking matchers v0.2.0
+    Checking regex v1.13.1
+   Compiling serde_derive v1.0.229
+   Compiling tokio-macros v2.7.2
+   Compiling thiserror-impl v2.0.20
+   Compiling tracing-attributes v0.1.31
+    Checking winapi-util v0.1.11
+    Checking nu-ansi-term v0.50.3
+    Checking mio v1.2.2
+    Checking dirs-sys v0.5.0
+    Checking socket2 v0.6.5
+    Checking dirs v6.0.0
+    Checking same-file v1.0.6
+    Checking walkdir v2.5.0
+    Checking tokio v1.53.1
+    Checking ignore v0.4.33
+    Checking tracing v0.1.44
+    Checking tracing-subscriber v0.3.23
+    Checking serde v1.0.229
+    Checking craftmine-core v0.1.0 (D:\Craftmine World-worktrees\godot-round2-r1-20260910\vendor\pi-desktop\crates\craftmine-core)
+    Checking chrono v0.4.45
+warning: unused import: `load_manifest`
+  --> crates\craftmine-core\src\godot_builds.rs:21:22
+   |
+21 |     godot_projects::{load_manifest, ordinary, valid_hash, Manifest},
+   |                      ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+    Checking host-core v0.14.3 (D:\Craftmine World-worktrees\godot-round2-r1-20260910\vendor\pi-desktop\crates\host-core)
+warning: method `content_files` is never used
+   --> crates\craftmine-core\src\content.rs:573:19
+    |
+234 | impl TaskJournal {
+    | ---------------- method in this implementation
+...
+573 |     pub(crate) fn content_files(
+    |                   ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `abort` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:371:8
+    |
+371 | pub fn abort(db: &mut Connection, operation_id: &str, reason: &str) -> Result<ReferenceIntent> {    let intent = load(db, operation...
+    |        ^^^^^
+
+warning: function `receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:492:8
+    |
+492 | pub fn receipt(
+    |        ^^^^^^^
+
+warning: function `store_receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:518:8
+    |
+518 | pub fn store_receipt(
+    |        ^^^^^^^^^^^^^
+
+warning: struct `ContentRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:219:12
+    |
+219 | pub struct ContentRef {
+    |            ^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:226:12
+    |
+225 | impl ContentRef {
+    | --------------- method in this implementation
+226 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `BuildRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:236:12
+    |
+236 | pub struct BuildRef {
+    |            ^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:246:12
+    |
+245 | impl BuildRef {
+    | ------------- method in this implementation
+246 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `ProgressRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:260:12
+    |
+260 | pub struct ProgressRef {
+    |            ^^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:270:12
+    |
+269 | impl ProgressRef {
+    | ---------------- method in this implementation
+270 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: associated functions `parse` and `parse_canonical` are never used
+   --> crates\craftmine-core\src\content_history\contract.rs:525:12
+    |
+388 | impl AssetLock {
+    | -------------- associated functions in this implementation
+...
+525 |     pub fn parse(bytes: &[u8]) -> Result<Self> {
+    |            ^^^^^
+...
+535 |     pub fn parse_canonical(bytes: &[u8]) -> Result<Self> {
+    |            ^^^^^^^^^^^^^^^
+
+warning: methods `config_dir`, `with_timeout`, `object_type`, and `cat_object` are never used
+   --> crates\craftmine-core\src\content_history\git.rs:369:12
+    |
+244 | impl GitAdapter {
+    | --------------- methods in this implementation
+...
+369 |     pub fn config_dir(&self) -> &Path {
+    |            ^^^^^^^^^^
+...
+373 |     pub fn with_timeout(mut self, timeout: Duration) -> Self {
+    |            ^^^^^^^^^^^^
+...
+640 |     pub fn object_type(&self, git_dir: &Path, oid: &str) -> Result<String> {
+    |            ^^^^^^^^^^^
+...
+648 |     pub fn cat_object(&self, git_dir: &Path, oid: &str) -> Result<Vec<u8>> {
+    |            ^^^^^^^^^^
+
+warning: constant `REPOSITORY_FORMAT` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:30:11
+   |
+30 | pub const REPOSITORY_FORMAT: &str = "craftmine.content-repository/1";
+   |           ^^^^^^^^^^^^^^^^^
+
+warning: method `as_str` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:42:8
+   |
+41 | impl ContentBackend {
+   | ------------------- method in this implementation
+42 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+
+warning: associated function `text` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:104:12
+    |
+103 | impl ContentFile {
+    | ---------------- associated function in this implementation
+104 |     pub fn text(path: &str, text: &str) -> Self {
+    |            ^^^^
+
+warning: struct `MaterializedCopy` is never constructed
+   --> crates\craftmine-core\src\content_history\repo.rs:167:12
+    |
+167 | pub struct MaterializedCopy {
+    |            ^^^^^^^^^^^^^^^^
+
+warning: multiple methods are never used
+   --> crates\craftmine-core\src\content_history\repo.rs:207:12
+    |
+194 | impl RepositoryStore {
+    | -------------------- methods in this implementation
+...
+207 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+...
+457 |     pub fn asset_lock(&self, layout: &RepoLayout, oid: &str) -> Result<Option<AssetLock>> {
+    |            ^^^^^^^^^^
+...
+468 |     pub fn content_ref(&self, layout: &RepoLayout, oid: &str) -> Result<ContentRef> {
+    |            ^^^^^^^^^^^
+...
+527 |     pub fn materialize(
+    |            ^^^^^^^^^^^
+...
+809 |     pub fn set_draft(
+    |            ^^^^^^^^^
+...
+824 |     pub fn draft(&self, layout: &RepoLayout, branch_id: &str) -> Result<Option<String>> {
+    |            ^^^^^
+...
+882 |     pub fn set_applied(
+    |            ^^^^^^^^^^^
+
+warning: function `group_by_request` is never used
+    --> crates\craftmine-core\src\content_history\repo.rs:1094:8
+     |
+1094 | pub fn group_by_request(records: &[CommitRecord]) -> BTreeMap<String, Vec<&CommitRecord>> {
+     |        ^^^^^^^^^^^^^^^^
+
+warning: function `reconcile_git_head` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:512:4
+    |
+512 | fn reconcile_git_head(
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: method `project_is_git_backed` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:727:19
+    |
+650 | impl TaskJournal {
+    | ---------------- method in this implementation
+...
+727 |     pub(super) fn project_is_git_backed(&self, world: &str) -> Result<bool> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^
+
+warning: `craftmine-core` (lib) generated 21 warnings (run `cargo fix --lib -p craftmine-core` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.80s

@@ -3,17 +3,22 @@ use std::io::{self, BufRead, Read, Write};
 use std::path::PathBuf;
 
 use anyhow::{bail, Context, Result};
-use craftmine_core::{TaskBinding, TaskJournal, WorkspaceContext, WorldDocument};
+use craftmine_core::{asset_catalog_dispatch, TaskBinding, TaskJournal, WorkspaceContext, WorldDocument};
 use serde_json::{json, Value};
 
 fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
     let method = request["method"].as_str().context("METHOD_REQUIRED")?;
     if method == "hello" {
         return Ok(
-            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"verificationJobs":true,"advisoryReviews":true,"playerApplications":true,"publishesWorlds":true,"agentPublishesWorlds":false,"godotProjects":true,"godotExecution":false,"godotBuildJobs":true,"godotExecutorGate":true}),
+            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"verificationJobs":true,"advisoryReviews":true,"playerApplications":true,"publishesWorlds":true,"agentPublishesWorlds":false,"godotProjects":true,"godotExecution":false,"godotBuildJobs":true,"godotExecutorGate":true,"contentHistory":true,"managedGit":true,"assetCatalog":true,"assetPreview":true,"creationPackages":true,"portableBackup":true}),
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
+    // Asset catalog (task S5). The catalog owns every asset.* method; this hook
+    // and the lib.rs re-export are the only integration lines.
+    if let Some(result) = asset_catalog_dispatch(journal, method, params) {
+        return result;
+    }
     if method == "budget.configure" {
         return journal.budget_configure(params);
     }
@@ -45,7 +50,45 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "godotRuntime.describeCandidate" => return journal.godot_runtime_describe_candidate(params),
         "godotRuntime.saveProgress" => return journal.godot_runtime_save_progress(params),
         "godotExecutor.register" => return journal.godot_executor_register(params),
+        "godotExecutor.status" => return Ok(journal.godot_executor_status()),
+        "godotExecutor.revoke" => return journal.godot_executor_revoke(params),
+        "godotJob.checkDescriptor" => return journal.godot_job_check_descriptor(params),
+        "godotJob.continue" => return journal.godot_job_continue(params),
+        "godotJob.usage" => return journal.godot_usage_summary(params),
         "godotJob.claim" => return journal.godot_job_claim(params),
+        "godotStorage.status" => return journal.godot_storage_status(params),
+        "godotStorage.reclaimPlan" => return journal.godot_storage_reclaim_plan(params),
+        "godotStorage.reclaimCommit" => return journal.godot_storage_reclaim_commit(params),
+        "godotWorld.initialize" => return journal.godot_world_initialize(params),
+        "godotWorld.initStatus" => return journal.godot_world_init_status(params),
+        "godotWorld.copy" => return journal.godot_world_copy(params),
+        "godotWorld.backupSnapshot" => return journal.godot_world_backup_snapshot(params),
+        "godotWorld.verifySnapshot" => return journal.godot_world_verify_snapshot(params),
+        "content.status" => return journal.content_status(params),
+        "content.gitInfo" => return journal.content_git_info(params),
+        "content.migrate.plan" => return journal.content_migrate_plan(params),
+        "content.migrate.apply" => return journal.content_migrate_apply(params),
+        "content.migrate.verify" => return journal.content_migrate_verify(params),
+        "content.history" => return journal.content_history(params),
+        "content.changes" => return journal.content_changes(params),
+        "content.diff" => return journal.content_diff(params),
+        "content.readFile" => return journal.content_read_file(params),
+        "content.branch.list" => return journal.content_branch_list(params),
+        "content.branch.create" => return journal.content_branch_create(params),
+        "content.branch.merge" => return journal.content_branch_merge(params),
+        "content.version.create" => return journal.content_version_create(params),
+        "content.version.list" => return journal.content_version_list(params),
+        "content.checkpoint.set" => return journal.content_checkpoint_set(params),
+        "content.checkpoint.list" => return journal.content_checkpoint_list(params),
+        "content.apply.prepare" => return journal.content_apply_prepare(params),
+        "content.apply.advance" => return journal.content_apply_advance(params),
+        "content.apply.confirm" => return journal.content_apply_confirm(params),
+        "content.apply.rollback" => return journal.content_apply_rollback(params),
+        "content.apply.recover" => return journal.content_apply_recover(params),
+        "content.reclaim.plan" => return journal.content_reclaim_plan(params),
+        "content.reclaim.prune" => return journal.content_reclaim_prune(params),
+        "content.verify" => return journal.content_verify(params),
+        "content.bundle" => return journal.content_bundle(params),
         "godotJob.progress" => return journal.godot_job_progress(params),
         "godotJob.heartbeat" => return journal.godot_job_heartbeat(params),
         "godotJob.finish" => return journal.godot_job_finish(params),
@@ -61,6 +104,56 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "backup.restore" => return journal.backup_restore(params),
         "backup.status" => return journal.backup_status(params),
         "backup.cancel" => return journal.backup_cancel(params),
+        // Portable complete archive (craftmine.portable-archive/1). Registered
+        // here because the shipped build is the only place these methods are
+        // reachable; a module-local test does not prove the product entry.
+        "backup.exportPortable" => return journal.backup_export_portable(params),
+        "backup.inspectPortable" => return journal.backup_inspect_portable(params),
+        "backup.verifyPortable" => return journal.backup_verify_portable(params),
+        "backup.restorePortable" => return journal.backup_restore_portable(params),
+        "backup.protectedRefs" => return journal.backup_protected_refs(params),
+        "backup.releasePortable" => return journal.backup_release_portable(params),
+        "backup.export-full" => return journal.backup_export_full(params),
+        "backup.verify" => return journal.backup_verify(params),
+        "backup.restore-full" => return journal.backup_restore_full(params),
+        "backup.contentUsage" => return journal.backup_content_usage(params),
+        // Asset catalog. The consumer contract is fixed by R6's interface sheet
+        // (docs/dispatch-reports/godot-round2/R6/INTERFACE_R6.md) and the panel
+        // allowlist in craftmine-panel-gateway.ts.
+        "asset.import" => return journal.asset_import(params),
+        "asset.read" => return journal.asset_read(params),
+        "asset.versions" => return journal.asset_versions(params),
+        "asset.bodyPath" => return journal.asset_body_path(params),
+        "asset.search" => return journal.asset_search(params),
+        "asset.scan" => return journal.asset_scan(params),
+        "asset.annotate" => return journal.asset_annotate(params),
+        "asset.recordUsage" => return journal.asset_record_usage(params),
+        "asset.usage" => return journal.asset_usage(params),
+        "asset.previewBegin" => return journal.asset_preview_begin(params),
+        "asset.previewFinish" => return journal.asset_preview_finish(params),
+        "asset.previewRead" => return journal.asset_preview_read(params),
+        "asset.probe" => return journal.asset_probe(params),
+        "asset.recordCheck" => return journal.asset_record_check(params),
+        "asset.mapLegacy" => return journal.asset_map_legacy(params),
+        "asset.resolveLegacy" => return journal.asset_resolve_legacy(params),
+        // Creation packages. `package.check`/`package.install`/... are the
+        // method strings the shipped reuse service calls.
+        "package.formatCheck" => return journal.package_format_check(params),
+        "package.planInstall" => return journal.package_plan_install(params),
+        "package.register" => return journal.package_register(params),
+        "package.check" => return journal.package_check(params),
+        "package.install" => return journal.package_install(params),
+        "package.list" => return journal.package_list(params),
+        "package.read" => return journal.package_read(params),
+        "package.progress" => return journal.package_progress(params),
+        "package.grant" => return journal.package_grant(params),
+        "package.upgrade" => return journal.package_upgrade(params),
+        "package.uninstall" => return journal.package_uninstall(params),
+        "package.restore" => return journal.package_restore(params),
+        "package.export" => return journal.package_export(params),
+        "package.import" => return journal.package_import(params),
+        "package.usage" => return journal.package_usage(params),
+        "legacy.convert" => return journal.legacy_convert(params),
         "application.list" => return journal.application_list(params),
         "workspace.current" => return journal.workspace_current(params),
         "workspace.findReceipt" => return journal.workspace_find_receipt(params),
@@ -302,6 +395,10 @@ fn main() -> Result<()> {
     journal.application_recover()?;
     journal.godot_application_recover()?;
     journal.godot_recover()?;
+    journal.godot_storage_recover()?;
+    // Portable archive pins are durable; a crashed export must be reconciled
+    // before any reclaimer trusts the pin set.
+    journal.backup_recover()?;
     journal.task_recover()?;
     let mut input = io::stdin().lock();
     let mut output = io::stdout().lock();

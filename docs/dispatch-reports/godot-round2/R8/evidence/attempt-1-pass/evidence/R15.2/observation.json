@@ -1,0 +1,170 @@
+{
+  "format": "craftmine.i.observation/1",
+  "project": {
+    "files": [
+      {
+        "path": "project.godot",
+        "sha256": "087ba21c81e620ebe177540698657afcd8aed5b153775348c349fd628baf4223",
+        "bytes": 1823
+      },
+      {
+        "path": "scenes/main.tscn",
+        "sha256": "1a648744c536605ffbd79a3d8b3ae2678736a96b5bf1636f064db8bd4543e1ae",
+        "bytes": 172
+      },
+      {
+        "path": "scripts/crosshair.gd",
+        "sha256": "feca2ca13f92439c8755725a5bcf8e55d02c63523be569320b07ddac8b09a091",
+        "bytes": 3117
+      },
+      {
+        "path": "scripts/input_map_setup.gd",
+        "sha256": "66bf5323ffe10de34d5cf67e3fdb26e61f38f00285f48d0fd9e0ec5bfed8dd6d",
+        "bytes": 1361
+      },
+      {
+        "path": "scripts/player.gd",
+        "sha256": "d1a184053337f5e5eb262ef5401eb25d901173adf2fca80da9be7be2d7595345",
+        "bytes": 3910
+      },
+      {
+        "path": "scripts/weapon_models.gd",
+        "sha256": "d2334756c4a2d26c06b848941de18ee5ba6eaab083a6d8d7fef316145e3e29b7",
+        "bytes": 3175
+      },
+      {
+        "path": "scripts/weapon_rig.gd",
+        "sha256": "61fd3b1e62134f1b9b23fe6e8d562640fe2f68449f25ab6111d699962d246c0e",
+        "bytes": 4350
+      },
+      {
+        "path": "scripts/world.gd",
+        "sha256": "e3fa9829c9b4d2552b0216f184187f72a03fc7ba7c1d69235faacd1f377d9150",
+        "bytes": 4596
+      }
+    ],
+    "baseId": "first-person",
+    "status": "source-only",
+    "manifestHash": "e97ee58db465a771ba9eafba4b961406f6ba6233ceb632208fa24e882206eacc",
+    "revision": 4,
+    "fileCount": 8,
+    "sourceEvidence": {
+      "projectGodot": true,
+      "hasScripts": true,
+      "crosshairCentered": true,
+      "weaponUnderCamera": true,
+      "equipmentSwitch": true,
+      "scriptCount": 7,
+      "scannedBytes": 20941
+    },
+    "manifestHashChanged": true
+  },
+  "build": {
+    "executorState": "unavailable",
+    "executorReason": "GODOT_BROKER_MISSING",
+    "available": false,
+    "checked": false
+  },
+  "writes": {
+    "attempted": 1,
+    "failed": 0,
+    "names": [
+      "godot_project_patch"
+    ]
+  },
+  "toolCalls": [
+    {
+      "name": "project_inspect",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_project_index",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_file_read",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_file_read",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "requirements_read",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_file_read",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_file_read",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_file_read",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_project_patch",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_project_index",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_build_start",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_build_read",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "godot_file_read",
+      "ok": true,
+      "code": null,
+      "error": null
+    }
+  ],
+  "usage": {
+    "calls": 18,
+    "promptTokens": 14614,
+    "cachedReadTokens": 457471,
+    "nonCachedInputTokens": -442857,
+    "outputTokens": 56658,
+    "totalTokens": 528743,
+    "unknownCalls": 0
+  },
+  "failures": [],
+  "humanInterventions": [],
+  "evidence": {
+    "screenshots": [],
+    "human": []
+  }
+}

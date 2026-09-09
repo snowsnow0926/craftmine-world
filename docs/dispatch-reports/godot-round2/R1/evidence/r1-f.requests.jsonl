@@ -1,0 +1,6 @@
+{"params":{"worldId":"a"},"method":"content.status"}
+{"params":{"worldId":"a"},"method":"content.apply.recover"}
+{"params":{"worldId":"a"},"method":"content.branch.list"}
+{"params":{"worldId":"a","limit":10},"method":"content.history"}
+{"params":{"worldId":"a"},"method":"content.migrate.verify"}
+{"params":{"worldId":"a"},"method":"content.verify"}

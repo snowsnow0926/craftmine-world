@@ -1,0 +1,3 @@
+# The frozen acceptance set is hashed as raw bytes, so its JSON must never be
+# converted to CRLF on checkout. This mirrors tests/godot-remaining/M/.gitattributes.
+*.json -text

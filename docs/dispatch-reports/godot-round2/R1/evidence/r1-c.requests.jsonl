@@ -1,0 +1,6 @@
+{"params":{"generation":1,"taskId":"work-eb99bd5b29a2cf7ce5fe090007a8bd24b5d410f1397ca460c5fcdc58adcc10d2","projectId":"project-r1"},"method":"task.discard"}
+{"params":{"selectedWorld":"a","context":{"sessionId":"session-r1","turnId":"turn-r2","projectId":"project-r1"}},"method":"workspace.open"}
+{"params":{"worldId":"a","manifestHash":"e3fb1c17593eae4f4234a8aa583194e09273e0df78f9d077c3e0b25669270f52","revision":0,"toolCallId":"patch-1","context":{"sessionId":"session-r1","turnId":"turn-r2","projectId":"project-r1"},"operation":{"repoId":"world-a","worldId":"a","expectedProgressRevision":null,"expectedAppliedOid":null,"expectedHeadOid":"7e5e3b95f01249e6f0a7074a18bb57a1763844c0","operationId":"op-patch","branchId":"main"},"operations":[{"path":"world.gd","op":"put","text":"extends Node3D\nvar damage := 99\n","expectedHash":"bb2306b7c77a57f0f5552d847a00a89aacf70e59050199bc3e9988e17b494a45"}]},"method":"godotProject.patch"}
+{"params":{"worldId":"a"},"method":"content.status"}
+{"params":{"worldId":"a","limit":10},"method":"content.history"}
+{"params":{"path":"world.gd","rev":"main","worldId":"a"},"method":"content.readFile"}

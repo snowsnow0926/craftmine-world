@@ -1,0 +1,148 @@
+{
+    "kind":  "craftmine.godot.round3.s7.candidate-identity/1",
+    "capturedAt":  "2026-09-10T04:17:06.8700452+08:00",
+    "status":  "integrated-not-frozen",
+    "frozen":  false,
+    "blockedBy":  [
+                      "full create-\u003ebuild-\u003echeck-\u003ecandidate-\u003eapply chain not yet exercised end to end by S7",
+                      "shipped-build executor discovery missing (P1-4)",
+                      "history tool method names (P1-3)",
+                      "frozen provenance for live mode unreproducible (P1-1)"
+                  ],
+    "branch":  "codex/godot-round3-s7-20260910",
+    "commit":  "01c7fe9f8cc6155c1ab0357902e7d8d958604ad1",
+    "tree":  "1e69935d35f539d32db042ef4a47b28b8af521fa",
+    "dirty":  true,
+    "included":  {
+                     "roundTwoClient":  "2fa3c7c4f55b7b7827d3313d3a0289023aafca24",
+                     "r2RoundThreeFixes":  "165b5bf",
+                     "s1":  "7e17ea97162c",
+                     "s2":  "7f0ff4e",
+                     "s3":  "60eb3b535958",
+                     "s4":  "e303fb75795e",
+                     "s5":  "5ac509f4b4ae",
+                     "s6":  "43e6a75"
+                 },
+    "builds":  {
+                   "coreExe":  {
+                                   "sha256":  "11add5d3b56b014bfb063a9664b0e8fdbc6c9bcd797749257229e1762e51be00",
+                                   "path":  "vendor/pi-desktop/target/release/craftmine-core.exe"
+                               },
+                   "plugin":  {
+                                  "path":  "desktop/build/craftmine.world",
+                                  "files":  {
+                                                "applications.cjs":  {
+                                                                         "bytes":  3834,
+                                                                         "sha256":  "e5f4d6feb837ef15fdbd6e9334047a12a695c968a5a5ee83bd47a30ef653f109"
+                                                                     },
+                                                "asset-service.mjs":  {
+                                                                          "bytes":  7785,
+                                                                          "sha256":  "e48f5849e8e9bdb0de964c63d931614f06085fe5bde1c12d6326dbde120392b4"
+                                                                      },
+                                                "BABEL_PARSER_LICENSE.txt":  {
+                                                                                 "bytes":  1086,
+                                                                                 "sha256":  "2e97627cb278aa7556fb9e8817368302301a595b6c7582512b8d74c57b773652"
+                                                                             },
+                                                "context-review.cjs":  {
+                                                                           "bytes":  3589,
+                                                                           "sha256":  "03a4cf32516b71f383dae2e8a3c6bef2efbbc0834f945b2fc232e6c0bf9c78a0"
+                                                                       },
+                                                "core-client.cjs":  {
+                                                                        "bytes":  2730,
+                                                                        "sha256":  "6888520e7db386bf1961a67e20c9edce286bc8d6aa1fb7e3a11fc859eb62ea4f"
+                                                                    },
+                                                "domain.cjs":  {
+                                                                   "bytes":  774841,
+                                                                   "sha256":  "657659178599e1c66c3737432cbfec336f7c217ba67a3f3390a23c0d04a32f66"
+                                                               },
+                                                "godot-capability.cjs":  {
+                                                                             "bytes":  16491,
+                                                                             "sha256":  "3a06057c3375705b1d02b3bbaf77c58b5eb5edf17d62db2dc05ef14d89c28b2a"
+                                                                         },
+                                                "godot-docs.cjs":  {
+                                                                       "bytes":  23194,
+                                                                       "sha256":  "16dc21adefa24eebae0abb21cacfe84fb927a26fb7a9341fb87125a15d2d347c"
+                                                                   },
+                                                "godot-executor.cjs":  {
+                                                                           "bytes":  72447,
+                                                                           "sha256":  "5f4c8cf738837c17bc1b52ef2d714ab3f3438dcd987b56150c5ccf7ceb39198e"
+                                                                       },
+                                                "godot-history.cjs":  {
+                                                                          "bytes":  10085,
+                                                                          "sha256":  "9c22d3b473ba8474a4baef4808b08f7732da36cfa8d4acb261fcfded124a794b"
+                                                                      },
+                                                "godot-jobs.cjs":  {
+                                                                       "bytes":  10240,
+                                                                       "sha256":  "0305553f72e5a5297af7a11255ef328f50df901f41caf46f8825cbc7a771febf"
+                                                                   },
+                                                "godot-library.cjs":  {
+                                                                          "bytes":  9044,
+                                                                          "sha256":  "2c5e7da7646c3cad6809e9cf9cd745569665c5fc08246abef72a3c59aaa9ae58"
+                                                                      },
+                                                "godot-observe.cjs":  {
+                                                                          "bytes":  14938,
+                                                                          "sha256":  "8b7f8b5983898a7d645a873010544798526865e297adf5a2b91ce23649c623d8"
+                                                                      },
+                                                "godot-query.cjs":  {
+                                                                        "bytes":  18003,
+                                                                        "sha256":  "a2bc2ecbd40b71d06f88cc2587705b3c2e87f46169bb5d3e9543b89884355bd2"
+                                                                    },
+                                                "godot-routing.cjs":  {
+                                                                          "bytes":  4254,
+                                                                          "sha256":  "15765d00d22c470038469f90f82621ca24f7f3e9d1509edadbb73d8be207b982"
+                                                                      },
+                                                "host-requests.cjs":  {
+                                                                          "bytes":  16391,
+                                                                          "sha256":  "e81948f9c106afcb4b48f6b4f8a72fc079d8aaf2a5204ca85bd6fca0d85f2925"
+                                                                      },
+                                                "main.cjs":  {
+                                                                 "bytes":  14221,
+                                                                 "sha256":  "dbdeb8270f6e35150ef165b1fc192af92ad58def3b926ca31519e9fcec234b95"
+                                                             },
+                                                "manifest.json":  {
+                                                                      "bytes":  53275,
+                                                                      "sha256":  "1419ed78cd9dfc0068060fcdecb09f460cb8c0825ecd479ec847c853d0618f86"
+                                                                  },
+                                                "reuse-service.mjs":  {
+                                                                          "bytes":  14374,
+                                                                          "sha256":  "71fe47c35dbf1f3dd563d1fe698d7edffaa46d468b3eca81893ee852c1375c11"
+                                                                      },
+                                                "review-jobs.cjs":  {
+                                                                        "bytes":  5011,
+                                                                        "sha256":  "d2a8951ce54bd55baef9a57393ca732928fed90664e209b4b90b02a81a8e9987"
+                                                                    },
+                                                "tool-services.cjs":  {
+                                                                          "bytes":  11864,
+                                                                          "sha256":  "385083811f32747c6f58e880a7f8cb3dc6f0b6b032821b1c15a48d0201c4680f"
+                                                                      },
+                                                "verification-jobs.cjs":  {
+                                                                              "bytes":  3347,
+                                                                              "sha256":  "60c89348334c22d98e58b1ca010435cc5ad75df17f1ae233f401e9e7541265a2"
+                                                                          },
+                                                "workbench-service.cjs":  {
+                                                                              "bytes":  13061,
+                                                                              "sha256":  "aa9497a03fd0c55569d3819244b4db669431baf567c08b7bc1b794ce58f84c27"
+                                                                          },
+                                                "world-tools.cjs":  {
+                                                                        "bytes":  20138,
+                                                                        "sha256":  "1e60c6eb0b38eec9a743b90954d55d66085a8fab3a02c6a15edcefc85c0ce512"
+                                                                    }
+                                            },
+                                  "fileCount":  24
+                              },
+                   "desktopMain":  {
+                                       "sha256":  "0424785fe954d52fa8f13013c6be81be3c2fdc52921448ce350a48aa5e763efe",
+                                       "path":  "vendor/pi-desktop/apps/desktop/out/main/index.js"
+                                   },
+                   "sidecar":  {
+                                   "sha256":  "41a5c7b635c6fb97b2e2a23b5900c765699804a93c380b71a5d92c4ece1bb711",
+                                   "path":  "vendor/pi-desktop/packages/agent-runtime/dist-bundle/sidecar.js"
+                               },
+                   "broker":  {
+                                  "sha256":  "c6f3c78f84027b46c20b831bcdf88bbab9d4fa3cb49001a9e2fe910d21907fb4",
+                                  "path":  "desktop/godot/sandbox/target/debug/godot-host-broker.exe"
+                              },
+                   "engineEditorSha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+               },
+    "agentToolCount":  35
+}

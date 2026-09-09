@@ -10,7 +10,10 @@ const configs={
   'first-person':{version:'0.1.0',examples:['blank','training-range']},
   'top-down':{version:'1.0.0',examples:['blank','town']},
   'side-view':{version:'1.0.0',examples:['blank','ruins']},
+  'mining-sandbox':{version:'1.0.0',examples:['blank','mine-camp']},
 };
+// Bases whose tools/new-world.mjs takes --template; the others take --world.
+const TEMPLATE_BASES=['top-down','mining-sandbox'];
 
 /** Materialize trusted authored base source in a new directory, never execute it. */
 export function materializeBase({baseId,worldId,template='blank',out}) {
@@ -25,7 +28,7 @@ export function materializeBase({baseId,worldId,template='blank',out}) {
     const project=path.join(out,'project.godot');
     if(template==='blank') fs.writeFileSync(project,fs.readFileSync(project,'utf8').replace('res://scenes/training_range.tscn','res://scenes/blank_start.tscn'));
   } else {
-    const args=baseId==='top-down'?['--template',template,'--world-id',worldId,'--name',worldId]:['--world',template,'--world-id',worldId];
+    const args=TEMPLATE_BASES.includes(baseId)?['--template',template,'--world-id',worldId,'--name',worldId]:['--world',template,'--world-id',worldId];
     const result=spawnSync(process.execPath,[path.join(bases,baseId,'tools/new-world.mjs'),...args,'--out',out],{encoding:'utf8',windowsHide:true});
     if(result.status!==0) throw Error(result.stderr||result.stdout||'Base materialization failed');
   }

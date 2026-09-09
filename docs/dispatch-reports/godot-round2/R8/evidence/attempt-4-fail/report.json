@@ -1,0 +1,987 @@
+{
+  "format": "craftmine.i.report/1",
+  "generatedAt": "2026-09-09T19:05:54.257Z",
+  "mode": "live",
+  "identity": {
+    "product": {
+      "version": "core@33620215ecd7",
+      "clientVersion": "plugin@0.1.0",
+      "commit": "67ba7ff6785651e61398af6189d9f0ec9bb519f5"
+    },
+    "engine": {
+      "name": "godot",
+      "version": "4.7.2-stable",
+      "renderer": "gl_compatibility"
+    },
+    "base": {
+      "id": "first-person",
+      "version": null,
+      "commit": null
+    },
+    "project": {
+      "treeHash": null,
+      "path": "godot-project",
+      "fileCount": 0
+    },
+    "model": {
+      "provider": "deepseek",
+      "modelId": "deepseek-v4.1-flash-expires-on-0910",
+      "thinking": "high"
+    },
+    "input": {
+      "kind": "no-input",
+      "inputEventsSent": 0,
+      "pointerLockRequests": 0,
+      "focusSteals": 0,
+      "browserLaunched": false
+    },
+    "dataDir": "D:\\Craftmine World-worktrees\\godot-round2-r8-20260910\\test-results\\r8-real-isb5Z2"
+  },
+  "freeze": {
+    "ok": true,
+    "sourcesOk": true,
+    "reason": "ok",
+    "lockedAt": "2026-09-09T18:53:31.763Z",
+    "sourceRoot": "D:\\Craftmine World",
+    "mismatched": [],
+    "missing": [],
+    "changedSources": [],
+    "missingSources": []
+  },
+  "headline": {
+    "rounds": 2,
+    "passed": 0,
+    "failed": 2,
+    "insufficient": 0,
+    "notRun": 0,
+    "modelCalls": 6,
+    "unknownUsageCalls": 0,
+    "humanInterventions": 0,
+    "verifiedStories": 0,
+    "failedStories": 0,
+    "notRunStories": 50,
+    "insufficientStories": 0
+  },
+  "rounds": [
+    {
+      "id": "R15.1",
+      "categoryId": "R15",
+      "phase": "initial",
+      "verdict": "failed",
+      "reasons": [
+        "I.R15.1.1: expected length >= 2, got 0",
+        "I.R15.1.2: expected a non-empty array at project.files",
+        "I.R15.1.3: expected true, got undefined",
+        "I.R15.1.4: expected true, got undefined",
+        "I.R15.1.5: expected true, got undefined",
+        "I.R15.1.6: expected >= 1, got 0",
+        "identity incomplete: base.version, project.treeHash"
+      ],
+      "evidenceDir": "evidence/R15.1",
+      "assertions": [
+        {
+          "id": "I.R15.1.1",
+          "kind": "machine",
+          "hard": true,
+          "passed": false,
+          "reason": "expected length >= 2, got 0"
+        },
+        {
+          "id": "I.R15.1.2",
+          "kind": "machine",
+          "hard": true,
+          "passed": false,
+          "reason": "expected a non-empty array at project.files"
+        },
+        {
+          "id": "I.R15.1.3",
+          "kind": "machine",
+          "hard": true,
+          "passed": false,
+          "reason": "expected true, got undefined"
+        },
+        {
+          "id": "I.R15.1.4",
+          "kind": "machine",
+          "hard": true,
+          "passed": false,
+          "reason": "expected true, got undefined"
+        },
+        {
+          "id": "I.R15.1.5",
+          "kind": "machine",
+          "hard": true,
+          "passed": false,
+          "reason": "expected true, got undefined"
+        },
+        {
+          "id": "I.R15.1.6",
+          "kind": "machine",
+          "hard": true,
+          "passed": false,
+          "reason": "expected >= 1, got 0"
+        },
+        {
+          "id": "I.R15.1.7",
+          "kind": "accounting",
+          "hard": true,
+          "passed": false,
+          "reason": "accounting evidence is required and cannot be satisfied by the assertion evaluator"
+        }
+      ],
+      "failures": [
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R15.1.1: expected length >= 2, got 0"
+        },
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R15.1.2: expected a non-empty array at project.files"
+        },
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R15.1.3: expected true, got undefined"
+        },
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R15.1.4: expected true, got undefined"
+        },
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R15.1.5: expected true, got undefined"
+        },
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R15.1.6: expected >= 1, got 0"
+        }
+      ],
+      "blockedBy": [
+        "R2",
+        "R7",
+        "C"
+      ],
+      "command": null
+    },
+    {
+      "id": "R15.2",
+      "categoryId": "R15",
+      "phase": "follow-up",
+      "verdict": "failed",
+      "reasons": [
+        "I.R15.2.1: expected >= 1, got null",
+        "I.R15.2.2: expected true, got undefined",
+        "I.R15.2.3: expected true, got undefined",
+        "I.R15.2.4: expected true, got undefined",
+        "I.R15.2.5: expected >= 1, got 0",
+        "identity incomplete: base.version, project.treeHash"
+      ],
+      "evidenceDir": "evidence/R15.2",
+      "assertions": [
+        {
+          "id": "I.R15.2.1",
+          "kind": "machine",
+          "hard": true,
+          "passed": false,
+          "reason": "expected >= 1, got null"
+        },
+        {
+          "id": "I.R15.2.2",
+          "kind": "machine",
+          "hard": true,
+          "passed": false,
+          "reason": "expected true, got undefined"
+        },
+        {
+          "id": "I.R15.2.3",
+          "kind": "machine",
+          "hard": true,
+          "passed": false,
+          "reason": "expected true, got undefined"
+        },
+        {
+          "id": "I.R15.2.4",
+          "kind": "machine",
+          "hard": true,
+          "passed": false,
+          "reason": "expected true, got undefined"
+        },
+        {
+          "id": "I.R15.2.5",
+          "kind": "machine",
+          "hard": true,
+          "passed": false,
+          "reason": "expected >= 1, got 0"
+        },
+        {
+          "id": "I.R15.2.6",
+          "kind": "accounting",
+          "hard": true,
+          "passed": false,
+          "reason": "accounting evidence is required and cannot be satisfied by the assertion evaluator"
+        }
+      ],
+      "failures": [
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R15.2.1: expected >= 1, got null"
+        },
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R15.2.2: expected true, got undefined"
+        },
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R15.2.3: expected true, got undefined"
+        },
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R15.2.4: expected true, got undefined"
+        },
+        {
+          "class": "model-wrong-behavior",
+          "message": "I.R15.2.5: expected >= 1, got 0"
+        }
+      ],
+      "blockedBy": [
+        "R2",
+        "R7",
+        "C"
+      ],
+      "command": null
+    }
+  ],
+  "hardFailures": [
+    {
+      "round": "R15.1",
+      "class": "model-wrong-behavior",
+      "message": "I.R15.1.1: expected length >= 2, got 0"
+    },
+    {
+      "round": "R15.1",
+      "class": "model-wrong-behavior",
+      "message": "I.R15.1.2: expected a non-empty array at project.files"
+    },
+    {
+      "round": "R15.1",
+      "class": "model-wrong-behavior",
+      "message": "I.R15.1.3: expected true, got undefined"
+    },
+    {
+      "round": "R15.1",
+      "class": "model-wrong-behavior",
+      "message": "I.R15.1.4: expected true, got undefined"
+    },
+    {
+      "round": "R15.1",
+      "class": "model-wrong-behavior",
+      "message": "I.R15.1.5: expected true, got undefined"
+    },
+    {
+      "round": "R15.1",
+      "class": "model-wrong-behavior",
+      "message": "I.R15.1.6: expected >= 1, got 0"
+    },
+    {
+      "round": "R15.2",
+      "class": "model-wrong-behavior",
+      "message": "I.R15.2.1: expected >= 1, got null"
+    },
+    {
+      "round": "R15.2",
+      "class": "model-wrong-behavior",
+      "message": "I.R15.2.2: expected true, got undefined"
+    },
+    {
+      "round": "R15.2",
+      "class": "model-wrong-behavior",
+      "message": "I.R15.2.3: expected true, got undefined"
+    },
+    {
+      "round": "R15.2",
+      "class": "model-wrong-behavior",
+      "message": "I.R15.2.4: expected true, got undefined"
+    },
+    {
+      "round": "R15.2",
+      "class": "model-wrong-behavior",
+      "message": "I.R15.2.5: expected >= 1, got 0"
+    }
+  ],
+  "pending": [],
+  "metrics": {
+    "modelCalls": 6,
+    "unknownUsageCalls": 0,
+    "usageCalls": 2,
+    "humanInterventions": 0,
+    "adapter": "pi-plugin",
+    "productProbe": {
+      "available": true,
+      "reason": "ok",
+      "identity": {
+        "provider": "deepseek",
+        "modelId": "deepseek-v4.1-flash-expires-on-0910",
+        "thinking": "high",
+        "credentialPresent": true,
+        "appliedKeys": [
+          "CRAFTMINE_DEEPSEEK_API_KEY",
+          "CRAFTMINE_MODEL_PROVIDER",
+          "CRAFTMINE_THINKING",
+          "CRAFTMINE_REASONING_EFFORT"
+        ]
+      },
+      "endpoints": {
+        "tools": "plugins/craftmine-world",
+        "core": "craftmine-core stdio JSON-lines"
+      }
+    }
+  },
+  "ledger": [
+    {
+      "group": "godot",
+      "id": "A01",
+      "title": "打开客户端并进入世界",
+      "status": "尚未执行",
+      "rounds": [
+        "R01.1",
+        "R01.2"
+      ],
+      "reasons": [
+        "等待 E/D 交付界面与返回游玩入口"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A02",
+      "title": "展开游玩再返回创作",
+      "status": "尚未执行",
+      "rounds": [
+        "R01.2"
+      ],
+      "reasons": [
+        "等待 D 的保存生命周期"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A03",
+      "title": "真实模型开发准星和持枪",
+      "status": "尚未执行",
+      "rounds": [
+        "R02.1"
+      ],
+      "reasons": [
+        "等待 L/F/C 的武器与工具接口"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A04",
+      "title": "切换枪与剑并攻击",
+      "status": "尚未执行",
+      "rounds": [
+        "R02.2"
+      ],
+      "reasons": [
+        "等待 F 的装备与攻击契约"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A05",
+      "title": "连续修改已玩的武器世界",
+      "status": "尚未执行",
+      "rounds": [
+        "R03.1",
+        "R03.2"
+      ],
+      "reasons": [
+        "等待 A/D/H/L 的应用与进度保留"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A06",
+      "title": "创建俯视世界并增加商店",
+      "status": "尚未执行",
+      "rounds": [
+        "R04.1"
+      ],
+      "reasons": [
+        "等待 E/F 的俯视底座与创建入口"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A07",
+      "title": "创建任务并完成后重启",
+      "status": "尚未执行",
+      "rounds": [
+        "R04.2"
+      ],
+      "reasons": [
+        "等待 F/A/D/L 的任务与重启链路"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A08",
+      "title": "在第二个世界复用作品",
+      "status": "尚未执行",
+      "rounds": [
+        "R05.1"
+      ],
+      "reasons": [
+        "等待 H 的作品包与复用链路"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A09",
+      "title": "创作期间切换到另一世界",
+      "status": "尚未执行",
+      "rounds": [
+        "R05.2"
+      ],
+      "reasons": [
+        "等待 A/E/L/D 的世界绑定"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A10",
+      "title": "进程中断后恢复任务",
+      "status": "尚未执行",
+      "rounds": [
+        "R06.1"
+      ],
+      "reasons": [
+        "等待 A/B/C 的中断与恢复"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A11",
+      "title": "连续三次压缩后继续修改",
+      "status": "尚未执行",
+      "rounds": [
+        "R06.2"
+      ],
+      "reasons": [
+        "等待 L/A 的上下文恢复"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A12",
+      "title": "结束或过期任务后接续草稿",
+      "status": "尚未执行",
+      "rounds": [
+        "R06.2"
+      ],
+      "reasons": [
+        "等待 A/L/E 的草稿接续"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A13",
+      "title": "转换旧世界副本并导出导入",
+      "status": "尚未执行",
+      "rounds": [
+        "R07.1",
+        "R07.2"
+      ],
+      "reasons": [
+        "等待 H/F 的迁移与导出"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A14",
+      "title": "坏候选、不兼容迁移或加载失败",
+      "status": "尚未执行",
+      "rounds": [
+        "R08.1",
+        "R08.2"
+      ],
+      "reasons": [
+        "等待 A/B/C/D/H 的失败保护"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A15",
+      "title": "横版获得能力后回访旧房间",
+      "status": "尚未执行",
+      "rounds": [
+        "R09.1"
+      ],
+      "reasons": [
+        "等待 F/G 的横版能力门槛"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A16",
+      "title": "挖掘和放置后保存重开",
+      "status": "尚未执行",
+      "rounds": [
+        "R09.2"
+      ],
+      "reasons": [
+        "等待 G/F/H/A 的沙盒与保存"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "godot",
+      "id": "A17",
+      "title": "安装升级和失败恢复",
+      "status": "尚未执行",
+      "rounds": [
+        "R14.1",
+        "R14.2"
+      ],
+      "reasons": [
+        "需要独立 Windows 环境；缺失时保留未验收"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V01",
+      "title": "连续三次创作与重启",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V02",
+      "title": "创建两个方案并切换界面",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V03",
+      "title": "草稿未检查或检查失败",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V04",
+      "title": "生成期间继续获得金币再应用武器修改",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V05",
+      "title": "恢复旧武器内容",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V06",
+      "title": "旧内容不支持新增状态字段",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V07",
+      "title": "准备后正式基线或素材锁变化",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V08",
+      "title": "Git 引用更新与 DB 提交之间退出",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V09",
+      "title": "提交完成后丢失回包",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V10",
+      "title": "文本无冲突但玩法冲突",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V11",
+      "title": "同素材两个版本、场景删除引用、二进制冲突",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V12",
+      "title": "历史缺素材、坏 blob、未知旧检查状态",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V13",
+      "title": "完整备份与全新目录恢复",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V14",
+      "title": "清理缓存和取消任务",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V15",
+      "title": "中文/长路径、大小写、链接及恶意 Git 配置",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "version",
+      "id": "V16",
+      "title": "远程只收到 Git、缺少大文件正文",
+      "status": "尚未执行",
+      "rounds": [
+        "R11.2"
+      ],
+      "reasons": [
+        "VM5/VM6 远程同步尚未实现，本次不授权部署或绑定外部账号"
+      ],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A01",
+      "title": "导入支持格式的真实文件",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A02",
+      "title": "大文件与分块中断",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A03",
+      "title": "同版不同内容、重复操作和相同正文",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A04",
+      "title": "坏图、模型引用缺失、预览超时",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A05",
+      "title": "当前世界引用 v1，库里新增 v2",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A06",
+      "title": "同一模板放两个实例，只改其中一个",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A07",
+      "title": "自动门保存后跨世界复用",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A08",
+      "title": "商店/战斗区的传递依赖和版本冲突",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A09",
+      "title": "升级宝箱、商店或任务作品",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A10",
+      "title": "目标世界已有本地覆盖",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A11",
+      "title": "归档、卸载和清理",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A12",
+      "title": "导出到新目录或另一台环境",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A13",
+      "title": "旧 Web 包与 Godot 存储迁移",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A14",
+      "title": "AI 检索并安装旧作品",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A15",
+      "title": "目录监听、路径碰撞、链接与外链文件",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.1"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A16",
+      "title": "切世界时旧搜索/预览请求返回",
+      "status": "尚未执行",
+      "rounds": [
+        "R12.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    },
+    {
+      "group": "assets",
+      "id": "AL-A17",
+      "title": "实际打包资源与许可清单不一致",
+      "status": "尚未执行",
+      "rounds": [
+        "R14.2"
+      ],
+      "reasons": [],
+      "history": [],
+      "reason": "尚未执行"
+    }
+  ],
+  "notes": [
+    "真实产品适配器：PI agent runtime + craftmine.world 插件子进程 + craftmine-core.exe。",
+    "模型：deepseek/deepseek-v4.1-flash-expires-on-0910 thinking=high。",
+    "构建门禁：GODOT_BROKER_MISSING（构建/检查未通过不代表源码未写出）。",
+    "源级证据只证明模型写出了符合要求的源码，不代替 R02.1/R02.2 的运行时断言。"
+  ]
+}

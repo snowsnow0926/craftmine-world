@@ -1,0 +1,47 @@
+{
+  "kind": "craftmine.godot.round3.s1-identity",
+  "generatedAt": "2026-09-10T04:25:00+08:00",
+  "branch": "codex/godot-round3-s1-20260910",
+  "worktree": "D:/Craftmine World-worktrees/godot-round3-s1-20260910",
+  "commit": "b5be0c8ff0af171b89493ba385385d2cc458831a",
+  "tree": "9a9c60e11cdd6c8fd5571a9bac32f7cee50c94ac",
+  "trackedFiles": 4222,
+  "inventorySha256": "876ea560b560b2bd5cdac5b43e187663da1e7b85b498328433d56262bfa6461f",
+  "inventoryMethod": "sha256 over the sorted 'git ls-tree -r <commit> --format=%(objectname) %(path)' lines joined with LF plus a trailing LF",
+  "dirty": false,
+  "consumedBaseline": {
+    "s7": "c7590c3 (S7 round-three integrated starting point, includes R2 2fa3c7c, R1, C, R3, R4, R5, R6, R7, R8, R9, B)",
+    "mergeCommits": ["b2f990c merge(godot): consume the S7 round-three integrated baseline", "24edb0c merge(godot): start round-three S1 from the committed R2 integration head"]
+  },
+  "commits": [
+    "b307d54 feat(godot): register the asset, package and portable backup RPCs",
+    "23bbfa3 feat(godot): bind a content apply to a launch-confirmed deployment",
+    "a2e56a3 fix(godot): aggregate durable backup pins in the build reclaimer",
+    "44af773 fix(godot): read Git-backed content when copying or describing a world",
+    "d69b3a0 test(godot): prove world initialization is one durable operation",
+    "fba17a1 docs(godot): record the round-three S1 stage delivery and evidence",
+    "b5be0c8 test(godot): reject the competing assets-lock shapes in the shared vectors"
+  ],
+  "core": {
+    "crate": "craftmine-core",
+    "version": "0.14.3",
+    "profile": "dev (debug)",
+    "binary": "vendor/pi-desktop/target/debug/craftmine-core.exe",
+    "binarySha256": "7bfe652b4040e056116735b286b4702713d3c3620a09e21eb043778d6ed7eb4f",
+    "binaryBytes": 10683904,
+    "sourceCommit": "44af77323c678341f345bb9f0880335edd080d83",
+    "note": "The binary hash is unchanged by the later commits, which touch only tests, specs and the shared vector file. Product sources that produce the binary are those of 44af773. MSVC relinking is not bit-reproducible, so the hash is recorded per build; the source identity above is the contract."
+  },
+  "engine": {
+    "godot": "not built or run by this task",
+    "note": "No Godot engine, Electron client or installer was built or exercised here; those identities belong to S7/S8."
+  },
+  "plugin": {
+    "path": "plugins/craftmine-world",
+    "note": "Not modified by S1. S2 owns plugin construction and host routing."
+  },
+  "git": {
+    "program": "managed adapter discovered at runtime by content.gitInfo (bundled candidate or PATH fallback)",
+    "note": "content.gitInfo reports the real path, version and sha256; the R1 evidence script records it per run."
+  }
+}

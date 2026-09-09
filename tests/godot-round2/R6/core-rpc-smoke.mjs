@@ -1,0 +1,481 @@
+// R6 end-to-end core RPC smoke test (real process, real bytes, no mocks).
+//
+// Spawns the built craftmine-core over its real stdio JSON protocol in an
+// isolated data directory and exercises the whole asset path: import a real
+// PNG, read it, scan the source directory, search, claim a preview, decode the
+// exact blob with the real Node preview service, record the evidence and prove
+// the version becomes previewable. No window, no input, no audio playback.
+//
+// Usage:
+//   node tests/godot-round2/R6/core-rpc-smoke.mjs
+//   CRAFTMINE_CORE_BIN=<path> node tests/godot-round2/R6/core-rpc-smoke.mjs
+//
+// Exit codes: 0 all checks passed, 2 the asset RPCs are not registered yet
+// (R1 wiring pending), 1 a registered call failed, 3 the binary is missing.
+import { spawn } from 'node:child_process';
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import zlib from 'node:zlib';
+import { fileURLToPath } from 'node:url';
+
+import { previewAsset } from '../../../vendor/pi-desktop/apps/desktop/electron/craftmine-assets/preview-service.mjs';
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(here, '..', '..', '..');
+const binary =
+  process.env.CRAFTMINE_CORE_BIN ??
+  path.join(root, 'vendor', 'pi-desktop', 'target', 'debug', process.platform === 'win32' ? 'craftmine-core.exe' : 'craftmine-core');
+
+if (!fs.existsSync(binary)) {
+  console.error(`CORE_BINARY_MISSING: ${binary}\nBuild it with: cargo build --manifest-path vendor/pi-desktop/Cargo.toml -p craftmine-core`);
+  process.exit(3);
+}
+
+const ENGINE = '4.7.2-stable';
+const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'r6-core-smoke-'));
+const sourceRoot = path.join(dataDir, 'player');
+fs.mkdirSync(sourceRoot, { recursive: true });
+
+function crc32(buffer) {
+  let crc = 0xffffffff;
+  for (const byte of buffer) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) crc = crc & 1 ? (crc >>> 1) ^ 0xedb88320 : crc >>> 1;
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+function chunk(type, data) {
+  const length = Buffer.alloc(4);
+  length.writeUInt32BE(data.length, 0);
+  const body = Buffer.concat([Buffer.from(type, 'ascii'), data]);
+  const crc = Buffer.alloc(4);
+  crc.writeUInt32BE(crc32(body), 0);
+  return Buffer.concat([length, body, crc]);
+}
+function realPng(width, height) {
+  const raw = Buffer.alloc((width * 4 + 1) * height);
+  for (let y = 0; y < height; y += 1) {
+    const row = y * (width * 4 + 1);
+    raw[row] = 0;
+    for (let x = 0; x < width; x += 1) {
+      const at = row + 1 + x * 4;
+      raw[at] = x * 8;
+      raw[at + 1] = y * 8;
+      raw[at + 2] = 128;
+      raw[at + 3] = 255;
+    }
+  }
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(width, 0);
+  ihdr.writeUInt32BE(height, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 6;
+  return Buffer.concat([
+    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    chunk('IHDR', ihdr),
+    chunk('IDAT', zlib.deflateSync(raw)),
+    chunk('IEND', Buffer.alloc(0)),
+  ]);
+}
+
+const pngBytes = realPng(16, 8);
+const sourcePath = path.join(sourceRoot, 'door.png');
+fs.writeFileSync(sourcePath, pngBytes);
+
+let child = null;
+let buffer = '';
+let nextId = 1;
+const pending = new Map();
+let stderr = '';
+
+function startCore() {
+  buffer = '';
+  child = spawn(binary, ['--data-dir', dataDir], { stdio: ['pipe', 'pipe', 'pipe'] });
+  child.stdout.setEncoding('utf8');
+  child.stdout.on('data', text => {
+    buffer += text;
+    let index = buffer.indexOf('\n');
+    while (index >= 0) {
+      const line = buffer.slice(0, index);
+      buffer = buffer.slice(index + 1);
+      index = buffer.indexOf('\n');
+      if (!line.trim()) continue;
+      const response = JSON.parse(line);
+      const job = pending.get(response.id);
+      if (job) {
+        pending.delete(response.id);
+        if (response.error) job.reject(response.error);
+        else job.resolve(response.result);
+      }
+    }
+  });
+  child.stderr.setEncoding('utf8');
+  child.stderr.on('data', text => {
+    stderr += text;
+  });
+}
+
+/**
+ * Stops the core and starts a new process on the same data directory. Preview
+ * attempt state must survive: a resumed claim proves the identity is durable,
+ * not an in-memory counter.
+ */
+async function restartCore() {
+  const stopped = new Promise(resolve => child.once('exit', resolve));
+  child.stdin.end();
+  await stopped;
+  for (const [id, job] of [...pending.entries()]) {
+    pending.delete(id);
+    job.reject({ code: 'CORE_RESTARTED', message: 'core restarted' });
+  }
+  startCore();
+}
+
+startCore();
+
+function rpc(method, params = {}) {
+  const id = nextId++;
+  return new Promise((resolve, reject) => {
+    pending.set(id, { resolve, reject });
+    child.stdin.write(`${JSON.stringify({ id, method, params })}\n`);
+    setTimeout(() => {
+      if (pending.delete(id)) reject({ code: 'RPC_TIMEOUT', message: method });
+    }, 30000);
+  });
+}
+
+const results = [];
+function record(name, status, detail = '') {
+  results.push({ name, status, detail });
+  console.log(`[${status}] ${name}${detail ? ` -> ${detail}` : ''}`);
+}
+
+async function main() {
+  const hello = await rpc('hello');
+  record('hello', hello?.format === 'craftmine.core/1' ? 'pass' : 'fail', hello?.format ?? 'no format');
+
+  const operationId = `r6-smoke-${crypto.randomUUID()}`;
+  const imported = await rpc('asset.import', {
+    operationId,
+    sourceRoot,
+    sourcePath,
+    assetId: 'door-texture',
+    version: 1,
+    kind: 'raw',
+    mediaKind: 'image',
+    path: 'textures/door.png',
+    mediaType: 'image/png',
+    displayName: '门贴图',
+    source: { origin: 'player-import', author: 'player', license: 'unknown', licenseStatus: 'unverified' },
+    tags: ['门'],
+  });
+  record('asset.import', imported.contentHash?.length === 64 ? 'pass' : 'fail', `bytes=${imported.bytes} dedup=${imported.deduplicated}`);
+  record(
+    'asset.import file hash',
+    imported.version_?.files?.[0]?.sha256 === crypto.createHash('sha256').update(pngBytes).digest('hex') ? 'pass' : 'fail',
+  );
+
+  const replay = await rpc('asset.import', {
+    operationId,
+    sourceRoot,
+    sourcePath,
+    assetId: 'door-texture',
+    version: 1,
+    kind: 'raw',
+    mediaKind: 'image',
+    path: 'textures/door.png',
+    mediaType: 'image/png',
+    displayName: '门贴图',
+    source: { origin: 'player-import', author: 'player', license: 'unknown', licenseStatus: 'unverified' },
+    tags: ['门'],
+  });
+  record('asset.import replay', replay.replayed === true ? 'pass' : 'fail', `replayed=${replay.replayed}`);
+
+  const read = await rpc('asset.read', { assetId: 'door-texture', version: 1 });
+  record('asset.read', read.version_?.contentHash === imported.contentHash ? 'pass' : 'fail');
+  record('asset.read state separation', read.state?.indexed === true && read.state?.previewable === false ? 'pass' : 'fail');
+
+  const versions = await rpc('asset.versions', { assetId: 'door-texture', offset: 0, limit: 10 });
+  record('asset.versions', versions.total === 1 ? 'pass' : 'fail', `total=${versions.total}`);
+
+  const scan = await rpc('asset.scan', { sourceRoot });
+  record('asset.scan hints', scan.hints?.unchanged === 1 && scan.worldUpdated === false ? 'pass' : 'fail', JSON.stringify(scan.hints));
+  record('asset.scan no world update', scan.worldUpdated === false ? 'pass' : 'fail');
+
+  const search = await rpc('asset.search', { scope: 'local-library', query: '门', offset: 0, limit: 10 });
+  record('asset.search', search.total === 1 && search.items?.[0]?.assetId === 'door-texture' ? 'pass' : 'fail', `total=${search.total}`);
+
+  const usage = await rpc('asset.recordUsage', { assetId: 'door-texture', version: 1, refKind: 'world-current', refId: 'w1', detail: 'smoke' });
+  record('asset.recordUsage', usage.refKind === 'world-current' ? 'pass' : 'fail');
+  const scoped = await rpc('asset.search', { scope: 'current-world', worldId: 'w1', offset: 0, limit: 10 });
+  record('asset.search current-world', scoped.total === 1 ? 'pass' : 'fail');
+
+  const annotated = await rpc('asset.annotate', { operationId: `${operationId}-annotate`, assetId: 'door-texture', displayName: '红色门贴图', tags: ['门', '红色'] });
+  record('asset.annotate keeps content hash', annotated.contentHash === imported.contentHash ? 'pass' : 'fail');
+
+  const begin = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1 });
+  record('asset.previewBegin', typeof begin.cacheKey === 'string' && begin.preview?.status === 'pending' ? 'pass' : 'fail');
+  const claim = begin.claim;
+  record(
+    'previewBegin issues a core claim',
+    typeof claim?.claimId === 'string' && claim.claimId.length === 64 && claim.attempt === 1 ? 'pass' : 'fail',
+    `attempt=${claim?.attempt}`,
+  );
+
+  const body = await rpc('asset.bodyPath', { assetId: 'door-texture', version: 1, path: 'textures/door.png' });
+  const blobBytes = fs.readFileSync(body.blobPath);
+  record('asset.bodyPath bytes match', crypto.createHash('sha256').update(blobBytes).digest('hex') === body.sha256 ? 'pass' : 'fail');
+
+  const evidence = previewAsset({
+    assetId: 'door-texture',
+    version: 1,
+    contentHash: read.version_.contentHash,
+    mediaType: 'image/png',
+    path: 'textures/door.png',
+    bytes: new Uint8Array(blobBytes),
+    engineVersion: ENGINE,
+    settingsHash: 'default',
+  });
+  record('real decode evidence', evidence.status === 'ok' && evidence.facts.picture === true ? 'pass' : 'fail', evidence.detail);
+
+  const finishArgs = {
+    operationId: `${operationId}-preview`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: claim.claimId,
+    attempt: claim.attempt,
+    status: evidence.status,
+    detail: evidence.detail,
+    facts: evidence.facts,
+  };
+  const finished = await rpc('asset.previewFinish', finishArgs);
+  record('previewFinish applies to the owning attempt', finished.applied === true && finished.attempt === 1 ? 'pass' : 'fail');
+  const replayed = await rpc('asset.previewFinish', finishArgs);
+  record('the same finish replays idempotently', replayed.replayed === true ? 'pass' : 'fail');
+  const afterPreview = await rpc('asset.read', { assetId: 'door-texture', version: 1 });
+  record('previewable only after real evidence', afterPreview.state?.previewable === true ? 'pass' : 'fail');
+  const previews = await rpc('asset.previewRead', { assetId: 'door-texture', version: 1 });
+  record(
+    'previewRead carries a thumbnail',
+    typeof previews.items?.[0]?.facts?.thumbnailBase64 === 'string' ? 'pass' : 'fail',
+  );
+
+  // Failure -> retry: the retry is a NEW attempt, and a changed result is
+  // recorded without OPERATION_CONFLICT.
+  const forced = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1, force: true });
+  const failedFinish = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-fail`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: forced.claim.claimId,
+    attempt: forced.claim.attempt,
+    status: 'failed',
+    detail: 'simulated decode failure',
+    facts: {},
+  });
+  record('a failed attempt is recorded as failed', failedFinish.applied === true && failedFinish.status === 'failed' ? 'pass' : 'fail');
+  const retry = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1 });
+  record(
+    'a retry issues a new attempt and claim',
+    retry.retried === true &&
+      retry.claim?.attempt === forced.claim.attempt + 1 &&
+      retry.claim?.claimId !== forced.claim.claimId
+      ? 'pass'
+      : 'fail',
+    `attempt=${retry.claim?.attempt}`,
+  );
+  const retryFinish = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-retry`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: retry.claim.claimId,
+    attempt: retry.claim.attempt,
+    status: 'ok',
+    detail: evidence.detail,
+    facts: evidence.facts,
+  });
+  record(
+    'a changed retry result never becomes OPERATION_CONFLICT',
+    retryFinish.applied === true && retryFinish.status === 'ok' && retryFinish.attempt === retry.claim.attempt
+      ? 'pass'
+      : 'fail',
+  );
+
+  // Cancel is the attempt's terminal state; a late worker result is discarded.
+  const cancelBegin = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1, force: true });
+  const cancelClaim = cancelBegin.claim;
+  const cancelled = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-cancel`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: cancelClaim.claimId,
+    attempt: cancelClaim.attempt,
+    status: 'cancelled',
+    detail: 'player cancelled',
+    facts: { abortSignalled: true },
+  });
+  record('cancel is applied as the attempt terminal state', cancelled.applied === true && cancelled.status === 'cancelled' ? 'pass' : 'fail');
+  const late = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-late`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: cancelClaim.claimId,
+    attempt: cancelClaim.attempt,
+    status: 'ok',
+    detail: 'late worker result',
+    facts: evidence.facts,
+  });
+  record(
+    'a late success cannot overwrite the cancel',
+    late.applied === false && late.stale === true && late.reason === 'STALE_PREVIEW_ATTEMPT' ? 'pass' : 'fail',
+  );
+  const afterCancel = await rpc('asset.previewRead', { assetId: 'door-texture', version: 1 });
+  record('the cancelled state is what is recorded', afterCancel.items?.[0]?.status === 'cancelled' ? 'pass' : 'fail');
+
+  // Concurrency: a second begin resumes the one live claim instead of starting
+  // a second decoder.
+  const concurrentA = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1, force: true });
+  const concurrentB = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1 });
+  record(
+    'a concurrent begin resumes the single live claim',
+    concurrentB.cached === true &&
+      concurrentB.resumed === true &&
+      concurrentB.claim?.claimId === concurrentA.claim.claimId &&
+      concurrentB.claim?.attempt === concurrentA.claim.attempt
+      ? 'pass'
+      : 'fail',
+  );
+
+  // Restart: the claim is durable, so a new process resumes the same attempt
+  // instead of leaving a permanent pending row or starting a second run.
+  await restartCore();
+  const helloAgain = await rpc('hello');
+  record('the core restarts on the same data directory', helloAgain?.format === 'craftmine.core/1' ? 'pass' : 'fail');
+  const afterRestart = await rpc('asset.previewRead', { assetId: 'door-texture', version: 1 });
+  const pendingRow = afterRestart.items?.find(item => item.status === 'pending');
+  record(
+    'the pending claim survives the restart',
+    pendingRow?.activeClaim === true && pendingRow?.attempt === concurrentA.claim.attempt ? 'pass' : 'fail',
+    `attempt=${pendingRow?.attempt}`,
+  );
+  const resumed = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1 });
+  record(
+    'a restarted core resumes the same claim, not a second run',
+    resumed.cached === true && resumed.resumed === true && resumed.claim?.claimId === concurrentA.claim.claimId
+      ? 'pass'
+      : 'fail',
+  );
+  const staleFinish = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-stale`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: '0'.repeat(64),
+    attempt: concurrentA.claim.attempt,
+    status: 'ok',
+    detail: 'fabricated claim',
+    facts: evidence.facts,
+  });
+  record('a fabricated claim cannot write a result', staleFinish.applied === false && staleFinish.stale === true ? 'pass' : 'fail');
+  const closed = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-close`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: concurrentA.claim.claimId,
+    attempt: concurrentA.claim.attempt,
+    status: 'ok',
+    detail: evidence.detail,
+    facts: evidence.facts,
+  });
+  record('the resumed claim closes the attempt', closed.applied === true ? 'pass' : 'fail');
+
+  const check = await rpc('asset.recordCheck', {
+    operationId: `${operationId}-check`,
+    assetId: 'door-texture',
+    version: 1,
+    baseId: 'first-person',
+    baseVersion: 1,
+    engineVersion: ENGINE,
+    target: 'desktop',
+    checkerVersion: 'smoke/1',
+    status: 'passed',
+    detail: 'smoke',
+  });
+  record('asset.recordCheck', check.status === 'passed' ? 'pass' : 'fail');
+  const checked = await rpc('asset.read', { assetId: 'door-texture', version: 1 });
+  record('baseChecked is separate', checked.state?.baseChecked?.status === 'passed' && checked.state?.appliedToSource?.worldId === 'w1' ? 'pass' : 'fail');
+
+  // Reclaim: the executor publishes a plan and only accepts an approved,
+  // re-verified entry; a used version and a stale plan are both refused.
+  const reclaimPlan = await rpc('asset.reclaimPlan', {});
+  record(
+    'asset.reclaimPlan publishes a usage-aware plan',
+    reclaimPlan?.format === 'craftmine.asset-reclaim-plan/1' &&
+      Array.isArray(reclaimPlan?.candidates) &&
+      reclaimPlan?.requiresApprovalFrom === 'S1 total recycler (pins from S4)'
+      ? 'pass'
+      : 'fail',
+    `candidates=${reclaimPlan?.candidateCount} protected=${reclaimPlan?.protectedVersions}`,
+  );
+  let staleRejected = false;
+  try {
+    await rpc('asset.reclaimCommit', {
+      operationId: `${operationId}-reclaim-stale`,
+      planId: 'arc-stale',
+      planHash: 'f'.repeat(64),
+      approvals: [],
+    });
+  } catch (error) {
+    staleRejected = String(error?.message ?? error?.code ?? '').includes('ASSET_RECLAIM_PLAN_STALE');
+  }
+  record('a stale reclaim plan is refused', staleRejected ? 'pass' : 'fail');
+  let protectedRejected = false;
+  try {
+    await rpc('asset.reclaimCommit', {
+      operationId: `${operationId}-reclaim-protected`,
+      planId: reclaimPlan.planId,
+      planHash: reclaimPlan.planHash,
+      approvals: [{ assetId: 'door-texture', version: 1, sha256: [body.sha256] }],
+    });
+  } catch (error) {
+    const text = String(error?.message ?? error?.code ?? '');
+    protectedRejected = text.includes('ASSET_RECLAIM_NOT_APPROVED') || text.includes('ASSET_RECLAIM_PROTECTED');
+  }
+  record('a version with a usage relation cannot be reclaimed', protectedRejected ? 'pass' : 'fail');
+  const stillThere = await rpc('asset.read', { assetId: 'door-texture', version: 1 });
+  record('the refused reclaim left the asset intact', stillThere.version_?.contentHash === imported.contentHash ? 'pass' : 'fail');
+}
+
+let exitCode = 0;
+try {
+  await main();
+} catch (error) {
+  const code = error?.code ?? 'FAILED';
+  if (code === 'UNKNOWN_METHOD') {
+    console.error(`\nASSET_RPC_NOT_REGISTERED: ${error.message ?? ''}`);
+    console.error('R1 has not added the asset.* entries to vendor/pi-desktop/crates/craftmine-core/src/main.rs yet.');
+    console.error('Fragment: docs/dispatch-reports/godot-round2/R6/INTERFACE_R6.md section 2.');
+    exitCode = 2;
+  } else {
+    console.error(`\nFAILED: ${JSON.stringify(error)}`);
+    exitCode = 1;
+  }
+} finally {
+  const passed = results.filter(entry => entry.status === 'pass').length;
+  const failed = results.filter(entry => entry.status === 'fail').length;
+  console.log(`\nSUMMARY: ${passed} passed, ${failed} failed, ${results.length} checks`);
+  if (exitCode === 0 && failed > 0) exitCode = 1;
+  if (stderr.trim()) console.error(`core stderr:\n${stderr.trim().slice(0, 2000)}`);
+  const exited = new Promise(resolve => child.once('exit', resolve));
+  child.stdin.end();
+  child.kill();
+  await Promise.race([exited, new Promise(resolve => setTimeout(resolve, 3000))]);
+  // Windows can keep the sqlite handle briefly after the process exits.
+  try {
+    fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+  } catch {
+    console.error(`LEFTOVER_TEST_DATA: ${dataDir}`);
+  }
+  process.exit(exitCode);
+}

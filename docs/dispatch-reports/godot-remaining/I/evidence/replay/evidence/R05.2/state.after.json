@@ -1,0 +1,32 @@
+{
+  "format": "craftmine.i.observation/1",
+  "isolation": {
+    "originWorldId": "world-1",
+    "selectedWorldId": "world-2",
+    "taskWorldId": "world-1",
+    "writtenWorldId": "world-1",
+    "originalTaskStillOnOriginWorld": true
+  },
+  "usage": {
+    "calls": 1,
+    "promptTokens": 900,
+    "cachedReadTokens": 0,
+    "nonCachedInputTokens": 900,
+    "outputTokens": 200,
+    "totalTokens": 1100,
+    "unknownCalls": 0
+  },
+  "failures": [],
+  "humanInterventions": [],
+  "evidence": {
+    "screenshots": [
+      {
+        "assertionId": "I.R05.2.4",
+        "name": "task-ownership.png",
+        "sha256": "a4bcd7b80c65e14e3809783fc4c587ce66a995dcc142e25bf61c9337ef6f3443",
+        "bytes": 70
+      }
+    ],
+    "human": []
+  }
+}

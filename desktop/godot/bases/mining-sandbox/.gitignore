@@ -1,0 +1,5 @@
+# Godot import cache and generated artifacts are never committed.
+.godot/
+*.translation
+export_presets.cfg
+evidence/
