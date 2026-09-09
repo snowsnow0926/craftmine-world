@@ -1,0 +1,229 @@
+{
+  "case": "adversarial",
+  "taskId": "b-adversarial-1788972699113",
+  "operation": "import",
+  "startedAt": "2026-09-09T16:51:39.113Z",
+  "transportExit": 0,
+  "finalResponse": {
+    "schemaVersion": 1,
+    "requestId": "b-adversarial-1788972699113",
+    "taskId": "b-adversarial-1788972699113",
+    "operation": "import",
+    "sourceBinding": {
+      "worldId": "fixed-b-synthetic-fixture",
+      "buildId": "b-adversarial-1788972699113",
+      "sourceRevision": 1,
+      "sourceDigest": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "inputHash": "9f220ea9fb8c0c1c3bba988e5628c72f818df935e78be49769457f7163492a35",
+    "sourceSnapshotDigest": "3fbd77d8b810480fb28e0de013ad2399acfecb7faf4d2c5e75cbc00dd4eb4836",
+    "sourceFiles": [
+      {
+        "path": "export_presets.cfg",
+        "bytes": 1089,
+        "sha256": "edc17f833c9365619cea23c47153d9d70854a9507d9428ccb687ba7efaaf561d"
+      },
+      {
+        "path": "main.gd",
+        "bytes": 204,
+        "sha256": "46ff831a188e1749c0caaab754d10e4f884abcb26a6d9ef8de743407b5e306c9"
+      },
+      {
+        "path": "main.tscn",
+        "bytes": 195,
+        "sha256": "2c14bbae599bac887e0596b7287ccab6b4e1e4f3495d22241df8c2f245f63599"
+      },
+      {
+        "path": "probe_resource.gd",
+        "bytes": 210,
+        "sha256": "78a7f6f8cd034a99968d03b30867e5d95a62240b6b7987268c049803d6eb7830"
+      },
+      {
+        "path": "probe_resource.tres",
+        "bytes": 205,
+        "sha256": "f68bd3e948523c7f691b266e5df0d7d01cfccd1fa0049ed223b4321d52578475"
+      },
+      {
+        "path": "probe_targets.cfg",
+        "bytes": 278,
+        "sha256": "50b676cb088708a2ec42215750a91e0e6189913e9f7894c85795f6e75cd310a5"
+      },
+      {
+        "path": "project.godot",
+        "bytes": 473,
+        "sha256": "e644cf55524fe1659086eb5eff83fbab9239a6cb55d55871592b9b27d5f1f3cd"
+      },
+      {
+        "path": "sandbox_probe/plugin.cfg",
+        "bytes": 208,
+        "sha256": "d83c581063dc538025e79f6609d48cb2dcb0257b3bb18cf3e86fbc11e049492e"
+      },
+      {
+        "path": "sandbox_probe/plugin.gd",
+        "bytes": 428,
+        "sha256": "6ef054b9435543b90034d80c4b28fa735972c83634e59a50ddf108a265b4c47d"
+      },
+      {
+        "path": "sandbox_probe/probe.gd",
+        "bytes": 3487,
+        "sha256": "5ae8b1f65d1ef6c224c3242dd12364f657822d4fcf644886e0ba052442757e19"
+      }
+    ],
+    "state": "succeeded",
+    "exitCode": 0,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "processVerification": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "pid": 242888,
+      "creationTimeFiletime": "134334463049319788",
+      "imagePath": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165138871-266180\\tasks\\b-adversarial-1788972699113\\bin\\Godot_v4.7.2-stable_win64.exe",
+      "appContainerSid": "S-1-15-2-104562747-802410880-425914965-2713485474-1979586788-847066053-1067262153",
+      "capabilitySids": [
+        "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+      ],
+      "integrityRid": 4096,
+      "isAppContainer": true,
+      "lpacQueryValue": null,
+      "lpacQueryError": 87,
+      "lpacCreationAttribute": true,
+      "jobMembershipVerified": true,
+      "jobLimitFlags": 8456,
+      "activeProcessLimit": 1,
+      "processMemoryBytes": 4294967296,
+      "verifiedBeforeResume": true,
+      "resumePreviousCount": 1
+    },
+    "networkPreflight": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "hostPositiveControls": [
+        "tcp4Echo",
+        "tcp6Echo",
+        "udp4Echo",
+        "udp6Echo"
+      ],
+      "hostReceivedCounts": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "exactTaskExempt": false,
+      "processVerification": {
+        "verified": true,
+        "policyVersion": "craftmine.windows.lpac-registry.v1",
+        "pid": 237536,
+        "creationTimeFiletime": "134334463047952918",
+        "imagePath": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165138871-266180\\tasks\\b-adversarial-1788972699113\\bin\\broker-preflight.exe",
+        "appContainerSid": "S-1-15-2-104562747-802410880-425914965-2713485474-1979586788-847066053-1067262153",
+        "capabilitySids": [
+          "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+        ],
+        "integrityRid": 4096,
+        "isAppContainer": true,
+        "lpacQueryValue": null,
+        "lpacQueryError": 87,
+        "lpacCreationAttribute": true,
+        "jobMembershipVerified": true,
+        "jobLimitFlags": 8456,
+        "activeProcessLimit": 1,
+        "processMemoryBytes": 4294967296,
+        "verifiedBeforeResume": true,
+        "resumePreviousCount": 1
+      },
+      "observation": {
+        "winsockStartup": 0,
+        "checks": [
+          {
+            "name": "tcp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          }
+        ]
+      }
+    },
+    "resourceEnforcement": {
+      "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+      "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+      "hardFilesystemQuota": false,
+      "workBytesLimit": 1073741824,
+      "logBytesLimit": 4194304,
+      "sampleIntervalMs": 200,
+      "samples": 14,
+      "maxObservedWorkBytes": 34065924,
+      "maxObservedLogBytes": 5857,
+      "enforced": false,
+      "reason": null
+    },
+    "artifacts": [],
+    "artifactsRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165138871-266180\\tasks\\b-adversarial-1788972699113\\artifacts",
+    "logsRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165138871-266180\\tasks\\b-adversarial-1788972699113\\logs",
+    "logs": [
+      {
+        "path": "preflight.json",
+        "bytes": 508,
+        "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+      },
+      {
+        "path": "task.log",
+        "bytes": 5857,
+        "sha256": "81f0c2b861386bd5db8d221a87966df166aefa605ed5b8a9b94cf028c5be789f"
+      }
+    ],
+    "cleanup": {
+      "verified": true,
+      "profileHresult": 0,
+      "workRemoved": true,
+      "error": null
+    },
+    "recoveryJournal": {
+      "path": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909165138871-266180\\tasks\\.recovery-journal\\b-adversarial-1788972699113.json",
+      "policyVersion": "craftmine.windows.recovery-journal.v1",
+      "cleared": true,
+      "error": null
+    },
+    "error": null,
+    "brokerSha256": "7442d7cfd8a219daec27286fc5e77c659604afc84f55cd021d782ddbc92b8b31"
+  },
+  "boundaryLines": [
+    "B_BOUNDARY_RESULT|plugin_ran=true|plugin_file_read=denied|plugin_file_write=denied|plugin_sibling_write=denied|plugin_external_connect=unknown(error=1)|plugin_loopback_connect=unknown(error=1)|plugin_spawn=denied(error=-1)",
+    "B_BOUNDARY_RESULT|tool_init_ran=true|tool_init_file_read=denied|tool_init_file_write=denied|tool_init_sibling_write=denied|tool_init_external_connect=unknown(error=1)|tool_init_loopback_connect=unknown(error=1)|tool_init_spawn=denied(error=-1)"
+  ],
+  "hostLoopbackControlPort": 62581,
+  "hostLoopbackConnections": 0,
+  "passed": true,
+  "failures": [],
+  "finishedAt": "2026-09-09T16:51:48.420Z"
+}

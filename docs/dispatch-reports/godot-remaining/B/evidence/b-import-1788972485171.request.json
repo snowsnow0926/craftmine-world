@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "requestId": "b-import-1788972485171",
+  "taskId": "b-import-1788972485171",
+  "operation": "import",
+  "projectRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909164805004-245784\\projects\\b-import-1788972485171",
+  "tasksRoot": "D:\\Craftmine World\\test-results\\godot-remaining-b\\test-results\\broker-cases\\b-20260909164805004-245784\\tasks",
+  "engineRoot": "D:/Craftmine World/desktop/build/godot/4.7.2-stable",
+  "sourceBinding": {
+    "worldId": "fixed-b-synthetic-fixture",
+    "buildId": "b-import-1788972485171",
+    "sourceRevision": 1,
+    "sourceDigest": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "inputHash": "6c2e1df44fa13e07c5fe5564db190e1474e6485f88b775fd4818b249800d3e37"
+}
