@@ -18,7 +18,7 @@ const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "r2-creation-"));
 
 test("the shipped catalog offers only delivered Godot bases and their templates", () => {
   const options = creation.readGodotCreateOptions({catalogFile, basesRoot});
-  assert.deepEqual([...options.bases.map((base) => base.id)].sort(), ["first-person", "side-view", "top-down"]);
+  assert.deepEqual([...options.bases.map((base) => base.id)].sort(), ["first-person", "mining-sandbox", "side-view", "top-down"]);
   assert.ok(options.bases.every((base) => base.delivered && base.templates.length >= 2));
   assert.deepEqual(options.bases.find((base) => base.id === "top-down").templates.map((t) => t.id), ["blank", "town"]);
   assert.equal(options.createActions, true);
@@ -35,7 +35,7 @@ test("creation requests are bounded and refuse bases this client cannot build", 
   assert.match(creation.validateGodotCreateRequest({title: "x", baseId: "side-view"}).operationId, /^[a-f0-9]{32}$/,
     "a missing operation id is generated once per request");
   for (const input of [{title: "", baseId: "top-down"}, {title: "x".repeat(81), baseId: "top-down"},
-    {title: "x", baseId: "mining-sandbox"}, {title: "x", baseId: "top-down", starterId: "../evil"}]) {
+    {title: "x", baseId: "unsupported-base"}, {title: "x", baseId: "top-down", starterId: "../evil"}]) {
     assert.throws(() => creation.validateGodotCreateRequest(input), /INVALID_WORLD_TITLE|WORLD_BASE_UNAVAILABLE|WORLD_STARTER_UNAVAILABLE/);
   }
 });
