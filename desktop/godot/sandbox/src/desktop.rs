@@ -249,7 +249,7 @@ impl PrivateDesktop {
             "Restore helper desktop",
         )?;
         result.name = wide(format!("{}\\{}", result.station_name, identifier));
-        println!(
+        eprintln!(
             "private_desktop_station={:?} name={} visible={} default_desktop_acl_modified=false",
             result.choice, result.station_name, result.station_visible
         );
