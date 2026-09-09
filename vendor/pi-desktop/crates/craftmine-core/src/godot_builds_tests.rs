@@ -104,6 +104,13 @@ fn a_build_copy_is_materialized_verified_and_reused_without_touching_source() ->
         }));
     }
     assert!(manifest["files"].as_array().unwrap().iter().any(|file| file["kind"] == "asset"));
+    // Host rows must be recorded, not silently dropped by the old CHECK.
+    let recorded: i64 = journal.db.query_row(
+        "SELECT COUNT(*) FROM craftmine_godot_build_files WHERE world_id='a' AND build_id=?1 AND kind='host'",
+        [started["buildId"].as_str().unwrap()],
+        |row| row.get(0),
+    )?;
+    assert_eq!(recorded, 3);
     // The same call replays its durable receipt; a new call gets a new job but
     // reuses the identical immutable build copy.
     let replay = start(&mut journal, &context, "build-one", &created, "build")?;
@@ -213,6 +220,54 @@ fn a_binary_asset_over_the_model_limit_is_rejected_without_a_second_store() -> R
         "GODOT_ASSET_TOO_LARGE",
     );
     assert!(!asset_root(&journal.directory, "a", true)?.join(digest_bytes(&payload)).try_exists()?);
+    Ok(())
+}
+
+#[test]
+fn a_database_with_the_old_build_file_check_is_rebuilt_for_host_rows() -> Result<()> {
+    let (_dir, path) = temp()?;
+    {
+        let db = rusqlite::Connection::open(&path)?;
+        db.execute_batch(
+            "PRAGMA foreign_keys=ON;
+             CREATE TABLE craftmine_godot_builds (
+                world_id TEXT NOT NULL, build_id TEXT NOT NULL, source_revision INTEGER NOT NULL,
+                manifest_hash TEXT NOT NULL, asset_manifest_hash TEXT NOT NULL, base_id TEXT NOT NULL,
+                base_build TEXT NOT NULL, engine_version TEXT NOT NULL, renderer TEXT NOT NULL,
+                target TEXT NOT NULL, files INTEGER NOT NULL, bytes INTEGER NOT NULL,
+                created_at INTEGER NOT NULL, PRIMARY KEY(world_id,build_id)
+             );
+             CREATE TABLE craftmine_godot_build_files (
+                world_id TEXT NOT NULL, build_id TEXT NOT NULL, path TEXT NOT NULL,
+                kind TEXT NOT NULL CHECK(kind IN ('source','asset','cache','artifact')),
+                sha256 TEXT NOT NULL, bytes INTEGER NOT NULL,
+                PRIMARY KEY(world_id,build_id,path),
+                FOREIGN KEY(world_id,build_id) REFERENCES craftmine_godot_builds(world_id,build_id)
+             );
+             INSERT INTO craftmine_godot_builds VALUES('a','gbd-legacy',0,'m','a','first-person',
+                'base-a','4.7.2-stable','gl_compatibility','web',1,1,1);
+             INSERT INTO craftmine_godot_build_files VALUES('a','gbd-legacy','p','source','h',1);",
+        )?;
+    }
+    let journal = TaskJournal::open(&path)?;
+    let sql: String = journal.db.query_row(
+        "SELECT sql FROM sqlite_master WHERE type='table' AND name='craftmine_godot_build_files'",
+        [],
+        |row| row.get(0),
+    )?;
+    assert!(sql.contains("'host'"));
+    let kept: i64 = journal.db.query_row(
+        "SELECT COUNT(*) FROM craftmine_godot_build_files",
+        [],
+        |row| row.get(0),
+    )?;
+    assert_eq!(kept, 1);
+    // A host row now records instead of being silently ignored by the old CHECK.
+    journal.db.execute(
+        "INSERT INTO craftmine_godot_build_files(world_id,build_id,path,kind,sha256,bytes)
+         VALUES('a','gbd-legacy','craftmine_host_bridge.js','host','h2',2)",
+        [],
+    )?;
     Ok(())
 }
 

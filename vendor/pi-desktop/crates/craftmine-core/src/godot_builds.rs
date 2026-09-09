@@ -170,7 +170,10 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
         )
         .optional()?;
     if legacy.is_some_and(|sql| !sql.contains("'host'")) {
-        db.execute_batch(
+        // The rebuild runs with foreign keys off so a legacy orphan cannot brick
+        // startup; orphans are then rejected explicitly instead of silently kept.
+        db.execute_batch("PRAGMA foreign_keys=OFF")?;
+        let rebuild = db.execute_batch(
             "ALTER TABLE craftmine_godot_build_files RENAME TO craftmine_godot_build_files_legacy;
              CREATE TABLE craftmine_godot_build_files (
                 world_id TEXT NOT NULL, build_id TEXT NOT NULL, path TEXT NOT NULL,
@@ -182,7 +185,17 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
              INSERT INTO craftmine_godot_build_files(world_id,build_id,path,kind,sha256,bytes)
                 SELECT world_id,build_id,path,kind,sha256,bytes FROM craftmine_godot_build_files_legacy;
              DROP TABLE craftmine_godot_build_files_legacy;",
+        );
+        db.execute_batch("PRAGMA foreign_keys=ON")?;
+        rebuild?;
+        let orphans: i64 = db.query_row(
+            "SELECT COUNT(*) FROM craftmine_godot_build_files f
+             LEFT JOIN craftmine_godot_builds b ON b.world_id=f.world_id AND b.build_id=f.build_id
+             WHERE b.build_id IS NULL",
+            [],
+            |row| row.get(0),
         )?;
+        ensure!(orphans == 0, "GODOT_BUILD_FILE_ORPHAN");
     }
     Ok(())
 }
