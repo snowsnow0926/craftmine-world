@@ -8,7 +8,7 @@ const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const slash = value => value.replaceAll('\\', '/');
 const text = value => typeof value === 'string' ? value.replace(/[\r\n\t]/g, ' ').replace(/(?:bearer\s+\S+|sk-[\w-]+|(?:api[_-]?key|token|password|secret)\s*[:=]\s*\S+)/gi, '[REDACTED]').slice(0, 300) : null;
 const date = value => typeof value === 'string' && Number.isFinite(Date.parse(value)) ? new Date(value).toISOString() : null;
-const identityKeys = ['commit','sourceCommit','buildId','contentOid','sourceRevision','revision','baseId','baseVersion','engineVersion','brokerSha256','coreSha256','sourceDigest','sourceArchiveHash'];
+const identityKeys = ['commit','sourceCommit','buildId','contentOid','sourceRevision','revision','baseId','baseVersion','engineVersion','brokerSha256','coreSha256','sourceDigest','sourceArchiveHash','mainSha256'];
 function identity(value) {
   return Object.fromEntries(identityKeys.flatMap(key => {
     const v = value?.[key];
@@ -24,6 +24,7 @@ async function discover(root) {
   const results = path.join(root,'test-results');
   for(const dir of await entries(results)) {
     if(dir.isDirectory() && /^desktop-native-complete-/.test(dir.name)) found.push({file:path.join(results,dir.name,'report.json'),kind:'actual-client'});
+    if(dir.isDirectory() && /^desktop-native-wx-/.test(dir.name)) found.push({file:path.join(results,dir.name,'report.json'),kind:'actual-client-windows-export'});
   }
   const recovery = path.join(results,'desktop-native-recovery-gql5Pk');
   for(const dir of await entries(recovery)) if(dir.isDirectory() && dir.name.startsWith('fault-evidence-')) found.push({file:path.join(recovery,dir.name,'report.json'),kind:'actual-client-recovery'});
@@ -34,7 +35,9 @@ async function discover(root) {
       if(entry.isDirectory()) await walk(file); // Dirent does not follow symbolic links.
       else if(entry.isFile()) {
         const relative = slash(path.relative(docs,file));
-        if(entry.name === 'native-final.json' || (/mining/i.test(relative) && /(?:report|closeout|controller).*\.(?:json|md)$/i.test(entry.name))) {
+        if(/(?:^|\/)windows-client\/(?:report|first-failure-report)\.json$/.test(relative)) {
+          found.push({file,kind:'actual-client-windows-export'});
+        } else if(entry.name === 'native-final.json' || (/mining/i.test(relative) && /(?:report|closeout|controller).*\.(?:json|md)$/i.test(entry.name))) {
           found.push({file,kind:entry.name.endsWith('.md')?'narrative-only':'native-fixed-scenario'});
         }
       }
@@ -75,6 +78,8 @@ async function readReport(root, source) {
     let report;
     try { report = JSON.parse(bytes.toString('utf8')); } catch { return {...record,state:'invalid',error:'INVALID_JSON'}; }
     if(!report || typeof report !== 'object' || Array.isArray(report)) return {...record,state:'invalid',error:'INVALID_REPORT_OBJECT'};
+    const windowsExport = source.kind === 'actual-client-windows-export';
+    if(windowsExport && report.format !== 'craftmine.windows-client-export/1') return {...record,state:'invalid',error:'INVALID_WINDOWS_CLIENT_REPORT_FORMAT'};
     const items = tasks(report);
     const failed = report.passed===false || Boolean(report.fatal) || items.some(item=>item.state==='failed');
     const isClient = source.kind.startsWith('actual-client');
@@ -83,7 +88,8 @@ async function readReport(root, source) {
     const state = !finished ? 'running' : failed ? 'failed' : (report.passed===true || (items.length>0 && items.every(item=>item.state==='passed'))) ? 'passed' : 'unknown';
     return {...record,format:text(report.format),state,startedAt:date(report.startedAt),finishedAt,hasRecordedFailure:failed,
       timeNote:!date(report.startedAt)&&!finishedAt?'原报告未记录运行时间；文件修改时间不能视为运行时间。':null,
-      identity:identity(report),worldIdentities:(report.worlds??[]).map(world=>({...identity(world),...identity(world.formal)})),
+      identity:windowsExport ? {...identity(report),...identity(report.provenance)} : identity(report),worldIdentities:(report.worlds??[]).map(world=>({...identity(world),...identity(world.formal)})),
+      ...(windowsExport ? {executionMode:typeof report.packaged==='string'&&report.packaged.length>0?'packaged-client':'frozen-source-client',note:'真实客户端 Windows 游戏导出入口报告；不据此推定安装器执行、签名、清洁首装或正式真模型验收通过。'} : {}),
       tasks:items,counts:{passed:items.filter(i=>i.state==='passed').length,failed:items.filter(i=>i.state==='failed').length,unknown:items.filter(i=>i.state==='unknown').length},
       ...(report.fatal ? {fatalPresent:true}:{}),
     };
@@ -124,6 +130,7 @@ export function renderMarkdown(summary) {
     if(record.error) lines.push(`读取问题：${record.error}。`);
     if(record.fatalPresent) lines.push('报告记录 fatal；错误全文保留在原始报告，避免复制敏感内容。');
     if(record.note) lines.push(record.note);
+    if(record.executionMode) lines.push(`客户端来源口径：${record.executionMode}（取自原报告，不代替安装包来源核对）。`);
     if(record.tasks?.length) {
       lines.push('','| 条目 | 状态 | 证据口径 |','| --- | --- | --- |');
       for(const item of record.tasks) lines.push(`| ${escape(item.id)}：${escape(item.name)} | ${item.state} | ${item.assertionSource}${item.errorPresent?'；原文含错误':''} |`);
