@@ -1,0 +1,43 @@
+(node:108520) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS 原生客户端启动真实 Rust 宿主和内置世界插件
+PASS 原生窗口全程离屏、不可聚焦且未显示
+PASS 客户端使用本次独立配置目录
+PASS 真实 React 前端通过沙箱 preload 与 Electron 通信
+PASS 桌面、世界面板和游戏初始化时均禁止鼠标锁定与焦点请求
+PASS 实际游戏隔离帧无法访问 Node 或插件桥
+PASS PI Rust dispatch resolves the actual session and world identity
+PASS Native utility process compiles and commits a real resource
+PASS The same host tool-call ID recovers its committed receipt
+PASS Native read returns the saved authored resource and its hash
+PASS Native tool dispatch cannot accept model-authored session identity
+PASS Verification submission returns a durable queued job without waiting for rendering
+PASS Repeated submission recovers the same job
+PASS The native isolated renderer runs actual behavior Workers and renders the compiled world
+PASS The world panel cannot manufacture verification evidence
+PASS An independent preview loads the checked build and retains the formal player
+PASS A compiled but broken behavior fails inside the actual Worker and retains its diagnostic
+PASS Old successful evidence is marked historical after the draft changes
+PASS Verification and preview do not publish draft code or replace saved player progress
+PASS A wrong-effect implementation can pass general machine checks
+PASS Actual request assertions reject changing color instead of hiding the rendered flower
+PASS The Agent can read bounded failed-request evidence to guide its next repair
+PASS Failed request evidence cannot be bypassed through the panel application channel
+PASS PI one-shot completion receives the host request and actual request assertions pass in the renderer
+PASS An advisory block verdict remains visible without vetoing machine acceptance
+PASS The actual world panel applies the candidate and retains current player progress
+PASS Rust persists the reviewed build containing the authored flower
+PASS Finishing the host turn prevents late native tool writes
+PASS The next native PI turn starts from the applied world and retains the flower
+PASS 原生表单经 Electron 授权目录桥和 Rust 完成旧世界导入
+PASS 退出前的真实游戏变化尚未写入持久存档
+PASS 真实 SQLite 写锁使原生退出失败时保留可重试的世界
+PASS 导入与保存失败全过程没有真实输入或窗口焦点调用
+PASS 解除写锁后原生退出先保存再正常关闭
+PASS 退出时未重建已销毁的界面或产生页面未处理异常
+PASS 关闭后 Rust 持久存档包含退出前最后的玩家位置
+PASS 完整重启同一原生客户端保留当前世界和已保存进度
+PASS 重启仍保持离屏和零输入调用
+PASS 重启后的客户端也能正常保存退出
+PASS 重启退出仍没有输入调用和页面未处理异常
+Native acceptance report: D:\Craftmine World-worktrees\parallel-e-20260909\test-results\desktop-native-Z1E0c4\report.json
