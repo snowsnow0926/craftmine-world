@@ -8,6 +8,8 @@ use anyhow::{ensure, Context, Result};
 use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde_json::{json, Value};
 
+mod installer;
+mod package_format;
 mod packages;
 mod reuse;
 
