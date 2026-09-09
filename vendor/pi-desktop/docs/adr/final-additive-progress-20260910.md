@@ -1,0 +1,3 @@
+# Explicit scene-backed additive migration
+
+Adding a persistent scene entity changes the complete progress schema. Keep strict runtime restore and full native round-trip checks, and derive a new complete snapshot before application. Only two known FPS entity collections may add stable IDs; defaults must come from the actual new scene, while every old state value survives. Reject removed/duplicate identities and changed old shapes. Match runtime records by stable identity rather than scene array position. The core and host bind this derivation to verified candidate and current formal progress identities, preserving the existing application transaction rather than inventing a parallel save store.
