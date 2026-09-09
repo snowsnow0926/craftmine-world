@@ -56,6 +56,15 @@ try {
     } catch (error) { results.push({ name: '未声明的权限必须被宿主拒绝', passed: /权限/.test(error.message), detail: error.message }); }
     strict.dispose();
 
+    const broken = new ExtensionRunner({ ...extension, code: 'export function apply(){throw Error("extension diagnostic sentinel");}' });
+    try {
+      await broken.ready;
+      await broken.apply({ command, world, state: null });
+      results.push({ name: '扩展执行异常保留真实源码错误', passed: false });
+    } catch (error) {
+      results.push({ name: '扩展执行异常保留真实源码错误', passed: error.message === 'extension diagnostic sentinel', detail: error.message });
+    } finally { broken.dispose(); }
+
     const probeRunner = new ExtensionRunner({ ...extension, permissions: ['targets.write', 'health.write'], targets: ['zombie-1'], capabilities: [], code: probe });
     try {
       await probeRunner.ready;
@@ -100,7 +109,7 @@ try {
 
   const approveReview = async () => ({ passed: true, summary: '评审没有提出阻断问题', findings: [] });
   const staged = await stageExtension(EXTENSION, { createRunner, review: approveReview, verifyWorld: async () => ({ passed: true, summary: '冻结回归 10/10 通过' }) });
-  w.check('真实沙箱 + 对抗评审 + 冻结回归都通过才拿到 ready', staged.status === 'ready', staged.error || staged.checks.map(check => check.detail).join(' / '));
+  w.check('真实沙箱结果接入模拟评审与冻结回归钩子', staged.status === 'ready', staged.error || staged.checks.map(check => check.detail).join(' / '));
   const noReview = await stageExtension(EXTENSION, { createRunner, verifyWorld: async () => ({ passed: true }) });
   w.check('没有对抗评审时一律拒绝装载', noReview.status === 'rejected' && /对抗评审/.test(noReview.error), noReview.error);
 

@@ -51,7 +51,7 @@ export class ExtensionRunner {
   receive(message) {
     if (this.closed) return;
     if (message?.type === 'ready' && this.readyResolve) { clearTimeout(this.loadTimer); this.readyResolve(); this.readyResolve = null; this.readyReject = null; return; }
-    if (message?.type === 'error' && !this.pending) { this.fail(Error(message.message || '扩展模块发生错误')); return; }
+    if (message?.type === 'error' && (!this.pending || message.sequence === this.pending.sequence)) { this.fail(Error(message.message || '扩展模块发生错误')); return; }
     const job = this.pending;
     if (message?.type !== 'result' || !job || message.sequence !== job.sequence) { this.fail(Error('扩展发送了无效或过期的消息')); return; }
     try {
