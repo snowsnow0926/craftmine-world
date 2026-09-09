@@ -561,14 +561,19 @@ function resolveInsidePlugin(pluginPath: string, relative: string): string | nul
  * Minimal environment for a plugin process: the host's own env may carry
  * provider keys and shell secrets, and plugins have no business seeing them.
  */
-function pluginProcessEnv(pluginId: string): Record<string, string> {
+export function pluginProcessEnv(pluginId: string, source: NodeJS.ProcessEnv = process.env): Record<string, string> {
   const env: Record<string, string> = {
     PI_PLUGIN_ID: pluginId,
-    NODE_ENV: process.env.NODE_ENV ?? "production",
+    NODE_ENV: source.NODE_ENV ?? "production",
   };
   for (const key of ["PATH", "SystemRoot", "windir", "TEMP", "TMP", "TMPDIR", "LANG"]) {
-    const value = process.env[key];
+    const value = source[key];
     if (value) env[key] = value;
+  }
+  // Only the built-in domain broker receives the main-resolved executable.
+  // Provider credentials and the rest of the host environment stay excluded.
+  if (pluginId === "craftmine.world" && source.CRAFTMINE_CORE_BIN) {
+    env.CRAFTMINE_CORE_BIN = source.CRAFTMINE_CORE_BIN;
   }
   return env;
 }

@@ -8452,6 +8452,7 @@ are withdrawn with ADR 0165.
 - Expected: one draft revision and one receipt; cancellation survives restart; foreign sessions/projects cannot inspect or write the task; plugin context carries the host session, turn, tool-call and dispatch IDs.
 - Validation: `cargo test -p craftmine-core`; `node --test test/plugin-complete.test.mjs` from the desktop package. No browser or OS input simulation is required.
 - Status: targeted checks; complete application journey remains W1/W2 work.
+- Native process configuration: `test/plugin-process-environment.test.mjs` verifies that only `craftmine.world` receives the resolved Rust executable and that unrelated host credentials/test tokens stay excluded. CRAFTMINE-007 exercises the actual Electron utility-process spawner.
 
 #### CRAFTMINE-002: Multiple worlds and Rust progress persistence
 

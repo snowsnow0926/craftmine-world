@@ -20,6 +20,8 @@ The Rust `plugins.execute` notification includes its existing `sessionId`, `tool
 
 `craftmine-core --data-dir <absolute path>` owns `tasks.sqlite` and accepts bounded JSON-lines requests on its private stdio pipe. `hello`, `task.start`, `task.inspect`, `task.commit` and `task.cancel` are available to the trusted broker. The built-in `craftmine.world` plugin owns the service lifecycle. Its first agent tool reports actual runtime status and explicitly reports world publishing as unavailable.
 
+Electron resolves the domain executable and forwards `CRAFTMINE_CORE_BIN` only to the `craftmine.world` utility process. Other plugin processes keep the existing minimal environment; provider secrets, headless test tokens and unrelated host variables are never forwarded. Native acceptance must exercise the production utility-process spawner, because a test-only Node fork with a copied environment cannot verify this boundary.
+
 The world view bundles trusted local resources into a sandboxed srcdoc iframe using script-hash CSP entries. The iframe exposes neither the plugin bridge nor Node. Blob Workers support the existing authored-code runtime. Message exchange requires the expected source window and a per-frame nonce. File-origin replies use a wildcard target only because the receiving document has an opaque origin; incoming validation remains mandatory.
 
 ## Desktop acceptance
