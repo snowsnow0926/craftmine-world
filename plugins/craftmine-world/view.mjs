@@ -20,6 +20,19 @@ let previewFrame=null;
 let preview=null,checkOffset=0,checkWorld=null,checksLoading=false,evidenceJob=null,evidenceNext=null;
 let previewReview=null,reviewLoading=false,applicationAttempt=null;
 let workbench;
+// Height in CSS pixels that the Electron host reserves at the top of the panel
+// for this page's chrome (header + modes bar). A sibling WebContentsView with
+// the Godot game is positioned directly below that offset, so the placeholder
+// region must start exactly here. Keep in sync with WORLD_CHROME_HEIGHT in
+// desktop/godot/web/runtime.mjs.
+const GODOT_CHROME_HEIGHT = 76;
+document.documentElement.style.setProperty('--godot-chrome',GODOT_CHROME_HEIGHT+'px');
+// Godot worlds run in the sibling Electron view, not in the voxel srcdoc iframe.
+let godot=false;
+const godotStateLabels={loading:'载入中',ready:'已就绪',paused:'已暂停',saving:'保存中',saved:'已保存',failed:'运行失败',closed:'已关闭'};
+function isGodotWorld(record) {
+  return record?.world?.build?.engine?.kind==='godot-web';
+}
 
 function applyAppearance(appearance) {
   if(appearance?.base==='light'||appearance?.base==='dark') {
@@ -30,9 +43,28 @@ function applyAppearance(appearance) {
 if(bridge) {
   void bridge.invoke('app.getAppearance').then(applyAppearance).catch(()=>{});
   bridge.on?.('appearance:changed',applyAppearance);
+  bridge.on?.('godot-world:state',onGodotState);
+}
+
+// State is broadcast by the Electron host; this page never infers it.
+function onGodotState(payload) {
+  if(!godot||!payload||payload.worldId!==current?.id)return;
+  const state=String(payload.state||'');
+  const label=godotStateLabels[state]||state;
+  document.body.dataset.godotState=state;
+  status.textContent=label;
+  if(state==='failed') {
+    // Reuse the shared error banner, but keep the state label in the status.
+    showError(Error(payload.error||'Godot 世界运行失败'));
+    status.textContent=label;
+  } else delete status.dataset.error;
+  if(state==='ready'||state==='saved')document.body.dataset.worldLoaded='true';
+  else if(state==='loading'||state==='failed'||state==='closed')delete document.body.dataset.worldLoaded;
 }
 
 function send(type, value = {}) {
+  // Godot worlds never speak the voxel host protocol; the host owns the game view.
+  if(godot)return;
   frame.contentWindow.postMessage({channel:'craftmine-host/1',nonce,type,...value}, '*');
 }
 
@@ -42,7 +74,9 @@ function showError(error) {
 }
 
 function controls() {
-  select.disabled=!bridge||busy||closing||!!preview||!!applicationAttempt||!!workbench?.busy;newButton.disabled=select.disabled;saveButton.disabled=select.disabled||!loaded;
+  select.disabled=!bridge||busy||closing||!!preview||!!applicationAttempt||!!workbench?.busy;newButton.disabled=select.disabled;saveButton.disabled=select.disabled||!loaded||godot;
+  if(godot){saveButton.title='Godot 世界由宿主自动保存';saveButton.setAttribute('aria-label','保存（Godot 世界由宿主自动保存）');}
+  else {saveButton.removeAttribute('title');saveButton.removeAttribute('aria-label');}
   importButton.disabled=select.disabled;
   document.getElementById('close-preview').disabled=busy||closing||!!applicationAttempt;
   document.getElementById('apply-world').disabled=busy||closing||!!applicationAttempt||!preview||!previewReview?.current||previewReview.status!=='completed'||!previewReview.acceptance?.passed;
@@ -65,6 +99,8 @@ function action(run) {
 }
 
 function snapshot({freeze=false}={}) {
+  // Kept callable for Godot worlds: the host snapshots the running game itself.
+  if(godot)return Promise.resolve({godot:true,snapshot:null});
   if(!loaded)return Promise.reject(Error('世界仍在载入'));
   return new Promise((resolve,reject)=>{
     const requestId=crypto.randomUUID();
@@ -74,6 +110,9 @@ function snapshot({freeze=false}={}) {
 }
 
 async function save({freeze=false}={}) {
+  // The Electron host owns the Godot save transaction; this page must not
+  // snapshot or call world.saveProgress for a Godot world.
+  if(godot)return {godot:true};
   if(applicationAttempt)await reconcileApplication();
   if(!bridge||!loaded||!current?.id)return;
   const result=await snapshot({freeze});
@@ -92,6 +131,9 @@ function cancelClose() {
 }
 
 function prepareClose() {
+  // Nothing to snapshot from this page for a Godot world: the host saves and
+  // exits the sibling runtime view before the panel view closes.
+  if(godot)return Promise.resolve({loaded:false,godot:true});
   if(closing&&closeOperation)return closeOperation;
   const generation=++closeGeneration, previous=activeOperation;
   closing=true;controls();
@@ -127,15 +169,28 @@ function mount(record) {
   document.getElementById('checks-list').replaceChildren();setMode(false);
   for(const pending of requests.values()){clearTimeout(pending.timer);pending.reject(Error('世界已切换'));}requests.clear();
   current=record;loaded=false;nonce=crypto.randomUUID();lastSaved=JSON.stringify(record.world.snapshot);
+  godot=isGodotWorld(record);
   document.getElementById('import-result').hidden=true;
   document.body.dataset.worldId=record.id||'';delete document.body.dataset.worldLoaded;delete document.body.dataset.worldError;
-  status.textContent='正在载入';controls();
-  frame.srcdoc=gameDocument.replace('__CRAFTMINE_NONCE__',nonce).replace('__CRAFTMINE_INPUT_GUARD__',globalThis.__craftmineHeadless?CRAFTMINE_INPUT_GUARD:'');
+  delete document.body.dataset.godotState;
+  if(godot) {
+    // Godot worlds are rendered by a sibling Electron view over #godot-surface;
+    // this page only draws the chrome and the placeholder region.
+    document.body.dataset.godot='true';
+    frame.removeAttribute('srcdoc');
+    status.textContent='载入中';
+  } else {
+    delete document.body.dataset.godot;
+    status.textContent='正在载入';
+    frame.srcdoc=gameDocument.replace('__CRAFTMINE_NONCE__',nonce).replace('__CRAFTMINE_INPUT_GUARD__',globalThis.__craftmineHeadless?CRAFTMINE_INPUT_GUARD:'');
+  }
+  controls();
   void workbench?.setWorld();
 }
 
 addEventListener('message',event=>{
   const message=event.data;
+  if(godot)return;
   if(event.source!==frame.contentWindow||message?.channel!=='craftmine-game/1'||message.nonce!==nonce)return;
   if(message.type==='ready')send('load',{...current.world,worldId:current.id});
   if(message.type==='selection')void workbench?.setSelection(message);
@@ -193,6 +248,7 @@ async function refreshChecks(reset=false) {
       if(job.status==='passed') {
         const form=document.createElement('form');form.dataset.previewJob=job.id;
         const button=document.createElement('button');button.type='submit';button.textContent='预览副本';
+        if(godot){button.disabled=true;button.title='Godot 世界由独立视图运行，暂不支持草稿预览';}
         form.append(button);form.onsubmit=event=>{event.preventDefault();void action(()=>openPreview(job.id));};actions.append(form);
       }
       if(['queued','running'].includes(job.status)) {
@@ -231,6 +287,8 @@ function closePreview(resume=true) {
   if(resume)send('resume');controls();
 }
 async function openPreview(id) {
+  // Draft previews mount the voxel srcdoc runner; Godot worlds run elsewhere.
+  if(godot)throw Error('Godot 世界由独立视图运行，暂不支持草稿预览');
   if(preview)closePreview(false);
   await save({freeze:true});
   const result=await bridge.invoke('verification.preview',{id});

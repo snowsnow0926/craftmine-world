@@ -1,0 +1,145 @@
+diff --git a/vendor/pi-desktop/apps/desktop/electron/main/index.ts b/vendor/pi-desktop/apps/desktop/electron/main/index.ts
+index 9ad8380..1dc64b8 100644
+--- a/vendor/pi-desktop/apps/desktop/electron/main/index.ts
++++ b/vendor/pi-desktop/apps/desktop/electron/main/index.ts
+@@ -180,6 +180,7 @@ import { builtinSkills, loadBuiltinSkillBody } from "./builtin-skills";
+ import { registerPluginDevTools } from "./plugin-dev-tools";
+ import { PluginPanelHost } from "./plugin-panel-host";
+ import { PluginViewHost, pluginViewKey } from "./plugin-view-host";
++import { GodotWorldViewHost, godotEngineOf } from "./godot-world-view-host";
+ import { parseAllowedExternalUrl } from "./safe-open-external";
+ import type { PluginAppearance } from "../shared/plugin-panel-chrome";
+ import { Logger, ignoreBrokenStdio } from "./logger";
+@@ -861,6 +862,65 @@ const pluginViews = new PluginViewHost(({ pluginId, url }) => {
+     data: { api: "view.egress", ok: false, url, ts: Date.now() },
+   });
+ });
++// Godot Web world surface (task C). The game is a top-level document on a
++// private loopback origin, so a multi-threaded export can be cross-origin
++// isolated; it is composited as a sibling WebContentsView below the panel
++// chrome the plugin view page reserves.
++const godotWorldBuildRoots = () => {
++  const roots = new Set<string>();
++  const configured = process.env.CRAFTMINE_GODOT_BUILD_ROOT;
++  if (configured) roots.add(resolve(configured));
++  roots.add(join(app.getPath("userData"), "godot-builds"));
++  return [...roots];
++};
++const readGodotWorldDescriptor = async () => {
++  if (!plugins.getLoaded("craftmine.world")) return null;
++  const list = (await plugins.invokePanelBridge("craftmine.world", "world.list", {})) as
++    | { worlds?: { id: string }[]; activeWorldId?: string }
++    | undefined;
++  const id = list?.activeWorldId ?? list?.worlds?.[0]?.id;
++  if (!id) return null;
++  const record = (await plugins.invokePanelBridge("craftmine.world", "world.open", { id })) as
++    | { id?: string; world?: { build?: unknown; snapshot?: unknown } }
++    | undefined;
++  const engine = godotEngineOf(record?.world?.build);
++  if (!engine?.root || !engine?.buildId) return null;
++  return {
++    worldId: String(record?.id ?? id),
++    buildId: engine.buildId,
++    root: engine.root,
++    entry: engine.entry,
++    threads: engine.threads,
++    build: record?.world?.build,
++    snapshot: record?.world?.snapshot,
++  };
++};
++const godotWorld = new GodotWorldViewHost({
++  window: () => mainWindow,
++  allowedRoots: godotWorldBuildRoots,
++  descriptor: readGodotWorldDescriptor,
++  progress: async (call) => {
++    const record = (await plugins.invokePanelBridge("craftmine.world", "world.saveProgress", {
++      id: call.worldId,
++      revision: call.revision,
++      baseBuild: call.buildId,
++      snapshot: call.snapshot,
++    })) as { revision?: number; contentHash?: string } | undefined;
++    return {
++      receipt: {
++        format: "craftmine.progress-receipt/1",
++        worldId: call.worldId,
++        buildId: call.buildId,
++        revision: Number(record?.revision ?? call.revision + 1),
++        contentHash: record?.contentHash,
++        persistedAt: Math.floor(Date.now() / 1000),
++      },
++    };
++  },
++  onState: (state) => {
++    pluginViews.broadcast("godot-world:state", state);
++  },
++});
+ pluginPanels.addSenderResolver((senderId) => pluginViews.pluginIdForSender(senderId));
+ const browserHost = new BrowserHost({
+   pane: browserPane,
+@@ -8457,6 +8517,7 @@ function registerIpc() {
+   handle(IPC.invoke.pluginDisable, async (id: string) => {
+     if (!host) throw new Error("host unavailable");
+     if (id === "craftmine.world") await pluginViews.prepareCraftmineForQuit();
++    if (id === "craftmine.world") await godotWorld.close();
+     pluginViews.closePlugin(id);
+     if (id === BROWSER_PLUGIN_ID) browserHost.disposeGuest();
+     await plugins.unload(id);
+@@ -8469,6 +8530,7 @@ function registerIpc() {
+   handle(IPC.invoke.pluginUninstall, async (id: string) => {
+     if (!host) throw new Error("host unavailable");
+     if (id === "craftmine.world") await pluginViews.prepareCraftmineForQuit();
++    if (id === "craftmine.world") await godotWorld.close();
+     pluginViews.closePlugin(id);
+     await plugins.unload(id);
+     logger.app("plugin", "info", "plugin uninstalled", { pluginId: id });
+@@ -8903,6 +8965,7 @@ function registerIpc() {
+         htmlPath,
+         netDomains: loaded.manifest.net?.domains?.map((domain) => String(domain)),
+       });
++      if (pluginId === "craftmine.world" && viewId === "world") void godotWorld.sync();
+       if (isBrowserView && location) {
+         void browserHost.navigate(
+           { path: location, url: location },
+@@ -8925,6 +8988,7 @@ function registerIpc() {
+     IPC.invoke.pluginViewSetBounds,
+     async (payload: { x: number; y: number; width: number; height: number }) => {
+       pluginViews.setBounds(payload ?? { x: 0, y: 0, width: 0, height: 0 });
++      godotWorld.setBounds(payload ?? { x: 0, y: 0, width: 0, height: 0 });
+       return { ok: true };
+     },
+   );
+@@ -8949,6 +9013,9 @@ function registerIpc() {
+         browserHost.setChromeSession(sessionId);
+       }
+       pluginViews.setVisible(pluginId, viewId, payload?.visible === true);
++      godotWorld.setVisible(
++        pluginId === "craftmine.world" && viewId === "world" && payload?.visible === true,
++      );
+       return { ok: true };
+     },
+   );
+@@ -9426,7 +9493,11 @@ app.on("before-quit", (event) => {
+ 
+   if (!craftmineQuitPrepared) {
+     if (craftmineQuitPreparation) return;
+-    craftmineQuitPreparation = pluginViews.prepareCraftmineForQuit();
++    craftmineQuitPreparation = (async () => {
++      const godot = await godotWorld.prepareForQuit();
++      if (!godot.ok) throw new Error(godot.error ?? "Godot world was not saved");
++      await pluginViews.prepareCraftmineForQuit();
++    })();
+     void craftmineQuitPreparation.then(() => {
+       craftmineQuitPrepared = true;
+       app.quit();
+diff --git a/vendor/pi-desktop/apps/desktop/electron.vite.config.ts b/vendor/pi-desktop/apps/desktop/electron.vite.config.ts
+index 53c7ad9..dce19f8 100644
+--- a/vendor/pi-desktop/apps/desktop/electron.vite.config.ts
++++ b/vendor/pi-desktop/apps/desktop/electron.vite.config.ts
+@@ -67,6 +67,7 @@ export default defineConfig({
+           index: resolve(__dirname, "electron/preload/index.ts"),
+           "plugin-panel": resolve(__dirname, "electron/preload/plugin-panel.ts"),
+           "craftmine-headless": resolve(__dirname, "electron/preload/craftmine-headless.ts"),
++          "godot-world": resolve(__dirname, "electron/preload/godot-world.ts"),
+         },
+         output: {
+           format: "cjs",

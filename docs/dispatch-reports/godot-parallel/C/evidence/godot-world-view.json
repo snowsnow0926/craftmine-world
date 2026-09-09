@@ -1,0 +1,362 @@
+{
+  "kind": "real-electron-godot-web-world-view",
+  "out": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-world-view-rVcPrO",
+  "checks": [
+    {
+      "name": "Pinned engine exported real 3D/2D Web builds for the Electron run",
+      "passed": true,
+      "evidence": [
+        {
+          "base": "first-person",
+          "revision": "initial",
+          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "bytes": 39307665
+        },
+        {
+          "base": "first-person",
+          "revision": "changed",
+          "buildId": "32c7a972449815617ca62af1ee04eb50f2bf84932b9361f5652bd9c8549ba2ad",
+          "bytes": 39307681
+        },
+        {
+          "base": "top-down",
+          "revision": "initial",
+          "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
+          "bytes": 39305449
+        }
+      ]
+    },
+    {
+      "name": "Real Electron content view runs the fixed Godot build",
+      "passed": true,
+      "evidence": {
+        "state": {
+          "worldId": "weapon-world",
+          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "instanceId": "8112d164d0f1c132364c7d04",
+          "state": "ready"
+        },
+        "instance": {
+          "worldId": "weapon-world",
+          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "instanceId": "8112d164d0f1c132364c7d04",
+          "url": "http://127.0.0.1:56071/w/264d9e29cf1008528fd41d93a501a6f2278e61f25b8ad00e26843202244d8aa6/index.html"
+        }
+      }
+    },
+    {
+      "name": "Game view is a real WebContentsView on a private loopback origin",
+      "passed": true,
+      "evidence": "http://127.0.0.1:56071/w/264d9e29cf1008528fd41d93a501a6f2278e61f25b8ad00e26843202244d8aa6/index.html"
+    },
+    {
+      "name": "Window stays offscreen, unfocusable and never asks for pointer lock",
+      "passed": true,
+      "evidence": {
+        "pointer-lock": 0,
+        "window-focus": 0
+      }
+    },
+    {
+      "name": "Multi-threaded export is cross-origin isolated inside Electron",
+      "passed": true,
+      "evidence": true
+    },
+    {
+      "name": "Runtime snapshot reports real engine state and viewport",
+      "passed": true,
+      "evidence": {
+        "base": "first-person",
+        "cameraAttachment": true,
+        "crosshairSize": [
+          1280,
+          860
+        ],
+        "crosshairVisible": true,
+        "damage": 12,
+        "persistentStorage": true,
+        "state": {
+          "ammo": 6,
+          "equipped": "gun",
+          "targetHealth": 50,
+          "yaw": 0
+        },
+        "viewportSize": [
+          1280,
+          860
+        ],
+        "weaponGlobal": [
+          0.25,
+          1.37999999523163,
+          3.34999990463257
+        ],
+        "weaponLocal": [
+          0.25,
+          -0.219999998807907,
+          -0.649999976158142
+        ],
+        "weaponVisible": true
+      }
+    },
+    {
+      "name": "Actual composited pixels show the rendered white crosshair",
+      "passed": true,
+      "evidence": {
+        "whitePixels": 32
+      }
+    },
+    {
+      "name": "Game view is placed below the panel chrome strip the view page reserves",
+      "passed": true,
+      "evidence": {
+        "x": 0,
+        "y": 76,
+        "width": 1280,
+        "height": 784
+      }
+    },
+    {
+      "name": "A base gameplay operation runs through the unified runtime protocol",
+      "passed": true,
+      "evidence": {
+        "ammo": 5,
+        "equipped": "gun",
+        "targetHealth": 38,
+        "yaw": 0
+      }
+    },
+    {
+      "name": "Hiding and reshowing the panel keeps the same runtime instance",
+      "passed": true,
+      "evidence": {
+        "hidden": {
+          "worldId": "weapon-world",
+          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "instanceId": "8112d164d0f1c132364c7d04",
+          "url": "http://127.0.0.1:56071/w/264d9e29cf1008528fd41d93a501a6f2278e61f25b8ad00e26843202244d8aa6/index.html"
+        },
+        "reshown": {
+          "worldId": "weapon-world",
+          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "instanceId": "8112d164d0f1c132364c7d04",
+          "url": "http://127.0.0.1:56071/w/264d9e29cf1008528fd41d93a501a6f2278e61f25b8ad00e26843202244d8aa6/index.html"
+        }
+      }
+    },
+    {
+      "name": "Panel resizing repositions the same instance instead of reloading",
+      "passed": true,
+      "evidence": {
+        "x": 0,
+        "y": 76,
+        "width": 1280,
+        "height": 784
+      }
+    },
+    {
+      "name": "Save reports runner confirmation and the durable receipt separately",
+      "passed": true,
+      "evidence": {
+        "runnerReceipt": {
+          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "bytes": 270,
+          "format": "craftmine.godot-progress/2",
+          "instanceId": "8112d164d0f1c132364c7d04",
+          "path": "user://worlds/90413b4be402f8934bb69c4ca8d1431e30bb80b210147b8218459e1b7948ff6f/progress.json",
+          "savedAt": 1788959753.451,
+          "sha256": "a163f0bbe5c0d797f909e596d6d9d876d92efd5972fa49002ed77542c6321fbb",
+          "worldId": "weapon-world"
+        },
+        "receipt": {
+          "format": "craftmine.progress-receipt/1",
+          "worldId": "weapon-world",
+          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "revision": 4,
+          "contentHash": "harness-3",
+          "persistedAt": 1788959753
+        }
+      }
+    },
+    {
+      "name": "Saved world reports the persisted state, not just the runner copy",
+      "passed": true,
+      "evidence": {
+        "worldId": "weapon-world",
+        "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+        "instanceId": "8112d164d0f1c132364c7d04",
+        "state": "saved"
+      }
+    },
+    {
+      "name": "A message claiming another world never reaches the running instance",
+      "passed": true,
+      "evidence": {
+        "ammo": 5,
+        "equipped": "gun",
+        "targetHealth": 38,
+        "yaw": 0
+      }
+    },
+    {
+      "name": "A candidate build that cannot load leaves the current world running",
+      "passed": true,
+      "evidence": {
+        "error": "Godot runtime did not report ready (previous world kept running)",
+        "state": {
+          "worldId": "weapon-world",
+          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "instanceId": "8112d164d0f1c132364c7d04",
+          "state": "ready",
+          "error": "Godot runtime did not report ready"
+        },
+        "instance": {
+          "worldId": "weapon-world",
+          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "instanceId": "8112d164d0f1c132364c7d04",
+          "url": "http://127.0.0.1:56071/w/264d9e29cf1008528fd41d93a501a6f2278e61f25b8ad00e26843202244d8aa6/index.html"
+        }
+      }
+    },
+    {
+      "name": "Switching world creates a new instance on a new origin",
+      "passed": true,
+      "evidence": {
+        "worldId": "town-world",
+        "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
+        "instanceId": "5ab6eea7a16b0566a7e4e92f",
+        "url": "http://127.0.0.1:56091/w/e4a7e22d06c8dc4815bbef4deeab83d971e07f85ee069104cf3db2aefe114730/index.html"
+      }
+    },
+    {
+      "name": "Second world starts with its own independent state",
+      "passed": true,
+      "evidence": {
+        "apples": 0,
+        "coins": 20,
+        "position": [
+          80,
+          150
+        ]
+      }
+    },
+    {
+      "name": "Late messages from the previous world are dropped by the new instance",
+      "passed": true,
+      "evidence": {
+        "apples": 0,
+        "coins": 20,
+        "position": [
+          80,
+          150
+        ]
+      }
+    },
+    {
+      "name": "A failed progress transaction keeps the world running and reports the failure",
+      "passed": true,
+      "evidence": {
+        "result": {
+          "status": "failed",
+          "error": "progress store is locked",
+          "runnerReceipt": {
+            "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
+            "bytes": 260,
+            "format": "craftmine.godot-progress/2",
+            "instanceId": "5ab6eea7a16b0566a7e4e92f",
+            "path": "user://worlds/f99eba75278ea5e5ba6dd12fa5d51342b9495b624dcdb84ededd6afa711253e2/progress.json",
+            "savedAt": 1788959762.734,
+            "sha256": "3006a3d248928f9899e09626a786b6bbd0f5b867c1893ae6373c20a21f852a01",
+            "worldId": "town-world"
+          }
+        },
+        "state": {
+          "worldId": "town-world",
+          "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
+          "instanceId": "5ab6eea7a16b0566a7e4e92f",
+          "state": "failed",
+          "error": "progress store is locked"
+        }
+      }
+    },
+    {
+      "name": "The acceptance client exits cleanly",
+      "passed": true,
+      "evidence": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "name": "Full Electron restart loads the persisted progress into a new instance",
+      "passed": true,
+      "evidence": {
+        "state": "ready",
+        "instanceChanged": true,
+        "actual": "{\"apples\":2,\"coins\":15,\"position\":[120,80]}",
+        "expected": "{\"coins\":15,\"apples\":2,\"position\":[120,80]}",
+        "instance": {
+          "worldId": "town-world",
+          "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
+          "instanceId": "3bb4af6fa190f9498d14bdcf",
+          "url": "http://127.0.0.1:56102/w/7cf582c14d5087b53004b139c9c0a4a4f00f14c4ba0c17845b1924c6c335eb25/index.html"
+        }
+      }
+    },
+    {
+      "name": "A second world created before the restart still starts with its own save",
+      "passed": true,
+      "evidence": {
+        "ammo": 6,
+        "equipped": "gun",
+        "targetHealth": 50,
+        "yaw": 0
+      }
+    },
+    {
+      "name": "No pointer lock or focus request was made during the whole run",
+      "passed": true,
+      "evidence": {
+        "pointer-lock": 0,
+        "window-focus": 0
+      }
+    },
+    {
+      "name": "The restarted client also exits cleanly",
+      "passed": true,
+      "evidence": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "notVerified": [
+    "product index.ts wiring (task I integration step)",
+    "real model authorship of the Godot project",
+    "GPU/player feel (offscreen software rendering)",
+    "packaged Windows distribution",
+    "plugin progress transaction against real Rust (host progress callback is a harness fixture)"
+  ],
+  "builds": [
+    {
+      "base": "first-person",
+      "revision": "initial",
+      "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+      "bytes": 39307665
+    },
+    {
+      "base": "first-person",
+      "revision": "changed",
+      "buildId": "32c7a972449815617ca62af1ee04eb50f2bf84932b9361f5652bd9c8549ba2ad",
+      "bytes": 39307681
+    },
+    {
+      "base": "top-down",
+      "revision": "initial",
+      "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
+      "bytes": 39305449
+    }
+  ],
+  "buildJsonBuildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+  "passed": 24,
+  "total": 24
+}

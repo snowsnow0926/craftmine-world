@@ -1,0 +1,740 @@
+{
+  "kind": "real-godot-web-in-react-fixture",
+  "checks": [
+    {
+      "name": "Pinned engine exports actual 3D and 2D Web builds",
+      "passed": true
+    },
+    {
+      "name": "Browser isolation matches the chosen Web template",
+      "passed": true,
+      "evidence": {
+        "threads": true
+      }
+    },
+    {
+      "name": "Godot runs with a real nonzero Web viewport",
+      "passed": true,
+      "evidence": {
+        "base": "first-person",
+        "cameraAttachment": true,
+        "crosshairSize": [
+          765,
+          914
+        ],
+        "crosshairVisible": true,
+        "damage": 12,
+        "persistentStorage": true,
+        "state": {
+          "ammo": 6,
+          "equipped": "gun",
+          "targetHealth": 50,
+          "yaw": 0
+        },
+        "viewportSize": [
+          765,
+          914
+        ],
+        "weaponGlobal": [
+          0.25,
+          1.37999999523163,
+          3.34999990463257
+        ],
+        "weaponLocal": [
+          0.25,
+          -0.219999998807907,
+          -0.649999976158142
+        ],
+        "weaponVisible": true
+      }
+    },
+    {
+      "name": "Game origin cannot read desktop DOM or its native bridge",
+      "passed": true
+    },
+    {
+      "name": "Real Godot canvas is centered beside the actual right composer",
+      "passed": true
+    },
+    {
+      "name": "Actual rendered white crosshair covers the canvas center",
+      "passed": true,
+      "evidence": {
+        "whitePixels": 32
+      }
+    },
+    {
+      "name": "Held weapon follows the real rotated camera",
+      "passed": true,
+      "evidence": [
+        -0.227530911564827,
+        1.37999999523163,
+        3.34179830551147
+      ]
+    },
+    {
+      "name": "Equipping a sword hides the rendered crosshair and gun",
+      "passed": true,
+      "evidence": {
+        "whitePixels": 0
+      }
+    },
+    {
+      "name": "Sword cannot consume gun ammo or deal ray damage",
+      "passed": true
+    },
+    {
+      "name": "Real Web physics ray deals damage and consumes one round",
+      "passed": true,
+      "evidence": {
+        "ammo": 5,
+        "equipped": "gun",
+        "targetHealth": 38,
+        "yaw": 0
+      }
+    },
+    {
+      "name": "Play expansion retains the actual Godot runtime and progress",
+      "passed": true
+    },
+    {
+      "name": "Crosshair remains centered in expanded play view",
+      "passed": true
+    },
+    {
+      "name": "Returning to creation restores the visible world bounds beside navigation",
+      "passed": true
+    },
+    {
+      "name": "Returning to creation retains the same composer and runtime",
+      "passed": true
+    },
+    {
+      "name": "Composited game pixels do not cover the left navigation after mode change",
+      "passed": true,
+      "evidence": {
+        "sampleCount": 30,
+        "maximumChannel": 0
+      }
+    },
+    {
+      "name": "Invalid 3D restore leaves all state unchanged",
+      "passed": true
+    },
+    {
+      "name": "Godot completes a graceful shutdown after writing progress",
+      "passed": true
+    },
+    {
+      "name": "Full independent browser restart restores actual IndexedDB progress",
+      "passed": true,
+      "evidence": {
+        "ammo": 5,
+        "equipped": "gun",
+        "targetHealth": 38,
+        "yaw": 0
+      }
+    },
+    {
+      "name": "Rebuilt source changes damage while preserving prior progress",
+      "passed": true
+    },
+    {
+      "name": "Changed build executes the new damage against restored state",
+      "passed": true,
+      "evidence": {
+        "ammo": 4,
+        "equipped": "gun",
+        "targetHealth": 31,
+        "yaw": 0
+      }
+    },
+    {
+      "name": "A same-origin second world using the same base starts with independent state",
+      "passed": true
+    },
+    {
+      "name": "Second world cannot read the first world save",
+      "passed": true
+    },
+    {
+      "name": "A disposed world handle rejects later operations",
+      "passed": true
+    },
+    {
+      "name": "Saving the second world leaves the first world progress intact",
+      "passed": true
+    },
+    {
+      "name": "Top-down purchase is rejected outside physical shop range",
+      "passed": true
+    },
+    {
+      "name": "Actual 2D movement reaches the shop and transfers coins/items",
+      "passed": true,
+      "evidence": {
+        "base": "top-down",
+        "persistentStorage": true,
+        "physicalShopOverlap": true,
+        "price": 5,
+        "state": {
+          "apples": 1,
+          "coins": 15,
+          "position": [
+            150,
+            150
+          ]
+        },
+        "viewportSize": [
+          765,
+          914
+        ]
+      }
+    },
+    {
+      "name": "Invalid 2D restore leaves all state unchanged and the runtime usable",
+      "passed": true
+    },
+    {
+      "name": "Concurrent purchase, save and quit drain accepted operations in order",
+      "passed": true
+    },
+    {
+      "name": "Top-down runtime restart restores position and inventory",
+      "passed": true,
+      "evidence": {
+        "base": "top-down",
+        "persistentStorage": true,
+        "physicalShopOverlap": true,
+        "price": 5,
+        "state": {
+          "apples": 2,
+          "coins": 10,
+          "position": [
+            150,
+            150
+          ]
+        },
+        "viewportSize": [
+          765,
+          914
+        ]
+      }
+    },
+    {
+      "name": "Unknown capabilities return a concrete error",
+      "passed": true
+    },
+    {
+      "name": "Host refuses a game sharing its privileged origin",
+      "passed": true
+    },
+    {
+      "name": "All runtime instances requested no focus or pointer lock",
+      "passed": true,
+      "evidence": []
+    },
+    {
+      "name": "Godot and React report no runtime errors",
+      "passed": true,
+      "evidence": []
+    }
+  ],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 82,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-initial-import",
+      "elapsedMs": 2114,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-initial-export",
+      "elapsedMs": 2015,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-initial-import",
+      "elapsedMs": 1840,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-initial-export",
+      "elapsedMs": 2017,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-changed-import",
+      "elapsedMs": 1846,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-changed-export",
+      "elapsedMs": 2105,
+      "exitCode": 0
+    }
+  ],
+  "loads": [
+    {
+      "base": "first-person",
+      "revision": "initial",
+      "worldId": "weapon-world",
+      "buildId": "76af172c3352a05075982de7ef3c8696148b82c8cb008fadf8d23a5e5b851181",
+      "elapsedMs": 704
+    },
+    {
+      "base": "first-person",
+      "revision": "initial",
+      "worldId": "weapon-world",
+      "buildId": "76af172c3352a05075982de7ef3c8696148b82c8cb008fadf8d23a5e5b851181",
+      "elapsedMs": 627
+    },
+    {
+      "base": "first-person",
+      "revision": "changed",
+      "worldId": "weapon-world",
+      "buildId": "00882e1af1dd9afd60b2a816716b5e1fc539b4b6070b54675371cb3ee2e6df80",
+      "elapsedMs": 619
+    },
+    {
+      "base": "first-person",
+      "revision": "initial",
+      "worldId": "independent-weapon-world",
+      "buildId": "76af172c3352a05075982de7ef3c8696148b82c8cb008fadf8d23a5e5b851181",
+      "elapsedMs": 535
+    },
+    {
+      "base": "first-person",
+      "revision": "initial",
+      "worldId": "weapon-world",
+      "buildId": "76af172c3352a05075982de7ef3c8696148b82c8cb008fadf8d23a5e5b851181",
+      "elapsedMs": 509
+    },
+    {
+      "base": "top-down",
+      "revision": "initial",
+      "worldId": "town-world",
+      "buildId": "f8fde1a3db60a186c90f3ca864b970fcf7134c9e4e2703a1808a7d4580592a9f",
+      "elapsedMs": 503
+    },
+    {
+      "base": "top-down",
+      "revision": "initial",
+      "worldId": "town-world",
+      "buildId": "f8fde1a3db60a186c90f3ca864b970fcf7134c9e4e2703a1808a7d4580592a9f",
+      "elapsedMs": 494
+    }
+  ],
+  "builds": [
+    {
+      "base": "first-person",
+      "revision": "initial",
+      "buildId": "76af172c3352a05075982de7ef3c8696148b82c8cb008fadf8d23a5e5b851181",
+      "threads": true,
+      "output": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-web-VnWwyg\\exports\\first-person-initial",
+      "files": [
+        {
+          "path": "bridge.js",
+          "bytes": 5903,
+          "sha256": "2e0beb1afa6cdf3f5229201e371f2d4b883779d46199b82f351c2b3c62b1d5c4"
+        },
+        {
+          "path": "index.apple-touch-icon.png",
+          "bytes": 11944,
+          "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+        },
+        {
+          "path": "index.audio.position.worklet.js",
+          "bytes": 2973,
+          "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+        },
+        {
+          "path": "index.audio.worklet.js",
+          "bytes": 7298,
+          "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+        },
+        {
+          "path": "index.html",
+          "bytes": 978,
+          "sha256": "63c3fa77d47f8c31f4e5b2a80a9f51264019699776f6e85e4f4f980ed75195f0"
+        },
+        {
+          "path": "index.icon.png",
+          "bytes": 5700,
+          "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+        },
+        {
+          "path": "index.js",
+          "bytes": 314653,
+          "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+        },
+        {
+          "path": "index.pck",
+          "bytes": 15444,
+          "sha256": "530775e3724c5b4b45a4e90cf6b57bbee2b4ba0c94c17ca6f0e2ac75d5a058dd"
+        },
+        {
+          "path": "index.png",
+          "bytes": 21443,
+          "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+        },
+        {
+          "path": "index.wasm",
+          "bytes": 38820072,
+          "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+        },
+        {
+          "path": "licenses/GODOT_COPYRIGHT.txt",
+          "bytes": 100108,
+          "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d"
+        },
+        {
+          "path": "licenses/GODOT_LICENSE.txt",
+          "bytes": 1149,
+          "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80"
+        }
+      ],
+      "bytes": 39307665,
+      "godotVersion": "4.7.2.stable.official.ed1daf0bf"
+    },
+    {
+      "base": "top-down",
+      "revision": "initial",
+      "buildId": "f8fde1a3db60a186c90f3ca864b970fcf7134c9e4e2703a1808a7d4580592a9f",
+      "threads": true,
+      "output": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-web-VnWwyg\\exports\\top-down-initial",
+      "files": [
+        {
+          "path": "bridge.js",
+          "bytes": 5903,
+          "sha256": "2e0beb1afa6cdf3f5229201e371f2d4b883779d46199b82f351c2b3c62b1d5c4"
+        },
+        {
+          "path": "index.apple-touch-icon.png",
+          "bytes": 11944,
+          "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+        },
+        {
+          "path": "index.audio.position.worklet.js",
+          "bytes": 2973,
+          "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+        },
+        {
+          "path": "index.audio.worklet.js",
+          "bytes": 7298,
+          "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+        },
+        {
+          "path": "index.html",
+          "bytes": 974,
+          "sha256": "4c9c0ea954f7ec5bf1d0f76ca1fc074dad1b24ce207e9802fff20e180d1caa02"
+        },
+        {
+          "path": "index.icon.png",
+          "bytes": 5700,
+          "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+        },
+        {
+          "path": "index.js",
+          "bytes": 314653,
+          "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+        },
+        {
+          "path": "index.pck",
+          "bytes": 13232,
+          "sha256": "7e16a4a482ba9255cb233d94a8a37b40da14d82c33114bc978d9e698d149ce0a"
+        },
+        {
+          "path": "index.png",
+          "bytes": 21443,
+          "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+        },
+        {
+          "path": "index.wasm",
+          "bytes": 38820072,
+          "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+        },
+        {
+          "path": "licenses/GODOT_COPYRIGHT.txt",
+          "bytes": 100108,
+          "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d"
+        },
+        {
+          "path": "licenses/GODOT_LICENSE.txt",
+          "bytes": 1149,
+          "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80"
+        }
+      ],
+      "bytes": 39305449,
+      "godotVersion": "4.7.2.stable.official.ed1daf0bf"
+    },
+    {
+      "base": "first-person",
+      "revision": "changed",
+      "buildId": "00882e1af1dd9afd60b2a816716b5e1fc539b4b6070b54675371cb3ee2e6df80",
+      "threads": true,
+      "output": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-web-VnWwyg\\exports\\first-person-changed",
+      "files": [
+        {
+          "path": "bridge.js",
+          "bytes": 5903,
+          "sha256": "2e0beb1afa6cdf3f5229201e371f2d4b883779d46199b82f351c2b3c62b1d5c4"
+        },
+        {
+          "path": "index.apple-touch-icon.png",
+          "bytes": 11944,
+          "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+        },
+        {
+          "path": "index.audio.position.worklet.js",
+          "bytes": 2973,
+          "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+        },
+        {
+          "path": "index.audio.worklet.js",
+          "bytes": 7298,
+          "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+        },
+        {
+          "path": "index.html",
+          "bytes": 978,
+          "sha256": "d25ac7c14143e77d79b9140d440e2e6c325dfb2d0edc9dbbc8a6d2656b844cfa"
+        },
+        {
+          "path": "index.icon.png",
+          "bytes": 5700,
+          "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+        },
+        {
+          "path": "index.js",
+          "bytes": 314653,
+          "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+        },
+        {
+          "path": "index.pck",
+          "bytes": 15460,
+          "sha256": "28558f2bc6ba9df8af3d1bab8cf9cc739c5a285602767593ab33b411485b63cb"
+        },
+        {
+          "path": "index.png",
+          "bytes": 21443,
+          "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+        },
+        {
+          "path": "index.wasm",
+          "bytes": 38820072,
+          "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+        },
+        {
+          "path": "licenses/GODOT_COPYRIGHT.txt",
+          "bytes": 100108,
+          "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d"
+        },
+        {
+          "path": "licenses/GODOT_LICENSE.txt",
+          "bytes": 1149,
+          "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80"
+        }
+      ],
+      "bytes": 39307681,
+      "godotVersion": "4.7.2.stable.official.ed1daf0bf"
+    }
+  ],
+  "console": [
+    {
+      "type": "log",
+      "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "type": "log",
+      "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "type": "requestfailed",
+      "text": "http://127.0.0.1:54918/first-person-changed/index.wasm net::ERR_ABORTED"
+    },
+    {
+      "type": "log",
+      "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "type": "log",
+      "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "type": "log",
+      "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "type": "log",
+      "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "type": "log",
+      "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    }
+  ],
+  "errors": [],
+  "notVerified": [
+    "product PI/Rust project transactions",
+    "real model authorship",
+    "native Godot embedding",
+    "untrusted project import isolation",
+    "GPU/player feel",
+    "new Windows distribution"
+  ],
+  "threads": true,
+  "inputRequests": [],
+  "returnGeometry": {
+    "frame": {
+      "x": 275,
+      "y": 46,
+      "width": 765,
+      "height": 914,
+      "top": 46,
+      "right": 1040,
+      "bottom": 960,
+      "left": 275
+    },
+    "surface": {
+      "x": 275,
+      "y": 46,
+      "width": 765,
+      "height": 914,
+      "top": 46,
+      "right": 1040,
+      "bottom": 960,
+      "left": 275
+    },
+    "sidebar": {
+      "x": 0,
+      "y": 0,
+      "width": 275,
+      "height": 960,
+      "top": 0,
+      "right": 275,
+      "bottom": 960,
+      "left": 0
+    },
+    "scroll": [
+      0,
+      0
+    ],
+    "frameStyle": "position: fixed; border: 0px; z-index: 100; display: block; left: 275px; top: 46px; width: 765px; height: 914px;"
+  },
+  "returnViewport": {
+    "base": "first-person",
+    "cameraAttachment": true,
+    "crosshairSize": [
+      765,
+      914
+    ],
+    "crosshairVisible": true,
+    "damage": 12,
+    "persistentStorage": true,
+    "state": {
+      "ammo": 5,
+      "equipped": "gun",
+      "targetHealth": 38,
+      "yaw": 0
+    },
+    "viewportSize": [
+      765,
+      914
+    ],
+    "weaponGlobal": [
+      0.25,
+      1.37999999523163,
+      3.34999990463257
+    ],
+    "weaponLocal": [
+      0.25,
+      -0.219999998807907,
+      -0.649999976158142
+    ],
+    "weaponVisible": true
+  },
+  "returnCanvas": {
+    "canvas": {
+      "x": 0,
+      "y": 0,
+      "width": 765,
+      "height": 914,
+      "top": 0,
+      "right": 765,
+      "bottom": 914,
+      "left": 0
+    },
+    "size": [
+      765,
+      914
+    ],
+    "scroll": [
+      0,
+      0
+    ]
+  },
+  "lastFrameUrls": [
+    "http://127.0.0.1:54917/",
+    "http://127.0.0.1:54919/top-down-initial/index.html"
+  ]
+}
