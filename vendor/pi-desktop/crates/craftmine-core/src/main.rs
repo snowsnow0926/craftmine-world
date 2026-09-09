@@ -10,7 +10,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
     let method = request["method"].as_str().context("METHOD_REQUIRED")?;
     if method == "hello" {
         return Ok(
-            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"verificationJobs":true,"advisoryReviews":true,"playerApplications":true,"publishesWorlds":true,"agentPublishesWorlds":false,"godotProjects":true,"godotExecution":false}),
+            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"verificationJobs":true,"advisoryReviews":true,"playerApplications":true,"publishesWorlds":true,"agentPublishesWorlds":false,"godotProjects":true,"godotExecution":false,"godotBuildJobs":true,"godotExecutorGate":true}),
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
@@ -29,6 +29,23 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "godotProject.read" => return journal.godot_project_read(params),
         "godotProject.patch" => return journal.godot_project_patch(params),
         "godotProject.receipt" => return journal.godot_project_receipt(params),
+        "godotAsset.put" => return journal.godot_asset_put(params),
+        "godotAsset.list" => return journal.godot_asset_list(params),
+        "godotBuild.start" => return journal.godot_build_start(params),
+        "godotBuild.read" => return journal.godot_build_read(params),
+        "godotBuild.cancel" => return journal.godot_build_cancel(params),
+        "godotBuild.receipt" => return journal.godot_build_receipt(params),
+        "godotCandidate.read" => return journal.godot_candidate_read(params),
+        "godotCandidate.list" => return journal.godot_candidate_list(params),
+        "godotApplication.prepare" => return journal.godot_application_prepare(params),
+        "godotApplication.commit" => return journal.godot_application_commit(params),
+        "godotApplication.read" => return journal.godot_application_read(params),
+        "godotApplication.abort" => return journal.godot_application_abort(params),
+        "godotExecutor.register" => return journal.godot_executor_register(params),
+        "godotJob.claim" => return journal.godot_job_claim(params),
+        "godotJob.progress" => return journal.godot_job_progress(params),
+        "godotJob.heartbeat" => return journal.godot_job_heartbeat(params),
+        "godotJob.finish" => return journal.godot_job_finish(params),
         "library.search" => return journal.library_search(params),
         "library.read" => return journal.library_read(params),
         "library.capture" => return journal.library_capture(params),
@@ -280,6 +297,8 @@ fn main() -> Result<()> {
     journal.verification_recover()?;
     journal.review_recover()?;
     journal.application_recover()?;
+    journal.godot_application_recover()?;
+    journal.godot_recover()?;
     journal.task_recover()?;
     let mut input = io::stdin().lock();
     let mut output = io::stdout().lock();
