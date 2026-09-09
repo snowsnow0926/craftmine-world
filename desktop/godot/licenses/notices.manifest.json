@@ -1,0 +1,175 @@
+{
+  "format": "craftmine.notices/1",
+  "product": "craftmine world / 最中幻想",
+  "reviewedAt": "2026-09-09",
+  "scope": "Offline notice inventory for the pinned Godot toolchain, the PI-Desktop (LGPL) baseline and the fonts shipped by the Windows client. Facts only; this file is not legal advice and does not relicense anything.",
+  "requiredEntryIds": [
+    "godot-engine",
+    "godot-third-party",
+    "pi-desktop-lgpl",
+    "font-geist",
+    "font-inter",
+    "font-noto-sans-sc",
+    "font-lxgw-wenkai"
+  ],
+  "entries": [
+    {
+      "id": "godot-engine",
+      "component": "Godot Engine",
+      "version": "4.7.2-stable",
+      "license": "MIT",
+      "licenseSource": "https://godotengine.org/license/",
+      "copyrightHolders": [
+        "Copyright (c) 2014-present Godot Engine contributors",
+        "Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur"
+      ],
+      "noticeFile": "GODOT_LICENSE.txt",
+      "noticeBytes": 1149,
+      "noticeSha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+      "lockCrossCheck": "GODOT_LICENSE.txt",
+      "appliesTo": ["engine-binary", "editor", "export-templates", "web-export"],
+      "noticeRequired": true,
+      "redistribution": "permitted-with-notice",
+      "expectAll": [
+        "Permission is hereby granted, free of charge",
+        "THE SOFTWARE IS PROVIDED \"AS IS\""
+      ],
+      "expectNone": []
+    },
+    {
+      "id": "godot-third-party",
+      "component": "Godot third-party components (single pinned aggregate file)",
+      "version": "4.7.2-stable",
+      "license": "multiple-per-file",
+      "licenseSource": "https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/COPYRIGHT.txt",
+      "copyrightHolders": ["See GODOT_COPYRIGHT.txt; each bundled component keeps its own notice"],
+      "noticeFile": "GODOT_COPYRIGHT.txt",
+      "noticeBytes": 100108,
+      "noticeSha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d",
+      "lockCrossCheck": "GODOT_COPYRIGHT.txt",
+      "appliesTo": ["engine-binary", "editor", "export-templates", "web-export"],
+      "noticeRequired": true,
+      "redistribution": "permitted-with-notice",
+      "expectAll": ["Copyright"],
+      "expectNone": []
+    },
+    {
+      "id": "pi-desktop-lgpl",
+      "component": "PI-Desktop baseline (upstream LGPL obligations, independent of Godot)",
+      "version": "0.14.3",
+      "license": "LGPL-3.0-or-later",
+      "licenseSource": "https://github.com/vastsa/PI-Desktop",
+      "copyrightHolders": ["PI-Desktop upstream authors; see vendor/pi-desktop and desktop/UPSTREAM.json"],
+      "noticeFile": "../../../vendor/pi-desktop/LICENSE",
+      "noticeBytes": 7652,
+      "noticeSha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "lockCrossCheck": null,
+      "appliesTo": ["client-binary", "client-source-archive"],
+      "noticeRequired": true,
+      "redistribution": "permitted-with-notice-and-corresponding-source",
+      "expectAll": [
+        "GNU LESSER GENERAL PUBLIC LICENSE",
+        "Version 3, 29 June 2007",
+        "GNU\\s+GPL"
+      ],
+      "expectNone": [
+        "Permission is hereby granted, free of charge, to any person obtaining a copy\\s+of this software"
+      ],
+      "packagedNoticePaths": [
+        "resources/licenses/PI-Desktop-LICENSE.txt",
+        "PI-Desktop-LICENSE.txt"
+      ],
+      "provenanceFile": "../../UPSTREAM.json",
+      "sourceOffer": "resources/source/CraftmineWorld-source.zip"
+    },
+    {
+      "id": "font-geist",
+      "component": "Geist font",
+      "version": "bundled by PI-Desktop 0.14.3",
+      "license": "OFL-1.1",
+      "licenseSource": "https://github.com/vercel/geist-font",
+      "copyrightHolders": ["Vercel / Geist contributors"],
+      "noticeFile": "../../../vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-Geist.txt",
+      "noticeBytes": 4368,
+      "noticeSha256": "930853ee1daa68554d9e35c8a9175affb74f699fad9a5da6ee5ebe76379d9137",
+      "lockCrossCheck": null,
+      "appliesTo": ["client-ui"],
+      "noticeRequired": true,
+      "redistribution": "permitted-with-notice",
+      "expectAll": ["SIL OPEN FONT LICENSE"],
+      "expectNone": [],
+      "packagedNoticePaths": ["resources/licenses/fonts/OFL-Geist.txt"]
+    },
+    {
+      "id": "font-inter",
+      "component": "Inter font",
+      "version": "bundled by PI-Desktop 0.14.3",
+      "license": "OFL-1.1",
+      "licenseSource": "https://github.com/rsms/inter",
+      "copyrightHolders": ["The Inter Project Authors"],
+      "noticeFile": "../../../vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-Inter.txt",
+      "noticeBytes": 4380,
+      "noticeSha256": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a",
+      "lockCrossCheck": null,
+      "appliesTo": ["client-ui"],
+      "noticeRequired": true,
+      "redistribution": "permitted-with-notice",
+      "expectAll": ["SIL OPEN FONT LICENSE"],
+      "expectNone": [],
+      "packagedNoticePaths": ["resources/licenses/fonts/OFL-Inter.txt"]
+    },
+    {
+      "id": "font-noto-sans-sc",
+      "component": "Noto Sans SC font",
+      "version": "bundled by PI-Desktop 0.14.3",
+      "license": "OFL-1.1",
+      "licenseSource": "https://fonts.google.com/noto",
+      "copyrightHolders": ["The Noto Project Authors"],
+      "noticeFile": "../../../vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
+      "noticeBytes": 4388,
+      "noticeSha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+      "lockCrossCheck": null,
+      "appliesTo": ["client-ui"],
+      "noticeRequired": true,
+      "redistribution": "permitted-with-notice",
+      "expectAll": ["SIL OPEN FONT LICENSE"],
+      "expectNone": [],
+      "packagedNoticePaths": ["resources/licenses/fonts/OFL-NotoSansSC.txt"]
+    },
+    {
+      "id": "font-lxgw-wenkai",
+      "component": "LXGW WenKai font",
+      "version": "bundled by PI-Desktop 0.14.3",
+      "license": "OFL-1.1",
+      "licenseSource": "https://github.com/lxgw/LxgwWenKai",
+      "copyrightHolders": ["LXGW and contributors"],
+      "noticeFile": "../../../vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-LXGWWenKai.txt",
+      "noticeBytes": 4448,
+      "noticeSha256": "c38b1994a5e48ac30ac7d1da7d0409fd8fd8127dfe28a13d6e787d5b1ef34a5e",
+      "lockCrossCheck": null,
+      "appliesTo": ["client-ui"],
+      "noticeRequired": true,
+      "redistribution": "permitted-with-notice",
+      "expectAll": ["SIL OPEN FONT LICENSE"],
+      "expectNone": [],
+      "packagedNoticePaths": ["resources/licenses/fonts/OFL-LXGWWenKai.txt"]
+    }
+  ],
+  "notIncluded": [
+    {
+      "scope": "npm/Electron build and runtime dependencies",
+      "reason": "Generated at package time into resources/licenses/third-party/npm-inventory.json with copied license texts; verified by the package preflight, not pinned here because it is derived from the pinned lockfile.",
+      "authority": "desktop/windows-package-tools.mjs"
+    },
+    {
+      "scope": "User-authored or user-imported project assets",
+      "reason": "Owned by the player; the client does not relicense them and cannot assert a license on their behalf.",
+      "authority": "desktop/windows-NOTICES.md"
+    },
+    {
+      "scope": "Godot asset-library or marketplace content",
+      "reason": "No such content is currently bundled. Each future asset must be declared per base in desktop/delivery/base-assets/*.json before it can ship or be exported.",
+      "authority": "docs/dispatch-reports/godot-parallel/H/SPEC_H_ASSET_MANIFEST.md"
+    }
+  ]
+}
