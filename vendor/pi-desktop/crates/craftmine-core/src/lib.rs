@@ -12,6 +12,8 @@ use sha2::{Digest, Sha256};
 mod applications;
 mod asset_catalog;
 mod backups;
+// The portable archive carries Git objects through the managed repository
+// store; R1 owns the module registration and the remaining wiring.
 mod content;
 mod content_history;
 mod durable;

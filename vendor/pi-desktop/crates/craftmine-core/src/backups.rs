@@ -13,6 +13,7 @@ use rusqlite::{
 use serde_json::{json, Map, Value};
 
 mod complete;
+mod portable;
 
 const LIMIT: usize = 32 * 1024 * 1024;
 const SCHEMA_VERSION: u64 = 3;
@@ -63,7 +64,14 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     db.execute_batch(
         "CREATE TABLE IF NOT EXISTS craftmine_backup_jobs (
  id TEXT PRIMARY KEY,kind TEXT NOT NULL,status TEXT NOT NULL,request_hash TEXT NOT NULL,
- archive_hash TEXT,receipt TEXT NOT NULL,archive TEXT,created_at INTEGER NOT NULL);",
+ archive_hash TEXT,receipt TEXT NOT NULL,archive TEXT,created_at INTEGER NOT NULL);
+ CREATE TABLE IF NOT EXISTS craftmine_backup_pins (
+ archive_id TEXT NOT NULL,kind TEXT NOT NULL,ref TEXT NOT NULL,world_id TEXT,
+ status TEXT NOT NULL,archive_hash TEXT,archive_path TEXT,
+ created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL,
+ PRIMARY KEY(archive_id,kind,ref));
+ CREATE INDEX IF NOT EXISTS craftmine_backup_pins_lookup
+ ON craftmine_backup_pins(status,kind);",
     )?;
     Ok(())
 }
