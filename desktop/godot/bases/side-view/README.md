@@ -11,7 +11,7 @@ Engine: `4.7.2-stable`, GDScript, `gl_compatibility`. Entry scene:
 
 | World | Kind | Content |
 | --- | --- | --- |
-| `worlds/blank` | blank start | one flat room, floor/walls/ceiling, a decorative step, one checkpoint, one training dummy |
+| `worlds/blank` | blank start | one flat room, floor/walls/ceiling, a decorative step, no checkpoint, no target, no reward and no ability |
 | `worlds/ruins` | example | three connected rooms with return paths, a spike pit, a one-time cache, a dummy, a breakable crate, a double-jump pickup and a 190 px high ledge |
 
 The ruins example contains the ability gate: the high ledge on the right is
@@ -48,7 +48,7 @@ never downloads or builds an engine.
 
 ```powershell
 node tools/gate-metrics.mjs     # arithmetic: single jump blocked, double jump passes
-node tools/verify.mjs           # 69 checks across 7 scenarios in isolated headless runs
+node tools/verify.mjs           # 8 scenarios in isolated headless runs (see the table)
 ```
 
 `tools/verify.mjs` starts one real Godot process per scenario with
@@ -65,7 +65,8 @@ reward. Scenarios:
 | `D_enter_vault` | fresh process: the ability survived restart, fires the double jump, clears the ledge and opens the vault |
 | `E_revisit` | return trip keeps ability/checkpoints and never grants a reward twice |
 | `F_hazard_respawn` | hazard death respawns at the real checkpoint and keeps progress |
-| `G_blank_basic` | the blank start has movement, jump, attack and no ability |
+| `G_blank_basic` | the blank start has movement, jump and attack, and inherits no reward, checkpoint, coin or ability |
+| `I_gate_guard` | asking the room manager for the gated vault without the ability is refused by the authored gate, not only by the physics shape |
 
 Anti-cheat guards are part of the run: per-tick displacement limits (no
 teleport), a source scan that only `place_at` writes the player position, a scan

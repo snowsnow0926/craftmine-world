@@ -481,8 +481,8 @@
       "files": [
         {
           "path": "scripts/world/room_door.gd",
-          "bytes": 2969,
-          "sha256": "346164484fc167798d944bba38bab01481dddc01b8c453453832f552d118bb13"
+          "bytes": 3415,
+          "sha256": "7c66dfe972b802c4504cada3cbc0f3aa2427bc0ffd34e64c2fe58059e598be1c"
         },
         {
           "path": "worlds/ruins/world.json",

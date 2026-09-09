@@ -190,7 +190,7 @@
         "license": "docs/assets-and-provenance.md",
         "generator": null
       },
-      "contentHash": "62ab7054802ceb4718ee4140320569f5f4cd03a7a8be34c2b6573439b3638d4b",
+      "contentHash": "dd5faab942bfa8c6ea4daa0f5368d153cc977069a2bd30059b015a9aff9fe3d3",
       "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
       "entityIdScheme": "stable string id declared in world data, never a node path",
       "capabilities": [
@@ -215,7 +215,7 @@
           "kind": "blank-start",
           "label": "Blank start",
           "entryScene": "res://scenes/main.tscn",
-          "description": "One flat room with the base runtime only: run, jump, platform collision, camera, basic attack and one save file.",
+          "description": "One flat room with the base runtime only: run, jump, platform collision, camera, basic attack and one save file. No checkpoint, target, reward or ability.",
           "source": "worlds/blank",
           "initialState": {
             "room": "start",
