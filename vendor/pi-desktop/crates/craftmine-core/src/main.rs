@@ -247,6 +247,18 @@ fn main() -> Result<()> {
     if !directory.is_absolute() {
         bail!("data directory must be absolute");
     }
+    std::fs::create_dir_all(&directory)?;
+    // The OS releases this lock on crash. A second broker must not run startup
+    // recovery against the first broker's live workspace leases.
+    let _store_lock = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .create(true)
+        .truncate(false)
+        .open(directory.join("domain-writer.lock"))?;
+    _store_lock
+        .try_lock()
+        .map_err(|error| anyhow::anyhow!("DOMAIN_ALREADY_RUNNING: {error}"))?;
     let mut journal = TaskJournal::open(&directory.join("tasks.sqlite"))?;
     journal.verification_recover()?;
     journal.review_recover()?;
