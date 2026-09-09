@@ -11,9 +11,12 @@ const output = path.join(root,'desktop/build/craftmine.world');
 const require = createRequire(path.join(root,'vendor/pi-desktop/packages/agent-runtime/package.json'));
 const {build} = require('esbuild');
 await fs.mkdir(path.join(output,'views'), {recursive:true});
-for (const file of ['manifest.json','main.cjs','core-client.cjs','world-tools.cjs']) await fs.copyFile(path.join(source,file),path.join(output,file));
+for (const file of ['manifest.json','main.cjs','core-client.cjs','world-tools.cjs','verification-jobs.cjs']) await fs.copyFile(path.join(source,file),path.join(output,file));
 await fs.rm(path.join(output,'main.js'), {force:true});
-await build({entryPoints:[path.join(source,'domain-adapter.mjs')],outfile:path.join(output,'domain.cjs'),bundle:true,platform:'node',format:'cjs',target:'node22'});
+await build({entryPoints:[path.join(source,'domain-adapter.mjs')],outfile:path.join(output,'domain.cjs'),bundle:true,platform:'node',format:'cjs',target:'node22',
+  alias:{'@babel/parser':require.resolve('@babel/parser')},
+  plugins:[{name:'desktop-static-syntax',setup(builder){builder.onResolve({filter:/behavior-syntax\.mjs$/},()=>({path:path.join(source,'behavior-syntax.mjs')}));}}]});
+await fs.copyFile(require.resolve('@babel/parser/package.json').replace(/package\.json$/,'LICENSE'),path.join(output,'BABEL_PARSER_LICENSE.txt'));
 for (const file of ['game.html','game.js','game.css','runtime.js']) await fs.rm(path.join(output,'views',file),{force:true});
 const scene = {format:'craftmine.scene/3',title:'新世界',night:false,objects:[],systems:[],behaviors:[]};
 const compiled = compileScene(scene);
@@ -35,5 +38,7 @@ const game = (await fs.readFile(path.join(root,'app/game.html'),'utf8'))
   .replace('</body>',`__CRAFTMINE_INPUT_GUARD__<script>${runtimeCode}</script><script>${gameCode}</script></body>`);
 const view = (await fs.readFile(path.join(source,'world.html'),'utf8')).replace(/content="default-src [^"]+"/,`content="${policy}"`);
 await fs.writeFile(path.join(output,'views/world.html'),view);
+await fs.writeFile(path.join(output,'views/verify.html'),`<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${policy}"><style>body{margin:0}iframe{border:0;width:100vw;height:100vh;display:block}</style></head><body><script>${inputGuard}</script><script src="verify.js"></script></body></html>`);
+await build({entryPoints:[path.join(source,'verify-view.mjs')],outfile:path.join(output,'views/verify.js'),bundle:true,platform:'browser',format:'iife',target:'chrome130',define:{CRAFTMINE_GAME_DOCUMENT:JSON.stringify(game),CRAFTMINE_INPUT_GUARD:JSON.stringify('<script>'+inputGuard+'</script>')}});
 await build({entryPoints:[path.join(source,'view.mjs')],outfile:path.join(output,'views/view.js'),bundle:true,platform:'browser',format:'iife',target:'chrome130',define:{CRAFTMINE_BOOT_WORLD:JSON.stringify(bootstrap),CRAFTMINE_GAME_DOCUMENT:JSON.stringify(game),CRAFTMINE_INPUT_GUARD:JSON.stringify('<script>'+inputGuard+'</script>')}});
 console.log(output);

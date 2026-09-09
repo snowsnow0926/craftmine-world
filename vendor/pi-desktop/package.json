@@ -37,6 +37,7 @@
     "clean": "pnpm -r --if-present clean && cargo clean"
   },
   "devDependencies": {
+    "@babel/parser": "7.29.8",
     "@pi-desktop/plugin-devkit": "workspace:*"
   }
 }

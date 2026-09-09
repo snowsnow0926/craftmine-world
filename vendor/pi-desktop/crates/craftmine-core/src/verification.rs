@@ -25,6 +25,7 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
 }
 
 fn read(db: &Connection, id: &str) -> Result<Value> {
+    expire(db)?;
     let (status,input,hash,output,output_hash,created,updated): (String,String,String,Option<String>,Option<String>,i64,i64) = db.query_row(
         "SELECT status,input,input_hash,output,output_hash,created_at,updated_at FROM craftmine_verifications WHERE id=?1", [id],
         |r| Ok((r.get(0)?,r.get(1)?,r.get(2)?,r.get(3)?,r.get(4)?,r.get(5)?,r.get(6)?)),
@@ -46,6 +47,16 @@ fn read(db: &Connection, id: &str) -> Result<Value> {
         "output":output,"outputHash":output_hash,"createdAt":created,"updatedAt":updated,
         "current":current,"publishingAvailable":false}),
     )
+}
+
+fn expire(db: &Connection) -> Result<()> {
+    let now = worlds::timestamp()?;
+    db.execute(
+        "UPDATE craftmine_verifications SET status='interrupted',run_token=NULL,updated_at=?1
+        WHERE status IN ('queued','running') AND updated_at < ?2",
+        params![now, now - 60_000],
+    )?;
+    Ok(())
 }
 
 fn assert_current(db: &Connection, input: &Value) -> Result<()> {
@@ -116,6 +127,7 @@ impl TaskJournal {
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        expire(&tx)?;
         let workspace = workspaces::inspect(&tx, ctx)?;
         workspaces::assert_live(&tx, &workspace)?;
         let binding = &workspace.task.binding;
@@ -202,6 +214,7 @@ impl TaskJournal {
             "VERIFICATION_INPUT_MISMATCH"
         );
         let evidence = &output["evidence"];
+        document(evidence)?;
         ensure!(
             evidence["format"] == "craftmine.desktop-check/1",
             "INVALID_VERIFICATION_EVIDENCE"

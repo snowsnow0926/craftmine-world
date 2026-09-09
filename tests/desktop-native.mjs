@@ -24,6 +24,11 @@ const readAppFile=relative=>{
 const mainSource=readAppFile('out/main/index.js').toString();
 for(const guard of ['configureHeadlessAcceptance()', 'focusable: !headlessAcceptance', 'offscreen: !!headlessAcceptance'])assert.ok(mainSource.includes(guard),'Refusing a build without native input isolation: '+guard);
 assert.ok(readAppFile('out/preload/craftmine-headless.cjs').length>0,'Headless preload is missing');
+if(process.env.CRAFTMINE_TEST_VERIFICATION==='1') {
+  const domain=fs.readFileSync(packaged?path.join(resources,'plugins/craftmine.world/domain.cjs'):path.join(desktop,'resources/plugins/craftmine.world/domain.cjs'),'utf8');
+  assert.ok(!domain.includes('node:child_process'),'Refusing a desktop behavior compiler that can spawn Electron as Node');
+  assert.ok(fs.readFileSync(packaged?path.join(resources,'plugins/craftmine.world/BABEL_PARSER_LICENSE.txt'):path.join(desktop,'resources/plugins/craftmine.world/BABEL_PARSER_LICENSE.txt')).length>0,'Bundled static parser license missing');
+}
 fs.mkdirSync('test-results',{recursive:true});
 const directory=fs.mkdtempSync(path.resolve('test-results/desktop-native-'));
 const profile=path.join(directory,'profile'),legacySource=path.join(directory,'legacy'),token=randomUUID();
@@ -98,8 +103,10 @@ try {
   const guards=await client.rpc('guards');evidence.guards=guards;
   check('桌面、世界面板和游戏初始化时均禁止鼠标锁定与焦点请求',guards.length>=3&&guards.every(frame=>frame.guard&&frame.guard.pointerLock===0&&frame.guard.focus===0));
   check('实际游戏隔离帧无法访问 Node 或插件桥',guards.some(frame=>frame.url==='about:srcdoc'&&frame.node==='undefined'&&frame.bridge==='undefined'));
-  if(process.env.CRAFTMINE_TEST_DRAFTS==='1') {
-    const drafts=await client.rpc('draftProbe',{},60000);evidence.drafts=drafts;
+  if(process.env.CRAFTMINE_TEST_DRAFTS==='1'||process.env.CRAFTMINE_TEST_VERIFICATION==='1') {
+    const drafts=await client.rpc('draftProbe',{},110000);evidence.drafts=drafts;
+    if(drafts.verification?.preview?.image){fs.writeFileSync(path.join(directory,'native-check-preview.png'),Buffer.from(drafts.verification.preview.image,'base64'));delete drafts.verification.preview.image;}
+    if(drafts.verification?.preview?.reviewImage){fs.writeFileSync(path.join(directory,'native-check-results.png'),Buffer.from(drafts.verification.preview.reviewImage,'base64'));delete drafts.verification.preview.reviewImage;}
     for(const result of drafts.checks)check(result.name,result.passed);
   }
   await client.rpc('importLegacy');

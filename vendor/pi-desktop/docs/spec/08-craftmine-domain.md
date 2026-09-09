@@ -109,3 +109,27 @@ model actions. Successful evidence must identify the compiled scene, extension s
 behavior artifacts and actual rendered build. A machine pass is not a published
 world or a claim of player-request acceptance. Advisory model review, candidate
 application and progress migration remain separate gates. See ADR 0307.
+
+The built-in plugin exposes `verification_submit/read/cancel` to PI. Reads are
+paginated to 16,000 Unicode characters and include a compact check overview. The
+World work-panel tab retains the full PI shell and adds Check records, result
+details and independent preview copies. Preview freezes and saves the formal
+world first; it never writes preview progress back or presents an Apply action.
+World switches clear the old world's check list immediately.
+
+The private `craftmine.verify` service is callable only by the built-in plugin
+process. Each job uses an unfocusable offscreen BrowserWindow, ephemeral session,
+no Node/bridge, denied permissions/navigation/network, and input guards installed
+before authored runtime initialization. Two checks may run across worlds; each
+world has at most one pending check. Native work has a 30-second deadline; Rust
+expires lost worker/receipt states after 60 seconds. Cancellation destroys the
+isolated renderer and its Workers. No path, source text or success claim from a
+model is evaluated in Electron main.
+
+The shared checker observes actual collision, color, items and resources. A loaded
+message and nonempty screenshot are insufficient: the native service samples the
+composited game frame to reject black canvases. This is a presentation check, not
+semantic visual acceptance. ResizeObserver redraws after hidden-canvas resize.
+Desktop syntax checking uses bundled @babel/parser 7.29.8 (license included), never
+a subprocess using Electron's executable. The web compiler retains Node --check
+and explicitly refuses an unprepared Electron runtime. See ADR 0308.

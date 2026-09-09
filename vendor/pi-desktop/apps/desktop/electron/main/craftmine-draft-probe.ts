@@ -1,4 +1,5 @@
 // Fixed native acceptance scenario; never registers a general-purpose RPC tool.
+import { runNativeVerificationProbe } from "./craftmine-verification-probe";
 type Call = <T = any>(method: string, params: Record<string, unknown>) => Promise<T>;
 
 export async function runNativeDraftProbe(access: {
@@ -6,6 +7,10 @@ export async function runNativeDraftProbe(access: {
   toolName: (name: string) => string;
   begin: (sessionId: string, turnId: string) => void;
   finish: (sessionId: string) => Promise<void>;
+  verification?: {
+    panel: (channel: string, payload: Record<string, unknown>) => Promise<any>;
+    preview: (id: string) => Promise<any>;
+  };
 }): Promise<unknown> {
   const checks: Array<{ name: string; passed: boolean }> = [];
   const check = (name: string, value: boolean) => {
@@ -46,10 +51,11 @@ export async function runNativeDraftProbe(access: {
     check("Native read returns the saved authored resource and its hash", JSON.parse(read.text).parts.length === 2 && read.hash.length === 64);
     const forged = await raw("project_inspect", { sessionId: "foreign" });
     check("Native tool dispatch cannot accept model-authored session identity", !forged.ok);
+    const verification = access.verification ? await runNativeVerificationProbe({ invoke, check, worldId: start.worldId, ...access.verification }) : null;
     await access.finish(sessionId);
     const late = await raw("workspace_patch", request, "native-late-flower");
     check("Finishing the host turn prevents late native tool writes", !late.ok);
-    return { sessionId, turnId, worldId: start.worldId, taskId: start.taskId, checks, modelCalled: false };
+    return { sessionId, turnId, worldId: start.worldId, taskId: start.taskId, checks, modelCalled: false, verification };
   } finally {
     await access.finish(sessionId);
   }

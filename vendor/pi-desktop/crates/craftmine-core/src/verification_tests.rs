@@ -220,3 +220,22 @@ fn stale_and_empty_drafts_cannot_queue_checks() -> Result<()> {
         .contains("NO_CHANGE"));
     Ok(())
 }
+
+#[test]
+fn a_lost_worker_receipt_expires_instead_of_running_forever() -> Result<()> {
+    let (_dir, mut j, ctx) = setup()?;
+    let (id, record) = start(&mut j, &ctx)?;
+    j.db.execute(
+        "UPDATE craftmine_verifications SET updated_at=0 WHERE id=?1",
+        [&id],
+    )?;
+    assert_eq!(j.verification_read(&id, None)?["status"], "interrupted");
+    assert!(j
+        .verification_finish(&id, "runner", &successful(&record))
+        .is_err());
+    assert_eq!(
+        j.verification_submit(&ctx, "retry-new-call", 1, "Retry")?["status"],
+        "queued"
+    );
+    Ok(())
+}

@@ -6,6 +6,7 @@ import {patchWorkspaceScene,workspaceResource} from '../../app/harness/resource-
 import {contentHash,fields,integer,HARNESS_LIMITS} from '../../app/harness/contracts.mjs';
 import {capabilitiesCatalog} from '../../app/harness/capabilities.mjs';
 import {BEHAVIOR_API_GUIDE} from '../../app/behavior-contracts.mjs';
+import {sceneDiff} from '../../app/scene-diff.mjs';
 
 const groups={object:'objects',behavior:'behaviors',system:'systems'};
 
@@ -15,6 +16,29 @@ function page(text,{start=0,limit=12000}={}) {
   if(start>chars.length)throw Error('读取起点超过末尾');
   const end=Math.min(start+limit,chars.length);
   return {text:chars.slice(start,end).join(''),start,next:end<chars.length?end:null,totalChars:chars.length};
+}
+
+export function compileVerification(input) {
+  const {world,draft}=input;
+  const extensions=new Set(world.extensions.map(extension=>extensionRequirement(extension.id,extension.version)));
+  const compiled=compileScene(draft.scene,{extensions});
+  const assets=validatePackedAssets(compiled.scene,world.build.assets||[]);
+  return {build:{...compiled,id:'v-'+compiled.hash.slice(0,20),...(assets.length?{assets}:{})},
+    extensions:world.extensions,snapshot:validateSnapshot(world.snapshot),diff:sceneDiff(world.build.scene,compiled.scene)};
+}
+
+export function verificationSummary(job) {
+  return {id:job.id,worldId:job.input.worldId,taskId:job.input.binding.taskId,
+    workspaceRevision:job.input.workspaceRevision,summary:job.input.summary,status:job.status,current:job.current,
+    inputHash:job.inputHash,outputHash:job.outputHash,createdAt:job.createdAt,updatedAt:job.updatedAt,publishingAvailable:false};
+}
+
+export function readVerification(job,args={}) {
+  const evidence=job.output?.evidence,diff=job.output?.artifact?.diff;
+  const overview={checks:[['场景编译',evidence?.compiler],['玩法事件',evidence?.behaviors],['游戏画面',evidence?.render]].map(([name,value])=>({name,passed:value?.skipped?null:value?.passed??null})),
+    error:evidence?.error||evidence?.behaviors?.modules?.filter(m=>!m.passed).map(m=>m.id+'：'+m.error).join('\n')||null,
+    changes:diff?['added','changed','removed'].map((key,index)=>({name:['新增','修改','移除'][index],objects:diff[key]?.length||0,behaviors:diff.behaviors?.[key]?.length||0,systems:diff.systems?.[key]?.length||0})):[]};
+  return {...verificationSummary(job),overview,...page(JSON.stringify({evidence:evidence||null,diff:diff||null},null,2),args)};
 }
 
 export function inspectDraft(workspace,args) {

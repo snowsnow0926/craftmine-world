@@ -37,7 +37,7 @@
       },
       {
         "name": "project_inspect",
-        "description": "Inspect the actual Craftmine world draft before creating or editing it. The first world tool binds this PI session to the selected world; changing the panel afterwards does not redirect it. Returns revision and a paginated resource index. Use capabilities_read for the actual resource contracts. Draft tools do not apply or verify a playable candidate yet; do not claim that a draft is already in the world.",
+        "description": "Inspect the actual Craftmine world draft before creating or editing it. The first world tool binds this PI session to the selected world; changing the panel afterwards does not redirect it. Returns revision and a paginated resource index. Use capabilities_read for contracts, workspace_patch to edit, then verification_submit to check the finished draft in the background. A saved or machine-checked draft is not yet applied to the world.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -189,6 +189,77 @@
           "required": [
             "workspaceRevision",
             "operations"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "verification_submit",
+        "description": "Submit the exact current draft revision for asynchronous compiler, behavior-event and real-render checks. Returns a durable job ID immediately; use verification_read to read actual results. Edits or a new turn cancel pending older checks. Machine success permits an isolated preview, not world publication or a claim that the player request is fully accepted.",
+        "risk": "medium",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "workspaceRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 48
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 800
+            }
+          },
+          "required": [
+            "workspaceRevision",
+            "summary"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "verification_read",
+        "description": "Read status and paginated machine evidence for a verification job owned by this PI session. Use next for additional pages. This does not open a new world workspace. Do not treat queued/running/interrupted or outdated evidence as successful.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^check-[a-f0-9]{64}$"
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "verification_cancel",
+        "description": "Cancel a pending verification owned by this PI session. Keeps the draft, original world and immutable check input. Already completed checks retain their recorded outcome.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^check-[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "id"
           ],
           "additionalProperties": false
         }

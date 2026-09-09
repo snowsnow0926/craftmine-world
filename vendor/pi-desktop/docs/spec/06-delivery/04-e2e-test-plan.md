@@ -8546,3 +8546,17 @@ completion permits it. Restart while queued/running and observe interrupted, wit
 the input retained and the formal world unchanged. Reject foreign-session reads,
 forged successful evidence and modified stored evidence. Native acceptance must
 use a separate headless profile and must record zero input/focus violations.
+
+### CRAFTMINE-011 — Native background checks and independent preview
+
+Through actual PI Rust tools.execute, submit a flower plus behavior and recover
+the submission receipt. Verify real bounded Workers and a rendered nonblack image
+in the isolated native service. Preview that exact artifact in the World panel;
+retain formal code and player position. Submit a compiler-valid behavior that
+throws, observe failed evidence, and mark the old success historical. Reject a
+panel attempt to report success. Continue through save contention and full native
+restart with zero input/focus violations. Inspect result and preview screenshots.
+
+A headless test must refuse a desktop compiler containing node:child_process
+before launching it. Static parser failure, black presentation and missing runtime
+observations are real regressions, not grounds to relax the acceptance assertions.

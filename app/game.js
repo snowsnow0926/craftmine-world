@@ -5,7 +5,7 @@ import { createExtensionTable, disposeExtensionTable } from './extension-runtime
   const nonce = location.hash.slice(1) || document.querySelector('meta[name="craftmine-nonce"]')?.content || '', parentOrigin = new URL(location.href).origin;
   const replyOrigin = parentOrigin === 'null' ? '*' : parentOrigin;
   const send = (type,payload={}) => {if(preview&&type==='agent'){inform('关闭预览后，可以继续描述对原世界的修改。');return;}parent.postMessage({channel:'craftmine-game/1',nonce,type,...payload},replyOrigin);};
-  let engine, build, frozen=false, lastTarget=null, preview=false, extensions=null;
+  let engine, build, frozen=false, lastTarget=null, preview=false, extensions=null, presentationObserver=null;
   const enter = document.getElementById('enter'), notice = document.getElementById('notice'); let noticeTimer;
   function inform(text,{tone='info',duration=4500}={}) { notice.textContent=text;notice.dataset.tone=tone;notice.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>notice.hidden=true,Math.max(1000,Math.min(10000,Number.isFinite(duration)?duration:4500))); }
   const BlankRuntime=makeWorldRuntime({send,inform,enter,isFrozen:()=>frozen});
@@ -24,6 +24,10 @@ import { createExtensionTable, disposeExtensionTable } from './extension-runtime
         });
         extensions=await createExtensionTable(m.extensions);
         await engine.generateBuild(m.build,m.snapshot,{extensions});engine.pauseInput();
+        // Resizing clears the canvas after the first synchronous draw. Hidden
+        // offscreen views skip the normal frame loop, so redraw after layout.
+        presentationObserver=new ResizeObserver(()=>{if(engine&&!frozen)engine.render(performance.now()/1000);});
+        presentationObserver.observe(document.getElementById('world').parentElement);
         // A hidden candidate iframe may not receive animation frames until activated.
         // Draw explicitly so readiness checks never depend on visibility scheduling.
         engine.render(performance.now()/1000);
@@ -44,6 +48,6 @@ import { createExtensionTable, disposeExtensionTable } from './extension-runtime
   enter.onclick=()=>{if(!engine||frozen||engine.play?.dead)return;enter.hidden=true;engine.enter();};
   document.getElementById('revive').onclick=()=>{if(engine&&!frozen)engine.revive();};
   document.getElementById('interact').onclick=()=>engine?.interact();
-  addEventListener('pagehide',()=>{engine?.dispose();disposeExtensionTable(extensions);});
+  addEventListener('pagehide',()=>{presentationObserver?.disconnect();engine?.dispose();disposeExtensionTable(extensions);});
   send('ready');
 })();

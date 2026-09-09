@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { spawnSync } from 'node:child_process';
+import {checkModuleSyntax} from './behavior-syntax.mjs';
 import { validateBehavior } from './behavior-contracts.mjs';
 import { canonicalJSON } from './canonical.mjs';
 
@@ -14,9 +14,7 @@ export function compileBehavior(input){
   // Parsing only. The generated file is never executed in the Node service.
   const sourceHash=createHash('sha256').update(definition.code).digest('hex');
   if(!parsed.has(sourceHash)){
-    const check=spawnSync(process.execPath,['--check','--input-type=module'],{input:definition.code,encoding:'utf8',windowsHide:true,timeout:3000,maxBuffer:16000});
-    if(check.error)throw Error('玩法语法检查未完成：'+check.error.message);
-    if(check.status!==0)throw Error('玩法源码语法错误：'+String(check.stderr).slice(0,1600));
+    checkModuleSyntax(definition.code);
     if(parsed.size>=128)parsed.delete(parsed.values().next().value);parsed.add(sourceHash);
   }
   if(COMMONJS_EXPORT.test(definition.code))throw Error('玩法源码必须使用 ES 模块导出，不能用 CommonJS 的 exports.xxx；请写成 export function step({frame,params,state}){...}');

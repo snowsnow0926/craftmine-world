@@ -2,8 +2,9 @@
 const {CoreClient} = require('./core-client.cjs');
 const {randomUUID} = require('node:crypto');
 const {createWorldTools} = require('./world-tools.cjs');
-const {emptyWorld, validateSnapshot, prepareLegacyWorld} = require('./domain.cjs');
-let core;
+const {createVerificationJobs} = require('./verification-jobs.cjs');
+const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary} = require('./domain.cjs');
+let core,verifications;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
 const importErrors={
@@ -20,6 +21,7 @@ const importErrors={
 };
 async function onLoad() {
   core = new CoreClient(process.env.CRAFTMINE_CORE_BIN, await pi.plugin.getDataPath());
+  verifications=createVerificationJobs(core,pi.craftmine);
   pi.services.register({id:'world-core',start:()=>core.start(),stop:()=>core.stop()});
   await pi.agent.registerTool({
     name: 'runtime_info',
@@ -32,17 +34,19 @@ async function onLoad() {
       view: 'world',
       worldWritesAvailable: false,
       draftToolsAvailable: info.sessionDrafts===true,
+      verificationJobsAvailable: info.verificationJobs===true,
       core: info,
       invocation: {sessionId:context?.sessionId,turnId:context?.turnId,toolCallId:context?.toolCallId},
       };
     },
   });
-  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context))))await pi.agent.registerTool(tool);
+  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context)),verifications))await pi.agent.registerTool(tool);
 }
 
 // Private parent-process lifecycle. There is no panel channel for this method.
 async function onHostTurnEnd(payload) {
   endedTurns.add(turnKey(payload));
+  if(payload.status!=='completed')await verifications.cancelTurn(payload);
   await core.start();
   await core.call('workspace.endTurn',payload);
   endedTurns.delete(turnKey(payload)); // Rust now owns the durable rejection.
@@ -50,6 +54,18 @@ async function onHostTurnEnd(payload) {
 
 async function onPanelInvoke(channel, payload={}) {
   await core.start();
+  if(channel==='verification.list')return core.call('verification.list',{worldId:payload.worldId,offset:payload.offset??0,limit:payload.limit??16});
+  if(channel==='verification.read')return readVerification(await core.call('verification.read',{id:payload.id}),payload);
+  if(channel==='verification.preview') {
+    const job=await core.call('verification.read',{id:payload.id});
+    if(job.status!=='passed'||!job.output?.artifact)throw Error('这次检查还没有可预览的构建');
+    return {job:verificationSummary(job),world:job.output.artifact};
+  }
+  if(channel==='verification.cancel') {
+    const result=await core.call('verification.cancel',{id:payload.id});
+    await verifications.cancel(payload.id);return result;
+  }
+
   if(channel==='world.importLegacy') {
     // Electron replaces this payload with the native picker's granted root.
     // The untrusted page cannot supply or override the filesystem source.
@@ -86,6 +102,7 @@ async function onPanelInvoke(channel, payload={}) {
 }
 
 async function onUnload() {
+  await verifications?.stop();
   await core?.stop();
   for(const tool of require('./manifest.json').contributes.agentTools)await pi.agent.unregisterTool(tool.name);
 }

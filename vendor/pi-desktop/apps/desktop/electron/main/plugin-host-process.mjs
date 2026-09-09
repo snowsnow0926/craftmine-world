@@ -102,6 +102,10 @@ const eventListeners = new Map();
 
 function buildApi() {
   return {
+    ...(pluginId === "craftmine.world" ? { craftmine: {
+      verify: (input) => call("craftmine.verify", [input]),
+      cancelVerification: (id) => call("craftmine.cancelVerification", [id]),
+    } } : {}),
     app: {
       getVersion: () => call("app.getVersion"),
       getLocale: () => call("app.getLocale"),

@@ -17,6 +17,8 @@ import { execFileSync } from "node:child_process";
 import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
+import { CraftmineVerifier } from "./craftmine-verifier";
+import { checkCraftmineFrame } from "./craftmine-frame-check";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
 import { configureHeadlessAcceptance, installHeadlessControl } from "./craftmine-headless";
 import {
@@ -558,7 +560,9 @@ const pluginPanels = new PluginPanelHost(
   },
 
 );
+const craftmineVerifier = new CraftmineVerifier();
 const plugins: PluginRuntime = new PluginRuntime({
+  craftmineVerification: craftmineVerifier,
   getWorkspacePath: () => {
     // Filled after host boots; temporary stub until services rebinding.
     return null;
@@ -8921,6 +8925,27 @@ installHeadlessControl({
       },
       begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId),
       finish: (sessionId) => finishTurn(sessionId, "completed", undefined, { createNotification: false }),
+      verification: process.env.CRAFTMINE_TEST_VERIFICATION === "1" ? {
+        panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload),
+        preview: async (id) => {
+          const contents = pluginViews.headlessWorldContents();
+          if (!contents) throw new Error("World view unavailable");
+          await contents.executeJavaScript(`craftmineView.review(${JSON.stringify(id)})`, false);
+          const reviewImage = (await contents.capturePage()).toPNG().toString("base64");
+          const result = await contents.executeJavaScript(`(async()=>{
+            const before=(await craftmineView.snapshot()).snapshot.player;
+            craftmineView.showChecks(); await craftmineView.preview(${JSON.stringify(id)});
+            return {loaded:document.body.dataset.previewLoaded==='true',playerPreserved:JSON.stringify(before)===JSON.stringify((await craftmineView.snapshot()).snapshot.player)};
+          })()`, false);
+          const capture = await contents.capturePage();
+          result.pixels = checkCraftmineFrame(capture);
+          result.image = capture.toPNG().toString("base64");
+          result.reviewImage = reviewImage;
+          result.guards = await Promise.all(contents.mainFrame.framesInSubtree.map(frame => frame.executeJavaScript("globalThis.__craftmineHeadless||null", false)));
+          await contents.executeJavaScript("craftmineView.closePreview()", false);
+          return result;
+        },
+      } : undefined,
     });
   },
 });

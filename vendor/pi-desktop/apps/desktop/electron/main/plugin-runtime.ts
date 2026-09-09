@@ -170,6 +170,10 @@ export type PluginFsConsentRequest = {
 export type PluginFsConsentAnswer = "once" | "session" | "deny";
 
 export type PluginHostServices = {
+  craftmineVerification?: {
+    verify: (input: unknown, pluginPath: string) => Promise<unknown>;
+    cancel: (id: string) => void;
+  };
   getWorkspacePath: () => string | null;
   getLocale?: () => string;
   getAppVersion?: () => string;
@@ -1403,6 +1407,12 @@ export class PluginRuntime {
   ): Promise<unknown> {
     const pluginId = loaded.manifest.id;
     switch (api) {
+      case "craftmine.verify":
+      case "craftmine.cancelVerification": {
+        if (pluginId !== "craftmine.world" || !this.services.craftmineVerification) throw apiError("UNSUPPORTED", "Built-in verifier unavailable");
+        if (api === "craftmine.cancelVerification") return this.services.craftmineVerification.cancel(String(args[0] ?? ""));
+        return this.services.craftmineVerification.verify(args[0], loaded.path);
+      }
       case "commands.register": {
         const descriptor = (args[0] ?? {}) as {
           id?: string;

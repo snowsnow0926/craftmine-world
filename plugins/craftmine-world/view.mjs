@@ -13,6 +13,10 @@ const requests = new Map();
 let current, nonce, loaded=false, busy=false, closing=false, lastSaved='';
 let activeOperation=Promise.resolve();
 let closeOperation, closeGeneration=0;
+const checksPanel=document.getElementById('checks-panel');
+const previewPanel=document.getElementById('preview-panel');
+let previewFrame=null;
+let preview=null,checkOffset=0,checkWorld=null,checksLoading=false,evidenceJob=null,evidenceNext=null;
 
 function applyAppearance(appearance) {
   if(appearance?.base==='light'||appearance?.base==='dark') {
@@ -35,8 +39,9 @@ function showError(error) {
 }
 
 function controls() {
-  select.disabled=!bridge||busy||closing;newButton.disabled=!bridge||busy||closing;saveButton.disabled=!bridge||busy||closing||!loaded;
-  importButton.disabled=!bridge||busy||closing;
+  select.disabled=!bridge||busy||closing||!!preview;newButton.disabled=!bridge||busy||closing||!!preview;saveButton.disabled=!bridge||busy||closing||!loaded||!!preview;
+  importButton.disabled=!bridge||busy||closing||!!preview;
+  document.getElementById('close-preview').disabled=busy||closing;
   frame.inert=closing;
 }
 
@@ -85,6 +90,7 @@ function prepareClose() {
       await previous;
       if(generation!==closeGeneration)throw Error('退出已取消');
       busy=true;controls();
+      closePreview(false);
       if(!loaded)return {loaded:false};
       const checkpoint=await save({freeze:true});
       if(generation!==closeGeneration)throw Error('退出已取消');
@@ -105,6 +111,9 @@ async function refreshList() {
 }
 
 function mount(record) {
+  closePreview(false);
+  checkWorld=null;checkOffset=0;document.getElementById('check-detail').hidden=true;
+  document.getElementById('checks-list').replaceChildren();setMode(false);
   for(const pending of requests.values()){clearTimeout(pending.timer);pending.reject(Error('世界已切换'));}requests.clear();
   current=record;loaded=false;nonce=crypto.randomUUID();lastSaved=JSON.stringify(record.world.snapshot);
   document.getElementById('import-result').hidden=true;
@@ -130,7 +139,103 @@ addEventListener('message',event=>{
 
 // Only the trusted product panel owns this lifecycle surface. Authored code
 // lives in the opaque game iframe and cannot reach it.
-globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose});
+globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,showChecks:()=>setMode(true),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
+
+const checkLabels={queued:'等待检查',running:'后台检查中',passed:'机器检查通过',failed:'检查未通过',cancelled:'已取消',interrupted:'已中断'};
+function setMode(checks) {
+  checksPanel.hidden=!checks;
+  document.getElementById('world-mode').setAttribute('aria-selected',String(!checks));
+  document.getElementById('checks-mode').setAttribute('aria-selected',String(checks));
+  if(checks){send('pause');void refreshChecks(true);}
+}
+async function refreshChecks(reset=false) {
+  if(!bridge||!current?.id||checksLoading||closing)return;
+  checksLoading=true;
+  const worldId=current.id;
+  try {
+    if(reset||checkWorld!==worldId){checkOffset=0;checkWorld=worldId;}
+    const jobs=await bridge.invoke('verification.list',{worldId,offset:checkOffset,limit:8});
+    if(current.id!==worldId)return;
+    const list=document.getElementById('checks-list');
+    if(!checkOffset)list.replaceChildren();
+    for(const job of jobs) {
+      const row=document.createElement('article');row.className='check-row';row.dataset.jobId=job.id;row.dataset.state=job.status;
+      const title=document.createElement('h3');title.textContent=job.summary;
+      const meta=document.createElement('div');meta.className='check-meta';
+      meta.textContent=`${checkLabels[job.status]||job.status} · 草稿 ${job.workspaceRevision}${job.current?'':' · 历史版本'} · ${new Date(job.createdAt).toLocaleTimeString()}`;
+      const actions=document.createElement('div');actions.className='check-actions';
+      const details=document.createElement('button');details.textContent='查看结果';details.onclick=()=>void action(()=>showEvidence(job.id));actions.append(details);
+      if(job.status==='passed') {
+        const form=document.createElement('form');form.dataset.previewJob=job.id;
+        const button=document.createElement('button');button.type='submit';button.textContent='预览副本';
+        form.append(button);form.onsubmit=event=>{event.preventDefault();void action(()=>openPreview(job.id));};actions.append(form);
+      }
+      if(['queued','running'].includes(job.status)) {
+        const cancel=document.createElement('button');cancel.textContent='取消检查';
+        cancel.onclick=()=>void action(async()=>{await bridge.invoke('verification.cancel',{id:job.id});await refreshChecks(true);});actions.append(cancel);
+      }
+      row.append(title,meta,actions);list.append(row);
+    }
+    document.getElementById('checks-empty').hidden=list.children.length>0;
+    document.getElementById('checks-more').hidden=jobs.length<8;
+    document.getElementById('checks-mode').textContent=jobs.some(j=>['queued','running'].includes(j.status))?'检查记录 · 进行中':'检查记录';
+  }catch(error){showError(error);}finally{checksLoading=false;}
+}
+async function showEvidence(id,start=0) {
+  const result=await bridge.invoke('verification.read',{id,start,limit:12000});
+  evidenceJob=id;evidenceNext=result.next;
+  document.getElementById('check-detail').hidden=false;
+  if(!start) {
+    const overview=document.getElementById('check-overview');overview.replaceChildren();
+    const line=text=>{const paragraph=document.createElement('p');paragraph.textContent=text;overview.append(paragraph);};
+    line(result.overview.checks.map(check=>`${check.passed===true?'✓':check.passed===false?'×':'—'} ${check.name}`).join('　'));
+    for(const change of result.overview.changes)if(change.objects+change.behaviors+change.systems)line(`${change.name}：${change.objects} 个对象，${change.behaviors} 个代码玩法，${change.systems} 个系统`);
+    if(result.overview.error)line(result.overview.error);
+    line(result.current?'这份草稿尚未应用。机器检查通过后，还需要完成评审与需求验收。':'这是历史草稿的检查记录。当前草稿已经改变。');
+  }
+  const text=document.getElementById('check-evidence');
+  const prefix=`${checkLabels[result.status]||result.status}${result.current?'':' · 历史草稿'}\n机器检查通过后仍需完成评审和需求验收。当前世界尚未应用这份草稿。\n\n`;
+  text.textContent=start?text.textContent+result.text:prefix+result.text;
+  document.getElementById('evidence-more').hidden=evidenceNext===null;
+}
+function closePreview(resume=true) {
+  if(!preview)return;
+  preview=null;previewPanel.hidden=true;previewFrame?.remove();previewFrame=null;delete document.body.dataset.previewLoaded;
+  if(resume)send('resume');controls();
+}
+async function openPreview(id) {
+  if(preview)closePreview(false);
+  await save({freeze:true});
+  const result=await bridge.invoke('verification.preview',{id});
+  const state={nonce:crypto.randomUUID(),world:result.world};preview=state;
+  previewFrame=document.createElement('iframe');previewFrame.title='草稿预览副本';previewFrame.setAttribute('sandbox','allow-scripts allow-pointer-lock');
+  previewPanel.append(previewFrame);
+  previewPanel.hidden=false;document.getElementById('preview-title').textContent=result.job.summary;
+  try {
+    await new Promise((resolve,reject)=>{
+      const finish=error=>{clearTimeout(timer);removeEventListener('message',receive);error?reject(error):resolve();};
+      const receive=event=>{
+        const message=event.data;
+        if(preview!==state||event.source!==previewFrame.contentWindow||message?.channel!=='craftmine-game/1'||message.nonce!==state.nonce)return;
+        if(message.type==='ready')previewFrame.contentWindow.postMessage({channel:'craftmine-host/1',nonce:state.nonce,type:'load',...state.world,preview:true},'*');
+        if(message.type==='error')finish(Error(message.message));
+        if(message.type==='loaded'){
+          if(message.version!==state.world.build.id){finish(Error('预览版本不一致'));return;}
+          document.body.dataset.previewLoaded='true';finish();
+        }
+      };
+      const timer=setTimeout(()=>finish(Error('预览载入超时')),15000);
+      addEventListener('message',receive);
+      previewFrame.srcdoc=gameDocument.replace('__CRAFTMINE_NONCE__',state.nonce).replace('__CRAFTMINE_INPUT_GUARD__',globalThis.__craftmineHeadless?CRAFTMINE_INPUT_GUARD:'');
+    });
+  }catch(error){closePreview();throw error;}
+}
+document.getElementById('world-mode').onclick=()=>setMode(false);
+document.getElementById('checks-mode').onclick=()=>setMode(true);
+document.getElementById('close-preview').onclick=()=>closePreview();
+document.getElementById('checks-more').onclick=()=>{checkOffset+=8;void refreshChecks();};
+document.getElementById('evidence-more').onclick=()=>void action(()=>showEvidence(evidenceJob,evidenceNext));
+setInterval(()=>{if(!busy&&!closing&&!checksPanel.hidden&&!preview&&checkOffset===0)void refreshChecks();},2500);
 
 saveButton.addEventListener('click',()=>void action(save));
 newButton.addEventListener('click',()=>{form.hidden=!form.hidden;});
@@ -161,7 +266,7 @@ select.addEventListener('change',()=>{
   const id=select.value;
   void action(async()=>{await save({freeze:true});mount(await bridge.invoke('world.open',{id}));await refreshList();}).finally(()=>{select.value=current?.id||'';});
 });
-setInterval(()=>{if(loaded&&!busy&&!closing&&bridge)void action(save);},10000);
+setInterval(()=>{if(loaded&&!busy&&!closing&&!preview&&bridge)void action(save);},10000);
 
 void action(async()=>{
   if(!bridge) {mount({title:initialWorld.build.scene.title,world:initialWorld});select.options[0].textContent=initialWorld.build.scene.title;return;}

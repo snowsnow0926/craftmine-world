@@ -1,5 +1,5 @@
 // PI owns the agent loop. This broker exposes bounded domain operations only.
-const {fields,inspectDraft,readDraftResource,patchDraft,readCapabilities}=require('./domain.cjs');
+const {fields,inspectDraft,readDraftResource,patchDraft,readCapabilities,readVerification}=require('./domain.cjs');
 
 function hostContext(context) {
   for(const key of ['projectId','sessionId','turnId','toolCallId','executionId']) {
@@ -9,7 +9,7 @@ function hostContext(context) {
   return {projectId:context.projectId,sessionId:context.sessionId,turnId:context.turnId};
 }
 
-function createWorldTools(core,getSettings,isEnded=()=>false) {
+function createWorldTools(core,getSettings,isEnded=()=>false,verifications) {
   const definitions=require('./manifest.json').contributes.agentTools.filter(tool=>tool.name!=='runtime_info');
   return definitions.map(definition=>({...definition,execute:async(args,invocation)=>{
     const context=hostContext(invocation);
@@ -21,9 +21,22 @@ function createWorldTools(core,getSettings,isEnded=()=>false) {
     const allowed=Object.keys(definition.schema.properties);
     fields(args,definition.schema.required||[],allowed.filter(key=>!(definition.schema.required||[]).includes(key)));
     await core.start();
+    if(definition.name==='verification_read') {
+      const job=await core.call('verification.read',{context,id:args.id});
+      return readVerification(job,args);
+    }
+    if(definition.name==='verification_cancel') {
+      const result=await core.call('verification.cancel',{context,id:args.id});
+      await verifications.cancel(args.id);return result;
+    }
     const selectedWorld=(await getSettings()).activeWorldId;
     assertActive();
     const workspace=await core.call('workspace.open',{context,selectedWorld});
+    await verifications?.cancelOtherTurns(context);
+    if(definition.name==='verification_submit') {
+      const job=await core.call('verification.submit',{context,toolCallId:invocation.toolCallId,revision:args.workspaceRevision,summary:args.summary});
+      verifications.enqueue(job,context);return job;
+    }
     if(definition.name==='project_inspect')return inspectDraft(workspace,args);
     if(definition.name==='resource_read') {
       const result=readDraftResource(workspace,args);
@@ -39,6 +52,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false) {
       const patched=patchDraft(workspace,args,record.world);
       assertActive();
       const receipt=await core.call('workspace.commit',{...params,binding:workspace.task.binding,revision:workspace.task.revision,draft:patched.draft});
+      await verifications?.cancelTurn(context);
       return {workspaceRevision:receipt.revision,draftHash:receipt.draftHash,changed:patched.changed,replayed:false,publishingAvailable:false};
     }
     throw Error('UNKNOWN_WORLD_TOOL');

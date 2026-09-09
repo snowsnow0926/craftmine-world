@@ -7,6 +7,7 @@ export const STATIC_FILES = Object.freeze([
   ['/app/gameplay.mjs', 'gameplay.mjs', 'text/javascript'], ['/app/geometry.mjs', 'geometry.mjs', 'text/javascript'],
   ['/app/behavior-contracts.mjs', 'behavior-contracts.mjs', 'text/javascript'], ['/app/behavior-runner.mjs', 'behavior-runner.mjs', 'text/javascript'],
   ['/app/behavior-state.mjs', 'behavior-state.mjs', 'text/javascript'], ['/app/behavior-session.mjs', 'behavior-session.mjs', 'text/javascript'],
+  ['/app/behavior-check.mjs', 'behavior-check.mjs', 'text/javascript'],
   ['/app/world-runtime.mjs', 'world-runtime.mjs', 'text/javascript'],
   ['/app/behavior-binding.mjs', 'behavior-binding.mjs', 'text/javascript'],
   ['/app/tween.mjs', 'tween.mjs', 'text/javascript'],
