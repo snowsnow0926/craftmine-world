@@ -44,6 +44,19 @@ archive hash separately when provisioning it. No tool path is taken from a
 model payload or shell command. The default directory-only build needs no
 archive extractor.
 
+Root subsequently provisioned the official 26.03 distribution from
+`https://github.com/ip7z/7zip/releases/download/26.03/7z2603-x64.exe`, by
+extracting rather than running it. Its archive is 1,661,239 bytes with SHA-256
+`0859c524b8a63551848f0c246abddcb1d0b7b656b0fbfe879f8d85e61a9e6edd`.
+The owned directory is
+`D:/cm-godot-final-20260910/desktop/build/archive-tool-26.03/tools`.
+`7z.exe` SHA-256 is
+`6ee3c0ed0b27663c1b948ae85a7c0bb073aed1498983182f3f0df1f6a8c30b2f`;
+`7z.dll` SHA-256 is
+`65e4c1f855f9ef6e8f0f5df8e3f27d9eb5f07311408639da0a1ca0b8f4871b0d`.
+Root's actual format query includes NSIS. This resolves the tool capability
+prerequisite; it does not by itself verify the pending Craftmine installer.
+
 ## Tests and limits
 
 - Local `node --test --test-isolation=none tests/godot-final-install-assets/release-run.test.mjs`: **4/4 passed**. Tests cover unique outputs, seal mutation, old installer exclusion, mandatory same-version pair, changed manifest, resealing, traversal/ADS/reserved Windows names/case aliases and links. These use synthetic bytes, not a real installer.
@@ -55,6 +68,11 @@ archive extractor.
   must rerun and retain its raw output. The obsolete exact-14-files assertion
   was updated to validate uniqueness and the newly mandatory GPL text; the
   shared product required-file list is unchanged.
+- Root reran the combined suite after that local permission failure: **9 passed,
+  0 failed, 1 explicitly skipped** (the unavailable symbolic-link privilege),
+  raw output `test-results/final-release-run-tests.log` in this worktree. The
+  logged `STAGE_OUTPUT_NOT_EMPTY` is the expected refusal exercised by a passing
+  negative test, not a failed build.
 - Actual full NSIS payload extraction awaits the root's frozen same-source
   build and full 7-Zip provisioning. It is not yet passed by these unit tests.
 - The blockmap is tied to this sealed build and hashed. Differential update

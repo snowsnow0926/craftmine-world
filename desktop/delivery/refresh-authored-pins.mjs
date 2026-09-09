@@ -17,6 +17,8 @@ const NEW_AUTHORED=new Set([
   'desktop/godot/bases/side-view/assets/ASSET_MANIFEST.json',
   'desktop/godot/bases/side-view/scripts/player/managed_input_source.gd',
   'desktop/godot/bases/side-view/scripts/player/managed_input_source.gd.uid',
+  'desktop/godot/shared/standalone_bootstrap.gd',
+  'desktop/godot/shared/windows-export.cfg',
 ]);
 export function authored(entry){return entry.author==='Craftmine World project'&&['authored','generated'].includes(entry.origin)&&['project-authored','MIT'].includes(entry.license);}
 function newEntry(relative,manifest){
@@ -48,6 +50,8 @@ export function refreshManifest(manifest,files,{approvedNew=NEW_AUTHORED}={}){
     const full=prefix+entry.path;
     if(MATERIALIZERS.has(full)){entry.distribution=['app-bundle'];entry.notes='Trusted world materialization entry point; required in the client, not a runtime game script. Licence status is unchanged.';}
     if(['desktop/godot/web/bridge.js','desktop/godot/web/shell.html'].includes(full))entry.distribution=['app-bundle','user-export'];
+    if(full==='desktop/godot/shared/standalone_bootstrap.gd')entry.distribution=['app-bundle','user-export'];
+    if(full==='desktop/godot/shared/windows-export.cfg')entry.distribution=['app-bundle'];
   }
   return result;
 }
