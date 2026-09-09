@@ -66,6 +66,7 @@ export const SAMPLE_SOURCES = Object.freeze({
   'real-process': 'Operating-system process counters sampled by PowerShell',
   'real-filesystem': 'Real files on disk measured by the Node process',
   'real-git': 'Real git.exe commands in this repository',
+  'real-rpc': 'Real craftmine-core.exe stdio JSON-RPC round trip (product path)',
   'synthetic-index': 'In-memory synthetic index built in a scratch directory; NOT product acceptance',
   skipped: 'Not measured',
 });
