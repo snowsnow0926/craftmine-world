@@ -2,9 +2,9 @@
 
 分支 `codex/godot-round3-s1-20260910`，工作树
 `D:/Craftmine World-worktrees/godot-round3-s1-20260910`，当前提交
-`d69b3a09d2834d4237f1b5a6c86e3590a3c40152`（tree
-`9e9f2fc006397b78aa02c28c457d2ce10456cd68`，4216 个跟踪文件，清单哈希
-`5d7a77c2f874895cd28af7da1511856508085cc87e530201f8bf5fa9025c9552`，工作区干净）。
+`b5be0c8ff0af171b89493ba385385d2cc458831a`（tree
+`9a9c60e11cdd6c8fd5571a9bac32f7cee50c94ac`，4222 个跟踪文件，清单哈希
+`876ea560b560b2bd5cdac5b43e187663da1e7b85b498328433d56262bfa6461f`，工作区干净）。
 完整身份见 [baseline-identity.json](baseline-identity.json)。
 
 起点：先按 R2 `2fa3c7c` 建了 `24edb0c`，随后消费 S7 已提交的综合基线
@@ -24,6 +24,8 @@
 | `a2e56a3` | 回收器在核心内部汇总 `craftmine_backup_pins`（`build` 类，`streaming`/`retained`），调用方漏传/伪造 `protectedBuilds` 不能解除保护 |
 | `44af773` | `godotWorld.copy`、`godotWorld.backupSnapshot` 从 Git 提交读取正文，Git 后端世界可复制、可出备份描述并保持 index/read/build |
 | `d69b3a0` | 世界初始化持久操作的实机 RPC 证据（仅测试） |
+| `b5be0c8` | 共享公共向量拒绝 `direct`/`closure` 字符串、`direct`/`closure` 对象、数字 version 三套同名语义（仅测试与向量） |
+| `fba17a1` | 本报告与原始证据 |
 
 规格/ADR 同步：`vendor/pi-desktop/docs/spec/dispatch-r1-core-content-wiring.md`（新增
 “Apply confirmation”“Reclaim protection”“RPC registration”三节）、
@@ -102,17 +104,18 @@ migration/checkpoint/draft/version/applied 引用与全部分支。证据：
 ### 3.2 未完成（明确未交付）
 
 **第 1 项（统一 AssetRef/ContentRef/BuildRef/ProgressRef/OperationContext 与
-`craftmine.assets-lock/1`）——未完成。**
+`craftmine.assets-lock/1`）——契约与公共向量已完成，消费者未迁移。**
 Rust 侧唯一契约已存在于 `content_history/contract.rs`（AssetRef/FileRef/ContentRef/BuildRef/
-ProgressRef/OperationContext/AssetLock，`craftmine.assets-lock/1`，规范文本+哈希），但三套同名
-语义仍并存：`library/installer.rs:275-284` 产出 `direct`/`closure` 字符串数组，
-`library/package_format.rs:438-493` 与 JS `plugins/craftmine-world/package-format.mjs` 要求对象，
-`asset_catalog/lock.rs`/`godot_builds.rs` 产出 `assets[]`。没有转换函数，也没有针对旧
-`direct/closure` 形态的显式迁移。这些是 S3（library/**）与 S5（asset_catalog/**）的文件；
-S1 只能维护契约与公共向量。**下一步（S1+S3）**：在
-`tests/godot-remaining/M/contract/asset-lock-vectors.json` 增加 `direct/closure` 反例向量，
-让 Rust `contract_vectors_tests.rs` 与 JS 运行器同时拒绝，再由 S3 把安装器/校验器改为只读写
-规范 `assets[]` 形态，并对旧数据走显式迁移。
+ProgressRef/OperationContext/AssetLock，`craftmine.assets-lock/1`，规范文本+哈希）。
+本轮把“同名格式三套语义”写进共享公共向量：`tests/godot-remaining/M/contract/
+asset-lock-vectors.json` 新增 `legacy-direct-closure-lock-shape`、
+`legacy-direct-object-lock-shape`、`numeric-asset-version-in-lock` 三条反例，全部要求
+`INVALID_ASSET_LOCK`，由 `content_history::contract_vectors_tests` 执行；Rust 契约测试与
+asset_catalog 的向量消费者均通过。**仍未完成**：`library/installer.rs:275-284` 仍产出
+`direct`/`closure` 字符串数组，`library/package_format.rs:438-493` 与 JS
+`plugins/craftmine-world/package-format.mjs` 仍要求对象形态，没有转换函数也没有旧数据显式迁移。
+这些是 S3（library/**）与 S5（asset_catalog/**）的文件。**下一步（S3+S1）**：S3 把安装器/
+校验器改为只读写规范 `assets[]` 形态并对旧数据走显式迁移；S1 已把契约与公共向量固定。
 
 **第 3 项（两个方案分支分别修改、检查和应用）——未完成。**
 `godot_projects.rs:1063-1077` 仍以 `CONTENT_WRITE_BRANCH_NOT_MAIN` 拒绝非 main 写入。
@@ -154,7 +157,8 @@ discard→新任务→压缩/重启后账目不重置。
 
 本轮把“模块实现存在但产品入口不存在”的四处正式登记补齐（第 6 项），把内容应用从调用方
 自证改成由核心解析的持久部署绑定（第 2 项），让 Git 后端世界可以复制和出备份描述
-（第 5 项），让回收保护集由核心强制汇总（第 7 项），并给出世界初始化持久操作的实机证据
-（第 4 项核心侧）。第 1、3、8 项未完成，其中第 3 项需要分支分域迁移，属于跨模块改动，
-已列明下一步。所有结论都有已提交源码、实机命令和原始日志支撑；未完成项按未完成记录，
-不并入完成分母。
+（第 5 项），让回收保护集由核心强制汇总（第 7 项），把“同名锁三套语义”写进共享公共向量
+（第 1 项契约侧），并给出世界初始化持久操作的实机证据（第 4 项核心侧）。第 1 项的消费者
+迁移、第 3 项分支创作、第 8 项未完成，其中第 3 项需要 `craftmine_godot_projects` 与
+`craftmine_godot_project_commits` 的分支分域迁移，属跨模块改动，已列明下一步。所有结论都有
+已提交源码、实机命令和原始日志支撑；未完成项按未完成记录，不并入完成分母。

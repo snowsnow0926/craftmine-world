@@ -1,12 +1,12 @@
 {
   "kind": "craftmine.godot.round3.s1-identity",
-  "generatedAt": "2026-09-10T04:10:00+08:00",
+  "generatedAt": "2026-09-10T04:25:00+08:00",
   "branch": "codex/godot-round3-s1-20260910",
   "worktree": "D:/Craftmine World-worktrees/godot-round3-s1-20260910",
-  "commit": "d69b3a09d2834d4237f1b5a6c86e3590a3c40152",
-  "tree": "9e9f2fc006397b78aa02c28c457d2ce10456cd68",
-  "trackedFiles": 4216,
-  "inventorySha256": "5d7a77c2f874895cd28af7da1511856508085cc87e530201f8bf5fa9025c9552",
+  "commit": "b5be0c8ff0af171b89493ba385385d2cc458831a",
+  "tree": "9a9c60e11cdd6c8fd5571a9bac32f7cee50c94ac",
+  "trackedFiles": 4222,
+  "inventorySha256": "876ea560b560b2bd5cdac5b43e187663da1e7b85b498328433d56262bfa6461f",
   "inventoryMethod": "sha256 over the sorted 'git ls-tree -r <commit> --format=%(objectname) %(path)' lines joined with LF plus a trailing LF",
   "dirty": false,
   "consumedBaseline": {
@@ -18,7 +18,9 @@
     "23bbfa3 feat(godot): bind a content apply to a launch-confirmed deployment",
     "a2e56a3 fix(godot): aggregate durable backup pins in the build reclaimer",
     "44af773 fix(godot): read Git-backed content when copying or describing a world",
-    "d69b3a0 test(godot): prove world initialization is one durable operation"
+    "d69b3a0 test(godot): prove world initialization is one durable operation",
+    "fba17a1 docs(godot): record the round-three S1 stage delivery and evidence",
+    "b5be0c8 test(godot): reject the competing assets-lock shapes in the shared vectors"
   ],
   "core": {
     "crate": "craftmine-core",
@@ -27,7 +29,8 @@
     "binary": "vendor/pi-desktop/target/debug/craftmine-core.exe",
     "binarySha256": "7bfe652b4040e056116735b286b4702713d3c3620a09e21eb043778d6ed7eb4f",
     "binaryBytes": 10683904,
-    "note": "MSVC relinking is not bit-reproducible, so the binary hash is recorded per build; the source identity above is the contract. Product sources are unchanged by the test-only commit d69b3a0."
+    "sourceCommit": "44af77323c678341f345bb9f0880335edd080d83",
+    "note": "The binary hash is unchanged by the later commits, which touch only tests, specs and the shared vector file. Product sources that produce the binary are those of 44af773. MSVC relinking is not bit-reproducible, so the hash is recorded per build; the source identity above is the contract."
   },
   "engine": {
     "godot": "not built or run by this task",
