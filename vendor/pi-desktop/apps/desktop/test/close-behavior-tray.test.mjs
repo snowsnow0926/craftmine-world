@@ -75,19 +75,17 @@ test("a stored quit preference still quits while the tray is resident", () => {
   // The close path itself quits directly rather than relying on that handler.
   assert.match(
     mainSource,
-    /windowsAllowedToClose\.add\(window\);\s*\n\s*app\.quit\(\);/,
+    /quitConfirmed = true;\s*\n\s*app\.quit\(\);/,
   );
 });
 
-test("permission to close does not leak into the next window", () => {
-  // A module-level latch stayed true after the window it was set for closed,
-  // so the window `ensureWindow()` created next skipped the prompt entirely.
+test("a failed world checkpoint cannot leave a window with permission to close", () => {
+  // Choosing Quit must not authorize a later native close before the world
+  // checkpoint succeeds. The quitting flag is set only after that barrier.
   assert.doesNotMatch(mainSource, /let allowWindowClose\b/);
-  assert.match(
-    mainSource,
-    /const windowsAllowedToClose = new WeakSet<BrowserWindow>\(\)/,
-  );
-  assert.match(mainSource, /windowsAllowedToClose\.has\(window\)/);
+  assert.doesNotMatch(mainSource, /windowsAllowedToClose/);
+  const quit = mainSource.slice(mainSource.indexOf('app.on("before-quit"'));
+  assert.ok(quit.indexOf('pluginViews.prepareCraftmineForQuit()') < quit.indexOf('quitting = true;'));
 });
 
 test("the stored close behavior is loaded before the first window", () => {

@@ -6,7 +6,7 @@ export function desktopRuntimePaths(directory) {
   const desktop=path.resolve('vendor/pi-desktop/apps/desktop');
   if(!process.env.CRAFTMINE_PACKAGED_ROOT)return {
     desktop,plugin:path.resolve('desktop/build/craftmine.world'),
-    binary:path.resolve('vendor/pi-desktop/target/release/craftmine-core.exe'),
+    binary:process.env.CRAFTMINE_CORE_BIN||path.resolve('vendor/pi-desktop/target/release/craftmine-core.exe'),
     hostEntry:path.join(desktop,'electron/main/plugin-host-process.mjs'),
   };
   const resources=path.join(path.resolve(process.env.CRAFTMINE_PACKAGED_ROOT),'resources');

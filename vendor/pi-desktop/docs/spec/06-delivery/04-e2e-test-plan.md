@@ -8467,3 +8467,10 @@ are withdrawn with ADR 0165.
 - Verify that an inherited PI profile does not become the Craftmine data directory, and different explicit profiles use different Chromium/lock directories. No relative profile path is accepted.
 - Build an unpacked Windows directory, then rerun the plugin/core and world persistence probes using its actual resources and extracted packaged plugin-host entry. Include source archive and license resources.
 - Status: layout 7/7 and profile/branding/update/resize/language targeted checks 21/21 pass. Packaged component probes 8/8 and 9/9 pass. Native Electron IPC, process restart, close-time save and installer acceptance remain pending.
+
+#### CRAFTMINE-004: Save barrier and failed-close retry
+
+- In an isolated headless world panel, change actual gameplay progress through its authenticated message API. Inject a bridge save failure, request close, and verify both the uncommitted page state and the older Rust state remain available. Verify controls resume without any input or focus API call.
+- Delay a real save and verify the close acknowledgement waits; retry successfully, stop the real plugin/Rust processes and reopen the committed final progress. Verify the acknowledgement identifies the actual saved world, revision and build.
+- Pure lifecycle tests cover a missing acknowledgement, a hanging renderer, cancellation on failure and unrelated plugin isolation. The Windows close handler must not retain permission to bypass a failed world checkpoint.
+- Validation: root `node tests/desktop-worlds-browser.mjs` (14 checks), desktop `node --test test/craftmine-lifecycle.test.mjs test/close-behavior-tray.test.mjs`. Full native Electron close and tab lifecycle remain independently tracked acceptance steps.

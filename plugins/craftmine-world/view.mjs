@@ -9,7 +9,9 @@ const form = document.getElementById('create-form');
 const errorBox = document.getElementById('error');
 const bridge = globalThis.pluginBridge;
 const requests = new Map();
-let current, nonce, loaded=false, busy=false, lastSaved='';
+let current, nonce, loaded=false, busy=false, closing=false, lastSaved='';
+let activeOperation=Promise.resolve();
+let closeOperation, closeGeneration=0;
 
 function applyAppearance(appearance) {
   if(appearance?.base==='light'||appearance?.base==='dark') {
@@ -32,35 +34,66 @@ function showError(error) {
 }
 
 function controls() {
-  select.disabled=!bridge||busy;newButton.disabled=!bridge||busy;saveButton.disabled=!bridge||busy||!loaded;
+  select.disabled=!bridge||busy||closing;newButton.disabled=!bridge||busy||closing;saveButton.disabled=!bridge||busy||closing||!loaded;
+  frame.inert=closing;
 }
 
-async function action(run) {
-  if(busy)return;
+function action(run) {
+  if(busy||closing)return Promise.resolve();
   busy=true;controls();errorBox.hidden=true;delete status.dataset.error;
-  try {return await run();}catch(error){showError(error);}
-  finally {busy=false;controls();}
+  activeOperation=(async()=>{
+    try {return await run();}catch(error){send('resume');showError(error);}
+    finally {busy=false;controls();}
+  })();
+  return activeOperation;
 }
 
-function snapshot() {
+function snapshot({freeze=false}={}) {
   if(!loaded)return Promise.reject(Error('世界仍在载入'));
   return new Promise((resolve,reject)=>{
     const requestId=crypto.randomUUID();
     const timer=setTimeout(()=>{requests.delete(requestId);reject(Error('读取世界超时'));},5000);
-    requests.set(requestId,{resolve,reject,timer});send('snapshot',{requestId});
+    requests.set(requestId,{resolve,reject,timer});send('snapshot',{requestId,freeze});
   });
 }
 
-async function save() {
+async function save({freeze=false}={}) {
   if(!bridge||!loaded||!current?.id)return;
-  const result=await snapshot();
+  const result=await snapshot({freeze});
   const serialized=JSON.stringify(result.snapshot);
-  if(serialized!==lastSaved) {
+  if(freeze||serialized!==lastSaved) {
     status.textContent='保存中…';
     current=await bridge.invoke('world.saveProgress',{id:current.id,revision:current.revision,baseBuild:current.world.build.id,snapshot:result.snapshot});
     lastSaved=serialized;
   }
   status.textContent='已保存';
+  return {worldId:current.id,revision:current.revision,buildId:current.world.build.id};
+}
+
+function cancelClose() {
+  closeGeneration++;closing=false;controls();send('resume');
+}
+
+function prepareClose() {
+  if(closing&&closeOperation)return closeOperation;
+  const generation=++closeGeneration, previous=activeOperation;
+  closing=true;controls();
+  closeOperation=(async()=>{
+    try {
+      await previous;
+      if(generation!==closeGeneration)throw Error('退出已取消');
+      busy=true;controls();
+      if(!loaded)return {loaded:false};
+      const checkpoint=await save({freeze:true});
+      if(generation!==closeGeneration)throw Error('退出已取消');
+      return {loaded:true,...checkpoint};
+    }catch(error){
+      if(generation===closeGeneration)cancelClose();
+      showError(error);throw error;
+    }finally{busy=false;controls();}
+  })();
+  activeOperation=closeOperation.catch(()=>{});
+  return closeOperation;
 }
 
 async function refreshList() {
@@ -92,8 +125,9 @@ addEventListener('message',event=>{
   if(pending){requests.delete(message.requestId);clearTimeout(pending.timer);message.type==='error'?pending.reject(Error(message.message)):pending.resolve(message);}
 });
 
-// A read-only diagnostics surface also used by the isolated resource probe.
-globalThis.craftmineView=Object.freeze({snapshot});
+// Only the trusted product panel owns this lifecycle surface. Authored code
+// lives in the opaque game iframe and cannot reach it.
+globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose});
 
 saveButton.addEventListener('click',()=>void action(save));
 newButton.addEventListener('click',()=>{form.hidden=!form.hidden;});
@@ -101,16 +135,16 @@ document.getElementById('cancel-create').addEventListener('click',()=>{form.hidd
 form.addEventListener('submit',event=>{
   event.preventDefault();
   void action(async()=>{
-    await save();
+    await save({freeze:true});
     const record=await bridge.invoke('world.create',{title:document.getElementById('world-name').value});
     form.hidden=true;form.reset();mount(record);await refreshList();
   });
 });
 select.addEventListener('change',()=>{
   const id=select.value;
-  void action(async()=>{await save();mount(await bridge.invoke('world.open',{id}));await refreshList();}).finally(()=>{select.value=current?.id||'';});
+  void action(async()=>{await save({freeze:true});mount(await bridge.invoke('world.open',{id}));await refreshList();}).finally(()=>{select.value=current?.id||'';});
 });
-setInterval(()=>{if(loaded&&!busy&&bridge)void action(save);},10000);
+setInterval(()=>{if(loaded&&!busy&&!closing&&bridge)void action(save);},10000);
 
 void action(async()=>{
   if(!bridge) {mount({title:initialWorld.build.scene.title,world:initialWorld});select.options[0].textContent=initialWorld.build.scene.title;return;}

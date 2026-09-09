@@ -377,7 +377,6 @@ let quitConfirmed = false;
 // Windows whose close handler has already decided to let the close through.
 // Per-window rather than a module-level latch, so a real close never leaks
 // permission to close into the next window `ensureWindow()` creates.
-const windowsAllowedToClose = new WeakSet<BrowserWindow>();
 
 let pluginNotificationPermission: PluginNotificationPermission = "unknown";
 const pluginNativeNotifications = new Set<SystemNotification>();
@@ -3338,8 +3337,7 @@ async function createWindow() {
     // default close.
     if (
       process.platform === "darwin" ||
-      quitting ||
-      windowsAllowedToClose.has(window)
+      quitting
     ) {
       return;
     }
@@ -3371,7 +3369,6 @@ async function createWindow() {
       // the D216 tray is resident. Mark `quitConfirmed` because the user
       // already chose to quit in the close-behavior dialog above.
       quitConfirmed = true;
-      windowsAllowedToClose.add(window);
       app.quit();
     })();
   });
@@ -8233,6 +8230,7 @@ function registerIpc() {
 
   handle(IPC.invoke.pluginDisable, async (id: string) => {
     if (!host) throw new Error("host unavailable");
+    if (id === "craftmine.world") await pluginViews.prepareCraftmineForQuit();
     pluginViews.closePlugin(id);
     if (id === BROWSER_PLUGIN_ID) browserHost.disposeGuest();
     await plugins.unload(id);
@@ -8244,6 +8242,7 @@ function registerIpc() {
 
   handle(IPC.invoke.pluginUninstall, async (id: string) => {
     if (!host) throw new Error("host unavailable");
+    if (id === "craftmine.world") await pluginViews.prepareCraftmineForQuit();
     pluginViews.closePlugin(id);
     await plugins.unload(id);
     logger.app("plugin", "info", "plugin uninstalled", { pluginId: id });
@@ -8690,7 +8689,7 @@ function registerIpc() {
   handle(
     IPC.invoke.pluginViewClose,
     async (payload: { pluginId?: string; viewId?: string }) => {
-      pluginViews.close(String(payload?.pluginId ?? ""), String(payload?.viewId ?? ""));
+      await pluginViews.close(String(payload?.pluginId ?? ""), String(payload?.viewId ?? ""));
       return { ok: true };
     },
   );
@@ -9088,6 +9087,9 @@ async function settleRunningTurnsForQuit(): Promise<void> {
   }
 }
 
+let craftmineQuitPrepared = false;
+let craftmineQuitPreparation: Promise<void> | null = null;
+
 app.on("before-quit", (event) => {
   // A duplicate launch has no host, sidecar, panel, or outbox of its own, and
   // the shutdown sequence below would write into the running instance's data
@@ -9115,6 +9117,22 @@ app.on("before-quit", (event) => {
         quitConfirmed = false;
       }
     });
+    return;
+  }
+
+  if (!craftmineQuitPrepared) {
+    if (craftmineQuitPreparation) return;
+    craftmineQuitPreparation = pluginViews.prepareCraftmineForQuit();
+    void craftmineQuitPreparation.then(() => {
+      craftmineQuitPrepared = true;
+      app.quit();
+    }, (error) => {
+      quitConfirmed = false;
+      logger.app("persistence", "error", "world checkpoint blocked application quit", { data: String(error) });
+      sendToRenderer(IPC.event.toast, { message: updaterLocale.startsWith("zh")
+        ? "世界尚未保存，已暂停退出。请检查世界面板后重试。"
+        : "Your world has not been saved. Check the World panel and retry quitting." });
+    }).finally(() => { craftmineQuitPreparation = null; });
     return;
   }
 

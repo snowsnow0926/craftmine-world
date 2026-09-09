@@ -2,6 +2,7 @@ import { session, shell, WebContentsView, type BrowserWindow } from "electron";
 import { pathToFileURL } from "node:url";
 import { join } from "node:path";
 import { parseAllowedExternalUrl } from "./safe-open-external";
+import { prepareWorldViewsForQuit } from "./craftmine-lifecycle";
 import {
   applyPluginEgressPolicy,
   pluginSessionPartition,
@@ -192,7 +193,9 @@ export class PluginViewHost {
     this.emitSurface();
   }
 
-  close(pluginId: string, viewId: string): void {
+  async close(pluginId: string, viewId: string): Promise<void> {
+    const entry = this.views.get(pluginViewKey(pluginId, viewId));
+    if (entry) await this.prepareEntries([entry]);
     this.destroy(pluginViewKey(pluginId, viewId));
   }
 
@@ -205,6 +208,18 @@ export class PluginViewHost {
 
   dispose(): void {
     for (const key of [...this.views.keys()]) this.destroy(key);
+  }
+
+  async prepareCraftmineForQuit(): Promise<void> {
+    await this.prepareEntries([...this.views.values()]);
+  }
+
+  private async prepareEntries(entries: LiveView[]): Promise<void> {
+    await prepareWorldViewsForQuit(entries.map((entry) => ({
+      pluginId: entry.pluginId,
+      prepare: () => entry.view.webContents.executeJavaScript("globalThis.craftmineView.prepareClose()", false),
+      cancel: () => entry.view.webContents.executeJavaScript("globalThis.craftmineView.cancelClose()", false),
+    })));
   }
 
   private destroy(key: string): void {
@@ -250,7 +265,7 @@ export class PluginViewHost {
   private evictBeyondLimit(): void {
     while (this.views.size > MAX_LIVE_VIEWS) {
       const candidates = [...this.views.values()]
-        .filter((entry) => entry.key !== this.visibleKey)
+        .filter((entry) => entry.key !== this.visibleKey && entry.pluginId !== "craftmine.world")
         .sort((a, b) => a.usedAt - b.usedAt);
       const oldest = candidates[0];
       if (!oldest) return;

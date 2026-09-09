@@ -12,9 +12,9 @@
     "recurringDevelopment": true,
     "previousLiveCompactionTestStopped": true,
     "automationId": "craftmine-windows",
-    "worktree": null,
-    "branch": null,
-    "nextStep": "第 1 批已合并，创建新的 codex/ 分支和独立工作树，先完成 W1 的关闭保存屏障、旧存档副本导入、无可见窗口验收，再推进 W2。禁止重复创建目标或并发写入。",
+    "worktree": "D:/Craftmine World-worktrees/pi-client-w1-20260909",
+    "branch": "codex/pi-client-w1-20260909",
+    "nextStep": "沿当前工作树继续 W1：关闭保存屏障已通过 14 项真实组件联通和 10 项退出回归，接下来完成旧存档副本导入、无可见窗口的原生 Electron 验收，再推进 W2。禁止重复创建目标或并发写入。",
     "cleanupNote": "旧工作树已注销、分支已删除；D:/Craftmine World-worktrees/pi-client-20260909 有残留，递归删除被自动执行审核以 blocked by policy 拒绝。保留且不自动重试，不复用该目录。"
   },
   "windowsClientPlan": {
