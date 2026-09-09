@@ -2,6 +2,7 @@
 import { makeWorldRuntime } from './world-runtime.mjs';
 import { createExtensionTable, disposeExtensionTable } from './extension-runtime.mjs';
 import { observePreview, stepPreview } from './preview-probe.mjs';
+import { installNativeGameAcceptance } from './craftmine-acceptance-game.mjs';
 (() => {
   const nonce = location.hash.slice(1) || document.querySelector('meta[name="craftmine-nonce"]')?.content || '', parentOrigin = new URL(location.href).origin;
   const replyOrigin = parentOrigin === 'null' ? '*' : parentOrigin;
@@ -10,6 +11,7 @@ import { observePreview, stepPreview } from './preview-probe.mjs';
   const enter = document.getElementById('enter'), notice = document.getElementById('notice'); let noticeTimer;
   function inform(text,{tone='info',duration=4500}={}) { notice.textContent=text;notice.dataset.tone=tone;notice.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>notice.hidden=true,Math.max(1000,Math.min(10000,Number.isFinite(duration)?duration:4500))); }
   const BlankRuntime=makeWorldRuntime({send,inform,enter,isFrozen:()=>frozen});
+  installNativeGameAcceptance({getEngine:()=>engine,freeze:()=>{frozen=true;}});
   const snapshot=()=>['craftmine.scene/3','craftmine.scene/4'].includes(build?.scene.format)||engine.behaviors?.data.value.format==='craftmine.behavior-state/3'||engine.behaviors?.data.value.archive.length||Object.keys(engine.behaviors?.data.value.inventory||{}).length?{format:'craftmine.progress/3',player:{...engine.p},gameplay:engine.play.snapshot(),behaviors:engine.behaviors.snapshot()}:engine.play?.definitions.length||Object.keys(engine.play?.state.targets||{}).length||Object.keys(engine.play?.state.archivedTargets||{}).length?{format:'craftmine.progress/2',player:{...engine.p},gameplay:engine.play.snapshot()}:{format:'craftmine.progress/1',player:{...engine.p}};
   window.addEventListener('message',async event=>{
     const m=event.data;if(event.source!==parent||event.origin!==parentOrigin||m?.nonce!==nonce||m.channel!=='craftmine-host/1')return;

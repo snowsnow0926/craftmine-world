@@ -17,6 +17,9 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
     if method == "budget.configure" {
         return journal.budget_configure(params);
     }
+    if method == "budget.findReceipt" {
+        return journal.budget_find_receipt(params);
+    }
     if method.starts_with("budget.") {
         return journal.budget_call(method, params);
     }

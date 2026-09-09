@@ -8628,3 +8628,18 @@ Collect actual startup, desktop frame intervals and model-workflow durations wit
 ### CRAFTMINE-016 — Player cumulative-token configuration
 
 Exhaust a finite task budget with known and unknown usage, interrupt it, and explicitly configure unlimited tokens through the player channel. Reopen and resume without changing the owner or losing usage. Replay the same operation without a second audit or write; reject different payloads, foreign session/world/generation and model proxy calls. New owners are unlimited; migrated databases and schema-1/2 archives retain old finite policies. Export schema 3 with audit receipts and reject unknown future archive versions. Independently exhaust request, compaction and deadline limits while cumulative tokens are unlimited.
+
+### CRAFTMINE-BATCH07-NATIVE — Fixed creation through the real native lifecycle
+
+Run `node tests/dispatch/batch07/native/gameplay.mjs` with the explicitly authorized
+local configuration in a marked offscreen profile. Import the fixed D example,
+edit its target through real PI tool dispatch, and obtain actual model review and
+player-form application. Capture the applied creation into Rust library storage,
+install its exact reference into a fresh world, verify/review/apply again, and
+exercise actual raycast shooting, melee range/cooldown, gravity damage, extension
+healing and single rewards. Save and completely restart Electron before checking
+ammo, reload, target death, inventory, initialized stamps and extension state.
+Preserve failed attempts. Repeat on an integrity-checked packaged executable.
+Use the fixed named native preload capability; ordinary formal-world request-step
+messages remain rejected. Never use OS input, focus, visible windows or SQLite
+writes. Fixed authorship must not be presented as model-generated content.

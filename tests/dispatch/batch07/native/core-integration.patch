@@ -1,0 +1,21 @@
+diff --git a/vendor/pi-desktop/crates/craftmine-core/src/main.rs b/vendor/pi-desktop/crates/craftmine-core/src/main.rs
+index f0ef15e..817b4e9 100644
+--- a/vendor/pi-desktop/crates/craftmine-core/src/main.rs
++++ b/vendor/pi-desktop/crates/craftmine-core/src/main.rs
+@@ -77,7 +77,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
+     if method.starts_with("application.") {
+         let id = || params["id"].as_str().context("APPLICATION_ID_REQUIRED");
+         return match method {
+-            "application.prepare" => journal.application_prepare(
++            "application.prepare" => journal.application_prepare_with_review_warnings(
+                 id()?,
+                 params["token"].as_str().context("TOKEN_REQUIRED")?,
+                 params["verificationId"]
+@@ -87,6 +87,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
+                 params["worldId"].as_str().context("WORLD_ID_REQUIRED")?,
+                 params["revision"].as_u64().context("REVISION_REQUIRED")?,
+                 &params["snapshot"],
++                params.get("acknowledgeReviewWarnings").map(|v|v.as_bool().context("INVALID_REVIEW_ACKNOWLEDGEMENT")).transpose()?.unwrap_or(false),
+             ),
+             "application.commit" => journal.application_commit(
+                 id()?,
