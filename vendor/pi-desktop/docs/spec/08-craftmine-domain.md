@@ -133,3 +133,23 @@ semantic visual acceptance. ResizeObserver redraws after hidden-canvas resize.
 Desktop syntax checking uses bundled @babel/parser 7.29.8 (license included), never
 a subprocess using Electron's executable. The web compiler retains Node --check
 and explicitly refuses an unprepared Electron runtime. See ADR 0308.
+
+## Reviewed application transactions
+
+The Rust review journal binds the host request and executor model to an immutable
+verification result. A one-shot model response and its executable assertion plan
+are sealed before test execution. Completed reviews preserve the exact response,
+usage and assertion outcomes. The advisory verdict itself never prevents player
+application; only machine gates may do so. See ADR 0309.
+
+The private application API prepares one exact verified/reviewed build against
+the latest world revision and progress. It excludes concurrent world/draft saves,
+requires real native load/render evidence with the same player position, and
+atomically commits the world, receipt and consumed draft. Preflight startup
+effects are discarded, so formal activation does not replay preflight rewards.
+Abort, startup and timeout retain the original world and draft. Only a consumed
+draft may advance its next turn's base without an explicit conflict resolution.
+
+These private Rust operations are the application foundation. The broker's real
+model review, request assertion execution and player UI/native flow are separate
+integration work; journal fixtures do not constitute end-to-end acceptance.

@@ -14,6 +14,62 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
+    if method.starts_with("review.") {
+        let id = || params["id"].as_str().context("REVIEW_ID_REQUIRED");
+        return match method {
+            "review.start" => journal.review_start(
+                params["verificationId"]
+                    .as_str()
+                    .context("CHECK_REQUIRED")?,
+                id()?,
+                params["token"].as_str().context("TOKEN_REQUIRED")?,
+            ),
+            "review.finish" => journal.review_finish(
+                id()?,
+                params["token"].as_str().context("TOKEN_REQUIRED")?,
+                &params["output"],
+            ),
+            "review.plan" => journal.review_plan(
+                id()?,
+                params["token"].as_str().context("TOKEN_REQUIRED")?,
+                &params["plan"],
+            ),
+            "review.read" => journal.review_read(id()?),
+            "review.list" => Ok(serde_json::to_value(
+                journal.review_list(
+                    params["verificationId"]
+                        .as_str()
+                        .context("CHECK_REQUIRED")?,
+                )?,
+            )?),
+            "review.cancel" => journal.review_cancel(id()?),
+            _ => bail!("UNKNOWN_METHOD"),
+        };
+    }
+    if method.starts_with("application.") {
+        let id = || params["id"].as_str().context("APPLICATION_ID_REQUIRED");
+        return match method {
+            "application.prepare" => journal.application_prepare(
+                id()?,
+                params["token"].as_str().context("TOKEN_REQUIRED")?,
+                params["verificationId"]
+                    .as_str()
+                    .context("CHECK_REQUIRED")?,
+                params["reviewId"].as_str().context("REVIEW_REQUIRED")?,
+                params["worldId"].as_str().context("WORLD_ID_REQUIRED")?,
+                params["revision"].as_u64().context("REVISION_REQUIRED")?,
+                &params["snapshot"],
+            ),
+            "application.commit" => journal.application_commit(
+                id()?,
+                params["token"].as_str().context("TOKEN_REQUIRED")?,
+                &params["evidence"],
+            ),
+            "application.read" => journal.application_read(id()?),
+            "application.abort" => journal.application_abort(id()?),
+            _ => bail!("UNKNOWN_METHOD"),
+        };
+    }
     if method.starts_with("verification.") {
         let ctx: Option<WorkspaceContext> = params
             .get("context")
@@ -21,11 +77,12 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
             .transpose()?;
         let id = || params["id"].as_str().context("VERIFICATION_ID_REQUIRED");
         return match method {
-            "verification.submit" => journal.verification_submit(
+            "verification.submit" => journal.verification_submit_with_origin(
                 ctx.as_ref().context("HOST_IDENTITY_REQUIRED")?,
                 params["toolCallId"].as_str().context("CALL_ID_REQUIRED")?,
                 params["revision"].as_u64().context("REVISION_REQUIRED")?,
                 params["summary"].as_str().context("SUMMARY_REQUIRED")?,
+                &params["origin"],
             ),
             "verification.claim" => journal
                 .verification_claim(id()?, params["token"].as_str().context("TOKEN_REQUIRED")?),
@@ -168,6 +225,8 @@ fn main() -> Result<()> {
     }
     let mut journal = TaskJournal::open(&directory.join("tasks.sqlite"))?;
     journal.verification_recover()?;
+    journal.review_recover()?;
+    journal.application_recover()?;
     let mut input = io::stdin().lock();
     let mut output = io::stdout().lock();
     loop {

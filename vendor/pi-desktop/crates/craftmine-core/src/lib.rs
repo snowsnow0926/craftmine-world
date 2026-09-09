@@ -9,7 +9,9 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 
+mod applications;
 mod legacy;
+mod reviews;
 mod verification;
 mod workspaces;
 mod worlds;
@@ -138,6 +140,8 @@ impl TaskJournal {
         legacy::migrate(&db)?;
         workspaces::migrate(&db)?;
         verification::migrate(&db)?;
+        reviews::migrate(&db)?;
+        applications::migrate(&db)?;
         let directory = std::fs::canonicalize(
             path.parent()
                 .filter(|p| !p.as_os_str().is_empty())

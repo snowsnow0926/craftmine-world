@@ -8564,3 +8564,7 @@ observations are real regressions, not grounds to relax the acceptance assertion
 The targeted broker test injects a native cancellation transport failure: stopping
 must still reject late job success. The bundled parser test compiles top-level
 side-effect syntax without executing it and rejects malformed module syntax.
+
+### CRAFTMINE-012 — Reviewed application transaction
+
+Prepare an exact successful check using the latest saved player progress and a completed advisory review with executed request assertions. Verify that an advisory block remains visible but does not veto passing machine checks. Reject missing/failed review evidence, wrong build/runner/player, stale revisions and concurrent draft/progress writes. Abort or restart before commit must retain the old world and draft. Commit twice with the same receipt must publish once; restart must recover the applied world and let the next turn use its new base. Preserve dirty drafts from other bases. Journal unit fixtures cover these transitions; actual PI review, native renderer and panel acceptance remain required separately.

@@ -24,7 +24,7 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     Ok(())
 }
 
-fn read(db: &Connection, id: &str) -> Result<Value> {
+pub(super) fn read(db: &Connection, id: &str) -> Result<Value> {
     expire(db)?;
     let (status,input,hash,output,output_hash,created,updated): (String,String,String,Option<String>,Option<String>,i64,i64) = db.query_row(
         "SELECT status,input,input_hash,output,output_hash,created_at,updated_at FROM craftmine_verifications WHERE id=?1", [id],
@@ -59,7 +59,7 @@ fn expire(db: &Connection) -> Result<()> {
     Ok(())
 }
 
-fn assert_current(db: &Connection, input: &Value) -> Result<()> {
+pub(super) fn assert_current(db: &Connection, input: &Value) -> Result<()> {
     let binding = &input["binding"];
     let id = binding["taskId"].as_str().context("TASK_ID_REQUIRED")?;
     let task = read_task(db, id)?;
@@ -116,13 +116,24 @@ impl TaskJournal {
         revision: u64,
         description: &str,
     ) -> Result<Value> {
+        self.verification_submit_with_origin(ctx, call, revision, description, &Value::Null)
+    }
+
+    pub fn verification_submit_with_origin(
+        &mut self,
+        ctx: &WorkspaceContext,
+        call: &str,
+        revision: u64,
+        description: &str,
+        origin: &Value,
+    ) -> Result<Value> {
         workspaces::call_id(call)?;
         ensure!(
             !description.trim().is_empty() && description.chars().count() <= 800,
             "INVALID_SUMMARY"
         );
         let request_hash = digest(&document(
-            &json!({"revision":revision,"summary":description}),
+            &json!({"revision":revision,"summary":description,"origin":origin}),
         )?);
         let tx = self
             .db
@@ -152,7 +163,7 @@ impl TaskJournal {
         )?;
         ensure!(!active, "VERIFICATION_BUSY");
         let input = json!({"worldId":workspace.world_id,"binding":binding,"workspaceRevision":revision,
-            "draftHash":workspace.task.draft_hash,"draft":workspace.task.draft,"world":world.world,"summary":description});
+            "draftHash":workspace.task.draft_hash,"draft":workspace.task.draft,"world":world.world,"summary":description,"origin":origin});
         let body = serde_json::to_string(&input)?;
         ensure!(
             body.len() <= worlds::MAX_WORLD_BYTES + super::MAX_DOCUMENT_BYTES,

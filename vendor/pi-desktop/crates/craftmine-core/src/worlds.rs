@@ -199,6 +199,7 @@ impl TaskJournal {
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
         let mut current = read(&tx, id)?;
+        super::applications::assert_idle(&tx, id)?;
         ensure!(
             current.summary.revision == expected_revision,
             "WORLD_REVISION_CONFLICT"

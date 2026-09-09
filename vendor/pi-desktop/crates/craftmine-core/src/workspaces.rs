@@ -123,6 +123,7 @@ pub(super) fn inspect(db: &Connection, ctx: &WorkspaceContext) -> Result<Workspa
 }
 
 pub(super) fn assert_live(db: &Connection, snapshot: &WorkspaceSnapshot) -> Result<()> {
+    super::applications::assert_idle(db, &snapshot.world_id)?;
     ensure!(snapshot.task.status == "running", "TASK_INACTIVE");
     let binding = &snapshot.task.binding;
     let ended: bool = db.query_row(
@@ -220,6 +221,7 @@ impl TaskJournal {
             .map(|p| p.1.as_str())
             .unwrap_or(selected_world);
         let world = worlds::read(&tx, world_id)?;
+        super::applications::assert_idle(&tx, world_id)?;
         let base = world.world.build["id"]
             .as_str()
             .context("BUILD_ID_REQUIRED")?;
@@ -241,9 +243,15 @@ impl TaskJournal {
         }
         let mut resumed_from = None;
         let draft = if let Some(previous) = &prior_task {
-            // A finished turn is not an applied candidate. Preserve all edits
-            // until publication advances the base or an explicit discard exists.
-            if previous.binding.base_build == base {
+            // Only an atomic application receipt permits moving to the new base.
+            // A normal completed turn still owns unapplied edits.
+            if super::applications::was_applied(
+                &tx,
+                &previous.binding.task_id,
+                &previous.draft_hash,
+            )? {
+                json!({"scene":world.world.build["scene"]})
+            } else if previous.binding.base_build == base {
                 resumed_from = Some(previous.binding.task_id.clone());
                 previous.draft.clone()
             } else {
