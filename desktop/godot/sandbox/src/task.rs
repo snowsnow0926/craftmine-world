@@ -20,6 +20,7 @@ use crate::{
     Result,
 };
 use sha2::{Digest, Sha256};
+use serde::Serialize;
 use std::{
     fs,
     io::Read,
@@ -68,6 +69,7 @@ impl TaskKind {
 pub struct TaskBudget {
     pub timeout: Duration,
     pub job: JobPolicy,
+    pub resource: ResourceBudget,
 }
 
 impl Default for TaskBudget {
@@ -75,8 +77,112 @@ impl Default for TaskBudget {
         Self {
             timeout: Duration::from_secs(600),
             job: JobPolicy::default(),
+            resource: ResourceBudget::default(),
         }
     }
+}
+
+/// Runtime resource ceiling sampled by the host while a task runs.
+///
+/// This is deliberately described as a sampled budget, not a filesystem quota:
+/// the task can transiently exceed the limit by up to one sampling interval,
+/// and the parent then terminates the whole job. Windows has no per-directory
+/// hard disk quota that can be applied to an AppContainer without machine-wide
+/// policy, which this project must not change.
+#[derive(Clone, Copy, Debug)]
+pub struct ResourceBudget {
+    /// Maximum bytes allowed under the task's writable `work` directory.
+    pub work_bytes: u64,
+    /// Maximum size of the task's inherited diagnostic log file.
+    pub log_bytes: u64,
+    /// How often the parent samples both counters.
+    pub sample_interval: Duration,
+}
+
+impl Default for ResourceBudget {
+    fn default() -> Self {
+        Self {
+            work_bytes: 1024 * 1024 * 1024,
+            log_bytes: 4 * 1024 * 1024,
+            sample_interval: Duration::from_millis(200),
+        }
+    }
+}
+
+/// What the parent actually measured and enforced for one task.
+#[derive(Clone, Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ResourceEnforcement {
+    pub policy_version: String,
+    /// Honest scope statement for consumers; see [`ResourceBudget`].
+    pub scope: String,
+    pub hard_filesystem_quota: bool,
+    pub work_bytes_limit: u64,
+    pub log_bytes_limit: u64,
+    pub sample_interval_ms: u64,
+    pub samples: u64,
+    pub max_observed_work_bytes: u64,
+    pub max_observed_log_bytes: u64,
+    pub enforced: bool,
+    pub reason: Option<String>,
+}
+
+impl ResourceEnforcement {
+    fn new(budget: &ResourceBudget) -> Self {
+        Self {
+            policy_version: RESOURCE_POLICY_VERSION.into(),
+            scope: "sampled-task-work-directory-and-log-size; parent terminates the job on breach".into(),
+            hard_filesystem_quota: false,
+            work_bytes_limit: budget.work_bytes,
+            log_bytes_limit: budget.log_bytes,
+            sample_interval_ms: budget.sample_interval.as_millis() as u64,
+            samples: 0,
+            max_observed_work_bytes: 0,
+            max_observed_log_bytes: 0,
+            enforced: false,
+            reason: None,
+        }
+    }
+}
+
+pub const RESOURCE_POLICY_VERSION: &str = "craftmine.windows.sampled-work-budget.v1";
+
+/// Bounded recursive byte count. Stops as soon as the cap is exceeded so a
+/// hostile task cannot make the parent walk an unbounded tree, and ignores
+/// entries that vanish mid-walk: the Godot editor creates and deletes files
+/// continuously, and a transient `NotFound` must never fail the task.
+fn directory_bytes(root: &Path, cap: u64) -> Result<u64> {
+    fn visit(root: &Path, cap: u64, total: &mut u64) {
+        use std::os::windows::fs::MetadataExt;
+        let entries = match fs::read_dir(root) {
+            Ok(entries) => entries,
+            Err(_) => return,
+        };
+        for entry in entries.flatten() {
+            if *total > cap {
+                return;
+            }
+            let path = entry.path();
+            let metadata = match fs::symlink_metadata(&path) {
+                Ok(metadata) => metadata,
+                Err(_) => continue,
+            };
+            if metadata.file_attributes() & 0x400 != 0 {
+                // Reparse point: never followed or counted.
+                continue;
+            }
+            if metadata.is_dir() {
+                visit(&path, cap, total);
+            } else if metadata.is_file() {
+                *total = total.saturating_add(metadata.len());
+            }
+        }
+    }
+    let mut total = 0u64;
+    if root.is_dir() {
+        visit(root, cap, &mut total);
+    }
+    Ok(total)
 }
 
 /// A pinned engine input. The caller supplies the hash, never the task.
@@ -239,12 +345,20 @@ pub struct Task {
     pub kind: TaskKind,
     pub layout: TaskLayout,
     pub budget: TaskBudget,
+    /// AppContainer profile name, recorded so a later recovery pass can
+    /// re-derive and verify the SID before deleting it.
+    pub profile_name: String,
+    /// Parent-owned identity nonce, also written to the task root marker.
+    pub identity_nonce: String,
     profile: AppContainerProfile,
     desktop: PrivateDesktop,
     sid: String,
     status: TaskStatus,
     log: PathBuf,
     engine: PathBuf,
+    process_verification: Option<crate::verification::ProcessVerification>,
+    network_preflight: Option<crate::preflight::NetworkPreflight>,
+    resource_enforcement: Option<ResourceEnforcement>,
 }
 
 impl Task {
@@ -280,8 +394,11 @@ impl Task {
         if let Some(source) = project_source {
             copy_tree(source, &layout.project)?;
         }
+        let identity_nonce = crate::recovery::new_identity_nonce();
+        crate::recovery::write_identity(&layout.root, task_id, &identity_nonce)?;
+        let profile_name = format!("craftmine.godot.task.{task_id}");
         let profile = AppContainerProfile::create(
-            &format!("craftmine.godot.task.{task_id}"),
+            &profile_name,
             "Craftmine managed Godot build task",
         )?;
         let sid = unsafe { crate::report::sid_to_string(profile.sid())? };
@@ -308,11 +425,16 @@ impl Task {
         let log = layout.logs.join("task.log");
         let engine = layout.bin.join(&pins.editor.file_name);
         Ok(Self {
+            process_verification: None,
+            network_preflight: None,
+            resource_enforcement: None,
             engine,
             task_id: task_id.to_string(),
             kind,
             layout,
             budget,
+            profile_name,
+            identity_nonce,
             profile,
             desktop,
             sid,
@@ -337,6 +459,33 @@ impl Task {
         &self.log
     }
 
+    pub fn process_verification(&self) -> Option<&crate::verification::ProcessVerification> { self.process_verification.as_ref() }
+    pub fn network_preflight(&self) -> Option<&crate::preflight::NetworkPreflight> { self.network_preflight.as_ref() }
+    pub fn resource_enforcement(&self) -> Option<&ResourceEnforcement> { self.resource_enforcement.as_ref() }
+
+    /// Host-only entry: the preflight binary is the caller's pinned broker,
+    /// not a model-provided path. It runs before project code under the exact
+    /// same package SID, capabilities, private desktop and policy recipe.
+    pub fn run_with_preflight(&mut self, broker: &PinnedInput, cancel: Arc<AtomicBool>) -> Result<&TaskStatus> {
+        if self.status.state != TaskState::Prepared { return Err("Task has already been run".into()); }
+        let binary = self.layout.bin.join("broker-preflight.exe");
+        copy_pinned(broker, &binary)?;
+        let spec = LaunchSpec { executable: binary, args: Vec::new(), cwd: self.layout.work.clone(),
+            redirection: Redirection::LogFile(self.layout.logs.join("preflight.json")), desktop: Some(self.desktop.name.clone()),
+            appcontainer: Some(self.profile.sid()), job: Some(self.budget.job), child_process_policy: None,
+            handle_list: true, environment: Some(minimal_environment(&self.layout.work, &std::env::var("SystemRoot")?)),
+            timeout: Duration::from_secs(20), diagnose: false };
+        match crate::preflight::run(spec, &cancel) {
+            Ok(result) => self.network_preflight = Some(result),
+            Err(error) => {
+                self.status = TaskStatus { state: if cancel.load(std::sync::atomic::Ordering::SeqCst) { TaskState::Cancelled } else { TaskState::Failed },
+                    exit_code: None, message: error.to_string() };
+                return Ok(&self.status);
+            }
+        }
+        self.run(Some(cancel))
+    }
+
     /// Runs the task, honouring both the budget timeout and an optional
     /// cancellation flag that another thread may set at any time. Cancellation
     /// terminates the whole task job, so no task process survives.
@@ -358,7 +507,7 @@ impl Task {
         };
         let engine = self.engine.clone();
         let system_root = std::env::var("SystemRoot")?;
-        let running = start_unless_cancelled(cancel.as_deref(), || crate::launch::start(&LaunchSpec {
+        let running = start_unless_cancelled(cancel.as_deref(), || crate::launch::start_verified(&LaunchSpec {
             executable: engine,
             args: self.kind.args(&self.layout.project, &self.layout.export_dir),
             cwd: self.layout.work.clone(),
@@ -377,10 +526,45 @@ impl Task {
                 message: "cancelled before process creation; no task process started".into() };
             return Ok(());
         };
+        self.process_verification = running.verification.clone();
         let started = std::time::Instant::now();
+        let mut enforcement = ResourceEnforcement::new(&self.budget.resource);
+        let mut next_sample = started + self.budget.resource.sample_interval;
+        let poll = Duration::from_millis(50).min(self.budget.resource.sample_interval);
         let outcome = loop {
-            if let Some(exit) = running.wait(Duration::from_millis(200))? {
+            if let Some(exit) = running.wait(poll)? {
                 break (TaskState::Succeeded, exit, "exit".to_string());
+            }
+            let now = std::time::Instant::now();
+            if now >= next_sample {
+                next_sample = now + self.budget.resource.sample_interval;
+                enforcement.samples += 1;
+                let work = directory_bytes(&self.layout.work, self.budget.resource.work_bytes)?;
+                let log = fs::metadata(&self.log).map(|metadata| metadata.len()).unwrap_or(0);
+                enforcement.max_observed_work_bytes = enforcement.max_observed_work_bytes.max(work);
+                enforcement.max_observed_log_bytes = enforcement.max_observed_log_bytes.max(log);
+                let breach = if work > self.budget.resource.work_bytes {
+                    Some(format!(
+                        "work directory bytes {work} exceed the sampled limit {}",
+                        self.budget.resource.work_bytes
+                    ))
+                } else if log > self.budget.resource.log_bytes {
+                    Some(format!(
+                        "task log bytes {log} exceed the sampled limit {}",
+                        self.budget.resource.log_bytes
+                    ))
+                } else {
+                    None
+                };
+                if let Some(reason) = breach {
+                    enforcement.enforced = true;
+                    enforcement.reason = Some(reason.clone());
+                    running.terminate(91)?;
+                    let exit = running
+                        .wait(Duration::from_secs(10))?
+                        .ok_or("Resource-terminated task did not reach a terminal state")?;
+                    break (TaskState::Failed, exit, reason);
+                }
             }
             let cancelled = cancel
                 .as_ref()
@@ -398,10 +582,11 @@ impl Task {
                 break (TaskState::Cancelled, exit, reason);
             }
         };
+        self.resource_enforcement = Some(enforcement);
         let (state, exit, reason) = outcome;
         let active = running.job().and_then(|job| job.active_processes());
-        if state == TaskState::Cancelled && active != Some(0) {
-            return Err(format!("Task job still holds {active:?} processes after cancellation").into());
+        if state != TaskState::Succeeded && active != Some(0) {
+            return Err(format!("Task job still holds {active:?} processes after termination").into());
         }
         self.status = TaskStatus {
             state: if state == TaskState::Succeeded && exit != 0 {
@@ -420,6 +605,7 @@ impl Task {
     pub fn collect_artifacts(&self) -> Result<Vec<Artifact>> {
         if self.status.state != TaskState::Succeeded { return Err("Only successful tasks can hand off artifacts".into()); }
         let mut artifacts = Vec::new();
+        let mut total = 0u64;
         if !self.layout.export_dir.is_dir() {
             return Ok(artifacts);
         }
@@ -429,9 +615,14 @@ impl Task {
                 return Err("Export artifact must be a regular file".into());
             }
             let path = entry.path();
+            let bytes = entry.metadata()?.len();
+            total = total.checked_add(bytes).ok_or("Artifact size overflow")?;
+            if artifacts.len() >= 4096 || bytes > 256 * 1024 * 1024 || total > 512 * 1024 * 1024 {
+                return Err("Artifact file count or byte limit exceeded".into());
+            }
             artifacts.push(Artifact {
                 name: entry.file_name().to_string_lossy().into_owned(),
-                bytes: entry.metadata()?.len(),
+                bytes,
                 sha256: digest(&path)?,
             });
         }
@@ -497,7 +688,37 @@ mod cancellation_tests {
     }
 }
 
+/// Materialization bounds. These match the broker's snapshot limits so a
+/// hostile project cannot exhaust the tasks volume before any job limit applies.
+const MAX_SOURCE_FILES: usize = 4096;
+const MAX_SOURCE_FILE_BYTES: u64 = 256 * 1024 * 1024;
+const MAX_SOURCE_TOTAL_BYTES: u64 = 512 * 1024 * 1024;
+
+struct CopyBudget {
+    files: usize,
+    total: u64,
+    max_files: usize,
+    max_file_bytes: u64,
+    max_total_bytes: u64,
+}
+
+impl CopyBudget {
+    fn new() -> Self {
+        Self {
+            files: 0,
+            total: 0,
+            max_files: MAX_SOURCE_FILES,
+            max_file_bytes: MAX_SOURCE_FILE_BYTES,
+            max_total_bytes: MAX_SOURCE_TOTAL_BYTES,
+        }
+    }
+}
+
 fn copy_tree(source: &Path, destination: &Path) -> Result<()> {
+    copy_tree_bounded(source, destination, &mut CopyBudget::new())
+}
+
+fn copy_tree_bounded(source: &Path, destination: &Path, budget: &mut CopyBudget) -> Result<()> {
     if !ordinary(source)?.is_dir() { return Err("Project source is not a regular directory".into()); }
     fs::create_dir_all(destination)?;
     for entry in fs::read_dir(source)? {
@@ -514,8 +735,16 @@ fn copy_tree(source: &Path, destination: &Path) -> Result<()> {
         }
         let target = destination.join(entry.file_name());
         if file_type.is_dir() {
-            copy_tree(&entry.path(), &target)?;
+            copy_tree_bounded(&entry.path(), &target, budget)?;
         } else if file_type.is_file() {
+            budget.files += 1;
+            budget.total = budget
+                .total
+                .checked_add(file_type.len())
+                .ok_or("Project source size overflow")?;
+            if budget.files > budget.max_files || file_type.len() > budget.max_file_bytes || budget.total > budget.max_total_bytes {
+                return Err("Project source exceeds the materialization budget".into());
+            }
             fs::copy(entry.path(), target)?;
         } else {
             return Err("Project source contains a non-regular file".into());
@@ -578,6 +807,47 @@ mod tests {
         };
         assert!(copy_pinned(&good, &base.join("copy.exe")).is_ok());
         fs::remove_dir_all(&base).ok();
+    }
+
+    #[test]
+    fn directory_bytes_is_capped_and_ignores_missing_roots() {
+        let base = std::env::temp_dir().join(format!(
+            "cm-dirbytes-{}-{}",
+            std::process::id(),
+            now_unix_ms().unwrap()
+        ));
+        fs::create_dir_all(base.join("nested")).unwrap();
+        fs::write(base.join("a.bin"), vec![0u8; 4096]).unwrap();
+        fs::write(base.join("nested").join("b.bin"), vec![0u8; 8192]).unwrap();
+        assert_eq!(directory_bytes(&base, u64::MAX).unwrap(), 12288);
+        // A cap stops the walk early but never reports less than the cap.
+        assert!(directory_bytes(&base, 4096).unwrap() > 4096);
+        assert_eq!(directory_bytes(&base.join("missing"), 1024).unwrap(), 0);
+        fs::remove_dir_all(&base).unwrap();
+    }
+
+    #[test]
+    fn materialization_budget_rejects_an_oversized_source_tree() {
+        let base = std::env::temp_dir().join(format!(
+            "cm-copybudget-{}-{}",
+            std::process::id(),
+            now_unix_ms().unwrap()
+        ));
+        let source = base.join("source");
+        fs::create_dir_all(&source).unwrap();
+        fs::write(source.join("one.bin"), vec![0u8; 2048]).unwrap();
+        let mut tight = CopyBudget::new();
+        tight.max_file_bytes = 1024;
+        assert!(copy_tree_bounded(&source, &base.join("a"), &mut tight).is_err());
+        let mut count = CopyBudget::new();
+        count.max_files = 0;
+        assert!(copy_tree_bounded(&source, &base.join("b"), &mut count).is_err());
+        let mut total = CopyBudget::new();
+        total.max_total_bytes = 1024;
+        assert!(copy_tree_bounded(&source, &base.join("c"), &mut total).is_err());
+        // The default budget accepts the same tree.
+        assert!(copy_tree_bounded(&source, &base.join("d"), &mut CopyBudget::new()).is_ok());
+        fs::remove_dir_all(&base).unwrap();
     }
 }
 
