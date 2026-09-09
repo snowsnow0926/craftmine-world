@@ -59,27 +59,59 @@ fn seed_catalog_asset(db: &TaskJournal) -> Result<String> {
 fn seed_repository(db: &TaskJournal) -> Result<String> {
     let store = repository_store(&db.directory)?;
     let layout = store.create("repo-world-a", "sha1", None)?;
+    // The repository history must carry exactly the bytes the SQLite revision
+    // manifest describes, so a revision resolves to a commit whose files match
+    // its manifest hashes.
     let first = store.commit(
         &layout,
         MAIN_BRANCH,
         None,
-        &[ContentFile::text("project.godot", "config_version=5\n")],
+        &[
+            ContentFile::text("project.godot", PROJECT),
+            ContentFile::text("main.tscn", SCENE),
+            ContentFile::text("world.gd", SCRIPT),
+        ],
         &commit_message("req-1", "task-1", "create world", "")?,
     )?;
     let second = store.commit(
         &layout,
         MAIN_BRANCH,
         Some(&first),
-        &[ContentFile::text(
-            "project.godot",
-            "config_version=5\nname=\"town\"\n",
-        )],
+        &[
+            ContentFile::text("project.godot", "config_version=5\nname=\"town\"\n"),
+            ContentFile::text("main.tscn", SCENE),
+            ContentFile::text("world.gd", SCRIPT),
+        ],
         &commit_message("req-1", "task-1", "rename world", "AI patch")?,
     )?;
     db.db.execute(
         "INSERT INTO craftmine_content_repositories(world_id,repo_id,object_format,backend,
          legacy_head_revision,created_at,switched_at) VALUES('a','repo-world-a','sha1','git',NULL,1,1)",
         [],
+    )?;
+    // The world is Git-backed now, so the legacy revision it still carries must
+    // have a verifiable commit index - exactly what the product's own migration
+    // writes. Without it `godotProject.read` cannot resolve revision 0, and no
+    // archive can restore a usable world.
+    let tree = store
+        .git()
+        .repo(&layout.git_dir, &["rev-parse", &format!("{first}^{{tree}}")])?
+        .ensure_ok("TEST_REV_PARSE_FAILED")?
+        .trimmed()?;
+    let manifest_hash: String = db.db.query_row(
+        "SELECT hash FROM craftmine_godot_revisions WHERE world_id='a' AND revision=0",
+        [],
+        |row| row.get(0),
+    )?;
+    db.db.execute(
+        "INSERT INTO craftmine_content_revision_map(world_id,legacy_revision,commit_oid,tree_oid,
+         manifest_hash,file_count,byte_count,imported_at) VALUES('a',0,?1,?2,?3,3,?4,1)",
+        rusqlite::params![
+            first,
+            tree,
+            manifest_hash,
+            (PROJECT.len() + SCENE.len() + SCRIPT.len()) as i64
+        ],
     )?;
     Ok(second)
 }
@@ -221,7 +253,7 @@ fn portable_archive_restores_into_a_new_directory_without_the_source() -> Result
 
     // The moved-away source is untouched by the restore.
     assert!(moved.join("tasks.sqlite").is_file());
-    assert!(!moved.join(".portable-staging").exists());
+    assert!(!moved.join(".craftmine-restore-receipt.json").exists());
     Ok(())
 }
 
@@ -343,7 +375,7 @@ fn a_damaged_archive_is_refused_and_never_touches_the_target() -> Result<()> {
         .all(|entry| !entry
             .file_name()
             .to_string_lossy()
-            .starts_with(".portable-staging")));
+            .starts_with(".craftmine-restore-")));
 
     // A truncated archive is refused as well.
     let bytes = fs::read(&archive)?;
@@ -416,7 +448,7 @@ fn a_domain_failure_leaves_no_half_populated_target() -> Result<()> {
             .unwrap()
             .file_name()
             .to_string_lossy()
-            .starts_with(".portable-staging-")
+            .starts_with(".craftmine-restore-")
     }));
     Ok(())
 }
