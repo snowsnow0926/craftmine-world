@@ -13,23 +13,6 @@
   "reviewedAt": "2026-09-09",
   "entries": [
     {
-      "path": "shell.html",
-      "role": "shell",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "0.1.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "user-export"
-      ],
-      "bytes": 730,
-      "sha256": "cbbfbd2c680b9f31883d5c0b0ffa330e732ba584bc51d9b91e04ca4c710c7a4a",
-      "outstanding": "Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
-      "notes": "Custom Web export shell loaded by the exported game."
-    },
-    {
       "path": "bridge.js",
       "role": "bridge",
       "origin": "authored",
@@ -47,40 +30,6 @@
       "notes": "Copied beside the exported index.html; registers the Godot callback and drains accepted actions."
     },
     {
-      "path": "runtime.mjs",
-      "role": "bridge",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "0.1.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle"
-      ],
-      "bytes": 19163,
-      "sha256": "e89815f05a984cc4275a6860c8b3e2349e648215bf86939d5cb00168453a34ee",
-      "outstanding": "Formal licence text pending the per-module review in docs/LICENSING_STRATEGY.md (see desktop/delivery/licensing/inventory.json); the project owns this file. Target: creation-core path (AGPL-3.0-only or commercial).",
-      "notes": "Host-side Godot Web world runtime: one token-scoped loopback origin per world instance plus the craftmine.godot-runtime/2 protocol. Imported by the Electron main process, app/game.js and app/static-files.mjs. Never copied into a player export."
-    },
-    {
-      "path": "runtime.d.mts",
-      "role": "notice",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "0.1.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "development-only"
-      ],
-      "bytes": 3033,
-      "sha256": "259bd97416e464342ad937330a3ab6413dcb420e6c3c493ccb0db9419a7fa744",
-      "outstanding": "Formal licence text pending the per-module review in docs/LICENSING_STRATEGY.md (see desktop/delivery/licensing/inventory.json); the project owns this file.",
-      "notes": "Type declarations for runtime.mjs, consumed by the Electron main process build and acceptance tests. Build-time only; not shipped at runtime."
-    },
-    {
       "path": "host.mjs",
       "role": "bridge",
       "origin": "authored",
@@ -96,6 +45,57 @@
       "sha256": "3baf4d329afa40b42e22c428b872dacb2d96887f4ff71db01652de32f52ac553",
       "outstanding": "Same authored-code licence decision as shell.html.",
       "notes": "Host-side MessagePort transport used by GD0 tests only. It must never be shipped to players or into an exported standalone game."
+    },
+    {
+      "path": "runtime.d.mts",
+      "role": "notice",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 3091,
+      "sha256": "6797593e1b85565bb2add85f510ce53c5d7880c8dec1649e2a3fb0d86f59ff69",
+      "outstanding": "Formal licence text pending the per-module review in docs/LICENSING_STRATEGY.md (see desktop/delivery/licensing/inventory.json); the project owns this file.",
+      "notes": "Type declarations for runtime.mjs, consumed by the Electron main process build and acceptance tests. Build-time only; not shipped at runtime."
+    },
+    {
+      "path": "runtime.mjs",
+      "role": "bridge",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "bytes": 19617,
+      "sha256": "7c4b60b590fe62d267b296ab332a6a28db5426df55f3592a0f4c528ae391260b",
+      "outstanding": "Formal licence text pending the per-module review in docs/LICENSING_STRATEGY.md (see desktop/delivery/licensing/inventory.json); the project owns this file. Target: creation-core path (AGPL-3.0-only or commercial).",
+      "notes": "Host-side Godot Web world runtime: one token-scoped loopback origin per world instance plus the craftmine.godot-runtime/2 protocol. Imported by the Electron main process, app/game.js and app/static-files.mjs. Never copied into a player export."
+    },
+    {
+      "path": "shell.html",
+      "role": "shell",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "user-export"
+      ],
+      "bytes": 715,
+      "sha256": "c00d4ddbd4c3c1003a7dc83527f353f1e1e7f95ce4dda3eac16ef9fd45872b39",
+      "outstanding": "Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+      "notes": "Custom Web export shell loaded by the exported game."
     }
   ],
   "externalEntries": [

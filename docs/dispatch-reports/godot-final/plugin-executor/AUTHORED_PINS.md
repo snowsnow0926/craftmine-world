@@ -14,4 +14,12 @@ Content reviewed for the new entries: first-person asset provenance index, blank
 
 The original source files are never granted new rights by hash refresh. Unknown third-party provenance cannot be fixed by choosing a new hash or setting `permitted`. Existing pending project licence application remains visible as warnings; binary/source identity and legal approval remain separate records.
 
+## Actual generated inventory result
+
+The root task ran generation and canonical materialization on the clean isolated source `969cb9cc686523049e7a57863d74fd48013fd004`. Its bases, probes, Web and delivery-manifest source trees match the audited integrated `9cfe071` byte-for-byte in Git. Seven manifests were generated. The first generated pass exposed one duplicate notice pin for the project's own original-assets MIT text; the generator now updates that owned notice from the same canonical blob as its ordinary entry. Its licence wording is unchanged. Third-party notice drift still fails.
+
+Actual local preflight after correction: **assets 0 failures / 116 pending-rights warnings; notices 0 failures / 0 warnings; LGPL 0 failures / 1 existing warning**. The 35 original asset errors are resolved. The new pending mining inventory accounts for most extra warning lines; they were not suppressed or marked approved. The full delivery selftest could not start here because its temporary-directory creation returned EPERM; root execution and raw evidence remain required.
+
+Additional scope limits found during audit: K's development-only scan matches repository path suffixes, while staged runtime paths omit the `desktop/` component; therefore it can miss docs/tests/tools actually placed under `resources/godot`. The staged `shared` directory also has byte coverage in the full runtime manifest but no independent K provenance manifest. These are outstanding distribution-scope checks, not resolved by refreshing the seven inventories. Actual product materializers depend on some `tools/new-world.mjs` files, so blanket removal of every tools directory would break world creation.
+
 Local regression: 9/9 tests passed for canonical-source verification, rejection of changed/unknown files, rights-field preservation, and complete runtime resource pins. The first attempt to run the full Git-backed generator in this subagent environment failed with `spawnSync git EPERM`, before writes. The root task must run it against the final clean integration tree and retain the real preflight output; this document alone does not claim those final pins have been generated or passed.

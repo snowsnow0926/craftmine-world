@@ -29,3 +29,10 @@ test('approved addition receives pending project authorship, never third-party a
   const result=refreshManifest({baseVersion:'1',sourceDirectory:'base',entries:[]},new Map([['base/new.gd',file('extends Node\n')]]),{approvedNew:new Set(['base/new.gd'])});
   assert.equal(result.entries[0].license,'project-authored');assert.match(result.entries[0].outstanding,/pending/);
 });
+test('owned notice newline pin follows its exact blob while third-party notices remain fixed',()=>{
+  const owned={path:'LICENSE.txt',author:'Craftmine World project',origin:'authored',license:'project-authored',bytes:1,sha256:'old'};
+  const manifest={sourceDirectory:'base',entries:[owned],requiredNotices:[{path:'base/LICENSE.txt',sha256:'old'}]};
+  const files=new Map([['base/LICENSE.txt',file('same grant\n')]]),result=refreshManifest(manifest,files);
+  assert.equal(result.requiredNotices[0].sha256,result.entries[0].sha256);
+  assert.throws(()=>refreshManifest({sourceDirectory:'base',entries:[],requiredNotices:[{path:'outside/LICENSE.txt',sha256:'old'}]},new Map([['outside/LICENSE.txt',file('changed')]])),/UNREVIEWED_NOTICE_CHANGED/);
+});

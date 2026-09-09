@@ -31,24 +31,6 @@
       "notes": "Pins the Compatibility renderer and GDScript for the GD0 probe."
     },
     {
-      "path": "world.tscn",
-      "role": "scene",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "0.1.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "bytes": 172,
-      "sha256": "5b158f34800530c5012beadcb882317ee618840f1821514afcdb2c2ca8357635",
-      "outstanding": "Same authored-code licence decision as project.godot.",
-      "notes": "Scene root; tiles and shop geometry are drawn from code, so no tileset or sprite asset is referenced."
-    },
-    {
       "path": "world.gd",
       "role": "source",
       "origin": "authored",
@@ -65,6 +47,24 @@
       "sha256": "66ae70334a1882d3cac6ee023f73402d6b081f80238957dbb8f0049c5a353a58",
       "outstanding": "Same authored-code licence decision as project.godot.",
       "notes": "Movement, physical shop overlap and purchase logic used by the GD0 evidence."
+    },
+    {
+      "path": "world.tscn",
+      "role": "scene",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 172,
+      "sha256": "5b158f34800530c5012beadcb882317ee618840f1821514afcdb2c2ca8357635",
+      "outstanding": "Same authored-code licence decision as project.godot.",
+      "notes": "Scene root; tiles and shop geometry are drawn from code, so no tileset or sprite asset is referenced."
     }
   ],
   "externalEntries": [
@@ -115,8 +115,8 @@
       "distribution": [
         "user-export"
       ],
-      "bytes": 730,
-      "sha256": "cbbfbd2c680b9f31883d5c0b0ffa330e732ba584bc51d9b91e04ca4c710c7a4a",
+      "bytes": 715,
+      "sha256": "c00d4ddbd4c3c1003a7dc83527f353f1e1e7f95ce4dda3eac16ef9fd45872b39",
       "outstanding": "Same authored-code licence decision as project.godot.",
       "notes": "Custom Web export shell; no third-party script, font or image is loaded."
     }

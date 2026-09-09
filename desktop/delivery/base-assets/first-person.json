@@ -13,6 +13,24 @@
   "reviewedAt": "2026-09-09",
   "entries": [
     {
+      "path": "crosshair.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 374,
+      "sha256": "5b691c9c745c80c99c5b8102ea8d106b5a67e78a6a192356eb006dfed77982e6",
+      "outstanding": "Same authored-code licence decision as project.godot.",
+      "notes": "Screen-centre crosshair control drawn from code; no texture asset."
+    },
+    {
       "path": "project.godot",
       "role": "config",
       "origin": "authored",
@@ -29,24 +47,6 @@
       "sha256": "079b73f563ed6b15a6209be77742021eb96dc1f55760e77b3a6edfb7124781e8",
       "outstanding": "Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
       "notes": "Pins the Compatibility renderer and GDScript for the GD0 probe."
-    },
-    {
-      "path": "world.tscn",
-      "role": "scene",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "0.1.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "bytes": 176,
-      "sha256": "6652732cf7b3e383a0a0aaa699fb8bf7189fbeaeba38295a25dbbfe0b958c673",
-      "outstanding": "Same authored-code licence decision as project.godot.",
-      "notes": "Scene root; geometry is generated in script, so no external art asset is referenced."
     },
     {
       "path": "world.gd",
@@ -67,8 +67,8 @@
       "notes": "Camera attachment, equipment, ray fire and save/restore used by the GD0 evidence."
     },
     {
-      "path": "crosshair.gd",
-      "role": "source",
+      "path": "world.tscn",
+      "role": "scene",
       "origin": "authored",
       "author": "Craftmine World project",
       "version": "0.1.0",
@@ -79,10 +79,10 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 374,
-      "sha256": "5b691c9c745c80c99c5b8102ea8d106b5a67e78a6a192356eb006dfed77982e6",
+      "bytes": 176,
+      "sha256": "6652732cf7b3e383a0a0aaa699fb8bf7189fbeaeba38295a25dbbfe0b958c673",
       "outstanding": "Same authored-code licence decision as project.godot.",
-      "notes": "Screen-centre crosshair control drawn from code; no texture asset."
+      "notes": "Scene root; geometry is generated in script, so no external art asset is referenced."
     }
   ],
   "externalEntries": [
@@ -133,8 +133,8 @@
       "distribution": [
         "user-export"
       ],
-      "bytes": 730,
-      "sha256": "cbbfbd2c680b9f31883d5c0b0ffa330e732ba584bc51d9b91e04ca4c710c7a4a",
+      "bytes": 715,
+      "sha256": "c00d4ddbd4c3c1003a7dc83527f353f1e1e7f95ce4dda3eac16ef9fd45872b39",
       "outstanding": "Same authored-code licence decision as project.godot.",
       "notes": "Custom Web export shell; no third-party script, font or image is loaded."
     }

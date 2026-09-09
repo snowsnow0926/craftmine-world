@@ -29,6 +29,12 @@ export function refreshManifest(manifest,files,{approvedNew=NEW_AUTHORED}={}){
   }
   for(const entry of result.entries||[]){const full=result.sourceDirectory+'/'+entry.path;seen.add(full);refresh(entry,full);}
   for(const entry of result.externalEntries||[])refresh(entry,entry.path);
+  for(const notice of result.requiredNotices||[]){
+    const owner=(result.entries||[]).find(entry=>result.sourceDirectory+'/'+entry.path===notice.path)||(result.externalEntries||[]).find(entry=>entry.path===notice.path);
+    const file=files.get(notice.path);if(!file)throw Error('PIN_NOTICE_MISSING:'+notice.path);
+    if(owner&&authored(owner)){notice.bytes=file.bytes.length;notice.sha256=file.sha256;}
+    else if((notice.bytes!==undefined&&notice.bytes!==file.bytes.length)||notice.sha256!==file.sha256)throw Error('UNREVIEWED_NOTICE_CHANGED:'+notice.path);
+  }
   for(const [full,file]of files){
     if(!full.startsWith(result.sourceDirectory+'/')||seen.has(full))continue;
     if(!approvedNew.has(full))throw Error('NEW_SOURCE_REQUIRES_REVIEW:'+full);
