@@ -1,0 +1,90 @@
+{
+  "format": "craftmine.godot-l3-candidate-set/1",
+  "note": "L3 候选档案：在 GD7 基线与冻结评测集就绪、且这里每条都补齐真实证据之前，这些候选都不得开工。本文件被 tests/godot-remaining/J/extensions.test.mjs 读取，用来证明闸门真的会拦住它们。",
+  "candidates": [
+    {
+      "format": "craftmine.godot-l3-candidate/1",
+      "candidateId": "world-snapshot-stream",
+      "partKind": "perfComponent",
+      "status": "hypothesis",
+      "problem": {
+        "summary": "完整进度正文一次性序列化成单个 JSON 文档后交给 Rust 校验；实体、任务和库存继续增长时，保存与快照的耗时和内存峰值缺少实测，无法判断是否需要流式/增量组件。",
+        "affectedBases": ["top-down", "side-view", "first-person"],
+        "frequency": null
+      },
+      "evidence": [
+        {
+          "kind": "source",
+          "ref": "desktop/godot/bases/top-down/core/scripts/world_state.gd",
+          "sha256": null,
+          "quote": "The state is keyed by *stable entity ids* declared in scenes and by data ids declared in res://data/**, never by node paths or array indices.",
+          "observedAt": "2026-09-10T00:00:00.000Z"
+        }
+      ],
+      "frozenInput": {
+        "taskId": null,
+        "inputHash": null,
+        "reproduce": null
+      },
+      "currentBaseline": {
+        "metric": "saveMsP95",
+        "value": null,
+        "unit": "ms",
+        "source": null,
+        "measuredAt": null
+      },
+      "candidateInterface": {
+        "entry": "step",
+        "interface": "step(ctx: Dictionary) -> Dictionary",
+        "notes": "只有在实测证明一次性序列化确实是瓶颈后才考虑；若普通 GDScript 增量写盘就够，则本候选作废并降级为 L1。"
+      },
+      "budget": { "frameMsP95": null, "memoryBytes": null, "packageBytes": null },
+      "rollback": { "strategy": "builtin-default", "verifiedBy": null },
+      "native": false,
+      "killCriterion": "若 GD7 在最大支持世界规模上实测保存 p95 仍低于冻结阈值，或普通 GDScript 分块写盘即可达标，则放弃本候选。",
+      "nextStep": "等 GD7 与 I 的冻结评测集就绪后，用固定世界规模采集保存/快照 p50/p95 与内存峰值，回填 evidence、frozenInput 与 currentBaseline。"
+    },
+    {
+      "format": "craftmine.godot-l3-candidate/1",
+      "candidateId": "collision-shape-batcher",
+      "partKind": "perfComponent",
+      "status": "hypothesis",
+      "problem": {
+        "summary": "地图碰撞按每个最大水平连续段生成一个 RectangleShape2D 节点；大图上形状数量随地图行数线性增长，尚未实测节点数与加载耗时是否成为瓶颈。",
+        "affectedBases": ["top-down"],
+        "frequency": null
+      },
+      "evidence": [
+        {
+          "kind": "source",
+          "ref": "desktop/godot/bases/top-down/core/scripts/map_renderer.gd",
+          "sha256": null,
+          "quote": "var rect := RectangleShape2D.new() ... shape.position = Vector2(start * tile_size + width * 0.5, y * tile_size + tile_size * 0.5)",
+          "observedAt": "2026-09-10T00:00:00.000Z"
+        }
+      ],
+      "frozenInput": {
+        "taskId": null,
+        "inputHash": null,
+        "reproduce": null
+      },
+      "currentBaseline": {
+        "metric": "collisionShapes",
+        "value": null,
+        "unit": "count",
+        "source": null,
+        "measuredAt": null
+      },
+      "candidateInterface": {
+        "entry": "step",
+        "interface": "step(ctx: Dictionary) -> Dictionary",
+        "notes": "先用 build_report.collisionShapes 作为可观测指标；若一次 GDScript 纵向合并就能把形状数降到阈值内，本候选必须判为 L1 并关闭。"
+      },
+      "budget": { "frameMsP95": null, "memoryBytes": null, "packageBytes": null },
+      "rollback": { "strategy": "builtin-default", "verifiedBy": null },
+      "native": false,
+      "killCriterion": "若 GDScript 合并矩形即可达到冻结的节点数/加载耗时阈值，则放弃本候选，不允许为了展示而引入原生部件。",
+      "nextStep": "在 GD7 固定包上对最大地图采集 collisionShapes、加载耗时与内存，并先做一版纯 GDScript 合并对照。"
+    }
+  ]
+}
