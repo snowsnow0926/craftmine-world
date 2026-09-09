@@ -86,6 +86,18 @@ other content is `CONTENT_OPERATION_TARGET_MISMATCH`, a mismatched progress is
 `CONTENT_PROGRESS_CONFLICT`, and an application that never launched is
 `GODOT_APPLICATION_NOT_APPLIED` / `GODOT_LAUNCH_REQUIRED`.
 
+## Reclaim protection
+
+`godotStorage.reclaimPlan`/`reclaimCommit` aggregate the protection set inside
+the core from durable rows: the formal world build, every candidate, every
+application, every active or passed job, every world copy, the newest builds, and
+now every `craftmine_backup_pins` row of kind `build` whose status is
+`streaming` or `retained`. `protectedBuilds` only adds pins; it can never remove
+one, so a caller that omits or forges it cannot make the reclaimer delete a build
+a retained archive still carries. A pin without a world protects everywhere.
+Content reclamation already protects migration, checkpoint, draft, version and
+applied refs plus every branch through `RepositoryStore::protected_refs`.
+
 ## RPC registration
 
 `main.rs` is the only place an RPC becomes reachable. The asset catalog

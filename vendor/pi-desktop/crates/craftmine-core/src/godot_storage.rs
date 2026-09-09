@@ -349,6 +349,25 @@ fn plan(
             protected.push((id, reason));
         }
     }
+    // Durable portable-archive pins are owned by the backup module. The core
+    // aggregates them itself so a caller that omits (or forges) `protectedBuilds`
+    // cannot unprotect a build that a retained archive still carries. A pin with
+    // no world is protected everywhere, which is the conservative reading.
+    let pinned: Vec<(String, Option<String>)> = db
+        .prepare(
+            "SELECT ref,world_id FROM craftmine_backup_pins
+             WHERE kind='build' AND status IN ('streaming','retained')",
+        )?
+        .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?
+        .collect::<rusqlite::Result<Vec<_>>>()?;
+    for (id, pinned_world) in pinned {
+        if godot_builds::valid_build_id(&id).is_err() {
+            continue;
+        }
+        if pinned_world.as_deref().is_none_or(|value| value == world) {
+            protected.push((id, "BACKUP_PINNED"));
+        }
+    }
     for id in caller_protected {
         protected.push((id.clone(), "CALLER_PINNED"));
     }

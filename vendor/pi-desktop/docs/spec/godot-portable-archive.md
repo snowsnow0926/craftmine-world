@@ -127,10 +127,12 @@ created_at, updated_at
 * Kinds: `build`, `godot-source-blob`, `godot-asset-body`, `asset-blob`,
   `git-ref` (`repoId|refName|oid`, carrying the repository's world),
   `legacy-import`, `repository`.
-* `backup.protected-refs` returns the live set. R1 feeds `builds` into
-  `godotStorage.reclaimPlan.protectedBuilds` and consults `sourceBlobs` /
-  `gitRefs` in its own reclaimer; R6 consults `assetBlobs` /
-  `godotAssetBodies`. There is no third deletion path.
+* `backup.protected-refs` returns the live set. The core aggregates the `build`
+  pins itself when it plans a build reclaim, so a caller that omits
+  `godotStorage.reclaimPlan.protectedBuilds` cannot unprotect an archived build;
+  `sourceBlobs` / `gitRefs` are consumed by the content and asset reclaimer
+  through the same call, and R6 consults `assetBlobs` / `godotAssetBodies`.
+  There is no third deletion path.
 * Startup recovery (`backup_recover`) retains a `streaming` pin only when its
   export job completed or its `archive_path` still holds a file; it abandons a
   `retained` pin whose archive disappeared. No age or mtime heuristic is used
