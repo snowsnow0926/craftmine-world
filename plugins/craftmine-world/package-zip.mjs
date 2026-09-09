@@ -28,7 +28,11 @@ export const DEFAULT_LIMITS = Object.freeze({
 
 const PACKAGE_FORMAT = 'craftmine.package/1';
 const RESOURCE_FORMAT = 'craftmine.resource/1';
-const LOCK_FORMAT = 'craftmine.assets-lock/1';
+// Must equal `ASSET_LOCK_FORMAT` in ./asset-lock.mjs and the Rust
+// `content_history::contract::ASSET_LOCK_FORMAT`. This module stays free of
+// node:crypto, so the single definition is enforced by
+// tests/godot-round3/S3/asset-lock.test.mjs instead of an import.
+export const LOCK_FORMAT = 'craftmine.assets-lock/1';
 const KINDS = Object.freeze(['base', 'world', 'module', 'object', 'scene', 'raw', 'data']);
 const MAX_PATH_BYTES = 240;
 const MAX_ASSET_ID_BYTES = 80;

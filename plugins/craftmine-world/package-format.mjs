@@ -7,10 +7,14 @@
 // must be JSON integer literals inside the JavaScript safe range. Float
 // literals are refused so Rust and JavaScript cannot disagree about a hash.
 import {createHash} from 'node:crypto';
+import {ASSET_LOCK_FORMAT,validateAssetLock} from './asset-lock.mjs';
 
 export const PACKAGE_FORMAT='craftmine.package/1';
 export const RESOURCE_FORMAT='craftmine.resource/1';
-export const LOCK_FORMAT='craftmine.assets-lock/1';
+// The lock has exactly one definition (`content_history::contract::AssetLock`
+// in Rust, `asset-lock.mjs` here). The package layer consumes it and never
+// declares a second shape under the same format id.
+export const LOCK_FORMAT=ASSET_LOCK_FORMAT;
 export const PACKAGE_KINDS=['base','world','module','object','scene','raw','data'];
 const MAX_SAFE_INTEGER=9007199254740991n;
 const MAX_PATH_BYTES=240;
@@ -263,42 +267,12 @@ const fileReference=value=>{
 // Dependency lock
 // ---------------------------------------------------------------------------
 
-// The lock must contain exactly the reachable closure of the direct refs, with
-// one version per assetId and no cycle.
+// One canonical shape, owned by `asset-lock.mjs` / `content_history::contract`.
+// The old `{direct, closure, graph}` document that reused this format id is
+// refused with `ASSET_LOCK_LEGACY_SHAPE`; it carried no content hash, so the
+// supported migration is to re-plan from the package's resource manifests.
 export function validateLock(lock){
-  requireValue(isObject(lock),'OBJECT_REQUIRED');
-  const direct=lock.direct,closure=lock.closure,graph=lock.graph??{};
-  requireValue(Array.isArray(direct),'LOCK_DIRECT_REQUIRED');
-  requireValue(Array.isArray(closure),'LOCK_CLOSURE_REQUIRED');
-  requireValue(isObject(graph),'LOCK_GRAPH_REQUIRED');
-  const versions=new Map(),available=new Set();
-  for(const item of closure){
-    const {id,version}=reference(item),label=`${id}@${version}`;
-    const existing=versions.get(id);
-    if(existing===undefined)versions.set(id,version);
-    else requireValue(existing===version,'PACKAGE_LOCK_VERSION_CONFLICT');
-    available.add(label);
-  }
-  const roots=[];
-  for(const item of direct){
-    const {id,version}=reference(item),label=`${id}@${version}`;
-    requireValue(available.has(label),'PACKAGE_LOCK_MISSING_DEPENDENCY');
-    roots.push(label);
-  }
-  const reachable=new Set(),stack=roots.map(root=>[root,[]]);
-  while(stack.length){
-    const [node,path]=stack.pop();
-    requireValue(!path.includes(node),'PACKAGE_DEPENDENCY_CYCLE');
-    if(reachable.has(node))continue;
-    reachable.add(node);
-    const next=[...path,node],edges=Array.isArray(graph[node])?graph[node]:[];
-    for(const edge of edges){
-      requireValue(typeof edge==='string','LOCK_GRAPH_REQUIRED');
-      requireValue(available.has(edge),'PACKAGE_LOCK_MISSING_DEPENDENCY');
-      stack.push([edge,next]);
-    }
-  }
-  requireValue(reachable.size===available.size,'PACKAGE_LOCK_UNREACHABLE_ENTRY');
+  validateAssetLock(lock);
   return {ok:true};
 }
 

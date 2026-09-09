@@ -7,6 +7,7 @@
 //! writes a world.
 use super::package_format as format;
 use super::super::{digest, durable::fields};
+use crate::content_history::contract::{AssetLock, AssetLockEntry, AssetRef, FileRef};
 use anyhow::{ensure, Context, Result};
 use serde_json::{json, Map, Value};
 use std::collections::{BTreeMap, BTreeSet};
@@ -59,10 +60,13 @@ struct Resource {
     version: u64,
     kind: String,
     content_hash: String,
-    dependencies: Vec<String>,
+    dependencies: Vec<AssetRef>,
+    dependency_labels: Vec<String>,
     compatibility: Value,
     interfaces: Value,
     entities: Vec<String>,
+    files: Vec<FileRef>,
+    install_path: String,
 }
 
 impl Resource {
@@ -75,12 +79,35 @@ impl Resource {
             .as_array()
             .context("DEPENDENCIES_REQUIRED")?
             .iter()
-            .map(|item| {
-                let id = item["id"].as_str().context("INVALID_ASSET_ID")?;
-                let version = item["version"].as_u64().context("INVALID_VERSION")?;
-                Ok(label(id, version))
-            })
+            .map(format::dependency_to_asset_ref)
             .collect::<Result<Vec<_>>>()?;
+        let dependency_labels = dependencies
+            .iter()
+            .map(|dependency| format!("{}@{}", dependency.asset_id, dependency.version))
+            .collect::<Vec<_>>();
+        let mut files = Vec::new();
+        for item in content["files"].as_array().context("FILES_REQUIRED")? {
+            let path = item["path"].as_str().context("PATH_REQUIRED")?.to_owned();
+            files.push(FileRef {
+                sha256: item["sha256"]
+                    .as_str()
+                    .context("HASH_REQUIRED")?
+                    .to_ascii_lowercase(),
+                media_type: format::media_type_for_path(&path).to_owned(),
+                path,
+                bytes: item["bytes"].as_u64().context("BYTES_REQUIRED")?,
+            });
+        }
+        // The install root is a relative path inside the world project. An
+        // author may pin it in `content.entry.installPath`; otherwise it is
+        // derived from the asset id so the plan stays deterministic.
+        let install_path = match content["entry"]["installPath"].as_str() {
+            Some(path) => {
+                crate::content_history::contract::validate_relative_path(path)?;
+                path.to_owned()
+            }
+            None => format!("addons/{asset_id}"),
+        };
         let entities = content["entry"]["entities"]
             .as_array()
             .map(|items| {
@@ -103,14 +130,32 @@ impl Resource {
             kind: content["kind"].as_str().context("INVALID_PACKAGE_KIND")?.to_owned(),
             content_hash: normalized["contentHash"].as_str().unwrap().to_owned(),
             dependencies,
+            dependency_labels,
             compatibility: content["compatibility"].clone(),
             interfaces: content["interfaces"].clone(),
             entities,
+            files,
+            install_path,
         })
     }
 
     fn label(&self) -> String {
         label(&self.asset_id, self.version)
+    }
+
+    /// The canonical lock entry for this resource.
+    fn lock_entry(&self) -> AssetLockEntry {
+        AssetLockEntry {
+            asset: AssetRef {
+                asset_id: self.asset_id.clone(),
+                version: self.version.to_string(),
+                content_hash: self.content_hash.clone(),
+            },
+            install_path: self.install_path.clone(),
+            files: self.files.clone(),
+            dependencies: self.dependencies.clone(),
+            overrides: Vec::new(),
+        }
     }
 }
 
@@ -139,7 +184,13 @@ fn order(resources: &BTreeMap<String, Resource>, roots: &[String]) -> Result<Vec
             .ok_or_else(|| anyhow::anyhow!("PACKAGE_MISSING_DEPENDENCY: {}", node))?;
         path.push(node.to_owned());
         for dependency in &resource.dependencies {
-            visit(resources, dependency, path, visited, ordered)?;
+            visit(
+                resources,
+                &format!("{}@{}", dependency.asset_id, dependency.version),
+                path,
+                visited,
+                ordered,
+            )?;
         }
         path.pop();
         visited.insert(node.to_owned());
@@ -212,12 +263,12 @@ impl super::super::TaskJournal {
         let mut depended = BTreeSet::new();
         for resource in resources.values() {
             for dependency in &resource.dependencies {
+                let dependency_label = format!("{}@{}", dependency.asset_id, dependency.version);
                 ensure!(
-                    resources.contains_key(dependency),
-                    "PACKAGE_MISSING_DEPENDENCY: {}",
-                    dependency
+                    resources.contains_key(&dependency_label),
+                    "PACKAGE_MISSING_DEPENDENCY: {dependency_label}"
                 );
-                depended.insert(dependency.clone());
+                depended.insert(dependency_label);
             }
         }
         let roots = requested
@@ -233,6 +284,20 @@ impl super::super::TaskJournal {
             roots
         };
         let ordered = order(&resources, &roots)?;
+
+        // Hash integrity is checked after the structure, so a cycle is
+        // reported as a cycle. A package that names the right id/version with
+        // the wrong content hash is refused, never silently repaired.
+        for resource in resources.values() {
+            for dependency in &resource.dependencies {
+                let dependency_label = format!("{}@{}", dependency.asset_id, dependency.version);
+                let resolved = &resources[&dependency_label];
+                ensure!(
+                    resolved.content_hash == dependency.content_hash,
+                    "PACKAGE_DEPENDENCY_HASH_MISMATCH: {dependency_label}"
+                );
+            }
+        }
 
         let mut instances = Vec::new();
         let mut conflicts = Vec::new();
@@ -266,23 +331,25 @@ impl super::super::TaskJournal {
             instances.push(json!({"assetId": resource.asset_id, "version": resource.version,
                 "kind": resource.kind, "contentHash": resource.content_hash,
                 "instanceId": instance, "entityMap": entity_map,
-                "dependencies": resource.dependencies, "localOverrides": []}));
+                "dependencies": resource.dependency_labels, "localOverrides": [],
+                "installPath": resource.install_path}));
         }
-        let graph = resources
+        // One canonical `craftmine.assets-lock/1` document. The content
+        // history, the asset catalog and this plan all speak the same lock.
+        let entries = ordered
             .iter()
-            .map(|(label, resource)| (label.clone(), json!(resource.dependencies)))
-            .collect::<Map<_, _>>();
-        let direct = roots.clone();
-        let closure = resources.keys().cloned().collect::<Vec<_>>();
+            .map(|label| resources[label].lock_entry())
+            .collect::<Vec<_>>();
+        let lock = AssetLock::new(entries)?;
         Ok(json!({"ok": conflicts.is_empty(), "operationId": operation,
             "worldId": target["worldId"],
             "order": ordered,
             "instances": instances,
             "remappedInputActions": remapped,
             "conflicts": conflicts,
-            "lock": {"format": format::LOCK_FORMAT, "direct": direct,
-                "closure": closure, "graph": graph},
+            "lock": lock,
+            "assetLockHash": lock.asset_lock_hash()?,
             "applied": false,
-            "note": "plan only; R3's materializer must execute it inside a draft"}))
+            "note": "plan only; the managed draft writer executes it inside a draft"}))
     }
 }

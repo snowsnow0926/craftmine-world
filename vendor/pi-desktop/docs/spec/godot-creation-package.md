@@ -90,13 +90,42 @@ needs.
 
 `creation` is never guessed from its name; the author must choose.
 
-### 1.4 Dependency lock
+### 1.4 Dependency lock: one canonical contract
 
-`craftmine.assets-lock/1` carries `direct`, `closure` and `graph`. Every direct
-ref must be in the closure (`PACKAGE_LOCK_MISSING_DEPENDENCY`), each assetId
-resolves to exactly one version (`PACKAGE_LOCK_VERSION_CONFLICT`), the graph is
-acyclic (`PACKAGE_DEPENDENCY_CYCLE`) and every closure entry must be reachable
-from a direct ref (`PACKAGE_LOCK_UNREACHABLE_ENTRY`). There is no "latest".
+There is exactly one `craftmine.assets-lock/1` document in the product:
+`AssetLock` in `crates/craftmine-core/src/content_history/contract.rs`, mirrored
+by `plugins/craftmine-world/asset-lock.mjs`. The content history, the asset
+catalog, the package layer and the client all validate, canonicalize and hash
+the same shape:
+
+```
+{format: "craftmine.assets-lock/1", assets: [
+  {asset: {assetId, version, contentHash}, installPath,
+   files: [{path, sha256, bytes, mediaType}],
+   dependencies: [{assetId, version, contentHash}],
+   overrides: [{scope, path, contentHash}]}]}
+```
+
+Canonical text is pretty JSON (two-space indent, LF, one trailing newline);
+`assetLockHash` is SHA-256 over those bytes. Sort order, path rules, one version
+per assetId, resolved and acyclic dependencies and the collision rules are the
+frozen contract in `tests/godot-remaining/M/contract/asset-lock-vectors.json`;
+`tests/godot-round3/S3/vectors/asset-lock-vectors.json` adds the shared
+Rust/JavaScript vectors and the media-type table.
+
+The package format keeps its **own** dependency metadata
+(`content.dependencies[]` = `{id, version, sha256}`) and converts it explicitly:
+`{id, version, sha256}` -> `AssetRef{assetId: id, version: "<n>", contentHash:
+sha256}`. A dependency whose declared hash does not equal the resolved
+resource's content hash is refused (`PACKAGE_DEPENDENCY_HASH_MISMATCH`). Because
+the package manifest file entries carry no media type, the conversion derives it
+from the extension with a fixed table shared by both languages.
+
+The former R4 document (`{direct, closure, graph}`) reused this format id with a
+different structure and no content hash. It is refused explicitly with
+`ASSET_LOCK_LEGACY_SHAPE`; the supported migration is to re-plan the install
+from the resource manifests (`package.planInstall`), which produces the
+canonical lock.
 
 ## 2 CP1 static ZIP round trip
 
@@ -133,7 +162,9 @@ into a deterministic plan before anything is written:
 - one new identity per resource per `operationId` (`ins-<24hex>`), stable on
   replay and different for a different operation;
 - entity map from each template entity id to `<instanceId>-e<n>`;
-- a `craftmine.assets-lock/1` block whose `direct` are the resolved roots;
+- a canonical `craftmine.assets-lock/1` document (see 1.4) built from the
+  resolved closure, with fixed versions, content hashes, install paths, files
+  and the full dependency list;
 - conflicts against the destination world's inventory:
   `PACKAGE_CONFLICT_INPUT_ACTION`, `PACKAGE_CONFLICT_AUTOLOAD`,
   `PACKAGE_CONFLICT_GLOBAL_CLASS`, `PACKAGE_CONFLICT_UID`,

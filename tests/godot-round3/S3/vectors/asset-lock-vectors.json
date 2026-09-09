@@ -1,0 +1,550 @@
+{
+  "format": "craftmine.asset-lock-vectors/1",
+  "owner": "S3 (bases, package install and reuse)",
+  "purpose": "One lock shape. These vectors are executed by the Rust package layer (crates/craftmine-core/src/library/package_format_tests.rs) and by JavaScript (tests/godot-round3/S3/asset-lock.test.mjs). Neither language may accept a document the other refuses, and both must reproduce the same canonical bytes and assetLockHash.",
+  "contractSource": {
+    "rust": "vendor/pi-desktop/crates/craftmine-core/src/content_history/contract.rs (AssetLock)",
+    "javascript": "plugins/craftmine-world/asset-lock.mjs",
+    "frozenRustVectors": "tests/godot-remaining/M/contract/asset-lock-vectors.json"
+  },
+  "frozenCrossLanguage": [
+    {
+      "name": "s1-fixture-lock",
+      "frozenName": "fixture-lock",
+      "source": "tests/godot-remaining/M/contract/asset-lock-vectors.json#vectors[0]",
+      "assetLockHash": "b95794a2afd498e782e6ec64ec84f1a595d9b56ac723ee4c997a15bbcaad9f0b",
+      "assets": 2
+    },
+    {
+      "name": "s1-empty-lock",
+      "frozenName": "empty-lock",
+      "source": "tests/godot-remaining/M/contract/asset-lock-vectors.json#vectors[1]",
+      "assetLockHash": "70396c0e7b3582530fb2765684ae9a8bbc6579c93066539e5ed83ce0db5a4809",
+      "assets": 0
+    }
+  ],
+  "mediaTypes": [
+    {
+      "path": "scripts/door.gd",
+      "mediaType": "text/x-gdscript"
+    },
+    {
+      "path": "shaders/glow.gdshader",
+      "mediaType": "text/x-gdshader"
+    },
+    {
+      "path": "scenes/chest.tscn",
+      "mediaType": "application/x-godot-scene"
+    },
+    {
+      "path": "data/items.tres",
+      "mediaType": "application/x-godot-resource"
+    },
+    {
+      "path": "data/recipes.json",
+      "mediaType": "application/json"
+    },
+    {
+      "path": "art/door.png",
+      "mediaType": "image/png"
+    },
+    {
+      "path": "art/photo.JPEG",
+      "mediaType": "image/jpeg"
+    },
+    {
+      "path": "art/icon.svg",
+      "mediaType": "image/svg+xml"
+    },
+    {
+      "path": "audio/step.wav",
+      "mediaType": "audio/wav"
+    },
+    {
+      "path": "audio/ambient.ogg",
+      "mediaType": "audio/ogg"
+    },
+    {
+      "path": "models/chest.glb",
+      "mediaType": "model/gltf-binary"
+    },
+    {
+      "path": "models/tree.gltf",
+      "mediaType": "model/gltf+json"
+    },
+    {
+      "path": "tables/items.csv",
+      "mediaType": "text/csv"
+    },
+    {
+      "path": "README.md",
+      "mediaType": "text/markdown"
+    },
+    {
+      "path": "NOTES.txt",
+      "mediaType": "text/plain"
+    },
+    {
+      "path": "unknown/blob.dat",
+      "mediaType": "application/octet-stream"
+    }
+  ],
+  "accept": [
+    {
+      "name": "single-object-with-files",
+      "assetLockHash": "993f933349e122a657a9d50393b9989258fa86ba3d3106f83e4f958ab8e4625b",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "1",
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "installPath": "addons/door",
+            "files": [
+              {
+                "path": "scripts/door.gd",
+                "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+                "bytes": 512,
+                "mediaType": "text/x-gdscript"
+              }
+            ],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "dependency-chain",
+      "assetLockHash": "81ba987e84f5cc004fb78b805cb5a31ba75b8232b4fe136677afd16b5022f3bc",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "chest",
+              "version": "2",
+              "contentHash": "3333333333333333333333333333333333333333333333333333333333333333"
+            },
+            "installPath": "addons/chest",
+            "files": [],
+            "dependencies": [
+              {
+                "assetId": "loot-table",
+                "version": "1",
+                "contentHash": "4444444444444444444444444444444444444444444444444444444444444444"
+              }
+            ],
+            "overrides": []
+          },
+          {
+            "asset": {
+              "assetId": "loot-table",
+              "version": "1",
+              "contentHash": "4444444444444444444444444444444444444444444444444444444444444444"
+            },
+            "installPath": "addons/loot-table",
+            "files": [
+              {
+                "path": "data/loot.json",
+                "sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+                "bytes": 128,
+                "mediaType": "application/json"
+              }
+            ],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    }
+  ],
+  "reject": [
+    {
+      "name": "legacy-direct-closure-graph",
+      "error": "ASSET_LOCK_LEGACY_SHAPE",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "direct": [
+          {
+            "id": "a",
+            "version": 1
+          }
+        ],
+        "closure": [
+          {
+            "id": "a",
+            "version": 1
+          }
+        ],
+        "graph": {
+          "a@1": []
+        }
+      }
+    },
+    {
+      "name": "format-mismatch",
+      "error": "ASSET_LOCK_FORMAT_MISMATCH",
+      "lock": {
+        "format": "craftmine.assets-lock/2",
+        "assets": []
+      }
+    },
+    {
+      "name": "unknown-document-field",
+      "error": "UNKNOWN_FIELD",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [],
+        "entries": []
+      }
+    },
+    {
+      "name": "unknown-entry-field",
+      "error": "UNKNOWN_FIELD",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "1",
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "installPath": "addons/door",
+            "files": [],
+            "dependencies": [],
+            "overrides": [],
+            "direct": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "mutable-version-latest",
+      "error": "ASSET_LOCK_MUTABLE_VERSION",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "latest",
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "installPath": "addons/door",
+            "files": [],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "conflicting-duplicate-version",
+      "error": "ASSET_LOCK_VERSION_CONFLICT",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "1",
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "installPath": "addons/door",
+            "files": [],
+            "dependencies": [],
+            "overrides": []
+          },
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "1",
+              "contentHash": "9999999999999999999999999999999999999999999999999999999999999999"
+            },
+            "installPath": "addons/door",
+            "files": [],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "unresolved-dependency",
+      "error": "ASSET_LOCK_DEPENDENCY_UNRESOLVED",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "chest",
+              "version": "1",
+              "contentHash": "3333333333333333333333333333333333333333333333333333333333333333"
+            },
+            "installPath": "addons/chest",
+            "files": [],
+            "dependencies": [
+              {
+                "assetId": "loot-table",
+                "version": "1",
+                "contentHash": "4444444444444444444444444444444444444444444444444444444444444444"
+              }
+            ],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "dependency-hash-mismatch",
+      "error": "ASSET_LOCK_DEPENDENCY_UNRESOLVED",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "chest",
+              "version": "1",
+              "contentHash": "3333333333333333333333333333333333333333333333333333333333333333"
+            },
+            "installPath": "addons/chest",
+            "files": [],
+            "dependencies": [
+              {
+                "assetId": "loot-table",
+                "version": "1",
+                "contentHash": "6666666666666666666666666666666666666666666666666666666666666666"
+              }
+            ],
+            "overrides": []
+          },
+          {
+            "asset": {
+              "assetId": "loot-table",
+              "version": "1",
+              "contentHash": "4444444444444444444444444444444444444444444444444444444444444444"
+            },
+            "installPath": "addons/loot-table",
+            "files": [],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "dependency-cycle",
+      "error": "ASSET_LOCK_DEPENDENCY_CYCLE",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "a",
+              "version": "1",
+              "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "installPath": "addons/a",
+            "files": [],
+            "dependencies": [
+              {
+                "assetId": "b",
+                "version": "1",
+                "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+              }
+            ],
+            "overrides": []
+          },
+          {
+            "asset": {
+              "assetId": "b",
+              "version": "1",
+              "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "installPath": "addons/b",
+            "files": [],
+            "dependencies": [
+              {
+                "assetId": "a",
+                "version": "1",
+                "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "install-path-traversal",
+      "error": "PATH_TRAVERSAL",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "1",
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "installPath": "../escape",
+            "files": [],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "install-path-absolute",
+      "error": "PATH_NOT_RELATIVE",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "1",
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "installPath": "/addons/door",
+            "files": [],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "file-path-device-name",
+      "error": "PATH_RESERVED_NAME",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "1",
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "installPath": "addons/door",
+            "files": [
+              {
+                "path": "aux.gd",
+                "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+                "bytes": 1,
+                "mediaType": "text/x-gdscript"
+              }
+            ],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "file-path-case-collision",
+      "error": "PATH_COLLISION",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "1",
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "installPath": "addons/door",
+            "files": [
+              {
+                "path": "art/Door.png",
+                "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+                "bytes": 1,
+                "mediaType": "image/png"
+              },
+              {
+                "path": "art/door.png",
+                "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+                "bytes": 1,
+                "mediaType": "image/png"
+              }
+            ],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "content-hash-not-sha256",
+      "error": "INVALID_SHA256",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "1",
+              "contentHash": "abc"
+            },
+            "installPath": "addons/door",
+            "files": [],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "file-missing-media-type",
+      "error": "INVALID_ASSET_LOCK",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "1",
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "installPath": "addons/door",
+            "files": [
+              {
+                "path": "scripts/door.gd",
+                "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+                "bytes": 1
+              }
+            ],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "segment-ending-in-dot",
+      "error": "INVALID_RELATIVE_PATH",
+      "lock": {
+        "format": "craftmine.assets-lock/1",
+        "assets": [
+          {
+            "asset": {
+              "assetId": "door",
+              "version": "1",
+              "contentHash": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "installPath": "addons./door",
+            "files": [],
+            "dependencies": [],
+            "overrides": []
+          }
+        ]
+      }
+    }
+  ]
+}

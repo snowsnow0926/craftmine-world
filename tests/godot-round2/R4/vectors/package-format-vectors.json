@@ -81,13 +81,5 @@
     {"name": "creation-needs-author-choice-2", "source": {"format": "craftmine.module/2", "kind": "creation"}, "ambiguous": ["module", "object", "scene", "world"]},
     {"name": "unknown-kind-refused", "source": {"format": "craftmine.module/1", "kind": "mystery"}, "error": "PACKAGE_LEGACY_FORMAT_UNKNOWN"},
     {"name": "unknown-format-refused", "source": {"format": "craftmine.other/9", "kind": "object"}, "error": "PACKAGE_LEGACY_FORMAT_UNKNOWN"}
-  ],
-  "lock": [
-    {"name": "exact-closure", "direct": [{"id": "a", "version": 1}], "closure": [{"id": "a", "version": 1}], "graph": {}, "ok": true},
-    {"name": "transitive-closure", "direct": [{"id": "a", "version": 1}], "closure": [{"id": "a", "version": 1}, {"id": "b", "version": 2}], "graph": {"a@1": ["b@2"], "b@2": []}, "ok": true},
-    {"name": "missing-direct-dependency", "direct": [{"id": "a", "version": 1}], "closure": [], "graph": {}, "error": "PACKAGE_LOCK_MISSING_DEPENDENCY"},
-    {"name": "two-versions-of-one-asset", "direct": [{"id": "a", "version": 1}], "closure": [{"id": "a", "version": 1}, {"id": "a", "version": 2}], "graph": {}, "error": "PACKAGE_LOCK_VERSION_CONFLICT"},
-    {"name": "cycle-in-lock", "direct": [{"id": "a", "version": 1}], "closure": [{"id": "a", "version": 1}, {"id": "b", "version": 1}], "graph": {"a@1": ["b@1"], "b@1": ["a@1"]}, "error": "PACKAGE_DEPENDENCY_CYCLE"},
-    {"name": "closure-not-reachable", "direct": [{"id": "a", "version": 1}], "closure": [{"id": "a", "version": 1}, {"id": "z", "version": 1}], "graph": {"a@1": []}, "error": "PACKAGE_LOCK_UNREACHABLE_ENTRY"}
   ]
 }
