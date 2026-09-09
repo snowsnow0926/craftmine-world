@@ -17,7 +17,13 @@
     "nextStep": "W4：真实原生作品库安装生命/射击/近战/扩展组合，正式应用及重启整链待验",
     "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。",
     "previousAutomationId": "craftmine-windows",
-    "currentWorktrees": "本次parallel-a到g工作树与分支保留用于追溯，未执行删除；历史五个清理被拒目录不变。"
+    "currentWorktrees": "本次parallel-a到g工作树与分支保留用于追溯，未执行删除；历史五个清理被拒目录不变。",
+    "localMerge": {
+      "implementationCommit": "4888043643554b94a42b1f0986e9bd89d10b01d6",
+      "branch": "master",
+      "verifiedClean": true,
+      "pushed": false
+    }
   },
   "windowsClientPlan": {
     "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",
@@ -256,7 +262,8 @@
         "可见窗口合成、物理双击和真实游玩手感、完整PI入口与性能基准待验",
         "renderer重启后的待确认操作ID恢复、安装已提交后的检查补交体验待完善",
         "扩展多命令整步原子性和通用状态迁移仍有边界；草稿保持2MB上限"
-      ]
+      ],
+      "merge": "4888043 and all implementation commits fast-forwarded into local master; no remote push"
     }
   },
   "liveVerification": {

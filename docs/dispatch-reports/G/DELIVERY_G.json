@@ -54,5 +54,11 @@
     "可见窗口合成、物理双击和真实游玩手感、完整PI入口与性能基准待验",
     "renderer重启后的待确认操作ID恢复、安装已提交后的检查补交体验待完善",
     "扩展多命令整步原子性和通用状态迁移仍有边界；草稿保持2MB上限"
-  ]
+  ],
+  "localMerge": {
+    "implementationCommit": "4888043643554b94a42b1f0986e9bd89d10b01d6",
+    "branch": "master",
+    "verifiedClean": true,
+    "pushed": false
+  }
 }

@@ -103,3 +103,5 @@
 - 825原包文件416871430字节逐个复制核对至主目录desktop/build/windows-preview-batch-06；NSIS154098909字节，SHA256 b73c0b3feeb626698e337bc0d6eac03503b81bebf92814f1efecdaa0912f4624。对应源码ZIP SHA2568f2dc35576bca18c1e7ab1f812c3c155e972997d08fcad78304f90462ac9a155；NotSigned。额外外层交付/最新指南勘误，不修改原测试包。
 - 完整报告WINDOWS_BATCH_06.md、docs/dispatch-reports/G/REPORT_G.md和ACCEPTANCE_MATRIX.md。整体W0–W5未完成：最终原生组合库安装链、干净Windows安装/升级、实际可见试玩、性能和少数故障体验仍待办。
 - 全程独立headless/offscreen目录，无真实鼠标键盘、Pointer Lock、窗口显示/置前或用户浏览器操作。未更改正式世界或现用服务。各组代码和失败档案保留，不删除本批工作树，不动五个历史清理被拒目录；不推送远端。
+
+本批实现及各组提交已于本地 master 快进合并到 4888043，合并后工作树干净；主项目证据哈希与实际 F 包内 EXE 哈希再次核对一致。未推送远端，后续仅追加此合并记录。
