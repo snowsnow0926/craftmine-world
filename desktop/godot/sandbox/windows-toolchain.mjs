@@ -6,7 +6,7 @@ import {promisify} from 'node:util';
 import {godotCacheDirectory,godotLock,sha256} from '../toolchain.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url));
 export const WINDOWS_TEMPLATE={file:'windows_release_x86_64.exe',bytes:109268480,sha256:'d34d36f3be1a6c49c56525ae86469b92e4f417ddf0b43cf00dd80c385c4b0562'};
-export const windowsPreset=await fs.readFile(path.join(here,'windows-export.cfg'),'utf8');
+export const windowsPreset=await fs.readFile(path.join(here,'../shared/windows-export.cfg'),'utf8');
 /** Extract a single verified archive entry into a fresh task-owned engine root. */
 export async function prepareWindowsToolchain(out){
  if(process.platform!=='win32'||!path.isAbsolute(out))throw Error('Windows absolute fresh output required');

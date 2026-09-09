@@ -24,7 +24,7 @@ function rustFiles(directory,prefix='src'){
     return entry.isDirectory()?rustFiles(path.join(directory,entry.name),relative):entry.name.endsWith('.rs')?[relative]:[];
   });
 }
-const SOURCE_FILES = ['Cargo.toml', 'Cargo.lock', ...rustFiles(path.join(sandbox,'src'))];
+const SOURCE_FILES = ['Cargo.toml', 'Cargo.lock', '../shared/windows-export.cfg', ...rustFiles(path.join(sandbox,'src'))];
 
 function sourceDigest() {
   const records = SOURCE_FILES.filter(relative => fs.existsSync(path.join(sandbox, relative)))

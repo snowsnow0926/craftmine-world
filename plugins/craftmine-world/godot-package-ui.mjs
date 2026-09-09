@@ -1,8 +1,10 @@
 // Godot component presentation. Files, source authority and installation stay native.
+import {createGodotWindowsExportUI} from './godot-windows-export-ui.mjs';
 const text=(tag,value)=>{const node=document.createElement(tag);node.textContent=value;return node;};
 const field=(label,type='input')=>{const wrapper=text('label',''),control=document.createElement(type);wrapper.append(text('span',label),control);return {wrapper,control};};
 export function createGodotPackageUI({element,request,getWorldId,action=run=>run()}) {
   let generation=0,source=null,grant=null,attempt=null;
+  const gameExportElement=document.createElement('section'),gameExport=createGodotWindowsExportUI({element:gameExportElement,request,getWorldId});
   const notice=text('p',''),choices=field('选择要导出的对象','select'),asset=field('作品编号'),version=field('版本号');
   notice.className='workbench-notice';
   notice.setAttribute('role','status');asset.control.value='my-component';asset.control.pattern='[a-z0-9][a-z0-9._-]{0,79}';asset.control.required=true;
@@ -39,5 +41,5 @@ export function createGodotPackageUI({element,request,getWorldId,action=run=>run
     if(!result.items?.length)list.append(text('p','入口场景中还没有可复用的独立对象。创建带稳定身份的门、箱子或目标后可在这里导出。'));
     notice.textContent=`已读取源码版本 ${result.revision}。导出不会包含玩家当前进度。${result.truncated?'当前只列出前 512 个对象。':''}`;
   }
-  return {async show(){generation++;source=null;grant=null;attempt=null;repeat.button.disabled=true;element.replaceChildren(text('h2','Godot 作品'),text('p','导出一个对象及其子节点，或把作品 ZIP 加入当前源码。安装后需检查、预览并应用。'),notice,importer.form,repeat.form,refresh.form,list,exporter.form);await refreshSource();},clear(){generation++;source=null;grant=null;attempt=null;},refresh:refreshSource};
+  return {async show(){generation++;source=null;grant=null;attempt=null;repeat.button.disabled=true;gameExport.clear();gameExport.show();element.replaceChildren(text('h2','Godot 作品'),text('p','导出一个对象及其子节点，或把作品 ZIP 加入当前源码。安装后需检查、预览并应用。'),gameExportElement,notice,importer.form,repeat.form,refresh.form,list,exporter.form);await refreshSource();},clear(){generation++;source=null;grant=null;attempt=null;gameExport.clear();},refresh:refreshSource};
 }

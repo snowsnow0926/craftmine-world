@@ -25,7 +25,7 @@ impl Operation {
 
 /// The private Windows export accepts this exact host preset, not arbitrary
 /// template paths, signing commands, executable resource tools or arguments.
-pub const WINDOWS_PRESET: &str = include_str!("../windows-export.cfg");
+pub const WINDOWS_PRESET: &str = include_str!("../../shared/windows-export.cfg");
 pub const WINDOWS_TEMPLATE_SHA256: &str = "d34d36f3be1a6c49c56525ae86469b92e4f417ddf0b43cf00dd80c385c4b0562";
 fn validate_windows_preset(bytes: &[u8]) -> Result<()> {
     if bytes != WINDOWS_PRESET.as_bytes() { return Err("Windows export requires the exact host-owned preset".into()); }
