@@ -1255,8 +1255,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 6799,
-      "sha256": "20d0f6c4a80f1cb0abe888ff4f1d2050e4804c246cc64909e56f836216e37b05",
+      "bytes": 7267,
+      "sha256": "2443637943a20bb044e98cd6d9972e28dcea2da9ce5c1ef61e78725dc7742b8e",
       "notes": "Authored GDScript executed by the base runtime."
     },
     {

@@ -322,6 +322,38 @@
       "sha256": "d25437ff8ce136baa015e746b9e8240e9bac7876ebdca90f7537aaffe354350a"
     },
     {
+      "path": "progress-migration.d.mts",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 443,
+      "sha256": "aac830eb1ab3ee33e7cb8f67f27aa4f6cffb62a4bbee92b60aa55c025de0be3d"
+    },
+    {
+      "path": "progress-migration.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 4199,
+      "sha256": "e911b970517257dbba1b2614fb991568c4689f7a84d40bec2bafb0ddbab310a2"
+    },
+    {
       "path": "runtime_bridge.gd",
       "role": "source",
       "origin": "authored",
@@ -368,8 +400,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 7387,
-      "sha256": "a4b8901426d8a61317d51d66b94252f22c77e37b85c530a5c2ec5f485c1251c9"
+      "bytes": 8353,
+      "sha256": "34f2dab7877e3ce302c58f416613b1fbaf0c401fd1f4c7aba5ab08f8db4c65d4"
     },
     {
       "path": "state_guard.gd",
