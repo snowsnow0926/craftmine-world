@@ -29,6 +29,9 @@ with revision, content hash, persistence time, and snapshot hash. A no-op save
 returns the existing durable revision and receipt; it is a valid checkpoint.
 A prepared application freezes saves of the new Godot progress format. Failure
 leaves the prior world intact. The page never submits its own durable receipt.
+The receipt also echoes the bound `instanceId` and exact runner
+`snapshotSha256`; these identify the save being acknowledged. They differ from
+`snapshotHash`, which hashes the core's normalized JSON state.
 
 New-format progress requires application evidence `craftmine.godot-application/2`
 containing the complete restored `snapshot`. A null legacy player projection
@@ -51,6 +54,16 @@ path components. It retains the artifact caps (256 MiB/file, 512 MiB total,
 `craftmine.godot-artifacts/1`, world ID, build ID and sorted artifacts. The host
 serves only those listed files, and must verify the actual bytes it serves;
 startup hashing alone does not address later filesystem changes.
+
+The private `godotRuntime.describeCandidate({worldId,applicationId,token})`
+resolves a prepared candidate for a separate validation instance. It checks the
+host's prepare token, current formal world/revision/hash, current source/assets,
+matching candidate/check, and all the same artifact bounds/hashes. It returns
+`phase: candidate`, application identity and input hash; the formal descriptor
+returns `phase: formal`. Candidate descriptors do not publish, select, or save
+the candidate. Aborted, expired, stale or foreign applications cannot resolve.
+Promotion and rollback remain duties of the native application coordinator;
+this operation alone does not complete that coordinator or its acceptance.
 
 These operations do not register an executor, enable arbitrary engine import,
 create a delivered base, or implement legacy-to-Godot conversion. Authored

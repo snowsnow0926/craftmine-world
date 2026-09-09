@@ -53,6 +53,10 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
       fields(params,['worldId']);
       return core.call(method,params,60000);
     }
+    if(method==='godotRuntime.describeCandidate'){
+      fields(params,['worldId','applicationId','token']);
+      return core.call(method,params,60000);
+    }
     if(method==='godotRuntime.saveProgress'){
       fields(params,['worldId','buildId','revision','runnerReceipt','snapshot']);
       return core.call(method,params,60000);

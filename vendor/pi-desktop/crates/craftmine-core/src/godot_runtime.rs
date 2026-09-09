@@ -58,6 +58,10 @@ struct DescribeArgs { world_id: String }
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct CandidateArgs { world_id: String, application_id: String, token: String }
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct SaveArgs {
     world_id: String,
     build_id: String,
@@ -97,6 +101,20 @@ fn same_json(left: &Value, right: &Value) -> bool {
 }
 
 impl TaskJournal {
+    fn runtime_artifacts(&self, world: &str, build: &str, job: &Value) -> Result<Value> {
+        let root = godot_builds::build_root(&self.directory, world, build, false)?.join("artifacts");
+        ensure!(godot_projects::ordinary(&root, "GODOT_ARTIFACT_MISSING")?.is_dir(), "GODOT_ARTIFACT_MISSING");
+        let artifacts = godot_jobs::verified_artifacts(&self.db, world, build, &root)?;
+        let mut checked = job["output"]["artifacts"].as_array().context("GODOT_ARTIFACT_MANIFEST_MISMATCH")?.clone();
+        checked.sort_by(|a,b| a["path"].as_str().cmp(&b["path"].as_str()));
+        ensure!(artifacts == checked, "GODOT_ARTIFACT_MANIFEST_MISMATCH");
+        let entry = "web/index.html";
+        ensure!(artifacts.iter().any(|item| item["path"] == entry), "GODOT_WEB_ENTRY_MISSING");
+        let manifest = json!({"format":"craftmine.godot-artifacts/1","worldId":world,"buildId":build,"artifacts":artifacts});
+        Ok(json!({"root":root.to_string_lossy(),"entry":entry,"threads":true,
+            "artifactManifestHash":digest(&serde_json::to_string(&manifest)?),"artifacts":artifacts}))
+    }
+
     /// Only an applied, integrity-checked build is a runnable formal world.
     /// This is not an executor attestation or proof of model-created gameplay.
     pub fn godot_runtime_describe(&self, args: &Value) -> Result<Value> {
@@ -140,20 +158,45 @@ impl TaskJournal {
             && job["status"] == "passed" && job["outputHash"] == input["checkOutputHash"], "GODOT_BUILD_NOT_APPLIED");
         // Source head may have advanced since application. Formal builds remain
         // runnable independently of a newer draft; only their own artifacts count.
-        let root = godot_builds::build_root(&self.directory, &args.world_id, build, false)?.join("artifacts");
-        ensure!(godot_projects::ordinary(&root, "GODOT_ARTIFACT_MISSING")?.is_dir(), "GODOT_ARTIFACT_MISSING");
-        let artifacts = godot_jobs::verified_artifacts(&self.db, &args.world_id, build, &root)?;
-        let mut checked_artifacts = job["output"]["artifacts"].as_array().context("GODOT_ARTIFACT_MANIFEST_MISMATCH")?.clone();
-        checked_artifacts.sort_by(|a,b| a["path"].as_str().cmp(&b["path"].as_str()));
-        ensure!(artifacts == checked_artifacts, "GODOT_ARTIFACT_MANIFEST_MISMATCH");
-        let entry = "web/index.html";
-        ensure!(artifacts.iter().any(|item| item["path"] == entry), "GODOT_WEB_ENTRY_MISSING");
-        let manifest = json!({"format":"craftmine.godot-artifacts/1","worldId":args.world_id,"buildId":build,"artifacts":artifacts});
-        Ok(json!({"format":"craftmine.godot-runtime-descriptor/1","worldId":args.world_id,
+        let mut descriptor = self.runtime_artifacts(&args.world_id, build, &job)?;
+        descriptor.as_object_mut().unwrap().extend(json!({"format":"craftmine.godot-runtime-descriptor/1","phase":"formal","worldId":args.world_id,
             "buildId":build,"baseId":base_id,"revision":current.summary.revision,"contentHash":current.content_hash,
-            "snapshot":current.world.snapshot,"build":current.world.build,
-            "root":root.to_string_lossy(),"entry":entry,"threads":true,
-            "artifactManifestHash":digest(&serde_json::to_string(&manifest)?),"artifacts":artifacts}))
+            "snapshot":current.world.snapshot,"build":current.world.build}).as_object().unwrap().clone());
+        Ok(descriptor)
+    }
+
+    /// A prepared candidate may be started in a separate host-owned instance,
+    /// but is not the formal world and may not save through its progress route.
+    pub fn godot_runtime_describe_candidate(&self, args: &Value) -> Result<Value> {
+        let args: CandidateArgs = serde_json::from_value(args.clone())?;
+        let receipt = super::godot_applications::read(&self.db, &args.application_id)?;
+        let owner: Option<String> = self.db.query_row("SELECT token FROM craftmine_godot_applications WHERE id=?1",
+            [&args.application_id], |row| row.get(0))?;
+        ensure!(owner.as_deref() == Some(args.token.as_str()), "GODOT_APPLICATION_OWNER_MISMATCH");
+        ensure!(receipt["status"] == "prepared", "GODOT_APPLICATION_INACTIVE");
+        let input = &receipt["input"];
+        ensure!(input["worldId"] == args.world_id, "PROJECT_WORLD_BINDING_MISMATCH");
+        let current = worlds::read(&self.db, &args.world_id)?;
+        ensure!(input["revision"] == current.summary.revision && input["worldHash"] == current.content_hash
+            && input["snapshot"] == current.world.snapshot, "WORLD_REVISION_CONFLICT");
+        ensure!(input["snapshot"]["format"] == PROGRESS_FORMAT, "GODOT_PROGRESS_MIGRATION_REQUIRED");
+        let candidate = godot_jobs::require_ready_candidate(&self.db,
+            input["candidateId"].as_str().context("CORRUPT_GODOT_APPLICATION")?, &args.world_id)?;
+        ensure!(candidate["buildId"] == input["buildId"] && candidate["checkOutputHash"] == input["checkOutputHash"],
+            "GODOT_CANDIDATE_STALE");
+        let build = super::godot_applications::godot_build_document(&self.db, &candidate)?;
+        let world = worlds::WorldDocument {build:build.clone(), snapshot:current.world.snapshot.clone(), extensions:current.world.extensions};
+        validate_binding(&world, Some(&args.world_id))?;
+        ensure!(build["godot"]["engineVersion"] == godot_builds::engine_version() && build["godot"]["target"] == "web",
+            "GODOT_BUILD_IDENTITY_MISMATCH");
+        let job = godot_jobs::read_job(&self.db, input["checkJobId"].as_str().context("CORRUPT_GODOT_APPLICATION")?)?;
+        let build_id = input["buildId"].as_str().context("CORRUPT_GODOT_APPLICATION")?;
+        let mut descriptor = self.runtime_artifacts(&args.world_id, build_id, &job)?;
+        descriptor.as_object_mut().unwrap().extend(json!({"format":"craftmine.godot-runtime-descriptor/1","phase":"candidate",
+            "worldId":args.world_id,"buildId":build_id,"baseId":candidate["baseId"],"revision":current.summary.revision,
+            "contentHash":current.content_hash,"snapshot":world.snapshot,"build":build,
+            "applicationId":args.application_id,"applicationInputHash":receipt["inputHash"]}).as_object().unwrap().clone());
+        Ok(descriptor)
     }
 
     /// The runner confirms a snapshot; only this SQLite transaction proves it is
@@ -177,6 +220,7 @@ impl TaskJournal {
         let current = self.world_save_progress(&args.world_id, args.revision, &args.build_id, &args.snapshot)?;
         Ok(json!({"receipt":{"format":"craftmine.godot-progress-receipt/1","worldId":args.world_id,
             "buildId":args.build_id,"revision":current.summary.revision,"contentHash":current.content_hash,
+            "instanceId":receipt.instance_id,"snapshotSha256":receipt.snapshot_sha256,
             "persistedAt":current.summary.updated_at,"snapshotHash":digest(&serde_json::to_string(&current.world.snapshot)?)}}))
     }
 }

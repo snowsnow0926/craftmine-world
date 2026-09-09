@@ -191,11 +191,23 @@ fn applied_progress_requires_full_launch_state_and_prepared_world_is_frozen() ->
     let (_, checked) = fixture::run_check(&mut journal, &fixture::ctx("one"), &project, "check", true)?;
     let prepare = journal.godot_application_prepare(&json!({"id":"apply","token":"token-apply",
         "candidateId":checked["candidateId"],"worldId":"a","revision":0,"snapshot":progress("a")}))?;
+    let describe = json!({"worldId":"a","applicationId":"apply","token":"token-apply"});
+    let descriptor = journal.godot_runtime_describe_candidate(&describe)?;
+    assert_eq!(descriptor["phase"], "candidate");
+    assert_eq!(descriptor["buildId"], prepare["buildId"]);
+    assert_eq!(descriptor["snapshot"], progress("a"));
+    assert_eq!(journal.world_read("a")?.world.build["id"], "base-a");
+    fixture::failed(journal.godot_runtime_describe_candidate(&json!({"worldId":"a","applicationId":"apply","token":"wrong"})), "GODOT_APPLICATION_OWNER_MISMATCH");
+    fixture::failed(journal.godot_runtime_describe_candidate(&json!({"worldId":"b","applicationId":"apply","token":"token-apply"})), "PROJECT_WORLD_BINDING_MISMATCH");
     fixture::failed(journal.godot_runtime_save_progress(&save_args(&progress("a"), "base-a", 0)), "WORLD_APPLICATION_BUSY");
     let args = json!({"id":"apply","token":"token-apply","evidence":{"format":"craftmine.godot-application/1",
         "inputHash":prepare["inputHash"],"launch":{"passed":true,"buildId":prepare["buildId"],
         "instanceId":"run","stateHash":digest("state")},"player":null}});
     fixture::failed(journal.godot_application_commit(&args), "APPLICATION_PROGRESS_CHANGED");
     assert_eq!(journal.world_read("a")?.summary.revision, 0);
+    journal.db.execute("UPDATE craftmine_godot_projects SET revision=revision+1 WHERE world_id='a'", [])?;
+    fixture::failed(journal.godot_runtime_describe_candidate(&describe), "GODOT_CANDIDATE_STALE");
+    journal.godot_application_abort(&json!({"id":"apply"}))?;
+    fixture::failed(journal.godot_runtime_describe_candidate(&describe), "GODOT_APPLICATION_OWNER_MISMATCH");
     Ok(())
 }

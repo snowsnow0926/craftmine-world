@@ -1,5 +1,5 @@
-{"directory":"D:\\cm-gd5-core\\test-results\\godot-core-cs7QLt","scope":"real private plugin router and Rust persistence","browser":false,"executor":false}
-✔ private host round trip preserves complete large Unicode progress across service restart (292.0392ms)
+{"directory":"D:\\cm-gd5-core\\test-results\\godot-core-IGDV1u","scope":"real private plugin router and Rust persistence","browser":false,"executor":false}
+✔ private host round trip preserves complete large Unicode progress across service restart (351.3316ms)
 ℹ tests 1
 ℹ suites 0
 ℹ pass 1
@@ -7,4 +7,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 390.5997
+ℹ duration_ms 496.052

@@ -8748,6 +8748,10 @@ reject world/build/revision/receipt-text/hash mismatches, schema changes, legacy
 replacement, and oversized UTF-8 state without data loss. Candidate evidence
 must include the entire restored state; null player evidence is insufficient.
 During a prepared new-format application, progress writes must be rejected.
+Resolve its candidate only with the matching private prepare token and world;
+verify full snapshot/artifacts while the formal build remains unchanged. Reject
+foreign tokens/worlds, source changes and aborted/expired applications. Match
+acknowledgements to the live instance and exact runner snapshot hash.
 
 The Electron host must bind the runner instance, use only private core RPCs,
 and validate bytes when serving each allowlisted artifact. Verify this in the

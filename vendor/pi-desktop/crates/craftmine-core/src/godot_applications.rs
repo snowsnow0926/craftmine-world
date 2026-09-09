@@ -105,7 +105,7 @@ pub(super) fn assert_idle(db: &Connection, world: &str) -> Result<()> {
     Ok(())
 }
 
-fn read(db: &Connection, id: &str) -> Result<Value> {
+pub(super) fn read(db: &Connection, id: &str) -> Result<Value> {
     expire(db)?;
     let (world_id, candidate_id, build_id, author_task, input, input_hash, status, output,
         output_hash, created, updated): (String, String, String, String, String, String, String,
@@ -379,7 +379,7 @@ impl TaskJournal {
 
 /// Formal world build descriptor for an applied Godot candidate. The scene
 /// format is explicit so the legacy runner does not mistake it for its own.
-fn godot_build_document(db: &Connection, candidate: &Value) -> Result<Value> {
+pub(super) fn godot_build_document(db: &Connection, candidate: &Value) -> Result<Value> {
     let build_id = candidate["buildId"].as_str().context("INVALID_GODOT_BUILD")?;
     valid_build_id(build_id)?;
     let world_id = candidate["worldId"].as_str().context("WORLD_ID_REQUIRED")?;
