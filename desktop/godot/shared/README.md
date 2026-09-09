@@ -1,10 +1,10 @@
 # Authored bases in the managed runtime
 
-This package connects the actual first-person, top-down and side-view bases to the existing craftmine.godot-runtime/2 Web bridge. The JavaScript host and Rust durability boundary remain separate components. It does not add permission to execute arbitrary generated projects.
+This package connects the actual first-person, top-down, side-view and mining-sandbox bases to the existing craftmine.godot-runtime/2 Web bridge. The JavaScript host and Rust durability boundary remain separate components. It does not add permission to execute arbitrary generated projects.
 
 ## Materialization
 
-Import materializeBase from materialize.mjs and supply baseId, worldId, template and a fresh absolute output directory. World ids use the portable lowercase 2–48 character rule required by the top-down generator. Supported templates are first-person blank/training-range, top-down blank/town and side-view blank/ruins. The materializer copies the authored project, adds CraftmineRuntime as an autoload, disables standalone file persistence in managed mode and emits managed-base.json with source file hashes. Only the selected adapter is copied; global class names from different bases must never be mixed in a project.
+Import materializeBase from materialize.mjs and supply baseId, worldId, template and a fresh absolute output directory. World ids use the portable lowercase 2–48 character rule required by the top-down generator. Supported templates are first-person blank/training-range, top-down blank/town, side-view blank/ruins and mining-sandbox blank/mine-camp. The materializer copies the authored project, adds CraftmineRuntime as an autoload, disables standalone file persistence in managed mode and emits managed-base.json with source file hashes. Only the selected adapter is copied; global class names from different bases must never be mixed in a project.
 
 After Godot boot, the tree is paused. The host must load an explicit snapshot (null for a fresh instance), then resume. The bridge remains active while paused. Load, restore-state, snapshot and save use the complete native body; 2D coordinates are never converted into a legacy voxel player.
 
@@ -20,6 +20,7 @@ Native bodies:
 - First-person 0.1.0: player placement/look/contact, equipment and ammunition, inventory, target health/hits, interactables, quests and stable savedAt metadata. Capturing or saving does not rewrite savedAt. A restored floor-contact observation is retained while paused and refreshed by the next real physics step.
 - Top-down 1.0.0: player scene/placement/facing, per-scene positions, coins, inventory, shop stock, quests, one-time rewards and flags. Restoration validates and stages the authored scene, then binds its real nodes. A failed bind retains the previous scene, progress and dirty status. Managed mode does not read or overwrite standalone user:// saves.
 - Side-view 1.0.0: room/placement/facing, ability/checkpoint/reward ledgers, room visits, counters, inventory, stable target health and player health/death recovery timers. Room reconstruction during restoration does not increment visit counts or grant rewards. Existing native v1 saves without entities/vitals migrate to authored target defaults and full health; the reward ledger still prevents defeated targets from respawning. Unknown entity/vital fields and incompatible target/reward combinations are rejected.
+- Mining-sandbox 1.0.0: player placement/facing/health, inventory, owned tools, equipped tool, flags, chunk index (revision, file name, SHA-256, cell count), edit count, terrain hash, world revision and the request ledger. The body carries every edited chunk cell, so a managed receipt binds terrain and a restore cannot lose it. The native restore validates against a clone, rejects unknown body/state fields, rejects a terrain hash the chunks do not produce (and rolls back), and refuses a chunk file name that escapes the chunk directory.
 
 This is complete native progress, not a rewind of every transient physics frame. Velocity, an active attack hitbox and animation frame remain controller state outside the native progress schema. Author-defined body fields must survive the adapter or produce an explicit rejection. Unknown outer fields and future versions are rejected rather than silently removed. Known extensible ledgers retain their keys.
 
@@ -32,6 +33,8 @@ The `observe` request is a read-only live observation and works while paused. E 
 F managed gameplay accepts `move`, `wait`, `buy`, `deliver`, `talk`, `gather`, `interact` and `focus` (an in-game interaction target, not window focus). Movement axes are finite values within -1..1 and move/wait commands are bounded to 600 ticks. Purchases, gathering and delivery still enforce live proximity and business rules. Standalone probe scene/position/reset helpers are refused by the managed adapter. Crossing a real door safely ends movement on the old actor and returns the newly bound scene; door replacement is deferred beyond the Area2D physics flush.
 
 G accepts `control` with `{segments: [{ticks, move?, jump?, attack?, interact?}, ...]}`. There are at most 64 segments and 600 physics ticks in total; ticks must be positive integers, move must be finite within -1..1, and buttons must be booleans. Unknown fields are rejected. The temporary input source supplies ordinary controller buttons and has a finite consumption deadline. It cannot set coordinates, health, abilities or rewards. This is runtime control, not a new model tool permission or arbitrary execution grant. Tests use no OS input or Pointer Lock.
+
+Mining-sandbox accepts read-only `snapshot`, `tile`, `inventory`, `hash`, `chunk` and bounded `move`/`wait`/`dig`/`place`/`craft`/`cancel`. There is no teleport, no state setter and no progress-restore operation in its allowlist; digging and placing still enforce reach, target, occupancy, adjacency, tool tier and inventory through the base's own services. `observe()` reports the player, inventory, tools, equipped tool, stations with their stable ids and recipes, chunk ids, edit count, terrain hash and the last action.
 
 ## Verification
 
@@ -65,8 +68,10 @@ stale. See `desktop/godot/bases/README.md`.
 (`extractInstance`) and plans/applies an installation
 (`planInstallation`/`applyInstallation`) that assigns a new entity id and starts
 from the component's initial state. Data-driven components are written by the
-tool; scene-node components are returned as an explicit `sceneEdits` step, so a
-component can never silently rewrite a `.tscn`.
+tool; scene-node components declare an `install` block and are written into a
+real `.tscn` by `scene_materializer.mjs`, which allocates the `ext_resource`,
+keeps the script's `uid://`, refuses duplicate identities and appends only (see
+`desktop/godot/bases/README.md`).
 
 ## Observation and bounded operations
 

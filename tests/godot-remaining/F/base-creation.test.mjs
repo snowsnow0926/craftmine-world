@@ -21,7 +21,7 @@ function run(args, cwd) {
 }
 
 test('the catalog describes a blank and an example template for every base', () => {
-  assert.deepEqual(CATALOG.bases.map((entry) => entry.baseId), ['first-person', 'side-view', 'top-down']);
+  assert.deepEqual(CATALOG.bases.map((entry) => entry.baseId), ['first-person', 'mining-sandbox', 'side-view', 'top-down']);
   for (const base of CATALOG.bases) {
     assert.equal(base.templates.filter((template) => template.kind === 'blank-start').length, 1, base.baseId);
     assert.equal(base.templates.filter((template) => template.kind === 'example').length, 1, base.baseId);

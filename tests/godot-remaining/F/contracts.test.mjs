@@ -17,7 +17,7 @@ import {
 import { buildCatalogs } from '../../../desktop/godot/shared/tools/build-base-catalog.mjs';
 
 const BASES_DIR = 'desktop/godot/bases';
-const EXPECTED_BASES = ['first-person', 'side-view', 'top-down'];
+const EXPECTED_BASES = ['first-person', 'mining-sandbox', 'side-view', 'top-down'];
 
 test('every base manifest satisfies the frozen contract', () => {
   const { bases, issues } = loadBaseContracts(BASES_DIR);

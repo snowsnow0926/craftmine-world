@@ -1,0 +1,8 @@
+exit=0
+request={"format":"craftmine.godot-mining-sandbox-probe/1","commands":[{"op":"craft","args":{"recipeId":"stone-brick","requestId":"g38-craft"}}],"saveOnExit":false}
+response={"baseId":"mining-sandbox","baseVersion":"1.0.0","finalSnapshot":{"baseId":"mining-sandbox","baseVersion":"1.0.0","bootError":"","chunkTiles":[16,16],"chunks":{},"cursor":[8,8],"editCount":0,"format":"craftmine.godot-mining-sandbox-snapshot/1","inventory":{"stone":2,"stone_brick":1},"lastAction":{},"mapSize":[96,48],"physical":{"overlaps":[],"solidTilesInPlayerRect":0},"player":{"equipped":"","facing":"right","health":3,"onFloor":false,"position":[136,154.5],"tile":[8,8],"toolTier":0},"rescue":{"from":[],"reason":"","resolved":false,"resolvedTiles":[{"from":[14,12],"id":"camp-forge","kind":"entity","to":[14,10]}],"to":[]},"save":{"lastSave":{}},"seed":31415926,"stateVersion":1,"terrainHash":"676353eab9ac60270840a2b37030355735f802c3e0e126e33778b1c123fa2a00","tileSize":16,"tools":[],"worldId":"a16-stack-craft","worldRevision":0},"format":"craftmine.godot-mining-sandbox-probe/1","ok":false,"results":[{"args":{"recipeId":"stone-brick","requestId":"g38-craft"},"op":"craft","result":{"itemId":"stone_brick","ok":false,"op":"craft","reason":"stack_full","recipeId":"stone-brick","requestId":"g38-craft","stackLimit":1}}],"worldId":"a16-stack-craft"}
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+--- stderr ---

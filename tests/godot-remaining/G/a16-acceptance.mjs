@@ -921,7 +921,7 @@ function run() {
     { op: 'capture-managed' },
   ], { saveOnExit: false });
   const capturedSnapshot = resultOf(captureRun, 2);
-  const managedBody = resultOf(captureRun, 3);
+  const managedBody = resultOf(captureRun, 3)?.body;
   // Start the next processes from a clean progress root so the restore is what
   // changes the state, not a save left behind by the capture run.
   rmSync(managed.progressRoot, { recursive: true, force: true });

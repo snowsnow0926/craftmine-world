@@ -146,18 +146,48 @@ test('a component source hash mismatch stops the installation', () => {
   assert.match(receipt.error, /hash mismatch/);
 });
 
-test('a scene-node component is planned but never written into a .tscn', () => {
+test('a scene-node component is written into the target scene with a new identity', () => {
   const project = path.join(tempDir(), 'world');
   fs.cpSync(path.join(BASES_DIR, 'top-down', 'worlds', 'blank'), project, { recursive: true });
-  const plan = planInstallation({ catalog: CATALOG, componentId: 'td.door', projectDir: project, entityId: 'door_new' });
+  const scene = 'scenes/world.tscn';
+  const plan = planInstallation({
+    catalog: CATALOG,
+    componentId: 'td.door',
+    projectDir: project,
+    entityId: 'door_new',
+    scene,
+    placement: { x: 64, y: 96 },
+  });
   assert.equal(plan.dataPatches.length, 0);
   assert.equal(plan.sceneEdits.length, 1);
-  assert.equal(plan.sceneEdits[0].reason, 'scene-node-required');
-  assert.ok(plan.manualSteps.length > 0);
-  const before = fs.readFileSync(path.join(project, 'scenes', 'world.tscn'), 'utf8');
+  assert.equal(plan.sceneEdits[0].format, 'craftmine.godot-scene-edit/1');
+  assert.equal(plan.manualSteps.length, 0);
+  const before = fs.readFileSync(path.join(project, scene), 'utf8');
   const receipt = applyInstallation({ catalog: CATALOG, plan, sourceDir: path.join(BASES_DIR, 'top-down'), projectDir: project });
-  assert.equal(receipt.requiresSceneEdit, true);
-  assert.equal(fs.readFileSync(path.join(project, 'scenes', 'world.tscn'), 'utf8'), before);
+  assert.equal(receipt.ok, true);
+  assert.equal(receipt.sceneApplied.length, 1);
+  assert.equal(receipt.requiresSceneEdit, undefined);
+  const after = fs.readFileSync(path.join(project, scene), 'utf8');
+  assert.match(after, /\[node name="door_new" type="Area2D" parent="\."\]/);
+  assert.match(after, /entity_id = "door_new"/);
+  assert.match(after, /target_scene = ""/);
+  assert.match(after, /\[ext_resource type="Script"[^\]]*path="res:\/\/scripts\/base\/door_zone\.gd"/);
+  // A second instance of the same component is independent of the first.
+  const second = planInstallation({
+    catalog: CATALOG,
+    componentId: 'td.door',
+    projectDir: project,
+    entityId: 'door_other',
+    scene,
+    placement: { x: 200, y: 96, target_scene: 'res://scenes/shop_interior.tscn' },
+  });
+  applyInstallation({ catalog: CATALOG, plan: second, sourceDir: path.join(BASES_DIR, 'top-down'), projectDir: project });
+  const both = fs.readFileSync(path.join(project, scene), 'utf8');
+  assert.match(both, /entity_id = "door_new"/);
+  assert.match(both, /entity_id = "door_other"/);
+  assert.match(both, /target_scene = "res:\/\/scenes\/shop_interior\.tscn"/);
+  assert.match(both, /target_scene = ""/);
+  assert.equal(both.match(/entity_id = "door_new"/g).length, 1);
 });
 
 test('a top-down data component installs its data file with a new identity', () => {

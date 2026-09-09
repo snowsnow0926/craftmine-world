@@ -125,9 +125,9 @@ static func _dispatch(game: Node, op: String, args: Dictionary) -> Dictionary:
 					"detail": String(managed.error),
 					"bytes": int(managed.get("bytes", 0)),
 				}
-			var envelope: Dictionary = managed.duplicate(true)
-			envelope[KEY_OK] = true
-			return envelope
+			# The managed body is returned untouched: adding probe envelope fields to
+			# it would make a later restore reject its own capture.
+			return _ok({"body": managed})
 		"restore-managed":
 			var body: Variant = args.get("body", {})
 			if not body is Dictionary:

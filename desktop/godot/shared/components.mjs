@@ -20,6 +20,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { sha256File } from './base_contract.mjs';
+import {
+  SCENE_EDIT_FORMAT,
+  planSceneInsertion,
+  applySceneInsertion,
+  planInputActions,
+  applyInputActions,
+  scriptUid,
+} from './scene_materializer.mjs';
 
 export const INSTALL_PLAN_FORMAT = 'craftmine.godot-component-install/1';
 export const COMPONENT_PACKAGE_FORMAT = 'craftmine.godot-component-package/1';
@@ -225,7 +233,7 @@ function assertFreshIdentity(world, entityId) {
  * a new entity id is assigned and the entity starts from the component's
  * declared initial state (the side-view state ledger starts empty).
  */
-export function planInstallation({ catalog, componentId, projectDir, entityId, roomId = null, placement = {}, overrides = {} }) {
+export function planInstallation({ catalog, componentId, projectDir, entityId, roomId = null, placement = {}, overrides = {}, scene = null }) {
   const component = getComponent(catalog, componentId);
   if (typeof entityId !== 'string' || !/^[a-z0-9][a-z0-9._-]{0,63}$/i.test(entityId)) {
     throw new Error('entityId must be a portable id');
@@ -251,6 +259,7 @@ export function planInstallation({ catalog, componentId, projectDir, entityId, r
     files,
     dataPatches: [],
     sceneEdits: [],
+    inputEdits: null,
     manualSteps: [],
   };
 
@@ -286,13 +295,41 @@ export function planInstallation({ catalog, componentId, projectDir, entityId, r
     }
   }
 
+  // Scene-node components: plan a real, reviewable scene insertion when the
+  // component declares an `install` block. The plan carries the exact node,
+  // ext_resource and identity, so applying it is no longer a manual step.
+  const install = component.install;
+  if (install && (install.mode === 'instance' || install.mode === 'script-node')) {
+    const scenePath = (scene ?? install.scene);
+    const absoluteScene = path.join(projectDir, scenePath);
+    if (!fs.existsSync(absoluteScene)) throw new Error(`target scene does not exist: ${scenePath}`);
+    const planned = planSceneInsertion({
+      sceneText: fs.readFileSync(absoluteScene, 'utf8'),
+      scenePath,
+      spec: install,
+      entityId,
+      placement,
+      overrides,
+    });
+    if (!planned.ok) throw new Error(`${planned.reason}: ${planned.detail}`);
+    plan.sceneEdits.push(planned.edit);
+    if (planned.edit.inputActions.length > 0) {
+      const projectFile = path.join(projectDir, 'project.godot');
+      if (fs.existsSync(projectFile)) {
+        const inputPlan = planInputActions(fs.readFileSync(projectFile, 'utf8'), planned.edit.inputActions);
+        if (inputPlan.edit) plan.inputEdits = inputPlan.edit;
+      }
+    }
+    return plan;
+  }
+
   plan.sceneEdits.push({
     reason: 'scene-node-required',
     baseId: component.baseId,
     componentId: component.id,
     identityField: component.identity?.field || null,
     requiredExports: Object.keys(component.initialState || {}),
-    note: 'Add the component node to the target scene and set the identity field. This tool never rewrites .tscn files.',
+    note: 'This component declares no install block, so it cannot be materialized into a scene automatically.',
   });
   plan.manualSteps.push(`add a ${component.label} node with ${component.identity?.field || 'identity'} = ${entityId}`);
   return plan;
@@ -306,6 +343,8 @@ export function applyInstallation({ catalog, plan, sourceDir, projectDir }) {
     entityId: plan.entityId,
     copied: [],
     patched: [],
+    sceneApplied: [],
+    inputsApplied: [],
     manualSteps: [...plan.manualSteps],
     ok: true,
   };
@@ -350,7 +389,39 @@ export function applyInstallation({ catalog, plan, sourceDir, projectDir }) {
       receipt.patched.push(patch.file);
     }
   }
-  if (plan.sceneEdits.length > 0) receipt.requiresSceneEdit = true;
+  for (const edit of plan.sceneEdits ?? []) {
+    if (edit.format !== SCENE_EDIT_FORMAT) {
+      receipt.requiresSceneEdit = true;
+      continue;
+    }
+    const target = path.join(projectDir, edit.scene);
+    if (!fs.existsSync(target)) {
+      receipt.ok = false;
+      receipt.error = `target scene is missing: ${edit.scene}`;
+      return receipt;
+    }
+    const uid = edit.extResource.type === 'Script' ? scriptUid(projectDir, edit.extResource.path) : null;
+    try {
+      fs.writeFileSync(target, applySceneInsertion(fs.readFileSync(target, 'utf8'), edit, { uid }));
+    } catch (error) {
+      receipt.ok = false;
+      receipt.error = `scene insertion failed: ${error.message}`;
+      return receipt;
+    }
+    receipt.sceneApplied.push({
+      scene: edit.scene,
+      node: edit.nodeName,
+      parent: edit.parent,
+      identityField: Object.keys(edit.properties).find((key) => key.endsWith('_id')) || null,
+      extResource: edit.extResource,
+    });
+  }
+  if (plan.inputEdits) {
+    const projectFile = path.join(projectDir, 'project.godot');
+    fs.writeFileSync(projectFile, applyInputActions(fs.readFileSync(projectFile, 'utf8'), plan.inputEdits));
+    receipt.inputsApplied = plan.inputEdits.actions.map((action) => action.name);
+  }
+  if ((plan.sceneEdits ?? []).some((edit) => edit.reason === 'scene-node-required')) receipt.requiresSceneEdit = true;
   receipt.componentFiles = component.files.map((file) => file.path);
   return receipt;
 }

@@ -521,6 +521,7 @@ func _notification(what: int) -> void:
 
 const MANAGED_FORMAT := "craftmine.godot-mining-sandbox-managed/1"
 const MANAGED_LIMIT := 1048576  # shared state_guard body limit
+const MANAGED_BODY_KEYS := ["format", "worldId", "baseId", "baseVersion", "stateVersion", "seed", "mapSize", "state", "chunks", "terrainHash"]
 ## A saved player tile may sit this many rows above the top row: the player can
 ## legitimately stand on the surface edge, but must not be restored far off-map.
 const PLAYER_TILE_MARGIN := 8
@@ -621,10 +622,16 @@ func capture_managed() -> Dictionary:
 
 
 ## SPEC 5.10: validate the entire body, then apply it. Nothing is applied when any
-## part is rejected.
+## part is rejected. Unknown fields are rejected instead of silently dropped, the
+## way the other three managed adapters behave.
 func restore_managed(body: Dictionary) -> Dictionary:
 	if terrain == null or state == null or generator == null:
 		return _managed_reject("bad_state", "Mining sandbox is not ready")
+	# The pre-call body, used to roll back a rejected terrain claim.
+	var previous := capture_managed()
+	for key in body.keys():
+		if not key in MANAGED_BODY_KEYS:
+			return _managed_reject("bad_state", "Unsupported native state field: body.%s" % key)
 	if String(body.get("format", "")) != MANAGED_FORMAT:
 		return _managed_reject("bad_format", "Managed body format is not supported")
 	if int(body.get("stateVersion", -1)) != MiningWorldState.STATE_VERSION:
@@ -678,14 +685,44 @@ func restore_managed(body: Dictionary) -> Dictionary:
 			or int(raw_tile[0]) < 0 or int(raw_tile[0]) >= generator.map_size.x \
 			or int(raw_tile[1]) < -PLAYER_TILE_MARGIN or int(raw_tile[1]) >= generator.map_size.y:
 		return _managed_reject("bad_state", "Managed player tile is outside the map")
-	# WorldState.from_dict validates every field before it assigns anything.
-	var applied := state.from_dict(raw_state, state.world_id)
+	# Validate the state against a clone first, so a rejected body cannot leave a
+	# half-applied world behind.
+	var candidate: MiningWorldState = state.clone()
+	if candidate == null:
+		return _managed_reject("bad_state", "Mining sandbox cannot clone its state")
+	var applied := candidate.from_dict(raw_state, state.world_id)
 	if not bool(applied.get("ok", false)):
 		return _managed_reject("bad_state", String(applied.get("error", "Managed state was rejected")))
+	var dropped := _omitted(raw_state, candidate.to_dict())
+	if not dropped.is_empty():
+		return _managed_reject("bad_state", "Unsupported native state field: state.%s" % dropped)
+	# The state is fully validated: commit it, then apply the validated chunks.
+	state.from_dict(candidate.to_dict(), state.world_id)
 	terrain.clear_edits()
 	for chunk_key in validated.keys():
 		var coords: Vector2i = chunk_store.parse_chunk_id(String(chunk_key))
 		terrain.apply_chunk(coords.x, coords.y, validated[chunk_key]["cells"], int(validated[chunk_key]["revision"]))
+	var recomputed := terrain.terrain_hash()
+	var claimed := String(body.get("terrainHash", ""))
+	if not claimed.is_empty() and claimed != recomputed:
+		terrain.clear_edits()
+		if not previous.is_empty() and not previous.has("error"):
+			var rollback_state: Variant = previous.get("state", {})
+			if rollback_state is Dictionary:
+				state.from_dict(rollback_state, state.world_id)
+			var rollback_chunks: Variant = previous.get("chunks", {})
+			if rollback_chunks is Dictionary:
+				for rollback_key in rollback_chunks.keys():
+					var rollback_coords: Vector2i = chunk_store.parse_chunk_id(String(rollback_key))
+					var rollback_entry: Variant = rollback_chunks[rollback_key]
+					if rollback_entry is Dictionary:
+						terrain.apply_chunk(rollback_coords.x, rollback_coords.y, rollback_entry.get("cells", []), int(rollback_entry.get("revision", 0)))
+		if collider != null:
+			collider.rebuild_all()
+		_sync_nodes_from_state()
+		if renderer != null:
+			renderer.invalidate()
+		return _managed_reject("bad_state", "Managed terrain hash does not match the restored chunks")
 	if collider != null:
 		collider.rebuild_all()
 	_sync_nodes_from_state()
@@ -697,6 +734,28 @@ func restore_managed(body: Dictionary) -> Dictionary:
 
 func _managed_reject(reason: String, detail: String) -> Dictionary:
 	return {"ok": false, "reason": reason, "detail": detail, "error": detail}
+
+
+## Mirrors shared/state_guard.gd `omitted`: returns the first path present in the
+## input that the output dropped, or "" when nothing was lost.
+static func _omitted(input: Variant, output: Variant, at: String = "body") -> String:
+	if input is Dictionary:
+		if not output is Dictionary:
+			return at
+		for key in input.keys():
+			if not output.has(key):
+				return "%s.%s" % [at, key]
+			var missing := _omitted(input[key], output[key], "%s.%s" % [at, key])
+			if not missing.is_empty():
+				return missing
+	elif input is Array:
+		if not output is Array or input.size() != output.size():
+			return at
+		for index in input.size():
+			var missing := _omitted(input[index], output[index], "%s[%d]" % [at, index])
+			if not missing.is_empty():
+				return missing
+	return ""
 
 
 # ------------------------------------------------------------------- helpers

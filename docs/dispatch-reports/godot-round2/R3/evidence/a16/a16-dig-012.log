@@ -1,0 +1,8 @@
+exit=0
+request={"format":"craftmine.godot-mining-sandbox-probe/1","commands":[{"op":"set-position","args":{"x":952,"y":336}},{"op":"dig","args":{"tx":59,"ty":21,"requestId":"g09-dig"}}],"saveOnExit":false}
+response={"baseId":"mining-sandbox","baseVersion":"1.0.0","finalSnapshot":{"baseId":"mining-sandbox","baseVersion":"1.0.0","bootError":"","chunkTiles":[16,16],"chunks":{"5_1":{"cells":1,"edited":true,"revision":1,"sha256":"4a3882190e4f7c2ccf5476b35657ae3da923b2dc40d8aa03b3b2d01a8a3fdc53"}},"cursor":[20,45],"editCount":1,"format":"craftmine.godot-mining-sandbox-snapshot/1","inventory":{"stone":1,"wood":2},"lastAction":{},"mapSize":[96,48],"physical":{"overlaps":[],"solidTilesInPlayerRect":0},"player":{"equipped":"","facing":"right","health":3,"onFloor":true,"position":[952,336],"tile":[59,20],"toolTier":0},"rescue":{"from":[20,45],"reason":"","resolved":false,"resolvedTiles":[{"from":[14,12],"id":"camp-forge","kind":"entity","to":[14,10]}],"to":[20,45]},"save":{"lastSave":{}},"seed":31415926,"stateVersion":1,"terrainHash":"7f5e80570c01168bfb67bbbf9d83f84cc345c00311a04f98f8b6ad239f182b24","tileSize":16,"tools":[],"worldId":"a16-dig","worldRevision":1},"format":"craftmine.godot-mining-sandbox-probe/1","ok":false,"results":[{"args":{"x":952,"y":336},"op":"set-position","result":{"facing":"right","ok":true,"overlaps":[],"position":[952,336]}},{"args":{"requestId":"g09-dig","tx":59,"ty":21},"op":"dig","result":{"ok":false,"op":"dig","reason":"tool_tier_too_low","requestId":"g09-dig","tx":59,"ty":21}}],"worldId":"a16-dig"}
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+--- stderr ---
