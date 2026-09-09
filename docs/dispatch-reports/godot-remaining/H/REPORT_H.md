@@ -134,6 +134,8 @@ node --test tests/godot-remaining/H/reuse-service.test.mjs
 - 原始输出：`evidence/rust-tests-final.txt`、`evidence/node-tests-final.txt`。
 - 首次失败/重试/最终成功：`evidence/first-failures.txt`（含两次编译错误、四次测试失败及处理方式）。
 - 证据记账：本轮为**纯逻辑测试 + 合成样例**。没有运行真实引擎、正式客户端或真实产品模型；没有人工手感环节。`tests/browser.mjs`、`tests/modules-browser.mjs` 未运行，未发送任何真实鼠标键盘操作，未激活窗口。
+- 回归核对：`node --test tests/dispatch/c/service-domain.test.mjs` 在 H 分支与**未改动的 master `e462147`** 上同样以
+  `AssertionError: Supply isolated copied Rust binary and actual A domain bundle` 失败；这是该用例要求外部提供隔离二进制与 A 域包的环境前置条件，与 H 的改动无关（H 只新增 `plugins/craftmine-world/reuse-service.mjs`，未改任何既有 JS 文件）。
 - 数据身份：全部为 `tempfile::tempdir()` 合成副本；未触碰用户存档、共享引擎缓存或历史工作树。
 - 源码身份：`9dd3704`（分支 `codex/godot-remaining-h-20260910`）；引擎/二进制身份：无（未涉及引擎二进制）。
 
