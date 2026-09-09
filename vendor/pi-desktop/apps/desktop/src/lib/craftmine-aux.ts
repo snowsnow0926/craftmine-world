@@ -64,7 +64,10 @@ export const CRAFTMINE_AUX_SECTIONS: CraftmineAuxSection[] = [
     label: { zh: "任务", en: "Tasks" },
     surface: { kind: "workbench", tab: "task" },
     channel: "task.current",
-    note: { zh: "当前会话绑定的创作任务。", en: "The creation task bound to this session." },
+    note: {
+      zh: "当前会话绑定的创作任务，以及可重新接续的中断草稿。",
+      en: "The task bound to this session and any interrupted drafts that can be resumed.",
+    },
   },
   {
     id: "backups",
@@ -129,7 +132,17 @@ export async function loadAuxSummary(
       const context = record(raw.context ?? raw);
       const status = text(context.status);
       const taskId = text(record(context.binding).taskId) || text(context.taskId);
-      return { id, label: section.label.zh, count: taskId ? 1 : 0, detail: status || (taskId ? "bound" : "") };
+      // A recoverable draft list is a separate real read. When the host does
+      // not expose it, the row keeps reporting only the bound task.
+      const recoverable = await bridge.call("task.recoverable", { worldId }).catch(() => null);
+      const drafts = list(record(recoverable).items);
+      const resumable = drafts.length > 0 ? `可接续 ${drafts.length} 项草稿` : "";
+      return {
+        id,
+        label: section.label.zh,
+        count: taskId ? 1 : 0,
+        detail: [status || (taskId ? "bound" : ""), resumable].filter(Boolean).join(" · "),
+      };
     }
     case "backups": {
       const status = text(raw.status) || text(raw.state);

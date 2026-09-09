@@ -1,0 +1,196 @@
+{
+  "kind": "real-react-panel-with-real-plugin-and-rust",
+  "sourceCommit": "04101e39bb912b3735275be492c097f49348f6eb",
+  "engine": {
+    "coreBinary": "D:/Craftmine World/vendor/pi-desktop/target/release/craftmine-core.exe",
+    "coreSha256": "ef3c4e253e4c960687b497d4298c45027f354f80b12a85749482f25ec7ae0d57"
+  },
+  "checks": [
+    {
+      "name": "真实插件与 Rust 登记了第一个世界",
+      "passed": true
+    },
+    {
+      "name": "保留的世界视图已加载真实 Rust 世界",
+      "passed": true
+    },
+    {
+      "name": "React 面板列出真实 Rust 世界",
+      "passed": true,
+      "detail": [
+        {
+          "id": "cfe68896-4d20-4ad4-ae70-19fa81e79f62",
+          "state": "ready",
+          "playable": "true",
+          "active": "true",
+          "disabled": false,
+          "text": "林间小屋底座未标注刚刚保存当前"
+        }
+      ]
+    },
+    {
+      "name": "已初始化世界标记为可游玩",
+      "passed": true
+    },
+    {
+      "name": "主机未标注底座时面板不伪造底座",
+      "passed": true,
+      "detail": [
+        {
+          "id": "cfe68896-4d20-4ad4-ae70-19fa81e79f62",
+          "state": "ready",
+          "playable": "true",
+          "active": "true",
+          "disabled": false,
+          "text": "林间小屋底座未标注刚刚保存当前"
+        }
+      ]
+    },
+    {
+      "name": "创建面板只允许已交付底座被选中",
+      "passed": true,
+      "detail": [
+        {
+          "id": "craftmine-web/5",
+          "delivered": "true",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "创建面板不伪造未交付底座",
+      "passed": true,
+      "detail": [
+        {
+          "id": "craftmine-web/5",
+          "delivered": "true",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "表单创建的世界经真实网关登记并可在面板中看到",
+      "passed": true,
+      "detail": [
+        {
+          "id": "bbbb39e1-4c8e-441d-a0f6-bbe3556f7a93",
+          "state": "ready",
+          "playable": "true",
+          "active": "true",
+          "disabled": false,
+          "text": "海边花园底座未标注刚刚保存当前"
+        },
+        {
+          "id": "cfe68896-4d20-4ad4-ae70-19fa81e79f62",
+          "state": "ready",
+          "playable": "true",
+          "active": "false",
+          "disabled": false,
+          "text": "林间小屋底座未标注刚刚保存"
+        }
+      ]
+    },
+    {
+      "name": "新建世界在真实初始化完成后才可游玩",
+      "passed": true,
+      "detail": {
+        "id": "bbbb39e1-4c8e-441d-a0f6-bbe3556f7a93",
+        "state": "ready",
+        "playable": "true",
+        "active": "true",
+        "disabled": false,
+        "text": "海边花园底座未标注刚刚保存当前"
+      }
+    },
+    {
+      "name": "保留视图已切换到真实新世界",
+      "passed": true
+    },
+    {
+      "name": "Rust 中确实存在两个世界",
+      "passed": true
+    },
+    {
+      "name": "新建世界写入标题与真实选择",
+      "passed": true
+    },
+    {
+      "name": "面板切换世界调用真实受管理切换",
+      "passed": true
+    },
+    {
+      "name": "切换不改动另一个世界的真实身份",
+      "passed": true
+    },
+    {
+      "name": "游玩模式使用真实保存的宽度",
+      "passed": true,
+      "detail": {
+        "mode": "play",
+        "width": 720
+      }
+    },
+    {
+      "name": "恢复默认布局写回文档默认值且保留当前模式",
+      "passed": true,
+      "detail": {
+        "mode": "play",
+        "width": 720,
+        "stored": {
+          "mode": "play",
+          "widths": {
+            "create": 480,
+            "play": 720
+          },
+          "chatWidth": 400,
+          "aux": {}
+        }
+      }
+    },
+    {
+      "name": "两个页面都没有请求鼠标锁定或焦点",
+      "passed": true
+    },
+    {
+      "name": "后台页面没有未处理异常",
+      "passed": true,
+      "detail": {
+        "viewErrors": [],
+        "panelErrors": []
+      }
+    },
+    {
+      "name": "插件与 Rust 重启后两个世界仍然存在",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Fixture stand-ins: desktop app store and react-i18next only.",
+    "The host currently reports only the web voxel base as delivered, so a Godot base creation cannot be exercised here.",
+    "No real model call, no installer and no visible-window composition."
+  ],
+  "createOptions": {
+    "create": true,
+    "switch": true,
+    "bases": [
+      {
+        "id": "craftmine-web/5",
+        "label": "网页体素",
+        "delivered": true
+      }
+    ],
+    "starters": [
+      {
+        "id": "blank",
+        "label": "空白世界",
+        "delivered": true
+      }
+    ]
+  },
+  "evidence": {
+    "firstWorld": "cfe68896-4d20-4ad4-ae70-19fa81e79f62",
+    "secondWorld": "bbbb39e1-4c8e-441d-a0f6-bbe3556f7a93",
+    "restartedActive": "cfe68896-4d20-4ad4-ae70-19fa81e79f62"
+  }
+}
