@@ -271,9 +271,13 @@ impl TaskJournal {
         // including binary assets. An altered copied ref cannot be exported.
         self.verify_copied_formal_source(owner, build, &store, &layout, commit)?;
         let files = godot_jobs::build_files(&self.db, owner, build, "source")?;
+        let source_revision:i64=self.db.query_row(
+            "SELECT source_revision FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
+            params![owner,build],|row|row.get(0))?;
+        let source_revision=u64::try_from(source_revision).context("INVALID_GODOT_SOURCE_REVISION")?;
         Ok(json!({"format":"craftmine.godot-export-source/1","worldId":request.world_id,
             "buildId":build,"sourceWorldId":owner,"baseId":metadata["baseId"],"baseVersion":metadata["snapshot"]["baseVersion"],
-            "revision":metadata["revision"],"snapshot":metadata["snapshot"],
+            "revision":metadata["revision"],"sourceRevision":source_revision,"snapshot":metadata["snapshot"],
             "repoId":source["repoId"],"contentOid":commit,"files":files}))
     }
 
