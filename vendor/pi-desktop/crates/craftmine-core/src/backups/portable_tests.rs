@@ -250,6 +250,11 @@ fn portable_archive_restores_into_a_new_directory_without_the_source() -> Result
         store.read_file(&layout, &fixture.repo_head, "project.godot")?,
         b"config_version=5\nname=\"town\"\n"
     );
+    // History is queryable in the restored installation, not just present as
+    // objects: both commits are reachable from the restored branch.
+    let page = store.history(&layout, MAIN_BRANCH, 0, 10)?;
+    assert_eq!(page.total, 2);
+    assert_eq!(page.records.len(), 2);
 
     // The moved-away source is untouched by the restore.
     assert!(moved.join("tasks.sqlite").is_file());
