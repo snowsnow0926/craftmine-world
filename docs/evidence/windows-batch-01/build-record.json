@@ -1,0 +1,9 @@
+{
+  "implementationCommit": "57f2c6d84e5fa43cc1f07170d967dba768be02ee",
+  "upstreamCommit": "ed0a75414e775eef4b4ee6c985cc9ddfe146ced2",
+  "sourceArchiveSHA256": "8b3a7be4f4ea12eebf6006872b4a13577767097c42711e72353f7c4e1342e6ba",
+  "executableSHA256": "f281df5ad71a0c5245336689088b0d32f36330ce36bb8470c27ab93f9d3148d3",
+  "signatureStatus": "NotSigned",
+  "nativeWindowAcceptance": "pending",
+  "realModelAcceptance": "pending"
+}
