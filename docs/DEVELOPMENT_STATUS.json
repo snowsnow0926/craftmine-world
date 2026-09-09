@@ -3,10 +3,10 @@
   "objective": "按 Godot 多底座计划循环开发：中央世界、右侧对话、真实工程创作、多底座、保存恢复、作品复用与 Windows 交付",
   "currentMilestone": "Godot 第3轮：Rust工程文件集和4个PI源码工具接线，69项Rust、6组工具、17项上下文、2项审查夹具通过；受限子进程仍0xC0000142，继续GD0/GD2",
   "baseline": "4d787a2",
-  "updated": "2026-09-09T12:34:48.248889+00:00",
+  "updated": "2026-09-09T12:43:31.292925+00:00",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "godot_goal_active_cycle03_validated_pending_merge",
+    "status": "godot_goal_active_cycle03_merged_cleanup_approval_pending",
     "reason": "用户明确要求将 GODOT_MULTIBASE_DEVELOPMENT_PLAN.md 设为 Goal 并开始循环开发。已创建 active Goal，没有 token 总预算；按阶段实现、验证、修复并记录。",
     "activeGoal": true,
     "recurringDevelopment": true,
@@ -16,10 +16,10 @@
     "worktree": "D:\\Craftmine World\\test-results\\worktrees\\godot-cycle03",
     "branch": "codex/godot-cycle-03-20260909",
     "godotCycle01Cleanup": "76c192a 已快进合并到本地 master；工作树登记和本轮分支已移除。Git 删除返回 Directory not empty，随后对已验证目标 D:/cw-gd-20260909-01 的 PowerShell 递归清理被自动审批以 blocked by policy 拒绝，未给出更具体原因。保留残留目录，不自动重试删除或复用；不阻断新轮次开发。",
-    "nextStep": "定位AppContainer加载失败与普通账户执行边界；推进Godot构建作业、素材/备份/主机应用事务和原生Electron预览，再验真实模型创作。",
+    "nextStep": "新建下一轮独立目录继续定位AppContainer加载失败与普通账户执行边界；推进Godot构建作业、素材/备份/主机应用事务和原生Electron预览，再验真实模型创作。已合并root目录清理另待明确授权。",
     "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。",
     "previousAutomationId": "craftmine-windows",
-    "currentWorktrees": "本轮 root 与 core 两个独立工作树；core 已集成 root，等待主分支合并后清理。历史残留不操作。",
+    "currentWorktrees": "第3轮core工作树与分支已移除；root工作树和已合并分支保留，清理被自动审批拒绝，等待明确授权。不重试、不换方式删除，也不复用该目录；下一轮新建独立目录。",
     "localMerge": {
       "implementationCommits": [
         "7a926fb",
@@ -28,13 +28,26 @@
         "d9ce808"
       ],
       "branch": "master",
-      "status": "pending_local_merge",
-      "verifiedClean": false,
+      "status": "fast_forward_merged",
+      "verifiedClean": true,
       "pushed": false,
-      "evidenceHashesVerifiedAfterMerge": false,
-      "newDistributionBuilt": false
+      "evidenceHashesVerifiedAfterMerge": true,
+      "newDistributionBuilt": false,
+      "implementationCommit": "5e5f756"
     },
-    "godotCycle02Cleanup": "e8d903e已快进合并，证据哈希逐项复核。本轮登记及分支已删除；Git留下依赖/仓库副本后，经精确范围审批，仅移除2504个链接条目而不跟随目标，再删除 D:/Craftmine World/test-results/worktrees/godot-cycle02。目录已不存在；未操作历史残留。"
+    "godotCycle02Cleanup": "e8d903e已快进合并，证据哈希逐项复核。本轮登记及分支已删除；Git留下依赖/仓库副本后，经精确范围审批，仅移除2504个链接条目而不跟随目标，再删除 D:/Craftmine World/test-results/worktrees/godot-cycle02。目录已不存在；未操作历史残留。",
+    "godotCycle03Cleanup": {
+      "mergedCommit": "5e5f756",
+      "coreWorktreeRemoved": true,
+      "coreBranchRemoved": true,
+      "rootWorktree": "D:/Craftmine World/test-results/worktrees/godot-cycle03",
+      "rootBranch": "codex/godot-cycle-03-20260909",
+      "rootRemoved": false,
+      "reviewRejected": true,
+      "rejectionReason": "自动审批认为删除约2418个链接并移除约5万文件的完整工作树及分支属于广泛、不可逆清理，用户授权开发但未明确授权该清理；需要明确确认。工具拒绝在进程创建前发生，未执行任何删除。",
+      "retryPolicy": "保留目录；未重试或采用间接删除。",
+      "blocksDevelopment": false
+    }
   },
   "godotMultibasePlan": {
     "document": "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md",
