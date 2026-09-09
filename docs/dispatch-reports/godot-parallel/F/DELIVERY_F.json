@@ -1,0 +1,165 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "task": "F",
+  "title": "2D top-down Godot base and a modifiable town example",
+  "date": "2026-09-09",
+  "branch": "codex/godot-parallel-f-20260909",
+  "worktree": "D:\\Craftmine World-worktrees\\godot-parallel-f-20260909",
+  "baselineCommit": "46739d2",
+  "implementationCommit": "b232d61",
+  "pushed": false,
+  "mergedToMaster": false,
+  "scope": {
+    "owned": [
+      "desktop/godot/bases/top-down/**",
+      "docs/dispatch-reports/godot-parallel/F/**"
+    ],
+    "notTouched": [
+      "shared protocols",
+      "desktop UI",
+      "Rust core",
+      "first-person base",
+      "side-view base",
+      "global goal, master plan, docs/DEVELOPMENT_STATUS.json"
+    ]
+  },
+  "base": {
+    "baseId": "top-down",
+    "baseVersion": "1.0.0",
+    "baseProtocolVersion": 1,
+    "godotVersion": "4.7.2-stable",
+    "engineReportedVersion": "4.7.2.stable.official.ed1daf0bf",
+    "renderer": "gl_compatibility",
+    "formats": {
+      "world": "craftmine.godot-topdown-world/1",
+      "state": "craftmine.godot-topdown-state/1",
+      "progress": "craftmine.godot-topdown-progress/1",
+      "probe": "craftmine.godot-topdown-probe/1",
+      "snapshot": "craftmine.godot-topdown-snapshot/1",
+      "map": "craftmine.godot-topdown-map/1",
+      "worldBuild": "craftmine.godot-world-build/1",
+      "acceptance": "craftmine.godot-topdown-acceptance/1",
+      "capture": "craftmine.godot-topdown-capture/1"
+    },
+    "stateVersion": 1
+  },
+  "deliverables": {
+    "blankStartWorld": "desktop/godot/bases/top-down/worlds/blank",
+    "townExampleWorld": "desktop/godot/bases/top-down/worlds/town",
+    "coreRuntime": "desktop/godot/bases/top-down/core/scripts (17 GDScript files)",
+    "originalPixelArt": "desktop/godot/bases/top-down/core/assets (tile atlas + 3 four-direction sheets + TileSet)",
+    "templates": "desktop/godot/bases/top-down/templates/{blank,town}",
+    "tools": [
+      "tools/make-assets.mjs",
+      "tools/new-world.mjs",
+      "tools/check-sync.mjs",
+      "tools/verify.mjs",
+      "tools/capture-web.mjs"
+    ],
+    "docs": [
+      "desktop/godot/bases/top-down/README.md",
+      "desktop/godot/bases/top-down/ASSET_SOURCES.md",
+      "desktop/godot/bases/top-down/docs/SPEC.md",
+      "desktop/godot/bases/top-down/docs/ADR-0001-top-down-base.md",
+      "desktop/godot/bases/top-down/docs/INTERFACE_BC.md"
+    ],
+    "reports": [
+      "docs/dispatch-reports/godot-parallel/F/REPORT_F.md",
+      "docs/dispatch-reports/godot-parallel/F/ACCEPTANCE_MATRIX.md"
+    ]
+  },
+  "shortFlow": {
+    "road": "one horizontal road across the overworld map",
+    "shop": "one shop with a counter in a separate interior scene",
+    "npc": "Mira, one quest giver on the road (plus a shopkeeper behind the counter)",
+    "quest": "gather 3 herbs from a patch, deliver to Mira, 30 coins + 1 apple, granted once"
+  },
+  "verification": {
+    "logicAcceptance": {
+      "command": "node desktop/godot/bases/top-down/tools/verify.mjs",
+      "result": "30/30 passed, 0 failed",
+      "method": "independent headless Godot processes, unique per-run world ids and user data dirs",
+      "input": "scripted movement vector through the real CharacterBody2D; no OS mouse or keyboard events, no window, no Pointer Lock",
+      "evidence": [
+        "docs/dispatch-reports/godot-parallel/F/evidence/verify/report.json",
+        "docs/dispatch-reports/godot-parallel/F/evidence/verify/evidence/*-request.json",
+        "docs/dispatch-reports/godot-parallel/F/evidence/verify/evidence/*-response.json",
+        "docs/dispatch-reports/godot-parallel/F/evidence/verify/evidence/*-process.log"
+      ],
+      "covers": [
+        "buying outside the counter range is rejected",
+        "real collision stops the player at a wall",
+        "real zone enter/exit overlap",
+        "coins, inventory and stock change together on purchase",
+        "stock boundary and insufficient coins",
+        "quest reward granted exactly once",
+        "cross-scene state retention",
+        "full process restart state retention",
+        "two town instances independent",
+        "new world from the example inherits no rewards",
+        "four-direction walk animation"
+      ]
+    },
+    "syncCheck": {
+      "command": "node desktop/godot/bases/top-down/tools/check-sync.mjs",
+      "result": "both committed worlds match the generator file-by-file",
+      "evidence": "docs/dispatch-reports/godot-parallel/F/REPORT_F.md"
+    },
+    "visualEvidence": {
+      "method": "Web export with the pinned Godot build, served from a throwaway local server, photographed in a separate headless browser profile with no input",
+      "screenshots": [
+        "docs/dispatch-reports/godot-parallel/F/evidence/screens/overworld.png",
+        "docs/dispatch-reports/godot-parallel/F/evidence/screens/shop-interior.png"
+      ],
+      "captureRecords": [
+        "docs/dispatch-reports/godot-parallel/F/evidence/screens/overworld-capture.json",
+        "docs/dispatch-reports/godot-parallel/F/evidence/screens/shop-interior-capture.json"
+      ],
+      "scopeNote": "proves the build renders; does not establish GPU performance or player feel"
+    },
+    "notRun": [
+      "tests/browser.mjs",
+      "tests/modules-browser.mjs",
+      "real mouse/keyboard, window compositing, gamepad feel"
+    ]
+  },
+  "guarantees": {
+    "stableEntityIdentity": "state is keyed by scene-declared entity_id and data id, never by node path; duplicate ids are reported",
+    "stateVersion": "progress and state carry stateVersion 1 and are validated field-by-field; invalid input is rejected whole",
+    "instanceIsolation": "custom_user_dir_name = craftmine-topdown-<worldId>, progress under a hash of worldId, worldId also checked inside the file",
+    "oneShotReward": "quests[id].rewarded and grantedRewards['<id>#reward'] are both checked before consuming items and both written on grant",
+    "atomicPurchase": "all range/stock/coin checks run before any mutation; coins, inventory and stock commit together",
+    "newWorldInitialProgress": "new-world.mjs fails if a template ships rewarded:true or a non-empty grantedRewards ledger"
+  },
+  "interfacesNeededFromOthers": {
+    "buildService": [
+      "managed project directory and process lifetime",
+      "map world-build.json file hashes to the Rust project version and receipt",
+      "build job submit/cancel/result plumbing"
+    ],
+    "runSaveService": [
+      "drive the probe protocol and read progress files",
+      "application transaction, backup and rollback between candidate and live world",
+      "stop/cleanup of long-running instances"
+    ],
+    "isolation": "OS-level access scope and network policy remain GD0 work; this base does not claim to provide a sandbox"
+  },
+  "taskIStartingPoint": {
+    "addProduct": "data/shops/general.json items[] (id, price, stock) plus data/items.json name",
+    "adjustRules": "data/quests/*.json requires/reward, GatherZone.max_charges in the scene",
+    "createQuest": "add data/quests/<id>.json and set quest_id on the NPC node",
+    "verify": "node tools/verify.mjs (30 checks) and node tools/check-sync.mjs",
+    "note": "new content needs its own assertions; existing assertions must not be relaxed"
+  },
+  "knownGaps": [
+    "short flow only: no combat, no seasons, no large RPG content, no infinite map",
+    "scene switching is a scene reload, not arbitrary hot reload",
+    "no OS-level isolation; AppContainer still exits with 0xC0000142 in GD0",
+    "no real mouse/keyboard, window compositing or player feel acceptance",
+    "no export preset committed; capture tool generates a minimal one to avoid machine-specific paths",
+    "world reuse, compatibility tags and base upgrade migration belong to GD6"
+  ],
+  "evidenceHashes": {
+    "note": "see world-build.json inside each world for per-file sha256; evidence JSON files are committed verbatim"
+  }
+}
