@@ -50,7 +50,7 @@ export const CRAFTMINE_WORLD_TEXT = {
   creating: { zh: "正在创建…", en: "Creating…" },
   planned: { zh: "规划中", en: "Planned" },
   auxTitle: { zh: "辅助工作区", en: "Auxiliary workspaces" },
-  auxOpen: { zh: "在创作面板打开", en: "Open in the world panel" },
+  auxOpen: { zh: "打开世界面板", en: "Open the world panel" },
   sessionTitle: { zh: "会话", en: "Session" },
   sessionBound: { zh: "当前世界绑定会话", en: "Session bound to this world" },
   switchFailed: { zh: "切换失败，仍停留在原世界。", en: "Switch failed; still in the previous world." },

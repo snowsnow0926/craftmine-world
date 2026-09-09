@@ -216,3 +216,82 @@ test("the world list never stores a second world database in the renderer", asyn
   assert.match(lib, /CRAFTMINE_REQUIRED_CHANNELS/);
   assert.match(lib, /world\.switch/);
 });
+test("capability parsing only promotes explicitly delivered bases and start points", () => {
+  const parsed = worlds.parseWorldCapabilities({
+    bases: [
+      { id: "craftmine-web/5", label: "Web voxel", delivered: true },
+      { id: "godot.top-down", label: "Top down", delivered: false },
+      { id: "godot.side-view", label: "Side view" },
+    ],
+    starters: [
+      { id: "blank", label: "Blank", delivered: true },
+      { id: "town", label: "Town" },
+    ],
+    switch: false,
+  });
+  assert.deepEqual(parsed.bases.map((base) => [base.id, base.delivered]), [
+    ["craftmine-web/5", true],
+    ["godot.top-down", false],
+    ["godot.side-view", false],
+  ]);
+  assert.deepEqual(parsed.starters.map((starter) => [starter.id, starter.delivered]), [
+    ["blank", true],
+    ["town", false],
+  ]);
+  assert.equal(parsed.switch, false);
+  assert.equal(parsed.create, true);
+  const silent = worlds.parseWorldCapabilities({});
+  assert.deepEqual(silent.bases, []);
+  assert.deepEqual(silent.starters, []);
+  assert.equal(silent.switch, null);
+});
+
+test("duplicate host ids are dropped so rows keep stable identities", () => {
+  const parsed = worlds.parseWorldList({
+    activeWorldId: "w1",
+    worlds: [
+      { id: "w1", title: "One", revision: 1, updatedAt: 5 },
+      { id: "w1", title: "One again", revision: 9, updatedAt: 9 },
+      { id: "w2", title: "Two", revision: 2, updatedAt: 6 },
+    ],
+  });
+  assert.deepEqual(parsed.worlds.map((entry) => entry.title), ["One", "Two"]);
+});
+
+test("switch planning blocks an in-flight save and keeps ties deterministic", () => {
+  const base = { activeWorldId: "w1", targetId: "w2", busy: false, saving: false, switchSupported: null, activeTask: null };
+  assert.deepEqual(worlds.planWorldSwitch({ ...base, saving: true }), { kind: "blocked", reason: "saving" });
+  assert.deepEqual(worlds.planWorldSwitch(base), { kind: "switch", targetId: "w2", taskStaysInWorld: null });
+  const list = [
+    { id: "b", title: "Beta", revision: 0, updatedAt: 10, base: null, origin: null, check: null },
+    { id: "a", title: "Alpha", revision: 0, updatedAt: 10, base: null, origin: null, check: null },
+    { id: "c", title: "Gamma", revision: 0, updatedAt: 20, base: null, origin: null, check: null },
+  ];
+  assert.deepEqual(worlds.sortWorldEntries(list, null).map((entry) => entry.id), ["c", "a", "b"]);
+  assert.deepEqual(worlds.sortWorldEntries(list, "b").map((entry) => entry.id), ["b", "c", "a"]);
+});
+
+test("capabilities are requested for the selected world only", async () => {
+  const calls = [];
+  const bridge = worlds.createCraftmineWorldBridge(async (pluginId, channel, payload) => {
+    calls.push([channel, payload]);
+    if (channel === "workbench.capabilities") return { channels: ["library.search"] };
+    if (channel === "world.createOptions") return { bases: [{ id: "craftmine-web/5", label: "Web", delivered: true }] };
+    return {};
+  });
+  const capabilities = await bridge.capabilities("w1");
+  assert.equal(calls[0][1].worldId, "w1");
+  assert.equal(calls[1][1].worldId, "w1");
+  assert.deepEqual(capabilities.bases.map((base) => base.id), ["craftmine-web/5"]);
+});
+
+test("a seam without an invoker yields no bridge instead of a broken one", () => {
+  const saved = globalThis.__craftmineWorldBridge;
+  try {
+    globalThis.__craftmineWorldBridge = { onChanged: () => () => {} };
+    assert.equal(worlds.craftmineWorldBridge(), null);
+  } finally {
+    if (saved === undefined) delete globalThis.__craftmineWorldBridge;
+    else globalThis.__craftmineWorldBridge = saved;
+  }
+});

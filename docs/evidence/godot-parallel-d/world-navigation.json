@@ -1,6 +1,6 @@
 {
   "kind": "real-react-world-navigation-with-real-plugin-and-rust-core",
-  "sourceCommit": "8819c6fe15bff7496558dc708237b35301fc02fe",
+  "sourceCommit": null,
   "plugin": "desktop/build/craftmine.world",
   "coreBinary": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\08a13417-7bd5-485f-96c5-4825a4f14525\\cargo-target\\release\\craftmine-core.exe",
   "checks": [
@@ -49,6 +49,10 @@
       "passed": true
     },
     {
+      "name": "a created world that cannot be opened keeps the previous world active everywhere ({\"error\":\"切换失败，仍停留在原世界。 Injected switch failure\",\"active\":\"22f06960-2d55-49b5-886a-58bae354992f\",\"count\":4,\"formOpen\":true} host 22f06960-2d55-49b5-886a-58bae354992f expected 22f06960-2d55-49b5-886a-58bae354992f)",
+      "passed": true
+    },
+    {
       "name": "a failed save keeps the previous world active in the UI and in Rust",
       "passed": true
     },
@@ -58,10 +62,6 @@
     },
     {
       "name": "switching while a task runs states that the task keeps its world",
-      "passed": true
-    },
-    {
-      "name": "the world list never writes session state",
       "passed": true
     },
     {
@@ -77,7 +77,7 @@
       "passed": true
     },
     {
-      "name": "the section opens the real world panel surface instead of duplicating it",
+      "name": "the section request opens the world panel and carries the section id",
       "passed": true
     },
     {

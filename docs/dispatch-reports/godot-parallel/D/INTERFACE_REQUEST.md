@@ -106,10 +106,28 @@ return {
 
   未报告的 `bases`/`starters` 视为空，界面只显示“空白”，不会出现任何未交付选项。
 
-## 5 素材辅助区缺通道
+## 5 辅助区需要把“区段”送到世界视图
+
+D 的辅助区展开行会打开世界面板，并派发 `craftmine-aux-open`（`detail: {surface, section}`），但当前没有任何组件监听它（`PluginViewTab` 只监听 resize 与 `craftmine-layout-changed`），因此按钮文案暂时是“打开世界面板”而不是承诺打开某个页签。
+
+建议：用与 `world.switch` 相同的广播机制把区段送进视图，视图侧调用现有的 `craftmineView.showWorkbench(tab)` / `showChecks()`：
+
+```js
+// main：world.focusSection → pluginViews.broadcast("craftmine:focus-section", { section })
+// view.mjs：
+bridge.on('craftmine:focus-section', ({ section }) => {
+  if (section === 'checks') return craftmineView.showChecks();
+  const tab = { works: 'library', memory: 'memory', tasks: 'task', backups: 'backup' }[section];
+  if (tab) craftmineView.showWorkbench(tab);
+});
+```
+
+`assets` 没有对应页签，见第 6 节。
+
+## 6 素材辅助区缺通道
 
 “素材”一栏目前只能显示“接口未接入”。需要一个真实来源（例如 `world.assets` 返回当前世界构建里的素材清单）或明确的“不支持”结论；D 不使用 localStorage 假造素材列表。
 
-## 6 已由 D 复用、不需要新增的通道
+## 7 已由 D 复用、不需要新增的通道
 
 `library.search`（作品）、`verification.list`（检查）、`memory.search`（记忆）、`task.current`（任务）、`backup.status`（备份）——都已存在，D 直接读它们的真实结果作为展开行的摘要，深层界面仍在世界面板里打开。

@@ -110,7 +110,7 @@ export type CraftmineAuxSummary = {
 
 export type CraftmineWorldBridge = {
   list(): Promise<CraftmineWorldList>;
-  capabilities(): Promise<CraftmineWorldCapabilities>;
+  capabilities(worldId: string): Promise<CraftmineWorldCapabilities>;
   create(input: CraftmineWorldCreateInput): Promise<CraftmineWorldCreateResult>;
   /** Freezes the running world, saves it, then opens the target world. */
   switchWorld(id: string): Promise<CraftmineWorldSwitchResult>;
@@ -176,9 +176,9 @@ function parseBase(value: unknown): CraftmineWorldBase | null {
   return {
     id,
     label: asText(raw.label) || id,
-    // A host that omits `delivered` is treated as reporting a real base: the
-    // field exists only to mark planned bases that must stay unselectable.
-    delivered: raw.delivered !== false,
+    // Only an explicit `delivered: true` counts; a silent host must never make
+    // a planned base selectable.
+    delivered: raw.delivered === true,
   };
 }
 
@@ -192,12 +192,15 @@ function parseCheck(value: unknown): CraftmineWorldEntry["check"] {
 export function parseWorldList(value: unknown): CraftmineWorldList {
   const raw = asRecord(value);
   const worlds = Array.isArray(raw.worlds) ? raw.worlds : [];
+  const seen = new Set<string>();
   return {
     activeWorldId: asText(raw.activeWorldId) || null,
     worlds: worlds.flatMap((item) => {
       const entry = asRecord(item);
       const id = asText(entry.id);
-      if (!id) return [];
+      // Duplicate ids would collide as React keys and misreconcile row state.
+      if (!id || seen.has(id)) return [];
+      seen.add(id);
       const origin = asText(entry.origin) as CraftmineWorldOrigin;
       return [
         {
@@ -224,7 +227,7 @@ export function parseWorldCapabilities(value: unknown): CraftmineWorldCapabiliti
     const entry = asRecord(item);
     const id = asText(entry.id);
     if (!id) return [];
-    return [{ id, label: asText(entry.label) || id, delivered: entry.delivered !== false }];
+    return [{ id, label: asText(entry.label) || id, delivered: entry.delivered === true }];
   });
   return {
     bases,
@@ -248,14 +251,15 @@ export function createCraftmineWorldBridge(
     async list() {
       return parseWorldList(await call("world.list"));
     },
-    async capabilities() {
-      const [capabilities, starter] = await Promise.all([
-        call("workbench.capabilities", {}).catch(() => null),
-        call("world.createOptions", {}).catch(() => null),
+    async capabilities(worldId) {
+      const [capabilities, options] = await Promise.all([
+        // The gateway rejects a call whose worldId is not the selected world.
+        call("workbench.capabilities", { worldId }).catch(() => null),
+        call("world.createOptions", { worldId }).catch(() => null),
       ]);
       const parsed = parseWorldCapabilities({
         ...asRecord(capabilities),
-        ...asRecord(starter),
+        ...asRecord(options),
       });
       return parsed;
     },
@@ -309,15 +313,15 @@ export function createCraftmineWorldBridge(
 
 /** Bridge backed by the real host, or null when the channel is not wired. */
 export function craftmineWorldBridge(): CraftmineWorldBridge | null {
-  const seam = (globalThis as SeamHost).__craftmineWorldBridge;
-  const record = asRecord(seam);
-  if (typeof record.onChanged === "function") {
-    return createCraftmineWorldBridge(craftmineHostInvoker()!, {
-      onChanged: record.onChanged as (listener: () => void) => () => void,
-    });
-  }
   const invoke = craftmineHostInvoker();
-  return invoke ? createCraftmineWorldBridge(invoke) : null;
+  if (!invoke) return null;
+  const seam = (globalThis as SeamHost).__craftmineWorldBridge;
+  const onChanged = asRecord(seam).onChanged;
+  return createCraftmineWorldBridge(invoke, {
+    ...(typeof onChanged === "function"
+      ? { onChanged: onChanged as (listener: () => void) => () => void }
+      : {}),
+  });
 }
 
 /* ------------------------------------------------------------------ labels */

@@ -54,7 +54,8 @@ export function CraftmineNavigation() {
   }, [sessions, activeSessionId]);
 
   // The deep surface lives inside the world view. Opening the world tab is a
-  // real action; the host routes the section request to the view.
+  // real action; the section request is delivered through the documented event
+  // the host must route to the view (INTERFACE_REQUEST.md section 2).
   const openSurface = (surface: CraftmineAuxSurface, section: string) => {
     open();
     window.dispatchEvent(new CustomEvent("craftmine-aux-open", { detail: { surface, section } }));

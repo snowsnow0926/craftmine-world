@@ -57,7 +57,7 @@ export function WorldListPanel({
           className="craftmine-world-icon-btn"
           data-action="new-world"
           onClick={() => setCreating((open) => !open)}
-          disabled={controller.status === "unavailable" || controller.capabilities?.create === false}
+          disabled={controller.busy || controller.status === "unavailable" || controller.capabilities?.create === false}
           aria-expanded={creating}
           aria-label={CRAFTMINE_WORLD_TEXT.newWorld[lang]}
           title={CRAFTMINE_WORLD_TEXT.newWorld[lang]}
@@ -141,7 +141,6 @@ function WorldRow({
       data-world-active={active ? "true" : "false"}
       data-world-base-state={worldBaseState(entry)}
       aria-current={active ? "true" : undefined}
-      aria-label={entry.title}
       onClick={onSelect}
       disabled={busy && !active}
     >

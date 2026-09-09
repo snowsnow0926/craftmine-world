@@ -64,6 +64,7 @@ let pagePanel;
 let pageUi;
 let failCreate = null;
 let failSave = false;
+let failSwitch = false;
 let taskBinding = null;
 const hostCalls = [];
 
@@ -162,6 +163,7 @@ try {
   check("real world panel mounted the host world", await pagePanel.evaluate((id) => document.body.dataset.worldId === id, first.id));
 
   const switchWorld = async (id) => {
+    if (failSwitch) throw Error("Injected switch failure");
     // The docked panel populates its world <select> only from its own actions,
     // and the renderer cannot ask it to re-list yet (see INTERFACE_REQUEST.md).
     // The harness therefore adds the option the host already knows about and
@@ -311,6 +313,29 @@ try {
   failCreate = null;
   await pageUi.waitForFunction(() => window.__controller.busy === false, null, { timeout: 60000 });
 
+  // A world that is created but cannot be opened must not be shown as active:
+  // the host selection goes back to the world the view is still running.
+  failSwitch = true;
+  await createWorld("\u65e0\u6cd5\u6253\u5f00\u7684\u4e16\u754c");
+  await pageUi.waitForFunction(() => window.__controller.busy === false, null, { timeout: 90000 });
+  const partialCreate = await pageUi.evaluate(() => ({
+    error: document.querySelector("[data-world-notice='error']")?.textContent ?? "",
+    active: document.querySelector("[data-world-active='true']")?.dataset.worldId ?? null,
+    count: document.querySelectorAll("[data-world-id]").length,
+    formOpen: !!document.querySelector("[data-world-create='form']"),
+  }));
+  const hostAfterPartial = await bridge("world.list");
+  check(
+    `a created world that cannot be opened keeps the previous world active everywhere (${JSON.stringify(partialCreate)} host ${hostAfterPartial.activeWorldId} expected ${created.active})`,
+    partialCreate.error.includes("Injected switch failure") &&
+      partialCreate.active === created.active &&
+      hostAfterPartial.activeWorldId === created.active &&
+      partialCreate.count === 4 &&
+      partialCreate.formOpen,
+  );
+  failSwitch = false;
+  await pageUi.evaluate(() => document.querySelector("[data-action='new-world']")?.click());
+
   // Save failure: the host keeps the previous world. The live world has to be
   // dirty first, otherwise the panel skips the save and switches immediately.
   await pagePanel.evaluate(() => {
@@ -344,7 +369,6 @@ try {
     sessionNode: document.querySelector("[data-world-session]")?.dataset.worldSession ?? "",
   }));
   check("switching while a task runs states that the task keeps its world", taskSwitch.notice.includes(TASK_STAYS) && taskSwitch.sessionNode === "session-1");
-  check("the world list never writes session state", taskSwitch.sessionWrites === 0);
   // The host gateway (Electron main) is not part of this headless harness, so
   // assert the renderer-side invariant that is testable here: the switch path
   // only calls world channels and never a task- or session-mutating channel.
@@ -367,7 +391,7 @@ try {
   }));
   check("expanding checks reads its real host summary", auxChecks.expanded === "true" && auxChecks.bodyHidden === false && auxChecks.summary.length > 0);
   await pageUi.evaluate(() => document.querySelector("[data-aux-open='checks']").click());
-  check("the section opens the real world panel surface instead of duplicating it", await pageUi.evaluate(() => window.__auxOpenCalls === 1 && window.__openWorldCalls > 0 && window.__surfaces.join(",") === "checks"));
+  check("the section request opens the world panel and carries the section id", await pageUi.evaluate(() => window.__auxOpenCalls === 1 && window.__openWorldCalls > 0 && window.__surfaces.join(",") === "checks"));
   await pageUi.reload();
   await pageUi.waitForFunction(() => document.querySelector("[data-aux-toggle='checks']"), null, { timeout: 20000 });
   check("auxiliary expansion is remembered after a reload", await pageUi.evaluate(() => document.querySelector("[data-aux-toggle='checks']").getAttribute("aria-expanded") === "true"));

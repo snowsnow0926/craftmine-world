@@ -49,14 +49,21 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   const [actionError, setActionError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // React state is not synchronous: two dispatches in the same task would both
+  // read `busy === false`. The ref is set before the first await.
+  const busyRef = useRef(false);
   const epoch = useRef(0);
   const alive = useRef(true);
+  const activeWorldIdRef = useRef<string | null>(null);
   useEffect(() => {
     alive.current = true;
     return () => {
       alive.current = false;
     };
   }, []);
+  useEffect(() => {
+    activeWorldIdRef.current = activeWorldId;
+  }, [activeWorldId]);
 
   const refresh = useCallback(async () => {
     if (!bridge) {
@@ -68,7 +75,9 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     try {
       const list = await bridge.list();
       if (!current()) return;
-      const caps = await bridge.capabilities().catch(() => null);
+      const caps = list.activeWorldId
+        ? await bridge.capabilities(list.activeWorldId).catch(() => null)
+        : null;
       if (!current()) return;
       const task = list.activeWorldId
         ? await bridge.activeTask(list.activeWorldId).catch(() => null)
@@ -95,19 +104,24 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     if (!bridge) return;
     const sync = () => void refresh();
     window.addEventListener("craftmine-world-changed", sync);
-    return () => window.removeEventListener("craftmine-world-changed", sync);
+    // The world view can change the active world on its own; refresh then too.
+    const off = bridge.onChanged(sync);
+    return () => {
+      window.removeEventListener("craftmine-world-changed", sync);
+      off();
+    };
   }, [bridge, refresh]);
 
   const select = useCallback(
     async (id: string) => {
-      if (!bridge) return;
+      if (!bridge || busyRef.current) return;
       setNotice(null);
       setActionError(null);
       const plan = planWorldSwitch({
         activeWorldId,
         targetId: id,
-        busy,
-        saving: busy,
+        busy: busyRef.current,
+        saving: busyRef.current,
         switchSupported: capabilities?.switch ?? null,
         activeTask,
       });
@@ -120,6 +134,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
         );
         return;
       }
+      busyRef.current = true;
       setBusy(true);
       if (plan.taskStaysInWorld) setNotice(CRAFTMINE_WORLD_TEXT.taskStays[lang]);
       try {
@@ -134,26 +149,37 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       } catch (failure) {
         setActionError(`${CRAFTMINE_WORLD_TEXT.switchFailed[lang]} ${worldErrorMessage(failure, lang)}`);
       } finally {
-        setBusy(false);
-        await refresh();
+        // Stay busy until the refreshed list reflects the result, so the panel
+        // never re-enables against stale state.
+        try {
+          await refresh();
+        } finally {
+          busyRef.current = false;
+          setBusy(false);
+        }
       }
     },
-    [activeTask, activeWorldId, bridge, busy, capabilities, lang, refresh],
+    [activeTask, activeWorldId, bridge, capabilities, lang, refresh],
   );
 
   const create = useCallback(
     async (input: CraftmineWorldCreateInput) => {
-      if (!bridge) return false;
+      if (!bridge || busyRef.current) return false;
+      busyRef.current = true;
       setBusy(true);
       setActionError(null);
       setNotice(null);
+      const previous = activeWorldIdRef.current;
       try {
         const created = await bridge.create(input);
-        await refresh();
         const result = await bridge.switchWorld(created.id);
         if (!result.ok) {
+          // The world exists, but the running view could not switch to it.
+          // Put the host selection back so the list and the view agree, and
+          // keep the form open with the real host error.
+          if (previous) await bridge.call("world.open", { id: previous }).catch(() => {});
           setActionError(`${CRAFTMINE_WORLD_TEXT.switchFailed[lang]} ${worldErrorMessage(result.error, lang)}`);
-          return true;
+          return false;
         }
         setActiveWorldId(result.activeWorldId);
         window.dispatchEvent(new CustomEvent("craftmine-world-changed"));
@@ -162,8 +188,14 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
         setActionError(worldErrorMessage(failure, lang));
         return false;
       } finally {
-        setBusy(false);
-        await refresh();
+        // Stay busy until the refreshed list reflects the result, so the panel
+        // never re-enables against stale state.
+        try {
+          await refresh();
+        } finally {
+          busyRef.current = false;
+          setBusy(false);
+        }
       }
     },
     [bridge, lang, refresh],

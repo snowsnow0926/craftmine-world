@@ -32,6 +32,12 @@ surface is a `WebContentsView` that owns the live snapshot.
 5. The panel drops a switch request while its own save is in flight. The
    renderer reports the host error and the player can retry; the host handler is
    expected to return a busy error rather than silently ignoring the request.
+6. Creating a world and opening it are two steps. Because `world.create` makes
+   the new world the host selection itself, a failed open is corrected by
+   `world.open` back to the world the view is still running, so the list and the
+   view never disagree. The create form reports failure in that case.
+7. Capability and summary reads carry the selected `worldId`, because the panel
+   gateway rejects any call for a world that is not selected.
 
 ## Consequences
 

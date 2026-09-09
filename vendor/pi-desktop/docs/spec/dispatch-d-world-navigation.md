@@ -26,10 +26,15 @@ Creating a second world is only possible inside the world panel.
 4. "New world" opens a create form with base, start point and name. Only bases
    and start points the host reports as delivered are selectable; planned or
    unreported options stay visible but disabled. A failed create keeps the
-   previous world and shows the full host error.
+   previous world and shows the full host error. When the world is created but
+   the view cannot open it, the host selection is put back to the world the view
+   is still running, the form stays open and the real switch error is shown.
+   The panel stays busy until the refreshed list reflects the result.
 5. Auxiliary surfaces (works, assets, checks, memory, tasks, backups) are
-   collapsed by default. Expanding one reads its real host summary and opens
-   the existing surface inside the world panel instead of duplicating it.
+   collapsed by default. Expanding one reads its real host summary for the
+   current world (a summary read for another world is never shown) and opens the
+   world panel instead of duplicating the surface. Section routing into the panel
+   is a host request; until it lands the button says "open the world panel".
    Expansion is remembered in the existing craftmine layout preference.
 6. The session bound to the current world is shown under the list; the existing
    session and project navigation below it is unchanged.

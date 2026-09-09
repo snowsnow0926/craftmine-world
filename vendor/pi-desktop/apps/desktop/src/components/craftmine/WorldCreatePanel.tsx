@@ -36,10 +36,16 @@ export function WorldCreatePanel({
       return;
     }
     setLocalError(null);
+    // Resolve the selection against the current capabilities: a base that
+    // arrived late, was removed, or is not delivered must never be sent.
+    const chosenBase = bases.find((base) => base.id === baseId && base.delivered)?.id
+      ?? bases.find((base) => base.delivered)?.id
+      ?? "";
+    const chosenStarter = starters.find((starter) => starter.id === starterId && starter.delivered)?.id ?? "";
     const created = await controller.create({
       title: normalizeWorldTitle(title),
-      ...(baseId ? { baseId } : {}),
-      ...(starterId ? { starterId } : {}),
+      ...(chosenBase ? { baseId: chosenBase } : {}),
+      ...(chosenStarter ? { starterId: chosenStarter } : {}),
     });
     if (created) onClose();
   };
