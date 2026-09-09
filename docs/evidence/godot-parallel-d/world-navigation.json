@@ -1,6 +1,6 @@
 {
   "kind": "real-react-world-navigation-with-real-plugin-and-rust-core",
-  "sourceCommit": null,
+  "sourceCommit": "9acc93caede451df96713ea8336f0b2b3bd0786e",
   "plugin": "desktop/build/craftmine.world",
   "coreBinary": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\08a13417-7bd5-485f-96c5-4825a4f14525\\cargo-target\\release\\craftmine-core.exe",
   "checks": [
@@ -49,7 +49,7 @@
       "passed": true
     },
     {
-      "name": "a created world that cannot be opened keeps the previous world active everywhere ({\"error\":\"切换失败，仍停留在原世界。 Injected switch failure\",\"active\":\"22f06960-2d55-49b5-886a-58bae354992f\",\"count\":4,\"formOpen\":true} host 22f06960-2d55-49b5-886a-58bae354992f expected 22f06960-2d55-49b5-886a-58bae354992f)",
+      "name": "a created world that cannot be opened keeps the previous world active everywhere ({\"error\":\"切换失败，仍停留在原世界。 Injected switch failure\",\"active\":\"82ed60a2-0347-4b4f-a34a-40dce40fbc66\",\"count\":4,\"formOpen\":true} host 82ed60a2-0347-4b4f-a34a-40dce40fbc66 expected 82ed60a2-0347-4b4f-a34a-40dce40fbc66)",
       "passed": true
     },
     {

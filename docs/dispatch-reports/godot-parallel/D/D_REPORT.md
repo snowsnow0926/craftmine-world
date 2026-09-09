@@ -4,7 +4,7 @@
 
 - 分支：`codex/godot-parallel-d-20260909`
 - 工作树：`D:/Craftmine World/test-results/worktrees/godot-parallel-d`
-- 实现提交：`8819c6f`（`feat(craftmine): add left-column world navigation with host-backed data`）
+- 实现提交：`8819c6f`（世界导航实现）、`9acc93c`（独立审查后的修复）；报告与证据：`d211d2a` 及最后一次证据提交
 - 按分工只提交自己的改动：**没有**合并 master、没有推送、没有清理工作树。
 
 ## 1 修改范围
@@ -57,7 +57,7 @@
 - 真实 `PluginRuntime` + 真实 `craftmine.world` 插件构建 + 本地编译的 `craftmine-core`（`cargo build --release -p craftmine-core`）驱动真实世界数据；真实 React 组件在同一独立 headless 浏览器进程中渲染；世界面板为真实 `views/world.html`。
 - 全程只用页面脚本、DOM 事件与面板桥：无鼠标键盘、无 Pointer Lock、无窗口激活；用例末尾专门断言 `__inputRequests === 0`。
 - 覆盖：真实世界列表与排序、底座未标注的真实显示、最近保存、创建（真实 Rust 持久化并打开）、创建失败（400+ 字错误换行且不撑破列）、保存失败停留在原世界（UI 与 Rust 两侧一致）、任务运行时切换的提示与会话不变、切换不产生任何任务/会话变更调用、辅助区折叠/真实摘要/打开深层界面/展开记忆、游玩与返回的实例保持、窄窗与 240px 侧栏、浅色主题、主机通道缺失时的显式状态、无未处理异常。
-- 证据：[world-navigation.json](../evidence/godot-parallel-d/world-navigation.json)（含 28 项检查、commit、插件与核心路径）、[深色](../evidence/godot-parallel-d/world-list-dark.png)、[窄窗](../evidence/godot-parallel-d/world-list-narrow.png)、[浅色](../evidence/godot-parallel-d/world-list-light.png)。SHA256 前 16 位：json `59DDA9D6000FE5B1`、dark `7DF5EA59168355F3`、narrow `B669CE6967F876EF`、light `15A70AF3BDB02F58`。
+- 证据：[world-navigation.json](../evidence/godot-parallel-d/world-navigation.json)（含 28 项检查、commit、插件与核心路径）、[深色](../evidence/godot-parallel-d/world-list-dark.png)、[窄窗](../evidence/godot-parallel-d/world-list-narrow.png)、[浅色](../evidence/godot-parallel-d/world-list-light.png)。证据对应提交 `9acc93c`；SHA256 前 16 位：json `F1162B9312D28579`、dark `54D486B516608F72`、narrow `2F78A8A1D8380981`、light `5B9378246174CC10`。
 - 未运行 `tests/browser.mjs`、`tests/modules-browser.mjs`，也未运行任何输入模拟。
 - **完整客户端集成回归**：`node tests/desktop-shell-browser.mjs` → **15/15 通过**（真实 `App` + 真实样式 + 世界面板），包含“会话侧栏与世界入口仍在”“默认世界居中、对话在右”“游玩展开保留同一世界与对话实例”“窄窗与更窄窗输入可达”“未请求真实输入或焦点”“无未处理异常”。说明 `CraftmineNavigation` 重写没有破坏既有布局与会话能力。
 
