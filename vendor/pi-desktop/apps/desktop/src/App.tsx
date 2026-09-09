@@ -31,7 +31,9 @@ import { ChatSurface } from "./components/ChatSurface";
 import { SearchDialog } from "./components/SearchDialog";
 import { ToastHost } from "./components/Toast";
 import { UpdateBanner } from "./components/UpdateBanner";
-import { useCraftmineImmersion } from "./lib/use-craftmine-immersion";
+import { useCraftmineLayout } from "./lib/use-craftmine-immersion";
+import { isCraftmineWorldWorkspace } from "./lib/craftmine-layout";
+import { CraftmineChatResize } from "./components/CraftmineChatResize";
 import { WindowControls } from "./components/WindowControls";
 import { useAppStore } from "./stores/app-store";
 import type { ToastOptions } from "./stores/app-store";
@@ -242,7 +244,17 @@ function AppShell() {
   }, [sidebarExiting]);
   const [presentedWorkPanelOpen, setPresentedWorkPanelOpen] = useState(false);
   const [workPanelExiting, setWorkPanelExiting] = useState(false);
-  const craftmineImmersive = useCraftmineImmersion(page, presentedWorkPanelOpen && workPanelOpen, activeWorkPanelTabId, subagentPanelOpen);
+  const craftmineLayout = useCraftmineLayout();
+  const craftmineWorldFirst = isCraftmineWorldWorkspace(page, presentedWorkPanelOpen && workPanelOpen, activeWorkPanelTabId, subagentPanelOpen);
+  const craftmineImmersive = craftmineWorldFirst && craftmineLayout.mode === "play";
+  useEffect(() => {
+    if (!craftmineWorldFirst) return;
+    const narrow = window.matchMedia("(max-width: 1100px)");
+    const compact = () => { if (narrow.matches) setSidebarCollapsed(true); };
+    compact();
+    narrow.addEventListener("change", compact);
+    return () => narrow.removeEventListener("change", compact);
+  }, [craftmineWorldFirst]);
   const workPanelReservationRequest = useRef(0);
   const workPanelExitGeneration = useRef(0);
   const workPanelExitClosing = useRef(false);
@@ -1848,6 +1860,7 @@ function AppShell() {
 
           {craftmineImmersive && <WindowControls />}
           <section className="main-pane">
+            {craftmineWorldFirst && !craftmineImmersive && <CraftmineChatResize width={craftmineLayout.chatWidth} />}
             <WindowControls contained />
             {page === "chat" ? (
               <ConversationTopbar
@@ -1952,13 +1965,14 @@ function AppShell() {
     <div
       className={cx(
         "app-shell",
+        craftmineWorldFirst && "craftmine-world-first",
         craftmineImmersive && "craftmine-play",
         !ready && "app-shell-boot",
         page === "settings" && ready && "settings-mode",
         sidebarCollapsed && "sidebar-collapsed",
         showSplash && "is-booting",
       )}
-      style={{ "--ds-sidebar-width": `${sidebarWidth}px` } as CSSProperties}
+      style={{ "--ds-sidebar-width": `${sidebarWidth}px`, "--craftmine-chat-width": `${craftmineLayout.chatWidth}px` } as CSSProperties}
     >
       {shell}
       {splash}

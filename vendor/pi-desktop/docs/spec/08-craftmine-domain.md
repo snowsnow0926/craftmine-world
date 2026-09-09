@@ -93,6 +93,21 @@ Preserve project and session navigation, streaming conversations, cancellation, 
 
 The first desktop slice adds a fixed World entry in the existing sidebar and opens it after bootstrap on a new profile with no retained session or resource tabs. A renderer-only `@craftmine/home` context lets it open, close and collapse without creating a conversation. Home and conversation panels retain separate resources when navigating; the home key is never an Agent or host session identity. See ADR 0304. The initial work-panel width is 560 pixels; persisted widths are honored. Below 520 pixels of composer space, complete toolbar groups wrap and permission labels stay on one line. The product mark and English/Chinese welcome copy identify Craftmine. The plugin world view consumes `app.getAppearance` and `appearance:changed`. Product paths, per-profile instance locks and disabled upstream updates follow ADR 0301. Immersive layout, creation-library and candidate panels remain subsequent slices.
 
+## Central world presentation
+
+ADR 0311 supersedes the initial right-world layout while retaining the same
+work-panel, session and native-view identities. The active Craftmine world occupies
+the central flexible column, with a complete 400 px conversation on the right.
+Conversation width is saved independently in the existing layout preference and
+bounded to 360–640 px. Older preferences use the new default without losing mode
+or existing resource widths. Create/play transitions preserve mounted world and
+conversation instances. Non-world resources and settings retain PI presentation.
+
+At 1100 px or below, the world workspace initially collapses the sidebar, with its
+normal reopen action retained. At 760 px or below, world and conversation stack
+without hiding the input. Native view bounds follow layout and size changes.
+The layout never activates a window, enters OS fullscreen or requests input lock.
+
 ## Immutable desktop verification jobs
 
 The PI `verification_submit` tool snapshots one exact session draft revision in Rust.

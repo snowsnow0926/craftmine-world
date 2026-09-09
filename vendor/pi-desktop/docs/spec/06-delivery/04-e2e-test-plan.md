@@ -8647,3 +8647,18 @@ writes. Fixed authorship must not be presented as model-generated content.
 ### CRAFTMINE-017 — Frozen review fixture with request-facts tail
 
 The external native fixed-provider fixture parses exactly the initial review JSON and one final named `Craftmine host snapshot (craftmine.request/2)` JSON data block. Require the fixed native request provenance and the expected host binding/snapshot structure. Reject garbage prefixes/tails, duplicate snapshots, substituted request IDs, invalid generation and fabricated review-result objects. Preserve all existing 40 native assertions. The batch07 package stays at its frozen commit; this runner compatibility fix is delivered after that freeze and is not a real-provider acceptance claim.
+
+### CRAFTMINE-018 — Central world and retained right conversation
+
+Render the actual React application using the isolated headless shell runner.
+Verify left navigation, central world, complete right conversation, independent
+saved conversation width and native placeholder/bounds agreement. Switch to play
+and back through the existing forms; neither world nor composer may be remounted
+or reloaded. Exercise dark/light themes, a 1200 px desktop, automatic navigation
+collapse at 1000 px and the two-row layout at 720 px. Input stays visible with no
+document overflow. Preserve original home open/close/collapse and resource tests.
+
+The shell fixture supplies session data and the native-view transport. Separately
+run native offscreen acceptance for actual Electron/Rust startup, world persistence
+and shutdown; it must retain its input-isolation guards. Neither class of test
+authorizes OS input or visible windows, or proves model-generated Godot creation.

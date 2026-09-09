@@ -80,11 +80,13 @@ export function PluginViewTab({
     const observer = new ResizeObserver(report);
     observer.observe(surface);
     window.addEventListener("resize", report);
+    window.addEventListener("craftmine-layout-changed", report);
     report();
     void api.pluginViewSetVisible(pluginId, viewId, !blocked, sessionId);
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", report);
+      window.removeEventListener("craftmine-layout-changed", report);
       cancelAnimationFrame(frame);
       void api.pluginViewSetVisible(pluginId, viewId, false);
     };

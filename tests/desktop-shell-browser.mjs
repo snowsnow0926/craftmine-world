@@ -19,10 +19,11 @@ import i18n from 'i18next';import {initReactI18next} from 'react-i18next';
 import {catalogs,flattenCatalog} from '@pi-desktop/i18n';
 import App from './src/App';import {useAppStore} from './src/stores/app-store';
 import {api} from './src/lib/api';
+import {loadCraftmineLayout,rememberCraftmineChatWidth} from './src/lib/craftmine-layout';
 const view={pluginId:'craftmine.world',viewId:'world',ref:'craftmine.world/world',title:'世界',icon:'target'};
 const plugins=[{id:'craftmine.world',name:'Craftmine World',version:'0.1.0',enabled:true,status:'ready',source:'builtin',permissions:['ui.view']}];
 const settings={language:'zh-CN',theme:'dark',defaultMode:'agent',enterToSend:true,onboardingDismissed:true};
-const frame=document.createElement('iframe');frame.title='世界';frame.src=${JSON.stringify(worldUrl)};
+const frame=document.createElement('iframe');let worldLoads=0;frame.addEventListener('load',()=>worldLoads++);frame.title='世界';frame.src=${JSON.stringify(worldUrl)};
 Object.assign(frame.style,{position:'fixed',border:'0',display:'none',zIndex:'100'});document.body.append(frame);
 api.listPlugins=async()=>({plugins});api.listPluginViews=async()=>[view];api.listPluginThemes=async()=>[];
 api.getSettings=async()=>settings;api.setSettings=async next=>{Object.assign(settings,next);return settings;};
@@ -33,7 +34,7 @@ api.pluginViewSetVisible=async(_,__,visible)=>{frame.style.display=visible?'bloc
 async function mountShell() {
 await i18n.use(initReactI18next).init({lng:'zh-CN',fallbackLng:'en',resources:Object.fromEntries(Object.entries(catalogs).map(([key,value])=>[key,{translation:flattenCatalog(value)}])),interpolation:{escapeValue:false}});
 useAppStore.setState({ready:true,bootstrap:async()=>{},settings,plugins,pluginViews:[view],version:{appName:'craftmine world',version:'0.14.3',protocolVersion:11},healthOk:true,onboarding:{needed:false,dismissed:true},workPanelOpen:false,workPanelWidth:560,workPanelTabs:[],activeWorkPanelTabId:null});
-globalThis.shellFixture={theme(value){settings.theme=value;useAppStore.setState({settings:{...settings}});},home(){
+globalThis.shellFixture={theme(value){settings.theme=value;useAppStore.setState({settings:{...settings}});},layout:()=>loadCraftmineLayout(localStorage),worldLoads:()=>worldLoads,chatWidth(value){rememberCraftmineChatWidth(localStorage,value);window.dispatchEvent(new CustomEvent('craftmine-layout-changed'));},home(){
   const state=useAppStore.getState(),initial=state.workPanelOpen&&state.workPanelTabs.length===1&&!state.activeSessionId&&state.sessions.length===0;
   state.collapseWorkPanel();const collapsed=!useAppStore.getState().workPanelOpen;
   state.openWorkPanel();const reopened=useAppStore.getState().workPanelOpen;
@@ -63,11 +64,24 @@ try {
   const world=page.frames().find(frame=>frame.url()===worldUrl);
   assert.ok(world,'native view adapter');await world.waitForFunction(()=>document.body.dataset.worldLoaded==='true');
   check('实际 React 桌面保留会话侧栏和世界入口',await page.evaluate(()=>!!document.querySelector('.sidebar [data-nav="world"]')&&!!document.querySelector('[data-sidebar-session-section]')));
-  check('桌面保留聊天输入与可调工作面板',await page.evaluate(()=>!!document.querySelector('.composer-input')&&!!document.querySelector('.work-panel-resize')));
+  check('桌面保留聊天输入与独立的对话宽度控制',await page.evaluate(()=>!!document.querySelector('.composer-input')&&!!document.querySelector('.craftmine-chat-resize')));
   check('无聊天会话时自动打开世界并支持收起、关闭和重开',await page.evaluate(()=>shellFixture.home()));
   const geometry=await page.evaluate(()=>{const panel=document.querySelector('.work-panel').getBoundingClientRect();return{width:panel.width,right:panel.right,scroll:document.documentElement.scrollWidth};});
   check('世界面板达到 560 像素且未超出窗口',geometry.width>=559&&geometry.right<=1441&&geometry.scroll<=1440);
   check('世界画面位于工作面板的可见表面',await page.evaluate(()=>{const frame=document.querySelector('body>iframe');const rect=frame.getBoundingClientRect();return rect.width>500&&document.elementFromPoint(rect.x+rect.width/2,rect.y+rect.height/2)===frame;}));
+  check('默认世界居中且完整对话位于右侧',await page.evaluate(()=>{const nav=document.querySelector('.sidebar').getBoundingClientRect(),world=document.querySelector('.work-panel').getBoundingClientRect(),chat=document.querySelector('.main-pane').getBoundingClientRect();return nav.right<=world.left+1&&world.right<=chat.left+1&&Math.abs(chat.right-innerWidth)<1&&Math.abs(chat.width-400)<1;}));
+  await page.evaluate(()=>{window.retainedWorld=document.querySelector('body>iframe');window.retainedComposer=document.querySelector('.composer-input');window.initialWorldLoads=shellFixture.worldLoads();shellFixture.chatWidth(520);});
+  await page.waitForFunction(()=>Math.abs(document.querySelector('.main-pane').getBoundingClientRect().width-520)<1);
+  await page.waitForFunction(()=>{const native=document.querySelector('body>iframe').getBoundingClientRect(),surface=document.querySelector('.work-plugin-view-surface').getBoundingClientRect();return Math.abs(native.width-surface.width)<1&&Math.abs(native.left-surface.left)<1;});
+  check('调整对话宽度同步原生视图边界并保存独立偏好',await page.evaluate(()=>shellFixture.layout().chatWidth===520&&retainedWorld===document.querySelector('body>iframe')&&initialWorldLoads===shellFixture.worldLoads()));
+  await page.evaluate(()=>document.querySelectorAll('.work-panel .craftmine-layout-controls form')[1].requestSubmit());
+  await page.waitForFunction(()=>document.querySelector('.app-shell.craftmine-play'));
+  await page.waitForFunction(()=>Math.abs(document.querySelector('body>iframe').getBoundingClientRect().width-innerWidth)<2);
+  check('游玩展开保留同一个世界和对话实例',await page.evaluate(()=>getComputedStyle(document.querySelector('.main-pane')).display==='none'&&retainedComposer===document.querySelector('.composer-input')&&retainedWorld===document.querySelector('body>iframe')&&initialWorldLoads===shellFixture.worldLoads()));
+  await page.evaluate(()=>document.querySelectorAll('.work-panel .craftmine-layout-controls form')[0].requestSubmit());
+  await page.waitForFunction(()=>!document.querySelector('.app-shell.craftmine-play')&&Math.abs(document.querySelector('.main-pane').getBoundingClientRect().width-520)<1);
+  check('返回创作恢复右侧对话宽度且不重新加载世界',await page.evaluate(()=>shellFixture.layout().chatWidth===520&&initialWorldLoads===shellFixture.worldLoads()));
+  await page.evaluate(()=>shellFixture.chatWidth(400));
   await page.screenshot({path:path.join(dir,'desktop-dark.png')});
   await page.evaluate(()=>shellFixture.theme('light'));
   await page.emulateMedia({colorScheme:'light'});
@@ -78,6 +92,13 @@ try {
   await page.waitForFunction(()=>{const label=document.querySelector('.composer-permission .mode-chip>span');return label&&label.getBoundingClientRect().height<25;});
   check('1200 像素桌面窄聊天栏中中文控制标签完整显示',await page.evaluate(()=>{const label=document.querySelector('.composer-permission .mode-chip>span'),shell=document.querySelector('.composer-shell').getBoundingClientRect();return label.getBoundingClientRect().height<25&&[...document.querySelectorAll('.composer-toolbar button')].every(button=>{const rect=button.getBoundingClientRect();return rect.left>=shell.left&&rect.right<=shell.right;});}));
   await page.screenshot({path:path.join(dir,'desktop-narrow.png')});
+  await page.setViewportSize({width:1000,height:800});
+  await page.waitForFunction(()=>!document.querySelector('.sidebar'));
+  check('窄窗口自动收起导航并保留世界与右侧输入',await page.evaluate(()=>{const world=document.querySelector('.work-panel').getBoundingClientRect(),chat=document.querySelector('.main-pane').getBoundingClientRect();return world.width>=599&&chat.width>=399&&world.right<=chat.left+1&&document.documentElement.scrollWidth<=innerWidth;}));
+  await page.setViewportSize({width:720,height:900});
+  await page.waitForFunction(()=>{const world=document.querySelector('.work-panel').getBoundingClientRect(),chat=document.querySelector('.main-pane').getBoundingClientRect();return world.bottom<=chat.top+1;});
+  check('更窄窗口上下排列且输入和世界均在可见范围',await page.evaluate(()=>{const input=document.querySelector('.composer-input').getBoundingClientRect(),chat=document.querySelector('.main-pane').getBoundingClientRect();return input.width>0&&input.left>=0&&input.right<=innerWidth&&input.bottom<=innerHeight&&chat.width===innerWidth&&document.documentElement.scrollWidth<=innerWidth;}));
+  await page.screenshot({path:path.join(dir,'desktop-stacked.png')});
   check('没有请求真实输入或焦点',(await Promise.all(page.frames().map(frame=>frame.evaluate(()=>globalThis.__inputRequests||0)))).every(count=>count===0));
   check('实际前端组件无未处理异常',errors.length===0);
 }catch(error){errors.push(error.stack);process.exitCode=1;console.error(error);}
