@@ -2,7 +2,7 @@
 
 - 分支：`codex/godot-parallel-a-20260909`
 - 工作树：`D:\Craftmine World-worktrees\godot-parallel-a-20260909`
-- 基线：master `46739d2`（未合并 master、未推送、未清理他人工作树）
+- 提交：`01d3082c421c27f5d8468d873f3700f1a877ac43`（未合并 master、未推送、未清理他人工作树）
 - 修改范围：`desktop/godot/sandbox/**`、`docs/dispatch-reports/godot-parallel/A/**`、`docs/specs/godot-sandbox-execution-boundary-A.md`、`docs/adr/ADR-godot-sandbox-execution-boundary-A.md`
 - 验收环境：普通用户（`token_is_elevated=0`）、会话 1、辅助进程位于 `WinSta0\Default`；证据 `desktop/godot/sandbox/evidence/parent-environment.log`
 
