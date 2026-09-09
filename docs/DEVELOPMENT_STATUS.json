@@ -3,19 +3,19 @@
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "W2",
   "baseline": "3bdf52f",
-  "updated": "2026-09-09T05:34:38.315Z",
+  "updated": "2026-09-09T05:39:10.410Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "finishing_batch",
-    "reason": "第 5 批实现已合并本地 master，程序包及真实评审验收通过，正在合并交付报告并清理本批工作树。",
+    "status": "ready_for_next_batch",
+    "reason": "第 5 批代码与交付报告 b3ff0fc 已合并本地 master；包内固定场景 40/40、真实 DeepSeek 评审 33/33 通过。继续 W2 作品库和原生 Agent 完整创作验收。",
     "activeGoal": true,
     "recurringDevelopment": true,
     "previousLiveCompactionTestStopped": true,
     "automationId": "craftmine-windows",
-    "worktree": "D:/Craftmine World-worktrees/pi-apply-20260909",
-    "branch": "codex/pi-apply-20260909",
+    "worktree": null,
+    "branch": null,
     "nextStep": "第 5 批合并清理后新建独立工作树，继续 W2：Rust 固定版本作品库、中文搜索/读取/安装、应用证据与世界作用域；接着跑原生实际 PI Agent 生成树→修改→检查评审→面板应用→重启→新会话复用。W2 完整通过后继续 W3–W5。不要把固定草稿的真实评审当作 Agent 自动创作验收。",
-    "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。"
+    "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。"
   },
   "windowsClientPlan": {
     "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",
@@ -61,7 +61,7 @@
     ],
     "runtimeChangedInThisReview": true,
     "personalServiceOrDataChangedInThisReview": false,
-    "currentPhase": "W2",
+    "currentPhase": "W2：评审、需求验收和正式应用已接通；继续作品库与原生 Agent 完整创作验收",
     "sourceImportCommit": "2920fc7",
     "sourceBaselineVerified": true,
     "developmentLog": "docs/WINDOWS_DEVELOPMENT_LOG.md",
@@ -190,7 +190,8 @@
       "signature": "NotSigned",
       "executableSha256": "dc5ad95867bbc61901950d487e56a2f9c942b4da90c64705e184969853a91fa9",
       "sourceZipSha256": "0ee33ac16e4c7ba4ddb80d212b7575b7b6942725aab831e6d632783ae733f099",
-      "merge": "75dbc0e and 0a5667f fast-forward merged into local master; delivery report merge and cleanup pending"
+      "merge": "b3ff0fc and all implementation commits merged into local master; no remote push",
+      "cleanup": "Merged branch and worktree registration removed. Residual pi-apply-20260909 directory retained after automatic approval review rejected recursive cleanup (blocked by policy). Do not retry deletion or reuse."
     }
   },
   "liveVerification": {
