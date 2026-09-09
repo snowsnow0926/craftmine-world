@@ -243,12 +243,12 @@
   "runs": [
     {
       "label": "engine-version",
-      "elapsedMs": 82,
+      "elapsedMs": 79,
       "exitCode": 0
     },
     {
       "label": "first-person-initial-import",
-      "elapsedMs": 2114,
+      "elapsedMs": 2023,
       "exitCode": 0
     },
     {
@@ -258,22 +258,22 @@
     },
     {
       "label": "top-down-initial-import",
-      "elapsedMs": 1840,
+      "elapsedMs": 1928,
       "exitCode": 0
     },
     {
       "label": "top-down-initial-export",
-      "elapsedMs": 2017,
+      "elapsedMs": 2016,
       "exitCode": 0
     },
     {
       "label": "first-person-changed-import",
-      "elapsedMs": 1846,
+      "elapsedMs": 1829,
       "exitCode": 0
     },
     {
       "label": "first-person-changed-export",
-      "elapsedMs": 2105,
+      "elapsedMs": 2015,
       "exitCode": 0
     }
   ],
@@ -282,59 +282,59 @@
       "base": "first-person",
       "revision": "initial",
       "worldId": "weapon-world",
-      "buildId": "76af172c3352a05075982de7ef3c8696148b82c8cb008fadf8d23a5e5b851181",
-      "elapsedMs": 704
+      "buildId": "a3fca2cd5e7ffc9798b830dee2ebe7a241ae253132bb7734076c1b26bff7201a",
+      "elapsedMs": 774
     },
     {
       "base": "first-person",
       "revision": "initial",
       "worldId": "weapon-world",
-      "buildId": "76af172c3352a05075982de7ef3c8696148b82c8cb008fadf8d23a5e5b851181",
-      "elapsedMs": 627
+      "buildId": "a3fca2cd5e7ffc9798b830dee2ebe7a241ae253132bb7734076c1b26bff7201a",
+      "elapsedMs": 608
     },
     {
       "base": "first-person",
       "revision": "changed",
       "worldId": "weapon-world",
-      "buildId": "00882e1af1dd9afd60b2a816716b5e1fc539b4b6070b54675371cb3ee2e6df80",
-      "elapsedMs": 619
+      "buildId": "12052ee162e3b0154eb936e4755a1ee9cb9d598bdd70f21b275b564cb889fa48",
+      "elapsedMs": 521
     },
     {
       "base": "first-person",
       "revision": "initial",
       "worldId": "independent-weapon-world",
-      "buildId": "76af172c3352a05075982de7ef3c8696148b82c8cb008fadf8d23a5e5b851181",
-      "elapsedMs": 535
+      "buildId": "a3fca2cd5e7ffc9798b830dee2ebe7a241ae253132bb7734076c1b26bff7201a",
+      "elapsedMs": 520
     },
     {
       "base": "first-person",
       "revision": "initial",
       "worldId": "weapon-world",
-      "buildId": "76af172c3352a05075982de7ef3c8696148b82c8cb008fadf8d23a5e5b851181",
-      "elapsedMs": 509
+      "buildId": "a3fca2cd5e7ffc9798b830dee2ebe7a241ae253132bb7734076c1b26bff7201a",
+      "elapsedMs": 529
     },
     {
       "base": "top-down",
       "revision": "initial",
       "worldId": "town-world",
-      "buildId": "f8fde1a3db60a186c90f3ca864b970fcf7134c9e4e2703a1808a7d4580592a9f",
-      "elapsedMs": 503
+      "buildId": "e0da098c67787f510f52d124785ec3146fce71f06fb75de383130cf974d5e268",
+      "elapsedMs": 508
     },
     {
       "base": "top-down",
       "revision": "initial",
       "worldId": "town-world",
-      "buildId": "f8fde1a3db60a186c90f3ca864b970fcf7134c9e4e2703a1808a7d4580592a9f",
-      "elapsedMs": 494
+      "buildId": "e0da098c67787f510f52d124785ec3146fce71f06fb75de383130cf974d5e268",
+      "elapsedMs": 259
     }
   ],
   "builds": [
     {
       "base": "first-person",
       "revision": "initial",
-      "buildId": "76af172c3352a05075982de7ef3c8696148b82c8cb008fadf8d23a5e5b851181",
+      "buildId": "a3fca2cd5e7ffc9798b830dee2ebe7a241ae253132bb7734076c1b26bff7201a",
       "threads": true,
-      "output": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-web-VnWwyg\\exports\\first-person-initial",
+      "output": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-web-DgjaAR\\exports\\first-person-initial",
       "files": [
         {
           "path": "bridge.js",
@@ -374,7 +374,7 @@
         {
           "path": "index.pck",
           "bytes": 15444,
-          "sha256": "530775e3724c5b4b45a4e90cf6b57bbee2b4ba0c94c17ca6f0e2ac75d5a058dd"
+          "sha256": "b9ba9e9dbf842d68920351790d13603f3b5aeeed5401ed43c774a85c017e5764"
         },
         {
           "path": "index.png",
@@ -403,9 +403,9 @@
     {
       "base": "top-down",
       "revision": "initial",
-      "buildId": "f8fde1a3db60a186c90f3ca864b970fcf7134c9e4e2703a1808a7d4580592a9f",
+      "buildId": "e0da098c67787f510f52d124785ec3146fce71f06fb75de383130cf974d5e268",
       "threads": true,
-      "output": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-web-VnWwyg\\exports\\top-down-initial",
+      "output": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-web-DgjaAR\\exports\\top-down-initial",
       "files": [
         {
           "path": "bridge.js",
@@ -445,7 +445,7 @@
         {
           "path": "index.pck",
           "bytes": 13232,
-          "sha256": "7e16a4a482ba9255cb233d94a8a37b40da14d82c33114bc978d9e698d149ce0a"
+          "sha256": "10e161e1f42133424fe1294ec5ad6d28521b53fd423308bb0caa4d3031a752a1"
         },
         {
           "path": "index.png",
@@ -474,9 +474,9 @@
     {
       "base": "first-person",
       "revision": "changed",
-      "buildId": "00882e1af1dd9afd60b2a816716b5e1fc539b4b6070b54675371cb3ee2e6df80",
+      "buildId": "12052ee162e3b0154eb936e4755a1ee9cb9d598bdd70f21b275b564cb889fa48",
       "threads": true,
-      "output": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-web-VnWwyg\\exports\\first-person-changed",
+      "output": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-web-DgjaAR\\exports\\first-person-changed",
       "files": [
         {
           "path": "bridge.js",
@@ -516,7 +516,7 @@
         {
           "path": "index.pck",
           "bytes": 15460,
-          "sha256": "28558f2bc6ba9df8af3d1bab8cf9cc739c5a285602767593ab33b411485b63cb"
+          "sha256": "0f7a5a4ef920602fcbd377664e58f06e3f7238b3b825a92595cb8ff86d01a3b9"
         },
         {
           "path": "index.png",
@@ -567,10 +567,6 @@
     {
       "type": "log",
       "text": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
-    },
-    {
-      "type": "requestfailed",
-      "text": "http://127.0.0.1:54918/first-person-changed/index.wasm net::ERR_ABORTED"
     },
     {
       "type": "log",
@@ -734,7 +730,7 @@
     ]
   },
   "lastFrameUrls": [
-    "http://127.0.0.1:54917/",
-    "http://127.0.0.1:54919/top-down-initial/index.html"
+    "http://127.0.0.1:57445/",
+    "http://127.0.0.1:57447/top-down-initial/index.html"
   ]
 }

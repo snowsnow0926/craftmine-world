@@ -23,6 +23,17 @@ app.commandLine.appendSwitch("use-angle");
 app.commandLine.appendSwitch("use-angle=swiftshader");
 app.disableHardwareAcceleration();
 
+// Each world instance gets its own session, so the no-input guard is installed
+// on every session Electron creates rather than on one fixed partition.
+app.on("session-created", (ses) => {
+  ses.registerPreloadScript({ type: "frame", filePath: join(__dirname, "pointer-guard.cjs") });
+  ses.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
+  ses.setPermissionCheckHandler(() => false);
+});
+ipcMain.on("pi-desktop/godot-world/guard", (_event, kind) => {
+  if (kind in guardCounts) guardCounts[kind] += 1;
+});
+
 function send(message) {
   process.send?.(message);
 }
@@ -44,16 +55,6 @@ async function capture(target, name) {
 
 async function main() {
   mkdirSync(root, { recursive: true });
-  // The runtime view uses its own persisted partition. Register the no-input
-  // guard before the first world starts so it applies to every game document.
-  const ses = session.fromPartition("persist:pi-godot-world", { cache: true });
-  ses.registerPreloadScript({ type: "frame", filePath: join(__dirname, "pointer-guard.cjs") });
-  ipcMain.on("pi-desktop/godot-world/guard", (_event, kind) => {
-    if (kind in guardCounts) guardCounts[kind] += 1;
-  });
-  ses.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
-  ses.setPermissionCheckHandler(() => false);
-
   window = new BrowserWindow({
     show: false,
     focusable: false,

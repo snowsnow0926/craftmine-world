@@ -1,6 +1,6 @@
 {
   "kind": "real-electron-godot-web-world-view",
-  "out": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-world-view-rVcPrO",
+  "out": "D:\\Craftmine World-worktrees\\godot-parallel-c-20260909\\test-results\\godot-world-view-t5HU5t",
   "checks": [
     {
       "name": "Pinned engine exported real 3D/2D Web builds for the Electron run",
@@ -9,19 +9,19 @@
         {
           "base": "first-person",
           "revision": "initial",
-          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "buildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
           "bytes": 39307665
         },
         {
           "base": "first-person",
           "revision": "changed",
-          "buildId": "32c7a972449815617ca62af1ee04eb50f2bf84932b9361f5652bd9c8549ba2ad",
+          "buildId": "795649657985fea86a13a65f2ae080891652211b3b7096f004781d722a80c522",
           "bytes": 39307681
         },
         {
           "base": "top-down",
           "revision": "initial",
-          "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
+          "buildId": "5ea6d2386d9f5152e8c411793fcf5ad9fb809dc7edd8fe0e58b74c6934d15ba9",
           "bytes": 39305449
         }
       ]
@@ -32,22 +32,22 @@
       "evidence": {
         "state": {
           "worldId": "weapon-world",
-          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
-          "instanceId": "8112d164d0f1c132364c7d04",
+          "buildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
+          "instanceId": "713de7ada658564b2d71c361",
           "state": "ready"
         },
         "instance": {
           "worldId": "weapon-world",
-          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
-          "instanceId": "8112d164d0f1c132364c7d04",
-          "url": "http://127.0.0.1:56071/w/264d9e29cf1008528fd41d93a501a6f2278e61f25b8ad00e26843202244d8aa6/index.html"
+          "buildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
+          "instanceId": "713de7ada658564b2d71c361",
+          "url": "http://127.0.0.1:57306/w/8769c012ef9a9a6297ab323058b28cb9183a75b1164d29c158e835eb4d4032eb/index.html"
         }
       }
     },
     {
       "name": "Game view is a real WebContentsView on a private loopback origin",
       "passed": true,
-      "evidence": "http://127.0.0.1:56071/w/264d9e29cf1008528fd41d93a501a6f2278e61f25b8ad00e26843202244d8aa6/index.html"
+      "evidence": "http://127.0.0.1:57306/w/8769c012ef9a9a6297ab323058b28cb9183a75b1164d29c158e835eb4d4032eb/index.html"
     },
     {
       "name": "Window stays offscreen, unfocusable and never asks for pointer lock",
@@ -131,15 +131,15 @@
       "evidence": {
         "hidden": {
           "worldId": "weapon-world",
-          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
-          "instanceId": "8112d164d0f1c132364c7d04",
-          "url": "http://127.0.0.1:56071/w/264d9e29cf1008528fd41d93a501a6f2278e61f25b8ad00e26843202244d8aa6/index.html"
+          "buildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
+          "instanceId": "713de7ada658564b2d71c361",
+          "url": "http://127.0.0.1:57306/w/8769c012ef9a9a6297ab323058b28cb9183a75b1164d29c158e835eb4d4032eb/index.html"
         },
         "reshown": {
           "worldId": "weapon-world",
-          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
-          "instanceId": "8112d164d0f1c132364c7d04",
-          "url": "http://127.0.0.1:56071/w/264d9e29cf1008528fd41d93a501a6f2278e61f25b8ad00e26843202244d8aa6/index.html"
+          "buildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
+          "instanceId": "713de7ada658564b2d71c361",
+          "url": "http://127.0.0.1:57306/w/8769c012ef9a9a6297ab323058b28cb9183a75b1164d29c158e835eb4d4032eb/index.html"
         }
       }
     },
@@ -158,22 +158,22 @@
       "passed": true,
       "evidence": {
         "runnerReceipt": {
-          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "buildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
           "bytes": 270,
           "format": "craftmine.godot-progress/2",
-          "instanceId": "8112d164d0f1c132364c7d04",
+          "instanceId": "713de7ada658564b2d71c361",
           "path": "user://worlds/90413b4be402f8934bb69c4ca8d1431e30bb80b210147b8218459e1b7948ff6f/progress.json",
-          "savedAt": 1788959753.451,
-          "sha256": "a163f0bbe5c0d797f909e596d6d9d876d92efd5972fa49002ed77542c6321fbb",
+          "savedAt": 1788960090.929,
+          "sha256": "9e47aaaf06b2d9b0ac0509061a36c345eaf08b09943dc17044b80be22e5bea5a",
           "worldId": "weapon-world"
         },
         "receipt": {
           "format": "craftmine.progress-receipt/1",
           "worldId": "weapon-world",
-          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+          "buildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
           "revision": 4,
           "contentHash": "harness-3",
-          "persistedAt": 1788959753
+          "persistedAt": 1788960090
         }
       }
     },
@@ -182,8 +182,8 @@
       "passed": true,
       "evidence": {
         "worldId": "weapon-world",
-        "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
-        "instanceId": "8112d164d0f1c132364c7d04",
+        "buildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
+        "instanceId": "713de7ada658564b2d71c361",
         "state": "saved"
       }
     },
@@ -204,16 +204,16 @@
         "error": "Godot runtime did not report ready (previous world kept running)",
         "state": {
           "worldId": "weapon-world",
-          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
-          "instanceId": "8112d164d0f1c132364c7d04",
+          "buildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
+          "instanceId": "713de7ada658564b2d71c361",
           "state": "ready",
           "error": "Godot runtime did not report ready"
         },
         "instance": {
           "worldId": "weapon-world",
-          "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
-          "instanceId": "8112d164d0f1c132364c7d04",
-          "url": "http://127.0.0.1:56071/w/264d9e29cf1008528fd41d93a501a6f2278e61f25b8ad00e26843202244d8aa6/index.html"
+          "buildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
+          "instanceId": "713de7ada658564b2d71c361",
+          "url": "http://127.0.0.1:57306/w/8769c012ef9a9a6297ab323058b28cb9183a75b1164d29c158e835eb4d4032eb/index.html"
         }
       }
     },
@@ -222,9 +222,9 @@
       "passed": true,
       "evidence": {
         "worldId": "town-world",
-        "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
-        "instanceId": "5ab6eea7a16b0566a7e4e92f",
-        "url": "http://127.0.0.1:56091/w/e4a7e22d06c8dc4815bbef4deeab83d971e07f85ee069104cf3db2aefe114730/index.html"
+        "buildId": "5ea6d2386d9f5152e8c411793fcf5ad9fb809dc7edd8fe0e58b74c6934d15ba9",
+        "instanceId": "185fed860bdaad1cd827091b",
+        "url": "http://127.0.0.1:57336/w/74b159553388bc714eed1ce880d81fe747aeb24b81f44af2da30668b320b3a5e/index.html"
       }
     },
     {
@@ -259,20 +259,20 @@
           "status": "failed",
           "error": "progress store is locked",
           "runnerReceipt": {
-            "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
+            "buildId": "5ea6d2386d9f5152e8c411793fcf5ad9fb809dc7edd8fe0e58b74c6934d15ba9",
             "bytes": 260,
             "format": "craftmine.godot-progress/2",
-            "instanceId": "5ab6eea7a16b0566a7e4e92f",
+            "instanceId": "185fed860bdaad1cd827091b",
             "path": "user://worlds/f99eba75278ea5e5ba6dd12fa5d51342b9495b624dcdb84ededd6afa711253e2/progress.json",
-            "savedAt": 1788959762.734,
-            "sha256": "3006a3d248928f9899e09626a786b6bbd0f5b867c1893ae6373c20a21f852a01",
+            "savedAt": 1788960100.168,
+            "sha256": "ec0ce4e4852f17deaa2304e5c49fb32e986e70eca6552cc239728a7723655e2d",
             "worldId": "town-world"
           }
         },
         "state": {
           "worldId": "town-world",
-          "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
-          "instanceId": "5ab6eea7a16b0566a7e4e92f",
+          "buildId": "5ea6d2386d9f5152e8c411793fcf5ad9fb809dc7edd8fe0e58b74c6934d15ba9",
+          "instanceId": "185fed860bdaad1cd827091b",
           "state": "failed",
           "error": "progress store is locked"
         }
@@ -296,9 +296,9 @@
         "expected": "{\"coins\":15,\"apples\":2,\"position\":[120,80]}",
         "instance": {
           "worldId": "town-world",
-          "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
-          "instanceId": "3bb4af6fa190f9498d14bdcf",
-          "url": "http://127.0.0.1:56102/w/7cf582c14d5087b53004b139c9c0a4a4f00f14c4ba0c17845b1924c6c335eb25/index.html"
+          "buildId": "5ea6d2386d9f5152e8c411793fcf5ad9fb809dc7edd8fe0e58b74c6934d15ba9",
+          "instanceId": "e9da5804a432e68b20a3a23c",
+          "url": "http://127.0.0.1:57341/w/f29669a5c32e314a0508cb28c1b9edbade215a840925127e4ddff2e5c840756e/index.html"
         }
       }
     },
@@ -340,23 +340,23 @@
     {
       "base": "first-person",
       "revision": "initial",
-      "buildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+      "buildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
       "bytes": 39307665
     },
     {
       "base": "first-person",
       "revision": "changed",
-      "buildId": "32c7a972449815617ca62af1ee04eb50f2bf84932b9361f5652bd9c8549ba2ad",
+      "buildId": "795649657985fea86a13a65f2ae080891652211b3b7096f004781d722a80c522",
       "bytes": 39307681
     },
     {
       "base": "top-down",
       "revision": "initial",
-      "buildId": "c40952df3dee3f1fa16d7c376528b98f49258954f7ce2254522b9ad74a402348",
+      "buildId": "5ea6d2386d9f5152e8c411793fcf5ad9fb809dc7edd8fe0e58b74c6934d15ba9",
       "bytes": 39305449
     }
   ],
-  "buildJsonBuildId": "de5507435859340a50201c8de144c2828f6900043d9db32403a5fe1979fd6492",
+  "buildJsonBuildId": "e3e874f36333ff1041a91c509380935d0c08d87591731c43ed0b01acbec7a4f1",
   "passed": 24,
   "total": 24
 }

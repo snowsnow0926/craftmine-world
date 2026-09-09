@@ -79,7 +79,6 @@ export type GodotWorldSaveResult =
   | { status: "persisted"; runnerReceipt: Record<string, unknown>; receipt: GodotWorldPersistedReceipt }
   | { status: "failed"; error: string; runnerReceipt?: Record<string, unknown> };
 
-const PARTITION = "persist:pi-godot-world";
 /** How often the active world descriptor is re-read while the panel is visible. */
 const SYNC_INTERVAL_MS = 2000;
 const ID_PATTERN = /^[a-zA-Z0-9._-]{1,128}$/;
@@ -116,6 +115,8 @@ type LiveInstance = {
   instanceId: string;
   detach: () => void;
   alive: boolean;
+  /** The web contents were already closed; closing twice must be a no-op. */
+  closed: boolean;
 };
 
 export class GodotWorldViewHost {
@@ -130,6 +131,7 @@ export class GodotWorldViewHost {
   private syncPromise: Promise<GodotWorldState | null> = Promise.resolve(null);
   private lastSync = 0;
   private poll?: ReturnType<typeof setInterval>;
+  private disposed = false;
   private onState?: (state: GodotWorldState) => void;
 
   constructor(
@@ -169,6 +171,8 @@ export class GodotWorldViewHost {
   }
 
   async ensure(request: GodotWorldOpenRequest): Promise<GodotWorldState> {
+    if (this.disposed) throw new Error("Godot world host is disposed");
+    if (this.pending) throw new Error("A world instance is already starting");
     const worldId = requireId("world identity", request.worldId);
     const buildId = requireId("build identity", request.buildId);
     const allowed = this.options.allowedRoots?.() ?? [];
@@ -197,7 +201,14 @@ export class GodotWorldViewHost {
       threads: request.threads,
       timeoutMs: request.timeoutMs,
     });
-    const view = this.createView(runtime);
+    let view: WebContentsView;
+    try {
+      view = this.createView(runtime);
+    } catch (error) {
+      // A view that cannot be created must not leave a listening server behind.
+      await runtime.dispose({ graceful: false }).catch(() => undefined);
+      throw error;
+    }
     const instance: LiveInstance = {
       runtime,
       view,
@@ -206,19 +217,21 @@ export class GodotWorldViewHost {
       instanceId: runtime.instanceId,
       detach: () => {},
       alive: true,
+      closed: false,
     };
     this.pending = instance;
     instance.detach = runtime.attach((message) => {
       if (!instance.alive || instance.view.webContents.isDestroyed()) return;
       instance.view.webContents.send(GODOT_WORLD_MESSAGE_CHANNEL, message);
     });
-    view.webContents.on("did-fail-load", (_event, code, description) => {
+    view.webContents.on("did-fail-load", (_event, code, description, _url, isMainFrame) => {
+      if (!isMainFrame) return;
       if (instance !== this.current && instance !== this.pending) return;
-      this.fail(instance, `World view failed to load (${code} ${description})`);
+      this.fail(instance, `World view failed to load (${code} ${description})`, true);
     });
     view.webContents.on("render-process-gone", (_event, details) => {
       if (instance !== this.current && instance !== this.pending) return;
-      this.fail(instance, `World renderer stopped: ${details.reason}`);
+      this.fail(instance, `World renderer stopped: ${details.reason}`, true);
     });
     try {
       await view.webContents.loadURL(runtime.url);
@@ -231,16 +244,21 @@ export class GodotWorldViewHost {
       this.pending = null;
       instance.alive = false;
       instance.detach();
-      if (!view.webContents.isDestroyed()) view.webContents.close();
+      this.closeView(instance);
       await runtime.dispose({ graceful: false }).catch(() => undefined);
       const message = error instanceof Error ? error.message : String(error);
-      const state = previous
-        ? this.publish({ ...this.identityOf(previous), state: this.currentState?.state === "paused" ? "paused" : "ready", error: message })
-        : this.publish({ worldId, buildId, instanceId: "", state: "failed", error: message });
-      throw new Error(`${message}${previous ? " (previous world kept running)" : ""}`);
+      if (previous?.alive) {
+        // The running world is untouched: report its own identity, not the
+        // candidate that failed.
+        this.publish({ ...this.identityOf(previous), state: this.currentState?.state === "paused" ? "paused" : "ready", error: message });
+      } else {
+        this.publish({ worldId, buildId, instanceId: "", state: "failed", error: message });
+      }
+      throw new Error(`${message}${previous?.alive ? " (previous world kept running)" : ""}`);
     }
     this.pending = null;
     this.current = instance;
+    this.revision = 0;
     runtime.onEvent((event) => this.handleEvent(instance, event));
     view.webContents.once("did-finish-load", () => {
       if (!instance.alive) return;
@@ -257,7 +275,7 @@ export class GodotWorldViewHost {
         // The old renderer may already be gone.
       }
       this.detachView(previous.view);
-      if (!previous.view.webContents.isDestroyed()) previous.view.webContents.close();
+      this.closeView(previous);
       await previous.runtime.dispose({ graceful: true }).catch(() => undefined);
     }
     return this.currentState!;
@@ -287,6 +305,7 @@ export class GodotWorldViewHost {
    * throttled so a resize drag cannot hammer the plugin process.
    */
   async sync({ force = false }: { force?: boolean } = {}): Promise<GodotWorldState | null> {
+    if (this.disposed) return this.currentState;
     if (!this.options.descriptor) return this.currentState;
     if (this.syncing) return this.syncPromise;
     const now = Date.now();
@@ -320,6 +339,7 @@ export class GodotWorldViewHost {
   }
 
   setVisible(visible: boolean): void {
+    if (this.disposed) return;
     this.visible = visible;
     this.applyBounds();
     if (visible) {
@@ -335,7 +355,7 @@ export class GodotWorldViewHost {
    * inside the plugin page is picked up without a renderer event.
    */
   private startPolling(): void {
-    if (this.poll || !this.options.descriptor) return;
+    if (this.poll || this.disposed || !this.options.descriptor) return;
     this.poll = setInterval(() => void this.sync({ force: true }), SYNC_INTERVAL_MS);
   }
 
@@ -353,7 +373,10 @@ export class GodotWorldViewHost {
   async save({ revision }: { revision?: number } = {}): Promise<GodotWorldSaveResult> {
     const instance = this.current;
     if (!instance || !instance.alive) return { status: "failed", error: "No world runtime is running" };
-    if (revision !== undefined) this.revision = revision;
+    // The revision advances only after the host transaction committed; using
+    // the caller's value for this call keeps a failed save from poisoning the
+    // base revision of the next attempt.
+    const baseRevision = revision ?? this.revision;
     this.publish({ ...this.identityOf(instance), state: "saving" });
     const confirmed: { error?: string; result?: Record<string, unknown> } = await instance.runtime.save().catch((error) => ({
       error: String(error?.message ?? error),
@@ -377,7 +400,7 @@ export class GodotWorldViewHost {
     const persisted = await this.options.progress({
       worldId: instance.worldId,
       buildId: instance.buildId,
-      revision: this.revision,
+      revision: baseRevision,
       runnerReceipt,
       snapshot: result.state ?? result.snapshot,
     }).catch((error) => ({ failed: true, error: String(error?.message ?? error) }) as GodotWorldProgressResult);
@@ -386,10 +409,23 @@ export class GodotWorldViewHost {
       this.publish({ ...this.identityOf(instance), state: "failed", error: persisted.error });
       return { status: "failed", error: persisted.error, runnerReceipt };
     }
-    await instance.runtime.acknowledge({ receipt: persisted.receipt }).catch(() => undefined);
-    if (Number.isFinite(persisted.receipt.revision)) this.revision = persisted.receipt.revision;
+    const receipt = persisted.receipt as GodotWorldPersistedReceipt | undefined;
+    if (!receipt || typeof receipt !== "object" || typeof receipt.revision !== "number") {
+      const error = "Host progress transaction returned no durable receipt";
+      await instance.runtime.acknowledge({ failed: true, error }).catch(() => undefined);
+      this.publish({ ...this.identityOf(instance), state: "failed", error });
+      return { status: "failed", error, runnerReceipt };
+    }
+    await instance.runtime.acknowledge({ receipt }).catch(() => undefined);
+    if (instance !== this.current) {
+      // The world changed while the transaction was in flight: the receipt is
+      // still valid for `instance`, but it must not overwrite the new world's
+      // visible state.
+      return { status: "persisted", runnerReceipt, receipt };
+    }
+    this.revision = receipt.revision;
     this.publish({ ...this.identityOf(instance), state: "saved" });
-    return { status: "persisted", runnerReceipt, receipt: persisted.receipt };
+    return { status: "persisted", runnerReceipt, receipt };
   }
 
   async pause(): Promise<void> {
@@ -408,10 +444,13 @@ export class GodotWorldViewHost {
 
   /** Snapshot and persist before the client exits; the world is kept on failure. */
   async prepareForQuit(): Promise<{ ok: boolean; error?: string }> {
-    if (!this.current?.alive) return { ok: true };
+    const instance = this.current;
+    if (!instance?.alive) return { ok: true };
     const saved = await this.save();
     if (saved.status !== "persisted") return { ok: false, error: saved.error };
-    await this.current.runtime.exit().catch(() => undefined);
+    // The world may have been closed or replaced while the transaction ran;
+    // only stop the instance this call actually saved.
+    if (this.current === instance) await instance.runtime.exit().catch(() => undefined);
     return { ok: true };
   }
 
@@ -424,7 +463,7 @@ export class GodotWorldViewHost {
     if (pending) {
       pending.alive = false;
       pending.detach();
-      if (!pending.view.webContents.isDestroyed()) pending.view.webContents.close();
+      this.closeView(pending);
       await pending.runtime.dispose({ graceful: false }).catch(() => undefined);
     }
     if (!instance) {
@@ -439,13 +478,26 @@ export class GodotWorldViewHost {
       // The renderer may already be gone.
     }
     this.detachView(instance.view);
-    if (!instance.view.webContents.isDestroyed()) instance.view.webContents.close();
+    this.closeView(instance);
     await instance.runtime.dispose({ graceful: true }).catch(() => undefined);
     this.publishState({ state: "closed" });
   }
 
   dispose(): void {
-    void this.close();
+    this.disposed = true;
+    this.stopPolling();
+    void this.close().catch(() => undefined);
+  }
+
+  /** Close a view at most once; `webContents.close()` is asynchronous. */
+  private closeView(instance: LiveInstance): void {
+    if (instance.closed) return;
+    instance.closed = true;
+    try {
+      if (!instance.view.webContents.isDestroyed()) instance.view.webContents.close();
+    } catch {
+      // The renderer may already be gone.
+    }
   }
 
   private identityOf(instance: LiveInstance): { worldId: string; buildId: string; instanceId: string } {
@@ -465,8 +517,14 @@ export class GodotWorldViewHost {
     }
   }
 
-  private fail(instance: LiveInstance, error: string): void {
-    if (instance !== this.current) return;
+  /**
+   * Report a failure for the instance the user is looking at. A fatal failure
+   * (page load, renderer gone) also marks the instance unusable so the next
+   * sync starts a fresh one instead of keeping a dead view on screen.
+   */
+  private fail(instance: LiveInstance, error: string, fatal = false): void {
+    if (instance !== this.current && instance !== this.pending) return;
+    if (fatal) instance.alive = false;
     this.publish({ ...this.identityOf(instance), state: "failed", error });
   }
 
@@ -506,7 +564,7 @@ export class GodotWorldViewHost {
   }
 
   private createView(runtime: WorldRuntime): WebContentsView {
-    const ses = this.prepareSession(runtime.origin);
+    const ses = this.prepareSession(runtime.instanceId, runtime.origin);
     const view = new WebContentsView({
       webPreferences: {
         session: ses,
@@ -536,12 +594,15 @@ export class GodotWorldViewHost {
   }
 
   /**
-   * One session for every Godot world view, with egress confined to the
-   * instance's own loopback origin and every permission refused, including
-   * pointer lock, which the project forbids in automated runs.
+   * One session per runtime instance. Each instance serves its own loopback
+   * origin, and a shared partition would let a new instance inherit the
+   * previous one's origin-scoped storage when the OS reuses the port; it would
+   * also mean every new view re-registers the request filter, cancelling the
+   * still-running world's own requests. Egress is confined to the instance's
+   * origin and every permission, including pointer lock, is refused.
    */
-  private prepareSession(origin: string): Session {
-    const ses = session.fromPartition(PARTITION, { cache: true });
+  private prepareSession(instanceId: string, origin: string): Session {
+    const ses = session.fromPartition(`pi-godot-world-${instanceId}`, { cache: true });
     ses.webRequest.onBeforeRequest({ urls: ["<all_urls>"] }, (details, callback) => {
       callback({ cancel: !details.url.startsWith(`${origin}/`) });
     });

@@ -77,7 +77,7 @@ const wasm = responses.find((item) => item.url.endsWith(".wasm"));
 check("Engine assets are served with the correct type and no caching", wasm?.headers["content-type"] === "application/wasm" && wasm?.headers["cache-control"] === "no-store", wasm?.headers);
 const traversal = await page.evaluate(async (base) => {
   const results = [];
-  for (const suffix of ["../runtime.mjs", "..%2Fruntime.mjs", "/w/0000000000000000000000000000000000000000000000000000000000000000/index.html", "index.exe"]) {
+  for (const suffix of ["../runtime.mjs", "..%2Fruntime.mjs", "..%20/runtime.mjs", "%2e%2e/runtime.mjs", "/w/0000000000000000000000000000000000000000000000000000000000000000/index.html", "index.exe"]) {
     const response = await fetch(new URL(suffix, base));
     results.push({ suffix, status: response.status });
   }

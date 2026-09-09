@@ -22,11 +22,11 @@
    `nosniff`、`no-store`、`Referrer-Policy: no-referrer` 和以 `default-src 'none'` 起头的 CSP
    （`wasm-unsafe-eval`、内联引导、多线程时 `worker-src 'self' blob:`）。
 2. **资源服务与路径约束**：只服务构建目录内、扩展名白名单内的文件；`..`、反斜杠、
-   盘符、其他令牌一律 400/403/404/415；`dispose()` 后返回 410。
+   盘符、尾随点/空格、其他令牌一律 400/403/404/415；`realpath` 后再做一次包含检查；
+   `dispose()` 后返回 410。
 3. **真实 Electron 视图**：`godot-world-view-host.ts` 用 `WebContentsView` 承载游戏页面，
-   独立 session 分区 `persist:pi-godot-world`，出网只允许本实例来源，所有权限（含
-   `pointerLock`）拒绝；视图与插件视图是兄弟视图，位置为面板矩形减去顶栏
-   `WORLD_CHROME_HEIGHT = 76`。
+   每个实例独立 session 分区，出网只允许本实例来源，所有权限（含 `pointerLock`）拒绝；
+   视图与插件视图是兄弟视图，位置为面板矩形减去顶栏 `WORLD_CHROME_HEIGHT = 76`。
 4. **稳定身份**：`worldId + buildId + instanceId`，由宿主在页面创建前铸造并通过 preload
    `additionalArguments` 固定；协议层逐条比对，异世界/旧实例消息在改变任何状态前丢弃。
 5. **统一运行协议**：`craftmine.godot-runtime/2` 提供 `load`、`ready`、`snapshot`、`save`、
@@ -96,24 +96,48 @@
 - 整进程退出并重启：新实例载入宿主持久化的进度 `{coins:15, apples:2, position:[120,80]}`；
   重启前创建的另一个世界仍以自己的存档启动。
 
-## 4 未完成项与限制
+## 4 独立审查与修复
+
+提交 `93d3469` 后由一个只读子 Agent 对 `runtime.mjs`、`godot-world-view-host.ts`、
+`godot-world-view` preload 做了对抗性审查，发现并已修复以下问题（修复后全部验收重跑通过）：
+
+| 问题 | 修复 |
+| --- | --- |
+| 路径分段以点/空格结尾（`..%20`）会被 Win32 归一化并逃出构建根 | 拒绝以 `.` 或空格结尾的分段，并增加 `realpath` 后的二次包含检查 |
+| `entry` 未做与请求路径同等校验 | `entry` 同样经过路径校验后才创建服务器 |
+| 盘符根目录下 `root + sep` 前缀判断恒为假 | 改为 `path.relative` 判断 |
+| 共享 session 分区导致新视图注册过滤器时取消旧世界的请求 | 每个实例独立 session 分区（不再持久化） |
+| 端口复用可能让新实例共享旧实例的 origin 级存储 | 同上：存储随实例 session 隔离 |
+| `receive()` 对 BigInt 消息 `JSON.stringify` 抛错会打到主进程 | 包 try/catch，不可序列化一律丢弃 |
+| 候选构建失败时 sync 覆盖了"旧世界仍在运行"的状态 | 旧实例仍存活时发布旧实例身份 |
+| `ensure()` 并发调用会泄漏前一个实例 | 增加 pending 并发保护 |
+| `createView` 抛错时已启动的服务器不会释放 | 移入 try 并释放 runtime |
+| 子帧加载失败被当作整个世界失败 | 只处理主帧，且致命失败标记实例不可用以便重建 |
+| `revision` 跨世界不重置、且在持久化前就前进 | 新实例重置；只有拿到耐久回执后才前进 |
+| progress 返回空回执时 `receipt.revision` 抛 TypeError | 显式判空并按失败返回 |
+| 保存过程中世界被切换会覆盖新世界状态 | 提交后确认实例仍是 current 再发布 |
+| `prepareForQuit` 可能对已关闭/已替换的实例退出 | 捕获实例并确认后再退出 |
+| `dispose()` 后 `setVisible` 可复活宿主；视图可能被重复关闭 | 增加 disposed 标志与一次性关闭标志 |
+
+## 5 未完成项与限制
 
 1. **产品入口未接线**：`electron/main/index.ts` 与 `electron.vite.config.ts` 的改动属于任务 I。
    本任务提供可直接 `git apply` 的 `integration.patch`（已在临时副本验证可应用，
    并已用打补丁后的工作树跑通 `tsc` 与 `electron-vite build`，随后回退）。
    未接线前，Godot 世界在面板里只有顶栏与占位区。
 2. **进度事务是夹具**：Electron 验收里的 `progress` 回调是测试实现；真实
-   `world.saveProgress` → 回执的链路需要任务 I 按 §INTEGRATION_C 接线后另行验收。
+   `world.saveProgress` → 回执的链路需要任务 I 按 `INTEGRATION_C.md` 接线后另行验收。
 3. **世界文档需要 `build.engine`**：`{kind:"godot-web", buildId, root, entry, threads}`。
    由世界构建方写入；缺失时按旧运行器处理。宿主只接受白名单构建根目录内的 `root`。
 4. **渲染路径**：验收在离屏软件渲染（SwiftShader）下完成，只能证明真实画面与真实物理，
    不能作为 GPU 性能或玩家手感证据。
 5. **草稿预览**：Godot 世界暂不支持面板内草稿预览（按钮禁用并说明原因）；旧运行器预览不变。
-6. **运行器自身存档跨实例不共享**：每次切换世界都会换端口，`user://` 的 IndexedDB 随来源变化；
-   耐久进度以宿主事务为准，新实例通过 `load` 载入。这是设计取舍，已在 ADR 记录。
+6. **运行器自身存档跨实例不共享**：每次切换世界都会换端口与 session 分区，`user://` 的
+   IndexedDB 随来源变化；耐久进度以宿主事务为准，新实例通过 `load` 载入。这是设计取舍，
+   已在 ADR 记录。
 7. 未验证：真实模型创作、Windows 发行包、安装生命周期、多人并发下的长期稳定性。
 
-## 5 需要其他任务提供的接口
+## 6 需要其他任务提供的接口
 
 | 任务 | 需要提供 |
 | --- | --- |
@@ -123,7 +147,7 @@
 | 世界构建方 | 在世界文档 `world.build.engine` 写入 Godot 构建描述 |
 | E/F/G | 底座实现 `web_command(op,args)`；建议实现 `load`，否则运行器回退到 `restore-state` |
 
-## 6 与验收边界的对应
+## 7 与验收边界的对应
 
 | 任务要求 | 状态 |
 | --- | --- |

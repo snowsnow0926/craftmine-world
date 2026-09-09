@@ -92,9 +92,22 @@ export function isolationHeaders({threads = true} = {}) {
 
 function safeRelative(raw) {
   const decoded = decodeURIComponent(raw);
-  if (!decoded || decoded.includes('\0') || decoded.includes('\\')) throw Error('Invalid runtime path');
-  const parts = decoded.split('/');
-  if (parts.some(part => part === '' || part === '.' || part === '..' || part.includes(':'))) throw Error('Invalid runtime path');
+  if (!decoded || decoded.includes("\0") || decoded.includes("\\")) throw Error("Invalid runtime path");
+  const parts = decoded.split("/");
+  if (
+    parts.some(
+      (part) =>
+        part === "" ||
+        part === "." ||
+        part === ".." ||
+        part.includes(":") ||
+        // Win32 strips trailing dots and spaces when opening a path, so
+        // `..%20` would otherwise resolve outside the build root.
+        /[. ]$/.test(part),
+    )
+  ) {
+    throw Error("Invalid runtime path");
+  }
   return parts;
 }
 
@@ -124,8 +137,12 @@ export async function createWorldRuntime(options) {
   if (!Number.isFinite(timeoutMs) || timeoutMs < 1 || timeoutMs > 300000) throw Error('Invalid runtime timeout');
   const stat = await fsp.stat(root).catch(() => null);
   if (!stat?.isDirectory()) throw Error('World build directory is missing');
-  const entryPath = path.join(root, entry);
+  // The entry goes through the same validation as a request path, so a
+  // traversal or an empty segment is refused before a server is created.
+  const entryParts = safeRelative(entry);
+  const entryPath = path.join(root, ...entryParts);
   if (!(await fsp.stat(entryPath).catch(() => null))?.isFile()) throw Error('World build entry is missing');
+  const realRoot = await fsp.realpath(root);
 
   const requests = [];
   const listeners = new Set();
@@ -217,7 +234,13 @@ export async function createWorldRuntime(options) {
     } catch {
       return;
     }
-    if (JSON.stringify(message ?? null)?.length > WIRE_LIMIT) return;
+    // Structured clone can carry values JSON cannot (BigInt, cycles); a
+    // malformed message must be dropped, never thrown into the IPC handler.
+    try {
+      if (JSON.stringify(message ?? null).length > WIRE_LIMIT) return;
+    } catch {
+      return;
+    }
     accept(message);
   }
 
@@ -243,12 +266,23 @@ export async function createWorldRuntime(options) {
     if (!pathname.startsWith(prefix)) return send(404, 'Not found');
     let parts;
     try {
-      parts = safeRelative(pathname.slice(prefix.length) || entry);
+      parts = safeRelative(pathname.slice(prefix.length) || entryParts.join('/'));
     } catch {
       return send(400, 'Invalid runtime path');
     }
     const file = path.resolve(root, ...parts);
-    if (file !== root && !file.startsWith(root + path.sep)) return send(403, 'Forbidden');
+    const relative = path.relative(root, file);
+    if (relative.startsWith('..') || path.isAbsolute(relative)) return send(403, 'Forbidden');
+    // A junction or symlink inside the build root must not become a read
+    // primitive for the rest of the disk.
+    let real;
+    try {
+      real = fs.realpathSync(file);
+    } catch {
+      return send(404, 'Not found');
+    }
+    const realRelative = path.relative(realRoot, real);
+    if (realRelative.startsWith('..') || path.isAbsolute(realRelative)) return send(403, 'Forbidden');
     const type = TYPES.get(path.extname(file).toLowerCase());
     if (!type) return send(415, 'Unsupported runtime asset');
     let stream;
@@ -272,7 +306,7 @@ export async function createWorldRuntime(options) {
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   const origin = `http://127.0.0.1:${server.address().port}`;
-  const url = `${origin}${`/w/${token}/`}${entry}`;
+  const url = `${origin}/w/${token}/${entryParts.join('/')}`;
 
   function request(op, args = {}, {timeoutMs: perRequest} = {}) {
     if (disposed) return Promise.reject(Error('Godot runtime is disposed'));
@@ -301,7 +335,7 @@ export async function createWorldRuntime(options) {
     ...scope,
     url,
     origin,
-    entry,
+    entry: entryParts.join('/'),
     root,
     threads,
     get state() {
