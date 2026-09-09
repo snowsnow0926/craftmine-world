@@ -1,0 +1,14 @@
+diff --git a/vendor/pi-desktop/crates/host-core/src/rpc/mod.rs b/vendor/pi-desktop/crates/host-core/src/rpc/mod.rs
+--- a/vendor/pi-desktop/crates/host-core/src/rpc/mod.rs
++++ b/vendor/pi-desktop/crates/host-core/src/rpc/mod.rs
+@@ -1128,2 +1128,10 @@
+ 
++        "secrets.status" => {
++            if params.as_object().is_none_or(|fields| !fields.is_empty()) {
++                return Err(rpc_err(1002, "No parameters allowed", "INVALID_PARAMS"));
++            }
++            let st = state.lock().await;
++            Ok(json!({ "status": st.secrets.status(), "backend": st.secrets.backend() }))
++        }
++
+         "secrets.set" => {

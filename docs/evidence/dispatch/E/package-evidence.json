@@ -1,0 +1,4128 @@
+{
+  "format": "craftmine.package-evidence/1",
+  "commit": "2cf0f69cb88099ca7a4545fa9d2f668b62586e88",
+  "sourceArchiveHash": "42cce204ad857ec2c305126bac9fd9a6dd3a6590e2037d132bcbdd380445dff9",
+  "files": [
+    {
+      "path": "Craftmine World.exe",
+      "bytes": 225533440,
+      "sha256": "81d67ea42964aa390cee61558091aa3ecbbd8e4dbaa8fcd517a8830253141681"
+    },
+    {
+      "path": "LICENSE.electron.txt",
+      "bytes": 1096,
+      "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d"
+    },
+    {
+      "path": "LICENSES.chromium.html",
+      "bytes": 20313957,
+      "sha256": "b911161e6594ec76b872498b423c54406168f2974e0d407a847f7de1e5ff94dd"
+    },
+    {
+      "path": "chrome_100_percent.pak",
+      "bytes": 119905,
+      "sha256": "d76fe8fa3a14cd73e4c858746e2ab2d2fa6f2df38a906fa5814b50a8a895fc96"
+    },
+    {
+      "path": "chrome_200_percent.pak",
+      "bytes": 197089,
+      "sha256": "b74ad439f3d3762657f3ba533a6af3ac63315c838ed46519891366f43d834a0e"
+    },
+    {
+      "path": "d3dcompiler_47.dll",
+      "bytes": 4741488,
+      "sha256": "a05f99734f7c4822fefc12b367af21fd0976ed6608752fb1e1e80b6ece7ecbbb"
+    },
+    {
+      "path": "dxcompiler.dll",
+      "bytes": 25616384,
+      "sha256": "36c6f0af0cd7ff8585cea0a6090f1c2ce5db044d16b366074b2e9f85ef2e2629"
+    },
+    {
+      "path": "dxil.dll",
+      "bytes": 1509760,
+      "sha256": "77e039c905030a641e53658a008b74e90635a5ea9b6b79eabd0f2003bdfca59a"
+    },
+    {
+      "path": "ffmpeg.dll",
+      "bytes": 3067904,
+      "sha256": "e3b958ec29f381d9872f1f19e5c29661693f6aeaf382f969f97d5c6a9da53cca"
+    },
+    {
+      "path": "icudtl.dat",
+      "bytes": 10876560,
+      "sha256": "bd8c145abdf3f8383276ce01dfa4ae48709bef9fef1c0711eb7c3fab4f6eb7c2"
+    },
+    {
+      "path": "libEGL.dll",
+      "bytes": 474624,
+      "sha256": "700bde9f10d03c37bec6fef9471f5016650c2b8a3c7229060e996c232fa19bdc"
+    },
+    {
+      "path": "libGLESv2.dll",
+      "bytes": 8033792,
+      "sha256": "1811383343e2c4efd7f5275787188ae12ab9d059067032bc57d511fd25e03d70"
+    },
+    {
+      "path": "locales/de.pak",
+      "bytes": 693302,
+      "sha256": "6201f0c314340a272e6cd7b57e13c4e20e3bc64f053f2c6f8e98f1cf52840908"
+    },
+    {
+      "path": "locales/en-US.pak",
+      "bytes": 566095,
+      "sha256": "74404352908184e834397df60b238f23462e77d69ac4136b4f20af2db6191436"
+    },
+    {
+      "path": "locales/es.pak",
+      "bytes": 679701,
+      "sha256": "9ff88eabacab95f8bbef9e95f63d3619fa8d640ec03523d80abb26243b059a65"
+    },
+    {
+      "path": "locales/fr.pak",
+      "bytes": 738341,
+      "sha256": "dcd5c008c6b74000c2d95b6193059c9435b417d54e6991283e92bafcc5fbcc50"
+    },
+    {
+      "path": "locales/ko.pak",
+      "bytes": 694027,
+      "sha256": "ee01af13e4e4b804e48d7126a38a059e210c7f4fba0c37fd2dfa9ef4c106b9d3"
+    },
+    {
+      "path": "locales/tr.pak",
+      "bytes": 672677,
+      "sha256": "37619e7084337a839d8ccf7915381cf9975d0ffc9451bd37d210bc7322645219"
+    },
+    {
+      "path": "locales/zh-CN.pak",
+      "bytes": 571748,
+      "sha256": "0386ef8bf3ce4e24c604ee039273e452d12f8b1d6e5ac7e746995e8b39fab379"
+    },
+    {
+      "path": "locales/zh-TW.pak",
+      "bytes": 564377,
+      "sha256": "740c2da1eedff44b57d8700b6f81f1acf17e67bdf534220553b448da42f62b66"
+    },
+    {
+      "path": "resources/agent-runtime/sidecar.js",
+      "bytes": 5171629,
+      "sha256": "8eb57f1edcb3f054cc3dfbf5b70084eb12bb08d7e82f42799a176533fc0960f2"
+    },
+    {
+      "path": "resources/app.asar",
+      "bytes": 32771422,
+      "sha256": "41b2d19c1eed127015adbd6d6d34f6ae09c4832bc4dd3ffe1abed226c2ebedde"
+    },
+    {
+      "path": "resources/bin/craftmine-core.exe",
+      "bytes": 2588672,
+      "sha256": "b767d763bc424e824ca921bf2815a6cd4d4d52483ab7f3cc212618d7009d66e0"
+    },
+    {
+      "path": "resources/bin/pi-desktop-host-core.exe",
+      "bytes": 9082880,
+      "sha256": "25ed815846ff600af6435e8cc11d842fcb3994a1bc5cd93f117fdfe645b2f6f5"
+    },
+    {
+      "path": "resources/elevate.exe",
+      "bytes": 107520,
+      "sha256": "9b1fbf0c11c520ae714af8aa9af12cfd48503eedecd7398d8992ee94d1b4dc37"
+    },
+    {
+      "path": "resources/licenses/CRAFTMINE-NOTICES.md",
+      "bytes": 2167,
+      "sha256": "8810d048e745bb2645a0fbbf7557d3d459c024c10f367054f5ca87d96cfc5f91"
+    },
+    {
+      "path": "resources/licenses/PI-Desktop-LICENSE.txt",
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+    },
+    {
+      "path": "resources/licenses/UPSTREAM.json",
+      "bytes": 702,
+      "sha256": "2144168932a5ad26819c256439ea517c6a7c5a6538fa292c4a912fbe06f94a38"
+    },
+    {
+      "path": "resources/licenses/fonts/OFL-Geist.txt",
+      "bytes": 4368,
+      "sha256": "930853ee1daa68554d9e35c8a9175affb74f699fad9a5da6ee5ebe76379d9137"
+    },
+    {
+      "path": "resources/licenses/fonts/OFL-Inter.txt",
+      "bytes": 4380,
+      "sha256": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a"
+    },
+    {
+      "path": "resources/licenses/fonts/OFL-LXGWWenKai.txt",
+      "bytes": 4448,
+      "sha256": "c38b1994a5e48ac30ac7d1da7d0409fd8fd8127dfe28a13d6e787d5b1ef34a5e"
+    },
+    {
+      "path": "resources/licenses/fonts/OFL-NotoSansSC.txt",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_abtesting@1.22.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_client-abtesting@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_client-analytics@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_client-common@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_client-insights@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_client-personalization@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_client-query-suggestions@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_client-search@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_ingestion@1.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_monitoring@1.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_recommend@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_requester-browser-xhr@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_requester-fetch@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@algolia_requester-node-http@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/@antfu_install-pkg@1.1.0-LICENSE",
+      "bytes": 1094,
+      "sha256": "67cd5e903c1f908edfa27c25606fa806ce629d9a8ddb7d83019d9fd1f83f7fde"
+    },
+    {
+      "path": "resources/licenses/third-party/@anthropic-ai_sdk@0.123.0-LICENSE",
+      "bytes": 1056,
+      "sha256": "8bf96984ff8bcfae7e48cae76a529e8a25317ba9e02abf7fd3cc64fdf95657a6"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-crypto_sha256-browser@5.2.0-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-crypto_sha256-js@5.2.0-LICENSE",
+      "bytes": 11323,
+      "sha256": "6dc0e068dcf3a5bc8e054205b85b7720e1d49265bbc64bf515d2cf79197df69a"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-crypto_supports-web-crypto@5.2.0-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-crypto_util@5.2.0-LICENSE",
+      "bytes": 11356,
+      "sha256": "db1ed8cccea0d0fb5d92b7c59d9aa78a5bbcd047972519c6a21a4416937f2ebf"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_client-bedrock-runtime@3.1048.0-LICENSE",
+      "bytes": 11390,
+      "sha256": "18c295fdd68d4f68418b0209829f241481e93549d9e7b9fcd4b4c029322c8a45"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_core@3.976.0-LICENSE",
+      "bytes": 11352,
+      "sha256": "edea91454b811f127fbdea3d86f378f6719bd372ed440abf82b232f6fca06c3d"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_credential-provider-env@3.972.60-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_credential-provider-ini@3.973.5-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_credential-provider-node@3.972.71-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_credential-provider-process@3.972.60-LICENSE",
+      "bytes": 11352,
+      "sha256": "2ef1e48ea743d9c82313e6887858f7c1feaddd636f5a3f43926aab0143e67ebd"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_credential-provider-sso@3.973.4-LICENSE",
+      "bytes": 11352,
+      "sha256": "2ef1e48ea743d9c82313e6887858f7c1feaddd636f5a3f43926aab0143e67ebd"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_credential-provider-web-identity@3.972.66-LICENSE",
+      "bytes": 11352,
+      "sha256": "2ef1e48ea743d9c82313e6887858f7c1feaddd636f5a3f43926aab0143e67ebd"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_eventstream-handler-node@3.972.29-LICENSE",
+      "bytes": 11385,
+      "sha256": "07364a5f7d0177a59a05a0002187431f8f899320983c0dc049d72df015e8064c"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_middleware-eventstream@3.972.24-LICENSE",
+      "bytes": 11390,
+      "sha256": "e345c2ee7df4446e739de7b91535f0c10ddcd909b9753889e943ee637b05db8c"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_middleware-websocket@3.972.42-LICENSE",
+      "bytes": 11385,
+      "sha256": "07364a5f7d0177a59a05a0002187431f8f899320983c0dc049d72df015e8064c"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_signature-v4-multi-region@3.996.41-LICENSE",
+      "bytes": 11385,
+      "sha256": "07364a5f7d0177a59a05a0002187431f8f899320983c0dc049d72df015e8064c"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_token-providers@3.1048.0-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_token-providers@3.1092.0-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_types@3.974.2-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_util-locate-window@3.965.8-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws-sdk_xml-builder@3.972.36-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@aws_lambda-invoke-store@0.3.0-LICENSE",
+      "bytes": 10142,
+      "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_code-frame@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_compat-data@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_core@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_generator@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_helper-compilation-targets@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_helper-globals@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_helper-module-imports@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_helper-module-transforms@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_helper-plugin-utils@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_helper-string-parser@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_helper-validator-identifier@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_helper-validator-option@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_helpers@7.29.7-LICENSE",
+      "bytes": 1189,
+      "sha256": "4be9d87b56a306293223b490c0d0b245e9e94f39884147bf051a6c7b825aeb30"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_parser@7.29.7-LICENSE",
+      "bytes": 1086,
+      "sha256": "2e97627cb278aa7556fb9e8817368302301a595b6c7582512b8d74c57b773652"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_parser@7.29.8-LICENSE",
+      "bytes": 1086,
+      "sha256": "2e97627cb278aa7556fb9e8817368302301a595b6c7582512b8d74c57b773652"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_plugin-transform-arrow-functions@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_plugin-transform-react-jsx-self@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_plugin-transform-react-jsx-source@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_runtime@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_template@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_traverse@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_types@7.29.7-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@babel_types@7.29.8-LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "resources/licenses/third-party/@braintree_sanitize-url@7.1.2-LICENSE",
+      "bytes": 1066,
+      "sha256": "0984740e0c3d725c8044dec7edcefe1dbce180ef5a7bc710c251e19607000158"
+    },
+    {
+      "path": "resources/licenses/third-party/@chevrotain_types@11.1.2-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/@electron_asar@3.4.1-LICENSE.md",
+      "bytes": 1055,
+      "sha256": "d5af8fc171f6f600c0ab4e7597dca398dda80dbe6821ce01cef78e859e7a00f8"
+    },
+    {
+      "path": "resources/licenses/third-party/@electron_fuses@1.8.0-LICENSE",
+      "bytes": 1065,
+      "sha256": "24e49a190cf97a2127e0588981e82ff6e4357632278c9ab510f328a2689eca53"
+    },
+    {
+      "path": "resources/licenses/third-party/@electron_get@3.1.0-LICENSE",
+      "bytes": 1088,
+      "sha256": "edab8abb78d9c5b36944c3e00aebf6a90eb32378993f49ac8a3904007029c629"
+    },
+    {
+      "path": "resources/licenses/third-party/@electron_get@5.1.0-LICENSE",
+      "bytes": 1088,
+      "sha256": "edab8abb78d9c5b36944c3e00aebf6a90eb32378993f49ac8a3904007029c629"
+    },
+    {
+      "path": "resources/licenses/third-party/@electron_notarize@2.5.0-LICENSE",
+      "bytes": 1070,
+      "sha256": "60e42db5f32611ac978f4be323cba0511d1375a1af10f32d2a8bba9b291d9de2"
+    },
+    {
+      "path": "resources/licenses/third-party/@electron_osx-sign@1.3.3-LICENSE",
+      "bytes": 1352,
+      "sha256": "fe6ac932d2a16058886ab32ce601b50ce2b9d65925305b72227a184185552535"
+    },
+    {
+      "path": "resources/licenses/third-party/@electron_rebuild@4.2.0-LICENSE",
+      "bytes": 1088,
+      "sha256": "edab8abb78d9c5b36944c3e00aebf6a90eb32378993f49ac8a3904007029c629"
+    },
+    {
+      "path": "resources/licenses/third-party/@electron_universal@2.0.3-LICENSE",
+      "bytes": 1088,
+      "sha256": "edab8abb78d9c5b36944c3e00aebf6a90eb32378993f49ac8a3904007029c629"
+    },
+    {
+      "path": "resources/licenses/third-party/@electron_windows-sign@1.2.2-LICENSE",
+      "bytes": 1292,
+      "sha256": "77cbd788d921cacb2eb6b35c96a37f6752a05c69884387a4e9b1588bacec8e4a"
+    },
+    {
+      "path": "resources/licenses/third-party/@google_genai@1.52.0-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/@iconify_types@2.0.0-license.txt",
+      "bytes": 1096,
+      "sha256": "045ce74712fc613fdd74d1c55f5140a08d623836ff2aca44132b38d68fbc67ad"
+    },
+    {
+      "path": "resources/licenses/third-party/@iconify_utils@3.1.4-license.txt",
+      "bytes": 1083,
+      "sha256": "a86793ac023162ce98b91899601c15f6712f44943163c4f92a0a4bf89152b3bf"
+    },
+    {
+      "path": "resources/licenses/third-party/@isaacs_fs-minipass@4.0.1-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/@jridgewell_gen-mapping@0.3.13-LICENSE",
+      "bytes": 1080,
+      "sha256": "769d154fbde32a915af110b1123650bc79f4cbe675acc66e005265bf069c6c6c"
+    },
+    {
+      "path": "resources/licenses/third-party/@jridgewell_remapping@2.3.5-LICENSE",
+      "bytes": 1080,
+      "sha256": "769d154fbde32a915af110b1123650bc79f4cbe675acc66e005265bf069c6c6c"
+    },
+    {
+      "path": "resources/licenses/third-party/@jridgewell_resolve-uri@3.1.2-LICENSE",
+      "bytes": 1079,
+      "sha256": "b8778b155bfde5a28b023a558753c0fa058a52bb9de35c343c250be1bbcdedab"
+    },
+    {
+      "path": "resources/licenses/third-party/@jridgewell_sourcemap-codec@1.5.5-LICENSE",
+      "bytes": 1080,
+      "sha256": "769d154fbde32a915af110b1123650bc79f4cbe675acc66e005265bf069c6c6c"
+    },
+    {
+      "path": "resources/licenses/third-party/@jridgewell_sourcemap-codec@1.6.0-LICENSE",
+      "bytes": 1080,
+      "sha256": "769d154fbde32a915af110b1123650bc79f4cbe675acc66e005265bf069c6c6c"
+    },
+    {
+      "path": "resources/licenses/third-party/@jridgewell_trace-mapping@0.3.31-LICENSE",
+      "bytes": 1080,
+      "sha256": "769d154fbde32a915af110b1123650bc79f4cbe675acc66e005265bf069c6c6c"
+    },
+    {
+      "path": "resources/licenses/third-party/@malept_cross-spawn-promise@2.0.0-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/@malept_flatpak-bundler@0.4.0-LICENSE",
+      "bytes": 1064,
+      "sha256": "503b8b4d83781a017ffee6b4ec40d7d8da68be5f898004bfeb4ef4a7cb52ef23"
+    },
+    {
+      "path": "resources/licenses/third-party/@mermaid-js_parser@1.2.0-LICENSE",
+      "bytes": 1077,
+      "sha256": "d374061c40bfb6f99c5033290caefda97a9b3e7e477e5ee02f487143ef2177e8"
+    },
+    {
+      "path": "resources/licenses/third-party/@noble_hashes@1.4.0-LICENSE",
+      "bytes": 1109,
+      "sha256": "4f221aee6e072336700c408c68ab3b96a3fc09f6aebe6f48f1bd99e5ef13faec"
+    },
+    {
+      "path": "resources/licenses/third-party/@noble_hashes@2.2.0-LICENSE",
+      "bytes": 1109,
+      "sha256": "4f221aee6e072336700c408c68ab3b96a3fc09f6aebe6f48f1bd99e5ef13faec"
+    },
+    {
+      "path": "resources/licenses/third-party/@opentelemetry_api@1.9.0-LICENSE",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "resources/licenses/third-party/@peculiar_asn1-schema@2.8.0-LICENSE",
+      "bytes": 1057,
+      "sha256": "1ecdd8e8977af83c07c5f97bec87b47d27059b7ea323ca3160fbfa2314f5d99c"
+    },
+    {
+      "path": "resources/licenses/third-party/@peculiar_json-schema@1.1.12-LICENSE",
+      "bytes": 1057,
+      "sha256": "83e4dd21429a91fb7cea67a476032a9641425e5355df2e0f589a738b6ec9fd2c"
+    },
+    {
+      "path": "resources/licenses/third-party/@peculiar_utils@2.0.3-LICENSE",
+      "bytes": 1084,
+      "sha256": "ce2ae0f0066d1be56ab4ec851cc611805bb95cdc8dd858b301e22ee54b351d43"
+    },
+    {
+      "path": "resources/licenses/third-party/@peculiar_webcrypto@1.7.1-LICENSE.md",
+      "bytes": 1084,
+      "sha256": "06fa9b6896b5e0062651f1a769d08f19892e76f2c1b42329f60f4cdd8de4c378"
+    },
+    {
+      "path": "resources/licenses/third-party/@protobufjs_aspromise@1.1.2-LICENSE",
+      "bytes": 1505,
+      "sha256": "a67b34a24a5daddcce46aea68c5004e4442bbfb63690329fa607bf4de4269794"
+    },
+    {
+      "path": "resources/licenses/third-party/@protobufjs_base64@1.1.2-LICENSE",
+      "bytes": 1505,
+      "sha256": "a67b34a24a5daddcce46aea68c5004e4442bbfb63690329fa607bf4de4269794"
+    },
+    {
+      "path": "resources/licenses/third-party/@protobufjs_codegen@2.0.5-LICENSE",
+      "bytes": 1505,
+      "sha256": "a67b34a24a5daddcce46aea68c5004e4442bbfb63690329fa607bf4de4269794"
+    },
+    {
+      "path": "resources/licenses/third-party/@protobufjs_eventemitter@1.1.1-LICENSE",
+      "bytes": 1505,
+      "sha256": "a67b34a24a5daddcce46aea68c5004e4442bbfb63690329fa607bf4de4269794"
+    },
+    {
+      "path": "resources/licenses/third-party/@protobufjs_fetch@1.1.1-LICENSE",
+      "bytes": 1505,
+      "sha256": "a67b34a24a5daddcce46aea68c5004e4442bbfb63690329fa607bf4de4269794"
+    },
+    {
+      "path": "resources/licenses/third-party/@protobufjs_float@1.0.2-LICENSE",
+      "bytes": 1505,
+      "sha256": "a67b34a24a5daddcce46aea68c5004e4442bbfb63690329fa607bf4de4269794"
+    },
+    {
+      "path": "resources/licenses/third-party/@protobufjs_path@1.1.2-LICENSE",
+      "bytes": 1505,
+      "sha256": "a67b34a24a5daddcce46aea68c5004e4442bbfb63690329fa607bf4de4269794"
+    },
+    {
+      "path": "resources/licenses/third-party/@protobufjs_pool@1.1.0-LICENSE",
+      "bytes": 1505,
+      "sha256": "a67b34a24a5daddcce46aea68c5004e4442bbfb63690329fa607bf4de4269794"
+    },
+    {
+      "path": "resources/licenses/third-party/@protobufjs_utf8@1.1.2-LICENSE",
+      "bytes": 1505,
+      "sha256": "a67b34a24a5daddcce46aea68c5004e4442bbfb63690329fa607bf4de4269794"
+    },
+    {
+      "path": "resources/licenses/third-party/@rolldown_pluginutils@1.0.0-beta.27-LICENSE",
+      "bytes": 1302,
+      "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_core@2.5.0-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_core@4.4.3-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_engine-javascript@2.5.0-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_engine-javascript@4.4.3-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_engine-oniguruma@2.5.0-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_engine-oniguruma@4.4.3-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_langs@2.5.0-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_langs@4.4.3-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_primitive@4.4.3-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_themes@2.5.0-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_themes@4.4.3-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_transformers@2.5.0-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_types@2.5.0-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_types@4.4.3-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/@shikijs_vscode-textmate@10.0.2-LICENSE.md",
+      "bytes": 1083,
+      "sha256": "b5cb7ff7859e7d282d98fc43ab081b0dda5dc659dc3385cf65740c759a7e6a6c"
+    },
+    {
+      "path": "resources/licenses/third-party/@sindresorhus_is@4.6.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/@smithy_core@3.29.8-LICENSE",
+      "bytes": 11385,
+      "sha256": "07364a5f7d0177a59a05a0002187431f8f899320983c0dc049d72df015e8064c"
+    },
+    {
+      "path": "resources/licenses/third-party/@smithy_credential-provider-imds@4.4.13-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@smithy_fetch-http-handler@5.6.10-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@smithy_is-array-buffer@2.2.0-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@smithy_node-http-handler@4.7.3-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@smithy_node-http-handler@4.9.10-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@smithy_signature-v4@5.6.9-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@smithy_types@4.16.1-LICENSE",
+      "bytes": 11385,
+      "sha256": "07364a5f7d0177a59a05a0002187431f8f899320983c0dc049d72df015e8064c"
+    },
+    {
+      "path": "resources/licenses/third-party/@smithy_util-buffer-from@2.2.0-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@smithy_util-utf8@2.3.0-LICENSE",
+      "bytes": 11357,
+      "sha256": "d82ceb8cbd004a2d4834085c557d55459f528e30268d95159ee1e4030a693a6e"
+    },
+    {
+      "path": "resources/licenses/third-party/@stablelib_base64@1.0.1-LICENSE",
+      "bytes": 1110,
+      "sha256": "1605b77bebe018db1fc27bd22fbcdeed1335c617937a124299a8b042b42b0fb6"
+    },
+    {
+      "path": "resources/licenses/third-party/@standard-schema_spec@1.1.0-LICENSE",
+      "bytes": 1071,
+      "sha256": "653b779005a3a4d64a7288c940f7b9a0e8f0b1e0375f6aa6af9473caf131e564"
+    },
+    {
+      "path": "resources/licenses/third-party/@szmarczak_http-timer@4.0.6-LICENSE",
+      "bytes": 1071,
+      "sha256": "0194571d45a06ea2a22ceb51f981e3be92525966d28847dbc0d9982603bf90de"
+    },
+    {
+      "path": "resources/licenses/third-party/@tailwindcss_node@4.3.3-LICENSE",
+      "bytes": 1071,
+      "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985"
+    },
+    {
+      "path": "resources/licenses/third-party/@tailwindcss_oxide-win32-x64-msvc@4.3.3-LICENSE",
+      "bytes": 1071,
+      "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985"
+    },
+    {
+      "path": "resources/licenses/third-party/@tailwindcss_oxide@4.3.3-LICENSE",
+      "bytes": 1071,
+      "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985"
+    },
+    {
+      "path": "resources/licenses/third-party/@tailwindcss_vite@4.3.3-LICENSE",
+      "bytes": 1071,
+      "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_babel__core@7.20.5-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_babel__generator@7.27.0-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_babel__template@7.4.4-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_babel__traverse@7.28.0-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_cacheable-request@6.0.3-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_chai@5.2.3-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-array@3.2.2-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-axis@3.0.6-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-brush@3.0.6-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-chord@3.0.6-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-color@3.1.3-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-contour@3.0.6-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-delaunay@6.0.4-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-dispatch@3.0.7-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-drag@3.0.7-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-dsv@3.0.7-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-ease@3.0.2-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-fetch@3.0.7-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-force@3.0.10-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-format@3.0.4-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-geo@3.1.1-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-hierarchy@3.1.7-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-interpolate@3.0.4-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-path@3.1.1-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-polygon@3.0.2-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-quadtree@3.0.6-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-random@3.0.4-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-scale-chromatic@3.1.0-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-scale@4.0.9-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-selection@3.0.11-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-shape@3.1.8-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-time-format@4.0.3-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-time@3.0.4-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-timer@3.0.2-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-transition@3.0.9-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3-zoom@3.0.8-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_d3@7.4.3-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_debug@4.1.13-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_deep-eql@4.0.2-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_estree-jsx@1.0.5-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_estree@1.0.9-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_fs-extra@9.0.13-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_geojson@7946.0.16-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_hast@3.0.5-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_http-cache-semantics@4.2.0-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_katex@0.16.8-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_keyv@3.1.4-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_linkify-it@5.0.0-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_markdown-it@14.1.2-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_mdast@4.0.4-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_mdurl@2.0.0-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_ms@2.1.0-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_node@24.13.3-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_react-dom@19.2.4-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_react@19.2.18-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_responselike@1.0.3-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_retry@0.12.0-LICENSE",
+      "bytes": 1183,
+      "sha256": "dea9265341829002e2c23a7372393eb2ed6e26085fb623f38a4ba0af833f30a6"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_trusted-types@2.0.7-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_unist@2.0.11-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_unist@3.0.3-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@types_web-bluetooth@0.0.21-LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "resources/licenses/third-party/@ungap_structured-clone@1.3.3-LICENSE",
+      "bytes": 765,
+      "sha256": "dc6d4961d8b6ee747231582ae9c53ce1d66bf76bc9f5a28f554c0e97210953bf"
+    },
+    {
+      "path": "resources/licenses/third-party/@upsetjs_venn.js@2.0.0-LICENSE",
+      "bytes": 1106,
+      "sha256": "6a3508febf2cfccfee96597394543a6154a4bb0b1f91f28404be42c09e9fcb54"
+    },
+    {
+      "path": "resources/licenses/third-party/@vitejs_plugin-react@4.7.0-LICENSE",
+      "bytes": 1103,
+      "sha256": "29b68325fe026047d13e187b44c33b2acacf7dc647dec4583702e59f235e13b5"
+    },
+    {
+      "path": "resources/licenses/third-party/@vitejs_plugin-vue@5.2.4-LICENSE",
+      "bytes": 1103,
+      "sha256": "29b68325fe026047d13e187b44c33b2acacf7dc647dec4583702e59f235e13b5"
+    },
+    {
+      "path": "resources/licenses/third-party/@vitest_expect@4.1.10-LICENSE",
+      "bytes": 1102,
+      "sha256": "04575fc5bfae19a9b63100f8691f901a2e15a399011ac02db435a9ef27295551"
+    },
+    {
+      "path": "resources/licenses/third-party/@vitest_mocker@4.1.10-LICENSE",
+      "bytes": 1102,
+      "sha256": "04575fc5bfae19a9b63100f8691f901a2e15a399011ac02db435a9ef27295551"
+    },
+    {
+      "path": "resources/licenses/third-party/@vitest_pretty-format@4.1.10-LICENSE",
+      "bytes": 1102,
+      "sha256": "04575fc5bfae19a9b63100f8691f901a2e15a399011ac02db435a9ef27295551"
+    },
+    {
+      "path": "resources/licenses/third-party/@vitest_runner@4.1.10-LICENSE",
+      "bytes": 1102,
+      "sha256": "04575fc5bfae19a9b63100f8691f901a2e15a399011ac02db435a9ef27295551"
+    },
+    {
+      "path": "resources/licenses/third-party/@vitest_snapshot@4.1.10-LICENSE",
+      "bytes": 1102,
+      "sha256": "04575fc5bfae19a9b63100f8691f901a2e15a399011ac02db435a9ef27295551"
+    },
+    {
+      "path": "resources/licenses/third-party/@vitest_spy@4.1.10-LICENSE",
+      "bytes": 1102,
+      "sha256": "04575fc5bfae19a9b63100f8691f901a2e15a399011ac02db435a9ef27295551"
+    },
+    {
+      "path": "resources/licenses/third-party/@vitest_utils@4.1.10-LICENSE",
+      "bytes": 1102,
+      "sha256": "04575fc5bfae19a9b63100f8691f901a2e15a399011ac02db435a9ef27295551"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_compiler-core@3.5.41-LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_compiler-dom@3.5.41-LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_compiler-sfc@3.5.41-LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_compiler-ssr@3.5.41-LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_devtools-api@7.7.10-LICENSE",
+      "bytes": 1067,
+      "sha256": "d0ac09e8df2b54625ea1606dfae75d5b6af1cbc5d28a17eca1350be9c367175c"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_devtools-kit@7.7.10-LICENSE",
+      "bytes": 1067,
+      "sha256": "d0ac09e8df2b54625ea1606dfae75d5b6af1cbc5d28a17eca1350be9c367175c"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_devtools-shared@7.7.10-LICENSE",
+      "bytes": 1067,
+      "sha256": "d0ac09e8df2b54625ea1606dfae75d5b6af1cbc5d28a17eca1350be9c367175c"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_reactivity@3.5.41-LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_runtime-core@3.5.41-LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_runtime-dom@3.5.41-LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_server-renderer@3.5.41-LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "resources/licenses/third-party/@vue_shared@3.5.41-LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "resources/licenses/third-party/@vueuse_core@12.8.2-LICENSE",
+      "bytes": 1101,
+      "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b"
+    },
+    {
+      "path": "resources/licenses/third-party/@vueuse_integrations@12.8.2-LICENSE",
+      "bytes": 1101,
+      "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b"
+    },
+    {
+      "path": "resources/licenses/third-party/@vueuse_metadata@12.8.2-LICENSE",
+      "bytes": 1101,
+      "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b"
+    },
+    {
+      "path": "resources/licenses/third-party/@vueuse_shared@12.8.2-LICENSE",
+      "bytes": 1101,
+      "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b"
+    },
+    {
+      "path": "resources/licenses/third-party/@xmldom_xmldom@0.8.13-LICENSE",
+      "bytes": 1298,
+      "sha256": "4da724fc305d81606b245b324d4d2586916b9d248b23d82183df753ace0fdf71"
+    },
+    {
+      "path": "resources/licenses/third-party/@xmldom_xmldom@0.9.10-LICENSE",
+      "bytes": 1298,
+      "sha256": "4da724fc305d81606b245b324d4d2586916b9d248b23d82183df753ace0fdf71"
+    },
+    {
+      "path": "resources/licenses/third-party/abbrev@4.0.0-LICENSE",
+      "bytes": 2011,
+      "sha256": "9e0d5c7989f7e9f07d7c4b158aceff270f235eb7464ace41c5e7b200834a43e0"
+    },
+    {
+      "path": "resources/licenses/third-party/agent-base@7.1.4-LICENSE",
+      "bytes": 1101,
+      "sha256": "8d8c55319c7729d57be811c747452636688d54f19701ee0752b6b15ad3771d9a"
+    },
+    {
+      "path": "resources/licenses/third-party/ajv@8.20.0-LICENSE",
+      "bytes": 1090,
+      "sha256": "a05350a88e318e4f5f2c2a1ff1e2e88daa4dd38e6e78b71cccae422bdc762cc3"
+    },
+    {
+      "path": "resources/licenses/third-party/algoliasearch@5.56.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "4228dcd9ab9a4b6a635457ebdb937fbce06d8aab61ad16812fb5fd2ff186c88c"
+    },
+    {
+      "path": "resources/licenses/third-party/ansi-regex@5.0.1-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/ansi-styles@4.3.0-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/argparse@2.0.1-LICENSE",
+      "bytes": 12775,
+      "sha256": "de4d1f2d2ad5ad0cfd1657a106476b31cb5db5ef9d1ff842b237c0c81f0c8a23"
+    },
+    {
+      "path": "resources/licenses/third-party/asn1js@3.0.10-LICENSE",
+      "bytes": 1571,
+      "sha256": "ebe5d98519d0dfcbcb80e20b22a56e7321e8557cd14355760434bbd4c1f4f683"
+    },
+    {
+      "path": "resources/licenses/third-party/assertion-error@2.0.1-LICENSE",
+      "bytes": 1108,
+      "sha256": "2130216d5ab4c02134f8247f32999feda0abe1eaf028218baeac445c19ce4cea"
+    },
+    {
+      "path": "resources/licenses/third-party/async-exit-hook@2.0.1-license",
+      "bytes": 1119,
+      "sha256": "6fb9754611c20f6649f68805e8c990e83261f29316e29de9e6cedae607b8634c"
+    },
+    {
+      "path": "resources/licenses/third-party/async@3.2.6-LICENSE",
+      "bytes": 1063,
+      "sha256": "d9fed24f132985934fca621c4dc1dfb53e03377a24d0568d424383d7eaa9c0ac"
+    },
+    {
+      "path": "resources/licenses/third-party/asynckit@0.4.0-LICENSE",
+      "bytes": 1078,
+      "sha256": "1953150d5d4b10c7542cee6f6e0c613b2682545233f069d75cfff1936386ce10"
+    },
+    {
+      "path": "resources/licenses/third-party/at-least-node@1.0.0-LICENSE",
+      "bytes": 770,
+      "sha256": "ecc042b5f1cdc6854fc00486065084bed877daa8a7fadce15ef943a550d1dff0"
+    },
+    {
+      "path": "resources/licenses/third-party/aws4@1.13.2-LICENSE",
+      "bytes": 1080,
+      "sha256": "c366fee901d0ff03629d5b39509565785e5be424c73c85eef885f4e40eb32578"
+    },
+    {
+      "path": "resources/licenses/third-party/bail@2.0.2-license",
+      "bytes": 1099,
+      "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+    },
+    {
+      "path": "resources/licenses/third-party/balanced-match@1.0.2-LICENSE.md",
+      "bytes": 1096,
+      "sha256": "a1bd5deadb6a06dd74efa852c1b8b23f63b67f2214fbe9c8bd591da51da69268"
+    },
+    {
+      "path": "resources/licenses/third-party/balanced-match@4.0.4-LICENSE.md",
+      "bytes": 1155,
+      "sha256": "d408f38ffa3355c5faec517153295338892eb0f1ea43f57874bb23c6075979b5"
+    },
+    {
+      "path": "resources/licenses/third-party/base64-js@1.5.1-LICENSE",
+      "bytes": 1081,
+      "sha256": "5b37224c080cdcc97c871ada971c224e9926370fe74f11b539aa1cf9f3b1aca1"
+    },
+    {
+      "path": "resources/licenses/third-party/baseline-browser-mapping@2.11.1-LICENSE.txt",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "resources/licenses/third-party/bignumber.js@9.3.1-LICENCE.md",
+      "bytes": 1147,
+      "sha256": "def75ba75d6426f1c3f02addf8e175fbe6e0d8a82e541cbdffc16d2bd8fd7d6a"
+    },
+    {
+      "path": "resources/licenses/third-party/birpc@2.9.0-LICENSE",
+      "bytes": 1094,
+      "sha256": "67cd5e903c1f908edfa27c25606fa806ce629d9a8ddb7d83019d9fd1f83f7fde"
+    },
+    {
+      "path": "resources/licenses/third-party/bluebird@3.7.2-LICENSE",
+      "bytes": 1086,
+      "sha256": "87092fe7ffd1e92eba5d1dd39b73a73fdb4fdd4df3474beacc3d9f6b08ece82c"
+    },
+    {
+      "path": "resources/licenses/third-party/boolean@3.2.0-LICENSE.txt",
+      "bytes": 1086,
+      "sha256": "8e4aa1aef825c37d6f74d4b867dccb7b059b66c75ecdedc74834e2f403568a27"
+    },
+    {
+      "path": "resources/licenses/third-party/bowser@2.14.1-LICENSE",
+      "bytes": 1797,
+      "sha256": "dfde54fedc270c2a305d9a9f993d93f706d34624455a2fd2d2a05ca34d8ae8c3"
+    },
+    {
+      "path": "resources/licenses/third-party/brace-expansion@1.1.18-LICENSE",
+      "bytes": 1096,
+      "sha256": "68f12f6e2c33688699249c01d8f9623c534da20aa71989c57b061b7bc1676d14"
+    },
+    {
+      "path": "resources/licenses/third-party/brace-expansion@2.1.4-LICENSE",
+      "bytes": 1096,
+      "sha256": "68f12f6e2c33688699249c01d8f9623c534da20aa71989c57b061b7bc1676d14"
+    },
+    {
+      "path": "resources/licenses/third-party/brace-expansion@5.0.9-LICENSE",
+      "bytes": 1144,
+      "sha256": "9c63a23124d68cd30cd316a94a1a0bca34f032786df6df69fc4b5f136bac8d2e"
+    },
+    {
+      "path": "resources/licenses/third-party/browserslist@4.28.7-LICENSE",
+      "bytes": 1118,
+      "sha256": "21c2679a63d7699c0e644409e2f17d0adbc7a965003feb06b3ff4b833d21f722"
+    },
+    {
+      "path": "resources/licenses/third-party/buffer-equal-constant-time@1.0.1-LICENSE.txt",
+      "bytes": 1518,
+      "sha256": "751d0e80fb5c828f8c3de198cc760e1e05377e47c8263ab6ee2f10cdc19ba658"
+    },
+    {
+      "path": "resources/licenses/third-party/buffer-from@1.1.2-LICENSE",
+      "bytes": 1078,
+      "sha256": "14275f5c8139d02054c5259d52a88ccbba662a86af18c30f071c8d082dc6004c"
+    },
+    {
+      "path": "resources/licenses/third-party/builder-util-runtime@9.7.0-LICENSE",
+      "bytes": 1084,
+      "sha256": "bed8d0ab3e6031817f775a641ff37313b0f5591bc8ba0ed79b978dafbd4231ce"
+    },
+    {
+      "path": "resources/licenses/third-party/builder-util@26.15.3-LICENSE",
+      "bytes": 1084,
+      "sha256": "bed8d0ab3e6031817f775a641ff37313b0f5591bc8ba0ed79b978dafbd4231ce"
+    },
+    {
+      "path": "resources/licenses/third-party/bytestreamjs@2.0.1-LICENSE",
+      "bytes": 1534,
+      "sha256": "f0fd6a4bf9bf46cfcea2005f800305fbb72cd0152b3c269cf496388258ee08f9"
+    },
+    {
+      "path": "resources/licenses/third-party/cac@6.7.14-LICENSE",
+      "bytes": 1117,
+      "sha256": "709131d7af352b81204ada2a3d812e245a83576e327b364f92ba24c578ba9408"
+    },
+    {
+      "path": "resources/licenses/third-party/cacheable-lookup@5.0.4-LICENSE",
+      "bytes": 1071,
+      "sha256": "b35de79efc88b23c73dd431df6075bed0890db0db1544ee3d57b046aa7a8e72b"
+    },
+    {
+      "path": "resources/licenses/third-party/cacheable-request@7.0.4-LICENSE",
+      "bytes": 1068,
+      "sha256": "861908ec818ff6142fdd6c4b66d6264c206d3d5a46003b1342e1853a9a85abac"
+    },
+    {
+      "path": "resources/licenses/third-party/call-bind-apply-helpers@1.0.2-LICENSE",
+      "bytes": 1071,
+      "sha256": "5e325595b4ea8cfec3802f545b1def5d7b73e4a5b8e9ba63e32a320f67732292"
+    },
+    {
+      "path": "resources/licenses/third-party/caniuse-lite@1.0.30001806-LICENSE",
+      "bytes": 18651,
+      "sha256": "fd3a263fe19ed8faa9068b43abaebafc02c77897b0c6fc09abc04bb592e5f16e"
+    },
+    {
+      "path": "resources/licenses/third-party/ccount@2.0.1-license",
+      "bytes": 1099,
+      "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+    },
+    {
+      "path": "resources/licenses/third-party/chai@6.2.2-LICENSE",
+      "bytes": 1082,
+      "sha256": "b181da80336ff9dd1043fc8be1a764d7382363433319aa872e4d2cb5ce2a3066"
+    },
+    {
+      "path": "resources/licenses/third-party/chalk@4.1.2-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/character-entities-html4@2.1.0-license",
+      "bytes": 1099,
+      "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+    },
+    {
+      "path": "resources/licenses/third-party/character-entities-legacy@3.0.0-license",
+      "bytes": 1099,
+      "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+    },
+    {
+      "path": "resources/licenses/third-party/character-entities@2.0.2-license",
+      "bytes": 1099,
+      "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+    },
+    {
+      "path": "resources/licenses/third-party/character-reference-invalid@2.0.1-license",
+      "bytes": 1099,
+      "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+    },
+    {
+      "path": "resources/licenses/third-party/chownr@3.0.0-LICENSE.md",
+      "bytes": 1764,
+      "sha256": "a49c9ba464796f65b59fca3f1e6ca40912df1e859f575383223f7ec6c5baae09"
+    },
+    {
+      "path": "resources/licenses/third-party/ci-info@4.3.1-LICENSE",
+      "bytes": 1086,
+      "sha256": "f58943cb354fb2707fea2f7b26b04e6014ddb56835cdfd414c9d2c6c59165b64"
+    },
+    {
+      "path": "resources/licenses/third-party/ci-info@4.4.0-LICENSE",
+      "bytes": 1086,
+      "sha256": "f58943cb354fb2707fea2f7b26b04e6014ddb56835cdfd414c9d2c6c59165b64"
+    },
+    {
+      "path": "resources/licenses/third-party/cliui@8.0.1-LICENSE.txt",
+      "bytes": 731,
+      "sha256": "2dc0465729366c3a7890dfa9e972a1ba7048a26c02116fb8b419a6a1ac110149"
+    },
+    {
+      "path": "resources/licenses/third-party/clone-response@1.0.3-LICENSE",
+      "bytes": 1068,
+      "sha256": "861908ec818ff6142fdd6c4b66d6264c206d3d5a46003b1342e1853a9a85abac"
+    },
+    {
+      "path": "resources/licenses/third-party/color-convert@2.0.1-LICENSE",
+      "bytes": 1087,
+      "sha256": "693866fc419c6f61c8570438ec00659d156ec2b4d4a4d04091711f5f11a365d4"
+    },
+    {
+      "path": "resources/licenses/third-party/color-name@1.1.4-LICENSE",
+      "bytes": 1085,
+      "sha256": "c064f7a3e353bc1bc977f3c897941c75ef763f44f41677e0a15370ca0853d6e2"
+    },
+    {
+      "path": "resources/licenses/third-party/combined-stream@1.0.8-License",
+      "bytes": 1085,
+      "sha256": "47eb8ca82c798246774946d1be0f9aa08f025fa8325ced0947aeeb4c05fe5547"
+    },
+    {
+      "path": "resources/licenses/third-party/comma-separated-tokens@2.0.3-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/commander@5.1.0-LICENSE",
+      "bytes": 1098,
+      "sha256": "04512a63dce4d2d506ad612dc0bd7681ccf6e3655f7b6eaef7dfac8323d1ec0b"
+    },
+    {
+      "path": "resources/licenses/third-party/commander@7.2.0-LICENSE",
+      "bytes": 1098,
+      "sha256": "04512a63dce4d2d506ad612dc0bd7681ccf6e3655f7b6eaef7dfac8323d1ec0b"
+    },
+    {
+      "path": "resources/licenses/third-party/commander@8.3.0-LICENSE",
+      "bytes": 1098,
+      "sha256": "04512a63dce4d2d506ad612dc0bd7681ccf6e3655f7b6eaef7dfac8323d1ec0b"
+    },
+    {
+      "path": "resources/licenses/third-party/commander@9.5.0-LICENSE",
+      "bytes": 1098,
+      "sha256": "04512a63dce4d2d506ad612dc0bd7681ccf6e3655f7b6eaef7dfac8323d1ec0b"
+    },
+    {
+      "path": "resources/licenses/third-party/concat-map@0.0.1-LICENSE",
+      "bytes": 1073,
+      "sha256": "435a6722c786b0a56fbe7387028f1d9d3f3a2d0fb615bb8fee118727c3f59b7b"
+    },
+    {
+      "path": "resources/licenses/third-party/convert-source-map@2.0.0-LICENSE",
+      "bytes": 1078,
+      "sha256": "1fa6ee8bb95a81ae3d73a5bd074a3ac380ffec13697051063ca1a601921b91db"
+    },
+    {
+      "path": "resources/licenses/third-party/copy-anything@4.0.5-LICENSE",
+      "bytes": 1076,
+      "sha256": "91d090a8e06fd0f8b599f7bd5bc9e3d97896548037ef43ee1926c6109b7cd342"
+    },
+    {
+      "path": "resources/licenses/third-party/core-util-is@1.0.3-LICENSE",
+      "bytes": 1077,
+      "sha256": "33b734d60042d0fe0c92dd1fc1e874193a1c899ec3e276a2eb935d2d0bf5b710"
+    },
+    {
+      "path": "resources/licenses/third-party/cose-base@1.0.3-LICENSE",
+      "bytes": 1081,
+      "sha256": "5fb3cf4a14c3c5af6e473a192df8bca10c77754e3a0c6492c79fb92a76a5478a"
+    },
+    {
+      "path": "resources/licenses/third-party/cose-base@2.2.0-LICENSE",
+      "bytes": 1081,
+      "sha256": "5fb3cf4a14c3c5af6e473a192df8bca10c77754e3a0c6492c79fb92a76a5478a"
+    },
+    {
+      "path": "resources/licenses/third-party/cross-spawn@7.0.6-LICENSE",
+      "bytes": 1105,
+      "sha256": "aaa78451b6fecd1b9c4594c796c133c0e90cad100372ff8bc6de615e9ef9adf1"
+    },
+    {
+      "path": "resources/licenses/third-party/csstype@3.2.3-LICENSE",
+      "bytes": 1062,
+      "sha256": "11d55bd4541c75ee7879547ac49089c489163dae49551389713c3d026cab383e"
+    },
+    {
+      "path": "resources/licenses/third-party/cytoscape-cose-bilkent@4.1.0-LICENSE",
+      "bytes": 1084,
+      "sha256": "440fc58a56a12814e417d2b341da89b050da052dc75bdb235607d37ec5fe74ef"
+    },
+    {
+      "path": "resources/licenses/third-party/cytoscape-fcose@2.2.0-LICENSE",
+      "bytes": 1079,
+      "sha256": "2837634f403949215760fcdd2fa1ed0c64875d02099ecc8318c704b852f1421d"
+    },
+    {
+      "path": "resources/licenses/third-party/cytoscape@3.34.0-LICENSE",
+      "bytes": 1082,
+      "sha256": "eb319c6e6f233607f71e8e2f450391751883cfc0eeb3ca7ef574c13d1d9c2203"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-array@2.12.1-LICENSE",
+      "bytes": 1475,
+      "sha256": "0747bebeb06b10954913149be9b9a8bdf6fad3e6fdcbd9f9524e7a94c13d2cea"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-array@3.2.4-LICENSE",
+      "bytes": 731,
+      "sha256": "3e6849627f74ff73c257a3ae1efb574015d94fc1035c05ec3c15805165efcbc4"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-axis@3.0.0-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-brush@3.0.0-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-chord@3.0.1-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-color@3.1.0-LICENSE",
+      "bytes": 731,
+      "sha256": "faa682e3e430941f958d26180458f5934a62f58dac4d70ccdd15608c15d0f884"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-contour@4.0.2-LICENSE",
+      "bytes": 731,
+      "sha256": "e51cba0e4fa1d8c078e15319868f2b90188f413f9ce9dac1043b62db32901e93"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-delaunay@6.0.4-LICENSE",
+      "bytes": 757,
+      "sha256": "582c3022bd01942336095f92b58a90b1be624dc547d987555c6c956512dd24c1"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-dispatch@3.0.1-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-drag@3.0.0-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-dsv@3.0.1-LICENSE",
+      "bytes": 731,
+      "sha256": "7842a82012622e5a37bfe4f6c1b67cd3bae6350716b5bf87f36cea0bdc1319dc"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-ease@3.0.1-LICENSE",
+      "bytes": 1504,
+      "sha256": "b989d9085148d21ff64a75e14462aefa06b2589a55553b07b1460c70081c7d08"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-fetch@3.0.1-LICENSE",
+      "bytes": 731,
+      "sha256": "ffdc17dc9040006bddeb891c95bfbb492e86d6bc64a4a4233666febab1be35e0"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-force@3.0.0-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-format@3.1.2-LICENSE",
+      "bytes": 731,
+      "sha256": "2a6d2d5f32ba0b755ddbc1c833f766e30cdbe6ebe9a6d4e3e24427721f0b63d3"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-geo@3.1.1-LICENSE",
+      "bytes": 1857,
+      "sha256": "3e3edc1224eec9c39cd26491a21304a62883c1e5b6a65c5283ccc7a6cc94baee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-hierarchy@3.1.2-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-interpolate@3.0.1-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-path@1.0.9-LICENSE",
+      "bytes": 1475,
+      "sha256": "b8265327ab678f554800e71188b1cc6b1ff57522e292d2b1c0be66f27cf328b6"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-path@3.1.0-LICENSE",
+      "bytes": 731,
+      "sha256": "a09b0d6d76e768fca2085fad05743ee81ddd11946bcda160a3cf5e1081a479aa"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-polygon@3.0.1-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-quadtree@3.0.1-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-random@3.0.1-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-sankey@0.12.3-LICENSE",
+      "bytes": 1471,
+      "sha256": "2bf785e778d67a4f5266cffcd4f2cc5bb98cde73791666e7efeb8002ba32dfa5"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-scale-chromatic@3.1.0-LICENSE",
+      "bytes": 1423,
+      "sha256": "0986d93944902cca9af86824b6a641b4b7c2d10602fc510c433a8bcd443919fe"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-scale@4.0.2-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-selection@3.0.0-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-shape@1.3.7-LICENSE",
+      "bytes": 1475,
+      "sha256": "7eea8533ea92bd8c32a901e89ecb0305890905bb12711449565ddff96891146d"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-shape@3.2.0-LICENSE",
+      "bytes": 731,
+      "sha256": "faa682e3e430941f958d26180458f5934a62f58dac4d70ccdd15608c15d0f884"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-time-format@4.1.0-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-time@3.1.0-LICENSE",
+      "bytes": 731,
+      "sha256": "faa682e3e430941f958d26180458f5934a62f58dac4d70ccdd15608c15d0f884"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-timer@3.0.1-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-transition@3.0.1-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3-zoom@3.0.0-LICENSE",
+      "bytes": 731,
+      "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+    },
+    {
+      "path": "resources/licenses/third-party/d3@7.9.0-LICENSE",
+      "bytes": 731,
+      "sha256": "3e6849627f74ff73c257a3ae1efb574015d94fc1035c05ec3c15805165efcbc4"
+    },
+    {
+      "path": "resources/licenses/third-party/dagre-d3-es@7.0.14-LICENSE.md",
+      "bytes": 1328,
+      "sha256": "d01eb84ccce437dbf5fd40853bceea0f287930920acea066597a4a25ead63858"
+    },
+    {
+      "path": "resources/licenses/third-party/dayjs@1.11.21-LICENSE",
+      "bytes": 1072,
+      "sha256": "5faab7526d055651be3aab769d58897be6bd91f3d39d137f25f12dba1b31d5dc"
+    },
+    {
+      "path": "resources/licenses/third-party/debug@4.4.3-LICENSE",
+      "bytes": 1139,
+      "sha256": "3a61c6c96caf5c1d9b623fb9b04c822b783dfcb78aa7e49c76a3f643e6ed7f95"
+    },
+    {
+      "path": "resources/licenses/third-party/decode-named-character-reference@1.3.0-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/decompress-response@6.0.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/defer-to-connect@2.0.1-LICENSE",
+      "bytes": 1071,
+      "sha256": "0194571d45a06ea2a22ceb51f981e3be92525966d28847dbc0d9982603bf90de"
+    },
+    {
+      "path": "resources/licenses/third-party/define-data-property@1.1.4-LICENSE",
+      "bytes": 1071,
+      "sha256": "b41d08bc3624d8c436fc80237d73ebb361985a67f4504bbcd703e5ca2b27254c"
+    },
+    {
+      "path": "resources/licenses/third-party/define-properties@1.2.1-LICENSE",
+      "bytes": 1080,
+      "sha256": "00d402c2bbe7c67369bd01ce2c16b8ed46ccc949a1ee2d6bb8f9606afa8c7434"
+    },
+    {
+      "path": "resources/licenses/third-party/delaunator@5.1.0-LICENSE",
+      "bytes": 738,
+      "sha256": "0b348fff56384b43dbb37593906904e56d0f9deb51eae590d4dc6d427fbf1808"
+    },
+    {
+      "path": "resources/licenses/third-party/delayed-stream@1.0.0-License",
+      "bytes": 1085,
+      "sha256": "47eb8ca82c798246774946d1be0f9aa08f025fa8325ced0947aeeb4c05fe5547"
+    },
+    {
+      "path": "resources/licenses/third-party/dequal@2.0.3-license",
+      "bytes": 1114,
+      "sha256": "306fa513e39b23a6e8747520de761809d206b99800ef41907b530226574c59ae"
+    },
+    {
+      "path": "resources/licenses/third-party/detect-libc@2.1.2-LICENSE",
+      "bytes": 11357,
+      "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+    },
+    {
+      "path": "resources/licenses/third-party/detect-node@2.1.0-LICENSE",
+      "bytes": 1068,
+      "sha256": "54b32293ea560d22cd9b62af9b2cda1a030d910a48c6601d227c5ff2338d95f8"
+    },
+    {
+      "path": "resources/licenses/third-party/devlop@1.1.0-license",
+      "bytes": 1099,
+      "sha256": "6f296a5eccc1dc96714bb94ebaa9cac25b0a1467d74cc5263ac4d0646ab01f62"
+    },
+    {
+      "path": "resources/licenses/third-party/diff@8.0.4-LICENSE",
+      "bytes": 1546,
+      "sha256": "eda81a415869e67809f6a9f3fd6056062cb83a462118e07eec5e92b2e0c40ce9"
+    },
+    {
+      "path": "resources/licenses/third-party/dir-compare@4.2.0-LICENSE",
+      "bytes": 1198,
+      "sha256": "4b5d70dad6961c6f676e8a1dbd408e4869c1996dff9fc7d7d49c04916c60751f"
+    },
+    {
+      "path": "resources/licenses/third-party/dompurify@3.4.13-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/dotenv-expand@11.0.7-LICENSE",
+      "bytes": 1295,
+      "sha256": "3726b9470c3a6b54e1ebcc1d802d37089b5a5fc97273b52b2cee578a4421ec45"
+    },
+    {
+      "path": "resources/licenses/third-party/dotenv@16.6.1-LICENSE",
+      "bytes": 1294,
+      "sha256": "74b629b24865e1e83c5277ee84590b7937644d6fd959d0c7bdce758676cd2ced"
+    },
+    {
+      "path": "resources/licenses/third-party/dunder-proto@1.0.1-LICENSE",
+      "bytes": 1073,
+      "sha256": "2b770a704c15de238c3f622b01b0044ddd60b49ee30608ea6991ebf19db7a7a1"
+    },
+    {
+      "path": "resources/licenses/third-party/duplexer2@0.1.4-LICENSE.md",
+      "bytes": 1535,
+      "sha256": "252a200ba7a38686f7954ec4cb09b3ad7788fa099eb724de167d7ab16b1244b9"
+    },
+    {
+      "path": "resources/licenses/third-party/ecdsa-sig-formatter@1.0.11-LICENSE",
+      "bytes": 11312,
+      "sha256": "50a6b24f8defc31a078aa9799a91d776f83948071574854f12473362aee74d0d"
+    },
+    {
+      "path": "resources/licenses/third-party/ejs@3.1.10-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/electron-builder-squirrel-windows@26.15.3-LICENSE",
+      "bytes": 1084,
+      "sha256": "bed8d0ab3e6031817f775a641ff37313b0f5591bc8ba0ed79b978dafbd4231ce"
+    },
+    {
+      "path": "resources/licenses/third-party/electron-builder@26.15.3-LICENSE",
+      "bytes": 1084,
+      "sha256": "bed8d0ab3e6031817f775a641ff37313b0f5591bc8ba0ed79b978dafbd4231ce"
+    },
+    {
+      "path": "resources/licenses/third-party/electron-publish@26.15.3-LICENSE",
+      "bytes": 1084,
+      "sha256": "bed8d0ab3e6031817f775a641ff37313b0f5591bc8ba0ed79b978dafbd4231ce"
+    },
+    {
+      "path": "resources/licenses/third-party/electron-to-chromium@1.5.395-LICENSE",
+      "bytes": 728,
+      "sha256": "25ba5c59dad3e0dd8f9540beaa0f0a86a10e3aec35af5fdc8e88c5f6a5c0d8c6"
+    },
+    {
+      "path": "resources/licenses/third-party/electron-updater@6.8.9-LICENSE",
+      "bytes": 1084,
+      "sha256": "bed8d0ab3e6031817f775a641ff37313b0f5591bc8ba0ed79b978dafbd4231ce"
+    },
+    {
+      "path": "resources/licenses/third-party/electron-vite@4.0.1-LICENSE",
+      "bytes": 1066,
+      "sha256": "464d49f59b9c72ace6962a49794d40dbd670ddb8853708a3714e3113ca10fe86"
+    },
+    {
+      "path": "resources/licenses/third-party/electron-winstaller@5.4.0-LICENSE",
+      "bytes": 1055,
+      "sha256": "379ecb81d11a2c2a72225e0cf8cd04803b220da64e1668042ddd0d04bd1c8666"
+    },
+    {
+      "path": "resources/licenses/third-party/electron@43.4.0-LICENSE",
+      "bytes": 1096,
+      "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d"
+    },
+    {
+      "path": "resources/licenses/third-party/emoji-regex-xs@1.0.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "8ca7af4f6c753e5ab8388e1078d94ce4650723bba4b0d4dfe562fbd45fb4a4e6"
+    },
+    {
+      "path": "resources/licenses/third-party/end-of-stream@1.4.5-LICENSE",
+      "bytes": 1078,
+      "sha256": "3fe8d55a98dbf260eace67c00cf9bc53edb46234e840098a0b93df3096b97fb6"
+    },
+    {
+      "path": "resources/licenses/third-party/enhanced-resolve@5.24.3-LICENSE",
+      "bytes": 1071,
+      "sha256": "9068a8782d2fb4c6e432cfa25334efa56f722822180570802bf86e71b6003b1e"
+    },
+    {
+      "path": "resources/licenses/third-party/entities@4.3.0-LICENSE",
+      "bytes": 1260,
+      "sha256": "cb992345949ccd6e8394b2cd6c465f7b897c864f845937dbf64e8997f389e164"
+    },
+    {
+      "path": "resources/licenses/third-party/entities@7.0.1-LICENSE",
+      "bytes": 1260,
+      "sha256": "cb992345949ccd6e8394b2cd6c465f7b897c864f845937dbf64e8997f389e164"
+    },
+    {
+      "path": "resources/licenses/third-party/env-paths@2.2.1-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/env-paths@3.0.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/es-define-property@1.0.1-LICENSE",
+      "bytes": 1071,
+      "sha256": "5e325595b4ea8cfec3802f545b1def5d7b73e4a5b8e9ba63e32a320f67732292"
+    },
+    {
+      "path": "resources/licenses/third-party/es-errors@1.3.0-LICENSE",
+      "bytes": 1071,
+      "sha256": "5e325595b4ea8cfec3802f545b1def5d7b73e4a5b8e9ba63e32a320f67732292"
+    },
+    {
+      "path": "resources/licenses/third-party/es-module-lexer@2.3.1-LICENSE",
+      "bytes": 1085,
+      "sha256": "8a4b6c44eebfb026d23719a348145a661a555568dbfdc11618ff2d0dd9306b00"
+    },
+    {
+      "path": "resources/licenses/third-party/es-object-atoms@1.1.2-LICENSE",
+      "bytes": 1071,
+      "sha256": "5e325595b4ea8cfec3802f545b1def5d7b73e4a5b8e9ba63e32a320f67732292"
+    },
+    {
+      "path": "resources/licenses/third-party/es-set-tostringtag@2.1.0-LICENSE",
+      "bytes": 1073,
+      "sha256": "1a3aeb1f1398bd697d57c3c585faadf59d825aca6e3162cd7eeb72ff76eb2466"
+    },
+    {
+      "path": "resources/licenses/third-party/es-toolkit@1.50.0-LICENSE",
+      "bytes": 1077,
+      "sha256": "51f3674294d988d89dbebd31273baaeb3c697a15482d9699b14d1fded2e132a7"
+    },
+    {
+      "path": "resources/licenses/third-party/es6-error@4.1.1-LICENSE.md",
+      "bytes": 1081,
+      "sha256": "9f655c5baa5a6f254d1e87f27e14d04acaff4bd0b489ea3c2f33723919da2f44"
+    },
+    {
+      "path": "resources/licenses/third-party/esbuild@0.25.12-LICENSE.md",
+      "bytes": 1069,
+      "sha256": "b40ec5baec7bb34fa5b1c09521fa3cd52d5fad7adafed74932a2010d3612a681"
+    },
+    {
+      "path": "resources/licenses/third-party/esbuild@0.28.1-LICENSE.md",
+      "bytes": 1069,
+      "sha256": "b40ec5baec7bb34fa5b1c09521fa3cd52d5fad7adafed74932a2010d3612a681"
+    },
+    {
+      "path": "resources/licenses/third-party/escalade@3.2.0-license",
+      "bytes": 1104,
+      "sha256": "9a9edad7baae52622bddf3c15b2ef8a33d2c89f2d25408ad13e8a7481c6b0c97"
+    },
+    {
+      "path": "resources/licenses/third-party/escape-string-regexp@4.0.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/escape-string-regexp@5.0.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/estree-util-is-identifier-name@3.0.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/estree-walker@2.0.2-LICENSE",
+      "bytes": 1126,
+      "sha256": "8a6dcbabe7179f9c8489c08a7d874d0f1e093ae7449e03756ccf87cb9d0e296e"
+    },
+    {
+      "path": "resources/licenses/third-party/estree-walker@3.0.3-LICENSE",
+      "bytes": 1126,
+      "sha256": "8a6dcbabe7179f9c8489c08a7d874d0f1e093ae7449e03756ccf87cb9d0e296e"
+    },
+    {
+      "path": "resources/licenses/third-party/expect-type@1.4.0-LICENSE",
+      "bytes": 10760,
+      "sha256": "7c6cc83c84eaa249a85bf12fe3eedd831bb50c696e8890b5248223ae68c7b408"
+    },
+    {
+      "path": "resources/licenses/third-party/exponential-backoff@3.1.3-LICENSE",
+      "bytes": 11351,
+      "sha256": "f5afc95c69e116ea6b1755f91a8763f53eadb78b4f1582a08d2d18586a03a117"
+    },
+    {
+      "path": "resources/licenses/third-party/extend@3.0.2-LICENSE",
+      "bytes": 1081,
+      "sha256": "97af7428f93afbab9bf79cd09254da1357161794f4255eb1b4599f04dd2d2e7c"
+    },
+    {
+      "path": "resources/licenses/third-party/fast-deep-equal@3.1.3-LICENSE",
+      "bytes": 1074,
+      "sha256": "7bf9b2de73a6b356761c948d0e9eeb4be6c1270bd04c79cd489c1e400ffdfc1a"
+    },
+    {
+      "path": "resources/licenses/third-party/fast-sha256@1.3.0-LICENSE",
+      "bytes": 1210,
+      "sha256": "88d9b4eb60579c191ec391ca04c16130572d7eedc4a86daa58bf28c6e14c9bcd"
+    },
+    {
+      "path": "resources/licenses/third-party/fast-uri@3.1.5-LICENSE",
+      "bytes": 1813,
+      "sha256": "b010b0dfdfdb23d7396e03b82cd4621fc9bb8f95d6b0aea70b9c24e12074c786"
+    },
+    {
+      "path": "resources/licenses/third-party/fdir@6.5.0-LICENSE",
+      "bytes": 1053,
+      "sha256": "9a39f2aadab11a3697edd668ff2d8ad885b649737b7ab4d3bf12b34e5ada0c86"
+    },
+    {
+      "path": "resources/licenses/third-party/fetch-blob@3.2.0-LICENSE",
+      "bytes": 1068,
+      "sha256": "a5edccac92c3aa845694dcfaa72a0c098c1ae40d5ca6a37e4e59d778cf8e29bd"
+    },
+    {
+      "path": "resources/licenses/third-party/focus-trap@7.8.0-LICENSE",
+      "bytes": 1083,
+      "sha256": "b8d0347312c547c22802b39e495bc8f75d1a27bd69a51950fe5dcf8529b05070"
+    },
+    {
+      "path": "resources/licenses/third-party/form-data@4.0.6-License",
+      "bytes": 1118,
+      "sha256": "e5b780d4f38d1d3328e3e53186c4e62d3fa149ea6f2bacd5de5ad0c30ac85343"
+    },
+    {
+      "path": "resources/licenses/third-party/formdata-polyfill@4.0.10-LICENSE",
+      "bytes": 1083,
+      "sha256": "435a6437e47e5e479942255680e7fbe5f333d55234ada1c35f6115ca641d5bb4"
+    },
+    {
+      "path": "resources/licenses/third-party/fs-extra@10.1.0-LICENSE",
+      "bytes": 1084,
+      "sha256": "1e76029602ae9b21cc4e612db2496d92febed882ba13ba745f8b3309e85f9d39"
+    },
+    {
+      "path": "resources/licenses/third-party/fs-extra@11.3.1-LICENSE",
+      "bytes": 1084,
+      "sha256": "c6a7de1428955aa5a692f4d3a3d3ede658d959616944713337cda296736442e1"
+    },
+    {
+      "path": "resources/licenses/third-party/fs-extra@11.3.6-LICENSE",
+      "bytes": 1084,
+      "sha256": "c6a7de1428955aa5a692f4d3a3d3ede658d959616944713337cda296736442e1"
+    },
+    {
+      "path": "resources/licenses/third-party/fs-extra@7.0.1-LICENSE",
+      "bytes": 1084,
+      "sha256": "1e76029602ae9b21cc4e612db2496d92febed882ba13ba745f8b3309e85f9d39"
+    },
+    {
+      "path": "resources/licenses/third-party/fs-extra@8.1.0-LICENSE",
+      "bytes": 1084,
+      "sha256": "1e76029602ae9b21cc4e612db2496d92febed882ba13ba745f8b3309e85f9d39"
+    },
+    {
+      "path": "resources/licenses/third-party/fs-extra@9.1.0-LICENSE",
+      "bytes": 1084,
+      "sha256": "1e76029602ae9b21cc4e612db2496d92febed882ba13ba745f8b3309e85f9d39"
+    },
+    {
+      "path": "resources/licenses/third-party/fs.realpath@1.0.0-LICENSE",
+      "bytes": 2125,
+      "sha256": "8465b04b67f473341171b5c9c8b2c741a4a395b3f6ed58339b3a4f4db3db7472"
+    },
+    {
+      "path": "resources/licenses/third-party/function-bind@1.1.2-LICENSE",
+      "bytes": 1052,
+      "sha256": "773e131a7684726005a7e4688a80b4620033bc08499bc1404dd1a1eb3bca725e"
+    },
+    {
+      "path": "resources/licenses/third-party/gaxios@7.2.0-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/gcp-metadata@8.1.2-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/gensync@1.0.0-beta.2-LICENSE",
+      "bytes": 1075,
+      "sha256": "e3a956681ee067f971ac413994171b3d90ca801ec6324e76c9c55366cfe31cb0"
+    },
+    {
+      "path": "resources/licenses/third-party/get-caller-file@2.0.5-LICENSE.md",
+      "bytes": 745,
+      "sha256": "902dbb4154679fb2b8d7c33878183f45b268d01eae5e5033dddaa8852d45f213"
+    },
+    {
+      "path": "resources/licenses/third-party/get-intrinsic@1.3.0-LICENSE",
+      "bytes": 1071,
+      "sha256": "39c5ec504cf6bd5cd782a7c695828e09189df79f5d94840e4f08feb97b9fd416"
+    },
+    {
+      "path": "resources/licenses/third-party/get-proto@1.0.1-LICENSE",
+      "bytes": 1071,
+      "sha256": "be46ce1e3b0479af9ce82d22b465a6d7d2ff084fca0aaf3d54172da2b5eb5781"
+    },
+    {
+      "path": "resources/licenses/third-party/get-stream@5.2.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/glob@7.2.0-LICENSE",
+      "bytes": 976,
+      "sha256": "6236fa0b88a4a0cce3dda0367979491b2052b3c8d6b1c10b3668de083e86a7f0"
+    },
+    {
+      "path": "resources/licenses/third-party/global-agent@3.0.0-LICENSE",
+      "bytes": 1529,
+      "sha256": "ba98e94118579117505f6f11fd9a4354c5e65ece03b4898d8b8f7785efcd25c1"
+    },
+    {
+      "path": "resources/licenses/third-party/globalthis@1.0.4-LICENSE",
+      "bytes": 1081,
+      "sha256": "acfaf437865d82f0fa9b9cdcae8b550bed8d011adaa5b42d973191caf99f62a8"
+    },
+    {
+      "path": "resources/licenses/third-party/google-auth-library@10.9.0-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/google-logging-utils@1.1.3-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/google-logging-utils@1.2.0-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/gopd@1.2.0-LICENSE",
+      "bytes": 1071,
+      "sha256": "d90bf0a089da4cf43d644ed240a0b3825dcdb705e64e38371d56995a4cc9e4c5"
+    },
+    {
+      "path": "resources/licenses/third-party/got@11.8.6-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/graceful-fs@4.2.11-LICENSE",
+      "bytes": 791,
+      "sha256": "f65c5d9f22a317b2a10803bd1868461ce6499c2ed7217bc80c0cc772a748789c"
+    },
+    {
+      "path": "resources/licenses/third-party/hachure-fill@0.5.2-LICENSE",
+      "bytes": 1068,
+      "sha256": "5e807b516a9be9229ed459880bf353a336e2d947867247290680d437017be391"
+    },
+    {
+      "path": "resources/licenses/third-party/has-flag@4.0.0-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/has-property-descriptors@1.0.2-LICENSE",
+      "bytes": 1067,
+      "sha256": "0f0ca96f50793990031ebc488a38f7292ff70bce8ab6a8e5eeda674abc32ccdf"
+    },
+    {
+      "path": "resources/licenses/third-party/has-symbols@1.1.0-LICENSE",
+      "bytes": 1071,
+      "sha256": "206c1adcf206dc0031b11232f5b054ec5f1662407ab1ca415247921cab2068ab"
+    },
+    {
+      "path": "resources/licenses/third-party/has-tostringtag@1.0.2-LICENSE",
+      "bytes": 1067,
+      "sha256": "e2560e002e13281578c75c850061d9255c33d16d732939e8c2db64c2506642fa"
+    },
+    {
+      "path": "resources/licenses/third-party/hasown@2.0.4-LICENSE",
+      "bytes": 1083,
+      "sha256": "bf9b0d665be2a689851eea667ca9f42066ea1d903b38349c51e6a44b2577680a"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-from-dom@5.0.1-license",
+      "bytes": 760,
+      "sha256": "c01b44788e1829e81cb20d621c93c07a08ea010063118b956739f2ab050d17ca"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-from-html-isomorphic@2.0.0-license",
+      "bytes": 1101,
+      "sha256": "fb5678944a6345b1d30a8fe006aef2be2f6bb1c22431a7cc92674fb0944a7578"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-from-html@2.0.3-license",
+      "bytes": 1099,
+      "sha256": "e620971c29d750df627f71f4e629618ef8fcbbea134ab95b344fc0c1a757cad1"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-from-parse5@8.0.3-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-is-element@3.0.0-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-parse-selector@4.0.0-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-raw@9.1.0-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-sanitize@5.0.2-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-to-html@9.0.5-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-to-jsx-runtime@2.3.6-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-to-parse5@8.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-to-text@4.0.2-license",
+      "bytes": 1099,
+      "sha256": "691115fe0234b1f05cb52a9c4aded367e389784a6501af824e85a7e54ca47d38"
+    },
+    {
+      "path": "resources/licenses/third-party/hast-util-whitespace@3.0.0-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/hastscript@9.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/hookable@5.5.3-LICENSE.md",
+      "bytes": 1088,
+      "sha256": "3555f8c47cbff86d199d5a5033afd5ef9560e0095927296af670a886b8b1988d"
+    },
+    {
+      "path": "resources/licenses/third-party/hosted-git-info@4.1.0-LICENSE",
+      "bytes": 733,
+      "sha256": "c1476ec53119cd4c8370f91f5152ac76312a29b4fae2d49b5e0e0970fe0fa5ee"
+    },
+    {
+      "path": "resources/licenses/third-party/html-parse-stringify@3.1.0-LICENSE",
+      "bytes": 1092,
+      "sha256": "f51aa7a410f3d3ff9352a5422b76c072588ac76b63861f59447502caeacacc16"
+    },
+    {
+      "path": "resources/licenses/third-party/html-url-attributes@3.0.1-license",
+      "bytes": 1070,
+      "sha256": "e18cf5173e928f808f0cd208097fee8fbec9d28fc0255213938e4c559e29ff58"
+    },
+    {
+      "path": "resources/licenses/third-party/html-void-elements@3.0.0-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/http-cache-semantics@4.2.0-LICENSE",
+      "bytes": 1274,
+      "sha256": "ab868ad5a2ef5068560d9cd3b2180ec63c140bb4c5cae1ba779d300a0ac74fa3"
+    },
+    {
+      "path": "resources/licenses/third-party/http-proxy-agent@7.0.2-LICENSE",
+      "bytes": 1102,
+      "sha256": "71368fd0f5b4129191e9afcd1e1ef2dc89a9090d3e4d80bbab92dafd032b3bef"
+    },
+    {
+      "path": "resources/licenses/third-party/http2-wrapper@1.0.3-LICENSE",
+      "bytes": 1071,
+      "sha256": "0194571d45a06ea2a22ceb51f981e3be92525966d28847dbc0d9982603bf90de"
+    },
+    {
+      "path": "resources/licenses/third-party/https-proxy-agent@7.0.6-LICENSE",
+      "bytes": 1101,
+      "sha256": "8d8c55319c7729d57be811c747452636688d54f19701ee0752b6b15ad3771d9a"
+    },
+    {
+      "path": "resources/licenses/third-party/i18next@26.3.6-LICENSE",
+      "bytes": 1082,
+      "sha256": "1cd0a2b02a6cc40ef8ee16310d13eeffdd7b5de4a562fd3ee7c921d8eb54f60a"
+    },
+    {
+      "path": "resources/licenses/third-party/iconv-lite@0.6.3-LICENSE",
+      "bytes": 1064,
+      "sha256": "ac779f7314c74f232ef847ea86e714abe25cf6eeb5cc97b69451b74e2af6492d"
+    },
+    {
+      "path": "resources/licenses/third-party/import-meta-resolve@4.2.0-license",
+      "bytes": 3493,
+      "sha256": "8770a1a4b69ee722636643e81340ce4a8f0b8415b1c568487edc9062338bfcc7"
+    },
+    {
+      "path": "resources/licenses/third-party/inflight@1.0.6-LICENSE",
+      "bytes": 748,
+      "sha256": "05dc4d785ac3a488676d3ed10e901b75ad89dafcc63f8e66610fd4a39cc5c7e8"
+    },
+    {
+      "path": "resources/licenses/third-party/inherits@2.0.4-LICENSE",
+      "bytes": 749,
+      "sha256": "5ffe28e7ade7d8f10d85d5337a73fd793dac5c462fb9a28fbf8c5046c7fbca3b"
+    },
+    {
+      "path": "resources/licenses/third-party/inline-style-parser@0.2.7-LICENSE",
+      "bytes": 1098,
+      "sha256": "395c95f20598da653ff1eb1cb9d74947c7fac689697147f1d192fd0242a0e635"
+    },
+    {
+      "path": "resources/licenses/third-party/internmap@1.0.1-LICENSE",
+      "bytes": 726,
+      "sha256": "9ea8903938dab5f12c4572d60725069bec2d1b0dc3bcc210b09bae946a5ebb1f"
+    },
+    {
+      "path": "resources/licenses/third-party/internmap@2.0.3-LICENSE",
+      "bytes": 726,
+      "sha256": "9ea8903938dab5f12c4572d60725069bec2d1b0dc3bcc210b09bae946a5ebb1f"
+    },
+    {
+      "path": "resources/licenses/third-party/is-alphabetical@2.0.1-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/is-alphanumerical@2.0.1-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/is-decimal@2.0.1-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/is-fullwidth-code-point@3.0.0-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/is-hexadecimal@2.0.1-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/is-plain-obj@4.1.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/is-what@5.5.0-LICENSE",
+      "bytes": 1076,
+      "sha256": "91d090a8e06fd0f8b599f7bd5bc9e3d97896548037ef43ee1926c6109b7cd342"
+    },
+    {
+      "path": "resources/licenses/third-party/isbinaryfile@4.0.10-LICENSE.txt",
+      "bytes": 1074,
+      "sha256": "2eedc70f2242aaf269e86e2c85eabeb875dc524d187d5953016b24091d26a843"
+    },
+    {
+      "path": "resources/licenses/third-party/isbinaryfile@5.0.7-LICENSE.txt",
+      "bytes": 1074,
+      "sha256": "2eedc70f2242aaf269e86e2c85eabeb875dc524d187d5953016b24091d26a843"
+    },
+    {
+      "path": "resources/licenses/third-party/isexe@2.0.0-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/isexe@3.1.5-LICENSE.md",
+      "bytes": 1552,
+      "sha256": "8a1af140fdfbf5afd3df27f7e662f989c5b963a300020dfafce42033cae9e004"
+    },
+    {
+      "path": "resources/licenses/third-party/isexe@4.0.0-LICENSE.md",
+      "bytes": 1552,
+      "sha256": "8a1af140fdfbf5afd3df27f7e662f989c5b963a300020dfafce42033cae9e004"
+    },
+    {
+      "path": "resources/licenses/third-party/jiti@2.7.0-LICENSE",
+      "bytes": 1078,
+      "sha256": "46231df5a7733c3f52f11b71f3df61813007745b62b09031acfb45fb42d75082"
+    },
+    {
+      "path": "resources/licenses/third-party/js-tokens@4.0.0-LICENSE",
+      "bytes": 1103,
+      "sha256": "2213d91c606205c71eb051a199478cdc2adde945893404d7f1421436dd6d5cc1"
+    },
+    {
+      "path": "resources/licenses/third-party/js-yaml@4.3.1-LICENSE",
+      "bytes": 1084,
+      "sha256": "a07bc24468b9654ce76a547d47a2db282d07733b715db4c73a98bd63961f9550"
+    },
+    {
+      "path": "resources/licenses/third-party/json-bigint@1.0.0-LICENSE",
+      "bytes": 1081,
+      "sha256": "def82c085d05e795fe6a9cb5b70c48e022212355afc0e91d4de047cade28df06"
+    },
+    {
+      "path": "resources/licenses/third-party/json-buffer@3.0.1-LICENSE",
+      "bytes": 1071,
+      "sha256": "715f1f0f2eb7688e53e4e958acdc7fc9e365ae3eaf26efc2604b93cc65fdc3f5"
+    },
+    {
+      "path": "resources/licenses/third-party/json-schema-to-ts@3.1.1-LICENSE",
+      "bytes": 1071,
+      "sha256": "18a2bfd070b08bd1cc538c90f59989a9523e070e72fe9a9068593c3e82f44fa7"
+    },
+    {
+      "path": "resources/licenses/third-party/json-schema-traverse@1.0.0-LICENSE",
+      "bytes": 1074,
+      "sha256": "7bf9b2de73a6b356761c948d0e9eeb4be6c1270bd04c79cd489c1e400ffdfc1a"
+    },
+    {
+      "path": "resources/licenses/third-party/json-stringify-safe@5.0.1-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/json5@2.2.3-LICENSE.md",
+      "bytes": 1145,
+      "sha256": "53e59feb13058722d977c699eb0407c7bce2f93c949b681bbd2ff31698535927"
+    },
+    {
+      "path": "resources/licenses/third-party/jsonfile@4.0.0-LICENSE",
+      "bytes": 1110,
+      "sha256": "a9801fb52ba22ef808682a094da8a7a480584b7ed0dfd0d888ab543616335031"
+    },
+    {
+      "path": "resources/licenses/third-party/jsonfile@6.2.1-LICENSE",
+      "bytes": 1110,
+      "sha256": "a9801fb52ba22ef808682a094da8a7a480584b7ed0dfd0d888ab543616335031"
+    },
+    {
+      "path": "resources/licenses/third-party/jwa@2.0.1-LICENSE",
+      "bytes": 1068,
+      "sha256": "3320319f8a5f42bc4254e65471eca7a5ea4dc8c883c4c24b4868e36b14890bcf"
+    },
+    {
+      "path": "resources/licenses/third-party/jws@4.0.1-LICENSE",
+      "bytes": 1068,
+      "sha256": "3320319f8a5f42bc4254e65471eca7a5ea4dc8c883c4c24b4868e36b14890bcf"
+    },
+    {
+      "path": "resources/licenses/third-party/katex@0.16.47-LICENSE",
+      "bytes": 1107,
+      "sha256": "766ccc1f306c885aa45542a9846bbd0a505b27a0374f146778171c2254ce18e3"
+    },
+    {
+      "path": "resources/licenses/third-party/khroma@2.1.0-license",
+      "bytes": 1105,
+      "sha256": "66b333b0f66759a0b710459e03f7029abe17f4358114a128d2c972e642961b49"
+    },
+    {
+      "path": "resources/licenses/third-party/layout-base@1.0.2-LICENSE",
+      "bytes": 1069,
+      "sha256": "eabb762d8a95109a39c9be3247325529a5239a7aca327d909c3ccdc41f3a06bf"
+    },
+    {
+      "path": "resources/licenses/third-party/layout-base@2.0.1-LICENSE",
+      "bytes": 1069,
+      "sha256": "eabb762d8a95109a39c9be3247325529a5239a7aca327d909c3ccdc41f3a06bf"
+    },
+    {
+      "path": "resources/licenses/third-party/lightningcss-win32-x64-msvc@1.32.0-LICENSE",
+      "bytes": 15648,
+      "sha256": "5eba353fe5076ac3432177f8ab1cf75e3afcd0584251e37c3bfead5f447d040e"
+    },
+    {
+      "path": "resources/licenses/third-party/lightningcss@1.32.0-LICENSE",
+      "bytes": 15648,
+      "sha256": "5eba353fe5076ac3432177f8ab1cf75e3afcd0584251e37c3bfead5f447d040e"
+    },
+    {
+      "path": "resources/licenses/third-party/lodash-es@4.18.1-LICENSE",
+      "bytes": 1952,
+      "sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc"
+    },
+    {
+      "path": "resources/licenses/third-party/lodash.escaperegexp@4.1.2-LICENSE",
+      "bytes": 1951,
+      "sha256": "ffd8b33b354585f4ce119f19c53728281e48a97b074491eb6bf6d5c5ff305272"
+    },
+    {
+      "path": "resources/licenses/third-party/lodash.isequal@4.5.0-LICENSE",
+      "bytes": 1950,
+      "sha256": "e159c6d48c989185448658f276375bfb2300362ec6d4ae5525a2d49c4bcb947d"
+    },
+    {
+      "path": "resources/licenses/third-party/lodash@4.18.1-LICENSE",
+      "bytes": 1952,
+      "sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc"
+    },
+    {
+      "path": "resources/licenses/third-party/long@5.3.2-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/longest-streak@3.1.0-license",
+      "bytes": 1106,
+      "sha256": "9f084fac69d8cf1e6ce983ba5a3499c7695ed74a26ec625c38f0fd19fddd5e10"
+    },
+    {
+      "path": "resources/licenses/third-party/lowercase-keys@2.0.0-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/lru-cache@5.1.1-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/lru-cache@6.0.0-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/lucide-react@1.31.0-LICENSE",
+      "bytes": 3208,
+      "sha256": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57"
+    },
+    {
+      "path": "resources/licenses/third-party/magic-string@0.30.21-LICENSE",
+      "bytes": 1051,
+      "sha256": "1cbe51b907662f6cb1492b16c359384a595180bf0e4d101603ed525e75c4e484"
+    },
+    {
+      "path": "resources/licenses/third-party/mark.js@8.11.1-LICENSE",
+      "bytes": 1088,
+      "sha256": "402936bcc8f1b6947750eb9193183d7d0c4dbca3c0ba06398571d94ee85c24be"
+    },
+    {
+      "path": "resources/licenses/third-party/markdown-table@3.0.4-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/marked@16.4.2-LICENSE.md",
+      "bytes": 2942,
+      "sha256": "8e3a3f82f59a60958f56ca08f445647c32a4733dc7ca6c2c46f6eb898471ab9c"
+    },
+    {
+      "path": "resources/licenses/third-party/marked@18.0.9-LICENSE",
+      "bytes": 2942,
+      "sha256": "8e3a3f82f59a60958f56ca08f445647c32a4733dc7ca6c2c46f6eb898471ab9c"
+    },
+    {
+      "path": "resources/licenses/third-party/matcher@3.0.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/math-intrinsics@1.1.0-LICENSE",
+      "bytes": 1073,
+      "sha256": "2b770a704c15de238c3f622b01b0044ddd60b49ee30608ea6991ebf19db7a7a1"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-find-and-replace@3.0.2-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-from-markdown@2.0.3-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-gfm-autolink-literal@2.0.1-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-gfm-footnote@2.1.0-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-gfm-strikethrough@2.0.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-gfm-table@2.0.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-gfm-task-list-item@2.0.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-gfm@3.1.0-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-math@3.0.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-mdx-expression@2.0.1-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-mdx-jsx@3.2.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-mdxjs-esm@2.0.1-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-phrasing@4.1.0-license",
+      "bytes": 1150,
+      "sha256": "b6d1a4e1831b177acc96f22a817d4f0f4c18419355badc3125754445fc69e3a7"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-to-hast@13.2.1-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-to-markdown@2.1.2-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/mdast-util-to-string@4.0.0-license",
+      "bytes": 1099,
+      "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+    },
+    {
+      "path": "resources/licenses/third-party/mermaid@11.16.1-LICENSE",
+      "bytes": 1089,
+      "sha256": "ec9fb67dcb25eccc416ed56e1aab819222c805a2a4bfe4cb19e7556bf2ffde80"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-core-commonmark@2.0.3-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-extension-gfm-autolink-literal@2.1.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-extension-gfm-footnote@2.1.0-license",
+      "bytes": 1099,
+      "sha256": "807a88522a850092aece49486207c17c313c4d5708ac276524840fe1caa0b0fa"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-extension-gfm-strikethrough@2.1.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-extension-gfm-table@2.1.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-extension-gfm-tagfilter@2.0.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-extension-gfm-task-list-item@2.1.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-extension-gfm@3.0.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-extension-math@3.1.0-license",
+      "bytes": 1099,
+      "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-factory-destination@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-factory-label@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-factory-space@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-factory-title@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-factory-whitespace@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-character@2.1.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-chunked@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-classify-character@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-combine-extensions@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-decode-numeric-character-reference@2.0.2-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-decode-string@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-encode@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-html-tag-name@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-normalize-identifier@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-resolve-all@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-sanitize-uri@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-subtokenize@2.1.0-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-symbol@2.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark-util-types@2.0.2-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/micromark@4.0.2-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/mime-db@1.52.0-LICENSE",
+      "bytes": 1172,
+      "sha256": "cc1dfd4dafa27271e8212cd3b274eeb3f262e40a6fdab36ddc3f9696f706f58b"
+    },
+    {
+      "path": "resources/licenses/third-party/mime-types@2.1.35-LICENSE",
+      "bytes": 1167,
+      "sha256": "71f83c4c0621102a56d9853812777b85751bce7e9726f686f5b056c1f8a4b0e6"
+    },
+    {
+      "path": "resources/licenses/third-party/mime@2.6.0-LICENSE",
+      "bytes": 1098,
+      "sha256": "8f2658c03422c408b2b2ce4d151decc3b1a6fd3d86e5ca9433777bccdcdf75a2"
+    },
+    {
+      "path": "resources/licenses/third-party/mimic-response@1.0.1-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/mimic-response@3.1.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/minimatch@10.2.5-LICENSE.md",
+      "bytes": 1550,
+      "sha256": "2c7c5d22ed5a8ee968c64757710979afcd77438c48b4a265b94e615babd8a901"
+    },
+    {
+      "path": "resources/licenses/third-party/minimatch@3.1.5-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/minimatch@5.1.9-LICENSE",
+      "bytes": 775,
+      "sha256": "d11323827fa4edeaafc437cc5b91b6971b335f0127efeeb42bf5122fe8657e8f"
+    },
+    {
+      "path": "resources/licenses/third-party/minimatch@9.0.9-LICENSE",
+      "bytes": 775,
+      "sha256": "d11323827fa4edeaafc437cc5b91b6971b335f0127efeeb42bf5122fe8657e8f"
+    },
+    {
+      "path": "resources/licenses/third-party/minimist@1.2.8-LICENSE",
+      "bytes": 1073,
+      "sha256": "435a6722c786b0a56fbe7387028f1d9d3f3a2d0fb615bb8fee118727c3f59b7b"
+    },
+    {
+      "path": "resources/licenses/third-party/minipass@7.1.3-LICENSE.md",
+      "bytes": 1552,
+      "sha256": "8a1af140fdfbf5afd3df27f7e662f989c5b963a300020dfafce42033cae9e004"
+    },
+    {
+      "path": "resources/licenses/third-party/minisearch@7.2.0-LICENSE.txt",
+      "bytes": 1051,
+      "sha256": "70d37354d6395629fb99edb28cb37a5d356ffa24a48cd02a5def5b83a300a899"
+    },
+    {
+      "path": "resources/licenses/third-party/minizlib@3.1.0-LICENSE",
+      "bytes": 1339,
+      "sha256": "df05697a04b8997c79d423930534e59cc18828f6e22d0c8c2d62fcbea1c4f50b"
+    },
+    {
+      "path": "resources/licenses/third-party/mitt@3.0.1-LICENSE",
+      "bytes": 1069,
+      "sha256": "1cab22f196264195a4caec8ca5630170fdde76ee8f43346e47021d087332d3b0"
+    },
+    {
+      "path": "resources/licenses/third-party/mkdirp@0.5.6-LICENSE",
+      "bytes": 1141,
+      "sha256": "05991c2e8f070b69ec5b656c2c12fd07cd0153dd157d39b050b82af59b319a01"
+    },
+    {
+      "path": "resources/licenses/third-party/ms@2.1.3-license.md",
+      "bytes": 1079,
+      "sha256": "1662fae9b5314d11cf51284e2dcd1f006a354f7343f08712a730fcff9a359801"
+    },
+    {
+      "path": "resources/licenses/third-party/nanoid@3.3.18-LICENSE",
+      "bytes": 1095,
+      "sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987"
+    },
+    {
+      "path": "resources/licenses/third-party/node-abi@4.33.0-LICENSE",
+      "bytes": 1069,
+      "sha256": "9a508cd4122f2dc1cc39f8ab0b6950efbc49fb087a581c7177a4b8c9d5d0d6a1"
+    },
+    {
+      "path": "resources/licenses/third-party/node-domexception@1.0.0-LICENSE",
+      "bytes": 1071,
+      "sha256": "8ec1386f7f078b0c7cd25341cd80f332df902371cda9f40c10ec2b4007b420b7"
+    },
+    {
+      "path": "resources/licenses/third-party/node-fetch@3.3.2-LICENSE.md",
+      "bytes": 1090,
+      "sha256": "3e2c11dcf3f17ab585baab8faba54772d7872f1c6e026022acd4b4006665efb0"
+    },
+    {
+      "path": "resources/licenses/third-party/node-gyp@12.4.0-LICENSE",
+      "bytes": 1102,
+      "sha256": "662a1b0115251cfb29c6aed0f221f8847bc49c6365d1c53a62c9f4bccc2489c3"
+    },
+    {
+      "path": "resources/licenses/third-party/node-int64@0.4.0-LICENSE",
+      "bytes": 1058,
+      "sha256": "8f85aab053e268546014761da47630a09886626afbd0d8d440cb2c69611bb8d3"
+    },
+    {
+      "path": "resources/licenses/third-party/node-releases@2.0.51-LICENSE",
+      "bytes": 1107,
+      "sha256": "3706296ed611888111ceccc1dff4712844dea4bde0b185c82d718c3b69895abe"
+    },
+    {
+      "path": "resources/licenses/third-party/nopt@9.0.0-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/normalize-url@6.1.0-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/npm-inventory.json",
+      "bytes": 119347,
+      "sha256": "5b21734b50755dc43e81311d871e121a30003a21c78de087b4da66c0c071b9d9"
+    },
+    {
+      "path": "resources/licenses/third-party/object-keys@1.1.1-LICENSE",
+      "bytes": 1080,
+      "sha256": "5640e5cbe2e9f57f6ccfdd8dbfbeadb875495bdbcb69d2666ce3177ccd0942e4"
+    },
+    {
+      "path": "resources/licenses/third-party/obug@2.1.4-LICENSE",
+      "bytes": 1205,
+      "sha256": "ee48679d379ca6b4493d5e231094d85f818dd9be40b1a4f234fb7ff657ee35d9"
+    },
+    {
+      "path": "resources/licenses/third-party/once@1.4.0-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/oniguruma-parser@0.12.2-LICENSE",
+      "bytes": 1077,
+      "sha256": "5fe78c91b36c6147ed0b6ab1631ce731165b7dd5e00482be1f027d46d12a8082"
+    },
+    {
+      "path": "resources/licenses/third-party/oniguruma-to-es@3.1.1-LICENSE",
+      "bytes": 1072,
+      "sha256": "3d19c2b6246b3072547af2bd05e6b4c09bd3d15955590f1f1e1d20382c919a49"
+    },
+    {
+      "path": "resources/licenses/third-party/oniguruma-to-es@4.3.6-LICENSE",
+      "bytes": 1077,
+      "sha256": "c1a5a1ebc88f3e0f3caa04c0af52bf8f3a5405a467337a09594ae1ad149cec83"
+    },
+    {
+      "path": "resources/licenses/third-party/openai@6.40.0-LICENSE",
+      "bytes": 11336,
+      "sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4"
+    },
+    {
+      "path": "resources/licenses/third-party/p-cancelable@2.1.1-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/p-limit@3.1.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/p-retry@4.6.2-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/package-manager-detector@1.8.0-LICENSE",
+      "bytes": 1102,
+      "sha256": "05c365176db3cc00e951c44b921c809c75b8e99d2d724f7daf00381e26fb0850"
+    },
+    {
+      "path": "resources/licenses/third-party/parse-entities@4.0.2-license",
+      "bytes": 1101,
+      "sha256": "5d0698266086f217bb11ea0499d33453e401fe479fb9126ad04e625e63d3557b"
+    },
+    {
+      "path": "resources/licenses/third-party/parse5@7.0.0-LICENSE",
+      "bytes": 1109,
+      "sha256": "8c535800331e1e4439835555b3f9edc7fe9dee2fab0d8bbbd5a982e8b8343d4d"
+    },
+    {
+      "path": "resources/licenses/third-party/partial-json@0.1.7-LICENSE",
+      "bytes": 1075,
+      "sha256": "cd519ad3d7e012427f978dfb2e3b92ee403d189d7b859ba6bf68fd7e12ca456f"
+    },
+    {
+      "path": "resources/licenses/third-party/path-data-parser@0.1.0-LICENSE",
+      "bytes": 1068,
+      "sha256": "e9754a00aebde654e80f40bcf41dab667d6a41dfbbd2912bcf14fb07d468bf71"
+    },
+    {
+      "path": "resources/licenses/third-party/path-is-absolute@1.0.1-license",
+      "bytes": 1119,
+      "sha256": "6fb9754611c20f6649f68805e8c990e83261f29316e29de9e6cedae607b8634c"
+    },
+    {
+      "path": "resources/licenses/third-party/path-key@3.1.1-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/pathe@2.0.3-LICENSE",
+      "bytes": 3355,
+      "sha256": "52e92576851154bad7737e90cc72818936f43665cb0e3f7428ed8edc8cc5709b"
+    },
+    {
+      "path": "resources/licenses/third-party/pe-library@0.4.1-LICENSE",
+      "bytes": 1060,
+      "sha256": "ad05317184b8cd78a770c1f55e386f600fd23feb88596c797ceb3ccd49f7d6bc"
+    },
+    {
+      "path": "resources/licenses/third-party/perfect-debounce@1.0.0-LICENSE",
+      "bytes": 1078,
+      "sha256": "46231df5a7733c3f52f11b71f3df61813007745b62b09031acfb45fb42d75082"
+    },
+    {
+      "path": "resources/licenses/third-party/picocolors@1.1.1-LICENSE",
+      "bytes": 787,
+      "sha256": "6582629e2979466878f6014313dcc2f3756c9616148682227ce3063dde310750"
+    },
+    {
+      "path": "resources/licenses/third-party/picomatch@4.0.5-LICENSE",
+      "bytes": 1091,
+      "sha256": "d0cd141b0c322fded5dfad1d4645bb2fedfc05b7321fe1009469638190d59ef9"
+    },
+    {
+      "path": "resources/licenses/third-party/pinyin-pro@3.29.1-LICENSE",
+      "bytes": 1070,
+      "sha256": "824f6069c5a59b0c1650d0fb9f8d091866c6019eb761c8e658dfc03f001eabd2"
+    },
+    {
+      "path": "resources/licenses/third-party/pkijs@3.4.0-LICENSE",
+      "bytes": 1565,
+      "sha256": "d27a2aa238102924ea75da808f79253484347d824b9b7b077837e4232f9493f5"
+    },
+    {
+      "path": "resources/licenses/third-party/plist@3.1.0-LICENSE",
+      "bytes": 1107,
+      "sha256": "3677dc86e6e5f119b500c308cc24cf533e2eb44c41050ea64584e049e5b70161"
+    },
+    {
+      "path": "resources/licenses/third-party/plist@3.1.1-LICENSE",
+      "bytes": 1107,
+      "sha256": "3677dc86e6e5f119b500c308cc24cf533e2eb44c41050ea64584e049e5b70161"
+    },
+    {
+      "path": "resources/licenses/third-party/points-on-curve@0.2.0-LICENSE",
+      "bytes": 1068,
+      "sha256": "e9754a00aebde654e80f40bcf41dab667d6a41dfbbd2912bcf14fb07d468bf71"
+    },
+    {
+      "path": "resources/licenses/third-party/points-on-path@0.2.1-LICENSE",
+      "bytes": 1062,
+      "sha256": "b6fc1f7f1d96a48bc97176f3dcef959e364c5c17ba44167511de421500a86c6c"
+    },
+    {
+      "path": "resources/licenses/third-party/postcss@8.5.26-LICENSE",
+      "bytes": 1095,
+      "sha256": "5be1f3465bba68a626777f984878814aaf35e7ef8e9fd314d469bcf887050fb8"
+    },
+    {
+      "path": "resources/licenses/third-party/postject@1.0.0-alpha.6-LICENSE",
+      "bytes": 13409,
+      "sha256": "6546657539feb5b454f400db317e71fa39ff5cd048fa5d78ae0ada2df72f1ea7"
+    },
+    {
+      "path": "resources/licenses/third-party/preact@10.29.8-LICENSE",
+      "bytes": 1087,
+      "sha256": "1fe6958409c8c257a70c587a18b6f7f412b179b456630790d30b2ec9a8e4b7d4"
+    },
+    {
+      "path": "resources/licenses/third-party/proc-log@6.1.0-LICENSE",
+      "bytes": 742,
+      "sha256": "dc32a0dee275e0a9aeffbc974dbf4899a30dcdc2e5ffa8934aecb69261065864"
+    },
+    {
+      "path": "resources/licenses/third-party/process-nextick-args@2.0.1-license.md",
+      "bytes": 1064,
+      "sha256": "ecdccbcf39024f624ded480c01c0b25458e1eca8f26ecf040933865ce56d9a4f"
+    },
+    {
+      "path": "resources/licenses/third-party/progress@2.0.3-LICENSE",
+      "bytes": 1098,
+      "sha256": "d7d2a7786de7c7cfd96f920c6f12927d74e1d2a861ca4498bf465c3bc3f4c21c"
+    },
+    {
+      "path": "resources/licenses/third-party/promise-retry@2.0.1-LICENSE",
+      "bytes": 1056,
+      "sha256": "b1344bd78ebcbf8a359225ec444d038a653c6a5f9ecf405a50d4a5c11fbf27d1"
+    },
+    {
+      "path": "resources/licenses/third-party/proper-lockfile@4.1.2-LICENSE",
+      "bytes": 1105,
+      "sha256": "aaa78451b6fecd1b9c4594c796c133c0e90cad100372ff8bc6de615e9ef9adf1"
+    },
+    {
+      "path": "resources/licenses/third-party/property-information@7.2.0-license",
+      "bytes": 1101,
+      "sha256": "5d0698266086f217bb11ea0499d33453e401fe479fb9126ad04e625e63d3557b"
+    },
+    {
+      "path": "resources/licenses/third-party/protobufjs@7.6.5-LICENSE",
+      "bytes": 1937,
+      "sha256": "49d6a1c9a623784c61c6cb70f773f3457faceb1914a13c8560a9823b7631950c"
+    },
+    {
+      "path": "resources/licenses/third-party/pump@3.0.4-LICENSE",
+      "bytes": 1078,
+      "sha256": "3fe8d55a98dbf260eace67c00cf9bc53edb46234e840098a0b93df3096b97fb6"
+    },
+    {
+      "path": "resources/licenses/third-party/pvtsutils@1.3.6-LICENSE",
+      "bytes": 1084,
+      "sha256": "c620c1d08a47c93ce242914a4269b86e41df5a97845325725a5f83d5d6f9d7fd"
+    },
+    {
+      "path": "resources/licenses/third-party/pvutils@1.2.0-LICENSE",
+      "bytes": 1137,
+      "sha256": "15c88630f1e778db64a446cb31b67362cc9eb7a048fdf5ac7ab51905b74464cd"
+    },
+    {
+      "path": "resources/licenses/third-party/quick-lru@5.1.1-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/react-dom@19.2.8-LICENSE",
+      "bytes": 1088,
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "resources/licenses/third-party/react-i18next@15.7.4-LICENSE",
+      "bytes": 1075,
+      "sha256": "95bdba2cfae72e5337ecc7ccc33154492e33a533549628e385d32d98d1642859"
+    },
+    {
+      "path": "resources/licenses/third-party/react-markdown@10.1.0-license",
+      "bytes": 1079,
+      "sha256": "f6196c64e144f9a6fa9154c3a80bc8b89615a9567934b83a8951879f06ba2aef"
+    },
+    {
+      "path": "resources/licenses/third-party/react-refresh@0.17.0-LICENSE",
+      "bytes": 1088,
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "resources/licenses/third-party/react@19.2.8-LICENSE",
+      "bytes": 1088,
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "resources/licenses/third-party/readable-stream@2.3.8-LICENSE",
+      "bytes": 2337,
+      "sha256": "ec62dc96da0099b87f4511736c87309335527fb7031639493e06c95728dc8c54"
+    },
+    {
+      "path": "resources/licenses/third-party/regex-recursion@6.0.2-LICENSE",
+      "bytes": 1072,
+      "sha256": "3d19c2b6246b3072547af2bd05e6b4c09bd3d15955590f1f1e1d20382c919a49"
+    },
+    {
+      "path": "resources/licenses/third-party/regex-utilities@2.3.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "8ca7af4f6c753e5ab8388e1078d94ce4650723bba4b0d4dfe562fbd45fb4a4e6"
+    },
+    {
+      "path": "resources/licenses/third-party/regex@6.1.0-LICENSE",
+      "bytes": 1072,
+      "sha256": "3d19c2b6246b3072547af2bd05e6b4c09bd3d15955590f1f1e1d20382c919a49"
+    },
+    {
+      "path": "resources/licenses/third-party/rehype-raw@7.0.0-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/rehype-sanitize@6.0.0-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/remark-gfm@4.0.1-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/remark-parse@11.0.0-license",
+      "bytes": 1099,
+      "sha256": "413654b0a78b98661dce96d2aff2e4d075603d220b8483e28b1aa010ccc138b4"
+    },
+    {
+      "path": "resources/licenses/third-party/remark-rehype@11.1.2-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/remark-stringify@11.0.0-license",
+      "bytes": 1099,
+      "sha256": "413654b0a78b98661dce96d2aff2e4d075603d220b8483e28b1aa010ccc138b4"
+    },
+    {
+      "path": "resources/licenses/third-party/require-directory@2.1.1-LICENSE",
+      "bytes": 1099,
+      "sha256": "a92e52eb1fa7cd746e3827bf01d3a3589bbc8e1e51348b1da042aad165525ad1"
+    },
+    {
+      "path": "resources/licenses/third-party/require-from-string@2.0.2-license",
+      "bytes": 1128,
+      "sha256": "6ee0feb1f6ef996ff5a68600f8cf98909cf412d39ef3cdceaefd87d636fa1b7f"
+    },
+    {
+      "path": "resources/licenses/third-party/resedit@1.7.2-LICENSE",
+      "bytes": 1060,
+      "sha256": "ad05317184b8cd78a770c1f55e386f600fd23feb88596c797ceb3ccd49f7d6bc"
+    },
+    {
+      "path": "resources/licenses/third-party/resolve-alpn@1.2.1-LICENSE",
+      "bytes": 1072,
+      "sha256": "03b347a3d13b0e5bdb8fc5edeed0286b1be51441c6490a90710692d227136e0d"
+    },
+    {
+      "path": "resources/licenses/third-party/responselike@2.0.1-LICENSE",
+      "bytes": 1055,
+      "sha256": "2c4e066228dbca96c8c6e8bef5377306f227ffa1d87a18a218b230e13ac5d39e"
+    },
+    {
+      "path": "resources/licenses/third-party/retry@0.12.0-License",
+      "bytes": 1139,
+      "sha256": "01ad164273e8e095abc9dbd1c21e194594a671af7d528cb43ee7b4c903ba7da3"
+    },
+    {
+      "path": "resources/licenses/third-party/retry@0.13.1-License",
+      "bytes": 1139,
+      "sha256": "01ad164273e8e095abc9dbd1c21e194594a671af7d528cb43ee7b4c903ba7da3"
+    },
+    {
+      "path": "resources/licenses/third-party/rfdc@1.4.1-LICENSE",
+      "bytes": 1101,
+      "sha256": "1ce941682a96c7b898ecd125d0f2e22319758ea6f3adbf498a65d649b0f3f7dd"
+    },
+    {
+      "path": "resources/licenses/third-party/rimraf@2.6.3-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/roarr@2.15.4-LICENSE",
+      "bytes": 1529,
+      "sha256": "ba98e94118579117505f6f11fd9a4354c5e65ece03b4898d8b8f7785efcd25c1"
+    },
+    {
+      "path": "resources/licenses/third-party/robust-predicates@3.0.3-LICENSE",
+      "bytes": 1210,
+      "sha256": "88d9b4eb60579c191ec391ca04c16130572d7eedc4a86daa58bf28c6e14c9bcd"
+    },
+    {
+      "path": "resources/licenses/third-party/rollup@4.62.2-LICENSE.md",
+      "bytes": 35231,
+      "sha256": "fa1bd040c5bdeefe65b3821cebf474f2733ce65df13089bd151dda1778e62fe8"
+    },
+    {
+      "path": "resources/licenses/third-party/roughjs@4.6.6-LICENSE",
+      "bytes": 1068,
+      "sha256": "dca9a392272606ac748ac0976a2a1133f14eef841c27beaa51a844d53c56a09d"
+    },
+    {
+      "path": "resources/licenses/third-party/rw@1.3.3-LICENSE",
+      "bytes": 1429,
+      "sha256": "e273680c43c2ab5bb3b50af28de6a08000b333396834db7bf6129cd6f130c9cd"
+    },
+    {
+      "path": "resources/licenses/third-party/safe-buffer@5.1.2-LICENSE",
+      "bytes": 1081,
+      "sha256": "c7cc929b57080f4b9d0c6cf57669f0463fc5b39906344dfc8d3bc43426b30eac"
+    },
+    {
+      "path": "resources/licenses/third-party/safe-buffer@5.2.1-LICENSE",
+      "bytes": 1081,
+      "sha256": "c7cc929b57080f4b9d0c6cf57669f0463fc5b39906344dfc8d3bc43426b30eac"
+    },
+    {
+      "path": "resources/licenses/third-party/safer-buffer@2.1.2-LICENSE",
+      "bytes": 1094,
+      "sha256": "4bc935e71be198c67ddf3c2b5fddb195f6edc182bfc155a96a6db61b44b494b9"
+    },
+    {
+      "path": "resources/licenses/third-party/sanitize-filename@1.6.4-LICENSE.md",
+      "bytes": 1304,
+      "sha256": "69dbd0bb60112fbdd6da878a5ecddee7ddac764d669591d7846cb0310c6e7be8"
+    },
+    {
+      "path": "resources/licenses/third-party/sax@1.6.0-LICENSE.md",
+      "bytes": 1552,
+      "sha256": "8a1af140fdfbf5afd3df27f7e662f989c5b963a300020dfafce42033cae9e004"
+    },
+    {
+      "path": "resources/licenses/third-party/scheduler@0.27.0-LICENSE",
+      "bytes": 1088,
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "resources/licenses/third-party/search-insights@2.17.3-LICENSE.md",
+      "bytes": 1087,
+      "sha256": "830d71c5bf3a3b2252a3e8cf5dacda43ba94478f22b9a971458ab3eebc2e38d3"
+    },
+    {
+      "path": "resources/licenses/third-party/semver-compare@1.0.0-LICENSE",
+      "bytes": 1073,
+      "sha256": "435a6722c786b0a56fbe7387028f1d9d3f3a2d0fb615bb8fee118727c3f59b7b"
+    },
+    {
+      "path": "resources/licenses/third-party/semver@5.7.2-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/semver@6.3.1-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/semver@7.7.4-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/semver@7.8.5-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/serialize-error@7.0.1-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/shebang-command@2.0.0-license",
+      "bytes": 1116,
+      "sha256": "69dee148a2cc470554dfa7142e830662062394d0fe67cddd379aba90dc60d6b3"
+    },
+    {
+      "path": "resources/licenses/third-party/shebang-regex@3.0.0-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/shiki@2.5.0-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/shiki@4.4.3-LICENSE",
+      "bytes": 1121,
+      "sha256": "7a9d8d01038aeacf9e5bcdabbddf2a7815200dce9fc1118468cc553e00ae3eee"
+    },
+    {
+      "path": "resources/licenses/third-party/siginfo@2.0.0-LICENSE",
+      "bytes": 744,
+      "sha256": "3bdddf0b9b08aaa2fe4365b803fc958ed32c0597ca0bd727be8d9fcb8b248d18"
+    },
+    {
+      "path": "resources/licenses/third-party/signal-exit@3.0.7-LICENSE.txt",
+      "bytes": 748,
+      "sha256": "e05b1eaf5b5f99b7ad75cd1f38858ff9a311780b97715ead67936d60bf96aa7e"
+    },
+    {
+      "path": "resources/licenses/third-party/simple-update-notifier@2.0.0-LICENSE",
+      "bytes": 1069,
+      "sha256": "c34396f8f573f642c7ce5d18fb9b46b2d85e46979f8c06facca387c5293baede"
+    },
+    {
+      "path": "resources/licenses/third-party/source-map-js@1.2.1-LICENSE",
+      "bytes": 1526,
+      "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd"
+    },
+    {
+      "path": "resources/licenses/third-party/source-map-support@0.5.21-LICENSE.md",
+      "bytes": 1079,
+      "sha256": "3a7d3bb198e909ed642bd68bd29a7d7c09a636d27a51ec663d35f00c4760ec42"
+    },
+    {
+      "path": "resources/licenses/third-party/source-map@0.6.1-LICENSE",
+      "bytes": 1526,
+      "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd"
+    },
+    {
+      "path": "resources/licenses/third-party/space-separated-tokens@2.0.2-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/speakingurl@14.0.1-LICENSE",
+      "bytes": 1523,
+      "sha256": "4cf85d9fa395446ce467f60711fe8154a374bd6c86e3fd44b847bcadec86fe33"
+    },
+    {
+      "path": "resources/licenses/third-party/sprintf-js@1.1.3-LICENSE",
+      "bytes": 1513,
+      "sha256": "f8287e4dd9480be58c56aca4a55c23b782c43a86e69aabad78fff4df0d29edef"
+    },
+    {
+      "path": "resources/licenses/third-party/stat-mode@1.0.0-LICENSE",
+      "bytes": 1087,
+      "sha256": "57e9315162353f033b16b7dfb95dd1aab998a0c8dcae9f198988c4a25ffebc0d"
+    },
+    {
+      "path": "resources/licenses/third-party/std-env@4.2.0-LICENCE",
+      "bytes": 1079,
+      "sha256": "a6f36438e46fb911859f3b9c4cad045ba64e1af3d8f4512c60258fa2d7552d28"
+    },
+    {
+      "path": "resources/licenses/third-party/string-width@4.2.3-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/string_decoder@1.1.1-LICENSE",
+      "bytes": 2338,
+      "sha256": "11f2aafb37d06b3ee5bdaf06e9811141d0da05263c316f3d627f45c20d43261b"
+    },
+    {
+      "path": "resources/licenses/third-party/stringify-entities@4.0.4-license",
+      "bytes": 1106,
+      "sha256": "9f084fac69d8cf1e6ce983ba5a3499c7695ed74a26ec625c38f0fd19fddd5e10"
+    },
+    {
+      "path": "resources/licenses/third-party/strip-ansi@6.0.1-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/style-to-js@1.1.21-LICENSE",
+      "bytes": 1110,
+      "sha256": "bbb380e5c1a717079378d6ea4d33c8a5a81655d4612b749f882e34e46712aab5"
+    },
+    {
+      "path": "resources/licenses/third-party/style-to-object@1.0.14-LICENSE",
+      "bytes": 1110,
+      "sha256": "896c9fd6b5fc48ac31800b9d29a6e3ffcb0c2d534ed077ebfa5c2fa388cc38b7"
+    },
+    {
+      "path": "resources/licenses/third-party/stylis@4.4.0-LICENSE",
+      "bytes": 1078,
+      "sha256": "88c579c6ee44b41137a21321190d177982e5b17d4fa1b83a4a2e3ea325a8fc9a"
+    },
+    {
+      "path": "resources/licenses/third-party/sumchecker@3.0.1-LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "resources/licenses/third-party/superjson@2.2.6-LICENSE",
+      "bytes": 1095,
+      "sha256": "d6b3a220bde9bf72fd0f9aecf71cd48c43ddc652abea727fc98a9b21a9534bb9"
+    },
+    {
+      "path": "resources/licenses/third-party/supports-color@7.2.0-license",
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "path": "resources/licenses/third-party/tabbable@6.5.0-LICENSE",
+      "bytes": 1079,
+      "sha256": "8e714750725e75c8b31172ef84c0805f94873f86e3b5cfca8a948553f0778fa1"
+    },
+    {
+      "path": "resources/licenses/third-party/tailwindcss@4.3.3-LICENSE",
+      "bytes": 1071,
+      "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985"
+    },
+    {
+      "path": "resources/licenses/third-party/tapable@2.3.3-LICENSE",
+      "bytes": 1088,
+      "sha256": "824ef6c33ae5ecbbab65d37f2b37da2bfc81d76cf7676ec0f59d00a0a38bdb75"
+    },
+    {
+      "path": "resources/licenses/third-party/tar@7.5.21-LICENSE.md",
+      "bytes": 1552,
+      "sha256": "8a1af140fdfbf5afd3df27f7e662f989c5b963a300020dfafce42033cae9e004"
+    },
+    {
+      "path": "resources/licenses/third-party/temp@0.9.4-LICENSE",
+      "bytes": 1086,
+      "sha256": "63053a2fc2b06fe2138fa128ab29c487e28e38be8a7b9c16a4ef7209e945c0b0"
+    },
+    {
+      "path": "resources/licenses/third-party/tiny-typed-emitter@2.1.0-LICENSE",
+      "bytes": 1104,
+      "sha256": "4b3faf884ee71eec3df920b66c98fc6618af28e824cf3a32ef3d8774048cc76d"
+    },
+    {
+      "path": "resources/licenses/third-party/tinybench@2.9.0-LICENSE",
+      "bytes": 1065,
+      "sha256": "cebc084d54e6dd99e53292ddb4bc1cdb63d9bfcd9ce438fe3aa6eb106d79e2ea"
+    },
+    {
+      "path": "resources/licenses/third-party/tinyexec@1.2.4-LICENSE",
+      "bytes": 1065,
+      "sha256": "f95f668fe64081ddb4153b322e34fdd719b991285ed08177d5ad7133b7988d92"
+    },
+    {
+      "path": "resources/licenses/third-party/tinyglobby@0.2.17-LICENSE",
+      "bytes": 1076,
+      "sha256": "22c68811e174cbbfb3813d4135918df4f540959c14d872e601d9abe83d3cde8f"
+    },
+    {
+      "path": "resources/licenses/third-party/tinyrainbow@3.1.0-LICENCE",
+      "bytes": 1065,
+      "sha256": "cebc084d54e6dd99e53292ddb4bc1cdb63d9bfcd9ce438fe3aa6eb106d79e2ea"
+    },
+    {
+      "path": "resources/licenses/third-party/tmp@0.2.7-LICENSE",
+      "bytes": 1082,
+      "sha256": "162413c61e0982abe89a06bf7a02ec760dc49a7364d838bd9f01daebb5b95954"
+    },
+    {
+      "path": "resources/licenses/third-party/trim-lines@3.0.1-license",
+      "bytes": 1106,
+      "sha256": "9f084fac69d8cf1e6ce983ba5a3499c7695ed74a26ec625c38f0fd19fddd5e10"
+    },
+    {
+      "path": "resources/licenses/third-party/trough@2.2.0-license",
+      "bytes": 1099,
+      "sha256": "6c03fd41cfd7c92d8aa8a2fa521b94b2683f059123281dcf921ddea9216b6254"
+    },
+    {
+      "path": "resources/licenses/third-party/ts-algebra@2.0.0-LICENSE",
+      "bytes": 1071,
+      "sha256": "18a2bfd070b08bd1cc538c90f59989a9523e070e72fe9a9068593c3e82f44fa7"
+    },
+    {
+      "path": "resources/licenses/third-party/ts-dedent@2.3.0-LICENSE",
+      "bytes": 1073,
+      "sha256": "eff13095d9d762c3bd9dda74370c81e2130c28f2691bc455603abf973bac25b9"
+    },
+    {
+      "path": "resources/licenses/third-party/tslib@2.8.1-LICENSE.txt",
+      "bytes": 655,
+      "sha256": "210b19e543130388c68654b7497e967119ce17145f66ab7d85688fbd70f08751"
+    },
+    {
+      "path": "resources/licenses/third-party/type-fest@0.13.1-license",
+      "bytes": 1116,
+      "sha256": "64a93ffc0a06a2266dbb57ed7ebe3b56ba66ab337b6347fabdbf86c76819fbae"
+    },
+    {
+      "path": "resources/licenses/third-party/typebox@1.3.13-license",
+      "bytes": 1094,
+      "sha256": "e8a7cc256941a26ba8234f04390165243a4d42f74fd6491934140605bf7eae2d"
+    },
+    {
+      "path": "resources/licenses/third-party/typebox@1.3.7-license",
+      "bytes": 1094,
+      "sha256": "e8a7cc256941a26ba8234f04390165243a4d42f74fd6491934140605bf7eae2d"
+    },
+    {
+      "path": "resources/licenses/third-party/typescript@5.9.3-LICENSE.txt",
+      "bytes": 9197,
+      "sha256": "a7d00bfd54525bc694b6e32f64c7ebcf5e6b7ae3657be5cc12767bce74654a47"
+    },
+    {
+      "path": "resources/licenses/third-party/undici-types@7.18.2-LICENSE",
+      "bytes": 1090,
+      "sha256": "a6db8096b2707bc0102d256917d4d33f298ba36d8c3f25de067a2b5bb379db27"
+    },
+    {
+      "path": "resources/licenses/third-party/undici@6.28.0-LICENSE",
+      "bytes": 1090,
+      "sha256": "a6db8096b2707bc0102d256917d4d33f298ba36d8c3f25de067a2b5bb379db27"
+    },
+    {
+      "path": "resources/licenses/third-party/undici@7.29.0-LICENSE",
+      "bytes": 1090,
+      "sha256": "a6db8096b2707bc0102d256917d4d33f298ba36d8c3f25de067a2b5bb379db27"
+    },
+    {
+      "path": "resources/licenses/third-party/unified@11.0.5-license",
+      "bytes": 1099,
+      "sha256": "05811400116ed61f1a7693b78fe8ca6598c155a12f3978e609db4df648a4cb3d"
+    },
+    {
+      "path": "resources/licenses/third-party/unist-util-find-after@5.0.0-license",
+      "bytes": 1099,
+      "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+    },
+    {
+      "path": "resources/licenses/third-party/unist-util-is@6.0.1-license",
+      "bytes": 1099,
+      "sha256": "82974dbf2639d13edab95c32ed9cb6c0867ede272cd2e07ce47ce8548fe55c05"
+    },
+    {
+      "path": "resources/licenses/third-party/unist-util-position@5.0.0-license",
+      "bytes": 1099,
+      "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+    },
+    {
+      "path": "resources/licenses/third-party/unist-util-remove-position@5.0.0-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/unist-util-stringify-position@4.0.0-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/unist-util-visit-parents@6.0.2-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/unist-util-visit@5.1.0-license",
+      "bytes": 1099,
+      "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+    },
+    {
+      "path": "resources/licenses/third-party/universalify@0.1.2-LICENSE",
+      "bytes": 1100,
+      "sha256": "3fda5977c0904e226190b4e21d64340c1731e2142d6fe5f3dee0090a216b8b63"
+    },
+    {
+      "path": "resources/licenses/third-party/universalify@2.0.1-LICENSE",
+      "bytes": 1100,
+      "sha256": "3fda5977c0904e226190b4e21d64340c1731e2142d6fe5f3dee0090a216b8b63"
+    },
+    {
+      "path": "resources/licenses/third-party/unzipper@0.12.5-LICENSE",
+      "bytes": 1219,
+      "sha256": "b9e9abeaf8b92573dc28915d4948dbce30d55b30c688d109898b35e6105c4215"
+    },
+    {
+      "path": "resources/licenses/third-party/update-browserslist-db@1.2.3-LICENSE",
+      "bytes": 1118,
+      "sha256": "c414dde36704bd9c8a76c7aa2921b19270ff9abeb478ea0050250d16cf29b0f6"
+    },
+    {
+      "path": "resources/licenses/third-party/utf8-byte-length@1.0.5-LICENSE.MIT.txt",
+      "bytes": 1079,
+      "sha256": "bfefe6b48c92732f278120d7a3bf682c3b01e25fdc2e0327544cbb62a2fa9a8e"
+    },
+    {
+      "path": "resources/licenses/third-party/utf8-byte-length@1.0.5-LICENSE.WTFPL.txt",
+      "bytes": 480,
+      "sha256": "184d8dd2923c05139a55da1ff61a367e45ca596ac4fb96a26856c3c90003c4bb"
+    },
+    {
+      "path": "resources/licenses/third-party/util-deprecate@1.0.2-LICENSE",
+      "bytes": 1102,
+      "sha256": "0154425673db15cdfa80ecba2c9b1f1a867f7197a006764712849bfc3a93cbb7"
+    },
+    {
+      "path": "resources/licenses/third-party/uuid@14.0.1-LICENSE.md",
+      "bytes": 1109,
+      "sha256": "beaa6b04fb82e41dd2ad679e19e27953afb5999b1abbb455b6564e78ebfeb332"
+    },
+    {
+      "path": "resources/licenses/third-party/vfile-location@5.0.3-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/vfile-message@4.0.3-license",
+      "bytes": 1094,
+      "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+    },
+    {
+      "path": "resources/licenses/third-party/vfile@6.0.3-license",
+      "bytes": 1099,
+      "sha256": "05811400116ed61f1a7693b78fe8ca6598c155a12f3978e609db4df648a4cb3d"
+    },
+    {
+      "path": "resources/licenses/third-party/vite@6.4.3-LICENSE.md",
+      "bytes": 115624,
+      "sha256": "008938a3441801ca3960f8e3ccb4c0738e7996442a53063141d57d3769a7344d"
+    },
+    {
+      "path": "resources/licenses/third-party/vite@7.3.6-LICENSE.md",
+      "bytes": 101176,
+      "sha256": "a77a1c089806b39ad339535bdf3677f636c91d96693e8ad7b11fe733f650ea64"
+    },
+    {
+      "path": "resources/licenses/third-party/vitepress@1.6.4-LICENSE",
+      "bytes": 1081,
+      "sha256": "6db2f08c2112251083b26df3117dde40c5589d337195953531e7e677d1a600e5"
+    },
+    {
+      "path": "resources/licenses/third-party/vitest@4.1.10-LICENSE.md",
+      "bytes": 37726,
+      "sha256": "881d660c26831481b697e39724d4a35c9f86e07b67156d4aeb693a0b39910435"
+    },
+    {
+      "path": "resources/licenses/third-party/void-elements@3.1.0-LICENSE",
+      "bytes": 1070,
+      "sha256": "405a272eaef556691ad7dda96db3237c9544afe18725842a1a5b3ec308960222"
+    },
+    {
+      "path": "resources/licenses/third-party/vue@3.5.41-LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "resources/licenses/third-party/web-namespaces@2.0.1-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/licenses/third-party/web-streams-polyfill@3.3.3-LICENSE",
+      "bytes": 1120,
+      "sha256": "81008a3fb78f69f3c4a72a9e005c8582342ab62864371b3ab8e1b6af9041e080"
+    },
+    {
+      "path": "resources/licenses/third-party/webcrypto-core@1.9.2-LICENSE",
+      "bytes": 1067,
+      "sha256": "77f65dc73794f48cbf111484def84366d470b0fab2b4c51c564c3ce62ea028b8"
+    },
+    {
+      "path": "resources/licenses/third-party/which@2.0.2-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/which@5.0.0-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/which@6.0.1-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/why-is-node-running@2.3.0-LICENSE",
+      "bytes": 1079,
+      "sha256": "6a134e51aa31496c15a741592fc5d782b2dbf8d8b6b8524e15c8520ae0cd6374"
+    },
+    {
+      "path": "resources/licenses/third-party/wrap-ansi@7.0.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/wrappy@1.0.2-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/ws@8.21.1-LICENSE",
+      "bytes": 1183,
+      "sha256": "2b29dcfe0d6471f7e8c92c5fb38c9f93edee10330937055440192f1832b1ecef"
+    },
+    {
+      "path": "resources/licenses/third-party/xmlbuilder@15.1.1-LICENSE",
+      "bytes": 1101,
+      "sha256": "e368bc4263b466cf98c225af15e300549e00da8859416a4536109e9654d434a8"
+    },
+    {
+      "path": "resources/licenses/third-party/y18n@5.0.8-LICENSE",
+      "bytes": 731,
+      "sha256": "2034cce3b6fafcddd642c4175e01d3ddfc332a53b9f20fdc46b1466dc89ac469"
+    },
+    {
+      "path": "resources/licenses/third-party/yallist@3.1.1-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/yallist@4.0.0-LICENSE",
+      "bytes": 765,
+      "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
+    },
+    {
+      "path": "resources/licenses/third-party/yallist@5.0.0-LICENSE.md",
+      "bytes": 1764,
+      "sha256": "a49c9ba464796f65b59fca3f1e6ca40912df1e859f575383223f7ec6c5baae09"
+    },
+    {
+      "path": "resources/licenses/third-party/yaml@2.9.0-LICENSE",
+      "bytes": 738,
+      "sha256": "5bba27375d93e9119f76c1015f7672cf9ad5f70952296e0842fb2243d6376869"
+    },
+    {
+      "path": "resources/licenses/third-party/yargs-parser@21.1.1-LICENSE.txt",
+      "bytes": 731,
+      "sha256": "365496ca1f56da40b23c9815fc40fa9005847b2f8f8fd1c1a4929ef25ec8cd1d"
+    },
+    {
+      "path": "resources/licenses/third-party/yargs@17.7.3-LICENSE",
+      "bytes": 1146,
+      "sha256": "2f1a503bfab84b3ba7393627308b3274501e459e3b5185bbb56bbf16cb1602d4"
+    },
+    {
+      "path": "resources/licenses/third-party/yocto-queue@0.1.0-license",
+      "bytes": 1117,
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+    },
+    {
+      "path": "resources/licenses/third-party/zod@4.4.3-LICENSE",
+      "bytes": 1072,
+      "sha256": "3f1189b28e3866e0d979968d466b78f813f76827cfdca1fbb124cc0a5c8841f8"
+    },
+    {
+      "path": "resources/licenses/third-party/zustand@5.0.15-LICENSE",
+      "bytes": 1070,
+      "sha256": "c1e6e266563517467b1bf874817d23e426f3149252bd7d42758cd697514b8417"
+    },
+    {
+      "path": "resources/licenses/third-party/zwitch@2.0.4-license",
+      "bytes": 1099,
+      "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+    },
+    {
+      "path": "resources/models.dev/api.json",
+      "bytes": 4503690,
+      "sha256": "877e9e0c4dd81f1c44ba9ffc2f0a1887077b215d6934d7ccad81e3c7de280eb2"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/BABEL_PARSER_LICENSE.txt",
+      "bytes": 1086,
+      "sha256": "2e97627cb278aa7556fb9e8817368302301a595b6c7582512b8d74c57b773652"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/applications.cjs",
+      "bytes": 3419,
+      "sha256": "70ae5ee1c68f2a34065448dfee88be198af5ee068839e444342ad458399dbd5d"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/core-client.cjs",
+      "bytes": 2616,
+      "sha256": "5449d1d2172284f038511c4248ca8920cc1b88201c2602e1fc473c1f2d9394c7"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/domain.cjs",
+      "bytes": 736092,
+      "sha256": "258ac2580210eaa0029f52e891319065bcf6d5b242802d9392823bc87d262fa0"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/main.cjs",
+      "bytes": 7802,
+      "sha256": "166ceacce1c9338e2382988cdd43842307a131a8d8fce48bfaa74f237718de76"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/manifest.json",
+      "bytes": 9193,
+      "sha256": "c0581961fc58358c22c37b489540930906bd50d2b00ce5dbc09c1fafd03190b9"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/review-jobs.cjs",
+      "bytes": 3943,
+      "sha256": "0724866639575350b4b817ec637903102ded9b681b2eba8623863d678036ed30"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/verification-jobs.cjs",
+      "bytes": 3347,
+      "sha256": "60c89348334c22d98e58b1ca010435cc5ad75df17f1ae233f401e9e7541265a2"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/views/verify.html",
+      "bytes": 2544,
+      "sha256": "07232530d3aaf1b9fdbc20f68088b2be2820ecf47a4a056659006e73f2f0fa3d"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/views/verify.js",
+      "bytes": 330492,
+      "sha256": "611ea6da77c60ec4ebfeb8b5fb7b2985f832207f69cc256c0209734fbbdde828"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/views/view.js",
+      "bytes": 239562,
+      "sha256": "7901029a30577a977f11ea0ded1547360b127bac5f2d8089f56688dfc1e64af2"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/views/world.html",
+      "bytes": 6965,
+      "sha256": "29317418cb81e3d9593e8f640180555b3240a43df96fdefc496a7d5e4c912dea"
+    },
+    {
+      "path": "resources/plugins/craftmine.world/world-tools.cjs",
+      "bytes": 4524,
+      "sha256": "f88e1dec374160a57dc02f0c897f9e11e54022957df648de6e65c5ea2fee3ba7"
+    },
+    {
+      "path": "resources/plugins/pi.advisor/main.js",
+      "bytes": 4938,
+      "sha256": "242f571d49753a385c94dda60b118bee898d930de9bbf917f13531b51ad11a42"
+    },
+    {
+      "path": "resources/plugins/pi.advisor/manifest.json",
+      "bytes": 2227,
+      "sha256": "dd6c200aec004f812bf22adc4a034b931deb22da2d2a2a2e1d85c2b9f01ac455"
+    },
+    {
+      "path": "resources/plugins/pi.advisor/renderer/index.html",
+      "bytes": 6251,
+      "sha256": "86d0d743d3d31d11d8eb23eebe68eac44411fa01db17a58bd05a71635b7e71e8"
+    },
+    {
+      "path": "resources/plugins/pi.advisor/skills/advisor.md",
+      "bytes": 678,
+      "sha256": "99c9925b969ea79214a6edbd05c6db6cf1454a7fa8a353d3584f336b32cd70a6"
+    },
+    {
+      "path": "resources/plugins/pi.browser/main.js",
+      "bytes": 4350,
+      "sha256": "ff9a5799706c038d06eb5288820187afe7e981c83f39cffaf2b7a99bf0216574"
+    },
+    {
+      "path": "resources/plugins/pi.browser/manifest.json",
+      "bytes": 601,
+      "sha256": "d928cc723ab73d4e3f3bc3339fb612d19f720f9ad93c01e297fe2d0e0b9812f1"
+    },
+    {
+      "path": "resources/plugins/pi.browser/views/browser.html",
+      "bytes": 9944,
+      "sha256": "cb536c399b02a6800800b073bea7a0314ab63f5737dba02ff7aba6825347d3fe"
+    },
+    {
+      "path": "resources/plugins/pi.files/main.js",
+      "bytes": 526,
+      "sha256": "8d0c60d37b7bea6a3680e90f18024addecf1a7b04a070fcbaba6a76d2b5c931c"
+    },
+    {
+      "path": "resources/plugins/pi.files/manifest.json",
+      "bytes": 639,
+      "sha256": "05278c280bb23c0440095b32bad28fc0f6de41ec59e690348d8bd1a355451363"
+    },
+    {
+      "path": "resources/plugins/pi.files/views/tree.html",
+      "bytes": 47452,
+      "sha256": "57d2b6e7d1a97ecdc07e28015255c0e34d628e06a492a1fc646d0220a1b79444"
+    },
+    {
+      "path": "resources/skills/plugin-development.md",
+      "bytes": 9158,
+      "sha256": "9cc2be95543ea9c656ade58f400cd2dde867c86da0fd4ea60508d879fdb0678c"
+    },
+    {
+      "path": "resources/source/BUILD.md",
+      "bytes": 7470,
+      "sha256": "bbe576424f26b2217a843ec3c61d0ed3845c817624a9db6d3d2a8ecde45e9d45"
+    },
+    {
+      "path": "resources/source/CraftmineWorld-source.zip",
+      "bytes": 36894192,
+      "sha256": "42cce204ad857ec2c305126bac9fd9a6dd3a6590e2037d132bcbdd380445dff9"
+    },
+    {
+      "path": "resources/source/USER_GUIDE.zh-CN.md",
+      "bytes": 4414,
+      "sha256": "66e6b73dce25fd2bc985f9a1d8ee06c0074b31723b09acdbcce15314b6d4951b"
+    },
+    {
+      "path": "resources/source/build-manifest.json",
+      "bytes": 1601,
+      "sha256": "c5489a3bed7ed1a77ffc693b00a16015912308c46c446f28b4ca6ab292574c33"
+    },
+    {
+      "path": "resources/source/windows-upgrade-guard.ps1",
+      "bytes": 7240,
+      "sha256": "8619487c5abab9105cc6e51d7a786f1a7e65792316fb615a81e0d8fe52f34402"
+    },
+    {
+      "path": "resources/tray-icon.png",
+      "bytes": 4108,
+      "sha256": "b38d415157631fc34db882ea293bd670eecdfa637be4129c2fda35d5c5257f10"
+    },
+    {
+      "path": "resources.pak",
+      "bytes": 7236935,
+      "sha256": "7b0b402a23db7660a01a14f8db3a08efeab4076b3cf1bbee86e9cb46248ee2b7"
+    },
+    {
+      "path": "snapshot_blob.bin",
+      "bytes": 365488,
+      "sha256": "dafdbbd280832732b550196282099b1417228f86f1b1f55dea24b7beda63a997"
+    },
+    {
+      "path": "v8_context_snapshot.bin",
+      "bytes": 740048,
+      "sha256": "1692cefb5b02afb917fdbd53e99a9b8309cead8e91e3590a9f4608832df86c39"
+    },
+    {
+      "path": "vk_swiftshader.dll",
+      "bytes": 5502464,
+      "sha256": "292eb353e8a0bf89806f951483bb6df890a638d6f17dd692baae96ca80fe5719"
+    },
+    {
+      "path": "vk_swiftshader_icd.json",
+      "bytes": 106,
+      "sha256": "32d83ff113fef532a9f97e0d2831f8656628ab1c99e9060f0332b1532839afd9"
+    },
+    {
+      "path": "vulkan-1.dll",
+      "bytes": 930304,
+      "sha256": "3f482a27a955eef4921bfb796a043dd338363eea285efae34d299aef0fee6afe"
+    }
+  ],
+  "installers": [
+    {
+      "path": "vendor/pi-desktop/apps/desktop/release/Craftmine-World-Setup-0.14.3.exe",
+      "bytes": 152916650,
+      "sha256": "6eef8af401ac85f614b6f3031e6935babf21490b539411f65dc25a25d1463652"
+    }
+  ],
+  "totalBytes": 414897979,
+  "installerExecuted": false,
+  "cleanWindowsVerified": false,
+  "signature": "unsigned-local-preview"
+}

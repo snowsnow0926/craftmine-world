@@ -1,0 +1,153 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "agent": "E",
+  "promptVersion": "w2-w5-v1",
+  "status": "ready_for_integration",
+  "baseRef": "dispatch/w2-w5-v1",
+  "baseCommit": "2f71e128fd9ff9c49ee4e466138f4949b6bce862",
+  "codeCommit": "378e863ab96da5a74f3f7119f21c83936807531d",
+  "packagedSourceCommit": "2cf0f69cb88099ca7a4545fa9d2f668b62586e88",
+  "branch": "codex/parallel-e-20260909",
+  "worktree": "D:/Craftmine World-worktrees/parallel-e-20260909",
+  "commits": [
+    "f2fc01c8d3db2bdca8137057f1fb56ca1125fac5",
+    "575b000f4d91ad5067c1eb41424068e71592d436",
+    "2cf0f69cb88099ca7a4545fa9d2f668b62586e88",
+    "378e863ab96da5a74f3f7119f21c83936807531d"
+  ],
+  "report": "docs/dispatch-reports/E/REPORT_E.md",
+  "interfaces": [
+    "docs/dispatch-reports/E/INTERFACE_E.md"
+  ],
+  "integrationPatches": [
+    {
+      "path": "docs/dispatch-reports/E/integration.patch",
+      "sha256": "3db5f8420ea54f8784814ffb960342371a5434e56ce6c97f8895349188483f4d",
+      "description": "G-owned secrets.status RPC insertion; G already acknowledged integration"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "rust",
+      "command": "cargo test --locked -p host-core secrets::",
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909/vendor/pi-desktop",
+      "sourceCommit": "575b000f4d91ad5067c1eb41424068e71592d436",
+      "result": "10 passed",
+      "evidence": "docs/evidence/dispatch/E/credential-tests.log"
+    },
+    {
+      "kind": "services",
+      "command": "node --test tests/dispatch/e/windows-services.test.mjs",
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909",
+      "sourceCommit": "378e863ab96da5a74f3f7119f21c83936807531d",
+      "result": "11 passed",
+      "evidence": "docs/evidence/dispatch/E/service-tests-final.log"
+    },
+    {
+      "kind": "types",
+      "command": "pnpm --filter @pi/desktop exec tsc -p tsconfig.json --noEmit",
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909/vendor/pi-desktop",
+      "sourceCommit": "575b000f4d91ad5067c1eb41424068e71592d436",
+      "result": "passed",
+      "evidence": "docs/evidence/dispatch/E/typecheck.log"
+    },
+    {
+      "kind": "package",
+      "command": "powershell.exe -NoProfile -NonInteractive -WindowStyle Hidden -File desktop/build-client.ps1 -Installer",
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909",
+      "sourceCommit": "2cf0f69cb88099ca7a4545fa9d2f668b62586e88",
+      "result": "exit 0",
+      "evidence": "docs/evidence/dispatch/E/package-build-final.log"
+    },
+    {
+      "kind": "native-packaged-fixture",
+      "command": "CRAFTMINE_PACKAGED_ROOT=<own win-unpacked> CRAFTMINE_TEST_APPLICATION=1 node tests/desktop-native.mjs",
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909",
+      "sourceCommit": "2cf0f69cb88099ca7a4545fa9d2f668b62586e88",
+      "result": "40 passed; no real model/input",
+      "evidence": "docs/evidence/dispatch/E/native-packaged-report.json"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/evidence/dispatch/E/build-manifest.json",
+      "sha256": "c5489a3bed7ed1a77ffc693b00a16015912308c46c446f28b4ca6ab292574c33",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "c5489a3bed7ed1a77ffc693b00a16015912308c46c446f28b4ca6ab292574c33",
+      "description": "build-manifest.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/credential-tests.log",
+      "sha256": "b48112747959c7a78b7c8f11fa8dfdd7567659b0d80959cf0f8b2c15426c44f4",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "5d7e37b2cc5114850257ce80c23e0a5ac53db3332dd918485745e19a5cd8793a",
+      "description": "credential-tests.log"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/native-packaged-report.json",
+      "sha256": "34122b8bc354ba793fef971a3229d9736228c3382ec87ccfae6014c2e7d24684",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "34122b8bc354ba793fef971a3229d9736228c3382ec87ccfae6014c2e7d24684",
+      "description": "native-packaged-report.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/native-packaged.log",
+      "sha256": "292716e564be41e7a56939a4aff79ce551ffbaeabd794e77ca4bb98f858e7572",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "949c2595f3755d323ee1746b452c760962b149440ce440e6a3fc2700ba44c69d",
+      "description": "native-packaged.log"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/package-build-final.log",
+      "sha256": "b8291d955934dc0f39eda38955ce37f822c5b05b8c2ec193a17c70e15413872d",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "1738943143b5ef42ed2cf55d0a89be430be7970e8aabd4fa4199a57717d73258",
+      "description": "package-build-final.log"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/package-evidence.json",
+      "sha256": "85413357353d0b2c53de4e145fec185b232e2d2486297657e807058feb65ebef",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "85413357353d0b2c53de4e145fec185b232e2d2486297657e807058feb65ebef",
+      "description": "package-evidence.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/service-tests-final.log",
+      "sha256": "63460ae98f1e3909f236a3c17a8468b85ba788a1758b59f886baa959962e196d",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "63460ae98f1e3909f236a3c17a8468b85ba788a1758b59f886baa959962e196d",
+      "description": "service-tests-final.log"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/typecheck.log",
+      "sha256": "8fec2681d7bebc232372196260ec6661ff2af646bc00bb23a45deecb94424e0e",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "90c4877d647373e7d931996d46651bb9fc381c6424dd1f9811f39bd3a3679393",
+      "description": "typecheck.log"
+    }
+  ],
+  "dependencies": [
+    {
+      "group": "A",
+      "contractVersion": "craftmine.domain-backup/1",
+      "usesFixture": true,
+      "missingWork": "G wire actual domain backup bridge and revalidate integrated transaction"
+    },
+    {
+      "group": "C/G",
+      "contractVersion": "E Windows services v1",
+      "usesFixture": false,
+      "missingWork": "G integrate UI/main and rebuild final package"
+    }
+  ],
+  "unverified": [
+    "clean Windows without Node/Rust/pnpm",
+    "actual installer first install/upgrade/uninstall",
+    "actual cross-user credential decryption",
+    "final integrated package",
+    "real-model and three-compaction acceptance"
+  ],
+  "privateDataIncluded": false,
+  "mergedToPrimary": false,
+  "pushed": false
+}
