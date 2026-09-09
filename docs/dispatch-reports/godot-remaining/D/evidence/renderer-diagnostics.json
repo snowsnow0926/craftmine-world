@@ -1,0 +1,517 @@
+{
+  "diagnostics": [
+    {
+      "kind": "renderer-console",
+      "webContents": 1,
+      "level": "warning",
+      "message": "%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged.",
+      "source": "node:electron/js2c/sandbox_bundle",
+      "line": 2
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 3,
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+      "source": "http://127.0.0.1:49799/w/ca2168b9d092ff515f1de218c8bc86dcfbf1f073ed12c008103bc8ca2fb23658/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 2,
+      "level": "warning",
+      "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+      "source": "http://127.0.0.1:49777/w/9f6c5dfc073c7dfc36d26bd814a6622468ccc8e01e7a929b4a33e3dc41243aa6/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 3,
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+      "source": "http://127.0.0.1:49799/w/ca2168b9d092ff515f1de218c8bc86dcfbf1f073ed12c008103bc8ca2fb23658/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 3,
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+      "source": "http://127.0.0.1:49799/w/ca2168b9d092ff515f1de218c8bc86dcfbf1f073ed12c008103bc8ca2fb23658/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 3,
+      "level": "warning",
+      "message": "[.WebGL-0x71140ebbac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49799/w/ca2168b9d092ff515f1de218c8bc86dcfbf1f073ed12c008103bc8ca2fb23658/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 3,
+      "level": "warning",
+      "message": "[.WebGL-0x71140ebbac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49799/w/ca2168b9d092ff515f1de218c8bc86dcfbf1f073ed12c008103bc8ca2fb23658/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 3,
+      "level": "warning",
+      "message": "[.WebGL-0x71140ebbac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49799/w/ca2168b9d092ff515f1de218c8bc86dcfbf1f073ed12c008103bc8ca2fb23658/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 3,
+      "level": "warning",
+      "message": "[.WebGL-0x71140ebbac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49799/w/ca2168b9d092ff515f1de218c8bc86dcfbf1f073ed12c008103bc8ca2fb23658/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 3,
+      "level": "warning",
+      "message": "[.WebGL-0x71140ebbac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49799/w/ca2168b9d092ff515f1de218c8bc86dcfbf1f073ed12c008103bc8ca2fb23658/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 4,
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+      "source": "http://127.0.0.1:49830/w/574342c936673e717cb43ae32a9860edf74ca2be189fa990cef3b80bb4a0c4f1/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 4,
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+      "source": "http://127.0.0.1:49830/w/574342c936673e717cb43ae32a9860edf74ca2be189fa990cef3b80bb4a0c4f1/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 4,
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+      "source": "http://127.0.0.1:49830/w/574342c936673e717cb43ae32a9860edf74ca2be189fa990cef3b80bb4a0c4f1/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 4,
+      "level": "warning",
+      "message": "[.WebGL-0x6bfc0e68a600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49830/w/574342c936673e717cb43ae32a9860edf74ca2be189fa990cef3b80bb4a0c4f1/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 4,
+      "level": "warning",
+      "message": "[.WebGL-0x6bfc0e68a600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49830/w/574342c936673e717cb43ae32a9860edf74ca2be189fa990cef3b80bb4a0c4f1/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 4,
+      "level": "warning",
+      "message": "[.WebGL-0x6bfc0e68a600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49830/w/574342c936673e717cb43ae32a9860edf74ca2be189fa990cef3b80bb4a0c4f1/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 4,
+      "level": "warning",
+      "message": "[.WebGL-0x6bfc0e68a600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49830/w/574342c936673e717cb43ae32a9860edf74ca2be189fa990cef3b80bb4a0c4f1/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 4,
+      "level": "warning",
+      "message": "[.WebGL-0x6bfc0e68a600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49830/w/574342c936673e717cb43ae32a9860edf74ca2be189fa990cef3b80bb4a0c4f1/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 5,
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+      "source": "http://127.0.0.1:49843/w/51675e2899695ab5363586bd58b4ae72913626e871552034e8449d8ea8ccc8fd/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 5,
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+      "source": "http://127.0.0.1:49843/w/51675e2899695ab5363586bd58b4ae72913626e871552034e8449d8ea8ccc8fd/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 5,
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+      "source": "http://127.0.0.1:49843/w/51675e2899695ab5363586bd58b4ae72913626e871552034e8449d8ea8ccc8fd/bridge.js",
+      "line": 97
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 5,
+      "level": "warning",
+      "message": "[.WebGL-0x61740f208e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49843/w/51675e2899695ab5363586bd58b4ae72913626e871552034e8449d8ea8ccc8fd/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 5,
+      "level": "warning",
+      "message": "[.WebGL-0x61740f208e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49843/w/51675e2899695ab5363586bd58b4ae72913626e871552034e8449d8ea8ccc8fd/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 5,
+      "level": "warning",
+      "message": "[.WebGL-0x61740f208e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49843/w/51675e2899695ab5363586bd58b4ae72913626e871552034e8449d8ea8ccc8fd/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 5,
+      "level": "warning",
+      "message": "[.WebGL-0x61740f208e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49843/w/51675e2899695ab5363586bd58b4ae72913626e871552034e8449d8ea8ccc8fd/index.html",
+      "line": 0
+    },
+    {
+      "kind": "renderer-console",
+      "webContents": 5,
+      "level": "warning",
+      "message": "[.WebGL-0x61740f208e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.",
+      "source": "http://127.0.0.1:49843/w/51675e2899695ab5363586bd58b4ae72913626e871552034e8449d8ea8ccc8fd/index.html",
+      "line": 0
+    }
+  ],
+  "guardCounts": {
+    "pointer-lock": 0,
+    "window-focus": 0
+  },
+  "children": 1,
+  "host": {
+    "worldId": "alpha",
+    "buildId": "formal-build",
+    "instanceId": "87efd4ff7d4e07557a86c3cf",
+    "alive": true,
+    "console": [
+      {
+        "at": 1788973537884,
+        "level": "info",
+        "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+      },
+      {
+        "at": 1788973538016,
+        "level": "info",
+        "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+      },
+      {
+        "at": 1788973538181,
+        "level": "info",
+        "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+      },
+      {
+        "at": 1788973538523,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "at": 1788973538523,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "at": 1788973538523,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "at": 1788973538528,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "at": 1788973538529,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "at": 1788973538532,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "at": 1788973538533,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "at": 1788973538548,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "at": 1788973538548,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "at": 1788973539097,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+      },
+      {
+        "at": 1788973539097,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "at": 1788973539190,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "at": 1788973539280,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "at": 1788973539378,
+        "level": "warning",
+        "message": "[.WebGL-0x2b40edeac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+      }
+    ],
+    "faults": [],
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/w/*/index.html",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/bridge.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.wasm",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.pck",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.audio.position.worklet.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/w/*/index.audio.worklet.js",
+        "status": 200
+      }
+    ]
+  },
+  "candidate": null
+}

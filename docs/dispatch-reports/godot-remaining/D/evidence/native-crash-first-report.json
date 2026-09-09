@@ -1,0 +1,12 @@
+{
+  "kind": "real-electron-godot-candidate-coordination",
+  "out": "D:\\Craftmine World-worktrees\\godot-remaining-d-20260910\\test-results\\godot-candidate-native-hTd9Df",
+  "checks": [],
+  "limits": [
+    "Repository-authored base and test-only executor/application registration; no model or OS sandbox claim",
+    "Production index.ts wiring is compile-checked separately; this harness constructs the same classes",
+    "Software offscreen rendering; no player input or feel acceptance"
+  ],
+  "failure": "Error: Error: Godot runtime did not report ready\n    at GodotWorldViewHost.startReplacement (D:\\Craftmine World-worktrees\\godot-remaining-d-20260910\\test-results\\godot-candidate-native-hTd9Df\\app\\main\\index.cjs:751:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async GodotWorldViewHost.ensureInner (D:\\Craftmine World-worktrees\\godot-remaining-d-20260910\\test-results\\godot-candidate-native-hTd9Df\\app\\main\\index.cjs:678:14)\n    at async GodotWorldViewHost.ensure (D:\\Craftmine World-worktrees\\godot-remaining-d-20260910\\test-results\\godot-candidate-native-hTd9Df\\app\\main\\index.cjs:644:14)\n    at async Object.bootstrap (D:\\Craftmine World-worktrees\\godot-remaining-d-20260910\\test-results\\godot-candidate-native-hTd9Df\\app\\main\\index.cjs:1655:7)\n    at async process.<anonymous> (D:\\Craftmine World-worktrees\\godot-remaining-d-20260910\\test-results\\godot-candidate-native-hTd9Df\\app\\main\\index.cjs:1713:20)\n    at ChildProcess.<anonymous> (file:///D:/Craftmine%20World-worktrees/godot-remaining-d-20260910/tests/godot-remaining/D/godot-candidate-native.mjs:29:259)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+  "passed": false
+}
