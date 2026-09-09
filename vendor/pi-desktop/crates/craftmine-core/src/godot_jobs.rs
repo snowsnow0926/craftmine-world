@@ -89,6 +89,37 @@ struct TokenArgs {
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct CheckDescriptorArgs {
+    job_id: String,
+    token: String,
+    artifacts: Vec<Artifact>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct RevokeArgs {
+    executor_id: String,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ContinueArgs {
+    world_id: String,
+    tool_call_id: String,
+    origin_job_id: String,
+    context: WorkspaceContext,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct UsageArgs {
+    world_id: String,
+    #[serde(default)]
+    context: Option<WorkspaceContext>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct FinishArgs {
     job_id: String,
     token: String,
@@ -209,7 +240,80 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
         );
         CREATE INDEX IF NOT EXISTS craftmine_godot_candidates_world ON craftmine_godot_candidates(world_id,created_at);",
     )?;
+    // Jobs gained an explicit expiry reason and a continuation origin after the
+    // first executor shipped; both are additive and safe to backfill as NULL.
+    for (column, definition) in [
+        ("interrupt_reason", "TEXT"),
+        ("origin_job_id", "TEXT"),
+    ] {
+        let present: bool = db.query_row(
+            "SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_jobs') WHERE name=?1",
+            [column],
+            |row| row.get::<_, i64>(0),
+        )? > 0;
+        if !present {
+            db.execute_batch(&format!(
+                "ALTER TABLE craftmine_godot_jobs ADD COLUMN {column} {definition}"
+            ))?;
+        }
+    }
+    // Core-measurable accounting per terminal execution. Model-side counters
+    // (tokens, requests, compactions) are not observable here and stay unknown
+    // instead of being reported as zero.
+    db.execute_batch(
+        "CREATE TABLE IF NOT EXISTS craftmine_godot_job_usage (
+            job_id TEXT PRIMARY KEY REFERENCES craftmine_godot_jobs(id),
+            world_id TEXT NOT NULL, task_id TEXT NOT NULL, origin_job_id TEXT,
+            kind TEXT NOT NULL, outcome TEXT NOT NULL, wall_clock_ms INTEGER NOT NULL,
+            source_bytes INTEGER NOT NULL DEFAULT 0, asset_bytes INTEGER NOT NULL DEFAULT 0,
+            host_bytes INTEGER NOT NULL DEFAULT 0, artifact_bytes INTEGER NOT NULL DEFAULT 0,
+            artifact_count INTEGER NOT NULL DEFAULT 0, build_files INTEGER NOT NULL DEFAULT 0,
+            limits TEXT NOT NULL, recorded_at INTEGER NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS craftmine_godot_job_usage_world
+            ON craftmine_godot_job_usage(world_id,recorded_at);",
+    )?;
     Ok(())
+}
+
+/// Model-side counters that the core cannot observe for a build/check job.
+pub(super) const UNKNOWN_USAGE_FIELDS: [&str; 5] =
+    ["modelTokens", "modelRequests", "compactions", "contextTokens", "serviceQuota"];
+
+/// Persist accounting for every terminal job exactly once. Values are recomputed
+/// from durable rows, so a repeated sweep cannot inflate or lose usage.
+pub(super) fn settle_usage(db: &Connection) -> Result<usize> {
+    let limits = json!({
+        "buildFileCount":godot_builds::BUILD_FILE_COUNT,"buildFileBytes":godot_builds::BUILD_FILE_BYTES,
+        "buildTotalBytes":godot_builds::BUILD_TOTAL,"artifactCount":ARTIFACT_COUNT,
+        "artifactFileBytes":ARTIFACT_FILE_BYTES,"artifactTotalBytes":ARTIFACT_TOTAL_BYTES,
+        "leaseMillis":LEASE_MILLIS,"queueTimeoutMillis":QUEUE_TIMEOUT_MILLIS,
+        "unknown":UNKNOWN_USAGE_FIELDS
+    });
+    let changed = db.execute(
+        "INSERT OR IGNORE INTO craftmine_godot_job_usage(job_id,world_id,task_id,origin_job_id,kind,
+            outcome,wall_clock_ms,source_bytes,asset_bytes,host_bytes,artifact_bytes,artifact_count,
+            build_files,limits,recorded_at)
+         SELECT j.id,j.world_id,j.task_id,j.origin_job_id,j.kind,j.status,
+            MAX(0,j.updated_at-j.created_at),
+            COALESCE((SELECT SUM(f.bytes) FROM craftmine_godot_build_files f WHERE f.world_id=j.world_id
+                AND f.build_id=j.build_id AND f.kind='source'),0),
+            COALESCE((SELECT SUM(f.bytes) FROM craftmine_godot_build_files f WHERE f.world_id=j.world_id
+                AND f.build_id=j.build_id AND f.kind='asset'),0),
+            COALESCE((SELECT SUM(f.bytes) FROM craftmine_godot_build_files f WHERE f.world_id=j.world_id
+                AND f.build_id=j.build_id AND f.kind='host'),0),
+            COALESCE((SELECT SUM(f.bytes) FROM craftmine_godot_build_files f WHERE f.world_id=j.world_id
+                AND f.build_id=j.build_id AND f.kind='artifact'),0),
+            COALESCE((SELECT COUNT(*) FROM craftmine_godot_build_files f WHERE f.world_id=j.world_id
+                AND f.build_id=j.build_id AND f.kind='artifact'),0),
+            COALESCE((SELECT b.files FROM craftmine_godot_builds b WHERE b.world_id=j.world_id
+                AND b.build_id=j.build_id),0),
+            ?1,?2
+         FROM craftmine_godot_jobs j
+         WHERE j.status IN ('passed','failed','cancelled','interrupted')",
+        params![serde_json::to_string(&limits)?, worlds::timestamp()?],
+    )?;
+    Ok(changed)
 }
 
 fn valid_job_id(id: &str) -> Result<()> {
@@ -229,42 +333,47 @@ pub(super) fn valid_candidate_id(id: &str) -> Result<()> {
 }
 
 /// Reclaim leases whose executor died, and stop waiting forever for an executor
-/// that never registered.
+/// that never registered. Every expiry records a reason so the UI can explain
+/// why a job ended instead of starting a doomed "resume".
 pub(super) fn expire(db: &Connection) -> Result<()> {
     let now = worlds::timestamp()?;
     db.execute(
         "UPDATE craftmine_godot_jobs SET status='interrupted',run_token=NULL,executor_id=NULL,
-            lease_expires_at=NULL,updated_at=?1
+            lease_expires_at=NULL,interrupt_reason='GODOT_LEASE_EXPIRED',updated_at=?1
          WHERE status IN ('claimed','running') AND lease_expires_at IS NOT NULL AND lease_expires_at < ?1",
         [now],
     )?;
     db.execute(
-        "UPDATE craftmine_godot_jobs SET status='blocked',blocked_reason='GODOT_EXECUTOR_TIMEOUT',updated_at=?1
+        "UPDATE craftmine_godot_jobs SET status='interrupted',run_token=NULL,executor_id=NULL,
+            lease_expires_at=NULL,interrupt_reason='GODOT_QUEUE_TIMEOUT',updated_at=?1
          WHERE status='queued' AND created_at < ?2",
         params![now, now - QUEUE_TIMEOUT_MILLIS],
     )?;
+    settle_usage(db)?;
     Ok(())
 }
 
 pub(super) fn read_job(db: &Connection, id: &str) -> Result<Value> {
     valid_job_id(id)?;
     let (world_id, task_id, kind, build_id, revision, manifest, assets, base_id, base_build, status,
-        blocked, executor, stage, progress, lease, output, output_hash, created, updated): (
+        blocked, executor, stage, progress, lease, output, output_hash, created, updated, interrupt,
+        origin): (
         String, String, String, String, i64, String, String, String, String, String,
         Option<String>, Option<String>, Option<String>, i64, Option<i64>, Option<String>,
-        Option<String>, i64, i64,
+        Option<String>, i64, i64, Option<String>, Option<String>,
     ) = db
         .query_row(
             "SELECT world_id,task_id,kind,build_id,source_revision,manifest_hash,asset_manifest_hash,
                 base_id,base_build,status,blocked_reason,executor_id,stage,progress,lease_expires_at,
-                output,output_hash,created_at,updated_at FROM craftmine_godot_jobs WHERE id=?1",
+                output,output_hash,created_at,updated_at,interrupt_reason,origin_job_id
+             FROM craftmine_godot_jobs WHERE id=?1",
             [id],
             |row| {
                 Ok((
                     row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?, row.get(4)?, row.get(5)?,
                     row.get(6)?, row.get(7)?, row.get(8)?, row.get(9)?, row.get(10)?, row.get(11)?,
                     row.get(12)?, row.get(13)?, row.get(14)?, row.get(15)?, row.get(16)?, row.get(17)?,
-                    row.get(18)?,
+                    row.get(18)?, row.get(19)?, row.get(20)?,
                 ))
             },
         )
@@ -289,7 +398,8 @@ pub(super) fn read_job(db: &Connection, id: &str) -> Result<Value> {
         "sourceRevision":revision,"manifestHash":manifest,"assetManifestHash":assets,"baseId":base_id,
         "baseBuild":base_build,"status":status,"blockedReason":blocked,"executorId":executor,
         "stage":stage,"progress":progress,"leaseExpiresAt":lease,"output":output,
-        "outputHash":output_hash,"candidateId":candidate,"createdAt":created,"updatedAt":updated}))
+        "outputHash":output_hash,"candidateId":candidate,"createdAt":created,"updatedAt":updated,
+        "interruptReason":interrupt,"originJobId":origin}))
 }
 
 pub(super) fn build_files(
@@ -392,7 +502,7 @@ pub(super) fn verified_artifacts(db: &Connection, world: &str, build: &str, root
 }
 
 fn verify_project(db: &Connection, world: &str, build: &str, root: &std::path::Path) -> Result<()> {
-    for kind in ["source", "asset"] {
+    for kind in ["source", "asset", "host"] {
         for file in build_files(db, world, build, kind)? {
             verify_file(root, file["path"].as_str().context("CORRUPT_GODOT_BUILD")?,
                 file["sha256"].as_str().context("CORRUPT_GODOT_BUILD")?,
@@ -486,23 +596,274 @@ pub(super) fn require_ready_candidate(
 }
 
 impl TaskJournal {
-    /// Capability gate. Only an attested, matching executor may run a job.
-    pub(super) fn execution_gate(&self, kind: &str) -> (bool, Option<&'static str>) {
-        let Some(executor) = self
+    /// Live capability status for the private host. Availability never survives
+    /// a core restart, so the host must re-attest after every restart instead of
+    /// the UI remembering a stale "available".
+    pub fn godot_executor_status(&self) -> Value {
+        let (build, build_reason) = self.execution_gate("build");
+        let (check, check_reason) = self.execution_gate("check");
+        let executors: Vec<Value> = self
             .executors
-            .values()
-            .find(|executor| executor.engine_version == engine_version())
-        else {
-            return (false, Some("GODOT_EXECUTION_UNAVAILABLE"));
-        };
-        let capability = match kind {
-            "check" => executor.capabilities["check"] == json!(true),
-            _ => executor.capabilities["build"] == json!(true),
-        };
-        if !capability || executor.capabilities["import"] != json!(true) {
-            return (false, Some("GODOT_EXECUTOR_CAPABILITY_MISSING"));
+            .iter()
+            .map(|(id, executor)| {
+                json!({"executorId":id,"engineVersion":executor.engine_version,
+                    "isolation":executor.isolation,"evidenceHash":executor.evidence_hash,
+                    "capabilities":executor.capabilities,"registeredAt":executor.registered_at})
+            })
+            .collect();
+        json!({"format":"craftmine.godot-execution-status/1","engineVersion":engine_version(),
+            "build":build,"check":check,"buildBlockedReason":build_reason,
+            "checkBlockedReason":check_reason,"executors":executors})
+    }
+
+    /// Drop one executor and interrupt only the jobs it owned. Revocation is not
+    /// a restart: unrelated jobs and other executors keep running.
+    pub fn godot_executor_revoke(&mut self, args: &Value) -> Result<Value> {
+        let args: RevokeArgs = serde_json::from_value(args.clone())?;
+        workspaces::call_id(&args.executor_id)?;
+        let removed = self.executors.remove(&args.executor_id).is_some();
+        let interrupted = self.db.execute(
+            "UPDATE craftmine_godot_jobs SET status='interrupted',run_token=NULL,executor_id=NULL,
+                lease_expires_at=NULL,interrupt_reason='GODOT_EXECUTOR_REVOKED',updated_at=?2
+             WHERE executor_id=?1 AND status IN ('claimed','running')",
+            params![args.executor_id, worlds::timestamp()?],
+        )?;
+        settle_usage(&self.db)?;
+        Ok(json!({"executorId":args.executor_id,"revoked":removed,"interrupted":interrupted,
+            "executionAvailable":self.execution_gate("build").0}))
+    }
+
+    /// Resolve only a live worker's staged exports for an isolated runtime
+    /// check. This neither registers artifacts nor makes a candidate ready, so a
+    /// half-finished build can never become appliable.
+    pub fn godot_job_check_descriptor(&mut self, args: &Value) -> Result<Value> {
+        let args: CheckDescriptorArgs = serde_json::from_value(args.clone())?;
+        let tx = self
+            .db
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        expire(&tx)?;
+        let (world, build, record) = owned_job(&tx, &args.job_id, &args.token)?;
+        ensure!(
+            matches!(record["status"].as_str(), Some("claimed" | "running")),
+            "GODOT_JOB_INACTIVE"
+        );
+        ensure!(record["kind"] == "check", "GODOT_RUNTIME_CHECK_REQUIRED");
+        let executor = self
+            .executors
+            .get(record["executorId"].as_str().unwrap_or_default())
+            .context("GODOT_EXECUTOR_UNAVAILABLE")?;
+        ensure!(
+            executor.capabilities["check"] == json!(true),
+            "GODOT_EXECUTOR_CAPABILITY_MISSING"
+        );
+        let root = build_root(&self.directory, &world, &build, false)?;
+        verify_project(&tx, &world, &build, &root.join("source"))?;
+        let root = root.join("artifacts");
+        ensure!(
+            !args.artifacts.is_empty() && args.artifacts.len() <= ARTIFACT_COUNT,
+            "GODOT_ARTIFACT_MISSING"
+        );
+        let mut paths = std::collections::HashSet::new();
+        let mut bytes = 0u64;
+        for artifact in &args.artifacts {
+            bytes = bytes
+                .checked_add(artifact.bytes)
+                .context("GODOT_ARTIFACT_TOO_LARGE")?;
+            ensure!(bytes <= ARTIFACT_TOTAL_BYTES, "GODOT_ARTIFACT_TOO_LARGE");
+            ensure!(
+                paths.insert(artifact.path.to_ascii_lowercase()),
+                "GODOT_ARTIFACT_CONFLICT"
+            );
+            verify_artifact(&root, artifact)?;
         }
-        (true, None)
+        ensure!(paths.contains("web/index.html"), "GODOT_WEB_ENTRY_MISSING");
+        let input_hash: String = tx.query_row(
+            "SELECT request_hash FROM craftmine_godot_jobs WHERE id=?1",
+            [&args.job_id],
+            |row| row.get(0),
+        )?;
+        let current = worlds::read(&tx, &world)?;
+        let snapshot = if current.world.snapshot["format"] == super::godot_runtime::PROGRESS_FORMAT {
+            ensure!(
+                current.world.snapshot["baseId"] == record["baseId"],
+                "GODOT_PROGRESS_BASE_MISMATCH"
+            );
+            current.world.snapshot
+        } else {
+            Value::Null
+        };
+        let result = json!({"format":"craftmine.godot-check-descriptor/1","phase":"check",
+            "jobId":args.job_id,"inputHash":input_hash,"worldId":world,"buildId":build,
+            "baseId":record["baseId"],"root":root.to_string_lossy(),"entry":"web/index.html",
+            "threads":true,"artifacts":args.artifacts,"snapshot":snapshot});
+        tx.commit()?;
+        Ok(result)
+    }
+
+    /// Continue a historical draft in a new execution. The original job, task and
+    /// draft stay untouched; the new job records its origin so cumulative
+    /// accounting spans the whole chain. A moved source or a formal world that
+    /// changed base is a conflict, never a silent rebase.
+    pub fn godot_job_continue(&mut self, args: &Value) -> Result<Value> {
+        let args: ContinueArgs = serde_json::from_value(args.clone())?;
+        workspaces::call_id(&args.tool_call_id)?;
+        let (queued, blocked_reason) = {
+            let origin = read_job(&self.db, &args.origin_job_id)?;
+            let kind = origin["kind"].as_str().context("INVALID_GODOT_JOB")?;
+            (self.execution_gate(kind).0, self.execution_gate(kind).1)
+        };
+        let tx = self
+            .db
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        expire(&tx)?;
+        let origin = read_job(&tx, &args.origin_job_id)?;
+        ensure!(origin["worldId"] == args.world_id, "PROJECT_WORLD_BINDING_MISMATCH");
+        ensure!(
+            matches!(origin["status"].as_str(), Some("interrupted" | "cancelled" | "failed")),
+            "GODOT_JOB_NOT_CONTINUABLE"
+        );
+        let workspace = scope(&tx, &args.context, &args.world_id, true)?;
+        let task = workspace.task.binding.task_id.clone();
+        let request_hash = digest(&serde_json::to_string(&json!({
+            "worldId":args.world_id,"originJobId":args.origin_job_id,"toolCallId":args.tool_call_id
+        }))?);
+        // A repeated call replays the stored job instead of queuing a second one.
+        let prior: Option<String> = tx
+            .query_row(
+                "SELECT id FROM craftmine_godot_jobs WHERE task_id=?1 AND tool_call_id=?2",
+                params![task, args.tool_call_id],
+                |row| row.get(0),
+            )
+            .optional()?;
+        if let Some(prior) = prior {
+            let stored: String = tx.query_row(
+                "SELECT request_hash FROM craftmine_godot_jobs WHERE id=?1",
+                [&prior],
+                |row| row.get(0),
+            )?;
+            ensure!(stored == request_hash, "REPLAY_MISMATCH");
+            let mut result = read_job(&tx, &prior)?;
+            result["replayed"] = json!(true);
+            tx.commit()?;
+            return Ok(result);
+        }
+        // The draft being continued must still be the current project head.
+        let (manifest, manifest_hash) = super::godot_projects::load_manifest(&tx, &args.world_id, None)?;
+        let (asset_hash, _) = godot_builds::asset_manifest(&tx, &args.world_id)?;
+        ensure!(
+            origin["sourceRevision"].as_u64() == Some(manifest.revision)
+                && origin["manifestHash"].as_str() == Some(manifest_hash.as_str())
+                && origin["assetManifestHash"].as_str() == Some(asset_hash.as_str()),
+            "GODOT_CONTINUATION_STALE"
+        );
+        // The formal world must still be on the base this draft was authored on.
+        let world = worlds::read(&tx, &args.world_id)?;
+        let lineage = world.world.build["godot"]["baseBuild"].as_str();
+        ensure!(
+            manifest.base_build == workspace.task.binding.base_build
+                || lineage == Some(manifest.base_build.as_str()),
+            "WORLD_BUILD_CONFLICT"
+        );
+        let kind = origin["kind"].as_str().context("INVALID_GODOT_JOB")?;
+        let job_id = format!(
+            "gjob-{}",
+            digest(&format!(
+                "craftmine.godot-job/1|{}|{}|{}",
+                args.world_id, task, args.tool_call_id
+            ))
+        );
+        let status = if queued { "queued" } else { "blocked" };
+        let now = worlds::timestamp()?;
+        tx.execute(
+            "INSERT INTO craftmine_godot_jobs(id,world_id,task_id,tool_call_id,kind,build_id,
+                source_revision,manifest_hash,asset_manifest_hash,base_id,base_build,request_hash,
+                status,blocked_reason,progress,created_at,updated_at,origin_job_id)
+             VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,0,?15,?15,?16)",
+            params![job_id, args.world_id, task, args.tool_call_id, kind,
+                origin["buildId"].as_str(), origin["sourceRevision"].as_i64(),
+                origin["manifestHash"].as_str(), origin["assetManifestHash"].as_str(),
+                origin["baseId"].as_str(), origin["baseBuild"].as_str(), request_hash,
+                status, blocked_reason, now, args.origin_job_id],
+        )?;
+        let mut result = read_job(&tx, &job_id)?;
+        result["executionAvailable"] = json!(queued);
+        result["blockedReason"] = json!(blocked_reason);
+        result["replayed"] = json!(false);
+        tx.commit()?;
+        Ok(result)
+    }
+
+    /// Cumulative accounting for one world, including continued executions.
+    /// Only core-measurable values are reported; model-side counters stay null
+    /// and are listed under `unknown`.
+    pub fn godot_usage_summary(&self, args: &Value) -> Result<Value> {
+        let args: UsageArgs = serde_json::from_value(args.clone())?;
+        world_scope(&self.db, &args.world_id, args.context.as_ref())?;
+        settle_usage(&self.db)?;
+        let mut statement = self.db.prepare(
+            "SELECT job_id,task_id,origin_job_id,kind,outcome,wall_clock_ms,source_bytes,asset_bytes,
+                host_bytes,artifact_bytes,artifact_count,build_files,recorded_at
+             FROM craftmine_godot_job_usage WHERE world_id=?1 ORDER BY recorded_at,job_id",
+        )?;
+        let rows = statement.query_map([&args.world_id], |row| {
+            Ok(json!({
+                "jobId":row.get::<_,String>(0)?,"taskId":row.get::<_,String>(1)?,
+                "originJobId":row.get::<_,Option<String>>(2)?,"kind":row.get::<_,String>(3)?,
+                "outcome":row.get::<_,String>(4)?,"wallClockMillis":row.get::<_,i64>(5)?,
+                "sourceBytes":row.get::<_,i64>(6)?,"assetBytes":row.get::<_,i64>(7)?,
+                "hostBytes":row.get::<_,i64>(8)?,"artifactBytes":row.get::<_,i64>(9)?,
+                "artifactCount":row.get::<_,i64>(10)?,"buildFiles":row.get::<_,i64>(11)?,
+                "recordedAt":row.get::<_,i64>(12)?
+            }))
+        })?;
+        let items = rows.collect::<rusqlite::Result<Vec<_>>>()?;
+        let mut totals = json!({"executions":items.len(),"wallClockMillis":0,"sourceBytes":0,
+            "assetBytes":0,"hostBytes":0,"artifactBytes":0,"artifactCount":0});
+        for item in &items {
+            for (target, source) in [
+                ("wallClockMillis", "wallClockMillis"), ("sourceBytes", "sourceBytes"),
+                ("assetBytes", "assetBytes"), ("hostBytes", "hostBytes"),
+                ("artifactBytes", "artifactBytes"), ("artifactCount", "artifactCount"),
+            ] {
+                let sum = totals[target].as_i64().unwrap_or(0) + item[source].as_i64().unwrap_or(0);
+                totals[target] = json!(sum);
+            }
+        }
+        let limits: Option<String> = self
+            .db
+            .query_row(
+                "SELECT limits FROM craftmine_godot_job_usage WHERE world_id=?1 ORDER BY recorded_at DESC LIMIT 1",
+                [&args.world_id],
+                |row| row.get(0),
+            )
+            .optional()?;
+        Ok(json!({"format":"craftmine.godot-usage/1","worldId":args.world_id,"items":items,
+            "totals":totals,"limits":limits.map(|body| serde_json::from_str::<Value>(&body)).transpose()?,
+            "unknown":UNKNOWN_USAGE_FIELDS}))
+    }
+
+    /// Capability gate. Only an attested, matching executor may run a job, and a
+    /// capable executor must not be masked by an earlier, less capable one.
+    pub(super) fn execution_gate(&self, kind: &str) -> (bool, Option<&'static str>) {
+        let mut registered = false;
+        for executor in self.executors.values() {
+            if executor.engine_version != engine_version() {
+                continue;
+            }
+            registered = true;
+            let capability = match kind {
+                "check" => executor.capabilities["check"] == json!(true),
+                _ => executor.capabilities["build"] == json!(true),
+            };
+            if capability && executor.capabilities["import"] == json!(true) {
+                return (true, None);
+            }
+        }
+        if registered {
+            (false, Some("GODOT_EXECUTOR_CAPABILITY_MISSING"))
+        } else {
+            (false, Some("GODOT_EXECUTION_UNAVAILABLE"))
+        }
     }
 
     pub fn godot_executor_register(&mut self, args: &Value) -> Result<Value> {
@@ -629,7 +990,8 @@ impl TaskJournal {
         )?);
         description["files"] = json!({
             "source":build_files(&tx, world, build, "source")?,
-            "asset":build_files(&tx, world, build, "asset")?
+            "asset":build_files(&tx, world, build, "asset")?,
+            "host":build_files(&tx, world, build, "host")?
         });
         tx.commit()?;
         Ok(description)
@@ -820,6 +1182,7 @@ impl TaskJournal {
         let mut result = read_job(&tx, &args.job_id)?;
         result["candidateId"] = json!(candidate_id);
         result["taskId"] = json!(task);
+        settle_usage(&tx)?;
         tx.commit()?;
         Ok(result)
     }
@@ -854,14 +1217,19 @@ impl TaskJournal {
     }
 
     /// Startup sweep: leases cannot survive the process that owned them, and a
-    /// late result from an interrupted job must never be applied.
+    /// late result from an interrupted job must never be applied. The reason is
+    /// recorded so the UI explains the restart instead of offering a doomed
+    /// resume. Interrupted jobs are never re-queued automatically: a new
+    /// execution must be requested explicitly.
     pub fn godot_recover(&mut self) -> Result<usize> {
         self.executors.clear();
         let changed = self.db.execute(
             "UPDATE craftmine_godot_jobs SET status='interrupted',run_token=NULL,executor_id=NULL,
-                lease_expires_at=NULL,updated_at=?1 WHERE status IN ('claimed','running')",
+                lease_expires_at=NULL,interrupt_reason='GODOT_HOST_RESTART',updated_at=?1
+             WHERE status IN ('claimed','running')",
             [worlds::timestamp()?],
         )?;
+        settle_usage(&self.db)?;
         Ok(changed)
     }
 }
