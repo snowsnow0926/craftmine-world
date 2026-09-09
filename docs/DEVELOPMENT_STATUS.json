@@ -3,18 +3,18 @@
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "W2",
   "baseline": "3bdf52f",
-  "updated": "2026-09-09T06:04:51.833Z",
+  "updated": "2026-09-09T06:18:21.721Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "awaiting_external_agent_delivery",
-    "reason": "用户已要求停止本轮后的自动开发，现改为手工分发并行派工提示词；本轮仅生成文档，未启动任何开发 Agent。等待 A–F 回传报告，由协调者验收集成。",
+    "status": "parallel_development_running",
+    "reason": "用户追加授权：本线程启动多个子 Agent 并行开发，由协调者接收报告、接线并验收。",
     "activeGoal": false,
     "recurringDevelopment": false,
     "previousLiveCompactionTestStopped": true,
     "automationId": null,
-    "worktree": null,
-    "branch": null,
-    "nextStep": "按 docs/parallel-w2-w5/00_README.md 分发 A–F 六份任务；收到 REPORT/DELIVERY/代码与证据后执行 G 集成验收。未经用户新指令不恢复自动循环。",
+    "worktree": "D:/Craftmine World-worktrees/parallel-g-20260909",
+    "branch": "codex/parallel-g-20260909",
+    "nextStep": "首批 A/B/D 并行，接续 C/E/F；G 完成公共入口与同一集成源码的验证。",
     "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。",
     "previousAutomationId": "craftmine-windows"
   },
@@ -209,8 +209,19 @@
         "F"
       ],
       "integrationAgent": "G",
-      "status": "documents_ready_awaiting_user_dispatch",
-      "productCodeChanged": false
+      "status": "root_managed_parallel_development",
+      "productCodeChanged": false,
+      "executionReport": "docs/dispatch-reports/G/EXECUTION.md",
+      "activePackages": [
+        "A",
+        "B",
+        "D"
+      ],
+      "queuedPackages": [
+        "C",
+        "E",
+        "F"
+      ]
     }
   },
   "liveVerification": {

@@ -33,7 +33,8 @@ export function validateSystems(systems) {
   for(const s of systems){validateSystem(s);const key=s.type==='resource'?'resource:'+s.id:s.type;if(types.has(key)||ids.has(s.id))throw Error('同类玩法系统或 ID 重复');types.add(key);ids.add(s.id);}
 }
 export function validateGameplayState(state) {
-  exactKeys(state,['systems','targets','equipped',...(Object.hasOwn(state,'archivedTargets')?['archivedTargets']:[])]);
+  exactKeys(state,['systems','targets','equipped',...(Object.hasOwn(state,'archivedTargets')?['archivedTargets']:[]),...(Object.hasOwn(state,'cooldown')?['cooldown']:[])]);
+  if(Object.hasOwn(state,'cooldown'))bounded(state.cooldown,0,10);
   if(![null,'ranged','melee'].includes(state.equipped))throw Error('装备状态无效');
   for(const [name,limit]of [['systems',6],['targets',128],...(Object.hasOwn(state,'archivedTargets')?[['archivedTargets',128]]:[])]) {
     const table=state[name];if(!table||typeof table!=='object'||Array.isArray(table)||Object.keys(table).length>limit)throw Error('玩法存档大小无效');
@@ -53,7 +54,7 @@ export function validateGameplayState(state) {
 export class GameplaySession {
   constructor(systems=[],objects=[],saved=null) {
     validateSystems(systems);if(saved)validateGameplayState(saved);
-    this.definitions=systems;this.objects=objects;this.cooldown=0;
+    this.definitions=systems;this.objects=objects;this.cooldown=saved?.cooldown||0;
     this.state={systems:{},targets:{},equipped:null,archivedTargets:structuredClone(saved?.archivedTargets||{})};
     for(const [id,value]of Object.entries(saved?.targets||{}))if(!objects.some(o=>o.id===id&&o.components?.health>0))this.state.archivedTargets[id]=structuredClone(value);
     for(const s of systems) {
@@ -73,6 +74,7 @@ export class GameplaySession {
   alive(id){return this.state.targets[id]?.health!==0;}
   equip(type){if(['ranged','melee'].includes(type)&&this.get(type)){this.state.equipped=type;return true;}return false;}
   tick(dt){
+    bounded(dt,0,60);
     this.cooldown=Math.max(0,this.cooldown-dt);
     const ranged=this.get('ranged');if(ranged){const state=this.state.systems[ranged.id];if(state.reloadRemaining>0){state.reloadRemaining=Math.max(0,state.reloadRemaining-dt);if(state.reloadRemaining===0)state.ammo=ranged.config.magazine;}}
     const health=this.get('health');if(health&&!this.dead)this.player.health=Math.min(this.player.maxHealth,this.player.health+health.config.regenPerSecond*dt);
@@ -87,6 +89,7 @@ export class GameplaySession {
   revive(){if(this.player)this.player.health=this.player.maxHealth;}
   reload(){const s=this.get('ranged');if(!s||this.dead)return false;const state=this.state.systems[s.id];if(state.reloadRemaining||state.ammo===s.config.magazine)return false;state.reloadRemaining=s.config.reloadSeconds;return true;}
   attack(hit){
+    if(hit&&((hit.id!=null&&!identifier(hit.id))||!Number.isFinite(hit.distance)||hit.distance<0))throw Error('攻击命中信息无效');
     const s=this.get(this.state.equipped);if(!s||this.dead||this.cooldown>0)return {fired:false};
     if(s.type==='ranged'){const state=this.state.systems[s.id];if(state.reloadRemaining)return {fired:false,reason:'正在换弹'};if(!state.ammo)return {fired:false,reason:'弹匣已空，按 R 换弹'};state.ammo--;}
     this.cooldown=s.config.cooldown;
@@ -94,5 +97,5 @@ export class GameplaySession {
     let damage=0;if(target&&target.health>0){damage=Math.min(target.health,s.config.damage);target.health-=damage;}
     return {fired:true,type:s.type,damage,id:damage?hit.id:null,destroyed:!!damage&&target.health===0};
   }
-  snapshot(){return structuredClone(this.state);}
+  snapshot(){return {...structuredClone(this.state),cooldown:this.cooldown};}
 }

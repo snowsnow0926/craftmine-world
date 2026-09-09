@@ -1,0 +1,167 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "agent": "D",
+  "promptVersion": "w2-w5-v1",
+  "status": "ready_for_integration",
+  "baseRef": "dispatch/w2-w5-v1",
+  "baseCommit": "2f71e128fd9ff9c49ee4e466138f4949b6bce862",
+  "codeCommit": "fb0883a73775c130145bc57fb04bff02569ce919",
+  "branch": "codex/parallel-d-20260909",
+  "worktree": "D:\\Craftmine World-worktrees\\parallel-d-20260909",
+  "commits": [
+    "ec3c6471b69cf7880784121815171eb8937d3863",
+    "1963e684bb8585c4cb27b3450e2f5376b14fe592",
+    "fb0883a73775c130145bc57fb04bff02569ce919"
+  ],
+  "files": [
+    "app/behavior-binding.mjs",
+    "app/behavior-session.mjs",
+    "app/behavior-state.mjs",
+    "app/extension-runtime.mjs",
+    "app/game.js",
+    "app/gameplay.mjs",
+    "app/harness/extension-loader.mjs",
+    "app/preview-probe.mjs",
+    "app/request-plan.mjs",
+    "app/world-runtime.mjs",
+    "docs/dispatch-reports/D/INTERFACE_D.md",
+    "examples/dispatch-d/README.md",
+    "examples/dispatch-d/build-packages.mjs",
+    "examples/dispatch-d/content.mjs",
+    "examples/dispatch-d/garden-training@1.json",
+    "examples/dispatch-d/oak-tree@1.json",
+    "examples/dispatch-d/thin-grass@1.json",
+    "examples/dispatch-d/training-drain@1.extension.json",
+    "examples/dispatch-d/training-scene.json",
+    "examples/dispatch-d/wild-flower@1.json",
+    "tests/dispatch/d/headless.mjs",
+    "tests/dispatch/d/runtime.test.mjs",
+    "vendor/pi-desktop/docs/adr/dispatch-d-persistent-startup-and-extension-state.md",
+    "vendor/pi-desktop/docs/spec/dispatch-d-gameplay-runtime.md"
+  ],
+  "report": "docs/dispatch-reports/D/REPORT_D.md",
+  "interfaces": [
+    {
+      "path": "docs/dispatch-reports/D/INTERFACE_D.md",
+      "sha256": "d7184781c81398d85c3deac353bdbd427944dabef7c98543ed75d538d052ce85",
+      "description": "Lifecycle/extension state, physical preview events and selection contracts"
+    }
+  ],
+  "integrationPatches": [
+    {
+      "path": "docs/dispatch-reports/D/integration.patch",
+      "sha256": "144d191b4c87723f882b457a96974b45f70358a7cd8b03152c986ba14d5d5257",
+      "description": "Proposed one-file frozen checksum update; G must review before applying",
+      "baseBlob": "2b0021a0d217db5c71cbfe70c0c655974594dfc9",
+      "applied": false
+    }
+  ],
+  "tests": [
+    {
+      "kind": "logic-contract",
+      "command": "node --test tests/dispatch/d/runtime.test.mjs tests/extension.test.mjs tests/extension-dispatch.test.mjs tests/behavior.test.mjs tests/creation.test.mjs tests/state-migration.test.mjs tests/modules.test.mjs tests/desktop-domain.test.mjs",
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-d-20260909",
+      "sourceCommit": "fb0883a73775c130145bc57fb04bff02569ce919",
+      "result": "65/65 passed",
+      "evidence": "docs/evidence/dispatch/D/targeted-final.log"
+    },
+    {
+      "kind": "headless-real-game-workers",
+      "command": "node tests/dispatch/d/headless.mjs",
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-d-20260909",
+      "sourceCommit": "fb0883a73775c130145bc57fb04bff02569ce919",
+      "result": "27/27 passed, no focus or pointer lock",
+      "evidence": "docs/evidence/dispatch/D/headless-final.json"
+    },
+    {
+      "kind": "domain-regression-before-freeze",
+      "command": "npm test",
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-d-20260909",
+      "sourceCommit": "2f71e128fd9ff9c49ee4e466138f4949b6bce862 plus in-progress D working tree",
+      "result": "269/276 passed; 7 frozen checksum gate failures; not accepted",
+      "evidence": "docs/evidence/dispatch/D/domain-regression.log"
+    },
+    {
+      "kind": "desktop-additional",
+      "command": "node --test tests/desktop-application.test.mjs",
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-d-20260909",
+      "sourceCommit": "D working tree before freeze",
+      "result": "not run successfully: missing generated applications.cjs, esbuild dependency absent",
+      "evidence": "docs/dispatch-reports/D/REPORT_D.md"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/evidence/dispatch/D/.gitattributes",
+      "sha256": "7846b37551c23529eb00c68fbb5a435390e922d9db2625cb88681c31746b289e",
+      "description": ".gitattributes"
+    },
+    {
+      "path": "docs/evidence/dispatch/D/domain-regression.log",
+      "sha256": "04d9298a49cfef0d8dcf33a31917025f8c7bfc8b71cb16520c1c0c58b48c6d1d",
+      "description": "domain-regression.log"
+    },
+    {
+      "path": "docs/evidence/dispatch/D/garden.png",
+      "sha256": "436b054e39daff7026875cccb63c2733d867b6854f8274b1d7af0cb2fa1440c4",
+      "description": "garden.png"
+    },
+    {
+      "path": "docs/evidence/dispatch/D/headless-failed-browser-import.json",
+      "sha256": "c7886c6fc4b4519652c18affdb8f7cd76f2dc182ea4b593c86cb6621d96e69c1",
+      "description": "headless-failed-browser-import.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/D/headless-final.json",
+      "sha256": "3e65ba4c9e10efadea21d481e80d3f16df79fc0a52a3db39e6d58fd4561685a5",
+      "description": "headless-final.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/D/headless-final.log",
+      "sha256": "c9de707294a1b878a3b8b1f5805ada0d4af2ef812f113ca5e4979d2ba665ac31",
+      "description": "headless-final.log"
+    },
+    {
+      "path": "docs/evidence/dispatch/D/targeted-final.log",
+      "sha256": "694e8162337b1bcee651327702be0192022846e5b72cdd2ac111a0bf7650d314",
+      "description": "targeted-final.log"
+    }
+  ],
+  "dependencies": [
+    {
+      "group": "A",
+      "contractVersion": "D-v1",
+      "usesFixture": true,
+      "missingWork": "Actual Rust capture/prepareInstall/application transaction integration and replay"
+    },
+    {
+      "group": "C/G",
+      "contractVersion": "D-selection-v1",
+      "usesFixture": false,
+      "missingWork": "load.worldId and host validation of source/nonce/world/build/revision/object"
+    },
+    {
+      "group": "F",
+      "contractVersion": "D-preview-v1",
+      "usesFixture": false,
+      "missingWork": "Actual native PI model and packaged acceptance"
+    },
+    {
+      "group": "G",
+      "contractVersion": "frozen-kernel",
+      "usesFixture": false,
+      "missingWork": "Review loader change and approve single checksum update"
+    }
+  ],
+  "unverified": [
+    "Native model creation and memory installation",
+    "New Rust library/application lifecycle integration",
+    "Desktop stale selection rejection",
+    "Packaged Windows application",
+    "Transactional rollback across multiple extension commands",
+    "Automatic adversarial input generation beyond self-test traces"
+  ],
+  "privateDataIncluded": false,
+  "mergedToPrimary": false,
+  "pushed": false
+}

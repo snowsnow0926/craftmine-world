@@ -1,5 +1,5 @@
 // PI owns the agent loop. This broker exposes bounded domain operations only.
-const {fields,inspectDraft,readDraftResource,patchDraft,readCapabilities,readVerification}=require('./domain.cjs');
+const {fields,inspectDraft,readDraftResource,patchDraft,readCapabilities,readVerification,draftPackages,createLibraryService,createMemoryService}=require('./domain.cjs');
 
 function hostContext(context) {
   for(const key of ['projectId','sessionId','turnId','toolCallId','executionId']) {
@@ -10,6 +10,8 @@ function hostContext(context) {
 }
 
 function createWorldTools(core,getSettings,isEnded=()=>false,verifications,reviews) {
+  const library=createLibraryService({call:(method,params)=>core.call(method,params)});
+  const memory=createMemoryService({call:(method,params)=>core.call(method,params)});
   const definitions=require('./manifest.json').contributes.agentTools.filter(tool=>tool.name!=='runtime_info');
   return definitions.map(definition=>({...definition,execute:async(args,invocation)=>{
     const context=hostContext(invocation);
@@ -38,6 +40,20 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     const workspace=await core.call('workspace.open',{context,selectedWorld});
     await verifications?.cancelOtherTurns(context);
     await reviews?.cancelOtherTurns(context);
+    if(definition.name==='library_search')return library.search(args);
+    if(definition.name==='library_read')return library.read(args);
+    if(definition.name==='library_install'){
+      assertActive();
+      const result=await library.install(context,invocation.toolCallId,{ref:args.ref,revision:args.workspaceRevision,...(args.position?{position:args.position}:{})});
+      await verifications?.cancelTurn(context);await reviews?.cancelTurn(context);
+      return {...result,workspaceRevision:result.receipt.revision,publishingAvailable:false};
+    }
+    if(definition.name==='memory_search')return memory.search({...args,scope:{projectId:context.projectId,worldId:workspace.worldId},sourceHashes:[workspace.task.draftHash]});
+    if(definition.name==='memory_propose'){
+      // A tool may suggest a memory, but only the existing durable evidence
+      // can validate it. Never turn model text into a host user requirement.
+      return memory.propose({context,operationId:invocation.toolCallId,record:{...args,scope:{projectId:context.projectId,worldId:workspace.worldId}}});
+    }
     if(definition.name==='verification_submit') {
       const job=await core.call('verification.submit',{context,toolCallId:invocation.toolCallId,revision:args.workspaceRevision,summary:args.summary,origin:invocation.craftmineOrigin||null});
       verifications.enqueue(job,context);return job;
@@ -49,7 +65,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       return result;
     }
     const record=await core.call('world.read',{id:workspace.worldId});
-    if(definition.name==='capabilities_read')return readCapabilities(args,record.world.extensions,workspace.task.draft.scene);
+    if(definition.name==='capabilities_read')return readCapabilities(args,draftPackages(workspace.task.draft,record.world).extensions,workspace.task.draft.scene);
     if(definition.name==='workspace_patch') {
       const params={context,toolCallId:invocation.toolCallId,request:args};
       const previous=await core.call('workspace.receipt',params);

@@ -247,16 +247,22 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
     }
     raycast(origin,dir,reach=7){return this.pick(origin,dir,reach);}
     attack(){
-      if(isFrozen()||!this.input)return;const definition=this.play?.get(this.play.state.equipped);if(!definition)return;
+      if(isFrozen()||!this.input)return;return this.performAttack();
+    }
+    // Shared physical attack for user input and isolated data-only acceptance.
+    // The test bridge is preview-only; no host-supplied hit can bypass raycasting.
+    performAttack(){
+      const definition=this.play?.get(this.play.state.equipped);if(!definition)return {fired:false};
       const hit=this.pick([this.p.x,this.p.y+1.56,this.p.z],basis(this.p).f,definition.config.range,true);
       const result=this.play.attack(hit?{id:hit.treeId,distance:hit.distance}:null);
-      if(!result.fired){if(result.reason)inform(result.reason);return;}
+      if(!result.fired){if(result.reason)inform(result.reason);return result;}
       const weapon=document.getElementById('held-item');weapon.classList.remove('swing','fire');void weapon.offsetWidth;weapon.classList.add(result.type==='melee'?'swing':'fire');
       document.getElementById('hit-marker').classList.toggle('hit',result.damage>0);clearTimeout(this.hitTimer);this.hitTimer=setTimeout(()=>document.getElementById('hit-marker').classList.remove('hit'),180);
       if(result.damage)inform(`${this.objects.get(result.id)?.name} −${result.damage}${result.destroyed?' · 已击破':''}`);
       if(result.destroyed){const key='object:'+result.id,mesh=this.meshes.get(key);if(mesh?.buffer)this.gl.deleteBuffer(mesh.buffer);this.meshes.delete(key);}
       if(hit?.treeId)this.behaviors?.dispatch('attack',hit.treeId);
       this.updateHud();
+      return result;
     }
     update(dt,time){
       if(this.play?.dead)this.pauseInput();

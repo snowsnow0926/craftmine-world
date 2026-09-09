@@ -5,8 +5,9 @@ const {createWorldTools} = require('./world-tools.cjs');
 const {createVerificationJobs} = require('./verification-jobs.cjs');
 const {createReviewJobs} = require('./review-jobs.cjs');
 const {createApplications} = require('./applications.cjs');
+const {createHostRequests} = require('./host-requests.cjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary} = require('./domain.cjs');
-let core,verifications,reviews,applications;
+let core,verifications,reviews,applications,hostRequests;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
 const importErrors={
@@ -26,6 +27,7 @@ async function onLoad() {
   reviews=createReviewJobs(core,pi.craftmine);
   verifications=createVerificationJobs(core,pi.craftmine,id=>reviews.start(id));
   applications=createApplications(core,pi.craftmine);
+  hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings()});
   pi.services.register({id:'world-core',start:()=>core.start(),stop:()=>core.stop()});
   await pi.agent.registerTool({
     name: 'runtime_info',
@@ -120,4 +122,5 @@ async function onUnload() {
   await core?.stop();
   for(const tool of require('./manifest.json').contributes.agentTools)await pi.agent.unregisterTool(tool.name);
 }
-module.exports = {onLoad, onUnload, onPanelInvoke, onHostTurnEnd};
+const onHostRequest=(method,params)=>hostRequests(method,params);
+module.exports = {onLoad, onUnload, onPanelInvoke, onHostTurnEnd, onHostRequest};

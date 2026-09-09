@@ -88,6 +88,8 @@ function testRuntimeIdentity(sessionId: string) {
 }
 
 type RuntimeParams = {
+  /** Trusted desktop host world-task scope; never read from model arguments. */
+  craftmineWorld?: boolean;
   sessionId: string;
   mode?: Mode;
   /** Durable host turn ID for the prompt currently being executed. */
@@ -314,6 +316,7 @@ async function runtimeFor(
     });
   }
   const reusable = existing?.matches({
+    craftmineWorld: params.craftmineWorld,
     mode,
     provider,
     thinkingLevel,
@@ -348,8 +351,9 @@ async function runtimeFor(
     }>("session.get", { id: sessionId });
     history = await hydrateAttachmentHistory(detail?.session?.messages ?? [], params);
     compaction = detail?.session?.compaction;
-  } catch {
+  } catch (error) {
     // History restore is best-effort; a prompt can still start cleanly.
+    if (params.craftmineWorld) throw error;
   }
   if (currentPrompt !== undefined) {
     const last = history.at(-1);
@@ -362,6 +366,7 @@ async function runtimeFor(
     }
   }
   const runtime = new DesktopAgentRuntime({
+    craftmineWorld: params.craftmineWorld,
     host: hostProxy as any,
     sessionId,
     mode,

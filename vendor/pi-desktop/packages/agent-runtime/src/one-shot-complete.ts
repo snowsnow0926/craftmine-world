@@ -11,6 +11,7 @@ import type {
   Model,
   SimpleStreamOptions,
 } from "@earendil-works/pi-ai";
+import { craftmineGuardedStream, type CraftmineRequestHooks, type CraftminePurpose } from "./craftmine-context.js";
 import type { MessageUsage, ThinkingLevel } from "@pi-desktop/shared";
 import { classifyAgentError } from "./agent-errors.js";
 import { assistantContent, usageFromPi } from "./agent-messages.js";
@@ -40,6 +41,8 @@ export type OneShotCompleteStream = (
 ) => AssistantMessageEventStream;
 
 export type OneShotCompleteOptions = {
+  craftmineHooks?: CraftmineRequestHooks;
+  craftminePurpose?: CraftminePurpose;
   signal?: AbortSignal;
   stream?: OneShotCompleteStream;
   emptyErrorCode?: string;
@@ -111,8 +114,10 @@ export async function completeOneShot(
     model,
     context,
     requestOptions,
-    (retryOptions) => streamSimple(model, context, retryOptions),
+    (retryOptions) => craftmineGuardedStream(model, context, retryOptions, options.craftmineHooks, options.craftminePurpose ?? "review",
+      (boundedContext, boundedOptions) => streamSimple(model, boundedContext, boundedOptions)),
     {
+      allowOutputLimitRepair: !options.craftmineHooks,
       claim: (error, phase) => {
         if (phase !== "request" || !error.retriable) return undefined;
         if (error.code === "PROVIDER_RATE_LIMITED") {

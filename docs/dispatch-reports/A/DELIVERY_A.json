@@ -1,0 +1,121 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "agent": "A",
+  "promptVersion": "w2-w5-v1",
+  "status": "ready_for_integration",
+  "baseRef": "dispatch/w2-w5-v1",
+  "baseCommit": "2f71e128fd9ff9c49ee4e466138f4949b6bce862",
+  "codeCommit": "1f8884a19dccdb18a97f68cc2ce4ad4e07df7a28",
+  "branch": "codex/parallel-a-20260909",
+  "worktree": "D:/Craftmine World-worktrees/parallel-a-20260909",
+  "commits": [
+    "1b18e9fd03dbb8d7d8a28ec825f9062495e51e73",
+    "aea897c879df6ae28fefc81f16d96b50503f75d2",
+    "1f8884a19dccdb18a97f68cc2ce4ad4e07df7a28"
+  ],
+  "report": "docs/dispatch-reports/A/REPORT_A.md",
+  "interfaces": [
+    "docs/dispatch-reports/A/INTERFACE_A.md"
+  ],
+  "integrationPatches": [
+    {
+      "path": "docs/dispatch-reports/A/integration.patch",
+      "sha256": "6cacb10ea4048c02c09bb7afb77b8ed3dc7c128db152ea40ddbc9d664f78fc20",
+      "description": "Optional factory reexports through existing domain bundle; never applied during A acceptance"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "rust_transaction",
+      "command": "$env:CARGO_TARGET_DIR = Join-Path $PWD 'test-results/dispatch-a/build-target'; cargo test --manifest-path vendor/pi-desktop/Cargo.toml --locked -p craftmine-core",
+      "cwd": "D:/Craftmine World-worktrees/parallel-a-20260909",
+      "sourceCommit": "1f8884a19dccdb18a97f68cc2ce4ad4e07df7a28",
+      "result": "32 passed, 0 failed",
+      "evidence": "docs/evidence/dispatch/A/rust-tests.log"
+    },
+    {
+      "kind": "rust_process_and_compiler_with_proof_fixtures",
+      "command": "$env:CRAFTMINE_CORE_BIN = Join-Path $PWD 'test-results/dispatch-a/build-target/debug/craftmine-core.exe'; node --test tests/dispatch/a/domain-process.test.mjs",
+      "cwd": "D:/Craftmine World-worktrees/parallel-a-20260909",
+      "sourceCommit": "1f8884a19dccdb18a97f68cc2ce4ad4e07df7a28",
+      "result": "5 passed, 0 failed",
+      "evidence": "docs/evidence/dispatch/A/process-tests.log"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/evidence/dispatch/A/rust-tests.log",
+      "sha256": "533a2ce5e9362632601b947cd24fba7ae75cee86a29454b1049af99d74913c03",
+      "description": "32 Rust transaction tests, including baseline 28"
+    },
+    {
+      "path": "docs/evidence/dispatch/A/build.log",
+      "sha256": "77ef1ace51fe60885faab87e6e90dab26c9cb01755e1b739a33d66ffb8c77e1e",
+      "description": "Debug Rust service build"
+    },
+    {
+      "path": "docs/evidence/dispatch/A/process-tests.log",
+      "sha256": "a39ef57394997acbbbc9c2497fd0fcd5082c55740bfd96dc7398ff421c25955f",
+      "description": "5 actual process/compiler suites with explicit proof fixtures"
+    },
+    {
+      "path": "docs/evidence/dispatch/A/INITIAL_FAILURES.md",
+      "sha256": "41338851853a300001f733e7577bb97228c39736d9064ded6d4334e20965bde3",
+      "description": "Observed earlier development failures; not reconstructed raw logs"
+    },
+    {
+      "path": "docs/evidence/dispatch/A/manifest.json",
+      "sha256": "d4ccc5d8294e672da2136c76b214fdf456259d5907da5c1683a8a594180bad37",
+      "description": "Frozen source, executable identity, versions and no-input audit scope"
+    }
+  ],
+  "dependencies": [
+    {
+      "group": "B",
+      "contractVersion": "A1",
+      "usesFixture": false,
+      "missingWork": "Final real PI requests and compaction consume the integrated durable ledger"
+    },
+    {
+      "group": "C",
+      "contractVersion": "A1",
+      "usesFixture": false,
+      "missingWork": "Actual desktop business channels and source-bound user interactions"
+    },
+    {
+      "group": "D",
+      "contractVersion": "existing module/4",
+      "usesFixture": true,
+      "missingWork": "Game execution is not proven by A package/compile fixtures"
+    },
+    {
+      "group": "E",
+      "contractVersion": "domain-backup/1",
+      "usesFixture": false,
+      "missingWork": "Trusted file IO and complete Windows package"
+    },
+    {
+      "group": "F",
+      "contractVersion": "w2-w5-v1",
+      "usesFixture": false,
+      "missingWork": "Native real-model creation/reuse and three actual compactions"
+    },
+    {
+      "group": "G",
+      "contractVersion": "A1",
+      "usesFixture": false,
+      "missingWork": "Private factory/channel/identity wiring and final integration acceptance"
+    }
+  ],
+  "unverified": [
+    "Actual native model creation/reuse",
+    "Three real PI compactions with successful completion",
+    "Full packaged Windows client and clean OS installation",
+    "Asset-heavy installation above existing 2MB draft limit",
+    "Backup receipt retention management UI",
+    "Physical power-loss injection at every SQLite write boundary"
+  ],
+  "privateDataIncluded": false,
+  "mergedToPrimary": false,
+  "pushed": false
+}

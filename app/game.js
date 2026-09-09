@@ -6,7 +6,7 @@ import { observePreview, stepPreview } from './preview-probe.mjs';
   const nonce = location.hash.slice(1) || document.querySelector('meta[name="craftmine-nonce"]')?.content || '', parentOrigin = new URL(location.href).origin;
   const replyOrigin = parentOrigin === 'null' ? '*' : parentOrigin;
   const send = (type,payload={}) => {if(preview&&type==='agent'){inform('关闭预览后，可以继续描述对原世界的修改。');return;}parent.postMessage({channel:'craftmine-game/1',nonce,type,...payload},replyOrigin);};
-  let engine, build, frozen=false, lastTarget=null, preview=false, extensions=null, presentationObserver=null;
+  let engine, build, worldId=null, selectionRevision=0, frozen=false, lastTarget=null, preview=false, extensions=null, presentationObserver=null;
   const enter = document.getElementById('enter'), notice = document.getElementById('notice'); let noticeTimer;
   function inform(text,{tone='info',duration=4500}={}) { notice.textContent=text;notice.dataset.tone=tone;notice.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>notice.hidden=true,Math.max(1000,Math.min(10000,Number.isFinite(duration)?duration:4500))); }
   const BlankRuntime=makeWorldRuntime({send,inform,enter,isFrozen:()=>frozen});
@@ -17,9 +17,16 @@ import { observePreview, stepPreview } from './preview-probe.mjs';
       if(m.type==='load'){
         if(engine)return;
         build=m.build;
+        worldId=typeof m.worldId==='string'&&m.worldId.length>0&&m.worldId.length<=128?m.worldId:null;
         preview=m.preview===true;if(preview){document.body.dataset.preview='true';enter.firstChild.textContent='试玩这个副本 ';enter.querySelector('small').textContent='WASD 移动 · 鼠标环顾 · Esc 暂停';}
         engine=new BlankRuntime(document.getElementById('world'),{
-          onTarget:t=>{lastTarget=t?.treeId||null;document.getElementById('target').textContent=lastTarget?engine.objects.get(lastTarget)?.name||'':'';},
+          onTarget:t=>{
+            const selected=engine?.objects?.has(t?.treeId)?t.treeId:null;
+            if(selected!==lastTarget){lastTarget=selected;selectionRevision++;
+              if(worldId&&!preview)send('selection',{worldId,build:{id:build.id,hash:build.hash},objectId:selected,selectionRevision});
+            }
+            document.getElementById('target').textContent=lastTarget?engine.objects.get(lastTarget)?.name||'':'';
+          },
           onStats:s=>{if(!frozen)send('state',{snapshot:snapshot(),selected:lastTarget,fps:s.fps,renderer:engine.software?'兼容 3D':'WebGL'});},
           onNotice:inform,onControl:()=>{},onError:message=>send('error',{message}),
         });

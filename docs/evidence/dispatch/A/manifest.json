@@ -1,0 +1,41 @@
+{
+  "format": "craftmine.dispatch-evidence/1",
+  "agent": "A",
+  "sourceCommit": "1f8884a19dccdb18a97f68cc2ce4ad4e07df7a28",
+  "sourceOverlay": null,
+  "binary": {
+    "path": "D:/Craftmine World-worktrees/parallel-a-20260909/test-results/dispatch-a/build-target/debug/craftmine-core.exe",
+    "sha256": "a1513083b411fb4c2e186916f391ce6678a11f8b269b2636b9c98dee72509bb7",
+    "configuration": "debug"
+  },
+  "nodeVersion": "24.14.0",
+  "cargoVersion": "1.96.1",
+  "modelCalls": 0,
+  "modelTokens": 0,
+  "nativeCompactions": 0,
+  "osInputOperations": 0,
+  "windowFocusOperations": 0,
+  "testProfiles": "Unique mkdtemp directories under this worktree test-results/dispatch-a",
+  "evidence": [
+    {
+      "path": "docs/evidence/dispatch/A/rust-tests.log",
+      "sha256": "533a2ce5e9362632601b947cd24fba7ae75cee86a29454b1049af99d74913c03",
+      "description": "32 Rust transaction tests, including baseline 28"
+    },
+    {
+      "path": "docs/evidence/dispatch/A/build.log",
+      "sha256": "77ef1ace51fe60885faab87e6e90dab26c9cb01755e1b739a33d66ffb8c77e1e",
+      "description": "Debug Rust service build"
+    },
+    {
+      "path": "docs/evidence/dispatch/A/process-tests.log",
+      "sha256": "a39ef57394997acbbbc9c2497fd0fcd5082c55740bfd96dc7398ff421c25955f",
+      "description": "5 actual process/compiler suites with explicit proof fixtures"
+    },
+    {
+      "path": "docs/evidence/dispatch/A/INITIAL_FAILURES.md",
+      "sha256": "41338851853a300001f733e7577bb97228c39736d9064ded6d4334e20965bde3",
+      "description": "Observed earlier development failures; not reconstructed raw logs"
+    }
+  ]
+}

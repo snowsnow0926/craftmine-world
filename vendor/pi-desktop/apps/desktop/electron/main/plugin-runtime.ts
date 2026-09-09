@@ -283,6 +283,8 @@ export type PluginHostServices = {
     sessionId?: string;
     stripToolName?: string;
     signal?: AbortSignal;
+    /** Set only by the private built-in review API, never agent.complete input. */
+    craftmineReviewId?: string;
   }) => Promise<PluginCompleteResult>;
 };
 
@@ -893,6 +895,15 @@ export class PluginRuntime {
     await this.sendToChild(loaded, {
       t: "call", method: "lifecycle.turnEnded", payload: input,
     }, 10_000);
+  }
+
+  /** Private orchestrator-to-domain bridge; no renderer/third-party API maps here. */
+  async requestCraftmineHost(method: string, params: Record<string, unknown>): Promise<unknown> {
+    const allowed = new Set(["selection.read", "turn.begin", "task.context", "budget.reserve", "budget.settle", "budget.boundary", "review.context", "review.reserve", "review.settle"]);
+    if (!allowed.has(method)) throw apiError("UNSUPPORTED", "Unsupported Craftmine host request");
+    const loaded = this.loaded.get("craftmine.world");
+    if (!loaded?.child) throw apiError("UNSUPPORTED", "Craftmine world service unavailable");
+    return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, 15_000);
   }
 
   /**
@@ -2467,6 +2478,7 @@ export class PluginRuntime {
           ? pluginToolName(loaded.manifest.id, inFlight.toolName)
           : undefined,
         signal: controller.signal,
+        ...(craftmineReviewId ? { craftmineReviewId } : {}),
       });
       controller.signal.throwIfAborted();
     } catch (error) {

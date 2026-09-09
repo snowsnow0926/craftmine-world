@@ -17,7 +17,7 @@
     #import-result { padding:8px 12px; font-size:12px; color:light-dark(#376445,#afd0b8); } #import-result[hidden] { display:none; }
     :focus-visible { outline:2px solid light-dark(#47795e,#9cceae); outline-offset:2px; }
     iframe { display:block; flex:1; width:100%; border:0; min-height:0; }
-    .modes { display:flex; gap:4px; padding:6px 12px; border-bottom:1px solid light-dark(#e3e3e3,#333); }
+    .modes { display:flex; flex-wrap:wrap; gap:4px; padding:6px 12px; border-bottom:1px solid light-dark(#e3e3e3,#333); }
     .modes button { border-color:transparent; background:transparent; font-size:12px; }
     .modes button[aria-selected="true"] { background:light-dark(#e9e9e9,#303030); }
     #surface { position:relative; flex:1; min-height:0; display:flex; }
@@ -41,6 +41,28 @@
     #check-detail { margin-top:14px; border-top:1px solid light-dark(#ddd,#444); padding-top:12px; }
     #check-evidence { white-space:pre-wrap; overflow-wrap:anywhere; max-height:45vh; overflow:auto; font:11px/1.6 ui-monospace,monospace; }
     #checks-empty { color:light-dark(#656565,#aaa); line-height:1.7; }
+    #workbench-panel { position:absolute; inset:0; overflow:auto; background:light-dark(#fafafa,#191919); padding:14px; font-size:12px; line-height:1.65; }
+    #workbench-panel[hidden],[data-workbench-page][hidden] { display:none; }
+    .workbench-card,.workbench-detail { border:1px solid light-dark(#ddd,#393939); border-radius:9px; margin:10px 0; padding:12px; overflow-wrap:anywhere; }
+    .workbench-card h3,.workbench-detail h3 { margin:0 0 6px; font-size:13px; font-weight:600; }
+    .workbench-card p { margin:5px 0; }
+    .workbench-card form,.workbench-detail>form { display:inline-flex; margin:5px 5px 0 0; }
+    .workbench-meta,.workbench-empty { color:light-dark(#5f6361,#aeb6b0); }
+    .workbench-search,.workbench-form { display:flex; flex-wrap:wrap; align-items:end; gap:9px; margin:8px 0 14px; }
+    .workbench-search label,.workbench-form label { display:flex; flex-direction:column; gap:4px; min-width:0; flex:1 1 130px; }
+    .workbench-search input,.workbench-search select,.workbench-form input,.workbench-form select,.workbench-form textarea { width:100%; min-width:0; max-width:100%; }
+    .workbench-form textarea { resize:vertical; min-height:86px; color:inherit; background:light-dark(#fff,#242424); border:1px solid light-dark(#ddd,#444); border-radius:6px; padding:8px; font:inherit; }
+    .workbench-form label:has(textarea) { flex-basis:100%; }
+    .workbench-search input[type=checkbox],.workbench-form input[type=checkbox] { width:auto; align-self:start; }
+    .workbench-notice { min-height:20px; margin:0 0 10px; overflow-wrap:anywhere; }
+    .workbench-notice[data-error=true] { color:light-dark(#a82a2a,#ef9999); }
+    .workbench-notice[data-error=false] { color:light-dark(#376445,#afd0b8); }
+    .workbench-code { white-space:pre-wrap; overflow-wrap:anywhere; overflow:auto; max-height:40vh; font:11px/1.6 ui-monospace,monospace; }
+    .workbench-hash { overflow-wrap:anywhere; font:10px/1.5 ui-monospace,monospace; color:light-dark(#656565,#aaa); }
+    #selection-context { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:7px 12px; background:light-dark(#eaf1eb,#213529); font-size:12px; }
+    #selection-context[hidden] { display:none; } #selection-context span { flex:1; overflow-wrap:anywhere; }
+    #refresh-workbench { margin-left:auto; } #refresh-workbench button { font-size:11px; }
+    @media(max-width:420px) { header { gap:6px; padding:7px 8px; } .modes { padding:6px 8px; gap:2px; } .modes button { padding:6px; } .save-state { flex-basis:70px; } #workbench-panel { padding:10px; } .workbench-card form { display:flex; } }
   </style>
   <script src="view.js" defer></script>
 </head>
@@ -59,12 +81,19 @@
   </form>
   <div id="error" role="alert" hidden></div>
   <div id="import-result" role="status" hidden></div>
+  <div id="selection-context" aria-label="已选需求对象" hidden></div>
   <nav class="modes" aria-label="世界工作面板">
     <button id="world-mode" type="button" aria-selected="true">世界</button>
     <button id="checks-mode" type="button" aria-selected="false">检查记录</button>
+    <button type="button" data-workbench-tab="library" aria-selected="false">作品库</button>
+    <button type="button" data-workbench-tab="memory" aria-selected="false">记忆</button>
+    <button type="button" data-workbench-tab="task" aria-selected="false">任务</button>
+    <button type="button" data-workbench-tab="backup" aria-selected="false">备份</button>
+    <form id="refresh-workbench"><button type="submit" title="重新读取服务状态">刷新</button></form>
   </nav>
   <main id="surface">
     <iframe title="可游玩的世界" sandbox="allow-scripts allow-pointer-lock"></iframe>
+    <section id="workbench-panel" aria-label="创作工作台" hidden></section>
     <section id="checks-panel" aria-label="检查记录" hidden>
       <p id="checks-empty">还没有检查记录。创作助手修改好草稿后，可以在后台检查并生成预览。</p>
       <div id="checks-list"></div>

@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { existsSync } from "node:fs";
 import type { HostProcess, ProcessExitHandler, StderrHandler } from "./host-process";
 import { DEFAULT_RPC_TIMEOUT_MS, rpcTimeoutMs } from "@pi-desktop/shared";
+import { CRAFTMINE_PROXY_METHODS, type CraftmineTurnGateway } from "./craftmine-turn-gateway";
 
 // stderr lines kept per sidecar so an unexpected exit can be reported with the
 // process's last words instead of a bare "agent sidecar exited".
@@ -51,6 +52,7 @@ export type VendorAuthResolver = (input: {
 // host-core) and only for a provider row main bound to that same session, so
 // it cannot reach a credential the session was not launched with.
 const HOST_PROXY_ALLOWED = new Set([
+  ...CRAFTMINE_PROXY_METHODS,
   "tools.execute",
   "tools.abort",
   "tools.list",
@@ -115,6 +117,11 @@ export class AgentSidecar {
   // ask for auth it is already using, and a session that never bound an OAuth
   // row can ask for nothing at all.
   private vendorAuthBindings = new Map<string, Set<string>>();
+  private craftmineGateway: CraftmineTurnGateway | null = null;
+
+  setCraftmineGateway(gateway: CraftmineTurnGateway): void {
+    this.craftmineGateway = gateway;
+  }
 
   constructor(onStderr?: StderrHandler) {
     const entry = resolveSidecarEntry();
@@ -401,6 +408,13 @@ export class AgentSidecar {
           );
         }
         const params = (msg.params?.params ?? {}) as Record<string, unknown>;
+        if (CRAFTMINE_PROXY_METHODS.has(method)) {
+          if (!this.craftmineGateway) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
+          const result = await this.craftmineGateway.invoke(method, params);
+          this.writeToChild(JSON.stringify({ jsonrpc: "2.0", id: msg.id, result }) + "\n");
+          return;
+        }
+        if (method === "tools.execute") this.craftmineGateway?.assertTool(params);
         const requestedToolName = String(params.toolName ?? "");
         const planLocalTool =
           requestedToolName === "Skill" ||

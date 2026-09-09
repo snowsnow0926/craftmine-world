@@ -241,9 +241,22 @@ impl TaskJournal {
                 "VERIFICATION_SCENE_MISMATCH"
             );
             ensure!(
-                artifact["extensions"] == record["input"]["world"]["extensions"],
+                artifact["extensions"]
+                    == record["input"]["draft"]
+                        .get("extensions")
+                        .unwrap_or(&record["input"]["world"]["extensions"])
+                        .clone(),
                 "EXTENSIONS_CHANGED"
             );
+            if let Some(existing) = record["input"]["world"]["extensions"].as_array() {
+                let loaded = artifact["extensions"]
+                    .as_array()
+                    .context("EXTENSIONS_REQUIRED")?;
+                ensure!(
+                    existing.iter().all(|old| loaded.contains(old)),
+                    "EXISTING_EXTENSION_CHANGED"
+                );
+            }
             ensure!(
                 build["hash"]
                     .as_str()

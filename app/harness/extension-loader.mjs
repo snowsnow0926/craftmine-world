@@ -99,7 +99,7 @@ export async function runSelfTests(extension, { createRunner } = {}) {
     try {
       const real = await runCommands(extension, test, { createRunner });
       const realReport = evaluateAssertions(test.expect, real.trace);
-      entry.real = { passed: realReport.passed, detail: realReport.summary, effects: real.effects.map(effect => effect.type) };
+      entry.real = { passed: realReport.passed, detail: realReport.summary, effects: real.effects.map(effect => effect.type), trace: real.trace };
       const fake = await runCommands(extension, test, { createRunner, noop: true });
       const fakeReport = evaluateAssertions(test.expect, fake.trace);
       entry.noop = { passed: fakeReport.passed, detail: fakeReport.summary };
@@ -138,12 +138,18 @@ export async function stageExtension(input, { loaded = [], createRunner, verifyW
   // 评审的严重程度是**建议**，不是判据：真实运行证明评审会不断提出新的设计意见（等量治疗、
   // 白名单、冷却……），把它当硬门槛会让改稿循环永不收敛。硬门槛只保留机器能复核的检查。
   let reviewAssertions = [], reviewFindings = [], reviewBlocked = false, reviewRan = false;
+  let reviewExecution = {scope:'extension-selftest-traces',ran:false,passed:null,results:[]};
   if (typeof review !== 'function') checks.push({ name: '对抗评审', passed: false, detail: '装载扩展必须先过对抗评审（评审只能提出带断言的问题）' });
   else if (selfTests.passed) {
     try {
       const report = await review(prepared.extension, { selfTests });
       reviewRan = true;
       reviewAssertions = report?.assertions || [];
+      if(!Array.isArray(reviewAssertions)||reviewAssertions.length>32)throw Error('评审断言数量无效');
+      // Review severity stays advisory, but its executable claims are evaluated
+      // against actual sandbox traces, never accepted from model self-report.
+      const results=selfTests.results.map(test=>({name:test.name,...evaluateAssertions(reviewAssertions,test.real.trace)}));
+      reviewExecution={scope:'extension-selftest-traces',ran:true,passed:results.every(result=>result.passed),results};
       reviewFindings = (report?.findings || []).map(finding => ({ claim: finding.claim, severity: finding.severity }));
       reviewBlocked = Boolean(report?.blocked);
       checks.push({
@@ -163,7 +169,7 @@ export async function stageExtension(input, { loaded = [], createRunner, verifyW
   return {
     ...prepared, status: failed.length ? 'rejected' : 'ready', checks,
     error: failed.length ? failed.map(check => check.detail).join('；') : null,
-    selfTests, reviewAssertions, reviewFindings, reviewBlocked, reviewRan,
+    selfTests, reviewAssertions, reviewFindings, reviewBlocked, reviewRan, reviewExecution,
   };
 }
 
