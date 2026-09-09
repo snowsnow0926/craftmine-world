@@ -274,7 +274,7 @@ impl TaskJournal {
             && world.world.build["id"]
                 .as_str()
                 .is_some_and(|id| godot_builds::valid_build_id(id).is_ok());
-        let result = json!({
+        let mut result = json!({
             "format":"craftmine.godot-world-init/1","initId":init["initId"],"worldId":args.world_id,
             "title":init["title"],"baseId":init["baseId"],"baseBuild":init["baseBuild"],
             "status":status,"reason":reason,"playable":playable,
@@ -284,6 +284,13 @@ impl TaskJournal {
             "initialSnapshotHash":init["initialSnapshotHash"],"createdAt":init["createdAt"]
         });
         tx.commit()?;
+        if playable {
+            if let Err(error) = self.godot_runtime_describe(&json!({"worldId":args.world_id})) {
+                result["playable"] = json!(false);
+                result["reason"] = json!(error.to_string());
+                result["rebuildRequired"] = json!(true);
+            }
+        }
         Ok(result)
     }
 

@@ -38,6 +38,11 @@
       "sha256": "c12cdf346bfc966b827c9b91a57b7e500a5fa1f16d4b77e7a5d2e237583c64eb"
     },
     {
+      "path": "evidence/binary-migration-final.log",
+      "bytes": 9792,
+      "sha256": "3deabbd1983cff7fccaa9a40359a8942524761cde96885b39290f32fb9438c56"
+    },
+    {
       "path": "evidence/branch-check-01.log",
       "bytes": 7425,
       "sha256": "bb7d3a44cf958141ded8c0ca2f5685ff37a604b7ed76c23ad6c7bf14acb5dfb7"
@@ -81,6 +86,11 @@
       "path": "evidence/core-locks-full-01.log",
       "bytes": 35988,
       "sha256": "f52cf06639353d16672b042c2c0b9f4457a16e21727aeedf58ccf3ce2c8baada"
+    },
+    {
+      "path": "evidence/core-restoration-full.log",
+      "bytes": 36509,
+      "sha256": "13d1c4077cc41ff96ae0b41987e7dbef19a978a1126ecbbc0b4256ab3b78ec66"
     },
     {
       "path": "evidence/creation-retry-ui-report.json",
@@ -183,6 +193,51 @@
       "sha256": "96f9c6bdbc8fc51de5a06a3b086037d302231873c112806811ef932555872d53"
     },
     {
+      "path": "evidence/rebuild-check-01.log",
+      "bytes": 2356,
+      "sha256": "24eed7c2d03c03a2e40447f8a8d6c0ff92d66ed2759f471d806dd491f8f82735"
+    },
+    {
+      "path": "evidence/rebuild-check-final.log",
+      "bytes": 7425,
+      "sha256": "2dd500ac83dc822bbab1236fc664ee3996ccc11b6b5513b0d2827351c56aab54"
+    },
+    {
+      "path": "evidence/rebuild-context-build-final.log",
+      "bytes": 7670,
+      "sha256": "a925312c7a2ae2e2891dfc05c5042598fa3440b5f1c5346122384d7c2d3c7ed3"
+    },
+    {
+      "path": "evidence/rebuild-core-build.log",
+      "bytes": 7670,
+      "sha256": "655132440f4ce6cf8e63e1ae2ce57ee5b81edb567b03ab0b9ce2329ab9690a81"
+    },
+    {
+      "path": "evidence/rebuild-portable-01.log",
+      "bytes": 9542,
+      "sha256": "df7feae91680015e2031a608b334acb6dc741c92527bbb03b1812fddc3dbaf67"
+    },
+    {
+      "path": "evidence/rebuild-portable-02.log",
+      "bytes": 9542,
+      "sha256": "b54af0a651bdf1fef04c592fc1e720eaf5e62054fbd4e2cc80004de55a99881d"
+    },
+    {
+      "path": "evidence/rebuild-service-final.log",
+      "bytes": 265,
+      "sha256": "cd23027796164e1b43bac166d23f31a1665e9caca4586188e587eeaf551cd162"
+    },
+    {
+      "path": "evidence/rebuild-service-types.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/rebuild-worlds-final.log",
+      "bytes": 10158,
+      "sha256": "ae5eb73d39115923329379ef52eee62121a4fa677e836f2e9ae336225171651e"
+    },
+    {
       "path": "evidence/restore-proof-build.log",
       "bytes": 7425,
       "sha256": "88cfb03bc1b3f6378d097f696692cc43a46998e1c2d898150f465c781a3c59fc"
@@ -196,6 +251,16 @@
       "path": "evidence/restore-proof-final.log",
       "bytes": 9539,
       "sha256": "b5e8f1b127617db5ac29497d5ad78616bd39eb6dc0eb2aea9e4b7ebb249468e2"
+    },
+    {
+      "path": "evidence/source-context-02.log",
+      "bytes": 9791,
+      "sha256": "1109da446c0bc87b23f6b950a6f97a05da8e31a3453e260830e7265fa207c81d"
+    },
+    {
+      "path": "evidence/source-context-final.log",
+      "bytes": 10203,
+      "sha256": "77248621a32b0f44d79b4c4ac4978cb207467093c7b0edbd1d7fd1fc9ed54888"
     }
   ]
 }
