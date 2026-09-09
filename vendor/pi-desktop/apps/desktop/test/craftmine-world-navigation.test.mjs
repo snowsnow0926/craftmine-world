@@ -145,21 +145,23 @@ test("auxiliary sections cover the six surfaces and report missing channels", as
     aux.CRAFTMINE_AUX_SECTIONS.map((section) => section.id),
     ["works", "assets", "checks", "memory", "tasks", "backups"],
   );
-  assert.equal(aux.craftmineAuxSection("assets").channel, null);
+  assert.equal(aux.craftmineAuxSection("assets").channel, "asset.search");
+  assert.deepEqual(aux.craftmineAuxSection("assets").surface, { kind: "assets" });
   const calls = [];
   const bridge = {
     call: async (channel, payload) => {
       calls.push([channel, payload]);
       if (channel === "verification.list") return [{ status: "passed" }];
       if (channel === "library.search") return { items: [{}, {}], total: 7 };
+      if (channel === "asset.search") return { items: [{}, {}, {}], total: 12, truncated: true };
       return {};
     },
   };
-  assert.equal(await aux.loadAuxSummary(bridge, "w1", "assets"), null);
-  assert.equal(calls.length, 0);
+  assert.deepEqual(await aux.loadAuxSummary(bridge, "w1", "assets"),
+    { id: "assets", label: "\u7d20\u6750", count: 12, detail: "\u2026" });
+  assert.deepEqual(calls[0], ["asset.search", { worldId: "w1", scope: "local-library", offset: 0, limit: 5 }]);
   assert.deepEqual(await aux.loadAuxSummary(bridge, "w1", "checks"), { id: "checks", label: "\u68c0\u67e5", count: 1, detail: "passed" });
   assert.equal((await aux.loadAuxSummary(bridge, "w1", "works")).count, 7);
-  assert.equal(calls[0][1].worldId, "w1");
   assert.equal(aux.auxSummaryText(null, "en"), "Not connected");
   assert.match(aux.auxSummaryText({ id: "x", label: "x", count: 3, detail: "passed" }, "zh"), /3/);
 });
