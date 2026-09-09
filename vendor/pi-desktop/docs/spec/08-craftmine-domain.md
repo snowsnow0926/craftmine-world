@@ -2,6 +2,72 @@
 
 This is a downstream product specification. See ADR 0300.
 
+## Managed Godot source projects
+
+ADR 0312 adds a source-only Godot file-set capability to the same Rust domain
+database. It does not replace applied legacy worlds, scene drafts or progress.
+`hello` reports `godotProjects: true` and `godotExecution: false`; a stored project
+is neither a verified candidate nor a runnable/published base.
+
+The trusted broker owns every identity passed to these private stdio methods:
+
+| Method | Parameters in addition to host `context` and `worldId` | Result |
+| --- | --- | --- |
+| `godotProject.create` | `toolCallId`, current formal `baseBuild`, source `baseId`, `files: [{path,text}]` | Source receipt with world/task/call, revision 0, manifest hash and sizes |
+| `godotProject.index` | Optional paired `revision`/`manifestHash`, `offset` (default 0), `limit` (1–32) | Project target, writer provenance, sorted file path/hash/size entries, total and next offset |
+| `godotProject.read` | Required `revision`, `manifestHash`, `path`; character `offset` and `limit` (1–16,000) | Exact UTF-8 source page, file hash/size, total characters and next offset |
+| `godotProject.patch` | `toolCallId`, current `revision`/`manifestHash`, `operations` | New source receipt; identical call replay returns the original result |
+
+A put is `{op:"put",path,text,expectedHash}`; `null` is required for a new path,
+and replacements use the previous file hash. A remove is
+`{op:"remove",path,expectedHash}`. Empty/no-change changes and a missing final
+`project.godot` are rejected. Invalid multi-file changes do not publish partially.
+Unknown fields are refused. The private `godotProject.receipt` method takes the
+original `binding`, `worldId`, `toolCallId`, `method` and complete original
+parameter object as `request`; it can recover a committed receipt after the turn
+ended without accepting a late edit. There is no model-facing binding/receipt tool.
+
+World identity comes from the persisted session binding, not panel selection.
+Writes use the existing task/turn and exclusive world lease, reject changed formal
+base builds and check both the project revision and manifest hash. Reads can bind
+to immutable historical revisions. A new session turn can continue the existing
+world source head while an old turn loses write authority.
+
+The fixed source target is Godot `4.7.2-stable`, GDScript, `gl_compatibility`, Web.
+The `baseId` values `first-person`, `top-down`, `side-view` describe the authored
+file set; they do not certify those gameplay bases as delivered. Every successful
+mutation returns `status:"source-only"`, `verified:false`, `applied:false`.
+
+Manifest metadata and immutable revisions/receipts live in `tasks.sqlite`; source
+bytes are independent hash-addressed files scoped under the domain world's managed
+directory. File data is synchronized/verified before committing references. A
+failed transaction can leave an unreachable blob but cannot advance the visible
+head; a retry verifies and reuses it. Corrupt or missing referenced files report an
+error. No model-supplied read path is passed through to host filesystem APIs.
+
+The core accepts 1–16 files per create/patch, at most 4 MiB per UTF-8 file and
+8 MiB changed text, and at most 64 MiB/4,096 files per manifest. This is independent
+of the legacy 2,000,000-byte scene-document limit. Historical/orphan blobs can
+exceed 64 MiB; retained-storage quotas and garbage collection remain pending.
+Physical world directories use SHA-256 of the case-sensitive world ID, preventing
+Windows reserved-name and case aliasing. The broker's stricter public
+request budget remains valid. Source paths are ASCII portable segments (240 bytes,
+16 levels maximum), with Windows device names, ADS, absolute/traversal paths,
+hidden/cache entries, case aliases and file/directory collisions rejected. The
+allowed text extensions are `godot`, `gd`, `tscn`, `tres`, `gdshader`, `gdshaderinc`,
+`json`, `cfg`, `txt`, `md`, `csv`, `svg`. Managed filesystem links/reparse points
+are refused. Binary assets, runtime source validation, import/export, execution,
+OS isolation, candidate application and Godot backup/library support remain
+unavailable; legacy backups do not capture this new source authoring head.
+
+PI tools expose creation, index, read and patch through host context only; the
+model never supplies world/session/project/turn/binding or call IDs. Index and
+read hashes provide the observations needed to form a checked patch. Storage
+success must never be reported as game behavior, model validation or deployment.
+The Craftmine model context explicitly instructs the Agent to check `runtime_info`,
+treat these tools as source storage and never describe legacy `verification_submit`
+as building or verifying a Godot project.
+
 ## Task journal contract
 
 - `TaskBinding` is host-owned project, session, turn, task and base-build identity.

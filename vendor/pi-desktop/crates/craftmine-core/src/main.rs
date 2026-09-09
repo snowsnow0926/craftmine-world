@@ -10,7 +10,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
     let method = request["method"].as_str().context("METHOD_REQUIRED")?;
     if method == "hello" {
         return Ok(
-            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"verificationJobs":true,"advisoryReviews":true,"playerApplications":true,"publishesWorlds":true,"agentPublishesWorlds":false}),
+            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"verificationJobs":true,"advisoryReviews":true,"playerApplications":true,"publishesWorlds":true,"agentPublishesWorlds":false,"godotProjects":true,"godotExecution":false}),
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
@@ -24,6 +24,11 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         return journal.budget_call(method, params);
     }
     match method {
+        "godotProject.create" => return journal.godot_project_create(params),
+        "godotProject.index" => return journal.godot_project_index(params),
+        "godotProject.read" => return journal.godot_project_read(params),
+        "godotProject.patch" => return journal.godot_project_patch(params),
+        "godotProject.receipt" => return journal.godot_project_receipt(params),
         "library.search" => return journal.library_search(params),
         "library.read" => return journal.library_read(params),
         "library.capture" => return journal.library_capture(params),
@@ -309,6 +314,8 @@ fn main() -> Result<()> {
                     let retryable = matches!(
                         code,
                         "STALE_DRAFT"
+                            | "GODOT_PROJECT_REVISION_CONFLICT"
+                            | "PROJECT_FILE_CONFLICT"
                             | "WORLD_BUSY"
                             | "WORLD_APPLICATION_BUSY"
                             | "BACKUP_CURRENT_STATE_CONFLICT"

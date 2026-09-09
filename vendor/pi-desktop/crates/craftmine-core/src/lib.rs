@@ -12,6 +12,7 @@ use sha2::{Digest, Sha256};
 mod applications;
 mod backups;
 mod durable;
+mod godot_projects;
 mod legacy;
 mod library;
 mod memories;
@@ -151,6 +152,7 @@ impl TaskJournal {
         library::migrate(&db)?;
         memories::migrate(&db)?;
         backups::migrate(&db)?;
+        godot_projects::migrate(&db)?;
         let directory = std::fs::canonicalize(
             path.parent()
                 .filter(|p| !p.as_os_str().is_empty())

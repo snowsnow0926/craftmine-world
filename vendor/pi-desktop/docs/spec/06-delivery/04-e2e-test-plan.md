@@ -8662,3 +8662,36 @@ The shell fixture supplies session data and the native-view transport. Separatel
 run native offscreen acceptance for actual Electron/Rust startup, world persistence
 and shutdown; it must retain its input-isolation guards. Neither class of test
 authorizes OS input or visible windows, or proves model-generated Godot creation.
+
+### CRAFTMINE-019 — Managed Godot source file revisions
+
+Use a private isolated `craftmine-core` data directory and real stdio methods.
+Bind a host session to an existing world, create actual `project.godot`, `.tscn`
+and GDScript source files, index/read them, and replace a script using the exact
+project revision, manifest hash and file hash. Require source-only receipts and
+an unavailable execution flag. The old applied world and progress must remain
+unchanged. Index historical revisions and read exact UTF-8 character pages.
+
+Replay the same host call after a lost response without a second revision; reject
+changed replay input. End the turn and recover its receipt through the original
+binding. Open a new turn and continue the same source head; the old turn cannot
+edit. Change the visible world while retaining session binding and require that
+neither paths nor late operations cross into the selected world. Reject foreign
+project/session context, active foreign leases, stale revisions and base builds,
+file hash mismatches, Windows aliases/ADS/traversal and duplicate path operations.
+
+Rust tests must store a source file over the legacy 2 MB draft limit as an actual
+file, reopen SQLite, detect a corrupt blob, and inject a SQLite receipt-insert
+failure after blob creation. No partial head/version/receipt may appear, and a
+verified orphan blob may be reused on retry. A directory link/reparse fixture
+must be rejected when the platform permits creating that isolated fixture; an
+unavailable fixture is recorded explicitly, not counted as passing isolation.
+
+The PI broker integration separately proves that identity comes from execution
+context, tool arguments cannot override it, result pages remain bounded, and
+provider-visible success is described as saved source, not a built/playable world.
+Check that the model context requests `runtime_info` and does not suggest using
+legacy `verification_submit` to compile or verify the new Godot source file set.
+This scenario never starts Godot, evaluates generated source, sends input or
+focuses a window. Real model authorship, import/run sandboxing and application
+remain separate acceptance gates.
