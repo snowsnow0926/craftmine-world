@@ -6,5 +6,10 @@
 }
 .craftmine-world-nav:hover, .craftmine-world-nav.active { background: var(--ds-bg-active); color: var(--ds-text-primary); }
 .craftmine-world-nav:disabled { opacity: .55; cursor: default; }
-.craftmine-world-nav-hint { margin-left: auto; font-size: var(--text-2xs); color: var(--ds-text-muted); }
+.craftmine-world-nav-hint { margin-left: auto; font-size: var(--text-2xs); color: var(--ds-text-muted); white-space: normal; overflow-wrap: anywhere; }
 .craftmine-world-nav:focus-visible { outline: 2px solid var(--ds-text-secondary); outline-offset: 2px; }
+.craftmine-layout-controls { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 0; }
+.craftmine-layout-controls button { border: 1px solid transparent; border-radius: var(--radius-xs); background: transparent; color: var(--ds-text-secondary); padding: 4px 8px; font-size: var(--text-2xs); }
+.craftmine-layout-controls button[aria-pressed="true"] { background: var(--ds-bg-active); color: var(--ds-text-primary); }
+.craftmine-layout-controls button:focus-visible { outline: 2px solid var(--ds-text-secondary); outline-offset: 2px; }
+.work-panel-header > .craftmine-layout-controls { flex: none; }

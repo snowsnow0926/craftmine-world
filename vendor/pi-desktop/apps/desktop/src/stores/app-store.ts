@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { rememberCraftmineWidth } from "../lib/craftmine-layout";
 import i18n from "i18next";
 import type {
   AgentEventEnvelope,
@@ -4390,6 +4391,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       ),
     });
     saveWorkPanelWidth(get().workPanelWidth);
+    rememberCraftmineWidth(localStorage, get().workPanelWidth);
   },
 
   openFileInWorkPanel: (path, mimeType) => {

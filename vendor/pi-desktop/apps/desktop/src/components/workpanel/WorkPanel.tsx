@@ -33,6 +33,7 @@ import { FilesTab } from "./FilesTab";
 import { PluginViewTab } from "./PluginViewTab";
 import { WorkTabEmpty } from "./WorkTabEmpty";
 import { SubagentPanel } from "./SubagentPanel";
+import { CraftmineLayoutControls } from "../CraftmineLayoutControls";
 import type { SubagentPanelSelection } from "../../lib/subagent-panel";
 import {
   WORK_PANEL_MAX_WIDTH,
@@ -436,6 +437,7 @@ export function WorkPanel({
       />
       <div className="work-panel-main">
         <header className="work-panel-header" data-work-panel-section="current">
+          {activePluginView?.pluginId === "craftmine.world" && <CraftmineLayoutControls />}
           <div className="work-panel-context no-drag" ref={contextRef}>
             {subagentPanel ? (
               <div
