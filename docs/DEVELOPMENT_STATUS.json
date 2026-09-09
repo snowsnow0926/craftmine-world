@@ -3,18 +3,18 @@
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
   "currentMilestone": "W2",
   "baseline": "3bdf52f",
-  "updated": "2026-09-09",
+  "updated": "2026-09-09T04:07:45.682Z",
   "execution": {
     "scope": "current_codex_thread",
     "status": "running",
-    "reason": "W2 第 3 批完成会话绑定、Rust 草稿工具、原生分发和真实 PI/DeepSeek 草稿续改。候选验收、预览应用、作品复用与桌面模型设置闭环继续推进。",
+    "reason": "第 4 批完成 Rust 后台检查、持久证据、PI 检查面板和独立预览；开发版及新包内 EXE 各 31 项通过。继续评审、候选事务、作品复用与真实桌面模型闭环。",
     "activeGoal": true,
     "recurringDevelopment": true,
     "previousLiveCompactionTestStopped": true,
     "automationId": "craftmine-windows",
-    "worktree": null,
-    "branch": null,
-    "nextStep": "第 3 批 5de1c7c（含 bc5ff3a、b360559、d526ebb）已合并本地 master。先确认交付状态记录也已合并，然后从最新 master 创建新的 codex/ 分支和独立 W2 候选工作树。实现 Rust 验收作业、不可变证据和候选事务；接 PI 候选差异/验收/预览/玩家应用面板，再接最小作品检索与真实桌面模型设置闭环。不要重做已通过的会话草稿工具或无改动重复 W1 检查。",
+    "worktree": "D:/Craftmine World-worktrees/pi-candidates-20260909",
+    "branch": "codex/pi-candidates-20260909",
+    "nextStep": "先完成第 4 批报告、证据和源码的本地合并与交付记录，再从最新 master 建立新 W2 工作树。复用已完成的 verification.* 作业和 PI 预览，接入必须执行但只作建议的模型评审、需求验收和 Rust 候选应用事务；保存最新玩家进度、处理位置/状态/版本冲突，应用后正确推进草稿基准。随后完成作品检索/固定版本复用和真实桌面模型设置闭环。不要重写已通过的草稿与后台检查，也不要把机器通过当成玩家应用。",
     "cleanupNote": "三批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909 留有文件：Git 删除返回 Directory not empty；随后各批针对自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未给出更具体原因。保留这三个目录，不自动重试删除，也不复用。不阻断后续开发。"
   },
   "windowsClientPlan": {
@@ -52,7 +52,7 @@
     },
     "knownGaps": [
       "W1 开发版与包内 EXE 已通过原生离屏验收；可见窗口合成、物理双击、正式安装、图标/引导仍待完善",
-      "W2 Rust 会话草稿和 PI 工具已接通；候选验收作业、证据、预览/应用、作品检索仍待接入",
+      "W2 Rust 草稿、后台检查、不可变证据和 PI 独立预览已接通；模型评审、正式应用事务和作品检索仍待完成",
       "实际 Electron 工具分发已通过；真实 PI/DeepSeek 草稿生成续改使用隔离调用会话，不等于桌面模型设置到玩家应用的完整闭环",
       "世界草稿写入租约与停止跨进程接线已完成；崩溃后的租约恢复、显式丢弃与跨会话作品复用仍待实现",
       "需核实完整模型请求上下文预算，补世界记忆注入、Windows 凭据和至少三次强制压缩后绿色收尾",
@@ -70,8 +70,8 @@
       "passed": 276,
       "failed": 0,
       "skipped": 0,
-      "evidence": "test-results/windows-batch-03/w2-domain-tests.log",
-      "scope": "领域回归；另有 Rust 16、插件草稿 16、核心探针 8、原生开发版 23、身份传递 5、真实 PI 模型草稿 6、渲染 2 项通过。具体边界见第 3 批报告。"
+      "evidence": "test-results/windows-batch-04/w2-verification-domain-tests.log",
+      "scope": "另有 Rust 22、插件草稿 16、共享 HTTP 验收 3、取消/静态解析 2、画面采样 1、原生开发版及包内 EXE 各 31 项通过；无本批真实模型调用。"
     },
     "buildVerification": {
       "dependencies": "pnpm install --frozen-lockfile: passed",
@@ -135,6 +135,33 @@
       ],
       "mergedCommit": "5de1c7c",
       "cleanup": "Merged branch and worktree registration removed; residual directory retained after automatic approval review rejected recursive cleanup."
+    },
+    "batch04": {
+      "report": "docs/WINDOWS_BATCH_04.md",
+      "status": "W2 verification jobs and independent preview complete; review, application, library and native model flow pending",
+      "rustTests": "22/22",
+      "pluginDraftChecks": "16/16",
+      "sharedBrowserChecks": "3/3",
+      "brokerParserChecks": "2/2",
+      "frameCheck": "1/1",
+      "nativeDevelopmentChecks": "31/31",
+      "nativePackagedChecks": "31/31",
+      "realModelCalled": false,
+      "sourceCommits": [
+        "1a497f8",
+        "2f12573",
+        "2566c4f"
+      ],
+      "buildCommit": "2566c4f",
+      "packageUpdated": true,
+      "evidenceDirectory": "docs/evidence/windows-batch-04",
+      "deliveryDirectory": "D:/Craftmine World/desktop/build/windows-preview-batch-04",
+      "executableSha256": "52db7aaa2a8e77e4b2924ba6f56e4fed29e7d325b532d65afe6194213ae1c3be",
+      "sourceZipSha256": "d941f6fced8c5833b5439550e082337a8aecb97a3601c123191eff772c4f111b",
+      "copyVerified": true,
+      "signature": "NotSigned",
+      "merge": "pending",
+      "cleanup": "pending"
     }
   },
   "liveVerification": {
@@ -357,7 +384,7 @@
       ]
     }
   ],
-  "nextAction": "继续 docs/WINDOWS_DEVELOPMENT_LOG.md 指定的独立工作树，完成 W0 Rust 领域事务、调用身份透传和世界资源探针，然后 W1 完整 PI 桌面客户端。旧真实压缩和真实模型扩展全链路仍需复验，不将固定源码测试代替真实模型证据。",
+  "nextAction": "先完成第 4 批报告、证据和源码的本地合并与交付记录，再从最新 master 建立新 W2 工作树。复用已完成的 verification.* 作业和 PI 预览，接入必须执行但只作建议的模型评审、需求验收和 Rust 候选应用事务；保存最新玩家进度、处理位置/状态/版本冲突，应用后正确推进草稿基准。随后完成作品检索/固定版本复用和真实桌面模型设置闭环。不要重写已通过的草稿与后台检查，也不要把机器通过当成玩家应用。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",
@@ -374,7 +401,8 @@
       "worldCandidateAndProgressUnchanged": true,
       "allPreviousFieldsUnchanged": true,
       "projectFileBytesUnchanged": true,
-      "migration": "No project migration; all project bytes unchanged. Asset index is created only on explicit import."
+      "migration": "No project migration; all project bytes unchanged. Asset index is created only on explicit import.",
+      "observationStatus": "Historical observation; not rechecked or modified in Windows batch 04"
     },
     "lastReadOnlyCheck": {
       "date": "2026-09-08T16:02:55.917Z",
@@ -383,6 +411,11 @@
       "current": "v-ef6c29ea887d0323e15d",
       "candidate": null,
       "applying": null
+    },
+    "windowsPreview": {
+      "directory": "D:/Craftmine World/desktop/build/windows-preview-batch-04",
+      "buildCommit": "2566c4f",
+      "scope": "Unpacked Windows preview; machine verification and independent draft preview; application and real model desktop flow pending"
     }
   },
   "capabilityRoadmap": {

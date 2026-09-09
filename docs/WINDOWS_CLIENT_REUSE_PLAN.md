@@ -2,7 +2,7 @@
 
 版本：2.1 · 2026-09-09。**本版以 PI-Desktop 为首选底座，替代 v1 的 DeepSeek Harness 桌面端方案。**
 
-状态：用户已授权将本计划设为目标并持续开发至 W0–W5 完成。W0 接入探针与 W1 核心运行自动验收已通过，W2 已接通会话草稿工具，真实 PI/DeepSeek 组件创作与续改通过；候选验收、预览应用、作品复用和桌面模型配置全流程仍待完成。上一批包内 EXE 17 项、本批原生开发版 23 项通过，可见窗口体验与最终安装交付仍待完成。执行详情以 DEVELOPMENT_STATUS.json、WINDOWS_DEVELOPMENT_LOG.md 和 WINDOWS_BATCH_03.md 为准。用户追加要求：优先采用 Rust 核心后端，前端尽量保留并强化 PI-Desktop 完整桌面体验。
+状态：用户已授权持续开发至 W0–W5 完成。W0 接入探针与 W1 核心运行自动验收已通过。W2 已接通会话草稿、Rust 后台检查、不可变证据、PI 检查面板和独立预览；第 4 批开发版及包内 EXE 各 31 项通过。正式候选应用、模型评审、作品复用和真实桌面模型配置全流程仍待完成。以 DEVELOPMENT_STATUS.json、WINDOWS_DEVELOPMENT_LOG.md 和 WINDOWS_BATCH_04.md 为准。前端继续保留并强化完整 PI 桌面，Rust 管理创作核心。
 
 ## 1. 本版的核心决定
 

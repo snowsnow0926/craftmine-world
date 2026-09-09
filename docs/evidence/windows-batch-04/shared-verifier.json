@@ -1,0 +1,310 @@
+{
+  "date": "2026-09-09T03:48:35.505Z",
+  "checks": [
+    {
+      "name": "共享验收器观察实际碰撞、位置和颜色变化，并验证恢复事件",
+      "passed": true,
+      "detail": {
+        "format": "craftmine.behavior-check/1",
+        "build": "9824c541b628dd4dabd7477bc37964a745f64822968a28d43850f1e4ef670ab4",
+        "passed": true,
+        "modules": [
+          {
+            "id": "sliding-door",
+            "revision": "code-b044d5b5b68ebcd486ed",
+            "passed": true,
+            "events": [
+              "start",
+              "tick",
+              "interact:door-one",
+              "interact:door-one",
+              "contact:door-one",
+              "attack:door-one",
+              "land:door-one",
+              "restore"
+            ],
+            "effects": [
+              {
+                "type": "hud.message",
+                "text": "门已打开"
+              },
+              {
+                "type": "hud.message",
+                "text": "门已关闭"
+              }
+            ],
+            "motions": [
+              {
+                "id": "door-one",
+                "position": {
+                  "x": 1.2,
+                  "y": 6,
+                  "z": 7
+                }
+              },
+              {
+                "id": "door-one",
+                "position": {
+                  "x": 0,
+                  "y": 6,
+                  "z": 7
+                }
+              }
+            ],
+            "error": null,
+            "declaredKeys": [],
+            "keyEffects": [],
+            "acceptance": {
+              "format": "craftmine.acceptance/1",
+              "passed": true,
+              "assertions": [
+                {
+                  "id": "interact#1:object.patch",
+                  "kind": "commandEffect",
+                  "passed": true,
+                  "detail": "object.patch door-one 生效：位置、碰撞"
+                },
+                {
+                  "id": "interact#3:object.patch",
+                  "kind": "commandEffect",
+                  "passed": true,
+                  "detail": "object.patch door-one 生效：位置、碰撞"
+                }
+              ],
+              "summary": "模块没有声明按键，跳过按键验收；命令级验收通过"
+            },
+            "state": {
+              "format": "craftmine.behavior-state/2",
+              "time": 1,
+              "modules": {
+                "sliding-door": {
+                  "stateVersion": 1,
+                  "revision": "code-b044d5b5b68ebcd486ed",
+                  "state": {
+                    "open": false
+                  },
+                  "overrides": {
+                    "door-one": {
+                      "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                      },
+                      "visible": true,
+                      "solid": true,
+                      "color": "#ff5599",
+                      "yaw": 0
+                    }
+                  },
+                  "error": ""
+                }
+              },
+              "inventory": {},
+              "archive": []
+            },
+            "world": {
+              "playerHealth": null,
+              "objects": [
+                {
+                  "id": "door-one",
+                  "position": {
+                    "x": 0,
+                    "y": 6,
+                    "z": 7
+                  },
+                  "visible": true,
+                  "mesh": true,
+                  "health": 0,
+                  "solid": true,
+                  "color": "#ff5599",
+                  "bounds": {
+                    "min": {
+                      "x": -0.5,
+                      "y": 6,
+                      "z": 7
+                    },
+                    "max": {
+                      "x": 0.5,
+                      "y": 8.5,
+                      "z": 7.23
+                    }
+                  }
+                },
+                {
+                  "id": "pad-one",
+                  "position": {
+                    "x": 3,
+                    "y": 6,
+                    "z": 7
+                  },
+                  "visible": true,
+                  "mesh": true,
+                  "health": 0,
+                  "solid": true,
+                  "color": "#6bcbbc",
+                  "bounds": {
+                    "min": {
+                      "x": 2.3,
+                      "y": 6,
+                      "z": 6.3
+                    },
+                    "max": {
+                      "x": 3.6999999999999997,
+                      "y": 6.15,
+                      "z": 7.699999999999999
+                    }
+                  }
+                }
+              ],
+              "inventory": {},
+              "items": {},
+              "resources": {},
+              "panels": {},
+              "effects": [
+                "hud.message",
+                "hud.message"
+              ]
+            },
+            "gameplay": {
+              "systems": {},
+              "targets": {},
+              "equipped": null,
+              "archivedTargets": {}
+            }
+          },
+          {
+            "id": "spring-pad",
+            "revision": "code-fecc13a877fc9d61a139",
+            "passed": true,
+            "events": [
+              "start",
+              "tick",
+              "interact:pad-one",
+              "interact:pad-one",
+              "contact:pad-one",
+              "attack:pad-one",
+              "land:pad-one",
+              "restore"
+            ],
+            "effects": [
+              {
+                "type": "player.impulse",
+                "velocity": {
+                  "x": 0,
+                  "y": 12,
+                  "z": 0
+                }
+              }
+            ],
+            "motions": [],
+            "error": null,
+            "declaredKeys": [],
+            "keyEffects": [],
+            "acceptance": {
+              "format": "craftmine.acceptance/1",
+              "passed": true,
+              "assertions": [],
+              "summary": "模块没有声明按键，跳过按键验收；没有可检查的命令"
+            },
+            "state": {
+              "format": "craftmine.behavior-state/2",
+              "time": 1,
+              "modules": {
+                "spring-pad": {
+                  "stateVersion": 1,
+                  "revision": "code-fecc13a877fc9d61a139",
+                  "state": {
+                    "lastBounce": 0.6000000000000001,
+                    "bounces": 1
+                  },
+                  "overrides": {},
+                  "error": ""
+                }
+              },
+              "inventory": {},
+              "archive": []
+            },
+            "world": {
+              "playerHealth": null,
+              "objects": [
+                {
+                  "id": "door-one",
+                  "position": {
+                    "x": 0,
+                    "y": 6,
+                    "z": 7
+                  },
+                  "visible": true,
+                  "mesh": true,
+                  "health": 0,
+                  "solid": true,
+                  "color": null,
+                  "bounds": {
+                    "min": {
+                      "x": -0.5,
+                      "y": 6,
+                      "z": 7
+                    },
+                    "max": {
+                      "x": 0.5,
+                      "y": 8.5,
+                      "z": 7.23
+                    }
+                  }
+                },
+                {
+                  "id": "pad-one",
+                  "position": {
+                    "x": 3,
+                    "y": 6,
+                    "z": 7
+                  },
+                  "visible": true,
+                  "mesh": true,
+                  "health": 0,
+                  "solid": true,
+                  "color": "#6bcbbc",
+                  "bounds": {
+                    "min": {
+                      "x": 2.3,
+                      "y": 6,
+                      "z": 6.3
+                    },
+                    "max": {
+                      "x": 3.6999999999999997,
+                      "y": 6.15,
+                      "z": 7.699999999999999
+                    }
+                  }
+                }
+              ],
+              "inventory": {},
+              "items": {},
+              "resources": {},
+              "panels": {},
+              "effects": [
+                "player.impulse"
+              ]
+            },
+            "gameplay": {
+              "systems": {},
+              "targets": {},
+              "equipped": null,
+              "archivedTargets": {}
+            }
+          }
+        ],
+        "scope": "接口与事件序列检查；不等同于玩家需求验收"
+      }
+    },
+    {
+      "name": "顶层源码仅在隔离 Worker 执行，异常成为失败证据",
+      "passed": true
+    },
+    {
+      "name": "检查没有修改测试世界",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

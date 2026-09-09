@@ -1,0 +1,73 @@
+{
+  "recordedAt": "2026-09-09T04:05:26.756Z",
+  "sourceCommits": [
+    "1a497f8",
+    "2f12573",
+    "2566c4f"
+  ],
+  "checks": [
+    {
+      "command": "npm test",
+      "passed": 276,
+      "failed": 0,
+      "evidence": "test-results/windows-batch-04/w2-verification-domain-tests.log"
+    },
+    {
+      "command": "cargo test --locked -p craftmine-core",
+      "passed": 22,
+      "failed": 0,
+      "scope": "Rust unit tests; output recorded in Codex tool log"
+    },
+    {
+      "command": "node tests/desktop-drafts-probe.mjs",
+      "passed": 16,
+      "failed": 0,
+      "scope": "Actual plugin and Rust, fixture invocation identity"
+    },
+    {
+      "command": "node tests/shared-behavior-verification.mjs",
+      "passed": 3,
+      "failed": 0,
+      "scope": "Shared verifier via actual HTTP and headless Workers"
+    },
+    {
+      "command": "node --test tests/desktop-verification-jobs.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "scope": "Injected cancellation transport failure and actual bundled static parser"
+    },
+    {
+      "command": "node --test test/craftmine-frame-check.test.mjs",
+      "passed": 1,
+      "failed": 0,
+      "scope": "Nonempty black HUD rejected, colored game frame accepted"
+    },
+    {
+      "command": "CRAFTMINE_TEST_VERIFICATION=1 node tests/desktop-native.mjs",
+      "passed": 31,
+      "failed": 0,
+      "scope": "Actual native development client with fixture tool requests"
+    },
+    {
+      "command": "CRAFTMINE_PACKAGED_ROOT=<built program> CRAFTMINE_TEST_VERIFICATION=1 node tests/desktop-native.mjs",
+      "passed": 31,
+      "failed": 0,
+      "scope": "Actual unpacked EXE with fixture tool requests"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "result": "passed"
+    },
+    {
+      "command": "desktop/build-client.ps1",
+      "result": "passed",
+      "sourceCommit": "2566c4f"
+    }
+  ],
+  "limits": [
+    "No real model was called in this batch; previous batch real-model evidence is separate.",
+    "No advisory model review, candidate application, cross-session creation library, compaction or installer acceptance.",
+    "Offscreen UI surfaces do not prove visible native composition or physical double-click.",
+    "The program is an unsigned unpacked Windows preview, not an installer."
+  ]
+}

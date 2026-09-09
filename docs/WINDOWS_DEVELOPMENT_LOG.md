@@ -69,3 +69,13 @@
 - 完整报告 WINDOWS_BATCH_03.md，便携证据 docs/evidence/windows-batch-03，原始运行目录已复制到主项目 test-results/windows-batch-03。未操作真实输入、置前窗口或修改个人世界；未推送远程。
 
 - 第 3 批合并完成：5de1c7c 及全部实现提交已进入本地 master，未推送。工作树登记与开发分支已移除；Git 删除返回 Directory not empty，针对本批残留的递归清理被自动执行审核以 blocked by policy 拒绝，未给出更具体原因。保留 D:/Craftmine World-worktrees/pi-client-w2-20260909，不再自动删除或复用；先前两个被拒绝清理的目录也保持不动。本次状态记录使用单独的轻量工作树提交。
+
+## 2026-09-09：W2 后台检查、独立预览与第 4 批程序
+
+- 独立工作树 pi-candidates-20260909，基线 master ff9f3e6；实现提交 1a497f8、2f12573，回归提交 2566c4f。
+- Rust 保存不可变检查输入、身份/版本、调用回执和证据；编辑、停止、新轮次取消旧检查，正常结束允许已提交检查收尾。程序重启或回执失联 60 秒后标为中断。
+- PI 注册 verification_submit/read/cancel，世界工作面板新增检查卡片、简明结果与独立副本。实际 Electron 离屏服务跑共享行为检查器和游戏画面；模型和页面不能填写检查结果。正式应用与模型评审仍未接通。
+- 实测修复 Electron 被当 Node 启动的语法检查、离屏 ResizeObserver 导致黑屏、验收漏记碰撞/颜色和切换世界残留旧卡片。保留初次黑屏的窄通过记录，最终结果另行复验。
+- 领域 276/276、Rust 22/22、插件草稿 16/16、共享 HTTP 检查 3/3、取消/解析 2/2、画面检查 1/1；原生开发版与包内 EXE 各 31/31。构建/类型检查通过。本批没有调用模型。
+- 程序基于 2566c4f，复制到主目录 desktop/build/windows-preview-batch-04；58 个文件逐个哈希一致，约 393 MiB，未签名程序目录，附许可证、源码 ZIP 和构建说明。
+- 完整报告 WINDOWS_BATCH_04.md；便携证据 docs/evidence/windows-batch-04，原始记录已保存主目录 test-results/windows-batch-04。当前继续 W2 的评审、正式应用事务、作品检索和真实桌面模型全流程，之后 W3–W5；不改变目标。

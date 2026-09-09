@@ -1,0 +1,768 @@
+{
+  "format": "craftmine.native-acceptance/1",
+  "mode": "development",
+  "time": "2026-09-09T03:58:30.542Z",
+  "passed": true,
+  "checks": [
+    {
+      "name": "原生客户端启动真实 Rust 宿主和内置世界插件",
+      "passed": true
+    },
+    {
+      "name": "原生窗口全程离屏、不可聚焦且未显示",
+      "passed": true
+    },
+    {
+      "name": "客户端使用本次独立配置目录",
+      "passed": true
+    },
+    {
+      "name": "真实 React 前端通过沙箱 preload 与 Electron 通信",
+      "passed": true
+    },
+    {
+      "name": "桌面、世界面板和游戏初始化时均禁止鼠标锁定与焦点请求",
+      "passed": true
+    },
+    {
+      "name": "实际游戏隔离帧无法访问 Node 或插件桥",
+      "passed": true
+    },
+    {
+      "name": "PI Rust dispatch resolves the actual session and world identity",
+      "passed": true
+    },
+    {
+      "name": "Native utility process compiles and commits a real resource",
+      "passed": true
+    },
+    {
+      "name": "The same host tool-call ID recovers its committed receipt",
+      "passed": true
+    },
+    {
+      "name": "Native read returns the saved authored resource and its hash",
+      "passed": true
+    },
+    {
+      "name": "Native tool dispatch cannot accept model-authored session identity",
+      "passed": true
+    },
+    {
+      "name": "Verification submission returns a durable queued job without waiting for rendering",
+      "passed": true
+    },
+    {
+      "name": "Repeated submission recovers the same job",
+      "passed": true
+    },
+    {
+      "name": "The native isolated renderer runs actual behavior Workers and renders the compiled world",
+      "passed": true
+    },
+    {
+      "name": "The world panel cannot manufacture verification evidence",
+      "passed": true
+    },
+    {
+      "name": "An independent preview loads the checked build and retains the formal player",
+      "passed": true
+    },
+    {
+      "name": "A compiled but broken behavior fails inside the actual Worker and retains its diagnostic",
+      "passed": true
+    },
+    {
+      "name": "Old successful evidence is marked historical after the draft changes",
+      "passed": true
+    },
+    {
+      "name": "Verification and preview do not publish draft code or replace saved player progress",
+      "passed": true
+    },
+    {
+      "name": "Finishing the host turn prevents late native tool writes",
+      "passed": true
+    },
+    {
+      "name": "原生表单经 Electron 授权目录桥和 Rust 完成旧世界导入",
+      "passed": true
+    },
+    {
+      "name": "退出前的真实游戏变化尚未写入持久存档",
+      "passed": true
+    },
+    {
+      "name": "真实 SQLite 写锁使原生退出失败时保留可重试的世界",
+      "passed": true
+    },
+    {
+      "name": "导入与保存失败全过程没有真实输入或窗口焦点调用",
+      "passed": true
+    },
+    {
+      "name": "解除写锁后原生退出先保存再正常关闭",
+      "passed": true
+    },
+    {
+      "name": "退出时未重建已销毁的界面或产生页面未处理异常",
+      "passed": true
+    },
+    {
+      "name": "关闭后 Rust 持久存档包含退出前最后的玩家位置",
+      "passed": true
+    },
+    {
+      "name": "完整重启同一原生客户端保留当前世界和已保存进度",
+      "passed": true
+    },
+    {
+      "name": "重启仍保持离屏和零输入调用",
+      "passed": true
+    },
+    {
+      "name": "重启后的客户端也能正常保存退出",
+      "passed": true
+    },
+    {
+      "name": "重启退出仍没有输入调用和页面未处理异常",
+      "passed": true
+    }
+  ],
+  "evidence": {
+    "initialStatus": {
+      "name": "craftmine world",
+      "profile": "D:\\Craftmine World-worktrees\\pi-candidates-20260909\\test-results\\desktop-native-ZPa1iF\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/Craftmine%20World-worktrees/pi-candidates-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    "desktop": {
+      "title": "craftmine world · 最中幻想",
+      "text": "最中幻想\n世界\n打开工作台\n会话\n暂无临时对话\n项目\nlegacy\nD:/Craftmine World-worktrees/pi-candidates-20260909/test-results/desktop-native-ZPa1iF/legacy\n当前项目还没有对话\n打开通知中心\nv0.14.3\n新建任务\n今天，创造怎样的世界？\n开始使用\n关闭\n添加 AI 模型服务\n保存 API 密钥\n打开项目文件夹\n发送第一条消息\n加载开发插件（可选）\n描述你的想法，比如在身边种一片花草…\n智能体\n每次询问\n模型\n世界\n最中幻想\n让你的想法，长成一个世界\n正在启动最中幻想…",
+      "version": {
+        "ok": true,
+        "data": {
+          "name": "craftmine world",
+          "version": "0.14.3",
+          "protocolVersion": 11,
+          "hostProtocolVersion": 11,
+          "hostVersion": "0.14.3",
+          "platform": "win32",
+          "arch": "x64"
+        }
+      },
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    "guards": [
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/pi-candidates-20260909/vendor/pi-desktop/apps/desktop/out/renderer/index.html"
+      },
+      {
+        "bridge": "object",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/pi-candidates-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+      },
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "about:srcdoc"
+      }
+    ],
+    "drafts": {
+      "sessionId": "499c37b7-da1b-4822-b219-cb71387fdbd7",
+      "turnId": "a106903d-969e-4fde-a768-c8965ed85fb3",
+      "worldId": "3ef74df4-19d8-42a6-aa58-9401ca667468",
+      "taskId": "work-864509d66a66d9f2c4393a66759bf07bdd1df963d869ecfc6bff7a226125ca93",
+      "checks": [
+        {
+          "name": "PI Rust dispatch resolves the actual session and world identity",
+          "passed": true
+        },
+        {
+          "name": "Native utility process compiles and commits a real resource",
+          "passed": true
+        },
+        {
+          "name": "The same host tool-call ID recovers its committed receipt",
+          "passed": true
+        },
+        {
+          "name": "Native read returns the saved authored resource and its hash",
+          "passed": true
+        },
+        {
+          "name": "Native tool dispatch cannot accept model-authored session identity",
+          "passed": true
+        },
+        {
+          "name": "Verification submission returns a durable queued job without waiting for rendering",
+          "passed": true
+        },
+        {
+          "name": "Repeated submission recovers the same job",
+          "passed": true
+        },
+        {
+          "name": "The native isolated renderer runs actual behavior Workers and renders the compiled world",
+          "passed": true
+        },
+        {
+          "name": "The world panel cannot manufacture verification evidence",
+          "passed": true
+        },
+        {
+          "name": "An independent preview loads the checked build and retains the formal player",
+          "passed": true
+        },
+        {
+          "name": "A compiled but broken behavior fails inside the actual Worker and retains its diagnostic",
+          "passed": true
+        },
+        {
+          "name": "Old successful evidence is marked historical after the draft changes",
+          "passed": true
+        },
+        {
+          "name": "Verification and preview do not publish draft code or replace saved player progress",
+          "passed": true
+        },
+        {
+          "name": "Finishing the host turn prevents late native tool writes",
+          "passed": true
+        }
+      ],
+      "modelCalled": false,
+      "verification": {
+        "passed": {
+          "createdAt": 1788926299454,
+          "current": true,
+          "id": "check-9aba705da128353176f4d6a079280db5cadda1ac20e260d9ef5c24509beddc0d",
+          "inputHash": "5c3ca9635b17559d5c5be23b57a7e6b1bf018ca19cb4f34705052ef3d9ba8e82",
+          "next": null,
+          "outputHash": "361db59541b15bfe5dd1873bd108ac968e30d11b2d116ce1199d5ffc87ca4252",
+          "overview": {
+            "changes": [
+              {
+                "behaviors": 1,
+                "name": "新增",
+                "objects": 1,
+                "systems": 0
+              },
+              {
+                "behaviors": 0,
+                "name": "修改",
+                "objects": 0,
+                "systems": 0
+              },
+              {
+                "behaviors": 0,
+                "name": "移除",
+                "objects": 0,
+                "systems": 0
+              }
+            ],
+            "checks": [
+              {
+                "name": "场景编译",
+                "passed": true
+              },
+              {
+                "name": "玩法事件",
+                "passed": true
+              },
+              {
+                "name": "游戏画面",
+                "passed": true
+              }
+            ],
+            "error": null
+          },
+          "publishingAvailable": false,
+          "start": 0,
+          "status": "passed",
+          "summary": "Native flower and gameplay verification",
+          "taskId": "work-864509d66a66d9f2c4393a66759bf07bdd1df963d869ecfc6bff7a226125ca93",
+          "text": "{\n  \"evidence\": {\n    \"behaviors\": {\n      \"build\": \"b37e4c998356dac0f60cfac3088f780b0737d5b45a6f486a73dfbf28509b060d\",\n      \"format\": \"craftmine.behavior-check/1\",\n      \"modules\": [\n        {\n          \"acceptance\": {\n            \"assertions\": [],\n            \"format\": \"craftmine.acceptance/1\",\n            \"passed\": true,\n            \"summary\": \"模块没有声明按键，跳过按键验收；没有可检查的命令\"\n          },\n          \"declaredKeys\": [],\n          \"effects\": [],\n          \"error\": null,\n          \"events\": [\n            \"start\",\n            \"tick\",\n            \"interact:native-flower\",\n            \"interact:native-flower\",\n            \"contact:native-flower\",\n            \"attack:native-flower\",\n            \"land:native-flower\",\n            \"restore\"\n          ],\n          \"gameplay\": {\n            \"archivedTargets\": {},\n            \"equipped\": null,\n            \"systems\": {},\n            \"targets\": {}\n          },\n          \"id\": \"native-check-behavior\",\n          \"keyEffects\": [],\n          \"motions\": [],\n          \"passed\": true,\n          \"revision\": \"code-f66339fb0ab2a79001f4\",\n          \"state\": {\n            \"archive\": [],\n            \"format\": \"craftmine.behavior-state/2\",\n            \"inventory\": {},\n            \"modules\": {\n              \"native-check-behavior\": {\n                \"error\": \"\",\n                \"overrides\": {},\n                \"revision\": \"code-f66339fb0ab2a79001f4\",\n                \"state\": {},\n                \"stateVersion\": 1\n              }\n            },\n            \"time\": 1\n          },\n          \"world\": {\n            \"effects\": [],\n            \"inventory\": {},\n            \"items\": {},\n            \"objects\": [\n              {\n                \"bounds\": {\n                  \"max\": {\n                    \"x\": 3.1799999999999997,\n                    \"y\": 6.66,\n                    \"z\": 4.18\n                  },\n                  \"min\": {\n                    \"x\": 2.88,\n                    \"y\": 6,\n                    \"z\": 3.88\n                  }\n                },\n                \"color\": null,\n                \"health\": 0,\n                \"id\": \"native-flower\",\n                \"mesh\": true,\n                \"position\": {\n                  \"x\": 3,\n                  \"y\": 6,\n                  \"z\": 4\n                },\n                \"solid\": false,\n                \"visible\": true\n              }\n            ],\n            \"panels\": {},\n            \"playerHealth\": null,\n            \"resources\": {}\n          }\n        }\n      ],\n      \"passed\": true,\n      \"scope\": \"接口与事件序列检查；不等同于玩家需求验收\"\n    },\n    \"compiler\": {\n      \"passed\": true\n    },\n    \"format\": \"craftmine.desktop-check/1\",\n    \"isolation\": {\n      \"focusable\": false,\n      \"frames\": [\n        {\n          \"bridge\": \"undefined\",\n          \"guard\": {\n            \"focus\": 0,\n            \"pointerLock\": 0\n          },\n          \"node\": \"undefined\"\n        },\n        {\n          \"bridge\": \"undefined\",\n          \"guard\": {\n            \"focus\": 0,\n            \"pointerLock\": 0\n          },\n          \"node\": \"undefined\"\n        }\n      ],\n      \"offscreen\": true,\n      \"visible\": false\n    },\n    \"passed\": true,\n    \"render\": {\n      \"capture\": {\n        \"coloredSamples\": 35,\n        \"height\": 640,\n        \"samples\": 35,\n        \"sha256\": \"4f8d84066961bfe13d58255d1635ce0b0d6578e0d4bf32bd4787a31944c466ac\",\n        \"width\": 960\n      },\n      \"passed\": true,\n      \"renderer\": \"WebGL\",\n      \"version\": \"v-b37e4c998356dac0f60c\"\n    },\n    \"scope\": \"接口、事件与实际绘制检查；玩家需求验收与评审尚未完成\"\n  },\n  \"diff\": {\n    \"added\": [\n      \"原生测试花\"\n    ],\n    \"behaviors\": {\n      \"added\": [\n        \"Verification fixture\"\n      ],\n      \"changed\": [],\n      \"removed\": []\n    },\n    \"changed\": [],\n    \"details\": {\n      \"format\": \"craftmine.diff/1\",\n      \"items\": [\n        {\n          \"beforeName\": null,\n          \"change\": \"added\",\n          \"fields\": [\n            \"components\",\n            \"name\",\n            \"parts\",\n            \"position\",\n            \"source\",\n            \"appearance\"\n          ],\n          \"id\": \"native-flower\",\n          \"kind\": \"object\",\n          \"name\": \"原生测试花\"\n        },\n        {\n          \"beforeName\": null,\n          \"change\": \"added\",\n          \"fields\": [\n            \"binding\",\n            \"code\",\n            \"description\",\n            \"format\",\n            \"initialState\",\n            \"keys\",\n            \"name\",\n            \"params\",\n            \"permissions\",\n            \"requires\",\n            \"stateVersion\",\n            \"targets\"\n          ],\n          \"id\": \"native-check-behavior\",\n          \"kind\": \"behavior\",\n          \"name\": \"Verification fixture\"\n        }\n      ]\n    },\n    \"environment\": false,\n    \"removed\": [],\n    \"systems\": {\n      \"added\": [],\n      \"changed\": [],\n      \"removed\": []\n    }\n  }\n}",
+          "totalChars": 4743,
+          "updatedAt": 1788926299704,
+          "workspaceRevision": 2,
+          "worldId": "3ef74df4-19d8-42a6-aa58-9401ca667468",
+          "detail": {
+            "evidence": {
+              "behaviors": {
+                "build": "b37e4c998356dac0f60cfac3088f780b0737d5b45a6f486a73dfbf28509b060d",
+                "format": "craftmine.behavior-check/1",
+                "modules": [
+                  {
+                    "acceptance": {
+                      "assertions": [],
+                      "format": "craftmine.acceptance/1",
+                      "passed": true,
+                      "summary": "模块没有声明按键，跳过按键验收；没有可检查的命令"
+                    },
+                    "declaredKeys": [],
+                    "effects": [],
+                    "error": null,
+                    "events": [
+                      "start",
+                      "tick",
+                      "interact:native-flower",
+                      "interact:native-flower",
+                      "contact:native-flower",
+                      "attack:native-flower",
+                      "land:native-flower",
+                      "restore"
+                    ],
+                    "gameplay": {
+                      "archivedTargets": {},
+                      "equipped": null,
+                      "systems": {},
+                      "targets": {}
+                    },
+                    "id": "native-check-behavior",
+                    "keyEffects": [],
+                    "motions": [],
+                    "passed": true,
+                    "revision": "code-f66339fb0ab2a79001f4",
+                    "state": {
+                      "archive": [],
+                      "format": "craftmine.behavior-state/2",
+                      "inventory": {},
+                      "modules": {
+                        "native-check-behavior": {
+                          "error": "",
+                          "overrides": {},
+                          "revision": "code-f66339fb0ab2a79001f4",
+                          "state": {},
+                          "stateVersion": 1
+                        }
+                      },
+                      "time": 1
+                    },
+                    "world": {
+                      "effects": [],
+                      "inventory": {},
+                      "items": {},
+                      "objects": [
+                        {
+                          "bounds": {
+                            "max": {
+                              "x": 3.1799999999999997,
+                              "y": 6.66,
+                              "z": 4.18
+                            },
+                            "min": {
+                              "x": 2.88,
+                              "y": 6,
+                              "z": 3.88
+                            }
+                          },
+                          "color": null,
+                          "health": 0,
+                          "id": "native-flower",
+                          "mesh": true,
+                          "position": {
+                            "x": 3,
+                            "y": 6,
+                            "z": 4
+                          },
+                          "solid": false,
+                          "visible": true
+                        }
+                      ],
+                      "panels": {},
+                      "playerHealth": null,
+                      "resources": {}
+                    }
+                  }
+                ],
+                "passed": true,
+                "scope": "接口与事件序列检查；不等同于玩家需求验收"
+              },
+              "compiler": {
+                "passed": true
+              },
+              "format": "craftmine.desktop-check/1",
+              "isolation": {
+                "focusable": false,
+                "frames": [
+                  {
+                    "bridge": "undefined",
+                    "guard": {
+                      "focus": 0,
+                      "pointerLock": 0
+                    },
+                    "node": "undefined"
+                  },
+                  {
+                    "bridge": "undefined",
+                    "guard": {
+                      "focus": 0,
+                      "pointerLock": 0
+                    },
+                    "node": "undefined"
+                  }
+                ],
+                "offscreen": true,
+                "visible": false
+              },
+              "passed": true,
+              "render": {
+                "capture": {
+                  "coloredSamples": 35,
+                  "height": 640,
+                  "samples": 35,
+                  "sha256": "4f8d84066961bfe13d58255d1635ce0b0d6578e0d4bf32bd4787a31944c466ac",
+                  "width": 960
+                },
+                "passed": true,
+                "renderer": "WebGL",
+                "version": "v-b37e4c998356dac0f60c"
+              },
+              "scope": "接口、事件与实际绘制检查；玩家需求验收与评审尚未完成"
+            },
+            "diff": {
+              "added": [
+                "原生测试花"
+              ],
+              "behaviors": {
+                "added": [
+                  "Verification fixture"
+                ],
+                "changed": [],
+                "removed": []
+              },
+              "changed": [],
+              "details": {
+                "format": "craftmine.diff/1",
+                "items": [
+                  {
+                    "beforeName": null,
+                    "change": "added",
+                    "fields": [
+                      "components",
+                      "name",
+                      "parts",
+                      "position",
+                      "source",
+                      "appearance"
+                    ],
+                    "id": "native-flower",
+                    "kind": "object",
+                    "name": "原生测试花"
+                  },
+                  {
+                    "beforeName": null,
+                    "change": "added",
+                    "fields": [
+                      "binding",
+                      "code",
+                      "description",
+                      "format",
+                      "initialState",
+                      "keys",
+                      "name",
+                      "params",
+                      "permissions",
+                      "requires",
+                      "stateVersion",
+                      "targets"
+                    ],
+                    "id": "native-check-behavior",
+                    "kind": "behavior",
+                    "name": "Verification fixture"
+                  }
+                ]
+              },
+              "environment": false,
+              "removed": [],
+              "systems": {
+                "added": [],
+                "changed": [],
+                "removed": []
+              }
+            }
+          }
+        },
+        "failed": {
+          "createdAt": 1788926299917,
+          "current": true,
+          "id": "check-e284e8ea25608990d18374611031046b0b0d97afd56bb2e89d8e4879c68d9bff",
+          "inputHash": "c4c6c2721c7d5dd7cd281fb3c6844037eb90d7e798a94762dfc4aabddaa21943",
+          "next": null,
+          "outputHash": "43dcdd2a1197f92cea0df187336a99821b8f5de57c9711fd0c6dd1d998c42e23",
+          "overview": {
+            "changes": [
+              {
+                "behaviors": 1,
+                "name": "新增",
+                "objects": 1,
+                "systems": 0
+              },
+              {
+                "behaviors": 0,
+                "name": "修改",
+                "objects": 0,
+                "systems": 0
+              },
+              {
+                "behaviors": 0,
+                "name": "移除",
+                "objects": 0,
+                "systems": 0
+              }
+            ],
+            "checks": [
+              {
+                "name": "场景编译",
+                "passed": true
+              },
+              {
+                "name": "玩法事件",
+                "passed": false
+              },
+              {
+                "name": "游戏画面",
+                "passed": null
+              }
+            ],
+            "error": "native-check-behavior：「Verification fixture」检查失败：NATIVE_VERIFIER_FAILURE"
+          },
+          "publishingAvailable": false,
+          "start": 0,
+          "status": "failed",
+          "summary": "Intentional Worker failure",
+          "taskId": "work-864509d66a66d9f2c4393a66759bf07bdd1df963d869ecfc6bff7a226125ca93",
+          "text": "{\n  \"evidence\": {\n    \"behaviors\": {\n      \"build\": \"d2d2a3f79f5ad04451b2847daacc1ac713a99a5dd74668342e3dd4d4a9abd130\",\n      \"format\": \"craftmine.behavior-check/1\",\n      \"modules\": [\n        {\n          \"effects\": [],\n          \"error\": \"「Verification fixture」检查失败：NATIVE_VERIFIER_FAILURE\",\n          \"events\": [],\n          \"failedEvent\": \"start\",\n          \"id\": \"native-check-behavior\",\n          \"motions\": [],\n          \"passed\": false,\n          \"revision\": \"code-f79338587556e8b4f29f\"\n        }\n      ],\n      \"passed\": false,\n      \"scope\": \"接口与事件序列检查；不等同于玩家需求验收\"\n    },\n    \"compiler\": {\n      \"passed\": true\n    },\n    \"format\": \"craftmine.desktop-check/1\",\n    \"isolation\": {\n      \"focusable\": false,\n      \"frames\": [\n        {\n          \"bridge\": \"undefined\",\n          \"guard\": {\n            \"focus\": 0,\n            \"pointerLock\": 0\n          },\n          \"node\": \"undefined\"\n        }\n      ],\n      \"offscreen\": true,\n      \"visible\": false\n    },\n    \"passed\": false,\n    \"render\": {\n      \"passed\": false,\n      \"skipped\": true\n    },\n    \"scope\": \"接口、事件与实际绘制检查；玩家需求验收与评审尚未完成\"\n  },\n  \"diff\": {\n    \"added\": [\n      \"原生测试花\"\n    ],\n    \"behaviors\": {\n      \"added\": [\n        \"Verification fixture\"\n      ],\n      \"changed\": [],\n      \"removed\": []\n    },\n    \"changed\": [],\n    \"details\": {\n      \"format\": \"craftmine.diff/1\",\n      \"items\": [\n        {\n          \"beforeName\": null,\n          \"change\": \"added\",\n          \"fields\": [\n            \"components\",\n            \"name\",\n            \"parts\",\n            \"position\",\n            \"source\",\n            \"appearance\"\n          ],\n          \"id\": \"native-flower\",\n          \"kind\": \"object\",\n          \"name\": \"原生测试花\"\n        },\n        {\n          \"beforeName\": null,\n          \"change\": \"added\",\n          \"fields\": [\n            \"binding\",\n            \"code\",\n            \"description\",\n            \"format\",\n            \"initialState\",\n            \"keys\",\n            \"name\",\n            \"params\",\n            \"permissions\",\n            \"requires\",\n            \"stateVersion\",\n            \"targets\"\n          ],\n          \"id\": \"native-check-behavior\",\n          \"kind\": \"behavior\",\n          \"name\": \"Verification fixture\"\n        }\n      ]\n    },\n    \"environment\": false,\n    \"removed\": [],\n    \"systems\": {\n      \"added\": [],\n      \"changed\": [],\n      \"removed\": []\n    }\n  }\n}",
+          "totalChars": 2361,
+          "updatedAt": 1788926299994,
+          "workspaceRevision": 3,
+          "worldId": "3ef74df4-19d8-42a6-aa58-9401ca667468",
+          "detail": {
+            "evidence": {
+              "behaviors": {
+                "build": "d2d2a3f79f5ad04451b2847daacc1ac713a99a5dd74668342e3dd4d4a9abd130",
+                "format": "craftmine.behavior-check/1",
+                "modules": [
+                  {
+                    "effects": [],
+                    "error": "「Verification fixture」检查失败：NATIVE_VERIFIER_FAILURE",
+                    "events": [],
+                    "failedEvent": "start",
+                    "id": "native-check-behavior",
+                    "motions": [],
+                    "passed": false,
+                    "revision": "code-f79338587556e8b4f29f"
+                  }
+                ],
+                "passed": false,
+                "scope": "接口与事件序列检查；不等同于玩家需求验收"
+              },
+              "compiler": {
+                "passed": true
+              },
+              "format": "craftmine.desktop-check/1",
+              "isolation": {
+                "focusable": false,
+                "frames": [
+                  {
+                    "bridge": "undefined",
+                    "guard": {
+                      "focus": 0,
+                      "pointerLock": 0
+                    },
+                    "node": "undefined"
+                  }
+                ],
+                "offscreen": true,
+                "visible": false
+              },
+              "passed": false,
+              "render": {
+                "passed": false,
+                "skipped": true
+              },
+              "scope": "接口、事件与实际绘制检查；玩家需求验收与评审尚未完成"
+            },
+            "diff": {
+              "added": [
+                "原生测试花"
+              ],
+              "behaviors": {
+                "added": [
+                  "Verification fixture"
+                ],
+                "changed": [],
+                "removed": []
+              },
+              "changed": [],
+              "details": {
+                "format": "craftmine.diff/1",
+                "items": [
+                  {
+                    "beforeName": null,
+                    "change": "added",
+                    "fields": [
+                      "components",
+                      "name",
+                      "parts",
+                      "position",
+                      "source",
+                      "appearance"
+                    ],
+                    "id": "native-flower",
+                    "kind": "object",
+                    "name": "原生测试花"
+                  },
+                  {
+                    "beforeName": null,
+                    "change": "added",
+                    "fields": [
+                      "binding",
+                      "code",
+                      "description",
+                      "format",
+                      "initialState",
+                      "keys",
+                      "name",
+                      "params",
+                      "permissions",
+                      "requires",
+                      "stateVersion",
+                      "targets"
+                    ],
+                    "id": "native-check-behavior",
+                    "kind": "behavior",
+                    "name": "Verification fixture"
+                  }
+                ]
+              },
+              "environment": false,
+              "removed": [],
+              "systems": {
+                "added": [],
+                "changed": [],
+                "removed": []
+              }
+            }
+          }
+        },
+        "preview": {
+          "loaded": true,
+          "playerPreserved": true,
+          "pixels": {
+            "coloredSamples": 35,
+            "samples": 35
+          },
+          "guards": [
+            {
+              "focus": 0,
+              "pointerLock": 0
+            },
+            {
+              "focus": 0,
+              "pointerLock": 0
+            },
+            {
+              "focus": 0,
+              "pointerLock": 0
+            }
+          ]
+        }
+      }
+    },
+    "worldImage": {
+      "width": 1200,
+      "height": 800
+    },
+    "saveFailure": "Error invoking remote method 'pi-plugin-panel-invoke': Error: database is locked",
+    "beforeExit": {
+      "name": "craftmine world",
+      "profile": "D:\\Craftmine World-worktrees\\pi-candidates-20260909\\test-results\\desktop-native-ZPa1iF\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/Craftmine%20World-worktrees/pi-candidates-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    "firstExit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": []
+    },
+    "restored": {
+      "id": "48efd037-c547-4ff8-8e1e-fcba281c19c0",
+      "player": {
+        "pitch": 0,
+        "x": 0.5,
+        "y": 6,
+        "yaw": 0,
+        "z": 12.5
+      }
+    },
+    "restartExit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": []
+    }
+  },
+  "binaries": {
+    "electron": "bab31519ee1bc5b490caf7844e2b1dbcd4f7bb49a13039103952ab381c02ade4",
+    "host": "95466031da04a857a7968653d68bd3408e75cce4f75240729dcfc966c7436987",
+    "core": "4aa4642b60d76a3749c09b161b44cdde8751fc27d54fdfc2e5f9631e0d075613"
+  },
+  "limits": [
+    "离屏运行，未做可见窗口或物理双击验收",
+    "目录选择返回测试夹具，未打开系统对话框",
+    "桌面与世界分别离屏渲染和截图，不证明可见原生窗口的最终合成",
+    "本次不调用模型，也不证明真实 Agent 创作闭环"
+  ]
+}
