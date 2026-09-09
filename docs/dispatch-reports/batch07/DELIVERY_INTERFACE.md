@@ -15,3 +15,7 @@ Diagnostics retain format `craftmine.diagnostics/1`. Metrics now carry bounded s
 The frame timing script is also used by the independent fixed-load browser benchmark; that benchmark records its own environment, windows, load and references. Diagnostic samples are not benchmark acceptance. No claimed optimization is made without a before/after comparison.
 
 Windows read-only entry: `desktop/windows-readiness.ps1 -NoIsolatedMachineAvailable`. Explicit disposable CI entry: `desktop/ci/windows-isolated-validation.ps1` (default not-run; Execute is refused outside a GitHub-hosted ephemeral Windows runner). No installer has been executed locally. The NSIS silent-error path now uses a default button and exit code 2, following the bundled upstream NSIS templates' silent-dialog convention; final package compilation is still required after freeze.
+
+## 玩家累计 token 配置
+
+Rust `TaskJournal::budget_configure` 输入 `{projectId,sessionId,worldId,taskId,generation,operationId,maxTokens}`，输出 `{operationId,budget,previousMaxTokens}`。`maxTokens` 必填，null 表示无限累计，整数范围 1..9007199254740991。主进程单独路由 `budget.configure`；禁止加入模型 `budget_call` 或 proxy 工具白名单。当前中断任务可以先调限再恢复，完整输入幂等。备份 schemaVersion 改为 3，兼容 1/2，未知未来版本拒绝。
