@@ -2,7 +2,6 @@
   "baseline": 15,
   "r2": 15,
   "newRegressions": [],
-  "fixedByR2": [],
   "failing": [
     "? a run with its own data directory keeps the current start behavior",
     "? a symlink inside the workspace cannot carry a read out of it",
