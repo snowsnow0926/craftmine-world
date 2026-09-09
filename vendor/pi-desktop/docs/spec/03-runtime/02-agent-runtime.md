@@ -385,6 +385,41 @@ be left with the guard off and no way to restore it. Manual `/compact` remains
 available while the session is idle. Checkpoint generation is abortable and
 counts as running state until durable persistence completes.
 
+### 5.1a Craftmine durable facts and live observation (S6)
+
+Craftmine World appends a per-request host snapshot as the final text block of
+every provider request (see `craftmine-context.ts`). The block carries
+`machineFacts`, including `godotFacts`, which is re-derived from the durable
+journal on every request. It therefore survives any number of compactions and a
+model switch without relying on conversation memory, and it never carries live
+game state: applied build, world and draft revision, the last journaled source
+head, the executor gate and the verification count are durable values; the
+player's current camera, equipment, entities and quests are not.
+
+Live values are read on demand through the model tool
+`godot_runtime_state scope=live`, which consumes a host provider
+(`sampleLiveState`). The trusted main process supplies it:
+
+- `createCraftmineLiveSampler` (`electron/main/craftmine-live-sample.ts`) reads
+  the additive `observe-envelope` op of the running formal instance, validates
+  the envelope against the shared observation schema, and returns the host's own
+  `worldId`/`buildId`/`instanceId`. A caller may narrow the request but a
+  mismatch is refused; a stopped instance returns `null`.
+- The plugin host API exposes it as `craftmine.godotLiveState`, gated to the
+  `craftmine.world` plugin and only when the host registered the service.
+- The plugin validates the identity again and flattens the payload; a sample
+  without identity, from another world/build/instance, carrying a progress body,
+  or outside the freshness window is reported as unknown (`stale` with reasons),
+  never replaced by the last confirmed save.
+
+The same provider bundle carries the seven-kind limit ledger
+(`budget.inspect` of the current task), the live managed-executor status, the
+executor hand-off for a queued build/check job, and the discussion-only
+predicate. `godot_capability_report` reports which of them this process actually
+received (`services.wired` / `services.missing` with the owning agent and the
+host method that would close each gap), so an unwired provider is visible to the
+model and to acceptance instead of degrading silently.
+
 ## 5b. Operating mode and planning state
 
 - Default product mode: **Agent**

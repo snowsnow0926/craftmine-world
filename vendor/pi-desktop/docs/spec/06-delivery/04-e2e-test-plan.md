@@ -8781,3 +8781,29 @@ Fixed source/executor/application fixtures prove transport and persistence only;
 record separately whether the actual product entry was built/exercised. Do not
 claim arbitrary model execution, OS sandbox, candidate UI application or packaged
 asset licensing from these checks.
+
+## CRAFTMINE-GODOT-023 ¡ª Live observation, durable budget and executor hand-off
+
+Run `tests/godot-round3/S6/*.test.mjs` with the plugin modules staged beside a
+stub domain bundle, and `node desktop/build-world-plugin.mjs` to prove the
+shipped plugin still builds and loads every module.
+
+Verify that `godot_runtime_state scope=live` returns camera, equipment, entities
+and quests only from the host sampler, that a sample from another world, build or
+instance, without identity, carrying a progress body, or outside the freshness
+window is reported as unknown with its reasons, and that the last confirmed save
+never appears as current equipment. Verify that `godot_capability_report`
+lists the providers the process actually received and the owner of each missing
+one, that `godot_jobs mode=status` prefers the live executor gate over the durable
+registration row, and that a queued `godot_build_start` job is handed to the
+executor in the same turn (a blocked job reports its real reason and is not handed
+over). Verify that three consecutive compactions and a model switch re-derive the
+same durable Godot facts from the host journal, that the fact block never contains
+live equipment, and that an interrupted request settles as `unknown` against the
+same task row so continuation does not reset the cost.
+
+No actual input, focus activation, Pointer Lock or user browser is permitted. The
+fixtures prove transport, identity and accounting only: record separately whether
+the real product entry, a real running instance and a real model were exercised.
+Do not claim a rendered game, a real compile result or a real model turn from
+these checks.
