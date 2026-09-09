@@ -143,7 +143,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     if(has('task.recoverable')){
       const response=await call('task.recoverable');const entries=Array.isArray(response)?response:response.items||response.tasks||[];
       for(const item of entries){const row=document.createElement('article');row.className='workbench-card';row.append(text('h3','可恢复的创作'),text('p',item.summary||item.reason||'任务中断，已有草稿已保存。'),text('p','继续前将核对世界版本；不会自动重放旧模型请求。','workbench-meta'));
-        for(const [operation,label]of [['resume','继续创作'],['discard','结束此草稿任务']])if(has('task.'+operation)){const control=button(label,()=>action(async()=>{await call('task.'+operation,{taskId:item.taskId||item.id,generation:item.generation});await showTask();status(operation==='resume'?'草稿已恢复，请在对话中继续创作。':'已结束该任务，正式世界保持原状。');}));control.control.disabled=active;row.append(control.form);}pages.task.append(row);
+        for(const [operation,label]of [['resume','继续创作'],['discard','结束此草稿任务']])if(has('task.'+operation)){const control=button(label,()=>action(async()=>{const result=await call('task.'+operation,{taskId:item.taskId||item.id,generation:item.generation});await showTask();status(operation==='resume'?(result?.continuation==='running'?'草稿已恢复，正在继续创作。':'草稿已恢复，请在对话中继续创作。'):'已结束该任务，正式世界保持原状。');}));control.control.disabled=active;row.append(control.form);}pages.task.append(row);
       }
     }
   }
