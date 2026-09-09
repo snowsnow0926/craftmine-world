@@ -8,6 +8,7 @@ import { captureCreation,creationGroups,validateCreation,creationDependencies,cr
 
 export const MODULE_RUNTIME='craftmine-web/2';
 const hash=content=>createHash('sha256').update(canonicalJSON(content)).digest('hex');
+const loadedExtensions=data=>new Set((data.extensions||[]).map(extension=>`ext:${extension.id}@${extension.version}`));
 function payloadOf(kind,definition){
   if(kind==='gameplay')return {name:definition.name,type:definition.type,config:clone(definition.config)};
   return {name:definition.name,parts:clone(definition.parts),components:clone(definition.components),...(definition.appearance?{appearance:clone(definition.appearance)}:{})};
@@ -104,24 +105,24 @@ export class ModuleLibrary {
     return results;
   }
   instantiate(data,scene,id,version,player,position=null){
-    const module=this.read(data,id,version),next=upgradeScene(scene),source={id,version};
+    const module=this.read(data,id,version),next=upgradeScene(scene),source={id,version},extensions=loadedExtensions(data);
     if(module.kind==='creation'){
       if(!position){
-        const checked=data.library.find(m=>m.id===id)?.verifications?.[version],bounds=checked?.hash===module.hash?checked.bounds:null,obstacles=compileScene(next).primitives?.filter(p=>p.solid).map(p=>({min:p.min,max:p.max}))||[];
+        const checked=data.library.find(m=>m.id===id)?.verifications?.[version],bounds=checked?.hash===module.hash?checked.bounds:null,obstacles=compileScene(next,{extensions}).primitives?.filter(p=>p.solid).map(p=>({min:p.min,max:p.max}))||[];
         for(const group of creationGroups(next)){
           const binding=group.behaviors.find(d=>d.binding)?.binding,installed=data.moduleBindings?.creation?.[group.id],entry=data.library.find(m=>m.id===(installed?.id||binding?.source.id));
           if(!entry)continue;
           const contentHash=hash({kind:'creation',payload:captureCreation(group,next)}),record=entry.versions.find(v=>v.hash===contentHash),report=entry.verifications?.[record?.version];
           if(report?.passed&&report.hash===contentHash){const origin=binding?.origin||group.objects[0]?.position||{x:0,y:6,z:0};obstacles.push({min:Object.fromEntries(['x','y','z'].map(k=>[k,origin[k]+report.bounds.min[k]])),max:Object.fromEntries(['x','y','z'].map(k=>[k,origin[k]+report.bounds.max[k]]))});}
         }
-        return placeCreation(next,module.payload,source,player,{bounds,obstacles});
+        return placeCreation(next,module.payload,source,player,{bounds,obstacles,extensions});
       }
       const generated=materializeCreation(module.payload,source,position),candidate={...next,format:next.format==='craftmine.scene/4'?'craftmine.scene/4':'craftmine.scene/3',objects:[...next.objects,...generated.objects],behaviors:[...(next.behaviors||[]),...generated.behaviors],systems:[...next.systems,...generated.systems.filter(s=>!next.systems.some(old=>old.type===s.type)).map(s=>({...s,id:'system-'+randomUUID()}))]};
-      const normalized=withAppearanceFormat(candidate);compileScene(normalized);return normalized;
+      const normalized=withAppearanceFormat(candidate);compileScene(normalized,{extensions});return normalized;
     }
     if(module.kind==='gameplay'){
       const old=next.systems.find(s=>s.type===module.payload.type),definition={id:old?.id||'system-'+randomUUID(),...clone(module.payload),source};
-      next.systems=next.systems.filter(s=>s.type!==definition.type);next.systems.push(definition);const normalized=withAppearanceFormat(next);compileScene(normalized);return normalized;
+      next.systems=next.systems.filter(s=>s.type!==definition.type);next.systems.push(definition);const normalized=withAppearanceFormat(next);compileScene(normalized,{extensions});return normalized;
     }
     if(module.dependencies.includes('health@1')&&!next.systems.some(s=>s.type==='health'))throw Error('此对象需要生命值模块，请先复用或创建生命值模块');
     const bounds=objectContentBounds({...module.payload,position:{x:0,y:0,z:0}}),min=bounds.min;
@@ -133,7 +134,7 @@ export class ModuleLibrary {
       if(player.x+.4>position.x+min.x&&player.x-.4<position.x+min.x+size.x&&player.z+.4>position.z+min.z&&player.z-.4<position.z+min.z+size.z)continue;
       const object={id:'instance-'+randomUUID(),...clone(module.payload),position,source};
       const candidate={...next,objects:[...next.objects,object]};
-      try{const normalized=withAppearanceFormat(candidate);compileScene(normalized);return normalized;}catch(e){lastError=e;}
+      try{const normalized=withAppearanceFormat(candidate);compileScene(normalized,{extensions});return normalized;}catch(e){lastError=e;}
     }
     throw Error('附近没有足够的放置空间：'+lastError?.message);
   }
@@ -148,6 +149,6 @@ export class ModuleLibrary {
       next.objects.push(...generated.objects);next.behaviors.push(...generated.behaviors);
       next.systems.push(...generated.systems.filter(s=>!next.systems.some(old=>old.type===s.type)).map(s=>({...s,id:'system-'+randomUUID()})));
     }
-    const normalized=withAppearanceFormat(next);compileScene(normalized);return normalized;
+    const normalized=withAppearanceFormat(next);compileScene(normalized,{extensions:loadedExtensions(data)});return normalized;
   }
 }

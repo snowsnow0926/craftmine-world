@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { compileScene,upgradeScene,withAppearanceFormat,canonicalJSON } from './scene.mjs';
 import { objectContentBounds } from './asset-binding.mjs';
 import { exactKeys,identifier,bounded } from './gameplay.mjs';
-import { validateBehavior } from './behavior-contracts.mjs';
+import { validateBehavior,isExtensionRequirement } from './behavior-contracts.mjs';
 
 const shift=(p,translation,sign=1)=>Object.fromEntries(['x','y','z'].map(k=>[k,Number((p[k]+sign*translation[k]).toFixed(8))]));
 const safeId=v=>identifier(v)&&!['constructor','prototype'].includes(v);
@@ -57,9 +57,11 @@ export function validateCreation(payload){
   }
   exactKeys(payload.tests,['format','scope','events']);
   if(payload.tests.format!=='craftmine.creation-tests/1'||payload.tests.scope!=='interface'||JSON.stringify(payload.tests.events)!==JSON.stringify(['start','tick','interact','interact','contact','attack','land','restore']))throw Error('创作模块的检查用例不兼容');
-  const needed=new Set(payload.scripts.flatMap(s=>s.definition.requires));if(payload.objects.some(o=>o.components.contactDamage>0))needed.add('health@1');
+  const dependencies=payload.scripts.flatMap(s=>s.definition.requires),needed=new Set(dependencies.filter(r=>!isExtensionRequirement(r)));if(payload.objects.some(o=>o.components.contactDamage>0))needed.add('health@1');
   if(!Array.isArray(payload.systems)||payload.systems.some(s=>!needed.has(s.type+'@1'))||[...needed].some(r=>!payload.systems.some(s=>s.type===r.split('@')[0])))throw Error('创作模块的依赖定义不完整或包含多余系统');
-  const scene=materializeCreation(payload,{id:'creation-check',version:1},payload.anchor,'check-instance');compileScene(scene);
+  // A library template records extension requirements without activating them.
+  // Installation separately compiles against the destination's loaded set.
+  const scene=materializeCreation(payload,{id:'creation-check',version:1},payload.anchor,'check-instance');compileScene(scene,{extensions:new Set(dependencies.filter(isExtensionRequirement))});
   return structuredClone(payload);
 }
 
@@ -73,7 +75,7 @@ export function materializeCreation(payload,source,position,instanceId='creation
   return withAppearanceFormat(scene);
 }
 
-export function placeCreation(scene,payload,source,player,{bounds,obstacles=[]}={}){
+export function placeCreation(scene,payload,source,player,{bounds,obstacles=[],extensions=new Set()}={}){
   const next=upgradeScene(scene),front={x:player.x-Math.sin(player.yaw)*5,z:player.z-Math.cos(player.yaw)*5};
   const ranges=payload.objects.map(objectContentBounds),min=k=>bounds?.min[k]??Math.min(0,...ranges.map(b=>b.min[k])),max=k=>bounds?.max[k]??Math.max(0,...ranges.map(b=>b.max[k]));
   const instanceId='creation-'+randomUUID();let lastError;
@@ -86,7 +88,7 @@ export function placeCreation(scene,payload,source,player,{bounds,obstacles=[]}=
     }
     const generated=materializeCreation(payload,source,position,instanceId);
     const candidate=withAppearanceFormat({...next,format:next.format==='craftmine.scene/4'?'craftmine.scene/4':'craftmine.scene/3',objects:[...next.objects,...generated.objects],behaviors:[...(next.behaviors||[]),...generated.behaviors],systems:[...next.systems,...generated.systems.filter(s=>!next.systems.some(old=>old.type===s.type)).map(s=>({...s,id:'system-'+randomUUID()}))]});
-    try{const build=compileScene(candidate);const body={min:{x:player.x-.4,y:player.y,z:player.z-.4},max:{x:player.x+.4,y:player.y+1.8,z:player.z+.4}};if(build.primitives.some(p=>generated.objects.some(o=>o.id===p.id)&&p.solid&&['x','y','z'].every(k=>p.min[k]<body.max[k]&&p.max[k]>body.min[k])))continue;return candidate;}catch(error){lastError=error;}
+    try{const build=compileScene(candidate,{extensions});const body={min:{x:player.x-.4,y:player.y,z:player.z-.4},max:{x:player.x+.4,y:player.y+1.8,z:player.z+.4}};if(build.primitives.some(p=>generated.objects.some(o=>o.id===p.id)&&p.solid&&['x','y','z'].every(k=>p.min[k]<body.max[k]&&p.max[k]>body.min[k])))continue;return candidate;}catch(error){lastError=error;}
   }
   throw Error('附近无法放下完整创作：'+(lastError?.message||'与玩家位置冲突'));
 }

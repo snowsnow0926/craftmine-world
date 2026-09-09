@@ -6,9 +6,28 @@ import { compileScene,encodeAgentScene,decodeAgentScene,canonicalJSON } from '..
 import { behaviorScene,behaviorFrame } from './behavior-fixtures.mjs';
 import { GameplaySession } from '../app/gameplay.mjs';
 import { BehaviorState } from '../app/behavior-state.mjs';
+import fs from 'node:fs';
+import path from 'node:path';
+import { ProjectStore } from '../app/store.mjs';
 
 const source={id:'creation-library-test',version:1};
 const fixture=()=>{const scene=behaviorScene(),group=creationGroups(scene)[0];return captureCreation(group,scene);};
+test('作品记忆保存扩展依赖，安装只接受目标世界已装载的准确版本',()=>{
+  const scene=behaviorScene();scene.behaviors=[{...scene.behaviors[0],format:'craftmine.behavior/2',requires:['ext:color-shift@2'],binding:null,keys:[]}];
+  fs.mkdirSync('test-results',{recursive:true});const store=new ProjectStore(fs.mkdtempSync(path.resolve('test-results/extension-memory-')));
+  store.change(data=>{data.extensions=[{id:'color-shift',version:2}];});
+  const build=store.build(scene);
+  store.change(data=>store.modules.capture(data,scene,'记住使用扩展的门',build.id));
+  const entry=store.data.library.find(module=>module.kind==='creation'),module=store.modules.read(store.data,entry.id,entry.latest);
+  assert.ok(module.dependencies.includes('ext:color-shift@2'));
+  const empty={...scene,objects:[],behaviors:[]},player={x:15,y:6,z:15,yaw:0};
+  for(const extensions of [[],[{id:'color-shift',version:1}]])assert.throws(()=>store.modules.instantiate({...store.data,extensions},empty,entry.id,entry.latest,player),/扩展|依赖/);
+  const installed=store.modules.instantiate(store.data,empty,entry.id,entry.latest,player);
+  compileScene(installed,{extensions:new Set(['ext:color-shift@2'])});
+  assert.equal(installed.behaviors[0].code,scene.behaviors[0].code);
+  assert.deepEqual(installed.behaviors[0].requires,['ext:color-shift@2']);
+  assert.notEqual(installed.behaviors[0].targets[0],scene.behaviors[0].targets[0]);
+});
 test('创作模板保存原始源码、参数与显式对象映射，放到新位置不替换字符串',()=>{
   const payload=fixture();validateCreation(payload);const scene=materializeCreation(payload,source,{x:12,y:6,z:-10},'test-instance');compileScene(scene);
   assert.equal(scene.behaviors[0].code,behaviorScene().behaviors[0].code);assert.deepEqual(scene.behaviors[0].params,behaviorScene().behaviors[0].params);
