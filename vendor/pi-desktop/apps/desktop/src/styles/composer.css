@@ -657,6 +657,21 @@
 }
 
 @container composer-stack (max-width: 520px) {
+  /* A docked world can leave a narrow conversation column. Keep localized
+   * controls intact and move complete groups onto the next toolbar row. */
+  .composer-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .composer-left,
+  .composer-right {
+    flex-shrink: 0;
+  }
+
+  .composer-right {
+    margin-inline-start: auto;
+  }
+
   .plan-approval-bar {
     grid-template-columns: minmax(0, 1fr);
   }

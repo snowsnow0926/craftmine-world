@@ -9,6 +9,7 @@ const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 export function CraftmineNavigation() {
   const { i18n } = useTranslation();
   const chinese = i18n.language.startsWith("zh");
+  const ready = useAppStore((s) => s.ready);
   const available = useAppStore((s) => s.pluginViews.some((view) => view.ref === WORLD.resource));
   const active = useAppStore((s) => s.page === "chat" && s.workPanelOpen && s.activeWorkPanelTabId === WORLD.id);
   const initialized = useRef(false);
@@ -18,11 +19,13 @@ export function CraftmineNavigation() {
     state.openWorkPanelTab(WORLD);
   };
   useEffect(() => {
-    if (!available || initialized.current) return;
+    // Plugin metadata may arrive before bootstrap restores the session context.
+    // Opening earlier lets that restoration immediately clear the new world tab.
+    if (!ready || !available || initialized.current) return;
     initialized.current = true;
     const state = useAppStore.getState();
     if (!state.activeSessionId && state.workPanelTabs.length === 0) state.openWorkPanelTab(WORLD);
-  }, [available]);
+  }, [ready, available]);
   return (
     <nav className="craftmine-navigation no-drag" aria-label={chinese ? "世界创作" : "World creation"}>
       <button type="button" className={`craftmine-world-nav ${active ? "active" : ""}`} onClick={open} disabled={!available} data-nav="world" aria-current={active ? "page" : undefined}>

@@ -23,6 +23,9 @@ export type WorkPanelContext = WorkPanelTabsState & {
   fileRequest: { path: string; seq: number; mimeType?: string } | null;
 };
 
+// Renderer-only context key. This is never a host session or Agent identity.
+export const HOME_WORK_PANEL_CONTEXT = "@craftmine/home";
+
 export type ReviewArtifactEvent = {
   toolName?: string;
   isError?: boolean;

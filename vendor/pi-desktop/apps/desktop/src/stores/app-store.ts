@@ -107,6 +107,7 @@ import {
   closeWorkPanelTabState,
   emptyWorkPanelContext,
   fileWorkPanelTab,
+  HOME_WORK_PANEL_CONTEXT,
   openWorkPanelTabState,
   sanitizeWorkPanelTabsState,
   shouldOpenReviewArtifact,
@@ -1069,9 +1070,9 @@ function switchWorkPanelSession(
 > {
   const switched = switchWorkPanelContextState(
     state.workPanelContexts,
-    state.activeSessionId,
+    state.activeSessionId ?? HOME_WORK_PANEL_CONTEXT,
     currentWorkPanelContext(state),
-    nextSessionId,
+    nextSessionId ?? HOME_WORK_PANEL_CONTEXT,
   );
   return {
     workPanelContexts: switched.contexts,
@@ -4215,8 +4216,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   openWorkPanel: () => {
     const state = get();
-    const sessionId = state.activeSessionId;
-    if (!sessionId) return;
+    const sessionId = state.activeSessionId ?? HOME_WORK_PANEL_CONTEXT;
     const context = currentWorkPanelContext(state);
     set({
       workPanelOpen: true,
@@ -4245,7 +4245,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!sessionId) return;
     set((state) => {
       const affectsVisibleSession =
-        state.activeSessionId === sessionId &&
+        (state.activeSessionId ?? HOME_WORK_PANEL_CONTEXT) === sessionId &&
         (pendingSessionSelection === null ||
           pendingSessionSelection.id === sessionId);
       const context = affectsVisibleSession
@@ -4289,14 +4289,12 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
   },
   openWorkPanelTab: (tab) => {
-    const sessionId = get().activeSessionId;
-    if (!sessionId) return;
+    const sessionId = get().activeSessionId ?? HOME_WORK_PANEL_CONTEXT;
     get().openWorkPanelTabForSession(sessionId, tab);
   },
   activateWorkPanelTab: (tabId) => {
     set((state) => {
-      const sessionId = state.activeSessionId;
-      if (!sessionId) return {};
+      const sessionId = state.activeSessionId ?? HOME_WORK_PANEL_CONTEXT;
       const next = activateWorkPanelTabState(
         {
           tabs: state.workPanelTabs,
@@ -4332,8 +4330,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   closeWorkPanelTab: (tabId) => {
     let closePanel = false;
     set((state) => {
-      const sessionId = state.activeSessionId;
-      if (!sessionId) return {};
+      const sessionId = state.activeSessionId ?? HOME_WORK_PANEL_CONTEXT;
       const next = closeWorkPanelTabState(
         {
           tabs: state.workPanelTabs,
@@ -4371,8 +4368,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
   collapseWorkPanel: () => {
     const state = get();
-    const sessionId = state.activeSessionId;
-    if (!sessionId || !state.workPanelOpen) return;
+    const sessionId = state.activeSessionId ?? HOME_WORK_PANEL_CONTEXT;
+    if (!state.workPanelOpen) return;
     set({
       workPanelOpen: false,
       workPanelContexts: {

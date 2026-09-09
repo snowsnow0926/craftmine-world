@@ -32,8 +32,15 @@ api.pluginViewOpen=async()=>({ok:true});api.pluginViewSetBounds=async bounds=>{O
 api.pluginViewSetVisible=async(_,__,visible)=>{frame.style.display=visible?'block':'none';return{ok:true};};
 async function mountShell() {
 await i18n.use(initReactI18next).init({lng:'zh-CN',fallbackLng:'en',resources:Object.fromEntries(Object.entries(catalogs).map(([key,value])=>[key,{translation:flattenCatalog(value)}])),interpolation:{escapeValue:false}});
-useAppStore.setState({ready:true,bootstrap:async()=>{},settings,plugins,pluginViews:[view],version:{appName:'craftmine world',version:'0.14.3',protocolVersion:11},healthOk:true,onboarding:{needed:false,dismissed:true},workPanelOpen:true,workPanelWidth:560,workPanelTabs:[{id:'plugin:craftmine.world/world',kind:'plugin',resource:'craftmine.world/world'}],activeWorkPanelTabId:'plugin:craftmine.world/world'});
-globalThis.shellFixture={theme(value){settings.theme=value;useAppStore.setState({settings:{...settings}});},panel(open){useAppStore.setState({workPanelOpen:open});}};
+useAppStore.setState({ready:true,bootstrap:async()=>{},settings,plugins,pluginViews:[view],version:{appName:'craftmine world',version:'0.14.3',protocolVersion:11},healthOk:true,onboarding:{needed:false,dismissed:true},workPanelOpen:false,workPanelWidth:560,workPanelTabs:[],activeWorkPanelTabId:null});
+globalThis.shellFixture={theme(value){settings.theme=value;useAppStore.setState({settings:{...settings}});},home(){
+  const state=useAppStore.getState(),initial=state.workPanelOpen&&state.workPanelTabs.length===1&&!state.activeSessionId&&state.sessions.length===0;
+  state.collapseWorkPanel();const collapsed=!useAppStore.getState().workPanelOpen;
+  state.openWorkPanel();const reopened=useAppStore.getState().workPanelOpen;
+  state.closeWorkPanelTab('plugin:craftmine.world/world');const closed=useAppStore.getState().workPanelTabs.length===0;
+  state.openWorkPanelTab({id:'plugin:craftmine.world/world',kind:'plugin',resource:'craftmine.world/world'});
+  return initial&&collapsed&&reopened&&closed&&useAppStore.getState().workPanelOpen&&!useAppStore.getState().activeSessionId;
+}};
 createRoot(document.getElementById('root')).render(<App/>);
 } void mountShell();
 `;
@@ -57,6 +64,7 @@ try {
   assert.ok(world,'native view adapter');await world.waitForFunction(()=>document.body.dataset.worldLoaded==='true');
   check('实际 React 桌面保留会话侧栏和世界入口',await page.evaluate(()=>!!document.querySelector('.sidebar [data-nav="world"]')&&!!document.querySelector('[data-sidebar-session-section]')));
   check('桌面保留聊天输入与可调工作面板',await page.evaluate(()=>!!document.querySelector('.composer-input')&&!!document.querySelector('.work-panel-resize')));
+  check('无聊天会话时自动打开世界并支持收起、关闭和重开',await page.evaluate(()=>shellFixture.home()));
   const geometry=await page.evaluate(()=>{const panel=document.querySelector('.work-panel').getBoundingClientRect();return{width:panel.width,right:panel.right,scroll:document.documentElement.scrollWidth};});
   check('世界面板达到 560 像素且未超出窗口',geometry.width>=559&&geometry.right<=1441&&geometry.scroll<=1440);
   check('世界画面位于工作面板的可见表面',await page.evaluate(()=>{const frame=document.querySelector('body>iframe');const rect=frame.getBoundingClientRect();return rect.width>500&&document.elementFromPoint(rect.x+rect.width/2,rect.y+rect.height/2)===frame;}));
@@ -66,6 +74,10 @@ try {
   await page.waitForFunction(()=>document.documentElement.dataset.theme==='light');
   await page.screenshot({path:path.join(dir,'desktop-light.png')});
   check('保留深浅主题切换',true);
+  await page.setViewportSize({width:1200,height:800});
+  await page.waitForFunction(()=>{const label=document.querySelector('.composer-permission .mode-chip>span');return label&&label.getBoundingClientRect().height<25;});
+  check('1200 像素桌面窄聊天栏中中文控制标签完整显示',await page.evaluate(()=>{const label=document.querySelector('.composer-permission .mode-chip>span'),shell=document.querySelector('.composer-shell').getBoundingClientRect();return label.getBoundingClientRect().height<25&&[...document.querySelectorAll('.composer-toolbar button')].every(button=>{const rect=button.getBoundingClientRect();return rect.left>=shell.left&&rect.right<=shell.right;});}));
+  await page.screenshot({path:path.join(dir,'desktop-narrow.png')});
   check('没有请求真实输入或焦点',(await Promise.all(page.frames().map(frame=>frame.evaluate(()=>globalThis.__inputRequests||0)))).every(count=>count===0));
   check('实际前端组件无未处理异常',errors.length===0);
 }catch(error){errors.push(error.stack);process.exitCode=1;console.error(error);}

@@ -8483,3 +8483,10 @@ are withdrawn with ADR 0165.
 - Reject absent extension dependencies and Windows junctions without replacing a desktop world. Rust tests additionally cover archive tampering, path escape, atomic import and replay after subsequent progress.
 - Validation: root `node tests/desktop-legacy-browser.mjs` (14 checks on Windows), `cargo test --locked -p craftmine-core` (10 tests). Native dialog interaction is intentionally replaced by the fixture picker and is not claimed as tested.
 - Format-1 regression: verify the original insertion-order-dependent hash from the sealed JSON text, reject reordered/tampered input, and convert the playable copy to the canonical format while keeping the original archived. `tests/desktop-domain.test.mjs` covers the converter; the native probe imports a real format-1 fixture through Rust.
+
+#### CRAFTMINE-006: Home workspace and narrow conversation controls
+
+- Begin with no conversation and no prepopulated work-panel tabs. The World entry automatically opens its real React surface after bootstrap. Collapse, reopen, close and reopen the home panel through its store actions without creating a conversation.
+- Navigate between the home context and two conversation contexts. Each retains its own resources; home navigation never becomes a host session or changes a background conversation's tabs.
+- At 1440 and 1200 pixel desktop widths, preserve the sidebar, composer and 560 pixel world surface. In the narrow conversation column, permission text remains horizontal and every toolbar control stays inside the composer. Verify both themes.
+- Validation: root `node tests/desktop-shell-browser.mjs` (9 headless checks with fixture session/native-view transport), desktop `node --test test/work-panel-tabs.test.mjs`. Native first-run world startup is separately covered by CRAFTMINE-007.

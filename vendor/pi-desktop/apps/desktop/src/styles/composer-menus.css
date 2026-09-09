@@ -43,6 +43,8 @@
 /* Permission-mode chip menu (D115): anchored left above the mode chips. */
 .composer-permission {
   position: relative;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .composer-permission-menu {

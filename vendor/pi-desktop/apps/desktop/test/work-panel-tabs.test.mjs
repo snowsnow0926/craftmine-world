@@ -6,6 +6,7 @@ const {
   browserPluginTab,
   closeWorkPanelTabState,
   emptyWorkPanelContext,
+  HOME_WORK_PANEL_CONTEXT,
   fileWorkPanelTab,
   isKnownWorkPanelTab,
   isToolWorkPanelTab,
@@ -17,6 +18,20 @@ const {
   switchWorkPanelContextState,
   toolWorkPanelTab,
 } = await import("../src/lib/work-panel-tabs.ts");
+
+test("the home world workspace survives navigation without becoming a chat session", () => {
+  const tab = pluginWorkPanelTab("craftmine.world", "world");
+  const home = { ...emptyWorkPanelContext(), ...openWorkPanelTabState(emptyWorkPanelContext(), tab), open: true };
+  const conversation = switchWorkPanelContextState({}, HOME_WORK_PANEL_CONTEXT, home, "session-a");
+  assert.deepEqual(conversation.visible, emptyWorkPanelContext());
+  assert.deepEqual(conversation.contexts[HOME_WORK_PANEL_CONTEXT], home);
+  const files = { ...emptyWorkPanelContext(), ...openWorkPanelTabState(emptyWorkPanelContext(), fileWorkPanelTab("session-a.txt")), open: true };
+  const returned = switchWorkPanelContextState(conversation.contexts, "session-a", files, HOME_WORK_PANEL_CONTEXT);
+  assert.deepEqual(returned.visible, home);
+  assert.deepEqual(returned.contexts["session-a"], files);
+  const other = switchWorkPanelContextState(returned.contexts, HOME_WORK_PANEL_CONTEXT, home, "session-b");
+  assert.deepEqual(other.visible, emptyWorkPanelContext());
+});
 
 test("work panel tabs open on demand and deduplicate by resource", () => {
   const empty = { tabs: [], activeTabId: null };
