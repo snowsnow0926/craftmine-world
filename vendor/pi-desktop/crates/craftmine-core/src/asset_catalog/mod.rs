@@ -7,6 +7,7 @@
 //! * `index`     — classification, search, tags and usage relations.
 //! * `preview`   — structural probe, preview states and base-check evidence.
 //! * `budget`    — recommended and measured budgets, kept separate.
+//! * `reclaim`   — executes S1-approved reclamation entries, re-verified.
 //!
 //! Work installation and application stay with H/M/A/C/D: this module only
 //! provides fixed resource bodies, lock parsing and read-only evidence.
@@ -20,11 +21,15 @@ mod import;
 mod index;
 mod lock;
 mod preview;
+mod reclaim;
 mod scan;
 mod store;
 #[cfg(test)]
 #[path = "asset_catalog_tests.rs"]
 mod tests;
+#[cfg(test)]
+#[path = "reclaim_tests.rs"]
+mod reclaim_tests;
 
 pub use dispatch::dispatch;
 

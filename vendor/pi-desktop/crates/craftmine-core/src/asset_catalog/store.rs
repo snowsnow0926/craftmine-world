@@ -295,6 +295,19 @@ pub(super) fn discard_blob(db: &Connection, root: &Path, sha256: &str) -> Result
     Ok(())
 }
 
+/// Removes the blob accounting row only when no version file references it.
+/// Used after a reclaim commit; a blob any surviving version references keeps
+/// its row, so accounting can never disagree with `craftmine_asset_files`.
+pub(super) fn delete_unreferenced_blob_row(db: &Connection, sha256: &str) -> Result<bool> {
+    contract::validate_sha256(sha256)?;
+    let removed = db.execute(
+        "DELETE FROM craftmine_asset_blobs WHERE sha256=?1
+         AND NOT EXISTS(SELECT 1 FROM craftmine_asset_files WHERE sha256=?1)",
+        [sha256],
+    )?;
+    Ok(removed > 0)
+}
+
 /// Reads a verified prefix for structural probing. The full blob hash is still
 /// verified when the blob is smaller than the prefix limit.
 pub(super) fn blob_read_prefix(

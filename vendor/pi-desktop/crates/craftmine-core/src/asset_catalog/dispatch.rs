@@ -41,6 +41,8 @@ pub fn dispatch(journal: &mut TaskJournal, method: &str, params: &Value) -> Opti
         "asset.recordCheck" => journal.asset_record_check(params),
         "asset.mapLegacy" => journal.asset_map_legacy(params),
         "asset.resolveLegacy" => journal.asset_resolve_legacy(params),
+        "asset.reclaimPlan" => journal.asset_reclaim_plan(params),
+        "asset.reclaimCommit" => journal.asset_reclaim_commit(params),
         _ => return None,
     })
 }
