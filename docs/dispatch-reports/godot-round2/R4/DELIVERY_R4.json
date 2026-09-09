@@ -1,0 +1,135 @@
+{
+  "task": "godot-round2-20260910/R4-packages-and-installation",
+  "title": "作品包真正安装、升级和跨世界复用（静态包与安装器规划）",
+  "branch": "codex/godot-round2-r4-20260910",
+  "worktree": "D:/Craftmine World-worktrees/godot-round2-r4-20260910",
+  "baseCommit": "bcebeb1",
+  "inheritedCommit": "da41621",
+  "codeCommit": "0bb0e71",
+  "pushed": false,
+  "ownedFiles": [
+    "vendor/pi-desktop/crates/craftmine-core/src/library.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/library/package_format.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/library/package_format_tests.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/library/installer.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/library/installer_tests.rs",
+    "plugins/craftmine-world/package-format.mjs",
+    "plugins/craftmine-world/package-zip.mjs",
+    "tests/godot-round2/R4/vectors/package-format-vectors.json",
+    "tests/godot-round2/R4/package-format.test.mjs",
+    "tests/godot-round2/R4/package-zip.test.mjs",
+    "vendor/pi-desktop/docs/spec/godot-creation-package.md",
+    "docs/dispatch-reports/godot-round2/R4/REPORT_R4.md",
+    "docs/dispatch-reports/godot-round2/R4/REGISTRATION_R4.md",
+    "docs/dispatch-reports/godot-round2/R4/evidence/first-failures.txt",
+    "docs/dispatch-reports/godot-round2/R4/evidence/rust-cp0-cp2-tests.txt",
+    "docs/dispatch-reports/godot-round2/R4/evidence/node-package-format.txt",
+    "docs/dispatch-reports/godot-round2/R4/evidence/node-package-zip.txt"
+  ],
+  "notTouched": [
+    "vendor/pi-desktop/crates/craftmine-core/src/lib.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/main.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/backups.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/backups/complete.rs",
+    "plugins/craftmine-world/library-service.mjs",
+    "plugins/craftmine-world/workbench-service.cjs",
+    "plugins/craftmine-world/domain-adapter.mjs",
+    "vendor/pi-desktop/apps/desktop/electron/main/index.ts",
+    "vendor/pi-desktop/apps/desktop/electron/main/craftmine-panel-gateway.ts",
+    "vendor/pi-desktop/apps/desktop/electron/main/craftmine-operation-journal.ts",
+    "vendor/pi-desktop/Cargo.toml",
+    "vendor/pi-desktop/Cargo.lock"
+  ],
+  "newDependencies": [],
+  "formats": [
+    "craftmine.package/1",
+    "craftmine.resource/1",
+    "craftmine.assets-lock/1"
+  ],
+  "api": {
+    "rust": ["package.formatCheck", "package.planInstall"],
+    "js": {
+      "plugins/craftmine-world/package-format.mjs": [
+        "PACKAGE_FORMAT", "RESOURCE_FORMAT", "LOCK_FORMAT", "PACKAGE_KINDS",
+        "canonicalJSON", "canonicalValue", "contentHash", "validatePath",
+        "validateEntries", "validateKind", "legacyKind", "validateLock",
+        "validateResourceManifest", "validatePackageJson"
+      ],
+      "plugins/craftmine-world/package-zip.mjs": [
+        "DEFAULT_LIMITS", "crc32", "writeZip", "readZip", "packStaticPackage",
+        "unpackStaticPackage", "archiveIdentity", "FORMAT_BACKEND"
+      ]
+    }
+  },
+  "verification": [
+    {
+      "command": "cargo test -p craftmine-core",
+      "cwd": "vendor/pi-desktop",
+      "env": "CARGO_TARGET_DIR=<scratch>/cargo-target-r4",
+      "result": "ok. 132 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out",
+      "warnings": 0,
+      "evidence": "docs/dispatch-reports/godot-round2/R4/evidence/rust-cp0-cp2-tests.txt"
+    },
+    {
+      "command": "node --test tests/godot-round2/R4/package-format.test.mjs",
+      "result": "tests 9 / pass 9 / fail 0",
+      "evidence": "docs/dispatch-reports/godot-round2/R4/evidence/node-package-format.txt"
+    },
+    {
+      "command": "node --test tests/godot-round2/R4/package-zip.test.mjs",
+      "result": "tests 22 / pass 22 / fail 0 (package-format backend: package-format.mjs)",
+      "evidence": "docs/dispatch-reports/godot-round2/R4/evidence/node-package-zip.txt"
+    }
+  ],
+  "sharedVectors": {
+    "file": "tests/godot-round2/R4/vectors/package-format-vectors.json",
+    "consumers": [
+      "vendor/pi-desktop/crates/craftmine-core/src/library/package_format_tests.rs",
+      "tests/godot-round2/R4/package-format.test.mjs"
+    ],
+    "counts": {"canonical": 25, "paths": 21, "kinds": 11, "legacy": 11, "lock": 6}
+  },
+  "evidenceClass": {
+    "logic": "yes",
+    "syntheticFixture": "yes",
+    "realEngine": "no",
+    "formalClient": "no",
+    "realModel": "no",
+    "humanFeel": "no",
+    "pointerLockOrRealInput": "none"
+  },
+  "acceptance": {
+    "CP0": "frozen and vector-verified in Rust and JS; 4 decisions still need R1/R6 co-freeze (spec §5)",
+    "CP1": "static raw/data package round trip and hardening complete; share package implemented; full backup is R5; standalone game is R9",
+    "CP2": "planning layer complete (order, identity, entity map, lock, conflicts); materialization and candidate/apply NOT done (R3/C/R2)",
+    "CP-A04": "pass (logic)",
+    "CP-A05": "pass (logic)",
+    "CP-A06": "pass (logic)",
+    "CP-A11": "planning layer pass",
+    "CP-A02": "pass for synthetic raw+data package",
+    "CP-A10": "not verified",
+    "CP-A19": "not verified",
+    "CP-A20": "not verified"
+  },
+  "incomplete": [
+    "CP2 scene materialization and candidate/apply: blocked on R3 materializer, C checker, R2 candidate entry",
+    "RPC/service registration: R1 main.rs dispatch, R2 workbench-service channels and work UI, R7 model tools (patch provided, not applied)",
+    "R1 Git content history and deployment transaction joint test: idempotency, cancel, late result, failure rollback",
+    "Real auto-door and chest packages, two-world reuse, local override and upgrade full chain: no R3 base or C executor",
+    "CP3 player bases, CP4 standalone runtime package, CP5 three-way merge conflicts, CP6 extension ecosystem: not started",
+    "Full backup moved to R5; R4 did not modify backups files this round"
+  ],
+  "incidents": [
+    "Two parallel fixers wrote files into the main checkout D:/Craftmine World via relative paths; the files were removed and the empty tests/godot-round2/R4 directory was deleted by R4. Main tree verified back to its 7 pre-existing entries."
+  ],
+  "integrationOrder": [
+    "R1: main.rs dispatch for package.formatCheck and package.planInstall",
+    "R2: workbench-service.cjs channels and work UI import/plan entry",
+    "R3: materializer consuming instances[].entityMap and localOverrides into a draft",
+    "R7: package_inspect and package_plan_install tools",
+    "then CP2 two-world door/chest full chain and CP-A10/CP-A19 acceptance"
+  ],
+  "registrationPatch": "docs/dispatch-reports/godot-round2/R4/REGISTRATION_R4.md",
+  "spec": "vendor/pi-desktop/docs/spec/godot-creation-package.md",
+  "report": "docs/dispatch-reports/godot-round2/R4/REPORT_R4.md"
+}

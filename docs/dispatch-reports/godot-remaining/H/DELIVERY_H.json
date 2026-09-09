@@ -1,0 +1,124 @@
+{
+  "task": "godot-remaining-20260910-H",
+  "title": "作品复用、旧世界转换与完整备份",
+  "branch": "codex/godot-remaining-h-20260910",
+  "worktree": "D:/Craftmine World-worktrees/godot-remaining-h-20260910",
+  "baseCommit": "e462147",
+  "codeCommit": "9dd37041d4119987edaf755b306ec9ea76e68263",
+  "pushed": false,
+  "ownedFiles": [
+    "vendor/pi-desktop/crates/craftmine-core/src/library.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/library/packages.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/library/reuse.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/library/reuse_tests.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/backups.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/backups/complete.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/backups/complete_tests.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/legacy.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/legacy/convert.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/legacy/convert_tests.rs",
+    "plugins/craftmine-world/reuse-service.mjs",
+    "tests/godot-remaining/H/reuse-service.test.mjs",
+    "vendor/pi-desktop/docs/spec/godot-package-reuse-and-migration.md",
+    "docs/dispatch-reports/godot-remaining/H/INTERFACE_H.md",
+    "docs/dispatch-reports/godot-remaining/H/REGISTRATION_H.md",
+    "docs/dispatch-reports/godot-remaining/H/ADR_H_PACKAGE_REUSE_AND_BACKUP.md"
+  ],
+  "notTouched": [
+    "vendor/pi-desktop/crates/craftmine-core/src/lib.rs",
+    "vendor/pi-desktop/crates/craftmine-core/src/main.rs",
+    "plugins/craftmine-world/workbench-service.cjs",
+    "plugins/craftmine-world/domain-adapter.mjs",
+    "plugins/craftmine-world/library-service.mjs",
+    "vendor/pi-desktop/apps/desktop/electron/main/index.ts",
+    "vendor/pi-desktop/apps/desktop/electron/main/craftmine-panel-gateway.ts",
+    "vendor/pi-desktop/apps/desktop/electron/main/craftmine-operation-journal.ts"
+  ],
+  "newTables": [
+    "craftmine_packages",
+    "craftmine_package_operations",
+    "craftmine_package_instances",
+    "craftmine_package_instance_operations",
+    "craftmine_legacy_conversions"
+  ],
+  "domainSchemaVersion": 3,
+  "domainSchemaVersionNote": "kept at 3; older archives missing the new tables are padded with the live column list so frozen assertions in durable_tests.rs and memory_receipt_tests.rs stay valid",
+  "api": {
+    "rust": [
+      "package.register", "package.check", "package.install", "package.list",
+      "package.read", "package.progress", "package.grant", "package.upgrade",
+      "package.uninstall", "package.restore", "package.export", "package.import",
+      "package.usage", "backup.export-full", "backup.verify",
+      "backup.restore-full", "backup.content-usage", "legacy.convert"
+    ],
+    "js": {
+      "module": "plugins/craftmine-world/reuse-service.mjs",
+      "exports": ["createReuseService", "explain", "compatibilityMatrix", "migrationReport"],
+      "methods": [
+        "check", "install", "list", "read", "progress", "grant", "upgrade",
+        "uninstall", "restore", "exportPackage", "importPackage", "usage",
+        "backupFull", "backupVerify", "backupRestoreFull", "legacyConvert", "explain"
+      ]
+    }
+  },
+  "formats": [
+    "craftmine.package/1",
+    "craftmine.package-state/1",
+    "craftmine.work-package/1",
+    "craftmine.complete-backup/1"
+  ],
+  "verification": [
+    {
+      "command": "cargo test -p craftmine-core",
+      "cwd": "vendor/pi-desktop",
+      "env": "CARGO_TARGET_DIR=<scratch>/cargo-target-h",
+      "result": "ok. 120 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out",
+      "warnings": 0,
+      "evidence": "docs/dispatch-reports/godot-remaining/H/evidence/rust-tests-final.txt"
+    },
+    {
+      "command": "node --test tests/godot-remaining/H/reuse-service.test.mjs",
+      "cwd": ".",
+      "result": "tests 8 / pass 8 / fail 0",
+      "evidence": "docs/dispatch-reports/godot-remaining/H/evidence/node-tests-final.txt"
+    }
+  ],
+  "evidenceClass": {
+    "logic": "yes",
+    "syntheticFixture": "yes",
+    "realEngine": "no",
+    "formalClient": "no",
+    "realModel": "no",
+    "humanFeel": "no",
+    "pointerLockOrRealInput": "none"
+  },
+  "acceptance": {
+    "A08": "logic-level complete, end-to-end not run",
+    "A13": "partial: copy conversion with per-item report and work-package round trip; real user world not used",
+    "A05": "not jointly verified",
+    "A14": "partial: four failure classes tested with unchanged state; not on the real candidate load path",
+    "AL3": "contract/logic only",
+    "AL4": "logic: declarative migration, upgrade/uninstall, no duplicate rewards",
+    "AL5": "partial: usage relations, cleanup protection, complete backup boundary",
+    "VM4": "partial: offline package without credentials/session/progress, copy install with new identity"
+  },
+  "incomplete": [
+    "RPC registration not merged: main.rs dispatch, workbench-service.cjs channels, domain-adapter re-export, panel gateway allow-list, operation journal allowed/receipt fields",
+    "Task 6 joint F/I verification of three model-authored L2 extensions: no executor or model-authored samples available",
+    "Script migration: needs the C/B isolated copy executor; only declarative operations exist today",
+    "Real engine / formal client acceptance for A08 and A13 not run in this worktree",
+    "A17 Windows install lifecycle needs an independent Windows environment",
+    "Legacy JavaScript gameplay conversion not implemented; kept on the legacy base and reported per item"
+  ],
+  "integrationOrder": [
+    "A: main.rs dispatch entries",
+    "main task / E: workbench-service.cjs channel table and createReuseService wiring, domain-adapter.mjs re-export, craftmine-panel-gateway.ts allow-list, craftmine-operation-journal.ts allowed and receipt keys",
+    "main task: assign ADR number and merge; confirm the SCHEMA_VERSION=3 decision with A",
+    "then: task 6 joint verification and end-to-end re-run of A08/A13"
+  ],
+  "registrationPatch": "docs/dispatch-reports/godot-remaining/H/REGISTRATION_H.md",
+  "interfaceContract": "docs/dispatch-reports/godot-remaining/H/INTERFACE_H.md",
+  "adrFragment": "docs/dispatch-reports/godot-remaining/H/ADR_H_PACKAGE_REUSE_AND_BACKUP.md",
+  "spec": "vendor/pi-desktop/docs/spec/godot-package-reuse-and-migration.md",
+  "report": "docs/dispatch-reports/godot-remaining/H/REPORT_H.md"
+}

@@ -1,0 +1,67 @@
+R4 首次失败、修正与主目录事故记录
+====================================
+
+环境：Windows PowerShell / cargo 1.96.1 / rustc 1.96.1 / node v24.14.0
+工作树：D:\Craftmine World-worktrees\godot-round2-r4-20260910
+分支：codex/godot-round2-r4-20260910（bcebeb1 + 继承 H da41621）
+CARGO_TARGET_DIR：<scratch>\cargo-target-r4
+
+1. CP0 Rust 模块首次编译
+------------------------
+package_format.rs 与 package_format_tests.rs 一次编译通过，8 项测试全绿。
+首次输出有 31 条 dead_code warning（validate_resource_manifest、
+validate_package_json、LOCK_FORMAT 等只在测试中使用）。
+处理：新增真实入口 `TaskJournal::package_format_check`（R1 登记为
+package.formatCheck）后 warning 归零，未用 #[allow(dead_code)] 掩盖。
+
+2. 安装器规划器首次测试失败（2 项）
+-----------------------------------
+cargo test -p craftmine-core
+test result: FAILED. 130 passed; 2 failed
+
+(a) library::installer::tests::plans_dependencies_first_and_allocates_new_identity
+    left:  ["recipe@1","stone@1"]   right: ["recipe@1"]
+    原因：plan.lock.direct 用了全部传入资源，而不是解析后的根。
+    处理：direct = roots。
+
+(b) library::installer::tests::missing_dependency_and_cycle_are_refused_without_a_plan
+    Error: PACKAGE_ROOT_REQUIRED
+    原因：a↔b 互相依赖时没有任何入度为 0 的根，先触发了“无根”检查，
+    掩盖了真正的环。
+    处理：根集为空时改为从全部条目开始遍历，让 PACKAGE_DEPENDENCY_CYCLE
+    先被报出。
+
+修正后：test result: ok. 132 passed; 0 failed; 1 ignored。
+
+3. 两个并行 fixer 误写主目录（已清理）
+--------------------------------------
+两个子代理的 Write 工具把工作树相对路径解析到了主目录
+D:\Craftmine World，产生了：
+  plugins/craftmine-world/package-format.mjs
+  plugins/craftmine-world/package-zip.mjs
+  tests/godot-round2/R4/package-format.test.mjs
+  tests/godot-round2/R4/package-zip.test.mjs
+  空目录 tests/godot-round2/R4/
+子代理自行删除文件后仍残留空目录；R4 复核时删除空目录，并确认主目录
+git status 只剩本轮开始前的 6 条未提交文档条目：
+  M README.md
+  M docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md
+  ?? docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md
+  ?? docs/COMMUNITY_PLATFORM_DEVELOPMENT_PLAN.md
+  ?? docs/CREATION_PACKAGE_DEVELOPMENT_PLAN.md
+  ?? docs/LICENSING_STRATEGY.md
+  ?? docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md
+（共 7 条，与启动时一致，未多出任何 R4 文件。）
+教训：本工作树相对路径写入不可信，交付文件一律用绝对路径核对后再提交。
+
+4. 最终成功证据
+---------------
+cargo test -p craftmine-core
+  test result: ok. 132 passed; 0 failed; 1 ignored（0 warning）
+node --test tests/godot-round2/R4/package-format.test.mjs
+  tests 9 / pass 9 / fail 0
+node --test tests/godot-round2/R4/package-zip.test.mjs
+  tests 22 / pass 22 / fail 0（package-format backend: package-format.mjs）
+
+未放宽任何断言：向量文件在测试期间未被修改；H 的既有测试与 R4 的 CP0
+向量测试同时通过。
