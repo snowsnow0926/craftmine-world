@@ -15,7 +15,7 @@ use super::{digest, godot_builds, godot_runtime, worlds, TaskJournal, WorkspaceC
 #[path = "godot_worlds_tests.rs"]
 mod tests;
 
-const BASES: [&str; 3] = ["first-person", "top-down", "side-view"];
+const BASES: [&str; 4] = ["first-person", "top-down", "side-view", "mining-sandbox"];
 /// One backup descriptor stays well below the archive budget.
 const BACKUP_BYTES: usize = 8 * 1024 * 1024;
 
