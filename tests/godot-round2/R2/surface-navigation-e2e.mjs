@@ -133,6 +133,15 @@ try {
   const recoverable = await gateway("task.recoverable", {worldId: world.id});
   check("任务行可以读取真实可接续草稿", Array.isArray(recoverable.items), recoverable);
 
+  // Asset reads pass the navigation allowlist and the main-process panel
+  // gateway; the plugin service that answers them is R6's still-unregistered
+  // half, so the real host refuses with its own code instead of a fake list.
+  const asset = await gateway("asset.search", {worldId: world.id, scope: "local-library", offset: 0, limit: 5})
+    .then((value) => ({ok: true, value}))
+    .catch((error) => ({ok: false, code: error.code ?? "", message: String(error.message)}));
+  check("素材读取到达插件服务层并报告真实未注册", asset.ok === false
+    && /UNKNOWN_WORKBENCH_CHANNEL|PLUGIN_CALL_FAILED/.test(`${asset.code} ${asset.message}`), asset);
+
   check("没有请求鼠标锁定或焦点", await page.evaluate(() => __inputRequests === 0));
   check("页面没有未处理异常", pageErrors.length === 0, pageErrors);
   await page.screenshot({path: path.join(dir, "surface.png")});
