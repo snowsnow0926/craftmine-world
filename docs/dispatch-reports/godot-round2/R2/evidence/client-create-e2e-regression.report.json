@@ -1,9 +1,9 @@
 {
   "kind": "real-react-panel-with-real-plugin-and-rust",
-  "sourceCommit": "36603abb4a60532ad8ed2a9d6b496af32e6d6237",
+  "sourceCommit": "66a8f2f967fcb985d755ab46668c9453d083f78e",
   "engine": {
     "coreBinary": "D:\\Craftmine World-worktrees\\godot-round2-r2-20260910\\vendor\\pi-desktop\\target\\release\\craftmine-core.exe",
-    "coreSha256": "665d61c01aff5012048f69c86917ba1ba30fe35c176b66a9f1bf9ec150dc9398"
+    "coreSha256": "8925d553a987f7bd4ca61709013fddfd66279cca9c676a9b8c008cc8736cca98"
   },
   "checks": [
     {
@@ -19,7 +19,7 @@
       "passed": true,
       "detail": [
         {
-          "id": "71368cd8-c118-4eb9-b035-b4f21b080724",
+          "id": "65715df3-8c2b-4078-8084-06ef894cee52",
           "state": "ready",
           "playable": "true",
           "active": "true",
@@ -37,7 +37,7 @@
       "passed": true,
       "detail": [
         {
-          "id": "71368cd8-c118-4eb9-b035-b4f21b080724",
+          "id": "65715df3-8c2b-4078-8084-06ef894cee52",
           "state": "ready",
           "playable": "true",
           "active": "true",
@@ -73,7 +73,7 @@
       "passed": true,
       "detail": [
         {
-          "id": "4c5c585d-9259-452e-b8ba-26add7f406d8",
+          "id": "f1cc3635-6d72-454a-969a-5b2b9fdc52ad",
           "state": "ready",
           "playable": "true",
           "active": "true",
@@ -81,7 +81,7 @@
           "text": "海边花园网页体素刚刚保存当前"
         },
         {
-          "id": "71368cd8-c118-4eb9-b035-b4f21b080724",
+          "id": "65715df3-8c2b-4078-8084-06ef894cee52",
           "state": "ready",
           "playable": "true",
           "active": "false",
@@ -94,7 +94,7 @@
       "name": "新建世界在真实初始化完成后才可游玩",
       "passed": true,
       "detail": {
-        "id": "4c5c585d-9259-452e-b8ba-26add7f406d8",
+        "id": "f1cc3635-6d72-454a-969a-5b2b9fdc52ad",
         "state": "ready",
         "playable": "true",
         "active": "true",
@@ -189,8 +189,8 @@
     ]
   },
   "evidence": {
-    "firstWorld": "71368cd8-c118-4eb9-b035-b4f21b080724",
-    "secondWorld": "4c5c585d-9259-452e-b8ba-26add7f406d8",
-    "restartedActive": "71368cd8-c118-4eb9-b035-b4f21b080724"
+    "firstWorld": "65715df3-8c2b-4078-8084-06ef894cee52",
+    "secondWorld": "f1cc3635-6d72-454a-969a-5b2b9fdc52ad",
+    "restartedActive": "65715df3-8c2b-4078-8084-06ef894cee52"
   }
 }

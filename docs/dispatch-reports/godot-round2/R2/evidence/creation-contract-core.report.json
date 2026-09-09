@@ -1,9 +1,9 @@
 {
   "kind": "real-core-godot-world-initialization-contract",
-  "sourceCommit": "6b08407d97c37b66f6fd367c4ebed40bce12814b",
+  "sourceCommit": "66a8f2f967fcb985d755ab46668c9453d083f78e",
   "engine": {
     "coreBinary": "craftmine-core.exe",
-    "coreSha256": "d7c1e1b78eec252bff88bbb481d6a258dc2a73344055690f9386b9d986ef2bdc",
+    "coreSha256": "8925d553a987f7bd4ca61709013fddfd66279cca9c676a9b8c008cc8736cca98",
     "godotEngine": {
       "name": "godot",
       "version": "4.7.2-stable",
@@ -175,7 +175,7 @@
         "baseBuild": "top-down-1.0.0",
         "baseId": "top-down",
         "candidateId": null,
-        "createdAt": 1788978668827,
+        "createdAt": 1788982050381,
         "formalBuildId": "top-down-1.0.0",
         "format": "craftmine.godot-world-init/1",
         "initId": "gwinit-f431bafd6b0f682658dd4fee6dccf48013fdc15e2065167fc3d2549fbfbf1228",
@@ -243,7 +243,7 @@
           "applicationId": null,
           "baseBuild": "top-down-1.0.0",
           "baseId": "top-down",
-          "createdAt": 1788978668827,
+          "createdAt": 1788982050381,
           "format": "craftmine.godot-world-init/1",
           "initId": "gwinit-f431bafd6b0f682658dd4fee6dccf48013fdc15e2065167fc3d2549fbfbf1228",
           "initialSnapshotHash": "9981c06dc3f2ad07a78ba868eafee215b24c0ce1f00add8755841ff3b2374f24",
@@ -260,7 +260,7 @@
           "revision": 0,
           "runtimeKind": "godot",
           "title": "契约世界",
-          "updatedAt": 1788978668827,
+          "updatedAt": 1788982050381,
           "world": {
             "build": {
               "godot": {

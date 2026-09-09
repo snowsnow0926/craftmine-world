@@ -1,6 +1,6 @@
 {
   "kind": "real-gateway-and-retained-view-surface-navigation",
-  "sourceCommit": "957bbe427b24e536263a1d1077031cb26495e0e0",
+  "sourceCommit": "66a8f2f967fcb985d755ab46668c9453d083f78e",
   "checks": [
     {
       "name": "作品入口打开真实工作台标签",

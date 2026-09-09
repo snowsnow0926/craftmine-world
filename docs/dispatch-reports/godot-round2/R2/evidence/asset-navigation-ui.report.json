@@ -1,6 +1,6 @@
 {
   "kind": "real-react-asset-navigation-with-fixture-host",
-  "sourceCommit": "451033b1f0889012096452a27e7c70066c136661",
+  "sourceCommit": "66a8f2f967fcb985d755ab46668c9453d083f78e",
   "checks": [
     {
       "name": "素材行存在并有真实打开入口",
@@ -73,7 +73,7 @@
       "repro": "open the asset sheet, press 导入素材",
       "evidence": {
         "pageErrors": [
-          "Uncaught TypeError: Cannot read properties of undefined (reading 'find')\n    at AssetLibraryPanel (file:///D:/Craftmine%20World-worktrees/godot-round2-r2-20260910/test-results/godot-round2-r2-assets-4huZ6S/fixture.js:24484:51)\n    at react_stack_bottom_frame (file:///D:/Craftmine%20World-worktrees/godot-round2-r2-20260910/test-results/godot-round2-r2-assets-4huZ6S/fixture.js:19766:21)\n    at renderWithHooks (file:///D:/Craftmine%20World-worktrees/godot-round2-r2-20260910/test-results/godot-round2-r2-assets-4huZ6S/fixture.js:6911:25)\n    at updateFunctionComponent (file:///D:/Craftmine%20World-"
+          "Uncaught TypeError: Cannot read properties of undefined (reading 'find')\n    at AssetLibraryPanel (file:///D:/Craftmine%20World-worktrees/godot-round2-r2-20260910/test-results/godot-round2-r2-assets-YnMavS/fixture.js:24484:51)\n    at react_stack_bottom_frame (file:///D:/Craftmine%20World-worktrees/godot-round2-r2-20260910/test-results/godot-round2-r2-assets-YnMavS/fixture.js:19766:21)\n    at renderWithHooks (file:///D:/Craftmine%20World-worktrees/godot-round2-r2-20260910/test-results/godot-round2-r2-assets-YnMavS/fixture.js:6911:25)\n    at updateFunctionComponent (file:///D:/Craftmine%20World-"
         ]
       }
     }
