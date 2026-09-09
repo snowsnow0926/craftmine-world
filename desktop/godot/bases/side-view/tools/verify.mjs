@@ -29,7 +29,7 @@ const ENGINE_CANDIDATES = [
   path.resolve(baseDir, '..', '..', '..', 'build', 'godot', '4.7.2-stable', 'editor', 'Godot_v4.7.2-stable_win64.exe'),
 ];
 
-const ENGINE_VERSION = '4.7.2-stable';
+const ENGINE_EXPECTED = '4.7.2';
 
 const checks = [];
 const runs = {};
@@ -245,7 +245,7 @@ function main() {
     process.exit(2);
   }
   const engineVersion = spawnSync(engine, ['--headless', '--version'], { encoding: 'utf8' }).stdout.trim();
-  check('engine.version', engineVersion.includes('4.7.2'), engineVersion);
+  check('engine.version', engineVersion.includes(ENGINE_EXPECTED), engineVersion);
 
   // A fresh checkout has no import cache, so run one before any scenario.
   const importReport = ensureImport(projectDir);
