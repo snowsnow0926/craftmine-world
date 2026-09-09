@@ -1,0 +1,19 @@
+probe.is_appcontainer=1
+probe.is_lpac=unknown(os_error=Some(87),returned_bytes=0)
+probe.capability_count=1
+probe.winsock_startup_error=0
+probe.loopback_v4_target=127.0.0.1:55421
+probe.loopback_v4_event=unknown(socket_error=10013)
+probe.loopback_v4_connect_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.loopback_v4_connect_error=Some(10013)
+probe.loopback_v6_target=[::1]:55422
+probe.loopback_v6_event=unknown(socket_error=10013)
+probe.loopback_v6_connect_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.loopback_v6_connect_error=Some(10013)
+probe.loopback_v4_bind_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.loopback_v4_bind_error=Some(10013)
+probe.loopback_v6_bind_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.loopback_v6_bind_error=Some(10013)
+probe.external_connect_error=Some(10013)
+probe.external_connect_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.network_policy_denied=true

@@ -1,0 +1,135 @@
+WorkerThreadPool: 28 threads, 21 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Using "default" pen tablet driver...
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+SceneTreeFTI: traversal method DEFAULT
+Loading resource: D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/editor_settings-4.7.tres remapped: D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/editor_settings-4.7.tres
+Completed load for: 'D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/editor_settings-4.7.tres' remapped 'D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/editor_settings-4.7.tres' at thread -1
+EditorSettings: Load OK!
+EditorTheme: Generating new theme for the config '3810048042'.
+EditorTheme: Generating new icons.
+EditorTheme: Generating new fonts.
+EditorTheme: Generating new styles.
+Loading resource: D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/cache/editor_doc_cache-4.7.res remapped: D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/cache/editor_doc_cache-4.7.res
+MbedTLS: Some X509 certificates could not be parsed (3 certificates skipped).
+Loaded system CA certificates
+Completed load for: 'D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/cache/editor_doc_cache-4.7.res' remapped 'D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/cache/editor_doc_cache-4.7.res' at thread -1
+Failed to bind socket. Error: 3.
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+Loading resource: res://craftmine_shared/runtime_bridge.gd remapped: res://craftmine_shared/runtime_bridge.gd
+Completed load for: 'res://craftmine_shared/runtime_bridge.gd' remapped 'res://craftmine_shared/runtime_bridge.gd' at thread -1
+Loading resource: res://scripts/base/game.gd remapped: res://scripts/base/game.gd
+Completed load for: 'res://scripts/base/game.gd' remapped 'res://scripts/base/game.gd' at thread -1
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (21 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   4% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   9% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  13% ] [90m[1mupdate_scripts_classes[22m | BaseContract[39m[0m
+[  18% ] [90m[1mupdate_scripts_classes[22m | DirectionalSprite[39m[0m
+[  22% ] [90m[1mupdate_scripts_classes[22m | DoorZone[39m[0m
+[  27% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  31% ] [90m[1mupdate_scripts_classes[22m | GatherZone[39m[0m
+[  36% ] [90m[1mupdate_scripts_classes[22m | Interactable[39m[0m
+[  40% ] [90m[1mupdate_scripts_classes[22m | MapRenderer[39m[0m
+[  45% ] [90m[1mupdate_scripts_classes[22m | Npc[39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | TopDownPlayer[39m[0m
+[  54% ] [90m[1mupdate_scripts_classes[22m | Probe[39m[0m
+[  59% ] [90m[1mupdate_scripts_classes[22m | QuestManager[39m[0m
+[  63% ] [90m[1mupdate_scripts_classes[22m | SaveSystem[39m[0m
+[  68% ] [90m[1mupdate_scripts_classes[22m | Shop[39m[0m
+[  72% ] [90m[1mupdate_scripts_classes[22m | SpawnMarker[39m[0m
+[  77% ] [90m[1mupdate_scripts_classes[22m | WorldRoot[39m[0m
+[  81% ] [90m[1mupdate_scripts_classes[22m | WorldState[39m[0m
+[  86% ] [90m[1mupdate_scripts_classes[22m | TopDownZone[39m[0m
+[  90% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started Scanning actions... (5 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | npc_sheet.png[39m[0m
+[  16% ] [90m[1m_update_scan_actions[22m | player_sheet.png[39m[0m
+[  33% ] [90m[1m_update_scan_actions[22m | shopkeeper_sheet.png[39m[0m
+[  50% ] [90m[1m_update_scan_actions[22m | town_tiles.png[39m[0m
+[  66% ] [90m[1m_update_scan_actions[22m | icon.svg[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (5 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  16% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  33% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  50% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  66% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | npc_sheet.png[39m[0m
+EditorFileSystem: Importing file: res://assets/characters/npc_sheet.png
+EditorFileSystem: Importing file: res://icon.svg
+EditorFileSystem: Importing file: res://assets/characters/player_sheet.png
+EditorFileSystem: Importing file: res://assets/tiles/town_tiles.png
+EditorFileSystem: Importing file: res://assets/characters/shopkeeper_sheet.png
+EditorFileSystem: "res://icon.svg" import took 6 ms.
+[  16% ] [90m[1mreimport[22m | player_sheet.png[39m[0m
+EditorFileSystem: "res://assets/characters/npc_sheet.png" import took 8 ms.
+EditorFileSystem: "res://assets/characters/shopkeeper_sheet.png" import took 8 ms.
+[  33% ] [90m[1mreimport[22m | shopkeeper_sheet.png[39m[0m
+EditorFileSystem: "res://assets/characters/player_sheet.png" import took 8 ms.
+[  50% ] [90m[1mreimport[22m | town_tiles.png[39m[0m
+[  66% ] [90m[1mreimport[22m | icon.svg[39m[0m
+EditorFileSystem: "res://assets/tiles/town_tiles.png" import took 8 ms.
+[  83% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (5 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+Loading resource: res://scenes/overworld.tscn remapped: res://scenes/overworld.tscn
+Loading resource: res://scripts/base/world_root.gd remapped: res://scripts/base/world_root.gd
+Completed load for: 'res://scripts/base/world_root.gd' remapped 'res://scripts/base/world_root.gd' at thread -1
+Loading resource: res://scripts/base/map_renderer.gd remapped: res://scripts/base/map_renderer.gd
+Completed load for: 'res://scripts/base/map_renderer.gd' remapped 'res://scripts/base/map_renderer.gd' at thread -1
+Loading resource: res://assets/tiles/town_tileset.tres remapped: res://assets/tiles/town_tileset.tres
+Loading resource: res://assets/tiles/town_tiles.png remapped: res://assets/tiles/town_tiles.png
+Loading resource: res://.godot/imported/town_tiles.png-2e281c2b843ce044e298a30536bb08e4.ctex remapped: res://.godot/imported/town_tiles.png-2e281c2b843ce044e298a30536bb08e4.ctex
+Completed load for: 'res://assets/tiles/town_tiles.png' remapped 'res://assets/tiles/town_tiles.png' at thread -1
+Completed load for: 'res://assets/tiles/town_tileset.tres' remapped 'res://assets/tiles/town_tileset.tres' at thread -1
+Loading resource: res://scripts/base/player.gd remapped: res://scripts/base/player.gd
+Completed load for: 'res://scripts/base/player.gd' remapped 'res://scripts/base/player.gd' at thread -1
+Loading resource: res://assets/characters/player_sheet.png remapped: res://assets/characters/player_sheet.png
+Loading resource: res://.godot/imported/player_sheet.png-c3da66da78b6f37a6eb312409bb16284.ctex remapped: res://.godot/imported/player_sheet.png-c3da66da78b6f37a6eb312409bb16284.ctex
+Completed load for: 'res://assets/characters/player_sheet.png' remapped 'res://assets/characters/player_sheet.png' at thread -1
+Loading resource: res://scripts/base/spawn_marker.gd remapped: res://scripts/base/spawn_marker.gd
+Completed load for: 'res://scripts/base/spawn_marker.gd' remapped 'res://scripts/base/spawn_marker.gd' at thread -1
+Loading resource: res://scripts/base/npc.gd remapped: res://scripts/base/npc.gd
+Completed load for: 'res://scripts/base/npc.gd' remapped 'res://scripts/base/npc.gd' at thread -1
+Loading resource: res://assets/characters/npc_sheet.png remapped: res://assets/characters/npc_sheet.png
+Loading resource: res://.godot/imported/npc_sheet.png-78142822add5c2da7cd5f93dfd25eecb.ctex remapped: res://.godot/imported/npc_sheet.png-78142822add5c2da7cd5f93dfd25eecb.ctex
+Completed load for: 'res://assets/characters/npc_sheet.png' remapped 'res://assets/characters/npc_sheet.png' at thread -1
+Loading resource: res://scripts/base/gather_zone.gd remapped: res://scripts/base/gather_zone.gd
+Completed load for: 'res://scripts/base/gather_zone.gd' remapped 'res://scripts/base/gather_zone.gd' at thread -1
+Loading resource: res://scripts/base/door_zone.gd remapped: res://scripts/base/door_zone.gd
+Completed load for: 'res://scripts/base/door_zone.gd' remapped 'res://scripts/base/door_zone.gd' at thread -1
+Completed load for: 'res://scenes/overworld.tscn' remapped 'res://scenes/overworld.tscn' at thread -1
+Script docs haven't been properly loaded or regenerated, so don't save them to disk.
+EditorSettings: Save OK!
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Orphan StringName: Node (static: 4, total: 5)
+StringName: 1 unclaimed string names at exit.

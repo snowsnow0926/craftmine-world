@@ -1,0 +1,70 @@
+evidence_root=D:\Craftmine World\test-results\godot-cycle05-sandbox-network\craftmine.gd5.net.208848.1788966935728
+host_positive_controls=v4,v6
+host_targets=v4:127.0.0.1:55421,v6:[::1]:55422
+host_echo_control=127.0.0.1:55421 passed=true
+host_echo_control=[::1]:55422 passed=true
+variant=appcontainer exemptions=2 exact_task_exempt=false
+private_desktop_station=SessionDefault name=Service-0x0-5c54a$ visible=false default_desktop_acl_modified=false
+variant=appcontainer exit=0 timeout=false active=Some(1)
+probe.is_appcontainer=1
+probe.is_lpac=unknown(os_error=Some(87),returned_bytes=0)
+probe.capability_count=0
+probe.winsock_startup_error=0
+probe.loopback_v4_target=127.0.0.1:55421
+probe.loopback_v4_event=unknown(fd_connect_timeout)
+probe.loopback_v4_connect_result=ok=false,kind=Some(TimedOut),os_error=None,detail=Some("connection timed out")
+probe.loopback_v4_connect_error=None
+probe.loopback_v6_target=[::1]:55422
+probe.loopback_v6_event=unknown(fd_connect_timeout)
+probe.loopback_v6_connect_result=ok=false,kind=Some(TimedOut),os_error=None,detail=Some("connection timed out")
+probe.loopback_v6_connect_error=None
+probe.loopback_v4_bind_result=ok=true,kind=None,os_error=None,detail=None
+probe.loopback_v4_bind_error=None
+probe.loopback_v6_bind_result=ok=true,kind=None,os_error=None,detail=None
+probe.loopback_v6_bind_error=None
+probe.external_connect_error=Some(10013)
+probe.external_connect_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.network_policy_denied=false
+variant=appcontainer host_accepted_v4=0 host_echo_v4=0
+variant=appcontainer host_accepted_v6=0 host_echo_v6=0
+private_desktop_cleanup restored=true desktop_closed=true station_closed=true
+variant=appcontainer cleanup_hresult=0
+variant=lpac exemptions=2 exact_task_exempt=false
+private_desktop_station=SessionDefault name=Service-0x0-5c54a$ visible=false default_desktop_acl_modified=false
+variant=lpac exit=1 timeout=false active=Some(1)
+probe.is_appcontainer=1
+probe.is_lpac=unknown(os_error=Some(87),returned_bytes=0)
+probe.capability_count=0
+probe.winsock_startup_error=10107
+PROBE_ERROR: Winsock initialization failed; network policy remains unverified
+variant=lpac host_accepted_v4=0 host_echo_v4=0
+variant=lpac host_accepted_v6=0 host_echo_v6=0
+private_desktop_cleanup restored=true desktop_closed=true station_closed=true
+variant=lpac cleanup_hresult=0
+variant=lpac-registry exemptions=2 exact_task_exempt=false
+private_desktop_station=SessionDefault name=Service-0x0-5c54a$ visible=false default_desktop_acl_modified=false
+variant=lpac-registry exit=0 timeout=false active=Some(1)
+probe.is_appcontainer=1
+probe.is_lpac=unknown(os_error=Some(87),returned_bytes=0)
+probe.capability_count=1
+probe.winsock_startup_error=0
+probe.loopback_v4_target=127.0.0.1:55421
+probe.loopback_v4_event=unknown(socket_error=10013)
+probe.loopback_v4_connect_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.loopback_v4_connect_error=Some(10013)
+probe.loopback_v6_target=[::1]:55422
+probe.loopback_v6_event=unknown(socket_error=10013)
+probe.loopback_v6_connect_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.loopback_v6_connect_error=Some(10013)
+probe.loopback_v4_bind_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.loopback_v4_bind_error=Some(10013)
+probe.loopback_v6_bind_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.loopback_v6_bind_error=Some(10013)
+probe.external_connect_error=Some(10013)
+probe.external_connect_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.network_policy_denied=true
+variant=lpac-registry host_accepted_v4=0 host_echo_v4=0
+variant=lpac-registry host_accepted_v6=0 host_echo_v6=0
+private_desktop_cleanup restored=true desktop_closed=true station_closed=true
+variant=lpac-registry cleanup_hresult=0
+diagnostic_complete=true product_execution_enabled=false

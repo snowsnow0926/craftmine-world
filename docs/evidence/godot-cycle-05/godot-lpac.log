@@ -1,0 +1,120 @@
+policy_variant=lpac-registryRead-no-network-capabilities
+pinned_input=editor\Godot_v4.7.2-stable_win64.exe sha256=ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424
+pinned_input=editor\Godot_v4.7.2-stable_win64_console.exe sha256=c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643
+pinned_input=templates\version.txt sha256=38885c88f75abbc797a1db7559719800279a00cfb9fa8b2e2868a7f6f84bad2e
+pinned_input=templates\web_nothreads_debug.zip sha256=08962aefef811b603541d7951ac67ef00413aad2d978855183c28adee98f626a
+pinned_input=templates\web_nothreads_release.zip sha256=d3ee2f08cef0cf3cf6678a6355a92a8db48ccdd35cbd2e8bfd5f0e8a0b4032a0
+pinned_input=templates\web_release.zip sha256=02f0dca13ed3d8343fa68f8f88ac80295562408d71aa67157e8b96ddebaa67a3
+fixture_project=D:\cm-gd5-sandbox\desktop\godot\sandbox\out\craftmine.gd0.gate.255464.1788967116412\work\project
+host_loopback_control=passed
+private_desktop_station=SessionDefault name=Service-0x0-5c54a$ visible=false default_desktop_acl_modified=false
+work_integrity_rid=8192 label_modified=false
+task_sid=S-1-15-2-1122988704-1056926376-668913815-3046585395-399005426-1287438643-3099234924
+loopback_exemption_count=2 exact_task_exempt=false
+probe.child_station_visible=false
+probe.denied_interactive_station_error=Some(5)
+probe.allowed_dir_write=passed
+probe.denied_read_error=Some(5)
+probe.denied_read_error_result=ok=false,kind=Some(PermissionDenied),os_error=Some(5),detail=Some("拒绝访问。 (os error 5)")
+probe.denied_write_error=Some(5)
+probe.denied_write_error_result=ok=false,kind=Some(PermissionDenied),os_error=Some(5),detail=Some("拒绝访问。 (os error 5)")
+probe.net_loopback_connect_error=Some(10013)
+probe.net_loopback_connect_error_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.net_loopback_bind_error=Some(10013)
+probe.net_loopback_bind_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.net_external_connect_error=Some(10013)
+probe.net_external_connect_error_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.child_spawn_error=Some(1816)
+probe.child_spawn_error_result=ok=false,kind=Some(Uncategorized),os_error=Some(1816),detail=Some("配额不足，无法处理此命令。 (os error 1816)")
+probe.native_boundary_probe=passed
+native_boundary_gate=passed
+godot_version_lines=1 showing_tail=1
+godot_version| 4.7.2.stable.official.ed1daf0bf
+godot_version=passed
+godot_import_lines=84 showing_tail=20
+Editor-time boundary evidence missing: plugin_external_connect=denied
+godot_import|        [3] _enter_tree (res://sandbox_probe/plugin.gd:11)
+godot_import| [  83% ] [90m[1mfirst_scan_filesystem[22m | 正在启动文件扫描……[39m[0m
+godot_import| [92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+godot_import| [0m
+godot_import| [   0% ] [90m[1mupdate_scripts_classes[22m | Started 正在注册全局类…… (4 steps)[39m[0m
+godot_import| [   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+godot_import| [  20% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+godot_import| [  40% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+godot_import| [  60% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+godot_import| [92m[ DONE ][39m [1mupdate_scripts_classes[22m
+godot_import| [0m
+godot_import| [   0% ] [90m[1mloading_editor_layout[22m | Started 正在加载编辑器 (5 steps)[39m[0m
+godot_import| [   0% ] [90m[1mloading_editor_layout[22m | 正在加载编辑器布局……[39m[0m
+godot_import| [  16% ] [90m[1mloading_editor_layout[22m | 正在加载停靠面板……[39m[0m
+godot_import| [92m[ DONE ][39m [1mloading_editor_layout[22m
+godot_import| [0m
+godot_import| ERROR: Condition "_sock == (SOCKET)(~0)" is true. Returning: FAILED
+godot_import|    at: open (drivers/windows/net_socket_winsock.cpp:238)
+godot_import| ERROR: Condition "err != OK" is true. Returning: ERR_CANT_CREATE
+godot_import|    at: listen (core/io/tcp_server.cpp:56)
+godot_import_exit=0x0
+editor_time_probe=
+plugin_ran=true
+plugin_file_read=denied
+plugin_file_write=denied
+plugin_sibling_write=denied
+plugin_external_connect=unknown(error=1)
+plugin_loopback_connect=unknown(error=1)
+plugin_spawn=denied(error=-1)
+tool_init_ran=true
+tool_init_file_read=denied
+tool_init_file_write=denied
+tool_init_sibling_write=denied
+tool_init_external_connect=unknown(error=1)
+tool_init_loopback_connect=unknown(error=1)
+tool_init_spawn=denied(error=-1)
+
+editor_time_boundary_verified=false
+godot_import=passed
+godot_export_lines=104 showing_tail=30
+godot_export|        [1] run (res://sandbox_probe/probe.gd:42)
+godot_export|        [2] _init (res://probe_resource.gd:9)
+godot_export| ERROR: Condition "_sock == (SOCKET)(~0)" is true. Returning: FAILED
+godot_export|    at: open (drivers/windows/net_socket_winsock.cpp:238)
+godot_export|    GDScript backtrace (most recent call first):
+godot_export|        [0] _connect (res://sandbox_probe/probe.gd:61)
+godot_export|        [1] run (res://sandbox_probe/probe.gd:43)
+godot_export|        [2] _init (res://probe_resource.gd:9)
+godot_export| ERROR: Could not create child process: D:\cm-gd5-sandbox\desktop\godot\sandbox\out\craftmine.gd0.gate.255464.1788967116412\bin\Godot_v4.7.2-stable_win64.exe --headless --version
+godot_export|    at: create_process (platform/windows/os_windows.cpp:1589)
+godot_export|    GDScript backtrace (most recent call first):
+godot_export|        [0] _spawn (res://sandbox_probe/probe.gd:81)
+godot_export|        [1] run (res://sandbox_probe/probe.gd:44)
+godot_export|        [2] _init (res://probe_resource.gd:9)
+godot_export| [  82% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-c8db7da73c0c5d2eebfc0496f635fbee-probe_resource.res[39m[0m
+godot_export| [  82% ] [90m[1msavepack[22m | 正在保存文件：res://sandbox_probe/plugin.gd.remap[39m[0m
+godot_export| [  82% ] [90m[1msavepack[22m | 正在保存文件：res://sandbox_probe/probe.gd.remap[39m[0m
+godot_export| [  82% ] [90m[1msavepack[22m | 正在保存文件：res://main.gd.remap[39m[0m
+godot_export| [  82% ] [90m[1msavepack[22m | 正在保存文件：res://main.tscn.remap[39m[0m
+godot_export| [  82% ] [90m[1msavepack[22m | 正在保存文件：res://probe_resource.gd.remap[39m[0m
+godot_export| [  82% ] [90m[1msavepack[22m | 正在保存文件：res://probe_resource.tres.remap[39m[0m
+godot_export| [  82% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/global_script_class_cache.cfg[39m[0m
+godot_export| [  82% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/uid_cache.bin[39m[0m
+godot_export| [  82% ] [90m[1msavepack[22m | 正在保存文件：res://project.binary[39m[0m
+godot_export| [92m[ DONE ][39m [1msavepack[22m
+godot_export| [0m
+godot_export| ERROR: Condition "_sock == (SOCKET)(~0)" is true. Returning: FAILED
+godot_export|    at: open (drivers/windows/net_socket_winsock.cpp:238)
+godot_export| ERROR: Condition "err != OK" is true. Returning: ERR_CANT_CREATE
+godot_export|    at: listen (core/io/tcp_server.cpp:56)
+godot_export_exit=0x0
+artifact=index.apple-touch-icon.png bytes=11944 sha256=01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5
+artifact=index.audio.position.worklet.js bytes=2973 sha256=be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8
+artifact=index.audio.worklet.js bytes=7298 sha256=5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3
+artifact=index.html bytes=5447 sha256=21520f7bfafb89462c42d6557c7703dd5930e985c1e826ab019c4387879981b1
+artifact=index.icon.png bytes=5700 sha256=ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5
+artifact=index.js bytes=279815 sha256=33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba
+artifact=index.pck bytes=6784 sha256=5251295def71cc931946dddd3200f35e3b2e7bf73c03623a8a92312f0e67e4c5
+artifact=index.png bytes=21443 sha256=3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e
+artifact=index.wasm bytes=39514754 sha256=fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0
+godot_web_export=passed files=9
+evidence=D:\cm-gd5-sandbox\desktop\godot\sandbox\out\craftmine.gd0.gate.255464.1788967116412
+private_desktop_cleanup restored=true desktop_closed=true station_closed=true
+profile_cleanup_hresult=0x0
+PROBE_ERROR: Editor-time evidence remains unknown; fixed runtime compatibility was recorded but full gate did not pass

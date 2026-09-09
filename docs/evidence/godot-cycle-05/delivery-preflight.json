@@ -1,0 +1,271 @@
+{
+  "format": "craftmine.delivery-preflight/1",
+  "generatedAt": "2026-09-09T15:31:27.198Z",
+  "command": "all",
+  "root": "D:\\cm-gd5-core",
+  "commit": "719a9af941b64d90c427f8e92956bf21968bcefb",
+  "ok": false,
+  "checks": [
+    {
+      "id": "notices",
+      "ok": true,
+      "failures": [],
+      "warnings": [],
+      "facts": {
+        "entries": 7,
+        "requiredEntries": 7
+      }
+    },
+    {
+      "id": "assets",
+      "ok": false,
+      "failures": [
+        {
+          "code": "ASSET_BYTES_MISMATCH",
+          "message": "Byte count differs from the manifest: desktop/godot/web/bridge.js (first-person:desktop/godot/web/bridge.js)",
+          "declared": 5903,
+          "actual": 6415
+        },
+        {
+          "code": "ASSET_BYTES_MISMATCH",
+          "message": "Byte count differs from the manifest: desktop/godot/web/bridge.js (shared-web:bridge.js)",
+          "declared": 5903,
+          "actual": 6415
+        },
+        {
+          "code": "ASSET_UNDECLARED_FILE",
+          "message": "shared-web has an undeclared file: desktop/godot/web/runtime.d.mts"
+        },
+        {
+          "code": "ASSET_UNDECLARED_FILE",
+          "message": "shared-web has an undeclared file: desktop/godot/web/runtime.mjs"
+        },
+        {
+          "code": "ASSET_BYTES_MISMATCH",
+          "message": "Byte count differs from the manifest: desktop/godot/web/bridge.js (top-down:desktop/godot/web/bridge.js)",
+          "declared": 5903,
+          "actual": 6415
+        },
+        {
+          "code": "ASSET_BASE_MANIFEST_MISSING",
+          "message": "No asset manifest covers desktop/godot/bases/first-person"
+        },
+        {
+          "code": "ASSET_BASE_MANIFEST_MISSING",
+          "message": "No asset manifest covers desktop/godot/bases/side-view"
+        },
+        {
+          "code": "ASSET_BASE_MANIFEST_MISSING",
+          "message": "No asset manifest covers desktop/godot/bases/top-down"
+        }
+      ],
+      "warnings": [
+        "first-person desktop/godot/probes/first-person/project.godot: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+        "first-person desktop/godot/probes/first-person/world.tscn: Same authored-code licence decision as project.godot.",
+        "first-person desktop/godot/probes/first-person/world.gd: Same authored-code licence decision as project.godot.",
+        "first-person desktop/godot/probes/first-person/crosshair.gd: Same authored-code licence decision as project.godot.",
+        "first-person desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as project.godot.",
+        "first-person desktop/godot/web/bridge.js: Same authored-code licence decision as project.godot.",
+        "first-person desktop/godot/web/shell.html: Same authored-code licence decision as project.godot.",
+        "shared-web desktop/godot/web/shell.html: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+        "shared-web desktop/godot/web/bridge.js: Same authored-code licence decision as shell.html.",
+        "shared-web desktop/godot/web/host.mjs: Same authored-code licence decision as shell.html.",
+        "shared-web desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as shell.html.",
+        "top-down desktop/godot/probes/top-down/project.godot: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+        "top-down desktop/godot/probes/top-down/world.tscn: Same authored-code licence decision as project.godot.",
+        "top-down desktop/godot/probes/top-down/world.gd: Same authored-code licence decision as project.godot.",
+        "top-down desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as project.godot.",
+        "top-down desktop/godot/web/bridge.js: Same authored-code licence decision as project.godot.",
+        "top-down desktop/godot/web/shell.html: Same authored-code licence decision as project.godot."
+      ],
+      "facts": {
+        "manifests": 3,
+        "discoveredBases": [
+          "first-person",
+          "side-view",
+          "top-down"
+        ],
+        "inventory": {
+          "first-person": {
+            "appBundle": [
+              "desktop/godot/probes/first-person/project.godot",
+              "desktop/godot/probes/first-person/world.tscn",
+              "desktop/godot/probes/first-person/world.gd",
+              "desktop/godot/probes/first-person/crosshair.gd",
+              "desktop/godot/probes/shared/web_bridge.gd"
+            ],
+            "userExport": [
+              "desktop/godot/probes/first-person/project.godot",
+              "desktop/godot/probes/first-person/world.tscn",
+              "desktop/godot/probes/first-person/world.gd",
+              "desktop/godot/probes/first-person/crosshair.gd",
+              "desktop/godot/probes/shared/web_bridge.gd",
+              "desktop/godot/web/bridge.js",
+              "desktop/godot/web/shell.html"
+            ],
+            "developmentOnly": []
+          },
+          "shared-web": {
+            "appBundle": [
+              "desktop/godot/probes/shared/web_bridge.gd"
+            ],
+            "userExport": [
+              "desktop/godot/web/shell.html",
+              "desktop/godot/web/bridge.js",
+              "desktop/godot/probes/shared/web_bridge.gd"
+            ],
+            "developmentOnly": [
+              "desktop/godot/web/host.mjs"
+            ]
+          },
+          "top-down": {
+            "appBundle": [
+              "desktop/godot/probes/top-down/project.godot",
+              "desktop/godot/probes/top-down/world.tscn",
+              "desktop/godot/probes/top-down/world.gd",
+              "desktop/godot/probes/shared/web_bridge.gd"
+            ],
+            "userExport": [
+              "desktop/godot/probes/top-down/project.godot",
+              "desktop/godot/probes/top-down/world.tscn",
+              "desktop/godot/probes/top-down/world.gd",
+              "desktop/godot/probes/shared/web_bridge.gd",
+              "desktop/godot/web/bridge.js",
+              "desktop/godot/web/shell.html"
+            ],
+            "developmentOnly": []
+          }
+        }
+      }
+    },
+    {
+      "id": "lgpl",
+      "ok": true,
+      "failures": [],
+      "warnings": [
+        "vendor/pi-desktop/LICENSE references GPL-3 but does not bundle the full GPL-3 text; confirm the required notice set with counsel."
+      ],
+      "facts": {
+        "licenseSha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+        "upstreamLicense": "LGPL-3.0-or-later",
+        "upstreamCommit": "ed0a75414e775eef4b4ee6c985cc9ddfe146ced2"
+      }
+    },
+    {
+      "id": "godot-cache",
+      "ok": true,
+      "failures": [],
+      "warnings": [],
+      "facts": {
+        "unpackedFiles": 2,
+        "templateFiles": 4,
+        "templateVersion": "4.7.2.stable"
+      }
+    },
+    {
+      "id": "export",
+      "ok": true,
+      "failures": [],
+      "warnings": [
+        "No export directory was supplied; exported bytes were not verified."
+      ],
+      "facts": {
+        "skipped": true
+      }
+    },
+    {
+      "id": "package",
+      "ok": true,
+      "failures": [],
+      "warnings": [
+        "No package directory was supplied; package bytes were not verified."
+      ],
+      "facts": {
+        "skipped": true
+      }
+    }
+  ],
+  "failures": [
+    {
+      "code": "ASSET_BYTES_MISMATCH",
+      "message": "Byte count differs from the manifest: desktop/godot/web/bridge.js (first-person:desktop/godot/web/bridge.js)",
+      "declared": 5903,
+      "actual": 6415
+    },
+    {
+      "code": "ASSET_BYTES_MISMATCH",
+      "message": "Byte count differs from the manifest: desktop/godot/web/bridge.js (shared-web:bridge.js)",
+      "declared": 5903,
+      "actual": 6415
+    },
+    {
+      "code": "ASSET_UNDECLARED_FILE",
+      "message": "shared-web has an undeclared file: desktop/godot/web/runtime.d.mts"
+    },
+    {
+      "code": "ASSET_UNDECLARED_FILE",
+      "message": "shared-web has an undeclared file: desktop/godot/web/runtime.mjs"
+    },
+    {
+      "code": "ASSET_BYTES_MISMATCH",
+      "message": "Byte count differs from the manifest: desktop/godot/web/bridge.js (top-down:desktop/godot/web/bridge.js)",
+      "declared": 5903,
+      "actual": 6415
+    },
+    {
+      "code": "ASSET_BASE_MANIFEST_MISSING",
+      "message": "No asset manifest covers desktop/godot/bases/first-person"
+    },
+    {
+      "code": "ASSET_BASE_MANIFEST_MISSING",
+      "message": "No asset manifest covers desktop/godot/bases/side-view"
+    },
+    {
+      "code": "ASSET_BASE_MANIFEST_MISSING",
+      "message": "No asset manifest covers desktop/godot/bases/top-down"
+    }
+  ],
+  "warnings": [
+    "first-person desktop/godot/probes/first-person/project.godot: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+    "first-person desktop/godot/probes/first-person/world.tscn: Same authored-code licence decision as project.godot.",
+    "first-person desktop/godot/probes/first-person/world.gd: Same authored-code licence decision as project.godot.",
+    "first-person desktop/godot/probes/first-person/crosshair.gd: Same authored-code licence decision as project.godot.",
+    "first-person desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as project.godot.",
+    "first-person desktop/godot/web/bridge.js: Same authored-code licence decision as project.godot.",
+    "first-person desktop/godot/web/shell.html: Same authored-code licence decision as project.godot.",
+    "shared-web desktop/godot/web/shell.html: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+    "shared-web desktop/godot/web/bridge.js: Same authored-code licence decision as shell.html.",
+    "shared-web desktop/godot/web/host.mjs: Same authored-code licence decision as shell.html.",
+    "shared-web desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as shell.html.",
+    "top-down desktop/godot/probes/top-down/project.godot: Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+    "top-down desktop/godot/probes/top-down/world.tscn: Same authored-code licence decision as project.godot.",
+    "top-down desktop/godot/probes/top-down/world.gd: Same authored-code licence decision as project.godot.",
+    "top-down desktop/godot/probes/shared/web_bridge.gd: Same authored-code licence decision as project.godot.",
+    "top-down desktop/godot/web/bridge.js: Same authored-code licence decision as project.godot.",
+    "top-down desktop/godot/web/shell.html: Same authored-code licence decision as project.godot.",
+    "vendor/pi-desktop/LICENSE references GPL-3 but does not bundle the full GPL-3 text; confirm the required notice set with counsel.",
+    "No export directory was supplied; exported bytes were not verified.",
+    "No package directory was supplied; package bytes were not verified."
+  ],
+  "inputs": {
+    "cache": "D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable",
+    "export": null,
+    "package": null
+  },
+  "facts": {
+    "commit": "719a9af941b64d90c427f8e92956bf21968bcefb",
+    "sourceDate": "2026-09-09T23:24:57+08:00",
+    "lockVersion": "4.7.2-stable",
+    "lockStatus": "gd0-candidate-not-production-bundled",
+    "node": "v24.14.0",
+    "pnpm": null,
+    "cargo": "cargo 1.96.1 (356927216 2026-06-26)",
+    "editorSha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    "webTemplate": "webThreadedRelease"
+  },
+  "limits": [
+    "Read-only: no download, no installer, no window and no write inside the inspected tree.",
+    "Hash equality proves these bytes, not that a licence is legally sufficient for a specific business use.",
+    "Skipped inputs are not verified and are listed explicitly."
+  ]
+}

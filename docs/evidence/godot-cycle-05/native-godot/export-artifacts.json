@@ -1,0 +1,56 @@
+{
+  "format": "craftmine.evidence-artifacts/1",
+  "source": "D:/cm-gd5-core/test-results/godot-runtime-native-i3TyN3/export",
+  "files": [
+    {
+      "path": "bridge.js",
+      "bytes": 6415,
+      "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+    },
+    {
+      "path": "index.apple-touch-icon.png",
+      "bytes": 9395,
+      "sha256": "5e84aed46eb199395bac370fe195fbce66a34430ec04411d600cc78d349f9b62"
+    },
+    {
+      "path": "index.audio.position.worklet.js",
+      "bytes": 2973,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    {
+      "path": "index.audio.worklet.js",
+      "bytes": 7298,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    {
+      "path": "index.html",
+      "bytes": 980,
+      "sha256": "62e5ee9fdc4905b3c6f0c524e4b8f9b980fbbe16ef9150a22e911d6db50a01ed"
+    },
+    {
+      "path": "index.icon.png",
+      "bytes": 4355,
+      "sha256": "9c169796e4366405ba202f3e57ae43dff7fb9b4cc8f248a0284134c32261fb4f"
+    },
+    {
+      "path": "index.js",
+      "bytes": 314653,
+      "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+    },
+    {
+      "path": "index.pck",
+      "bytes": 202972,
+      "sha256": "1fc04bc63c77c32a6684c18587b88eefbce852a5cde685b4a3ee729542fb3670"
+    },
+    {
+      "path": "index.png",
+      "bytes": 21443,
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    {
+      "path": "index.wasm",
+      "bytes": 38820072,
+      "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+    }
+  ]
+}

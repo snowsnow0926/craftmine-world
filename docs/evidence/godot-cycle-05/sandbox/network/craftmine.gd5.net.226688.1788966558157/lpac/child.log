@@ -1,0 +1,5 @@
+probe.is_appcontainer=1
+probe.is_lpac=unknown(os_error=Some(87),returned_bytes=0)
+probe.capability_count=0
+probe.winsock_startup_error=10107
+PROBE_ERROR: Winsock initialization failed; network policy remains unverified

@@ -1,0 +1,16 @@
+probe.child_station_visible=false
+probe.denied_interactive_station_error=Some(5)
+probe.allowed_dir_write=passed
+probe.denied_read_error=Some(5)
+probe.denied_read_error_result=ok=false,kind=Some(PermissionDenied),os_error=Some(5),detail=Some("拒绝访问。 (os error 5)")
+probe.denied_write_error=Some(5)
+probe.denied_write_error_result=ok=false,kind=Some(PermissionDenied),os_error=Some(5),detail=Some("拒绝访问。 (os error 5)")
+probe.net_loopback_connect_error=Some(10013)
+probe.net_loopback_connect_error_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.net_loopback_bind_error=Some(10013)
+probe.net_loopback_bind_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.net_external_connect_error=Some(10013)
+probe.net_external_connect_error_result=ok=false,kind=Some(PermissionDenied),os_error=Some(10013),detail=Some("以一种访问权限不允许的方式做了一个访问套接字的尝试。 (os error 10013)")
+probe.child_spawn_error=Some(1816)
+probe.child_spawn_error_result=ok=false,kind=Some(Uncategorized),os_error=Some(1816),detail=Some("配额不足，无法处理此命令。 (os error 1816)")
+probe.native_boundary_probe=passed

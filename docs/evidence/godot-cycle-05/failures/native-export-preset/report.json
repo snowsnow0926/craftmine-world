@@ -1,0 +1,10 @@
+{
+  "kind": "real-electron-managed-godot-rust-persistence",
+  "out": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-ZblWUA",
+  "checks": [],
+  "limits": [
+    "Repository-authored base and test-only executor/application registration; no model or OS sandbox claim",
+    "Production index.ts wiring is compile-checked separately; this harness constructs the same classes",
+    "Software offscreen rendering; no player input or feel acceptance"
+  ]
+}

@@ -1,0 +1,9 @@
+probe.is_appcontainer=1
+probe.is_lpac=unknown(os_error=Some(87),returned_bytes=0)
+probe.capability_count=0
+probe.loopback_v4_connect_error=None
+probe.loopback_v6_connect_error=None
+probe.loopback_v4_bind_error=None
+probe.loopback_v6_bind_error=None
+probe.external_connect_error=Some(10013)
+probe.network_policy_denied=false

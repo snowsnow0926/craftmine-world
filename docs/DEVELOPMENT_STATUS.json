@@ -1,33 +1,29 @@
 {
   "format": "craftmine.development/1",
   "objective": "按 Godot 多底座计划循环开发：中央世界、右侧对话、真实工程创作、多底座、保存恢复、作品复用与 Windows 交付",
-  "currentMilestone": "Godot并行接手审计：A–H集成与数据/权限修复；核心102、原生25、E/F/G 52/40/80通过；真实Godot执行/完整进度适配与发行门禁待完成",
-  "baseline": "46739d222ceefc654b596725c96288a4087993b3",
-  "updated": "2026-09-09T14:45:16.501Z",
+  "currentMilestone": "Godot第5轮：完整进度/可信产物解析/真实宿主接线完成；Rust111、客户端25、第一人称Godot原生9通过；可信执行器、产品多底座创建与真实模型验收继续推进",
+  "baseline": "2f84da9e9779226cf153861ce5a397be1442f2b5",
+  "updated": "2026-09-09T15:39:48.205Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "godot_goal_active_cycle04_merged",
+    "status": "godot_goal_active_cycle05_validated",
     "reason": "用户明确要求将 GODOT_MULTIBASE_DEVELOPMENT_PLAN.md 设为 Goal 并开始循环开发。已创建 active Goal，没有 token 总预算；按阶段实现、验证、修复并记录。",
     "activeGoal": true,
     "recurringDevelopment": true,
     "executionMode": "goal",
     "previousLiveCompactionTestStopped": true,
     "automationId": null,
-    "worktree": "D:\\Craftmine World-worktrees\\godot-integration-20260909",
-    "branch": "codex/godot-integration-20260909",
+    "worktree": "D:\\cm-gd5-core",
+    "branch": "codex/godot-cycle05-core",
     "godotCycle01Cleanup": "76c192a 已快进合并到本地 master；工作树登记和本轮分支已移除。Git 删除返回 Directory not empty，随后对已验证目标 D:/cw-gd-20260909-01 的 PowerShell 递归清理被自动审批以 blocked by policy 拒绝，未给出更具体原因。保留残留目录，不自动重试删除或复用；不阻断新轮次开发。",
-    "nextStep": "继续GD0回环隔离与可信A/B适配；GD2完整底座进度、产物解析、候选真实实例证明和C产品接线，再推进真实模型验收。",
+    "nextStep": "GD0由可信宿主核验实际Godot进程token/固定策略并签发任务凭证，补UDP；再接真实A/B执行器、候选实例应用与产品内三底座创建，进行真实模型验收。",
     "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。",
     "previousAutomationId": "craftmine-windows",
-    "currentWorktrees": "集成已合并；底座修复树/分支已清理。core审计树清理返回Invalid argument而保留；C审计实体已删除、Git元数据/分支保留。A–H原树与历史目录未操作。根集成树在最终合并后执行普通Git清理，结果以本轮最终回复为准。",
+    "currentWorktrees": "第5轮 root/core、host、bases、sandbox 三个独立子任务已集成；原始证据归档后再普通Git清理，仅处理本轮已合并干净树。历史树和清理拒绝不重试。",
     "localMerge": {
-      "status": "fast_forward_merged",
+      "status": "ready_for_local_fast_forward",
       "branch": "master",
-      "implementationCommit": "a8b920df75e4a277db271dfffbb99d683229fe53",
-      "codeCommit": "8db008f7d8a0ce80a4fa0a858aa7f795d9ed6ea5",
-      "evidenceFilesVerified": 27,
-      "allDispatchHeadsAndRepairsPresent": true,
-      "unrelatedDirtyFilesPreserved": true,
+      "codeCommit": "bab1468",
       "pushed": false,
       "newDistributionBuilt": false
     },
@@ -50,13 +46,24 @@
       "view": "directory removed; metadata removal failed Invalid argument; branch retained",
       "originalDispatchAndHistoricalTrees": "untouched",
       "root": "ordinary Git cleanup follows final merge"
+    },
+    "godotCycle04Merge": {
+      "status": "fast_forward_merged",
+      "branch": "master",
+      "implementationCommit": "a8b920df75e4a277db271dfffbb99d683229fe53",
+      "codeCommit": "8db008f7d8a0ce80a4fa0a858aa7f795d9ed6ea5",
+      "evidenceFilesVerified": 27,
+      "allDispatchHeadsAndRepairsPresent": true,
+      "unrelatedDirtyFilesPreserved": true,
+      "pushed": false,
+      "newDistributionBuilt": false
     }
   },
   "godotMultibasePlan": {
     "document": "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md",
     "developmentLog": "docs/GODOT_DEVELOPMENT_LOG.md",
     "status": "active",
-    "cycle": 4,
+    "cycle": 5,
     "currentStages": [
       "GD0",
       "GD1",
@@ -74,38 +81,107 @@
       "7a926fb",
       "94ae19c",
       "68c8bb2",
-      "d9ce808"
+      "d9ce808",
+      "17ec6ba",
+      "8f4d496",
+      "325f0db",
+      "2648814",
+      "14ff622",
+      "3c2b05d",
+      "bab1468"
     ],
-    "evidenceDirectory": "docs/evidence/godot-cycle-04",
+    "evidenceDirectory": "docs/evidence/godot-cycle-05",
     "godotVersion": "4.7.2.stable.official.ed1daf0bf",
     "checks": {
       "rustCore": {
-        "passed": 102,
-        "ignored": 1
+        "passed": 111,
+        "ignored": 1,
+        "evidence": "core-tests.log"
       },
-      "broker": 12,
-      "native": 25,
-      "navigationUnits": 23,
-      "godotHostLifecycleFixture": 17,
-      "sandboxLibrary": 9,
-      "firstPersonAuthored": 52,
-      "topDownAuthored": 40,
-      "sideViewAuthored": 80,
-      "baseSaveAudit": 5,
-      "topDownSync": 2,
-      "deliverySelftest": 35,
-      "desktopJsBuild": "passed",
-      "hostTypecheck": "passed"
+      "privateRouterRust": {
+        "passed": 1,
+        "evidence": "core-router-tests.log",
+        "scope": "Large Unicode state, exact runner JSON spelling, durable restart"
+      },
+      "rustAdapter": {
+        "passed": 9,
+        "evidence": "rust-adapter/report.json",
+        "scope": "Real Rust, authored artifact/application fixtures"
+      },
+      "completeDesktopClient": {
+        "passed": 25,
+        "evidence": "desktop-client/report.json",
+        "scope": "Actual product entry/broker/React, legacy worlds; not a product Godot creation flow"
+      },
+      "godotElectronRust": {
+        "passed": 9,
+        "evidence": "native-godot/report.json",
+        "scope": "Authored first-person managed base, actual Godot Web and native host classes, test-only executor/application registration"
+      },
+      "runtimeBoundaries": {
+        "passed": 11,
+        "evidence": "host-boundaries.log"
+      },
+      "hostLifecycle": {
+        "passed": 17,
+        "evidence": "../../dispatch-reports/godot-cycle05/host-lifecycle.txt",
+        "scope": "Deterministic host seams; agent run"
+      },
+      "managedProgress": {
+        "passed": 20,
+        "evidence": "bases/test-results/godot-managed-progress-SJsZxX/report.json",
+        "scope": "All three authored bases; actual Godot headless"
+      },
+      "basePersistence": {
+        "passed": 5,
+        "evidence": "../../dispatch-reports/godot-parallel/cycle05/bases/persistence-audit.json"
+      },
+      "firstPersonAuthored": {
+        "passed": 52,
+        "evidence": "bases/test-results/godot-first-person-base-NYNHiO/report.json"
+      },
+      "topDownAuthored": {
+        "passed": 40,
+        "evidence": "bases/test-results/gd5-native-Cig5lQ/top-down/report.json"
+      },
+      "sideViewAuthored": {
+        "passed": 80,
+        "evidence": "bases/test-results/gd5-native-Cig5lQ/side-view/verify-report.json"
+      },
+      "topDownGeneratedSync": {
+        "passed": 2,
+        "scope": "Agent source regeneration comparison"
+      },
+      "sandboxTests": {
+        "passed": 13,
+        "scope": "Agent-reported Cargo test run: 11 library + 2 network classification; not a full OS gate"
+      },
+      "sandboxBinaries": {
+        "passed": 4,
+        "scope": "Agent-reported compile"
+      },
+      "desktopTypecheck": {
+        "status": "passed",
+        "evidence": "desktop-typecheck.log"
+      },
+      "workspaceJsBuild": {
+        "status": "passed",
+        "evidence": "build-js.log"
+      },
+      "finalDesktopBuild": {
+        "status": "passed",
+        "evidence": "desktop-build-final.log"
+      }
     },
     "actualModelCalls": 0,
     "newDistributionBuilt": false,
     "remaining": [
-      "GD0回环网络隔离、真实A/B执行适配器与runtime check",
-      "GD2完整底座进度、可信产物路径、真实实例证明、C产品接线/回滚/页签可见性",
-      "GD3/GD4真实PI模型创作与再修改，当前底座仅作者工程验收",
-      "GD5横版GPU验收和编辑器退出资源泄漏；挖掘A16未实现",
-      "GD6作品复用/转换、实体迁移、源码素材备份/总量配额和长任务恢复",
-      "GD7三个底座与两个runtime文件权利清单；独立Windows A17未验收",
+      "GD0实际进程token/策略可信凭证、UDP隔离、A/B执行器与真实runtime check；诊断LPAC已明确TCP拒绝，产品执行器仍关闭",
+      "GD2候选真实实例应用协调、产品Godot新建/切换闭环、已有Godot旧进度显式迁移、F/G原生客户端验收",
+      "GD3/GD4真实PI模型创作及再修改；当前测试都是作者工程，调用分母为0",
+      "GD5横版画面/手感及A16挖掘建造分支；编辑器退出泄漏本轮已修复",
+      "GD6作品复用/旧世界转换、实体迁移、源码素材备份/总量配额和长任务恢复",
+      "GD7八项资产预检失败、逐文件权利审计、独立Windows安装升级回滚A17",
       "GD8适用L3/L4场景真实验收"
     ],
     "decisionDocument": "docs/GODOT_INTEGRATION_DECISION.md",
@@ -113,16 +189,20 @@
       "prototypeCompiled": true,
       "runtimePassed": false,
       "productExecutionEnabled": false,
-      "priorLoaderFailureDiagnosedByTaskA": true,
       "fixedAuthoredGodotImportExportObserved": true,
-      "evidence": "desktop/godot/sandbox/evidence/results.json",
+      "osChecksRerunDuringAudit": true,
+      "nativeDiagnosticLpacRegistryTcpExplicitlyDenied": true,
       "networkLoopbackDenied": false,
-      "osChecksRerunDuringAudit": false,
+      "networkLoopbackDeniedScope": "Product policy remains unverified; diagnostic LPAC recipe denied TCP with 10013",
+      "editorTimeNetworkResult": "unknown(error=1)",
+      "actualLpacTokenQuery": "unknown(os_error=87)",
+      "evidence": "docs/evidence/godot-cycle-05/sandbox/godot-lpac/evidence.txt",
+      "correction": "cycle04 allowed inference was incorrect: ordinary AppContainer result was TimedOut with no OS error number",
       "remaining": [
-        "loopback isolation",
+        "host-verified actual process and versioned policy receipt",
+        "UDP denial",
         "trusted executor adapter",
-        "real runtime check",
-        "authenticated candidate launch evidence"
+        "real candidate/runtime acceptance"
       ]
     },
     "previousCycleChecks": {
@@ -135,7 +215,7 @@
       "available": true,
       "storage": "tasks.sqlite + immutable world-scoped source/assets/builds",
       "agentTools": 11,
-      "status": "managed-source-assets-jobs; executor unavailable",
+      "status": "managed-source-assets-jobs plus formal runtime persistence; real executor unavailable",
       "buildAvailable": false,
       "binaryAssetsAvailable": true,
       "backupsIncludeGodotSource": false,
@@ -168,7 +248,58 @@
       },
       "evidenceDirectory": "docs/evidence/godot-cycle-03"
     },
-    "auditDocument": "docs/GODOT_PARALLEL_AUDIT.md"
+    "auditDocument": "docs/GODOT_PARALLEL_AUDIT.md",
+    "cycle04Summary": {
+      "checks": {
+        "rustCore": {
+          "passed": 102,
+          "ignored": 1
+        },
+        "broker": 12,
+        "native": 25,
+        "navigationUnits": 23,
+        "godotHostLifecycleFixture": 17,
+        "sandboxLibrary": 9,
+        "firstPersonAuthored": 52,
+        "topDownAuthored": 40,
+        "sideViewAuthored": 80,
+        "baseSaveAudit": 5,
+        "topDownSync": 2,
+        "deliverySelftest": 35,
+        "desktopJsBuild": "passed",
+        "hostTypecheck": "passed"
+      },
+      "isolation": {
+        "prototypeCompiled": true,
+        "runtimePassed": false,
+        "productExecutionEnabled": false,
+        "priorLoaderFailureDiagnosedByTaskA": true,
+        "fixedAuthoredGodotImportExportObserved": true,
+        "evidence": "desktop/godot/sandbox/evidence/results.json",
+        "networkLoopbackDenied": false,
+        "osChecksRerunDuringAudit": false,
+        "remaining": [
+          "loopback isolation",
+          "trusted executor adapter",
+          "real runtime check",
+          "authenticated candidate launch evidence"
+        ]
+      },
+      "evidenceDirectory": "docs/evidence/godot-cycle-04"
+    },
+    "cycleReport": "docs/GODOT_CYCLE_05.md",
+    "runtimePersistence": {
+      "available": true,
+      "format": "craftmine.godot-progress/1",
+      "fullBody": true,
+      "artifactResolution": "core-owned applied artifact hashes",
+      "nativeFirstPersonPassed": 9,
+      "topDownAndSideViewNativeClientVerified": false,
+      "candidateDescriptor": true,
+      "candidateCoordinator": false,
+      "productGodotCreation": false,
+      "formalProgressMigrationRequired": true
+    }
   },
   "windowsClientPlan": {
     "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",
@@ -731,7 +862,7 @@
       ]
     }
   ],
-  "nextAction": "保持当前 Godot Goal active，按照 GODOT_DEVELOPMENT_LOG.md 继续下一轮 GD0 导出、中央呈现和隔离验证；完成后推进 GD2。保留第7批交付与旧世界。",
+  "nextAction": "GD0由可信宿主核验实际Godot进程token/固定策略并签发任务凭证，补UDP；再接真实A/B执行器、候选实例应用与产品内三底座创建，进行真实模型验收。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",

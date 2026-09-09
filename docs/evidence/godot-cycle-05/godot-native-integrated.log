@@ -1,0 +1,10 @@
+PASS Real Web runtime initial state registered into actual Rust applied artifact
+PASS Native base operation changes complete equipment state
+PASS Real Godot receipt commits through real Rust
+PASS Separate isolated Electron view renders without Node or input
+PASS Checks surface detaches native sibling
+PASS World surface reattaches native sibling
+PASS Storage failure blocks world departure and quit
+PASS Full equipment/world state survives real Electron and Rust restart
+PASS Confirmed durable checkpoint permits runtime exit
+{"out":"D:\\cm-gd5-core\\test-results\\godot-runtime-native-i3TyN3","passed":9,"completed":true}

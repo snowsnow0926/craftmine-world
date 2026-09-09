@@ -1,0 +1,19 @@
+(node:179848) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS 原生客户端启动真实 Rust 宿主和内置世界插件
+PASS 原生窗口全程离屏、不可聚焦且未显示
+PASS 客户端使用本次独立配置目录
+PASS 真实 React 前端通过沙箱 preload 与 Electron 通信
+PASS 桌面、世界面板和游戏初始化时均禁止鼠标锁定与焦点请求
+PASS 实际游戏隔离帧无法访问 Node 或插件桥
+PASS 左栏真实 preload IPC 读取 Rust 世界列表
+PASS 真实左栏在首次创建后自动显示当前世界
+PASS 创建目录只列出已接通的体素空白底座
+PASS 原生导航 IPC 拒绝原始存档写入和应用令牌
+PASS 未交付底座创建失败后选择和世界数量不变
+Error: Error: Error invoking remote method 'pi-plugin-panel-invoke': Error: Error: Unsupported Craftmine host request; world recovery failed: Error: Unsupported Craftmine host request. Runtime hidden and paused; reopen the world to retry.
+    at ChildProcess.<anonymous> (file:///D:/cm-gd5-core/tests/desktop-native.mjs:80:34)
+    at ChildProcess.emit (node:events:508:28)
+    at emit (node:internal/child_process:948:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)
+Native acceptance report: D:\cm-gd5-core\test-results\desktop-native-8y3cO8\report.json

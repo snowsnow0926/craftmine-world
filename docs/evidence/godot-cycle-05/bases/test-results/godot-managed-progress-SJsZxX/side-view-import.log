@@ -1,0 +1,76 @@
+WorkerThreadPool: 28 threads, 21 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Using "default" pen tablet driver...
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+SceneTreeFTI: traversal method DEFAULT
+Loading resource: D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/editor_settings-4.7.tres remapped: D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/editor_settings-4.7.tres
+Completed load for: 'D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/editor_settings-4.7.tres' remapped 'D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/editor_settings-4.7.tres' at thread -1
+EditorSettings: Load OK!
+EditorTheme: Generating new theme for the config '3810048042'.
+EditorTheme: Generating new icons.
+EditorTheme: Generating new fonts.
+EditorTheme: Generating new styles.
+Loading resource: D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/cache/editor_doc_cache-4.7.res remapped: D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/cache/editor_doc_cache-4.7.res
+MbedTLS: Some X509 certificates could not be parsed (3 certificates skipped).
+Loaded system CA certificates
+Completed load for: 'D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/cache/editor_doc_cache-4.7.res' remapped 'D:/cm-gd5-bases/test-results/godot-managed-progress-SJsZxX/engine/editor_data/cache/editor_doc_cache-4.7.res' at thread -1
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+Loading resource: res://craftmine_shared/runtime_bridge.gd remapped: res://craftmine_shared/runtime_bridge.gd
+Completed load for: 'res://craftmine_shared/runtime_bridge.gd' remapped 'res://craftmine_shared/runtime_bridge.gd' at thread -1
+Loading resource: res://scripts/runtime/side_view_runtime.gd remapped: res://scripts/runtime/side_view_runtime.gd
+Completed load for: 'res://scripts/runtime/side_view_runtime.gd' remapped 'res://scripts/runtime/side_view_runtime.gd' at thread -1
+Loading resource: res://scripts/probe/headless_verifier.gd remapped: res://scripts/probe/headless_verifier.gd
+Completed load for: 'res://scripts/probe/headless_verifier.gd' remapped 'res://scripts/probe/headless_verifier.gd' at thread -1
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (21 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   4% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   9% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  13% ] [90m[1mupdate_scripts_classes[22m | HumanInputSource[39m[0m
+[  18% ] [90m[1mupdate_scripts_classes[22m | InputSource[39m[0m
+[  22% ] [90m[1mupdate_scripts_classes[22m | ScriptedInputSource[39m[0m
+[  27% ] [90m[1mupdate_scripts_classes[22m | SideViewPlayer[39m[0m
+[  31% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  36% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  40% ] [90m[1mupdate_scripts_classes[22m | SaveStore[39m[0m
+[  45% ] [90m[1mupdate_scripts_classes[22m | SideViewConfig[39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  54% ] [90m[1mupdate_scripts_classes[22m | WorldState[39m[0m
+[  59% ] [90m[1mupdate_scripts_classes[22m | SideViewCheckpoint[39m[0m
+[  63% ] [90m[1mupdate_scripts_classes[22m | SideViewHazard[39m[0m
+[  68% ] [90m[1mupdate_scripts_classes[22m | SideViewPickup[39m[0m
+[  72% ] [90m[1mupdate_scripts_classes[22m | SideViewRoom[39m[0m
+[  77% ] [90m[1mupdate_scripts_classes[22m | SideViewDoor[39m[0m
+[  81% ] [90m[1mupdate_scripts_classes[22m | SideViewRoomManager[39m[0m
+[  86% ] [90m[1mupdate_scripts_classes[22m | SideViewTarget[39m[0m
+[  90% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+Loading resource: res://scenes/main.tscn remapped: res://scenes/main.tscn
+Loading resource: res://scripts/runtime/main.gd remapped: res://scripts/runtime/main.gd
+Completed load for: 'res://scripts/runtime/main.gd' remapped 'res://scripts/runtime/main.gd' at thread -1
+Completed load for: 'res://scenes/main.tscn' remapped 'res://scenes/main.tscn' at thread -1
+Script docs haven't been properly loaded or regenerated, so don't save them to disk.
+EditorSettings: Save OK!
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Orphan StringName: Node (static: 4, total: 5)
+StringName: 1 unclaimed string names at exit.

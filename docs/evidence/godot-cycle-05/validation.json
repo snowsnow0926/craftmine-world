@@ -1,0 +1,201 @@
+{
+  "format": "craftmine.godot-integration-audit/1",
+  "date": "2026-09-09T15:39:48.203Z",
+  "cycle": 5,
+  "baseCommit": "2f84da9e9779226cf153861ce5a397be1442f2b5",
+  "codeCommit": "bab1468",
+  "implementationCommits": [
+    "17ec6ba",
+    "8f4d496",
+    "325f0db",
+    "2648814",
+    "14ff622",
+    "3c2b05d",
+    "bab1468"
+  ],
+  "goalStatus": "active",
+  "actualModelCalls": 0,
+  "newDistributionBuilt": false,
+  "productGodotExecutionEnabled": false,
+  "noRealInput": true,
+  "noPointerLock": true,
+  "noFocusRequests": true,
+  "checks": {
+    "rustCore": {
+      "passed": 111,
+      "ignored": 1,
+      "evidence": "core-tests.log"
+    },
+    "privateRouterRust": {
+      "passed": 1,
+      "evidence": "core-router-tests.log",
+      "scope": "Large Unicode state, exact runner JSON spelling, durable restart"
+    },
+    "rustAdapter": {
+      "passed": 9,
+      "evidence": "rust-adapter/report.json",
+      "scope": "Real Rust, authored artifact/application fixtures"
+    },
+    "completeDesktopClient": {
+      "passed": 25,
+      "evidence": "desktop-client/report.json",
+      "scope": "Actual product entry/broker/React, legacy worlds; not a product Godot creation flow"
+    },
+    "godotElectronRust": {
+      "passed": 9,
+      "evidence": "native-godot/report.json",
+      "scope": "Authored first-person managed base, actual Godot Web and native host classes, test-only executor/application registration"
+    },
+    "runtimeBoundaries": {
+      "passed": 11,
+      "evidence": "host-boundaries.log"
+    },
+    "hostLifecycle": {
+      "passed": 17,
+      "evidence": "../../dispatch-reports/godot-cycle05/host-lifecycle.txt",
+      "scope": "Deterministic host seams; agent run"
+    },
+    "managedProgress": {
+      "passed": 20,
+      "evidence": "bases/test-results/godot-managed-progress-SJsZxX/report.json",
+      "scope": "All three authored bases; actual Godot headless"
+    },
+    "basePersistence": {
+      "passed": 5,
+      "evidence": "../../dispatch-reports/godot-parallel/cycle05/bases/persistence-audit.json"
+    },
+    "firstPersonAuthored": {
+      "passed": 52,
+      "evidence": "bases/test-results/godot-first-person-base-NYNHiO/report.json"
+    },
+    "topDownAuthored": {
+      "passed": 40,
+      "evidence": "bases/test-results/gd5-native-Cig5lQ/top-down/report.json"
+    },
+    "sideViewAuthored": {
+      "passed": 80,
+      "evidence": "bases/test-results/gd5-native-Cig5lQ/side-view/verify-report.json"
+    },
+    "topDownGeneratedSync": {
+      "passed": 2,
+      "scope": "Agent source regeneration comparison"
+    },
+    "sandboxTests": {
+      "passed": 13,
+      "scope": "Agent-reported Cargo test run: 11 library + 2 network classification; not a full OS gate"
+    },
+    "sandboxBinaries": {
+      "passed": 4,
+      "scope": "Agent-reported compile"
+    },
+    "desktopTypecheck": {
+      "status": "passed",
+      "evidence": "desktop-typecheck.log"
+    },
+    "workspaceJsBuild": {
+      "status": "passed",
+      "evidence": "build-js.log"
+    },
+    "finalDesktopBuild": {
+      "status": "passed",
+      "evidence": "desktop-build-final.log"
+    }
+  },
+  "isolation": {
+    "nativeLpacRegistryTcp": "explicit 10013 denial",
+    "hostEchoPositiveControls": true,
+    "exactTaskExempt": false,
+    "actualGodotVersion": "4.7.2.stable.official.ed1daf0bf",
+    "fixedGodotImportExit": 0,
+    "fixedGodotExportExit": 0,
+    "artifactCount": 9,
+    "fullGateExit": 1,
+    "editorTimeNetwork": "unknown(error=1)",
+    "lpacTokenQuery": "unknown(os_error=87)",
+    "productExecutorEnabled": false,
+    "evidence": "sandbox/godot-lpac/evidence.txt",
+    "correction": "Previous ordinary-AppContainer loopback success claim was false: raw_os_error=None with TimedOut is not success."
+  },
+  "delivery": {
+    "passed": false,
+    "failures": [
+      {
+        "code": "ASSET_BYTES_MISMATCH",
+        "message": "Byte count differs from the manifest: desktop/godot/web/bridge.js (first-person:desktop/godot/web/bridge.js)",
+        "declared": 5903,
+        "actual": 6415
+      },
+      {
+        "code": "ASSET_BYTES_MISMATCH",
+        "message": "Byte count differs from the manifest: desktop/godot/web/bridge.js (shared-web:bridge.js)",
+        "declared": 5903,
+        "actual": 6415
+      },
+      {
+        "code": "ASSET_UNDECLARED_FILE",
+        "message": "shared-web has an undeclared file: desktop/godot/web/runtime.d.mts"
+      },
+      {
+        "code": "ASSET_UNDECLARED_FILE",
+        "message": "shared-web has an undeclared file: desktop/godot/web/runtime.mjs"
+      },
+      {
+        "code": "ASSET_BYTES_MISMATCH",
+        "message": "Byte count differs from the manifest: desktop/godot/web/bridge.js (top-down:desktop/godot/web/bridge.js)",
+        "declared": 5903,
+        "actual": 6415
+      },
+      {
+        "code": "ASSET_BASE_MANIFEST_MISSING",
+        "message": "No asset manifest covers desktop/godot/bases/first-person"
+      },
+      {
+        "code": "ASSET_BASE_MANIFEST_MISSING",
+        "message": "No asset manifest covers desktop/godot/bases/side-view"
+      },
+      {
+        "code": "ASSET_BASE_MANIFEST_MISSING",
+        "message": "No asset manifest covers desktop/godot/bases/top-down"
+      }
+    ],
+    "skipped": [
+      "export",
+      "package"
+    ],
+    "evidence": "delivery-preflight.json"
+  },
+  "preservedFailures": [
+    {
+      "path": "failures/desktop-broker",
+      "result": "11 checks then failure",
+      "fix": "Add exact runtime methods to product main-process private allowlist"
+    },
+    {
+      "path": "failures/native-export-preset",
+      "result": "Failed before first check",
+      "fix": "Supply required export preset include/exclude filter fields"
+    },
+    {
+      "path": "failures/native-timestamp",
+      "result": "7 checks then full restart state inequality",
+      "fix": "Make base savedAt capture a pure read; keep exact equality assertion"
+    },
+    {
+      "path": "sandbox/network",
+      "result": "Earlier unsupported token query, ambiguous network result and bounded timeout runs; raw logs preserved"
+    }
+  ],
+  "limitations": [
+    "Product model calls remain zero; three native base suites use repository-authored fixtures.",
+    "Native Web/Electron/Rust evidence covers first-person only. Top-down/side-view currently have Godot headless evidence.",
+    "Complete native progress excludes transient velocity, animation frames and active hitboxes. Unknown native fields are rejected until adapters support them.",
+    "Full product client regression covers legacy world navigation. A full product Godot creation/selection/play flow remains unverified.",
+    "Candidate descriptor validation is implemented; candidate instance coordinator and authenticated real executor/application evidence remain absent.",
+    "LPAC + registryRead diagnostic explicitly denied native TCP with 10013 and exported fixed Godot. Product task API still uses the previous policy and the full editor-time gate failed.",
+    "Unsupported TokenIsLessPrivilegedAppContainer query returned 87; it is not recorded as a successful observation.",
+    "A selection failure after runtime replacement restores from durable state; it is not an atomic two-phase in-memory swap.",
+    "Artifacts are hashed before serving; this does not prove protection against concurrent native filesystem mutation.",
+    "One historical Windows junction test remains ignored. No player input, visible compositor or player-feel acceptance.",
+    "Delivery preflight has eight failures; release export and installer validation were skipped. No installation or push."
+  ]
+}

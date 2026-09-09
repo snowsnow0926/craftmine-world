@@ -1,0 +1,43 @@
+PASS  blank-01  blank start builds a real tilemap with real collision
+PASS  blank-02  player moves through real physics and faces the travel direction
+PASS  blank-03  blank start has no inherited progress
+PASS  town-01  town ships initial progress with an unclaimed quest
+PASS  town-02  real collision stops the player at the building wall
+PASS  shop-01  scene switch into the shop interior binds the new scene
+PASS  shop-02  buying outside the counter range is rejected
+PASS  shop-03  the counter is the focused interactable at the counter
+PASS  shop-03b  a quest cannot be handed in to an NPC that is not its declared giver
+PASS  shop-04  buying at the counter moves coins, inventory and stock together
+PASS  shop-05  stock is a hard boundary and never goes below zero
+PASS  shop-06  leaving the counter range blocks further purchases
+PASS  shop-07  insufficient coins are rejected without changing state
+PASS  shop-08  returning to the overworld keeps coins, items and stock
+PASS  zone-01  gathering outside the patch is rejected
+PASS  zone-02  walking into the patch creates a real physics overlap
+PASS  zone-03  gathering inside the patch yields items and consumes charges
+PASS  zone-04  leaving the patch clears the overlap and blocks gathering
+PASS  quest-01  delivery outside NPC range is rejected
+PASS  quest-01b  delivering an unknown quest id is rejected
+PASS  quest-02  dialogue reports the active quest before delivery
+PASS  quest-03  the first delivery consumes the herbs and pays the reward once
+PASS  quest-04  the second delivery is rejected and pays nothing
+PASS  quest-05  dialogue and quest status show completion after delivery
+PASS  anim-01  directional animation follows movement in all four directions
+PASS  anim-02  the walk cycle advances while moving in one direction
+PASS  restart-01  a full process restart restores coins, inventory, stock and quest state
+PASS  restart-02  the quest reward stays one-shot after a full restart
+PASS  restart-03  shopping still works after a full restart
+PASS  restart-04  gather charges persist across a full restart
+PASS  instance-01  a second town instance starts from its own initial state
+PASS  instance-02  the two instances keep different identities and independent progress
+PASS  new-world-01  a world created after the example was finished inherits no rewards
+PASS  placement-01  save captures a real shop purchase and non-spawn placement facing up
+PASS  placement-02  a new process restores shop scene, exact position and visible facing without setup commands
+PASS  placement-03  room restoration preserves inventory, shop stock and every reward ledger
+PASS  placement-missing  unavailable or mismatched saved scene refuses autosave and preserves disk bytes
+PASS  placement-mismatch  unavailable or mismatched saved scene refuses autosave and preserves disk bytes
+PASS  placement-04  entry-scene restart restores a non-default position and left-facing sprite with all progress
+PASS  new-world-02  the create-world guard accepts an initial-progress template and rejects author progress
+
+40/40 checks passed (0 failed)
+report: D:\cm-gd5-bases\test-results\gd5-native-Cig5lQ\top-down\report.json

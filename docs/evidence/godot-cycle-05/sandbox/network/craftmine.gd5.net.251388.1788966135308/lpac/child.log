@@ -1,0 +1,9 @@
+probe.is_appcontainer=1
+probe.is_lpac=unknown(os_error=Some(87),returned_bytes=0)
+probe.capability_count=0
+
+thread 'main' (269732) panicked at /rustc/31fca3adb283cc9dfd56b49cdee9a96eb9c96ffd/library\std\src\sys\pal\windows\winsock.rs:26:9:
+assertion `left == right` failed
+  left: 10107
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

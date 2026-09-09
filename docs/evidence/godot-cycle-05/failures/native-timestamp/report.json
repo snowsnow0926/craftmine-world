@@ -1,0 +1,39 @@
+{
+  "kind": "real-electron-managed-godot-rust-persistence",
+  "out": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-kCXVqG",
+  "checks": [
+    {
+      "name": "Real Web runtime initial state registered into actual Rust applied artifact",
+      "passed": true
+    },
+    {
+      "name": "Native base operation changes complete equipment state",
+      "passed": true
+    },
+    {
+      "name": "Real Godot receipt commits through real Rust",
+      "passed": true
+    },
+    {
+      "name": "Separate isolated Electron view renders without Node or input",
+      "passed": true
+    },
+    {
+      "name": "Checks surface detaches native sibling",
+      "passed": true
+    },
+    {
+      "name": "World surface reattaches native sibling",
+      "passed": true
+    },
+    {
+      "name": "Storage failure blocks world departure and quit",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Repository-authored base and test-only executor/application registration; no model or OS sandbox claim",
+    "Production index.ts wiring is compile-checked separately; this harness constructs the same classes",
+    "Software offscreen rendering; no player input or feel acceptance"
+  ]
+}

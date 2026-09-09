@@ -1,0 +1,43 @@
+
+[app/timing] [timing] kind=boot phase=when-ready elapsedMs=97
+[app/lifecycle] app boot craftmine world 0.14.3
+[app/timing] [timing] kind=boot phase=backends-start elapsedMs=101
+[app/timing] [timing] kind=boot phase=host elapsedMs=819 spawnedMs=4 handshakeMs=713 durationMs=718 ok=true
+[app/runtime] host-core handshake ok
+[agent/runtime] [agent-sidecar] ready (host-proxy mode)
+[app/timing] [timing] kind=boot phase=sidecar elapsedMs=1292 spawnedMs=5 configureMs=464 durationMs=470 ok=true
+[app/runtime] agent sidecar configured
+[app/plugin] plugin.service
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=1428 pluginId=craftmine.world durationMs=134 ok=true
+[app/plugin] plugin restored
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=1497 pluginId=pi.browser durationMs=69 ok=true
+[app/plugin] plugin restored
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=1573 pluginId=pi.files durationMs=76 ok=true
+[app/plugin] plugin restored
+[app/timing] [timing] kind=boot phase=mcp-refresh elapsedMs=1575 durationMs=2 ok=true
+[app/timing] [timing] kind=boot phase=backends-ready elapsedMs=1576
+[app/timing] [timing] kind=boot phase=window-created elapsedMs=1601
+[app/timing] [timing] kind=boot phase=window-loaded elapsedMs=1743 durationMs=139 ok=true
+[app/timing] [timing] kind=boot phase=window-ready elapsedMs=1743
+[app/timing] [timing] kind=boot phase=window-rendered-offscreen elapsedMs=1744
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+HEADLESS PAGE 1: [timing] kind=boot phase=renderer-bootstrap durationMs=9 ok=true
+[app/timing] [timing] kind=boot phase=renderer-bootstrap durationMs=9 ok=true
+Error occurred in handler for 'pi-plugin-panel-invoke': Error: WORLD_BASE_UNAVAILABLE
+    at apiError (file:///D:/cm-gd5-core/vendor/pi-desktop/apps/desktop/out/main/index.js:25811:16)
+    at PluginRuntime.handleChildMessage (file:///D:/cm-gd5-core/vendor/pi-desktop/apps/desktop/out/main/index.js:26585:25)
+    at ForkUtilityProcess.<anonymous> (file:///D:/cm-gd5-core/vendor/pi-desktop/apps/desktop/out/main/index.js:26211:39)
+    at ForkUtilityProcess.emit (node:events:509:28)
+    at UtilityProcess.emit (node:electron/js2c/browser_init:2:90639) {
+  code: 'PLUGIN_CALL_FAILED'
+}
+Error occurred in handler for 'pi-plugin-panel-invoke': Error: Error: Unsupported Craftmine host request; world recovery failed: Error: Unsupported Craftmine host request. Runtime hidden and paused; reopen the world to retry.
+    at Object.invoke (file:///D:/cm-gd5-core/vendor/pi-desktop/apps/desktop/out/main/index.js:45285:34)
+    at async PluginPanelHost.pluginId.pluginId [as bridge] (file:///D:/cm-gd5-core/vendor/pi-desktop/apps/desktop/out/main/index.js:53552:53)
+    at async Session.<anonymous> (node:electron/js2c/browser_init:2:118313)
+[app/persistence] world checkpoint blocked application quit

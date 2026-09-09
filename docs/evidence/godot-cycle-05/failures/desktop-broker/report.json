@@ -1,0 +1,210 @@
+{
+  "format": "craftmine.native-acceptance/1",
+  "mode": "development",
+  "time": "2026-09-09T15:25:48.773Z",
+  "passed": false,
+  "checks": [
+    {
+      "name": "原生客户端启动真实 Rust 宿主和内置世界插件",
+      "passed": true
+    },
+    {
+      "name": "原生窗口全程离屏、不可聚焦且未显示",
+      "passed": true
+    },
+    {
+      "name": "客户端使用本次独立配置目录",
+      "passed": true
+    },
+    {
+      "name": "真实 React 前端通过沙箱 preload 与 Electron 通信",
+      "passed": true
+    },
+    {
+      "name": "桌面、世界面板和游戏初始化时均禁止鼠标锁定与焦点请求",
+      "passed": true
+    },
+    {
+      "name": "实际游戏隔离帧无法访问 Node 或插件桥",
+      "passed": true
+    },
+    {
+      "name": "左栏真实 preload IPC 读取 Rust 世界列表",
+      "passed": true
+    },
+    {
+      "name": "真实左栏在首次创建后自动显示当前世界",
+      "passed": true
+    },
+    {
+      "name": "创建目录只列出已接通的体素空白底座",
+      "passed": true
+    },
+    {
+      "name": "原生导航 IPC 拒绝原始存档写入和应用令牌",
+      "passed": true
+    },
+    {
+      "name": "未交付底座创建失败后选择和世界数量不变",
+      "passed": true
+    }
+  ],
+  "evidence": {
+    "initialStatus": {
+      "name": "craftmine world",
+      "profile": "D:\\cm-gd5-core\\test-results\\desktop-native-8y3cO8\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/cm-gd5-core/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    "desktop": {
+      "title": "craftmine world · 最中幻想",
+      "text": "最中幻想\n世界\n打开世界\n世界\n我的第一个世界\n网页体素\n刚刚保存\n当前\n辅助工作区\n作品\n接口未接入\n素材\n接口未接入\n检查\n接口未接入\n记忆\n接口未接入\n任务\n接口未接入\n备份\n接口未接入\n创作\n游玩\n会话\n暂无临时对话\n项目\nlegacy\nD:/cm-gd5-core/test-results/desktop-native-8y3cO8/legacy\n当前项目还没有对话\n打开通知中心\nv0.14.3\n新建任务\n今天，创造怎样的世界？\n开始使用\n关闭\n添加 AI 模型服务\n保存 API 密钥\n打开项目文件夹\n发送第一条消息\n加载开发插件（可选）\n描述你的想法，比如在身边种一片花草…\n智能体\n每次询问\n模型\n创作\n游玩\n世界\n最中幻想\n让你的想法，长成一个世界\n正在启动最中幻想…",
+      "version": {
+        "ok": true,
+        "data": {
+          "name": "craftmine world",
+          "version": "0.14.3",
+          "protocolVersion": 11,
+          "hostProtocolVersion": 11,
+          "hostVersion": "0.14.3",
+          "platform": "win32",
+          "arch": "x64"
+        }
+      },
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    "guards": [
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/cm-gd5-core/vendor/pi-desktop/apps/desktop/out/renderer/index.html"
+      },
+      {
+        "bridge": "object",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/cm-gd5-core/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+      },
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "about:srcdoc"
+      }
+    ],
+    "failure": "Error: Error: Error invoking remote method 'pi-plugin-panel-invoke': Error: Error: Unsupported Craftmine host request; world recovery failed: Error: Unsupported Craftmine host request. Runtime hidden and paused; reopen the world to retry.\n    at ChildProcess.<anonymous> (file:///D:/cm-gd5-core/tests/desktop-native.mjs:80:34)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+    "statusAtFailure": {
+      "name": "craftmine world",
+      "profile": "D:\\cm-gd5-core\\test-results\\desktop-native-8y3cO8\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/cm-gd5-core/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    "desktopStateAtFailure": {
+      "title": "craftmine world · 最中幻想",
+      "text": "最中幻想\n世界\n打开世界\n世界\n我的第一个世界\n网页体素\n刚刚保存\n当前\n辅助工作区\n作品\n接口未接入\n素材\n接口未接入\n检查\n接口未接入\n记忆\n接口未接入\n任务\n接口未接入\n备份\n接口未接入\n创作\n游玩\n会话\n暂无临时对话\n项目\nlegacy\nD:/cm-gd5-core/test-results/desktop-native-8y3cO8/legacy\n当前项目还没有对话\n打开通知中心\nv0.14.3\n新建任务\n今天，创造怎样的世界？\n开始使用\n关闭\n添加 AI 模型服务\n保存 API 密钥\n打开项目文件夹\n发送第一条消息\n加载开发插件（可选）\n描述你的想法，比如在身边种一片花草…\n智能体\n每次询问\n模型\n创作\n游玩\n世界\n最中幻想\n让你的想法，长成一个世界\n正在启动最中幻想…",
+      "version": {
+        "ok": true,
+        "data": {
+          "name": "craftmine world",
+          "version": "0.14.3",
+          "protocolVersion": 11,
+          "hostProtocolVersion": 11,
+          "hostVersion": "0.14.3",
+          "platform": "win32",
+          "arch": "x64"
+        }
+      },
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    "guardsAtFailure": [
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/cm-gd5-core/vendor/pi-desktop/apps/desktop/out/renderer/index.html"
+      },
+      {
+        "bridge": "object",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/cm-gd5-core/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+      },
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "about:srcdoc"
+      }
+    ]
+  },
+  "binaries": {
+    "electron": "bab31519ee1bc5b490caf7844e2b1dbcd4f7bb49a13039103952ab381c02ade4",
+    "host": "45916ae9afe294971519c840652082731c5828ab6c8bef8e0ed9e0c1e97ce35d",
+    "core": "45f7c681259aec7ce25bc0449b64f9ffff924e927c504792bb0eaaeae4a2dd73"
+  },
+  "limits": [
+    "离屏运行，未做可见窗口或物理双击验收",
+    "目录选择返回测试夹具，未打开系统对话框",
+    "桌面与世界分别离屏渲染和截图，不证明可见原生窗口的最终合成",
+    "本次不调用模型，也不证明真实 Agent 创作闭环"
+  ]
+}

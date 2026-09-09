@@ -172,3 +172,26 @@ A–H八份原HEAD及各修复提交均为master祖先。README、总计划及�
 合并前后哈希完全一致，没有推送。底座修复工作树/分支已清理；core审计清理返回
 Invalid argument，目录/登记保留；C审计实体已删除，Git元数据清理返回相同错误，
 登记/分支保留，均未强删或换方式重试。根集成树在最终文档合并后执行普通Git清理。
+
+## 第 5 轮：完整底座进度、真实宿主接线与隔离证据修正
+
+日期：2026-09-09。起点 `2f84da9`。root 在 `D:/cm-gd5-core` 的
+`codex/godot-cycle05-core` 继续当前 Goal，并集成 host、bases、sandbox 三个独立子任务。
+
+Rust 新增完整原生进度、正式产物解析、候选描述符和耐久回执；真实 Electron 宿主接线，
+三个作者底座实现加载/暂停/保存/恢复。root 完整产品回归发现私有 broker 漏了 Godot
+方法，已修复。E 时间戳漂移、F/G 状态恢复和 G 编辑器退出泄漏也完成修复。
+
+本轮 Rust 111 通过/1 历史忽略，完整客户端 25、第一人称真实 Godot/Electron/Rust 9、
+三底座进度 20 组、E/F/G 作者工程 52/40/80 通过；完整 TS 与 JS 构建通过。
+客户端 25 项使用旧世界，F/G 当前是 Godot headless 验证，不能宣称产品三底座创建已验收。
+
+修正前一轮网络误判：普通 AppContainer 的 TimedOut 且无 OS 错误号不代表成功。
+新 LPAC+registryRead 原生 TCP 探针明确返回 10013，同策略固定 Godot 导入/导出退出 0。
+编辑器脚本网络只给出通用错误，因此完整门禁仍退出 1；产品执行器尚未开启。
+真实发行预检 8 项失败，发行导出和安装包跳过。真实模型调用为 0。
+
+见[完整报告](GODOT_CYCLE_05.md)、[验收范围](evidence/godot-cycle-05/validation.json)、
+[证据清单](evidence/godot-cycle-05/manifest.json)。所有失败保留，原始字节已归档。
+下一轮继续可信进程/策略凭证、真实执行器、候选协调和产品三底座创建，再做真实模型验收。
+GD0–GD8 范围不变，Goal 保持 active；无真实输入、焦点或 Pointer Lock，没有推送和安装。

@@ -1,0 +1,672 @@
+{
+  "format": "craftmine.evidence-archive/1",
+  "createdAt": "2026-09-09T15:37:51.643Z",
+  "files": [
+    {
+      "path": "native-godot/engine-version.log",
+      "source": "D:\\cm-gd5-core\\test-results\\godot-runtime-native-i3TyN3\\engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "path": "native-godot/first.log",
+      "source": "D:\\cm-gd5-core\\test-results\\godot-runtime-native-i3TyN3\\first.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": "native-godot/managed-export.log",
+      "source": "D:\\cm-gd5-core\\test-results\\godot-runtime-native-i3TyN3\\managed-export.log",
+      "bytes": 14531,
+      "sha256": "2a4e7dcd7740df7aeee0bda377ba7e4760bd91b907616b007bb8fb89a60d8a35"
+    },
+    {
+      "path": "native-godot/managed-import.log",
+      "source": "D:\\cm-gd5-core\\test-results\\godot-runtime-native-i3TyN3\\managed-import.log",
+      "bytes": 5130,
+      "sha256": "4e052a215df562fa90037d9230362f0ae506d723995d79ee88d50722f175d97b"
+    },
+    {
+      "path": "native-godot/native-world.png",
+      "source": "D:\\cm-gd5-core\\test-results\\godot-runtime-native-i3TyN3\\native-world.png",
+      "bytes": 282361,
+      "sha256": "9bc9452dba08ded340a032942979d20208a737728fe77dc8dcdf4e6560bc2959"
+    },
+    {
+      "path": "native-godot/report.json",
+      "source": "D:\\cm-gd5-core\\test-results\\godot-runtime-native-i3TyN3\\report.json",
+      "bytes": 1414,
+      "sha256": "f78d2173f36abaf1bd4bf5d657690844e99b37a9c10497a3cda73b2f78cd31cf"
+    },
+    {
+      "path": "native-godot/restart.log",
+      "source": "D:\\cm-gd5-core\\test-results\\godot-runtime-native-i3TyN3\\restart.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": "desktop-client/first-start.log",
+      "source": "D:\\cm-gd5-core\\test-results\\desktop-native-WwJ2QD\\first-start.log",
+      "bytes": 3907,
+      "sha256": "5c2662f20c5c28ef1a6cfeccf93c488c27018cf44b49762127109d62925ab6da"
+    },
+    {
+      "path": "desktop-client/native-desktop.png",
+      "source": "D:\\cm-gd5-core\\test-results\\desktop-native-WwJ2QD\\native-desktop.png",
+      "bytes": 63315,
+      "sha256": "085a60f3abd4bf76230c8b2cf5c84af36299a5551088c24f5d0548b4de6096c4"
+    },
+    {
+      "path": "desktop-client/native-save-failure.png",
+      "source": "D:\\cm-gd5-core\\test-results\\desktop-native-WwJ2QD\\native-save-failure.png",
+      "bytes": 72599,
+      "sha256": "f122ccd7894440d452703c2b697c3e51b0165700b65b33243bf18d0fd6223e19"
+    },
+    {
+      "path": "desktop-client/native-world-save-failure.png",
+      "source": "D:\\cm-gd5-core\\test-results\\desktop-native-WwJ2QD\\native-world-save-failure.png",
+      "bytes": 206262,
+      "sha256": "a4df4c1f53e7d89d92109a49f55b67178fd0a3247270f9df096b8edaceb808a2"
+    },
+    {
+      "path": "desktop-client/native-world.png",
+      "source": "D:\\cm-gd5-core\\test-results\\desktop-native-WwJ2QD\\native-world.png",
+      "bytes": 202210,
+      "sha256": "74dff082bcdafb5d714d64b8319ee26579a64dfea9b85e2b5dbe15ca81c98c97"
+    },
+    {
+      "path": "desktop-client/report.json",
+      "source": "D:\\cm-gd5-core\\test-results\\desktop-native-WwJ2QD\\report.json",
+      "bytes": 7626,
+      "sha256": "fc097b2068cbfd757edd8e8106adb9d86680f742447434a2a66bd7b1d4befd2d"
+    },
+    {
+      "path": "desktop-client/restart.log",
+      "source": "D:\\cm-gd5-core\\test-results\\desktop-native-WwJ2QD\\restart.log",
+      "bytes": 1938,
+      "sha256": "54ac9f0b3ae5c6c2cbbf0a053141a3e279a6d8710608a3deb109fddc2b09dacc"
+    },
+    {
+      "path": "failures/desktop-broker/first-start.log",
+      "source": "D:\\cm-gd5-core\\test-results\\desktop-native-8y3cO8\\first-start.log",
+      "bytes": 3058,
+      "sha256": "2fb17520d9149322e995d841fc3900eafeaa3beb5a2d69bc4749d45cac1e19d7"
+    },
+    {
+      "path": "failures/desktop-broker/native-failure.png",
+      "source": "D:\\cm-gd5-core\\test-results\\desktop-native-8y3cO8\\native-failure.png",
+      "bytes": 57916,
+      "sha256": "6e480eb1e9412947c34a018c19af7f330ec098906fe7a33bd7fd9b8962a80c15"
+    },
+    {
+      "path": "failures/desktop-broker/report.json",
+      "source": "D:\\cm-gd5-core\\test-results\\desktop-native-8y3cO8\\report.json",
+      "bytes": 7829,
+      "sha256": "906e4f59598f7055d4b19d0774e396dbf7d09128e49435656f6461f8734f1153"
+    },
+    {
+      "path": "rust-adapter/report.json",
+      "source": "D:\\cm-gd5-core\\test-results\\godot-runtime-core-UqUwQh\\report.json",
+      "bytes": 1204,
+      "sha256": "8c7ab9ac1ffaab3c519167f551fb8ad542d6927e7cd3e5aa104693ac22d282ce"
+    },
+    {
+      "path": "failures/native-export-preset/engine-version.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-ZblWUA\\engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "path": "failures/native-export-preset/managed-import.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-ZblWUA\\managed-import.log",
+      "bytes": 5777,
+      "sha256": "83df7b21fae2f547be08f846370c463e740490897130a691db26f8782263eb32"
+    },
+    {
+      "path": "failures/native-export-preset/report.json",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-ZblWUA\\report.json",
+      "bytes": 492,
+      "sha256": "1b661fe803dcc109e39c0544c7edc8c968b07bd1a385be4486be0b50eed1d80c"
+    },
+    {
+      "path": "failures/native-timestamp/engine-version.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-kCXVqG\\engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "path": "failures/native-timestamp/first.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-kCXVqG\\first.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": "failures/native-timestamp/managed-export.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-kCXVqG\\managed-export.log",
+      "bytes": 14531,
+      "sha256": "2a4e7dcd7740df7aeee0bda377ba7e4760bd91b907616b007bb8fb89a60d8a35"
+    },
+    {
+      "path": "failures/native-timestamp/managed-import.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-kCXVqG\\managed-import.log",
+      "bytes": 5130,
+      "sha256": "4e052a215df562fa90037d9230362f0ae506d723995d79ee88d50722f175d97b"
+    },
+    {
+      "path": "failures/native-timestamp/native-world.png",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-kCXVqG\\native-world.png",
+      "bytes": 282361,
+      "sha256": "9bc9452dba08ded340a032942979d20208a737728fe77dc8dcdf4e6560bc2959"
+    },
+    {
+      "path": "failures/native-timestamp/report.json",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-kCXVqG\\report.json",
+      "bytes": 1216,
+      "sha256": "f4980295f91729823ef65494c4293b84af37f61e2ed77b6e5587ad43360e9e0b"
+    },
+    {
+      "path": "failures/native-timestamp/restart.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-kCXVqG\\restart.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": "agent-native-godot/engine-version.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-mr2Pjt\\engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "path": "agent-native-godot/first.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-mr2Pjt\\first.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": "agent-native-godot/managed-export.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-mr2Pjt\\managed-export.log",
+      "bytes": 14531,
+      "sha256": "2a4e7dcd7740df7aeee0bda377ba7e4760bd91b907616b007bb8fb89a60d8a35"
+    },
+    {
+      "path": "agent-native-godot/managed-import.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-mr2Pjt\\managed-import.log",
+      "bytes": 5130,
+      "sha256": "4e052a215df562fa90037d9230362f0ae506d723995d79ee88d50722f175d97b"
+    },
+    {
+      "path": "agent-native-godot/native-world.png",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-mr2Pjt\\native-world.png",
+      "bytes": 282361,
+      "sha256": "9bc9452dba08ded340a032942979d20208a737728fe77dc8dcdf4e6560bc2959"
+    },
+    {
+      "path": "agent-native-godot/report.json",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-mr2Pjt\\report.json",
+      "bytes": 1435,
+      "sha256": "b68b2eb032987a742b6c9526a89d93daf7d163ad32d549cace9c840e7e29de80"
+    },
+    {
+      "path": "agent-native-godot/restart.log",
+      "source": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host\\test-results\\godot-runtime-native-mr2Pjt\\restart.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/engine-version.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/first-person-acknowledgement.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\first-person-acknowledgement.log",
+      "bytes": 6531,
+      "sha256": "959d001909deffeb6f4b26e87036d29628257e75471ddf752e2c3e09ce38dbaf"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/first-person-enriched.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\first-person-enriched.log",
+      "bytes": 5103,
+      "sha256": "34beb615efccd0ab723a6493c3b1484f27d980621ec8118255d07becdfbd60e6"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/first-person-fresh.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\first-person-fresh.log",
+      "bytes": 5213,
+      "sha256": "7d1cbeaae996ca4aabfb28b1444fe363d1295c99d2a948e0e213f13ff6ecd3f5"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/first-person-import.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\first-person-import.log",
+      "bytes": 41513,
+      "sha256": "81b68b4e2b080ac1c8f9c633ce137aaa617a5adc534e6b9e25af046ccdad1f6b"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/first-person-live-restore.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\first-person-live-restore.log",
+      "bytes": 7446,
+      "sha256": "047c3e5f893d9a4577874f2489e892c7132829c61ca832715a660bfe276d18f8"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/first-person-restart-and-reject.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\first-person-restart-and-reject.log",
+      "bytes": 43633,
+      "sha256": "7deb513c3377f85b1777ea0ebd18393477064ee6905db09879a0cafb4fcf76da"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/first-person-saved-state.json",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\first-person-saved-state.json",
+      "bytes": 1864,
+      "sha256": "ce526bf4099cc15f67fc1cc161d99f06961d3e19cb5f44538d17bcd55811b56f"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/report.json",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\report.json",
+      "bytes": 3266,
+      "sha256": "ae1581d481b67772210e7418c04c6994a2c28dc44dbb301bf1db9ad31e016c1a"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/side-view-acknowledgement.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\side-view-acknowledgement.log",
+      "bytes": 4617,
+      "sha256": "4bd8f30b16e7363e8cb68fb9804ad4e05fe46122a09fbafa72892371f7c5c8a2"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/side-view-enriched.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\side-view-enriched.log",
+      "bytes": 3573,
+      "sha256": "eed0c997d9a4a3c5dc851f694f1920fca9bb505f6b76e1b0dcc25848448ac080"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/side-view-fresh.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\side-view-fresh.log",
+      "bytes": 2885,
+      "sha256": "3c6f992822f7c0aee3487328b8c936b15d067b8024b53f3bba85922eaee0a421"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/side-view-import.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\side-view-import.log",
+      "bytes": 5713,
+      "sha256": "5bee356c35d5280dad0f1a94df3bc8e237f446d3e02f782b79ebecce0b0b992e"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/side-view-live-restore.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\side-view-live-restore.log",
+      "bytes": 5151,
+      "sha256": "2d44e8d0ed2f0ad599d30948e60b621071304a850d8152819dc7fc88b4c65792"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/side-view-restart-and-reject.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\side-view-restart-and-reject.log",
+      "bytes": 41089,
+      "sha256": "83f7a862fa6c950980064e97a36e50c00821ca6168eb8d7753041ab0e7fe3c29"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/side-view-saved-state.json",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\side-view-saved-state.json",
+      "bytes": 1094,
+      "sha256": "a5ee7afe6482c0dd71c81001ed607dff6c914448241b4a9c32f768d865968726"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/top-down-acknowledgement.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\top-down-acknowledgement.log",
+      "bytes": 4250,
+      "sha256": "41e180901a292999a95f14e23494d1d72967f96786d0133c476486085c24cc47"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/top-down-enriched.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\top-down-enriched.log",
+      "bytes": 3266,
+      "sha256": "beae2344447e2253263381d7aaf43a63d546161e4a562f9fe2e1a47b9ac34a02"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/top-down-fresh.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\top-down-fresh.log",
+      "bytes": 2948,
+      "sha256": "82aefa2f1a52652d53e5a3b524ad54bf3b341097d15aee9e3f05abf046cd5c3b"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/top-down-import.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\top-down-import.log",
+      "bytes": 10481,
+      "sha256": "007ffb31126ee5b51e48a1a3ce8ab34dfb03a7b64b70084b7b3006ec5ad246ec"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/top-down-live-restore.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\top-down-live-restore.log",
+      "bytes": 4721,
+      "sha256": "07d186def6499d7c6b2a5ccdc2a2164882cba9ea3fc54e175f058846d62bc44e"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/top-down-restart-and-reject.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\top-down-restart-and-reject.log",
+      "bytes": 30323,
+      "sha256": "56d6cb1f981108a378165139a38ffb49e7fe8d3414c3e8adb7e603865eba3e8d"
+    },
+    {
+      "path": "bases/test-results/godot-managed-progress-SJsZxX/top-down-saved-state.json",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-managed-progress-SJsZxX\\top-down-saved-state.json",
+      "bytes": 1036,
+      "sha256": "be62d2330dab04511bab9c8dd12827ef58c0a26083c7f09b1efc3701de7fab29"
+    },
+    {
+      "path": "bases/test-results/audit-base-save-xEKH1W/engine-version.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\audit-base-save-xEKH1W\\engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "path": "bases/test-results/audit-base-save-xEKH1W/first-person-import.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\audit-base-save-xEKH1W\\first-person-import.log",
+      "bytes": 4953,
+      "sha256": "7600993dbb8437a1a403fec01700e7aef0f9d0c3889b6f1d6cd3aae782170bed"
+    },
+    {
+      "path": "bases/test-results/audit-base-save-xEKH1W/first-person-state.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\audit-base-save-xEKH1W\\first-person-state.log",
+      "bytes": 87,
+      "sha256": "0049edd3f9860b5b7471a5468157f16f4b72b6480aea917f50048f9ff3135aa5"
+    },
+    {
+      "path": "bases/test-results/audit-base-save-xEKH1W/report.json",
+      "source": "D:\\cm-gd5-bases\\test-results\\audit-base-save-xEKH1W\\report.json",
+      "bytes": 1238,
+      "sha256": "e13b683d45a1e902f538de3e96cd166999dfd973bda2e8c26ad102fb93b40102"
+    },
+    {
+      "path": "bases/test-results/audit-base-save-xEKH1W/side-view-full-import.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\audit-base-save-xEKH1W\\side-view-full-import.log",
+      "bytes": 2449,
+      "sha256": "7413efdd0a98294c812b334ddb849df647a9eb6d2386fea6314a45b68d1ba54f"
+    },
+    {
+      "path": "bases/test-results/audit-base-save-xEKH1W/side-view-import.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\audit-base-save-xEKH1W\\side-view-import.log",
+      "bytes": 1334,
+      "sha256": "e28263ba69a7a6bfc7f6e04292ad13a8087ca7aba822a79fa1bd81c64cba2b39"
+    },
+    {
+      "path": "bases/test-results/audit-base-save-xEKH1W/side-view-rejected-boot.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\audit-base-save-xEKH1W\\side-view-rejected-boot.log",
+      "bytes": 335,
+      "sha256": "8b48259c509c1505cca3a452190621000ab722723b1518a840676ff66a8abfe4"
+    },
+    {
+      "path": "bases/test-results/audit-base-save-xEKH1W/side-view-state.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\audit-base-save-xEKH1W\\side-view-state.log",
+      "bytes": 87,
+      "sha256": "0049edd3f9860b5b7471a5468157f16f4b72b6480aea917f50048f9ff3135aa5"
+    },
+    {
+      "path": "bases/test-results/audit-base-save-xEKH1W/top-down-import.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\audit-base-save-xEKH1W\\top-down-import.log",
+      "bytes": 4024,
+      "sha256": "34456fb230de215a1b8de881c38e8348fc0e1ba964977d9db27284545cb6ffb9"
+    },
+    {
+      "path": "bases/test-results/audit-base-save-xEKH1W/top-down-state.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\audit-base-save-xEKH1W\\top-down-state.log",
+      "bytes": 87,
+      "sha256": "0049edd3f9860b5b7471a5468157f16f4b72b6480aea917f50048f9ff3135aa5"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-blank.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-blank.log",
+      "bytes": 9851,
+      "sha256": "382c45b5ad03a9f44ab6bc4b108a60583f14e5a17a31ccae323da5585a762cad"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-blocks-a.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-blocks-a.log",
+      "bytes": 23896,
+      "sha256": "eee04e1a67ceb45c91ce99fac039ad9de461c5d3e9f3113c19b7fa03309f15b7"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-blocks-b.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-blocks-b.log",
+      "bytes": 44410,
+      "sha256": "4c4327509a4fbe1c19d6d4a9cd30b8c25617bcac7453b737fc110dbf9a1a8e50"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-changed.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-changed.log",
+      "bytes": 12234,
+      "sha256": "ad1b52faacac81009170a55ab33caecfd293178d74860bab36dc74ba1f642b50"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-fresh.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-fresh.log",
+      "bytes": 22583,
+      "sha256": "b43ef72026d2f5c19170d16a62cc25f4813e9fd5fce955b343a1657daa88e9d5"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-import.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-import.log",
+      "bytes": 4953,
+      "sha256": "7600993dbb8437a1a403fec01700e7aef0f9d0c3889b6f1d6cd3aae782170bed"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-interact-restart.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-interact-restart.log",
+      "bytes": 4943,
+      "sha256": "0194d3dfd430ddf7b43f669b204db88d698ac7c1cbfff857cff583f22b44de4f"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-interact.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-interact.log",
+      "bytes": 9902,
+      "sha256": "f2583f359bcdd5b4d07822c0e8ebfa8954f1054959e72954ae809ab3490e3929"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-invalid.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-invalid.log",
+      "bytes": 7572,
+      "sha256": "a867f36d2b393f4118e39eda2bc2f83802380da982fa7a67517a0270d722d040"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-isolation.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-isolation.log",
+      "bytes": 2558,
+      "sha256": "f3d7c2d9b97625999e5a25a49be4762429f6719693faae57ea2f7af0fdb50523"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-melee-approach.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-melee-approach.log",
+      "bytes": 8972,
+      "sha256": "d40bcd1185b067e5deb2d21e462ff81d3f15b4e09ec8c6dfb5d570f7eafb60f5"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-melee.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-melee.log",
+      "bytes": 15954,
+      "sha256": "459a399c7394a72e7fbc5361762374d1af2155cfe1cf49ade81f6de1158c5553"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-mesh-check.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-mesh-check.log",
+      "bytes": 2464,
+      "sha256": "146ca8d1b325c5e64dc180f927f392ae1177ad46d4c404c5421a6fa3141cf70a"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-play.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-play.log",
+      "bytes": 24550,
+      "sha256": "29df782954007db4a5d85fc1938b4b50b672a0255aec468c9bbc7fb2d8da75a9"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-quest-restart.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-quest-restart.log",
+      "bytes": 4864,
+      "sha256": "fed82f85ce3c4aa2b0058cba6d51b3a018a95f8e444647fda5dc1389f21f9c0a"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-quest.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-quest.log",
+      "bytes": 62787,
+      "sha256": "905629b2328eccdbcba5eaf0e49aa24129a5bae9d2570e94911d32431e9e666b"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-reimport.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-reimport.log",
+      "bytes": 1033,
+      "sha256": "b728de0c23f24d9aa31bc7608b177d7ca13857d7c3aca862a08506d00675123b"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-restored.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-restored.log",
+      "bytes": 7055,
+      "sha256": "ab9b37a5a31b300f5743f87a72335031539d3207843031dedd3b91db6d5502ee"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-rollback.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-rollback.log",
+      "bytes": 5404,
+      "sha256": "62c258a682f40be2883fdf4f6003f4c5fde850d41c40191ac72f775955758213"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/base-wall.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\base-wall.log",
+      "bytes": 5041,
+      "sha256": "a06d90a6cf306f0d15c2be0ecdbdc7e62107fd2f0343ff22d02d6a1b63f85959"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/engine-version.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "path": "bases/test-results/godot-first-person-base-NYNHiO/report.json",
+      "source": "D:\\cm-gd5-bases\\test-results\\godot-first-person-base-NYNHiO\\report.json",
+      "bytes": 732825,
+      "sha256": "629edb208e412ee7196190f2da0f8d55e74ea63ba7e0ea4d58262bd2b667c980"
+    },
+    {
+      "path": "bases/test-results/gd5-native-Cig5lQ/engine-version.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\gd5-native-Cig5lQ\\engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "path": "bases/test-results/gd5-native-Cig5lQ/side-view.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\gd5-native-Cig5lQ\\side-view.log",
+      "bytes": 4460,
+      "sha256": "b7c3c1f070fd895ecf6e35268031ebc65b64b74b838b07eda12d04cee8c128c9"
+    },
+    {
+      "path": "bases/test-results/gd5-native-Cig5lQ/top-down.log",
+      "source": "D:\\cm-gd5-bases\\test-results\\gd5-native-Cig5lQ\\top-down.log",
+      "bytes": 3164,
+      "sha256": "b085a2cb26e772500dd2a1c2df9fc84cd7999f43e5abee07d05f9a5adf8a5b4b"
+    },
+    {
+      "path": "bases/test-results/gd5-native-Cig5lQ/top-down/report.json",
+      "source": "D:\\cm-gd5-bases\\test-results\\gd5-native-Cig5lQ\\top-down\\report.json",
+      "bytes": 71200,
+      "sha256": "e12210d123173d9a48932d809735c2d3b91e7ea735d896475828c991986452a6"
+    },
+    {
+      "path": "bases/test-results/gd5-native-Cig5lQ/side-view/verify-report.json",
+      "source": "D:\\cm-gd5-bases\\test-results\\gd5-native-Cig5lQ\\side-view\\verify-report.json",
+      "bytes": 22676,
+      "sha256": "28d26f6a76dd1724f9a987097aad95959d0154bb140bb5db457dbe9eea86588b"
+    },
+    {
+      "path": "sandbox/godot-lpac/evidence.txt",
+      "source": "D:\\cm-gd5-sandbox\\desktop\\godot\\sandbox\\out\\craftmine.gd0.gate.255464.1788967116412\\evidence.txt",
+      "bytes": 16686,
+      "sha256": "33587972a5ca5e16d8f904513a4679b4faabdf96d35c498ef837234b5910736d"
+    },
+    {
+      "path": "sandbox/godot-lpac/godot-export.log",
+      "source": "D:\\cm-gd5-sandbox\\desktop\\godot\\sandbox\\out\\craftmine.gd0.gate.255464.1788967116412\\godot-export.log",
+      "bytes": 6992,
+      "sha256": "cf04b04d162c8c2e738d6a6d0d041ea8ba286b3790dab9816f9dc7d26e08fd47"
+    },
+    {
+      "path": "sandbox/godot-lpac/godot-import.log",
+      "source": "D:\\cm-gd5-sandbox\\desktop\\godot\\sandbox\\out\\craftmine.gd0.gate.255464.1788967116412\\godot-import.log",
+      "bytes": 5278,
+      "sha256": "3e8a3ce0ff6e220815b817b5f3fcacbf58ad66d4babe9eb40d030e3187b93d47"
+    },
+    {
+      "path": "sandbox/godot-lpac/godot-version.log",
+      "source": "D:\\cm-gd5-sandbox\\desktop\\godot\\sandbox\\out\\craftmine.gd0.gate.255464.1788967116412\\godot-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "path": "sandbox/godot-lpac/native-probe.log",
+      "source": "D:\\cm-gd5-sandbox\\desktop\\godot\\sandbox\\out\\craftmine.gd0.gate.255464.1788967116412\\native-probe.log",
+      "bytes": 1412,
+      "sha256": "d23b7ae5d24cda8804f8a562a011ed778f3e3606f9414fceaf12b65f05def0b7"
+    },
+    {
+      "path": "sandbox/network/craftmine.gd5.net.208848.1788966935728/appcontainer/child.log",
+      "source": "D:\\Craftmine World\\test-results\\godot-cycle05-sandbox-network\\craftmine.gd5.net.208848.1788966935728\\appcontainer\\child.log",
+      "bytes": 1107,
+      "sha256": "a8b4c99e5dab1d30d1253cd47f6c4afc1d1a2ed6ee93dc5f23780a04c685e418"
+    },
+    {
+      "path": "sandbox/network/craftmine.gd5.net.208848.1788966935728/lpac/child.log",
+      "source": "D:\\Craftmine World\\test-results\\godot-cycle05-sandbox-network\\craftmine.gd5.net.208848.1788966935728\\lpac\\child.log",
+      "bytes": 219,
+      "sha256": "9fe5add28285e1f9bbd8f848c601b8e76e8e4c9f38db9e8a0accc6fefd53143d"
+    },
+    {
+      "path": "sandbox/network/craftmine.gd5.net.208848.1788966935728/lpac-registry/child.log",
+      "source": "D:\\Craftmine World\\test-results\\godot-cycle05-sandbox-network\\craftmine.gd5.net.208848.1788966935728\\lpac-registry\\child.log",
+      "bytes": 1564,
+      "sha256": "107871d6851eaa13abacbb903aae046041debc249cf62177ba2d8f1ed6710da8"
+    },
+    {
+      "path": "sandbox/network/craftmine.gd5.net.226688.1788966558157/appcontainer/child.log",
+      "source": "D:\\Craftmine World\\test-results\\godot-cycle05-sandbox-network\\craftmine.gd5.net.226688.1788966558157\\appcontainer\\child.log",
+      "bytes": 536,
+      "sha256": "4293cf7a2e2d1191f31f85528f85b76e36b0a43e8c73913507c9e1683edd1b7e"
+    },
+    {
+      "path": "sandbox/network/craftmine.gd5.net.226688.1788966558157/lpac/child.log",
+      "source": "D:\\Craftmine World\\test-results\\godot-cycle05-sandbox-network\\craftmine.gd5.net.226688.1788966558157\\lpac\\child.log",
+      "bytes": 219,
+      "sha256": "9fe5add28285e1f9bbd8f848c601b8e76e8e4c9f38db9e8a0accc6fefd53143d"
+    },
+    {
+      "path": "sandbox/network/craftmine.gd5.net.241144.1788965993869/appcontainer/child.log",
+      "source": "D:\\Craftmine World\\test-results\\godot-cycle05-sandbox-network\\craftmine.gd5.net.241144.1788965993869\\appcontainer\\child.log",
+      "bytes": 76,
+      "sha256": "014f99ac6449244e4e3377ac43ff5828029cd9ac9c6a0e3b91c41576f53006d6"
+    },
+    {
+      "path": "sandbox/network/craftmine.gd5.net.241144.1788965993869/lpac/child.log",
+      "source": "D:\\Craftmine World\\test-results\\godot-cycle05-sandbox-network\\craftmine.gd5.net.241144.1788965993869\\lpac\\child.log",
+      "bytes": 76,
+      "sha256": "014f99ac6449244e4e3377ac43ff5828029cd9ac9c6a0e3b91c41576f53006d6"
+    },
+    {
+      "path": "sandbox/network/craftmine.gd5.net.251388.1788966135308/appcontainer/child.log",
+      "source": "D:\\Craftmine World\\test-results\\godot-cycle05-sandbox-network\\craftmine.gd5.net.251388.1788966135308\\appcontainer\\child.log",
+      "bytes": 324,
+      "sha256": "a8c20e9c13405224323514cc99e0eaf638ee7831e5a43b4afdb6a4b1e92ba0b1"
+    },
+    {
+      "path": "sandbox/network/craftmine.gd5.net.251388.1788966135308/lpac/child.log",
+      "source": "D:\\Craftmine World\\test-results\\godot-cycle05-sandbox-network\\craftmine.gd5.net.251388.1788966135308\\lpac\\child.log",
+      "bytes": 375,
+      "sha256": "8938280449669fb151f1bce59c2aa3e964ddfbb07c662a1044f2387b87e4af75"
+    },
+    {
+      "path": "sandbox/network/craftmine.gd5.net.256756.1788966279844/appcontainer/child.log",
+      "source": "D:\\Craftmine World\\test-results\\godot-cycle05-sandbox-network\\craftmine.gd5.net.256756.1788966279844\\appcontainer\\child.log",
+      "bytes": 107,
+      "sha256": "09f44764b0a71fa9949d4070f76123a8c15812146ad7ba113df9233b1c29f38d"
+    },
+    {
+      "path": "sandbox/network/craftmine.gd5.net.256756.1788966279844/lpac/child.log",
+      "source": "D:\\Craftmine World\\test-results\\godot-cycle05-sandbox-network\\craftmine.gd5.net.256756.1788966279844\\lpac\\child.log",
+      "bytes": 375,
+      "sha256": "d30532231ba3ce021ebfc27c519113875df8dc72c608ad802357f00d613c3eb4"
+    }
+  ]
+}
