@@ -3,7 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
-import {createRequire} from 'node:module';
+import {loadPackageAsar} from './package-asar.mjs';
 import {fileHash,resourceInventory,verifyRuntimeResources} from './prepare-runtime-resources.mjs';
 import {beginRelease,readRelease,sealRelease,verifySeal,selectInstaller,extractInstaller,verifyArchiveTool} from './release-run.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -71,10 +71,9 @@ if(mode==='begin-release'){
   const runtime=await verifyRuntimeResources(path.join(packageRoot,'resources'),manifest.commit,{packaged:true});
   if(runtime.filesDigest!==manifest.runtime?.filesDigest||await digest(path.join(packageRoot,'resources/runtime-resources.json'))!==manifest.runtime.manifestSha256)throw Error('PACKAGE_RUNTIME_IDENTITY_MISMATCH');
   if(JSON.stringify(await resourceInventory(path.join(packageRoot,'resources/plugins/craftmine.world')))!==JSON.stringify(manifest.pluginFiles))throw Error('PACKAGE_PLUGIN_IDENTITY_MISMATCH');
-  const require=createRequire(path.join(root,'vendor/pi-desktop/apps/desktop/package.json'));
-  const asar=require('@electron/asar'),archive=path.join(packageRoot,'resources/app.asar');
+  const asar=loadPackageAsar(path.join(root,'vendor/pi-desktop/apps/desktop')),archive=path.join(packageRoot,'resources/app.asar');
   for(const file of manifest.clientFiles){
-    const body=asar.extractFile(archive,'out/'+file.path);
+    const body=asar.extractFile(archive,path.normalize('out/'+file.path));
     if(body.length!==file.bytes||createHash('sha256').update(body).digest('hex')!==file.sha256)throw Error('PACKAGE_CLIENT_IDENTITY_MISMATCH:'+file.path);
   }
   const files=[];async function walk(dir){for(const name of(await fs.readdir(dir)).sort()){const p=path.join(dir,name),info=await fs.lstat(p);if(info.isSymbolicLink())throw Error('PACKAGE_LINK_DENIED');if(info.isDirectory())await walk(p);else files.push({path:path.relative(packageRoot,p).replaceAll('\\','/'),bytes:info.size,sha256:await digest(p)});}}
