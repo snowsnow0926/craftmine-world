@@ -622,14 +622,21 @@ function createGodotExecutor(core, options = {}) {
 
   async function finishJob(entry, result) {
     const {jobId, token} = entry;
+    const kind = entry.claim?.kind ?? entry.mode;
+    // The core requires at least one assertion for a check job, including a
+    // failed one: a job that never reached the runtime check must say so rather
+    // than be refused and left to expire.
+    const assertions = result.check.assertions.length ? result.check.assertions
+      : (kind === 'check' ? [{id:'runtime.not-run', passed:false,
+          detail:(result.reason ?? 'the job did not reach the runtime check').slice(0, 200)}] : []);
     const output = {
       format:RESULT_FORMAT,
       inputHash:entry.claim?.inputHash,
       passed:result.import.passed && result.compile.passed && result.check.passed && result.compile.errors.length === 0
-        && result.check.assertions.every(assertion => assertion.passed === true),
+        && assertions.every(assertion => assertion.passed === true),
       import:result.import,
       compile:result.compile,
-      check:result.check,
+      check:{passed:result.check.passed, assertions},
       artifacts:result.artifacts,
       engine:{version:ENGINE_VERSION, isolation:ISOLATION, evidenceHash:discovery.evidenceHash},
     };
@@ -782,18 +789,22 @@ function createGodotExecutor(core, options = {}) {
     await Promise.all([...jobs.keys()].map(jobId => cancel(jobId, 'executor stopping')));
     await Promise.all([...jobs.values()].map(entry => entry.promise));
     let revoked = false;
+    let revokeReason = null;
     if (registered) {
       try { const result = await core.call('godotExecutor.revoke', {executorId:EXECUTOR_ID}, 20000); revoked = result?.revoked === true; }
       catch (error) {
         // Without `godotExecutor.revoke` the core keeps a stale registration for
         // this process; jobs can no longer be claimed, but the capability flag
         // stays until the core restarts. Reported, never hidden.
-        if (!/UNSUPPORTED|UNKNOWN|NOT_FOUND/i.test(String(error?.message ?? ''))) warn('revoke failed:', error.message);
+        revokeReason = /UNSUPPORTED|UNKNOWN|NOT_FOUND/i.test(String(error?.message ?? ''))
+          ? 'GODOT_EXECUTOR_REVOKE_UNSUPPORTED' : String(error?.message ?? error);
+        if (revokeReason !== 'GODOT_EXECUTOR_REVOKE_UNSUPPORTED') warn('revoke failed:', revokeReason);
       }
     }
     registered = false;
     discovery.state = 'stopped';
-    return {revoked};
+    discovery.revokeReason = revokeReason;
+    return {revoked, revokeReason};
   }
 
   function status() {
