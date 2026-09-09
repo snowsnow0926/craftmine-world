@@ -1,11 +1,11 @@
 # S1｜核心事务、分支创作、正式 RPC 与统一引用：阶段交付
 
 分支 `codex/godot-round3-s1-20260910`，工作树
-`D:/Craftmine World-worktrees/godot-round3-s1-20260910`，当前提交
+`D:/Craftmine World-worktrees/godot-round3-s1-20260910`。代码状态提交
 `b5be0c8ff0af171b89493ba385385d2cc458831a`（tree
 `9a9c60e11cdd6c8fd5571a9bac32f7cee50c94ac`，4222 个跟踪文件，清单哈希
-`876ea560b560b2bd5cdac5b43e187663da1e7b85b498328433d56262bfa6461f`，工作区干净）。
-完整身份见 [baseline-identity.json](baseline-identity.json)。
+`876ea560b560b2bd5cdac5b43e187663da1e7b85b498328433d56262bfa6461f`）；其后只追加本报告，
+不再改动源码。工作区干净。完整身份见 [baseline-identity.json](baseline-identity.json)。
 
 起点：先按 R2 `2fa3c7c` 建了 `24edb0c`，随后消费 S7 已提交的综合基线
 `c7590c3`（含 R2、R1、C、R3–R9、B），合并提交 `b2f990c`。没有复制旧树、没有改旧树、
