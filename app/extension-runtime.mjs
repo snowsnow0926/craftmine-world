@@ -1,5 +1,7 @@
 import { ExtensionRunner } from './extension-runner.mjs';
 
+const disposeRunner=runner=>{try{Promise.resolve(runner?.dispose()).catch(()=>{});}catch{}};
+
 // The game and its verifier must execute the same installed extension code.
 export async function createExtensionTable(list = [], { runnerFactory = extension => new ExtensionRunner(extension) } = {}) {
   if (!Array.isArray(list)) throw Error('扩展装载表必须为数组');
@@ -21,11 +23,11 @@ export async function createExtensionTable(list = [], { runnerFactory = extensio
     }
     return table;
   } catch (error) {
-    for (const runner of runners) runner.dispose();
+    for (const runner of runners) disposeRunner(runner);
     throw error;
   }
 }
 
 export function disposeExtensionTable(table) {
-  for (const runner of new Set([...(table?.values() || [])].map(entry => entry.runner))) runner.dispose();
+  for (const runner of new Set([...(table?.values() || [])].map(entry => entry.runner))) disposeRunner(runner);
 }
