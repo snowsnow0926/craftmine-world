@@ -128,9 +128,9 @@ const passingEvidence = (overrides = {}) => ({
   isolation:{ok:true, guard:{focus:0, pointerLock:0}}, recovery:{ok:true, gracefulExit:true}, ...overrides,
 });
 
-function makeExecutor({env, core = fakeCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot, files:env.files}), verifier = {godotCheck: async () => passingEvidence()}, jobTimeoutMs = 30000}) {
+function makeExecutor({env, core = fakeCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot, files:env.files}), verifier = {godotCheck: async () => passingEvidence()}, jobTimeoutMs = 30000, runRecovery}) {
   return createGodotExecutor(core, {
-    dataPath:env.dataPath, verifier, jobTimeoutMs, logger:{log(){}, warn(){}, error(){}},
+    dataPath:env.dataPath, verifier, jobTimeoutMs, runRecovery, logger:{log(){}, warn(){}, error(){}},
     spawnBroker: (binary, args, settings) => spawn(process.execPath, [fixtureBroker, ...args], settings),
   });
 }
@@ -420,4 +420,29 @@ test('a changed broker binary is refused when a pin is configured', async t => {
   assert.equal(started.available, false);
   assert.equal(started.reason, 'GODOT_BROKER_MISMATCH');
   await executor.stop();
+});
+
+test('one verified native import crash gets a fresh task, preserving its failure and full check',async t=>{
+  const env=environment();t.after(restoreEnv);setScenario(env,{importCrash:true});
+  const core=fakeCore(env),runRecovery=async(_binary,args)=>({exitCode:0,stdout:JSON.stringify({policyVersion:'craftmine.windows.recovery-journal.v1',tasksRoot:args[1],journalRoot:args[1],entries:[],unreadable:[]}),stderr:''});
+  const executor=makeExecutor({env,core,runRecovery});assert.equal((await executor.start()).available,true);
+  const jobId='gjob-'+'d'.repeat(64);executor.enqueue({jobId,worldId:'world-c',mode:'check'});await settle(executor,jobId);
+  await executor.stop();assert.equal(core.state.status,'passed');
+  const saved=JSON.parse(fs.readFileSync(path.join(env.dataPath,'godot/executor-ledger.json'),'utf8')).jobs[jobId];
+  assert.equal(saved.importCrashRetries,1);assert.equal(saved.attempts.length,3);
+  assert.equal(saved.attempts[0].failure.engineExitCode,0xc0000005);assert.equal(saved.attempts[0].retryDecision.reason,'VERIFIED_NATIVE_IMPORT_CRASH');
+  assert.notEqual(saved.attempts[0].requestId,saved.attempts[1].requestId);assert.equal(saved.attempts[1].outcome,'succeeded');assert.equal(saved.attempts[2].operation,'exportWeb');
+  assert.ok(core.state.output.check.assertions.every(x=>x.passed));
+  await executor.start();assert.equal(executor.ledger.jobs[jobId].importCrashRetries,1);await executor.stop();
+});
+
+test('script errors, changed inputs, unknown cleanup and repeated crashes never become successful retries',async t=>{
+  for(const crashTamper of ['cleanup','journal','resource','source','input','exit','log-hash','script','second-crash']){
+    const env=environment();t.after(restoreEnv);setScenario(env,{importCrash:true,crashTamper,crashCount:crashTamper==='second-crash'?2:1});
+    const core=fakeCore(env),runRecovery=async(_binary,args)=>({exitCode:0,stdout:JSON.stringify({policyVersion:'craftmine.windows.recovery-journal.v1',tasksRoot:args[1],journalRoot:args[1],entries:[],unreadable:[]}),stderr:''});
+    const executor=makeExecutor({env,core,runRecovery});assert.equal((await executor.start()).available,true);
+    const jobId='gjob-'+'e'.repeat(64);executor.enqueue({jobId,worldId:'world-c',mode:'check'});await settle(executor,jobId);await executor.stop();
+    assert.equal(core.state.status,'failed',crashTamper);const attempts=executor.ledger.jobs[jobId].attempts;
+    assert.equal(attempts.length,crashTamper==='second-crash'?2:1,crashTamper);assert.ok(attempts.every(x=>x.operation==='import'));
+  }
 });

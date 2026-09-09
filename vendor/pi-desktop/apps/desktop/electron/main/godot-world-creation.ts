@@ -263,7 +263,7 @@ export type GodotCreationDependencies = {
   domain: (method: string, params: Record<string, unknown>) => Promise<any>;
   materialize: (input: {baseId: string; worldId: string; template: string; out: string}) => unknown;
   makeWorldId?: () => string;
-  initialization?: {start: (worldId: string) => Promise<void>; error: (worldId: string) => string | null; running: (worldId: string) => boolean};
+  initialization?: {start: (worldId: string, settings?: {recover?:boolean}) => Promise<void>; error: (worldId: string) => string | null; running: (worldId: string) => boolean};
 };
 
 /**
@@ -369,6 +369,9 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
         return null;
       }
     },
-    retry(worldId: string) { return deps.initialization?.start(worldId) ?? Promise.resolve(); },
+    async retry(worldId: string) {
+      if(deps.initialization?.running(worldId))await deps.initialization.start(worldId);
+      await deps.initialization?.start(worldId,{recover:true});
+    },
   };
 }

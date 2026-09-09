@@ -96,6 +96,27 @@ function respond(request) {
     error: scenario.error ?? null,
     brokerSha256: scenario.brokerSha256 ?? sha256(fs.readFileSync(process.env.CRAFTMINE_GODOT_BROKER_BIN)),
   };
+  if(request.operation==='import'&&scenario.importCrash){
+    const counter=path.join(request.tasksRoot,'fixture-import-count.json');
+    const count=fs.existsSync(counter)?JSON.parse(fs.readFileSync(counter,'utf8'))+1:1;
+    fs.writeFileSync(counter,JSON.stringify(count));
+    if(count<=(scenario.crashCount??1)){
+      response.state='failed';response.exitCode=0xc0000005;
+      response.error='exit exit=0xc0000005 job_active_processes=Some(0)';
+      response.recoveryJournal={cleared:true,error:null};
+      response.resourceEnforcement={enforced:false,reason:null,samples:2};
+      switch(scenario.crashTamper){
+        case 'cleanup':response.cleanup.workRemoved=false;break;
+        case 'journal':response.recoveryJournal.cleared=false;break;
+        case 'resource':response.resourceEnforcement.enforced=true;break;
+        case 'source':response.sourceFiles[0].sha256=sha256('wrong');break;
+        case 'input':response.inputHash=sha256('wrong');break;
+        case 'exit':response.exitCode=1;break;
+        case 'log-hash':response.logs[0].sha256=sha256('wrong');break;
+        case 'script':{const bad='SCRIPT ERROR: deliberate fixture error\n';fs.writeFileSync(path.join(logsRoot,'task.log'),bad);response.logs=[{path:'task.log',bytes:Buffer.byteLength(bad),sha256:sha256(bad)}];break;}
+      }
+    }
+  }
   return response;
 }
 

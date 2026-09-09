@@ -8867,3 +8867,9 @@ status queries on reopening the same world, ignore late responses after unmount,
 and retry a failed/blocked query without repeating the import. Verify the native
 sourceJob identity/projection contract, pure timer races and the isolated DOM
 with the three tests in docs/spec/godot-package-check-status.md.
+A native import access violation may consume one durable retry only with exact
+source/log hashes, verified process/network policy, zero remaining job processes,
+complete cleanup and journal retirement. Protocol tests must reject second
+crashes, script errors, input drift, tampered logs and unknown cleanup. Separately
+exercise world.creationRetry against an actual failed owned profile and compare
+all other saved worlds after retry and restart. See godot-native-import-retry.md.

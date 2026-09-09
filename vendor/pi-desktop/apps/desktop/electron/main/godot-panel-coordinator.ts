@@ -96,7 +96,9 @@ export function createGodotPanelCoordinator(options: Options) {
       if (channel === "world.list") return augmentWorldList(await options.invoke(channel, payload));
       if (channel === "world.creationRetry") {
         if (typeof payload.worldId !== "string" || Object.keys(payload).some(key => key !== "worldId")) throw Error("INVALID_GODOT_PANEL_ACTION");
-        void currentCreation()?.retry(payload.worldId);
+        if (switching || await options.selection()!==payload.worldId) throw Error("GODOT_WORLD_CHANGED");
+        const creation=currentCreation();if(!creation)throw Error("GODOT_BASES_UNAVAILABLE");
+        void creation.retry(payload.worldId);
         return {status: "running", worldId: payload.worldId};
       }
       if (channel === "world.create") {

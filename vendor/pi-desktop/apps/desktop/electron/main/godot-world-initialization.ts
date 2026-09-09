@@ -15,7 +15,7 @@ export function createGodotWorldInitializer(options: {
   const running = new Map<string, Promise<void>>();
   const failures = new Map<string, string>();
   const domain = options.domain;
-  async function initialize(worldId: string) {
+  async function initialize(worldId: string, recover=false) {
     if (!/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId)) throw Error("INVALID_WORLD_ID");
     const status = await domain("godotWorld.initStatus", {worldId});
     if (status.playable) return;
@@ -23,6 +23,11 @@ export function createGodotWorldInitializer(options: {
     const metadata = JSON.parse(fs.readFileSync(path.join(directory, "managed-base.json"), "utf8"));
     if (metadata.worldId !== worldId || !Array.isArray(metadata.files)) throw Error("MANAGED_BASE_IDENTITY_MISMATCH");
     const context = {projectId: "craftmine-world-initialization", sessionId: `create-${worldId}`, turnId: randomUUID()};
+    if(recover){
+      const available=await domain("task.recoverable",{projectId:context.projectId,worldId});
+      const previous=(available.items??[]).find((item:Data)=>item.worldId===worldId&&item.binding?.sessionId===context.sessionId);
+      if(previous)await domain("task.resume",{context,worldId,taskId:previous.taskId,generation:previous.generation});
+    }
     const task = await domain("turn.begin", {context, selectedWorld: worldId,
       request: {id: `initialize-${worldId}`, text: "Initialize the selected authored base and confirm its first load."}});
     let completed = false;
@@ -100,10 +105,10 @@ export function createGodotWorldInitializer(options: {
   }
   return {
     get busy() { return running.size > 0; },
-    start(worldId: string) {
+    start(worldId: string, settings?: {recover?:boolean}) {
       if (!running.has(worldId)) {
         failures.delete(worldId);
-        const work = initialize(worldId).catch(error => {failures.set(worldId, String(error));}).finally(() => running.delete(worldId));
+        const work = initialize(worldId,settings?.recover===true).catch(error => {failures.set(worldId, String(error));}).finally(() => running.delete(worldId));
         running.set(worldId, work);
       }
       return running.get(worldId)!;

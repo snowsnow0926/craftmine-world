@@ -583,7 +583,10 @@ function createGodotExecutor(core, options = {}) {
     if (response.inputHash !== expected.inputHash) return fail('GODOT_BROKER_INPUT_MISMATCH');
     if (canonical(response.sourceBinding) !== canonical(expected.sourceBinding)) return fail('GODOT_BROKER_BINDING_MISMATCH');
     if (response.state === 'cancelled') return {ok:false, cancelled:true, reason:'GODOT_JOB_CANCELLED', receipt:response};
-    if (response.state !== 'succeeded') return fail('GODOT_BROKER_TASK_FAILED');
+    const importCrash = expected.allowNativeImportCrash === true && expected.operation === 'import'
+      && response.state === 'failed' && response.exitCode === 0xc0000005
+      && response.error === 'exit exit=0xc0000005 job_active_processes=Some(0)';
+    if (response.state !== 'succeeded' && !importCrash) return fail('GODOT_BROKER_TASK_FAILED');
     if (response.policyVersion !== ISOLATION) return fail('GODOT_BROKER_POLICY_MISMATCH');
     if (response.processVerification?.verified !== true) return fail('GODOT_BROKER_PROCESS_UNVERIFIED');
     if (response.networkPreflight?.verified !== true) return fail('GODOT_BROKER_NETWORK_UNVERIFIED');
@@ -606,7 +609,37 @@ function createGodotExecutor(core, options = {}) {
       }
       if (expectedMap.size) return fail('GODOT_BROKER_SOURCE_MISSING:' + [...expectedMap.keys()][0]);
     }
-    return {ok:true, receipt:response, files};
+    return {ok:!importCrash, retryableNativeImportCrash:importCrash, receipt:response, files};
+  }
+
+  async function importCrashRetry(entry, run, expected) {
+    const response=run.response, previous=ledgerEntry(entry.jobId);
+    if (previous.importCrashRetries || entry.cancelled || stopped || run.ok!==true || run.exitCode!==0 || run.signal
+      || run.parseError || run.cancelled || run.timedOut || run.oversized) return null;
+    if (!validateBrokerReceipt(response,{...expected,allowNativeImportCrash:true}).retryableNativeImportCrash) return null;
+    if (!expected.pinnedBrokerSha256 || expected.measuredBrokerSha256!==expected.pinnedBrokerSha256
+      || response.cleanup?.profileHresult!==0 || response.cleanup?.workRemoved!==true || response.cleanup?.error!==null
+      || response.recoveryJournal?.cleared!==true || response.recoveryJournal?.error!==null
+      || response.resourceEnforcement?.enforced!==false || response.resourceEnforcement?.reason!==null
+      || !(response.resourceEnforcement?.samples>0)
+      || !run.recovery?.ok || run.recovery.parseError || run.recovery.finalReceiptClaimed
+      || run.recovery.skipped?.length!==0 || run.recovery.unreadable?.length!==0) return null;
+    const logs=path.resolve(tasksRoot,expected.requestId,'logs');
+    if (path.resolve(plainPath(response.logsRoot??''))!==logs || !ordinaryDirectory(logs)) return null;
+    const record=response.logs?.length===1?response.logs[0]:null;
+    if (record?.path!=='task.log' || !Number.isSafeInteger(record.bytes) || record.bytes<1 || record.bytes>BROKER_TASK_LOG_BYTES) return null;
+    try {
+      const file=path.join(logs,'task.log'),info=await fsp.lstat(file);
+      if(!info.isFile()||info.isSymbolicLink()||info.size!==record.bytes)return null;
+      const bytes=await fsp.readFile(file);
+      if(bytes.length!==record.bytes||sha256(bytes)!==record.sha256||classifyLog(bytes.toString('utf8')).errors.length)return null;
+      previous.importCrashRetries=1;
+      recordAttempt(entry.jobId,{requestId:expected.requestId,retryDecision:{reason:'VERIFIED_NATIVE_IMPORT_CRASH',
+        logSha256:record.sha256,sourceDigest:response.sourceSnapshotDigest,brokerSha256:response.brokerSha256}});
+      await ledgerWrite;
+      if(ledgerError)return null;
+      return record.sha256;
+    } catch { return null; }
   }
 
   // ---------------------------------------------------------------- job worker
@@ -756,9 +789,16 @@ function createGodotExecutor(core, options = {}) {
         projectRoot:plainPath(claim.projectRoot), sourceBinding, inputHash:claim.inputHash,
       };
 
-      const importRun = await trackedBrokerRun(entry, {...baseRequest, operation:'import', requestId:brokerTaskId('import'), timeoutMs:jobTimeoutMs,
+      let importRun = await trackedBrokerRun(entry, {...baseRequest, operation:'import', requestId:brokerTaskId('import'), timeoutMs:jobTimeoutMs,
         onCancel:reason => warn('import cancelled:', jobId, reason)});
       if (entry.cancelled) return await abandon(entry, 'GODOT_JOB_CANCELLED');
+      if (mode==='check' && await importCrashRetry(entry,importRun,{operation:'import',sourceBinding,inputHash:claim.inputHash,
+        expectedFiles:files,requestId:importRun.requestId,measuredBrokerSha256:discovery.measuredBrokerSha256,pinnedBrokerSha256:discovery.brokerPin?.sha256??null})) {
+        warn('retrying one verified native import crash:',jobId,importRun.requestId);
+        importRun=await trackedBrokerRun(entry,{...baseRequest,operation:'import',requestId:brokerTaskId('import'),timeoutMs:jobTimeoutMs,
+          onCancel:reason=>warn('import retry cancelled:',jobId,reason)});
+        if(entry.cancelled)return await abandon(entry,'GODOT_JOB_CANCELLED');
+      }
       const importCheck = validateBrokerReceipt(importRun.response, {operation:'import', sourceBinding, inputHash:claim.inputHash,
         expectedFiles:files, requestId:importRun.requestId ?? entry.importRequestId,
         measuredBrokerSha256:discovery.measuredBrokerSha256, pinnedBrokerSha256:discovery.brokerPin?.sha256 ?? null});
@@ -1034,6 +1074,7 @@ function createGodotExecutor(core, options = {}) {
       for (const [jobId, entry] of Object.entries(value.jobs)) {
         if (!entry || typeof entry !== 'object') continue;
         jobs[jobId] = {jobId, worldId:entry.worldId ?? null, mode:entry.mode ?? null,
+          importCrashRetries:entry.importCrashRetries ? 1 : 0,
           state:typeof entry.state === 'string' ? entry.state : 'enqueued',
           attempts:Array.isArray(entry.attempts) ? entry.attempts.filter(attempt => attempt && typeof attempt === 'object') : [],
           startedAt:entry.startedAt ?? null, finishedAt:entry.finishedAt ?? null,

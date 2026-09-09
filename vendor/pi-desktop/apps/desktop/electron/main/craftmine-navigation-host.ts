@@ -35,6 +35,10 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
   }
   const payload = (input.payload ?? {}) as Record<string, unknown>;
   const channel = input.channel;
+  if (channel === "world.creationRetry") {
+    if (Object.keys(payload).some(key=>key!=="worldId") || typeof payload.worldId!=="string" || !/^[a-z0-9][a-z0-9-]{1,47}$/.test(payload.worldId)) throw Error("INVALID_WORLD_ID");
+    return deps.invoke(channel,{worldId:payload.worldId});
+  }
   if (channel === "world.copyStatus") return deps.invoke(channel, payload);
   if (channel === "world.copy") return deps.navigate({...payload, operation: "copy"});
   if (NAVIGATION_READ_CHANNELS.has(channel) || HISTORY_CHANNELS.has(channel)) return deps.invoke(channel, payload);

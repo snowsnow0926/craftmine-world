@@ -16,6 +16,14 @@ test('navigation keeps raw writes and host execution credentials out of the rend
   assert.deepEqual(calls,[]);
 });
 
+test('retry initialization forwards only a selected world identity, never a path or recovery token',async()=>{
+  const calls=[],deps={invoke:async(...args)=>calls.push(args),navigate:async()=>{throw Error('not a new world');}};
+  await invokeCraftmineNavigation(request('world.creationRetry',{worldId:'world-failed'}),deps);
+  assert.deepEqual(calls,[['world.creationRetry',{worldId:'world-failed'}]]);
+  for(const payload of [{worldId:'../x'},{worldId:'world-failed',taskId:'forged'},{worldId:''}])await assert.rejects(invokeCraftmineNavigation(request('world.creationRetry',payload),deps),/INVALID_WORLD_ID/);
+  assert.equal(calls.length,1);
+});
+
 test('create and both switch names go through live-view checkpointing',async()=>{
   const calls=[];
   const deps={invoke:async()=>{throw Error('raw mutation must not run');},navigate:async(value)=>{calls.push(value);return value;}};

@@ -6112,6 +6112,7 @@ function registerIpc() {
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
+    if (payload?.channel==="world.creationRetry" && (godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotRestores.busy)) throw Error("ACTIVE_TASK_EXISTS");
     return invokeCraftmineNavigation(payload, {
       invoke: (channel, params) => channel === "world.copyStatus" ? Promise.resolve(godotCopies.status(params)) : channel.startsWith("godot.history")
         ? godotHistory.invoke(channel, params) : godotPanel.invoke(channel, params),
