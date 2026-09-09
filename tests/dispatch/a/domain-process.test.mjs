@@ -55,6 +55,12 @@ test('real Rust process: immutable tree capture, restart, cross-session/world ex
   await assert.rejects(library.read({ref:{...captured.ref,hash:'b'.repeat(64)}}),/HASH_MISMATCH/);
   assert.equal((await call('world.read',{id:'destination-world'})).world.build.scene.objects.length,0);
 });
+test('real Rust process: second broker cannot recover another live broker leases',async t=>{
+  const {client,call,directory}=await start();t.after(()=>client.stop());
+  await call('world.create',{id:'source-world',title:'Single writer',world:{build:build(empty),snapshot:INITIAL_SNAPSHOT,extensions:[]}});await call('workspace.open',{context,selectedWorld:'source-world'});
+  const second=new CoreClient(binary,directory);await assert.rejects(second.start(),/exited/);
+  assert.equal((await call('workspace.inspect',{context})).task.status,'running');
+});
 test('real Rust process: creation code, local target bindings and fixed extension travel together',async t=>{
   const {client,call}=await start();t.after(()=>client.stop());
   const module=JSON.parse(await readFile(new URL('./fixtures/garden-training.json',import.meta.url),'utf8'));
