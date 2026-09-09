@@ -1,0 +1,88 @@
+{
+  "task": "A",
+  "title": "Managed Windows execution boundary for Godot build processes",
+  "branch": "codex/godot-parallel-a-20260909",
+  "worktree": "D:\\Craftmine World-worktrees\\godot-parallel-a-20260909",
+  "baseMaster": "46739d2",
+  "mergedMaster": false,
+  "pushed": false,
+  "commit": "01d3082c421c27f5d8468d873f3700f1a877ac43",
+  "scope": [
+    "desktop/godot/sandbox/**",
+    "docs/dispatch-reports/godot-parallel/A/**",
+    "docs/specs/godot-sandbox-execution-boundary-A.md",
+    "docs/adr/ADR-godot-sandbox-execution-boundary-A.md"
+  ],
+  "rootCause": {
+    "historicExit": "0xC0000142",
+    "cause": "PROC_THREAD_ATTRIBUTE_CHILD_PROCESS_POLICY = PROCESS_CREATION_CHILD_PROCESS_RESTRICTED",
+    "evidence": "desktop/godot/sandbox/evidence/child-policy-matrix.log",
+    "excluded": [
+      "AppContainer token",
+      "task desktop / window station",
+      "job object limits",
+      "handle list",
+      "minimal environment",
+      "KernelBase.dll"
+    ],
+    "fix": "omit the attribute; contain children with JOB_OBJECT_LIMIT_ACTIVE_PROCESS = 1"
+  },
+  "verified": [
+    "task directory read/write",
+    "synthetic sibling read denied (5)",
+    "synthetic sibling write denied (5)",
+    "interactive station denied (5)",
+    "child station not visible",
+    "non-loopback egress denied (10013) with host positive control",
+    "child process creation denied (1816)",
+    "real Godot 4.7.2 version",
+    "real headless import exit 0",
+    "real Web export exit 0 with 9 hashed artifacts",
+    "editor plugin and @tool code ran inside the boundary",
+    "cancellation/timeout leaves no process and an empty job",
+    "7 offline unit tests"
+  ],
+  "notVerified": [
+    "loopback network denial (loopback is allowed)",
+    "LPAC",
+    "UI/input/clipboard isolation",
+    "reparse point and handle races",
+    "CPU/disk/GPU quotas",
+    "untrusted model-authored projects",
+    "exported web build run in a browser",
+    "non-Windows platforms"
+  ],
+  "acceptance": {
+    "taskDirectoryAccess": "passed",
+    "outOfBoundsFileAccess": "denied(5)",
+    "network": "positive control passed, non-loopback denied(10013), loopback ALLOWED (gap)",
+    "childProcessControl": "denied(1816)",
+    "cancelNoLeftoverProcess": "passed",
+    "godotImportExport": "passed"
+  },
+  "evidence": [
+    "desktop/godot/sandbox/evidence/gate-run1.txt",
+    "desktop/godot/sandbox/evidence/gate-run2.txt",
+    "desktop/godot/sandbox/evidence/child-policy-matrix.log",
+    "desktop/godot/sandbox/evidence/cancellation.log",
+    "desktop/godot/sandbox/evidence/task-api.log",
+    "desktop/godot/sandbox/evidence/parent-environment.log",
+    "desktop/godot/sandbox/evidence/build.log",
+    "desktop/godot/sandbox/evidence/tests.log",
+    "desktop/godot/sandbox/evidence/results.json"
+  ],
+  "interfacesProvidedToB": [
+    "task::Task prepare/run/cancel_flag/status/log_path/collect_artifacts/hand_off_artifacts/finish",
+    "launch::start -> RunningProcess with pid/wait/terminate/is_running/job",
+    "task::validate_task_id",
+    "task directory layout bin/work/logs/artifacts"
+  ],
+  "needsFromOthers": [
+    "shared build entry: add path dependency on desktop/godot/sandbox (not modified here)",
+    "docs/GODOT_INTEGRATION_DECISION.md lines 56-62 need the corrected status",
+    "product decision: administrator-configured policy required to deny loopback"
+  ],
+  "noRealInput": true,
+  "existingAclModified": false,
+  "defaultDesktopTouched": false
+}

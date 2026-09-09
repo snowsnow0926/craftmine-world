@@ -1,45 +1,136 @@
 {
-  "format": "craftmine.godot-appcontainer-prototype/1",
+  "format": "craftmine.godot-execution-boundary/2",
   "observedDate": "2026-09-09",
-  "kind": "fixed-trusted-native-probe-before-godot",
-  "offlineCompilation": "passed-after-sha2-format-fix",
-  "testedIsolation": "AppContainer with no capabilities and creation-time Job/child restrictions",
+  "kind": "managed-restricted-godot-build-task",
+  "platform": {
+    "user": "standard-user",
+    "elevated": false,
+    "sessionId": 1,
+    "helperStation": "WinSta0",
+    "helperDesktop": "Default",
+    "taskStation": "Service-0x0-5c54a$",
+    "taskStationVisible": false
+  },
+  "rootCause": {
+    "historicExit": "0xC0000142",
+    "cause": "PROC_THREAD_ATTRIBUTE_CHILD_PROCESS_POLICY = PROCESS_CREATION_CHILD_PROCESS_RESTRICTED",
+    "isolatedBy": "differential launch matrix, one variable per variant",
+    "evidence": [
+      "evidence/child-policy-matrix.log",
+      "evidence/gate-run1.txt",
+      "evidence/gate-run2.txt"
+    ],
+    "notTheCause": [
+      "AppContainer token",
+      "task desktop or window station",
+      "job object limits",
+      "handle list",
+      "minimal environment",
+      "KernelBase.dll (last loaded image in the old trace)"
+    ],
+    "fix": "omit the child-process policy attribute; enforce child containment with JOB_OBJECT_LIMIT_ACTIVE_PROCESS = 1"
+  },
   "attempts": [
     {
-      "logBytes": 0,
-      "exitCode": 3221225794,
-      "tokenIsAppContainer": 1,
-      "exitHex": "0xC0000142",
-      "directory": "out/craftmine.gd0.probe.220548.1788953192498",
-      "profileCleanupHresult": "0x0",
-      "childBinary": "parent executable self-probe"
+      "variant": "baseline-appcontainer-job-desktop",
+      "exitHex": "0x0",
+      "reachedMain": true
     },
     {
-      "logBytes": 0,
-      "exitCode": 3221225794,
-      "tokenIsAppContainer": 1,
+      "variant": "no-desktop",
       "exitHex": "0xC0000142",
-      "directory": "out/craftmine.gd0.probe.250596.1788953266431",
-      "profileCleanupHresult": "0x0",
-      "childBinary": "separate child-only executable"
+      "reachedMain": false
+    },
+    {
+      "variant": "current-station-desktop",
+      "exitHex": "0xC0000142",
+      "reachedMain": false
+    },
+    {
+      "variant": "winsta0-desktop",
+      "exitHex": "0xC0000142",
+      "reachedMain": false
+    },
+    {
+      "variant": "desktop-all-application-packages",
+      "exitHex": "0xC0000142",
+      "reachedMain": false
+    },
+    {
+      "variant": "no-job",
+      "exitHex": "0x0",
+      "reachedMain": true
+    },
+    {
+      "variant": "no-handle-list",
+      "exitHex": "0xC0000142",
+      "reachedMain": false
+    },
+    {
+      "variant": "full-env",
+      "exitHex": "0xC0000142",
+      "reachedMain": false
+    },
+    {
+      "variant": "no-appcontainer",
+      "exitHex": "0xC0000142",
+      "reachedMain": false
+    },
+    {
+      "variant": "cmd-child",
+      "exitHex": "0xC0000142",
+      "reachedMain": false
+    },
+    {
+      "variant": "child-policy-1-with-job",
+      "exitHex": "0xC0000142",
+      "reachedMain": false
+    },
+    {
+      "variant": "child-policy-1-no-job",
+      "exitHex": "0xC0000142",
+      "reachedMain": false
+    },
+    {
+      "variant": "child-policy-1-normal-token",
+      "exitHex": "0xC0000142",
+      "reachedMain": false
+    },
+    {
+      "variant": "child-policy-2-with-job",
+      "exitHex": "0x0",
+      "reachedMain": true
     }
   ],
-  "godotExecuted": false,
-  "boundaryChecksExecuted": false,
+  "verified": {
+    "taskDirectoryWrite": "passed",
+    "syntheticSiblingRead": "denied(5)",
+    "syntheticSiblingWrite": "denied(5)",
+    "interactiveStationAccess": "denied(5)",
+    "childStationVisible": false,
+    "nonLoopbackEgress": "denied(10013)",
+    "childProcessCreation": "denied(1816)",
+    "godotVersion": "4.7.2.stable.official.ed1daf0bf",
+    "godotHeadlessImport": "exit 0x0, .godot produced",
+    "godotWebExport": "exit 0x0, 9 artifacts hashed by parent",
+    "editorPluginCode": "ran, file/network/child denials held",
+    "toolResourceCode": "ran, file denials held",
+    "cancellation": "timed out, job active processes 0, pid gone",
+    "productApi": "Task Version/Import/ExportWeb succeeded, 9 artifacts handed off, cancel path Cancelled with empty job",
+    "unitTests": "7 passed"
+  },
+  "notVerified": [
+    "loopback network denial (loopback is ALLOWED by default)",
+    "LPAC",
+    "UI and input isolation, clipboard",
+    "reparse-point and handle-race attacks",
+    "CPU, disk and GPU quotas",
+    "untrusted model-authored projects",
+    "web build executed in a browser",
+    "non-Windows platforms"
+  ],
   "existingAclModified": false,
   "onlyTaskDirectoryAclsModified": true,
-  "cause": "Unresolved child initialization failure before first application output",
-  "notVerified": [
-    "sentinel read denial",
-    "sentinel write denial",
-    "network denial",
-    "child creation denial",
-    "Godot version execution",
-    "LPAC",
-    "headless import",
-    "addons",
-    "export",
-    "UI boundary",
-    "arbitrary model projects"
-  ]
+  "defaultDesktopTouched": false,
+  "realInputSynthesized": false
 }
