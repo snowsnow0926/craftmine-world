@@ -1,23 +1,14 @@
-﻿cargo : warning: variable does not need to be mutable
+﻿cargo : crates\craftmine-core\src\content_history\migration_tests.rs:142:9: warning: variable does not need to be mutab
+le
 所在位置 行:1 字符: 527
 + ... CE_DIR=$ev; cargo test -p craftmine-core --lib backups::portable::tes ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (warning: variab...d to be mutable:String) [], RemoteException
+    + CategoryInfo          : NotSpecified: (crates\craftmin...d to be mutable:String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
  
-   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
-    |
-142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]
-\n")])?;
-    |         ----^^^^^^^
-    |         |
-    |         help: remove this `mut`
-    |
-    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
-
 warning: `craftmine-core` (lib test) generated 1 warning (run `cargo fix --lib -p craftmine-core --tests` to apply 1 su
 ggestion)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
      Running unittests src\lib.rs (C:\Users\WINDOWS\.pi-desktop\scratch\3d732e51-6eac-42ff-8487-568e244b45de\cargo-targ
 et-r5\debug\deps\craftmine_core-13091a1caf054aaf.exe)
 
@@ -36,303 +27,49 @@ running 1 test
     "credentialsIncluded": false,
     "gitRefs": 1,
     "legacyImports": 1,
-    "sessionIncluded": false,
-    "snapshotHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
+    "sessionNote": "local session and world-lease routing rows travel with the domain snapshot; they hold no credentials or tokens",
+    "sessionRowsIncluded": true,
+    "snapshotHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
     "sourceBlobs": 3,
     "tables": 62
   },
-  "createdAt": 1788978339491,
-  "entries": [
-    {
-      "body": true,
-      "bytes": 13673,
-      "kind": "domain",
-      "objectFormat": null,
-      "objectType": null,
-      "oid": null,
-      "owner": "R5",
-      "path": "domain.json",
-      "refs": [],
-      "repoId": null,
-      "sha256": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
-      "world": null
-    },
-    {
-      "body": true,
-      "bytes": 14,
-      "kind": "asset-blob",
-      "objectFormat": null,
-      "objectType": null,
-      "oid": null,
-      "owner": "R6",
-      "path": "asset-catalog/blobs/a1/a1042b75d7fa607256bab0d089bb7c2ee0b7e85b5959f8485ce4e9f3211f0f3d",
-      "refs": [
-        "asset/a1042b75d7fa607256bab0d089bb7c2ee0b7e85b5959f8485ce4e9f3211f0f3d"
-      ],
-      "repoId": null,
-      "sha256": "a1042b75d7fa607256bab0d089bb7c2ee0b7e85b5959f8485ce4e9f3211f0f3d",
-      "world": null
-    },
-    {
-      "body": true,
-      "bytes": 17,
-      "kind": "content-repo-object",
-      "objectFormat": "sha1",
-      "objectType": "blob",
-      "oid": "2e48d32904d54b75eff0c518539741be1adb1142",
-      "owner": "R1",
-      "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/objects/2e48d32904d54b75eff0c518539741be1adb1142",
-      "refs": [
-        "repo-world-a|2e48d32904d54b75eff0c518539741be1adb1142"
-      ],
-      "repoId": "repo-world-a",
-      "sha256": "37e4e67eb903e86489f3bddb2a50edfe3a3a6b0a07c14f3e255017e78d990e99",
-      "world": null
-    },
-    {
-      "body": true,
-      "bytes": 264,
-      "kind": "content-repo-object",
-      "objectFormat": "sha1",
-      "objectType": "commit",
-      "oid": "3736112d6852b601ad46d473218363b6ecda4e2e",
-      "owner": "R1",
-      "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/objects/3736112d6852b601ad46d473218363b6ecda4e2e",
-      "refs": [
-        "repo-world-a|3736112d6852b601ad46d473218363b6ecda4e2e"
-      ],
-      "repoId": "repo-world-a",
-      "sha256": "42258c71e751a0200e52c87142ef301c665cefe1bd44deb7b11a8a7945521c0e",
-      "world": null
-    },
-    {
-      "body": true,
-      "bytes": 41,
-      "kind": "content-repo-object",
-      "objectFormat": "sha1",
-      "objectType": "tree",
-      "oid": "389e5c366369cc895e33494e88486644ab2609cf",
-      "owner": "R1",
-      "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/objects/389e5c366369cc895e33494e88486644ab2609cf",
-      "refs": [
-        "repo-world-a|389e5c366369cc895e33494e88486644ab2609cf"
-      ],
-      "repoId": "repo-world-a",
-      "sha256": "d76f48223e936c7dcdda1c230c2b44baa242f991b8853ca5d59ffae736e09599",
-      "world": null
-    },
-    {
-      "body": true,
-      "bytes": 29,
-      "kind": "content-repo-object",
-      "objectFormat": "sha1",
-      "objectType": "blob",
-      "oid": "92126f812d0390930de0f51c1b9bab737e4d9c58",
-      "owner": "R1",
-      "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/objects/92126f812d0390930de0f51c1b9bab737e4d9c58",
-      "refs": [
-        "repo-world-a|92126f812d0390930de0f51c1b9bab737e4d9c58"
-      ],
-      "repoId": "repo-world-a",
-      "sha256": "0ccf5255c8c57c67bef4129980b6238dd5a39dd723a3e8aed485a3a2b75e10e7",
-      "world": null
-    },
-    {
-      "body": true,
-      "bytes": 41,
-      "kind": "content-repo-object",
-      "objectFormat": "sha1",
-      "objectType": "tree",
-      "oid": "d0b8e267cf4d9b71209462ff4201aea8ac0fc4c1",
-      "owner": "R1",
-      "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/objects/d0b8e267cf4d9b71209462ff4201aea8ac0fc4c1",
-      "refs": [
-        "repo-world-a|d0b8e267cf4d9b71209462ff4201aea8ac0fc4c1"
-      ],
-      "repoId": "repo-world-a",
-      "sha256": "f1eafaafc2f2be5498297798d3fc4a1c51e0d670d8750c38e1f400230b8985ff",
-      "world": null
-    },
-    {
-      "body": true,
-      "bytes": 322,
-      "kind": "content-repo-object",
-      "objectFormat": "sha1",
-      "objectType": "commit",
-      "oid": "decb4e9850b6b8c1cfa28e66a71a7f553cb6677d",
-      "owner": "R1",
-      "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/objects/decb4e9850b6b8c1cfa28e66a71a7f553cb6677d",
-      "refs": [
-        "repo-world-a|decb4e9850b6b8c1cfa28e66a71a7f553cb6677d"
-      ],
-      "repoId": "repo-world-a",
-      "sha256": "0143b6c2f9e0f0c80807c165140cbcac41fab66681e16f7be3e63541e393b892",
-      "world": null
-    },
-    {
-      "body": false,
-      "bytes": 0,
-      "kind": "content-repo",
-      "objectFormat": "sha1",
-      "objectType": null,
-      "oid": null,
-      "owner": "R1",
-      "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/refs.json",
-      "refs": [
-        "refs/heads/main|decb4e9850b6b8c1cfa28e66a71a7f553cb6677d"
-      ],
-      "repoId": "repo-world-a",
-      "sha256": "648a255ebe89a33ba79e8fe53f54f5afb16074bbdec1ff142cf95aa6f3b31cb7",
-      "world": null
-    },
-    {
-      "body": true,
-      "bytes": 14,
-      "kind": "godot-asset-body",
-      "objectFormat": null,
-      "objectType": null,
-      "oid": null,
-      "owner": "R1",
-      "path": "godot-assets/ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb/a1042b75d7fa607256bab0d089bb7c2ee0b7e85b5959f8485ce4e9f3211f0f3d",
-      "refs": [
-        "world/a"
-      ],
-      "repoId": null,
-      "sha256": "a1042b75d7fa607256bab0d089bb7c2ee0b7e85b5959f8485ce4e9f3211f0f3d",
-      "world": "a"
-    },
-    {
-      "body": true,
-      "bytes": 64,
-      "kind": "godot-source-blob",
-      "objectFormat": null,
-      "objectType": null,
-      "oid": null,
-      "owner": "R1",
-      "path": "godot-source/ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb/blobs/531e6c3d345a9eebd57c7dabe4021050355e1b7f6d78ee35f51a579f1b3e96ea",
-      "refs": [
-        "world/a"
-      ],
-      "repoId": null,
-      "sha256": "531e6c3d345a9eebd57c7dabe4021050355e1b7f6d78ee35f51a579f1b3e96ea",
-      "world": "a"
-    },
-    {
-      "body": true,
-      "bytes": 32,
-      "kind": "godot-source-blob",
-      "objectFormat": null,
-      "objectType": null,
-      "oid": null,
-      "owner": "R1",
-      "path": "godot-source/ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb/blobs/bb2306b7c77a57f0f5552d847a00a89aacf70e59050199bc3e9988e17b494a45",
-      "refs": [
-        "world/a"
-      ],
-      "repoId": null,
-      "sha256": "bb2306b7c77a57f0f5552d847a00a89aacf70e59050199bc3e9988e17b494a45",
-      "world": "a"
-    },
-    {
-      "body": true,
-      "bytes": 66,
-      "kind": "godot-source-blob",
-      "objectFormat": null,
-      "objectType": null,
-      "oid": null,
-      "owner": "R1",
-      "path": "godot-source/ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb/blobs/f75c8c1a33cfbcc8636e09981829f7050e198bf91a005ca1a00038d6b77ad975",
-      "refs": [
-        "world/a"
-      ],
-      "repoId": null,
-      "sha256": "f75c8c1a33cfbcc8636e09981829f7050e198bf91a005ca1a00038d6b77ad975",
-      "world": "a"
-    },
-    {
-      "body": true,
-      "bytes": 352,
-      "kind": "legacy-import",
-      "objectFormat": null,
-      "objectType": null,
-      "oid": null,
-      "owner": "R5",
-      "path": "legacy-imports/import/manifest.json",
-      "refs": [
-        "legacy-import/import"
-      ],
-      "repoId": null,
-      "sha256": "9631ed8721133186494308688f95a3ece33f421c185aa6564a53aeb98d7c42b4",
-      "world": null
-    },
-    {
-      "body": true,
-      "bytes": 116,
-      "kind": "legacy-import",
-      "objectFormat": null,
-      "objectType": null,
-      "oid": null,
-      "owner": "R5",
-      "path": "legacy-imports/import/source/builds/v-0123456789abcdef0123/build.json",
-      "refs": [
-        "legacy-import/import"
-      ],
-      "repoId": null,
-      "sha256": "18f01cb093606ef98b5387b09ad6e933a5a5378c26986213f6524f949f9caaa1",
-      "world": null
-    },
-    {
-      "body": true,
-      "bytes": 202,
-      "kind": "legacy-import",
-      "objectFormat": null,
-      "objectType": null,
-      "oid": null,
-      "owner": "R5",
-      "path": "legacy-imports/import/source/project.json",
-      "refs": [
-        "legacy-import/import"
-      ],
-      "repoId": null,
-      "sha256": "b22be9a2b6518531f5a55095534c97cc9d63f87897615255ff5f839bf14c92f7",
-      "world": null
-    }
-  ],
+  "createdAt": 1788978674860,
+  "entryCount": 16,
   "format": "craftmine.portable-archive/1",
   "rebuildable": [
     {
       "excluded": true,
-      "kind": "godot-import-cache",
-      "reason": "regenerated by the Godot importer from the archived source blobs"
+      "kind": "godot-builds/<worldKey>/<buildId>/source",
+      "reason": "materialized project source, rebuilt from the archived source blobs"
     },
     {
       "excluded": true,
-      "kind": "godot-build-artifacts",
-      "reason": "rebuilt by the managed build job from the archived source and the fixed toolchain"
+      "kind": "godot-builds/<worldKey>/<buildId>/artifacts",
+      "reason": "export artifacts, rebuilt by the managed build job from the archived source and the fixed toolchain"
     },
     {
       "excluded": true,
-      "kind": "godot-build-cache",
+      "kind": "godot-builds/<worldKey>/<buildId>/cache",
       "reason": "per-build scratch space, never a source of truth"
     },
     {
       "excluded": true,
-      "kind": "content-repo-copies",
+      "kind": "content-history/repos/<repoKey>/copies",
       "reason": "materialized worktrees, rebuilt from the archived Git objects"
     },
     {
       "excluded": true,
       "kind": "git-config",
-      "reason": "local tool configuration, recreated by the Git adapter"
+      "reason": "local Git configuration, recreated by the Git adapter"
     }
   ],
   "schemaVersion": 1,
-  "sourceDigest": "2af8301fd19371970e0227f601ead21bac5b9df43281cb2359889526b31b0178"
+  "sourceDigest": "ba409c25aa8825282a516fd5d5c396b3151f4c703e05092bbc1e529c4f08847c"
 }
-archive: 22852 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-277604-1788978339491.cmarchive (not committed)
+archive: 23094 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-59792-1788978674860.cmarchive (not committed)
 === export receipt ===
 {
-  "archivePath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\r5-evidence-277604-1788978339491.cmarchive",
+  "archivePath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\r5-evidence-59792-1788978674860.cmarchive",
   "consistency": {
     "assetBlobs": 1,
     "boundary": "one immediate transaction over the domain database; every body is immutable content-addressed or sealed data read after that snapshot, and each body is re-hashed while streaming",
@@ -345,8 +82,9 @@ archive: 22852 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-277604-1
     "credentialsIncluded": false,
     "gitRefs": 1,
     "legacyImports": 1,
-    "sessionIncluded": false,
-    "snapshotHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
+    "sessionNote": "local session and world-lease routing rows travel with the domain snapshot; they hold no credentials or tokens",
+    "sessionRowsIncluded": true,
+    "snapshotHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
     "sourceBlobs": 3,
     "tables": 62
   },
@@ -363,13 +101,13 @@ archive: 22852 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-277604-1
   "id": "portable-1",
   "kind": "export-portable",
   "manifest": {
-    "bytes": 22852,
+    "bytes": 23094,
     "contentBytes": 15247,
-    "domainHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
+    "domainHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
     "entries": 16,
-    "hash": "a68b745720a2e8ee7b406c4306b76deb8e61a272f0794972ae5c139f8e82c776",
+    "hash": "e0bc201bf8e63233d9c8fc4746f886f308c5237b89a2bf6b01a37a4412e3aad7",
     "schemaVersion": 1,
-    "streamSha256": "403aa134cf90d214cdc0b786129b889a088e220ec1749f4b8cae366ca6fc0a5f"
+    "streamSha256": "0fd9a1dcacc418f0d8f2dd007d3df63d63259177b0cf3f5f53a704945d072202"
   },
   "protectedRefs": {
     "builds": 0,
@@ -378,36 +116,37 @@ archive: 22852 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-277604-1
   "rebuildableExcluded": [
     {
       "excluded": true,
-      "kind": "godot-import-cache",
-      "reason": "regenerated by the Godot importer from the archived source blobs"
+      "kind": "godot-builds/<worldKey>/<buildId>/source",
+      "reason": "materialized project source, rebuilt from the archived source blobs"
     },
     {
       "excluded": true,
-      "kind": "godot-build-artifacts",
-      "reason": "rebuilt by the managed build job from the archived source and the fixed toolchain"
+      "kind": "godot-builds/<worldKey>/<buildId>/artifacts",
+      "reason": "export artifacts, rebuilt by the managed build job from the archived source and the fixed toolchain"
     },
     {
       "excluded": true,
-      "kind": "godot-build-cache",
+      "kind": "godot-builds/<worldKey>/<buildId>/cache",
       "reason": "per-build scratch space, never a source of truth"
     },
     {
       "excluded": true,
-      "kind": "content-repo-copies",
+      "kind": "content-history/repos/<repoKey>/copies",
       "reason": "materialized worktrees, rebuilt from the archived Git objects"
     },
     {
       "excluded": true,
       "kind": "git-config",
-      "reason": "local tool configuration, recreated by the Git adapter"
+      "reason": "local Git configuration, recreated by the Git adapter"
     }
   ],
-  "sessionIncluded": false,
+  "sessionNote": "local session and world-lease routing rows travel with the domain snapshot; they hold no credentials or tokens",
+  "sessionRowsIncluded": true,
   "status": "completed"
 }
 === verify report ===
 {
-  "archiveHash": "a68b745720a2e8ee7b406c4306b76deb8e61a272f0794972ae5c139f8e82c776",
+  "archiveHash": "e0bc201bf8e63233d9c8fc4746f886f308c5237b89a2bf6b01a37a4412e3aad7",
   "consistency": {
     "assetBlobs": 1,
     "boundary": "one immediate transaction over the domain database; every body is immutable content-addressed or sealed data read after that snapshot, and each body is re-hashed while streaming",
@@ -420,41 +159,42 @@ archive: 22852 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-277604-1
     "credentialsIncluded": false,
     "gitRefs": 1,
     "legacyImports": 1,
-    "sessionIncluded": false,
-    "snapshotHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
+    "sessionNote": "local session and world-lease routing rows travel with the domain snapshot; they hold no credentials or tokens",
+    "sessionRowsIncluded": true,
+    "snapshotHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
     "sourceBlobs": 3,
     "tables": 62
   },
   "contentBytes": 15247,
-  "createdAt": 1788978339491,
+  "createdAt": 1788978674860,
   "credentialsIncluded": false,
   "entries": 16,
   "format": "craftmine.portable-archive/1",
   "rebuildable": [
     {
       "excluded": true,
-      "kind": "godot-import-cache",
-      "reason": "regenerated by the Godot importer from the archived source blobs"
+      "kind": "godot-builds/<worldKey>/<buildId>/source",
+      "reason": "materialized project source, rebuilt from the archived source blobs"
     },
     {
       "excluded": true,
-      "kind": "godot-build-artifacts",
-      "reason": "rebuilt by the managed build job from the archived source and the fixed toolchain"
+      "kind": "godot-builds/<worldKey>/<buildId>/artifacts",
+      "reason": "export artifacts, rebuilt by the managed build job from the archived source and the fixed toolchain"
     },
     {
       "excluded": true,
-      "kind": "godot-build-cache",
+      "kind": "godot-builds/<worldKey>/<buildId>/cache",
       "reason": "per-build scratch space, never a source of truth"
     },
     {
       "excluded": true,
-      "kind": "content-repo-copies",
+      "kind": "content-history/repos/<repoKey>/copies",
       "reason": "materialized worktrees, rebuilt from the archived Git objects"
     },
     {
       "excluded": true,
       "kind": "git-config",
-      "reason": "local tool configuration, recreated by the Git adapter"
+      "reason": "local Git configuration, recreated by the Git adapter"
     }
   ],
   "valid": true,
@@ -463,8 +203,8 @@ archive: 22852 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-277604-1
 === source-unreadable condition ===
 {
   "movedStillResolves": true,
-  "movedTo": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmpVp6kJW\\data-moved-away",
-  "sourceDirectory": "\\\\?\\C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmp6rZpRG",
+  "movedTo": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmpDMr2Po\\data-moved-away",
+  "sourceDirectory": "\\\\?\\C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmpABgqpz",
   "sourceStillResolves": false,
   "topLevelBeforeMove": [
     "asset-catalog",
@@ -480,11 +220,11 @@ archive: 22852 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-277604-1
 }
 === restore receipt ===
 {
-  "archiveHash": "a68b745720a2e8ee7b406c4306b76deb8e61a272f0794972ae5c139f8e82c776",
+  "archiveHash": "e0bc201bf8e63233d9c8fc4746f886f308c5237b89a2bf6b01a37a4412e3aad7",
   "contentBytes": 15247,
   "credentialsIncluded": false,
-  "currentHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
-  "domainHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
+  "currentHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
+  "domainHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
   "entries": 16,
   "id": "evidence-restore",
   "importedProvenance": true,
@@ -500,19 +240,19 @@ archive: 22852 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-277604-1
   ],
   "restoredInPlace": true,
   "status": "completed",
-  "targetDirectory": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmp7fPaOp\\data",
+  "targetDirectory": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmpFyLGyW\\data",
   "verifiedFiles": 15
 }
 === restored state ===
 {
   "assetBlobRestored": true,
-  "domainHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
+  "domainHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
   "gitFileMatchesSource": true,
-  "gitHead": "decb4e9850b6b8c1cfa28e66a71a7f553cb6677d",
+  "gitHead": "170cc8fb704a31e5ccb79c5b6558d7eb457b6066",
   "gitHeadMatchesSource": true,
   "godotAssetRestored": true,
   "legacyProjectRestored": true,
-  "restoredCurrentHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
+  "restoredCurrentHash": "c8f6146c022a652dd4c617f75fdef7da7b27033a61c47ae4b35de78c3b185a20",
   "sourceBlobRestored": true,
   "worldAProgress": {
     "format": "craftmine.progress/1",
@@ -528,5 +268,5 @@ archive: 22852 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-277604-1
 }
 test backups::portable::tests::evidence_archive_manifest_and_restore_state ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 203 filtered out; finished in 1.10s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 206 filtered out; finished in 1.50s
 

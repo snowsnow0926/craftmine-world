@@ -34,7 +34,8 @@
   * Git：每个受管仓库从其固定引用的可达对象集读取（对象 + 类型），引用表另存。
 * 依赖锁：`craftmine.assets-lock/1` 作为 Git blob 随对象一起归档，包依赖关系随域快照归档。
 * 可重建缓存明确排除并**具名说明**：`godot-import-cache`、`godot-build-artifacts`、`godot-build-cache`、`content-repo-copies`、`git-config`。
-* 共同边界写入头部 `consistency`：域快照哈希、表数、正文根、各类引用计数、`credentialsIncluded:false`、`sessionIncluded:false`，并声明“先单事务快照 + 同事务写入保护钉住，再读取不可变正文，每个正文边读边重算哈希”。
+* 共同边界写入头部 `consistency`：域快照哈希、表数、正文根、各类引用计数、`credentialsIncluded:false`、`sessionRowsIncluded:true`（本地会话与世界租约路由行随域快照一起走，其中没有凭据或令牌），并声明“先单事务快照 + 同事务写入保护钉住，再读取不可变正文，每个正文边读边重算哈希”。
+* 条目表为**逐行 JSON**，每条目一行；`archiveHash` 绑定头行与整张条目表，正文逐条按自身哈希校验，`consistency.snapshotHash` 必须等于域条目的哈希。
 
 ### 1.2 第 2 条：新目录 + 来源不可读恢复 —— 完成
 
@@ -63,9 +64,14 @@
 | 正文单字节篡改 | 校验/恢复均报 `BACKUP_HASH_MISMATCH`，目标保持空 |
 | 归档截断 | 报 `BACKUP_ARCHIVE_TRUNCATED` 等，目标保持空 |
 | 条目路径置换（`../`、绝对路径、盘符、反斜杠） | `INVALID_ARCHIVE_PATH` |
+| 条目路径越出 kind 对应根目录（如 `legacy-import` 指向 `tasks.sqlite`） | `INVALID_ARCHIVE_PATH` |
+| 归档缺表/缺列 | `BACKUP_SCHEMA_MISMATCH`/`BACKUP_COLUMNS_MISMATCH` |
+| 恢复过程中域校验失败（内容已落盘） | 事务回滚 + 删除已放置正文 + 删除本次创建的库文件，目标恢复原状 |
 | 归档内缺正文/尺寸不符 | 导出即 `BACKUP_CONTENT_MISSING`/`BACKUP_CONTENT_CHANGED` |
 | 目标已有世界 | `BACKUP_TARGET_NOT_EMPTY`，原世界不变 |
+| 目标与运行中的数据目录重叠 | `BACKUP_TARGET_OVERLAP` |
 | 导出被中断（作业停在 `streaming`） | 重启扫描把钉住标为 `abandoned`，不产生伪成功保护 |
+| 导出已发布归档但提交失败 | 钉住保留，重启扫描因归档仍在而提升为 `retained` |
 | 取消/磁盘满 | 写 `<archive>.partial`，失败即删除并标记作业 `failed`、钉住 `abandoned`（代码路径已实现；**磁盘满未用真实满盘实测**） |
 
 未完成：磁盘满、锁文件竞争、各持久边界逐一杀进程与回包丢失的矩阵。
@@ -102,16 +108,30 @@ R5 提供版本化分发片段与返回结构（`INTERFACE_R5.md` §2、§5）�
 cd "D:\Craftmine World-worktrees\godot-round2-r5-20260910\vendor\pi-desktop"
 $env:CARGO_TARGET_DIR="$env:PI_SCRATCH_DIR\cargo-target-r5"
 cargo test -p craftmine-core --lib backups::portable
-# test result: ok. 7 passed; 0 failed; 1 ignored
+# test result: ok. 10 passed; 0 failed; 1 ignored
 
 cargo test -p craftmine-core
-# test result: ok. 201 passed; 0 failed; 3 ignored（未注册 content_history 前基线为 153 passed）
+# test result: ok. 204 passed; 0 failed; 3 ignored（未注册 content_history 前基线为 153 passed）
 ```
 
-* `evidence/rust-portable-tests.txt`：本模块 7 项断言原文。
-* `evidence/rust-full-crate-tests.txt`：整 crate 回归原文（201 通过、0 失败）。
+* `evidence/rust-portable-tests.txt`：本模块 10 项断言原文。
+* `evidence/rust-full-crate-tests.txt`：整 crate 回归原文（204 通过、0 失败）。
 * `evidence/rust-portable-evidence.txt`：归档清单（逐项哈希）、导出/校验/恢复回执、源不可读条件、恢复后状态。
 * `tests/godot-round2/R5/README.md`：每个测试证明什么、如何重跑；`run-portable-evidence.ps1` 一键重生成证据。
+
+### 3.1 对抗性复审与据此的修复
+
+提交后对 `portable.rs` 做了一次只读对抗复审，发现并修复了以下缺陷（全部有回归测试）：
+
+1. **恢复不再可能半填充**：正文先落盘、域最后提交的顺序会在域校验失败时留下正文与空库。现在域行写入与正文落盘同处一个事务，提交前调用 `validate_integrity`；任何失败回滚事务并删除已移动的正文、本次创建的 `tasks.sqlite` 与暂存目录。回归测试 `a_domain_failure_leaves_no_half_populated_target` 用「内容已放置后外键校验失败」构造该路径。
+2. **`validate_integrity` 移入提交前**，不再出现“报失败但已提交”。
+3. **归档缺表不再静默清空**：每个活表都必须在归档中存在，否则 `BACKUP_SCHEMA_MISMATCH`。
+4. **条目路径受 kind 约束**：`path` 必须位于其 kind 对应的根目录下（`domain.json`、`legacy-imports/`、`godot-source/`、`godot-assets/`、`asset-catalog/blobs/`、`content-history/repos/`），因此归档无法覆盖数据库或无关文件。回归测试 `an_entry_cannot_write_outside_the_root_of_its_kind`。
+5. **条目表改为逐行**：原先把整张条目表放进一行 JSON，约两万个对象就会触发行上限；现在每个条目一行，`archiveHash` 绑定头行与整张条目表。
+6. **钉住不再被误弃**：`craftmine_backup_pins` 记录 `archive_path`；导出在归档文件已发布后才失败的场景不再把钉住标为 `abandoned`；`backup_recover` 在「导出作业完成」或「归档文件仍在」时保留，归档文件消失时释放。`git-ref` 钉住带上所属世界，`repository` 钉住实际写入。
+7. 其他：目标目录解析改为规范化「最深的已存在祖先」，`C:\data\..\data\sub` 不再绕过重叠检查；`installation_empty` 统计全部已登记表；`backup.inspectPortable` 明确只校验头部（正文与尾行由 `verifyPortable` 证明）；`rebuildable` 名单改为真实磁盘路径。
+
+仍未修复并明确记账：导出事务在 `rev-list`/`cat-file` 期间持有写锁（并发写入方可能遇到 `SQLITE_BUSY`，属 R1 的接线范围）。
 
 **证据范围**：全部为合成夹具 + 模块级 Rust 测试。未运行真实 Godot 引擎、正式客户端、真实产品模型；未做手感评估。`tests/browser.mjs`、`tests/modules-browser.mjs` 未运行；未发送真实鼠标键盘、未激活窗口、未操作用户浏览器。全部数据在 `tempfile::tempdir()` 中，未触碰用户存档、共享引擎缓存或历史工作树。
 

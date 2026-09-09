@@ -22,27 +22,37 @@ whole stream verified. Nothing is buffered as a single document.
 ```
 MAGIC             "CRAFTMINE-PORTABLE-ARCHIVE/1\n"
 HEADER            one JSON line
-ENTRY             per entry: one JSON line, then exactly `bytes` raw bytes
+ENTRY[0..N]       one JSON line per entry
+BODY[i]           raw bytes, only for entries whose `body` is true
 FOOTER            one JSON line
 ```
 
-* `HEADER.entries` lists every entry in advance: `path`, `kind`, `owner`,
-  `world`, `bytes`, `sha256`, `refs`, `repoId`, `objectFormat`, `oid`,
-  `objectType`, `body`. A caller can therefore verify an archive without
-  interpreting any body.
+* `HEADER` carries `format`, `schemaVersion`, `createdAt`, `sourceDigest`,
+  `entryCount`, `rebuildable` and `consistency`.
+* The entry table is one JSON line per entry, never a single line for the whole
+  table, so a large history is not bounded by a line limit. Each entry lists
+  `path`, `kind`, `owner`, `world`, `bytes`, `sha256`, `refs`, `repoId`,
+  `objectFormat`, `oid`, `objectType` and `body`.
+* Every entry path must live under the root implied by its kind
+  (`domain.json`, `legacy-imports/`, `godot-source/`, `godot-assets/`,
+  `asset-catalog/blobs/`, `content-history/repos/`). An archive can therefore
+  never overwrite the database or an unrelated file.
 * `HEADER.consistency` records the common boundary: the domain snapshot hash,
-  the table count, the content roots, per-category reference counts and an
-  explicit `credentialsIncluded:false` / `sessionIncluded:false`.
+  the table count, the content roots, per-category reference counts, and an
+  explicit `credentialsIncluded:false`. `sessionRowsIncluded:true` is reported
+  honestly: local session and world-lease routing rows travel with the domain
+  snapshot and contain no credentials or tokens.
 * `HEADER.rebuildable` names every cache that is deliberately **not** shipped
-  (`godot-import-cache`, `godot-build-artifacts`, `godot-build-cache`,
-  `content-repo-copies`, `git-config`) with a reason.
-* `FOOTER` carries `entries`, `contentBytes` and `archiveHash`, where
-  `archiveHash` is the SHA-256 of the serialized header. Every body is verified
-  against its own `sha256` while streaming.
+  (`godot-builds/<worldKey>/<buildId>/{source,artifacts,cache}`,
+  `content-history/repos/<repoKey>/copies`, `git-config`) with a reason.
+* `FOOTER` carries `entryCount`, `contentBytes` and `archiveHash`.
+  `archiveHash` is the SHA-256 of the header line and the whole entry table, so
+  neither can be edited without detection. Every body is verified against its
+  own `sha256` while streaming, and `consistency.snapshotHash` is checked
+  against the domain entry's hash.
 
-There is no total-size JSON limit. Streaming caps apply per body
-(`ENTRY_LIMIT` 4 GiB), for the domain snapshot (`DOMAIN_LIMIT` 1 GiB) and for
-one metadata line (`LINE_LIMIT` 8 MiB).
+Streaming caps: one entry body 4 GiB, one JSON line 8 MiB, the declared entry
+total 256 GiB, at most 2,000,000 entries.
 
 ## 3. Entry kinds
 
@@ -80,20 +90,25 @@ The archive never copies a directory tree "as it happens to look".
 
 `backup.restore-portable` writes nothing into the target until the whole stream
 has verified. Bodies are staged under `<target>/.portable-staging-*`, then moved
-into place; the domain is applied last, in one transaction, and validated
-(`validate_integrity`). A failure removes the staging directory and leaves the
-target as it was.
+into place; the domain rows are written inside one transaction that is committed
+only after every body is in place, every repository is materialized and
+`validate_integrity` passed. Any failure rolls the transaction back, deletes the
+bodies it had already moved, deletes a database file this restore created, and
+removes the staging directory.
 
 * A fresh installation may restore into its own data directory, but only when
-  that installation holds no worlds, tasks, imports, revisions, asset versions,
-  repositories, library entries or packages.
+  every registered table is empty.
 * Any other target must be a separate empty directory that does not overlap the
-  running data directory.
+  running data directory. A stale `.portable-staging-*` left by a crashed
+  restore is removed; any other entry makes the target non-empty.
 * The source data directory of the archive is never opened. A restore that has
   to read the original directory would defeat the purpose of a portable backup.
 * Git history is recreated with `hash-object -w` and `update-ref`. Every
   recomputed object id is compared with the archived one, so the restored
   history is the archived history.
+* Every registered table must be present in the archive. An archive made by a
+  build with fewer tables is refused with `BACKUP_SCHEMA_MISMATCH` instead of
+  silently wiping the tables it does not know.
 * The receipt reports `rebuildRequired`: the build ids that were restored as
   metadata but whose derived build copies were deliberately not shipped.
 
@@ -103,20 +118,26 @@ target as it was.
 reference:
 
 ```
-archive_id, kind, ref, world_id, status, archive_hash, created_at, updated_at
+archive_id, kind, ref, world_id, status, archive_hash, archive_path,
+created_at, updated_at
 ```
 
 * `status` is `streaming` (in flight), `retained` (archive completed) or
   `abandoned`/`released`.
 * Kinds: `build`, `godot-source-blob`, `godot-asset-body`, `asset-blob`,
-  `git-ref` (`repoId|refName|oid`), `legacy-import`, `repository`.
+  `git-ref` (`repoId|refName|oid`, carrying the repository's world),
+  `legacy-import`, `repository`.
 * `backup.protected-refs` returns the live set. R1 feeds `builds` into
   `godotStorage.reclaimPlan.protectedBuilds` and consults `sourceBlobs` /
   `gitRefs` in its own reclaimer; R6 consults `assetBlobs` /
   `godotAssetBodies`. There is no third deletion path.
-* Startup recovery (`backup_recover`) promotes a `streaming` pin to `retained`
-  only when its export job completed, and abandons it otherwise. No age or
-  mtime heuristic is used anywhere.
+* Startup recovery (`backup_recover`) retains a `streaming` pin only when its
+  export job completed or its `archive_path` still holds a file; it abandons a
+  `retained` pin whose archive disappeared. No age or mtime heuristic is used
+  anywhere.
+* If the export process dies between publishing the archive file and writing
+  the completion row, the pins stay `streaming`; recovery promotes them because
+  the archive is present, so a complete archive is never left unprotected.
 
 ## 7. Failure behaviour
 
@@ -124,11 +145,19 @@ archive_id, kind, ref, world_id, status, archive_hash, created_at, updated_at
 | --- | --- |
 | missing body, changed bytes, changed size | `BACKUP_CONTENT_MISSING` / `BACKUP_CONTENT_CHANGED` at export; `BACKUP_HASH_MISMATCH` at verify/restore |
 | truncated or trailing bytes | `BACKUP_ARCHIVE_TRUNCATED` / `BACKUP_ARCHIVE_TRAILING_BYTES` |
-| duplicate or escaping entry path | `BACKUP_DUPLICATE_ENTRY` / `INVALID_ARCHIVE_PATH` |
+| duplicate entry path | `BACKUP_DUPLICATE_ENTRY` |
+| entry path outside its kind's root, traversal, absolute or drive-letter path | `INVALID_ARCHIVE_PATH` |
+| edited header or entry table | `BACKUP_HASH_MISMATCH` |
+| domain hash not bound to the header | `BACKUP_DOMAIN_HASH_MISMATCH` |
+| archive lacks a registered table, or a column | `BACKUP_SCHEMA_MISMATCH` / `BACKUP_COLUMNS_MISMATCH` |
+| restored rows violate a foreign key or the ledger | `BACKUP_FOREIGN_KEY_FAILURE` etc., transaction rolled back |
 | target not empty, or a live world would be overwritten | `BACKUP_TARGET_NOT_EMPTY` |
 | target overlaps the running data directory | `BACKUP_TARGET_OVERLAP` |
 | archive inside the data directory | `BACKUP_ARCHIVE_INSIDE_DATA_DIR` |
+| entry count or declared size over the cap | `BACKUP_ENTRY_COUNT_LIMIT` / `BACKUP_ARCHIVE_TOO_LARGE` |
 | disk full / interrupted export | `.partial` file removed, pins abandoned, job marked `failed` |
 | Git object disappeared between snapshot and read | export fails loudly (`BACKUP_GIT_OBJECT_MISSING`) |
 
-A failed export or restore never leaves a row that claims success.
+A failed export or restore never leaves a row that claims success. A failed
+restore never leaves content or a database behind that a later retry would have
+to work around.

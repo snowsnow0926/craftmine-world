@@ -30,7 +30,10 @@ restored state into
 | Test | Proves |
 | --- | --- |
 | `portable_archive_restores_into_a_new_directory_without_the_source` | V13 / CP-A18: full restore into a new data directory after the source directory was renamed away; worlds, progress, drafts, source blobs, Godot asset bodies, asset library bodies and Git history all come back |
+| `restore_into_a_separate_empty_directory_creates_a_new_database` | the non-in-place branch: a separate empty target gets its own database and content, and the exporting installation is untouched |
 | `a_damaged_archive_is_refused_and_never_touches_the_target` | a flipped body byte and a truncated stream are refused; the target stays empty |
+| `a_domain_failure_leaves_no_half_populated_target` | content placed before a domain integrity failure is rolled back, so no half-populated target remains |
+| `an_entry_cannot_write_outside_the_root_of_its_kind` | an entry can never be renamed over the database or another root |
 | `restore_refuses_a_target_that_already_holds_a_world` | a live installation cannot be overwritten |
 | `retained_archives_protect_content_from_the_reclaimer` | joint test against A's real `godot_storage_reclaim_plan`: a retained archive pins its builds as `CALLER_PINNED`, and releasing the archive hands them back |
 | `an_interrupted_export_keeps_no_retained_protection` | startup recovery abandons a pin whose export never completed |

@@ -127,7 +127,7 @@ fn portable_archive_restores_into_a_new_directory_without_the_source() -> Result
     let exported = export_to(&mut fixture.db, &archive)?;
     assert_eq!(exported["status"], "completed");
     assert_eq!(exported["credentialsIncluded"], false);
-    assert_eq!(exported["sessionIncluded"], false);
+    assert_eq!(exported["sessionRowsIncluded"], true);
     // Rebuildable caches are declared, never shipped.
     let excluded = exported["rebuildableExcluded"].as_array().unwrap();
     assert!(excluded.len() >= 3);
@@ -225,6 +225,61 @@ fn portable_archive_restores_into_a_new_directory_without_the_source() -> Result
     Ok(())
 }
 
+/// Rebuilds an archive in the same container format so tests can craft
+/// deliberately broken input.
+fn build_archive(entries: Vec<(Value, Vec<u8>)>) -> Vec<u8> {
+    let snapshot_hash = entries
+        .iter()
+        .find(|(entry, _)| entry["kind"] == "domain")
+        .map(|(entry, _)| entry["sha256"].clone())
+        .unwrap_or(Value::Null);
+    let header = json!({
+        "format": FORMAT, "schemaVersion": SCHEMA_VERSION, "createdAt": 1,
+        "sourceDigest": "synthetic", "entryCount": entries.len(),
+        "rebuildable": [],
+        "consistency": {"snapshotHash": snapshot_hash, "credentialsIncluded": false},
+    });
+    let mut out = Vec::new();
+    let mut hasher = Sha256::new();
+    out.extend_from_slice(MAGIC);
+    let header_text = serde_json::to_string(&header).unwrap();
+    out.extend_from_slice(header_text.as_bytes());
+    out.push(b'\n');
+    hasher.update(header_text.as_bytes());
+    hasher.update(b"\n");
+    for (entry, _) in &entries {
+        let text = serde_json::to_string(entry).unwrap();
+        out.extend_from_slice(text.as_bytes());
+        out.push(b'\n');
+        hasher.update(text.as_bytes());
+        hasher.update(b"\n");
+    }
+    let mut content_bytes = 0u64;
+    for (_, body) in &entries {
+        out.extend_from_slice(body);
+        content_bytes += body.len() as u64;
+    }
+    let footer = json!({
+        "format": FORMAT, "entryCount": entries.len(),
+        "contentBytes": content_bytes, "archiveHash": hex(hasher.finalize()),
+    });
+    out.extend_from_slice(serde_json::to_string(&footer).unwrap().as_bytes());
+    out.push(b'\n');
+    out
+}
+
+fn entry(kind: &str, path: &str, body: &[u8]) -> (Value, Vec<u8>) {
+    (
+        json!({
+            "path": path, "kind": kind, "owner": "test", "world": null,
+            "bytes": body.len(), "sha256": digest_bytes(body), "refs": [],
+            "repoId": null, "objectFormat": null, "oid": null,
+            "objectType": null, "body": !body.is_empty(),
+        }),
+        body.to_vec(),
+    )
+}
+
 /// Flips one byte inside the first content body, so the failure is a body hash
 /// mismatch rather than a broken metadata line.
 fn corrupt_first_body(archive: &Path, out: &Path) -> Result<()> {
@@ -236,18 +291,20 @@ fn corrupt_first_body(archive: &Path, out: &Path) -> Result<()> {
         + MAGIC.len()
         + 1;
     let header: Value = serde_json::from_slice(&bytes[MAGIC.len()..header_end - 1])?;
-    let mut offset = header_end;
-    for entry in header["entries"].as_array().context("entries")? {
-        let size = entry["bytes"].as_u64().context("bytes")? as usize;
-        if entry["body"] == true && size > 0 {
-            let mut copy = bytes.clone();
-            copy[offset] ^= 0x01;
-            fs::write(out, &copy)?;
-            return Ok(());
-        }
-        offset += size;
+    let count = header["entryCount"].as_u64().context("entryCount")? as usize;
+    let mut cursor = header_end;
+    for _ in 0..count {
+        let newline = bytes[cursor..]
+            .iter()
+            .position(|byte| *byte == b'\n')
+            .context("entry line")?
+            + cursor;
+        cursor = newline + 1;
     }
-    anyhow::bail!("no content body found in the archive")
+    let mut copy = bytes.clone();
+    copy[cursor] ^= 0x01;
+    fs::write(out, &copy)?;
+    Ok(())
 }
 
 #[test]
@@ -307,8 +364,119 @@ fn a_damaged_archive_is_refused_and_never_touches_the_target() -> Result<()> {
 }
 
 #[test]
-fn restore_refuses_a_target_that_already_holds_a_world() -> Result<()> {
+fn a_domain_failure_leaves_no_half_populated_target() -> Result<()> {
+    // Content that would be placed, plus a domain that applies but fails
+    // integrity validation: a session row references a world that does not
+    // exist. The restore must roll back and remove the content it had already
+    // moved into the target.
+    let body = b"legacy-bytes";
+    let root = tempfile::tempdir()?;
+    let target = root.path().join("data");
+    let mut fresh = TaskJournal::open(&target.join("tasks.sqlite"))?;
+    let mut domain = snapshot(&fresh.db, &tables(&fresh.db)?)?;
+    domain["craftmine_session_worlds"]["rows"] = json!([["session-a", "project-a", "ghost", "task-a"]]);
+    let domain_body = serde_json::to_vec(&domain)?;
+
+    let mut entries = vec![
+        entry("legacy-import", "legacy-imports/import/source/x.txt", body),
+        (
+            json!({
+                "path": "domain.json", "kind": "domain", "owner": "test", "world": null,
+                "bytes": domain_body.len(), "sha256": digest_bytes(&domain_body),
+                "refs": [], "repoId": null, "objectFormat": null, "oid": null,
+                "objectType": null, "body": true,
+            }),
+            domain_body,
+        ),
+    ];
+    entries.sort_by(|left, right| left.0["path"].as_str().cmp(&right.0["path"].as_str()));
+    let archives = tempfile::tempdir()?;
+    let archive = archives.path().join("crafted.cmarchive");
+    fs::write(&archive, build_archive(entries))?;
+
+    let error = fresh
+        .backup_restore_portable(&json!({
+            "operationId": "restore-crafted",
+            "archivePath": archive.to_string_lossy(),
+            "targetDirectory": target.to_string_lossy(),
+        }))
+        .unwrap_err()
+        .to_string();
+    assert!(
+        error.contains("BACKUP_FOREIGN_KEY_FAILURE"),
+        "{error}"
+    );
+    assert!(fresh.world_list()?.is_empty());
+    assert!(
+        !target.join("legacy-imports/import/source/x.txt").exists(),
+        "content placed before the domain failure must be rolled back"
+    );
+    assert!(fs::read_dir(&target)?.all(|entry| {
+        !entry
+            .unwrap()
+            .file_name()
+            .to_string_lossy()
+            .starts_with(".portable-staging-")
+    }));
+    Ok(())
+}
+
+#[test]
+fn an_entry_cannot_write_outside_the_root_of_its_kind() -> Result<()> {
+    let archives = tempfile::tempdir()?;
+    for (kind, path) in [
+        ("legacy-import", "tasks.sqlite"),
+        ("legacy-import", "asset-catalog/blobs/aa/x"),
+        ("godot-source-blob", "legacy-imports/import/manifest.json"),
+        ("domain", "legacy-imports/import/manifest.json"),
+        ("content-repo-object", "content-history/repo.git/objects/x"),
+        ("unknown-kind", "legacy-imports/import/manifest.json"),
+    ] {
+        let archive = archives.path().join("crafted.cmarchive");
+        fs::write(&archive, build_archive(vec![entry(kind, path, b"x")]))?;
+        let root = tempfile::tempdir()?;
+        let target = root.path().join("data");
+        let fresh = TaskJournal::open(&target.join("tasks.sqlite"))?;
+        let error = fresh
+            .backup_verify_portable(&json!({"archivePath": archive.to_string_lossy()}))
+            .unwrap_err()
+            .to_string();
+        assert!(
+            error.contains("INVALID_ARCHIVE_PATH"),
+            "{kind} {path}: {error}"
+        );
+    }
+    Ok(())
+}
+
+#[test]
+fn restore_into_a_separate_empty_directory_creates_a_new_database() -> Result<()> {
     let mut fixture = fixture()?;
+    let archives = tempfile::tempdir()?;
+    let archive = archives.path().join("world.cmarchive");
+    export_to(&mut fixture.db, &archive)?;
+
+    let root = tempfile::tempdir()?;
+    let target = root.path().join("elsewhere");
+    let restored = fixture.db.backup_restore_portable(&json!({
+        "operationId": "restore-elsewhere",
+        "archivePath": archive.to_string_lossy(),
+        "targetDirectory": target.to_string_lossy(),
+    }))?;
+    assert_eq!(restored["restoredInPlace"], false);
+    assert!(target.join("tasks.sqlite").is_file());
+    let reopened = TaskJournal::open(&target.join("tasks.sqlite"))?;
+    assert_eq!(reopened.world_list()?.len(), 2);
+    assert!(target
+        .join("legacy-imports/import/source/project.json")
+        .is_file());
+    // The exporting installation is untouched.
+    assert_eq!(fixture.db.world_list()?.len(), 2);
+    Ok(())
+}
+
+#[test]
+fn restore_refuses_a_target_that_already_holds_a_world() -> Result<()> {    let mut fixture = fixture()?;
     let archives = tempfile::tempdir()?;
     let archive = archives.path().join("world.cmarchive");
     export_to(&mut fixture.db, &archive)?;
