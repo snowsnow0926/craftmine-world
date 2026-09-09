@@ -1,0 +1,28 @@
+{
+  "format": "craftmine.windows-client-export/1",
+  "out": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-client-native-nX8Ak1",
+  "passed": false,
+  "frozenManifest": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-client-frozen-d5RVol\\frozen-info.json",
+  "packaged": null,
+  "mainSha256": "8c235426bebdebef4703a5bb032912659c14f324d1b1f49713d7b537e5cf81db",
+  "steps": [
+    {
+      "name": "isolated compiled client and actual installed catalog",
+      "passed": false,
+      "error": "Error: Client exited during headless controller"
+    }
+  ],
+  "calls": [],
+  "limits": [
+    "Independent offscreen product; no model or OS input/focus/Pointer Lock",
+    "Fresh world, actual initialization/gameplay/checkpoint/export routing; fixed headless picker selects only this test directory",
+    "Exported games run headlessly with normal native permissions in separate test profiles"
+  ],
+  "exit": {
+    "code": 1,
+    "signal": null,
+    "error": null
+  },
+  "error": "Error: Client exited during headless controller\n    at until (file:///D:/Craftmine%20World/test-results/final-install-assets/tests/godot-final-install-assets/windows-client-native.mjs:18:146)\n    at async file:///D:/Craftmine%20World/test-results/final-install-assets/tests/godot-final-install-assets/windows-client-native.mjs:22:87\n    at async step (file:///D:/Craftmine%20World/test-results/final-install-assets/tests/godot-final-install-assets/windows-client-native.mjs:19:46)\n    at async file:///D:/Craftmine%20World/test-results/final-install-assets/tests/godot-final-install-assets/windows-client-native.mjs:22:10",
+  "finishedAt": "2026-09-09T22:56:09.811Z"
+}
