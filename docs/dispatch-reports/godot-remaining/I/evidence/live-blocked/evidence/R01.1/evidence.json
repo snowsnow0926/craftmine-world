@@ -10,9 +10,9 @@
   "notes": null,
   "identity": {
     "format": "craftmine.i.identity/1",
-    "runId": "4fd57203-e811-4ed1-a72c-ddbd97abb5e9",
+    "runId": "802ebd3a-ae43-4082-9619-17b4dfb81a60",
     "mode": "live",
-    "startedAt": "2026-09-09T16:57:55.250Z",
+    "startedAt": "2026-09-09T16:59:12.179Z",
     "product": {
       "version": null,
       "clientVersion": null,
@@ -86,5 +86,5 @@
       "bytes": 551
     }
   ],
-  "sealedAt": "2026-09-09T16:57:55.263Z"
+  "sealedAt": "2026-09-09T16:59:12.187Z"
 }

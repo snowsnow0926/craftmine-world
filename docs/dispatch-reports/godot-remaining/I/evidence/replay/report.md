@@ -1,6 +1,6 @@
 # 真实模型验收报告（任务 I）
 
-- 生成时间：2026-09-09T16:57:54.965Z
+- 生成时间：2026-09-09T16:59:11.970Z
 - 模式：replay
 - 冻结校验：通过（ok）
 - 身份摘要：product=replay-fixture engine=replay-fixture base=replay-fixture model=replay-fixture

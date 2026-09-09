@@ -7,9 +7,9 @@
   "notes": null,
   "identity": {
     "format": "craftmine.i.identity/1",
-    "runId": "1d70f12c-6697-442c-af08-b6aec8df940e",
+    "runId": "e2bb98fb-5b61-4126-9210-f242fb4f20b5",
     "mode": "replay",
-    "startedAt": "2026-09-09T16:57:54.938Z",
+    "startedAt": "2026-09-09T16:59:11.944Z",
     "product": {
       "version": "replay-fixture",
       "clientVersion": "replay-fixture",
@@ -101,5 +101,5 @@
       "bytes": 5
     }
   ],
-  "sealedAt": "2026-09-09T16:57:54.960Z"
+  "sealedAt": "2026-09-09T16:59:11.965Z"
 }

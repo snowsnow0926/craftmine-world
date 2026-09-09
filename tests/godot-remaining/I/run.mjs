@@ -227,6 +227,7 @@ export async function runAcceptance({ argv = process.argv.slice(2), env = proces
     ].filter(Boolean),
   });
   const written = writeReport(outRoot, report);
+  fs.writeFileSync(path.join(outRoot, 'ledger-state.json'), `${JSON.stringify({ format: 'craftmine.i.ledger-state/1', generatedAt: report.generatedAt, mode: args.mode, freeze: report.freeze, items: ledgerRows(ledger) }, null, 2)}\n`);
 
   const hardFailed = results.filter(round => round.verdict === 'failed').length;
   const blocked = results.filter(round => round.verdict === 'blocked' || round.verdict === 'not-run').length;

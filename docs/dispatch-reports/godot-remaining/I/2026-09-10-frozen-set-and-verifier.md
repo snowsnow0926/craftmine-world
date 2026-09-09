@@ -19,7 +19,7 @@
 | `tests/godot-remaining/I/spec/product-interface-contract.frozen.json` | 向 A/C/D/E/L/H/M/N 请求的只读消费契约 |
 | `tests/godot-remaining/I/spec/FREEZE.lock.json` | 8 个冻结文件的 sha256 + 6 份来源文档的 sha256 与来源根 |
 | `tests/godot-remaining/I/lib/*.mjs` | 断言求值器、冻结校验、禁用输入守卫、身份、证据、失败分类、台账、报告、覆盖检查、两种传输 |
-| `tests/godot-remaining/I/run.mjs` | 验收驱动：`audit` / `replay` / `live` 三种模式 |
+| `tests/godot-remaining/I/run.mjs` | 验收驱动：`audit` / `replay` / `live` 三种模式；每次运行输出 `report.json`、`report.md` 与 `ledger-state.json` |
 | `tests/godot-remaining/I/selfcheck.mjs` | 验收器自检：16 项 |
 | `tests/godot-remaining/I/acceptance-runner.test.mjs` | `node:test` 逻辑测试：7 项 |
 | `tests/godot-remaining/I/fixtures/**` | 7 个回放夹具 + 2 个反例夹具（用于证明验收器可判红） |
