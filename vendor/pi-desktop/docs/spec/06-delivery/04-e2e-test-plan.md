@@ -1,5 +1,15 @@
 # 04. E2E Test Plan
 
+## CRAFTMINE-025: Automatic context and resume provenance (batch 07)
+
+See [the context boundary checks](../dispatch-batch07-context-boundaries.md).
+Use the actual PI runtime with explicit provider/domain fixtures: a large
+completed transcript triggers measured automatic compaction without a model
+tool request; the next user request retains current world facts and no naked
+old task. A failed summary cannot drop history or send a creation request.
+Native recovery journals the continue action, not a reverse copy of projected
+requirements. Real packaged multi-summary and recovery checks remain separate.
+
 ## CRAFTMINE-024: Atomic extension validation (batch 07)
 
 See [the staged-step contract](../dispatch-batch07-extension-transactions.md).

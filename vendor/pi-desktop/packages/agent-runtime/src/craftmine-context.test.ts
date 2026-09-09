@@ -149,9 +149,34 @@ describe("Craftmine authoritative request boundary", () => {
     expect(internal.fullEntries.at(-1).message.stopReason).toBe("stop");
     await runtime.dispose();
   });
+  for (const failSummary of [false, true]) it(`automatically compacts the measured payload without new_context, summary failure=${failSummary}`, async () => {
+    const f = fixture(), records: unknown[] = [], contexts: Context[] = [];
+    const history = [
+      { id: "old-user", role: "user", content: "The previous task was to build a tree.", createdAt: "2026-09-09T00:00:00Z", status: "complete" },
+      { id: "old-answer", role: "assistant", content: "Completed history. "+"past ".repeat(88000), createdAt: "2026-09-09T00:00:01Z", status: "complete" },
+    ];
+    const runtime = makeRuntime(f.hooks, records, history), internal = runtime as any;
+    vi.spyOn(internal.models, "streamSimple").mockImplementation((_m: unknown, context: unknown) => {
+      contexts.push(context as Context);
+      if (contexts.length===1 && failSummary) return stream({ ...result(), stopReason: "error", content: [], errorMessage: "SUMMARY_PROVIDER_UNAVAILABLE" });
+      return stream(result(contexts.length===1 ? "The previous tree is complete. Current task facts preserve its draft and blue-flower correction." : "Blue flowers complete."));
+    });
+    await runtime.prompt("Add blue flowers; retain the existing tree.", "new-goal", "new-turn");
+    expect(f.calls.filter(c=>c.method==="budget.boundary" && c.params.kind==="compaction")).toHaveLength(1);
+    expect(f.calls.filter(c=>c.method==="budget.reserve").map(c=>c.params.purpose)).toEqual(failSummary ? ["summary"] : ["summary","creation"]);
+    expect(records).toHaveLength(failSummary ? 0 : 1);
+    expect(internal.fullEntries.some((entry: any)=>entry.id==="old-answer")).toBe(true);
+    if (!failSummary) {
+      const users=contexts.at(-1)!.messages.filter(message=>message.role==="user");
+      expect(users.filter(message=>JSON.stringify(message.content).includes("Add blue flowers"))).toHaveLength(1);
+      expect(JSON.stringify(users)).toContain("<summary>");
+      expect(JSON.stringify(users)).not.toContain("previous task was to build");
+    }
+    await runtime.dispose();
+  });
 });
-function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, records: unknown[] = []) {
-  return new DesktopAgentRuntime({ craftmineWorld: true, craftmineHooks: hooks, sessionId: "session", turnId: "turn", mode: "agent", thinkingLevel: "off", commandShell: { id: "bash", label: "Bash", dialect: "posix", available: true, isDefault: true },
+function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, records: unknown[] = [], history: any[] = []) {
+  return new DesktopAgentRuntime({ craftmineWorld: true, craftmineHooks: hooks, history, sessionId: "session", turnId: "turn", mode: "agent", thinkingLevel: "off", commandShell: { id: "bash", label: "Bash", dialect: "posix", available: true, isDefault: true },
     // The provider is a contract fixture, never a real model or a mock PI loop.
     provider: { id: "fixture", name: "Fixture", modelId: "fixture", baseUrl: "http://127.0.0.1:1", apiKey: "", authKind: "none", supportsReasoning: false, supportedThinkingLevels: ["off"], modelConfig: { source: "generic", name: "Fixture", baseUrl: "http://127.0.0.1:1", input: ["text"], reasoning: false, cost: model.cost, contextWindow: 256000, maxTokens: 4000 } },
     pluginTools: [{ name: "plugin_craftmine_world_project_inspect", description: "Inspect" }],
