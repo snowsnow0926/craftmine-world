@@ -79,7 +79,9 @@ function buildRoot() {
   write(path.join(root, 'vendor/pi-desktop/Cargo.lock'), '# synthetic cargo lock\n');
   write(path.join(root, 'vendor/pi-desktop/target/release/pi-desktop-host-core.exe'), 'synthetic host binary\n');
   write(path.join(root, 'vendor/pi-desktop/target/release/craftmine-core.exe'), 'synthetic core binary\n');
-  for (const [index, baseId] of BASE_IDS.entries()) {
+  // Independent shipped requirement: do not make fixture coverage follow a
+  // production allowlist that could accidentally drop the fourth base again.
+  for (const [index, baseId] of ['first-person', 'side-view', 'top-down', 'mining-sandbox'].entries()) {
     const directory = path.join(root, 'desktop/godot/bases', baseId);
     const manifestName = baseId === 'first-person' ? 'base_manifest.json' : 'manifest.json';
     write(path.join(directory, manifestName), JSON.stringify({
@@ -192,7 +194,8 @@ test('create() pins real bytes for every component', () => {
     assert.equal(file.bytes, fs.statSync(path.join(root, file.path)).size);
   }
 
-  for (const baseId of BASE_IDS) {
+  assert.deepEqual(Object.keys(manifest.components.bases).sort(), ['first-person','mining-sandbox','side-view','top-down']);
+  for (const baseId of ['first-person','side-view','top-down','mining-sandbox']) {
     const base = manifest.components.bases[baseId];
     assert.equal(base.baseId, baseId);
     assert.equal(base.engine.version, '4.7.2-stable');
@@ -226,6 +229,26 @@ test('create() pins real bytes for every component', () => {
   assert.ok(manifest.totals.bytes > 0);
   assert.ok(manifest.reproducibility.pinnedInputs.length >= 5);
   assert.ok(manifest.reproducibility.limits.length >= 3);
+});
+
+test('release inventory independently contains all four shipped bases and six declared mining components', () => {
+  const expectedBases=['first-person','mining-sandbox','side-view','top-down'];
+  const expectedComponents=['ms.crafting-station','ms.material','ms.ore-vein','ms.recipe','ms.spawn-point','ms.terrain-layer'];
+  assert.deepEqual([...BASE_IDS].sort(),expectedBases);
+  const repo=path.resolve(HERE,'../../..');
+  const source=fs.readFileSync(path.join(repo,'desktop/godot/bases/mining-sandbox/manifest.json'));
+  const catalog=JSON.parse(fs.readFileSync(path.join(repo,'desktop/godot/bases/component-catalog.json'),'utf8'));
+  const mining=catalog.components.filter(entry=>entry.baseId==='mining-sandbox');
+  assert.deepEqual(mining.map(entry=>entry.id).sort(),expectedComponents);
+  assert.ok(mining.every(entry=>entry.install===null),'manual component boundary must not be promoted by inventory');
+  const root=buildRoot();write(path.join(root,'desktop/godot/bases/mining-sandbox/manifest.json'),source);
+  const release=createReleaseManifest(root,{now:'2026-01-01T00:00:00.000Z'});
+  assert.deepEqual(Object.keys(release.components.bases).sort(),expectedBases);
+  const base=release.components.bases['mining-sandbox'];
+  assert.deepEqual(base.declaredComponentIds,expectedComponents);
+  const file=base.files.find(entry=>entry.path==='desktop/godot/bases/mining-sandbox/manifest.json');
+  assert.equal(file.sha256,createHash('sha256').update(source).digest('hex'));
+  assert.equal(file.bytes,source.length);
 });
 
 test('create() pins a package snapshot only when --package is given', () => {

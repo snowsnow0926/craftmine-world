@@ -135,6 +135,36 @@ function makeExecutor({env, core = fakeCore({projectRoot:env.projectRoot, artifa
   });
 }
 
+test('stop drains a real pending broker preflight and prevents obsolete registration', async t => {
+  const env=environment();t.after(restoreEnv);setScenario(env,{delayMs:250});
+  const core=fakeCore(env),calls=[];const call=core.call.bind(core);
+  core.call=async(method,params)=>{calls.push(method);return call(method,params);};
+  let spawned;const reached=new Promise(resolve=>{spawned=resolve;});let child;
+  const executor=createGodotExecutor(core,{dataPath:env.dataPath,logger:{log(){},warn(){}},
+    spawnBroker:(_binary,args,settings)=>{child=spawn(process.execPath,[fixtureBroker,...args],settings);spawned();return child;}});
+  const startup=executor.start();await reached;
+  const stopping=executor.stop();
+  await Promise.all([startup,stopping]);
+  assert.notEqual(child.exitCode,null,'stop must drain the broker process');
+  assert.equal(calls.includes('godotExecutor.register'),false);
+  assert.equal(executor.status().state,'stopped');assert.equal(executor.registered,false);
+});
+
+test('stop drains an in-flight registration, revokes it, then admits one fresh restart', async t => {
+  const env=environment();t.after(restoreEnv);const core=fakeCore(env),calls=[];
+  let releaseRegister,reachedRegister;const barrier=new Promise(resolve=>{releaseRegister=resolve;});
+  const reached=new Promise(resolve=>{reachedRegister=resolve;});const call=core.call.bind(core);let first=true;
+  core.call=async(method,params)=>{calls.push(method);if(method==='godotExecutor.register'&&first){first=false;reachedRegister();await barrier;}return call(method,params);};
+  const executor=makeExecutor({env,core});const initial=executor.start();await reached;
+  let stopped=false;const stop=executor.stop().then(value=>{stopped=true;return value;});
+  const restart=executor.start();await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(stopped,false);assert.equal(calls.filter(x=>x==='godotExecutor.register').length,1);
+  releaseRegister();await Promise.all([initial,stop]);await restart;
+  const lifecycle=calls.filter(x=>['godotExecutor.register','godotExecutor.revoke'].includes(x));
+  assert.deepEqual(lifecycle,['godotExecutor.register','godotExecutor.revoke','godotExecutor.register']);
+  assert.equal(executor.registered,true);await executor.stop();assert.equal(core.state.executor,null);
+});
+
 /** Wait until a job leaves the executor's live set (finished, failed or abandoned). */
 async function settle(executor, jobId, timeoutMs = 60000) {
   const deadline = Date.now() + timeoutMs;

@@ -39,7 +39,8 @@ function completePackage(directory) {
 }
 
 test('the required-file list is shared with the delivery preflight', () => {
-  assert.equal(PACKAGE_REQUIRED_FILES.length, 14);
+  assert.equal(new Set(PACKAGE_REQUIRED_FILES).size, PACKAGE_REQUIRED_FILES.length);
+  assert.ok(PACKAGE_REQUIRED_FILES.includes('resources/licenses/gpl/GPL-3.0.txt'));
   assert.ok(PACKAGE_REQUIRED_FILES.includes('Craftmine World.exe'));
   assert.ok(PACKAGE_REQUIRED_FILES.includes('resources/source/build-manifest.json'));
   assert.ok(PACKAGE_REQUIRED_FILES.includes('resources/source/USER_GUIDE.zh-CN.md'));

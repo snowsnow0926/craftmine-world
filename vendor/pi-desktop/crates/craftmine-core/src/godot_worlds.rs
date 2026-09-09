@@ -14,8 +14,27 @@ use super::{digest, godot_builds, godot_runtime, worlds, TaskJournal, WorkspaceC
 #[cfg(test)]
 #[path = "godot_worlds_tests.rs"]
 mod tests;
+#[cfg(test)]
+#[path = "godot_mining_copy_tests.rs"]
+mod mining_copy_tests;
 
-const BASES: [&str; 3] = ["first-person", "top-down", "side-view"];
+const BASES: [&str; 4] = ["first-person", "top-down", "side-view", "mining-sandbox"];
+
+fn rebind_copy_progress(source:&Value,old:&str,new:&str)->Result<Value>{
+    godot_runtime::validate_progress(source)?;
+    ensure!(source["worldId"]==old,"GODOT_COPY_PROGRESS_IDENTITY_MISMATCH");
+    let mut snapshot=source.clone();
+    if source["baseId"]=="mining-sandbox" {
+        ensure!(source["body"]["format"]=="craftmine.godot-mining-sandbox-managed/1"
+            && source["body"]["worldId"]==old
+            && source["body"]["state"]["format"]=="craftmine.godot-mining-sandbox-state/1"
+            && source["body"]["state"]["worldId"]==old,"GODOT_COPY_PROGRESS_IDENTITY_MISMATCH");
+        snapshot["body"]["state"]["worldId"]=json!(new);
+    }
+    snapshot["worldId"]=json!(new);
+    if snapshot["body"].get("worldId").is_some(){snapshot["body"]["worldId"]=json!(new);}
+    Ok(snapshot)
+}
 /// One backup descriptor stays well below the archive budget.
 const BACKUP_BYTES: usize = 8 * 1024 * 1024;
 
@@ -84,6 +103,28 @@ impl TaskJournal {
         let _lock=crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args:StatusArgs=serde_json::from_value(args.clone())?;
         self.prepare_copied_rebuild_source(&args.world_id)
+    }
+
+    /// Durable copy origin lookup. Older rows retain the immutable build owner,
+    /// not necessarily the user's source selection. The original selection can
+    /// still be verified against the persisted copy id without guessing it.
+    pub fn godot_world_copy_status(&self,args:&Value)->Result<Value> {
+        #[derive(Deserialize)]
+        #[serde(rename_all="camelCase",deny_unknown_fields)]
+        struct Args {world_id:String,source_world_id:Option<String>}
+        let args:Args=serde_json::from_value(args.clone())?;
+        worlds::validate_id(&args.world_id)?;
+        if let Some(source)=&args.source_world_id {worlds::validate_id(source)?;}
+        let row:Option<(String,String,String,String)>=self.db.query_row(
+            "SELECT id,source_world_id,source_build_id,progress_mode FROM craftmine_godot_world_copies WHERE target_world_id=?1",
+            [&args.world_id],|r|Ok((r.get(0)?,r.get(1)?,r.get(2)?,r.get(3)?))).optional()?;
+        let Some((id,owner,build,mode))=row else {return Ok(Value::Null)};
+        if let Some(source)=&args.source_world_id {
+            let expected=format!("gcopy-{}",digest(&format!("craftmine.godot-world-copy/1|{source}|{}",args.world_id)));
+            ensure!(id==expected,"GODOT_COPY_ORIGIN_MISMATCH");
+        }
+        Ok(json!({"copyId":id,"targetWorldId":args.world_id,"originalSourceWorldId":args.source_world_id,
+            "sourceBuildOwnerWorldId":owner,"sourceBuildId":build,"progressMode":mode}))
     }
 }
 
@@ -456,15 +497,8 @@ impl TaskJournal {
         ensure!(applied.is_some(), "GODOT_BUILD_NOT_APPLIED");
         let snapshot = match args.progress.as_str() {
             // A copy gets a new identity, so the inherited progress must carry
-            // the target world id in both the envelope and the body.
-            "formal" => {
-                let mut snapshot = source.world.snapshot.clone();
-                snapshot["worldId"] = json!(args.target_world_id);
-                if snapshot["body"].is_object() && snapshot["body"].get("worldId").is_some() {
-                    snapshot["body"]["worldId"] = json!(args.target_world_id);
-                }
-                snapshot
-            }
+            // target identity at the fixed schema locations, preserving all game data.
+            "formal" => rebind_copy_progress(&source.world.snapshot,&args.source_world_id,&args.target_world_id)?,
             _ => args.snapshot.clone().context("GODOT_PROGRESS_REQUIRED")?,
         };
         ensure!(
@@ -474,6 +508,9 @@ impl TaskJournal {
             "GODOT_PROGRESS_BASE_MISMATCH"
         );
         godot_runtime::validate_progress(&snapshot)?;
+        if snapshot["baseId"]=="mining-sandbox" {
+            rebind_copy_progress(&snapshot,&args.target_world_id,&args.target_world_id)?;
+        }
         // Extensions are deliberately not copied: they may reference source-only
         // state and must be re-registered explicitly.
         let world = WorldDocument {

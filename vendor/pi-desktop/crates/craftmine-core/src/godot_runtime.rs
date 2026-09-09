@@ -184,6 +184,7 @@ impl TaskJournal {
             && job["status"] == "passed" && job["outputHash"] == input["checkOutputHash"], "GODOT_BUILD_NOT_APPLIED");
         // Source head may have advanced since application. Formal builds remain
         // runnable independently of a newer draft; only their own artifacts count.
+        ensure!(!verify_artifacts || copy.is_none(), "GODOT_COPY_REBUILD_REQUIRED");
         let mut descriptor = if verify_artifacts { self.runtime_artifacts(&owner, build, &job)? } else { json!({}) };
         descriptor.as_object_mut().unwrap().extend(json!({"format":"craftmine.godot-runtime-descriptor/1","phase":"formal","worldId":args.world_id,
             "buildId":build,"baseId":base_id,"revision":current.summary.revision,"contentHash":current.content_hash,
@@ -203,29 +204,18 @@ impl TaskJournal {
         let reason = availability.err().map(|error| error.to_string());
         if let Some(reason) = &reason {
             ensure!(["GODOT_STORAGE_UNAVAILABLE", "GODOT_ARTIFACT_MISSING", "CORRUPT_GODOT_ARTIFACT",
-                "GODOT_ARTIFACT_MANIFEST_MISMATCH", "GODOT_WEB_ENTRY_MISSING"]
+                "GODOT_ARTIFACT_MANIFEST_MISMATCH", "GODOT_WEB_ENTRY_MISSING", "GODOT_COPY_REBUILD_REQUIRED"]
                 .iter().any(|code| reason.starts_with(code)), "GODOT_REBUILD_UNSAFE: {reason}");
         }
         let world = worlds::read(&self.db, &request.world_id)?;
         let build = metadata["buildId"].as_str().context("INVALID_GODOT_BUILD")?;
-        let owner = metadata["copiedFromWorldId"].as_str().unwrap_or(&request.world_id);
-        let (content, branch, revision): (Option<String>, String, i64) = self.db.query_row(
-            "SELECT content_oid,branch_id,source_revision FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
-            params![owner, build], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)))?;
-        // Older applied builds predate Git. Their migration map names the exact
-        // legacy revision, unlike the repository's potentially newer main head.
+        let source = self.runtime_formal_source(&request.world_id, &metadata)?;
+        let parent = source["contentOid"].as_str().context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
+        let copied = metadata["copiedFromWorldId"].is_string();
+        let transform = if copied { self.verified_copy_runtime(&request.world_id, &metadata, parent)? } else { None };
         let (store, layout) = self.content_layout(&request.world_id)?;
-        let content_oid = if owner != request.world_id {
-            let copied = store.git().ref_value(&layout.git_dir, &super::godot_worlds::copied_formal_ref(&request.world_id, build))?
-                .context("GODOT_REBUILD_SOURCE_TRANSFER_REQUIRED")?;
-            self.verify_copied_formal_source(owner, build, &store, &layout, &copied)?;
-            copied
-        } else { match content {
-            Some(value) => value,
-            None => self.db.query_row("SELECT commit_oid FROM craftmine_content_revision_map WHERE world_id=?1 AND legacy_revision=?2",
-                params![owner, revision], |row| row.get(0)).optional()?.context("GODOT_REBUILD_SOURCE_NOT_INDEXED")?,
-        }};
-        let tree = store.commit_tree_oid(&layout, &content_oid).context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
+        let content_oid = transform.as_ref().and_then(|v|v["contentOid"].as_str()).unwrap_or(parent);
+        let tree = store.commit_tree_oid(&layout, content_oid).context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
         let rebuild_branch = format!("restore-{}", &digest(&format!("{}|{build}", request.world_id))[..24]);
         let rebuild_content = store.branch_head(&layout, &rebuild_branch)?;
         if let Some(head) = &rebuild_content {
@@ -234,8 +224,61 @@ impl TaskJournal {
         Ok(json!({"format":"craftmine.godot-rebuild-plan/1","worldId":request.world_id,
             "rebuildRequired":reason.is_some(),"reason":reason,"formalBuildId":build,
             "worldRevision":world.summary.revision,"snapshotHash":digest(&serde_json::to_string(&world.world.snapshot)?),
-            "repoId":layout.repo_id,"contentOid":content_oid,"branchId":branch,
+            "repoId":layout.repo_id,"contentOid":content_oid,"branchId":source["branchId"],
+            "identityRebindRequired":copied && transform.is_none(),"sourceParentOid":if copied {Some(parent)} else {None},
+            "identityTransform":transform,
             "rebuildBranchId":rebuild_branch,"rebuildContentOid":rebuild_content}))
+    }
+
+    // Caller holds the shared content/export/GC lock. No ref writes or implicit
+    // migrations here; copied-world source preparation is a separate transaction.
+    fn runtime_formal_source(&self, world_id: &str, metadata: &Value) -> Result<Value> {
+        let build = metadata["buildId"].as_str().context("INVALID_GODOT_BUILD")?;
+        let owner = metadata["copiedFromWorldId"].as_str().unwrap_or(world_id);
+        let (content, branch, revision): (Option<String>, String, i64) = self.db.query_row(
+            "SELECT content_oid,branch_id,source_revision FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
+            params![owner, build], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)))?;
+        // Older applied builds predate Git. Their migration map names the exact
+        // legacy revision, unlike the repository's potentially newer main head.
+        let (store, layout) = self.content_layout(world_id)?;
+        let content_oid = if owner != world_id {
+            let copied = store.git().ref_value(&layout.git_dir, &super::godot_worlds::copied_formal_ref(world_id, build))?
+                .context("GODOT_REBUILD_SOURCE_TRANSFER_REQUIRED")?;
+            self.verify_copied_formal_source(owner, build, &store, &layout, &copied)?;
+            copied
+        } else { match content {
+            Some(value) => value,
+            None => self.db.query_row("SELECT commit_oid FROM craftmine_content_revision_map WHERE world_id=?1 AND legacy_revision=?2",
+                params![owner, revision], |row| row.get(0)).optional()?.context("GODOT_REBUILD_SOURCE_NOT_INDEXED")?,
+        }};
+        store.commit_tree_oid(&layout, &content_oid).context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
+        Ok(json!({"repoId":layout.repo_id,"contentOid":content_oid,"branchId":branch}))
+    }
+
+    /// Private readonly export metadata. Formal application evidence and exact
+    /// source bytes are verified, but Web artifacts need not survive a backup.
+    pub fn godot_runtime_export_source(&self, args: &Value) -> Result<Value> {
+        let _lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
+        let request: DescribeArgs = serde_json::from_value(args.clone())?;
+        let metadata = self.runtime_describe_impl(args, false)?;
+        ensure!(!metadata.is_null(), "GODOT_EXPORT_NOT_SUPPORTED");
+        let source = self.runtime_formal_source(&request.world_id, &metadata)?;
+        let (store, layout) = self.content_layout(&request.world_id)?;
+        let commit = source["contentOid"].as_str().context("GODOT_REBUILD_SOURCE_NOT_AVAILABLE")?;
+        let build = metadata["buildId"].as_str().context("INVALID_GODOT_BUILD")?;
+        let owner = metadata["copiedFromWorldId"].as_str().unwrap_or(&request.world_id);
+        // Compare the complete raw-byte tree to the immutable formal build,
+        // including binary assets. An altered copied ref cannot be exported.
+        self.verify_copied_formal_source(owner, build, &store, &layout, commit)?;
+        let files = godot_jobs::build_files(&self.db, owner, build, "source")?;
+        let source_revision:i64=self.db.query_row(
+            "SELECT source_revision FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
+            params![owner,build],|row|row.get(0))?;
+        let source_revision=u64::try_from(source_revision).context("INVALID_GODOT_SOURCE_REVISION")?;
+        Ok(json!({"format":"craftmine.godot-export-source/1","worldId":request.world_id,
+            "buildId":build,"sourceWorldId":owner,"baseId":metadata["baseId"],"baseVersion":metadata["snapshot"]["baseVersion"],
+            "revision":metadata["revision"],"sourceRevision":source_revision,"snapshot":metadata["snapshot"],
+            "repoId":source["repoId"],"contentOid":commit,"files":files}))
     }
 
     /// A prepared candidate may be started in a separate host-owned instance,

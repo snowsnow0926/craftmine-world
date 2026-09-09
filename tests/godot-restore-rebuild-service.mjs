@@ -20,6 +20,7 @@ for(const scenario of ['ready','blocked','wrong-candidate']) {
     calls.push({method,args});
     if(method==='content.status')return {backend:'git',headOid:'new-unpublished-draft'};
     if(method==='godotWorld.prepareRebuildSource')return {copied:false};
+    if(method==='godotWorld.prepareCopyRuntime')return {copied:false};
     if(method==='godotWorld.rebuildPlan')return plan();
     if(method==='world.read')return structuredClone(record);
     if(method==='content.branch.create'){assert.equal(args.fromRev,'old-formal-oid');created=true;return {};}

@@ -28,6 +28,7 @@ mod godot_projects;
 mod godot_runtime;
 mod godot_storage;
 mod godot_worlds;
+mod godot_copy_runtime;
 mod legacy;
 mod library;
 mod memories;

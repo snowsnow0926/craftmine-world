@@ -36,3 +36,18 @@ test('owned notice newline pin follows its exact blob while third-party notices 
   assert.equal(result.requiredNotices[0].sha256,result.entries[0].sha256);
   assert.throws(()=>refreshManifest({sourceDirectory:'base',entries:[],requiredNotices:[{path:'outside/LICENSE.txt',sha256:'old'}]},new Map([['outside/LICENSE.txt',file('changed')]])),/UNREVIEWED_NOTICE_CHANGED/);
 });
+test('only the two reviewed standalone additions are admitted with precise distribution and pending rights',()=>{
+  const manifest={baseVersion:'1',sourceDirectory:'desktop/godot/shared',rightsStatus:'pending-formal-application',reviewedCommit:'unchanged',entries:[]};
+  const files=new Map([
+    ['desktop/godot/shared/standalone_bootstrap.gd',file('extends Node\n')],
+    ['desktop/godot/shared/windows-export.cfg',file('[preset.0]\n')],
+  ]);
+  const result=refreshManifest(manifest,files);
+  assert.equal(result.entries.length,2);
+  assert.deepEqual(result.entries.find(e=>e.path==='standalone_bootstrap.gd').distribution,['app-bundle','user-export']);
+  assert.deepEqual(result.entries.find(e=>e.path==='windows-export.cfg').distribution,['app-bundle']);
+  assert.equal(result.rightsStatus,manifest.rightsStatus);assert.equal(result.reviewedCommit,'unchanged');
+  for(const entry of result.entries){assert.equal(entry.license,'project-authored');assert.match(entry.outstanding,/pending/);}
+  files.set('desktop/godot/shared/unreviewed_export.gd',file('extends Node\n'));
+  assert.throws(()=>refreshManifest(manifest,files),/NEW_SOURCE_REQUIRES_REVIEW/);
+});

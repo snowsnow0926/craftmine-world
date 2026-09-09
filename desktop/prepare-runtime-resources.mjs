@@ -8,6 +8,7 @@ import {createHash,randomUUID} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {readGitSnapshot} from './delivery/lib/source-bytes.mjs';
 import {loadRuntimeDistribution,stageRuntimeSourceSnapshot} from './delivery/lib/runtime-distribution.mjs';
+import {GPL3_TEXT} from './delivery/lib/gpl-text-pin.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const OWNER='.craftmine-runtime-stage.json';
@@ -39,13 +40,35 @@ export async function resourceInventory(directory,prefix=''){
   }
   return files;
 }
+export async function verifyWindowsHostInputs(directory,brokerIdentity,sourceDistribution){
+  const records=[];
+  for(const name of ['standalone_bootstrap.gd','windows-export.cfg']){
+    const relative='godot/shared/'+name,source='desktop/godot/shared/'+name,target=path.join(directory,relative);
+    await ordinaryAncestors(path.dirname(target));
+    const stat=await fs.lstat(target);if(!stat.isFile()||stat.isSymbolicLink())throw Error('WINDOWS_HOST_INPUT_NOT_REGULAR:'+name);
+    const sha256=await fileHash(target);
+    const declared=sourceDistribution?.included?.find(item=>item.path===source);
+    if(!declared||declared.sha256!==sha256||declared.bytes!==stat.size)throw Error('WINDOWS_HOST_INPUT_SOURCE_MISMATCH:'+name);
+    if(name==='windows-export.cfg'){
+      const embedded=brokerIdentity?.sourceFiles?.find(item=>item.path==='../shared/windows-export.cfg');
+      if(!embedded||embedded.sha256!==sha256)throw Error('WINDOWS_PRESET_BROKER_SOURCE_MISMATCH');
+    }
+    records.push({path:relative,bytes:stat.size,sha256});
+  }
+  return records;
+}
 export async function verifyRuntimeResources(directory,expectedCommit,{packaged=false}={}){
   await ordinaryAncestors(directory);
   const manifest=JSON.parse(await fs.readFile(path.join(directory,'runtime-resources.json'),'utf8'));
   if(manifest.format!==FORMAT||manifest.sourceCommit!==expectedCommit)throw Error('RUNTIME_SOURCE_IDENTITY_MISMATCH');
-  const files=packaged?(await Promise.all(['git','godot','licenses/godot'].map(async prefix=>resourceInventory(path.join(directory,prefix),prefix)))).flat():await resourceInventory(directory);
+  const files=packaged?(await Promise.all(['git','godot','licenses/godot','licenses/gpl'].map(async prefix=>resourceInventory(path.join(directory,prefix),prefix)))).flat():await resourceInventory(directory);
   if(JSON.stringify(files)!==JSON.stringify(manifest.files))throw Error('RUNTIME_RESOURCE_HASH_MISMATCH');
   if(hash(JSON.stringify(files))!==manifest.filesDigest)throw Error('RUNTIME_RESOURCE_DIGEST_MISMATCH');
+  if(manifest.windowsExportInputs||files.some(file=>['godot/shared/standalone_bootstrap.gd','godot/shared/windows-export.cfg'].includes(file.path))){
+    const brokerIdentity=JSON.parse(await fs.readFile(path.join(directory,'godot/broker/broker-identity.json'),'utf8'));
+    const inputs=await verifyWindowsHostInputs(directory,brokerIdentity,manifest.sourceDistribution);
+    if(JSON.stringify(inputs)!==JSON.stringify(manifest.windowsExportInputs))throw Error('WINDOWS_HOST_INPUT_INVENTORY_MISMATCH');
+  }
   return manifest;
 }
 function command(binary,args,options={}){return execFileSync(binary,args,{cwd:root,windowsHide:true,encoding:'utf8',maxBuffer:32*1024*1024,...options}).trim();}
@@ -62,6 +85,9 @@ async function verifiedCopy(source,target,pin={}){
   await fs.mkdir(path.dirname(target),{recursive:true});await fs.copyFile(source,target);
   if(await fileHash(target)!==sha256)throw Error('RUNTIME_COPY_HASH_MISMATCH');
   return {bytes:stat.size,sha256};
+}
+export async function stageGplText(sourceRoot,staging){
+  return verifiedCopy(path.join(sourceRoot,GPL3_TEXT.source),path.join(staging,GPL3_TEXT.resource),GPL3_TEXT);
 }
 async function verifyArchive(file,pin){
   await ordinaryAncestors(path.dirname(file));const stat=await fs.lstat(file);
@@ -122,9 +148,11 @@ export async function prepareRuntimeResources({godotCache,gitZip,brokerBin}){
   const sourceDistribution=stageRuntimeSourceSnapshot(readGitSnapshot(root,commit,['desktop/godot/bases','desktop/godot/shared','desktop/godot/web']),sourceStage,loadRuntimeDistribution(root));
   for(const relative of ['bases','shared','web'])await fs.rename(path.join(sourceStage,relative),path.join(staging,'godot',relative));
   await fs.rmdir(sourceStage);
+  const windowsExportInputs=await verifyWindowsHostInputs(staging,brokerIdentity,sourceDistribution);
   await copyTracked('desktop/godot/licenses',path.join(staging,'godot','licenses'));
   for(const pin of lock.licenses)if(await fileHash(path.join(staging,'godot',pin.file))!==pin.sha256)throw Error('GODOT_NOTICE_PIN_MISMATCH');
   await copyTracked('desktop/godot/licenses',path.join(staging,'licenses/godot'));
+  await stageGplText(root,staging);
   await verifiedCopy(path.join(root,'desktop/godot/toolchain.lock.json'),path.join(staging,'godot/toolchain.lock.json'));
   const gitRoot=path.join(staging,'git');await fs.mkdir(gitRoot);
   command('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(root,'desktop/extract-runtime-resources.ps1'),'-Archive',gitZip,'-Destination',gitRoot,'-Kind','MinGit']);
@@ -140,7 +168,7 @@ export async function prepareRuntimeResources({godotCache,gitZip,brokerBin}){
     totalBytes:gitFiles.reduce((sum,file)=>sum+file.bytes,0)},null,2)+'\n');
   const files=await resourceInventory(staging);
   const manifest={format:FORMAT,sourceCommit:commit,sourceDate:command('git',['show','-s','--format=%cI','HEAD']),
-    sourceDistribution,
+    sourceDistribution,windowsExportInputs,
     toolchain:{godot:lock.version,templatesArchiveSha256:lock.exportTemplates.sha256,git:git.version,gitArchiveSha256:git.archive.sha256,
       brokerSha256:brokerIdentity.sha256,brokerSourceDigest:brokerIdentity.sourceDigest},
     files,filesDigest:hash(JSON.stringify(files)),totalBytes:files.reduce((sum,file)=>sum+file.bytes,0),
