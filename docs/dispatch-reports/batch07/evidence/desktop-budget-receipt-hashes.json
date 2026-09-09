@@ -1,0 +1,12 @@
+{
+  "integratedBase": "759a095",
+  "budgetLibrary": "5e640f9",
+  "routerOverlay": false,
+  "files": {
+    "vendor/pi-desktop/apps/desktop/electron/main/craftmine-panel-gateway.ts": "baeef5e32de160a1a400e677f8a37ea2dad1af7c289d822837b6a78dca1e1a6f",
+    "plugins/craftmine-world/host-requests.cjs": "ad0c8db89eee778fe7f8fc71796b6aaebdc183964be5ab57c7ce001af7b6d85e",
+    "vendor/pi-desktop/crates/craftmine-core/src/main.rs": "20afdde261560b1cb5db1bef0a99e51ef193f5ce90f2ba0599670180bec7cb0f",
+    "vendor/pi-desktop/crates/craftmine-core/src/durable.rs": "e3dd919388334bfa7f4759a583e527d459bb118a48e1968bc7762ff3c403831a",
+    "test-results/batch07-desktop-rust-target/debug/craftmine-core.exe": "24f230a96cab4a3672bf8643e8086b3d8aafa2b09469998d34a8e6a4284fd2b9"
+  }
+}

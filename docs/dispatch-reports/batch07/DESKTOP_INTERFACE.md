@@ -41,3 +41,8 @@ pnpm -C vendor/pi-desktop/apps/desktop typecheck
 ```
 
 The native desktop gate must additionally verify the full-width world surface and window controls, returning to the existing conversation, world/session changes, profile operations, and B's real budget.configure on an interrupted current task. No real input or visible-window automation is authorized.
+
+
+## Follow-up: budget receipt lookup
+
+Before executing a saved `task.budget` intent, the gateway calls private `budget.findReceipt` with the exact configure fields `{projectId,sessionId,worldId,taskId,generation,operationId,maxTokens}`. The owner fields come from Main and the action fields from the stored record. A hit returns the original configure receipt even after recovery advances the head; null alone permits the normal current-head write flow. The lookup is read-only, allows only the original task scope and complete request match, and is not a model/public renderer channel. B `5e640f9` and G `759a095` include its validator/private routes. See `DESKTOP_BUDGET_RECEIPT_FIX.md` for actual-process validation.

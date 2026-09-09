@@ -42,6 +42,15 @@ export function createCraftminePanelGateway(options: {
     if (permit && (permit.token !== internal || JSON.stringify(permit.owner) !== JSON.stringify(operationOwner))) throw new Error("OPERATION_OWNER_CHANGED");
     const workbench = (name: string, input: Record<string, any> = payload, host: Owner = owner) => options.domain("workbench.request", { channel: name, payload: input, host });
     const executeStored = async (record: PendingOperation) => {
+      if (record.channel === "task.budget") {
+        // A resumed task has a new head. The original player operation can
+        // still be completed by its exact authoritative receipt, without
+        // applying the old policy to that new task or creating another turn.
+        const saved = await options.domain("budget.findReceipt", {
+          ...record.payload, ...operationOwner, operationId: record.operationId,
+        });
+        if (saved !== null) return saved;
+      }
       if (record.channel === "backup.restore") {
         // A main-process restart loses its picker grant. Resolve an already
         // committed restore before attempting to consume that grant again.

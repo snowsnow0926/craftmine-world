@@ -31,6 +31,7 @@ test('backup restart resolves actual receipt before expired grant and stale rech
  const task={binding:{taskId:'task',turnId:'turn'},generation:1,status:'finished',draft:{revision:3,hash:'b'.repeat(64)}};
  const panel=createCraftminePanelGateway({operations:createCraftmineOperationJournal(dir),viewingSession:()=> 'session',session:async()=>({id:'session'}),activeTurn:()=>undefined,begin:async()=>{begins++;return 'bad';},end:async()=>{},stop:async()=>{},resume:async()=>{},interrupt:async()=>{},diagnostics:async()=>({}),backup:async(channel)=>{if(channel==='backup.status')return {status,currentHash:'c'.repeat(64)};restores++;throw Error('EXPIRED_GRANT');},domain:async(method,args)=>{
   if(method==='selection.read')return {worldId:'world'};
+  if(method==='budget.findReceipt')return null;
   if(method==='budget.configure'){budgets++;assert.equal(args.sessionId,'session');return {operationId:args.operationId,budget:{limits:{maxTokens:args.maxTokens}}};}
   if(args.channel==='task.current')return {context:task};if(args.channel==='draft.recheck'){rechecks++;assert.equal(args.host.context.turnId,'turn');return {verificationId:'actual-fixture',status:'queued'};}throw Error('Unsupported fixture request');
  }});
@@ -42,4 +43,19 @@ test('backup restart resolves actual receipt before expired grant and stale rech
  await panel('draft.recheck',{worldId:'world',operationId:'recheck-current',taskId:'task',generation:1,revision:3,draftHash:'b'.repeat(64)});
  await panel('task.budget',{worldId:'world',operationId:'budget-unlimited',taskId:'task',generation:1,maxTokens:null});
  assert.equal(rechecks,1);assert.equal(budgets,1);assert.equal(begins,0);
+});
+test('budget receipt lookup completes an old intent before current-head or active-turn checks',async()=>{
+ const dir=await mkdtemp(path.join(root,'test-results/batch07-gateway-budget-'));let reads=0,currentReads=0;const calls=[];
+ let receipt=null,lookupError=null;
+ const panel=createCraftminePanelGateway({operations:createCraftmineOperationJournal(dir),viewingSession:()=> 'session',session:async()=>({id:'session'}),activeTurn:()=> 'new-active-turn',begin:async()=>{throw Error('Must not begin');},end:async()=>{},stop:async()=>{},resume:async()=>{},interrupt:async()=>{},diagnostics:async()=>{},backup:async()=>{},domain:async(method,args)=>{
+  if(method==='selection.read')return {worldId:'world'};
+  if(method==='budget.findReceipt'){reads++;calls.push(args);if(lookupError)throw Error(lookupError);return receipt;}
+  currentReads++;throw Error('No current head required for receipt');
+ }});
+ const original={taskId:'old-task',generation:1,maxTokens:null};
+ const intent=await panel('workbench.prepare',{worldId:'world',channel:'task.budget',payload:original});
+ lookupError='CORRUPT_BUDGET_RECEIPT';await assert.rejects(panel('workbench.execute',{worldId:'world',operationId:intent.operationId}),/CORRUPT_BUDGET_RECEIPT/);assert.equal(currentReads,0);
+ lookupError=null;receipt={operationId:intent.operationId,budget:{ownerTaskId:'old-budget',limits:{maxTokens:null}},previousMaxTokens:1000};
+ assert.deepEqual(await panel('workbench.execute',{worldId:'world',operationId:intent.operationId}),receipt);
+ assert.equal(reads,2);assert.equal(currentReads,0);assert.equal(calls[0].sessionId,'session');assert.equal(calls[0].worldId,'world');assert.deepEqual(Object.fromEntries(Object.keys(original).map(key=>[key,calls[0][key]])),original);assert.equal(calls[0].operationId,intent.operationId);
 });

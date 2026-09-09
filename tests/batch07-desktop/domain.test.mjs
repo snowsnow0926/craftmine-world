@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,mkdir} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
+import {createHash} from 'node:crypto';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
@@ -95,4 +95,60 @@ test('actual Rust panel integration preserves draft identity, exact receipts and
   const recoverable=await panel('task.recoverable',{worldId:selectedWorld});
   assert.ok(recoverable.items.some(item=>item.generation===after.generation));
   await assert.rejects(domain('turn.begin',{context:{...context,turnId:'must-not-reset-budget'},selectedWorld,request:{id:'bypass-recovery',text:'新任务'}}),/EXPLICIT_RECOVERY/);
+});
+
+
+test('lost budget receipt survives Rust and Main restart after recovery advances the task head',async t=>{
+  await mkdir(path.join(root,'test-results'),{recursive:true});
+  const directory=await mkdtemp(path.join(root,'test-results/batch07-budget-receipt-'));
+  const core=new CoreClient(process.env.CRAFTMINE_CORE_BIN||path.join(root,'desktop/build/rust-target/debug/craftmine-core.exe'),directory);
+  t.after(()=>core.stop());await core.start();
+  let sessionId='budget-receipt-session',selectedWorld='budget-world',activeTurn;
+  const projectId='pi-'+createHash('sha256').update(JSON.stringify(['session',sessionId])).digest('hex');
+  const context={projectId,sessionId,turnId:'before-recovery'};
+  await core.call('world.create',{id:selectedWorld,title:'Budget receipt',world:emptyWorld('Budget receipt')});
+  const call=(method,args)=>core.call(method,args);
+  const workbench=createWorkbenchService(core,{library:createLibraryService({call}),memory:createMemoryService({call}),getSettings:async()=>({activeWorldId:selectedWorld})});
+  const trusted=createHostRequests(core,{workbench,getSettings:async()=>({activeWorldId:selectedWorld})});
+  const before=await trusted('turn.begin',{context,selectedWorld,request:{id:'original-request',text:'Preserve this original task'}});
+  await trusted('budget.reserve',{context,binding:before.binding,generation:before.generation,requestId:'unknown-before-recovery',purpose:'creation',estimatedInputTokens:100,maxOutputTokens:50});
+  await trusted('task.interrupt',{context,reason:'HOST_INTERRUPTED'});
+  await core.call('workspace.endTurn',{sessionId,turnId:context.turnId,status:'error'});
+  const current=(await trusted('task.context',{context}));
+  let configurations=0,loseResponse=true;
+  const options={viewingSession:()=>sessionId,session:async id=>({id}),activeTurn:()=>activeTurn,
+    domain:async(method,args)=>{
+      const result=await trusted(method,args);
+      if(method==='budget.configure'){configurations++;if(loseResponse){loseResponse=false;throw Error('INJECTED_LOST_BUDGET_RESPONSE');}}
+      return result;
+    },begin:async()=>{throw Error('Must not create a turn');},end:async()=>{},stop:async()=>{},resume:async()=>{},interrupt:async()=>{},backup:async()=>{},diagnostics:async()=>{}};
+  const journalDir=path.join(directory,'pending');
+  let panel=createCraftminePanelGateway({...options,operations:createCraftmineOperationJournal(journalDir)});
+  const payload={taskId:current.binding.taskId,generation:current.generation,maxTokens:4000};
+  const prepared=await panel('workbench.prepare',{worldId:selectedWorld,channel:'task.budget',payload});
+  await assert.rejects(panel('workbench.execute',{worldId:selectedWorld,operationId:prepared.operationId}),/INJECTED_LOST_BUDGET_RESPONSE/);
+  assert.equal((await panel('workbench.operations',{worldId:selectedWorld})).items[0].state,'uncertain');
+  const exact={projectId,sessionId,worldId:selectedWorld,...payload,operationId:prepared.operationId};
+  const authoritative=await core.call('budget.findReceipt',exact);assert.equal(authoritative.budget.limits.maxTokens,4000);
+  await core.stop();await core.start();
+  const nextContext={...context,turnId:'after-recovery'};
+  const resumed=await trusted('task.resume',{context:nextContext,worldId:selectedWorld,taskId:current.binding.taskId,generation:current.generation});
+  assert.notEqual(resumed.workspace.task.binding.taskId,current.binding.taskId);assert.equal(resumed.generation,current.generation+1);
+  activeTurn=nextContext.turnId;
+  const afterHead=await trusted('task.context',{context:nextContext});
+  panel=createCraftminePanelGateway({...options,operations:createCraftmineOperationJournal(journalDir)});
+  assert.deepEqual(await panel('workbench.execute',{worldId:selectedWorld,operationId:prepared.operationId}),authoritative);
+  assert.equal(configurations,1);assert.equal((await panel('workbench.operations',{worldId:selectedWorld})).items[0].state,'completed');
+  const afterReplay=await trusted('task.context',{context:nextContext});assert.deepEqual(afterReplay.budget,afterHead.budget);assert.deepEqual(afterReplay.draft,afterHead.draft);assert.deepEqual(afterReplay.binding,afterHead.binding);
+  assert.equal(afterReplay.budget.reservedTokens,150);assert.equal(afterReplay.budget.unknownRequestCount,1);
+  await assert.rejects(panel('task.budget',{worldId:selectedWorld,operationId:prepared.operationId,...payload,maxTokens:9000}),/REPLAY_MISMATCH/);
+  await assert.rejects(core.call('budget.findReceipt',{...exact,maxTokens:9000}),/REPLAY_MISMATCH/);
+  for(const scope of [{sessionId:'foreign'},{projectId:'foreign'},{worldId:'foreign-world'}])await assert.rejects(core.call('budget.findReceipt',{...exact,...scope}));
+  await assert.rejects(core.call('budget.findReceipt',{...exact,context:{projectId}}));
+  sessionId='foreign';assert.deepEqual((await panel('workbench.operations',{worldId:selectedWorld})).items,[]);await assert.rejects(panel('workbench.execute',{worldId:selectedWorld,operationId:prepared.operationId}),/OWNER_MISMATCH/);sessionId=context.sessionId;
+  selectedWorld='foreign-world';await assert.rejects(panel('workbench.execute',{worldId:selectedWorld,operationId:prepared.operationId}),/OWNER_MISMATCH/);selectedWorld='budget-world';
+  activeTurn=undefined;
+  const unknown=await panel('workbench.prepare',{worldId:selectedWorld,channel:'task.budget',payload:{...payload,maxTokens:5000}});
+  assert.equal(await core.call('budget.findReceipt',{...exact,operationId:unknown.operationId,maxTokens:5000}),null);
+  await assert.rejects(panel('workbench.execute',{worldId:selectedWorld,operationId:unknown.operationId}),/STALE_TASK/);assert.equal(configurations,1);
 });

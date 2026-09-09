@@ -1,0 +1,17 @@
+✔ actual Rust panel integration preserves draft identity, exact receipts and bound context after world switches (209.9133ms)
+✔ lost budget receipt survives Rust and Main restart after recovery advances the task head (96.0656ms)
+✔ actual gateway and filesystem journal bind replay to Main session/world and original args (16.8745ms)
+✔ backup restart resolves actual receipt before expired grant and stale recheck never creates a turn (34.8543ms)
+✔ budget receipt lookup completes an old intent before current-head or active-turn checks (9.3709ms)
+✔ real filesystem journal survives pending/completed restart with exact original install revision (15.6661ms)
+✔ real persisted owner and params reject session/world/identity injection (4.6153ms)
+✔ concurrent execution is deduplicated and uncertain operation retries original ID (43.5612ms)
+✔ interrupted running records load uncertain and corrupt journal fails closed (4.7465ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 458.1769
