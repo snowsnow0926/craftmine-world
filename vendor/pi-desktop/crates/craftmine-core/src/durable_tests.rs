@@ -355,3 +355,153 @@ fn requirements_survive_explicit_recovery_but_do_not_enter_ordinary_new_tasks() 
         .is_err());
     Ok(())
 }
+fn configure(id: &Value, operation: &str, max: Value) -> Value {
+    json!({"projectId":id["binding"]["projectId"],"sessionId":id["binding"]["sessionId"],"worldId":"world-a","taskId":id["binding"]["taskId"],"generation":id["generation"],"operationId":operation,"maxTokens":max})
+}
+#[test]
+fn unlimited_budget_keeps_other_boundaries_and_never_clears_usage() -> Result<()> {
+    let (_dir, mut j, _ctx, id) = fixture()?;
+    let mut request = reserve(&id, "large");
+    request["estimatedInputTokens"] = json!(2_000_000);
+    request["limits"] = json!({"maxTokens":null,"maxRequests":1,"maxCompactions":1});
+    let result = j.budget_call("budget.reserve", &request)?;
+    assert!(result["budget"]["remainingTokens"].is_null());
+    assert!(result["budget"]["limits"]["maxTokens"].is_null());
+    assert_eq!(result["budget"]["reservedTokens"], 2_000_100);
+    assert!(j
+        .budget_call("budget.reserve", &reserve(&id, "second"))
+        .unwrap_err()
+        .to_string()
+        .contains("REQUEST_BUDGET"));
+    let mut event = id.clone();
+    event["eventId"] = json!("c1");
+    event["kind"] = json!("compaction");
+    j.budget_call("budget.boundary", &event)?;
+    event["eventId"] = json!("c2");
+    assert!(j
+        .budget_call("budget.boundary", &event)
+        .unwrap_err()
+        .to_string()
+        .contains("COMPACTION_BUDGET"));
+    Ok(())
+}
+#[test]
+fn player_removes_exhausted_limit_with_durable_bound_receipt_and_model_denial() -> Result<()> {
+    let (dir, mut j, ctx, id) = fixture()?;
+    let mut request = reserve(&id, "pending");
+    request["limits"] = json!({"maxTokens":200});
+    j.budget_call("budget.reserve", &request)?;
+    j.budget_call("budget.settle", &settle(&id, "pending", "unknown"))?;
+    j.task_interrupt(&json!({"context":ctx,"reason":"TOKEN_BUDGET_EXHAUSTED"}))?;
+    let config = configure(&id, "player-unlimited", Value::Null);
+    let result = j.budget_configure(&config)?;
+    assert_eq!(result["budget"]["reservedTokens"], 200);
+    assert_eq!(result["budget"]["unknownRequestCount"], 1);
+    assert_eq!(result["budget"]["requestCount"], 1);
+    assert_eq!(result["budget"]["ownerTaskId"], id["binding"]["taskId"]);
+    assert_eq!(result["previousMaxTokens"], 200);
+    assert_eq!(j.budget_configure(&config)?, result);
+    let mut changed = config.clone();
+    changed["maxTokens"] = json!(300);
+    assert!(j
+        .budget_configure(&changed)
+        .unwrap_err()
+        .to_string()
+        .contains("REPLAY_MISMATCH"));
+    for (key, value) in [
+        ("sessionId", json!("foreign")),
+        ("worldId", json!("foreign")),
+        ("projectId", json!("foreign")),
+        ("generation", json!(2)),
+        ("maxTokens", json!(0)),
+        ("maxTokens", json!(-1)),
+        ("maxTokens", json!(9007199254740992u64)),
+    ] {
+        let mut bad = config.clone();
+        bad[key] = value;
+        assert!(j.budget_configure(&bad).is_err());
+    }
+    assert!(j
+        .budget_call("budget.configure", &config)
+        .unwrap_err()
+        .to_string()
+        .contains("UNKNOWN_METHOD"));
+    drop(j);
+    let mut j = TaskJournal::open(&dir.path().join("tasks.sqlite"))?;
+    assert_eq!(j.budget_configure(&config)?, result);
+    let mut next = ctx.clone();
+    next.turn_id = "budget-resume".into();
+    let resumed =
+        j.task_resume(&json!({"taskId":id["binding"]["taskId"],"generation":1,"context":next}))?;
+    assert!(resumed["budget"]["limits"]["maxTokens"].is_null());
+    assert_eq!(resumed["budget"]["reservedTokens"], 200);
+    assert!(j.budget_configure(&config).is_err());
+    Ok(())
+}
+#[test]
+fn existing_owners_keep_policy_across_atomic_migration_and_reopen() -> Result<()> {
+    let (dir, j, _ctx, id) = fixture()?;
+    runtime(&j.db, id["binding"]["taskId"].as_str().unwrap())?;
+    j.db.execute_batch("DROP TABLE craftmine_budget_configurations;")?;
+    drop(j);
+    let mut j = TaskJournal::open(&dir.path().join("tasks.sqlite"))?;
+    assert_eq!(
+        j.budget_call("budget.inspect", &id)?["limits"]["maxTokens"],
+        1_000_000
+    );
+    j.budget_configure(&configure(&id, "explicit", Value::Null))?;
+    drop(j);
+    let mut j = TaskJournal::open(&dir.path().join("tasks.sqlite"))?;
+    assert!(j.budget_call("budget.inspect", &id)?["limits"]["maxTokens"].is_null());
+    Ok(())
+}
+#[test]
+fn legacy_backup_missing_limits_keeps_policy_and_schema_three_keeps_audit() -> Result<()> {
+    let (_dir, mut j, ctx, id) = fixture()?;
+    runtime(&j.db, id["binding"]["taskId"].as_str().unwrap())?;
+    j.workspace_end_turn(&ctx.session_id, &ctx.turn_id, "completed")?;
+    let exported = j.backup_export(&json!({"operationId":"budget-export"}))?;
+    let mut archive = exported["archive"].clone();
+    assert_eq!(archive["schemaVersion"], 3);
+    archive["schemaVersion"] = json!(2);
+    archive["tables"]
+        .as_object_mut()
+        .unwrap()
+        .remove("craftmine_budget_configurations");
+    archive["hash"] = json!(digest(&serde_json::to_string(&archive["tables"])?));
+    assert_eq!(
+        j.backup_inspect(&json!({"archive":archive}))?["valid"],
+        true
+    );
+    let current = j.backup_status(&json!({}))?["currentHash"].clone();
+    j.backup_restore(
+        &json!({"operationId":"budget-legacy","archive":archive,"expectedCurrentHash":current}),
+    )?;
+    assert_eq!(
+        j.budget_call("budget.inspect", &id)?["limits"]["maxTokens"],
+        1_000_000
+    );
+    let config = configure(&id, "after-import", Value::Null);
+    let result = j.budget_configure(&config)?;
+    let new = j.backup_export(&json!({"operationId":"budget-export-new"}))?;
+    assert_eq!(
+        new["archive"]["tables"]["craftmine_budget_configurations"]["rows"]
+            .as_array()
+            .unwrap()
+            .len(),
+        1
+    );
+    assert_eq!(
+        j.backup_inspect(&json!({"archive":new["archive"]}))?["valid"],
+        true
+    );
+    assert_eq!(j.budget_configure(&config)?, result);
+    let mut future = new["archive"].clone();
+    future["schemaVersion"] = json!(4);
+    assert!(j
+        .backup_inspect(&json!({"archive":future}))
+        .unwrap_err()
+        .to_string()
+        .contains("VERSION_UNSUPPORTED"));
+    Ok(())
+}

@@ -8620,3 +8620,11 @@ apply from the panel, and preserve progress/next-turn base. Save real usage, fai
 and successful evidence separately. Ground y=6 and hidden drawable-mesh semantics
 must come from the runtime contract. This proves real-model review of a fixture,
 not Agent-generated code. Never export credentials or the test profile.
+
+### CRAFTMINE-015 — Bounded observed diagnostics and isolated Windows delivery
+
+Collect actual startup, desktop frame intervals and model-workflow durations with source/outcome labels. Missing or hidden samples remain unavailable. Exercise concurrent, failed and aborted jobs without recording prompts or identities. Run fixed empty/flora/tree loads in a separate headless process with pointer lock and focus disabled; record environment, workload, durations and reference thresholds. These results do not certify another GPU or device. The Windows install/upgrade/locked-database/uninstall script must refuse a local host and defaults to dry-run. A prepared hosted CI entry is not an executed clean-OS test.
+
+### CRAFTMINE-016 — Player cumulative-token configuration
+
+Exhaust a finite task budget with known and unknown usage, interrupt it, and explicitly configure unlimited tokens through the player channel. Reopen and resume without changing the owner or losing usage. Replay the same operation without a second audit or write; reject different payloads, foreign session/world/generation and model proxy calls. New owners are unlimited; migrated databases and schema-1/2 archives retain old finite policies. Export schema 3 with audit receipts and reject unknown future archive versions. Independently exhaust request, compaction and deadline limits while cumulative tokens are unlimited.
