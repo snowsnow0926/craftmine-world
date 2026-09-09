@@ -28,7 +28,7 @@ export const MANIFEST_DIFF_FORMAT = 'craftmine.release-manifest-diff/1';
 
 export const TOOLCHAIN_LOCK = 'desktop/godot/toolchain.lock.json';
 export const BASE_ASSETS_DIR = 'desktop/delivery/base-assets';
-export const BASE_IDS = ['first-person', 'side-view', 'top-down'];
+export const BASE_IDS = ['first-person', 'side-view', 'top-down', 'mining-sandbox'];
 export const BRIDGE_FILES = [
   'desktop/godot/web/bridge.js',
   'desktop/godot/web/shell.html',
@@ -493,6 +493,8 @@ function collectBases(root) {
       status,
       notes: notes.join(' '),
       baseId: manifest?.baseId ?? baseId,
+      // Authored declarations only; an ID does not prove automatic installation.
+      declaredComponentIds: (Array.isArray(manifest?.components) ? manifest.components : []).map(entry => entry.id).filter(id => typeof id === 'string').sort(),
       engine,
       fileCount: files.length,
       aggregateSha256: aggregateHash(files),
