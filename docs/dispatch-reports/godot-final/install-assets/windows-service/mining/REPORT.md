@@ -1,0 +1,9 @@
+# Fourth-base standalone acceptance
+
+Mining-sandbox is now enabled after actual formal export and complete Windows restart: 4/4 passed, C:/Users/WINDOWS/AppData/Local/Temp/windows-formal-export-cPoPkR. The source was copied from the ended full-client fixture desktop-native-complete-X3aHy0, following its verified active-data pointer to profile/plugins/data/.craftmine-restored/ce0c3ee7b407/a166c3a02d8d6edb/data. That client performed actual dig/craft/place and portable recovery; this export retained the resulting full terrain chunks, inventory, request ledger and world progress. No other base fixture was substituted.
+
+Bootstrap explicitly maps mining body.state.worldId in addition to the two common envelope identities. Only body.state.player.position uses exact float32 coordinate comparison across WASM/native; other fields stay exact. Copied-world execution itself remains a separate acceptance gate.
+
+Three native faults also passed against this actual exported mining EXE in new profile copies: bad primary restores the previous backup, bad primary+backup refuses without writes, and temporary-save write failure refuses without modifying either stored file. The valid backup now remains intact even when a rejected primary is replaced: the invalid original is retained separately, not rotated over the valid backup. Logs and full report are retained in this folder. The earlier FPS three-fault evidence is in ../faults and predates this additional backup-retention assertion.
+
+Combined with the preceding three-base report, four catalog bases have formal Windows export and exact Windows-to-Windows full-state restart evidence. This is headless service acceptance, not visible play, model acceptance, final product picker wiring or release-license clearance. Runtime resource paths did not change; standalone_bootstrap.gd content changed and must be re-pinned by delivery.

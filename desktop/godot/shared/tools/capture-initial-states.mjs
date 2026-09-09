@@ -8,9 +8,8 @@ const root=path.resolve(import.meta.dirname,'../../../..');
 fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
 const directory=fs.mkdtempSync(path.join(root,'test-results/initial-states-'));
 const output=path.resolve(import.meta.dirname,'../initial-states');fs.mkdirSync(output,{recursive:true});
-const worldId='authored-initial-world';
 const engine=await createGodotProbeEnvironment(directory);
-const script=`extends SceneTree
+const captureScript=worldId=>`extends SceneTree
 func _initialize() -> void:
     _capture.call_deferred()
 func _capture() -> void:
@@ -31,11 +30,14 @@ func _capture() -> void:
     quit(1)
 `;
 const report={format:'craftmine.authored-initial-states/1',engine:engine.actualVersion,runs:engine.runs,states:[]};
-for(const [baseId,templates] of Object.entries({'first-person':['blank','training-range'],'top-down':['blank','town'],'side-view':['blank','ruins']})){
+const requested=process.env.CRAFTMINE_CAPTURE_BASES?.split(',');
+for(const [baseId,templates] of Object.entries({'first-person':['blank','training-range'],'top-down':['blank','town'],'side-view':['blank','ruins'],'mining-sandbox':['blank','mine-camp']})){
+  if(requested&&!requested.includes(baseId))continue;
   for(const template of templates){
+    const worldId=`authored-${baseId}-${template}`;
     const project=path.join(directory,baseId+'-'+template);
     const manifest=materializeBase({baseId,worldId,template,out:project});
-    fs.writeFileSync(path.join(project,'capture_initial.gd'),script);
+    fs.writeFileSync(path.join(project,'capture_initial.gd'),captureScript(worldId));
     await engine.run(baseId+'-'+template+'-import',['--editor','--path',project,'--import'],{timeout:120000});
     const text=await engine.run(baseId+'-'+template+'-capture',['--path',project,'--script','res://capture_initial.gd']);
     const line=text.split(/\r?\n/).find(line=>line.startsWith('CRAFTMINE_INITIAL_STATE:'));

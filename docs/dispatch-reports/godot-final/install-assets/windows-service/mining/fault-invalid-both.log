@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Parse JSON failed. Error at line 0: Expected 'true', 'false', or 'null', got 'invalid'
+   at: parse_string (core/io/json.cpp:629)
+ERROR: Parse JSON failed. Error at line 0: Expected 'true', 'false', or 'null', got 'invalid'
+   at: parse_string (core/io/json.cpp:629)
+STANDALONE_ERROR: No valid saved state; previous files preserved

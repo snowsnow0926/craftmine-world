@@ -951,7 +951,7 @@ export class PluginRuntime {
     // methods the trusted orchestrator may reach at all. Enqueue/cancel/revoke
     // stay off this list so a renderer can never start or stop engine execution.
     for (const operation of [
-      "godotWorld.initialize", "godotWorld.initStatus", "godotWorld.copy", "godotWorld.rebuildPlan", "godotWorld.prepareRebuildSource",
+      "godotWorld.initialize", "godotWorld.initStatus", "godotWorld.copy", "godotWorld.copyStatus", "godotWorld.rebuildPlan", "godotWorld.prepareRebuildSource", "godotWorld.prepareCopyRuntime", "godotRuntime.exportSource",
       "godotWorld.backupSnapshot", "godotWorld.verifySnapshot",
       "godotProject.create", "godotProject.index", "godotProject.read", "godotProject.patch", "godotProject.receipt",
       "godotProject.applyFiles",

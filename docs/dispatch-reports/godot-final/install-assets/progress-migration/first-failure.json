@@ -1,0 +1,23 @@
+{
+  "root": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\progress-migration-AsHvS5",
+  "passed": false,
+  "checks": [],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 201,
+      "exitCode": 0
+    },
+    {
+      "label": "import",
+      "elapsedMs": 3035,
+      "exitCode": 0
+    },
+    {
+      "label": "old",
+      "elapsedMs": 347,
+      "error": "Error: old: Godot reported an error"
+    }
+  ],
+  "error": "Error: old: Godot reported an error\n    at Object.run (file:///D:/Craftmine%20World/test-results/final-install-assets/desktop/godot/toolchain.mjs:60:88)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async capture (file:///D:/Craftmine%20World/test-results/final-install-assets/tests/godot-final-install-assets/progress-migration-native.mjs:63:191)\n    at async file:///D:/Craftmine%20World/test-results/final-install-assets/tests/godot-final-install-assets/progress-migration-native.mjs:64:17"
+}

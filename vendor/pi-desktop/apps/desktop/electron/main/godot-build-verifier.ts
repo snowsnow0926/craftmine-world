@@ -37,7 +37,7 @@ export type GodotRuntimeCheckDescriptor = {
   inputHash: string;
   worldId: string;
   buildId: string;
-  baseId: "first-person" | "top-down" | "side-view";
+  baseId: "first-person" | "top-down" | "side-view" | "mining-sandbox";
   /** Absolute path to the core-owned artifacts directory. */
   root: string;
   entry: "web/index.html";
@@ -151,7 +151,7 @@ const ID_PATTERN = /^[a-zA-Z0-9._-]{1,128}$/;
 const HASH_PATTERN = /^[a-f0-9]{64}$/;
 const JOB_ID_PATTERN = /^gjob-[a-f0-9]{64}$/;
 const BUILD_ID_PATTERN = /^gbd-[a-f0-9]{64}$/;
-const BASE_IDS = ["first-person", "top-down", "side-view"] as const;
+const BASE_IDS = ["first-person", "top-down", "side-view", "mining-sandbox"] as const;
 const GUARD_PROBE =
   "({guard: globalThis.__craftmineHeadless ?? null, node: typeof process, bridge: typeof pluginBridge})";
 

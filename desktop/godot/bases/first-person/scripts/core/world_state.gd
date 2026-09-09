@@ -160,13 +160,25 @@ func _apply_collection(group: StringName, entries) -> String:
 	var nodes := _state_nodes(group)
 	if entries.size() != nodes.size():
 		return "Saved " + group + " block does not match the scene"
-	for index in nodes.size():
-		var node = nodes[index]
-		var entry = entries[index]
-		if not entry is Dictionary:
+	var by_id: Dictionary = {}
+	for entry in entries:
+		if not entry is Dictionary or not entry.get("id") is String or entry.id.is_empty():
 			return "Saved " + group + " entry is not an object"
-		if node.has_method("state_id") and str(entry.get("id", "")) != String(node.state_id()):
+		if by_id.has(entry.id):
+			return "Saved " + group + " has duplicate identity " + entry.id
+		by_id[entry.id] = entry
+	var scene_ids: Dictionary = {}
+	for node in nodes:
+		if not node.has_method("state_id"):
+			return "Scene " + group + " node has no stable identity"
+		var id := String(node.state_id())
+		if id.is_empty() or scene_ids.has(id):
+			return "Scene " + group + " has duplicate or empty identity"
+		scene_ids[id] = true
+		if not by_id.has(id):
 			return "Saved " + group + " entry does not match scene node " + String(node.name)
+	for node in nodes:
+		var entry: Dictionary = by_id[String(node.state_id())]
 		var problem: String = node.restore(entry)
 		if not problem.is_empty():
 			return problem

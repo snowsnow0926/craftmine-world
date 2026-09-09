@@ -44,7 +44,8 @@ function createPackageInstallBinding({call,begin,selected,finish}) {
     if(await selected()!==worldId)throw Error('GODOT_WORLD_CHANGED');
     const worldRecord=await call('world.read',{id:worldId});
     if(worldRecord.runtimeKind!=='godot')throw Error('GODOT_WORLD_REQUIRED');
-    const context={projectId:'craftmine-package-install',sessionId:'package-'+worldId,turnId:operationId};
+    const scope=require('node:crypto').createHash('sha256').update(JSON.stringify([worldId,operationId])).digest('hex').slice(0,40);
+    const context={projectId:'craftmine-package-install',sessionId:'package-'+scope,turnId:operationId};
     try {
       // turn.begin is the host router's workspace.open + task.recordContext
       // transaction sequence, not a Rust CoreClient method.

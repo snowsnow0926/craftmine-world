@@ -1,0 +1,11 @@
+✔ additive source defaults preserve old damage, equipment, inventory and all fields (2.1892ms)
+✔ old identity deletion, duplication and incompatible native shapes are rejected (0.9942ms)
+✔ full previous entry and unknown non-entity changes cannot be smuggled through defaults (0.436ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6.941

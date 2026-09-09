@@ -290,13 +290,21 @@ async function pickDirectory() {
 async function navigate(request) {
   if(busy||closing||preview||applicationAttempt||workbench?.busy)throw Error('WORLD_BUSY');
   if(!bridge||(!loaded&&!godot)||!current?.id)throw Error('WORLD_VIEW_UNAVAILABLE');
-  if(!['switch','create'].includes(request?.operation))throw Error('INVALID_NAVIGATION_REQUEST');
+  if(!['switch','create','copy'].includes(request?.operation))throw Error('INVALID_NAVIGATION_REQUEST');
   if(request.operation==='switch'&&request.id===current.id)return {ok:true,activeWorldId:current.id};
   busy=true;controls();errorBox.hidden=true;
   const previous=current.id;
   activeOperation=(async()=>{
     try {
       let target;
+      if(request.operation==='copy') {
+        const {operation,...payload}=request;
+        const result=await bridge.invoke('world.copy',payload);
+        const record=await bridge.invoke('world.read',{id:result.targetWorldId});
+        mount(record);
+        await refreshList().catch(showError);
+        return result;
+      }
       if(request.operation==='switch') {
         target=await bridge.invoke('world.read',{id:request.id});
       }

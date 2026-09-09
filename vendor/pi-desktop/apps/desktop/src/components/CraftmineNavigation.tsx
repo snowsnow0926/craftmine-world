@@ -13,6 +13,7 @@ import { WorldListPanel } from "./craftmine/WorldListPanel";
 import { WorldAuxSections } from "./craftmine/WorldAuxSections";
 import { AssetLibraryPanel } from "./craftmine/assets/AssetLibraryPanel";
 import { GodotHistoryPanel } from "./craftmine/GodotHistoryPanel";
+import { CopyWorldButton } from "./craftmine/CopyWorldButton";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
@@ -104,6 +105,7 @@ export function CraftmineNavigation() {
       {available && (
         <>
           <WorldListPanel controller={controller} lang={lang} onOpenWorld={open} />
+          <CopyWorldButton bridge={controller.bridge} worldId={controller.activeWorldId} onCopied={open} />
 
           {activeSessionId && (
             <div className="craftmine-world-session" data-world-session={activeSessionId}>

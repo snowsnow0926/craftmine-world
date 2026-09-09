@@ -9,6 +9,9 @@ use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde::Deserialize;
 use serde_json::{json, Value};
 
+#[path = "godot_additive_progress.rs"]
+pub(super) mod additive_progress;
+
 use super::{
     digest,
     godot_builds::valid_build_id,
@@ -295,10 +298,12 @@ impl TaskJournal {
         );
         assert_player_unchanged(&before, &args.snapshot)?;
         worlds::validate_progress(&args.snapshot)?;
+        let migration = additive_progress::for_candidate(&tx, &candidate, &args.snapshot)?;
+        let snapshot = migration.as_ref().map(|proof| proof["snapshot"].clone()).unwrap_or_else(|| args.snapshot.clone());
         let build_id = candidate["buildId"].as_str().context("INVALID_GODOT_BUILD")?;
         let prepared = worlds::WorldDocument {
             build: godot_build_document(&tx, &candidate)?,
-            snapshot: before.world.snapshot.clone(),
+            snapshot: snapshot.clone(),
             extensions: before.world.extensions.clone(),
         };
         // Encoding proves the resulting world document is valid before anything
@@ -309,11 +314,15 @@ impl TaskJournal {
             [candidate["checkJobId"].as_str().context("INVALID_GODOT_JOB")?],
             |row| row.get::<_, String>(0),
         )?;
-        let input = json!({"candidateId":args.candidate_id,"worldId":args.world_id,
+        let mut input = json!({"candidateId":args.candidate_id,"worldId":args.world_id,
             "revision":args.revision,"worldHash":before.content_hash,"baseBuild":before.world.build["id"],
-            "buildId":build_id,"snapshot":args.snapshot,"authorTaskId":author_task,
+            "buildId":build_id,"snapshot":snapshot,"authorTaskId":author_task,
             "checkJobId":candidate["checkJobId"],"checkOutputHash":candidate["checkOutputHash"],
             "sourceRevision":candidate["sourceRevision"],"manifestHash":candidate["manifestHash"]});
+        if let Some(proof) = migration {
+            input["previousSnapshot"] = args.snapshot;
+            input["progressMigration"] = proof;
+        }
         let body = serde_json::to_string(&input)?;
         let previous = worlds::encode(&before.world)?;
         let now = worlds::timestamp()?;
@@ -406,7 +415,7 @@ impl TaskJournal {
                 && args.evidence.launch.state_hash.bytes().all(|b| b.is_ascii_hexdigit()),
             "GODOT_LAUNCH_REQUIRED"
         );
-        assert_player_unchanged(&before, &input["snapshot"])?;
+        additive_progress::validate_prepared(&tx, &candidate, &before, &input)?;
         if input["snapshot"]["format"] == super::godot_runtime::PROGRESS_FORMAT {
             ensure!(args.evidence.format == "craftmine.godot-application/2"
                 && args.evidence.snapshot.as_ref() == Some(&input["snapshot"]), "APPLICATION_PROGRESS_CHANGED");
@@ -417,7 +426,7 @@ impl TaskJournal {
         );
         let world = worlds::WorldDocument {
             build: godot_build_document(&tx, &candidate)?,
-            snapshot: before.world.snapshot.clone(),
+            snapshot: input["snapshot"].clone(),
             extensions: before.world.extensions.clone(),
         };
         let body = worlds::encode(&world)?;
