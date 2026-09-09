@@ -553,7 +553,13 @@ pub(super) fn read_candidate(db: &Connection, id: &str) -> Result<Value> {
         params![world_id, build_id],
         |row| Ok((row.get(0)?, row.get(1)?)),
     )?;
-    Ok(json!({"candidateId":id,"worldId":world_id,"buildId":build_id,"sourceRevision":revision,
+    let content: Option<(String,String)> = db.query_row(
+        "SELECT r.repo_id,b.content_oid FROM craftmine_godot_builds b
+         JOIN craftmine_content_repositories r ON r.world_id=b.world_id
+         WHERE b.world_id=?1 AND b.build_id=?2 AND b.content_oid IS NOT NULL AND r.backend='git'",
+        params![world_id,build_id], |row| Ok((row.get(0)?,row.get(1)?))).optional()?;
+    let content = content.map(|(repo_id,content_oid)| json!({"repoId":repo_id,"branchId":"main","contentOid":content_oid}));
+    Ok(json!({"candidateId":id,"worldId":world_id,"buildId":build_id,"sourceRevision":revision,"content":content,
         "manifestHash":manifest,"assetManifestHash":assets,"baseId":base_id,"baseBuild":base_build,
         "checkJobId":check_job,"checkOutputHash":check_hash,"status":status,"buildFiles":files,
         "buildBytes":bytes,"createdAt":created,"updatedAt":updated}))

@@ -31,6 +31,7 @@ mod godot_worlds;
 mod legacy;
 mod library;
 mod memories;
+mod operation_lock;
 mod recovery;
 mod reviews;
 mod verification;

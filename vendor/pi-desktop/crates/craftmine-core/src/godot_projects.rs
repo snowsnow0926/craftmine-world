@@ -234,6 +234,9 @@ fn source_path(path: &str) -> Result<()> {
                 | "md"
                 | "csv"
                 | "svg"
+                | "obj"
+                | "mtl"
+                | "uid"
         ),
         "UNSUPPORTED_PROJECT_FILE"
     );
@@ -822,6 +825,7 @@ fn store(db: &Connection, manifest: &Manifest, call: &str, request_hash: &str) -
 
 impl TaskJournal {
     pub fn godot_project_create(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let request_hash = request_hash("godotProject.create", args)?;
         let args: CreateArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.tool_call_id)?;
@@ -979,6 +983,7 @@ impl TaskJournal {
     }
 
     pub fn godot_project_patch(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let request_hash = request_hash("godotProject.patch", args)?;
         let args: PatchArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.tool_call_id)?;
@@ -1184,4 +1189,3 @@ impl TaskJournal {
         .unwrap_or(Value::Null))
     }
 }
-
