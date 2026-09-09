@@ -1,0 +1,4 @@
+host_loopback_control=passed
+private_desktop_cleanup restored=true desktop_closed=true station_closed=true
+profile_cleanup_hresult=0x0
+PROBE_ERROR: Create private station: 拒绝访问。 (os error 5)

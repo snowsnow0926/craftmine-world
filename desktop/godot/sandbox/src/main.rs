@@ -1,4 +1,6 @@
 #![cfg(windows)]
+mod desktop;
+mod loader;
 // Fixed, trusted prototype only. No arbitrary project or command execution API.
 use sha2::{Digest, Sha256};
 use std::{
@@ -115,12 +117,60 @@ unsafe fn grant_new_directory(path: &Path, sid: PSID, rights: u32) -> Result<()>
     }
     Ok(())
 }
+unsafe fn inspect_new_work_label(path: &Path) -> Result<()> {
+    let mut sacl = null_mut();
+    let mut sd = null_mut();
+    let code = GetNamedSecurityInfoW(
+        wide(path).as_ptr(),
+        SE_FILE_OBJECT,
+        LABEL_SECURITY_INFORMATION,
+        null_mut(),
+        null_mut(),
+        null_mut(),
+        &mut sacl,
+        &mut sd,
+    );
+    if code != 0 {
+        return Err(format!("Read new work integrity label: {code}").into());
+    }
+    let result = (|| -> Result<()> {
+        let mut level = 0x2000u32; // Unlabelled objects default to Medium integrity.
+        if !sacl.is_null() {
+            for i in 0..(*sacl).AceCount as u32 {
+                let mut ace = null_mut();
+                win(GetAce(sacl, i, &mut ace), "Read integrity ACE")?;
+                let header = &*(ace as *const ACE_HEADER);
+                if header.AceType == 0x11 {
+                    let label = &*(ace as *const SYSTEM_MANDATORY_LABEL_ACE);
+                    let sid = (&label.SidStart as *const u32).cast_mut().cast();
+                    if IsValidSid(sid) == 0 {
+                        return Err("Invalid integrity SID".into());
+                    }
+                    let count = *GetSidSubAuthorityCount(sid);
+                    if count == 0 {
+                        return Err("Missing integrity RID".into());
+                    }
+                    level = *GetSidSubAuthority(sid, (count - 1) as u32);
+                    if level > 0x2000 {
+                        return Err("Work integrity exceeds Medium".into());
+                    }
+                }
+            }
+        }
+        println!("work_integrity_rid={level} label_modified=false");
+        Ok(())
+    })();
+    LocalFree(sd);
+    result
+}
 unsafe fn launch(
     profile: &Profile,
+    desktop: &desktop::PrivateDesktop,
     executable: &Path,
     args: &[String],
     work: &Path,
     log: &Path,
+    diagnose: bool,
 ) -> Result<u32> {
     let job = Handle(CreateJobObjectW(null(), null()));
     if job.0.is_null() {
@@ -207,6 +257,7 @@ unsafe fn launch(
     }
     let mut startup: STARTUPINFOEXW = std::mem::zeroed();
     startup.StartupInfo.cb = std::mem::size_of_val(&startup) as u32;
+    startup.StartupInfo.lpDesktop = desktop.name.as_ptr().cast_mut();
     startup.lpAttributeList = attributes.pointer;
     startup.StartupInfo.dwFlags = STARTF_USESTDHANDLES;
     startup.StartupInfo.hStdInput = handles[1];
@@ -249,7 +300,10 @@ unsafe fn launch(
             null(),
             null(),
             1,
-            EXTENDED_STARTUPINFO_PRESENT | CREATE_NO_WINDOW | CREATE_UNICODE_ENVIRONMENT,
+            EXTENDED_STARTUPINFO_PRESENT
+                | CREATE_NO_WINDOW
+                | CREATE_UNICODE_ENVIRONMENT
+                | if diagnose { DEBUG_ONLY_THIS_PROCESS } else { 0 },
             environment.as_ptr().cast(),
             cwd.as_ptr(),
             &startup.StartupInfo,
@@ -280,6 +334,9 @@ unsafe fn launch(
     if is_container != 1 {
         TerminateJobObject(job.0, 91);
         return Err("Child token is not AppContainer".into());
+    }
+    if diagnose {
+        loader::trace(process.0, information.dwProcessId)?;
     }
     if WaitForSingleObject(process.0, 15000) != WAIT_OBJECT_0 {
         TerminateJobObject(job.0, 92);
@@ -345,6 +402,11 @@ fn run() -> Result<()> {
         &probe,
     )?;
     let listener = TcpListener::bind("127.0.0.1:0")?;
+    // Positive control: the fixed host endpoint exists and accepts a connection.
+    let control = std::net::TcpStream::connect(listener.local_addr()?)?;
+    let accepted = listener.accept()?;
+    drop((control, accepted));
+    println!("host_loopback_control=passed");
     listener.set_nonblocking(true)?;
     unsafe {
         let name = wide(&identifier);
@@ -364,14 +426,17 @@ fn run() -> Result<()> {
             .into());
         }
         let profile = Profile { name, sid };
+        let desktop = desktop::PrivateDesktop::create(&identifier, sid)?;
         grant_new_directory(&bin, sid, FILE_GENERIC_READ | FILE_GENERIC_EXECUTE)?;
         grant_new_directory(
             &work,
             sid,
             FILE_GENERIC_READ | FILE_GENERIC_WRITE | FILE_GENERIC_EXECUTE | DELETE,
         )?;
+        inspect_new_work_label(&work)?;
         let native_exit = launch(
             &profile,
+            &desktop,
             &probe,
             &[
                 "--native-probe".into(),
@@ -381,6 +446,7 @@ fn run() -> Result<()> {
             ],
             &work,
             &root.join("native-probe.log"),
+            true,
         )?;
         let native_output = fs::read_to_string(root.join("native-probe.log"))?;
         println!("{native_output}");
@@ -395,10 +461,12 @@ fn run() -> Result<()> {
         }
         let godot_exit = launch(
             &profile,
+            &desktop,
             &engine,
             &["--headless".into(), "--version".into()],
             &work,
             &root.join("godot-version.log"),
+            false,
         )?;
         let version = fs::read_to_string(root.join("godot-version.log"))?;
         println!("{version}");

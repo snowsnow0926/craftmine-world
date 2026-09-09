@@ -1,0 +1,5 @@
+host_loopback_control=passed
+private_station_visible=false default_desktop_acl_modified=false
+private_desktop_cleanup restored=true desktop_closed=true station_closed=true
+profile_cleanup_hresult=0x0
+PROBE_ERROR: Label newly created work directory: 5
