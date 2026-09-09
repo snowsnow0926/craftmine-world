@@ -85,7 +85,7 @@ struct RunnerReceipt {
 // Godot encodes integral floats as `1.0`; JavaScript re-encodes them as `1`.
 // Compare JSON values without making serialization spelling an identity check.
 // Do not conflate distinct large integers through lossy f64 conversion.
-fn same_json(left: &Value, right: &Value) -> bool {
+pub(super) fn same_json(left: &Value, right: &Value) -> bool {
     match (left, right) {
         (Value::Number(a), Value::Number(b)) if a != b => {
             match (a.as_f64(), b.as_f64()) {
@@ -294,14 +294,15 @@ impl TaskJournal {
         ensure!(input["worldId"] == args.world_id, "PROJECT_WORLD_BINDING_MISMATCH");
         let current = worlds::read(&self.db, &args.world_id)?;
         ensure!(input["revision"] == current.summary.revision && input["worldHash"] == current.content_hash
-            && input["snapshot"] == current.world.snapshot, "WORLD_REVISION_CONFLICT");
+            && input.get("previousSnapshot").unwrap_or(&input["snapshot"]) == &current.world.snapshot, "WORLD_REVISION_CONFLICT");
         ensure!(input["snapshot"]["format"] == PROGRESS_FORMAT, "GODOT_PROGRESS_MIGRATION_REQUIRED");
         let candidate = godot_jobs::require_ready_candidate(&self.db,
             input["candidateId"].as_str().context("CORRUPT_GODOT_APPLICATION")?, &args.world_id)?;
         ensure!(candidate["buildId"] == input["buildId"] && candidate["checkOutputHash"] == input["checkOutputHash"],
             "GODOT_CANDIDATE_STALE");
+        super::godot_applications::additive_progress::validate_prepared(&self.db, &candidate, &current, input)?;
         let build = super::godot_applications::godot_build_document(&self.db, &candidate)?;
-        let world = worlds::WorldDocument {build:build.clone(), snapshot:current.world.snapshot.clone(), extensions:current.world.extensions};
+        let world = worlds::WorldDocument {build:build.clone(), snapshot:input["snapshot"].clone(), extensions:current.world.extensions};
         validate_binding(&world, Some(&args.world_id))?;
         ensure!(build["godot"]["engineVersion"] == godot_builds::engine_version() && build["godot"]["target"] == "web",
             "GODOT_BUILD_IDENTITY_MISMATCH");

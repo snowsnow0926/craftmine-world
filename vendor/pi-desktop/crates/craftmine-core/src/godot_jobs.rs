@@ -163,6 +163,10 @@ struct CheckResult {
     passed: bool,
     #[serde(default)]
     assertions: Vec<Assertion>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    defaults_snapshot: Option<Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    progress_migration: Option<Value>,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -214,6 +218,15 @@ fn candidate_limit() -> usize {
     16
 }
 
+pub(super) fn check_input(db: &Connection, job: &str) -> Result<Value> {
+    let (body, hash): (Option<String>, Option<String>) = db.query_row(
+        "SELECT check_input,check_input_hash FROM craftmine_godot_jobs WHERE id=?1", [job],
+        |r| Ok((r.get(0)?, r.get(1)?)))?;
+    let body = body.context("GODOT_CHECK_INPUT_REQUIRED")?;
+    ensure!(hash.as_deref() == Some(digest(&body).as_str()), "GODOT_CHECK_INPUT_CORRUPT");
+    Ok(serde_json::from_str(&body)?)
+}
+
 pub(super) fn migrate(db: &Connection) -> Result<()> {
     db.execute_batch(
         "CREATE TABLE IF NOT EXISTS craftmine_godot_jobs (
@@ -245,6 +258,8 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     for (column, definition) in [
         ("interrupt_reason", "TEXT"),
         ("origin_job_id", "TEXT"),
+        ("check_input", "TEXT"),
+        ("check_input_hash", "TEXT"),
     ] {
         let present: bool = db.query_row(
             "SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_jobs') WHERE name=?1",
@@ -722,6 +737,18 @@ impl TaskJournal {
             "jobId":args.job_id,"inputHash":input_hash,"worldId":world,"buildId":build,
             "baseId":record["baseId"],"root":root.to_string_lossy(),"entry":"web/index.html",
             "threads":true,"artifacts":args.artifacts,"snapshot":snapshot});
+        let previous: Option<String> = tx.query_row("SELECT check_input FROM craftmine_godot_jobs WHERE id=?1", [&args.job_id], |r| r.get(0))?;
+        if previous.is_some() {
+            let existing = check_input(&tx, &args.job_id)?;
+            let mut identity = result.clone();
+            identity["snapshot"] = existing["snapshot"].clone();
+            ensure!(existing == identity, "GODOT_CHECK_INPUT_MISMATCH");
+            tx.commit()?;
+            return Ok(existing);
+        }
+        let body = serde_json::to_string(&result)?;
+        tx.execute("UPDATE craftmine_godot_jobs SET check_input=?2,check_input_hash=?3 WHERE id=?1",
+            params![args.job_id, body, digest(&body)])?;
         tx.commit()?;
         Ok(result)
     }
@@ -1161,6 +1188,19 @@ impl TaskJournal {
             && args.output.compile.errors.is_empty()
             && args.output.check.passed
             && args.output.check.assertions.iter().all(|assertion| assertion.passed);
+        match (&args.output.check.defaults_snapshot, &args.output.check.progress_migration) {
+            (None, None) => {},
+            (Some(defaults), Some(proof)) => {
+                ensure!(kind == "check" && passed, "GODOT_ADDITIVE_CHECK_REQUIRED");
+                let descriptor = check_input(&tx, &args.job_id)?;
+                ensure!(descriptor["worldId"] == world && descriptor["buildId"] == build
+                    && descriptor["inputHash"] == request_hash && defaults["worldId"] == world
+                    && defaults["baseId"] == record["baseId"]
+                    && descriptor["artifacts"] == serde_json::to_value(&args.output.artifacts)?, "GODOT_CHECK_INPUT_MISMATCH");
+                super::godot_applications::additive_progress::verify_proof(&descriptor["snapshot"], defaults, proof)?;
+            },
+            _ => anyhow::bail!("GODOT_ADDITIVE_INVALID_PROOF"),
+        }
         let artifacts_root = build_root(&self.directory, &world, &build, false)?.join("artifacts");
         ensure!(args.output.artifacts.len() <= ARTIFACT_COUNT, "GODOT_ARTIFACT_TOO_LARGE");
         let mut total = 0u64;
