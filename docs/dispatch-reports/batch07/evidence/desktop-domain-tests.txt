@@ -1,0 +1,15 @@
+✔ actual Rust panel integration preserves draft identity, exact receipts and bound context after world switches (187.0112ms)
+✔ actual gateway and filesystem journal bind replay to Main session/world and original args (15.8244ms)
+✔ backup restart resolves actual receipt before expired grant and stale recheck never creates a turn (30.6064ms)
+✔ real filesystem journal survives pending/completed restart with exact original install revision (14.4237ms)
+✔ real persisted owner and params reject session/world/identity injection (3.8896ms)
+✔ concurrent execution is deduplicated and uncertain operation retries original ID (42.8188ms)
+✔ interrupted running records load uncertain and corrupt journal fails closed (3.7983ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 318.0762
