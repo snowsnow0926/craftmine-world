@@ -5,7 +5,11 @@
   "baseline": "46739d2",
   "branch": "codex/godot-parallel-g-20260909",
   "worktree": "D:/Craftmine World-worktrees/godot-parallel-g-20260909",
-  "implementationCommit": "5e0161f1540c28f8df97ec2566ac99b0679e2134",
+  "implementationCommit": "e53b08ca08d4635a0cb1e9fe3ed5d9c74c43a09c",
+  "implementationCommits": [
+    "5e0161f1540c28f8df97ec2566ac99b0679e2134",
+    "e53b08ca08d4635a0cb1e9fe3ed5d9c74c43a09c"
+  ],
   "implementationCommitSubject": "feat(godot): add side-view base with a real double-jump ability gate",
   "merged": false,
   "pushed": false,
@@ -99,7 +103,7 @@
       "docs/dispatch-reports/godot-parallel/G/evidence/gate-metrics.json",
       "docs/dispatch-reports/godot-parallel/G/evidence/run-facts.json"
     ],
-    "sourceTreeHash": "cfe96726e1621d530d672f9d7d24395f151089e36bd33ca87a522c6e2f13db60"
+    "sourceTreeHash": "fe1838608656c13949da041b8a0c435572633b4659ed62b8d93ed770eb4a8546"
   },
   "assets": {
     "thirdPartyAssets": 0,

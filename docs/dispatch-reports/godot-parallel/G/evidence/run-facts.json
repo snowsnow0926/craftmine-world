@@ -1,6 +1,6 @@
 {
  "format": "craftmine.godot-sideview-run-facts/1",
- "runRoot": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-9",
+ "runRoot": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-final",
  "runs": {
   "A_reach_ruins": {
    "plan": "travel_to_ruins",
@@ -1491,7 +1491,7 @@
   },
   {
    "path": "tools/verify.mjs",
-   "sha256": "582d9703bad78fc4926df11f9e9aef45ab99b399ef57233352b60164716eda71"
+   "sha256": "3a756247233c664640ef940a865fe04108e8b046876ce3e9e69b193bc06a6dfa"
   },
   {
    "path": "worlds/blank/world.json",
@@ -1503,5 +1503,5 @@
   }
  ],
  "sourceFileCount": 56,
- "sourceTreeHash": "cfe96726e1621d530d672f9d7d24395f151089e36bd33ca87a522c6e2f13db60"
+ "sourceTreeHash": "fe1838608656c13949da041b8a0c435572633b4659ed62b8d93ed770eb4a8546"
 }

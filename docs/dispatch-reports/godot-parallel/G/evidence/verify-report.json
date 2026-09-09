@@ -3,9 +3,9 @@
   "baseId": "side-view",
   "engine": "D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable\\editor\\Godot_v4.7.2-stable_win64_console.exe",
   "engineVersion": "4.7.2.stable.official.ed1daf0bf",
-  "runRoot": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-9",
-  "startedAt": "2026-09-09T13:06:21.565Z",
-  "finishedAt": "2026-09-09T13:06:29.856Z",
+  "runRoot": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-final",
+  "startedAt": "2026-09-09T13:07:58.214Z",
+  "finishedAt": "2026-09-09T13:08:05.411Z",
   "metrics": {
     "format": "craftmine.godot-sideview-gate/1",
     "gateId": "gate_vault_ledge",
@@ -69,7 +69,7 @@
     {
       "id": "A.traceWritten",
       "passed": true,
-      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-9\\runs\\A_reach_ruins.json"
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-final\\runs\\A_reach_ruins.json"
     },
     {
       "id": "A.noTeleportX",
@@ -119,7 +119,7 @@
     {
       "id": "B.traceWritten",
       "passed": true,
-      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-9\\runs\\B_gate_locked.json"
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-final\\runs\\B_gate_locked.json"
     },
     {
       "id": "B.noTeleportX",
@@ -159,7 +159,7 @@
     {
       "id": "C.traceWritten",
       "passed": true,
-      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-9\\runs\\C_get_ability.json"
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-final\\runs\\C_get_ability.json"
     },
     {
       "id": "C.noTeleportX",
@@ -204,7 +204,7 @@
     {
       "id": "D.traceWritten",
       "passed": true,
-      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-9\\runs\\D_enter_vault.json"
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-final\\runs\\D_enter_vault.json"
     },
     {
       "id": "D.noTeleportX",
@@ -254,7 +254,7 @@
     {
       "id": "E.traceWritten",
       "passed": true,
-      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-9\\runs\\E_revisit.json"
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-final\\runs\\E_revisit.json"
     },
     {
       "id": "E.noTeleportX",
@@ -299,7 +299,7 @@
     {
       "id": "F.traceWritten",
       "passed": true,
-      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-9\\runs\\F_hazard_respawn.json"
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-final\\runs\\F_hazard_respawn.json"
     },
     {
       "id": "F.noTeleportX",
@@ -339,7 +339,7 @@
     {
       "id": "G.traceWritten",
       "passed": true,
-      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-9\\runs\\G_blank_basic.json"
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-final\\runs\\G_blank_basic.json"
     },
     {
       "id": "G.noTeleportX",
@@ -404,7 +404,7 @@
     {
       "id": "H.traceWritten",
       "passed": true,
-      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-9\\runs\\H_materialized.json"
+      "detail": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-final\\runs\\H_materialized.json"
     },
     {
       "id": "H.noTeleportX",
