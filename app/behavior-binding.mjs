@@ -29,10 +29,31 @@ export class BehaviorBinding {
     if(!this.binding)return validateBehaviorResult(input,this.world,frame,{extensions:this.extensions});
     validateBehaviorResult(input,this.authored,this.frame(frame),{local:true,extensions:this.extensions});
     const value=structuredClone(input);
-    for(const command of value.commands)if(command.type==='object.patch'){
-      command.id=this.localToWorld.get(command.id);
-      if(command.position)command.position=shifted(command.position,this.binding.translation,1);
+    for(const command of value.commands){
+      if(['object.patch','target.damage','target.revive'].includes(command.type))command.id=this.localToWorld.get(command.id);
+      if(command.type==='object.patch'&&command.position)command.position=shifted(command.position,this.binding.translation,1);
+      // Extension command target identifiers use the same explicit instance map.
+      // Arbitrary strings/state are deliberately not rewritten.
+      if(this.extensions?.has(command.type))for(const key of ['targetId','id'])if(this.localToWorld.has(command[key]))command[key]=this.localToWorld.get(command[key]);
     }
     return validateBehaviorResult(value,this.world,frame,{extensions:this.extensions});
+  }
+  extensionCall(command,frame){
+    if(!this.binding)return {command:structuredClone(command),world:structuredClone(frame)};
+    const local=structuredClone(command);
+    for(const key of ['targetId','id'])if(this.worldToLocal.has(local[key]))local[key]=this.worldToLocal.get(local[key]);
+    return {command:local,world:this.frame(frame)};
+  }
+  extensionEffects(effects){
+    if(!this.binding)return structuredClone(effects);
+    return effects.map(effect=>{
+      const result=structuredClone(effect);
+      if(['object.patch','target.damage','target.revive'].includes(result.type)){
+        if(!this.localToWorld.has(result.id))throw Error('扩展效果超出实例绑定');
+        result.id=this.localToWorld.get(result.id);
+      }
+      if(result.type==='object.patch'&&result.position)result.position=shifted(result.position,this.binding.translation,1);
+      return result;
+    });
   }
 }

@@ -44,7 +44,12 @@ export function validateBehaviorState(value){
     archivedModules=value.archive.map(e=>e.record);
   }
   for(const module of [...Object.values(value.modules),...archivedModules]){
-    exactKeys(module,['stateVersion','revision','state','overrides','error',...(capable?['panels']:[])]);
+    exactKeys(module,['stateVersion','revision','state','overrides','error',...(capable?['panels']:[]),...(Object.hasOwn(module,'initialized')?['initialized']:[]),...(Object.hasOwn(module,'extensions')?['extensions']:[])]);
+    if(Object.hasOwn(module,'initialized')&&typeof module.initialized!=='boolean')throw Error('玩法启动记录无效');
+    if(Object.hasOwn(module,'extensions')){
+      table(module.extensions,16);jsonRecord(module.extensions,128000);
+      for(const entry of Object.values(module.extensions)){exactKeys(entry,['version','state']);if(!Number.isInteger(entry.version)||entry.version<1||entry.version>9999)throw Error('扩展状态版本无效');jsonRecord(entry.state);}
+    }
     if(!Number.isInteger(module.stateVersion)||module.stateVersion<1||module.stateVersion>10000||!/^code-[a-f0-9]{20}$/.test(module.revision)||typeof module.error!=='string'||module.error.length>600)throw Error('代码玩法状态版本无效');
     jsonRecord(module.state);table(module.overrides,16);
     if(capable){table(module.panels,3);for(const panel of Object.values(module.panels))validatePanel(panel);}
@@ -70,7 +75,13 @@ export class BehaviorState {
       let old=current?.stateVersion===d.stateVersion?current:this.value.archive.find(e=>e.id===d.id&&e.record.stateVersion===d.stateVersion)?.record;
       if(current&&!old&&current.stateVersion!==d.stateVersion)old=migrateRecord(d,current,artifact.id);
       this.value.archive=this.value.archive.filter(e=>e.id!==d.id||e.record.stateVersion!==d.stateVersion);
-      const record=normalize(old||{stateVersion:d.stateVersion,revision:artifact.id,state:structuredClone(d.initialState),overrides:{},error:''});
+      const record=normalize(old||{stateVersion:d.stateVersion,revision:artifact.id,state:structuredClone(d.initialState),overrides:{},error:'',initialized:false});
+      // Legacy persisted modules already ran start. Updating code or state does
+      // not reissue rewards; a newly installed instance has no previous record.
+      record.initialized=old?old.initialized!==false:false;record.extensions??={};
+      for(const [extensionId,entry]of Object.entries(record.extensions)){
+        if(!d.requires?.includes(`ext:${extensionId}@${entry.version}`))throw Error(`扩展状态 ${extensionId}@${entry.version} 与新玩法依赖不兼容，原进度已保留`);
+      }
       if(record.revision!==artifact.id)record.error='';record.revision=artifact.id;
       if(capable&&!d.capabilities?.includes('hud.panel@1'))record.panels={};
       for(const id of Object.keys(record.overrides))if(!d.targets.includes(id)||!d.permissions.includes('objects.write'))delete record.overrides[id];

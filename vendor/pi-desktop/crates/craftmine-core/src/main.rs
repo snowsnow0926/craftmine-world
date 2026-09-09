@@ -14,6 +14,31 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
+    if method.starts_with("budget.") {
+        return journal.budget_call(method, params);
+    }
+    match method {
+        "library.search" => return journal.library_search(params),
+        "library.read" => return journal.library_read(params),
+        "library.capture" => return journal.library_capture(params),
+        "memory.search" => return journal.memory_search(params),
+        "memory.propose" => return journal.memory_propose(params),
+        "memory.retire" => return journal.memory_retire(params),
+        "backup.export" => return journal.backup_export(params),
+        "backup.inspect" => return journal.backup_inspect(params),
+        "backup.restore" => return journal.backup_restore(params),
+        "backup.status" => return journal.backup_status(params),
+        "backup.cancel" => return journal.backup_cancel(params),
+        "application.list" => return journal.application_list(params),
+        "workspace.current" => return journal.workspace_current(params),
+        "workspace.findReceipt" => return journal.workspace_find_receipt(params),
+        "task.context" => return journal.task_context(params),
+        "task.recordContext" => return journal.task_record_context(params),
+        "task.resume" => return journal.task_resume(params),
+        "task.discard" => return journal.task_discard(params),
+        "task.recoverable" => return journal.task_recoverable(params),
+        _ => {}
+    }
     if method.starts_with("review.") {
         let id = || params["id"].as_str().context("REVIEW_ID_REQUIRED");
         return match method {
@@ -223,10 +248,23 @@ fn main() -> Result<()> {
     if !directory.is_absolute() {
         bail!("data directory must be absolute");
     }
+    std::fs::create_dir_all(&directory)?;
+    // The OS releases this lock on crash. A second broker must not run startup
+    // recovery against the first broker's live workspace leases.
+    let _store_lock = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .create(true)
+        .truncate(false)
+        .open(directory.join("domain-writer.lock"))?;
+    _store_lock
+        .try_lock()
+        .map_err(|error| anyhow::anyhow!("DOMAIN_ALREADY_RUNNING: {error}"))?;
     let mut journal = TaskJournal::open(&directory.join("tasks.sqlite"))?;
     journal.verification_recover()?;
     journal.review_recover()?;
     journal.application_recover()?;
+    journal.task_recover()?;
     let mut input = io::stdin().lock();
     let mut output = io::stdout().lock();
     loop {
@@ -244,7 +282,29 @@ fn main() -> Result<()> {
         let response = match serde_json::from_slice::<Value>(&line) {
             Ok(request) => match dispatch(&mut journal, &request) {
                 Ok(result) => json!({"id":request["id"],"result":result}),
-                Err(error) => json!({"id":request["id"],"error":{"message":error.to_string()}}),
+                Err(error) => {
+                    let message = error.to_string();
+                    let marker = message
+                        .split(|c: char| {
+                            !(c.is_ascii_uppercase() || c == '_' || c.is_ascii_digit())
+                        })
+                        .next()
+                        .unwrap_or("");
+                    let code = if marker.is_empty() {
+                        "DOMAIN_ERROR"
+                    } else {
+                        marker
+                    };
+                    let retryable = matches!(
+                        code,
+                        "STALE_DRAFT"
+                            | "WORLD_BUSY"
+                            | "WORLD_APPLICATION_BUSY"
+                            | "BACKUP_CURRENT_STATE_CONFLICT"
+                            | "BACKUP_RESTORE_WORLD_BUSY"
+                    );
+                    json!({"id":request["id"],"error":{"code":code,"message":message,"retryable":retryable}})
+                }
             },
             Err(_) => json!({"id":null,"error":{"message":"INVALID_JSON"}}),
         };

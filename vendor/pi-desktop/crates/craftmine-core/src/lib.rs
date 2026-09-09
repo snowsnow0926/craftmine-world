@@ -10,7 +10,12 @@ use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 
 mod applications;
+mod backups;
+mod durable;
 mod legacy;
+mod library;
+mod memories;
+mod recovery;
 mod reviews;
 mod verification;
 mod workspaces;
@@ -142,6 +147,10 @@ impl TaskJournal {
         verification::migrate(&db)?;
         reviews::migrate(&db)?;
         applications::migrate(&db)?;
+        durable::migrate(&db)?;
+        library::migrate(&db)?;
+        memories::migrate(&db)?;
+        backups::migrate(&db)?;
         let directory = std::fs::canonicalize(
             path.parent()
                 .filter(|p| !p.as_os_str().is_empty())

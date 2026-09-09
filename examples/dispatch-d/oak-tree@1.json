@@ -1,0 +1,75 @@
+{
+  "format": "craftmine.module/1",
+  "runtime": "craftmine-web/2",
+  "id": "oak-tree",
+  "version": 1,
+  "kind": "object",
+  "hash": "09e6e7fd47394006e272b0fe6fca0d1e00151e8e1fbfca488d853ee0a315d8f1",
+  "name": "小橡树",
+  "description": "独立示例；非用户作品，安装后仍需验收。",
+  "dependencies": [
+    "geometry@2"
+  ],
+  "payload": {
+    "name": "小橡树",
+    "parts": [
+      {
+        "shape": "box",
+        "offset": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "size": {
+          "x": 0.5,
+          "y": 3,
+          "z": 0.5
+        },
+        "color": "#ffffff",
+        "solid": true,
+        "material": "wood"
+      },
+      {
+        "shape": "box",
+        "offset": {
+          "x": -0.8,
+          "y": 2,
+          "z": -0.8
+        },
+        "size": {
+          "x": 2.2,
+          "y": 1.5,
+          "z": 2.2
+        },
+        "color": "#9ccc78",
+        "solid": false,
+        "material": "leaves"
+      },
+      {
+        "shape": "box",
+        "offset": {
+          "x": -0.4,
+          "y": 3.3,
+          "z": -0.4
+        },
+        "size": {
+          "x": 1.4,
+          "y": 0.7,
+          "z": 1.4
+        },
+        "color": "#afd28c",
+        "solid": false,
+        "material": "leaves"
+      }
+    ],
+    "components": {
+      "health": 0,
+      "contactDamage": 0
+    }
+  },
+  "origin": {
+    "build": "09bb46d3491fa419bda44e64b5c3c0ef408e8780b18f9af900b51210a18c26cb",
+    "definition": "oak-tree",
+    "time": 0
+  }
+}

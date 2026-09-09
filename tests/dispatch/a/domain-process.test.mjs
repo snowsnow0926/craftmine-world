@@ -1,0 +1,118 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdir,mkdtemp,readFile} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createRequire} from 'node:module';
+import {createHash} from 'node:crypto';
+import {compileScene,INITIAL_SNAPSHOT,upgradeScene} from '../../../app/scene.mjs';
+import {createLibraryService} from '../../../plugins/craftmine-world/library-service.mjs';
+import {createMemoryService} from '../../../plugins/craftmine-world/memory-service.mjs';
+import {materializeCreation} from '../../../app/creation.mjs';
+import {canonicalJSON} from '../../../app/canonical.mjs';
+const require=createRequire(import.meta.url),{CoreClient}=require('../../../plugins/craftmine-world/core-client.cjs');
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
+const binary=process.env.CRAFTMINE_CORE_BIN||path.join(root,'.build-target/debug/craftmine-core.exe');
+const context={projectId:'fixture-project',sessionId:'fixture-session',turnId:'fixture-turn'};
+const empty=upgradeScene({format:'craftmine.scene/1',title:'Fixture world',night:false,objects:[]});
+const tree={id:'oak-tree',name:'橡树',position:{x:0,y:6,z:0},parts:[{offset:{x:0,y:0,z:0},size:{x:1,y:3,z:1},material:'wood'}]};
+const source=upgradeScene({format:'craftmine.scene/1',title:'Fixture world',night:false,objects:[tree]});
+async function start(){const base=path.join(root,'test-results/dispatch-a');await mkdir(base,{recursive:true});const directory=await mkdtemp(path.join(base,'domain-'));const client=new CoreClient(binary,directory);await client.start();return {client,directory,call:(method,args)=>client.call(method,args,15000)};}
+function build(scene,extensions=[]){const compiled=compileScene(scene,{extensions:new Set(extensions.map(e=>'ext:'+e.id+'@'+e.version))});return {...compiled,behaviors:compiled.behaviors||[],id:'v-'+compiled.hash.slice(0,20)};}
+async function applied(call,scene=source,extensions=[]){
+  await call('world.create',{id:'source-world',title:'Source world',world:{build:build(empty),snapshot:INITIAL_SNAPSHOT,extensions}});
+  const workspace=await call('workspace.open',{context,selectedWorld:'source-world'});
+  await call('workspace.commit',{context,binding:workspace.task.binding,toolCallId:'fixture-edit',revision:0,request:{fixture:'compiled source'},draft:{scene}});
+  const verification=await call('verification.submit',{context,toolCallId:'fixture-check',revision:1,summary:'Fixture compiled source',origin:{modelKey:'fixture/provider',request:{messageId:'fixture-user',text:'Add a tree'}}});
+  const check=await call('verification.claim',{id:verification.id,token:'fixture-worker'});const compiled=build(scene,extensions);
+  await call('verification.finish',{id:check.id,token:'fixture-worker',output:{inputHash:check.inputHash,artifact:{build:compiled,extensions},evidence:{format:'craftmine.desktop-check/1',passed:true,compiler:{passed:true},behaviors:{build:compiled.hash,passed:true,modules:compiled.behaviors.map(b=>({id:b.definition.id,revision:b.id,passed:true}))},render:{passed:true,version:compiled.id}}}});
+  const review=await call('review.start',{verificationId:check.id,id:'fixture-review',token:'fixture-reviewer'});
+  const plan=await call('review.plan',{id:review.id,token:'fixture-reviewer',plan:{modelKey:'fixture/provider',text:'Fixture review',assertions:[{id:'tree-exists',why:'The tree exists'}]}});
+  await call('review.finish',{id:review.id,token:'fixture-reviewer',output:{format:'craftmine.desktop-review/1',inputHash:review.inputHash,planHash:plan.hash,modelKey:'fixture/provider',advisory:true,verdict:'ready',text:'Fixture review',acceptance:{passed:true,assertions:[{id:'tree-exists',passed:true}],verificationOutputHash:review.input.verificationOutputHash}}});
+  const application=await call('application.prepare',{id:'fixture-application',token:'fixture-owner',verificationId:check.id,reviewId:review.id,worldId:'source-world',revision:0,snapshot:INITIAL_SNAPSHOT});
+  await call('application.commit',{id:application.id,token:'fixture-owner',evidence:{format:'craftmine.desktop-application/1',inputHash:application.inputHash,render:{passed:true,version:compiled.id,capture:{sha256:'a'.repeat(64)}},player:INITIAL_SNAPSHOT.player}});
+  return application;
+}
+test('real Rust process: immutable tree capture, restart, cross-session/world exact install and replay',async t=>{
+  const fixture=await start();let client=fixture.client;t.after(()=>client.stop());let call=fixture.call;
+  await applied(call);let library=createLibraryService({call});
+  const args={operationId:'capture-tree',applicationId:'fixture-application',worldId:'source-world',kind:'object',resourceId:'oak-tree',tags:['树木','自然'],scope:{projectId:context.projectId,worldId:'source-world'}};
+  const captured=await library.capture(args);assert.deepEqual(await library.capture(args),captured);
+  const results=await library.search({query:'橡树',limit:2});assert.equal(results.total,1);assert.equal(results.items[0].evidence.applied,true);
+  const raw=await call('library.read',{ref:captured.ref});assert.equal(raw.bundle.module.payload.name,'橡树');
+  const forged=structuredClone(raw.bundle);forged.module.payload.parts[0].material='sand';forged.module.hash=createHash('sha256').update(canonicalJSON({kind:'object',payload:forged.module.payload})).digest('hex');
+  await assert.rejects(call('library.capture',{...args,operationId:'forged',bundle:forged}),/CAPTURE_CONTENT_MISMATCH/);
+  await client.stop();client=new CoreClient(binary,fixture.directory);await client.start();call=(m,p)=>client.call(m,p,15000);library=createLibraryService({call});
+  assert.deepEqual(await call('library.read',{ref:captured.ref}),raw);
+  await call('world.create',{id:'destination-world',title:'Destination',world:{build:build(empty),snapshot:INITIAL_SNAPSHOT,extensions:[]}});
+  const target={projectId:'another-projectless-session',sessionId:'destination-session',turnId:'destination-turn'};await call('workspace.open',{context:target,selectedWorld:'destination-world'});
+  const input={ref:captured.ref,revision:0,position:{x:6,y:6,z:0}};
+  const prepared=await library.prepareInstall(target,input);assert.equal(prepared.operations[0].op,'add');assert.equal((await call('workspace.inspect',{context:target})).task.revision,0);
+  const installed=await library.install(target,'install-one',input);assert.equal(installed.receipt.revision,1);assert.equal((await library.install(target,'install-one',input)).replayed,true);
+  const second=await library.install(target,'install-two',{ref:captured.ref,revision:1,position:{x:-6,y:6,z:0}});assert.notEqual(second.idMap.objects['oak-tree'],installed.idMap.objects['oak-tree']);
+  const draft=(await call('workspace.inspect',{context:target})).task;assert.equal(draft.draft.scene.objects.length,2);
+  await assert.rejects(library.install(target,'conflict',{ref:captured.ref,revision:2,position:{x:6,y:6,z:0}}),/重叠/);assert.equal((await call('workspace.inspect',{context:target})).task.revision,2);
+  await assert.rejects(library.read({ref:{...captured.ref,hash:'b'.repeat(64)}}),/HASH_MISMATCH/);
+  assert.equal((await call('world.read',{id:'destination-world'})).world.build.scene.objects.length,0);
+});
+test('real Rust process: second broker cannot recover another live broker leases',async t=>{
+  const {client,call,directory}=await start();t.after(()=>client.stop());
+  await call('world.create',{id:'source-world',title:'Single writer',world:{build:build(empty),snapshot:INITIAL_SNAPSHOT,extensions:[]}});await call('workspace.open',{context,selectedWorld:'source-world'});
+  const second=new CoreClient(binary,directory);await assert.rejects(second.start(),/exited/);
+  assert.equal((await call('workspace.inspect',{context})).task.status,'running');
+});
+test('real Rust process: creation code, local target bindings and fixed extension travel together',async t=>{
+  const {client,call}=await start();t.after(()=>client.stop());
+  const module=JSON.parse(await readFile(new URL('./fixtures/garden-training.json',import.meta.url),'utf8'));
+  const extension=JSON.parse(await readFile(new URL('./fixtures/training-drain.json',import.meta.url),'utf8'));
+  const scene=materializeCreation(module.payload,{id:module.id,version:module.version},{x:0,y:6,z:0},'original-garden');
+  await applied(call,scene,[extension]);const library=createLibraryService({call});
+  const captured=await library.capture({operationId:'capture-garden',applicationId:'fixture-application',worldId:'source-world',kind:'creation',resourceId:scene.behaviors[0].id,scope:{projectId:context.projectId},tags:['花草','枪械']});
+  const stored=await call('library.read',{ref:captured.ref});assert.deepEqual(stored.bundle.extensions,[extension]);
+  await call('world.create',{id:'destination-world',title:'Destination',world:{build:build(empty),snapshot:INITIAL_SNAPSHOT,extensions:[]}});
+  const target={projectId:'other-session',sessionId:'garden-destination',turnId:'new-turn'};await call('workspace.open',{context:target,selectedWorld:'destination-world'});
+  const first=await library.install(target,'garden-one',{ref:captured.ref,revision:0,position:{x:-15,y:6,z:0}});
+  const second=await library.install(target,'garden-two',{ref:captured.ref,revision:1,position:{x:15,y:6,z:0}});
+  const draft=(await call('workspace.inspect',{context:target})).task.draft;
+  assert.equal(draft.extensions.length,1);assert.deepEqual(draft.extensions[0],extension);assert.equal(draft.scene.behaviors.length,module.payload.scripts.length*2);
+  for(const behavior of draft.scene.behaviors){assert.ok(module.payload.scripts.some(s=>s.definition.code===behavior.code));assert.ok(behavior.targets.every(id=>draft.scene.objects.some(o=>o.id===id)));assert.ok(behavior.binding.objects.every(p=>draft.scene.objects.some(o=>o.id===p.world)));}
+  assert.notDeepEqual(first.idMap.objects,second.idMap.objects);assert.equal(draft.scene.systems.length,module.payload.systems.length);
+  assert.equal(draft.scene.behaviors.filter(b=>b.code.includes('training-token')).length,module.payload.scripts.filter(s=>s.definition.code.includes('training-token')).length*2);
+  const modified=structuredClone(stored.bundle);modified.module.payload.scripts[0].definition.initialState={forged:true};modified.module.hash=createHash('sha256').update(canonicalJSON({kind:'creation',payload:modified.module.payload})).digest('hex');
+  await assert.rejects(call('library.capture',{operationId:'forged-state',applicationId:'fixture-application',worldId:'source-world',kind:'creation',resourceId:scene.behaviors[0].id,bundle:modified,scope:{projectId:context.projectId},tags:[]}),/CAPTURE_CONTENT_MISMATCH/);
+});
+test('real Rust process: user-backed scoped memory, false evidence, staleness and retirement',async t=>{
+  const {client,call}=await start();t.after(()=>client.stop());await call('world.create',{id:'source-world',title:'Memory world',world:{build:build(empty),snapshot:INITIAL_SNAPSHOT,extensions:[]}});await call('workspace.open',{context,selectedWorld:'source-world'});
+  const service=createMemoryService({call});const claim='花草应当很小，不妨碍走路';await call('task.recordContext',{context,requestId:'player-rule',kind:'correction',text:claim});
+  const record={id:'rule:small-plants',kind:'project-rule',scope:{projectId:context.projectId},claim,sourceRefs:['user:player-rule'],tags:['花草'],appliesTo:{runtimeRange:'craftmine-web/5'}};
+  const trusted=await service.propose({context,operationId:'memory-one',record});assert.equal(trusted.status,'validated');assert.equal(trusted.scope.worldId,'source-world');
+  assert.equal((await service.search({scope:{projectId:'new-session',worldId:'source-world'},query:'花草'})).items.length,1);
+  assert.equal((await service.search({scope:{projectId:context.projectId,worldId:'another-world'}})).items.length,0);
+  await assert.rejects(service.propose({context,operationId:'fake',record:{...record,id:'rule:forged',status:'validated'}}),/CANNOT_VALIDATE/);
+  const fake=await service.propose({context,operationId:'fake-two',record:{...record,id:'rule:unproven',sourceRefs:['evidence:imaginary-review']}});assert.equal(fake.status,'proposed');
+  const stale=await service.search({scope:{projectId:context.projectId,worldId:'source-world'},runtimeVersion:'craftmine-web/6'});assert.equal(stale.items.find(i=>i.id===record.id).status,'needs_revalidation');
+  await service.retire({scope:{projectId:'new-session',worldId:'source-world'},id:record.id,reason:'改用新规则'});assert.equal((await service.search({scope:{projectId:context.projectId,worldId:'source-world'}})).items.length,1);
+});
+test('real Rust process: consistent backup, corrupt input, CAS, cancelled restore and portable trust',async t=>{
+  const {client,call}=await start();t.after(()=>client.stop());await applied(call);
+  const library=createLibraryService({call});const captured=await library.capture({operationId:'backup-capture',applicationId:'fixture-application',worldId:'source-world',kind:'object',resourceId:'oak-tree',scope:{projectId:context.projectId}});
+  const exported=await call('backup.export',{operationId:'export-original'});assert.equal(exported.credentialsIncluded,false);
+  assert.deepEqual(await call('backup.export',{operationId:'export-original'}),exported);
+  const manifest=await call('backup.inspect',{archive:exported.archive});assert.equal(manifest.valid,true);assert.equal(manifest.knownLocalExport,true);
+  const bad=structuredClone(exported.archive);bad.tables.craftmine_worlds.rows[0][1]='tampered title';await assert.rejects(call('backup.inspect',{archive:bad}),/HASH_MISMATCH/);
+  const corrupt=structuredClone(exported.archive);const worldColumns=corrupt.tables.craftmine_worlds.columns;corrupt.tables.craftmine_worlds.rows[0][worldColumns.indexOf('document')]='{}';corrupt.hash=createHash('sha256').update(canonicalJSON(corrupt.tables)).digest('hex');await assert.rejects(call('backup.inspect',{archive:corrupt}),/CORRUPT_WORLD/);
+  const injection=structuredClone(exported.archive);injection.tables.craftmine_worlds.columns[0]='../../secrets.json';injection.hash=createHash('sha256').update(canonicalJSON(injection.tables)).digest('hex');await assert.rejects(call('backup.inspect',{archive:injection}),/COLUMNS_MISMATCH/);
+  const original=await call('world.read',{id:'source-world'});const moved=structuredClone(original.world.snapshot);moved.player.x=12;
+  await call('world.saveProgress',{id:original.id,revision:original.revision,baseBuild:original.world.build.id,snapshot:moved});
+  const before=await call('backup.status',{});await assert.rejects(call('backup.restore',{operationId:'stale',archive:exported.archive,expectedCurrentHash:'f'.repeat(64)}),/CURRENT_STATE_CONFLICT/);
+  assert.equal((await call('world.read',{id:'source-world'})).world.snapshot.player.x,12);
+  await call('backup.cancel',{operationId:'cancelled-restore'});await assert.rejects(call('backup.restore',{operationId:'cancelled-restore',archive:exported.archive,expectedCurrentHash:before.currentHash}),/REPLAY_MISMATCH/);
+  const restored=await call('backup.restore',{operationId:'restore-original',archive:exported.archive,expectedCurrentHash:before.currentHash});assert.equal(restored.modelReplay,false);assert.equal((await call('world.read',{id:'source-world'})).world.snapshot.player.x,INITIAL_SNAPSHOT.player.x);
+  assert.deepEqual(await call('backup.restore',{operationId:'restore-original',archive:exported.archive,expectedCurrentHash:before.currentHash}),restored);
+  assert.equal((await call('library.read',{ref:captured.ref})).metadata.evidence.applied,true);
+  const imported=await start();t.after(()=>imported.client.stop());const emptyState=await imported.call('backup.status',{});
+  const receipt=await imported.call('backup.restore',{operationId:'portable-restore',archive:exported.archive,expectedCurrentHash:emptyState.currentHash});assert.equal(receipt.importedProvenance,true);
+  assert.equal((await imported.call('library.read',{ref:captured.ref})).metadata.evidence.needsRevalidation,true);
+  assert.equal((await imported.call('application.read',{id:'fixture-application'})).status,'imported');
+  await assert.rejects(createLibraryService({call:imported.call}).capture({operationId:'forged-trust',applicationId:'fixture-application',worldId:'source-world',kind:'object',resourceId:'oak-tree',scope:{projectId:context.projectId}}),/APPLIED_SOURCE_REQUIRED/);
+});

@@ -1,0 +1,75 @@
+{
+  "format": "craftmine.module/1",
+  "runtime": "craftmine-web/2",
+  "id": "thin-grass",
+  "version": 1,
+  "kind": "object",
+  "hash": "9ec5aab0579b2f42f2235091822b638a0829b40b6153d73233097856c6aa7d55",
+  "name": "细叶草丛",
+  "description": "独立示例；非用户作品，安装后仍需验收。",
+  "dependencies": [
+    "geometry@2"
+  ],
+  "payload": {
+    "name": "细叶草丛",
+    "parts": [
+      {
+        "shape": "blade",
+        "offset": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "size": {
+          "x": 0.18,
+          "y": 0.46,
+          "z": 0.13
+        },
+        "color": "#68a94c",
+        "solid": false,
+        "material": "solid"
+      },
+      {
+        "shape": "blade",
+        "offset": {
+          "x": 0.15,
+          "y": 0,
+          "z": 0.1
+        },
+        "size": {
+          "x": 0.15,
+          "y": 0.32,
+          "z": 0.18
+        },
+        "color": "#82b654",
+        "solid": false,
+        "material": "solid"
+      },
+      {
+        "shape": "blade",
+        "offset": {
+          "x": 0.3,
+          "y": 0,
+          "z": -0.05
+        },
+        "size": {
+          "x": 0.16,
+          "y": 0.52,
+          "z": 0.16
+        },
+        "color": "#589044",
+        "solid": false,
+        "material": "solid"
+      }
+    ],
+    "components": {
+      "health": 0,
+      "contactDamage": 0
+    }
+  },
+  "origin": {
+    "build": "09bb46d3491fa419bda44e64b5c3c0ef408e8780b18f9af900b51210a18c26cb",
+    "definition": "thin-grass",
+    "time": 0
+  }
+}

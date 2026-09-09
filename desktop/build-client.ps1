@@ -5,6 +5,7 @@ Push-Location -LiteralPath $craftmineRoot
 try {
     $craftmineChanges = git status --porcelain --untracked-files=normal
     if ($craftmineChanges) { throw 'Commit source changes before packaging so the source archive matches the binary.' }
+    $craftmineBuildCommit = git rev-parse HEAD
     node desktop/prepare-client.mjs
     if ($LASTEXITCODE -ne 0) { throw 'World plugin build failed' }
     git archive --format=zip --output=desktop/build/CraftmineWorld-source.zip HEAD
@@ -30,8 +31,15 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Desktop build failed' }
         pnpm --filter @pi-desktop/agent-runtime bundle
         if ($LASTEXITCODE -ne 0) { throw 'Agent bundle failed' }
+        node (Join-Path $craftmineRoot 'desktop/windows-package-tools.mjs') manifest
+        if ($LASTEXITCODE -ne 0) { throw 'Build manifest failed' }
         if ($Installer) { pnpm --filter @pi-desktop/desktop exec electron-builder --win --publish never }
         else { pnpm --filter @pi-desktop/desktop exec electron-builder --win --dir --publish never }
         if ($LASTEXITCODE -ne 0) { throw 'Windows packaging failed' }
+        node (Join-Path $craftmineRoot 'desktop/windows-package-tools.mjs') verify
+        if ($LASTEXITCODE -ne 0) { throw 'Package integrity verification failed' }
+        if ((git rev-parse HEAD) -ne $craftmineBuildCommit -or (git status --porcelain --untracked-files=normal)) {
+            throw 'Source changed during packaging; discard this verification result and rebuild from a clean commit.'
+        }
     } finally { Pop-Location }
 } finally { Pop-Location }

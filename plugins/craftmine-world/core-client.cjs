@@ -26,7 +26,7 @@ class CoreClient {
       let response;try{response=JSON.parse(line);}catch{fail(Error('Invalid Rust service response'));child.kill();return;}
       const job=this.pending.get(response.id);if(!job)return;
       this.pending.delete(response.id);clearTimeout(job.timer);
-      if(response.error)job.reject(Error(response.error.message));else job.resolve(response.result);
+      if(response.error)job.reject(Object.assign(Error(response.error.message),{code:response.error.code,errorCode:response.error.code,retryable:response.error.retryable===true}));else job.resolve(response.result);
     });
     return this.call('hello');
   }

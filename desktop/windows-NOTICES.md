@@ -1,0 +1,13 @@
+# Craftmine World Windows distribution notices
+
+Craftmine World / 最中幻想 derives from PI-Desktop, whose pinned upstream revision and provenance are in `UPSTREAM.json`. The upstream copyright and LGPL-3.0-or-later license remain in `PI-Desktop-LICENSE.txt` and the supplied source archive. This file does not replace or relicense upstream material.
+
+The corresponding project source is bundled at `resources/source/CraftmineWorld-source.zip`, with build instructions, Chinese user guidance and a source/hash manifest. Build from that exact archive with the checked-in lockfiles. No remote publishing or proprietary-only redistribution is performed by this local preview build.
+
+The original geometric Craftmine voxel icon is authored for this project in `desktop/windows-brand-assets.mjs`; SVG, PNG and ICO are generated from that source. Upstream PI artwork remains in the corresponding upstream source for provenance and other platforms; the Windows application and installer use the new mark.
+
+Electron and Chromium notices are carried in their normal package files. `resources/licenses/third-party/npm-inventory.json` lists installed build/runtime package names, pinned versions and declared license identifiers, with available top-level LICENSE/NOTICE/COPYING texts copied beside it. The lockfile and package sources determine transitive relationships. The bundled source retains upstream authorship and declarations; missing package license files are represented honestly in the inventory rather than inventing a license.
+
+The locally shipped Geist, Inter, Noto Sans SC and LXGW WenKai font licenses are copied into `resources/licenses/fonts`. Original font files and attribution remain in the corresponding source archive. The Babel parser license is additionally present in the built-in world plugin. User-authored/imported assets retain their own provenance and are not relicensed by this client.
+
+Windows current-user DPAPI is a system service, not a transferable credential backup format. Portable domain backups exclude credentials. The application, domain files and model-provider account remain independent of any personal PI-Desktop installation.

@@ -12,6 +12,8 @@ import {GameplaySession} from '../../app/gameplay.mjs';
 import {BehaviorState} from '../../app/behavior-state.mjs';
 import {validateRequestPlan} from '../../app/request-plan.mjs';
 import {assertionGuide} from '../../app/harness/assertions.mjs';
+export {createLibraryService} from './library-service.mjs';
+export {createMemoryService} from './memory-service.mjs';
 
 const groups={object:'objects',behavior:'behaviors',system:'systems'};
 
@@ -23,7 +25,7 @@ export function prepareApplication(job,record) {
   const blocked=playerBlockedBy({primitives:behaviors.view.primitives.filter(part=>gameplay.alive(part.id))},saved.player);
   if(blocked)throw Error(`新内容与当前位置重叠（${blocked}），请回到世界走开一些，再应用。`);
   const snapshot=validateSnapshot({format:'craftmine.progress/3',player:saved.player,gameplay:gameplay.snapshot(),behaviors:behaviors.snapshot()});
-  return {build,extensions:record.world.extensions,snapshot};
+  return {build,extensions:job.output.artifact.extensions??record.world.extensions,snapshot};
 }
 
 export function reviewPrompt(job) {
@@ -62,13 +64,34 @@ function page(text,{start=0,limit=12000}={}) {
   return {text:chars.slice(start,end).join(''),start,next:end<chars.length?end:null,totalChars:chars.length};
 }
 
+export function draftPackages(draft,world) {
+  const merged=(base,added,key,label)=>{
+    if(!Array.isArray(base)||!Array.isArray(added))throw Error(label+' 清单无效');
+    const byId=new Map();
+    for(const item of [...base,...added]){
+      const id=key(item),old=byId.get(id);
+      if(old&&contentHash(old)!==contentHash(item))throw Error(label+' 版本冲突：'+id);
+      byId.set(id,item);
+    }
+    return [...byId.values()];
+  };
+  const extensions=merged(world.extensions||[],draft.extensions||[],item=>item.id,'扩展').map(validateExtension);
+  if(extensions.length>64)throw Error('扩展清单超过上限');
+  const requirements=new Set(extensions.map(item=>extensionRequirement(item.id,item.version))),commands=new Set();
+  for(const extension of extensions){
+    for(const requirement of extension.requires)if(!requirements.has(requirement))throw Error('缺少扩展依赖：'+requirement);
+    for(const command of extension.provides.commands){if(commands.has(command.type))throw Error('扩展命令冲突：'+command.type);commands.add(command.type);}
+  }
+  const assets=validatePackedAssets(draft.scene,merged(world.build.assets||[],draft.assets||[],item=>item.id+'@'+item.version,'素材'));
+  return {extensions,assets,requirements};
+}
+
 export function compileVerification(input) {
   const {world,draft}=input;
-  const extensions=new Set(world.extensions.map(extension=>extensionRequirement(extension.id,extension.version)));
-  const compiled=compileScene(draft.scene,{extensions});
-  const assets=validatePackedAssets(compiled.scene,world.build.assets||[]);
+  const {extensions,assets,requirements}=draftPackages(draft,world);
+  const compiled=compileScene(draft.scene,{extensions:requirements});
   return {build:{...compiled,id:'v-'+compiled.hash.slice(0,20),...(assets.length?{assets}:{})},
-    extensions:world.extensions,snapshot:validateSnapshot(world.snapshot),diff:sceneDiff(world.build.scene,compiled.scene)};
+    extensions,snapshot:validateSnapshot(world.snapshot),diff:sceneDiff(world.build.scene,compiled.scene)};
 }
 
 export function verificationSummary(job) {
@@ -106,11 +129,11 @@ export function readDraftResource(workspace,args) {
 export function patchDraft(workspace,args,world) {
   if(args.workspaceRevision!==workspace.task.revision)throw Error('STALE_DRAFT: 草稿已改变，请重新读取');
   if(workspace.task.revision>=HARNESS_LIMITS.calls)throw Error('CALL_LIMIT: 本轮草稿修改次数已达上限');
-  const extensions=new Set(world.extensions.map(extension=>extensionRequirement(extension.id,extension.version)));
+  const {requirements:extensions,assets}=draftPackages(workspace.task.draft,world);
   const patched=patchWorkspaceScene(workspace.task.draft.scene,args,{reads:workspace.reads,extensions,baseScene:world.build.scene});
   // Asset references must remain satisfiable by the actual immutable packages.
-  validatePackedAssets(patched.scene,world.build.assets||[]);
-  return {draft:{scene:patched.scene},changed:patched.changed};
+  validatePackedAssets(patched.scene,assets);
+  return {draft:{...workspace.task.draft,scene:patched.scene},changed:patched.changed};
 }
 
 export function readCapabilities(args,extensions,scene) {

@@ -180,12 +180,68 @@ fn receipt(
 }
 
 impl TaskJournal {
+    /// Recover a trusted desktop action's receipt after its short turn ended.
+    /// Scope is the original host session and world; this never opens a lease.
+    pub fn workspace_find_receipt(&self, args: &Value) -> Result<Value> {
+        super::durable::fields(args, &["projectId", "sessionId", "worldId", "toolCallId", "request"])?;
+        let project = super::durable::text(args, "projectId", 240)?;
+        let session = super::durable::text(args, "sessionId", 240)?;
+        let world = super::durable::text(args, "worldId", 240)?;
+        let call = super::durable::text(args, "toolCallId", 240)?;
+        call_id(call)?;
+        let task: Option<String> = self.db.query_row(
+            "SELECT t.id FROM craftmine_receipts r JOIN craftmine_tasks t ON t.id=r.task_id
+             JOIN craftmine_workspaces w ON w.task_id=t.id
+             WHERE r.tool_call_id=?1 AND w.world_id=?2
+             AND json_extract(t.binding,'$.projectId')=?3
+             AND json_extract(t.binding,'$.sessionId')=?4 LIMIT 1",
+            params![call,world,project,session], |row| row.get(0),
+        ).optional()?;
+        match task {
+            Some(id) => Ok(serde_json::to_value(receipt(&self.db, &id, call, &args["request"])?)?),
+            None => Ok(Value::Null),
+        }
+    }
+
+    pub fn workspace_current(&self, args: &Value) -> Result<Value> {
+        super::durable::fields(args, &["projectId", "sessionId"])?;
+        let project = super::durable::text(args, "projectId", 240)?;
+        let session = super::durable::text(args, "sessionId", 240)?;
+        let head: Option<(String, String)> = self
+            .db
+            .query_row(
+                "SELECT project_id,head_task FROM craftmine_session_worlds WHERE session_id=?1",
+                [session],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .optional()?;
+        let Some((stored, id)) = head else {
+            return Ok(Value::Null);
+        };
+        ensure!(stored == project, "PROJECT_BINDING_MISMATCH");
+        let task = read_task(&self.db, &id)?;
+        let context = WorkspaceContext {
+            project_id: project.into(),
+            session_id: session.into(),
+            turn_id: task.binding.turn_id,
+        };
+        Ok(serde_json::to_value(inspect(&self.db, &context)?)?)
+    }
     /// The selected world is only a default for a previously unbound session.
     /// Later turns inherit a draft; old turn IDs can never reacquire its lease.
     pub fn workspace_open(
         &mut self,
         ctx: &WorkspaceContext,
         selected_world: &str,
+    ) -> Result<WorkspaceSnapshot> {
+        self.workspace_open_recovery(ctx, selected_world, None)
+    }
+
+    pub(super) fn workspace_open_recovery(
+        &mut self,
+        ctx: &WorkspaceContext,
+        selected_world: &str,
+        recovery_request: Option<(&str, u64, &str)>,
     ) -> Result<WorkspaceSnapshot> {
         ctx.validate()?;
         let tx = self
@@ -226,6 +282,23 @@ impl TaskJournal {
             .as_str()
             .context("BUILD_ID_REQUIRED")?;
         let prior_task = prior.as_ref().map(|p| read_task(&tx, &p.2)).transpose()?;
+        if let Some(previous) = &prior_task {
+            let (generation, owner, recovery) =
+                super::durable::runtime(&tx, &previous.binding.task_id)?;
+            if let Some((expected_id, expected_generation, expected_owner)) = recovery_request {
+                ensure!(
+                    expected_id == previous.binding.task_id
+                        && expected_generation == generation
+                        && expected_owner == owner
+                        && recovery == "interrupted",
+                    "RECOVERY_CONFLICT"
+                );
+            } else {
+                ensure!(recovery != "interrupted", "EXPLICIT_RECOVERY_REQUIRED");
+            }
+        } else {
+            ensure!(recovery_request.is_none(), "RECOVERY_CONFLICT");
+        }
         let lease: Option<String> = tx
             .query_row(
                 "SELECT task_id FROM craftmine_world_leases WHERE world_id=?1",
@@ -292,6 +365,16 @@ impl TaskJournal {
             "INSERT INTO craftmine_world_leases(world_id,task_id) VALUES(?1,?2)",
             params![world_id, id],
         )?;
+        if let Some((old_id, generation, owner)) = recovery_request {
+            tx.execute("INSERT INTO craftmine_task_runtime(task_id,generation,budget_owner,recovery) VALUES(?1,?2,?3,'none')",params![id,i64::try_from(generation.checked_add(1).context("GENERATION_LIMIT")?)?,owner])?;
+            tx.execute(
+                "UPDATE craftmine_task_runtime SET recovery='resumed' WHERE task_id=?1",
+                [old_id],
+            )?;
+            let old = prior_task.as_ref().context("RECOVERY_CONFLICT")?;
+            tx.execute("INSERT OR IGNORE INTO craftmine_ended_turns(session_id,turn_id,status) VALUES(?1,?2,'aborted')",params![old.binding.session_id,old.binding.turn_id])?;
+            tx.execute("INSERT INTO craftmine_task_requirements(task_id,request_id,kind,text,created_at) SELECT ?2,request_id,kind,text,created_at FROM craftmine_task_requirements WHERE task_id=?1",params![old_id,id])?;
+        }
         tx.commit()?;
         self.workspace_inspect(ctx)
     }

@@ -1,0 +1,20 @@
+diff --git a/vendor/pi-desktop/apps/desktop/electron/main/index.ts b/vendor/pi-desktop/apps/desktop/electron/main/index.ts
+index 69f5086..d322eff 100644
+--- a/vendor/pi-desktop/apps/desktop/electron/main/index.ts
++++ b/vendor/pi-desktop/apps/desktop/electron/main/index.ts
+@@ -20,6 +20,7 @@ import { craftmineProjectIdentity } from "./craftmine-tool-context";
+ import { CraftmineTurnGateway } from "./craftmine-turn-gateway";
+ import { CraftmineVerifier } from "./craftmine-verifier";
+ import { checkCraftmineFrame } from "./craftmine-frame-check";
++import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
+ import { runNativeDraftProbe } from "./craftmine-draft-probe";
+ import { configureHeadlessAcceptance, installHeadlessControl } from "./craftmine-headless";
+ import {
+@@ -8981,6 +8982,7 @@ function registerIpc() {
+   });
+ }
+ 
++installNativeAgentAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload), active: (sessionId) => activeTurns.has(sessionId) });
+ installHeadlessControl({
+   window: () => mainWindow,
+   world: () => pluginViews.headlessWorldContents(),
