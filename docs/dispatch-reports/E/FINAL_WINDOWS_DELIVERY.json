@@ -1,0 +1,77 @@
+{
+  "format": "craftmine.final-windows-package/1",
+  "status": "built-and-offscreen-fixture-passed",
+  "requestedProductFreeze": "0f6eaa87742b05a1b2d10c97e22b3dd3d7281fc3",
+  "sourceCommit": "aaa5dc7da06a7f160537f720460056a94389cafd",
+  "productSourceMatchesFreeze": true,
+  "sourceDifference": [
+    "docs/dispatch-reports/E/DELIVERY_E.json",
+    "docs/dispatch-reports/E/MAINTENANCE_ADDENDUM.md"
+  ],
+  "root": "D:/Craftmine World-worktrees/parallel-e-20260909",
+  "folder": "vendor/pi-desktop/apps/desktop/release/win-unpacked",
+  "folderFiles": 825,
+  "folderBytes": 416871430,
+  "installer": {
+    "path": "vendor/pi-desktop/apps/desktop/release/Craftmine-World-Setup-0.14.3.exe",
+    "bytes": 154098909,
+    "sha256": "b73c0b3feeb626698e337bc0d6eac03503b81bebf92814f1efecdaa0912f4624",
+    "signature": "NotSigned"
+  },
+  "sourceArchive": {
+    "path": "desktop/build/CraftmineWorld-source.zip",
+    "bytes": 38127257,
+    "sha256": "8f2dc35576bca18c1e7ab1f812c3c155e972997d08fcad78304f90462ac9a155"
+  },
+  "nativeFixture": {
+    "mode": "packaged",
+    "exitCode": 0,
+    "passed": 40,
+    "total": 40,
+    "report": "docs/evidence/dispatch/E/final-package/native-report.json",
+    "realModelCalls": 0
+  },
+  "evidence": [
+    {
+      "path": "docs/evidence/dispatch/E/final-package/build-manifest.json",
+      "sha256": "86d11184d6e281293cf1e3e707aee3b82e4cab5a896941d1967eeb62c350b621",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "86d11184d6e281293cf1e3e707aee3b82e4cab5a896941d1967eeb62c350b621"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/final-package/integrated-native-packaged.log",
+      "sha256": "eb62bad495ba0999bb5dbc1a8b29861bb4f4672a43de1dc4e052d0fd5031b94d",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "6b6b27252deafa56f3f52744216fa7d0c357ad77e10d45efe0bd4ee6fa460234"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/final-package/integrated-package-build.log",
+      "sha256": "dede069e8e736054e902dc2171d543cc69b1d8485ff5106e2eaa2e9e41776fa9",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "44510a63b07522a18efd263f3706b551c73db19594a3e75f708dcbdd2de55473"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/final-package/native-report.json",
+      "sha256": "061d48d7153af16e2d57da9a956057cdeb8815212959f6ac728787bd7f4f5e82",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "061d48d7153af16e2d57da9a956057cdeb8815212959f6ac728787bd7f4f5e82"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/final-package/package-evidence.json",
+      "sha256": "d7ae87c8f121e69776132a8177e4ee7da49498b271e32428934a3068f5d74441",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "d7ae87c8f121e69776132a8177e4ee7da49498b271e32428934a3068f5d74441"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/final-package/signature-status.json",
+      "sha256": "9b803a64e28873f865f42e9c1b087d373400c9633442c33aba4a9883ceb2965f",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "17b8931fee52a63e2c3147e4731200926c349e66fddfc0a8acc1314b0ca672b9"
+    }
+  ],
+  "installerExecuted": false,
+  "cleanWindowsVerified": false,
+  "actualCrossUserCredentialTest": false,
+  "realInputCalls": 0,
+  "remotePublished": false
+}

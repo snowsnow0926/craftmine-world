@@ -19,3 +19,7 @@
 第一次维护夹具漏提供 known usage 必需的 inputTokens/outputTokens，Rust 返回 INTEGER_REQUIRED；补齐真实契约后通过，没有弱化实现校验。初次桌面 tsc 引用了 E 旧包留下的 agent-runtime dist，缺少 B 导出；重建该工作空间依赖后通过。没有把上述失败记为成功，也没有真实模型或真实键鼠/窗口操作。
 
 这不是完整 UI/真实模型手动压缩成绩；G/F 仍须从集成版本运行原生入口，确认同预算归属、候选可应用。此前 E source 2cf0f69 安装包不含此修复，不可作为最终发行证据。当前代码与 debug 二进制哈希见 maintenance-verification.json。根 Agent 已收到代码并可继续相邻入口工作。
+
+## 普通会话兼容补丁
+
+根 Agent 再次指出：内置插件存在不代表当前 PI 会话已创建世界。提交 `d8a83a05f7c2b85fd864e6882200fe4111de252b` 使私有发现路由仅在 workspace 不存在时返回 null，Main 使用原 generic compact；已有 running/cancelled/interrupted 世界仍拒绝，绝不新建草稿作为回退。真实进程测试新增 absent 仍 absent、running 拒绝以及实际关闭重启后 interrupted 拒绝，最终 1/1 通过（238.5 ms）；桌面 tsc 通过。首次测试尝试不存在的 task.recover RPC，随后改用真实进程重启复现，未修改协议以迁就测试。此前本附录对“无 finished 世界一律报错”的描述只对应 1e685fd 旧提交；最新行为以本补丁为准。

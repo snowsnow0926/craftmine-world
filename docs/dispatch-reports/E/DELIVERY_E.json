@@ -5,8 +5,8 @@
   "status": "ready_for_integration",
   "baseRef": "dispatch/w2-w5-v1",
   "baseCommit": "2f71e128fd9ff9c49ee4e466138f4949b6bce862",
-  "codeCommit": "1e685fd4072272386d74f046722e09c1bda51339",
-  "packagedSourceCommit": "2cf0f69cb88099ca7a4545fa9d2f668b62586e88",
+  "codeCommit": "aaa5dc7da06a7f160537f720460056a94389cafd",
+  "packagedSourceCommit": "aaa5dc7da06a7f160537f720460056a94389cafd",
   "branch": "codex/parallel-e-20260909",
   "worktree": "D:/Craftmine World-worktrees/parallel-e-20260909",
   "commits": [
@@ -15,13 +15,15 @@
     "2cf0f69cb88099ca7a4545fa9d2f668b62586e88",
     "378e863ab96da5a74f3f7119f21c83936807531d",
     "cdb9ba3391b037c19d478be58adad327f320cc36",
-    "1e685fd4072272386d74f046722e09c1bda51339"
+    "1e685fd4072272386d74f046722e09c1bda51339",
+    "d8a83a05f7c2b85fd864e6882200fe4111de252b"
   ],
   "report": "docs/dispatch-reports/E/REPORT_E.md",
   "interfaces": [
     "docs/dispatch-reports/E/INTERFACE_E.md",
     "docs/dispatch-reports/E/MEMORY_RECEIPT_ADDENDUM.md",
-    "docs/dispatch-reports/E/MAINTENANCE_ADDENDUM.md"
+    "docs/dispatch-reports/E/MAINTENANCE_ADDENDUM.md",
+    "docs/dispatch-reports/E/FINAL_WINDOWS_PACKAGE.md"
   ],
   "integrationPatches": [
     {
@@ -126,6 +128,38 @@
       "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909/vendor/pi-desktop",
       "sourceCommit": "1e685fd4072272386d74f046722e09c1bda51339",
       "evidence": "docs/evidence/dispatch/E/maintenance-verification.json"
+    },
+    {
+      "kind": "domain-process",
+      "command": "CRAFTMINE_CORE_BIN=<own debug binary> node --test tests/dispatch/e/maintenance-process.test.mjs",
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909",
+      "sourceCommit": "d8a83a05f7c2b85fd864e6882200fe4111de252b",
+      "result": "1 passed including absent/running/actual restarted interrupted workspace distinction",
+      "evidence": "docs/dispatch-reports/E/MAINTENANCE_ADDENDUM.md"
+    },
+    {
+      "kind": "typecheck",
+      "command": "pnpm --filter @pi-desktop/desktop exec tsc -p tsconfig.json --noEmit",
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909/vendor/pi-desktop",
+      "sourceCommit": "d8a83a05f7c2b85fd864e6882200fe4111de252b",
+      "result": "passed",
+      "evidence": "docs/dispatch-reports/E/MAINTENANCE_ADDENDUM.md"
+    },
+    {
+      "kind": "integrated-package",
+      "command": "powershell.exe -NoProfile -NonInteractive -WindowStyle Hidden -File desktop/build-client.ps1 -Installer",
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909",
+      "sourceCommit": "aaa5dc7da06a7f160537f720460056a94389cafd",
+      "result": "exit 0; 825 files + NSIS; exact hashes checked",
+      "evidence": "docs/evidence/dispatch/E/final-package/integrated-package-build.log"
+    },
+    {
+      "kind": "integrated-native-fixture",
+      "command": "CRAFTMINE_PACKAGED_ROOT=<final own win-unpacked> CRAFTMINE_TEST_APPLICATION=1 node tests/desktop-native.mjs",
+      "cwd": "D:/Craftmine World-worktrees/parallel-e-20260909",
+      "sourceCommit": "aaa5dc7da06a7f160537f720460056a94389cafd",
+      "result": "40/40 passed, exit 0, no live model",
+      "evidence": "docs/evidence/dispatch/E/final-package/native-report.json"
     }
   ],
   "evidence": [
@@ -217,6 +251,42 @@
       "path": "docs/evidence/dispatch/E/maintenance-verification.json",
       "sha256": "8049d051ed1ea5af5908a34cfbd3941bb9261a8e6d94551b6a3ba2e998aef2ed",
       "description": "Recorded actual command outcomes and source/binary hashes, not raw process log"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/final-package/build-manifest.json",
+      "sha256": "86d11184d6e281293cf1e3e707aee3b82e4cab5a896941d1967eeb62c350b621",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "86d11184d6e281293cf1e3e707aee3b82e4cab5a896941d1967eeb62c350b621"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/final-package/integrated-native-packaged.log",
+      "sha256": "eb62bad495ba0999bb5dbc1a8b29861bb4f4672a43de1dc4e052d0fd5031b94d",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "6b6b27252deafa56f3f52744216fa7d0c357ad77e10d45efe0bd4ee6fa460234"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/final-package/integrated-package-build.log",
+      "sha256": "dede069e8e736054e902dc2171d543cc69b1d8485ff5106e2eaa2e9e41776fa9",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "44510a63b07522a18efd263f3706b551c73db19594a3e75f708dcbdd2de55473"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/final-package/native-report.json",
+      "sha256": "061d48d7153af16e2d57da9a956057cdeb8815212959f6ac728787bd7f4f5e82",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "061d48d7153af16e2d57da9a956057cdeb8815212959f6ac728787bd7f4f5e82"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/final-package/package-evidence.json",
+      "sha256": "d7ae87c8f121e69776132a8177e4ee7da49498b271e32428934a3068f5d74441",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "d7ae87c8f121e69776132a8177e4ee7da49498b271e32428934a3068f5d74441"
+    },
+    {
+      "path": "docs/evidence/dispatch/E/final-package/signature-status.json",
+      "sha256": "9b803a64e28873f865f42e9c1b087d373400c9633442c33aba4a9883ceb2965f",
+      "sha256Source": "original-worktree-bytes",
+      "gitNormalizedSha256": "17b8931fee52a63e2c3147e4731200926c349e66fddfc0a8acc1314b0ca672b9"
     }
   ],
   "dependencies": [
@@ -237,12 +307,12 @@
     "clean Windows without Node/Rust/pnpm",
     "actual installer first install/upgrade/uninstall",
     "actual cross-user credential decryption",
-    "final integrated package",
     "real-model and three-compaction acceptance"
   ],
   "privateDataIncluded": false,
   "mergedToPrimary": false,
   "pushed": false,
   "windowsCodeCommit": "378e863ab96da5a74f3f7119f21c83936807531d",
-  "integrationBaseCommit": "88957dc0c14e85cb4f683129b61710ca77e6abc5"
+  "integrationBaseCommit": "88957dc0c14e85cb4f683129b61710ca77e6abc5",
+  "finalPackage": "docs/dispatch-reports/E/FINAL_WINDOWS_DELIVERY.json"
 }
