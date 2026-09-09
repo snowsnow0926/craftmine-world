@@ -155,8 +155,11 @@ impl RunningProcess {
     pub fn wait(&self, timeout: Duration) -> Result<Option<u32>> {
         let milliseconds = timeout.as_millis().min(u32::MAX as u128) as u32;
         unsafe {
-            if WaitForSingleObject(self.process.0, milliseconds) != WAIT_OBJECT_0 {
-                return Ok(None);
+            match WaitForSingleObject(self.process.0, milliseconds) {
+                WAIT_OBJECT_0 => {},
+                WAIT_TIMEOUT => return Ok(None),
+                WAIT_FAILED => return Err(io_error("WaitForSingleObject", io::Error::last_os_error())),
+                value => return Err(format!("Unexpected process wait result {value:#x}").into()),
             }
             let mut exit = 0;
             win(
@@ -208,6 +211,16 @@ fn environment_block(environment: &Option<Vec<(String, String)>>) -> Result<Vec<
 
 /// Creates the restricted process. Returns as soon as the process exists.
 pub fn start(spec: &LaunchSpec) -> Result<RunningProcess> {
+    start_policy(spec, false, false)
+}
+
+// LPAC is a fixed diagnostic variant, not a product policy selection API.
+fn start_policy(spec: &LaunchSpec, lpac: bool, registry_read: bool) -> Result<RunningProcess> {
+    if lpac && (spec.appcontainer.is_none() || spec.job.is_none()
+        || spec.job.is_some_and(|job| job.active_process_limit != 1)
+        || spec.desktop.is_none() || !spec.handle_list) {
+        return Err("LPAC diagnostic requires the full task boundary".into());
+    }
     let job = match &spec.job {
         Some(policy) => {
             let handle = unsafe { CreateJobObjectW(null(), null()) };
@@ -263,6 +276,7 @@ pub fn start(spec: &LaunchSpec) -> Result<RunningProcess> {
 
     unsafe {
         let mut attribute_count = 0u32;
+        if lpac { attribute_count += 1; }
         if spec.appcontainer.is_some() {
             attribute_count += 1;
         }
@@ -297,13 +311,25 @@ pub fn start(spec: &LaunchSpec) -> Result<RunningProcess> {
             _storage: storage,
         };
 
+        let registry_capability = if registry_read { Some(RegistryReadCapability::derive()?) } else { None };
+        let mut capability_entry = windows_sys::Win32::Security::SID_AND_ATTRIBUTES {
+            Sid: registry_capability.as_ref().map(|capability| capability.0).unwrap_or(null_mut()),
+            Attributes: 4, // SE_GROUP_ENABLED from winnt.h
+        };
         let capabilities = SECURITY_CAPABILITIES {
             AppContainerSid: spec.appcontainer.unwrap_or(null_mut()),
-            Capabilities: null_mut(),
-            CapabilityCount: 0,
+            Capabilities: if registry_read { &mut capability_entry } else { null_mut() },
+            CapabilityCount: if registry_read { 1 } else { 0 },
             Reserved: 0,
         };
         let mut updates: Vec<(usize, *const c_void, usize)> = Vec::new();
+        // PROCESS_CREATION_ALL_APPLICATION_PACKAGES_OPT_OUT: remove implicit
+        // ALL APPLICATION PACKAGES resource access; grants no network capability.
+        let opt_out = 1u32;
+        if lpac {
+            updates.push((PROC_THREAD_ATTRIBUTE_ALL_APPLICATION_PACKAGES_POLICY as usize,
+                (&opt_out as *const u32).cast(), std::mem::size_of_val(&opt_out)));
+        }
         if spec.appcontainer.is_some() {
             updates.push((
                 PROC_THREAD_ATTRIBUTE_SECURITY_CAPABILITIES as usize,
@@ -460,7 +486,22 @@ pub struct Outcome {
 
 /// Convenience wrapper: start, wait for the spec timeout, then terminate.
 pub fn launch(spec: &LaunchSpec) -> Result<Outcome> {
-    let running = start(spec)?;
+    launch_policy(spec, false, false)
+}
+
+/// Fixed acceptance experiments only. Never used by the product Task API.
+pub fn launch_lpac_diagnostic(spec: &LaunchSpec) -> Result<Outcome> {
+    launch_policy(spec, true, false)
+}
+
+/// Final bounded LPAC candidate: registryRead only, no network capabilities.
+/// This never changes the product Task policy.
+pub fn launch_lpac_registry_diagnostic(spec: &LaunchSpec) -> Result<Outcome> {
+    launch_policy(spec, true, true)
+}
+
+fn launch_policy(spec: &LaunchSpec, lpac: bool, registry_read: bool) -> Result<Outcome> {
+    let running = start_policy(spec, lpac, registry_read)?;
     let exit = match running.wait(spec.timeout)? {
         Some(exit) => exit,
         None => {
@@ -485,6 +526,30 @@ pub fn launch(spec: &LaunchSpec) -> Result<Outcome> {
         appcontainer: running.appcontainer,
         job_active_processes: running.job().and_then(|job| job.active_processes()),
     })
+}
+
+struct RegistryReadCapability(PSID);
+impl RegistryReadCapability {
+    unsafe fn derive() -> Result<Self> {
+        use windows_sys::Win32::Security::DeriveCapabilitySidsFromName;
+        let mut groups: *mut PSID = null_mut(); let mut group_count = 0;
+        let mut capabilities: *mut PSID = null_mut(); let mut capability_count = 0;
+        win(DeriveCapabilitySidsFromName(wide("registryRead").as_ptr(), &mut groups, &mut group_count,
+            &mut capabilities, &mut capability_count), "Derive registryRead capability")?;
+        for index in 0..group_count { LocalFree(*groups.add(index as usize)); }
+        LocalFree(groups.cast());
+        if capability_count != 1 {
+            for index in 0..capability_count { LocalFree(*capabilities.add(index as usize)); }
+            LocalFree(capabilities.cast());
+            return Err("Expected exactly one registryRead capability SID".into());
+        }
+        let sid = *capabilities;
+        LocalFree(capabilities.cast());
+        Ok(Self(sid))
+    }
+}
+impl Drop for RegistryReadCapability {
+    fn drop(&mut self) { unsafe { LocalFree(self.0); } }
 }
 
 /// Builds the minimal environment an isolated task is allowed to see.

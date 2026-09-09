@@ -113,12 +113,12 @@ Raw evidence: `evidence/gate-run1.txt`, `evidence/gate-run2.txt`,
 
 ## Not verified
 
-- **Loopback network is allowed.** The native probe connected to the host's
-  `127.0.0.1` listener and could bind one (`net_loopback_connect_error=None`,
-  `net_loopback_bind_error=None`). Standard AppContainer without capabilities
-  blocks non-loopback egress only. A standard user cannot add WFP filters or
-  firewall rules, so loopback denial needs an administrator-configured policy
-  and is **not** claimed here. Treat a task as able to reach local services.
+- **Loopback isolation remains unverified.** Earlier evidence recorded
+  `net_loopback_connect_error=None` and incorrectly interpreted it as success.
+  That expression conflated `Ok` with `Err` having no raw OS error (including
+  Rust-created timeouts). Cycle 5's event completion and echo probes have not
+  demonstrated a cross-container data connection or an explicit policy denial.
+  Binding a listener alone proves neither. The product execution gate stays closed.
 - LPAC (Less Privileged AppContainer), UI/input isolation, clipboard.
 - Reparse-point and handle-race attacks; CPU/disk/GPU quotas; disk exhaustion.
 - Real model-authored projects (only the fixed fixture was used).

@@ -59,8 +59,12 @@ static func _connect(host: String, port: int, timeout_ms: int) -> String:
 		return "not-configured"
 	var peer := StreamPeerTCP.new()
 	var error := peer.connect_to_host(host, port)
+	# Only an explicit authorization error establishes denial. Generic socket
+	# failure, refused connection and timeout cannot establish policy isolation.
+	if error == ERR_UNAUTHORIZED:
+		return "denied(unauthorized)"
 	if error != OK:
-		return "denied(error=%d)" % error
+		return "unknown(error=%d)" % error
 	var started := Time.get_ticks_msec()
 	while Time.get_ticks_msec() - started < timeout_ms:
 		peer.poll()
@@ -69,8 +73,8 @@ static func _connect(host: String, port: int, timeout_ms: int) -> String:
 			peer.disconnect_from_host()
 			return "ALLOWED"
 		if status == StreamPeerTCP.STATUS_ERROR:
-			return "denied(status=error)"
-	return "denied(timeout)"
+			return "unknown(status=error)"
+	return "unknown(timeout)"
 
 
 static func _spawn() -> String:

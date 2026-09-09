@@ -8,6 +8,7 @@ pub mod acl;
 pub mod desktop;
 pub mod launch;
 pub mod loader;
+pub mod network;
 pub mod profile;
 pub mod report;
 pub mod task;
