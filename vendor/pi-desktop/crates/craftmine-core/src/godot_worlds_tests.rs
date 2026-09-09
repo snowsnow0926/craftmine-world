@@ -124,6 +124,8 @@ fn portable_restore_rebuilds_applied_source_without_losing_progress_or_drafts() 
     assert_ne!(exported["contentOid"],journal.content_status(&json!({"worldId":"g1"}))?["headOid"]);
     assert_eq!(exported["snapshot"],journal.world_read("g1")?.world.snapshot);
     assert_eq!(exported["sourceWorldId"],"g1");
+    assert_eq!(exported["sourceRevision"],0);
+    assert_ne!(exported["sourceRevision"],exported["revision"],"source revision is not play-progress revision");
     let exported_script=exported["files"].as_array().unwrap().iter().find(|file|file["path"]=="world.gd").unwrap();
     assert_eq!(exported_script["sha256"],digest(SCRIPT));
     assert_eq!(exported_script["bytes"],SCRIPT.len());
@@ -143,6 +145,7 @@ fn portable_restore_rebuilds_applied_source_without_losing_progress_or_drafts() 
     assert_eq!(copied_export["contentOid"],g3_plan["contentOid"]);
     assert_eq!(copied_export["snapshot"]["body"]["worldId"],"g3");
     assert_eq!(copied_export["files"],exported["files"]);
+    assert_eq!(copied_export["sourceRevision"],exported["sourceRevision"]);
     // Simulate an older copied world: it has an unpublished main draft and no
     // dedicated formal-source ref. Recovery must transfer from the source's
     // old formal revision, not either world's newer head.

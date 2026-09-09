@@ -1,6 +1,6 @@
 # Exact formal source export
 
-Private RPC godotRuntime.exportSource({worldId}) returns craftmine.godot-export-source/1 with worldId, sourceWorldId, buildId, baseId, baseVersion, revision, snapshot, repoId, contentOid, files[{path,kind,bytes,sha256}].
+Private RPC godotRuntime.exportSource({worldId}) returns craftmine.godot-export-source/1 with worldId, sourceWorldId, buildId, baseId, baseVersion, revision, sourceRevision, snapshot, repoId, contentOid, files[{path,kind,bytes,sha256}]. revision is the world's progress revision; sourceRevision is the formal build owner's persisted source_revision, never inferred from progress or the draft head. contentOid remains the exact source authority.
 
 sourceWorldId identifies the immutable build owner. Copied source bytes may still contain that source identity; this field does not claim runtime identity rebinding. Packaging must explicitly account for the difference.
 
