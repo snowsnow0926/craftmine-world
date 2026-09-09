@@ -1,0 +1,549 @@
+{
+  "root": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-formal-export-OgdoM0",
+  "passed": false,
+  "worlds": [
+    {
+      "baseId": "first-person",
+      "worldId": "world-e0d2fe3fe0f1",
+      "formal": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "buildId": "gbd-6bf945cc53b040c999089c3b0576341404f2e63828f2d434803f5b9fca45bb6d",
+        "contentOid": "c4eb1f2b3b440260f5b8f63a78482a74aeca7ce3",
+        "files": [
+          {
+            "bytes": 8249,
+            "kind": "source",
+            "path": "README.md",
+            "sha256": "f2cd23550b9aa9226bb8c655dcc84c12a3c253ed99085be7a9b76dc50657ba6f"
+          },
+          {
+            "bytes": 4902,
+            "kind": "source",
+            "path": "assets/ASSET_MANIFEST.json",
+            "sha256": "fc1468d9a8633bccb0457ba84a0794339df7634a624e012bea6966939dff66ed"
+          },
+          {
+            "bytes": 123,
+            "kind": "source",
+            "path": "assets/materials/ammo_crate.tres",
+            "sha256": "c24e2cdba717abce260c1e2c3cf7d05b48e14861f148ab4a539f71a61a8cbe06"
+          },
+          {
+            "bytes": 124,
+            "kind": "source",
+            "path": "assets/materials/crate_wood.tres",
+            "sha256": "9905461f79f608125581a290791d95c63c257ef49c5677ff95237304e84b8ce7"
+          },
+          {
+            "bytes": 220,
+            "kind": "source",
+            "path": "assets/materials/pickup_kit.tres",
+            "sha256": "83c19b9c7bef57f857daaed4561c8c81e60394bee0054e352b7bcabe8f19851b"
+          },
+          {
+            "bytes": 142,
+            "kind": "source",
+            "path": "assets/materials/pistol_body.tres",
+            "sha256": "d7b39baf4f1038cc04a95e97087ab0038209a919f14772c196059ccca8b70309"
+          },
+          {
+            "bytes": 124,
+            "kind": "source",
+            "path": "assets/materials/range_floor.tres",
+            "sha256": "f2da6abd284c572bc3af716e996f47d3d9ebf7ab627ca2793de4a08d8d9b318e"
+          },
+          {
+            "bytes": 125,
+            "kind": "source",
+            "path": "assets/materials/range_wall.tres",
+            "sha256": "8f96618b4c5c60b77b2b4636d74de45994b6e3cdd28d835bdab256bf8b735f0f"
+          },
+          {
+            "bytes": 142,
+            "kind": "source",
+            "path": "assets/materials/sword_blade.tres",
+            "sha256": "acb6df02acf66e2530fab60dfa3294c09fbad38a6571a3384bd20c6ec0d04403"
+          },
+          {
+            "bytes": 124,
+            "kind": "source",
+            "path": "assets/materials/target_plate.tres",
+            "sha256": "c5edae0af7bccaceb6d8de24d334386be4f24f2ea391c8e1c9bf0eb933cfa403"
+          },
+          {
+            "bytes": 1624,
+            "kind": "source",
+            "path": "assets/meshes/ammo_crate.obj",
+            "sha256": "2fc6a40063be6d990328ef58ee276fadc77332abecd5d49173ebef897e19a48b"
+          },
+          {
+            "bytes": 1169,
+            "kind": "source",
+            "path": "assets/meshes/range_crate.obj",
+            "sha256": "4d31011e2c7f077a94d1e4fe5207d62a7e51140a4901773bcd1bc8f269443d79"
+          },
+          {
+            "bytes": 2999,
+            "kind": "source",
+            "path": "assets/meshes/target_dummy.obj",
+            "sha256": "85733881b045534f5e250ec10bcf7379099e62c5b8ef31bb79a820a9caec5d06"
+          },
+          {
+            "bytes": 3026,
+            "kind": "source",
+            "path": "assets/meshes/weapon_pistol.obj",
+            "sha256": "5ed4c8dd6d283402dce43ca28953294ea48858ec9d37fa699b549067aa82d805"
+          },
+          {
+            "bytes": 2562,
+            "kind": "source",
+            "path": "assets/meshes/weapon_sword.obj",
+            "sha256": "cf292380be16c39ea8b092c3f81911a4feb35b9af32dceac7182889e91c23996"
+          },
+          {
+            "bytes": 2837,
+            "kind": "source",
+            "path": "assets/provenance/ASSET_PROVENANCE.md",
+            "sha256": "3a889f7090841c72f003d22d18a017f085d9ce06459e475857fa999d8a8f3183"
+          },
+          {
+            "bytes": 12585,
+            "kind": "source",
+            "path": "base_manifest.json",
+            "sha256": "8797aded9be45f6d5e4fb76189637815de3abf25f45a0cbc807b6d11d9eb2b11"
+          },
+          {
+            "bytes": 2006,
+            "kind": "source",
+            "path": "craftmine_initial_state.json",
+            "sha256": "b23dc9393e53ee731a7e61ed2b5bf564e66f523545afe65ce6644c3967ae7019"
+          },
+          {
+            "bytes": 2409,
+            "kind": "source",
+            "path": "craftmine_shared/base_adapter.gd",
+            "sha256": "e292098349b87635dd465fa438fff6253f6bda49b20c7c74cf3f47b4294d49a6"
+          },
+          {
+            "bytes": 6461,
+            "kind": "source",
+            "path": "craftmine_shared/runtime_bridge.gd",
+            "sha256": "96092d065d6faa605e966f2f6dfe462d81153018509a400b2391c050f332c92c"
+          },
+          {
+            "bytes": 1800,
+            "kind": "source",
+            "path": "craftmine_shared/state_guard.gd",
+            "sha256": "9b3bb64b8515b0937e9e884999cfe10684d16d4a2b0af53140cc2a81dcc11293"
+          },
+          {
+            "bytes": 356,
+            "kind": "source",
+            "path": "data/balance/blank_start.tres",
+            "sha256": "0beff95e72cdf4c9bd4468d1acaaf5c13a5f10684399233daf8d8aaa109368b5"
+          },
+          {
+            "bytes": 356,
+            "kind": "source",
+            "path": "data/balance/training_range.tres",
+            "sha256": "0beff95e72cdf4c9bd4468d1acaaf5c13a5f10684399233daf8d8aaa109368b5"
+          },
+          {
+            "bytes": 621,
+            "kind": "source",
+            "path": "data/equipment/equipment_catalog.tres",
+            "sha256": "49b4dd6f09eee09deef27efbec81d64c98757deed23c699aac2dbaecde3f074c"
+          },
+          {
+            "bytes": 773,
+            "kind": "source",
+            "path": "data/equipment/inspection_tool.tres",
+            "sha256": "2513efe37e1930b973273fe04ccfd2289812f60c3ad74642919626f175defe1c"
+          },
+          {
+            "bytes": 1145,
+            "kind": "source",
+            "path": "data/equipment/pistol.tres",
+            "sha256": "7fd9521ab3ba0c4f72b05c0d0b7a1035d6041583cd2426e03a7c32ce656d9262"
+          },
+          {
+            "bytes": 1149,
+            "kind": "source",
+            "path": "data/equipment/practice_sword.tres",
+            "sha256": "d3442c71f169f432c557cc211ace1f975aaf5c99c117e0475a296f6b962957f4"
+          },
+          {
+            "bytes": 466,
+            "kind": "source",
+            "path": "data/quests/range_basic.tres",
+            "sha256": "573ef83a37c6c7ba3402c25a23c34d2dd3e57c73c21c3ebd282cc51a07d8dc31"
+          },
+          {
+            "bytes": 411,
+            "kind": "source",
+            "path": "data/ui/crosshair_melee.tres",
+            "sha256": "663c80abb5ed74c00f6511fe25dd8cd069dae27225cd3f33d191b45717527b7f"
+          },
+          {
+            "bytes": 406,
+            "kind": "source",
+            "path": "data/ui/crosshair_precision.tres",
+            "sha256": "aed9d6331d1e05d36b27d3a660ef3991c0913f2b0ac973e72be4b92059b06353"
+          },
+          {
+            "bytes": 525,
+            "kind": "source",
+            "path": "icon.svg",
+            "sha256": "dea7e5179c20bcfaff795536867fe53a7bc0ce3426f7d3643ef2f2085bd86dec"
+          },
+          {
+            "bytes": 1435,
+            "kind": "source",
+            "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+            "sha256": "2fddded709a512b0873dbdf7b4556f8d79c67a440571edd919810e6abe2c1825"
+          },
+          {
+            "bytes": 2616,
+            "kind": "source",
+            "path": "project.godot",
+            "sha256": "1599fbabb0fb6acf44068f178c8b897f462c5ef0e706251989b71f5c42391661"
+          },
+          {
+            "bytes": 1914,
+            "kind": "source",
+            "path": "scenes/actors/player.tscn",
+            "sha256": "eefdc2c1636b0ac4979f138e30ed3a0338244a23195e17a4a1de37bf731606fb"
+          },
+          {
+            "bytes": 884,
+            "kind": "source",
+            "path": "scenes/actors/target_dummy.tscn",
+            "sha256": "e9bec5b13ce2f79e73910f43a13f0e2c490613f4015c5cc88da94df608e1aa7e"
+          },
+          {
+            "bytes": 3328,
+            "kind": "source",
+            "path": "scenes/blank_start.tscn",
+            "sha256": "35c9dfe889c56dfa5b57e8d241957c4567d459085f03dfaaf38da263a2c05dfa"
+          },
+          {
+            "bytes": 870,
+            "kind": "source",
+            "path": "scenes/props/ammo_crate.tscn",
+            "sha256": "53136311263bf382e71c271a037cb41e41fd43e282ba1e132f7098a7d703a6af"
+          },
+          {
+            "bytes": 935,
+            "kind": "source",
+            "path": "scenes/props/pickup_item.tscn",
+            "sha256": "6a9251f75827a9d5e2357c3aec236a9a3cada0a97c9f9174b487f289504eca5e"
+          },
+          {
+            "bytes": 694,
+            "kind": "source",
+            "path": "scenes/props/range_crate.tscn",
+            "sha256": "6a665c867014969a7e105d3b06551cb144a7b26f24ca9d939b204da83cceb051"
+          },
+          {
+            "bytes": 7518,
+            "kind": "source",
+            "path": "scenes/training_range.tscn",
+            "sha256": "a03f70a245562cfed7a5c2d91eb62ef9fa6dd3ccfcff36b49a95d97d0a597b71"
+          },
+          {
+            "bytes": 2966,
+            "kind": "source",
+            "path": "scenes/ui/hud.tscn",
+            "sha256": "dadad07a9f5d9538be0ba02e018bde72348250fe308f6c37d3bddccefe2a9fc1"
+          },
+          {
+            "bytes": 6394,
+            "kind": "source",
+            "path": "scripts/adapters/base_ops.gd",
+            "sha256": "c1d1963b079636dccc9ffa0b2d1eb99f1fb082672919497db9402dcc969f2076"
+          },
+          {
+            "bytes": 2413,
+            "kind": "source",
+            "path": "scripts/adapters/preview_bridge.gd",
+            "sha256": "41e4589a14433d881f1e0439bf38ac1915906149e3fcbdec5d7bc0ad1a0b36ba"
+          },
+          {
+            "bytes": 3150,
+            "kind": "source",
+            "path": "scripts/adapters/probe_runner.gd",
+            "sha256": "ea263f8f7eac652d5b22af1a7f6f5b206e094b4fe837202b5628f946fb01486c"
+          },
+          {
+            "bytes": 3661,
+            "kind": "source",
+            "path": "scripts/core/aim_query.gd",
+            "sha256": "fc98091abbb02d43db75742df06453b752448b860a5b77370f99610a614f6815"
+          },
+          {
+            "bytes": 1745,
+            "kind": "source",
+            "path": "scripts/core/ammo_crate.gd",
+            "sha256": "ac7d374b7835f9364a4cba57b1403238bac4fe44d57217afb35f5932636e53a5"
+          },
+          {
+            "bytes": 2927,
+            "kind": "source",
+            "path": "scripts/core/attack_dispatcher.gd",
+            "sha256": "6af6085ed8a5ee072e9f2b4c225775a6fe7a2bc222167dd3b95e2160ef8b5109"
+          },
+          {
+            "bytes": 1012,
+            "kind": "source",
+            "path": "scripts/core/balance_profile.gd",
+            "sha256": "b9b01a5d1c5880959503e74d5cddf2b047dad3ed32c9d0aa9dcffaf12f63a527"
+          },
+          {
+            "bytes": 8720,
+            "kind": "source",
+            "path": "scripts/core/base_world.gd",
+            "sha256": "0d025bc0d4b6a3aa087fc6c38151002039c1aa1ce725d0984b0e954fd57f779c"
+          },
+          {
+            "bytes": 1578,
+            "kind": "source",
+            "path": "scripts/core/camera_rig.gd",
+            "sha256": "76a8c99e34b5fae49eb7bb382708469a9ca05a564a61c582f73fd8f26cc3f36c"
+          },
+          {
+            "bytes": 1841,
+            "kind": "source",
+            "path": "scripts/core/equipment_catalog.gd",
+            "sha256": "9269b73c71cfe315a0ca7ebb2b0b85f6324c4bdecd3bfbbf44b26ce8f4d50780"
+          },
+          {
+            "bytes": 3420,
+            "kind": "source",
+            "path": "scripts/core/equipment_definition.gd",
+            "sha256": "28a311cadc1626649a6751fe84ee86f641c92f91b761d9b800ab5e3918e313be"
+          },
+          {
+            "bytes": 10700,
+            "kind": "source",
+            "path": "scripts/core/equipment_state.gd",
+            "sha256": "10c4cd49fb01d3e8dbd82ea9da93de708629cbf90e101a2dbba1d14c7072f07c"
+          },
+          {
+            "bytes": 1944,
+            "kind": "source",
+            "path": "scripts/core/equipment_visuals.gd",
+            "sha256": "15af90e8a20169f189996f1300f580b74afbc58a49c419b4c714657cc7f85abc"
+          },
+          {
+            "bytes": 1085,
+            "kind": "source",
+            "path": "scripts/core/interactable.gd",
+            "sha256": "5493aed7a2eefcf53f3d0af3658d67de999a42af37a3e18eab2b1f74c1f26d31"
+          },
+          {
+            "bytes": 2339,
+            "kind": "source",
+            "path": "scripts/core/inventory.gd",
+            "sha256": "60fa6fb82dffdbb6347ba6221dddfbb3e366c2d57a935a50149fb3a50f017baf"
+          },
+          {
+            "bytes": 3754,
+            "kind": "source",
+            "path": "scripts/core/melee_attack.gd",
+            "sha256": "c44c3373376c57ffb1538d576e943e2e535723f8a8f41950230ec34603c55203"
+          },
+          {
+            "bytes": 1419,
+            "kind": "source",
+            "path": "scripts/core/pickup_item.gd",
+            "sha256": "80c28cd8b30245c91f14a50d9f8e8466826e29657bef44a79bea7490610ae72d"
+          },
+          {
+            "bytes": 5869,
+            "kind": "source",
+            "path": "scripts/core/player_controller.gd",
+            "sha256": "bd780724d1ce8ab5bb3e07ab839711cbf33c05edccef3c741abcd81d840cc34c"
+          },
+          {
+            "bytes": 1292,
+            "kind": "source",
+            "path": "scripts/core/quest_definition.gd",
+            "sha256": "0607b3905a7700c9ef43c01560c9ea42af5529bd60694940135b06287de9b1af"
+          },
+          {
+            "bytes": 6041,
+            "kind": "source",
+            "path": "scripts/core/quest_tracker.gd",
+            "sha256": "456f381becd6b302087b1b2e6720a44dc06e35d539cad3a6226f5966dfc83a43"
+          },
+          {
+            "bytes": 3330,
+            "kind": "source",
+            "path": "scripts/core/ranged_attack.gd",
+            "sha256": "3f2ab846a28c748ca4c777ba556e760958116e3df05b86567d43e521cb5f9dd3"
+          },
+          {
+            "bytes": 4027,
+            "kind": "source",
+            "path": "scripts/core/save_store.gd",
+            "sha256": "d85e1ada777a307bb45e7a089c10ad21c1d016c9eb9a2d467b54323461104ef8"
+          },
+          {
+            "bytes": 4155,
+            "kind": "source",
+            "path": "scripts/core/target_dummy.gd",
+            "sha256": "30e03144b0b6953e56e1bdd878880072142e14786985aec36b588b94c28dd4b8"
+          },
+          {
+            "bytes": 6982,
+            "kind": "source",
+            "path": "scripts/core/world_state.gd",
+            "sha256": "ca097b794611a86cbd98ce3a35073943dc98d7d9252ad84a63899d20f2bbc9bc"
+          },
+          {
+            "bytes": 6057,
+            "kind": "source",
+            "path": "scripts/ui/crosshair.gd",
+            "sha256": "ac731aa902583a4ee465180ca342e114fc702633df352b6b7314747bbff8d169"
+          },
+          {
+            "bytes": 1312,
+            "kind": "source",
+            "path": "scripts/ui/crosshair_style.gd",
+            "sha256": "d6c7622573196940413b5378ee4246bb3a15a9068a40104744cc7b512d064f20"
+          },
+          {
+            "bytes": 7656,
+            "kind": "source",
+            "path": "scripts/ui/hud.gd",
+            "sha256": "c5a59d95ad98962e7bd82c58e7b6d7ab6db66dcc7b032adadb3f491ea5436956"
+          }
+        ],
+        "format": "craftmine.godot-export-source/1",
+        "repoId": "world-world-e0d2fe3fe0f1",
+        "revision": 2,
+        "snapshot": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-e0d2fe3fe0f1"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-e0d2fe3fe0f1"
+        },
+        "sourceWorldId": "world-e0d2fe3fe0f1",
+        "worldId": "world-e0d2fe3fe0f1"
+      },
+      "checks": [
+        "Real formal source+persisted progress exported, exact operation retry returns receipt"
+      ],
+      "result": {
+        "worldId": "world-e0d2fe3fe0f1",
+        "operationId": "first-person-formal-export",
+        "status": "completed",
+        "buildId": "gbd-6bf945cc53b040c999089c3b0576341404f2e63828f2d434803f5b9fca45bb6d",
+        "baseId": "first-person",
+        "revision": 2,
+        "files": 71,
+        "directoryName": "Craftmine-first-person-first-person-formal-export",
+        "rightsStatus": "local-preview-source-included"
+      }
+    }
+  ],
+  "checks": [],
+  "limitations": [
+    "Ended real client data copied before all access; checkpoint callback has no live view to save.",
+    "Headless exported game acceptance, no visible input/focus/PointerLock and no model calls."
+  ],
+  "error": "Error: Command failed: C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-formal-export-OgdoM0\\exports\\Craftmine-first-person-first-person-formal-export\\game.exe --headless -- --craftmine-standalone-check --craftmine-standalone-equip\nSCRIPT ERROR: Parse Error: Member \"ready\" redefined (original in native class 'Node')\r\n   at: GDScript::reload (res://_craftmine_standalone/bootstrap.gd:10)\r\nSCRIPT ERROR: Parse Error: Cannot infer the type of \"location\" variable because the value doesn't have a set type.\r\n   at: GDScript::reload (res://_craftmine_standalone/bootstrap.gd:111)\r\nERROR: Failed to load script \"res://_craftmine_standalone/bootstrap.gd\" with error \"Parse error\".\r\n   at: load (modules/gdscript/gdscript_resource_format.cpp:46)\r\nERROR: Failed to instantiate an autoload, script 'res://_craftmine_standalone/bootstrap.gd' does not inherit from 'Node'.\r\n   at: start (main/main.cpp:4539)\r\n\n    at genericNodeError (node:internal/errors:985:15)\n    at wrappedFn (node:internal/errors:539:14)\n    at ChildProcess.exithandler (node:child_process:417:12)\n    at ChildProcess.emit (node:events:508:28)\n    at maybeClose (node:internal/child_process:1100:16)\n    at ChildProcess._handle.onexit (node:internal/child_process:305:5)"
+}

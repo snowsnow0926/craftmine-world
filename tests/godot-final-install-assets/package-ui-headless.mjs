@@ -5,7 +5,8 @@ import http from 'node:http';
 import assert from 'node:assert/strict';
 import {playwright,browserOptions} from '../../app/browser-tools.mjs';
 const out=await fs.mkdtemp(path.join(os.tmpdir(),'package-ui-')),source=await fs.readFile(new URL('../../plugins/craftmine-world/godot-package-ui.mjs',import.meta.url));
-const server=http.createServer((req,res)=>{res.setHeader('Content-Type',req.url==='/ui.mjs'?'text/javascript':'text/html');res.end(req.url==='/ui.mjs'?source:'<!doctype html><html lang="zh-CN"><meta charset="utf-8"><body><main id="ui"></main></body></html>');});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+const windowsSource=await fs.readFile(new URL('../../plugins/craftmine-world/godot-windows-export-ui.mjs',import.meta.url));
+const server=http.createServer((req,res)=>{const script=req.url==='/ui.mjs'?source:req.url==='/godot-windows-export-ui.mjs'?windowsSource:null;res.setHeader('Content-Type',script?'text/javascript':'text/html');res.end(script??'<!doctype html><html lang="zh-CN"><meta charset="utf-8"><body><main id="ui"></main></body></html>');});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 let browser;
 try {
  browser=await playwright().chromium.launch(browserOptions());const context=await browser.newContext();
@@ -20,7 +21,9 @@ try {
  await submit('导入作品 ZIP 并检查');await page.waitForFunction(()=>errors.includes('TRANSPORT_LOST'));
  await submit('导入作品 ZIP 并检查');await page.waitForFunction(()=>[...document.querySelectorAll('button')].find(button=>button.textContent==='再次安装为独立对象')?.disabled===false);
  await submit('再次安装为独立对象');await page.waitForFunction(()=>calls.some(call=>call.input.method==='repeatImportSource'));
- const result=await page.evaluate(()=>({calls,errors,guard:inputGuards,text:document.body.textContent,scriptCount:document.querySelectorAll('script').length}));
+ await page.evaluate(async()=>{const {createGodotWindowsExportUI}=await import('/godot-windows-export-ui.mjs');const element=document.createElement('section');document.body.append(element);let failed=false;window.windowsCalls=[];const win=createGodotWindowsExportUI({element,getWorldId:()=>world,request:async(channel,input)=>{windowsCalls.push({channel,input});if(!failed){failed=true;throw Error('LOST_EXPORT_REPLY');}return{status:'completed',directoryName:'Own game'};}});win.show();await [...element.querySelectorAll('button')].find(x=>x.textContent==='导出 Windows 游戏').onclick();win.clear();win.show();await [...element.querySelectorAll('button')].find(x=>x.textContent==='导出 Windows 游戏').onclick();});
+ const result=await page.evaluate(()=>({calls,windowsCalls,errors,guard:inputGuards,text:document.body.textContent,scriptCount:document.querySelectorAll('script').length}));
+ assert.equal(result.windowsCalls.length,2);assert.equal(result.windowsCalls[0].input.operationId,result.windowsCalls[1].input.operationId);assert.equal(result.windowsCalls[0].channel,'godot.exportWindows');assert.equal(result.windowsCalls[0].input.worldId,'alpha');assert.deepEqual(Object.keys(result.windowsCalls[0].input).sort(),['operationId','worldId']);
  const imports=result.calls.filter(call=>call.input.method==='importSource');assert.equal(imports.length,2);assert.equal(imports[0].input.params.operationId,imports[1].input.params.operationId);
  const repeat=result.calls.find(call=>call.input.method==='repeatImportSource');assert.notEqual(repeat.input.params.operationId,imports[0].input.params.operationId);assert.equal(repeat.input.params.grantId,'opaque-import-grant');assert.equal(result.scriptCount,0);assert.deepEqual(result.guard,{pointerLock:0,focus:0});assert.match(result.text,/检查记录/);
  await page.screenshot({path:path.join(out,'package-ui.png')});await fs.writeFile(path.join(out,'report.json'),JSON.stringify(result,null,2));

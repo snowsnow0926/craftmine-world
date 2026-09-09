@@ -1,0 +1,88 @@
+{
+  "calls": [
+    {
+      "channel": "package.request",
+      "input": {
+        "worldId": "alpha",
+        "method": "sourceList",
+        "params": {
+          "worldId": "alpha"
+        }
+      }
+    },
+    {
+      "channel": "package.request",
+      "input": {
+        "worldId": "alpha",
+        "method": "exportSource",
+        "params": {
+          "revision": 4,
+          "manifestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "nodePath": "Door",
+          "assetId": "my-component",
+          "version": 1,
+          "worldId": "alpha"
+        }
+      }
+    },
+    {
+      "channel": "package.request",
+      "input": {
+        "worldId": "alpha",
+        "method": "importSource",
+        "params": {
+          "operationId": "b49c3d1d-f1b0-4599-9634-d0d3a945cabc",
+          "worldId": "alpha"
+        }
+      }
+    },
+    {
+      "channel": "package.request",
+      "input": {
+        "worldId": "alpha",
+        "method": "importSource",
+        "params": {
+          "operationId": "b49c3d1d-f1b0-4599-9634-d0d3a945cabc",
+          "worldId": "alpha"
+        }
+      }
+    },
+    {
+      "channel": "package.request",
+      "input": {
+        "worldId": "alpha",
+        "method": "repeatImportSource",
+        "params": {
+          "operationId": "866c20cf-c66c-44c9-9f45-19d2eadb1895",
+          "grantId": "opaque-import-grant",
+          "worldId": "alpha"
+        }
+      }
+    }
+  ],
+  "windowsCalls": [
+    {
+      "channel": "godot.exportWindows",
+      "input": {
+        "worldId": "alpha",
+        "operationId": "f915c946-46a8-4784-be53-8e62c48bcc27"
+      }
+    },
+    {
+      "channel": "godot.exportWindows",
+      "input": {
+        "worldId": "alpha",
+        "operationId": "f915c946-46a8-4784-be53-8e62c48bcc27"
+      }
+    }
+  ],
+  "errors": [
+    "TRANSPORT_LOST"
+  ],
+  "guard": {
+    "pointerLock": 0,
+    "focus": 0
+  },
+  "text": "Godot 作品导出一个对象及其子节点，或把作品 ZIP 加入当前源码。安装后需检查、预览并应用。独立游戏导出 Windows 游戏取消导出导出已应用版本及当前保存进度，不包含未应用草稿。已加入 1 个独立对象并提交检查。通过后请到顶部“检查记录”预览并应用。导入作品 ZIP 并检查再次安装为独立对象刷新当前源码对象Door <script>safe</script> · Door选择要导出的对象Door <script>safe</script> · Door作品编号版本号导出所选对象为 ZIP独立游戏导出 Windows 游戏取消导出已导出到所选目录中的 Own game。双击 game.exe 游玩，F5 保存。源码已随包附带；模块发行许可仍待确认。",
+  "scriptCount": 0
+}
