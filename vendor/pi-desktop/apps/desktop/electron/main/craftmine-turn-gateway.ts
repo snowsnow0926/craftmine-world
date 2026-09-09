@@ -23,6 +23,7 @@ function identity(value: unknown): value is string {
 export class CraftmineTurnGateway {
   private bindings = new Map<string, CraftmineTurnBinding>();
   private ended = new Map<string, string>();
+  private reservations = new Map<string, CraftmineTurnBinding>();
 
   constructor(private readonly activeTurn: (sessionId: string) => string | undefined,
     private readonly allowedTools: () => ReadonlySet<string>,
@@ -70,15 +71,23 @@ export class CraftmineTurnGateway {
 
   async invoke(method: string, params: Record<string, unknown>): Promise<unknown> {
     if (!CRAFTMINE_PROXY_METHODS.has(method)) throw denied("CRAFTMINE_METHOD_DENIED");
-    const binding = this.bindings.get(String(params.sessionId ?? ""));
-    if (!binding || params.turnId !== binding.turnId || this.ended.get(binding.sessionId) === binding.turnId || this.activeTurn(binding.sessionId) !== binding.turnId) {
+    const settlement = method === "craftmine.budget.settle";
+    const reservationKey = JSON.stringify([params.sessionId, params.turnId, params.requestId]);
+    const binding = settlement ? this.reservations.get(reservationKey) : this.bindings.get(String(params.sessionId ?? ""));
+    if (!binding || params.turnId !== binding.turnId || (!settlement && (this.ended.get(binding.sessionId) === binding.turnId || this.activeTurn(binding.sessionId) !== binding.turnId))) {
       throw denied("CRAFTMINE_ACTIVE_TURN_REQUIRED");
     }
-    for (const key of ["context", "binding", "projectId", "worldId", "selectedWorld", "generation"]) {
+    const forbidden = ["context", "projectId", "worldId", "selectedWorld"];
+    if (method === "craftmine.context") forbidden.push("binding", "generation");
+    for (const key of forbidden) {
       if (Object.hasOwn(params, key)) throw denied("CRAFTMINE_FORGED_IDENTITY");
     }
+    if (method === "craftmine.budget.reserve") {
+      if (!identity(params.requestId)) throw denied("CRAFTMINE_REQUEST_ID_REQUIRED");
+      this.reservations.set(reservationKey, binding);
+    }
     const result = await this.request(method, params, binding);
-    if (this.bindings.get(binding.sessionId) !== binding || this.ended.get(binding.sessionId) === binding.turnId || this.activeTurn(binding.sessionId) !== binding.turnId) {
+    if (!settlement && (this.bindings.get(binding.sessionId) !== binding || this.ended.get(binding.sessionId) === binding.turnId || this.activeTurn(binding.sessionId) !== binding.turnId)) {
       throw denied("CRAFTMINE_STALE_REPLY");
     }
     return result;

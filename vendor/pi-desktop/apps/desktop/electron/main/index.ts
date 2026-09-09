@@ -17,6 +17,7 @@ import { execFileSync } from "node:child_process";
 import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
+import { CraftmineTurnGateway } from "./craftmine-turn-gateway";
 import { CraftmineVerifier } from "./craftmine-verifier";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
@@ -2255,6 +2256,42 @@ const inFlightExecutionFinishes = new Set<string>();
 let approvedExecutionDrain: Promise<void> | null = null;
 const turnSettlements = new Map<string, Set<() => void>>();
 const turnFinalizations = new Map<string, Promise<void>>();
+const craftmineGateway = new CraftmineTurnGateway(
+  sessionId => turnFinalizations.has(sessionId) ? undefined : activeTurns.get(sessionId),
+  () => new Set(plugins.getTools().filter(tool => tool.pluginId === "craftmine.world").map(tool => tool.fullName)),
+  async (method, params, binding) => {
+    const context = { projectId: binding.projectId, sessionId: binding.sessionId, turnId: binding.turnId };
+    const { sessionId: _sessionId, turnId: _turnId, ...input } = params;
+    const operation = method === "craftmine.context" ? "task.context" : method.replace(/^craftmine\./, "");
+    if (operation === "task.context") {
+      if (!host) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
+      const detail = await host.call<{ session?: any }>("session.get", { id: binding.sessionId });
+      if (craftmineProjectIdentity(detail.session, binding.sessionId) !== binding.projectId) throw new Error("CRAFTMINE_PROJECT_CHANGED");
+      const latest = detail.session.messages?.findLast((message: UiMessage) => message.role === "user");
+      if (!latest) throw new Error("CRAFTMINE_USER_REQUEST_REQUIRED");
+      return plugins.requestCraftmineHost(operation, { context, request: { id: latest.id, text: latest.content } });
+    }
+    return plugins.requestCraftmineHost(operation, { ...input, context });
+  },
+);
+
+async function bindCraftmineTurn(sessionId: string, turnId: string, session: any,
+  request: { id: string; text: string }): Promise<boolean> {
+  if (!plugins.getLoaded("craftmine.world") || !pluginActiveInProject("craftmine.world", session.projectPath ?? null)) {
+    craftmineGateway.beginGeneric(sessionId, turnId); return false;
+  }
+  const selection = await plugins.requestCraftmineHost("selection.read", {}) as { worldId: string | null };
+  const selectedWorld = selection.worldId;
+  if (typeof selectedWorld !== "string" || !selectedWorld) {
+    craftmineGateway.beginGeneric(sessionId, turnId); return false;
+  }
+  const projectId = craftmineProjectIdentity(session, sessionId);
+  const result = await plugins.requestCraftmineHost("turn.begin", {
+    context: { projectId, sessionId, turnId }, selectedWorld, request,
+  }) as { world: { id: string } };
+  craftmineGateway.bind({ projectId, sessionId, turnId, selectedWorld: result.world.id });
+  return true;
+}
 /** sessionId -> last assistant usage recorded for active turn */
 const activeTurnUsages = new Map<string, MessageUsage>();
 
@@ -4712,6 +4749,7 @@ function wireSidecar(s: AgentSidecar) {
 async function startSidecar(): Promise<void> {
   const spawnStarted = Date.now();
   const s = new AgentSidecar((text) => logger.child("agent", text));
+  s.setCraftmineGateway(craftmineGateway);
   const spawnedMs = Date.now() - spawnStarted;
   wireSidecar(s);
   s.setProjectInstructionResolver(async ({ projectPath, path }) => {
@@ -4960,6 +4998,7 @@ function finishTurn(
 
     try {
       if (host && turnId) {
+        craftmineGateway.end(sessionId, turnId);
         await plugins.endCraftmineTurn({ sessionId, turnId, status }).catch((error) => {
           logger.app("persistence", "error", "Craftmine draft turn end failed", { sessionId, data: String(error) });
         });
@@ -5199,10 +5238,14 @@ async function dispatchApprovedPlan(rawExecution: unknown): Promise<void> {
       turnId,
     });
     startedApprovedExecutions.add(execution.id);
+    const originalRequest = sessionResult.session.messages?.findLast((message: UiMessage) => message.role === "user");
+    const craftmineWorld = await bindCraftmineTurn(execution.sessionId, turnId, sessionResult.session,
+      { id: originalRequest?.id || `approved-${execution.id}`, text: originalRequest?.content || "执行已确认的创作计划" });
     const accepted = await sidecar.call<{ accepted: boolean }>(
       "agent.executeApprovedPlan",
       {
         ...launch.sidecarParams,
+        craftmineWorld,
         mode: "agent",
         turnId,
         execution,
@@ -7897,10 +7940,13 @@ function registerIpc() {
 
     let result: { accepted: boolean; turnId: string };
     try {
+      const craftmineWorld = await bindCraftmineTurn(req.sessionId, durableTurnId, session,
+        { id: userMessage.id, text: userMessage.content });
       result = await sidecar.call<{ accepted: boolean; turnId: string }>(
         "agent.prompt",
         {
           ...launch.sidecarParams,
+          craftmineWorld,
           // The host-created durable turn is the approval identity used by
           // Rust. The runtime must not replace it with a provider-local UUID.
           turnId: durableTurnId,

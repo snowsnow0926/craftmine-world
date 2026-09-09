@@ -410,6 +410,10 @@ async function handleParentCall(method, payload) {
       await pluginModule?.onHostTurnEnd?.(payload);
       return { ok: true };
     }
+    case "lifecycle.craftmineRequest": {
+      if (pluginId !== "craftmine.world" || typeof pluginModule?.onHostRequest !== "function") throw new Error("UNSUPPORTED");
+      return pluginModule.onHostRequest(payload?.method, payload?.params);
+    }
     case "lifecycle.unload": {
       // Best effort: a throwing onUnload must not block teardown.
       try {

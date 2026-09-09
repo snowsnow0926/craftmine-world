@@ -40,3 +40,12 @@ test('private model context rejects forged identity and stale reply after stop',
   const pending=gateway.invoke('craftmine.context',{sessionId:'s',turnId:'t'});
   active.delete('s');resolve({world:'late'});await assert.rejects(pending,/STALE_REPLY/);
 });
+test('stopped request may settle its exact reservation but cannot create another request',async()=>{
+  const calls=[];const {gateway,active}=setup(async(method,params)=>{calls.push([method,params]);return {ok:true};});
+  await gateway.invoke('craftmine.budget.reserve',{sessionId:'s',turnId:'t',requestId:'r',binding:{taskId:'fixture'},generation:1});
+  gateway.end('s','t');active.delete('s');
+  await gateway.invoke('craftmine.budget.settle',{sessionId:'s',turnId:'t',requestId:'r',status:'unknown'});
+  assert.equal(calls.length,2);
+  await assert.rejects(gateway.invoke('craftmine.budget.settle',{sessionId:'s',turnId:'t',requestId:'forged',status:'known'}),/ACTIVE_TURN_REQUIRED/);
+  await assert.rejects(gateway.invoke('craftmine.budget.reserve',{sessionId:'s',turnId:'t',requestId:'new'}),/ACTIVE_TURN_REQUIRED/);
+});

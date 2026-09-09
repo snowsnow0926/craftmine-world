@@ -521,6 +521,8 @@ export type PluginHostApi = {
 };
 
 export type PluginModule = {
+  /** Downstream built-in only. Invoked by the parent, unavailable to panel or model tools. */
+  onHostRequest?: (method: string, params: Record<string, unknown>) => Promise<unknown> | unknown;
   /** Downstream Craftmine-only acknowledged host lifecycle, unavailable to panels. */
   onHostTurnEnd?: (input: { sessionId: string; turnId: string; status: "completed" | "aborted" | "error" }) => Promise<void> | void;
   onLoad?: () => Promise<void> | void;
