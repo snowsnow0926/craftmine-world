@@ -29,6 +29,7 @@ export const CRAFTMINE_REQUIRED_CHANNELS = [
   "world.create",
   "world.saveProgress",
   "world.switch",
+  "world.creationAction",
   "workbench.capabilities",
   "verification.list",
 ] as const;
@@ -37,6 +38,8 @@ export type CraftmineWorldBase = {
   /** Real engine/runtime identifier, e.g. `craftmine-web/5`. */
   id: string;
   label: string;
+  /** Host-provided summary of what the base can actually run. */
+  description: string;
   /** false when the host knows the base only as a planned/schema value. */
   delivered: boolean;
 };
@@ -44,7 +47,60 @@ export type CraftmineWorldBase = {
 export type CraftmineWorldStarter = {
   id: string;
   label: string;
+  /** Host-provided summary of what the starting content contains. */
+  description: string;
   delivered: boolean;
+};
+
+/**
+ * Creation lifecycle of a world. A world is playable only when the host has
+ * finished initializing it (`ready`); `initializing` and `failed` worlds stay
+ * visible so the player can see real progress or a real failure, but they are
+ * never opened, switched into or counted as created successfully.
+ */
+export type CraftmineWorldState = "ready" | "initializing" | "failed";
+
+export const CRAFTMINE_WORLD_STATES: CraftmineWorldState[] = ["ready", "initializing", "failed"];
+
+export type CraftmineCreationStageStatus = "pending" | "running" | "passed" | "failed" | "skipped";
+
+export type CraftmineCreationStage = {
+  id: string;
+  label: string;
+  status: CraftmineCreationStageStatus;
+};
+
+/** Recovery actions the host reports it can actually perform. */
+export type CraftmineCreationAction = "retry" | "choose-base" | "discard-draft" | "details";
+
+export const CRAFTMINE_CREATION_ACTIONS: CraftmineCreationAction[] = [
+  "retry",
+  "choose-base",
+  "discard-draft",
+  "details",
+];
+
+export type CraftmineCreationError = {
+  code: string;
+  message: string;
+  stage: string;
+  recoverable: boolean;
+};
+
+/**
+ * Host-reported initialization progress for one world. Every field is a fact
+ * from the host: the renderer never advances a stage, invents a percentage or
+ * turns a failure into a pass.
+ */
+export type CraftmineWorldCreation = {
+  operationId: string;
+  /** Current stage id, matching one entry of `stages`. */
+  stage: string;
+  stages: CraftmineCreationStage[];
+  /** 0..100, reported by the host; monotonic on the host side. */
+  progress: number;
+  error: CraftmineCreationError | null;
+  actions: CraftmineCreationAction[];
 };
 
 export type CraftmineWorldOrigin = "created" | "imported" | "godot-source" | "unknown";
@@ -66,6 +122,10 @@ export type CraftmineWorldEntry = {
   base: CraftmineWorldBase | null;
   origin: CraftmineWorldOrigin | null;
   check: { status: CraftmineCheckStatus; at: number } | null;
+  /** `ready` when the host is silent, so existing worlds stay playable. */
+  state: CraftmineWorldState;
+  /** Present while initializing or after a failed initialization. */
+  creation: CraftmineWorldCreation | null;
 };
 
 export type CraftmineWorldList = {
@@ -79,6 +139,8 @@ export type CraftmineWorldCapabilities = {
   create: boolean;
   /** true/false when the host reports it; null when the host is silent. */
   switch: boolean | null;
+  /** true only when the host reports it can run creation recovery actions. */
+  createActions: boolean;
 };
 
 export type CraftmineWorldCreateInput = {
@@ -87,7 +149,12 @@ export type CraftmineWorldCreateInput = {
   starterId?: string;
 };
 
-export type CraftmineWorldCreateResult = { id: string; title: string };
+export type CraftmineWorldCreateResult = {
+  id: string;
+  title: string;
+  state: CraftmineWorldState;
+  creation: CraftmineWorldCreation | null;
+};
 
 export type CraftmineWorldSwitchResult =
   | { ok: true; activeWorldId: string }
@@ -114,6 +181,8 @@ export type CraftmineWorldBridge = {
   create(input: CraftmineWorldCreateInput): Promise<CraftmineWorldCreateResult>;
   /** Freezes the running world, saves it, then opens the target world. */
   switchWorld(id: string): Promise<CraftmineWorldSwitchResult>;
+  /** Runs one host-reported recovery action for a failed initialization. */
+  creationAction(worldId: string, action: CraftmineCreationAction): Promise<void>;
   /** Task bound to the currently viewed session, with the world that owns it. */
   activeTask(worldId: string): Promise<CraftmineActiveTask | null>;
   /** Raw host channel call, used by the auxiliary sections' real summaries. */
@@ -176,10 +245,96 @@ function parseBase(value: unknown): CraftmineWorldBase | null {
   return {
     id,
     label: asText(raw.label) || id,
+    description: asText(raw.description),
     // Only an explicit `delivered: true` counts; a silent host must never make
     // a planned base selectable.
     delivered: raw.delivered === true,
   };
+}
+
+function parseStarter(value: unknown): CraftmineWorldStarter | null {
+  const raw = asRecord(value);
+  const id = asText(raw.id);
+  if (!id) return null;
+  return {
+    id,
+    label: asText(raw.label) || id,
+    description: asText(raw.description),
+    delivered: raw.delivered === true,
+  };
+}
+
+const CREATION_STAGE_STATUSES: CraftmineCreationStageStatus[] = [
+  "pending",
+  "running",
+  "passed",
+  "failed",
+  "skipped",
+];
+
+function parseCreationStage(value: unknown): CraftmineCreationStage | null {
+  const raw = asRecord(value);
+  const id = asText(raw.id);
+  if (!id) return null;
+  const status = asText(raw.status) as CraftmineCreationStageStatus;
+  return {
+    id,
+    label: asText(raw.label) || id,
+    status: CREATION_STAGE_STATUSES.includes(status) ? status : "pending",
+  };
+}
+
+function parseCreationError(value: unknown): CraftmineCreationError | null {
+  const raw = asRecord(value);
+  const code = asText(raw.code);
+  const message = asText(raw.message);
+  if (!code && !message) return null;
+  return {
+    code: code || "WORLD_CREATION_FAILED",
+    message,
+    stage: asText(raw.stage),
+    recoverable: raw.recoverable !== false,
+  };
+}
+
+/**
+ * Reads the host's initialization descriptor. Returns null when the host did
+ * not report one, so a legacy world stays a plain `ready` world instead of
+ * rendering invented stages.
+ */
+export function parseWorldCreation(value: unknown): CraftmineWorldCreation | null {
+  const raw = asRecord(value);
+  const operationId = asText(raw.operationId);
+  const rawStages = Array.isArray(raw.stages) ? raw.stages : [];
+  if (!operationId && rawStages.length === 0) return null;
+  const stages = rawStages.flatMap((item) => {
+    const stage = parseCreationStage(item);
+    return stage ? [stage] : [];
+  });
+  const progress = asNumber(raw.progress);
+  const actions = (Array.isArray(raw.actions) ? raw.actions : []).flatMap((item) => {
+    const action = asText(item) as CraftmineCreationAction;
+    return CRAFTMINE_CREATION_ACTIONS.includes(action) ? [action] : [];
+  });
+  return {
+    operationId,
+    stage: asText(raw.stage) || stages.find((stage) => stage.status === "running")?.id || stages.at(-1)?.id || "",
+    stages,
+    progress: Math.min(100, Math.max(0, Math.round(progress))),
+    error: parseCreationError(raw.error),
+    actions: [...new Set(actions)],
+  };
+}
+
+/** A world is playable only after the host reports its initialization passed. */
+export function isWorldPlayable(entry: CraftmineWorldEntry): boolean {
+  return entry.state === "ready";
+}
+
+export function parseWorldState(value: unknown): CraftmineWorldState {
+  const raw = asRecord(value);
+  const state = asText(raw.state) as CraftmineWorldState;
+  return CRAFTMINE_WORLD_STATES.includes(state) ? state : "ready";
 }
 
 function parseCheck(value: unknown): CraftmineWorldEntry["check"] {
@@ -211,6 +366,8 @@ export function parseWorldList(value: unknown): CraftmineWorldList {
           base: parseBase(entry.base),
           origin: ORIGINS.includes(origin) ? origin : null,
           check: parseCheck(entry.check),
+          state: parseWorldState(entry),
+          creation: parseWorldCreation(entry.creation ?? entry),
         },
       ];
     }),
@@ -224,16 +381,15 @@ export function parseWorldCapabilities(value: unknown): CraftmineWorldCapabiliti
     return base ? [base] : [];
   });
   const starters = (Array.isArray(raw.starters) ? raw.starters : []).flatMap((item) => {
-    const entry = asRecord(item);
-    const id = asText(entry.id);
-    if (!id) return [];
-    return [{ id, label: asText(entry.label) || id, delivered: entry.delivered === true }];
+    const starter = parseStarter(item);
+    return starter ? [starter] : [];
   });
   return {
     bases,
     starters,
     create: raw.create !== false,
     switch: typeof raw.switch === "boolean" ? raw.switch : null,
+    createActions: raw.createActions === true,
   };
 }
 
@@ -270,7 +426,16 @@ export function createCraftmineWorldBridge(
       const record = asRecord(await call("world.create", payload));
       const id = asText(record.id) || asText(asRecord(record.summary).id);
       if (!id) throw new Error("WORLD_CREATE_NO_ID");
-      return { id, title: asText(record.title) || input.title };
+      return {
+        id,
+        title: asText(record.title) || input.title,
+        state: parseWorldState(record),
+        creation: parseWorldCreation(record.creation ?? record),
+      };
+    },
+    async creationAction(worldId, action) {
+      if (!CRAFTMINE_CREATION_ACTIONS.includes(action)) throw new Error("INVALID_WORLD_CREATION_ACTION");
+      await call("world.creationAction", { worldId, action });
     },
     async switchWorld(id) {
       try {
@@ -380,8 +545,7 @@ export function worldRecency(updatedAt: number, now: number, lang: CraftmineLang
 export function worldCheckLabel(
   check: CraftmineWorldEntry["check"],
   lang: CraftmineLang,
-): string | null {
-  if (!check) return null;
+): string | null {  if (!check) return null;
   const labels: Record<CraftmineCheckStatus, [string, string]> = {
     queued: ["检查排队中", "Check queued"],
     running: ["检查进行中", "Check running"],
@@ -403,6 +567,46 @@ export function worldCheckTone(
   return "busy";
 }
 
+/* -------------------------------------------------------------- lifecycle */
+
+export function worldStateLabel(state: CraftmineWorldState, lang: CraftmineLang): string {
+  const labels: Record<CraftmineWorldState, [string, string]> = {
+    ready: ["可游玩", "Playable"],
+    initializing: ["初始化中", "Initializing"],
+    failed: ["初始化失败", "Initialization failed"],
+  };
+  return labels[state][lang === "zh" ? 0 : 1];
+}
+
+/** Current stage text, e.g. `导入资源 (2/4)`. Empty when the host is silent. */
+export function creationStageText(
+  creation: CraftmineWorldCreation | null,
+  lang: CraftmineLang,
+): string {
+  if (!creation) return "";
+  const index = creation.stages.findIndex((stage) => stage.id === creation.stage);
+  const stage = index >= 0 ? creation.stages[index] : null;
+  const name = stage?.label || creation.stage;
+  if (!name) return "";
+  if (creation.stages.length > 1 && index >= 0) {
+    return lang === "zh" ? `${name} (${index + 1}/${creation.stages.length})` : `${name} (${index + 1}/${creation.stages.length})`;
+  }
+  return name;
+}
+
+export function creationProgressText(
+  creation: CraftmineWorldCreation | null,
+  lang: CraftmineLang,
+): string {
+  if (!creation || creation.progress <= 0) return "";
+  return lang === "zh" ? `已进行 ${creation.progress}%` : `${creation.progress}%`;
+}
+
+/** Recovery actions the host reported; an empty list renders no buttons. */
+export function creationActions(creation: CraftmineWorldCreation | null): CraftmineCreationAction[] {
+  return creation?.actions ?? [];
+}
+
 /* ------------------------------------------------------------------ inputs */
 
 export const CRAFTMINE_WORLD_TITLE_MAX = 80;
@@ -419,7 +623,7 @@ export function validateWorldTitle(value: string, lang: CraftmineLang): string |
 
 /* ---------------------------------------------------------------- ordering */
 
-/** Active world first, then most recently saved, then title. */
+/** Active world first, then playable before unfinished, then most recently saved. */
 export function sortWorldEntries(
   worlds: CraftmineWorldEntry[],
   activeWorldId: string | null,
@@ -428,9 +632,15 @@ export function sortWorldEntries(
     if (left.id === right.id) return 0;
     if (left.id === activeWorldId) return -1;
     if (right.id === activeWorldId) return 1;
+    if (isWorldPlayable(left) !== isWorldPlayable(right)) return isWorldPlayable(left) ? -1 : 1;
     if (left.updatedAt !== right.updatedAt) return right.updatedAt - left.updatedAt;
     return left.title.localeCompare(right.title);
   });
+}
+
+/** True while at least one world still reports an unfinished initialization. */
+export function hasInitializingWorld(worlds: CraftmineWorldEntry[]): boolean {
+  return worlds.some((entry) => entry.state === "initializing");
 }
 
 /* ------------------------------------------------------------ switch plan */
