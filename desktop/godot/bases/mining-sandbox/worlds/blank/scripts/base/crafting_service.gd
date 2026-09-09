@@ -72,17 +72,26 @@ func craft(recipe_id: String, request_id: String, station_id: String) -> Diction
 		if inventory.count(String(item_id)) < total:
 			return _reject(rid, "insufficient_materials", {"recipeId": recipe_id, "itemId": item_id, "required": total, "held": inventory.count(String(item_id))})
 		consumed.append({"id": String(item_id), "count": total})
-	# All inputs present: consume atomically, then grant the output once.
-	for entry in consumed:
-		inventory._apply_consume(String(entry.id), int(entry.count))
 	var output: Variant = recipe.get("output", {})
 	var output_id := ""
 	var output_count := 0
 	if output is Dictionary:
 		output_id = String(output.get("id", ""))
 		output_count = int(output.get("count", 0))
-	if not output_id.is_empty() and output_count > 0:
-		inventory._apply_grant(output_id, output_count)
+	if output_id.is_empty() or output_count <= 0:
+		return _reject(rid, "unknown_recipe", {"recipeId": recipe_id})
+	# The output must fit before anything is consumed, otherwise a full stack
+	# would silently eat the inputs.
+	if inventory.count(output_id) + output_count > inventory.stack_size(output_id):
+		return _reject(rid, "stack_full", {
+			"recipeId": recipe_id,
+			"itemId": output_id,
+			"stackLimit": inventory.stack_size(output_id),
+		})
+	# All inputs present and the output fits: consume atomically, grant once.
+	for entry in consumed:
+		inventory._apply_consume(String(entry.id), int(entry.count))
+	inventory._apply_grant(output_id, output_count)
 	var result := {
 		"ok": true,
 		"op": "craft",

@@ -242,15 +242,23 @@ func from_dict(data: Dictionary, expected_world_id: String) -> Dictionary:
 		if revision == null or revision < 0:
 			return _invalid("Chunk revision is invalid")
 		var sha := String(entry.get("sha256", ""))
-		if sha.length() != 64:
-			return _invalid("Chunk hash is invalid")
+		var file := String(entry.get("file", ""))
+		if file.contains("/") or file.contains("\\"):
+			return _invalid("Chunk file name is invalid")
 		var bytes: Variant = _as_int(entry.get("bytes"))
 		if bytes == null or bytes < 0:
 			return _invalid("Chunk size is invalid")
 		var cells: Variant = _as_int(entry.get("cells"))
 		if cells == null or cells < 0:
 			return _invalid("Chunk cell count is invalid")
-		next_index[String(key)] = {"revision": revision, "sha256": sha, "bytes": bytes, "cells": cells}
+		if file.is_empty():
+			# Revision-only entry: every edit in this chunk was reverted to
+			# generated terrain, so it carries no file, no hash and no cells.
+			if int(cells) != 0 or not sha.is_empty() or int(bytes) != 0:
+				return _invalid("Chunk entry has no file but declares content")
+		elif sha.length() != 64:
+			return _invalid("Chunk hash is invalid")
+		next_index[String(key)] = {"revision": revision, "file": file, "sha256": sha, "bytes": bytes, "cells": cells}
 
 	var edit_count_value: Variant = _as_int(data.get("editCount"))
 	if edit_count_value == null or edit_count_value < 0:

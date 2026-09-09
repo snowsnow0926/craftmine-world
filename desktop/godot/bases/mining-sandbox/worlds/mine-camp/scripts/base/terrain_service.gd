@@ -87,6 +87,22 @@ func saved_sha(cx: int, cy: int) -> String:
 	return String(_saved_sha.get(_chunk_id(cx, cy), ""))
 
 
+## Every chunk the runtime knows about: chunks with edits plus chunks whose
+## revision is non-zero even though their edits were reverted to generated
+## terrain. The latter keep their revision across a restart (SPEC 5.2).
+func known_chunk_ids() -> Array:
+	var ids: Array = []
+	for chunk_id in _edits.keys():
+		var chunk: Variant = _edits[chunk_id]
+		if chunk is Dictionary and not chunk.is_empty():
+			ids.append(chunk_id)
+	for chunk_id in _revisions.keys():
+		if int(_revisions[chunk_id]) > 0 and not ids.has(chunk_id):
+			ids.append(chunk_id)
+	ids.sort()
+	return ids
+
+
 func edited_chunk_ids() -> Array:
 	var ids: Array = []
 	for chunk_id in _edits.keys():
@@ -177,8 +193,11 @@ func dig(tx: int, ty: int, request_id: String) -> Dictionary:
 		var drop_id := String(drop.get("id", ""))
 		var drop_count := int(drop.get("count", 0))
 		if not drop_id.is_empty():
-			inventory._apply_grant(drop_id, drop_count)
-			dropped = {"id": drop_id, "count": drop_count}
+			var overflow := inventory._apply_grant(drop_id, drop_count)
+			dropped = {"id": drop_id, "count": drop_count - overflow}
+			if overflow > 0:
+				dropped["overflow"] = overflow
+				dropped["reason"] = "stack_full"
 	var result := {
 		"ok": true,
 		"op": "dig",
@@ -327,7 +346,7 @@ func player_center() -> Vector2:
 
 # -------------------------------------------------------- persistence hooks
 
-func apply_chunk(cx: int, cy: int, cells: Array, revision: int) -> void:
+func apply_chunk(cx: int, cy: int, cells: Array, revision: int, file_sha: String = "") -> void:
 	var chunk_id := _chunk_id(cx, cy)
 	var chunk: Dictionary = {}
 	for entry in cells:
@@ -338,6 +357,9 @@ func apply_chunk(cx: int, cy: int, cells: Array, revision: int) -> void:
 	else:
 		_edits[chunk_id] = chunk
 	_revisions[chunk_id] = maxi(0, revision)
+	# Remember the committed file hash so `snapshot.chunks[].sha256` reports the
+	# same value before and after a restart.
+	_saved_sha[chunk_id] = file_sha
 	_dirty[chunk_id] = false
 
 

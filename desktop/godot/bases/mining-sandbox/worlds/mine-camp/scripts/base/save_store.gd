@@ -75,14 +75,18 @@ func save(state: MiningWorldState, terrain: MiningTerrainService) -> Dictionary:
 	var hashes: Dictionary = {}
 	var keep: Dictionary = {}
 	var written := 0
-	for chunk_id in terrain.edited_chunk_ids():
+	for chunk_id in terrain.known_chunk_ids():
 		var coords := chunk_store.parse_chunk_id(String(chunk_id))
 		if coords.x < 0:
 			continue
 		var cells := terrain.cells_of_chunk(coords.x, coords.y)
-		if cells.is_empty():
-			continue
 		var revision := terrain.chunk_revision(coords.x, coords.y)
+		if cells.is_empty():
+			# Every edit in this chunk was reverted to generated terrain. Keep the
+			# revision in the index but write no file (SPEC 5.1); the superseded
+			# file is pruned after the index commit.
+			index[String(chunk_id)] = {"revision": revision, "file": "", "sha256": "", "bytes": 0, "cells": 0}
+			continue
 		var previous_entry: Variant = state.chunk_index.get(String(chunk_id), {})
 		var previous: Dictionary = previous_entry if previous_entry is Dictionary else {}
 		var previous_file := String(previous.get("file", chunk_store.file_name(coords.x, coords.y)))
@@ -279,13 +283,26 @@ func restore_into(state: MiningWorldState, terrain: MiningTerrainService) -> Dic
 			return _reject("bad_state", "chunk index entry %s is invalid" % chunk_id, path)
 		var expected_sha := String(entry.get("sha256", ""))
 		var file := String(entry.get("file", chunk_store.file_name(coords.x, coords.y)))
-		if file.is_empty() or file.contains("/") or file.contains("\\"):
+		var declared_cells: Variant = _as_int(entry.get("cells"))
+		if declared_cells == null or int(declared_cells) < 0:
+			return _reject("bad_state", "chunk index entry %s has an invalid cell count" % chunk_id, path)
+		if file.is_empty():
+			# A chunk whose edits were reverted to generated terrain: revision only.
+			if int(declared_cells) != 0:
+				return _reject("bad_state", "chunk index entry %s declares cells but no file" % chunk_id, path)
+			var empty_revision: Variant = _as_int(entry.get("revision"))
+			if empty_revision == null or int(empty_revision) < 0:
+				return _reject("bad_state", "chunk index entry %s has an invalid revision" % chunk_id, path)
+			pending[chunk_id] = {"cells": [], "revision": int(empty_revision), "coords": coords, "sha256": ""}
+			index_mirror[chunk_id] = entry.duplicate(true)
+			continue
+		if file.contains("/") or file.contains("\\"):
 			return _reject("bad_state", "chunk index entry %s has an invalid file name" % chunk_id, path)
 		var outcome := chunk_store.read_chunk(chunks_dir().path_join(file), coords.x, coords.y, expected_sha, material_ids)
 		if not bool(outcome.get("ok", false)):
 			return _reject(String(outcome.get("reason", "chunk_corrupt")), String(outcome.get("detail", "")), path)
 		var cells: Array = outcome.cells
-		pending[chunk_id] = {"cells": cells, "revision": int(outcome.revision), "coords": coords}
+		pending[chunk_id] = {"cells": cells, "revision": int(outcome.revision), "coords": coords, "sha256": expected_sha}
 		index_mirror[chunk_id] = entry.duplicate(true)
 		for cell in cells:
 			overrides[Vector2i(int(cell[0]), int(cell[1]))] = String(cell[2])
@@ -321,7 +338,7 @@ func restore_into(state: MiningWorldState, terrain: MiningTerrainService) -> Dic
 	for chunk_id in pending.keys():
 		var info: Dictionary = pending[chunk_id]
 		var coords: Vector2i = info.coords
-		terrain.apply_chunk(coords.x, coords.y, info.cells, int(info.revision))
+		terrain.apply_chunk(coords.x, coords.y, info.cells, int(info.revision), String(info.get("sha256", "")))
 	state.chunk_index = index_mirror
 	state.edit_count = terrain.edit_count()
 	state.terrain_hash = terrain.terrain_hash()
