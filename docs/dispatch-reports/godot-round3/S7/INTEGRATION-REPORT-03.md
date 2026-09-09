@@ -43,6 +43,19 @@ automation of mouse/keyboard, and no Pointer Lock.
 | S7 product probe, toolchain provisioned | `node tests/godot-round3/S7/probe-product.mjs --provision-executor` | executor registers, job runs import -> export, check stage reports `Isolated Godot check unavailable` **in the probe harness only** (the probe does not construct the Electron host service) |
 | S7 product probe, as shipped | same without `--provision-executor` | `GODOT_BROKER_MISSING` (no packaging path installs the broker; owner S2/S8) |
 | Frozen-set verifier | `tests/godot-remaining/I/run.mjs` audit/replay/negative | unchanged: 0/30, 6 passed/1 insufficient/23 not-run, 2 failed/28 not-run; live still refused on provenance |
+| S3 package/install/identity | `node --test tests/godot-round3/S3/*.test.mjs` | **35/35 passed** |
+| S5 preview cancel latency | `node --test tests/godot-round3/S5/*.test.mjs` | **3/3 passed** (real worker cancel 18 ms, no window/input/playback API) |
+| S6 model-tool services | `node --test tests/godot-round3/S6/*.test.mjs` | **29/30 passed, 1 failed** |
+
+### S6 suite failure after integration (owner S6, test fixture only)
+
+`tests/godot-round3/S6/plugin-load.test.mjs` stages a fixed file list (line 20-23) that predates
+S2's plugin wiring. The integrated `main.cjs` now requires `./asset-service.mjs` and
+`./reuse-service.mjs`, which the staging list does not copy, so the test fails with
+`Cannot find module './asset-service.mjs'`. The product bundle itself is correct: 24 files,
+including both services, and S2's `plugin-routes.mjs` asserts "the packaged plugin ships the
+services main.cjs constructs" (5/5 pass). Fix belongs in S6's staging list.
+
 
 ## 4. What is still not verified, and why
 
