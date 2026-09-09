@@ -761,3 +761,137 @@ fn every_registered_table_is_inside_the_snapshot() -> Result<()> {
     drop(dir);
     Ok(())
 }
+
+/// Deterministic pseudo-random body: the same bytes on every run.
+fn pseudo_random_bytes(len: usize, seed: usize) -> Vec<u8> {
+    (0..len)
+        .map(|offset| ((seed * 31 + offset * 7) % 251) as u8)
+        .collect()
+}
+
+/// High-water mark of this process's commit charge, in bytes.
+#[cfg(windows)]
+fn peak_pagefile_bytes() -> u64 {
+    #[repr(C)]
+    #[allow(dead_code)]
+    #[derive(Default)]
+    struct ProcessMemoryCountersEx {
+        cb: u32,
+        page_fault_count: u32,
+        peak_working_set_size: usize,
+        working_set_size: usize,
+        quota_peak_paged_pool_usage: usize,
+        quota_paged_pool_usage: usize,
+        quota_peak_non_paged_pool_usage: usize,
+        quota_non_paged_pool_usage: usize,
+        pagefile_usage: usize,
+        peak_pagefile_usage: usize,
+        private_usage: usize,
+    }
+    extern "system" {
+        fn GetCurrentProcess() -> isize;
+        fn K32GetProcessMemoryInfo(
+            process: isize,
+            counters: *mut ProcessMemoryCountersEx,
+            cb: u32,
+        ) -> i32;
+    }
+    let mut counters = ProcessMemoryCountersEx::default();
+    counters.cb = std::mem::size_of::<ProcessMemoryCountersEx>() as u32;
+    let ok = unsafe { K32GetProcessMemoryInfo(GetCurrentProcess(), &mut counters, counters.cb) };
+    assert!(ok != 0, "K32GetProcessMemoryInfo failed");
+    counters.peak_pagefile_usage as u64
+}
+
+/// 40 files of 2 MiB make roughly 80 MiB of `cat-file --batch` output, which is
+/// above the adapter's 64 MiB buffered stdout limit. The export can only succeed
+/// when the object bodies are streamed; the buffering path fails with
+/// `BACKUP_GIT_TRUNCATED` before this test reaches its assertions. Ignored by
+/// default because it moves a few hundred MiB through the disk; run explicitly:
+/// `cargo test -p craftmine-core --lib backups::portable -- --ignored --nocapture`.
+#[test]
+#[ignore = "writes ~80 MiB of Git objects; run explicitly with --ignored"]
+fn a_repository_larger_than_the_buffered_stdout_cap_exports_and_verifies() -> Result<()> {
+    const FILES: usize = 40;
+    const FILE_BYTES: usize = 2 * 1024 * 1024;
+    // The export must not raise the process's commit-charge high-water mark by
+    // more than this. Buffering one whole `cat-file --batch` stream would need
+    // about 80 MiB, so the bound separates streaming from buffering.
+    const MARGINAL_PEAK_LIMIT_MIB: u64 = 32;
+
+    let (dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let store = repository_store(&journal.directory)?;
+    let layout = store.create("repo-large", "sha1", None)?;
+    // Commit one 2 MiB blob at a time so the fixture itself never holds more
+    // than one blob; the repository as a whole still streams ~80 MiB out of
+    // `cat-file --batch`, which is what the export has to handle.
+    let mut parent: Option<String> = None;
+    for index in 0..FILES {
+        let files = [ContentFile {
+            path: format!("blob-{index:02}.bin"),
+            bytes: pseudo_random_bytes(FILE_BYTES, index),
+        }];
+        parent = Some(store.commit(
+            &layout,
+            MAIN_BRANCH,
+            parent.as_deref(),
+            &files,
+            &commit_message(
+                "req-large",
+                "task-large",
+                &format!("large world {index}"),
+                "",
+            )?,
+        )?);
+    }
+    journal.db.execute(
+        "INSERT INTO craftmine_content_repositories(world_id,repo_id,object_format,backend,
+         legacy_head_revision,created_at,switched_at) VALUES('a','repo-large','sha1','git',NULL,1,1)",
+        [],
+    )?;
+
+    let archives = tempfile::tempdir()?;
+    let archive = archives.path().join("large.cmarchive");
+    #[cfg(windows)]
+    let before = peak_pagefile_bytes();
+    let exported = export_to(&mut journal, &archive)?;
+    #[cfg(windows)]
+    let after = peak_pagefile_bytes();
+
+    assert_eq!(exported["status"], "completed");
+    let content_bytes = exported["manifest"]["contentBytes"].as_u64().unwrap();
+    assert!(
+        content_bytes >= (FILES * FILE_BYTES) as u64,
+        "every object body must be in the archive, got {content_bytes} bytes"
+    );
+    assert!(
+        exported["content"]["gitObjects"].as_u64().unwrap() >= (FILES + 2) as u64,
+        "the commit, its root tree and {FILES} blobs are all archived"
+    );
+
+    let verified = journal.backup_verify_portable(&json!({
+        "archivePath": archive.to_string_lossy()
+    }))?;
+    assert_eq!(verified["valid"], true);
+    assert!(verified["verifiedFiles"].as_u64().unwrap() >= (FILES + 2) as u64);
+
+    #[cfg(windows)]
+    {
+        let marginal_mib = after.saturating_sub(before) / (1024 * 1024);
+        println!(
+            "export marginal peak commit: {marginal_mib} MiB \
+             (peak before {before} bytes, peak after {after} bytes, content {content_bytes} bytes)"
+        );
+        assert!(
+            marginal_mib <= MARGINAL_PEAK_LIMIT_MIB,
+            "export raised the peak commit charge by {marginal_mib} MiB, above the \
+             {MARGINAL_PEAK_LIMIT_MIB} MiB bound"
+        );
+    }
+    #[cfg(not(windows))]
+    let _ = MARGINAL_PEAK_LIMIT_MIB;
+
+    drop(dir);
+    Ok(())
+}

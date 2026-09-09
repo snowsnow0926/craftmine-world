@@ -17,9 +17,9 @@
 //!   object format is recorded instead of assuming 40 characters.
 
 use std::{
-    io::{Read, Write},
+    io::{BufRead, BufReader, Read, Write},
     path::{Path, PathBuf},
-    process::{Command, Stdio},
+    process::{Child, ChildStdin, ChildStdout, Command, Stdio},
     sync::mpsc,
     time::{Duration, Instant},
 };
@@ -183,6 +183,130 @@ impl GitOutput {
             self.stderr.trim()
         );
         Ok(self)
+    }
+}
+
+/// A Git process whose standard output is consumed incrementally.
+///
+/// `execute` buffers a command's entire stdout and stops storing at
+/// `STDOUT_LIMIT`, so it cannot serve a command that legitimately produces more
+/// than that (for example `cat-file --batch` over a large repository). A
+/// `GitStream` hands the caller the raw pipe instead, so the caller can copy the
+/// output into its destination in bounded chunks and the peak memory of the call
+/// does not grow with the repository size. The command whitelist, the isolated
+/// environment and the timeout apply exactly as they do for `execute`.
+pub struct GitStream {
+    child: Child,
+    stdout: Option<BufReader<ChildStdout>>,
+    stdin: Option<ChildStdin>,
+    stderr: Option<std::thread::JoinHandle<Vec<u8>>>,
+    deadline: Instant,
+    subcommand: String,
+    timeout: Duration,
+    finished: bool,
+}
+
+impl GitStream {
+    /// Takes the write end of the pipe.
+    ///
+    /// A caller that feeds the process more input than one pipe buffer must
+    /// write from a dedicated thread while reading stdout: otherwise the child
+    /// blocks on a full stdout pipe and the caller blocks on a full stdin pipe.
+    pub fn take_stdin(&mut self) -> Option<ChildStdin> {
+        self.stdin.take()
+    }
+
+    /// Waits for the process and fails on a non-zero exit status.
+    ///
+    /// Standard input is closed first, so a command that reads to end-of-file
+    /// can finish, and any output the caller did not read is discarded, so a
+    /// command still producing output cannot block on a full stdout pipe while
+    /// this waits.
+    pub fn finish(mut self) -> Result<()> {
+        self.stdin = None;
+        let drain = self.stdout.take().map(|mut stdout| {
+            std::thread::spawn(move || {
+                let mut buffer = [0u8; 64 * 1024];
+                while let Ok(read) = stdout.read(&mut buffer) {
+                    if read == 0 {
+                        break;
+                    }
+                }
+            })
+        });
+        let mut status = loop {
+            if let Some(status) = self.child.try_wait().context("GIT_WAIT_FAILED")? {
+                break Some(status);
+            }
+            if Instant::now() >= self.deadline {
+                let _ = self.child.kill();
+                let _ = self.child.wait();
+                break None;
+            }
+            std::thread::sleep(Duration::from_millis(5));
+        };
+        self.finished = true;
+        if let Some(drain) = drain {
+            let _ = drain.join();
+        }
+        let stderr = self
+            .stderr
+            .take()
+            .and_then(|reader| reader.join().ok())
+            .unwrap_or_default();
+        let Some(exit) = status.take() else {
+            anyhow::bail!(
+                "GIT_TIMEOUT: {} exceeded {:?}",
+                self.subcommand,
+                self.timeout
+            );
+        };
+        ensure!(
+            exit.success(),
+            "GIT_STREAM_FAILED: {} exited {}: {}",
+            self.subcommand,
+            exit.code().unwrap_or(-1),
+            String::from_utf8_lossy(&stderr).trim()
+        );
+        Ok(())
+    }
+}
+
+impl Read for GitStream {
+    fn read(&mut self, buffer: &mut [u8]) -> std::io::Result<usize> {
+        match self.stdout.as_mut() {
+            Some(stdout) => stdout.read(buffer),
+            None => Ok(0),
+        }
+    }
+}
+
+impl BufRead for GitStream {
+    fn fill_buf(&mut self) -> std::io::Result<&[u8]> {
+        match self.stdout.as_mut() {
+            Some(stdout) => stdout.fill_buf(),
+            None => Ok(&[]),
+        }
+    }
+
+    fn consume(&mut self, amount: usize) {
+        if let Some(stdout) = self.stdout.as_mut() {
+            stdout.consume(amount);
+        }
+    }
+}
+
+impl Drop for GitStream {
+    fn drop(&mut self) {
+        if !self.finished {
+            // A stream that was not finished must not leave a child behind.
+            let _ = self.child.kill();
+            let _ = self.child.wait();
+            self.finished = true;
+        }
+        if let Some(reader) = self.stderr.take() {
+            let _ = reader.join();
+        }
     }
 }
 
@@ -591,6 +715,58 @@ impl GitAdapter {
             code: status.code().unwrap_or(-1),
             stdout,
             stderr: String::from_utf8_lossy(&stderr).into_owned(),
+        })
+    }
+
+    /// Spawn a Git command against a managed repository directory whose stdout
+    /// is read incrementally instead of being buffered and truncated.
+    ///
+    /// The whitelist check, the managed configuration, the isolated environment
+    /// and the timeout are the same as `execute`; only the buffering differs.
+    /// The caller must call [`GitStream::finish`]; dropping the stream without
+    /// it kills the process.
+    pub fn repo_stream(&self, git_dir: &Path, args: &[&str]) -> Result<GitStream> {
+        let mut full = vec![format!(
+            "--git-dir={}",
+            Self::plain(git_dir).to_string_lossy()
+        )];
+        full.extend(args.iter().map(|arg| arg.to_string()));
+        let subcommand = full
+            .iter()
+            .find(|arg| !arg.starts_with('-'))
+            .map(String::as_str)
+            .unwrap_or("")
+            .to_string();
+        let mut command = self.build_command(&full, &[])?;
+        let mut child = command.spawn().context("GIT_SPAWN_FAILED")?;
+        let stdin = child.stdin.take().context("GIT_SPAWN_FAILED")?;
+        let stdout = child.stdout.take().context("GIT_SPAWN_FAILED")?;
+        let mut child_stderr = child.stderr.take().context("GIT_SPAWN_FAILED")?;
+        let stderr_reader = std::thread::spawn(move || {
+            let mut buffer = Vec::new();
+            let mut chunk = [0u8; 8 * 1024];
+            loop {
+                match child_stderr.read(&mut chunk) {
+                    Ok(0) | Err(_) => break,
+                    Ok(count) => {
+                        if buffer.len() < STDERR_LIMIT {
+                            let remaining = STDERR_LIMIT - buffer.len();
+                            buffer.extend_from_slice(&chunk[..count.min(remaining)]);
+                        }
+                    }
+                }
+            }
+            buffer
+        });
+        Ok(GitStream {
+            child,
+            stdout: Some(BufReader::new(stdout)),
+            stdin: Some(stdin),
+            stderr: Some(stderr_reader),
+            deadline: Instant::now() + self.timeout,
+            subcommand,
+            timeout: self.timeout,
+            finished: false,
         })
     }
 

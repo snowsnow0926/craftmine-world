@@ -51,6 +51,9 @@ const ENTRY_LIMIT: u64 = 4 * 1024 * 1024 * 1024;
 const TOTAL_LIMIT: u64 = 256 * 1024 * 1024 * 1024;
 const ENTRY_COUNT_LIMIT: usize = 2_000_000;
 const COPY_BUFFER: usize = 128 * 1024;
+/// Upper bound for one line of Git plumbing output (`<oid> <type> <size>` or
+/// `<oid> <path>`). Streaming reads stay bounded even against a malformed peer.
+const GIT_LINE_LIMIT: usize = 64 * 1024;
 /// Operational tables never travel inside a user archive. Receipts and
 /// protection pins describe the local installation, not the user's world.
 const OPERATIONAL_TABLES: &[&str] = &["craftmine_backup_jobs", "craftmine_backup_pins"];
@@ -588,14 +591,48 @@ fn table_exists(db: &Connection, name: &str) -> Result<bool> {
     )?)
 }
 
+/// Reads one newline-terminated line of Git plumbing output into `buffer`.
+///
+/// Returns `Ok(false)` at a clean end of stream. A stream that ends inside a
+/// line, or a line longer than `GIT_LINE_LIMIT`, is refused instead of being
+/// buffered without bound.
+fn read_git_line<R: BufRead>(stream: &mut R, buffer: &mut Vec<u8>) -> Result<bool> {
+    buffer.clear();
+    loop {
+        let available = stream.fill_buf().context("BACKUP_GIT_TRUNCATED")?;
+        if available.is_empty() {
+            ensure!(buffer.is_empty(), "BACKUP_GIT_TRUNCATED");
+            return Ok(false);
+        }
+        match available.iter().position(|byte| *byte == b'\n') {
+            Some(at) => {
+                ensure!(buffer.len() + at <= GIT_LINE_LIMIT, "BACKUP_GIT_INVALID");
+                buffer.extend_from_slice(&available[..at]);
+                stream.consume(at + 1);
+                return Ok(true);
+            }
+            None => {
+                let count = available.len();
+                ensure!(buffer.len() + count <= GIT_LINE_LIMIT, "BACKUP_GIT_INVALID");
+                buffer.extend_from_slice(available);
+                stream.consume(count);
+            }
+        }
+    }
+}
+
 /// Git carriers.
 ///
 /// A bare repository is not copied file by file and no repository command
 /// outside the managed whitelist is used. Every object reachable from the
-/// snapshot's references is read with `cat-file --batch`, stored as one
-/// content-addressed entry, and recreated at restore with `hash-object -w`
+/// snapshot's references is read with a streaming `cat-file --batch`, stored as
+/// one content-addressed entry, and recreated at restore with `hash-object -w`
 /// plus `update-ref`. Recomputing each object id proves the restored history is
 /// the archived history, not a lookalike.
+///
+/// Object bodies are streamed: one header line plus one `COPY_BUFFER` chunk is
+/// held at a time, so a repository whose `cat-file --batch` output exceeds the
+/// adapter's buffered stdout limit is still archived.
 fn enumerate_repositories(
     db: &Connection,
     directory: &Path,
@@ -657,49 +694,92 @@ fn enumerate_repositories(
         if ref_names.is_empty() {
             continue;
         }
-        let listed = store
-            .git()
-            .repo(&layout.git_dir, &["rev-list", "--objects", "--all"])?
-            .ensure_ok("GIT_REV_LIST_FAILED")?;
         let mut oids: Vec<String> = Vec::new();
         let mut seen = BTreeSet::new();
-        for line in listed.stdout_text()?.lines() {
-            if let Some(oid) = line.split(' ').next().filter(|oid| !oid.is_empty()) {
-                if seen.insert(oid.to_owned()) {
-                    oids.push(oid.to_owned());
+        {
+            let mut stream = store
+                .git()
+                .repo_stream(&layout.git_dir, &["rev-list", "--objects", "--all"])?;
+            // Nothing is written to `rev-list`; closing stdin lets it run.
+            drop(stream.take_stdin());
+            let mut line = Vec::new();
+            while read_git_line(&mut stream, &mut line)? {
+                let text = std::str::from_utf8(&line).context("BACKUP_GIT_INVALID")?;
+                if let Some(oid) = text.split(' ').next().filter(|oid| !oid.is_empty()) {
+                    if seen.insert(oid.to_owned()) {
+                        oids.push(oid.to_owned());
+                    }
                 }
             }
+            stream.finish().context("GIT_REV_LIST_FAILED")?;
         }
-        let mut stdin = oids.join("\n").into_bytes();
-        stdin.push(b'\n');
-        let batch = store
+        if oids.is_empty() {
+            continue;
+        }
+        let mut stream = store
             .git()
-            .repo_stdin(&layout.git_dir, &["cat-file", "--batch"], &stdin)?
-            .ensure_ok("GIT_CAT_FILE_FAILED")?;
-        let mut cursor = 0usize;
+            .repo_stream(&layout.git_dir, &["cat-file", "--batch"])?;
+        // Object names are fed from a dedicated thread while this thread reads
+        // stdout, so a full stdin pipe can never block the process before it
+        // has produced the output being read.
+        let mut batch_stdin = stream.take_stdin().context("GIT_SPAWN_FAILED")?;
+        let mut feed = oids.join("\n").into_bytes();
+        feed.push(b'\n');
+        let feeder = std::thread::spawn(move || {
+            let _ = batch_stdin.write_all(&feed);
+            let _ = batch_stdin.flush();
+        });
+        let mut header = Vec::new();
+        let mut buffer = vec![0u8; COPY_BUFFER];
         for oid in &oids {
-            let newline = batch.stdout[cursor..]
-                .iter()
-                .position(|byte| *byte == b'\n')
-                .map(|at| cursor + at)
-                .context("BACKUP_GIT_TRUNCATED")?;
-            let header = std::str::from_utf8(&batch.stdout[cursor..newline])
-                .context("BACKUP_GIT_INVALID")?;
-            let parts: Vec<&str> = header.split(' ').collect();
-            ensure!(parts.len() == 3, "BACKUP_GIT_OBJECT_MISSING: {header}");
-            ensure!(parts[0] == oid, "BACKUP_GIT_OBJECT_MISMATCH");
-            let size: usize = parts[2].parse().context("BACKUP_GIT_INVALID")?;
-            let start = newline + 1;
-            let end = start.checked_add(size).context("BACKUP_SIZE_OVERFLOW")?;
             ensure!(
-                end < batch.stdout.len() && batch.stdout[end] == b'\n',
+                read_git_line(&mut stream, &mut header)?,
                 "BACKUP_GIT_TRUNCATED"
             );
-            let body = &batch.stdout[start..end];
+            let header_text = std::str::from_utf8(&header).context("BACKUP_GIT_INVALID")?;
+            let parts: Vec<&str> = header_text.split(' ').collect();
+            ensure!(parts.len() == 3, "BACKUP_GIT_OBJECT_MISSING: {header_text}");
+            ensure!(parts[0] == oid, "BACKUP_GIT_OBJECT_MISMATCH");
+            let size: u64 = parts[2].parse().context("BACKUP_GIT_INVALID")?;
+            ensure!(size <= ENTRY_LIMIT, "BACKUP_ENTRY_TOO_LARGE");
             let staged = staging.join(format!("object-{}", entries.len()));
-            fs::write(&staged, body).context("BACKUP_STAGING_WRITE_FAILED")?;
+            let mut output = BufWriter::with_capacity(
+                COPY_BUFFER,
+                File::create(&staged).context("BACKUP_STAGING_WRITE_FAILED")?,
+            );
+            let mut hasher = Sha256::new();
+            let mut remaining = size;
+            while remaining > 0 {
+                let want = remaining.min(buffer.len() as u64) as usize;
+                let read = stream
+                    .read(&mut buffer[..want])
+                    .context("BACKUP_GIT_TRUNCATED")?;
+                ensure!(read > 0, "BACKUP_GIT_TRUNCATED");
+                hasher.update(&buffer[..read]);
+                output
+                    .write_all(&buffer[..read])
+                    .context("BACKUP_STAGING_WRITE_FAILED")?;
+                remaining -= read as u64;
+            }
+            output.flush().context("BACKUP_STAGING_WRITE_FAILED")?;
+            output
+                .into_inner()
+                .map_err(|error| error.into_error())
+                .context("BACKUP_STAGING_WRITE_FAILED")?
+                .sync_all()
+                .context("BACKUP_STAGING_WRITE_FAILED")?;
+            // Every body is terminated by exactly one newline.
+            let mut terminator = [0u8; 1];
+            let read = stream
+                .read(&mut terminator)
+                .context("BACKUP_GIT_TRUNCATED")?;
+            ensure!(read == 1 && terminator[0] == b'\n', "BACKUP_GIT_TRUNCATED");
+            // The entry metadata describes the bytes on disk, so the streamed
+            // hash and a fresh re-hash of the staged file must agree.
             let (bytes, sha256) =
                 sha256_file(&staged).with_context(|| format!("BACKUP_OBJECT_UNREADABLE: {oid}"))?;
+            ensure!(bytes == size, "BACKUP_GIT_TRUNCATED");
+            ensure!(hex(hasher.finalize()) == sha256, "BACKUP_GIT_OBJECT_MISMATCH");
             entries.push(ContentEntry {
                 path: format!("content-history/repos/{key}/objects/{oid}"),
                 kind: "content-repo-object",
@@ -714,8 +794,9 @@ fn enumerate_repositories(
                 oid: Some(oid.clone()),
                 object_type: Some(parts[1].to_owned()),
             });
-            cursor = end + 1;
         }
+        let _ = feeder.join();
+        stream.finish().context("GIT_CAT_FILE_FAILED")?;
     }
     Ok(entries)
 }
@@ -2180,14 +2261,28 @@ fn restore_archive(
                 if owner != repo_id {
                     continue;
                 }
-                let body = fs::read(staged_path)
-                    .with_context(|| format!("BACKUP_OBJECT_STAGED_MISSING: {oid}"))?;
+                // The body is hashed straight from the staged file by path, so
+                // the largest object is never held in memory during a restore.
+                ensure!(
+                    staged_path.is_file(),
+                    "BACKUP_OBJECT_STAGED_MISSING: {oid}"
+                );
+                let staged_arg = GitAdapter::plain_path(staged_path)
+                    .to_string_lossy()
+                    .into_owned();
                 let written = store
                     .git()
-                    .repo_stdin(
+                    .repo(
                         &layout.git_dir,
-                        &["hash-object", "-w", "--stdin", "-t", object_type],
-                        &body,
+                        &[
+                            "hash-object",
+                            "--no-filters",
+                            "-w",
+                            "-t",
+                            object_type,
+                            "--",
+                            staged_arg.as_str(),
+                        ],
                     )?
                     .ensure_ok("BACKUP_OBJECT_RESTORE_FAILED")?
                     .trimmed()?;
