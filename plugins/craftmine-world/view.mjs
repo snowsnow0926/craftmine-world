@@ -5,6 +5,7 @@ const status = document.getElementById('world-status');
 const select = document.getElementById('world-list');
 const saveButton = document.getElementById('save-world');
 const newButton = document.getElementById('new-world');
+const importButton = document.getElementById('import-world');
 const form = document.getElementById('create-form');
 const errorBox = document.getElementById('error');
 const bridge = globalThis.pluginBridge;
@@ -35,6 +36,7 @@ function showError(error) {
 
 function controls() {
   select.disabled=!bridge||busy||closing;newButton.disabled=!bridge||busy||closing;saveButton.disabled=!bridge||busy||closing||!loaded;
+  importButton.disabled=!bridge||busy||closing;
   frame.inert=closing;
 }
 
@@ -105,6 +107,7 @@ async function refreshList() {
 function mount(record) {
   for(const pending of requests.values()){clearTimeout(pending.timer);pending.reject(Error('世界已切换'));}requests.clear();
   current=record;loaded=false;nonce=crypto.randomUUID();lastSaved=JSON.stringify(record.world.snapshot);
+  document.getElementById('import-result').hidden=true;
   document.body.dataset.worldId=record.id||'';delete document.body.dataset.worldLoaded;delete document.body.dataset.worldError;
   status.textContent='正在载入';controls();
   frame.srcdoc=gameDocument.replace('__CRAFTMINE_NONCE__',nonce);
@@ -131,6 +134,20 @@ globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose});
 
 saveButton.addEventListener('click',()=>void action(save));
 newButton.addEventListener('click',()=>{form.hidden=!form.hidden;});
+document.getElementById('import-form').addEventListener('submit',event=>{
+  event.preventDefault();void action(async()=>{
+  await save({freeze:true});
+  status.textContent='选择旧项目文件夹…';
+  const picked=await bridge.invoke('fs.requestDirectory');
+  if(!picked){send('resume');status.textContent='已保存';return;}
+  status.textContent='正在备份并导入…';
+  const result=await bridge.invoke('world.importLegacy');
+  mount(result.record);await refreshList();
+  const note=document.getElementById('import-result');
+  note.textContent=`旧世界已导入，${result.archive.files} 个原始文件已备份。历史作品、候选和草稿保存在备份中。`;
+  note.hidden=false;
+  });
+});
 document.getElementById('cancel-create').addEventListener('click',()=>{form.hidden=true;});
 form.addEventListener('submit',event=>{
   event.preventDefault();

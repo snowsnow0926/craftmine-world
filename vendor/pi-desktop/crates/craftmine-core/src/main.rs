@@ -15,6 +15,26 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
     match method {
+        "legacy.capture" => {
+            return journal.legacy_capture(
+                params["id"].as_str().context("IMPORT_ID_REQUIRED")?,
+                std::path::Path::new(params["source"].as_str().context("SOURCE_REQUIRED")?),
+            )
+        }
+        "legacy.read" => {
+            return journal.legacy_read(
+                params["id"].as_str().context("IMPORT_ID_REQUIRED")?,
+                params["path"].as_str().context("ARCHIVE_PATH_REQUIRED")?,
+            )
+        }
+        "legacy.commit" => {
+            let world: WorldDocument = serde_json::from_value(params["world"].clone())?;
+            return Ok(serde_json::to_value(journal.legacy_commit(
+                params["id"].as_str().context("IMPORT_ID_REQUIRED")?,
+                params["title"].as_str().context("TITLE_REQUIRED")?,
+                &world,
+            )?)?);
+        }
         "world.list" => return Ok(serde_json::to_value(journal.world_list()?)?),
         "world.read" => {
             return Ok(serde_json::to_value(journal.world_read(
@@ -72,11 +92,14 @@ fn main() -> Result<()> {
     let mut output = io::stdout().lock();
     loop {
         let mut line = Vec::new();
-        let size = (&mut input).take(2_200_001).read_until(b'\n', &mut line)?;
+        const MAX_RPC_BYTES: u64 = 72 * 1024 * 1024;
+        let size = (&mut input)
+            .take(MAX_RPC_BYTES + 1)
+            .read_until(b'\n', &mut line)?;
         if size == 0 {
             break;
         }
-        if size > 2_200_000 {
+        if size as u64 > MAX_RPC_BYTES {
             bail!("RPC_DOCUMENT_TOO_LARGE");
         }
         let response = match serde_json::from_slice::<Value>(&line) {

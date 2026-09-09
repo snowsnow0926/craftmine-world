@@ -14,7 +14,7 @@
     "automationId": "craftmine-windows",
     "worktree": "D:/Craftmine World-worktrees/pi-client-w1-20260909",
     "branch": "codex/pi-client-w1-20260909",
-    "nextStep": "沿当前工作树继续 W1：关闭保存屏障已通过 14 项真实组件联通和 10 项退出回归，接下来完成旧存档副本导入、无可见窗口的原生 Electron 验收，再推进 W2。禁止重复创建目标或并发写入。",
+    "nextStep": "沿当前工作树继续 W1：关闭保存与旧存档副本导入均通过真实组件联通。下一步增加严格禁止显示、焦点和输入的 Electron 离屏验证入口，跑完整客户端的启动、保存失败重试、关闭和重启，再推进 W2。禁止重复创建目标或并发写入。",
     "cleanupNote": "旧工作树已注销、分支已删除；D:/Craftmine World-worktrees/pi-client-20260909 有残留，递归删除被自动执行审核以 blocked by policy 拒绝。保留且不自动重试，不复用该目录。"
   },
   "windowsClientPlan": {
@@ -51,7 +51,7 @@
       "evidence": "test-results/windows-plan-final-snapshot-20260909.log（271 条）与 2026-09-09 晚真实端到端修复后的 272 条"
     },
     "knownGaps": [
-      "Windows 程序目录已能构建；完整原生窗口、安装流程、关闭保存屏障和旧存档副本导入仍未验收",
+    "Windows 程序目录已能构建，关闭保存与旧存档导入的真实组件验证通过；完整原生 Electron 生命周期和安装流程尚待验收",
       "世界面板、Rust 存储与打包组件通过；PI Agent 世界工具、长时验收、作品和候选面板仍需集成",
       "真实 toolCallId 透传和 Rust 草稿恢复去重通过；仍需项目写入租约和取消跨进程接线",
       "需核实完整模型请求的上下文预算，补齐世界记忆注入与 Windows 系统保护凭据",
@@ -68,11 +68,11 @@
     "developmentLog": "docs/WINDOWS_DEVELOPMENT_LOG.md",
     "latestVerification": {
       "command": "npm test",
-      "passed": 274,
+    "passed": 275,
       "failed": 0,
       "skipped": 0,
-      "evidence": "test-results/domain-full.log",
-      "scope": "独立开发工作树；另有真实 headless 固定源码回归 7/7，不等同真实模型完整任务通过"
+    "evidence": "test-results/w1-domain-tests.log",
+    "scope": "独立开发工作树；另有关闭保存 14/14、旧世界导入 14/14、扩展沙箱 14/14；评审钩子是固定测试数据，不等同真实模型完整任务通过"
     },
     "buildVerification": {
       "dependencies": "pnpm install --frozen-lockfile: passed",

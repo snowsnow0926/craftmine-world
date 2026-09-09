@@ -6,7 +6,11 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use super::{digest, document, TaskJournal};
+use super::{digest, TaskJournal};
+
+// Asset packages may contain 32 MiB of binary data encoded as base64.
+// Task drafts keep their separate, smaller limit.
+pub const MAX_WORLD_BYTES: usize = 64 * 1024 * 1024;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -45,7 +49,7 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     Ok(())
 }
 
-fn validate_id(id: &str) -> Result<()> {
+pub(super) fn validate_id(id: &str) -> Result<()> {
     ensure!(
         !id.is_empty()
             && id.len() <= 80
@@ -90,7 +94,7 @@ fn validate_progress(snapshot: &Value) -> Result<()> {
     Ok(())
 }
 
-fn encode(world: &WorldDocument) -> Result<String> {
+pub(super) fn encode(world: &WorldDocument) -> Result<String> {
     ensure!(
         world.build["id"]
             .as_str()
@@ -99,10 +103,12 @@ fn encode(world: &WorldDocument) -> Result<String> {
     );
     ensure!(world.build["scene"].is_object(), "SCENE_REQUIRED");
     validate_progress(&world.snapshot)?;
-    document(&serde_json::to_value(world)?)
+    let body = serde_json::to_string(world)?;
+    ensure!(body.len() <= MAX_WORLD_BYTES, "WORLD_DOCUMENT_TOO_LARGE");
+    Ok(body)
 }
 
-fn read(db: &Connection, id: &str) -> Result<WorldRecord> {
+pub(super) fn read(db: &Connection, id: &str) -> Result<WorldRecord> {
     validate_id(id)?;
     let (title, revision, updated, body, hash): (String, i64, i64, String, String) = db.query_row(
         "SELECT title,revision,updated_at,document,content_hash FROM craftmine_worlds WHERE id=?1", [id],
@@ -128,42 +134,53 @@ impl TaskJournal {
         title: &str,
         world: &WorldDocument,
     ) -> Result<WorldRecord> {
-        validate_id(id)?;
-        ensure!(
-            !title.trim().is_empty()
-                && title.chars().count() <= 80
-                && !title.chars().any(char::is_control),
-            "INVALID_WORLD_TITLE"
-        );
-        let body = encode(world)?;
-        self.db.execute("INSERT INTO craftmine_worlds(id,title,revision,updated_at,document,content_hash) VALUES(?1,?2,0,?3,?4,?5)", params![id,title,timestamp()?,body,digest(&body)])?;
+        insert(&self.db, id, title, world)?;
         read(&self.db, id)
     }
 
     pub fn world_list(&self) -> Result<Vec<WorldSummary>> {
-        let mut statement = self.db.prepare(
-            "SELECT id,title,revision,updated_at FROM craftmine_worlds ORDER BY updated_at DESC,id",
-        )?;
-        let rows = statement.query_map([], |row| {
-            Ok((
-                row.get::<_, String>(0)?,
-                row.get::<_, String>(1)?,
-                row.get::<_, i64>(2)?,
-                row.get::<_, i64>(3)?,
-            ))
-        })?;
-        rows.map(|row| {
-            let (id, title, revision, updated) = row?;
-            Ok(WorldSummary {
-                id,
-                title,
-                revision: revision.try_into()?,
-                updated_at: updated.try_into()?,
-            })
-        })
-        .collect()
+        list(&self.db)
     }
+}
 
+pub(super) fn insert(db: &Connection, id: &str, title: &str, world: &WorldDocument) -> Result<()> {
+    validate_id(id)?;
+    ensure!(
+        !title.trim().is_empty()
+            && title.chars().count() <= 80
+            && !title.chars().any(char::is_control),
+        "INVALID_WORLD_TITLE"
+    );
+    let body = encode(world)?;
+    db.execute("INSERT INTO craftmine_worlds(id,title,revision,updated_at,document,content_hash) VALUES(?1,?2,0,?3,?4,?5)", params![id,title,timestamp()?,body,digest(&body)])?;
+    Ok(())
+}
+
+fn list(db: &Connection) -> Result<Vec<WorldSummary>> {
+    let mut statement = db.prepare(
+        "SELECT id,title,revision,updated_at FROM craftmine_worlds ORDER BY updated_at DESC,id",
+    )?;
+    let rows = statement.query_map([], |row| {
+        Ok((
+            row.get::<_, String>(0)?,
+            row.get::<_, String>(1)?,
+            row.get::<_, i64>(2)?,
+            row.get::<_, i64>(3)?,
+        ))
+    })?;
+    rows.map(|row| {
+        let (id, title, revision, updated) = row?;
+        Ok(WorldSummary {
+            id,
+            title,
+            revision: revision.try_into()?,
+            updated_at: updated.try_into()?,
+        })
+    })
+    .collect()
+}
+
+impl TaskJournal {
     pub fn world_read(&self, id: &str) -> Result<WorldRecord> {
         read(&self.db, id)
     }

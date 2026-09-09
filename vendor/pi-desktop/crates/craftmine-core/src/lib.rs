@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 
+mod legacy;
 mod worlds;
 pub use worlds::{WorldDocument, WorldRecord, WorldSummary};
 
@@ -65,6 +66,7 @@ pub struct DraftReceipt {
 
 pub struct TaskJournal {
     db: Connection,
+    directory: std::path::PathBuf,
 }
 
 fn document(value: &Value) -> Result<String> {
@@ -130,7 +132,13 @@ impl TaskJournal {
                 request_hash TEXT NOT NULL, result TEXT NOT NULL, PRIMARY KEY(task_id, tool_call_id)
             );")?;
         worlds::migrate(&db)?;
-        Ok(Self { db })
+        legacy::migrate(&db)?;
+        let directory = std::fs::canonicalize(
+            path.parent()
+                .filter(|p| !p.as_os_str().is_empty())
+                .unwrap_or(Path::new(".")),
+        )?;
+        Ok(Self { db, directory })
     }
 
     /// Duplicate starts are rejected rather than resetting an existing task.

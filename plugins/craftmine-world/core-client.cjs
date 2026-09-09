@@ -30,11 +30,11 @@ class CoreClient {
     });
     return this.call('hello');
   }
-  call(method, params={}) {
+  call(method, params={}, timeoutMs=5000) {
     const child=this.child;if(!child||child.exitCode!==null||child.stdin.destroyed)return Promise.reject(Error('Craftmine Rust service is unavailable'));
     const id=randomUUID();
     return new Promise((resolve,reject)=>{
-      const timer=setTimeout(()=>{this.pending.delete(id);reject(Error('Craftmine Rust request timed out'));},5000);
+      const timer=setTimeout(()=>{this.pending.delete(id);reject(Error('Craftmine Rust request timed out'));},timeoutMs);
       this.pending.set(id,{resolve,reject,timer,child});
       child.stdin.write(JSON.stringify({id,method,params})+'\n',error=>{if(error){clearTimeout(timer);this.pending.delete(id);reject(error);}});
     });

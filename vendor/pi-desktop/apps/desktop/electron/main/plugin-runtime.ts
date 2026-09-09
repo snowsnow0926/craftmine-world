@@ -1288,6 +1288,14 @@ export class PluginRuntime {
         // implement itself is forwarded to the plugin's onPanelInvoke so
         // plugins can define their own panel↔main-process channels
         // (e.g. the domain manager's "domain.sync" data bridge).
+        if (pluginId === "craftmine.world" && channel === "world.importLegacy") {
+          this.assertPermission(loaded, "fs.read");
+          if (!loaded.userRoot) throw apiError("PERMISSION_DENIED", "Choose the legacy project directory first");
+          return this.sendToChild(loaded, {
+            t: "call", method: "panel.invoke",
+            payload: { channel, payload: { source: loaded.userRoot } },
+          }, 120_000);
+        }
         return this.sendToChild(
           loaded,
           {

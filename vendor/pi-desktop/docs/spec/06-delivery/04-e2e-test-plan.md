@@ -8474,3 +8474,11 @@ are withdrawn with ADR 0165.
 - Delay a real save and verify the close acknowledgement waits; retry successfully, stop the real plugin/Rust processes and reopen the committed final progress. Verify the acknowledgement identifies the actual saved world, revision and build.
 - Pure lifecycle tests cover a missing acknowledgement, a hanging renderer, cancellation on failure and unrelated plugin isolation. The Windows close handler must not retain permission to bypass a failed world checkpoint.
 - Validation: root `node tests/desktop-worlds-browser.mjs` (14 checks), desktop `node --test test/craftmine-lifecycle.test.mjs test/close-behavior-tray.test.mjs`. Full native Electron close and tab lifecycle remain independently tracked acceptance steps.
+
+#### CRAFTMINE-005: Complete legacy archive and playable import
+
+- Create an isolated legacy fixture containing flora, a real PNG whose package exceeds 2 MB, a gameplay module calling an extension, library versions, an unapplied candidate and a running-task draft. Record every source file's hash.
+- Submit the real import form in a separate headless browser. The picker service returns the fixture directory; the plugin, Rust copy/transaction, compiler, assets and game Workers are real. Verify the native picker root overrides forged page paths.
+- Verify the imported build/source/assets/extensions match, actual target health changes, every archived/source file hash remains identical, and old tasks stay archived. Save, stop plugin and Rust, reopen, and verify no repeated damage.
+- Reject absent extension dependencies and Windows junctions without replacing a desktop world. Rust tests additionally cover archive tampering, path escape, atomic import and replay after subsequent progress.
+- Validation: root `node tests/desktop-legacy-browser.mjs` (14 checks on Windows), `cargo test --locked -p craftmine-core` (10 tests). Native dialog interaction is intentionally replaced by the fixture picker and is not claimed as tested.

@@ -10,7 +10,7 @@
     "views": [{"id":"world","title":{"en":"World","zh-CN":"世界"},"icon":"target","entry":"views/world.html","order":1}],
     "agentTools": [{"name":"runtime_info","description":"Inspect the connected Craftmine runtime and its available integration capabilities.","risk":"low","schema":{"type":"object","properties":{},"additionalProperties":false}}]
   },
-  "permissions": ["ui.view", "agent.tool.register", "background.service"],
+  "permissions": ["ui.view", "agent.tool.register", "background.service", "fs.read"],
   "activationEvents": ["onStartup"],
   "engines": {"piDesktop": ">=0.14.3"}
 }
