@@ -1,0 +1,270 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "agent": "F",
+  "promptVersion": "w2-w5-v1",
+  "status": "ready_for_integration",
+  "baseRef": "dispatch/w2-w5-v1",
+  "baseCommit": "2f71e128fd9ff9c49ee4e466138f4949b6bce862",
+  "codeCommit": "03bc3948eb75e2a326d4fc90c844a417273f357a",
+  "branch": "codex/parallel-f-20260909",
+  "worktree": "D:\\Craftmine World-worktrees\\parallel-f-20260909",
+  "commits": [
+    "cc46edc48c44cb6e71b00b4c1379702357b8cf1f",
+    "985ea8a7532101de17b5cce21952e4b07c2cfb96",
+    "a346377987ec8e35eac42bb512618e2759ac6c15",
+    "3f4c0312ea15e14b2661af692fa63ec1320cc29a"
+  ],
+  "report": "docs/dispatch-reports/F/REPORT_F.md",
+  "interfaces": [
+    "docs/dispatch-reports/F/INTERFACE_F.md"
+  ],
+  "integrationPatches": [
+    {
+      "path": "docs/dispatch-reports/F/integration.patch",
+      "sha256": "35f5f589f8aa4f78f17a59471ab477368bb03e0c68beaa8d74bf21e280cbaaf5",
+      "description": "Original temporary shared index overlay, already integrated in G a82c0ea"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "native-real-model",
+      "command": "CRAFTMINE_LIVE_CONFIG=<authorized local config> node tests/dispatch/f/native-agent.mjs",
+      "sourceCommit": "2f5f7b006c6388ffd060f15b834811a5ca93080b",
+      "result": "passed; explicit F index overlay, fixed A core binary",
+      "evidence": [
+        "docs/evidence/dispatch/F/native-baseline.json",
+        "docs/evidence/dispatch/F/baseline-durable-audit.json"
+      ],
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909"
+    },
+    {
+      "kind": "native-real-model-compaction",
+      "command": "CRAFTMINE_F_COMPACTIONS=3 CRAFTMINE_LIVE_CONFIG=<authorized local config> node tests/dispatch/f/native-agent.mjs",
+      "sourceCommit": "2f5f7b006c6388ffd060f15b834811a5ca93080b",
+      "result": "passed; three real PI summaries, actual application/restart",
+      "evidence": [
+        "docs/evidence/dispatch/F/native-three-compactions.json",
+        "docs/evidence/dispatch/F/three-compactions-durable-audit.json"
+      ],
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909"
+    },
+    {
+      "kind": "native-real-model-library",
+      "command": "CRAFTMINE_F_WORKBENCH=1 node tests/dispatch/f/native-agent.mjs; node tests/dispatch/f/retry-review.mjs test-results/desktop-native-f-45T8IB",
+      "sourceCommit": "a82c0ea8c85b6bef3fdd730bdf945583d2ba1140",
+      "repairSourceCommit": "3f5ef582c0fdda32ef6608660e798af70e6a674f",
+      "result": "initial real review schema failure retained; one explicit corrected real review passed and applied exact saved tree",
+      "evidence": [
+        "docs/evidence/dispatch/F/reuse-initial-review-failure.json",
+        "docs/evidence/dispatch/F/reuse-explicit-review-retry.json"
+      ],
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909"
+    },
+    {
+      "kind": "native-real-model-recovery",
+      "command": "CRAFTMINE_F_RECOVERY=1 node tests/dispatch/f/native-agent.mjs; node tests/dispatch/f/retry-review.mjs test-results/desktop-native-f-nSynTZ",
+      "sourceCommit": "1e3fcfe9d051712b725b06ca3ee2eecb80779cd8",
+      "repairSourceCommit": "3f5ef582c0fdda32ef6608660e798af70e6a674f",
+      "result": "real process interruption/resume preserves draft/owner/unknown budget; review schema repaired and applied; helper backup-grant failure retained",
+      "evidence": [
+        "docs/evidence/dispatch/F/recovery-initial-review-failure.json",
+        "docs/evidence/dispatch/F/recovery-review-memory-backup-grant-failure.json"
+      ],
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909"
+    },
+    {
+      "kind": "native-state-no-model",
+      "command": "CRAFTMINE_F_STATE_ONLY=1 CRAFTMINE_F_MEMORY=1 CRAFTMINE_F_BACKUP=1 node tests/dispatch/f/retry-review.mjs test-results/desktop-native-f-nSynTZ",
+      "sourceCommit": "a346377987ec8e35eac42bb512618e2759ac6c15",
+      "result": "passed; zero additional model requests, actual memory and backup file-grant restore",
+      "evidence": [
+        "docs/evidence/dispatch/F/recovery-final-state-backup.json"
+      ],
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909"
+    },
+    {
+      "kind": "native-fixed-provider-negative-fixtures",
+      "command": "CRAFTMINE_TEST_APPLICATION=1 node tests/desktop-native.mjs",
+      "sourceCommit": "a82c0ea8c85b6bef3fdd730bdf945583d2ba1140",
+      "result": "40 passed; fixed authorship and provider, actual native dispatch/render/application",
+      "evidence": [
+        "docs/evidence/dispatch/F/native-negative-fixtures.json"
+      ],
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909"
+    },
+    {
+      "kind": "headless-real-game-workers",
+      "command": "node tests/dispatch/d/headless.mjs",
+      "sourceCommit": "a82c0ea8c85b6bef3fdd730bdf945583d2ba1140",
+      "result": "27 passed; D authored fixtures, real game and restricted Workers",
+      "evidence": [
+        "docs/evidence/dispatch/F/gameplay-headless.json",
+        "docs/evidence/dispatch/F/garden.png"
+      ],
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909"
+    },
+    {
+      "kind": "real-rust-process-and-runtime",
+      "command": "node --test tests/dispatch/a/domain-process.test.mjs tests/dispatch/d/runtime.test.mjs",
+      "sourceCommit": "3f5ef582c0fdda32ef6608660e798af70e6a674f",
+      "result": "12 passed; 5 Rust-process contracts plus 7 runtime tests; source/application evidence fixtures explicit",
+      "evidence": [
+        "docs/dispatch-reports/F/REPORT_F.md"
+      ],
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909"
+    },
+    {
+      "kind": "controller-contract",
+      "command": "node --test tests/dispatch/f/acceptance-safety.test.mjs",
+      "sourceCommit": "a346377987ec8e35eac42bb512618e2759ac6c15",
+      "result": "4 passed",
+      "evidence": [
+        "docs/dispatch-reports/F/REPORT_F.md"
+      ],
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909"
+    },
+    {
+      "kind": "packaged-refusal-contract",
+      "command": "node --test tests/dispatch/f/package-guard.test.mjs",
+      "sourceCommit": "3f4c0312ea15e14b2661af692fa63ec1320cc29a",
+      "result": "2 passed; no Electron process launched",
+      "evidence": [
+        "docs/dispatch-reports/F/REPORT_F.md"
+      ],
+      "cwd": "D:\\Craftmine World-worktrees\\parallel-f-20260909"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/evidence/dispatch/F/baseline-durable-audit.json",
+      "sha256": "0c8d612734ba772f219deff7be0b1c49e1b786ba98fef80c9ca7af16a3da00c5",
+      "description": "baseline-durable-audit.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/gameplay-headless.json",
+      "sha256": "32513512fd2c8dae94e90d0390b4d8956735f00cd41959b29b952289a31c957e",
+      "description": "gameplay-headless.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/garden.png",
+      "sha256": "436b054e39daff7026875cccb63c2733d867b6854f8274b1d7af0cb2fa1440c4",
+      "description": "garden.png"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/native-baseline.json",
+      "sha256": "669a0e28c73939788ad05c77483a2dbea252f5e80098e7c79eabc111fac47ca7",
+      "description": "native-baseline.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/native-negative-fixtures.json",
+      "sha256": "035adc2f6bd3fa72adaa1cc2ed0c98a9b2d57c86fe331d5db165221735478bb7",
+      "description": "native-negative-fixtures.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/native-three-compactions.json",
+      "sha256": "b25612f2f6a5e752e07491b6756e4e136e2c8139543868a9a75488359516c24a",
+      "description": "native-three-compactions.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/process-memory-sample.json",
+      "sha256": "d3d51013f18c2c12b9b377f7d4a8afceaa1eae379a36bbbb0ae17526c0e34fc3",
+      "description": "process-memory-sample.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/recovery-final-state-backup.json",
+      "sha256": "6e5de181eef1f623047d1ff4a8838519f1320026236e12967c460a7b4658a1c6",
+      "description": "recovery-final-state-backup.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/recovery-initial-review-failure.json",
+      "sha256": "aff77644a9efa1b64e9005a3a7a24ee16c9ea26275fa867d1404ee8922a7facb",
+      "description": "recovery-initial-review-failure.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/recovery-retry-helper-startup-failure.json",
+      "sha256": "df9af628b1716dea739cc292acaa462af4799f7547479271aa6f964358e7d1c3",
+      "description": "recovery-retry-helper-startup-failure.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/recovery-review-memory-backup-grant-failure.json",
+      "sha256": "ad603866dda908a1bb3c05c657c0b000df035ef9f19bd18da3e86e7cea00aa86",
+      "description": "recovery-review-memory-backup-grant-failure.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/retry-helper-startup-failure.json",
+      "sha256": "944afee743fdb9f88fe73c25becc06ecc227dabdb7644a8e14c6071f0abeb4da",
+      "description": "retry-helper-startup-failure.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/reuse-explicit-review-retry.json",
+      "sha256": "2c32633c1b29d72b91a778755d9755706f8bd58a77c00e59f3dbd8affed6709e",
+      "description": "reuse-explicit-review-retry.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/reuse-initial-review-failure.json",
+      "sha256": "8db49f3fabb57da058ed058eea92570a3616c566df429eea913aeafd0578375a",
+      "description": "reuse-initial-review-failure.json"
+    },
+    {
+      "path": "docs/evidence/dispatch/F/three-compactions-durable-audit.json",
+      "sha256": "250c40df50cc4dba45b40481dc3135825d3a49f36234ac83b784335b4fef1b37",
+      "description": "three-compactions-durable-audit.json"
+    }
+  ],
+  "dependencies": [
+    {
+      "group": "A",
+      "contractVersion": "actual Rust domain with durable budget/library/memory/backup",
+      "usesFixture": true,
+      "missingWork": "Native crash matrix beyond patch-stage is not exhaustive"
+    },
+    {
+      "group": "B",
+      "contractVersion": "actual PI runtime and host-bound request gateway",
+      "usesFixture": false,
+      "missingWork": "Actual provider/window switch and unrelated corrected task after compaction not tested"
+    },
+    {
+      "group": "C",
+      "contractVersion": "actual workbench renderer and host-owned business gateway",
+      "usesFixture": false,
+      "missingWork": "Full PI desktop feature matrix remains outside F coverage"
+    },
+    {
+      "group": "D",
+      "contractVersion": "actual game/Worker and fixed creation/extension packages",
+      "usesFixture": true,
+      "missingWork": "Native model-authored gameplay extension chain not tested"
+    },
+    {
+      "group": "E",
+      "contractVersion": "actual DPAPI host, file grants and schema-2 backup",
+      "usesFixture": false,
+      "missingWork": "Final integrated package representative pending; clean OS unavailable"
+    }
+  ],
+  "finalPackage": {
+    "status": "pending_final_package",
+    "productFreezeCommit": "0f6eaa87742b05a1b2d10c97e22b3dd3d7281fc3"
+  },
+  "modelUsage": {
+    "provider": "deepseek",
+    "model": "deepseek-v4.1-flash-expires-on-0910",
+    "thinking": "high",
+    "developmentRequests": 64,
+    "knownProviderTotalTokens": 598930,
+    "unknownRequests": 1,
+    "unknownReservedTokens": 66274
+  },
+  "unverified": [
+    "Clean Windows installer/upgrade",
+    "Visible-window composition and physical movement",
+    "Final frozen package representative (pending E artifact)",
+    "Stable peak-memory/frame/performance gates",
+    "Actual native two-world/project switch during a model run",
+    "Crash at every verification/application/save substage"
+  ],
+  "privateDataIncluded": false,
+  "mergedToPrimary": false,
+  "pushed": false
+}
