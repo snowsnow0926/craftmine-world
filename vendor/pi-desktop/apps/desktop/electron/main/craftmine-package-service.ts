@@ -72,7 +72,7 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
         if(method==='sourceJob') {
           fields(args,['worldId','jobId']);
           if(typeof args.jobId!=='string'||!/^gjob-[a-f0-9]{64}$/.test(args.jobId))failure('INVALID_PARAMS');
-          const result=await options.domainCall<any>('godotBuild.read',{worldId,jobId:args.jobId});await selected(worldId);
+          const result=await options.domainCall('godotBuild.read',{worldId,jobId:args.jobId});await selected(worldId);
           const statuses=['blocked','queued','claimed','running','passed','failed','cancelled','interrupted'];
           if(result.worldId!==worldId||result.jobId!==args.jobId||!statuses.includes(result.status))failure('PACKAGE_JOB_RECEIPT_INVALID');
           return {worldId,jobId:args.jobId,status:result.status,terminal:['passed','failed','cancelled','interrupted'].includes(result.status)};
