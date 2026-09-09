@@ -1,6 +1,4 @@
 //! AL1 streaming import, immutable versions, legacy mapping and body access.
-use std::path::Path;
-
 use anyhow::{ensure, Context, Result};
 use rusqlite::{params, OptionalExtension, TransactionBehavior};
 use serde_json::{json, Value};
@@ -463,9 +461,5 @@ impl TaskJournal {
             }),
             None => json!({"mapped": false}),
         })
-    }
-
-    pub(super) fn blob_directory(&self, create: bool) -> Result<std::path::PathBuf> {
-        store::blob_root(Path::new(&self.directory), create)
     }
 }

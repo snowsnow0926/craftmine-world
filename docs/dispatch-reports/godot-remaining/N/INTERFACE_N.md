@@ -16,6 +16,7 @@
 | `asset.bodyPath` | `assetId, version, path` | 宿主侧绝对 `blobPath`、`sha256`、`bytes`（**不把大正文塞进聊天**） | H 备份、M 导出、K 打包 |
 | `asset.mapLegacy` / `asset.resolveLegacy` | 旧 `asset id/version/hash` 与 `assetId/version` | 旧格式映射，保留原始定义 | H 迁移 |
 | `asset.search` | `scope, worldId?, query?, kind?, mediaKind?, tags?, favoritesOnly?, latestOnly?, offset, limit` | 分类/标签/范围检索，返回 `state` | 模型/UI |
+| `asset.scan` | `sourceRoot, maxFiles?, maxBytes?, hashBytes?` | 授权目录递归扫描，按内容哈希返回新版本提示；`worldUpdated:false`，不登记、不改世界 | 玩家/UI 目录导入 |
 | `asset.annotate` | `operationId, assetId, displayName?, tags?, favorite?, notes?` | 只改浏览元数据，`contentHash` 不变 | 玩家/UI |
 | `asset.recordUsage` / `asset.usage` | `assetId, version, refKind, refId, detail` / `assetId, version?` | 使用关系，AL5 删除保护依据 | H/M（宿主） |
 | `asset.previewBegin` | `assetId, version, settingsHash?` | `jobId, cacheKey, cached, timeoutMs, preview` | C/D 宿主 |
@@ -52,6 +53,7 @@ asset_catalog::migrate(&db)?;
 "asset.mapLegacy" => return journal.asset_map_legacy(params),
 "asset.resolveLegacy" => return journal.asset_resolve_legacy(params),
 "asset.search" => return journal.asset_search(params),
+"asset.scan" => return journal.asset_scan(params),
 "asset.annotate" => return journal.asset_annotate(params),
 "asset.recordUsage" => return journal.asset_record_usage(params),
 "asset.usage" => return journal.asset_usage(params),

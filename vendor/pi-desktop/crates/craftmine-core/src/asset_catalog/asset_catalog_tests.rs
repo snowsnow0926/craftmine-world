@@ -112,6 +112,15 @@ fn al0_shared_lock_vectors_are_frozen() -> Result<()> {
             "lock hash for {}",
             case["name"]
         );
+        // The strict parser used by the host must produce the same hash from
+        // the frozen canonical text.
+        let parsed = lockfile::parse_lock(case["canonical"].as_str().unwrap())?;
+        assert_eq!(
+            parsed.lock_hash()?,
+            case["sha256"].as_str().unwrap(),
+            "parse_lock round trip for {}",
+            case["name"]
+        );
     }
     for case in vectors["lockErrors"].as_array().unwrap() {
         let lock: AssetLock = serde_json::from_value(case["lock"].clone())?;
@@ -346,7 +355,7 @@ fn al1_refuses_unauthorized_sources_paths_and_oversized_budget_without_partial_s
     assert!(journal
         .asset_read(&json!({"assetId":"door-texture","version":1}))
         .is_err());
-    let blobs = journal.blob_directory(false)?;
+    let blobs = store::blob_root(&journal.directory, false)?;
     let entries: Vec<_> = walk(&blobs)?;
     assert!(entries.is_empty(), "staging left files: {entries:?}");
 
@@ -634,6 +643,61 @@ fn al2_probe_and_preview_states_never_conflate() -> Result<()> {
     assert_eq!(checked["state"]["baseChecked"]["baseId"], "first-person");
     let unchecked = journal.asset_read(&json!({"assetId":"door-texture","version":2}))?;
     assert_eq!(unchecked["state"]["baseChecked"], Value::Null);
+    Ok(())
+}
+
+#[test]
+fn al1_scan_reports_new_version_hints_without_touching_worlds() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let nested = root.join("textures");
+    std::fs::create_dir_all(&nested)?;
+    std::fs::write(nested.join("door.png"), png_header(4, 4))?;
+    std::fs::write(root.join("note.webp"), b"unsupported")?;
+
+    let before = journal.asset_search(&json!({"scope":"local-library","offset":0,"limit":10}))?;
+    let scan = journal.asset_scan(&json!({"sourceRoot": root.to_string_lossy()}))?;
+    assert_eq!(scan["worldUpdated"], false);
+    assert_eq!(scan["scanned"], 2);
+    assert_eq!(scan["hints"]["newVersions"], 1);
+    assert_eq!(scan["hints"]["unsupported"], 1);
+    let png = scan["items"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|item| item["path"] == "textures/door.png")
+        .unwrap();
+    assert_eq!(png["known"], false);
+    assert_eq!(png["supported"], true);
+    assert_eq!(png["mediaType"], "image/png");
+    let after = journal.asset_search(&json!({"scope":"local-library","offset":0,"limit":10}))?;
+    assert_eq!(after["total"], before["total"], "scan must not register anything");
+
+    let file = nested.join("door.png");
+    journal.asset_import(&import_args(
+        &root,
+        &file,
+        "op-scan",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+    let rescan = journal.asset_scan(&json!({"sourceRoot": root.to_string_lossy()}))?;
+    assert_eq!(rescan["hints"]["newVersions"], 0);
+    assert_eq!(rescan["hints"]["unchanged"], 1);
+    let known = rescan["items"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|item| item["path"] == "textures/door.png")
+        .unwrap();
+    assert_eq!(known["known"], true);
+    assert_eq!(known["assetId"], "door-texture");
+
+    let limited = journal.asset_scan(&json!({"sourceRoot": root.to_string_lossy(), "maxFiles": 1}))?;
+    assert_eq!(limited["truncated"], true);
     Ok(())
 }
 

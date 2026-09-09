@@ -36,6 +36,9 @@ godot-asset-library `11b303dad6a5b3a4347df2633a03d4338c4db063`（MIT，维护模
 - 旧格式映射：`asset.mapLegacy` / `asset.resolveLegacy` 保留旧 `asset id/version/hash`。
 - 宿主正文访问：`asset.bodyPath` 返回绝对 blob 路径与哈希，大正文不经过聊天 base64。
 - 授权边界：`sourcePath` 必须 canonicalize 到 `sourceRoot` 之内，拒绝链接/重解析点。
+- 目录扫描：`asset.scan` 只在授权根内递归（深度/文件数/字节数/哈希预算可限），跳过链接与
+  重解析点，按内容 SHA-256 给出"新版本 / 未变化 / 不支持"提示，显式返回 `worldUpdated:false`；
+  目录监听由宿主重复调用该扫描实现，文件系统事件不能直接改世界。
 
 ### 1.3 AL2 浏览与可信预览
 
@@ -58,8 +61,8 @@ godot-asset-library `11b303dad6a5b3a4347df2633a03d4338c4db063`（MIT，维护模
 
 | 命令 | 结果 |
 | --- | --- |
-| `cargo test -p craftmine-core --offline` | **121 passed; 0 failed; 1 ignored**（既有 111 + 新增 10；忽略项是仓库原有的 Windows junction 测试） |
-| `cargo test -p craftmine-core --offline --lib asset_catalog` | 10 passed; 0 failed |
+| `cargo test -p craftmine-core --offline` | **122 passed; 0 failed; 1 ignored**（既有 111 + 新增 11；忽略项是仓库原有的 Windows junction 测试），0 warning |
+| `cargo test -p craftmine-core --offline --lib asset_catalog` | 11 passed; 0 failed |
 | `node --test tests/godot-remaining/N/image-decode.test.mjs` | 28 pass / 0 fail / 0 skipped |
 | `node --test tests/godot-remaining/N/audio-decode.test.mjs` | 22 pass / 0 fail |
 | `node --test tests/godot-remaining/N/godot-package.test.mjs` | 22 pass / 0 fail |
@@ -93,7 +96,7 @@ godot-asset-library `11b303dad6a5b3a4347df2633a03d4338c4db063`（MIT，维护模
 | AL-A12 | 导出到新目录/另一台环境 | 部分 | blob 自包含 + `asset.bodyPath`；作品包与完整备份由 H/K |
 | AL-A13 | 旧 Web 包与 Godot 存储迁移 | 部分 | 旧格式映射与解析已实现；真实旧库迁移由 H |
 | AL-A14 | AI 检索并安装旧作品 | 部分 | 检索/读取已实现；安装是 H/M/A/C/D 的链路 |
-| AL-A15 | 目录监听、路径碰撞、链接与外链 | 部分 | 授权根限制、路径/保留名/大小写规则已实现；**目录扫描/监听未实现** |
+| AL-A15 | 目录监听、路径碰撞、链接与外链 | 部分通过 | `al1_scan_…`（授权根递归、链接跳过、预算截断、内容哈希新版本提示、`worldUpdated:false`）、路径/保留名规则；**目录监听仍是宿主轮询，未做 OS 事件监听** |
 | AL-A16 | 切世界时旧搜索/预览请求返回 | 部分 | 预览缓存键含内容身份、检索按世界范围过滤；迟到响应/取消的宿主侧处理未验证 |
 | AL-A17 | 打包资源与许可清单不一致 | **不属于 N** | H/K 的清单与预检 |
 

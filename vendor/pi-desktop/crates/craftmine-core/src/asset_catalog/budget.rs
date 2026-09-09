@@ -3,9 +3,8 @@
 use anyhow::{ensure, Result};
 use serde_json::Value;
 
-use super::contract;
-
 /// The legacy single-file limit this library replaces for player imports.
+#[allow(dead_code)]
 pub(super) const LEGACY_ASSET_BYTES: u64 = 512 * 1024;
 /// Recommended player-import budget, separated per resource.
 pub(super) const IMPORT_FILE_BYTES: u64 = 64 * 1024 * 1024;
@@ -13,6 +12,10 @@ pub(super) const IMPORT_TOTAL_BYTES: u64 = 256 * 1024 * 1024;
 pub(super) const IMPORT_FILES: usize = 4096;
 pub(super) const IMPORT_CHUNK_BYTES: usize = 64 * 1024;
 pub(super) const PREVIEW_PARALLEL: usize = 4;
+/// Hosts read this to size their preview worker pool; the core never runs
+/// decoders itself.
+#[allow(dead_code)]
+pub(super) const PREVIEW_WORKERS_HINT: usize = PREVIEW_PARALLEL;
 pub(super) const PREVIEW_TIMEOUT_MS: u64 = 20_000;
 pub(super) const SEARCH_LIMIT: usize = 100;
 pub(super) const SEARCH_SCAN_LIMIT: usize = 20_000;
@@ -80,7 +83,4 @@ impl ImportLimits {
         Ok(limits)
     }
 
-    pub(super) fn check_media(&self, media_type: &str) -> Result<()> {
-        contract::valid_media_type(media_type)
-    }
 }

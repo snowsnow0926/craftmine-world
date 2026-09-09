@@ -9,6 +9,11 @@
 //! 4. `assetLockHash` is SHA-256 over the canonical UTF-8 JSON bytes, where
 //!    canonical means compact separators, struct field order and no trailing
 //!    newline.
+//!
+//! These entry points are the AL0 shared-contract surface: M's VM0 store and
+//! the host install/upgrade adapters consume them, and the frozen vectors
+//! exercise them today.
+#![allow(dead_code)]
 use std::collections::BTreeMap;
 
 use anyhow::{ensure, Result};
