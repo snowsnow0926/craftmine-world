@@ -74,7 +74,9 @@
     "results": {
       "fullCrate": "152 passed; 0 failed; 2 ignored (exit 0)",
       "contentHistory": "41 passed; 0 failed; 1 ignored (exit 0)",
-      "cargoCheckDeliveredTree": "cargo check -p craftmine-core --offline -> Finished, exit 0 (content_history is not declared in lib.rs, so it is not compiled in the delivered tree)"
+      "cargoCheckDeliveredTree": "cargo check -p craftmine-core --offline -> Finished, exit 0 (content_history is not declared in lib.rs, so it is not compiled in the delivered tree)",
+      "deliveredTreeSuite": "111 passed; 0 failed; 1 ignored (exit 0) - the existing crate suite on the delivered branch, proving nothing else regressed",
+      "wiringSnippetAppliesCleanly": "git apply --check docs/dispatch-reports/godot-remaining/M/lib.rs.snippet.diff -> exit 0"
     },
     "verificationCaveat": "The module tests require 'mod content_history;' plus two migrate calls in lib.rs, which belongs to agent A. The registration was applied temporarily to run the 41 tests and then reverted before committing. The delivered branch therefore does NOT compile the module; the snippet must be applied by A and the tests re-run.",
     "notRun": [
