@@ -2,7 +2,7 @@
 use super::{
     digest,
     durable::{fields, text},
-    library, read_task, worlds, TaskJournal,
+    library, memories, read_task, worlds, TaskJournal,
 };
 use anyhow::{ensure, Context, Result};
 use rusqlite::{
@@ -13,6 +13,7 @@ use rusqlite::{
 use serde_json::{json, Map, Value};
 
 const LIMIT: usize = 32 * 1024 * 1024;
+const SCHEMA_VERSION: u64 = 2;
 const TABLES: &[&str] = &[
     "craftmine_worlds",
     "craftmine_tasks",
@@ -85,6 +86,33 @@ fn snapshot(db: &Connection) -> Result<Value> {
 fn fingerprint(db: &Connection) -> Result<String> {
     Ok(digest(&serde_json::to_string(&snapshot(db)?)?))
 }
+fn compatible_tables(archive: &Value) -> Result<Value> {
+    let mut tables = archive["tables"].clone();
+    let map = tables.as_object().context("BACKUP_TABLES_REQUIRED")?;
+    ensure!(
+        map.len() == TABLES.len() && TABLES.iter().all(|name| map.contains_key(*name)),
+        "BACKUP_SCHEMA_MISMATCH"
+    );
+    if archive["schemaVersion"] == 1 {
+        let operations = &mut tables["craftmine_memory_operations"];
+        fields(operations, &["columns", "rows"])?;
+        ensure!(
+            operations["columns"] == json!(["operation_id", "request_hash", "result"]),
+            "BACKUP_COLUMNS_MISMATCH"
+        );
+        operations["columns"] = json!(["operation_id", "request_hash", "result", "request_json"]);
+        for row in operations["rows"]
+            .as_array_mut()
+            .context("BACKUP_ROWS_REQUIRED")?
+        {
+            let cells = row.as_array_mut().context("BACKUP_ROW_REQUIRED")?;
+            ensure!(cells.len() == 3, "BACKUP_ROW_WIDTH_MISMATCH");
+            // Old archives cannot attest a host session; never infer one.
+            cells.push(Value::Null);
+        }
+    }
+    Ok(tables)
+}
 fn restore_tables(db: &Connection, tables: &Value) -> Result<()> {
     let map = tables.as_object().context("BACKUP_TABLES_REQUIRED")?;
     ensure!(
@@ -133,6 +161,7 @@ fn restore_tables(db: &Connection, tables: &Value) -> Result<()> {
     Ok(())
 }
 fn validate_integrity(db: &Connection) -> Result<()> {
+    memories::validate_receipts(db)?;
     let foreign: Option<String> = db
         .prepare("PRAGMA foreign_key_check")?
         .query_row([], |r| r.get(0))
@@ -191,7 +220,8 @@ fn validate_archive(db: &Connection, archive: &Value) -> Result<Value> {
         &["format", "schemaVersion", "createdAt", "tables", "hash"],
     )?;
     ensure!(
-        archive["format"] == "craftmine.domain-backup/1" && archive["schemaVersion"] == 1,
+        archive["format"] == "craftmine.domain-backup/1"
+            && matches!(archive["schemaVersion"].as_u64(), Some(1 | SCHEMA_VERSION)),
         "BACKUP_VERSION_UNSUPPORTED"
     );
     let hash = digest(&serde_json::to_string(&archive["tables"])?);
@@ -207,7 +237,7 @@ fn validate_archive(db: &Connection, archive: &Value) -> Result<Value> {
         staging.execute_batch(&sql)?;
     }
     let tx = staging.transaction_with_behavior(TransactionBehavior::Immediate)?;
-    restore_tables(&tx, &archive["tables"])?;
+    restore_tables(&tx, &compatible_tables(archive)?)?;
     validate_integrity(&tx)?;
     tx.commit()?;
     let known:bool=db.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_backup_jobs WHERE kind='export' AND archive_hash=?1 AND status='completed')",[&hash],|r|r.get(0))?;
@@ -255,11 +285,11 @@ impl TaskJournal {
         }
         let tables = snapshot(&tx)?;
         let content_hash = digest(&serde_json::to_string(&tables)?);
-        let archive = json!({"format":"craftmine.domain-backup/1","schemaVersion":1,"createdAt":worlds::timestamp()?,"tables":tables,"hash":content_hash});
+        let archive = json!({"format":"craftmine.domain-backup/1","schemaVersion":SCHEMA_VERSION,"createdAt":worlds::timestamp()?,"tables":tables,"hash":content_hash});
         let body = serde_json::to_string(&archive)?;
         ensure!(body.len() <= LIMIT, "BACKUP_TOO_LARGE");
         job_capacity(&tx, body.len())?;
-        let receipt = json!({"id":id,"status":"completed","kind":"export","manifest":{"hash":content_hash,"bytes":body.len(),"schemaVersion":1},"credentialsIncluded":false});
+        let receipt = json!({"id":id,"status":"completed","kind":"export","manifest":{"hash":content_hash,"bytes":body.len(),"schemaVersion":SCHEMA_VERSION},"credentialsIncluded":false});
         tx.execute("INSERT INTO craftmine_backup_jobs(id,kind,status,request_hash,archive_hash,receipt,archive,created_at) VALUES(?1,'export','completed',?2,?3,?4,?5,?6)",params![id,hash,content_hash,serde_json::to_string(&receipt)?,body,worlds::timestamp()?])?;
         tx.commit()?;
         let mut result = receipt;
@@ -299,7 +329,7 @@ impl TaskJournal {
         let before = snapshot(&tx)?;
         let previous_hash = digest(&serde_json::to_string(&before)?);
         job_capacity(&tx, serde_json::to_vec(&before)?.len() + 256)?;
-        restore_tables(&tx, &args["archive"]["tables"])?;
+        restore_tables(&tx, &compatible_tables(&args["archive"])?)?;
         // Raw legacy import archives remain outside portable backups. Keep
         // their local manifests, but detach a link whose world was replaced.
         tx.execute("UPDATE craftmine_legacy_imports SET world_id=NULL,world_hash=NULL WHERE world_id IS NOT NULL AND world_id NOT IN (SELECT id FROM craftmine_worlds)",[])?;
@@ -323,7 +353,7 @@ impl TaskJournal {
         validate_integrity(&tx)?;
         let receipt = json!({"id":id,"kind":"restore","status":"completed","archiveHash":manifest["hash"],"previousHash":previous_hash,"currentHash":fingerprint(&tx)?,"modelReplay":false,"importedProvenance":manifest["knownLocalExport"]!=true});
         // Retain the exact previous domain state as a rollback archive receipt.
-        let previous_archive = json!({"format":"craftmine.domain-backup/1","schemaVersion":1,"createdAt":worlds::timestamp()?,"tables":before,"hash":previous_hash});
+        let previous_archive = json!({"format":"craftmine.domain-backup/1","schemaVersion":SCHEMA_VERSION,"createdAt":worlds::timestamp()?,"tables":before,"hash":previous_hash});
         tx.execute("INSERT INTO craftmine_backup_jobs(id,kind,status,request_hash,archive_hash,receipt,archive,created_at) VALUES(?1,'restore','completed',?2,?3,?4,?5,?6)",params![id,request_hash,manifest["hash"].as_str(),serde_json::to_string(&receipt)?,serde_json::to_string(&previous_archive)?,worlds::timestamp()?])?;
         tx.commit()?;
         Ok(receipt)
@@ -342,7 +372,7 @@ impl TaskJournal {
             return Ok(serde_json::from_str(&receipt)?);
         }
         Ok(
-            json!({"currentHash":fingerprint(&self.db)?,"archiveLimitBytes":LIMIT,"schemaVersion":1}),
+            json!({"currentHash":fingerprint(&self.db)?,"archiveLimitBytes":LIMIT,"schemaVersion":SCHEMA_VERSION}),
         )
     }
     pub fn backup_cancel(&mut self, args: &Value) -> Result<Value> {
