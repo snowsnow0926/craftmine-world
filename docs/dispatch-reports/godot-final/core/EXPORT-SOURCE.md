@@ -1,0 +1,9 @@
+# Exact formal source export
+
+Private RPC godotRuntime.exportSource({worldId}) returns craftmine.godot-export-source/1 with worldId, sourceWorldId, buildId, baseId, baseVersion, revision, snapshot, repoId, contentOid, files[{path,kind,bytes,sha256}].
+
+sourceWorldId identifies the immutable build owner. Copied source bytes may still contain that source identity; this field does not claim runtime identity rebinding. Packaging must explicitly account for the difference.
+
+The complete file tree is reread and verified against the formal build's raw-byte index, including binary resources. The exact Git lineage resolver is shared with rebuildPlan, under one content/export/GC lock; no nested lock is acquired. Export does not depend on Web artifacts or an edited rebuild branch, does not migrate/repair implicitly, and never uses unpublished main. Missing copied-formal refs and tampered refs reject. Existing content.readFile({worldId,rev:contentOid,path,encoding:"base64"}) returns raw bytes as base64 with hash/length for the private caller. This read is separate; callers must verify returned bytes against the frozen index and reject unavailable objects rather than fall back to head.
+
+Validation: the real Git/SQLite portable archive regression passes source-ahead, copy identity, missing-ref, wrong-ref, and restored source-without-Web cases. backup.status is identical across export. All 7 godot_worlds tests and binary build pass. Engine/application fixtures in these core tests remain synthetic; this is not a standalone Windows game execution claim. Initial compile failure and successful raw logs are archived in evidence/export-source-*.log.
