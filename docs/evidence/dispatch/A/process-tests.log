@@ -1,0 +1,13 @@
+✔ real Rust process: immutable tree capture, restart, cross-session/world exact install and replay (100.9087ms)
+✔ real Rust process: second broker cannot recover another live broker leases (57.1486ms)
+✔ real Rust process: creation code, local target bindings and fixed extension travel together (278.9274ms)
+✔ real Rust process: user-backed scoped memory, false evidence, staleness and retirement (49.0604ms)
+✔ real Rust process: consistent backup, corrupt input, CAS, cancelled restore and portable trust (146.6111ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 730.3687
