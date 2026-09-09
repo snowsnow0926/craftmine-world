@@ -38,21 +38,33 @@ fn applied(journal: &mut TaskJournal) -> Result<Value> {
     Ok(project)
 }
 
+/// The only state that may persist Godot progress: a build the host really
+/// applied after a verified check and a confirmed launch.
+fn applied_state(journal: &mut TaskJournal) -> Result<(String, u64)> {
+    applied(journal)?;
+    let world = journal.world_read("a")?;
+    Ok((
+        world.world.build["id"].as_str().unwrap().to_string(),
+        world.summary.revision,
+    ))
+}
+
 #[test]
 fn full_progress_is_lossless_across_restart_and_noop_save() -> Result<()> {
     let (_dir, path) = fixture::temp()?;
     let mut journal = TaskJournal::open(&path)?;
-    seed(&mut journal)?;
+    let (build, revision) = applied_state(&mut journal)?;
     let mut snapshot = progress("a");
     snapshot["body"]["inventory"]["ore"] = json!(27);
-    let args = save_args(&snapshot, "base-a", 0);
+    let args = save_args(&snapshot, &build, revision);
     let result = journal.godot_runtime_save_progress(&args)?;
-    assert_eq!(result["receipt"]["revision"], 1);
+    assert_eq!(result["receipt"]["revision"], revision + 1);
     assert_eq!(result["receipt"]["format"], "craftmine.godot-progress-receipt/1");
     drop(journal);
     let mut journal = TaskJournal::open(&path)?;
     assert_eq!(journal.world_read("a")?.world.snapshot, snapshot);
-    let noop = journal.godot_runtime_save_progress(&save_args(&snapshot, "base-a", 1))?;
+    let noop =
+        journal.godot_runtime_save_progress(&save_args(&snapshot, &build, revision + 1))?;
     assert_eq!(noop["receipt"], result["receipt"]);
     fixture::failed(journal.godot_runtime_save_progress(&args), "WORLD_REVISION_CONFLICT");
     Ok(())
@@ -91,7 +103,7 @@ fn a_new_turn_can_continue_applied_source_but_not_foreign_lineage() -> Result<()
 fn receipt_tampering_and_cross_world_saves_leave_formal_progress_intact() -> Result<()> {
     let (_dir, path) = fixture::temp()?;
     let mut journal = TaskJournal::open(&path)?;
-    seed(&mut journal)?;
+    let (build, revision) = applied_state(&mut journal)?;
     let before = journal.world_read("a")?;
     for (field, value, code) in [
         ("worldId", json!("b"), "GODOT_RUNNER_RECEIPT_MISMATCH"),
@@ -100,15 +112,22 @@ fn receipt_tampering_and_cross_world_saves_leave_formal_progress_intact() -> Res
         ("snapshotSha256", json!(digest("wrong")), "GODOT_SNAPSHOT_HASH_MISMATCH"),
         ("instanceId", json!("../x"), "GODOT_RUNNER_RECEIPT_MISMATCH"),
     ] {
-        let mut args = save_args(&progress("a"), "base-a", 0);
+        let mut args = save_args(&progress("a"), &build, revision);
         args["runnerReceipt"][field] = value;
         fixture::failed(journal.godot_runtime_save_progress(&args), code);
         assert_eq!(journal.world_read("a")?, before);
     }
-    fixture::failed(journal.godot_runtime_save_progress(&save_args(&progress("b"), "base-a", 0)), "GODOT_PROGRESS_WORLD_MISMATCH");
-    let mut args = save_args(&progress("a"), "base-a", 0);
+    fixture::failed(journal.godot_runtime_save_progress(&save_args(&progress("b"), &build, revision)), "GODOT_PROGRESS_WORLD_MISMATCH");
+    let mut args = save_args(&progress("a"), &build, revision);
     args["snapshot"]["body"]["grantedRewards"] = json!([]);
     fixture::failed(journal.godot_runtime_save_progress(&args), "GODOT_SNAPSHOT_HASH_MISMATCH");
+    assert_eq!(journal.world_read("a")?, before);
+    // A build id the world merely claims is never enough: the formal build id is
+    // the applied one, so claiming the base build is a build conflict.
+    fixture::failed(
+        journal.godot_runtime_save_progress(&save_args(&progress("a"), "base-a", revision)),
+        "WORLD_BUILD_CONFLICT",
+    );
     assert_eq!(journal.world_read("a")?, before);
     Ok(())
 }
@@ -117,7 +136,7 @@ fn receipt_tampering_and_cross_world_saves_leave_formal_progress_intact() -> Res
 fn base_and_schema_changes_need_explicit_migration_not_plain_save() -> Result<()> {
     let (_dir, path) = fixture::temp()?;
     let mut journal = TaskJournal::open(&path)?;
-    seed(&mut journal)?;
+    let (build, revision) = applied_state(&mut journal)?;
     for (key, value, code) in [
         ("baseId", json!("top-down"), "GODOT_PROGRESS_BASE_MISMATCH"),
         ("baseVersion", json!("2.0.0"), "GODOT_PROGRESS_VERSION_MISMATCH"),
@@ -125,10 +144,10 @@ fn base_and_schema_changes_need_explicit_migration_not_plain_save() -> Result<()
     ] {
         let mut snapshot = progress("a");
         snapshot[key] = value;
-        fixture::failed(journal.godot_runtime_save_progress(&save_args(&snapshot, "base-a", 0)), code);
+        fixture::failed(journal.godot_runtime_save_progress(&save_args(&snapshot, &build, revision)), code);
     }
-    fixture::failed(journal.world_save_progress("a", 0, "base-a", &fixture::world().snapshot), "GODOT_PROGRESS_MIGRATION_REQUIRED");
-    assert_eq!(journal.world_read("a")?.summary.revision, 0);
+    fixture::failed(journal.world_save_progress("a", revision, &build, &fixture::world().snapshot), "GODOT_PROGRESS_MIGRATION_REQUIRED");
+    assert_eq!(journal.world_read("a")?.summary.revision, revision);
     Ok(())
 }
 
@@ -145,11 +164,33 @@ fn progress_limits_count_utf8_and_do_not_truncate_custom_state() -> Result<()> {
 }
 
 #[test]
+fn progress_is_refused_for_a_world_whose_build_was_never_applied() -> Result<()> {
+    let (_dir, path) = fixture::temp()?;
+    let mut journal = TaskJournal::open(&path)?;
+    // A freshly initialised world claims a base build but has no application yet.
+    journal.godot_world_initialize(&json!({"worldId":"g1","title":"New World","baseId":"first-person",
+        "baseBuild":"base-a","snapshot":progress("g1")}))?;
+    let revision = journal.world_read("g1")?.summary.revision;
+    let mut snapshot = progress("g1");
+    snapshot["body"]["inventory"] = json!({"ore": 3});
+    let text = serde_json::to_string(&snapshot)?;
+    fixture::failed(
+        journal.godot_runtime_save_progress(&json!({"worldId":"g1","buildId":"base-a",
+            "revision":revision,"snapshot":snapshot,"runnerReceipt":{"format":"craftmine.godot-runner-receipt/1",
+            "worldId":"g1","buildId":"base-a","instanceId":"runtime-g1","snapshotText":text,
+            "snapshotSha256":digest(&text),"bytes":text.len()}})),
+        "GODOT_BUILD_NOT_APPLIED",
+    );
+    assert_eq!(journal.world_read("g1")?.summary.revision, revision);
+    Ok(())
+}
+
+#[test]
 fn godot_integral_floats_match_javascript_json_without_large_integer_aliases() -> Result<()> {
     let (_dir, path) = fixture::temp()?;
     let mut journal = TaskJournal::open(&path)?;
-    seed(&mut journal)?;
-    let mut args = save_args(&progress("a"), "base-a", 0);
+    let (build, revision) = applied_state(&mut journal)?;
+    let mut args = save_args(&progress("a"), &build, revision);
     let text = args["runnerReceipt"]["snapshotText"].as_str().unwrap().replace("1200", "1200.0");
     args["runnerReceipt"]["snapshotText"] = json!(text);
     args["runnerReceipt"]["snapshotSha256"] = json!(digest(&text));

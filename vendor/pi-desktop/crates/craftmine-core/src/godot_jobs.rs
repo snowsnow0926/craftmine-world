@@ -592,6 +592,30 @@ pub(super) fn require_ready_candidate(
     );
     let (assets, _) = godot_builds::asset_manifest(db, world_id)?;
     ensure!(candidate["assetManifestHash"] == assets, "GODOT_CANDIDATE_STALE");
+    // On the managed Git backend a candidate is also stale when the commit it
+    // was built from is no longer the commit the revision maps to.
+    let current_commit = super::godot_projects::git_commit_for(
+        db,
+        world_id,
+        candidate["sourceRevision"].as_u64().unwrap_or(u64::MAX),
+    )?;
+    if let Some(current_commit) = current_commit {
+        let built: Option<String> = db
+            .query_row(
+                "SELECT content_oid FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
+                params![
+                    world_id,
+                    candidate["buildId"].as_str().context("INVALID_GODOT_BUILD")?
+                ],
+                |row| row.get(0),
+            )
+            .optional()?
+            .flatten();
+        ensure!(
+            built.as_deref() == Some(current_commit.as_str()),
+            "GODOT_CANDIDATE_STALE"
+        );
+    }
     Ok(candidate)
 }
 
