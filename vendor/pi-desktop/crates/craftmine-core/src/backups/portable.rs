@@ -1011,6 +1011,60 @@ fn crash_point(name: &str) {
     }
 }
 
+/// Export staging is created exclusively by one operation, but it is still
+/// removed only after its owner record proves it belongs to that operation.
+const EXPORT_OWNER: &str = "owner.json";
+const EXPORT_OWNER_FORMAT: &str = "craftmine.export-staging/1";
+
+fn write_export_owner(
+    staging: &Path,
+    operation_id: &str,
+    archive: &Path,
+    created_at: i64,
+) -> Result<()> {
+    let path = staging.join(EXPORT_OWNER);
+    fs::write(
+        &path,
+        serde_json::to_vec(&json!({
+            "format": EXPORT_OWNER_FORMAT,
+            "operationId": operation_id,
+            "archivePath": archive.to_string_lossy(),
+            "createdAt": created_at,
+        }))?,
+    )?;
+    sync_file(&path)?;
+    Ok(())
+}
+
+fn remove_export_staging(staging: &Path, operation_id: &str, archive: &Path) {
+    if is_redirect(staging) {
+        return;
+    }
+    let Ok(body) = fs::read(staging.join(EXPORT_OWNER)) else {
+        return;
+    };
+    let Ok(owner) = serde_json::from_slice::<Value>(&body) else {
+        return;
+    };
+    if owner["format"] == EXPORT_OWNER_FORMAT
+        && owner["operationId"].as_str() == Some(operation_id)
+        && owner["archivePath"].as_str() == Some(archive.to_string_lossy().as_ref())
+    {
+        let _ = fs::remove_dir_all(staging);
+    }
+}
+
+/// True when the reader has no further byte. Reads a bounded window instead of
+/// slurping the rest of a hostile archive into memory.
+fn assert_no_trailing_bytes(reader: &mut impl BufRead) -> Result<()> {
+    let mut probe = [0u8; 1];
+    ensure!(
+        reader.read(&mut probe)? == 0,
+        "BACKUP_ARCHIVE_TRAILING_BYTES"
+    );
+    Ok(())
+}
+
 impl TaskJournal {
     /// Streams a complete archive to `archivePath`. The archive is written next
     /// to the target and only renamed into place once every body verified, so a
@@ -1060,6 +1114,7 @@ impl TaskJournal {
             }
             fs::create_dir(&staging).context("BACKUP_STAGING_EXISTS")?;
             let created_at = worlds::timestamp()?;
+            write_export_owner(&staging, &id, &path, created_at)?;
 
             // Snapshot and protection pins commit together, before any body is
             // read. A reclaimer that runs afterwards already sees the pins.
@@ -1212,7 +1267,7 @@ impl TaskJournal {
             footer["streamSha256"] = json!(stream_hash);
 
             fs::rename(&partial, &path).context("BACKUP_ARCHIVE_RENAME_FAILED")?;
-            fs::remove_dir_all(&staging).ok();
+            remove_export_staging(&staging, &id, &path);
 
             let receipt = json!({
                 "id": id,
@@ -1262,7 +1317,7 @@ impl TaskJournal {
         if result.is_err() {
             let published = path.try_exists().unwrap_or(false);
             let _ = fs::remove_file(&partial);
-            let _ = fs::remove_dir_all(&staging);
+            remove_export_staging(&staging, &id, &path);
             if published {
                 // The archive is complete on disk; keep the pins so a reclaimer
                 // cannot delete the bodies it holds. Startup recovery promotes
@@ -1926,9 +1981,7 @@ fn verify_archive(path: &Path) -> Result<Value> {
         header["consistency"]["snapshotHash"] == domain_entry["sha256"],
         "BACKUP_DOMAIN_HASH_MISMATCH"
     );
-    let mut extra = Vec::new();
-    reader.read_to_end(&mut extra)?;
-    ensure!(extra.is_empty(), "BACKUP_ARCHIVE_TRAILING_BYTES");
+    assert_no_trailing_bytes(&mut reader)?;
     Ok(json!({
         "format": FORMAT,
         "valid": true,
@@ -2053,9 +2106,7 @@ fn restore_archive(
                 && footer["archiveHash"].as_str() == Some(archive_hash.as_str()),
             "BACKUP_FOOTER_MISMATCH"
         );
-        let mut extra = Vec::new();
-        reader.read_to_end(&mut extra)?;
-        ensure!(extra.is_empty(), "BACKUP_ARCHIVE_TRAILING_BYTES");
+        assert_no_trailing_bytes(&mut reader)?;
         let domain = domain.context("BACKUP_DOMAIN_MISSING")?;
         crash_point("after-stage");
         cancel()?;
