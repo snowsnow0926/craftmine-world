@@ -1,0 +1,154 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "agent": "C",
+  "promptVersion": "w2-w5-v1",
+  "status": "ready_for_integration",
+  "baseRef": "dispatch/w2-w5-v1",
+  "baseCommit": "2f71e128fd9ff9c49ee4e466138f4949b6bce862",
+  "codeCommit": "0b99c8c21510a3cc727d685f344343efc34e158a",
+  "branch": "codex/parallel-c-20260909",
+  "worktree": "D:/Craftmine World-worktrees/parallel-c-20260909",
+  "commits": [
+    "5e0486b76eb42f3f7cb6944721a5c15dad12a99d",
+    "405c21060c9ac629c82714cc41c32f9d6dea98b0",
+    "0b99c8c21510a3cc727d685f344343efc34e158a"
+  ],
+  "report": "docs/dispatch-reports/C/REPORT_C.md",
+  "interfaces": [
+    "docs/dispatch-reports/C/INTERFACE_C.md"
+  ],
+  "integrationPatches": [],
+  "tests": [
+    {
+      "kind": "built-plugin-fixture",
+      "command": "node desktop/build-world-plugin.mjs && node tests/dispatch/c/ui-headless.mjs",
+      "cwd": "D:/Craftmine World-worktrees/parallel-c-20260909",
+      "sourceCommit": "0b99c8c21510a3cc727d685f344343efc34e158a",
+      "result": "26/26 pass",
+      "evidence": "docs/evidence/dispatch/C/ui-report.json"
+    },
+    {
+      "kind": "actual-react-with-store-fixture",
+      "command": "node tests/dispatch/c/layout-headless.mjs",
+      "cwd": "D:/Craftmine World-worktrees/parallel-c-20260909",
+      "sourceCommit": "405c21060c9ac629c82714cc41c32f9d6dea98b0",
+      "result": "6/6 pass; React files unchanged after this commit",
+      "evidence": "docs/evidence/dispatch/C/layout-report.json"
+    },
+    {
+      "kind": "actual-rust-and-domain-adapter",
+      "command": "node --test --test-reporter=tap tests/dispatch/c/service-domain.test.mjs",
+      "cwd": "D:/Craftmine World-worktrees/parallel-c-20260909",
+      "sourceCommit": "405c21060c9ac629c82714cc41c32f9d6dea98b0",
+      "result": "1/1 pass; final extra trim on untested memory.findReceipt path only",
+      "evidence": "docs/evidence/dispatch/C/service-domain.tap"
+    },
+    {
+      "kind": "typescript",
+      "command": "pnpm --filter @pi-desktop/desktop run typecheck",
+      "cwd": "D:/Craftmine World-worktrees/parallel-c-20260909/vendor/pi-desktop",
+      "sourceCommit": "405c21060c9ac629c82714cc41c32f9d6dea98b0",
+      "result": "exit 0; React source unchanged",
+      "evidence": "docs/dispatch-reports/C/REPORT_C.md"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/evidence/dispatch/C/.gitattributes",
+      "sha256": "7846b37551c23529eb00c68fbb5a435390e922d9db2625cb88681c31746b289e",
+      "description": "Headless UI screenshot or evidence line-ending policy"
+    },
+    {
+      "path": "docs/evidence/dispatch/C/backup-dark-narrow.png",
+      "sha256": "0e20755ff6241df7879de7ab73450191c94f40ee30e3c0e674726082442cdc70",
+      "description": "Headless UI screenshot or evidence line-ending policy"
+    },
+    {
+      "path": "docs/evidence/dispatch/C/layout-report.json",
+      "sha256": "b30b4725e6abadfee4c3276e7a88ee5734763258eecaa86fe675321dfbf19f60",
+      "description": "Actual React control with store/i18n fixtures"
+    },
+    {
+      "path": "docs/evidence/dispatch/C/library-dark-wide.png",
+      "sha256": "54b9e6476260f66c822fbbddc409ccc8b7b05c0ce564bbeebf343a3dbad6bce8",
+      "description": "Headless UI screenshot or evidence line-ending policy"
+    },
+    {
+      "path": "docs/evidence/dispatch/C/memory-light-narrow.png",
+      "sha256": "ce13c7921348f7e5891dbdf538682456e6b08a5aa31be17c86ded94fb7695302",
+      "description": "Headless UI screenshot or evidence line-ending policy"
+    },
+    {
+      "path": "docs/evidence/dispatch/C/react-layout.png",
+      "sha256": "6e32cb6a62353e7049e87bd27057cd13893f414ddeec09c3027a1d3c1cbed574",
+      "description": "Actual React control with store/i18n fixtures"
+    },
+    {
+      "path": "docs/evidence/dispatch/C/service-domain.tap",
+      "sha256": "7e04dd014ceabbf91d8761d171e2a309c7ba9722c58f6b3058acbabe66fe1363",
+      "description": "Actual isolated Rust/A/compiler with seeded application evidence fixture"
+    },
+    {
+      "path": "docs/evidence/dispatch/C/ui-report.json",
+      "sha256": "ffdeadebc1d6488387276aca2a95dbdbf33e77bccca68485eeb0a9780bc4e203",
+      "description": "Built plugin UI with explicit domain bridge fixtures"
+    }
+  ],
+  "overlay": [
+    {
+      "source": "G desktop/build/rust-target/debug/craftmine-core.exe",
+      "copy": "test-results/dispatch-c-overlay/core.exe",
+      "sha256": "6659ef6d108f3378af5faed32db4a1fae80472d993443084e284f7e34a1bfbba",
+      "purpose": "Copied read-only; independent Rust process/data directory"
+    },
+    {
+      "source": "G desktop/build/craftmine.world/domain.cjs",
+      "copy": "test-results/dispatch-c-overlay/domain.cjs",
+      "sha256": "44fcad01cd8edcf9ea7c3fee5e867a1c0503131bc9ee99eb025e522682e5e825",
+      "purpose": "Actual A service bundle; no production code overlay"
+    }
+  ],
+  "dependencies": [
+    {
+      "group": "A",
+      "contractVersion": "INTERFACE_A v1",
+      "usesFixture": false,
+      "missingWork": "Native full application integration by G/F"
+    },
+    {
+      "group": "B",
+      "contractVersion": "validatedContext",
+      "usesFixture": false,
+      "missingWork": "Host B integration by G"
+    },
+    {
+      "group": "D",
+      "contractVersion": "craftmine-world selection/1",
+      "usesFixture": true,
+      "missingWork": "D actual selection emitter merge; C tests frame event protocol"
+    },
+    {
+      "group": "E",
+      "contractVersion": "profile backup service v1",
+      "usesFixture": true,
+      "missingWork": "Native backup/diagnostic service and memory.findReceipt"
+    },
+    {
+      "group": "G/F",
+      "contractVersion": "native acceptance",
+      "usesFixture": false,
+      "missingWork": "main/manifest/build copy, real model lifecycle/native package"
+    }
+  ],
+  "unverified": [
+    "Real model/compaction/continuation and cumulative budget",
+    "Full visible native desktop composition and Windows package",
+    "Native file picker/backup restore",
+    "memory.findReceipt cross-short-turn replay pending E binary",
+    "Library commit-to-verification failure recovery needs query/resubmit",
+    "Unresolved manual operation IDs do not survive renderer restart"
+  ],
+  "privateDataIncluded": false,
+  "mergedToPrimary": false,
+  "pushed": false
+}

@@ -1,0 +1,31 @@
+{
+  "kind": "actual-react-layout-with-store-fixture",
+  "sourceCommit": "405c21060c9ac629c82714cc41c32f9d6dea98b0",
+  "checks": [
+    {
+      "name": "play mode uses the existing work panel with wider saved size",
+      "passed": true
+    },
+    {
+      "name": "returning to creation restores its previous size",
+      "passed": true
+    },
+    {
+      "name": "layout switch preserves session and other resource tabs",
+      "passed": true
+    },
+    {
+      "name": "layout preference persists after renderer reload",
+      "passed": true
+    },
+    {
+      "name": "corrupt or unsafe stored widths use bounded defaults",
+      "passed": true
+    },
+    {
+      "name": "no pointer lock focus or component errors",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

@@ -62,7 +62,7 @@ function createWorkbenchService(core,{library,memory,verifications,reviews,getSe
       fields(payload,['channel','payload']);need(['library.install','memory.propose'].includes(payload.channel),'UNKNOWN_ACTION');
       fields(payload.payload,['worldId',...channels[payload.channel]]);const args=payload.payload;
       await selected(host,args.worldId);need(text(args.operationId),'OPERATION_ID_REQUIRED');
-      if(payload.channel==='memory.propose')return core.call('memory.findReceipt',{projectId:host.projectId,sessionId:host.sessionId,worldId:args.worldId,operationId:args.operationId,request:{kind:args.kind,claim:args.claim,tags:args.tags??[],supersedes:args.replaceId?[args.replaceId]:[]}});
+      if(payload.channel==='memory.propose')return core.call('memory.findReceipt',{projectId:host.projectId,sessionId:host.sessionId,worldId:args.worldId,operationId:args.operationId,request:{kind:args.kind,claim:typeof args.claim==='string'?args.claim.trim():args.claim,tags:args.tags??[],supersedes:args.replaceId?[args.replaceId]:[]}});
       const request={operation:'library.install',ref:args.ref,revision:0,...(args.position?{position:args.position}:{})};
       const receipt=await core.call('workspace.findReceipt',{projectId:host.projectId,sessionId:host.sessionId,worldId:args.worldId,toolCallId:args.operationId,request});
       return receipt?{receipt,replayed:true,applied:false,verificationStatus:'query-required'}:null;
