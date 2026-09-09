@@ -8101,9 +8101,13 @@ function registerIpc() {
     );
     sidecar.setProjectInstructionRoot(req.sessionId, launch.projectPath);
     let result: unknown;
+    let current: CraftmineTaskContext | null = null;
     if (plugins.getLoaded("craftmine.world") && pluginActiveInProject("craftmine.world", detail.session.projectPath ?? null)) {
       const projectId = craftmineProjectIdentity(detail.session, req.sessionId);
-      const current = await plugins.requestCraftmineHost("maintenance.context", { projectId, sessionId: req.sessionId }) as CraftmineTaskContext;
+      current = await plugins.requestCraftmineHost("maintenance.context", { projectId, sessionId: req.sessionId }) as CraftmineTaskContext | null;
+    }
+    if (current) {
+      const projectId = craftmineProjectIdentity(detail.session, req.sessionId);
       const turn = await host.call<{ turnId: string }>("session.beginTurn", { sessionId: req.sessionId, providerId: launch.providerId, modelId: launch.modelId });
       activeTurns.set(req.sessionId, turn.turnId);
       try {

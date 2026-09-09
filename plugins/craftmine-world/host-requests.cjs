@@ -72,7 +72,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
     if(method==='maintenance.context'){
       fields(params,['projectId','sessionId']);
       const workspace=await core.call('workspace.current',params);
-      if(!workspace)throw Error('CRAFTMINE_FINISHED_TASK_REQUIRED');
+      if(!workspace)return null;
       const current=await snapshot(contextOf(workspace.task.binding));
       if(current.status!=='finished'||current.lease?.owned)throw Error('CRAFTMINE_FINISHED_TASK_REQUIRED');
       return current;

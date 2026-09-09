@@ -20,13 +20,16 @@ test('actual completed draft keeps verification, review and ledger through succe
   const base=path.join(root,'test-results/dispatch-e-maintenance');await mkdir(base,{recursive:true});const dir=await mkdtemp(path.join(base,'domain-'));
   const core=new CoreClient(process.env.CRAFTMINE_CORE_BIN,dir);t.after(()=>core.stop());await core.start();
   const call=(method,args)=>core.call(method,args);
+  const domain=createHostRequests(core,{getSettings:async()=>({activeWorldId:'different-panel-world'})});
+  assert.equal(await domain('maintenance.context',{projectId:context.projectId,sessionId:context.sessionId}),null);
+  assert.equal(await call('workspace.current',{projectId:context.projectId,sessionId:context.sessionId}),null);
   const empty=upgradeScene({format:'craftmine.scene/1',title:'Maintenance',night:false,objects:[]});
   const source=upgradeScene({...empty,format:'craftmine.scene/1',objects:[{id:'tree',name:'Tree',position:{x:0,y:6,z:0},parts:[{offset:{x:0,y:0,z:0},size:{x:1,y:3,z:1},material:'wood'}]}]});
   const build=scene=>{const compiled=compileScene(scene);return {...compiled,behaviors:compiled.behaviors||[],id:'v-'+compiled.hash.slice(0,20)};};
   // Real durable check/review contracts, explicitly synthetic evidence. Stop
   // before application so this verifies the player's pending candidate.
   await sourceFixture({context,empty,source,build,INITIAL_SNAPSHOT})(async(method,args)=>method.startsWith('application.')?{id:'not-applied'}:call(method,args));
-  const domain=createHostRequests(core,{getSettings:async()=>({activeWorldId:'different-panel-world'})});
+  await assert.rejects(domain('maintenance.context',{projectId:context.projectId,sessionId:context.sessionId}),/FINISHED_TASK_REQUIRED/);
   const running=await domain('task.context',{context});
   const identity={binding:running.binding,generation:running.generation};
   await domain('budget.reserve',{...identity,context,requestId:'original-creation',purpose:'creation',estimatedInputTokens:100,maxOutputTokens:50});
@@ -67,4 +70,8 @@ test('actual completed draft keeps verification, review and ledger through succe
   const next={...context,turnId:'new-creation'};await call('workspace.open',{context:next,selectedWorld:'source-world'});
   await assert.rejects(call('budget.reserve',{...identity,requestId:'late-summary',purpose:'summary',estimatedInputTokens:10,maxOutputTokens:10}),/STALE_TURN/);
   assert.equal(registry.has(context.sessionId,next.turnId),false);
+  await core.stop();
+  const reopened=new CoreClient(process.env.CRAFTMINE_CORE_BIN,dir);t.after(()=>reopened.stop());await reopened.start();
+  const afterRestart=createHostRequests(reopened,{getSettings:async()=>({activeWorldId:'source-world'})});
+  await assert.rejects(afterRestart('maintenance.context',{projectId:context.projectId,sessionId:context.sessionId}),/FINISHED_TASK_REQUIRED/);
 });
