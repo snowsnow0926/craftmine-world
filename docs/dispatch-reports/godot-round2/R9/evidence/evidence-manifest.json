@@ -1,0 +1,268 @@
+{
+  "format": "craftmine.evidence/1",
+  "generatedAt": "2026-09-09T18:49:08.956Z",
+  "directory": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\docs\\dispatch-reports\\godot-round2\\R9\\evidence",
+  "commit": "ef30cac844436e932b55c0d12f62dc2addeb71e2",
+  "fileCount": 25,
+  "documented": 24,
+  "unclassified": [
+    "provenance.json"
+  ],
+  "files": [
+    {
+      "path": "boundary-client.json",
+      "status": "documented",
+      "bytes": 1230,
+      "sha256": "9be8c9808c5e215f433c7ad2befc5942c98f3a7c893eb9296a2d489e917be9f3",
+      "command": "node desktop/delivery/content-boundary-check.mjs --boundary client --path desktop/build/r9-restaged-preview --json",
+      "proves": "The restaged package satisfies the client content boundary: 1233 entries, required notices present, no forbidden path (no credentials, node_modules, .git, logs, user data).",
+      "limits": "The check reads names and sizes only; it does not open payload files.",
+      "sourceCommit": null
+    },
+    {
+      "path": "git-bundle-stage.json",
+      "status": "documented",
+      "bytes": 1732,
+      "sha256": "ec8c5c01aef522a0a7cb7db50f81f3d4547b156d9d8609a98946482b37cd6a3b",
+      "command": "node desktop/delivery/tools/git-bundle.mjs stage --package desktop/build/r9-restaged-preview --zip <MinGit-2.53.0-64-bit.zip>",
+      "proves": "The MinGit tree was laid out as resources/git/** with bin/git.exe for R1's exe-adjacent candidate: 385 files, 109064331 bytes, and a per-file hash record in resources/git/GIT-BUNDLE.json.",
+      "limits": "Staging proves the layout and hashes; the runtime discovery (bundled vs pathFallback) still needs an integrated client.",
+      "sourceCommit": null
+    },
+    {
+      "path": "git-bundle-verify.json",
+      "status": "documented",
+      "bytes": 1504,
+      "sha256": "066264b6f7bacda7e514bff001a1f4f9fcbb08dd26b276b4b97f11c2957e2bad",
+      "command": "node desktop/delivery/tools/git-bundle.mjs verify --zip <MinGit-2.53.0-64-bit.zip>",
+      "proves": "The pinned MinGit archive matches the official GitHub asset digest 82b562c9…, the wrapper reports git version 2.53.0.windows.1, and LICENSE.txt (GPL-2.0) is present.",
+      "limits": "Verifies the archive and the version string; it does not prove the integrated client reports content.gitInfo.source=bundled.",
+      "sourceCommit": null
+    },
+    {
+      "path": "licence-repair.json",
+      "status": "documented",
+      "bytes": 8678,
+      "sha256": "2c54ea1653135a1036b1c940b52b70f03edcd45a9db58e5f4ced5f1098163d4d",
+      "command": "node desktop/delivery/licensing/tools/apply-package-licences.mjs --package desktop/build/r9-restaged-preview --guide desktop/windows-USER_GUIDE.zh-CN.md   (report copied out of the package)",
+      "proves": "Exactly which texts were installed, generated or kept: 45 npm packages without a bundled licence text now point at the canonical text, the GPL-3 and canonical third-party texts were installed, the Rust notice file was generated, the stale user guide was replaced, 0 unresolved, 0 failures.",
+      "limits": "It repairs the licence directory and the packaged guide only; no binary changes and no licence is applied to project code.",
+      "sourceCommit": null
+    },
+    {
+      "path": "licensing-check-batch07.json",
+      "status": "documented",
+      "bytes": 25189,
+      "sha256": "37377198923932d9d05f836b90b56c9dd1b6d013cb5c3e90333e534076637d60",
+      "command": "node desktop/delivery/licensing-check.mjs --inventory desktop/delivery/licensing/inventory.json --package \"D:\\Craftmine World\\desktop\\build\\windows-preview-batch-07\" --evidence <file>",
+      "proves": "The original round-one package fails with 67 licence failures and 19 pending entries; this is the starting point that round two had to classify.",
+      "limits": "Describes that package, not the current staging pipeline.",
+      "sourceCommit": null
+    },
+    {
+      "path": "licensing-check-repaired.json",
+      "status": "documented",
+      "bytes": 10657,
+      "sha256": "e33bd8b263cd207321de90f3a8b5fdfd547daf6d560b7849f3b633d432d46fad",
+      "command": "node desktop/delivery/licensing-check.mjs --inventory desktop/delivery/licensing/inventory.json --package desktop/build/r9-restaged-preview --evidence <file>",
+      "proves": "After desktop/delivery/licensing/tools/apply-package-licences.mjs, the restaged package has 0 licence failures; 19 entries remain pending-rights-review / unknown-rightsholder and the exit code is 3 (PENDING, not a pass).",
+      "limits": "0 failures means the notices and texts the offline entry requires are present; it does not mean the pending rights are resolved.",
+      "sourceCommit": null
+    },
+    {
+      "path": "licensing-check-repaired.txt",
+      "status": "documented",
+      "bytes": 3448,
+      "sha256": "7a3c7c7a41a79a9894aa4a9ea72416dc1121c8acca6a183b0b2ea3564a83e141",
+      "command": "same as licensing-check-repaired.json, console output",
+      "proves": "Readable pending list and the final PENDING — NOT A PASS line.",
+      "limits": "Text log.",
+      "sourceCommit": null
+    },
+    {
+      "path": "licensing-check.txt",
+      "status": "documented",
+      "bytes": 5750,
+      "sha256": "994785a3f50b74b29aa7de0b4da50e35b5860191417d7b903e0215f8958379f1",
+      "command": "same as licensing-check-batch07.json, console output",
+      "proves": "Human-readable failure summary of the original package.",
+      "limits": "Text log.",
+      "sourceCommit": null
+    },
+    {
+      "path": "measurement-final.json",
+      "status": "documented",
+      "bytes": 50803,
+      "sha256": "b9ff86d4bc1addb62c282c50920c77892ee6f2ed1ff956e632b30a56460a3f56",
+      "command": "node desktop/delivery/measure.mjs all --package \"D:\\Craftmine World\\desktop\\build\\windows-preview-batch-07\" --cache \"D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable\" --out <file>",
+      "proves": "Real cold/warm start, offscreen first frame, engine import/build/probe waits, 900 headless frames, process memory, package and installer size, git log/diff P50/P95 over 30 runs and synthetic 1k/10k asset-index calibration, each with threshold and verdict.",
+      "limits": "Measured against the round-one package, before the Git tree was bundled; candidate-apply, install and product asset search/preview are skipped.",
+      "sourceCommit": null
+    },
+    {
+      "path": "measurement.txt",
+      "status": "documented",
+      "bytes": 7292,
+      "sha256": "35d94cb19943f1c227b7fffd04f9b9dd5bef0047cb6a5772aee255367c3f540f",
+      "command": "same as measurement-final.json, console output",
+      "proves": "Readable metric table plus skipped/unmeasured reasons.",
+      "limits": "Text log.",
+      "sourceCommit": null
+    },
+    {
+      "path": "package-pin-batch07.json",
+      "status": "documented",
+      "bytes": 169687,
+      "sha256": "fdad5265cc6eaf643ac255c48563214b1e0fb9d0546b42989828c96791e6dae1",
+      "command": "node desktop/windows-package-tools.mjs pin --package \"D:\\Craftmine World\\desktop\\build\\windows-preview-batch-07\" --out <file>",
+      "proves": "Read-only byte pin of the original round-one package: 828 files, 573147733 bytes, 1 installer, missing required files listed (it predates the Git requirement).",
+      "limits": "Pinning proves which bytes exist; it does not prove installability or licence completeness.",
+      "sourceCommit": null
+    },
+    {
+      "path": "package-pin.txt",
+      "status": "documented",
+      "bytes": 271,
+      "sha256": "8f2855f0afe87e7504dd3d489bfb220882bcc62aa0d4b17cbba3f73e757a3bae",
+      "command": "same as package-pin-batch07.json, console output",
+      "proves": "One-line summary of the pin.",
+      "limits": "Text log.",
+      "sourceCommit": null
+    },
+    {
+      "path": "preflight-baseline.json",
+      "status": "documented",
+      "bytes": 12350,
+      "sha256": "a5252927f5a3bb73958d1fd0922b0ae47716e7b3d2c35f4c020652a114af0e13",
+      "command": "node desktop/delivery/preflight.mjs all --evidence <file>   (run at commit e4621478, before the task K repairs)",
+      "proves": "The eight real preflight failures recorded in docs/GODOT_CYCLE_05.md reproduce exactly at e4621478: 3 bridge byte drifts, 2 undeclared runtime files, 3 missing base manifests.",
+      "limits": "Package and engine cache inputs were not supplied in this baseline run.",
+      "sourceCommit": "e462147852e36bdfcaf897d3f915c5809fb88670"
+    },
+    {
+      "path": "preflight-final.json",
+      "status": "documented",
+      "bytes": 21976,
+      "sha256": "596d5eb427a9b8106ae78e6c6411ef6ac4c40b310f522ad07e0ed2f75707e31b",
+      "command": "node desktop/delivery/preflight.mjs all --cache \"D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable\" --package desktop/build/r9-restaged-preview --evidence <file>",
+      "proves": "Notices, base assets, LGPL provenance, engine cache bytes and the restaged package pass with 0 failures; the warnings are the documented pending-licence notes.",
+      "limits": "Export check skipped (no export directory). A pass means these bytes are consistent with the manifests, not that the package is a delivery build.",
+      "sourceCommit": null
+    },
+    {
+      "path": "preflight-final.txt",
+      "status": "documented",
+      "bytes": 9354,
+      "sha256": "7292d2855e2a53f04b3c6777db8acfe93d44b54057e0807387a544c5f928f77c",
+      "command": "same as preflight-final.json, console output",
+      "proves": "Human-readable summary.",
+      "limits": "Text log; the JSON record is authoritative.",
+      "sourceCommit": null
+    },
+    {
+      "path": "product-rpc-r1.json",
+      "status": "documented",
+      "bytes": 3489,
+      "sha256": "07fc952c0b3b0593d6284bb4f89a924dd798300228f68e8f7abf6204bc2de09d",
+      "command": "node desktop/delivery/measure.mjs product --core \"D:\\Craftmine World-worktrees\\godot-round2-r1-20260910\\vendor\\pi-desktop\\target\\debug\\craftmine-core.exe\" --runs 10 --out <file>",
+      "proves": "The measurement wiring works against a real R1 debug build over stdio JSON-RPC: hello round trip and 10 content.gitInfo round trips (p50 ~0.11 ms, p95 ~65 ms). asset.search returns UNKNOWN_METHOD there.",
+      "limits": "R1 is not integrated and this is a debug build of a task branch; the numbers are calibration and their thresholds stay pending-real-sample.",
+      "sourceCommit": null
+    },
+    {
+      "path": "product-rpc-r1.txt",
+      "status": "documented",
+      "bytes": 4248,
+      "sha256": "3b457a461669455a189e5857732a59e377158c056f2ea52ee34388fbf7489a31",
+      "command": "same as product-rpc-r1.json, console output",
+      "proves": "Readable table plus the skipped asset.search reason.",
+      "limits": "Text log.",
+      "sourceCommit": null
+    },
+    {
+      "path": "product-rpc-r6.json",
+      "status": "documented",
+      "bytes": 3489,
+      "sha256": "b484d1c9a2bc1b743e5554374f081a0057dc30fd1d95a9a269f8dabc29a033bb",
+      "command": "node desktop/delivery/measure.mjs product --core \"D:\\Craftmine World-worktrees\\godot-round2-r6-20260910\\vendor\\pi-desktop\\target\\debug\\craftmine-core.exe\" --runs 10 --out <file>",
+      "proves": "The same wiring against R6's debug build: hello and 10 content.gitInfo round trips; asset.search is UNKNOWN_METHOD in that build too, so the product asset path stays pending.",
+      "limits": "Task-branch debug build, not integrated; calibration only.",
+      "sourceCommit": null
+    },
+    {
+      "path": "product-rpc-r6.txt",
+      "status": "documented",
+      "bytes": 4252,
+      "sha256": "67799c37a7ae2f5c3dd2151d9a9764170d1a8df4b91fce738ec9a6fdf0c97413",
+      "command": "same as product-rpc-r6.json, console output",
+      "proves": "Readable table plus the skipped asset.search reason.",
+      "limits": "Text log.",
+      "sourceCommit": null
+    },
+    {
+      "path": "provenance.json",
+      "status": "unclassified",
+      "bytes": 10459,
+      "sha256": "912c254e03590096d8291ecf53d08817950f005be0b0b4ea8e48c818f9c70d9d",
+      "command": null,
+      "proves": null,
+      "limits": null,
+      "sourceCommit": null
+    },
+    {
+      "path": "release-manifest-create.txt",
+      "status": "documented",
+      "bytes": 14166,
+      "sha256": "fe9193649bae46d3b43785f0204bb0772c905c41ddbfc32467ad55d86c4a57df",
+      "command": "same as release-manifest.json, console output",
+      "proves": "Component-by-component summary of what was pinned.",
+      "limits": "Text log.",
+      "sourceCommit": null
+    },
+    {
+      "path": "release-manifest-verify.txt",
+      "status": "documented",
+      "bytes": 1738,
+      "sha256": "4b254fb742e9bd5e7abe0cf39e88bb617dac906bf41b00e43a522a35d815982c",
+      "command": "node desktop/delivery/release-manifest.mjs verify --manifest <release-manifest.json> --package desktop/build/r9-restaged-preview",
+      "proves": "The restaged package matches the manifest: 0 missing, 0 mismatch, 0 unpinned, 0 forbidden, 0 links, exit 0.",
+      "limits": "The manifest was created with --package, so the package files are pinned from this artefact; it proves byte identity with the recorded snapshot, not reproducibility from source.",
+      "sourceCommit": null
+    },
+    {
+      "path": "release-manifest.json",
+      "status": "documented",
+      "bytes": 104577,
+      "sha256": "9fa1dcd9318558bdd46f76f6fd92a9349db8f7a74936272ca9eaedb544b30278",
+      "command": "node desktop/delivery/release-manifest.mjs create --root . --cache <cache> --package desktop/build/r9-restaged-preview --out <file>",
+      "proves": "Client, engine, export templates, broker, bases, bridge, dependencies, licences, the pinned Git bundle and the content-boundary declaration are pinned with real bytes and SHA-256; tooling:m/tooling:n record the R1/R6 branch commits without inventing a hash.",
+      "limits": "A pin of this tree plus a snapshot of the restaged package; not a build attestation.",
+      "sourceCommit": null
+    },
+    {
+      "path": "size-with-git.json",
+      "status": "documented",
+      "bytes": 8168,
+      "sha256": "69b9f280174f2efa96b7b14acda345cda69030cf033962bb7546fbc134a75cec",
+      "command": "node desktop/delivery/measure.mjs size --package desktop/build/r9-restaged-preview --out <file>",
+      "proves": "Real size after bundling Git: total 651.121 MB, 1233 files, resources/git 104.074 MB, all inside the frozen caps.",
+      "limits": "Filesystem measurement of one package; not a claim about installer compression.",
+      "sourceCommit": null
+    },
+    {
+      "path": "size-with-git.txt",
+      "status": "documented",
+      "bytes": 5230,
+      "sha256": "f9154ee71b79b709428deb5fdbf3df5e885219fd1655acd110fbb21a2b4cfa9c",
+      "command": "same as size-with-git.json, console output",
+      "proves": "Readable per-bucket size table.",
+      "limits": "Text log.",
+      "sourceCommit": null
+    }
+  ],
+  "limits": [
+    "A hash proves which bytes are archived; it does not prove the measurement is representative.",
+    "Evidence produced against a package or engine outside this repository is identified by path and hash, not by copying that binary here.",
+    "This manifest does not list itself, because it cannot contain its own hash."
+  ]
+}

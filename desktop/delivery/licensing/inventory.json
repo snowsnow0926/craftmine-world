@@ -1,0 +1,1207 @@
+{
+  "format": "craftmine.license-inventory/1",
+  "generatedAt": "2026-09-09T17:01:59.764Z",
+  "generatedBy": "desktop/delivery/licensing/tools/build-inventory.mjs",
+  "curatedBy": "desktop/delivery/licensing/tools/inventory-curation.json",
+  "worktree": {
+    "branch": "codex/godot-remaining-k-20260910",
+    "commit": "154a8f7af93918ba3ad59f5c30a04e450fc279d5",
+    "upstreamRepository": "https://github.com/vastsa/PI-Desktop",
+    "upstreamCommit": "ed0a75414e775eef4b4ee6c985cc9ddfe146ced2",
+    "upstreamArchiveSha256": "fe28ec8bf8a7da3f1622ba8f708b657958a0c844b793ce23ee483c8cc395a881"
+  },
+  "decisionRecord": {
+    "path": "docs/LICENSING_STRATEGY.md",
+    "status": "decision record only; not an applied licence and not a contract",
+    "note": "This inventory implements the per-module fact gathering and target recording from the decision record. It does not apply any licence."
+  },
+  "generatedFrom": [
+    {
+      "path": "desktop/UPSTREAM.json",
+      "sha256": "2144168932a5ad26819c256439ea517c6a7c5a6538fa292c4a912fbe06f94a38"
+    },
+    {
+      "path": "desktop/delivery/licensing/evidence/upstream-diff.json",
+      "sha256": "69742bd51a42477c956ae397aa76a766e800207f66ad55572145e3553174bfb8"
+    },
+    {
+      "path": "desktop/delivery/licensing/evidence/npm-licenses.json",
+      "sha256": "4b1e46fce0829aaa50270212e08d7114773730b463b1066daca8fbaad243c6f2"
+    },
+    {
+      "path": "desktop/delivery/licensing/evidence/cargo-licenses.json",
+      "sha256": "9690584f7dc62ccde7b2dff4e894b7ab9e949eab72a14da76c3c449171666ef4"
+    },
+    {
+      "path": "vendor/pi-desktop/LICENSE",
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+    },
+    {
+      "path": "vendor/pi-desktop/Cargo.toml",
+      "sha256": "2cea454e977e59d562c1a43c6088c2adc6855af746905b04d6aa8d81cf95f6b1"
+    },
+    {
+      "path": "vendor/pi-desktop/pnpm-lock.yaml",
+      "sha256": "dc5f1c747258b24b8ccd3b81048f6ad4d8f5ec9cbb135f9a3344c94f9f845254"
+    },
+    {
+      "path": "vendor/pi-desktop/Cargo.lock",
+      "sha256": "df9b004ade14b617b4293e0ec36a6653b30c71decd4d8a73a11b7978fd31540c"
+    },
+    {
+      "path": "desktop/godot/licenses/notices.manifest.json",
+      "sha256": "e8e7c6406071ed4737bd42685bc21c826796eec0459ad7717d40a24a4cdbdbfb"
+    },
+    {
+      "path": "desktop/godot/toolchain.lock.json",
+      "sha256": "8cb609ea91659b863b7bb65f05ea27ac8f99eefa5798a78d9e847a13d7a7d288"
+    }
+  ],
+  "dependencyFacts": {
+    "npm": {
+      "packages": 796,
+      "withoutCopiedText": 45,
+      "lockPackages": 891,
+      "unmatchedAgainstLock": 0,
+      "licenseCounts": {
+        "MIT": 606,
+        "Apache-2.0": 56,
+        "BSD-2-Clause": 8,
+        "CC0-1.0": 1,
+        "ISC": 75,
+        "BSD-3-Clause": 29,
+        "Python-2.0": 1,
+        "CC-BY-4.0": 1,
+        "BlueOak-1.0.0": 8,
+        "(MPL-2.0 OR Apache-2.0)": 1,
+        "Unlicense": 2,
+        "see package source": 1,
+        "MPL-2.0": 2,
+        "WTFPL OR ISC": 1,
+        "WTFPL": 1,
+        "0BSD": 1,
+        "(MIT OR CC0-1.0)": 1,
+        "(WTFPL OR MIT)": 1
+      }
+    },
+    "cargo": {
+      "lockedPackages": 140,
+      "reachableFromShippedBins": 140,
+      "missingLicenseId": 0,
+      "licenseCounts": {
+        "MIT OR Apache-2.0": 88,
+        "Apache-2.0 OR MIT": 10,
+        "Unlicense OR MIT": 5,
+        "MIT": 22,
+        "LGPL-3.0-or-later": 2,
+        "MIT/Apache-2.0": 3,
+        "Zlib": 1,
+        "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT": 3,
+        "MPL-2.0": 1,
+        "MIT OR Apache-2.0 OR LGPL-2.1-or-later": 1,
+        "Unlicense/MIT": 2,
+        "BSD-3-Clause": 1,
+        "(MIT OR Apache-2.0) AND Unicode-3.0": 1
+      }
+    }
+  },
+  "upstreamDiffFacts": {
+    "upstreamFiles": 1140,
+    "vendoredTrackedFiles": 1295,
+    "unchanged": 1078,
+    "modified": 62,
+    "added": 155,
+    "removed": 0
+  },
+  "summary": {
+    "entries": 22,
+    "byStatus": {
+      "pending-rights-review": 18,
+      "verified": 3,
+      "unknown-rightsholder": 1
+    },
+    "byOrigin": {
+      "upstream": 1,
+      "project-authored": 12,
+      "generated": 2,
+      "third-party": 5,
+      "user-content": 2
+    },
+    "byChannel": {
+      "app-bundle": 16,
+      "development-only": 8,
+      "user-export": 10
+    },
+    "projectDistributed": 16,
+    "pendingRightsholderUnknown": [
+      "ai-generated-output"
+    ]
+  },
+  "entries": [
+    {
+      "id": "pi-desktop-upstream",
+      "module": "PI-Desktop upstream baseline (vendor/pi-desktop, files byte-identical to upstream ed0a754)",
+      "paths": [
+        "vendor/pi-desktop/**"
+      ],
+      "origin": "upstream",
+      "rightsHolder": "PI-Desktop upstream authors (repository vastsa/PI-Desktop, commit ed0a75414e775eef4b4ee6c985cc9ddfe146ced2); individual copyright holders and legal entities are not enumerated",
+      "observedLicense": "LGPL-3.0-or-later (vendor/pi-desktop/Cargo.toml workspace.package.license; desktop/UPSTREAM.json)",
+      "targetLicense": "LGPL-3.0-or-later retained unchanged (LICENSING_STRATEGY §1: upstream keeps its own licence)",
+      "licenseFile": "vendor/pi-desktop/LICENSE",
+      "deliveryChannels": [
+        "app-bundle",
+        "development-only"
+      ],
+      "dependencies": [
+        "npm-third-party-dependencies",
+        "cargo-third-party-dependencies"
+      ],
+      "evidence": [
+        {
+          "path": "desktop/UPSTREAM.json",
+          "note": "Pins repository, commit ed0a75414e775eef4b4ee6c985cc9ddfe146ced2, archive URL/SHA-256 and LGPL-3.0-or-later.",
+          "commit": "2920fc7619f665d8f491c721029059c424872922"
+        },
+        {
+          "path": "vendor/pi-desktop/LICENSE",
+          "note": "LGPL-3 text as shipped by upstream; it is the LGPL-3 supplement and incorporates GPL-3 by reference (the full GPL-3 text is not bundled).",
+          "commit": "2920fc7619f665d8f491c721029059c424872922"
+        },
+        {
+          "path": "vendor/pi-desktop/Cargo.toml",
+          "note": "Workspace metadata declares license = \"LGPL-3.0-or-later\".",
+          "commit": "99acbe5534744ac9a3c99fcd12d4bd81c178373f"
+        },
+        {
+          "path": "desktop/delivery/licensing/evidence/upstream-diff.json",
+          "note": "Byte comparison against the SHA-256-verified upstream archive: 1078 unchanged, 62 modified, 155 added, 0 removed tracked files.",
+          "commit": null
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "Which upstream files are copyright of which contributor or entity is not enumerated; the upstream project's own contribution records were not audited.",
+        "Whether the LGPL-3 supplement text alone satisfies the notice obligation or the full GPL-3 text must also travel with the client is unresolved; both texts are now fetched into licensing/texts/.",
+        "The vendored tree contains project modifications and additions (see pi-desktop-modifications); the split between upstream and project material is recorded but not legally characterised.",
+        "No written upstream permission or trademark position beyond the declared licence has been verified."
+      ],
+      "noticeKey": "PI-Desktop",
+      "licenseTextIds": [
+        "lgpl-3.0",
+        "gpl-3.0"
+      ],
+      "packageProbe": [
+        "resources/licenses/PI-Desktop-LICENSE.txt",
+        "resources/source/CraftmineWorld-source.zip"
+      ],
+      "projectDistributed": true,
+      "notes": "Rights holder detail beyond the upstream project name is unknown and must stay unknown until counsel or the upstream project confirms it."
+    },
+    {
+      "id": "pi-desktop-modifications",
+      "module": "Project modifications and additions inside the vendored PI-Desktop tree (62 modified, 155 added tracked files)",
+      "paths": [
+        "vendor/pi-desktop/** (subset; exact list in licensing/evidence/upstream-diff.json)"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project for the added/modified content; upstream authors retain rights in the modified originals (contributors are not enumerated)",
+      "observedLicense": "No per-file declaration; the workspace metadata still says LGPL-3.0-or-later and no file-level licence header was added",
+      "targetLicense": "LGPL-3.0-or-later for modifications to upstream files (derivative works keep the upstream licence); project-added creation-core files are candidates for AGPL-3.0-only plus a commercial option only after the rights review completes",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "app-bundle",
+        "development-only"
+      ],
+      "dependencies": [
+        "npm-third-party-dependencies",
+        "cargo-third-party-dependencies"
+      ],
+      "evidence": [
+        {
+          "path": "desktop/delivery/licensing/evidence/upstream-diff.json",
+          "note": "File-level added/modified/removed classification against the verified upstream archive; generated by tools/upstream-diff.mjs.",
+          "commit": null
+        },
+        {
+          "path": "vendor/pi-desktop/Cargo.lock",
+          "note": "Modified in the vendored tree; the lockfile diff is part of the modification set.",
+          "commit": "379ca2fe12dc4a2250813d354078922bcb8cdb8e"
+        },
+        {
+          "path": "vendor/pi-desktop/pnpm-lock.yaml",
+          "note": "Modified in the vendored tree; dependency changes are part of the modification set.",
+          "commit": "2f1257301282a1a68f09095cb7ca3d260ad77670"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "Whether each added file was authored in this repository or copied from an unrecorded source cannot be proved from the diff alone.",
+        "Employer rights and contributor identity for the modifications are not documented; there is no CLA or DCO record.",
+        "Some modifications may be AI-assisted; that provenance is not recorded per file.",
+        "Relicensing modifications as AGPL/commercial would require confirming the project has the rights to do so, which is exactly what is unverified."
+      ],
+      "noticeKey": "PI-Desktop",
+      "licenseTextIds": [
+        "lgpl-3.0"
+      ],
+      "packageProbe": [
+        "resources/licenses/PI-Desktop-LICENSE.txt"
+      ],
+      "projectDistributed": true,
+      "notes": "Modifications to upstream LGPL files are treated as derivative works and stay LGPL-3.0-or-later in the target until counsel says otherwise."
+    },
+    {
+      "id": "craftmine-core",
+      "module": "craftmine-core (durable Craftmine world task transactions, Rust crate; shipped as resources/bin/craftmine-core.exe)",
+      "paths": [
+        "vendor/pi-desktop/crates/craftmine-core/**"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project (contributors not enumerated)",
+      "observedLicense": "LGPL-3.0-or-later, inherited from vendor/pi-desktop/Cargo.toml workspace.package.license (the crate sets license.workspace = true)",
+      "targetLicense": "AGPL-3.0-only with a separate commercial option (LICENSING_STRATEGY §1, creation core), subject to the pending rights review",
+      "licenseFile": "vendor/pi-desktop/LICENSE",
+      "deliveryChannels": [
+        "app-bundle"
+      ],
+      "dependencies": [
+        "cargo-third-party-dependencies"
+      ],
+      "evidence": [
+        {
+          "path": "vendor/pi-desktop/crates/craftmine-core/Cargo.toml",
+          "note": "license.workspace = true; inherits the workspace LGPL-3.0-or-later metadata. No AGPL text or header is present.",
+          "commit": "379ca2fe12dc4a2250813d354078922bcb8cdb8e"
+        },
+        {
+          "path": "desktop/delivery/licensing/evidence/upstream-diff.json",
+          "note": "crates/craftmine-core is absent from upstream ed0a754 (upstream crates/ contains host-core only), so the crate is project-added.",
+          "commit": null
+        },
+        {
+          "path": "desktop/delivery/licensing/evidence/cargo-licenses.json",
+          "note": "Full reachable Rust dependency walk for the two shipped binaries; every crate's declared licence is recorded.",
+          "commit": null
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "The crate currently declares LGPL-3.0-or-later while the decision record targets AGPL-3.0-only plus commercial; the change is not applied and needs a rights determination first.",
+        "Per-file authorship, any AI assistance and employer rights are unrecorded.",
+        "A commercial licence can only cover what the project has the right to relicense; that is not yet established for this crate.",
+        "The 140-crate dependency set is all permissively licensed but attribution notices for MIT/Apache-2.0 crates are not yet generated into a consolidated file."
+      ],
+      "noticeKey": "craftmine-core",
+      "licenseTextIds": [
+        "agpl-3.0",
+        "lgpl-3.0"
+      ],
+      "packageProbe": [
+        "resources/bin/craftmine-core.exe"
+      ],
+      "projectDistributed": true,
+      "notes": "Do not change licence metadata here; the observed/declared value and the target deliberately differ."
+    },
+    {
+      "id": "app-creation-core",
+      "module": "app/ creation core, agent harness and browser UI (Node, shipped inside resources/app.asar)",
+      "paths": [
+        "app/**"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project (contributors not enumerated)",
+      "observedLicense": "none-declared (no LICENSE file at the repository root, in app/ or in package.json; package.json is private and declares no license field)",
+      "targetLicense": "AGPL-3.0-only with a separate commercial option (creation core, LICENSING_STRATEGY §1)",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "app-bundle",
+        "development-only"
+      ],
+      "dependencies": [
+        "npm-third-party-dependencies"
+      ],
+      "evidence": [
+        {
+          "path": "package.json",
+          "note": "private: true and no license field; the repository root has no LICENSE file, so no licence is declared for app/.",
+          "commit": "7a2376df276bad3638f20976572b0680950f4ff5"
+        },
+        {
+          "path": "app/server.mjs",
+          "note": "Entry point of the creation workbench; file history in this repository is the only provenance record.",
+          "commit": "910f2a6a661cc3ff801ecc2412418ceca528b9a9"
+        },
+        {
+          "path": "desktop/windows-NOTICES.md",
+          "note": "States that the bundled source retains upstream authorship and that user content is not relicensed; it does not grant a licence for app/.",
+          "commit": "575b000f4d91ad5067c1eb41424068e71592d436"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "No licence declaration exists today; adding AGPL-3.0-only requires a rights determination and is deliberately not done in this task.",
+        "Contributor identity, employer rights and AI-assisted code are unverified.",
+        "Copy relationships between app/ and world-workshop-3d/ or other prototypes are not fully recorded.",
+        "The AGPL network-interaction obligation (section 13) has not been reviewed against the actual hosting/deployment model."
+      ],
+      "noticeKey": "app/",
+      "licenseTextIds": [
+        "agpl-3.0"
+      ],
+      "packageProbe": [
+        "resources/app.asar"
+      ],
+      "projectDistributed": true,
+      "notes": "This row is the largest rights gap: a shipped, substantial, undeclared project component."
+    },
+    {
+      "id": "plugin-craftmine-world",
+      "module": "plugins/craftmine-world/ built-in world plugin (shipped as resources/plugins/craftmine.world/)",
+      "paths": [
+        "plugins/craftmine-world/**"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project (contributors not enumerated)",
+      "observedLicense": "none-declared (manifest.json declares no license field; no licence text in the directory)",
+      "targetLicense": "AGPL-3.0-only with a separate commercial option (creation core, LICENSING_STRATEGY §1)",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "app-bundle"
+      ],
+      "dependencies": [
+        "npm-third-party-dependencies"
+      ],
+      "evidence": [
+        {
+          "path": "plugins/craftmine-world/manifest.json",
+          "note": "Plugin manifest; no licence field is declared.",
+          "commit": "62d1841e7b5c27dfe74a16809510b1d9244993f9"
+        },
+        {
+          "path": "plugins/craftmine-world/main.cjs",
+          "note": "Plugin entry point; file history in this repository is the only provenance record.",
+          "commit": "8db008f7d8a0ce80a4fa0a858aa7f795d9ed6ea5"
+        },
+        {
+          "path": "desktop/windows-NOTICES.md",
+          "note": "Records that the Babel parser licence is additionally present in the built-in world plugin; that dependency's own licence applies.",
+          "commit": "575b000f4d91ad5067c1eb41424068e71592d436"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "No licence declaration; applying AGPL-3.0-only needs the same rights review as app/.",
+        "The plugin bundles or depends on third-party npm code; the exact shipped set and its notices are handled by the npm inventory row.",
+        "Contributor and employer rights are unrecorded."
+      ],
+      "noticeKey": "craftmine.world",
+      "licenseTextIds": [
+        "agpl-3.0"
+      ],
+      "packageProbe": [
+        "resources/plugins/craftmine.world/main.cjs"
+      ],
+      "projectDistributed": true,
+      "notes": ""
+    },
+    {
+      "id": "world-workshop-3d",
+      "module": "world-workshop-3d/ legacy browser prototype (not shipped in the Windows package)",
+      "paths": [
+        "world-workshop-3d/**"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project (contributors not enumerated)",
+      "observedLicense": "none-declared (no licence file in the directory)",
+      "targetLicense": "No distribution licence decided; the prototype is development-only until it is included in a release (LICENSING_STRATEGY §4 lists it among the unverified origins)",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "development-only"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "world-workshop-3d/README.md",
+          "note": "Prototype documentation; no licence statement.",
+          "commit": "6aece1b6d63a738658373457bb93e769ed9e4e9f"
+        },
+        {
+          "path": "world-workshop-3d/build.py",
+          "note": "Build entry point; file history in this repository is the only provenance record.",
+          "commit": "6aece1b6d63a738658373457bb93e769ed9e4e9f"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "Whether any code or sample was copied from third-party tutorials, samples or another prototype is unrecorded.",
+        "It is not shipped, so no distribution licence is required until it enters a release; if it does, the same rights review as app/ applies."
+      ],
+      "noticeKey": "world-workshop-3d",
+      "licenseTextIds": [],
+      "packageProbe": [],
+      "projectDistributed": false,
+      "notes": ""
+    },
+    {
+      "id": "godot-web-bridge-runtime",
+      "module": "Godot Web bridge, export runtime and host transport (desktop/godot/web, desktop/godot/shared)",
+      "paths": [
+        "desktop/godot/web/**",
+        "desktop/godot/shared/**"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project (contributors not enumerated)",
+      "observedLicense": "project-authored as declared in desktop/delivery/base-assets/shared-web.json; no licence text exists (licenseFile: null with an explicit outstanding note)",
+      "targetLicense": "MIT for the code an exported game needs (bridge.js, shell.html, web_bridge.gd); AGPL-3.0-only or commercial for runtime.mjs and runtime.d.mts, which belong to the creation-core path; development-only for host.mjs",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "user-export",
+        "app-bundle",
+        "development-only"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "desktop/delivery/base-assets/shared-web.json",
+          "note": "Per-file origin/authored/author/license/redistribution/distribution plus byte+hash pins; runtime.mjs is explicitly the creation-core path and bridge.js/shell.html the export path.",
+          "commit": "4fa79a54ae50d03714e0257e242fccd962ec01b0"
+        },
+        {
+          "path": "desktop/godot/web/bridge.js",
+          "note": "Shipped beside an exported Web build; no licence header is present.",
+          "commit": "325f0db1c4eafcbcf4a51f63049b04e56fef41c0"
+        },
+        {
+          "path": "desktop/godot/web/runtime.mjs",
+          "note": "Host-side Godot Web runtime imported by the Electron main process; never copied into a player export.",
+          "commit": "325f0db1c4eafcbcf4a51f63049b04e56fef41c0"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "The formal MIT text and copyright-holder string for the export runtime are not written; the rights entry is 'pending per-module review' and is a preflight warning.",
+        "Per-file authorship confirmation is still open (recorded in desktop/delivery/base-assets/rights/*.md).",
+        "The boundary between creation-core code (AGPL/commercial target) and export runtime code (MIT target) is declared per file but not yet legally reviewed.",
+        "bridge.js is copied into exports; whether it must carry a copyright notice in the export is unresolved."
+      ],
+      "noticeKey": "bridge.js",
+      "licenseTextIds": [
+        "mit"
+      ],
+      "packageProbe": [
+        "bridge.js",
+        "licenses/GODOT_LICENSE.txt",
+        "resources/licenses/CRAFTMINE-NOTICES.md"
+      ],
+      "projectDistributed": true,
+      "notes": "Do not silently declare these files MIT: the export-runtime subset is a target, not an applied licence."
+    },
+    {
+      "id": "godot-probes",
+      "module": "Godot probe projects used for preview and evidence (desktop/godot/probes/first-person, top-down, shared)",
+      "paths": [
+        "desktop/godot/probes/**"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project (contributors not enumerated)",
+      "observedLicense": "project-authored as declared in desktop/delivery/base-assets/{first-person,top-down,shared-web}.json; licenseFile null with an explicit outstanding note",
+      "targetLicense": "MIT for the authored export runtime/example scripts once the rights review completes (LICENSING_STRATEGY §1)",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "app-bundle",
+        "user-export"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "desktop/delivery/base-assets/first-person.json",
+          "note": "Per-file authored/author/license/distribution and byte+hash pins for the first-person probe.",
+          "commit": "4fa79a54ae50d03714e0257e242fccd962ec01b0"
+        },
+        {
+          "path": "desktop/delivery/base-assets/top-down.json",
+          "note": "Same for the top-down probe.",
+          "commit": "4fa79a54ae50d03714e0257e242fccd962ec01b0"
+        },
+        {
+          "path": "desktop/delivery/base-assets/shared-web.json",
+          "note": "Covers desktop/godot/probes/shared/web_bridge.gd, copied into every exported probe project.",
+          "commit": "4fa79a54ae50d03714e0257e242fccd962ec01b0"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "Formal MIT text and copyright holder are not written; the rights entry is 'pending per-module review'.",
+        "Per-file authorship confirmation is open.",
+        "Probes are duplicated into base directories in places; the copy relationship is recorded per manifest but not exhaustively."
+      ],
+      "noticeKey": "web_bridge.gd",
+      "licenseTextIds": [
+        "mit"
+      ],
+      "packageProbe": [
+        "bridge.js",
+        "licenses/GODOT_LICENSE.txt"
+      ],
+      "projectDistributed": true,
+      "notes": ""
+    },
+    {
+      "id": "base-first-person",
+      "module": "Shipped 3D first-person base (desktop/godot/bases/first-person)",
+      "paths": [
+        "desktop/godot/bases/first-person/**"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project",
+      "observedLicense": "project-authored (per-file declarations in bases-first-person.json); original geometry/materials/icon carry a formal MIT grant in licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "targetLicense": "MIT for assets and export-runtime/example code; AGPL-3.0-only or commercial for creation-core code (recorded per entry in desktop/delivery/base-assets/bases-first-person.json)",
+      "licenseFile": "desktop/godot/bases/first-person/licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "deliveryChannels": [
+        "app-bundle",
+        "user-export"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "desktop/delivery/base-assets/bases-first-person.json",
+          "note": "72 entries with origin, author, licence, targetLicense, distribution, byte+hash pins and rightsStatus pending-formal-application.",
+          "commit": "4fa79a54ae50d03714e0257e242fccd962ec01b0"
+        },
+        {
+          "path": "desktop/godot/bases/first-person/assets/provenance/ASSET_PROVENANCE.md",
+          "note": "States every asset is original project work; meshes generated by tools/generate_meshes.mjs, MIT via licenses/ORIGINAL_ASSETS_LICENSE.txt; no third-party asset.",
+          "commit": "baead90705e591256402d6eacb89b85224a9c906"
+        },
+        {
+          "path": "desktop/delivery/base-assets/rights/first-person.md",
+          "note": "Rights statement (not a licence): project-authored, formal application pending.",
+          "commit": "4fa79a54ae50d03714e0257e242fccd962ec01b0"
+        },
+        {
+          "path": "desktop/godot/bases/first-person/licenses/ORIGINAL_ASSETS_LICENSE.txt",
+          "note": "MIT grant for original geometry, materials and icon only; does not cover the engine or the rest of the client.",
+          "commit": "baead90705e591256402d6eacb89b85224a9c906"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "Per-file authorship confirmation before the MIT grant is applied to export-runtime files is still open.",
+        "The copyright-holder string and the commercial scope need counsel review.",
+        "The MIT grant covers the asset directory; other code in the base is only a target until formally applied."
+      ],
+      "noticeKey": "first-person",
+      "licenseTextIds": [
+        "mit"
+      ],
+      "packageProbe": [
+        "resources/licenses/CRAFTMINE-NOTICES.md",
+        "licenses/GODOT_LICENSE.txt"
+      ],
+      "projectDistributed": true,
+      "notes": ""
+    },
+    {
+      "id": "base-top-down",
+      "module": "Shipped 2D top-down base (desktop/godot/bases/top-down)",
+      "paths": [
+        "desktop/godot/bases/top-down/**"
+      ],
+      "origin": "generated",
+      "rightsHolder": "Craftmine World project",
+      "observedLicense": "project-authored / project-generated (per-file declarations in bases-top-down.json); pixel art generated by tools/make-assets.mjs with a fixed seed and Node's built-in zlib only",
+      "targetLicense": "MIT for generated assets and export-runtime/example code; AGPL-3.0-only or commercial for creation-core code (recorded per entry in desktop/delivery/base-assets/bases-top-down.json)",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "app-bundle",
+        "user-export"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "desktop/delivery/base-assets/bases-top-down.json",
+          "note": "Per-entry origin generated/authored, targetLicense and rightsStatus pending-formal-application.",
+          "commit": "4fa79a54ae50d03714e0257e242fccd962ec01b0"
+        },
+        {
+          "path": "desktop/godot/bases/top-down/ASSET_SOURCES.md",
+          "note": "States all pixel assets are drawn by tools/make-assets.mjs; nothing copied from Stardew Valley, RPG Maker, Godot samples or any third-party pack; no fonts, music or sound files.",
+          "commit": "b232d61e217c6d8481d48b0322ed2ed6fae0594b"
+        },
+        {
+          "path": "desktop/delivery/base-assets/rights/top-down.md",
+          "note": "Rights statement (not a licence): project-authored/generated, formal application pending.",
+          "commit": "4fa79a54ae50d03714e0257e242fccd962ec01b0"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "The formal MIT text and copyright-holder string are not written.",
+        "Generated-output copyright characterisation is a legal question; the project asserts ownership of the generator and the fixed seed but not a blanket warranty.",
+        "Per-file authorship of the hand-written parts is open."
+      ],
+      "noticeKey": "top-down",
+      "licenseTextIds": [
+        "mit"
+      ],
+      "packageProbe": [
+        "resources/licenses/CRAFTMINE-NOTICES.md",
+        "licenses/GODOT_LICENSE.txt"
+      ],
+      "projectDistributed": true,
+      "notes": ""
+    },
+    {
+      "id": "base-side-view",
+      "module": "Shipped 2D side-view base (desktop/godot/bases/side-view)",
+      "paths": [
+        "desktop/godot/bases/side-view/**"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project",
+      "observedLicense": "project-authored (per-file declarations in bases-side-view.json); no binary art asset at all",
+      "targetLicense": "MIT for export-runtime/example code; AGPL-3.0-only or commercial for creation-core code (recorded per entry in desktop/delivery/base-assets/bases-side-view.json)",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "app-bundle",
+        "user-export"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "desktop/godot/bases/side-view/docs/assets-and-provenance.md",
+          "note": "States the base ships no third-party assets: every visual is generated in code; fonts, audio, images, models and tilesets are none.",
+          "commit": "5e0161f1540c28f8df97ec2566ac99b0679e2134"
+        },
+        {
+          "path": "desktop/delivery/base-assets/bases-side-view.json",
+          "note": "Per-entry origin, targetLicense and rightsStatus pending-formal-application.",
+          "commit": "4fa79a54ae50d03714e0257e242fccd962ec01b0"
+        },
+        {
+          "path": "desktop/delivery/base-assets/rights/side-view.md",
+          "note": "Rights statement (not a licence): project-authored, formal application pending.",
+          "commit": "4fa79a54ae50d03714e0257e242fccd962ec01b0"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "Formal MIT text and copyright-holder string are not written.",
+        "Per-file authorship confirmation is open.",
+        "There is no asset licence to audit for this base, and none is claimed."
+      ],
+      "noticeKey": "side-view",
+      "licenseTextIds": [
+        "mit"
+      ],
+      "packageProbe": [
+        "resources/licenses/CRAFTMINE-NOTICES.md",
+        "licenses/GODOT_LICENSE.txt"
+      ],
+      "projectDistributed": true,
+      "notes": ""
+    },
+    {
+      "id": "godot-engine",
+      "module": "Godot Engine 4.7.2-stable (pinned toolchain; bundled only when a build ships the engine)",
+      "paths": [
+        "desktop/godot/licenses/GODOT_LICENSE.txt",
+        "desktop/godot/toolchain.lock.json"
+      ],
+      "origin": "third-party",
+      "rightsHolder": "Godot Engine contributors; Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur (see GODOT_LICENSE.txt)",
+      "observedLicense": "MIT",
+      "targetLicense": "MIT retained unchanged (third-party content keeps its own licence, LICENSING_STRATEGY §1)",
+      "licenseFile": "desktop/godot/licenses/GODOT_LICENSE.txt",
+      "deliveryChannels": [
+        "app-bundle",
+        "user-export"
+      ],
+      "dependencies": [
+        "godot-third-party-components"
+      ],
+      "evidence": [
+        {
+          "path": "desktop/godot/toolchain.lock.json",
+          "note": "Pins Godot 4.7.2-stable editor/template URLs and SHA-256 values and the two licence files; status is gd0-candidate-not-production-bundled.",
+          "commit": "15124daaf1fb613d1d1ce9da124c1dac3cdcd627"
+        },
+        {
+          "path": "desktop/godot/licenses/GODOT_LICENSE.txt",
+          "note": "MIT text, SHA-256 b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80.",
+          "commit": "409e9ab3fb86f1f866194a4d551d31c432827f92"
+        },
+        {
+          "path": "desktop/godot/licenses/notices.manifest.json",
+          "note": "Machine-readable notice entry godot-engine with byte and hash pins; checked by desktop/delivery/preflight.mjs.",
+          "commit": "3a49d9970b9ee8d5d671ac42ae388e905e192609"
+        }
+      ],
+      "status": "verified",
+      "openQuestions": [
+        "The Godot trademark policy has not been reviewed for product naming and icon use.",
+        "Whether a specific build actually bundles the engine is determined by scanning the package; the toolchain lock says the current status is candidate, not production-bundled."
+      ],
+      "noticeKey": "Godot",
+      "licenseTextIds": [
+        "godot-mit"
+      ],
+      "packageProbe": [
+        "resources/licenses/godot/GODOT_LICENSE.txt",
+        "licenses/GODOT_LICENSE.txt"
+      ],
+      "projectDistributed": true,
+      "notes": "Verified means the text and pins are present and consistent, not that the licence is legally sufficient for every business use."
+    },
+    {
+      "id": "godot-third-party-components",
+      "module": "Godot bundled third-party components (single pinned aggregate GODOT_COPYRIGHT.txt)",
+      "paths": [
+        "desktop/godot/licenses/GODOT_COPYRIGHT.txt"
+      ],
+      "origin": "third-party",
+      "rightsHolder": "Each bundled component keeps its own copyright holder (see GODOT_COPYRIGHT.txt; not enumerated here)",
+      "observedLicense": "multiple per file (aggregate copyright/notice file, 100108 bytes)",
+      "targetLicense": "Each component's own licence retained; no relicensing",
+      "licenseFile": "desktop/godot/licenses/GODOT_COPYRIGHT.txt",
+      "deliveryChannels": [
+        "app-bundle",
+        "user-export"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "desktop/godot/licenses/GODOT_COPYRIGHT.txt",
+          "note": "Aggregate third-party copyright/notice text pinned at SHA-256 cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d.",
+          "commit": "409e9ab3fb86f1f866194a4d551d31c432827f92"
+        },
+        {
+          "path": "desktop/godot/licenses/notices.manifest.json",
+          "note": "Entry godot-third-party pins the aggregate file and requires it to travel with the engine.",
+          "commit": "3a49d9970b9ee8d5d671ac42ae388e905e192609"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "The aggregate file has not been decomposed into per-component licence identifiers and obligations (for example permissive vs notice-bearing vs copyleft).",
+        "Some bundled components may impose obligations beyond the engine's own MIT licence; that has not been enumerated.",
+        "Only the components of the pinned 4.7.2-stable build are covered; a version change requires re-review."
+      ],
+      "noticeKey": "COPYRIGHT",
+      "licenseTextIds": [
+        "godot-copyright"
+      ],
+      "packageProbe": [
+        "resources/licenses/godot/GODOT_COPYRIGHT.txt",
+        "licenses/GODOT_COPYRIGHT.txt"
+      ],
+      "projectDistributed": true,
+      "notes": ""
+    },
+    {
+      "id": "npm-third-party-dependencies",
+      "module": "npm build and runtime dependencies installed into the client (Electron/app.asar and the built-in plugin)",
+      "paths": [
+        "vendor/pi-desktop/pnpm-lock.yaml",
+        "desktop/delivery/licensing/evidence/npm-licenses.json"
+      ],
+      "origin": "third-party",
+      "rightsHolder": "Each package's own authors and copyright holders (796 installed packages; not enumerated here)",
+      "observedLicense": "per package, declared in the installed inventory (MIT 606, ISC 75, Apache-2.0 56, BSD-3-Clause 29, BSD-2-Clause 8, BlueOak-1.0.0 8, Unlicense 2, MPL-2.0 2, others 10); no package is missing a declared licence id",
+      "targetLicense": "Each package's own licence retained; no relicensing. Notice and attribution obligations must be reproduced.",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "app-bundle"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "vendor/pi-desktop/pnpm-lock.yaml",
+          "note": "Pinned dependency graph (pnpm lockfile v9) for the vendored workspace; resolved package ids are cross-checked against the installed inventory.",
+          "commit": "2f1257301282a1a68f09095cb7ca3d260ad77670"
+        },
+        {
+          "path": "desktop/delivery/licensing/evidence/npm-licenses.json",
+          "note": "Snapshot of the real build inventory: 796 installed packages with name, version, declared licence and copied licence-file names; 45 have no copied text.",
+          "commit": null
+        },
+        {
+          "path": "desktop/windows-NOTICES.md",
+          "note": "States that the package carries npm-inventory.json with copied texts and that missing package licence files are represented honestly rather than invented.",
+          "commit": "575b000f4d91ad5067c1eb41424068e71592d436"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "45 installed packages have no copied licence text; for those the notice obligation is recorded but not satisfied by a bundled text.",
+        "The installed inventory is generated at package time and is not committed; this snapshot must be regenerated for each release and checked against the lockfile.",
+        "MPL-2.0, BlueOak-1.0.0 and other non-standard obligations have not been reviewed individually.",
+        "Electron/Chromium carry their own notices (LICENSE.electron.txt, LICENSES.chromium.html) which are outside this row and were not audited."
+      ],
+      "noticeKey": "npm-inventory.json",
+      "licenseTextIds": [
+        "third-party-inventory",
+        "mit-canonical",
+        "apache-2.0",
+        "isc",
+        "bsd-3-clause",
+        "bsd-2-clause",
+        "mpl-2.0",
+        "cc0-1.0",
+        "wtfpl"
+      ],
+      "packageProbe": [
+        "resources/licenses/third-party/npm-inventory.json"
+      ],
+      "projectDistributed": true,
+      "notes": "The full per-package list is in evidence/npm-licenses.json; notices/CRAFTMINE-NOTICES.md reproduces it."
+    },
+    {
+      "id": "cargo-third-party-dependencies",
+      "module": "Rust crates linked into the shipped binaries resources/bin/craftmine-core.exe and resources/bin/pi-desktop-host-core.exe",
+      "paths": [
+        "vendor/pi-desktop/Cargo.lock",
+        "desktop/delivery/licensing/evidence/cargo-licenses.json"
+      ],
+      "origin": "third-party",
+      "rightsHolder": "Each crate's own authors and copyright holders (140 locked crates, all reachable from the two shipped binaries; not enumerated here)",
+      "observedLicense": "per crate from cargo metadata (MIT OR Apache-2.0 88, MIT 27, Apache-2.0 OR MIT 10, Unlicense OR MIT 5, Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT 3, Apache-2.0 3, LGPL-3.0-or-later 2 (the project's own workspace crates), Unlicense 2, Zlib 1, MPL-2.0 1, BSD-3-Clause 1, MIT OR Apache-2.0 OR LGPL-2.1-or-later 1, MIT OR Apache-2.0 AND Unicode-3.0 1); no crate is missing a licence id",
+      "targetLicense": "Each crate's own licence retained; no relicensing. MIT/Apache-2.0 attribution and MPL-2.0/Unicode-3.0 conditions must be reproduced.",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "app-bundle"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "vendor/pi-desktop/Cargo.lock",
+          "note": "Pinned 140-crate graph for the vendored workspace.",
+          "commit": "379ca2fe12dc4a2250813d354078922bcb8cdb8e"
+        },
+        {
+          "path": "desktop/delivery/licensing/evidence/cargo-licenses.json",
+          "note": "Real cargo metadata walk from the two shipped bin targets; every reachable crate with its declared licence expression.",
+          "commit": null
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "No consolidated third-party Rust notice file is generated yet; MIT/Apache-2.0 attribution texts are not bundled for the Rust dependencies.",
+        "The MPL-2.0 crate and the Unicode-3.0 clause have not been reviewed for their source-availability conditions.",
+        "Cargo metadata reports declared licence expressions, not the copyright lines that attribution notices require.",
+        "Only the crates reachable from the two shipped binaries are covered; adding a feature or dependency requires re-running the walk."
+      ],
+      "noticeKey": "Cargo",
+      "licenseTextIds": [
+        "cargo-third-party-notices",
+        "mit-canonical",
+        "apache-2.0",
+        "mpl-2.0",
+        "bsd-3-clause",
+        "zlib"
+      ],
+      "packageProbe": [
+        "resources/bin/craftmine-core.exe",
+        "resources/bin/pi-desktop-host-core.exe"
+      ],
+      "projectDistributed": true,
+      "notes": "A candidate file id cargo-third-party-notices is named in offline-entry.json and is currently missing; that is a real gap, not a pass."
+    },
+    {
+      "id": "bundled-fonts",
+      "module": "Fonts bundled by the upstream PI-Desktop client (Geist, Inter, Noto Sans SC, LXGW WenKai)",
+      "paths": [
+        "vendor/pi-desktop/apps/desktop/src/assets/fonts/**"
+      ],
+      "origin": "third-party",
+      "rightsHolder": "Vercel / Geist contributors; The Inter Project Authors; The Noto Project Authors; LXGW and contributors",
+      "observedLicense": "OFL-1.1",
+      "targetLicense": "OFL-1.1 retained unchanged",
+      "licenseFile": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-Geist.txt",
+      "deliveryChannels": [
+        "app-bundle"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "desktop/godot/licenses/notices.manifest.json",
+          "note": "Four font entries with OFL-1.1, byte and SHA-256 pins and packaged paths under resources/licenses/fonts/.",
+          "commit": "3a49d9970b9ee8d5d671ac42ae388e905e192609"
+        },
+        {
+          "path": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-Geist.txt",
+          "note": "OFL text for Geist; the other three have sibling files in the same directory.",
+          "commit": "2920fc7619f665d8f491c721029059c424872922"
+        }
+      ],
+      "status": "verified",
+      "openQuestions": [
+        "Reserved Font Name declarations and any renaming obligations have not been checked per font.",
+        "The fonts ship as part of the upstream client; the upstream distribution already includes these notices, but the packaged copies must stay byte-identical."
+      ],
+      "noticeKey": "OFL",
+      "licenseTextIds": [
+        "ofl-geist",
+        "ofl-inter",
+        "ofl-notosanssc",
+        "ofl-lxgwwenkai"
+      ],
+      "packageProbe": [
+        "resources/licenses/fonts/OFL-Geist.txt",
+        "resources/licenses/fonts/OFL-Inter.txt",
+        "resources/licenses/fonts/OFL-NotoSansSC.txt",
+        "resources/licenses/fonts/OFL-LXGWWenKai.txt"
+      ],
+      "projectDistributed": true,
+      "notes": "No other font, audio or model asset is present in the project outside vendor/ (see audio-models row)."
+    },
+    {
+      "id": "audio-models",
+      "module": "Audio and 3D model assets across the project and bases",
+      "paths": [
+        "desktop/godot/bases/first-person/assets/meshes/**",
+        "desktop/godot/bases/**"
+      ],
+      "origin": "generated",
+      "rightsHolder": "Craftmine World project",
+      "observedLicense": "project-generated: five .obj meshes generated by tools/generate_meshes.mjs (MIT via licenses/ORIGINAL_ASSETS_LICENSE.txt). No audio file of any format exists in the repository outside vendor/.",
+      "targetLicense": "MIT for the generated meshes and project assets; each third-party asset keeps its own licence if one is ever added",
+      "licenseFile": "desktop/godot/bases/first-person/licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "deliveryChannels": [
+        "app-bundle",
+        "user-export"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "desktop/godot/bases/first-person/assets/provenance/ASSET_PROVENANCE.md",
+          "note": "All five meshes are original work generated by tools/generate_meshes.mjs; no scanned, purchased or extracted geometry; no third-party texture, HDRI, font, sound or shader.",
+          "commit": "baead90705e591256402d6eacb89b85224a9c906"
+        },
+        {
+          "path": "desktop/godot/bases/side-view/docs/assets-and-provenance.md",
+          "note": "Side-view base ships no third-party assets; fonts, audio, images, models and tilesets are none.",
+          "commit": "5e0161f1540c28f8df97ec2566ac99b0679e2134"
+        },
+        {
+          "path": "desktop/godot/bases/top-down/ASSET_SOURCES.md",
+          "note": "Top-down base declares no fonts, music or sound files.",
+          "commit": "b232d61e217c6d8481d48b0322ed2ed6fae0594b"
+        }
+      ],
+      "status": "verified",
+      "openQuestions": [
+        "A repository-wide scan found no audio asset; if audio is added later it needs its own row, licence and notice.",
+        "Generated mesh copyright characterisation relies on the generator and its authored vertex data; the project asserts ownership, not a blanket warranty."
+      ],
+      "noticeKey": "meshes",
+      "licenseTextIds": [
+        "mit"
+      ],
+      "packageProbe": [],
+      "projectDistributed": true,
+      "notes": "Reported explicitly because the task requires stating whether fonts/audio/models are present: fonts are present via the upstream client (separate row), audio is absent, models are project-generated only."
+    },
+    {
+      "id": "desktop-delivery-tooling",
+      "module": "Delivery, packaging and licensing tooling (desktop/delivery/**, desktop/windows-package-tools.mjs)",
+      "paths": [
+        "desktop/delivery/**",
+        "desktop/windows-package-tools.mjs"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project (contributors not enumerated)",
+      "observedLicense": "none-declared",
+      "targetLicense": "No distribution licence decided; development-only tooling",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "development-only"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "desktop/delivery/preflight.mjs",
+          "note": "Read-only delivery preflight; project-authored tooling.",
+          "commit": "3a49d9970b9ee8d5d671ac42ae388e905e192609"
+        },
+        {
+          "path": "desktop/windows-package-tools.mjs",
+          "note": "Package-time third-party inventory generator referenced by desktop/windows-NOTICES.md.",
+          "commit": "154a8f7af93918ba3ad59f5c30a04e450fc279d5"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "Contributor and employer rights are unrecorded.",
+        "Tooling is not shipped; a licence decision is only needed if it is published separately."
+      ],
+      "noticeKey": "delivery",
+      "licenseTextIds": [],
+      "packageProbe": [],
+      "projectDistributed": false,
+      "notes": ""
+    },
+    {
+      "id": "project-examples",
+      "module": "Example scripts and saved scenes (examples/**)",
+      "paths": [
+        "examples/**"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project (contributors not enumerated)",
+      "observedLicense": "none-declared",
+      "targetLicense": "MIT for example scripts when they are included in exports (LICENSING_STRATEGY §1: project-owned export runtime and example scripts are MIT targets)",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "development-only"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "examples/dispatch-d/README.md",
+          "note": "Example asset package documentation; no licence statement.",
+          "commit": "fb0883a73775c130145bc57fb04bff02569ce919"
+        },
+        {
+          "path": "examples/door-and-bounce.save.json",
+          "note": "Saved scene example; project-authored.",
+          "commit": "c8d4ba4ac28925293d0a4d794765f1020a2c48ab"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "Whether these examples ship in the client or in exports is not decided; the target MIT text is not written.",
+        "Contributor rights are unrecorded."
+      ],
+      "noticeKey": "examples",
+      "licenseTextIds": [],
+      "packageProbe": [],
+      "projectDistributed": false,
+      "notes": ""
+    },
+    {
+      "id": "godot-sandbox-probe",
+      "module": "Godot sandbox boundary probe (desktop/godot/sandbox, Rust, development-only)",
+      "paths": [
+        "desktop/godot/sandbox/**"
+      ],
+      "origin": "project-authored",
+      "rightsHolder": "Craftmine World project (contributors not enumerated)",
+      "observedLicense": "none-declared (Cargo.toml has no license field; publish = false)",
+      "targetLicense": "No distribution licence decided; development-only verification harness",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "development-only"
+      ],
+      "dependencies": [
+        "cargo-third-party-dependencies"
+      ],
+      "evidence": [
+        {
+          "path": "desktop/godot/sandbox/Cargo.toml",
+          "note": "publish = false and no license field; a development probe, not a shipped artifact.",
+          "commit": "2648814fccf0d95d3e3199270456fa07bf2e9383"
+        },
+        {
+          "path": "desktop/godot/sandbox/README.md",
+          "note": "Describes the boundary probe purpose.",
+          "commit": "2648814fccf0d95d3e3199270456fa07bf2e9383"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "Contributor rights are unrecorded.",
+        "Its dependencies (sha2, windows-sys) are permissively licensed but are not part of the shipped client."
+      ],
+      "noticeKey": "sandbox",
+      "licenseTextIds": [],
+      "packageProbe": [],
+      "projectDistributed": false,
+      "notes": ""
+    },
+    {
+      "id": "user-created-content",
+      "module": "User-created and user-imported worlds, scenes and assets (runtime data, not shipped by the project)",
+      "paths": [
+        "user data directories at runtime (not in this repository)"
+      ],
+      "origin": "user-content",
+      "rightsHolder": "The user / author. The project does not claim copyright in user works.",
+      "observedLicense": "author's choice; unknown at inventory time",
+      "targetLicense": "The author's own licence choice. The project does not relicense user content and cannot assert a licence on the author's behalf (LICENSING_STRATEGY §1 and §3).",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "user-export"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "desktop/windows-NOTICES.md",
+          "note": "States that user-authored/imported assets retain their own provenance and are not relicensed by this client.",
+          "commit": "575b000f4d91ad5067c1eb41424068e71592d436"
+        },
+        {
+          "path": "desktop/godot/licenses/notices.manifest.json",
+          "note": "notIncluded section: user-authored or user-imported project assets are owned by the player; the client cannot assert a licence on their behalf.",
+          "commit": "3a49d9970b9ee8d5d671ac42ae388e905e192609"
+        }
+      ],
+      "status": "pending-rights-review",
+      "openQuestions": [
+        "The project makes no warranty about the provenance or rights of content a user imports.",
+        "An exported game that includes user content is the user's distribution act; the project cannot audit it."
+      ],
+      "noticeKey": "user",
+      "licenseTextIds": [],
+      "packageProbe": [],
+      "projectDistributed": false,
+      "notes": "Excluded from shipped-rights enforcement because the project is not the distributor of user content."
+    },
+    {
+      "id": "ai-generated-output",
+      "module": "AI-generated models, textures, code and text produced by the model providers through the creation tools",
+      "paths": [
+        "runtime output only (not in this repository)"
+      ],
+      "origin": "user-content",
+      "rightsHolder": "unknown (the model provider's terms and the copyright status of generated output are not determined)",
+      "observedLicense": "no licence asserted",
+      "targetLicense": "No project licence assertion and no warranty. Users must check the provider terms that apply to them.",
+      "licenseFile": null,
+      "deliveryChannels": [
+        "user-export"
+      ],
+      "dependencies": [],
+      "evidence": [
+        {
+          "path": "desktop/windows-NOTICES.md",
+          "note": "Distribution notice keeps user/imported content out of the project's own licensing claims; the project makes no rights guarantee for AI output.",
+          "commit": "575b000f4d91ad5067c1eb41424068e71592d436"
+        },
+        {
+          "path": "desktop/godot/licenses/notices.manifest.json",
+          "note": "notIncluded section: user-authored or user-imported project assets are owned by the player; the client cannot assert a licence on their behalf. The governing decision record docs/LICENSING_STRATEGY.md says the project does not claim copyright over user works and makes no uniform rights guarantee for AI output.",
+          "commit": "3a49d9970b9ee8d5d671ac42ae388e905e192609"
+        }
+      ],
+      "status": "unknown-rightsholder",
+      "openQuestions": [
+        "Copyright status of AI-generated output depends on jurisdiction and the provider's terms and has not been determined.",
+        "The project cannot promise that AI output is free of third-party rights.",
+        "Which provider terms apply depends on the user's own account and configuration."
+      ],
+      "noticeKey": "AI",
+      "licenseTextIds": [],
+      "packageProbe": [],
+      "projectDistributed": false,
+      "notes": "Deliberately left unknown-rightsholder. It is user content, so it is excluded from shipped-rights enforcement, but it must never be presented as cleared."
+    }
+  ],
+  "limits": [
+    "Rights verification is deliberately incomplete where evidence is missing; pending and unknown entries are not cleared by this file.",
+    "Targets are copied from docs/LICENSING_STRATEGY.md and are not applied licences.",
+    "Observed licence values are what the metadata or file declares, not a legal conclusion.",
+    "A dependency licence expression is not the attribution text that MIT/Apache-2.0 notices require."
+  ]
+}

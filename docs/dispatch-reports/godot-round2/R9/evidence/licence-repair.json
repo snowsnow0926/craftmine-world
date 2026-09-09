@@ -1,0 +1,181 @@
+{
+  "format": "craftmine.package-licence-repair/1",
+  "generatedAt": "2026-09-09T18:39:03.304Z",
+  "package": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\build\\r9-restaged-preview",
+  "dryRun": false,
+  "engineBundled": false,
+  "actions": [
+    {
+      "action": "kept",
+      "target": "resources/licenses/PI-Desktop-LICENSE.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\texts\\LICENSE-LGPL-3.0.txt",
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "why": "offline-entry lgpl-3.0 (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/GPL-3.0.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\texts\\LICENSE-GPL-3.0.txt",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "why": "offline-entry gpl-3.0 (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/fonts/OFL-Geist.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\vendor\\pi-desktop\\apps\\desktop\\src\\assets\\fonts\\licenses\\OFL-Geist.txt",
+      "bytes": 4368,
+      "sha256": "930853ee1daa68554d9e35c8a9175affb74f699fad9a5da6ee5ebe76379d9137",
+      "why": "offline-entry ofl-geist (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/fonts/OFL-Inter.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\vendor\\pi-desktop\\apps\\desktop\\src\\assets\\fonts\\licenses\\OFL-Inter.txt",
+      "bytes": 4380,
+      "sha256": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a",
+      "why": "offline-entry ofl-inter (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/fonts/OFL-NotoSansSC.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\vendor\\pi-desktop\\apps\\desktop\\src\\assets\\fonts\\licenses\\OFL-NotoSansSC.txt",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+      "why": "offline-entry ofl-notosanssc (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/fonts/OFL-LXGWWenKai.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\vendor\\pi-desktop\\apps\\desktop\\src\\assets\\fonts\\licenses\\OFL-LXGWWenKai.txt",
+      "bytes": 4448,
+      "sha256": "c38b1994a5e48ac30ac7d1da7d0409fd8fd8127dfe28a13d6e787d5b1ef34a5e",
+      "why": "offline-entry ofl-lxgwwenkai (required)"
+    },
+    {
+      "action": "present",
+      "target": "resources/licenses/third-party/npm-inventory.json",
+      "bytes": 128667,
+      "sha256": "54671c58f75b14e1b03c65134297e655e5fbde4995735e898eba97421a8571ca",
+      "why": "generated at package time: third-party-inventory"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/third-party/LICENSE-MIT.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\texts\\LICENSE-MIT.txt",
+      "bytes": 1078,
+      "sha256": "b05785f9f18e6716bab63424b11454513b9943a222595b70411009202fc592b5",
+      "why": "offline-entry mit-canonical (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/third-party/LICENSE-Apache-2.0.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\texts\\LICENSE-Apache-2.0.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "why": "offline-entry apache-2.0 (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/third-party/LICENSE-ISC.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\texts\\LICENSE-ISC.txt",
+      "bytes": 737,
+      "sha256": "521c6f0ed8e64736684f89843d16a4df6b4b7449acbcfc6ca6630a3037ca8c53",
+      "why": "offline-entry isc (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/third-party/LICENSE-BSD-3-Clause.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\texts\\LICENSE-BSD-3-Clause.txt",
+      "bytes": 1460,
+      "sha256": "5a93d5831e1297ab10fe643e1a631e83be392896da14ee2951285a79012df69d",
+      "why": "offline-entry bsd-3-clause (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/third-party/LICENSE-BSD-2-Clause.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\texts\\LICENSE-BSD-2-Clause.txt",
+      "bytes": 1267,
+      "sha256": "f32fb3b417a194167cfad068223fc975ba96c5960513a10f66a3c28720aec1df",
+      "why": "offline-entry bsd-2-clause (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/third-party/LICENSE-MPL-2.0.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\texts\\LICENSE-MPL-2.0.txt",
+      "bytes": 16727,
+      "sha256": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172",
+      "why": "offline-entry mpl-2.0 (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/third-party/LICENSE-Zlib.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\texts\\LICENSE-Zlib.txt",
+      "bytes": 838,
+      "sha256": "bfb1112d49db5b1daecdfef24bd7e2f3ea0bafb33aa67aa0ab51e2bf8407c03d",
+      "why": "offline-entry zlib (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/third-party/LICENSE-CC0-1.0.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\texts\\LICENSE-CC0-1.0.txt",
+      "bytes": 7048,
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "why": "offline-entry cc0-1.0 (required)"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/third-party/LICENSE-WTFPL.txt",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\texts\\LICENSE-WTFPL.txt",
+      "bytes": 432,
+      "sha256": "13d8825a59e5e546d41e8711405d0f335a9934362a47c04a3b4280fa7932dc4a",
+      "why": "offline-entry wtfpl (required)"
+    },
+    {
+      "action": "present",
+      "target": "resources/licenses/third-party/CARGO-NOTICES.md",
+      "bytes": 6680,
+      "sha256": "3360637002e0a71754ca2657855998be2bec435b35a7382675b46e75c41627de",
+      "why": "generated at package time: cargo-third-party-notices"
+    },
+    {
+      "action": "kept",
+      "target": "resources/licenses/CRAFTMINE-NOTICES.md",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\notices\\CRAFTMINE-NOTICES.md",
+      "bytes": 78896,
+      "sha256": "cdfc34c24cbe7953646a8388da500af81c7f12c2ecb09e2b7440002eac8bfb80",
+      "why": "notice document already current"
+    },
+    {
+      "action": "generated",
+      "target": "resources/licenses/third-party/CARGO-NOTICES.md",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\delivery\\licensing\\evidence\\cargo-licenses.json",
+      "bytes": 6680,
+      "sha256": "3360637002e0a71754ca2657855998be2bec435b35a7382675b46e75c41627de",
+      "why": "consolidated Rust crate attribution"
+    },
+    {
+      "action": "repaired",
+      "target": "resources/licenses/third-party/npm-inventory.json",
+      "bytes": 128667,
+      "sha256": "54671c58f75b14e1b03c65134297e655e5fbde4995735e898eba97421a8571ca",
+      "why": "0 npm packages without a bundled licence text now point at the canonical text"
+    },
+    {
+      "action": "kept",
+      "target": "resources/source/USER_GUIDE.zh-CN.md",
+      "source": "D:\\Craftmine World-worktrees\\godot-round2-r9-20260910\\desktop\\windows-USER_GUIDE.zh-CN.md",
+      "bytes": 7099,
+      "sha256": "5f7bf4774f016e1ae728a70d1ae705a02d771dffa893f910c9edf3b40fb7fdab",
+      "why": "user guide already current"
+    }
+  ],
+  "unresolved": [],
+  "failures": [],
+  "limits": [
+    "Only the licence directory and the packaged user guide are written; no binary is modified.",
+    "Every installed text is copied from a provenance-recorded official copy under desktop/delivery/licensing/texts/; no text is authored here.",
+    "Repairing the notices does not apply a licence to project code: entries that are pending-rights-review stay pending in inventory.json."
+  ]
+}
