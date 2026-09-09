@@ -670,7 +670,7 @@ pub(super) fn read_manifest_files(
     Ok(files)
 }
 
-fn digest_bytes(bytes: &[u8]) -> String {
+pub(super) fn digest_bytes(bytes: &[u8]) -> String {
     use sha2::{Digest, Sha256};
     Sha256::digest(bytes)
         .iter()

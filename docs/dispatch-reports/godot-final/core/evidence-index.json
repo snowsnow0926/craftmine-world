@@ -68,6 +68,41 @@
       "sha256": "b62aaf8dc11bf031e9c0ebfab036ab7d6331eb9c315eec9cafb584a33114c3e5"
     },
     {
+      "path": "evidence/copied-adoption-final.log",
+      "bytes": 9788,
+      "sha256": "0e3f25f79542539ecc961ae1fc483c040e42f10147c183020e7667a196a77882"
+    },
+    {
+      "path": "evidence/copied-rebuild-service-final.log",
+      "bytes": 265,
+      "sha256": "0ece4820f684c8e4d48a6ec1acf0d224f3b44429ccf176dbba182d9cbffb3c0a"
+    },
+    {
+      "path": "evidence/copied-restore-01.log",
+      "bytes": 9788,
+      "sha256": "2e16e5c7efc826caa01617055d16c401305a504dde108d2e1a36075e15ee636e"
+    },
+    {
+      "path": "evidence/copied-source-01.log",
+      "bytes": 1977,
+      "sha256": "766496c95e135948bacd942e4736882351d4eaa0fe969067e6a04d3cd73031b1"
+    },
+    {
+      "path": "evidence/copied-source-02.log",
+      "bytes": 10403,
+      "sha256": "c3bccae958505b7320d8c4df41f8710563f33a853d1a802f54510be2eacddd67"
+    },
+    {
+      "path": "evidence/copied-source-build-final.log",
+      "bytes": 7670,
+      "sha256": "70a62e139f68ba172da137c7c8faa619dc346473f5a501aba6c4a7cfc09e8f60"
+    },
+    {
+      "path": "evidence/copied-worlds-final.log",
+      "bytes": 10403,
+      "sha256": "d4303c7df65dc480b4713c6777f73f51cd3a5c2f606494807623f84bc15380ea"
+    },
+    {
       "path": "evidence/core-branches-full-01.log",
       "bytes": 37163,
       "sha256": "89d16a0ff193e3c7858d8850b0a328a5d518e8e974be0b9b3307baf5442b1f6b"
@@ -76,6 +111,11 @@
       "path": "evidence/core-branches-full-02.log",
       "bytes": 35929,
       "sha256": "eed0b2348fd9532ebecc5e511d62b9185d6dbdfc1d05e7ffe81f1637f8694c58"
+    },
+    {
+      "path": "evidence/core-copied-full.log",
+      "bytes": 36619,
+      "sha256": "45cab523a1331c7d7e8731596faf3d49a0f0dc205bcd022aa8f97a204920f52f"
     },
     {
       "path": "evidence/core-files-full-01.log",

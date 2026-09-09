@@ -1,0 +1,36 @@
+   Compiling craftmine-core v0.1.0 (D:\cm-godot-final-core-20260910\vendor\pi-desktop\crates\craftmine-core)
+warning: unused import: `load_manifest`
+  --> crates\craftmine-core\src\godot_builds.rs:21:22
+   |
+21 |     godot_projects::{load_manifest, ordinary, valid_hash, Manifest},
+   |                      ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0624]: method `commit_ref` is private
+   --> crates\craftmine-core\src\godot_worlds.rs:69:26
+    |
+ 69 |         let commit=store.commit_ref(&layout,&reference,None,&files,&message)?;
+    |                          ^^^^^^^^^^ private method
+    |
+   ::: crates\craftmine-core\src\content_history\repo.rs:331:5
+    |
+331 |     pub(super) fn commit_ref(&self, layout: &RepoLayout, branch: &str, expected_head: Option<&str>, files: &[ContentFile], message: &str) -> Result<String> {
+    |     ------------------------------------------------------------------------------------------------------------------------------------------------------- private method defined here
+
+For more information about this error, try `rustc --explain E0624`.
+warning: `craftmine-core` (lib) generated 1 warning
+error: could not compile `craftmine-core` (lib) due to 1 previous error; 1 warning emitted
+warning: build failed, waiting for other jobs to finish...
+warning: variable does not need to be mutable
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `craftmine-core` (lib test) generated 2 warnings (1 duplicate)
+error: could not compile `craftmine-core` (lib test) due to 1 previous error; 2 warnings emitted
