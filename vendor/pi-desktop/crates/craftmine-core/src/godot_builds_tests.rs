@@ -85,7 +85,7 @@ fn a_build_copy_is_materialized_verified_and_reused_without_touching_source() ->
     let before = journal.world_read("a")?;
     let started = start(&mut journal, &context, "build-one", &created, "build")?;
     assert_eq!(started["replayed"], false);
-    assert_eq!(started["materialized"]["files"], 4);
+    assert_eq!(started["materialized"]["files"], 7);
     assert_eq!(started["status"], "blocked");
     assert_eq!(started["blockedReason"], "GODOT_EXECUTION_UNAVAILABLE");
     assert_eq!(started["executionAvailable"], false);
@@ -94,8 +94,23 @@ fn a_build_copy_is_materialized_verified_and_reused_without_touching_source() ->
     assert_eq!(fs::read(root.join("source").join("assets").join("hero.png"))?, b"hero-bytes");
     let manifest: Value = serde_json::from_str(&fs::read_to_string(root.join("manifest.json"))?)?;
     assert_eq!(manifest["buildId"], started["buildId"]);
-    assert_eq!(manifest["files"].as_array().unwrap().len(), 4);
+    assert_eq!(manifest["files"].as_array().unwrap().len(), 7);
+    // Host-owned files are fixed into the build copy and recorded with their own
+    // kind, so a project cannot silently replace the bridge or export preset.
+    for (name, text) in crate::godot_host_resources::files() {
+        assert_eq!(fs::read_to_string(root.join("source").join(name))?, text);
+        assert!(manifest["files"].as_array().unwrap().iter().any(|file| {
+            file["path"] == name && file["kind"] == "host" && file["sha256"] == digest(&text)
+        }));
+    }
     assert!(manifest["files"].as_array().unwrap().iter().any(|file| file["kind"] == "asset"));
+    // Host rows must be recorded, not silently dropped by the old CHECK.
+    let recorded: i64 = journal.db.query_row(
+        "SELECT COUNT(*) FROM craftmine_godot_build_files WHERE world_id='a' AND build_id=?1 AND kind='host'",
+        [started["buildId"].as_str().unwrap()],
+        |row| row.get(0),
+    )?;
+    assert_eq!(recorded, 3);
     // The same call replays its durable receipt; a new call gets a new job but
     // reuses the identical immutable build copy.
     let replay = start(&mut journal, &context, "build-one", &created, "build")?;
@@ -103,7 +118,7 @@ fn a_build_copy_is_materialized_verified_and_reused_without_touching_source() ->
     let again = start(&mut journal, &context, "build-two", &created, "build")?;
     assert_eq!(again["buildId"], started["buildId"]);
     assert_ne!(again["jobId"], started["jobId"]);
-    assert_eq!(again["materialized"]["files"], 4);
+    assert_eq!(again["materialized"]["files"], 7);
     assert_eq!(journal.world_read("a")?, before);
     assert_eq!(journal.godot_project_index(&json!({"context":&context,"worldId":"a"}))?["revision"], created["revision"]);
     assert_eq!(journal.godot_asset_list(&json!({"context":&context,"worldId":"a"}))?["items"][0]["sha256"], asset["sha256"]);
@@ -205,5 +220,75 @@ fn a_binary_asset_over_the_model_limit_is_rejected_without_a_second_store() -> R
         "GODOT_ASSET_TOO_LARGE",
     );
     assert!(!asset_root(&journal.directory, "a", true)?.join(digest_bytes(&payload)).try_exists()?);
+    Ok(())
+}
+
+#[test]
+fn a_database_with_the_old_build_file_check_is_rebuilt_for_host_rows() -> Result<()> {
+    let (_dir, path) = temp()?;
+    {
+        let db = rusqlite::Connection::open(&path)?;
+        db.execute_batch(
+            "PRAGMA foreign_keys=ON;
+             CREATE TABLE craftmine_godot_builds (
+                world_id TEXT NOT NULL, build_id TEXT NOT NULL, source_revision INTEGER NOT NULL,
+                manifest_hash TEXT NOT NULL, asset_manifest_hash TEXT NOT NULL, base_id TEXT NOT NULL,
+                base_build TEXT NOT NULL, engine_version TEXT NOT NULL, renderer TEXT NOT NULL,
+                target TEXT NOT NULL, files INTEGER NOT NULL, bytes INTEGER NOT NULL,
+                created_at INTEGER NOT NULL, PRIMARY KEY(world_id,build_id)
+             );
+             CREATE TABLE craftmine_godot_build_files (
+                world_id TEXT NOT NULL, build_id TEXT NOT NULL, path TEXT NOT NULL,
+                kind TEXT NOT NULL CHECK(kind IN ('source','asset','cache','artifact')),
+                sha256 TEXT NOT NULL, bytes INTEGER NOT NULL,
+                PRIMARY KEY(world_id,build_id,path),
+                FOREIGN KEY(world_id,build_id) REFERENCES craftmine_godot_builds(world_id,build_id)
+             );
+             INSERT INTO craftmine_godot_builds VALUES('a','gbd-legacy',0,'m','a','first-person',
+                'base-a','4.7.2-stable','gl_compatibility','web',1,1,1);
+             INSERT INTO craftmine_godot_build_files VALUES('a','gbd-legacy','p','source','h',1);",
+        )?;
+    }
+    let journal = TaskJournal::open(&path)?;
+    let sql: String = journal.db.query_row(
+        "SELECT sql FROM sqlite_master WHERE type='table' AND name='craftmine_godot_build_files'",
+        [],
+        |row| row.get(0),
+    )?;
+    assert!(sql.contains("'host'"));
+    let kept: i64 = journal.db.query_row(
+        "SELECT COUNT(*) FROM craftmine_godot_build_files",
+        [],
+        |row| row.get(0),
+    )?;
+    assert_eq!(kept, 1);
+    // A host row now records instead of being silently ignored by the old CHECK.
+    journal.db.execute(
+        "INSERT INTO craftmine_godot_build_files(world_id,build_id,path,kind,sha256,bytes)
+         VALUES('a','gbd-legacy','craftmine_host_bridge.js','host','h2',2)",
+        [],
+    )?;
+    Ok(())
+}
+
+#[test]
+fn a_project_cannot_shadow_host_files_in_a_build_copy() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let created = journal.godot_project_create(&json!({"context":&context,"worldId":"a",
+        "toolCallId":"create-host","baseBuild":"base-a","baseId":"first-person","files":[
+            {"path":"project.godot","text":PROJECT},
+            {"path":"main.tscn","text":SCENE},
+            {"path":"export_presets.cfg","text":"[preset.0]\nname=\"evil\"\n"}]}))?;
+    failed(
+        start(&mut journal, &context, "build-host", &created, "build"),
+        "GODOT_RESERVED_HOST_PATH",
+    );
+    // The rejected build leaves no half-materialized build copy behind.
+    assert!(journal.godot_candidate_list(&json!({"worldId":"a"}))?["items"]
+        .as_array()
+        .unwrap()
+        .is_empty());
     Ok(())
 }

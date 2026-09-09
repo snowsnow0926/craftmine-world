@@ -59,6 +59,35 @@ fn full_progress_is_lossless_across_restart_and_noop_save() -> Result<()> {
 }
 
 #[test]
+fn a_new_turn_can_continue_applied_source_but_not_foreign_lineage() -> Result<()> {
+    let (_dir, path) = fixture::temp()?;
+    let mut journal = TaskJournal::open(&path)?;
+    let project = applied(&mut journal)?;
+    let first = fixture::ctx("one");
+    journal.workspace_end_turn(&first.session_id, &first.turn_id, "completed")?;
+    let second = fixture::ctx("two");
+    journal.workspace_open(&second, "a")?;
+    let before = journal.world_read("a")?;
+    let request = json!({"context":second,"worldId":"a","toolCallId":"continue-applied",
+        "revision":project["revision"],"manifestHash":project["manifestHash"],
+        "operations":[{"op":"put","path":"continued.gd","text":"extends Node\n","expectedHash":null}]});
+    let mut foreign = before.world.clone();
+    foreign.build["godot"]["baseBuild"] = json!("unrelated-base");
+    let body = worlds::encode(&foreign)?;
+    journal.db.execute("UPDATE craftmine_worlds SET document=?1,content_hash=?2 WHERE id='a'", params![body, digest(&body)])?;
+    fixture::failed(journal.godot_project_patch(&request), "WORLD_BUILD_CONFLICT");
+    let body = worlds::encode(&before.world)?;
+    journal.db.execute("UPDATE craftmine_worlds SET document=?1,content_hash=?2 WHERE id='a'", params![body, digest(&body)])?;
+    let patched = journal.godot_project_patch(&request)?;
+    assert_eq!(patched["revision"], project["revision"].as_u64().unwrap() + 1);
+    assert_eq!(patched["baseBuild"], before.world.build["id"]);
+    assert_eq!(journal.world_read("a")?, before);
+    let job = fixture::start(&mut journal, &second, "build-continued", &patched, "check")?;
+    assert_eq!(job["status"], "queued");
+    Ok(())
+}
+
+#[test]
 fn receipt_tampering_and_cross_world_saves_leave_formal_progress_intact() -> Result<()> {
     let (_dir, path) = fixture::temp()?;
     let mut journal = TaskJournal::open(&path)?;

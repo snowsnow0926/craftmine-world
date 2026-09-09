@@ -12,12 +12,17 @@ use sha2::{Digest, Sha256};
 mod applications;
 mod asset_catalog;
 mod backups;
+mod content;
+mod content_history;
 mod durable;
 mod godot_applications;
 mod godot_builds;
+mod godot_host_resources;
 mod godot_jobs;
 mod godot_projects;
 mod godot_runtime;
+mod godot_storage;
+mod godot_worlds;
 mod legacy;
 mod library;
 mod memories;
@@ -88,6 +93,10 @@ pub struct TaskJournal {
     /// Live isolation attestations of registered executors. Deliberately not
     /// durable: a restarted core requires the executor to prove itself again.
     pub(crate) executors: std::collections::BTreeMap<String, godot_jobs::Executor>,
+    /// Discovered managed Git program, pinned once per process. `OnceCell`
+    /// keeps the probe (version + binary hash) off the hot path without making
+    /// the journal shared across threads.
+    pub(crate) git: std::cell::OnceCell<content_history::git::GitAdapter>,
 }
 
 fn document(value: &Value) -> Result<String> {
@@ -167,6 +176,11 @@ impl TaskJournal {
         godot_builds::migrate(&db)?;
         godot_jobs::migrate(&db)?;
         godot_applications::migrate(&db)?;
+        godot_storage::migrate(&db)?;
+        godot_worlds::migrate(&db)?;
+        // The managed Git content history owns authored source from here on.
+        content_history::migration::migrate(&db)?;
+        content_history::apply::migrate(&db)?;
         let directory = std::fs::canonicalize(
             path.parent()
                 .filter(|p| !p.as_os_str().is_empty())
@@ -176,6 +190,7 @@ impl TaskJournal {
             db,
             directory,
             executors: std::collections::BTreeMap::new(),
+            git: std::cell::OnceCell::new(),
         })
     }
 
