@@ -20,8 +20,10 @@ import {playwright, browserOptions} from "../../../app/browser-tools.mjs";
 
 const root = path.resolve(fileURLToPath(new URL("../../../", import.meta.url)));
 const desktop = path.join(root, "vendor/pi-desktop/apps/desktop");
-const require = createRequire(path.join(desktop, "package.json"));
-const {build} = createRequire(path.join(root, "vendor/pi-desktop/packages/agent-runtime/package.json"))("esbuild");
+const dependencyRoot = process.env.CRAFTMINE_NATIVE_DEPENDENCY_ROOT || root;
+const dependencyDesktop = path.join(dependencyRoot, "vendor/pi-desktop/apps/desktop");
+const require = createRequire(path.join(dependencyDesktop, "package.json"));
+const {build} = createRequire(path.join(dependencyRoot, "vendor/pi-desktop/packages/agent-runtime/package.json"))("esbuild");
 fs.mkdirSync(path.join(root, "test-results"), {recursive: true});
 const out = fs.mkdtempSync(path.join(root, "test-results/godot-remaining-e-create-ui-"));
 const slash = (value) => value.replaceAll("\\", "/");
@@ -68,6 +70,7 @@ await build({
   platform: "browser",
   format: "iife",
   jsx: "automatic",
+  nodePaths: [path.join(dependencyDesktop, "node_modules")],
   alias: {
     react: require.resolve("react"),
     "react-dom/client": require.resolve("react-dom/client"),
@@ -125,7 +128,7 @@ window.__fixtureInvoke=async(channel,payload={})=>{
     window.__activeWorldId=target.id;
     return {ok:true,activeWorldId:target.id};
   }
-  if(channel==='world.creationAction'){window.__creationActions.push({worldId:payload.worldId,action:payload.action});return {ok:true};}
+  if(channel==='world.creationRetry'){window.__creationActions.push({channel,payload});return {status:'running',worldId:payload.worldId};}
   if(channel==='task.current')return {};
   return {};
 };
@@ -261,7 +264,7 @@ try {
   check("恢复按钮只来自主机报告的动作", JSON.stringify(recovery.actions) === JSON.stringify(["retry", "discard-draft", "details"]), recovery);
   await page.evaluate(() => document.querySelector("[data-world-recovery-action='retry']").click());
   await page.waitForFunction(() => window.__creationActions.length === 1);
-  check("重试初始化调用真实恢复通道", JSON.stringify(await page.evaluate(() => window.__creationActions)) === JSON.stringify([{worldId: "w-broken", action: "retry"}]));
+  check("重试初始化按钮调用正式 world.creationRetry 且仅传 worldId", JSON.stringify(await page.evaluate(() => window.__creationActions)) === JSON.stringify([{channel: "world.creationRetry", payload: {worldId: "w-broken"}}]));
   await page.evaluate(() => document.querySelector("[data-world-recovery-action='details']").click());
   await page.waitForFunction(() => !!document.querySelector("[data-world-creation-detail]"));
   check("详情展开主机报告的阶段与错误码", await page.evaluate(() => {
