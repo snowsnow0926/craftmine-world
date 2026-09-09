@@ -7,7 +7,7 @@ function boundedText(value,max){if(typeof value!=='string'||!value.trim()||Buffe
 function assertIdentity(input,snapshot){
   if(!sameBinding(input.binding,snapshot.binding)||input.generation!==snapshot.generation)throw Error('CRAFTMINE_BUDGET_BINDING_MISMATCH');
 }
-function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
+function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor}){
   const reservations=new Map();
   const keyOf=(context,id)=>JSON.stringify([context.projectId,context.sessionId,context.turnId,id]);
   async function snapshot(context){
@@ -61,6 +61,40 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
       fields(params,['worldId','buildId','revision','runnerReceipt','snapshot']);
       return core.call(method,params,60000);
     }
+    // Managed executor lifecycle. The executor process owns the pinned engine;
+    // this router only reports its live state, drives the optional core
+    // interfaces, and forwards enqueue/cancel from the trusted host.
+    if(method==='godotExecutor.status'){
+      fields(params,[]);
+      return godotExecutor?.status()??{format:'craftmine.godot-executor-status/1',state:'unavailable',available:false,buildAvailable:false,checkAvailable:false,reason:'GODOT_EXECUTOR_UNAVAILABLE',jobs:[]};
+    }
+    if(method==='godotExecutor.revoke'){
+      fields(params,['executorId']);
+      const result=await core.call(method,params,60000);
+      if(godotExecutor)await godotExecutor.stop();
+      return result;
+    }
+    if(method==='godotExecutor.enqueue'){
+      fields(params,['jobId','worldId','mode'],['kind','status']);
+      if(!godotExecutor)throw Error('GODOT_EXECUTOR_UNAVAILABLE');
+      return godotExecutor.enqueue(params);
+    }
+    if(method==='godotExecutor.cancel'){
+      fields(params,['jobId']);
+      return godotExecutor?.cancel(params.jobId)??{cancelled:false};
+    }
+    const applicationFields={
+      'godotJob.checkDescriptor':['jobId','token','artifacts'],
+      'godotApplication.prepare':['id','token','candidateId','worldId','revision','snapshot'],
+      'godotApplication.commit':['id','token','evidence'],
+      'godotApplication.read':['id'],
+      'godotApplication.abort':['id'],
+      'world.read':['id'],
+    };
+    if(Object.hasOwn(applicationFields,method)){
+      fields(params,applicationFields[method]);
+      return core.call(method,params,60000);
+    }
     if(method==='budget.configure'||method==='budget.findReceipt'){
       fields(params,['projectId','sessionId','worldId','taskId','generation','operationId','maxTokens']);
       return core.call(method,params);
@@ -69,6 +103,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
       fields(params,['context','reason']);
       const result=await core.call(method,params);
       await verifications?.cancelTurn(params.context);await reviews?.cancelTurn(params.context);
+      await godotExecutor?.cancelTurn(params.context);
       return result;
     }
     if(method==='workbench.request'){
