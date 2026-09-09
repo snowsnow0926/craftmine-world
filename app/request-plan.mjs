@@ -7,15 +7,19 @@ function fields(value,allowed) {
 export function validateRequestStep(step) {
   fields(step,['label','event','dt','player']);
   if(typeof step.label!=='string'||!step.label.trim()||step.label.length>80)throw Error('REQUEST_STEP_LABEL');
-  fields(step.event,['type','targetId','code']);
-  if(!['tick','interact','contact','attack','land','key'].includes(step.event.type))throw Error('REQUEST_STEP_EVENT');
+  fields(step.event,['type','targetId','code','weapon']);
+  if(!['tick','interact','contact','attack','land','key','equip','reload'].includes(step.event.type))throw Error('REQUEST_STEP_EVENT');
+  if(step.event.type==='equip'&&!['ranged','melee'].includes(step.event.weapon))throw Error('REQUEST_STEP_WEAPON');
+  if(step.event.type!=='equip'&&step.event.weapon!==undefined)throw Error('REQUEST_STEP_WEAPON');
+  if(['equip','reload'].includes(step.event.type)&&step.event.targetId!=null)throw Error('REQUEST_STEP_TARGET');
   if(step.event.targetId!=null&&(typeof step.event.targetId!=='string'||step.event.targetId.length>80))throw Error('REQUEST_STEP_TARGET');
   if(step.event.type==='key'&&!BEHAVIOR_KEYS.includes(step.event.code))throw Error('REQUEST_STEP_KEY');
   if(step.event.type!=='key'&&step.event.code!==undefined)throw Error('REQUEST_STEP_KEY');
   if(step.dt!==undefined&&(!Number.isFinite(step.dt)||step.dt<0||step.dt>1))throw Error('REQUEST_STEP_DURATION');
   if(step.player!==undefined){
-    fields(step.player,['x','y','z']);
+    fields(step.player,['x','y','z','yaw','pitch']);
     for(const [axis,min,max]of [['x',-47,47],['y',6,38],['z',-47,47]])if(!Number.isFinite(step.player[axis])||step.player[axis]<min||step.player[axis]>max)throw Error('REQUEST_STEP_PLAYER');
+    for(const [axis,limit]of [['yaw',1e6],['pitch',1.52]])if(step.player[axis]!==undefined&&(!Number.isFinite(step.player[axis])||Math.abs(step.player[axis])>limit))throw Error('REQUEST_STEP_PLAYER');
   }
   return step;
 }

@@ -1,0 +1,155 @@
+{
+  "format": "craftmine.module/1",
+  "runtime": "craftmine-web/2",
+  "id": "wild-flower",
+  "version": 1,
+  "kind": "object",
+  "hash": "b1156c4de7c81ce71e66e5ba910378d0d13d7cfa2d7b7fa658205638fef72b56",
+  "name": "粉色野花",
+  "description": "独立示例；非用户作品，安装后仍需验收。",
+  "dependencies": [
+    "geometry@2"
+  ],
+  "payload": {
+    "name": "粉色野花",
+    "parts": [
+      {
+        "shape": "box",
+        "offset": {
+          "x": 0.25,
+          "y": 0,
+          "z": 0.25
+        },
+        "size": {
+          "x": 0.05,
+          "y": 0.6,
+          "z": 0.05
+        },
+        "color": "#4d934c",
+        "solid": false,
+        "material": "solid"
+      },
+      {
+        "shape": "box",
+        "offset": {
+          "x": 0.05,
+          "y": 0.3,
+          "z": 0.25
+        },
+        "size": {
+          "x": 0.24,
+          "y": 0.13,
+          "z": 0.04
+        },
+        "color": "#73ad53",
+        "solid": false,
+        "material": "solid"
+      },
+      {
+        "shape": "box",
+        "offset": {
+          "x": 0.29,
+          "y": 0.19,
+          "z": 0.25
+        },
+        "size": {
+          "x": 0.22,
+          "y": 0.12,
+          "z": 0.04
+        },
+        "color": "#5b9a48",
+        "solid": false,
+        "material": "solid"
+      },
+      {
+        "shape": "box",
+        "offset": {
+          "x": 0.08,
+          "y": 0.58,
+          "z": 0.23
+        },
+        "size": {
+          "x": 0.19,
+          "y": 0.09,
+          "z": 0.13
+        },
+        "color": "#f5a0b8",
+        "solid": false,
+        "material": "solid"
+      },
+      {
+        "shape": "box",
+        "offset": {
+          "x": 0.29,
+          "y": 0.58,
+          "z": 0.23
+        },
+        "size": {
+          "x": 0.19,
+          "y": 0.09,
+          "z": 0.13
+        },
+        "color": "#f5a0b8",
+        "solid": false,
+        "material": "solid"
+      },
+      {
+        "shape": "box",
+        "offset": {
+          "x": 0.21,
+          "y": 0.58,
+          "z": 0.04
+        },
+        "size": {
+          "x": 0.14,
+          "y": 0.09,
+          "z": 0.2
+        },
+        "color": "#f5a0b8",
+        "solid": false,
+        "material": "solid"
+      },
+      {
+        "shape": "box",
+        "offset": {
+          "x": 0.21,
+          "y": 0.58,
+          "z": 0.36
+        },
+        "size": {
+          "x": 0.14,
+          "y": 0.09,
+          "z": 0.2
+        },
+        "color": "#f5a0b8",
+        "solid": false,
+        "material": "solid"
+      },
+      {
+        "shape": "box",
+        "offset": {
+          "x": 0.23,
+          "y": 0.64,
+          "z": 0.24
+        },
+        "size": {
+          "x": 0.09,
+          "y": 0.07,
+          "z": 0.09
+        },
+        "color": "#f2cb64",
+        "solid": false,
+        "material": "solid"
+      }
+    ],
+    "components": {
+      "health": 0,
+      "contactDamage": 0
+    }
+  },
+  "origin": {
+    "build": "09bb46d3491fa419bda44e64b5c3c0ef408e8780b18f9af900b51210a18c26cb",
+    "definition": "wild-flower",
+    "time": 0
+  }
+}
