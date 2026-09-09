@@ -173,6 +173,7 @@ export function previewAsset(request) {
           thumbnailWidth: decoded.thumbnail.width,
           thumbnailHeight: decoded.thumbnail.height,
           thumbnailBytes: decoded.thumbnail.png.length,
+          thumbnailBase64: Buffer.from(decoded.thumbnail.png).toString('base64'),
           progressive: probe.progressive === true,
           interlace: probe.interlace === 0 ? 'none' : 'adam7',
           picture: true,
