@@ -1,0 +1,71 @@
+{
+  "checks": [
+    {
+      "base": "side-view-materializer",
+      "passed": true,
+      "distinctInstanceIds": [
+        "4b04673b-0e0a-45e7-8e6a-9f347276d9ac",
+        "771d63ae-e2cf-4fb0-a636-3036f58e3038"
+      ]
+    },
+    {
+      "base": "first-person",
+      "passed": true
+    },
+    {
+      "base": "top-down/worlds/town",
+      "passed": true
+    },
+    {
+      "base": "side-view",
+      "passed": true
+    },
+    {
+      "base": "side-view-rejected-boot",
+      "passed": true,
+      "exitCode": 3
+    }
+  ],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 82,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-import",
+      "elapsedMs": 2407,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-state",
+      "elapsedMs": 246,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-import",
+      "elapsedMs": 2021,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-state",
+      "elapsedMs": 245,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-import",
+      "elapsedMs": 1926,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-state",
+      "elapsedMs": 154,
+      "exitCode": 0
+    }
+  ],
+  "realModelCalls": 0,
+  "knownImportDiagnostics": [
+    "WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+    "ERROR: 3 resources still in use at exit (run with --verbose for details)."
+  ]
+}

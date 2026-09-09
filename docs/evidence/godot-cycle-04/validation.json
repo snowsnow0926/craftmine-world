@@ -1,0 +1,64 @@
+{
+  "format": "craftmine.godot-integration-audit/1",
+  "date": "2026-09-09T14:42:14.312Z",
+  "codeCommit": "8db008f7d8a0ce80a4fa0a858aa7f795d9ed6ea5",
+  "baseCommit": "46739d222ceefc654b596725c96288a4087993b3",
+  "actualModelCalls": 0,
+  "newDistributionBuilt": false,
+  "productGodotExecutionEnabled": false,
+  "checks": {
+    "rustCore": {
+      "passed": 102,
+      "ignored": 1
+    },
+    "broker": 12,
+    "native": 25,
+    "navigationUnits": 23,
+    "godotHostLifecycleFixture": 17,
+    "sandboxLibrary": 9,
+    "firstPersonAuthored": 52,
+    "topDownAuthored": 40,
+    "sideViewAuthored": 80,
+    "baseSaveAudit": 5,
+    "topDownSync": 2,
+    "deliverySelftest": 35,
+    "desktopJsBuild": "passed",
+    "hostTypecheck": "passed"
+  },
+  "delivery": {
+    "passed": false,
+    "failures": [
+      {
+        "code": "ASSET_UNDECLARED_FILE",
+        "message": "shared-web has an undeclared file: desktop/godot/web/runtime.d.mts"
+      },
+      {
+        "code": "ASSET_UNDECLARED_FILE",
+        "message": "shared-web has an undeclared file: desktop/godot/web/runtime.mjs"
+      },
+      {
+        "code": "ASSET_BASE_MANIFEST_MISSING",
+        "message": "No asset manifest covers desktop/godot/bases/first-person"
+      },
+      {
+        "code": "ASSET_BASE_MANIFEST_MISSING",
+        "message": "No asset manifest covers desktop/godot/bases/side-view"
+      },
+      {
+        "code": "ASSET_BASE_MANIFEST_MISSING",
+        "message": "No asset manifest covers desktop/godot/bases/top-down"
+      }
+    ],
+    "reason": "three base manifests and two shared runtime declarations missing; export/package not supplied"
+  },
+  "limitations": [
+    "no real model authorship",
+    "no product Godot executor/progress/artifact adapter",
+    "loopback access remains allowed in A evidence",
+    "Godot C fault checks use fixture persistence",
+    "G editor exit resource leak remains",
+    "one historical Windows junction test ignored",
+    "no installer/export acceptance",
+    "pixel captures of separate offscreen surfaces are not visible compositor acceptance"
+  ]
+}

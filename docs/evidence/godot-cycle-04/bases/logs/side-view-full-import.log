@@ -1,0 +1,40 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started 项目初始化 (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | 正在扫描文件结构……[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | 正在加载全局类名……[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | 正在校验 GDExtension……[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | 正在创建自动加载脚本……[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | 正在初始化插件……[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | 正在启动文件扫描……[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started 正在注册全局类…… (17 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | HumanInputSource[39m[0m
+[   5% ] [90m[1mupdate_scripts_classes[22m | InputSource[39m[0m
+[  11% ] [90m[1mupdate_scripts_classes[22m | ScriptedInputSource[39m[0m
+[  16% ] [90m[1mupdate_scripts_classes[22m | SideViewPlayer[39m[0m
+[  22% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  27% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | SaveStore[39m[0m
+[  38% ] [90m[1mupdate_scripts_classes[22m | SideViewConfig[39m[0m
+[  44% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | WorldState[39m[0m
+[  55% ] [90m[1mupdate_scripts_classes[22m | SideViewCheckpoint[39m[0m
+[  61% ] [90m[1mupdate_scripts_classes[22m | SideViewHazard[39m[0m
+[  66% ] [90m[1mupdate_scripts_classes[22m | SideViewPickup[39m[0m
+[  72% ] [90m[1mupdate_scripts_classes[22m | SideViewRoom[39m[0m
+[  77% ] [90m[1mupdate_scripts_classes[22m | SideViewDoor[39m[0m
+[  83% ] [90m[1mupdate_scripts_classes[22m | SideViewRoomManager[39m[0m
+[  88% ] [90m[1mupdate_scripts_classes[22m | SideViewTarget[39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started 正在加载编辑器 (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | 正在加载编辑器布局……[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | 正在加载停靠面板……[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 3 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

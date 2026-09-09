@@ -1,0 +1,22 @@
+evidence_directory=D:\Craftmine World-worktrees\godot-integration-20260909\test-results\godot-build-tools-0coika
+✔ managed build: blocked without an executor, queued after attestation, real candidate (145.8151ms)
+✔ stale sources and cross-world edits stay refused through the broker (118.6134ms)
+✔ a cancelled job refuses a late result and never yields a candidate (120.9845ms)
+✔ lost responses recover the committed receipt without a second write (123.683ms)
+✔ only the player application transaction can publish a candidate (120.9852ms)
+✔ tool catalogue declares managed build tools without host identity (1.9182ms)
+evidence_directory=D:\Craftmine World-worktrees\godot-integration-20260909\test-results\godot-project-tools-NffPDU
+✔ real source tools: world binding, Unicode reads, immutable revision and process restart (147.2379ms)
+✔ real source tools: exact retry receipt, stale edits and path failures preserve head (107.2402ms)
+✔ broker rejects forged identity, ended turns and oversized content before mutation (82.6268ms)
+✔ tool catalogue declares the Godot tool surface without host identity (1.9146ms)
+✔ lost mutation response recovers its real receipt after turn completion without another write (94.3128ms)
+✔ a missing receipt preserves the original uncertain error and does not replay creation (78.8436ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1035.3783

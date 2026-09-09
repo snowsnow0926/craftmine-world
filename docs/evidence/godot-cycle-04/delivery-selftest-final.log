@@ -1,0 +1,37 @@
+PASS baseline notices, assets and LGPL checks pass
+PASS absent engine licence file fails
+PASS licence text that is not the MIT text fails even with a matching hash
+PASS notice manifest drifting from the toolchain lock fails
+PASS deleting the required LGPL notice entry fails
+PASS MIT text substituted for the LGPL notice fails
+PASS upstream provenance claiming a non-LGPL licence fails
+PASS modified base source fails the pinned hash
+PASS undeclared file inside a base directory fails
+PASS denied redistribution on a shipped asset fails
+PASS third-party asset without a notice file fails
+PASS authored asset without licence text or reason fails
+PASS base manifest targeting another engine version fails
+PASS missing required notice for an exported base fails
+PASS cache check distinguishes absent from omitted input
+PASS well-formed export build passes
+PASS export missing an engine notice fails
+PASS export whose build.json hash no longer matches fails
+PASS well-formed Windows package passes
+PASS package with a tampered artefact fails
+PASS package whose third-party inventory points at an absent text fails
+PASS package bundling an engine without Godot notices fails
+PASS package bundling an engine with correct Godot notices passes
+PASS every new base directory requires its own manifest despite matching probe IDs
+PASS unrevealed asset redistribution is rejected
+PASS unreviewed asset redistribution is rejected
+PASS unrevealed notice redistribution is rejected
+PASS unreviewed notice redistribution is rejected
+PASS deeply nested Godot executable cannot bypass package notice checks
+PASS renamed engine is recognized by the locked executable hash
+PASS Web WASM and PCK without native executable still require Godot notices
+PASS unknown WASM needs an exact reviewed runtime declaration
+PASS package link rejection happens before traversing its target
+PASS missing locked executable identity cannot certify no runtime
+PASS shared base tests are not a base, but cannot hide a world project
+SELFTEST PASSED: 35 cases, 0 failed
+Evidence: D:\Craftmine World-worktrees\godot-integration-20260909\test-results\delivery-preflight-selftest-VCujnn\report.json

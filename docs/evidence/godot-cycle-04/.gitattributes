@@ -1,0 +1,2 @@
+# Preserve subprocess output byte-for-byte, including its final blank lines.
+*.log -text whitespace=cr-at-eol,-blank-at-eof

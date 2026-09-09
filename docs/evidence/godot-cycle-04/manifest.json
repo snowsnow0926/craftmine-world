@@ -1,0 +1,140 @@
+{
+  "format": "craftmine.evidence-manifest/1",
+  "files": [
+    {
+      "path": "bases/first-person.json",
+      "bytes": 732829,
+      "sha256": "be83ea6314d8449bc2ede1eae6bc794c529a59ced6ea4623e48cdc691dd7b281"
+    },
+    {
+      "path": "bases/top-down.json",
+      "bytes": 57806,
+      "sha256": "5b82738e447e9e5af6602947ee0d130782685b66baab62068c750c785700167c"
+    },
+    {
+      "path": "bases/side-view.json",
+      "bytes": 22980,
+      "sha256": "10555a40ec534e39585b45c5555a47c64e615f319ee58e3cc91ba65beebda463"
+    },
+    {
+      "path": "bases/audit.json",
+      "bytes": 1414,
+      "sha256": "2e53e16f1883e985d8cf416437aade0a450021e98ddcd7639fb2850ef6fc9951"
+    },
+    {
+      "path": "bases/logs/engine-version.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    },
+    {
+      "path": "bases/logs/first-person-import.log",
+      "bytes": 4953,
+      "sha256": "7600993dbb8437a1a403fec01700e7aef0f9d0c3889b6f1d6cd3aae782170bed"
+    },
+    {
+      "path": "bases/logs/first-person-state.log",
+      "bytes": 87,
+      "sha256": "0049edd3f9860b5b7471a5468157f16f4b72b6480aea917f50048f9ff3135aa5"
+    },
+    {
+      "path": "bases/logs/side-view-full-import.log",
+      "bytes": 2698,
+      "sha256": "54279e0b81e025e69053ca49997cd4bb263d8a10fbb1296976014e56b01c67fb"
+    },
+    {
+      "path": "bases/logs/side-view-import.log",
+      "bytes": 1334,
+      "sha256": "e28263ba69a7a6bfc7f6e04292ad13a8087ca7aba822a79fa1bd81c64cba2b39"
+    },
+    {
+      "path": "bases/logs/side-view-rejected-boot.log",
+      "bytes": 584,
+      "sha256": "13e06201e8f352b46dcaebf1838faccf7109a552f6b59f792479e5fe34cbf504"
+    },
+    {
+      "path": "bases/logs/side-view-state.log",
+      "bytes": 87,
+      "sha256": "0049edd3f9860b5b7471a5468157f16f4b72b6480aea917f50048f9ff3135aa5"
+    },
+    {
+      "path": "bases/logs/top-down-import.log",
+      "bytes": 4024,
+      "sha256": "34456fb230de215a1b8de881c38e8348fc0e1ba964977d9db27284545cb6ffb9"
+    },
+    {
+      "path": "bases/logs/top-down-state.log",
+      "bytes": 87,
+      "sha256": "0049edd3f9860b5b7471a5468157f16f4b72b6480aea917f50048f9ff3135aa5"
+    },
+    {
+      "path": "bases/top-down-scene-resume.json",
+      "bytes": 71438,
+      "sha256": "158db775f6894a2dce58bd02fcdb941048c68d282f73fb32864065578fc786ed"
+    },
+    {
+      "path": "native.json",
+      "bytes": 7923,
+      "sha256": "e34422e6a4f35e117713cd01eafba26a74eb458c93cfea0190f24d0e4c0b25f3"
+    },
+    {
+      "path": "native-desktop.png",
+      "bytes": 63315,
+      "sha256": "085a60f3abd4bf76230c8b2cf5c84af36299a5551088c24f5d0548b4de6096c4"
+    },
+    {
+      "path": "native-world.png",
+      "bytes": 202210,
+      "sha256": "74dff082bcdafb5d714d64b8319ee26579a64dfea9b85e2b5dbe15ca81c98c97"
+    },
+    {
+      "path": "failures/native-before-row-assertion.json",
+      "bytes": 7740,
+      "sha256": "ab09b0021aa30bf3f5dced4c017f2e3eaaa8ecb9bbffadc7cd419e9c5ded2f8b"
+    },
+    {
+      "path": "failures/stale-world-rows.png",
+      "bytes": 57486,
+      "sha256": "db75a97860fb4457305fcb6c433182af23c45d587e86812b1d2ada424e27b716"
+    },
+    {
+      "path": "godot-integration-build-js-final.log",
+      "bytes": 19653,
+      "sha256": "1c9f7c37c2779fab03145fe27b2606b471f466ddf137fa507a89d27f2a16b62f"
+    },
+    {
+      "path": "godot-tools-final.log",
+      "bytes": 1482,
+      "sha256": "ad6b9ccde297be58a5d06f7f0d328352708dc6da7b089adde54d69b7e39da5b5"
+    },
+    {
+      "path": "core-final.log",
+      "bytes": 12011,
+      "sha256": "09696033bd1b7ad4fbf0167a466ebebf7916cf74f0776ac2596f07b24a5b41b7"
+    },
+    {
+      "path": "native-final.log",
+      "bytes": 1904,
+      "sha256": "e6cd4c79a49dfa958f996db1fe5a16efcee452071c2544301b7b76cafc951398"
+    },
+    {
+      "path": "delivery-selftest-final.log",
+      "bytes": 2192,
+      "sha256": "d73ab6eb152e570c79c6624476299718c0cfb28dd1ade9866b4e1eb9ed9cc44c"
+    },
+    {
+      "path": "delivery-final.json",
+      "bytes": 10938,
+      "sha256": "11fda9572368bacf5cc52dcc34703772b555291720ebe0c56ad59ce5ec110d8a"
+    },
+    {
+      "path": "delivery-selftest.json",
+      "bytes": 3755,
+      "sha256": "9d513e50e574971e383a817be2967283b06c9e7b92a717a3a142b97ba36ebd88"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 2073,
+      "sha256": "f41d5da94982319a39590bd8478735817ab327f0d61b2007790087257040294b"
+    }
+  ]
+}
