@@ -69,7 +69,7 @@ const {
   mediaKindForType,
   normalizeTags,
 } = model;
-const { createAssetLibraryController } = hookModule;
+const { createAssetLibraryController, controllerActions } = hookModule;
 
 /* --------------------------------------------------------------- fixtures */
 
@@ -641,7 +641,65 @@ test("scanSummary and importRequestFor produce the import payload", async () => 
   assert.deepEqual(host.calls[1].payload, request);
   assert.equal(imported.displayName, "Crate");
   assert.equal(controller.snapshot().lastImport.assetId, "crate");
-  assert.equal(controller.snapshot().scan.hints.newVersions, 5);
+  assert.equal(controller.snapshot().scanResult.hints.newVersions, 5);
+});
+
+test("snapshot data keys stay disjoint from controller action names", () => {
+  // Regression guard for the import crash: `scan` once named both the scan
+  // result (data) and the scan action (method). The merge in useAssetLibrary
+  // then replaced the result with the function, and AssetLibraryPanel threw
+  // `Cannot read properties of undefined (reading 'find')`, unmounting the tree.
+  const host = fakeHost({});
+  const controller = createAssetLibraryController(host.call);
+  const actionNames = Object.keys(controllerActions(controller));
+  const collisions = Object.keys(controller.snapshot()).filter((key) =>
+    actionNames.includes(key),
+  );
+  assert.deepEqual(
+    collisions,
+    [],
+    `snapshot field(s) ${collisions.join(", ")} collide with controller action names`,
+  );
+  assert.equal(typeof controller.scan, "function");
+  assert.equal(controller.snapshot().scanResult, null);
+});
+
+test("the panel import path reads the scan result, never the scan action", async () => {
+  const scan = {
+    root: "C:\\assets",
+    scanned: 1,
+    truncated: false,
+    items: [
+      {
+        path: "models/a.glb",
+        bytes: 10,
+        supported: true,
+        mediaType: "model/gltf-binary",
+        sha256: "b".repeat(64),
+        known: false,
+      },
+    ],
+    issues: [],
+    hints: { newVersions: 1, unchanged: 0, unsupported: 0 },
+    worldUpdated: false,
+  };
+  const host = fakeHost({ "asset.scan": () => scan });
+  const controller = createAssetLibraryController(host.call);
+  await controller.scan("C:\\assets");
+  // Exactly what AssetLibraryPanel.startImport() does after the scan resolves.
+  const result = controller.snapshot().scanResult;
+  assert.equal(typeof controller.scan, "function");
+  assert.ok(Array.isArray(result?.items), "scanResult.items must be an array");
+  const picked = result.items.find((item) => item.path === "models/a.glb");
+  assert.equal(picked.supported, true);
+  assert.equal(scanSummary(result).newVersions, 1);
+});
+
+test("AssetLibraryPanel reads scan data from scanResult with a guarded items read", () => {
+  const panel = readFileSync(join(assetsDir, "AssetLibraryPanel.tsx"), "utf8");
+  assert.match(panel, /const scan = controller\.scanResult;/);
+  assert.match(panel, /Array\.isArray\(scan\.items\)/);
+  assert.doesNotMatch(panel, /const scan = controller\.scan;/);
 });
 
 test("versionOptions lists newest first", () => {

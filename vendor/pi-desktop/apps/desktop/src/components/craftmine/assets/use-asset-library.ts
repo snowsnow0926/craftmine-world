@@ -68,7 +68,10 @@ export type AssetLibrarySnapshot = {
   previewRecords: AssetPreviewRecord[];
   usage: AssetUsageItem[];
   usageTotal: number;
-  scan: AssetScanResult | null;
+  // The scan result is data. The `scan` action keeps its name in
+  // `AssetLibraryActions`; the two must never share a key, or the merged
+  // controller object lets the method overwrite the result.
+  scanResult: AssetScanResult | null;
   lastImport: AssetLibraryImportSummary | null;
   busy: boolean;
 };
@@ -392,7 +395,7 @@ function initialState(call: AssetLibraryCall | null): AssetLibrarySnapshot {
     previewRecords: [],
     usage: [],
     usageTotal: 0,
-    scan: null,
+    scanResult: null,
     lastImport: null,
     busy: false,
   };
@@ -635,7 +638,7 @@ export function createAssetLibraryController(
   const scan = async (sourceRoot: string): Promise<AssetScanResult> =>
     run(async () => {
       const result = parseScan(await call!("asset.scan", { sourceRoot }));
-      emit({ scan: result, status: "ready" });
+      emit({ scanResult: result, status: "ready" });
       return result;
     });
 
@@ -697,8 +700,19 @@ export function useAssetLibrary(bridge: AssetLibraryBridge | null): AssetLibrary
     // here, and the failure is already in `error`/`status` for the panel.
     void controller.refresh().catch(() => {});
   }, [controller]);
+  return { ...snapshot, ...controllerActions(controller) };
+}
+
+/**
+ * Action half of the controller. The snapshot's data keys and these action
+ * names must stay disjoint: `scan` once named both the scan result and the scan
+ * action, so the merge replaced the result with the function and the panel
+ * crashed the whole React tree when it read `scan.items`.
+ */
+export function controllerActions(
+  controller: AssetLibraryControllerApi,
+): AssetLibraryActions {
   return {
-    ...snapshot,
     search: controller.search,
     loadMore: controller.loadMore,
     refresh: controller.refresh,

@@ -201,14 +201,18 @@ export function AssetLibraryPanel({
       .catch(() => {});
   }, [controller.search]);
 
-  const scan = controller.scan;
+  // `scanResult` is the snapshot field; `controller.scan` is the action. Reading
+  // the action here used to bind a function and crash the whole React tree.
+  const scan = controller.scanResult;
   const preview = describePreview(controller.preview, lang);
   const selected = controller.selected;
   const summary = scanSummary(scan);
   const thumb = thumbnailSrc(controller.preview);
   const audioMs = controller.preview?.facts.durationMs;
   const picked: AssetScanItem | null =
-    scan && importPath ? scan.items.find((item) => item.path === importPath) ?? null : null;
+    scan && importPath && Array.isArray(scan.items)
+      ? scan.items.find((item) => item.path === importPath) ?? null
+      : null;
 
   const openCard = (assetId: string, version: number): void => {
     setView("detail");
