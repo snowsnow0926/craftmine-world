@@ -16,6 +16,7 @@ import { dirname, isAbsolute, join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
+import { configureHeadlessAcceptance, installHeadlessControl } from "./craftmine-headless";
 import {
   existsSync,
   mkdirSync,
@@ -285,6 +286,7 @@ function stripWinLongPrefix(p: string): string {
 ignoreBrokenStdio();
 const processStartedAt = Date.now();
 
+const headlessAcceptance = configureHeadlessAcceptance();
 app.setName(APP_NAME);
 const productPaths = craftminePaths(process.env, app.getPath("appData"));
 mkdirSync(productPaths.userData, { recursive: true });
@@ -374,9 +376,6 @@ let closePromptOpen = false;
 // dialog (Cmd+Q, tray quit, etc.). Prevents the dialog from showing again when
 // `app.quit()` is re-issued after the user confirmed.
 let quitConfirmed = false;
-// Windows whose close handler has already decided to let the close through.
-// Per-window rather than a module-level latch, so a real close never leaks
-// permission to close into the next window `ensureWindow()` creates.
 
 let pluginNotificationPermission: PluginNotificationPermission = "unknown";
 const pluginNativeNotifications = new Set<SystemNotification>();
@@ -390,7 +389,7 @@ function getPluginNotificationPermission(): PluginNotificationPermission {
 function showPluginNativeNotification(
   input: PluginNativeNotificationInput,
 ): Promise<PluginNativeNotificationResult> {
-  if (!SystemNotification.isSupported()) {
+  if (headlessAcceptance || !SystemNotification.isSupported()) {
     return Promise.resolve({ shown: false, permission: "unsupported" });
   }
 
@@ -641,6 +640,7 @@ const plugins: PluginRuntime = new PluginRuntime({
     await shell.trashItem(fullPath);
   },
   pickDirectory: async () => {
+    if (headlessAcceptance) return headlessAcceptance.legacySource;
     const result = await dialog.showOpenDialog({
       properties: ["openDirectory"],
     });
@@ -1777,6 +1777,7 @@ function hasVisibleWindow(): boolean {
 }
 
 function restoreMainWindow() {
+  if (headlessAcceptance) return;
   void ensureWindow()
     .then(() => {
       const window = mainWindow;
@@ -1805,6 +1806,7 @@ function updateTrayMenu(locale = app.getLocale()) {
 }
 
 function createTray() {
+  if (headlessAcceptance) return;
   if (tray) return;
   const iconPath = trayIconPath();
   if (!iconPath) {
@@ -1836,6 +1838,9 @@ function createTray() {
 
 
 function sendToRenderer(channel: string, payload: unknown) {
+  // Backend teardown emits plugin lifecycle events. A closing renderer must
+  // not respond by refreshing the stopped host or recreating disposed views.
+  if (quitting) return;
   if (channel === IPC.event.pluginChanged) {
     applyNativeThemeSource({ theme: appThemePreference });
   }
@@ -2453,6 +2458,7 @@ function createPluginLauncherWindow(): Promise<BrowserWindow> {
       ...pluginLauncherBounds(),
       title: `${APP_NAME} Plugin Launcher`,
       show: false,
+      focusable: !headlessAcceptance,
       frame: false,
       transparent: true,
       backgroundColor: "#00000000",
@@ -2467,6 +2473,7 @@ function createPluginLauncherWindow(): Promise<BrowserWindow> {
       ...(process.platform === "darwin" ? { type: "panel" as const } : {}),
       webPreferences: {
         preload: join(__dirname, "../preload/index.cjs"),
+        offscreen: !!headlessAcceptance,
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: true,
@@ -2540,6 +2547,7 @@ function createPluginLauncherWindow(): Promise<BrowserWindow> {
 }
 
 function prewarmPluginLauncher(): void {
+  if (headlessAcceptance) return;
   const started = Date.now();
   void createPluginLauncherWindow().then(
     () => {
@@ -2588,6 +2596,7 @@ async function togglePluginLauncher(): Promise<void> {
 }
 
 function applyPluginLauncherShortcut(keybindings?: KeybindingOverrides) {
+  if (headlessAcceptance) return;
   const shortcut = KEYBOARD_SHORTCUTS.find(
     (candidate) => candidate.id === "openPluginLauncher",
   );
@@ -2639,6 +2648,7 @@ function applyPluginLauncherShortcut(keybindings?: KeybindingOverrides) {
 }
 
 async function createWindow() {
+  if (headlessAcceptance) closeBehavior = "quit";
   notificationViewingSessionId = null;
   requestedWorkPanelReservation = 0;
   workPanelReservation = emptyWorkPanelReservationState();
@@ -2663,6 +2673,7 @@ async function createWindow() {
     minHeight: WINDOW_MIN_HEIGHT,
     title: APP_NAME,
     show: false,
+    focusable: !headlessAcceptance,
     // Keep native edge/corner resizing explicit. Frameless chrome owns the
     // titlebar only; the OS remains responsible for the resize hit regions.
     resizable: true,
@@ -2684,6 +2695,7 @@ async function createWindow() {
         }),
     webPreferences: {
       preload: join(__dirname, "../preload/index.cjs"),
+      offscreen: !!headlessAcceptance,
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
@@ -3017,7 +3029,7 @@ async function createWindow() {
     window.on("maximize", sendMaximized);
     // Native-runner E2E fixture: establish the initial native state before
     // the renderer mounts, then let WindowControls query it through IPC.
-    if (process.env.PI_DESKTOP_START_MAXIMIZED === "1") window.maximize();
+    if (!headlessAcceptance && process.env.PI_DESKTOP_START_MAXIMIZED === "1") window.maximize();
   }
   window.on("unmaximize", () => {
     if (process.platform !== "darwin") sendMaximized();
@@ -3174,6 +3186,7 @@ async function createWindow() {
   };
 
   const ensureStableBounds = (force = false) => {
+    if (headlessAcceptance) return;
     if (
       !isLiveWindow() ||
       boundsGuard ||
@@ -3374,6 +3387,7 @@ async function createWindow() {
   });
 
   const boundsWatchdog = setInterval(() => {
+    if (headlessAcceptance) return;
     if (!isLiveWindow()) {
       clearInterval(boundsWatchdog);
       return;
@@ -3421,6 +3435,7 @@ async function createWindow() {
 
   window.once("ready-to-show", () => {
     if (!isLiveWindow()) return;
+    if (headlessAcceptance) { bootTiming.mark("window-rendered-offscreen"); return; }
     // Capture runs need the deterministic Codex footprint; normal launches
     // must respect restored user bounds and only fix real shelf states.
     ensureStableBounds(process.env.PI_DESKTOP_CAPTURE === "1");
@@ -4326,7 +4341,7 @@ async function createWindow() {
   });
 
   const loadStarted = Date.now();
-  if (process.env.ELECTRON_RENDERER_URL) {
+  if (!headlessAcceptance && process.env.ELECTRON_RENDERER_URL) {
     await window.loadURL(process.env.ELECTRON_RENDERER_URL);
     if (process.env.PI_DESKTOP_DEVTOOLS === "1") {
       window.webContents.openDevTools({ mode: "detach" });
@@ -5880,6 +5895,7 @@ function registerIpc() {
     body?: string;
   } = {}) => {
     if (
+      headlessAcceptance ||
       !mainWindow ||
       mainWindow.isDestroyed() ||
       !SystemNotification.isSupported()
@@ -6813,7 +6829,7 @@ function registerIpc() {
     };
     // Dev convenience only: never auto-open the app bundle directory as the
     // workspace in a packaged build.
-    const seed =
+    const seed = headlessAcceptance ? headlessAcceptance.legacySource :
       process.env.PI_DESKTOP_SEED_WORKSPACE ||
       process.env.PI_DESKTOP_WORKSPACE ||
       (isDevelopmentBuild ? join(__dirname, "../../..") : "");
@@ -8649,6 +8665,7 @@ function registerIpc() {
       const viewId = String(payload?.viewId ?? "");
       const sessionId = String(payload?.sessionId ?? "").trim();
       const location = String(payload?.location ?? "").trim();
+      if (quitting) return { ok: false };
       const isBrowserView = pluginId === BROWSER_PLUGIN_ID && viewId === BROWSER_VIEW_ID;
       if (isBrowserView && sessionId) browserHost.setChromeSession(sessionId);
       if (isBrowserView && sessionId && location) {
@@ -8868,6 +8885,12 @@ function registerIpc() {
   });
 }
 
+installHeadlessControl({
+  window: () => mainWindow,
+  world: () => pluginViews.headlessWorldContents(),
+  runtime: () => ({ hostAvailable: !!host?.isAvailable(), plugins: plugins.listLoaded().map(plugin => plugin.manifest.id) }),
+});
+
 app.whenReady().then(async () => {
   // A launch that lost the single-instance lock is already quitting. Never
   // create a window, a tray, or a child process on top of the running app.
@@ -8936,7 +8959,7 @@ app.whenReady().then(async () => {
   // GitHub discovery is delayed and time-bounded. Never start it before the
   // first window exists: a hung feed used to sit in "checking" for ~60s and
   // compete with boot for the net stack.
-  updater.startAutoCheck();
+  if (!headlessAcceptance) updater.startAutoCheck();
   // createWindow awaits the initial load (loadFile resolves on
   // did-finish-load), so the page is up; give React a beat to mount its
   // event subscriptions before pushing the boot outcome.
@@ -9104,6 +9127,7 @@ app.on("before-quit", (event) => {
   // Skip confirmation in automated probe/capture modes where no human is
   // present to interact with the dialog.
   const isAutomatedMode =
+    !!headlessAcceptance ||
     process.env.PI_DESKTOP_BOOT_PROBE === "1" ||
     process.env.PI_DESKTOP_SUPERVISION_PROBE === "1" ||
     process.env.PI_DESKTOP_CAPTURE === "1";

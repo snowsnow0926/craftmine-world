@@ -12,7 +12,9 @@ Use Windows x64, Node.js 24, pnpm 11 and a Rust MSVC toolchain with Visual Studi
 4. For an extracted source archive without Git metadata, initialize a local Git repository and commit the extracted sources before running the script. This creates the matching source archive embedded by the packaging step. Preserve the supplied `UPSTREAM.json` provenance.
 5. The optional `-Installer` switch builds the NSIS installer. Installer acceptance remains a later milestone.
 
-Do not separate the executable from its adjacent files. End users of the finished package will not need Node, Rust or pnpm. The current preview has not yet passed the complete Electron startup and installer acceptance journey.
+An optional `CARGO_TARGET_DIR` may point to a shared Cargo build cache. The build script copies only the two resulting release executables into the declared package resource paths; it does not copy that cache into the application.
+
+Do not separate the executable from its adjacent files. End users of the finished package will not need Node, Rust or pnpm. Offscreen native startup and lifecycle have development-build coverage; installer and visible-window acceptance remain separate work.
 
 ## Runtime profile
 
@@ -30,9 +32,12 @@ Automated checks use independent headless Chromium and separate data directories
 - Root `node tests/desktop-legacy-browser.mjs` verifies the actual import form, a complete legacy backup, fixed asset/extension versions, runtime effects and restart. Its native directory picker returns an isolated fixture path; it does not open a dialog or control input.
 - Set `CRAFTMINE_PACKAGED_ROOT` to an absolute `win-unpacked` directory to test the packaged plugin host, plugin resources and Rust binary with the two probes above.
 - Root `node tests/desktop-shell-browser.mjs` renders the actual React components for layout and theme checks. Its session data and native window bridge are fixtures, so it is not a full Electron test.
+- Root `npm run test:desktop:native` launches the built Electron application in a contained, marked test profile with actual utility processes and Rust services. It verifies native IPC, old-world import, failed-close retry under a real SQLite write lock, normal shutdown and complete process restart. Main and world captures are separate offscreen surfaces. `CRAFTMINE_CORE_BIN` and `PI_DESKTOP_HOST_BIN` may select existing absolute release binaries. No dialog, pointer lock, input simulation, focused or visible window is used.
 
-W1 is still in progress. Close-time save and legacy import have component integration coverage; complete native-window acceptance and polished icons remain pending. The world creation Agent tools are not connected to the PI loop yet (W2); runtime status is the only exposed Craftmine Agent tool. Real-model creation, compaction, memory and gameplay composition must not be reported as completed based on these probes.
+W1 has component integration and native offscreen lifecycle coverage. Visible desktop composition, polished product onboarding/icons and installer acceptance remain pending. The world creation Agent tools are not connected to the PI loop yet (W2); runtime status is the only exposed Craftmine Agent tool. Real-model creation, compaction, memory and gameplay composition must not be reported as completed based on these probes.
 
 The world panel can import an original project directory or its `.craftmine` child. Rust keeps the complete original files under `plugins/data/craftmine.world/legacy-imports/<import-id>/source` in the product profile. The current world, progress, assets and extensions become a new desktop world. Old library versions, unapplied candidates and unfinished drafts remain in that backup; their new-client editing and reuse UI is still pending. The source directory is never migrated in place. Import bounds are 256 MiB total, 64 MiB per file, 10,000 files/directories and 32 nested levels; links are rejected.
+
+Early scene-format-1 worlds are verified from their original JSON bytes and converted to the existing canonical format in the playable copy. That copy receives a new build ID; the original format and ID remain in its archive. Formats 2–4 retain their existing build IDs.
 
 The package includes the upstream LGPL license, provenance, this build guide and a source archive from the build commit. Third-party authorship is retained in that source. See the project plan for the remaining distribution work.

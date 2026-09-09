@@ -1,4 +1,5 @@
 import { BrowserWindow, ipcMain, session } from "electron";
+import { isHeadlessAcceptance } from "./craftmine-headless";
 import { pathToFileURL } from "node:url";
 import { join } from "node:path";
 import { isNetUrlAllowed } from "@pi-desktop/plugin-sdk";
@@ -265,6 +266,7 @@ export class PluginPanelHost {
       height: Math.max(280, request.height || 360),
       title: request.title,
       show: false,
+      focusable: !isHeadlessAcceptance(),
       autoHideMenuBar: true,
       // The host theme is only a fallback; the preload samples the actual
       // plugin page colors after it has loaded and paints the chrome from them.
@@ -274,6 +276,7 @@ export class PluginPanelHost {
       frame: false,
       webPreferences: {
         session: ses,
+        offscreen: isHeadlessAcceptance(),
         preload: join(__dirname, "../preload/plugin-panel.js"),
         contextIsolation: true,
         nodeIntegration: false,

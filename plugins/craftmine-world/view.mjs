@@ -110,7 +110,7 @@ function mount(record) {
   document.getElementById('import-result').hidden=true;
   document.body.dataset.worldId=record.id||'';delete document.body.dataset.worldLoaded;delete document.body.dataset.worldError;
   status.textContent='正在载入';controls();
-  frame.srcdoc=gameDocument.replace('__CRAFTMINE_NONCE__',nonce);
+  frame.srcdoc=gameDocument.replace('__CRAFTMINE_NONCE__',nonce).replace('__CRAFTMINE_INPUT_GUARD__',globalThis.__craftmineHeadless?CRAFTMINE_INPUT_GUARD:'');
 }
 
 addEventListener('message',event=>{

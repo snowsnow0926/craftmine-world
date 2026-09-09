@@ -119,6 +119,7 @@ export class AgentSidecar {
   constructor(onStderr?: StderrHandler) {
     const entry = resolveSidecarEntry();
     this.child = spawn(process.execPath, [entry], {
+      windowsHide: true,
       stdio: ["pipe", "pipe", "pipe"],
       env: {
         ...process.env,

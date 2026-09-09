@@ -22,7 +22,9 @@ const compiledGame = await build({entryPoints:[path.join(root,'app/game.js')],wr
 const escapeScript = text => text.replace(/\r\n?/g,'\n').replace(/<\/script/gi,'<\\/script');
 const runtimeCode = escapeScript(await fs.readFile(path.join(root,'world-workshop-3d/src/voxel-runtime.js'),'utf8'));
 const gameCode = escapeScript(compiledGame.outputFiles[0].text);
-const hashes = [runtimeCode,gameCode].map(text=>"'sha256-"+createHash('sha256').update(text).digest('base64')+"'").join(' ');
+const inputGuardBuild=await build({entryPoints:[path.join(root,'vendor/pi-desktop/apps/desktop/electron/shared/craftmine-headless-input.ts')],write:false,bundle:true,platform:'browser',format:'iife',globalName:'CraftmineHeadlessGuard',footer:{js:'CraftmineHeadlessGuard.installHeadlessInputGuard();'},target:'chrome130'});
+const inputGuard=escapeScript(inputGuardBuild.outputFiles[0].text);
+const hashes = [runtimeCode,gameCode,inputGuard].map(text=>"'sha256-"+createHash('sha256').update(text).digest('base64')+"'").join(' ');
 const policy = `default-src 'none'; script-src 'self' blob: ${hashes}; worker-src blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; frame-src 'self'; connect-src 'none'; base-uri 'none'`;
 const styles = await fs.readFile(path.join(root,'app/game.css'),'utf8');
 const game = (await fs.readFile(path.join(root,'app/game.html'),'utf8'))
@@ -30,8 +32,8 @@ const game = (await fs.readFile(path.join(root,'app/game.html'),'utf8'))
   .replace('<link rel="stylesheet" href="/app/game.css">',`<style>${styles}</style>`)
   .replace('<script src="/runtime.js" defer></script>','')
   .replace('<script type="module" src="/app/game.js"></script>','')
-  .replace('</body>',`<script>${runtimeCode}</script><script>${gameCode}</script></body>`);
+  .replace('</body>',`__CRAFTMINE_INPUT_GUARD__<script>${runtimeCode}</script><script>${gameCode}</script></body>`);
 const view = (await fs.readFile(path.join(source,'world.html'),'utf8')).replace(/content="default-src [^"]+"/,`content="${policy}"`);
 await fs.writeFile(path.join(output,'views/world.html'),view);
-await build({entryPoints:[path.join(source,'view.mjs')],outfile:path.join(output,'views/view.js'),bundle:true,platform:'browser',format:'iife',target:'chrome130',define:{CRAFTMINE_BOOT_WORLD:JSON.stringify(bootstrap),CRAFTMINE_GAME_DOCUMENT:JSON.stringify(game)}});
+await build({entryPoints:[path.join(source,'view.mjs')],outfile:path.join(output,'views/view.js'),bundle:true,platform:'browser',format:'iife',target:'chrome130',define:{CRAFTMINE_BOOT_WORLD:JSON.stringify(bootstrap),CRAFTMINE_GAME_DOCUMENT:JSON.stringify(game),CRAFTMINE_INPUT_GUARD:JSON.stringify('<script>'+inputGuard+'</script>')}});
 console.log(output);

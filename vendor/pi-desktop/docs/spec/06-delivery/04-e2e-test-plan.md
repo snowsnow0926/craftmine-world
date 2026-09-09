@@ -8491,3 +8491,11 @@ are withdrawn with ADR 0165.
 - Navigate between the home context and two conversation contexts. Each retains its own resources; home navigation never becomes a host session or changes a background conversation's tabs.
 - At 1440 and 1200 pixel desktop widths, preserve the sidebar, composer and 560 pixel world surface. In the narrow conversation column, permission text remains horizontal and every toolbar control stays inside the composer. Verify both themes.
 - Validation: root `node tests/desktop-shell-browser.mjs` (9 headless checks with fixture session/native-view transport), desktop `node --test test/work-panel-tabs.test.mjs`. Native first-run world startup is separately covered by CRAFTMINE-007.
+
+#### CRAFTMINE-007: Native offscreen desktop lifecycle
+
+- Build the desktop and prepare its world plugin. Run root `node tests/desktop-native.mjs` with real release Rust binaries. The driver creates its own marked profile and fixture, launches Electron with parent IPC, and never uses input simulation or a visible window.
+- Verify actual Rust host/plugin startup, first-run world opening, React/preload IPC, guards in every frame and the game's lack of Node/plugin-bridge access.
+- Import the contained format-1 fixture through the native form and picker grant. Capture the desktop and world as separate offscreen surfaces. Change actual gameplay state, hold a real SQLite write lock, and request a native close. The failed save must retain the world and restore controls.
+- Release the write lock, retry close and inspect the committed state. Restart the full Electron process against the same profile and verify the selected world and final player position. Both exits must be normal with zero input violations and unhandled page errors; shutting down services must not recreate views.
+- Validation: 17 native checks pass in the Windows development build. `test/craftmine-headless-profile.test.mjs` additionally checks invalid tokens, paths and junction escapes. Native dialog UI, visible composition, a physical double-click, installers and real-model creation remain untested by this scenario.

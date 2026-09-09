@@ -66,6 +66,7 @@ export default defineConfig({
         input: {
           index: resolve(__dirname, "electron/preload/index.ts"),
           "plugin-panel": resolve(__dirname, "electron/preload/plugin-panel.ts"),
+          "craftmine-headless": resolve(__dirname, "electron/preload/craftmine-headless.ts"),
         },
         output: {
           format: "cjs",

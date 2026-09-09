@@ -3,6 +3,7 @@ import { pathToFileURL } from "node:url";
 import { join } from "node:path";
 import { parseAllowedExternalUrl } from "./safe-open-external";
 import { prepareWorldViewsForQuit } from "./craftmine-lifecycle";
+import { isHeadlessAcceptance } from "./craftmine-headless";
 import {
   applyPluginEgressPolicy,
   pluginSessionPartition,
@@ -112,6 +113,11 @@ export class PluginViewHost {
   /** Whether a live web contents exists for this view. */
   has(pluginId: string, viewId: string): boolean {
     return this.views.has(pluginViewKey(pluginId, viewId));
+  }
+
+  /** Read-only handle for the isolated native acceptance controller. */
+  headlessWorldContents(): Electron.WebContents | null {
+    return [...this.views.values()].find(entry => entry.pluginId === "craftmine.world")?.view.webContents || null;
   }
 
   /**
@@ -286,6 +292,7 @@ export class PluginViewHost {
     const view = new WebContentsView({
       webPreferences: {
         session: ses,
+        offscreen: isHeadlessAcceptance(),
         preload: join(__dirname, "../preload/plugin-panel.js"),
         contextIsolation: true,
         nodeIntegration: false,

@@ -13,6 +13,19 @@ try {
     try {
         cargo build --release --locked -p host-core -p craftmine-core
         if ($LASTEXITCODE -ne 0) { throw 'Rust build failed' }
+        # A shared Cargo cache is useful for isolated worktrees. Packaging still
+        # reads these two executables from its declared local resource paths.
+        if ($env:CARGO_TARGET_DIR) {
+            $craftmineCargoOutput = (Resolve-Path -LiteralPath $env:CARGO_TARGET_DIR).Path
+            $craftminePackageOutput = Join-Path $craftmineRoot 'vendor/pi-desktop/target'
+            if ($craftmineCargoOutput -ne $craftminePackageOutput) {
+                $craftminePackageRelease = Join-Path $craftminePackageOutput 'release'
+                New-Item -ItemType Directory -Path $craftminePackageRelease -Force | Out-Null
+                foreach ($craftmineBinary in @('pi-desktop-host-core.exe', 'craftmine-core.exe')) {
+                    Copy-Item -LiteralPath (Join-Path $craftmineCargoOutput "release/$craftmineBinary") -Destination (Join-Path $craftminePackageRelease $craftmineBinary)
+                }
+            }
+        }
         pnpm build:js
         if ($LASTEXITCODE -ne 0) { throw 'Desktop build failed' }
         pnpm --filter @pi-desktop/agent-runtime bundle

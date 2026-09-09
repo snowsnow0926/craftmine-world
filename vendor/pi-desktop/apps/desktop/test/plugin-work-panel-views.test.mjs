@@ -183,8 +183,8 @@ test("an embedded view drops the window-control chrome", () => {
 test("only one view is attached at a time and the cache is bounded", () => {
   assert.match(viewHostSource, /const MAX_LIVE_VIEWS = \d+/);
   assert.match(viewHostSource, /private evictBeyondLimit\(\)/);
-  // Never evict what is on screen.
-  assert.match(viewHostSource, /\.filter\(\(entry\) => entry\.key !== this\.visibleKey\)/);
+  // Never evict the visible view or an unsaved Craftmine world.
+  assert.match(viewHostSource, /\.filter\(\(entry\) => entry\.key !== this\.visibleKey && entry\.pluginId !== "craftmine\.world"\)/);
   // Showing one view detaches the previous, so a stale surface cannot linger
   // above the renderer during a fast tab switch.
   assert.match(
