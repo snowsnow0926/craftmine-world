@@ -525,6 +525,20 @@ fn job_capacity(db: &Connection, additional: usize) -> Result<()> {
     Ok(())
 }
 impl TaskJournal {
+    /// Verify the atomic restore identity after startup has legitimately
+    /// reconciled tasks. Startup mutations do not erase this commit proof.
+    pub fn backup_restore_proof(&self,args:&Value)->Result<Value> {
+        fields(args,&["operationId","archiveHash"])?;
+        let id=text(args,"operationId",240)?;
+        let hash=text(args,"archiveHash",64)?;
+        ensure!(hash.len()==64 && hash.bytes().all(|byte|byte.is_ascii_hexdigit()),"BACKUP_HASH_REQUIRED");
+        let (domain,committed):(String,i64)=self.db.query_row(
+            "SELECT domain_hash,committed_at FROM craftmine_restore_marks WHERE operation_id=?1 AND archive_hash=?2",
+            params![id,hash],|row|Ok((row.get(0)?,row.get(1)?))).context("BACKUP_RESTORE_PROOF_MISSING")?;
+        Ok(json!({"verified":true,"operationId":id,"archiveHash":hash,"domainHash":domain,
+            "committedAt":committed,"currentHash":fingerprint(&self.db)?}))
+    }
+
     pub fn backup_export(&mut self, args: &Value) -> Result<Value> {
         fields(args, &["operationId"])?;
         let id = text(args, "operationId", 240)?;
