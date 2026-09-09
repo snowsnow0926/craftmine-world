@@ -1,0 +1,45 @@
+{
+  "format": "craftmine.godot-appcontainer-prototype/1",
+  "observedDate": "2026-09-09",
+  "kind": "fixed-trusted-native-probe-before-godot",
+  "offlineCompilation": "passed-after-sha2-format-fix",
+  "testedIsolation": "AppContainer with no capabilities and creation-time Job/child restrictions",
+  "attempts": [
+    {
+      "logBytes": 0,
+      "exitCode": 3221225794,
+      "tokenIsAppContainer": 1,
+      "exitHex": "0xC0000142",
+      "directory": "out/craftmine.gd0.probe.220548.1788953192498",
+      "profileCleanupHresult": "0x0",
+      "childBinary": "parent executable self-probe"
+    },
+    {
+      "logBytes": 0,
+      "exitCode": 3221225794,
+      "tokenIsAppContainer": 1,
+      "exitHex": "0xC0000142",
+      "directory": "out/craftmine.gd0.probe.250596.1788953266431",
+      "profileCleanupHresult": "0x0",
+      "childBinary": "separate child-only executable"
+    }
+  ],
+  "godotExecuted": false,
+  "boundaryChecksExecuted": false,
+  "existingAclModified": false,
+  "onlyTaskDirectoryAclsModified": true,
+  "cause": "Unresolved child initialization failure before first application output",
+  "notVerified": [
+    "sentinel read denial",
+    "sentinel write denial",
+    "network denial",
+    "child creation denial",
+    "Godot version execution",
+    "LPAC",
+    "headless import",
+    "addons",
+    "export",
+    "UI boundary",
+    "arbitrary model projects"
+  ]
+}
