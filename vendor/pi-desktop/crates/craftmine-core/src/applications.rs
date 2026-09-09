@@ -98,11 +98,31 @@ impl TaskJournal {
         revision: u64,
         snapshot: &Value,
     ) -> Result<Value> {
+        self.application_prepare_with_review_warnings(
+            id, token, check, review_id, world_id, revision, snapshot, false,
+        )
+    }
+
+    /// Only an explicit player acknowledgement may accept model-authored warning
+    /// assertions. Independent verification and loading remain mandatory.
+    pub fn application_prepare_with_review_warnings(
+        &mut self,
+        id: &str,
+        token: &str,
+        check: &str,
+        review_id: &str,
+        world_id: &str,
+        revision: u64,
+        snapshot: &Value,
+        acknowledge_review_warnings: bool,
+    ) -> Result<Value> {
         super::workspaces::call_id(id)?;
         super::workspaces::call_id(token)?;
-        let request_hash = digest(&document(
-            &json!({"check":check,"review":review_id,"worldId":world_id,"revision":revision,"snapshot":snapshot}),
-        )?);
+        let mut request = json!({"check":check,"review":review_id,"worldId":world_id,"revision":revision,"snapshot":snapshot});
+        if acknowledge_review_warnings {
+            request["acknowledgeReviewWarnings"] = json!(true);
+        }
+        let request_hash = digest(&document(&request)?);
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -127,7 +147,11 @@ impl TaskJournal {
             job["input"]["worldId"] == world_id,
             "APPLICATION_WORLD_MISMATCH"
         );
-        let review = reviews::require_ready(&tx, check, review_id)?;
+        let review = if acknowledge_review_warnings {
+            reviews::require_ready_with_acknowledgement(&tx, check, review_id, true)?
+        } else {
+            reviews::require_ready(&tx, check, review_id)?
+        };
         let before = worlds::read(&tx, world_id)?;
         ensure!(
             before.summary.revision == revision,
@@ -146,7 +170,8 @@ impl TaskJournal {
         let input = json!({"worldId":world_id,"revision":revision,"baseBuild":before.world.build["id"],
             "worldHash":before.content_hash,"verificationId":check,"verificationOutputHash":job["outputHash"],
             "reviewId":review_id,"reviewOutputHash":review["outputHash"],"buildId":prepared.build["id"],
-            "snapshot":snapshot,"binding":job["input"]["binding"],"draftHash":job["input"]["draftHash"]});
+            "snapshot":snapshot,"binding":job["input"]["binding"],"draftHash":job["input"]["draftHash"],
+            "acknowledgeReviewWarnings":acknowledge_review_warnings});
         let body = document(&input)?;
         let previous = worlds::encode(&before.world)?;
         let now = worlds::timestamp()?;
@@ -200,10 +225,13 @@ impl TaskJournal {
             job["outputHash"] == input["verificationOutputHash"],
             "APPLICATION_EVIDENCE_MISMATCH"
         );
-        let review = reviews::require_ready(
+        let review = reviews::require_ready_with_acknowledgement(
             &tx,
             check,
             input["reviewId"].as_str().context("REVIEW_REQUIRED")?,
+            input["acknowledgeReviewWarnings"]
+                .as_bool()
+                .unwrap_or(false),
         )?;
         ensure!(
             review["outputHash"] == input["reviewOutputHash"],
@@ -232,7 +260,7 @@ impl TaskJournal {
         let world = WorldDocument {
             build: job["output"]["artifact"]["build"].clone(),
             snapshot: input["snapshot"].clone(),
-            extensions: before.world.extensions,
+            extensions: serde_json::from_value(job["output"]["artifact"]["extensions"].clone())?,
         };
         let body = worlds::encode(&world)?;
         let revision: i64 = before

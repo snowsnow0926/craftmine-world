@@ -3,6 +3,11 @@ use crate::WorkspaceContext;
 
 // These are journal fixtures, not model, compiler, or native-render evidence.
 fn ready() -> Result<(tempfile::TempDir, TaskJournal, WorkspaceContext, String)> {
+    ready_with_extensions(json!([]))
+}
+fn ready_with_extensions(
+    extensions: Value,
+) -> Result<(tempfile::TempDir, TaskJournal, WorkspaceContext, String)> {
     let dir = tempfile::tempdir()?;
     let mut j = TaskJournal::open(&dir.path().join("tasks.sqlite"))?;
     j.world_create("world","Test",&WorldDocument{
@@ -20,7 +25,7 @@ fn ready() -> Result<(tempfile::TempDir, TaskJournal, WorkspaceContext, String)>
         "patch",
         0,
         &json!({"add":"tree"}),
-        &json!({"scene":{"title":"Test","objects":[{"id":"tree"}]}}),
+        &json!({"scene":{"title":"Test","objects":[{"id":"tree"}]},"extensions":extensions}),
     )?;
     let job = j.verification_submit_with_origin(
         &ctx,
@@ -34,7 +39,7 @@ fn ready() -> Result<(tempfile::TempDir, TaskJournal, WorkspaceContext, String)>
     let hash = "a".repeat(64);
     let build_id = format!("v-{}", "a".repeat(20));
     j.verification_finish(&id,"verify-owner",&json!({"inputHash":record["inputHash"],
-        "artifact":{"build":{"id":build_id,"hash":hash,"scene":record["input"]["draft"]["scene"],"behaviors":[]},"extensions":[]},
+        "artifact":{"build":{"id":build_id,"hash":hash,"scene":record["input"]["draft"]["scene"],"behaviors":[]},"extensions":extensions},
         "evidence":{"format":"craftmine.desktop-check/1","passed":true,"compiler":{"passed":true},
             "behaviors":{"build":hash,"passed":true,"modules":[]},"render":{"passed":true,"version":build_id}}}))?;
     Ok((dir, j, ctx, id))
@@ -65,6 +70,125 @@ fn proof(receipt: &Value) -> Value {
     json!({"format":"craftmine.desktop-application/1","inputHash":receipt["inputHash"],
         "render":{"passed":true,"version":receipt["input"]["buildId"],"capture":{"sha256":"b".repeat(64)}},
         "player":receipt["input"]["snapshot"]["player"]})
+}
+
+#[test]
+fn explicit_player_acknowledgement_is_bound_and_never_changes_failed_review() -> Result<()> {
+    let (_dir, mut j, _ctx, check) = ready()?;
+    let failed = review(&mut j, &check, "review", false)?;
+    let before = j.world_read("world")?;
+    assert!(prepare(&mut j, &check, "apply")
+        .unwrap_err()
+        .to_string()
+        .contains("REQUEST_CHECK_FAILED"));
+    let receipt = j.application_prepare_with_review_warnings(
+        "apply",
+        "apply-owner",
+        &check,
+        "review",
+        "world",
+        0,
+        &before.world.snapshot,
+        true,
+    )?;
+    assert_eq!(receipt["input"]["acknowledgeReviewWarnings"], true);
+    assert_eq!(receipt["input"]["reviewOutputHash"], failed["outputHash"]);
+    assert!(prepare(&mut j, &check, "apply")
+        .unwrap_err()
+        .to_string()
+        .contains("REPLAY_MISMATCH"));
+    let mut forged = proof(&receipt);
+    forged["render"]["passed"] = json!(false);
+    assert!(j
+        .application_commit("apply", "apply-owner", &forged)
+        .unwrap_err()
+        .to_string()
+        .contains("APPLICATION_LOAD_REQUIRED"));
+    assert_eq!(j.world_read("world")?, before);
+    j.application_commit("apply", "apply-owner", &proof(&receipt))?;
+    assert_eq!(
+        j.review_read("review")?["output"]["acceptance"]["passed"],
+        false
+    );
+    assert_eq!(
+        j.application_read("apply")?["input"]["acknowledgeReviewWarnings"],
+        true
+    );
+    Ok(())
+}
+
+#[test]
+fn acknowledgement_cannot_bypass_machine_status_or_review_binding() -> Result<()> {
+    let (_dir, mut j, ctx, check) = ready()?;
+    review(&mut j, &check, "review", false)?;
+    let world = j.world_read("world")?;
+    let next = j.verification_submit_with_origin(
+        &ctx,
+        "other-check",
+        1,
+        "Other",
+        &json!({"modelKey":"fixture/model","request":{"messageId":"user-2","text":"Check again"}}),
+    )?;
+    let next_id = next["id"].as_str().unwrap();
+    assert!(j
+        .application_prepare_with_review_warnings(
+            "queued",
+            "owner",
+            next_id,
+            "review",
+            "world",
+            0,
+            &world.world.snapshot,
+            true
+        )
+        .unwrap_err()
+        .to_string()
+        .contains("VERIFIED_CURRENT_DRAFT_REQUIRED"));
+    let claimed = j.verification_claim(next_id, "worker")?;
+    j.verification_finish(next_id,"worker",&json!({"inputHash":claimed["inputHash"],"evidence":{"format":"craftmine.desktop-check/1","passed":false,"error":"Actual machine fixture failure"}}))?;
+    assert!(j
+        .application_prepare_with_review_warnings(
+            "failed",
+            "owner",
+            next_id,
+            "review",
+            "world",
+            0,
+            &world.world.snapshot,
+            true
+        )
+        .unwrap_err()
+        .to_string()
+        .contains("VERIFIED_CURRENT_DRAFT_REQUIRED"));
+    assert!(
+        reviews::require_ready_with_acknowledgement(&j.db, next_id, "review", true)
+            .unwrap_err()
+            .to_string()
+            .contains("REVIEW_BINDING_MISMATCH")
+    );
+    assert_eq!(j.world_read("world")?, world);
+    Ok(())
+}
+
+#[test]
+fn application_publishes_exact_extensions_from_verified_draft() -> Result<()> {
+    let extensions = json!([{"id":"journal-extension-fixture","version":1,"code":"fixed immutable fixture bytes"}]);
+    let (dir, mut j, _ctx, check) = ready_with_extensions(extensions.clone())?;
+    assert!(j.world_read("world")?.world.extensions.is_empty());
+    review(&mut j, &check, "review", true)?;
+    let receipt = prepare(&mut j, &check, "apply")?;
+    j.application_commit("apply", "apply-owner", &proof(&receipt))?;
+    assert_eq!(
+        serde_json::to_value(j.world_read("world")?.world.extensions)?,
+        extensions
+    );
+    drop(j);
+    let j = TaskJournal::open(&dir.path().join("tasks.sqlite"))?;
+    assert_eq!(
+        serde_json::to_value(j.world_read("world")?.world.extensions)?,
+        extensions
+    );
+    Ok(())
 }
 
 #[test]

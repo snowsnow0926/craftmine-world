@@ -46,6 +46,9 @@ function controls() {
   importButton.disabled=select.disabled;
   document.getElementById('close-preview').disabled=busy||closing||!!applicationAttempt;
   document.getElementById('apply-world').disabled=busy||closing||!!applicationAttempt||!preview||!previewReview?.current||previewReview.status!=='completed'||!previewReview.acceptance?.passed;
+  const warnings=document.getElementById('apply-world-warnings');
+  warnings.hidden=previewReview?.status!=='completed'||previewReview.acceptance?.passed!==false;
+  warnings.disabled=busy||closing||!!applicationAttempt||!preview||!previewReview?.current||warnings.hidden;
   document.getElementById('retry-review').disabled=busy||closing||!!applicationAttempt;
   document.getElementById('cancel-review').disabled=busy||closing;
   frame.inert=closing||!!applicationAttempt;
@@ -266,7 +269,7 @@ async function refreshReview() {
     const review=records[0]||null;previewReview=review;
     const labels={running:'正在评审与检查需求…',failed:'评审未完成',cancelled:'评审已取消',interrupted:'评审已中断'};
     document.getElementById('review-state').textContent=!review?'尚未完成评审':!review.current?'历史草稿 · 请检查最新草稿':
-      review.status==='completed'?(review.acceptance?.passed?'需求检查通过 · 可以应用':'需求检查未通过 · 请继续修改'):labels[review.status]||review.status;
+      review.status==='completed'?(review.acceptance?.passed?'评审检查通过 · 可以应用':'评审发现问题 · 请查看后决定是否应用'):labels[review.status]||review.status;
     const notes=document.getElementById('review-notes');notes.replaceChildren();
     const line=text=>{const p=document.createElement('p');p.textContent=text;notes.append(p);};
     if(review?.request?.text)line('你的需求：'+review.request.text);
@@ -274,6 +277,7 @@ async function refreshReview() {
     if(review?.suggestions?.length){line('评审建议（由你决定）：');const ul=document.createElement('ul');for(const text of review.suggestions){const li=document.createElement('li');li.textContent=text;ul.append(li);}notes.append(ul);}
     for(const text of review?.limitations||[])line('仍需体验：'+text);
     for(const assertion of review?.acceptance?.assertions||[])line(`${assertion.passed?'✓':'×'} ${assertion.why||assertion.id}：${assertion.detail}`);
+    if(review?.status==='completed'&&review.acceptance?.passed===false)line('以上评审检查未通过。你可以继续修改，或选择“带评审提示应用”；这些结果会保留在记录中。');
     if(review?.error)line(review.error);
     if(!review)line('新检查会自动使用对话里的原始需求与模型评审。旧记录需要在对话中重新提交检查。');
     document.getElementById('retry-review').hidden=!review||!review.current||review.status==='running';
@@ -283,11 +287,11 @@ async function refreshReview() {
   finally{reviewLoading=false;controls();}
 }
 
-async function applyCandidate() {
+async function applyCandidate(acknowledgeReviewWarnings=false) {
   const state=preview,review=previewReview;
-  if(!state||!review?.current||review.status!=='completed'||!review.acceptance?.passed)throw Error('请先完成这份草稿的需求检查与评审');
+  if(!state||!review?.current||review.status!=='completed'||(!review.acceptance?.passed&&!(acknowledgeReviewWarnings===true&&review.acceptance?.passed===false)))throw Error('请先完成这份草稿的需求检查与评审');
   await save({freeze:true});
-  const args={operationId:crypto.randomUUID(),verificationId:state.job.id,reviewId:review.id,worldId:current.id,revision:current.revision};
+  const args={operationId:crypto.randomUUID(),verificationId:state.job.id,reviewId:review.id,worldId:current.id,revision:current.revision,...(acknowledgeReviewWarnings?{acknowledgeReviewWarnings:true}:{})};
   applicationAttempt=args;status.textContent='正在检查最新进度并应用…';
   try{
     const result=await bridge.invoke('candidate.apply',args);
@@ -315,7 +319,7 @@ async function reconcileApplication() {
 document.getElementById('world-mode').onclick=()=>setMode(false);
 document.getElementById('checks-mode').onclick=()=>setMode(true);
 document.getElementById('close-preview').onclick=()=>closePreview();
-document.getElementById('apply-form').onsubmit=event=>{event.preventDefault();void action(applyCandidate);};
+document.getElementById('apply-form').onsubmit=event=>{event.preventDefault();const acknowledged=event.submitter?.id==='apply-world-warnings';void action(()=>applyCandidate(acknowledged));};
 document.getElementById('retry-review').onclick=()=>void action(async()=>{await bridge.invoke('review.start',{verificationId:preview.job.id});await refreshReview();});
 document.getElementById('cancel-review').onclick=()=>void action(async()=>{await bridge.invoke('review.cancel',{id:previewReview.id});await refreshReview();});
 document.getElementById('checks-more').onclick=()=>{checkOffset+=8;void refreshChecks();};

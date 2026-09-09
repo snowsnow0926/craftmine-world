@@ -48,16 +48,27 @@ pub(super) fn read(db: &Connection, id: &str) -> Result<Value> {
 }
 
 pub(super) fn require_ready(db: &Connection, check: &str, id: &str) -> Result<Value> {
+    require_ready_with_acknowledgement(db, check, id, false)
+}
+
+pub(super) fn require_ready_with_acknowledgement(
+    db: &Connection,
+    check: &str,
+    id: &str,
+    acknowledged: bool,
+) -> Result<Value> {
     let review = read(db, id)?;
     ensure!(review["verificationId"] == check, "REVIEW_BINDING_MISMATCH");
     ensure!(review["status"] == "completed", "REVIEW_REQUIRED");
+    ensure!(review["current"] == true, "REVIEW_NOT_CURRENT");
     let job = verification::read(db, check)?;
     ensure!(
         review["input"]["verificationOutputHash"] == job["outputHash"],
         "REVIEW_EVIDENCE_MISMATCH"
     );
     ensure!(
-        review["output"]["acceptance"]["passed"] == true,
+        review["output"]["acceptance"]["passed"] == true
+            || (acknowledged && review["output"]["acceptance"]["passed"] == false),
         "REQUEST_CHECK_FAILED"
     );
     // The advisory verdict, including "block", is deliberately not a gate.
