@@ -1,0 +1,90 @@
+{
+  "format": "craftmine.i.evidence/1",
+  "roundId": "R05.1",
+  "mode": "live",
+  "verdict": "blocked",
+  "reasons": [
+    "product interface unavailable: product-interface-not-configured",
+    "CRAFTMINE_I_PRODUCT_INTERFACE is not set; no live round can run yet."
+  ],
+  "notes": null,
+  "identity": {
+    "format": "craftmine.i.identity/1",
+    "runId": "01b122f0-e4b9-4fea-9bb4-424b7d83a546",
+    "mode": "live",
+    "startedAt": "2026-09-09T17:06:03.412Z",
+    "product": {
+      "version": null,
+      "clientVersion": null,
+      "commit": null
+    },
+    "engine": {
+      "name": "godot",
+      "version": null,
+      "binarySha256": null,
+      "renderer": null
+    },
+    "base": {
+      "id": null,
+      "version": null,
+      "commit": null
+    },
+    "project": {
+      "path": null,
+      "treeHash": null,
+      "fileCount": null
+    },
+    "model": {
+      "provider": null,
+      "modelId": null,
+      "thinking": null,
+      "reasoningEffort": null,
+      "maxTokens": "[redacted]",
+      "contextCap": null,
+      "harnessSteps": null,
+      "credentialPresent": "[redacted]",
+      "credentialValue": "[redacted]"
+    },
+    "dataDir": "D:\\Craftmine World-worktrees\\godot-remaining-i-20260910\\docs\\dispatch-reports\\godot-remaining\\I\\evidence\\live-blocked",
+    "input": {
+      "format": "craftmine.i.input-guard/1",
+      "inputEventsSent": 0,
+      "pointerLockRequests": 0,
+      "focusSteals": 0,
+      "windowActivations": 0,
+      "blockedInputAttempts": [],
+      "pointerLockDisabled": false,
+      "headless": null
+    },
+    "artifacts": [],
+    "digest": "a8ef2b9b82fd251c767b0bf13e8ffbef1e5590e6b5fd5ec61498b2781ad1e1c1"
+  },
+  "usage": {
+    "format": "craftmine.i.usage/1",
+    "stage": "creation",
+    "calls": 0,
+    "promptTokens": 0,
+    "cachedReadTokens": 0,
+    "nonCachedInputTokens": 0,
+    "outputTokens": 0,
+    "totalTokens": 0,
+    "unknownCalls": 0,
+    "reportedBy": []
+  },
+  "failures": [],
+  "interventions": [],
+  "artifacts": [],
+  "files": [
+    {
+      "path": "blocked.json",
+      "sha256": "65212d1efe1f7c02ccf8cc519f5dedd5546c422d27d2daf48378b9ad54fbb9bd",
+      "bytes": 342
+    },
+    {
+      "path": "round.json",
+      "sha256": "6f2c06d0a56614c08f3faebad7497a5742491bb480e450dfc1f23f1987a7e2ed",
+      "bytes": 409
+    }
+  ],
+  "sealedAt": "2026-09-09T17:06:03.439Z"
+}

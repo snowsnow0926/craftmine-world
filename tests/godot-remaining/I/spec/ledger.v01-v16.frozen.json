@@ -1,0 +1,28 @@
+{
+  "format": "craftmine.i.ledger/1",
+  "version": 1,
+  "frozenAt": "2026-09-10",
+  "group": "version",
+  "source": "docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md §11 (V01–V16)",
+  "statusVocabulary": ["已证实", "失败", "尚未执行", "证据不足"],
+  "rule": "I 逐条维护，指向版本管理计划原故事。本地逻辑验收由 M 负责，I 只在真实模型与崩溃窗口路径复核；未到远程阶段的条目保留未执行。",
+  "initialStatus": "尚未执行",
+  "items": [
+    { "id": "V01", "title": "连续三次创作与重启", "mustObserve": "历史内容准确，任务内细节可追溯，正式版本一致", "owner": "M", "iScope": "真实模型三次创作后的历史一致性", "rounds": ["R11.1"] },
+    { "id": "V02", "title": "创建两个方案并切换界面", "mustObserve": "两分支独立，原任务继续写原绑定分支", "owner": "M", "iScope": "分支应用与任务绑定复核", "rounds": ["R11.2"] },
+    { "id": "V03", "title": "草稿未检查或检查失败", "mustObserve": "草稿可恢复；不改变正式世界或伪造通过状态", "owner": "M", "iScope": "坏候选不改变正式世界", "rounds": ["R11.2"] },
+    { "id": "V04", "title": "生成期间继续获得金币再应用武器修改", "mustObserve": "应用使用最新正式进度，预览奖励不回流", "owner": "M", "iScope": "真实模型应用时的进度基准", "rounds": ["R11.1"] },
+    { "id": "V05", "title": "恢复旧武器内容", "mustObserve": "新建恢复记录，兼容进度保留，后续历史仍可找回", "owner": "M", "iScope": "真实模型恢复旧版", "rounds": ["R11.1"] },
+    { "id": "V06", "title": "旧内容不支持新增状态字段", "mustObserve": "明确拒绝或生成迁移副本，无静默清空与重复奖励", "owner": "M", "iScope": "不兼容内容处理", "rounds": ["R11.2"] },
+    { "id": "V07", "title": "准备后正式基线或素材锁变化", "mustObserve": "候选过期，不能覆盖更新；原分支内容保留", "owner": "M", "iScope": "候选过期复核", "rounds": ["R11.2"] },
+    { "id": "V08", "title": "Git 引用更新与 DB 提交之间退出", "mustObserve": "按日志恢复，Git、部署记录、存档和实例最终一致", "owner": "M", "iScope": "崩溃窗口真实强退复核", "rounds": ["R11.2"] },
+    { "id": "V09", "title": "提交完成后丢失回包", "mustObserve": "原 operationId 查回同一回执，无重复应用", "owner": "M", "iScope": "未知回执复核", "rounds": ["R11.2"] },
+    { "id": "V10", "title": "文本无冲突但玩法冲突", "mustObserve": "重新检查能判失败，不以 Git 合并成功当作玩法成功", "owner": "M", "iScope": "玩法冲突复核", "rounds": ["R11.2"] },
+    { "id": "V11", "title": "同素材两个版本、场景删除引用、二进制冲突", "mustObserve": "列出冲突，人工或 AI 方案形成新候选后再检查", "owner": "M", "iScope": "冲突呈现复核", "rounds": ["R11.2"] },
+    { "id": "V12", "title": "历史缺素材、坏 blob、未知旧检查状态", "mustObserve": "如实显示可恢复范围，不拼造历史事实", "owner": "M", "iScope": "缺正文如实报告", "rounds": ["R11.2"] },
+    { "id": "V13", "title": "完整备份与全新目录恢复", "mustObserve": "Git 历史、素材、应用及选定进度一致；恢复失败不覆盖原世界", "owner": "M", "iScope": "新目录完整恢复", "rounds": ["R11.2"] },
+    { "id": "V14", "title": "清理缓存和取消任务", "mustObserve": "保留可达版本、活跃任务与受保护资源，未删除用户源素材", "owner": "M", "iScope": "回收不误删复核", "rounds": ["R11.2"] },
+    { "id": "V15", "title": "中文/长路径、大小写、链接及恶意 Git 配置", "mustObserve": "有明确结果；不越界，不执行项目提供的宿主命令", "owner": "M", "iScope": "越界防护复核", "rounds": ["R11.2"] },
+    { "id": "V16", "title": "远程只收到 Git、缺少大文件正文", "mustObserve": "标为同步未完成，不允许生成伪完整作品或替换正式世界", "owner": "M", "iScope": "远程同步尚未实施，保留未执行", "rounds": ["R11.2"], "blockedReason": "VM5/VM6 远程同步尚未实现，本次不授权部署或绑定外部账号" }
+  ]
+}

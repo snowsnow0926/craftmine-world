@@ -1,0 +1,45 @@
+[
+  {
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "I'll first check the current Godot project state in this world."
+      },
+      {
+        "type": "toolCall",
+        "id": "call_00_1Z2G2WxAuJmFIYIAJ3mC9186",
+        "name": "plugin_craftmine_world_godot_project_index",
+        "arguments": {}
+      },
+      {
+        "type": "toolCall",
+        "id": "call_01_MY8uK4Qn17xnKYMQjaz78300",
+        "name": "plugin_craftmine_world_project_inspect",
+        "arguments": {}
+      }
+    ]
+  },
+  {
+    "role": "toolResult",
+    "content": [
+      {
+        "type": "text",
+        "text": "GODOT_PROJECT_NOT_FOUND"
+      }
+    ]
+  },
+  {
+    "role": "toolResult",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"worldId\":\"6ef42c0a-406e-43a6-8db5-c976695329ab\",\"taskId\":\"work-3e006f398850c82544516b7b5e08753f4a4a2c05bfde550a01dbec0b2e2329e7\",\"baseBuild\":\"v-75b99891d0c9467f8f7f\",\"title\":\"R8 真实模型验收世界\",\"workspaceRevision\":0,\"status\":\"running\",\"resumedFrom\":null,\"resources\":[],\"next\":null,\"total\":0,\"publishingAvailable\":false}"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "content": []
+  }
+]

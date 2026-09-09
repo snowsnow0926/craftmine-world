@@ -1,0 +1,30 @@
+{
+  "format": "craftmine.i.ledger/1",
+  "version": 1,
+  "frozenAt": "2026-09-10",
+  "group": "assets",
+  "source": "docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md §12 (文档内写作 A01–A17)",
+  "aliasNote": "分发文档写作 AL-A01–AL-A17 以避免与 Godot A01–A17 混淆；文档原编号为 A01–A17。本台账 id 使用 AL-Axx，alias 指向原文编号。",
+  "statusVocabulary": ["已证实", "失败", "尚未执行", "证据不足"],
+  "rule": "真实模型验收至少包括检索复用自动门、在既有版本上改造、保存到另一个世界复用、升级保留状态四种任务，保留失败、人工干预与素材引用。固定作者作品与真实模型结果分别报告。",
+  "initialStatus": "尚未执行",
+  "items": [
+    { "id": "AL-A01", "alias": "A01", "title": "导入支持格式的真实文件", "mustObserve": "正文哈希、解码/导入结果和预览一致；名称不能代替格式检查", "owner": "N", "rounds": ["R12.1"] },
+    { "id": "AL-A02", "alias": "A02", "title": "大文件与分块中断", "mustObserve": "预算内可恢复完成；超限有具体错误，无伪完整资源和 UI 假成功", "owner": "N", "rounds": ["R12.1"] },
+    { "id": "AL-A03", "alias": "A03", "title": "同版不同内容、重复操作和相同正文", "mustObserve": "冲突拒绝；相同操作返回同一结果；去重不合并来源与许可", "owner": "N", "rounds": ["R12.1"] },
+    { "id": "AL-A04", "alias": "A04", "title": "坏图、模型引用缺失、预览超时", "mustObserve": "状态准确，正式世界和其他资源保持可用", "owner": "N", "rounds": ["R12.1"] },
+    { "id": "AL-A05", "alias": "A05", "title": "当前世界引用 v1，库里新增 v2", "mustObserve": "旧世界仍显示并运行 v1；新版本可独立预览", "owner": "N", "iScope": "固定素材 v1/v2", "rounds": ["R12.2"] },
+    { "id": "AL-A06", "alias": "A06", "title": "同一模板放两个实例，只改其中一个", "mustObserve": "实例身份、局部覆盖和进度独立", "owner": "N", "iScope": "两实例局部改动", "rounds": ["R12.2"] },
+    { "id": "AL-A07", "alias": "A07", "title": "自动门保存后跨世界复用", "mustObserve": "外观、碰撞、源码、声音与交互真实存在；使用初始状态", "owner": "N", "iScope": "真实模型检索并复用自动门", "rounds": ["R12.1"] },
+    { "id": "AL-A08", "alias": "A08", "title": "商店/战斗区的传递依赖和版本冲突", "mustObserve": "完整闭包可安装，缺项/冲突明确，不能运行部分拼装包", "owner": "H", "rounds": ["R12.1"] },
+    { "id": "AL-A09", "alias": "A09", "title": "升级宝箱、商店或任务作品", "mustObserve": "兼容状态保留；领取、消耗与奖励不重复；失败恢复旧实例", "owner": "H", "iScope": "升级保留状态", "rounds": ["R12.2"] },
+    { "id": "AL-A10", "alias": "A10", "title": "目标世界已有本地覆盖", "mustObserve": "明确保留或冲突，不用新版静默覆盖玩家修改", "owner": "H", "iScope": "基于旧版改造", "rounds": ["R12.2"] },
+    { "id": "AL-A11", "alias": "A11", "title": "归档、卸载和清理", "mustObserve": "使用关系正确；当前/历史/草稿引用均不损坏；用户源文件不被删除", "owner": "H", "rounds": ["R12.2"] },
+    { "id": "AL-A12", "alias": "A12", "title": "导出到新目录或另一台环境", "mustObserve": "精确依赖、声明和内容齐全；不依赖原机器缓存，不带凭据或默认私有进度", "owner": "H", "iScope": "缺正文与新目录完整恢复", "rounds": ["R12.2"] },
+    { "id": "AL-A13", "alias": "A13", "title": "旧 Web 包与 Godot 存储迁移", "mustObserve": "保留原始版本和来源；不支持项明确；失败不破坏原库", "owner": "H", "rounds": ["R12.2"] },
+    { "id": "AL-A14", "alias": "A14", "title": "AI 检索并安装旧作品", "mustObserve": "工具记录实际固定引用；模型不能伪造资源存在、兼容或检查通过", "owner": "N", "iScope": "检索自动门与真实固定引用", "rounds": ["R12.1"] },
+    { "id": "AL-A15", "alias": "A15", "title": "目录监听、路径碰撞、链接与外链文件", "mustObserve": "只在授权范围扫描/读取；变化生成新版本提示，不隐式更新世界", "owner": "N", "rounds": ["R12.1"] },
+    { "id": "AL-A16", "alias": "A16", "title": "切世界时旧搜索/预览请求返回", "mustObserve": "结果不串到新世界，任务取消与缓存身份正确", "owner": "N", "rounds": ["R12.2"] },
+    { "id": "AL-A17", "alias": "A17", "title": "实际打包资源与许可清单不一致", "mustObserve": "预检明确失败；不以清单自测通过替代实际分发检查", "owner": "K", "iScope": "许可清单与实际分发一致", "rounds": ["R14.2"] }
+  ]
+}

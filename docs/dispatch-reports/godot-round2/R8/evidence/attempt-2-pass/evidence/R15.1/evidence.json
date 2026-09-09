@@ -1,0 +1,105 @@
+{
+  "format": "craftmine.i.evidence/1",
+  "roundId": "R15.1",
+  "mode": "live",
+  "verdict": "passed",
+  "reasons": [],
+  "notes": null,
+  "identity": {
+    "product": {
+      "version": "core@33620215ecd7",
+      "clientVersion": "plugin@0.1.0",
+      "commit": "67ba7ff6785651e61398af6189d9f0ec9bb519f5"
+    },
+    "engine": {
+      "name": "godot",
+      "version": "4.7.2-stable",
+      "renderer": "gl_compatibility"
+    },
+    "base": {
+      "id": "first-person",
+      "version": "first-person",
+      "commit": null
+    },
+    "project": {
+      "treeHash": "846a6102d207f18a94d62a59028603e380c0fc4b6cd48e16808c5c0bc45ca66c",
+      "path": "godot-project",
+      "fileCount": 7
+    },
+    "model": {
+      "provider": "deepseek",
+      "modelId": "deepseek-v4.1-flash-expires-on-0910",
+      "thinking": "high"
+    },
+    "input": {
+      "kind": "no-input",
+      "inputEventsSent": 0,
+      "pointerLockRequests": 0,
+      "focusSteals": 0,
+      "browserLaunched": false
+    },
+    "dataDir": "D:\\Craftmine World-worktrees\\godot-round2-r8-20260910\\test-results\\r8-real-gvMKLA"
+  },
+  "usage": {
+    "format": "craftmine.i.usage/1",
+    "stage": "creation",
+    "calls": 1,
+    "promptTokens": 47752,
+    "cachedReadTokens": 713344,
+    "nonCachedInputTokens": -665592,
+    "outputTokens": 57944,
+    "totalTokens": 819040,
+    "unknownCalls": 0,
+    "reportedBy": [
+      "model-usage"
+    ]
+  },
+  "failures": [
+    {
+      "class": "unclassified",
+      "stage": "tool:godot_project_index",
+      "message": "GODOT_PROJECT_NOT_FOUND",
+      "defined": true
+    }
+  ],
+  "interventions": [],
+  "artifacts": [],
+  "files": [
+    {
+      "path": "assertions.json",
+      "sha256": "aca3f367ebba5487395f57f8ca5fc5e50675016c5e8168e404000e094b985de2",
+      "bytes": 871
+    },
+    {
+      "path": "observation.json",
+      "sha256": "02142f96d393d5473f0197e4fac4ff726775ed80e7e4a8c80adf024e33a54256",
+      "bytes": 4341
+    },
+    {
+      "path": "project-files.json",
+      "sha256": "21055c8b26f494d88d264ed74818c1f3bb278e353cad51a1a6ada1f56b2f6d08",
+      "bytes": 26522
+    },
+    {
+      "path": "request.raw.txt",
+      "sha256": "dc4b31bed29f87cd2ba6890cd26f47a173246d424b0af99582a7d44d4970994b",
+      "bytes": 370
+    },
+    {
+      "path": "response.raw.txt",
+      "sha256": "2124755c8e1a712d15ad16042bd67a5567f02bd6ee4f3351a91c498f61545daf",
+      "bytes": 6066
+    },
+    {
+      "path": "round.json",
+      "sha256": "102b68bb4fb941dd0e407d0d33854a9bbd4afab19438c2d4d2c7a4d7bea3bb06",
+      "bytes": 903
+    },
+    {
+      "path": "turn.json",
+      "sha256": "1ccd7f3f438b3d34eec63339d9c0f6c98b5f4085fde72f97b171ff7b6812cc8e",
+      "bytes": 54
+    }
+  ],
+  "sealedAt": "2026-09-09T19:01:29.104Z"
+}
