@@ -986,11 +986,11 @@
       "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
       "redistribution": "permitted",
       "distribution": [
-        "development-only"
+        "app-bundle"
       ],
       "bytes": 9344,
       "sha256": "76e561a575335ec87700108c6f3eed437149cc8658048fafe987f08249d53413",
-      "notes": "Development-only Node script; never shipped to players."
+      "notes": "Trusted world materialization entry point; required in the client, not a runtime game script. Licence status is unchanged."
     },
     {
       "path": "tools/verify.mjs",

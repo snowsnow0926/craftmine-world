@@ -1416,11 +1416,12 @@
       "licenseFile": null,
       "redistribution": "permitted",
       "distribution": [
-        "development-only"
+        "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 8828,
-      "sha256": "9d5441c8da30ad8fb90f767f50b35441ec048f09d25d594037ae2cf2129d5203"
+      "sha256": "9d5441c8da30ad8fb90f767f50b35441ec048f09d25d594037ae2cf2129d5203",
+      "notes": "Trusted world materialization entry point; required in the client, not a runtime game script. Licence status is unchanged."
     }
   ],
   "externalEntries": [],

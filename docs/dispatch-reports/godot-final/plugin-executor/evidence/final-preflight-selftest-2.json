@@ -1,0 +1,164 @@
+{
+  "format": "craftmine.delivery-preflight-selftest/1",
+  "generatedAt": "2026-09-09T21:36:17.197Z",
+  "total": 39,
+  "failed": 0,
+  "results": [
+    {
+      "name": "baseline notices, assets and LGPL checks pass",
+      "passed": true
+    },
+    {
+      "name": "absent engine licence file fails",
+      "passed": true
+    },
+    {
+      "name": "licence text that is not the MIT text fails even with a matching hash",
+      "passed": true
+    },
+    {
+      "name": "notice manifest drifting from the toolchain lock fails",
+      "passed": true
+    },
+    {
+      "name": "deleting the required LGPL notice entry fails",
+      "passed": true
+    },
+    {
+      "name": "MIT text substituted for the LGPL notice fails",
+      "passed": true
+    },
+    {
+      "name": "upstream provenance claiming a non-LGPL licence fails",
+      "passed": true
+    },
+    {
+      "name": "modified base source fails the pinned hash",
+      "passed": true
+    },
+    {
+      "name": "undeclared file inside a base directory fails",
+      "passed": true
+    },
+    {
+      "name": "denied redistribution on a shipped asset fails",
+      "passed": true
+    },
+    {
+      "name": "third-party asset without a notice file fails",
+      "passed": true
+    },
+    {
+      "name": "authored asset without licence text or reason fails",
+      "passed": true
+    },
+    {
+      "name": "base manifest targeting another engine version fails",
+      "passed": true
+    },
+    {
+      "name": "missing required notice for an exported base fails",
+      "passed": true
+    },
+    {
+      "name": "cache check distinguishes absent from omitted input",
+      "passed": true
+    },
+    {
+      "name": "well-formed export build passes",
+      "passed": true
+    },
+    {
+      "name": "export missing an engine notice fails",
+      "passed": true
+    },
+    {
+      "name": "export whose build.json hash no longer matches fails",
+      "passed": true
+    },
+    {
+      "name": "well-formed Windows package passes",
+      "passed": true
+    },
+    {
+      "name": "package with a tampered artefact fails",
+      "passed": true
+    },
+    {
+      "name": "package whose third-party inventory points at an absent text fails",
+      "passed": true
+    },
+    {
+      "name": "package bundling an engine without Godot notices fails",
+      "passed": true
+    },
+    {
+      "name": "package bundling an engine with correct Godot notices passes",
+      "passed": true
+    },
+    {
+      "name": "every new base directory requires its own manifest despite matching probe IDs",
+      "passed": true
+    },
+    {
+      "name": "unrevealed asset redistribution is rejected",
+      "passed": true
+    },
+    {
+      "name": "unreviewed asset redistribution is rejected",
+      "passed": true
+    },
+    {
+      "name": "unrevealed notice redistribution is rejected",
+      "passed": true
+    },
+    {
+      "name": "unreviewed notice redistribution is rejected",
+      "passed": true
+    },
+    {
+      "name": "deeply nested Godot executable cannot bypass package notice checks",
+      "passed": true
+    },
+    {
+      "name": "renamed engine is recognized by the locked executable hash",
+      "passed": true
+    },
+    {
+      "name": "Web WASM and PCK without native executable still require Godot notices",
+      "passed": true
+    },
+    {
+      "name": "unknown WASM needs an exact reviewed runtime declaration",
+      "passed": true
+    },
+    {
+      "name": "package link rejection happens before traversing its target",
+      "passed": true
+    },
+    {
+      "name": "missing locked executable identity cannot certify no runtime",
+      "passed": true
+    },
+    {
+      "name": "shared base tests are not a base, but cannot hide a world project",
+      "passed": true
+    },
+    {
+      "name": "a rights document that does not exist is a failure, not a silent pass",
+      "passed": true
+    },
+    {
+      "name": "an unapplied rights status is always reported, even when the field is omitted",
+      "passed": true
+    },
+    {
+      "name": "a development-only file inside a package is refused",
+      "passed": true
+    },
+    {
+      "name": "a file whose basename merely collides with a development-only file is not refused",
+      "passed": true
+    }
+  ]
+}

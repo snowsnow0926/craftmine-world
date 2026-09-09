@@ -96,6 +96,7 @@
       "licenseFile": null,
       "redistribution": "permitted",
       "distribution": [
+        "app-bundle",
         "user-export"
       ],
       "bytes": 6415,
@@ -113,6 +114,7 @@
       "licenseFile": null,
       "redistribution": "permitted",
       "distribution": [
+        "app-bundle",
         "user-export"
       ],
       "bytes": 715,

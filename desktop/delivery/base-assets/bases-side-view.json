@@ -927,11 +927,11 @@
       "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
       "redistribution": "permitted",
       "distribution": [
-        "development-only"
+        "app-bundle"
       ],
       "bytes": 4463,
       "sha256": "e7f803344654ae7cd784f14f85603562b14ca921d584062b154e74bfdd01af2a",
-      "notes": "Development-only Node script; never shipped to players."
+      "notes": "Trusted world materialization entry point; required in the client, not a runtime game script. Licence status is unchanged."
     },
     {
       "path": "tools/plans/attempt_vault_locked.json",

@@ -37,3 +37,11 @@ test('K detects development-only leakage at actual resources/godot paths',()=>{
   assert.ok(result.failures.some(x=>x.code==='DEVELOPMENT_ONLY_FILE_SHIPPED'));
   assert.ok(result.failures.some(x=>x.code==='PACKAGE_ASSET_DISTRIBUTION'));
 });
+test('K verifies the source pins at the mapped packaged runtime path',()=>{
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'craftmine-package-pin-')),directory=path.join(root,'package'),bytes=Buffer.from('authored runtime');
+  fs.mkdirSync(path.join(root,'desktop/delivery/base-assets'),{recursive:true});
+  fs.writeFileSync(path.join(root,'desktop/delivery/base-assets/shared.json'),JSON.stringify({format:'craftmine.base-assets/1',sourceDirectory:'desktop/godot/shared',entries:[{path:'materialize.mjs',distribution:['app-bundle'],redistribution:'permitted',bytes:bytes.length,sha256:hash(bytes)}]}));
+  fs.mkdirSync(path.join(directory,'resources/godot/shared'),{recursive:true});const file=path.join(directory,'resources/godot/shared/materialize.mjs');fs.writeFileSync(file,bytes);
+  assert.equal(checkPackage(root,directory).failures.some(x=>x.code.startsWith('PACKAGE_ASSET_')),false);
+  fs.writeFileSync(file,'changed runtime');assert.ok(checkPackage(root,directory).failures.some(x=>x.code==='PACKAGE_ASSET_PIN_MISMATCH'));
+});

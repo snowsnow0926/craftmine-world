@@ -591,7 +591,10 @@ export function checkPackage(root, packageDirectory) {
     for(const file of packageFiles){
       const relative=runtimeRepositoryPath(rel(directory,file));
       if(!relative||!/^desktop\/godot\/(bases|shared|web)\//.test(relative))continue;
-      try{if(!runtimeDecision(relative,distribution).include)failures.push(fail('PACKAGE_ASSET_DISTRIBUTION','Runtime file is not declared app-bundle: '+relative));}
+      try{
+        if(!runtimeDecision(relative,distribution).include)failures.push(fail('PACKAGE_ASSET_DISTRIBUTION','Runtime file is not declared app-bundle: '+relative));
+        else {const bytes=fs.statSync(file).size,digest=sha256(file);if(!distribution.get(relative).some(entry=>entry.distribution?.includes('app-bundle')&&entry.bytes===bytes&&entry.sha256===digest))failures.push(fail('PACKAGE_ASSET_PIN_MISMATCH','Packaged runtime bytes differ from the declared source: '+relative));}
+      }
       catch(error){failures.push(fail('PACKAGE_ASSET_UNDECLARED',String(error.message)));}
     }
   } catch(error){failures.push(fail('PACKAGE_DISTRIBUTION_INVALID',String(error.message)));}
