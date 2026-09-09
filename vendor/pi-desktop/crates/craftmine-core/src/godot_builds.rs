@@ -611,7 +611,7 @@ pub(super) fn materialize(
     let mut total = 0u64;
     for (path, entry) in &manifest.files {
         let text = match source {
-            SourceContent::Legacy => super::godot_projects::blob_read(directory, world, entry)?,
+            SourceContent::Legacy => super::godot_projects::blob_read_bytes(directory, world, entry)?,
             SourceContent::Git {
                 store,
                 layout,
@@ -622,7 +622,7 @@ pub(super) fn materialize(
                     super::godot_projects::file_digest(&bytes) == entry.sha256,
                     "CORRUPT_GODOT_BUILD"
                 );
-                String::from_utf8(bytes).context("CONTENT_NOT_UTF8")?
+                bytes
             }
         };
         let parent = match path.rsplit_once('/') {
@@ -632,7 +632,7 @@ pub(super) fn materialize(
         let target = ensure_dirs(&source_root, parent, "GODOT_STORAGE_UNAVAILABLE")?.join(
             path.rsplit('/').next().unwrap_or(path),
         );
-        write_verified(&target, &entry.sha256, text.as_bytes(), "CORRUPT_GODOT_BUILD")?;
+        write_verified(&target, &entry.sha256, &text, "CORRUPT_GODOT_BUILD")?;
         total = total
             .checked_add(text.len() as u64)
             .context("GODOT_BUILD_TOO_LARGE")?;
@@ -890,8 +890,10 @@ impl TaskJournal {
             "WORLD_BUILD_CONFLICT"
         );
         let (asset_manifest_hash, assets) = asset_manifest(&tx, &args.world_id)?;
-        let asset_lock_hash = if git_backed {
-            Some(asset_lock_hash(&tx, &args.world_id)?)
+        let asset_lock_hash = if let Some((store,layout))=&git {
+            let lock=store.asset_lock(layout,content_oid.as_deref().context("GODOT_BUILD_CONTENT_UNKNOWN")?)?
+                .unwrap_or_else(super::content_history::contract::AssetLock::empty);
+            Some(lock.asset_lock_hash()?)
         } else {
             None
         };

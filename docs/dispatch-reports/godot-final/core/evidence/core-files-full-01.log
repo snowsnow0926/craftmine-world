@@ -1,0 +1,536 @@
+warning: unused import: `load_manifest`
+  --> crates\craftmine-core\src\godot_builds.rs:21:22
+   |
+21 |     godot_projects::{load_manifest, ordinary, valid_hash, Manifest},
+   |                      ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `entry` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:11:15
+   |
+11 | pub(super) fn entry(
+   |               ^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `build` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:32:15
+   |
+32 | pub(super) fn build(entries: Vec<AssetLockEntry>) -> Result<AssetLock> {
+   |               ^^^^^
+
+warning: function `resolve_closure` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:37:15
+   |
+37 | pub(super) fn resolve_closure(lock: &AssetLock, roots: &[AssetRef]) -> Result<Vec<AssetRef>> {
+   |               ^^^^^^^^^^^^^^^
+
+warning: function `collect` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:52:4
+   |
+52 | fn collect(entry: &AssetLockEntry, lock: &AssetLock, out: &mut Vec<AssetRef>) {
+   |    ^^^^^^^
+
+warning: field `claim_owner` is never read
+  --> crates\craftmine-core\src\asset_catalog\preview.rs:95:5
+   |
+88 | struct PreviewState {
+   |        ------------ field in this struct
+...
+95 |     claim_owner: String,
+   |     ^^^^^^^^^^^
+
+warning: method `content_files` is never used
+   --> crates\craftmine-core\src\content.rs:614:19
+    |
+236 | impl TaskJournal {
+    | ---------------- method in this implementation
+...
+614 |     pub(crate) fn content_files(
+    |                   ^^^^^^^^^^^^^
+
+warning: function `abort` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:461:8
+    |
+461 | pub fn abort(db: &mut Connection, operation_id: &str, reason: &str) -> Result<ReferenceIntent> {    let intent = load(db, operation...
+    |        ^^^^^
+
+warning: function `receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:582:8
+    |
+582 | pub fn receipt(
+    |        ^^^^^^^
+
+warning: function `store_receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:608:8
+    |
+608 | pub fn store_receipt(
+    |        ^^^^^^^^^^^^^
+
+warning: struct `ContentRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:219:12
+    |
+219 | pub struct ContentRef {
+    |            ^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:226:12
+    |
+225 | impl ContentRef {
+    | --------------- method in this implementation
+226 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `BuildRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:236:12
+    |
+236 | pub struct BuildRef {
+    |            ^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:246:12
+    |
+245 | impl BuildRef {
+    | ------------- method in this implementation
+246 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `ProgressRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:260:12
+    |
+260 | pub struct ProgressRef {
+    |            ^^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:270:12
+    |
+269 | impl ProgressRef {
+    | ---------------- method in this implementation
+270 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: methods `config_dir`, `with_timeout`, `object_type`, and `cat_object` are never used
+   --> crates\craftmine-core\src\content_history\git.rs:493:12
+    |
+368 | impl GitAdapter {
+    | --------------- methods in this implementation
+...
+493 |     pub fn config_dir(&self) -> &Path {
+    |            ^^^^^^^^^^
+...
+497 |     pub fn with_timeout(mut self, timeout: Duration) -> Self {
+    |            ^^^^^^^^^^^^
+...
+816 |     pub fn object_type(&self, git_dir: &Path, oid: &str) -> Result<String> {
+    |            ^^^^^^^^^^^
+...
+824 |     pub fn cat_object(&self, git_dir: &Path, oid: &str) -> Result<Vec<u8>> {
+    |            ^^^^^^^^^^
+
+warning: constant `REPOSITORY_FORMAT` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:30:11
+   |
+30 | pub const REPOSITORY_FORMAT: &str = "craftmine.content-repository/1";
+   |           ^^^^^^^^^^^^^^^^^
+
+warning: method `as_str` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:42:8
+   |
+41 | impl ContentBackend {
+   | ------------------- method in this implementation
+42 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+
+warning: associated function `text` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:104:12
+    |
+103 | impl ContentFile {
+    | ---------------- associated function in this implementation
+104 |     pub fn text(path: &str, text: &str) -> Self {
+    |            ^^^^
+
+warning: struct `MaterializedCopy` is never constructed
+   --> crates\craftmine-core\src\content_history\repo.rs:167:12
+    |
+167 | pub struct MaterializedCopy {
+    |            ^^^^^^^^^^^^^^^^
+
+warning: methods `root`, `content_ref`, `materialize`, `set_draft`, `draft`, and `set_applied` are never used
+   --> crates\craftmine-core\src\content_history\repo.rs:207:12
+    |
+194 | impl RepositoryStore {
+    | -------------------- methods in this implementation
+...
+207 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+...
+468 |     pub fn content_ref(&self, layout: &RepoLayout, oid: &str) -> Result<ContentRef> {
+    |            ^^^^^^^^^^^
+...
+527 |     pub fn materialize(
+    |            ^^^^^^^^^^^
+...
+809 |     pub fn set_draft(
+    |            ^^^^^^^^^
+...
+824 |     pub fn draft(&self, layout: &RepoLayout, branch_id: &str) -> Result<Option<String>> {
+    |            ^^^^^
+...
+882 |     pub fn set_applied(
+    |            ^^^^^^^^^^^
+
+warning: function `group_by_request` is never used
+    --> crates\craftmine-core\src\content_history\repo.rs:1094:8
+     |
+1094 | pub fn group_by_request(records: &[CommitRecord]) -> BTreeMap<String, Vec<&CommitRecord>> {
+     |        ^^^^^^^^^^^^^^^^
+
+warning: function `reconcile_git_head` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:534:4
+    |
+534 | fn reconcile_git_head(
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: method `project_is_git_backed` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:807:19
+    |
+719 | impl TaskJournal {
+    | ---------------- method in this implementation
+...
+807 |     pub(super) fn project_is_git_backed(&self, world: &str) -> Result<bool> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `claim_owner` is never read
+  --> crates\craftmine-core\src\asset_catalog\preview.rs:95:5
+   |
+88 | struct PreviewState {
+   |        ------------ field in this struct
+...
+95 |     claim_owner: String,
+   |     ^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `root` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:207:12
+    |
+194 | impl RepositoryStore {
+    | -------------------- method in this implementation
+...
+207 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+
+warning: function `VECTORS_JSON` should have a snake case name
+   --> crates\craftmine-core\src\content_history\contract_vectors_tests.rs:113:4
+    |
+113 | fn VECTORS_JSON() -> Result<Value> {
+    |    ^^^^^^^^^^^^ help: convert the identifier to snake case: `vectors_json`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `craftmine-core` (lib) generated 25 warnings (run `cargo fix --lib -p craftmine-core` to apply 1 suggestion)
+warning: `craftmine-core` (lib test) generated 10 warnings (6 duplicates) (run `cargo fix --lib -p craftmine-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src\lib.rs (vendor\pi-desktop\target\debug\deps\craftmine_core-13091a1caf054aaf.exe)
+
+running 271 tests
+test asset_catalog::tests::al0_path_rules_come_from_the_shared_contract ... ok
+test asset_catalog::tests::al0_consumes_the_single_shared_lock_contract ... ok
+test asset_catalog::tests::al1_conflicting_import_leaves_no_orphan_blob ... ok
+test asset_catalog::tests::al1_existing_version_path_records_receipts_and_refuses_new_provenance ... ok
+test asset_catalog::tests::al1_unwritable_storage_fails_without_partial_state ... ok
+test asset_catalog::tests::al2_preview_cache_key_matches_the_cross_language_constant ... ok
+test asset_catalog::tests::al1_refuses_unauthorized_sources_paths_and_oversized_budget_without_partial_state ... ok
+test asset_catalog::tests::al1_replays_identical_operations_and_refuses_same_version_new_content ... ok
+test applications::tests::acknowledgement_cannot_bypass_machine_status_or_review_binding ... ok
+test asset_catalog::tests::al1_scan_reports_new_version_hints_without_touching_worlds ... ok
+test asset_catalog::tests::al0_catalog_builds_a_canonical_shared_lock ... ok
+test asset_catalog::tests::al1_sweeps_stale_staging_files_and_keeps_recent_ones ... ok
+test applications::tests::explicit_player_acknowledgement_is_bound_and_never_changes_failed_review ... ok
+test asset_catalog::reclaim_tests::reclaim_plan_measures_capacity_within_a_generous_bound ... ok
+test asset_catalog::tests::al1_scan_reports_a_locked_file_and_keeps_scanning ... ok
+test asset_catalog::tests::al1_content_hash_refuses_duplicate_paths_and_discard_keeps_referenced_blobs ... ok
+test applications::tests::application_is_atomic_replayable_and_advances_only_consumed_drafts ... ok
+test applications::tests::review_requires_exact_model_input_and_persists_machine_failures ... ok
+test applications::tests::application_publishes_exact_extensions_from_verified_draft ... ok
+test asset_catalog::tests::al1_locked_source_reports_a_dedicated_code ... ok
+test asset_catalog::reclaim_tests::reclaim_commit_refuses_a_stale_or_unknown_plan ... ok
+test asset_catalog::reclaim_tests::reclaim_commit_refuses_unapproved_and_mismatched_entries ... ok
+test asset_catalog::reclaim_tests::reclaim_commit_removes_rows_and_blob_then_replays ... ok
+test asset_catalog::reclaim_tests::reclaim_commit_deletes_only_approved_versions ... ok
+test asset_catalog::reclaim_tests::reclaim_commit_never_deletes_a_protected_version ... ok
+test applications::tests::preparing_excludes_writes_and_abort_preserves_draft_and_progress ... ok
+test applications::tests::uncommitted_draft_is_never_reset_by_an_unrelated_application ... ok
+test applications::tests::missing_review_failed_request_and_forged_load_cannot_publish ... ok
+test asset_catalog::reclaim_tests::reclaim_plan_lists_only_versions_without_usage_rows ... ok
+test backups::portable::durability_tests::crash_helper ... ignored, crash helper: driven by S4_CRASH_ROOT and CRAFTMINE_S4_CRASH_AT
+test applications::tests::restart_timeout_and_cancel_revoke_pending_publication ... ok
+test asset_catalog::tests::al1_streams_real_files_beyond_the_legacy_limit_and_dedupes_bodies ... ok
+test backups::portable::tests::a_repository_larger_than_the_buffered_stdout_cap_exports_and_verifies ... ignored, writes ~80 MiB of Git objects; run explicitly with --ignored
+test asset_catalog::tests::al1_versions_stay_immutable_while_browsing_metadata_changes ... ok
+test asset_catalog::tests::al2_body_path_reverifies_the_blob ... ok
+test backups::portable::tests::archive_paths_cannot_escape_the_target_directory ... ok
+test asset_catalog::tests::al2_preview_expired_claim_never_stays_pending ... ok
+test backups::portable::tests::evidence_archive_manifest_and_restore_state ... ignored, evidence generator; requires R5_EVIDENCE_DIR
+test asset_catalog::tests::al2_preview_cancel_is_terminal_and_a_late_result_is_stale ... ok
+test asset_catalog::tests::al2_preview_concurrent_begin_resumes_one_claim ... ok
+test asset_catalog::tests::al2_preview_finish_replay_is_idempotent_within_one_attempt ... ok
+test asset_catalog::tests::al2_preview_finish_requires_the_current_claim ... ok
+test asset_catalog::tests::al2_preview_claim_and_retry_are_enforced ... ok
+test backups::domain_tests::a_new_table_added_to_the_schema_fails_the_export ... ok
+test asset_catalog::tests::al2_preview_retry_after_failure_records_a_changed_result ... ok
+test backups::domain_tests::the_domain_snapshot_carries_the_godot_and_git_tables ... ok
+test asset_catalog::tests::al2_record_check_is_idempotent_and_conflict_safe ... ok
+test asset_catalog::tests::al2_probe_and_preview_states_never_conflate ... ok
+test asset_catalog::tests::al2_search_filters_by_scope_kind_tags_and_paginates ... ok
+test backups::complete::tests::a_package_whose_library_content_disappeared_is_reported_as_missing ... ok
+test backups::portable::tests::a_domain_failure_leaves_no_half_populated_target ... ok
+test asset_catalog::tests::al2_probe_verifies_the_whole_blob_even_beyond_the_prefix ... ok
+test backups::complete::tests::complete_backup_separates_caches_and_verifies_every_content_file ... ok
+test backups::portable::durability_tests::a_kill_after_the_commit_is_promoted_from_the_precommit_receipt ... ok
+test content_history::contract_tests::asset_lock_rejects_conflicting_duplicate_versions ... ok
+test content_history::contract_tests::asset_lock_rejects_mutable_versions ... ok
+test content_history::contract_tests::asset_lock_rejects_unresolved_and_cyclic_dependencies ... ok
+test content_history::contract_tests::canonical_fixture_has_the_frozen_first_bytes ... ok
+test content_history::contract_tests::canonical_fixture_matches_the_frozen_vector ... ok
+test content_history::contract_tests::empty_lock_has_a_stable_hash ... ok
+test content_history::contract_tests::git_oids_are_not_assumed_to_be_forty_characters ... ok
+test content_history::contract_tests::lock_parse_requires_canonical_bytes_for_commits ... ok
+test content_history::contract_tests::paths_reject_traversal_absolute_links_and_device_names ... ok
+test content_history::contract_tests::print_frozen_vectors ... ignored, prints the frozen vectors; run with --ignored --nocapture
+test content_history::contract_tests::references_keep_source_progress_and_operation_identity_apart ... ok
+test content_history::contract_vectors_tests::every_error_vector_fails_with_its_frozen_code ... ok
+test backups::portable::tests::an_interrupted_export_keeps_no_retained_protection ... ok
+test content_history::contract_vectors_tests::every_positive_vector_reproduces_its_frozen_hash ... ok
+test backups::portable::tests::every_registered_table_is_inside_the_snapshot ... ok
+test content_history::git_tests::dangerous_subcommands_are_refused_before_spawning ... ok
+test content_history::git_tests::discovery_records_provenance_instead_of_assuming_a_bundled_git ... ok
+test content_history::git_tests::identity_is_derived_and_validated ... ok
+test content::tests::content_git_program_is_reported_with_its_real_source ... ok
+test content_history::apply_tests::a_lost_response_is_answered_from_the_stored_receipt ... ok
+test content_history::git_tests::reference_names_are_validated ... ok
+test backups::portable::durability_tests::a_lookalike_staging_directory_is_refused_and_never_deleted ... ok
+test backups::portable::durability_tests::a_cancel_request_converges_and_removes_only_owned_staging ... ok
+test backups::portable::durability_tests::a_committed_restore_is_never_rolled_back_by_another_operation ... ok
+test backups::portable::tests::retained_archives_protect_content_from_the_reclaimer ... ok
+test backups::portable::durability_tests::a_restored_installation_keeps_authoring_new_revisions ... ok
+test content_history::git_tests::hostile_repository_configuration_is_rejected ... ok
+test content_history::git_tests::user_and_system_git_configuration_is_never_read ... ok
+test content_history::migration_tests::a_missing_blob_is_reported_and_blocks_the_import ... ok
+test content_history::migration_tests::plan_reads_every_revision_and_writes_nothing ... ok
+test content_history::git_tests::timeouts_are_enforced_and_kill_the_child ... ok
+test content_history::repo_tests::authoring_exclusions_traversal_and_case_collisions_are_refused ... ok
+test content_history::git_tests::managed_configuration_isolates_hooks_and_identity ... ok
+test backups::portable::tests::an_entry_cannot_write_outside_the_root_of_its_kind ... ok
+test content_history::git_tests::object_ids_are_not_assumed_to_be_forty_characters ... ok
+test content_history::git_tests::compare_and_swap_rejects_a_stale_reference_value ... ok
+test content_history::apply_tests::a_deployment_that_does_not_match_the_operation_is_refused ... ok
+test content_history::repo_tests::repository_identity_never_becomes_a_filesystem_component ... ok
+test content_history::apply_tests::operation_ids_are_idempotent_but_cannot_be_reused ... ok
+test backups::portable::tests::a_damaged_archive_is_refused_and_never_touches_the_target ... ok
+test content_history::apply_tests::a_stale_expected_applied_value_refuses_to_move_the_reference ... ok
+test durable::tests::accounting_is_idempotent_and_unknown_usage_remains_charged ... ok
+test durable::tests::cancelled_task_accepts_only_reserved_settlement_and_discard_keeps_code ... ok
+test durable::tests::completed_budget_receipt_is_readable_after_head_advances_without_write_authority ... ok
+test content_history::apply_tests::git_advance_and_database_confirmation_are_separate_durable_steps ... ok
+test content_history::apply_tests::rollback_restores_the_previous_applied_content_after_a_crash ... ok
+test backups::portable::tests::restore_refuses_a_target_that_already_holds_a_world ... ok
+test durable::tests::existing_owners_keep_policy_across_atomic_migration_and_reopen ... ok
+test content_history::migration_tests::verification_reports_legacy_damage_after_the_switch ... ok
+test durable::tests::configured_first_request_initializes_deadline_once_without_changing_policy ... ok
+test asset_catalog::tests::al2_search_scales_to_ten_thousand_versions ... ok
+test content_history::apply_tests::two_writers_cannot_both_advance_the_same_world ... ok
+test durable::tests::request_limits_deadline_generation_and_unknown_fields_are_enforced ... ok
+test durable::tests::player_removes_exhausted_limit_with_durable_bound_receipt_and_model_denial ... ok
+test durable::tests::legacy_backup_missing_limits_keeps_policy_and_schema_three_keeps_audit ... ok
+test durable::tests::requirement_pages_bound_characters_segments_and_reject_forged_inputs ... ok
+test durable::tests::requirements_keep_original_goal_and_three_latest_corrections ... ok
+test durable::tests::unlimited_budget_keeps_other_boundaries_and_never_clears_usage ... ok
+test durable::tests::requirements_survive_explicit_recovery_but_do_not_enter_ordinary_new_tasks ... ok
+test content_history::repo_tests::changes_and_file_diffs_separate_text_from_binary ... ok
+test content::tests::a_content_apply_is_confirmed_only_by_a_launch_confirmed_deployment ... ok
+test durable::tests::three_compactions_retain_ledger_and_requirements_across_explicit_recovery ... ok
+test durable::tests::malformed_backup_accounting_is_rejected_before_replacing_any_world ... ok
+test content_history::repo_tests::materialised_copy_has_no_git_metadata_and_reports_unsupported_entries ... ok
+test godot_applications::tests::a_rejected_candidate_cannot_replace_the_formal_world ... ok
+test godot_applications::tests::a_verified_candidate_publishes_only_after_a_real_new_instance_launch ... ok
+test godot_applications::tests::a_restarted_core_never_applies_an_unconfirmed_candidate ... ok
+test backups::portable::durability_tests::a_kill_before_the_commit_is_undone_and_the_same_operation_can_retry ... ok
+test godot_applications::tests::asset_edits_after_prepare_revoke_publication ... ok
+test content_history::repo_tests::sha256_repositories_record_their_object_format_end_to_end ... ok
+test godot_builds::tests::a_binary_asset_over_the_model_limit_is_rejected_without_a_second_store ... ok
+test godot_applications::tests::commit_is_replay_safe_and_a_wrong_token_is_refused ... ok
+test godot_applications::tests::launch_evidence_must_prove_the_exact_candidate_build ... ok
+test godot_applications::tests::matching_player_does_not_authorize_replacing_other_formal_progress ... ok
+test godot_applications::tests::newer_formal_progress_cannot_be_overwritten_by_a_prepared_application ... ok
+test content::tests::a_migrated_world_builds_from_git_and_a_moved_commit_makes_its_candidate_stale ... ok
+test godot_applications::tests::prepare_rejects_a_progress_change_and_a_second_application ... ok
+test godot_applications::tests::source_edits_after_prepare_revoke_publication ... ok
+test godot_applications::tests::the_previous_world_and_its_progress_stay_recoverable ... ok
+test godot_builds::tests::a_database_with_the_old_build_file_check_is_rebuilt_for_host_rows ... ok
+test godot_builds::tests::a_build_copy_is_materialized_verified_and_reused_without_touching_source ... ok
+test godot_builds::tests::a_corrupt_asset_blob_is_reported_and_never_repaired_silently ... ok
+test godot_builds::tests::a_forged_asset_hash_never_writes_anything ... ok
+test godot_builds::tests::a_project_cannot_shadow_host_files_in_a_build_copy ... ok
+test godot_builds::tests::a_stale_source_revision_cannot_start_a_build ... ok
+test content::tests::branches_versions_and_file_reads_come_from_the_git_history ... ok
+test content::tests::legacy_revisions_migrate_to_git_and_the_legacy_writer_is_refused ... ok
+test content_history::repo_tests::concurrent_branch_writes_are_rejected_by_compare_and_swap ... ok
+test godot_builds::tests::assets_are_content_addressed_listed_and_isolated_per_world ... ok
+test godot_jobs::tests::a_cancelled_job_rejects_a_late_result_and_creates_no_candidate ... ok
+test godot_builds::tests::cross_world_and_ended_turns_cannot_start_builds ... ok
+test godot_jobs::tests::a_check_without_assertions_proves_nothing ... ok
+test godot_jobs::tests::a_job_cannot_run_without_an_attested_executor ... ok
+test godot_jobs::tests::a_claim_hands_the_executor_absolute_isolated_paths_and_verified_inputs ... ok
+test godot_jobs::tests::claim_rechecks_materialized_source_before_granting_a_job ... ok
+test godot_projects::tests::filesystem_directory_links_cannot_redirect_managed_blob_reads ... ignored, Windows junction fixture setup was denied/timed out under the managed test runner; run explicitly only when fixture creation is available
+test godot_jobs::tests::a_restart_interrupts_a_running_job_and_refuses_its_late_result ... ok
+test godot_jobs::tests::a_wrong_token_cannot_observe_or_finish_a_job ... ok
+test backups::portable::tests::restore_into_a_separate_empty_directory_creates_a_new_database ... ok
+test godot_jobs::tests::a_result_from_another_job_is_rejected_by_the_input_hash ... ok
+test godot_jobs::tests::an_artifact_that_does_not_match_its_declared_hash_is_rejected ... ok
+test godot_jobs::tests::executor_gate_finds_a_capable_executor_and_revocation_interrupts_only_its_jobs ... ok
+test godot_jobs::tests::progress_is_monotonic_and_heartbeats_extend_the_lease ... ok
+test content_history::repo_tests::merge_reports_clean_text_and_real_conflicts_without_reusing_parent_checks ... ok
+test godot_jobs::tests::real_compile_errors_fail_the_job_even_when_the_executor_claims_success ... ok
+test godot_jobs::tests::a_passing_check_creates_a_ready_candidate_and_supersedes_the_older_one ... ok
+test content_history::repo_tests::commit_branch_history_and_asset_lock_are_authoritative_in_git ... ok
+test godot_jobs::tests::a_continuation_keeps_its_origin_and_refuses_a_moved_source ... ok
+test godot_builds::tests::build_identity_changes_with_source_assets_and_base ... ok
+test content_history::repo_tests::bundle_reclaim_and_prune_only_touch_unreachable_objects ... ok
+test godot_projects::tests::all_path_aliases_collisions_unknown_fields_and_missing_config_are_rejected ... ok
+test godot_jobs::tests::runtime_check_descriptor_requires_a_live_owner_and_verified_staged_bytes ... ok
+test godot_projects::tests::corrupt_existing_blob_is_rejected_on_read_reuse_and_unrelated_patch ... ok
+test godot_jobs::tests::usage_summary_reports_core_counters_and_keeps_model_counters_unknown ... ok
+test backups::portable::tests::portable_archive_restores_into_a_new_directory_without_the_source ... ok
+test godot_runtime::tests::progress_limits_count_utf8_and_do_not_truncate_custom_state ... ok
+test godot_projects::tests::manifest_hash_and_stored_revision_mismatch_are_not_reset ... ok
+test godot_projects::tests::case_distinct_world_ids_have_separate_physical_files_on_windows ... ok
+test godot_projects::tests::deleting_a_source_preserves_history_and_file_sets_are_world_scoped ... ok
+test godot_projects::tests::panel_selection_foreign_context_and_stale_turn_cannot_redirect_files ... ok
+test godot_projects::tests::optimistic_version_and_file_hash_conflicts_leave_the_head_unchanged ... ok
+test godot_projects::tests::paginated_index_and_unicode_reads_remain_bound_to_an_immutable_revision ... ok
+test godot_projects::tests::replay_is_exact_and_receipts_survive_turn_completion_and_restart ... ok
+test godot_projects::tests::project_files_are_durable_and_independent_of_legacy_world_and_draft ... ok
+test godot_projects::tests::sqlite_failure_cannot_publish_a_partial_file_set_or_receipt ... ok
+test godot_runtime::tests::legacy_returns_null_but_unverified_godot_is_an_error ... ok
+test godot_runtime::tests::progress_is_refused_for_a_world_whose_build_was_never_applied ... ok
+test content_history::migration_tests::a_partial_import_resumes_instead_of_starting_a_second_history ... ok
+test godot_runtime::tests::applied_progress_requires_full_launch_state_and_prepared_world_is_frozen ... ok
+test godot_projects::tests::source_files_over_two_megabytes_do_not_use_the_legacy_json_limit ... FAILED
+test godot_runtime::tests::base_and_schema_changes_need_explicit_migration_not_plain_save ... ok
+test godot_worlds::tests::initialize_creates_a_recoverable_record_and_never_declares_a_playable_world ... ok
+test godot_runtime::tests::full_progress_is_lossless_across_restart_and_noop_save ... ok
+test godot_runtime::tests::godot_integral_floats_match_javascript_json_without_large_integer_aliases ... ok
+test godot_runtime::tests::descriptor_rehashes_exports_and_ignores_world_document_paths ... ok
+test godot_runtime::tests::descriptor_uses_only_applied_store_and_survives_newer_source_head ... ok
+test godot_runtime::tests::a_new_turn_can_continue_applied_source_but_not_foreign_lineage ... ok
+test library::installer::tests::print_install_plan_fixture ... ignored, regenerates tests/godot-round3/S3/vectors/install-plan-fixture.json
+test godot_runtime::tests::receipt_tampering_and_cross_world_saves_leave_formal_progress_intact ... ok
+test library::package_format::tests::canonical_vectors_are_shared_with_javascript ... ok
+test library::package_format::tests::entry_collisions_and_unverified_normalization_are_refused ... ok
+test library::package_format::tests::frozen_contract_lock_vector_is_reproduced ... ok
+test library::package_format::tests::kind_vectors_are_shared_with_javascript ... ok
+test library::package_format::tests::legacy_kinds_are_mapped_or_refused_never_guessed ... ok
+test library::package_format::tests::lock_vectors_are_shared_with_javascript ... ok
+test library::package_format::tests::media_type_table_is_shared_with_javascript ... ok
+test library::package_format::tests::package_dependency_metadata_converts_into_an_asset_ref ... ok
+test library::package_format::tests::package_index_refuses_unlisted_and_missing_entries ... ok
+test library::package_format::tests::path_vectors_are_shared_with_javascript ... ok
+test library::package_format::tests::resource_manifest_identity_is_recomputed_not_trusted ... ok
+test content_history::migration_tests::every_revision_becomes_one_commit_and_the_backend_switches ... ok
+test godot_worlds::tests::a_failed_initialization_keeps_a_recoverable_record_and_can_be_retried ... ok
+test godot_storage::tests::storage_status_counts_every_category_without_deleting_anything ... ok
+test library::installer::tests::a_dependency_with_the_wrong_hash_is_refused ... ok
+test legacy::convert::tests::compiled_conversion_and_corrupt_archive_are_reported_without_changing_the_source ... ok
+test godot_worlds::tests::backup_descriptor_verifies_the_live_store_and_detects_tampering ... ok
+test content_history::repo_tests::bulk_commit_hashes_all_files_in_one_git_invocation ... ok
+test legacy::tests::captures_every_file_without_mutating_or_restarting_legacy_tasks ... ok
+test legacy::convert::tests::conversion_writes_a_copy_and_reports_each_content_type ... ok
+test legacy::tests::corrupt_archives_and_paths_cannot_escape_or_publish ... ok
+test library::installer::tests::conflicts_are_reported_and_never_silently_overwritten ... ok
+test operation_lock::tests::operation_lock_child ... ignored, owned child process; driven by operation_lock_process test
+test operation_lock::tests::independent_handles_cannot_own_an_operation_together ... ok
+
+running 1 test
+test library::installer::tests::incompatible_base_is_reported_as_a_conflict ... ok
+test library::installer::tests::missing_dependency_and_cycle_are_refused_without_a_plan ... ok
+test godot_worlds::tests::only_a_real_verified_application_confirms_initialization ... ok
+test godot_jobs::tests::engine_sized_artifacts_are_streamed_and_corruption_is_refused ... ok
+test library::installer::tests::plans_dependencies_first_and_allocates_new_identity ... ok
+test godot_worlds::tests::copying_a_formal_world_keeps_identity_separate_and_can_start_from_initial_state ... ok
+test library::installer::tests::the_plan_lock_is_accepted_by_the_package_validator ... ok
+test godot_storage::tests::continuing_a_draft_whose_build_was_reclaimed_is_refused_clearly ... ok
+test godot_storage::tests::a_caller_pin_from_works_backups_or_history_is_never_reclaimed ... ok
+test library::reuse::tests::fixed_version_closure_and_explicit_failures ... ok
+test godot_storage::tests::a_durable_backup_pin_protects_a_build_without_any_caller_argument ... ok
+test godot_storage::tests::a_reference_created_after_the_plan_blocks_reclamation ... ok
+test godot_storage::tests::reclaim_protects_formal_and_recent_builds_and_commits_atomically ... ok
+test library::reuse::tests::uninstall_keeps_progress_and_restore_is_reversible ... ok
+test library::reuse::tests::two_worlds_reuse_the_same_version_with_independent_identity_and_progress ... ok
+test library::reuse::tests::upgrade_is_declarative_and_never_drops_progress_or_repeats_rewards ... ok
+test memories::receipt_tests::committed_receipt_survives_end_turn_and_process_reopen ... ok
+test memories::receipt_tests::receipt_checks_full_request_owner_and_unknown_fields ... ok
+test memories::receipt_tests::corrupted_original_request_is_rejected_by_lookup_and_backup ... ok
+test memories::receipt_tests::legacy_schema_migrates_without_inventing_receipt_ownership ... ok
+test operation_lock::tests::operation_lock_process_excludes_live_recovery_and_releases_after_kill ... ok
+test recovery::tests::interrupt_revokes_only_its_jobs_and_lease_and_rejects_untrusted_reason_text ... ok
+test recovery::tests::failed_resume_launch_can_resume_again_without_resetting_budget_draft_or_goal ... ok
+test tests::binding_and_replay_conflicts_cannot_change_the_draft ... ok
+test recovery::tests::real_error_end_preserves_exhausted_task_and_resumes_after_player_removes_limit ... ok
+test tests::independent_connections_observe_revision_conflicts_atomically ... ok
+test verification::tests::a_lost_worker_receipt_expires_instead_of_running_forever ... ok
+test tests::cancelled_task_stays_cancelled_and_late_writes_are_rejected ... ok
+test tests::lost_response_is_recovered_without_repeating_edit_after_restart ... ok
+test verification::tests::failed_checks_and_tampered_storage_are_distinguished ... ok
+test verification::tests::finished_draft_retry_keeps_task_and_replays_after_restart ... ok
+test memories::receipt_tests::backup_v2_roundtrip_preserves_receipt_and_v1_migrates_to_unverifiable ... ok
+test verification::tests::finished_draft_retry_rejects_active_stale_foreign_and_extra_fields ... ok
+test legacy::tests::import_commit_is_atomic_and_replay_does_not_reset_play_progress ... ok
+test verification::tests::stale_and_empty_drafts_cannot_queue_checks ... ok
+test verification::tests::forged_success_and_foreign_identity_are_rejected ... ok
+test workspaces::tests::a_resumed_revision_zero_draft_is_not_discarded_when_the_world_base_changes ... ok
+test verification::tests::input_receipt_and_evidence_survive_restart ... ok
+test workspaces::tests::cancelled_before_first_tool_cannot_create_a_draft ... ok
+test workspaces::tests::draft_revision_conflicts_and_foreign_bindings_leave_history_unchanged ... ok
+test workspaces::tests::committed_reads_and_receipts_survive_restart_and_old_turns_cannot_write ... ok
+test workspaces::tests::exclusive_world_drafts_survive_connections_and_release_at_turn_end ... ok
+test workspaces::tests::selection_changes_never_redirect_an_existing_session ... ok
+test worlds::metadata_tests::persisted_build_metadata_is_consistent_and_unknown_formats_stay_unknown ... ok
+test worlds::tests::competing_views_cannot_overwrite_newer_progress_or_builds ... ok
+test worlds::tests::corruption_and_invalid_progress_are_reported_without_resetting_worlds ... ok
+test worlds::tests::progress_and_independent_worlds_survive_process_reopen ... ok
+test library::reuse::tests::offline_package_round_trip_carries_no_credentials_or_progress ... ok
+test recovery::tests::first_end_result_is_idempotent_and_completed_tasks_do_not_revive ... ok
+test godot_worlds::tests::a_git_backed_world_can_be_copied_and_described_from_its_commit ... ok
+test verification::tests::edits_abort_and_recovery_revoke_completion ... ok
+test recovery::tests::startup_repairs_only_proven_legacy_failed_current_heads ... ok
+test godot_projects::tests::a_private_file_install_is_atomic_binary_safe_and_replayable_on_both_backends ... ok
+test asset_catalog::tests::al2_search_and_import_measurements_are_recorded ... ok
+
+failures:
+
+---- godot_projects::tests::source_files_over_two_megabytes_do_not_use_the_legacy_json_limit stdout ----
+
+thread 'godot_projects::tests::source_files_over_two_megabytes_do_not_use_the_legacy_json_limit' (275536) panicked at crates\craftmine-core\src\godot_projects_tests.rs:85:5:
+Expected INVALID_PROJECT_TEXT
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    godot_projects::tests::source_files_over_two_megabytes_do_not_use_the_legacy_json_limit
+
+test result: FAILED. 263 passed; 1 failed; 7 ignored; 0 measured; 0 filtered out; finished in 11.99s
+
+error: test failed, to rerun pass `-p craftmine-core --lib`

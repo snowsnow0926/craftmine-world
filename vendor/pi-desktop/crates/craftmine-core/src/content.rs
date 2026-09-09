@@ -618,12 +618,14 @@ impl TaskJournal {
     ) -> Result<Vec<ContentFile>> {
         let mut content = Vec::with_capacity(files.len() + 1);
         for (path, entry) in files {
-            let text = super::godot_projects::blob_read(&self.directory, world, entry)?;
-            content.push(ContentFile::text(path, &text));
+            let bytes = super::godot_projects::blob_read_bytes(&self.directory, world, entry)?;
+            content.push(ContentFile{path:path.clone(),bytes});
         }
         let (_, assets) = super::godot_builds::asset_manifest(&self.db, world)?;
-        if let Some(lock) = super::godot_builds::asset_lock(&assets)? {
+        if !files.contains_key(super::content_history::contract::ASSET_LOCK_FILE) {
+          if let Some(lock) = super::godot_builds::asset_lock(&assets)? {
             content.push(ContentFile::asset_lock(&lock)?);
+          }
         }
         Ok(content)
     }
