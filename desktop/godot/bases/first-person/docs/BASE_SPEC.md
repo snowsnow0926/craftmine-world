@@ -120,3 +120,10 @@ of the saved state, so a restart cannot pay the reward twice.
 - Networking, save encryption, anti-cheat.
 - Hot reload of a modified project while a world is running. The acceptance run
   deliberately restarts the process.
+
+## Integration audit persistence requirements
+
+See [the shared authored-base audit contract](../../tests/PERSISTENCE_AUDIT.md) and
+[the state-boundary decision](../../tests/ADR-0001-audit-state-boundary.md).
+Foreign or rejected progress must not mutate live state or overwrite the prior save.
+The audit regression entry point is `desktop/godot/bases/tests/audit-persistence.mjs`.

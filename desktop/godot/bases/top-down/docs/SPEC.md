@@ -152,3 +152,10 @@ NPC 台词由 `data/npcs/<id>.json` 的 `lines` 决定，按顺序取第一条
 | `invalid_price` | 商品价格为负 |
 | `unsupported_op` | 探针收到未知操作 |
 | `scene_not_bound` | 场景切换后新场景未在超时内完成绑定 |
+
+## Integration audit persistence requirements
+
+See [the shared authored-base audit contract](../../tests/PERSISTENCE_AUDIT.md) and
+[the state-boundary decision](../../tests/ADR-0001-audit-state-boundary.md).
+Foreign or rejected progress must not mutate live state or overwrite the prior save.
+The audit regression entry point is `desktop/godot/bases/tests/audit-persistence.mjs`.

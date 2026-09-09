@@ -12,6 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { randomUUID } from 'node:crypto';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const baseDir = path.resolve(here, '..');
@@ -19,9 +20,10 @@ const baseDir = path.resolve(here, '..');
 const SHARED = ['project.godot', 'manifest.json', 'params', 'scripts', 'scenes'];
 
 function parseArgs(argv) {
-  const args = { world: '', out: '', force: false };
+  const args = { world: '', worldId: '', out: '', force: false };
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--world') args.world = argv[i + 1];
+    else if (argv[i] === '--world-id') args.worldId = argv[i + 1];
     else if (argv[i] === '--out') args.out = path.resolve(argv[i + 1]);
     else if (argv[i] === '--force') args.force = true;
   }
@@ -58,11 +60,15 @@ function main() {
     console.error(`Unknown world '${args.world}'. Available: ${worlds.join(', ')}`);
     process.exit(2);
   }
+  const worldId = args.worldId || randomUUID();
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,127}$/.test(worldId)) throw Error('Invalid world instance identity');
   if (fs.existsSync(args.out) && !args.force) {
     console.error(`Output directory already exists: ${args.out} (pass --force to overwrite)`);
     process.exit(2);
   }
-  if (fs.existsSync(args.out)) fs.rmSync(args.out, { recursive: true, force: true });
+  if (fs.existsSync(args.out) && (fs.lstatSync(args.out).isSymbolicLink() || fs.readdirSync(args.out).length)) {
+    throw Error('Refusing to replace a link or nonempty output directory; choose a fresh managed directory');
+  }
   fs.mkdirSync(args.out, { recursive: true });
 
   for (const item of SHARED) {
@@ -74,14 +80,15 @@ function main() {
   copyDir(path.join(baseDir, 'worlds', args.world), path.join(args.out, 'worlds', args.world));
   fs.writeFileSync(
     path.join(args.out, 'worlds', 'default.json'),
-    `${JSON.stringify({ format: 'craftmine.godot-sideview-default/1', worldId: args.world }, null, 2)}\n`,
+    `${JSON.stringify({ format: 'craftmine.godot-sideview-default/1', worldId: args.world, instanceId: worldId }, null, 2)}\n`,
   );
   const world = JSON.parse(fs.readFileSync(path.join(args.out, 'worlds', args.world, 'world.json'), 'utf8'));
   const receipt = {
     format: 'craftmine.godot-sideview-materialize/1',
     baseId: 'side-view',
     baseVersion: '1.0.0',
-    worldId: args.world,
+    worldId,
+    templateId: args.world,
     worldKind: world.kind,
     stateVersion: world.stateVersion,
     entryScene: 'res://scenes/main.tscn',

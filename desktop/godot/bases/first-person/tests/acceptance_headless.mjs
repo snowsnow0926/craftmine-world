@@ -240,9 +240,9 @@ try {
   // ------------------------------------------------------------ rejection of bad state
   const invalid = await run(environment, 'base-invalid', writeScript('invalid', [
     {op: 'snapshot'},
-    {op: 'restore-state', args: {state: {format: 'craftmine.godot-base-state/1', stateVersion: 1, base: 'first-person', player: {position: [0, 1, 2]}, equipment: {active: 'pistol', items: []}, inventory: {slots: []}, targets: [], quests: {quests: []}}}},
+    {op: 'restore-state', args: {state: {format: 'craftmine.godot-base-state/1', stateVersion: 1, worldId: 'fresh-world', base: 'first-person', player: {position: [0, 1, 2]}, equipment: {active: 'pistol', items: []}, inventory: {slots: []}, targets: [], quests: {quests: []}}}},
     {op: 'snapshot'},
-    {op: 'restore-state', args: {state: {format: 'craftmine.godot-base-state/1', stateVersion: 99, base: 'first-person'}}},
+    {op: 'restore-state', args: {state: {format: 'craftmine.godot-base-state/1', stateVersion: 99, worldId: 'fresh-world', base: 'first-person'}}},
     {op: 'snapshot'},
   ]), ['--base-world-id=fresh-world']);
   report.observations.invalid = invalid;
@@ -300,6 +300,7 @@ try {
 
   // ------------------------------------------------ rollback after a mid-apply failure
   const rollbackState = {
+    worldId: 'rollback-world',
     format: 'craftmine.godot-base-state/1',
     stateVersion: 1,
     base: 'first-person',

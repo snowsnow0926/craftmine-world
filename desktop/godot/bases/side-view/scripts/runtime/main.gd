@@ -24,11 +24,20 @@ func _ready() -> void:
 	if SideView.config == null or not SideView.config.is_valid():
 		SideView.config = SideViewConfig.load_default()
 	var state_version := int(world_data.get("stateVersion", 1))
-	var state := WorldState.create(world_id, state_version)
-	var store := SaveStore.create(world_id)
+	var instance_id := _resolve_instance_id()
+	if RegEx.create_from_string("^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$").search(instance_id) == null:
+		push_error("SideView: invalid instance identity")
+		get_tree().quit(2)
+		return
+	var state := WorldState.create(instance_id, state_version)
+	var store := SaveStore.create(instance_id)
 	if OS.get_environment("CRAFTMINE_SIDEVIEW_RESET") == "1":
 		store.wipe()
 	var load_report := store.load_into(state)
+	if not String(load_report.get("error", "")).is_empty():
+		push_error("SideView: refusing to overwrite rejected progress: " + String(load_report.error))
+		get_tree().quit(3)
+		return
 
 	room_host = Node2D.new()
 	room_host.name = "Rooms"
@@ -50,7 +59,7 @@ func _ready() -> void:
 	room_manager.setup(world_data, SideView.config, state, SideView, player)
 
 	SideView.bind_world(world_data, state, store, {
-		"worldId": world_id,
+		"worldId": instance_id,
 		"loaded": load_report.get("loaded", false),
 		"recoveredFromBackup": load_report.get("created", false),
 		"loadError": load_report.get("error", ""),
@@ -62,7 +71,7 @@ func _ready() -> void:
 	room_manager.start()
 	SideView.mark_world_ready()
 	SideView.emit_event("world_ready", {
-		"worldId": world_id,
+		"worldId": instance_id,
 		"roomId": str(state.player.get("room", "")),
 		"loaded": load_report.get("loaded", false),
 		"stateHash": SideView.persistent_hash(),
@@ -79,7 +88,22 @@ func _resolve_world_id() -> String:
 			return str((parsed as Dictionary)["worldId"])
 	return "ruins"
 
+func _resolve_instance_id() -> String:
+	var from_env := OS.get_environment("CRAFTMINE_SIDEVIEW_INSTANCE_ID")
+	if not from_env.is_empty():
+		return from_env
+	var pointer := WORLD_ROOT.path_join("default.json")
+	if FileAccess.file_exists(pointer):
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(pointer))
+		if parsed is Dictionary and parsed.get("instanceId") is String and not parsed.instanceId.is_empty():
+			return parsed.instanceId
+	# Direct repository examples keep their existing identities. The materializer
+	# always writes a distinct instance identity for newly created worlds.
+	return world_id
+
 func _load_world(id: String) -> Dictionary:
+	if RegEx.create_from_string("^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$").search(id) == null:
+		return {}
 	var path := WORLD_ROOT.path_join(id).path_join("world.json")
 	if not FileAccess.file_exists(path):
 		return {}

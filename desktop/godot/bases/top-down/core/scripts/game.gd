@@ -282,10 +282,14 @@ static func _int_property(node: Node, property: StringName, fallback: int) -> in
 # --------------------------------------------------------- persistence verbs
 
 func save() -> Dictionary:
+	if not boot_error.is_empty():
+		return {"ok": false, "error": boot_error}
 	_record_scene_position()
-	_dirty = false
-	_dirty_timer = 0.0
-	return SaveSystem.save(state)
+	var result := SaveSystem.save(state)
+	if result.get("ok", false):
+		_dirty = false
+		_dirty_timer = 0.0
+	return result
 
 
 func restore() -> Dictionary:

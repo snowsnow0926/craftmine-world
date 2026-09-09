@@ -1,0 +1,54 @@
+{
+  "format": "craftmine.base-audit-evidence/1",
+  "baseCommit": "75f69fa2903e0c259bfaf5ce0cfecd190bb21545",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "realModelCalls": 0,
+  "reports": [
+    {
+      "label": "first-person",
+      "file": "D:/Craftmine World-worktrees/test-results/godot-first-person-base-qWfA1A/report.json",
+      "bytes": 732829,
+      "sha256": "be83ea6314d8449bc2ede1eae6bc794c529a59ced6ea4623e48cdc691dd7b281",
+      "checks": 52,
+      "failed": 0,
+      "knownImportDiagnostics": []
+    },
+    {
+      "label": "top-down",
+      "file": "D:\\Craftmine World-worktrees\\godot-audit-bases-20260909\\test-results\\topdown-audit-final-evidence\\report.json",
+      "bytes": 57806,
+      "sha256": "5b82738e447e9e5af6602947ee0d130782685b66baab62068c750c785700167c",
+      "checks": 34,
+      "failed": 0,
+      "knownImportDiagnostics": []
+    },
+    {
+      "label": "side-view",
+      "file": "D:\\Craftmine World-worktrees\\godot-audit-bases-20260909\\test-results\\sideview-audit-final\\report.json",
+      "bytes": 22980,
+      "sha256": "10555a40ec534e39585b45c5555a47c64e615f319ee58e3cc91ba65beebda463",
+      "checks": 80,
+      "failed": 0,
+      "knownImportDiagnostics": []
+    },
+    {
+      "label": "audit",
+      "file": "D:\\Craftmine World-worktrees\\godot-audit-bases-20260909\\test-results\\audit-base-save-H3C6PR\\report.json",
+      "bytes": 1414,
+      "sha256": "2e53e16f1883e985d8cf416437aade0a450021e98ddcd7639fb2850ef6fc9951",
+      "checks": 5,
+      "failed": 0,
+      "knownImportDiagnostics": [
+        "WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        "ERROR: 3 resources still in use at exit (run with --verbose for details)."
+      ]
+    }
+  ],
+  "limitations": [
+    "author fixtures only",
+    "no product bridge/application acceptance",
+    "side-view editor shutdown resource leak remains",
+    "no new rendered pixel acceptance",
+    "no A17 installation"
+  ]
+}
