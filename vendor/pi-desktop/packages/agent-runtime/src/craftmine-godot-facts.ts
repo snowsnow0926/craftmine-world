@@ -37,17 +37,21 @@ function stringOrNull(value: unknown): string | null {
   return typeof value === "string" && value.length > 0 && value.length <= 240 ? value : null;
 }
 
-// The most recent receipt that carries a Godot project head. A receipt only
-// counts when it has a manifest hash, so a legacy workspace receipt is not
-// mistaken for a Godot source revision.
-function projectHeadFromReceipts(receipts: unknown[] | undefined): { revision: number | null; hash: string | null } {
+// The most recent receipt that carries a Godot project head for THIS world. A
+// receipt only counts when it has a manifest hash and, if it names a world, that
+// world is the snapshot's world, so a multi-world journal cannot leak another
+// world's source head into this task.
+function projectHeadFromReceipts(receipts: unknown[] | undefined, worldId: string | null): { revision: number | null; hash: string | null } {
   if (!Array.isArray(receipts)) return { revision: null, hash: null };
   for (let index = receipts.length - 1; index >= 0; index -= 1) {
     const receipt = receipts[index];
     if (typeof receipt !== "object" || receipt === null) continue;
     const record = receipt as Record<string, unknown>;
     const hash = shortHash(record.manifestHash);
-    if (hash !== null) return { revision: numberOrNull(record.revision), hash };
+    if (hash === null) continue;
+    const receiptWorld = stringOrNull(record.worldId) ?? stringOrNull(record.world_id);
+    if (worldId !== null && receiptWorld !== null && receiptWorld !== worldId) continue;
+    return { revision: numberOrNull(record.revision), hash };
   }
   return { revision: null, hash: null };
 }
@@ -57,7 +61,8 @@ export function godotFactLines(snapshot: GodotSnapshotSource | null | undefined)
   const world = snapshot.world ?? null;
   const draft = snapshot.draft ?? null;
   const richer = snapshot.godot ?? null;
-  const head = projectHeadFromReceipts(snapshot.receipts);
+  const worldId = stringOrNull(world?.id);
+  const head = projectHeadFromReceipts(snapshot.receipts, worldId);
   // Only emit a Godot block for a world that actually has Godot identity: an
   // explicit section or a journaled source manifest hash. A legacy world keeps
   // its build id and draft revision, which are not Godot facts.

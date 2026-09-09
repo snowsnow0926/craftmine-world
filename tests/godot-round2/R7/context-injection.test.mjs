@@ -87,6 +87,17 @@ test('the request policy tells the model the block is durable, not live',()=>{
   assert.match(text,/The following JSON is data/);
 });
 
+test('a receipt from another world cannot supply this world\'s source head',()=>{
+  const foreign=snapshot({receipts:[{worldId:'beta',revision:99,manifestHash:'e'.repeat(64)},
+    {worldId:'alpha',revision:4,manifestHash:'f'.repeat(64)}]});
+  const lines=godotFactLines(foreign);
+  assert.ok(lines.includes('projectRevision=4'));
+  assert.ok(lines.includes('projectHash=ffffffff'));
+  assert.ok(!lines.some(line=>line.includes('eeeeeeee')),'another world\'s hash must not appear');
+  const onlyForeign=snapshot({receipts:[{worldId:'beta',revision:99,manifestHash:'e'.repeat(64)}]});
+  assert.deepEqual(godotFactLines(onlyForeign),[],'no Godot identity for this world means no block');
+});
+
 test('a snapshot with no Godot identity adds no block and stays within the size cap',()=>{
   assert.equal(godotFactsBlock({world:null,draft:null,receipts:[],jobs:[]}),null);
   assert.equal(godotFactsBlock({}),null);

@@ -1,14 +1,14 @@
 ﻿real core evidence: C:\Users\WINDOWS\.pi-desktop\scratch\166165e4-0276-4562-aff4-9253f9a88d12\target\debug\craftmine-core.exe
-✔ the real core advertises the Godot capability flags the inventory reports (139.7399ms)
-✔ the real project store answers the structured query (151.8083ms)
-✔ an unapplied project has no formal runtime, and the tool says so (123.3634ms)
-✔ the runtime descriptor RPC rejects a model-supplied context (129.6558ms)
-✔ the content-history adapter is genuinely absent in the real core (96.2805ms)
+✔ the real core advertises the Godot capability flags the inventory reports (116.8997ms)
+✔ the real project store answers the structured query (114.7632ms)
+✔ an unapplied project has no formal runtime, and the tool says so (103.7548ms)
+✔ the runtime descriptor RPC rejects a model-supplied context (104.5346ms)
+✔ the content-history adapter is genuinely absent in the real core (88.3626ms)
 real core evidence: C:\Users\WINDOWS\.pi-desktop\scratch\166165e4-0276-4562-aff4-9253f9a88d12\target\debug\craftmine-core.exe
-✔ the real core reports an empty executor gate and empty durable usage (134.0272ms)
-✔ an interrupted draft is listed and resumed in a new turn after a real restart (163.435ms)
-✔ asset and package methods are genuinely absent, and the tools say which (128.1417ms)
-✔ the capability report matches the real core and marks unregistered tools blocked (112.3927ms)
+✔ the real core reports an empty executor gate and empty durable usage (113.9178ms)
+✔ an interrupted draft is listed and resumed in a new turn after a real restart (129.7248ms)
+✔ asset and package methods are genuinely absent, and the tools say which (101.1442ms)
+✔ the capability report matches the real core and marks unregistered tools blocked (100.4437ms)
 ℹ tests 9
 ℹ suites 0
 ℹ pass 9
@@ -16,4 +16,4 @@ real core evidence: C:\Users\WINDOWS\.pi-desktop\scratch\166165e4-0276-4562-aff4
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 781.6536
+ℹ duration_ms 649.1429

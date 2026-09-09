@@ -86,14 +86,16 @@ async function listRecoverable(core,{projectId,worldId,sessionId}){
   if(!core||typeof core.call!=='function')throw Error('CORE_REQUIRED');
   if(typeof projectId!=='string'||!projectId)throw Error('PROJECT_ID_REQUIRED');
   const result=await core.call('task.recoverable',{projectId,...(worldId?{worldId}:{})});
-  const items=(Array.isArray(result?.items)?result.items:[]).map(item=>{
-    const sameSession=!sessionId||item?.binding?.sessionId===sessionId;
-    return {taskId:item?.taskId??null,worldId:item?.worldId??null,generation:item?.generation??null,
-      draftRevision:item?.draftRevision??null,draftHash:item?.draftHash??null,status:item?.status??null,
-      createdAt:item?.binding?.createdAt??null,sessionId:item?.binding?.sessionId??null,
-      resumable:item?.status==='interrupted'&&sameSession,
-      blockedReason:item?.status!=='interrupted'?'NOT_INTERRUPTED':(sameSession?null:'OTHER_SESSION')};
-  });
+  const rows=Array.isArray(result?.items)?result.items:[];
+  // A draft belongs to one session. Do not show another session's task id or
+  // draft hash to this model; the host list is project-wide.
+  const scoped=sessionId?rows.filter(item=>item?.binding?.sessionId===sessionId):rows;
+  const items=scoped.map(item=>({
+    taskId:item?.taskId??null,worldId:item?.worldId??null,generation:item?.generation??null,
+    draftRevision:item?.draftRevision??null,draftHash:item?.draftHash??null,status:item?.status??null,
+    createdAt:item?.binding?.createdAt??null,
+    resumable:item?.status==='interrupted',
+    blockedReason:item?.status!=='interrupted'?'NOT_INTERRUPTED':null}));
   return {format:RECOVERY_FORMAT,scope:'list',projectId,worldId:worldId||null,items,
     modelReplay:result?.modelReplay===true,
     note:'A draft resumes with the task and draft it already has; the model cannot replay a completed turn.'};
@@ -107,7 +109,7 @@ async function resumeDraft(core,{context,worldId,taskId,generation}){
   if(typeof taskId!=='string'||!taskId.trim()||taskId.length>240)throw Error('INVALID_TASK_ID');
   if(!Number.isSafeInteger(generation)||generation<1)throw Error('INVALID_GENERATION');
   const listed=await listRecoverable(core,{projectId:context.projectId,worldId,sessionId:context.sessionId});
-  const match=listed.items.find(item=>item.taskId===taskId&&item.generation===generation);
+  const match=listed.items.find(item=>item.taskId===taskId&&Number(item.generation)===Number(generation));
   if(!match)return {format:RECOVERY_FORMAT,scope:'resume',resumed:false,
     reason:explainRecovery('STALE_RECOVERY_SELECTION'),listed:listed.items};
   if(!match.resumable)return {format:RECOVERY_FORMAT,scope:'resume',resumed:false,

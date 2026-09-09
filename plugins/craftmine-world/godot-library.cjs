@@ -110,21 +110,21 @@ function createLibraryBinding({core,context,worldId,methods={}}){
     },
     proposeVariant({ref,name,operationId}={}){
       const fixedRef=validateAssetRef(ref);
-      return proposal('variant',writes.register,{operationId:operationId||'proposal-variant',ref:fixedRef,
+      return proposal('variant',writes.register,{operationId:operationId||'proposal-variant',worldId,ref:fixedRef,
         name:boundedString(name,240)}, {note:'A variant gets a new asset id and does not inherit instance progress.'});
     },
     proposeUpgrade({ref,instanceId,operationId}={}){
-      return proposal('upgrade',writes.upgrade,{operationId:operationId||'proposal-upgrade',
+      return proposal('upgrade',writes.upgrade,{operationId:operationId||'proposal-upgrade',worldId,
         instanceId:boundedString(instanceId,120),toRef:validateAssetRef(ref)},
       {note:'Each selected instance is checked separately; a pass for one instance does not transfer to another.'});
     },
     proposeRestoreContent({instanceId,operationId}={}){
-      return proposal('restore-content',writes.restore,{operationId:operationId||'proposal-restore-content',
+      return proposal('restore-content',writes.restore,{operationId:operationId||'proposal-restore-content',worldId,
         instanceId:boundedString(instanceId,120)},
       {note:'Restores an uninstalled package instance; world progress is untouched.'});
     },
     proposeRestoreSave({progressRef,operationId}={}){
-      return proposal('restore-save','backup.restore',{operationId:operationId||'proposal-restore-save',
+      return proposal('restore-save','backup.restore',{operationId:operationId||'proposal-restore-save',worldId,
         progressRef:progressRef??null},
       {owner:'R5',note:'Restoring confirmed world progress is a player action over a verified backup; the model only proposes it.'});
     },
@@ -138,7 +138,7 @@ function createLibraryBinding({core,context,worldId,methods={}}){
       if(intent==='instance-only')return {...this.proposeInstall({ref,operationId}),change};
       if(intent==='variant')return {...this.proposeVariant({ref,name:target?.name,operationId}),change};
       if(intent==='upgrade-selected')return {...proposal('upgrade-selected',writes.upgrade,
-        {operationId:operationId||'proposal-upgrade-selected',
+        {operationId:operationId||'proposal-upgrade-selected',worldId,
           targets:change.instances.map(one=>({instanceId:one,toRef:validateAssetRef(ref)}))},
         {owner:OWNERS.package,note:change.note}),change};
       if(intent==='restore-content')return {...this.proposeRestoreContent({instanceId:instanceId??change.instances[0],operationId}),change};

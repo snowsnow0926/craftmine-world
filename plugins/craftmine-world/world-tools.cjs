@@ -61,7 +61,9 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       return capabilityReport({manifest:require('./manifest.json'),routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake,
         gaps,limits:limitAccounting(options.budget)});
     }
-    if(definition.name==='requirements_read')return core.call('task.readRequirements',{context,...args});
+    // The executor gate is global, so it must answer even when no world is bound.
+    if(definition.name==='godot_jobs'&&args.mode==='status')return executorStatus(core);
+    if(definition.name==='requirements_read')return core.call('task.readRequirements',{...args,context});
     if(definition.name==='verification_read') {
       const job=await core.call('verification.read',{context,id:args.id});
       return {...readVerification(job,args),reviews:await core.call('review.list',{verificationId:args.id}).then(records=>records.slice(0,1).map(record=>{
@@ -72,7 +74,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     }
     if(definition.name==='verification_cancel') {
       const result=await core.call('verification.cancel',{context,id:args.id});
-      await verifications.cancel(args.id);return result;
+      await verifications?.cancel(args.id);return result;
     }
     const selectedWorld=(await getSettings()).activeWorldId;
     assertActive();

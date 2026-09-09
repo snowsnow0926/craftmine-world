@@ -57,6 +57,7 @@ function normalizeLiveSample(sample,identity={},options={}){
   const sampledMillis=Date.parse(sampledAt);
   if(!Number.isFinite(sampledMillis))return missing('INVALID_LIVE_SAMPLE_TIMESTAMP');
   const maxAgeMs=Number.isFinite(options.maxAgeMs)?options.maxAgeMs:30000;
+  const skewMs=Number.isFinite(options.clockSkewMs)?options.clockSkewMs:5000;
   const now=Number.isFinite(options.now)?options.now:Date.now();
   const ageMillis=now-sampledMillis;
   const worldId=present(sample.worldId)??present(sample.world_id);
@@ -69,9 +70,12 @@ function normalizeLiveSample(sample,identity={},options={}){
   if(identity.buildId&&buildId&&identity.buildId!==buildId)mismatches.push('LIVE_BUILD_MISMATCH');
   // A sample that omits identity cannot be proven to belong to this world.
   if((identity.worldId&&!worldId)||(identity.buildId&&!buildId)||!instanceId)mismatches.push('LIVE_IDENTITY_UNVERIFIED');
-  // A restarted or replaced game process invalidates the previous sample.
-  if(identity.instanceId&&instanceId&&identity.instanceId!==instanceId)mismatches.push('LIVE_INSTANCE_CHANGED');
-  if(ageMillis>maxAgeMs)mismatches.push('LIVE_SAMPLE_STALE');
+  // A replaced game process is informational, not a reason to distrust a fresh
+  // sample: the new instance becomes the baseline. World/build/age do invalidate.
+  const instanceChanged=Boolean(identity.instanceId&&instanceId&&identity.instanceId!==instanceId);
+  // A future timestamp beyond a small clock skew is as untrustworthy as an old
+  // one (game clock ahead of the host, or a bogus value).
+  if(ageMillis>maxAgeMs||ageMillis<-skewMs)mismatches.push('LIVE_SAMPLE_STALE');
   const display=sample.display&&typeof sample.display==='object'?sample.display:null;
   const player=sample.player&&typeof sample.player==='object'?sample.player:null;
   const camera=display&&display.cameraGlobal?{global:display.cameraGlobal,
@@ -87,11 +91,11 @@ function normalizeLiveSample(sample,identity={},options={}){
     if(field==='entities')return value.targets===null&&value.interactables===null;
     return value===null||value===undefined;
   });
-  return {available:true,sampledAt,sampledMillis,ageMillis,maxAgeMillis:maxAgeMs,worldId,baseId,baseVersion,buildId,instanceId,
+  return {available:true,sampledAt,sampledMillis,ageMillis,maxAgeMillis:maxAgeMs,clockSkewMillis:skewMs,worldId,baseId,baseVersion,buildId,instanceId,
     viewportSize:present(sample.viewportSize),windowSize:present(sample.windowSize),
     inputCaptured:present(sample.inputCaptured),hasSave:present(sample.hasSave),
     persistentStorage:present(sample.persistentStorage),levelTitle:present(sample.levelTitle),
-    ...normalized,unavailable,stale:mismatches.length>0,mismatches,
+    ...normalized,unavailable,stale:mismatches.length>0,mismatches,instanceChanged,
     provenance:'live-instance-sample'};
 }
 

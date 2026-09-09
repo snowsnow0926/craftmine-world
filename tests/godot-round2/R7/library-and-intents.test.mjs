@@ -116,6 +116,18 @@ test('install, variant, upgrade and restore are proposals that never apply',()=>
   assert.deepEqual(calls,[],'a proposal must not reach the host');
 });
 
+test('every proposal records the host-bound world',()=>{
+  const {library}=binding();
+  for(const proposal of [
+    library.proposeInstall({ref:REF}),
+    library.proposeVariant({ref:REF,name:'v2'}),
+    library.proposeUpgrade({ref:REF,instanceId:'ins-1'}),
+    library.proposeRestoreContent({instanceId:'ins-1'}),
+    library.proposeRestoreSave({progressRef:{revision:1,contentHash:'b'.repeat(64)}}),
+    library.proposeChange({intent:'upgrade-selected',ref:REF,selection:['ins-1','ins-2']})
+  ])assert.equal(proposal.params.worldId,'alpha','a proposal must name the bound world');
+});
+
 test('the five change intents dispatch to distinct proposals',()=>{
   const {library}=binding();
   assert.equal(library.proposeChange({intent:'instance-only',ref:REF}).proposal,'install');

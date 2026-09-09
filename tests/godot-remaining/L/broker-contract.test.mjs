@@ -52,7 +52,7 @@ const HANDSHAKE={format:'craftmine.core/1',godotProjects:true,godotExecution:fal
   publishesWorlds:true,agentPublishesWorlds:false};
 
 let sequence=0;
-function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false}={}){
+function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false,noWorld=false}={}){
   const calls=[];
   const core={start:async()=>HANDSHAKE,call:async(method,params)=>{
     calls.push({method,params});
@@ -95,7 +95,7 @@ function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false
     throw Object.assign(Error('UNKNOWN_METHOD'),{errorCode:'UNKNOWN_METHOD'});
   }};
   const invocation={projectId:'project',sessionId:'session',turnId:'turn',executionId:'execution'};
-  const tools=createWorldTools(core,async()=>({activeWorldId:'alpha',...(settingsFlag?{discussionOnly:true}:{})}),()=>false,undefined,undefined,
+  const tools=createWorldTools(core,async()=>({activeWorldId:noWorld?undefined:'alpha',...(settingsFlag?{discussionOnly:true}:{})}),()=>false,undefined,undefined,
     {isDiscussionOnly:()=>discussionOnly,sampleLiveState:sampler,
       budget:()=>({tokens:{limit:1000,used:1000},requests:{used:2},context:{limit:80000,used:900}}),historyMethods});
   const call=(name,args={},extra={})=>tools.find(tool=>tool.name===name).execute(args,
@@ -194,20 +194,26 @@ test('live observation refuses to substitute saved progress for current state',a
   assert.deepEqual(Object.keys(state.durableProgress).sort(),['savedAt','source']);
   assert.ok(!JSON.stringify(state).includes('pistol'),'saved equipment must not appear in a live response');
   assert.equal(state.docsCompatibility.compatible,true);
-  const wired=fixture({sampler:async()=>({sampledAt:'2026-09-10T12:00:00Z',worldId:'alpha',buildId:'gbd-1',instanceId:'inst-1',
+  const wired=fixture({sampler:async()=>({sampledAt:new Date().toISOString(),worldId:'alpha',buildId:'gbd-1',instanceId:'inst-1',
     base:'first-person',equipment:{active:'rifle'},display:{cameraGlobal:[1,2,3]},targets:[],interactables:[]})});
   const live=await wired.call('godot_runtime_state',{scope:'live'});
   assert.equal(live.live.available,true);
   assert.equal(live.live.instanceId,'inst-1');
   assert.equal(live.live.equipment.active,'rifle');
   assert.equal(live.live.stale,false);
-  // A replaced game process invalidates the previous sample.
-  const replaced=fixture({sampler:async()=>({sampledAt:'2026-09-10T12:00:00Z',worldId:'alpha',buildId:'gbd-1',instanceId:'inst-2',
-    base:'first-person',equipment:{active:'sword'},display:{cameraGlobal:[0,0,0]},targets:[],interactables:[]})});
+  // A replaced game process is reported, then becomes the new baseline.
+  let instance='inst-1';
+  const replaced=fixture({sampler:async()=>({sampledAt:new Date().toISOString(),worldId:'alpha',buildId:'gbd-1',
+    instanceId:instance,base:'first-person',equipment:{active:'sword'},display:{cameraGlobal:[0,0,0]},
+    targets:[],interactables:[]})});
   await replaced.call('godot_runtime_state',{scope:'live'});
-  const next=await replaced.call('godot_runtime_state',{scope:'live'});
-  assert.equal(next.live.instanceId,'inst-2');
-  assert.equal(next.live.stale,false);
+  instance='inst-2';
+  const swapped=await replaced.call('godot_runtime_state',{scope:'live'});
+  assert.equal(swapped.live.instanceChanged,true);
+  assert.equal(swapped.live.stale,false);
+  const settled=await replaced.call('godot_runtime_state',{scope:'live'});
+  assert.equal(settled.live.instanceChanged,false,'the new instance is now the baseline');
+  assert.equal(settled.live.stale,false);
   const build=await wired.call('godot_runtime_state',{scope:'build'});
   assert.equal(build.phase,'formal');
   assert.ok(!('live' in build));
@@ -237,6 +243,14 @@ test('godot_history reports the exact missing adapter and never calls git',async
   assert.equal(proposal.applies,false);
   assert.equal(proposal.requiresPlayerAction,true);
   assert.ok(!f.calls.some(entry=>/^(git|shell|exec)/.test(entry.method)));
+});
+
+test('the executor gate answers without a bound world',async()=>{
+  const f=fixture({noWorld:true});
+  const status=await f.call('godot_jobs',{mode:'status'});
+  assert.equal(status.scope,'executor');
+  assert.equal(status.status.build,true);
+  assert.ok(!f.calls.some(entry=>entry.method==='workspace.open'),'a global gate must not need a world binding');
 });
 
 test('godot_jobs exposes the real executor gate, durable usage and resume',async()=>{

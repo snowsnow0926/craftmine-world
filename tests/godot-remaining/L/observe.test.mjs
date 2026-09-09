@@ -51,22 +51,28 @@ test('a live sample without a timestamp is refused',()=>{
 test('a live sample from another world or build is marked stale',()=>{
   const sample={sampledAt:'2026-09-10T10:00:00Z',worldId:'beta',buildId:'gbd-2',instanceId:'inst-9',base:'first-person',
     equipment:{active:'sword'},display:{cameraGlobal:[0,1,0],attachedToCamera:true,alignedWithCamera:true,forwardDot:0.999}};
-  const live=normalizeLiveSample(sample,{worldId:'alpha',buildId:'gbd-1',instanceId:'inst-9'});
+  const live=normalizeLiveSample(sample,{worldId:'alpha',buildId:'gbd-1',instanceId:'inst-9'},{now:Date.parse('2026-09-10T10:00:00Z')});
   assert.equal(live.stale,true);
   assert.deepEqual(live.mismatches,['LIVE_WORLD_MISMATCH','LIVE_BUILD_MISMATCH']);
   assert.equal(live.provenance,'live-instance-sample');
   assert.equal(live.equipment.active,'sword');
 });
 
-test('a replaced instance and an expired sample are both refused',()=>{
+test('a replaced instance is informational while an expired or future sample is refused',()=>{
   const sample={sampledAt:'2026-09-10T10:00:00Z',worldId:'alpha',buildId:'gbd-1',instanceId:'inst-2',
     equipment:{active:'rifle'}};
-  const changed=normalizeLiveSample(sample,{worldId:'alpha',buildId:'gbd-1',instanceId:'inst-1'});
-  assert.deepEqual(changed.mismatches,['LIVE_INSTANCE_CHANGED']);
+  const changed=normalizeLiveSample(sample,{worldId:'alpha',buildId:'gbd-1',instanceId:'inst-1'},{now:Date.parse('2026-09-10T10:00:00Z')});
+  assert.equal(changed.instanceChanged,true);
+  assert.equal(changed.stale,false,'a fresh sample from a replaced instance is still current');
+  assert.deepEqual(changed.mismatches,[]);
   const expired=normalizeLiveSample(sample,{worldId:'alpha',buildId:'gbd-1',instanceId:'inst-2'},
     {now:Date.parse('2026-09-10T10:01:00Z'),maxAgeMs:30000});
   assert.deepEqual(expired.mismatches,['LIVE_SAMPLE_STALE']);
   assert.equal(expired.ageMillis,60000);
+  const future=normalizeLiveSample({...sample,sampledAt:'2026-09-10T11:00:00Z'},
+    {worldId:'alpha',buildId:'gbd-1',instanceId:'inst-2'},
+    {now:Date.parse('2026-09-10T10:00:00Z'),maxAgeMs:30000});
+  assert.deepEqual(future.mismatches,['LIVE_SAMPLE_STALE'],'a future timestamp is not trusted');
   const fresh=normalizeLiveSample(sample,{worldId:'alpha',buildId:'gbd-1',instanceId:'inst-2'},
     {now:Date.parse('2026-09-10T10:00:05Z'),maxAgeMs:30000});
   assert.equal(fresh.stale,false);
@@ -74,7 +80,7 @@ test('a replaced instance and an expired sample are both refused',()=>{
 
 test('a base that does not expose camera or equipment reports them unknown',()=>{
   const live=normalizeLiveSample({sampledAt:'2026-09-10T10:00:00Z',worldId:'alpha',buildId:'gbd-1',instanceId:'inst-1',
-    base:'top-down',player:{position:[1,2]},quests:{quests:[{id:'q1'}]}},{worldId:'alpha',buildId:'gbd-1'});
+    base:'top-down',player:{position:[1,2]},quests:{quests:[{id:'q1'}]}},{worldId:'alpha',buildId:'gbd-1'},{now:Date.parse('2026-09-10T10:00:00Z')});
   assert.equal(live.available,true);
   assert.equal(live.camera,null);
   assert.equal(live.equipment,null);
@@ -147,7 +153,7 @@ test('limit accounting preserves unknown counters instead of reporting zero',()=
 });
 
 test('a live sample without its own identity is not trusted as current',()=>{
-  const live=normalizeLiveSample({sampledAt:'2026-09-10T10:00:00Z',equipment:{active:'sword'}},{worldId:'alpha',buildId:'gbd-1'});
+  const live=normalizeLiveSample({sampledAt:'2026-09-10T10:00:00Z',equipment:{active:'sword'}},{worldId:'alpha',buildId:'gbd-1'},{now:Date.parse('2026-09-10T10:00:00Z')});
   assert.equal(live.available,true);
   assert.equal(live.stale,true);
   assert.deepEqual(live.mismatches,['LIVE_IDENTITY_UNVERIFIED']);

@@ -57,17 +57,17 @@ test('continuing a job reports a missing adapter instead of guessing',async()=>{
   assert.equal(result.owner,'R1');
 });
 
-test('recoverable drafts report resumability and the blocking reason',async()=>{
+test('recoverable drafts report resumability and hide other sessions',async()=>{
   const core={call:async()=>({items:[
     {taskId:'task-a',binding:{sessionId:'session'},generation:2,worldId:'alpha',draftRevision:4,draftHash:'a'.repeat(64),status:'interrupted'},
     {taskId:'task-b',binding:{sessionId:'other'},generation:1,worldId:'alpha',draftRevision:1,draftHash:'b'.repeat(64),status:'interrupted'},
     {taskId:'task-c',binding:{sessionId:'session'},generation:1,worldId:'alpha',draftRevision:2,draftHash:'c'.repeat(64),status:'finished'}
   ],modelReplay:false})};
   const listed=await listRecoverable(core,{projectId:'project',worldId:'alpha',sessionId:'session'});
-  assert.equal(listed.items.length,3);
-  assert.deepEqual(listed.items.map(item=>item.resumable),[true,false,false]);
-  assert.equal(listed.items[1].blockedReason,'OTHER_SESSION');
-  assert.equal(listed.items[2].blockedReason,'NOT_INTERRUPTED');
+  assert.deepEqual(listed.items.map(item=>item.taskId),['task-a','task-c'],'another session\'s draft is not listed');
+  assert.deepEqual(listed.items.map(item=>item.resumable),[true,false]);
+  assert.equal(listed.items[1].blockedReason,'NOT_INTERRUPTED');
+  assert.ok(!listed.items.some(item=>Object.hasOwn(item,'sessionId')),'no session id is echoed to the model');
 });
 
 test('resume refuses a stale selection, a foreign draft and an unknown task',async()=>{

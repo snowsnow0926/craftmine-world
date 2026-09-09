@@ -146,11 +146,11 @@ node --test tests/godot-remaining/L/broker-real-core.test.mjs tests/godot-round2
 node desktop/build-world-plugin.mjs
 ```
 
-结果：**98 项通过，0 失败，0 跳过**（逻辑 89 + 真实核心 9）。
+结果：**101 项通过，0 失败，0 跳过**（逻辑 92 + 真实核心 9）。
 
 | 账目 | 内容 | 证据 |
 | --- | --- | --- |
-| 逻辑/契约 | 工具路由、守卫、意图、上下文注入 89 项 | `evidence/tests-logic.log` |
+| 逻辑/契约 | 工具路由、守卫、意图、上下文注入 92 项 | `evidence/tests-logic.log` |
 | 真实核心 | 执行器门禁、用量、草稿重启接续、缺失适配器 9 项 | `evidence/tests-real-core.log` |
 | 插件构建 | 35 工具、模块可加载 | `evidence/plugin-build.log`、`built-tool-surface.json` |
 | 核心身份 | 自建 debug 二进制 SHA-256 | `evidence/core-binary.txt` |
@@ -159,6 +159,24 @@ node desktop/build-world-plugin.mjs
 **分别记账**：逻辑测试证明契约与路由；真实核心测试证明这些工具能驱动真实 Rust 存储与真实 RPC 约束；
 **没有**证明：真实模型行为、引擎渲染、可见窗口、玩家手感、真实产品端到端。未运行被禁止的输入测试，
 未发送真实鼠标键盘、未请求 Pointer Lock、未激活窗口、未操作用户浏览器。
+
+## 4.1 独立审查与修复
+
+提交 `1e0160d` 经 code-reviewer 审查后修复了以下缺陷（第二轮提交）：
+
+| 缺陷 | 修复 |
+| --- | --- |
+| 活体实例被替换后永久标记 stale（基线永不更新） | 实例替换改为 `instanceChanged` 信息位，不再是失效原因；新实例成为新基线 |
+| 未来时间戳的样本永不过期（游戏时钟超前或伪造） | 超过时钟偏移容差（默认 5s）即判 stale |
+| `task.recoverable` 会把其他会话的 taskId/draftHash 返回给模型 | 列表按当前会话过滤；模型看不到其他会话条目 |
+| `variant`/`upgrade`/`restore-content`/`restore-save` 提案缺 `worldId` | 每个提案都记录宿主绑定的世界 |
+| 事实块可能采信其他世界的回执 | 回执按 `worldId` 过滤；本世界无 Godot 身份时不产生块 |
+| `generation` 严格 `===`，宿主返回字符串会误判 | 数值比较 |
+| `task.readRequirements` 参数展开顺序可能被将来新增字段利用 | 改为 `{...args,context}` |
+| `verification_cancel` 非可选调用 `verifications.cancel` | 改为可选链，与同文件其他调用一致 |
+| `godot_jobs mode=status` 需要世界绑定 | 前移到绑定之前，无世界也能读取全局门禁 |
+
+未修复（按未完成记录）：`godot_asset_put` 的 `bytesBase64` 上限 131136 比 98304 字节略宽（A 的工具，属其范围）。
 
 ## 5 环境与依赖说明
 
