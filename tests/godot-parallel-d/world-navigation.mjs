@@ -1,5 +1,10 @@
 // Headless acceptance for the left-column world navigation (task D).
 //
+// Run with a built plugin and core binary:
+//   node desktop/build-world-plugin.mjs
+//   cargo build --release -p craftmine-core --target-dir <dir>
+//   CRAFTMINE_CORE_BIN=<dir>/release/craftmine-core.exe node tests/godot-parallel-d/world-navigation.mjs
+//
 // Real React components run against the real craftmine.world plugin and the
 // real Rust core. No mouse, keyboard, focus or pointer-lock input is used:
 // state is driven through page scripts, DOM events and the panel bridge, in an
