@@ -1,0 +1,10 @@
+{
+  "format": "craftmine.godot-sideview-input-plan/1",
+  "name": "walk_into_spikes",
+  "description": "Fresh entrance start. Walks right without jumping, so the player falls into the spike pit, dies and respawns at the checkpoint it touched on the way. Used to prove the checkpoint respawn is the real death path and that progress survives it.",
+  "durationTicks": 240,
+  "settleTicks": 180,
+  "segments": [
+    { "fromTick": 0, "toTick": 240, "right": true }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "format": "craftmine.godot-sideview-world/1",
+  "worldId": "blank",
+  "baseId": "side-view",
+  "baseVersion": "1.0.0",
+  "stateVersion": 1,
+  "kind": "blank-start",
+  "title": "Side-view blank start",
+  "description": "One flat room with the base runtime only: run, jump, platform collision, camera, basic attack, one checkpoint and one save file. Intended as the starting point for new side-view worlds.",
+  "startRoom": "start",
+  "startSpawn": "spawn_start",
+  "rooms": [
+    {
+      "id": "start",
+      "bounds": { "x": 0, "y": 0, "w": 640, "h": 360 },
+      "background": "#0f141a",
+      "solids": [
+        { "id": "floor", "x": 0, "y": 320, "w": 640, "h": 40 },
+        { "id": "wall_left", "x": -20, "y": 0, "w": 20, "h": 360 },
+        { "id": "wall_right", "x": 640, "y": 0, "w": 20, "h": 360 },
+        { "id": "ceiling", "x": 0, "y": -20, "w": 640, "h": 20 },
+        { "id": "step", "x": 120, "y": 250, "w": 120, "h": 16, "color": "#33414f" }
+      ],
+      "spawns": [
+        { "id": "spawn_start", "x": 80, "y": 320, "facing": 1 }
+      ],
+      "doors": [],
+      "checkpoints": [
+        { "id": "cp_start", "x": 180, "y": 320 }
+      ],
+      "abilities": [],
+      "rewards": [],
+      "targets": [
+        {
+          "id": "dummy_start",
+          "kind": "dummy",
+          "x": 460,
+          "y": 320,
+          "health": 2,
+          "rewardId": "reward_blank_dummy",
+          "grants": { "counters": { "coins": 1 } }
+        }
+      ],
+      "hazards": []
+    }
+  ]
+}

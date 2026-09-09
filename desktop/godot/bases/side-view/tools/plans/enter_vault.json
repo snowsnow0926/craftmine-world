@@ -1,0 +1,11 @@
+{
+  "format": "craftmine.godot-sideview-input-plan/1",
+  "name": "enter_vault",
+  "description": "Continues from the get_ability save in a fresh process, so the ability must have survived the restart. Runs right into the high-ledge wall. Segment one holds jump for the whole flight of a full-height ground jump; segment two presses jump again near the apex, which fires the second impulse and lifts the player about 250 px, above the 190 px ledge. Then walks right into the vault exit volume. No coordinate is ever written by the harness.",
+  "durationTicks": 240,
+  "settleTicks": 150,
+  "segments": [
+    { "fromTick": 0, "toTick": 95, "right": true, "jump": { "mode": "hold" } },
+    { "fromTick": 0, "toTick": 240, "right": true, "jump": { "mode": "once", "offset": 25, "hold": 6 } }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "format": "craftmine.godot-sideview-input-plan/1",
+  "name": "revisit_rooms",
+  "description": "Continues from the enter_vault save. Walks left out of the vault, back into the ruins (spawning on the ledge), drops to the floor, and continues left through the ruins into the entrance. Used to prove that a return trip keeps abilities, checkpoints and one-time rewards and does not grant any reward twice.",
+  "durationTicks": 700,
+  "settleTicks": 150,
+  "segments": [
+    { "fromTick": 0, "toTick": 700, "left": true }
+  ]
+}

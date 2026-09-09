@@ -1,0 +1,21 @@
+{
+  "format": "craftmine.godot-sideview-gate/1",
+  "gateId": "gate_vault_ledge",
+  "requiredAbility": "double_jump",
+  "requiredRise": 190,
+  "singleJumpRise": 136.111,
+  "doubleJumpTotalRise": 249.889,
+  "singleJumpMargin": 53.889,
+  "doubleJumpMargin": 59.889,
+  "minimumSingleJumpMargin": 16,
+  "minimumDoubleJumpMargin": 16,
+  "singleJumpBlocked": true,
+  "doubleJumpPasses": true,
+  "singleJumpHorizontalReach": 202.222,
+  "doubleJumpHorizontalReach": 286,
+  "singleJumpAirTime": 0.778,
+  "paramsFormat": "craftmine.godot-sideview-params/1",
+  "worldId": "ruins",
+  "paramsFile": "D:\\Craftmine World-worktrees\\godot-parallel-g-20260909\\desktop\\godot\\bases\\side-view\\params\\side_view_params.json",
+  "worldFile": "D:\\Craftmine World-worktrees\\godot-parallel-g-20260909\\desktop\\godot\\bases\\side-view\\worlds\\ruins\\world.json"
+}
