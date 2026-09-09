@@ -2369,6 +2369,7 @@ const craftminePanelRequest = createCraftminePanelGateway({
     activeTurns.set(session.id, result.turnId); return result.turnId;
   },
   end: (sessionId, status) => finishTurn(sessionId, status, undefined, { createNotification: false }),
+  interrupt: async (context, reason) => { await plugins.requestCraftmineHost("task.interrupt", { context, reason }); },
   stop: async sessionId => {
     if (!sidecar) throw new Error("CRAFTMINE_SIDECAR_UNAVAILABLE");
     const turnId = activeTurns.get(sessionId);

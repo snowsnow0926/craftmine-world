@@ -20,6 +20,7 @@ export function createCraftminePanelGateway(options: {
   end: (sessionId: string, status: "completed" | "error") => Promise<void>;
   stop: (sessionId: string) => Promise<void>;
   resume: (session: any, turnId: string, result: any) => Promise<void>;
+  interrupt: (context: Record<string, string>, reason: string) => Promise<void>;
   backup: (channel: string, payload: Record<string, any>) => Promise<any>;
   diagnostics: (channel: string, payload: Record<string, any>) => Promise<any>;
 }) {
@@ -67,9 +68,11 @@ export function createCraftminePanelGateway(options: {
     const action = (async () => {
       const turnId = await options.begin(session);
       const context = { projectId: owner.projectId, sessionId, turnId };
+      let recovered = false;
       try {
         if (channel === "task.resume") {
           const result = await options.domain("task.resume", { context, worldId, taskId: payload.taskId, generation: payload.generation });
+          recovered = true;
           // A fresh explicit player request continues this same recovered
           // budget owner. Ending a placeholder turn here would reset it.
           await options.resume(session, turnId, result);
@@ -82,7 +85,12 @@ export function createCraftminePanelGateway(options: {
         const result = await workbench(channel, payload, { ...owner, context, origin, previous: current.context });
         await options.end(sessionId, "completed");
         return result;
-      } catch (error) { await options.end(sessionId, "error"); throw error; }
+      } catch (error) {
+        // A committed recovery must remain recoverable if starting the fresh
+        // model request fails; otherwise the next prompt creates a new ledger.
+        if (recovered) await options.interrupt(context, "RESUME_LAUNCH_FAILED");
+        await options.end(sessionId, "error"); throw error;
+      }
     })();
     inFlight.set(key, action);
     try { return await action; } finally { inFlight.delete(key); }

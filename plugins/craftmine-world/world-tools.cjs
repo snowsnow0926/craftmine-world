@@ -2,6 +2,7 @@
 const {fields,inspectDraft,readDraftResource,patchDraft,readCapabilities,readVerification,draftPackages,createLibraryService,createMemoryService}=require('./domain.cjs');
 
 function hostContext(context) {
+  if(context?.toolCallId?.startsWith('@host:'))throw Error('RESERVED_HOST_RECEIPT');
   for(const key of ['projectId','sessionId','turnId','toolCallId','executionId']) {
     const value=context?.[key];
     if(typeof value!=='string'||!value.trim()||value.length>240||/[\x00-\x1f]/.test(value))throw Error('HOST_IDENTITY_REQUIRED: 世界工具需要有效的 PI 会话');

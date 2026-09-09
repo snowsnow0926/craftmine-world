@@ -48,6 +48,12 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
   }
   return async function onHostRequest(method,params={}){
     await core.start();
+    if(method==='task.interrupt'){
+      fields(params,['context','reason']);
+      const result=await core.call(method,params);
+      await verifications?.cancelTurn(params.context);await reviews?.cancelTurn(params.context);
+      return result;
+    }
     if(method==='workbench.request'){
       fields(params,['channel','payload','host']);
       if(!workbench)throw Error('WORKBENCH_UNAVAILABLE');

@@ -37,6 +37,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "task.readRequirements" => return journal.task_read_requirements(params),
         "task.recordContext" => return journal.task_record_context(params),
         "task.resume" => return journal.task_resume(params),
+        "task.interrupt" => return journal.task_interrupt(params),
         "task.discard" => return journal.task_discard(params),
         "task.recoverable" => return journal.task_recoverable(params),
         _ => {}
