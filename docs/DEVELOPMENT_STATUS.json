@@ -3,10 +3,10 @@
   "objective": "按 Godot 多底座计划循环开发：中央世界、右侧对话、真实工程创作、多底座、保存恢复、作品复用与 Windows 交付",
   "currentMilestone": "Godot并行接手审计：A–H集成与数据/权限修复；核心102、原生25、E/F/G 52/40/80通过；真实Godot执行/完整进度适配与发行门禁待完成",
   "baseline": "46739d222ceefc654b596725c96288a4087993b3",
-  "updated": "2026-09-09T14:40:57.759Z",
+  "updated": "2026-09-09T14:45:16.501Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "godot_goal_active_parallel_audit_validated",
+    "status": "godot_goal_active_cycle04_merged",
     "reason": "用户明确要求将 GODOT_MULTIBASE_DEVELOPMENT_PLAN.md 设为 Goal 并开始循环开发。已创建 active Goal，没有 token 总预算；按阶段实现、验证、修复并记录。",
     "activeGoal": true,
     "recurringDevelopment": true,
@@ -19,13 +19,17 @@
     "nextStep": "继续GD0回环隔离与可信A/B适配；GD2完整底座进度、产物解析、候选真实实例证明和C产品接线，再推进真实模型验收。",
     "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。",
     "previousAutomationId": "craftmine-windows",
-    "currentWorktrees": "本轮独立集成树与三个修复树；A–H原交付树未操作清理；历史被拒绝的清理未重试。",
+    "currentWorktrees": "集成已合并；底座修复树/分支已清理。core审计树清理返回Invalid argument而保留；C审计实体已删除、Git元数据/分支保留。A–H原树与历史目录未操作。根集成树在最终合并后执行普通Git清理，结果以本轮最终回复为准。",
     "localMerge": {
-      "status": "validated_in_integration_worktree",
+      "status": "fast_forward_merged",
       "branch": "master",
+      "implementationCommit": "a8b920df75e4a277db271dfffbb99d683229fe53",
+      "codeCommit": "8db008f7d8a0ce80a4fa0a858aa7f795d9ed6ea5",
+      "evidenceFilesVerified": 27,
+      "allDispatchHeadsAndRepairsPresent": true,
+      "unrelatedDirtyFilesPreserved": true,
       "pushed": false,
-      "newDistributionBuilt": false,
-      "codeCommit": "8db008f7d8a0ce80a4fa0a858aa7f795d9ed6ea5"
+      "newDistributionBuilt": false
     },
     "godotCycle02Cleanup": "e8d903e已快进合并，证据哈希逐项复核。本轮登记及分支已删除；Git留下依赖/仓库副本后，经精确范围审批，仅移除2504个链接条目而不跟随目标，再删除 D:/Craftmine World/test-results/worktrees/godot-cycle02。目录已不存在；未操作历史残留。",
     "godotCycle03Cleanup": {
@@ -39,6 +43,13 @@
       "rejectionReason": "自动审批认为删除约2418个链接并移除约5万文件的完整工作树及分支属于广泛、不可逆清理，用户授权开发但未明确授权该清理；需要明确确认。工具拒绝在进程创建前发生，未执行任何删除。",
       "retryPolicy": "保留目录；未重试或采用间接删除。",
       "blocksDevelopment": false
+    },
+    "godotCycle04Cleanup": {
+      "bases": "removed with branch",
+      "core": "git worktree remove failed Invalid argument; tree and registration retained",
+      "view": "directory removed; metadata removal failed Invalid argument; branch retained",
+      "originalDispatchAndHistoricalTrees": "untouched",
+      "root": "ordinary Git cleanup follows final merge"
     }
   },
   "godotMultibasePlan": {

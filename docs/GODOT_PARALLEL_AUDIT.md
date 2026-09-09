@@ -105,3 +105,12 @@ G 原验收只过滤 SCRIPT ERROR；另行发现的编辑器退出资源泄漏�
 [底座](dispatch-reports/godot-parallel/audit/bases/REPORT.md)、
 [F 重启](dispatch-reports/godot-parallel/audit/bases/SCENE_RESUME.md)、
 [H 预检](dispatch-reports/godot-parallel/H/AUDIT_REPORT.md)。
+
+
+## 合并与清理记录
+
+实现已合入本地 master a8b920d；27份本轮证据在主目录再次验哈希通过，
+全部原交付与修复提交都已包含。无关许可文档改动逐字保留，没有推送。
+底座审计树/分支已清理。core清理返回Invalid argument，工作树保留；
+C实体已删除但Git元数据清理返回相同错误，登记和分支保留。原A–H与历史目录未动。
+根集成树在这份记录合并后执行普通Git清理；这类清理遗留不阻断下一轮开发。
