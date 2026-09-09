@@ -1,0 +1,13 @@
+﻿ M docs/dispatch-reports/godot-round2/R7/evidence/tests-logic.log
+ M docs/dispatch-reports/godot-round2/R7/evidence/tests-real-core.log
+ M docs/dispatch-reports/godot-round2/R7/evidence/worktree-status.txt
+ M plugins/craftmine-world/godot-jobs.cjs
+ M plugins/craftmine-world/godot-library.cjs
+ M plugins/craftmine-world/godot-observe.cjs
+ M plugins/craftmine-world/world-tools.cjs
+ M tests/godot-remaining/L/broker-contract.test.mjs
+ M tests/godot-remaining/L/observe.test.mjs
+ M tests/godot-round2/R7/context-injection.test.mjs
+ M tests/godot-round2/R7/jobs-and-recovery.test.mjs
+ M tests/godot-round2/R7/library-and-intents.test.mjs
+ M vendor/pi-desktop/packages/agent-runtime/src/craftmine-godot-facts.ts
