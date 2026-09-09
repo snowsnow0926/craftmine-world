@@ -22,6 +22,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "library.read" => return journal.library_read(params),
         "library.capture" => return journal.library_capture(params),
         "memory.search" => return journal.memory_search(params),
+        "memory.findReceipt" => return journal.memory_find_receipt(params),
         "memory.propose" => return journal.memory_propose(params),
         "memory.retire" => return journal.memory_retire(params),
         "backup.export" => return journal.backup_export(params),
