@@ -189,6 +189,8 @@ import { createGodotCandidateCoordinator } from "./godot-candidate-coordinator";
 import {
   createGodotWorldFactory, loadMaterializer, resolveGodotRoot, type GodotCreationDependencies,
 } from "./godot-world-creation";
+import {createGodotWorldInitializer} from "./godot-world-initialization";
+import {createAssetPreviewHost} from "../craftmine-assets/host-service.mjs";
 import { createGodotPanelCoordinator } from "./godot-panel-coordinator";
 import { pathToFileURL } from "node:url";
 import { parseAllowedExternalUrl } from "./safe-open-external";
@@ -932,6 +934,19 @@ const godotRoot = resolveGodotRoot({
   startDir: __dirname,
   override: process.env.CRAFTMINE_GODOT_BASES,
 });
+const godotToolchainRoot = app.isPackaged ? join(process.resourcesPath, "godot") : join(godotRoot, "..", "build", "runtime-resources", "godot");
+plugins.setServices({craftmineGodotToolchain: {
+  broker: join(godotToolchainRoot, "broker", "godot-host-broker.exe"),
+  brokerIdentity: join(godotToolchainRoot, "broker", "broker-identity.json"),
+  engineRoot: join(godotToolchainRoot, "engine", "4.7.2-stable"),
+  toolchainLock: join(godotToolchainRoot, "toolchain.lock.json"),
+  bridgePath: join(godotToolchainRoot, "web", "bridge.js"),
+}});
+const assetPreviews = createAssetPreviewHost({resolveBody: (input: Record<string, unknown>) => plugins.requestCraftmineHost("asset.bodyPath", input)});
+plugins.setServices({
+  craftmineAssetPreview: (input) => assetPreviews.preview(input),
+  craftmineCancelAssetPreview: (input) => assetPreviews.cancel(input),
+});
 let materializeBase: GodotCreationDependencies["materialize"] | null = null;
 void loadMaterializer(join(godotRoot, "shared", "materialize.mjs"))
   .then(fn => { materializeBase = fn; })
@@ -1021,6 +1036,12 @@ godotCreation = createGodotWorldFactory({
   catalogFile: join(godotRoot, "bases", "base-catalog.json"),
   basesRoot: join(godotRoot, "bases"),
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
+  initialization: createGodotWorldInitializer({
+    worldsRoot: join(dataDir, "godot-worlds"),
+    domain: (method, params) => plugins.requestCraftmineHost(method, params),
+    selection: godotSelection,
+    firstLoad: (worldId, candidateId) => godotCandidates.firstLoad(worldId, candidateId),
+  }),
   materialize: input => {
     if (!materializeBase) throw new Error("GODOT_MATERIALIZER_UNAVAILABLE");
     return materializeBase(input);
@@ -5952,8 +5973,20 @@ function registerIpc() {
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
     return invokeCraftmineNavigation(payload, {
-      invoke: (channel, params) => plugins.invokePanelBridge("craftmine.world", channel, params),
-      navigate: (request) => pluginViews.navigateCraftmine(request),
+      invoke: (channel, params) => godotPanel.invoke(channel, params),
+      navigate: async (request) => {
+        // World creation from the main sidebar also works before its work panel
+        // has mounted. The retained view still owns the save/switch sequence.
+        const loaded = plugins.getLoaded("craftmine.world");
+        const view = loaded?.manifest.contributes?.views?.find(candidate => candidate.id === "world");
+        if (!loaded) throw Error("WORLD_PLUGIN_NOT_LOADED");
+        if (!view) throw Error("WORLD_VIEW_DECLARATION_MISSING");
+        if (!loaded.permissions.has("ui.view")) throw Error("WORLD_VIEW_PERMISSION_REQUIRED");
+        if (!pluginActiveInProject("craftmine.world", currentWorkspacePath())) throw Error("WORLD_PLUGIN_SCOPE_DISABLED");
+        pluginViews.open({pluginId: "craftmine.world", viewId: "world", locale: updaterLocale,
+          theme: pluginPanelTheme, htmlPath: join(loaded.path, view.entry), netDomains: loaded.manifest.net?.domains});
+        return pluginViews.navigateCraftmine(request);
+      },
       showSurface: (request) => pluginViews.showCraftmineSurface(request),
       pickDirectory: () => pluginViews.pickCraftmineDirectory(),
     });
@@ -9213,6 +9246,11 @@ installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => ma
 installHeadlessControl({
   window: () => mainWindow,
   world: () => pluginViews.headlessWorldContents(),
+  godotGameplay: {
+    observe: () => godotWorld.request("observe-envelope", {}),
+    action: (op, args) => op === "resume" ? godotWorld.resume().then(() => ({status: "ready"})) : godotWorld.request(op, args),
+    capture: (width, height) => godotWorld.headlessCapture(width, height),
+  },
   runtime: () => ({ hostAvailable: !!host?.isAvailable(), plugins: plugins.listLoaded().map(plugin => plugin.manifest.id) }),
   draftProbe: async () => {
     if (!headlessAcceptance || !host) throw new Error("Native draft acceptance is unavailable");

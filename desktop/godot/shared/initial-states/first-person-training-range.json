@@ -1,0 +1,106 @@
+{
+  "format": "craftmine.authored-initial-state/1",
+  "baseId": "first-person",
+  "template": "training-range",
+  "worldId": "authored-initial-world",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "sourceDigest": "8f4013614c97300853fa30e17327074c2544dc60726392a33269fb61c395398d",
+  "snapshot": {
+    "baseId": "first-person",
+    "baseVersion": "0.1.0",
+    "body": {
+      "base": "first-person",
+      "baseVersion": "0.1.0",
+      "equipment": {
+        "active": "pistol",
+        "items": [
+          {
+            "id": "pistol",
+            "magazine": 6,
+            "reserve": 12
+          },
+          {
+            "id": "practice_sword",
+            "magazine": 0,
+            "reserve": 0
+          },
+          {
+            "id": "inspection_tool",
+            "magazine": 0,
+            "reserve": 0
+          }
+        ]
+      },
+      "format": "craftmine.godot-base-state/1",
+      "interactables": [
+        {
+          "enabled": true,
+          "id": "AmmoCrate",
+          "usesLeft": 3
+        },
+        {
+          "enabled": true,
+          "id": "RepairKit",
+          "taken": false
+        }
+      ],
+      "inventory": {
+        "slots": [
+          {
+            "count": 1,
+            "id": "repair_kit"
+          }
+        ]
+      },
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "quests": {
+        "quests": [
+          {
+            "count": 0,
+            "id": "range_basic",
+            "rewardGranted": false,
+            "status": 1
+          }
+        ]
+      },
+      "savedAt": "2026-09-09T20:55:22Z",
+      "stateVersion": 1,
+      "targets": [
+        {
+          "damageTaken": 0,
+          "destroyed": false,
+          "health": 50,
+          "hitCount": 0,
+          "id": "target_a"
+        },
+        {
+          "damageTaken": 0,
+          "destroyed": false,
+          "health": 50,
+          "hitCount": 0,
+          "id": "target_b"
+        },
+        {
+          "damageTaken": 0,
+          "destroyed": false,
+          "health": 50,
+          "hitCount": 0,
+          "id": "target_c"
+        }
+      ],
+      "worldId": "authored-initial-world"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "authored-initial-world"
+  }
+}

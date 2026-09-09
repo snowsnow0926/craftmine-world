@@ -400,7 +400,7 @@ impl TaskJournal {
                 manifest.files.get(path) == Some(entry),
                 "GODOT_SOURCE_STALE"
             );
-            super::godot_projects::blob_write(&self.directory, &args.target_world_id, entry, text)?;
+            super::godot_projects::blob_write_bytes(&self.directory, &args.target_world_id, entry, text)?;
         }
         let body = serde_json::to_string(&manifest)?;
         let hash = digest(&body);
@@ -483,7 +483,7 @@ impl TaskJournal {
                 // hashed, so a backup descriptor proves the live store (a Git
                 // commit or an immutable blob), not just the rows.
                 for (path, entry) in &parsed.files {
-                    super::godot_projects::read_indexed_file(
+                    super::godot_projects::read_indexed_bytes(
                         self,
                         &args.world_id,
                         parsed.revision,

@@ -1,0 +1,45 @@
+{
+  "format": "craftmine.authored-initial-state/1",
+  "baseId": "side-view",
+  "template": "blank",
+  "worldId": "authored-initial-world",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "sourceDigest": "cbb77a253e5cf58f541a78913810e965b0ecd5a84999b900db6c538328f86254",
+  "snapshot": {
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "body": {
+      "abilities": {},
+      "activeCheckpoint": "",
+      "checkpoints": {},
+      "counters": {},
+      "entities": {},
+      "format": "craftmine.godot-sideview-state/1",
+      "inventory": {},
+      "player": {
+        "facing": 1,
+        "room": "start",
+        "x": 80,
+        "y": 320
+      },
+      "rewards": {},
+      "rooms": {
+        "start": {
+          "entries": 1,
+          "visited": true
+        }
+      },
+      "stateVersion": 1,
+      "vitals": {
+        "alive": true,
+        "health": 3,
+        "invulnerableRemaining": 0,
+        "respawnRemaining": 0
+      },
+      "worldId": "authored-initial-world"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "authored-initial-world"
+  }
+}

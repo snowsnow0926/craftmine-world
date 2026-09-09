@@ -8,6 +8,20 @@ use crate::content_history::repo::{commit_message, ContentFile, MAIN_BRANCH};
 use crate::godot_test_support::*;
 use std::fs;
 
+#[test]
+fn portable_columns_require_explicit_migrations_and_never_default_missing_user_fields() -> Result<()> {
+    let (dir,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let names=tables(&journal.db)?;
+    let mut domain=snapshot(&journal.db,&names)?;
+    domain["craftmine_godot_builds"]["columns"].as_array_mut().unwrap().retain(|value|value!="branch_id");
+    let tx=journal.db.transaction()?;
+    apply_domain_rows(&tx,&domain)?;tx.rollback()?;
+    domain["craftmine_worlds"]["columns"].as_array_mut().unwrap().retain(|value|value!="title");
+    let tx=journal.db.transaction()?;
+    assert!(apply_domain_rows(&tx,&domain).unwrap_err().to_string().contains("BACKUP_COLUMNS_MISMATCH"));
+    tx.rollback()?;drop(dir);Ok(())
+}
+
 const LEGACY_PROJECT: &str = r#"{"format":"craftmine.project/1","current":"v-0123456789abcdef0123",
     "snapshot":{"format":"craftmine.progress/1","player":{"x":0.5,"y":6,"z":12.5,"yaw":0,"pitch":0}},
     "assets":[],"extensions":[]}"#;
@@ -202,6 +216,10 @@ fn portable_archive_restores_into_a_new_directory_without_the_source() -> Result
     assert_eq!(restored["status"], "completed");
     assert_eq!(restored["restoredInPlace"], true);
     assert_eq!(restored["domainHash"], domain_hash);
+    let proof=fresh.backup_restore_proof(&json!({"operationId":"restore-1","archiveHash":restored["archiveHash"]}))?;
+    assert_eq!(proof["verified"],true);
+    assert_eq!(proof["domainHash"],restored["domainHash"]);
+    assert!(fresh.backup_restore_proof(&json!({"operationId":"another-restore","archiveHash":restored["archiveHash"]})).is_err());
     assert_eq!(restored["currentHash"], domain_hash);
 
     // Worlds, drafts, progress and source content are all back.
@@ -255,6 +273,10 @@ fn portable_archive_restores_into_a_new_directory_without_the_source() -> Result
     let page = store.history(&layout, MAIN_BRANCH, 0, 10)?;
     assert_eq!(page.total, 2);
     assert_eq!(page.records.len(), 2);
+    fresh.db.execute("UPDATE craftmine_worlds SET title='changed after restart' WHERE id='a'",[])?;
+    let after=fresh.backup_restore_proof(&json!({"operationId":"restore-1","archiveHash":restored["archiveHash"]}))?;
+    assert_eq!(after["domainHash"],proof["domainHash"]);
+    assert_ne!(after["currentHash"],proof["currentHash"]);
 
     // The moved-away source is untouched by the restore.
     assert!(moved.join("tasks.sqlite").is_file());

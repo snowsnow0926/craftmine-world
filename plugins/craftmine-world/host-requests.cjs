@@ -14,7 +14,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
   const ASSET_METHODS=new Set(['search','read','versions','usage','annotate','scan','importAsset','previewRead','probe',
     'resolveLegacy','recordUsage','recordCheck','preview','cancel']);
   const PACKAGE_METHODS=new Set(['check','install','list','read','progress','grant','upgrade','uninstall','restore',
-    'exportPackage','importPackage','usage','backupFull','backupVerify','backupRestoreFull','legacyConvert','explain']);
+    'exportPackage','importPackage','installSource','usage','backupFull','backupVerify','backupRestoreFull','legacyConvert','explain']);
   const keyOf=(context,id)=>JSON.stringify([context.projectId,context.sessionId,context.turnId,id]);
   async function snapshot(context){
     const value=await core.call('task.context',{context});
@@ -128,11 +128,12 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'godotWorld.backupSnapshot':[['worldId'],['context']],
       'godotWorld.verifySnapshot':[['worldId','snapshot'],['context']],
       'godotProject.create':[['context','worldId','toolCallId','baseBuild','baseId','files'],[]],
-      'godotProject.index':[['context','worldId'],['revision','manifestHash','offset','limit']],
-      'godotProject.read':[['context','worldId','revision','manifestHash','path'],['offset','limit']],
+      'godotProject.applyFiles':[['context','worldId','toolCallId','revision','manifestHash','files'],['operation']],
+      'godotProject.index':[['context','worldId'],['revision','manifestHash','offset','limit','branchId']],
+      'godotProject.read':[['context','worldId','revision','manifestHash','path'],['offset','limit','branchId']],
       'godotProject.patch':[['context','worldId','toolCallId','revision','manifestHash','operations'],['operation']],
       'godotProject.receipt':[['binding','worldId','toolCallId','method','request'],[]],
-      'godotBuild.start':[['context','worldId','toolCallId','revision','manifestHash','mode'],[]],
+      'godotBuild.start':[['context','worldId','toolCallId','revision','manifestHash','mode'],['branchId']],
       'godotBuild.read':[['worldId','jobId'],['context']],
       'godotBuild.cancel':[['worldId','jobId'],['context']],
       'godotBuild.receipt':[['binding','worldId','toolCallId','method','request'],[]],

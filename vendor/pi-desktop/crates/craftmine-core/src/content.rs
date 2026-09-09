@@ -342,6 +342,7 @@ impl TaskJournal {
     }
 
     pub fn content_migrate_apply(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: WorldArgs = serde_json::from_value(args.clone())?;
         worlds::read(&self.db, &args.world_id)?;
         let store = self.content_store()?;
@@ -406,6 +407,7 @@ impl TaskJournal {
     }
 
     pub fn content_branch_create(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: BranchCreateArgs = serde_json::from_value(args.clone())?;
         let (store, layout) = self.content_layout(&args.world_id)?;
         let oid = store.git().resolve(&layout.git_dir, &args.from_rev)?;
@@ -430,6 +432,7 @@ impl TaskJournal {
     }
 
     pub fn content_version_create(&self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: VersionCreateArgs = serde_json::from_value(args.clone())?;
         let (store, layout) = self.content_layout(&args.world_id)?;
         let oid = store.git().resolve(&layout.git_dir, &args.rev)?;
@@ -444,6 +447,7 @@ impl TaskJournal {
     }
 
     pub fn content_checkpoint_set(&self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: CheckpointSetArgs = serde_json::from_value(args.clone())?;
         let (store, layout) = self.content_layout(&args.world_id)?;
         let oid = store.git().resolve(&layout.git_dir, &args.rev)?;
@@ -474,6 +478,7 @@ impl TaskJournal {
     }
 
     pub fn content_apply_advance(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: AdvanceArgs = serde_json::from_value(args.clone())?;
         let world: String = self
             .db
@@ -495,6 +500,10 @@ impl TaskJournal {
         // Resolve the durable operation first: the deployment must be bound to
         // the same world and to the formal progress the operation expected.
         let intent = apply::intent(&self.db, &args.operation_id)?;
+        if intent.state==apply::OperationState::Committed {
+            ensure!(intent.application_id.as_deref()==Some(args.application_id.as_str()),"REPLAY_MISMATCH");
+            return Ok(serde_json::to_value(intent)?);
+        }
         let evidence = super::godot_applications::applied_deployment(
             &self.db,
             &args.application_id,
@@ -511,7 +520,20 @@ impl TaskJournal {
         Ok(serde_json::to_value(intent)?)
     }
 
+    /// Pure observation of a durable operation; never advances or recovers it.
+    pub fn content_operation_read(&self, args: &Value) -> Result<Value> {
+        #[derive(Deserialize)]
+        #[serde(rename_all = "camelCase", deny_unknown_fields)]
+        struct Args { world_id: String, operation_id: String }
+        let args: Args = serde_json::from_value(args.clone())?;
+        worlds::read(&self.db, &args.world_id)?;
+        let intent = apply::intent(&self.db, &args.operation_id)?;
+        ensure!(intent.world_id == args.world_id, "CONTENT_CONTEXT_MISMATCH");
+        Ok(serde_json::to_value(intent)?)
+    }
+
     pub fn content_apply_rollback(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: RollbackArgs = serde_json::from_value(args.clone())?;
         let store = self.content_store()?;
         let intent = apply::rollback(&mut self.db, &store, &args.operation_id, &args.reason)?;
@@ -550,8 +572,14 @@ impl TaskJournal {
     }
 
     pub fn content_reclaim_prune(&self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: KeepArgs = serde_json::from_value(args.clone())?;
         let (store, layout) = self.content_layout(&args.world_id)?;
+        let pinned: bool = self.db.query_row(
+            "SELECT EXISTS(SELECT 1 FROM craftmine_backup_pins WHERE status IN ('streaming','retained')
+             AND ((kind='repository' AND ref=?1) OR (kind='git-ref' AND ref LIKE ?2)))",
+            rusqlite::params![layout.repo_id, format!("{}|%", layout.repo_id)], |row| row.get(0))?;
+        ensure!(!pinned, "CONTENT_RECLAIM_PINNED");
         let keep = self.keep_refs(&args.world_id, &args.keep)?;
         Ok(serde_json::to_value(store.prune(&layout, &keep)?)?)
     }
@@ -594,15 +622,15 @@ impl TaskJournal {
     ) -> Result<Vec<ContentFile>> {
         let mut content = Vec::with_capacity(files.len() + 1);
         for (path, entry) in files {
-            let text = super::godot_projects::blob_read(&self.directory, world, entry)?;
-            content.push(ContentFile::text(path, &text));
+            let bytes = super::godot_projects::blob_read_bytes(&self.directory, world, entry)?;
+            content.push(ContentFile{path:path.clone(),bytes});
         }
         let (_, assets) = super::godot_builds::asset_manifest(&self.db, world)?;
-        if let Some(lock) = super::godot_builds::asset_lock(&assets)? {
+        if !files.contains_key(super::content_history::contract::ASSET_LOCK_FILE) {
+          if let Some(lock) = super::godot_builds::asset_lock(&assets)? {
             content.push(ContentFile::asset_lock(&lock)?);
+          }
         }
         Ok(content)
     }
 }
-
-

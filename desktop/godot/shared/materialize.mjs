@@ -29,7 +29,7 @@ export function materializeBase({baseId,worldId,template='blank',out}) {
     if(template==='blank') fs.writeFileSync(project,fs.readFileSync(project,'utf8').replace('res://scenes/training_range.tscn','res://scenes/blank_start.tscn'));
   } else {
     const args=TEMPLATE_BASES.includes(baseId)?['--template',template,'--world-id',worldId,'--name',worldId]:['--world',template,'--world-id',worldId];
-    const result=spawnSync(process.execPath,[path.join(bases,baseId,'tools/new-world.mjs'),...args,'--out',out],{encoding:'utf8',windowsHide:true});
+    const result=spawnSync(process.execPath,[path.join(bases,baseId,'tools/new-world.mjs'),...args,'--out',out],{encoding:'utf8',windowsHide:true,env:{...process.env,ELECTRON_RUN_AS_NODE:'1'}});
     if(result.status!==0) throw Error(result.stderr||result.stdout||'Base materialization failed');
   }
   const shared=path.join(out,'craftmine_shared');
@@ -42,6 +42,18 @@ export function materializeBase({baseId,worldId,template='blank',out}) {
   text=text.includes('[autoload]')?text.replace('[autoload]','[autoload]\n'+autoload):text+'\n[autoload]\n'+autoload+'\n';
   text+='\n[craftmine]\nruntime/enabled=true\nruntime/world_id='+JSON.stringify(worldId)+'\nruntime/adapter="res://craftmine_shared/base_adapter.gd"\n';
   fs.writeFileSync(project,text);
+  // The starting state is captured from the authored scene with our fixed
+  // engine. Rebind only its world identity; gameplay fields remain unchanged.
+  const initialFile=path.join(here,'initial-states',baseId+'-'+template+'.json');
+  if(fs.existsSync(initialFile)) {
+    const initial=JSON.parse(fs.readFileSync(initialFile,'utf8'));
+    if(initial.format!=='craftmine.authored-initial-state/1'||initial.baseId!==baseId||initial.template!==template||!initial.snapshot?.body)throw Error('Invalid authored initial state');
+    const body={...initial.snapshot.body,worldId};
+    fs.writeFileSync(path.join(out,'craftmine_initial_state.json'),JSON.stringify({
+      format:'craftmine.materialized-initial-state/1',baseId,template,worldId,
+      sourceDigest:initial.sourceDigest,engine:initial.engine,initialProgress:body,
+    },null,2)+'\n');
+  }
   const files=[];
   for(const relative of fs.readdirSync(out,{recursive:true}).sort()) {
     const file=path.join(out,relative);

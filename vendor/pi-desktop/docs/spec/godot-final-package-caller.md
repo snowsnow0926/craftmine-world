@@ -1,0 +1,11 @@
+# Product package source installation
+
+`createManagedPackageInstaller({call,bind,enqueue,stagingRoot})` supplies `reuse.installSource`. Page arguments are only operationId, worldId, archiveBase64 and optional project-relative scene. `bind` is a trusted host callback returning the current context, OperationContext and world.read record after checking the selected world. It must not accept caller-supplied execution identity. Staging lives under private plugin data.
+
+The installer validates real ZIP contents, reads every current source file through revision-bound core index/read (text or base64 pages), verifies hashes, builds the resource dependency plan, materializes declared scene nodes, merges the lock and instance map, and calls `godotProject.applyFiles` once. It then starts a check against that exact source revision and enqueues the real executor. The response is `check-queued` or `source-saved-check-blocked`, always `applied:false`; candidate validation/application remains a separate host transaction.
+
+Scene resources in this bounded slice declare one entity in content.entry.entities and an entry.sceneInstall using the existing scene-materializer specification. Raw/data resources need no scene declaration. Object/scene/module resources without a supported declaration are refused, not silently counted as installed. Script and scene references inside payloads must already match their declared install root; arbitrary relocation/migrations are not performed here.
+
+The private intent retains the exact apply request and receipt, so service restart resumes without rebuilding a different request or reapplying source. Reuse of an operation id with different archive/target is rejected. A blocked check can be explicitly retried, bounded to 32 attempts. Source installation does not mutate formal build or progress and cannot make an unchecked candidate playable.
+
+Acceptance: real ZIP through the caller and real Rust Git-backed source transaction; a second door retains both distinct identities and the first lock entry; a missing executor produces a blocked check with formal build unchanged. Separate full-client checks must validate actual executor, rendering, candidate apply and gameplay; this source test never registers a fake executor.

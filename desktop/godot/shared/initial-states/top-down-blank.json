@@ -1,0 +1,40 @@
+{
+  "format": "craftmine.authored-initial-state/1",
+  "baseId": "top-down",
+  "template": "blank",
+  "worldId": "authored-initial-world",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "sourceDigest": "f527527a10ea3a1c1cf0197c42e97f90a13dd6c49b76d482994c99198a64e500",
+  "snapshot": {
+    "baseId": "top-down",
+    "baseVersion": "1.0.0",
+    "body": {
+      "coins": 0,
+      "flags": {},
+      "format": "craftmine.godot-topdown-state/1",
+      "grantedRewards": {},
+      "inventory": {},
+      "player": {
+        "facing": "down",
+        "position": [
+          192,
+          128
+        ],
+        "sceneId": "world"
+      },
+      "quests": {},
+      "scenePositions": {
+        "world": [
+          192,
+          128
+        ]
+      },
+      "shops": {},
+      "stateVersion": 1,
+      "worldId": "authored-initial-world"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "authored-initial-world"
+  }
+}

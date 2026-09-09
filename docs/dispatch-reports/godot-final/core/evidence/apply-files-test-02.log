@@ -1,0 +1,63 @@
+   Compiling craftmine-core v0.1.0 (D:\cm-godot-final-core-20260910\vendor\pi-desktop\crates\craftmine-core)
+warning: unused import: `load_manifest`
+  --> crates\craftmine-core\src\godot_builds.rs:21:22
+   |
+21 |     godot_projects::{load_manifest, ordinary, valid_hash, Manifest},
+   |                      ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0277]: the trait bound `u64: ToSql` is not satisfied
+   --> crates\craftmine-core\src\godot_projects.rs:708:9
+    |
+708 |         params![manifest.world_id,manifest.revision,body])?;
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `ToSql` is not implemented for `u64`
+    |
+    = help: the following other types implement trait `ToSql`:
+              f32
+              f64
+              i16
+              i32
+              i64
+              i8
+              isize
+              u16
+            and 2 others
+    = note: required for the cast from `&u64` to `&dyn ToSql`
+    = note: this error originates in the macro `params` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `u64: ToSql` is not satisfied
+   --> crates\craftmine-core\src\godot_projects.rs:737:17
+    |
+737 |                 params![world,revision],|row|Ok((row.get(0)?,row.get(1)?))).optional()?;
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^ the trait `ToSql` is not implemented for `u64`
+    |
+    = help: the following other types implement trait `ToSql`:
+              f32
+              f64
+              i16
+              i32
+              i64
+              i8
+              isize
+              u16
+            and 2 others
+    = note: required for the cast from `&u64` to `&dyn ToSql`
+    = note: this error originates in the macro `params` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0277`.
+warning: `craftmine-core` (lib) generated 1 warning
+error: could not compile `craftmine-core` (lib) due to 2 previous errors; 1 warning emitted
+warning: build failed, waiting for other jobs to finish...
+warning: variable does not need to be mutable
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `craftmine-core` (lib test) generated 2 warnings (1 duplicate)
+error: could not compile `craftmine-core` (lib test) due to 2 previous errors; 2 warnings emitted

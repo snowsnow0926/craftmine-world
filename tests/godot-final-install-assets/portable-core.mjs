@@ -1,0 +1,55 @@
+// Real Rust archive bodies, activation, restart and an injected activation failure.
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {createRequire} from 'node:module';
+import {pathToFileURL} from 'node:url';
+import {CoreClient} from '../../plugins/craftmine-world/core-client.cjs';
+import {createPortableRestoreService,resolveActiveDirectory} from '../../plugins/craftmine-world/portable-restore-service.cjs';
+const binary=process.env.CRAFTMINE_CORE_BIN;if(!binary)throw Error('CRAFTMINE_CORE_BIN required');
+const root=await fs.mkdtemp(path.join(os.tmpdir(),'portable-activation-'));
+const data=path.join(root,'original'),archivePath=path.join(root,'body.craftmine');
+let core=new CoreClient(binary,data);
+const deps=process.env.CRAFTMINE_DEPS_ROOT||path.resolve('vendor/pi-desktop/packages/agent-runtime');
+const {build}=createRequire(path.join(deps,'package.json'))('esbuild');
+await build({entryPoints:[path.resolve('vendor/pi-desktop/apps/desktop/electron/main/craftmine-backup-service.ts')],outfile:path.join(root,'native-backup.mjs'),bundle:true,platform:'node',format:'esm'});
+const {createCraftmineBackupService}=await import(pathToFileURL(path.join(root,'native-backup.mjs')));
+const context={projectId:'project-a',sessionId:'session-a',turnId:'one'};
+const checks=[];
+try {
+ await core.start();const call=(m,p)=>core.call(m,p,120000);
+ await call('world.create',{id:'a',title:'Before backup',world:{build:{id:'base-a',scene:{format:'craftmine.scene/3',objects:[]}},snapshot:{format:'craftmine.progress/1',player:{x:0.5,y:7.6,z:0.5,yaw:0,pitch:0}},extensions:[]}});
+ await call('workspace.open',{context,selectedWorld:'a'});
+ const source=await call('godotProject.create',{context,worldId:'a',toolCallId:'create',baseBuild:'base-a',baseId:'first-person',files:[{path:'project.godot',text:'config_version=5\n[application]\nrun/main_scene="res://world.tscn"\n'},{path:'world.tscn',text:'[gd_scene format=3]\n[node name="World" type="Node3D"]\n'},{path:'body.gd',text:'extends Node\n# full body '+ '正文'.repeat(32000)}]});
+ await call('content.migrate.apply',{worldId:'a'});
+ const service=createPortableRestoreService({core,rootDirectory:data}),lifecycle=[];
+ const native=createCraftmineBackupService({pickFile:async()=>archivePath,domainCall:(m,p)=>m==='backup.restorePortableActive'?service.restore(p):call(m,p),beforeRestore:async()=>{lifecycle.push('pause');},afterRestore:async input=>{lifecycle.push(input.activated?'reload-restored':'reload-current');}});
+ const exported=await native.request('backup.export',{operationId:'export-full-body'});
+ const inspected=await call('backup.inspectPortable',{archivePath});assert.equal(inspected.bodiesVerified,false);
+ const verified=await call('backup.verifyPortable',{archivePath});assert.equal(verified.valid,true);assert.equal(verified.archiveHash,exported.archiveHash);assert.ok(verified.contentBytes>100000);checks.push('actual archive bodies verified');
+ const originalWorld=await call('world.read',{id:'a'});
+ const expectedCurrentHash=(await call('backup.status',{})).currentHash;
+ const input={operationId:'restore-full-body',archivePath,archiveHash:verified.archiveHash,expectedCurrentHash};
+ const grant=await native.request('backup.inspect',{});assert.equal(grant.bodiesVerified,true);assert.equal(JSON.stringify(grant).includes(root),false);
+ const result=await native.request('backup.restore',{operationId:input.operationId,grantId:grant.grantId,expectedCurrentHash:grant.expectedCurrentHash});assert.equal(result.activated,true);assert.deepEqual(lifecycle,['pause','reload-restored']);assert.notEqual(core.directory,data);assert.deepEqual(await call('world.read',{id:'a'}),originalWorld);checks.push('native grant route activates real restore and runs lifecycle hooks');
+ await core.exclusive(async rpc=>{await assert.rejects(core.call('world.list',{}),/BACKUP_SWITCH_IN_PROGRESS/);await assert.rejects(core.start(),/BACKUP_SWITCH_IN_PROGRESS/);await rpc.call('hello',{});});checks.push('exclusive transition rejects concurrent callers');
+ const active=core.directory;assert.equal(await resolveActiveDirectory(data),active);
+ await core.stop();core=new CoreClient(binary,data);await core.start();assert.equal(core.directory,active);assert.deepEqual(await core.call('world.read',{id:'a'}),originalWorld);checks.push('new CoreClient restarts into restored directory');
+ const retry=createPortableRestoreService({core,rootDirectory:data});assert.equal((await retry.restore(input)).activated,true);checks.push('same operation replays after process restart');
+ await assert.rejects(core.call('workspace.open',{context:{...context,turnId:'after-restore'},selectedWorld:'a'}),/EXPLICIT_RECOVERY_REQUIRED/);
+ const recovery=await core.call('task.recoverable',{projectId:context.projectId,worldId:'a'});
+ await core.call('task.resume',{taskId:recovery.items[0].taskId,generation:recovery.items[0].generation,context:{...context,turnId:'after-restore'}});
+ // Reading uses the restored source revision; the body is never in the UI JSON.
+ const state=await core.call('godotProject.index',{context:{...context,turnId:'after-restore'},worldId:'a',offset:0,limit:32});assert.equal(state.manifestHash,source.manifestHash);
+ const body=await core.call('godotProject.read',{context:{...context,turnId:'after-restore'},worldId:'a',revision:state.revision,manifestHash:state.manifestHash,path:'body.gd',offset:0,limit:16000});assert.match(body.text,/正文/);checks.push('restored Git source body readable after restart');
+ const previous=core.directory,rawLaunch=core.launch.bind(core);let inject=true;
+ core.launch=async()=>{if(inject&&core.directory!==previous){inject=false;throw Error('INJECTED_RESTORED_START_FAILURE');}return rawLaunch();};
+ const second={...input,operationId:'restore-fail-start',expectedCurrentHash:(await core.call('backup.status',{})).currentHash};
+ await assert.rejects(retry.restore(second),/INJECTED_RESTORED_START_FAILURE/);assert.equal(core.directory,previous);assert.equal(await resolveActiveDirectory(data),previous);assert.deepEqual(await core.call('world.read',{id:'a'}),originalWorld);checks.push('failed activation restores previous pointer and live core');
+ const pointer=path.join(data,'.craftmine-active-data.json'),validPointer=await fs.readFile(pointer,'utf8');
+ await fs.writeFile(pointer,JSON.stringify({...JSON.parse(validPointer),relativeDirectory:'../../foreign'}));await assert.rejects(resolveActiveDirectory(data),/BACKUP_POINTER_INVALID/);await fs.writeFile(pointer,validPointer);checks.push('forged pointer target refused');
+ assert.ok((await fs.stat(path.join(data,'craftmine.db')).catch(()=>null))|| (await fs.readdir(data)).length>1);checks.push('original directory retained');
+ console.log(JSON.stringify({passed:true,checks,root,coreSha256:createHash('sha256').update(await fs.readFile(binary)).digest('hex')}));
+}finally{await core.stop();}

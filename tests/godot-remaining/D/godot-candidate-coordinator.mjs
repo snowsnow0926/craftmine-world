@@ -39,6 +39,7 @@ function fixture({cold=false,formalBuild=!cold}={}){
    if(['commit-lost','commit-unreachable','foreign-receipt'].includes(fault))throw Error('commit response lost');return clone(r);
   }
   if(method==='world.read')return clone(formal);
+  if(method==='content.status')return {backend:'legacy'};
   throw Error('unknown '+method);
  };
  const coordinator=createGodotCandidateCoordinator({host,adapter,domain,selection:async()=>selected});

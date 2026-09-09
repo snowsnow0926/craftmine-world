@@ -4,6 +4,61 @@ use crate::digest;
 use rusqlite::params;
 
 #[test]
+fn two_branches_edit_check_and_apply_independently_without_replacing_main() -> Result<()> {
+    let (_dir,path)=temp()?; let mut journal=setup(&path)?; let context=ctx("one");
+    let main=create_project(&mut journal,&context)?;
+    journal.content_migrate_apply(&json!({"worldId":"a"}))?;
+    let original=journal.content_status(&json!({"worldId":"a"}))?;
+    register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("branches"))?;
+    let mut candidates=Vec::new();
+    for branch in ["forest","cave"] {
+        let created=journal.content_branch_create(&json!({"worldId":"a","branchId":branch,"fromRev":original["headOid"]}))?;
+        let indexed=journal.godot_project_index(&json!({"context":context,"worldId":"a","branchId":branch}))?;
+        let operation=json!({"operationId":format!("edit-{branch}"),"worldId":"a","repoId":original["repoId"],"branchId":branch,
+            "expectedHeadOid":created["headOid"],"expectedAppliedOid":null,"expectedProgressRevision":0});
+        let patched=journal.godot_project_patch(&json!({"context":context,"worldId":"a","toolCallId":format!("patch-{branch}"),
+            "revision":indexed["revision"],"manifestHash":indexed["manifestHash"],"operation":operation,
+            "operations":[{"op":"put","path":"branch.gd","text":format!("extends Node\nconst NAME = '{branch}'\n"),"expectedHash":null}]}))?;
+        assert_eq!(patched["branchId"],branch);
+        let job=journal.godot_build_start(&json!({"context":context,"worldId":"a","branchId":branch,"toolCallId":format!("check-{branch}"),
+            "revision":patched["revision"],"manifestHash":patched["manifestHash"],"mode":"check"}))?;
+        let claimed=claim(&mut journal,&job,"token-a","executor-a")?;
+        let artifacts=write_artifact(&claimed,"web/index.html",b"<html>fixed fixture</html>")?;
+        let done=finish(&mut journal,&job,"token-a",&output(&claimed,true,json!([{"id":"branch.fixture","passed":true}]),artifacts,json!([])))?;
+        let candidate=journal.godot_candidate_read(&json!({"worldId":"a","candidateId":done["candidateId"]}))?;
+        assert_eq!(candidate["candidate"]["content"]["branchId"],branch);
+        assert_eq!(candidate["candidate"]["content"]["contentOid"],patched["commitOid"]);
+        candidates.push((branch,patched,job,done));
+    }
+    assert_ne!(candidates[0].1["revision"],candidates[1].1["revision"]);
+    assert_eq!(journal.godot_project_index(&json!({"context":context,"worldId":"a"}))?["manifestHash"],main["manifestHash"]);
+    assert_eq!(journal.content_status(&json!({"worldId":"a"}))?["headOid"],original["headOid"]);
+    for (branch,patched,job,done) in candidates {
+        let before=journal.world_read("a")?;
+        let app_id=format!("apply-{branch}"); let op_id=format!("content-{branch}");
+        let prepared=journal.godot_application_prepare(&json!({"id":app_id,"token":"t","candidateId":done["candidateId"],
+            "worldId":"a","revision":before.summary.revision,"snapshot":before.world.snapshot}))?;
+        let status=journal.content_status(&json!({"worldId":"a"}))?;
+        let request=json!({"worldId":"a","context":{"operationId":op_id,"worldId":"a","repoId":original["repoId"],"branchId":branch,
+            "expectedHeadOid":patched["commitOid"],"expectedAppliedOid":status["appliedOid"],"expectedProgressRevision":before.summary.revision},
+            "kind":"apply","targetOid":patched["commitOid"],"detail":"branch apply"});
+        journal.content_apply_prepare(&request)?;
+        journal.content_apply_advance(&json!({"operationId":op_id}))?;
+        journal.godot_application_commit(&json!({"id":app_id,"token":"t","evidence":{"format":"craftmine.godot-application/1",
+            "inputHash":prepared["inputHash"],"launch":{"passed":true,"buildId":job["buildId"],"instanceId":format!("instance-{branch}"),
+                "stateHash":digest(branch)},"player":before.world.snapshot["player"]}}))?;
+        let confirmed=journal.content_apply_confirm(&json!({"operationId":op_id,"applicationId":app_id,"detail":"confirmed"}))?;
+        assert_eq!(confirmed["state"],"committed");
+        assert_eq!(journal.content_apply_prepare(&request)?,confirmed);
+        assert_eq!(journal.world_read("a")?.world.build["godot"]["sourceRevision"],patched["revision"]);
+    }
+    drop(journal);let mut journal=TaskJournal::open(&path)?;
+    assert_eq!(journal.content_status(&json!({"worldId":"a"}))?["headOid"],original["headOid"]);
+    assert_eq!(journal.content_apply_confirm(&json!({"operationId":"content-forest","applicationId":"apply-forest","detail":"lost old reply"}))?["state"],"committed");
+    Ok(())
+}
+
+#[test]
 fn content_git_program_is_reported_with_its_real_source() -> Result<()> {
     let (_dir, path) = temp()?;
     let journal = TaskJournal::open(&path)?;
@@ -74,7 +129,7 @@ fn legacy_revisions_migrate_to_git_and_the_legacy_writer_is_refused() -> Result<
         journal.godot_project_patch(&request("patch-other-branch",
             json!({"operationId":"op-branch","worldId":"a","repoId":repo,"branchId":"idea",
                 "expectedHeadOid":head,"expectedAppliedOid":null,"expectedProgressRevision":null}))),
-        "CONTENT_WRITE_BRANCH_NOT_MAIN",
+        "CONTENT_BRANCH_NOT_FOUND",
     );
     let patched =
         journal.godot_project_patch(&request("patch-after", operation("op-patch", Some(&head))))?;
@@ -260,4 +315,3 @@ fn a_content_apply_is_confirmed_only_by_a_launch_confirmed_deployment() -> Resul
     assert_eq!(replay["state"], "committed");
     Ok(())
 }
-

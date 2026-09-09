@@ -201,7 +201,7 @@ test('a cancelled apply restores the previous world',()=>{
   assert.deepEqual(fs.readdirSync(dir).filter(name=>name.startsWith('.craftmine-stage-')),[],'stage cleaned');
 });
 
-test('an interrupted apply can be recovered from the journal',()=>{
+test('a legacy journal without before-images refuses destructive recovery',()=>{
   const dir=project();
   const file=path.join(dir,'addons','door','scripts','door.gd');
   fs.mkdirSync(path.dirname(file),{recursive:true});
@@ -214,9 +214,8 @@ test('an interrupted apply can be recovered from the journal',()=>{
       {path:'addons/door/scripts/missing.gd',sha256:hex('8'),kind:'payload'},
     ]},
   }}));
-  const recovered=recoverDraftInstall({projectDir:dir,operationId:'install-9'});
-  assert.deepEqual(recovered.removed,['addons/door/scripts/door.gd']);
-  assert.equal(fs.existsSync(file),false);
+  assert.throws(()=>recoverDraftInstall({projectDir:dir,operationId:'install-9'}),/DRAFT_LEGACY_RECOVERY_UNSAFE/);
+  assert.equal(fs.readFileSync(file).equals(SCRIPT_BYTES),true);
   assert.throws(()=>recoverDraftInstall({projectDir:dir,operationId:'install-unknown'}),/DRAFT_UNKNOWN_OPERATION/);
 });
 
@@ -250,4 +249,19 @@ test('declared input actions are written into project.godot in the same set',()=
   const text=fs.readFileSync(path.join(dir,'project.godot'),'utf8');
   assert.match(text,/\[input\]/);
   assert.match(text,/interact=\{/);
+});
+
+function sceneEdit(id){return {format:'craftmine.godot-scene-edit/1',scene:'scenes/world.tscn',parent:'.',nodeName:id,mode:'script-node',nodeType:'Node2D',extResource:{type:'Script',path:'addons/door/scripts/door.gd',id:'resource-'+id},properties:{entity_id:JSON.stringify(id)},identity:{field:'entity_id',value:JSON.stringify(id),entityId:id},groups:[],inputActions:[]};}
+test('same-content targets and multiple scene edits are installed together',()=>{
+ const dir=project(),p=plan();const ref=p.lock.assets[0].files[1];p.lock.assets[0].files.push({...ref,path:'same.uid'});
+ const extra={contentHash:DOOR_HASH,path:'same.uid',bytes:UID_BYTES};
+ const result=applyDraftInstall({plan:p,payload:[...payload(),extra],projectDir:dir,sceneEdits:[sceneEdit('door-a'),sceneEdit('door-b')]});
+ assert.equal(result.ok,true,JSON.stringify(result));const text=fs.readFileSync(path.join(dir,'scenes/world.tscn'),'utf8');assert.match(text,/door-a/);assert.match(text,/door-b/);assert.equal(fs.readFileSync(path.join(dir,'addons/door/same.uid'),'utf8'),UID);
+});
+test('a second independent install retains the first instance and lock entry',()=>{
+ const dir=project();assert.equal(applyDraftInstall({plan:plan(),payload:payload(),projectDir:dir}).ok,true);
+ const p=plan({plan:{operationId:'install-2'}});p.instances[0].instanceId='ins-2';p.instances[0].entityMap={door:'ins-2-e0'};
+ assert.equal(applyDraftInstall({plan:p,payload:payload(),projectDir:dir}).ok,true);
+ assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir,DRAFT_INSTANCES_FILE))).instances.map(i=>i.instanceId),['ins-1','ins-2']);
+ assert.equal(JSON.parse(fs.readFileSync(path.join(dir,ASSET_LOCK_FILE))).assets.length,1);
 });

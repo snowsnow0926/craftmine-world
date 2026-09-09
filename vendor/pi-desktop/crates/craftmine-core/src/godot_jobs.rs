@@ -394,7 +394,8 @@ pub(super) fn read_job(db: &Connection, id: &str) -> Result<Value> {
             |row| row.get(0),
         )
         .optional()?;
-    Ok(json!({"jobId":id,"worldId":world_id,"taskId":task_id,"kind":kind,"buildId":build_id,
+    let branch:Option<String>=db.query_row("SELECT branch_id FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",params![world_id,build_id],|r|r.get(0)).optional()?;
+    Ok(json!({"jobId":id,"worldId":world_id,"taskId":task_id,"kind":kind,"buildId":build_id,"branchId":branch,
         "sourceRevision":revision,"manifestHash":manifest,"assetManifestHash":assets,"baseId":base_id,
         "baseBuild":base_build,"status":status,"blockedReason":blocked,"executorId":executor,
         "stage":stage,"progress":progress,"leaseExpiresAt":lease,"output":output,
@@ -553,7 +554,13 @@ pub(super) fn read_candidate(db: &Connection, id: &str) -> Result<Value> {
         params![world_id, build_id],
         |row| Ok((row.get(0)?, row.get(1)?)),
     )?;
-    Ok(json!({"candidateId":id,"worldId":world_id,"buildId":build_id,"sourceRevision":revision,
+    let content: Option<(String,String,String)> = db.query_row(
+        "SELECT r.repo_id,b.content_oid,b.branch_id FROM craftmine_godot_builds b
+         JOIN craftmine_content_repositories r ON r.world_id=b.world_id
+         WHERE b.world_id=?1 AND b.build_id=?2 AND b.content_oid IS NOT NULL AND r.backend='git'",
+        params![world_id,build_id], |row| Ok((row.get(0)?,row.get(1)?,row.get(2)?))).optional()?;
+    let content = content.map(|(repo_id,content_oid,branch)| json!({"repoId":repo_id,"branchId":branch,"contentOid":content_oid}));
+    Ok(json!({"candidateId":id,"worldId":world_id,"buildId":build_id,"sourceRevision":revision,"content":content,
         "manifestHash":manifest,"assetManifestHash":assets,"baseId":base_id,"baseBuild":base_build,
         "checkJobId":check_job,"checkOutputHash":check_hash,"status":status,"buildFiles":files,
         "buildBytes":bytes,"createdAt":created,"updatedAt":updated}))
@@ -577,14 +584,9 @@ pub(super) fn require_ready_candidate(
         job["status"] == "passed" && job["outputHash"] == candidate["checkOutputHash"],
         "GODOT_CANDIDATE_NOT_READY"
     );
-    let current: Option<(i64, String)> = db
-        .query_row(
-            "SELECT revision,hash FROM craftmine_godot_projects WHERE world_id=?1",
-            [world_id],
-            |row| Ok((row.get(0)?, row.get(1)?)),
-        )
-        .optional()?;
-    let (revision, hash) = current.context("GODOT_CANDIDATE_STALE")?;
+    let (manifest,hash)=super::godot_projects::branch_head_manifest(db,world_id,candidate["content"]["branchId"].as_str().unwrap_or("main"))
+        .context("GODOT_CANDIDATE_STALE")?;
+    let revision=i64::try_from(manifest.revision)?;
     ensure!(
         i64::try_from(candidate["sourceRevision"].as_u64().unwrap_or(u64::MAX)).ok() == Some(revision)
             && candidate["manifestHash"].as_str() == Some(hash.as_str()),
@@ -772,7 +774,7 @@ impl TaskJournal {
             return Ok(result);
         }
         // The draft being continued must still be the current project head.
-        let (manifest, manifest_hash) = super::godot_projects::load_manifest(&tx, &args.world_id, None)?;
+        let (manifest, manifest_hash) = super::godot_projects::branch_head_manifest(&tx, &args.world_id,origin["branchId"].as_str().unwrap_or("main"))?;
         let (asset_hash, _) = godot_builds::asset_manifest(&tx, &args.world_id)?;
         ensure!(
             origin["sourceRevision"].as_u64() == Some(manifest.revision)
@@ -1206,8 +1208,9 @@ impl TaskJournal {
             if passed {
                 tx.execute(
                     "UPDATE craftmine_godot_candidates SET status='superseded',updated_at=?2
-                     WHERE world_id=?1 AND status='ready' AND id<>?3",
-                    params![world, now, id],
+                     WHERE world_id=?1 AND status='ready' AND id<>?3
+                     AND build_id IN (SELECT build_id FROM craftmine_godot_builds WHERE world_id=?1 AND branch_id=?4)",
+                    params![world, now, id,record["branchId"].as_str().unwrap_or("main")],
                 )?;
             }
             candidate_id = Some(id);

@@ -954,6 +954,7 @@ export class PluginRuntime {
       "godotWorld.initialize", "godotWorld.initStatus", "godotWorld.copy",
       "godotWorld.backupSnapshot", "godotWorld.verifySnapshot",
       "godotProject.create", "godotProject.index", "godotProject.read", "godotProject.patch", "godotProject.receipt",
+      "godotProject.applyFiles",
       "godotBuild.start", "godotBuild.read", "godotBuild.cancel", "godotBuild.receipt",
       "godotJob.continue", "godotJob.usage",
       "godotCandidate.list", "godotCandidate.read",
@@ -1543,7 +1544,10 @@ export class PluginRuntime {
       }
       case "craftmine.sampleLiveState": {
         if (pluginId !== "craftmine.world" || !this.services.craftmineLiveSample) throw apiError("UNSUPPORTED", "Live gameplay sampling unavailable");
-        return this.services.craftmineLiveSample(args[0]);
+        const input = args[0] ?? {};
+        if (!input || typeof input !== "object" || Array.isArray(input) || Object.entries(input).some(([key, value]) => !["worldId", "buildId", "instanceId"].includes(key) || (value !== null && typeof value !== "string")))
+          throw apiError("INVALID_ARGUMENT", "Invalid live observation identity");
+        return this.services.craftmineLiveSample(input);
       }
       case "craftmine.godotLiveState": {
         if (pluginId !== "craftmine.world" || !this.services.craftmineLiveSample) throw apiError("UNSUPPORTED", "Live Godot observation unavailable");
