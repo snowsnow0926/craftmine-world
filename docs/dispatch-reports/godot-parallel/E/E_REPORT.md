@@ -122,8 +122,8 @@ node desktop/godot/bases/first-person/tests/acceptance_headless.mjs
 不使用真实鼠标键盘、不请求 Pointer Lock、不激活或置前任何窗口；脚本化操作只通过
 `probe_runner.gd` 的 JSON 命令表驱动真实节点。
 
-证据目录：`D:\Craftmine World-worktrees\test-results\godot-first-person-base-Jt7tot\report.json`
-（最近一次全绿运行，52/52）。关键断言与观测：
+证据目录：`D:\Craftmine World-worktrees\test-results\godot-first-person-base-1nUONI\report.json`
+（最终全绿运行，52/52）。关键断言与观测：
 
 | 验收项 | 断言 | 实测 |
 | --- | --- | --- |
@@ -162,7 +162,7 @@ node desktop/godot/bases/first-person/tests/acceptance_web.mjs
 headless Chromium + SwiftShader。初始化脚本让 `requestPointerLock` 直接抛错并记录
 任何 focus / pointer-lock 尝试；**全程不发送任何鼠标或键盘事件**。
 
-证据：`test-results\first-person-web-cGh6sF\report.json`（21/21 通过），同目录截图
+证据：`test-results\first-person-web-HWfjtg\report.json`（21/21 通过），同目录截图
 `crosshair-1280x720.png`、`crosshair-800x600.png`、`crosshair-1920x1080.png`、
 `sword.png`、`pistol.png`。
 
