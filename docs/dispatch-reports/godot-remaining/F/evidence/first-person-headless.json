@@ -1,0 +1,1249 @@
+{
+  "kind": "first-person-base-headless",
+  "engine": "4.7.2-stable",
+  "checks": [
+    {
+      "name": "Pinned real engine imports the base project headlessly",
+      "passed": true
+    },
+    {
+      "name": "Base starts headless with a real viewport and no captured input",
+      "passed": true,
+      "evidence": [
+        64,
+        64
+      ]
+    },
+    {
+      "name": "Crosshair is a full-rect control centred on the real viewport",
+      "passed": true,
+      "evidence": {
+        "size": [
+          64,
+          64
+        ],
+        "offset": [
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "name": "Crosshair stays centred across real resolution changes",
+      "passed": true,
+      "evidence": [
+        {
+          "viewport": [
+            1280,
+            720
+          ],
+          "offset": [
+            0,
+            0
+          ]
+        },
+        {
+          "viewport": [
+            800,
+            600
+          ],
+          "offset": [
+            0,
+            0
+          ]
+        },
+        {
+          "viewport": [
+            1920,
+            1080
+          ],
+          "offset": [
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Resolution changes really reach the engine viewport",
+      "passed": true,
+      "evidence": [
+        [
+          1280,
+          720
+        ],
+        [
+          800,
+          600
+        ],
+        [
+          1920,
+          1080
+        ]
+      ]
+    },
+    {
+      "name": "Held model keeps its camera-local mount after a real look",
+      "passed": true,
+      "evidence": {
+        "alignedWithCamera": true,
+        "attachedToCamera": true,
+        "cameraGlobal": [
+          0.0895904079079628,
+          1.58604657649994,
+          6.10636568069458
+        ],
+        "forwardDot": 1,
+        "global": [
+          -0.0176227167248726,
+          1.47347438335419,
+          5.60653305053711
+        ],
+        "local": [
+          0.239999994635582,
+          -0.200000002980232,
+          -0.419999986886978
+        ],
+        "meshPath": "res://assets/meshes/weapon_pistol.obj",
+        "visible": true
+      }
+    },
+    {
+      "name": "Held model moves and turns in world space with the camera",
+      "passed": true,
+      "evidence": {
+        "before": [
+          0.239999994635582,
+          1.39999985694885,
+          5.57999992370605
+        ],
+        "after": [
+          -0.0176227167248726,
+          1.47347438335419,
+          5.60653305053711
+        ],
+        "forwardDot": 1
+      }
+    },
+    {
+      "name": "Sword state swaps the model and hides the crosshair from the same state",
+      "passed": true,
+      "evidence": {
+        "equipment": "practice_sword",
+        "mesh": "res://assets/meshes/weapon_sword.obj",
+        "crosshair": false
+      }
+    },
+    {
+      "name": "Sword attack executes melee, uses no ammunition and respects real reach",
+      "passed": true,
+      "evidence": {
+        "arcDegrees": 80,
+        "attackMode": "MELEE",
+        "candidateCount": 0,
+        "considered": [],
+        "damage": 0,
+        "equipment": "practice_sword",
+        "fired": true,
+        "hit": false,
+        "hits": [],
+        "reach": 2.6,
+        "reason": "",
+        "shot": 1,
+        "snapshot": {
+          "aim": {
+            "collider": "TargetB",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              0,
+              1.59999990463257,
+              -9.80000114440918
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              960,
+              540
+            ],
+            "color": [
+              1,
+              0.850000023841858,
+              0.400000005960464,
+              0.899999976158142
+            ],
+            "cooldownRatio": 1,
+            "drawn": false,
+            "enabledForEquipment": false,
+            "globalCenter": [
+              960,
+              540
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [],
+            "shape": 2,
+            "size": [
+              1920,
+              1080
+            ],
+            "viewportCenter": [
+              960,
+              540
+            ],
+            "viewportSize": [
+              1920,
+              1080
+            ],
+            "visible": false
+          },
+          "display": {
+            "alignedWithCamera": false,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0,
+              1.59999990463257,
+              6
+            ],
+            "forwardDot": 0.987855851650238,
+            "global": [
+              0.300000011920929,
+              1.25999987125397,
+              5.5
+            ],
+            "local": [
+              0.300000011920929,
+              -0.340000003576279,
+              -0.5
+            ],
+            "meshPath": "res://assets/meshes/weapon_sword.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "practice_sword",
+            "attackMode": "MELEE",
+            "blockReason": "cooling-down",
+            "capacity": 0,
+            "cooldownRemaining": 0.6,
+            "cooldownSeconds": 0.6,
+            "crosshairVisible": false,
+            "damage": 20,
+            "displayName": "Practice sword",
+            "magazine": 0,
+            "reloading": false,
+            "reserve": 0
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "∞",
+            "equipment": "Practice sword  ·  MELEE",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Cooling down 0.60s"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1920,
+            1080
+          ],
+          "windowSize": [
+            1920,
+            1080
+          ],
+          "worldId": "fresh-world"
+        }
+      }
+    },
+    {
+      "name": "Switching back restores the gun model, reticle and untouched ammunition",
+      "passed": true,
+      "evidence": {
+        "crosshair": 4,
+        "equipment": {
+          "active": "pistol",
+          "attackMode": "RANGED",
+          "blockReason": "",
+          "capacity": 6,
+          "cooldownRemaining": 0,
+          "cooldownSeconds": 0.35,
+          "crosshairVisible": true,
+          "damage": 12,
+          "displayName": "Service pistol",
+          "magazine": 6,
+          "reloading": false,
+          "reserve": 12
+        }
+      }
+    },
+    {
+      "name": "Forward movement is real and the body stays on the floor",
+      "passed": true,
+      "evidence": {
+        "before": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "after": [
+          0,
+          0.899999976158142,
+          2.11500144004822
+        ]
+      }
+    },
+    {
+      "name": "Real aim ray hits the centre target with the authored damage",
+      "passed": true,
+      "evidence": {
+        "damage": 12,
+        "hits": [
+          {
+            "collider": "TargetB",
+            "damage": 12,
+            "pellet": 0,
+            "point": [
+              0,
+              1.59999990463257,
+              -9.80000019073486
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "A second immediate shot is blocked by the real cooldown",
+      "passed": true,
+      "evidence": "cooling-down"
+    },
+    {
+      "name": "After the cooldown expires the next shot fires and damages the target",
+      "passed": true,
+      "evidence": {
+        "health": 26,
+        "magazine": 4
+      }
+    },
+    {
+      "name": "Reload moves real rounds from the reserve into the magazine",
+      "passed": true,
+      "evidence": {
+        "active": "pistol",
+        "attackMode": "RANGED",
+        "blockReason": "",
+        "capacity": 6,
+        "cooldownRemaining": 0,
+        "cooldownSeconds": 0.35,
+        "crosshairVisible": true,
+        "damage": 12,
+        "displayName": "Service pistol",
+        "magazine": 6,
+        "reloading": false,
+        "reserve": 10
+      }
+    },
+    {
+      "name": "Saving writes progress through the real filesystem",
+      "passed": true,
+      "evidence": "user://worlds/cb5d8a7476f9541bbb2badfa832b8926c431e694f4b058393fd19f3f5132bf58/state.json"
+    },
+    {
+      "name": "Sliding into the range wall stops movement instead of passing through it",
+      "passed": true,
+      "evidence": [
+        19.0466690063477,
+        0.899999976158142,
+        6
+      ]
+    },
+    {
+      "name": "A brand new process starts from authored defaults",
+      "passed": true,
+      "evidence": {
+        "equipment": {
+          "active": "pistol",
+          "attackMode": "RANGED",
+          "blockReason": "",
+          "capacity": 6,
+          "cooldownRemaining": 0,
+          "cooldownSeconds": 0.35,
+          "crosshairVisible": true,
+          "damage": 12,
+          "displayName": "Service pistol",
+          "magazine": 6,
+          "reloading": false,
+          "reserve": 12
+        },
+        "targets": [
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Restore across a full process restart recovers ammo, equipment and target damage",
+      "passed": true,
+      "evidence": {
+        "equipment": {
+          "active": "pistol",
+          "attackMode": "RANGED",
+          "blockReason": "",
+          "capacity": 6,
+          "cooldownRemaining": 0,
+          "cooldownSeconds": 0.35,
+          "crosshairVisible": true,
+          "damage": 12,
+          "displayName": "Service pistol",
+          "magazine": 6,
+          "reloading": false,
+          "reserve": 10
+        },
+        "targetB": 26
+      }
+    },
+    {
+      "name": "Restored player position and look match the saved state",
+      "passed": true,
+      "evidence": {
+        "saved": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            1.50000143051147
+          ],
+          "yaw": 0
+        },
+        "restored": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            1.50000143051147
+          ],
+          "yaw": 0
+        }
+      }
+    },
+    {
+      "name": "A restored world reports the same save on disk",
+      "passed": true,
+      "evidence": {
+        "hasSave": true,
+        "persistent": true
+      }
+    },
+    {
+      "name": "Walking with the sword equipped closes the real distance to the target",
+      "passed": true,
+      "evidence": {
+        "position": [
+          -3.56670498847961,
+          0.900940418243408,
+          -5.44905996322632
+        ],
+        "mesh": "res://assets/meshes/weapon_sword.obj"
+      }
+    },
+    {
+      "name": "Aimed sword melee reports the target inside real reach",
+      "passed": true,
+      "evidence": {
+        "collider": "TargetA",
+        "hit": true,
+        "interactable": false,
+        "position": [
+          -3.21613693237305,
+          1.40340495109558,
+          -5.80000019073486
+        ],
+        "prompt": ""
+      }
+    },
+    {
+      "name": "Sword melee damages a target inside its real reach",
+      "passed": true,
+      "evidence": {
+        "damage": 20,
+        "targetA": 30
+      }
+    },
+    {
+      "name": "Destroying two targets completes the authored quest",
+      "passed": true,
+      "evidence": {
+        "destroyed": [
+          "target_a",
+          "target_b"
+        ],
+        "quest": [
+          {
+            "count": 2,
+            "id": "range_basic",
+            "rewardGranted": true,
+            "status": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "Quest completion grants the reserve and inventory reward exactly once",
+      "passed": true,
+      "evidence": {
+        "reserve": 18,
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            },
+            {
+              "count": 1,
+              "id": "marksman_badge"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "The HUD shows the live quest and inventory from the same state",
+      "passed": true,
+      "evidence": {
+        "ammo": "2 / 6   reserve 18",
+        "equipment": "Service pistol  ·  RANGED",
+        "inventory": "Bag: repair_kit x1, marksman_badge x1",
+        "lastDamage": 2,
+        "message": "Quest complete: range_basic",
+        "prompt": "",
+        "quests": "✔ Break two targets",
+        "status": "Ready"
+      }
+    },
+    {
+      "name": "Quest progress and the one-time reward survive a full restart",
+      "passed": true,
+      "evidence": {
+        "quest": [
+          {
+            "count": 2,
+            "id": "range_basic",
+            "rewardGranted": true,
+            "status": 2
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            },
+            {
+              "count": 1,
+              "id": "marksman_badge"
+            }
+          ]
+        },
+        "reserve": 18
+      }
+    },
+    {
+      "name": "Blank start runs as its own real scene with no targets or interactables",
+      "passed": true,
+      "evidence": {
+        "title": "Blank start",
+        "targets": 0,
+        "interactables": 0
+      }
+    },
+    {
+      "name": "Blank start moves with real physics and fires with no target present",
+      "passed": true,
+      "evidence": {
+        "before": [
+          0,
+          0.899999976158142,
+          0
+        ],
+        "after": [
+          0,
+          0.899999976158142,
+          -1.63500034809113
+        ]
+      }
+    },
+    {
+      "name": "Blank start saves and restores its own world identity",
+      "passed": true,
+      "evidence": {
+        "active": "pistol",
+        "attackMode": "RANGED",
+        "blockReason": "cooling-down",
+        "capacity": 6,
+        "cooldownRemaining": 0.333333333333333,
+        "cooldownSeconds": 0.35,
+        "crosshairVisible": true,
+        "damage": 12,
+        "displayName": "Service pistol",
+        "magazine": 5,
+        "reloading": false,
+        "reserve": 12
+      }
+    },
+    {
+      "name": "Pointing at the crate produces a real aim result and prompt",
+      "passed": true,
+      "evidence": {
+        "aim": {
+          "collider": "AmmoCrate",
+          "hit": true,
+          "interactable": true,
+          "position": [
+            1.95500004291534,
+            0.394108235836029,
+            4.20125293731689
+          ],
+          "prompt": "Take ammunition  [E]  3 left"
+        },
+        "hud": "Take ammunition  [E]  3 left"
+      }
+    },
+    {
+      "name": "Interacting adds real reserve ammunition through EquipmentState",
+      "passed": true,
+      "evidence": {
+        "ammo": 12,
+        "handled": true,
+        "reserve": 24,
+        "snapshot": {
+          "aim": {
+            "collider": "AmmoCrate",
+            "hit": true,
+            "interactable": true,
+            "position": [
+              1.95500004291534,
+              0.394108235836029,
+              4.20125293731689
+            ],
+            "prompt": "Take ammunition  [E]  2 left"
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              32,
+              32
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              32,
+              32
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  22,
+                  32
+                ],
+                "kind": "line",
+                "to": [
+                  29,
+                  32
+                ]
+              },
+              {
+                "from": [
+                  35,
+                  32
+                ],
+                "kind": "line",
+                "to": [
+                  42,
+                  32
+                ]
+              },
+              {
+                "from": [
+                  32,
+                  22
+                ],
+                "kind": "line",
+                "to": [
+                  32,
+                  29
+                ]
+              },
+              {
+                "from": [
+                  32,
+                  35
+                ],
+                "kind": "line",
+                "to": [
+                  32,
+                  42
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              64,
+              64
+            ],
+            "viewportCenter": [
+              32,
+              32
+            ],
+            "viewportSize": [
+              64,
+              64
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.224064826965332,
+              1.53031301498413,
+              5.7938437461853
+            ],
+            "forwardDot": 1,
+            "global": [
+              0.600856781005859,
+              1.16753816604614,
+              5.77329635620117
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 24
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 24",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "Take ammunition  [E]  3 left",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 2
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": -0.45,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.827
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            64,
+            64
+          ],
+          "windowSize": [
+            64,
+            64
+          ],
+          "worldId": "interact-world"
+        },
+        "usesLeft": 2
+      }
+    },
+    {
+      "name": "Interactable state and the granted ammunition survive a restart",
+      "passed": true,
+      "evidence": {
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 2
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "reserve": 24
+      }
+    },
+    {
+      "name": "An incomplete state is rejected with a concrete reason",
+      "passed": true,
+      "evidence": "State has no interactable block"
+    },
+    {
+      "name": "A newer state version is rejected instead of being guessed at",
+      "passed": true,
+      "evidence": "State version is newer than this base supports"
+    },
+    {
+      "name": "Rejected states leave the live world completely unchanged",
+      "passed": true
+    },
+    {
+      "name": "Equipment models resolve to the authored OBJ assets in this project",
+      "passed": true,
+      "evidence": "res://assets/meshes/weapon_pistol.obj"
+    },
+    {
+      "name": "A ready weapon shows the style colour before any attack",
+      "passed": true,
+      "evidence": [
+        1,
+        1,
+        1,
+        0.920000016689301
+      ]
+    },
+    {
+      "name": "A confirmed hit turns the reticle to the hit colour",
+      "passed": true,
+      "evidence": [
+        1,
+        0.449999988079071,
+        0.300000011920929,
+        1
+      ]
+    },
+    {
+      "name": "A second attack is refused while cooling down",
+      "passed": true,
+      "evidence": "cooling-down"
+    },
+    {
+      "name": "The reticle shows the cooldown colour while the item is cooling down",
+      "passed": true,
+      "evidence": [
+        1,
+        0.800000011920929,
+        0.349999994039536,
+        0.899999976158142
+      ]
+    },
+    {
+      "name": "An attack is refused while reloading",
+      "passed": true,
+      "evidence": "reloading"
+    },
+    {
+      "name": "After the reload the reticle returns to the style colour and the magazine is full",
+      "passed": true,
+      "evidence": {
+        "color": [
+          1,
+          1,
+          1,
+          0.920000016689301
+        ],
+        "equipment": {
+          "active": "pistol",
+          "attackMode": "RANGED",
+          "blockReason": "",
+          "capacity": 6,
+          "cooldownRemaining": 0,
+          "cooldownSeconds": 0.35,
+          "crosshairVisible": true,
+          "damage": 12,
+          "displayName": "Service pistol",
+          "magazine": 6,
+          "reloading": false,
+          "reserve": 11
+        }
+      }
+    },
+    {
+      "name": "An empty magazine refuses the next attack with the empty reason",
+      "passed": true,
+      "evidence": {
+        "magazine": 0,
+        "reason": "empty"
+      }
+    },
+    {
+      "name": "A no-attack item shows no model and no reticle from the same state",
+      "passed": true,
+      "evidence": {
+        "equipment": {
+          "active": "inspection_tool",
+          "attackMode": "NONE",
+          "blockReason": "no-attack",
+          "capacity": 0,
+          "cooldownRemaining": 0,
+          "cooldownSeconds": 0,
+          "crosshairVisible": false,
+          "damage": 0,
+          "displayName": "Inspection tool",
+          "magazine": 0,
+          "reloading": false,
+          "reserve": 0
+        },
+        "crosshair": false,
+        "display": false
+      }
+    },
+    {
+      "name": "A no-attack item refuses an attack with the no-attack reason",
+      "passed": true,
+      "evidence": "no-attack"
+    },
+    {
+      "name": "A state that fails on a later block is rejected with a concrete reason",
+      "passed": true,
+      "evidence": "Saved base_targets block does not match the scene"
+    },
+    {
+      "name": "Blocks applied before the failure are rolled back completely",
+      "passed": true,
+      "evidence": {
+        "before": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "after": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "A world with no save of its own cannot read another world progress",
+      "passed": true,
+      "evidence": "Progress is missing"
+    },
+    {
+      "name": "Edited source damage applies without discarding saved progress",
+      "passed": true,
+      "evidence": {
+        "damage": 7,
+        "reserve": 10,
+        "targetB": 26
+      }
+    },
+    {
+      "name": "The edited damage drives the next real hit",
+      "passed": true,
+      "evidence": {
+        "first": 19,
+        "second": 12
+      }
+    }
+  ],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 221,
+      "exitCode": 0
+    },
+    {
+      "label": "base-import",
+      "elapsedMs": 3371,
+      "exitCode": 0
+    },
+    {
+      "label": "base-fresh",
+      "elapsedMs": 455,
+      "exitCode": 0
+    },
+    {
+      "label": "base-play",
+      "elapsedMs": 3399,
+      "exitCode": 0
+    },
+    {
+      "label": "base-wall",
+      "elapsedMs": 7006,
+      "exitCode": 0
+    },
+    {
+      "label": "base-restored",
+      "elapsedMs": 359,
+      "exitCode": 0
+    },
+    {
+      "label": "base-melee-approach",
+      "elapsedMs": 3776,
+      "exitCode": 0
+    },
+    {
+      "label": "base-melee",
+      "elapsedMs": 3667,
+      "exitCode": 0
+    },
+    {
+      "label": "base-quest",
+      "elapsedMs": 5882,
+      "exitCode": 0
+    },
+    {
+      "label": "base-quest-restart",
+      "elapsedMs": 247,
+      "exitCode": 0
+    },
+    {
+      "label": "base-blank",
+      "elapsedMs": 801,
+      "exitCode": 0
+    },
+    {
+      "label": "base-interact",
+      "elapsedMs": 253,
+      "exitCode": 0
+    },
+    {
+      "label": "base-interact-restart",
+      "elapsedMs": 254,
+      "exitCode": 0
+    },
+    {
+      "label": "base-invalid",
+      "elapsedMs": 253,
+      "exitCode": 0
+    },
+    {
+      "label": "base-mesh-check",
+      "elapsedMs": 348,
+      "exitCode": 0
+    },
+    {
+      "label": "base-blocks-a",
+      "elapsedMs": 2474,
+      "exitCode": 0
+    },
+    {
+      "label": "base-blocks-b",
+      "elapsedMs": 2829,
+      "exitCode": 0
+    },
+    {
+      "label": "base-rollback",
+      "elapsedMs": 248,
+      "exitCode": 0
+    },
+    {
+      "label": "base-isolation",
+      "elapsedMs": 349,
+      "exitCode": 0
+    },
+    {
+      "label": "base-reimport",
+      "elapsedMs": 2684,
+      "exitCode": 0
+    },
+    {
+      "label": "base-changed",
+      "elapsedMs": 989,
+      "exitCode": 0
+    }
+  ],
+  "errors": [],
+  "notVerified": [
+    "model-authored creation from the blank start (see docs/MODEL_ACCEPTANCE_TASKS.md)",
+    "rendered pixels and compositor output (see acceptance_web.mjs)",
+    "product PI/Rust project transactions and application receipts",
+    "OS-level isolation of untrusted projects",
+    "player feel and hardware GPU performance"
+  ]
+}
