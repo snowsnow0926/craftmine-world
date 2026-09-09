@@ -500,6 +500,10 @@ impl TaskJournal {
         // Resolve the durable operation first: the deployment must be bound to
         // the same world and to the formal progress the operation expected.
         let intent = apply::intent(&self.db, &args.operation_id)?;
+        if intent.state==apply::OperationState::Committed {
+            ensure!(intent.application_id.as_deref()==Some(args.application_id.as_str()),"REPLAY_MISMATCH");
+            return Ok(serde_json::to_value(intent)?);
+        }
         let evidence = super::godot_applications::applied_deployment(
             &self.db,
             &args.application_id,
