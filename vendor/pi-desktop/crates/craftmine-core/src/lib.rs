@@ -10,6 +10,7 @@ use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 
 mod legacy;
+mod verification;
 mod workspaces;
 mod worlds;
 pub use workspaces::WorkspaceContext;
@@ -136,6 +137,7 @@ impl TaskJournal {
         worlds::migrate(&db)?;
         legacy::migrate(&db)?;
         workspaces::migrate(&db)?;
+        verification::migrate(&db)?;
         let directory = std::fs::canonicalize(
             path.parent()
                 .filter(|p| !p.as_os_str().is_empty())

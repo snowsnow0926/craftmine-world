@@ -10,10 +10,40 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
     let method = request["method"].as_str().context("METHOD_REQUIRED")?;
     if method == "hello" {
         return Ok(
-            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"publishesWorlds":false}),
+            json!({"format":"craftmine.core/1","version":env!("CARGO_PKG_VERSION"),"storage":"sqlite","sessionDrafts":true,"verificationJobs":true,"publishesWorlds":false}),
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
+    if method.starts_with("verification.") {
+        let ctx: Option<WorkspaceContext> = params
+            .get("context")
+            .map(|value| serde_json::from_value(value.clone()))
+            .transpose()?;
+        let id = || params["id"].as_str().context("VERIFICATION_ID_REQUIRED");
+        return match method {
+            "verification.submit" => journal.verification_submit(
+                ctx.as_ref().context("HOST_IDENTITY_REQUIRED")?,
+                params["toolCallId"].as_str().context("CALL_ID_REQUIRED")?,
+                params["revision"].as_u64().context("REVISION_REQUIRED")?,
+                params["summary"].as_str().context("SUMMARY_REQUIRED")?,
+            ),
+            "verification.claim" => journal
+                .verification_claim(id()?, params["token"].as_str().context("TOKEN_REQUIRED")?),
+            "verification.finish" => journal.verification_finish(
+                id()?,
+                params["token"].as_str().context("TOKEN_REQUIRED")?,
+                &params["output"],
+            ),
+            "verification.read" => journal.verification_read(id()?, ctx.as_ref()),
+            "verification.cancel" => journal.verification_cancel(id()?, ctx.as_ref()),
+            "verification.list" => Ok(serde_json::to_value(journal.verification_list(
+                params["worldId"].as_str().context("WORLD_ID_REQUIRED")?,
+                params["offset"].as_u64().unwrap_or(0).try_into()?,
+                params["limit"].as_u64().unwrap_or(16).try_into()?,
+            )?)?),
+            _ => bail!("UNKNOWN_METHOD"),
+        };
+    }
     if method == "workspace.endTurn" {
         journal.workspace_end_turn(
             params["sessionId"].as_str().context("SESSION_REQUIRED")?,
@@ -137,6 +167,7 @@ fn main() -> Result<()> {
         bail!("data directory must be absolute");
     }
     let mut journal = TaskJournal::open(&directory.join("tasks.sqlite"))?;
+    journal.verification_recover()?;
     let mut input = io::stdin().lock();
     let mut output = io::stdout().lock();
     loop {

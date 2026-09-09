@@ -8536,3 +8536,13 @@ are withdrawn with ADR 0165.
 - Import the contained format-1 fixture through the native form and picker grant. Capture the desktop and world as separate offscreen surfaces. Change actual gameplay state, hold a real SQLite write lock, and request a native close. The failed save must retain the world and restore controls.
 - Release the write lock, retry close and inspect the committed state. Restart the full Electron process against the same profile and verify the selected world and final player position. Both exits must be normal with zero input violations and unhandled page errors; shutting down services must not recreate views.
 - Validation: 17 native checks pass in both the Windows development build and the packaged EXE selected through `CRAFTMINE_PACKAGED_ROOT`. The driver refuses entries without the required headless guards before launching. `test/craftmine-headless-profile.test.mjs` additionally checks invalid tokens, paths and junction escapes. Native dialog UI, visible composition, a physical double-click, installers and real-model creation remain untested by this scenario.
+
+### CRAFTMINE-010 — Immutable verification lifecycle
+
+Submit a changed session draft, recover the same receipt, reject an altered replay,
+and run compiler/behavior/render checks against the captured revision. Verify that
+an edit, abort or newer turn prevents the old runner from completing; normal turn
+completion permits it. Restart while queued/running and observe interrupted, with
+the input retained and the formal world unchanged. Reject foreign-session reads,
+forged successful evidence and modified stored evidence. Native acceptance must
+use a separate headless profile and must record zero input/focus violations.

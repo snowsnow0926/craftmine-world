@@ -92,3 +92,20 @@ Bounds are 256 MiB per archive, 64 MiB per file, 10,000 files plus directories a
 Preserve project and session navigation, streaming conversations, cancellation, tool details, file and diff panels, model settings, themes and panel resizing. Add world and creation tabs, candidate preview and verification evidence using the same work-panel model. Provide Chinese defaults and an optional immersive play layout.
 
 The first desktop slice adds a fixed World entry in the existing sidebar and opens it after bootstrap on a new profile with no retained session or resource tabs. A renderer-only `@craftmine/home` context lets it open, close and collapse without creating a conversation. Home and conversation panels retain separate resources when navigating; the home key is never an Agent or host session identity. See ADR 0304. The initial work-panel width is 560 pixels; persisted widths are honored. Below 520 pixels of composer space, complete toolbar groups wrap and permission labels stay on one line. The product mark and English/Chinese welcome copy identify Craftmine. The plugin world view consumes `app.getAppearance` and `appearance:changed`. Product paths, per-profile instance locks and disabled upstream updates follow ADR 0301. Immersive layout, creation-library and candidate panels remain subsequent slices.
+
+## Immutable desktop verification jobs
+
+The PI `verification_submit` tool snapshots one exact session draft revision in Rust.
+A durable receipt binds the host tool call to that input; altered replays, unchanged
+worlds, stale revisions and a second active check of the same world are rejected.
+The broker claims queued jobs with a private runner token. Rust owns the state
+transitions and hashes both input and output. Tools and panels cannot submit
+verification results or claim a job.
+
+Edits, cancellation and a later session turn revoke pending checks transactionally.
+Normal turn completion allows an already submitted check to finish. Service startup
+marks unfinished jobs interrupted, preserving their inputs; it does not replay
+model actions. Successful evidence must identify the compiled scene, extension set,
+behavior artifacts and actual rendered build. A machine pass is not a published
+world or a claim of player-request acceptance. Advisory model review, candidate
+application and progress migration remain separate gates. See ADR 0307.

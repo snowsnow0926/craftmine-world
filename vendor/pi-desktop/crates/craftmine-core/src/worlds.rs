@@ -61,7 +61,7 @@ pub(super) fn validate_id(id: &str) -> Result<()> {
     Ok(())
 }
 
-fn timestamp() -> Result<i64> {
+pub(super) fn timestamp() -> Result<i64> {
     Ok(SystemTime::now()
         .duration_since(UNIX_EPOCH)?
         .as_millis()

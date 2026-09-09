@@ -22,7 +22,7 @@ pub struct WorkspaceContext {
 }
 
 impl WorkspaceContext {
-    fn validate(&self) -> Result<()> {
+    pub(super) fn validate(&self) -> Result<()> {
         TaskBinding {
             project_id: self.project_id.clone(),
             session_id: self.session_id.clone(),
@@ -82,7 +82,7 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     Ok(())
 }
 
-fn inspect(db: &Connection, ctx: &WorkspaceContext) -> Result<WorkspaceSnapshot> {
+pub(super) fn inspect(db: &Connection, ctx: &WorkspaceContext) -> Result<WorkspaceSnapshot> {
     ctx.validate()?;
     let (project, world, head): (String, String, String) = db.query_row(
         "SELECT project_id,world_id,head_task FROM craftmine_session_worlds WHERE session_id=?1",
@@ -122,7 +122,7 @@ fn inspect(db: &Connection, ctx: &WorkspaceContext) -> Result<WorkspaceSnapshot>
     })
 }
 
-fn assert_live(db: &Connection, snapshot: &WorkspaceSnapshot) -> Result<()> {
+pub(super) fn assert_live(db: &Connection, snapshot: &WorkspaceSnapshot) -> Result<()> {
     ensure!(snapshot.task.status == "running", "TASK_INACTIVE");
     let binding = &snapshot.task.binding;
     let ended: bool = db.query_row(
@@ -150,7 +150,7 @@ fn assert_live(db: &Connection, snapshot: &WorkspaceSnapshot) -> Result<()> {
     Ok(())
 }
 
-fn call_id(id: &str) -> Result<()> {
+pub(super) fn call_id(id: &str) -> Result<()> {
     ensure!(
         !id.trim().is_empty() && id.len() <= 240 && !id.chars().any(char::is_control),
         "INVALID_CALL_ID"
@@ -261,6 +261,7 @@ impl TaskJournal {
             base_build: base.into(),
         };
         if let Some(previous) = &prior_task {
+            super::verification::cancel_task(&tx, &previous.binding.task_id)?;
             tx.execute(
                 "UPDATE craftmine_tasks SET status='cancelled' WHERE id=?1 AND status='running'",
                 [&previous.binding.task_id],
@@ -356,6 +357,7 @@ impl TaskJournal {
         ensure!(snapshot.task.revision == revision, "STALE_DRAFT");
         let hash = digest(&body);
         ensure!(hash != snapshot.task.draft_hash, "NO_CHANGE");
+        super::verification::cancel_task(&tx, &binding.task_id)?;
         let next = revision.checked_add(1).context("REVISION_LIMIT")?;
         let stored = i64::try_from(next).context("REVISION_LIMIT")?;
         let result = DraftReceipt {
@@ -397,6 +399,9 @@ impl TaskJournal {
             turn_id: turn.into(),
         }
         .task_id();
+        if status != "completed" {
+            super::verification::cancel_task(&tx, &id)?;
+        }
         tx.execute(
             "UPDATE craftmine_tasks SET status=?2 WHERE id=?1 AND status='running'",
             params![
