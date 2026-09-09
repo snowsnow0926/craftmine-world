@@ -2,6 +2,7 @@
 // Facts only: every rule below compares pinned bytes or declared metadata. It never
 // downloads, executes or rewrites anything inside the checked tree.
 import fs from 'node:fs';
+import {loadRuntimeDistribution,runtimeDecision,runtimeRepositoryPath} from './runtime-distribution.mjs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
@@ -546,7 +547,7 @@ function checkDevelopmentOnlyFiles(root, directory, files, failures) {
   for (const file of files) {
     const relativePath = rel(directory, file);
     for (const candidate of declared) {
-      if (relativePath === candidate || relativePath.endsWith('/' + candidate)) {
+      if (relativePath === candidate || relativePath.endsWith('/' + candidate) || runtimeRepositoryPath(relativePath) === candidate) {
         failures.push(fail('DEVELOPMENT_ONLY_FILE_SHIPPED', 'Development-only file must not ship: ' + relativePath));
         found++;
         break;
@@ -585,6 +586,15 @@ export function checkPackage(root, packageDirectory) {
     if (!exists(path.join(directory, relative))) failures.push(fail('PACKAGE_FILE_MISSING', 'Package is missing ' + relative));
   }
   facts.developmentOnlyFiles = checkDevelopmentOnlyFiles(root, directory, packageFiles, failures);
+  try {
+    const distribution=loadRuntimeDistribution(root);
+    for(const file of packageFiles){
+      const relative=runtimeRepositoryPath(rel(directory,file));
+      if(!relative||!/^desktop\/godot\/(bases|shared|web)\//.test(relative))continue;
+      try{if(!runtimeDecision(relative,distribution).include)failures.push(fail('PACKAGE_ASSET_DISTRIBUTION','Runtime file is not declared app-bundle: '+relative));}
+      catch(error){failures.push(fail('PACKAGE_ASSET_UNDECLARED',String(error.message)));}
+    }
+  } catch(error){failures.push(fail('PACKAGE_DISTRIBUTION_INVALID',String(error.message)));}
   const manifestPath = path.join(directory, 'resources/source/build-manifest.json');
   if (exists(manifestPath)) {
     const manifest = readJson(manifestPath);

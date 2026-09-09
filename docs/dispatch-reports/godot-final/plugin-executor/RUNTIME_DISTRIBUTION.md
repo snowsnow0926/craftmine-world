@@ -1,0 +1,13 @@
+# Runtime distribution closure
+
+The Windows layout is `resources/godot/{bases,shared,web}`. K now maps those exact paths back to `desktop/godot/...`; basename collisions still do not match. A staged source must have an `app-bundle` declaration and exact canonical byte/hash pins. Unknown files, denied/unreviewed redistribution and development-only files cannot enter the runtime subset. Source ZIP coverage is unchanged and retains development documents and tests.
+
+Dependency review of the real `shared/materialize.mjs` found direct fixed calls to `side-view`, `top-down` and `mining-sandbox` `tools/new-world.mjs`. They import Node built-ins and read their base's configuration, core, templates and world files. The first-person materializer copies its base directly; its new-world tool is also retained as a supported creation entry point. These four tools now declare `app-bundle` only. Pure test/document/build-tool declarations remain development-only and are excluded by staging.
+
+`shared-runtime.json` covers the reviewed shared subtree `e37e26ede930e31c74f8177e30523bf327096a74`, plus the generated base/component catalogs and the base overview. JavaScript host/materializer/component code and captured authored initial states are app resources. The GDScript runtime bridge, state guard and adapters also enter user exports. The captured state files identify the original authored base, exact engine and source digest; they contain no third-party assets or credentials. Formal project licence application remains pending. Existing licence/redistribution fields are not changed by this scope correction.
+
+The production Web host is `web/runtime.mjs`. The older `web/host.mjs` has no production imports and remains the GD0 development preview transport, so it is excluded. `bridge.js` and `shell.html` are available to the app and to exports.
+
+`stageRuntimeSourceSnapshot` is used by the real resource builder and by the stage fixture. It validates the complete source selection before writes and reports excluded paths. `tests/godot-final/staged-materializers.mjs` stages actual committed base/shared/Web files and runs all four ordinary materializers from that staged directory, in fresh output directories, without running Godot or a model. Its result must be recorded separately from the 14 passing logic/filesystem regressions.
+
+The root-run previous K selftest completed **39/39** with zero failures. Raw output: `test-results/final-preflight-selftest.log`; JSON: `test-results/delivery-preflight-selftest-lzeset/report.json`. This predates the distribution-path changes and is retained as a previous result, not a substitute for the required new run.

@@ -7,6 +7,9 @@ import {git,ordinarySource,readGitSnapshot} from './lib/source-bytes.mjs';
 const MANIFESTS='desktop/delivery/base-assets';
 const MINING='desktop/godot/bases/mining-sandbox';
 const MINING_REVIEWED_TREE='aad4e98123ed171568807e0184b94777318162da';
+const SHARED='desktop/godot/shared';
+const SHARED_REVIEWED_TREE='e37e26ede930e31c74f8177e30523bf327096a74';
+const MATERIALIZERS=new Set(['first-person','side-view','top-down','mining-sandbox'].map(base=>'desktop/godot/bases/'+base+'/tools/new-world.mjs'));
 const NEW_AUTHORED=new Set([
   'desktop/godot/bases/first-person/assets/ASSET_MANIFEST.json',
   'desktop/godot/bases/first-person/data/balance/blank_start.tres',
@@ -41,6 +44,11 @@ export function refreshManifest(manifest,files,{approvedNew=NEW_AUTHORED}={}){
     const entry=newEntry(full.slice(result.sourceDirectory.length+1),result);entry.bytes=file.bytes.length;entry.sha256=file.sha256;result.entries.push(entry);
   }
   result.entries.sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
+  for(const [entries,prefix]of [[result.entries,result.sourceDirectory+'/'],[result.externalEntries,'']])for(const entry of entries||[]){
+    const full=prefix+entry.path;
+    if(MATERIALIZERS.has(full)){entry.distribution=['app-bundle'];entry.notes='Trusted world materialization entry point; required in the client, not a runtime game script. Licence status is unchanged.';}
+    if(['desktop/godot/web/bridge.js','desktop/godot/web/shell.html'].includes(full))entry.distribution=['app-bundle','user-export'];
+  }
   return result;
 }
 
@@ -64,6 +72,20 @@ export function refreshAuthoredPins({sourceRoot,sourceCommit,outputRoot,canonica
     const manifest={format:'craftmine.base-assets/1',baseId:'mining-sandbox',displayName:'Finite 2D mining sandbox base',baseVersion:base.baseVersion,engine:{version:lock.version,renderer:base.renderer,language:base.language},sourceDirectory:MINING,rightsStatus:'pending-formal-application',rightsNote:'Existing ASSET_SOURCES.md and docs/REUSE.md document project-authored code and reuse of the project side-view base. No formal licence application or third-party approval is made by this inventory.',entries:[],externalEntries:[],requiredNotices:[]};
     for(const relative of ['desktop/godot/licenses/GODOT_LICENSE.txt','desktop/godot/licenses/GODOT_COPYRIGHT.txt']){const file=files.get(relative);manifest.requiredNotices.push({path:relative,bytes:file.bytes.length,sha256:file.sha256,appliesTo:['app-bundle','user-export']});}
     output.set('bases-mining-sandbox.json',refreshManifest(manifest,files,{approvedNew:new Set([...files.keys()].filter(x=>x.startsWith(MINING+'/')))}));
+  }
+  if(![...output.values()].some(x=>x.sourceDirectory===SHARED)){
+    if(git(sourceRoot,['rev-parse',sourceCommit+':'+SHARED]).toString().trim()!==SHARED_REVIEWED_TREE)throw Error('SHARED_SOURCE_REVIEW_STALE');
+    const manifest={format:'craftmine.base-assets/1',baseId:'shared-runtime',displayName:'Authored managed Godot host and runtime protocol',baseVersion:'1',engine:{version:'4.7.2-stable',language:'GDScript and JavaScript'},sourceDirectory:SHARED,rightsStatus:'pending-formal-application',rightsNote:'Project-authored managed protocol, materializers, component installation and captured authored initial states. Content inventory only; formal per-module licence application remains pending.',entries:[],externalEntries:[],requiredNotices:[]};
+    const shared=refreshManifest(manifest,files,{approvedNew:new Set([...files.keys()].filter(x=>x.startsWith(SHARED+'/')))});
+    for(const entry of shared.entries){
+      if(/^(tests|tools)\//.test(entry.path)||entry.path.endsWith('.md'))entry.distribution=['development-only'];
+      else entry.distribution=entry.path.endsWith('.gd')?['app-bundle','user-export']:['app-bundle'];
+    }
+    for(const name of ['base-catalog.json','component-catalog.json','README.md']){
+      const relative='desktop/godot/bases/'+name,file=files.get(relative),doc=name.endsWith('.md');
+      shared.externalEntries.push({...newEntry(relative,shared),role:doc?'doc':'catalog',origin:doc?'authored':'generated',distribution:doc?['development-only']:['app-bundle'],bytes:file.bytes.length,sha256:file.sha256});
+    }
+    output.set('shared-runtime.json',shared);
   }
   const canonicalFiles=[...files.values()].filter(x=>x.checkoutDiffers&&([...output.values()].some(m=>(m.entries||[]).some(e=>authored(e)&&m.sourceDirectory+'/'+e.path===x.relative)||(m.externalEntries||[]).some(e=>authored(e)&&e.path===x.relative))));
   // Every input was checked against the immutable Git object before any write.
