@@ -4,8 +4,19 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {createHash} from 'node:crypto';
-import {safeResourcePath,fileHash,resourceInventory,verifyRuntimeResources} from '../../desktop/prepare-runtime-resources.mjs';
+import {safeResourcePath,fileHash,resourceInventory,verifyRuntimeResources,REQUIRED_WEB_TEMPLATE_KEYS} from '../../desktop/prepare-runtime-resources.mjs';
 const digest=body=>createHash('sha256').update(body).digest('hex');
+test('staging covers every Web template required by the real native broker',async()=>{
+  const lock=JSON.parse(await fs.readFile(new URL('../../desktop/godot/toolchain.lock.json',import.meta.url),'utf8'));
+  const broker=await fs.readFile(new URL('../../desktop/godot/sandbox/src/broker.rs',import.meta.url),'utf8');
+  const required=[...broker.matchAll(/\("(web_[a-z_]+\.zip)", "([a-f0-9]{64})"\)/g)].map(match=>({file:match[1],sha256:match[2]}));
+  assert.equal(required.length,3,'real fixed_pins template contract must remain explicit');
+  for(const requiredPin of required){
+    const staged=REQUIRED_WEB_TEMPLATE_KEYS.map(key=>lock.exportTemplates[key]).find(pin=>pin?.file===requiredPin.file);
+    assert.ok(staged,'Native preparation requires staged '+requiredPin.file);
+    assert.equal(staged.sha256,requiredPin.sha256);assert.ok(staged.bytes>0);
+  }
+});
 async function fixture(){
   const directory=await fs.mkdtemp(path.join(tmpdir(),'craftmine-runtime-manifest-'));
   for(const relative of ['git/bin/git.exe','godot/broker/godot-host-broker.exe','licenses/godot/LICENSE.txt']){

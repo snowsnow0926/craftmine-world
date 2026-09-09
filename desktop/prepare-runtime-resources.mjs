@@ -11,6 +11,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const OWNER='.craftmine-runtime-stage.json';
 const FORMAT='craftmine.runtime-resources/1';
 const hash=value=>createHash('sha256').update(value).digest('hex');
+export const REQUIRED_WEB_TEMPLATE_KEYS=Object.freeze(['webDebug','webThreadedRelease','webRelease']);
 export async function fileHash(file){const digest=createHash('sha256');for await(const part of createReadStream(file))digest.update(part);return digest.digest('hex');}
 export function safeResourcePath(value){
   if(typeof value!=='string'||!value||value.includes('\\')||value.includes(':')||value.startsWith('/')||value.includes('\0'))throw Error('RUNTIME_RESOURCE_PATH_INVALID');
@@ -102,7 +103,7 @@ export async function prepareRuntimeResources({godotCache,gitZip,brokerBin}){
   await verifiedCopy(path.join(godotCache,'editor',lock.editor.executable),path.join(engine,'editor',lock.editor.executable),{sha256:lock.editor.executableSha256});
   const templates=path.join(engine,'templates');await fs.mkdir(templates,{recursive:true});
   command('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(root,'desktop/extract-runtime-resources.ps1'),'-Archive',tpz,'-Destination',templates,'-Kind','GodotWindows']);
-  for(const key of ['webThreadedRelease','webRelease']){const pin=lock.exportTemplates[key];await verifiedCopy(path.join(godotCache,'templates',pin.file),path.join(templates,pin.file),pin);}
+  for(const key of REQUIRED_WEB_TEMPLATE_KEYS){const pin=lock.exportTemplates[key];if(!pin)throw Error('RUNTIME_TEMPLATE_PIN_MISSING:'+key);await verifiedCopy(path.join(godotCache,'templates',pin.file),path.join(templates,pin.file),pin);}
   await fs.writeFile(path.join(templates,'version.txt'),lock.version.replace('-stable','.stable')+'\n');
   const broker=path.join(staging,'godot/broker/godot-host-broker.exe');await verifiedCopy(brokerBin,broker);
   const brokerIdentity=JSON.parse(command(process.execPath,[path.join(root,'desktop/godot/sandbox/broker-identity.mjs'),broker],{
