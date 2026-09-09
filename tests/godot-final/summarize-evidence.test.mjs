@@ -15,6 +15,24 @@ async function fixture(t) {
   }};
 }
 const finishedAt='2026-09-10T01:00:00Z';
+test('discovers committed Windows client success and first profile failure plus packaged and unfinished runs',async t=>{
+  const f=await fixture(t),format='craftmine.windows-client-export/1';
+  await f.write('docs/dispatch-reports/godot-final/install-assets/windows-client/report.json',{format,finishedAt,passed:true,packaged:null,mainSha256:'a'.repeat(64),provenance:{buildId:'gbd-actual',brokerSha256:'b'.repeat(64)},steps:[{name:'worldPanel Windows export',passed:true}]});
+  await f.write('docs/dispatch-reports/godot-final/install-assets/windows-client/first-failure-report.json',{format,finishedAt,passed:false,steps:[{name:'headless profile',passed:false,error:'token=PRIVATE_VALUE'}],error:'Raw private error'});
+  await f.write('test-results/desktop-native-wx-package/report.json',{format,finishedAt,passed:true,packaged:'C:/owned/unpacked',steps:[{name:'exported game restart',passed:true}]});
+  await f.write('test-results/desktop-native-wx-running/report.json',{format,passed:true,steps:[{name:'catalog',passed:true}]});
+  await fs.mkdir(path.join(f.root,'test-results/desktop-native-wx-unwritten'),{recursive:true});
+  const summary=await summarizeEvidence({root:f.root});assert.equal(summary.reports.length,5);assert.ok(summary.reports.every(r=>r.kind==='actual-client-windows-export'));
+  const find=part=>summary.reports.find(r=>r.path.includes(part));
+  assert.equal(find('first-failure').state,'failed');assert.equal(find('windows-client/report').state,'passed');assert.equal(find('wx-running').state,'running');assert.equal(find('wx-unwritten').state,'running');
+  assert.equal(find('wx-package').state,'passed');assert.equal(find('wx-package').executionMode,'packaged-client');assert.equal(find('windows-client/report').executionMode,'frozen-source-client');assert.equal(find('windows-client/report').identity.mainSha256,'a'.repeat(64));assert.equal(find('windows-client/report').identity.buildId,'gbd-actual');
+  assert.equal(summary.formalModel.state,'not-executed');assert.deepEqual([summary.formalModel.categories,summary.formalModel.rounds,summary.formalModel.assertions],[15,30,141]);assert.equal(summary.package.state,'not-verified');assert.ok(!Object.hasOwn(summary.formalModel,'cost'));
+  const rendered=renderMarkdown(summary);assert.match(rendered,/actual-client-windows-export/);assert.match(rendered,/不据此推定安装器执行、签名/);assert.ok(!rendered.includes('PRIVATE_VALUE'));assert.ok(!rendered.includes('Raw private error'));
+});
+test('Windows report discovery does not accept direct-service reports as actual client export',async t=>{
+  const f=await fixture(t);await f.write('test-results/desktop-native-wx-wrong/report.json',{format:'craftmine.standalone-export/1',finishedAt,passed:true,checks:['native save']});
+  const result=await summarizeEvidence({root:f.root});assert.equal(result.reports[0].state,'invalid');assert.equal(result.reports[0].error,'INVALID_WINDOWS_CLIENT_REPORT_FORMAT');
+});
 test('keeps failed run, later successful rerun and unfinished run separately',async t=>{
   const f=await fixture(t);
   await f.write('test-results/desktop-native-complete-a/report.json',{finishedAt,steps:[{name:'restore',passed:false,error:'secret=PRIVATE_VALUE'}],calls:[{prompt:'ORIGINAL_PROMPT'}]});
