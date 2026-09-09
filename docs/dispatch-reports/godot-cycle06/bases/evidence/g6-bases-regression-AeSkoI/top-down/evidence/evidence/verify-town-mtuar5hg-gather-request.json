@@ -1,0 +1,78 @@
+{
+  "format": "craftmine.godot-topdown-probe/1",
+  "commands": [
+    {
+      "op": "set-position",
+      "args": {
+        "x": 96,
+        "y": 300,
+        "label": "below"
+      }
+    },
+    {
+      "op": "gather",
+      "args": {
+        "zoneId": "zone-herb-patch",
+        "label": "gather-away"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": -1,
+        "steps": 40,
+        "label": "walk-in"
+      }
+    },
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "inside"
+      }
+    },
+    {
+      "op": "gather",
+      "args": {
+        "zoneId": "zone-herb-patch",
+        "label": "gather-1"
+      }
+    },
+    {
+      "op": "gather",
+      "args": {
+        "zoneId": "zone-herb-patch",
+        "label": "gather-2"
+      }
+    },
+    {
+      "op": "gather",
+      "args": {
+        "zoneId": "zone-herb-patch",
+        "label": "gather-3"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": 1,
+        "steps": 40,
+        "label": "walk-out"
+      }
+    },
+    {
+      "op": "gather",
+      "args": {
+        "zoneId": "zone-herb-patch",
+        "label": "gather-after"
+      }
+    },
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "outside"
+      }
+    }
+  ]
+}

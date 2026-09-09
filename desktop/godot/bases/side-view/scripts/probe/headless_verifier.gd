@@ -9,6 +9,9 @@
 ##   CRAFTMINE_SIDEVIEW_RESET       "1" wipes that save root before boot
 ##   CRAFTMINE_SIDEVIEW_INPUT_PLAN  scripted button plan (JSON)
 ##   CRAFTMINE_SIDEVIEW_PROBE_OUT   where to write the run trace (JSON)
+##   CRAFTMINE_SIDEVIEW_GATE_PROBE  asks the room manager to transition to this
+##                                  room id without walking there, so the
+##                                  authored gate guard can be observed
 ##
 ## The verifier can read runtime state and press buttons. It cannot write player
 ## position, abilities, checkpoints or rewards: there is no such entry point.
@@ -20,6 +23,8 @@ var active: bool = false
 var input_source: ScriptedInputSource
 var output_path: String = ""
 var samples: Array = []
+var gate_probe_room: String = ""
+var _gate_probe_requested: bool = false
 var _total_ticks: int = 0
 var _ticks: int = 0
 var _finished: bool = false
@@ -27,22 +32,29 @@ var _started: bool = false
 
 func _ready() -> void:
 	var plan_path := OS.get_environment("CRAFTMINE_SIDEVIEW_INPUT_PLAN")
-	if plan_path == "":
+	gate_probe_room = OS.get_environment("CRAFTMINE_SIDEVIEW_GATE_PROBE")
+	if plan_path == "" and gate_probe_room == "":
 		return
 	output_path = OS.get_environment("CRAFTMINE_SIDEVIEW_PROBE_OUT")
-	input_source = ScriptedInputSource.from_file(plan_path)
-	if not input_source.is_valid():
-		push_error("SideViewVerifier: %s" % input_source.last_error)
-		get_tree().quit(3)
-		return
+	if plan_path != "":
+		input_source = ScriptedInputSource.from_file(plan_path)
+		if not input_source.is_valid():
+			push_error("SideViewVerifier: %s" % input_source.last_error)
+			get_tree().quit(3)
+			return
+		_total_ticks = input_source.duration_ticks() + input_source.settle_ticks()
+	else:
+		_total_ticks = 60
 	active = true
-	_total_ticks = input_source.duration_ticks() + input_source.settle_ticks()
 	SideView.world_ready.connect(_on_world_ready)
 
 func _on_world_ready() -> void:
 	if _started:
 		return
 	_started = true
+	if gate_probe_room != "":
+		SideView.emit_event("gate_probe_started", {"targetRoom": gate_probe_room, "room": SideView.current_room_id})
+		return
 	SideView.input_source = input_source
 	SideView.emit_event("verifier_started", {
 		"plan": input_source.plan.get("name", ""),
@@ -69,6 +81,11 @@ func _physics_process(_delta: float) -> void:
 		player.double_jump_available,
 	])
 	_ticks += 1
+	if gate_probe_room != "" and not _gate_probe_requested and _ticks >= 10:
+		_gate_probe_requested = true
+		# Ask the room manager for a real transition, exactly as a door would.
+		# The authored gate guard must refuse it when the ability is missing.
+		SideView.room_manager.request_transition(gate_probe_room, "spawn_from_ruins")
 	if _ticks >= _total_ticks:
 		_finish()
 
@@ -85,12 +102,18 @@ func _finish() -> void:
 	}
 	probe["progress"] = SideView.progress_dict()
 	probe["roomBounds"] = _room_bounds_dict()
+	if gate_probe_room != "":
+		probe["gateProbe"] = {
+			"targetRoom": gate_probe_room,
+			"roomAfter": SideView.current_room_id,
+			"playerRoom": str(placement.get("room", "")),
+		}
 	var payload := {
 		"format": RUN_FORMAT,
 		"worldId": SideView.state.world_id,
 		"baseId": SideView.BASE_ID,
 		"boot": SideView.boot_report,
-		"inputPlan": input_source.plan,
+		"inputPlan": input_source.plan if input_source != null else {},
 		"sampleColumns": ["tick", "room", "x", "y", "vx", "vy", "onFloor", "alive", "doubleJumpUnlocked", "doubleJumpAvailable"],
 		"samples": samples,
 		"events": SideView.events,

@@ -1,0 +1,85 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1msavepack[22m | Started Packing (102 steps)[39m[0m
+[   1% ] [90m[1msavepack[22m | Storing File: res://.godot/imported/npc_sheet.png-78142822add5c2da7cd5f93dfd25eecb.ctex[39m[0m
+[   1% ] [90m[1msavepack[22m | Storing File: res://assets/characters/npc_sheet.png.import[39m[0m
+[   3% ] [90m[1msavepack[22m | Storing File: res://.godot/imported/player_sheet.png-c3da66da78b6f37a6eb312409bb16284.ctex[39m[0m
+[   3% ] [90m[1msavepack[22m | Storing File: res://assets/characters/player_sheet.png.import[39m[0m
+[   6% ] [90m[1msavepack[22m | Storing File: res://.godot/imported/shopkeeper_sheet.png-f40a445b7d99f092b8cf10c40350f31f.ctex[39m[0m
+[   6% ] [90m[1msavepack[22m | Storing File: res://assets/characters/shopkeeper_sheet.png.import[39m[0m
+[   8% ] [90m[1msavepack[22m | Storing File: res://.godot/imported/town_tiles.png-2e281c2b843ce044e298a30536bb08e4.ctex[39m[0m
+[   8% ] [90m[1msavepack[22m | Storing File: res://assets/tiles/town_tiles.png.import[39m[0m
+[  11% ] [90m[1msavepack[22m | Storing File: res://.godot/exported/133200997/export-dad950a95e8af3989a3eee1bf5d7ceb1-town_tileset.res[39m[0m
+[  13% ] [90m[1msavepack[22m | Storing File: res://assets/ASSET_MANIFEST.json[39m[0m
+[  16% ] [90m[1msavepack[22m | Storing File: res://craftmine_shared/base_adapter.gdc[39m[0m
+[  18% ] [90m[1msavepack[22m | Storing File: res://craftmine_shared/runtime_bridge.gdc[39m[0m
+[  21% ] [90m[1msavepack[22m | Storing File: res://craftmine_shared/state_guard.gdc[39m[0m
+[  24% ] [90m[1msavepack[22m | Storing File: res://data/maps/town-overworld.json[39m[0m
+[  26% ] [90m[1msavepack[22m | Storing File: res://data/maps/town-shop-interior.json[39m[0m
+[  29% ] [90m[1msavepack[22m | Storing File: res://data/npcs/mira.json[39m[0m
+[  31% ] [90m[1msavepack[22m | Storing File: res://data/npcs/shopkeeper.json[39m[0m
+[  33% ] [90m[1msavepack[22m | Storing File: res://data/quests/herb-delivery.json[39m[0m
+[  35% ] [90m[1msavepack[22m | Storing File: res://data/shops/general.json[39m[0m
+[  38% ] [90m[1msavepack[22m | Storing File: res://data/items.json[39m[0m
+[  41% ] [90m[1msavepack[22m | Storing File: res://.godot/exported/133200997/export-da8a30b31f4988d0c9e34b55162e0e36-overworld.scn[39m[0m
+[  43% ] [90m[1msavepack[22m | Storing File: res://.godot/exported/133200997/export-c00af02e41dbdda1aa48dba003e9a45e-shop_interior.scn[39m[0m
+[  46% ] [90m[1msavepack[22m | Storing File: res://scripts/base/base_contract.gdc[39m[0m
+[  48% ] [90m[1msavepack[22m | Storing File: res://scripts/base/directional_sprite.gdc[39m[0m
+[  51% ] [90m[1msavepack[22m | Storing File: res://scripts/base/door_zone.gdc[39m[0m
+[  53% ] [90m[1msavepack[22m | Storing File: res://scripts/base/game.gdc[39m[0m
+[  56% ] [90m[1msavepack[22m | Storing File: res://scripts/base/gather_zone.gdc[39m[0m
+[  58% ] [90m[1msavepack[22m | Storing File: res://scripts/base/interactable.gdc[39m[0m
+[  61% ] [90m[1msavepack[22m | Storing File: res://scripts/base/map_renderer.gdc[39m[0m
+[  64% ] [90m[1msavepack[22m | Storing File: res://scripts/base/npc.gdc[39m[0m
+[  66% ] [90m[1msavepack[22m | Storing File: res://scripts/base/player.gdc[39m[0m
+[  68% ] [90m[1msavepack[22m | Storing File: res://scripts/base/probe.gdc[39m[0m
+[  70% ] [90m[1msavepack[22m | Storing File: res://scripts/base/quest_manager.gdc[39m[0m
+[  73% ] [90m[1msavepack[22m | Storing File: res://scripts/base/save_system.gdc[39m[0m
+[  75% ] [90m[1msavepack[22m | Storing File: res://scripts/base/shop.gdc[39m[0m
+[  78% ] [90m[1msavepack[22m | Storing File: res://scripts/base/spawn_marker.gdc[39m[0m
+[  81% ] [90m[1msavepack[22m | Storing File: res://scripts/base/world_root.gdc[39m[0m
+[  83% ] [90m[1msavepack[22m | Storing File: res://scripts/base/world_state.gdc[39m[0m
+[  86% ] [90m[1msavepack[22m | Storing File: res://scripts/base/zone.gdc[39m[0m
+[  88% ] [90m[1msavepack[22m | Storing File: res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex[39m[0m
+[  88% ] [90m[1msavepack[22m | Storing File: res://icon.svg.import[39m[0m
+[  91% ] [90m[1msavepack[22m | Storing File: res://managed-base.json[39m[0m
+[  93% ] [90m[1msavepack[22m | Storing File: res://world-build.json[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://world.json[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://assets/tiles/town_tileset.tres.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://craftmine_shared/base_adapter.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://craftmine_shared/runtime_bridge.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://craftmine_shared/state_guard.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scenes/overworld.tscn.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scenes/shop_interior.tscn.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/base_contract.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/directional_sprite.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/door_zone.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/game.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/gather_zone.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/interactable.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/map_renderer.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/npc.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/player.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/probe.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/quest_manager.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/save_system.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/shop.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/spawn_marker.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/world_root.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/world_state.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/base/zone.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://.godot/global_script_class_cache.cfg[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://icon.svg[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://.godot/uid_cache.bin[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://project.binary[39m[0m
+[92m[ DONE ][39m [1msavepack[22m
+[0m

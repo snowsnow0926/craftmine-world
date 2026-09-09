@@ -1,0 +1,857 @@
+{
+  "commands": [
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "practice_sword",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T16:00:46Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "foreign"
+        }
+      },
+      "error": "Error: Error: Progress identity or base version does not match\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "practice_sword",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T16:00:46Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "foreign"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "alpha"
+        }
+      },
+      "error": "Error: Error: Native progress belongs to another world\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "practice_sword",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T16:00:46Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 99,
+          "worldId": "alpha"
+        }
+      },
+      "error": "Error: Error: Unsupported progress state version or body\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    },
+    {
+      "op": "restore-state",
+      "args": {
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "practice_sword",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": "invalid",
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T16:00:46Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "alpha"
+        }
+      },
+      "error": "Error: Error: State has no player block\n    at settle (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:301:28)\n    at accept (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:336:38)\n    at Object.receive (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:361:5)\n    at IpcMainImpl.<anonymous> (D:\\Craftmine World\\test-results\\g6-bases\\test-results\\godot-runtime-native-qRqcMv\\first-person\\app\\main\\index.cjs:1131:26)\n    at IpcMainImpl.emit (node:events:509:28)\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:117663)\n    at Session.emit (node:events:509:28)"
+    }
+  ],
+  "initial": {
+    "baseId": "first-person",
+    "format": "craftmine.godot-progress/1",
+    "state": {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "body": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-09T16:00:46Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    }
+  },
+  "before": {
+    "base": "first-person",
+    "state": {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "body": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-09T16:00:46Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "saved": {
+    "status": "persisted",
+    "runnerReceipt": {
+      "buildId": "gbd-a1dbf1f8e397e59d1747f31e5c1bfc75b92668f2ac4115a48fadcddd406096c1",
+      "bytes": 1069,
+      "format": "craftmine.godot-runner-receipt/1",
+      "instanceId": "283a4e54e5a2284974332d45",
+      "snapshotSha256": "a05e55d7e31998ecced60e75b2cac81acbdf86ca14b9c144dd141e1a904ea59d",
+      "snapshotText": "{\"baseId\":\"first-person\",\"baseVersion\":\"0.1.0\",\"body\":{\"base\":\"first-person\",\"baseVersion\":\"0.1.0\",\"equipment\":{\"active\":\"practice_sword\",\"items\":[{\"id\":\"pistol\",\"magazine\":6,\"reserve\":12},{\"id\":\"practice_sword\",\"magazine\":0,\"reserve\":0},{\"id\":\"inspection_tool\",\"magazine\":0,\"reserve\":0}]},\"format\":\"craftmine.godot-base-state/1\",\"interactables\":[{\"enabled\":true,\"id\":\"AmmoCrate\",\"usesLeft\":3},{\"enabled\":true,\"id\":\"RepairKit\",\"taken\":false}],\"inventory\":{\"slots\":[{\"count\":1,\"id\":\"repair_kit\"}]},\"player\":{\"onFloor\":true,\"pitch\":0.0,\"position\":[0.0,0.899999976158142,6.0],\"yaw\":0.0},\"quests\":{\"quests\":[{\"count\":0.0,\"id\":\"range_basic\",\"rewardGranted\":false,\"status\":1}]},\"savedAt\":\"2026-09-09T16:00:46Z\",\"stateVersion\":1,\"targets\":[{\"damageTaken\":0.0,\"destroyed\":false,\"health\":50.0,\"hitCount\":0,\"id\":\"target_a\"},{\"damageTaken\":0.0,\"destroyed\":false,\"health\":50.0,\"hitCount\":0,\"id\":\"target_b\"},{\"damageTaken\":0.0,\"destroyed\":false,\"health\":50.0,\"hitCount\":0,\"id\":\"target_c\"}],\"worldId\":\"alpha\"},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"alpha\"}",
+      "worldId": "alpha"
+    },
+    "receipt": {
+      "buildId": "gbd-a1dbf1f8e397e59d1747f31e5c1bfc75b92668f2ac4115a48fadcddd406096c1",
+      "contentHash": "944b92da2bc0a5c78b139ac9b849b80cfb70a1db93f8e69bdc51cacff21f0e27",
+      "format": "craftmine.godot-progress-receipt/1",
+      "instanceId": "283a4e54e5a2284974332d45",
+      "persistedAt": 1788969650216,
+      "revision": 2,
+      "snapshotHash": "ce7d5d93768dab8a9cfe464f8707dd4a5791b160a49f87833a0405ab9ba87249",
+      "snapshotSha256": "a05e55d7e31998ecced60e75b2cac81acbdf86ca14b9c144dd141e1a904ea59d",
+      "worldId": "alpha"
+    },
+    "snapshot": {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "body": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "practice_sword",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-09T16:00:46Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    }
+  },
+  "image": {
+    "isolation": {
+      "isolated": true,
+      "node": "undefined",
+      "origin": "http://127.0.0.1:62484"
+    },
+    "guardCounts": {
+      "pointer-lock": 0,
+      "window-focus": 0
+    },
+    "attached": 1,
+    "width": 1280,
+    "height": 860,
+    "pixels": {
+      "colors": 867,
+      "sampled": 8215,
+      "nonDominant": 8063
+    }
+  },
+  "restored": {
+    "base": "first-person",
+    "state": {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "body": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "practice_sword",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-09T16:00:46Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "format": "craftmine.f-evidence-environment/1",
+  "recordedAt": "2026-09-09T17:08:44.573Z",
+  "source": {
+    "worktree": "D:/Craftmine World-worktrees/godot-remaining-f-20260910",
+    "branch": "codex/godot-remaining-f-20260910",
+    "inheritedCommit": "564e43a32ade84b8af1739a2e9f4a999ab97620d"
+  },
+  "engine": {
+    "name": "godot",
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "renderer": "gl_compatibility",
+    "headless": true,
+    "editorExecutable": {
+      "file": "Godot_v4.7.2-stable_win64.exe",
+      "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+      "matchesToolchainLock": true
+    },
+    "consoleExecutable": {
+      "file": "Godot_v4.7.2-stable_win64_console.exe",
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+      "note": "console companion used for headless runs; the toolchain lock pins the GUI executable above"
+    }
+  },
+  "node": {
+    "version": "v24.14.0"
+  },
+  "notes": [
+    "No real mouse/keyboard input, no pointer lock, no window activation.",
+    "All runs used --headless with isolated save/profile directories.",
+    "The first-person and side-view suites copy the pinned engine into an isolated profile; the top-down suite ran the console executable directly."
+  ]
+}

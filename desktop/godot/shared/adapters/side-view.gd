@@ -48,5 +48,50 @@ func restore(body: Dictionary) -> String:
 	host.player.restore_vitals()
 	return ""
 
-func command(_op: String, _args: Dictionary) -> Dictionary:
-	return {"error": "Unsupported side-view operation"}
+func observe() -> Dictionary:
+	var host := runtime()
+	var targets := []
+	for node in host.room_manager.current_room.get_children():
+		if node is SideViewTarget and not node.is_queued_for_deletion():
+			targets.append({"id": node.target_id, "health": node.health, "maxHealth": node.max_health})
+	return {"player": host.player.snapshot(), "roomId": host.current_room_id, "targets": targets, "tick": host.elapsed_ticks, "visual": {"visible": host.player.visual.is_visible_in_tree(), "playerVisible": host.player.is_visible_in_tree(), "textureWidth": host.player.visual.texture.get_width(), "textureHeight": host.player.visual.texture.get_height(), "screenX": host.player.visual.get_global_transform_with_canvas().origin.x, "screenY": host.player.visual.get_global_transform_with_canvas().origin.y}}
+
+func command(op: String, args: Dictionary) -> Dictionary:
+	if op != "control":
+		return {"error": "Unsupported side-view operation"}
+	if args.size() != 1 or not args.get("segments") is Array or args.segments.is_empty() or args.segments.size() > 64:
+		return {"error": "Control requires 1 to 64 bounded segments"}
+	var source := ManagedInputSource.new()
+	for segment in args.segments:
+		if not segment is Dictionary:
+			return {"error": "Control segment must be an object"}
+		for key in segment:
+			if not key in ["ticks", "move", "jump", "attack", "interact"]:
+				return {"error": "Unsupported control field"}
+		var ticks: Variant = segment.get("ticks")
+		if not (ticks is int or ticks is float) or not is_finite(float(ticks)) or float(ticks) != floorf(float(ticks)) or ticks < 1 or ticks > 600 or source.frames.size() + int(ticks) > 600:
+			return {"error": "Control is limited to 600 physics ticks"}
+		var axis: Variant = segment.get("move", 0.0)
+		if not (axis is int or axis is float) or not is_finite(float(axis)) or absf(float(axis)) > 1:
+			return {"error": "Control move axis must be finite and within -1 to 1"}
+		for key in ["jump", "attack", "interact"]:
+			if not segment.get(key, false) is bool:
+				return {"error": "Control buttons must be booleans"}
+		for _tick in int(ticks):
+			source.frames.append(segment.duplicate())
+	var host := runtime()
+	var previous = host.input_source
+	var before := observe()
+	host.input_source = source
+	var tree = Engine.get_main_loop()
+	# The source supplies neutral controls after its final tick. A finite deadline
+	# also bounds a dead/stalled player that temporarily stops polling controls.
+	for _tick in range(source.frames.size() + 180):
+		await tree.physics_frame
+		await tree.process_frame
+		if source.tick >= source.frames.size():
+			break
+	host.input_source = previous
+	if source.tick < source.frames.size():
+		return {"error": "Player did not consume controls before the deadline"}
+	return {"result": {"before": before, "after": observe(), "appliedTicks": source.frames.size()}}

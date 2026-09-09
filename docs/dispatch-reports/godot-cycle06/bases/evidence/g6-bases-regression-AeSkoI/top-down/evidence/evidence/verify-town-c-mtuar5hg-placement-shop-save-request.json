@@ -1,0 +1,54 @@
+{
+  "format": "craftmine.godot-topdown-probe/1",
+  "commands": [
+    {
+      "op": "change-scene",
+      "args": {
+        "scene": "res://scenes/shop_interior.tscn",
+        "spawn": "from-street",
+        "label": "enter"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": -1,
+        "steps": 40,
+        "label": "walk-counter"
+      }
+    },
+    {
+      "op": "buy",
+      "args": {
+        "shopId": "shop-general",
+        "itemId": "bread",
+        "label": "buy"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": -1,
+        "dy": 0,
+        "steps": 8,
+        "label": "walk-left"
+      }
+    },
+    {
+      "op": "move",
+      "args": {
+        "dx": 0,
+        "dy": -1,
+        "steps": 3,
+        "label": "face-up"
+      }
+    },
+    {
+      "op": "save",
+      "args": {
+        "label": "save"
+      }
+    }
+  ]
+}
