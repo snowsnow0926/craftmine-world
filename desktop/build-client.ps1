@@ -1,12 +1,18 @@
 param(
     [switch]$Installer,
     [Parameter(Mandatory=$true)][string]$GodotCache,
-    [Parameter(Mandatory=$true)][string]$GitArchive
+    [Parameter(Mandatory=$true)][string]$GitArchive,
+    [string]$ArchiveTool,
+    [string]$ArchiveToolSha256,
+    [string]$ArchiveLibrarySha256
 )
 $ErrorActionPreference = 'Stop'
 $craftmineRoot = Split-Path -Parent $PSScriptRoot
 Push-Location -LiteralPath $craftmineRoot
 try {
+    if ($Installer -and (-not $ArchiveTool -or $ArchiveToolSha256 -notmatch '^[a-f0-9]{64}$' -or $ArchiveLibrarySha256 -notmatch '^[a-f0-9]{64}$')) {
+        throw 'Installer payload verification requires a pinned full 7z.exe and 7z.dll: -ArchiveTool, -ArchiveToolSha256 and -ArchiveLibrarySha256.'
+    }
     $craftmineChanges = git status --porcelain --untracked-files=normal
     if ($craftmineChanges) { throw 'Commit source changes before packaging so the source archive matches the binary.' }
     $craftmineBuildCommit = git rev-parse HEAD
@@ -44,10 +50,18 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Agent bundle failed' }
         node (Join-Path $craftmineRoot 'desktop/windows-package-tools.mjs') manifest
         if ($LASTEXITCODE -ne 0) { throw 'Build manifest failed' }
-        if ($Installer) { pnpm --filter @pi-desktop/desktop exec electron-builder --win --publish never }
-        else { pnpm --filter @pi-desktop/desktop exec electron-builder --win --dir --publish never }
+        $craftmineBeginArgs = @((Join-Path $craftmineRoot 'desktop/windows-package-tools.mjs'), 'begin-release')
+        if ($Installer) { $craftmineBeginArgs += @('--installer', '--archive-tool', (Resolve-Path -LiteralPath $ArchiveTool).Path, '--archive-tool-sha256', $ArchiveToolSha256, '--archive-library-sha256', $ArchiveLibrarySha256) }
+        $craftmineReleaseJson = node @craftmineBeginArgs
+        if ($LASTEXITCODE -ne 0) { throw 'Release output reservation failed' }
+        $craftmineRelease = $craftmineReleaseJson | ConvertFrom-Json
+        $craftmineOutputArgument = '--config.directories.output=' + $craftmineRelease.output
+        if ($Installer) { pnpm --filter @pi-desktop/desktop exec electron-builder --win --publish never $craftmineOutputArgument }
+        else { pnpm --filter @pi-desktop/desktop exec electron-builder --win --dir --publish never $craftmineOutputArgument }
         if ($LASTEXITCODE -ne 0) { throw 'Windows packaging failed' }
-        node (Join-Path $craftmineRoot 'desktop/windows-package-tools.mjs') verify
+        node (Join-Path $craftmineRoot 'desktop/windows-package-tools.mjs') seal-release --run $craftmineRelease.runFile
+        if ($LASTEXITCODE -ne 0) { throw 'Release output sealing failed' }
+        node (Join-Path $craftmineRoot 'desktop/windows-package-tools.mjs') verify --run $craftmineRelease.runFile
         if ($LASTEXITCODE -ne 0) { throw 'Package integrity verification failed' }
         if ((git rev-parse HEAD) -ne $craftmineBuildCommit -or (git status --porcelain --untracked-files=normal)) {
             throw 'Source changed during packaging; discard this verification result and rebuild from a clean commit.'
