@@ -203,9 +203,9 @@ try {
   const listed = await rows();
   check("React 面板列出真实 Rust 世界", listed.length === 1 && listed[0].text.includes("林间小屋"), listed);
   check("已初始化世界标记为可游玩", listed[0].state === "ready" && listed[0].playable === "true" && listed[0].disabled === false);
-  // The host currently omits `base` for a newly created world. The panel must
-  // say so rather than invent the base it was created from.
-  check("主机未标注底座时面板不伪造底座", listed[0].text.includes("底座未标注"), listed);
+  // The core now reports the base of a created world, so the row must show the
+  // host's real label instead of the "not reported" fallback.
+  check("面板显示主机上报的底座标签", listed[0].text.includes("网页体素"), listed);
 
   // The host reports only the web base as delivered; a planned base must never
   // become selectable even if the host lists it.
