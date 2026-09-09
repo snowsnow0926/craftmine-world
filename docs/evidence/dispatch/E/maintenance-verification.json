@@ -1,0 +1,63 @@
+{
+  "format": "craftmine.maintenance-verification/1",
+  "sourceCommit": "1e685fd4072272386d74f046722e09c1bda51339",
+  "binary": {
+    "path": "vendor/pi-desktop/target/debug/craftmine-core.exe",
+    "sha256": "f2fba487ce553c6751ad73f62b499b82755e9fa9692a5ebbd8206022de4e485d"
+  },
+  "sourceFiles": [
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/craftmine-maintenance-context.ts",
+      "sha256": "3cac8fd87f97dbb496137e375c5f93cd0a37da5468eb76969844a551c2263d02"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/craftmine-turn-gateway.ts",
+      "sha256": "514db94c9b5ccbe34681d8cb49c26ff3a1978f081b5011f47ec903ab59c898b8"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/index.ts",
+      "sha256": "641b25820706078132d53bab875edd0ccb529bcb562260411640bcb77bee1605"
+    },
+    {
+      "path": "plugins/craftmine-world/host-requests.cjs",
+      "sha256": "1440885eaffcb96dff744685793bdb80fe3be9ed96c88eddf59a83d29287971b"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/durable.rs",
+      "sha256": "7167ee23a6731fb1f583a0ba77ee7604e2643f066c0254d60deba420da09ef52"
+    },
+    {
+      "path": "vendor/pi-desktop/packages/agent-runtime/src/craftmine-context.ts",
+      "sha256": "fb85db530e3b885e3355fb1720147c19ae9c183deea5f76c7146737c18ee0ef0"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "actual-domain-process",
+      "command": "CRAFTMINE_CORE_BIN=<own debug binary> node --test tests/dispatch/e/maintenance-process.test.mjs",
+      "result": "1 passed",
+      "durationMs": 200.7948
+    },
+    {
+      "kind": "runtime-unit",
+      "command": "pnpm --filter @pi-desktop/agent-runtime exec vitest run src/craftmine-context.test.ts",
+      "result": "15 passed",
+      "durationMs": 800
+    },
+    {
+      "kind": "typecheck",
+      "command": "pnpm --filter @pi-desktop/agent-runtime build && pnpm --filter @pi-desktop/desktop exec tsc -p tsconfig.json --noEmit",
+      "result": "passed"
+    },
+    {
+      "kind": "rust",
+      "command": "cargo test --locked -p craftmine-core",
+      "result": "37 passed",
+      "durationMs": 930
+    }
+  ],
+  "rawLogClaim": false,
+  "realModelCalls": 0,
+  "packaged": false,
+  "privateData": false
+}
