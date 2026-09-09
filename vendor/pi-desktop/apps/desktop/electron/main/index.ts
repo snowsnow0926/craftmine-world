@@ -5973,8 +5973,20 @@ function registerIpc() {
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
     return invokeCraftmineNavigation(payload, {
-      invoke: (channel, params) => plugins.invokePanelBridge("craftmine.world", channel, params),
-      navigate: (request) => pluginViews.navigateCraftmine(request),
+      invoke: (channel, params) => godotPanel.invoke(channel, params),
+      navigate: async (request) => {
+        // World creation from the main sidebar also works before its work panel
+        // has mounted. The retained view still owns the save/switch sequence.
+        const loaded = plugins.getLoaded("craftmine.world");
+        const view = loaded?.manifest.contributes?.views?.find(candidate => candidate.id === "world");
+        if (!loaded) throw Error("WORLD_PLUGIN_NOT_LOADED");
+        if (!view) throw Error("WORLD_VIEW_DECLARATION_MISSING");
+        if (!loaded.permissions.has("ui.view")) throw Error("WORLD_VIEW_PERMISSION_REQUIRED");
+        if (!pluginActiveInProject("craftmine.world", currentWorkspacePath())) throw Error("WORLD_PLUGIN_SCOPE_DISABLED");
+        pluginViews.open({pluginId: "craftmine.world", viewId: "world", locale: updaterLocale,
+          theme: pluginPanelTheme, htmlPath: join(loaded.path, view.entry), netDomains: loaded.manifest.net?.domains});
+        return pluginViews.navigateCraftmine(request);
+      },
       showSurface: (request) => pluginViews.showCraftmineSurface(request),
       pickDirectory: () => pluginViews.pickCraftmineDirectory(),
     });
@@ -9234,6 +9246,11 @@ installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => ma
 installHeadlessControl({
   window: () => mainWindow,
   world: () => pluginViews.headlessWorldContents(),
+  godotGameplay: {
+    observe: () => godotWorld.request("observe-envelope", {}),
+    action: (op, args) => op === "resume" ? godotWorld.resume().then(() => ({status: "ready"})) : godotWorld.request(op, args),
+    capture: (width, height) => godotWorld.headlessCapture(width, height),
+  },
   runtime: () => ({ hostAvailable: !!host?.isAvailable(), plugins: plugins.listLoaded().map(plugin => plugin.manifest.id) }),
   draftProbe: async () => {
     if (!headlessAcceptance || !host) throw new Error("Native draft acceptance is unavailable");

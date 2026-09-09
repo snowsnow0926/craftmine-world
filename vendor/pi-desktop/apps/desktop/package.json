@@ -45,6 +45,7 @@
     "electron": "^43.4.0",
     "electron-builder": "^26.15.3",
     "electron-vite": "^4.0.0",
+    "esbuild": "0.25.12",
     "i18next": "^26.3.6",
     "katex": "^0.16.47",
     "lucide-react": "^1.31.0",
@@ -198,7 +199,10 @@
         {
           "from": "../../../../desktop/build/runtime-resources",
           "to": ".",
-          "filter": ["**/*", "!.craftmine-runtime-stage.json"]
+          "filter": [
+            "**/*",
+            "!.craftmine-runtime-stage.json"
+          ]
         },
         {
           "from": "../../target/release/pi-desktop-host-core.exe",

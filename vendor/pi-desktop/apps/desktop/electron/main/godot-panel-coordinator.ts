@@ -116,6 +116,11 @@ export function createGodotPanelCoordinator(options: Options) {
       try {
         release = await options.host.holdSelectionSync();
         previous = await options.selection();
+        const initializing = await currentCreation()?.status(payload.id);
+        if (initializing && initializing.state !== "ready") {
+          await options.host.switchWorld(null);
+          return options.invoke("world.open", {id: payload.id});
+        }
         // The descriptor resolves only a verified applied artifact; errors are
         // not a legacy fallback and do not change the saved selection.
         const next = await options.adapter.describe(payload.id);

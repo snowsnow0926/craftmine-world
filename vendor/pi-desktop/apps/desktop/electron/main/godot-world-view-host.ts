@@ -486,6 +486,29 @@ export class GodotWorldViewHost {
     return (response?.result ?? null) as Record<string, unknown> | null;
   }
 
+  /** Private acceptance capture of the actual game view; never generates input. */
+  async headlessCapture(width: number, height: number): Promise<{pngBase64: string; width: number; height: number}> {
+    const instance = this.current;
+    if (process.env.CRAFTMINE_HEADLESS_TEST !== "1" || !instance?.alive ||
+        !instance.view.webContents.isOffscreen() || !Number.isSafeInteger(width) ||
+        !Number.isSafeInteger(height) || width < 320 || height < 240 || width > 1920 || height > 1080) {
+      throw new Error("GODOT_HEADLESS_CAPTURE_REFUSED");
+    }
+    const previous = instance.view.getBounds();
+    ++this.syncHolds;
+    try {
+      instance.view.setBounds({x: 0, y: 0, width, height});
+      await new Promise(resolve => setTimeout(resolve, 350));
+      if (this.current !== instance || !instance.alive) throw new Error("GODOT_WORLD_CHANGED");
+      instance.view.webContents.invalidate();
+      const screenshot = await instance.view.webContents.capturePage();
+      return {pngBase64: screenshot.toPNG().toString("base64"), ...screenshot.getSize()};
+    } finally {
+      if (instance.alive && !instance.view.webContents.isDestroyed()) instance.view.setBounds(previous);
+      --this.syncHolds;
+    }
+  }
+
   /** Forward one runtime operation; the base owns everything but the core ops. */
   async request(op: string, args: Record<string, unknown> = {}): Promise<Record<string, unknown> | null> {
     const instance = this.current;

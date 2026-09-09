@@ -28,3 +28,10 @@ candidate fault regression tests, TypeScript checks, and a separate full-client
 headless harness. The harness uses the real Electron entry and plugin/core with
 private data, no input simulation, no focus and Pointer Lock disabled. Initial
 unit and source-build results are not real-model or packaged-release acceptance.
+
+Sandbox preloads are independent complete bundles: no local require of shared
+chunks is valid in an Electron sandbox. Main-window navigation opens and awaits
+the retained view before asking it to save or switch. Its create request carries
+the original operation id; initializing Godot worlds remain selectable while
+their verified runtime is being built. A private headless capture reads the real
+game view at bounded dimensions, restores its bounds and never emits input.

@@ -260,7 +260,7 @@ async function pickDirectory() {
 // requests explicitly; action() deliberately absorbs errors for DOM handlers.
 async function navigate(request) {
   if(busy||closing||preview||applicationAttempt||workbench?.busy)throw Error('WORLD_BUSY');
-  if(!bridge||!loaded||!current?.id)throw Error('WORLD_VIEW_UNAVAILABLE');
+  if(!bridge||(!loaded&&!godot)||!current?.id)throw Error('WORLD_VIEW_UNAVAILABLE');
   if(!['switch','create'].includes(request?.operation))throw Error('INVALID_NAVIGATION_REQUEST');
   if(request.operation==='switch'&&request.id===current.id)return {ok:true,activeWorldId:current.id};
   busy=true;controls();errorBox.hidden=true;
@@ -271,9 +271,9 @@ async function navigate(request) {
       if(request.operation==='switch') {
         target=await bridge.invoke('world.read',{id:request.id});
       }
-      await save({freeze:true});
+      if(loaded)await save({freeze:true});
       if(request.operation==='create')target=await bridge.invoke('world.create',{
-        title:request.title,baseId:request.baseId,starterId:request.starterId,activate:false,
+        title:request.title,baseId:request.baseId,starterId:request.starterId,operationId:request.operationId,activate:false,
       });
       const record=await bridge.invoke('world.open',{id:target.id});
       mount(record);
