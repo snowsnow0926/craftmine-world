@@ -228,6 +228,40 @@ pub(super) fn blob_read(root: &Path, sha256: &str, bytes: u64) -> Result<Vec<u8>
     Ok(content)
 }
 
+/// Removes staging files left by a killed import. A file younger than
+/// `older_than_ms` may still belong to a live writer, so it is kept.
+pub(super) fn sweep_pending(root: &Path, older_than_ms: i64) -> Result<usize> {
+    if !root.try_exists()? {
+        return Ok(0);
+    }
+    let now = crate::worlds::timestamp()?;
+    let mut removed = 0usize;
+    for entry in fs::read_dir(root)? {
+        let path = entry?.path();
+        let name = path
+            .file_name()
+            .and_then(|value| value.to_str())
+            .unwrap_or("")
+            .to_string();
+        if !name.starts_with("pending-") {
+            continue;
+        }
+        let age = now.saturating_sub(
+            crate::godot_projects::ordinary(&path, "ASSET_STORAGE_UNAVAILABLE")?
+                .modified()
+                .ok()
+                .and_then(|time| time.duration_since(std::time::UNIX_EPOCH).ok())
+                .map(|value| value.as_millis() as i64)
+                .unwrap_or(now),
+        );
+        if age >= older_than_ms {
+            fs::remove_file(&path)?;
+            removed += 1;
+        }
+    }
+    Ok(removed)
+}
+
 /// Removes a blob that no version row references, used when a registration
 /// transaction fails after the body was already renamed into place. A blob that
 /// any version still references is never deleted.

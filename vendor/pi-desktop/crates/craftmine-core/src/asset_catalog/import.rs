@@ -186,6 +186,9 @@ impl TaskJournal {
         );
 
         let blobs = store::blob_root(&self.directory, true)?;
+        // A killed import leaves staging files behind; sweep the stale ones
+        // before writing so recovery does not accumulate garbage.
+        let _ = store::sweep_pending(&blobs, 60 * 60 * 1000);
         let streamed = store::stream_blob(&blobs, &file, &limits)?;
         let files = vec![FileRef {
             path: path.clone(),

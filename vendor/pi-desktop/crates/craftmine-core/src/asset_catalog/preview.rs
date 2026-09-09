@@ -400,6 +400,18 @@ impl TaskJournal {
             ensure!(!decoder.is_empty(), "PREVIEW_EVIDENCE_REQUIRED");
             contract::validate_sha256(digest)
                 .map_err(|_| anyhow::anyhow!("PREVIEW_EVIDENCE_REQUIRED"))?;
+            // A thumbnail is small by design; a full body must never travel as
+            // base64 through the preview record.
+            if let Some(thumbnail) = facts["thumbnailBase64"].as_str() {
+                ensure!(
+                    thumbnail.len() <= 700_000
+                        && thumbnail
+                            .bytes()
+                            .all(|byte| byte.is_ascii_alphanumeric()
+                                || matches!(byte, b'+' | b'/' | b'=')),
+                    "INVALID_PREVIEW_THUMBNAIL"
+                );
+            }
         }
         let row = store::version_row(&self.db, &asset_id, version)?.context("ASSET_NOT_FOUND")?;
         let key = cache_key(&asset_id, version, &row.content_hash, &settings_hash);

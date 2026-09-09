@@ -1069,6 +1069,119 @@ fn al2_probe_verifies_the_whole_blob_even_beyond_the_prefix() -> Result<()> {
 }
 
 #[test]
+fn al1_sweeps_stale_staging_files_and_keeps_recent_ones() -> Result<()> {
+    let (dir, _path, journal) = journal()?;
+    let blobs = store::blob_root(&journal.directory, true)?;
+    let stale = blobs.join("pending-999-1-0");
+    std::fs::write(&stale, b"partial body")?;
+    // A zero age threshold sweeps everything, modelling a restart after a
+    // killed import.
+    assert_eq!(store::sweep_pending(&blobs, 0)?, 1);
+    assert!(!stale.exists());
+    // A live writer's file is kept when it is younger than the threshold.
+    let live = blobs.join("pending-999-2-1");
+    std::fs::write(&live, b"in flight")?;
+    assert_eq!(store::sweep_pending(&blobs, i64::MAX)?, 0);
+    assert!(live.exists());
+    Ok(())
+}
+
+#[test]
+fn al1_unwritable_storage_fails_without_partial_state() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let file = write_source(&root, "door.png", &deterministic_bytes(4096))?;
+    // Occupy the storage directory name with a file so creating the blob tree
+    // fails, as it would when the volume is full or read-only.
+    std::fs::write(dir.path().join("asset-catalog"), b"not a directory")?;
+    let error = journal
+        .asset_import(&import_args(
+            &root,
+            &file,
+            "op-storage",
+            "door-texture",
+            1,
+            "textures/door.png",
+            "image/png",
+            "image",
+        ))
+        .unwrap_err()
+        .to_string();
+    assert!(!error.is_empty());
+    assert!(journal
+        .asset_read(&json!({"assetId":"door-texture","version":1}))
+        .is_err());
+    Ok(())
+}
+
+#[test]
+fn al2_search_scales_to_ten_thousand_versions() -> Result<()> {
+    let (_dir, _path, journal) = journal()?;
+    let created_at = crate::worlds::timestamp()?;
+    let tx = rusqlite::Transaction::new_unchecked(
+        &journal.db,
+        rusqlite::TransactionBehavior::Immediate,
+    )?;
+    for index in 0..10_000u64 {
+        let asset_id = format!("asset-{index:05}");
+        let content_hash = store::digest_bytes(format!("{asset_id}/1").as_bytes());
+        let files = vec![FileRef {
+            path: format!("textures/{asset_id}.png"),
+            sha256: store::digest_bytes(asset_id.as_bytes()),
+            bytes: 1024,
+            media_type: "image/png".into(),
+        }];
+        store::insert_version(
+            &tx,
+            &store::VersionRow {
+                asset_id: asset_id.clone(),
+                version: 1,
+                kind: "raw".into(),
+                content_hash,
+                display_name: format!("asset {index:05}"),
+                media_kind: "image".into(),
+                bytes: 1024,
+                file_count: 1,
+                origin: "local".into(),
+                author: "player".into(),
+                license: "unknown".into(),
+                license_status: "unverified".into(),
+                created_at,
+            },
+            &files,
+        )?;
+    }
+    tx.commit()?;
+
+    let mut samples = Vec::new();
+    for _ in 0..20 {
+        let started = std::time::Instant::now();
+        let page = journal.asset_search(&json!({"scope":"local-library","offset":0,"limit":100}))?;
+        samples.push(started.elapsed().as_micros());
+        assert_eq!(page["total"], 10_000);
+        assert_eq!(page["truncated"], false);
+        assert_eq!(page["items"].as_array().unwrap().len(), 100);
+    }
+    samples.sort();
+    let p50 = samples[samples.len() / 2];
+    let p95 = samples[samples.len() * 95 / 100];
+    println!("MEASURED 10k asset search: P50 {p50} us, P95 {p95} us");
+
+    let started = std::time::Instant::now();
+    let one = journal.asset_search(
+        &json!({"scope":"local-library","query":"asset-09999","offset":0,"limit":10}),
+    )?;
+    println!(
+        "MEASURED 10k filtered search: {} us, total {}",
+        started.elapsed().as_micros(),
+        one["total"]
+    );
+    assert_eq!(one["total"], 1);
+    assert_eq!(one["items"][0]["assetId"], "asset-09999");
+    Ok(())
+}
+
+#[test]
 fn al2_search_and_import_measurements_are_recorded() -> Result<()> {
     let (dir, _path, mut journal) = journal()?;
     let root = source_root(dir.path())?;
