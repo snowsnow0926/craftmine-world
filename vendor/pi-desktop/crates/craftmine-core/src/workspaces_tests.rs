@@ -147,6 +147,47 @@ fn cancelled_before_first_tool_cannot_create_a_draft() -> Result<()> {
 }
 
 #[test]
+fn a_resumed_revision_zero_draft_is_not_discarded_when_the_world_base_changes() -> Result<()> {
+    let dir = tempfile::tempdir()?;
+    let mut journal = TaskJournal::open(&dir.path().join("tasks.sqlite"))?;
+    journal.world_create("a", "A", &world())?;
+    let ctx = context("one");
+    let first = journal.workspace_open(&ctx, "a")?;
+    let edited = json!({"scene":{"objects":[{"id":"saved-tree"}]}});
+    journal.workspace_commit(
+        &ctx,
+        &first.task.binding,
+        "edit",
+        0,
+        &json!({"edit":true}),
+        &edited,
+    )?;
+    let resumed = journal.workspace_open(&context("two"), "a")?;
+    assert_eq!(resumed.task.revision, 0);
+    let mut changed = world();
+    changed.build["id"] = json!("v-new-base");
+    let body = worlds::encode(&changed)?;
+    journal.db.execute(
+        "UPDATE craftmine_worlds SET document=?1,content_hash=?2 WHERE id='a'",
+        params![body, digest(&body)],
+    )?;
+    assert!(journal
+        .workspace_open(&context("three"), "a")
+        .unwrap_err()
+        .to_string()
+        .contains("DRAFT_BASE_CONFLICT"));
+    assert_eq!(
+        journal.workspace_inspect(&context("two"))?.task.draft,
+        edited
+    );
+    assert_eq!(
+        journal.workspace_inspect(&context("two"))?.task.status,
+        "running"
+    );
+    Ok(())
+}
+
+#[test]
 fn draft_revision_conflicts_and_foreign_bindings_leave_history_unchanged() -> Result<()> {
     let dir = tempfile::tempdir()?;
     let path = dir.path().join("tasks.sqlite");

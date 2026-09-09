@@ -22,6 +22,21 @@ finalization. Check resource commit/read, same-call recovery, forged-identity
 rejection and late-call rejection. No model is invoked by this scenario. Keep
 the existing zero-input, save-failure and full native restart checks enabled.
 
+## CRAFTMINE-009: Real PI world draft creation
+
+Run downstream `tests/live-pi-drafts.mjs` with `CRAFTMINE_LIVE_CONFIG` pointing to
+the authorized existing project credentials. Keep the selected DeepSeek model;
+do not silently substitute another provider or model. The fixture uses the
+pinned pi-agent-core/pi-ai loop, actual registered plugin tools and Rust service,
+with an isolated invocation session and profile. Create one rooted tree, then
+restart the plugin and Rust, begin a new turn and enlarge only its canopy.
+Verify source geometry, trunk ground contact, stable trunk/position, retained
+draft ancestry and unchanged formal world. Record real calls, errors and usage.
+Render both recorded objects using `tests/desktop-draft-render.mjs`; inspect the
+actual bundled game surface. Its outer bridge is a fixture and is not candidate
+publication. Native model settings, verification jobs, candidate application and
+cross-session creation reuse remain separate W2 acceptance requirements.
+
 > Scope: MVP acceptance scenarios plus current shipped product increments for PI-Desktop
 > Status: Accepted (protocol/Electron automation is active; full desktop Playwright remains planned)
 > Cross-references: [acceptance-criteria](02-acceptance-criteria.md) · [milestones](01-mvp-milestones.md) · [ai-development-workflow](03-ai-development-workflow.md) · [change-checklist](05-change-checklist.md)

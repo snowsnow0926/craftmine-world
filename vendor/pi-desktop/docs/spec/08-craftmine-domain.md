@@ -51,12 +51,21 @@ The PI tool catalogue exposes `project_inspect`, `capabilities_read`,
 `resource_read` and `workspace_patch` under the normal plugin namespace. Index
 pages hold at most 32 resources; code and contract pages at most 16,000 Unicode
 characters. A patch contains 1–8 additions/replacements and a checked revision.
+Tool input is bounded to 180,000 UTF-8 bytes. Object/schema guidance matches the
+current scene format and explicitly defines offsets as minimum corners, with
+ground at y=6. It does not advertise appearance fields to a format-3 world.
 Replacement requires a recorded read of the matching resource hash. The web
 workspace and desktop broker share the same pure transformation and compiler,
 including loaded extension versions and object scope validation. Desktop patches
 also check immutable asset availability. Rust alone persists desktop changes.
 This slice does not register a candidate-apply tool or execute authored code in
 the privileged plugin process.
+
+The Rust hello response advertises `sessionDrafts`; the runtime information tool
+uses that actual capability instead of inferring support from registered tool
+names. Successful turn termination removes the broker's temporary rejection
+entry only after Rust acknowledges persistence; failed termination keeps the
+entry and permits an acknowledged retry.
 
 Electron resolves the domain executable and forwards `CRAFTMINE_CORE_BIN` only to the `craftmine.world` utility process. Other plugin processes keep the existing minimal environment; provider secrets, headless test tokens and unrelated host variables are never forwarded. Native acceptance must exercise the production utility-process spawner, because a test-only Node fork with a copied environment cannot verify this boundary.
 

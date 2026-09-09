@@ -25,14 +25,17 @@ async function onLoad() {
     name: 'runtime_info',
     description: 'Inspect the connected Craftmine runtime and available integration capabilities.',
     risk: 'low', schema: {type:'object',properties:{},additionalProperties:false},
-    execute: async (_args, context) => ({
+    execute: async (_args, context) => {
+      const info=await core.start();
+      return {
       format: 'craftmine.desktop-runtime/1',
       view: 'world',
       worldWritesAvailable: false,
-      draftToolsAvailable: true,
-      core: await core.start(),
+      draftToolsAvailable: info.sessionDrafts===true,
+      core: info,
       invocation: {sessionId:context?.sessionId,turnId:context?.turnId,toolCallId:context?.toolCallId},
-    }),
+      };
+    },
   });
   for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context))))await pi.agent.registerTool(tool);
 }
@@ -42,6 +45,7 @@ async function onHostTurnEnd(payload) {
   endedTurns.add(turnKey(payload));
   await core.start();
   await core.call('workspace.endTurn',payload);
+  endedTurns.delete(turnKey(payload)); // Rust now owns the durable rejection.
 }
 
 async function onPanelInvoke(channel, payload={}) {

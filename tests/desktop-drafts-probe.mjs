@@ -4,6 +4,7 @@ import path from 'node:path';
 import {fork} from 'node:child_process';
 import {register} from 'node:module';
 import {pathToFileURL} from 'node:url';
+import {DatabaseSync} from 'node:sqlite';
 import {desktopRuntimePaths} from './helpers/desktop-runtime-paths.mjs';
 import {flower} from './scene-fixtures.mjs';
 
@@ -64,6 +65,8 @@ try {
   const bad={workspaceRevision:2,operations:[{op:'add',kind:'object',id:'invalid',expectedHash:null,value:{...value,id:'invalid',parts:[]}}]};
   await assert.rejects(run('workspace_patch',bad),/几何/);
   check('编译失败和过期补丁保留最后一次有效草稿',(await run('project_inspect')).workspaceRevision===2);
+  await assert.rejects(run('workspace_patch',{...bad,operations:[{...bad.operations[0],value:{...bad.operations[0].value,name:'花'.repeat(65000)}}]}),/TOOL_INPUT_TOO_LARGE/);
+  check('中文工具载荷按 UTF-8 字节限制大小',(await run('project_inspect')).workspaceRevision===2);
   const formal=await panel('world.open',{id:a.id});
   check('草稿修改没有改动正式世界和玩家进度',formal.contentHash===a.contentHash);
   await assert.rejects(panel('lifecycle.turnEnded',{sessionId:context.sessionId,turnId:context.turnId,status:'aborted'}),/Unsupported/);
@@ -77,6 +80,14 @@ try {
   await runtime.endCraftmineTurn({sessionId:context.sessionId,turnId:'turn-b',status:'completed'});
   const other=await run('project_inspect',{}, {...context,sessionId:'session-b'});
   check('上一轮结束后另一会话可以获得世界写入权',other.worldId===a.id);
+  const locked=new DatabaseSync(path.join(directory,'profile/plugins/data/craftmine.world/tasks.sqlite'));
+  locked.exec('BEGIN IMMEDIATE');
+  try {
+    await assert.rejects(runtime.endCraftmineTurn({sessionId:'session-b',turnId:context.turnId,status:'aborted'}),/locked/);
+    await assert.rejects(run('project_inspect',{}, {...context,sessionId:'session-b'}),/TURN_ENDED/);
+  }finally {locked.exec('ROLLBACK');locked.close();}
+  await runtime.endCraftmineTurn({sessionId:'session-b',turnId:context.turnId,status:'aborted'});
+  check('停止写库失败时仍拒绝迟到工具，解锁后可补写停止记录',true);
   await runtime.endCraftmineTurn({sessionId:'late-session',turnId:'late-turn',status:'aborted'});
   await assert.rejects(run('project_inspect',{}, {...context,sessionId:'late-session',turnId:'late-turn'}),/TURN_ENDED/);
   check('停止早于首个工具时也不会事后创建任务',true);

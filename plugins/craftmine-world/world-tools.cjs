@@ -16,7 +16,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false) {
     const assertActive=()=>{if(isEnded(context))throw Error('TURN_ENDED');};
     assertActive();
     if(!args||typeof args!=='object'||Array.isArray(args))throw Error('INVALID_ARGUMENTS');
-    if(JSON.stringify(args).length>180000)throw Error('TOOL_INPUT_TOO_LARGE');
+    if(Buffer.byteLength(JSON.stringify(args),'utf8')>180000)throw Error('TOOL_INPUT_TOO_LARGE');
     // Reject forged identity/unknown fields before acquiring any draft lease.
     const allowed=Object.keys(definition.schema.properties);
     fields(args,definition.schema.required||[],allowed.filter(key=>!(definition.schema.required||[]).includes(key)));
@@ -31,7 +31,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false) {
       return result;
     }
     const record=await core.call('world.read',{id:workspace.worldId});
-    if(definition.name==='capabilities_read')return readCapabilities(args,record.world.extensions);
+    if(definition.name==='capabilities_read')return readCapabilities(args,record.world.extensions,workspace.task.draft.scene);
     if(definition.name==='workspace_patch') {
       const params={context,toolCallId:invocation.toolCallId,request:args};
       const previous=await core.call('workspace.receipt',params);

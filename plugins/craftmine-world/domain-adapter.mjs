@@ -45,12 +45,19 @@ export function patchDraft(workspace,args,world) {
   return {draft:{scene:patched.scene},changed:patched.changed};
 }
 
-export function readCapabilities(args,extensions) {
+export function readCapabilities(args,extensions,scene) {
   fields(args,[],['section','start','limit']);
   const {section='objects'}=args;
   let text;
   if(section==='objects'||section==='systems') {
-    text=JSON.stringify({groundY:6,instructions:'Use workspace_patch to add or replace one complete resource. Coordinates are world units. Small plants use thin non-solid parts, not full-sized building blocks.',schemas:OUTPUT_SCHEMA.properties.scene.anyOf.filter(s=>s.properties).map(s=>s.properties[section])},null,2);
+    const format=scene?.format==='craftmine.scene/4'?'craftmine.scene/4':'craftmine.scene/3';
+    const schema=OUTPUT_SCHEMA.properties.scene.anyOf.find(s=>s.properties?.format.enum.includes(format));
+    text=JSON.stringify({format,groundY:6,instructions:[
+      'Use workspace_patch to add or replace one complete resource. The schema below matches the current world format; do not add fields from another format.',
+      'Coordinates are in meters. Each part offset is its MINIMUM corner relative to object.position, not its center. Minimum world corner = position + offset; maximum = position + offset + size.',
+      'For a rooted tree at position.y=6, the trunk bottom has offset.y=0. Center a canopy on the trunk by subtracting half its size from its desired center. Keep trunk, branches and canopy connected.',
+      'Small plants use thin non-solid parts, not full-sized building blocks. Leaves normally use solid:false so players can move through foliage.',
+    ],schema:schema.properties[section]},null,2);
   } else if(section==='behaviors')text=BEHAVIOR_API_GUIDE;
   else if(section==='catalog')text=JSON.stringify(capabilitiesCatalog({extensions}),null,2);
   else throw Error('未知能力章节');
