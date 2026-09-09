@@ -46,6 +46,7 @@ App.tsx 与 Sidebar.tsx 未改：`CraftmineNavigation` 已由既有代码挂载�
 | 世界模型/导航单元测试 | `node --test vendor/pi-desktop/apps/desktop/test/craftmine-world-navigation.test.mjs` | 24/24 通过 | `evidence/craftmine-world-navigation.test.txt` |
 | 既有布局回归 | `node tests/batch07-desktop/layout-headless.mjs` | 10/10 通过 | `test-results/batch07-layout-*` |
 | 类型检查 | `npx tsc -p tsconfig.json --noEmit`（`vendor/pi-desktop/apps/desktop`） | 0 错误 | 见提交说明 |
+| 桌面端源码契约全量回归 | `node --test test/*.test.mjs`（`vendor/pi-desktop/apps/desktop`） | 1231/1247 通过；14 项失败均为既有基线失败 | 失败文件为 `window-menu`、`work-panel`、`context-compaction`、`packaging-footprint`、`startup-splash-motion`、macOS 发布与打包类，`git diff --name-only e462147..HEAD` 不含其断言的任何源码文件，且这些测试不引用 craftmine |
 
 真实链路细节（`world-create-e2e.mjs`）：真实 `PluginRuntime` + 真实
 `craftmine-navigation-host.ts` + 真实 `views/world.html`（`craftmineView.navigate`）+ 真实
