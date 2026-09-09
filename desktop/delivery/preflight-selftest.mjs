@@ -55,6 +55,7 @@ function fixture() {
     'desktop/godot/licenses/notices.manifest.json',
     'desktop/UPSTREAM.json',
     'vendor/pi-desktop/LICENSE',
+    'desktop/delivery/licensing/texts/LICENSE-GPL-3.0.txt',
     'vendor/pi-desktop/Cargo.toml',
     'vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-Geist.txt',
     'vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-Inter.txt',
@@ -299,6 +300,7 @@ function makePackage(root,{runtime=true}={}) {
   write('resources/git/GIT-BUNDLE.json', JSON.stringify({format: 'craftmine.git-bundle-staged/1', version: '2.53.0.windows.1'}));
   write('resources/git/LICENSE.txt', 'GNU GENERAL PUBLIC LICENSE Version 2');
   write('resources/licenses/PI-Desktop-LICENSE.txt', fs.readFileSync(path.join(REPO_ROOT, 'vendor/pi-desktop/LICENSE')));
+  write('resources/licenses/gpl/GPL-3.0.txt', fs.readFileSync(path.join(REPO_ROOT, 'desktop/delivery/licensing/texts/LICENSE-GPL-3.0.txt')));
   write('resources/licenses/CRAFTMINE-NOTICES.md', 'LGPL-3.0-or-later obligations are documented here.\n');
   for (const name of ['OFL-Geist.txt', 'OFL-Inter.txt', 'OFL-NotoSansSC.txt', 'OFL-LXGWWenKai.txt']) write('resources/licenses/fonts/' + name, 'SIL OPEN FONT LICENSE');
   write('resources/licenses/third-party/example@1.0.0-LICENSE', 'MIT');

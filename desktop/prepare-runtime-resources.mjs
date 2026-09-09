@@ -8,6 +8,7 @@ import {createHash,randomUUID} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {readGitSnapshot} from './delivery/lib/source-bytes.mjs';
 import {loadRuntimeDistribution,stageRuntimeSourceSnapshot} from './delivery/lib/runtime-distribution.mjs';
+import {GPL3_TEXT} from './delivery/lib/gpl-text-pin.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const OWNER='.craftmine-runtime-stage.json';
@@ -43,7 +44,7 @@ export async function verifyRuntimeResources(directory,expectedCommit,{packaged=
   await ordinaryAncestors(directory);
   const manifest=JSON.parse(await fs.readFile(path.join(directory,'runtime-resources.json'),'utf8'));
   if(manifest.format!==FORMAT||manifest.sourceCommit!==expectedCommit)throw Error('RUNTIME_SOURCE_IDENTITY_MISMATCH');
-  const files=packaged?(await Promise.all(['git','godot','licenses/godot'].map(async prefix=>resourceInventory(path.join(directory,prefix),prefix)))).flat():await resourceInventory(directory);
+  const files=packaged?(await Promise.all(['git','godot','licenses/godot','licenses/gpl'].map(async prefix=>resourceInventory(path.join(directory,prefix),prefix)))).flat():await resourceInventory(directory);
   if(JSON.stringify(files)!==JSON.stringify(manifest.files))throw Error('RUNTIME_RESOURCE_HASH_MISMATCH');
   if(hash(JSON.stringify(files))!==manifest.filesDigest)throw Error('RUNTIME_RESOURCE_DIGEST_MISMATCH');
   return manifest;
@@ -62,6 +63,9 @@ async function verifiedCopy(source,target,pin={}){
   await fs.mkdir(path.dirname(target),{recursive:true});await fs.copyFile(source,target);
   if(await fileHash(target)!==sha256)throw Error('RUNTIME_COPY_HASH_MISMATCH');
   return {bytes:stat.size,sha256};
+}
+export async function stageGplText(sourceRoot,staging){
+  return verifiedCopy(path.join(sourceRoot,GPL3_TEXT.source),path.join(staging,GPL3_TEXT.resource),GPL3_TEXT);
 }
 async function verifyArchive(file,pin){
   await ordinaryAncestors(path.dirname(file));const stat=await fs.lstat(file);
@@ -125,6 +129,7 @@ export async function prepareRuntimeResources({godotCache,gitZip,brokerBin}){
   await copyTracked('desktop/godot/licenses',path.join(staging,'godot','licenses'));
   for(const pin of lock.licenses)if(await fileHash(path.join(staging,'godot',pin.file))!==pin.sha256)throw Error('GODOT_NOTICE_PIN_MISMATCH');
   await copyTracked('desktop/godot/licenses',path.join(staging,'licenses/godot'));
+  await stageGplText(root,staging);
   await verifiedCopy(path.join(root,'desktop/godot/toolchain.lock.json'),path.join(staging,'godot/toolchain.lock.json'));
   const gitRoot=path.join(staging,'git');await fs.mkdir(gitRoot);
   command('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(root,'desktop/extract-runtime-resources.ps1'),'-Archive',gitZip,'-Destination',gitRoot,'-Kind','MinGit']);

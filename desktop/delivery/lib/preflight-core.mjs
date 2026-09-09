@@ -3,6 +3,7 @@
 // downloads, executes or rewrites anything inside the checked tree.
 import fs from 'node:fs';
 import {loadRuntimeDistribution,runtimeDecision,runtimeRepositoryPath} from './runtime-distribution.mjs';
+import {GPL3_TEXT} from './gpl-text-pin.mjs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
@@ -27,6 +28,7 @@ export const PACKAGE_REQUIRED_FILES = [
   'resources/source/build-manifest.json',
   'resources/source/USER_GUIDE.zh-CN.md',
   'resources/licenses/PI-Desktop-LICENSE.txt',
+  'resources/' + GPL3_TEXT.resource,
   'resources/licenses/CRAFTMINE-NOTICES.md',
   // R1's managed Git must not depend on the user's PATH, so the pinned Git tree and
   // its bundle record are part of a delivery package.
@@ -183,6 +185,13 @@ export function checkNotices(root) {
 }
 
 /** PI-Desktop LGPL obligations, deliberately independent from the Godot MIT notice. */
+export function checkGplText(file) {
+  if (!exists(file)) return [fail('GPL_FULL_TEXT_MISSING', 'Pinned GPL-3 full text is absent: ' + file)];
+  const stat=fs.lstatSync(file);
+  if (!stat.isFile() || stat.isSymbolicLink() || stat.size!==GPL3_TEXT.bytes || sha256(file)!==GPL3_TEXT.sha256)
+    return [fail('GPL_FULL_TEXT_MISMATCH', 'GPL-3 full text differs from the fixed official bytes: ' + file)];
+  return [];
+}
 export function checkLgpl(root, {packageDirectory = null} = {}) {
   const failures = [];
   const warnings = [];
@@ -203,13 +212,9 @@ export function checkLgpl(root, {packageDirectory = null} = {}) {
     if (/Permission is hereby granted, free of charge, to any person obtaining a copy\s+of this software/.test(text)) {
       failures.push(fail('LGPL_NOTICE_IS_MIT', licensePath + ' contains MIT text; the Godot licence must not stand in for the LGPL obligations'));
     }
-    // The upstream file is the LGPL-3 supplement only; it incorporates GPL-3 by
-    // reference. Whether a distribution must also bundle the GPL-3 text is a legal
-    // question, so it is reported rather than asserted either way.
-    if (!/GNU GENERAL PUBLIC LICENSE\s+Version 3, 29 June 2007/.test(text)) {
-      warnings.push(licensePath + ' references GPL-3 but does not bundle the full GPL-3 text; confirm the required notice set with counsel.');
-    }
   }
+  failures.push(...checkGplText(path.join(root,GPL3_TEXT.source)));
+  facts.gplFullText={source:GPL3_TEXT.source,sha256:GPL3_TEXT.sha256,bytes:GPL3_TEXT.bytes};
   if (!exists(path.join(root, upstreamPath))) failures.push(fail('LGPL_PROVENANCE_MISSING', 'Provenance file is absent: ' + upstreamPath));
   else {
     const upstream = readJson(path.join(root, upstreamPath));
@@ -234,6 +239,7 @@ export function checkLgpl(root, {packageDirectory = null} = {}) {
     }
   }
   if (packageDirectory) {
+    failures.push(...checkGplText(path.join(packageDirectory,'resources',GPL3_TEXT.resource)));
     const packaged = ['resources/licenses/PI-Desktop-LICENSE.txt', 'PI-Desktop-LICENSE.txt'].map(candidate => path.join(packageDirectory, candidate)).find(exists);
     if (!packaged) failures.push(fail('LGPL_PACKAGED_COPY_MISSING', 'Package has no PI-Desktop-LICENSE.txt in resources/licenses/'));
     else if (sha256(packaged) !== facts.licenseSha256) failures.push(fail('LGPL_PACKAGED_COPY_MISMATCH', 'Packaged LGPL copy differs from ' + licensePath));
@@ -581,6 +587,7 @@ export function checkPackage(root, packageDirectory) {
     }
   }
   if (failures.length) return {id: 'package', ok: false, failures, warnings, facts: {scannedEntries}};
+  failures.push(...checkGplText(path.join(directory,'resources',GPL3_TEXT.resource)));
   const required = PACKAGE_REQUIRED_FILES;
   for (const relative of required) {
     if (!exists(path.join(directory, relative))) failures.push(fail('PACKAGE_FILE_MISSING', 'Package is missing ' + relative));
