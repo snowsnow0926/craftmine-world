@@ -73,6 +73,46 @@ real `.tscn` by `scene_materializer.mjs`, which allocates the `ext_resource`,
 keeps the script's `uid://`, refuses duplicate identities and appends only (see
 `desktop/godot/bases/README.md`).
 
+### Scene identity rules (round-three audit fixes)
+
+- The plan owns node structure and identity. `placement` and `overrides` may set
+  declared exports only; `entity_id`/identity field, `parent`, `script`, `name`,
+  `instance`, `type` and `groups` are refused with `reserved-override`. The
+  round-two counterexample (`overrides:{entity_id:'old-id'}` accepted, two nodes
+  with the same identity) is a regression test in
+  `tests/godot-round3/S3/scene-identity.test.mjs`.
+- After serialization the scene is re-parsed and refused if the planned identity
+  does not occur exactly once, if any identity value occurs twice, if a node
+  declares the identity field twice, or if a node name repeats under one parent.
+- `.tscn` and `project.godot` may use CRLF. The parser normalizes `\r`, so CRLF
+  scenes no longer hide existing identities, and new lines keep the file's own
+  line ending. `planInputActions` accepts `[input]` sections with either ending,
+  so an existing action is no longer reported as missing.
+
+### Managed draft install (`draft_install.mjs`)
+
+An install is one file set, not a sequence of writes. `planDraftInstall` takes a
+`package.planInstall` result plus the unpacked payload and returns the complete
+managed set: every asset file under its `installPath`, the canonical
+`craftmine.assets.lock.json`, `.craftmine/instances.json` (instance ids and
+entity map), the scene edits computed from the current scene text, and the
+`project.godot` input actions a component declares. It writes nothing.
+
+Preflight refuses, before any write: a payload file missing from the package, a
+hash or declared size mismatch, a script without its `.uid`, a `class_name` that
+already exists in the world or twice in the package, an existing payload file
+with a different hash (unless the plan's overrides own that path), a stale HEAD
+and an install path that escapes the project.
+
+`applyDraftInstall` stages the whole set inside the project, journals the intent,
+then replaces targets while keeping the previous bytes of every replaced file.
+Any failure, cancellation or disk/lock error restores the world and removes
+files created by that call; `recoverDraftInstall` rolls back a journaled
+`applying` operation after a crash. Repeating an operation id with the same
+content is a no-op; the same id with different content is `OPERATION_CONFLICT`.
+Committing the draft to a formal revision is the core content transaction; this
+module never writes Git and never touches a running world.
+
 ## Observation and bounded operations
 
 `observation.mjs` defines `craftmine.godot-observation/1`:

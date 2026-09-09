@@ -45,12 +45,11 @@ test('legacy vectors',()=>{
   }
 });
 
-test('lock vectors',()=>{
-  for(const vector of vectors.lock){
-    const lock={direct:vector.direct,closure:vector.closure,graph:vector.graph};
-    if(vector.ok)assert.deepEqual(validateLock(lock),{ok:true},vector.name);
-    else throwsCode(()=>validateLock(lock),vector.error);
-  }
+test('lock coverage moved to the single canonical contract',()=>{
+  // The R4 `{direct, closure, graph}` document reused this format id; it is
+  // refused now and its coverage lives in tests/godot-round3/S3/asset-lock.test.mjs
+  // together with the Rust side of the same vectors.
+  throwsCode(()=>validateLock({direct:[{id:'a',version:1}],closure:[{id:'a',version:1}],graph:{}}),'ASSET_LOCK_LEGACY_SHAPE');
 });
 
 const resourceContent=()=>({assetId:'demo.asset',version:1,kind:'raw',files:[{path:'payload/a.txt',bytes:3,sha256:'0'.repeat(64)}],dependencies:[],entry:{},interfaces:{},compatibility:{},state:{},licenses:{}});

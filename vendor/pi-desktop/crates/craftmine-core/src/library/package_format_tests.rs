@@ -2,9 +2,21 @@ use super::*;
 
 const VECTORS: &str =
     include_str!("../../../../../../tests/godot-round2/R4/vectors/package-format-vectors.json");
+const S3_VECTORS: &str =
+    include_str!("../../../../../../tests/godot-round3/S3/vectors/asset-lock-vectors.json");
+const CONTRACT_VECTORS: &str =
+    include_str!("../../../../../../tests/godot-remaining/M/contract/asset-lock-vectors.json");
 
 fn vectors() -> Value {
     parse(VECTORS).expect("vector file must be strict JSON")
+}
+
+fn s3_vectors() -> Value {
+    parse(S3_VECTORS).expect("S3 vector file must be strict JSON")
+}
+
+fn contract_vectors() -> Value {
+    serde_json::from_str(CONTRACT_VECTORS).expect("contract vector file must be JSON")
 }
 
 fn code(error: anyhow::Error) -> String {
@@ -81,21 +93,102 @@ fn legacy_kinds_are_mapped_or_refused_never_guessed() {
     }
 }
 
+/// The lock has one definition. Both languages execute these vectors: an
+/// accepted document must canonicalize to the same `assetLockHash`, and a
+/// refused document must fail with the same code. The frozen vectors come from
+/// the Rust contract itself, so this also proves the JavaScript mirror
+/// reproduces serde_json's pretty bytes exactly.
 #[test]
 fn lock_vectors_are_shared_with_javascript() {
-    let vectors = vectors();
-    for case in vectors["lock"].as_array().unwrap() {
+    let vectors = s3_vectors();
+    for case in vectors["accept"].as_array().unwrap() {
         let name = case["name"].as_str().unwrap();
-        let lock = json!({"direct": case["direct"], "closure": case["closure"],
-            "graph": case["graph"]});
-        match case.get("error").and_then(Value::as_str) {
-            Some(expected) => {
-                let error = code(validate_lock(&lock).unwrap_err());
-                assert!(error.contains(expected), "{name}: {error}");
-            }
-            None => assert!(validate_lock(&lock).is_ok(), "{name}"),
-        }
+        let lock = validate_lock(&case["lock"])
+            .unwrap_or_else(|error| panic!("{name}: {error}"));
+        assert_eq!(
+            lock.asset_lock_hash().unwrap(),
+            case["assetLockHash"].as_str().unwrap(),
+            "{name}: canonical hash"
+        );
+        // Idempotent: validating a canonical lock changes nothing.
+        assert_eq!(
+            lock,
+            validate_lock(&case["lock"]).unwrap(),
+            "{name}: idempotent"
+        );
     }
+    for case in vectors["reject"].as_array().unwrap() {
+        let name = case["name"].as_str().unwrap();
+        let expected = case["error"].as_str().unwrap();
+        let error = code(validate_lock(&case["lock"]).unwrap_err());
+        assert!(error.contains(expected), "{name}: expected {expected}, got {error}");
+    }
+}
+
+#[test]
+fn frozen_contract_lock_vector_is_reproduced() {
+    let vectors = contract_vectors();
+    for case in vectors["vectors"].as_array().unwrap() {
+        let name = case["name"].as_str().unwrap();
+        let text = case["lockText"].as_str().unwrap();
+        let lock = validate_lock(&parse(text).unwrap())
+            .unwrap_or_else(|error| panic!("{name}: {error}"));
+        assert_eq!(
+            lock.canonical_text().unwrap(),
+            text,
+            "{name}: canonical bytes"
+        );
+        assert_eq!(
+            lock.asset_lock_hash().unwrap(),
+            case["assetLockHash"].as_str().unwrap(),
+            "{name}: assetLockHash"
+        );
+        assert_eq!(
+            lock.assets.len(),
+            case["lockText"].as_str().unwrap().matches("\"installPath\"").count(),
+            "{name}: asset count"
+        );
+    }
+}
+
+#[test]
+fn media_type_table_is_shared_with_javascript() {
+    let vectors = s3_vectors();
+    for case in vectors["mediaTypes"].as_array().unwrap() {
+        assert_eq!(
+            media_type_for_path(case["path"].as_str().unwrap()),
+            case["mediaType"].as_str().unwrap(),
+            "{}",
+            case["path"]
+        );
+    }
+    assert_eq!(media_type_for_path("no-extension"), "application/octet-stream");
+    assert_eq!(media_type_for_path("a/b.GD"), "text/x-gdscript");
+}
+
+#[test]
+fn package_dependency_metadata_converts_into_an_asset_ref() {
+    let converted = dependency_to_asset_ref(&json!({"id": "stone", "version": 1,
+        "sha256": "a".repeat(64)})).unwrap();
+    assert_eq!(converted.asset_id, "stone");
+    assert_eq!(converted.version, "1");
+    assert_eq!(converted.content_hash, "a".repeat(64));
+    assert!(code(
+        dependency_to_asset_ref(&json!({"id": "stone", "version": 0,
+            "sha256": "a".repeat(64)})).unwrap_err()
+    )
+    .contains("INVALID_VERSION"));
+    assert!(code(
+        dependency_to_asset_ref(&json!({"id": "stone", "version": 1,
+            "sha256": "abc"})).unwrap_err()
+    )
+    .contains("INVALID_HASH"));
+    // The package rule accepts uppercase hex and normalizes it.
+    assert_eq!(
+        dependency_to_asset_ref(&json!({"id": "stone", "version": 1,
+            "sha256": "A".repeat(64)})).unwrap().content_hash,
+        "a".repeat(64)
+    );
 }
 
 #[test]

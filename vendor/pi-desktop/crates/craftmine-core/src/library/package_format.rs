@@ -9,11 +9,11 @@
 use super::super::digest;
 use anyhow::{ensure, Context, Result};
 use serde_json::{json, Map, Value};
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeSet;
 
 pub(super) const PACKAGE_FORMAT: &str = "craftmine.package/1";
 pub(super) const RESOURCE_FORMAT: &str = "craftmine.resource/1";
-pub(super) const LOCK_FORMAT: &str = "craftmine.assets-lock/1";
+pub(super) const LOCK_FORMAT: &str = crate::content_history::contract::ASSET_LOCK_FORMAT;
 pub(super) const KINDS: &[&str] = &["base", "world", "module", "object", "scene", "raw", "data"];
 pub(super) const MAX_SAFE_INTEGER: i64 = 9_007_199_254_740_991;
 const MAX_PATH_BYTES: usize = 240;
@@ -409,9 +409,27 @@ pub(super) fn legacy_kind(source: &Value) -> Result<Value> {
 }
 
 // ---------------------------------------------------------------------------
-// Dependency lock
+// Dependency lock: the single canonical `craftmine.assets-lock/1` document
 // ---------------------------------------------------------------------------
+//
+// `content_history::contract` owns the lock type (`AssetLock`) and the content
+// history, the asset catalog and this package layer all consume that one
+// definition. The package format keeps its *own* dependency metadata
+// (`content.dependencies[]` = `{id, version, sha256}`) and converts it here, so
+// the two schemas never masquerade as each other:
+//
+//   {id, version, sha256} -> AssetRef {assetId: id, version: "<n>", contentHash: sha256}
+//
+// The former R4 `{direct, closure, graph}` document is refused explicitly with
+// `ASSET_LOCK_LEGACY_SHAPE`. It carried no content hash, so a faithful
+// conversion does not exist; the supported migration is to re-plan the install
+// from the package manifests (`package.planInstall`).
 
+use crate::content_history::contract::{AssetLock, AssetRef};
+
+/// Package-level asset reference: `{id, version, sha256}`. Stricter than the
+/// canonical identifier rule on purpose (lowercase ids, no `:`), so every
+/// package id is also a valid canonical asset id.
 fn reference(value: &Value) -> Result<(String, u64)> {
     let id = value["id"]
         .as_str()
@@ -429,70 +447,68 @@ fn reference(value: &Value) -> Result<(String, u64)> {
     Ok((id, version))
 }
 
-fn label(id: &str, version: u64) -> String {
-    format!("{id}@{version}")
+/// Media type for an asset-relative payload path. `craftmine.resource/1` file
+/// entries carry no media type, so the conversion derives it from the
+/// extension with a fixed table. `plugins/craftmine-world/asset-lock.mjs`
+/// mirrors this table exactly and the shared vectors prove they agree.
+pub(super) fn media_type_for_path(path: &str) -> &'static str {
+    let lowered = path.to_ascii_lowercase();
+    let extension = match lowered.rfind('.') {
+        Some(index) => &lowered[index..],
+        None => "",
+    };
+    match extension {
+        ".gd" => "text/x-gdscript",
+        ".gdshader" => "text/x-gdshader",
+        ".tscn" => "application/x-godot-scene",
+        ".tres" => "application/x-godot-resource",
+        ".json" => "application/json",
+        ".png" => "image/png",
+        ".jpg" | ".jpeg" => "image/jpeg",
+        ".svg" => "image/svg+xml",
+        ".wav" => "audio/wav",
+        ".ogg" => "audio/ogg",
+        ".mp3" => "audio/mpeg",
+        ".glb" => "model/gltf-binary",
+        ".gltf" => "model/gltf+json",
+        ".csv" => "text/csv",
+        ".md" => "text/markdown",
+        ".txt" | ".cfg" | ".godot" => "text/plain",
+        _ => "application/octet-stream",
+    }
 }
 
-/// The lock must contain exactly the reachable closure of the direct refs,
-/// with one version per assetId and no cycle.
-pub(super) fn validate_lock(lock: &Value) -> Result<()> {
-    let direct = lock["direct"].as_array().context("LOCK_DIRECT_REQUIRED")?;
-    let closure = lock["closure"].as_array().context("LOCK_CLOSURE_REQUIRED")?;
-    let graph = lock["graph"].as_object().cloned().unwrap_or_default();
+/// Convert one validated package dependency into a canonical asset reference.
+pub(super) fn dependency_to_asset_ref(dependency: &Value) -> Result<AssetRef> {
+    let (id, version) = reference(dependency)?;
+    Ok(AssetRef {
+        asset_id: id,
+        version: version.to_string(),
+        content_hash: hash_field(dependency, "sha256")?,
+    })
+}
 
-    let mut versions: BTreeMap<String, u64> = BTreeMap::new();
-    let mut available = BTreeSet::new();
-    for item in closure {
-        let (id, version) = reference(item)?;
-        match versions.get(&id) {
-            Some(existing) => ensure!(*existing == version, "PACKAGE_LOCK_VERSION_CONFLICT"),
-            None => {
-                versions.insert(id.clone(), version);
-            }
-        }
-        available.insert(label(&id, version));
-    }
-
-    let mut roots = Vec::new();
-    for item in direct {
-        let (id, version) = reference(item)?;
-        let key = label(&id, version);
-        ensure!(
-            available.contains(&key),
-            "PACKAGE_LOCK_MISSING_DEPENDENCY"
-        );
-        roots.push(key);
-    }
-
-    let mut reachable = BTreeSet::new();
-    let mut stack: Vec<(String, Vec<String>)> = roots
-        .into_iter()
-        .map(|root| (root, Vec::new()))
-        .collect();
-    while let Some((node, path)) = stack.pop() {
-        if let Some(index) = path.iter().position(|item| item == &node) {
-            let mut cycle = path[index..].to_vec();
-            cycle.push(node);
-            anyhow::bail!("PACKAGE_DEPENDENCY_CYCLE: {}", cycle.join(" -> "));
-        }
-        if !reachable.insert(node.clone()) {
-            continue;
-        }
-        let mut next = path.clone();
-        next.push(node.clone());
-        if let Some(edges) = graph.get(&node).and_then(Value::as_array) {
-            for edge in edges {
-                let edge = edge.as_str().context("LOCK_GRAPH_REQUIRED")?.to_owned();
-                ensure!(available.contains(&edge), "PACKAGE_LOCK_MISSING_DEPENDENCY");
-                stack.push((edge, next.clone()));
-            }
-        }
-    }
+/// Validate and canonicalize a lock document against the single contract.
+pub(super) fn validate_lock(lock: &Value) -> Result<AssetLock> {
     ensure!(
-        reachable.len() == available.len(),
-        "PACKAGE_LOCK_UNREACHABLE_ENTRY"
+        !["direct", "closure", "graph"]
+            .iter()
+            .any(|key| lock.get(*key).is_some()),
+        "ASSET_LOCK_LEGACY_SHAPE"
     );
-    Ok(())
+    // `AssetLock` denies unknown fields, but serde reports that as a generic
+    // deserialization error. The JavaScript mirror distinguishes an unknown
+    // field (`UNKNOWN_FIELD`) from a missing or wrongly typed one
+    // (`INVALID_ASSET_LOCK`), and the shared vectors require the same codes.
+    let mut parsed: AssetLock = match serde_json::from_value(lock.clone()) {
+        Ok(parsed) => parsed,
+        Err(error) if error.to_string().contains("unknown field") => {
+            anyhow::bail!("UNKNOWN_FIELD")
+        }
+        Err(_) => anyhow::bail!("INVALID_ASSET_LOCK"),
+    };
+    parsed.canonicalize()?;
+    Ok(parsed)
 }
 
 // ---------------------------------------------------------------------------
@@ -691,9 +707,11 @@ impl super::super::TaskJournal {
             result.insert("legacy".into(), legacy_kind(legacy)?);
         }
         if let Some(lock) = args.get("lock").filter(|value| !value.is_null()) {
-            validate_lock(lock)?;
+            let canonical = validate_lock(lock)?;
             result.insert("lock".into(), json!("ok"));
             result.insert("lockFormat".into(), json!(LOCK_FORMAT));
+            result.insert("assetLockHash".into(), json!(canonical.asset_lock_hash()?));
+            result.insert("assets".into(), json!(canonical.assets.len()));
         }
         if let Some(manifest) = args.get("manifest").filter(|value| !value.is_null()) {
             result.insert("manifest".into(), validate_resource_manifest(manifest)?);

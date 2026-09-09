@@ -34,7 +34,10 @@ const EXT_HEADER = /^\[ext_resource type="([^"]+)"(?: uid="([^"]+)")? path="([^"
 
 /** Split a .tscn into its header, ext_resource lines and node blocks. */
 export function parseScene(text) {
-  const lines = text.split('\n');
+  // Normalize CRLF: without this, `key = value\r` never matched the property
+  // regex, so a CRLF scene's existing identities were invisible to the
+  // duplicate check.
+  const lines = text.split('\n').map((line) => (line.endsWith('\r') ? line.slice(0, -1) : line));
   const header = [];
   const extResources = [];
   const nodes = [];
@@ -48,7 +51,17 @@ export function parseScene(text) {
     }
     const node = NODE_HEADER.exec(line);
     if (node) {
-      current = { name: node[1], header: line, attributes: node[2], properties: {}, lines: [line] };
+      // The parent of a node is a header attribute, not a property line.
+      const parentMatch = /(?:^|\s)parent="([^"]*)"/.exec(node[2]);
+      current = {
+        name: node[1],
+        header: line,
+        attributes: node[2],
+        parent: parentMatch ? parentMatch[1] : null,
+        properties: {},
+        duplicateProperties: [],
+        lines: [line],
+      };
       nodes.push(current);
       continue;
     }
@@ -58,7 +71,10 @@ export function parseScene(text) {
   for (const node of nodes) {
     for (const line of node.lines.slice(1)) {
       const property = /^([A-Za-z_][A-Za-z0-9_/]*)\s*=\s*(.*)$/.exec(line);
-      if (property) node.properties[property[1]] = property[2].trim();
+      if (property) {
+        if (node.properties[property[1]] !== undefined) node.duplicateProperties.push(property[1]);
+        node.properties[property[1]] = property[2].trim();
+      }
     }
   }
   return { header, extResources, nodes, text };
@@ -118,7 +134,7 @@ export function planSceneInsertion({ sceneText, scenePath, spec, entityId, place
   const parsed = parseScene(sceneText);
   const nodeName = sanitizeNodeName(entityId);
   const parent = spec.parent || '.';
-  const siblings = parsed.nodes.filter((node) => (node.properties.parent || '.') === parent);
+  const siblings = parsed.nodes.filter((node) => (node.parent || '.') === parent);
   if (siblings.some((node) => node.name === nodeName)) {
     return { ok: false, reason: 'node-name-taken', detail: `${parent} already has a node named ${nodeName}` };
   }
@@ -131,6 +147,21 @@ export function planSceneInsertion({ sceneText, scenePath, spec, entityId, place
     if (value === wanted || value === `"${entityId}"` || value === `&"${entityId}"`) {
       return { ok: false, reason: 'identity-taken', detail: `${identityField} = ${entityId} already exists in ${scenePath}` };
     }
+  }
+  // The plan owns node structure and identity. Placement and local overrides
+  // may only set declared exports; letting them rewrite the identity produced
+  // two nodes with the same identity in the round-two audit counterexample.
+  const reserved = [identityField, 'parent', 'script', 'name', 'instance', 'type', 'groups'];
+  const forbidden = [];
+  for (const key of [...Object.keys(overrides || {}), ...Object.keys(placement || {})]) {
+    if (reserved.includes(key) && !forbidden.includes(key)) forbidden.push(key);
+  }
+  if (forbidden.length > 0) {
+    return {
+      ok: false,
+      reason: 'reserved-override',
+      detail: `${forbidden.join(', ')} cannot be set by placement or overrides; the plan owns node structure and identity`,
+    };
   }
   const extId = allocateExtId(parsed);
   const extResource = spec.mode === 'instance'
@@ -151,6 +182,15 @@ export function planSceneInsertion({ sceneText, scenePath, spec, entityId, place
     if (key === 'parent') continue;
     properties[key] = gdLiteral(value);
   }
+  // Defense in depth: even if a future caller adds another property source,
+  // the identity written to the node must be exactly the planned one.
+  if (properties[identityField] !== wanted) {
+    return {
+      ok: false,
+      reason: 'identity-overridden',
+      detail: `${identityField} would be rewritten to ${properties[identityField]} instead of ${wanted}`,
+    };
+  }
   return {
     ok: true,
     edit: {
@@ -162,6 +202,7 @@ export function planSceneInsertion({ sceneText, scenePath, spec, entityId, place
       nodeType: spec.nodeType || 'Node2D',
       extResource,
       properties,
+      identity: { field: identityField, value: wanted, entityId },
       groups: spec.groups ? [...spec.groups] : [],
       inputActions: spec.inputActions ? [...spec.inputActions] : [],
     },
@@ -197,17 +238,19 @@ export function scriptUid(projectDir, scriptPath) {
 
 /**
  * Apply a planned insertion to scene text. Only appends: the existing header,
- * ext_resources and nodes are preserved byte for byte.
+ * ext_resources and nodes are preserved byte for byte, and new lines use the
+ * file's existing line ending so a CRLF scene stays CRLF.
  */
 export function applySceneInsertion(sceneText, edit, { uid = null } = {}) {
   const eol = sceneLineEnding(sceneText);
+  const tail = eol === '\r\n' ? '\r' : '';
   const parsed = parseScene(sceneText);
   const nodeName = edit.nodeName;
   if (parsed.nodes.some((node) => node.name === nodeName)) {
     throw new Error(`scene already contains a node named ${nodeName}`);
   }
   const resource = { ...edit.extResource, uid };
-  const extLine = renderExtResource(resource);
+  const extLine = `${renderExtResource(resource)}${tail}`;
   // Insert the new ext_resource after the last existing one, or after the scene
   // header when the scene has none.
   const lines = sceneText.split('\n');
@@ -216,19 +259,62 @@ export function applySceneInsertion(sceneText, edit, { uid = null } = {}) {
     if (EXT_HEADER.test(lines[index])) insertExtAt = index + 1;
   }
   lines.splice(insertExtAt, 0, extLine);
-  const block = renderNodeBlock(edit);
+  const block = renderNodeBlock(edit).map((line) => `${line}${tail}`);
   const text = lines.join('\n');
-  const needsBlank = !text.endsWith('\n\n');
-  return `${text}${needsBlank ? '\n' : ''}${block.join('\n')}\n`;
+  const needsBlank = !text.endsWith(`${eol}${eol}`);
+  const result = `${text}${needsBlank ? eol : ''}${block.join('\n')}\n`;
+  // The round-two audit found two nodes with the same identity after an
+  // override rewrote it. Re-parse the serialized scene and refuse to return
+  // anything that is not exactly one node per identity and per name.
+  assertSerializedIdentity(result, edit);
+  return result;
+}
+
+/** Reject duplicate node names and duplicate identity values after writing. */
+export function assertSerializedIdentity(sceneText, edit) {
+  const parsed = parseScene(sceneText);
+  const names = new Set();
+  for (const node of parsed.nodes) {
+    // Godot node names must be unique per parent, not globally.
+    const parent = node.parent || '.';
+    const scoped = `${parent}\u0000${node.name}`;
+    if (names.has(scoped)) {
+      throw new Error(`scene contains duplicate node name ${node.name} under ${parent} after serialization`);
+    }
+    names.add(scoped);
+  }
+  if (!edit || !edit.identity) return;
+  const { field, value } = edit.identity;
+  for (const node of parsed.nodes) {
+    if (node.duplicateProperties.includes(field)) {
+      throw new Error(`node ${node.name} declares ${field} more than once after serialization`);
+    }
+  }
+  const seen = new Map();
+  for (const node of parsed.nodes) {
+    const actual = node.properties[field];
+    if (actual === undefined) continue;
+    seen.set(actual, (seen.get(actual) ?? 0) + 1);
+  }
+  const duplicated = [...seen.entries()].filter(([, count]) => count > 1);
+  if (duplicated.length > 0) {
+    throw new Error(`scene contains duplicate ${field} values after serialization: ${duplicated.map(([key, count]) => `${key} x${count}`).join(', ')}`);
+  }
+  const owners = parsed.nodes.filter((node) => node.properties[field] === value);
+  if (owners.length !== 1) {
+    throw new Error(`scene identity ${field} = ${value} occurs ${owners.length} times after serialization`);
+  }
 }
 
 /** Input actions a component needs, as `[input]` entries for project.godot. */
 export function planInputActions(projectText, actions) {
   if (!actions || actions.length === 0) return { ok: true, edit: null, missing: [] };
   const present = new Set();
-  const inputSection = /\[input\]\n([\s\S]*?)(\n\[|$)/.exec(projectText);
+  // project.godot may use CRLF; the round-two audit showed an existing action
+  // being reported as missing because the section regex required a bare LF.
+  const inputSection = /\[input\]\r?\n([\s\S]*?)(\r?\n\[|$)/.exec(projectText);
   if (inputSection) {
-    for (const line of inputSection[1].split('\n')) {
+    for (const line of inputSection[1].split(/\r?\n/)) {
       const name = /^([A-Za-z_][A-Za-z0-9_]*)=/.exec(line);
       if (name) present.add(name[1]);
     }
