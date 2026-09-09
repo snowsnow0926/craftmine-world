@@ -13,7 +13,7 @@ use rusqlite::{
 use serde_json::{json, Map, Value};
 
 const LIMIT: usize = 32 * 1024 * 1024;
-const SCHEMA_VERSION: u64 = 2;
+const SCHEMA_VERSION: u64 = 3;
 const TABLES: &[&str] = &[
     "craftmine_worlds",
     "craftmine_tasks",
@@ -31,6 +31,7 @@ const TABLES: &[&str] = &[
     "craftmine_applied_drafts",
     "craftmine_task_runtime",
     "craftmine_budget_limits",
+    "craftmine_budget_configurations",
     "craftmine_budget_requests",
     "craftmine_budget_events",
     "craftmine_budget_settlement_history",
@@ -88,6 +89,71 @@ fn fingerprint(db: &Connection) -> Result<String> {
 }
 fn compatible_tables(archive: &Value) -> Result<Value> {
     let mut tables = archive["tables"].clone();
+    if archive["schemaVersion"]
+        .as_u64()
+        .is_some_and(|version| version < 3)
+    {
+        let map = tables.as_object_mut().context("BACKUP_TABLES_REQUIRED")?;
+        ensure!(
+            !map.contains_key("craftmine_budget_configurations"),
+            "BACKUP_SCHEMA_MISMATCH"
+        );
+        map.insert(
+            "craftmine_budget_configurations".into(),
+            json!({"columns":["owner","operation_id","request","result","created_at"],"rows":[]}),
+        );
+        let task_ids = tables["craftmine_tasks"]["rows"]
+            .as_array()
+            .context("BACKUP_ROWS_REQUIRED")?
+            .iter()
+            .map(|row| {
+                row[0]
+                    .as_str()
+                    .map(str::to_owned)
+                    .context("BACKUP_ROW_REQUIRED")
+            })
+            .collect::<Result<Vec<_>>>()?;
+        let runtime = &mut tables["craftmine_task_runtime"];
+        ensure!(
+            runtime["columns"] == json!(["task_id", "generation", "budget_owner", "recovery"]),
+            "BACKUP_COLUMNS_MISMATCH"
+        );
+        let runtime_rows = runtime["rows"]
+            .as_array_mut()
+            .context("BACKUP_ROWS_REQUIRED")?;
+        for task_id in task_ids {
+            if !runtime_rows.iter().any(|row| row[0] == task_id) {
+                runtime_rows.push(json!([task_id, 1, task_id, "none"]));
+            }
+        }
+        let owners = runtime["rows"]
+            .as_array()
+            .context("BACKUP_ROWS_REQUIRED")?
+            .iter()
+            .map(|row| {
+                row[2]
+                    .as_str()
+                    .map(str::to_owned)
+                    .context("BACKUP_ROW_REQUIRED")
+            })
+            .collect::<Result<Vec<_>>>()?;
+        let limits = &mut tables["craftmine_budget_limits"];
+        ensure!(
+            limits["columns"] == json!(["owner", "limits"]),
+            "BACKUP_COLUMNS_MISMATCH"
+        );
+        let rows = limits["rows"]
+            .as_array_mut()
+            .context("BACKUP_ROWS_REQUIRED")?;
+        for owner in owners {
+            if !rows.iter().any(|row| row[0] == owner) {
+                rows.push(json!([
+                    owner,
+                    serde_json::to_string(&super::durable::legacy_limits())?
+                ]));
+            }
+        }
+    }
     let map = tables.as_object().context("BACKUP_TABLES_REQUIRED")?;
     ensure!(
         map.len() == TABLES.len() && TABLES.iter().all(|name| map.contains_key(*name)),
@@ -221,7 +287,10 @@ fn validate_archive(db: &Connection, archive: &Value) -> Result<Value> {
     )?;
     ensure!(
         archive["format"] == "craftmine.domain-backup/1"
-            && matches!(archive["schemaVersion"].as_u64(), Some(1 | SCHEMA_VERSION)),
+            && matches!(
+                archive["schemaVersion"].as_u64(),
+                Some(1 | 2 | SCHEMA_VERSION)
+            ),
         "BACKUP_VERSION_UNSUPPORTED"
     );
     let hash = digest(&serde_json::to_string(&archive["tables"])?);

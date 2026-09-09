@@ -2,6 +2,14 @@ import { describe, expect, it } from "vitest";
 import { classifyAgentError } from "./agent-errors.js";
 
 describe("classifyAgentError", () => {
+  it("keeps local task limits terminal even when wrapped in an RPC or transport error", () => {
+    for (const code of ["TOKEN_BUDGET_EXHAUSTED", "REQUEST_BUDGET_EXHAUSTED", "COMPACTION_BUDGET_EXHAUSTED", "TASK_DEADLINE_EXCEEDED"]) {
+      expect(classifyAgentError(`host RPC: ${code}`)).toMatchObject({ code, retriable: false });
+      expect(classifyAgentError(Object.assign(new Error(`${code}: network error`), { status: 429 }))).toMatchObject({ code, retriable: false });
+    }
+    expect(classifyAgentError("CRAFTMINE_CONTEXT_BUDGET_EXCEEDED")).toMatchObject({ code: "CRAFTMINE_REQUEST_TOO_LARGE", retriable: false });
+    expect(classifyAgentError("CRAFTMINE_TASK_NOT_ACTIVE")).toMatchObject({ code: "CRAFTMINE_TASK_STATE_CHANGED", retriable: false });
+  });
   it("classifies auth failures from status fields", () => {
     const err = Object.assign(new Error("Incorrect API key provided"), {
       status: 401,

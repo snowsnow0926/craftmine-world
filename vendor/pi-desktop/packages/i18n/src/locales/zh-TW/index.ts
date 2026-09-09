@@ -1787,6 +1787,12 @@ export const zhTW = {
     justNow: "剛剛",
   },
   errors: {
+    TOKEN_BUDGET_EXHAUSTED: "本機任務累計 token 額度已用完。請到世界工作台調整額度，再恢復已儲存的任務。",
+    REQUEST_BUDGET_EXHAUSTED: "本機任務請求次數已達上限，請在世界工作台查看已儲存的任務。",
+    COMPACTION_BUDGET_EXHAUSTED: "本機任務壓縮次數已達上限，請在世界工作台查看已儲存的任務。",
+    TASK_DEADLINE_EXCEEDED: "本機任務執行時限已到，請在世界工作台查看已儲存的任務。",
+    CRAFTMINE_REQUEST_TOO_LARGE: "這次請求超出模型上下文或預留輸出容量，請恢復上下文後繼續。",
+    CRAFTMINE_TASK_STATE_CHANGED: "已儲存的任務狀態已變更，請重新整理世界工作台。",
     HOST_UNAVAILABLE: "本地服務不可用",
     MODEL_NOT_CONFIGURED: "該模型尚未配置，或當前 AI 服務不提供此模型。",
     TOOL_DENIED: "此操作的許可權已被拒絕",

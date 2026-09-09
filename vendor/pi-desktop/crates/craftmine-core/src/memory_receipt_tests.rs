@@ -131,7 +131,7 @@ fn backup_v2_roundtrip_preserves_receipt_and_v1_migrates_to_unverifiable() -> Re
     let saved = journal.memory_propose(&proposed)?;
     journal.workspace_end_turn(&context.session_id, &context.turn_id, "completed")?;
     let exported = journal.backup_export(&json!({"operationId":"export-v2"}))?;
-    assert_eq!(exported["archive"]["schemaVersion"], 2);
+    assert_eq!(exported["archive"]["schemaVersion"], 3);
     assert_eq!(
         journal.backup_inspect(&json!({"archive":exported["archive"]}))?["valid"],
         true
@@ -141,6 +141,7 @@ fn backup_v2_roundtrip_preserves_receipt_and_v1_migrates_to_unverifiable() -> Re
     assert_eq!(journal.memory_find_receipt(&lookup)?, saved);
     let mut legacy = exported["archive"].clone();
     legacy["schemaVersion"] = json!(1);
+    legacy["tables"].as_object_mut().unwrap().remove("craftmine_budget_configurations");
     legacy["tables"]["craftmine_memory_operations"]["columns"]
         .as_array_mut()
         .unwrap()
@@ -166,7 +167,7 @@ fn backup_v2_roundtrip_preserves_receipt_and_v1_migrates_to_unverifiable() -> Re
         .to_string()
         .contains("UNVERIFIABLE"));
     let again = journal.backup_export(&json!({"operationId":"export-migrated"}))?;
-    assert_eq!(again["archive"]["schemaVersion"], 2);
+    assert_eq!(again["archive"]["schemaVersion"], 3);
     assert_eq!(
         journal.backup_inspect(&json!({"archive":again["archive"]}))?["valid"],
         true

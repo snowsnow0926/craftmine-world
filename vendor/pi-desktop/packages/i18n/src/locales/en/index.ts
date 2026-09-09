@@ -1813,6 +1813,12 @@ export const en = {
     justNow: "Just now",
   },
   errors: {
+    TOKEN_BUDGET_EXHAUSTED: "The local task token budget is exhausted. Adjust its budget in the world workbench, then resume the saved task.",
+    REQUEST_BUDGET_EXHAUSTED: "The task request limit is reached. Review the saved task in the world workbench.",
+    COMPACTION_BUDGET_EXHAUSTED: "The task compaction limit is reached. Review the saved task in the world workbench.",
+    TASK_DEADLINE_EXCEEDED: "The task time limit is reached. Review the saved task in the world workbench.",
+    CRAFTMINE_REQUEST_TOO_LARGE: "This request exceeds the model context or reserved output allowance. Recover context before continuing.",
+    CRAFTMINE_TASK_STATE_CHANGED: "The saved task state changed. Refresh the world workbench before continuing.",
     HOST_UNAVAILABLE: "The local service is unavailable",
     MODEL_NOT_CONFIGURED: "This model isn't set up, or the AI provider doesn't offer it.",
     TOOL_DENIED: "Permission was denied for this action",

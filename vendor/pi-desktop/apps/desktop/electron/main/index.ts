@@ -20,11 +20,15 @@ import { craftmineProjectIdentity } from "./craftmine-tool-context";
 import { CraftmineTurnGateway } from "./craftmine-turn-gateway";
 import { CraftmineMaintenanceContexts } from "./craftmine-maintenance-context";
 import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
+import { createCraftmineOperationJournal } from "./craftmine-operation-journal";
 import { createCraftmineBackupService, type CraftmineFilePicker } from "./craftmine-backup-service";
 import { createCraftmineDiagnosticsService } from "./craftmine-diagnostics-service";
+import { createCraftmineTelemetry } from "./craftmine-telemetry";
+import { readCraftmineBuildIdentity } from "./craftmine-build-identity";
 import { CraftmineVerifier } from "./craftmine-verifier";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
 import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
+import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
 import { configureHeadlessAcceptance, installHeadlessControl } from "./craftmine-headless";
 import {
@@ -753,7 +757,7 @@ const plugins: PluginRuntime = new PluginRuntime({
       includeSessionContext: input.includeSessionContext,
       sessionContext,
     });
-    const result = await completeOneShot(
+    const result = await craftmineTelemetry.measureCompletion(() => completeOneShot(
       runtimeProvider,
       context,
       launch.sidecarParams.thinkingLevel,
@@ -769,7 +773,7 @@ const plugins: PluginRuntime = new PluginRuntime({
           }),
         } : {}),
       },
-    );
+    ));
     return {
       text: result.text,
       modelKey: `${launch.providerId}/${launch.modelId}`,
@@ -2346,6 +2350,7 @@ const craftmineFilePicker: CraftmineFilePicker = async request => {
   return result.canceled ? null : result.filePath ?? null;
 };
 const craftmineBackup = createCraftmineBackupService({ domainCall: (method, params) => plugins.requestCraftmineHost(method, params), pickFile: craftmineFilePicker });
+const craftmineBuildIdentity = readCraftmineBuildIdentity(process.resourcesPath);
 const craftmineDiagnostics = createCraftmineDiagnosticsService({
   pickFile: craftmineFilePicker,
   snapshot: async () => {
@@ -2357,10 +2362,13 @@ const craftmineDiagnostics = createCraftmineDiagnosticsService({
       const current = await plugins.requestCraftmineHost("task.context", { context }).catch(() => null) as CraftmineTaskContext | null;
       if (current) task = { status: current.status, requestCount: current.budget.requestCount, compactionCount: current.budget.compactionCount };
     }
-    return { build: { version: app.getVersion() }, task, credentials };
+    return { build: { version: app.getVersion(), ...craftmineBuildIdentity }, task, credentials, telemetry: craftmineTelemetry.status() };
   },
 });
+const craftmineTelemetry = createCraftmineTelemetry({ observe: craftmineDiagnostics.observe });
+app.once("will-quit", () => craftmineTelemetry.dispose());
 const craftminePanelRequest = createCraftminePanelGateway({
+  operations: createCraftmineOperationJournal(join(dataDir, "craftmine-pending-operations")),
   viewingSession: () => notificationViewingSessionId,
   session: async id => {
     if (!host) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
@@ -2391,8 +2399,11 @@ const craftminePanelRequest = createCraftminePanelGateway({
     if (!host || !sidecar) throw new Error("CRAFTMINE_BACKEND_UNAVAILABLE");
     const sessionId = session.id, projectId = craftmineProjectIdentity(session, sessionId);
     const context = { projectId, sessionId, turnId };
-    const facts = await plugins.requestCraftmineHost("task.context", { context }) as CraftmineTaskContext;
-    const content = "继续完成被中断的创作，保留已保存的改动。原任务要求：\n" + facts.requirements.slice().reverse().map(row => row.text).join("\n");
+    await plugins.requestCraftmineHost("task.context", { context });
+    // Requirements and corrections are injected from the authoritative journal
+    // on every model request. A resume action must not re-journal a reversed,
+    // truncated copy of historical requirements as a new player correction.
+    const content = "继续完成被中断的创作，保留已保存的改动。";
     const userMessage = { id: crypto.randomUUID(), role: "user" as const, content, createdAt: new Date().toISOString(), status: "complete" as const };
     await host.call("session.appendMessage", { sessionId, message: userMessage, turnId });
     await plugins.requestCraftmineHost("task.context", { context, request: { id: userMessage.id, text: content } });
@@ -2852,6 +2863,7 @@ async function createWindow() {
   });
   bootTiming.mark("window-created");
   const window = mainWindow;
+  craftmineTelemetry.attachWindow(window.webContents);
   window.webContents.on("console-message", (_event, _level, message) => {
     if (typeof message === "string" && message.startsWith("[timing] ")) {
       logger.app("timing", "info", message);
@@ -4769,6 +4781,7 @@ function wireSidecar(s: AgentSidecar) {
   s.onNotification((method, params) => {
     if (method === "agent.event") {
       const envelope = params as AgentEventEnvelope;
+      craftmineTelemetry.observeAgentEvent(envelope);
       const event = envelope.event;
       if (event.type === "tool_start") {
         logger.app("tool", "info", "tool start", {
@@ -5100,6 +5113,7 @@ function finishTurn(
 
     try {
       if (host && turnId) {
+        craftmineTelemetry.finishAgentJob(sessionId, turnId, status === "error" ? "failed" : status === "aborted" ? "aborted" : "completed");
         craftmineGateway.end(sessionId, turnId);
         if (!craftmineMaintenanceContexts.has(sessionId, turnId)) await plugins.endCraftmineTurn({ sessionId, turnId, status }).catch((error) => {
           logger.app("persistence", "error", "Craftmine draft turn end failed", { sessionId, data: String(error) });
@@ -9082,6 +9096,7 @@ function registerIpc() {
 }
 
 installNativeAgentAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload), active: (sessionId) => activeTurns.has(sessionId) });
+installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), toolName: name => { const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name); if (!tool) throw Error("Missing world tool: " + name); return tool.fullName; }, begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId), finish: sessionId => finishTurn(sessionId, "completed", undefined, { createNotification: false }) });
 installHeadlessControl({
   window: () => mainWindow,
   world: () => pluginViews.headlessWorldContents(),

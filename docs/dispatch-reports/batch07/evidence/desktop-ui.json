@@ -1,0 +1,872 @@
+{
+  "kind": "built-plugin-ui-with-host-fixture",
+  "sourceCommit": "89d670293a94f1bf1a6d4ebe7c9764b3c6b5c530",
+  "files": {
+    "plugins/craftmine-world/view.mjs": "2742617d8e18dc2a7a778943de3213a09971d79d33af6cdada18ae291448f7bd",
+    "plugins/craftmine-world/world.html": "a57db0850e19bf80ff2993e012a7193f2f5141185faeeee90ddc9fab2403ed04",
+    "plugins/craftmine-world/workbench-ui.mjs": "52d982ecaaa1827d5963cc9864ee0e462532dca88b121d97dbed7778b071cda8",
+    "desktop/build/craftmine.world/views/view.js": "37e177df1465b50780d2dc9af9d6b94748d655fef5e246c21b008a705e88b3e7"
+  },
+  "checks": [
+    {
+      "name": "actual built world panel loads game and preserves save controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "authentic frame selection renders removable context",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "stale world build revision and unknown objects never reach host",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "selection can be explicitly removed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "fixed versions render with applied and verification provenance",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "untrusted library name is rendered as text",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact source version exposes bounded source and dependencies",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "install says draft rather than applied",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "installation sends exact version hash and no renderer owner identity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "lost install reply retries identical operation and revision",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "renderer restart shows saved unresolved operation without automatic execution",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "explicit recovery executes the original saved operation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "active model task disables manual install",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "task shows actual reservations and unknown results",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "stop sends captured task and generation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "explicit resume preserves task generation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "budget setting uses a player operation and distinguishes cumulative limit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "recheck keeps captured draft hash revision and generation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "memory shows world scope and source",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "retire displays inactive record",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "player rule is proposed with bound world and no forged validation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "restore explicitly describes all profile worlds",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "failed restore preserves world and opaque path authority",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "unknown restore can query existing operation receipt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "narrow workbench has no horizontal overflow",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "unavailable services never display fake success",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "failed save prevents world switch and preserves current record",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "world switch binds new memory reads and clears selection",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no input lock or focus request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no page errors",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "inputAudit": [
+    {
+      "lock": 0,
+      "focus": 0
+    },
+    {
+      "lock": 0,
+      "focus": 0
+    }
+  ],
+  "calls": [
+    {
+      "channel": "app.getAppearance",
+      "args": {}
+    },
+    {
+      "channel": "world.list",
+      "args": {}
+    },
+    {
+      "channel": "world.open",
+      "args": {
+        "id": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "world.list",
+      "args": {}
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.recoverable",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.execute",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "8f5baf86-a67b-4cd9-83e4-1d4f4c6441c9"
+      }
+    },
+    {
+      "channel": "library.install",
+      "args": {
+        "worldId": "world-a",
+        "ref": {
+          "id": "old-tree",
+          "version": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "revision": 3,
+        "operationId": "8f5baf86-a67b-4cd9-83e4-1d4f4c6441c9"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.execute",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "8f5baf86-a67b-4cd9-83e4-1d4f4c6441c9"
+      }
+    },
+    {
+      "channel": "workbench.acknowledge",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "8f5baf86-a67b-4cd9-83e4-1d4f4c6441c9"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "library.search",
+      "args": {
+        "worldId": "world-a",
+        "query": "",
+        "offset": 0,
+        "limit": 12
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "library.search",
+      "args": {
+        "worldId": "world-a",
+        "query": "",
+        "offset": 0,
+        "limit": 12
+      }
+    },
+    {
+      "channel": "library.read",
+      "args": {
+        "worldId": "world-a",
+        "ref": {
+          "id": "old-tree",
+          "version": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "start": 0,
+        "limit": 12000
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.recoverable",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.stop",
+      "args": {
+        "worldId": "world-a",
+        "taskId": "task-a",
+        "generation": 1
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.recoverable",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.resume",
+      "args": {
+        "worldId": "world-a",
+        "taskId": "interrupted-a",
+        "generation": 2
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.recoverable",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.prepare",
+      "args": {
+        "worldId": "world-a",
+        "channel": "task.budget",
+        "payload": {
+          "taskId": "task-a",
+          "generation": 1,
+          "maxTokens": null
+        }
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.execute",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "f8c3d2df-6250-48e9-b3f5-da8b56bad5c3"
+      }
+    },
+    {
+      "channel": "task.budget",
+      "args": {
+        "worldId": "world-a",
+        "taskId": "task-a",
+        "generation": 1,
+        "maxTokens": null,
+        "operationId": "f8c3d2df-6250-48e9-b3f5-da8b56bad5c3"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.recoverable",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.execute",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "f8c3d2df-6250-48e9-b3f5-da8b56bad5c3"
+      }
+    },
+    {
+      "channel": "workbench.acknowledge",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "f8c3d2df-6250-48e9-b3f5-da8b56bad5c3"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.prepare",
+      "args": {
+        "worldId": "world-a",
+        "channel": "draft.recheck",
+        "payload": {
+          "taskId": "task-a",
+          "generation": 1,
+          "revision": 3,
+          "draftHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.execute",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "93f8c5e2-0d5a-410c-b45f-b064c179cebb"
+      }
+    },
+    {
+      "channel": "draft.recheck",
+      "args": {
+        "worldId": "world-a",
+        "taskId": "task-a",
+        "generation": 1,
+        "revision": 3,
+        "draftHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "operationId": "93f8c5e2-0d5a-410c-b45f-b064c179cebb"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.execute",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "93f8c5e2-0d5a-410c-b45f-b064c179cebb"
+      }
+    },
+    {
+      "channel": "workbench.acknowledge",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "93f8c5e2-0d5a-410c-b45f-b064c179cebb"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "memory.search",
+      "args": {
+        "worldId": "world-a",
+        "query": "",
+        "includeInactive": false,
+        "offset": 0,
+        "limit": 12
+      }
+    },
+    {
+      "channel": "memory.retire",
+      "args": {
+        "worldId": "world-a",
+        "id": "rule-a",
+        "reason": "玩家在创作记忆面板停用"
+      }
+    },
+    {
+      "channel": "memory.search",
+      "args": {
+        "worldId": "world-a",
+        "query": "",
+        "includeInactive": false,
+        "offset": 0,
+        "limit": 12
+      }
+    },
+    {
+      "channel": "workbench.prepare",
+      "args": {
+        "worldId": "world-a",
+        "channel": "memory.propose",
+        "payload": {
+          "kind": "project-rule",
+          "claim": "以后树木保留通路",
+          "tags": []
+        }
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.execute",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "4ab26bf2-8836-4f35-b724-859c2aefe5ba"
+      }
+    },
+    {
+      "channel": "memory.propose",
+      "args": {
+        "worldId": "world-a",
+        "kind": "project-rule",
+        "claim": "以后树木保留通路",
+        "tags": [],
+        "operationId": "4ab26bf2-8836-4f35-b724-859c2aefe5ba"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "memory.search",
+      "args": {
+        "worldId": "world-a",
+        "query": "",
+        "includeInactive": false,
+        "offset": 0,
+        "limit": 12
+      }
+    },
+    {
+      "channel": "workbench.execute",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "4ab26bf2-8836-4f35-b724-859c2aefe5ba"
+      }
+    },
+    {
+      "channel": "workbench.acknowledge",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "4ab26bf2-8836-4f35-b724-859c2aefe5ba"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "world.saveProgress",
+      "args": {
+        "id": "world-a",
+        "revision": 1,
+        "baseBuild": "v-4694f55704548e637923",
+        "snapshot": {
+          "format": "craftmine.progress/3",
+          "player": {
+            "x": 0.5,
+            "y": 6,
+            "z": 12.5,
+            "yaw": 0,
+            "pitch": 0
+          },
+          "gameplay": {
+            "systems": {},
+            "targets": {},
+            "equipped": null,
+            "archivedTargets": {},
+            "cooldown": 0
+          },
+          "behaviors": {
+            "format": "craftmine.behavior-state/2",
+            "time": 0,
+            "modules": {},
+            "inventory": {},
+            "archive": []
+          }
+        }
+      }
+    },
+    {
+      "channel": "backup.inspect",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.prepare",
+      "args": {
+        "worldId": "world-a",
+        "channel": "backup.restore",
+        "payload": {
+          "grantId": "opaque-grant",
+          "expectedCurrentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "workbench.execute",
+      "args": {
+        "worldId": "world-a",
+        "operationId": "50ab308e-55d1-4e6f-bbfe-48925282db5c"
+      }
+    },
+    {
+      "channel": "backup.restore",
+      "args": {
+        "worldId": "world-a",
+        "grantId": "opaque-grant",
+        "expectedCurrentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "operationId": "50ab308e-55d1-4e6f-bbfe-48925282db5c"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "memory.search",
+      "args": {
+        "worldId": "world-a",
+        "query": "",
+        "includeInactive": false,
+        "offset": 0,
+        "limit": 12
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "args": {
+        "worldId": "world-a"
+      }
+    },
+    {
+      "channel": "world.saveProgress",
+      "args": {
+        "id": "world-a",
+        "revision": 2,
+        "baseBuild": "v-4694f55704548e637923",
+        "snapshot": {
+          "format": "craftmine.progress/3",
+          "player": {
+            "x": 0.5,
+            "y": 6,
+            "z": 12.5,
+            "yaw": 0,
+            "pitch": 0
+          },
+          "gameplay": {
+            "systems": {},
+            "targets": {},
+            "equipped": null,
+            "archivedTargets": {},
+            "cooldown": 0
+          },
+          "behaviors": {
+            "format": "craftmine.behavior-state/2",
+            "time": 0,
+            "modules": {},
+            "inventory": {},
+            "archive": []
+          }
+        }
+      }
+    },
+    {
+      "channel": "world.saveProgress",
+      "args": {
+        "id": "world-a",
+        "revision": 2,
+        "baseBuild": "v-4694f55704548e637923",
+        "snapshot": {
+          "format": "craftmine.progress/3",
+          "player": {
+            "x": 0.5,
+            "y": 6,
+            "z": 12.5,
+            "yaw": 0,
+            "pitch": 0
+          },
+          "gameplay": {
+            "systems": {},
+            "targets": {},
+            "equipped": null,
+            "archivedTargets": {},
+            "cooldown": 0
+          },
+          "behaviors": {
+            "format": "craftmine.behavior-state/2",
+            "time": 0,
+            "modules": {},
+            "inventory": {},
+            "archive": []
+          }
+        }
+      }
+    },
+    {
+      "channel": "world.open",
+      "args": {
+        "id": "world-b"
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "args": {
+        "worldId": "world-b"
+      }
+    },
+    {
+      "channel": "world.list",
+      "args": {}
+    },
+    {
+      "channel": "task.current",
+      "args": {
+        "worldId": "world-b"
+      }
+    },
+    {
+      "channel": "workbench.operations",
+      "args": {
+        "worldId": "world-b"
+      }
+    },
+    {
+      "channel": "memory.search",
+      "args": {
+        "worldId": "world-b",
+        "query": "",
+        "includeInactive": false,
+        "offset": 0,
+        "limit": 12
+      }
+    }
+  ]
+}

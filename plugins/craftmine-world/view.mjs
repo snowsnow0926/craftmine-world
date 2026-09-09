@@ -342,7 +342,7 @@ workbench=createWorkbench({
 });
 for(const item of document.querySelectorAll('[data-workbench-tab]'))item.addEventListener('click',()=>void openWorkbench(item.dataset.workbenchTab));
 document.getElementById('refresh-workbench').onsubmit=event=>{event.preventDefault();if(!busy&&!closing)void workbench.refreshCapabilities();};
-setInterval(()=>{if(workbench.tab==='task'&&!busy&&!closing)void workbench.refresh();},4000);
+setInterval(()=>{if(!busy&&!closing){if(workbench.tab==='task')void workbench.refresh();else if(workbench.tab)void workbench.refreshPending();}},4000);
 
 saveButton.addEventListener('click',()=>void action(save));
 newButton.addEventListener('click',()=>{form.hidden=!form.hidden;});

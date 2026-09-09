@@ -1787,6 +1787,12 @@ export const zhCN = {
     justNow: "刚刚",
   },
   errors: {
+    TOKEN_BUDGET_EXHAUSTED: "本地任务累计 token 额度已用完。请到世界工作台调整额度，再恢复已保存的任务。",
+    REQUEST_BUDGET_EXHAUSTED: "本地任务请求次数已达上限。请在世界工作台查看已保存的任务。",
+    COMPACTION_BUDGET_EXHAUSTED: "本地任务压缩次数已达上限。请在世界工作台查看已保存的任务。",
+    TASK_DEADLINE_EXCEEDED: "本地任务运行时限已到。请在世界工作台查看已保存的任务。",
+    CRAFTMINE_REQUEST_TOO_LARGE: "这次请求超出模型上下文或预留输出容量，请恢复上下文后再继续。",
+    CRAFTMINE_TASK_STATE_CHANGED: "已保存的任务状态发生变化，请刷新世界工作台再继续。",
     HOST_UNAVAILABLE: "本地服务不可用",
     MODEL_NOT_CONFIGURED: "该模型尚未配置，或当前 AI 服务不提供此模型。",
     TOOL_DENIED: "此操作的权限已被拒绝",

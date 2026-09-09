@@ -1775,6 +1775,12 @@ export const fr = {
     "justNow": "À l'instant"
   },
   "errors": {
+    TOKEN_BUDGET_EXHAUSTED: "Le budget local de tokens est épuisé. Ajustez-le dans l’atelier du monde, puis reprenez la tâche enregistrée.",
+    REQUEST_BUDGET_EXHAUSTED: "La limite de requêtes est atteinte. Consultez la tâche dans l’atelier du monde.",
+    COMPACTION_BUDGET_EXHAUSTED: "La limite de compactage est atteinte. Consultez la tâche dans l’atelier du monde.",
+    TASK_DEADLINE_EXCEEDED: "La durée limite est atteinte. Consultez la tâche dans l’atelier du monde.",
+    CRAFTMINE_REQUEST_TOO_LARGE: "La requête dépasse le contexte du modèle ou la sortie réservée. Restaurez le contexte avant de continuer.",
+    CRAFTMINE_TASK_STATE_CHANGED: "L’état de la tâche enregistrée a changé. Actualisez l’atelier du monde.",
     "HOST_UNAVAILABLE": "Le service local n'est pas disponible",
     "MODEL_NOT_CONFIGURED": "Ce modèle n'est pas configuré ou le fournisseur d'IA ne le propose pas.",
     "TOOL_DENIED": "L'autorisation a été refusée pour cette action",

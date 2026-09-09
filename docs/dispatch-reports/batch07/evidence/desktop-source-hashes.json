@@ -1,0 +1,15 @@
+{
+  "codeCommit": "aa1842e8beee8c95ba008a09329eba3c40c9d628",
+  "files": {
+    "plugins/craftmine-world/view.mjs": "2742617d8e18dc2a7a778943de3213a09971d79d33af6cdada18ae291448f7bd",
+    "plugins/craftmine-world/workbench-ui.mjs": "52d982ecaaa1827d5963cc9864ee0e462532dca88b121d97dbed7778b071cda8",
+    "plugins/craftmine-world/workbench-service.cjs": "aa9497a03fd0c55569d3819244b4db669431baf567c08b7bc1b794ce58f84c27",
+    "vendor/pi-desktop/apps/desktop/electron/main/craftmine-operation-journal.ts": "55fb900088005ab8792c0bca434971e9dc75d5a451bb6d8024350422ca31a1c5",
+    "vendor/pi-desktop/apps/desktop/electron/main/craftmine-panel-gateway.ts": "65affee510b6e4bdb4eb0b2d22b2f1f00ce753051f4b001773f0caa20240b2b8",
+    "vendor/pi-desktop/apps/desktop/src/App.tsx": "eea066c15f79457f6bd15bf87019ce5e11f386e8806dba5f262ef8146cae9ed9",
+    "vendor/pi-desktop/apps/desktop/src/lib/use-craftmine-immersion.ts": "24e54e6e0c664743f798fe7712ca426b6d35f62e27f46e0fd7254e9af4cef94a",
+    "vendor/pi-desktop/apps/desktop/src/styles/craftmine.css": "d0453b35013f6446e242a48335a190c9da097e56f0b5f11c8129a60e6a2f0037",
+    "vendor/pi-desktop/crates/craftmine-core/src/verification.rs": "5a1c9b4f567a68769f42b9231581690bbd5804dbd12dedb75bfb85b86bc8164d",
+    "test-results/batch07-desktop-rust-target/debug/craftmine-core.exe": "adad950a876786fd9922d7388c6390524ac7ea5997e1e3b3ffd4816a4741c996"
+  }
+}

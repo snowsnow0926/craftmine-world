@@ -1,0 +1,51 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests src\lib.rs (test-results/batch07-desktop-rust-target\debug\deps\craftmine_core-40518bbba217c061.exe)
+
+running 44 tests
+test tests::binding_and_replay_conflicts_cannot_change_the_draft ... ok
+test memories::receipt_tests::receipt_checks_full_request_owner_and_unknown_fields ... ok
+test tests::cancelled_task_stays_cancelled_and_late_writes_are_rejected ... ok
+test tests::independent_connections_observe_revision_conflicts_atomically ... ok
+test memories::receipt_tests::committed_receipt_survives_end_turn_and_process_reopen ... ok
+test durable::tests::accounting_is_idempotent_and_unknown_usage_remains_charged ... ok
+test memories::receipt_tests::legacy_schema_migrates_without_inventing_receipt_ownership ... ok
+test applications::tests::preparing_excludes_writes_and_abort_preserves_draft_and_progress ... ok
+test durable::tests::request_limits_deadline_generation_and_unknown_fields_are_enforced ... ok
+test tests::lost_response_is_recovered_without_repeating_edit_after_restart ... ok
+test applications::tests::review_requires_exact_model_input_and_persists_machine_failures ... ok
+test durable::tests::cancelled_task_accepts_only_reserved_settlement_and_discard_keeps_code ... ok
+test legacy::tests::corrupt_archives_and_paths_cannot_escape_or_publish ... ok
+test memories::receipt_tests::corrupted_original_request_is_rejected_by_lookup_and_backup ... ok
+test applications::tests::missing_review_failed_request_and_forged_load_cannot_publish ... ok
+test legacy::tests::captures_every_file_without_mutating_or_restarting_legacy_tasks ... ok
+test verification::tests::a_lost_worker_receipt_expires_instead_of_running_forever ... ok
+test applications::tests::application_is_atomic_replayable_and_advances_only_consumed_drafts ... ok
+test durable::tests::requirements_keep_original_goal_and_three_latest_corrections ... ok
+test applications::tests::uncommitted_draft_is_never_reset_by_an_unrelated_application ... ok
+test durable::tests::three_compactions_retain_ledger_and_requirements_across_explicit_recovery ... ok
+test recovery::tests::interrupt_revokes_only_its_jobs_and_lease_and_rejects_untrusted_reason_text ... ok
+test recovery::tests::failed_resume_launch_can_resume_again_without_resetting_budget_draft_or_goal ... ok
+test memories::receipt_tests::backup_v2_roundtrip_preserves_receipt_and_v1_migrates_to_unverifiable ... ok
+test durable::tests::requirements_survive_explicit_recovery_but_do_not_enter_ordinary_new_tasks ... ok
+test applications::tests::restart_timeout_and_cancel_revoke_pending_publication ... ok
+test verification::tests::failed_checks_and_tampered_storage_are_distinguished ... ok
+test verification::tests::finished_draft_retry_rejects_active_stale_foreign_and_extra_fields ... ok
+test workspaces::tests::cancelled_before_first_tool_cannot_create_a_draft ... ok
+test verification::tests::finished_draft_retry_keeps_task_and_replays_after_restart ... ok
+test verification::tests::stale_and_empty_drafts_cannot_queue_checks ... ok
+test verification::tests::forged_success_and_foreign_identity_are_rejected ... ok
+test workspaces::tests::a_resumed_revision_zero_draft_is_not_discarded_when_the_world_base_changes ... ok
+test workspaces::tests::draft_revision_conflicts_and_foreign_bindings_leave_history_unchanged ... ok
+test worlds::tests::corruption_and_invalid_progress_are_reported_without_resetting_worlds ... ok
+test verification::tests::input_receipt_and_evidence_survive_restart ... ok
+test worlds::tests::competing_views_cannot_overwrite_newer_progress_or_builds ... ok
+test durable::tests::requirement_pages_bound_characters_segments_and_reject_forged_inputs ... ok
+test workspaces::tests::exclusive_world_drafts_survive_connections_and_release_at_turn_end ... ok
+test worlds::tests::progress_and_independent_worlds_survive_process_reopen ... ok
+test workspaces::tests::selection_changes_never_redirect_an_existing_session ... ok
+test workspaces::tests::committed_reads_and_receipts_survive_restart_and_old_turns_cannot_write ... ok
+test verification::tests::edits_abort_and_recovery_revoke_completion ... ok
+test legacy::tests::import_commit_is_atomic_and_replay_does_not_reset_play_progress ... ok
+
+test result: ok. 44 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.67s
+

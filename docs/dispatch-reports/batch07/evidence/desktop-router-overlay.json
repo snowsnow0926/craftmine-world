@@ -1,0 +1,7 @@
+{
+  "purpose": "Test-only missing parent-owned RPC router seam; all library code is current Batch07 source",
+  "sourceMainSha256": "a8b74b43f91e2556c8cf0258839c244ff8e4401df83762816cbbf6202d432562",
+  "overlayMainSha256": "7e9323b460eac16cdaa4c474f94bc83f9b2238f26e09b90cea6904177cd0bd59",
+  "change": "verification.retry => journal.verification_retry(params)",
+  "productFilesModified": false
+}

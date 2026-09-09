@@ -1,5 +1,26 @@
 # 04. E2E Test Plan
 
+## CRAFTMINE-026: Local token limits and stable request prefixes
+
+On an isolated profile, exhaust a small cumulative task token budget while the
+model context has room. Require a local-limit error, no automatic provider retry
+and preserved draft/accounting. Change only the current task token cap through
+player controls and resume the same budget owner. Capture consecutive actual
+serialized requests: system, unchanged history and tool-call reasoning remain
+stable; fresh host facts appear only at the tail. Real-provider cache rates must
+come from returned usage, with fixtures clearly separated. Never use physical
+input or foreground a window during automated acceptance.
+
+## CRAFTMINE-025: Automatic context and resume provenance (batch 07)
+
+See [the context boundary checks](../dispatch-batch07-context-boundaries.md).
+Use the actual PI runtime with explicit provider/domain fixtures: a large
+completed transcript triggers measured automatic compaction without a model
+tool request; the next user request retains current world facts and no naked
+old task. A failed summary cannot drop history or send a creation request.
+Native recovery journals the continue action, not a reverse copy of projected
+requirements. Real packaged multi-summary and recovery checks remain separate.
+
 ## CRAFTMINE-024: Atomic extension validation (batch 07)
 
 See [the staged-step contract](../dispatch-batch07-extension-transactions.md).
@@ -8599,6 +8620,14 @@ apply from the panel, and preserve progress/next-turn base. Save real usage, fai
 and successful evidence separately. Ground y=6 and hidden drawable-mesh semantics
 must come from the runtime contract. This proves real-model review of a fixture,
 not Agent-generated code. Never export credentials or the test profile.
+
+### CRAFTMINE-015 — Bounded observed diagnostics and isolated Windows delivery
+
+Collect actual startup, desktop frame intervals and model-workflow durations with source/outcome labels. Missing or hidden samples remain unavailable. Exercise concurrent, failed and aborted jobs without recording prompts or identities. Run fixed empty/flora/tree loads in a separate headless process with pointer lock and focus disabled; record environment, workload, durations and reference thresholds. These results do not certify another GPU or device. The Windows install/upgrade/locked-database/uninstall script must refuse a local host and defaults to dry-run. A prepared hosted CI entry is not an executed clean-OS test.
+
+### CRAFTMINE-016 — Player cumulative-token configuration
+
+Exhaust a finite task budget with known and unknown usage, interrupt it, and explicitly configure unlimited tokens through the player channel. Reopen and resume without changing the owner or losing usage. Replay the same operation without a second audit or write; reject different payloads, foreign session/world/generation and model proxy calls. New owners are unlimited; migrated databases and schema-1/2 archives retain old finite policies. Export schema 3 with audit receipts and reject unknown future archive versions. Independently exhaust request, compaction and deadline limits while cumulative tokens are unlimited.
 
 ### CRAFTMINE-BATCH07-NATIVE — Fixed creation through the real native lifecycle
 

@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { arch, platform, release } from "node:os";
 import { desktopServiceError, writeSelectedFile, type CraftmineFilePicker } from "./craftmine-backup-service";
+import type { TelemetrySource, TelemetryOutcome } from "./craftmine-telemetry";
 
 type Metric = "startup" | "frame" | "modelJob";
 const safeCode = (value: unknown) => typeof value === "string" && /^[A-Z][A-Z0-9_]{0,79}$/.test(value) ? value : undefined;
@@ -11,28 +12,35 @@ const plain = (value: unknown): Record<string, any> => value && typeof value ===
 /** Build diagnostics from allowlisted fields, never redact an unbounded copy
  * of logs, chat, provider configuration or world source after the fact. */
 export function createCraftmineDiagnosticsService(options: { pickFile: CraftmineFilePicker; snapshot: () => Promise<unknown>; now?: () => number }) {
-  const metrics: Record<Metric, number[]> = { startup: [], frame: [], modelJob: [] };
+  const metrics: Record<Metric, Array<{ duration: number; source?: TelemetrySource; outcome?: TelemetryOutcome }>> = { startup: [], frame: [], modelJob: [] };
   const receipts = new Map<string, Record<string, unknown>>();
   const pending = new Map<string, Promise<Record<string, unknown>>>();
   async function status() {
-    const input = plain(await options.snapshot()), build = plain(input.build), task = plain(input.task), credentials = plain(input.credentials);
+    const input = plain(await options.snapshot()), build = plain(input.build), task = plain(input.task), credentials = plain(input.credentials), telemetry = plain(input.telemetry);
     const summary = Object.fromEntries(Object.entries(metrics).map(([key, values]) => {
-      const ordered = [...values].sort((a, b) => a - b);
-      return [key, { samples: ordered.length, ...(ordered.length ? { p50Ms: ordered[Math.floor((ordered.length - 1) * .5)], p95Ms: ordered[Math.floor((ordered.length - 1) * .95)] } : {}) }];
+      const summarize = (items: typeof values) => {
+        const ordered = items.map(item => item.duration).sort((a, b) => a - b);
+        return { samples: ordered.length, ...(ordered.length ? { p50Ms: ordered[Math.floor((ordered.length - 1) * .5)], p95Ms: ordered[Math.floor((ordered.length - 1) * .95)] } : {}) };
+      };
+      const sources = [...new Set(values.map(item => item.source).filter(Boolean))];
+      return [key, { ...summarize(values), bySource: Object.fromEntries(sources.map(source => [source, summarize(values.filter(item => item.source === source))])), outcomes: Object.fromEntries(["completed", "failed", "aborted"].map(outcome => [outcome, values.filter(item => item.outcome === outcome).length])) }];
     }));
     return { format: "craftmine.diagnostics/1", scope: "sanitized", createdAt: new Date((options.now ?? Date.now)()).toISOString(),
-      product: "craftmine world / 最中幻想", build: { version: typeof build.version === "string" && /^[0-9][a-zA-Z0-9.+-]{0,39}$/.test(build.version) ? build.version : undefined, commit: safeHash(build.commit), sourceHash: safeHash(build.sourceHash), packageHash: safeHash(build.packageHash) },
+      product: "craftmine world / 最中幻想", build: { version: typeof build.version === "string" && /^[0-9][a-zA-Z0-9.+-]{0,39}$/.test(build.version) ? build.version : undefined, commit: safeHash(build.commit), sourceHash: safeHash(build.sourceHash), packageHash: safeHash(build.packageHash), manifestHash: safeHash(build.manifestHash) },
       environment: { platform: platform(), arch: arch(), release: release(), node: process.versions.node, electron: process.versions.electron },
-      metrics: { ...summary, mainProcessRssBytes: process.memoryUsage().rss },
+      metrics: { ...summary, mainProcessRssBytes: process.memoryUsage().rss, boundedWindowSamples: 200,
+        definitions: { startup: "process start to first renderer document load", frame: "visible desktop animation callback interval; not GPU time", modelJob: "host workflow elapsed time; see bySource; agent_turn includes tools/network" },
+        sampling: Object.fromEntries(["frameWindows", "hiddenFrameWindows", "failedFrameWindows", "droppedJobStarts", "unpairedJobEnds", "activeAgentJobs"].map(key => [key, number(telemetry[key])])) },
       task: { status: ["running", "finished", "cancelled", "interrupted", "failed", "idle"].includes(task.status) ? task.status : "unknown", requestCount: number(task.requestCount), compactionCount: number(task.compactionCount), errorCode: safeCode(task.errorCode) },
       credentials: { status: ["protected", "fallback", "unavailable"].includes(credentials.status) ? credentials.status : "unavailable" },
       exclusions: ["credentials", "chat", "personalPaths", "worldSource", "rawLogs", "providerConfiguration"],
     };
   }
   return {
-    observe(metric: Metric, durationMs: number) {
+    observe(metric: Metric, durationMs: number, details: { source?: TelemetrySource; outcome?: TelemetryOutcome } = {}) {
       if (!Object.hasOwn(metrics, metric) || !Number.isFinite(durationMs) || durationMs < 0 || durationMs > 3_600_000) throw desktopServiceError("INVALID_METRIC");
-      metrics[metric].push(durationMs); if (metrics[metric].length > 200) metrics[metric].shift();
+      if (details.source && !["renderer_document_load", "desktop_animation_interval", "agent_turn", "one_shot_completion"].includes(details.source) || details.outcome && !["completed", "failed", "aborted"].includes(details.outcome)) throw desktopServiceError("INVALID_METRIC_SOURCE");
+      metrics[metric].push({ duration: durationMs, ...details }); if (metrics[metric].length > 200) metrics[metric].shift();
     },
     async request(channel: string, input: Record<string, unknown> = {}) {
       try {

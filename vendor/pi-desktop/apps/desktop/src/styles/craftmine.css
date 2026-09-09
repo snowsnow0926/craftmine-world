@@ -13,3 +13,16 @@
 .craftmine-layout-controls button[aria-pressed="true"] { background: var(--ds-bg-active); color: var(--ds-text-primary); }
 .craftmine-layout-controls button:focus-visible { outline: 2px solid var(--ds-text-secondary); outline-offset: 2px; }
 .work-panel-header > .craftmine-layout-controls { flex: none; }
+
+/* Preserve mounted conversation/sidebar state while giving the native world
+   view the entire client workspace. ResizeObserver updates its native bounds. */
+.app-shell.craftmine-play > .sidebar,
+.app-shell.craftmine-play > .main-pane { display: none; }
+.app-shell.craftmine-play > .work-panel { width: 100% !important; max-width: none; min-width: 0; flex: 1 1 100%; border-left: 0; }
+.app-shell.craftmine-play .work-panel-header { padding-right: 146px; }
+.app-shell.craftmine-play .work-panel-resize { display: none; }
+.app-shell.craftmine-play .craftmine-layout-controls { flex-wrap: nowrap; }
+@media (max-width: 660px) {
+  .app-shell.craftmine-play .work-panel-header { flex-wrap: wrap; height: auto; min-height: 72px; }
+  .app-shell.craftmine-play .craftmine-layout-controls { order: 3; }
+}

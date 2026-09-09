@@ -1,0 +1,8 @@
+{
+    "cleanWindowsVerified":  false,
+    "installationExecuted":  false,
+    "isolatedRunnerAllowed":  false,
+    "reason":  "Explicit Execute and an ephemeral GitHub-hosted Windows runner are required.",
+    "status":  "not-run",
+    "format":  "craftmine.windows-isolated-validation/1"
+}

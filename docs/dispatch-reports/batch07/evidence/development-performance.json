@@ -1,0 +1,157 @@
+{
+  "format": "craftmine.local-performance/1",
+  "status": "measured",
+  "sourceCommit": "a4944bed75244e7cf689c07b8a265163660053ba",
+  "time": "2026-09-09T08:13:53.446Z",
+  "environment": {
+    "platform": "win32",
+    "release": "10.0.19045",
+    "arch": "x64",
+    "node": "v24.14.0",
+    "cpu": "Intel(R) Core(TM) i7-14700KF",
+    "cpuCount": 28,
+    "totalMemoryBytes": 34163752960,
+    "browser": "147.0.7727.138"
+  },
+  "configuration": {
+    "viewport": {
+      "width": 1200,
+      "height": 800
+    },
+    "warmupMs": 1000,
+    "windowsPerLoad": 3,
+    "maxSamplesPerWindow": 120,
+    "maxWindowMs": 3000,
+    "headless": true
+  },
+  "references": {
+    "loadMs": 10000,
+    "frameP95Ms": 50,
+    "minimumSamples": 90,
+    "purpose": "Local investigation references chosen before measurement, not a shipping performance SLA."
+  },
+  "workloads": [
+    {
+      "id": "empty",
+      "objects": 0,
+      "parts": 0,
+      "voxels": 0,
+      "primitives": 0,
+      "buildHash": "83c449fdf17ea898903f2b514478e3a18a040dc5308da775110ade15e671fd86",
+      "loadMs": 203.2956999999999,
+      "renderer": "WebGL",
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4070 SUPER (0x00002783) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "jsHeapUsedBytes": 13364830,
+      "documentHidden": false,
+      "inputAudit": {
+        "pointerLock": 0,
+        "focus": 0
+      },
+      "frame": {
+        "samples": 360,
+        "minMs": 6.799999999999727,
+        "p50Ms": 7,
+        "p95Ms": 7,
+        "maxMs": 7.100000000000364,
+        "meanMs": 6.951666666666665
+      },
+      "windowElapsedMs": [
+        840.3000001907349,
+        839.7000000476837,
+        839.0999999046326
+      ],
+      "referenceChecks": {
+        "loadWithin": true,
+        "frameP95Within": true,
+        "sufficientSamples": true
+      },
+      "nodeControllerRssBytes": 122699776
+    },
+    {
+      "id": "flora-48",
+      "objects": 48,
+      "parts": 264,
+      "voxels": 0,
+      "primitives": 264,
+      "buildHash": "b0e604b8cbe4bda2f8e89ee91ce1e81cf70dc2e45426c16df3a4aaf1019bb8ba",
+      "loadMs": 166.21890000000076,
+      "renderer": "WebGL",
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4070 SUPER (0x00002783) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "jsHeapUsedBytes": 29660231,
+      "documentHidden": false,
+      "inputAudit": {
+        "pointerLock": 0,
+        "focus": 0
+      },
+      "frame": {
+        "samples": 360,
+        "minMs": 6.799999999999727,
+        "p50Ms": 7,
+        "p95Ms": 7,
+        "maxMs": 7.100000000000364,
+        "meanMs": 6.952222222222223
+      },
+      "windowElapsedMs": [
+        840.2000000476837,
+        839.9000000953674,
+        840.2999999523163
+      ],
+      "referenceChecks": {
+        "loadWithin": true,
+        "frameP95Within": true,
+        "sufficientSamples": true
+      },
+      "nodeControllerRssBytes": 152612864
+    },
+    {
+      "id": "trees-128",
+      "objects": 128,
+      "parts": 384,
+      "voxels": 0,
+      "primitives": 384,
+      "buildHash": "e008839e69ccbbf2ed143788dbbab7b860c370fd39dd842edd7cf7e5060a1c20",
+      "loadMs": 212.20040000000154,
+      "renderer": "WebGL",
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4070 SUPER (0x00002783) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "jsHeapUsedBytes": 59947902,
+      "documentHidden": false,
+      "inputAudit": {
+        "pointerLock": 0,
+        "focus": 0
+      },
+      "frame": {
+        "samples": 360,
+        "minMs": 6.7999999999999545,
+        "p50Ms": 7,
+        "p95Ms": 7,
+        "maxMs": 7.100000000000364,
+        "meanMs": 6.951666666666668
+      },
+      "windowElapsedMs": [
+        840.2000000476837,
+        839.5,
+        839.5999999046326
+      ],
+      "referenceChecks": {
+        "loadWithin": true,
+        "frameP95Within": true,
+        "sufficientSamples": true
+      },
+      "nodeControllerRssBytes": 177876992
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Headless browser on this shared development host; not visible Electron composition or a clean OS.",
+    "Animation callback intervals include scheduling and rendering contention; not GPU duration or input latency.",
+    "No frame-rate portability claim; CPU/GPU/browser/viewport and concurrent work affect results.",
+    "Renderer JS heap is not whole-browser memory. Node RSS is only this benchmark controller.",
+    "No real model, input, pointer lock, foregrounding, installer or user profile."
+  ],
+  "elapsedMs": 12215.5121,
+  "sourceHashes": {
+    "app/game.js": "ddcdfcffdb4c2d0761739b0a7485eefcbb1a51cfa9e3e1609660d7a911ea0812",
+    "world-workshop-3d/src/voxel-runtime.js": "2055e344ccf1a2a7637340efdc62becee5dc68686793c920f164946c64b15076",
+    "vendor/pi-desktop/apps/desktop/electron/main/craftmine-telemetry.ts": "5ef5ebd045d83d5043214fce906d5325d084c6626e90600df0fd437bce53d4f8"
+  }
+}

@@ -97,7 +97,7 @@ fn forged_success_and_foreign_identity_are_rejected() -> Result<()> {
         ("/evidence/render/passed", json!(false)),
         ("/evidence/behaviors/build", json!("another")),
         ("/evidence/behaviors/modules", json!([{"passed":true}])),
-        ("/artifact/build/hash", json!("é".repeat(32))),
+        ("/artifact/build/hash", json!("茅".repeat(32))),
     ] {
         let mut bad = output.clone();
         *bad.pointer_mut(pointer).unwrap() = value;
@@ -237,5 +237,89 @@ fn a_lost_worker_receipt_expires_instead_of_running_forever() -> Result<()> {
         j.verification_submit(&ctx, "retry-new-call", 1, "Retry")?["status"],
         "queued"
     );
+    Ok(())
+}
+
+#[test]
+fn finished_draft_retry_keeps_task_and_replays_after_restart() -> Result<()> {
+    let (dir, mut j, ctx) = setup()?;
+    j.workspace_end_turn("session", "turn", "completed")?;
+    let before = j.workspace_inspect(&ctx)?;
+    let args = json!({"context":ctx,"toolCallId":"retry-check","revision":1,"draftHash":before.task.draft_hash,"summary":"Recheck saved draft"});
+    let queued = j.verification_retry(&args)?;
+    assert_eq!(queued["status"], "queued");
+    let after = j.workspace_inspect(&ctx)?;
+    assert_eq!(before.task.binding, after.task.binding);
+    assert_eq!(before.task.draft_hash, after.task.draft_hash);
+    assert_eq!(before.task.revision, after.task.revision);
+    assert_eq!(after.task.status, "finished");
+    let id = queued["id"].as_str().unwrap();
+    let record = j.verification_claim(id, "retry-worker")?;
+    assert_eq!(
+        j.verification_finish(id, "retry-worker", &successful(&record))?["status"],
+        "passed"
+    );
+    drop(j);
+    let mut restored = TaskJournal::open(&dir.path().join("tasks.sqlite"))?;
+    assert_eq!(restored.verification_retry(&args)?["id"], queued["id"]);
+    let mut changed = args.clone();
+    changed["summary"] = json!("Changed");
+    assert!(restored
+        .verification_retry(&changed)
+        .unwrap_err()
+        .to_string()
+        .contains("REPLAY_MISMATCH"));
+    Ok(())
+}
+
+#[test]
+fn finished_draft_retry_rejects_active_stale_foreign_and_extra_fields() -> Result<()> {
+    let (_dir, mut j, ctx) = setup()?;
+    let work = j.workspace_inspect(&ctx)?;
+    let args = json!({"context":ctx,"toolCallId":"retry-check","revision":1,"draftHash":work.task.draft_hash,"summary":"Recheck saved draft"});
+    assert!(j
+        .verification_retry(&args)
+        .unwrap_err()
+        .to_string()
+        .contains("FINISHED_CURRENT_DRAFT_REQUIRED"));
+    j.workspace_end_turn("session", "turn", "completed")?;
+    for (pointer, value) in [
+        ("/revision", json!(0)),
+        ("/draftHash", json!("f".repeat(64))),
+        ("/context/sessionId", json!("foreign")),
+        ("/context/turnId", json!("foreign")),
+    ] {
+        let mut wrong = args.clone();
+        *wrong
+            .pointer_mut(pointer)
+            .unwrap_or_else(|| panic!("Missing pointer {pointer}")) = value;
+        assert!(j.verification_retry(&wrong).is_err());
+    }
+    let mut extra = args.clone();
+    extra["injected"] = json!(true);
+    assert!(j.verification_retry(&extra).is_err());
+    extra = args.clone();
+    extra["context"]["injected"] = json!(true);
+    assert!(j.verification_retry(&extra).is_err());
+    let other = WorkspaceContext {
+        project_id: "other".into(),
+        session_id: "other".into(),
+        turn_id: "other".into(),
+    };
+    j.workspace_open(&other, "world")?;
+    assert!(j
+        .verification_retry(&args)
+        .unwrap_err()
+        .to_string()
+        .contains("WORLD_LEASE_BUSY"));
+    j.workspace_end_turn("other", "other", "completed")?;
+    j.workspace_open(
+        &WorkspaceContext {
+            turn_id: "next".into(),
+            ..ctx.clone()
+        },
+        "world",
+    )?;
+    assert!(j.verification_retry(&args).is_err());
     Ok(())
 }
