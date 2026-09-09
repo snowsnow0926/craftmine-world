@@ -17,7 +17,7 @@ mod budget;
 mod contract;
 mod import;
 mod index;
-mod lockfile;
+mod lock;
 mod preview;
 mod scan;
 mod store;
@@ -28,9 +28,3 @@ mod tests;
 pub(super) fn migrate(db: &Connection) -> Result<()> {
     store::migrate(db)
 }
-
-/// Shared AL0 test vectors consumed by M's VM0 implementation and by these
-/// tests. The canonical copy lives in `docs/dispatch-reports/godot-remaining/N`.
-#[allow(dead_code)]
-pub(super) const LOCK_VECTORS: &str =
-    include_str!("vectors/assets-lock-vectors.json");

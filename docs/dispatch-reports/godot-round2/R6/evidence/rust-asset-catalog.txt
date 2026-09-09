@@ -1,0 +1,95 @@
+﻿cargo : warning: variable does not need to be mutable
+所在位置 行:1 字符: 504
++ ... -full.txt"; cargo test -p craftmine-core --offline --lib asset_catalo ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (warning: variab...d to be mutable:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]
+\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: methods `is_git_backed` and `content_files` are never used
+   --> crates\craftmine-core\src\content.rs:267:19
+    |
+234 | impl TaskJournal {
+    | ---------------- methods in this implementation
+...
+267 |     pub(crate) fn is_git_backed(&self, world: &str) -> Result<bool> {
+    |                   ^^^^^^^^^^^^^
+...
+572 |     pub(crate) fn content_files(
+    |                   ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `is_ancestor` is never used
+   --> crates\craftmine-core\src\content_history\git.rs:909:12
+    |
+244 | impl GitAdapter {
+    | --------------- method in this implementation
+...
+909 |     pub fn is_ancestor(&self, git_dir: &Path, ancestor: &str, descendant: &str) -> Result<bool> {
+    |            ^^^^^^^^^^^
+
+warning: constant `REPOSITORY_FORMAT` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:30:11
+   |
+30 | pub const REPOSITORY_FORMAT: &str = "craftmine.content-repository/1";
+   |           ^^^^^^^^^^^^^^^^^
+
+warning: method `as_str` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:42:8
+   |
+41 | impl ContentBackend {
+   | ------------------- method in this implementation
+42 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+
+warning: method `root` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:207:12
+    |
+194 | impl RepositoryStore {
+    | -------------------- method in this implementation
+...
+207 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+
+warning: function `asset_lock` is never used
+   --> crates\craftmine-core\src\godot_builds.rs:459:15
+    |
+459 | pub(super) fn asset_lock(
+    |               ^^^^^^^^^^
+
+warning: `craftmine-core` (lib test) generated 7 warnings (run `cargo fix --lib -p craftmine-core --tests` to apply 1 s
+uggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src\lib.rs (target\debug\deps\craftmine_core-13091a1caf054aaf.exe)
+
+running 17 tests
+test asset_catalog::tests::al0_path_rules_come_from_the_shared_contract ... ok
+test asset_catalog::tests::al2_preview_cache_key_matches_the_cross_language_constant ... ok
+test asset_catalog::tests::al0_consumes_the_single_shared_lock_contract ... ok
+test asset_catalog::tests::al1_scan_reports_new_version_hints_without_touching_worlds ... ok
+test asset_catalog::tests::al1_refuses_unauthorized_sources_paths_and_oversized_budget_without_partial_state ... ok
+test asset_catalog::tests::al2_record_check_is_idempotent_and_conflict_safe ... ok
+test asset_catalog::tests::al1_content_hash_refuses_duplicate_paths_and_discard_keeps_referenced_blobs ... ok
+test asset_catalog::tests::al1_replays_identical_operations_and_refuses_same_version_new_content ... ok
+test asset_catalog::tests::al2_preview_claim_and_retry_are_enforced ... ok
+test asset_catalog::tests::al0_catalog_builds_a_canonical_shared_lock ... ok
+test asset_catalog::tests::al1_existing_version_path_records_receipts_and_refuses_new_provenance ... ok
+test asset_catalog::tests::al1_versions_stay_immutable_while_browsing_metadata_changes ... ok
+test asset_catalog::tests::al2_probe_and_preview_states_never_conflate ... ok
+test asset_catalog::tests::al2_search_filters_by_scope_kind_tags_and_paginates ... ok
+test asset_catalog::tests::al2_probe_verifies_the_whole_blob_even_beyond_the_prefix ... ok
+test asset_catalog::tests::al1_streams_real_files_beyond_the_legacy_limit_and_dedupes_bodies ... ok
+test asset_catalog::tests::al2_search_and_import_measurements_are_recorded ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 174 filtered out; finished in 3.89s
+

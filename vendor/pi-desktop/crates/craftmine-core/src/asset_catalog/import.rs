@@ -154,7 +154,7 @@ impl TaskJournal {
             return Ok(existing);
         }
         let asset_id = text(args, "assetId", contract::MAX_ID_BYTES)?.to_string();
-        contract::valid_id(&asset_id, "INVALID_ASSET_ID")?;
+        contract::validate_identifier(&asset_id, "INVALID_ASSET_ID")?;
         let version = number(args, "version", contract::MAX_VERSION)?;
         contract::valid_version(version)?;
         let kind = AssetKind::parse(args["kind"].as_str().context("kind: STRING_REQUIRED")?)?;
@@ -169,8 +169,8 @@ impl TaskJournal {
             contract::media_kind_of(&media_type) == media_kind,
             "MEDIA_KIND_MISMATCH"
         );
-        let path = text(args, "path", contract::MAX_PATH_BYTES)?.to_string();
-        contract::valid_rel_path(&path)?;
+        let path = text(args, "path", contract::PATH_BYTE_LIMIT)?.to_string();
+        contract::validate_relative_path(&path)?;
         let display_name = text(args, "displayName", 200)?.to_string();
         let source = source_of(&args["source"])?;
         let tags = tags_of(&args["tags"])?;
@@ -373,7 +373,7 @@ impl TaskJournal {
         fields(args, &["assetId", "version", "path"])?;
         let asset_id = text(args, "assetId", contract::MAX_ID_BYTES)?;
         let version = number(args, "version", contract::MAX_VERSION)?;
-        let path = text(args, "path", contract::MAX_PATH_BYTES)?;
+        let path = text(args, "path", contract::PATH_BYTE_LIMIT)?;
         store::version_row(&self.db, asset_id, version)?.context("ASSET_NOT_FOUND")?;
         let file = store::files_of(&self.db, asset_id, version)?
             .into_iter()

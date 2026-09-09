@@ -293,7 +293,7 @@ impl TaskJournal {
         let asset_id = text(args, "assetId", contract::MAX_ID_BYTES)?.to_string();
         let version = number(args, "version", contract::MAX_VERSION)?;
         let settings_hash = args["settingsHash"].as_str().unwrap_or("default").to_string();
-        contract::valid_label(&settings_hash, "INVALID_SETTINGS_HASH")?;
+        contract::validate_identifier(&settings_hash, "INVALID_SETTINGS_HASH")?;
         let row = store::version_row(&self.db, &asset_id, version)?.context("ASSET_NOT_FOUND")?;
         let key = cache_key(&asset_id, version, &row.content_hash, &settings_hash);
         if let Some(existing) = preview_row(&self.db, &asset_id, version, &settings_hash)? {
@@ -398,7 +398,8 @@ impl TaskJournal {
             let decoder = facts["decoder"].as_str().unwrap_or("");
             let digest = facts["digest"].as_str().unwrap_or("");
             ensure!(!decoder.is_empty(), "PREVIEW_EVIDENCE_REQUIRED");
-            contract::valid_hash(digest, "PREVIEW_EVIDENCE_REQUIRED")?;
+            contract::validate_sha256(digest)
+                .map_err(|_| anyhow::anyhow!("PREVIEW_EVIDENCE_REQUIRED"))?;
         }
         let row = store::version_row(&self.db, &asset_id, version)?.context("ASSET_NOT_FOUND")?;
         let key = cache_key(&asset_id, version, &row.content_hash, &settings_hash);

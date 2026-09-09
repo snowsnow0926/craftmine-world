@@ -23,16 +23,13 @@ import { runPreviewInWorker } from '../../../vendor/pi-desktop/apps/desktop/elec
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..', '..', '..');
 const assetDir = path.join(root, 'vendor', 'pi-desktop', 'apps', 'desktop', 'electron', 'craftmine-assets');
-const vectorsPath = path.join(
+const sharedVectorsPath = path.join(
   root,
-  'vendor',
-  'pi-desktop',
-  'crates',
-  'craftmine-core',
-  'src',
-  'asset_catalog',
-  'vectors',
-  'assets-lock-vectors.json',
+  'tests',
+  'godot-remaining',
+  'M',
+  'contract',
+  'asset-lock-vectors.json',
 );
 
 const ENGINE = '4.7.2-stable';
@@ -211,20 +208,48 @@ function encodeOggVorbis() {
   return page(0x02, 8000, [ident]);
 }
 
-test('cache key matches the frozen cross-language vector', () => {
-  const vectors = JSON.parse(fs.readFileSync(vectorsPath, 'utf8'));
-  const expected = vectors.previewCache;
-  const input = expected.input;
+test('cache key matches the frozen cross-language constant', () => {
+  const canonical = [
+    'craftmine.asset-preview/1',
+    'door-texture',
+    '1',
+    'a'.repeat(64),
+    'asset-preview/1',
+    ENGINE,
+    'default',
+  ].join('\n');
+  const sha = 'a372177f10f8030150ed62ff1543e1fc5e41c46d211a85248fc12c640ea48d42';
   assert.equal(
-    cacheKeyInput({ ...input, previewerVersion: PREVIEWER_VERSION }),
-    expected.canonical,
+    cacheKeyInput({
+      assetId: 'door-texture',
+      version: 1,
+      contentHash: 'a'.repeat(64),
+      previewerVersion: PREVIEWER_VERSION,
+      engineVersion: ENGINE,
+      settingsHash: 'default',
+    }),
+    canonical,
   );
-  assert.equal(cacheKey(input), expected.sha256);
   assert.equal(
-    crypto.createHash('sha256').update(Buffer.from(expected.canonical, 'utf8')).digest('hex'),
-    expected.sha256,
+    cacheKey({ assetId: 'door-texture', version: 1, contentHash: 'a'.repeat(64), engineVersion: ENGINE }),
+    sha,
   );
-  report('cache-key', { canonical: expected.canonical, sha256: expected.sha256 });
+  report('cache-key', { canonical, sha256: sha });
+});
+
+test('the shared lock vectors hash identically on the Node side', () => {
+  const vectors = JSON.parse(fs.readFileSync(sharedVectorsPath, 'utf8'));
+  assert.equal(vectors.format, 'craftmine.contract-vectors/1');
+  for (const entry of vectors.vectors) {
+    const bytes = Buffer.from(entry.lockText, 'utf8');
+    assert.equal(bytes.length, entry.lockBytes, `${entry.name} byte length`);
+    assert.equal(
+      crypto.createHash('sha256').update(bytes).digest('hex'),
+      entry.assetLockHash,
+      `${entry.name} hash`,
+    );
+  }
+  report('shared-lock-vectors', { cases: vectors.vectors.map(item => item.name) });
 });
 
 test('PNG decodes to real pixels and a thumbnail', () => {
@@ -319,8 +344,11 @@ test('GLB decodes real accessor bytes and topology', () => {
     bytes,
     engineVersion: ENGINE,
   });
-  assert.equal(result.status, 'ok', result.detail);
+  assert.equal(result.status, 'partial', result.detail);
   assert.equal(result.facts.triangles, 1);
+  assert.equal(result.facts.picture, false);
+  assert.equal(result.facts.rendered, false);
+  assert.equal(result.facts.renderReason, 'model-render-not-implemented');
   const broken = Buffer.from(bytes);
   broken.writeUInt32LE(999999, 8);
   const failed = previewAsset({
@@ -357,8 +385,11 @@ test('WAV decodes real PCM while OGG stays container-only', () => {
     bytes: encodeOggVorbis(),
     engineVersion: ENGINE,
   });
-  assert.equal(ogg.status, 'partial', ogg.detail);
+  // OGG PCM decoding is not implemented, so it is never reported as playable.
+  assert.equal(ogg.status, 'failed', ogg.detail);
+  assert.equal(ogg.detail, 'OGG_PCM_DECODE_NOT_IMPLEMENTED');
   assert.equal(ogg.facts.pcmDecoded, false);
+  assert.equal(ogg.facts.playable, false);
   assert.equal(ogg.facts.reason, 'ogg-pcm-decode-not-implemented');
   assert.match(ogg.facts.digest, /^[0-9a-f]{64}$/);
   report('audio', { wav: wav.status, ogg: ogg.status, oggReason: ogg.facts.reason });

@@ -1,15 +1,16 @@
-//! AL0-AL2 tests: frozen vectors, streaming import, immutability, search,
-//! preview evidence and measured budgets.
+//! AL0-AL2 tests: shared contract consumption, streaming import, immutability,
+//! search, preview evidence and measured budgets.
 use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use serde_json::{json, Value};
 
 use super::budget::LEGACY_ASSET_BYTES;
-use super::contract::{AssetRef, FileRef};
-use super::lockfile::{self, AssetLock};
-use super::store;
-use super::LOCK_VECTORS;
+use super::contract::FileRef;
+use super::{lock, store};
+use crate::content_history::contract::{
+    validate_oid, validate_relative_path, validate_sha256, AssetLock,
+};
 use crate::TaskJournal;
 
 fn journal() -> Result<(tempfile::TempDir, PathBuf, TaskJournal)> {
@@ -92,87 +93,222 @@ fn glb_header(json_bytes: u32) -> Vec<u8> {
     bytes
 }
 
+/// Canonical shared vectors are owned by task M/R1 and consumed here as the
+/// exact file `content_history::contract_tests` uses, so both consumers must
+/// agree on every hash and error.
+fn shared_vectors() -> Result<Value> {
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("..")
+        .join("..")
+        .join("..")
+        .join("..")
+        .join("tests")
+        .join("godot-remaining")
+        .join("M")
+        .join("contract")
+        .join("asset-lock-vectors.json");
+    let text = std::fs::read_to_string(&path)
+        .map_err(|error| anyhow::anyhow!("MISSING_SHARED_VECTORS {}: {error}", path.display()))?;
+    Ok(serde_json::from_str(&text)?)
+}
+
 #[test]
-fn al0_shared_lock_vectors_are_frozen() -> Result<()> {
-    let vectors: Value = serde_json::from_str(LOCK_VECTORS)?;
-    assert_eq!(vectors["format"], "craftmine.assets-lock-vectors/1");
-    assert_eq!(vectors["frozen"]["lockFormat"], "craftmine.assets-lock/1");
-    for case in vectors["canonical"].as_array().unwrap() {
-        let lock: AssetLock = serde_json::from_value(case["lock"].clone())?;
-        let canonical = String::from_utf8(lock.canonical_bytes()?)?;
+fn al0_consumes_the_single_shared_lock_contract() -> Result<()> {
+    let vectors = shared_vectors()?;
+    assert_eq!(vectors["format"], "craftmine.contract-vectors/1");
+    for case in vectors["vectors"].as_array().unwrap() {
+        let text = case["lockText"].as_str().unwrap();
+        let parsed = AssetLock::parse_canonical(text.as_bytes())?;
         assert_eq!(
-            canonical,
-            case["canonical"].as_str().unwrap(),
-            "canonical bytes for {}",
+            parsed.canonical_text()?,
+            text,
+            "canonical text {}",
             case["name"]
         );
         assert_eq!(
-            lock.lock_hash()?,
-            case["sha256"].as_str().unwrap(),
-            "lock hash for {}",
+            parsed.asset_lock_hash()?,
+            case["assetLockHash"].as_str().unwrap(),
+            "shared hash {}",
             case["name"]
         );
-        // The strict parser used by the host must produce the same hash from
-        // the frozen canonical text.
-        let parsed = lockfile::parse_lock(case["canonical"].as_str().unwrap())?;
+        // The catalog's own builder must produce the identical document.
+        let rebuilt = lock::build(parsed.assets.clone())?;
         assert_eq!(
-            parsed.lock_hash()?,
-            case["sha256"].as_str().unwrap(),
-            "parse_lock round trip for {}",
+            rebuilt.asset_lock_hash()?,
+            parsed.asset_lock_hash()?,
+            "catalog lock builder {}",
             case["name"]
         );
     }
-    for case in vectors["lockErrors"].as_array().unwrap() {
-        let lock: AssetLock = serde_json::from_value(case["lock"].clone())?;
-        let error = lock.canonicalize().unwrap_err().to_string();
-        assert!(
-            error.contains(case["code"].as_str().unwrap()),
-            "{}: {error}",
-            case["name"]
-        );
+    let mut checked = 0usize;
+    for case in vectors["errorVectors"].as_array().unwrap() {
+        let input = case["input"].as_str().unwrap_or("");
+        let expected = case["expectedError"].as_str().unwrap();
+        let error = match case["call"].as_str().unwrap_or("") {
+            "validate_sha256" => validate_sha256(input).unwrap_err().to_string(),
+            "validate_oid" => validate_oid(input).unwrap_err().to_string(),
+            "validate_relative_path" => validate_relative_path(input).unwrap_err().to_string(),
+            "detect_path_collisions" => {
+                let paths: Vec<String> = serde_json::from_str(input)?;
+                crate::content_history::contract::detect_path_collisions(
+                    paths.iter().map(String::as_str),
+                )
+                .unwrap_err()
+                .to_string()
+            }
+            // Structural vectors (lock conflict, cycle, non-canonical bytes)
+            // are exercised by R1's contract_tests; the catalog must not
+            // re-implement them.
+            _ => continue,
+        };
+        assert!(error.contains(expected), "{}: {error}", case["name"]);
+        checked += 1;
     }
-    for case in vectors["closureOk"].as_array().unwrap() {
-        let lock: AssetLock = serde_json::from_value::<AssetLock>(case["lock"].clone())?;
-        let lock = lock.canonicalize()?;
-        let roots: Vec<AssetRef> = serde_json::from_value(case["roots"].clone())?;
-        let resolved = lockfile::resolve_closure(&lock, &roots)?;
-        let expected: Vec<AssetRef> = serde_json::from_value(case["resolved"].clone())?;
-        assert_eq!(resolved, expected, "closure for {}", case["name"]);
-    }
-    for case in vectors["closureErrors"].as_array().unwrap() {
-        let lock: AssetLock = serde_json::from_value::<AssetLock>(case["lock"].clone())?;
-        let lock = lock.canonicalize()?;
-        let roots: Vec<AssetRef> = serde_json::from_value(case["roots"].clone())?;
-        let error = lockfile::resolve_closure(&lock, &roots).unwrap_err().to_string();
-        assert!(
-            error.contains(case["code"].as_str().unwrap()),
-            "{}: {error}",
-            case["name"]
-        );
-    }
+    assert!(
+        checked >= 17,
+        "expected to execute the shared error vectors, ran {checked}"
+    );
     Ok(())
 }
 
 #[test]
-fn al0_path_rules_reject_traversal_and_reserved_names() {
-    for bad in [
-        "../evil.tscn",
-        "/absolute.tscn",
-        "a\\b.tscn",
-        "textures/CON.png",
-        "textures/lpt9.png",
-        "textures/trailing.",
-        "textures/.",
-        "",
+fn al0_path_rules_come_from_the_shared_contract() {
+    // Rejections use R1's codes; the catalog adds no second path rule.
+    for (bad, code) in [
+        ("../evil.tscn", "PATH_TRAVERSAL"),
+        ("/absolute.tscn", "PATH_NOT_RELATIVE"),
+        ("a\\b.tscn", "PATH_NOT_RELATIVE"),
+        ("textures/CON.png", "PATH_RESERVED_NAME"),
+        ("textures/lpt9.png", "PATH_RESERVED_NAME"),
+        ("textures/trailing.", "INVALID_RELATIVE_PATH"),
+        ("a/.git/config", "PATH_TRAVERSAL"),
+        ("", "INVALID_RELATIVE_PATH"),
     ] {
-        assert!(
-            super::contract::valid_rel_path(bad).is_err(),
-            "{bad} must be refused"
-        );
+        let error = validate_relative_path(bad).unwrap_err().to_string();
+        assert!(error.contains(code), "{bad}: {error}");
     }
-    for good in ["textures/door.png", "objects/auto-door.tscn", "a/b/c/d.gd"] {
-        assert!(super::contract::valid_rel_path(good).is_ok(), "{good}");
+    // The shared rule allows dot-prefixed files; only `.git` components are
+    // refused, so the catalog must not invent a stricter rule of its own.
+    for good in [
+        "textures/door.png",
+        "objects/auto-door.tscn",
+        "a/b/c/d.gd",
+        ".gitignore",
+        ".hidden/asset.png",
+    ] {
+        assert!(validate_relative_path(good).is_ok(), "{good}");
     }
+}
+
+#[test]
+fn al0_catalog_builds_a_canonical_shared_lock() -> Result<()> {
+    use crate::content_history::contract::{AssetLock, AssetOverrideRef};
+
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let texture = write_source(&root, "door.png", &png_header(4, 4))?;
+    let object = write_source(&root, "door.glb", &glb_header(128))?;
+    let raw = journal.asset_import(&import_args(
+        &root,
+        &texture,
+        "op-lock-raw",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+    let model = journal.asset_import(&import_args(
+        &root,
+        &object,
+        "op-lock-object",
+        "auto-door",
+        1,
+        "models/door.glb",
+        "model/gltf-binary",
+        "model",
+    ))?;
+    let raw_ref = super::contract::asset_ref(
+        "door-texture",
+        1,
+        raw["contentHash"].as_str().unwrap(),
+    )?;
+    let object_ref =
+        super::contract::asset_ref("auto-door", 1, model["contentHash"].as_str().unwrap())?;
+
+    let raw_entry = lock::entry(
+        raw_ref.clone(),
+        "assets/textures/door.png",
+        vec![FileRef {
+            path: "door.png".into(),
+            sha256: raw["version_"]["files"][0]["sha256"]
+                .as_str()
+                .unwrap()
+                .into(),
+            bytes: raw["bytes"].as_u64().unwrap(),
+            media_type: "image/png".into(),
+        }],
+        vec![],
+        vec![],
+    )?;
+    let object_entry = lock::entry(
+        object_ref.clone(),
+        "assets/models/door.glb",
+        vec![FileRef {
+            path: "door.glb".into(),
+            sha256: model["version_"]["files"][0]["sha256"]
+                .as_str()
+                .unwrap()
+                .into(),
+            bytes: model["bytes"].as_u64().unwrap(),
+            media_type: "model/gltf-binary".into(),
+        }],
+        vec![raw_ref.clone()],
+        vec![AssetOverrideRef {
+            scope: "world:town".into(),
+            path: "door.glb".into(),
+            content_hash: raw_ref.content_hash.clone(),
+        }],
+    )?;
+
+    let catalog_lock = lock::build(vec![object_entry.clone(), raw_entry.clone()])?;
+    // The catalog's builder must be byte-identical to R1's own canonicalization.
+    let direct = AssetLock::new(vec![raw_entry.clone(), object_entry.clone()])?;
+    assert_eq!(catalog_lock.canonical_text()?, direct.canonical_text()?);
+    assert_eq!(catalog_lock.asset_lock_hash()?, direct.asset_lock_hash()?);
+    let parsed = AssetLock::parse_canonical(catalog_lock.canonical_bytes()?.as_slice())?;
+    assert_eq!(parsed.asset_lock_hash()?, catalog_lock.asset_lock_hash()?);
+
+    // Fixed closure: the object pulls in exactly its texture, sorted.
+    let closure = lock::resolve_closure(&catalog_lock, &[object_ref.clone()])?;
+    assert_eq!(closure, vec![object_ref.clone(), raw_ref.clone()]);
+
+    // The shared contract rejects unresolved dependencies and cycles; the
+    // catalog does not resolve them silently.
+    let orphan = lock::entry(
+        object_ref.clone(),
+        "assets/models/door.glb",
+        vec![],
+        vec![super::contract::asset_ref("missing", 1, &"a".repeat(64))?],
+        vec![],
+    )?;
+    let error = lock::build(vec![orphan, raw_entry.clone()])
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("ASSET_LOCK_DEPENDENCY_UNRESOLVED"), "{error}");
+
+    let back = lock::entry(
+        raw_ref.clone(),
+        "assets/textures/door.png",
+        vec![],
+        vec![object_ref.clone()],
+        vec![],
+    )?;
+    let error = lock::build(vec![back, object_entry])
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("ASSET_LOCK_DEPENDENCY_CYCLE"), "{error}");
+    Ok(())
 }
 
 #[test]
@@ -335,7 +471,7 @@ fn al1_refuses_unauthorized_sources_paths_and_oversized_budget_without_partial_s
         "image",
     );
     let error = journal.asset_import(&traversal).unwrap_err().to_string();
-    assert!(error.contains("INVALID_ASSET_PATH"), "{error}");
+    assert!(error.contains("PATH_TRAVERSAL"), "{error}");
 
     let mut over = import_args(
         &root,
@@ -703,24 +839,22 @@ fn al1_scan_reports_new_version_hints_without_touching_worlds() -> Result<()> {
 }
 
 #[test]
-fn al2_preview_cache_key_matches_the_shared_vector() -> Result<()> {
-    let vectors: Value = serde_json::from_str(LOCK_VECTORS)?;
-    let case = &vectors["previewCache"];
-    let input = &case["input"];
+fn al2_preview_cache_key_matches_the_cross_language_constant() -> Result<()> {
+    // Preview cache keys are asset-catalog-owned (not part of the shared lock
+    // contract). The Node preview service asserts the same constant in
+    // tests/godot-round2/R6/preview-service.test.mjs.
+    const CANONICAL: &str = "craftmine.asset-preview/1\ndoor-texture\n1\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nasset-preview/1\n4.7.2-stable\ndefault";
+    const SHA256: &str = "a372177f10f8030150ed62ff1543e1fc5e41c46d211a85248fc12c640ea48d42";
     let computed = super::preview::cache_key(
-        input["assetId"].as_str().unwrap(),
-        input["version"].as_u64().unwrap(),
-        input["contentHash"].as_str().unwrap(),
-        input["settingsHash"].as_str().unwrap(),
+        "door-texture",
+        1,
+        &"a".repeat(64),
+        "default",
     );
+    assert_eq!(computed, SHA256, "Rust preview cache key");
     assert_eq!(
-        computed,
-        case["sha256"].as_str().unwrap(),
-        "Rust preview cache key must match the shared vector"
-    );
-    assert_eq!(
-        store::digest_bytes(case["canonical"].as_str().unwrap().as_bytes()),
-        case["sha256"].as_str().unwrap(),
+        store::digest_bytes(CANONICAL.as_bytes()),
+        SHA256,
         "the frozen canonical string must hash to the frozen value"
     );
     Ok(())

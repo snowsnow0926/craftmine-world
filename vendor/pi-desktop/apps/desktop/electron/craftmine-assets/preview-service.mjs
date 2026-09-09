@@ -175,6 +175,8 @@ export function previewAsset(request) {
           thumbnailBytes: decoded.thumbnail.png.length,
           progressive: probe.progressive === true,
           interlace: probe.interlace === 0 ? 'none' : 'adam7',
+          picture: true,
+          playable: false,
         },
       };
     }
@@ -182,9 +184,18 @@ export function previewAsset(request) {
       const facts = decodeGlb(bytes);
       return {
         cacheKey: cache,
-        status: 'ok',
-        detail: `glb ${facts.triangles} tris / ${facts.nodes} nodes`,
-        facts,
+        status: 'partial',
+        detail: `glb structure only: ${facts.triangles} tris / ${facts.nodes} nodes`,
+        facts: {
+          ...facts,
+          // The accessor bytes were really parsed, but no offscreen renderer
+          // produced a picture. The UI must not present this as a rendered
+          // model preview.
+          picture: false,
+          rendered: false,
+          renderReason: 'model-render-not-implemented',
+          playable: false,
+        },
       };
     }
     if (mediaType === 'audio/wav' || mediaType === 'audio/ogg') {
@@ -193,9 +204,9 @@ export function previewAsset(request) {
       const containerOnly = decoded.pcmDecoded === false;
       return {
         cacheKey: cache,
-        status: containerOnly ? 'partial' : 'ok',
+        status: containerOnly ? 'failed' : 'ok',
         detail: containerOnly
-          ? `${probe.codec} container only (${probe.durationMs} ms)`
+          ? 'OGG_PCM_DECODE_NOT_IMPLEMENTED'
           : `${probe.codec} ${probe.durationMs} ms`,
         facts: {
           decoder: AUDIO_DECODER,
@@ -211,7 +222,9 @@ export function previewAsset(request) {
           frames: decoded.frames,
           durationMs: decoded.durationMs,
           pcmDecoded: decoded.pcmDecoded,
-          reason: decoded.reason || null,
+          playable: decoded.pcmDecoded === true,
+          picture: false,
+          reason: decoded.reason || (containerOnly ? 'OGG_PCM_DECODE_NOT_IMPLEMENTED' : null),
         },
       };
     }
@@ -231,6 +244,8 @@ export function previewAsset(request) {
         ])))),
         kind: checked.kind,
         executed: false,
+        picture: false,
+        playable: false,
         files: checked.files,
         bytes: checked.bytes,
         extResources: checked.extResources.length,

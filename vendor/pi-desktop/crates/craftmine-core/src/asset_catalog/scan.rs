@@ -162,7 +162,7 @@ impl Walk {
                 "supported": media_type.is_some(),
                 "mediaType": media_type,
             });
-            if contract::valid_rel_path(&relative_path).is_err() {
+            if contract::validate_relative_path(&relative_path).is_err() {
                 self.issues.push(json!({
                     "path": relative_path,
                     "code": "INVALID_ASSET_PATH",

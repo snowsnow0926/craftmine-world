@@ -106,7 +106,7 @@ pub(super) fn blob_root(directory: &Path, create: bool) -> Result<PathBuf> {
 }
 
 pub(super) fn blob_path(root: &Path, sha256: &str) -> Result<PathBuf> {
-    contract::valid_hash(sha256, "INVALID_ASSET_HASH")?;
+    contract::validate_sha256(sha256)?;
     Ok(root.join(&sha256[..2]).join(sha256))
 }
 
@@ -232,7 +232,7 @@ pub(super) fn blob_read(root: &Path, sha256: &str, bytes: u64) -> Result<Vec<u8>
 /// transaction fails after the body was already renamed into place. A blob that
 /// any version still references is never deleted.
 pub(super) fn discard_blob(db: &Connection, root: &Path, sha256: &str) -> Result<()> {
-    contract::valid_hash(sha256, "INVALID_ASSET_HASH")?;
+    contract::validate_sha256(sha256)?;
     let referenced: bool = db.query_row(
         "SELECT EXISTS(SELECT 1 FROM craftmine_asset_files WHERE sha256=?1)",
         [sha256],
