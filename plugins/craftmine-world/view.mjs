@@ -59,13 +59,16 @@ function onGodotState(payload) {
     showError(Error(payload.error||'Godot 世界运行失败'));
     status.textContent=label;
   } else delete status.dataset.error;
-  if(state==='ready'||state==='saved')document.body.dataset.worldLoaded='true';
+  if(state==='ready'||state==='saved'||state==='paused'){loaded=true;document.body.dataset.worldLoaded='true';controls();}
   else if(state==='loading'||state==='failed'||state==='closed')delete document.body.dataset.worldLoaded;
 }
 
 function send(type, value = {}) {
   // Godot worlds never speak the voxel host protocol; the host owns the game view.
-  if(godot)return;
+  if(godot){
+    if(type==='resume')void bridge.invoke('godot.runtimeResume',{worldId:current.id}).catch(showError);
+    return;
+  }
   frame.contentWindow.postMessage({channel:'craftmine-host/1',nonce,type,...value}, '*');
 }
 
@@ -75,8 +78,8 @@ function showError(error) {
 }
 
 function controls() {
-  select.disabled=!bridge||busy||closing||!!preview||!!applicationAttempt||!!workbench?.busy;newButton.disabled=select.disabled;saveButton.disabled=select.disabled||!loaded||godot;
-  if(godot){saveButton.title='Godot 世界由宿主自动保存';saveButton.setAttribute('aria-label','保存（Godot 世界由宿主自动保存）');}
+  select.disabled=!bridge||busy||closing||!!preview||!!applicationAttempt||!!workbench?.busy;newButton.disabled=select.disabled;saveButton.disabled=select.disabled||!loaded;
+  if(godot){saveButton.title='保存世界进度';saveButton.setAttribute('aria-label','保存世界进度');}
   else {saveButton.removeAttribute('title');saveButton.removeAttribute('aria-label');}
   importButton.disabled=select.disabled;
   document.getElementById('close-preview').disabled=busy||closing||!!applicationAttempt;
@@ -113,7 +116,11 @@ function snapshot({freeze=false}={}) {
 async function save({freeze=false}={}) {
   // The Electron host owns the Godot save transaction; this page must not
   // snapshot or call world.saveProgress for a Godot world.
-  if(godot)throw Error('Godot 世界保存服务尚未接入，未切换世界');
+  if(godot){
+    const receipt=await bridge.invoke('godot.runtimeSave',{worldId:current.id,freeze});
+    current={...current,revision:receipt.revision,contentHash:receipt.contentHash};status.textContent='已保存';
+    return {worldId:current.id,revision:receipt.revision,buildId:receipt.buildId};
+  }
   if(applicationAttempt)await reconcileApplication();
   if(!bridge||!loaded||!current?.id)return;
   const result=await snapshot({freeze});
@@ -132,9 +139,6 @@ function cancelClose() {
 }
 
 function prepareClose() {
-  // Nothing to snapshot from this page for a Godot world: the host saves and
-  // exits the sibling runtime view before the panel view closes.
-  if(godot)return Promise.resolve({loaded:false,godot:true});
   if(closing&&closeOperation)return closeOperation;
   const generation=++closeGeneration, previous=activeOperation;
   closing=true;controls();
@@ -167,7 +171,7 @@ async function refreshList() {
 function mount(record) {
   closePreview(false);
   checkWorld=null;checkOffset=0;document.getElementById('check-detail').hidden=true;
-  document.getElementById('checks-list').replaceChildren();setMode(false);
+  document.getElementById('checks-list').replaceChildren();setMode(false,{notify:false});
   for(const pending of requests.values()){clearTimeout(pending.timer);pending.reject(Error('世界已切换'));}requests.clear();
   current=record;loaded=false;nonce=crypto.randomUUID();lastSaved=JSON.stringify(record.world.snapshot);
   godot=isGodotWorld(record);
@@ -180,6 +184,11 @@ function mount(record) {
     document.body.dataset.godot='true';
     frame.removeAttribute('srcdoc');
     status.textContent='载入中';
+    void bridge.invoke('godot.runtimeState',{worldId:record.id}).then(async state=>{
+      if(current?.id!==record.id)return;
+      onGodotState(state);
+      await bridge.invoke('godot.runtimeSurface',{worldId:record.id,visible:true});
+    }).catch(error=>{if(current?.id===record.id)showError(error);});
   } else {
     delete document.body.dataset.godot;
     status.textContent='正在载入';
@@ -225,7 +234,6 @@ async function navigate(request) {
       let target;
       if(request.operation==='switch') {
         target=await bridge.invoke('world.read',{id:request.id});
-        if(isGodotWorld(target))throw Error('GODOT_RUNTIME_UNAVAILABLE');
       }
       await save({freeze:true});
       if(request.operation==='create')target=await bridge.invoke('world.create',{
@@ -245,18 +253,20 @@ async function navigate(request) {
 }
 
 const checkLabels={queued:'等待检查',running:'后台检查中',passed:'机器检查通过',failed:'检查未通过',cancelled:'已取消',interrupted:'已中断'};
-function setMode(checks) {
+function setMode(checks,{notify=true}={}) {
   const leavingWorkbench=!!workbench?.tab;
   void workbench?.show(null);
   for(const item of document.querySelectorAll('[data-workbench-tab]'))item.setAttribute('aria-selected','false');
   checksPanel.hidden=!checks;
   document.getElementById('world-mode').setAttribute('aria-selected',String(!checks));
   document.getElementById('checks-mode').setAttribute('aria-selected',String(checks));
+  if(notify&&godot&&current?.id)void bridge.invoke('godot.runtimeSurface',{worldId:current.id,visible:!checks}).catch(showError);
   if(checks){send('pause');void refreshChecks(true);}
-  else if(leavingWorkbench&&loaded&&!applicationAttempt&&!preview)send('resume');
+  else if(notify&&leavingWorkbench&&loaded&&!applicationAttempt&&!preview)send('resume');
 }
 function openWorkbench(tab){
   if(busy||closing||preview||applicationAttempt)return;
+  if(godot&&current?.id)void bridge.invoke('godot.runtimeSurface',{worldId:current.id,visible:false}).catch(showError);
   checksPanel.hidden=true;
   document.getElementById('world-mode').setAttribute('aria-selected','false');document.getElementById('checks-mode').setAttribute('aria-selected','false');
   for(const item of document.querySelectorAll('[data-workbench-tab]'))item.setAttribute('aria-selected',String(item.dataset.workbenchTab===tab));

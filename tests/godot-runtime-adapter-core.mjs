@@ -1,0 +1,47 @@
+// Real Rust persistence/descriptor integration; source and artifact bytes are authored fixtures.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {createRequire,stripTypeScriptTypes} from 'node:module';
+const require=createRequire(import.meta.url);
+const {CoreClient}=require('../plugins/craftmine-world/core-client.cjs');
+const root=process.cwd();fs.mkdirSync('test-results',{recursive:true});
+const out=fs.mkdtempSync(path.resolve('test-results/godot-runtime-core-'));
+const binary=process.env.CRAFTMINE_CORE_BIN;if(!binary)throw Error('CRAFTMINE_CORE_BIN is required');
+const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+let source=fs.readFileSync('vendor/pi-desktop/apps/desktop/electron/main/godot-runtime-adapter.ts','utf8');
+source=stripTypeScriptTypes(source,{mode:'transform'});
+const {createGodotRuntimeAdapter}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+let core=new CoreClient(binary,path.join(out,'data'));await core.start();
+const call=(method,params)=>core.call(method,params);
+const state=id=>({format:'craftmine.godot-progress/1',worldId:id,baseId:'first-person',baseVersion:'0.1.0',stateVersion:1,body:{worldId:id,inventory:{ore:12},room:{unlocked:true},quests:{q1:3},position:[1200,0,-98],custom:{天气:'晴'}}});
+const checks=[];const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,passed:true});};
+try{
+  for(const id of ['alpha','beta'])await call('world.create',{id,title:id,world:{build:{id:'base-a',scene:{format:'craftmine.godot-scene/1',baseId:'first-person'},godot:{}},snapshot:state(id),extensions:[]}});
+  const context={projectId:'project-a',sessionId:'session-a',turnId:'one'};
+  await call('workspace.open',{context,selectedWorld:'alpha'});
+  const project=await call('godotProject.create',{context,worldId:'alpha',toolCallId:'create',baseBuild:'base-a',baseId:'first-person',files:[{path:'project.godot',text:'config_version=5\n'},{path:'world.gd',text:'extends Node3D\n'}]});
+  await call('godotExecutor.register',{executorId:'fixture',attestation:{format:'craftmine.godot-executor/1',isolation:'authored-test-fixture',evidenceHash:hash('test-only'),engineVersion:'4.7.2-stable',capabilities:{import:true,build:true,check:true}}});
+  const job=await call('godotBuild.start',{context,worldId:'alpha',toolCallId:'check',revision:project.revision,manifestHash:project.manifestHash,mode:'check'});
+  const claimed=await call('godotJob.claim',{jobId:job.jobId,token:'fixture-token',executorId:'fixture'});
+  const bytes=Buffer.from('<html>authored descriptor fixture</html>');fs.mkdirSync(path.join(claimed.artifactsRoot,'web'),{recursive:true});fs.writeFileSync(path.join(claimed.artifactsRoot,'web/index.html'),bytes);
+  const artifact={path:'web/index.html',sha256:hash(bytes),bytes:bytes.length};
+  const finished=await call('godotJob.finish',{jobId:job.jobId,token:'fixture-token',output:{format:'craftmine.godot-job-result/1',inputHash:claimed.inputHash,passed:true,import:{passed:true,log:'authored fixture; no engine executed'},compile:{passed:true,errors:[],warnings:[]},check:{passed:true,assertions:[{id:'fixture',passed:true}]},artifacts:[artifact],engine:{version:'4.7.2-stable',isolation:'authored-test-fixture',evidenceHash:claimed.evidenceHash}}});
+  const prepared=await call('godotApplication.prepare',{id:'fixture-apply',token:'apply-token',worldId:'alpha',candidateId:finished.candidateId,revision:0,snapshot:state('alpha')});
+  await call('godotApplication.commit',{id:'fixture-apply',token:'apply-token',evidence:{format:'craftmine.godot-application/2',inputHash:prepared.inputHash,launch:{passed:true,buildId:prepared.buildId,instanceId:'fixture-observed',stateHash:hash('authored-fixture')},player:null,snapshot:state('alpha')}});
+  let selection='alpha',live={worldId:'alpha',buildId:prepared.buildId,instanceId:'native-one'},loseReply=false;
+  const adapter=createGodotRuntimeAdapter({selection:async()=>selection,instance:()=>live,domain:async(method,args)=>{const result=await call(method,args);if(loseReply&&method==='godotRuntime.saveProgress'){loseReply=false;throw Error('injected lost reply after real commit');}return result;}});
+  const descriptor=await adapter.descriptor();check('descriptor comes from real applied artifact store',descriptor.root===claimed.artifactsRoot&&descriptor.entry==='web/index.html'&&descriptor.artifacts[0].sha256===artifact.sha256);
+  const snapshot=state('alpha');snapshot.body.inventory.ore=27;snapshot.body.custom.extra='草'.repeat(100000);
+  const request=(snapshot,revision)=>{const text=JSON.stringify(snapshot);return {worldId:'alpha',buildId:prepared.buildId,revision,snapshot,runnerReceipt:{format:'craftmine.godot-runner-receipt/1',worldId:'alpha',buildId:prepared.buildId,instanceId:'native-one',snapshotText:text,snapshotSha256:hash(text),bytes:Buffer.byteLength(text)}};};
+  const saved=await adapter.progress(request(snapshot,descriptor.revision));check('real core saves complete non-voxel state over 64 KiB',saved.receipt.revision>descriptor.revision);
+  const noop=await adapter.progress(request(snapshot,saved.receipt.revision));check('no-op save accepts same real durable revision',noop.receipt.revision===saved.receipt.revision);
+  const forged=request(snapshot,saved.receipt.revision);forged.runnerReceipt.instanceId='old-instance';check('old native instance denied before persistence',(await adapter.progress(forged)).failed===true);
+  selection='beta';check('selected world cannot redirect instance-bound save',(await adapter.progress(request(snapshot,saved.receipt.revision))).receipt.worldId==='alpha');selection='alpha';
+  snapshot.body.quests.q1=4;loseReply=true;const recovered=await adapter.progress(request(snapshot,saved.receipt.revision));check('lost save reply recovered by exact real describe without replay',recovered.receipt.revision===saved.receipt.revision+1&&recovered.receipt.instanceId==='native-one'&&recovered.receipt.snapshotSha256===hash(JSON.stringify(snapshot)));
+  await core.stop();core=new CoreClient(binary,path.join(out,'data'));await core.start();
+  const restored=await adapter.describe('alpha');assert.deepEqual(restored.snapshot,snapshot);check('full state survives actual core process restart',true);
+  const other=await call('world.read',{id:'beta'});assert.deepEqual(other.world.snapshot,state('beta'));check('other world progress unchanged',true);
+  fs.writeFileSync(path.join(claimed.artifactsRoot,'web/index.html'),'corrupt');await assert.rejects(adapter.describe('alpha'),/CORRUPT_GODOT_ARTIFACT/);check('changed artifact blocks trusted descriptor',true);
+}finally{await core.stop();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({kind:'real-rust-godot-runtime-adapter',binary,checks,limits:['authored artifact/executor/application fixture; no real model or OS-isolated builder claim','native Electron validation is separate']},null,2));console.log(JSON.stringify({out,passed:checks.length}));}

@@ -8731,3 +8731,26 @@ The original C fixtures alone do not satisfy those integration cases.
 ### GODOT-AUDIT-CORE: input and publication integrity
 
 Using isolated data and protocol calls without input simulation: verify claimed `projectRoot/project.godot`; corrupt source before claim and require refusal. Verify a 39,514,754-byte synthetic engine-sized artifact and reject altered bytes/over-budget declarations. Prepare with identical player pose but stale inventory/quests and require `APPLICATION_PROGRESS_CHANGED`; exact formal progress survives commit. Source or asset edits after prepare require `GODOT_CANDIDATE_STALE`, preserving the world. Optional list/read metadata must agree; unknown formats cannot default to legacy. Reusing a sandbox task directory must fail before overwrites; fresh task ids start empty. Native runtime proof and authenticated launch remain separate tests.
+
+## CRAFTMINE-GODOT-022 — Formal native host and complete durable progress
+
+Run `tests/godot-runtime-boundaries.mjs`, `tests/godot-host-lifecycle.mjs`,
+`tests/godot-host-typecheck.mjs`, and with a current Rust core binary,
+`tests/godot-runtime-adapter-core.mjs`. Then run
+`tests/godot-runtime-native.mjs` with the fixed managed base/toolchain and isolated
+Electron dependency paths. Keep the generated unique report/log directories.
+
+Verify a formal descriptor resolves only Rust-applied artifacts; extra/changed
+assets are not served; runner world/build/instance/exact snapshot hash bind the
+real receipt; full non-voxel equipment/inventory/quest state survives a real Rust
+and Electron restart. Verify same-revision no-op, lost reply recovery, stale
+messages, malformed/oversized wire values and storage failure. A save failure
+must block switch/quit; a failed selection write followed by failed restoration
+must hide/pause the uncertain view and report both errors. Checks/workbench must
+detach the native sibling. Runtime identity cannot come from page state or paths.
+
+No actual input, focus activation, Pointer Lock or user browser is permitted.
+Fixed source/executor/application fixtures prove transport and persistence only;
+record separately whether the actual product entry was built/exercised. Do not
+claim arbitrary model execution, OS sandbox, candidate UI application or packaged
+asset licensing from these checks.

@@ -1,0 +1,21 @@
+(node:250244) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ world open holds polling through selection commit and releases after success (1.0761ms)
+✔ failed selection read releases transaction so next open works (0.3373ms)
+✔ descriptor/save errors preserve prior instance and selection (0.5638ms)
+✔ selection commit failure restores durable previous world (0.1344ms)
+✔ failed selection write plus failed old startup hides and pauses the mismatched runtime (0.3271ms)
+✔ selection commit with lost reply hides runtime until panel explicitly reopens (0.1068ms)
+✔ panel cannot submit snapshot paths identities or save another world (0.1559ms)
+✔ declared assets are verified on every GET and HEAD; added files never served (49.93ms)
+✔ native transport rejects uncloneable/oversize responses and remains usable (14.7013ms)
+✔ page bridge explicitly rejects malformed/oversized completion and callback exceptions (12.4624ms)
+✔ production adapter rejects candidate descriptors and mismatched durable instance/text hash (0.743ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2075.316

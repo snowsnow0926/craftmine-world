@@ -40,11 +40,11 @@ function fixture() {
       const receipt={format:'craftmine.progress-receipt/1',worldId:call.worldId,buildId:call.buildId,revision:call.revision+1,contentHash:'b'.repeat(64)};
       if(fault==='hash')delete receipt.contentHash;
       if(fault==='identity')receipt.worldId='foreign';
-      if(fault==='revision')receipt.revision=call.revision;
+      if(fault==='revision')receipt.revision=call.revision-1;
       return {receipt};
     }});
   host.createView=()=>({webContents:{async loadURL(){},on(){},once(){},send(){},isDestroyed(){return false;},close(){events.push('close-view');}}});
-  const request=(worldId='alpha',revision=8)=>({worldId,buildId:'build-'+worldId,revision,root});
+  const request=(worldId='alpha',revision=8)=>({worldId,buildId:'build-'+worldId,revision,root,artifacts:[{path:'index.html',sha256:'a'.repeat(64),bytes:0}]});
   return {host,events,runtimes,request,metadata:context.module.exports.godotEngineOf,setFault:x=>fault=x,setDescriptor:x=>descriptor=x,setGate:x=>startupGate=x,setProgress:x=>callback=x};
 }
 

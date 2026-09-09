@@ -13,7 +13,8 @@
   const previewProtocol = 'craftmine.godot-preview/1';
   const runtimeProtocol = 'craftmine.godot-runtime/2';
   const runtimeOps = ['capabilities', 'load', 'snapshot', 'save', 'pause', 'resume', 'acknowledge', 'cancel', 'exit'];
-  const limit = 65536;
+  const limit = 8 * 1024 * 1024;
+  const bytes = value => new TextEncoder().encode(value).byteLength;
   const adapter = globalThis.craftmineRuntime || globalThis.__craftmineRuntimeHost || null;
   let port, scope, callback, engine, started = false, exited = false, quitting, exitRequested = false, detached = false;
   const active = new Set();
@@ -32,7 +33,9 @@
     if (request?.protocol !== runtimeProtocol && request?.protocol !== previewProtocol) return;
     if (Object.entries(scope).some(([key, value]) => request[key] !== value)) return;
     if (!Number.isSafeInteger(request.id) || request.id < 1 || active.has(request.id)) return;
-    if (typeof request.op !== 'string' || JSON.stringify(request).length > limit || active.size >= 16) return;
+    try {
+      if (typeof request.op !== 'string' || bytes(JSON.stringify(request)) > limit || active.size >= 16) throw Error('Invalid, oversized or busy runtime request');
+    } catch { send({type:'response',id:request.id,error:'Invalid, oversized or busy runtime request'}); return; }
     active.add(request.id);
     if (request.op === 'cancel') {
       const target = request.args?.id;
@@ -45,7 +48,8 @@
       quitting = request.id;
       finishQuit();
     } else {
-      callback(JSON.stringify({ id: request.id, worldId: scope.worldId, buildId: scope.buildId, instanceId: scope.instanceId, op: request.op, args: request.args ?? {} }));
+      try { callback(JSON.stringify({ id: request.id, worldId: scope.worldId, buildId: scope.buildId, instanceId: scope.instanceId, op: request.op, args: request.args ?? {} })); }
+      catch { reply(request.id,null,'Runtime callback rejected the request'); }
     }
   }
   function scopeIsValid(value) {
@@ -82,8 +86,8 @@
   const api = Object.freeze({
     register(value) { if (typeof value !== 'function' || callback) throw Error('Runtime already registered'); callback = value; ready(); },
     complete(value) {
-      if (typeof value !== 'string' || value.length > limit) return;
-      let response; try { response = JSON.parse(value); } catch { return; }
+      if (typeof value !== 'string' || bytes(value) > limit) { for (const id of [...active]) reply(id,null,'Invalid or oversized runtime response'); return; }
+      let response; try { response = JSON.parse(value); } catch { for (const id of [...active]) reply(id,null,'Invalid runtime response JSON'); return; }
       reply(response.id, response.result, response.error);
     },
     start(value) {

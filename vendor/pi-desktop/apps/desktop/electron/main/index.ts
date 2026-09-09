@@ -181,6 +181,9 @@ import { registerPluginDevTools } from "./plugin-dev-tools";
 import { PluginPanelHost } from "./plugin-panel-host";
 import { PluginViewHost, pluginViewKey } from "./plugin-view-host";
 import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
+import { GodotWorldViewHost } from "./godot-world-view-host";
+import { createGodotRuntimeAdapter } from "./godot-runtime-adapter";
+import { createGodotPanelCoordinator } from "./godot-panel-coordinator";
 import { parseAllowedExternalUrl } from "./safe-open-external";
 import type { PluginAppearance } from "../shared/plugin-panel-chrome";
 import { Logger, ignoreBrokenStdio } from "./logger";
@@ -560,7 +563,9 @@ async function safeOpenExternal(rawUrl: unknown): Promise<void> {
 
 const pluginPanels = new PluginPanelHost(
   async (pluginId, channel, payload) => {
-    const result = await plugins.invokePanelBridge(pluginId, channel, payload);
+    const result = pluginId === "craftmine.world"
+      ? await godotPanel.invoke(channel, payload ?? {})
+      : await plugins.invokePanelBridge(pluginId, channel, payload);
     if (pluginId === "craftmine.world" && ["world.create", "world.open", "world.saveProgress", "world.importLegacy", "candidate.apply"].includes(channel)) {
       sendToRenderer(IPC.event.craftmineWorldChanged, {});
     }
@@ -800,6 +805,10 @@ const plugins: PluginRuntime = new PluginRuntime({
     // The view's page outlived the process behind its bridge, so it is a dead
     // surface. Drop it; the renderer re-opens it on the pluginChanged event if
     // the tab is still active and the plugin came back.
+    if (pluginId === "craftmine.world") {
+      godotWorld.setSurfaceVisible(false);
+      void godotWorld.pause().catch(error => logger.app("persistence", "warn", "Godot pause after plugin interruption failed", {data:String(error)}));
+    }
     pluginViews.closePlugin(pluginId);
     if (pluginId === BROWSER_PLUGIN_ID) browserHost.disposeGuest();
     sendToRenderer(IPC.event.pluginChanged,{ reason: "crash", pluginId });
@@ -827,6 +836,10 @@ const plugins: PluginRuntime = new PluginRuntime({
       message: ok ? `Reloaded ${name}` : `Reload failed: ${name} — ${message ?? ""}`,
     });
     // Views were loaded from the previous revision of the plugin's files.
+    if (pluginId === "craftmine.world") {
+      godotWorld.setSurfaceVisible(false);
+      void godotWorld.pause().catch(error => logger.app("persistence", "warn", "Godot pause after plugin interruption failed", {data:String(error)}));
+    }
     pluginViews.closePlugin(pluginId);
     if (pluginId === BROWSER_PLUGIN_ID) browserHost.disposeGuest();
     sendToRenderer(IPC.event.pluginChanged,{ reason: "reload", pluginId });
@@ -867,6 +880,27 @@ const pluginViews = new PluginViewHost(({ pluginId, url }) => {
     data: { api: "view.egress", ok: false, url, ts: Date.now() },
   });
 });
+const godotSelection = async () => {
+  if (!plugins.getLoaded("craftmine.world")) return null;
+  const selected = await plugins.requestCraftmineHost("selection.read", {}) as {worldId: string | null};
+  return selected.worldId;
+};
+const godotAdapter: ReturnType<typeof createGodotRuntimeAdapter> = createGodotRuntimeAdapter({
+  domain: (method, params) => plugins.requestCraftmineHost(method, params),
+  selection: godotSelection,
+  instance: () => godotWorld.instance,
+});
+const godotWorld: GodotWorldViewHost = new GodotWorldViewHost({
+  window: () => mainWindow,
+  allowedRoots: godotAdapter.allowedRoots,
+  descriptor: godotAdapter.descriptor,
+  progress: godotAdapter.progress,
+  onState: state => pluginViews.broadcast("godot-world:state", state),
+});
+const godotPanel = createGodotPanelCoordinator({
+  host: godotWorld, adapter: godotAdapter, selection: godotSelection,
+  invoke: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload),
+});
 pluginPanels.addSenderResolver((senderId) => pluginViews.pluginIdForSender(senderId));
 const browserHost = new BrowserHost({
   pane: browserPane,
@@ -896,6 +930,9 @@ const browserHost = new BrowserHost({
 });
 pluginViews.onSurface = (surface) => {
   browserHost.setChromeSurface(surface);
+  const visible = surface?.pluginId === "craftmine.world" && surface.viewId === "world";
+  godotWorld.setVisible(visible);
+  if (visible && surface) godotWorld.setBounds(surface.bounds);
 };
 plugins.setServices({
   browser: {
@@ -8470,7 +8507,7 @@ function registerIpc() {
 
   handle(IPC.invoke.pluginDisable, async (id: string) => {
     if (!host) throw new Error("host unavailable");
-    if (id === "craftmine.world") await pluginViews.prepareCraftmineForQuit();
+    if (id === "craftmine.world") { await pluginViews.prepareCraftmineForQuit(); await godotWorld.switchWorld(null); }
     pluginViews.closePlugin(id);
     if (id === BROWSER_PLUGIN_ID) browserHost.disposeGuest();
     await plugins.unload(id);
@@ -8482,7 +8519,7 @@ function registerIpc() {
 
   handle(IPC.invoke.pluginUninstall, async (id: string) => {
     if (!host) throw new Error("host unavailable");
-    if (id === "craftmine.world") await pluginViews.prepareCraftmineForQuit();
+    if (id === "craftmine.world") { await pluginViews.prepareCraftmineForQuit(); await godotWorld.switchWorld(null); }
     pluginViews.closePlugin(id);
     await plugins.unload(id);
     logger.app("plugin", "info", "plugin uninstalled", { pluginId: id });
@@ -8930,6 +8967,10 @@ function registerIpc() {
   handle(
     IPC.invoke.pluginViewClose,
     async (payload: { pluginId?: string; viewId?: string }) => {
+      if (payload?.pluginId === "craftmine.world" && payload?.viewId === "world") {
+        await pluginViews.prepareCraftmineForQuit();
+        await godotWorld.switchWorld(null);
+      }
       await pluginViews.close(String(payload?.pluginId ?? ""), String(payload?.viewId ?? ""));
       return { ok: true };
     },
@@ -9440,7 +9481,11 @@ app.on("before-quit", (event) => {
 
   if (!craftmineQuitPrepared) {
     if (craftmineQuitPreparation) return;
-    craftmineQuitPreparation = pluginViews.prepareCraftmineForQuit();
+    craftmineQuitPreparation = (async () => {
+      await pluginViews.prepareCraftmineForQuit();
+      const godot = await godotWorld.prepareForQuit();
+      if (!godot.ok) throw new Error(godot.error ?? "Godot progress was not saved");
+    })();
     void craftmineQuitPreparation.then(() => {
       craftmineQuitPrepared = true;
       app.quit();
@@ -9478,6 +9523,7 @@ app.on("before-quit", (event) => {
     userMcp.disposeAll();
     browserPane.dispose();
     pluginViews.dispose();
+    godotWorld.dispose();
     inflightCheckpointer.dispose();
     const sidecarShutdown = sidecar?.dispose();
 

@@ -24,7 +24,8 @@ export const RUNTIME_PROTOCOL = 'craftmine.godot-runtime/2';
 export const WORLD_CHROME_HEIGHT = 76;
 const TOKEN_PATTERN = /^[a-f0-9]{64}$/;
 const ID_PATTERN = /^[a-zA-Z0-9._-]{1,128}$/;
-const WIRE_LIMIT = 262144;
+const WIRE_LIMIT = 8 * 1024 * 1024;
+const MAX_ARTIFACT_BYTES = 256 * 1024 * 1024;
 const MAX_PENDING = 16;
 const TYPES = new Map([
   ['.html', 'text/html; charset=utf-8'],
@@ -143,6 +144,18 @@ export async function createWorldRuntime(options) {
   const entryPath = path.join(root, ...entryParts);
   if (!(await fsp.stat(entryPath).catch(() => null))?.isFile()) throw Error('World build entry is missing');
   const realRoot = await fsp.realpath(root);
+  const artifactFiles = options.artifacts === undefined ? null : new Map();
+  if (artifactFiles) {
+    if (!Array.isArray(options.artifacts) || options.artifacts.length < 1 || options.artifacts.length > 4096) throw Error('Invalid runtime artifact manifest');
+    let total = 0;
+    for (const item of options.artifacts) {
+      const key = safeRelative(item.path).join('/');
+      if (key !== item.path || artifactFiles.has(key) || !/^[a-f0-9]{64}$/.test(item.sha256) || !Number.isSafeInteger(item.bytes) || item.bytes < 0 || item.bytes > MAX_ARTIFACT_BYTES) throw Error('Invalid runtime artifact entry');
+      total += item.bytes; artifactFiles.set(key, Object.freeze({...item}));
+    }
+    if (total > 512 * 1024 * 1024 || !artifactFiles.has(entryParts.join('/'))) throw Error('Runtime artifact manifest is incomplete or too large');
+  }
+  let servingBytes = 0;
 
   const requests = [];
   const listeners = new Set();
@@ -228,17 +241,26 @@ export async function createWorldRuntime(options) {
 
   /** The page side calls this; the host adapter is injected by preload or a test. */
   function receive(raw) {
+    if (typeof raw === 'string' && Buffer.byteLength(raw, 'utf8') > WIRE_LIMIT) {
+      for (const id of [...pending.keys()]) settle(id, 'Oversized runtime response');
+      emit({type:'runtime-error',error:'Oversized runtime response'}); return;
+    }
     let message;
     try {
       message = typeof raw === 'string' ? JSON.parse(raw) : raw;
     } catch {
-      return;
+      for (const id of [...pending.keys()]) settle(id, 'Malformed runtime response');
+      emit({type:'runtime-error',error:'Malformed runtime response'}); return;
     }
     // Structured clone can carry values JSON cannot (BigInt, cycles); a
     // malformed message must be dropped, never thrown into the IPC handler.
     try {
-      if (JSON.stringify(message ?? null).length > WIRE_LIMIT) return;
+      if (Buffer.byteLength(JSON.stringify(message ?? null), 'utf8') > WIRE_LIMIT) throw Error('Runtime response exceeds the wire limit');
     } catch {
+      if (Object.entries(scope).every(([key, value]) => message?.[key] === value)) {
+        if (Number.isSafeInteger(message?.id)) settle(message.id, 'Invalid or oversized runtime response');
+        else emit({type:'runtime-error',error:'Invalid or oversized runtime response'});
+      }
       return;
     }
     accept(message);
@@ -270,6 +292,8 @@ export async function createWorldRuntime(options) {
     } catch {
       return send(400, 'Invalid runtime path');
     }
+    const artifact = artifactFiles?.get(parts.join('/'));
+    if (artifactFiles && !artifact) return send(404, 'Runtime asset is not in the verified manifest');
     const file = path.resolve(root, ...parts);
     const relative = path.relative(root, file);
     if (relative.startsWith('..') || path.isAbsolute(relative)) return send(403, 'Forbidden');
@@ -285,22 +309,27 @@ export async function createWorldRuntime(options) {
     if (realRelative.startsWith('..') || path.isAbsolute(realRelative)) return send(403, 'Forbidden');
     const type = TYPES.get(path.extname(file).toLowerCase());
     if (!type) return send(415, 'Unsupported runtime asset');
-    let stream;
+    let buffer;
     try {
-      if (!fs.statSync(file).isFile()) return send(404, 'Not found');
-      stream = fs.createReadStream(file);
-    } catch {
-      return send(404, 'Not found');
-    }
+      // Reject links at every component, then verify and send the same bytes.
+      let cursor = root;
+      for (const part of parts) { cursor = path.join(cursor, part); if (fs.lstatSync(cursor).isSymbolicLink()) return send(403, 'Runtime asset link refused'); }
+      const info = fs.lstatSync(file);
+      if (!info.isFile()) return send(404, 'Not found');
+      if (info.size > MAX_ARTIFACT_BYTES || servingBytes + info.size > 512 * 1024 * 1024) return send(503, 'Runtime asset request budget exceeded');
+      if (artifact && info.size !== artifact.bytes) return send(409, 'Runtime asset size changed');
+      buffer = fs.readFileSync(file);
+      if (artifact && createHash('sha256').update(buffer).digest('hex') !== artifact.sha256) return send(409, 'Runtime asset hash changed');
+    } catch { return send(404, 'Not found'); }
     record.status = 200;
     record.headers = {...headers, 'Content-Type': type};
     response.writeHead(200, record.headers);
-    if (request.method === 'HEAD') {
-      response.end();
-      return;
-    }
-    stream.on('error', () => response.destroy());
-    stream.pipe(response);
+    if (request.method === 'HEAD') return response.end();
+    servingBytes += buffer.length;
+    let released = false;
+    const release = () => { if (!released) { released = true; servingBytes -= buffer.length; } };
+    response.once('close', release); response.once('finish', release);
+    response.end(buffer);
   });
   server.keepAliveTimeout = 1000;
   server.listen(0, '127.0.0.1');
@@ -312,11 +341,13 @@ export async function createWorldRuntime(options) {
     if (disposed) return Promise.reject(Error('Godot runtime is disposed'));
     if (exited) return Promise.reject(Error('Godot runtime has exited'));
     if (!ready) return Promise.reject(Error('Godot runtime is not ready'));
+    if (perRequest !== undefined && (!Number.isFinite(perRequest) || perRequest < 1 || perRequest > 300000)) return Promise.reject(Error('Invalid runtime request timeout'));
     if (typeof op !== 'string' || !op.length || op.length > 64) return Promise.reject(Error('Invalid runtime operation'));
     if (pending.size >= MAX_PENDING) return Promise.reject(Error('Too many runtime requests'));
     const id = ++sequence;
     const message = {...scope, type: 'request', id, op, args};
-    if (JSON.stringify(message).length > WIRE_LIMIT) return Promise.reject(Error('Invalid runtime request'));
+    try { if (Buffer.byteLength(JSON.stringify(message), 'utf8') > WIRE_LIMIT) throw Error('Runtime request exceeds the wire limit'); }
+    catch { return Promise.reject(Error('Invalid or oversized runtime request')); }
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => settle(id, `Runtime request timed out: ${op}`), perRequest ?? timeoutMs);
       pending.set(id, {resolve, reject, timer});
