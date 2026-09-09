@@ -1,0 +1,35 @@
+[
+  {
+    "exitCode": 0,
+    "directoryRemoved": true,
+    "head": "3c2b05de2ba686cf81b6c799de63c80e560906ea",
+    "path": "D:\\cm-gd5-bases",
+    "output": [
+      "Deleted branch codex/godot-cycle05-bases (was 3c2b05d)."
+    ],
+    "branch": "codex/godot-cycle05-bases",
+    "branchRemoved": true
+  },
+  {
+    "exitCode": 0,
+    "directoryRemoved": true,
+    "head": "14ff6222a868d03fe9580067ce330062c099bc73",
+    "path": "D:\\cm-gd5-sandbox",
+    "output": [
+      "Deleted branch codex/godot-cycle05-sandbox (was 14ff622)."
+    ],
+    "branch": "codex/godot-cycle05-sandbox",
+    "branchRemoved": true
+  },
+  {
+    "exitCode": 255,
+    "directoryRemoved": false,
+    "head": "325f0db1c4eafcbcf4a51f63049b04e56fef41c0",
+    "path": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host",
+    "output": [
+      "error: failed to delete 'D:/Craftmine World/test-results/worktrees/gd5-host': Filename too long"
+    ],
+    "branch": "codex/godot-cycle05-host",
+    "branchRemoved": false
+  }
+]

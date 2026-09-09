@@ -94,3 +94,10 @@ E 已做真实 Web/Electron/Rust 验证，F/G 目前只有 Godot headless 证据
 
 主目录另一个任务的 README、总计划、许可策略保持原样。未擅自改许可、推送远程、
 启用全机审计或改防火墙；验证没有真实输入、Pointer Lock 或用户浏览器操作。
+
+
+本轮实现与验收已通过 `adda86c` 快进合入本地 master；在主目录逐项复核 128 份证据的
+大小与 SHA-256，三个子任务及 root 修复均为 master 祖先。README、总计划和许可策略
+合并前后哈希一致，没有推送。本轮 bases/sandbox 树及分支已移除；host 普通 Git 清理
+返回 Filename too long，目录/分支保留，未强删或换方式重试。root 在本记录合并后执行
+普通 Git 清理，结果以最终回复为准；历史树均未操作。清理记录另行纳入证据清单。

@@ -1,6 +1,6 @@
 {
   "format": "craftmine.evidence-manifest/1",
-  "generatedAt": "2026-09-09T15:45:25.768Z",
+  "generatedAt": "2026-09-09T15:47:27.133Z",
   "files": [
     {
       "path": ".gitattributes",
@@ -501,6 +501,11 @@
       "path": "godot-native-integrated.log",
       "bytes": 634,
       "sha256": "0fae945fb39bde98d409f16dbd2a0a7f6d4d4284ded371ae7d34d68cc71d90b1"
+    },
+    {
+      "path": "helper-cleanup.json",
+      "bytes": 1031,
+      "sha256": "68ed65783e5c2231f028516ed470f2c8ac5e226efe128b7e6ef0af50d0ed6342"
     },
     {
       "path": "host-boundaries.log",
