@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 // Asset library service for the craftmine.world plugin.
 //
 // Forwards asset.* channels to the trusted core process and runs preview
@@ -55,164 +56,55 @@ function requireClaim(begun) {
   return claim;
 }
 
-export function createAssetService({ call, runPreview, readFile, owner = SERVICE_OWNER }) {
-  if (typeof call !== 'function') throw new Error('DOMAIN_CALL_REQUIRED');
-  if (typeof runPreview !== 'function') throw new Error('PREVIEW_RUNNER_REQUIRED');
-  if (typeof readFile !== 'function') throw new Error('BODY_READER_REQUIRED');
-
-  // The one live execution per cache key. A second preview of the same content
-  // resumes the core claim instead of starting a second decoder.
-  const running = new Map();
-
-  const forward = method => args => call(channelFor(method), args ?? {});
-
-  return {
-    search: forward('asset.search'),
-    read: forward('asset.read'),
-    versions: forward('asset.versions'),
-    usage: forward('asset.usage'),
-    annotate: forward('asset.annotate'),
-    scan: forward('asset.scan'),
-    importAsset: forward('asset.import'),
-    previewRead: forward('asset.previewRead'),
-    probe: forward('asset.probe'),
-    resolveLegacy: forward('asset.resolveLegacy'),
-    recordUsage: forward('asset.recordUsage'),
-    recordCheck: forward('asset.recordCheck'),
-
-    /**
-     * Claims a preview slot, decodes the exact body in an isolated worker and
-     * records the real evidence against that claim. A cached ok/partial result
-     * is returned without re-running the decoder; a failed/timeout/cancelled
-     * attempt is retried as a new attempt with a new claim.
-     */
-    async preview(args = {}) {
-      const assetId = requireText(args, 'assetId');
-      const version = requireVersion(args);
-      const settingsHash = args.settingsHash ?? 'default';
-      const begun = await call('asset.previewBegin', {
-        assetId,
-        version,
-        settingsHash,
-        owner,
-        force: args.force === true,
-      });
-      if (begun.cached && begun.preview?.status !== 'pending') {
-        return {
-          ...begun.preview,
-          cached: true,
-          retried: false,
-          applied: true,
-          stale: false,
-          attempt: begun.preview.attempt ?? begun.attempt ?? 0,
-        };
-      }
-      const claim = requireClaim(begun);
-      const operationId = `preview-${begun.cacheKey}-a${claim.attempt}-${claim.claimId}`;
-      const controller = new AbortController();
-      const entry = { claimId: claim.claimId, attempt: claim.attempt, controller };
-      running.set(begun.cacheKey, entry);
+export function createAssetService({call,runPreview,readFile,cancelPreview,owner=SERVICE_OWNER}) {
+  if(typeof call!=='function'||typeof runPreview!=='function')throw Error('ASSET_SERVICE_DEPENDENCIES_REQUIRED');
+  const running=new Map();
+  const keyOf=args=>JSON.stringify([args.assetId,args.version,args.path??null,args.settingsHash??'default',args.engineVersion??'unknown']);
+  const forward=method=>args=>call(channelFor(method),args??{});
+  const api={search:forward('asset.search'),read:forward('asset.read'),versions:forward('asset.versions'),usage:forward('asset.usage'),annotate:forward('asset.annotate'),scan:forward('asset.scan'),importAsset:forward('asset.import'),previewRead:forward('asset.previewRead'),probe:forward('asset.probe'),resolveLegacy:forward('asset.resolveLegacy'),recordUsage:forward('asset.recordUsage'),recordCheck:forward('asset.recordCheck')};
+  async function finish(entry,evidence,cancel=false) {
+    return call('asset.previewFinish',{operationId:(cancel?'preview-cancel-':'preview-')+entry.jobId,assetId:entry.assetId,version:entry.version,settingsHash:entry.settingsHash,claimId:entry.claim.claimId,attempt:entry.claim.attempt,status:evidence.status,detail:evidence.detail??'',facts:evidence.facts??{}});
+  }
+  api.preview=async args=>{
+    const assetId=requireText(args,'assetId'),version=requireVersion(args),key=keyOf(args);
+    if(running.has(key))return running.get(key).promise;
+    const entry={assetId,version,controller:new AbortController()};running.set(key,entry);
+    entry.promise=(async()=>{
+      let begun;
       try {
-        const record = await call('asset.read', { assetId, version });
-        const files = record?.version_?.files ?? [];
-        const file = args.path ? files.find(item => item.path === args.path) : files[0];
-        if (!file) throw new Error('ASSET_FILE_NOT_FOUND');
-        const body = await call('asset.bodyPath', { assetId, version, path: file.path });
-        const bytes = await readFile(body.blobPath);
-        const evidence = await runPreview(
-          {
-            assetId,
-            version,
-            contentHash: record.version_.contentHash,
-            mediaType: file.mediaType,
-            path: file.path,
-            bytes,
-            engineVersion: args.engineVersion ?? 'unknown',
-            settingsHash,
-            attempt: claim.attempt,
-            claimId: claim.claimId,
-          },
-          { timeoutMs: begun.timeoutMs, signal: controller.signal },
-        );
-        const finish = await call('asset.previewFinish', {
-          operationId,
-          assetId,
-          version,
-          settingsHash,
-          claimId: claim.claimId,
-          attempt: claim.attempt,
-          status: evidence.status,
-          detail: evidence.detail ?? '',
-          facts: evidence.facts ?? {},
-        });
-        // A cancel or a newer attempt owns the slot now: the late result is
-        // reported as discarded, never written over the current state.
-        if (finish?.applied === false) {
-          return {
-            ...evidence,
-            cached: false,
-            retried: begun.retried === true,
-            applied: false,
-            stale: true,
-            reason: finish.reason ?? 'STALE_PREVIEW_ATTEMPT',
-            attempt: claim.attempt,
-          };
+        const record=await call('asset.read',{assetId,version});
+        const files=record?.version_?.files??[];
+        const file=args.path?files.find(f=>f.path===args.path):files[0];
+        if(!file)throw Error('ASSET_FILE_NOT_FOUND');
+        entry.settingsHash=createHash('sha256').update(JSON.stringify([file.path,file.sha256,args.settingsHash??'default',args.engineVersion??'unknown'])).digest('hex');
+        begun=await call('asset.previewBegin',{assetId,version,settingsHash:entry.settingsHash,owner,force:args.force===true});
+        if(begun.cached&&begun.preview?.status!=='pending')return {...begun.preview,cached:true,applied:true,stale:false};
+        entry.claim=requireClaim(begun);entry.jobId=begun.cacheKey+'-a'+entry.claim.attempt+'-'+entry.claim.claimId;
+        const request={jobId:entry.jobId,assetId,version,path:file.path,settingsHash:entry.settingsHash,engineVersion:args.engineVersion??'unknown',attempt:entry.claim.attempt,claimId:entry.claim.claimId};
+        let evidence;
+        if(entry.controller.signal.aborted)evidence={status:'cancelled',detail:'PREVIEW_CANCELLED',facts:{}};
+        else {
+          // Legacy in-process tests can provide a byte reader; production sends
+          // only a resource identity and the host resolves its managed body.
+          if(readFile){const body=await call('asset.bodyPath',{assetId,version,path:file.path});request.bytes=await readFile(body.blobPath);request.mediaType=file.mediaType;request.contentHash=record.version_.contentHash;}
+          evidence=await runPreview(request,{timeoutMs:begun.timeoutMs,signal:entry.controller.signal});
         }
-        return {
-          ...evidence,
-          cached: false,
-          retried: begun.retried === true,
-          applied: true,
-          stale: false,
-          attempt: claim.attempt,
-        };
-      } finally {
-        if (running.get(begun.cacheKey) === entry) running.delete(begun.cacheKey);
-      }
-    },
-
-    /**
-     * Player cancellation. It terminates the live worker for this claim and
-     * records the attempt's terminal state. Cancelling a finished preview is a
-     * no-op: a cached ok result is never rewritten to cancelled.
-     */
-    async cancel(args = {}) {
-      const assetId = requireText(args, 'assetId');
-      const version = requireVersion(args);
-      const settingsHash = args.settingsHash ?? 'default';
-      const begun = await call('asset.previewBegin', { assetId, version, settingsHash, owner });
-      const entry = running.get(begun.cacheKey);
-      const claim = begun.claim;
-      let abortSignalled = false;
-      if (entry && (!claim || entry.claimId === claim.claimId)) {
-        entry.controller.abort(new Error('PREVIEW_CANCELLED'));
-        abortSignalled = true;
-      }
-      if (!claim?.claimId) {
-        return {
-          cancelled: false,
-          applied: false,
-          reason: 'NO_ACTIVE_ATTEMPT',
-          status: begun.preview?.status ?? null,
-          abortSignalled,
-        };
-      }
-      const finish = await call('asset.previewFinish', {
-        operationId: `preview-cancel-${begun.cacheKey}-a${claim.attempt}-${claim.claimId}`,
-        assetId,
-        version,
-        settingsHash,
-        claimId: claim.claimId,
-        attempt: claim.attempt,
-        status: 'cancelled',
-        detail: args.detail ?? 'cancelled by player',
-        facts: { abortSignalled },
-      });
-      return {
-        ...finish,
-        cancelled: finish?.applied === true,
-        abortSignalled,
-      };
-    },
+        const receipt=await finish(entry,evidence);
+        return {...evidence,cached:false,retried:begun.retried===true,applied:receipt?.applied!==false,stale:receipt?.applied===false,reason:receipt?.reason,attempt:entry.claim.attempt};
+      } catch(error) {
+        if(entry.claim){const evidence={status:entry.controller.signal.aborted?'cancelled':'failed',detail:String(error.message??error).slice(0,200),facts:{}};await finish(entry,evidence);return {...evidence,applied:true,stale:false};}
+        throw error;
+      } finally{if(running.get(key)===entry)running.delete(key);}
+    })();return entry.promise;
   };
+  api.cancel=async args=>{
+    const entry=running.get(keyOf(args));
+    if(!entry)return {cancelled:false,applied:false,reason:'NO_ACTIVE_ATTEMPT'};
+    const closing=entry.claim?finish(entry,{status:'cancelled',detail:args.detail??'PREVIEW_CANCELLED',facts:{abortSignalled:true}},true):null;
+    entry.controller.abort();
+    if(entry.jobId&&cancelPreview)await cancelPreview({jobId:entry.jobId});
+    if(closing){const result=await closing;return {...result,cancelled:result?.applied!==false,abortSignalled:true};}
+    return {cancelled:true,applied:false,abortSignalled:true};
+  };
+  return api;
 }
