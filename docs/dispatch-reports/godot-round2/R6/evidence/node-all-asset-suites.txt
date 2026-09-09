@@ -20,28 +20,28 @@
 [case] limit-max-frames -> {"maxFrames":799,"code":"AUDIO_TOO_LARGE","allowedFrames":800}
 [case] limit-deadline -> {"deadline":"now-1","code":"PREVIEW_TIMEOUT"}
 [case] limit-ogg-frames -> {"maxFrames":95999,"code":"AUDIO_TOO_LARGE"}
-✔ AUDIO_LIMITS exposes the documented hard limits (1.5593ms)
-✔ WAV 16-bit mono sine: probe + decode peak/rms/digest (3.3565ms)
-✔ WAV 8-bit unsigned mono: decode peak/rms/digest (0.904ms)
-✔ WAV 24-bit mono: decode peak/rms/digest (1.0588ms)
-✔ WAV 32-bit float mono: decode peak/rms/digest (0.689ms)
-✔ WAV 16-bit stereo: interleaved frames + per-channel gain (1.4145ms)
-✔ WAV WAVE_FORMAT_EXTENSIBLE 16-bit PCM decodes like plain PCM (0.4344ms)
-✔ Ogg Vorbis: container parse + granule duration + honest pcmDecoded:false (0.771ms)
-✔ Ogg Opus: container parse + 48 kHz granule duration + honest pcmDecoded:false (0.4362ms)
-✔ bad input: non-RIFF / non-Ogg header -> UNSUPPORTED_FORMAT (0.5541ms)
-✔ bad input: truncated RIFF header -> CORRUPT_AUDIO (0.1869ms)
-✔ bad input: WAV chunk length out of bounds -> CORRUPT_AUDIO (0.14ms)
-✔ bad input: unsupported WAVE codec / bit depth -> UNSUPPORTED_FORMAT (0.3221ms)
-✔ bad input: Ogg page CRC mismatch -> CORRUPT_AUDIO (0.7242ms)
-✔ bad input: truncated Ogg page -> CORRUPT_AUDIO (0.5026ms)
-✔ bad input: Ogg without a complete packet -> CORRUPT_AUDIO (0.4929ms)
-✔ bad input: unknown Ogg codec -> UNSUPPORTED_FORMAT (0.4888ms)
-✔ limits: channel count over AUDIO_LIMITS.channels -> AUDIO_TOO_LARGE (0.3706ms)
-✔ limits: byte size over AUDIO_LIMITS.bytes -> AUDIO_TOO_LARGE (0.4374ms)
-✔ limits: options.maxFrames exceeded -> AUDIO_TOO_LARGE (1.2066ms)
-✔ limits: options.deadline exceeded -> PREVIEW_TIMEOUT (0.6226ms)
-✔ limits: Ogg frame count respects maxFrames (0.4714ms)
+✔ AUDIO_LIMITS exposes the documented hard limits (1.1477ms)
+✔ WAV 16-bit mono sine: probe + decode peak/rms/digest (2.2708ms)
+✔ WAV 8-bit unsigned mono: decode peak/rms/digest (0.505ms)
+✔ WAV 24-bit mono: decode peak/rms/digest (0.7038ms)
+✔ WAV 32-bit float mono: decode peak/rms/digest (0.3774ms)
+✔ WAV 16-bit stereo: interleaved frames + per-channel gain (0.7974ms)
+✔ WAV WAVE_FORMAT_EXTENSIBLE 16-bit PCM decodes like plain PCM (0.308ms)
+✔ Ogg Vorbis: container parse + granule duration + honest pcmDecoded:false (0.5132ms)
+✔ Ogg Opus: container parse + 48 kHz granule duration + honest pcmDecoded:false (0.3187ms)
+✔ bad input: non-RIFF / non-Ogg header -> UNSUPPORTED_FORMAT (0.4702ms)
+✔ bad input: truncated RIFF header -> CORRUPT_AUDIO (0.1554ms)
+✔ bad input: WAV chunk length out of bounds -> CORRUPT_AUDIO (0.1259ms)
+✔ bad input: unsupported WAVE codec / bit depth -> UNSUPPORTED_FORMAT (0.1477ms)
+✔ bad input: Ogg page CRC mismatch -> CORRUPT_AUDIO (0.1591ms)
+✔ bad input: truncated Ogg page -> CORRUPT_AUDIO (0.1006ms)
+✔ bad input: Ogg without a complete packet -> CORRUPT_AUDIO (0.0966ms)
+✔ bad input: unknown Ogg codec -> UNSUPPORTED_FORMAT (0.1007ms)
+✔ limits: channel count over AUDIO_LIMITS.channels -> AUDIO_TOO_LARGE (0.0896ms)
+✔ limits: byte size over AUDIO_LIMITS.bytes -> AUDIO_TOO_LARGE (0.0842ms)
+✔ limits: options.maxFrames exceeded -> AUDIO_TOO_LARGE (0.2782ms)
+✔ limits: options.deadline exceeded -> PREVIEW_TIMEOUT (0.4151ms)
+✔ limits: Ogg frame count respects maxFrames (0.1961ms)
 [case] PACKAGE_LIMITS -> {"files":4096,"fileBytes":4194304,"totalBytes":67108864,"refs":20000}
 [case] AssetPreviewError -> {"name":"AssetPreviewError","code":"SOME_CODE"}
 [case] packageKind -> {"scene":"scene","script":"script","resource":"resource","mixed":"mixed","unknown":"unknown"}
@@ -51,8 +51,8 @@
 [case] cycle-two -> {"cycles":[["a.tscn","b.tscn"]]}
 [case] cycle-normalized -> {"two":[["a.tscn","z.tscn"]],"three":[["a.tscn","b.tscn","c.tscn"]]}
 [case] cycle-self -> {"cycles":[["s.tscn"]]}
-[case] cycle-dense-acyclic -> {"nodes":40,"edges":480,"elapsedMs":32,"cycles":0,"cyclesTruncated":true}
-[case] cycle-many -> {"nodes":8,"elapsedMs":7.36,"cycles":4096,"cyclesTruncated":true}
+[case] cycle-dense-acyclic -> {"nodes":40,"edges":480,"elapsedMs":18.26,"cycles":0,"cyclesTruncated":true}
+[case] cycle-many -> {"nodes":8,"elapsedMs":6.12,"cycles":4096,"cyclesTruncated":true}
 [case] cycle-not-truncated -> {"two":false,"self":false,"acyclic":false}
 [case] path-traversal -> {"ok":false,"issues":["path-traversal"]}
 [case] path-absolute -> {"issues":["absolute-path:/etc/passwd","absolute-path:C:/Windows/evil.tscn"]}
@@ -67,31 +67,31 @@
 [case] limit-total-bytes -> {"files":17,"totalBytes":71303168,"code":"PACKAGE_TOO_LARGE"}
 [case] limit-refs -> {"refs":20001,"code":"PACKAGE_TOO_LARGE"}
 [case] executed-flag -> {"checked":5,"executed":[false,false,false,false,false]}
-✔ PACKAGE_LIMITS exposes the documented hard limits (2.1529ms)
-✔ AssetPreviewError carries name, code and message (0.4024ms)
-✔ packageKind classifies scene / script / resource / mixed / unknown (0.5146ms)
-✔ scene: missing res:// reference is reported with owner path and line (10.2262ms)
-✔ scene: unresolved ExtResource / SubResource ids are reported (0.4448ms)
-✔ script: preload / load / extends res:// references are all parsed (0.4889ms)
-✔ cycles: a.tscn -> b.tscn -> a.tscn is detected and normalized (0.2683ms)
-✔ cycles: start is the lexicographically smallest path regardless of input order (0.4903ms)
-✔ cycles: self reference is reported as a one-element loop (0.3388ms)
-✔ cycles: dense acyclic graph returns fast, finds no cycle and reports truncation (33.934ms)
-✔ cycles: many-cycle graph returns instead of hanging and flags truncation (7.8679ms)
-✔ cycles: small graphs finish within budget and report cyclesTruncated:false (0.4031ms)
-✔ path safety: parent traversal is rejected (0.2166ms)
-✔ path safety: absolute paths are rejected (0.1721ms)
-✔ path safety: Windows reserved names are rejected (0.4223ms)
-✔ path safety: case-only collisions are rejected (0.3125ms)
-✔ path safety: duplicate paths after normalization are rejected (0.2309ms)
-✔ path safety: backslash separators are rejected (0.1959ms)
-✔ path safety: non-Uint8Array content is reported, not executed (0.2354ms)
-✔ unknown extensions are counted but never reported as errors (0.1622ms)
-✔ limits: file count over PACKAGE_LIMITS.files -> PACKAGE_TOO_LARGE (1.6449ms)
-✔ limits: single file over PACKAGE_LIMITS.fileBytes -> PACKAGE_TOO_LARGE (0.2659ms)
-✔ limits: total bytes over PACKAGE_LIMITS.totalBytes -> PACKAGE_TOO_LARGE (0.2097ms)
-✔ limits: reference count over PACKAGE_LIMITS.refs -> PACKAGE_TOO_LARGE (15.3104ms)
-✔ every result reports executed:false (no engine, no GDScript) (0.4853ms)
+✔ PACKAGE_LIMITS exposes the documented hard limits (1.105ms)
+✔ AssetPreviewError carries name, code and message (0.1865ms)
+✔ packageKind classifies scene / script / resource / mixed / unknown (0.2397ms)
+✔ scene: missing res:// reference is reported with owner path and line (6.0735ms)
+✔ scene: unresolved ExtResource / SubResource ids are reported (0.3111ms)
+✔ script: preload / load / extends res:// references are all parsed (0.3424ms)
+✔ cycles: a.tscn -> b.tscn -> a.tscn is detected and normalized (0.218ms)
+✔ cycles: start is the lexicographically smallest path regardless of input order (0.8081ms)
+✔ cycles: self reference is reported as a one-element loop (0.149ms)
+✔ cycles: dense acyclic graph returns fast, finds no cycle and reports truncation (19.2469ms)
+✔ cycles: many-cycle graph returns instead of hanging and flags truncation (6.4676ms)
+✔ cycles: small graphs finish within budget and report cyclesTruncated:false (0.2592ms)
+✔ path safety: parent traversal is rejected (0.1659ms)
+✔ path safety: absolute paths are rejected (0.1571ms)
+✔ path safety: Windows reserved names are rejected (0.1956ms)
+✔ path safety: case-only collisions are rejected (0.1261ms)
+✔ path safety: duplicate paths after normalization are rejected (0.0883ms)
+✔ path safety: backslash separators are rejected (0.1048ms)
+✔ path safety: non-Uint8Array content is reported, not executed (0.0837ms)
+✔ unknown extensions are counted but never reported as errors (0.0877ms)
+✔ limits: file count over PACKAGE_LIMITS.files -> PACKAGE_TOO_LARGE (1.8864ms)
+✔ limits: single file over PACKAGE_LIMITS.fileBytes -> PACKAGE_TOO_LARGE (0.2649ms)
+✔ limits: total bytes over PACKAGE_LIMITS.totalBytes -> PACKAGE_TOO_LARGE (0.2149ms)
+✔ limits: reference count over PACKAGE_LIMITS.refs -> PACKAGE_TOO_LARGE (11.4263ms)
+✔ every result reports executed:false (no engine, no GDScript) (0.3451ms)
 [pass] image-limits-exact-values
 [pass] asset-preview-error-shape
 [pass] png-rgb8-exact-pixels-and-probe
@@ -102,7 +102,7 @@
 [pass] png-16bit-shifts-to-8bit
 [pass] png-grayscale-with-trns
 [pass] png-encode-decode-roundtrip
-[info] jpeg fixture source: System.Drawing powershell.exe -NoProfile -Command -> C:\Users\WINDOWS\AppData\Local\Temp\craftmine-al2-jpeg-dRQeaS\gradient.jpg
+[info] jpeg fixture source: System.Drawing powershell.exe -NoProfile -Command -> C:\Users\WINDOWS\AppData\Local\Temp\craftmine-al2-jpeg-1KMRPJ\gradient.jpg
 [pass] jpeg-real-file-pixels
 [pass] jpeg-restart-interval-and-rst-markers
 [pass] jpeg-444-chroma-color-conversion
@@ -151,34 +151,34 @@ PASS error-truncated-jpeg-entropy-is-corrupt
 PASS unsupported-adam7-png
 PASS unsupported-progressive-jpeg
 --- pass 28 / fail 0 / skip 0 ---
-✔ image-limits-exact-values (2.3493ms)
-✔ asset-preview-error-shape (0.4337ms)
-✔ png-rgb8-exact-pixels-and-probe (3.6856ms)
-✔ png-scanline-filters-0-1-2-3-4 (1.2897ms)
-✔ png-palette-bitdepth4-with-trns (1.1783ms)
-✔ png-palette-without-trns-is-opaque (0.5015ms)
-✔ png-grayscale-bitdepth1 (0.5503ms)
-✔ png-16bit-shifts-to-8bit (0.5644ms)
-✔ png-grayscale-with-trns (0.386ms)
-✔ png-encode-decode-roundtrip (0.7345ms)
-✔ jpeg-real-file-pixels (467.7679ms)
-✔ jpeg-restart-interval-and-rst-markers (0.9665ms)
-✔ jpeg-444-chroma-color-conversion (0.6352ms)
-✔ jpeg-rgb-component-ids-skip-colour-conversion (1.0995ms)
-✔ jpeg-422-chroma-upsampling-step (0.5858ms)
-✔ jpeg-420-subsampling-block-layout (0.6881ms)
-✔ thumbnail-maxside-keeps-aspect-ratio (17.8688ms)
-✔ thumbnail-box-filter-averages (0.6542ms)
-✔ options-maxside-validation (0.3513ms)
-✔ deadline-expired-throws-preview-timeout (0.9591ms)
-✔ error-truncated-png-is-corrupt (0.3007ms)
-✔ error-fake-jpeg-sof-is-corrupt (0.1586ms)
-✔ error-oversized-headers-are-too-large (0.3279ms)
-✔ error-byte-limit-is-too-large (0.1156ms)
-✔ error-unsupported-format (0.6231ms)
-✔ error-truncated-jpeg-entropy-is-corrupt (708.921ms)
-✔ unsupported-adam7-png (0.4383ms)
-✔ unsupported-progressive-jpeg (0.2655ms)
+✔ image-limits-exact-values (1.1964ms)
+✔ asset-preview-error-shape (0.176ms)
+✔ png-rgb8-exact-pixels-and-probe (2.4039ms)
+✔ png-scanline-filters-0-1-2-3-4 (0.7847ms)
+✔ png-palette-bitdepth4-with-trns (0.5385ms)
+✔ png-palette-without-trns-is-opaque (0.3379ms)
+✔ png-grayscale-bitdepth1 (0.3767ms)
+✔ png-16bit-shifts-to-8bit (0.5569ms)
+✔ png-grayscale-with-trns (0.35ms)
+✔ png-encode-decode-roundtrip (0.4645ms)
+✔ jpeg-real-file-pixels (534.1856ms)
+✔ jpeg-restart-interval-and-rst-markers (1.2487ms)
+✔ jpeg-444-chroma-color-conversion (0.6636ms)
+✔ jpeg-rgb-component-ids-skip-colour-conversion (0.6139ms)
+✔ jpeg-422-chroma-upsampling-step (0.7117ms)
+✔ jpeg-420-subsampling-block-layout (0.7516ms)
+✔ thumbnail-maxside-keeps-aspect-ratio (14.0999ms)
+✔ thumbnail-box-filter-averages (0.3966ms)
+✔ options-maxside-validation (0.2654ms)
+✔ deadline-expired-throws-preview-timeout (0.7169ms)
+✔ error-truncated-png-is-corrupt (0.2171ms)
+✔ error-fake-jpeg-sof-is-corrupt (0.1238ms)
+✔ error-oversized-headers-are-too-large (0.2216ms)
+✔ error-byte-limit-is-too-large (0.0918ms)
+✔ error-unsupported-format (0.0726ms)
+✔ error-truncated-jpeg-entropy-is-corrupt (484.9326ms)
+✔ unsupported-adam7-png (0.418ms)
+✔ unsupported-progressive-jpeg (0.3119ms)
 [case] cache-key -> {"canonical":"craftmine.asset-preview/1\ndoor-texture\n1\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nasset-preview/1\n4.7.2-stable\ndefault","sha256":"a372177f10f8030150ed62ff1543e1fc5e41c46d211a85248fc12c640ea48d42"}
 [case] shared-lock-vectors -> {"cases":["fixture-lock","empty-lock"]}
 [case] png -> {"status":"ok","facts":{"decoder":"image-decode.mjs@1","digest":"c8830066d0cee317addf1e9db1c1ba59c07e0c558e4dc70c6483927d7b2036e9","format":"png","width":8,"height":4,"thumbnailWidth":8,"thumbnailHeight":4,"thumbnailBytes":140,"thumbnailBase64":"iVBORw0KGgoAAAANSUhEUgAAAAgAAAAECAYAAACzzX7wAAAAU0lEQVR42hXKQREDMRAEsUViJIPESObZKA7JIjGhTkVvzQyewQzewQ5+gzv4BmeCJ5jgDTb4BTf48g/FU0zxFlv8ilt8/YfFs5jFu9jFb3EX3+IP/1RIQf9tSz4AAAAASUVORK5CYII=","progressive":false,"interlace":"none","picture":true,"playable":false}}
@@ -188,40 +188,40 @@ PASS unsupported-progressive-jpeg
 [case] audio -> {"wav":"ok","ogg":"failed","oggReason":"ogg-pcm-decode-not-implemented"}
 [case] package -> {"ok":"ok","rejected":"package rejected: res://art/missing.png"}
 [case] unsupported -> {"cacheKey":"3ed896d9f300004c81807eda160536909add8ab2d5d8df42c11e2ee3e178e6e5","status":"failed","detail":"UNSUPPORTED_MEDIA_TYPE","facts":{}}
-✔ cache key matches the frozen cross-language constant (1.1266ms)
-✔ the shared lock vectors hash identically on the Node side (0.504ms)
-✔ PNG decodes to real pixels and a thumbnail (2.7741ms)
-✔ a corrupt PNG becomes a failed preview, never a placeholder (0.5276ms)
-✔ JPEG fixture decodes when the host can generate one (474.4249ms)
-✔ GLB decodes real accessor bytes and topology (0.9579ms)
-✔ WAV decodes real PCM while OGG stays container-only (2.8039ms)
-✔ Godot package preview is static only and reports missing references (2.5363ms)
-✔ unsupported media types never report success (0.2669ms)
+✔ cache key matches the frozen cross-language constant (1.6237ms)
+✔ the shared lock vectors hash identically on the Node side (0.5117ms)
+✔ PNG decodes to real pixels and a thumbnail (2.9442ms)
+✔ a corrupt PNG becomes a failed preview, never a placeholder (0.4608ms)
+✔ JPEG fixture decodes when the host can generate one (582.5965ms)
+✔ GLB decodes real accessor bytes and topology (0.547ms)
+✔ WAV decodes real PCM while OGG stays container-only (1.3509ms)
+✔ Godot package preview is static only and reports missing references (1.3317ms)
+✔ unsupported media types never report success (0.1493ms)
 [case] worker -> {"ok":"ok","timeout":"timeout"}
 [case] static-safety -> {"files":["preview-service.mjs","preview-worker.mjs","decode/image-decode.mjs","decode/audio-decode.mjs","decode/godot-package.mjs"]}
-✔ the worker isolates decoding and honours a hard timeout (52.8546ms)
-✔ the preview path contains no window, input, playback or engine calls (1.5211ms)
-✔ buildSearchRequest fills host defaults and clamps the page size (8.6821ms)
-✔ mergePage de-duplicates by assetId+version and keeps order (0.3165ms)
-✔ controller.search sends the built request and loadMore uses nextOffset (1.0172ms)
-✔ scope and category switching send the new filter to the host (0.45ms)
-✔ the four state flags produce four independent badges (0.43ms)
-✔ describePreview covers all six statuses with honest copy (0.5942ms)
-✔ OGG is never playable and never gets a player (0.1137ms)
-✔ cancel sends previewFinish(cancelled) and retry re-runs previewBegin (1.4251ms)
-✔ scanSummary and importRequestFor produce the import payload (1.1291ms)
-✔ versionOptions lists newest first (0.3297ms)
-✔ host failures reach the caller and stay in the error state (0.7578ms)
-✔ asset UI sources contain no pointer-lock, click or focus emulation (0.99ms)
-✔ a late search response for a previous scope never overwrites the list (0.5063ms)
-✔ thumbnailSrc only accepts a bounded, well-formed base64 payload (0.223ms)
-✔ read-only channels are forwarded unchanged to the core (3.0906ms)
-✔ preview decodes the exact body and records real evidence (0.3852ms)
-✔ a cached ok preview does not re-run the decoder (0.1238ms)
-✔ a failed preview is retried instead of staying locked (0.1395ms)
-✔ a worker failure is recorded as failed, never as ok (0.1501ms)
-✔ cancel records a cancelled state through a claimed slot (0.1438ms)
-✔ the asset service contains no window, input or playback calls (0.0857ms)
+✔ the worker isolates decoding and honours a hard timeout (34.9107ms)
+✔ the preview path contains no window, input, playback or engine calls (2.5273ms)
+✔ buildSearchRequest fills host defaults and clamps the page size (6.5292ms)
+✔ mergePage de-duplicates by assetId+version and keeps order (0.2032ms)
+✔ controller.search sends the built request and loadMore uses nextOffset (0.5966ms)
+✔ scope and category switching send the new filter to the host (0.2574ms)
+✔ the four state flags produce four independent badges (0.2683ms)
+✔ describePreview covers all six statuses with honest copy (0.4403ms)
+✔ OGG is never playable and never gets a player (0.0889ms)
+✔ cancel sends previewFinish(cancelled) and retry re-runs previewBegin (0.9204ms)
+✔ scanSummary and importRequestFor produce the import payload (0.8415ms)
+✔ versionOptions lists newest first (0.202ms)
+✔ host failures reach the caller and stay in the error state (0.461ms)
+✔ asset UI sources contain no pointer-lock, click or focus emulation (13.8638ms)
+✔ a late search response for a previous scope never overwrites the list (0.4181ms)
+✔ thumbnailSrc only accepts a bounded, well-formed base64 payload (0.2423ms)
+✔ read-only channels are forwarded unchanged to the core (2.1596ms)
+✔ preview decodes the exact body and records real evidence (0.2599ms)
+✔ a cached ok preview does not re-run the decoder (0.1149ms)
+✔ a failed preview is retried instead of staying locked (0.1201ms)
+✔ a worker failure is recorded as failed, never as ok (0.1488ms)
+✔ cancel records a cancelled state through a claimed slot (0.1307ms)
+✔ the asset service contains no window, input or playback calls (0.0863ms)
 ℹ tests 107
 ℹ suites 0
 ℹ pass 107
@@ -229,4 +229,4 @@ PASS unsupported-progressive-jpeg
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 1489.7695
+ℹ duration_ms 1264.4598
