@@ -68,6 +68,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "godotWorld.prepareRebuildSource" => return journal.godot_world_prepare_rebuild_source(params),
         "godotWorld.prepareCopyRuntime" => return journal.godot_world_prepare_copy_runtime(params),
         "godotWorld.copy" => return journal.godot_world_copy(params),
+        "godotWorld.copyStatus" => return journal.godot_world_copy_status(params),
         "godotWorld.backupSnapshot" => return journal.godot_world_backup_snapshot(params),
         "godotWorld.verifySnapshot" => return journal.godot_world_verify_snapshot(params),
         "content.status" => return journal.content_status(params),

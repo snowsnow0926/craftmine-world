@@ -138,6 +138,11 @@ fn portable_restore_rebuilds_applied_source_without_losing_progress_or_drafts() 
     assert_eq!(journal.godot_project_read(&json!({"worldId":"g2","context":copy_context,"revision":copy_index["revision"],"manifestHash":copy_index["manifestHash"],"path":"world.gd"}))?["text"],SCRIPT);
     // A copy of a copy resolves the original formal build owner correctly.
     journal.godot_world_copy(&json!({"sourceWorldId":"g2","targetWorldId":"g3","title":"Second copy","progress":"formal"}))?;
+    let origin=journal.godot_world_copy_status(&json!({"worldId":"g3","sourceWorldId":"g2"}))?;
+    assert_eq!(origin["originalSourceWorldId"],"g2");
+    assert_eq!(origin["sourceBuildOwnerWorldId"],"g1");
+    failed(journal.godot_world_copy_status(&json!({"worldId":"g3","sourceWorldId":"g1"})),"GODOT_COPY_ORIGIN_MISMATCH");
+    assert!(journal.godot_world_copy_status(&json!({"worldId":"missing"}))?.is_null());
     let g3_plan=journal.godot_world_rebuild_plan(&json!({"worldId":"g3"}))?;
     let copied_export=journal.godot_runtime_export_source(&json!({"worldId":"g3"}))?;
     assert_eq!(copied_export["worldId"],"g3");
