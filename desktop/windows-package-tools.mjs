@@ -5,13 +5,28 @@ import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 import {fileHash,resourceInventory,verifyRuntimeResources} from './prepare-runtime-resources.mjs';
+import {beginRelease,readRelease,sealRelease,verifySeal,selectInstaller,extractInstaller,verifyArchiveTool} from './release-run.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const digest=fileHash;
 const relative=file=>path.relative(root,file).replaceAll('\\','/');
 const exe=(command,args)=>execFileSync(command,args,{cwd:root,encoding:'utf8',windowsHide:true}).trim();
 const build=path.join(root,'desktop/build');
 const mode=process.argv[2];
-if(mode==='manifest'){
+const argument=name=>{const index=process.argv.indexOf('--'+name);return index===-1?null:process.argv[index+1];};
+const cleanHead=()=>{if(exe('git',['status','--porcelain','--untracked-files=normal']))throw Error('PACKAGE_SOURCE_NOT_CLEAN');return exe('git',['rev-parse','HEAD']);};
+if(mode==='begin-release'){
+  const manifest=JSON.parse(await fs.readFile(path.join(build,'build-manifest.json'),'utf8'));
+  if(manifest.commit!==cleanHead())throw Error('PACKAGE_SOURCE_NOT_CURRENT_CLEAN_HEAD');
+  const installer=process.argv.includes('--installer');
+  const archiveTool=installer?await verifyArchiveTool({path:argument('archive-tool'),sha256:argument('archive-tool-sha256'),librarySha256:argument('archive-library-sha256')}):null;
+  console.log(JSON.stringify(await beginRelease(root,manifest,{installer,archiveTool})));
+}else if(mode==='seal-release'){
+  if(!argument('run'))throw Error('RELEASE_RUN_REQUIRED');
+  const run=await readRelease(root,argument('run'));
+  if(run.commit!==cleanHead())throw Error('PACKAGE_SOURCE_NOT_CURRENT_CLEAN_HEAD');
+  const metadata=JSON.parse(await fs.readFile(path.join(root,'vendor/pi-desktop/apps/desktop/package.json'),'utf8'));
+  const seal=await sealRelease(run,metadata.version);console.log(JSON.stringify({runFile:run.runFile,files:seal.files.length}));
+}else if(mode==='manifest'){
   const notices=path.join(build,'third-party'),inventory=[];await fs.mkdir(notices,{recursive:true});
   const store=path.join(root,'vendor/pi-desktop/node_modules/.pnpm');
   for(const entry of(await fs.readdir(store)).sort()){
@@ -40,7 +55,13 @@ if(mode==='manifest'){
   await fs.mkdir(build,{recursive:true});await fs.writeFile(path.join(build,'build-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
   console.log(JSON.stringify({commit,sourceArchiveHash:manifest.sourceArchiveHash}));
 }else if(mode==='verify'){
-  const packageRoot=path.join(root,'vendor/pi-desktop/apps/desktop/release/win-unpacked');
+  if(!argument('run'))throw Error('RELEASE_RUN_REQUIRED');
+  const run=await readRelease(root,argument('run'));
+  if(run.commit!==cleanHead())throw Error('PACKAGE_SOURCE_NOT_CURRENT_CLEAN_HEAD');
+  const seal=await verifySeal(run);
+  const packageRoot=path.join(run.output,'win-unpacked');
+  const verifyContents=async packageRoot=>{
+  if(await digest(path.join(packageRoot,'resources/source/build-manifest.json'))!==run.buildManifestSha256)throw Error('PACKAGE_BUILD_MANIFEST_IDENTITY_MISMATCH');
   const manifest=JSON.parse(await fs.readFile(path.join(packageRoot,'resources/source/build-manifest.json'),'utf8'));
   if(manifest.commit!==exe('git',['rev-parse','HEAD'])||exe('git',['status','--porcelain','--untracked-files=normal']))throw Error('PACKAGE_SOURCE_NOT_CURRENT_CLEAN_HEAD');
   const required=['Craftmine World.exe','resources/app.asar','resources/bin/pi-desktop-host-core.exe','resources/bin/craftmine-core.exe','resources/agent-runtime/sidecar.js','resources/plugins/craftmine.world/main.cjs','resources/source/CraftmineWorld-source.zip','resources/source/USER_GUIDE.zh-CN.md','resources/licenses/PI-Desktop-LICENSE.txt','resources/licenses/CRAFTMINE-NOTICES.md'];
@@ -58,11 +79,27 @@ if(mode==='manifest'){
   }
   const files=[];async function walk(dir){for(const name of(await fs.readdir(dir)).sort()){const p=path.join(dir,name),info=await fs.lstat(p);if(info.isSymbolicLink())throw Error('PACKAGE_LINK_DENIED');if(info.isDirectory())await walk(p);else files.push({path:path.relative(packageRoot,p).replaceAll('\\','/'),bytes:info.size,sha256:await digest(p)});}}
   await walk(packageRoot);
-  const release=path.dirname(packageRoot),installers=[];
-  for(const name of(await fs.readdir(release)).sort())if(/^Craftmine-World-Setup-.*\.exe$/.test(name)){const p=path.join(release,name);installers.push({path:relative(p),bytes:(await fs.stat(p)).size,sha256:await digest(p)});}
-  const evidence={format:'craftmine.package-evidence/1',commit:manifest.commit,sourceArchiveHash:manifest.sourceArchiveHash,files,installers,totalBytes:files.reduce((n,f)=>n+f.bytes,0),installerExecuted:false,cleanWindowsVerified:false,signature:'unsigned-local-preview'};
-  await fs.writeFile(path.join(build,'package-evidence.json'),JSON.stringify(evidence,null,2)+'\n');
-  console.log(JSON.stringify({commit:manifest.commit,files:files.length,totalBytes:evidence.totalBytes,installers}));
+  return {manifest,files};
+  };
+  const {manifest,files}=await verifyContents(packageRoot);
+  const metadata=JSON.parse(await fs.readFile(path.join(root,'vendor/pi-desktop/apps/desktop/package.json'),'utf8'));
+  const pair=selectInstaller(seal.files,run.installer,metadata.version);
+  let extraction=null;
+  if(pair){
+    const archiveTool=await verifyArchiveTool(run.archiveTool);
+    extraction=await extractInstaller(run,pair,archiveTool.path);
+    extraction.tool=archiveTool;
+    const extracted=await verifyContents(extraction.application);
+    if(JSON.stringify(extracted.files)!==JSON.stringify(files))throw Error('PACKAGE_INSTALLER_PAYLOAD_MISMATCH');
+    extraction={...extraction,verified:true,files:extracted.files.length};
+  }
+  if(pair)await verifyArchiveTool(run.archiveTool);
+  await verifySeal(run);if(run.commit!==cleanHead())throw Error('PACKAGE_SOURCE_CHANGED_DURING_VERIFY');
+  const installers=pair?[pair.installer,pair.blockmap]:[];
+  const evidence={format:'craftmine.package-evidence/2',runFile:relative(run.runFile),commit:manifest.commit,sourceArchiveHash:manifest.sourceArchiveHash,buildManifestSha256:run.buildManifestSha256,files,installers,extraction,totalBytes:files.reduce((n,f)=>n+f.bytes,0),installerExecuted:false,cleanWindowsVerified:false,signature:'unsigned-local-preview',blockmapVerification:pair?'Paired output of this sealed build; byte hash only, differential update operation untested':'not-produced'};
+  const evidenceFile=path.join(path.dirname(run.runFile),'package-evidence.json');
+  await fs.writeFile(evidenceFile,JSON.stringify(evidence,null,2)+'\n',{flag:'wx'});
+  console.log(JSON.stringify({commit:manifest.commit,evidenceFile,files:files.length,totalBytes:evidence.totalBytes,installers,installerPayloadVerified:extraction?.verified===true}));
 }else if(mode==='pin'||mode==='stage'||mode==='diff'){
   const {PACKAGE_REQUIRED_FILES}=await import('./delivery/lib/preflight-core.mjs');
   const argument=name=>{const index=process.argv.indexOf('--'+name);return index===-1?null:process.argv[index+1];};
@@ -147,4 +184,4 @@ if(mode==='manifest'){
     for(const file of left.keys())if(!right.has(file))removed.push(file);
     console.log(JSON.stringify({a:path.resolve(first),b:path.resolve(second),added,removed,changed},null,2));
   }
-}else throw Error('Use manifest, verify, pin, stage or diff');
+}else throw Error('Use manifest, begin-release, seal-release, verify --run <run.json>, pin, stage or diff');
