@@ -18,31 +18,56 @@ if (!isMainThread && workerData?.previewRequest) {
 }
 
 /**
- * Runs `request` in a worker with a hard timeout. A timeout or cancel
+ * Runs `request` in a worker with a hard timeout. A timeout or an abort signal
  * terminates the worker; it never reports success for an unfinished decode.
+ * The caller (asset-service) owns the attempt claim, so a terminated worker's
+ * late message can never be recorded.
  */
-export function runPreviewInWorker(request, { timeoutMs = PREVIEW_TIMEOUT_MS } = {}) {
+export function runPreviewInWorker(request, { timeoutMs = PREVIEW_TIMEOUT_MS, signal } = {}) {
+  if (signal?.aborted) {
+    return Promise.resolve({
+      cacheKey: null,
+      status: 'cancelled',
+      detail: 'PREVIEW_CANCELLED',
+      facts: { workerTerminated: false },
+    });
+  }
   const worker = new Worker(fileURLToPath(import.meta.url), {
     workerData: { previewRequest: request },
   });
   return new Promise(resolve => {
     let settled = false;
+    let timer = null;
+    const terminate = () => {
+      worker.terminate().catch(() => {});
+    };
+    const onAbort = () => {
+      terminate();
+      finish({
+        cacheKey: null,
+        status: 'cancelled',
+        detail: 'PREVIEW_CANCELLED',
+        facts: { workerTerminated: true },
+      });
+    };
     const finish = value => {
       if (settled) return;
       settled = true;
-      clearTimeout(timer);
+      if (timer !== null) clearTimeout(timer);
+      signal?.removeEventListener?.('abort', onAbort);
       resolve(value);
     };
-    const timer = setTimeout(() => {
-      worker.terminate().catch(() => {});
+    timer = setTimeout(() => {
+      terminate();
       finish({
         cacheKey: null,
         status: 'timeout',
         detail: 'PREVIEW_TIMEOUT',
-        facts: {},
+        facts: { workerTerminated: true },
       });
     }, timeoutMs);
     timer.unref?.();
+    signal?.addEventListener?.('abort', onAbort, { once: true });
     worker.once('message', message => {
       worker.terminate().catch(() => {});
       if (message?.ok) {

@@ -68,7 +68,10 @@ export type AssetLibrarySnapshot = {
   previewRecords: AssetPreviewRecord[];
   usage: AssetUsageItem[];
   usageTotal: number;
-  scan: AssetScanResult | null;
+  // The scan result is data. The `scan` action keeps its name in
+  // `AssetLibraryActions`; the two must never share a key, or the merged
+  // controller object lets the method overwrite the result.
+  scanResult: AssetScanResult | null;
   lastImport: AssetLibraryImportSummary | null;
   busy: boolean;
 };
@@ -262,15 +265,23 @@ function parsePreview(value: unknown): AssetPreview {
 
 function parsePreviewBegin(value: unknown): AssetPreviewBeginResult {
   const raw = record(value);
+  // `asset.preview` returns the decoder evidence directly; a raw
+  // `asset.previewBegin` nests it under `preview`.
+  const evidence = raw.preview ? record(raw.preview) : raw;
   const previous = str(raw.previousStatus) as AssetPreviewStatus;
   return {
     jobId: str(raw.jobId),
     cacheKey: str(raw.cacheKey),
     cached: bool(raw.cached),
     retried: bool(raw.retried),
+    attempt: num(raw.attempt ?? evidence.attempt),
+    // A result the core rejected as stale must never be presented as applied.
+    applied: raw.applied === undefined ? true : bool(raw.applied),
+    stale: bool(raw.stale),
+    reason: str(raw.reason),
     ...(raw.previousStatus ? { previousStatus: previous } : {}),
     timeoutMs: num(raw.timeoutMs),
-    preview: parsePreview(raw.preview),
+    preview: parsePreview(evidence),
   };
 }
 
@@ -392,7 +403,7 @@ function initialState(call: AssetLibraryCall | null): AssetLibrarySnapshot {
     previewRecords: [],
     usage: [],
     usageTotal: 0,
-    scan: null,
+    scanResult: null,
     lastImport: null,
     busy: false,
   };
@@ -432,6 +443,9 @@ export function createAssetLibraryController(
   // Monotonic query generation: a response for a previous scope/world must
   // never overwrite the current list after the player switches.
   let generation = 0;
+  // Preview attempts have their own generation. A late decode result, cancel or
+  // retry for a previous attempt is dropped by identity, not hidden by the UI.
+  let previewGeneration = 0;
 
   const run = async <T>(work: () => Promise<T>): Promise<T> => {
     if (!call) {
@@ -526,6 +540,8 @@ export function createAssetLibraryController(
 
   const select = async (assetId: string, version: number): Promise<AssetReadResult> =>
     run(async () => {
+      // A preview in flight for the previous selection is now superseded.
+      previewGeneration += 1;
       const read = parseReadResult(await call!("asset.read", { assetId, version }));
       emit({
         selected: read,
@@ -557,14 +573,37 @@ export function createAssetLibraryController(
     assetId: string,
     version: number,
     settingsHash?: string,
-  ): Promise<AssetPreviewBeginResult> =>
-    run(async () => {
+  ): Promise<AssetPreviewBeginResult> => {
+    // Evict by attempt identity: a result that arrives after the player
+    // switched asset/version, cancelled or retried is discarded, not shown.
+    const mine = ++previewGeneration;
+    return run(async () => {
       const payload: Record<string, unknown> = { assetId, version };
       if (settingsHash) payload.settingsHash = settingsHash;
-      const result = parsePreviewBegin(await call!("asset.previewBegin", payload));
+      // `asset.preview` runs begin -> decode -> finish against one core-issued
+      // claim; the panel never writes preview state itself.
+      const result = parsePreviewBegin(await call!("asset.preview", payload));
+      if (mine !== previewGeneration) return result;
+      const selected = state.selected;
+      if (
+        selected &&
+        (selected.version_.assetId !== assetId || selected.version_.version !== version)
+      ) {
+        return result;
+      }
       emit({ preview: result.preview, previewJob: result, status: "ready" });
+      const records = parsePreviewRecords(
+        await call!("asset.previewRead", { assetId, version }),
+      );
+      if (mine !== previewGeneration) return result;
+      emit({
+        previewRecords: records,
+        preview: latestPreview(records) ?? result.preview,
+        status: "ready",
+      });
       return result;
     });
+  };
 
   const previewFinish = async (request: AssetPreviewFinishRequest): Promise<void> => {
     await run(async () => {
@@ -594,20 +633,34 @@ export function createAssetLibraryController(
     });
   };
 
-  /** UI-side cancel: the host finishes the job with `status: "cancelled"`. */
+  /**
+   * Player cancel. The host terminates the live worker and closes the attempt;
+   * a cached ok preview is never rewritten to cancelled. Any in-flight result
+   * for this asset is superseded.
+   */
   const cancelPreview = async (): Promise<void> => {
-    const job = state.previewJob;
     const selected = state.selected;
-    if (!job || !selected) return;
-    await previewFinish({
-      operationId: job.jobId,
-      assetId: selected.version_.assetId,
-      version: selected.version_.version,
-      status: "cancelled",
-      detail: "",
-      facts: {},
+    if (!selected) return;
+    previewGeneration += 1;
+    await run(async () => {
+      await call!("asset.cancel", {
+        assetId: selected.version_.assetId,
+        version: selected.version_.version,
+        detail: "cancelled by player",
+      });
+      const records = parsePreviewRecords(
+        await call!("asset.previewRead", {
+          assetId: selected.version_.assetId,
+          version: selected.version_.version,
+        }),
+      );
+      emit({
+        previewJob: null,
+        previewRecords: records,
+        preview: latestPreview(records),
+        status: "ready",
+      });
     });
-    emit({ previewJob: null });
   };
 
   const retryPreview = async (): Promise<AssetPreviewBeginResult | null> => {
@@ -635,7 +688,7 @@ export function createAssetLibraryController(
   const scan = async (sourceRoot: string): Promise<AssetScanResult> =>
     run(async () => {
       const result = parseScan(await call!("asset.scan", { sourceRoot }));
-      emit({ scan: result, status: "ready" });
+      emit({ scanResult: result, status: "ready" });
       return result;
     });
 
@@ -697,8 +750,19 @@ export function useAssetLibrary(bridge: AssetLibraryBridge | null): AssetLibrary
     // here, and the failure is already in `error`/`status` for the panel.
     void controller.refresh().catch(() => {});
   }, [controller]);
+  return { ...snapshot, ...controllerActions(controller) };
+}
+
+/**
+ * Action half of the controller. The snapshot's data keys and these action
+ * names must stay disjoint: `scan` once named both the scan result and the scan
+ * action, so the merge replaced the result with the function and the panel
+ * crashed the whole React tree when it read `scan.items`.
+ */
+export function controllerActions(
+  controller: AssetLibraryControllerApi,
+): AssetLibraryActions {
   return {
-    ...snapshot,
     search: controller.search,
     loadMore: controller.loadMore,
     refresh: controller.refresh,

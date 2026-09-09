@@ -61,7 +61,8 @@ fn hash_file(path: &Path, budget: &mut u64) -> Result<Option<String>> {
     if meta.len() > *budget {
         return Ok(None);
     }
-    let mut reader = crate::godot_builds::open_read(path)?;
+    let mut reader = crate::godot_builds::open_read(path)
+        .map_err(|error| super::source_io_error(path, error))?;
     let mut hasher = <sha2::Sha256 as sha2::Digest>::new();
     let mut buffer = vec![0u8; IMPORT_CHUNK_BYTES];
     let mut total: u64 = 0;
@@ -176,7 +177,20 @@ impl Walk {
                 self.items.push(item);
                 continue;
             };
-            let hash = hash_file(&path, &mut self.hash_budget)?;
+            let hash = match hash_file(&path, &mut self.hash_budget) {
+                Ok(hash) => hash,
+                Err(error) => {
+                    // One locked or unreadable file must not fail the whole
+                    // authorized scan; it is reported as an issue instead.
+                    self.issues.push(json!({
+                        "path": item["path"].clone(),
+                        "code": super::source_io_code(&error),
+                    }));
+                    item["known"] = Value::Null;
+                    self.items.push(item);
+                    continue;
+                }
+            };
             match hash {
                 Some(sha256) => {
                     let known: Option<(String, i64)> = self.lookup(&sha256)?;

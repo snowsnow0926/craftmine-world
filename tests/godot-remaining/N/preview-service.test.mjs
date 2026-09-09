@@ -18,6 +18,12 @@ import {
   decodeGlb,
   previewAsset,
 } from '../../../vendor/pi-desktop/apps/desktop/electron/craftmine-assets/preview-service.mjs';
+import {
+  GLB_RENDERER_VERSION,
+  parseGlb,
+  renderGlbStatic,
+} from '../../../vendor/pi-desktop/apps/desktop/electron/craftmine-assets/decode/glb-render.mjs';
+import { decodeImage } from '../../../vendor/pi-desktop/apps/desktop/electron/craftmine-assets/decode/image-decode.mjs';
 import { runPreviewInWorker } from '../../../vendor/pi-desktop/apps/desktop/electron/craftmine-assets/preview-worker.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -83,28 +89,73 @@ function encodePng(width, height, pixel) {
   ]);
 }
 
-/** Minimal static GLB with one triangle. */
-function encodeGlb() {
-  const positions = Buffer.alloc(9 * 4);
-  [0, 0, 0, 1, 0, 0, 0, 1, 0].forEach((value, index) => positions.writeFloatLE(value, index * 4));
-  const indices = Buffer.alloc(3 * 2);
-  [0, 1, 2].forEach((value, index) => indices.writeUInt16LE(value, index * 2));
-  const binary = Buffer.concat([positions, indices]);
+/** Build a minimal real GLB container around the supplied geometry. */
+function encodeGlbFixture({
+  positions = [0, 0, 0, 1, 0, 0, 0, 1, 0],
+  indices = [0, 1, 2],
+  indexType = 5123,
+  node = null,
+  nodes = null,
+  sceneNodes = null,
+  material = null,
+  mode = null,
+  omitPosition = false,
+  omitIndices = false,
+} = {}) {
+  const parts = [];
+  const bufferViews = [];
+  const accessors = [];
+  const attributes = {};
+  if (!omitPosition) {
+    const positionBytes = Buffer.alloc((positions.length / 3) * 12);
+    positions.forEach((value, index) => positionBytes.writeFloatLE(value, index * 4));
+    bufferViews.push({ buffer: 0, byteOffset: 0, byteLength: positionBytes.length });
+    accessors.push({
+      bufferView: bufferViews.length - 1,
+      componentType: 5126,
+      count: positions.length / 3,
+      type: 'VEC3',
+    });
+    attributes.POSITION = accessors.length - 1;
+    parts.push(positionBytes);
+  }
+  const primitive = { attributes };
+  if (!omitIndices && Array.isArray(indices) && indices.length > 0) {
+    const elementBytes = indexType === 5125 ? 4 : indexType === 5121 ? 1 : 2;
+    const indexBytes = Buffer.alloc(indices.length * elementBytes);
+    indices.forEach((value, index) => {
+      if (elementBytes === 4) indexBytes.writeUInt32LE(value, index * 4);
+      else if (elementBytes === 1) indexBytes.writeUInt8(value, index);
+      else indexBytes.writeUInt16LE(value, index * 2);
+    });
+    const byteOffset = parts.reduce((sum, part) => sum + part.length, 0);
+    bufferViews.push({ buffer: 0, byteOffset, byteLength: indexBytes.length });
+    accessors.push({
+      bufferView: bufferViews.length - 1,
+      componentType: indexType,
+      count: indices.length,
+      type: 'SCALAR',
+    });
+    primitive.indices = accessors.length - 1;
+    parts.push(indexBytes);
+  }
+  if (material !== null) primitive.material = 0;
+  if (mode !== null) primitive.mode = mode;
+  const binary = Buffer.concat(parts);
+  const nodeList = nodes === null
+    ? [node === null ? { mesh: 0, name: 'Fixture' } : { mesh: 0, ...node }]
+    : nodes;
+  const roots = sceneNodes === null ? [0] : sceneNodes;
   const json = {
     asset: { version: '2.0' },
     scene: 0,
-    scenes: [{ nodes: [0] }],
-    nodes: [{ mesh: 0, name: 'Triangle' }],
-    meshes: [{ primitives: [{ attributes: { POSITION: 0 }, indices: 1 }] }],
-    accessors: [
-      { bufferView: 0, componentType: 5126, count: 3, type: 'VEC3' },
-      { bufferView: 1, componentType: 5123, count: 3, type: 'SCALAR' },
-    ],
-    bufferViews: [
-      { buffer: 0, byteOffset: 0, byteLength: positions.length },
-      { buffer: 0, byteOffset: positions.length, byteLength: indices.length },
-    ],
+    scenes: [{ nodes: roots }],
+    nodes: nodeList,
+    meshes: [{ primitives: [primitive] }],
+    accessors,
+    bufferViews,
     buffers: [{ byteLength: binary.length }],
+    ...(material === null ? {} : { materials: [material] }),
   };
   const jsonBytes = Buffer.from(JSON.stringify(json), 'utf8');
   const jsonPad = (4 - (jsonBytes.length % 4)) % 4;
@@ -123,6 +174,32 @@ function encodeGlb() {
   binHeader.writeUInt32LE(binChunk.length, 0);
   binHeader.write('BIN\0', 4, 'ascii');
   return Buffer.concat([header, jsonHeader, jsonChunk, binHeader, binChunk]);
+}
+
+/** Minimal static GLB with one triangle. */
+function encodeGlb() {
+  return encodeGlbFixture();
+}
+
+/** Read the IHDR dimensions of a real PNG byte stream. */
+function readPngIhdr(png) {
+  assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+  assert.equal(png.subarray(12, 16).toString('ascii'), 'IHDR');
+  return {
+    width: png.readUInt32BE(16),
+    height: png.readUInt32BE(20),
+    bitDepth: png[24],
+    colorType: png[25],
+  };
+}
+
+/** Count rendered pixels that are not the dark background. */
+function countForegroundPixels(rgba) {
+  let count = 0;
+  for (let i = 0; i < rgba.length; i += 4) {
+    if (rgba[i] !== 16 || rgba[i + 1] !== 18 || rgba[i + 2] !== 24) count += 1;
+  }
+  return count;
 }
 
 function encodeWav16(frames) {
@@ -335,32 +412,276 @@ test('GLB decodes real accessor bytes and topology', () => {
   assert.equal(decoded.triangles, 1);
   assert.equal(decoded.vertices, 3);
   assert.equal(decoded.nodes, 1);
+  assert.equal(decoded.decoder, 'glb-decode.mjs@1');
   assert.match(decoded.digest, /^[0-9a-f]{64}$/);
+  const parsed = parseGlb(bytes);
+  assert.equal(parsed.triangles, 1);
+  assert.equal(parsed.vertices, 3);
+  assert.equal(parsed.accessors.length, 2);
+  assert.equal(parsed.bufferViews.length, 2);
+  assert.equal(parsed.meshes.length, 1);
+  assert.equal(parsed.nodes.length, 1);
+  assert.equal(parsed.scenes.length, 1);
+  assert.equal(parsed.materials.length, 0);
+  assert.equal(parsed.images.length, 0);
+  assert.ok(parsed.bin instanceof Uint8Array);
+  assert.equal(parsed.json.asset.version, '2.0');
+  report('glb-structure', { decoded, accessors: parsed.accessors.length });
+});
+
+test('GLB preview returns a real rendered picture and keeps accessor facts', () => {
+  const bytes = encodeGlb();
   const result = previewAsset({
     assetId: 'auto-door',
     version: 1,
     contentHash: 'd'.repeat(64),
     mediaType: 'model/gltf-binary',
     bytes,
+    maxSide: 96,
+    engineVersion: ENGINE,
+  });
+  assert.equal(result.status, 'ok', result.detail);
+  assert.equal(result.facts.picture, true);
+  assert.equal(result.facts.rendered, true);
+  assert.equal(result.facts.accessorParsed, true);
+  assert.equal(result.facts.playable, false);
+  assert.equal(result.facts.renderer, GLB_RENDERER_VERSION);
+  assert.equal(result.facts.decoder, 'glb-decode.mjs@1');
+  assert.equal(result.facts.triangles, 1);
+  assert.equal(result.facts.vertices, 3);
+  assert.equal(result.facts.nodes, 1);
+  assert.equal(result.facts.meshes, 1);
+  assert.equal(result.facts.materials, 0);
+  assert.equal(result.facts.images, 0);
+  assert.equal(result.facts.accessors, 2);
+  assert.equal(result.facts.renderWidth, 96);
+  assert.equal(result.facts.renderHeight, 96);
+  assert.ok(result.facts.thumbnailBytes > 0);
+  assert.match(result.facts.digest, /^[0-9a-f]{64}$/);
+  assert.match(result.detail, /rendered 96x96/);
+  assert.match(result.detail, /1 tris \/ 1 nodes/);
+
+  const png = Buffer.from(result.facts.thumbnailBase64, 'base64');
+  assert.equal(png.length, result.facts.thumbnailBytes);
+  const ihdr = readPngIhdr(png);
+  assert.ok(ihdr.width > 0 && ihdr.width <= 96, `IHDR width ${ihdr.width}`);
+  assert.ok(ihdr.height > 0 && ihdr.height <= 96, `IHDR height ${ihdr.height}`);
+  assert.equal(ihdr.bitDepth, 8);
+  assert.equal(ihdr.colorType, 6);
+
+  // The thumbnail must be a decodable PNG with actual shaded geometry in it.
+  const decoded = decodeImage(png, { maxSide: 96 });
+  assert.equal(decoded.width, ihdr.width);
+  assert.equal(decoded.height, ihdr.height);
+  assert.ok(countForegroundPixels(decoded.rgba) > 0, 'picture must contain geometry pixels');
+  report('glb-rendered', {
+    status: result.status,
+    detail: result.detail,
+    renderer: result.facts.renderer,
+    thumbnailBytes: result.facts.thumbnailBytes,
+    foreground: countForegroundPixels(decoded.rgba),
+  });
+});
+
+test('two different GLB models never share one digest or thumbnail', () => {
+  const triangle = encodeGlb();
+  const quad = encodeGlbFixture({
+    positions: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0],
+    indices: [0, 1, 2, 0, 2, 3],
+  });
+  const render = bytes => previewAsset({
+    assetId: 'auto-door',
+    version: 1,
+    contentHash: 'd'.repeat(64),
+    mediaType: 'model/gltf-binary',
+    bytes,
+    maxSide: 64,
+    engineVersion: ENGINE,
+  });
+  const first = render(triangle);
+  const second = render(quad);
+  assert.equal(first.status, 'ok', first.detail);
+  assert.equal(second.status, 'ok', second.detail);
+  assert.equal(first.facts.triangles, 1);
+  assert.equal(second.facts.triangles, 2);
+  assert.notEqual(first.facts.digest, second.facts.digest);
+  assert.notEqual(first.facts.thumbnailBase64, second.facts.thumbnailBase64);
+  assert.notEqual(first.facts.geometryDigest, second.facts.geometryDigest);
+  report('glb-distinct', {
+    digests: [first.facts.digest.slice(0, 12), second.facts.digest.slice(0, 12)],
+  });
+});
+
+test('GLB rendering is deterministic for identical bytes', () => {
+  const bytes = encodeGlb();
+  const direct = renderGlbStatic(bytes, { maxSide: 80 });
+  const again = renderGlbStatic(bytes, { maxSide: 80 });
+  assert.equal(Buffer.from(direct.png).toString('base64'), Buffer.from(again.png).toString('base64'));
+  assert.equal(direct.pixelDigest, again.pixelDigest);
+  assert.equal(direct.camera.yawDeg, 35);
+  assert.equal(direct.camera.pitchDeg, 25);
+  assert.ok(direct.camera.scale > 0);
+
+  const request = () => previewAsset({
+    assetId: 'auto-door',
+    version: 1,
+    contentHash: 'd'.repeat(64),
+    mediaType: 'model/gltf-binary',
+    bytes,
+    maxSide: 80,
+    engineVersion: ENGINE,
+  });
+  const one = request();
+  const two = request();
+  assert.equal(one.facts.thumbnailBase64, two.facts.thumbnailBase64);
+  assert.equal(one.facts.digest, two.facts.digest);
+  report('glb-deterministic', { digest: one.facts.digest.slice(0, 12), bytes: one.facts.thumbnailBytes });
+});
+
+test('GLB node/scene transforms and materials change the rendered picture', () => {
+  const request = bytes => previewAsset({
+    assetId: 'auto-door',
+    version: 1,
+    contentHash: 'd'.repeat(64),
+    mediaType: 'model/gltf-binary',
+    bytes,
+    maxSide: 64,
+    engineVersion: ENGINE,
+  });
+  const base = request(encodeGlb());
+  assert.equal(base.status, 'ok', base.detail);
+
+  const rotZ = [0, 0, Math.sin(Math.PI / 12), Math.cos(Math.PI / 12)];
+  const stretch = [1, 3, 1];
+  // Hierarchical S*R vs R*S: a flat "first transform wins" renderer would
+  // produce one identical picture for both.
+  const scaleThenRotate = encodeGlbFixture({
+    nodes: [{ scale: stretch, children: [1] }, { mesh: 0, rotation: rotZ }],
+  });
+  const rotateThenScale = encodeGlbFixture({
+    nodes: [{ rotation: rotZ, children: [1] }, { mesh: 0, scale: stretch }],
+  });
+  // A node matrix (column-major) with a non-uniform scale must be honoured too.
+  const matrixNode = encodeGlbFixture({
+    node: { matrix: [1, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] },
+  });
+  const colored = encodeGlbFixture({
+    material: { pbrMetallicRoughness: { baseColorFactor: [0.9, 0.1, 0.1, 1] } },
+  });
+
+  const results = [scaleThenRotate, rotateThenScale, matrixNode, colored].map(request);
+  for (const result of results) assert.equal(result.status, 'ok', result.detail);
+  assert.equal(results[3].facts.materials, 1);
+  const digests = [base, ...results].map(result => result.facts.digest);
+  assert.equal(new Set(digests).size, digests.length, `digests must differ: ${digests.map(d => d.slice(0, 8)).join(', ')}`);
+  report('glb-transforms', { digests: digests.map(digest => digest.slice(0, 8)) });
+});
+
+test('a parsed GLB with no rasterisable triangles stays partial, never ok', () => {
+  const lines = encodeGlbFixture({ mode: 1 });
+  const result = previewAsset({
+    assetId: 'auto-door',
+    version: 5,
+    contentHash: '8'.repeat(64),
+    mediaType: 'model/gltf-binary',
+    bytes: lines,
     engineVersion: ENGINE,
   });
   assert.equal(result.status, 'partial', result.detail);
-  assert.equal(result.facts.triangles, 1);
   assert.equal(result.facts.picture, false);
   assert.equal(result.facts.rendered, false);
-  assert.equal(result.facts.renderReason, 'model-render-not-implemented');
-  const broken = Buffer.from(bytes);
-  broken.writeUInt32LE(999999, 8);
-  const failed = previewAsset({
+  assert.equal(result.facts.accessorParsed, true);
+  assert.equal(result.facts.renderer, GLB_RENDERER_VERSION);
+  assert.equal(result.facts.triangles, 0);
+  assert.equal(result.facts.vertices, 3);
+  assert.match(result.facts.renderReason, /RENDER_EMPTY_GEOMETRY/);
+  assert.match(result.detail, /glb structure only/);
+  report('glb-partial', { status: result.status, reason: result.facts.renderReason });
+});
+
+test('corrupt or unsupported GLB bodies fail and never report a picture', () => {
+  const good = encodeGlb();
+  const cases = [
+    ['declared-length', (() => {
+      const broken = Buffer.from(good);
+      broken.writeUInt32LE(999999, 8);
+      return broken;
+    })()],
+    ['truncated', good.subarray(0, good.length - 12)],
+    ['bad-magic', (() => {
+      const broken = Buffer.from(good);
+      broken.write('nope', 0, 'ascii');
+      return broken;
+    })()],
+    ['unsupported-version', (() => {
+      const broken = Buffer.from(good);
+      broken.writeUInt32LE(3, 4);
+      return broken;
+    })()],
+  ];
+  const details = [];
+  for (const [name, bytes] of cases) {
+    const result = previewAsset({
+      assetId: 'auto-door',
+      version: 2,
+      contentHash: 'e'.repeat(64),
+      mediaType: 'model/gltf-binary',
+      bytes,
+      engineVersion: ENGINE,
+    });
+    assert.equal(result.status, 'failed', `${name} must fail`);
+    assert.notEqual(result.facts.picture, true, `${name} must not report a picture`);
+    assert.notEqual(result.facts.rendered, true, `${name} must not report a render`);
+    details.push([name, result.detail]);
+  }
+  assert.equal(details[0][1], 'CORRUPT_ASSET_BODY');
+  assert.equal(details[1][1], 'CORRUPT_ASSET_BODY');
+  assert.equal(details[2][1], 'CORRUPT_ASSET_BODY');
+  assert.equal(details[3][1], 'UNSUPPORTED_GLB_VERSION');
+  assert.throws(() => parseGlb(good.subarray(0, 24)), error => error.code === 'CORRUPT_ASSET_BODY');
+  report('glb-corrupt', { details });
+});
+
+test('a GLB without POSITION data fails instead of faking a picture', () => {
+  const noPosition = encodeGlbFixture({ omitPosition: true, omitIndices: true });
+  const result = previewAsset({
     assetId: 'auto-door',
-    version: 2,
-    contentHash: 'e'.repeat(64),
+    version: 3,
+    contentHash: 'f'.repeat(64),
     mediaType: 'model/gltf-binary',
-    bytes: broken,
+    bytes: noPosition,
     engineVersion: ENGINE,
   });
-  assert.equal(failed.status, 'failed');
-  report('glb', { ok: result.facts, broken: failed.detail });
+  assert.equal(result.status, 'failed', result.detail);
+  assert.equal(result.detail, 'MISSING_POSITION');
+  assert.notEqual(result.facts.picture, true);
+  assert.throws(() => parseGlb(noPosition), error => error.code === 'MISSING_POSITION');
+  assert.throws(
+    () => renderGlbStatic(noPosition),
+    error => error.code === 'MISSING_POSITION' && /MISSING_POSITION/.test(error.message),
+  );
+  report('glb-no-position', { status: result.status, detail: result.detail });
+});
+
+test('a GLB render aborts with PREVIEW_TIMEOUT once the deadline passed', () => {
+  const bytes = encodeGlb();
+  assert.throws(
+    () => renderGlbStatic(bytes, { deadline: Date.now() - 1 }),
+    error => error.code === 'PREVIEW_TIMEOUT' && /PREVIEW_TIMEOUT/.test(error.message),
+  );
+  const timedOut = previewAsset({
+    assetId: 'auto-door',
+    version: 4,
+    contentHash: '9'.repeat(64),
+    mediaType: 'model/gltf-binary',
+    bytes,
+    deadline: Date.now() - 1,
+    engineVersion: ENGINE,
+  });
+  assert.equal(timedOut.status, 'timeout');
+  assert.equal(timedOut.detail, 'PREVIEW_TIMEOUT');
+  assert.notEqual(timedOut.facts.picture, true);
+  report('glb-timeout', { status: timedOut.status, detail: timedOut.detail });
 });
 
 test('WAV decodes real PCM while OGG stays container-only', () => {
@@ -475,7 +796,7 @@ test('the worker isolates decoding and honours a hard timeout', async () => {
 });
 
 test('the preview path contains no window, input, playback or engine calls', () => {
-  const sources = ['preview-service.mjs', 'preview-worker.mjs', 'decode/image-decode.mjs', 'decode/audio-decode.mjs', 'decode/godot-package.mjs']
+  const sources = ['preview-service.mjs', 'preview-worker.mjs', 'decode/image-decode.mjs', 'decode/audio-decode.mjs', 'decode/godot-package.mjs', 'decode/glb-render.mjs']
     .filter(name => fs.existsSync(path.join(assetDir, name)))
     .map(name => [name, fs.readFileSync(path.join(assetDir, name), 'utf8')]);
   assert.ok(sources.length >= 3);

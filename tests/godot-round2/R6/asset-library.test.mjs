@@ -69,7 +69,7 @@ const {
   mediaKindForType,
   normalizeTags,
 } = model;
-const { createAssetLibraryController } = hookModule;
+const { createAssetLibraryController, controllerActions } = hookModule;
 
 /* --------------------------------------------------------------- fixtures */
 
@@ -510,24 +510,30 @@ test("OGG is never playable and never gets a player", () => {
 
 /* ------------------------------------------------------- cancel / retry */
 
-test("cancel sends previewFinish(cancelled) and retry re-runs previewBegin", async () => {
-  let reads = 0;
+test("preview runs the real service and cancel terminates the attempt", async () => {
+  let phase = "ok";
   const { controller, calls } = selectedController({
-    "asset.previewBegin": () => ({
+    "asset.preview": () => ({
       jobId: "job-1",
       cacheKey: "cache-1",
       cached: false,
       retried: false,
+      attempt: 1,
+      applied: true,
+      stale: false,
       timeoutMs: 20000,
-      preview: { status: "pending", detail: "", facts: {}, createdAt: 6 },
+      status: "pending",
+      detail: "",
+      facts: {},
     }),
-    "asset.previewFinish": () => ({ ok: true }),
-    "asset.previewRead": () => {
-      reads += 1;
-      return reads === 1
-        ? { items: [previewRecord("ok", "png 4x4", { picture: true })], total: 1 }
-        : { items: [previewRecord("cancelled", "", {}, 7)], total: 1 };
+    "asset.cancel": () => {
+      phase = "cancelled";
+      return { cancelled: true, applied: true, attempt: 1 };
     },
+    "asset.previewRead": () => ({
+      items: [previewRecord(phase, phase === "ok" ? "png 4x4" : "", phase === "ok" ? { picture: true } : {}, 7)],
+      total: 1,
+    }),
   });
 
   const read = await controller.select("a1", 2);
@@ -540,30 +546,75 @@ test("cancel sends previewFinish(cancelled) and retry re-runs previewBegin", asy
 
   const begun = await controller.previewBegin("a1", 2);
   assert.equal(begun.jobId, "job-1");
-  assert.equal(controller.snapshot().preview.status, "pending");
+  assert.equal(begun.attempt, 1);
+  assert.equal(begun.applied, true);
+  assert.equal(begun.preview.status, "pending");
+  // The panel must call the real attempt-bound service, never the raw core
+  // begin/finish channels, so the core-issued claim owns the run.
+  assert.equal(calls.some((entry) => entry.channel === "asset.previewBegin"), false);
+  assert.equal(calls.some((entry) => entry.channel === "asset.previewFinish"), false);
+  assert.deepEqual(
+    calls.find((entry) => entry.channel === "asset.preview").payload,
+    { assetId: "a1", version: 2 },
+  );
+  assert.equal(controller.snapshot().previewJob.jobId, "job-1");
 
   await controller.cancelPreview();
-  const finish = calls.filter((entry) => entry.channel === "asset.previewFinish");
-  assert.equal(finish.length, 1);
-  assert.deepEqual(finish[0].payload, {
-    operationId: "job-1",
+  const cancel = calls.filter((entry) => entry.channel === "asset.cancel");
+  assert.equal(cancel.length, 1);
+  assert.deepEqual(cancel[0].payload, {
     assetId: "a1",
     version: 2,
-    status: "cancelled",
-    detail: "",
-    facts: {},
+    detail: "cancelled by player",
   });
   assert.equal(controller.snapshot().preview.status, "cancelled");
   assert.equal(controller.snapshot().previewJob, null);
 
   await controller.retryPreview();
-  const begins = calls.filter((entry) => entry.channel === "asset.previewBegin");
-  assert.equal(begins.length, 2);
-  assert.deepEqual(begins[0].payload, { assetId: "a1", version: 2 });
-  assert.deepEqual(begins[1].payload, { assetId: "a1", version: 2 });
+  const previews = calls.filter((entry) => entry.channel === "asset.preview");
+  assert.equal(previews.length, 2);
+  assert.deepEqual(previews[0].payload, { assetId: "a1", version: 2 });
+  assert.deepEqual(previews[1].payload, { assetId: "a1", version: 2 });
   await controller.previewBegin("a1", 2, "settings-9");
-  const withSettings = calls.filter((entry) => entry.channel === "asset.previewBegin")[2];
+  const withSettings = calls.filter((entry) => entry.channel === "asset.preview")[2];
   assert.deepEqual(withSettings.payload, { assetId: "a1", version: 2, settingsHash: "settings-9" });
+});
+
+test("a late preview result for a superseded selection is discarded", async () => {
+  let release = null;
+  const gate = new Promise((resolve) => {
+    release = resolve;
+  });
+  const { controller } = selectedController({
+    "asset.preview": async () => {
+      await gate;
+      return {
+        jobId: "job-late",
+        cacheKey: "cache-late",
+        cached: false,
+        retried: false,
+        attempt: 1,
+        applied: true,
+        stale: false,
+        timeoutMs: 20000,
+        status: "ok",
+        detail: "late-should-not-appear",
+        facts: { picture: true },
+      };
+    },
+  });
+  await controller.select("a1", 2);
+  const pending = controller.previewBegin("a1", 2);
+  // The player switches to another version before the decode returns.
+  await controller.select("a1", 1);
+  const afterSwitch = controller.snapshot();
+  release();
+  const late = await pending;
+  assert.equal(late.stale, false, "the host did apply it to its own attempt");
+  // The superseded result must not overwrite the newer selection's state.
+  assert.equal(controller.snapshot().previewJob, null);
+  assert.notEqual(controller.snapshot().preview?.detail, "late-should-not-appear");
+  assert.deepEqual(controller.snapshot().preview, afterSwitch.preview);
 });
 
 /* ------------------------------------------------------- scan + import */
@@ -641,7 +692,65 @@ test("scanSummary and importRequestFor produce the import payload", async () => 
   assert.deepEqual(host.calls[1].payload, request);
   assert.equal(imported.displayName, "Crate");
   assert.equal(controller.snapshot().lastImport.assetId, "crate");
-  assert.equal(controller.snapshot().scan.hints.newVersions, 5);
+  assert.equal(controller.snapshot().scanResult.hints.newVersions, 5);
+});
+
+test("snapshot data keys stay disjoint from controller action names", () => {
+  // Regression guard for the import crash: `scan` once named both the scan
+  // result (data) and the scan action (method). The merge in useAssetLibrary
+  // then replaced the result with the function, and AssetLibraryPanel threw
+  // `Cannot read properties of undefined (reading 'find')`, unmounting the tree.
+  const host = fakeHost({});
+  const controller = createAssetLibraryController(host.call);
+  const actionNames = Object.keys(controllerActions(controller));
+  const collisions = Object.keys(controller.snapshot()).filter((key) =>
+    actionNames.includes(key),
+  );
+  assert.deepEqual(
+    collisions,
+    [],
+    `snapshot field(s) ${collisions.join(", ")} collide with controller action names`,
+  );
+  assert.equal(typeof controller.scan, "function");
+  assert.equal(controller.snapshot().scanResult, null);
+});
+
+test("the panel import path reads the scan result, never the scan action", async () => {
+  const scan = {
+    root: "C:\\assets",
+    scanned: 1,
+    truncated: false,
+    items: [
+      {
+        path: "models/a.glb",
+        bytes: 10,
+        supported: true,
+        mediaType: "model/gltf-binary",
+        sha256: "b".repeat(64),
+        known: false,
+      },
+    ],
+    issues: [],
+    hints: { newVersions: 1, unchanged: 0, unsupported: 0 },
+    worldUpdated: false,
+  };
+  const host = fakeHost({ "asset.scan": () => scan });
+  const controller = createAssetLibraryController(host.call);
+  await controller.scan("C:\\assets");
+  // Exactly what AssetLibraryPanel.startImport() does after the scan resolves.
+  const result = controller.snapshot().scanResult;
+  assert.equal(typeof controller.scan, "function");
+  assert.ok(Array.isArray(result?.items), "scanResult.items must be an array");
+  const picked = result.items.find((item) => item.path === "models/a.glb");
+  assert.equal(picked.supported, true);
+  assert.equal(scanSummary(result).newVersions, 1);
+});
+
+test("AssetLibraryPanel reads scan data from scanResult with a guarded items read", () => {
+  const panel = readFileSync(join(assetsDir, "AssetLibraryPanel.tsx"), "utf8");
+  assert.match(panel, /const scan = controller\.scanResult;/);
+  assert.match(panel, /Array\.isArray\(scan\.items\)/);
+  assert.doesNotMatch(panel, /const scan = controller\.scan;/);
 });
 
 test("versionOptions lists newest first", () => {

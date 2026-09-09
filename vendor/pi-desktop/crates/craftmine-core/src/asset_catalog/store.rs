@@ -65,6 +65,8 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
             previewer_version TEXT NOT NULL, engine_version TEXT NOT NULL,
             settings_hash TEXT NOT NULL, status TEXT NOT NULL, detail TEXT NOT NULL,
             facts TEXT NOT NULL, created_at INTEGER NOT NULL,
+            attempt INTEGER NOT NULL DEFAULT 0, claim_id TEXT NOT NULL DEFAULT '',
+            claim_owner TEXT NOT NULL DEFAULT '', claim_deadline INTEGER NOT NULL DEFAULT 0,
             PRIMARY KEY(asset_id,version,content_hash,previewer_version,engine_version,settings_hash)
         );
         CREATE TABLE IF NOT EXISTS craftmine_asset_checks (
@@ -82,6 +84,16 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
         CREATE INDEX IF NOT EXISTS craftmine_asset_versions_by_kind
             ON craftmine_asset_versions(kind,media_kind,asset_id);",
     )?;
+    // Attempt identity for preview slots. A database written before the claim
+    // columns existed keeps its rows; `duplicate column name` means migrated.
+    for statement in [
+        "ALTER TABLE craftmine_asset_previews ADD COLUMN attempt INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE craftmine_asset_previews ADD COLUMN claim_id TEXT NOT NULL DEFAULT ''",
+        "ALTER TABLE craftmine_asset_previews ADD COLUMN claim_owner TEXT NOT NULL DEFAULT ''",
+        "ALTER TABLE craftmine_asset_previews ADD COLUMN claim_deadline INTEGER NOT NULL DEFAULT 0",
+    ] {
+        let _ = db.execute(statement, []);
+    }
     Ok(())
 }
 
@@ -126,7 +138,8 @@ pub(super) fn stream_blob(root: &Path, source: &Path, limits: &ImportLimits) -> 
         meta.len() <= limits.file_bytes,
         "ASSET_FILE_TOO_LARGE"
     );
-    let mut reader = super::super::godot_builds::open_read(source)?;
+    let mut reader = super::super::godot_builds::open_read(source)
+        .map_err(|error| super::source_io_error(source, error))?;
     let temporary = root.join(format!(
         "pending-{}-{}-{}",
         std::process::id(),
@@ -280,6 +293,19 @@ pub(super) fn discard_blob(db: &Connection, root: &Path, sha256: &str) -> Result
         fs::remove_file(&path)?;
     }
     Ok(())
+}
+
+/// Removes the blob accounting row only when no version file references it.
+/// Used after a reclaim commit; a blob any surviving version references keeps
+/// its row, so accounting can never disagree with `craftmine_asset_files`.
+pub(super) fn delete_unreferenced_blob_row(db: &Connection, sha256: &str) -> Result<bool> {
+    contract::validate_sha256(sha256)?;
+    let removed = db.execute(
+        "DELETE FROM craftmine_asset_blobs WHERE sha256=?1
+         AND NOT EXISTS(SELECT 1 FROM craftmine_asset_files WHERE sha256=?1)",
+        [sha256],
+    )?;
+    Ok(removed > 0)
 }
 
 /// Reads a verified prefix for structural probing. The full blob hash is still

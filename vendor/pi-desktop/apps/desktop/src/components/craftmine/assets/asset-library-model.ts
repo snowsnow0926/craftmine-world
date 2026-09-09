@@ -172,6 +172,11 @@ export type AssetPreviewBeginResult = {
   cacheKey: string;
   cached: boolean;
   retried: boolean;
+  /** Core-issued execution identity; separate from the content cache key. */
+  attempt?: number;
+  applied?: boolean;
+  stale?: boolean;
+  reason?: string;
   previousStatus?: AssetPreviewStatus;
   timeoutMs: number;
   preview: AssetPreview;

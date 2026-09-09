@@ -3,7 +3,7 @@ use std::io::{self, BufRead, Read, Write};
 use std::path::PathBuf;
 
 use anyhow::{bail, Context, Result};
-use craftmine_core::{TaskBinding, TaskJournal, WorkspaceContext, WorldDocument};
+use craftmine_core::{asset_catalog_dispatch, TaskBinding, TaskJournal, WorkspaceContext, WorldDocument};
 use serde_json::{json, Value};
 
 fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
@@ -14,6 +14,11 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
+    // Asset catalog (task S5). The catalog owns every asset.* method; this hook
+    // and the lib.rs re-export are the only integration lines.
+    if let Some(result) = asset_catalog_dispatch(journal, method, params) {
+        return result;
+    }
     if method == "budget.configure" {
         return journal.budget_configure(params);
     }

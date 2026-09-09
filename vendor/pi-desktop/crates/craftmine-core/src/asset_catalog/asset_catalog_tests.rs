@@ -93,6 +93,36 @@ fn glb_header(json_bytes: u32) -> Vec<u8> {
     bytes
 }
 
+/// The attempt identity the core issued in `asset_preview_begin`. A finish can
+/// only be accepted for the exact claim the core handed out.
+fn claim_of(begin: &Value) -> (String, u64) {
+    (
+        begin["claim"]["claimId"].as_str().unwrap().to_string(),
+        begin["claim"]["attempt"].as_u64().unwrap(),
+    )
+}
+
+fn finish_args(
+    operation: &str,
+    asset: &str,
+    version: u64,
+    claim: &(String, u64),
+    status: &str,
+    detail: &str,
+    facts: Value,
+) -> Value {
+    json!({
+        "operationId": operation,
+        "assetId": asset,
+        "version": version,
+        "status": status,
+        "detail": detail,
+        "facts": facts,
+        "claimId": claim.0,
+        "attempt": claim.1,
+    })
+}
+
 /// Canonical shared vectors are owned by task M/R1 and consumed here as the
 /// exact file `content_history::contract_tests` uses, so both consumers must
 /// agree on every hash and error.
@@ -699,40 +729,50 @@ fn al2_probe_and_preview_states_never_conflate() -> Result<()> {
     let begin = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
     assert_eq!(begin["cached"], false);
     assert_eq!(begin["preview"]["status"], "pending");
+    let claim = claim_of(&begin);
     let cached = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
     assert_eq!(cached["cached"], true);
     assert_eq!(cached["cacheKey"], begin["cacheKey"]);
+    assert_eq!(
+        claim_of(&cached),
+        claim,
+        "a live claim is resumed, not replaced"
+    );
 
-    // A success without real decoder evidence is refused.
+    // A success without real decoder evidence is refused, even for the live
+    // claim.
     let error = journal
-        .asset_preview_finish(&json!({
-            "operationId": "op-preview-bad",
-            "assetId": "door-texture",
-            "version": 1,
-            "status": "ok",
-            "detail": "",
-            "facts": {"decoder": "image-decode.mjs"},
-        }))
+        .asset_preview_finish(&finish_args(
+            "op-preview-bad",
+            "door-texture",
+            1,
+            &claim,
+            "ok",
+            "",
+            json!({"decoder": "image-decode.mjs"}),
+        ))
         .unwrap_err()
         .to_string();
     assert!(error.contains("PREVIEW_EVIDENCE_REQUIRED"), "{error}");
     let state = journal.asset_read(&json!({"assetId":"door-texture","version":1}))?;
     assert_eq!(state["state"]["previewable"], false);
 
-    let finished = journal.asset_preview_finish(&json!({
-        "operationId": "op-preview-ok",
-        "assetId": "door-texture",
-        "version": 1,
-        "status": "ok",
-        "detail": "decoded 64x32 rgba",
-        "facts": {
+    let finished = journal.asset_preview_finish(&finish_args(
+        "op-preview-ok",
+        "door-texture",
+        1,
+        &claim,
+        "ok",
+        "decoded 64x32 rgba",
+        json!({
             "decoder": "image-decode.mjs@1",
             "digest": store::digest_bytes(&png_header(64, 32)),
             "width": 64,
             "height": 32,
-        },
-    }))?;
+        }),
+    ))?;
     assert_eq!(finished["status"], "ok");
+    assert_eq!(finished["applied"], true);
     let state = journal.asset_read(&json!({"assetId":"door-texture","version":1}))?;
     assert_eq!(state["state"]["previewable"], true);
 
@@ -748,15 +788,17 @@ fn al2_probe_and_preview_states_never_conflate() -> Result<()> {
         "image/png",
         "image",
     ))?;
-    journal.asset_preview_begin(&json!({"assetId":"door-texture","version":2}))?;
-    journal.asset_preview_finish(&json!({
-        "operationId": "op-preview-fail",
-        "assetId": "door-texture",
-        "version": 2,
-        "status": "failed",
-        "detail": "decode error",
-        "facts": {},
-    }))?;
+    let v2_begin = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":2}))?;
+    let v2_claim = claim_of(&v2_begin);
+    journal.asset_preview_finish(&finish_args(
+        "op-preview-fail",
+        "door-texture",
+        2,
+        &v2_claim,
+        "failed",
+        "decode error",
+        json!({}),
+    ))?;
     let v2 = journal.asset_read(&json!({"assetId":"door-texture","version":2}))?;
     assert_eq!(v2["state"]["previewable"], false);
     let v1 = journal.asset_read(&json!({"assetId":"door-texture","version":1}))?;
@@ -916,45 +958,452 @@ fn al2_preview_claim_and_retry_are_enforced() -> Result<()> {
         "image",
     ))?;
 
-    // A finish without a claimed begin is refused.
+    // A finish without a claimed begin is refused: the core never issued this
+    // claim, so no preview slot exists for it.
+    let unissued = ("0".repeat(64), 1u64);
     let error = journal
-        .asset_preview_finish(&json!({
-            "operationId": "op-finish-unclaimed",
-            "assetId": "door-texture",
-            "version": 1,
-            "status": "ok",
-            "detail": "x",
-            "facts": {"decoder": "image-decode.mjs@1", "digest": store::digest_bytes(b"x")},
-        }))
+        .asset_preview_finish(&finish_args(
+            "op-finish-unclaimed",
+            "door-texture",
+            1,
+            &unissued,
+            "ok",
+            "x",
+            json!({"decoder": "image-decode.mjs@1", "digest": store::digest_bytes(b"x")}),
+        ))
         .unwrap_err()
         .to_string();
     assert!(error.contains("PREVIEW_NOT_CLAIMED"), "{error}");
 
-    journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
-    journal.asset_preview_finish(&json!({
-        "operationId": "op-preview-timeout",
-        "assetId": "door-texture",
-        "version": 1,
-        "status": "timeout",
-        "detail": "slow",
-        "facts": {},
-    }))?;
+    let begin = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
+    let claim = claim_of(&begin);
+    journal.asset_preview_finish(&finish_args(
+        "op-preview-timeout",
+        "door-texture",
+        1,
+        &claim,
+        "timeout",
+        "slow",
+        json!({}),
+    ))?;
     let retry = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
     assert_eq!(retry["cached"], false);
     assert_eq!(retry["retried"], true);
     assert_eq!(retry["previousStatus"], "timeout");
+    let retry_claim = claim_of(&retry);
+    assert_ne!(retry_claim.0, claim.0, "a retry gets its own claim");
+    assert_eq!(retry_claim.1, claim.1 + 1);
 
-    journal.asset_preview_finish(&json!({
-        "operationId": "op-preview-ok",
-        "assetId": "door-texture",
-        "version": 1,
-        "status": "ok",
-        "detail": "decoded",
-        "facts": {"decoder": "image-decode.mjs@1", "digest": store::digest_bytes(&png_header(8, 8))},
-    }))?;
+    journal.asset_preview_finish(&finish_args(
+        "op-preview-ok",
+        "door-texture",
+        1,
+        &retry_claim,
+        "ok",
+        "decoded",
+        json!({"decoder": "image-decode.mjs@1", "digest": store::digest_bytes(&png_header(8, 8))}),
+    ))?;
     let cached = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
     assert_eq!(cached["cached"], true);
     assert_eq!(cached["retried"], false);
+    assert_eq!(cached["claim"], Value::Null, "a cached result issues no claim");
+    let state = journal.asset_read(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(state["state"]["previewable"], true);
+    Ok(())
+}
+
+#[test]
+fn al2_preview_retry_after_failure_records_a_changed_result() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let image = write_source(&root, "door.png", &png_header(16, 16))?;
+    journal.asset_import(&import_args(
+        &root,
+        &image,
+        "op-retry-import",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+
+    let first = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
+    let first_claim = claim_of(&first);
+    assert_eq!(first_claim.1, 1);
+    let failed = journal.asset_preview_finish(&finish_args(
+        "op-retry-fail",
+        "door-texture",
+        1,
+        &first_claim,
+        "failed",
+        "decode error",
+        json!({}),
+    ))?;
+    assert_eq!(failed["applied"], true);
+    assert_eq!(failed["stale"], false);
+    assert_eq!(failed["attempt"], 1);
+
+    // A retry is a new attempt with a new claim, so its result can never be
+    // mistaken for a replay of the failed one.
+    let retry = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(retry["cached"], false);
+    assert_eq!(retry["retried"], true);
+    assert_eq!(retry["previousStatus"], "failed");
+    let retry_claim = claim_of(&retry);
+    assert_ne!(retry_claim.0, first_claim.0, "the retry has a new claim");
+    assert_eq!(retry_claim.1, 2, "the retry advances the attempt");
+    assert_eq!(retry_claim.1, first_claim.1 + 1);
+
+    // A retry is a distinct operation: the new attempt writes normally.
+    let ok = journal.asset_preview_finish(&finish_args(
+        "op-retry-ok",
+        "door-texture",
+        1,
+        &retry_claim,
+        "ok",
+        "decoded on the second attempt",
+        json!({
+            "decoder": "image-decode.mjs@1",
+            "digest": store::digest_bytes(b"second-attempt"),
+        }),
+    ))?;
+    assert_eq!(ok["applied"], true);
+    assert_eq!(ok["stale"], false);
+    assert_eq!(ok["attempt"], 2);
+
+    let read = journal.asset_preview_read(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(read["total"], 1, "one slot, not one row per attempt");
+    assert_eq!(read["items"][0]["status"], "ok");
+    assert_eq!(read["items"][0]["attempt"], 2);
+    assert_eq!(read["items"][0]["activeClaim"], false);
+    let state = journal.asset_read(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(state["state"]["previewable"], true);
+    Ok(())
+}
+
+#[test]
+fn al2_preview_finish_replay_is_idempotent_within_one_attempt() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let image = write_source(&root, "door.png", &png_header(16, 16))?;
+    journal.asset_import(&import_args(
+        &root,
+        &image,
+        "op-replay-import",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+
+    let begin = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
+    let claim = claim_of(&begin);
+    let args = finish_args(
+        "op-replay-finish",
+        "door-texture",
+        1,
+        &claim,
+        "ok",
+        "decoded",
+        json!({
+            "decoder": "image-decode.mjs@1",
+            "digest": store::digest_bytes(&png_header(16, 16)),
+        }),
+    );
+    let first = journal.asset_preview_finish(&args)?;
+    assert_eq!(first["applied"], true);
+    assert_eq!(first["replayed"], false);
+
+    // The same operation with identical args replays the stored result instead
+    // of writing a second row or failing.
+    let second = journal.asset_preview_finish(&args)?;
+    assert_eq!(second["replayed"], true);
+    assert_eq!(second["applied"], true);
+    assert_eq!(second["attempt"], 1);
+    assert_eq!(second["operationId"], "op-replay-finish");
+
+    let read = journal.asset_preview_read(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(read["total"], 1);
+    assert_eq!(read["items"][0]["status"], "ok");
+    assert_eq!(read["items"][0]["attempt"], 1);
+    Ok(())
+}
+
+#[test]
+fn al2_preview_cancel_is_terminal_and_a_late_result_is_stale() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let image = write_source(&root, "door.png", &png_header(16, 16))?;
+    journal.asset_import(&import_args(
+        &root,
+        &image,
+        "op-cancel-import",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+
+    let begin = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
+    let claim = claim_of(&begin);
+    let cancelled = journal.asset_preview_finish(&finish_args(
+        "op-cancel",
+        "door-texture",
+        1,
+        &claim,
+        "cancelled",
+        "user cancelled",
+        json!({}),
+    ))?;
+    assert_eq!(cancelled["applied"], true);
+    assert_eq!(cancelled["stale"], false);
+    assert_eq!(cancelled["status"], "cancelled");
+    assert_eq!(cancelled["attempt"], 1);
+
+    // The cancelled attempt is dead. A late decoder result is a normal Ok
+    // "not applied" answer, not an error and not a write.
+    let late = journal.asset_preview_finish(&finish_args(
+        "op-late-result",
+        "door-texture",
+        1,
+        &claim,
+        "ok",
+        "late decode",
+        json!({
+            "decoder": "image-decode.mjs@1",
+            "digest": store::digest_bytes(&png_header(16, 16)),
+        }),
+    ))?;
+    assert_eq!(late["applied"], false);
+    assert_eq!(late["stale"], true);
+    assert_eq!(late["reason"], "STALE_PREVIEW_ATTEMPT");
+    assert_eq!(late["status"], "cancelled");
+    assert_eq!(late["attempt"], 1);
+
+    let read = journal.asset_preview_read(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(read["total"], 1);
+    assert_eq!(read["items"][0]["status"], "cancelled");
+    assert_eq!(read["items"][0]["attempt"], 1);
+    assert_eq!(read["items"][0]["activeClaim"], false);
+    let state = journal.asset_read(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(state["state"]["previewable"], false);
+    Ok(())
+}
+
+#[test]
+fn al2_preview_concurrent_begin_resumes_one_claim() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let image = write_source(&root, "door.png", &png_header(16, 16))?;
+    journal.asset_import(&import_args(
+        &root,
+        &image,
+        "op-resume-import",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+
+    let first = journal.asset_preview_begin(
+        &json!({"assetId":"door-texture","version":1,"owner":"host-a"}),
+    )?;
+    let second = journal.asset_preview_begin(
+        &json!({"assetId":"door-texture","version":1,"owner":"host-b"}),
+    )?;
+    assert_eq!(second["cached"], true);
+    assert_eq!(second["resumed"], true);
+    assert_eq!(second["retried"], false);
+    assert_eq!(second["previousStatus"], "pending");
+    assert_eq!(
+        claim_of(&second),
+        claim_of(&first),
+        "two callers share one execution"
+    );
+    assert_eq!(second["claim"]["claimId"], first["claim"]["claimId"]);
+    assert_eq!(second["claim"]["attempt"], first["claim"]["attempt"]);
+    assert_eq!(second["cacheKey"], first["cacheKey"]);
+
+    let read = journal.asset_preview_read(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(read["total"], 1, "resuming must not open a second slot");
+    assert_eq!(read["items"][0]["status"], "pending");
+    assert_eq!(read["items"][0]["attempt"], 1);
+    assert_eq!(read["items"][0]["activeClaim"], true);
+
+    // The shared claim is the only one that can finish the run.
+    let claim = claim_of(&second);
+    let ok = journal.asset_preview_finish(&finish_args(
+        "op-resume-ok",
+        "door-texture",
+        1,
+        &claim,
+        "ok",
+        "decoded by the resuming host",
+        json!({
+            "decoder": "image-decode.mjs@1",
+            "digest": store::digest_bytes(&png_header(16, 16)),
+        }),
+    ))?;
+    assert_eq!(ok["applied"], true);
+    assert_eq!(ok["stale"], false);
+    assert_eq!(ok["attempt"], 1);
+    let state = journal.asset_read(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(state["state"]["previewable"], true);
+    Ok(())
+}
+
+#[test]
+fn al2_preview_expired_claim_never_stays_pending() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let image = write_source(&root, "door.png", &png_header(16, 16))?;
+    journal.asset_import(&import_args(
+        &root,
+        &image,
+        "op-expired-import",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+
+    let begin = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
+    let stale_claim = claim_of(&begin);
+    assert_eq!(stale_claim.1, 1);
+
+    // Model a host that timed out, crashed or restarted: the claim deadline is
+    // already in the past and its owner can no longer report. `journal.db` is
+    // reachable from this module, so the row is aged directly.
+    let aged = journal.db.execute(
+        "UPDATE craftmine_asset_previews SET claim_deadline=1 WHERE asset_id='door-texture'",
+        [],
+    )?;
+    assert_eq!(aged, 1);
+    assert_eq!(
+        journal.asset_preview_sweep()?,
+        1,
+        "an expired claim is closed, never left pending"
+    );
+
+    let retry = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(retry["cached"], false);
+    assert_eq!(retry["retried"], true);
+    // The sweep closed the dead attempt first, so the retry reports it as
+    // failed rather than as a superseded pending claim.
+    assert_eq!(retry["previousStatus"], "failed");
+    assert_eq!(retry["staleClaim"], false);
+    let retry_claim = claim_of(&retry);
+    assert_eq!(retry_claim.1, 2);
+    assert_ne!(retry_claim.0, stale_claim.0);
+
+    // The dead attempt can never write a result, not even a successful one.
+    let late = journal.asset_preview_finish(&finish_args(
+        "op-expired-late",
+        "door-texture",
+        1,
+        &stale_claim,
+        "ok",
+        "late decode",
+        json!({
+            "decoder": "image-decode.mjs@1",
+            "digest": store::digest_bytes(&png_header(16, 16)),
+        }),
+    ))?;
+    assert_eq!(late["applied"], false);
+    assert_eq!(late["stale"], true);
+    assert_eq!(late["reason"], "STALE_PREVIEW_ATTEMPT");
+    assert_eq!(late["attempt"], 2);
+    assert_eq!(late["status"], "pending");
+
+    let read = journal.asset_preview_read(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(read["total"], 1);
+    assert_eq!(read["items"][0]["status"], "pending");
+    assert_eq!(read["items"][0]["attempt"], 2);
+    assert_eq!(read["items"][0]["activeClaim"], true);
+    assert_eq!(read["items"][0]["claimExpired"], false);
+    Ok(())
+}
+
+#[test]
+fn al2_preview_finish_requires_the_current_claim() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let image = write_source(&root, "door.png", &png_header(16, 16))?;
+    journal.asset_import(&import_args(
+        &root,
+        &image,
+        "op-current-import",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+
+    let begin = journal.asset_preview_begin(&json!({"assetId":"door-texture","version":1}))?;
+    let claim = claim_of(&begin);
+    let evidence = json!({
+        "decoder": "image-decode.mjs@1",
+        "digest": store::digest_bytes(&png_header(16, 16)),
+    });
+
+    // A fabricated claim is not the current one, so it cannot finish the run.
+    let fabricated = ("f".repeat(64), 1u64);
+    let forged = journal.asset_preview_finish(&finish_args(
+        "op-forged-claim",
+        "door-texture",
+        1,
+        &fabricated,
+        "ok",
+        "forged",
+        evidence.clone(),
+    ))?;
+    assert_eq!(forged["applied"], false);
+    assert_eq!(forged["stale"], true);
+    assert_eq!(forged["reason"], "STALE_PREVIEW_ATTEMPT");
+    assert_eq!(forged["attempt"], 1);
+    assert_eq!(forged["status"], "pending");
+
+    // A future attempt number for the real claim is equally stale.
+    let future = (claim.0.clone(), 99u64);
+    let ahead = journal.asset_preview_finish(&finish_args(
+        "op-future-attempt",
+        "door-texture",
+        1,
+        &future,
+        "ok",
+        "ahead",
+        evidence.clone(),
+    ))?;
+    assert_eq!(ahead["applied"], false);
+    assert_eq!(ahead["stale"], true);
+    assert_eq!(ahead["reason"], "STALE_PREVIEW_ATTEMPT");
+    assert_eq!(ahead["attempt"], 1);
+
+    let read = journal.asset_preview_read(&json!({"assetId":"door-texture","version":1}))?;
+    assert_eq!(read["total"], 1);
+    assert_eq!(read["items"][0]["status"], "pending");
+    assert_eq!(read["items"][0]["attempt"], 1);
+    assert_eq!(read["items"][0]["activeClaim"], true);
+
+    // The core-issued claim still applies.
+    let applied = journal.asset_preview_finish(&finish_args(
+        "op-current-claim",
+        "door-texture",
+        1,
+        &claim,
+        "ok",
+        "decoded",
+        evidence,
+    ))?;
+    assert_eq!(applied["applied"], true);
+    assert_eq!(applied["stale"], false);
+    assert_eq!(applied["attempt"], 1);
     let state = journal.asset_read(&json!({"assetId":"door-texture","version":1}))?;
     assert_eq!(state["state"]["previewable"], true);
     Ok(())
@@ -1282,5 +1731,177 @@ fn al2_search_and_import_measurements_are_recorded() -> Result<()> {
         .to_string();
     assert!(error.contains("ASSET_FILE_TOO_LARGE"), "{error}");
     println!("MEASURED import 64MiB+1 rejected: ASSET_FILE_TOO_LARGE");
+    Ok(())
+}
+
+/// A Windows sharing violation must not look like a missing or corrupt source:
+/// the player gets a dedicated code, and no partial row or blob survives.
+#[cfg(windows)]
+#[test]
+fn al1_locked_source_reports_a_dedicated_code() -> Result<()> {
+    use std::os::windows::fs::OpenOptionsExt;
+
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let bytes = png_header(8, 8);
+    let file = write_source(&root, "door.png", &bytes)?;
+    let locked = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .share_mode(0)
+        .open(&file)?;
+
+    let error = journal
+        .asset_import(&import_args(
+            &root,
+            &file,
+            "op-locked",
+            "door-texture",
+            1,
+            "textures/door.png",
+            "image/png",
+            "image",
+        ))
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("ASSET_SOURCE_LOCKED"), "{error}");
+    assert!(
+        !error.contains("ASSET_SOURCE_UNREADABLE"),
+        "a sharing violation must not be reported as unreadable: {error}"
+    );
+
+    let read = journal
+        .asset_read(&json!({"assetId":"door-texture","version":1}))
+        .unwrap_err()
+        .to_string();
+    assert!(read.contains("ASSET_NOT_FOUND"), "{read}");
+
+    let blobs = store::blob_root(&journal.directory, false)?;
+    let entries = walk(&blobs)?;
+    assert!(entries.is_empty(), "locked import left blobs: {entries:?}");
+    drop(locked);
+    Ok(())
+}
+
+/// One locked file must be reported as an issue; the rest of the authorized
+/// directory keeps being scanned.
+#[cfg(windows)]
+#[test]
+fn al1_scan_reports_a_locked_file_and_keeps_scanning() -> Result<()> {
+    use std::os::windows::fs::OpenOptionsExt;
+
+    let (dir, _path, journal) = journal()?;
+    let root = source_root(dir.path())?;
+    std::fs::write(root.join("a.png"), png_header(4, 4))?;
+    let locked_path = root.join("b.png");
+    std::fs::write(&locked_path, png_header(8, 8))?;
+    let locked = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .share_mode(0)
+        .open(&locked_path)?;
+
+    let scan = journal.asset_scan(&json!({"sourceRoot": root.to_string_lossy()}))?;
+    assert_eq!(scan["truncated"], false);
+    let items = scan["items"].as_array().unwrap();
+    assert!(
+        items.iter().any(|item| item["path"] == "a.png"),
+        "readable file missing from items: {items:?}"
+    );
+    let issues = scan["issues"].as_array().unwrap();
+    assert!(
+        issues
+            .iter()
+            .any(|issue| issue["path"] == "b.png" && issue["code"] == "SOURCE_LOCKED"),
+        "locked file not reported: {issues:?}"
+    );
+    drop(locked);
+    Ok(())
+}
+
+/// A refused import must not leave the just-streamed body behind as an orphan.
+#[test]
+fn al1_conflicting_import_leaves_no_orphan_blob() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let first_bytes = deterministic_bytes(4096);
+    let second_bytes = deterministic_bytes(8192);
+    let first = write_source(&root, "door-a.png", &first_bytes)?;
+    let second = write_source(&root, "door-b.png", &second_bytes)?;
+
+    let stored = journal.asset_import(&import_args(
+        &root,
+        &first,
+        "op-conflict-a",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+    assert_eq!(stored["existing"], false);
+
+    let error = journal
+        .asset_import(&import_args(
+            &root,
+            &second,
+            "op-conflict-b",
+            "door-texture",
+            1,
+            "textures/door.png",
+            "image/png",
+            "image",
+        ))
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("ASSET_VERSION_CONFLICT"), "{error}");
+
+    let blobs = store::blob_root(&journal.directory, false)?;
+    let entries = walk(&blobs)?;
+    assert_eq!(entries.len(), 1, "conflict left extra blobs: {entries:?}");
+    let expected_name = store::digest_bytes(&first_bytes);
+    assert_eq!(
+        entries[0].file_name().and_then(|name| name.to_str()),
+        Some(expected_name.as_str()),
+        "the surviving blob must be the first body"
+    );
+    Ok(())
+}
+
+/// Body access re-verifies the stored bytes, so on-disk tampering is refused.
+#[test]
+fn al2_body_path_reverifies_the_blob() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let bytes = deterministic_bytes(4096);
+    let file = write_source(&root, "door.png", &bytes)?;
+    journal.asset_import(&import_args(
+        &root,
+        &file,
+        "op-body",
+        "door-texture",
+        1,
+        "textures/door.png",
+        "image/png",
+        "image",
+    ))?;
+
+    let blobs = store::blob_root(&journal.directory, false)?;
+    let on_disk = store::blob_path(&blobs, &store::digest_bytes(&bytes))?;
+    assert!(on_disk.is_file());
+    let mut tampered = bytes.clone();
+    tampered[0] ^= 0xff;
+    assert_eq!(tampered.len(), bytes.len());
+    std::fs::write(&on_disk, &tampered)?;
+
+    let error = journal
+        .asset_body_path(&json!({
+            "assetId": "door-texture",
+            "version": 1,
+            "path": "textures/door.png",
+        }))
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("CORRUPT_ASSET_BLOB"), "{error}");
     Ok(())
 }
