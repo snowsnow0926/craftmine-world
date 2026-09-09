@@ -40,6 +40,7 @@ import {trainingScene,drainExtension} from '../../../../examples/dispatch-d/cont
 import {execFileSync} from 'node:child_process';
 import {isDeepStrictEqual} from 'node:util';
 const gameOnly=process.env.CRAFTMINE_BATCH07_GAME_ONLY==='1';
+const stateOnly=process.env.CRAFTMINE_BATCH07_STATE_ONLY==='1';
 const config=process.env.CRAFTMINE_LIVE_CONFIG;
 assert.ok(config&&path.isAbsolute(config),'Explicit authorized config required');loadLocalConfig(config);
 assert.equal(modelProvider(),'deepseek');assert.ok(deepseekKey());
@@ -52,7 +53,8 @@ if(resume)assert.ok(resume.startsWith(path.resolve('test-results')+path.sep+'des
 const directory=resume||fs.mkdtempSync(path.resolve('test-results/desktop-native-batch07-')),profile=path.join(directory,'profile'),legacySource=path.join(directory,'legacy');
 const previous=resume?JSON.parse(fs.readFileSync(path.join(directory,'report.json'))):null;
 const continueInstall=!!(previous?.capture?.ref&&previous?.newWorld&&!previous?.install);
-if(resume)assert.ok(previous.success===false&&previous.identity?.sessionId&&(!previous.retryOf||continueInstall),'Only one explicit review retry or captured installation continuation allowed');
+if(resume)assert.ok(previous.success===false&&previous.identity?.sessionId&&(!previous.retryOf||continueInstall||(stateOnly&&previous.install&&previous.afterRestart)),'Only one explicit review retry, captured installation or verified state continuation allowed');
+assert.ok(!stateOnly||resume,'State-only requires retained owned evidence');
 const token=resume?JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'))).token:randomUUID();
 if(!resume){fs.mkdirSync(profile);fs.mkdirSync(legacySource);
 fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));
@@ -68,7 +70,7 @@ const save=()=>fs.writeFileSync(path.join(directory,'report.json'),JSON.stringif
 function ledger(){const db=new DatabaseSync(path.join(profile,'plugins/data/craftmine.world/tasks.sqlite'),{readOnly:true});try{return Object.fromEntries(['craftmine_worlds','craftmine_applications','craftmine_verifications','craftmine_reviews','craftmine_library','craftmine_budget_requests','craftmine_task_runtime','craftmine_memories'].map(table=>[table,db.prepare(`SELECT * FROM ${table}`).all()]));}finally{db.close();}}
 function launch(label){
   const env={...process.env,CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_HEADLESS_ROOT:directory,CRAFTMINE_DATA_DIR:profile,CRAFTMINE_HEADLESS_TOKEN:token,CRAFTMINE_CORE_BIN:core,PI_DESKTOP_HOST_BIN:host,CRAFTMINE_BATCH07_NATIVE:'1',CRAFTMINE_F_MODEL:modelId(),CRAFTMINE_F_KEY:deepseekKey(),CRAFTMINE_F_THINKING:thinkingEnabled()?reasoningEffort():'off'};
-  if(previous)env.CRAFTMINE_BATCH07_SESSION=previous.identity.sessionId;
+  if(previous)env.CRAFTMINE_BATCH07_SESSION=evidence.identity?.sessionId||previous.identity.sessionId;
   if(continueInstall)env.CRAFTMINE_BATCH07_CAPTURE_REF=JSON.stringify(previous.capture.ref);
   delete env.ELECTRON_RUN_AS_NODE;for(const key of Object.keys(env))if(/^PI_DESKTOP_(CAPTURE|BOOT_PROBE|SUPERVISION_PROBE|PLAN_UI_PROBE)/.test(key))delete env[key];
   const child=spawn(electron,packaged?[]:[desktop],{cwd:directory,windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env});
@@ -95,6 +97,8 @@ try{
   evidence.isolation=await client.rpc('status','craftmine-headless');check('Isolated offscreen unfocusable windows',evidence.isolation.violations.length===0&&evidence.isolation.windows.every(w=>w.offscreen&&!w.visible&&!w.focusable&&!w.focused));
   if(!resume){evidence.import=await client.rpc('importLegacy','craftmine-headless',100000);await ready();}
   evidence.gameOnly=gameOnly;
+  evidence.stateOnly=stateOnly;
+  if(!stateOnly){
   if(!gameOnly){
   if(continueInstall){evidence.identity=await client.rpc('initializeDestination');evidence.author=previous.author;evidence.capture=previous.capture;evidence.newWorld=previous.newWorld;}
   else {
@@ -132,6 +136,7 @@ try{
   await step('fall');value=await step('fall');check('Actual repeated falls can kill player',value.playerHealth===0);
   value=await step('attack-now');check('Dead player cannot consume full magazine',Object.values(value.gameplay.systems).some(s=>s.ammo===3));
   await client.rpc('save');
+  }else{evidence.identity=previous.identity;evidence.priorChain={install:previous.install,applied:previous.installedApplied,beforeRestart:previous.beforeRestart,afterRestart:previous.afterRestart,checks:previous.checks};evidence.guards=await client.rpc('guards','craftmine-headless');}
   evidence.memorySession=await client.rpc('initialize');
   evidence.memory=await client.rpc('memory');
   evidence.backup=await client.rpc('backup','craftmine-acceptance-batch07',60000);save();
@@ -141,6 +146,7 @@ try{
   evidence.restoredSnapshot=await client.rpc('snapshot');
   evidence.finalLedger=ledger();evidence.finalStatus=await client.rpc('status','craftmine-headless');
   check('Explicit rule memory survives real backup restore',evidence.finalLedger.craftmine_memories.some(row=>JSON.stringify(row).includes('这个训练世界复用组合玩法时保留扩展的固定版本')));
+  if(stateOnly)check('State-only continuation makes zero additional model requests',evidence.finalLedger.craftmine_budget_requests.length===previous.failureLedger.craftmine_budget_requests.length);
   check('No focus, pointer lock or physical input across all game frames',evidence.finalStatus.violations.length===0&&evidence.guards.every(f=>f.guard?.pointerLock===0&&f.guard?.focus===0));
   check(gameOnly?'Game-only scenario makes zero model requests':'Real reviews stay inside bounded model allowance',evidence.finalLedger.craftmine_budget_requests.length<=(gameOnly?0:evidence.limits.requests)&&Date.now()-start<evidence.limits.timeoutMs);
   evidence.success=true;
