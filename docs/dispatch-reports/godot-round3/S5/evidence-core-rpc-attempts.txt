@@ -1,0 +1,37 @@
+[pass] hello -> craftmine.core/1
+[pass] asset.import -> bytes=321 dedup=false
+[pass] asset.import file hash
+[pass] asset.import replay -> replayed=true
+[pass] asset.read
+[pass] asset.read state separation
+[pass] asset.versions -> total=1
+[pass] asset.scan hints -> {"newVersions":0,"unchanged":1,"unsupported":0}
+[pass] asset.scan no world update
+[pass] asset.search -> total=1
+[pass] asset.recordUsage
+[pass] asset.search current-world
+[pass] asset.annotate keeps content hash
+[pass] asset.previewBegin
+[pass] previewBegin issues a core claim -> attempt=1
+[pass] asset.bodyPath bytes match
+[pass] real decode evidence -> png 16x8
+[pass] previewFinish applies to the owning attempt
+[pass] the same finish replays idempotently
+[pass] previewable only after real evidence
+[pass] previewRead carries a thumbnail
+[pass] a failed attempt is recorded as failed
+[pass] a retry issues a new attempt and claim -> attempt=3
+[pass] a changed retry result never becomes OPERATION_CONFLICT
+[pass] cancel is applied as the attempt terminal state
+[pass] a late success cannot overwrite the cancel
+[pass] the cancelled state is what is recorded
+[pass] a concurrent begin resumes the single live claim
+[pass] the core restarts on the same data directory
+[pass] the pending claim survives the restart -> attempt=5
+[pass] a restarted core resumes the same claim, not a second run
+[pass] a fabricated claim cannot write a result
+[pass] the resumed claim closes the attempt
+[pass] asset.recordCheck
+[pass] baseChecked is separate
+
+SUMMARY: 35 passed, 0 failed, 35 checks

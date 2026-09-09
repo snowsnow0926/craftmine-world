@@ -84,33 +84,56 @@ const pngBytes = realPng(16, 8);
 const sourcePath = path.join(sourceRoot, 'door.png');
 fs.writeFileSync(sourcePath, pngBytes);
 
-const child = spawn(binary, ['--data-dir', dataDir], { stdio: ['pipe', 'pipe', 'pipe'] });
+let child = null;
 let buffer = '';
 let nextId = 1;
 const pending = new Map();
-child.stdout.setEncoding('utf8');
-child.stdout.on('data', text => {
-  buffer += text;
-  let index = buffer.indexOf('\n');
-  while (index >= 0) {
-    const line = buffer.slice(0, index);
-    buffer = buffer.slice(index + 1);
-    index = buffer.indexOf('\n');
-    if (!line.trim()) continue;
-    const response = JSON.parse(line);
-    const job = pending.get(response.id);
-    if (job) {
-      pending.delete(response.id);
-      if (response.error) job.reject(response.error);
-      else job.resolve(response.result);
-    }
-  }
-});
 let stderr = '';
-child.stderr.setEncoding('utf8');
-child.stderr.on('data', text => {
-  stderr += text;
-});
+
+function startCore() {
+  buffer = '';
+  child = spawn(binary, ['--data-dir', dataDir], { stdio: ['pipe', 'pipe', 'pipe'] });
+  child.stdout.setEncoding('utf8');
+  child.stdout.on('data', text => {
+    buffer += text;
+    let index = buffer.indexOf('\n');
+    while (index >= 0) {
+      const line = buffer.slice(0, index);
+      buffer = buffer.slice(index + 1);
+      index = buffer.indexOf('\n');
+      if (!line.trim()) continue;
+      const response = JSON.parse(line);
+      const job = pending.get(response.id);
+      if (job) {
+        pending.delete(response.id);
+        if (response.error) job.reject(response.error);
+        else job.resolve(response.result);
+      }
+    }
+  });
+  child.stderr.setEncoding('utf8');
+  child.stderr.on('data', text => {
+    stderr += text;
+  });
+}
+
+/**
+ * Stops the core and starts a new process on the same data directory. Preview
+ * attempt state must survive: a resumed claim proves the identity is durable,
+ * not an in-memory counter.
+ */
+async function restartCore() {
+  const stopped = new Promise(resolve => child.once('exit', resolve));
+  child.stdin.end();
+  await stopped;
+  for (const [id, job] of [...pending.entries()]) {
+    pending.delete(id);
+    job.reject({ code: 'CORE_RESTARTED', message: 'core restarted' });
+  }
+  startCore();
+}
+
+startCore();
 
 function rpc(method, params = {}) {
   const id = nextId++;
@@ -194,6 +217,12 @@ async function main() {
 
   const begin = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1 });
   record('asset.previewBegin', typeof begin.cacheKey === 'string' && begin.preview?.status === 'pending' ? 'pass' : 'fail');
+  const claim = begin.claim;
+  record(
+    'previewBegin issues a core claim',
+    typeof claim?.claimId === 'string' && claim.claimId.length === 64 && claim.attempt === 1 ? 'pass' : 'fail',
+    `attempt=${claim?.attempt}`,
+  );
 
   const body = await rpc('asset.bodyPath', { assetId: 'door-texture', version: 1, path: 'textures/door.png' });
   const blobBytes = fs.readFileSync(body.blobPath);
@@ -211,14 +240,20 @@ async function main() {
   });
   record('real decode evidence', evidence.status === 'ok' && evidence.facts.picture === true ? 'pass' : 'fail', evidence.detail);
 
-  await rpc('asset.previewFinish', {
+  const finishArgs = {
     operationId: `${operationId}-preview`,
     assetId: 'door-texture',
     version: 1,
+    claimId: claim.claimId,
+    attempt: claim.attempt,
     status: evidence.status,
     detail: evidence.detail,
     facts: evidence.facts,
-  });
+  };
+  const finished = await rpc('asset.previewFinish', finishArgs);
+  record('previewFinish applies to the owning attempt', finished.applied === true && finished.attempt === 1 ? 'pass' : 'fail');
+  const replayed = await rpc('asset.previewFinish', finishArgs);
+  record('the same finish replays idempotently', replayed.replayed === true ? 'pass' : 'fail');
   const afterPreview = await rpc('asset.read', { assetId: 'door-texture', version: 1 });
   record('previewable only after real evidence', afterPreview.state?.previewable === true ? 'pass' : 'fail');
   const previews = await rpc('asset.previewRead', { assetId: 'door-texture', version: 1 });
@@ -226,6 +261,134 @@ async function main() {
     'previewRead carries a thumbnail',
     typeof previews.items?.[0]?.facts?.thumbnailBase64 === 'string' ? 'pass' : 'fail',
   );
+
+  // Failure -> retry: the retry is a NEW attempt, and a changed result is
+  // recorded without OPERATION_CONFLICT.
+  const forced = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1, force: true });
+  const failedFinish = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-fail`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: forced.claim.claimId,
+    attempt: forced.claim.attempt,
+    status: 'failed',
+    detail: 'simulated decode failure',
+    facts: {},
+  });
+  record('a failed attempt is recorded as failed', failedFinish.applied === true && failedFinish.status === 'failed' ? 'pass' : 'fail');
+  const retry = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1 });
+  record(
+    'a retry issues a new attempt and claim',
+    retry.retried === true &&
+      retry.claim?.attempt === forced.claim.attempt + 1 &&
+      retry.claim?.claimId !== forced.claim.claimId
+      ? 'pass'
+      : 'fail',
+    `attempt=${retry.claim?.attempt}`,
+  );
+  const retryFinish = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-retry`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: retry.claim.claimId,
+    attempt: retry.claim.attempt,
+    status: 'ok',
+    detail: evidence.detail,
+    facts: evidence.facts,
+  });
+  record(
+    'a changed retry result never becomes OPERATION_CONFLICT',
+    retryFinish.applied === true && retryFinish.status === 'ok' && retryFinish.attempt === retry.claim.attempt
+      ? 'pass'
+      : 'fail',
+  );
+
+  // Cancel is the attempt's terminal state; a late worker result is discarded.
+  const cancelBegin = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1, force: true });
+  const cancelClaim = cancelBegin.claim;
+  const cancelled = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-cancel`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: cancelClaim.claimId,
+    attempt: cancelClaim.attempt,
+    status: 'cancelled',
+    detail: 'player cancelled',
+    facts: { abortSignalled: true },
+  });
+  record('cancel is applied as the attempt terminal state', cancelled.applied === true && cancelled.status === 'cancelled' ? 'pass' : 'fail');
+  const late = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-late`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: cancelClaim.claimId,
+    attempt: cancelClaim.attempt,
+    status: 'ok',
+    detail: 'late worker result',
+    facts: evidence.facts,
+  });
+  record(
+    'a late success cannot overwrite the cancel',
+    late.applied === false && late.stale === true && late.reason === 'STALE_PREVIEW_ATTEMPT' ? 'pass' : 'fail',
+  );
+  const afterCancel = await rpc('asset.previewRead', { assetId: 'door-texture', version: 1 });
+  record('the cancelled state is what is recorded', afterCancel.items?.[0]?.status === 'cancelled' ? 'pass' : 'fail');
+
+  // Concurrency: a second begin resumes the one live claim instead of starting
+  // a second decoder.
+  const concurrentA = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1, force: true });
+  const concurrentB = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1 });
+  record(
+    'a concurrent begin resumes the single live claim',
+    concurrentB.cached === true &&
+      concurrentB.resumed === true &&
+      concurrentB.claim?.claimId === concurrentA.claim.claimId &&
+      concurrentB.claim?.attempt === concurrentA.claim.attempt
+      ? 'pass'
+      : 'fail',
+  );
+
+  // Restart: the claim is durable, so a new process resumes the same attempt
+  // instead of leaving a permanent pending row or starting a second run.
+  await restartCore();
+  const helloAgain = await rpc('hello');
+  record('the core restarts on the same data directory', helloAgain?.format === 'craftmine.core/1' ? 'pass' : 'fail');
+  const afterRestart = await rpc('asset.previewRead', { assetId: 'door-texture', version: 1 });
+  const pendingRow = afterRestart.items?.find(item => item.status === 'pending');
+  record(
+    'the pending claim survives the restart',
+    pendingRow?.activeClaim === true && pendingRow?.attempt === concurrentA.claim.attempt ? 'pass' : 'fail',
+    `attempt=${pendingRow?.attempt}`,
+  );
+  const resumed = await rpc('asset.previewBegin', { assetId: 'door-texture', version: 1 });
+  record(
+    'a restarted core resumes the same claim, not a second run',
+    resumed.cached === true && resumed.resumed === true && resumed.claim?.claimId === concurrentA.claim.claimId
+      ? 'pass'
+      : 'fail',
+  );
+  const staleFinish = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-stale`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: '0'.repeat(64),
+    attempt: concurrentA.claim.attempt,
+    status: 'ok',
+    detail: 'fabricated claim',
+    facts: evidence.facts,
+  });
+  record('a fabricated claim cannot write a result', staleFinish.applied === false && staleFinish.stale === true ? 'pass' : 'fail');
+  const closed = await rpc('asset.previewFinish', {
+    operationId: `${operationId}-preview-close`,
+    assetId: 'door-texture',
+    version: 1,
+    claimId: concurrentA.claim.claimId,
+    attempt: concurrentA.claim.attempt,
+    status: 'ok',
+    detail: evidence.detail,
+    facts: evidence.facts,
+  });
+  record('the resumed claim closes the attempt', closed.applied === true ? 'pass' : 'fail');
 
   const check = await rpc('asset.recordCheck', {
     operationId: `${operationId}-check`,
@@ -264,8 +427,15 @@ try {
   console.log(`\nSUMMARY: ${passed} passed, ${failed} failed, ${results.length} checks`);
   if (exitCode === 0 && failed > 0) exitCode = 1;
   if (stderr.trim()) console.error(`core stderr:\n${stderr.trim().slice(0, 2000)}`);
+  const exited = new Promise(resolve => child.once('exit', resolve));
   child.stdin.end();
   child.kill();
-  fs.rmSync(dataDir, { recursive: true, force: true });
+  await Promise.race([exited, new Promise(resolve => setTimeout(resolve, 3000))]);
+  // Windows can keep the sqlite handle briefly after the process exits.
+  try {
+    fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+  } catch {
+    console.error(`LEFTOVER_TEST_DATA: ${dataDir}`);
+  }
   process.exit(exitCode);
 }
