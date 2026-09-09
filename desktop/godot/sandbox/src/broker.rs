@@ -10,7 +10,7 @@ use std::{fs, io::Read, path::{Path, PathBuf}, sync::{Arc, atomic::AtomicBool}};
 pub struct SourceBinding { pub world_id: String, pub build_id: String, pub source_revision: u64, pub source_digest: String }
 #[derive(Clone, Copy, Debug, Deserialize, Serialize)]
 #[serde(rename_all="camelCase")]
-pub enum Operation { Version, Import, ExportWeb }
+pub enum Operation { Version, Import, ExportWeb, ExportWindows }
 
 impl Operation {
     pub fn as_str(&self) -> &'static str {
@@ -18,8 +18,36 @@ impl Operation {
             Operation::Version => "version",
             Operation::Import => "import",
             Operation::ExportWeb => "exportWeb",
+            Operation::ExportWindows => "exportWindows",
         }
     }
+}
+
+/// The private Windows export accepts this exact host preset, not arbitrary
+/// template paths, signing commands, executable resource tools or arguments.
+pub const WINDOWS_PRESET: &str = include_str!("../../shared/windows-export.cfg");
+pub const WINDOWS_TEMPLATE_SHA256: &str = "d34d36f3be1a6c49c56525ae86469b92e4f417ddf0b43cf00dd80c385c4b0562";
+fn validate_windows_preset(bytes: &[u8]) -> Result<()> {
+    if bytes != WINDOWS_PRESET.as_bytes() { return Err("Windows export requires the exact host-owned preset".into()); }
+    Ok(())
+}
+fn validate_windows_artifacts(artifacts: &[crate::task::Artifact]) -> Result<()> {
+    if artifacts.len() != 2
+        || !artifacts.iter().any(|file| file.name == "game.exe" && file.bytes == 109268480 && file.sha256 == WINDOWS_TEMPLATE_SHA256)
+        || !artifacts.iter().any(|file| file.name == "game.pck" && file.bytes > 0) {
+        return Err("Windows export requires an unchanged pinned EXE and a separate nonempty PCK only".into());
+    }
+    Ok(())
+}
+pub fn windows_pins(root: &Path) -> EnginePins {
+    let mut pins = fixed_pins(root);
+    pins.templates.retain(|pin| pin.file_name == "version.txt");
+    pins.templates.push(PinnedInput {
+        source: root.join("templates/windows_release_x86_64.exe"),
+        file_name: "windows_release_x86_64.exe".into(),
+        sha256: WINDOWS_TEMPLATE_SHA256.into(),
+    });
+    pins
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all="camelCase", deny_unknown_fields)]
@@ -141,8 +169,9 @@ pub fn execute(request: Request, cancel: Arc<AtomicBool>) -> Result<Response> {
     let executable = std::env::current_exe()?;
     let broker_sha256 = file_digest(&executable)?;
     let broker = PinnedInput { source: executable, sha256: broker_sha256.clone(), file_name: "broker-preflight.exe".into() };
-    let kind = match request.operation { Operation::Version => TaskKind::Version, Operation::Import => TaskKind::Import, Operation::ExportWeb => TaskKind::ExportWeb };
-    let mut task = Task::prepare(&request.tasks_root, &request.task_id, kind, request.project_root.as_deref(), &fixed_pins(&request.engine_root), TaskBudget::default())?;
+    let kind = match request.operation { Operation::Version => TaskKind::Version, Operation::Import => TaskKind::Import, Operation::ExportWeb => TaskKind::ExportWeb, Operation::ExportWindows => TaskKind::ExportWindows };
+    let pins = if matches!(request.operation, Operation::ExportWindows) { windows_pins(&request.engine_root) } else { fixed_pins(&request.engine_root) };
+    let mut task = Task::prepare(&request.tasks_root, &request.task_id, kind, request.project_root.as_deref(), &pins, TaskBudget::default())?;
     // The journal entry is flushed before any restricted process starts, so a
     // hard broker kill always leaves a recoverable record. It lives outside the
     // task's granted directories.
@@ -165,6 +194,7 @@ pub fn execute(request: Request, cancel: Arc<AtomicBool>) -> Result<Response> {
     let outcome = (|| -> Result<()> {
         let (_, copied) = snapshot(if matches!(request.operation, Operation::Version) { None } else { Some(task.layout.project.as_path()) })?;
         if copied != response.source_snapshot_digest { return Err("Source changed during broker materialization".into()); }
+        if matches!(request.operation, Operation::ExportWindows) { validate_windows_preset(&fs::read(task.layout.project.join("export_presets.cfg"))?)?; }
         let status = task.run_with_preflight(&broker, cancel)?.clone();
         response.state = match status.state { TaskState::Succeeded => "succeeded", TaskState::Cancelled => "cancelled", _ => "failed" }.into();
         response.exit_code = status.exit_code;
@@ -172,7 +202,8 @@ pub fn execute(request: Request, cancel: Arc<AtomicBool>) -> Result<Response> {
         response.network_preflight = task.network_preflight().cloned();
         response.resource_enforcement = task.resource_enforcement().cloned();
         if status.state != TaskState::Succeeded { response.error = Some(status.message); }
-        if matches!(request.operation, Operation::ExportWeb) && status.state == TaskState::Succeeded {
+        if matches!(request.operation, Operation::ExportWeb | Operation::ExportWindows) && status.state == TaskState::Succeeded {
+            if matches!(request.operation, Operation::ExportWindows) { validate_windows_artifacts(&task.collect_artifacts()?)?; }
             response.artifacts = task.hand_off_artifacts()?.into_iter().map(|artifact| SourceFile { path: artifact.name, bytes: artifact.bytes, sha256: artifact.sha256 }).collect();
         }
         Ok(())
@@ -227,6 +258,25 @@ mod tests {
     fn empty_snapshot_has_canonical_compact_json_hash() {
         let (files, digest) = snapshot(None).unwrap();
         assert!(files.is_empty()); assert_eq!(digest, sha256(b"[]"));
+    }
+    #[test]
+    fn windows_export_rejects_replaced_engine_and_extra_native_code() {
+        use crate::task::Artifact;
+        let mut files = vec![Artifact { name: "game.exe".into(), bytes: 109268480, sha256: WINDOWS_TEMPLATE_SHA256.into() },
+            Artifact { name: "game.pck".into(), bytes: 10, sha256: "00".repeat(32) }];
+        assert!(validate_windows_artifacts(&files).is_ok());
+        files[0].sha256 = "00".repeat(32);
+        assert!(validate_windows_artifacts(&files).is_err());
+        files[0].sha256 = WINDOWS_TEMPLATE_SHA256.into();
+        files.push(Artifact { name: "extra.dll".into(), bytes: 1, sha256: "00".repeat(32) });
+        assert!(validate_windows_artifacts(&files).is_err());
+    }
+    #[test]
+    fn windows_export_rejects_custom_templates_and_resource_modification() {
+        assert!(validate_windows_preset(WINDOWS_PRESET.as_bytes()).is_ok());
+        for (from, to) in [("application/modify_resources=false", "application/modify_resources=true"),
+            ("custom_template/release=\"\"", "custom_template/release=\"C:/other.exe\"")]
+        { assert!(validate_windows_preset(WINDOWS_PRESET.replace(from, to).as_bytes()).is_err()); }
     }
     #[test]
     fn snapshot_orders_paths_and_binds_content_changes() {

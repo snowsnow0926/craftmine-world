@@ -1,0 +1,5 @@
+# Decision: export the formal source and captured state
+
+Use the core formal exportSource lineage and immutable content reads, not the current source draft. Add only a recorded fixed packaging bootstrap and preset. Reuse existing managed adapters so standalone saves retain full base state. Original source hashes, packaging changes and complete export source remain reviewable. The exporter exposes no arbitrary executable/command or renderer path. It publishes only after the fixed LPAC broker and log gate succeed, with operation replay and scoped recovery.
+
+Cross-runtime JSON may spell identical native Vector float32 values differently. Acceptance normalizes only the explicit coordinate fields to exact float32 bits and retains all original values; Windows restart acceptance remains exact full JSON equality. Broader tolerances and dropped fields are rejected. Path tokens are short to remain usable inside Windows AppContainer cache paths, while intent binds full identities. Final product wiring and fourth-base acceptance remain separate gates.

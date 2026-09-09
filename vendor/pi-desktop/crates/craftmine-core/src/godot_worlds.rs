@@ -85,6 +85,28 @@ impl TaskJournal {
         let args:StatusArgs=serde_json::from_value(args.clone())?;
         self.prepare_copied_rebuild_source(&args.world_id)
     }
+
+    /// Durable copy origin lookup. Older rows retain the immutable build owner,
+    /// not necessarily the user's source selection. The original selection can
+    /// still be verified against the persisted copy id without guessing it.
+    pub fn godot_world_copy_status(&self,args:&Value)->Result<Value> {
+        #[derive(Deserialize)]
+        #[serde(rename_all="camelCase",deny_unknown_fields)]
+        struct Args {world_id:String,source_world_id:Option<String>}
+        let args:Args=serde_json::from_value(args.clone())?;
+        worlds::validate_id(&args.world_id)?;
+        if let Some(source)=&args.source_world_id {worlds::validate_id(source)?;}
+        let row:Option<(String,String,String,String)>=self.db.query_row(
+            "SELECT id,source_world_id,source_build_id,progress_mode FROM craftmine_godot_world_copies WHERE target_world_id=?1",
+            [&args.world_id],|r|Ok((r.get(0)?,r.get(1)?,r.get(2)?,r.get(3)?))).optional()?;
+        let Some((id,owner,build,mode))=row else {return Ok(Value::Null)};
+        if let Some(source)=&args.source_world_id {
+            let expected=format!("gcopy-{}",digest(&format!("craftmine.godot-world-copy/1|{source}|{}",args.world_id)));
+            ensure!(id==expected,"GODOT_COPY_ORIGIN_MISMATCH");
+        }
+        Ok(json!({"copyId":id,"targetWorldId":args.world_id,"originalSourceWorldId":args.source_world_id,
+            "sourceBuildOwnerWorldId":owner,"sourceBuildId":build,"progressMode":mode}))
+    }
 }
 
 #[derive(Deserialize)]

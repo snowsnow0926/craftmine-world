@@ -1,0 +1,12 @@
+{
+  "format": "craftmine.windows-user-game-acceptance/1",
+  "root": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-user-game-Wxwja8",
+  "passed": false,
+  "checks": [],
+  "limitations": [
+    "Authored base, not a real model run.",
+    "Headless native gameplay and persistence, not visible CP4 play acceptance.",
+    "Standalone executable is unsigned; module rights and distributable packaging require delivery review."
+  ],
+  "error": "Error: spawn EPERM\n    at ChildProcess.spawn (node:internal/child_process:421:11)\n    at spawn (node:child_process:796:9)\n    at execFile (node:child_process:349:17)\n    at execFile (node:child_process:245:21)\n    at prepareWindowsToolchain (file:///D:/Craftmine%20World/test-results/final-install-assets/desktop/godot/sandbox/windows-toolchain.mjs:18:27)\n    at async file:///D:/Craftmine%20World/test-results/final-install-assets/tests/godot-final-install-assets/windows-game-native.mjs:36:18"
+}

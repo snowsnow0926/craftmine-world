@@ -1,0 +1,15 @@
+✔ coordinate comparison keeps all non-coordinate fields and distinguishes adjacent float32 values (1.7465ms)
+✔ completed operation survives host restart and truncated path hashes still bind full identity (13.5329ms)
+✔ export log rejects script failures even when engine export returned zero (0.267ms)
+✔ untrusted request cannot pass paths, commands or another selected world (0.1453ms)
+✔ per-world operation lock and same-operation single flight precede picker (0.957ms)
+✔ directory junction is rejected before source or checkpoint access (2.4841ms)
+✔ source bytes must match exact formal revision, no draft lookup or publication (10.1468ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 33.7444
