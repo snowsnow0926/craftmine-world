@@ -22,7 +22,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use super::{
-    contract::{validate_identifier, validate_oid, OperationContext},
+    contract::{validate_identifier, validate_oid, validate_sha256, OperationContext},
     repo::RepositoryStore,
 };
 
@@ -101,6 +101,9 @@ pub struct ReferenceIntent {
     pub expected_progress_revision: Option<u64>,
     pub target_oid: String,
     pub detail: String,
+    /// The formally applied, launch-confirmed Godot application that proved this
+    /// operation. `None` until `confirm` binds one.
+    pub application_id: Option<String>,
     pub created_at: i64,
     pub updated_at: i64,
 }
@@ -162,6 +165,19 @@ pub(crate) fn migrate(db: &Connection) -> Result<()> {
             PRIMARY KEY(operation_id, tool_call_id)
         );",
     )?;
+    // The deployment that proved an operation was added after the first release
+    // of this table; it is additive and backfilled as NULL.
+    let present: bool = db.query_row(
+        "SELECT COUNT(*) FROM pragma_table_info('craftmine_content_operations') WHERE name='application_id'",
+        [],
+        |row| row.get::<_, i64>(0).map(|count| count > 0),
+    )?;
+    if !present {
+        db.execute(
+            "ALTER TABLE craftmine_content_operations ADD COLUMN application_id TEXT",
+            [],
+        )?;
+    }
     Ok(())
 }
 
@@ -175,7 +191,7 @@ fn load(db: &Connection, operation_id: &str) -> Result<ReferenceIntent> {
     let row = db
         .query_row(
             "SELECT world_id,repo_id,branch_id,kind,state,expected_head_oid,expected_applied_oid,
-                    expected_progress_revision,target_oid,detail,created_at,updated_at
+                    expected_progress_revision,target_oid,detail,created_at,updated_at,application_id
              FROM craftmine_content_operations WHERE operation_id=?1",
             [operation_id],
             |row| {
@@ -192,6 +208,7 @@ fn load(db: &Connection, operation_id: &str) -> Result<ReferenceIntent> {
                     row.get::<_, String>(9)?,
                     row.get::<_, i64>(10)?,
                     row.get::<_, i64>(11)?,
+                    row.get::<_, Option<String>>(12)?,
                 ))
             },
         )
@@ -211,7 +228,14 @@ fn load(db: &Connection, operation_id: &str) -> Result<ReferenceIntent> {
         detail: row.9,
         created_at: row.10,
         updated_at: row.11,
+        application_id: row.12,
     })
+}
+
+/// Read one durable operation intent. A caller that lost a response can use this
+/// to observe the same operation by its stable id instead of applying again.
+pub fn intent(db: &Connection, operation_id: &str) -> Result<ReferenceIntent> {
+    load(db, operation_id)
 }
 
 /// Write the durable intent. Repeating the same call is idempotent; reusing an
@@ -326,19 +350,68 @@ fn finish_advance(db: &mut Connection, operation_id: &str, detail: &str) -> Resu
     load(db, operation_id)
 }
 
+/// Trusted proof that a formal, launch-confirmed Godot deployment published the
+/// exact Git content an operation targets.
+///
+/// The caller resolves this from the durable application record; it is never
+/// built from a caller-supplied object id or a free-text "deployment" string.
+/// `confirm` refuses to commit without it, so Git content, the SQLite deployment,
+/// the check result and the latest formal progress are bound to one operation.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct DeploymentEvidence {
+    /// The applied `craftmine_godot_applications` row.
+    pub application_id: String,
+    /// The build the application published.
+    pub build_id: String,
+    /// `craftmine_godot_builds.content_oid`: the Git commit the build was made from.
+    pub content_oid: String,
+    /// The checked candidate the application consumed.
+    pub candidate_id: String,
+    /// The passed check job and its output hash.
+    pub check_job_id: String,
+    pub check_output_hash: String,
+    /// The formal world revision the application was prepared against.
+    pub input_revision: u64,
+    /// The formal world revision after the application committed.
+    pub world_revision: u64,
+    /// The instance that really launched the build.
+    pub instance_id: String,
+}
+
 /// Record that the deployment record now agrees with the Git reference.
 ///
-/// The caller passes the reference value it committed, so a mismatched
+/// The caller passes the *resolved* deployment, so a mismatched or forged
 /// deployment can never be silently marked complete.
 pub fn confirm(
     db: &mut Connection,
     store: &RepositoryStore,
     operation_id: &str,
-    applied_oid: &str,
+    evidence: &DeploymentEvidence,
     detail: &str,
 ) -> Result<ReferenceIntent> {
-    validate_oid(applied_oid)?;
+    validate_oid(&evidence.content_oid)?;
+    validate_identifier(&evidence.application_id, "INVALID_APPLICATION_ID")?;
+    validate_identifier(&evidence.build_id, "INVALID_GODOT_BUILD")?;
+    validate_identifier(&evidence.candidate_id, "INVALID_GODOT_CANDIDATE")?;
+    validate_identifier(&evidence.check_job_id, "INVALID_GODOT_JOB")?;
+    validate_sha256(&evidence.check_output_hash)?;
+    ensure!(
+        !evidence.instance_id.trim().is_empty() && evidence.instance_id.len() <= 240,
+        "GODOT_LAUNCH_REQUIRED"
+    );
+    ensure!(detail.len() <= 4_000, "CONTENT_OPERATION_DETAIL_TOO_LONG");
     let intent = load(db, operation_id)?;
+    // A lost response is answered from the same operation instead of applying
+    // again. The same deployment may confirm twice; a different one is a replay.
+    if intent.state == OperationState::Committed {
+        ensure!(
+            intent.application_id.as_deref() == Some(evidence.application_id.as_str()),
+            "REPLAY_MISMATCH: {operation_id} was confirmed by {:?}",
+            intent.application_id
+        );
+        return Ok(intent);
+    }
     ensure!(
         intent.state == OperationState::ReferenceAdvanced,
         "CONTENT_OPERATION_STATE: {} is {}",
@@ -346,10 +419,27 @@ pub fn confirm(
         intent.state.as_str()
     );
     ensure!(
-        applied_oid == intent.target_oid,
-        "CONTENT_OPERATION_TARGET_MISMATCH: {applied_oid} != {}",
+        evidence.content_oid == intent.target_oid,
+        "CONTENT_OPERATION_TARGET_MISMATCH: deployment {} != target {}",
+        evidence.content_oid,
         intent.target_oid
     );
+    // The deployment must have been prepared against exactly the formal progress
+    // this operation expected, and must be the only step that advanced it.
+    if let Some(expected) = intent.expected_progress_revision {
+        ensure!(
+            evidence.input_revision == expected,
+            "CONTENT_PROGRESS_CONFLICT: deployment prepared at revision {} but the operation expected {}",
+            evidence.input_revision,
+            expected
+        );
+        ensure!(
+            evidence.world_revision == expected + 1,
+            "CONTENT_PROGRESS_CONFLICT: world revision {} is not one step past the expected {}",
+            evidence.world_revision,
+            expected
+        );
+    }
     let layout = store.open_existing(&intent.repo_id)?;
     let observed = store
         .git()
@@ -361,8 +451,8 @@ pub fn confirm(
     let now = crate::worlds::timestamp()?;
     db.execute(
         "UPDATE craftmine_content_operations
-         SET state='committed', detail=?2, updated_at=?3 WHERE operation_id=?1",
-        params![operation_id, detail, now],
+         SET state='committed', application_id=?4, detail=?2, updated_at=?3 WHERE operation_id=?1",
+        params![operation_id, detail, now, evidence.application_id],
     )?;
     load(db, operation_id)
 }

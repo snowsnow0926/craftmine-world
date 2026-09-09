@@ -195,7 +195,9 @@ struct AdvanceArgs {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct ConfirmArgs {
     operation_id: String,
-    applied_oid: String,
+    /// The formally applied Godot application that proves this deployment. The
+    /// caller can no longer pass an object id or a free-text claim instead.
+    application_id: String,
     detail: String,
 }
 
@@ -490,7 +492,22 @@ impl TaskJournal {
     pub fn content_apply_confirm(&mut self, args: &Value) -> Result<Value> {
         let args: ConfirmArgs = serde_json::from_value(args.clone())?;
         let store = self.content_store()?;
-        let intent = apply::confirm(&mut self.db, &store, &args.operation_id, &args.applied_oid, &args.detail)?;
+        // Resolve the durable operation first: the deployment must be bound to
+        // the same world and to the formal progress the operation expected.
+        let intent = apply::intent(&self.db, &args.operation_id)?;
+        let evidence = super::godot_applications::applied_deployment(
+            &self.db,
+            &args.application_id,
+            &intent.world_id,
+            intent.expected_progress_revision,
+        )?;
+        let intent = apply::confirm(
+            &mut self.db,
+            &store,
+            &args.operation_id,
+            &evidence,
+            &args.detail,
+        )?;
         Ok(serde_json::to_value(intent)?)
     }
 

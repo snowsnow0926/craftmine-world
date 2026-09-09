@@ -209,3 +209,43 @@ fn a_caller_pin_from_works_backups_or_history_is_never_reclaimed() -> Result<()>
     );
     Ok(())
 }
+
+/// A retained portable archive pins its builds durably. The core aggregates
+/// those pins itself, so a caller that forgets `protectedBuilds` cannot cause
+/// the reclaimer to delete a build an archive still carries.
+#[test]
+fn a_durable_backup_pin_protects_a_build_without_any_caller_argument() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let (first, _, _) = three_builds(&mut journal, &context)?;
+    let build = first["buildId"].as_str().unwrap().to_string();
+    journal.db.execute(
+        "INSERT INTO craftmine_backup_pins(archive_id,kind,ref,world_id,status,created_at,updated_at)
+         VALUES('archive-one','build',?1,'a','retained',1,1)",
+        [&build],
+    )?;
+    // No `protectedBuilds` argument at all.
+    let plan = journal.godot_storage_reclaim_plan(&json!({"worldId":"a","context":&context}))?;
+    assert!(
+        plan["deletable"].as_array().unwrap().is_empty(),
+        "a pinned build must not be deletable"
+    );
+    assert!(plan["protected"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|item| item["buildId"] == json!(build) && item["reason"] == "BACKUP_PINNED"));
+    // A released pin no longer protects the build.
+    journal.db.execute(
+        "UPDATE craftmine_backup_pins SET status='released' WHERE archive_id='archive-one'",
+        [],
+    )?;
+    let after = journal.godot_storage_reclaim_plan(&json!({"worldId":"a","context":&context}))?;
+    assert!(after["deletable"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|item| item["buildId"] == json!(build)));
+    Ok(())
+}

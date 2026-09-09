@@ -304,6 +304,30 @@ impl TaskJournal {
             "INVALID_WORLD_TITLE"
         );
         ensure!(matches!(args.progress.as_str(), "formal" | "initial"), "INVALID_PROGRESS");
+        // Read the source content before the write transaction: a Git-backed
+        // source world has no blob store, so its commit is the only source of
+        // bytes. The revision is re-checked inside the transaction below. The
+        // copiability check runs first so an ineligible source reports the same
+        // error it did before the content read moved out of the transaction.
+        let pre_source = worlds::read(&self.db, &args.source_world_id)?;
+        ensure!(
+            pre_source.world.build["scene"]["format"] == "craftmine.godot-scene/1",
+            "GODOT_WORLD_NOT_COPIABLE"
+        );
+        let pre_build = pre_source.world.build["id"]
+            .as_str()
+            .context("INVALID_GODOT_BUILD")?;
+        ensure!(
+            godot_builds::valid_build_id(pre_build).is_ok(),
+            "GODOT_WORLD_NOT_COPIABLE"
+        );
+        let (pre_manifest, pre_hash) =
+            super::godot_projects::load_manifest(&self.db, &args.source_world_id, None)?;
+        let source_files = super::godot_projects::read_manifest_files(
+            self,
+            &args.source_world_id,
+            &pre_manifest,
+        )?;
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -366,10 +390,17 @@ impl TaskJournal {
         worlds::insert(&tx, &args.target_world_id, &args.title, &world)?;
         let (mut manifest, manifest_hash) =
             super::godot_projects::load_manifest(&tx, &args.source_world_id, None)?;
+        ensure!(
+            manifest.revision == pre_manifest.revision && manifest_hash == pre_hash,
+            "GODOT_SOURCE_STALE"
+        );
         manifest.world_id = args.target_world_id.clone();
-        for entry in manifest.files.values() {
-            let text = super::godot_projects::blob_read(&self.directory, &args.source_world_id, entry)?;
-            super::godot_projects::blob_write(&self.directory, &args.target_world_id, entry, &text)?;
+        for (path, entry, text) in &source_files {
+            ensure!(
+                manifest.files.get(path) == Some(entry),
+                "GODOT_SOURCE_STALE"
+            );
+            super::godot_projects::blob_write(&self.directory, &args.target_world_id, entry, text)?;
         }
         let body = serde_json::to_string(&manifest)?;
         let hash = digest(&body);
@@ -448,10 +479,17 @@ impl TaskJournal {
             Some((revision, manifest, hash)) => {
                 ensure!(digest(&manifest) == hash, "CORRUPT_PROJECT_MANIFEST");
                 let parsed: super::godot_projects::Manifest = serde_json::from_str(&manifest)?;
-                // Every referenced blob is read back from disk and hashed, so a
-                // backup descriptor proves the live store, not just the rows.
-                for entry in parsed.files.values() {
-                    super::godot_projects::blob_read(&self.directory, &args.world_id, entry)?;
+                // Every referenced file is read back from the live backend and
+                // hashed, so a backup descriptor proves the live store (a Git
+                // commit or an immutable blob), not just the rows.
+                for (path, entry) in &parsed.files {
+                    super::godot_projects::read_indexed_file(
+                        self,
+                        &args.world_id,
+                        parsed.revision,
+                        path,
+                        entry,
+                    )?;
                 }
                 let files: Vec<Value> = parsed
                     .files

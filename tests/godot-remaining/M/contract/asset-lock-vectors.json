@@ -17,7 +17,8 @@
     "Asset content hashes use a separate namespace: validate_sha256 requires exactly 64 lowercase hex characters. A 40-character Git OID is not a SHA-256 hash and a SHA-256 hash is not validated as an OID.",
     "Stored paths are relative, forward-slash separated, at most 240 bytes, at most 16 segments and at most 80 bytes per segment. Traversal, '.', absolute paths, drive letters, backslashes, control characters, Windows device names, '.git' components and case-insensitive collisions are rejected.",
     "Unicode NFC normalization is the producer's responsibility; the hash always covers the stored bytes, so the contract never normalizes implicitly.",
-    "Lock documents larger than 8 MiB are rejected as ASSET_LOCK_TOO_LARGE; non-UTF-8 bytes are rejected as ASSET_LOCK_NOT_UTF8."
+    "Lock documents larger than 8 MiB are rejected as ASSET_LOCK_TOO_LARGE; non-UTF-8 bytes are rejected as ASSET_LOCK_NOT_UTF8.",
+    "There is exactly one lock document shape: {format, assets[]} with a string AssetRef.version. The installer's legacy direct/closure string arrays, the package validator's direct/closure object arrays and a numeric version are all rejected as INVALID_ASSET_LOCK, so the same format identifier can never carry three different semantics; a consumer with legacy data must migrate it explicitly."
   ],
   "vectors": [
     {
@@ -220,6 +221,27 @@
       "call": "AssetLock::canonicalize",
       "expectedError": "ASSET_LOCK_FORMAT_MISMATCH",
       "verifiedBy": "contract.rs AssetLock::canonicalize (first ensure!)"
+    },
+    {
+      "name": "legacy-direct-closure-lock-shape",
+      "input": "{\"format\":\"craftmine.assets-lock/1\",\"direct\":[\"door@1\"],\"closure\":[\"door@1\"],\"graph\":{\"door@1\":[]}}",
+      "call": "AssetLock::parse",
+      "expectedError": "INVALID_ASSET_LOCK",
+      "verifiedBy": "content_history::contract_vectors_tests (the installer's legacy direct/closure shape is not a lock document)"
+    },
+    {
+      "name": "legacy-direct-object-lock-shape",
+      "input": "{\"format\":\"craftmine.assets-lock/1\",\"direct\":[{\"id\":\"door\",\"version\":1}],\"closure\":[{\"id\":\"door\",\"version\":1}]}",
+      "call": "AssetLock::parse",
+      "expectedError": "INVALID_ASSET_LOCK",
+      "verifiedBy": "content_history::contract_vectors_tests (the package validator's object shape is not a lock document either)"
+    },
+    {
+      "name": "numeric-asset-version-in-lock",
+      "input": "{\"format\":\"craftmine.assets-lock/1\",\"assets\":[{\"asset\":{\"assetId\":\"door\",\"version\":1,\"contentHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"installPath\":\"assets/door\"}]}",
+      "call": "AssetLock::parse",
+      "expectedError": "INVALID_ASSET_LOCK",
+      "verifiedBy": "content_history::contract_vectors_tests (AssetRef.version is a string; a numeric version is a different format)"
     }
   ]
 }

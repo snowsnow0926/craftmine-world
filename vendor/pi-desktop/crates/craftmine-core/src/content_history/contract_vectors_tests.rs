@@ -97,7 +97,10 @@ fn run(name: &str, input: &str) -> Result<()> {
             }
             AssetLock::parse_canonical(reindented.as_bytes()).map(|_| ())
         }
-        "invalid-lock-json" => AssetLock::parse(b"not json").map(|_| ()),
+        "invalid-lock-json"
+        | "legacy-direct-closure-lock-shape"
+        | "legacy-direct-object-lock-shape"
+        | "numeric-asset-version-in-lock" => AssetLock::parse(input.as_bytes()).map(|_| ()),
         "lock-format-mismatch" => {
             let mut lock = AssetLock::empty();
             lock.format = "craftmine.assets-lock/2".into();
