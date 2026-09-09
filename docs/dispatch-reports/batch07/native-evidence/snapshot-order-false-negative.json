@@ -1,0 +1,3498 @@
+{
+  "started": "2026-09-09T08:25:23.941Z",
+  "source": "66e59dc3a82446e2b0ef79a4432dfc4b3a5e29fd",
+  "packageManifest": null,
+  "draftAuthorship": "fixed D fixture imported normally; actual native patch changes target name",
+  "model": {
+    "id": "deepseek-v4.1-flash-expires-on-0910",
+    "thinking": "high"
+  },
+  "binaryHashes": {
+    "core": "830fafaca5a79d90a0866c1367af5fcbf692658088567cf047a606be65e20921",
+    "host": "e3086635d1cd0f09d809b524686ddf4e39a57fcd2fc15beb7233d50a28e507a5",
+    "main": "3761d111fa96f5ed7fe7d94a876d5f8729af4680ede5e8c0764df4d2b8732f61"
+  },
+  "limits": {
+    "requests": 12,
+    "timeoutMs": 900000
+  },
+  "checks": [
+    {
+      "name": "Isolated offscreen unfocusable windows",
+      "passed": true
+    },
+    {
+      "name": "Fresh reused instance starts once with full target health",
+      "passed": true
+    },
+    {
+      "name": "Actual physics fall reduces player health",
+      "passed": true
+    },
+    {
+      "name": "Real remapped extension drains target and heals player",
+      "passed": true
+    },
+    {
+      "name": "Actual long range miss consumes ammunition without damage",
+      "passed": true
+    },
+    {
+      "name": "Actual ray miss leaves target unchanged",
+      "passed": true
+    },
+    {
+      "name": "Actual shooting hit damages target",
+      "passed": true
+    },
+    {
+      "name": "Cooldown or empty ammunition rejects repeated shot",
+      "passed": true
+    },
+    {
+      "name": "Actual melee out of range rejects damage",
+      "passed": true
+    },
+    {
+      "name": "Actual melee in range damages target",
+      "passed": true
+    },
+    {
+      "name": "Actual melee cooldown rejects repeated damage",
+      "passed": true
+    },
+    {
+      "name": "Extension kills and heals only actual damage",
+      "passed": true
+    },
+    {
+      "name": "Next actual gameplay tick grants exactly one kill reward",
+      "passed": true
+    },
+    {
+      "name": "Formal Rust progress includes initialized lifecycle and exact extension state",
+      "passed": true
+    },
+    {
+      "name": "Full Electron restart preserves gameplay and behavior snapshot",
+      "passed": false
+    }
+  ],
+  "steps": [
+    {
+      "name": "observe",
+      "result": {
+        "effects": [],
+        "gameplay": {
+          "archivedTargets": {},
+          "cooldown": 0,
+          "equipped": "ranged",
+          "systems": {
+            "health-system": {
+              "health": 100,
+              "maxHealth": 100,
+              "type": "health"
+            },
+            "melee-system": {
+              "type": "melee"
+            },
+            "ranged-system": {
+              "ammo": 3,
+              "reloadRemaining": 0,
+              "type": "ranged"
+            }
+          },
+          "targets": {
+            "training-target": {
+              "health": 60,
+              "maxHealth": 60
+            }
+          }
+        },
+        "inventory": {
+          "training-token": 1
+        },
+        "items": {
+          "training-token": "训练币"
+        },
+        "objects": [
+          {
+            "bounds": null,
+            "color": null,
+            "health": 0,
+            "id": "oak-tree",
+            "mesh": true,
+            "position": {
+              "x": -3,
+              "y": 6,
+              "z": 5
+            },
+            "solid": true,
+            "visible": true
+          },
+          {
+            "bounds": null,
+            "color": null,
+            "health": 0,
+            "id": "thin-grass",
+            "mesh": true,
+            "position": {
+              "x": 1.2,
+              "y": 6,
+              "z": 8
+            },
+            "solid": false,
+            "visible": true
+          },
+          {
+            "bounds": null,
+            "color": "#bfa365",
+            "health": 60,
+            "id": "training-target",
+            "mesh": true,
+            "position": {
+              "x": 0,
+              "y": 6,
+              "z": 6
+            },
+            "solid": true,
+            "visible": true
+          },
+          {
+            "bounds": null,
+            "color": null,
+            "health": 0,
+            "id": "wild-flower",
+            "mesh": true,
+            "position": {
+              "x": -1.1,
+              "y": 6,
+              "z": 8
+            },
+            "solid": false,
+            "visible": true
+          }
+        ],
+        "panels": {},
+        "playerHealth": 100,
+        "resources": {}
+      }
+    },
+    {
+      "name": "fall",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 50,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 3,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 60,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 60,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 50,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 100,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 3,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 60,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 60,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 100,
+          "resources": {}
+        },
+        "player": {
+          "pitch": 0,
+          "x": 10,
+          "y": 6,
+          "yaw": 0,
+          "z": 12
+        }
+      }
+    },
+    {
+      "name": "drain",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 3,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 50,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 50,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 50,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 3,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 60,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 60,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 50,
+          "resources": {}
+        },
+        "change": {
+          "changed": true,
+          "fields": [
+            "player.health",
+            "object:training-target.health"
+          ]
+        },
+        "commands": [
+          {
+            "amount": 10,
+            "targetId": "training-target",
+            "type": "training.drain"
+          }
+        ],
+        "event": {
+          "code": "KeyG",
+          "type": "key"
+        },
+        "label": "drain",
+        "player": {
+          "pitch": 0,
+          "x": 10,
+          "y": 6,
+          "yaw": 0,
+          "z": 12
+        }
+      }
+    },
+    {
+      "name": "ranged-far",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.2,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 2,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 50,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 50,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 3,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 50,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 50,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "change": {
+          "changed": false,
+          "fields": []
+        },
+        "commands": [],
+        "event": {
+          "type": "attack"
+        },
+        "label": "ranged-far",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 40
+        }
+      }
+    },
+    {
+      "name": "ranged-miss",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.2,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 1,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 50,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 50,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.2,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 2,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 50,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 50,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "change": {
+          "changed": false,
+          "fields": []
+        },
+        "commands": [],
+        "event": {
+          "type": "attack"
+        },
+        "label": "ranged-miss",
+        "player": {
+          "pitch": 0,
+          "x": 3,
+          "y": 6,
+          "yaw": 0,
+          "z": 9
+        }
+      }
+    },
+    {
+      "name": "ranged-hit",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.2,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 30,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 30,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.2,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 1,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 50,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 50,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "change": {
+          "changed": true,
+          "fields": [
+            "object:training-target.health"
+          ]
+        },
+        "commands": [],
+        "event": {
+          "type": "attack"
+        },
+        "label": "ranged-hit",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 9
+        }
+      }
+    },
+    {
+      "name": "attack-now",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.2,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 30,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 30,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.2,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 30,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 30,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "change": {
+          "changed": false,
+          "fields": []
+        },
+        "commands": [],
+        "event": {
+          "type": "attack"
+        },
+        "label": "attack-now",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 9
+        }
+      }
+    },
+    {
+      "name": "equip-melee",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.2,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 30,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 30,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.2,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 30,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 30,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "change": {
+          "changed": false,
+          "fields": []
+        },
+        "commands": [],
+        "event": {
+          "type": "equip",
+          "weapon": "melee"
+        },
+        "label": "equip-melee",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 9
+        }
+      }
+    },
+    {
+      "name": "melee-far",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 30,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 30,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.2,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 30,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 30,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "change": {
+          "changed": false,
+          "fields": []
+        },
+        "commands": [],
+        "event": {
+          "type": "attack"
+        },
+        "label": "melee-far",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 10
+        }
+      }
+    },
+    {
+      "name": "melee-hit",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 5,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 5,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 30,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 30,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "change": {
+          "changed": true,
+          "fields": [
+            "object:training-target.health"
+          ]
+        },
+        "commands": [],
+        "event": {
+          "type": "attack"
+        },
+        "label": "melee-hit",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 8
+        }
+      }
+    },
+    {
+      "name": "attack-now",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 5,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 5,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 5,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 5,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "change": {
+          "changed": false,
+          "fields": []
+        },
+        "commands": [],
+        "event": {
+          "type": "attack"
+        },
+        "label": "attack-now",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 8
+        }
+      }
+    },
+    {
+      "name": "drain",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 65,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 0,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 0,
+              "id": "training-target",
+              "mesh": false,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": false,
+              "visible": false
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 65,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 60,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 5,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 5,
+              "id": "training-target",
+              "mesh": true,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 60,
+          "resources": {}
+        },
+        "change": {
+          "changed": true,
+          "fields": [
+            "player.health",
+            "object:training-target.visible",
+            "object:training-target.mesh",
+            "object:training-target.health",
+            "object:training-target.solid"
+          ]
+        },
+        "commands": [
+          {
+            "amount": 10,
+            "targetId": "training-target",
+            "type": "training.drain"
+          }
+        ],
+        "event": {
+          "code": "KeyG",
+          "type": "key"
+        },
+        "label": "drain",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 8
+        }
+      }
+    },
+    {
+      "name": "tick",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 65,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 0,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 2
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 0,
+              "id": "training-target",
+              "mesh": false,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": false,
+              "visible": false
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 65,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 65,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 0,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 1
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 0,
+              "id": "training-target",
+              "mesh": false,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": false,
+              "visible": false
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 65,
+          "resources": {}
+        },
+        "change": {
+          "changed": true,
+          "fields": [
+            "inventory.training-token"
+          ]
+        },
+        "commands": [
+          {
+            "count": 1,
+            "item": "training-token",
+            "type": "inventory.add"
+          }
+        ],
+        "event": {
+          "type": "tick"
+        },
+        "label": "tick",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 8
+        }
+      }
+    },
+    {
+      "name": "equip-ranged",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 65,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 0,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 2
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 0,
+              "id": "training-target",
+              "mesh": false,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": false,
+              "visible": false
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 65,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "melee",
+            "systems": {
+              "health-system": {
+                "health": 65,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 0,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 2
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 0,
+              "id": "training-target",
+              "mesh": false,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": false,
+              "visible": false
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 65,
+          "resources": {}
+        },
+        "change": {
+          "changed": false,
+          "fields": []
+        },
+        "commands": [],
+        "event": {
+          "type": "equip",
+          "weapon": "ranged"
+        },
+        "label": "equip-ranged",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 8
+        }
+      }
+    },
+    {
+      "name": "reload",
+      "result": {
+        "after": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 65,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0.4,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 0,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 2
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 0,
+              "id": "training-target",
+              "mesh": false,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": false,
+              "visible": false
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 65,
+          "resources": {}
+        },
+        "before": {
+          "effects": [],
+          "gameplay": {
+            "archivedTargets": {},
+            "cooldown": 0.3,
+            "equipped": "ranged",
+            "systems": {
+              "health-system": {
+                "health": 65,
+                "maxHealth": 100,
+                "type": "health"
+              },
+              "melee-system": {
+                "type": "melee"
+              },
+              "ranged-system": {
+                "ammo": 0,
+                "reloadRemaining": 0,
+                "type": "ranged"
+              }
+            },
+            "targets": {
+              "training-target": {
+                "health": 0,
+                "maxHealth": 60
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 2
+          },
+          "items": {
+            "training-token": "训练币"
+          },
+          "objects": [
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "oak-tree",
+              "mesh": true,
+              "position": {
+                "x": -3,
+                "y": 6,
+                "z": 5
+              },
+              "solid": true,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "thin-grass",
+              "mesh": true,
+              "position": {
+                "x": 1.2,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            },
+            {
+              "bounds": null,
+              "color": "#bfa365",
+              "health": 0,
+              "id": "training-target",
+              "mesh": false,
+              "position": {
+                "x": 0,
+                "y": 6,
+                "z": 6
+              },
+              "solid": false,
+              "visible": false
+            },
+            {
+              "bounds": null,
+              "color": null,
+              "health": 0,
+              "id": "wild-flower",
+              "mesh": true,
+              "position": {
+                "x": -1.1,
+                "y": 6,
+                "z": 8
+              },
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "panels": {},
+          "playerHealth": 65,
+          "resources": {}
+        },
+        "change": {
+          "changed": false,
+          "fields": []
+        },
+        "commands": [],
+        "event": {
+          "type": "reload"
+        },
+        "label": "reload",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 8
+        }
+      }
+    }
+  ],
+  "isolation": {
+    "name": "craftmine world",
+    "profile": "D:\\Craftmine World-worktrees\\batch07-native-20260909\\test-results\\desktop-native-batch07-WnK0A8\\profile\\desktop",
+    "runtime": {
+      "hostAvailable": true,
+      "plugins": [
+        "craftmine.world",
+        "pi.browser",
+        "pi.files"
+      ]
+    },
+    "violations": [],
+    "pageErrors": [],
+    "windows": [
+      {
+        "visible": false,
+        "focused": false,
+        "focusable": false,
+        "offscreen": true
+      }
+    ],
+    "world": "file:///D:/Craftmine%20World-worktrees/batch07-native-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+  },
+  "gameOnly": true,
+  "beforeRestart": {
+    "worldId": "aeb5bc26-f449-4d6e-817c-bcc898bf54a9",
+    "snapshot": {
+      "channel": "craftmine-game/1",
+      "nonce": "e19a444e-cd6f-4a1f-86a2-c15c207d3797",
+      "type": "snapshot",
+      "requestId": "a7ee1a5b-fc4b-4227-abf6-703f0ac2dea2",
+      "snapshot": {
+        "format": "craftmine.progress/3",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 8
+        },
+        "gameplay": {
+          "systems": {
+            "health-system": {
+              "type": "health",
+              "health": 65,
+              "maxHealth": 100
+            },
+            "ranged-system": {
+              "type": "ranged",
+              "ammo": 0,
+              "reloadRemaining": 0.4
+            },
+            "melee-system": {
+              "type": "melee"
+            }
+          },
+          "targets": {
+            "training-target": {
+              "health": 0,
+              "maxHealth": 60
+            }
+          },
+          "equipped": "ranged",
+          "archivedTargets": {},
+          "cooldown": 0.3
+        },
+        "behaviors": {
+          "format": "craftmine.behavior-state/3",
+          "time": 2.25,
+          "modules": {
+            "training-rewards": {
+              "stateVersion": 1,
+              "revision": "code-1be96c7cb3cc9d50e12e",
+              "state": {
+                "claimed": true
+              },
+              "overrides": {},
+              "error": "",
+              "initialized": true,
+              "panels": {},
+              "extensions": {}
+            },
+            "training-drain-key": {
+              "stateVersion": 1,
+              "revision": "code-24b1c7bfabb627f46782",
+              "state": {},
+              "overrides": {},
+              "error": "",
+              "initialized": true,
+              "panels": {},
+              "extensions": {
+                "training-drain": {
+                  "version": 1,
+                  "state": {
+                    "calls": 2
+                  }
+                }
+              }
+            }
+          },
+          "inventory": {
+            "training-token": 2
+          },
+          "archive": [],
+          "items": {
+            "training-token": {
+              "name": "训练币",
+              "description": "花园训练奖励"
+            }
+          }
+        }
+      }
+    }
+  },
+  "save": {
+    "loaded": true,
+    "worldId": "aeb5bc26-f449-4d6e-817c-bcc898bf54a9",
+    "revision": 1,
+    "buildId": "v-09bb46d3491fa419bda4"
+  },
+  "beforeLedger": {
+    "craftmine_worlds": [
+      {
+        "id": "50bc7533-6269-42aa-9381-83a55d69e118",
+        "title": "我的第一个世界",
+        "revision": 1,
+        "updated_at": 1788942326548,
+        "document": "{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"4641627420193586d325a99b528a245dc053fa85ec5057e982d76612fe79ea22\",\"id\":\"v-4641627420193586d325\",\"primitives\":[],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"extensions\":[]}",
+        "content_hash": "6bb5671b71426daeb2c9ed844db2a68254a8dc928d7a59208bb502502665f806"
+      },
+      {
+        "id": "aeb5bc26-f449-4d6e-817c-bcc898bf54a9",
+        "title": "花园训练场",
+        "revision": 1,
+        "updated_at": 1788942326809,
+        "document": "{\"build\":{\"behaviors\":[{\"checks\":[\"源码结构、状态与权限声明校验通过\",\"JavaScript 模块语法检查通过（尚不代表玩法验收）\",\"已确认源码以 ES 模块导出 step 函数\"],\"definition\":{\"binding\":null,\"capabilities\":[\"inventory.read@1\",\"inventory.items@1\"],\"code\":\"export function step({frame,state}) {\\n      if(frame.event.type==='start')return {state,commands:[{type:'inventory.define',item:'training-token',name:'训练币',description:'花园训练奖励'},{type:'inventory.add',item:'training-token',count:1}]};\\n      const target=frame.objects.find(o=>o.id==='training-target');\\n      if(!state.claimed&&target?.health===0)return {state:{...state,claimed:true},commands:[{type:'inventory.add',item:'training-token',count:1}]};\\n      return {state,commands:[]};\\n    }\",\"description\":\"启动赠送一枚训练币，击破目标再奖励一枚。\",\"format\":\"craftmine.behavior/3\",\"id\":\"training-rewards\",\"initialState\":{\"claimed\":false},\"keys\":[],\"name\":\"花园训练场\",\"params\":{},\"permissions\":[\"inventory.write\"],\"requires\":[\"health@1\",\"ranged@1\",\"melee@1\"],\"stateVersion\":1,\"targets\":[\"wild-flower\",\"thin-grass\",\"oak-tree\",\"training-target\"]},\"format\":\"craftmine.behavior-build/1\",\"hash\":\"1be96c7cb3cc9d50e12e9dbe4f2cbda1a1e9c0fbc589e74d6d1c015c8c0d62c6\",\"id\":\"code-1be96c7cb3cc9d50e12e\"},{\"checks\":[\"源码结构、状态与权限声明校验通过\",\"JavaScript 模块语法检查通过（尚不代表玩法验收）\",\"已确认源码以 ES 模块导出 step 函数\"],\"definition\":{\"binding\":null,\"capabilities\":[],\"code\":\"export function step({frame,state}) {return {state,commands:frame.event.type==='key'&&frame.event.code==='KeyG'?[{type:'training.drain',targetId:'training-target',amount:10}]:[]};}\",\"description\":\"按 G 从训练靶吸取最多十点生命。\",\"format\":\"craftmine.behavior/3\",\"id\":\"training-drain-key\",\"initialState\":{},\"keys\":[\"KeyG\"],\"name\":\"训练吸血\",\"params\":{},\"permissions\":[\"targets.write\",\"health.write\"],\"requires\":[\"health@1\",\"ext:training-drain@1\"],\"stateVersion\":1,\"targets\":[\"training-target\"]},\"format\":\"craftmine.behavior-build/1\",\"hash\":\"24b1c7bfabb627f4678277e4b721a4a80ef7fe73317aed3b5547a82cc0e72076\",\"id\":\"code-24b1c7bfabb627f46782\"}],\"format\":\"craftmine.build/3\",\"hash\":\"09bb46d3491fa419bda44e64b5c3c0ef408e8780b18f9af900b51210a18c26cb\",\"id\":\"v-09bb46d3491fa419bda4\",\"primitives\":[{\"color\":\"#4d934c\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.8,\"y\":6.6,\"z\":8.3},\"min\":{\"x\":-0.8500000000000001,\"y\":6,\"z\":8.25},\"offset\":{\"x\":0.25,\"y\":0,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.05,\"y\":0.6,\"z\":0.05},\"solid\":false},{\"color\":\"#73ad53\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.81,\"y\":6.43,\"z\":8.29},\"min\":{\"x\":-1.05,\"y\":6.3,\"z\":8.25},\"offset\":{\"x\":0.05,\"y\":0.3,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.24,\"y\":0.13,\"z\":0.04},\"solid\":false},{\"color\":\"#5b9a48\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.5900000000000001,\"y\":6.3100000000000005,\"z\":8.29},\"min\":{\"x\":-0.81,\"y\":6.19,\"z\":8.25},\"offset\":{\"x\":0.29,\"y\":0.19,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.22,\"y\":0.12,\"z\":0.04},\"solid\":false},{\"color\":\"#f5a0b8\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.8300000000000001,\"y\":6.67,\"z\":8.360000000000001},\"min\":{\"x\":-1.02,\"y\":6.58,\"z\":8.23},\"offset\":{\"x\":0.08,\"y\":0.58,\"z\":0.23},\"shape\":\"box\",\"size\":{\"x\":0.19,\"y\":0.09,\"z\":0.13},\"solid\":false},{\"color\":\"#f5a0b8\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.6200000000000001,\"y\":6.67,\"z\":8.360000000000001},\"min\":{\"x\":-0.81,\"y\":6.58,\"z\":8.23},\"offset\":{\"x\":0.29,\"y\":0.58,\"z\":0.23},\"shape\":\"box\",\"size\":{\"x\":0.19,\"y\":0.09,\"z\":0.13},\"solid\":false},{\"color\":\"#f5a0b8\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.7500000000000001,\"y\":6.67,\"z\":8.239999999999998},\"min\":{\"x\":-0.8900000000000001,\"y\":6.58,\"z\":8.04},\"offset\":{\"x\":0.21,\"y\":0.58,\"z\":0.04},\"shape\":\"box\",\"size\":{\"x\":0.14,\"y\":0.09,\"z\":0.2},\"solid\":false},{\"color\":\"#f5a0b8\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.7500000000000001,\"y\":6.67,\"z\":8.559999999999999},\"min\":{\"x\":-0.8900000000000001,\"y\":6.58,\"z\":8.36},\"offset\":{\"x\":0.21,\"y\":0.58,\"z\":0.36},\"shape\":\"box\",\"size\":{\"x\":0.14,\"y\":0.09,\"z\":0.2},\"solid\":false},{\"color\":\"#f2cb64\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.7800000000000001,\"y\":6.71,\"z\":8.33},\"min\":{\"x\":-0.8700000000000001,\"y\":6.64,\"z\":8.24},\"offset\":{\"x\":0.23,\"y\":0.64,\"z\":0.24},\"shape\":\"box\",\"size\":{\"x\":0.09,\"y\":0.07,\"z\":0.09},\"solid\":false},{\"color\":\"#68a94c\",\"id\":\"thin-grass\",\"material\":\"solid\",\"max\":{\"x\":1.38,\"y\":6.46,\"z\":8.13},\"min\":{\"x\":1.2,\"y\":6,\"z\":8},\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"blade\",\"size\":{\"x\":0.18,\"y\":0.46,\"z\":0.13},\"solid\":false},{\"color\":\"#82b654\",\"id\":\"thin-grass\",\"material\":\"solid\",\"max\":{\"x\":1.4999999999999998,\"y\":6.32,\"z\":8.28},\"min\":{\"x\":1.35,\"y\":6,\"z\":8.1},\"offset\":{\"x\":0.15,\"y\":0,\"z\":0.1},\"shape\":\"blade\",\"size\":{\"x\":0.15,\"y\":0.32,\"z\":0.18},\"solid\":false},{\"color\":\"#589044\",\"id\":\"thin-grass\",\"material\":\"solid\",\"max\":{\"x\":1.66,\"y\":6.52,\"z\":8.11},\"min\":{\"x\":1.5,\"y\":6,\"z\":7.95},\"offset\":{\"x\":0.3,\"y\":0,\"z\":-0.05},\"shape\":\"blade\",\"size\":{\"x\":0.16,\"y\":0.52,\"z\":0.16},\"solid\":false},{\"color\":\"#ffffff\",\"id\":\"oak-tree\",\"material\":\"wood\",\"max\":{\"x\":-2.5,\"y\":9,\"z\":5.5},\"min\":{\"x\":-3,\"y\":6,\"z\":5},\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":3,\"z\":0.5},\"solid\":true},{\"color\":\"#9ccc78\",\"id\":\"oak-tree\",\"material\":\"leaves\",\"max\":{\"x\":-1.5999999999999996,\"y\":9.5,\"z\":6.4},\"min\":{\"x\":-3.8,\"y\":8,\"z\":4.2},\"offset\":{\"x\":-0.8,\"y\":2,\"z\":-0.8},\"shape\":\"box\",\"size\":{\"x\":2.2,\"y\":1.5,\"z\":2.2},\"solid\":false},{\"color\":\"#afd28c\",\"id\":\"oak-tree\",\"material\":\"leaves\",\"max\":{\"x\":-2,\"y\":10,\"z\":6},\"min\":{\"x\":-3.4,\"y\":9.3,\"z\":4.6},\"offset\":{\"x\":-0.4,\"y\":3.3,\"z\":-0.4},\"shape\":\"box\",\"size\":{\"x\":1.4,\"y\":0.7,\"z\":1.4},\"solid\":false},{\"color\":\"#bfa365\",\"id\":\"training-target\",\"material\":\"solid\",\"max\":{\"x\":0.7,\"y\":8,\"z\":6.4},\"min\":{\"x\":0,\"y\":6,\"z\":6},\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":0.7,\"y\":2,\"z\":0.4},\"solid\":true}],\"scene\":{\"behaviors\":[{\"binding\":null,\"capabilities\":[\"inventory.read@1\",\"inventory.items@1\"],\"code\":\"export function step({frame,state}) {\\n      if(frame.event.type==='start')return {state,commands:[{type:'inventory.define',item:'training-token',name:'训练币',description:'花园训练奖励'},{type:'inventory.add',item:'training-token',count:1}]};\\n      const target=frame.objects.find(o=>o.id==='training-target');\\n      if(!state.claimed&&target?.health===0)return {state:{...state,claimed:true},commands:[{type:'inventory.add',item:'training-token',count:1}]};\\n      return {state,commands:[]};\\n    }\",\"description\":\"启动赠送一枚训练币，击破目标再奖励一枚。\",\"format\":\"craftmine.behavior/3\",\"id\":\"training-rewards\",\"initialState\":{\"claimed\":false},\"keys\":[],\"name\":\"花园训练场\",\"params\":{},\"permissions\":[\"inventory.write\"],\"requires\":[\"health@1\",\"ranged@1\",\"melee@1\"],\"stateVersion\":1,\"targets\":[\"wild-flower\",\"thin-grass\",\"oak-tree\",\"training-target\"]},{\"binding\":null,\"capabilities\":[],\"code\":\"export function step({frame,state}) {return {state,commands:frame.event.type==='key'&&frame.event.code==='KeyG'?[{type:'training.drain',targetId:'training-target',amount:10}]:[]};}\",\"description\":\"按 G 从训练靶吸取最多十点生命。\",\"format\":\"craftmine.behavior/3\",\"id\":\"training-drain-key\",\"initialState\":{},\"keys\":[\"KeyG\"],\"name\":\"训练吸血\",\"params\":{},\"permissions\":[\"targets.write\",\"health.write\"],\"requires\":[\"health@1\",\"ext:training-drain@1\"],\"stateVersion\":1,\"targets\":[\"training-target\"]}],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":0},\"id\":\"wild-flower\",\"name\":\"粉色野花\",\"parts\":[{\"color\":\"#4d934c\",\"material\":\"solid\",\"offset\":{\"x\":0.25,\"y\":0,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.05,\"y\":0.6,\"z\":0.05},\"solid\":false},{\"color\":\"#73ad53\",\"material\":\"solid\",\"offset\":{\"x\":0.05,\"y\":0.3,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.24,\"y\":0.13,\"z\":0.04},\"solid\":false},{\"color\":\"#5b9a48\",\"material\":\"solid\",\"offset\":{\"x\":0.29,\"y\":0.19,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.22,\"y\":0.12,\"z\":0.04},\"solid\":false},{\"color\":\"#f5a0b8\",\"material\":\"solid\",\"offset\":{\"x\":0.08,\"y\":0.58,\"z\":0.23},\"shape\":\"box\",\"size\":{\"x\":0.19,\"y\":0.09,\"z\":0.13},\"solid\":false},{\"color\":\"#f5a0b8\",\"material\":\"solid\",\"offset\":{\"x\":0.29,\"y\":0.58,\"z\":0.23},\"shape\":\"box\",\"size\":{\"x\":0.19,\"y\":0.09,\"z\":0.13},\"solid\":false},{\"color\":\"#f5a0b8\",\"material\":\"solid\",\"offset\":{\"x\":0.21,\"y\":0.58,\"z\":0.04},\"shape\":\"box\",\"size\":{\"x\":0.14,\"y\":0.09,\"z\":0.2},\"solid\":false},{\"color\":\"#f5a0b8\",\"material\":\"solid\",\"offset\":{\"x\":0.21,\"y\":0.58,\"z\":0.36},\"shape\":\"box\",\"size\":{\"x\":0.14,\"y\":0.09,\"z\":0.2},\"solid\":false},{\"color\":\"#f2cb64\",\"material\":\"solid\",\"offset\":{\"x\":0.23,\"y\":0.64,\"z\":0.24},\"shape\":\"box\",\"size\":{\"x\":0.09,\"y\":0.07,\"z\":0.09},\"solid\":false}],\"position\":{\"x\":-1.1,\"y\":6,\"z\":8},\"source\":null},{\"components\":{\"contactDamage\":0,\"health\":0},\"id\":\"thin-grass\",\"name\":\"细叶草丛\",\"parts\":[{\"color\":\"#68a94c\",\"material\":\"solid\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"blade\",\"size\":{\"x\":0.18,\"y\":0.46,\"z\":0.13},\"solid\":false},{\"color\":\"#82b654\",\"material\":\"solid\",\"offset\":{\"x\":0.15,\"y\":0,\"z\":0.1},\"shape\":\"blade\",\"size\":{\"x\":0.15,\"y\":0.32,\"z\":0.18},\"solid\":false},{\"color\":\"#589044\",\"material\":\"solid\",\"offset\":{\"x\":0.3,\"y\":0,\"z\":-0.05},\"shape\":\"blade\",\"size\":{\"x\":0.16,\"y\":0.52,\"z\":0.16},\"solid\":false}],\"position\":{\"x\":1.2,\"y\":6,\"z\":8},\"source\":null},{\"components\":{\"contactDamage\":0,\"health\":0},\"id\":\"oak-tree\",\"name\":\"小橡树\",\"parts\":[{\"color\":\"#ffffff\",\"material\":\"wood\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":3,\"z\":0.5},\"solid\":true},{\"color\":\"#9ccc78\",\"material\":\"leaves\",\"offset\":{\"x\":-0.8,\"y\":2,\"z\":-0.8},\"shape\":\"box\",\"size\":{\"x\":2.2,\"y\":1.5,\"z\":2.2},\"solid\":false},{\"color\":\"#afd28c\",\"material\":\"leaves\",\"offset\":{\"x\":-0.4,\"y\":3.3,\"z\":-0.4},\"shape\":\"box\",\"size\":{\"x\":1.4,\"y\":0.7,\"z\":1.4},\"solid\":false}],\"position\":{\"x\":-3,\"y\":6,\"z\":5},\"source\":null},{\"components\":{\"contactDamage\":0,\"health\":60},\"id\":\"training-target\",\"name\":\"训练靶\",\"parts\":[{\"color\":\"#bfa365\",\"material\":\"solid\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":0.7,\"y\":2,\"z\":0.4},\"solid\":true}],\"position\":{\"x\":0,\"y\":6,\"z\":6},\"source\":null}],\"systems\":[{\"config\":{\"fallDamage\":5,\"maxHealth\":100,\"regenPerSecond\":0},\"id\":\"health-system\",\"name\":\"生命值\",\"source\":null,\"type\":\"health\"},{\"config\":{\"cooldown\":0.2,\"damage\":20,\"magazine\":3,\"range\":30,\"reloadSeconds\":0.4},\"id\":\"ranged-system\",\"name\":\"训练枪\",\"source\":null,\"type\":\"ranged\"},{\"config\":{\"cooldown\":0.3,\"damage\":25,\"range\":2},\"id\":\"melee-system\",\"name\":\"训练剑\",\"source\":null,\"type\":\"melee\"}],\"title\":\"花园训练场\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/3\",\"inventory\":{\"training-token\":2},\"items\":{\"training-token\":{\"description\":\"花园训练奖励\",\"name\":\"训练币\"}},\"modules\":{\"training-drain-key\":{\"error\":\"\",\"extensions\":{\"training-drain\":{\"state\":{\"calls\":2},\"version\":1}},\"initialized\":true,\"overrides\":{},\"panels\":{},\"revision\":\"code-24b1c7bfabb627f46782\",\"state\":{},\"stateVersion\":1},\"training-rewards\":{\"error\":\"\",\"extensions\":{},\"initialized\":true,\"overrides\":{},\"panels\":{},\"revision\":\"code-1be96c7cb3cc9d50e12e\",\"state\":{\"claimed\":true},\"stateVersion\":1}},\"time\":2.25},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0.3,\"equipped\":\"ranged\",\"systems\":{\"health-system\":{\"health\":65,\"maxHealth\":100,\"type\":\"health\"},\"melee-system\":{\"type\":\"melee\"},\"ranged-system\":{\"ammo\":0,\"reloadRemaining\":0.4,\"type\":\"ranged\"}},\"targets\":{\"training-target\":{\"health\":0,\"maxHealth\":60}}},\"player\":{\"pitch\":0,\"x\":0.35,\"y\":6,\"yaw\":0,\"z\":8}},\"extensions\":[{\"capabilities\":[],\"code\":\"export function apply({command,world,state}) {\\n    const target=world.objects.find(o=>o.id===command.targetId);\\n    const amount=Math.min(target?.health||0,Math.max(1,Math.min(20,Number(command.amount)||1)));\\n    return {state:{calls:(state?.calls||0)+1},effects:amount?[{type:'target.damage',id:command.targetId,amount},{type:'health.add',amount}]:[]};\\n  }\",\"description\":\"按实际伤害恢复生命，保存每个玩法实例的施放次数。\",\"format\":\"craftmine.extension/1\",\"id\":\"training-drain\",\"name\":\"训练吸血\",\"permissions\":[\"targets.write\",\"health.write\"],\"provides\":{\"commands\":[{\"fields\":[{\"description\":\"已绑定的目标 ID\",\"name\":\"targetId\"},{\"description\":\"伤害 1–20\",\"name\":\"amount\"}],\"permission\":\"targets.write\",\"type\":\"training.drain\"}],\"events\":[]},\"requires\":[],\"selfTests\":[{\"commands\":[{\"amount\":10,\"targetId\":\"training-target\",\"type\":\"training.drain\"}],\"expect\":[{\"exact\":0,\"id\":\"drain.damage\",\"kind\":\"objectHealth\",\"object\":\"training-target\",\"red\":\"没有伤害的空实现\",\"why\":\"目标实际失去五点生命\"},{\"id\":\"drain.heal\",\"kind\":\"playerHealth\",\"max\":55,\"min\":55,\"red\":\"按请求量恢复十点\",\"why\":\"只恢复五点实际伤害\"}],\"name\":\"只吸取实际伤害\",\"state\":{},\"world\":{\"objects\":[{\"health\":5,\"id\":\"training-target\",\"mesh\":true,\"position\":{\"x\":0,\"y\":6,\"z\":0},\"solid\":true,\"visible\":true}],\"playerHealth\":50}}],\"targets\":[\"training-target\"],\"version\":1}]}",
+        "content_hash": "c323cb5a2c987827d0a45e557e22af2203db7ea7a5b9fec7cca0a6f629e800c1"
+      }
+    ],
+    "craftmine_applications": [],
+    "craftmine_verifications": [],
+    "craftmine_reviews": [],
+    "craftmine_library": [],
+    "craftmine_budget_requests": [],
+    "craftmine_task_runtime": [],
+    "craftmine_memories": []
+  },
+  "guards": [
+    {
+      "bridge": "undefined",
+      "guard": {
+        "focus": 0,
+        "pointerLock": 0
+      },
+      "node": "undefined",
+      "url": "file:///D:/Craftmine%20World-worktrees/batch07-native-20260909/vendor/pi-desktop/apps/desktop/out/renderer/index.html"
+    },
+    {
+      "bridge": "object",
+      "guard": {
+        "focus": 0,
+        "pointerLock": 0
+      },
+      "node": "undefined",
+      "url": "file:///D:/Craftmine%20World-worktrees/batch07-native-20260909/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    {
+      "bridge": "undefined",
+      "guard": {
+        "focus": 0,
+        "pointerLock": 0
+      },
+      "node": "undefined",
+      "url": "about:srcdoc"
+    }
+  ],
+  "exitAudit": {
+    "type": "craftmine-headless-exit",
+    "violations": [],
+    "pageErrors": []
+  },
+  "afterRestart": {
+    "worldId": "aeb5bc26-f449-4d6e-817c-bcc898bf54a9",
+    "snapshot": {
+      "channel": "craftmine-game/1",
+      "nonce": "65ca611e-715b-44af-a795-3c4e0a8cfdfb",
+      "type": "snapshot",
+      "requestId": "4d7e714a-322c-45c6-bac1-d18b9e0c6f4f",
+      "snapshot": {
+        "format": "craftmine.progress/3",
+        "player": {
+          "pitch": 0,
+          "x": 0.35,
+          "y": 6,
+          "yaw": 0,
+          "z": 8
+        },
+        "gameplay": {
+          "systems": {
+            "health-system": {
+              "type": "health",
+              "health": 65,
+              "maxHealth": 100
+            },
+            "ranged-system": {
+              "type": "ranged",
+              "ammo": 0,
+              "reloadRemaining": 0.4
+            },
+            "melee-system": {
+              "type": "melee"
+            }
+          },
+          "targets": {
+            "training-target": {
+              "health": 0,
+              "maxHealth": 60
+            }
+          },
+          "equipped": "ranged",
+          "archivedTargets": {},
+          "cooldown": 0.3
+        },
+        "behaviors": {
+          "format": "craftmine.behavior-state/3",
+          "time": 2.25,
+          "modules": {
+            "training-rewards": {
+              "error": "",
+              "extensions": {},
+              "initialized": true,
+              "overrides": {},
+              "panels": {},
+              "revision": "code-1be96c7cb3cc9d50e12e",
+              "state": {
+                "claimed": true
+              },
+              "stateVersion": 1
+            },
+            "training-drain-key": {
+              "error": "",
+              "extensions": {
+                "training-drain": {
+                  "state": {
+                    "calls": 2
+                  },
+                  "version": 1
+                }
+              },
+              "initialized": true,
+              "overrides": {},
+              "panels": {},
+              "revision": "code-24b1c7bfabb627f46782",
+              "state": {},
+              "stateVersion": 1
+            }
+          },
+          "inventory": {
+            "training-token": 2
+          },
+          "archive": [],
+          "items": {
+            "training-token": {
+              "description": "花园训练奖励",
+              "name": "训练币"
+            }
+          }
+        }
+      }
+    }
+  },
+  "success": false,
+  "error": "AssertionError [ERR_ASSERTION]: Full Electron restart preserves gameplay and behavior snapshot\n    at check (file:///D:/Craftmine%20World-worktrees/batch07-native-20260909/tests/dispatch/batch07/native/gameplay.mjs:64:79)\n    at file:///D:/Craftmine%20World-worktrees/batch07-native-20260909/tests/dispatch/batch07/native/gameplay.mjs:121:3\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+  "failureLedger": {
+    "craftmine_worlds": [
+      {
+        "id": "50bc7533-6269-42aa-9381-83a55d69e118",
+        "title": "我的第一个世界",
+        "revision": 1,
+        "updated_at": 1788942326548,
+        "document": "{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"4641627420193586d325a99b528a245dc053fa85ec5057e982d76612fe79ea22\",\"id\":\"v-4641627420193586d325\",\"primitives\":[],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"extensions\":[]}",
+        "content_hash": "6bb5671b71426daeb2c9ed844db2a68254a8dc928d7a59208bb502502665f806"
+      },
+      {
+        "id": "aeb5bc26-f449-4d6e-817c-bcc898bf54a9",
+        "title": "花园训练场",
+        "revision": 1,
+        "updated_at": 1788942326809,
+        "document": "{\"build\":{\"behaviors\":[{\"checks\":[\"源码结构、状态与权限声明校验通过\",\"JavaScript 模块语法检查通过（尚不代表玩法验收）\",\"已确认源码以 ES 模块导出 step 函数\"],\"definition\":{\"binding\":null,\"capabilities\":[\"inventory.read@1\",\"inventory.items@1\"],\"code\":\"export function step({frame,state}) {\\n      if(frame.event.type==='start')return {state,commands:[{type:'inventory.define',item:'training-token',name:'训练币',description:'花园训练奖励'},{type:'inventory.add',item:'training-token',count:1}]};\\n      const target=frame.objects.find(o=>o.id==='training-target');\\n      if(!state.claimed&&target?.health===0)return {state:{...state,claimed:true},commands:[{type:'inventory.add',item:'training-token',count:1}]};\\n      return {state,commands:[]};\\n    }\",\"description\":\"启动赠送一枚训练币，击破目标再奖励一枚。\",\"format\":\"craftmine.behavior/3\",\"id\":\"training-rewards\",\"initialState\":{\"claimed\":false},\"keys\":[],\"name\":\"花园训练场\",\"params\":{},\"permissions\":[\"inventory.write\"],\"requires\":[\"health@1\",\"ranged@1\",\"melee@1\"],\"stateVersion\":1,\"targets\":[\"wild-flower\",\"thin-grass\",\"oak-tree\",\"training-target\"]},\"format\":\"craftmine.behavior-build/1\",\"hash\":\"1be96c7cb3cc9d50e12e9dbe4f2cbda1a1e9c0fbc589e74d6d1c015c8c0d62c6\",\"id\":\"code-1be96c7cb3cc9d50e12e\"},{\"checks\":[\"源码结构、状态与权限声明校验通过\",\"JavaScript 模块语法检查通过（尚不代表玩法验收）\",\"已确认源码以 ES 模块导出 step 函数\"],\"definition\":{\"binding\":null,\"capabilities\":[],\"code\":\"export function step({frame,state}) {return {state,commands:frame.event.type==='key'&&frame.event.code==='KeyG'?[{type:'training.drain',targetId:'training-target',amount:10}]:[]};}\",\"description\":\"按 G 从训练靶吸取最多十点生命。\",\"format\":\"craftmine.behavior/3\",\"id\":\"training-drain-key\",\"initialState\":{},\"keys\":[\"KeyG\"],\"name\":\"训练吸血\",\"params\":{},\"permissions\":[\"targets.write\",\"health.write\"],\"requires\":[\"health@1\",\"ext:training-drain@1\"],\"stateVersion\":1,\"targets\":[\"training-target\"]},\"format\":\"craftmine.behavior-build/1\",\"hash\":\"24b1c7bfabb627f4678277e4b721a4a80ef7fe73317aed3b5547a82cc0e72076\",\"id\":\"code-24b1c7bfabb627f46782\"}],\"format\":\"craftmine.build/3\",\"hash\":\"09bb46d3491fa419bda44e64b5c3c0ef408e8780b18f9af900b51210a18c26cb\",\"id\":\"v-09bb46d3491fa419bda4\",\"primitives\":[{\"color\":\"#4d934c\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.8,\"y\":6.6,\"z\":8.3},\"min\":{\"x\":-0.8500000000000001,\"y\":6,\"z\":8.25},\"offset\":{\"x\":0.25,\"y\":0,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.05,\"y\":0.6,\"z\":0.05},\"solid\":false},{\"color\":\"#73ad53\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.81,\"y\":6.43,\"z\":8.29},\"min\":{\"x\":-1.05,\"y\":6.3,\"z\":8.25},\"offset\":{\"x\":0.05,\"y\":0.3,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.24,\"y\":0.13,\"z\":0.04},\"solid\":false},{\"color\":\"#5b9a48\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.5900000000000001,\"y\":6.3100000000000005,\"z\":8.29},\"min\":{\"x\":-0.81,\"y\":6.19,\"z\":8.25},\"offset\":{\"x\":0.29,\"y\":0.19,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.22,\"y\":0.12,\"z\":0.04},\"solid\":false},{\"color\":\"#f5a0b8\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.8300000000000001,\"y\":6.67,\"z\":8.360000000000001},\"min\":{\"x\":-1.02,\"y\":6.58,\"z\":8.23},\"offset\":{\"x\":0.08,\"y\":0.58,\"z\":0.23},\"shape\":\"box\",\"size\":{\"x\":0.19,\"y\":0.09,\"z\":0.13},\"solid\":false},{\"color\":\"#f5a0b8\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.6200000000000001,\"y\":6.67,\"z\":8.360000000000001},\"min\":{\"x\":-0.81,\"y\":6.58,\"z\":8.23},\"offset\":{\"x\":0.29,\"y\":0.58,\"z\":0.23},\"shape\":\"box\",\"size\":{\"x\":0.19,\"y\":0.09,\"z\":0.13},\"solid\":false},{\"color\":\"#f5a0b8\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.7500000000000001,\"y\":6.67,\"z\":8.239999999999998},\"min\":{\"x\":-0.8900000000000001,\"y\":6.58,\"z\":8.04},\"offset\":{\"x\":0.21,\"y\":0.58,\"z\":0.04},\"shape\":\"box\",\"size\":{\"x\":0.14,\"y\":0.09,\"z\":0.2},\"solid\":false},{\"color\":\"#f5a0b8\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.7500000000000001,\"y\":6.67,\"z\":8.559999999999999},\"min\":{\"x\":-0.8900000000000001,\"y\":6.58,\"z\":8.36},\"offset\":{\"x\":0.21,\"y\":0.58,\"z\":0.36},\"shape\":\"box\",\"size\":{\"x\":0.14,\"y\":0.09,\"z\":0.2},\"solid\":false},{\"color\":\"#f2cb64\",\"id\":\"wild-flower\",\"material\":\"solid\",\"max\":{\"x\":-0.7800000000000001,\"y\":6.71,\"z\":8.33},\"min\":{\"x\":-0.8700000000000001,\"y\":6.64,\"z\":8.24},\"offset\":{\"x\":0.23,\"y\":0.64,\"z\":0.24},\"shape\":\"box\",\"size\":{\"x\":0.09,\"y\":0.07,\"z\":0.09},\"solid\":false},{\"color\":\"#68a94c\",\"id\":\"thin-grass\",\"material\":\"solid\",\"max\":{\"x\":1.38,\"y\":6.46,\"z\":8.13},\"min\":{\"x\":1.2,\"y\":6,\"z\":8},\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"blade\",\"size\":{\"x\":0.18,\"y\":0.46,\"z\":0.13},\"solid\":false},{\"color\":\"#82b654\",\"id\":\"thin-grass\",\"material\":\"solid\",\"max\":{\"x\":1.4999999999999998,\"y\":6.32,\"z\":8.28},\"min\":{\"x\":1.35,\"y\":6,\"z\":8.1},\"offset\":{\"x\":0.15,\"y\":0,\"z\":0.1},\"shape\":\"blade\",\"size\":{\"x\":0.15,\"y\":0.32,\"z\":0.18},\"solid\":false},{\"color\":\"#589044\",\"id\":\"thin-grass\",\"material\":\"solid\",\"max\":{\"x\":1.66,\"y\":6.52,\"z\":8.11},\"min\":{\"x\":1.5,\"y\":6,\"z\":7.95},\"offset\":{\"x\":0.3,\"y\":0,\"z\":-0.05},\"shape\":\"blade\",\"size\":{\"x\":0.16,\"y\":0.52,\"z\":0.16},\"solid\":false},{\"color\":\"#ffffff\",\"id\":\"oak-tree\",\"material\":\"wood\",\"max\":{\"x\":-2.5,\"y\":9,\"z\":5.5},\"min\":{\"x\":-3,\"y\":6,\"z\":5},\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":3,\"z\":0.5},\"solid\":true},{\"color\":\"#9ccc78\",\"id\":\"oak-tree\",\"material\":\"leaves\",\"max\":{\"x\":-1.5999999999999996,\"y\":9.5,\"z\":6.4},\"min\":{\"x\":-3.8,\"y\":8,\"z\":4.2},\"offset\":{\"x\":-0.8,\"y\":2,\"z\":-0.8},\"shape\":\"box\",\"size\":{\"x\":2.2,\"y\":1.5,\"z\":2.2},\"solid\":false},{\"color\":\"#afd28c\",\"id\":\"oak-tree\",\"material\":\"leaves\",\"max\":{\"x\":-2,\"y\":10,\"z\":6},\"min\":{\"x\":-3.4,\"y\":9.3,\"z\":4.6},\"offset\":{\"x\":-0.4,\"y\":3.3,\"z\":-0.4},\"shape\":\"box\",\"size\":{\"x\":1.4,\"y\":0.7,\"z\":1.4},\"solid\":false},{\"color\":\"#bfa365\",\"id\":\"training-target\",\"material\":\"solid\",\"max\":{\"x\":0.7,\"y\":8,\"z\":6.4},\"min\":{\"x\":0,\"y\":6,\"z\":6},\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":0.7,\"y\":2,\"z\":0.4},\"solid\":true}],\"scene\":{\"behaviors\":[{\"binding\":null,\"capabilities\":[\"inventory.read@1\",\"inventory.items@1\"],\"code\":\"export function step({frame,state}) {\\n      if(frame.event.type==='start')return {state,commands:[{type:'inventory.define',item:'training-token',name:'训练币',description:'花园训练奖励'},{type:'inventory.add',item:'training-token',count:1}]};\\n      const target=frame.objects.find(o=>o.id==='training-target');\\n      if(!state.claimed&&target?.health===0)return {state:{...state,claimed:true},commands:[{type:'inventory.add',item:'training-token',count:1}]};\\n      return {state,commands:[]};\\n    }\",\"description\":\"启动赠送一枚训练币，击破目标再奖励一枚。\",\"format\":\"craftmine.behavior/3\",\"id\":\"training-rewards\",\"initialState\":{\"claimed\":false},\"keys\":[],\"name\":\"花园训练场\",\"params\":{},\"permissions\":[\"inventory.write\"],\"requires\":[\"health@1\",\"ranged@1\",\"melee@1\"],\"stateVersion\":1,\"targets\":[\"wild-flower\",\"thin-grass\",\"oak-tree\",\"training-target\"]},{\"binding\":null,\"capabilities\":[],\"code\":\"export function step({frame,state}) {return {state,commands:frame.event.type==='key'&&frame.event.code==='KeyG'?[{type:'training.drain',targetId:'training-target',amount:10}]:[]};}\",\"description\":\"按 G 从训练靶吸取最多十点生命。\",\"format\":\"craftmine.behavior/3\",\"id\":\"training-drain-key\",\"initialState\":{},\"keys\":[\"KeyG\"],\"name\":\"训练吸血\",\"params\":{},\"permissions\":[\"targets.write\",\"health.write\"],\"requires\":[\"health@1\",\"ext:training-drain@1\"],\"stateVersion\":1,\"targets\":[\"training-target\"]}],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":0},\"id\":\"wild-flower\",\"name\":\"粉色野花\",\"parts\":[{\"color\":\"#4d934c\",\"material\":\"solid\",\"offset\":{\"x\":0.25,\"y\":0,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.05,\"y\":0.6,\"z\":0.05},\"solid\":false},{\"color\":\"#73ad53\",\"material\":\"solid\",\"offset\":{\"x\":0.05,\"y\":0.3,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.24,\"y\":0.13,\"z\":0.04},\"solid\":false},{\"color\":\"#5b9a48\",\"material\":\"solid\",\"offset\":{\"x\":0.29,\"y\":0.19,\"z\":0.25},\"shape\":\"box\",\"size\":{\"x\":0.22,\"y\":0.12,\"z\":0.04},\"solid\":false},{\"color\":\"#f5a0b8\",\"material\":\"solid\",\"offset\":{\"x\":0.08,\"y\":0.58,\"z\":0.23},\"shape\":\"box\",\"size\":{\"x\":0.19,\"y\":0.09,\"z\":0.13},\"solid\":false},{\"color\":\"#f5a0b8\",\"material\":\"solid\",\"offset\":{\"x\":0.29,\"y\":0.58,\"z\":0.23},\"shape\":\"box\",\"size\":{\"x\":0.19,\"y\":0.09,\"z\":0.13},\"solid\":false},{\"color\":\"#f5a0b8\",\"material\":\"solid\",\"offset\":{\"x\":0.21,\"y\":0.58,\"z\":0.04},\"shape\":\"box\",\"size\":{\"x\":0.14,\"y\":0.09,\"z\":0.2},\"solid\":false},{\"color\":\"#f5a0b8\",\"material\":\"solid\",\"offset\":{\"x\":0.21,\"y\":0.58,\"z\":0.36},\"shape\":\"box\",\"size\":{\"x\":0.14,\"y\":0.09,\"z\":0.2},\"solid\":false},{\"color\":\"#f2cb64\",\"material\":\"solid\",\"offset\":{\"x\":0.23,\"y\":0.64,\"z\":0.24},\"shape\":\"box\",\"size\":{\"x\":0.09,\"y\":0.07,\"z\":0.09},\"solid\":false}],\"position\":{\"x\":-1.1,\"y\":6,\"z\":8},\"source\":null},{\"components\":{\"contactDamage\":0,\"health\":0},\"id\":\"thin-grass\",\"name\":\"细叶草丛\",\"parts\":[{\"color\":\"#68a94c\",\"material\":\"solid\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"blade\",\"size\":{\"x\":0.18,\"y\":0.46,\"z\":0.13},\"solid\":false},{\"color\":\"#82b654\",\"material\":\"solid\",\"offset\":{\"x\":0.15,\"y\":0,\"z\":0.1},\"shape\":\"blade\",\"size\":{\"x\":0.15,\"y\":0.32,\"z\":0.18},\"solid\":false},{\"color\":\"#589044\",\"material\":\"solid\",\"offset\":{\"x\":0.3,\"y\":0,\"z\":-0.05},\"shape\":\"blade\",\"size\":{\"x\":0.16,\"y\":0.52,\"z\":0.16},\"solid\":false}],\"position\":{\"x\":1.2,\"y\":6,\"z\":8},\"source\":null},{\"components\":{\"contactDamage\":0,\"health\":0},\"id\":\"oak-tree\",\"name\":\"小橡树\",\"parts\":[{\"color\":\"#ffffff\",\"material\":\"wood\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":0.5,\"y\":3,\"z\":0.5},\"solid\":true},{\"color\":\"#9ccc78\",\"material\":\"leaves\",\"offset\":{\"x\":-0.8,\"y\":2,\"z\":-0.8},\"shape\":\"box\",\"size\":{\"x\":2.2,\"y\":1.5,\"z\":2.2},\"solid\":false},{\"color\":\"#afd28c\",\"material\":\"leaves\",\"offset\":{\"x\":-0.4,\"y\":3.3,\"z\":-0.4},\"shape\":\"box\",\"size\":{\"x\":1.4,\"y\":0.7,\"z\":1.4},\"solid\":false}],\"position\":{\"x\":-3,\"y\":6,\"z\":5},\"source\":null},{\"components\":{\"contactDamage\":0,\"health\":60},\"id\":\"training-target\",\"name\":\"训练靶\",\"parts\":[{\"color\":\"#bfa365\",\"material\":\"solid\",\"offset\":{\"x\":0,\"y\":0,\"z\":0},\"shape\":\"box\",\"size\":{\"x\":0.7,\"y\":2,\"z\":0.4},\"solid\":true}],\"position\":{\"x\":0,\"y\":6,\"z\":6},\"source\":null}],\"systems\":[{\"config\":{\"fallDamage\":5,\"maxHealth\":100,\"regenPerSecond\":0},\"id\":\"health-system\",\"name\":\"生命值\",\"source\":null,\"type\":\"health\"},{\"config\":{\"cooldown\":0.2,\"damage\":20,\"magazine\":3,\"range\":30,\"reloadSeconds\":0.4},\"id\":\"ranged-system\",\"name\":\"训练枪\",\"source\":null,\"type\":\"ranged\"},{\"config\":{\"cooldown\":0.3,\"damage\":25,\"range\":2},\"id\":\"melee-system\",\"name\":\"训练剑\",\"source\":null,\"type\":\"melee\"}],\"title\":\"花园训练场\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/3\",\"inventory\":{\"training-token\":2},\"items\":{\"training-token\":{\"description\":\"花园训练奖励\",\"name\":\"训练币\"}},\"modules\":{\"training-drain-key\":{\"error\":\"\",\"extensions\":{\"training-drain\":{\"state\":{\"calls\":2},\"version\":1}},\"initialized\":true,\"overrides\":{},\"panels\":{},\"revision\":\"code-24b1c7bfabb627f46782\",\"state\":{},\"stateVersion\":1},\"training-rewards\":{\"error\":\"\",\"extensions\":{},\"initialized\":true,\"overrides\":{},\"panels\":{},\"revision\":\"code-1be96c7cb3cc9d50e12e\",\"state\":{\"claimed\":true},\"stateVersion\":1}},\"time\":2.25},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0.3,\"equipped\":\"ranged\",\"systems\":{\"health-system\":{\"health\":65,\"maxHealth\":100,\"type\":\"health\"},\"melee-system\":{\"type\":\"melee\"},\"ranged-system\":{\"ammo\":0,\"reloadRemaining\":0.4,\"type\":\"ranged\"}},\"targets\":{\"training-target\":{\"health\":0,\"maxHealth\":60}}},\"player\":{\"pitch\":0,\"x\":0.35,\"y\":6,\"yaw\":0,\"z\":8}},\"extensions\":[{\"capabilities\":[],\"code\":\"export function apply({command,world,state}) {\\n    const target=world.objects.find(o=>o.id===command.targetId);\\n    const amount=Math.min(target?.health||0,Math.max(1,Math.min(20,Number(command.amount)||1)));\\n    return {state:{calls:(state?.calls||0)+1},effects:amount?[{type:'target.damage',id:command.targetId,amount},{type:'health.add',amount}]:[]};\\n  }\",\"description\":\"按实际伤害恢复生命，保存每个玩法实例的施放次数。\",\"format\":\"craftmine.extension/1\",\"id\":\"training-drain\",\"name\":\"训练吸血\",\"permissions\":[\"targets.write\",\"health.write\"],\"provides\":{\"commands\":[{\"fields\":[{\"description\":\"已绑定的目标 ID\",\"name\":\"targetId\"},{\"description\":\"伤害 1–20\",\"name\":\"amount\"}],\"permission\":\"targets.write\",\"type\":\"training.drain\"}],\"events\":[]},\"requires\":[],\"selfTests\":[{\"commands\":[{\"amount\":10,\"targetId\":\"training-target\",\"type\":\"training.drain\"}],\"expect\":[{\"exact\":0,\"id\":\"drain.damage\",\"kind\":\"objectHealth\",\"object\":\"training-target\",\"red\":\"没有伤害的空实现\",\"why\":\"目标实际失去五点生命\"},{\"id\":\"drain.heal\",\"kind\":\"playerHealth\",\"max\":55,\"min\":55,\"red\":\"按请求量恢复十点\",\"why\":\"只恢复五点实际伤害\"}],\"name\":\"只吸取实际伤害\",\"state\":{},\"world\":{\"objects\":[{\"health\":5,\"id\":\"training-target\",\"mesh\":true,\"position\":{\"x\":0,\"y\":6,\"z\":0},\"solid\":true,\"visible\":true}],\"playerHealth\":50}}],\"targets\":[\"training-target\"],\"version\":1}]}",
+        "content_hash": "c323cb5a2c987827d0a45e557e22af2203db7ea7a5b9fec7cca0a6f629e800c1"
+      }
+    ],
+    "craftmine_applications": [],
+    "craftmine_verifications": [],
+    "craftmine_reviews": [],
+    "craftmine_library": [],
+    "craftmine_budget_requests": [],
+    "craftmine_task_runtime": [],
+    "craftmine_memories": []
+  },
+  "lastExitAudit": {
+    "type": "craftmine-headless-exit",
+    "violations": [],
+    "pageErrors": []
+  },
+  "elapsedMs": 10964
+}
