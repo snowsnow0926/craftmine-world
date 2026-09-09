@@ -1,0 +1,37 @@
+; Craftmine World - side-view base project (Godot 4.7.2-stable, GDScript, GL Compatibility).
+; The base owns movement, collision, camera, combat, checkpoints and persistence.
+; The host owns build/apply/identity: this project never builds, exports or touches
+; files outside the configured save directory.
+config_version=5
+
+[application]
+
+config/name="Craftmine Side-View Base"
+config/description="Gravity, jump, platform collision, camera, basic attack and checkpoints. Blank start plus a small ruins example."
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[autoload]
+
+SideView="*res://scripts/runtime/side_view_runtime.gd"
+SideViewVerifier="*res://scripts/probe/headless_verifier.gd"
+
+[display]
+
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[physics]
+
+common/physics_ticks_per_second=60
+2d/default_gravity=1800.0
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.058, 0.074, 0.094, 1)

@@ -1,0 +1,15 @@
+{
+  "format": "craftmine.godot-sideview-input-plan/1",
+  "name": "travel_to_ruins",
+  "description": "From the entrance start, run right and jump on a fixed cadence. The second jump carries the player over the spike pit; the third crosses the full-height east exit into the ruins room. Input stops shortly after the transition so the player stops well to the left of the low platform.",
+  "durationTicks": 150,
+  "settleTicks": 150,
+  "segments": [
+    {
+      "fromTick": 0,
+      "toTick": 150,
+      "right": true,
+      "jump": { "mode": "repeat", "period": 30, "hold": 15 }
+    }
+  ]
+}

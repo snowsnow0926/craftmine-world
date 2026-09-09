@@ -1,0 +1,174 @@
+{
+  "format": "craftmine.godot-sideview-world/1",
+  "worldId": "ruins",
+  "baseId": "side-view",
+  "baseVersion": "1.0.0",
+  "stateVersion": 1,
+  "kind": "example",
+  "title": "Side-view small ruins",
+  "description": "Three connected rooms with return paths. The ruins room holds a one-time cache, a training dummy, a breakable crate and the double-jump pickup on a low platform. The high ledge on the right is 190 px above the floor: a single jump reaches about 136 px and cannot pass, a double jump reaches about 250 px and opens the vault. Parameters live in params/side_view_params.json.",
+  "startRoom": "entrance",
+  "startSpawn": "spawn_start",
+  "gate": {
+    "id": "gate_vault_ledge",
+    "kind": "double-jump",
+    "room": "ruins",
+    "requiredAbility": "double_jump",
+    "requiredRise": 190.0,
+    "from": { "x": 810, "y": 440 },
+    "to": { "x": 880, "y": 250 },
+    "unlocksRoom": "vault",
+    "notes": "The ledge left face is a solid wall from y=250 to y=440 at x=820, so the only route onto the ledge top is a vertical jump from the floor directly beside it. Room exits are full-height volumes so a jump that crosses a room edge still transitions."
+  },
+  "rooms": [
+    {
+      "id": "entrance",
+      "bounds": { "x": 0, "y": 0, "w": 640, "h": 360 },
+      "background": "#0f141a",
+      "solids": [
+        { "id": "floor_left", "x": 0, "y": 320, "w": 380, "h": 40 },
+        { "id": "floor_right", "x": 440, "y": 320, "w": 200, "h": 40 },
+        { "id": "wall_left", "x": -20, "y": 0, "w": 20, "h": 360 },
+        { "id": "wall_right", "x": 640, "y": 0, "w": 20, "h": 360 },
+        { "id": "ceiling", "x": 0, "y": -20, "w": 640, "h": 20 }
+      ],
+      "spawns": [
+        { "id": "spawn_start", "x": 120, "y": 320, "facing": 1 },
+        { "id": "spawn_from_ruins", "x": 556, "y": 320, "facing": -1 }
+      ],
+      "doors": [
+        {
+          "id": "door_entrance_east",
+          "x": 616,
+          "y": 0,
+          "w": 24,
+          "h": 360,
+          "targetRoom": "ruins",
+          "targetSpawn": "spawn_from_entrance"
+        }
+      ],
+      "checkpoints": [
+        { "id": "cp_entrance", "x": 200, "y": 320 }
+      ],
+      "abilities": [],
+      "rewards": [],
+      "targets": [],
+      "hazards": [
+        { "id": "spikes_entrance", "x": 390, "y": 340, "w": 40, "h": 20 }
+      ]
+    },
+    {
+      "id": "ruins",
+      "bounds": { "x": 0, "y": 0, "w": 1120, "h": 480 },
+      "background": "#12181f",
+      "solids": [
+        { "id": "floor", "x": 0, "y": 440, "w": 1120, "h": 60 },
+        { "id": "wall_left", "x": -20, "y": 0, "w": 20, "h": 480 },
+        { "id": "wall_right", "x": 1120, "y": 0, "w": 20, "h": 480 },
+        { "id": "ceiling", "x": 0, "y": -20, "w": 1120, "h": 20 },
+        { "id": "low_platform", "x": 380, "y": 330, "w": 140, "h": 16, "color": "#33414f" },
+        { "id": "high_ledge", "x": 820, "y": 250, "w": 140, "h": 190, "color": "#3b4a58" }
+      ],
+      "spawns": [
+        { "id": "spawn_from_entrance", "x": 80, "y": 440, "facing": 1 },
+        { "id": "spawn_from_ledge", "x": 840, "y": 250, "facing": -1 }
+      ],
+      "doors": [
+        {
+          "id": "door_ruins_west",
+          "x": 0,
+          "y": 0,
+          "w": 24,
+          "h": 480,
+          "targetRoom": "entrance",
+          "targetSpawn": "spawn_from_ruins"
+        },
+        {
+          "id": "door_vault",
+          "x": 880,
+          "y": 0,
+          "w": 80,
+          "h": 250,
+          "targetRoom": "vault",
+          "targetSpawn": "spawn_from_ruins"
+        }
+      ],
+      "checkpoints": [
+        { "id": "cp_ruins", "x": 120, "y": 440 }
+      ],
+      "abilities": [
+        { "id": "double_jump", "x": 490, "y": 330 }
+      ],
+      "rewards": [
+        {
+          "id": "reward_ruins_cache",
+          "x": 220,
+          "y": 440,
+          "grants": { "counters": { "coins": 5 }, "items": { "coin": 5 } }
+        }
+      ],
+      "targets": [
+        {
+          "id": "dummy_ruins",
+          "kind": "dummy",
+          "x": 560,
+          "y": 440,
+          "health": 2,
+          "rewardId": "reward_dummy_ruins",
+          "grants": { "counters": { "coins": 2 } }
+        },
+        {
+          "id": "crate_ruins",
+          "kind": "breakable",
+          "x": 680,
+          "y": 440,
+          "health": 1,
+          "w": 24,
+          "h": 32,
+          "rewardId": "reward_crate_ruins",
+          "grants": { "counters": { "coins": 1 }, "items": { "scrap": 1 } }
+        }
+      ],
+      "hazards": []
+    },
+    {
+      "id": "vault",
+      "bounds": { "x": 0, "y": 0, "w": 640, "h": 360 },
+      "background": "#161b24",
+      "solids": [
+        { "id": "floor", "x": 0, "y": 320, "w": 640, "h": 40 },
+        { "id": "wall_left", "x": -20, "y": 0, "w": 20, "h": 360 },
+        { "id": "wall_right", "x": 640, "y": 0, "w": 20, "h": 360 },
+        { "id": "ceiling", "x": 0, "y": -20, "w": 640, "h": 20 }
+      ],
+      "spawns": [
+        { "id": "spawn_from_ruins", "x": 60, "y": 320, "facing": 1 }
+      ],
+      "doors": [
+        {
+          "id": "door_vault_west",
+          "x": 0,
+          "y": 0,
+          "w": 24,
+          "h": 360,
+          "targetRoom": "ruins",
+          "targetSpawn": "spawn_from_ledge"
+        }
+      ],
+      "checkpoints": [
+        { "id": "cp_vault", "x": 140, "y": 320 }
+      ],
+      "abilities": [],
+      "rewards": [
+        {
+          "id": "reward_vault_relic",
+          "x": 520,
+          "y": 320,
+          "grants": { "counters": { "coins": 10 }, "items": { "relic": 1 } }
+        }
+      ],
+      "targets": [],
+      "hazards": []
+    }
+  ]
+}

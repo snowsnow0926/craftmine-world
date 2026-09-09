@@ -1,0 +1,15 @@
+{
+  "format": "craftmine.godot-sideview-input-plan/1",
+  "name": "get_ability",
+  "description": "Continues from the reach_ruins save (player on the ruins floor to the left of the low platform). Runs right at full speed and jumps once: the arc clears the platform's left edge and lands on top, then walks right over the double-jump pickup. The pickup is only reachable by an actual jump, because the platform top is 110 px above the floor and a single jump rises about 136 px.",
+  "durationTicks": 300,
+  "settleTicks": 120,
+  "segments": [
+    {
+      "fromTick": 0,
+      "toTick": 300,
+      "right": true,
+      "jump": { "mode": "once", "offset": 10, "hold": 15 }
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "format": "craftmine.godot-base/1",
+  "baseId": "side-view",
+  "baseVersion": "1.0.0",
+  "godotVersion": "4.7.2-stable",
+  "language": "GDScript",
+  "renderer": "gl_compatibility",
+  "status": "delivered-example-and-blank-start",
+  "entryScene": "res://scenes/main.tscn",
+  "protocols": {
+    "worldFormat": "craftmine.godot-sideview-world/1",
+    "stateFormat": "craftmine.godot-sideview-state/1",
+    "paramsFormat": "craftmine.godot-sideview-params/1",
+    "probeFormat": "craftmine.godot-sideview-probe/1",
+    "runFormat": "craftmine.godot-sideview-run/1",
+    "inputPlanFormat": "craftmine.godot-sideview-input-plan/1",
+    "gateReportFormat": "craftmine.godot-sideview-gate/1",
+    "progressFormat": "craftmine.progress/1",
+    "baseProtocolVersion": 1
+  },
+  "worlds": {
+    "blank": {
+      "directory": "worlds/blank",
+      "kind": "blank-start",
+      "entryScene": "res://scenes/main.tscn",
+      "description": "One flat room with the base runtime only: run, jump, platform collision, camera, basic attack, one checkpoint and one save file."
+    },
+    "ruins": {
+      "directory": "worlds/ruins",
+      "kind": "example",
+      "entryScene": "res://scenes/main.tscn",
+      "description": "Three connected rooms with return paths, a one-time cache, a training dummy, a breakable crate, a double-jump pickup and a 190 px high ledge that only a double jump can clear."
+    }
+  },
+  "capabilities": [
+    "gravity",
+    "run-and-air-control",
+    "jump-with-coyote-time-and-buffer",
+    "variable-jump-height",
+    "platform-collision",
+    "room-bounded-camera",
+    "basic-attack-hitbox",
+    "checkpoint-and-respawn",
+    "hazard-death",
+    "one-time-ability-pickup",
+    "one-time-reward-pickup",
+    "room-transition-with-return-path",
+    "persistent-abilities-checkpoints-rooms-rewards",
+    "atomic-save-with-backup-recovery"
+  ],
+  "abilities": [
+    {
+      "id": "double_jump",
+      "grantedBy": "worlds/ruins ability pickup",
+      "effect": "second upward impulse while airborne",
+      "persistent": true
+    }
+  ],
+  "tools": {
+    "verify": "tools/verify.mjs",
+    "gateMetrics": "tools/gate-metrics.mjs",
+    "newWorld": "tools/new-world.mjs",
+    "inputPlans": "tools/plans/"
+  },
+  "stateVersion": 1,
+  "entityIdScheme": "stable string id declared in world data, never a node path",
+  "hostBoundary": {
+    "writesOutsideSaveDirectory": false,
+    "startsGodotProcesses": false,
+    "buildsOrExports": false,
+    "readsHostCredentials": false,
+    "testInterface": "headless verifier is dormant unless CRAFTMINE_SIDEVIEW_INPUT_PLAN is set; it can press buttons and read the probe, never write player state"
+  },
+  "branchProposals": {
+    "digSandbox": {
+      "document": "docs/sandbox-branch-interface.md",
+      "status": "proposal-only-not-implemented"
+    }
+  }
+}

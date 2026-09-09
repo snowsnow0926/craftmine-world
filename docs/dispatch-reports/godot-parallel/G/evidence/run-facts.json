@@ -1,0 +1,1507 @@
+{
+ "format": "craftmine.godot-sideview-run-facts/1",
+ "runRoot": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d2ca382-14f2-49a8-b039-95f5608957c9\\sv-acc-final",
+ "runs": {
+  "A_reach_ruins": {
+   "plan": "travel_to_ruins",
+   "worldId": "ruins",
+   "boot": {
+    "loadError": "",
+    "loaded": false,
+    "recoveredFromBackup": false,
+    "stateVersion": 1,
+    "worldId": "ruins"
+   },
+   "totalTicks": 300,
+   "sampleCount": 300,
+   "final": {
+    "abilities": {},
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "checkpoints": {
+     "activated": {
+      "cp_ruins": true
+     },
+     "active": "cp_ruins"
+    },
+    "counters": {
+     "coins": 5
+    },
+    "format": "craftmine.godot-sideview-probe/1",
+    "inventory": {
+     "coin": 5
+    },
+    "player": {
+     "facing": 1,
+     "room": "ruins",
+     "x": 238.45675659179688,
+     "y": 439.9251403808594
+    },
+    "progress": {
+     "format": "craftmine.progress/1",
+     "player": {
+      "pitch": 0,
+      "x": 238.45675659179688,
+      "y": 439.9251403808594,
+      "yaw": 0,
+      "z": 0
+     }
+    },
+    "rewards": {
+     "reward_ruins_cache": true
+    },
+    "roomBounds": {
+     "h": 480,
+     "w": 1120,
+     "x": 0,
+     "y": 0
+    },
+    "rooms": {
+     "entrance": {
+      "entries": 1,
+      "visited": true
+     },
+     "ruins": {
+      "entries": 1,
+      "visited": true
+     }
+    },
+    "stateHash": "fd8f5f6346f8cbf4d921fdfe593f3fc96f0746ea3c4ba795db6c4dfc95fbdaf0",
+    "stateVersion": 1,
+    "tick": 300,
+    "time": 5,
+    "worldId": "ruins"
+   },
+   "timeline": [
+    {
+     "tick": 0,
+     "name": "room_entered",
+     "data": {
+      "roomId": "entrance",
+      "spawnId": "spawn_start",
+      "visited": true,
+      "x": 120,
+      "y": 320
+     }
+    },
+    {
+     "tick": 1,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 320
+     }
+    },
+    {
+     "tick": 61,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 319.92523193359375
+     }
+    },
+    {
+     "tick": 118,
+     "name": "door_used",
+     "data": {
+      "doorId": "door_entrance_east",
+      "doorRect": {
+       "h": 360,
+       "w": 24,
+       "x": 616,
+       "y": 0
+      },
+      "fromRoom": "entrance",
+      "playerX": 610.3370361328125,
+      "playerY": 319.9251403808594,
+      "targetRoom": "ruins",
+      "targetSpawn": "spawn_from_entrance"
+     }
+    },
+    {
+     "tick": 118,
+     "name": "room_entered",
+     "data": {
+      "roomId": "ruins",
+      "spawnId": "spawn_from_entrance",
+      "visited": true,
+      "x": 80,
+      "y": 440
+     }
+    },
+    {
+     "tick": 121,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 440
+     }
+    },
+    {
+     "tick": 125,
+     "name": "checkpoint_activated",
+     "data": {
+      "checkpointId": "cp_ruins",
+      "firstTime": true,
+      "x": 120,
+      "y": 440
+     }
+    },
+    {
+     "tick": 159,
+     "name": "reward_collected",
+     "data": {
+      "grants": {
+       "counters": {
+        "coins": 5
+       },
+       "items": {
+        "coin": 5
+       }
+      },
+      "rewardId": "reward_ruins_cache",
+      "source": "pickup",
+      "x": 220,
+      "y": 440
+     }
+    }
+   ]
+  },
+  "B_gate_locked": {
+   "plan": "attempt_vault_locked",
+   "worldId": "ruins",
+   "boot": {
+    "loadError": "",
+    "loaded": true,
+    "recoveredFromBackup": false,
+    "stateVersion": 1,
+    "worldId": "ruins"
+   },
+   "totalTicks": 540,
+   "sampleCount": 540,
+   "final": {
+    "abilities": {},
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "checkpoints": {
+     "activated": {
+      "cp_ruins": true
+     },
+     "active": "cp_ruins"
+    },
+    "counters": {
+     "coins": 5
+    },
+    "format": "craftmine.godot-sideview-probe/1",
+    "inventory": {
+     "coin": 5
+    },
+    "player": {
+     "facing": 1,
+     "room": "ruins",
+     "x": 809.9252319335938,
+     "y": 439.9768981933594
+    },
+    "progress": {
+     "format": "craftmine.progress/1",
+     "player": {
+      "pitch": 0,
+      "x": 809.9252319335938,
+      "y": 439.9768981933594,
+      "yaw": 0,
+      "z": 0
+     }
+    },
+    "rewards": {
+     "reward_ruins_cache": true
+    },
+    "roomBounds": {
+     "h": 480,
+     "w": 1120,
+     "x": 0,
+     "y": 0
+    },
+    "rooms": {
+     "entrance": {
+      "entries": 1,
+      "visited": true
+     },
+     "ruins": {
+      "entries": 2,
+      "visited": true
+     }
+    },
+    "stateHash": "fd8f5f6346f8cbf4d921fdfe593f3fc96f0746ea3c4ba795db6c4dfc95fbdaf0",
+    "stateVersion": 1,
+    "tick": 540,
+    "time": 9,
+    "worldId": "ruins"
+   },
+   "timeline": [
+    {
+     "tick": 0,
+     "name": "room_entered",
+     "data": {
+      "roomId": "ruins",
+      "spawnId": "",
+      "visited": true,
+      "x": 238.45675659179688,
+      "y": 439.9251403808594
+     }
+    },
+    {
+     "tick": 141,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 439.9982604980469
+     }
+    },
+    {
+     "tick": 201,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 439.9981994628906
+     }
+    },
+    {
+     "tick": 261,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 439.9981994628906
+     }
+    },
+    {
+     "tick": 321,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 439.9981994628906
+     }
+    },
+    {
+     "tick": 381,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 439.9981994628906
+     }
+    }
+   ]
+  },
+  "C_get_ability": {
+   "plan": "get_ability",
+   "worldId": "ruins",
+   "boot": {
+    "loadError": "",
+    "loaded": true,
+    "recoveredFromBackup": false,
+    "stateVersion": 1,
+    "worldId": "ruins"
+   },
+   "totalTicks": 420,
+   "sampleCount": 420,
+   "final": {
+    "abilities": {
+     "double_jump": true
+    },
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "checkpoints": {
+     "activated": {
+      "cp_ruins": true
+     },
+     "active": "cp_ruins"
+    },
+    "counters": {
+     "coins": 5
+    },
+    "format": "craftmine.godot-sideview-probe/1",
+    "inventory": {
+     "coin": 5
+    },
+    "player": {
+     "facing": 1,
+     "room": "ruins",
+     "x": 809.9249877929688,
+     "y": 439.9252624511719
+    },
+    "progress": {
+     "format": "craftmine.progress/1",
+     "player": {
+      "pitch": 0,
+      "x": 809.9249877929688,
+      "y": 439.9252624511719,
+      "yaw": 0,
+      "z": 0
+     }
+    },
+    "rewards": {
+     "reward_ruins_cache": true
+    },
+    "roomBounds": {
+     "h": 480,
+     "w": 1120,
+     "x": 0,
+     "y": 0
+    },
+    "rooms": {
+     "entrance": {
+      "entries": 1,
+      "visited": true
+     },
+     "ruins": {
+      "entries": 2,
+      "visited": true
+     }
+    },
+    "stateHash": "f3500d0a93bab31d43d73e362496528add7df295bc692a77faa4315491596f53",
+    "stateVersion": 1,
+    "tick": 420,
+    "time": 7,
+    "worldId": "ruins"
+   },
+   "timeline": [
+    {
+     "tick": 0,
+     "name": "room_entered",
+     "data": {
+      "roomId": "ruins",
+      "spawnId": "",
+      "visited": true,
+      "x": 238.45675659179688,
+      "y": 439.9251403808594
+     }
+    },
+    {
+     "tick": 11,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 439.9252624511719
+     }
+    },
+    {
+     "tick": 57,
+     "name": "ability_gained",
+     "data": {
+      "abilityId": "double_jump",
+      "source": "pickup",
+      "x": 490,
+      "y": 330
+     }
+    }
+   ]
+  },
+  "D_enter_vault": {
+   "plan": "enter_vault",
+   "worldId": "ruins",
+   "boot": {
+    "loadError": "",
+    "loaded": true,
+    "recoveredFromBackup": false,
+    "stateVersion": 1,
+    "worldId": "ruins"
+   },
+   "totalTicks": 390,
+   "sampleCount": 390,
+   "final": {
+    "abilities": {
+     "double_jump": true
+    },
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "checkpoints": {
+     "activated": {
+      "cp_ruins": true,
+      "cp_vault": true
+     },
+     "active": "cp_vault"
+    },
+    "counters": {
+     "coins": 15
+    },
+    "format": "craftmine.godot-sideview-probe/1",
+    "inventory": {
+     "coin": 5,
+     "relic": 1
+    },
+    "player": {
+     "facing": 1,
+     "room": "vault",
+     "x": 629.9249877929688,
+     "y": 319.9252624511719
+    },
+    "progress": {
+     "format": "craftmine.progress/1",
+     "player": {
+      "pitch": 0,
+      "x": 629.9249877929688,
+      "y": 319.9252624511719,
+      "yaw": 0,
+      "z": 0
+     }
+    },
+    "rewards": {
+     "reward_ruins_cache": true,
+     "reward_vault_relic": true
+    },
+    "roomBounds": {
+     "h": 360,
+     "w": 640,
+     "x": 0,
+     "y": 0
+    },
+    "rooms": {
+     "entrance": {
+      "entries": 1,
+      "visited": true
+     },
+     "ruins": {
+      "entries": 3,
+      "visited": true
+     },
+     "vault": {
+      "entries": 1,
+      "visited": true
+     }
+    },
+    "stateHash": "f096177402eb6f8afa4151f7c3bc43c812a840f353d968b97a0d356d4e9fcf6d",
+    "stateVersion": 1,
+    "tick": 390,
+    "time": 6.5,
+    "worldId": "ruins"
+   },
+   "timeline": [
+    {
+     "tick": 0,
+     "name": "room_entered",
+     "data": {
+      "roomId": "ruins",
+      "spawnId": "",
+      "visited": true,
+      "x": 809.9249877929688,
+      "y": 439.9252624511719
+     }
+    },
+    {
+     "tick": 1,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 439.9252624511719
+     }
+    },
+    {
+     "tick": 26,
+     "name": "player_jump",
+     "data": {
+      "kind": "double",
+      "y": 310.7586364746094
+     }
+    },
+    {
+     "tick": 52,
+     "name": "door_used",
+     "data": {
+      "doorId": "door_vault",
+      "doorRect": {
+       "h": 250,
+       "w": 80,
+       "x": 880,
+       "y": 0
+      },
+      "fromRoom": "ruins",
+      "playerX": 875.5916748046875,
+      "playerY": 208.92530822753906,
+      "targetRoom": "vault",
+      "targetSpawn": "spawn_from_ruins"
+     }
+    },
+    {
+     "tick": 52,
+     "name": "room_entered",
+     "data": {
+      "roomId": "vault",
+      "spawnId": "spawn_from_ruins",
+      "visited": true,
+      "x": 60,
+      "y": 320
+     }
+    },
+    {
+     "tick": 68,
+     "name": "checkpoint_activated",
+     "data": {
+      "checkpointId": "cp_vault",
+      "firstTime": true,
+      "x": 140,
+      "y": 320
+     }
+    },
+    {
+     "tick": 157,
+     "name": "reward_collected",
+     "data": {
+      "grants": {
+       "counters": {
+        "coins": 10
+       },
+       "items": {
+        "relic": 1
+       }
+      },
+      "rewardId": "reward_vault_relic",
+      "source": "pickup",
+      "x": 520,
+      "y": 320
+     }
+    }
+   ]
+  },
+  "E_revisit": {
+   "plan": "revisit_rooms",
+   "worldId": "ruins",
+   "boot": {
+    "loadError": "",
+    "loaded": true,
+    "recoveredFromBackup": false,
+    "stateVersion": 1,
+    "worldId": "ruins"
+   },
+   "totalTicks": 850,
+   "sampleCount": 850,
+   "final": {
+    "abilities": {
+     "double_jump": true
+    },
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "checkpoints": {
+     "activated": {
+      "cp_ruins": true,
+      "cp_vault": true
+     },
+     "active": "cp_ruins"
+    },
+    "counters": {
+     "coins": 15,
+     "deaths": 1
+    },
+    "format": "craftmine.godot-sideview-probe/1",
+    "inventory": {
+     "coin": 5,
+     "relic": 1
+    },
+    "player": {
+     "facing": -1,
+     "room": "entrance",
+     "x": 10.074953079223633,
+     "y": 319.9252624511719
+    },
+    "progress": {
+     "format": "craftmine.progress/1",
+     "player": {
+      "pitch": 0,
+      "x": 10.074953079223633,
+      "y": 319.9252624511719,
+      "yaw": 0,
+      "z": 0
+     }
+    },
+    "rewards": {
+     "reward_ruins_cache": true,
+     "reward_vault_relic": true
+    },
+    "roomBounds": {
+     "h": 360,
+     "w": 640,
+     "x": 0,
+     "y": 0
+    },
+    "rooms": {
+     "entrance": {
+      "entries": 2,
+      "visited": true
+     },
+     "ruins": {
+      "entries": 4,
+      "visited": true
+     },
+     "vault": {
+      "entries": 2,
+      "visited": true
+     }
+    },
+    "stateHash": "b125829662017fb590153dde3258972f9d0007399e5395230b200c0e523b9d8e",
+    "stateVersion": 1,
+    "tick": 850,
+    "time": 14.166666666666666,
+    "worldId": "ruins"
+   },
+   "timeline": [
+    {
+     "tick": 0,
+     "name": "room_entered",
+     "data": {
+      "roomId": "vault",
+      "spawnId": "",
+      "visited": true,
+      "x": 629.9249877929688,
+      "y": 319.9252624511719
+     }
+    },
+    {
+     "tick": 111,
+     "name": "checkpoint_activated",
+     "data": {
+      "checkpointId": "cp_vault",
+      "firstTime": false,
+      "x": 140,
+      "y": 320
+     }
+    },
+    {
+     "tick": 143,
+     "name": "door_used",
+     "data": {
+      "doorId": "door_vault_west",
+      "doorRect": {
+       "h": 360,
+       "w": 24,
+       "x": 0,
+       "y": 0
+      },
+      "fromRoom": "vault",
+      "playerX": 27.591659545898438,
+      "playerY": 319.9252624511719,
+      "targetRoom": "ruins",
+      "targetSpawn": "spawn_from_ledge"
+     }
+    },
+    {
+     "tick": 143,
+     "name": "room_entered",
+     "data": {
+      "roomId": "ruins",
+      "spawnId": "spawn_from_ledge",
+      "visited": true,
+      "x": 840,
+      "y": 250
+     }
+    },
+    {
+     "tick": 307,
+     "name": "checkpoint_activated",
+     "data": {
+      "checkpointId": "cp_ruins",
+      "firstTime": false,
+      "x": 120,
+      "y": 440
+     }
+    },
+    {
+     "tick": 334,
+     "name": "door_used",
+     "data": {
+      "doorId": "door_ruins_west",
+      "doorRect": {
+       "h": 480,
+       "w": 24,
+       "x": 0,
+       "y": 0
+      },
+      "fromRoom": "ruins",
+      "playerX": 28.66765785217285,
+      "playerY": 439.9252014160156,
+      "targetRoom": "entrance",
+      "targetSpawn": "spawn_from_ruins"
+     }
+    },
+    {
+     "tick": 334,
+     "name": "room_entered",
+     "data": {
+      "roomId": "entrance",
+      "spawnId": "spawn_from_ruins",
+      "visited": true,
+      "x": 556,
+      "y": 320
+     }
+    },
+    {
+     "tick": 376,
+     "name": "hazard_touched",
+     "data": {
+      "hazardId": "spikes_entrance",
+      "x": 390.07489013671875,
+      "y": 347.5
+     }
+    },
+    {
+     "tick": 376,
+     "name": "player_died",
+     "data": {
+      "cause": "hazard:spikes_entrance"
+     }
+    },
+    {
+     "tick": 412,
+     "name": "player_respawned",
+     "data": {
+      "checkpointId": "cp_ruins",
+      "x": 40,
+      "y": 320
+     }
+    }
+   ]
+  },
+  "F_hazard_respawn": {
+   "plan": "walk_into_spikes",
+   "worldId": "ruins",
+   "boot": {
+    "loadError": "",
+    "loaded": false,
+    "recoveredFromBackup": false,
+    "stateVersion": 1,
+    "worldId": "ruins"
+   },
+   "totalTicks": 420,
+   "sampleCount": 420,
+   "final": {
+    "abilities": {},
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "checkpoints": {
+     "activated": {
+      "cp_entrance": true
+     },
+     "active": "cp_entrance"
+    },
+    "counters": {
+     "deaths": 4
+    },
+    "format": "craftmine.godot-sideview-probe/1",
+    "inventory": {},
+    "player": {
+     "facing": 1,
+     "room": "entrance",
+     "x": 200,
+     "y": 320
+    },
+    "progress": {
+     "format": "craftmine.progress/1",
+     "player": {
+      "pitch": 0,
+      "x": 200,
+      "y": 320,
+      "yaw": 0,
+      "z": 0
+     }
+    },
+    "rewards": {},
+    "roomBounds": {
+     "h": 360,
+     "w": 640,
+     "x": 0,
+     "y": 0
+    },
+    "rooms": {
+     "entrance": {
+      "entries": 1,
+      "visited": true
+     }
+    },
+    "stateHash": "ccd901156b79f7feb11e19b52aded019ed45d25fb120aacab1996e293c2c047e",
+    "stateVersion": 1,
+    "tick": 420,
+    "time": 7,
+    "worldId": "ruins"
+   },
+   "timeline": [
+    {
+     "tick": 0,
+     "name": "room_entered",
+     "data": {
+      "roomId": "entrance",
+      "spawnId": "spawn_start",
+      "visited": true,
+      "x": 120,
+      "y": 320
+     }
+    },
+    {
+     "tick": 17,
+     "name": "checkpoint_activated",
+     "data": {
+      "checkpointId": "cp_entrance",
+      "firstTime": true,
+      "x": 200,
+      "y": 320
+     }
+    },
+    {
+     "tick": 76,
+     "name": "hazard_touched",
+     "data": {
+      "hazardId": "spikes_entrance",
+      "x": 429.92529296875,
+      "y": 347.4252624511719
+     }
+    },
+    {
+     "tick": 76,
+     "name": "player_died",
+     "data": {
+      "cause": "hazard:spikes_entrance"
+     }
+    },
+    {
+     "tick": 112,
+     "name": "player_respawned",
+     "data": {
+      "checkpointId": "cp_entrance",
+      "x": 200,
+      "y": 320
+     }
+    },
+    {
+     "tick": 113,
+     "name": "checkpoint_activated",
+     "data": {
+      "checkpointId": "cp_entrance",
+      "firstTime": false,
+      "x": 200,
+      "y": 320
+     }
+    },
+    {
+     "tick": 169,
+     "name": "hazard_touched",
+     "data": {
+      "hazardId": "spikes_entrance",
+      "x": 429.92510986328125,
+      "y": 347.4252624511719
+     }
+    },
+    {
+     "tick": 169,
+     "name": "player_died",
+     "data": {
+      "cause": "hazard:spikes_entrance"
+     }
+    },
+    {
+     "tick": 205,
+     "name": "player_respawned",
+     "data": {
+      "checkpointId": "cp_entrance",
+      "x": 200,
+      "y": 320
+     }
+    },
+    {
+     "tick": 206,
+     "name": "checkpoint_activated",
+     "data": {
+      "checkpointId": "cp_entrance",
+      "firstTime": false,
+      "x": 200,
+      "y": 320
+     }
+    },
+    {
+     "tick": 262,
+     "name": "hazard_touched",
+     "data": {
+      "hazardId": "spikes_entrance",
+      "x": 429.92510986328125,
+      "y": 347.4252624511719
+     }
+    },
+    {
+     "tick": 262,
+     "name": "player_died",
+     "data": {
+      "cause": "hazard:spikes_entrance"
+     }
+    },
+    {
+     "tick": 298,
+     "name": "player_respawned",
+     "data": {
+      "checkpointId": "cp_entrance",
+      "x": 200,
+      "y": 320
+     }
+    },
+    {
+     "tick": 299,
+     "name": "checkpoint_activated",
+     "data": {
+      "checkpointId": "cp_entrance",
+      "firstTime": false,
+      "x": 200,
+      "y": 320
+     }
+    },
+    {
+     "tick": 355,
+     "name": "hazard_touched",
+     "data": {
+      "hazardId": "spikes_entrance",
+      "x": 427.0003662109375,
+      "y": 347.4252624511719
+     }
+    },
+    {
+     "tick": 355,
+     "name": "player_died",
+     "data": {
+      "cause": "hazard:spikes_entrance"
+     }
+    },
+    {
+     "tick": 391,
+     "name": "player_respawned",
+     "data": {
+      "checkpointId": "cp_entrance",
+      "x": 200,
+      "y": 320
+     }
+    },
+    {
+     "tick": 392,
+     "name": "checkpoint_activated",
+     "data": {
+      "checkpointId": "cp_entrance",
+      "firstTime": false,
+      "x": 200,
+      "y": 320
+     }
+    }
+   ]
+  },
+  "G_blank_basic": {
+   "plan": "blank_basic",
+   "worldId": "blank",
+   "boot": {
+    "loadError": "",
+    "loaded": false,
+    "recoveredFromBackup": false,
+    "stateVersion": 1,
+    "worldId": "blank"
+   },
+   "totalTicks": 510,
+   "sampleCount": 510,
+   "final": {
+    "abilities": {},
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "checkpoints": {
+     "activated": {
+      "cp_start": true
+     },
+     "active": "cp_start"
+    },
+    "counters": {
+     "coins": 1,
+     "hits": 2
+    },
+    "format": "craftmine.godot-sideview-probe/1",
+    "inventory": {},
+    "player": {
+     "facing": 1,
+     "room": "start",
+     "x": 424.500244140625,
+     "y": 319.9715576171875
+    },
+    "progress": {
+     "format": "craftmine.progress/1",
+     "player": {
+      "pitch": 0,
+      "x": 424.500244140625,
+      "y": 319.9715576171875,
+      "yaw": 0,
+      "z": 0
+     }
+    },
+    "rewards": {
+     "reward_blank_dummy": true
+    },
+    "roomBounds": {
+     "h": 360,
+     "w": 640,
+     "x": 0,
+     "y": 0
+    },
+    "rooms": {
+     "start": {
+      "entries": 1,
+      "visited": true
+     }
+    },
+    "stateHash": "78e5e77e2c7de60e5bb57326c9c55ff3d04f86523bd811ac69deb9bd7701d01f",
+    "stateVersion": 1,
+    "tick": 510,
+    "time": 8.5,
+    "worldId": "blank"
+   },
+   "timeline": [
+    {
+     "tick": 0,
+     "name": "room_entered",
+     "data": {
+      "roomId": "start",
+      "spawnId": "spawn_start",
+      "visited": true,
+      "x": 80,
+      "y": 320
+     }
+    },
+    {
+     "tick": 21,
+     "name": "checkpoint_activated",
+     "data": {
+      "checkpointId": "cp_start",
+      "firstTime": true,
+      "x": 180,
+      "y": 320
+     }
+    },
+    {
+     "tick": 82,
+     "name": "target_hit",
+     "data": {
+      "damage": 1,
+      "facing": 1,
+      "health": 1,
+      "targetId": "dummy_start"
+     }
+    },
+    {
+     "tick": 122,
+     "name": "target_hit",
+     "data": {
+      "damage": 1,
+      "facing": 1,
+      "health": 0,
+      "targetId": "dummy_start"
+     }
+    },
+    {
+     "tick": 122,
+     "name": "target_defeated",
+     "data": {
+      "kind": "dummy",
+      "rewardId": "reward_blank_dummy",
+      "targetId": "dummy_start"
+     }
+    },
+    {
+     "tick": 141,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 319.9252624511719
+     }
+    }
+   ]
+  },
+  "H_materialized": {
+   "plan": "travel_to_ruins",
+   "worldId": "ruins",
+   "boot": {
+    "loadError": "",
+    "loaded": false,
+    "recoveredFromBackup": false,
+    "stateVersion": 1,
+    "worldId": "ruins"
+   },
+   "totalTicks": 300,
+   "sampleCount": 300,
+   "final": {
+    "abilities": {},
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "checkpoints": {
+     "activated": {
+      "cp_ruins": true
+     },
+     "active": "cp_ruins"
+    },
+    "counters": {
+     "coins": 5
+    },
+    "format": "craftmine.godot-sideview-probe/1",
+    "inventory": {
+     "coin": 5
+    },
+    "player": {
+     "facing": 1,
+     "room": "ruins",
+     "x": 238.45675659179688,
+     "y": 439.9251403808594
+    },
+    "progress": {
+     "format": "craftmine.progress/1",
+     "player": {
+      "pitch": 0,
+      "x": 238.45675659179688,
+      "y": 439.9251403808594,
+      "yaw": 0,
+      "z": 0
+     }
+    },
+    "rewards": {
+     "reward_ruins_cache": true
+    },
+    "roomBounds": {
+     "h": 480,
+     "w": 1120,
+     "x": 0,
+     "y": 0
+    },
+    "rooms": {
+     "entrance": {
+      "entries": 1,
+      "visited": true
+     },
+     "ruins": {
+      "entries": 1,
+      "visited": true
+     }
+    },
+    "stateHash": "fd8f5f6346f8cbf4d921fdfe593f3fc96f0746ea3c4ba795db6c4dfc95fbdaf0",
+    "stateVersion": 1,
+    "tick": 300,
+    "time": 5,
+    "worldId": "ruins"
+   },
+   "timeline": [
+    {
+     "tick": 0,
+     "name": "room_entered",
+     "data": {
+      "roomId": "entrance",
+      "spawnId": "spawn_start",
+      "visited": true,
+      "x": 120,
+      "y": 320
+     }
+    },
+    {
+     "tick": 1,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 320
+     }
+    },
+    {
+     "tick": 61,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 319.92523193359375
+     }
+    },
+    {
+     "tick": 118,
+     "name": "door_used",
+     "data": {
+      "doorId": "door_entrance_east",
+      "doorRect": {
+       "h": 360,
+       "w": 24,
+       "x": 616,
+       "y": 0
+      },
+      "fromRoom": "entrance",
+      "playerX": 610.3370361328125,
+      "playerY": 319.9251403808594,
+      "targetRoom": "ruins",
+      "targetSpawn": "spawn_from_entrance"
+     }
+    },
+    {
+     "tick": 118,
+     "name": "room_entered",
+     "data": {
+      "roomId": "ruins",
+      "spawnId": "spawn_from_entrance",
+      "visited": true,
+      "x": 80,
+      "y": 440
+     }
+    },
+    {
+     "tick": 121,
+     "name": "player_jump",
+     "data": {
+      "kind": "ground",
+      "y": 440
+     }
+    },
+    {
+     "tick": 125,
+     "name": "checkpoint_activated",
+     "data": {
+      "checkpointId": "cp_ruins",
+      "firstTime": true,
+      "x": 120,
+      "y": 440
+     }
+    },
+    {
+     "tick": 159,
+     "name": "reward_collected",
+     "data": {
+      "grants": {
+       "counters": {
+        "coins": 5
+       },
+       "items": {
+        "coin": 5
+       }
+      },
+      "rewardId": "reward_ruins_cache",
+      "source": "pickup",
+      "x": 220,
+      "y": 440
+     }
+    }
+   ]
+  }
+ },
+ "sourceHashes": [
+  {
+   "path": ".gitignore",
+   "sha256": "1b1b71d62b222d3a1a59e0aa92f1c1bcff4f2eae24f72300b93722974fc9856b"
+  },
+  {
+   "path": "docs/assets-and-provenance.md",
+   "sha256": "ac09127bdc41918234c2b69ec5cf1838a93276ff68a0d8e420fb72027ce1667b"
+  },
+  {
+   "path": "docs/base-spec.md",
+   "sha256": "a85b729a411c7cc416a2f7dddc543a4e4af164d812760010d07f89087281faf3"
+  },
+  {
+   "path": "docs/host-integration.md",
+   "sha256": "dbd435d7e83e07f2f70e261e7342f9fa1ce92d2f509df08fb7a8321ffbeaca36"
+  },
+  {
+   "path": "docs/sandbox-branch-interface.md",
+   "sha256": "3a45ffb72840512a1e44d237a630b4845b9efba4d2189003465ee2536b657f5b"
+  },
+  {
+   "path": "manifest.json",
+   "sha256": "becffc1401bd15d1c113f4167138082664a25d5734d758a5edc2e5f9f2a29bde"
+  },
+  {
+   "path": "params/side_view_params.json",
+   "sha256": "997281c7652b6398dfc078d59f08a6b113dd1fde85f13bda175d72df35aeded5"
+  },
+  {
+   "path": "project.godot",
+   "sha256": "27c61efd02d0938c4ad195505863516d9cb817e6242f29358205f7254f375a6d"
+  },
+  {
+   "path": "README.md",
+   "sha256": "0019dc2a584b77688b8f7c206b7dc7a29ecca6ea57d053b0dc00b7dbdf881879"
+  },
+  {
+   "path": "scenes/main.tscn",
+   "sha256": "81209aca3e434c5c1e5ffee25828e02a22a5f9c17a7fc771921b8b67e449d433"
+  },
+  {
+   "path": "scripts/player/human_input_source.gd",
+   "sha256": "5421b8fd8c6d5f96ed441b35697bb5195b0b1008c9bdcc550655b8cb58156e22"
+  },
+  {
+   "path": "scripts/player/human_input_source.gd.uid",
+   "sha256": "f55116dd9dcc6589ada520d8492328b5ee023043fd5c1a5246d6718e5de93446"
+  },
+  {
+   "path": "scripts/player/input_source.gd",
+   "sha256": "be83ebdec49d64b688a2790d9b74fe15233b27b4685891af4411ab4d80a04b37"
+  },
+  {
+   "path": "scripts/player/input_source.gd.uid",
+   "sha256": "a7e62cdc4af90efc6de02e38f705296120f81418e435adc58eade63b01d31675"
+  },
+  {
+   "path": "scripts/player/scripted_input_source.gd",
+   "sha256": "fa0531d6cd403677a9c6af4ddfb2abce72e7d8c6be6f595cb62f94587162bae4"
+  },
+  {
+   "path": "scripts/player/scripted_input_source.gd.uid",
+   "sha256": "2ef2e0ac9fe6c17e4b55501c6ecd1af4d455e25308cc3d8b5fe48a6810d2c76f"
+  },
+  {
+   "path": "scripts/player/side_view_player.gd",
+   "sha256": "ce821db47594789c80d691cd22ce4e4b34c85b8d398223bed2ded81214bfccfa"
+  },
+  {
+   "path": "scripts/player/side_view_player.gd.uid",
+   "sha256": "7535196321b831d5c4981d8bf5f175fcfbdfa1142d5382e65f9838ce97c10178"
+  },
+  {
+   "path": "scripts/probe/headless_verifier.gd",
+   "sha256": "2d500fa3bc1636f47519524a9eff5082be7a364c479124233cba9a9435fc93fc"
+  },
+  {
+   "path": "scripts/probe/headless_verifier.gd.uid",
+   "sha256": "f70b78381a0724f91a73513c19fa3788250d97ee15dd05b98c1550511ce9f111"
+  },
+  {
+   "path": "scripts/runtime/main.gd",
+   "sha256": "d462be095b2ef46d3f7eadd29504ca3489c3e5b83ce0ea9ee1cba02660612844"
+  },
+  {
+   "path": "scripts/runtime/main.gd.uid",
+   "sha256": "94b6817ecb399f4afd8fc43e58a12b9a5c3f1a21d16e5c909eae3d18328dcfab"
+  },
+  {
+   "path": "scripts/runtime/save_store.gd",
+   "sha256": "87444bcce9549785618e30c169e4e6b5618768fd5094b0155f7377bd0bb00640"
+  },
+  {
+   "path": "scripts/runtime/save_store.gd.uid",
+   "sha256": "cbce8269289f7aae9a3750c619b8c8b25d06e4797dd63188067e79f7e7131601"
+  },
+  {
+   "path": "scripts/runtime/side_view_config.gd",
+   "sha256": "50193640a1d902bd00c995904a15711b9469b96df649c6f8aee37368d4e97143"
+  },
+  {
+   "path": "scripts/runtime/side_view_config.gd.uid",
+   "sha256": "816b865b1684e127bee65641534edf2eb7631672fee7599d975743cf400ab694"
+  },
+  {
+   "path": "scripts/runtime/side_view_runtime.gd",
+   "sha256": "e69524dcfd8b4c6c57ad16c760629724b91d96f3c49382a47639ac9145b08ddf"
+  },
+  {
+   "path": "scripts/runtime/side_view_runtime.gd.uid",
+   "sha256": "49f678e8fdf53888bd8c3cf7d98d5b73343d69d01a6e749505507ac1be03b377"
+  },
+  {
+   "path": "scripts/runtime/world_state.gd",
+   "sha256": "25f276541d3eeacdb4d970edb610d84fe4475b56427a5615c48cb416b9c89ecf"
+  },
+  {
+   "path": "scripts/runtime/world_state.gd.uid",
+   "sha256": "20c8925fa42827aeb986411100d7971d1a077ed0a2031933692903b0bf43cb9f"
+  },
+  {
+   "path": "scripts/world/checkpoint.gd",
+   "sha256": "4f4e391ec9fb29af25228c7876b0d0e3aaf4cb020488c88b7f4354359dcf819f"
+  },
+  {
+   "path": "scripts/world/checkpoint.gd.uid",
+   "sha256": "cc1e0c624a63732ba1dd08b702acf05a445ae707bd99bcdc4e7a97c899f19cc7"
+  },
+  {
+   "path": "scripts/world/hazard.gd",
+   "sha256": "255c51dbc198bf833805be5f3d9de603db1781e1280eeeef21e6ec9e1c6c0f49"
+  },
+  {
+   "path": "scripts/world/hazard.gd.uid",
+   "sha256": "5ff749e723785974f022cc3a64393498c102fd0ad7126b4dc8834b7a021fefc6"
+  },
+  {
+   "path": "scripts/world/pickup.gd",
+   "sha256": "c0b3d28d8f405bca5efd9c36bf551403df57862f166ea918402b9ea2abe3caac"
+  },
+  {
+   "path": "scripts/world/pickup.gd.uid",
+   "sha256": "a5d9749032cee80cc7ed57c5eb72d126b7a2f16446950f922f351b321fbd5f96"
+  },
+  {
+   "path": "scripts/world/room_door.gd",
+   "sha256": "530462e565c3d00f439a612a8c001ff704ccaa170bf9ddc5e4aff3cfc65e2234"
+  },
+  {
+   "path": "scripts/world/room_door.gd.uid",
+   "sha256": "212ef79c2debfc4dafd6a7c70878b71760f8979c13ff99a055e025c06fea89e1"
+  },
+  {
+   "path": "scripts/world/room_manager.gd",
+   "sha256": "663ac911cd4dd5d8838aac3f1c6eaa8db7749e14bbbe9ccc31689f61e2da6e08"
+  },
+  {
+   "path": "scripts/world/room_manager.gd.uid",
+   "sha256": "57b5a135661a870ce235d37c688615784685f5c157d8f8962c8b6f7fa9984636"
+  },
+  {
+   "path": "scripts/world/room.gd",
+   "sha256": "c74d7c6d0d3b04920a1b39bc2776308a4dcc6d901e08efba729d99fb246119fc"
+  },
+  {
+   "path": "scripts/world/room.gd.uid",
+   "sha256": "6f53d5ef950f58c30486befb4795bdc95eb1f9473ff30bc38eaee8f4d522c005"
+  },
+  {
+   "path": "scripts/world/target.gd",
+   "sha256": "60953bfc985e187212aae0c0157900f78b6ff04cddfb7f1a264611668fe4c3d1"
+  },
+  {
+   "path": "scripts/world/target.gd.uid",
+   "sha256": "f762db7c4824817bc29e659bdee572907fec3c347803314a6bcf7cdc87624481"
+  },
+  {
+   "path": "tools/gate-metrics.mjs",
+   "sha256": "6a5620b3173de5159535dd6f8f2e84435851796bc4be83a725915d4f1fe4b994"
+  },
+  {
+   "path": "tools/new-world.mjs",
+   "sha256": "5a5fb3f2c25759ca29ca0447b0dbe6e1247e37a88e333bd63f2ec1ecc644e66e"
+  },
+  {
+   "path": "tools/plans/attempt_vault_locked.json",
+   "sha256": "c43cda43f31aaa2d826949e67d778aad5590ad0452f069e9dd3e60394e26e8e8"
+  },
+  {
+   "path": "tools/plans/blank_basic.json",
+   "sha256": "b1307c039c962fe91ad9b529731a8f18f3110191f5d6c816358ad2accd0be5bc"
+  },
+  {
+   "path": "tools/plans/enter_vault.json",
+   "sha256": "4f4e5a5f9258dd4f3c66b4ba1471d47e6fd909463a4f88554b439ca200033a64"
+  },
+  {
+   "path": "tools/plans/get_ability.json",
+   "sha256": "03bcba986e2a3fb821c452e5a27a4d7b78e98e4fcf82b0c4b9eb303f103a469a"
+  },
+  {
+   "path": "tools/plans/revisit_rooms.json",
+   "sha256": "6405e66cf95d1fc583bcbac82d17ae9cf7b92a71dd82dfbe74d9d2a50db7520f"
+  },
+  {
+   "path": "tools/plans/travel_to_ruins.json",
+   "sha256": "aa7a2711521d1283cced9fb8b2c2cc292c68ba813ed6eb77c83ca1a5ef81fd83"
+  },
+  {
+   "path": "tools/plans/walk_into_spikes.json",
+   "sha256": "5648c4d99d110b6a13587411afdb7110b265ea87a67ff37f8345e5c041ec60f5"
+  },
+  {
+   "path": "tools/verify.mjs",
+   "sha256": "3a756247233c664640ef940a865fe04108e8b046876ce3e9e69b193bc06a6dfa"
+  },
+  {
+   "path": "worlds/blank/world.json",
+   "sha256": "d9d701be2ba107f9fd257bc5ce204d285e0b433e23806488d5038a75e5910620"
+  },
+  {
+   "path": "worlds/ruins/world.json",
+   "sha256": "2a31ca42db092234bcabac3abf9f391e8fd83bce48779fcf90412eba47c3ce60"
+  }
+ ],
+ "sourceFileCount": 56,
+ "sourceTreeHash": "fe1838608656c13949da041b8a0c435572633b4659ed62b8d93ed770eb4a8546"
+}

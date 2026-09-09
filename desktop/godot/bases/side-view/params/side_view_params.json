@@ -1,0 +1,57 @@
+{
+  "format": "craftmine.godot-sideview-params/1",
+  "baseId": "side-view",
+  "baseVersion": "1.0.0",
+  "notes": "Single source of truth for tuning. Loaded by the runtime, by the acceptance harness and by the docs generator. All units are pixels and seconds; +Y is down, matching Godot 2D.",
+  "movement": {
+    "gravity": 1800.0,
+    "maxFallSpeed": 1200.0,
+    "runSpeed": 260.0,
+    "groundAccel": 2400.0,
+    "groundDecel": 2600.0,
+    "airAccel": 1800.0,
+    "airDecel": 900.0,
+    "jumpVelocity": -700.0,
+    "doubleJumpVelocity": -640.0,
+    "coyoteTime": 0.1,
+    "jumpBufferTime": 0.12,
+    "jumpCutMultiplier": 0.45,
+    "wallSlideEnabled": false,
+    "wallJumpEnabled": false,
+    "upDirection": "up"
+  },
+  "combat": {
+    "maxHealth": 3,
+    "invulnerableTime": 0.8,
+    "attackCooldown": 0.35,
+    "attackActiveTime": 0.12,
+    "attackDamage": 1,
+    "attackReach": 34.0,
+    "attackHeight": 30.0,
+    "attackKnockback": 0.0
+  },
+  "respawn": {
+    "delaySeconds": 0.6,
+    "resetVelocity": true
+  },
+  "camera": {
+    "smoothing": 8.0,
+    "deadzoneWidth": 96.0,
+    "deadzoneHeight": 48.0,
+    "lookAheadX": 48.0,
+    "clampToRoomBounds": true
+  },
+  "world": {
+    "physicsTicksPerSecond": 60,
+    "viewportWidth": 640,
+    "viewportHeight": 360,
+    "playerHalfWidth": 10.0,
+    "playerHeight": 40.0
+  },
+  "gates": {
+    "notes": "Geometry facts used by the arithmetic gate check. The runtime derives jump reach from movement values; the world data declares which gate each region belongs to.",
+    "vaultLedgeRise": 190.0,
+    "minimumSingleJumpMargin": 16.0,
+    "minimumDoubleJumpMargin": 16.0
+  }
+}

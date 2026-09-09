@@ -1,0 +1,11 @@
+{
+  "format": "craftmine.godot-sideview-input-plan/1",
+  "name": "attempt_vault_locked",
+  "description": "Continues from the reach_ruins save (player under the low platform in the ruins room, double jump NOT owned). Runs right on the ground, passing under the low platform and its pickup, until pressed against the high-ledge wall, then performs full-height single jumps for six seconds. The jump is held for its whole flight, so each jump really reaches its full ~136 px; the ledge top is 190 px above the floor, so the player must never reach the vault.",
+  "durationTicks": 420,
+  "settleTicks": 120,
+  "segments": [
+    { "fromTick": 0, "toTick": 140, "right": true },
+    { "fromTick": 140, "toTick": 420, "right": true, "jump": { "mode": "repeat", "period": 60, "hold": 55 } }
+  ]
+}
