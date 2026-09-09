@@ -99,8 +99,8 @@
     },
     {
       "path": "scripts/base/game.gd",
-      "bytes": 10177,
-      "sha256": "57f8d8ebd60ad18f40bf6204efcc2da459d7182ceab46056de70bd5fe87ff18b"
+      "bytes": 11373,
+      "sha256": "b4bcd89763551f5d730ba61682aed9972d87726a96b005b61680d1256e8020a1"
     },
     {
       "path": "scripts/base/gather_zone.gd",
@@ -114,8 +114,8 @@
     },
     {
       "path": "scripts/base/map_renderer.gd",
-      "bytes": 4331,
-      "sha256": "dfb5f533c50e226af194739ee9cd0f531c8ae1f87ddd1c9fd11861ca48c30358"
+      "bytes": 4798,
+      "sha256": "3c856e484521a0bf0ace28195ca61144c30da581d06f0da4d90c6cd5c1358e3c"
     },
     {
       "path": "scripts/base/npc.gd",
@@ -129,13 +129,13 @@
     },
     {
       "path": "scripts/base/probe.gd",
-      "bytes": 9351,
-      "sha256": "7788efbbe4d57bc9d5f3f26a3b4507da99195a787153b6fbc6d1d559378ccb76"
+      "bytes": 10393,
+      "sha256": "a241960395637d4445257638c81a0fb295ddeed884b9cc885f21fc4d01d8d7e6"
     },
     {
       "path": "scripts/base/quest_manager.gd",
-      "bytes": 2720,
-      "sha256": "d08d9eff49c38f071b1b27610e065785bdf9533678001ce6acc743d5ce57b90e"
+      "bytes": 3742,
+      "sha256": "2fc3235f7c5f43e5fbc405b613b7768d0e8ad9449b4cb88817b40ecbbf0f8e76"
     },
     {
       "path": "scripts/base/save_system.gd",
@@ -159,8 +159,8 @@
     },
     {
       "path": "scripts/base/world_state.gd",
-      "bytes": 12638,
-      "sha256": "11832fb46205f7199b34354480d7fbcc81657fd7bb50c7b246e18febab544621"
+      "bytes": 13421,
+      "sha256": "86e9ac26f99ae28b1150669522662308a1a31e355b4a11f2dab3006afc74efd0"
     },
     {
       "path": "scripts/base/zone.gd",

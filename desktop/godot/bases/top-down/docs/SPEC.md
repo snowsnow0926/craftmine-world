@@ -70,11 +70,14 @@
 
 1. 任务数据存在，否则 `unknown_quest`
 2. `actor` 与发布者区域真实重叠，否则 `out_of_range`
-3. 需求物品和数量配置合法，否则 `quest_is_misconfigured`
-4. **奖励尚未发放**：`quests[id].rewarded == false` 且
-   `grantedRewards["<id>#reward"]` 不存在，否则 `already_rewarded`
+3. `giver` 的 `entity_id` 等于任务声明的 `giver`（声明为空时不检查），否则 `wrong_giver`
+   —— 这一条挡住"把任务 id 传给另一个 NPC 再领一次"的路径
+4. 确保任务记录存在（`ensure_quest`），使后续账本写入不可能中途失败
+5. **奖励尚未发放**：`quests[id].rewarded == false`、`grantedRewards["<id>#reward"]`
+   不存在、且 `quests[id].status != "completed"`，否则 `already_rewarded`
    —— 这一步在扣除物品之前，所以重复交付不会吞掉玩家材料
-5. 背包数量足够，否则 `missing_items`
+6. 需求物品和数量配置合法，否则 `quest_is_misconfigured`
+7. 背包数量足够，否则 `missing_items`
 
 通过后一次性提交：扣材料 → 加金币 → 加奖励物品 → 同时写
 `quests[id].rewarded = true` 与 `grantedRewards["<id>#reward"] = true`
@@ -141,8 +144,9 @@ NPC 台词由 `data/npcs/<id>.json` 的 `lines` 决定，按顺序取第一条
 | `unknown_item` / `unknown_shop` / `unknown_npc` / `unknown_zone` | id 不在当前场景或数据里 |
 | `out_of_stock` | 库存为 0 |
 | `not_enough_coins` | 金币不足 |
-| `already_rewarded` | 该任务奖励已发放 |
+| `already_rewarded` | 该任务奖励已发放，或任务状态已是 `completed` |
 | `missing_items` | 交付所需物品不足 |
+| `wrong_giver` | 把任务交给了不是它声明的发布者 |
 | `quest_is_misconfigured` | 任务数据缺少合法的 `requires` |
 | `shop_disabled` / `disabled` | 交互物被禁用 |
 | `invalid_price` | 商品价格为负 |

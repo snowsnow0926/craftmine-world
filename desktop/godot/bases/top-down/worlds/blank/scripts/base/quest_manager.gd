@@ -20,7 +20,23 @@ static func deliver(quest_id: String, giver: Node, actor: Node) -> Dictionary:
 	if actor == null or giver == null or not (giver as Area2D).overlaps_body(actor):
 		return {"ok": false, "reason": "out_of_range", "questId": quest_id}
 
+	# A quest may only be handed in to its declared giver, so passing another NPC
+	# (or another quest id) cannot open a second reward path.
+	var declared_giver := String(quest.get("giver", ""))
+	if not declared_giver.is_empty() and _entity_id(giver) != declared_giver:
+		return {
+			"ok": false,
+			"reason": "wrong_giver",
+			"questId": quest_id,
+			"expectedGiver": declared_giver,
+			"actualGiver": _entity_id(giver),
+		}
+
 	var state: WorldState = Game.state
+	# Guarantee the quest record exists before any ledger write, so a quest that
+	# no NPC declared can never pay out and then abort mid-transaction.
+	state.ensure_quest(quest_id)
+
 	var ledger_key := reward_id(quest_id)
 	if state.quest_rewarded(quest_id) or state.has_granted(ledger_key):
 		return {
@@ -30,6 +46,15 @@ static func deliver(quest_id: String, giver: Node, actor: Node) -> Dictionary:
 			"rewardId": ledger_key,
 			"coins": state.coins,
 			"questStatus": state.quest_status(quest_id),
+		}
+	if state.quest_status(quest_id) == "completed":
+		return {
+			"ok": false,
+			"reason": "already_rewarded",
+			"questId": quest_id,
+			"rewardId": ledger_key,
+			"coins": state.coins,
+			"questStatus": "completed",
 		}
 
 	var requires: Dictionary = quest.get("requires", {})
@@ -76,3 +101,10 @@ static func deliver(quest_id: String, giver: Node, actor: Node) -> Dictionary:
 		"grantedItems": granted_items,
 		"questStatus": state.quest_status(quest_id),
 	}
+
+
+static func _entity_id(node: Node) -> String:
+	if node == null or node.get_script() == null:
+		return ""
+	var value: Variant = node.get("entity_id")
+	return String(value) if value is String else ""

@@ -26,6 +26,14 @@
       }
     },
     {
+      "op": "deliver",
+      "args": {
+        "npcId": "npc-mira",
+        "questId": "no-such-quest",
+        "label": "deliver-unknown"
+      }
+    },
+    {
       "op": "talk",
       "args": {
         "npcId": "npc-mira",

@@ -38,24 +38,32 @@ static func create(world_id_value: String, initial: Dictionary) -> WorldState:
 # only the starting position/inventory of a brand new player, so a world copied
 # from the example can never inherit the example author's claimed rewards.
 func apply_initial_progress(initial: Dictionary) -> void:
-	coins = int(initial.get("coins", 0))
+	# Every value is sanitised: initial progress is author-written data, and a
+	# negative stock or a malformed position must not produce a save file that
+	# the strict loader will reject forever.
+	coins = maxi(0, _safe_int(initial.get("coins"), 0))
 	inventory.clear()
 	for entry in _as_array(initial.get("inventory", [])):
 		if entry is Dictionary and entry.get("id") is String:
-			inventory[String(entry.id)] = int(entry.get("count", 0))
+			var count := maxi(0, _safe_int(entry.get("count"), 0))
+			if count > 0:
+				inventory[String(entry.id)] = count
 	shops.clear()
 	for shop_entry in _as_array(initial.get("shops", [])):
 		if shop_entry is Dictionary and shop_entry.get("id") is String:
 			var stock: Dictionary = {}
 			for item in _as_array(shop_entry.get("stock", [])):
 				if item is Dictionary and item.get("id") is String:
-					stock[String(item.id)] = int(item.get("count", 0))
+					stock[String(item.id)] = maxi(0, _safe_int(item.get("count"), 0))
 			shops[String(shop_entry.id)] = {"stock": stock}
 	quests.clear()
 	for quest_entry in _as_array(initial.get("quests", [])):
 		if quest_entry is Dictionary and quest_entry.get("id") is String:
+			var status := String(quest_entry.get("status", "inactive"))
+			if not QUEST_STATUSES.has(status):
+				status = "inactive"
 			quests[String(quest_entry.id)] = {
-				"status": String(quest_entry.get("status", "inactive")),
+				"status": status,
 				"delivered": 0,
 				"rewarded": false,
 			}
@@ -64,13 +72,27 @@ func apply_initial_progress(initial: Dictionary) -> void:
 	scene_positions.clear()
 	for flag_entry in _as_array(initial.get("flags", [])):
 		if flag_entry is Dictionary and flag_entry.get("id") is String:
-			flags[String(flag_entry.id)] = flag_entry.get("value", true)
+			var value: Variant = flag_entry.get("value", true)
+			if value is bool or value is String or value is int or value is float:
+				flags[String(flag_entry.id)] = value
 	scene_id = String(initial.get("sceneId", ""))
-	var spawn := _as_array(initial.get("playerPosition", [0, 0]))
-	player_position = Vector2(float(spawn[0]), float(spawn[1]))
+	player_position = Vector2.ZERO
+	var spawn := _as_array(initial.get("playerPosition", []))
+	if spawn.size() == 2:
+		var px: Variant = _as_float(spawn[0])
+		var py: Variant = _as_float(spawn[1])
+		if px != null and py != null:
+			player_position = Vector2(px, py)
 	player_facing = String(initial.get("playerFacing", "down"))
 	if not FACINGS.has(player_facing):
 		player_facing = "down"
+
+
+static func _safe_int(value: Variant, fallback: int) -> int:
+	var parsed: Variant = _as_int(value)
+	if parsed == null:
+		return fallback
+	return int(parsed)
 
 
 func clone() -> WorldState:
@@ -117,7 +139,7 @@ func ensure_shop(shop_id: String, catalog: Array) -> void:
 			continue
 		var item_id := String(entry.id)
 		if not stock.has(item_id):
-			stock[item_id] = int(entry.get("stock", 0))
+			stock[item_id] = maxi(0, _safe_int(entry.get("stock"), 0))
 
 
 func stock_of(shop_id: String, item_id: String) -> int:

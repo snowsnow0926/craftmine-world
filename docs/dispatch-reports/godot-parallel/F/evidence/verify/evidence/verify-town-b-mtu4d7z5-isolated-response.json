@@ -16,6 +16,8 @@
     "maps": {
       "town-overworld": {
         "collisionShapes": 48,
+        "effectiveHeight": 22,
+        "effectiveWidth": 40,
         "height": 22,
         "mapId": "town-overworld",
         "ok": true,
@@ -70,7 +72,7 @@
       "moving": false
     },
     "stateVersion": 1,
-    "worldId": "verify-town-b-mtu47sdt"
+    "worldId": "verify-town-b-mtu4d7z5"
   },
   "format": "craftmine.godot-topdown-probe/1",
   "ok": true,
@@ -93,6 +95,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -147,7 +151,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-b-mtu47sdt"
+          "worldId": "verify-town-b-mtu4d7z5"
         }
       }
     },
@@ -199,6 +203,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -253,7 +259,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-b-mtu47sdt"
+          "worldId": "verify-town-b-mtu4d7z5"
         },
         "zoneId": "herb-patch"
       }
@@ -280,6 +286,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -334,7 +342,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-b-mtu47sdt"
+          "worldId": "verify-town-b-mtu4d7z5"
         }
       }
     }
@@ -342,8 +350,8 @@
   "save": {
     "bytes": 579,
     "ok": true,
-    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-b-mtu47sdt/worlds/907537f299fc23a26fa1465d5d811986e30b4dc99e7cde06b66d0dea03819a08/progress.json",
-    "sha256": "fb3b29209c4b2f615c8998c6848c7b97dc94729b861f49a567dea046d103c8fd"
+    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-b-mtu4d7z5/worlds/b2b434280135a5916fc9b51af04d7767f5448187d96e7e3ffc3863df0f7d17d6/progress.json",
+    "sha256": "bf42e6ab52e64258092bc553374151e9f16ef23d253a925645e969ca622a5c66"
   },
-  "worldId": "verify-town-b-mtu47sdt"
+  "worldId": "verify-town-b-mtu4d7z5"
 }

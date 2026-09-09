@@ -10,12 +10,12 @@
       }
     },
     {
-      "op": "move",
+      "op": "move-capture",
       "args": {
         "dx": 1,
         "dy": 0,
-        "steps": 8,
-        "label": "right"
+        "steps": 30,
+        "label": "walk"
       }
     },
     {

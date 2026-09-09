@@ -61,12 +61,13 @@ desktop/godot/bases/top-down/
 
 ```
 node desktop/godot/bases/top-down/tools/verify.mjs
-→ 30/30 通过
+→ 34/34 通过
 ```
 
 覆盖：空白起点可跑、真实碰撞、区域进入/离开、范围外购买被拒、钱物库存一致、
-库存为 0 与金币不足边界、任务奖励仅一次、跨场景保持、完整进程重启保持、
-两个实例独立、从示例新建世界不继承奖励、四方向动画。
+库存为 0 与金币不足边界、任务奖励仅一次（含未知任务 id 与非声明发布者）、
+跨场景保持、完整进程重启保持（含采集次数）、两个实例独立、
+从示例新建世界不继承奖励、创建工具的模板守卫、四方向动画与行走帧推进。
 
 原始证据：`evidence/verify/report.json`、`evidence/verify/evidence/*.json`
 （每个世界实例的探针请求、响应与进程日志）。
@@ -93,6 +94,7 @@ Web 导出后在独立 headless 浏览器里截图，不发送任何输入：
 
 ## 过程中修掉的问题（保留记录）
 
+实现期间：
 1. `MapRenderer` 的图例默认 `solid = true`，导致整张地图都变成实心，玩家出生就被
    挤开；改为默认非实心，只有显式 `"solid": true` 才碰撞。
 2. `decor` 层用 `.` 当空白，而 `.` 在图例里是草地，于是装饰层把整张地图盖成草地，
@@ -101,9 +103,26 @@ Web 导出后在独立 headless 浏览器里截图，不发送任何输入：
 4. 探针的 `_set_position` 是协程但没有 `await`；补上。
 5. 退出时的自动保存没有触发；改为 `_exit_tree` + `NOTIFICATION_WM_CLOSE_REQUEST` +
    `NOTIFICATION_PREDELETE`，并增加"状态变更后最多 1 秒写回"。
-6. 验收脚本用固定 `worldId`，第二次运行会读到上一次的 `%APPDATA%` 进度；
+6. `NOTIFICATION_PREDELETE` 阶段 `get_tree()` 不可用，自动保存报错；
+   节点查找改为 `is_inside_tree()` 守卫。
+7. 验收脚本用固定 `worldId`，第二次运行会读到上一次的 `%APPDATA%` 进度；
    改为每次运行生成唯一 `worldId`，并在结束时清理对应目录。
-7. PowerShell 重写 `.tscn` 时把中文提示串写成 `?`，Godot 解析失败；改用 UTF-8 写入。
+8. PowerShell 重写 `.tscn` 时把中文提示串写成 `?`，Godot 解析失败；改用 UTF-8 写入。
+
+独立只读评审后（code-reviewer，只读，未改文件）：
+9. 任务记录不存在时账本写入会中断并可能重复发奖 → `deliver` 先 `ensure_quest`。
+10. 任务可交给非声明发布者 → 新增 `wrong_giver` 检查。
+11. 模板用 `status: "completed"` 可绕过创建检查 → 模板守卫同时拒绝 completed。
+12. 初始进度里的负数库存/畸形坐标会写出永远无法载入的存档 →
+    `apply_initial_progress`、`ensure_shop` 做钳制与校验。
+13. `--force --out` 可能删除任意目录、`--template` 可越权、`--name` 可注入
+    `project.godot` → 加路径守卫、模板名白名单、只删"看起来像生成世界"的目录、
+    值经 JSON 转义并拒绝换行。
+14. `anim-02` 只测到朝向不同 → 新增 `move-capture` 在移动中采样帧号。
+15. 采集次数持久化未被断言 → 重启探针采集一次并断言计数。
+16. 场景切换失败时自动加载仍持有已释放节点 → 切换前清空场景引用。
+17. 快照假设 `Sprite` 一定是 `DirectionalSprite` → 属性读取改为类型安全。
+18. `reset-to-initial` 留下过期 `scene_id` → 保留当前场景并清空位置记录。
 
 ## 未完成 / 边界
 

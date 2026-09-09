@@ -88,6 +88,14 @@
       }
     },
     {
+      "op": "deliver",
+      "args": {
+        "npcId": "npc-shopkeeper",
+        "questId": "herb-delivery",
+        "label": "deliver-wrong-giver"
+      }
+    },
+    {
       "op": "buy",
       "args": {
         "shopId": "shop-general",

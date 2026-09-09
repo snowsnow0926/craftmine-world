@@ -7,12 +7,12 @@ config_version=5
 
 [application]
 
-config/name="__WORLD_NAME__"
-config/description="__WORLD_DESCRIPTION__"
-run/main_scene="__MAIN_SCENE__"
+config/name=__WORLD_NAME__
+config/description=__WORLD_DESCRIPTION__
+run/main_scene=__MAIN_SCENE__
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/use_custom_user_dir=true
-config/custom_user_dir_name="__USER_DIR__"
+config/custom_user_dir_name=__USER_DIR__
 config/icon="res://icon.svg"
 
 [autoload]

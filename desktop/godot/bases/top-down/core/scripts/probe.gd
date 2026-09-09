@@ -80,6 +80,8 @@ static func _dispatch(game: Node, op: String, args: Dictionary) -> Dictionary:
 			return {"ok": true, "frames": frames}
 		"move":
 			return await _move(game, args)
+		"move-capture":
+			return await _move_capture(game, args)
 		"set-position":
 			return await _set_position(game, args)
 		"buy":
@@ -133,6 +135,36 @@ static func _move(game: Node, args: Dictionary) -> Dictionary:
 		"after": [after.x, after.y],
 		"distance": before.distance_to(after),
 		"blocked": before.distance_to(after) <= 0.01,
+		"facing": actor.facing,
+		"steps": steps,
+	}
+
+
+# Walks while sampling the sprite frame, so the walk cycle itself can be checked
+# instead of only the resting frame after a move.
+static func _move_capture(game: Node, args: Dictionary) -> Dictionary:
+	var actor: Node = game.player()
+	if actor == null:
+		return {"ok": false, "reason": "no_player"}
+	var direction := Vector2(float(args.get("dx", 0.0)), float(args.get("dy", 0.0)))
+	var steps := maxi(1, int(args.get("steps", 1)))
+	var sprite: Node = actor.get_node_or_null("Sprite")
+	var frames: Array = []
+	actor.scripted_mode = true
+	actor.scripted_input = direction
+	for index in range(steps):
+		await game.get_tree().physics_frame
+		if sprite != null:
+			frames.append(int(sprite.get("frame")))
+	actor.scripted_input = Vector2.ZERO
+	await game.get_tree().physics_frame
+	var distinct: Dictionary = {}
+	for frame in frames:
+		distinct[frame] = true
+	return {
+		"ok": true,
+		"frames": frames,
+		"distinctFrames": distinct.size(),
 		"facing": actor.facing,
 		"steps": steps,
 	}

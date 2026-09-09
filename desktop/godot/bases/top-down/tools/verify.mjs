@@ -12,7 +12,7 @@
 
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -239,6 +239,7 @@ function main() {
       { op: 'set-position', args: { x: 160, y: 180, label: 'leave' } },
       { op: 'buy', args: { shopId: 'shop-general', itemId: 'bread', label: 'buy-left' } },
       { op: 'set-position', args: { x: 160, y: 108, label: 'back' } },
+      { op: 'deliver', args: { npcId: 'npc-shopkeeper', questId: 'herb-delivery', label: 'deliver-wrong-giver' } },
       { op: 'buy', args: { shopId: 'shop-general', itemId: 'rope', label: 'buy-rope' } },
       { op: 'buy', args: { shopId: 'shop-general', itemId: 'potion', label: 'buy-poor' } },
       { op: 'change-scene', args: { scene: 'res://scenes/overworld.tscn', spawn: 'from-shop', label: 'exit' } },
@@ -253,6 +254,10 @@ function main() {
       shop.byLabel['buy-away']);
     checks.add('shop-03', 'the counter is the focused interactable at the counter',
       shop.byLabel.focus.focus === 'shop-general', shop.byLabel.focus);
+    checks.add('shop-03b', 'a quest cannot be handed in to an NPC that is not its declared giver',
+      shop.byLabel['deliver-wrong-giver'].ok === false
+      && shop.byLabel['deliver-wrong-giver'].reason === 'wrong_giver',
+      shop.byLabel['deliver-wrong-giver']);
     checks.add('shop-04', 'buying at the counter moves coins, inventory and stock together',
       shop.byLabel['buy-1'].ok === true
       && shop.byLabel['buy-1'].coins === 34
@@ -299,8 +304,11 @@ function main() {
     checks.add('zone-02', 'walking into the patch creates a real physics overlap',
       gather.byLabel.inside.snapshot.physical.overlaps['zone-herb-patch'] === true,
       gather.byLabel.inside.snapshot.physical.overlaps);
-    checks.add('zone-03', 'gathering inside the patch yields items',
-      gather.byLabel['gather-1'].ok === true && gather.byLabel['gather-3'].inventory === 3,
+    checks.add('zone-03', 'gathering inside the patch yields items and consumes charges',
+      gather.byLabel['gather-1'].ok === true
+      && gather.byLabel['gather-1'].chargesLeft === 4
+      && gather.byLabel['gather-3'].inventory === 3
+      && gather.byLabel['gather-3'].chargesLeft === 2,
       { first: gather.byLabel['gather-1'], third: gather.byLabel['gather-3'] });
     checks.add('zone-04', 'leaving the patch clears the overlap and blocks gathering',
       gather.byLabel.outside.snapshot.physical.overlaps['zone-herb-patch'] === false
@@ -313,6 +321,7 @@ function main() {
       { op: 'set-position', args: { x: 200, y: 240, label: 'far' } },
       { op: 'deliver', args: { npcId: 'npc-mira', questId: 'herb-delivery', label: 'deliver-far' } },
       { op: 'set-position', args: { x: 200, y: 176, label: 'near' } },
+      { op: 'deliver', args: { npcId: 'npc-mira', questId: 'no-such-quest', label: 'deliver-unknown' } },
       { op: 'talk', args: { npcId: 'npc-mira', label: 'talk-before' } },
       { op: 'deliver', args: { npcId: 'npc-mira', questId: 'herb-delivery', label: 'deliver-1' } },
       { op: 'deliver', args: { npcId: 'npc-mira', questId: 'herb-delivery', label: 'deliver-2' } },
@@ -322,6 +331,9 @@ function main() {
     checks.add('quest-01', 'delivery outside NPC range is rejected',
       quest.byLabel['deliver-far'].ok === false && quest.byLabel['deliver-far'].reason === 'out_of_range',
       quest.byLabel['deliver-far']);
+    checks.add('quest-01b', 'delivering an unknown quest id is rejected',
+      quest.byLabel['deliver-unknown'].ok === false && quest.byLabel['deliver-unknown'].reason === 'unknown_quest',
+      quest.byLabel['deliver-unknown']);
     checks.add('quest-02', 'dialogue reports the active quest before delivery',
       quest.byLabel['talk-before'].ok === true && quest.byLabel['talk-before'].questStatus === 'active',
       quest.byLabel['talk-before']);
@@ -345,7 +357,7 @@ function main() {
     // -------------------------------------------------- directional animation
     const anim = town.world.probe('anim', [
       { op: 'set-position', args: { x: 104, y: 168, label: 'place' } },
-      { op: 'move', args: { dx: 1, dy: 0, steps: 8, label: 'right' } },
+      { op: 'move-capture', args: { dx: 1, dy: 0, steps: 30, label: 'walk' } },
       { op: 'snapshot', args: { label: 'right' } },
       { op: 'move', args: { dx: 0, dy: 1, steps: 8, label: 'down' } },
       { op: 'snapshot', args: { label: 'down' } },
@@ -364,15 +376,17 @@ function main() {
       dirs.right.facing === 'right' && dirs.down.facing === 'down'
       && dirs.left.facing === 'left' && dirs.up.facing === 'up',
       dirs);
-    checks.add('anim-02', 'walk frames advance while moving and differ per direction',
-      new Set([dirs.right.frame, dirs.down.frame, dirs.left.frame, dirs.up.frame]).size > 1,
-      Object.fromEntries(Object.entries(dirs).map(([key, value]) => [key, value.frame])));
+    checks.add('anim-02', 'the walk cycle advances while moving in one direction',
+      anim.byLabel.walk.distinctFrames >= 2 && anim.byLabel.walk.facing === 'right',
+      { distinctFrames: anim.byLabel.walk.distinctFrames, sample: anim.byLabel.walk.frames.slice(0, 12) });
 
     // ------------------------------------------------ full restart persistence
     const restart = town.world.probe('restart', [
       { op: 'snapshot', args: { label: 'loaded' } },
       { op: 'set-position', args: { x: 200, y: 176, label: 'near-npc' } },
       { op: 'deliver', args: { npcId: 'npc-mira', questId: 'herb-delivery', label: 'deliver-again' } },
+      { op: 'set-position', args: { x: 96, y: 248, label: 'patch' } },
+      { op: 'gather', args: { zoneId: 'zone-herb-patch', label: 'gather-after-restart' } },
       { op: 'change-scene', args: { scene: 'res://scenes/shop_interior.tscn', spawn: 'from-street', label: 'enter' } },
       { op: 'set-position', args: { x: 160, y: 108, label: 'counter' } },
       { op: 'buy', args: { shopId: 'shop-general', itemId: 'potion', label: 'buy-potion' } },
@@ -399,6 +413,11 @@ function main() {
       && restart.byLabel['buy-potion'].coins === 25
       && restart.byLabel['buy-potion'].stock === 1,
       restart.byLabel['buy-potion']);
+    checks.add('restart-04', 'gather charges persist across a full restart',
+      restart.byLabel['gather-after-restart'].ok === true
+      && restart.byLabel['gather-after-restart'].chargesLeft === 1
+      && restart.byLabel['gather-after-restart'].snapshot.flags['zone.herb-patch.gathered'] === 4,
+      restart.byLabel['gather-after-restart']);
 
     // --------------------------------------------------- instance independence
     const townB = makeWorld('town-b', ids.townB, 'town');
@@ -431,6 +450,28 @@ function main() {
       && Object.keys(fresh.snapshot.grantedRewards).length === 0
       && fresh.snapshot.worldId === ids.townC,
       { coins: fresh.snapshot.coins, quest: fresh.snapshot.quests['herb-delivery'], granted: fresh.snapshot.grantedRewards });
+
+    // The create-world guard itself: a template that ships author progress must
+    // be refused, not silently sanitised.
+    const guardDir = join(work, 'template-guard');
+    cpSync(join(BASE_DIR, 'templates', 'town'), guardDir, { recursive: true });
+    const guardFile = join(guardDir, 'world.json.template');
+    const guardSource = readFileSync(guardFile, 'utf8');
+    const shippedReward = run('node', [join(BASE_DIR, 'tools', 'new-world.mjs'), '--check-template', guardDir]);
+    writeFileSync(guardFile, guardSource.replace('"status": "active"', '"status": "active", "rewarded": true'));
+    const rejectedReward = run('node', [join(BASE_DIR, 'tools', 'new-world.mjs'), '--check-template', guardDir]);
+    writeFileSync(guardFile, guardSource.replace('"status": "active"', '"status": "completed"'));
+    const rejectedCompleted = run('node', [join(BASE_DIR, 'tools', 'new-world.mjs'), '--check-template', guardDir]);
+    checks.add('new-world-02', 'the create-world guard accepts an initial-progress template and rejects author progress',
+      shippedReward.status === 0
+      && rejectedReward.status !== 0
+      && rejectedCompleted.status !== 0,
+      {
+        acceptedTemplate: shippedReward.status,
+        shippedReward: rejectedReward.status,
+        completedQuest: rejectedCompleted.status,
+        message: (rejectedReward.stderr || '').trim(),
+      });
 
     // ------------------------------------------------------------- report
     const report = {

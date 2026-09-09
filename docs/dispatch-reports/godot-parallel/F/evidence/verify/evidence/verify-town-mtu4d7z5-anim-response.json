@@ -20,6 +20,8 @@
     "maps": {
       "town-overworld": {
         "collisionShapes": 48,
+        "effectiveHeight": 22,
+        "effectiveWidth": 40,
         "height": 22,
         "mapId": "town-overworld",
         "ok": true,
@@ -37,14 +39,14 @@
         "zone-herb-patch": false
       },
       "playerPosition": [
-        104.0,
+        136.266632080078,
         168.0
       ]
     },
     "player": {
       "facing": "up",
       "position": [
-        104.0,
+        136.266632080078,
         168.0
       ],
       "sceneId": "overworld"
@@ -83,7 +85,7 @@
       "moving": false
     },
     "stateVersion": 1,
-    "worldId": "verify-town-mtu47sdt"
+    "worldId": "verify-town-mtu4d7z5"
   },
   "format": "craftmine.godot-topdown-probe/1",
   "ok": true,
@@ -113,24 +115,47 @@
       "args": {
         "dx": 1.0,
         "dy": 0.0,
-        "label": "right",
-        "steps": 8.0
+        "label": "walk",
+        "steps": 30.0
       },
-      "op": "move",
+      "op": "move-capture",
       "result": {
-        "after": [
-          115.733337402344,
-          168.0
-        ],
-        "before": [
-          104.0,
-          168.0
-        ],
-        "blocked": false,
-        "distance": 11.7333374023438,
+        "distinctFrames": 4,
         "facing": "right",
+        "frames": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          11,
+          11
+        ],
         "ok": true,
-        "steps": 8
+        "steps": 30
       }
     },
     {
@@ -159,6 +184,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -176,14 +203,14 @@
               "zone-herb-patch": false
             },
             "playerPosition": [
-              115.733337402344,
+              147.999908447266,
               168.0
             ]
           },
           "player": {
             "facing": "right",
             "position": [
-              115.733337402344,
+              147.999908447266,
               168.0
             ],
             "sceneId": "overworld"
@@ -222,7 +249,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
@@ -236,11 +263,11 @@
       "op": "move",
       "result": {
         "after": [
-          115.733337402344,
+          147.999908447266,
           179.733276367188
         ],
         "before": [
-          115.733337402344,
+          147.999908447266,
           168.0
         ],
         "blocked": false,
@@ -276,6 +303,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -293,14 +322,14 @@
               "zone-herb-patch": false
             },
             "playerPosition": [
-              115.733337402344,
+              147.999908447266,
               179.733276367188
             ]
           },
           "player": {
             "facing": "down",
             "position": [
-              115.733337402344,
+              147.999908447266,
               179.733276367188
             ],
             "sceneId": "overworld"
@@ -339,7 +368,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
@@ -353,15 +382,15 @@
       "op": "move",
       "result": {
         "after": [
-          104.0,
+          136.266632080078,
           179.733276367188
         ],
         "before": [
-          115.733337402344,
+          147.999908447266,
           179.733276367188
         ],
         "blocked": false,
-        "distance": 11.7333374023438,
+        "distance": 11.7332763671875,
         "facing": "left",
         "ok": true,
         "steps": 8
@@ -393,6 +422,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -410,14 +441,14 @@
               "zone-herb-patch": false
             },
             "playerPosition": [
-              104.0,
+              136.266632080078,
               179.733276367188
             ]
           },
           "player": {
             "facing": "left",
             "position": [
-              104.0,
+              136.266632080078,
               179.733276367188
             ],
             "sceneId": "overworld"
@@ -456,7 +487,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
@@ -470,11 +501,11 @@
       "op": "move",
       "result": {
         "after": [
-          104.0,
+          136.266632080078,
           168.0
         ],
         "before": [
-          104.0,
+          136.266632080078,
           179.733276367188
         ],
         "blocked": false,
@@ -510,6 +541,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -527,14 +560,14 @@
               "zone-herb-patch": false
             },
             "playerPosition": [
-              104.0,
+              136.266632080078,
               168.0
             ]
           },
           "player": {
             "facing": "up",
             "position": [
-              104.0,
+              136.266632080078,
               168.0
             ],
             "sceneId": "overworld"
@@ -573,16 +606,16 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     }
   ],
   "save": {
-    "bytes": 656,
+    "bytes": 678,
     "ok": true,
-    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-mtu47sdt/worlds/c8664e90434e4995e3b047d38e94ff220998e9ac78c1258ef25aa32166e4bb23/progress.json",
-    "sha256": "705cdc9feab6541b1a1cb37ee7abcab623cac757b1a01c0efa490f46df68d200"
+    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-mtu4d7z5/worlds/29c6660b0b0f31cc73da2c4e5f07a08c43a9617be577a0e94fb2ce38f581aa28/progress.json",
+    "sha256": "0ba46ef0e1f7dc2498d51ca8943b72ec68251fbf8740dcbe12d008279e80733c"
   },
-  "worldId": "verify-town-mtu47sdt"
+  "worldId": "verify-town-mtu4d7z5"
 }

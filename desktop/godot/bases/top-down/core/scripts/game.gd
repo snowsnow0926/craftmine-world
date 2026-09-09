@@ -201,21 +201,23 @@ func _find_spawn(spawn_id: String) -> Node:
 
 func _place_player() -> void:
 	var actor := player()
-	if actor == null:
+	var body := actor as Node2D
+	if body == null:
 		return
-	var target: Vector2 = actor.global_position
+	var target: Vector2 = body.global_position
 	if not _pending_spawn.is_empty():
 		var marker := _find_spawn(_pending_spawn)
-		if marker != null:
-			target = (marker as Node2D).global_position
+		var marker_body := marker as Node2D
+		if marker_body != null:
+			target = marker_body.global_position
 	elif state.scene_positions.has(_scene_id):
 		var saved: Array = state.scene_positions[_scene_id]
 		if saved.size() == 2:
 			target = Vector2(float(saved[0]), float(saved[1]))
-	actor.global_position = target
+	body.global_position = target
 	_pending_spawn = ""
 	state.player_position = target
-	state.player_facing = actor.facing
+	state.player_facing = _facing_of(actor)
 
 
 func change_scene(scene_path: String, spawn_id: String = "") -> Dictionary:
@@ -224,6 +226,10 @@ func change_scene(scene_path: String, spawn_id: String = "") -> Dictionary:
 	if not ResourceLoader.exists(scene_path):
 		return {"ok": false, "error": "Scene does not exist: %s" % scene_path}
 	_record_scene_position()
+	# Drop references to the outgoing scene immediately: if the new scene never
+	# binds, lookups must fail cleanly instead of returning freed nodes.
+	_scene_root = null
+	_entities.clear()
 	_pending_spawn = spawn_id
 	var code := get_tree().change_scene_to_file(scene_path)
 	if code != OK:
@@ -233,19 +239,44 @@ func change_scene(scene_path: String, spawn_id: String = "") -> Dictionary:
 
 func _record_scene_position() -> void:
 	var actor := player()
-	if actor == null:
+	var body := actor as Node2D
+	if body == null:
 		return
-	state.scene_positions[_scene_id] = [actor.global_position.x, actor.global_position.y]
-	state.player_position = actor.global_position
-	state.player_facing = actor.facing
+	state.scene_positions[_scene_id] = [body.global_position.x, body.global_position.y]
+	state.player_position = body.global_position
+	state.player_facing = _facing_of(actor)
 
 
 func tick(_root: Node) -> void:
 	var actor := player()
-	if actor == null:
+	var body := actor as Node2D
+	if body == null:
 		return
-	state.player_position = actor.global_position
-	state.player_facing = actor.facing
+	state.player_position = body.global_position
+	state.player_facing = _facing_of(actor)
+
+
+func _facing_of(actor: Node) -> String:
+	var value := _string_property(actor, &"facing")
+	return value if WorldState.FACINGS.has(value) else state.player_facing
+
+
+static func _string_property(node: Node, property: StringName) -> String:
+	if node == null:
+		return ""
+	var value: Variant = node.get(property)
+	return String(value) if value is String else ""
+
+
+static func _int_property(node: Node, property: StringName, fallback: int) -> int:
+	if node == null:
+		return fallback
+	var value: Variant = node.get(property)
+	if value is int:
+		return value
+	if value is float and is_finite(value):
+		return int(value)
+	return fallback
 
 
 # --------------------------------------------------------- persistence verbs
@@ -268,6 +299,10 @@ func restore() -> Dictionary:
 func reset_to_initial() -> Dictionary:
 	SaveSystem.erase(state.world_id)
 	state = WorldState.create(String(world.get("worldId", "")), world.get("initialProgress", {}))
+	# Resetting progress must not claim the player is in a scene that is not
+	# loaded, so keep the currently bound scene and drop remembered positions.
+	state.scene_id = _scene_id
+	state.scene_positions.clear()
 	_place_player()
 	return {"ok": true, "snapshot": snapshot()}
 
@@ -287,10 +322,11 @@ func snapshot() -> Dictionary:
 	}
 	result["maps"] = _map_reports()
 	var sprite: Node = actor.get_node_or_null("Sprite") if actor != null else null
+	var moving: Variant = sprite.get(&"moving") if sprite != null else null
 	result["sprite"] = {
-		"frame": int(sprite.frame) if sprite != null else -1,
-		"facing": String(sprite.facing) if sprite != null else "",
-		"moving": bool(sprite.moving) if sprite != null else false,
+		"frame": _int_property(sprite, &"frame", -1),
+		"facing": _string_property(sprite, &"facing"),
+		"moving": moving if moving is bool else false,
 	}
 	return result
 

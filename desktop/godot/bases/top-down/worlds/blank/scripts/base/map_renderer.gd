@@ -37,13 +37,17 @@ func build() -> Dictionary:
 
 	var cells := 0
 	var solid_cells := 0
+	var effective_width := 0
+	var effective_height := 0
 	for layer in map.get("layers", []):
 		if not layer is Dictionary:
 			continue
 		var rows: Array = layer.get("rows", [])
+		effective_height = maxi(effective_height, rows.size())
 		var is_collision := bool(layer.get("collision", false))
 		for y in range(rows.size()):
 			var row := String(rows[y])
+			effective_width = maxi(effective_width, row.length())
 			for x in range(row.length()):
 				var entry: Variant = legend.get(row[x])
 				if not entry is Dictionary:
@@ -71,12 +75,18 @@ func build() -> Dictionary:
 		"collisionShapes": shapes,
 		"width": int(map.get("width", 0)),
 		"height": int(map.get("height", 0)),
+		"effectiveWidth": effective_width,
+		"effectiveHeight": effective_height,
 	}
-	call_deferred("_apply_camera_limits", int(map.get("width", 0)) * tile_size, int(map.get("height", 0)) * tile_size)
+	# Limits follow the actual row data, so a row longer than the declared width
+	# still gets a camera that can reach it.
+	call_deferred("_apply_camera_limits", effective_width * tile_size, effective_height * tile_size)
 	return build_report
 
 
-# Keep the viewport inside the map so a small map does not show empty background.
+# Keeps the viewport inside the map when the map is larger than the viewport.
+# A map smaller than the viewport still shows background around it, which is
+# expected and visible in the blank start world.
 func _apply_camera_limits(width_px: int, height_px: int) -> void:
 	if width_px <= 0 or height_px <= 0:
 		return

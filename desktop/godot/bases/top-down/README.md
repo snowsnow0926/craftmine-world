@@ -63,7 +63,7 @@ $env:CRAFTMINE_GODOT_BIN = 'D:\Craftmine World\desktop\build\godot\4.7.2-stable\
 node desktop/godot/bases/top-down/tools/verify.mjs
 ```
 
-它会用临时目录创建 5 个世界实例、真实导入并跑 30 项检查，输出 `report.json` 与原始探针记录。
+它会用临时目录创建 4 个世界实例、真实导入并跑完整检查，输出 `report.json` 与原始探针记录。
 
 画面证据（Web 导出 + 独立 headless 浏览器截图，同样不发送任何输入）：
 
@@ -82,8 +82,9 @@ node desktop/godot/bases/top-down/tools/new-world.mjs `
 ```
 
 **新世界只带初始进度**：`new-world.mjs` 在写盘后会校验模板的 `initialProgress`，
-只要出现 `rewarded: true` 或非空 `grantedRewards` 就直接失败。所以从示例创建的新世界
-不会继承示例作者已经领过的奖励。
+只要出现 `rewarded: true`、`status: "completed"`、非空 `grantedRewards`、负数金币或
+负数背包数量就直接失败。所以从示例创建的新世界不会继承示例作者已经领过的奖励。
+单独检查某个模板可以运行 `node tools/new-world.mjs --check-template templates/town`。
 
 常见修改点：
 

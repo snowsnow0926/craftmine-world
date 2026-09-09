@@ -24,6 +24,21 @@
       }
     },
     {
+      "op": "set-position",
+      "args": {
+        "x": 96,
+        "y": 248,
+        "label": "patch"
+      }
+    },
+    {
+      "op": "gather",
+      "args": {
+        "zoneId": "zone-herb-patch",
+        "label": "gather-after-restart"
+      }
+    },
+    {
       "op": "change-scene",
       "args": {
         "scene": "res://scenes/shop_interior.tscn",

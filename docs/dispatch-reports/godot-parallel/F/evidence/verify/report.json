@@ -1,6 +1,6 @@
 {
   "format": "craftmine.godot-topdown-acceptance/1",
-  "generatedAt": "2026-09-09T13:09:41.077Z",
+  "generatedAt": "2026-09-09T13:13:56.871Z",
   "godotVersion": "4.7.2.stable.official.ed1daf0bf",
   "baseId": "top-down",
   "baseVersion": "1.0.0",
@@ -11,37 +11,37 @@
   "evidenceDirectory": "D:\\Craftmine World-worktrees\\godot-parallel-f-20260909\\docs\\dispatch-reports\\godot-parallel\\F\\evidence\\verify\\evidence",
   "worlds": {
     "blank": {
-      "worldId": "verify-blank-mtu47sdt",
+      "worldId": "verify-blank-mtu4d7z5",
       "template": "blank",
       "directory": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\final-work\\blank",
-      "worldBuildSha256": "1acf6aefd9ebece020ab2e8dfd65e66e5469e240e24fb60766923eba1b248b46",
+      "worldBuildSha256": "15e79661d6eb2a17e69e0570539bf5dc80d66238f7b4d5b5b912b046fed4d503",
       "entryScene": "res://scenes/world.tscn"
     },
     "town": {
-      "worldId": "verify-town-mtu47sdt",
+      "worldId": "verify-town-mtu4d7z5",
       "template": "town",
       "directory": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\final-work\\town",
-      "worldBuildSha256": "2b4f872e8f74f429bd303cfd6726196ec7d596de3641dc6562a073d139f3b833",
+      "worldBuildSha256": "d9790cf280677b6860359bbeaa5c11977e593456b719b2105e70517288acb69b",
       "entryScene": "res://scenes/overworld.tscn"
     },
     "town-b": {
-      "worldId": "verify-town-b-mtu47sdt",
+      "worldId": "verify-town-b-mtu4d7z5",
       "template": "town",
       "directory": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\final-work\\town-b",
-      "worldBuildSha256": "313b004264b1c1e1f5a2f90b6870766aa75b1eed4ae1622ee53e33e2e51a3cd6",
+      "worldBuildSha256": "548273ccc70720d7da8bbfe431a319b0054d0c28e7ccff43c54f8c8fdb7f2450",
       "entryScene": "res://scenes/overworld.tscn"
     },
     "town-c": {
-      "worldId": "verify-town-c-mtu47sdt",
+      "worldId": "verify-town-c-mtu4d7z5",
       "template": "town",
       "directory": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\final-work\\town-c",
-      "worldBuildSha256": "6dcaf1ddc0eaf04e8a707409bbb9c4a401c8368062d8e796ba383e1a9ac47759",
+      "worldBuildSha256": "f67ab8c697f05e8e3e48c2839171f76582fb3161bf414ce20bdc463f35265d49",
       "entryScene": "res://scenes/overworld.tscn"
     }
   },
   "summary": {
-    "total": 30,
-    "passed": 30,
+    "total": 34,
+    "passed": 34,
     "failed": 0
   },
   "checks": [
@@ -51,6 +51,8 @@
       "ok": true,
       "detail": {
         "collisionShapes": 37,
+        "effectiveHeight": 16,
+        "effectiveWidth": 24,
         "height": 16,
         "mapId": "blank-room",
         "ok": true,
@@ -136,6 +138,8 @@
           "maps": {
             "town-shop-interior": {
               "collisionShapes": 32,
+              "effectiveHeight": 14,
+              "effectiveWidth": 20,
               "height": 14,
               "mapId": "town-shop-interior",
               "ok": true,
@@ -195,7 +199,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         },
         "spawn": "from-street"
       }
@@ -220,6 +224,8 @@
           "maps": {
             "town-shop-interior": {
               "collisionShapes": 32,
+              "effectiveHeight": 14,
+              "effectiveWidth": 20,
               "height": 14,
               "mapId": "town-shop-interior",
               "ok": true,
@@ -279,7 +285,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
@@ -290,6 +296,94 @@
       "detail": {
         "focus": "shop-general",
         "ok": true
+      }
+    },
+    {
+      "id": "shop-03b",
+      "name": "a quest cannot be handed in to an NPC that is not its declared giver",
+      "ok": true,
+      "detail": {
+        "actualGiver": "npc-shopkeeper",
+        "expectedGiver": "npc-mira",
+        "ok": false,
+        "questId": "herb-delivery",
+        "reason": "wrong_giver",
+        "snapshot": {
+          "bootError": "",
+          "coins": 22,
+          "duplicateEntityIds": [],
+          "flags": {},
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {},
+          "inventory": {
+            "bread": 3
+          },
+          "maps": {
+            "town-shop-interior": {
+              "collisionShapes": 32,
+              "effectiveHeight": 14,
+              "effectiveWidth": 20,
+              "height": 14,
+              "mapId": "town-shop-interior",
+              "ok": true,
+              "solidCells": 78,
+              "tileSize": 16,
+              "tiles": 280,
+              "width": 20
+            }
+          },
+          "physical": {
+            "facing": "down",
+            "overlaps": {
+              "door-exit": false,
+              "npc-shopkeeper": true,
+              "shop-general": true
+            },
+            "playerPosition": [
+              160,
+              108
+            ]
+          },
+          "player": {
+            "facing": "down",
+            "position": [
+              160,
+              108
+            ],
+            "sceneId": "shop-interior"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 0,
+              "rewarded": false,
+              "status": "active"
+            }
+          },
+          "sceneId": "shop-interior",
+          "scenePositions": {
+            "overworld": [
+              416,
+              134.000244140625
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 0,
+                "potion": 2,
+                "rope": 1
+              }
+            }
+          },
+          "sprite": {
+            "facing": "down",
+            "frame": 0,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "verify-town-mtu4d7z5"
+        }
       }
     },
     {
@@ -316,6 +410,8 @@
           "maps": {
             "town-shop-interior": {
               "collisionShapes": 32,
+              "effectiveHeight": 14,
+              "effectiveWidth": 20,
               "height": 14,
               "mapId": "town-shop-interior",
               "ok": true,
@@ -375,7 +471,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         },
         "stock": 2
       }
@@ -405,6 +501,8 @@
             "maps": {
               "town-shop-interior": {
                 "collisionShapes": 32,
+                "effectiveHeight": 14,
+                "effectiveWidth": 20,
                 "height": 14,
                 "mapId": "town-shop-interior",
                 "ok": true,
@@ -464,7 +562,7 @@
               "moving": false
             },
             "stateVersion": 1,
-            "worldId": "verify-town-mtu47sdt"
+            "worldId": "verify-town-mtu4d7z5"
           },
           "stock": 0
         },
@@ -486,6 +584,8 @@
             "maps": {
               "town-shop-interior": {
                 "collisionShapes": 32,
+                "effectiveHeight": 14,
+                "effectiveWidth": 20,
                 "height": 14,
                 "mapId": "town-shop-interior",
                 "ok": true,
@@ -545,7 +645,7 @@
               "moving": false
             },
             "stateVersion": 1,
-            "worldId": "verify-town-mtu47sdt"
+            "worldId": "verify-town-mtu4d7z5"
           }
         }
       }
@@ -572,6 +672,8 @@
           "maps": {
             "town-shop-interior": {
               "collisionShapes": 32,
+              "effectiveHeight": 14,
+              "effectiveWidth": 20,
               "height": 14,
               "mapId": "town-shop-interior",
               "ok": true,
@@ -631,7 +733,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
@@ -658,6 +760,8 @@
           "maps": {
             "town-shop-interior": {
               "collisionShapes": 32,
+              "effectiveHeight": 14,
+              "effectiveWidth": 20,
               "height": 14,
               "mapId": "town-shop-interior",
               "ok": true,
@@ -717,7 +821,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
@@ -760,6 +864,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -823,7 +929,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         },
         "zoneId": "herb-patch"
       }
@@ -840,7 +946,7 @@
     },
     {
       "id": "zone-03",
-      "name": "gathering inside the patch yields items",
+      "name": "gathering inside the patch yields items and consumes charges",
       "ok": true,
       "detail": {
         "first": {
@@ -866,6 +972,8 @@
             "maps": {
               "town-overworld": {
                 "collisionShapes": 48,
+                "effectiveHeight": 22,
+                "effectiveWidth": 40,
                 "height": 22,
                 "mapId": "town-overworld",
                 "ok": true,
@@ -929,7 +1037,7 @@
               "moving": false
             },
             "stateVersion": 1,
-            "worldId": "verify-town-mtu47sdt"
+            "worldId": "verify-town-mtu4d7z5"
           },
           "zoneId": "herb-patch"
         },
@@ -956,6 +1064,8 @@
             "maps": {
               "town-overworld": {
                 "collisionShapes": 48,
+                "effectiveHeight": 22,
+                "effectiveWidth": 40,
                 "height": 22,
                 "mapId": "town-overworld",
                 "ok": true,
@@ -1019,7 +1129,7 @@
               "moving": false
             },
             "stateVersion": 1,
-            "worldId": "verify-town-mtu47sdt"
+            "worldId": "verify-town-mtu4d7z5"
           },
           "zoneId": "herb-patch"
         }
@@ -1055,6 +1165,8 @@
             "maps": {
               "town-overworld": {
                 "collisionShapes": 48,
+                "effectiveHeight": 22,
+                "effectiveWidth": 40,
                 "height": 22,
                 "mapId": "town-overworld",
                 "ok": true,
@@ -1118,7 +1230,7 @@
               "moving": false
             },
             "stateVersion": 1,
-            "worldId": "verify-town-mtu47sdt"
+            "worldId": "verify-town-mtu4d7z5"
           },
           "zoneId": "herb-patch"
         }
@@ -1149,6 +1261,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -1212,21 +1326,18 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
     {
-      "id": "quest-02",
-      "name": "dialogue reports the active quest before delivery",
+      "id": "quest-01b",
+      "name": "delivering an unknown quest id is rejected",
       "ok": true,
       "detail": {
-        "line": "南边那丛草药正好成熟，帮我采三份回来吧。",
-        "name": "米拉",
-        "npcId": "mira",
-        "ok": true,
-        "questId": "herb-delivery",
-        "questStatus": "active",
+        "ok": false,
+        "questId": "no-such-quest",
+        "reason": "unknown_quest",
         "snapshot": {
           "bootError": "",
           "coins": 7,
@@ -1244,6 +1355,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -1307,7 +1420,104 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
+        }
+      }
+    },
+    {
+      "id": "quest-02",
+      "name": "dialogue reports the active quest before delivery",
+      "ok": true,
+      "detail": {
+        "line": "南边那丛草药正好成熟，帮我采三份回来吧。",
+        "name": "米拉",
+        "npcId": "mira",
+        "ok": true,
+        "questId": "herb-delivery",
+        "questStatus": "active",
+        "snapshot": {
+          "bootError": "",
+          "coins": 7,
+          "duplicateEntityIds": [],
+          "flags": {
+            "zone.herb-patch.gathered": 3
+          },
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {},
+          "inventory": {
+            "bread": 3,
+            "herb": 3,
+            "rope": 1
+          },
+          "maps": {
+            "town-overworld": {
+              "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
+              "height": 22,
+              "mapId": "town-overworld",
+              "ok": true,
+              "solidCells": 145,
+              "tileSize": 16,
+              "tiles": 893,
+              "width": 40
+            }
+          },
+          "physical": {
+            "facing": "down",
+            "overlaps": {
+              "door-shop": false,
+              "npc-mira": true,
+              "zone-herb-patch": false
+            },
+            "playerPosition": [
+              200,
+              176
+            ]
+          },
+          "player": {
+            "facing": "down",
+            "position": [
+              200,
+              176
+            ],
+            "sceneId": "overworld"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 0,
+              "rewarded": false,
+              "status": "active"
+            }
+          },
+          "sceneId": "overworld",
+          "scenePositions": {
+            "overworld": [
+              96,
+              300
+            ],
+            "shop-interior": [
+              160,
+              108
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 0,
+                "potion": 2,
+                "rope": 0
+              }
+            }
+          },
+          "sprite": {
+            "facing": "down",
+            "frame": 0,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
@@ -1351,6 +1561,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -1414,7 +1626,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
@@ -1448,6 +1660,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -1511,7 +1725,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
@@ -1545,6 +1759,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -1608,7 +1824,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
@@ -1641,13 +1857,24 @@
     },
     {
       "id": "anim-02",
-      "name": "walk frames advance while moving and differ per direction",
+      "name": "the walk cycle advances while moving in one direction",
       "ok": true,
       "detail": {
-        "right": 8,
-        "down": 0,
-        "left": 4,
-        "up": 12
+        "distinctFrames": 4,
+        "sample": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          9,
+          9,
+          9
+        ]
       }
     },
     {
@@ -1704,6 +1931,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -1743,7 +1972,7 @@
           "sceneId": "overworld",
           "scenePositions": {
             "overworld": [
-              104,
+              136.266632080078,
               168
             ],
             "shop-interior": [
@@ -1767,7 +1996,7 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     },
@@ -1787,7 +2016,7 @@
           "coins": 25,
           "duplicateEntityIds": [],
           "flags": {
-            "zone.herb-patch.gathered": 3
+            "zone.herb-patch.gathered": 4
           },
           "format": "craftmine.godot-topdown-snapshot/1",
           "grantedRewards": {
@@ -1796,12 +2025,15 @@
           "inventory": {
             "apple": 1,
             "bread": 3,
+            "herb": 1,
             "potion": 1,
             "rope": 1
           },
           "maps": {
             "town-shop-interior": {
               "collisionShapes": 32,
+              "effectiveHeight": 14,
+              "effectiveWidth": 20,
               "height": 14,
               "mapId": "town-shop-interior",
               "ok": true,
@@ -1841,8 +2073,8 @@
           "sceneId": "shop-interior",
           "scenePositions": {
             "overworld": [
-              200,
-              176
+              96,
+              248
             ],
             "shop-interior": [
               160,
@@ -1865,9 +2097,109 @@
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         },
         "stock": 1
+      }
+    },
+    {
+      "id": "restart-04",
+      "name": "gather charges persist across a full restart",
+      "ok": true,
+      "detail": {
+        "amount": 1,
+        "chargesLeft": 1,
+        "inventory": 1,
+        "itemId": "herb",
+        "ok": true,
+        "snapshot": {
+          "bootError": "",
+          "coins": 37,
+          "duplicateEntityIds": [],
+          "flags": {
+            "zone.herb-patch.gathered": 4
+          },
+          "format": "craftmine.godot-topdown-snapshot/1",
+          "grantedRewards": {
+            "herb-delivery#reward": true
+          },
+          "inventory": {
+            "apple": 1,
+            "bread": 3,
+            "herb": 1,
+            "rope": 1
+          },
+          "maps": {
+            "town-overworld": {
+              "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
+              "height": 22,
+              "mapId": "town-overworld",
+              "ok": true,
+              "solidCells": 145,
+              "tileSize": 16,
+              "tiles": 893,
+              "width": 40
+            }
+          },
+          "physical": {
+            "facing": "down",
+            "overlaps": {
+              "door-shop": false,
+              "npc-mira": false,
+              "zone-herb-patch": true
+            },
+            "playerPosition": [
+              96,
+              248
+            ]
+          },
+          "player": {
+            "facing": "down",
+            "position": [
+              96,
+              248
+            ],
+            "sceneId": "overworld"
+          },
+          "quests": {
+            "herb-delivery": {
+              "delivered": 1,
+              "rewarded": true,
+              "status": "completed"
+            }
+          },
+          "sceneId": "overworld",
+          "scenePositions": {
+            "overworld": [
+              136.266632080078,
+              168
+            ],
+            "shop-interior": [
+              160,
+              108
+            ]
+          },
+          "shops": {
+            "general": {
+              "stock": {
+                "apple": 5,
+                "bread": 0,
+                "potion": 2,
+                "rope": 0
+              }
+            }
+          },
+          "sprite": {
+            "facing": "down",
+            "frame": 0,
+            "moving": false
+          },
+          "stateVersion": 1,
+          "worldId": "verify-town-mtu4d7z5"
+        },
+        "zoneId": "herb-patch"
       }
     },
     {
@@ -1888,8 +2220,8 @@
       "name": "the two instances keep different identities and independent progress",
       "ok": true,
       "detail": {
-        "worldId": "verify-town-b-mtu47sdt",
-        "other": "verify-town-mtu47sdt",
+        "worldId": "verify-town-b-mtu4d7z5",
+        "other": "verify-town-mtu4d7z5",
         "inventory": {
           "herb": 1
         }
@@ -1907,6 +2239,17 @@
           "status": "active"
         },
         "granted": {}
+      }
+    },
+    {
+      "id": "new-world-02",
+      "name": "the create-world guard accepts an initial-progress template and rejects author progress",
+      "ok": true,
+      "detail": {
+        "acceptedTemplate": 0,
+        "shippedReward": 1,
+        "completedQuest": 1,
+        "message": "new-world: C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\final-work\\template-guard ships a claimed reward for quest herb-delivery"
       }
     }
   ]

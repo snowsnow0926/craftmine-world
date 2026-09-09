@@ -7,6 +7,7 @@
   "worktree": "D:\\Craftmine World-worktrees\\godot-parallel-f-20260909",
   "baselineCommit": "46739d2",
   "implementationCommit": "b232d61",
+  "fixCommits": ["098d1cc"],
   "pushed": false,
   "mergedToMaster": false,
   "scope": {
@@ -77,7 +78,7 @@
   "verification": {
     "logicAcceptance": {
       "command": "node desktop/godot/bases/top-down/tools/verify.mjs",
-      "result": "30/30 passed, 0 failed",
+      "result": "34/34 passed, 0 failed",
       "method": "independent headless Godot processes, unique per-run world ids and user data dirs",
       "input": "scripted movement vector through the real CharacterBody2D; no OS mouse or keyboard events, no window, no Pointer Lock",
       "evidence": [
@@ -97,7 +98,11 @@
         "full process restart state retention",
         "two town instances independent",
         "new world from the example inherits no rewards",
-        "four-direction walk animation"
+        "the create-world guard rejects templates that ship author progress",
+        "four-direction walk animation and walk-cycle advance",
+        "quest cannot be handed to a non-declared giver",
+        "unknown quest id is rejected",
+        "gather charges persist across a full restart"
       ]
     },
     "syncCheck": {
@@ -129,7 +134,27 @@
     "instanceIsolation": "custom_user_dir_name = craftmine-topdown-<worldId>, progress under a hash of worldId, worldId also checked inside the file",
     "oneShotReward": "quests[id].rewarded and grantedRewards['<id>#reward'] are both checked before consuming items and both written on grant",
     "atomicPurchase": "all range/stock/coin checks run before any mutation; coins, inventory and stock commit together",
-    "newWorldInitialProgress": "new-world.mjs fails if a template ships rewarded:true or a non-empty grantedRewards ledger"
+    "newWorldInitialProgress": "new-world.mjs fails if a template ships rewarded:true, status:'completed', a non-empty grantedRewards ledger, negative coins or negative inventory counts",
+    "questGiverBinding": "a quest can only be handed in to the giver declared in its data file (wrong_giver otherwise)",
+    "writeSideSanitised": "initial progress and shop stock are clamped/validated so the writer cannot emit a save the strict loader rejects"
+  },
+  "review": {
+    "kind": "independent read-only code review (code-reviewer subagent)",
+    "findingsAddressed": 18,
+    "highSeverity": [
+      "quest ledger write could abort after payment when the quest record did not exist; fixed with ensure_quest and covered by quest-01b/shop-03b"
+    ],
+    "mediumSeverity": [
+      "quest status was ignored by deliver and the create-world guard checked fields that cannot carry over",
+      "write side could produce an unloadable save from negative stock or a malformed position",
+      "new-world --force could delete an arbitrary directory and --template allowed path traversal"
+    ],
+    "testHardening": [
+      "move-capture probe op asserts the walk cycle advances",
+      "restart probe asserts gather charges persist",
+      "template guard has a negative fixture and is asserted directly"
+    ],
+    "evidence": "docs/dispatch-reports/godot-parallel/F/ACCEPTANCE_MATRIX.md"
   },
   "interfacesNeededFromOthers": {
     "buildService": [

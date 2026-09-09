@@ -12,6 +12,8 @@
     "maps": {
       "town-overworld": {
         "collisionShapes": 48,
+        "effectiveHeight": 22,
+        "effectiveWidth": 40,
         "height": 22,
         "mapId": "town-overworld",
         "ok": true,
@@ -22,22 +24,22 @@
       }
     },
     "physical": {
-      "facing": "down",
+      "facing": "up",
       "overlaps": {
         "door-shop": false,
         "npc-mira": false,
         "zone-herb-patch": false
       },
       "playerPosition": [
-        104.0,
-        168.0
+        416.0,
+        134.000244140625
       ]
     },
     "player": {
-      "facing": "down",
+      "facing": "up",
       "position": [
-        104.0,
-        168.0
+        416.0,
+        134.000244140625
       ],
       "sceneId": "overworld"
     },
@@ -49,7 +51,12 @@
       }
     },
     "sceneId": "overworld",
-    "scenePositions": {},
+    "scenePositions": {
+      "overworld": [
+        104.0,
+        168.0
+      ]
+    },
     "shops": {
       "general": {
         "stock": {
@@ -61,19 +68,65 @@
       }
     },
     "sprite": {
-      "facing": "down",
-      "frame": 0,
+      "facing": "up",
+      "frame": 12,
       "moving": false
     },
     "stateVersion": 1,
-    "worldId": "verify-town-mtu47sdt"
+    "worldId": "verify-town-mtu4d7z5"
   },
   "format": "craftmine.godot-topdown-probe/1",
   "ok": true,
   "results": [
     {
       "args": {
-        "label": "start"
+        "facing": "up",
+        "label": "place",
+        "x": 416.0,
+        "y": 160.0
+      },
+      "op": "set-position",
+      "result": {
+        "facing": "up",
+        "ok": true,
+        "overlaps": {
+          "door-shop": false,
+          "npc-mira": false,
+          "zone-herb-patch": false
+        },
+        "position": [
+          416.0,
+          160.0
+        ]
+      }
+    },
+    {
+      "args": {
+        "dx": 0.0,
+        "dy": -1.0,
+        "label": "into-wall",
+        "steps": 60.0
+      },
+      "op": "move",
+      "result": {
+        "after": [
+          416.0,
+          134.000244140625
+        ],
+        "before": [
+          416.0,
+          160.0
+        ],
+        "blocked": false,
+        "distance": 25.999755859375,
+        "facing": "up",
+        "ok": true,
+        "steps": 60
+      }
+    },
+    {
+      "args": {
+        "label": "after"
       },
       "op": "snapshot",
       "result": {
@@ -89,6 +142,8 @@
           "maps": {
             "town-overworld": {
               "collisionShapes": 48,
+              "effectiveHeight": 22,
+              "effectiveWidth": 40,
               "height": 22,
               "mapId": "town-overworld",
               "ok": true,
@@ -99,22 +154,22 @@
             }
           },
           "physical": {
-            "facing": "down",
+            "facing": "up",
             "overlaps": {
               "door-shop": false,
               "npc-mira": false,
               "zone-herb-patch": false
             },
             "playerPosition": [
-              104.0,
-              168.0
+              416.0,
+              134.000244140625
             ]
           },
           "player": {
-            "facing": "down",
+            "facing": "up",
             "position": [
-              104.0,
-              168.0
+              416.0,
+              134.000244140625
             ],
             "sceneId": "overworld"
           },
@@ -126,7 +181,12 @@
             }
           },
           "sceneId": "overworld",
-          "scenePositions": {},
+          "scenePositions": {
+            "overworld": [
+              104.0,
+              168.0
+            ]
+          },
           "shops": {
             "general": {
               "stock": {
@@ -138,21 +198,21 @@
             }
           },
           "sprite": {
-            "facing": "down",
-            "frame": 0,
+            "facing": "up",
+            "frame": 12,
             "moving": false
           },
           "stateVersion": 1,
-          "worldId": "verify-town-mtu47sdt"
+          "worldId": "verify-town-mtu4d7z5"
         }
       }
     }
   ],
   "save": {
-    "bytes": 541,
+    "bytes": 561,
     "ok": true,
-    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-mtu47sdt/worlds/c8664e90434e4995e3b047d38e94ff220998e9ac78c1258ef25aa32166e4bb23/progress.json",
-    "sha256": "4c9a9f5a2fe694a0d6cbe9b74d5d64e11967838b132ac4d8696d6aacedb5ce12"
+    "path": "C:/Users/WINDOWS/AppData/Roaming/craftmine-topdown-verify-town-mtu4d7z5/worlds/29c6660b0b0f31cc73da2c4e5f07a08c43a9617be577a0e94fb2ce38f581aa28/progress.json",
+    "sha256": "7148240f7fe7a51302d93d15696e6618d2e53beb1629895805e7c37e40758ca5"
   },
-  "worldId": "verify-town-mtu47sdt"
+  "worldId": "verify-town-mtu4d7z5"
 }

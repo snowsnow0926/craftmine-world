@@ -1,6 +1,6 @@
 {
   "format": "craftmine.godot-topdown-capture/1",
-  "generatedAt": "2026-09-09T13:08:07.958Z",
+  "generatedAt": "2026-09-09T13:14:20.947Z",
   "godot": "D:/Craftmine World/desktop/build/godot/4.7.2-stable/editor/Godot_v4.7.2-stable_win64_console.exe",
   "webTemplate": "D:/Craftmine World/desktop/build/godot/4.7.2-stable/templates/web_release.zip",
   "worldDirectory": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\cap-shop\\world",
@@ -42,7 +42,7 @@
     {
       "path": "index.html",
       "bytes": 5441,
-      "sha256": "7296357721a709322407aaff3d7b09bbf3de5475cf53dedc04f3bd9be4896334"
+      "sha256": "a863373084b05ef5e344adccdbe43cef7dec5a4ec48485ba7a647bbe195536de"
     },
     {
       "path": "index.icon.png",
@@ -56,8 +56,8 @@
     },
     {
       "path": "index.pck",
-      "bytes": 88416,
-      "sha256": "772317ff5dd5b118ef1aee9d83188270c41c8c31d462b7af017779bdd9ca6768"
+      "bytes": 91296,
+      "sha256": "3e58e0fdf76b6bb2c364ab946e701b3d5147596081ee06170e33e482359fd369"
     },
     {
       "path": "index.png",
