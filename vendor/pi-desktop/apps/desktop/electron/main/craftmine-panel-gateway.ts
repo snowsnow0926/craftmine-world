@@ -38,7 +38,10 @@ export function createCraftminePanelGateway(options: {
       const available = await workbench(channel);
       return { channels: [...new Set([...available.channels, "task.resume", "task.discard", "task.stop", ...[...CRAFTMINE_PANEL_CHANNELS].filter(name => /^(backup|diagnostics)\./.test(name))])] };
     }
-    if (channel.startsWith("backup.")) return options.backup(channel, payload);
+    if (channel.startsWith("backup.")) {
+      const { worldId: _worldId, ...input } = payload;
+      return options.backup(channel, input);
+    }
     if (channel.startsWith("diagnostics.")) {
       const { worldId: _worldId, ...input } = payload;
       return options.diagnostics(channel, input);
