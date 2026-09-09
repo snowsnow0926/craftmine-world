@@ -19,7 +19,7 @@
 
 ## 3 契约字段
 
-见 `tool-services.cjs:SERVICE_PROVIDERS`。每个键声明 `kind/owner/hostMethod/provides/requiredFor`；`validateToolServices` 在构造期校验类型，`describeToolServices` 输出 `wired`/`missing`。
+见 `tool-services.cjs:SERVICE_PROVIDERS`。每个键声明 `kind/owner/hostMethod/provides/requiredFor`；`validateToolServices` 在构造期校验类型，`describeToolServices` 输出 `wired`/`missing`/`optionalMissing`。`optional:true` 表示有可用默认值的覆盖项（`isDiscussionOnly` 走设置回落、`historyMethods`/`libraryMethods` 用内置方法名、`maxSampleAgeMs` 用 30s），其缺失不计入 `complete`，避免把“有默认值”误报成“能力缺失”。
 
 ## 4 活体样本规则
 

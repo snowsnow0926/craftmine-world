@@ -50,7 +50,10 @@ test('an unwired provider is reported with its owner, never as a value',()=>{
   assert.ok(live.requiredFor.includes('godot_runtime_state scope=live'));
   assert.match(live.note,/never replaced/);
   // Every declared key is accounted for exactly once.
-  assert.equal(description.wired.length+description.missing.length,SERVICE_KEYS.length);
+  assert.equal(description.wired.length+description.missing.length+description.optionalMissing.length,SERVICE_KEYS.length);
+  // An override with a working default is not a capability gap.
+  assert.ok(description.optionalMissing.some(entry=>entry.key==='historyMethods'&&entry.optional===true));
+  assert.ok(!description.missing.some(entry=>entry.key==='historyMethods'));
 });
 
 test('a provider of the wrong shape fails at construction instead of degrading',()=>{

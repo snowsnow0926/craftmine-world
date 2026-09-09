@@ -17,12 +17,12 @@
 | `executorStatus` | S2 | 进程内执行器 | 回落到核心登记行并标注 `source:'core-registration'`、`liveProviderWired:false` |
 | `executorEnqueue` | S2 | 进程内执行器 | `godot_build_start` 返回 `execution.enqueued=false, reason:'EXECUTOR_PROVIDER_NOT_WIRED', owner:'S2'` |
 | `executorCancel` | S2 | 进程内执行器 | 取消只落到核心作业行，不返回 `execution` |
-| `isDiscussionOnly` | R2 | 会话状态 | 回落读取插件设置 `discussionOnly/readOnlyTurn`（当前生效路径） |
-| `historyMethods` | S1 | `content.*` | `godot_history` 按真实方法名调用并如实报缺口 |
-| `libraryMethods` | S1+S3+S5 | `asset.*` / `package.*` | `asset_library`/`package_library` 报 `DEPENDENCY_NOT_WIRED` |
-| `maxSampleAgeMs` | R2 | — | 默认 30000ms 新鲜度窗口 |
+| `isDiscussionOnly` | R2 | 会话状态 | 可选：回落读取插件设置 `discussionOnly/readOnlyTurn`（当前生效路径） |
+| `historyMethods` | S1 | `content.*` | 可选：使用内置方法名，`godot_history` 按真实方法名调用并如实报缺口 |
+| `libraryMethods` | S1+S3+S5 | `asset.*` / `package.*` | 可选：使用内置方法名，`asset_library`/`package_library` 报 `DEPENDENCY_NOT_WIRED` |
+| `maxSampleAgeMs` | R2 | — | 可选：默认 30000ms 新鲜度窗口 |
 
-类型错误在构造期抛 `TOOL_SERVICE_INVALID`（不再静默降级）。`godot_capability_report` 新增 `services.wired` / `services.missing`，把“这个进程实际收到哪些提供方、缺的那个归谁、缺哪个宿主方法”直接交给模型与验收。
+类型错误在构造期抛 `TOOL_SERVICE_INVALID`（不再静默降级）。`godot_capability_report` 新增 `services.wired` / `services.missing` / `services.optionalMissing`，把“这个进程实际收到哪些提供方、缺的那个归谁、缺哪个宿主方法”直接交给模型与验收；有默认值的覆盖项单列，不把“有默认值”报成“能力缺失”。
 
 ## 2 已实际合入的接线（含他人文件，请对应负责人确认/覆盖）
 

@@ -14,7 +14,9 @@
 
 const SERVICE_CONTRACT_FORMAT='craftmine.tool-services/1';
 
-// key -> how the tool layer consumes it and who must provide it.
+// key -> how the tool layer consumes it and who must provide it. `optional`
+// marks an override or tuning value that has a working default: its absence is
+// not a capability gap and must not make the wiring look incomplete.
 const SERVICE_PROVIDERS={
   sampleLiveState:{
     kind:'function',owner:'R2',hostMethod:'godotLiveState',
@@ -37,19 +39,19 @@ const SERVICE_PROVIDERS={
     provides:'cancels the executor-side worker for one job id',
     requiredFor:['godot_build_cancel']},
   isDiscussionOnly:{
-    kind:'function',owner:'R2',hostMethod:null,
+    kind:'function',owner:'R2',hostMethod:null,optional:true,
     provides:'whether the current turn is discussion-only, from the session the host actually owns',
     requiredFor:['discussion-mode write refusal']},
   historyMethods:{
-    kind:'object',owner:'S1',hostMethod:'content.*',
+    kind:'object',owner:'S1',hostMethod:'content.*',optional:true,
     provides:'the registered content-history method names',
     requiredFor:['godot_history']},
   libraryMethods:{
-    kind:'object',owner:'S1+S3+S5',hostMethod:'asset.*/package.*',
+    kind:'object',owner:'S1+S3+S5',hostMethod:'asset.*/package.*',optional:true,
     provides:'the registered asset and package method names',
     requiredFor:['asset_library','package_library']},
   maxSampleAgeMs:{
-    kind:'number',owner:'R2',hostMethod:null,
+    kind:'number',owner:'R2',hostMethod:null,optional:true,
     provides:'the freshness window the host accepts for a live sample',
     requiredFor:['godot_runtime_state scope=live staleness']}
 };
@@ -77,21 +79,26 @@ function validateToolServices(options){
 
 // Real wiring state for the model and for acceptance. `missing` is the audited
 // gap list; each entry names the owner and the host method that would close it.
+// Optional overrides are listed separately so a working default is never
+// reported as a missing capability.
 function describeToolServices(options){
   const provided=options&&typeof options==='object'?options:{};
-  const wired=[],missing=[];
+  const wired=[],missing=[],optionalMissing=[];
   for(const key of SERVICE_KEYS){
     const declared=SERVICE_PROVIDERS[key];
     const value=provided[key];
     const present=value!==undefined&&value!==null;
     const entry={key,owner:declared.owner,hostMethod:declared.hostMethod,requiredFor:declared.requiredFor.slice(),provides:declared.provides};
-    if(present)wired.push({...entry,kind:declared.kind});
-    else missing.push({...entry,kind:declared.kind,reason:'NOT_WIRED',
-      note:'The tool reports this value as unknown. It is never replaced by a task-start snapshot, a saved value or zero.'});
+    if(present){wired.push({...entry,kind:declared.kind});continue;}
+    const gap={...entry,kind:declared.kind,reason:'NOT_WIRED',
+      note:'The tool reports this value as unknown. It is never replaced by a task-start snapshot, a saved value or zero.'};
+    if(declared.optional)optionalMissing.push({...gap,optional:true,
+      note:'Optional override or tuning value; the tool uses its documented default.'});
+    else missing.push(gap);
   }
-  return {format:SERVICE_CONTRACT_FORMAT,wired,missing,
+  return {format:SERVICE_CONTRACT_FORMAT,wired,missing,optionalMissing,
     complete:missing.length===0,
-    note:'wired lists the providers this process actually received; missing names the exact owner and host method.'};
+    note:'wired lists the providers this process actually received; missing names the exact owner and host method for a required one; optionalMissing has a working default.'};
 }
 
 // Providers derived from the plugin host API. `callHost(method, params)` must

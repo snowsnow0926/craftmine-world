@@ -140,8 +140,11 @@ test('the capability report exposes the real wiring state and the durable ledger
   assert.equal(report.services.format,'craftmine.tool-services/1');
   const wired=report.services.wired.map(entry=>entry.key);
   for(const key of ['sampleLiveState','executorStatus','executorEnqueue','budget'])assert.ok(wired.includes(key),key);
-  assert.equal(report.services.complete,false,'context/service/resource are still unknown');
-  assert.ok(report.services.missing.some(entry=>entry.key==='isDiscussionOnly'&&entry.owner==='R2'));
+  assert.equal(report.services.complete,false,'the cancel provider was not supplied');
+  assert.ok(report.services.missing.some(entry=>entry.key==='executorCancel'&&entry.owner==='S2'));
+  // An optional override with a working default is never reported as a gap.
+  assert.ok(report.services.optionalMissing.some(entry=>entry.key==='isDiscussionOnly'&&entry.owner==='R2'));
+  assert.ok(!report.services.missing.some(entry=>entry.key==='historyMethods'));
   assert.equal(report.limits.available,true);
   assert.deepEqual(report.limits.kinds.tokens,{known:true,limit:10000,used:1500,remaining:8500,exhausted:false,source:'durable-ledger'});
   assert.equal(report.limits.kinds.context.known,false);
