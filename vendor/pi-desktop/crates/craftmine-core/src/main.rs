@@ -14,6 +14,15 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
+    if method.starts_with("budget.") { return journal.budget_call(method, params); }
+    match method {
+        "task.context" => return journal.task_context(params),
+        "task.recordContext" => return journal.task_record_context(params),
+        "task.resume" => return journal.task_resume(params),
+        "task.discard" => return journal.task_discard(params),
+        "task.recoverable" => return journal.task_recoverable(params),
+        _ => {},
+    }
     if method.starts_with("review.") {
         let id = || params["id"].as_str().context("REVIEW_ID_REQUIRED");
         return match method {
@@ -227,6 +236,7 @@ fn main() -> Result<()> {
     journal.verification_recover()?;
     journal.review_recover()?;
     journal.application_recover()?;
+    journal.task_recover()?;
     let mut input = io::stdin().lock();
     let mut output = io::stdout().lock();
     loop {
