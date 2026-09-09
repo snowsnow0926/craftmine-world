@@ -17,9 +17,27 @@ const fs = require('node:fs');
 const fsp = require('node:fs/promises');
 const path = require('node:path');
 
-const execFileAsync = (file, args) => new Promise(resolve => {
-  execFile(file, args, {windowsHide:true, timeout:20000, maxBuffer:1024 * 1024},
-    (error, stdout, stderr) => resolve({error, stdout:String(stdout ?? ''), stderr:String(stderr ?? '')}));
+const execFileAsync = (file, args, options = {}) => new Promise(resolve => {
+  const settle = (error, stdout, stderr) => resolve({
+    error:error ?? null,
+    // `execFile` reports a non-zero exit as an error, so the real status is
+    // exposed separately: the recovery CLI exits 1 for a partial pass that is
+    // still a valid report.
+    exitCode:typeof error?.code === 'number' ? error.code : 0,
+    stdout:String(stdout ?? ''),
+    stderr:String(stderr ?? ''),
+  });
+  try {
+    execFile(file, args, {
+      windowsHide:true,
+      timeout:options.timeoutMs ?? 20000,
+      maxBuffer:options.maxBufferBytes ?? 1024 * 1024,
+    }, settle);
+  } catch (error) {
+    // A synchronous spawn failure (invalid or non-executable path) must not
+    // reject: recovery is best-effort cleanup, and the caller reports it.
+    settle(error, '', '');
+  }
 });
 
 const EXECUTOR_ID = 'craftmine-windows-broker-v1';
@@ -38,6 +56,18 @@ const PREFLIGHT_TIMEOUT_MS = 120000;
 const CANCEL_GRACE_MS = 15000;
 const BLOCKED_RETRY_MS = 600000;
 const MAX_JOBS = 2;
+// Host-owned recovery pass (BROKER_PROTOCOL_V1.md "Recovery journal"). The
+// broker only ever reclaims a task whose recorded identity it can still prove,
+// so this replaces the older pid + image-name cleanup path entirely.
+const RECOVERY_POLICY_VERSION = 'craftmine.windows.recovery-journal.v1';
+const RECOVER_TIMEOUT_MS = 120000;
+const RECOVER_REPORT_BYTES = 8 * 1024 * 1024;
+const LEDGER_FORMAT = 'craftmine.godot-executor-ledger/1';
+const BROKER_IDENTITY_FORMAT = 'craftmine.godot-broker-identity/1';
+// A broker profile name is `craftmine.godot.task.<taskId>` and Windows refuses
+// a profile name longer than 64 characters, so the generated id is bounded.
+const BROKER_PROFILE_PREFIX = 'craftmine.godot.task.';
+const BROKER_TASK_ID_MAX = 64 - BROKER_PROFILE_PREFIX.length;
 
 // Fixed-engine native diagnostics that the restricted AppContainer environment
 // produces before any project code runs. Each entry is an exact (message,
@@ -142,6 +172,69 @@ function classifyLog(text) {
   return {native, errors, warnings};
 }
 
+/**
+ * Reduce a broker recovery report to the facts a consumer may act on. A
+ * reclaimed task means "no final receipt arrived and the recorded identity was
+ * re-proved", never "the build succeeded".
+ */
+function summarizeRecovery(report, meta = {}) {
+  const entries = Array.isArray(report?.entries) ? report.entries : [];
+  const reconciled = entry => entry?.identityVerified === true && entry?.journalRemoved === true;
+  const reclaimed = entries.filter(reconciled).map(entry => ({
+    taskId:entry.taskId, operation:entry.operation, childProcessState:entry.childProcessState ?? null,
+    childPid:entry.childPid ?? null, taskRootRemoved:entry.taskRootRemoved === true,
+    profileDeleted:entry.profileDeleted === true, reclaimed:Array.isArray(entry.reclaimed) ? entry.reclaimed : [],
+    finalReceiptObserved:entry.finalReceiptObserved === true,
+  }));
+  const skipped = entries.filter(entry => !reconciled(entry)).map(entry => ({
+    taskId:entry.taskId, operation:entry.operation, brokerStillRunning:entry.brokerStillRunning ?? null,
+    reasons:Array.isArray(entry.skipped) ? entry.skipped : [],
+  }));
+  const unreadable = (Array.isArray(report?.unreadable) ? report.unreadable : [])
+    .map(entry => ({file:entry?.file ?? null, error:entry?.error ?? null}));
+  return {
+    format:'craftmine.godot-recovery-summary/1',
+    trigger:meta.trigger ?? null,
+    ok:!!report && report.policyVersion === RECOVERY_POLICY_VERSION && typeof report.tasksRoot === 'string',
+    policyVersion:report?.policyVersion ?? null,
+    // The broker canonicalizes on Windows, so its report can carry a Win32
+    // verbatim prefix; normalize it like every other host-owned root.
+    tasksRoot:typeof report?.tasksRoot === 'string' ? plainPath(report.tasksRoot) : null,
+    journalRoot:typeof report?.journalRoot === 'string' ? plainPath(report.journalRoot) : null,
+    exitCode:meta.exitCode ?? null,
+    parseError:meta.parseError ?? null,
+    timedOut:meta.timedOut === true,
+    stderr:typeof meta.stderr === 'string' ? meta.stderr.slice(0, 400) : null,
+    reconciledCount:report?.reconciledCount ?? reclaimed.length,
+    skippedCount:report?.skippedCount ?? skipped.length,
+    reclaimed, skipped, unreadable,
+    // A report that claims a final receipt would contradict the protocol;
+    // surface it instead of silently trusting it.
+    finalReceiptClaimed:entries.some(entry => entry?.finalReceiptObserved === true),
+  };
+}
+
+/**
+ * Run the broker's own `recover <tasksRoot>` CLI once and reduce its report.
+ * A non-zero exit is a valid partial pass, so only the payload decides.
+ */
+async function runRecoveryPass({broker, tasksRoot, run, trigger = null, timeoutMs = RECOVER_TIMEOUT_MS}) {
+  const runner = run ?? ((binary, args, settings) => execFileAsync(binary, args, settings));
+  const result = await runner(broker, ['recover', tasksRoot], {timeoutMs, maxBufferBytes:RECOVER_REPORT_BYTES});
+  let report = null, parseError = null;
+  const text = String(result?.stdout ?? '').trim();
+  if (text) {
+    // The CLI prints the report on stdout; a preparation failure prints a short
+    // `{schemaVersion,state,error}` object instead.
+    const start = text.indexOf('{');
+    const end = text.lastIndexOf('}');
+    try { report = JSON.parse(start >= 0 && end > start ? text.slice(start, end + 1) : text); }
+    catch (error) { parseError = error.message; }
+  }
+  return summarizeRecovery(report, {trigger, exitCode:result?.exitCode ?? null, parseError,
+    stderr:result?.stderr, timedOut:result?.error?.killed === true});
+}
+
 function createGodotExecutor(core, options = {}) {
   const dataPath = options.dataPath;
   const verifier = options.verifier ?? null;
@@ -150,6 +243,9 @@ function createGodotExecutor(core, options = {}) {
   // protocol tests inject a scripted broker so framing, digests, cancellation
   // and tampered receipts can be exercised deterministically.
   const spawnBroker = options.spawnBroker ?? ((binary, args, settings) => spawn(binary, args, settings));
+  // Test seam only: the product always runs the pinned broker's own `recover`
+  // CLI, which re-proves task identity before it reclaims anything.
+  const runRecovery = options.runRecovery ?? ((binary, args, settings) => execFileAsync(binary, args, settings));
   const clock = options.now ?? (() => Date.now());
   const jobTimeoutMs = options.jobTimeoutMs ?? JOB_TIMEOUT_MS;
   const jobs = new Map();
@@ -215,6 +311,35 @@ function createGodotExecutor(core, options = {}) {
     return null;
   }
 
+  /**
+   * The shipped broker identity. A configured hash wins, then the identity file
+   * that ships next to the broker copy (or in the plugin data directory).
+   * Absence is reported as unpinned rather than silently accepted, so a
+   * development build cannot masquerade as the pinned production one.
+   */
+  function brokerIdentity(broker) {
+    const candidates = [];
+    const configuredIdentity = configured('CRAFTMINE_GODOT_BROKER_IDENTITY');
+    if (configuredIdentity) candidates.push(configuredIdentity);
+    candidates.push(path.join(path.dirname(broker), 'broker-identity.json'));
+    if (dataPath) candidates.push(path.join(dataPath, 'godot', 'broker-identity.json'));
+    for (const candidate of candidates) {
+      try {
+        const value = JSON.parse(fs.readFileSync(candidate, 'utf8'));
+        if (value?.format === BROKER_IDENTITY_FORMAT && typeof value.sha256 === 'string') return {source:candidate, ...value};
+      } catch { /* the next candidate is tried; absence is reported, never assumed */ }
+    }
+    return null;
+  }
+
+  function pinnedBroker(broker) {
+    const explicit = process.env.CRAFTMINE_GODOT_BROKER_SHA256;
+    if (explicit) return {sha256:String(explicit).toLowerCase(), source:'CRAFTMINE_GODOT_BROKER_SHA256', identity:null};
+    const identity = brokerIdentity(broker);
+    if (identity) return {sha256:String(identity.sha256).toLowerCase(), source:identity.source, identity};
+    return null;
+  }
+
   async function verifyToolchain() {
     const broker = candidateBroker();
     if (!broker || !fs.existsSync(broker)) return {ok:false, reason:'GODOT_BROKER_MISSING'};
@@ -222,8 +347,8 @@ function createGodotExecutor(core, options = {}) {
     if (!engineRoot || !ordinaryDirectory(engineRoot)) return {ok:false, reason:'GODOT_ENGINE_MISSING'};
     const lock = toolchainLock();
     const brokerSha256 = await sha256File(broker);
-    const pinnedBroker = process.env.CRAFTMINE_GODOT_BROKER_SHA256;
-    if (pinnedBroker && pinnedBroker.toLowerCase() !== brokerSha256) return {ok:false, reason:'GODOT_BROKER_MISMATCH'};
+    const pin = pinnedBroker(broker);
+    if (pin && pin.sha256 !== brokerSha256) return {ok:false, reason:'GODOT_BROKER_MISMATCH'};
     const measured = {};
     if (lock) {
       const editor = path.join(engineRoot, 'editor', lock.value.editor?.executable ?? '');
@@ -244,7 +369,10 @@ function createGodotExecutor(core, options = {}) {
     const bridge = bridgeSource();
     if (!bridge || !fs.existsSync(bridge)) return {ok:false, reason:'GODOT_BRIDGE_MISSING'};
     measured.bridgeSha256 = await sha256File(bridge);
-    return {ok:true, broker, brokerSha256, engineRoot, lock, measured, bridge:{file:bridge, sha256:measured.bridgeSha256}};
+    return {ok:true, broker, brokerSha256, engineRoot, lock, measured, bridge:{file:bridge, sha256:measured.bridgeSha256},
+      brokerPin:pin ? {sha256:pin.sha256, source:pin.source, identity:pin.identity ? {
+        sourceCommit:pin.identity.sourceCommit ?? null, profile:pin.identity.profile ?? null,
+        protocolVersion:pin.identity.protocolVersion ?? null} : null} : null};
   }
 
   async function preflight(verified) {
@@ -262,6 +390,7 @@ function createGodotExecutor(core, options = {}) {
     const result = validateBrokerReceipt(run.response, {
       operation:'version', sourceBinding:{worldId:'executor-preflight', buildId:'executor-preflight', sourceRevision:0, sourceDigest:sha256('')},
       inputHash:sha256('craftmine.godot-executor/preflight'), expectedFiles:[], requestId:taskId,
+      measuredBrokerSha256:verified.brokerSha256,
     });
     if (!result.ok) {
       // Keep the broker's own diagnostics: a preparation failure must be
@@ -306,41 +435,39 @@ function createGodotExecutor(core, options = {}) {
   }
 
   /**
-   * The broker persists the exact child identity (pid + image + creation time)
-   * before resuming it. A cooperative cancel lets it clean up; a hard kill may
-   * not, so the host verifies the recorded process is gone and terminates a
-   * survivor itself. Identity is the recorded image name, never a bare pid.
+   * Host-owned recovery pass. `godot-host-broker.exe recover <tasksRoot>` is the
+   * only component allowed to reclaim a task whose broker died without a final
+   * response: it re-proves the tasks root, identity nonce, AppContainer SID and
+   * the child pid + creation FILETIME before deleting anything, and it refuses
+   * a task whose owning broker is still alive. A task counts as reclaimed only
+   * when `identityVerified` and `journalRemoved` are both true, and a recovery
+   * pass never means the build succeeded: every entry carries
+   * `finalReceiptObserved:false` by construction.
+   *
+   * The pass is single-flight, so concurrent triggers (startup, abnormal exit,
+   * cancel, restart reconciliation) never race on the same journal directory.
    */
-  async function reapTaskProcess(requestId) {
-    const sidecar = path.join(tasksRoot, requestId, 'logs', 'process-verification.json');
-    let recorded = null;
-    // The sidecar is written just before the child resumes, so an interruption
-    // can catch it mid-write; a few bounded retries keep that from looking like
-    // "no child was ever recorded".
-    for (let attempt = 0; attempt < 5 && recorded === null; attempt += 1) {
-      try { recorded = JSON.parse(await fsp.readFile(sidecar, 'utf8')); }
-      catch { await new Promise(resolve => setTimeout(resolve, 200)); }
+  let recoveryChain = Promise.resolve();
+
+  function recoverTasks(trigger) {
+    const run = () => recoverTasksOnce(trigger);
+    recoveryChain = recoveryChain.then(run, run);
+    return recoveryChain;
+  }
+
+  async function recoverTasksOnce(trigger) {
+    if (!tasksRoot || !discovery.broker) {
+      return {format:'craftmine.godot-recovery-summary/1', trigger, ok:false, reason:'GODOT_RECOVERY_UNAVAILABLE',
+        policyVersion:RECOVERY_POLICY_VERSION, tasksRoot:tasksRoot ?? null, journalRoot:null,
+        reconciledCount:0, skippedCount:0, reclaimed:[], skipped:[], unreadable:[], finalReceiptClaimed:false};
     }
-    if (recorded === null) {
-      log('reap: task identity unavailable', sidecar, 'exists=' + fs.existsSync(sidecar), 'tasksRoot=' + tasksRoot);
-      return {checked:false, reason:'GODOT_TASK_IDENTITY_UNAVAILABLE', requestId};
+    const summary = await runRecoveryPass({broker:discovery.broker, tasksRoot, run:runRecovery, trigger});
+    discovery.recoveries = [...(discovery.recoveries ?? []), summary].slice(-8);
+    if (summary.reclaimed.length) warn('recovered tasks without a final receipt:', trigger, summary.reclaimed.map(entry => entry.taskId).join(','));
+    if (summary.skipped.length || summary.unreadable.length) {
+      log('recovery pass kept', summary.skipped.length, 'task(s) and', summary.unreadable.length, 'unreadable entry(ies):', trigger);
     }
-    const pid = recorded?.pid;
-    if (!Number.isInteger(pid) || pid <= 0) return {checked:false, reason:'GODOT_TASK_IDENTITY_INVALID', requestId};
-    log('reap checking recorded child', pid, 'for task', requestId);
-    const expected = path.basename(String(recorded.imagePath ?? '')).toLowerCase();
-    const remember = record => {
-      discovery.reaps = [...(discovery.reaps ?? []), {...record, at:nowIso()}].slice(-8);
-      log('reap outcome', JSON.stringify(record));
-      return record;
-    };    const listing = await execFileAsync('tasklist', ['/FI', `PID eq ${pid}`, '/FO', 'CSV', '/NH']);
-    if (!listing.stdout.includes(String(pid))) return remember({checked:true, alive:false, pid});
-    const image = (listing.stdout.split(',')[0] ?? '').replaceAll('"', '').trim().toLowerCase();
-    if (expected && image !== expected) return remember({checked:true, alive:true, pid, identity:'mismatch', image});
-    const killed = await execFileAsync('taskkill', ['/T', '/F', '/PID', String(pid)]);
-    const gone = !(await execFileAsync('tasklist', ['/FI', `PID eq ${pid}`, '/FO', 'CSV', '/NH'])).stdout.includes(String(pid));
-    warn('reaped surviving task process', pid, image, 'gone=' + gone, killed.error ? String(killed.error.message) : '');
-    return remember({checked:true, alive:true, pid, image, killed:gone});
+    return summary;
   }
 
   /**
@@ -373,11 +500,17 @@ function createGodotExecutor(core, options = {}) {
       let response = null, parseError = null;
       const line = stdout.trim();
       if (line) { try { response = JSON.parse(line); } catch (error) { parseError = error.message; } }
-      const settle = reaped => finish({ok:true, requestId:request.requestId, exitCode:code, signal, response, parseError,
-        stdout:bounded(stdout, 8192), stderr, cancelled, timedOut, oversized, reaped});
-      // A run that did not report success may have left its child behind.
-      if (response?.state === 'succeeded' && !cancelled && !timedOut) settle(null);
-      else reapTaskProcess(request.requestId).then(settle, error => { warn('reap failed:', String(error?.message ?? error)); settle(null); });
+      // Only a run that reported success *and* proved both cleanup and journal
+      // retirement needs no recovery pass.
+      const cleanSuccess = response?.state === 'succeeded' && !cancelled && !timedOut
+        && response?.cleanup?.verified === true && response?.recoveryJournal?.cleared === true;
+      const settle = recovery => finish({ok:true, requestId:request.requestId, exitCode:code, signal, response, parseError,
+        stdout:bounded(stdout, 8192), stderr, cancelled, timedOut, oversized, recovery});
+      // Any other ending may have left a task root, an AppContainer profile or a
+      // surviving child. The host-owned recovery pass re-proves the recorded
+      // identity before it reclaims anything; it is the only cleanup path.
+      if (cleanSuccess) settle(null);
+      else recoverTasks('broker-exit').then(settle, error => { warn('recovery pass failed:', String(error?.message ?? error)); settle(null); });
     });
     const timer = setTimeout(() => { timedOut = true; cancel('timeout'); }, Math.max(1000, request.timeoutMs ?? JOB_TIMEOUT_MS));
 
@@ -426,6 +559,10 @@ function createGodotExecutor(core, options = {}) {
     if (response.processVerification?.verified !== true) return fail('GODOT_BROKER_PROCESS_UNVERIFIED');
     if (response.networkPreflight?.verified !== true) return fail('GODOT_BROKER_NETWORK_UNVERIFIED');
     if (response.cleanup?.verified !== true) return fail('GODOT_BROKER_CLEANUP_UNVERIFIED');
+    // A breached sampled budget is a real failure, never a warning.
+    if (response.resourceEnforcement?.enforced === true) return fail('GODOT_RESOURCE_BUDGET_EXCEEDED');
+    // The receipt's own hash is a self-measurement, not authorization: it is
+    // compared with the pin the host verified against the launched file.
     if (expected.pinnedBrokerSha256 && response.brokerSha256 !== expected.pinnedBrokerSha256) return fail('GODOT_BROKER_MISMATCH');
     const files = Array.isArray(response.sourceFiles) ? response.sourceFiles : null;
     if (!files) return fail('GODOT_BROKER_RESPONSE_INVALID');
@@ -569,6 +706,13 @@ function createGodotExecutor(core, options = {}) {
       claim = await core.call('godotJob.claim', {jobId, token, executorId:EXECUTOR_ID}, 30000);
       entry.claim = claim;
       entry.startedAt = clock();
+      const durable = ledgerEntry(jobId);
+      durable.worldId = claim.worldId ?? worldId;
+      durable.mode = claim.kind ?? mode;
+      durable.state = 'running';
+      durable.startedAt = nowIso();
+      durable.reason = null;
+      persistLedger();
       heartbeat = setInterval(() => {
         core.call('godotJob.heartbeat', {jobId, token}, 15000).catch(error => warn('heartbeat failed:', jobId, error.message));
       }, HEARTBEAT_MS);
@@ -583,11 +727,12 @@ function createGodotExecutor(core, options = {}) {
         projectRoot:plainPath(claim.projectRoot), sourceBinding, inputHash:claim.inputHash,
       };
 
-      const importRun = await track(entry, runBroker({...baseRequest, operation:'import', requestId:brokerTaskId('import'), timeoutMs:jobTimeoutMs,
-        onCancel:reason => warn('import cancelled:', jobId, reason)}));
+      const importRun = await trackedBrokerRun(entry, {...baseRequest, operation:'import', requestId:brokerTaskId('import'), timeoutMs:jobTimeoutMs,
+        onCancel:reason => warn('import cancelled:', jobId, reason)});
       if (entry.cancelled) return await abandon(entry, 'GODOT_JOB_CANCELLED');
       const importCheck = validateBrokerReceipt(importRun.response, {operation:'import', sourceBinding, inputHash:claim.inputHash,
-        expectedFiles:files, requestId:importRun.requestId ?? entry.importRequestId, pinnedBrokerSha256:discovery.preflight?.brokerSha256});
+        expectedFiles:files, requestId:importRun.requestId ?? entry.importRequestId,
+        measuredBrokerSha256:discovery.measuredBrokerSha256, pinnedBrokerSha256:discovery.brokerPin?.sha256 ?? null});
       const importLog = await readTaskLog(importRun.response ?? {});
       const importClassified = classifyLog(importLog);
       const importPassed = importCheck.ok === true && importClassified.errors.length === 0;
@@ -603,11 +748,12 @@ function createGodotExecutor(core, options = {}) {
 
       let artifacts = [], bridgeReplaced = false, runtime = null, descriptorSource = null, exportLog = '';
       if (mode === 'check') {
-        const exportRun = await track(entry, runBroker({...baseRequest, operation:'exportWeb', requestId:brokerTaskId('exportWeb'), timeoutMs:jobTimeoutMs,
-          onCancel:reason => warn('export cancelled:', jobId, reason)}));
+        const exportRun = await trackedBrokerRun(entry, {...baseRequest, operation:'exportWeb', requestId:brokerTaskId('exportWeb'), timeoutMs:jobTimeoutMs,
+          onCancel:reason => warn('export cancelled:', jobId, reason)});
         if (entry.cancelled) return await abandon(entry, 'GODOT_JOB_CANCELLED');
         const exportCheck = validateBrokerReceipt(exportRun.response, {operation:'exportWeb', sourceBinding, inputHash:claim.inputHash,
-          expectedFiles:files, requestId:exportRun.requestId ?? entry.exportRequestId, pinnedBrokerSha256:discovery.preflight?.brokerSha256});
+          expectedFiles:files, requestId:exportRun.requestId ?? entry.exportRequestId,
+          measuredBrokerSha256:discovery.measuredBrokerSha256, pinnedBrokerSha256:discovery.brokerPin?.sha256 ?? null});
         exportLog = await readTaskLog(exportRun.response ?? {});
         if (!exportCheck.ok) {
           return await finishJob(entry, {
@@ -690,9 +836,21 @@ function createGodotExecutor(core, options = {}) {
     try {
       const record = await core.call('godotJob.finish', {jobId, token, output}, 30000);
       log('job finished', jobId, record?.status, result.reason ? 'reason=' + result.reason : '');
+      const durable = ledgerEntry(jobId);
+      durable.state = record?.status === 'failed' ? 'failed' : 'finished';
+      durable.outcome = record?.status ?? 'unknown';
+      durable.finishedAt = nowIso();
+      durable.reason = result.reason ?? null;
+      persistLedger();
       return {status:record?.status ?? 'unknown', candidateId:record?.candidateId ?? null, reason:result.reason ?? null};
     } catch (error) {
       warn('finish refused:', jobId, String(error?.message ?? error), result.reason ?? '');
+      const durable = ledgerEntry(jobId);
+      durable.state = 'failed';
+      durable.outcome = 'refused';
+      durable.finishedAt = nowIso();
+      durable.reason = String(error?.message ?? error);
+      persistLedger();
       return {status:'refused', candidateId:null, reason:String(error?.message ?? error)};
     }
   }
@@ -700,6 +858,15 @@ function createGodotExecutor(core, options = {}) {
   async function abandon(entry, reason) {
     warn('job abandoned:', entry.jobId, reason);
     try { await core.call('godotBuild.cancel', {worldId:entry.worldId, jobId:entry.jobId}, 20000); } catch {}
+    const durable = ledgerEntry(entry.jobId);
+    durable.state = 'cancelled';
+    durable.outcome = 'cancelled';
+    durable.finishedAt = nowIso();
+    durable.reason = reason;
+    persistLedger();
+    // A cancelled broker run has already been followed by a recovery pass in
+    // runBroker; this covers a cancel that never reached the broker.
+    await recoverTasks('cancel');
     return {status:'cancelled', candidateId:null, reason};
   }
 
@@ -711,11 +878,30 @@ function createGodotExecutor(core, options = {}) {
     if (jobs.size >= MAX_JOBS) return {enqueued:false, reason:'GODOT_EXECUTOR_BUSY'};
     const entry = {jobId, worldId:job?.worldId ?? null, mode:job?.mode ?? job?.kind ?? 'build', token:randomUUID(), context, cancelled:false};
     jobs.set(jobId, entry);
+    const durable = ledgerEntry(jobId);
+    durable.worldId = entry.worldId;
+    durable.mode = entry.mode;
+    durable.state = 'enqueued';
+    durable.reason = null;
+    durable.finishedAt = null;
+    persistLedger();
     entry.promise = new Promise(resolve => setImmediate(resolve))
       .then(() => waitForQueued(entry))
-      .then(queued => queued ? runJob(entry) : (jobs.delete(jobId), {status:'blocked', candidateId:null, reason:'GODOT_EXECUTION_UNAVAILABLE'}))
-      .catch(error => { jobs.delete(jobId); warn('job worker failed:', jobId, error.message); return {status:'failed', candidateId:null, reason:error.message}; });
+      .then(queued => queued ? runJob(entry) : (jobs.delete(jobId), settleWithoutRun(entry, 'blocked', 'GODOT_EXECUTION_UNAVAILABLE')))
+      .catch(error => { jobs.delete(jobId); settleWithoutRun(entry, 'failed', error.message);
+        warn('job worker failed:', jobId, error.message); return {status:'failed', candidateId:null, reason:error.message}; });
     return {enqueued:true, jobId};
+  }
+
+  /** A job that never reached the broker still needs a terminal ledger state. */
+  function settleWithoutRun(entry, state, reason) {
+    const durable = ledgerEntry(entry.jobId);
+    durable.state = state;
+    durable.outcome = state;
+    durable.finishedAt = nowIso();
+    durable.reason = reason;
+    persistLedger();
+    return {status:state, candidateId:null, reason};
   }
 
   async function waitForQueued(entry) {
@@ -758,6 +944,11 @@ function createGodotExecutor(core, options = {}) {
 
   async function reconcile() {
     if (!registered || stopped) return {enqueued:0};
+    // Reclaim tasks whose broker died without a final response before the
+    // core's queued list is trusted again.
+    const recovery = await recoverTasks('reconcile');
+    const recoverySummary = {trigger:recovery.trigger, ok:recovery.ok,
+      reclaimed:recovery.reclaimed.map(entry => entry.taskId), skipped:recovery.skipped.length, unreadable:recovery.unreadable.length};
     try {
       const pending = await core.call('godotJob.pending', {}, 20000);
       let enqueued = 0;
@@ -765,12 +956,144 @@ function createGodotExecutor(core, options = {}) {
         if (job.status !== 'queued') continue;
         if (enqueue(job, {}).enqueued) enqueued++;
       }
-      return {enqueued};
+      return {enqueued, recovery:recoverySummary};
     } catch (error) {
       // `godotJob.pending` is an optional core interface; its absence is not a failure.
       if (!/UNSUPPORTED|UNKNOWN|NOT_FOUND/i.test(String(error?.message ?? ''))) warn('reconcile failed:', error.message);
-      return {enqueued:0, unsupported:true};
+      return {enqueued:0, unsupported:true, recovery:recoverySummary};
     }
+  }
+
+  // ------------------------------------------------------- durable job ledger
+
+  // The in-memory job map dies with the process. A small atomically-written
+  // ledger lets a restarted executor tell "no final receipt, task reclaimed"
+  // apart from "completed", and keeps one job from being started twice after an
+  // observation wait timed out.
+  let ledger = {format:LEDGER_FORMAT, executorId:EXECUTOR_ID, updatedAt:null, jobs:{}};
+  let ledgerWrite = Promise.resolve();
+
+  const ledgerFile = () => dataPath ? path.join(dataPath, 'godot', 'executor-ledger.json') : null;
+
+  async function loadLedger() {
+    const file = ledgerFile();
+    if (!file) return;
+    try {
+      const value = JSON.parse(await fsp.readFile(file, 'utf8'));
+      if (value?.format === LEDGER_FORMAT && value.jobs && typeof value.jobs === 'object') ledger = value;
+    } catch { /* a missing or unreadable ledger is rebuilt from live state */ }
+  }
+
+  function persistLedger() {
+    const file = ledgerFile();
+    if (!file) return ledgerWrite;
+    ledger.updatedAt = nowIso();
+    const text = JSON.stringify(ledger, null, 2);
+    ledgerWrite = ledgerWrite.then(async () => {
+      const temporary = file + '.tmp';
+      await fsp.mkdir(path.dirname(file), {recursive:true});
+      await fsp.writeFile(temporary, text, 'utf8');
+      await fsp.rename(temporary, file);
+    }).catch(error => warn('ledger write failed:', String(error?.message ?? error)));
+    return ledgerWrite;
+  }
+
+  function ledgerEntry(jobId) {
+    if (!ledger.jobs[jobId]) {
+      ledger.jobs[jobId] = {jobId, worldId:null, mode:null, state:'enqueued', attempts:[],
+        startedAt:null, finishedAt:null, outcome:null, reason:null};
+    }
+    return ledger.jobs[jobId];
+  }
+
+  function recordAttempt(jobId, attempt) {
+    const entry = ledgerEntry(jobId);
+    const index = entry.attempts.findIndex(item => item.requestId === attempt.requestId);
+    if (index >= 0) entry.attempts[index] = {...entry.attempts[index], ...attempt};
+    else entry.attempts.push(attempt);
+    persistLedger();
+  }
+
+  const attemptReclaimed = (summary, requestId) => !!summary?.reclaimed?.some(entry => entry.taskId === requestId);
+
+  /** Run one broker invocation and keep its durable attempt record in step. */
+  async function trackedBrokerRun(entry, request) {
+    const attempt = {requestId:request.requestId, operation:request.operation, startedAt:nowIso(), outcome:null, transport:null, recovery:null};
+    recordAttempt(entry.jobId, attempt);
+    const run = await track(entry, runBroker(request));
+    if (run.response?.resourceEnforcement) {
+      const observed = run.response.resourceEnforcement;
+      discovery.resources = {policyVersion:observed.policyVersion ?? null, scope:observed.scope ?? null,
+        hardFilesystemQuota:observed.hardFilesystemQuota === true, enforced:observed.enforced === true,
+        workBytesLimit:observed.workBytesLimit ?? null, logBytesLimit:observed.logBytesLimit ?? null,
+        maxObservedWorkBytes:observed.maxObservedWorkBytes ?? null, maxObservedLogBytes:observed.maxObservedLogBytes ?? null,
+        samples:observed.samples ?? null, reason:observed.reason ?? null, at:nowIso()};
+    }
+    const cleanSuccess = run.response?.state === 'succeeded' && run.response?.cleanup?.verified === true
+      && run.response?.recoveryJournal?.cleared === true;
+    recordAttempt(entry.jobId, {
+      requestId:request.requestId, finishedAt:nowIso(),
+      transport:run.response?.state ?? null,
+      // "succeeded" is reserved for a run that retired its own journal entry.
+      outcome:cleanSuccess ? 'succeeded'
+        : attemptReclaimed(run.recovery, request.requestId) ? 'reclaimed-without-final-receipt'
+        : 'no-final-receipt:' + (run.parseError ?? run.response?.state ?? run.reason ?? 'transport'),
+      recovery:run.recovery ? {trigger:run.recovery.trigger,
+        reclaimed:run.recovery.reclaimed.map(item => item.taskId),
+        skipped:run.recovery.skipped.length, unreadable:run.recovery.unreadable.length} : null,
+    });
+    return run;
+  }
+
+  /**
+   * Restart reconciliation. Runs once after the startup recovery pass: a job
+   * whose attempt left no final receipt is only re-enqueued when the recovery
+   * pass re-proved the old task identity, so an unknown leftover is reported
+   * instead of being started a second time over an unverified task root.
+   */
+  async function reconcileAfterRestart(summary) {
+    const stale = Object.values(ledger.jobs).filter(entry => !['finished', 'failed', 'cancelled'].includes(entry.state));
+    const result = {checked:stale.length, requeued:[], terminal:[], interrupted:[], unverifiable:[], recovery:summary?.trigger ?? null};
+    for (const entry of stale) {
+      let unverified = false;
+      for (const attempt of entry.attempts) {
+        if (attempt.outcome) continue;
+        attempt.outcome = attemptReclaimed(summary, attempt.requestId) ? 'reclaimed-without-final-receipt' : 'unknown-at-restart';
+        attempt.recoveredAt = nowIso();
+        if (attempt.outcome !== 'reclaimed-without-final-receipt') unverified = true;
+      }
+      let job = null;
+      try { job = await core.call('godotBuild.read', {worldId:entry.worldId, jobId:entry.jobId}, 20000); }
+      catch { job = null; }
+      const jobState = job?.status ?? null;
+      if (jobState === 'succeeded' || jobState === 'failed' || jobState === 'cancelled') {
+        entry.state = jobState === 'succeeded' ? 'finished' : jobState;
+        entry.finishedAt = nowIso();
+        entry.reason = 'GODOT_RESTART_TERMINAL:' + jobState;
+        result.terminal.push({jobId:entry.jobId, status:jobState});
+      } else if (jobState === 'queued' && !unverified) {
+        entry.state = 'enqueued';
+        entry.reason = 'GODOT_RESTART_REQUEUED';
+        result.requeued.push(entry.jobId);
+        enqueue({jobId:entry.jobId, worldId:entry.worldId, mode:entry.mode});
+      } else if (jobState === 'blocked' && entry.attempts.length === 0) {
+        entry.state = 'enqueued';
+        entry.reason = 'GODOT_RESTART_BLOCKED';
+        result.requeued.push(entry.jobId);
+        enqueue({jobId:entry.jobId, worldId:entry.worldId, mode:entry.mode});
+      } else if (unverified) {
+        // No final receipt and no re-proved identity: never restart it.
+        entry.state = 'interrupted';
+        entry.reason = 'GODOT_RESTART_IDENTITY_UNVERIFIED';
+        result.unverifiable.push({jobId:entry.jobId, attempts:entry.attempts.map(attempt => attempt.requestId)});
+      } else {
+        entry.state = 'interrupted';
+        entry.reason = 'GODOT_RESTART_ATTEMPT_INTERRUPTED:' + (jobState ?? 'unreadable');
+        result.interrupted.push({jobId:entry.jobId, status:jobState});
+      }
+    }
+    persistLedger();
+    return result;
   }
 
   // ---------------------------------------------------------------- lifecycle
@@ -792,13 +1115,18 @@ function createGodotExecutor(core, options = {}) {
         return status();
       }
       Object.assign(discovery, {state:'discovered', reason:null, broker:verified.broker, engineRoot:verified.engineRoot,
-        lock:verified.lock ? path.basename(verified.lock.path) : null, measured:verified.measured, bridge:verified.bridge});
+        lock:verified.lock ? path.basename(verified.lock.path) : null, measured:verified.measured, bridge:verified.bridge,
+        measuredBrokerSha256:verified.brokerSha256, brokerPin:verified.brokerPin});
       tasksRoot = path.join(dataPath ?? path.dirname(verified.broker), 'godot', 'tasks');
       await fsp.mkdir(tasksRoot, {recursive:true});
       if (!ordinaryDirectory(tasksRoot)) {
         Object.assign(discovery, {state:'unavailable', reason:'GODOT_STORAGE_UNAVAILABLE'});
         return status();
       }
+      // Restart reconciliation, phase 1: reclaim any task whose broker died
+      // without a final response before a fresh preflight creates new tasks.
+      await loadLedger();
+      discovery.startupRecovery = await recoverTasks('startup');
       const preflightResult = await preflight(verified);
       if (!preflightResult.ok) {
         Object.assign(discovery, {state:'unavailable', reason:preflightResult.reason, detail:preflightResult.detail ?? null, preflight:preflightResult.receipt ?? null});
@@ -825,6 +1153,9 @@ function createGodotExecutor(core, options = {}) {
         warn('registration refused:', String(error?.message ?? error));
         return status();
       }
+      // Restart reconciliation, phase 2: a job may only be started again once
+      // the executor is registered, so this runs after registration.
+      discovery.restartReconciliation = await reconcileAfterRestart(discovery.startupRecovery);
       await reconcile();
       return status();
     })().finally(() => { starting = null; });
@@ -835,6 +1166,10 @@ function createGodotExecutor(core, options = {}) {
     stopped = true;
     await Promise.all([...jobs.keys()].map(jobId => cancel(jobId, 'executor stopping')));
     await Promise.all([...jobs.values()].map(entry => entry.promise));
+    // Nothing is running any more, so any journal entry left behind belongs to
+    // a task that never reported a final receipt. Reclaim it with re-proved
+    // identity; never delete by name or bare pid.
+    discovery.stopRecovery = await recoverTasks('stop');
     let revoked = false;
     let revokeReason = null;
     if (registered) {
@@ -865,7 +1200,10 @@ function createGodotExecutor(core, options = {}) {
       buildAvailable:registered,
       checkAvailable:registered && !!verifier?.godotCheck,
       reason:discovery.reason,
-      broker:discovery.broker ? {sha256:discovery.preflight?.brokerSha256 ?? null} : null,
+      broker:discovery.broker ? {sha256:discovery.measuredBrokerSha256 ?? null,
+        pinned:!!discovery.brokerPin, pinSource:discovery.brokerPin?.source ?? null,
+        sourceCommit:discovery.brokerPin?.identity?.sourceCommit ?? null,
+        protocolVersion:discovery.brokerPin?.identity?.protocolVersion ?? null} : null,
       engineRoot:discovery.engineRoot,
       lock:discovery.lock,
       evidenceHash:discovery.evidenceHash,
@@ -877,8 +1215,22 @@ function createGodotExecutor(core, options = {}) {
         cleanupVerified:discovery.preflight.cleanup?.verified === true,
         networkChecks:(discovery.preflight.networkPreflight?.observation?.checks ?? []).map(check => ({name:check.name, ok:check.ok === true, rawOsError:check.rawOsError ?? null})),
       } : null,
+      // Recovery is the only cleanup path. A reclaimed task means the recorded
+      // identity was re-proved after a missing final receipt; it never means
+      // the build succeeded.
+      recoveries:discovery.recoveries ?? [],
+      startupRecovery:discovery.startupRecovery ?? null,
+      restartReconciliation:discovery.restartReconciliation ?? null,
+      stopRecovery:discovery.stopRecovery ?? null,
+      // The broker enforces a sampled budget, not a filesystem quota. The two
+      // are reported separately so a hard-quota claim is never inferred.
+      resources:{sampled:true, hardFilesystemQuota:false,
+        scope:'sampled-task-work-directory-and-log-size; parent terminates the job on breach',
+        lastObserved:discovery.resources ?? null},
       jobs:[...jobs.keys()],
-      reaps:discovery.reaps ?? [],
+      ledger:{jobs:Object.keys(ledger.jobs).length,
+        active:Object.values(ledger.jobs).filter(entry => !['finished', 'failed', 'cancelled'].includes(entry.state)).length,
+        updatedAt:ledger.updatedAt},
       tasksRoot,
       registered,
       revokedOnStop:null,
@@ -886,7 +1238,10 @@ function createGodotExecutor(core, options = {}) {
   }
 
   return {start, stop, status, enqueue, cancel, cancelTurn, cancelOtherTurns, reconcile,
+    recover:recoverTasks, reconcileAfterRestart, get ledger() { return ledger; },
     get executorId() { return EXECUTOR_ID; }, get registered() { return registered; }};
 }
 
-module.exports = {createGodotExecutor, classifyLog, sourceSnapshotDigest, safeRelative, EXECUTOR_ID, ISOLATION, ENGINE_VERSION, NATIVE_ISOLATION_DIAGNOSTICS};
+module.exports = {createGodotExecutor, classifyLog, summarizeRecovery, runRecoveryPass, sourceSnapshotDigest, safeRelative, ordinaryDirectory,
+  EXECUTOR_ID, ISOLATION, ENGINE_VERSION, RECOVERY_POLICY_VERSION, LEDGER_FORMAT, BROKER_IDENTITY_FORMAT,
+  BROKER_PROFILE_PREFIX, BROKER_TASK_ID_MAX, NATIVE_ISOLATION_DIAGNOSTICS};
