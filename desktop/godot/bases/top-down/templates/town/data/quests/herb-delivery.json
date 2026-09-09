@@ -1,0 +1,7 @@
+{
+  "id": "herb-delivery",
+  "title": "三份草药",
+  "giver": "npc-mira",
+  "requires": { "itemId": "herb", "count": 3 },
+  "reward": { "coins": 30, "items": [{ "id": "apple", "count": 1 }] }
+}

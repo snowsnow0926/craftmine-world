@@ -1,0 +1,9 @@
+{
+  "id": "mira",
+  "name": "米拉",
+  "lines": [
+    { "when": "completed", "text": "谢谢你把草药送来，镇上的人都能用上了。" },
+    { "when": "active", "text": "南边那丛草药正好成熟，帮我采三份回来吧。" },
+    { "when": "always", "text": "今天天气不错。" }
+  ]
+}

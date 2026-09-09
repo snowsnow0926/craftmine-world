@@ -1,0 +1,32 @@
+{
+  "format": "craftmine.godot-topdown-world/1",
+  "baseId": "top-down",
+  "baseVersion": "1.0.0",
+  "baseProtocolVersion": 1,
+  "worldId": "__WORLD_ID__",
+  "displayName": "__WORLD_NAME__",
+  "description": "One road, one shop, one NPC and one collect-and-deliver quest.",
+  "entryScene": "res://scenes/overworld.tscn",
+  "stateVersion": 1,
+  "autosaveOnExit": true,
+  "initialProgress": {
+    "coins": 40,
+    "sceneId": "overworld",
+    "playerPosition": [104, 168],
+    "playerFacing": "down",
+    "inventory": [],
+    "shops": [
+      {
+        "id": "general",
+        "stock": [
+          { "id": "bread", "count": 3 },
+          { "id": "potion", "count": 2 },
+          { "id": "apple", "count": 5 },
+          { "id": "rope", "count": 1 }
+        ]
+      }
+    ],
+    "quests": [{ "id": "herb-delivery", "status": "active" }],
+    "flags": []
+  }
+}

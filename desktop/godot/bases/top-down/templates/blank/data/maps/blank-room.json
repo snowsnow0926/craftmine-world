@@ -1,0 +1,245 @@
+{
+  "format": "craftmine.godot-topdown-map/1",
+  "id": "blank-room",
+  "displayName": "Blank room",
+  "tileSize": 16,
+  "width": 24,
+  "height": 16,
+  "legend": {
+    ".": {
+      "atlas": [
+        0,
+        0
+      ],
+      "name": "grass"
+    },
+    ",": {
+      "atlas": [
+        1,
+        0
+      ],
+      "name": "grass-variant"
+    },
+    "#": {
+      "atlas": [
+        2,
+        0
+      ],
+      "name": "road"
+    },
+    ";": {
+      "atlas": [
+        3,
+        0
+      ],
+      "name": "road-variant"
+    },
+    "*": {
+      "atlas": [
+        4,
+        0
+      ],
+      "name": "flower-grass"
+    },
+    "p": {
+      "atlas": [
+        5,
+        0
+      ],
+      "name": "stone-path"
+    },
+    "w": {
+      "atlas": [
+        6,
+        0
+      ],
+      "name": "wood-floor"
+    },
+    "t": {
+      "atlas": [
+        7,
+        0
+      ],
+      "name": "tile-floor"
+    },
+    "W": {
+      "atlas": [
+        0,
+        1
+      ],
+      "name": "brick-wall"
+    },
+    "T": {
+      "atlas": [
+        1,
+        1
+      ],
+      "name": "wall-top"
+    },
+    "R": {
+      "atlas": [
+        2,
+        1
+      ],
+      "name": "roof"
+    },
+    "r": {
+      "atlas": [
+        3,
+        1
+      ],
+      "name": "roof-dark"
+    },
+    "D": {
+      "atlas": [
+        4,
+        1
+      ],
+      "name": "door"
+    },
+    "o": {
+      "atlas": [
+        5,
+        1
+      ],
+      "name": "window"
+    },
+    "S": {
+      "atlas": [
+        6,
+        1
+      ],
+      "name": "sign"
+    },
+    "F": {
+      "atlas": [
+        7,
+        1
+      ],
+      "name": "fence"
+    },
+    "H": {
+      "atlas": [
+        0,
+        2
+      ],
+      "name": "herb"
+    },
+    "C": {
+      "atlas": [
+        1,
+        2
+      ],
+      "name": "counter"
+    },
+    "h": {
+      "atlas": [
+        2,
+        2
+      ],
+      "name": "shelf"
+    },
+    "c": {
+      "atlas": [
+        3,
+        2
+      ],
+      "name": "crate"
+    },
+    "n": {
+      "atlas": [
+        4,
+        2
+      ],
+      "name": "tree-trunk"
+    },
+    "N": {
+      "atlas": [
+        5,
+        2
+      ],
+      "name": "tree-top"
+    },
+    "x": {
+      "atlas": [
+        6,
+        2
+      ],
+      "name": "shadow"
+    },
+    "X": {
+      "atlas": [
+        7,
+        2
+      ],
+      "name": "solid-marker",
+      "solid": true
+    }
+  },
+  "layers": [
+    {
+      "id": "ground",
+      "rows": [
+        "WWWWWWWWWWWWWWWWWWWWWWWW",
+        "W......................W",
+        "W......................W",
+        "W......................W",
+        "W......................W",
+        "W.....WWW..............W",
+        "W.....WWW..............W",
+        "W.....WWW..............W",
+        "W......................W",
+        "W..............WW......W",
+        "W..............WW......W",
+        "W..............WW......W",
+        "W..............WW......W",
+        "W......................W",
+        "W......................W",
+        "WWWWWWWWWWWWWWWWWWWWWWWW"
+      ]
+    },
+    {
+      "id": "decor",
+      "rows": [
+        "                        ",
+        "                        ",
+        "                        ",
+        "           *            ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        "
+      ]
+    },
+    {
+      "id": "collision",
+      "collision": true,
+      "rows": [
+        "XXXXXXXXXXXXXXXXXXXXXXXX",
+        "X                      X",
+        "X                      X",
+        "X                      X",
+        "X                      X",
+        "X     XXX              X",
+        "X     XXX              X",
+        "X     XXX              X",
+        "X                      X",
+        "X              XX      X",
+        "X              XX      X",
+        "X              XX      X",
+        "X              XX      X",
+        "X                      X",
+        "X                      X",
+        "XXXXXXXXXXXXXXXXXXXXXXXX"
+      ]
+    }
+  ]
+}

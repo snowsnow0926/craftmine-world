@@ -1,0 +1,233 @@
+{
+  "format": "craftmine.godot-world-build/1",
+  "baseId": "top-down",
+  "baseVersion": "1.0.0",
+  "baseProtocolVersion": 1,
+  "worldFormat": "craftmine.godot-topdown-world/1",
+  "stateFormat": "craftmine.godot-topdown-state/1",
+  "progressFormat": "craftmine.godot-topdown-progress/1",
+  "probeFormat": "craftmine.godot-topdown-probe/1",
+  "godotVersion": "4.7.2-stable",
+  "worldId": "example-town",
+  "template": "town",
+  "entryScene": "res://scenes/overworld.tscn",
+  "stateVersion": 1,
+  "initialProgress": {
+    "coins": 40,
+    "sceneId": "overworld",
+    "playerPosition": [
+      104,
+      168
+    ],
+    "playerFacing": "down",
+    "inventory": [],
+    "shops": [
+      {
+        "id": "general",
+        "stock": [
+          {
+            "id": "bread",
+            "count": 3
+          },
+          {
+            "id": "potion",
+            "count": 2
+          },
+          {
+            "id": "apple",
+            "count": 5
+          },
+          {
+            "id": "rope",
+            "count": 1
+          }
+        ]
+      }
+    ],
+    "quests": [
+      {
+        "id": "herb-delivery",
+        "status": "active"
+      }
+    ],
+    "flags": []
+  },
+  "userDirName": "craftmine-topdown-example-town",
+  "files": [
+    {
+      "path": "assets/ASSET_MANIFEST.json",
+      "bytes": 1214,
+      "sha256": "dfc311e90385b7928ddbdd4ef55266a47abdb46b52eb54b1f1895d55121101f2"
+    },
+    {
+      "path": "assets/characters/npc_sheet.png",
+      "bytes": 354,
+      "sha256": "5cd5d625a5c3f6d98d79ee0ef943ebdaa80330bbd5acac8b77de1eb6d650d324"
+    },
+    {
+      "path": "assets/characters/player_sheet.png",
+      "bytes": 354,
+      "sha256": "cadc92f42970367386024de6249e8f03a4c2f0ed3bb7961b2e0e09ac8a8c1c11"
+    },
+    {
+      "path": "assets/characters/shopkeeper_sheet.png",
+      "bytes": 351,
+      "sha256": "f183a595fcd620e5df4959074663646835e900ae7e3b05c8df8e4b94b850bef4"
+    },
+    {
+      "path": "assets/tiles/town_tiles.png",
+      "bytes": 1238,
+      "sha256": "11f1e95532e9da84855627439e88fa190538e75748c460a3919a6fcca50f7169"
+    },
+    {
+      "path": "assets/tiles/town_tileset.tres",
+      "bytes": 687,
+      "sha256": "c6bf78a941f4082cc24ba665cc73fb1438d3b130df46ee6f5d1d093c6b9e5b10"
+    },
+    {
+      "path": "data/items.json",
+      "bytes": 276,
+      "sha256": "fe4f4156cc0609c60f180668dc5fe664d78f2119549dd186c02380c9c936db3c"
+    },
+    {
+      "path": "data/maps/town-overworld.json",
+      "bytes": 5999,
+      "sha256": "44a124949065af49e356ccf0d8a2ebce5f187405e5463ad635cfb97414eb44bf"
+    },
+    {
+      "path": "data/maps/town-shop-interior.json",
+      "bytes": 3923,
+      "sha256": "ef9ce2b35408953566a3133290ee3a02e7b3849eb943d932a1a001ced7d02cc0"
+    },
+    {
+      "path": "data/npcs/mira.json",
+      "bytes": 311,
+      "sha256": "910b028ac4356ea9c32168be455fe5fbf405cf831431463029307e74232f2d9d"
+    },
+    {
+      "path": "data/npcs/shopkeeper.json",
+      "bytes": 166,
+      "sha256": "8b005a6327aa59b1c6de63e404f1e83dcab137ed32723a8609ea16fd723136f5"
+    },
+    {
+      "path": "data/quests/herb-delivery.json",
+      "bytes": 197,
+      "sha256": "44ce48f79d1eca1d05fbf909084896a77e0dacd5729e8e3ed402b6fbea827abc"
+    },
+    {
+      "path": "data/shops/general.json",
+      "bytes": 253,
+      "sha256": "41749473c7da58165fa9d36b1033aa20cb1a4c89fdfc81744299fcb3776fab54"
+    },
+    {
+      "path": "icon.svg",
+      "bytes": 396,
+      "sha256": "9bf6bb63d15442c473f9968f394812ca6d95f84dfdefdd3b866e5876bae5431e"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 1039,
+      "sha256": "5e023f49f4911566d9355e02341d437f9d67d2627cfc466eff67430538e9aecc"
+    },
+    {
+      "path": "scenes/overworld.tscn",
+      "bytes": 3971,
+      "sha256": "f6900986e9ff8cd1b39cb9c37b7b3c36de8d12248d06c472de1fe4d2417487b5"
+    },
+    {
+      "path": "scenes/shop_interior.tscn",
+      "bytes": 3848,
+      "sha256": "839f1c67078f1e713d8fedc3ef1a983bb4cfde0619330eb52b22b08dff92d466"
+    },
+    {
+      "path": "scripts/base/base_contract.gd",
+      "bytes": 915,
+      "sha256": "bf5f665cf1d9568d4a5e0ce41895596095f6a28e90f1aac0c25e33636cfabb1c"
+    },
+    {
+      "path": "scripts/base/directional_sprite.gd",
+      "bytes": 1158,
+      "sha256": "d5282bdcafd8bc82a561d1922a87517f4dbfd674e5c3a735a3155f578ef95197"
+    },
+    {
+      "path": "scripts/base/door_zone.gd",
+      "bytes": 766,
+      "sha256": "cad57353104e2ab8ddc0d109f1e83bc9d78f1093026591e582c00cd5baa74b88"
+    },
+    {
+      "path": "scripts/base/game.gd",
+      "bytes": 11373,
+      "sha256": "b4bcd89763551f5d730ba61682aed9972d87726a96b005b61680d1256e8020a1"
+    },
+    {
+      "path": "scripts/base/gather_zone.gd",
+      "bytes": 1195,
+      "sha256": "2032d10f3a3c6b907ba72a6a307c132371dc7075349acae4d80fc9202238ac04"
+    },
+    {
+      "path": "scripts/base/interactable.gd",
+      "bytes": 920,
+      "sha256": "2f57eb36dc7f346c7fab8db61d654af652fd3c6eea89650102f84641395e4873"
+    },
+    {
+      "path": "scripts/base/map_renderer.gd",
+      "bytes": 4798,
+      "sha256": "3c856e484521a0bf0ace28195ca61144c30da581d06f0da4d90c6cd5c1358e3c"
+    },
+    {
+      "path": "scripts/base/npc.gd",
+      "bytes": 1273,
+      "sha256": "f46c3b930bd64bd6c065c775d0862e07828ffdd372226e9e8ed190911692213d"
+    },
+    {
+      "path": "scripts/base/player.gd",
+      "bytes": 3017,
+      "sha256": "baa3dcf54f86b9027cfdee11ee0c82421740bdfda84b43b553da0ddc71ff06d3"
+    },
+    {
+      "path": "scripts/base/probe.gd",
+      "bytes": 10393,
+      "sha256": "a241960395637d4445257638c81a0fb295ddeed884b9cc885f21fc4d01d8d7e6"
+    },
+    {
+      "path": "scripts/base/quest_manager.gd",
+      "bytes": 3742,
+      "sha256": "2fc3235f7c5f43e5fbc405b613b7768d0e8ad9449b4cb88817b40ecbbf0f8e76"
+    },
+    {
+      "path": "scripts/base/save_system.gd",
+      "bytes": 3338,
+      "sha256": "b70371e37e3ccfd2aecc7a4214cb4620e8bf5823e4b3a80398087c634be622cd"
+    },
+    {
+      "path": "scripts/base/shop.gd",
+      "bytes": 2375,
+      "sha256": "cfcb973873967c0cf3603408c1d0dffa6742146bc6356a589fb8d78d76a283a6"
+    },
+    {
+      "path": "scripts/base/spawn_marker.gd",
+      "bytes": 178,
+      "sha256": "4dae551e7969ce5118bd0215970f8ff4545a0eb952bb1d224e5809bdde44cfdb"
+    },
+    {
+      "path": "scripts/base/world_root.gd",
+      "bytes": 330,
+      "sha256": "ccb5822d5fb3ed4cb437706d390b1371aafa675bf890484e89edd2088a8482a3"
+    },
+    {
+      "path": "scripts/base/world_state.gd",
+      "bytes": 13421,
+      "sha256": "86e9ac26f99ae28b1150669522662308a1a31e355b4a11f2dab3006afc74efd0"
+    },
+    {
+      "path": "scripts/base/zone.gd",
+      "bytes": 1047,
+      "sha256": "c7ba39f2fdef7d965ad9de771321d4d8c747c3459c2c11c9d4182f72203e83d6"
+    },
+    {
+      "path": "world.json",
+      "bytes": 1045,
+      "sha256": "48acca06767b8608f424b8bc7d4f6c4991586a4907109ca8639640861a0be22c"
+    }
+  ]
+}

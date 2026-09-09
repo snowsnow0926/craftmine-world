@@ -1,0 +1,25 @@
+{
+  "format": "craftmine.godot-topdown-world/1",
+  "baseId": "top-down",
+  "baseVersion": "1.0.0",
+  "baseProtocolVersion": 1,
+  "worldId": "example-blank",
+  "displayName": "空白起点",
+  "description": "Blank top-down start: one room, movement, collision and saving only.",
+  "entryScene": "res://scenes/world.tscn",
+  "stateVersion": 1,
+  "autosaveOnExit": true,
+  "initialProgress": {
+    "coins": 0,
+    "sceneId": "world",
+    "playerPosition": [
+      192,
+      128
+    ],
+    "playerFacing": "down",
+    "inventory": [],
+    "shops": [],
+    "quests": [],
+    "flags": []
+  }
+}

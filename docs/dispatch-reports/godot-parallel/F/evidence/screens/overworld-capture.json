@@ -1,0 +1,73 @@
+{
+  "format": "craftmine.godot-topdown-capture/1",
+  "generatedAt": "2026-09-09T13:14:10.455Z",
+  "godot": "D:/Craftmine World/desktop/build/godot/4.7.2-stable/editor/Godot_v4.7.2-stable_win64_console.exe",
+  "webTemplate": "D:/Craftmine World/desktop/build/godot/4.7.2-stable/templates/web_release.zip",
+  "worldDirectory": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\cap-town\\world",
+  "webDirectory": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\cap-town\\web",
+  "screenshot": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\2d6ded1c-653b-43f7-98f0-2782d7bc06c1\\cap-town\\town.png",
+  "canvas": {
+    "width": 320,
+    "height": 180
+  },
+  "input": "none: no mouse, keyboard, focus or Pointer Lock requests",
+  "consoleErrors": [],
+  "analysis": {
+    "uniqueColors": 29,
+    "colorfulPixels": 56828,
+    "totalPixels": 57600,
+    "matched": {
+      "grass": 39843,
+      "road": 8279,
+      "roof": 0,
+      "skin": 30
+    }
+  },
+  "files": [
+    {
+      "path": "index.apple-touch-icon.png",
+      "bytes": 1302,
+      "sha256": "a10123f9806c67d74bfede5ba015ddf2af655a1f12a726f3aff638547eb25521"
+    },
+    {
+      "path": "index.audio.position.worklet.js",
+      "bytes": 2973,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    {
+      "path": "index.audio.worklet.js",
+      "bytes": 7298,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    {
+      "path": "index.html",
+      "bytes": 5441,
+      "sha256": "cdc779dc25a1af27f288bdf30c06055ca4f459dd1b4fa97313e7e0ae0ee7a730"
+    },
+    {
+      "path": "index.icon.png",
+      "bytes": 339,
+      "sha256": "7f25a50bdbb37008cde02ea4263e6813c92d2fe6a0111769679a02f846a869a9"
+    },
+    {
+      "path": "index.js",
+      "bytes": 314653,
+      "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+    },
+    {
+      "path": "index.pck",
+      "bytes": 91280,
+      "sha256": "3f66f4124dae99f3852d871682dd096fdadd4d6b0de93387d6c35174c9505b10"
+    },
+    {
+      "path": "index.png",
+      "bytes": 21443,
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    {
+      "path": "index.wasm",
+      "bytes": 38820072,
+      "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+    }
+  ]
+}

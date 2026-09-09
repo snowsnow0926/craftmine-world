@@ -1,0 +1,10 @@
+{
+  "id": "general",
+  "title": "杂货铺",
+  "items": [
+    { "id": "bread", "price": 6, "stock": 3 },
+    { "id": "potion", "price": 12, "stock": 2 },
+    { "id": "apple", "price": 4, "stock": 5 },
+    { "id": "rope", "price": 15, "stock": 1 }
+  ]
+}

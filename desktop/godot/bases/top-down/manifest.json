@@ -1,0 +1,38 @@
+{
+  "format": "craftmine.godot-base/1",
+  "baseId": "top-down",
+  "baseVersion": "1.0.0",
+  "godotVersion": "4.7.2-stable",
+  "language": "GDScript",
+  "renderer": "gl_compatibility",
+  "status": "delivered-example-and-blank-start",
+  "protocols": {
+    "worldFormat": "craftmine.godot-topdown-world/1",
+    "stateFormat": "craftmine.godot-topdown-state/1",
+    "progressFormat": "craftmine.godot-topdown-progress/1",
+    "probeFormat": "craftmine.godot-topdown-probe/1",
+    "baseProtocolVersion": 1
+  },
+  "worlds": {
+    "blank": {
+      "directory": "worlds/blank",
+      "kind": "blank-start",
+      "entryScene": "res://scenes/world.tscn",
+      "description": "Empty walkable room with the base runtime only: movement, collision, camera and save."
+    },
+    "town": {
+      "directory": "worlds/town",
+      "kind": "example",
+      "entryScene": "res://scenes/overworld.tscn",
+      "description": "One road, one shop, one NPC and one collect-and-deliver quest."
+    }
+  },
+  "tools": {
+    "makeAssets": "tools/make-assets.mjs",
+    "newWorld": "tools/new-world.mjs",
+    "syncBase": "tools/sync-base.mjs",
+    "verify": "tools/verify.mjs"
+  },
+  "stateVersion": 1,
+  "entityIdScheme": "stable string id declared in the scene, never a node path"
+}

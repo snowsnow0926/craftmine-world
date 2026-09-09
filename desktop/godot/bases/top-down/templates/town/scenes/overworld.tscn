@@ -1,0 +1,118 @@
+[gd_scene load_steps=17 format=3]
+
+[ext_resource type="Script" path="res://scripts/base/world_root.gd" id="1_root"]
+[ext_resource type="Script" path="res://scripts/base/map_renderer.gd" id="2_map"]
+[ext_resource type="TileSet" path="res://assets/tiles/town_tileset.tres" id="3_tileset"]
+[ext_resource type="Script" path="res://scripts/base/player.gd" id="4_player"]
+[ext_resource type="Script" path="res://scripts/base/directional_sprite.gd" id="5_sprite"]
+[ext_resource type="Texture2D" path="res://assets/characters/player_sheet.png" id="6_player_tex"]
+[ext_resource type="Script" path="res://scripts/base/spawn_marker.gd" id="7_spawn"]
+[ext_resource type="Script" path="res://scripts/base/npc.gd" id="8_npc"]
+[ext_resource type="Texture2D" path="res://assets/characters/npc_sheet.png" id="9_npc_tex"]
+[ext_resource type="Script" path="res://scripts/base/gather_zone.gd" id="10_gather"]
+[ext_resource type="Script" path="res://scripts/base/door_zone.gd" id="11_door"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(10, 12)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_range"]
+radius = 22.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_npc"]
+size = Vector2(20, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_herb"]
+size = Vector2(64, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_door"]
+size = Vector2(30, 16)
+
+[node name="Overworld" type="Node2D"]
+script = ExtResource("1_root")
+scene_id = "overworld"
+
+[node name="Map" type="Node2D" parent="."]
+script = ExtResource("2_map")
+map_id = "town-overworld"
+tile_set_path = "res://assets/tiles/town_tileset.tres"
+
+[node name="Tiles" type="TileMapLayer" parent="Map"]
+tile_set = ExtResource("3_tileset")
+
+[node name="Collision" type="StaticBody2D" parent="Map"]
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(104, 168)
+script = ExtResource("4_player")
+entity_id = "player"
+move_speed = 88.0
+
+[node name="Sprite" type="Sprite2D" parent="Player"]
+texture = ExtResource("6_player_tex")
+script = ExtResource("5_sprite")
+
+[node name="Shape" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_player")
+
+[node name="InteractRange" type="Area2D" parent="Player"]
+collision_layer = 8
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape2D" parent="Player/InteractRange"]
+shape = SubResource("CircleShape2D_range")
+
+[node name="Camera" type="Camera2D" parent="Player" groups=["camera"]]
+
+[node name="SpawnStart" type="Marker2D" parent="."]
+position = Vector2(104, 168)
+script = ExtResource("7_spawn")
+spawn_id = "start"
+
+[node name="SpawnFromShop" type="Marker2D" parent="."]
+position = Vector2(472, 168)
+script = ExtResource("7_spawn")
+spawn_id = "from-shop"
+
+[node name="NpcMira" type="Area2D" parent="."]
+position = Vector2(200, 168)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("8_npc")
+entity_id = "npc-mira"
+prompt = "和米拉说话"
+npc_id = "mira"
+quest_id = "herb-delivery"
+
+[node name="Sprite" type="Sprite2D" parent="NpcMira"]
+texture = ExtResource("9_npc_tex")
+script = ExtResource("5_sprite")
+
+[node name="Shape" type="CollisionShape2D" parent="NpcMira"]
+shape = SubResource("RectangleShape2D_npc")
+
+[node name="HerbPatch" type="Area2D" parent="."]
+position = Vector2(96, 248)
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("10_gather")
+entity_id = "zone-herb-patch"
+zone_id = "herb-patch"
+item_id = "herb"
+amount_per_gather = 1
+max_charges = 5
+
+[node name="Shape" type="CollisionShape2D" parent="HerbPatch"]
+shape = SubResource("RectangleShape2D_herb")
+
+[node name="ShopDoor" type="Area2D" parent="."]
+position = Vector2(464, 120)
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("11_door")
+entity_id = "door-shop"
+zone_id = "shop-door"
+target_scene = "res://scenes/shop_interior.tscn"
+target_spawn = "from-street"
+
+[node name="Shape" type="CollisionShape2D" parent="ShopDoor"]
+shape = SubResource("RectangleShape2D_door")
