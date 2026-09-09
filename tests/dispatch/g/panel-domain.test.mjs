@@ -31,7 +31,7 @@ test('actual Rust panel integration preserves draft identity, exact receipts and
   const panel=createCraftminePanelGateway({viewingSession:()=>sessionId,session:async id=>({id,providerId:'fixture',modelId:'fixture'}),activeTurn:id=>active.get(id),domain,
     begin:async session=>{const turn='action-'+(++sequence);active.set(session.id,turn);return turn;},
     end:async(id,status)=>{await core.call('workspace.endTurn',{sessionId:id,turnId:active.get(id),status});active.delete(id);},
-    resume:async()=>{throw Error('No model in this explicit host fixture');},stop:async()=>{},backup:async()=>{throw Error('No file picker in this domain fixture');},diagnostics:async()=>({})});
+    resume:async()=>{throw Error('No model in this explicit host fixture');},stop:async()=>{},backup:async(channel,payload)=>{assert.equal(Object.hasOwn(payload,'worldId'),false);return {channel,...payload};},diagnostics:async()=>({})});
   const empty=upgradeScene({format:'craftmine.scene/1',title:'Fixture',night:false,objects:[]});
   const source=upgradeScene({...empty,format:'craftmine.scene/1',objects:[{id:'oak-tree',name:'树',position:{x:0,y:6,z:0},parts:[{offset:{x:0,y:0,z:0},size:{x:1,y:3,z:1},material:'wood'}]}]});
   const compile=scene=>{const result=compileScene(scene);return {...result,behaviors:result.behaviors||[],id:'v-'+result.hash.slice(0,20)};};
@@ -40,6 +40,7 @@ test('actual Rust panel integration preserves draft identity, exact receipts and
   await call('workspace.endTurn',{sessionId:sourceContext.sessionId,turnId:sourceContext.turnId,status:'completed'});
   assert.ok((await panel('workbench.capabilities',{worldId:selectedWorld})).channels.includes('task.recoverable'));
   assert.equal((await panel('task.current',{worldId:selectedWorld})).context,null);
+  for(const channel of ['backup.status','backup.cancel'])assert.equal((await panel(channel,{worldId:selectedWorld,operationId:'backup-operation'})).operationId,'backup-operation');
   const capture=await panel('library.capture',{worldId:selectedWorld,operationId:'capture-panel-tree',kind:'object',resourceId:'oak-tree',tags:[]});
   await call('world.create',{id:'target',title:'Target',world:emptyWorld('Target')});selectedWorld='target';sessionId='native-session-fixture';
   const args={worldId:selectedWorld,operationId:'install-panel-tree',ref:capture.ref,revision:0};

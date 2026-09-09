@@ -23,6 +23,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     const allowed=Object.keys(definition.schema.properties);
     fields(args,definition.schema.required||[],allowed.filter(key=>!(definition.schema.required||[]).includes(key)));
     await core.start();
+    if(definition.name==='requirements_read')return core.call('task.readRequirements',{context,...args});
     if(definition.name==='verification_read') {
       const job=await core.call('verification.read',{context,id:args.id});
       return {...readVerification(job,args),reviews:await core.call('review.list',{verificationId:args.id}).then(records=>records.slice(0,1).map(record=>{
