@@ -13,6 +13,7 @@ const plain = (value: unknown): Record<string, any> => value && typeof value ===
 export function createCraftmineDiagnosticsService(options: { pickFile: CraftmineFilePicker; snapshot: () => Promise<unknown>; now?: () => number }) {
   const metrics: Record<Metric, number[]> = { startup: [], frame: [], modelJob: [] };
   const receipts = new Map<string, Record<string, unknown>>();
+  const pending = new Map<string, Promise<Record<string, unknown>>>();
   async function status() {
     const input = plain(await options.snapshot()), build = plain(input.build), task = plain(input.task), credentials = plain(input.credentials);
     const summary = Object.fromEntries(Object.entries(metrics).map(([key, values]) => {
@@ -30,23 +31,33 @@ export function createCraftmineDiagnosticsService(options: { pickFile: Craftmine
   }
   return {
     observe(metric: Metric, durationMs: number) {
-      if (!(metric in metrics) || !Number.isFinite(durationMs) || durationMs < 0 || durationMs > 3_600_000) throw desktopServiceError("INVALID_METRIC");
+      if (!Object.hasOwn(metrics, metric) || !Number.isFinite(durationMs) || durationMs < 0 || durationMs > 3_600_000) throw desktopServiceError("INVALID_METRIC");
       metrics[metric].push(durationMs); if (metrics[metric].length > 200) metrics[metric].shift();
     },
     async request(channel: string, input: Record<string, unknown> = {}) {
+      try {
       if (!input || Array.isArray(input) || Object.keys(input).some(key => key !== "operationId")) throw desktopServiceError("INVALID_PARAMS");
-      if (channel === "diagnostics.status") return status();
+      if (channel === "diagnostics.status") return await status();
       if (channel !== "diagnostics.export") throw desktopServiceError("UNKNOWN_DIAGNOSTICS_CHANNEL");
       const operationId = input.operationId;
       if (typeof operationId !== "string" || !/^[a-zA-Z0-9_-]{8,100}$/.test(operationId)) throw desktopServiceError("INVALID_OPERATION_ID");
       if (receipts.has(operationId)) return receipts.get(operationId);
+      if (pending.has(operationId)) return await pending.get(operationId);
       if (receipts.size >= 32) throw desktopServiceError("DIAGNOSTICS_EXPORT_LIMIT");
+      const run = (async () => {
       const selected = await options.pickFile({ kind: "save-diagnostics", suggestedName: "Craftmine-World-diagnostics.json" });
       if (!selected) return { status: "cancelled", operationId };
       const bytes = Buffer.from(JSON.stringify(await status(), null, 2));
       await writeSelectedFile(selected, bytes);
       const receipt = { status: "completed", operationId, bytes: bytes.length, hash: createHash("sha256").update(bytes).digest("hex"), scope: "sanitized" };
       receipts.set(operationId, receipt); return receipt;
+      })();
+      pending.set(operationId, run);
+      try { return await run; } finally { pending.delete(operationId); }
+      } catch (error) {
+        const code = (error as { code?: unknown }).code;
+        throw desktopServiceError(typeof code === "string" && /^[A-Z][A-Z0-9_]{0,79}$/.test(code) ? code : "DIAGNOSTICS_OPERATION_FAILED");
+      }
     },
   };
 }

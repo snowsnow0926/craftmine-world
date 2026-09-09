@@ -51,6 +51,15 @@ test('diagnostics is an allowlist with measured counters and no secrets/source/p
   const status=await service.request('diagnostics.status'),text=JSON.stringify(status);assert.equal(status.metrics.startup.p50Ms,200);assert.equal(status.credentials.status,'protected');for(const secret of ['secret-value','C:/private','private chat','private-source'])assert.equal(text.includes(secret),false);
   const receipt=await service.request('diagnostics.export',{operationId:'diagnostic-fixture'});assert.equal(receipt.status,'completed');assert.equal((await fs.readFile(f.file,'utf8')).includes('secret-value'),false);
 });
+test('failed export file write is not confused with a completed domain snapshot',async()=>{
+  const f=await fixture(),calls=[],call=domain(calls);const service=createCraftmineBackupService({pickFile:async()=>f.dir,domainCall:async(method,params)=>method==='backup.status'?{status:'completed',currentHash:old}:call(method,params)});
+  await assert.rejects(service.request('backup.export',{operationId:'failed-write'}),/NONFILE_DENIED/);
+  assert.equal((await service.request('backup.status',{operationId:'failed-write'})).status,'failed');
+});
+test('diagnostic export errors omit selected private paths',async()=>{
+  const f=await fixture(),service=createCraftmineDiagnosticsService({pickFile:async()=>path.join(f.dir,'missing','report.json'),snapshot:async()=>({})});
+  await assert.rejects(service.request('diagnostics.export',{operationId:'failed-diagnostic'}),error=>!error.message.includes(f.dir)&&error.message==='ENOENT');
+});
 function guard(args){return spawnSync('powershell.exe',['-NoProfile','-NonInteractive','-WindowStyle','Hidden','-File',path.join(root,'desktop/windows-upgrade-guard.ps1'),...args],{windowsHide:true,encoding:'utf8'});}
 test('offline upgrade guard copies synthetic data and verifies corruption without touching originals',async()=>{
   const f=await fixture(),profile=path.join(f.dir,'profile');await fs.mkdir(path.join(profile,'plugins/data/craftmine.world'),{recursive:true});await fs.writeFile(path.join(profile,'pi.sqlite'),'synthetic-db');await fs.writeFile(path.join(profile,'plugins/data/craftmine.world/tasks.sqlite'),'synthetic-world');

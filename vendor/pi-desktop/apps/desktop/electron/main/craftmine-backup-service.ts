@@ -36,13 +36,13 @@ async function readBounded(path: string): Promise<Buffer> {
     return buffer.subarray(0, total);
   } finally { await handle.close(); }
 }
-export async function writeSelectedFile(path: string, bytes: Buffer): Promise<void> {
+export async function writeSelectedFile(path: string, bytes: Buffer, canCommit: () => boolean = () => true): Promise<void> {
   const target = await selectedFile(path), temporary = `${target}.tmp-${randomUUID()}`;
   const file = await open(temporary, "wx", 0o600);
   try { await file.writeFile(bytes); await file.sync(); }
   catch (error) { await file.close(); await unlink(temporary).catch(() => {}); throw error; }
   await file.close();
-  try { await selectedFile(target); await rename(temporary, target); }
+  try { await selectedFile(target); if (!canCommit()) throw desktopServiceError("BACKUP_CANCELLED"); await rename(temporary, target); }
   catch (error) { await unlink(temporary).catch(() => {}); throw error; }
 }
 
@@ -97,7 +97,8 @@ export function createCraftmineBackupService(options: { domainCall: CraftmineDom
           if (entry.cancelled) return { status: "cancelled", operationId, scope: "profile" };
           const bytes = Buffer.from(JSON.stringify(result.archive));
           if (bytes.length > CRAFTMINE_BACKUP_LIMIT) throw desktopServiceError("BACKUP_FILE_TOO_LARGE");
-          await writeSelectedFile(selected, bytes);
+          try { await writeSelectedFile(selected, bytes, () => !entry.cancelled); }
+          catch (error) { if (entry.cancelled) return { status: "cancelled", operationId, scope: "profile" }; throw error; }
           return { status: "completed", operationId, archiveHash: result.manifest?.hash, bytes: bytes.length, scope: "profile", credentialsIncluded: false };
         });
       }
@@ -128,7 +129,7 @@ export function createCraftmineBackupService(options: { domainCall: CraftmineDom
         const local = operationId ? operations.get(operationId) : undefined;
         if (local?.result) return local.result;
         const result = await options.domainCall("backup.status", operationId ? { id: operationId } : {});
-        return { ...(operationId ? { operationId } : {}), status: local?.pending ? "running" : result.status, currentHash: result.currentHash, archiveHash: result.archiveHash, scope: "profile" };
+        return { ...(operationId ? { operationId } : {}), status: local?.pending ? "running" : local?.kind === "export" ? "failed" : result.status, currentHash: result.currentHash, archiveHash: result.archiveHash, scope: "profile" };
       }
       throw desktopServiceError("UNKNOWN_BACKUP_CHANNEL");
       } catch (error) {
