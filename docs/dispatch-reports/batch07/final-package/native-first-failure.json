@@ -1,0 +1,194 @@
+{
+  "format": "craftmine.native-acceptance/1",
+  "mode": "packaged",
+  "time": "2026-09-09T09:12:27.619Z",
+  "passed": false,
+  "checks": [
+    {
+      "name": "原生客户端启动真实 Rust 宿主和内置世界插件",
+      "passed": true
+    },
+    {
+      "name": "原生窗口全程离屏、不可聚焦且未显示",
+      "passed": true
+    },
+    {
+      "name": "客户端使用本次独立配置目录",
+      "passed": true
+    },
+    {
+      "name": "真实 React 前端通过沙箱 preload 与 Electron 通信",
+      "passed": true
+    },
+    {
+      "name": "桌面、世界面板和游戏初始化时均禁止鼠标锁定与焦点请求",
+      "passed": true
+    },
+    {
+      "name": "实际游戏隔离帧无法访问 Node 或插件桥",
+      "passed": true
+    }
+  ],
+  "evidence": {
+    "initialStatus": {
+      "name": "craftmine world",
+      "profile": "D:\\Craftmine World-worktrees\\batch07-delivery-20260909\\test-results\\desktop-native-gZWAre\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/Craftmine%20World-worktrees/batch07-delivery-20260909/vendor/pi-desktop/apps/desktop/release/win-unpacked/resources/plugins/craftmine.world/views/world.html"
+    },
+    "desktop": {
+      "title": "craftmine world · 最中幻想",
+      "text": "最中幻想\n世界\n打开工作台\n创作\n游玩\n会话\n暂无临时对话\n项目\nlegacy\nD:/Craftmine World-worktrees/batch07-delivery-20260909/test-results/desktop-native-gZWAre/legacy\n当前项目还没有对话\n打开通知中心\nv0.14.3\n新建任务\n今天，创造怎样的世界？\n开始使用\n关闭\n添加 AI 模型服务\n保存 API 密钥\n打开项目文件夹\n发送第一条消息\n加载开发插件（可选）\n描述你的想法，比如在身边种一片花草…\n智能体\n每次询问\n模型\n创作\n游玩\n世界\n最中幻想\n让你的想法，长成一个世界\n正在启动最中幻想…",
+      "version": {
+        "ok": true,
+        "data": {
+          "name": "craftmine world",
+          "version": "0.14.3",
+          "protocolVersion": 11,
+          "hostProtocolVersion": 11,
+          "hostVersion": "0.14.3",
+          "platform": "win32",
+          "arch": "x64"
+        }
+      },
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    "guards": [
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/batch07-delivery-20260909/vendor/pi-desktop/apps/desktop/release/win-unpacked/resources/app.asar/out/renderer/index.html"
+      },
+      {
+        "bridge": "object",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/batch07-delivery-20260909/vendor/pi-desktop/apps/desktop/release/win-unpacked/resources/plugins/craftmine.world/views/world.html"
+      },
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "about:srcdoc"
+      }
+    ],
+    "failure": "Error: Error: Native review failed: [{\"id\":\"review-df2eaf30c3e248aef4237f01ab9b8baa7abec439e8a3c41184dfcd7ee1a79672\",\"status\":\"failed\",\"current\":true,\"suggestions\":[],\"limitations\":[],\"error\":\"400: {\\\"message\\\":\\\"Unexpected non-whitespace character after JSON at position 4171 (line 1 column 4172)\\\"}\",\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"native-review-user\",\"text\":\"真实宿主需求：在地上增加一朵有花瓣的花，按 G 隐藏花，再按一次恢复。\"},\"acceptance\":null,\"modelKey\":\"86097ca1-7ab0-4e06-8096-730989f8a612/craftmine-review-fixture\",\"usage\":null,\"createdAt\":1788945144163}]\n    at ChildProcess.<anonymous> (file:///D:/Craftmine%20World-worktrees/batch07-delivery-20260909/tests/desktop-native.mjs:80:34)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+    "statusAtFailure": {
+      "name": "craftmine world",
+      "profile": "D:\\Craftmine World-worktrees\\batch07-delivery-20260909\\test-results\\desktop-native-gZWAre\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/Craftmine%20World-worktrees/batch07-delivery-20260909/vendor/pi-desktop/apps/desktop/release/win-unpacked/resources/plugins/craftmine.world/views/world.html"
+    },
+    "desktopStateAtFailure": {
+      "title": "craftmine world · 最中幻想",
+      "text": "最中幻想\n世界\n打开工作台\n创作\n游玩\n会话\n暂无临时对话\n项目\nlegacy\nD:/Craftmine World-worktrees/batch07-delivery-20260909/test-results/desktop-native-gZWAre/legacy\n当前项目还没有对话\n打开通知中心\nv0.14.3\n新建任务\n今天，创造怎样的世界？\n开始使用\n关闭\n添加 AI 模型服务\n保存 API 密钥\n打开项目文件夹\n发送第一条消息\n加载开发插件（可选）\n描述你的想法，比如在身边种一片花草…\n智能体\n每次询问\n模型\n创作\n游玩\n世界",
+      "version": {
+        "ok": true,
+        "data": {
+          "name": "craftmine world",
+          "version": "0.14.3",
+          "protocolVersion": 11,
+          "hostProtocolVersion": 11,
+          "hostVersion": "0.14.3",
+          "platform": "win32",
+          "arch": "x64"
+        }
+      },
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    "guardsAtFailure": [
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/batch07-delivery-20260909/vendor/pi-desktop/apps/desktop/release/win-unpacked/resources/app.asar/out/renderer/index.html"
+      },
+      {
+        "bridge": "object",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/Craftmine%20World-worktrees/batch07-delivery-20260909/vendor/pi-desktop/apps/desktop/release/win-unpacked/resources/plugins/craftmine.world/views/world.html"
+      },
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "about:srcdoc"
+      }
+    ],
+    "reviewProvider": {
+      "kind": "fixed-loopback-fixture",
+      "requests": []
+    }
+  },
+  "binaries": {
+    "electron": "b43061132a84007bfdcb38f11c8ecdfd388343093709576f801e1693404706d4",
+    "host": "e043d6cae190410005e04e6748af4877e63295ae1c990c2695b0cb9d97ce638e",
+    "core": "105100e695080c0a9f4b0282fa9d955eb8087a9ff31034cfa7ba1de84ed4f60c"
+  },
+  "limits": [
+    "离屏运行，未做可见窗口或物理双击验收",
+    "目录选择返回测试夹具，未打开系统对话框",
+    "桌面与世界分别离屏渲染和截图，不证明可见原生窗口的最终合成",
+    "PI 评审回复来自固定服务，未调用真实模型"
+  ]
+}

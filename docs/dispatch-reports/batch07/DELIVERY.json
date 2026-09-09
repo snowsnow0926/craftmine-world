@@ -1,10 +1,11 @@
 {
   "format": "craftmine.batch07-delivery/1",
-  "status": "implementation-ready-awaiting-integrated-freeze",
+  "status": "packaged-and-40-native-fixture-passed",
   "implementationCommits": [
     "ed32592",
     "9871d1c",
-    "9f1b4d4"
+    "9f1b4d4",
+    "5e640f9"
   ],
   "tests": {
     "serviceSuite": {
@@ -16,13 +17,47 @@
       "total": 6
     },
     "rustCore": {
-      "passed": 47,
-      "total": 47
+      "passed": 49,
+      "total": 49,
+      "scope": "E branch before final integration"
     },
     "desktopTypecheck": "passed-before-main-integration",
     "hostDeadline": {
       "passed": 3,
       "total": 3
+    },
+    "finalIntegration": {
+      "source": "root supplied freeze evidence/G_REPORT.md",
+      "rust": {
+        "passed": 57,
+        "total": 57
+      },
+      "nodeIntegration": {
+        "passed": 30,
+        "total": 30
+      },
+      "runtime": {
+        "passed": 330,
+        "total": 330
+      },
+      "domain": {
+        "passed": 276,
+        "total": 276
+      },
+      "buildJs": "passed"
+    },
+    "nativePackaged": {
+      "passed": 40,
+      "total": 40,
+      "mode": "packaged",
+      "report": "final-package/native-report.json",
+      "firstAttempt": "failed after 6 startup/isolation checks: old external fixture did not parse named request-facts tail",
+      "firstFailureEvidence": "final-package/native-first-failure.json",
+      "productPayloadModified": false,
+      "fixtureParserControls": {
+        "passed": 2,
+        "total": 2
+      }
     }
   },
   "performance": {
@@ -45,10 +80,52 @@
     "isolatedCiExecution": "not-run",
     "localExecuteRefusal": "passed"
   },
-  "finalArtifacts": null,
+  "finalArtifacts": {
+    "folder": {
+      "path": "D:/Craftmine World-worktrees/batch07-delivery-20260909/vendor/pi-desktop/apps/desktop/release/win-unpacked",
+      "files": 825,
+      "bytes": 418062454,
+      "perFileEvidence": "final-package/package-evidence.json"
+    },
+    "installer": {
+      "path": "D:/Craftmine World-worktrees/batch07-delivery-20260909/vendor/pi-desktop/apps/desktop/release/Craftmine-World-Setup-0.14.3.exe",
+      "bytes": 155076619,
+      "sha256": "a7e194e79b1f798fac018ebdef511b15151a0cf8626e4ef0745347890872a3a5"
+    },
+    "source": {
+      "path": "D:/Craftmine World-worktrees/batch07-delivery-20260909/desktop/build/CraftmineWorld-source.zip",
+      "sha256": "019c758d450a425dd381cc3023f92b734945a0fd130337a822382325f6a8584a",
+      "bytes": 39149380
+    },
+    "manifest": {
+      "path": "D:/Craftmine World-worktrees/batch07-delivery-20260909/vendor/pi-desktop/apps/desktop/release/win-unpacked/resources/source/build-manifest.json",
+      "sha256": "85b560c260a2d2793bc3aad46ff79bab03c7ed211106b84e84f108bfb0f74d60"
+    },
+    "nativeBinaries": {
+      "electron": "b43061132a84007bfdcb38f11c8ecdfd388343093709576f801e1693404706d4",
+      "host": "e043d6cae190410005e04e6748af4877e63295ae1c990c2695b0cb9d97ce638e",
+      "core": "105100e695080c0a9f4b0282fa9d955eb8087a9ff31034cfa7ba1de84ed4f60c"
+    }
+  },
   "limitations": [
-    "Await integrated product freeze before final packaging.",
-    "Development benchmark is not visible Electron or clean-OS acceptance.",
-    "No local install/uninstall, VM download or real input."
-  ]
+    "No clean Windows machine/VM available; no install, upgrade, uninstall or cross-user credential acceptance executed.",
+    "No visible-window composition or real mouse/keyboard acceptance.",
+    "Development benchmark is not visible Electron or cross-machine performance certification.",
+    "External fixture runner was adapted after product freeze; product folder, installer and source archive remain unchanged."
+  ],
+  "productFreezeCommit": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+  "buildCommit": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+  "fixtureRunnerCommit": "cab0da5b499f36911c2ba3bca30f0f2993c41148",
+  "licenses": {
+    "upstream": "LGPL-3.0-or-later",
+    "licenseIdenticalToPinnedSource": true,
+    "licenseSha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+    "sourceArchiveIncluded": true,
+    "buildGuideIncluded": true,
+    "chineseGuideMatchesFreeze": true,
+    "npmInventoryPackages": 796,
+    "fontNoticesIncluded": true,
+    "signatures": "NotSigned"
+  },
+  "samePackageRealModel": "Run separately by root and A; use their final reports, not this fixed provider result."
 }
