@@ -17,7 +17,7 @@
 
 warning: `craftmine-core` (lib test) generated 1 warning (run `cargo fix --lib -p craftmine-core --tests` to apply 1 su
 ggestion)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
      Running unittests src\lib.rs (C:\Users\WINDOWS\.pi-desktop\scratch\3d732e51-6eac-42ff-8487-568e244b45de\cargo-targ
 et-r5\debug\deps\craftmine_core-13091a1caf054aaf.exe)
 
@@ -37,11 +37,11 @@ running 1 test
     "gitRefs": 1,
     "legacyImports": 1,
     "sessionIncluded": false,
-    "snapshotHash": "a8e16119d39db2bc9e12684e3aa3ee2477f0db07bb3125dac2e302cd3e7a3119",
+    "snapshotHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
     "sourceBlobs": 3,
     "tables": 62
   },
-  "createdAt": 1788978278354,
+  "createdAt": 1788978339491,
   "entries": [
     {
       "body": true,
@@ -54,7 +54,7 @@ running 1 test
       "path": "domain.json",
       "refs": [],
       "repoId": null,
-      "sha256": "a8e16119d39db2bc9e12684e3aa3ee2477f0db07bb3125dac2e302cd3e7a3119",
+      "sha256": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
       "world": null
     },
     {
@@ -75,22 +75,6 @@ running 1 test
     },
     {
       "body": true,
-      "bytes": 264,
-      "kind": "content-repo-object",
-      "objectFormat": "sha1",
-      "objectType": "commit",
-      "oid": "2af7ce5ca00f02791d41741ef931356c78742f7f",
-      "owner": "R1",
-      "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/objects/2af7ce5ca00f02791d41741ef931356c78742f7f",
-      "refs": [
-        "repo-world-a|2af7ce5ca00f02791d41741ef931356c78742f7f"
-      ],
-      "repoId": "repo-world-a",
-      "sha256": "09c7675118afcd2146e0745d0e259cc98a9a52b182ff8a89f83e0bb13b3efeb6",
-      "world": null
-    },
-    {
-      "body": true,
       "bytes": 17,
       "kind": "content-repo-object",
       "objectFormat": "sha1",
@@ -107,6 +91,22 @@ running 1 test
     },
     {
       "body": true,
+      "bytes": 264,
+      "kind": "content-repo-object",
+      "objectFormat": "sha1",
+      "objectType": "commit",
+      "oid": "3736112d6852b601ad46d473218363b6ecda4e2e",
+      "owner": "R1",
+      "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/objects/3736112d6852b601ad46d473218363b6ecda4e2e",
+      "refs": [
+        "repo-world-a|3736112d6852b601ad46d473218363b6ecda4e2e"
+      ],
+      "repoId": "repo-world-a",
+      "sha256": "42258c71e751a0200e52c87142ef301c665cefe1bd44deb7b11a8a7945521c0e",
+      "world": null
+    },
+    {
+      "body": true,
       "bytes": 41,
       "kind": "content-repo-object",
       "objectFormat": "sha1",
@@ -119,22 +119,6 @@ running 1 test
       ],
       "repoId": "repo-world-a",
       "sha256": "d76f48223e936c7dcdda1c230c2b44baa242f991b8853ca5d59ffae736e09599",
-      "world": null
-    },
-    {
-      "body": true,
-      "bytes": 322,
-      "kind": "content-repo-object",
-      "objectFormat": "sha1",
-      "objectType": "commit",
-      "oid": "5e3c4c790315e769a9c632b24e6a0ce9969fe6d2",
-      "owner": "R1",
-      "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/objects/5e3c4c790315e769a9c632b24e6a0ce9969fe6d2",
-      "refs": [
-        "repo-world-a|5e3c4c790315e769a9c632b24e6a0ce9969fe6d2"
-      ],
-      "repoId": "repo-world-a",
-      "sha256": "2e6abcc9dcb983f3db75d6ea0f5a903330ca22f66013d72bdb2c98c78a080623",
       "world": null
     },
     {
@@ -170,6 +154,22 @@ running 1 test
       "world": null
     },
     {
+      "body": true,
+      "bytes": 322,
+      "kind": "content-repo-object",
+      "objectFormat": "sha1",
+      "objectType": "commit",
+      "oid": "decb4e9850b6b8c1cfa28e66a71a7f553cb6677d",
+      "owner": "R1",
+      "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/objects/decb4e9850b6b8c1cfa28e66a71a7f553cb6677d",
+      "refs": [
+        "repo-world-a|decb4e9850b6b8c1cfa28e66a71a7f553cb6677d"
+      ],
+      "repoId": "repo-world-a",
+      "sha256": "0143b6c2f9e0f0c80807c165140cbcac41fab66681e16f7be3e63541e393b892",
+      "world": null
+    },
+    {
       "body": false,
       "bytes": 0,
       "kind": "content-repo",
@@ -179,7 +179,7 @@ running 1 test
       "owner": "R1",
       "path": "content-history/repos/587f6b4646ae3c15fd346df012c9f659/refs.json",
       "refs": [
-        "refs/heads/main|5e3c4c790315e769a9c632b24e6a0ce9969fe6d2"
+        "refs/heads/main|decb4e9850b6b8c1cfa28e66a71a7f553cb6677d"
       ],
       "repoId": "repo-world-a",
       "sha256": "648a255ebe89a33ba79e8fe53f54f5afb16074bbdec1ff142cf95aa6f3b31cb7",
@@ -327,11 +327,12 @@ running 1 test
     }
   ],
   "schemaVersion": 1,
-  "sourceDigest": "f98f57567ec9e8ca9cdcfbaef69bac2d8bafd1ac943692518c9209046f685c9b"
+  "sourceDigest": "2af8301fd19371970e0227f601ead21bac5b9df43281cb2359889526b31b0178"
 }
+archive: 22852 bytes at C:\Users\WINDOWS\AppData\Local\Temp\r5-evidence-277604-1788978339491.cmarchive (not committed)
 === export receipt ===
 {
-  "archivePath": "D:\\Craftmine World-worktrees\\godot-round2-r5-20260910\\docs\\dispatch-reports\\godot-round2\\R5\\evidence\\evidence.cmarchive",
+  "archivePath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\r5-evidence-277604-1788978339491.cmarchive",
   "consistency": {
     "assetBlobs": 1,
     "boundary": "one immediate transaction over the domain database; every body is immutable content-addressed or sealed data read after that snapshot, and each body is re-hashed while streaming",
@@ -345,7 +346,7 @@ running 1 test
     "gitRefs": 1,
     "legacyImports": 1,
     "sessionIncluded": false,
-    "snapshotHash": "a8e16119d39db2bc9e12684e3aa3ee2477f0db07bb3125dac2e302cd3e7a3119",
+    "snapshotHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
     "sourceBlobs": 3,
     "tables": 62
   },
@@ -364,11 +365,11 @@ running 1 test
   "manifest": {
     "bytes": 22852,
     "contentBytes": 15247,
-    "domainHash": "a8e16119d39db2bc9e12684e3aa3ee2477f0db07bb3125dac2e302cd3e7a3119",
+    "domainHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
     "entries": 16,
-    "hash": "7aba0424cbf8ace9e0c026070cc35fc81f5ab321b77ed1f6e21289983e18376f",
+    "hash": "a68b745720a2e8ee7b406c4306b76deb8e61a272f0794972ae5c139f8e82c776",
     "schemaVersion": 1,
-    "streamSha256": "6c8bfc3653ddaddeadae4e32f54dff62a81828ca1544473bbff4cb685b3b2e0b"
+    "streamSha256": "403aa134cf90d214cdc0b786129b889a088e220ec1749f4b8cae366ca6fc0a5f"
   },
   "protectedRefs": {
     "builds": 0,
@@ -406,7 +407,7 @@ running 1 test
 }
 === verify report ===
 {
-  "archiveHash": "7aba0424cbf8ace9e0c026070cc35fc81f5ab321b77ed1f6e21289983e18376f",
+  "archiveHash": "a68b745720a2e8ee7b406c4306b76deb8e61a272f0794972ae5c139f8e82c776",
   "consistency": {
     "assetBlobs": 1,
     "boundary": "one immediate transaction over the domain database; every body is immutable content-addressed or sealed data read after that snapshot, and each body is re-hashed while streaming",
@@ -420,12 +421,12 @@ running 1 test
     "gitRefs": 1,
     "legacyImports": 1,
     "sessionIncluded": false,
-    "snapshotHash": "a8e16119d39db2bc9e12684e3aa3ee2477f0db07bb3125dac2e302cd3e7a3119",
+    "snapshotHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
     "sourceBlobs": 3,
     "tables": 62
   },
   "contentBytes": 15247,
-  "createdAt": 1788978278354,
+  "createdAt": 1788978339491,
   "credentialsIncluded": false,
   "entries": 16,
   "format": "craftmine.portable-archive/1",
@@ -462,8 +463,8 @@ running 1 test
 === source-unreadable condition ===
 {
   "movedStillResolves": true,
-  "movedTo": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmppbn80v\\data-moved-away",
-  "sourceDirectory": "\\\\?\\C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmpcCiuPt",
+  "movedTo": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmpVp6kJW\\data-moved-away",
+  "sourceDirectory": "\\\\?\\C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmp6rZpRG",
   "sourceStillResolves": false,
   "topLevelBeforeMove": [
     "asset-catalog",
@@ -479,11 +480,11 @@ running 1 test
 }
 === restore receipt ===
 {
-  "archiveHash": "7aba0424cbf8ace9e0c026070cc35fc81f5ab321b77ed1f6e21289983e18376f",
+  "archiveHash": "a68b745720a2e8ee7b406c4306b76deb8e61a272f0794972ae5c139f8e82c776",
   "contentBytes": 15247,
   "credentialsIncluded": false,
-  "currentHash": "a8e16119d39db2bc9e12684e3aa3ee2477f0db07bb3125dac2e302cd3e7a3119",
-  "domainHash": "a8e16119d39db2bc9e12684e3aa3ee2477f0db07bb3125dac2e302cd3e7a3119",
+  "currentHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
+  "domainHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
   "entries": 16,
   "id": "evidence-restore",
   "importedProvenance": true,
@@ -499,19 +500,19 @@ running 1 test
   ],
   "restoredInPlace": true,
   "status": "completed",
-  "targetDirectory": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmpowxn27\\data",
+  "targetDirectory": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\.tmp7fPaOp\\data",
   "verifiedFiles": 15
 }
 === restored state ===
 {
   "assetBlobRestored": true,
-  "domainHash": "a8e16119d39db2bc9e12684e3aa3ee2477f0db07bb3125dac2e302cd3e7a3119",
+  "domainHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
   "gitFileMatchesSource": true,
-  "gitHead": "5e3c4c790315e769a9c632b24e6a0ce9969fe6d2",
+  "gitHead": "decb4e9850b6b8c1cfa28e66a71a7f553cb6677d",
   "gitHeadMatchesSource": true,
   "godotAssetRestored": true,
   "legacyProjectRestored": true,
-  "restoredCurrentHash": "a8e16119d39db2bc9e12684e3aa3ee2477f0db07bb3125dac2e302cd3e7a3119",
+  "restoredCurrentHash": "6650a49123349040e9461d00e4b664af985680be271f8ae9ac229be628174cc4",
   "sourceBlobRestored": true,
   "worldAProgress": {
     "format": "craftmine.progress/1",
@@ -527,5 +528,5 @@ running 1 test
 }
 test backups::portable::tests::evidence_archive_manifest_and_restore_state ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 203 filtered out; finished in 1.24s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 203 filtered out; finished in 1.10s
 

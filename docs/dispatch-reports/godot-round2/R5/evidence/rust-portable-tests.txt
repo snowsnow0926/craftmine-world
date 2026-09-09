@@ -1,6 +1,6 @@
 ﻿cargo : warning: variable does not need to be mutable
-所在位置 行:1 字符: 501
-+ ... \evidence'; cargo test -p craftmine-core --lib backups::portable 2>&1 ...
+所在位置 行:1 字符: 687
++ ... dence.txt"; cargo test -p craftmine-core --lib backups::portable 2>&1 ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : NotSpecified: (warning: variab...d to be mutable:String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
@@ -31,5 +31,5 @@ test backups::portable::tests::restore_refuses_a_target_that_already_holds_a_wor
 test backups::portable::tests::a_damaged_archive_is_refused_and_never_touches_the_target ... ok
 test backups::portable::tests::portable_archive_restores_into_a_new_directory_without_the_source ... ok
 
-test result: ok. 7 passed; 0 failed; 1 ignored; 0 measured; 196 filtered out; finished in 1.26s
+test result: ok. 7 passed; 0 failed; 1 ignored; 0 measured; 196 filtered out; finished in 1.36s
 

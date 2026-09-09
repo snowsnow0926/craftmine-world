@@ -433,6 +433,108 @@ fn archive_paths_cannot_escape_the_target_directory() -> Result<()> {
     Ok(())
 }
 
+/// Evidence generator for the round-two report. Ignored by default because it
+/// writes an archive; run with `R5_EVIDENCE_DIR` set and `--ignored --nocapture`.
+#[test]
+#[ignore = "evidence generator; requires R5_EVIDENCE_DIR"]
+fn evidence_archive_manifest_and_restore_state() -> Result<()> {
+    let out = PathBuf::from(std::env::var("R5_EVIDENCE_DIR").expect("R5_EVIDENCE_DIR"));
+    fs::create_dir_all(&out)?;
+    let mut fixture = fixture()?;
+    // The archive itself is large and binary; only the text evidence is kept.
+    let archive = std::env::temp_dir().join(format!(
+        "r5-evidence-{}-{}.cmarchive",
+        std::process::id(),
+        worlds::timestamp()?
+    ));
+    let exported = export_to(&mut fixture.db, &archive)?;
+
+    let bytes = fs::read(&archive)?;
+    let header_end = bytes[MAGIC.len()..]
+        .iter()
+        .position(|byte| *byte == b'\n')
+        .context("header line")?
+        + MAGIC.len()
+        + 1;
+    let header: Value = serde_json::from_slice(&bytes[MAGIC.len()..header_end - 1])?;
+    println!("=== archive manifest ===");
+    println!("{}", serde_json::to_string_pretty(&header)?);
+    println!(
+        "archive: {} bytes at {} (not committed)",
+        bytes.len(),
+        archive.to_string_lossy()
+    );
+    println!("=== export receipt ===");
+    println!("{}", serde_json::to_string_pretty(&exported)?);
+    println!("=== verify report ===");
+    println!(
+        "{}",
+        serde_json::to_string_pretty(
+            &fixture
+                .db
+                .backup_verify_portable(&json!({"archivePath": archive.to_string_lossy()}))?
+        )?
+    );
+
+    let domain_hash = exported["manifest"]["domainHash"].clone();
+    let source = fixture.source_dir.clone();
+    let holding = tempfile::tempdir()?;
+    let moved = holding.path().join("data-moved-away");
+    let source_listing: Vec<String> = fs::read_dir(&source)?
+        .filter_map(|entry| entry.ok())
+        .map(|entry| entry.file_name().to_string_lossy().to_string())
+        .collect();
+    drop(fixture.db);
+    fs::rename(&source, &moved)?;
+    println!("=== source-unreadable condition ===");
+    println!(
+        "{}",
+        serde_json::to_string_pretty(&json!({
+            "sourceDirectory": source.to_string_lossy(),
+            "sourceStillResolves": source.exists(),
+            "movedTo": moved.to_string_lossy(),
+            "movedStillResolves": moved.exists(),
+            "topLevelBeforeMove": source_listing,
+        }))?
+    );
+
+    let fresh_root = tempfile::tempdir()?;
+    let target = fresh_root.path().join("data");
+    let mut fresh = TaskJournal::open(&target.join("tasks.sqlite"))?;
+    let restored = fresh.backup_restore_portable(&json!({
+        "operationId": "evidence-restore",
+        "archivePath": archive.to_string_lossy(),
+        "targetDirectory": target.to_string_lossy(),
+    }))?;
+    println!("=== restore receipt ===");
+    println!("{}", serde_json::to_string_pretty(&restored)?);
+    println!("=== restored state ===");
+    let store = repository_store(&target)?;
+    let layout = store.open_existing("repo-world-a")?;
+    println!(
+        "{}",
+        serde_json::to_string_pretty(&json!({
+            "domainHash": domain_hash,
+            "restoredCurrentHash": restored["currentHash"],
+            "worlds": fresh.world_list()?.len(),
+            "worldAProgress": fresh.world_read("a")?.world.snapshot,
+            "legacyProjectRestored": target.join("legacy-imports/import/source/project.json").is_file(),
+            "sourceBlobRestored": target
+                .join("godot-source").join(digest("a")).join("blobs").join(digest(PROJECT)).is_file(),
+            "godotAssetRestored": target
+                .join("godot-assets").join(digest("a")).join(digest_bytes(HERO)).is_file(),
+            "assetBlobRestored": target
+                .join("asset-catalog/blobs").join(&fixture.catalog_sha[..2])
+                .join(&fixture.catalog_sha).is_file(),
+            "gitHead": store.branch_head(&layout, MAIN_BRANCH)?,
+            "gitHeadMatchesSource": store.branch_head(&layout, MAIN_BRANCH)? == Some(fixture.repo_head.clone()),
+            "gitFileMatchesSource": store.read_file(&layout, &fixture.repo_head, "project.godot")?
+                == b"config_version=5\nname=\"town\"\n",
+        }))?
+    );
+    Ok(())
+}
+
 /// The portable archive snapshots every registered `craftmine_*` table, not a
 /// hardcoded list, so a module that registers tables later is covered.
 #[test]
