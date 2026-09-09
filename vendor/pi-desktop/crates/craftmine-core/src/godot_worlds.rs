@@ -475,15 +475,27 @@ impl TaskJournal {
                 "mediaType":asset.media_type}))
             .collect();
         let build_id = world.world.build["id"].as_str().unwrap_or_default();
+        // A copied world shares its source's build copy, which lives under the
+        // source world's storage key.
+        let build_owner: Option<String> = self
+            .db
+            .query_row(
+                "SELECT source_world_id FROM craftmine_godot_world_copies
+                 WHERE target_world_id=?1 AND source_build_id=?2",
+                params![args.world_id, build_id],
+                |row| row.get(0),
+            )
+            .optional()?;
         let build = if godot_builds::valid_build_id(build_id).is_ok() {
-            let root = godot_builds::build_root(&self.directory, &args.world_id, build_id, false)?;
+            let owner = build_owner.clone().unwrap_or_else(|| args.world_id.clone());
+            let root = godot_builds::build_root(&self.directory, &owner, build_id, false)?;
             let files: Vec<Value> = self
                 .db
                 .prepare(
                     "SELECT path,kind,sha256,bytes FROM craftmine_godot_build_files
                      WHERE world_id=?1 AND build_id=?2 ORDER BY path",
                 )?
-                .query_map(params![args.world_id, build_id], |row| {
+                .query_map(params![owner, build_id], |row| {
                     Ok(json!({"path":row.get::<_,String>(0)?,"kind":row.get::<_,String>(1)?,
                         "sha256":row.get::<_,String>(2)?,"bytes":row.get::<_,i64>(3)?}))
                 })?
@@ -519,7 +531,7 @@ impl TaskJournal {
             "worldRevision":world.summary.revision,"contentHash":world.content_hash,
             "document":serde_json::from_str::<Value>(&document)?,
             "project":project,"assetManifestHash":asset_hash,"assets":assets,
-            "build":build,"application":application,"init":init
+            "build":build,"copiedFromWorldId":build_owner,"application":application,"init":init
         });
         let body_text = serde_json::to_string(&body)?;
         ensure!(body_text.len() <= BACKUP_BYTES, "GODOT_BACKUP_TOO_LARGE");

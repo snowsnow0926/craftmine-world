@@ -164,6 +164,30 @@ fn a_reference_created_after_the_plan_blocks_reclamation() -> Result<()> {
 }
 
 #[test]
+fn continuing_a_draft_whose_build_was_reclaimed_is_refused_clearly() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let (_, _, origin) = three_builds(&mut journal, &context)?;
+    // Keep nothing: the cancelled draft's own build becomes reclaimable.
+    let plan = journal.godot_storage_reclaim_plan(&json!({"worldId":"a","context":&context,
+        "keepRecentBuilds":0}))?;
+    assert_eq!(plan["deletable"].as_array().unwrap().len(), 3);
+    journal.godot_storage_reclaim_commit(&json!({"worldId":"a","context":&context,
+        "planId":plan["planId"],"planHash":plan["planHash"],"keepRecentBuilds":0}))?;
+    assert!(!build_row_exists(&journal, origin["buildId"].as_str().unwrap())?);
+    // The cancelled draft is still continuable in principle and its source is
+    // still the head, but its immutable build copy is gone: say that plainly
+    // instead of queueing a job that can only fail at claim.
+    failed(
+        journal.godot_job_continue(&json!({"context":&context,"worldId":"a",
+            "toolCallId":"continue-reclaimed","originJobId":origin["jobId"]})),
+        "GODOT_CONTINUATION_BUILD_GONE",
+    );
+    Ok(())
+}
+
+#[test]
 fn a_caller_pin_from_works_backups_or_history_is_never_reclaimed() -> Result<()> {
     let (_dir, path) = temp()?;
     let mut journal = setup(&path)?;

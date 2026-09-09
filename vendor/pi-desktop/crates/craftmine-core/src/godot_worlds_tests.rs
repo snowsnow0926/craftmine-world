@@ -246,6 +246,12 @@ fn copying_a_formal_world_keeps_identity_separate_and_can_start_from_initial_sta
         .unwrap()
         .iter()
         .any(|item| item["reason"] == "WORLD_COPY"));
+    // A copy's backup descriptor resolves the shared build from its source.
+    let copied_backup = journal.godot_world_backup_snapshot(&json!({"worldId":"g6"}))?;
+    assert_eq!(copied_backup["copiedFromWorldId"], "g1");
+    assert_eq!(copied_backup["build"]["buildId"], build);
+    assert_eq!(copied_backup["worldId"], "g6");
+    assert_eq!(copied_backup["snapshotHash"].as_str().unwrap().len(), 64);
     Ok(())
 }
 

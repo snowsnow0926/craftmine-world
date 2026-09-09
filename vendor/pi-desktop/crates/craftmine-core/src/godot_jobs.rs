@@ -765,6 +765,15 @@ impl TaskJournal {
             "WORLD_BUILD_CONFLICT"
         );
         let kind = origin["kind"].as_str().context("INVALID_GODOT_JOB")?;
+        // The origin's immutable build copy may have been reclaimed after the job
+        // ended. Continuing then would queue a job that can only fail at claim,
+        // so say it plainly instead.
+        let build_exists: bool = tx.query_row(
+            "SELECT EXISTS(SELECT 1 FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2)",
+            params![args.world_id, origin["buildId"].as_str().unwrap_or_default()],
+            |row| row.get(0),
+        )?;
+        ensure!(build_exists, "GODOT_CONTINUATION_BUILD_GONE");
         let job_id = format!(
             "gjob-{}",
             digest(&format!(

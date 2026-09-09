@@ -82,6 +82,7 @@
 ```
 `originJobId` 必须属于同一世界且处于 `interrupted`/`cancelled`/`failed`。
 错误：`GODOT_JOB_NOT_CONTINUABLE`、`GODOT_CONTINUATION_STALE`（源已前进）、
+`GODOT_CONTINUATION_BUILD_GONE`（原不可变构建副本已被回收，需重新构建）、
 `WORLD_BUILD_CONFLICT`（正式世界不再同源）、`REPLAY_MISMATCH`、`GODOT_JOB_NOT_FOUND`、
 `PROJECT_WORLD_BINDING_MISMATCH`、`TASK_INACTIVE`/`TURN_ENDED`/`WORLD_LEASE_LOST`。
 
@@ -171,11 +172,13 @@
  "manifest":{...},"files":[{"path","sha256","bytes"}]},"assetManifestHash":"<64 hex>",
  "assets":[{"path","sha256","bytes","mediaType"}],
  "build":{"buildId":"gbd-...","files":[{"path","kind","sha256","bytes"}]},
+ "copiedFromWorldId":null,
  "application":{"applicationId","inputHash","outputHash"},
  "init":{...},"snapshotHash":"<64 hex>"}}
 ```
 生成时逐一回读并哈希工程 blob、资源正文、构建文件；任一损坏报 `CORRUPT_GODOT_BUILD` /
 `CORRUPT_GODOT_ASSET` / `CORRUPT_PROJECT_FILE`，超过 8 MiB 报 `GODOT_BACKUP_TOO_LARGE`。
+副本世界（共享源构建）会填 `copiedFromWorldId` 并从源世界存储解析构建文件。
 
 ```json
 {"method":"godotWorld.verifySnapshot","params":{"worldId":"g1","context":{...},"snapshot":{...}}}
