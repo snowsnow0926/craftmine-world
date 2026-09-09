@@ -8,8 +8,10 @@ const {createApplications} = require('./applications.cjs');
 const {createHostRequests} = require('./host-requests.cjs');
 const {createWorkbenchService} = require('./workbench-service.cjs');
 const {createGodotExecutor} = require('./godot-executor.cjs');
+const {createAssetService} = require('./asset-service.mjs');
+const {createReuseService} = require('./reuse-service.mjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary,createLibraryService,createMemoryService} = require('./domain.cjs');
-let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor;
+let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor,assetService,reuseService;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
 const importErrors={
@@ -31,10 +33,21 @@ async function onLoad() {
   applications=createApplications(core,pi.craftmine);
   const call=(method,params)=>core.call(method,params);
   workbench=createWorkbenchService(core,{library:createLibraryService({call}),memory:createMemoryService({call}),verifications,reviews,getSettings:()=>pi.plugin.getSettings()});
+  // S5 asset service. Decoding is a host capability (pi.craftmine.assetPreview)
+  // and asset bytes come from the host file bridge, so the plugin never holds a
+  // decoder and never fabricates a preview: a missing host runner rejects the
+  // call with its own reason.
+  assetService=createAssetService({call,
+    runPreview:(input,options)=>typeof pi.craftmine?.assetPreview==='function'
+      ?pi.craftmine.assetPreview(input,options)
+      :Promise.reject(Error('ASSET_PREVIEW_HOST_UNAVAILABLE')),
+    readFile:target=>pi.fs.readPreview(target)});
+  // S3 works/package service: domain validation over the core's package routes.
+  reuseService=createReuseService({call});
   // The managed executor owns the pinned engine. It registers only after a real
   // broker preflight, so the reported capability always comes from live state.
   godotExecutor=createGodotExecutor(core,{dataPath:await pi.plugin.getDataPath(),verifier:pi.craftmine,logger:console});
-  hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor});
+  hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService});
   pi.services.register({id:'world-core',start:()=>core.start(),stop:()=>core.stop()});
   pi.services.register({id:'godot-executor',start:()=>godotExecutor.start(),stop:()=>godotExecutor.stop()});
   await pi.agent.registerTool({
@@ -68,7 +81,21 @@ async function onLoad() {
       };
     },
   });
-  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context)),verifications,reviews))await pi.agent.registerTool(tool);
+  // S6 model-tool handshake. The host owns live sampling and budget accounting;
+  // the plugin passes the real host bridge, the managed executor's enqueue entry
+  // and a budget provider, and leaves a counter it does not have as unknown
+  // instead of inventing a number.
+  const worldToolOptions={
+    sampleLiveState:typeof pi.craftmine?.sampleLiveState==='function'?input=>pi.craftmine.sampleLiveState(input):null,
+    budget:()=>({}),
+    // S6's contract: executorEnqueue({jobId,worldId,mode}, context) ->
+    // {enqueued, reason}. A build started by the model is only executed once
+    // this reaches the managed executor.
+    executorEnqueue:(job,context)=>godotExecutor.enqueue(job,context),
+    historyMethods:['content.history','content.version.list','content.checkpoint.list','content.readFile','content.diff','content.changes'],
+    libraryMethods:['library.search','library.read'],
+  };
+  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context)),verifications,reviews,worldToolOptions))await pi.agent.registerTool(tool);
 }
 
 // Private parent-process lifecycle. There is no panel channel for this method.

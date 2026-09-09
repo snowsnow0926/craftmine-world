@@ -21,6 +21,37 @@ import {
 const WIRE_LIMIT = 8 * 1024 * 1024;
 const INSTALLED_MARKER = "__craftmineGodotCheckPreload";
 
+/**
+ * Reports uncaught page-script failures as `runtime-error` frames.
+ *
+ * The engine bridge already reports Godot's own `onPrintError` output. An
+ * arbitrary exception thrown by authored game script (or a rejected promise it
+ * leaves behind) never reaches that path, so the isolated check would otherwise
+ * call a page "error free" while it is visibly broken. The hook is installed in
+ * the main world at document start, before any engine or application script.
+ */
+function installGameErrorHooks(): void {
+  const transport = (globalThis as unknown as {
+    craftmineRuntime?: { scope?: unknown; post?: (message: unknown) => void };
+  }).craftmineRuntime;
+  if (typeof transport?.post !== "function" || !transport.scope) return;
+  const report = (detail: string): void => {
+    try { transport.post!({ ...(transport.scope as object), type: "runtime-error", error: detail.slice(0, 2000) }); }
+    catch { /* the transport is detached; nothing to report to */ }
+  };
+  globalThis.addEventListener("error", (event: ErrorEvent) => {
+    // Resource load failures surface here without a message; the console
+    // channel already reports those, so only real script failures are sent.
+    if (typeof event?.message !== "string" || !event.message) return;
+    const where = event.filename ? ` (${event.filename}:${event.lineno}:${event.colno})` : "";
+    report(`uncaught-error: ${event.message}${where}`);
+  }, true);
+  globalThis.addEventListener("unhandledrejection", (event: PromiseRejectionEvent) => {
+    const reason = event?.reason;
+    report(`unhandled-rejection: ${reason instanceof Error ? `${reason.name}: ${reason.message}` : String(reason)}`);
+  });
+}
+
 const scope = process.argv
   .map(parseGodotWorldScopeArgument)
   .find((value): value is NonNullable<typeof value> => value !== null);
@@ -60,4 +91,7 @@ if (scope && marker[INSTALLED_MARKER] !== true) {
       return () => ipcRenderer.removeListener(GODOT_WORLD_DETACH_CHANNEL, listener);
     },
   });
+  // Installed after the transport exists and still at document start, so an
+  // exception thrown by the first application script is reported.
+  contextBridge.executeInMainWorld({ func: installGameErrorHooks });
 }

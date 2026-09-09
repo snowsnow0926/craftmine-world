@@ -12,7 +12,7 @@ const output = path.join(root,'desktop/build/craftmine.world');
 const require = createRequire(path.join(root,'vendor/pi-desktop/packages/agent-runtime/package.json'));
 const {build} = require('esbuild');
 await fs.mkdir(path.join(output,'views'), {recursive:true});
-for (const file of ['manifest.json','main.cjs','core-client.cjs','world-tools.cjs','verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs','workbench-service.cjs','godot-executor.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs','godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs']) await fs.copyFile(path.join(source,file),path.join(output,file));
+for (const file of ['manifest.json','main.cjs','core-client.cjs','world-tools.cjs','verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs','workbench-service.cjs','godot-executor.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs','godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','asset-service.mjs','reuse-service.mjs']) await fs.copyFile(path.join(source,file),path.join(output,file));
 await fs.rm(path.join(output,'main.js'), {force:true});
 await build({entryPoints:[path.join(source,'domain-adapter.mjs')],outfile:path.join(output,'domain.cjs'),bundle:true,platform:'node',format:'cjs',target:'node22',
   alias:{'@babel/parser':require.resolve('@babel/parser')},
