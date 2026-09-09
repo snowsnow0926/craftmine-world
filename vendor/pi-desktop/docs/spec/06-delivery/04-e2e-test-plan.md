@@ -8704,3 +8704,18 @@ require the original receipt without another mutation. Inject failure before a
 commit; require the original uncertain error when no receipt exists. Retain the
 `craftmine.request/2` snapshot protocol and run the existing batch-07 review-fixture
 regression. These fixtures do not call a real provider or run authored Godot code.
+
+### Godot host lifecycle integration follow-up
+
+Run `node tests/godot-host-lifecycle.mjs` for the deterministic fault cases in
+`godot-host-lifecycle-audit.md`: a failed save or temporary descriptor read keeps
+the existing instance; malformed receipts never authorize exit; a failed candidate
+resumes the old world; successful switches use the durable revision and persist
+before replacing. This suite covers the real host class with fixture transport
+and storage callbacks, not an integrated Rust/Electron product.
+
+Before enabling the product Godot descriptor, also verify a real Rust transaction
+with nonzero revision, full base state preservation through save/restart/switch,
+trusted artifact lookup from B's applied build, selection rollback on failed
+candidate load, and hiding the sibling view while checks/workbench pages are open.
+The original C fixtures alone do not satisfy those integration cases.

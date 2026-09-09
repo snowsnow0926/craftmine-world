@@ -8,6 +8,7 @@
 import { app, BrowserWindow, ipcMain, session, WebContentsView } from "electron";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
 import { GodotWorldViewHost } from "../../vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host";
 
 const root = process.env.CRAFTMINE_GODOT_ACCEPTANCE_ROOT;
@@ -76,7 +77,7 @@ async function main() {
           worldId: call.worldId,
           buildId: call.buildId,
           revision: call.revision + 1,
-          contentHash: "harness-" + call.revision,
+          contentHash: createHash("sha256").update(JSON.stringify(call.snapshot)).digest("hex"),
           persistedAt: Math.floor(Date.now() / 1000),
         },
       };
@@ -91,7 +92,7 @@ async function main() {
 
 const commands = {
   async open(request) {
-    const state = await host.ensure(request);
+    const state = await host.ensure({ revision: 0, ...request });
     if (request.bounds) host.setBounds(request.bounds);
     if (request.visible !== false) host.setVisible(true);
     return { state, instance: host.instance };
