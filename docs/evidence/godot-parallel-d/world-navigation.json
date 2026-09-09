@@ -1,6 +1,6 @@
 {
   "kind": "real-react-world-navigation-with-real-plugin-and-rust-core",
-  "sourceCommit": null,
+  "sourceCommit": "8819c6fe15bff7496558dc708237b35301fc02fe",
   "plugin": "desktop/build/craftmine.world",
   "coreBinary": "C:\\Users\\WINDOWS\\.pi-desktop\\scratch\\08a13417-7bd5-485f-96c5-4825a4f14525\\cargo-target\\release\\craftmine-core.exe",
   "checks": [
@@ -45,7 +45,7 @@
       "passed": true
     },
     {
-      "name": "a long host error wraps instead of breaking the narrow column (1016/1016 doc 1440/1440)",
+      "name": "a long host error wraps instead of breaking the narrow column",
       "passed": true
     },
     {
