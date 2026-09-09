@@ -12,3 +12,8 @@ read stays a read, and renderer-supplied status cannot close any task.
 Explicit world initialization retry also forwards the recovery setting through
 the factory adapter and uses a bounded project/world recovery lookup before
 generation-bound task resume. No new session bypasses an interrupted task.
+
+Both private operations must be allowed by the production orchestrator adapter
+as well as the plugin router. The adapter test executes that production method
+and verifies forwarding and unknown-operation rejection. Actual profile retry
+waits for the existing navigation controls to finish loading before submission.

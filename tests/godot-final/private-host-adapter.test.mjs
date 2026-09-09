@@ -1,0 +1,22 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import {createRequire} from 'node:module';
+const require=createRequire(path.resolve('vendor/pi-desktop/packages/agent-runtime/package.json'));
+const {transformSync}=require('esbuild');
+const source=fs.readFileSync('vendor/pi-desktop/apps/desktop/electron/main/plugin-runtime.ts','utf8');
+const start=source.indexOf('  async requestCraftmineHost('),end=source.indexOf('\n  /**',start);
+assert.ok(start>0&&end>start);
+const compiled=transformSync('class Adapter { '+source.slice(start,end)+' }; globalThis.Adapter=Adapter;',{loader:'ts',target:'node24'}).code;
+const scope={apiError:(code,message)=>Object.assign(Error(message),{code})};vm.runInNewContext(compiled,scope);
+test('production host adapter reaches recovery and package finalization without widening arbitrary RPC',async()=>{
+  const adapter=new scope.Adapter(),child={child:{}},calls=[];
+  adapter.loaded=new Map([['craftmine.world',child]]);
+  adapter.sendToChild=async(...args)=>{calls.push(args);return {ok:true};};
+  for(const method of ['task.recoverable','package.sourceJob'])assert.equal((await adapter.requestCraftmineHost(method,{worldId:'world'})).ok,true);
+  assert.deepEqual(calls.map(call=>call[1].payload.method),['task.recoverable','package.sourceJob']);
+  assert.ok(calls.every(call=>call[0]===child&&call[1].method==='lifecycle.craftmineRequest'));
+  await assert.rejects(adapter.requestCraftmineHost('arbitrary.shell',{}),/Unsupported/);assert.equal(calls.length,2);
+});

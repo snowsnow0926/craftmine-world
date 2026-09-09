@@ -940,6 +940,8 @@ export class PluginRuntime {
   async requestCraftmineHost(method: string, params: Record<string, unknown>): Promise<unknown> {
     const allowed = new Set(["selection.read", "maintenance.context", "turn.begin", "task.context", "budget.configure", "budget.reserve", "budget.settle", "budget.boundary", "review.context", "review.reserve", "review.settle", "workbench.request", "task.resume", "task.interrupt", "task.discard", "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel"]);
     allowed.add("budget.findReceipt");
+    allowed.add("task.recoverable");
+    allowed.add("package.sourceJob");
     for (const operation of ["godotRuntime.describe", "godotRuntime.describeCandidate", "godotRuntime.saveProgress"]) allowed.add(operation);
     // Read-only live executor state for diagnostics. Enqueue/revoke stay private
     // to the host: the renderer can never start or stop engine execution.
