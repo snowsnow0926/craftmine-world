@@ -16,7 +16,7 @@ const {materializeBase}=await import(pathToFileURL(path.join(basesRoot,'desktop/
 fs.mkdirSync('test-results',{recursive:true});const out=fs.mkdtempSync(path.resolve('test-results/godot-runtime-native-'));
 const report={kind:'real-electron-managed-godot-rust-persistence',out,checks:[],limits:['Repository-authored base and test-only executor/application registration; no model or OS sandbox claim','Production index.ts wiring is compile-checked separately; this harness constructs the same classes','Software offscreen rendering; no player input or feel acceptance']};
 const check=(name,ok)=>{report.checks.push({name,passed:!!ok});assert.ok(ok,name);console.log('PASS '+name);};
-let child;
+let child,completed=false;
 try{
  const env=await createGodotProbeEnvironment(out,{web:true,threads:true});
  const project=path.join(out,'project'),exportRoot=path.join(out,'export');fs.mkdirSync(exportRoot);
@@ -43,5 +43,6 @@ try{
  check('Checks surface detaches native sibling',await child.call('surface',false)===0);check('World surface reattaches native sibling',await child.call('surface',true)===1);
  await child.call('failSave',true);await assert.rejects(child.call('depart'),/TEST_STORAGE_FAILURE|durable storage/);const blocked=await child.call('quitCheck');check('Storage failure blocks world departure and quit',!blocked.ok);await child.call('failSave',false);
  const persisted=await child.call('save');await child.stop();child=launch('restart');await child.ready;await child.call('open');const restored=await child.call('snapshot');assert.deepEqual(restored.state,persisted.snapshot);check('Full equipment/world state survives real Electron and Rust restart',true);
- const quit=await child.call('quitCheck');check('Confirmed durable checkpoint permits runtime exit',quit.ok);await child.stop();child=null;
-}finally{if(child)await child.stop().catch(()=>child.kill());fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({out,passed:report.checks.filter(c=>c.passed).length}));}
+ const quit=await child.call('quitCheck');check('Confirmed durable checkpoint permits runtime exit',quit.ok);await child.stop();child=null;completed=true;
+}catch(error){report.failure=String(error?.stack||error);throw error;
+}finally{if(child)await child.stop().catch(()=>child.kill());report.passed=completed;fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({out,passed:report.checks.filter(c=>c.passed).length,completed}));}

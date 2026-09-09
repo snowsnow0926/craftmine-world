@@ -7,6 +7,13 @@ No new model-facing build or execution permission is introduced.
 
 ## Trust and storage
 
+The main-process `PluginRuntime.requestCraftmineHost` allowlist and the private
+plugin router both include the exact three runtime RPCs (`describe`,
+`describeCandidate`, `saveProgress`), with a 60-second host transport budget for
+artifact hashing and persistence. This does not widen the panel/model methods.
+Full-client verification exercises this broker; a test that supplies its own
+domain callback cannot prove that the product allowlist is connected.
+
 The private main-process adapter calls `godotRuntime.describe({worldId})`.
 Only `craftmine.godot-runtime-descriptor/1` with `phase: formal` is accepted.
 A null result means a legacy world; a corrupt or unavailable Godot artifact is

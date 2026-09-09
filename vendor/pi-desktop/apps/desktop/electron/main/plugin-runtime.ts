@@ -903,10 +903,11 @@ export class PluginRuntime {
   async requestCraftmineHost(method: string, params: Record<string, unknown>): Promise<unknown> {
     const allowed = new Set(["selection.read", "maintenance.context", "turn.begin", "task.context", "budget.configure", "budget.reserve", "budget.settle", "budget.boundary", "review.context", "review.reserve", "review.settle", "workbench.request", "task.resume", "task.interrupt", "task.discard", "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel"]);
     allowed.add("budget.findReceipt");
+    for (const operation of ["godotRuntime.describe", "godotRuntime.describeCandidate", "godotRuntime.saveProgress"]) allowed.add(operation);
     if (!allowed.has(method)) throw apiError("UNSUPPORTED", "Unsupported Craftmine host request");
     const loaded = this.loaded.get("craftmine.world");
     if (!loaded?.child) throw apiError("UNSUPPORTED", "Craftmine world service unavailable");
-    return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, method.startsWith("backup.") || method === "workbench.request" ? 60_000 : 15_000);
+    return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, method.startsWith("backup.") || method.startsWith("godotRuntime.") || method === "workbench.request" ? 60_000 : 15_000);
   }
 
   /**
