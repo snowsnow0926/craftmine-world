@@ -129,7 +129,7 @@ export type CraftmineHostInvoker = (
 
 type SeamHost = {
   __craftmineWorldBridge?: unknown;
-  piDesktop?: { pluginPanelInvoke?: unknown };
+  piDesktop?: { pluginPanelInvoke?: unknown; onCraftmineWorldChanged?: unknown };
 };
 
 function asInvoker(value: unknown): CraftmineHostInvoker | null {
@@ -316,7 +316,7 @@ export function craftmineWorldBridge(): CraftmineWorldBridge | null {
   const invoke = craftmineHostInvoker();
   if (!invoke) return null;
   const seam = (globalThis as SeamHost).__craftmineWorldBridge;
-  const onChanged = asRecord(seam).onChanged;
+  const onChanged = asRecord(seam).onChanged ?? (globalThis as SeamHost).piDesktop?.onCraftmineWorldChanged;
   return createCraftmineWorldBridge(invoke, {
     ...(typeof onChanged === "function"
       ? { onChanged: onChanged as (listener: () => void) => () => void }

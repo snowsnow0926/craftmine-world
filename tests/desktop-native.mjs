@@ -123,6 +123,8 @@ try {
     const nav=(channel,payload={})=>client.rpc('worldNavigation',{channel,payload},20000);
     const list=await nav('world.list');
     check('左栏真实 preload IPC 读取 Rust 世界列表',list.activeWorldId===initial.id&&list.worlds.some(item=>item.id===initial.id));
+    const initialRows=await client.until(()=>client.rpc('worldNavigationRows'),rows=>rows.some(row=>row.id===initial.id&&row.active),'World rows did not refresh after bootstrap');
+    check('真实左栏在首次创建后自动显示当前世界',initialRows.some(row=>row.id===initial.id&&row.active));
     const options=await nav('world.createOptions');
     check('创建目录只列出已接通的体素空白底座',options.bases.length===1&&options.bases[0].id==='craftmine-web/5'&&options.bases[0].delivered);
     await assert.rejects(nav('world.saveProgress',{id:initial.id,snapshot:{}}),/PERMISSION_DENIED/);
@@ -135,6 +137,8 @@ try {
     const switched=await nav('world.switch',{id:initial.id});
     await client.state(state=>state.loaded&&state.id===initial.id&&!state.disabled);
     check('原生创建和切换通过保留视图保存后完成',switched.ok&&switched.activeWorldId===initial.id);
+    const changedRows=await client.until(()=>client.rpc('worldNavigationRows'),rows=>rows.some(row=>row.id===created.id)&&rows.some(row=>row.id===initial.id&&row.active),'World rows did not follow navigation');
+    check('真实左栏收到宿主变更并同步世界及当前标记',changedRows.some(row=>row.id===created.id));
     const navDatabase=path.join(profile,'plugins/data/craftmine.world/tasks.sqlite');
     lock=new DatabaseSync(navDatabase);lock.exec('BEGIN IMMEDIATE');
     await assert.rejects(nav('world.create',{title:'Blocked by live save'}),/locked/i);

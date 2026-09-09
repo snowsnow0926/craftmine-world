@@ -92,6 +92,12 @@ export function installHeadlessControl(access: {
             `globalThis.piDesktop.pluginPanelInvoke("craftmine.world",${JSON.stringify(request.channel)},${JSON.stringify(request.payload ?? {})})`, false,
           );
         }
+        case "worldNavigationRows": {
+          const window = access.window(); if (!window) throw new Error("Window is not ready");
+          return window.webContents.executeJavaScript(
+            `[...document.querySelectorAll(".craftmine-world-item")].map(row=>({id:row.dataset.worldId,active:row.dataset.worldActive==="true",text:row.innerText}))`, false,
+          );
+        }
         case "draftProbe": return access.draftProbe();
         case "guards": {
           const contents = [access.window()?.webContents, access.world()].filter((value): value is WebContents => !!value);

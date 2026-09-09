@@ -21,3 +21,9 @@ loader or silently skip saving while the runtime adapter is incomplete.
 Validation uses the real gateway, plugin/core and an isolated headless view.
 Pure gateway tests verify denied channels, mutation routing and save failures.
 These checks do not certify arbitrary Godot execution or a Windows installer.
+
+The native audit also found that direct IPC succeeded while the rendered list
+remained empty after bootstrap. Successful panel world mutations now notify the
+main renderer through a dedicated event. The preload subscribes to that event
+and plugin lifecycle changes; the real navigation bridge refreshes its host
+facts. Native tests inspect the actual rows after bootstrap and navigation.

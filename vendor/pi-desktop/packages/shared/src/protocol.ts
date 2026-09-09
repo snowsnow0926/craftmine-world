@@ -219,6 +219,7 @@ export const IPC = {
   },
   event: {
     pluginChanged: "pi-desktop/event/pluginChanged",
+    craftmineWorldChanged: "pi-desktop/event/craftmineWorldChanged",
     pluginLauncherShown: "pi-desktop/pluginLauncher/event/shown",
     agentMessage: "pi-desktop/agent/event/message",
     hostStatus: "pi-desktop/app/event/hostStatus",

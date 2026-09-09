@@ -16,6 +16,15 @@ function assertChannel(channel: string) {
 }
 
 const api = {
+  onCraftmineWorldChanged: (listener: () => void) => {
+    const receive = () => listener();
+    ipcRenderer.on(IPC.event.craftmineWorldChanged, receive);
+    ipcRenderer.on(IPC.event.pluginChanged, receive);
+    return () => {
+      ipcRenderer.removeListener(IPC.event.craftmineWorldChanged, receive);
+      ipcRenderer.removeListener(IPC.event.pluginChanged, receive);
+    };
+  },
   pluginPanelInvoke: async (pluginId: string, channel: string, payload: Record<string, unknown> = {}) => {
     const result = await ipcRenderer.invoke(IPC.invoke.pluginPanelInvoke, { pluginId, channel, payload });
     if (!result?.ok) throw new Error(result?.error?.message ?? "World operation failed");

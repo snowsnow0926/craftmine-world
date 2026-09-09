@@ -559,8 +559,13 @@ async function safeOpenExternal(rawUrl: unknown): Promise<void> {
 }
 
 const pluginPanels = new PluginPanelHost(
-  async (pluginId, channel, payload) =>
-    plugins.invokePanelBridge(pluginId, channel, payload),
+  async (pluginId, channel, payload) => {
+    const result = await plugins.invokePanelBridge(pluginId, channel, payload);
+    if (pluginId === "craftmine.world" && ["world.create", "world.open", "world.saveProgress", "world.importLegacy", "candidate.apply"].includes(channel)) {
+      sendToRenderer(IPC.event.craftmineWorldChanged, {});
+    }
+    return result;
+  },
   // A panel reaching for an undeclared host is the shape an exfiltration
   // attempt takes, so it is logged like a denied API call rather than dropped
   // silently in the network layer.
