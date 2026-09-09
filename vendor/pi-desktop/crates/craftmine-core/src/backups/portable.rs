@@ -1187,6 +1187,7 @@ impl TaskJournal {
     /// to the target and only renamed into place once every body verified, so a
     /// crash or a full disk leaves no file that could be mistaken for a backup.
     pub fn backup_export_portable(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         fields(args, &["operationId", "archivePath"])?;
         let id = text(args, "operationId", 240)?.to_owned();
         let path = archive_path(args)?;
@@ -1242,8 +1243,9 @@ impl TaskJournal {
             let created_at = worlds::timestamp()?;
             write_export_owner(&staging, &id, &path, created_at)?;
 
-            // Snapshot and protection pins commit together, before any body is
-            // read. A reclaimer that runs afterwards already sees the pins.
+            // The OS operation lock excludes Git writers and reclaim throughout
+            // staging. Snapshot and pins commit together before the archive
+            // streams bodies; Git objects are staged under that same lock.
             let mut pins: Vec<Pin> = Vec::new();
             let (names, tables_snapshot, entries) = {
                 let tx = self
@@ -1506,6 +1508,7 @@ impl TaskJournal {
     /// before the database commit. A killed process therefore either rolls
     /// back exactly its own work or is recognized as already completed.
     pub fn backup_restore_portable(&mut self, args: &Value) -> Result<Value> {
+        let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         fields(args, &["operationId", "archivePath", "targetDirectory"])?;
         let id = text(args, "operationId", 240)?.to_owned();
         let archive = archive_path(args)?;
@@ -1544,6 +1547,7 @@ impl TaskJournal {
             }
         }
 
+        let _target_lock = crate::operation_lock::OperationLock::restore_target(&resolved)?;
         if in_place {
             ensure!(self.installation_empty()?, "BACKUP_TARGET_NOT_EMPTY");
         } else {
@@ -1789,6 +1793,7 @@ impl TaskJournal {
         };
         let resolved = resolve_target(&target);
         let staging = restore_staging_path(&resolved, &id);
+        let _target_lock = crate::operation_lock::OperationLock::restore_target(&resolved)?;
         let archive_hash = archive_hash.unwrap_or_default();
         let state = if resolved == self.directory {
             restore_commit_state(&self.db, id, &archive_hash)
@@ -1871,7 +1876,11 @@ impl TaskJournal {
         let mut converged = 0;
         for (id, status, job) in jobs {
             if matches!(status.as_str(), "restoring" | "cancel-requested") {
-                self.recover_restore_operation(&id)?;
+                match self.recover_restore_operation(&id) {
+                    Ok(()) => {},
+                    Err(error) if error.to_string().contains("OPERATION_BUSY") => continue,
+                    Err(error) => return Err(error),
+                }
                 converged += 1;
                 continue;
             }
@@ -1883,6 +1892,11 @@ impl TaskJournal {
                 continue;
             };
             let resolved = resolve_target(&target);
+            let _target_lock = match crate::operation_lock::OperationLock::restore_target(&resolved) {
+                Ok(lock) => lock,
+                Err(error) if error.to_string().contains("OPERATION_BUSY") => continue,
+                Err(error) => return Err(error),
+            };
             let staging = restore_staging_path(&resolved, &id);
             remove_owned_staging(&self.db, &staging, &id);
             if let Some(marker) = read_restore_receipt(&resolved) {
@@ -2004,6 +2018,11 @@ impl TaskJournal {
     /// content that no archive holds. A retained pin whose archive disappeared
     /// is released for the same reason. No age or mtime heuristic is used.
     pub fn backup_recover(&mut self) -> Result<usize> {
+        let _operation_lock = match crate::operation_lock::OperationLock::domain(&self.directory) {
+            Ok(lock) => lock,
+            Err(error) if error.to_string().contains("OPERATION_BUSY") => return Ok(0),
+            Err(error) => return Err(error),
+        };
         let rows = self
             .db
             .prepare("SELECT archive_id,status,MAX(archive_path) FROM craftmine_backup_pins WHERE status IN ('streaming','retained') GROUP BY archive_id,status")?
