@@ -1,0 +1,9 @@
+# Manual compaction is maintenance, not a world turn
+
+Opening a world workspace for a manual chat summary cloned the current draft into a new task, cancelled its verification/review jobs, and reset the durable budget owner. A maintenance action must not change a candidate's authority or acceptance state.
+
+Main now resolves the session's current finished domain context through the private `maintenance.context` lifecycle method, independent of the selected panel world. It opens only a PI host turn and retains a private map from that exact host turn to the original domain context. This map routes context reads without appending a user requirement, summary reservations, compaction boundaries, and exact-owner settlement. It permits neither other model purposes nor tool boundaries. Gateway tool execution is entirely denied for maintenance turns, including read tools. Generic PI turns retain their existing behavior.
+
+Rust permits finished/current/no-recovery tasks to reserve summary requests and record compaction attempts against the original ledger. Current-task inspection fences any old draft after a new turn. Creation/retry/tool calls still require the live write lease. Finished review rules remain unchanged. Failed attempts count; unknown usage retains its reservation. A completed or failed PI maintenance turn never ends the original domain turn. The private map remains for late settlement, while the gateway blocks new requests after completion. A new authoring turn has a distinct key and cannot inherit maintenance scope.
+
+A world session with no finished current task gets `CRAFTMINE_FINISHED_TASK_REQUIRED`; it never creates a workspace solely for summary. Summary does not restore or resume an interrupted task. Package finalization and real-model manual compaction remain integration acceptance work.

@@ -63,7 +63,7 @@ export function estimateCraftmineRequest(context: Context, output: number, toolR
 }
 
 export function craftmineContextBlocks(snapshot: CraftmineTaskContext, purpose: CraftminePurpose = "creation"): string {
-  if (!snapshot?.binding?.taskId || !Number.isSafeInteger(snapshot.generation) || snapshot.generation < 1 || !snapshot.world?.id || (!snapshot.lease?.owned && !(purpose === "review" && snapshot.status === "finished"))) fail("CRAFTMINE_CONTEXT_INVALID");
+  if (!snapshot?.binding?.taskId || !Number.isSafeInteger(snapshot.generation) || snapshot.generation < 1 || !snapshot.world?.id || (!snapshot.lease?.owned && !(["review", "summary"].includes(purpose) && snapshot.status === "finished"))) fail("CRAFTMINE_CONTEXT_INVALID");
   if (["cancelled", "discarded", "completed", "interrupted"].includes(snapshot.status)) fail("CRAFTMINE_TASK_NOT_ACTIVE");
   const memories = (snapshot.memories ?? []).filter(memory => memory.status === "validated" &&
     (!memory.worldId || memory.worldId === snapshot.world.id) && (!memory.projectId || memory.projectId === snapshot.binding.projectId));

@@ -18,6 +18,7 @@ import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
 import { CraftmineTurnGateway } from "./craftmine-turn-gateway";
+import { CraftmineMaintenanceContexts } from "./craftmine-maintenance-context";
 import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
 import { createCraftmineBackupService, type CraftmineFilePicker } from "./craftmine-backup-service";
 import { createCraftmineDiagnosticsService } from "./craftmine-diagnostics-service";
@@ -2280,6 +2281,7 @@ const inFlightExecutionFinishes = new Set<string>();
 let approvedExecutionDrain: Promise<void> | null = null;
 const turnSettlements = new Map<string, Set<() => void>>();
 const turnFinalizations = new Map<string, Promise<void>>();
+const craftmineMaintenanceContexts = new CraftmineMaintenanceContexts();
 const craftmineGateway = new CraftmineTurnGateway(
   sessionId => turnFinalizations.has(sessionId) ? undefined : activeTurns.get(sessionId),
   () => new Set(plugins.getTools().filter(tool => tool.pluginId === "craftmine.world").map(tool => tool.fullName)),
@@ -2287,6 +2289,10 @@ const craftmineGateway = new CraftmineTurnGateway(
     const context = { projectId: binding.projectId, sessionId: binding.sessionId, turnId: binding.turnId };
     const { sessionId: _sessionId, turnId: _turnId, ...input } = params;
     const operation = method === "craftmine.context" ? "task.context" : method.replace(/^craftmine\./, "");
+    if (craftmineMaintenanceContexts.has(binding.sessionId, binding.turnId)) {
+      return craftmineMaintenanceContexts.request(binding, operation, input,
+        (name, payload) => plugins.requestCraftmineHost(name, payload));
+    }
     if (operation === "task.context") {
       if (!host) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
       const detail = await host.call<{ session?: any }>("session.get", { id: binding.sessionId });
@@ -2297,6 +2303,7 @@ const craftmineGateway = new CraftmineTurnGateway(
     }
     return plugins.requestCraftmineHost(operation, { ...input, context });
   },
+  (sessionId, turnId) => craftmineMaintenanceContexts.has(sessionId, turnId),
 );
 
 async function bindCraftmineTurn(sessionId: string, turnId: string, session: any,
@@ -5094,7 +5101,7 @@ function finishTurn(
     try {
       if (host && turnId) {
         craftmineGateway.end(sessionId, turnId);
-        await plugins.endCraftmineTurn({ sessionId, turnId, status }).catch((error) => {
+        if (!craftmineMaintenanceContexts.has(sessionId, turnId)) await plugins.endCraftmineTurn({ sessionId, turnId, status }).catch((error) => {
           logger.app("persistence", "error", "Craftmine draft turn end failed", { sessionId, data: String(error) });
         });
         const createNotification =
@@ -8073,7 +8080,7 @@ function registerIpc() {
 
   handle(IPC.invoke.agentCompact, async (req: { sessionId: string }) => {
     if (!host || !sidecar) throw new Error("backend unavailable");
-    if (activeTurns.has(req.sessionId)) {
+    if (activeTurns.has(req.sessionId) || turnFinalizations.has(req.sessionId)) {
       throw Object.assign(new Error("Session already has an active turn"), {
         errorCode: ErrorCodes.AGENT_BUSY,
       });
@@ -8093,17 +8100,17 @@ function registerIpc() {
       settings,
     );
     sidecar.setProjectInstructionRoot(req.sessionId, launch.projectPath);
-    const selection = plugins.getLoaded("craftmine.world")
-      ? await plugins.requestCraftmineHost("selection.read", {}) as { worldId: string | null } : null;
     let result: unknown;
-    if (selection?.worldId && pluginActiveInProject("craftmine.world", detail.session.projectPath ?? null)) {
+    if (plugins.getLoaded("craftmine.world") && pluginActiveInProject("craftmine.world", detail.session.projectPath ?? null)) {
+      const projectId = craftmineProjectIdentity(detail.session, req.sessionId);
+      const current = await plugins.requestCraftmineHost("maintenance.context", { projectId, sessionId: req.sessionId }) as CraftmineTaskContext;
       const turn = await host.call<{ turnId: string }>("session.beginTurn", { sessionId: req.sessionId, providerId: launch.providerId, modelId: launch.modelId });
       activeTurns.set(req.sessionId, turn.turnId);
       try {
-        const previous = detail.session.messages?.findLast((message: UiMessage) => message.role === "user");
-        const craftmineWorld = await bindCraftmineTurn(req.sessionId, turn.turnId, detail.session,
-          { id: crypto.randomUUID(), text: previous?.content || "压缩当前会话，保留世界状态和未完成的要求。" });
-        result = await sidecar.call("agent.compact", { ...launch.sidecarParams, craftmineWorld, turnId: turn.turnId });
+        const binding = { projectId, sessionId: req.sessionId, turnId: turn.turnId, selectedWorld: current.world.id };
+        craftmineMaintenanceContexts.bind(binding, current);
+        craftmineGateway.bind(binding);
+        result = await sidecar.call("agent.compact", { ...launch.sidecarParams, craftmineWorld: true, turnId: turn.turnId });
         await finishTurn(req.sessionId, "completed", undefined, { createNotification: false });
       } catch (error) { await finishTurn(req.sessionId, "error", undefined, { createNotification: false }); throw error; }
     } else result = await sidecar.call("agent.compact", launch.sidecarParams);

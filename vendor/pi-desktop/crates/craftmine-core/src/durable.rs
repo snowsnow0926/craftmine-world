@@ -80,8 +80,9 @@ fn identity(db: &Connection, args: &Value, live: bool) -> Result<(TaskBinding, S
     );
     if live {
         let review = args["purpose"] == "review";
+        let maintenance = args["purpose"] == "summary" || args["kind"] == "compaction";
         ensure!(
-            (task.status == "running" || review && task.status == "finished") && recovery == "none",
+            (task.status == "running" || (review || maintenance) && task.status == "finished") && recovery == "none",
             "TASK_INACTIVE"
         );
         let ctx = WorkspaceContext {
@@ -98,7 +99,7 @@ fn identity(db: &Connection, args: &Value, live: bool) -> Result<(TaskBinding, S
                 world.world.build["id"] == binding.base_build,
                 "WORLD_BUILD_CONFLICT"
             );
-        } else {
+        } else if !(maintenance && task.status == "finished") {
             workspaces::assert_live(db, &snapshot)?;
         }
     }
