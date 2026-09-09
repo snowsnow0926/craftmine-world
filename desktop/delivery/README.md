@@ -86,6 +86,37 @@ Rules:
   `reviewedCommit` and `reviewedAt` in one commit. The preflight is read-only and
   deliberately offers no auto-refresh: blessing new bytes must be a reviewed change.
 
+Two scopes share the format:
+
+- `first-person.json`, `top-down.json` and `shared-web.json` cover the fixed GD0
+  probe projects, the shared Web bridge and the host runtime.
+- `bases-first-person.json`, `bases-side-view.json` and `bases-top-down.json` cover
+  the shipped base directories under `desktop/godot/bases/`, one manifest per
+  directory, so `assets` no longer reports `ASSET_BASE_MANIFEST_MISSING`. They carry
+  `provenanceScope: "shipped-base-directory"`, a `targetLicense` per entry, and a
+  manifest-level `rightsStatus` / `rightsNote` / `rightsDocument` triple.
+
+`rightsStatus` is `pending-formal-application` while the per-module rights review in
+`desktop/delivery/licensing/inventory.json` is open. That state is reported once per
+manifest as the warning `ASSET_RIGHTS_PENDING`, not as one line per file, and it never
+turns into a pass: the rights statement stays visible in the preflight record. An entry
+that names a `licenseDocument` fails with `ASSET_LICENSE_DOCUMENT_MISSING` when that
+document does not exist, so a rights claim can never point at a missing file.
+
+### Drafting new base manifests
+
+```powershell
+# Draft only: writes to an explicit path, never over the committed manifests.
+node desktop/delivery/tools/draft-base-manifest.mjs --all --out-dir $env:PI_SCRATCH_DIR\base-drafts
+# Drift report for the committed manifests (read-only, non-zero exit on drift).
+node desktop/delivery/tools/draft-base-manifest.mjs --check
+```
+
+The tool computes real bytes and SHA-256, but it does not decide rights: a human must
+review `origin`, `author`, `license`, `redistribution`, `distribution` and
+`targetLicense`, then copy the reviewed file into `base-assets/` in the same commit as
+the source change. `--check` only reports drift; it never rewrites a manifest.
+
 ## 4 Offline licence entry
 
 `desktop/godot/licenses/README.md` is the user-facing offline entry; it lists every
@@ -142,6 +173,21 @@ remain explicit failures; preflight does not assign their licenses.
 
 The canonical pending redistribution value is `unreviewed`. The earlier typo
 `unrevealed` is recognized only as a legacy pending value and is also rejected.
+
+## Delivery preflight repair (2026-09-10, task K)
+
+The eight failures recorded in `docs/GODOT_CYCLE_05.md` were re-run and fixed against
+the real tree at `e4621478`, not against the previous report:
+
+| Failure | Cause found by re-running | Fix |
+| --- | --- | --- |
+| `ASSET_BYTES_MISMATCH` x3 on `desktop/godot/web/bridge.js` | the pinned 5903 bytes were stale; the shipped file is 6415 bytes | re-reviewed and re-pinned bytes and SHA-256 in the three manifests that reference it |
+| `ASSET_UNDECLARED_FILE` x2 for `runtime.mjs` and `runtime.d.mts` | the host Web runtime and its type declarations were never declared | both declared, with the host runtime scoped to `app-bundle` and the declarations to `development-only`, and an explicit outstanding licence note |
+| `ASSET_BASE_MANIFEST_MISSING` x3 | no manifest covered the shipped base directories | one provenance manifest per shipped base, generated from the tree and reviewed by hand |
+
+`node desktop/delivery/preflight.mjs assets` now passes with zero failures. The
+remaining warnings are the documented pending-licence notes, which are intentionally
+not converted into passes.
 Both asset shipping declarations and notice declarations fail for denied or
 pending redistribution. Existing approved rights metadata is not rewritten.
 

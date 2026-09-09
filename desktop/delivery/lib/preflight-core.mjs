@@ -231,6 +231,10 @@ function validateBaseEntry(root, manifest, entry, fileDirectory, failures) {
   if (entry.license === 'project-authored' && !entry.outstanding && !entry.licenseDocument) {
     failures.push(fail('ASSET_AUTHORED_LICENSE_UNDECLARED', label + ' is project-authored but neither a licence text nor an explicit outstanding reason is recorded'));
   }
+  if (entry.licenseDocument) {
+    const resolved = path.isAbsolute(entry.licenseDocument) ? entry.licenseDocument : path.resolve(root, entry.licenseDocument);
+    if (!exists(resolved)) failures.push(fail('ASSET_LICENSE_DOCUMENT_MISSING', label + ' rights document is absent: ' + entry.licenseDocument));
+  }
   if (entry.distribution.includes('user-export') && entry.redistribution === 'denied') {
     failures.push(fail('ASSET_EXPORT_DENIED', label + ' is marked user-export but redistribution is denied'));
   }
@@ -279,6 +283,13 @@ export function checkBaseAssets(root, {directory = BASE_ASSETS_DIR} = {}) {
     if (!exists(baseDirectory)) { failures.push(fail('ASSET_SOURCE_MISSING', label + ' source directory is absent: ' + manifest.sourceDirectory)); continue; }
     if (lock && manifest.engine?.version && manifest.engine.version !== lock.version) {
       failures.push(fail('ASSET_ENGINE_MISMATCH', label + ' targets engine ' + manifest.engine.version + ' but the lock pins ' + lock.version));
+    }
+    // Rights that are documented but not yet formally applied stay visible as a
+    // single warning per manifest instead of one line per file.
+    if (manifest.rightsStatus && manifest.rightsStatus !== 'applied') {
+      warnings.push('ASSET_RIGHTS_PENDING ' + label + ' rightsStatus=' + manifest.rightsStatus
+        + (manifest.rightsDocument ? ' rightsDocument=' + manifest.rightsDocument : '')
+        + (manifest.rightsNote ? ' :: ' + manifest.rightsNote : ''));
     }
     const entries = Array.isArray(manifest.entries) ? manifest.entries : [];
     const external = Array.isArray(manifest.externalEntries) ? manifest.externalEntries : [];

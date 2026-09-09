@@ -69,6 +69,8 @@ function fixture() {
     'desktop/godot/probes/shared/web_bridge.gd',
     'desktop/godot/web/bridge.js',
     'desktop/godot/web/host.mjs',
+    'desktop/godot/web/runtime.mjs',
+    'desktop/godot/web/runtime.d.mts',
     'desktop/godot/web/shell.html',
     'desktop/delivery/base-assets/first-person.json',
     'desktop/delivery/base-assets/top-down.json',
