@@ -176,6 +176,14 @@ export type PluginHostServices = {
     verify: (input: unknown, pluginPath: string) => Promise<unknown>;
     cancel: (id: string) => void;
   };
+  /**
+   * Isolated Godot build check. The main process owns the offscreen renderer
+   * window; the plugin host only supplies the bounded descriptor.
+   */
+  godotVerification?: {
+    check: (input: unknown) => Promise<unknown>;
+    cancel: (id: string) => void;
+  };
   getWorkspacePath: () => string | null;
   getLocale?: () => string;
   getAppVersion?: () => string;
@@ -1445,6 +1453,12 @@ export class PluginRuntime {
         if (pluginId !== "craftmine.world" || !this.services.craftmineVerification) throw apiError("UNSUPPORTED", "Built-in verifier unavailable");
         if (api === "craftmine.cancelVerification") return this.services.craftmineVerification.cancel(String(args[0] ?? ""));
         return this.services.craftmineVerification.verify(args[0], loaded.path);
+      }
+      case "craftmine.godotCheck":
+      case "craftmine.cancelGodotCheck": {
+        if (pluginId !== "craftmine.world" || !this.services.godotVerification) throw apiError("UNSUPPORTED", "Godot build verifier unavailable");
+        if (api === "craftmine.cancelGodotCheck") return this.services.godotVerification.cancel(String(args[0] ?? ""));
+        return this.services.godotVerification.check(args[0]);
       }
       case "commands.register": {
         const descriptor = (args[0] ?? {}) as {

@@ -11,6 +11,7 @@ const creation = await import("../electron/main/godot-world-creation.ts");
 const {createGodotPanelCoordinator} = await import("../electron/main/godot-panel-coordinator.ts");
 
 const root = path.resolve(fileURLToPath(new URL("../../../../../", import.meta.url)));
+const desktop = path.join(root, "vendor/pi-desktop/apps/desktop");
 const catalogFile = path.join(root, "desktop/godot/bases/base-catalog.json");
 const basesRoot = path.join(root, "desktop/godot/bases");
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "r2-creation-"));
@@ -26,9 +27,13 @@ test("the shipped catalog offers only delivered Godot bases and their templates"
 });
 
 test("creation requests are bounded and refuse bases this client cannot build", () => {
-  assert.deepEqual(creation.validateGodotCreateRequest({title: " 小镇 ", baseId: "top-down", starterId: "town"}),
+  assert.deepEqual(
+    (({title, baseId, templateId}) => ({title, baseId, templateId}))(
+      creation.validateGodotCreateRequest({title: " 小镇 ", baseId: "top-down", starterId: "town"})),
     {title: "小镇", baseId: "top-down", templateId: "town"});
   assert.deepEqual(creation.validateGodotCreateRequest({title: "x", baseId: "side-view"}).templateId, "blank");
+  assert.match(creation.validateGodotCreateRequest({title: "x", baseId: "side-view"}).operationId, /^[a-f0-9]{32}$/,
+    "a missing operation id is generated once per request");
   for (const input of [{title: "", baseId: "top-down"}, {title: "x".repeat(81), baseId: "top-down"},
     {title: "x", baseId: "mining-sandbox"}, {title: "x", baseId: "top-down", starterId: "../evil"}]) {
     assert.throws(() => creation.validateGodotCreateRequest(input), /INVALID_WORLD_TITLE|WORLD_BASE_UNAVAILABLE|WORLD_STARTER_UNAVAILABLE/);
@@ -76,7 +81,92 @@ test("core init status maps to real stages and never to a pass", () => {
   assert.equal(silent.creation, null, "a silent core must not get invented stages");
 });
 
-test("the factory registers through the core and removes a failed managed copy", async () => {
+test("the shipped materializer loads from an absolute path exactly once", async () => {
+  const modulePath = path.join(root, "desktop/godot/shared/materialize.mjs");
+  await assert.rejects(() => creation.loadMaterializer(`file:///${modulePath}`), /MATERIALIZER_PATH_REQUIRED/);
+  await assert.rejects(() => creation.loadMaterializer(path.join(root, "desktop/godot/shared/missing.mjs")), /MATERIALIZER_NOT_FOUND/);
+  const materialize = await creation.loadMaterializer(modulePath);
+  assert.equal(typeof materialize, "function");
+  const out = path.join(tmp(), "world-materialized");
+  materialize({baseId: "top-down", worldId: "world-mat1", template: "blank", out});
+  assert.equal(fs.existsSync(path.join(out, "project.godot")), true, "the real module materialized a project");
+  assert.deepEqual(Object.keys(creation.readBaseInitialBody(out)).sort(), ["coins", "flags", "inventory", "playerFacing", "playerPosition", "quests", "sceneId", "shops"]);
+});
+
+test("the main process passes a path, never a pre-converted URL", async () => {
+  const source = fs.readFileSync(path.join(desktop, "electron/main/index.ts"), "utf8");
+  assert.match(source, /loadMaterializer\(join\(godotRoot, "shared", "materialize\.mjs"\)\)/);
+  assert.doesNotMatch(source, /loadMaterializer\(pathToFileURL/);
+});
+
+test("world ids are stable per operation and reject unsafe ids", () => {
+  assert.equal(creation.worldIdForOperation("op-abcdefgh"), creation.worldIdForOperation("op-abcdefgh"));
+  assert.notEqual(creation.worldIdForOperation("op-abcdefgh"), creation.worldIdForOperation("op-abcdefgi"));
+  assert.match(creation.worldIdForOperation("op-abcdefgh"), /^world-[a-f0-9]{12}$/);
+  assert.throws(() => creation.worldIdForOperation("short"), /INVALID_OPERATION_ID/);
+  assert.deepEqual(creation.validateGodotCreateRequest({title: "x", baseId: "top-down", operationId: "op-abcdefgh"}).operationId, "op-abcdefgh");
+  assert.throws(() => creation.validateGodotCreateRequest({title: "x", baseId: "top-down", operationId: "../evil"}), /INVALID_OPERATION_ID/);
+});
+
+test("a lost reply is reconciled against the core and never deletes a registered world", async () => {
+  const worldsRoot = tmp();
+  const calls = [];
+  const materialize = ({out}) => {
+    fs.mkdirSync(out, {recursive: true});
+    fs.writeFileSync(path.join(out, "world.json"), JSON.stringify({initialProgress: {coins: 0}}));
+  };
+  const factory = creation.createGodotWorldFactory({
+    worldsRoot, catalogFile, basesRoot, materialize,
+    domain: async (method, params) => {
+      calls.push(method);
+      if (method === "godotWorld.initialize") throw new Error("transport lost");
+      if (method === "godotWorld.initStatus") return {status: "pending", initId: "gwinit-1", playable: false, worldId: params.worldId};
+      throw new Error(`unexpected ${method}`);
+    },
+  });
+  const created = await factory.create({title: "小镇", baseId: "top-down", operationId: "op-lostreply1"});
+  assert.equal(created.state, "initializing");
+  assert.deepEqual(calls, ["godotWorld.initialize", "godotWorld.initStatus"]);
+  assert.equal(fs.existsSync(path.join(worldsRoot, creation.worldIdForOperation("op-lostreply1"))), true,
+    "a committed world keeps its materialized source");
+});
+
+test("an unknown outcome keeps the source and reports a retryable identity", async () => {
+  const worldsRoot = tmp();
+  const materialize = ({out}) => {
+    fs.mkdirSync(out, {recursive: true});
+    fs.writeFileSync(path.join(out, "world.json"), JSON.stringify({initialProgress: {coins: 0}}));
+  };
+  const factory = creation.createGodotWorldFactory({
+    worldsRoot, catalogFile, basesRoot, materialize,
+    domain: async () => { throw new Error("host unavailable"); },
+  });
+  await assert.rejects(factory.create({title: "小镇", baseId: "top-down", operationId: "op-uncertain1"}), (error) => {
+    assert.equal(error.message, "WORLD_CREATE_UNCERTAIN");
+    assert.equal(error.worldId, creation.worldIdForOperation("op-uncertain1"));
+    assert.equal(error.operationId, "op-uncertain1");
+    return true;
+  });
+  assert.equal(fs.existsSync(path.join(worldsRoot, creation.worldIdForOperation("op-uncertain1"))), true);
+});
+
+test("a world the core never registered releases its managed copy", async () => {
+  const worldsRoot = tmp();
+  const materialize = ({out}) => {
+    fs.mkdirSync(out, {recursive: true});
+    fs.writeFileSync(path.join(out, "world.json"), JSON.stringify({initialProgress: {coins: 0}}));
+  };
+  const factory = creation.createGodotWorldFactory({
+    worldsRoot, catalogFile, basesRoot, materialize,
+    domain: async (method) => {
+      if (method === "godotWorld.initialize") throw new Error("WORLD_EXISTS");
+      throw Object.assign(new Error("GODOT_WORLD_NOT_INITIALIZING"), {code: "GODOT_WORLD_NOT_INITIALIZING"});
+    },
+  });
+  await assert.rejects(factory.create({title: "小镇", baseId: "top-down", operationId: "op-never1"}), /WORLD_EXISTS/);
+  assert.equal(fs.existsSync(path.join(worldsRoot, creation.worldIdForOperation("op-never1"))), false);
+});
+test("the factory registers through the core and releases only an unregistered copy", async () => {
   const worldsRoot = tmp();
   const calls = [];
   const materialize = ({out}) => {
@@ -88,7 +178,7 @@ test("the factory registers through the core and removes a failed managed copy",
     domain: async (method, params) => { calls.push([method, params]); return {init: {status: "pending", initId: "gwinit-x", playable: false}}; },
     materialize, makeWorldId: () => "world-test1",
   });
-  const created = await factory.create({title: "小镇", baseId: "top-down", starterId: "blank"});
+  const created = await factory.create({title: "小镇", baseId: "top-down", starterId: "blank", operationId: "op-test1"});
   assert.equal(created.state, "initializing");
   assert.deepEqual(calls.map(([method]) => method), ["godotWorld.initialize"]);
   assert.equal(calls[0][1].snapshot.worldId, "world-test1");
@@ -98,16 +188,40 @@ test("the factory registers through the core and removes a failed managed copy",
 
   const failing = creation.createGodotWorldFactory({
     worldsRoot, catalogFile, basesRoot,
-    domain: async () => { throw new Error("WORLD_EXISTS"); },
+    domain: async (method) => {
+      if (method === "godotWorld.initialize") throw new Error("WORLD_EXISTS");
+      throw Object.assign(new Error("GODOT_WORLD_NOT_INITIALIZING"), {code: "GODOT_WORLD_NOT_INITIALIZING"});
+    },
     materialize, makeWorldId: () => "world-test2",
   });
   await assert.rejects(failing.create({title: "重复", baseId: "top-down"}), /WORLD_EXISTS/);
-  assert.equal(fs.existsSync(path.join(worldsRoot, "world-test2")), false, "a failed creation leaves no project behind");
+  assert.equal(fs.existsSync(path.join(worldsRoot, "world-test2")), false, "an unregistered copy is released");
   assert.equal(await factory.status("world-test1").then((s) => s.state), "initializing");
   assert.equal(await creation.createGodotWorldFactory({
     worldsRoot, catalogFile, basesRoot, domain: async () => { throw new Error("UNSUPPORTED_HOST_OPERATION"); },
     materialize, makeWorldId: () => "world-test3",
   }).status("world-test3"), null, "a missing route reports unknown, never a fake ready");
+});
+
+test("the main process injects the isolated Godot build verifier", () => {
+  const index = fs.readFileSync(path.join(desktop, "electron/main/index.ts"), "utf8");
+  assert.match(index, /import \{ GodotBuildVerifier \} from "\.\/godot-build-verifier"/);
+  assert.match(index, /const godotVerifier = new GodotBuildVerifier\(\)/);
+  assert.match(index, /godotVerification: \{/);
+  assert.match(index, /godotVerifier\.cancelAll\(\)/);
+  const runtime = fs.readFileSync(path.join(desktop, "electron/main/plugin-runtime.ts"), "utf8");
+  assert.match(runtime, /case "craftmine\.godotCheck":/);
+  assert.match(runtime, /case "craftmine\.cancelGodotCheck":/);
+  assert.match(runtime, /godotVerification\?: \{/);
+});
+
+test("the create panel keeps one stable operation id for retries", () => {
+  const panel = fs.readFileSync(path.join(desktop, "src/components/craftmine/WorldCreatePanel.tsx"), "utf8");
+  assert.match(panel, /const operationId = useRef<string>\(/);
+  assert.match(panel, /operationId: operationId\.current/);
+  const gateway = fs.readFileSync(path.join(desktop, "electron/main/craftmine-navigation-host.ts"), "utf8");
+  assert.match(gateway, /INVALID_OPERATION_ID/);
+  assert.match(gateway, /operationId: payload\.operationId/);
 });
 
 test("the panel coordinator serves Godot bases, creation and real world state", async () => {

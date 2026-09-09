@@ -14,7 +14,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import {randomBytes} from "node:crypto";
+import {createHash, randomBytes} from "node:crypto";
 import {pathToFileURL} from "node:url";
 
 export const PROGRESS_FORMAT = "craftmine.godot-progress/1";
@@ -44,7 +44,7 @@ export type GodotCreateOptions = {
   bases: GodotBaseOption[];
 };
 
-export type GodotCreateRequest = { title: string; baseId: string; templateId: string };
+export type GodotCreateRequest = { title: string; baseId: string; templateId: string; operationId: string };
 
 export type CreationStageStatus = "pending" | "running" | "passed" | "failed" | "skipped";
 export type CreationStage = { id: string; label: string; status: CreationStageStatus };
@@ -109,7 +109,19 @@ export function validateGodotCreateRequest(value: unknown): GodotCreateRequest {
   if (!DELIVERED_GODOT_BASES.includes(baseId as (typeof DELIVERED_GODOT_BASES)[number])) throw new Error("WORLD_BASE_UNAVAILABLE");
   const templateId = typeof raw.starterId === "string" && raw.starterId ? raw.starterId : "blank";
   if (!/^[a-z][a-z0-9-]{0,39}$/.test(templateId)) throw new Error("WORLD_STARTER_UNAVAILABLE");
-  return {title, baseId, templateId};
+  // Stable operation identity: a retried submit must target the same world.
+  const operationId = typeof raw.operationId === "string" && raw.operationId
+    ? raw.operationId
+    : randomBytes(16).toString("hex");
+  if (!/^[A-Za-z0-9_-]{8,80}$/.test(operationId)) throw new Error("INVALID_OPERATION_ID");
+  return {title, baseId, templateId, operationId};
+}
+
+/** Deterministic portable world id for one operation (lowercase, tooling-safe). */
+export function worldIdForOperation(operationId: string): string {
+  if (!/^[A-Za-z0-9_-]{8,80}$/.test(operationId)) throw new Error("INVALID_OPERATION_ID");
+  const digest = createHash("sha256").update(`craftmine.godot-world-op/1|${operationId}`).digest("hex");
+  return `world-${digest.slice(0, 12)}`;
 }
 
 /** A world id that is portable across machines and accepted by the base tooling. */
@@ -252,9 +264,18 @@ export type GodotCreationDependencies = {
   makeWorldId?: () => string;
 };
 
-/** Loads the shipped materializer lazily so the main process never bundles it twice. */
-export async function loadMaterializer(moduleUrl: string): Promise<GodotCreationDependencies["materialize"]> {
-  const module = await import(pathToFileURL(moduleUrl).href) as {materializeBase: GodotCreationDependencies["materialize"]};
+/**
+ * Loads the shipped materializer lazily so the main process never bundles it
+ * twice. The argument is an absolute filesystem path (not a URL); this is the
+ * single place that converts it, so callers cannot double-encode it.
+ */
+export async function loadMaterializer(modulePath: string): Promise<GodotCreationDependencies["materialize"]> {
+  if (typeof modulePath !== "string" || !path.isAbsolute(modulePath)) {
+    throw new Error("MATERIALIZER_PATH_REQUIRED");
+  }
+  if (!fs.existsSync(modulePath)) throw new Error("MATERIALIZER_NOT_FOUND");
+  const module = await import(pathToFileURL(modulePath).href) as {materializeBase: GodotCreationDependencies["materialize"]};
+  if (typeof module.materializeBase !== "function") throw new Error("MATERIALIZER_INVALID");
   return module.materializeBase;
 }
 
@@ -273,9 +294,14 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       const base = baseOf(request.baseId);
       const template = base.templates.find((candidate) => candidate.id === request.templateId);
       if (!template || !template.delivered) throw new Error("WORLD_STARTER_UNAVAILABLE");
-      const worldId = (deps.makeWorldId ?? portableWorldId)();
+      // The world identity is derived from the caller's stable operation id, so
+      // a retried submit after a lost reply targets the same world instead of
+      // creating a second one.
+      const worldId = deps.makeWorldId ? deps.makeWorldId() : worldIdForOperation(request.operationId);
       const projectDir = path.join(deps.worldsRoot, worldId);
-      if (fs.existsSync(projectDir)) throw new Error("WORLD_EXISTS");
+      // Only a directory this operation created may be cleaned up on failure.
+      const ownsProjectDir = !fs.existsSync(projectDir);
+      if (!ownsProjectDir) throw new Error("WORLD_EXISTS");
       fs.mkdirSync(path.dirname(projectDir), {recursive: true});
       try {
         deps.materialize({baseId: request.baseId, worldId, template: request.templateId, out: projectDir});
@@ -292,11 +318,31 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
         const mapped = initStatusToCreation(result?.init ?? null);
         return {id: worldId, title: request.title, state: mapped.state, creation: mapped.creation};
       } catch (error) {
-        // The core record exists only after `godotWorld.initialize` commits.
-        // A failure before that leaves no world, so the managed copy is removed
-        // instead of leaving an unreferenced project behind.
-        fs.rmSync(projectDir, {recursive: true, force: true});
-        throw error;
+        // A transport failure can hide a committed transaction. Ask the core
+        // for the durable record first: a world that exists is a success to
+        // report, never a directory to delete.
+        let durable: {state: string; creation: WorldCreation | null} | null = null;
+        let notRegistered = false;
+        try {
+          durable = initStatusToCreation(await deps.domain("godotWorld.initStatus", {worldId}));
+        } catch (queryError) {
+          // The core's own "no such initialization" answer proves the world was
+          // never registered; any other failure leaves the outcome unknown.
+          const detail = `${(queryError as {code?: string}).code ?? ""} ${String((queryError as Error).message ?? queryError)}`;
+          notRegistered = /GODOT_WORLD_NOT_INITIALIZING|GODOT_WORLD_INIT_MISSING|WORLD_NOT_FOUND/.test(detail);
+        }
+        if (durable) return {id: worldId, title: request.title, state: durable.state, creation: durable.creation};
+        if (notRegistered && ownsProjectDir) {
+          // The core proved it never registered this world, and this operation
+          // created the directory: the managed copy is safe to remove.
+          fs.rmSync(projectDir, {recursive: true, force: true});
+          throw error;
+        }
+        // Unknown outcome: keep the source and report a recoverable state that
+        // the player can retry with the same operation id.
+        throw Object.assign(new Error("WORLD_CREATE_UNCERTAIN"), {
+          cause: error, worldId, operationId: request.operationId,
+        });
       }
     },
     /** Real initialization status for one world, or null when the core is silent. */
