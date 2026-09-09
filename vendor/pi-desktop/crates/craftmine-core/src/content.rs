@@ -511,6 +511,18 @@ impl TaskJournal {
         Ok(serde_json::to_value(intent)?)
     }
 
+    /// Pure observation of a durable operation; never advances or recovers it.
+    pub fn content_operation_read(&self, args: &Value) -> Result<Value> {
+        #[derive(Deserialize)]
+        #[serde(rename_all = "camelCase", deny_unknown_fields)]
+        struct Args { world_id: String, operation_id: String }
+        let args: Args = serde_json::from_value(args.clone())?;
+        worlds::read(&self.db, &args.world_id)?;
+        let intent = apply::intent(&self.db, &args.operation_id)?;
+        ensure!(intent.world_id == args.world_id, "CONTENT_CONTEXT_MISMATCH");
+        Ok(serde_json::to_value(intent)?)
+    }
+
     pub fn content_apply_rollback(&mut self, args: &Value) -> Result<Value> {
         let args: RollbackArgs = serde_json::from_value(args.clone())?;
         let store = self.content_store()?;
@@ -604,5 +616,4 @@ impl TaskJournal {
         Ok(content)
     }
 }
-
 
