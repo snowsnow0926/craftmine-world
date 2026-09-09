@@ -40,12 +40,37 @@ function explainRecovery(code){
   return {kind:'unknown',reason:'未识别的恢复错误码，保留原始值。',code,unknown:true};
 }
 
-// Durable, host-owned execution state. Read-only for the model.
-async function executorStatus(core){
+// Live, host-owned execution state. Read-only for the model.
+//
+// The managed executor runs inside the product process, so its own status is
+// the authoritative gate; the core RPC only records the registration. When the
+// live provider is wired it is preferred and its provenance is reported, so a
+// stale core row can never be presented as "builds are available".
+async function executorStatus(core,options={}){
   if(!core||typeof core.call!=='function')throw Error('CORE_REQUIRED');
-  const status=await core.call('godotExecutor.status',{});
-  return {format:JOBS_FORMAT,scope:'executor',status,
-    // The model may not hold a lease token, so these stay host-only.
+  if(typeof options.executorStatus==='function'){
+    let live;
+    try { live=await options.executorStatus(); }
+    catch(error){ return {format:JOBS_FORMAT,scope:'executor',available:false,
+      reason:error?.errorCode==='GODOT_EXECUTOR_UNAVAILABLE'?'GODOT_EXECUTOR_UNAVAILABLE':'EXECUTOR_STATUS_FAILED',
+      errorCode:error?.errorCode||null,source:'live-executor',tokenGatedMethods:TOKEN_GATED_METHODS.slice()}; }
+    if(live===null||live===undefined||typeof live!=='object'||Array.isArray(live))return {format:JOBS_FORMAT,scope:'executor',
+      available:false,reason:'EXECUTOR_STATUS_INVALID',source:'live-executor',tokenGatedMethods:TOKEN_GATED_METHODS.slice()};
+    return {format:JOBS_FORMAT,scope:'executor',status:live,source:'live-executor',
+      // The model may not hold a lease token, so these stay host-only.
+      tokenGatedMethods:TOKEN_GATED_METHODS.slice()};
+  }
+  let status;
+  try { status=await core.call('godotExecutor.status',{}); }
+  catch(error){
+    if(error?.errorCode==='UNKNOWN_METHOD')return {format:JOBS_FORMAT,scope:'executor',available:false,
+      reason:'DEPENDENCY_NOT_WIRED',requiredHostMethod:'godotExecutor.status',owner:'S2',
+      source:'core-registration',tokenGatedMethods:TOKEN_GATED_METHODS.slice()};
+    throw error;
+  }
+  return {format:JOBS_FORMAT,scope:'executor',status,source:'core-registration',
+    liveProviderWired:false,
+    note:'This is the durable registration row. The live executor gate is unknown until the product passes its executor status provider.',
     tokenGatedMethods:TOKEN_GATED_METHODS.slice()};
 }
 

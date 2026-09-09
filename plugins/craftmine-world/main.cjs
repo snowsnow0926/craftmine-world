@@ -9,6 +9,7 @@ const {createHostRequests} = require('./host-requests.cjs');
 const {createWorkbenchService} = require('./workbench-service.cjs');
 const {createGodotExecutor} = require('./godot-executor.cjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary,createLibraryService,createMemoryService} = require('./domain.cjs');
+const {createHostProviders,createCoreBudgetProvider} = require('./tool-services.cjs');
 let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
@@ -68,7 +69,25 @@ async function onLoad() {
       };
     },
   });
-  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context)),verifications,reviews))await pi.agent.registerTool(tool);
+  // Model-tool service wiring (task S6). Each provider is optional at the
+  // contract level, but production must supply every one of them: an unwired
+  // provider makes the tool report an explicit gap with its owner instead of
+  // substituting a task-start snapshot, a saved value or a zero counter.
+  const hostProviders=createHostProviders((method,params)=>{
+    if(method==='godotLiveState'&&typeof pi.craftmine?.godotLiveState==='function')return pi.craftmine.godotLiveState(params);
+    throw Object.assign(Error('HOST_PROVIDER_NOT_WIRED'),{errorCode:'HOST_PROVIDER_NOT_WIRED'});
+  });
+  const toolServices={
+    ...hostProviders,
+    // The seven-kind limit ledger is read through this process's core client.
+    budget:createCoreBudgetProvider(core),
+    // The managed executor lives in this process: its own status is the gate,
+    // and it is the service that actually runs a queued build or check job.
+    executorStatus:()=>godotExecutor.status(),
+    executorEnqueue:(job,context)=>godotExecutor.enqueue(job,context),
+    executorCancel:jobId=>godotExecutor.cancel(jobId),
+  };
+  for(const tool of createWorldTools(core,()=>pi.plugin.getSettings(),context=>endedTurns.has(turnKey(context)),verifications,reviews,toolServices))await pi.agent.registerTool(tool);
 }
 
 // Private parent-process lifecycle. There is no panel channel for this method.

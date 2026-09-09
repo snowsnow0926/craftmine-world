@@ -175,16 +175,15 @@ function renderFactsBlock(facts){
 
 // Seven independent limit kinds. A missing counter stays unknown; it is never
 // reported as zero, and a local limit is never described as a service failure.
-function limitAccounting(provider){
-  if(typeof provider!=='function'){
-    return {available:false,reason:'BUDGET_PROVIDER_NOT_WIRED',kinds:LIMIT_KINDS.slice(),
-      note:'Missing counters are unknown, not zero. Distinguish token, context, request, compaction, service, wall-clock and resource limits.'};
-  }
-  const raw=provider()||{};
+function normalizeLimitKinds(raw){
   const kinds={};
   for(const kind of LIMIT_KINDS){
-    const entry=raw[kind];
-    if(entry===undefined||entry===null){kinds[kind]={known:false};continue;}
+    const entry=raw?.[kind];
+    // An absent entry, or an entry with no counter at all, is unknown. It is
+    // never reported as a zero-valued known limit.
+    const empty=entry!==null&&typeof entry==='object'&&!Array.isArray(entry)&&
+      entry.limit===undefined&&entry.used===undefined&&entry.remaining===undefined&&entry.exhausted===undefined;
+    if(entry===undefined||entry===null||empty){kinds[kind]={known:false};continue;}
     const limit=entry.limit===undefined?null:entry.limit;
     const used=entry.used===undefined?null:entry.used;
     const remaining=entry.remaining!==undefined?entry.remaining:(typeof limit==='number'&&typeof used==='number'?limit-used:null);
@@ -195,5 +194,34 @@ function limitAccounting(provider){
   return {available:true,kinds,exhausted,kindsOrder:LIMIT_KINDS.slice()};
 }
 
+function limitAccounting(provider){
+  if(typeof provider!=='function'){
+    return {available:false,reason:'BUDGET_PROVIDER_NOT_WIRED',kinds:LIMIT_KINDS.slice(),
+      note:'Missing counters are unknown, not zero. Distinguish token, context, request, compaction, service, wall-clock and resource limits.'};
+  }
+  return normalizeLimitKinds(provider()||{});
+}
+
+// Async variant for a provider that reads a durable source. A provider failure
+// is reported with its owner and the method it needed; the kinds stay listed so
+// the model knows what is unknown rather than assuming zero.
+async function readLimitAccounting(provider,context){
+  if(typeof provider!=='function'){
+    return {available:false,reason:'BUDGET_PROVIDER_NOT_WIRED',owner:'R2+S1',requiredHostMethod:'budget.inspect',
+      kinds:LIMIT_KINDS.slice(),
+      note:'Missing counters are unknown, not zero. Distinguish token, context, request, compaction, service, wall-clock and resource limits.'};
+  }
+  let raw;
+  try { raw=await provider(context); }
+  catch(error){
+    return {available:false,reason:error?.errorCode==='UNKNOWN_METHOD'?'DEPENDENCY_NOT_WIRED':'BUDGET_READ_FAILED',
+      errorCode:error?.errorCode||null,owner:'S1',requiredHostMethod:'budget.inspect',
+      kinds:LIMIT_KINDS.slice(),note:'The durable ledger could not be read; every counter is unknown.'};
+  }
+  const result=normalizeLimitKinds((raw&&raw.kinds)?raw.kinds:raw||{});
+  if(raw&&raw.ledger&&typeof raw.ledger==='object')result.ledger=raw.ledger;
+  return result;
+}
+
 module.exports={OBSERVATION_FORMAT,LIMIT_KINDS,UNTRUSTED,LIVE_FIELDS,describeRuntime,normalizeLiveSample,
-  projectFacts,renderFactsBlock,limitAccounting};
+  projectFacts,renderFactsBlock,normalizeLimitKinds,limitAccounting,readLimitAccounting};

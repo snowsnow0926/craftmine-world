@@ -2,11 +2,12 @@
 const {fields,inspectDraft,readDraftResource,patchDraft,readCapabilities,readVerification,draftPackages,createLibraryService,createMemoryService}=require('./domain.cjs');
 const docs=require('./godot-docs.cjs');
 const {createProjectQuery}=require('./godot-query.cjs');
-const {describeRuntime,normalizeLiveSample,projectFacts,limitAccounting}=require('./godot-observe.cjs');
+const {describeRuntime,normalizeLiveSample,projectFacts,readLimitAccounting}=require('./godot-observe.cjs');
 const {capabilityReport,classifyGap}=require('./godot-capability.cjs');
 const {createHistoryService}=require('./godot-history.cjs');
 const {createLibraryBinding}=require('./godot-library.cjs');
 const {executorStatus,usageSummary,continueJob,listRecoverable,resumeDraft,explainRecovery}=require('./godot-jobs.cjs');
+const {validateToolServices,describeToolServices}=require('./tool-services.cjs');
 const {GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS}=require('./godot-routing.cjs');
 
 function hostContext(context) {
@@ -19,6 +20,10 @@ function hostContext(context) {
 }
 
 function createWorldTools(core,getSettings,isEnded=()=>false,verifications,reviews,options={}) {
+  // The provider contract is validated once, at construction, so a wrong type
+  // fails the plugin load instead of silently degrading a live reading.
+  validateToolServices(options);
+  const services=describeToolServices(options);
   const library=createLibraryService({call:(method,params)=>core.call(method,params)});
   const memory=createMemoryService({call:(method,params)=>core.call(method,params)});
   const definitions=require('./manifest.json').contributes.agentTools.filter(tool=>tool.name!=='runtime_info');
@@ -59,10 +64,10 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       const handshake=await core.start();
       const gaps=args.request||Array.isArray(args.evidence)?[{request:args.request||null,evidence:args.evidence||[]}]:[];
       return capabilityReport({manifest:require('./manifest.json'),routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake,
-        gaps,limits:limitAccounting(options.budget)});
+        gaps,limits:await readLimitAccounting(options.budget,context),services});
     }
     // The executor gate is global, so it must answer even when no world is bound.
-    if(definition.name==='godot_jobs'&&args.mode==='status')return executorStatus(core);
+    if(definition.name==='godot_jobs'&&args.mode==='status')return executorStatus(core,options);
     if(definition.name==='requirements_read')return core.call('task.readRequirements',{...args,context});
     if(definition.name==='verification_read') {
       const job=await core.call('verification.read',{context,id:args.id});
@@ -84,6 +89,21 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     await reviews?.cancelOtherTurns(context);
     const godotWrites={godot_project_create:true,godot_project_patch:true,godot_asset_put:true,godot_build_start:true};
     const godotReceipts=GODOT_RECEIPTS;
+    // Hand a queued core job to the live managed executor. A missing provider is
+    // reported as unwired with its owner; the durable job row still exists, so
+    // the player and the model both see that execution did not start.
+    const handOffJob=async(job,context)=>{
+      const jobId=typeof job?.jobId==='string'?job.jobId:typeof job?.id==='string'?job.id:null;
+      if(!jobId)return {enqueued:false,reason:'JOB_ID_MISSING',owner:'S2'};
+      if(typeof options.executorEnqueue!=='function')return {enqueued:false,reason:'EXECUTOR_PROVIDER_NOT_WIRED',owner:'S2',
+        note:'The core job is recorded but no live executor received it.'};
+      try {
+        const result=await options.executorEnqueue({jobId,worldId:workspace.worldId,mode:job?.kind??job?.mode??'build'},context);
+        return {enqueued:result?.enqueued===true,reason:result?.reason??null,owner:'S2'};
+      } catch(error){
+        return {enqueued:false,reason:error?.errorCode||error?.message||'EXECUTOR_ENQUEUE_FAILED',owner:'S2'};
+      }
+    };
     if(definition.name==='godot_project_query') {
       const query=createProjectQuery({core,context,worldId:workspace.worldId});
       if(args.mode==='summary')return query.summary(args);
@@ -122,25 +142,30 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     }
     if(definition.name==='godot_project_facts') {
       const facts=await projectFacts({core,context,worldId:workspace.worldId,sampler:options.sampleLiveState});
-      facts.limits=limitAccounting(options.budget);
+      facts.limits=await readLimitAccounting(options.budget,context);
       facts.docsCompatibility=docs.checkEngineVersion(facts.runtime?.engineVersion??facts.project?.engineVersion);
       // A model switch or a compaction must be able to recheck everything from
       // durable sources: capability flags, executor gate, durable usage.
       facts.modelSwitch={capabilityHandshake:await core.start(),requiresReinspection:true};
-      try { facts.executor=await executorStatus(core); }
+      facts.services=services;
+      try { facts.executor=await executorStatus(core,options); }
       catch(error){ facts.executor={available:false,reason:error?.errorCode==='UNKNOWN_METHOD'?'DEPENDENCY_NOT_WIRED':'EXECUTOR_STATUS_FAILED',
-        requiredHostMethod:'godotExecutor.status',owner:'R1'}; }
+        requiredHostMethod:'godotExecutor.status',owner:'S2'}; }
       try { facts.usage=await usageSummary(core,{context,worldId:workspace.worldId}); }
       catch(error){ facts.usage={available:false,reason:error?.errorCode==='UNKNOWN_METHOD'?'DEPENDENCY_NOT_WIRED':'USAGE_READ_FAILED',
         requiredHostMethod:'godotJob.usage',owner:'R1'}; }
       return facts;
     }
     if(definition.name==='godot_jobs') {
-      if(args.mode==='status')return executorStatus(core);
+      if(args.mode==='status')return executorStatus(core,options);
       if(args.mode==='usage')return usageSummary(core,{context,worldId:workspace.worldId});
       if(args.mode==='resume') {
         if(!args.originJobId)throw Error('ORIGIN_JOB_ID_REQUIRED');
-        return continueJob(core,{context,worldId:workspace.worldId,originJobId:args.originJobId,toolCallId:invocation.toolCallId});
+        const resumed=await continueJob(core,{context,worldId:workspace.worldId,originJobId:args.originJobId,toolCallId:invocation.toolCallId});
+        // A continued job is queued again in the core; it still needs the live
+        // executor, so the same hand-off applies as for a fresh start.
+        if(resumed?.available===false)return resumed;
+        return {...resumed,execution:await handOffJob(resumed?.result,context)};
       }
       throw Error('INVALID_JOBS_MODE');
     }
@@ -191,7 +216,22 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       if(godotWrites[definition.name])params.toolCallId=invocation.toolCallId;
       if(definition.name==='godot_project_create')params.baseBuild=workspace.task.binding.baseBuild;
       const method=GODOT_METHODS[definition.name];
-      try {return await core.call(method,params);}
+      try {
+        const result=await core.call(method,params);
+        // A queued build/check job must reach the live executor in the same
+        // turn; otherwise the model reports a build that never runs.
+        if(definition.name==='godot_build_start'&&result&&typeof result==='object'){
+          const execution=result.executionAvailable===false
+            ? {enqueued:false,reason:result.blockedReason||'GODOT_EXECUTION_UNAVAILABLE',owner:'S2',skipped:true}
+            : await handOffJob(result,context);
+          return {...result,execution};
+        }
+        if(definition.name==='godot_build_cancel'&&typeof options.executorCancel==='function'){
+          const cancelled=await options.executorCancel(args.jobId).catch(error=>({cancelled:false,reason:error?.errorCode||error?.message}));
+          return {...result,execution:{cancelled:cancelled?.cancelled===true,reason:cancelled?.reason??null,owner:'S2'}};
+        }
+        return result;
+      }
       catch(error) {
         if(!godotWrites[definition.name]||error?.errorCode)throw error;
         // A transport failure cannot establish whether the commit happened.
