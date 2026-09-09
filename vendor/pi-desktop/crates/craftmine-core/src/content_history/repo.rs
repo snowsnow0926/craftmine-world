@@ -394,7 +394,7 @@ impl RepositoryStore {
             }
             let mut input = String::new();
             for path in &paths {
-                input.push_str(&path.to_string_lossy());
+                input.push_str(&crate::content_history::git::GitAdapter::plain_path(&path).to_string_lossy());
                 input.push('\n');
             }
             let output = self.git.repo_stdin(
@@ -428,6 +428,24 @@ impl RepositoryStore {
         validate_identifier(branch_id, "INVALID_BRANCH_ID")?;
         self.git
             .ref_value(&layout.git_dir, &format!("refs/heads/{branch_id}"))
+    }
+
+    /// Tree object of a commit, used to branch from existing content without
+    /// rewriting it.
+    pub fn commit_tree_oid(&self, layout: &RepoLayout, oid: &str) -> Result<String> {
+        validate_oid(oid)?;
+        let output = self.git.repo(
+            &layout.git_dir,
+            &["rev-parse", &format!("{oid}^{{tree}}")],
+        )?;
+        ensure!(
+            output.ok(),
+            "GIT_REV_PARSE_FAILED: {}",
+            output.stderr.trim()
+        );
+        let tree = output.trimmed()?;
+        validate_oid(&tree)?;
+        Ok(tree)
     }
 
     pub fn branches(&self, layout: &RepoLayout) -> Result<Vec<RefEntry>> {
@@ -1084,3 +1102,4 @@ pub fn group_by_request(records: &[CommitRecord]) -> BTreeMap<String, Vec<&Commi
     }
     groups
 }
+

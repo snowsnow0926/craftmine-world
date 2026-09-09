@@ -431,8 +431,7 @@ fn hex(bytes: &[u8]) -> String {
         .collect()
 }
 
-pub(super) fn asset_manifest(db: &Connection, world: &str) -> Result<(String, Vec<AssetRow>)> {
-    let mut statement = db.prepare(
+pub(super) fn asset_manifest(db: &Connection, world: &str) -> Result<(String, Vec<AssetRow>)> {    let mut statement = db.prepare(
         "SELECT sha256,name,path,media_type,bytes FROM craftmine_godot_assets WHERE world_id=?1 ORDER BY path",
     )?;
     let rows = statement
@@ -449,6 +448,41 @@ pub(super) fn asset_manifest(db: &Connection, world: &str) -> Result<(String, Ve
     let body = serde_json::to_string(&rows)?;
     ensure!(body.len() <= BUILD_MANIFEST_LIMIT, "GODOT_BUILD_TOO_LARGE");
     Ok((digest(&body), rows))
+}
+
+/// Canonical shared asset lock for a world's current assets.
+///
+/// The asset id is the content hash, so identical bytes installed at two paths
+/// become one pinned reference with two install locations, and no entry can
+/// reference `latest`. `None` means the world has no assets, which is a valid
+/// source-only state rather than an empty lock file.
+pub(super) fn asset_lock(
+    assets: &[AssetRow],
+) -> Result<Option<super::content_history::contract::AssetLock>> {
+    use super::content_history::contract::{AssetLock, AssetLockEntry, AssetRef, FileRef};
+    if assets.is_empty() {
+        return Ok(None);
+    }
+    let mut entries = Vec::with_capacity(assets.len());
+    for asset in assets {
+        entries.push(AssetLockEntry {
+            asset: AssetRef {
+                asset_id: asset.sha256.clone(),
+                version: "1".into(),
+                content_hash: asset.sha256.clone(),
+            },
+            install_path: asset.path.clone(),
+            files: vec![FileRef {
+                path: asset.path.clone(),
+                sha256: asset.sha256.clone(),
+                bytes: asset.bytes,
+                media_type: asset.media_type.clone(),
+            }],
+            dependencies: Vec::new(),
+            overrides: Vec::new(),
+        });
+    }
+    Ok(Some(AssetLock::new(entries)?))
 }
 
 fn scope(

@@ -230,6 +230,17 @@ pub struct GitAdapter {
     timeout: Duration,
 }
 
+impl Clone for GitAdapter {
+    fn clone(&self) -> Self {
+        Self {
+            info: self.info.clone(),
+            config_dir: self.config_dir.clone(),
+            identity: self.identity.clone(),
+            timeout: self.timeout,
+        }
+    }
+}
+
 impl GitAdapter {
     /// Locate and pin the Git program.
     ///
@@ -368,6 +379,25 @@ impl GitAdapter {
         self.config_dir.join("empty-hooks")
     }
 
+    /// Git parses paths itself and does not understand the Windows verbatim
+    /// (`\\?\`) prefix that `std::fs::canonicalize` returns. Strip it before any
+    /// path is handed to the child process, or Git fails to read the managed
+    /// configuration and reports a generic error.
+    pub fn plain_path(path: &Path) -> PathBuf {
+        Self::plain(path)
+    }
+
+    fn plain(path: &Path) -> PathBuf {
+        let text = path.to_string_lossy();
+        if let Some(rest) = text.strip_prefix(r"\\?\UNC\") {
+            return PathBuf::from(format!(r"\\{rest}"));
+        }
+        if let Some(rest) = text.strip_prefix(r"\\?\") {
+            return PathBuf::from(rest);
+        }
+        path.to_path_buf()
+    }
+
     fn home_dir(&self) -> PathBuf {
         self.config_dir.join("home")
     }
@@ -382,7 +412,7 @@ impl GitAdapter {
     /// Configuration overrides applied to every invocation. They take
     /// precedence over any repository or system configuration.
     fn overrides(&self) -> Vec<String> {
-        let hooks = self.hooks_dir().to_string_lossy().into_owned();
+        let hooks = Self::plain(&self.hooks_dir()).to_string_lossy().into_owned();
         [
             ("core.hooksPath", hooks.as_str()),
             ("core.fsmonitor", "false"),
@@ -423,25 +453,25 @@ impl GitAdapter {
         let mut command = Command::new(&self.info.path);
         command.args(self.overrides());
         command.args(args);
-        command.current_dir(self.work_dir());
+        command.current_dir(Self::plain(&self.work_dir()));
         command
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .env("GIT_CONFIG_NOSYSTEM", "1")
-            .env("GIT_CONFIG_GLOBAL", self.config_dir.join("gitconfig"))
+            .env("GIT_CONFIG_GLOBAL", Self::plain(&self.config_dir.join("gitconfig")))
             .env("GIT_TERMINAL_PROMPT", "0")
-            .env("GIT_ASKPASS", self.config_dir.join(if cfg!(windows) {
+            .env("GIT_ASKPASS", Self::plain(&self.config_dir.join(if cfg!(windows) {
                 "deny-askpass.cmd"
             } else {
                 "deny-askpass.sh"
-            }))
+            })))
             .env("GIT_PAGER", "cat")
             .env("GCM_INTERACTIVE", "never")
             .env("GIT_OPTIONAL_LOCKS", "0")
-            .env("HOME", self.home_dir())
-            .env("XDG_CONFIG_HOME", self.home_dir().join(".config"))
-            .env("USERPROFILE", self.home_dir());
+            .env("HOME", Self::plain(&self.home_dir()))
+            .env("XDG_CONFIG_HOME", Self::plain(&self.home_dir().join(".config")))
+            .env("USERPROFILE", Self::plain(&self.home_dir()));
         for (key, value) in envs {
             command.env(key, value);
         }
@@ -470,7 +500,10 @@ impl GitAdapter {
         envs: &[(String, String)],
         stdin: &[u8],
     ) -> Result<GitOutput> {
-        let mut full = vec![format!("--git-dir={}", git_dir.to_string_lossy())];
+        let mut full = vec![format!(
+            "--git-dir={}",
+            Self::plain(git_dir).to_string_lossy()
+        )];
         full.extend(args.iter().map(|arg| arg.to_string()));
         self.execute(&full, envs, Some(stdin))
     }
@@ -572,7 +605,7 @@ impl GitAdapter {
         if let Some(parent) = git_dir.parent() {
             std::fs::create_dir_all(parent)?;
         }
-        let path = git_dir.to_string_lossy().into_owned();
+        let path = Self::plain(git_dir).to_string_lossy().into_owned();
         self.raw(&[
             "init",
             "--bare",
@@ -640,7 +673,7 @@ impl GitAdapter {
         }
         let env = vec![(
             "GIT_INDEX_FILE".to_string(),
-            index.to_string_lossy().into_owned(),
+            Self::plain(&index).to_string_lossy().into_owned(),
         )];
         let result = (|| -> Result<String> {
             let args = vec!["update-index", "--add", "-z", "--index-info"];
