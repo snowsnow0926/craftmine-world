@@ -337,6 +337,9 @@ fn plan(
         ("SELECT build_id FROM craftmine_godot_candidates WHERE world_id=?1", "CANDIDATE"),
         ("SELECT build_id FROM craftmine_godot_applications WHERE world_id=?1", "APPLICATION"),
         ("SELECT build_id FROM craftmine_godot_jobs WHERE world_id=?1 AND status NOT IN ('failed','cancelled','interrupted')", "ACTIVE_OR_PASSED_JOB"),
+        // A copied world shares the source build id, so the build must survive
+        // as long as either side references it.
+        ("SELECT source_build_id FROM craftmine_godot_world_copies WHERE source_world_id=?1 OR target_world_id=?1", "WORLD_COPY"),
     ] {
         for id in db
             .prepare(sql)?

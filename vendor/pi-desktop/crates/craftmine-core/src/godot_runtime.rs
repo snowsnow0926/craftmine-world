@@ -138,9 +138,22 @@ impl TaskJournal {
         validate_binding(&current.world, Some(&args.world_id))?;
         let build = current.world.build["id"].as_str().context("INVALID_GODOT_BUILD")?;
         godot_builds::valid_build_id(build)?;
+        // A copied world shares its source's immutable build copy, so the owning
+        // store and the launch evidence come from the source world. The copy is
+        // still reported under its own world id.
+        let copy: Option<String> = self
+            .db
+            .query_row(
+                "SELECT source_world_id FROM craftmine_godot_world_copies
+                 WHERE target_world_id=?1 AND source_build_id=?2",
+                params![args.world_id, build],
+                |row| row.get(0),
+            )
+            .optional()?;
+        let owner = copy.clone().unwrap_or_else(|| args.world_id.clone());
         let (base_id, engine, renderer, target): (String, String, String, String) = self.db.query_row(
             "SELECT base_id,engine_version,renderer,target FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
-            params![args.world_id, build], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?))
+            params![owner, build], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?))
         ).context("GODOT_BUILD_NOT_FOUND")?;
         ensure!(current.world.snapshot["baseId"] == base_id
             && current.world.build["godot"]["engineVersion"] == engine
@@ -150,27 +163,28 @@ impl TaskJournal {
         let applied: Option<(String, String, String, String)> = self.db.query_row(
             "SELECT a.input,a.input_hash,a.output,a.output_hash FROM craftmine_godot_applications a
              WHERE a.world_id=?1 AND a.build_id=?2 AND a.status='applied' ORDER BY a.updated_at DESC LIMIT 1",
-            params![args.world_id, build], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?))
+            params![owner, build], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?))
         ).optional()?;
         let (input, input_hash, output, output_hash) = applied.context("GODOT_BUILD_NOT_APPLIED")?;
         ensure!(digest(&input) == input_hash && digest(&output) == output_hash, "CORRUPT_GODOT_APPLICATION");
         let input: Value = serde_json::from_str(&input)?;
         let output: Value = serde_json::from_str(&output)?;
-        ensure!(input["worldId"] == args.world_id && input["buildId"] == build
+        ensure!(input["worldId"] == owner && input["buildId"] == build
             && output["inputHash"] == input_hash && output["launch"]["passed"] == true
             && output["launch"]["buildId"] == build, "CORRUPT_GODOT_APPLICATION");
         let candidate = godot_jobs::read_candidate(&self.db, input["candidateId"].as_str().context("CORRUPT_GODOT_APPLICATION")?)?;
         let job = godot_jobs::read_job(&self.db, input["checkJobId"].as_str().context("CORRUPT_GODOT_APPLICATION")?)?;
-        ensure!(candidate["worldId"] == args.world_id && candidate["buildId"] == build
+        ensure!(candidate["worldId"] == owner && candidate["buildId"] == build
             && candidate["status"] == "applied" && candidate["checkJobId"] == input["checkJobId"]
             && candidate["checkOutputHash"] == input["checkOutputHash"]
             && job["status"] == "passed" && job["outputHash"] == input["checkOutputHash"], "GODOT_BUILD_NOT_APPLIED");
         // Source head may have advanced since application. Formal builds remain
         // runnable independently of a newer draft; only their own artifacts count.
-        let mut descriptor = self.runtime_artifacts(&args.world_id, build, &job)?;
+        let mut descriptor = self.runtime_artifacts(&owner, build, &job)?;
         descriptor.as_object_mut().unwrap().extend(json!({"format":"craftmine.godot-runtime-descriptor/1","phase":"formal","worldId":args.world_id,
             "buildId":build,"baseId":base_id,"revision":current.summary.revision,"contentHash":current.content_hash,
-            "snapshot":current.world.snapshot,"build":current.world.build}).as_object().unwrap().clone());
+            "snapshot":current.world.snapshot,"build":current.world.build,
+            "copiedFromWorldId":copy}).as_object().unwrap().clone());
         Ok(descriptor)
     }
 

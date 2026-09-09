@@ -226,6 +226,26 @@ fn copying_a_formal_world_keeps_identity_separate_and_can_start_from_initial_sta
             "progress":"initial","snapshot":progress("g9")})),
         "GODOT_PROGRESS_BASE_MISMATCH",
     );
+    // A formal copy shares the immutable build, carries the target identity in
+    // its progress, and stays runnable through the source's launch evidence.
+    let formal = journal.godot_world_copy(&json!({"sourceWorldId":"g1","targetWorldId":"g6",
+        "title":"Formal Copy","progress":"formal"}))?;
+    assert_eq!(formal["progressMode"], "formal");
+    let inherited = journal.world_read("g6")?.world.snapshot;
+    assert_eq!(inherited["worldId"], "g6");
+    assert_eq!(inherited["body"]["worldId"], "g6");
+    assert_eq!(inherited["body"]["inventory"], json!({"ore":9}));
+    let descriptor = journal.godot_runtime_describe(&json!({"worldId":"g6"}))?;
+    assert_eq!(descriptor["phase"], "formal");
+    assert_eq!(descriptor["copiedFromWorldId"], "g1");
+    assert_eq!(descriptor["buildId"], build);
+    // The shared build is never reclaimed while either world references it.
+    let plan = journal.godot_storage_reclaim_plan(&json!({"worldId":"g1"}))?;
+    assert!(plan["protected"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|item| item["reason"] == "WORLD_COPY"));
     Ok(())
 }
 

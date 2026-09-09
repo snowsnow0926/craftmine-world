@@ -84,10 +84,14 @@ keeps its record and reason and can be retried with a new execution.
 `godotWorld.copy {sourceWorldId,targetWorldId,title,progress,snapshot?}` copies a
 formal Godot world into a new identity. The applied build is shared because its
 artifacts are immutable; the project head, source blobs and asset bodies are
-copied; `progress: formal` inherits play progress and `progress: initial` starts
-from the supplied initial state, so a copied example does not inherit rewards.
-Extensions are not copied. The origin is recorded in
-`craftmine_godot_world_copies`.
+copied; `progress: formal` inherits play progress (rewritten to the target world
+identity in the envelope and body) and `progress: initial` starts from the
+supplied initial state, so a copied example does not inherit rewards. Extensions
+are not copied. The origin is recorded in `craftmine_godot_world_copies`, which
+also keeps the shared build from being reclaimed while either world uses it.
+`godotRuntime.describe` resolves the shared build and the source's applied launch
+evidence for the copy and reports `copiedFromWorldId`, so a copy is runnable
+without forging an application.
 
 `godotWorld.backupSnapshot {worldId}` returns a self-contained descriptor of the
 world document, project manifest, asset rows, build file list, applied

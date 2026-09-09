@@ -337,7 +337,16 @@ impl TaskJournal {
             .optional()?;
         ensure!(applied.is_some(), "GODOT_BUILD_NOT_APPLIED");
         let snapshot = match args.progress.as_str() {
-            "formal" => source.world.snapshot.clone(),
+            // A copy gets a new identity, so the inherited progress must carry
+            // the target world id in both the envelope and the body.
+            "formal" => {
+                let mut snapshot = source.world.snapshot.clone();
+                snapshot["worldId"] = json!(args.target_world_id);
+                if snapshot["body"].is_object() && snapshot["body"].get("worldId").is_some() {
+                    snapshot["body"]["worldId"] = json!(args.target_world_id);
+                }
+                snapshot
+            }
             _ => args.snapshot.clone().context("GODOT_PROGRESS_REQUIRED")?,
         };
         ensure!(
