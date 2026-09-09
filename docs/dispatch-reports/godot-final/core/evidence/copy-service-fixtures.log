@@ -1,0 +1,11 @@
+{
+  "kind": "pure-copy-service-fixtures-not-runtime",
+  "checks": [
+    "ready: durable-origin retry preserves one target",
+    "lost-response: durable-origin retry preserves one target",
+    "independent rebuild failure retries same persisted copy after service restart",
+    "failed durability cannot create or select a copy",
+    "foreign durable origin and caller-supplied snapshot rejected"
+  ],
+  "out": "D:\\cm-godot-final-core-20260910\\test-results\\copy-service-zoO9C6"
+}
