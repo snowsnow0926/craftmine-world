@@ -405,6 +405,46 @@ async function main() {
   record('asset.recordCheck', check.status === 'passed' ? 'pass' : 'fail');
   const checked = await rpc('asset.read', { assetId: 'door-texture', version: 1 });
   record('baseChecked is separate', checked.state?.baseChecked?.status === 'passed' && checked.state?.appliedToSource?.worldId === 'w1' ? 'pass' : 'fail');
+
+  // Reclaim: the executor publishes a plan and only accepts an approved,
+  // re-verified entry; a used version and a stale plan are both refused.
+  const reclaimPlan = await rpc('asset.reclaimPlan', {});
+  record(
+    'asset.reclaimPlan publishes a usage-aware plan',
+    reclaimPlan?.format === 'craftmine.asset-reclaim-plan/1' &&
+      Array.isArray(reclaimPlan?.candidates) &&
+      reclaimPlan?.requiresApprovalFrom === 'S1 total recycler (pins from S4)'
+      ? 'pass'
+      : 'fail',
+    `candidates=${reclaimPlan?.candidateCount} protected=${reclaimPlan?.protectedVersions}`,
+  );
+  let staleRejected = false;
+  try {
+    await rpc('asset.reclaimCommit', {
+      operationId: `${operationId}-reclaim-stale`,
+      planId: 'arc-stale',
+      planHash: 'f'.repeat(64),
+      approvals: [],
+    });
+  } catch (error) {
+    staleRejected = String(error?.message ?? error?.code ?? '').includes('ASSET_RECLAIM_PLAN_STALE');
+  }
+  record('a stale reclaim plan is refused', staleRejected ? 'pass' : 'fail');
+  let protectedRejected = false;
+  try {
+    await rpc('asset.reclaimCommit', {
+      operationId: `${operationId}-reclaim-protected`,
+      planId: reclaimPlan.planId,
+      planHash: reclaimPlan.planHash,
+      approvals: [{ assetId: 'door-texture', version: 1, sha256: [body.sha256] }],
+    });
+  } catch (error) {
+    const text = String(error?.message ?? error?.code ?? '');
+    protectedRejected = text.includes('ASSET_RECLAIM_NOT_APPROVED') || text.includes('ASSET_RECLAIM_PROTECTED');
+  }
+  record('a version with a usage relation cannot be reclaimed', protectedRejected ? 'pass' : 'fail');
+  const stillThere = await rpc('asset.read', { assetId: 'door-texture', version: 1 });
+  record('the refused reclaim left the asset intact', stillThere.version_?.contentHash === imported.contentHash ? 'pass' : 'fail');
 }
 
 let exitCode = 0;

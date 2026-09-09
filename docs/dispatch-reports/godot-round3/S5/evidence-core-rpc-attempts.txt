@@ -33,5 +33,9 @@
 [pass] the resumed claim closes the attempt
 [pass] asset.recordCheck
 [pass] baseChecked is separate
+[pass] asset.reclaimPlan publishes a usage-aware plan -> candidates=0 protected=1
+[pass] a stale reclaim plan is refused
+[pass] a version with a usage relation cannot be reclaimed
+[pass] the refused reclaim left the asset intact
 
-SUMMARY: 35 passed, 0 failed, 35 checks
+SUMMARY: 39 passed, 0 failed, 39 checks
