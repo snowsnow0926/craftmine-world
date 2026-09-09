@@ -1,0 +1,18 @@
+{
+  "root": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-save-fault-wxhtGl",
+  "passed": true,
+  "checks": [
+    {
+      "fault": "invalid-primary",
+      "passed": true
+    },
+    {
+      "fault": "invalid-both",
+      "passed": true
+    },
+    {
+      "fault": "write-failed",
+      "passed": true
+    }
+  ]
+}
