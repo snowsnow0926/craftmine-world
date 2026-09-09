@@ -1,6 +1,7 @@
 // Trusted product glue. Authored gameplay never runs in this Node process.
 const {CoreClient} = require('./core-client.cjs');
 const {createPortableRestoreService} = require('./portable-restore-service.cjs');
+const {createPackageTurnLifecycle,createPackageInstallBinding} = require('./package-turn-lifecycle.cjs');
 const {randomUUID} = require('node:crypto');
 const {createWorldTools} = require('./world-tools.cjs');
 const {createVerificationJobs} = require('./verification-jobs.cjs');
@@ -47,20 +48,13 @@ async function onLoad() {
       ?pi.craftmine.cancelAssetPreview(input)
       :Promise.reject(Error('ASSET_PREVIEW_HOST_UNAVAILABLE'))});
   // S3 works/package service: domain validation over the core's package routes.
+  const packageTurns=createPackageTurnLifecycle({call});
   const installSource=createManagedPackageInstaller({call,
+    turns:packageTurns,
     stagingRoot:require('node:path').join(await pi.plugin.getDataPath(),'package-source-installs'),
     enqueue:(job,context)=>godotExecutor.enqueue(job,context),
-    bind:async(worldId,operationId)=>{
-      if((await pi.plugin.getSettings()).activeWorldId!==worldId)throw Error('GODOT_WORLD_CHANGED');
-      const worldRecord=await call('world.read',{id:worldId});
-      if(worldRecord.runtimeKind!=='godot')throw Error('GODOT_WORLD_REQUIRED');
-      const context={projectId:'craftmine-package-install',sessionId:'package-'+worldId,turnId:operationId};
-      await call('turn.begin',{context,selectedWorld:worldId,request:{id:operationId,text:'Install this selected package into the world draft, then check it.'}});
-      let status=await call('content.status',{worldId});
-      if(status.backend!=='git'){await call('content.migrate.apply',{worldId});status=await call('content.status',{worldId});}
-      return {context,worldRecord,operation:{operationId,worldId,repoId:status.repoId,branchId:'main',
-        expectedHeadOid:status.headOid,expectedAppliedOid:status.appliedOid,expectedProgressRevision:worldRecord.revision}};
-    }});
+    bind:createPackageInstallBinding({call,begin:params=>hostRequests('turn.begin',params),
+      selected:async()=>(await pi.plugin.getSettings()).activeWorldId,finish:packageTurns.finish})});
   const packageSource=createManagedPackageSourceService({call,bind:async worldId=>{
     if((await pi.plugin.getSettings()).activeWorldId!==worldId)throw Error('GODOT_WORLD_CHANGED');
     const worldRecord=await call('world.read',{id:worldId});
@@ -76,9 +70,10 @@ async function onLoad() {
   // broker preflight, so the reported capability always comes from live state.
   const toolchain=typeof pi.craftmine?.getGodotToolchain==='function'?await pi.craftmine.getGodotToolchain():null;
   godotExecutor=createGodotExecutor(core,{dataPath:await pi.plugin.getDataPath(),verifier:pi.craftmine,logger:console,toolchain});
-  const portableRestore=createPortableRestoreService({core,rootDirectory:await pi.plugin.getDataPath()});
+  const restoreService=createPortableRestoreService({core,rootDirectory:await pi.plugin.getDataPath()});
+  const portableRestore={restore:async params=>{await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();}}};
   hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService,portableRestore});
-  pi.services.register({id:'world-core',start:()=>core.start(),stop:async()=>{await godotExecutor?.stop();await core.stop();}});
+  pi.services.register({id:'world-core',start:()=>{packageTurns.start();return core.start();},stop:async()=>{await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
   pi.services.register({id:'godot-executor',start:()=>godotExecutor.start(),stop:()=>godotExecutor.stop()});
   await pi.agent.registerTool({
     name: 'runtime_info',
