@@ -1,37 +1,38 @@
 {
   "format": "craftmine.development/1",
   "objective": "按 Godot 多底座计划循环开发：中央世界、右侧对话、真实工程创作、多底座、保存恢复、作品复用与 Windows 交付",
-  "currentMilestone": "Godot 第2轮：多线程Web实际中央预览33项、通信21项与原生逻辑13项通过；OS隔离初始化尚未通过，继续GD0/GD2",
-  "baseline": "e56ff66",
-  "updated": "2026-09-09T11:56:11Z",
+  "currentMilestone": "Godot 第3轮：Rust工程文件集和4个PI源码工具接线，69项Rust、6组工具、17项上下文、2项审查夹具通过；受限子进程仍0xC0000142，继续GD0/GD2",
+  "baseline": "4d787a2",
+  "updated": "2026-09-09T12:34:48.248889+00:00",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "godot_goal_active_cycle02_merged_next_cycle_ready",
+    "status": "godot_goal_active_cycle03_validated_pending_merge",
     "reason": "用户明确要求将 GODOT_MULTIBASE_DEVELOPMENT_PLAN.md 设为 Goal 并开始循环开发。已创建 active Goal，没有 token 总预算；按阶段实现、验证、修复并记录。",
     "activeGoal": true,
     "recurringDevelopment": true,
     "executionMode": "goal",
     "previousLiveCompactionTestStopped": true,
     "automationId": null,
-    "worktree": null,
-    "branch": null,
+    "worktree": "D:\\Craftmine World\\test-results\\worktrees\\godot-cycle03",
+    "branch": "codex/godot-cycle-03-20260909",
     "godotCycle01Cleanup": "76c192a 已快进合并到本地 master；工作树登记和本轮分支已移除。Git 删除返回 Directory not empty，随后对已验证目标 D:/cw-gd-20260909-01 的 PowerShell 递归清理被自动审批以 blocked by policy 拒绝，未给出更具体原因。保留残留目录，不自动重试删除或复用；不阻断新轮次开发。",
-    "nextStep": "定位受限进程初始化与Godot导入隔离；推进GD2工程/构建/进度模型，随后接入真实PI/Rust工具与原生Electron预览。",
+    "nextStep": "定位AppContainer加载失败与普通账户执行边界；推进Godot构建作业、素材/备份/主机应用事务和原生Electron预览，再验真实模型创作。",
     "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。",
     "previousAutomationId": "craftmine-windows",
-    "currentWorktrees": "当前 Godot Goal 没有活动开发工作树；第2轮目录、登记和分支已清理。下一轮新建独立目录；历史工作树与之前被拒清理的目录均保持。",
+    "currentWorktrees": "本轮 root 与 core 两个独立工作树；core 已集成 root，等待主分支合并后清理。历史残留不操作。",
     "localMerge": {
       "implementationCommits": [
-        "15124da",
-        "0e282b5"
+        "7a926fb",
+        "94ae19c",
+        "68c8bb2",
+        "d9ce808"
       ],
       "branch": "master",
-      "status": "fast_forward_merged",
-      "verifiedClean": true,
+      "status": "pending_local_merge",
+      "verifiedClean": false,
       "pushed": false,
-      "evidenceHashesVerifiedAfterMerge": true,
-      "newDistributionBuilt": false,
-      "implementationCommit": "e8d903e"
+      "evidenceHashesVerifiedAfterMerge": false,
+      "newDistributionBuilt": false
     },
     "godotCycle02Cleanup": "e8d903e已快进合并，证据哈希逐项复核。本轮登记及分支已删除；Git留下依赖/仓库副本后，经精确范围审批，仅移除2504个链接条目而不跟随目标，再删除 D:/Craftmine World/test-results/worktrees/godot-cycle02。目录已不存在；未操作历史残留。"
   },
@@ -39,41 +40,72 @@
     "document": "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md",
     "developmentLog": "docs/GODOT_DEVELOPMENT_LOG.md",
     "status": "active",
-    "cycle": 2,
+    "cycle": 3,
     "currentStages": [
       "GD0",
-      "GD1"
+      "GD1",
+      "GD2"
     ],
     "implementationCommits": [
       "213bba7",
       "409e9ab",
       "15124da",
-      "0e282b5"
+      "0e282b5",
+      "7a926fb",
+      "94ae19c",
+      "68c8bb2",
+      "d9ce808"
     ],
-    "evidenceDirectory": "docs/evidence/godot-cycle-02",
+    "evidenceDirectory": "docs/evidence/godot-cycle-03",
     "godotVersion": "4.7.2.stable.official.ed1daf0bf",
     "checks": {
-      "webPreview": 33,
-      "godotHeadless": 13,
-      "transport": 21
+      "rustCorePassed": 69,
+      "rustCoreIgnored": 1,
+      "godotSourceCorePassed": 12,
+      "sourceTools": 6,
+      "agentContext": 17,
+      "legacyReviewFixture": 2
     },
     "actualModelCalls": 0,
     "newDistributionBuilt": false,
     "remaining": [
-      "GD0操作系统隔离、原生呈现接线/对照及完整性能测量",
+      "GD0普通账户OS执行隔离、原生呈现接线/对照和完整性能测量",
       "GD1按底座组织的世界列表与辅助入口",
-      "GD2真实工程工具、稳定世界来源和主机应用事务",
+      "GD2受管理构建、二进制素材、源码备份、累计历史存储配额、稳定世界来源、主机进度/应用事务和真实模型验收",
       "GD3至GD8适用实现与验收"
     ],
     "decisionDocument": "docs/GODOT_INTEGRATION_DECISION.md",
     "isolation": {
       "prototypeCompiled": true,
       "runtimePassed": false,
-      "attempts": 2,
+      "attempts": 7,
       "exitCode": "0xC0000142",
       "boundaryChecksExecuted": false,
       "godotExecuted": false,
-      "temporaryProfilesRemoved": true
+      "temporaryProfilesRemoved": true,
+      "cycle03Attempts": 5,
+      "noninteractiveStationOpened": true,
+      "privateDesktopCreated": true,
+      "existingStationOrDesktopAclModified": false,
+      "lastTrace": "docs/evidence/godot-cycle-03/failures/loader-diagnostic.log",
+      "causeProven": false
+    },
+    "previousCycleChecks": {
+      "cycle": 2,
+      "webPreview": 33,
+      "godotHeadless": 13,
+      "transport": 21
+    },
+    "sourceAuthoring": {
+      "available": true,
+      "storage": "existing tasks.sqlite + immutable per-world source blobs",
+      "agentTools": 4,
+      "status": "source-only",
+      "buildAvailable": false,
+      "receiptRecovery": "exact host-bound read after uncertain transport outcome; no mutation replay",
+      "binaryAssetsAvailable": false,
+      "backupsIncludeGodotSource": false,
+      "windowsJunctionRuntimeVerified": false
     }
   },
   "windowsClientPlan": {

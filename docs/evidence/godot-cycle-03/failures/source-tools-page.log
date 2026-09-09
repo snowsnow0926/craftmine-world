@@ -1,0 +1,33 @@
+evidence_directory=D:\Craftmine World\test-results\worktrees\godot-cycle03\test-results\godot-project-tools-fYR5cB
+✖ real source tools: world binding, Unicode reads, immutable revision and process restart (240.9161ms)
+✔ real source tools: exact retry receipt, stale edits and path failures preserve head (85.257ms)
+✔ broker rejects forged identity, ended turns and oversized content before mutation (61.2989ms)
+✔ tool catalogue exposes only source authoring for Godot (1.0752ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 976.6086
+
+✖ failing tests:
+
+test at tests\godot-project-tools.mjs:52:1
+✖ real source tools: world binding, Unicode reads, immutable revision and process restart (240.9161ms)
+  Error: INVALID_PROJECT_PAGE
+      at Interface.<anonymous> (D:\Craftmine World\test-results\worktrees\godot-cycle03\plugins\craftmine-world\core-client.cjs:29:50)
+      at Interface.emit (node:events:508:28)
+      at [_onLine] [as _onLine] (node:internal/readline/interface:465:12)
+      at [_normalWrite] [as _normalWrite] (node:internal/readline/interface:647:22)
+      at Socket.ondata (node:internal/readline/interface:263:23)
+      at Socket.emit (node:events:508:28)
+      at addChunk (node:internal/streams/readable:563:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+      at Readable.push (node:internal/streams/readable:394:5)
+      at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+    code: 'INVALID_PROJECT_PAGE',
+    errorCode: 'INVALID_PROJECT_PAGE',
+    retryable: false
+  }

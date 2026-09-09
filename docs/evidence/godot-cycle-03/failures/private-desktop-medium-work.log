@@ -1,0 +1,8 @@
+host_loopback_control=passed
+private_station_visible=false default_desktop_acl_modified=false
+work_integrity_rid=8192 label_modified=false
+appcontainer=true log=D:\Craftmine World\test-results\worktrees\godot-cycle03\desktop\godot\sandbox\out\craftmine.gd0.probe.149312.1788956055001\native-probe.log exit=3221225794
+
+private_desktop_cleanup restored=true desktop_closed=true station_closed=true
+profile_cleanup_hresult=0x0
+PROBE_ERROR: Native boundary probe failed; Godot was not started

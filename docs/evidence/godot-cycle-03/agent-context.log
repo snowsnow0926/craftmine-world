@@ -1,0 +1,16 @@
+$ vitest run "src/craftmine-context.test.ts"
+
+ RUN  v4.1.10 D:/Craftmine World/test-results/worktrees/godot-cycle03/vendor/pi-desktop/packages/agent-runtime
+
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=1 streamMs=1 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=3 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=1 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=0 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=new-turn providerWaitMs=2 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=new-turn providerWaitMs=2 outcome=error errorCode=CONTEXT_COMPACTION_FAILED
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  20:33:00
+   Duration  943ms (transform 334ms, setup 0ms, import 716ms, tests 58ms, environment 0ms)
+

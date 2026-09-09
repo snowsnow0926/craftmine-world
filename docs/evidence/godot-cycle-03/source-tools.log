@@ -1,0 +1,15 @@
+evidence_directory=D:\Craftmine World\test-results\worktrees\godot-cycle03\test-results\godot-project-tools-3695nD
+✔ real source tools: world binding, Unicode reads, immutable revision and process restart (403.3339ms)
+✔ real source tools: exact retry receipt, stale edits and path failures preserve head (83.339ms)
+✔ broker rejects forged identity, ended turns and oversized content before mutation (59.0763ms)
+✔ tool catalogue exposes only source authoring for Godot (0.9688ms)
+✔ lost mutation response recovers its real receipt after turn completion without another write (79.8973ms)
+✔ a missing receipt preserves the original uncertain error and does not replay creation (62.2729ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 859.9814

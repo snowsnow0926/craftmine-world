@@ -69,3 +69,16 @@ FileAccess 写入成功与浏览器持久化完成是两个时点。当前证据
 4. 开始 GD3 的真实模型准星/持枪/装备需求；随后推进俯视、横版、玩法分支、作品复用与高阶能力。GD1 未完成的世界导航与辅助入口仍保留在原计划中。
 
 Godot 及第三方声明已经随固定 Web 导出复制。发行阶段还需单独完成原有 PI LGPL、素材来源、独立作品导出与 Windows 安装升级验收；本轮没有生成或发布新的发行包。
+
+
+## 第 3 轮补充：源码接线与实际隔离结果
+
+Rust 已增加绑定世界的 Godot 工程文件集、不可变清单版本、分页源码读取和原子补丁；PI 插件新增四个源码工具。工程保存在现有领域数据库和按哈希索引的独立源码文件中，不把源码塞进旧世界的 2 MB JSON。旧世界的正式内容、候选和玩家进度继续由原事务管理；当前 Godot 工程状态明确为 source-only、未验证、未应用。
+
+同一份新 Rust 二进制通过 69 项回归（其中 12 项 Godot 源码测试），Windows junction 验收因夹具创建失败明确未验收。六组实际插件源码/Rust 进程联测通过，包括切换界面世界后保持原绑定、Unicode 分页、历史版本、幂等、冲突和完整进程重启后的显式恢复。模型上下文同步说明：旧 verification_submit 不会构建 Godot。详情见[本轮记录](GODOT_DEVELOPMENT_LOG.md)和[证据](evidence/godot-cycle-03/validation.json)。本轮产品模型调用为 0。
+
+隔离探针已能在标准用户下打开不可见的会话窗口站并创建任务私有桌面；不修改原窗口站或默认桌面的 ACL。工作目录只读确认 Medium 完整性，实际 AppContainer 子进程仍在 main 前以 0xC0000142 退出。对新子进程记录的有界加载事件只看到映像、ntdll、kernel32、KernelBase 和退出，不能将最后一个 DLL 等同于故障来源。全部临时 profile 已删除。代码中的文件/网络/子进程/UI 拒绝断言尚未执行，Godot 导入/导出仍不可开放给任意模型工程。
+
+目录必须降低到 Low 的早期推断已更正：微软明确允许获得 package SID 授权的 AppContainer 访问 Medium 或更低完整性的资源；仍须通过真实写入正例和拒绝反例确认。[Microsoft AppContainer 说明](https://learn.microsoft.com/en-us/windows/win32/secauthz/implementing-an-appcontainer)
+
+后续先厘清当前启动环境和 0xC0000142 的实际来源，或验证适用普通账户的另一个执行方案；再连接工程构建作业、原生 Electron Web 世界视图、主机进度事务和真实模型创作。源码备份、二进制素材、累计历史空间配额/清理、掉电一致性仍需实现或验收。多底座交付与 GD3–GD8 不因源码接口通过而完成。

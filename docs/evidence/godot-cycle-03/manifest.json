@@ -1,0 +1,91 @@
+{
+  "format": "craftmine.evidence-manifest/1",
+  "cycle": 3,
+  "files": [
+    {
+      "path": "agent-context.log",
+      "bytes": 1217,
+      "sha256": "8a5b5c8947ab2955b6362e158aba647beac5172263ab60852687da53b45ebdc4"
+    },
+    {
+      "path": "build-js.log",
+      "bytes": 19653,
+      "sha256": "be6131ef46e8ef73e6b9df06d17db39010340ba1daa489bbfdcf3b9eb68f2d06"
+    },
+    {
+      "path": "failures/loader-diagnostic.log",
+      "bytes": 877,
+      "sha256": "285ea4970c8546082c1ce581faaf826d5c0efd9b0cad1d9729a741a8c55fc76b"
+    },
+    {
+      "path": "failures/private-desktop-attempt.log",
+      "bytes": 205,
+      "sha256": "305c7c19668fec900a7a19eb385baf6fde98543243d823d0de192a1c3e7126c0"
+    },
+    {
+      "path": "failures/private-desktop-medium-work.log",
+      "bytes": 497,
+      "sha256": "6b6734ee9afbb605e84b814c0ffa08ae5f79d79540258a549ac2bf90574b9454"
+    },
+    {
+      "path": "failures/private-desktop-session-station.log",
+      "bytes": 256,
+      "sha256": "d9949770e877c939f43352f3960510fc5a5312fca0c31bfa5e31149c6225b877"
+    },
+    {
+      "path": "failures/private-desktop-unnamed-attempt.log",
+      "bytes": 240,
+      "sha256": "dd07a2c8f64e89732c43e7ff030dffb9fc5c06dcb02920fc0e2d002eaff9e89a"
+    },
+    {
+      "path": "failures/README.md",
+      "bytes": 2397,
+      "sha256": "f5057519df80be505418d45eb1cc9739ba5bf381ce16ed2a5b7e498b7ca42cd8"
+    },
+    {
+      "path": "failures/source-tools-dependencies.log",
+      "bytes": 1418,
+      "sha256": "e824dff5566927de3974d4d6c7d10de60eb4000531ae36108625764271613fbc"
+    },
+    {
+      "path": "failures/source-tools-page.log",
+      "bytes": 1644,
+      "sha256": "d2408ac4a360b3dde2908c5c99ba899bff3465e1381ad85dce6828593d422c58"
+    },
+    {
+      "path": "failures/source-tools-recovery.log",
+      "bytes": 1663,
+      "sha256": "0d4e326d73abb6de466d0dfe9e00ff86938156908fbcf2258a2ce295c256fd45"
+    },
+    {
+      "path": "plugin-build.log",
+      "bytes": 87,
+      "sha256": "07f3cc4519f5bcff3bc87adb1faf40c577ef12110b713313cbb63d02c30499f1"
+    },
+    {
+      "path": "review-fixture.log",
+      "bytes": 340,
+      "sha256": "f269bb4306dc77455be9ce72fa723567bf2185f836a02632d598fb120b08cc1b"
+    },
+    {
+      "path": "rust-core-build.log",
+      "bytes": 212,
+      "sha256": "4ba5dc6b31654d1dfc9a27ce0d77d985f1fb35cc491c6fb65b4de40df72925fb"
+    },
+    {
+      "path": "rust-core.log",
+      "bytes": 7607,
+      "sha256": "70977164199d5666a87004971e47ec82bccb2127a9684389e4cfdbc919531cc8"
+    },
+    {
+      "path": "source-tools.log",
+      "bytes": 826,
+      "sha256": "26292d867ff99ab4b4f360b18ca78a5c47505324cee4f566070753bd7a12f997"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 2083,
+      "sha256": "da92773a0feb61d6fa8ab42c4b79420293bdfe281e6ddb3c4bd4bbed7c249b85"
+    }
+  ]
+}

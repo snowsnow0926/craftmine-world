@@ -1,0 +1,62 @@
+{
+  "format": "craftmine.godot-cycle-validation/1",
+  "cycle": 3,
+  "actualModelCalls": 0,
+  "sourceTools": {
+    "passed": 6,
+    "failed": 0,
+    "evidence": "source-tools.log",
+    "scope": "Actual plugin broker source bundled with domain code and actual newly compiled Rust stdio process; source-only projects; explicit host task.resume after process restart; broker fault injection after actual commit plus ended turn recovers only original receipt, before-commit failure stays unknown",
+    "defaultCoreTimeoutMs": 5000
+  },
+  "agentContext": {
+    "passed": 17,
+    "failed": 0,
+    "command": "pnpm --filter @pi-desktop/agent-runtime test -- src/craftmine-context.test.ts",
+    "toolOutputChunk": "e4a30e",
+    "scope": "Existing fixture model/ledger/context tests; not real model inference",
+    "evidence": "agent-context.log"
+  },
+  "buildJs": {
+    "passed": true,
+    "evidence": "build-js.log"
+  },
+  "pluginBuild": {
+    "passed": true,
+    "evidence": "plugin-build.log"
+  },
+  "sandbox": {
+    "compiled": true,
+    "nativeBoundaryPassed": false,
+    "godotExecuted": false,
+    "lastExit": "0xC0000142",
+    "latestTrace": "failures/loader-diagnostic.log",
+    "inputRequests": 0,
+    "existingStationOrDesktopAclModified": false,
+    "workDirectoryLabelModified": false,
+    "compiledToolChunk": "86b4f0",
+    "binarySha256": "7401367aedb247cc81c82f32a7b4aa036c8bd63184882897e37ff5115559b397"
+  },
+  "newDistributionBuilt": false,
+  "rustCore": {
+    "passed": 69,
+    "failed": 0,
+    "ignored": 1,
+    "godotSourcePassed": 12,
+    "evidence": "rust-core.log",
+    "binarySha256": "9a8b62a89de6b7975edecc5d8439affa71bf07979df6db17ba69f966d4dd4258",
+    "sourceCommit": "7a926fb30606b746e05a84f504df198b55fd2a83",
+    "unverified": "Windows junction fixture setup failed; no passing reparse runtime claim"
+  },
+  "reviewFixture": {
+    "passed": 2,
+    "failed": 0,
+    "evidence": "review-fixture.log"
+  },
+  "implementationCommits": [
+    "7a926fb",
+    "94ae19c",
+    "68c8bb2",
+    "d9ce808"
+  ]
+}

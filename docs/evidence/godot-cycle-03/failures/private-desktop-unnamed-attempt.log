@@ -1,0 +1,4 @@
+host_loopback_control=passed
+private_desktop_cleanup restored=true desktop_closed=true station_closed=true
+profile_cleanup_hresult=0x0
+PROBE_ERROR: Create private station: 当文件已存在时，无法创建该文件。 (os error 183)
