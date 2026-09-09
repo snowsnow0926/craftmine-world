@@ -210,7 +210,7 @@ export function planDraftInstall({
       // Scripts must carry their Godot UID so references survive moves.
       if (relative.endsWith('.gd')) {
         const uidKey = `${entry.asset.contentHash}\u0000${ref.path}.uid`;
-        if (!byHash.has(uidKey)) {
+        if (!byHash.has(uidKey) || !entry.files.some(f=>f.path===ref.path+'.uid')) {
           conflicts.push({code: 'DRAFT_MISSING_SCRIPT_UID', detail: relative});
           continue;
         }
@@ -220,7 +220,7 @@ export function planDraftInstall({
             conflicts.push({code: 'DRAFT_SCRIPT_CLASS_CONFLICT', detail: `${name} already exists in the world`});
             continue;
           }
-          if (newClasses.has(name)) {
+          if (newClasses.has(name) && newClasses.get(name)!==relative) {
             conflicts.push({code: 'DRAFT_SCRIPT_CLASS_CONFLICT', detail: `${name} declared twice in the package`});
             continue;
           }

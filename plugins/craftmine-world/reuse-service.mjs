@@ -15,9 +15,10 @@ const archive=value=>requireValue(isObject(value),'OBJECT_REQUIRED');
 const checkRef=ref=>{exactKeys(ref,['id','version','hash']);requireValue(text(ref.id,80)&&integer(ref.version,1,100000)&&isHash(ref.hash),'INVALID_REFERENCE');};
 const placement=position=>{exactKeys(position,['x','y','z']);requireValue(['x','y','z'].every(key=>Number.isFinite(position[key])&&Math.abs(position[key])<=80),'INVALID_PLACEMENT');};
 
-export function createReuseService({call}) {
+export function createReuseService({call,installSource}) {
   requireValue(typeof call==='function','DOMAIN_CALL_REQUIRED');
   return {
+    async installSource(args){requireValue(typeof installSource==='function','PACKAGE_INSTALL_HOST_UNAVAILABLE');return installSource(args);},
     async check(args){
       exactKeys(args,['ref','target']);checkRef(args.ref);exactKeys(args.target,['base','baseVersion','engine','stateFormat']);
       // target describes the reference environment, so invalid text is INVALID_REFERENCE.
@@ -143,4 +144,93 @@ export function migrationReport(receipt){
     {name:'preservedOnce',value:String(preserved.length)}];
   const warnings=preserved.length?[]:['升级后没有保留任何一次性奖励记录，请确认这是预期结果。'];
   return {rows,warnings};
+}
+
+/** Trusted product installer. A page supplies a package, never a context or OS root. */
+export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot}) {
+  requireValue(typeof call==='function'&&typeof bind==='function'&&typeof enqueue==='function','PACKAGE_INSTALL_HOST_REQUIRED');
+  const active=new Map();
+  return async function installSource(args){
+    exactKeys(args,['operationId','worldId','archiveBase64','scene']);operationId(args.operationId);identifier(args.worldId);
+    requireValue(typeof args.archiveBase64==='string'&&args.archiveBase64.length<=7*1024*1024&&/^[A-Za-z0-9+/]*={0,2}$/.test(args.archiveBase64),'PACKAGE_ARCHIVE_TOO_LARGE');
+    if(args.scene!==undefined)requireValue(text(args.scene,240),'INVALID_SCENE_PATH');
+    const fs=await import('node:fs/promises'),path=await import('node:path'),{createHash}=await import('node:crypto');
+    requireValue(path.isAbsolute(stagingRoot),'PACKAGE_STAGING_ROOT_REQUIRED');
+    const hash=value=>createHash('sha256').update(value).digest('hex');
+    const requestHash=hash(JSON.stringify(args)),key=hash(JSON.stringify([args.worldId,args.operationId]));
+    const previous=active.get(key);if(previous){requireValue(previous.requestHash===requestHash,'OPERATION_CONFLICT');return previous.promise;}
+    const entry={requestHash};active.set(key,entry);
+    entry.promise=(async()=>{
+      const {unpackStaticPackage}=await import('./package-zip.mjs');
+      const {planDraftInstall}=await import('../../desktop/godot/shared/draft_install.mjs');
+      const {planSceneInsertion,applySceneInsertion,parseScene}=await import('../../desktop/godot/shared/scene_materializer.mjs');
+      const directory=path.join(stagingRoot,key),intentFile=path.join(directory,'intent.json');
+      await fs.mkdir(directory,{recursive:true});
+      const save=async value=>{const file=intentFile+'.new';const fd=await fs.open(file,'w');try{await fd.writeFile(JSON.stringify(value));await fd.sync();}finally{await fd.close();}await fs.rename(file,intentFile);};
+      let intent;try{intent=JSON.parse(await fs.readFile(intentFile,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
+      if(intent)requireValue(intent.requestHash===requestHash,'OPERATION_CONFLICT');
+      if(!intent){
+        const bound=await bind(args.worldId,args.operationId);
+        requireValue(bound?.worldRecord?.id===args.worldId&&bound.operation?.worldId===args.worldId&&bound.operation?.operationId===args.operationId&&isObject(bound.context),'PACKAGE_BINDING_MISMATCH');
+        const context=bound.context,world=bound.worldRecord.world;
+        const archive=unpackStaticPackage(Buffer.from(args.archiveBase64,'base64'));
+        const projectDir=await fs.mkdtemp(path.join(directory,'source-'));
+        const safe=relative=>{requireValue(typeof relative==='string'&&!relative.includes('\\')&&!relative.includes(':')&&!relative.split('/').some(s=>!s||s==='.'||s==='..'),'PACKAGE_SOURCE_PATH_REFUSED');const full=path.resolve(projectDir,relative);requireValue(full.startsWith(projectDir+path.sep),'PACKAGE_SOURCE_PATH_REFUSED');return full;};
+        let offset=0,index,identity,sourceBytes=0;const originals=new Map(),sourceFiles=new Map();
+        do {
+          index=await call('godotProject.index',{context,worldId:args.worldId,offset,limit:32,...(identity?{revision:identity.revision,manifestHash:identity.manifestHash}:{})});
+          identity??=index;
+          requireValue(index.worldId===args.worldId&&index.revision===identity.revision&&index.manifestHash===identity.manifestHash,'PACKAGE_SOURCE_CHANGED');
+          for(const file of index.files){
+            let next=0;const chunks=[];
+            do {const part=await call('godotProject.read',{context,worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,path:file.path,offset:next,limit:16000});requireValue(part.sha256===file.sha256,'PACKAGE_SOURCE_CHANGED');chunks.push(part.encoding==='base64'?Buffer.from(part.bytesBase64,'base64'):Buffer.from(part.text,'utf8'));next=part.nextOffset;}while(next!==null&&next!==undefined);
+            const bytes=Buffer.concat(chunks);requireValue(bytes.length===file.bytes&&hash(bytes)===file.sha256,'PACKAGE_SOURCE_CORRUPT');sourceBytes+=bytes.length;requireValue(sourceBytes<=64*1024*1024,'PACKAGE_SOURCE_TOO_LARGE');
+            const target=safe(file.path);await fs.mkdir(path.dirname(target),{recursive:true});await fs.writeFile(target,bytes);originals.set(file.path,file.sha256);sourceFiles.set(file.path,bytes);
+          }
+          offset=index.nextOffset;
+        }while(offset!==null&&offset!==undefined);
+        const projectText=await fs.readFile(safe('project.godot'),'utf8');
+        const scene=args.scene??/run\/main_scene\s*=\s*"res:\/\/([^"]+)"/.exec(projectText)?.[1];
+        const inventory={inputActions:[],autoloads:[],globalClasses:[],uids:[],paths:[...originals.keys()],entityIds:[]};
+        for(const [name,bytes]of sourceFiles){
+          if(name.endsWith('.gd')){const match=/^\s*class_name\s+([A-Za-z_][A-Za-z0-9_]*)/m.exec(bytes.toString('utf8'));if(match)inventory.globalClasses.push(match[1]);}
+          if(name.endsWith('.uid'))inventory.uids.push(bytes.toString('utf8').trim());
+          if(name.endsWith('.tscn'))for(const node of parseScene(bytes.toString('utf8')).nodes)for(const [key,value]of Object.entries(node.properties))if(key.endsWith('_id'))inventory.entityIds.push(value.replace(/^&?"|"$/g,''));
+        }
+        for(const [section,key]of [['input','inputActions'],['autoload','autoloads']]){
+          const lines=projectText.split(/\r?\n/);let inside=false;
+          for(const line of lines){if(line.startsWith('[')){inside=line==='['+section+']';continue;}if(inside){const match=/^([A-Za-z_][A-Za-z0-9_]*)\s*=/.exec(line);if(match)inventory[key].push(match[1]);}}
+        }
+        const target={worldId:args.worldId,base:identity.baseId,baseVersion:world.snapshot?.baseVersion??'1.0.0',engine:identity.engineVersion,stateFormat:world.snapshot?.format??'craftmine.godot-progress/1',inventory};
+        const plan=await call('package.planInstall',{operationId:args.operationId,resources:archive.resources.map(r=>r.manifest),target,options:{allowInputActionRemap:false}});
+        requireValue(plan.ok===true,'PACKAGE_PLAN_CONFLICT');
+        const payload=[],sceneEdits=[],inputActions=[],scenes=new Map();
+        for(const resource of archive.resources){
+          for(const [file,bytes]of resource.files)payload.push({contentHash:resource.contentHash,path:file,bytes});
+          const spec=resource.manifest.content.entry?.sceneInstall;
+          if(!spec){requireValue(!['object','scene','module'].includes(resource.manifest.content.kind),'PACKAGE_INSTALL_DECLARATION_REQUIRED');continue;}
+          requireValue(scene,'PACKAGE_TARGET_SCENE_REQUIRED');safe(scene);
+          const instance=plan.instances.find(i=>i.assetId===resource.manifest.content.assetId&&i.version===resource.manifest.content.version);
+          requireValue(instance,'PACKAGE_INSTANCE_REQUIRED');
+          const ids=Object.values(instance.entityMap);requireValue(ids.length===1,'PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED');
+          const current=scenes.get(scene)??await fs.readFile(safe(scene),'utf8');
+          const linked={...spec,parent:spec.parent??'.',script:spec.script?instance.installPath+'/'+spec.script:undefined,sceneFile:spec.sceneFile?instance.installPath+'/'+spec.sceneFile:undefined};
+          const edit=planSceneInsertion({sceneText:current,scenePath:scene,spec:linked,entityId:ids[0]});requireValue(edit.ok,'PACKAGE_SCENE_MATERIALIZATION_FAILED');
+          sceneEdits.push(edit.edit);scenes.set(scene,applySceneInsertion(current,edit.edit));inputActions.push(...(spec.inputActions??[]));
+        }
+        const draft=planDraftInstall({plan,payload,projectDir,sceneEdits,inputActions});requireValue(draft.ok,'PACKAGE_DRAFT_CONFLICT');
+        const files=draft.files.filter(f=>originals.get(f.path)!==f.sha256).map(f=>({path:f.path,bytesBase64:f.bytes.toString('base64'),expectedHash:originals.get(f.path)??null}));
+        requireValue(files.length>0,'PACKAGE_NO_CHANGES');
+        const toolCallId='package-'+key.slice(0,40);
+        const applyRequest={context,worldId:args.worldId,toolCallId,revision:identity.revision,manifestHash:identity.manifestHash,operation:bound.operation,files};
+        requireValue(Buffer.byteLength(JSON.stringify(applyRequest))<=8*1024*1024,'PACKAGE_INSTALL_REQUEST_TOO_LARGE');
+        intent={requestHash,applyRequest,toolCallId,context,worldId:args.worldId,archiveSha256:archive.archiveSha256,instanceIds:plan.instances.map(i=>i.instanceId)};await save(intent);
+      }
+      if(!intent.receipt){intent.receipt=await call('godotProject.applyFiles',intent.applyRequest);requireValue(Number.isSafeInteger(intent.receipt.revision)&&typeof intent.receipt.manifestHash==='string','PACKAGE_SOURCE_RECEIPT_REQUIRED');await save(intent);}
+      if(!intent.job||intent.job.status==='blocked'){intent.checkAttempt=(intent.checkAttempt??0)+1;requireValue(intent.checkAttempt<=32,'PACKAGE_CHECK_RETRY_LIMIT');intent.job=await call('godotBuild.start',{context:intent.context,worldId:intent.worldId,toolCallId:intent.toolCallId+'-check-'+intent.checkAttempt,revision:intent.receipt.revision,manifestHash:intent.receipt.manifestHash,mode:'check'});await save(intent);}
+      if(intent.job.status!=='blocked')await enqueue(intent.job,intent.context);
+      return {status:intent.job.status==='blocked'?'source-saved-check-blocked':'check-queued',applied:false,worldId:intent.worldId,archiveSha256:intent.archiveSha256,instanceIds:intent.instanceIds,source:intent.receipt,job:intent.job};
+    })().finally(()=>{if(active.get(key)===entry)active.delete(key);});
+    return entry.promise;
+  };
 }
