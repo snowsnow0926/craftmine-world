@@ -26,7 +26,7 @@ test('the inventory reflects the real manifest and broker routing',()=>{
   const build=godot.find(tool=>tool.name==='godot_build_start');
   assert.equal(build.hostMethod,'godotBuild.start');
   assert.equal(build.reachable,true);
-  assert.equal(build.owner,'C');
+  assert.equal(build.owner,'S1');
   const docs=godot.find(tool=>tool.name==='godot_docs');
   assert.equal(docs.local,true);
   assert.equal(docs.reachable,true);
@@ -48,7 +48,7 @@ test('a disabled capability flag is reported as disabled, never as available',()
 test('host methods with no agent tool are listed with their owner',()=>{
   const inventory=buildInventory({manifest,routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake:HANDSHAKE});
   const prepare=inventory.unreachableMethods.find(entry=>entry.method==='godotApplication.prepare');
-  assert.equal(prepare.owner,'C');
+  assert.equal(prepare.owner,'S1');
   assert.equal(prepare.kind,'write');
   assert.equal(prepare.reason,'NO_AGENT_TOOL_ROUTES_THIS_METHOD');
   // Reachability of an unreachable method is always false; the capability flag
@@ -56,7 +56,7 @@ test('host methods with no agent tool are listed with their owner',()=>{
   assert.equal(prepare.reachable,false);
   assert.equal(prepare.capabilityEnabled,true);
   assert.ok(UNREACHABLE_METHODS.includes('backup.export'));
-  assert.equal(inventory.unreachableMethods.find(entry=>entry.method==='backup.export').owner,'H');
+  assert.equal(inventory.unreachableMethods.find(entry=>entry.method==='backup.export').owner,'S4');
   assert.ok(inventory.unreachableMethods.every(entry=>entry.reachable===false));
   // Every declared owner must be a real subsystem owner, not a guess.
   for(const [method,entry] of Object.entries(HOST_METHODS))assert.ok(entry.owner&&entry.capability,method);

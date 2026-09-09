@@ -18,7 +18,7 @@ const require=createRequire(import.meta.url);
 const source=path.join(root,'plugins/craftmine-world');
 const staging=await mkdtemp(path.join(process.env.PI_SCRATCH_DIR||tmpdir(),'godot-remaining-L-broker-'));
 const FILES=['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
-  'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs'];
+  'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs'];
 for(const file of FILES)await copyFile(path.join(source,file),path.join(staging,file));
 
 // Minimal stand-in for the generated domain bundle. Only the names the broker
