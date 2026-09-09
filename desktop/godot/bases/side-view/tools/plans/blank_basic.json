@@ -1,7 +1,7 @@
 {
   "format": "craftmine.godot-sideview-input-plan/1",
   "name": "blank_basic",
-  "description": "Blank start world. Runs right under the decorative step, stops in front of the training dummy and attacks until it is defeated, then jumps in place once. Proves the blank start has movement, jump, platform collision and a real hitbox-driven attack, and that it grants no ability.",
+  "description": "Blank start world. Runs right under the decorative step, jumps in place once and swings the attack repeatedly at empty air. Proves the blank start has movement, jump, platform collision and a real hitbox-driven attack, and that it inherits no target, reward, checkpoint, coin or ability.",
   "durationTicks": 420,
   "settleTicks": 90,
   "segments": [

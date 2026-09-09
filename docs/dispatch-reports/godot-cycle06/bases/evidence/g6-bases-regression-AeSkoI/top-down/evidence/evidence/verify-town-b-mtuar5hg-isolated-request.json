@@ -1,0 +1,32 @@
+{
+  "format": "craftmine.godot-topdown-probe/1",
+  "commands": [
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "start"
+      }
+    },
+    {
+      "op": "set-position",
+      "args": {
+        "x": 96,
+        "y": 248,
+        "label": "patch"
+      }
+    },
+    {
+      "op": "gather",
+      "args": {
+        "zoneId": "zone-herb-patch",
+        "label": "gather"
+      }
+    },
+    {
+      "op": "snapshot",
+      "args": {
+        "label": "after"
+      }
+    }
+  ]
+}

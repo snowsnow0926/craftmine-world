@@ -89,6 +89,47 @@ func set_world_id(value: String) -> void:
 	_apply_world_id(value)
 
 
+## Keyboard actions declared in project.godot but previously unhandled. Each one
+## drives the same real system the scripted operations use: no shortcut writes
+## state directly.
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("reload"):
+		if equipment_state != null:
+			equipment_state.request_reload()
+			get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("interact"):
+		if aim_query != null:
+			aim_query.interact()
+			get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("equip_next"):
+		if equipment_state != null and equipment_state.equip_next():
+			get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("equip_primary"):
+		_equip_catalog_index(0)
+	elif event.is_action_pressed("equip_secondary"):
+		_equip_catalog_index(1)
+	elif event.is_action_pressed("quicksave"):
+		quicksave()
+		get_viewport().set_input_as_handled()
+
+
+func _equip_catalog_index(index: int) -> void:
+	if equipment_state == null or equipment_state.catalog == null:
+		return
+	var ids := equipment_state.catalog.ids()
+	if index < 0 or index >= ids.size():
+		return
+	if equipment_state.equip(ids[index]):
+		get_viewport().set_input_as_handled()
+
+
+## Durable save of the current native progress. Returns "" on success.
+func quicksave() -> String:
+	if save_store == null or world_state == null:
+		return "no-save-system"
+	return save_store.save(world_state.capture())
+
+
 func camera_rig() -> CameraRig:
 	return player.camera_rig if player != null else null
 

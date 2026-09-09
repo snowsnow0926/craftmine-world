@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   craftmineWorldBridge,
+  hasInitializingWorld,
+  isWorldPlayable,
   planWorldSwitch,
   worldErrorMessage,
   type CraftmineActiveTask,
+  type CraftmineCreationAction,
   type CraftmineLang,
   type CraftmineWorldBridge,
   type CraftmineWorldCapabilities,
@@ -28,8 +31,13 @@ export type CraftmineWorldsController = {
   refresh: () => Promise<void>;
   select: (id: string) => Promise<void>;
   create: (input: CraftmineWorldCreateInput) => Promise<boolean>;
+  creationAction: (worldId: string, action: CraftmineCreationAction) => Promise<void>;
   clearMessages: () => void;
 };
+
+/** Bounded polling while a world initializes: ~5 minutes, then the player refreshes. */
+export const CRAFTMINE_CREATION_POLL_MS = 2500;
+export const CRAFTMINE_CREATION_POLL_LIMIT = 120;
 
 /**
  * Loads the real world list from the host and performs selection through the
@@ -75,9 +83,9 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     try {
       const list = await bridge.list();
       if (!current()) return;
-      const caps = list.activeWorldId
-        ? await bridge.capabilities(list.activeWorldId).catch(() => null)
-        : null;
+      // Capabilities load even with no world yet, so the first creation can
+      // still offer the bases the host actually delivered.
+      const caps = await bridge.capabilities(list.activeWorldId).catch(() => null);
       if (!current()) return;
       const task = list.activeWorldId
         ? await bridge.activeTask(list.activeWorldId).catch(() => null)
@@ -117,6 +125,13 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       if (!bridge || busyRef.current) return;
       setNotice(null);
       setActionError(null);
+      const target = worlds.find((entry) => entry.id === id);
+      if (target && !isWorldPlayable(target)) {
+        // The host registered the world but has not finished initializing it;
+        // opening it would leave the view on a world it cannot run.
+        setNotice(CRAFTMINE_WORLD_TEXT.creationNotPlayable[lang]);
+        return;
+      }
       const plan = planWorldSwitch({
         activeWorldId,
         targetId: id,
@@ -159,7 +174,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
         }
       }
     },
-    [activeTask, activeWorldId, bridge, capabilities, lang, refresh],
+    [activeTask, activeWorldId, bridge, capabilities, lang, refresh, worlds],
   );
 
   const create = useCallback(
@@ -172,6 +187,13 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       const previous = activeWorldIdRef.current;
       try {
         const created = await bridge.create(input);
+        // A world that is still initializing (or failed to initialize) is
+        // registered but not playable. Do not switch the running view into it:
+        // the row keeps showing the host's real progress until it is ready.
+        if (created.state !== "ready") {
+          setNotice(CRAFTMINE_WORLD_TEXT.createInitializing[lang]);
+          return true;
+        }
         const result = await bridge.switchWorld(created.id);
         if (!result.ok) {
           // The world exists, but the running view could not switch to it.
@@ -201,10 +223,58 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     [bridge, lang, refresh],
   );
 
+  const creationAction = useCallback(
+    async (worldId: string, action: CraftmineCreationAction) => {
+      if (!bridge || busyRef.current) return;
+      busyRef.current = true;
+      setBusy(true);
+      setActionError(null);
+      setNotice(null);
+      try {
+        await bridge.creationAction(worldId, action);
+      } catch (failure) {
+        setActionError(worldErrorMessage(failure, lang));
+      } finally {
+        try {
+          await refresh();
+        } finally {
+          busyRef.current = false;
+          setBusy(false);
+        }
+      }
+    },
+    [bridge, lang, refresh],
+  );
+
   const clearMessages = useCallback(() => {
     setActionError(null);
     setNotice(null);
   }, []);
+
+  // A world that is initializing changes on the host, not in this renderer.
+  // Poll the same read channel the list uses, with a hard bound, so the row can
+  // show real progress and stop on its own instead of spinning forever.
+  const initializing = hasInitializingWorld(worlds);
+  useEffect(() => {
+    if (!bridge || !initializing) return;
+    let polls = 0;
+    let stopped = false;
+    const timer = window.setInterval(() => {
+      if (stopped || busyRef.current) return;
+      polls += 1;
+      if (polls > CRAFTMINE_CREATION_POLL_LIMIT) {
+        stopped = true;
+        window.clearInterval(timer);
+        setNotice(CRAFTMINE_WORLD_TEXT.createPending[lang]);
+        return;
+      }
+      void refresh();
+    }, CRAFTMINE_CREATION_POLL_MS);
+    return () => {
+      stopped = true;
+      window.clearInterval(timer);
+    };
+  }, [bridge, initializing, lang, refresh]);
 
   return {
     status,
@@ -220,6 +290,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     refresh,
     select,
     create,
+    creationAction,
     clearMessages,
   };
 }

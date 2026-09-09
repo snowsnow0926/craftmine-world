@@ -53,17 +53,18 @@ function makeRunRoot() {
   return path.join(os.tmpdir(), 'craftmine-side-view-acceptance', stamp);
 }
 
-function runGodot({ label, world, saveDir, planFile, reset, projectOverride }) {
+function runGodot({ label, world, saveDir, planFile, reset, projectOverride, extraEnv = {} }) {
   const engine = resolveEngine();
   const project = projectOverride || projectDir;
   const outFile = path.join(runRoot, 'runs', `${label}.json`);
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
-  const plan = loadJson(planFile);
+  const plan = planFile ? loadJson(planFile) : {};
   const cap = (plan.durationTicks || 0) + (plan.settleTicks || 0) + 600;
-  const env = { ...process.env };
+  const env = { ...process.env, ...extraEnv };
   env.CRAFTMINE_SIDEVIEW_WORLD = world;
   env.CRAFTMINE_SIDEVIEW_SAVE_DIR = saveDir;
-  env.CRAFTMINE_SIDEVIEW_INPUT_PLAN = planFile;
+  if (planFile) env.CRAFTMINE_SIDEVIEW_INPUT_PLAN = planFile;
+  else delete env.CRAFTMINE_SIDEVIEW_INPUT_PLAN;
   env.CRAFTMINE_SIDEVIEW_PROBE_OUT = outFile;
   if (reset) env.CRAFTMINE_SIDEVIEW_RESET = '1';
   else delete env.CRAFTMINE_SIDEVIEW_RESET;
@@ -78,7 +79,7 @@ function runGodot({ label, world, saveDir, planFile, reset, projectOverride }) {
     label,
     world,
     project,
-    plan: plan.name,
+    plan: plan.name || null,
     saveDir,
     outFile,
     exitCode: result.status,
@@ -386,7 +387,7 @@ function main() {
     check('F.deathCounted', (f.run.final.counters.deaths ?? 0) >= 1, JSON.stringify(f.run.final.counters));
   }
 
-  // G. Blank start: base controls and attack work, no ability is granted.
+  // G. Blank start: base controls and attack work, and nothing is inherited.
   const g = runGodot({
     label: 'G_blank_basic',
     world: 'blank',
@@ -397,10 +398,30 @@ function main() {
   assertRunHealthy('G', g);
   if (g.run) {
     check('G.jumped', events(g.run, 'player_jump').some((e) => e.data.kind === 'ground'), 'ground jump');
-    check('G.attackedDummy', events(g.run, 'target_hit').some((e) => e.data.targetId === 'dummy_start'), 'target_hit dummy_start');
-    check('G.defeatedDummy', events(g.run, 'target_defeated').some((e) => e.data.targetId === 'dummy_start'), 'target_defeated dummy_start');
-    check('G.rewardOnce', g.run.final.counters.coins === 1, JSON.stringify(g.run.final.counters));
+    check('G.attacked', events(g.run, 'attack_started').length >= 1, 'attack_started');
+    check('G.noRewards', Object.keys(g.run.final.rewards).length === 0, JSON.stringify(g.run.final.rewards));
+    check('G.noCoins', (g.run.final.counters.coins ?? 0) === 0, JSON.stringify(g.run.final.counters));
+    check('G.noCheckpoints', Object.keys(g.run.final.checkpoints.activated).length === 0 && g.run.final.checkpoints.active === '', JSON.stringify(g.run.final.checkpoints));
     check('G.noAbilityInBlank', Object.keys(g.run.final.abilities).length === 0, JSON.stringify(g.run.final.abilities));
+  }
+
+  // I. Gate guard: asking the room manager for a gated room without the ability
+  // is refused by the authored gate, not only by the physics shape.
+  const gateGuard = runGodot({
+    label: 'I_gate_guard',
+    world: 'ruins',
+    saveDir: saveDirFor('I_gate_guard'),
+    planFile: null,
+    reset: true,
+    extraEnv: { CRAFTMINE_SIDEVIEW_GATE_PROBE: 'vault' },
+  });
+  assertRunHealthy('I', gateGuard);
+  if (gateGuard.run) {
+    const probe = gateGuard.run.final.gateProbe || {};
+    check('I.gateProbeRan', probe.targetRoom === 'vault', JSON.stringify(probe));
+    check('I.gateBlocked', events(gateGuard.run, 'gate_blocked').length >= 1, JSON.stringify(events(gateGuard.run, 'gate_blocked')));
+    check('I.stayedOutOfVault', probe.roomAfter !== 'vault' && probe.playerRoom !== 'vault', JSON.stringify(probe));
+    check('I.noAbility', Object.keys(gateGuard.run.final.abilities).length === 0, JSON.stringify(gateGuard.run.final.abilities));
   }
 
   // H. Materialized world: the source shape the host materializes for a build.

@@ -1,0 +1,724 @@
+{
+  "kind": "real-core-broker-godot-electron-candidate-chain",
+  "out": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-JaCjsg",
+  "checks": [
+    {
+      "name": "core binary configured",
+      "passed": true,
+      "detail": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\vendor\\pi-desktop\\target\\release\\craftmine-core.exe"
+    },
+    {
+      "name": "real Rust core started",
+      "passed": true,
+      "detail": {
+        "advisoryReviews": true,
+        "agentPublishesWorlds": false,
+        "format": "craftmine.core/1",
+        "godotBuildJobs": true,
+        "godotExecution": false,
+        "godotExecutorGate": true,
+        "godotProjects": true,
+        "playerApplications": true,
+        "publishesWorlds": true,
+        "sessionDrafts": true,
+        "storage": "sqlite",
+        "verificationJobs": true,
+        "version": "0.1.0"
+      }
+    },
+    {
+      "name": "source project stored",
+      "passed": true,
+      "detail": {
+        "revision": 0
+      }
+    },
+    {
+      "name": "build job blocked without a registered executor",
+      "passed": true,
+      "detail": "GODOT_EXECUTION_UNAVAILABLE"
+    },
+    {
+      "name": "executor registered after real preflight",
+      "passed": true,
+      "detail": "registered"
+    },
+    {
+      "name": "preflight proves process, network and cleanup",
+      "passed": true,
+      "detail": {
+        "policyVersion": "craftmine.windows.lpac-registry.v1",
+        "processVerified": true,
+        "networkVerified": true,
+        "cleanupVerified": true,
+        "networkChecks": [
+          {
+            "name": "tcp4",
+            "ok": false,
+            "rawOsError": 10013
+          },
+          {
+            "name": "tcp6",
+            "ok": false,
+            "rawOsError": 10013
+          },
+          {
+            "name": "tcpExternal",
+            "ok": false,
+            "rawOsError": 10013
+          },
+          {
+            "name": "udp4",
+            "ok": false,
+            "rawOsError": 10013
+          },
+          {
+            "name": "udp6",
+            "ok": false,
+            "rawOsError": 10013
+          },
+          {
+            "name": "udpExternal",
+            "ok": false,
+            "rawOsError": 10013
+          }
+        ]
+      }
+    },
+    {
+      "name": "restricted network is denied with real OS errors",
+      "passed": true,
+      "detail": [
+        {
+          "name": "tcp4",
+          "ok": false,
+          "rawOsError": 10013
+        },
+        {
+          "name": "tcp6",
+          "ok": false,
+          "rawOsError": 10013
+        },
+        {
+          "name": "tcpExternal",
+          "ok": false,
+          "rawOsError": 10013
+        },
+        {
+          "name": "udp4",
+          "ok": false,
+          "rawOsError": 10013
+        },
+        {
+          "name": "udp6",
+          "ok": false,
+          "rawOsError": 10013
+        },
+        {
+          "name": "udpExternal",
+          "ok": false,
+          "rawOsError": 10013
+        }
+      ]
+    },
+    {
+      "name": "job enqueued to the executor",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "real Godot import and export produced a passing job",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "export staged the web entry under the core artifacts root",
+      "passed": true,
+      "detail": [
+        "web/bridge.js",
+        "web/index.apple-touch-icon.png",
+        "web/index.audio.position.worklet.js",
+        "web/index.audio.worklet.js",
+        "web/index.html",
+        "web/index.icon.png",
+        "web/index.js",
+        "web/index.pck",
+        "web/index.png",
+        "web/index.wasm"
+      ]
+    },
+    {
+      "name": "host-pinned bridge replaced the authored copy",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "isolated Electron check ran and passed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "isolated check observed real rendered frames",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "frames": 3,
+        "distinctFrames": 1,
+        "captures": [
+          {
+            "sha256": "e64e90a315377b21b9f3b9e035c378238d3c48e790e07b3f424a48322afdddbb",
+            "width": 960,
+            "height": 640,
+            "coloredSamples": 35,
+            "samples": 35
+          },
+          {
+            "sha256": "e64e90a315377b21b9f3b9e035c378238d3c48e790e07b3f424a48322afdddbb",
+            "width": 960,
+            "height": 640,
+            "coloredSamples": 35,
+            "samples": 35
+          },
+          {
+            "sha256": "e64e90a315377b21b9f3b9e035c378238d3c48e790e07b3f424a48322afdddbb",
+            "width": 960,
+            "height": 640,
+            "coloredSamples": 35,
+            "samples": 35
+          }
+        ]
+      }
+    },
+    {
+      "name": "isolated check proved the input guard and no Node bridge",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "offscreen": true,
+        "focusable": false,
+        "visible": false,
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "networkBlocked": 0,
+        "navigationBlocked": 0,
+        "popupsBlocked": 0,
+        "sessionCleared": true
+      }
+    },
+    {
+      "name": "isolated check matched the formal progress snapshot",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal": true,
+        "expectedHash": "b544a090c62842753623324fe76fc830e2fcffb9ce9d028bfdd5c548b6aa2d8e",
+        "actualHash": "b544a090c62842753623324fe76fc830e2fcffb9ce9d028bfdd5c548b6aa2d8e",
+        "keys": [
+          "baseId",
+          "baseVersion",
+          "body",
+          "format",
+          "stateVersion",
+          "worldId"
+        ]
+      }
+    },
+    {
+      "name": "isolated check cleaned up",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "gracefulExit": true,
+        "windowDestroyed": true,
+        "serverClosed": true
+      }
+    },
+    {
+      "name": "runtime assertions are recorded separately from gameplay acceptance",
+      "passed": true,
+      "detail": [
+        {
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+          "id": "runtime.ready",
+          "passed": true
+        },
+        {
+          "detail": "frames=3 distinct=1",
+          "id": "runtime.frame",
+          "passed": true
+        },
+        {
+          "detail": null,
+          "id": "runtime.no-errors",
+          "passed": true
+        },
+        {
+          "detail": "formal progress unchanged",
+          "id": "runtime.snapshot",
+          "passed": true
+        },
+        {
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+          "id": "runtime.isolation",
+          "passed": true
+        },
+        {
+          "detail": "graceful=true",
+          "id": "runtime.recovery",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "passing check created a candidate",
+      "passed": true,
+      "detail": "gcan-66f38b43df32bd1fc885ed42e2eed3bf9420dd727594886e9cfe8c2f7abe4b7a"
+    },
+    {
+      "name": "candidate is ready with real check evidence",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "checkStatus": "passed",
+        "assertions": 6
+      }
+    },
+    {
+      "name": "staged export exists on disk under the core data directory",
+      "passed": true,
+      "detail": [
+        "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-JaCjsg\\core-data\\godot-builds\\773f63ad38bae69abf4afd818a1417967103334f80dab89d61bb04c5b333847b\\gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35\\artifacts\\web\\index.html"
+      ]
+    },
+    {
+      "name": "staged entry hash equals the recorded artifact hash",
+      "passed": true,
+      "detail": "5a374fb17352893488c797a4d5406b9fe0904ff6aeef5e5e639953e67a44d8b5"
+    },
+    {
+      "name": "formal progress was not written by the check",
+      "passed": true,
+      "detail": {
+        "expected": "{\"baseId\":\"first-person\",\"baseVersion\":\"1.0.0\",\"body\":{\"coins\":7,\"hp\":3,\"quests\":[\"range_basic\"]},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"c-e2e-world\"}",
+        "actual": "{\"baseId\":\"first-person\",\"baseVersion\":\"1.0.0\",\"body\":{\"coins\":7,\"hp\":3,\"quests\":[\"range_basic\"]},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"c-e2e-world\"}"
+      }
+    },
+    {
+      "name": "stopping the executor keeps the recorded result",
+      "passed": true,
+      "detail": "passed"
+    }
+  ],
+  "evidence": {
+    "executorLog": [
+      "[godot-executor] registered craftmine-windows-broker-v1 evidence e0eaadaae6d80bdf promoted 1",
+      "[godot-executor] staged 10 artifacts into \\\\?\\D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-JaCjsg\\core-data\\godot-builds\\773f63ad38bae69abf4afd818a1417967103334f80dab89d61bb04c5b333847b\\gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35\\artifacts",
+      "[godot-executor] job finished gjob-fba0fa734b1bb1cde26b022016c04382d91668b37d46eb8361d82543e9fbdd27 passed "
+    ],
+    "runtimeCheck": {
+      "format": "craftmine.godot-runtime-check/1",
+      "scope": "base-startup",
+      "jobId": "gjob-fba0fa734b1bb1cde26b022016c04382d91668b37d46eb8361d82543e9fbdd27",
+      "buildId": "gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35",
+      "worldId": "c-e2e-world",
+      "inputHash": "9ee00a87bdcad5375e75598ac90a6f05379d778145f1f520e9063d044d827a91",
+      "passed": true,
+      "startedAt": "2026-09-09T18:26:06.929Z",
+      "elapsedMs": 1257,
+      "ready": {
+        "ok": true,
+        "ops": [
+          "capabilities",
+          "load",
+          "snapshot",
+          "save",
+          "pause",
+          "resume",
+          "acknowledge",
+          "cancel",
+          "exit"
+        ],
+        "instanceId": "f104cd04803a071295f9262d",
+        "elapsedMs": 704
+      },
+      "render": {
+        "ok": true,
+        "frames": 3,
+        "distinctFrames": 1,
+        "captures": [
+          {
+            "sha256": "e64e90a315377b21b9f3b9e035c378238d3c48e790e07b3f424a48322afdddbb",
+            "width": 960,
+            "height": 640,
+            "coloredSamples": 35,
+            "samples": 35
+          },
+          {
+            "sha256": "e64e90a315377b21b9f3b9e035c378238d3c48e790e07b3f424a48322afdddbb",
+            "width": 960,
+            "height": 640,
+            "coloredSamples": 35,
+            "samples": 35
+          },
+          {
+            "sha256": "e64e90a315377b21b9f3b9e035c378238d3c48e790e07b3f424a48322afdddbb",
+            "width": 960,
+            "height": 640,
+            "coloredSamples": 35,
+            "samples": 35
+          }
+        ]
+      },
+      "errors": {
+        "ok": true,
+        "runtime": [],
+        "console": [],
+        "renderer": null
+      },
+      "snapshot": {
+        "ok": true,
+        "equal": true,
+        "expectedHash": "b544a090c62842753623324fe76fc830e2fcffb9ce9d028bfdd5c548b6aa2d8e",
+        "actualHash": "b544a090c62842753623324fe76fc830e2fcffb9ce9d028bfdd5c548b6aa2d8e",
+        "keys": [
+          "baseId",
+          "baseVersion",
+          "body",
+          "format",
+          "stateVersion",
+          "worldId"
+        ]
+      },
+      "isolation": {
+        "ok": true,
+        "offscreen": true,
+        "focusable": false,
+        "visible": false,
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "networkBlocked": 0,
+        "navigationBlocked": 0,
+        "popupsBlocked": 0,
+        "sessionCleared": true
+      },
+      "recovery": {
+        "ok": true,
+        "gracefulExit": true,
+        "windowDestroyed": true,
+        "serverClosed": true
+      },
+      "assertions": [
+        {
+          "id": "runtime.ready",
+          "passed": true
+        },
+        {
+          "id": "runtime.frame",
+          "passed": true
+        },
+        {
+          "id": "runtime.no-errors",
+          "passed": true
+        },
+        {
+          "id": "runtime.snapshot",
+          "passed": true
+        },
+        {
+          "id": "runtime.isolation",
+          "passed": true
+        },
+        {
+          "id": "runtime.recovery",
+          "passed": true
+        }
+      ],
+      "diagnostics": [
+        "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+        "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+        "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+        "[warning] [.WebGL-0x7b9c0e29ac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+        "[warning] [.WebGL-0x7b9c0e29ac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+        "[warning] [.WebGL-0x7b9c0e29ac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+        "[warning] [.WebGL-0x7b9c0e29ac00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+      ],
+      "error": null
+    },
+    "job": {
+      "status": "passed",
+      "candidateId": "gcan-66f38b43df32bd1fc885ed42e2eed3bf9420dd727594886e9cfe8c2f7abe4b7a",
+      "stage": "passed",
+      "artifacts": [
+        {
+          "path": "web/bridge.js",
+          "bytes": 6415,
+          "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+        },
+        {
+          "path": "web/index.apple-touch-icon.png",
+          "bytes": 11944,
+          "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+        },
+        {
+          "path": "web/index.audio.position.worklet.js",
+          "bytes": 2973,
+          "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+        },
+        {
+          "path": "web/index.audio.worklet.js",
+          "bytes": 7298,
+          "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+        },
+        {
+          "path": "web/index.html",
+          "bytes": 963,
+          "sha256": "5a374fb17352893488c797a4d5406b9fe0904ff6aeef5e5e639953e67a44d8b5"
+        },
+        {
+          "path": "web/index.icon.png",
+          "bytes": 5700,
+          "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+        },
+        {
+          "path": "web/index.js",
+          "bytes": 314653,
+          "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+        },
+        {
+          "path": "web/index.pck",
+          "bytes": 3400,
+          "sha256": "d07b32399b187615ca25a62a35f5af366d0d171fe6ed81b98b21beaa704d08e5"
+        },
+        {
+          "path": "web/index.png",
+          "bytes": 21443,
+          "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+        },
+        {
+          "path": "web/index.wasm",
+          "bytes": 38820072,
+          "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+        }
+      ],
+      "compile": {
+        "errors": [],
+        "passed": true,
+        "warnings": []
+      },
+      "assertions": [
+        {
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+          "id": "runtime.ready",
+          "passed": true
+        },
+        {
+          "detail": "frames=3 distinct=1",
+          "id": "runtime.frame",
+          "passed": true
+        },
+        {
+          "detail": null,
+          "id": "runtime.no-errors",
+          "passed": true
+        },
+        {
+          "detail": "formal progress unchanged",
+          "id": "runtime.snapshot",
+          "passed": true
+        },
+        {
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+          "id": "runtime.isolation",
+          "passed": true
+        },
+        {
+          "detail": "graceful=true",
+          "id": "runtime.recovery",
+          "passed": true
+        }
+      ]
+    },
+    "stagedWasm": [
+      {
+        "file": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-JaCjsg\\core-data\\godot\\tasks\\ex-9bdaa6afe6e6401ca6c275f9\\artifacts\\index.wasm",
+        "bytes": 38820072
+      },
+      {
+        "file": "D:\\Craftmine World-worktrees\\godot-remaining-c-20260910\\test-results\\godot-remaining-c-full-chain-JaCjsg\\core-data\\godot-builds\\773f63ad38bae69abf4afd818a1417967103334f80dab89d61bb04c5b333847b\\gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35\\artifacts\\web\\index.wasm",
+        "bytes": 38820072
+      }
+    ],
+    "candidate": {
+      "buildId": "gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35",
+      "candidate": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "base-a",
+        "baseId": "first-person",
+        "buildBytes": 39198323,
+        "buildFiles": 15,
+        "buildId": "gbd-8afef8a46e928e5d1e3819cd53334a52c85261b14fc976df786440f9e1b11f35",
+        "candidateId": "gcan-66f38b43df32bd1fc885ed42e2eed3bf9420dd727594886e9cfe8c2f7abe4b7a",
+        "checkJobId": "gjob-fba0fa734b1bb1cde26b022016c04382d91668b37d46eb8361d82543e9fbdd27",
+        "checkOutputHash": "7ebb315553659aca68f46273cb3c88b1d61a7c67b9254ddcaf245ca1103f70dc",
+        "createdAt": 1788978368209,
+        "manifestHash": "5a18a5da5c5119e4e87800ef8f94243bc2412c871b2a0a3378109cfe1632fada",
+        "sourceRevision": 0,
+        "status": "ready",
+        "updatedAt": 1788978368209,
+        "worldId": "c-e2e-world"
+      },
+      "check": {
+        "assertions": [
+          {
+            "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+            "id": "runtime.ready",
+            "passed": true
+          },
+          {
+            "detail": "frames=3 distinct=1",
+            "id": "runtime.frame",
+            "passed": true
+          },
+          {
+            "detail": null,
+            "id": "runtime.no-errors",
+            "passed": true
+          },
+          {
+            "detail": "formal progress unchanged",
+            "id": "runtime.snapshot",
+            "passed": true
+          },
+          {
+            "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+            "id": "runtime.isolation",
+            "passed": true
+          },
+          {
+            "detail": "graceful=true",
+            "id": "runtime.recovery",
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      "checkStatus": "passed",
+      "job": {
+        "artifacts": [
+          {
+            "bytes": 6415,
+            "path": "web/bridge.js",
+            "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+          },
+          {
+            "bytes": 11944,
+            "path": "web/index.apple-touch-icon.png",
+            "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+          },
+          {
+            "bytes": 2973,
+            "path": "web/index.audio.position.worklet.js",
+            "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+          },
+          {
+            "bytes": 7298,
+            "path": "web/index.audio.worklet.js",
+            "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+          },
+          {
+            "bytes": 963,
+            "path": "web/index.html",
+            "sha256": "5a374fb17352893488c797a4d5406b9fe0904ff6aeef5e5e639953e67a44d8b5"
+          },
+          {
+            "bytes": 5700,
+            "path": "web/index.icon.png",
+            "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+          },
+          {
+            "bytes": 314653,
+            "path": "web/index.js",
+            "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+          },
+          {
+            "bytes": 3400,
+            "path": "web/index.pck",
+            "sha256": "d07b32399b187615ca25a62a35f5af366d0d171fe6ed81b98b21beaa704d08e5"
+          },
+          {
+            "bytes": 21443,
+            "path": "web/index.png",
+            "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+          },
+          {
+            "bytes": 38820072,
+            "path": "web/index.wasm",
+            "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+          }
+        ],
+        "check": {
+          "assertions": [
+            {
+              "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+              "id": "runtime.ready",
+              "passed": true
+            },
+            {
+              "detail": "frames=3 distinct=1",
+              "id": "runtime.frame",
+              "passed": true
+            },
+            {
+              "detail": null,
+              "id": "runtime.no-errors",
+              "passed": true
+            },
+            {
+              "detail": "formal progress unchanged",
+              "id": "runtime.snapshot",
+              "passed": true
+            },
+            {
+              "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+              "id": "runtime.isolation",
+              "passed": true
+            },
+            {
+              "detail": "graceful=true",
+              "id": "runtime.recovery",
+              "passed": true
+            }
+          ],
+          "passed": true
+        },
+        "compile": {
+          "errors": [],
+          "passed": true,
+          "warnings": []
+        },
+        "engine": {
+          "evidenceHash": "e0eaadaae6d80bdfbcc88ba181e96dd2349c995e2df03d3741291740e2ac1fba",
+          "isolation": "craftmine.windows.lpac-registry.v1",
+          "version": "4.7.2-stable"
+        },
+        "format": "craftmine.godot-job-result/1",
+        "import": {
+          "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Call to GetAdaptersAddresses failed with error 5.\r\n   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started 项目初始化 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在扫描文件结构……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在加载全局类名……\u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在校验 GDExtension……\u001b[39m\u001b[0m\r\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在创建自动加载脚本……\u001b[39m\u001b[0m\r\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在初始化插件……\u001b[39m\u001b[0m\r\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在启动文件扫描……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started 正在加载编辑器 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载编辑器布局……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载停靠面板……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\r\n\u001b[0m\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n",
+          "passed": true
+        },
+        "inputHash": "9ee00a87bdcad5375e75598ac90a6f05379d778145f1f520e9063d044d827a91",
+        "passed": true
+      }
+    }
+  },
+  "limits": [
+    "Test-authored Godot project and host preset/shell; the real model path is task I",
+    "The Electron harness constructs the same classes as production main but does not fork the plugin utility process",
+    "Offscreen software rendering; no player input or feel acceptance"
+  ],
+  "passed": true
+}
