@@ -39,10 +39,11 @@ function completePackage(directory) {
 }
 
 test('the required-file list is shared with the delivery preflight', () => {
-  assert.equal(PACKAGE_REQUIRED_FILES.length, 11);
+  assert.equal(PACKAGE_REQUIRED_FILES.length, 14);
   assert.ok(PACKAGE_REQUIRED_FILES.includes('Craftmine World.exe'));
   assert.ok(PACKAGE_REQUIRED_FILES.includes('resources/source/build-manifest.json'));
   assert.ok(PACKAGE_REQUIRED_FILES.includes('resources/source/USER_GUIDE.zh-CN.md'));
+  assert.ok(PACKAGE_REQUIRED_FILES.includes('resources/git/bin/git.exe'));
   const source = fs.readFileSync(path.join(ROOT, 'desktop/windows-package-tools.mjs'), 'utf8');
   assert.match(source, /PACKAGE_REQUIRED_FILES\s*\}?\s*=\s*await import/);
   const core = fs.readFileSync(path.join(ROOT, 'desktop/delivery/lib/preflight-core.mjs'), 'utf8');

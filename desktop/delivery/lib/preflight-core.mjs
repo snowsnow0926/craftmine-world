@@ -26,7 +26,12 @@ export const PACKAGE_REQUIRED_FILES = [
   'resources/source/build-manifest.json',
   'resources/source/USER_GUIDE.zh-CN.md',
   'resources/licenses/PI-Desktop-LICENSE.txt',
-  'resources/licenses/CRAFTMINE-NOTICES.md'
+  'resources/licenses/CRAFTMINE-NOTICES.md',
+  // R1's managed Git must not depend on the user's PATH, so the pinned Git tree and
+  // its bundle record are part of a delivery package.
+  'resources/git/bin/git.exe',
+  'resources/git/GIT-BUNDLE.json',
+  'resources/git/LICENSE.txt'
 ];
 
 const MAX_TEXT_SCAN = 1024 * 1024;

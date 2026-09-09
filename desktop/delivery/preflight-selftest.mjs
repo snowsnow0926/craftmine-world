@@ -294,6 +294,9 @@ function makePackage(root) {
   }
   write('resources/source/CraftmineWorld-source.zip', 'synthetic source archive');
   write('resources/source/USER_GUIDE.zh-CN.md', 'synthetic user guide');
+  write('resources/git/bin/git.exe', 'synthetic git wrapper');
+  write('resources/git/GIT-BUNDLE.json', JSON.stringify({format: 'craftmine.git-bundle-staged/1', version: '2.53.0.windows.1'}));
+  write('resources/git/LICENSE.txt', 'GNU GENERAL PUBLIC LICENSE Version 2');
   write('resources/licenses/PI-Desktop-LICENSE.txt', fs.readFileSync(path.join(REPO_ROOT, 'vendor/pi-desktop/LICENSE')));
   write('resources/licenses/CRAFTMINE-NOTICES.md', 'LGPL-3.0-or-later obligations are documented here.\n');
   for (const name of ['OFL-Geist.txt', 'OFL-Inter.txt', 'OFL-NotoSansSC.txt', 'OFL-LXGWWenKai.txt']) write('resources/licenses/fonts/' + name, 'SIL OPEN FONT LICENSE');

@@ -118,10 +118,13 @@
     },
     "size.fileCount": {
       "unit": "files",
-      "max": 1200,
+      "max": 1400,
       "min": null,
       "status": "frozen",
-      "rationale": "Regular files under the package root. Observed 828."
+      "rationale": "Regular files under the package root. Observed 828 before the pinned Git tree was added; the required MinGit tree adds 385 files plus the bundle record, so the composition measured 1217 and the cap was raised from 1200 to 1400 before acceptance. This is a composition change (R1 requires a bundled Git), not a widening after a failing run: no run had failed on file count.",
+      "changeLog": [
+        {"at": "2026-09-10", "from": 1200, "to": 1400, "reason": "bundled MinGit tree (385 files) is now a required package component"}
+      ]
     },
     "size.resources.bin.mb": {
       "unit": "MB",
@@ -164,6 +167,13 @@
       "min": null,
       "status": "frozen",
       "rationale": "resources/* not in a named bucket (app.asar, models.dev, skills). Observed 35.78 MB."
+    },
+    "size.resources.git.mb": {
+      "unit": "MB",
+      "max": 128,
+      "min": null,
+      "status": "frozen",
+      "rationale": "resources/git, the pinned MinGit tree that R1's managed Git requires (385 files, 109.06 MB measured from the official archive). Added before acceptance as a required component with its own bucket so the total install size stays the governing limit."
     },
     "size.exe-dll.mb": {
       "unit": "MB",
@@ -269,6 +279,27 @@
       "min": null,
       "status": "pending-real-sample",
       "rationale": "AL2 asset preview is not integrated in this tree. No product number may be frozen from the synthetic index."
+    },
+    "product.hello.ms": {
+      "unit": "ms",
+      "max": null,
+      "min": null,
+      "status": "pending-real-sample",
+      "rationale": "Round trip of the real craftmine-core.exe hello handshake. Measured against a task branch build only; no integrated product build exists yet, so no threshold may be frozen."
+    },
+    "product.gitInfo.ms": {
+      "unit": "ms",
+      "max": null,
+      "min": null,
+      "status": "pending-real-sample",
+      "rationale": "R1 content.gitInfo round trip (managed Git discovery). The R1 adapter is not registered in an integrated build, so the number is calibration, not acceptance."
+    },
+    "product.assetSearch.ms": {
+      "unit": "ms",
+      "max": null,
+      "min": null,
+      "status": "pending-real-sample",
+      "rationale": "R6 asset.search round trip over an empty catalog. R6 is not registered in an integrated build, so the number is calibration, not acceptance."
     },
     "assets.search.synthetic-1000.ms": {
       "unit": "ms",

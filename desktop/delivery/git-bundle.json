@@ -1,0 +1,63 @@
+{
+  "format": "craftmine.git-bundle/1",
+  "id": "mingit",
+  "version": "2.53.0.windows.1",
+  "platform": "windows-x86_64",
+  "purpose": "Pinned Git distribution shipped with the client so R1's managed Git never depends on the user's PATH. R1's GitAdapter accepts CRAFTMINE_BUNDLED_GIT or an exe-adjacent git/bin/git.exe and reports source=pathFallback otherwise.",
+  "archive": {
+    "url": "https://github.com/git-for-windows/git/releases/download/v2.53.0.windows.1/MinGit-2.53.0-64-bit.zip",
+    "file": "MinGit-2.53.0-64-bit.zip",
+    "bytes": 41293746,
+    "sha256": "82b562c918ec87b2ef5316ed79bb199e3a25719bb871a0f10294acf21ebd08cd",
+    "digestSource": "GitHub release asset digest for v2.53.0.windows.1 (api.github.com/repos/git-for-windows/git/releases/tags/v2.53.0.windows.1), retrieved 2026-09-10",
+    "httpStatus": 200
+  },
+  "extracted": {
+    "files": 385,
+    "bytes": 109064331,
+    "note": "Raw archive: 384 files / 109017851 bytes. The package layout keeps that tree intact under resources/git/ and adds one wrapper copy at bin/git.exe (cmd/git.exe, 46480 bytes), so the staged tree is 385 files / 109064331 bytes. The stage tool recomputes both numbers and records them in the package."
+  },
+  "layout": {
+    "packageRoot": "resources/git",
+    "entry": "bin/git.exe",
+    "sourceEntry": "cmd/git.exe",
+    "runtimeRoot": "mingw64",
+    "r1Candidates": [
+      "CRAFTMINE_BUNDLED_GIT (environment variable, exact path)",
+      "git/bin/git.exe beside the executable",
+      "git/git.exe beside the executable",
+      "resources/git/bin/git.exe",
+      "resources/git/git.exe",
+      "../git/bin/git.exe relative to resources/bin/craftmine-core.exe"
+    ],
+    "why": "cmd/git.exe is the Git for Windows wrapper; it resolves its root from its own directory, so copying it to bin/git.exe with the tree one level up yields a working resources/git/bin/git.exe that matches the ../git/bin/git.exe candidate."
+  },
+  "licence": {
+    "spdx": "GPL-2.0-only",
+    "file": "LICENSE.txt",
+    "bytes": 19125,
+    "note": "MinGit also carries per-component licences under mingw64/share/licenses/** and usr/share/licenses/**; they ship with the tree and must not be stripped."
+  },
+  "contract": {
+    "minimum": [2, 38],
+    "gitInfoFormat": "craftmine.git-info/1",
+    "expectedSourceAfterStaging": "bundled",
+    "absentCode": "GIT_PROGRAM_NOT_FOUND",
+    "owner": "R1 (GitAdapter discovery); R9 pins and ships the binary"
+  },
+  "verifiedAt": "2026-09-10",
+  "evidence": {
+    "archiveHashChecked": "downloaded file SHA-256 equals the official asset digest",
+    "versionOutput": "git version 2.53.0.windows.1 (bin/git.exe and mingw64/bin/git.exe)",
+    "notProven": [
+      "content.gitInfo.source has not been observed as 'bundled' in a running integrated client: R1 is not merged into this tree.",
+      "No installer or client build has shipped this tree yet."
+    ]
+  },
+  "installSizeImpact": {
+    "extractedBytes": 109064331,
+    "previousPackageBytes": 573147733,
+    "projectedPackageBytes": 682212064,
+    "note": "Reported so the frozen install-size threshold can be reviewed before acceptance; the measurement tool classifies resources/git/** into its own bucket and records the projected total."
+  }
+}

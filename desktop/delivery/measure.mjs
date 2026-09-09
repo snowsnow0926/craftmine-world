@@ -18,7 +18,7 @@ import * as core from './lib/measure-core.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO_GUESS = path.resolve(HERE, '..', '..');
-const SUITES = ['startup', 'waits', 'frame', 'memory', 'size', 'git', 'assets', 'all'];
+const SUITES = ['startup', 'waits', 'frame', 'memory', 'size', 'git', 'assets', 'product', 'all'];
 
 function parseArgs(argv) {
   const options = { suite: 'all', runs: null, json: false };
@@ -28,6 +28,7 @@ function parseArgs(argv) {
     if (token === '--json') options.json = true;
     else if (token === '--root') options.root = argv[++i];
     else if (token === '--package') options.package = argv[++i];
+    else if (token === '--core') options.core = argv[++i];
     else if (token === '--cache') options.cache = argv[++i];
     else if (token === '--runs') options.runs = Number(argv[++i]);
     else if (token === '--out') options.out = argv[++i];
@@ -48,6 +49,7 @@ function usage() {
     `  suites: ${SUITES.join(', ')}`,
     '  --root <dir>        repository root (default: cwd)',
     '  --package <dir>     packaged client root containing "Craftmine World.exe"',
+    '  --core <exe>        craftmine-core.exe for the product RPC suite (default: the packaged resources/bin/craftmine-core.exe)',
     '  --cache <dir>       Godot cache dir (default: CRAFTMINE_GODOT_CACHE_DIR or the main tree cache)',
     '  --runs <n>          sample count (default: git 30, others 3, startup 2)',
     '  --out <file>        evidence JSON path (default: $PI_SCRATCH_DIR/k-measurement.json)',
@@ -76,6 +78,15 @@ function defaultCache() {
     process.env.CRAFTMINE_GODOT_CACHE_DIR,
     'D:/Craftmine World/desktop/build/godot/4.7.2-stable',
     path.join(REPO_GUESS, 'desktop', 'build', 'godot', '4.7.2-stable'),
+  ].filter(Boolean);
+  return candidates.find(candidate => fs.existsSync(candidate)) ?? null;
+}
+
+function resolveCore(explicit, packageDirectory) {
+  const candidates = [
+    explicit,
+    process.env.CRAFTMINE_CORE_BIN,
+    packageDirectory ? path.join(packageDirectory, 'resources', 'bin', 'craftmine-core.exe') : null
   ].filter(Boolean);
   return candidates.find(candidate => fs.existsSync(candidate)) ?? null;
 }
@@ -569,6 +580,7 @@ function sizeCategory(relative) {
   if (normalized.startsWith('resources/plugins/')) return 'resources.plugins';
   if (normalized.startsWith('resources/licenses/')) return 'resources.licenses';
   if (normalized.startsWith('resources/source/')) return 'resources.source';
+  if (normalized.startsWith('resources/git/')) return 'resources.git';
   if (normalized.startsWith('resources/')) return 'resources.other';
   if (normalized.startsWith('locales/')) return 'locales';
   return 'other';
@@ -606,7 +618,7 @@ async function suiteSize(ctx) {
   }));
   add('size.install.total.mb', mb(totalBytes), 'MB', `sum of ${files.length} file bytes under ${packageDir}`);
   add('size.fileCount', files.length, 'files', 'regular files under the package root');
-  for (const key of ['resources.bin', 'resources.agent-runtime', 'resources.plugins', 'resources.licenses', 'resources.source', 'resources.other', 'exe-dll', 'locales', 'other']) {
+  for (const key of ['resources.bin', 'resources.agent-runtime', 'resources.plugins', 'resources.licenses', 'resources.source', 'resources.git', 'resources.other', 'exe-dll', 'locales', 'other']) {
     add(`size.${key}.mb`, mb(buckets.get(key) ?? 0), 'MB', key === 'other' ? 'everything not in a named bucket' : null);
   }
   if (installerBytes > 0) add('size.installer.nsis.mb', mb(installerBytes), 'MB', 'largest Setup*.exe present in the package root');
@@ -820,6 +832,155 @@ function renderTable(record) {
 
 // ------------------------------------------------------------------------ main
 
+// ---------------------------------------------------------------------- product
+
+/**
+ * Line-delimited JSON-RPC session against a real craftmine-core.exe. No window, no
+ * shell, no input: the core speaks one JSON object per line on stdio.
+ */
+function rpcSession(exe, env, {cwd, args = []} = {}) {
+  const child = spawn(exe, args, {cwd, env, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe']});
+  let buffer = '';
+  let nextId = 1;
+  const pending = new Map();
+  const order = [];
+  const stderrChunks = [];
+  child.stdout.setEncoding('utf8');
+  child.stdout.on('data', chunk => {
+    buffer += chunk;
+    let index;
+    while ((index = buffer.indexOf('\n')) !== -1) {
+      const line = buffer.slice(0, index).trim();
+      buffer = buffer.slice(index + 1);
+      if (!line) continue;
+      let message;
+      try { message = JSON.parse(line); } catch { continue; }
+      const key = message.id;
+      let resolver = key != null ? pending.get(key) : null;
+      if (!resolver && order.length) resolver = pending.get(order.shift());
+      if (resolver) {
+        if (key != null && pending.has(key)) {
+          pending.delete(key);
+          const at = order.indexOf(key);
+          if (at !== -1) order.splice(at, 1);
+        }
+        resolver(message);
+      }
+    }
+  });
+  child.stderr.on('data', chunk => stderrChunks.push(String(chunk)));
+  return {
+    call(method, params = {}, timeoutMs = 60000) {
+      const id = 'm' + (nextId++);
+      return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+          pending.delete(id);
+          const at = order.indexOf(id);
+          if (at !== -1) order.splice(at, 1);
+          reject(new Error('RPC_TIMEOUT ' + method));
+        }, timeoutMs);
+        pending.set(id, message => { clearTimeout(timer); resolve(message); });
+        order.push(id);
+        child.stdin.write(JSON.stringify({params: {...params, id}, method}) + '\n');
+      });
+    },
+    async close() {
+      try { child.stdin.end(); } catch { /* already closed */ }
+      await new Promise(resolve => {
+        const timer = setTimeout(() => { try { child.kill(); } catch { /* gone */ } resolve(); }, 5000);
+        child.once('exit', () => { clearTimeout(timer); resolve(); });
+      });
+    },
+    stderr: () => stderrChunks.join('')
+  };
+}
+
+/** Measure the real product RPC path: hello, R1 content.gitInfo, R6 asset.search. */
+async function suiteProduct(ctx) {
+  const metrics = [];
+  const skipped = [];
+  const names = ['product.hello.ms', 'product.gitInfo.ms', 'product.assetSearch.ms'];
+  const humanCommand = 'node desktop/delivery/measure.mjs product --core "<integrated craftmine-core.exe>" --runs 30';
+  if (!ctx.core || !fs.existsSync(ctx.core)) {
+    for (const name of names) skipped.push(core.skippedMetric(name, 'no craftmine-core.exe supplied; the product RPC path was not measured', humanCommand));
+    return { id: 'product', metrics, skipped };
+  }
+  const runs = Math.max(3, ctx.runs ?? 10);
+  const profile = path.join(ctx.work, 'product-profile');
+  fs.mkdirSync(profile, { recursive: true });
+  const env = {...isolatedEnv(profile), CRAFTMINE_DATA_DIR: profile};
+  const session = rpcSession(ctx.core, env, {cwd: ctx.root, args: ['--data-dir', profile]});
+  try {
+    const started = performance.now();
+    const hello = await session.call('hello');
+    const helloMs = performance.now() - started;
+    if (hello?.error) {
+      for (const name of names) skipped.push(core.skippedMetric(name, 'hello failed: ' + JSON.stringify(hello.error).slice(0, 200), humanCommand));
+      return { id: 'product', metrics, skipped };
+    }
+    const capabilities = hello?.result ?? {};
+    metrics.push(core.metric({
+      name: 'product.hello.ms', unit: 'ms', samples: [helloMs], source: 'real-rpc',
+      process: ctx.core + ' (stdio JSON-RPC, isolated data dir)',
+      threshold: core.thresholdFor(ctx.thresholds, 'product.hello.ms'),
+      notes: 'capabilities: ' + JSON.stringify(capabilities).slice(0, 400)
+    }));
+
+    {
+      const samples = [];
+      let error = null;
+      for (let index = 0; index < runs; index += 1) {
+        const begin = performance.now();
+        const response = await session.call('content.gitInfo');
+        if (response?.error) { error = response.error; break; }
+        samples.push(performance.now() - begin);
+      }
+      if (samples.length) {
+        metrics.push(core.metric({
+          name: 'product.gitInfo.ms', unit: 'ms', samples, source: 'real-rpc',
+          process: ctx.core + ' content.gitInfo (R1 managed Git)',
+          threshold: core.thresholdFor(ctx.thresholds, 'product.gitInfo.ms'),
+          notes: 'round-trip wall time; advertised=' + Boolean(capabilities.contentHistory || capabilities.managedGit)
+            + '; the response also carries the Git source (bundled|pathFallback)'
+        }));
+      } else {
+        skipped.push(core.skippedMetric('product.gitInfo.ms', 'content.gitInfo error: ' + JSON.stringify(error).slice(0, 200), humanCommand));
+      }
+    }
+
+    {
+      const samples = [];
+      let error = null;
+      for (let index = 0; index < runs; index += 1) {
+        const begin = performance.now();
+        const response = await session.call('asset.search', {scope: 'all', query: '', offset: 0, limit: 20});
+        if (response?.error) { error = response.error; break; }
+        samples.push(performance.now() - begin);
+      }
+      if (samples.length) {
+        metrics.push(core.metric({
+          name: 'product.assetSearch.ms', unit: 'ms', samples, source: 'real-rpc',
+          process: ctx.core + ' asset.search (R6 catalog)',
+          threshold: core.thresholdFor(ctx.thresholds, 'product.assetSearch.ms'),
+          notes: 'empty query, offset 0, limit 20; advertised=' + Boolean(capabilities.assetCatalog)
+            + '; an empty catalog is still a real round trip'
+        }));
+      } else {
+        skipped.push(core.skippedMetric('product.assetSearch.ms', 'asset.search error: ' + JSON.stringify(error).slice(0, 200), humanCommand));
+      }
+    }
+    const stderrText = session.stderr().trim();
+    if (stderrText) skipped.push(core.skippedMetric('product.stderr', 'core wrote to stderr: ' + stderrText.slice(0, 200), humanCommand, 'text'));
+  } catch (error) {
+    for (const name of names) {
+      if (!metrics.some(metric => metric.name === name)) skipped.push(core.skippedMetric(name, 'RPC session failed: ' + String(error?.message ?? error).slice(0, 200), humanCommand));
+    }
+  } finally {
+    await session.close();
+  }
+  return { id: 'product', metrics, skipped };
+}
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
   if (options.help) { process.stdout.write(`${usage()}\n`); return 0; }
@@ -830,19 +991,21 @@ async function main() {
   const thresholdsPath = path.resolve(options.thresholds ?? path.join(HERE, 'MEASUREMENT_THRESHOLDS.json'));
   const thresholds = fs.existsSync(thresholdsPath) ? JSON.parse(fs.readFileSync(thresholdsPath, 'utf8')) : { metrics: {} };
   const cache = options.cache ? path.resolve(options.cache) : defaultCache();
+  const packageDir = options.package ? path.resolve(options.package) : defaultPackage();
   const ctx = {
     root,
     scratch,
     work,
     thresholds,
-    packageDir: options.package ? path.resolve(options.package) : defaultPackage(),
+    packageDir,
+    core: resolveCore(options.core, packageDir),
     godot: godotExecutable(cache),
     cache,
     runs: Number.isFinite(options.runs) && options.runs > 0 ? options.runs : null,
     startupTimeoutMs: 120000,
     memoryWindowMs: 12000,
   };
-  const suites = options.suite === 'all' ? ['startup', 'waits', 'frame', 'memory', 'size', 'git', 'assets'] : [options.suite];
+  const suites = options.suite === 'all' ? ['startup', 'waits', 'frame', 'memory', 'size', 'git', 'assets', 'product'] : [options.suite];
   const results = [];
   for (const suite of suites) {
     const started = performance.now();
@@ -854,7 +1017,8 @@ async function main() {
       else if (suite === 'memory') result = await suiteMemory(ctx);
       else if (suite === 'size') result = await suiteSize(ctx);
       else if (suite === 'git') result = await suiteGit(ctx);
-      else result = await suiteAssets(ctx);
+      else if (suite === 'assets') result = await suiteAssets(ctx);
+      else result = await suiteProduct(ctx);
     } catch (error) {
       result = { id: suite, metrics: [], skipped: [core.skippedMetric(`${suite}.<suite>`, `suite error: ${String(error?.message ?? error)}`, `node desktop/delivery/measure.mjs ${suite}`)] };
     }
