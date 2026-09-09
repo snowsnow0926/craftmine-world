@@ -5,6 +5,7 @@ import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import {spawnSync} from 'node:child_process';
 const root=fileURLToPath(new URL('../../../',import.meta.url));
 const require=createRequire(path.join(root,'vendor/pi-desktop/packages/agent-runtime/package.json'));
 async function module(name){const out=await require('esbuild').build({entryPoints:[path.join(root,'vendor/pi-desktop/apps/desktop/electron/main/'+name+'.ts')],bundle:true,platform:'node',format:'esm',write:false});return import('data:text/javascript;base64,'+Buffer.from(out.outputFiles[0].text).toString('base64'));}
@@ -50,4 +51,10 @@ test('packaged provenance uses only the bounded trusted manifest and leaves deve
   const file=path.join(dir,'source/build-manifest.json');await fs.writeFile(file,JSON.stringify({format:'craftmine.build/1',appId:'world.craftmine.desktop',commit:'a'.repeat(40),sourceArchiveHash:'b'.repeat(64),privatePath:'C:/private',secret:'synthetic-secret'}));
   const identity=readCraftmineBuildIdentity(dir);assert.equal(identity.commit,'a'.repeat(40));assert.equal(identity.manifestHash.length,64);assert.equal(JSON.stringify(identity).includes('synthetic-secret'),false);
   await fs.writeFile(file,'x'.repeat(128*1024+1));assert.deepEqual(readCraftmineBuildIdentity(dir),{});
+});
+
+test('isolated installer execute refuses a local host before filesystem authority', {skip:process.platform!=='win32'},()=>{
+  const env={...process.env};delete env.GITHUB_ACTIONS;delete env.RUNNER_ENVIRONMENT;delete env.RUNNER_TEMP;
+  const result=spawnSync('powershell.exe',['-NoProfile','-NonInteractive','-WindowStyle','Hidden','-File',path.join(root,'desktop/ci/windows-isolated-validation.ps1'),'-Execute'],{env,encoding:'utf8',windowsHide:true,timeout:10000});
+  assert.notEqual(result.status,0);assert.match(result.stderr,/ISOLATED_RUNNER_REQUIRED/);assert.doesNotMatch(result.stderr,/EXPLICIT_PACKAGE_AND_HASH_REQUIRED/);
 });
