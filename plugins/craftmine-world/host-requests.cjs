@@ -60,8 +60,9 @@ function createHostRequests(core,{verifications,reviews,getSettings}){
       if(params.request){
         fields(params.request,['id','text']);
         const known=before.requirements.find(item=>item.id===params.request.id);
-        if(known&&known.text!==params.request.text)throw Error('CRAFTMINE_REQUIREMENT_REPLAY_MISMATCH');
-        if(!known)await core.call('task.recordContext',{context:params.context,requestId:boundedText(params.request.id,240),text:boundedText(params.request.text,16000),kind:'correction'});
+        // Context contains a bounded projection. Compare the full request in
+        // Rust's durable journal, never against a potentially truncated view.
+        await core.call('task.recordContext',{context:params.context,requestId:boundedText(params.request.id,240),text:boundedText(params.request.text,16000),kind:known?.kind||'correction'});
       }
       return params.request? snapshot(params.context):before;
     }

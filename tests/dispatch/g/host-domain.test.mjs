@@ -26,6 +26,10 @@ test('real Rust host bridge records corrections, forbids identity/limit forgery 
   selected='other';assert.equal((await call('task.context',{context})).world.id,'first');
   assert.equal((await call('selection.read',{})).worldId,'other');
   await assert.rejects(call('task.context',{context,request:{id:'r2',text:'伪造重试'}}),/REPLAY_MISMATCH/);
+  const longText='树的要求。'.repeat(400);
+  const long=await call('task.context',{context,request:{id:'long',text:longText}});
+  assert.equal(long.requirements.find(row=>row.id==='long').truncated,true);
+  assert.equal((await call('task.context',{context,request:{id:'long',text:longText}})).world.id,'first');
   const owned={context,binding:start.binding,generation:start.generation};
   const reserve={...owned,requestId:'model-1',purpose:'creation',estimatedInputTokens:100,maxOutputTokens:50};
   await assert.rejects(call('budget.reserve',{...reserve,generation:999}),/BINDING_MISMATCH/);

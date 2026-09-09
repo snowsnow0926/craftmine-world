@@ -180,6 +180,29 @@ fn receipt(
 }
 
 impl TaskJournal {
+    /// Recover a trusted desktop action's receipt after its short turn ended.
+    /// Scope is the original host session and world; this never opens a lease.
+    pub fn workspace_find_receipt(&self, args: &Value) -> Result<Value> {
+        super::durable::fields(args, &["projectId", "sessionId", "worldId", "toolCallId", "request"])?;
+        let project = super::durable::text(args, "projectId", 240)?;
+        let session = super::durable::text(args, "sessionId", 240)?;
+        let world = super::durable::text(args, "worldId", 240)?;
+        let call = super::durable::text(args, "toolCallId", 240)?;
+        call_id(call)?;
+        let task: Option<String> = self.db.query_row(
+            "SELECT t.id FROM craftmine_receipts r JOIN craftmine_tasks t ON t.id=r.task_id
+             JOIN craftmine_workspaces w ON w.task_id=t.id
+             WHERE r.tool_call_id=?1 AND w.world_id=?2
+             AND json_extract(t.binding,'$.projectId')=?3
+             AND json_extract(t.binding,'$.sessionId')=?4 LIMIT 1",
+            params![call,world,project,session], |row| row.get(0),
+        ).optional()?;
+        match task {
+            Some(id) => Ok(serde_json::to_value(receipt(&self.db, &id, call, &args["request"])?)?),
+            None => Ok(Value::Null),
+        }
+    }
+
     pub fn workspace_current(&self, args: &Value) -> Result<Value> {
         super::durable::fields(args, &["projectId", "sessionId"])?;
         let project = super::durable::text(args, "projectId", 240)?;

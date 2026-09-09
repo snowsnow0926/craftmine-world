@@ -31,6 +31,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "backup.cancel" => return journal.backup_cancel(params),
         "application.list" => return journal.application_list(params),
         "workspace.current" => return journal.workspace_current(params),
+        "workspace.findReceipt" => return journal.workspace_find_receipt(params),
         "task.context" => return journal.task_context(params),
         "task.recordContext" => return journal.task_record_context(params),
         "task.resume" => return journal.task_resume(params),

@@ -12,6 +12,8 @@ import {GameplaySession} from '../../app/gameplay.mjs';
 import {BehaviorState} from '../../app/behavior-state.mjs';
 import {validateRequestPlan} from '../../app/request-plan.mjs';
 import {assertionGuide} from '../../app/harness/assertions.mjs';
+export {createLibraryService} from './library-service.mjs';
+export {createMemoryService} from './memory-service.mjs';
 
 const groups={object:'objects',behavior:'behaviors',system:'systems'};
 
