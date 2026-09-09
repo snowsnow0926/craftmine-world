@@ -245,8 +245,9 @@ export async function runSelfCheck({ root = ROOT, env = {} } = {}) {
   const replay = await runAcceptance({ argv: ['--mode', 'replay', '--out', replayOut], env });
   checks.push({
     name: 'replay 模式：通过 / 证据不足 / 未执行被正确区分且退出码 0',
-    passed: replay.exitCode === 0 && replay.report.headline.passed === 6 && replay.report.headline.failed === 0 && replay.report.headline.insufficient === 1 && replay.report.headline.notRun === 21,
-    detail: `exit=${replay.exitCode} passed=${replay.report.headline.passed} insufficient=${replay.report.headline.insufficient} notRun=${replay.report.headline.notRun}`,
+    passed: replay.exitCode === 0 && replay.report.headline.passed === 6 && replay.report.headline.failed === 0 && replay.report.headline.insufficient === 1
+      && replay.report.headline.notRun === replay.report.headline.rounds - 7,
+    detail: `exit=${replay.exitCode} passed=${replay.report.headline.passed} insufficient=${replay.report.headline.insufficient} notRun=${replay.report.headline.notRun}/${replay.report.headline.rounds}`,
   });
 
   const negative = await runAcceptance({ argv: ['--mode', 'replay', '--fixtures', path.join(root, 'fixtures', 'negative'), '--out', negativeOut], env });
@@ -259,8 +260,8 @@ export async function runSelfCheck({ root = ROOT, env = {} } = {}) {
   const live = await runAcceptance({ argv: ['--mode', 'live', '--confirm-live', '--out', liveOut], env: {} });
   checks.push({
     name: '产品接口未接通时 live 记为尚未执行并退出码 3（不发模型调用）',
-    passed: live.exitCode === 3 && live.report.headline.notRun === 28 && live.report.headline.modelCalls === 0 && live.report.headline.passed === 0,
-    detail: `exit=${live.exitCode} notRun=${live.report.headline.notRun} modelCalls=${live.report.headline.modelCalls}`,
+    passed: live.exitCode === 3 && live.report.headline.notRun === live.report.headline.rounds && live.report.headline.modelCalls === 0 && live.report.headline.passed === 0,
+    detail: `exit=${live.exitCode} notRun=${live.report.headline.notRun}/${live.report.headline.rounds} modelCalls=${live.report.headline.modelCalls}`,
   });
 
   const forgedOut = await tempDir('forged');

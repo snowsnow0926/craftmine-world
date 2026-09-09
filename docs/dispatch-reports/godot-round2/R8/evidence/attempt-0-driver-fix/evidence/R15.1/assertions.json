@@ -1,0 +1,51 @@
+[
+  {
+    "id": "I.R15.1.1",
+    "kind": "machine",
+    "hard": true,
+    "passed": false,
+    "reason": "expected length >= 2, got 0"
+  },
+  {
+    "id": "I.R15.1.2",
+    "kind": "machine",
+    "hard": true,
+    "passed": false,
+    "reason": "expected a non-empty array at project.files"
+  },
+  {
+    "id": "I.R15.1.3",
+    "kind": "machine",
+    "hard": true,
+    "passed": false,
+    "reason": "expected true, got undefined"
+  },
+  {
+    "id": "I.R15.1.4",
+    "kind": "machine",
+    "hard": true,
+    "passed": false,
+    "reason": "expected true, got undefined"
+  },
+  {
+    "id": "I.R15.1.5",
+    "kind": "machine",
+    "hard": true,
+    "passed": false,
+    "reason": "expected true, got undefined"
+  },
+  {
+    "id": "I.R15.1.6",
+    "kind": "machine",
+    "hard": true,
+    "passed": false,
+    "reason": "element 1 failed: expected true, got false"
+  },
+  {
+    "id": "I.R15.1.7",
+    "kind": "accounting",
+    "hard": true,
+    "passed": false,
+    "reason": "accounting evidence is required and cannot be satisfied by the assertion evaluator"
+  }
+]

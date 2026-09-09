@@ -1,0 +1,93 @@
+{
+  "format": "craftmine.i.evidence/1",
+  "roundId": "R15.2",
+  "mode": "live",
+  "verdict": "passed",
+  "reasons": [],
+  "notes": null,
+  "identity": {
+    "product": {
+      "version": "core@33620215ecd7",
+      "clientVersion": "plugin@0.1.0",
+      "commit": "67ba7ff6785651e61398af6189d9f0ec9bb519f5"
+    },
+    "engine": {
+      "name": "godot",
+      "version": "4.7.2-stable",
+      "renderer": "gl_compatibility"
+    },
+    "base": {
+      "id": "first-person",
+      "version": "first-person",
+      "commit": null
+    },
+    "project": {
+      "treeHash": "e97ee58db465a771ba9eafba4b961406f6ba6233ceb632208fa24e882206eacc",
+      "path": "godot-project",
+      "fileCount": 8
+    },
+    "model": {
+      "provider": "deepseek",
+      "modelId": "deepseek-v4.1-flash-expires-on-0910",
+      "thinking": "high"
+    },
+    "input": {
+      "kind": "no-input",
+      "inputEventsSent": 0,
+      "pointerLockRequests": 0,
+      "focusSteals": 0,
+      "browserLaunched": false
+    },
+    "dataDir": "D:\\Craftmine World-worktrees\\godot-round2-r8-20260910\\test-results\\r8-real-Mh4TLA"
+  },
+  "usage": {
+    "format": "craftmine.i.usage/1",
+    "stage": "creation",
+    "calls": 1,
+    "promptTokens": 14614,
+    "cachedReadTokens": 457471,
+    "nonCachedInputTokens": -442857,
+    "outputTokens": 56658,
+    "totalTokens": 528743,
+    "unknownCalls": 0,
+    "reportedBy": [
+      "model-usage"
+    ]
+  },
+  "failures": [],
+  "interventions": [],
+  "artifacts": [],
+  "files": [
+    {
+      "path": "assertions.json",
+      "sha256": "bfdda8d96a88cfc9d09c7802581cc9a278f1faf6052a21e9290788a05910bdd4",
+      "bytes": 759
+    },
+    {
+      "path": "observation.json",
+      "sha256": "ac4bcd479b56ae767514b94f7b7807a10f36a81eccfbd9c9f9af3015c2e0e015",
+      "bytes": 3802
+    },
+    {
+      "path": "request.raw.txt",
+      "sha256": "e1c39e3da8203369c13103c3029028eba7428441e76b85ab4e056ea8a0eb58d8",
+      "bytes": 219
+    },
+    {
+      "path": "response.raw.txt",
+      "sha256": "30a7a57e205e217a4c8f03d5da49ce8d023e77f847fad13d8db8b01ef5c7e5cf",
+      "bytes": 6090
+    },
+    {
+      "path": "round.json",
+      "sha256": "66b30ddaa06d578521bf6f6c113751763d248c786569f871285234f756aee54e",
+      "bytes": 581
+    },
+    {
+      "path": "turn.json",
+      "sha256": "6152c7b6eb346a10ee4ccba79b3c1e0e759ab7d221ef126d2fe8dc854f9a0cd2",
+      "bytes": 54
+    }
+  ],
+  "sealedAt": "2026-09-09T18:58:48.094Z"
+}

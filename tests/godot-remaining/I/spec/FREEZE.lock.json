@@ -1,11 +1,11 @@
 {
   "format": "craftmine.i.freeze-lock/1",
-  "frozenAt": "2026-09-09T17:03:24.962Z",
+  "frozenAt": "2026-09-09T18:53:31.763Z",
   "sourceRoot": "D:\\Craftmine World",
   "sourceRootAvailable": true,
   "files": {
-    "spec/acceptance-set.frozen.json": "2412e180495eead04d174248a9db557c7ba2577c5074cf4a8b627a343f4b6dc9",
-    "spec/assertions.frozen.json": "88b62983bdce90b5e91054f6fbbf6ed20c416eafeccf40ba886964d108585b82",
+    "spec/acceptance-set.frozen.json": "4657bab8e00cbb94aaff2cada27cef887dd52246ca48b6c26be2683691ce4497",
+    "spec/assertions.frozen.json": "ac3731f916986c440c3c73c3c9230232cd14f84f51d8877cef962171c605cb26",
     "spec/scoring.frozen.json": "909f4de7fa8006d0f6e3bcd8cadd1c6cf9a3514bbd94b76869484521d30f3e3f",
     "spec/failure-classes.frozen.json": "bcb07ad5165dddae5efb3e920329b0a6af2270cd139e28069407e6e931b82eb5",
     "spec/ledger.a01-a17.frozen.json": "c9507d81fdeea845d61af440de73c73cc0b1e242a961df22ddf6083919395755",
@@ -15,16 +15,16 @@
   },
   "sources": {
     "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md": {
-      "sha256": "06a677b61167691988095713c098dbb3079b87e5f35f55ad7898687d529c2893",
-      "bytes": 47845
+      "sha256": "92b0a04f1d6cca624bde8bff2dc6623acd3c6dd710077d2914f426abdcc67592",
+      "bytes": 48801
     },
     "docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md": {
-      "sha256": "38f23826e5c4b09db706eb6ac4faeaaf8f2ce05c2eba78a789d3860f5a2d3d68",
-      "bytes": 21204
+      "sha256": "76d859c84354d74de4de3a99a4a098bd6246f75c2819632206b0e4105cc2598a",
+      "bytes": 22081
     },
     "docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md": {
-      "sha256": "05f5f7d9396064a61717da0562196e843ea0ee3d742973f0f728c11026fb1a41",
-      "bytes": 23137
+      "sha256": "a386891a2937723690cda7e0ca3aab21e7729daac263d8ffd43561ff4d0eac32",
+      "bytes": 24715
     },
     "docs/dispatch-prompts/godot-remaining-20260910/I-real-model-acceptance.md": {
       "sha256": "4223e76e77c15d71ab48c746a9c7309fef03fa8e196c435c69b99a84171faa2d",

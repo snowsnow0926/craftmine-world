@@ -33,6 +33,10 @@
     "assets": "retrieved, refFixed, modifiedFromExisting, doorParts[{present}], v1StillRuns, v2PreviewIndependent, upgradeKeptState, twoInstancesIndependent, exportComplete, portable, containsCredentials, containsPrivateProgress, missingBodyReported",
     "release": "packageMatchesSource, storiesRerunInPackage[], licenseManifestMatches, installLifecycle[{result}], independentWindowsEnvironment",
     "performance": "stages, memoryMb, frameMs, installBytes, sampleCount",
+    "project": "baseId, status, manifestHash, manifestHashChanged, revision, fileCount, files[{path, sha256, bytes}], sourceEvidence{crosshairCentered, weaponUnderCamera, equipmentSwitch, hasScripts, projectGodot}",
+    "toolCalls": "[{name, ok, code, error}]",
+    "writes": "{attempted, failed, names[]}",
+    "build": "executorState, executorReason, available, jobId, status, checked",
     "usage": "calls, promptTokens, cachedReadTokens, nonCachedInputTokens, outputTokens, totalTokens, unknownCalls, byStage",
     "failures": "[{class, stage, message}]",
     "humanInterventions": "[{kind, note}]",
@@ -418,6 +422,36 @@
           "visualEvidence": ["截图：安装与升级结果"],
           "assertions": ["I.R14.2.1", "I.R14.2.2", "I.R14.2.3", "I.R14.2.4"],
           "blockedBy": ["K", "root"]
+        }
+      ]
+    },
+    {
+      "id": "R15",
+      "title": "真实模型驱动冒烟：产品适配器（源级证据，不代替 R02 运行时断言）",
+      "stories": [],
+      "extraRequirements": ["R8 产品适配器首条真实需求（源级/构建级证据）"],
+      "rounds": [
+        {
+          "id": "R15.1",
+          "phase": "initial",
+          "prompt": "这个世界的 Godot 工程还没有建立（godot_project_index 会返回 GODOT_PROJECT_NOT_FOUND）。请在当前世界新建一个第一人称 Godot 工程：做出中央准星和第一人称持枪，准星必须画在视口正中，枪要挂在相机上跟随视角旋转，切到剑时模型和准星要跟着换。请真正写入工程源码，不要只描述。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["真实模型通过产品工具写出 Godot 工程源码", "工程含 project.godot 与至少一个源码/场景文件", "源码里准星按视口中心定位", "武器节点挂在相机下", "工具调用无错误"],
+          "visualEvidence": [],
+          "assertions": ["I.R15.1.1", "I.R15.1.2", "I.R15.1.3", "I.R15.1.4", "I.R15.1.5", "I.R15.1.6", "I.R15.1.7"],
+          "blockedBy": ["R2", "R7", "C"],
+          "limits": "源级证据只证明模型写出了符合要求的源码；R02.1 的运行时准星偏移、持枪跟随与装备切换仍需真实运行观测，未被本条目替代。"
+        },
+        {
+          "id": "R15.2",
+          "phase": "follow-up",
+          "prompt": "继续改这个上一轮刚建好的同一个工程：把准星的形状换成更细的一种样式，并让枪在待机时有轻微呼吸摆动。不要重建工程，保留原来的相机挂点和准星居中规则。",
+          "identity": { "kind": "real-product-model", "modelRequired": true, "inputPolicy": "no-input", "dataDirIsolated": true },
+          "mustObserve": ["在同一工程上继续修改而不是重建", "准星仍按视口中心定位", "武器仍挂在相机下", "工具调用无错误"],
+          "visualEvidence": [],
+          "assertions": ["I.R15.2.1", "I.R15.2.2", "I.R15.2.3", "I.R15.2.4", "I.R15.2.5", "I.R15.2.6"],
+          "blockedBy": ["R2", "R7", "C"],
+          "limits": "同上：源级证据不替代 R02.2 的运行时开火/伤害/弹药/冷却观测。"
         }
       ]
     }

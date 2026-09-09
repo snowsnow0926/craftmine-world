@@ -1,0 +1,52 @@
+[
+  {
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "The world draft is empty and no Godot project exists yet. Let me read the installed contracts and any world memory before writing source."
+      },
+      {
+        "type": "toolCall",
+        "id": "call_00_z6vHvvrMjOXlYSWeqQeS7131",
+        "name": "plugin_craftmine_world_capabilities_read",
+        "arguments": {
+          "section": "catalog",
+          "limit": 4000
+        }
+      },
+      {
+        "type": "toolCall",
+        "id": "call_01_3ymAb4YQaRBAV1HgHwIW1070",
+        "name": "plugin_craftmine_world_memory_search",
+        "arguments": {
+          "query": "godot first-person crosshair weapon camera",
+          "limit": 20,
+          "includeInactive": true
+        }
+      }
+    ]
+  },
+  {
+    "role": "toolResult",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"section\":\"catalog\",\"text\":\"{\\n  \\\"format\\\": \\\"craftmine.capabilities/1\\\",\\n  \\\"runtime\\\": \\\"craftmine-web/5\\\",\\n  \\\"entry\\\": {\\n    \\\"export\\\": \\\"step\\\",\\n    \\\"signature\\\": \\\"async step({frame, params, state}) => {state, commands}\\\",\\n    \\\"module\\\": \\\"ES 模块，必须导出 step\\\"\\n  },\\n  \\\"events\\\": [\\n    {\\n      \\\"type\\\": \\\"start\\\",\\n      \\\"payload\\\": {},\\n      \\\"note\\\": \\\"模块装载时一次，用来注册物品和面板\\\"\\n    },\\n    {\\n      \\\"type\\\": \\\"tick\\\",\\n      \\\"payload\\\": {\\n        \\\"dt\\\": \\\"秒\\\"\\n      },\\n      \\\"note\\\": \\\"每帧一次，返回的 commands 最多 32 条\\\"\\n    },\\n    {\\n      \\\"type\\\": \\\"interact\\\",\\n      \\\"payload\\\": {\\n        \\\"targetId\\\": \\\"对象 ID\\\"\\n      },\\n      \\\"note\\\": \\\"玩家按 E 指向声明过的目标\\\"\\n    },\\n    {\\n      \\\"type\\\": \\\"contact\\\",\\n      \\\"payload\\\": {\\n        \\\"targetId\\\": \\\"对象 ID\\\"\\n      },\\n      \\\"note\\\": \\\"玩家接触声明过的目标\\\"\\n    },\\n    {\\n      \\\"type\\\": \\\"attack\\\",\\n      \\\"payload\\\": {\\n        \\\"targetId\\\": \\\"对象 ID\\\"\\n      },\\n      \\\"note\\\": \\\"玩家攻击命中声明过的目标\\\"\\n    },\\n    {\\n      \\\"type\\\": \\\"land\\\",\\n      \\\"payload\\\": {\\n        \\\"targetId\\\": \\\"对象 ID\\\"\\n      },\\n      \\\"note\\\": \\\"玩家落在声明过的目标上\\\"\\n    },\\n    {\\n      \\\"type\\\": \\\"key\\\",\\n      \\\"payload\\\": {\\n        \\\"code\\\": \\\"keys 中声明过的按键代码\\\"\\n      },\\n      \\\"note\\\": \\\"只有模块在 keys 里声明过的按键才会触发；不要读 frame.keys\\\"\\n    }\\n  ],\\n  \\\"keys\\\": [\\n    \\\"KeyB\\\",\\n    \\\"KeyC\\\",\\n    \\\"KeyG\\\",\\n    \\\"KeyH\\\",\\n    \\\"KeyI\\\",\\n    \\\"KeyJ\\\",\\n    \\\"KeyK\\\",\\n    \\\"KeyL\\\",\\n    \\\"KeyM\\\",\\n    \\\"KeyN\\\",\\n    \\\"KeyO\\\",\\n    \\\"KeyP\\\",\\n    \\\"KeyQ\\\",\\n    \\\"KeyU\\\",\\n    \\\"KeyV\\\",\\n    \\\"KeyX\\\",\\n    \\\"KeyY\\\",\\n    \\\"KeyZ\\\",\\n    \\\"Digit3\\\",\\n    \\\"Digit4\\\",\\n    \\\"Digit5\\\",\\n    \\\"Digit6\\\",\\n    \\\"Digit7\\\",\\n    \\\"Digit8\\\",\\n    \\\"Digit9\\\"\\n  ],\\n  \\\"permissions\\\": [\\n    \\\"objects.write\\\",\\n    \\\"player.motion\\\",\\n    \\\"hud.message\\\",\\n    \\\"inventory.write\\\",\\n    \\\"audio.play\\\",\\n    \\\"targets.write\\\",\\n    \\\"resources.write\\\",\\n    \\\"health.write\\\"\\n  ],\\n  \\\"capabilities\\\": [\\n    \\\"inventory.read@1\\\",\\n    \\\"inventory.items@1\\\",\\n    \\\"hud.panel@1\\\"\\n  ],\\n  \\\"requires\\\": [\\n    \\\"health@1\\\",\\n    \\\"ranged@1\\\",\\n    \\\"melee@1\\\",\\n    \\\"resource@1\\\"\\n  ],\\n  \\\"commands\\\": [\\n    {\\n      \\\"type\\\": \\\"object.patch\\\",\\n      \\\"permission\\\": \\\"objects.write\\\",\\n      \\\"scope\\\": \\\"声明过的 targets 里的对象\\\",\\n      \\\"fields\\\": [\\n        {\\n          \\\"name\\\": \\\"id\\\",\\n          \\\"description\\\": \\\"对象 ID\\\"\\n        },\\n        {\\n          \\\"name\\\": \\\"position\\\",\\n          \\\"description\\\": \\\"{x,y,z} 或 null；整项省略等同 null（保留原值）\\\"\\n        },\\n        {\\n          \\\"name\\\": \\\"visible\\\",\\n          \\\"description\\\": \\\"boolean 或 null\\\"\\n        },\\n        {\\n          \\\"name\\\": \\\"solid\\\",\\n          \\\"description\\\": \\\"boolean 或 null\\\"\\n        },\\n        {\\n          \\\"name\\\": \\\"color\\\",\\n          \\\"description\\\": \\\"'#RRGGBB' 或 null\\\"\\n        },\\n        {\\n          \\\"name\\\": \\\"yaw\\\",\\n          \\\"description\\\": \\\"null 或 0/90/180/270\\\"\\n        },\\n        {\\n          \\\"name\\\": \\\"duration\\\",\\n          \\\"description\\\": \\\"可选 0..5 秒，平滑移动\\\"\\n        }\\n      ],\\n      \\\"quota\\\": \\\"每步最多 32 条命令\\\",\\n      \\\"example\\\": \\\"{type:'object.patch',id:'door-1',visible:false}\\\",\\n      \\\"note\\\": \\\"visible:true 不会让已死亡的目标重新生效，复活必须用 target.revive\\\"\\n    },\\n    {\\n      \\\"type\\\": \\\"player.impulse\\\",\\n      \\\"permission\\\": \\\"player.motion\\\",\\n      \\\"scope\\\": \\\"当前玩家\\\",\\n      \\\"fields\\\": [\\n        {\\n          \\\"name\\\": \\\"velocity\\\",\\n          \\\"description\\\": \\\"{x,y,z}，每轴 -18..18\\\"\\n        }\\n      ],\\n      \\\"quota\\\": \\\"每步最多 1 条\\\",\\n      \\\"example\\\": \\\"{type:'player.impulse',velocity:{x:0,y:8,z:0}}\\\"\\n    },\\n    {\\n      \\\"type\\\": \\\"hud.message\\\",\\n      \\\"permission\\\": \\\"hud.message\\\",\\n      \\\"scope\\\": \\\"当前玩家\\\",\\n      \\\"fields\\\": [\\n        {\\n          \\\"name\\\": \\\"text\\\",\\n          \\\"description\\\": \\\"最多 160 字纯文本\\\"\\n        },\\n        {\\n          \\\"name\\\": \\\"tone\\\",\\n          \\\"description\\\": \\\"可选 'info' | 'warn' | 'success'\\\"\\n        },\\n        {\\n          \\\"name\\\": \\\"duration\\\",\\n          \\\"description\\\": \\\"可选 1000..10000 毫秒\\\"\\n        }\\n      ],\\n      \\\"quota\\\": \\\"每步最多 1 条\\\",\\n      \\\"example\\\": \\\"{type:'hud.message',text:'门开了',tone:'success'}\\\"\\n    },\\n    {\\n      \\\"type\\\": \\\"audio.play\\\",\\n      \\\"permission\\\": \\\"audio.play\\\",\\n      \\\"scope\\\": \\\"当前玩家\\\",\\n      \\\"fields\\\": [\\n        {\\n          \\\"name\\\": \\\"sound\\\",\\n          \\\"description\\\": \\\"'shoot' | 'hit' | 'open' | 'pickup' | 'error' | 'jump' | 'land' | 'step' | 'explode' | 'heal' | 'hurt' | 'unlock' | 'deny' | 'win'\\\"\\n        },\\n        {\\n          \\\"name\\\": \\\"volume\\\",\\n          \\\"description\\\": \\\"可选 0..1\\\"\\n        }\\n      ],\\n      \\\"quot\",\"start\":0,\"next\":4000,\"totalChars\":10295}"
+      }
+    ]
+  },
+  {
+    "role": "toolResult",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"items\":[],\"next\":null,\"offset\":0,\"total\":0}"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "content": []
+  }
+]

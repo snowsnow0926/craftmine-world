@@ -1,0 +1,71 @@
+{
+  "format": "craftmine.i.observation/1",
+  "project": {
+    "files": [],
+    "baseId": null,
+    "status": null,
+    "manifestHash": null,
+    "revision": null,
+    "fileCount": 0,
+    "error": "GODOT_PROJECT_NOT_FOUND"
+  },
+  "build": {
+    "executorState": "unavailable",
+    "executorReason": "GODOT_BROKER_MISSING",
+    "available": false,
+    "checked": false
+  },
+  "writes": {
+    "attempted": 0,
+    "failed": 0,
+    "names": []
+  },
+  "toolCalls": [
+    {
+      "name": "godot_project_index",
+      "ok": false,
+      "code": "GODOT_PROJECT_NOT_FOUND",
+      "error": "GODOT_PROJECT_NOT_FOUND"
+    },
+    {
+      "name": "project_inspect",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "capabilities_read",
+      "ok": true,
+      "code": null,
+      "error": null
+    },
+    {
+      "name": "memory_search",
+      "ok": true,
+      "code": null,
+      "error": null
+    }
+  ],
+  "usage": {
+    "calls": 3,
+    "promptTokens": 2194,
+    "cachedReadTokens": 15872,
+    "nonCachedInputTokens": -13678,
+    "outputTokens": 33180,
+    "totalTokens": 51246,
+    "unknownCalls": 0
+  },
+  "failures": [
+    {
+      "class": "unclassified",
+      "stage": "tool:godot_project_index",
+      "message": "GODOT_PROJECT_NOT_FOUND",
+      "defined": true
+    }
+  ],
+  "humanInterventions": [],
+  "evidence": {
+    "screenshots": [],
+    "human": []
+  }
+}
