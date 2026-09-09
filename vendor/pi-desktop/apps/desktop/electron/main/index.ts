@@ -180,6 +180,7 @@ import { builtinSkills, loadBuiltinSkillBody } from "./builtin-skills";
 import { registerPluginDevTools } from "./plugin-dev-tools";
 import { PluginPanelHost } from "./plugin-panel-host";
 import { PluginViewHost, pluginViewKey } from "./plugin-view-host";
+import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
 import { parseAllowedExternalUrl } from "./safe-open-external";
 import type { PluginAppearance } from "../shared/plugin-panel-chrome";
 import { Logger, ignoreBrokenStdio } from "./logger";
@@ -5850,6 +5851,14 @@ function registerIpc() {
       });
     }
   };
+
+  handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
+    assertMainWindowSender(event);
+    return invokeCraftmineNavigation(payload, {
+      invoke: (channel, params) => plugins.invokePanelBridge("craftmine.world", channel, params),
+      navigate: (request) => pluginViews.navigateCraftmine(request),
+    });
+  });
 
   handle(IPC.invoke.pluginLauncherToggle, async () => {
     await togglePluginLauncher();

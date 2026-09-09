@@ -8704,3 +8704,11 @@ require the original receipt without another mutation. Inject failure before a
 commit; require the original uncertain error when no receipt exists. Retain the
 `craftmine.request/2` snapshot protocol and run the existing batch-07 review-fixture
 regression. These fixtures do not call a real provider or run authored Godot code.
+
+CRAFTMINE-020: Through the main-window navigation IPC, read the actual world
+list, create a voxel world and switch with the retained view's live snapshot.
+Inject a save failure: the old selection and instance remain, the error reaches
+the caller, and no world is created. Reject concurrent operations, raw progress
+writes, non-main-window senders and Godot application credentials. Reject
+undelivered base IDs before creating data. Use independent headless data and
+no real input, focus or Pointer Lock.

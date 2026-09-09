@@ -16,6 +16,11 @@ function assertChannel(channel: string) {
 }
 
 const api = {
+  pluginPanelInvoke: async (pluginId: string, channel: string, payload: Record<string, unknown> = {}) => {
+    const result = await ipcRenderer.invoke(IPC.invoke.pluginPanelInvoke, { pluginId, channel, payload });
+    if (!result?.ok) throw new Error(result?.error?.message ?? "World operation failed");
+    return result.data;
+  },
   invoke: async <T = unknown>(channel: string, ...args: unknown[]): Promise<T> => {
     assertChannel(channel);
     return ipcRenderer.invoke(channel, ...args) as Promise<T>;

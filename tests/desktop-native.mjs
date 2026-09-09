@@ -119,6 +119,31 @@ try {
   const guards=await client.rpc('guards');evidence.guards=guards;
   check('桌面、世界面板和游戏初始化时均禁止鼠标锁定与焦点请求',guards.length>=3&&guards.every(frame=>frame.guard&&frame.guard.pointerLock===0&&frame.guard.focus===0));
   check('实际游戏隔离帧无法访问 Node 或插件桥',guards.some(frame=>frame.url==='about:srcdoc'&&frame.node==='undefined'&&frame.bridge==='undefined'));
+  if(process.env.CRAFTMINE_TEST_NAVIGATION==='1') {
+    const nav=(channel,payload={})=>client.rpc('worldNavigation',{channel,payload},20000);
+    const list=await nav('world.list');
+    check('左栏真实 preload IPC 读取 Rust 世界列表',list.activeWorldId===initial.id&&list.worlds.some(item=>item.id===initial.id));
+    const options=await nav('world.createOptions');
+    check('创建目录只列出已接通的体素空白底座',options.bases.length===1&&options.bases[0].id==='craftmine-web/5'&&options.bases[0].delivered);
+    await assert.rejects(nav('world.saveProgress',{id:initial.id,snapshot:{}}),/PERMISSION_DENIED/);
+    await assert.rejects(nav('godot.applicationPrepare',{}),/PERMISSION_DENIED/);
+    check('原生导航 IPC 拒绝原始存档写入和应用令牌',true);
+    await assert.rejects(nav('world.create',{title:'Unavailable',baseId:'top-down'}),/WORLD_BASE_UNAVAILABLE/);
+    check('未交付底座创建失败后选择和世界数量不变',(await nav('world.list')).worlds.length===list.worlds.length&&(await client.state()).id===initial.id);
+    const created=await nav('world.create',{title:'Navigation acceptance',baseId:'craftmine-web/5',starterId:'blank'});
+    await client.state(state=>state.loaded&&state.id===created.id&&!state.disabled);
+    const switched=await nav('world.switch',{id:initial.id});
+    await client.state(state=>state.loaded&&state.id===initial.id&&!state.disabled);
+    check('原生创建和切换通过保留视图保存后完成',switched.ok&&switched.activeWorldId===initial.id);
+    const navDatabase=path.join(profile,'plugins/data/craftmine.world/tasks.sqlite');
+    lock=new DatabaseSync(navDatabase);lock.exec('BEGIN IMMEDIATE');
+    await assert.rejects(nav('world.create',{title:'Blocked by live save'}),/locked/i);
+    const retained=await client.state();
+    const afterFailure=await nav('world.list');
+    check('真实存档写锁使左栏创建失败且保留旧世界',retained.id===initial.id&&afterFailure.activeWorldId===initial.id&&afterFailure.worlds.length===list.worlds.length+1);
+    lock.exec('ROLLBACK');lock.close();lock=null;
+    evidence.navigation={initial:initial.id,created:created.id,checks:6,transport:'renderer-preload-main-retained-view-real-plugin-real-rust'};
+  }
   if(process.env.CRAFTMINE_TEST_DRAFTS==='1'||process.env.CRAFTMINE_TEST_VERIFICATION==='1'||reviewProvider) {
     const drafts=await client.rpc('draftProbe',{},liveReview?220000:reviewProvider?180000:110000);evidence.drafts=drafts;
     if(drafts.verification?.preview?.image){fs.writeFileSync(path.join(directory,'native-check-preview.png'),Buffer.from(drafts.verification.preview.image,'base64'));delete drafts.verification.preview.image;}

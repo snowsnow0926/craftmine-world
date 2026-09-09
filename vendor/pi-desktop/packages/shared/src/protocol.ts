@@ -146,6 +146,7 @@ export const IPC = {
     pluginThemes: "pi-desktop/plugin/themes",
     pluginServices: "pi-desktop/plugin/services",
     pluginViews: "pi-desktop/plugin/views",
+    pluginPanelInvoke: "pi-desktop/plugin/panel/invoke",
     pluginViewOpen: "pi-desktop/plugin/view/open",
     pluginViewClose: "pi-desktop/plugin/view/close",
     pluginViewSetBounds: "pi-desktop/plugin/view/setBounds",

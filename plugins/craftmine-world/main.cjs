@@ -48,7 +48,7 @@ async function onLoad() {
       godotExecutorGate: info.godotExecutorGate===true,
       // The core never runs the engine itself; a registered isolated executor
       // is required before a build job can leave the blocked state.
-      godotBuildAvailable: info.godotBuildJobs===true,
+      godotBuildAvailable: false,
       godotExecutionInCore: info.godotExecution===true,
       verificationJobsAvailable: info.verificationJobs===true,
       playerApplicationsAvailable: info.playerApplications===true,
@@ -98,16 +98,11 @@ async function onPanelInvoke(channel, payload={}) {
   if(channel==='godot.candidateRead')return core.call('godotCandidate.read',{worldId:payload.worldId,candidateId:payload.candidateId});
   if(channel==='godot.applicationRead')return core.call('godotApplication.read',{id:payload.id});
   if(channel==='godot.applicationAbort')return core.call('godotApplication.abort',{id:payload.id});
-  if(channel==='godot.applicationPrepare') {
-    // The player's panel supplies the candidate and its saved revision. The
-    // launch token and evidence are minted by the host, never by the page.
-    const id=payload.id||randomUUID();
-    const token=randomUUID();
-    return {...await core.call('godotApplication.prepare',{id,token,candidateId:payload.candidateId,
-      worldId:payload.worldId,revision:payload.revision,snapshot:payload.snapshot}),token};
-  }
-  if(channel==='godot.applicationCommit') {
-    return core.call('godotApplication.commit',{id:payload.id,token:payload.token,evidence:payload.evidence});
+  // A page must never obtain a launch token and attest to its own candidate.
+  // Reopen this flow only through a trusted runtime coordinator with durable
+  // progress and an independently observed candidate instance.
+  if(channel==='godot.applicationPrepare'||channel==='godot.applicationCommit') {
+    throw Error('GODOT_APPLICATION_HOST_REQUIRED');
   }
 
   if(channel==='world.importLegacy') {
@@ -128,12 +123,20 @@ async function onPanelInvoke(channel, payload={}) {
   if(channel==='world.list') {
     return {worlds:await core.call('world.list'),activeWorldId:(await pi.plugin.getSettings()).activeWorldId};
   }
+  if(channel==='world.createOptions')return {
+    create:true,switch:true,
+    bases:[{id:'craftmine-web/5',label:'网页体素',delivered:true}],
+    starters:[{id:'blank',label:'空白世界',delivered:true}],
+  };
   if(channel==='world.create') {
+    if(payload.baseId && payload.baseId!=='craftmine-web/5')throw Error('WORLD_BASE_UNAVAILABLE');
+    if(payload.starterId && payload.starterId!=='blank')throw Error('WORLD_STARTER_UNAVAILABLE');
     const title=String(payload.title??'').trim();
     const record=await core.call('world.create',{id:randomUUID(),title,world:emptyWorld(title)});
-    await pi.plugin.setSettings({activeWorldId:record.id});
+    if(payload.activate!==false)await pi.plugin.setSettings({activeWorldId:record.id});
     return record;
   }
+  if(channel==='world.read')return core.call('world.read',{id:payload.id});
   if(channel==='world.open') {
     const record=await core.call('world.read',{id:payload.id});
     await pi.plugin.setSettings({activeWorldId:record.id});

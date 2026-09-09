@@ -72,7 +72,7 @@ export function installHeadlessControl(access: {
     return view.executeJavaScript(script, false);
   };
   process.on("message", (input: unknown) => {
-    const request = input as { type?: string; id?: string; method?: string; name?: string };
+    const request = input as { type?: string; id?: string; method?: string; name?: string; channel?: string; payload?: Record<string, unknown> };
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
       switch (request.method) {
@@ -85,6 +85,12 @@ export function installHeadlessControl(access: {
         case "desktopState": {
           const window = access.window(); if (!window) throw new Error("Window is not ready");
           return window.webContents.executeJavaScript(`(async()=>({title:document.title,text:document.body.innerText,version:globalThis.piDesktop?await piDesktop.invoke(piDesktop.channels.invoke.appGetVersion):null,guard:globalThis.__craftmineHeadless}))()`, false);
+        }
+        case "worldNavigation": {
+          const window = access.window(); if (!window) throw new Error("Window is not ready");
+          return window.webContents.executeJavaScript(
+            `globalThis.piDesktop.pluginPanelInvoke("craftmine.world",${JSON.stringify(request.channel)},${JSON.stringify(request.payload ?? {})})`, false,
+          );
         }
         case "draftProbe": return access.draftProbe();
         case "guards": {

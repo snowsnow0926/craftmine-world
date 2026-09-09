@@ -1,6 +1,10 @@
 # Spec: left-column world navigation
 
-Status: implemented on branch `codex/godot-parallel-d-20260909` (task D, Godot parallel dispatch).
+Status: task D renderer implementation plus the production navigation gateway
+from the integration audit (ADR 0314). Reads use the real plugin; create and
+switch run in the retained view and save before changing selection. Busy and
+save failures propagate to the caller. Only the delivered voxel blank starter
+is selectable until Godot execution, progress and runtime adapters are complete.
 
 ## Problem
 

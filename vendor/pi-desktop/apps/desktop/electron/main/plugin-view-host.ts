@@ -220,6 +220,16 @@ export class PluginViewHost {
     await this.prepareEntries([...this.views.values()]);
   }
 
+  async navigateCraftmine(request: Record<string, unknown>): Promise<unknown> {
+    const entry = this.views.get(pluginViewKey("craftmine.world", "world"));
+    if (!entry || entry.view.webContents.isDestroyed()) throw new Error("WORLD_VIEW_UNAVAILABLE");
+    // JSON is a JavaScript value here, never shell text. The method is fixed and
+    // the destination is the trusted product panel, never authored gameplay.
+    return entry.view.webContents.executeJavaScript(
+      `globalThis.craftmineView.navigate(${JSON.stringify(request)})`, false,
+    );
+  }
+
   private async prepareEntries(entries: LiveView[]): Promise<void> {
     await prepareWorldViewsForQuit(entries.map((entry) => ({
       pluginId: entry.pluginId,

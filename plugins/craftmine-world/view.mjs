@@ -31,7 +31,8 @@ document.documentElement.style.setProperty('--godot-chrome',GODOT_CHROME_HEIGHT+
 let godot=false;
 const godotStateLabels={loading:'载入中',ready:'已就绪',paused:'已暂停',saving:'保存中',saved:'已保存',failed:'运行失败',closed:'已关闭'};
 function isGodotWorld(record) {
-  return record?.world?.build?.engine?.kind==='godot-web';
+  return record?.world?.build?.engine?.kind==='godot-web' ||
+    record?.world?.build?.scene?.format==='craftmine.godot-scene/1';
 }
 
 function applyAppearance(appearance) {
@@ -112,7 +113,7 @@ function snapshot({freeze=false}={}) {
 async function save({freeze=false}={}) {
   // The Electron host owns the Godot save transaction; this page must not
   // snapshot or call world.saveProgress for a Godot world.
-  if(godot)return {godot:true};
+  if(godot)throw Error('Godot 世界保存服务尚未接入，未切换世界');
   if(applicationAttempt)await reconcileApplication();
   if(!bridge||!loaded||!current?.id)return;
   const result=await snapshot({freeze});
@@ -208,7 +209,40 @@ addEventListener('message',event=>{
 
 // Only the trusted product panel owns this lifecycle surface. Authored code
 // lives in the opaque game iframe and cannot reach it.
-globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,showChecks:()=>setMode(true),showWorkbench:tab=>openWorkbench(tab),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
+globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,navigate,showChecks:()=>setMode(true),showWorkbench:tab=>openWorkbench(tab),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
+
+// Both navigation columns use the same live-view save sequence. Reject busy
+// requests explicitly; action() deliberately absorbs errors for DOM handlers.
+async function navigate(request) {
+  if(busy||closing||preview||applicationAttempt||workbench?.busy)throw Error('WORLD_BUSY');
+  if(!bridge||!loaded||!current?.id)throw Error('WORLD_VIEW_UNAVAILABLE');
+  if(!['switch','create'].includes(request?.operation))throw Error('INVALID_NAVIGATION_REQUEST');
+  if(request.operation==='switch'&&request.id===current.id)return {ok:true,activeWorldId:current.id};
+  busy=true;controls();errorBox.hidden=true;
+  const previous=current.id;
+  activeOperation=(async()=>{
+    try {
+      let target;
+      if(request.operation==='switch') {
+        target=await bridge.invoke('world.read',{id:request.id});
+        if(isGodotWorld(target))throw Error('GODOT_RUNTIME_UNAVAILABLE');
+      }
+      await save({freeze:true});
+      if(request.operation==='create')target=await bridge.invoke('world.create',{
+        title:request.title,baseId:request.baseId,starterId:request.starterId,activate:false,
+      });
+      const record=await bridge.invoke('world.open',{id:target.id});
+      mount(record);
+      // A failed list refresh cannot undo a completed switch.
+      await refreshList().catch(showError);
+      return request.operation==='create'?{id:record.id,title:record.title}:{ok:true,activeWorldId:record.id};
+    } catch(error) {
+      if(current?.id===previous)send('resume');
+      showError(error);throw error;
+    } finally {busy=false;controls();select.value=current?.id||'';}
+  })();
+  return activeOperation;
+}
 
 const checkLabels={queued:'等待检查',running:'后台检查中',passed:'机器检查通过',failed:'检查未通过',cancelled:'已取消',interrupted:'已中断'};
 function setMode(checks) {
@@ -421,15 +455,12 @@ document.getElementById('import-form').addEventListener('submit',event=>{
 document.getElementById('cancel-create').addEventListener('click',()=>{form.hidden=true;});
 form.addEventListener('submit',event=>{
   event.preventDefault();
-  void action(async()=>{
-    await save({freeze:true});
-    const record=await bridge.invoke('world.create',{title:document.getElementById('world-name').value});
-    form.hidden=true;form.reset();mount(record);await refreshList();
-  });
+  void navigate({operation:'create',title:document.getElementById('world-name').value})
+    .then(()=>{form.hidden=true;form.reset();}).catch(()=>{});
 });
 select.addEventListener('change',()=>{
   const id=select.value;
-  void action(async()=>{await save({freeze:true});mount(await bridge.invoke('world.open',{id}));await refreshList();}).finally(()=>{select.value=current?.id||'';});
+  void navigate({operation:'switch',id}).catch(()=>{select.value=current?.id||'';});
 });
 setInterval(()=>{if(loaded&&!busy&&!closing&&!preview&&bridge)void action(save);},10000);
 

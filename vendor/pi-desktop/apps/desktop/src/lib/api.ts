@@ -688,6 +688,8 @@ export const api = {
    */
   listPluginViews: () => invoke<PluginViewMeta[]>(IPC.invoke.pluginViews),
   /** Create or reuse the view's web contents. Does not show it. */
+  pluginPanelInvoke: (pluginId: string, channel: string, payload: Record<string, unknown> = {}) =>
+    invoke(IPC.invoke.pluginPanelInvoke, { pluginId, channel, payload }),
   pluginViewOpen: (
     pluginId: string,
     viewId: string,
