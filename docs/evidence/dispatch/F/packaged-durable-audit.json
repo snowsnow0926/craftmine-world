@@ -1,0 +1,567 @@
+{
+  "format": "craftmine.f-durable-audit/1",
+  "passed": true,
+  "checks": [
+    {
+      "name": "Native runner completed its actual application and restart",
+      "passed": true
+    },
+    {
+      "name": "Both normal exits report zero input violations and page errors",
+      "passed": true
+    },
+    {
+      "name": "Exactly one actual task identity survived authoring",
+      "passed": true
+    },
+    {
+      "name": "Durable task binding matches the real host session",
+      "passed": true
+    },
+    {
+      "name": "Native summary checkpoints are persisted with real summaries",
+      "passed": true
+    },
+    {
+      "name": "Every requested compaction is also in the Rust ledger",
+      "passed": true
+    },
+    {
+      "name": "Actual summary and review calls share the same cumulative budget",
+      "passed": true
+    },
+    {
+      "name": "Request settlements retain usage rather than clear after compaction",
+      "passed": true
+    },
+    {
+      "name": "Actual user requirement is durable",
+      "passed": true
+    },
+    {
+      "name": "Applied final source satisfies explicit tree geometry",
+      "passed": true
+    },
+    {
+      "name": "One application and a completed real review exist",
+      "passed": true
+    },
+    {
+      "name": "At least four actual draft revisions and patch receipts survived",
+      "passed": true
+    },
+    {
+      "name": "Persisted revisions retain initial and intermediate authored positions",
+      "passed": true
+    }
+  ],
+  "totals": {
+    "requests": 22,
+    "compactions": 3,
+    "summaryRequests": 3,
+    "providerTotalTokens": 174584
+  },
+  "facts": {
+    "requests": [
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-568c8ee4-25f6-4aaf-ac5c-66b238bf7149",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "94580027077fbddec0cc8a7a68a08ad39831f5a93c1ff0bfdcb2e20c27be0b9c",
+        "estimate": 41293,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":2237,\"outputTokens\":78,\"totalTokens\":2827}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-87a89757-bdf4-464d-9e2e-b6c1bcc8c892",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "1ada74e05b0672e3d149de5152ca69f1db7aa2b3d7c39d0a2e953a91179f0a48",
+        "estimate": 47980,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":2838,\"outputTokens\":333,\"totalTokens\":4579}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-7b7ed46f-7362-43ba-9cbc-f6ca1b5cc69e",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "6fd0cc50e99ffd85c03e2ace4b90833223e80aaa1fa541a02390f4d0340350fb",
+        "estimate": 66004,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":8294,\"outputTokens\":591,\"totalTokens\":10293}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-38a156d2-a90c-498f-91df-632924475e05",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "6aee5ecf1addaeea3e7dbf159be575b143f67e9281ec7fb7a6ac5e0901f7f5c6",
+        "estimate": 67467,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":9230,\"outputTokens\":217,\"totalTokens\":10727}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-f9978b01-afc8-4799-84fe-4c63e8306037",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "summary",
+        "request_hash": "bfee89a7de6cb8dab1ec4b807d03685d6110bea7dbbcf2e240754662d8ca77d2",
+        "estimate": 41932,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":4295,\"outputTokens\":2425,\"totalTokens\":6720}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-0e75b897-a407-4ca8-8288-e8cf5ddbdae3",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "882c872e5fb3390dd603d9e0ac930973606d66ebe4d644a3ff296ffee576a887",
+        "estimate": 46032,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":4173,\"outputTokens\":201,\"totalTokens\":5654}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-ad5dbebc-704f-4b91-934a-f3ebacffa5d6",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "f6537d5e0458143064b674c1ecfadba235a611ea8555d79fd0c6f65c4041b7df",
+        "estimate": 48655,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":4800,\"outputTokens\":560,\"totalTokens\":6896}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-f5645589-79af-41d9-97ae-64913433eca2",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "b7e7c3a1f882f763ba4d1eef4151db6e75847c7e99ea283e6f788f86dc4b258f",
+        "estimate": 50007,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":5831,\"outputTokens\":72,\"totalTokens\":7183}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-f08c4734-80b4-4e32-8182-799bbc234e42",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "summary",
+        "request_hash": "1075863bda8211b74095dd02e1d3df183ac04bf903dcf0e9d88eab6554c3fa4c",
+        "estimate": 42449,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":4455,\"outputTokens\":2894,\"totalTokens\":7989}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-0ca2b47b-d55e-4cc5-8406-2b8ed3c750a0",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "b4e7dfa82b1a118c65b79c6e8a038c048fa77bd4499a568e069fb5a54c829fc1",
+        "estimate": 46945,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":4564,\"outputTokens\":587,\"totalTokens\":6815}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-2bede18e-9778-4380-a2b3-37f97f69d33f",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "05538d16b56d3c2c97501a458e074e61b807b28fe14133bcb957f957b8fdee88",
+        "estimate": 48628,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":5177,\"outputTokens\":103,\"totalTokens\":6944}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-f53dee06-d487-470a-b3b8-7d7996b303d9",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "8694997c08b46103bedb6952e66d680e9d68b481a76fcf796d745cbd4517387f",
+        "estimate": 51034,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":5956,\"outputTokens\":491,\"totalTokens\":8111}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-e3029c7a-7847-42f4-85f2-82a0635ebfe2",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "cde0af37c01822ccfdff83aff4c5fc3d17d98520bc3f6c84e2f546280e13a184",
+        "estimate": 52302,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":7054,\"outputTokens\":68,\"totalTokens\":8402}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-8322f788-2053-42fe-a097-5a83135dc2b0",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "summary",
+        "request_hash": "0ef0c643798839ab4cb8cbd6229dc3a9b6314e7294015163bb1cf0e33326a86e",
+        "estimate": 44309,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":5648,\"outputTokens\":3153,\"totalTokens\":9441}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-90eefae3-cee3-47e0-9d89-747d1cc1a6a7",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "fefd9999a2e2e6e6c096460ae6dac711af892516c2f11a08c7a89227ebbb278c",
+        "estimate": 47407,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":4805,\"outputTokens\":479,\"totalTokens\":7076}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-bdfa1d49-f6d9-43e6-be52-34dbed0a57ea",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "0e1535450aba084d9d83f41a8af7a65e44f444ea53e7d10db31f6263b4662f5b",
+        "estimate": 49494,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":5384,\"outputTokens\":104,\"totalTokens\":7280}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-c84700d7-5b44-4b52-b81b-e47ad02913d0",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "b4ad4924cab43f6ce5fff7e80c4192a0b6a2a3fc47025292eeae93d8f60c253a",
+        "estimate": 51896,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":6168,\"outputTokens\":473,\"totalTokens\":8433}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-07946c65-a8d5-4a33-9eb9-d11ae049ff2a",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "82c90831c072d8eb007290f2883d46c5e85cba2e56462e245d3411c294a18bb5",
+        "estimate": 53154,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":7364,\"outputTokens\":167,\"totalTokens\":8811}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-c8ae157d-7d28-4f4c-9463-e0a02ffacae9",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "6f5dff23294089421310652b9d06cf20a4c3e52491e7df0e8c40e7c9ac699fad",
+        "estimate": 54681,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":7424,\"outputTokens\":111,\"totalTokens\":9327}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-a6255f18-8f5a-4415-8a56-161f245d8eb1",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "review",
+        "request_hash": "164a5d3d3b77308b7d4eb0aa3f233dc6f4b5479f040a44636cec154e5c0a5f5e",
+        "estimate": 40570,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":2523,\"outputTokens\":3328,\"totalTokens\":7003}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-5ee6b354-02c0-43e1-b6be-a6efb81a7c53",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "ff726c3c58940ffcacddb7a497fad38b40752275dad08af077bd99b7d175db82",
+        "estimate": 59295,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":8764,\"outputTokens\":250,\"totalTokens\":10934}}"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "request-f1f4398c-9ddb-4cc2-9476-338c35a9d9b3",
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "generation": 1,
+        "purpose": "creation",
+        "request_hash": "0f77b24c8f9cec6c9e83a84a4ca86d43770a3681d2beee4da2949bdd2611d210",
+        "estimate": 64233,
+        "status": "known",
+        "settlement": "{\"status\":\"known\",\"usage\":{\"inputTokens\":10370,\"outputTokens\":849,\"totalTokens\":13139}}"
+      }
+    ],
+    "events": [
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_ET_ZofZbbKdkYz0EvHCIM8H3480",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_01_ET_OoYlqcicfddwX5yCIt0Z0978",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_B6yJjuWTVEh2pGt8LKDG9368",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_01_F49qnCqBWYEjbmxQ3QLk5755",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_02_LGWigrFfV3Kn4yahNdR59058",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_03_cnyORe1Zrl7kJDOsLLn46600",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_04_uCaREvFT3yIdlrYvckuj5170",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_oOxDbIP431UFP61T6SkR7021",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_VKcGC5ljk9O44a8y6Wdn4821",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "compaction-bc3e8fe7-57bc-44df-a0a8-291bc0e4f9c8",
+        "kind": "compaction"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_FmhViSLEHtPtiyThl0vz6197",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_01_GgZ8m86DjaT0QYjbFhTS0805",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_qMi3mq66ZcicQt5R1YSB4050",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_2b7WAW80Tl8WlvrbZogd0094",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "compaction-32e3494e-9d1a-4d38-9729-4cf7ea903fc9",
+        "kind": "compaction"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_IGry9nXmFHaIs9gtCbRA2715",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_eE9sI3FpBf0TDEdtY7ir6841",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_01_FdkKuiqEFrCVWABKNSn96189",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_Rksa5INlZkQA6bzlDvJm7570",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_dhbfMZ5n4tnnkEfDjJ2O0807",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "compaction-8bccdce9-a40e-44a9-8e1f-3489aa89f4c5",
+        "kind": "compaction"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_Z9hFuTo5EM3q1VaiOC3T1815",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_01_pGYHbdOoWoUO3NWY4AUm0224",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_02_osqBbbEkLIiCND0cnAm94940",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_03_I3jU4HSpDDLfStm2hJR97428",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_E7qTj8ug6AA9VXoxvxTL6643",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_01_OHDtcjJAr9nfoqJ1E6jl7467",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_cM0P1ayOuB7UXfygFZzx1041",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_rDJZGQmXbMQSHZbvJq190347",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_0GUKcXCFGClvIMPVl2Oo5995",
+        "kind": "tool"
+      },
+      {
+        "owner": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "event_id": "call_00_KdkBpMYPo90DxkJOWJQN2196",
+        "kind": "tool"
+      }
+    ],
+    "receipts": [
+      {
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "tool_call_id": "call_00_oOxDbIP431UFP61T6SkR7021",
+        "request_hash": "852c03c39f57e5c7a19aa6f9f477c5ddcc95d3c1028896beb30b3a1c012153c9",
+        "result": "{\"taskId\":\"work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452\",\"toolCallId\":\"call_00_oOxDbIP431UFP61T6SkR7021\",\"revision\":1,\"draftHash\":\"33244184e7b8b9000386d45ce63f05f1b7b96eb12aa414fa51c2924a990bff64\"}"
+      },
+      {
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "tool_call_id": "call_00_qMi3mq66ZcicQt5R1YSB4050",
+        "request_hash": "7a158259de51762dd83c2a4c62d7dbce7db69c6a0a66d7de5b6f8ed40f909fc2",
+        "result": "{\"taskId\":\"work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452\",\"toolCallId\":\"call_00_qMi3mq66ZcicQt5R1YSB4050\",\"revision\":2,\"draftHash\":\"e62296b902677174a7397e0d0e67f62485a4ab0bca72749dfb50c9c3196013f8\"}"
+      },
+      {
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "tool_call_id": "call_00_Rksa5INlZkQA6bzlDvJm7570",
+        "request_hash": "d0d59a8a05b7a8f378bce23226fccbfa942462a55a82f4a2174858d16de81a94",
+        "result": "{\"taskId\":\"work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452\",\"toolCallId\":\"call_00_Rksa5INlZkQA6bzlDvJm7570\",\"revision\":3,\"draftHash\":\"bdfd36e3fb03a2c5497acd5b56ee32a39f9d493ba27001ba59b1e094faf50d12\"}"
+      },
+      {
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "tool_call_id": "call_00_cM0P1ayOuB7UXfygFZzx1041",
+        "request_hash": "77b77bbfa8164c7f1b2e9b6b085e641c9d186a55b1b6fa2c5cf0ffab917e65e4",
+        "result": "{\"taskId\":\"work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452\",\"toolCallId\":\"call_00_cM0P1ayOuB7UXfygFZzx1041\",\"revision\":4,\"draftHash\":\"48357fc1b83e77ad6dab847f1265558541d410e1f27e548a7f7f3136649ff4cd\"}"
+      }
+    ],
+    "revisions": [
+      {
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "revision": 0,
+        "draft": "{\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[],\"systems\":[],\"title\":\"我的第一个世界\"}}",
+        "hash": "262711edd9eb3dc9e98d11440081d78eeb7204ef319e65d67a18a88f68c9623f"
+      },
+      {
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "revision": 1,
+        "draft": "{\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"原生橡树\",\"parts\":[{\"color\":\"#6b4a2b\",\"material\":\"wood\",\"offset\":{\"x\":-0.5,\"y\":0,\"z\":-0.5},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":3,\"z\":1},\"solid\":true},{\"color\":\"#3f8a3f\",\"material\":\"leaves\",\"offset\":{\"x\":-1.5,\"y\":3,\"z\":-1.5},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":2,\"z\":3},\"solid\":false}],\"position\":{\"x\":-10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"}}",
+        "hash": "33244184e7b8b9000386d45ce63f05f1b7b96eb12aa414fa51c2924a990bff64"
+      },
+      {
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "revision": 2,
+        "draft": "{\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"原生橡树\",\"parts\":[{\"color\":\"#6b4a2b\",\"material\":\"wood\",\"offset\":{\"x\":-0.5,\"y\":0,\"z\":-0.5},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8a3f\",\"material\":\"leaves\",\"offset\":{\"x\":-1.5,\"y\":2,\"z\":-1.5},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}],\"position\":{\"x\":-10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"}}",
+        "hash": "e62296b902677174a7397e0d0e67f62485a4ab0bca72749dfb50c9c3196013f8"
+      },
+      {
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "revision": 3,
+        "draft": "{\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"原生橡树\",\"parts\":[{\"color\":\"#6b4a2b\",\"material\":\"wood\",\"offset\":{\"x\":-0.5,\"y\":0,\"z\":-0.5},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8a3f\",\"material\":\"leaves\",\"offset\":{\"x\":-1.5,\"y\":2,\"z\":-1.5},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"}}",
+        "hash": "bdfd36e3fb03a2c5497acd5b56ee32a39f9d493ba27001ba59b1e094faf50d12"
+      },
+      {
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "revision": 4,
+        "draft": "{\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[{\"components\":{\"contactDamage\":0,\"health\":20},\"id\":\"native-oak\",\"name\":\"记忆松树\",\"parts\":[{\"color\":\"#6b4a2b\",\"material\":\"wood\",\"offset\":{\"x\":-0.5,\"y\":0,\"z\":-0.5},\"shape\":\"box\",\"size\":{\"x\":1,\"y\":2,\"z\":1},\"solid\":true},{\"color\":\"#3f8a3f\",\"material\":\"leaves\",\"offset\":{\"x\":-1.5,\"y\":2,\"z\":-1.5},\"shape\":\"box\",\"size\":{\"x\":3,\"y\":1,\"z\":3},\"solid\":false}],\"position\":{\"x\":10,\"y\":6,\"z\":4},\"source\":null}],\"systems\":[],\"title\":\"我的第一个世界\"}}",
+        "hash": "48357fc1b83e77ad6dab847f1265558541d410e1f27e548a7f7f3136649ff4cd"
+      }
+    ],
+    "requirements": [
+      {
+        "task_id": "work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452",
+        "request_id": "c0b4abce-5dd5-48e6-866b-ec287c942ce2",
+        "kind": "request",
+        "text": "请实际创作，不要只解释。用现有世界工具在空世界增加一棵有树干和树冠的树，id 为 native-oak。请在同一任务按顺序完成四阶段：1. 先读取规范和当前项目，制作高度5、位置x=-10 y=6 z=4的树并提交草稿；2. 实际调用内置 new_context 压缩上下文，恢复后读取草稿，把树变矮为总高度3并提交；3. 再调用 new_context，恢复后移动树到x=10 y=6 z=4并提交；4. 第三次调用 new_context，恢复后把名称改为记忆松树并提交。三次压缩必须真的执行，不要在文字里模拟。最终验收只针对最后状态：树名记忆松树、位置(10,6,4)、有树干树冠、总高度3。最后实际提交验证、读取验收，若失败请修复；通过后保留候选等待玩家应用。别增加其他物体或玩法。",
+        "created_at": 1788939707196
+      }
+    ],
+    "applications": [
+      {
+        "id": "apply-bdd65333e5b7d8172eeaaea5266245c88a7cc5f87be1b0b56be907c13ee67dd1",
+        "world_id": "562e2a4a-4930-4bfb-b45f-b6e0edfb646d",
+        "verification_id": "check-eba409a5623fb32e462f299dd68c754ece2bfe0204c304ec11da6edc72e4adb9",
+        "review_id": "review-d510dadd0f20db72838579ea8b730219cf6833d973077e1f3767cb5398aabdc3",
+        "request_hash": "11b36ef1aff2dc1f1d9eddc1f1f0fa96338059f3e82e2feb5beb2e3f07d7a31e",
+        "input": "{\"baseBuild\":\"v-4641627420193586d325\",\"binding\":{\"baseBuild\":\"v-4641627420193586d325\",\"projectId\":\"pi-4b4fa8c52d201a935672b0b09688200356e9fac10390daba8ffea6711779f09e\",\"sessionId\":\"32c80076-9794-4d10-afb2-d6bfdd33ca44\",\"taskId\":\"work-1b5edf40e6486b34b713180bc84c42be7abba0108cbc88dbaa4024c252c8e452\",\"turnId\":\"48b25e7c-26fc-495f-81ae-6c31105a0284\"},\"buildId\":\"v-1f9ff68eac4d27121227\",\"draftHash\":\"48357fc1b83e77ad6dab847f1265558541d410e1f27e548a7f7f3136649ff4cd\",\"reviewId\":\"review-d510dadd0f20db72838579ea8b730219cf6833d973077e1f3767cb5398aabdc3\",\"reviewOutputHash\":\"85d160cecd6bb6b0f5fe8da2dcedd1e93245e4d83503155cf046bdbc9a8b3831\",\"revision\":1,\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"verificationId\":\"check-eba409a5623fb32e462f299dd68c754ece2bfe0204c304ec11da6edc72e4adb9\",\"verificationOutputHash\":\"fa69ada3866c64752907af0cba10a6d20e470c94a8227e3050299949899ad05b\",\"worldHash\":\"6bb5671b71426daeb2c9ed844db2a68254a8dc928d7a59208bb502502665f806\",\"worldId\":\"562e2a4a-4930-4bfb-b45f-b6e0edfb646d\"}",
+        "input_hash": "8bb6613f4496a557a875c4d334fbee561693b831e8d5533df37e6cde8eeb0763",
+        "previous_world": "{\"build\":{\"behaviors\":[],\"format\":\"craftmine.build/3\",\"hash\":\"4641627420193586d325a99b528a245dc053fa85ec5057e982d76612fe79ea22\",\"id\":\"v-4641627420193586d325\",\"primitives\":[],\"scene\":{\"behaviors\":[],\"format\":\"craftmine.scene/3\",\"night\":false,\"objects\":[],\"systems\":[],\"title\":\"我的第一个世界\"},\"voxels\":[]},\"snapshot\":{\"behaviors\":{\"archive\":[],\"format\":\"craftmine.behavior-state/2\",\"inventory\":{},\"modules\":{},\"time\":0},\"format\":\"craftmine.progress/3\",\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5}},\"extensions\":[]}",
+        "previous_hash": "6bb5671b71426daeb2c9ed844db2a68254a8dc928d7a59208bb502502665f806",
+        "status": "applied",
+        "token": "c0bc28c9-76fe-4867-87b8-f26af5e8e4ec",
+        "output": "{\"format\":\"craftmine.desktop-application/1\",\"inputHash\":\"8bb6613f4496a557a875c4d334fbee561693b831e8d5533df37e6cde8eeb0763\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5},\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"1b6a4288dcd28ae05e111a333b3eae471ec9da1959715ffbfa8a53103aafc998\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-1f9ff68eac4d27121227\"}}",
+        "output_hash": "c920f349cce524c16abbabb445b7dd95e9b5f4f7dbac0d9034143a1f97a29d4f",
+        "created_at": 1788939776906,
+        "updated_at": 1788939777184
+      }
+    ],
+    "reviews": [
+      {
+        "id": "review-d510dadd0f20db72838579ea8b730219cf6833d973077e1f3767cb5398aabdc3",
+        "verification_id": "check-eba409a5623fb32e462f299dd68c754ece2bfe0204c304ec11da6edc72e4adb9",
+        "input": "{\"origin\":{\"modelKey\":\"32ea894e-4c1b-4907-bc6c-9b34a528fb2e/deepseek-v4.1-flash-expires-on-0910\",\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"c0b4abce-5dd5-48e6-866b-ec287c942ce2\",\"text\":\"请实际创作，不要只解释。用现有世界工具在空世界增加一棵有树干和树冠的树，id 为 native-oak。请在同一任务按顺序完成四阶段：1. 先读取规范和当前项目，制作高度5、位置x=-10 y=6 z=4的树并提交草稿；2. 实际调用内置 new_context 压缩上下文，恢复后读取草稿，把树变矮为总高度3并提交；3. 再调用 new_context，恢复后移动树到x=10 y=6 z=4并提交；4. 第三次调用 new_context，恢复后把名称改为记忆松树并提交。三次压缩必须真的执行，不要在文字里模拟。最终验收只针对最后状态：树名记忆松树、位置(10,6,4)、有树干树冠、总高度3。最后实际提交验证、读取验收，若失败请修复；通过后保留候选等待玩家应用。别增加其他物体或玩法。\"},\"thinkingLevel\":\"high\"},\"verificationId\":\"check-eba409a5623fb32e462f299dd68c754ece2bfe0204c304ec11da6edc72e4adb9\",\"verificationInputHash\":\"5da49d86a1e6ebcb669e7e64724258a7c931283b1115efe28b06c83a504cf71e\",\"verificationOutputHash\":\"fa69ada3866c64752907af0cba10a6d20e470c94a8227e3050299949899ad05b\"}",
+        "input_hash": "98275b26ee7da34d3b133ed9ca0728d50fbb6dab265ab33a996f28e175900010",
+        "status": "completed",
+        "token": "32e3df66-df6a-4947-85a2-7ce9e316b776",
+        "output": "{\"acceptance\":{\"assertions\":[{\"detail\":\"玩法在整个事件序列里没有报错\",\"id\":\"no-errors\",\"kind\":\"noErrors\",\"passed\":true,\"red\":\"任何阶段出现脚本异常、编译失败或运行时错误都会打红\",\"why\":\"四个阶段结束后世界脚本、编译与运行全程不得报错\"},{\"detail\":\"最终世界 native-oak.position = {\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4}\",\"id\":\"oak-final-position\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"树仍停在初始 (-10,6,4)、y 偏离 6（悬空或埋入地下）或坐标残留旧值时打红\",\"why\":\"最终验收要求树位于 x=10 y=6 z=4，且 y=6 与地面表面齐平\"},{\"detail\":\"最终世界 native-oak.visible = true\",\"id\":\"oak-visible\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"把第三个阶段误写成隐藏/删除、导致 visible=false 时打红\",\"why\":\"最终状态下树必须是逻辑可见的，而不是被隐藏\"},{\"detail\":\"最终世界 native-oak.mesh = true\",\"id\":\"oak-mesh\",\"kind\":\"objectField\",\"passed\":true,\"red\":\"只有命令/数据而没有 drawable mesh（例如被隐藏后未恢复）时打红\",\"why\":\"最终状态下渲染器必须实际持有该对象的可绘制网格，证明树真的画了出来\"},{\"detail\":\"最终世界新增了 1 个符合条件的对象：native-oak\",\"id\":\"oak-region-spawn\",\"kind\":\"newObjects\",\"passed\":true,\"red\":\"没有任何新增物体，或新增物体的锚点不在该坐标/未落地时打红\",\"why\":\"空世界最终确实新增了锚点落在 (10,6,4) 且与地面齐平的物体\"},{\"detail\":\"除 native-oak 之外，其他对象都没有变化\",\"id\":\"only-oak-changed\",\"kind\":\"objectsUnchanged\",\"passed\":true,\"red\":\"多出第二个物体、改动 night/title/systems 或改动其他对象字段时打红\",\"why\":\"请求明确要求不增加其他物体或玩法，其余场景内容必须保持不变\"}],\"baselineVersion\":\"v-4641627420193586d325\",\"passed\":true,\"scope\":\"实际游戏副本中的对象、玩法事件与状态断言；外观美术与物理操作体验仍由玩家预览判断\",\"trace\":{\"baseline\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{}},\"inventory\":{},\"items\":{},\"objects\":[],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"errors\":[],\"final\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"inventory\":{},\"items\":{},\"objects\":[{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"native-oak\",\"mesh\":true,\"position\":{\"x\":10,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true}],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"player\":{\"pitch\":0,\"x\":0.5,\"y\":6,\"yaw\":0,\"z\":12.5},\"start\":{\"effects\":[],\"gameplay\":{\"archivedTargets\":{},\"cooldown\":0,\"equipped\":null,\"systems\":{},\"targets\":{\"native-oak\":{\"health\":20,\"maxHealth\":20}}},\"inventory\":{},\"items\":{},\"objects\":[{\"bounds\":null,\"color\":null,\"health\":20,\"id\":\"native-oak\",\"mesh\":true,\"position\":{\"x\":10,\"y\":6,\"z\":4},\"solid\":true,\"visible\":true}],\"panels\":{},\"playerHealth\":null,\"resources\":{}},\"steps\":[]},\"verificationOutputHash\":\"fa69ada3866c64752907af0cba10a6d20e470c94a8227e3050299949899ad05b\"},\"advisory\":true,\"baseline\":{\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"eb8d069c86c7e454f14fb001acf7bb9e8bace44182bee6458b45136936151645\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-4641627420193586d325\"}},\"format\":\"craftmine.desktop-review/1\",\"inputHash\":\"98275b26ee7da34d3b133ed9ca0728d50fbb6dab265ab33a996f28e175900010\",\"isolation\":{\"focusable\":false,\"frames\":[{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"},{\"bridge\":\"undefined\",\"guard\":{\"focus\":0,\"pointerLock\":0},\"node\":\"undefined\"}],\"offscreen\":true,\"visible\":false},\"limitations\":[\"DSL 的 objectField 只支持 position/visible/solid/mesh/health/color，无法断言对象名称“记忆松树”、总高度数值 3 或部件数量/形状，“有树干和树冠”只能通过 mesh=true 加人工预览间接确认。\",\"region 断言只检查对象锚点 (10,6,4)，不能证明树干与树冠每个部件都与地面接触；树冠本身设计为悬空于 y=8..9。\",\"三次 new_context 压缩属于流程与预算证据（compactionCount=3、4 条草稿回执），最终世界状态断言无法直接证明压缩真实发生。\",\"不验证颜色/材质美观度、声音、玩家行走物理与图形识别；“像一棵树”的外观判断超出机器可断言范围。\",\"未验证候选是否已被玩家应用——本次仅确认候选保留、check 作业 passed。\"],\"modelKey\":\"32ea894e-4c1b-4907-bc6c-9b34a528fb2e/deepseek-v4.1-flash-expires-on-0910\",\"planHash\":\"152cc5fc49d1a5c128ed24b00203d929f825925f431c057b24cc9a64ee6acd5c\",\"render\":{\"capture\":{\"attempts\":1,\"coloredSamples\":35,\"height\":640,\"samples\":35,\"sha256\":\"1b6a4288dcd28ae05e111a333b3eae471ec9da1959715ffbfa8a53103aafc998\",\"width\":960},\"passed\":true,\"renderer\":\"WebGL\",\"version\":\"v-1f9ff68eac4d27121227\"},\"request\":{\"attachmentsOmitted\":0,\"messageId\":\"c0b4abce-5dd5-48e6-866b-ec287c942ce2\",\"text\":\"请实际创作，不要只解释。用现有世界工具在空世界增加一棵有树干和树冠的树，id 为 native-oak。请在同一任务按顺序完成四阶段：1. 先读取规范和当前项目，制作高度5、位置x=-10 y=6 z=4的树并提交草稿；2. 实际调用内置 new_context 压缩上下文，恢复后读取草稿，把树变矮为总高度3并提交；3. 再调用 new_context，恢复后移动树到x=10 y=6 z=4并提交；4. 第三次调用 new_context，恢复后把名称改为记忆松树并提交。三次压缩必须真的执行，不要在文字里模拟。最终验收只针对最后状态：树名记忆松树、位置(10,6,4)、有树干树冠、总高度3。最后实际提交验证、读取验收，若失败请修复；通过后保留候选等待玩家应用。别增加其他物体或玩法。\"},\"suggestions\":[\"树冠 solid=false、树干 solid=true 的取舍合理（可穿行树冠同时保留树干碰撞）；应用前请确认玩家不会生成在树干体积内被卡住。\",\"由于 DSL 不能断言对象名称文本与“总高度 3”，请在候选提交验收通过后做一次人工预览（名称显示为“记忆松树”、树高 3 格）再交给玩家应用。\",\"保持 behaviors=[]、systems=[]、night 不变，符合“别增加其他物体或玩法”，无需再改。\",\"若后续想更严格验证落地，可在同一验收任务中另加对树干部件底面的目视确认；当前 region 断言只约束锚点。\"],\"summary\":\"候选在空世界中只新增了 id=native-oak 的单一对象：名称“记忆松树”、锚点 (10,6,4)（正好落在地面 y=6）、树干 box 1×2×1（相对偏移 y=0..2）加树冠 box 3×1×3（y=2..3），总高度 3，未新增 behaviors/systems/night 改动，符合最终状态验收要求。请求中的流程性要求（三次真实 new_context 压缩、逐阶段提交）无法由世界状态断言覆盖，但 machineFacts.budget.compactionCount=3、四条草稿回执与 revisions 4 的草稿可作为佐证；名称文本、精确总高 3 与“两个可见部件”受 DSL 可断言字段限制，只能列为人工预览项。\",\"text\":\"{\\\"summary\\\":\\\"候选在空世界中只新增了 id=native-oak 的单一对象：名称“记忆松树”、锚点 (10,6,4)（正好落在地面 y=6）、树干 box 1×2×1（相对偏移 y=0..2）加树冠 box 3×1×3（y=2..3），总高度 3，未新增 behaviors/systems/night 改动，符合最终状态验收要求。请求中的流程性要求（三次真实 new_context 压缩、逐阶段提交）无法由世界状态断言覆盖，但 machineFacts.budget.compactionCount=3、四条草稿回执与 revisions 4 的草稿可作为佐证；名称文本、精确总高 3 与“两个可见部件”受 DSL 可断言字段限制，只能列为人工预览项。\\\",\\\"verdict\\\":\\\"ready\\\",\\\"suggestions\\\":[\\\"树冠 solid=false、树干 solid=true 的取舍合理（可穿行树冠同时保留树干碰撞）；应用前请确认玩家不会生成在树干体积内被卡住。\\\",\\\"由于 DSL 不能断言对象名称文本与“总高度 3”，请在候选提交验收通过后做一次人工预览（名称显示为“记忆松树”、树高 3 格）再交给玩家应用。\\\",\\\"保持 behaviors=[]、systems=[]、night 不变，符合“别增加其他物体或玩法”，无需再改。\\\",\\\"若后续想更严格验证落地，可在同一验收任务中另加对树干部件底面的目视确认；当前 region 断言只约束锚点。\\\"],\\\"limitations\\\":[\\\"DSL 的 objectField 只支持 position/visible/solid/mesh/health/color，无法断言对象名称“记忆松树”、总高度数值 3 或部件数量/形状，“有树干和树冠”只能通过 mesh=true 加人工预览间接确认。\\\",\\\"region 断言只检查对象锚点 (10,6,4)，不能证明树干与树冠每个部件都与地面接触；树冠本身设计为悬空于 y=8..9。\\\",\\\"三次 new_context 压缩属于流程与预算证据（compactionCount=3、4 条草稿回执），最终世界状态断言无法直接证明压缩真实发生。\\\",\\\"不验证颜色/材质美观度、声音、玩家行走物理与图形识别；“像一棵树”的外观判断超出机器可断言范围。\\\",\\\"未验证候选是否已被玩家应用——本次仅确认候选保留、check 作业 passed。\\\"],\\\"assertions\\\":[{\\\"id\\\":\\\"no-errors\\\",\\\"kind\\\":\\\"noErrors\\\",\\\"why\\\":\\\"四个阶段结束后世界脚本、编译与运行全程不得报错\\\",\\\"red\\\":\\\"任何阶段出现脚本异常、编译失败或运行时错误都会打红\\\"},{\\\"id\\\":\\\"oak-final-position\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"position\\\",\\\"value\\\":{\\\"x\\\":10,\\\"y\\\":6,\\\"z\\\":4},\\\"why\\\":\\\"最终验收要求树位于 x=10 y=6 z=4，且 y=6 与地面表面齐平\\\",\\\"red\\\":\\\"树仍停在初始 (-10,6,4)、y 偏离 6（悬空或埋入地下）或坐标残留旧值时打红\\\"},{\\\"id\\\":\\\"oak-visible\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"visible\\\",\\\"value\\\":true,\\\"why\\\":\\\"最终状态下树必须是逻辑可见的，而不是被隐藏\\\",\\\"red\\\":\\\"把第三个阶段误写成隐藏/删除、导致 visible=false 时打红\\\"},{\\\"id\\\":\\\"oak-mesh\\\",\\\"kind\\\":\\\"objectField\\\",\\\"object\\\":\\\"native-oak\\\",\\\"field\\\":\\\"mesh\\\",\\\"value\\\":true,\\\"why\\\":\\\"最终状态下渲染器必须实际持有该对象的可绘制网格，证明树真的画了出来\\\",\\\"red\\\":\\\"只有命令/数据而没有 drawable mesh（例如被隐藏后未恢复）时打红\\\"},{\\\"id\\\":\\\"oak-region-spawn\\\",\\\"kind\\\":\\\"newObjects\\\",\\\"min\\\":1,\\\"region\\\":{\\\"x\\\":[10,10],\\\"z\\\":[4,4],\\\"y\\\":[6,6]},\\\"why\\\":\\\"空世界最终确实新增了锚点落在 (10,6,4) 且与地面齐平的物体\\\",\\\"red\\\":\\\"没有任何新增物体，或新增物体的锚点不在该坐标/未落地时打红\\\"},{\\\"id\\\":\\\"only-oak-changed\\\",\\\"kind\\\":\\\"objectsUnchanged\\\",\\\"except\\\":[\\\"native-oak\\\"],\\\"why\\\":\\\"请求明确要求不增加其他物体或玩法，其余场景内容必须保持不变\\\",\\\"red\\\":\\\"多出第二个物体、改动 night/title/systems 或改动其他对象字段时打红\\\"}],\\\"steps\\\":[]}\",\"usage\":{\"cacheReadTokens\":1152,\"inputTokens\":2523,\"outputTokens\":3328,\"reasoningTokens\":2360,\"totalTokens\":7003},\"verdict\":\"ready\"}",
+        "output_hash": "85d160cecd6bb6b0f5fe8da2dcedd1e93245e4d83503155cf046bdbc9a8b3831",
+        "created_at": 1788939759136,
+        "updated_at": 1788939774978
+      }
+    ]
+  }
+}
