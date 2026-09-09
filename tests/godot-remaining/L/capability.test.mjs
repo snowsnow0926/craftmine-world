@@ -21,7 +21,7 @@ test('the inventory reflects the real manifest and broker routing',()=>{
   const inventory=buildInventory({manifest,routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake:HANDSHAKE});
   assert.equal(inventory.format,'craftmine.godot-capability/1');
   const godot=inventory.tools.filter(tool=>tool.name.startsWith('godot_'));
-  assert.equal(godot.length,17,godot.map(tool=>tool.name).join(','));
+  assert.equal(godot.length,19,godot.map(tool=>tool.name).join(','));
   assert.ok(godot.every(tool=>tool.wired===true),'every advertised Godot tool must be routed');
   const build=godot.find(tool=>tool.name==='godot_build_start');
   assert.equal(build.hostMethod,'godotBuild.start');

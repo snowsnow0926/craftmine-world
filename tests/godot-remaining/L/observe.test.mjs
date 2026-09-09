@@ -49,18 +49,32 @@ test('a live sample without a timestamp is refused',()=>{
 });
 
 test('a live sample from another world or build is marked stale',()=>{
-  const sample={sampledAt:'2026-09-10T10:00:00Z',worldId:'beta',buildId:'gbd-2',base:'first-person',
+  const sample={sampledAt:'2026-09-10T10:00:00Z',worldId:'beta',buildId:'gbd-2',instanceId:'inst-9',base:'first-person',
     equipment:{active:'sword'},display:{cameraGlobal:[0,1,0],attachedToCamera:true,alignedWithCamera:true,forwardDot:0.999}};
-  const live=normalizeLiveSample(sample,{worldId:'alpha',buildId:'gbd-1'});
+  const live=normalizeLiveSample(sample,{worldId:'alpha',buildId:'gbd-1',instanceId:'inst-9'});
   assert.equal(live.stale,true);
   assert.deepEqual(live.mismatches,['LIVE_WORLD_MISMATCH','LIVE_BUILD_MISMATCH']);
   assert.equal(live.provenance,'live-instance-sample');
   assert.equal(live.equipment.active,'sword');
 });
 
+test('a replaced instance and an expired sample are both refused',()=>{
+  const sample={sampledAt:'2026-09-10T10:00:00Z',worldId:'alpha',buildId:'gbd-1',instanceId:'inst-2',
+    equipment:{active:'rifle'}};
+  const changed=normalizeLiveSample(sample,{worldId:'alpha',buildId:'gbd-1',instanceId:'inst-1'});
+  assert.deepEqual(changed.mismatches,['LIVE_INSTANCE_CHANGED']);
+  const expired=normalizeLiveSample(sample,{worldId:'alpha',buildId:'gbd-1',instanceId:'inst-2'},
+    {now:Date.parse('2026-09-10T10:01:00Z'),maxAgeMs:30000});
+  assert.deepEqual(expired.mismatches,['LIVE_SAMPLE_STALE']);
+  assert.equal(expired.ageMillis,60000);
+  const fresh=normalizeLiveSample(sample,{worldId:'alpha',buildId:'gbd-1',instanceId:'inst-2'},
+    {now:Date.parse('2026-09-10T10:00:05Z'),maxAgeMs:30000});
+  assert.equal(fresh.stale,false);
+});
+
 test('a base that does not expose camera or equipment reports them unknown',()=>{
-  const live=normalizeLiveSample({sampledAt:'2026-09-10T10:00:00Z',worldId:'alpha',base:'top-down',
-    player:{position:[1,2]},quests:{quests:[{id:'q1'}]}},{worldId:'alpha'});
+  const live=normalizeLiveSample({sampledAt:'2026-09-10T10:00:00Z',worldId:'alpha',buildId:'gbd-1',instanceId:'inst-1',
+    base:'top-down',player:{position:[1,2]},quests:{quests:[{id:'q1'}]}},{worldId:'alpha',buildId:'gbd-1'});
   assert.equal(live.available,true);
   assert.equal(live.camera,null);
   assert.equal(live.equipment,null);
@@ -104,7 +118,7 @@ test('a wired sampler supplies the live section and keeps the timestamp it repor
       revision:4,entry:'web/index.html',artifacts:[],build:{godot:{engineVersion:'4.7.2-stable'}},snapshot:{}};
     throw Object.assign(Error('UNKNOWN_METHOD'),{errorCode:'UNKNOWN_METHOD'});
   }};
-  const sampler=async()=>({sampledAt:'2026-09-10T12:00:00Z',worldId:'alpha',buildId:'gbd-1',base:'first-person',
+  const sampler=async()=>({sampledAt:'2026-09-10T12:00:00Z',worldId:'alpha',buildId:'gbd-1',instanceId:'inst-1',base:'first-person',
     equipment:{active:'rifle',magazine:24},display:{cameraGlobal:[1,2,3]},quests:{quests:[]},targets:[{id:'t1'}],
     interactables:[]});
   const facts=await projectFacts({core,context:CONTEXT,worldId:'alpha',sampler});

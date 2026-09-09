@@ -49,20 +49,29 @@ async function describeRuntime(core,{worldId}){
 
 // A live sample must arrive from the running instance. This function never
 // synthesizes camera/equipment from durable progress.
-function normalizeLiveSample(sample,identity={}){
+function normalizeLiveSample(sample,identity={},options={}){
   if(sample===null||sample===undefined)return missing('LIVE_INSTANCE_NOT_RUNNING');
   if(typeof sample!=='object'||Array.isArray(sample))return missing('INVALID_LIVE_SAMPLE');
   const sampledAt=typeof sample.sampledAt==='string'?sample.sampledAt:null;
   if(!sampledAt)return missing('LIVE_SAMPLE_WITHOUT_TIMESTAMP');
+  const sampledMillis=Date.parse(sampledAt);
+  if(!Number.isFinite(sampledMillis))return missing('INVALID_LIVE_SAMPLE_TIMESTAMP');
+  const maxAgeMs=Number.isFinite(options.maxAgeMs)?options.maxAgeMs:30000;
+  const now=Number.isFinite(options.now)?options.now:Date.now();
+  const ageMillis=now-sampledMillis;
   const worldId=present(sample.worldId)??present(sample.world_id);
   const baseId=present(sample.base)??present(sample.baseId);
   const baseVersion=present(sample.baseVersion);
   const buildId=present(sample.buildId)??present(sample.build_id);
+  const instanceId=present(sample.instanceId);
   const mismatches=[];
   if(identity.worldId&&worldId&&identity.worldId!==worldId)mismatches.push('LIVE_WORLD_MISMATCH');
   if(identity.buildId&&buildId&&identity.buildId!==buildId)mismatches.push('LIVE_BUILD_MISMATCH');
   // A sample that omits identity cannot be proven to belong to this world.
-  if((identity.worldId&&!worldId)||(identity.buildId&&!buildId))mismatches.push('LIVE_IDENTITY_UNVERIFIED');
+  if((identity.worldId&&!worldId)||(identity.buildId&&!buildId)||!instanceId)mismatches.push('LIVE_IDENTITY_UNVERIFIED');
+  // A restarted or replaced game process invalidates the previous sample.
+  if(identity.instanceId&&instanceId&&identity.instanceId!==instanceId)mismatches.push('LIVE_INSTANCE_CHANGED');
+  if(ageMillis>maxAgeMs)mismatches.push('LIVE_SAMPLE_STALE');
   const display=sample.display&&typeof sample.display==='object'?sample.display:null;
   const player=sample.player&&typeof sample.player==='object'?sample.player:null;
   const camera=display&&display.cameraGlobal?{global:display.cameraGlobal,
@@ -78,7 +87,7 @@ function normalizeLiveSample(sample,identity={}){
     if(field==='entities')return value.targets===null&&value.interactables===null;
     return value===null||value===undefined;
   });
-  return {available:true,sampledAt,worldId,baseId,baseVersion,buildId,
+  return {available:true,sampledAt,sampledMillis,ageMillis,maxAgeMillis:maxAgeMs,worldId,baseId,baseVersion,buildId,instanceId,
     viewportSize:present(sample.viewportSize),windowSize:present(sample.windowSize),
     inputCaptured:present(sample.inputCaptured),hasSave:present(sample.hasSave),
     persistentStorage:present(sample.persistentStorage),levelTitle:present(sample.levelTitle),

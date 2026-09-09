@@ -1,4 +1,4 @@
-// Version-history and asset-reference contract tests.
+// Version-history and change-intent contract tests.
 // No engine, no Rust binary, no git, no shell, no browser.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -8,21 +8,14 @@ import {fileURLToPath} from 'node:url';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const require=createRequire(import.meta.url);
-const {validateAssetRef,validateFileRef,validateContentRef,validateOperationContext,validateChangeIntent,
-  createHistoryService,DEFAULT_METHODS,OPERATION_CONTEXT_FIELDS}=
+const {validateFileRef,validateContentRef,validateOperationContext,validateChangeIntent,
+  createHistoryService,DEFAULT_METHODS,CHANGE_INTENTS,OPERATION_CONTEXT_FIELDS}=
   require(path.join(root,'plugins/craftmine-world/godot-history.cjs'));
 
 const HASH='a'.repeat(64);
 const CONTEXT={projectId:'p',sessionId:'s',turnId:'t'};
-
-test('an asset reference must name an exact immutable version',()=>{
-  assert.deepEqual(validateAssetRef({assetId:'shop-kit',version:3,contentHash:HASH}),
-    {assetId:'shop-kit',version:3,contentHash:HASH});
-  assert.throws(()=>validateAssetRef({assetId:'shop-kit',version:3,contentHash:HASH,extra:1}),/INVALID_ASSET_REF_FIELDS/);
-  assert.throws(()=>validateAssetRef({assetId:'latest',version:1,contentHash:HASH}),/ASSET_REF_MUST_NOT_BE_LATEST/);
-  assert.throws(()=>validateAssetRef({assetId:'x',version:0,contentHash:HASH}),/INVALID_ASSET_VERSION/);
-  assert.throws(()=>validateAssetRef({assetId:'x',version:1,contentHash:'nope'}),/INVALID_ASSET_CONTENT_HASH/);
-});
+const FULL={operationId:'op-1',worldId:'alpha',repoId:'world-alpha',branchId:'plan-7',
+  expectedHeadOid:'abc1234',expectedAppliedOid:'def5678',expectedProgressRevision:12};
 
 test('file and content references reject host paths and assume no fixed OID length',()=>{
   assert.equal(validateFileRef({path:'scenes/world.tscn',sha256:HASH,bytes:10,mediaType:'text/plain'}).bytes,10);
@@ -33,19 +26,23 @@ test('file and content references reject host paths and assume no fixed OID leng
   assert.throws(()=>validateContentRef({repoId:'w',commitOid:'z'.repeat(40),assetLockHash:HASH}),/INVALID_COMMIT_OID/);
 });
 
-test('the operation context is host-bound and must carry identity',()=>{
-  const bound=validateOperationContext({operationId:'op-1',worldId:'alpha',branchId:'plan-7',
-    expectedHeadOid:'abc1234',expectedProgressRevision:12},{worldId:'alpha'});
+test('the operation context is host-bound and every field must be present',()=>{
+  const bound=validateOperationContext(FULL,{worldId:'alpha'});
   assert.equal(bound.worldId,'alpha');
   assert.equal(bound.expectedProgressRevision,12);
-  assert.throws(()=>validateOperationContext({worldId:'alpha'}),/OPERATION_CONTEXT_REQUIRES:operationId/);
-  assert.throws(()=>validateOperationContext({operationId:'op-1'}),/OPERATION_CONTEXT_REQUIRES:worldId/);
-  assert.throws(()=>validateOperationContext({operationId:'op-1',worldId:'beta'},{worldId:'alpha'}),/OPERATION_CONTEXT_WORLD_MISMATCH/);
-  assert.throws(()=>validateOperationContext({operationId:'op-1',worldId:'alpha',branchId:'bad\u0001'}),/INVALID_OPERATION_CONTEXT_FIELD:branchId/);
-  assert.ok(OPERATION_CONTEXT_FIELDS.includes('expectedAppliedOid'));
+  // The expected* keys may be null, but the host must supply the key.
+  const nulls=validateOperationContext({...FULL,expectedHeadOid:null,expectedAppliedOid:null,expectedProgressRevision:null},{worldId:'alpha'});
+  assert.equal(nulls.expectedHeadOid,null);
+  for(const field of OPERATION_CONTEXT_FIELDS){
+    const missing={...FULL};
+    delete missing[field];
+    assert.throws(()=>validateOperationContext(missing,{worldId:'alpha'}),new RegExp('OPERATION_CONTEXT_REQUIRES:'+field));
+  }
+  assert.throws(()=>validateOperationContext({...FULL,worldId:'beta'},{worldId:'alpha'}),/OPERATION_CONTEXT_WORLD_MISMATCH/);
+  assert.throws(()=>validateOperationContext({...FULL,branchId:'bad\u0001'}),/INVALID_OPERATION_CONTEXT_FIELD:branchId/);
 });
 
-test('natural language maps to three distinct change scopes',()=>{
+test('natural language maps to five distinct change scopes',()=>{
   const one=validateChangeIntent({intent:'instance-only',selection:['alpha']});
   assert.equal(one.scope,'one-instance');
   assert.equal(one.createsVariant,false);
@@ -60,7 +57,14 @@ test('natural language maps to three distinct change scopes',()=>{
   assert.equal(all.appliesToSelected,true);
   assert.equal(all.requiresPlayerAction,true);
   assert.throws(()=>validateChangeIntent({intent:'upgrade-selected',selection:[]}),/UPGRADE_SELECTED_REQUIRES_SELECTION/);
+  const content=validateChangeIntent({intent:'restore-content',selection:['ins-1']});
+  assert.equal(content.scope,'restore-instance');
+  assert.throws(()=>validateChangeIntent({intent:'restore-content',selection:['a','b']}),/RESTORE_CONTENT_REQUIRES_EXACTLY_ONE_INSTANCE/);
+  const save=validateChangeIntent({intent:'restore-save'});
+  assert.equal(save.scope,'restore-progress');
+  assert.equal(save.requiresPlayerAction,true);
   assert.throws(()=>validateChangeIntent({intent:'whatever'}),/INVALID_CHANGE_INTENT/);
+  assert.deepEqual(CHANGE_INTENTS,['instance-only','variant','upgrade-selected','restore-content','restore-save']);
 });
 
 function workspace(){
@@ -75,12 +79,9 @@ test('a missing adapter is reported with its exact method and owner',async()=>{
   assert.equal(history.available,false);
   assert.equal(history.reason,'DEPENDENCY_NOT_WIRED');
   assert.equal(history.requiredHostMethod,DEFAULT_METHODS.history);
+  assert.equal(history.requiredHostMethod,'content.history');
   assert.equal(history.owner,'M');
-  assert.equal(history.proposedName,true);
   assert.match(history.nextStep,/must register/);
-  const assets=await service.assetSearch({query:'shop'});
-  assert.equal(assets.owner,'N');
-  assert.equal(assets.requiredHostMethod,DEFAULT_METHODS.assetSearch);
 });
 
 test('a registered adapter is used directly and the context is host-bound',async()=>{
@@ -90,39 +91,30 @@ test('a registered adapter is used directly and the context is host-bound',async
   const service=createHistoryService({core,context:CONTEXT,workspace:workspace()});
   const result=await service.history({limit:5});
   assert.equal(result.available,true);
-  assert.equal(result.method,'version.history');
-  assert.equal(calls[0].method,'version.history');
-  assert.equal(calls[0].params.worldId,'alpha');
+  assert.equal(result.method,'content.history');
+  assert.equal(calls[0].method,'content.history');
   assert.equal(calls[0].params.operationContext.worldId,'alpha');
   assert.equal(calls[0].params.operationContext.branchId,'plan-7');
   assert.equal(calls[0].params.operationContext.expectedProgressRevision,12);
+  assert.ok(!('worldId' in calls[0].params),'no extra worldId beside the OperationContext');
 });
 
-test('a proposal is never an application and never performs git',()=>{
+test('a checkpoint or merge proposal is never an application and never performs git',()=>{
   const calls=[];
   const core={call:async(method,params)=>{calls.push({method,params});return {};}};
   const service=createHistoryService({core,context:CONTEXT,workspace:workspace()});
-  const proposal=service.assetInstallProposal({ref:{assetId:'shop-kit',version:2,contentHash:HASH},selection:['alpha']});
+  const proposal=service.checkpoint({contentRef:{repoId:'world-alpha',commitOid:'abc1234',assetLockHash:HASH},label:'before shop'});
   assert.equal(proposal.applies,false);
   assert.equal(proposal.requiresPlayerAction,true);
-  assert.equal(proposal.gitWriteOwner,'N');
+  assert.equal(proposal.gitWriteOwner,'M');
   assert.equal(proposal.operationContext.worldId,'alpha');
-  assert.equal(proposal.operationContext.operationId,'proposal-assetInstallProposal');
   assert.deepEqual(calls,[],'a proposal must not call the host at all');
-  for(const method of calls.map(call=>call.method))assert.ok(!/^(git|shell|exec)/.test(method));
-});
-
-test('a proposal without an explicit instance is refused instead of fabricated',()=>{
-  const core={call:async()=>({})};
-  const service=createHistoryService({core,context:CONTEXT,workspace:workspace()});
-  assert.throws(()=>service.assetInstallProposal({ref:{assetId:'shop-kit',version:2,contentHash:HASH}}),
-    /INSTANCE_ONLY_REQUIRES_EXACTLY_ONE_INSTANCE/);
 });
 
 test('an invalid reference is rejected before any host call',async()=>{
   const calls=[];
-  const core={call:async(method,params)=>{calls.push(method);return {};}};
+  const core={call:async(method)=>{calls.push(method);return {};}};
   const service=createHistoryService({core,context:CONTEXT,workspace:workspace()});
-  await assert.rejects(async()=>service.assetRead({ref:{assetId:'latest',version:1,contentHash:HASH}}),/ASSET_REF_MUST_NOT_BE_LATEST/);
+  await assert.rejects(async()=>service.version({contentRef:{repoId:'w',commitOid:'zz',assetLockHash:HASH}}),/INVALID_COMMIT_OID/);
   assert.deepEqual(calls,[]);
 });

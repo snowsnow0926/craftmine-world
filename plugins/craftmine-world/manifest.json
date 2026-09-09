@@ -502,7 +502,7 @@
       },
       {
         "name": "godot_runtime_state",
-        "description": "Read the actual runtime state of the bound world. scope=build returns the durable runnable-build descriptor (world, build, base, engine, entry). scope=live returns a timestamped sample from the running instance: camera, equipment, entities and quests. Live state is never inferred from a task-start snapshot or from the last saved progress; when no live sampler is connected the result says LIVE_OBSERVATION_NOT_WIRED and lists the unknown fields. This tool never writes progress or a receipt.",
+        "description": "Read the actual runtime state of the bound world. scope=build returns the durable runnable-build descriptor (world, build, base, engine, entry). scope=live returns a timestamped sample from the running instance: world, build, instance, camera, equipment, entities and quests. A sample without its own identity, from another world or build, from a replaced instance, or older than the freshness window is marked stale with the reason. Live state is never inferred from a task-start snapshot or from the last saved progress; when no live sampler is connected the result says LIVE_OBSERVATION_NOT_WIRED and lists the unknown fields. This tool never writes progress or a receipt.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -523,7 +523,7 @@
       },
       {
         "name": "godot_project_facts",
-        "description": "Rebuild the authoritative durable facts for this world after a context compaction or a model switch: project revision and manifest hash, base and engine identity, candidates, runtime build and last confirmed progress, plus which limit kind is exhausted. Call this instead of trusting a summary. Last confirmed progress is a save, not the player's current equipment; use godot_runtime_state scope=live for that.",
+        "description": "Rebuild the authoritative durable facts for this world after a context compaction or a model switch: project revision and manifest hash, base and engine identity, candidates, runtime build, last confirmed progress, the real executor gate, durable job usage, which limit kind is exhausted, and whether the documentation corpus matches the bound engine. Call this instead of trusting a summary. Last confirmed progress is a save, not the player's current equipment; use godot_runtime_state scope=live for that.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -574,7 +574,7 @@
       },
       {
         "name": "godot_history",
-        "description": "Query content history and library references for the bound world, and prepare change proposals. mode=history|version|diff|operation reads recorded versions; mode=asset-search|asset-read reads fixed library versions; mode=install-proposal|upgrade-proposal prepares a proposal that only the player can confirm. Asset references must name an exact version and content hash, never latest. intent distinguishes changing one instance, saving a variant, and upgrading all selected instances. Nothing here writes git or applies a change; when the backing adapter is not registered the result names the exact missing method and its owner.",
+        "description": "Query the recorded content history of the bound world and prepare version proposals. mode=history pages revisions; mode=version reads one recorded content version; mode=diff compares two versions; mode=operation looks up a past operation result; mode=checkpoint and mode=merge-candidate prepare a proposal that only the player can confirm. Every call carries a host-bound OperationContext; the model cannot choose a target branch or world. Nothing here writes git or applies a change; when the backing adapter is not registered the result names the exact missing method and its owner.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -586,10 +586,8 @@
                 "version",
                 "diff",
                 "operation",
-                "asset-search",
-                "asset-read",
-                "install-proposal",
-                "upgrade-proposal"
+                "checkpoint",
+                "merge-candidate"
               ]
             },
             "cursor": {
@@ -741,6 +739,276 @@
               },
               "required": [
                 "name"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "godot_jobs",
+        "description": "Read or continue managed Godot execution. mode=status returns the real executor gate: whether build and check are enabled, why they are blocked, and which isolated executors are registered. mode=usage returns durable per-job usage for this world (wall clock, source/asset/host/artifact bytes), kept separate from model token accounting. mode=resume re-queues an interrupted, cancelled or failed job by its original job id and is idempotent on replay. Executor-facing operations need a lease token and are never available here.",
+        "risk": "medium",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "status",
+                "usage",
+                "resume"
+              ]
+            },
+            "originJobId": {
+              "type": "string",
+              "maxLength": 240
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "godot_draft_recovery",
+        "description": "List and resume interrupted creative drafts. mode=list returns the drafts this project still holds, with generation, draft revision and hash, whether each is resumable, and why not (other session, not interrupted). mode=resume reopens exactly one listed draft in a new turn and returns its real workspace and generation; the model cannot resume a completed task, another session's draft, or replay a finished turn. Expired and conflicting selections are reported with their real reason.",
+        "risk": "medium",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "list",
+                "resume"
+              ]
+            },
+            "taskId": {
+              "type": "string",
+              "maxLength": 240
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "asset_library",
+        "description": "Search and read the fixed asset library. mode=search finds assets by scope, kind, media kind and tags and returns separated indexed/previewable/baseChecked/applied facts; mode=read returns one immutable version with its exact AssetRef, file hashes and source/licence record, and no body bytes; mode=versions lists every immutable version of one asset. Read-only: nothing here installs, imports or annotates. A missing library adapter is reported with the exact method and owner instead of invented content.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "search",
+                "read",
+                "versions"
+              ]
+            },
+            "scope": {
+              "type": "string",
+              "enum": [
+                "current-world",
+                "local-library",
+                "import-source"
+              ]
+            },
+            "query": {
+              "type": "string",
+              "maxLength": 120
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "raw",
+                "object",
+                "creation",
+                "world-template"
+              ]
+            },
+            "mediaKind": {
+              "type": "string",
+              "enum": [
+                "image",
+                "model",
+                "audio",
+                "package",
+                "other"
+              ]
+            },
+            "tags": {
+              "type": "array",
+              "maxItems": 32,
+              "items": {
+                "type": "string",
+                "maxLength": 40
+              }
+            },
+            "favoritesOnly": {
+              "type": "boolean"
+            },
+            "latestOnly": {
+              "type": "boolean"
+            },
+            "assetId": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "package_library",
+        "description": "Inspect and propose creation-package changes. mode=check validates one exact package version against a target base and engine and returns the resolved dependency closure with reasons; mode=read returns one installed instance; mode=list lists instances in this world; mode=propose prepares a change for the player to confirm and never applies it. intent distinguishes changing one instance, saving a variant, upgrading the selected instances, restoring a package instance, and restoring confirmed world progress. Exact versions only: latest is refused, and every proposal names the real host method.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "check",
+                "read",
+                "list",
+                "propose"
+              ]
+            },
+            "intent": {
+              "type": "string",
+              "enum": [
+                "instance-only",
+                "variant",
+                "upgrade-selected",
+                "restore-content",
+                "restore-save"
+              ]
+            },
+            "instanceId": {
+              "type": "string",
+              "maxLength": 120
+            },
+            "selection": {
+              "type": "array",
+              "maxItems": 32,
+              "items": {
+                "type": "string",
+                "maxLength": 120
+              }
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "installed",
+                "uninstalled"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "ref": {
+              "type": "object",
+              "properties": {
+                "assetId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "contentHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "assetId",
+                "version",
+                "contentHash"
+              ],
+              "additionalProperties": false
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "baseVersion": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "engine": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "stateFormat": {
+                  "type": "string",
+                  "maxLength": 120
+                }
+              },
+              "required": [
+                "base",
+                "engine"
+              ],
+              "additionalProperties": false
+            },
+            "progressRef": {
+              "type": "object",
+              "properties": {
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "contentHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "revision",
+                "contentHash"
               ],
               "additionalProperties": false
             }

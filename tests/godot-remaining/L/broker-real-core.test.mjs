@@ -51,7 +51,7 @@ test('the real core advertises the Godot capability flags the inventory reports'
   assert.equal(hello.godotBuildJobs,true);
   assert.equal(hello.godotExecution,false);
   const inventory=buildInventory({manifest,routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake:hello});
-  assert.equal(inventory.tools.filter(tool=>tool.name.startsWith('godot_')).length,17);
+  assert.equal(inventory.tools.filter(tool=>tool.name.startsWith('godot_')).length,19);
   assert.equal(inventory.tools.find(tool=>tool.name==='godot_build_start').reachable,true);
   assert.equal(inventory.tools.find(tool=>tool.name==='godot_project_index').reachable,true);
   const client2=await client.call('godotProject.index',{context:CONTEXT,worldId:'alpha',limit:8});
@@ -103,18 +103,22 @@ test('the runtime descriptor RPC rejects a model-supplied context',{skip},async 
   assert.equal(result,null);
 });
 
-test('the history and asset adapters are genuinely absent in the real core',{skip},async t=>{
+test('the content-history adapter is genuinely absent in the real core',{skip},async t=>{
   const {client}=await session(t);
   const history=createHistoryService({core:client,context:CONTEXT,
-    workspace:{worldId:'alpha',task:{binding:{repoId:'world-alpha',branchId:'plan-1'}}}});
+    workspace:{worldId:'alpha',task:{binding:{repoId:'world-alpha',branchId:'main',
+      expectedHeadOid:null,expectedAppliedOid:null,expectedProgressRevision:null}}}});
   const listed=await history.history({});
   assert.equal(listed.available,false);
   assert.equal(listed.reason,'DEPENDENCY_NOT_WIRED');
-  assert.equal(listed.requiredHostMethod,'version.history');
+  assert.equal(listed.requiredHostMethod,'content.history');
   assert.equal(listed.owner,'M');
-  const asset=await history.assetSearch({query:'shop'});
-  assert.equal(asset.owner,'N');
-  assert.equal(asset.requiredHostMethod,'asset.search');
+  // A world without a bound repository reports the missing identity instead of
+  // inventing a branch.
+  const unbound=createHistoryService({core:client,context:CONTEXT,workspace:{worldId:'alpha',task:{binding:{}}}});
+  const blocked=await unbound.history({});
+  assert.equal(blocked.reason,'OPERATION_CONTEXT_INCOMPLETE');
+  assert.ok(blocked.missing.includes('repoId'));
 });
 
 console.log('real core evidence: '+binary);

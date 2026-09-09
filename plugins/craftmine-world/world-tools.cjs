@@ -5,7 +5,9 @@ const {createProjectQuery}=require('./godot-query.cjs');
 const {describeRuntime,normalizeLiveSample,projectFacts,limitAccounting}=require('./godot-observe.cjs');
 const {capabilityReport,classifyGap}=require('./godot-capability.cjs');
 const {createHistoryService}=require('./godot-history.cjs');
-const {GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,GODOT_RECEIPTS}=require('./godot-routing.cjs');
+const {createLibraryBinding}=require('./godot-library.cjs');
+const {executorStatus,usageSummary,continueJob,listRecoverable,resumeDraft,explainRecovery}=require('./godot-jobs.cjs');
+const {GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS}=require('./godot-routing.cjs');
 
 function hostContext(context) {
   if(context?.toolCallId?.startsWith('@host:'))throw Error('RESERVED_HOST_RECEIPT');
@@ -20,6 +22,9 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
   const library=createLibraryService({call:(method,params)=>core.call(method,params)});
   const memory=createMemoryService({call:(method,params)=>core.call(method,params)});
   const definitions=require('./manifest.json').contributes.agentTools.filter(tool=>tool.name!=='runtime_info');
+  // Last accepted live instance per world, so a restarted game process
+  // invalidates the previous sample instead of being read as the same one.
+  const liveInstances=new Map();
   return definitions.map(definition=>({...definition,execute:async(args,invocation)=>{
     const context=hostContext(invocation);
     const assertActive=()=>{if(isEnded(context))throw Error('TURN_ENDED');};
@@ -39,7 +44,9 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     // Discussion-only turns may read anything and change nothing. The host may
     // pass a predicate, or expose discussionOnly/readOnlyTurn through settings;
     // either way the refusal happens before any host call.
-    if(WRITE_TOOLS.has(definition.name)) {
+    const conditionalWrite=CONDITIONAL_WRITE_TOOLS[definition.name];
+    const isWrite=WRITE_TOOLS.has(definition.name)||(conditionalWrite!==undefined&&args.mode===conditionalWrite);
+    if(isWrite) {
       let blocked=typeof options.isDiscussionOnly==='function'&&options.isDiscussionOnly();
       if(!blocked) {
         const settings=await getSettings();
@@ -99,19 +106,71 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
         try { sample=await options.sampleLiveState({worldId:workspace.worldId,buildId:descriptor.buildId}); }
         catch(error){ failure={available:false,reason:'LIVE_SAMPLE_FAILED',errorCode:error?.errorCode||null}; }
       }
+      const previous=liveInstances.get(workspace.worldId)||null;
       const live=failure||(typeof options.sampleLiveState==='function'
-        ? normalizeLiveSample(sample,{worldId:workspace.worldId,buildId:descriptor.buildId})
+        ? normalizeLiveSample(sample,{worldId:workspace.worldId,buildId:descriptor.buildId,
+            instanceId:previous?.instanceId??null},{maxAgeMs:options.maxSampleAgeMs})
         : {available:false,reason:'LIVE_OBSERVATION_NOT_WIRED',
            dependency:'host live sampler for the running Godot instance',
            note:'Camera, equipment, entities and quests below are unknown, not empty. Do not use the last saved progress as the current equipment.'});
+      // Only a fresh, identity-verified sample becomes the new baseline.
+      if(live.available&&!live.stale)liveInstances.set(workspace.worldId,{instanceId:live.instanceId,sampledAt:live.sampledAt});
       return {format:'craftmine.godot-runtime-state/1',scope:'live',descriptor:descriptorOnly,live,docsCompatibility,
-        durableProgress:{source:'last-confirmed-save',savedAt:durableProgress?.savedAt??null}};
+        previousInstance:previous,durableProgress:{source:'last-confirmed-save',savedAt:durableProgress?.savedAt??null}};
     }
     if(definition.name==='godot_project_facts') {
       const facts=await projectFacts({core,context,worldId:workspace.worldId,sampler:options.sampleLiveState});
       facts.limits=limitAccounting(options.budget);
       facts.docsCompatibility=docs.checkEngineVersion(facts.runtime?.engineVersion??facts.project?.engineVersion);
+      // A model switch or a compaction must be able to recheck everything from
+      // durable sources: capability flags, executor gate, durable usage.
+      facts.modelSwitch={capabilityHandshake:await core.start(),requiresReinspection:true};
+      try { facts.executor=await executorStatus(core); }
+      catch(error){ facts.executor={available:false,reason:error?.errorCode==='UNKNOWN_METHOD'?'DEPENDENCY_NOT_WIRED':'EXECUTOR_STATUS_FAILED',
+        requiredHostMethod:'godotExecutor.status',owner:'R1'}; }
+      try { facts.usage=await usageSummary(core,{context,worldId:workspace.worldId}); }
+      catch(error){ facts.usage={available:false,reason:error?.errorCode==='UNKNOWN_METHOD'?'DEPENDENCY_NOT_WIRED':'USAGE_READ_FAILED',
+        requiredHostMethod:'godotJob.usage',owner:'R1'}; }
       return facts;
+    }
+    if(definition.name==='godot_jobs') {
+      if(args.mode==='status')return executorStatus(core);
+      if(args.mode==='usage')return usageSummary(core,{context,worldId:workspace.worldId});
+      if(args.mode==='resume') {
+        if(!args.originJobId)throw Error('ORIGIN_JOB_ID_REQUIRED');
+        return continueJob(core,{context,worldId:workspace.worldId,originJobId:args.originJobId,toolCallId:invocation.toolCallId});
+      }
+      throw Error('INVALID_JOBS_MODE');
+    }
+    if(definition.name==='godot_draft_recovery') {
+      if(args.mode==='list')return listRecoverable(core,{projectId:context.projectId,worldId:workspace.worldId,sessionId:context.sessionId});
+      if(args.mode==='resume') {
+        if(!args.taskId)throw Error('TASK_ID_REQUIRED');
+        if(!Number.isSafeInteger(args.generation))throw Error('GENERATION_REQUIRED');
+        return resumeDraft(core,{context,worldId:workspace.worldId,taskId:args.taskId,generation:args.generation});
+      }
+      throw Error('INVALID_RECOVERY_MODE');
+    }
+    if(definition.name==='asset_library') {
+      const library=createLibraryBinding({core,context,worldId:workspace.worldId,methods:options.libraryMethods});
+      if(args.mode==='search')return library.assetSearch(args);
+      if(args.mode==='read'){if(!args.assetId)throw Error('ASSET_ID_REQUIRED');return library.assetRead(args);}
+      if(args.mode==='versions'){if(!args.assetId)throw Error('ASSET_ID_REQUIRED');return library.assetVersions(args);}
+      throw Error('INVALID_ASSET_MODE');
+    }
+    if(definition.name==='package_library') {
+      const library=createLibraryBinding({core,context,worldId:workspace.worldId,methods:options.libraryMethods});
+      if(args.mode==='check'){if(!args.ref)throw Error('ASSET_REF_REQUIRED');return library.packageCheck(args);}
+      if(args.mode==='read'){if(!args.instanceId)throw Error('INSTANCE_ID_REQUIRED');return library.packageRead(args);}
+      if(args.mode==='list')return library.packageList(args);
+      if(args.mode==='propose') {
+        // The bound world is the only install target the model may name; it
+        // cannot widen the selection to another world.
+        const selection=args.intent==='instance-only'?[workspace.worldId]:(args.selection||[]);
+        return library.proposeChange({intent:args.intent,ref:args.ref,selection,target:args.target,
+          instanceId:args.instanceId,progressRef:args.progressRef,operationId:invocation.toolCallId});
+      }
+      throw Error('INVALID_PACKAGE_MODE');
     }
     if(definition.name==='godot_history') {
       const history=createHistoryService({core,context,workspace,methods:options.historyMethods});
@@ -119,10 +178,8 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       if(args.mode==='version'){if(!args.contentRef)throw Error('CONTENT_REF_REQUIRED');return history.version(args);}
       if(args.mode==='diff'){if(!args.from||!args.to)throw Error('DIFF_REQUIRES_FROM_AND_TO');return history.diff(args);}
       if(args.mode==='operation'){if(!args.operationId)throw Error('OPERATION_ID_REQUIRED');return history.operationResult(args);}
-      if(args.mode==='asset-search'){if(!args.query)throw Error('QUERY_REQUIRED');return history.assetSearch(args);}
-      if(args.mode==='asset-read'){if(!args.ref)throw Error('ASSET_REF_REQUIRED');return history.assetRead(args);}
-      if(args.mode==='install-proposal'){if(!args.ref)throw Error('ASSET_REF_REQUIRED');return history.assetInstallProposal(args);}
-      if(args.mode==='upgrade-proposal'){if(!args.ref)throw Error('ASSET_REF_REQUIRED');return history.assetUpgradeProposal(args);}
+      if(args.mode==='checkpoint'){if(!args.contentRef)throw Error('CONTENT_REF_REQUIRED');return history.checkpoint(args);}
+      if(args.mode==='merge-candidate'){if(!args.from||!args.to)throw Error('DIFF_REQUIRES_FROM_AND_TO');return history.mergeCandidate(args);}
       throw Error('INVALID_HISTORY_MODE');
     }
     if(Object.hasOwn(GODOT_METHODS,definition.name)) {
@@ -188,4 +245,4 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
   }}));
 }
 
-module.exports={createWorldTools,GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS};
+module.exports={createWorldTools,GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS};

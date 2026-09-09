@@ -19,7 +19,11 @@ const LOCAL_TOOLS={
   godot_runtime_state:{owner:'L',hostMethod:'godotRuntime.describe',needs:['godotProjects']},
   godot_project_facts:{owner:'L',hostMethod:'godotProject.index+godotCandidate.list+godotRuntime.describe',needs:['godotProjects']},
   godot_capability_report:{owner:'L',hostMethod:'hello',needs:[]},
-  godot_history:{owner:'L',hostMethod:'version.*/asset.*',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
+  godot_history:{owner:'L',hostMethod:'content.*',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
+  godot_jobs:{owner:'L',hostMethod:'godotExecutor.status+godotJob.usage+godotJob.continue',needs:[]},
+  godot_draft_recovery:{owner:'L',hostMethod:'task.recoverable+task.resume',needs:['sessionDrafts']},
+  asset_library:{owner:'L',hostMethod:'asset.search+asset.read+asset.versions',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
+  package_library:{owner:'L',hostMethod:'package.check+package.read+package.list',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
   // Pre-existing world tools. They are advertised by the same catalogue, so the
   // inventory must report them truthfully instead of as unwired.
   project_inspect:{owner:'C',hostMethod:'workspace.open+inspect',needs:['sessionDrafts']},
@@ -41,8 +45,11 @@ const LOCAL_TOOLS={
 const WRITE_TOOLS=new Set(['godot_project_create','godot_project_patch','godot_asset_put','godot_build_start',
   'godot_build_cancel','workspace_patch','library_install','verification_submit','verification_cancel',
   'memory_propose']);
+// `godot_draft_recovery` mode=resume reopens a durable task: it is a write, not a
+// read, so a discussion turn must not run it.
+const CONDITIONAL_WRITE_TOOLS={godot_draft_recovery:'resume'};
 
 const GODOT_RECEIPTS={'godotProject.create':'godotProject.receipt','godotProject.patch':'godotProject.receipt',
   'godotAsset.put':'godotBuild.receipt','godotBuild.start':'godotBuild.receipt'};
 
-module.exports={GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,GODOT_RECEIPTS};
+module.exports={GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS};

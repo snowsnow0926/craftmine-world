@@ -18,7 +18,7 @@ const require=createRequire(import.meta.url);
 const source=path.join(root,'plugins/craftmine-world');
 const staging=await mkdtemp(path.join(process.env.PI_SCRATCH_DIR||tmpdir(),'godot-remaining-L-broker-'));
 const FILES=['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
-  'godot-observe.cjs','godot-capability.cjs','godot-history.cjs'];
+  'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs'];
 for(const file of FILES)await copyFile(path.join(source,file),path.join(staging,file));
 
 // Minimal stand-in for the generated domain bundle. Only the names the broker
@@ -83,6 +83,15 @@ function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false
       artifacts:[{path:'web/index.html'}],build:{godot:{engineVersion:'4.7.2-stable',renderer:'gl_compatibility',target:'web'}},
       snapshot:{savedAt:'2026-09-09T00:00:00Z',base:'first-person',equipment:{active:'pistol'}}};
     if(method==='godotProject.create')return {worldId:'alpha',status:'source-only'};
+    if(method==='godotExecutor.status')return {format:'craftmine.godot-execution-status/1',engineVersion:'4.7.2-stable',
+      build:true,check:true,buildBlockedReason:null,checkBlockedReason:null,executors:[{executorId:'exec-1'}]};
+    if(method==='godotJob.usage')return {items:[{jobId:'job-1',kind:'build',outcome:'passed',wallClockMillis:1200,
+      sourceBytes:10,assetBytes:0,hostBytes:0,artifactBytes:100,artifactCount:2}],
+      totals:{executions:1,wallClockMillis:1200,sourceBytes:10,assetBytes:0,hostBytes:0,artifactBytes:100,artifactCount:2}};
+    if(method==='godotJob.continue')return {jobId:'job-2',status:'queued'};
+    if(method==='task.recoverable')return {items:[{taskId:'task-9',binding:{sessionId:'session',projectId:'project'},
+      generation:2,worldId:'alpha',draftRevision:4,draftHash:'f'.repeat(64),status:'interrupted'}],modelReplay:false};
+    if(method==='task.resume')return {workspace:{worldId:'alpha'},generation:3,budget:{},modelReplay:false};
     throw Object.assign(Error('UNKNOWN_METHOD'),{errorCode:'UNKNOWN_METHOD'});
   }};
   const invocation={projectId:'project',sessionId:'session',turnId:'turn',executionId:'execution'};
@@ -94,12 +103,12 @@ function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false
   return {call,calls};
 }
 
-test('the advertised Godot surface is 17 tools and leaks no host identity field',async()=>{
+test('the advertised Godot surface is 19 tools and leaks no host identity field',async()=>{
   const manifest=JSON.parse(await readFile(path.join(source,'manifest.json'),'utf8'));
   const tools=manifest.contributes.agentTools.filter(tool=>tool.name.startsWith('godot_'));
-  assert.equal(tools.length,17);
+  assert.equal(tools.length,19);
   for(const name of ['godot_docs','godot_project_query','godot_runtime_state','godot_project_facts',
-    'godot_capability_report','godot_history'])assert.ok(tools.some(tool=>tool.name===name),`missing ${name}`);
+    'godot_capability_report','godot_history','godot_jobs','godot_draft_recovery'])assert.ok(tools.some(tool=>tool.name===name),`missing ${name}`);
   for(const tool of tools){
     assert.equal(tool.schema.additionalProperties,false);
     for(const key of ['worldId','context','toolCallId','baseBuild','executionId'])assert.ok(!Object.hasOwn(tool.schema.properties,key));
@@ -123,7 +132,7 @@ test('godot_capability_report advertises what is really reachable',async()=>{
   const report=await f.call('godot_capability_report',{});
   assert.equal(report.handshake.godotBuildJobs,true);
   assert.equal(report.handshake.godotExecution,false);
-  assert.equal(report.tools.length,30,'all advertised world tools except runtime_info');
+  assert.equal(report.tools.length,34,'all advertised world tools except runtime_info');
   assert.equal(report.tools.filter(tool=>tool.wired===false).length,0);
   assert.equal(report.tools.find(tool=>tool.name==='workspace_patch').reachable,true);
   assert.equal(report.tools.find(tool=>tool.name==='godot_build_start').reachable,true);
@@ -185,12 +194,20 @@ test('live observation refuses to substitute saved progress for current state',a
   assert.deepEqual(Object.keys(state.durableProgress).sort(),['savedAt','source']);
   assert.ok(!JSON.stringify(state).includes('pistol'),'saved equipment must not appear in a live response');
   assert.equal(state.docsCompatibility.compatible,true);
-  const wired=fixture({sampler:async()=>({sampledAt:'2026-09-10T12:00:00Z',worldId:'alpha',buildId:'gbd-1',
+  const wired=fixture({sampler:async()=>({sampledAt:'2026-09-10T12:00:00Z',worldId:'alpha',buildId:'gbd-1',instanceId:'inst-1',
     base:'first-person',equipment:{active:'rifle'},display:{cameraGlobal:[1,2,3]},targets:[],interactables:[]})});
   const live=await wired.call('godot_runtime_state',{scope:'live'});
   assert.equal(live.live.available,true);
+  assert.equal(live.live.instanceId,'inst-1');
   assert.equal(live.live.equipment.active,'rifle');
   assert.equal(live.live.stale,false);
+  // A replaced game process invalidates the previous sample.
+  const replaced=fixture({sampler:async()=>({sampledAt:'2026-09-10T12:00:00Z',worldId:'alpha',buildId:'gbd-1',instanceId:'inst-2',
+    base:'first-person',equipment:{active:'sword'},display:{cameraGlobal:[0,0,0]},targets:[],interactables:[]})});
+  await replaced.call('godot_runtime_state',{scope:'live'});
+  const next=await replaced.call('godot_runtime_state',{scope:'live'});
+  assert.equal(next.live.instanceId,'inst-2');
+  assert.equal(next.live.stale,false);
   const build=await wired.call('godot_runtime_state',{scope:'build'});
   assert.equal(build.phase,'formal');
   assert.ok(!('live' in build));
@@ -213,18 +230,104 @@ test('godot_history reports the exact missing adapter and never calls git',async
   const f=fixture();
   const history=await f.call('godot_history',{mode:'history'});
   assert.equal(history.available,false);
-  assert.equal(history.requiredHostMethod,'version.history');
+  assert.equal(history.requiredHostMethod,'content.history');
   assert.equal(history.owner,'M');
-  const assets=await f.call('godot_history',{mode:'asset-search',query:'shop'});
-  assert.equal(assets.owner,'N');
-  await assert.rejects(f.call('godot_history',{mode:'asset-read'}),/ASSET_REF_REQUIRED/);
-  await assert.rejects(f.call('godot_history',{mode:'asset-read',
-    ref:{assetId:'latest',version:1,contentHash:'a'.repeat(64)}}),/ASSET_REF_MUST_NOT_BE_LATEST/);
-  const proposal=await f.call('godot_history',{mode:'install-proposal',
-    ref:{assetId:'shop-kit',version:1,contentHash:'a'.repeat(64)},intent:'variant',target:{name:'shop-v2'}});
+  const proposal=await f.call('godot_history',{mode:'checkpoint',
+    contentRef:{repoId:'world-alpha',commitOid:'abc1234',assetLockHash:'a'.repeat(64)}});
   assert.equal(proposal.applies,false);
   assert.equal(proposal.requiresPlayerAction,true);
   assert.ok(!f.calls.some(entry=>/^(git|shell|exec)/.test(entry.method)));
+});
+
+test('godot_jobs exposes the real executor gate, durable usage and resume',async()=>{
+  const f=fixture();
+  const status=await f.call('godot_jobs',{mode:'status'});
+  assert.equal(status.scope,'executor');
+  assert.equal(status.status.build,true);
+  assert.equal(status.status.executors.length,1);
+  assert.ok(status.tokenGatedMethods.includes('godotJob.claim'));
+  assert.ok(!status.tokenGatedMethods.includes('godotExecutor.status'));
+  const usage=await f.call('godot_jobs',{mode:'usage'});
+  assert.equal(usage.scope,'usage');
+  assert.equal(usage.totals.wallClockMillis,1200);
+  assert.equal(usage.totals.artifactCount,2);
+  assert.match(usage.note,/never merged/);
+  const resumed=await f.call('godot_jobs',{mode:'resume',originJobId:'job-1'});
+  assert.equal(resumed.scope,'resume');
+  assert.equal(resumed.result.status,'queued');
+  await assert.rejects(f.call('godot_jobs',{mode:'resume'}),/ORIGIN_JOB_ID_REQUIRED/);
+  await assert.rejects(f.call('godot_jobs',{mode:'nope'}),/INVALID_JOBS_MODE/);
+});
+
+test('godot_draft_recovery lists and resumes only a listed draft',async()=>{
+  const f=fixture();
+  const listed=await f.call('godot_draft_recovery',{mode:'list'});
+  assert.equal(listed.items.length,1);
+  assert.equal(listed.items[0].resumable,true);
+  assert.equal(listed.items[0].draftRevision,4);
+  const resumed=await f.call('godot_draft_recovery',{mode:'resume',taskId:'task-9',generation:2});
+  assert.equal(resumed.resumed,true);
+  assert.equal(resumed.generationAfter,3);
+  const stale=await f.call('godot_draft_recovery',{mode:'resume',taskId:'task-9',generation:99});
+  assert.equal(stale.resumed,false);
+  assert.equal(stale.reason.kind,'conflict');
+  assert.equal(stale.reason.code,'STALE_RECOVERY_SELECTION');
+  await assert.rejects(f.call('godot_draft_recovery',{mode:'resume',taskId:'task-9'}),/GENERATION_REQUIRED/);
+});
+
+test('discussion-only turns cannot resume a draft',async()=>{
+  const f=fixture({discussionOnly:true});
+  await f.call('godot_draft_recovery',{mode:'list'});
+  await assert.rejects(f.call('godot_draft_recovery',{mode:'resume',taskId:'task-9',generation:2}),
+    /DISCUSSION_MODE_READ_ONLY/);
+  assert.ok(!f.calls.some(entry=>entry.method==='task.resume'));
+});
+
+test('asset and package tools bind the delivered method names and degrade honestly',async()=>{
+  const f=fixture();
+  const search=await f.call('asset_library',{mode:'search',scope:'current-world',query:'door'});
+  assert.equal(search.available,false);
+  assert.equal(search.requiredHostMethod,'asset.search');
+  assert.equal(search.owner,'R6');
+  assert.equal(f.calls.find(entry=>entry.method==='asset.search').params.worldId,'alpha');
+  const read=await f.call('asset_library',{mode:'read',assetId:'door-kit',version:2});
+  assert.equal(read.requiredHostMethod,'asset.read');
+  const check=await f.call('package_library',{mode:'check',ref:{assetId:'door-kit',version:2,contentHash:'a'.repeat(64)},
+    target:{base:'top-down',engine:'4.7.2-stable'}});
+  assert.equal(check.available,false);
+  assert.equal(check.requiredHostMethod,'package.check');
+  assert.equal(check.owner,'R4');
+  const list=await f.call('package_library',{mode:'list'});
+  assert.equal(list.requiredHostMethod,'package.list');
+});
+
+test('package proposals cover the five intents and never apply',async()=>{
+  const f=fixture();
+  const ref={assetId:'door-kit',version:2,contentHash:'a'.repeat(64)};
+  const install=await f.call('package_library',{mode:'propose',intent:'instance-only',ref});
+  assert.equal(install.proposal,'install');
+  assert.equal(install.method,'package.install');
+  assert.equal(install.applies,false);
+  assert.equal(install.params.worldId,'alpha','the bound world is the only install target');
+  const variant=await f.call('package_library',{mode:'propose',intent:'variant',ref,target:{name:'door-hard'}});
+  assert.equal(variant.method,'package.register');
+  assert.equal(variant.change.createsVariant,true);
+  const upgrade=await f.call('package_library',{mode:'propose',intent:'upgrade-selected',ref,
+    selection:['ins-1','ins-2']});
+  assert.equal(upgrade.method,'package.upgrade');
+  assert.equal(upgrade.params.targets.length,2);
+  const content=await f.call('package_library',{mode:'propose',intent:'restore-content',selection:['ins-1']});
+  assert.equal(content.method,'package.restore');
+  const save=await f.call('package_library',{mode:'propose',intent:'restore-save',
+    progressRef:{revision:7,contentHash:'b'.repeat(64)}});
+  assert.equal(save.method,'backup.restore');
+  assert.equal(save.owner,'R5');
+  await assert.rejects(f.call('package_library',{mode:'propose',intent:'upgrade-selected',ref,selection:[]}),
+    /UPGRADE_SELECTED_REQUIRES_SELECTION/);
+  await assert.rejects(f.call('package_library',{mode:'propose',intent:'instance-only',
+    ref:{assetId:'latest',version:1,contentHash:'a'.repeat(64)}}),/ASSET_REF_MUST_NOT_BE_LATEST/);
+  assert.ok(!f.calls.some(entry=>/^(package\.install|package\.upgrade|package\.restore|backup\.restore)$/.test(entry.method)),
+    'a proposal must not reach the host');
 });
 
 test('the broker still rejects forged fields and ended turns for the new tools',async()=>{
