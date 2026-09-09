@@ -2,6 +2,7 @@ import { app, BrowserWindow, dialog, globalShortcut, Notification, session, shel
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { readHeadlessProfile } from "./craftmine-headless-profile";
+import { createGodotGameplayAcceptance, type GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance";
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
 const violations: string[] = [];
@@ -63,8 +64,10 @@ export function installHeadlessControl(access: {
   world: () => WebContents | null;
   runtime: () => unknown;
   draftProbe: () => Promise<unknown>;
+  godotGameplay?: GodotGameplayAccess;
 }): void {
   if (!profile) return;
+  const godotGameplay = access.godotGameplay ? createGodotGameplayAcceptance(access.godotGameplay) : null;
   const configuration = profile;
   const evaluateWorld = (script: string) => {
     const view = access.world();
@@ -76,6 +79,13 @@ export function installHeadlessControl(access: {
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
       switch (request.method) {
+        case "godotPlay":
+        case "godotCapture720":
+        case "godotCapture600":
+        case "godotCapture1080":
+          if (Object.keys(request).sort().join(",") !== "id,method,type") throw new Error("Unexpected fixed gameplay request fields");
+          if (!godotGameplay) throw new Error("Actual Godot gameplay host unavailable");
+          return godotGameplay(request.method);
         case "status": return {
           name: app.getName(), profile: app.getPath("userData"), runtime: access.runtime(), violations, pageErrors,
           windows: BrowserWindow.getAllWindows().map(window => ({ visible: window.isVisible(), focused: window.isFocused(), focusable: window.isFocusable(), offscreen: window.webContents.isOffscreen() })),
