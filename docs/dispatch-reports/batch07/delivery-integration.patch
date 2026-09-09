@@ -1,0 +1,76 @@
+diff --git a/vendor/pi-desktop/apps/desktop/electron/main/index.ts b/vendor/pi-desktop/apps/desktop/electron/main/index.ts
+index 951c68c..ee0fb47 100644
+--- a/vendor/pi-desktop/apps/desktop/electron/main/index.ts
++++ b/vendor/pi-desktop/apps/desktop/electron/main/index.ts
+@@ -22,6 +22,8 @@ import { CraftmineMaintenanceContexts } from "./craftmine-maintenance-context";
+ import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
+ import { createCraftmineBackupService, type CraftmineFilePicker } from "./craftmine-backup-service";
+ import { createCraftmineDiagnosticsService } from "./craftmine-diagnostics-service";
++import { createCraftmineTelemetry } from "./craftmine-telemetry";
++import { readCraftmineBuildIdentity } from "./craftmine-build-identity";
+ import { CraftmineVerifier } from "./craftmine-verifier";
+ import { checkCraftmineFrame } from "./craftmine-frame-check";
+ import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
+@@ -753,7 +755,7 @@ const plugins: PluginRuntime = new PluginRuntime({
+       includeSessionContext: input.includeSessionContext,
+       sessionContext,
+     });
+-    const result = await completeOneShot(
++    const result = await craftmineTelemetry.measureCompletion(() => completeOneShot(
+       runtimeProvider,
+       context,
+       launch.sidecarParams.thinkingLevel,
+@@ -769,7 +771,7 @@ const plugins: PluginRuntime = new PluginRuntime({
+           }),
+         } : {}),
+       },
+-    );
++    ));
+     return {
+       text: result.text,
+       modelKey: `${launch.providerId}/${launch.modelId}`,
+@@ -2346,6 +2348,7 @@ const craftmineFilePicker: CraftmineFilePicker = async request => {
+   return result.canceled ? null : result.filePath ?? null;
+ };
+ const craftmineBackup = createCraftmineBackupService({ domainCall: (method, params) => plugins.requestCraftmineHost(method, params), pickFile: craftmineFilePicker });
++const craftmineBuildIdentity = readCraftmineBuildIdentity(process.resourcesPath);
+ const craftmineDiagnostics = createCraftmineDiagnosticsService({
+   pickFile: craftmineFilePicker,
+   snapshot: async () => {
+@@ -2357,9 +2360,11 @@ const craftmineDiagnostics = createCraftmineDiagnosticsService({
+       const current = await plugins.requestCraftmineHost("task.context", { context }).catch(() => null) as CraftmineTaskContext | null;
+       if (current) task = { status: current.status, requestCount: current.budget.requestCount, compactionCount: current.budget.compactionCount };
+     }
+-    return { build: { version: app.getVersion() }, task, credentials };
++    return { build: { version: app.getVersion(), ...craftmineBuildIdentity }, task, credentials, telemetry: craftmineTelemetry.status() };
+   },
+ });
++const craftmineTelemetry = createCraftmineTelemetry({ observe: craftmineDiagnostics.observe });
++app.once("will-quit", () => craftmineTelemetry.dispose());
+ const craftminePanelRequest = createCraftminePanelGateway({
+   viewingSession: () => notificationViewingSessionId,
+   session: async id => {
+@@ -2852,6 +2857,7 @@ async function createWindow() {
+   });
+   bootTiming.mark("window-created");
+   const window = mainWindow;
++  craftmineTelemetry.attachWindow(window.webContents);
+   window.webContents.on("console-message", (_event, _level, message) => {
+     if (typeof message === "string" && message.startsWith("[timing] ")) {
+       logger.app("timing", "info", message);
+@@ -4769,6 +4775,7 @@ function wireSidecar(s: AgentSidecar) {
+   s.onNotification((method, params) => {
+     if (method === "agent.event") {
+       const envelope = params as AgentEventEnvelope;
++      craftmineTelemetry.observeAgentEvent(envelope);
+       const event = envelope.event;
+       if (event.type === "tool_start") {
+         logger.app("tool", "info", "tool start", {
+@@ -5100,6 +5107,7 @@ function finishTurn(
+ 
+     try {
+       if (host && turnId) {
++        craftmineTelemetry.finishAgentJob(sessionId, turnId, status === "error" ? "failed" : status === "aborted" ? "aborted" : "completed");
+         craftmineGateway.end(sessionId, turnId);
+         if (!craftmineMaintenanceContexts.has(sessionId, turnId)) await plugins.endCraftmineTurn({ sessionId, turnId, status }).catch((error) => {
+           logger.app("persistence", "error", "Craftmine draft turn end failed", { sessionId, data: String(error) });
