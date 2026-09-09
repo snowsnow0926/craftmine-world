@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EquipmentCatalog" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/equipment_catalog.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/equipment/pistol.tres" id="2_pistol"]
+[ext_resource type="Resource" path="res://data/equipment/practice_sword.tres" id="3_sword"]
+[ext_resource type="Resource" path="res://data/equipment/inspection_tool.tres" id="4_tool"]
+
+[resource]
+script = ExtResource("1_script")
+default_id = &"pistol"
+items = Array[Resource]([ExtResource("2_pistol"), ExtResource("3_sword"), ExtResource("4_tool")])

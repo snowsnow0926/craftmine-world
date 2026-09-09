@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/pickup_item.gd" id="1_script"]
+[ext_resource type="Material" path="res://assets/materials/pickup_kit.tres" id="2_material"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_kit"]
+size = Vector3(0.34, 0.22, 0.26)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kit"]
+size = Vector3(0.34, 0.22, 0.26)
+
+[node name="PickupItem" type="StaticBody3D"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_script")
+item_id = &"repair_kit"
+amount = 1
+prompt = "Pick up"
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11, 0)
+mesh = SubResource("BoxMesh_kit")
+material_override = ExtResource("2_material")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11, 0)
+shape = SubResource("BoxShape3D_kit")

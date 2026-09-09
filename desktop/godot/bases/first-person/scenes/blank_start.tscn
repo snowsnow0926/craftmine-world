@@ -1,0 +1,81 @@
+[gd_scene load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/base_world.gd" id="1_world"]
+[ext_resource type="Script" path="res://scripts/core/equipment_state.gd" id="2_equipment"]
+[ext_resource type="Resource" path="res://data/equipment/equipment_catalog.tres" id="3_catalog"]
+[ext_resource type="Script" path="res://scripts/core/inventory.gd" id="4_inventory"]
+[ext_resource type="Script" path="res://scripts/core/quest_tracker.gd" id="5_quests"]
+[ext_resource type="Script" path="res://scripts/core/world_state.gd" id="6_state"]
+[ext_resource type="Script" path="res://scripts/core/save_store.gd" id="7_save"]
+[ext_resource type="PackedScene" path="res://scenes/actors/player.tscn" id="8_player"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="9_hud"]
+[ext_resource type="Script" path="res://scripts/adapters/preview_bridge.gd" id="10_bridge"]
+[ext_resource type="Script" path="res://scripts/adapters/probe_runner.gd" id="11_probe"]
+[ext_resource type="Material" path="res://assets/materials/range_floor.tres" id="12_floor"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+size = Vector3(60, 0.4, 60)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(60, 0.4, 60)
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.13, 0.15, 0.18, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.62, 0.66, 0.72, 1)
+ambient_light_energy = 0.6
+tonemap_mode = 2
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_world")
+world_id = "blank-world"
+level_title = "Blank start"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-52, -28, 0)
+light_energy = 1.0
+shadow_enabled = true
+
+[node name="Floor" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+mesh = SubResource("BoxMesh_floor")
+material_override = ExtResource("12_floor")
+
+[node name="Collision" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+shape = SubResource("BoxShape3D_floor")
+
+[node name="EquipmentState" type="Node" parent="."]
+script = ExtResource("2_equipment")
+catalog = ExtResource("3_catalog")
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource("4_inventory")
+
+[node name="QuestTracker" type="Node" parent="."]
+script = ExtResource("5_quests")
+
+[node name="WorldState" type="Node" parent="."]
+script = ExtResource("6_state")
+
+[node name="SaveStore" type="Node" parent="."]
+script = ExtResource("7_save")
+
+[node name="Player" parent="." instance=ExtResource("8_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+
+[node name="Hud" parent="." instance=ExtResource("9_hud")]
+
+[node name="PreviewBridge" type="Node" parent="."]
+script = ExtResource("10_bridge")
+
+[node name="ProbeRunner" type="Node" parent="."]
+script = ExtResource("11_probe")

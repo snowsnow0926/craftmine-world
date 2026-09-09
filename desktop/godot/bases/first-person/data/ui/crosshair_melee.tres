@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CrosshairStyle" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/crosshair_style.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+shape = 2
+size_px = 26.0
+thickness_px = 2.0
+gap_px = 0.0
+color = Color(0.85, 0.9, 1, 0.85)
+hit_color = Color(1, 0.5, 0.35, 1)
+cooldown_color = Color(1, 0.85, 0.4, 0.9)
+outline = true

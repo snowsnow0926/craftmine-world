@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <title>craftmine first-person base icon</title>
+  <desc>Original artwork authored for this repository. License: MIT.</desc>
+  <rect width="128" height="128" rx="20" fill="#1b2027"/>
+  <circle cx="64" cy="64" r="34" fill="none" stroke="#4f5a6b" stroke-width="4"/>
+  <path d="M64 22v22M64 84v22M22 64h22M84 64h22" stroke="#e6ebf2" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="64" cy="64" r="4" fill="#f2a33c"/>
+</svg>

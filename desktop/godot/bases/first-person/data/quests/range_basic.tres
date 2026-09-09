@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="QuestDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/quest_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"range_basic"
+title = "Break two targets"
+description = "Destroy two practice targets with any equipped item."
+objective = 0
+required_count = 2.0
+reward_reserve_rounds = 12
+reward_item = &"marksman_badge"
+reward_item_amount = 1

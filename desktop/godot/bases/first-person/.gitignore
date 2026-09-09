@@ -1,0 +1,8 @@
+# Godot regenerates this directory on import; it is not source.
+.godot/
+# Import sidecars are regenerated from the .obj sources on first import.
+*.import
+# Export output must never be committed.
+build/
+*.pck
+*.wasm

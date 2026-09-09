@@ -1,0 +1,49 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/player_controller.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/core/camera_rig.gd" id="2_rig"]
+[ext_resource type="Script" path="res://scripts/core/aim_query.gd" id="3_aim"]
+[ext_resource type="Script" path="res://scripts/core/attack_dispatcher.gd" id="4_dispatch"]
+[ext_resource type="Script" path="res://scripts/core/ranged_attack.gd" id="5_ranged"]
+[ext_resource type="Script" path="res://scripts/core/melee_attack.gd" id="6_melee"]
+[ext_resource type="Script" path="res://scripts/core/equipment_visuals.gd" id="7_visuals"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
+radius = 0.35
+height = 1.8
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("1_player")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_body")
+
+[node name="CameraRig" type="Node3D" parent="."]
+script = ExtResource("2_rig")
+
+[node name="PitchPivot" type="Node3D" parent="CameraRig"]
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig/PitchPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+current = true
+fov = 75.0
+near = 0.05
+
+[node name="WeaponMount" type="Node3D" parent="CameraRig/PitchPivot/Camera3D"]
+
+[node name="EquipmentVisuals" type="Node3D" parent="CameraRig/PitchPivot/Camera3D/WeaponMount"]
+script = ExtResource("7_visuals")
+
+[node name="AimQuery" type="Node" parent="CameraRig"]
+script = ExtResource("3_aim")
+
+[node name="AttackDispatcher" type="Node" parent="CameraRig"]
+script = ExtResource("4_dispatch")
+
+[node name="RangedAttack" type="Node" parent="CameraRig/AttackDispatcher"]
+script = ExtResource("5_ranged")
+
+[node name="MeleeAttack" type="Node" parent="CameraRig/AttackDispatcher"]
+script = ExtResource("6_melee")
