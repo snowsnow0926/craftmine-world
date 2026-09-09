@@ -1,0 +1,47 @@
+{
+  "kind": "actual-react-layout-with-store-fixture",
+  "sourceCommit": "65daaddaa22620c729889a8196dfee979ae12bdc",
+  "checks": [
+    {
+      "name": "play mode uses the existing work panel with wider saved size",
+      "passed": true
+    },
+    {
+      "name": "play fills the actual available workspace and hides mounted chat",
+      "passed": true
+    },
+    {
+      "name": "settings exits immersion without changing saved play preference",
+      "passed": true
+    },
+    {
+      "name": "other PI workpanel tabs keep ordinary desktop layout",
+      "passed": true
+    },
+    {
+      "name": "returning to creation restores its previous size",
+      "passed": true
+    },
+    {
+      "name": "layout switch preserves session and other resource tabs",
+      "passed": true
+    },
+    {
+      "name": "layout preference persists after renderer reload",
+      "passed": true
+    },
+    {
+      "name": "narrow light appearance preserves full workspace and return action",
+      "passed": true
+    },
+    {
+      "name": "corrupt or unsafe stored widths use bounded defaults",
+      "passed": true
+    },
+    {
+      "name": "no pointer lock focus or component errors",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

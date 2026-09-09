@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+CRAFTMINE_GD0={"base":"first-person","cameraAttachment":true,"crosshairSize":[64.0,64.0],"headless":true,"rayHit":true,"state":{"ammo":5,"equipped":"gun","targetHealth":38},"viewportSize":[64.0,64.0],"weaponUiSynchronized":true}
+ERROR: 1 RID allocations of type 'N17RendererSceneCull8InstanceE' were leaked at exit.
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+
+AssertionError [ERR_ASSERTION]: first-person-initial engine errors

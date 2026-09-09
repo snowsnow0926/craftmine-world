@@ -1,0 +1,3 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+CRAFTMINE_GD0={"base":"top-down","headless":true,"outsidePurchaseRejected":true,"physicalShopOverlap":false,"purchase":false,"state":{"apples":1,"coins":15,"position":[150.0,150.0]}}

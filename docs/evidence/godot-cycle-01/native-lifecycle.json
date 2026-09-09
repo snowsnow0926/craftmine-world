@@ -1,0 +1,209 @@
+{
+  "format": "craftmine.native-acceptance/1",
+  "mode": "development",
+  "time": "2026-09-09T10:34:31.458Z",
+  "passed": true,
+  "checks": [
+    {
+      "name": "原生客户端启动真实 Rust 宿主和内置世界插件",
+      "passed": true
+    },
+    {
+      "name": "原生窗口全程离屏、不可聚焦且未显示",
+      "passed": true
+    },
+    {
+      "name": "客户端使用本次独立配置目录",
+      "passed": true
+    },
+    {
+      "name": "真实 React 前端通过沙箱 preload 与 Electron 通信",
+      "passed": true
+    },
+    {
+      "name": "桌面、世界面板和游戏初始化时均禁止鼠标锁定与焦点请求",
+      "passed": true
+    },
+    {
+      "name": "实际游戏隔离帧无法访问 Node 或插件桥",
+      "passed": true
+    },
+    {
+      "name": "原生表单经 Electron 授权目录桥和 Rust 完成旧世界导入",
+      "passed": true
+    },
+    {
+      "name": "退出前的真实游戏变化尚未写入持久存档",
+      "passed": true
+    },
+    {
+      "name": "真实 SQLite 写锁使原生退出失败时保留可重试的世界",
+      "passed": true
+    },
+    {
+      "name": "导入与保存失败全过程没有真实输入或窗口焦点调用",
+      "passed": true
+    },
+    {
+      "name": "解除写锁后原生退出先保存再正常关闭",
+      "passed": true
+    },
+    {
+      "name": "退出时未重建已销毁的界面或产生页面未处理异常",
+      "passed": true
+    },
+    {
+      "name": "关闭后 Rust 持久存档包含退出前最后的玩家位置",
+      "passed": true
+    },
+    {
+      "name": "完整重启同一原生客户端保留当前世界和已保存进度",
+      "passed": true
+    },
+    {
+      "name": "重启仍保持离屏和零输入调用",
+      "passed": true
+    },
+    {
+      "name": "重启后的客户端也能正常保存退出",
+      "passed": true
+    },
+    {
+      "name": "重启退出仍没有输入调用和页面未处理异常",
+      "passed": true
+    }
+  ],
+  "evidence": {
+    "initialStatus": {
+      "name": "craftmine world",
+      "profile": "D:\\cw-gd-20260909-01\\test-results\\desktop-native-QTQ6IA\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/cw-gd-20260909-01/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    "desktop": {
+      "title": "craftmine world · 最中幻想",
+      "text": "最中幻想\n世界\n打开工作台\n创作\n游玩\n会话\n暂无临时对话\n项目\nlegacy\nD:/cw-gd-20260909-01/test-results/desktop-native-QTQ6IA/legacy\n当前项目还没有对话\n打开通知中心\nv0.14.3\n新建任务\n今天，创造怎样的世界？\n开始使用\n关闭\n添加 AI 模型服务\n保存 API 密钥\n打开项目文件夹\n发送第一条消息\n加载开发插件（可选）\n描述你的想法，比如在身边种一片花草…\n智能体\n每次询问\n模型\n创作\n游玩\n世界\n最中幻想\n让你的想法，长成一个世界\n正在启动最中幻想…",
+      "version": {
+        "ok": true,
+        "data": {
+          "name": "craftmine world",
+          "version": "0.14.3",
+          "protocolVersion": 11,
+          "hostProtocolVersion": 11,
+          "hostVersion": "0.14.3",
+          "platform": "win32",
+          "arch": "x64"
+        }
+      },
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    "guards": [
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/cw-gd-20260909-01/vendor/pi-desktop/apps/desktop/out/renderer/index.html"
+      },
+      {
+        "bridge": "object",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "file:///D:/cw-gd-20260909-01/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+      },
+      {
+        "bridge": "undefined",
+        "guard": {
+          "focus": 0,
+          "pointerLock": 0
+        },
+        "node": "undefined",
+        "url": "about:srcdoc"
+      }
+    ],
+    "worldImage": {
+      "width": 1200,
+      "height": 800
+    },
+    "saveFailure": "Error invoking remote method 'pi-plugin-panel-invoke': Error: database is locked",
+    "beforeExit": {
+      "name": "craftmine world",
+      "profile": "D:\\cw-gd-20260909-01\\test-results\\desktop-native-QTQ6IA\\profile\\desktop",
+      "runtime": {
+        "hostAvailable": true,
+        "plugins": [
+          "craftmine.world",
+          "pi.browser",
+          "pi.files"
+        ]
+      },
+      "violations": [],
+      "pageErrors": [],
+      "windows": [
+        {
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "offscreen": true
+        }
+      ],
+      "world": "file:///D:/cw-gd-20260909-01/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    "firstExit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": []
+    },
+    "restored": {
+      "id": "7cd46ec5-0681-47fb-a2f9-1aaa72ba7356",
+      "player": {
+        "pitch": 0,
+        "x": 0.5,
+        "y": 6,
+        "yaw": 0,
+        "z": 12.5
+      }
+    },
+    "restartExit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": []
+    }
+  },
+  "binaries": {
+    "electron": "bab31519ee1bc5b490caf7844e2b1dbcd4f7bb49a13039103952ab381c02ade4",
+    "host": "45916ae9afe294971519c840652082731c5828ab6c8bef8e0ed9e0c1e97ce35d",
+    "core": "ef3c4e253e4c960687b497d4298c45027f354f80b12a85749482f25ec7ae0d57"
+  },
+  "limits": [
+    "离屏运行，未做可见窗口或物理双击验收",
+    "目录选择返回测试夹具，未打开系统对话框",
+    "桌面与世界分别离屏渲染和截图，不证明可见原生窗口的最终合成",
+    "本次不调用模型，也不证明真实 Agent 创作闭环"
+  ]
+}

@@ -1,20 +1,21 @@
 {
   "format": "craftmine.development/1",
-  "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
-  "currentMilestone": "第7批已交付：W0–W4本机核心闭环通过，W5干净系统及物理体验验收待办",
-  "baseline": "3bdf52f",
-  "updated": "2026-09-09T09:27:23.439Z",
+  "objective": "按 Godot 多底座计划循环开发：中央世界、右侧对话、真实工程创作、多底座、保存恢复、作品复用与 Windows 交付",
+  "currentMilestone": "Godot 第1轮：GD1核心布局已验证，GD0固定引擎与3D/2D无窗口探针通过；继续导出、呈现和隔离验证",
+  "baseline": "65daadd",
+  "updated": "2026-09-09T10:44:13Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "batch_07_verified_delivered_plan_environment_partial",
-    "reason": "用户要求完成当前环境可做部分，并纳入本地累计token上限与DeepSeek缓存修复；本批并行实现、同包验收完成，独立Windows验收未执行。",
-    "activeGoal": false,
-    "recurringDevelopment": false,
+    "status": "godot_goal_active_cycle01_validated_pending_local_merge",
+    "reason": "用户明确要求将 GODOT_MULTIBASE_DEVELOPMENT_PLAN.md 设为 Goal 并开始循环开发。已创建 active Goal，没有 token 总预算；按阶段实现、验证、修复并记录。",
+    "activeGoal": true,
+    "recurringDevelopment": true,
+    "executionMode": "goal",
     "previousLiveCompactionTestStopped": true,
     "automationId": null,
-    "worktree": "D:/Craftmine World-worktrees/batch07-g-20260909",
-    "branch": "codex/batch07-g-20260909",
-    "nextStep": "查看第7批说明并由玩家使用新程序；独立Windows安装生命周期和物理体验待外部环境。",
+    "worktree": "D:/cw-gd-20260909-01",
+    "branch": "codex/godot-cycle-01-20260909",
+    "nextStep": "继续 GD0：匹配的 Web 导出、中央呈现、状态桥接和操作系统隔离；随后推进 GD2 工程事务。",
     "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。",
     "previousAutomationId": "craftmine-windows",
     "currentWorktrees": "batch07-g/native/desktop/delivery及此前parallel工作树保留用于追溯，不删除或复用历史五个被拒清理目录。",
@@ -26,6 +27,20 @@
       "pushed": false,
       "deliveredPayloadHashesVerifiedAfterMerge": true
     }
+  },
+  "godotMultibasePlan": {
+    "document": "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md",
+    "developmentLog": "docs/GODOT_DEVELOPMENT_LOG.md",
+    "status": "active",
+    "cycle": 1,
+    "currentStages": ["GD0", "GD1"],
+    "implementationCommits": ["213bba7", "409e9ab"],
+    "evidenceDirectory": "docs/evidence/godot-cycle-01",
+    "godotVersion": "4.7.2.stable.official.ed1daf0bf",
+    "checks": {"reactLayout": 15, "legacyLayout": 10, "nativeLifecycle": 17, "godotHeadless": 13, "panelUnit": 22},
+    "actualModelCalls": 0,
+    "newDistributionBuilt": false,
+    "remaining": ["GD0 Web/原生呈现对照和OS隔离", "GD1按底座组织的世界列表与辅助入口", "GD2真实工程工具与应用事务", "GD3至GD8适用实现和验收"]
   },
   "windowsClientPlan": {
     "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",
@@ -588,7 +603,7 @@
       ]
     }
   ],
-  "nextAction": "第7批已完成本轮开发与同包无窗口验收并提供新程序。尚需独立Windows验收和玩家实际体验；绝对时限、历史草稿重新挂载、通用代码迁移等边界见报告。未恢复旧定时自动任务。",
+  "nextAction": "保持当前 Godot Goal active，按照 GODOT_DEVELOPMENT_LOG.md 继续下一轮 GD0 导出、中央呈现和隔离验证；完成后推进 GD2。保留第7批交付与旧世界。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",

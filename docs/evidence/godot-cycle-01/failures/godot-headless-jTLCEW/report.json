@@ -1,0 +1,34 @@
+{
+  "kind": "fixed-authored-native-headless-godot",
+  "version": "4.7.2-stable",
+  "engineSha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "checks": [
+    {
+      "name": "Pinned real engine starts without a window",
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "label": "version",
+      "elapsedMs": 79,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-import",
+      "elapsedMs": 2224,
+      "exitCode": 0
+    }
+  ],
+  "errors": [
+    "AssertionError [ERR_ASSERTION]: first-person-initial engine errors\n    at run (file:///D:/cw-gd-20260909-01/tests/godot-headless.mjs:41:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///D:/cw-gd-20260909-01/tests/godot-headless.mjs:56:20"
+  ],
+  "notVerified": [
+    "model-authored creation",
+    "rendered crosshair appearance",
+    "central native embedding",
+    "web export",
+    "untrusted-code OS isolation"
+  ],
+  "actualVersion": "4.7.2.stable.official.ed1daf0bf"
+}
