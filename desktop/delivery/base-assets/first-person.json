@@ -1,0 +1,137 @@
+{
+  "format": "craftmine.base-assets/1",
+  "baseId": "first-person",
+  "displayName": "3D first-person base (fixed GD0 probe)",
+  "baseVersion": "0.1.0",
+  "engine": {
+    "version": "4.7.2-stable",
+    "renderer": "gl_compatibility",
+    "language": "GDScript"
+  },
+  "sourceDirectory": "desktop/godot/probes/first-person",
+  "reviewedCommit": "46739d222ceefc654b596725c96288a4087993b3",
+  "reviewedAt": "2026-09-09",
+  "entries": [
+    {
+      "path": "project.godot",
+      "role": "config",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": ["app-bundle", "user-export"],
+      "bytes": 359,
+      "sha256": "079b73f563ed6b15a6209be77742021eb96dc1f55760e77b3a6edfb7124781e8",
+      "outstanding": "Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+      "notes": "Pins the Compatibility renderer and GDScript for the GD0 probe."
+    },
+    {
+      "path": "world.tscn",
+      "role": "scene",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": ["app-bundle", "user-export"],
+      "bytes": 176,
+      "sha256": "6652732cf7b3e383a0a0aaa699fb8bf7189fbeaeba38295a25dbbfe0b958c673",
+      "outstanding": "Same authored-code licence decision as project.godot.",
+      "notes": "Scene root; geometry is generated in script, so no external art asset is referenced."
+    },
+    {
+      "path": "world.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": ["app-bundle", "user-export"],
+      "bytes": 6396,
+      "sha256": "fcfa641b6a7f8fba668365ef659aee38d6874389752c13552fdfdbfe98c75ee8",
+      "outstanding": "Same authored-code licence decision as project.godot.",
+      "notes": "Camera attachment, equipment, ray fire and save/restore used by the GD0 evidence."
+    },
+    {
+      "path": "crosshair.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": ["app-bundle", "user-export"],
+      "bytes": 374,
+      "sha256": "5b691c9c745c80c99c5b8102ea8d106b5a67e78a6a192356eb006dfed77982e6",
+      "outstanding": "Same authored-code licence decision as project.godot.",
+      "notes": "Screen-centre crosshair control drawn from code; no texture asset."
+    }
+  ],
+  "externalEntries": [
+    {
+      "path": "desktop/godot/probes/shared/web_bridge.gd",
+      "role": "bridge",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": ["app-bundle", "user-export"],
+      "bytes": 2556,
+      "sha256": "7b24e102f1ed91e311ec23a315914a95ef4a883da4d79af524051f7235b42de4",
+      "outstanding": "Same authored-code licence decision as project.godot.",
+      "notes": "Copied into every exported probe project by desktop/godot/export-probes.mjs."
+    },
+    {
+      "path": "desktop/godot/web/bridge.js",
+      "role": "bridge",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": ["user-export"],
+      "bytes": 3447,
+      "sha256": "a051ad9c4080386aeb5cf04587238b80b32354f5ff0561f2f2fccf508ce4ccfd",
+      "outstanding": "Same authored-code licence decision as project.godot.",
+      "notes": "Host-side bridge script shipped beside the exported Web build."
+    },
+    {
+      "path": "desktop/godot/web/shell.html",
+      "role": "shell",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": ["user-export"],
+      "bytes": 730,
+      "sha256": "cbbfbd2c680b9f31883d5c0b0ffa330e732ba584bc51d9b91e04ca4c710c7a4a",
+      "outstanding": "Same authored-code licence decision as project.godot.",
+      "notes": "Custom Web export shell; no third-party script, font or image is loaded."
+    }
+  ],
+  "requiredNotices": [
+    {
+      "path": "desktop/godot/licenses/GODOT_LICENSE.txt",
+      "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+      "appliesTo": ["user-export"],
+      "notes": "Copied into the export directory by desktop/godot/export-probes.mjs."
+    },
+    {
+      "path": "desktop/godot/licenses/GODOT_COPYRIGHT.txt",
+      "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d",
+      "appliesTo": ["user-export"],
+      "notes": "Aggregate third-party notices for the exported engine."
+    }
+  ]
+}

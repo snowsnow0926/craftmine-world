@@ -1,0 +1,113 @@
+{
+  "format": "craftmine.dispatch-delivery/1",
+  "task": "H",
+  "title": "Licence, asset and packaging preflight for Godot, multi-base and standalone exports",
+  "date": "2026-09-09",
+  "baseCommit": "46739d222ceefc654b596725c96288a4087993b3",
+  "branch": "codex/godot-parallel-h-20260909",
+  "worktree": "D:\\Craftmine World-worktrees\\godot-parallel-h-20260909",
+  "toolingCommit": "3a49d99",
+  "filesAdded": [
+    "desktop/delivery/preflight.mjs",
+    "desktop/delivery/lib/preflight-core.mjs",
+    "desktop/delivery/preflight-selftest.mjs",
+    "desktop/delivery/base-assets/first-person.json",
+    "desktop/delivery/base-assets/top-down.json",
+    "desktop/delivery/base-assets/shared-web.json",
+    "desktop/delivery/windows-lifecycle-acceptance.ps1",
+    "desktop/delivery/README.md",
+    "desktop/godot/licenses/notices.manifest.json",
+    "desktop/godot/licenses/README.md"
+  ],
+  "filesModified": [],
+  "publicEntryPointsTouched": [],
+  "notTouched": [
+    "desktop/godot/toolchain.lock.json",
+    "desktop/godot/prepare-toolchain.ps1",
+    "desktop/godot/toolchain.mjs",
+    "desktop/godot/export-probes.mjs",
+    "desktop/godot/probes/**",
+    "desktop/godot/web/**",
+    "desktop/godot/sandbox/**",
+    "desktop/windows-package-tools.mjs",
+    "desktop/build-client.ps1",
+    "desktop/ci/windows-isolated-validation.ps1",
+    "package.json",
+    ".gitattributes"
+  ],
+  "facts": {
+    "godotLicenseSha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+    "godotCopyrightSha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d",
+    "piDesktopLicenseSha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+    "piDesktopLicenseId": "LGPL-3.0-or-later",
+    "upstreamCommit": "ed0a75414e775eef4b4ee6c985cc9ddfe146ced2",
+    "engineCacheVerified": true,
+    "engineCacheBytes": 1367363568,
+    "templateVersion": "4.7.2.stable",
+    "realExportBuildId": "40d7a6db380803844bf7d5186320631f66e008f17073d4ff0d96cff1eb63e165",
+    "realExportFiles": 14,
+    "realExportBytes": 39313891,
+    "realExportEngineVersion": "4.7.2.stable.official.ed1daf0bf",
+    "packageArtifactsVerified": 5,
+    "packageThirdPartyEntries": 796,
+    "packageThirdPartyWithoutText": 45,
+    "packageGodotEngineBundled": false,
+    "baseManifests": 3,
+    "baseEntries": 17
+  },
+  "verification": [
+    {
+      "name": "preflight self-test",
+      "command": "node desktop/delivery/preflight-selftest.mjs",
+      "result": "23/23 passed",
+      "evidence": "docs/dispatch-reports/godot-parallel/H/evidence/preflight-selftest.json"
+    },
+    {
+      "name": "preflight all (real cache, real export, real package)",
+      "command": "node desktop/delivery/preflight.mjs all --cache <engine cache> --export <real web export> --package <batch-06 win-unpacked> --evidence <file>",
+      "result": "6 checks passed, 0 failures, 19 warnings",
+      "evidence": "docs/dispatch-reports/godot-parallel/H/evidence/preflight-all.json"
+    },
+    {
+      "name": "A17 lifecycle acceptance gate",
+      "command": "powershell -File desktop/delivery/windows-lifecycle-acceptance.ps1",
+      "result": "not-verified; no installer executed",
+      "evidence": "docs/dispatch-reports/godot-parallel/H/evidence/windows-lifecycle-not-run.json"
+    },
+    {
+      "name": "A17 execution gate refusals",
+      "result": "ISOLATED_RUNNER_REQUIRED / INSTALL_OUTSIDE_ISOLATED_ROOT / PROFILE_OUTSIDE_ISOLATED_ROOT, exit 1 each",
+      "evidence": "docs/dispatch-reports/godot-parallel/H/REPORT_H.md section 3.6"
+    }
+  ],
+  "notVerified": [
+    "A17 first install, upgrade, upgrade-failure recovery, uninstall and cross-user isolation (no isolated Windows environment; no installer executed)",
+    "Godot notices inside a real distribution package (engine is not bundled yet; conditional rule implemented and self-tested)",
+    "Formal licence texts for authored code (per-module review pending in docs/LICENSING_STRATEGY.md)",
+    "Legal sufficiency of any licence for a specific commercial use"
+  ],
+  "interfacesRequested": {
+    "I": [
+      "Ship resources/licenses/godot/{GODOT_LICENSE.txt,GODOT_COPYRIGHT.txt} when the engine is bundled",
+      "Keep the build-manifest artifact-to-package path mapping stable or notify H",
+      "Add the offline licence entry to the client UI and run the preflight as a release gate with --evidence",
+      "Confirm extra version/build-time fields to collect"
+    ],
+    "B_C": [
+      "Update desktop/delivery/base-assets/*.json hashes and reviewedCommit when base sources change",
+      "Declare every new asset with origin, author, version, licence, licenceFile, redistribution and distribution",
+      "Keep generated files out of the probe and web directories"
+    ],
+    "A": ["No change required"],
+    "shared": [
+      "Consider desktop/delivery/** text eol=lf in .gitattributes",
+      "Consider adding the preflight self-test to the aggregate test script"
+    ]
+  },
+  "documents": [
+    "docs/dispatch-reports/godot-parallel/H/REPORT_H.md",
+    "docs/dispatch-reports/godot-parallel/H/INTERFACE_H.md",
+    "docs/dispatch-reports/godot-parallel/H/SPEC_H_ASSET_MANIFEST.md",
+    "docs/dispatch-reports/godot-parallel/H/ADR_H_DELIVERY_PREFLIGHT.md"
+  ]
+}

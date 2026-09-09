@@ -1,0 +1,92 @@
+{
+  "format": "craftmine.base-assets/1",
+  "baseId": "shared-web",
+  "displayName": "Shared Web export transport and shells",
+  "baseVersion": "0.1.0",
+  "engine": {
+    "version": "4.7.2-stable",
+    "renderer": "gl_compatibility",
+    "language": "GDScript"
+  },
+  "sourceDirectory": "desktop/godot/web",
+  "reviewedCommit": "46739d222ceefc654b596725c96288a4087993b3",
+  "reviewedAt": "2026-09-09",
+  "entries": [
+    {
+      "path": "shell.html",
+      "role": "shell",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": ["user-export"],
+      "bytes": 730,
+      "sha256": "cbbfbd2c680b9f31883d5c0b0ffa330e732ba584bc51d9b91e04ca4c710c7a4a",
+      "outstanding": "Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
+      "notes": "Custom Web export shell loaded by the exported game."
+    },
+    {
+      "path": "bridge.js",
+      "role": "bridge",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": ["user-export"],
+      "bytes": 3447,
+      "sha256": "a051ad9c4080386aeb5cf04587238b80b32354f5ff0561f2f2fccf508ce4ccfd",
+      "outstanding": "Same authored-code licence decision as shell.html.",
+      "notes": "Copied beside the exported index.html; registers the Godot callback and drains accepted actions."
+    },
+    {
+      "path": "host.mjs",
+      "role": "bridge",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": ["development-only"],
+      "bytes": 3881,
+      "sha256": "3baf4d329afa40b42e22c428b872dacb2d96887f4ff71db01652de32f52ac553",
+      "outstanding": "Same authored-code licence decision as shell.html.",
+      "notes": "Host-side MessagePort transport used by GD0 tests only. It must never be shipped to players or into an exported standalone game."
+    }
+  ],
+  "externalEntries": [
+    {
+      "path": "desktop/godot/probes/shared/web_bridge.gd",
+      "role": "bridge",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": ["app-bundle", "user-export"],
+      "bytes": 2556,
+      "sha256": "7b24e102f1ed91e311ec23a315914a95ef4a883da4d79af524051f7235b42de4",
+      "outstanding": "Same authored-code licence decision as shell.html.",
+      "notes": "Authored GDScript adapter executed by the exported project."
+    }
+  ],
+  "requiredNotices": [
+    {
+      "path": "desktop/godot/licenses/GODOT_LICENSE.txt",
+      "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+      "appliesTo": ["user-export"],
+      "notes": "Copied into the export directory by desktop/godot/export-probes.mjs."
+    },
+    {
+      "path": "desktop/godot/licenses/GODOT_COPYRIGHT.txt",
+      "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d",
+      "appliesTo": ["user-export"],
+      "notes": "Aggregate third-party notices for the exported engine."
+    }
+  ]
+}
