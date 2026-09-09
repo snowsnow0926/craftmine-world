@@ -15,7 +15,7 @@ M/N 集成后的复测保留为未完成**，并给出可直接执行的入口�
 | 1 按实际代码修复发行预检 8 项失败 | **完成** | 重跑得到同样 8 项失败后修复数据与缺件；`preflight all` 6 项检查 0 失败 |
 | 2 固定版本/来源/哈希，建立可复现构建与同包清单 | **完成（M/N 待集成）** | `release-manifest.mjs create/verify/diff`，9 个组件，268→276 文件哈希 |
 | 3 实测冷暖启动、等待、帧时间、内存、体积，冻结阈值 | **完成（部分指标无真实样本）** | `measure.mjs`，42 项阈值冻结，实测 36 项，4 项 unmeasured、4 项 skipped |
-| 4 逐模块来源/权利/依赖/交付清单 | **完成** | `licensing/inventory.json` 22 行；2 verified、19 pending、1 unknown |
+| 4 逐模块来源/权利/依赖/交付清单 | **完成** | `licensing/inventory.json` 22 行；3 verified、18 pending、1 unknown |
 | 5 版权/标准许可全文/第三方声明/对应源码/离线入口 + 草稿 | **完成（正式适用待法律复核）** | 15 份官方文本含 URL/日期/哈希；两份声明；离线入口；三份草稿 |
 | 6 固定 Windows 预览/交付包 + 同包验收 + A17 | **未完成（等集成）** | 打包/固定/校验工具已完成；现有预览包校验出 1 处真实不一致；A17 无隔离机器 |
 | 7 首次创作、底座区别、作品复用、导出、升级、恢复说明 | **完成** | `desktop/delivery/DELIVERY_RUNBOOK.zh-CN.md` |
@@ -138,8 +138,9 @@ verify → PACKAGE NOT VERIFIED: 0 missing, 1 mismatch, 0 unpinned, 0 forbidden,
 - `licensing/inventory.json`：22 行，覆盖上游 PI-Desktop 及其修改、craftmine-core、
   `app/`、世界插件、`world-workshop-3d/`、Godot 桥接与 runtime、三个底座、Godot 引擎、
   npm 796 个包、Cargo 140 个 crate、字体、音频/模型、用户内容与 AI 输出。
-  结论：**2 项 verified（Godot 引擎、内置字体）、19 项 pending-rights-review、
-  1 项 unknown-rightsholder（AI 生成内容）**。没有任何一项被写成“已生效”。
+  结论：**3 项 verified（Godot 引擎、内置字体、音频/模型：核实未包含第三方素材）、
+  18 项 pending-rights-review、1 项 unknown-rightsholder（AI 生成内容）**。
+  没有任何一项被写成“已生效”。随包扫描（16 项随包交付）中 verified 2 项、pending 19 项。
 - 证据：与上游 zip 的逐文件 diff（1078 未变 / 62 修改 / 155 新增 / 0 删除）、
   真实 `cargo metadata` 依赖走查、真实 npm 安装树与 pnpm-lock 比对。
 - `licensing/texts/`：15 份官方文本，`SOURCES.json` 记录 URL、获取日期、字节与 SHA-256
