@@ -150,10 +150,10 @@ export function migrationReport(receipt){
 }
 
 /** Trusted product installer. A page supplies a package, never a context or OS root. */
-export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot}) {
+export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,turns}) {
   requireValue(typeof call==='function'&&typeof bind==='function'&&typeof enqueue==='function','PACKAGE_INSTALL_HOST_REQUIRED');
   const active=new Map();
-  return async function installSource(args){
+  const installSource=async function(args){
     exactKeys(args,['operationId','worldId','archiveBase64','scene']);operationId(args.operationId);identifier(args.worldId);
     requireValue(typeof args.archiveBase64==='string'&&args.archiveBase64.length<=7*1024*1024&&/^[A-Za-z0-9+/]*={0,2}$/.test(args.archiveBase64),'PACKAGE_ARCHIVE_TOO_LARGE');
     if(args.scene!==undefined)requireValue(text(args.scene,240),'INVALID_SCENE_PATH');
@@ -163,6 +163,7 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot}) {
     const requestHash=hash(JSON.stringify(args)),key=hash(JSON.stringify([args.worldId,args.operationId]));
     const previous=active.get(key);if(previous){requireValue(previous.requestHash===requestHash,'OPERATION_CONFLICT');return previous.promise;}
     const entry={requestHash};active.set(key,entry);
+    let ownedContext=null,handedOff=false,completed=false;
     entry.promise=(async()=>{
       const {unpackStaticPackage,DEFAULT_LIMITS}=await import('./package-zip.mjs');
       const {planDraftInstall}=await import('../../desktop/godot/shared/draft_install.mjs');
@@ -172,8 +173,10 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot}) {
       const save=async value=>{const file=intentFile+'.new';const fd=await fs.open(file,'w');try{await fd.writeFile(JSON.stringify(value));await fd.sync();}finally{await fd.close();}await fs.rename(file,intentFile);};
       let intent;try{intent=JSON.parse(await fs.readFile(intentFile,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
       if(intent)requireValue(intent.requestHash===requestHash,'OPERATION_CONFLICT');
+      if(intent?.ownsTurn)ownedContext=intent.context;
       if(!intent){
         const bound=await bind(args.worldId,args.operationId);
+        if(bound?.ownsTurn){requireValue(turns,'PACKAGE_TURN_LIFECYCLE_REQUIRED');ownedContext=bound.context;}
         requireValue(bound?.worldRecord?.id===args.worldId&&bound.operation?.worldId===args.worldId&&bound.operation?.operationId===args.operationId&&isObject(bound.context),'PACKAGE_BINDING_MISMATCH');
         const context=bound.context,world=bound.worldRecord.world;
         const archive=unpackStaticPackage(Buffer.from(args.archiveBase64,'base64'),{...DEFAULT_LIMITS,maxEntryBytes:4*1024*1024,maxTotalBytes:6*1024*1024,maxCompressedBytes:6*1024*1024,maxEntries:1024});
@@ -181,12 +184,12 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot}) {
         const safe=relative=>{requireValue(typeof relative==='string'&&!relative.includes('\\')&&!relative.includes(':')&&!relative.split('/').some(s=>!s||s==='.'||s==='..'),'PACKAGE_SOURCE_PATH_REFUSED');const full=path.resolve(projectDir,relative);requireValue(full.startsWith(projectDir+path.sep),'PACKAGE_SOURCE_PATH_REFUSED');return full;};
         let offset=0,index,identity,sourceBytes=0;const originals=new Map(),sourceFiles=new Map();
         do {
-          index=await call('godotProject.index',{context,worldId:args.worldId,offset,limit:32,...(identity?{revision:identity.revision,manifestHash:identity.manifestHash}:{})});
+          index=await call('godotProject.index',{context,worldId:args.worldId,...(bound.operation.branchId?{branchId:bound.operation.branchId}:{}),offset,limit:32,...(identity?{revision:identity.revision,manifestHash:identity.manifestHash}:{})});
           identity??=index;
           requireValue(index.worldId===args.worldId&&index.revision===identity.revision&&index.manifestHash===identity.manifestHash,'PACKAGE_SOURCE_CHANGED');
           for(const file of index.files){
             let next=0;const chunks=[];
-            do {const part=await call('godotProject.read',{context,worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,path:file.path,offset:next,limit:16000});requireValue(part.sha256===file.sha256,'PACKAGE_SOURCE_CHANGED');chunks.push(part.encoding==='base64'?Buffer.from(part.bytesBase64,'base64'):Buffer.from(part.text,'utf8'));next=part.nextOffset;}while(next!==null&&next!==undefined);
+            do {const part=await call('godotProject.read',{context,worldId:args.worldId,...(bound.operation.branchId?{branchId:bound.operation.branchId}:{}),revision:identity.revision,manifestHash:identity.manifestHash,path:file.path,offset:next,limit:16000});requireValue(part.sha256===file.sha256,'PACKAGE_SOURCE_CHANGED');chunks.push(part.encoding==='base64'?Buffer.from(part.bytesBase64,'base64'):Buffer.from(part.text,'utf8'));next=part.nextOffset;}while(next!==null&&next!==undefined);
             const bytes=Buffer.concat(chunks);requireValue(bytes.length===file.bytes&&hash(bytes)===file.sha256,'PACKAGE_SOURCE_CORRUPT');sourceBytes+=bytes.length;requireValue(sourceBytes<=64*1024*1024,'PACKAGE_SOURCE_TOO_LARGE');
             const target=safe(file.path);await fs.mkdir(path.dirname(target),{recursive:true});await fs.writeFile(target,bytes);originals.set(file.path,file.sha256);sourceFiles.set(file.path,bytes);
           }
@@ -233,13 +236,19 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot}) {
         const toolCallId='package-'+key.slice(0,40);
         const applyRequest={context,worldId:args.worldId,toolCallId,revision:identity.revision,manifestHash:identity.manifestHash,operation:bound.operation,files};
         requireValue(Buffer.byteLength(JSON.stringify(applyRequest))<=8*1024*1024,'PACKAGE_INSTALL_REQUEST_TOO_LARGE');
-        intent={requestHash,applyRequest,toolCallId,context,worldId:args.worldId,archiveSha256:archive.archiveSha256,instanceIds:plan.instances.map(i=>i.instanceId)};await save(intent);
+        intent={requestHash,applyRequest,toolCallId,context,ownsTurn:bound.ownsTurn===true,worldId:args.worldId,archiveSha256:archive.archiveSha256,instanceIds:plan.instances.map(i=>i.instanceId)};await save(intent);
       }
       if(!intent.receipt){intent.receipt=await call('godotProject.applyFiles',intent.applyRequest);requireValue(Number.isSafeInteger(intent.receipt.revision)&&typeof intent.receipt.manifestHash==='string','PACKAGE_SOURCE_RECEIPT_REQUIRED');await save(intent);}
-      if(!intent.job||intent.job.status==='blocked'){intent.checkAttempt=(intent.checkAttempt??0)+1;requireValue(intent.checkAttempt<=32,'PACKAGE_CHECK_RETRY_LIMIT');intent.job=await call('godotBuild.start',{context:intent.context,worldId:intent.worldId,toolCallId:intent.toolCallId+'-check-'+intent.checkAttempt,revision:intent.receipt.revision,manifestHash:intent.receipt.manifestHash,mode:'check'});await save(intent);}
-      if(intent.job.status!=='blocked')await enqueue(intent.job,intent.context);
+      if(!intent.job||intent.job.status==='blocked'&&!intent.ownsTurn){intent.checkAttempt=(intent.checkAttempt??0)+1;requireValue(intent.checkAttempt<=32,'PACKAGE_CHECK_RETRY_LIMIT');intent.job=await call('godotBuild.start',{context:intent.context,worldId:intent.worldId,...(intent.applyRequest.operation?.branchId?{branchId:intent.applyRequest.operation.branchId}:{}),toolCallId:intent.toolCallId+'-check-'+intent.checkAttempt,revision:intent.receipt.revision,manifestHash:intent.receipt.manifestHash,mode:'check'});await save(intent);}
+      if(intent.job.status!=='blocked'){
+        if(ownedContext){turns.watch({...intent.job,worldId:intent.worldId},ownedContext);handedOff=true;}
+        await enqueue(intent.job,intent.context);
+      }
+      completed=true;
       return {status:intent.job.status==='blocked'?'source-saved-check-blocked':'check-queued',applied:false,worldId:intent.worldId,archiveSha256:intent.archiveSha256,instanceIds:intent.instanceIds,source:intent.receipt,job:intent.job};
-    })().finally(()=>{if(active.get(key)===entry)active.delete(key);});
+    })().finally(async()=>{try{if(ownedContext&&!handedOff)await turns.finish(ownedContext,completed?'completed':'error');}finally{if(active.get(key)===entry)active.delete(key);}});
     return entry.promise;
   };
+  installSource.drain=()=>Promise.allSettled([...active.values()].map(entry=>entry.promise));
+  return installSource;
 }
