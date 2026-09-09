@@ -16,6 +16,16 @@ const hash = (text: string) => createHash("sha256").update(text).digest("hex");
 export function godotCopyTarget(worldId: string, operationId: string) {
   return "copy-" + hash(worldId + "|" + operationId).slice(0, 40);
 }
+export function godotCopyProgressIdentity(source: Data, oldWorldId: string, newWorldId: string): Data {
+  if (!source || source.format !== "craftmine.godot-progress/1" || source.worldId !== oldWorldId || source.body?.worldId !== oldWorldId) throw Error("GODOT_COPY_SOURCE_PROGRESS_INVALID");
+  const result = structuredClone(source);
+  if (source.baseId === "mining-sandbox") {
+    if (source.body.format !== "craftmine.godot-mining-sandbox-managed/1" || source.body.state?.format !== "craftmine.godot-mining-sandbox-state/1" || source.body.state.worldId !== oldWorldId) throw Error("GODOT_COPY_PROGRESS_IDENTITY_MISMATCH");
+    result.body.state.worldId = newWorldId;
+  }
+  result.worldId = newWorldId; result.body.worldId = newWorldId;
+  return result;
+}
 function request(value: unknown) {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw Error("INVALID_COPY_REQUEST");
   const data = value as Data;
@@ -58,10 +68,7 @@ export function createGodotWorldCopyService(options: GodotWorldCopyOptions) {
         if (await options.selection() !== worldId) throw Error("GODOT_WORLD_CHANGED");
         const savedWorld = await domain("world.read", {id: worldId});
         if (savedWorld?.revision !== saved.receipt.revision || savedWorld.world?.build?.id !== saved.receipt.buildId) throw Error("GODOT_COPY_SOURCE_CHECKPOINT_CHANGED");
-        expectedInitial = structuredClone(savedWorld.world.snapshot);
-        if (!expectedInitial || expectedInitial.format !== "craftmine.godot-progress/1" || expectedInitial.worldId !== worldId || expectedInitial.body?.worldId !== worldId) throw Error("GODOT_COPY_SOURCE_PROGRESS_INVALID");
-        expectedInitial.worldId = targetWorldId;
-        expectedInitial.body.worldId = targetWorldId;
+        expectedInitial = godotCopyProgressIdentity(savedWorld.world.snapshot, worldId, targetWorldId);
         update({status: "running", stage: "copy"});
         try {
           await domain("godotWorld.copy", {sourceWorldId: worldId, targetWorldId,
@@ -79,6 +86,7 @@ export function createGodotWorldCopyService(options: GodotWorldCopyOptions) {
       if (selectedAfterCopy !== worldId && selectedAfterCopy !== targetWorldId) throw Error("GODOT_WORLD_CHANGED");
       const before = await domain("world.read", {id: targetWorldId});
       if (before?.world?.snapshot?.worldId !== targetWorldId || before.world.snapshot.body?.worldId !== targetWorldId) throw Error("GODOT_COPY_PROGRESS_IDENTITY_MISMATCH");
+      godotCopyProgressIdentity(before.world.snapshot, targetWorldId, targetWorldId);
       if (expectedInitial && !isDeepStrictEqual(before.world.snapshot, expectedInitial)) throw Error("GODOT_COPY_SOURCE_CHECKPOINT_CHANGED");
       update({status: "running", stage: "prepare"});
       const content = await domain("content.status", {worldId: targetWorldId});
