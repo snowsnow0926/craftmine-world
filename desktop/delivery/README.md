@@ -175,3 +175,6 @@ Self-tests now create a unique `test-results/delivery-preflight-selftest-*`
 directory and place their `report.json` there. They never delete or overwrite an
 older run. The suite currently has 34 cases, including the integration negative
 cases. A simulated link tests rejection control flow, not OS junction behavior.
+The integrated suite has 35 cases. The reserved bases/tests development harness
+is excluded from base discovery only while it contains no project or base
+manifest. A project there reactivates the normal provenance requirement.

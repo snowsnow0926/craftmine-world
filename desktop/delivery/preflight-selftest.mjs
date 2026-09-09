@@ -409,6 +409,14 @@ test('missing locked executable identity cannot certify no runtime', () => {
   assert.ok(codes(checkPackage(root, directory)).includes('PACKAGE_ENGINE_HASH_UNAVAILABLE'));
 });
 
+test('shared base tests are not a base, but cannot hide a world project', () => {
+  const {root, write} = fixture();
+  write('desktop/godot/bases/tests/audit.mjs', '// development harness');
+  assert.ok(!codes(checkBaseAssets(root)).includes('ASSET_BASE_MANIFEST_MISSING'));
+  write('desktop/godot/bases/tests/project.godot', 'config_version=5');
+  assert.ok(codes(checkBaseAssets(root)).includes('ASSET_BASE_MANIFEST_MISSING'));
+});
+
 const failed = results.filter(result => !result.passed);
 fs.mkdirSync(path.join(REPO_ROOT, 'test-results'), {recursive: true});
 const reportPath = path.join(workRoot, 'report.json');

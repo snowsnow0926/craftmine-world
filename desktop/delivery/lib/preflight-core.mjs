@@ -330,6 +330,9 @@ export function checkBaseAssets(root, {directory = BASE_ASSETS_DIR} = {}) {
       const target = path.join(basesRoot, name), info = fs.lstatSync(target);
       if (info.isSymbolicLink()) { failures.push(fail('ASSET_LINK_DENIED', 'Base is a link: ' + name)); continue; }
       if (!info.isDirectory()) continue;
+      // Shared verification code is a development harness, not a world base.
+      // A project/manifest in that reserved directory removes the exemption.
+      if (name === 'tests' && !['project.godot', 'manifest.json', 'base_manifest.json'].some(file => exists(path.join(target, file)))) continue;
       discoveredBases.push(name);
       if (!coveredDirectories.has(path.resolve(target))) failures.push(fail('ASSET_BASE_MANIFEST_MISSING', 'No asset manifest covers desktop/godot/bases/' + name));
     }
