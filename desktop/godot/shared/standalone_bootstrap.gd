@@ -10,6 +10,7 @@ var binding: Dictionary
 var busy := false
 var game_ready := false
 var pending_quit := false
+var recovered_from_backup := false
 var label: Label
 var folder := ""
 
@@ -94,7 +95,7 @@ func boot() -> void:
 func request(op: String, args: Dictionary = {}) -> Dictionary:
 	return await runtime.handle_request({"worldId": binding.sourceWorldId, "buildId": binding.buildId, "instanceId": "standalone", "op": op, "args": args})
 
-# Copied worlds preserve exact source bytes. Map only the two protocol identity
+# Copied worlds preserve exact source bytes. Map only explicit protocol identity
 # fields at this local host boundary; never rewrite entity, room or quest IDs.
 func runtime_state(input: Dictionary) -> Dictionary:
 	if not Guard.validate(input, binding.worldId, binding.baseId, binding.baseVersion).is_empty():
@@ -102,6 +103,10 @@ func runtime_state(input: Dictionary) -> Dictionary:
 	var state := input.duplicate(true)
 	state.worldId = binding.sourceWorldId
 	state.body.worldId = binding.sourceWorldId
+	if binding.baseId == "mining-sandbox":
+		if not state.body.get("state") is Dictionary or state.body.state.get("worldId") != binding.worldId:
+			return {}
+		state.body.state.worldId = binding.sourceWorldId
 	return state
 
 func exported_state(input: Dictionary) -> Dictionary:
@@ -110,6 +115,10 @@ func exported_state(input: Dictionary) -> Dictionary:
 	var state := input.duplicate(true)
 	state.worldId = binding.worldId
 	state.body.worldId = binding.worldId
+	if binding.baseId == "mining-sandbox":
+		if not state.body.get("state") is Dictionary or state.body.state.get("worldId") != binding.sourceWorldId:
+			return {}
+		state.body.state.worldId = binding.worldId
 	return state
 
 func read_saved() -> Dictionary:
@@ -130,6 +139,7 @@ func read_saved() -> Dictionary:
 			continue
 		var state: Variant = JSON.parse_string(value.snapshotText)
 		if state is Dictionary and Guard.validate(state, binding.worldId, binding.baseId, binding.baseVersion).is_empty():
+			recovered_from_backup = name == "state.json.bak"
 			return {"snapshot": state}
 	return {"error": "No valid saved state; previous files preserved"} if existed else {}
 
@@ -145,7 +155,12 @@ func persist(and_quit: bool) -> void:
 		busy = false
 		problem(str(saved.error))
 		return
-	var text := JSON.stringify(exported_state(saved.result.state))
+	var state := exported_state(saved.result.state)
+	if state.is_empty():
+		busy = false
+		problem("Saved state identity or format is invalid")
+		return
+	var text := JSON.stringify(state)
 	var receipt := {"format": SAVE_FORMAT, "worldId": binding.worldId, "buildId": binding.buildId, "snapshotText": text, "snapshotSha256": text.sha256_text()}
 	var failure := write_atomic(JSON.stringify(receipt))
 	if not failure.is_empty():
@@ -178,14 +193,21 @@ func write_atomic(text: String) -> String:
 	if dir == null:
 		return "Could not reopen save directory"
 	if dir.file_exists("state.json"):
-		if dir.file_exists("state.json.bak") and dir.remove("state.json.bak") != OK:
-			return "Could not replace previous backup"
-		if dir.rename("state.json", "state.json.bak") != OK:
-			return "Could not preserve previous save"
+		if recovered_from_backup:
+			# Never rotate a rejected primary over the only known valid backup.
+			var rejected := "state.rejected." + str(Time.get_ticks_usec()) + ".json"
+			if dir.rename("state.json", rejected) != OK:
+				return "Could not preserve rejected primary"
+		else:
+			if dir.file_exists("state.json.bak") and dir.remove("state.json.bak") != OK:
+				return "Could not replace previous backup"
+			if dir.rename("state.json", "state.json.bak") != OK:
+				return "Could not preserve previous save"
 	if dir.rename("state.json.tmp", "state.json") != OK:
-		if dir.file_exists("state.json.bak"):
+		if not recovered_from_backup and dir.file_exists("state.json.bak"):
 			dir.rename("state.json.bak", "state.json")
 		return "Could not commit saved state"
+	recovered_from_backup = false
 	return ""
 
 func _unhandled_key_input(event: InputEvent) -> void:

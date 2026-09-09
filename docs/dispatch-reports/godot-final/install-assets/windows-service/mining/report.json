@@ -1,0 +1,1416 @@
+{
+  "root": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\windows-formal-export-cPoPkR",
+  "passed": true,
+  "worlds": [
+    {
+      "baseId": "mining-sandbox",
+      "worldId": "world-2610dec28156",
+      "formal": {
+        "baseId": "mining-sandbox",
+        "baseVersion": "1.0.0",
+        "buildId": "gbd-04b02aea64bffb294799bc23fbbe932ea2d4cedcdafd9fffd446fa901144d47d",
+        "contentOid": "418e2eda12d9f36d9b93ab3529e740cf485b4392",
+        "files": [
+          {
+            "bytes": 1243,
+            "kind": "source",
+            "path": "craftmine_initial_state.json",
+            "sha256": "b8a983e13bb73651aad093838e3c780b37424de9c0a2c2b0dcdef09708ab1c02"
+          },
+          {
+            "bytes": 10098,
+            "kind": "source",
+            "path": "craftmine_shared/base_adapter.gd",
+            "sha256": "ca9c5e7490a6e3e5e55627099149d18e9f92877eed9a960013ff899f12d6bdb1"
+          },
+          {
+            "bytes": 6645,
+            "kind": "source",
+            "path": "craftmine_shared/runtime_bridge.gd",
+            "sha256": "318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76"
+          },
+          {
+            "bytes": 1800,
+            "kind": "source",
+            "path": "craftmine_shared/state_guard.gd",
+            "sha256": "9b3bb64b8515b0937e9e884999cfe10684d16d4a2b0af53140cc2a81dcc11293"
+          },
+          {
+            "bytes": 699,
+            "kind": "source",
+            "path": "icon.svg",
+            "sha256": "55253ce29a79806ddc89b5b09e2d10f0906be42ec739ee339bdfe91d5c7c0a0b"
+          },
+          {
+            "bytes": 1928,
+            "kind": "source",
+            "path": "params/mining_sandbox_params.json",
+            "sha256": "b2ff7d5c713ab86dc85ff429b1a8362df71ce05e84abaa7dc489361376554762"
+          },
+          {
+            "bytes": 1551,
+            "kind": "source",
+            "path": "project.godot",
+            "sha256": "9c515291336f0d67ef00cabf1dfb3bea8c4da3232f600fdf9a24bbb32992b42d"
+          },
+          {
+            "bytes": 181,
+            "kind": "source",
+            "path": "scenes/main.tscn",
+            "sha256": "38ef7ae271d02f636a4c122b6d908fbfec257fc2da1074d062df83499bccda66"
+          },
+          {
+            "bytes": 1292,
+            "kind": "source",
+            "path": "scripts/base/base_contract.gd",
+            "sha256": "cc5c6c0adfc0c87d4574a4bd05092c1950a8d69dff5178d45465379453d29a06"
+          },
+          {
+            "bytes": 8165,
+            "kind": "source",
+            "path": "scripts/base/chunk_store.gd",
+            "sha256": "65f8013ffb87c585e688bcc4232b07632889aa35b9eb2aa3be737fb12e9803fa"
+          },
+          {
+            "bytes": 5805,
+            "kind": "source",
+            "path": "scripts/base/crafting_service.gd",
+            "sha256": "67f396e8dd898db861067c5fb3871de0b3cccd5f51013c8e1203df0712789050"
+          },
+          {
+            "bytes": 475,
+            "kind": "source",
+            "path": "scripts/base/human_input_source.gd",
+            "sha256": "789fa4e2758d196017888eba814073af486da5ecf6d3a0571d6762ab432adbd7"
+          },
+          {
+            "bytes": 581,
+            "kind": "source",
+            "path": "scripts/base/input_source.gd",
+            "sha256": "9d0178838ac126dabcffa8b519c4f538d5cb6ba56a7cf6d3d4aa8bc6a6701235"
+          },
+          {
+            "bytes": 6566,
+            "kind": "source",
+            "path": "scripts/base/inventory_service.gd",
+            "sha256": "4caa05659fdc5e0f8b564c11f3659ef67091273d2b2f5bcaa6b0c6b0bd2e6280"
+          },
+          {
+            "bytes": 29710,
+            "kind": "source",
+            "path": "scripts/base/mining_game.gd",
+            "sha256": "3922042a90ac28d9cd69911cb6f153cced2e627e4020cd83cfa1a122ec8c9979"
+          },
+          {
+            "bytes": 6690,
+            "kind": "source",
+            "path": "scripts/base/mining_params.gd",
+            "sha256": "2daaf039260d19f824627be79e44c0b6943f3e89591aeb2bf3cc66d9d786a359"
+          },
+          {
+            "bytes": 7244,
+            "kind": "source",
+            "path": "scripts/base/player.gd",
+            "sha256": "aad03577ecf467fe695fd97620178ee56c3d2d8e285ec597417e80e1a1b115fb"
+          },
+          {
+            "bytes": 8456,
+            "kind": "source",
+            "path": "scripts/base/probe.gd",
+            "sha256": "1dd6e9b2f36c1035847dbd566f991dc54f4b5503d2b01adf1e1478009236bf69"
+          },
+          {
+            "bytes": 20358,
+            "kind": "source",
+            "path": "scripts/base/save_store.gd",
+            "sha256": "8fc74bf656e2025003e5befd44863e6a4e3a96d26e04821ff97c795960877558"
+          },
+          {
+            "bytes": 697,
+            "kind": "source",
+            "path": "scripts/base/scripted_input_source.gd",
+            "sha256": "aef79f51254d3f8f9c5c9eb815f16f5eb71d34ab3ef6a1499e655635cc883906"
+          },
+          {
+            "bytes": 1319,
+            "kind": "source",
+            "path": "scripts/base/station.gd",
+            "sha256": "43eb858d6a49b766d2b1af8537c8cf6ad8777ba0964cc6dfd2a5155bbe1cbe38"
+          },
+          {
+            "bytes": 3344,
+            "kind": "source",
+            "path": "scripts/base/terrain_collider.gd",
+            "sha256": "5fe11d928078e0d2b36a946233b81aaf4ea0982d97b95aaa1d03c3b216af7284"
+          },
+          {
+            "bytes": 8013,
+            "kind": "source",
+            "path": "scripts/base/terrain_generator.gd",
+            "sha256": "e8953ae90eabee6dc0234d6cf708ee4c14e78fa8a30f56278507d466114f2ce8"
+          },
+          {
+            "bytes": 3082,
+            "kind": "source",
+            "path": "scripts/base/terrain_renderer.gd",
+            "sha256": "58b5063cdd9a6689135309411e1ee664a56c219444b012dd290f30f9230a985f"
+          },
+          {
+            "bytes": 13492,
+            "kind": "source",
+            "path": "scripts/base/terrain_service.gd",
+            "sha256": "fa6ccba603908a3379e2af1607a76dfb1e2ccd18ed1857b0afdc9b9dfe54b543"
+          },
+          {
+            "bytes": 12251,
+            "kind": "source",
+            "path": "scripts/base/world_state.gd",
+            "sha256": "24e4526ad4c479024e2500f6ebfdc9901a294295ca10809f2f999278438b6381"
+          },
+          {
+            "bytes": 4729,
+            "kind": "source",
+            "path": "world-build.json",
+            "sha256": "89b633b11d160636f832014429661b600b2633b0914cd12de269a9069d6db265"
+          },
+          {
+            "bytes": 6703,
+            "kind": "source",
+            "path": "world.json",
+            "sha256": "002731cebdcf355757ca41b492d7e5d667f5b90a091dfa4c771a2e79e3daa817"
+          }
+        ],
+        "format": "craftmine.godot-export-source/1",
+        "repoId": "world-world-2610dec28156",
+        "revision": 4,
+        "snapshot": {
+          "baseId": "mining-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseId": "mining-sandbox",
+            "baseVersion": "1.0.0",
+            "chunks": {
+              "0_0": {
+                "cells": [
+                  [
+                    8,
+                    10,
+                    "air"
+                  ],
+                  [
+                    10,
+                    10,
+                    "stone_brick"
+                  ],
+                  [
+                    7,
+                    14,
+                    "air"
+                  ],
+                  [
+                    9,
+                    14,
+                    "air"
+                  ]
+                ],
+                "revision": 4
+              }
+            },
+            "format": "craftmine.godot-mining-sandbox-managed/1",
+            "mapSize": [
+              96,
+              48
+            ],
+            "seed": 31415926,
+            "state": {
+              "chunkIndex": {},
+              "editCount": 0,
+              "equipped": "",
+              "flags": {},
+              "format": "craftmine.godot-mining-sandbox-state/1",
+              "inventory": {
+                "dirt": 1,
+                "wood": 2
+              },
+              "ledger": {
+                "7c9a21ff-9649-43e7-a66a-ddac53f345d5": {
+                  "applied": true,
+                  "op": "dig",
+                  "result": {
+                    "chunk": "0_0",
+                    "dropped": {
+                      "count": 1,
+                      "id": "dirt"
+                    },
+                    "material": "grass",
+                    "ok": true,
+                    "op": "dig",
+                    "revision": 1,
+                    "tx": 8,
+                    "ty": 10
+                  }
+                },
+                "a858ef12-40cd-4735-a754-eec69a55b447": {
+                  "applied": true,
+                  "op": "place",
+                  "result": {
+                    "chunk": "0_0",
+                    "consumed": {
+                      "count": 1,
+                      "id": "stone_brick"
+                    },
+                    "material": "stone_brick",
+                    "ok": true,
+                    "op": "place",
+                    "revision": 4,
+                    "tx": 10,
+                    "ty": 10
+                  }
+                },
+                "a991079a-dbef-4431-be4c-6b97412fef51": {
+                  "applied": true,
+                  "op": "dig",
+                  "result": {
+                    "chunk": "0_0",
+                    "dropped": {
+                      "count": 1,
+                      "id": "stone"
+                    },
+                    "material": "stone",
+                    "ok": true,
+                    "op": "dig",
+                    "revision": 2,
+                    "tx": 9,
+                    "ty": 14
+                  }
+                },
+                "b5bd0c29-ad4a-45f5-b4af-66563673ca70": {
+                  "applied": true,
+                  "op": "craft",
+                  "result": {
+                    "consumed": [
+                      {
+                        "count": 2,
+                        "id": "stone"
+                      }
+                    ],
+                    "ok": true,
+                    "op": "craft",
+                    "output": {
+                      "count": 1,
+                      "id": "stone_brick"
+                    },
+                    "recipeId": "stone-brick",
+                    "station": ""
+                  }
+                },
+                "e1dc5ef7-336f-4a13-a95b-41fc57e1df15": {
+                  "applied": true,
+                  "op": "dig",
+                  "result": {
+                    "chunk": "0_0",
+                    "dropped": {
+                      "count": 1,
+                      "id": "stone"
+                    },
+                    "material": "stone",
+                    "ok": true,
+                    "op": "dig",
+                    "revision": 3,
+                    "tx": 7,
+                    "ty": 14
+                  }
+                }
+              },
+              "ledgerEvicted": 0,
+              "player": {
+                "facing": "right",
+                "health": 3,
+                "position": [
+                  137.925201416016,
+                  175.987670898438
+                ],
+                "tile": [
+                  8,
+                  10
+                ]
+              },
+              "stateVersion": 1,
+              "terrainHash": "",
+              "tools": [],
+              "worldId": "world-2610dec28156",
+              "worldRevision": 4
+            },
+            "stateVersion": 1,
+            "terrainHash": "d4d4d6a4dea7eecbf8585ec6535a111a1946c3429a1b043ba1560f3177b73a6e",
+            "worldId": "world-2610dec28156"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-2610dec28156"
+        },
+        "sourceRevision": 2,
+        "sourceWorldId": "world-2610dec28156",
+        "worldId": "world-2610dec28156"
+      },
+      "checks": [
+        "Real formal source+persisted progress exported, exact operation retry returns receipt",
+        "Exact initial JSON preserved; first native load matches all fields with bit-exact native Vector coordinates",
+        "Separate second native process restores exact complete local save",
+        "Standalone gameplay and persistence never modify source core data"
+      ],
+      "result": {
+        "worldId": "world-2610dec28156",
+        "operationId": "mining-sandbox-formal-export",
+        "status": "completed",
+        "buildId": "gbd-04b02aea64bffb294799bc23fbbe932ea2d4cedcdafd9fffd446fa901144d47d",
+        "baseId": "mining-sandbox",
+        "revision": 4,
+        "files": 31,
+        "directoryName": "Craftmine-mining-sandbox-mining-sandbox-formal-export",
+        "rightsStatus": "local-preview-source-included"
+      },
+      "runs": [
+        {
+          "loaded": {
+            "baseId": "mining-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseId": "mining-sandbox",
+              "baseVersion": "1.0.0",
+              "chunks": {
+                "0_0": {
+                  "cells": [
+                    [
+                      8,
+                      10,
+                      "air"
+                    ],
+                    [
+                      10,
+                      10,
+                      "stone_brick"
+                    ],
+                    [
+                      7,
+                      14,
+                      "air"
+                    ],
+                    [
+                      9,
+                      14,
+                      "air"
+                    ]
+                  ],
+                  "revision": 4
+                }
+              },
+              "format": "craftmine.godot-mining-sandbox-managed/1",
+              "mapSize": [
+                96,
+                48
+              ],
+              "seed": 31415926,
+              "state": {
+                "chunkIndex": {},
+                "editCount": 0,
+                "equipped": "",
+                "flags": {},
+                "format": "craftmine.godot-mining-sandbox-state/1",
+                "inventory": {
+                  "dirt": 1,
+                  "wood": 2
+                },
+                "ledger": {
+                  "7c9a21ff-9649-43e7-a66a-ddac53f345d5": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "dirt"
+                      },
+                      "material": "grass",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 1,
+                      "tx": 8,
+                      "ty": 10
+                    }
+                  },
+                  "a858ef12-40cd-4735-a754-eec69a55b447": {
+                    "applied": true,
+                    "op": "place",
+                    "result": {
+                      "chunk": "0_0",
+                      "consumed": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "material": "stone_brick",
+                      "ok": true,
+                      "op": "place",
+                      "revision": 4,
+                      "tx": 10,
+                      "ty": 10
+                    }
+                  },
+                  "a991079a-dbef-4431-be4c-6b97412fef51": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 2,
+                      "tx": 9,
+                      "ty": 14
+                    }
+                  },
+                  "b5bd0c29-ad4a-45f5-b4af-66563673ca70": {
+                    "applied": true,
+                    "op": "craft",
+                    "result": {
+                      "consumed": [
+                        {
+                          "count": 2,
+                          "id": "stone"
+                        }
+                      ],
+                      "ok": true,
+                      "op": "craft",
+                      "output": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "recipeId": "stone-brick",
+                      "station": ""
+                    }
+                  },
+                  "e1dc5ef7-336f-4a13-a95b-41fc57e1df15": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 3,
+                      "tx": 7,
+                      "ty": 14
+                    }
+                  }
+                },
+                "ledgerEvicted": 0,
+                "player": {
+                  "facing": "right",
+                  "health": 3,
+                  "position": [
+                    137.925201416016,
+                    175.987670898438
+                  ],
+                  "tile": [
+                    8,
+                    10
+                  ]
+                },
+                "stateVersion": 1,
+                "terrainHash": "",
+                "tools": [],
+                "worldId": "world-2610dec28156",
+                "worldRevision": 4
+              },
+              "stateVersion": 1,
+              "terrainHash": "d4d4d6a4dea7eecbf8585ec6535a111a1946c3429a1b043ba1560f3177b73a6e",
+              "worldId": "world-2610dec28156"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "world-2610dec28156"
+          },
+          "saved": {
+            "baseId": "mining-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseId": "mining-sandbox",
+              "baseVersion": "1.0.0",
+              "chunks": {
+                "0_0": {
+                  "cells": [
+                    [
+                      8,
+                      10,
+                      "air"
+                    ],
+                    [
+                      10,
+                      10,
+                      "stone_brick"
+                    ],
+                    [
+                      7,
+                      14,
+                      "air"
+                    ],
+                    [
+                      9,
+                      14,
+                      "air"
+                    ]
+                  ],
+                  "revision": 4
+                }
+              },
+              "format": "craftmine.godot-mining-sandbox-managed/1",
+              "mapSize": [
+                96,
+                48
+              ],
+              "seed": 31415926,
+              "state": {
+                "chunkIndex": {},
+                "editCount": 0,
+                "equipped": "",
+                "flags": {},
+                "format": "craftmine.godot-mining-sandbox-state/1",
+                "inventory": {
+                  "dirt": 1,
+                  "wood": 2
+                },
+                "ledger": {
+                  "7c9a21ff-9649-43e7-a66a-ddac53f345d5": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "dirt"
+                      },
+                      "material": "grass",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 1,
+                      "tx": 8,
+                      "ty": 10
+                    }
+                  },
+                  "a858ef12-40cd-4735-a754-eec69a55b447": {
+                    "applied": true,
+                    "op": "place",
+                    "result": {
+                      "chunk": "0_0",
+                      "consumed": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "material": "stone_brick",
+                      "ok": true,
+                      "op": "place",
+                      "revision": 4,
+                      "tx": 10,
+                      "ty": 10
+                    }
+                  },
+                  "a991079a-dbef-4431-be4c-6b97412fef51": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 2,
+                      "tx": 9,
+                      "ty": 14
+                    }
+                  },
+                  "b5bd0c29-ad4a-45f5-b4af-66563673ca70": {
+                    "applied": true,
+                    "op": "craft",
+                    "result": {
+                      "consumed": [
+                        {
+                          "count": 2,
+                          "id": "stone"
+                        }
+                      ],
+                      "ok": true,
+                      "op": "craft",
+                      "output": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "recipeId": "stone-brick",
+                      "station": ""
+                    }
+                  },
+                  "e1dc5ef7-336f-4a13-a95b-41fc57e1df15": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 3,
+                      "tx": 7,
+                      "ty": 14
+                    }
+                  }
+                },
+                "ledgerEvicted": 0,
+                "player": {
+                  "facing": "right",
+                  "health": 3,
+                  "position": [
+                    137.925201416016,
+                    175.987670898438
+                  ],
+                  "tile": [
+                    8,
+                    10
+                  ]
+                },
+                "stateVersion": 1,
+                "terrainHash": "",
+                "tools": [],
+                "worldId": "world-2610dec28156",
+                "worldRevision": 4
+              },
+              "stateVersion": 1,
+              "terrainHash": "d4d4d6a4dea7eecbf8585ec6535a111a1946c3429a1b043ba1560f3177b73a6e",
+              "worldId": "world-2610dec28156"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "world-2610dec28156"
+          }
+        },
+        {
+          "loaded": {
+            "baseId": "mining-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseId": "mining-sandbox",
+              "baseVersion": "1.0.0",
+              "chunks": {
+                "0_0": {
+                  "cells": [
+                    [
+                      8,
+                      10,
+                      "air"
+                    ],
+                    [
+                      10,
+                      10,
+                      "stone_brick"
+                    ],
+                    [
+                      7,
+                      14,
+                      "air"
+                    ],
+                    [
+                      9,
+                      14,
+                      "air"
+                    ]
+                  ],
+                  "revision": 4
+                }
+              },
+              "format": "craftmine.godot-mining-sandbox-managed/1",
+              "mapSize": [
+                96,
+                48
+              ],
+              "seed": 31415926,
+              "state": {
+                "chunkIndex": {},
+                "editCount": 0,
+                "equipped": "",
+                "flags": {},
+                "format": "craftmine.godot-mining-sandbox-state/1",
+                "inventory": {
+                  "dirt": 1,
+                  "wood": 2
+                },
+                "ledger": {
+                  "7c9a21ff-9649-43e7-a66a-ddac53f345d5": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "dirt"
+                      },
+                      "material": "grass",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 1,
+                      "tx": 8,
+                      "ty": 10
+                    }
+                  },
+                  "a858ef12-40cd-4735-a754-eec69a55b447": {
+                    "applied": true,
+                    "op": "place",
+                    "result": {
+                      "chunk": "0_0",
+                      "consumed": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "material": "stone_brick",
+                      "ok": true,
+                      "op": "place",
+                      "revision": 4,
+                      "tx": 10,
+                      "ty": 10
+                    }
+                  },
+                  "a991079a-dbef-4431-be4c-6b97412fef51": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 2,
+                      "tx": 9,
+                      "ty": 14
+                    }
+                  },
+                  "b5bd0c29-ad4a-45f5-b4af-66563673ca70": {
+                    "applied": true,
+                    "op": "craft",
+                    "result": {
+                      "consumed": [
+                        {
+                          "count": 2,
+                          "id": "stone"
+                        }
+                      ],
+                      "ok": true,
+                      "op": "craft",
+                      "output": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "recipeId": "stone-brick",
+                      "station": ""
+                    }
+                  },
+                  "e1dc5ef7-336f-4a13-a95b-41fc57e1df15": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 3,
+                      "tx": 7,
+                      "ty": 14
+                    }
+                  }
+                },
+                "ledgerEvicted": 0,
+                "player": {
+                  "facing": "right",
+                  "health": 3,
+                  "position": [
+                    137.925201416016,
+                    175.987670898438
+                  ],
+                  "tile": [
+                    8,
+                    10
+                  ]
+                },
+                "stateVersion": 1,
+                "terrainHash": "",
+                "tools": [],
+                "worldId": "world-2610dec28156",
+                "worldRevision": 4
+              },
+              "stateVersion": 1,
+              "terrainHash": "d4d4d6a4dea7eecbf8585ec6535a111a1946c3429a1b043ba1560f3177b73a6e",
+              "worldId": "world-2610dec28156"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "world-2610dec28156"
+          },
+          "saved": {
+            "baseId": "mining-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseId": "mining-sandbox",
+              "baseVersion": "1.0.0",
+              "chunks": {
+                "0_0": {
+                  "cells": [
+                    [
+                      8,
+                      10,
+                      "air"
+                    ],
+                    [
+                      10,
+                      10,
+                      "stone_brick"
+                    ],
+                    [
+                      7,
+                      14,
+                      "air"
+                    ],
+                    [
+                      9,
+                      14,
+                      "air"
+                    ]
+                  ],
+                  "revision": 4
+                }
+              },
+              "format": "craftmine.godot-mining-sandbox-managed/1",
+              "mapSize": [
+                96,
+                48
+              ],
+              "seed": 31415926,
+              "state": {
+                "chunkIndex": {},
+                "editCount": 0,
+                "equipped": "",
+                "flags": {},
+                "format": "craftmine.godot-mining-sandbox-state/1",
+                "inventory": {
+                  "dirt": 1,
+                  "wood": 2
+                },
+                "ledger": {
+                  "7c9a21ff-9649-43e7-a66a-ddac53f345d5": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "dirt"
+                      },
+                      "material": "grass",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 1,
+                      "tx": 8,
+                      "ty": 10
+                    }
+                  },
+                  "a858ef12-40cd-4735-a754-eec69a55b447": {
+                    "applied": true,
+                    "op": "place",
+                    "result": {
+                      "chunk": "0_0",
+                      "consumed": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "material": "stone_brick",
+                      "ok": true,
+                      "op": "place",
+                      "revision": 4,
+                      "tx": 10,
+                      "ty": 10
+                    }
+                  },
+                  "a991079a-dbef-4431-be4c-6b97412fef51": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 2,
+                      "tx": 9,
+                      "ty": 14
+                    }
+                  },
+                  "b5bd0c29-ad4a-45f5-b4af-66563673ca70": {
+                    "applied": true,
+                    "op": "craft",
+                    "result": {
+                      "consumed": [
+                        {
+                          "count": 2,
+                          "id": "stone"
+                        }
+                      ],
+                      "ok": true,
+                      "op": "craft",
+                      "output": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "recipeId": "stone-brick",
+                      "station": ""
+                    }
+                  },
+                  "e1dc5ef7-336f-4a13-a95b-41fc57e1df15": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 3,
+                      "tx": 7,
+                      "ty": 14
+                    }
+                  }
+                },
+                "ledgerEvicted": 0,
+                "player": {
+                  "facing": "right",
+                  "health": 3,
+                  "position": [
+                    137.925201416016,
+                    175.987670898438
+                  ],
+                  "tile": [
+                    8,
+                    10
+                  ]
+                },
+                "stateVersion": 1,
+                "terrainHash": "",
+                "tools": [],
+                "worldId": "world-2610dec28156",
+                "worldRevision": 4
+              },
+              "stateVersion": 1,
+              "terrainHash": "d4d4d6a4dea7eecbf8585ec6535a111a1946c3429a1b043ba1560f3177b73a6e",
+              "worldId": "world-2610dec28156"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "world-2610dec28156"
+          }
+        }
+      ],
+      "crossPlatformCoordinates": {
+        "formal": {
+          "value": {
+            "baseId": "mining-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseId": "mining-sandbox",
+              "baseVersion": "1.0.0",
+              "chunks": {
+                "0_0": {
+                  "cells": [
+                    [
+                      8,
+                      10,
+                      "air"
+                    ],
+                    [
+                      10,
+                      10,
+                      "stone_brick"
+                    ],
+                    [
+                      7,
+                      14,
+                      "air"
+                    ],
+                    [
+                      9,
+                      14,
+                      "air"
+                    ]
+                  ],
+                  "revision": 4
+                }
+              },
+              "format": "craftmine.godot-mining-sandbox-managed/1",
+              "mapSize": [
+                96,
+                48
+              ],
+              "seed": 31415926,
+              "state": {
+                "chunkIndex": {},
+                "editCount": 0,
+                "equipped": "",
+                "flags": {},
+                "format": "craftmine.godot-mining-sandbox-state/1",
+                "inventory": {
+                  "dirt": 1,
+                  "wood": 2
+                },
+                "ledger": {
+                  "7c9a21ff-9649-43e7-a66a-ddac53f345d5": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "dirt"
+                      },
+                      "material": "grass",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 1,
+                      "tx": 8,
+                      "ty": 10
+                    }
+                  },
+                  "a858ef12-40cd-4735-a754-eec69a55b447": {
+                    "applied": true,
+                    "op": "place",
+                    "result": {
+                      "chunk": "0_0",
+                      "consumed": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "material": "stone_brick",
+                      "ok": true,
+                      "op": "place",
+                      "revision": 4,
+                      "tx": 10,
+                      "ty": 10
+                    }
+                  },
+                  "a991079a-dbef-4431-be4c-6b97412fef51": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 2,
+                      "tx": 9,
+                      "ty": 14
+                    }
+                  },
+                  "b5bd0c29-ad4a-45f5-b4af-66563673ca70": {
+                    "applied": true,
+                    "op": "craft",
+                    "result": {
+                      "consumed": [
+                        {
+                          "count": 2,
+                          "id": "stone"
+                        }
+                      ],
+                      "ok": true,
+                      "op": "craft",
+                      "output": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "recipeId": "stone-brick",
+                      "station": ""
+                    }
+                  },
+                  "e1dc5ef7-336f-4a13-a95b-41fc57e1df15": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 3,
+                      "tx": 7,
+                      "ty": 14
+                    }
+                  }
+                },
+                "ledgerEvicted": 0,
+                "player": {
+                  "facing": "right",
+                  "health": 3,
+                  "position": [
+                    137.92520141601562,
+                    175.9876708984375
+                  ],
+                  "tile": [
+                    8,
+                    10
+                  ]
+                },
+                "stateVersion": 1,
+                "terrainHash": "",
+                "tools": [],
+                "worldId": "world-2610dec28156",
+                "worldRevision": 4
+              },
+              "stateVersion": 1,
+              "terrainHash": "d4d4d6a4dea7eecbf8585ec6535a111a1946c3429a1b043ba1560f3177b73a6e",
+              "worldId": "world-2610dec28156"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "world-2610dec28156"
+          },
+          "changes": [
+            {
+              "path": "/body/state/player/position/0",
+              "jsonValue": 137.925201416016,
+              "float32Value": 137.92520141601562,
+              "float32Bits": "4309ecda"
+            },
+            {
+              "path": "/body/state/player/position/1",
+              "jsonValue": 175.987670898438,
+              "float32Value": 175.9876708984375,
+              "float32Bits": "432ffcd8"
+            }
+          ]
+        },
+        "native": {
+          "value": {
+            "baseId": "mining-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseId": "mining-sandbox",
+              "baseVersion": "1.0.0",
+              "chunks": {
+                "0_0": {
+                  "cells": [
+                    [
+                      8,
+                      10,
+                      "air"
+                    ],
+                    [
+                      10,
+                      10,
+                      "stone_brick"
+                    ],
+                    [
+                      7,
+                      14,
+                      "air"
+                    ],
+                    [
+                      9,
+                      14,
+                      "air"
+                    ]
+                  ],
+                  "revision": 4
+                }
+              },
+              "format": "craftmine.godot-mining-sandbox-managed/1",
+              "mapSize": [
+                96,
+                48
+              ],
+              "seed": 31415926,
+              "state": {
+                "chunkIndex": {},
+                "editCount": 0,
+                "equipped": "",
+                "flags": {},
+                "format": "craftmine.godot-mining-sandbox-state/1",
+                "inventory": {
+                  "dirt": 1,
+                  "wood": 2
+                },
+                "ledger": {
+                  "7c9a21ff-9649-43e7-a66a-ddac53f345d5": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "dirt"
+                      },
+                      "material": "grass",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 1,
+                      "tx": 8,
+                      "ty": 10
+                    }
+                  },
+                  "a858ef12-40cd-4735-a754-eec69a55b447": {
+                    "applied": true,
+                    "op": "place",
+                    "result": {
+                      "chunk": "0_0",
+                      "consumed": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "material": "stone_brick",
+                      "ok": true,
+                      "op": "place",
+                      "revision": 4,
+                      "tx": 10,
+                      "ty": 10
+                    }
+                  },
+                  "a991079a-dbef-4431-be4c-6b97412fef51": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 2,
+                      "tx": 9,
+                      "ty": 14
+                    }
+                  },
+                  "b5bd0c29-ad4a-45f5-b4af-66563673ca70": {
+                    "applied": true,
+                    "op": "craft",
+                    "result": {
+                      "consumed": [
+                        {
+                          "count": 2,
+                          "id": "stone"
+                        }
+                      ],
+                      "ok": true,
+                      "op": "craft",
+                      "output": {
+                        "count": 1,
+                        "id": "stone_brick"
+                      },
+                      "recipeId": "stone-brick",
+                      "station": ""
+                    }
+                  },
+                  "e1dc5ef7-336f-4a13-a95b-41fc57e1df15": {
+                    "applied": true,
+                    "op": "dig",
+                    "result": {
+                      "chunk": "0_0",
+                      "dropped": {
+                        "count": 1,
+                        "id": "stone"
+                      },
+                      "material": "stone",
+                      "ok": true,
+                      "op": "dig",
+                      "revision": 3,
+                      "tx": 7,
+                      "ty": 14
+                    }
+                  }
+                },
+                "ledgerEvicted": 0,
+                "player": {
+                  "facing": "right",
+                  "health": 3,
+                  "position": [
+                    137.92520141601562,
+                    175.9876708984375
+                  ],
+                  "tile": [
+                    8,
+                    10
+                  ]
+                },
+                "stateVersion": 1,
+                "terrainHash": "",
+                "tools": [],
+                "worldId": "world-2610dec28156",
+                "worldRevision": 4
+              },
+              "stateVersion": 1,
+              "terrainHash": "d4d4d6a4dea7eecbf8585ec6535a111a1946c3429a1b043ba1560f3177b73a6e",
+              "worldId": "world-2610dec28156"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "world-2610dec28156"
+          },
+          "changes": [
+            {
+              "path": "/body/state/player/position/0",
+              "jsonValue": 137.925201416016,
+              "float32Value": 137.92520141601562,
+              "float32Bits": "4309ecda"
+            },
+            {
+              "path": "/body/state/player/position/1",
+              "jsonValue": 175.987670898438,
+              "float32Value": 175.9876708984375,
+              "float32Bits": "432ffcd8"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "checks": [],
+  "limitations": [
+    "Ended real client data copied before all access; checkpoint callback has no live view to save.",
+    "Headless exported game acceptance, no visible input/focus/PointerLock and no model calls."
+  ]
+}
