@@ -1103,7 +1103,7 @@ function createGodotExecutor(core, options = {}) {
       outcome:cleanSuccess ? 'succeeded'
         : attemptReclaimed(run.recovery, request.requestId) ? 'reclaimed-without-final-receipt'
         : 'no-final-receipt:' + (run.parseError ?? run.response?.state ?? run.reason ?? 'transport'),
-      recovery:run.recovery ? {trigger:run.recovery.trigger,
+      recovery:run.recovery ? {trigger:run.recovery.trigger, ok:run.recovery.ok, parseError:run.recovery.parseError ?? null,
         reclaimed:run.recovery.reclaimed.map(item => item.taskId),
         skipped:run.recovery.skipped.length, unreadable:run.recovery.unreadable.length} : null,
     });

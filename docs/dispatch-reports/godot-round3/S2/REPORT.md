@@ -28,7 +28,7 @@
   （`broker-still-running`、`pid-reused`）原样保留；`unreadable` 单独列出；
   报告若声称有最终回包，标记 `finalReceiptClaimed` 并作为矛盾暴露。
 - 静态断言：执行器源码不含 `tasklist`/`taskkill`。
-- 证据：`recovery-protocol` 12/12、`recovery-real-broker` 4/4、C 协议回归 15/15。
+- 证据：`recovery-protocol` 14/14、`recovery-real-broker` 4/4、C 协议回归 15/15。
 
 ### 1.2 在启动、异常退出、取消、重启对账中实际调用 recover（完成）
 
@@ -141,6 +141,25 @@ attempt 已证明成功或已被身份核验回收时重新入队，否则置 `i
 - **未完成**：源码导入、包脚本/预览、Git hooks/filter 的宿主权限边界本轮只做了
   路由收敛（只转发白名单字段、服务自身校验），未做合成资源的输入/剪贴板边界实测。
 
+### 1.9 独立代码评审与修复（完成）
+
+对 `godot-executor.cjs` 的恢复/账本逻辑做了独立只读评审，按发现逐条修复并补测：
+
+| 发现 | 处理 |
+| --- | --- |
+| 作业可通过但 attempt 记为"无最终回包" | 运行"成功 + cleanup.verified"即记 `succeeded`，另记 `journalRetired`；未退休的 journal 仍走恢复，两者不再混同 |
+| `reconcileAfterRestart` 忽略 `enqueue` 返回值 | 只有 `enqueued:true` 才置 `enqueued`，否则保持非终态并记录原因 |
+| 阻塞期取消被记成 `blocked` 且不通知核心 | 改为走 `abandon()`（调用 `godotBuild.cancel` + 恢复） |
+| `abandon` 吞掉取消失败 | 未确认的核心取消记 `cancel-unconfirmed` 并保持可重试 |
+| `persistLedger` 固定临时名 / 失败被吞 | 唯一临时名；读写失败记入 `status().ledger.error`；`loadLedger` 前先等写链，并规范化损坏条目 |
+| `finish` 非 `failed` 一律记 `finished` | 只有核心确认 `passed` 才是终态成功，其余保持可重试 |
+| broker 忽略取消帧且杀不掉时作业永久挂起 | 宽限期后强制结算，交由恢复判定清理 |
+| `child.on('error')` 不做恢复 | 同样触发恢复 |
+| 恢复执行器抛异常改变作业状态 | 恢复失败只返回 `ok:false` 摘要，不影响作业结果 |
+| 汇总用报告自报计数 | 计数改为从条目数组推导，同时保留报告值以便对比 |
+
+新增测试：journal 未退休仍为有效构建、恢复失败不改作业结果、损坏账本不阻断启动。
+
 ## 2 身份
 
 | 项 | 值 |
@@ -156,7 +175,7 @@ attempt 已证明成功或已被身份核验回收时重新入队，否则置 `i
 
 | 文件 | 内容 |
 | --- | --- |
-| `evidence/recovery-protocol.log` | 12/12，脚本 broker：异常退出/取消/停止/重启对账/身份不可验证不重启 |
+| `evidence/recovery-protocol.log` | 14/14，脚本 broker：异常退出/取消/停止/重启对账/身份不可验证不重启/journal 未退休/恢复失败/损坏账本 |
 | `evidence/recovery-real-broker.log` | 4/4，真实 `godot-host-broker.exe recover` |
 | `evidence/c-executor-protocol-regression.log` | 15/15，C 协议回归 |
 | `evidence/plugin-routes.log` | 5/5，打包后的 router：字段白名单、服务转发、白名单同步、打包产物入口 |
