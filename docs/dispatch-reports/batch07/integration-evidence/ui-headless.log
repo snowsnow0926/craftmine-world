@@ -1,0 +1,31 @@
+PASS actual built world panel loads game and preserves save controls
+PASS authentic frame selection renders removable context
+PASS stale world build revision and unknown objects never reach host
+PASS selection can be explicitly removed
+PASS fixed versions render with applied and verification provenance
+PASS untrusted library name is rendered as text
+PASS exact source version exposes bounded source and dependencies
+PASS install says draft rather than applied
+PASS installation sends exact version hash and no renderer owner identity
+PASS lost install reply retries identical operation and revision
+PASS renderer restart shows saved unresolved operation without automatic execution
+PASS explicit recovery executes the original saved operation
+PASS active model task disables manual install
+PASS task shows actual reservations and unknown results
+PASS stop sends captured task and generation
+PASS explicit resume preserves task generation
+PASS budget setting uses a player operation and distinguishes cumulative limit
+PASS recheck keeps captured draft hash revision and generation
+PASS memory shows world scope and source
+PASS retire displays inactive record
+PASS player rule is proposed with bound world and no forged validation
+PASS restore explicitly describes all profile worlds
+PASS failed restore preserves world and opaque path authority
+PASS unknown restore can query existing operation receipt
+PASS narrow workbench has no horizontal overflow
+PASS unavailable services never display fake success
+PASS failed save prevents world switch and preserves current record
+PASS world switch binds new memory reads and clears selection
+PASS no input lock or focus request
+PASS no page errors
+Evidence: D:\Craftmine World-worktrees\batch07-g-20260909\test-results\batch07-ui-Zt6Lh1

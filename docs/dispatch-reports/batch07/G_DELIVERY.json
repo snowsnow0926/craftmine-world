@@ -1,0 +1,107 @@
+{
+  "format": "craftmine.batch07-integrated-delivery/1",
+  "status": "implemented_packaged_verified_current_batch_environment_limits",
+  "report": "docs/WINDOWS_BATCH_07.md",
+  "acceptanceMatrix": "docs/dispatch-reports/batch07/G_REPORT.md",
+  "productFreeze": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+  "buildCommit": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+  "deliveryDirectory": "D:/Craftmine World/desktop/build/windows-preview-batch-07",
+  "domainTests": 276,
+  "rustTests": 57,
+  "piTests": 330,
+  "finalBridgeTests": 30,
+  "i18nTests": 22,
+  "fullJsBuild": true,
+  "headlessWorkbenchChecks": 30,
+  "reactLayoutChecks": 10,
+  "nativeFixturePackaged": 40,
+  "realPackagedCompactions": 3,
+  "realPackagedCompactionRunnerChecks": 10,
+  "realPackagedDurableAudit": 13,
+  "nativePackagedScenarios": [
+    {
+      "name": "packaged-gameplay",
+      "passed": true,
+      "checks": 30,
+      "knownTokens": 44466,
+      "unknownEstimate": 0
+    },
+    {
+      "name": "packaged-tree-workbench",
+      "passed": true,
+      "checks": 20,
+      "knownTokens": 218244,
+      "unknownEstimate": 0
+    },
+    {
+      "name": "packaged-recovery",
+      "passed": true,
+      "checks": 12,
+      "knownTokens": 119484,
+      "unknownEstimate": 73174
+    }
+  ],
+  "realPackagedRequests": 58,
+  "realPackagedKnownTokens": 567166,
+  "realPackagedUnknownEstimate": 73174,
+  "realPackagedUnknownRequests": 1,
+  "cacheExperiment": {
+    "requests": 6,
+    "knownTokens": 114096,
+    "unknownRequests": 0,
+    "fixedPrefixWarmHitRate": 0.9824413836610241,
+    "changingSystemWarmHitRate": 0.013469430706092812,
+    "evidence": "docs/dispatch-reports/batch07/evidence/deepseek-prefix-experiment.json"
+  },
+  "actualThreeCompactionCreationCache": {
+    "requests": 19,
+    "inputTokens": 54293,
+    "cacheReadTokens": 93824,
+    "outputTokens": 5451,
+    "totalTokens": 153568,
+    "inputCacheHitRate": 0.6334451818494838
+  },
+  "fileCount": 825,
+  "totalBytes": 418062454,
+  "installerBytes": 155076619,
+  "installerSha256": "a7e194e79b1f798fac018ebdef511b15151a0cf8626e4ef0745347890872a3a5",
+  "sourceArchiveSha256": "019c758d450a425dd381cc3023f92b734945a0fd130337a822382325f6a8584a",
+  "manifestSha256": "85b560c260a2d2793bc3aad46ff79bab03c7ed211106b84e84f108bfb0f74d60",
+  "copyVerified": true,
+  "signature": "NotSigned",
+  "installerExecuted": false,
+  "cleanWindowsVerified": false,
+  "physicalInputVerified": false,
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "thinking": "high",
+  "remaining": [
+    "W5：无独立Windows/VM，干净首装、覆盖升级、失败恢复、卸载及跨用户凭据未验收；安装器未执行、未签名",
+    "真实鼠标键盘、可见窗口合成、物理双击与玩家手感未验收；开发机headless帧间隔不等于实际GPU性能",
+    "累计token不限仍保留80请求、8压缩和首次请求起约30分钟绝对时限；过期恢复按钮尚未细分提示",
+    "结束草稿任务后新任务从已应用世界开始，历史未应用草稿尚无普通UI一键重新挂载入口",
+    "通用任意代码状态迁移不提供；扩展整批校验不等于任意外部副作用事务回滚；草稿仍限制2MB"
+  ],
+  "testRunnerAfterProductFreeze": {
+    "commit": "cab0da5b499f36911c2ba3bca30f0f2993c41148",
+    "reason": "Strict parser support for named host facts tail; all original 40 checks retained; frozen payload unchanged"
+  },
+  "finalReports": {
+    "native": "docs/dispatch-reports/batch07/NATIVE_REPORT.md",
+    "delivery": "docs/dispatch-reports/batch07/DELIVERY_REPORT.md",
+    "review": "docs/dispatch-reports/batch07/FINAL_REVIEW.md"
+  },
+  "localMerge": "Ready; finalized after local master merge, no remote push",
+  "scopes": {
+    "fixedAuthorship": "Native gameplay fixture",
+    "realAuthorship": "Tree workbench, recovery and three-compaction scenarios",
+    "reviewWarnings": "Two explicit player acknowledgements retain original red assertions; machine verification and formal gameplay passed"
+  },
+  "safety": {
+    "physicalInput": false,
+    "pointerLock": false,
+    "visibleOrFocusedTestWindow": false,
+    "liveProfileWrites": false,
+    "installerExecuted": false,
+    "remotePush": false
+  }
+}

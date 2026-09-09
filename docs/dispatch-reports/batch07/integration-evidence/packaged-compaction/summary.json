@@ -1,0 +1,27 @@
+{
+  "format": "craftmine.batch07-compaction-summary/1",
+  "productFreeze": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+  "passed": true,
+  "runnerChecks": 10,
+  "durableChecks": 13,
+  "elapsedMs": 85291,
+  "totals": {
+    "requests": 23,
+    "compactions": 3,
+    "summaryRequests": 3,
+    "providerTotalTokens": 184972
+  },
+  "creationOnly": {
+    "requests": 19,
+    "inputTokens": 54293,
+    "cacheReadTokens": 93824,
+    "outputTokens": 5451,
+    "totalTokens": 153568,
+    "inputCacheHitRate": 0.6334451818494838
+  },
+  "limits": [
+    "Creation cache calculation excludes summary and review calls",
+    "Three forced compactions reset prompt prefixes; this is not an unchanged-prefix microbenchmark",
+    "No clean OS or physical input validation"
+  ]
+}

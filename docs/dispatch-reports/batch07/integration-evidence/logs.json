@@ -1,0 +1,42 @@
+[
+  {
+    "file": "domain-tests.log",
+    "sha256": "01cca7ee704c380edb638d0a60c8a2245a78bb46e01b0a26069974c9f88ca88f",
+    "bytes": 26956
+  },
+  {
+    "file": "rust-tests.log",
+    "sha256": "30e5f12ec75b8e4589767b9ff31e3d6754fcca067f33ab206ef59f4fabbbfdea",
+    "bytes": 6160
+  },
+  {
+    "file": "runtime-all-tests.log",
+    "sha256": "c8808e266abecbeb45f3ce5ab1506099d94d3ff9f876fa6dde67308594cf3e28",
+    "bytes": 17708
+  },
+  {
+    "file": "integration-tests-final.log",
+    "sha256": "641d970786f846dad619a971ee1432f9bcd557f8d00052804f2552a66963b0d4",
+    "bytes": 3161
+  },
+  {
+    "file": "i18n-tests.log",
+    "sha256": "d8b2f1b10f7774c2615e66544b911b1f16f012adc6e84c0ad047a1f53550e157",
+    "bytes": 274
+  },
+  {
+    "file": "layout-headless.log",
+    "sha256": "b66e9d82eeaaca0c728871f8338e1b98bb87d945ba2ee7b294a3337d5f51730f",
+    "bytes": 713
+  },
+  {
+    "file": "ui-headless.log",
+    "sha256": "8f96170d92f3043aa5e76cf2f97ef68fdb61075cd7ff885eff6631e84bcefee2",
+    "bytes": 1812
+  },
+  {
+    "file": "native-game-only.log",
+    "sha256": "dad4f271bb5dae3536e44e855e6479623bbd09181597fa76095fb9d706f1f431",
+    "bytes": 1804
+  }
+]

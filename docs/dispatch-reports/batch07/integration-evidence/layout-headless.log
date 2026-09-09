@@ -1,0 +1,11 @@
+PASS play mode uses the existing work panel with wider saved size
+PASS play fills the actual available workspace and hides mounted chat
+PASS settings exits immersion without changing saved play preference
+PASS other PI workpanel tabs keep ordinary desktop layout
+PASS returning to creation restores its previous size
+PASS layout switch preserves session and other resource tabs
+PASS layout preference persists after renderer reload
+PASS narrow light appearance preserves full workspace and return action
+PASS corrupt or unsafe stored widths use bounded defaults
+PASS no pointer lock focus or component errors
+Evidence: D:\Craftmine World-worktrees\batch07-g-20260909\test-results\batch07-layout-JxboQ7

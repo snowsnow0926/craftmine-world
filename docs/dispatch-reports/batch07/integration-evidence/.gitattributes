@@ -1,0 +1,4 @@
+# Raw acceptance evidence is hashed as bytes, including original line endings.
+*.json -text -whitespace
+*.log -text -whitespace
+*.png -text

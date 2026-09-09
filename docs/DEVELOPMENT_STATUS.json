@@ -1,34 +1,35 @@
 {
   "format": "craftmine.development/1",
   "objective": "个人 Windows 本机游戏创作 Alpha：自然语言生成新玩法代码、验证应用、保存迭代、模块与素材复用",
-  "currentMilestone": "W4/W5：主体已实现，组合整链与发行验收待完成",
+  "currentMilestone": "第7批已交付：W0–W4本机核心闭环通过，W5干净系统及物理体验验收待办",
   "baseline": "3bdf52f",
-  "updated": "2026-09-09T07:48:38.892Z",
+  "updated": "2026-09-09T09:23:17.379Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "batch_06_verified_delivered_plan_partial",
-    "reason": "用户授权由本线程启动多个子Agent并行开发；A–F已实际实现、G集成验收并交付第6批。整体W0–W5未完成，不恢复旧定时任务。",
+    "status": "batch_07_verified_delivered_plan_environment_partial",
+    "reason": "用户要求完成当前环境可做部分，并纳入本地累计token上限与DeepSeek缓存修复；本批并行实现、同包验收完成，独立Windows验收未执行。",
     "activeGoal": false,
     "recurringDevelopment": false,
     "previousLiveCompactionTestStopped": true,
     "automationId": null,
-    "worktree": "D:/Craftmine World-worktrees/parallel-g-20260909",
-    "branch": "codex/parallel-g-20260909",
-    "nextStep": "W4：真实原生作品库安装生命/射击/近战/扩展组合，正式应用及重启整链待验",
+    "worktree": "D:/Craftmine World-worktrees/batch07-g-20260909",
+    "branch": "codex/batch07-g-20260909",
+    "nextStep": "查看第7批说明并由玩家使用新程序；独立Windows安装生命周期和物理体验待外部环境。",
     "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。",
     "previousAutomationId": "craftmine-windows",
-    "currentWorktrees": "本次parallel-a到g工作树与分支保留用于追溯，未执行删除；历史五个清理被拒目录不变。",
+    "currentWorktrees": "batch07-g/native/desktop/delivery及此前parallel工作树保留用于追溯，不删除或复用历史五个被拒清理目录。",
     "localMerge": {
-      "implementationCommit": "4888043643554b94a42b1f0986e9bd89d10b01d6",
+      "implementationCommit": "607cc6bb43787b40c0a2739cc39b1b86bee14e15",
       "branch": "master",
-      "verifiedClean": true,
+      "status": "ready_for_merge",
+      "verifiedClean": false,
       "pushed": false
     }
   },
   "windowsClientPlan": {
     "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",
     "version": "2.1",
-    "status": "integrated_preview_delivered_w4_w5_acceptance_pending",
+    "status": "batch07_delivered_core_scenarios_verified_w5_environment_pending",
     "firstPhase": "W0",
     "initialDeliveryPhases": [
       "W0",
@@ -59,23 +60,23 @@
       "evidence": "test-results/windows-plan-final-snapshot-20260909.log（271 条）与 2026-09-09 晚真实端到端修复后的 272 条"
     },
     "knownGaps": [
-      "W4：真实原生作品库安装生命/射击/近战/扩展组合，正式应用及重启整链待验",
-      "W5：干净Windows首装、覆盖升级、失败恢复、卸载及跨用户凭据待验",
-      "可见窗口合成、物理双击和真实游玩手感、完整PI入口与性能基准待验",
-      "renderer重启后的待确认操作ID恢复、安装已提交后的检查补交体验待完善",
-      "扩展多命令整步原子性和通用状态迁移仍有边界；草稿保持2MB上限"
+      "W5：无独立Windows/VM，干净首装、覆盖升级、失败恢复、卸载及跨用户凭据未验收；安装器未执行、未签名",
+      "真实鼠标键盘、可见窗口合成、物理双击与玩家手感未验收；开发机headless帧间隔不等于实际GPU性能",
+      "累计token不限仍保留80请求、8压缩和首次请求起约30分钟绝对时限；过期恢复按钮尚未细分提示",
+      "结束草稿任务后新任务从已应用世界开始，历史未应用草稿尚无普通UI一键重新挂载入口",
+      "通用任意代码状态迁移不提供；扩展整批校验不等于任意外部副作用事务回滚；草稿仍限制2MB"
     ],
     "runtimeChangedInThisReview": true,
     "personalServiceOrDataChangedInThisReview": false,
-    "currentPhase": "W4/W5：主体已实现，组合整链与发行验收待完成",
+    "currentPhase": "第7批已交付：W0–W4本机核心闭环通过，W5干净系统及物理体验验收待办",
     "sourceImportCommit": "2920fc7",
     "sourceBaselineVerified": true,
     "developmentLog": "docs/WINDOWS_DEVELOPMENT_LOG.md",
     "latestVerification": {
       "passed": true,
-      "command": "npm test; cargo test --locked -p craftmine-core; PI runtime tests; G bridge; packaged native fixture and actual PI Agent",
-      "evidence": "docs/dispatch-reports/G/ACCEPTANCE_MATRIX.md",
-      "scope": "领域276、Rust42、PI324、最终接线11；最终包固定40和真实三次压缩/应用/重启通过，持久审计13。原生开发复用和恢复经一次严格评审纠错后应用成功。不是整体W0–W5通过。"
+      "command": "npm test; cargo test --locked -p craftmine-core; PI runtime tests; final Node integration; same-package offscreen fixture and actual PI Agent",
+      "evidence": "docs/dispatch-reports/batch07/G_REPORT.md",
+      "scope": "领域276、Rust57、PI330、最终接线30、多语言22、完整JS构建通过；同包固定40，实际树复用20、恢复12、三压缩10+独立审计13，固定组合/真实评审/正式游戏30；保留红评审和未知用量。不是全部W0–W5验收。"
     },
     "buildVerification": {
       "dependencies": "pnpm install --frozen-lockfile: passed",
@@ -264,6 +265,99 @@
         "扩展多命令整步原子性和通用状态迁移仍有边界；草稿保持2MB上限"
       ],
       "merge": "4888043 and all implementation commits fast-forwarded into local master; no remote push"
+    },
+    "batch07": {
+      "status": "implemented_packaged_verified_current_batch_environment_limits",
+      "report": "docs/WINDOWS_BATCH_07.md",
+      "acceptanceMatrix": "docs/dispatch-reports/batch07/G_REPORT.md",
+      "productFreeze": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+      "buildCommit": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+      "deliveryDirectory": "D:/Craftmine World/desktop/build/windows-preview-batch-07",
+      "domainTests": 276,
+      "rustTests": 57,
+      "piTests": 330,
+      "finalBridgeTests": 30,
+      "i18nTests": 22,
+      "fullJsBuild": true,
+      "headlessWorkbenchChecks": 30,
+      "reactLayoutChecks": 10,
+      "nativeFixturePackaged": 40,
+      "realPackagedCompactions": 3,
+      "realPackagedCompactionRunnerChecks": 10,
+      "realPackagedDurableAudit": 13,
+      "nativePackagedScenarios": [
+        {
+          "name": "packaged-gameplay",
+          "passed": true,
+          "checks": 30,
+          "knownTokens": 44466,
+          "unknownEstimate": 0
+        },
+        {
+          "name": "packaged-tree-workbench",
+          "passed": true,
+          "checks": 20,
+          "knownTokens": 218244,
+          "unknownEstimate": 0
+        },
+        {
+          "name": "packaged-recovery",
+          "passed": true,
+          "checks": 12,
+          "knownTokens": 119484,
+          "unknownEstimate": 73174
+        }
+      ],
+      "realPackagedRequests": 58,
+      "realPackagedKnownTokens": 567166,
+      "realPackagedUnknownEstimate": 73174,
+      "realPackagedUnknownRequests": 1,
+      "cacheExperiment": {
+        "requests": 6,
+        "knownTokens": 114096,
+        "unknownRequests": 0,
+        "fixedPrefixWarmHitRate": 0.9824413836610241,
+        "changingSystemWarmHitRate": 0.013469430706092812,
+        "evidence": "docs/dispatch-reports/batch07/evidence/deepseek-prefix-experiment.json"
+      },
+      "actualThreeCompactionCreationCache": {
+        "requests": 19,
+        "inputTokens": 54293,
+        "cacheReadTokens": 93824,
+        "outputTokens": 5451,
+        "totalTokens": 153568,
+        "inputCacheHitRate": 0.6334451818494838
+      },
+      "fileCount": 825,
+      "totalBytes": 418062454,
+      "installerBytes": 155076619,
+      "installerSha256": "a7e194e79b1f798fac018ebdef511b15151a0cf8626e4ef0745347890872a3a5",
+      "sourceArchiveSha256": "019c758d450a425dd381cc3023f92b734945a0fd130337a822382325f6a8584a",
+      "manifestSha256": "85b560c260a2d2793bc3aad46ff79bab03c7ed211106b84e84f108bfb0f74d60",
+      "copyVerified": true,
+      "signature": "NotSigned",
+      "installerExecuted": false,
+      "cleanWindowsVerified": false,
+      "physicalInputVerified": false,
+      "model": "deepseek-v4.1-flash-expires-on-0910",
+      "thinking": "high",
+      "remaining": [
+        "W5：无独立Windows/VM，干净首装、覆盖升级、失败恢复、卸载及跨用户凭据未验收；安装器未执行、未签名",
+        "真实鼠标键盘、可见窗口合成、物理双击与玩家手感未验收；开发机headless帧间隔不等于实际GPU性能",
+        "累计token不限仍保留80请求、8压缩和首次请求起约30分钟绝对时限；过期恢复按钮尚未细分提示",
+        "结束草稿任务后新任务从已应用世界开始，历史未应用草稿尚无普通UI一键重新挂载入口",
+        "通用任意代码状态迁移不提供；扩展整批校验不等于任意外部副作用事务回滚；草稿仍限制2MB"
+      ],
+      "testRunnerAfterProductFreeze": {
+        "commit": "cab0da5b499f36911c2ba3bca30f0f2993c41148",
+        "reason": "Strict parser support for named host facts tail; all original 40 checks retained; frozen payload unchanged"
+      },
+      "finalReports": {
+        "native": "docs/dispatch-reports/batch07/NATIVE_REPORT.md",
+        "delivery": "docs/dispatch-reports/batch07/DELIVERY_REPORT.md",
+        "review": "docs/dispatch-reports/batch07/FINAL_REVIEW.md"
+      },
+      "localMerge": "Ready; finalized after local master merge, no remote push"
     }
   },
   "liveVerification": {
@@ -486,7 +580,7 @@
       ]
     }
   ],
-  "nextAction": "先补W4最终原生组合作品链和少数故障体验，再在独立Windows环境完成安装升级/可见试玩/性能验收。第6批已交付；未恢复旧循环或定时自动任务。",
+  "nextAction": "第7批已完成本轮开发与同包无窗口验收并提供新程序。尚需独立Windows验收和玩家实际体验；绝对时限、历史草稿重新挂载、通用代码迁移等边界见报告。未恢复旧定时自动任务。",
   "blockers": [],
   "delivery": {
     "runningVersion": "Alpha 0.8",
@@ -504,7 +598,7 @@
       "allPreviousFieldsUnchanged": true,
       "projectFileBytesUnchanged": true,
       "migration": "No project migration; all project bytes unchanged. Asset index is created only on explicit import.",
-      "observationStatus": "Historical observation; not rechecked, restarted or modified in Windows batch 06"
+      "observationStatus": "Historical observation; not rechecked, restarted or modified in Windows batch 06 or 07"
     },
     "lastReadOnlyCheck": {
       "date": "2026-09-08T16:02:55.917Z",
@@ -515,11 +609,11 @@
       "applying": null
     },
     "windowsPreview": {
-      "directory": "D:/Craftmine World/desktop/build/windows-preview-batch-06",
-      "buildCommit": "aaa5dc7da06a7f160537f720460056a94389cafd",
-      "productFreeze": "0f6eaa87742b05a1b2d10c97e22b3dd3d7281fc3",
-      "report": "docs/WINDOWS_BATCH_06.md",
-      "scope": "Integrated Rust domain, PI desktop Agent, typed memory/library/recovery, Windows installer. Same packaged EXE passed 40 fixture checks and real three-compaction creation/application/restart. Clean OS and physical play remain unverified."
+      "directory": "D:/Craftmine World/desktop/build/windows-preview-batch-07",
+      "buildCommit": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+      "productFreeze": "5ac3f1a960c7bfb3224674f05a5607f97277e7eb",
+      "report": "docs/WINDOWS_BATCH_07.md",
+      "scope": "Same frozen Windows package: fixed desktop 40, actual tree authorship/reuse/recovery/three compactions, formal combat/extensions/save/restart, memory and backup. Local cumulative token configuration and cache-friendly request structure included. Independent limits, clean OS and physical play remain as documented."
     }
   },
   "capabilityRoadmap": {

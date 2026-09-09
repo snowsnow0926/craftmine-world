@@ -1,0 +1,30 @@
+(node:268704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Downloading Electron binary...
+Evidence directory: D:\Craftmine World-worktrees\batch07-g-20260909\test-results\desktop-native-batch07-NInYtr
+PASS Isolated offscreen unfocusable windows
+PASS Native instance starts once with full target health
+PASS Actual physics fall reduces player health
+PASS Real extension drains target and heals player
+PASS Actual long range miss consumes ammunition without damage
+PASS Actual ray miss leaves target unchanged
+PASS Actual shooting hit damages target
+PASS Cooldown or empty ammunition rejects repeated shot
+PASS Actual melee out of range rejects damage
+PASS Actual melee in range damages target
+PASS Actual melee cooldown rejects repeated damage
+PASS Extension kills and heals only actual damage
+PASS Next actual gameplay tick grants exactly one kill reward
+PASS Formal Rust progress includes initialized lifecycle and exact extension state
+PASS Full Electron restart preserves gameplay and behavior snapshot
+PASS Reload survives full restart and cannot fire early
+PASS Reload completes after remaining simulated time
+PASS Restored Worker extension state does not repeat reward
+PASS Restored extension continues exact persisted call count
+PASS Actual repeated falls can kill player
+PASS Dead player cannot consume full magazine
+PASS Real native file backup is inspected through opaque grant
+PASS Explicit rule memory survives real backup restore
+PASS No focus, pointer lock or physical input across all game frames
+PASS Game-only scenario makes zero model requests
+Evidence: D:\Craftmine World-worktrees\batch07-g-20260909\test-results\desktop-native-batch07-NInYtr

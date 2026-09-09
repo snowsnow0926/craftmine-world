@@ -1,0 +1,38 @@
+✔ actual Rust panel integration preserves draft identity, exact receipts and bound context after world switches (234.1749ms)
+✔ lost budget receipt survives Rust and Main restart after recovery advances the task head (99.247ms)
+✔ real error lifecycle permits player unlimited budget and same-owner recovery without manual interrupt (88.2292ms)
+✔ actual gateway and filesystem journal bind replay to Main session/world and original args (15.2479ms)
+✔ backup restart resolves actual receipt before expired grant and stale recheck never creates a turn (26.115ms)
+✔ budget receipt lookup completes an old intent before current-head or active-turn checks (10.4939ms)
+✔ real filesystem journal survives pending/completed restart with exact original install revision (13.7534ms)
+✔ real persisted owner and params reject session/world/identity injection (3.8538ms)
+✔ concurrent execution is deduplicated and uncertain operation retries original ID (57.7075ms)
+✔ interrupted running records load uncertain and corrupt journal fails closed (5.6453ms)
+✔ application migrates latest compatible state without executing authored startup effects (178.7285ms)
+✔ missing state migration and collision from saved overrides preserve the original world (2.6979ms)
+✔ review accepts an advisory block but rejects empty claims, unknown steps and simulated tool transcripts (0.6417ms)
+✔ a lost commit reply recovers its receipt without applying twice or accepting a different request (2.5756ms)
+✔ configured unused policy initializes one retry-stable host deadline (11.3998ms)
+✔ used null policy remains null and existing deadlines are reused (0.4422ms)
+✔ model reservation fields cannot smuggle limits into dedicated player configuration (0.3322ms)
+✔ actual lifecycle boundaries record startup once and bounded renderer cadence without input (2.9797ms)
+✔ hidden and invalid renderer reports stay absent rather than becoming zero-duration frames (0.5564ms)
+✔ concurrent host jobs retain identity, count failures and separate completion workflow sources (0.728ms)
+✔ aborted jobs and bounded storage do not create unknown zero samples (0.4717ms)
+✔ packaged provenance uses only the bounded trusted manifest and leaves development fields absent (4.7493ms)
+✔ isolated installer execute refuses a local host before filesystem authority (454.1026ms)
+✔ second extension throw cannot publish a partial reward or damage (83.3841ms)
+✔ second extension invalid-permission cannot publish a partial reward or damage (1.0978ms)
+✔ second extension invalid-state cannot publish a partial reward or damage (0.8193ms)
+✔ successful extension batch sees staged state and health then publishes once (1.0421ms)
+✔ moving player into staged geometry during an extension wait rejects the entire step (1.6184ms)
+✔ disposal discards all staged effects and extension state (0.6249ms)
+✔ real Rust host bridge records corrections, forbids identity/limit forgery and settles stopped requests (82.5641ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 774.2989

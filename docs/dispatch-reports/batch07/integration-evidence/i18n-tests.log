@@ -1,0 +1,9 @@
+
+ RUN  v4.1.10 D:/Craftmine World-worktrees/batch07-g-20260909/vendor/pi-desktop/packages/i18n
+
+
+ Test Files  3 passed (3)
+      Tests  22 passed (22)
+   Start at  16:57:00
+   Duration  426ms (transform 392ms, setup 0ms, import 574ms, tests 49ms, environment 0ms)
+
