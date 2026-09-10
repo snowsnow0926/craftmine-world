@@ -1,0 +1,11 @@
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+Error occurred in handler for 'pi-plugin-panel-invoke': Error: GODOT_CANDIDATE_ACTIVE
+    at PluginPanelHost.pluginId.pluginId [as bridge] (file:///D:/cm-plan-loop-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:60779:364)
+    at file:///D:/cm-plan-loop-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:46810:21
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:118329)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'pi-plugin-panel-invoke': Error: GODOT_CANDIDATE_ACTIVE
+    at PluginPanelHost.pluginId.pluginId [as bridge] (file:///D:/cm-plan-loop-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:60779:364)
+    at file:///D:/cm-plan-loop-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:46810:21
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:118329)
+    at Session.emit (node:events:509:28)

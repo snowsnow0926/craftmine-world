@@ -1,0 +1,28 @@
+(node:276536) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ host shares disposal, closes the transport, and waits beyond exit for child close (2.4149ms)
+✔ already closed host completes without an extra kill (1.044ms)
+✔ missing exit and close fail all callers after one owned kill (38.1412ms)
+✔ kill fallback must still reach actual close (30.6782ms)
+✔ an exited host with unclosed pipes reports timeout without killing again (46.0036ms)
+✔ spawn error followed by close is a terminal boundary even without exit (0.9205ms)
+✔ real isolated Node child completes EOF and closes both pipes before host disposal returns (94.7718ms)
+✔ sidecar detaches host listeners and gates every child write (0.5792ms)
+✔ host transport closes pending calls and listeners on process death (0.0905ms)
+✔ host transport retries transient RPC overload with a bounded backoff (0.086ms)
+✔ host disposal closes stdin, observes child closure, and force-kills only after grace (0.1666ms)
+✔ Bash defaults are finite and the tool advertises the effective timeout (0.1231ms)
+✔ turn ownership and execution queue wake only after durable turn settlement (0.3098ms)
+✔ late tool metadata cleanup is scoped to the turn that started the call (0.2929ms)
+✔ app quit waits for one idempotent teardown before allowing the follow-up quit (0.2034ms)
+✔ settings writes validate without applying read defaults (0.3236ms)
+✔ renderer notification drops silently when the render frame is disposed (0.1332ms)
+✔ sidecar crash reports carry the last stderr lines (0.1624ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 336.8757

@@ -1,0 +1,9 @@
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+Error occurred in handler for 'pi-plugin-panel-invoke': Error: TARGET_FEEDBACK_INVALID_VALUE
+    at fail$a (file:///D:/cm-plan-loop-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:187:23)
+    at values$D (file:///D:/cm-plan-loop-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:205:86)
+    at validateTargetFeedbackIntent (file:///D:/cm-plan-loop-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:212:136)
+    at validatePayload (file:///D:/cm-plan-loop-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:334:44)
+    at file:///D:/cm-plan-loop-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:427:25 {
+  code: 'TARGET_FEEDBACK_INVALID_VALUE'
+}
