@@ -61,15 +61,16 @@ test("host transport retries transient RPC overload with a bounded backoff", () 
   assert.match(hostSource, /!isHostOverloaded\(error\)/);
 });
 
-test("host disposal closes stdin, observes exit, and force-kills only after grace", () => {
-  const disposeSource = hostSource.slice(hostSource.indexOf("async dispose()"));
+test("host disposal closes stdin, observes child closure, and force-kills only after grace", () => {
+  const disposeSource = hostSource.slice(hostSource.indexOf("dispose(): Promise<void>"));
   const closeTransportSource = hostSource.slice(
     hostSource.indexOf("private closeTransport"),
     hostSource.indexOf("private cleanupProcessListeners"),
   );
 
   assert.match(hostSource, /private disposePromise\?: Promise<void>/);
-  assert.match(hostSource, /private waitForExit\(timeoutMs: number\)/);
+  assert.match(hostSource, /private waitForClose\(timeoutMs: number\)/);
+  assert.match(disposeSource, /HOST_CORE_CLOSE_TIMEOUT/);
   const graceMatch = hostSource.match(/const HOST_DISPOSE_GRACE_MS = ([\d_]+);/);
   assert.ok(graceMatch, "host disposal must define a graceful wait");
   const graceMs = Number(graceMatch[1].replace(/_/g, ""));

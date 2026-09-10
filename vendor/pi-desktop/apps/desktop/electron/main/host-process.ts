@@ -90,8 +90,8 @@ export class HostProcess {
   private closed = false;
   private exitNotified = false;
   private exitObserved = false;
-  private exitPromise: Promise<void>;
-  private resolveExit!: () => void;
+  private closeObserved = false;
+  private childClosed: Promise<void>;
   private disposePromise?: Promise<void>;
   private readline?: ReturnType<typeof createInterface>;
   private lastStderr = "";
@@ -99,9 +99,6 @@ export class HostProcess {
   readonly generation = randomUUID();
 
   constructor(dataDir: string, onStderr?: StderrHandler) {
-    this.exitPromise = new Promise<void>((resolve) => {
-      this.resolveExit = resolve;
-    });
     this.binaryPath = resolveHostBinary();
     const builtinPlugins = resolveBuiltinPluginsDir();
     this.child = spawn(this.binaryPath, [], {
@@ -116,6 +113,9 @@ export class HostProcess {
         ...(builtinPlugins ? { PI_DESKTOP_BUILTIN_PLUGINS_DIR: builtinPlugins } : {}),
       },
     });
+    this.childClosed = new Promise(resolve => {
+      this.child.once("close", () => { this.closeObserved = true; resolve(); });
+    });
 
     this.child.stderr.setEncoding("utf8");
     this.child.stderr.on("data", (text: string) => {
@@ -129,7 +129,6 @@ export class HostProcess {
       this.available = false;
       this.closeTransport(this.unavailableError("host-core exited"));
       this.exitObserved = true;
-      this.resolveExit();
       this.notifyExit({ code, signal, intentional: this.disposed });
       this.cleanupProcessListeners();
     });
@@ -167,8 +166,8 @@ export class HostProcess {
     this.child.stderr.removeAllListeners("data");
   }
 
-  private waitForExit(timeoutMs: number): Promise<boolean> {
-    if (this.exitObserved) return Promise.resolve(true);
+  private waitForClose(timeoutMs: number): Promise<boolean> {
+    if (this.closeObserved) return Promise.resolve(true);
     return new Promise((resolve) => {
       let settled = false;
       const finish = (observed: boolean) => {
@@ -178,8 +177,7 @@ export class HostProcess {
         resolve(observed);
       };
       const timer = setTimeout(() => finish(false), timeoutMs);
-      timer.unref?.();
-      this.exitPromise.then(() => finish(true));
+      this.childClosed.then(() => finish(true));
     });
   }
 
@@ -353,7 +351,7 @@ export class HostProcess {
     await this.call("app.handshake", { protocolVersion: PROTOCOL_VERSION });
   }
 
-  async dispose(): Promise<void> {
+  dispose(): Promise<void> {
     if (this.disposePromise) return this.disposePromise;
     this.disposePromise = this.disposeInternal();
     return this.disposePromise;
@@ -368,16 +366,18 @@ export class HostProcess {
       this.child.stdin.end();
     }
     this.closeTransport(this.unavailableError("host-core disposed"));
-    if (this.exitObserved) return;
+    if (await this.waitForClose(HOST_DISPOSE_GRACE_MS)) return;
 
-    const exited = await this.waitForExit(HOST_DISPOSE_GRACE_MS);
-    if (exited || this.exitObserved) return;
-
-    try {
-      this.child.kill("SIGKILL");
-    } catch {
-      // The child may have exited between the grace check and kill fallback.
+    if (!this.exitObserved) {
+      try {
+        this.child.kill("SIGKILL");
+      } catch {
+        // The child may have exited between the grace check and kill fallback.
+      }
     }
-    await this.waitForExit(HOST_FORCE_KILL_GRACE_MS);
+    // ChildProcess.close includes its stdio; exit alone is not this boundary.
+    if (!await this.waitForClose(HOST_FORCE_KILL_GRACE_MS)) {
+      throw new Error("HOST_CORE_CLOSE_TIMEOUT");
+    }
   }
 }
