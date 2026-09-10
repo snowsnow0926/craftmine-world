@@ -57,7 +57,7 @@ export class CreationTaskStatusObserver {
       this.unchanged = this.fingerprint === fingerprint ? this.unchanged + 1 : 0;
       this.fingerprint = fingerprint;
       this.publish(status, false);
-      if (creationTaskPending(status) || (this.awaitingTask && status.phase === "idle")) {
+      if (creationTaskPending(status) || this.awaitingTask) {
         if (Date.now() - this.startedAt >= 30 * 60_000) { this.publish(status, true); return; }
         this.timer = setTimeout(() => void this.refresh(), this.unchanged < 3 ? 2000 : this.unchanged < 8 ? 5000 : 10000);
       }

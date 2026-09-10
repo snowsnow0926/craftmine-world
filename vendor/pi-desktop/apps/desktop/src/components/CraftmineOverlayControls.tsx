@@ -14,6 +14,8 @@ export function CraftmineOverlayControls() {
   const creation = useCreationTaskStatus(sessionId ?? null, running);
   const status = useAppStore(state => state.activeSessionId ? state.agentStatuses[state.activeSessionId] : undefined);
   const activity = status?.activity;
+  const showHost = !!creation.status && creation.status.phase !== "idle" && (!running || ["checking", "applying"].includes(creation.status.phase));
+  const showUnavailable = creation.unavailable && !running;
   const stage = status?.pendingToolConfirmations ? (chinese ? "等待确认" : "Awaiting approval")
     : activity?.phase === "waiting-model" ? t("chat.waitingForModel")
     : activity?.phase === "retrying" ? t("chat.retryingModel", {attempt: activity.attempt})
@@ -32,10 +34,10 @@ export function CraftmineOverlayControls() {
         {chinese ? "收起" : "Close"}
       </button>}
       {(creation.status?.phase !== "idle" && creation.status) || creation.unavailable || running ? <span className="craftmine-overlay-task" role="status" aria-live="polite"
-        data-task-stage={creation.unavailable ? "unavailable" : creation.status?.phase ?? (status?.pendingToolConfirmations ? "approval" : activity?.phase ?? "running")}
-        title={creation.status?.error}>
-        {creation.unavailable ? (chinese ? "任务状态暂不可用 · 打开工作台查看" : "Task status unavailable · open workbench")
-          : creation.status && creation.status.phase !== "idle" && !(creation.status.phase === "editing" && running) ? creationTaskLabel(creation.status, chinese) : stage}
+        data-task-stage={status?.pendingToolConfirmations ? "approval" : showHost ? creation.status!.phase : showUnavailable ? "unavailable" : activity?.phase ?? "running"}
+        title={showHost ? creation.status?.error : undefined}>
+        {status?.pendingToolConfirmations ? stage : showHost ? creationTaskLabel(creation.status!, chinese)
+          : showUnavailable ? (chinese ? "任务状态暂不可用 · 打开工作台查看" : "Task status unavailable · open workbench") : stage}
       </span> : null}
     </div>
   );
