@@ -30,7 +30,7 @@ try{
   check(variant+' actual ordinary script loaded',actual.length===1&&actual[0].visible===true&&actual[0].solid===true);
   const required=freezeCreationRequirements({target:{entityId:'tree-a',position:[0,0,0]},entities},'让这棵树可以按E砍伐，砍掉时给背包增加一块木头，5秒后重新长出来。保存重开后保留木头和树的生长状态。').requirements;
   if(variant==='harvest'){const trace=await verifyCreationHarvest(runtime,required,defaults,p=>p);report.trace=trace;check('actual harvest, reward, no-repeat, restoration and regrowth',creationHarvestTraceMatches(required,trace));
-   const hidden=(await runtime.request('observe-envelope')).result;const hiddenTree=hidden.payload.creation.entities[0];check('trusted declaration marks hidden behavior presence as mutable',hiddenTree.presenceMutable===true&&hiddenTree.visible===false&&hiddenTree.solid===false);
+   const hidden=(await runtime.request('observe-envelope')).result;const hiddenTree=hidden.payload.creation.entities[0];check('trusted declaration marks hidden behavior presence as mutable',hiddenTree.presenceMutable===true&&hiddenTree.visible===false&&hiddenTree.solid===false&&hiddenTree.color==='#84a866');
    const nextWish=freezeCreationRequirements({target:{entityId:null,position:[4,0,0]},entities:hidden.payload.creation.entities},'把时间设为18点').requirements;
    await runtime.request('wait',{frames:330});await runtime.request('set-time',{hours:18});
    check('later unrelated wish accepts actual natural regrowth with preserved identity',godotCreationMatches(readGodotCreationObservation((await runtime.request('observe-envelope')).result,runtime,'running'),{format:'craftmine.godot-check-requirements/1',creation:nextWish}));}

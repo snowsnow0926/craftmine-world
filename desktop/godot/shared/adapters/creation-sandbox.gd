@@ -58,15 +58,17 @@ func _actual_entity(node: Node3D, declared: Dictionary) -> Dictionary:
 	var mesh_bounds: Variant = null
 	for child in node.find_children("*", "MeshInstance3D", true, false):
 		var mesh_node := child as MeshInstance3D
-		if mesh_node.mesh == null or not mesh_node.is_visible_in_tree():
+		if mesh_node.mesh == null:
 			continue
-		result.visible = true
-		var bounds: AABB = mesh_node.global_transform * mesh_node.mesh.get_aabb()
-		mesh_bounds = bounds if mesh_bounds == null else (mesh_bounds as AABB).merge(bounds)
 		if mesh_node.name == "CreationColorMesh":
 			var material := mesh_node.get_active_material(0) as StandardMaterial3D
 			if material != null:
 				result.color = "#" + material.albedo_color.to_html(false)
+		if not mesh_node.is_visible_in_tree():
+			continue
+		result.visible = true
+		var bounds: AABB = mesh_node.global_transform * mesh_node.mesh.get_aabb()
+		mesh_bounds = bounds if mesh_bounds == null else (mesh_bounds as AABB).merge(bounds)
 	var blocking_bounds: Variant = null
 	for child in node.find_children("*", "CollisionShape3D", true, false):
 		var shape_node := child as CollisionShape3D
@@ -151,6 +153,7 @@ func observe() -> Dictionary:
 		var definition: Dictionary = declared.get(id, {"id": id, "kind": "unknown", "parameters": {}})
 		var sampled := _actual_entity(child as Node3D, definition)
 		sampled["presenceMutable"] = mutable_presence.has(id)
+		sampled["solidMutable"] = definition.get("kind") == "door"
 		if sampled.has("collisionBounds"):
 			obstacles.append({"entityId": id, "min": sampled.collisionBounds.min, "max": sampled.collisionBounds.max})
 		actual.append(sampled)

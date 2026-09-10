@@ -100,3 +100,12 @@ test('existing declared behavior may regrow while an unrelated wish is being che
  const staticCapture={target:{entityId:null,position:[4,0,0]},entities:[{...growing,presenceMutable:false}]};
  assert.equal(creationEntitiesMatch(freezeCreationRequirements(staticCapture,'在这里再放一块石头，保留已有物体和游玩进度').requirements,[{...growing,visible:true,solid:true},rock]),false);
 });
+
+test('ordinary door opening may advance but does not authorize hiding the door',()=>{
+ const door={id:'door-a',kind:'door',position:[0,0,0],scale:[1,1,1],color:'#84a866',visible:true,solid:true,solidMutable:true};
+ const r=freezeCreationRequirements({target:{entityId:null,position:[4,0,0]},entities:[door]},'把时间设为18点').requirements;
+ const outer={format:'craftmine.godot-check-requirements/1',creation:r};
+ assert.equal(godotCreationMatches({phase:'running',entities:[{...door,solid:false,open:true}],timeOfDay:18},outer),true);
+ assert.equal(godotCreationMatches({phase:'running',entities:[{...door,solid:false,visible:false,open:true}],timeOfDay:18},outer),false);
+ assert.equal(r.entities.some(e=>Object.hasOwn(e,'solidMutable')),false);
+});

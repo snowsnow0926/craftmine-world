@@ -31,11 +31,11 @@ try{
   const observation=readGodotCreationObservation(raw,runtime,'running');
   const copyRequired=freezeCreationRequirements({target:{entityId:'tree-a',position:[4,0,0]},entities:entities.slice(0,4)},'复制这棵树两个，排开一点').requirements;
   check(variant+' actual duplicate count, style and separated collision bounds',creationEntitiesMatch(copyRequired,observation.entities)===(variant!=='overlapping-copies'));
-  const timeRequired={format:'craftmine.godot-check-requirements/1',creation:freezeCreationRequirements({target:{entityId:null,position:null},entities},'把时间设为18点').requirements};
+  const timeRequired={format:'craftmine.godot-check-requirements/1',creation:freezeCreationRequirements({target:{entityId:null,position:null},entities:observation.entities},'把时间设为18点').requirements};
   check(variant+' wrong actual time rejected',!godotCreationMatches(observation,timeRequired));await runtime.request('set-time',{hours:18});
   check(variant+' exact requested time observed',godotCreationMatches(readGodotCreationObservation((await runtime.request('observe-envelope')).result,runtime,'running'),timeRequired));
   const required=freezeCreationRequirements({target:{entityId:null,position:null},entities},'依次触碰marker-a、marker-b后打开door-a').requirements;
-  if(variant!=='unconditional'){const trace=await verifyCreationDoorSequence(runtime,required,defaults,p=>p);report.trace=trace;check('real sequence requires ordered interactions',creationDoorTraceMatches(required,trace));}
+  if(variant!=='unconditional'){const trace=await verifyCreationDoorSequence(runtime,required,defaults,p=>p);report.trace=trace;check('real sequence requires ordered interactions',creationDoorTraceMatches(required,trace));await runtime.request('set-time',{hours:18});check('unrelated frozen time wish accepts actual door progress while retaining visibility',godotCreationMatches(readGodotCreationObservation((await runtime.request('observe-envelope')).result,runtime,'running'),timeRequired));}
   else{await assert.rejects(verifyCreationDoorSequence(runtime,required,defaults,p=>p),/WRONG_ORDER|OPEN_TOO_EARLY/);check('runnable unconditional door candidate rejected',true);}
   await runtime.dispose({graceful:true});runtime=null;await page.close();page=null;
  }

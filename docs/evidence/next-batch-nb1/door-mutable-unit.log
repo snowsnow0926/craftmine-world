@@ -1,0 +1,21 @@
+✔ freezes exact placement and validates actual new identity/count/location (1.402ms)
+✔ exact scale targets original object; compound wishes remain unverified (0.338ms)
+✔ direct changes and delete have frozen values; mutated requirements cannot pass job binding (0.5964ms)
+✔ creation core descriptor parses only exact canonical hash and scoped engine observation (1.3313ms)
+✔ original first-person requirement digest contract remains unchanged (0.1167ms)
+✔ undo freezes formal inverse and refuses replay or changed actual entities (0.3435ms)
+✔ canonical requirement digest agrees with Rust numeric encoding (0.0965ms)
+✔ harvest accepts only the complete exact wish and preserves explicit expectations (0.3453ms)
+✔ frozen evaluation variants are exact bounded phrases, not keyword matching (0.4185ms)
+✔ placement and direct modification cannot pass with hidden or nonblocking objects (0.2694ms)
+✔ undo also freezes untouched objects instead of checking only their count (0.2245ms)
+✔ existing declared behavior may regrow while an unrelated wish is being checked (0.1392ms)
+✔ ordinary door opening may advance but does not authorize hiding the door (0.1192ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 121.3591

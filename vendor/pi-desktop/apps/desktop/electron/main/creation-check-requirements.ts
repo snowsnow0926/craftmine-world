@@ -1,5 +1,5 @@
 import {createHash} from 'node:crypto';
-export type CreationEntity = {id:string;kind:string;position:number[];scale:number[];color?:string;open?:boolean;visible?:boolean;solid?:boolean;presenceMutable?:boolean;bounds?:{min:number[];max:number[]}};
+export type CreationEntity = {id:string;kind:string;position:number[];scale:number[];color?:string;open?:boolean;visible?:boolean;solid?:boolean;presenceMutable?:boolean;solidMutable?:boolean;bounds?:{min:number[];max:number[]}};
 export type CreationRequirement = {format:'craftmine.creation-requirements/1';requestHash:string;entities:Array<{id?:string;kind?:string;position?:number[];scale?:number[];color?:string;visible?:boolean;solid?:boolean;absent?:boolean;excludeIds?:string[]}>;counts:Array<{kind:string;count:number}>;doorSequence?:{doorId:string;steps:string[]};harvest?:{entityId:string;inventoryId:"wood";reward:1;regrowFrames:300};timeOfDay?:18;duplicates?:{kind:string;count:2;scale:number[];color:string;priorIds:string[]}};
 export type FrozenCreationRequirement = {status:'verifiable';requirements:CreationRequirement}|{status:'unverified';reason:string};
 export type DirectCreationIntent = {action:'modify';targetId:string;changes:{scale?:number[];color?:string}}|{action:'delete';targetId:string}|{action:'undo';undoOperationId:string;formalJournal:unknown};
@@ -8,7 +8,7 @@ const kinds=['tree','rock','chest','door','marker'];
 const vector=(value:unknown):value is number[]=>Array.isArray(value)&&value.length===3&&value.every(n=>typeof n==='number'&&Number.isFinite(n)&&Math.abs(n)<=100000);
 const id=(v:unknown):v is string=>typeof v==='string'&&/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(v);
 // Runtime progress owns presence for declared entity behaviors; keep static objects exact.
-const frozenPresence=(e:CreationEntity)=>e.presenceMutable===true?{}:{...(typeof e.visible==='boolean'?{visible:e.visible}:{}),...(typeof e.solid==='boolean'?{solid:e.solid}:{})};
+const frozenPresence=(e:CreationEntity)=>e.presenceMutable===true?{}:{...(typeof e.visible==='boolean'?{visible:e.visible}:{}),...(e.solidMutable!==true&&typeof e.solid==='boolean'?{solid:e.solid}:{})};
 export function validCreationRequirement(value:any):value is CreationRequirement {
  if(!value||value.format!=='craftmine.creation-requirements/1'||!/^[a-f0-9]{64}$/.test(value.requestHash)||!Array.isArray(value.entities)||!Array.isArray(value.counts)||value.entities.length>256||value.counts.length>5||value.entities.length+value.counts.length===0&&!value.doorSequence&&!value.harvest&&value.timeOfDay===undefined&&!value.duplicates)return false;
  if(Object.keys(value).some(k=>!['format','requestHash','entities','counts','doorSequence','harvest','timeOfDay','duplicates'].includes(k)))return false;

@@ -25,3 +25,5 @@ creation adapter 从实际场景根节点的 Entity_* 子节点独立采样 glob
 最终审查发现：采伐树仍隐藏时提交无关放置愿望，如果模型检查前树自然长回，旧冻结规则会把合法最新进度当作错误。修复后可信 adapter 仅依据正式 scene.rules 的 entity-behavior.entityIds 标记 `presenceMutable` 捕获元信息；已有这类对象的瞬时 visible/solid 不作为冻结要求。静态对象仍严格保留 presence；新增物件仍必须可见且有碰撞；ID、位置、尺度、颜色和数量继续核对。撤销的未涉及对象同样处理。元信息不进入核心要求契约，也不能由模型请求指定。
 
 真实 Web 10 项回归通过，包含实际砍伐隐藏 → 冻结无关 18 点愿望 → 自然重生 → 真实采样仍满足愿望，同时错误奖励、提前重生、丢失恢复继续拒绝；12 项要求单测及桌面类型检查通过。
+
+门的碰撞状态与普通开门进度独立处理：adapter 给 door 标记 capture-only solidMutable，仅允许其 solid 随门状态变化，visible 仍固定。entity-behavior 的 presenceMutable 则允许声明的可见/碰撞投影按保存进度变化。主材质颜色在可见性过滤之前读取，因此隐藏的树仍保留真实颜色约束，不因生长阶段把颜色验收省略。
