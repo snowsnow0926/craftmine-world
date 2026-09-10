@@ -16,7 +16,7 @@ const hash=text=>createHash('sha256').update(text).digest('hex');
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'craftmine-guidance-'));
 for(const file of ['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
   'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs',
-  'tool-services.cjs','godot-guidance.cjs'])fs.copyFileSync(path.join(plugin,file),path.join(temp,file));
+  'tool-services.cjs','godot-guidance.cjs','creation-operations.cjs','creation-sequence-rule.cjs','creation-operation-schema.cjs'])fs.copyFileSync(path.join(plugin,file),path.join(temp,file));
 fs.cpSync(path.join(plugin,'guidance'),path.join(temp,'guidance'),{recursive:true});
 fs.writeFileSync(path.join(temp,'domain.cjs'),`module.exports={
   fields(args,required,optional){for(const k of required)if(!Object.hasOwn(args,k))throw Error('MISSING_FIELD');
@@ -28,7 +28,7 @@ const {capabilityReport}=require(path.join(plugin,'godot-capability.cjs'));
 const {GODOT_METHODS,LOCAL_TOOLS}=require(path.join(plugin,'godot-routing.cjs'));
 const invocation={projectId:'project',sessionId:'session',turnId:'turn',toolCallId:'call',executionId:'execution'};
 const skill=corpus.skills[0];
-function fixture({baseId='first-person',baseBuild='first-person-0.1.0',engineVersion='4.7.2-stable',missing=false,modified=false,ended=false,foreign=false}={}){
+function fixture({baseId='first-person',baseBuild='first-person-0.1.0',engineVersion='4.7.2-stable',missing=false,modified=false,ended=false,foreign=false,selectedSkill=skill}={}){
   const calls=[];
   const core={start:async()=>({godotProjects:true}),call:async(method,args)=>{
     calls.push({method,args});
@@ -37,7 +37,7 @@ function fixture({baseId='first-person',baseBuild='first-person-0.1.0',engineVer
       manifestHash:args.manifestHash??'a'.repeat(64),baseId,baseBuild,engineVersion};
     if(method==='godotProject.read'){
       if(missing)throw Error('PROJECT_FILE_NOT_FOUND');
-      const ref=skill.references.find(ref=>ref.projectPath===args.path);
+      const ref=selectedSkill.references.find(ref=>ref.projectPath===args.path);
       return {...args,worldId:foreign?'foreign-world':args.worldId,
         sha256:modified?'f'.repeat(64):ref.sha256,text:'x',nextOffset:1};
     }
@@ -132,4 +132,36 @@ test('manifest, capabilities, initial prompt and product discovery expose the ne
   assert.match(runtime,/tool\.name\.startsWith\("plugin_craftmine_world_"\)/);
   const main=fs.readFileSync(path.join(plugin,'main.cjs'),'utf8');
   assert.match(main,/for\(const tool of createWorldTools[\s\S]*?pi\.agent\.registerTool\(tool\)/);
+});
+
+test('造物指导按真实底座和三个接口哈希匹配，普通脚本示例可以分页读取',async()=>{
+ const creationSkill=corpus.skills.find(entry=>entry.id==='creation-sandbox.authoring');
+ assert.ok(creationSkill);
+ const base=JSON.parse(fs.readFileSync(path.join(root,'desktop/godot/bases/creation-sandbox/manifest.json')));
+ assert.equal(creationSkill.applicability.baseVersion,base.baseVersion);
+ assert.equal(hash(creationSkill.text),creationSkill.sha256);
+ assert.equal(creationSkill.text,fs.readFileSync(path.join(plugin,'guidance',creationSkill.path),'utf8').replace(/\r\n/g,'\n'));
+ for(const ref of creationSkill.references){
+  const text=fs.readFileSync(path.join(root,ref.sourcePath),'utf8');
+  assert.equal(text.replace(/\r\n/g,'\n'),ref.text,ref.sourcePath);
+  assert.ok(ref.acceptedSourceHashes.includes(hash(text)));
+ }
+ const opts={baseId:'creation-sandbox',baseBuild:'creation-sandbox-1.0.0',selectedSkill:creationSkill};
+ const f=fixture(opts),catalog=await f.run({mode:'catalog'});
+ assert.deepEqual(catalog.skills.map(entry=>entry.id),[creationSkill.id]);
+ assert.equal(f.calls.filter(call=>call.method==='godotProject.read').length,3);
+ for(const entry of [creationSkill,creationSkill.references.find(ref=>ref.path==='examples/double-press-rule.gd')]){
+  let offset=0,text='';
+  do{const result=await f.run({mode:'read',id:creationSkill.id,version:creationSkill.version,sha256:entry.sha256,
+   ...(entry===creationSkill?{}:{path:entry.path}),revision:catalog.source.revision,manifestHash:catalog.source.manifestHash,offset,limit:377});
+   text+=result.text;offset=result.nextOffset;
+  }while(offset!==null);
+  assert.equal(text,entry.text);
+ }
+ await assert.rejects(fixture({...opts,modified:true}).run({mode:'catalog'}),/GUIDANCE_INTERFACE_UNSUPPORTED/);
+ assert.match(creationSkill.text,/sourceRevision[\s\S]*expected.revision/);
+ assert.match(creationSkill.text,/不能.*snapshot ID/);
+ assert.match(creationSkill.text,/kind \*\*仅支持 `sequence-door`\*\*/);
+ assert.match(creationSkill.text,/godot_build_start[\s\S]*mode=check[\s\S]*godot_build_read/);
+ assert.match(creationSkill.text,/sourceTimeOfDay/);
 });
