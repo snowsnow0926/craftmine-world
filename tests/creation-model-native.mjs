@@ -49,7 +49,7 @@ function start(){
 }
 const rpc=(type,method,payload={},timeout=30000)=>new Promise((resolve,reject)=>{if(ended||!child.connected)return reject(Error('Electron exited'));const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('Timed out: '+method));},timeout);pending.set(id,{resolve,reject,timer});child.send({type,id,method,...payload});});
 const native=(method,payload={},timeout)=>rpc('craftmine-headless',method,payload,timeout);
-const evaluate=(method,caseId)=>rpc('craftmine-creation-evaluation',method,caseId?{caseId}:{},60000);
+const evaluate=(method,caseId)=>rpc('craftmine-creation-evaluation',method,caseId?{caseId}:{},method==='copy-world'?MODEL_LIMITS.maxCaseMs:60000);
 const nav=(channel,payload={})=>native('worldNavigation',{channel,payload},180000);
 const until=async(read,accept,label,timeout=90000)=>{const deadline=Date.now()+timeout;let value;while(Date.now()<deadline){if(ended)throw Error('Electron exited');try{value=await read();if(accept(value))return value;}catch(error){if(!/WORLD_BUSY|GODOT_CANDIDATE_ACTIVE/.test(String(error.message)))throw error;}await delay(500);}throw Error(label+' timed out');};
 async function isolation(){const state=await native('status');assert.deepEqual(state.violations,[]);assert.ok(state.windows.length&&state.windows.every(window=>!window.visible&&!window.focused&&!window.focusable&&window.offscreen));return state;}
@@ -64,12 +64,13 @@ async function runCase(result){
   try{
     if(result.id==='CA07'){
       originalWorld=worldId;await native('worldPanel',{channel:'godot.runtimeSave',payload:{worldId,freeze:true}});originalSnapshot=completeCreationProgress(await native('godotSnapshot'));originalObservation=await native('godotObserve');
-      const copied=await nav('world.copy',{worldId,operationId:randomUUID(),title:'真实模型评测独立副本'});assert.equal(copied.status,'ready');assert.notEqual(copied.targetWorldId,originalWorld);worldId=copied.targetWorldId;await settled(worldId);await evaluate('enable-auto-apply');
+      const copied=await evaluate('copy-world');assert.equal(copied.status,'ready');assert.equal(copied.sourceWorldId,originalWorld);assert.equal(copied.sourceSessionId,sessionId);assert.notEqual(copied.targetWorldId,originalWorld);assert.ok(copied.sessionId&&copied.sessionId!==sessionId);worldId=copied.targetWorldId;sessionId=copied.sessionId;result.copyHandoff=copied;await settled(worldId);await evaluate('enable-auto-apply');
     }
     if(result.id==='CA06')await restart();
     await evaluate(result.aim);prepared=await evaluate('capture');before=await native('godotObserve');progressBefore=await native('godotSnapshot');baseline=await evaluate('snapshot');
     if(baseline.budget?.remaining<1)throw Error('EVALUATION_REQUEST_LIMIT');
     const ids=new Set(messages(baseline).map(item=>item.id));
+    if(Date.now()-begin>=MODEL_LIMITS.maxCaseMs)throw Error('EVALUATION_CASE_SETUP_TIMEOUT');
     const prompted=await evaluate('prompt',result.id);assert.equal(prompted.content,result.request);prepared=prompted.target;result.promptResult=prompted.result;assert.equal(prompted.result?.ok,true,JSON.stringify(prompted.result));result.submitted=true;
     let sawTurn=false,lastFingerprint='',lastStatusAt=0;
     while(Date.now()-begin<MODEL_LIMITS.maxCaseMs){

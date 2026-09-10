@@ -52,7 +52,7 @@ export function installCreationEvaluation(access:Access){
       const original=await access.observe(),sourceWorldId=original?.worldId;
       if(!source||!sourceWorldId)throw Error("EVALUATION_COPY_SOURCE_REQUIRED");
       await desktop(`(()=>{const button=document.querySelector('[data-godot-copy-world] button');if(!button||button.disabled)throw Error('EVALUATION_COPY_BUTTON_UNAVAILABLE');const key=Object.keys(button).find(key=>key.startsWith('__reactProps'));if(!key||typeof button[key].onClick!=='function')throw Error('EVALUATION_COPY_CALLBACK_UNAVAILABLE');button[key].onClick();})()`);
-      const deadline=Date.now()+900000;let selected:{sessionId:string;worldId:string}|null=null;
+      const deadline=Date.now()+600000;let selected:{sessionId:string;worldId:string}|null=null;
       while(Date.now()<deadline){
         const state=await desktop(`(()=>{const copy=document.querySelector('[data-godot-copy-world]');return {sessionId:copy?.dataset.copySession,worldId:copy?.dataset.copyTargetWorld,viewing:document.querySelector('[data-world-session]')?.dataset.worldSession,error:copy?.querySelector('[role="alert"]')?.textContent};})()`);
         if(state.error)throw Error(state.error);
