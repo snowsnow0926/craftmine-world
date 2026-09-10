@@ -1,0 +1,2 @@
+# Preserve the independently hashed original JSON across Windows checkouts.
+recorded-failure-audit.json -text
