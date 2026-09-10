@@ -1,0 +1,82 @@
+{
+  "limits": [
+    "Preparation fixtures and targeted tests only; not actual native client acceptance.",
+    "Failures preserved; final 30 unit checks and 16 DOM checks passed."
+  ],
+  "sourceCommit": "c96d0cbcc49a8907db2e7f04efecf9fc87ed85c3",
+  "files": [
+    {
+      "file": "p6-asset-model.log",
+      "sha256": "2d62993d4aafe86b76e6a6ac3e095a8bc3b235ca8d0be4d34dc25cc5ba381fbb",
+      "bytes": 1507,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-asset-model.log"
+    },
+    {
+      "file": "p6-asset-forms-initial.log",
+      "sha256": "51ca2ac72ba73947776667829fcc1a0313057ace30d3841bab1cf4fa90ca223d",
+      "bytes": 726,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-asset-forms-initial.log"
+    },
+    {
+      "file": "asset-forms-r60Z7d__report.json",
+      "sha256": "37288772515400b6a47e18aad6c45a8a1723243d5d248d5ff2c1604e4e59b444",
+      "bytes": 2341,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\asset-forms-r60Z7d\\report.json"
+    },
+    {
+      "file": "p6-asset-forms-second.log",
+      "sha256": "3c0459a089af9b50ad2797fa77c716291a133209ebf16325cce08b5e6bb8fa68",
+      "bytes": 1079,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-asset-forms-second.log"
+    },
+    {
+      "file": "asset-forms-HNW7nj__report.json",
+      "sha256": "66bfb5463cd594b9dd978026cae8304d22eacd0e0f80ad8523615e8bf42a29c6",
+      "bytes": 2829,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\asset-forms-HNW7nj\\report.json"
+    },
+    {
+      "file": "p6-asset-forms-bound-version.log",
+      "sha256": "8cdd7fc453f1acf666aba6504fb3d9e984bc2ebb0ee973951f5352864ea9cc76",
+      "bytes": 919,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-asset-forms-bound-version.log"
+    },
+    {
+      "file": "asset-forms-g2qm20__report.json",
+      "sha256": "c56cfa56686cf97b40039fae61bd9488ab98dbc825beebb7a8d30c551343d069",
+      "bytes": 8633,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\asset-forms-g2qm20\\report.json"
+    },
+    {
+      "file": "p6-import-route.log",
+      "sha256": "4980efbca4d7fd3e5b4e640fbd147d51911e5900d6a4d19b84bf73b36de9d560",
+      "bytes": 677,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-import-route.log"
+    },
+    {
+      "file": "p6-source-grant-initial.log",
+      "sha256": "0bd55a58d108c9dfd11cdd16039b64b6636815dba22c3408bbba0fd09635aa91",
+      "bytes": 905,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-source-grant-initial.log"
+    },
+    {
+      "file": "p6-source-grant-second.log",
+      "sha256": "df7f7a36b50ee6124249f32d078d6d21fcc42edff920e3921d050f541726a9cb",
+      "bytes": 2506,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-source-grant-second.log"
+    },
+    {
+      "file": "p6-source-grant-third.log",
+      "sha256": "5c8139d6e09d88c6f92db67b4adbdbb4f919b902f80e45ad214355e6100beef1",
+      "bytes": 844,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-source-grant-third.log"
+    },
+    {
+      "file": "p6-targeted-final.log",
+      "sha256": "775b1543e2b8e9ad8a07f3da22e2ad1df387d76d7b807281168a66489a0a81e9",
+      "bytes": 2783,
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-targeted-final.log"
+    }
+  ],
+  "format": "craftmine.evidence-index/1"
+}

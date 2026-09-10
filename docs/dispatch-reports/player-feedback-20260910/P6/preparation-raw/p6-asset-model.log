@@ -1,0 +1,26 @@
+✔ buildSearchRequest fills host defaults and clamps the page size (14.7866ms)
+✔ mergePage de-duplicates by assetId+version and keeps order (0.1933ms)
+✔ controller.search sends the built request and loadMore uses nextOffset (0.7037ms)
+✔ scope and category switching send the new filter to the host (0.2218ms)
+✔ the four state flags produce four independent badges (0.2491ms)
+✔ describePreview covers all six statuses with honest copy (0.4135ms)
+✔ OGG is never playable and never gets a player (0.0811ms)
+✔ preview runs the real service and cancel terminates the attempt (0.8806ms)
+✔ a late preview result for a superseded selection is discarded (0.3193ms)
+✔ scanSummary and importRequestFor produce the import payload (0.6998ms)
+✔ snapshot data keys stay disjoint from controller action names (0.1173ms)
+✔ the panel import path reads the scan result, never the scan action (0.129ms)
+✔ AssetLibraryPanel reads scan data from scanResult with a guarded items read (0.2662ms)
+✔ versionOptions lists newest first (0.1329ms)
+✔ host failures reach the caller and stay in the error state (0.3723ms)
+✔ asset UI sources contain no pointer-lock, click or focus emulation (0.5275ms)
+✔ a late search response for a previous scope never overwrites the list (0.1912ms)
+✔ thumbnailSrc only accepts a bounded, well-formed base64 payload (0.1031ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 200.1638

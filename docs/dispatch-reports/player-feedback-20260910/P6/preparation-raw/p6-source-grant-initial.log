@@ -1,0 +1,33 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+:115
+
+};return Grant;
+  ^^^^^^^^^^^^^
+
+SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]: Return statement is not allowed here
+    at parseTypeScript (node:internal/modules/typescript:72:36)
+    at processTypeScriptCode (node:internal/modules/typescript:146:42)
+    at stripTypeScriptTypes (node:internal/modules/typescript:123:10)
+    at file:///D:/cm-fb-p6-20260910/tests/plan-loop/asset-source-grant.test.mjs:15:51 {
+  code: 'ERR_INVALID_TYPESCRIPT_SYNTAX'
+}
+
+Node.js v24.14.0
+✖ tests\plan-loop\asset-source-grant.test.mjs (131.7116ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 136.33
+
+✖ failing tests:
+
+test at tests\plan-loop\asset-source-grant.test.mjs:1:1
+✖ tests\plan-loop\asset-source-grant.test.mjs (131.7116ms)
+  'test failed'
