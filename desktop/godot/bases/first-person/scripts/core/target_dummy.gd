@@ -11,7 +11,13 @@ signal restored(target: TargetDummy)
 @export var target_id: StringName = &"target"
 @export var display_name: String = "Target"
 @export var max_health := 50.0
-@export var hit_flash_seconds := 0.12
+var _hit_flash_explicit := false
+var _applying_balance_flash := false
+@export var hit_flash_seconds := 0.12:
+	set(value):
+		hit_flash_seconds = value
+		if not _applying_balance_flash:
+			_hit_flash_explicit = true
 
 @onready var mesh_instance: MeshInstance3D = get_node_or_null("Mesh")
 @onready var collision: CollisionShape3D = get_node_or_null("Collision")
@@ -22,6 +28,15 @@ var hit_count := 0
 var damage_taken := 0.0
 var _flash_remaining := 0.0
 var _base_material: Material
+
+
+## Script initialization bypasses the setter; scene assignments, including an
+## explicit 0.12, call it. Balance updates must not become instance overrides.
+func apply_balance_hit_flash_seconds(value: float) -> void:
+	if not _hit_flash_explicit:
+		_applying_balance_flash = true
+		hit_flash_seconds = value
+		_applying_balance_flash = false
 
 
 func _ready() -> void:
