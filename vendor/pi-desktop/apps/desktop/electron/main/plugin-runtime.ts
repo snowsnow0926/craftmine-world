@@ -942,6 +942,7 @@ export class PluginRuntime {
     allowed.add("budget.findReceipt");
     allowed.add("task.recoverable");
     allowed.add("package.sourceJob");
+    for (const method of ["targetFeedback.describe", "targetFeedback.submit", "targetFeedback.status"]) allowed.add(method);
     for (const operation of ["godotRuntime.describe", "godotRuntime.describeCandidate", "godotRuntime.saveProgress"]) allowed.add(operation);
     // Read-only live executor state for diagnostics. Enqueue/revoke stay private
     // to the host: the renderer can never start or stop engine execution.

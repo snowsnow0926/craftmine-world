@@ -1,9 +1,8 @@
 # Restricted target feedback configuration
 
-Status: pure CP configuration declaration and source patch planner only. There
-is no renderer route, model tool, live runtime mutation, or persistence service
-in this change. Host integration must still use the existing source transaction,
-check, candidate and application lifecycle.
+This document specifies the pure CP configuration declaration and source patch
+planner. The private host integration is in `target-feedback-service.md` and
+uses the existing source transaction, check, candidate and application lifecycle.
 
 ## CP declaration
 
@@ -11,10 +10,18 @@ check, candidate and application lifecycle.
 manifest may carry `targetFeedbackConfiguration()`. Its format is
 `craftmine.interfaces.configuration/1`, contract `fp.target.feedback/1`, base
 `first-person` version `0.1.0`, scope `instance`, identity field `target_id`.
-The only parameter is `hitFlashMilliseconds`: integer 0 through 1000 inclusive,
+The only parameter is `hitFlashMilliseconds`: integer 1 through 1000 inclusive,
 default 120, Chinese label `受击闪光时长`, unit `毫秒`. Integer milliseconds keep
 the existing CP integer-only canonical content hash. The adapter maps them to
 the target instance's `hit_flash_seconds` numeric TSCN literal.
+
+Zero is deliberately refused for base 0.1.0: its unchanged target script swaps
+the hit material but skips restoration when the remaining duration starts at
+zero. This slice does not alter the shipped base script or its accepted hash.
+Existing zero overrides are reported unsupported rather than described as a
+working parameter. New overrides are appended after script binding in the node
+block; a target ID or override serialized before `script` is refused because
+Godot resets exported values when it attaches the script.
 
 `validateTargetFeedbackConfiguration` accepts the exact platform declaration;
 a package cannot add properties, widen bounds, change scope, or authorize an

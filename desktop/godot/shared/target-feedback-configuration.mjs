@@ -15,7 +15,7 @@ const PROPERTY='hit_flash_seconds';
 const ID=/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
 const CONFIG={format:'craftmine.interfaces.configuration/1',contractId:'fp.target.feedback/1',
  baseId:'first-person',baseVersion:'0.1.0',scope:'instance',identityField:'target_id',
- parameters:[{id:'hitFlashMilliseconds',label:'受击闪光时长',type:'integer',unit:'毫秒',default:120,minimum:0,maximum:1000}],
+ parameters:[{id:'hitFlashMilliseconds',label:'受击闪光时长',type:'integer',unit:'毫秒',default:120,minimum:1,maximum:1000}],
  preview:'checked-candidate',requiredChecks:['native-load','full-progress-round-trip','target-hit-feedback']};
 
 /** CP resource manifests may carry this object at content.interfaces.configuration. */
@@ -55,6 +55,10 @@ function parse(text){
  for(const node of parsed.nodes){
   for(const attribute of ['name','parent','type','instance'])requireValue((node.header.match(new RegExp('(?:^|\\s)'+attribute+'=','g'))??[]).length<=1,'TARGET_CONFIGURATION_SCENE_UNSUPPORTED');
   requireValue(!node.duplicateProperties.length,'TARGET_CONFIGURATION_DUPLICATE_PROPERTY');
+  const propertyOrder=Object.keys(node.properties),scriptIndex=propertyOrder.indexOf('script');
+  if(scriptIndex>=0)for(const property of ['target_id',PROPERTY]){
+   const index=propertyOrder.indexOf(property);requireValue(index<0||index>scriptIndex,'TARGET_CONFIGURATION_PROPERTY_BEFORE_SCRIPT');
+  }
   const nodePath=node.parent===null?'.':node.parent==='.'?node.name:node.parent+'/'+node.name;
   requireValue(!paths.has(nodePath),'TARGET_CONFIGURATION_DUPLICATE_NODE');paths.add(nodePath);node.nodePath=nodePath;
   if(Object.hasOwn(node.properties,'target_id')){const id=literalId(node.properties.target_id);requireValue(!ids.has(id),'TARGET_CONFIGURATION_DUPLICATE_ID');ids.add(id);}
@@ -65,7 +69,7 @@ function milliseconds(node,fallback=120){
  const raw=node.properties[PROPERTY];if(raw===undefined)return fallback;
  requireValue(/^(?:0(?:\.\d{1,3})?|1(?:\.0{1,3})?)$/.test(raw),'TARGET_CONFIGURATION_VALUE_EXPRESSION');
  const value=Math.round(Number(raw)*1000);
- requireValue(Number.isInteger(value)&&value>=0&&value<=1000,'TARGET_CONFIGURATION_VALUE_INVALID');return value;
+ requireValue(Number.isInteger(value)&&value>=1&&value<=1000,'TARGET_CONFIGURATION_VALUE_INVALID');return value;
 }
 function resolve(args){
  exact(args,['sceneText','scenePath','targetId','files']);
@@ -107,13 +111,14 @@ export function patchTargetFeedback(args){
  exact(args,['sceneText','scenePath','targetId','files','binding','values']);
  exact(args.values,['hitFlashMilliseconds']);
  const value=args.values.hitFlashMilliseconds;
- requireValue(Number.isInteger(value)&&value>=0&&value<=1000,'TARGET_CONFIGURATION_VALUE_INVALID');
+ requireValue(Number.isInteger(value)&&value>=1&&value<=1000,'TARGET_CONFIGURATION_VALUE_INVALID');
  const {node,value:oldValue,binding}=resolve({sceneText:args.sceneText,scenePath:args.scenePath,targetId:args.targetId,files:args.files});
  requireValue(isDeepStrictEqual(args.binding,binding),'TARGET_CONFIGURATION_STALE_BINDING');
  let text=args.sceneText;
  if(value!==oldValue){
-  // Replace exactly one physical property line, or insert immediately after
-  // this node's header. No normalization or reserialization of other bytes.
+  // Replace exactly one physical property line, or append to this node's block.
+  // Script must already be bound before exported properties are deserialized.
+  // No normalization or reserialization of other bytes.
   const headers=[...text.matchAll(/^\[node\b[^\r\n]*(?:\r?\n|$)/gm)];
   const header=headers.find(item=>item[0].replace(/\r?\n$/,'')===node.header);
   requireValue(header,'TARGET_CONFIGURATION_SCENE_UNSUPPORTED');
@@ -124,7 +129,7 @@ export function patchTargetFeedback(args){
   const match=property.exec(body);
   if(match){const equal=match[0].indexOf('=');const prefix=match[0].slice(0,equal+1)+(match[0].slice(equal+1).match(/^[ \t]*/)?.[0]??'');
    text=text.slice(0,start+match.index)+prefix+literal+text.slice(start+match.index+match[0].length);
-  }else {const newline=text.includes('\r\n')?'\r\n':'\n';requireValue(/\r?\n$/.test(header[0]),'TARGET_CONFIGURATION_SCENE_UNSUPPORTED');text=text.slice(0,start)+PROPERTY+' = '+literal+newline+text.slice(start);}
+  }else {const newline=text.includes('\r\n')?'\r\n':'\n';requireValue(/\r?\n$/.test(header[0]),'TARGET_CONFIGURATION_SCENE_UNSUPPORTED');text=text.slice(0,end)+(end>0&&!text.slice(0,end).endsWith('\n')?newline:'')+PROPERTY+' = '+literal+newline+text.slice(end);}
  }
  const files=new Map(args.files);files.set(args.scenePath,Buffer.from(text));
  const next=describeTargetFeedback({sceneText:text,scenePath:args.scenePath,targetId:args.targetId,files});

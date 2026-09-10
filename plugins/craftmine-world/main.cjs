@@ -12,6 +12,7 @@ const {createWorkbenchService} = require('./workbench-service.cjs');
 const {createGodotExecutor} = require('./godot-executor.cjs');
 const {createAssetService} = require('./asset-service.mjs');
 const {createReuseService,createManagedPackageInstaller,createManagedPackageSourceService} = require('./reuse-service.mjs');
+const {createTargetFeedbackService} = require('./target-feedback-service.mjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary,createLibraryService,createMemoryService} = require('./domain.cjs');
 const {createHostProviders,createCoreBudgetProvider} = require('./tool-services.cjs');
 let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor,assetService,reuseService;
@@ -49,6 +50,9 @@ async function onLoad() {
       :Promise.reject(Error('ASSET_PREVIEW_HOST_UNAVAILABLE'))});
   // S3 works/package service: domain validation over the core's package routes.
   const packageTurns=createPackageTurnLifecycle({call});
+  const targetFeedback=createTargetFeedbackService({call,selected:async()=>(await pi.plugin.getSettings()).activeWorldId,
+    begin:params=>hostRequests('turn.begin',params),enqueue:(job,context)=>godotExecutor.enqueue(job,context),turns:packageTurns,
+    stagingRoot:require('node:path').join(await pi.plugin.getDataPath(),'target-feedback-operations')});
   const installSource=createManagedPackageInstaller({call,
     turns:packageTurns,
     stagingRoot:require('node:path').join(await pi.plugin.getDataPath(),'package-source-installs'),
@@ -71,9 +75,9 @@ async function onLoad() {
   const toolchain=typeof pi.craftmine?.getGodotToolchain==='function'?await pi.craftmine.getGodotToolchain():null;
   godotExecutor=createGodotExecutor(core,{dataPath:await pi.plugin.getDataPath(),verifier:pi.craftmine,logger:console,toolchain});
   const restoreService=createPortableRestoreService({core,rootDirectory:await pi.plugin.getDataPath()});
-  const portableRestore={restore:async params=>{await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();}}};
-  hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns});
-  pi.services.register({id:'world-core',start:()=>{packageTurns.start();return core.start();},stop:async()=>{await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
+  const portableRestore={restore:async params=>{await targetFeedback.drain();await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();}}};
+  hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns,targetFeedback});
+  pi.services.register({id:'world-core',start:()=>{packageTurns.start();return core.start();},stop:async()=>{await targetFeedback.drain();await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
   pi.services.register({id:'godot-executor',start:()=>godotExecutor.start(),stop:()=>godotExecutor.stop()});
   await pi.agent.registerTool({
     name: 'runtime_info',

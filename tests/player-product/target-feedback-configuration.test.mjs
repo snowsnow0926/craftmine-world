@@ -43,7 +43,7 @@ test('CP configuration is exact, integer canonical, and remains in the existing 
 test('same names are separated by explicit stable IDs and only chosen physical text changes',()=>{
  const args=fixture(),description=describeTargetFeedback(args);assert.equal(description.values.hitFlashMilliseconds,120);
  const changed=apply(args,700);
- assert.equal(changed.text,scene.replace('[node name="Same" type="StaticBody3D" parent="Left"]\n','[node name="Same" type="StaticBody3D" parent="Left"]\nhit_flash_seconds = 0.7\n'));
+ assert.equal(changed.text,scene.replace('[node name="Right" type="Node3D" parent="."]\n','hit_flash_seconds = 0.7\n[node name="Right" type="Node3D" parent="."]\n'));
  assert.equal(changed.previousHash,hash(scene));assert.equal(changed.sha256,hash(changed.text));
  assert.equal(args.files.get('scripts/core/target_dummy.gd').equals(script),true);
  assert.equal(describeTargetFeedback(fixture(changed.text,'right-target')).values.hitFlashMilliseconds,250);
@@ -51,7 +51,11 @@ test('same names are separated by explicit stable IDs and only chosen physical t
 test('existing override replacement preserves CRLF, property spacing and unrelated bytes',()=>{
  const text=scene.replace('hit_flash_seconds = 0.25','hit_flash_seconds\t=\t0.25').replaceAll('\n','\r\n');
  assert.equal(apply(fixture(text,'right-target'),1).text,text.replace('hit_flash_seconds\t=\t0.25','hit_flash_seconds\t=\t0.001'));
- for(const value of [0,1000])assert.equal(apply(fixture(),value).values.hitFlashMilliseconds,value);
+ for(const value of [1,1000])assert.equal(apply(fixture(),value).values.hitFlashMilliseconds,value);
+ assert.throws(()=>apply(fixture(),0),/VALUE_INVALID/);
+ assert.throws(()=>describeTargetFeedback(fixture(scene.replace('hit_flash_seconds = 0.25','hit_flash_seconds = 0'),'right-target')),/VALUE_INVALID/);
+ const wrongOrder=scene.replace('script = ExtResource("script")\ntarget_id = &"left-target"','target_id = &"left-target"\nscript = ExtResource("script")');
+ assert.throws(()=>describeTargetFeedback(fixture(wrongOrder)),/PROPERTY_BEFORE_SCRIPT/);
  const noop=apply(fixture(),120);assert.equal(noop.changed,false);assert.equal(noop.text,scene);
 });
 test('official training scene and direct known PackedScene root resolve without modifying template',()=>{
@@ -59,7 +63,8 @@ test('official training scene and direct known PackedScene root resolve without 
  const template='scenes/actors/target_dummy.tscn',templateBytes=fs.readFileSync(path.join(base,template));
  const args={sceneText:text,scenePath,targetId:'target_b',files:new Map([[scenePath,Buffer.from(text)],[template,templateBytes],['scripts/core/target_dummy.gd',script]])};
  const result=apply(args,400);assert.equal(result.values.hitFlashMilliseconds,400);
- assert.ok(result.text.includes('[node name="TargetB" parent="Targets" instance=ExtResource("11_target")]\n'+'hit_flash_seconds = 0.4\n'));
+ assert.equal(result.text.replace('hit_flash_seconds = 0.4\n',''),text);
+ assert.ok(result.text.indexOf('hit_flash_seconds = 0.4')>result.text.indexOf('target_id = &"target_b"'));
  assert.equal(args.files.get(template),templateBytes);assert.equal(result.binding.dependencies.length,3);
 });
 test('old scene, dependency or target binding cannot authorize a patch',()=>{

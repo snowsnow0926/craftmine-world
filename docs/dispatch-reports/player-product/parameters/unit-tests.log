@@ -1,0 +1,31 @@
+✔ history reads use exact core fields without writable branch identity (1.1269ms)
+✔ version and range reads bind repository before supplying exact commits (0.3623ms)
+✔ operation reads call the pure RPC, never recovery (0.1199ms)
+✔ history proposals perform no writes (0.2488ms)
+✔ private package status uses only its bounded lifecycle route (1.5856ms)
+✔ private application confirmation rejects old self-attestation (0.2753ms)
+✔ portable and history private routes forward exact fields (0.6638ms)
+✔ existing authorized build routes dispatch core results and cancellation to the owned executor (0.3635ms)
+✔ CP configuration is exact, integer canonical, and remains in the existing resource format (2.1718ms)
+✔ same names are separated by explicit stable IDs and only chosen physical text changes (7.0417ms)
+✔ existing override replacement preserves CRLF, property spacing and unrelated bytes (1.2217ms)
+✔ official training scene and direct known PackedScene root resolve without modifying template (1.3614ms)
+✔ old scene, dependency or target binding cannot authorize a patch (0.5601ms)
+✔ missing, duplicate, inherited, expression and unknown targets are refused (0.5432ms)
+✔ source bytes mismatch and ambiguous external resource declarations are refused (0.1979ms)
+✔ invalid values and unrecognized property requests never return modified text (0.2418ms)
+✔ read exposes bounded contract values but no path/source/context; submit writes one scene and checks once (24.3891ms)
+✔ unapplied source and stale target bindings fail before starting a turn (4.2479ms)
+✔ lost core replies use durable receipts; replay after restart and main advancing never writes twice (17.0442ms)
+✔ no-op creates no turn, no draft and no check; wrong world/unknown properties refused (8.7091ms)
+✔ source-only failure retains the exact draft and never revives a closed lease or starts a second check (15.6973ms)
+✔ status goes through finalizing job lifecycle and never reports candidate applied (13.0152ms)
+✔ private ledger refuses hard links, oversized bodies and malformed operation schemas (18.1927ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 251.7522
