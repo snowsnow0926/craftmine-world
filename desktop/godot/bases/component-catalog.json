@@ -46,13 +46,13 @@
       "files": [
         {
           "path": "scripts/core/ammo_crate.gd",
-          "bytes": 1745,
-          "sha256": "ac7d374b7835f9364a4cba57b1403238bac4fe44d57217afb35f5932636e53a5"
+          "bytes": 1688,
+          "sha256": "ba4600bad289a11ca4dc77d8f58466c0ae2bbe6f8166d9c658c81aa4bf6ece9d"
         },
         {
           "path": "scenes/props/ammo_crate.tscn",
-          "bytes": 870,
-          "sha256": "53136311263bf382e71c271a037cb41e41fd43e282ba1e132f7098a7d703a6af"
+          "bytes": 846,
+          "sha256": "b83831825588559010dfeecec59bc2704f4ca8414de6982be2621d63ac9de685"
         }
       ]
     },
@@ -81,23 +81,23 @@
       "files": [
         {
           "path": "scripts/ui/crosshair.gd",
-          "bytes": 6057,
-          "sha256": "ac731aa902583a4ee465180ca342e114fc702633df352b6b7314747bbff8d169"
+          "bytes": 5904,
+          "sha256": "aef94179a55c9bd51da4eef523e6e8d2258610e58b4ee4fe358c7c7f46067137"
         },
         {
           "path": "scripts/ui/crosshair_style.gd",
-          "bytes": 1312,
-          "sha256": "d6c7622573196940413b5378ee4246bb3a15a9068a40104744cc7b512d064f20"
+          "bytes": 1281,
+          "sha256": "12f46fe53edfeb6e489edc6d548f50b53de8454b1c44443dacb7a2cbeb82c387"
         },
         {
           "path": "data/ui/crosshair_precision.tres",
-          "bytes": 406,
-          "sha256": "aed9d6331d1e05d36b27d3a660ef3991c0913f2b0ac973e72be4b92059b06353"
+          "bytes": 392,
+          "sha256": "bb2ddd54d6f88d2befa109e0e1a9ab9e1638efa98f793018e2868d5a75438a04"
         },
         {
           "path": "data/ui/crosshair_melee.tres",
-          "bytes": 411,
-          "sha256": "663c80abb5ed74c00f6511fe25dd8cd069dae27225cd3f33d191b45717527b7f"
+          "bytes": 397,
+          "sha256": "129613f4899b9510f85329d2b443cf007bfe3bca7c29d7591288d074b032ab93"
         }
       ]
     },
@@ -132,43 +132,43 @@
       "files": [
         {
           "path": "scripts/core/equipment_definition.gd",
-          "bytes": 3420,
-          "sha256": "28a311cadc1626649a6751fe84ee86f641c92f91b761d9b800ab5e3918e313be"
+          "bytes": 3333,
+          "sha256": "71500902d7b869706b73da6631029870ace4f210b59686209bb6da2f8f203bfa"
         },
         {
           "path": "scripts/core/equipment_catalog.gd",
-          "bytes": 1841,
-          "sha256": "9269b73c71cfe315a0ca7ebb2b0b85f6324c4bdecd3bfbbf44b26ce8f4d50780"
+          "bytes": 1774,
+          "sha256": "3df79cb4656e2155fe47cb2e7a2d1a31eaa8ff0b549f09b02278a37e9790594e"
         },
         {
           "path": "scripts/core/equipment_state.gd",
-          "bytes": 10700,
-          "sha256": "10c4cd49fb01d3e8dbd82ea9da93de708629cbf90e101a2dbba1d14c7072f07c"
+          "bytes": 10389,
+          "sha256": "0e071e15ebabf8e45960850b158a637daa600c1808e7c85578a62019b4677f69"
         },
         {
           "path": "scripts/core/equipment_visuals.gd",
-          "bytes": 1944,
-          "sha256": "15af90e8a20169f189996f1300f580b74afbc58a49c419b4c714657cc7f85abc"
+          "bytes": 1892,
+          "sha256": "24b54c092acc28095c9d9b4b3594a382ca0fa8dae52a79e057fdd6c092dc17d5"
         },
         {
           "path": "data/equipment/equipment_catalog.tres",
-          "bytes": 621,
-          "sha256": "49b4dd6f09eee09deef27efbec81d64c98757deed23c699aac2dbaecde3f074c"
+          "bytes": 610,
+          "sha256": "00fa48a213a99939fb4da868a386870e3370a3860c71e256037a40d9dade8c07"
         },
         {
           "path": "data/equipment/pistol.tres",
-          "bytes": 1145,
-          "sha256": "7fd9521ab3ba0c4f72b05c0d0b7a1035d6041583cd2426e03a7c32ce656d9262"
+          "bytes": 1114,
+          "sha256": "84f00affe56f9ae056fec5867aff546373229adafff3780ae8489da831a21199"
         },
         {
           "path": "data/equipment/practice_sword.tres",
-          "bytes": 1149,
-          "sha256": "d3442c71f169f432c557cc211ace1f975aaf5c99c117e0475a296f6b962957f4"
+          "bytes": 1118,
+          "sha256": "0f60670f22ef7fb1dccc7bc5c576c71929985a4134222b9c249ace5fcf647b69"
         },
         {
           "path": "data/equipment/inspection_tool.tres",
-          "bytes": 773,
-          "sha256": "2513efe37e1930b973273fe04ccfd2289812f60c3ad74642919626f175defe1c"
+          "bytes": 748,
+          "sha256": "ba54f27f694dd94a4b2cf287ac4dd2b1765628156d5ef1a23d7fcfefcaf72d28"
         }
       ]
     },
@@ -214,8 +214,8 @@
       "files": [
         {
           "path": "scripts/core/interactable.gd",
-          "bytes": 1085,
-          "sha256": "5493aed7a2eefcf53f3d0af3658d67de999a42af37a3e18eab2b1f74c1f26d31"
+          "bytes": 1043,
+          "sha256": "3bea31038e9d10970c4155920128d69f8439ab1affbce91d88f951dde1c03010"
         }
       ]
     },
@@ -262,13 +262,13 @@
       "files": [
         {
           "path": "scripts/core/pickup_item.gd",
-          "bytes": 1419,
-          "sha256": "80c28cd8b30245c91f14a50d9f8e8466826e29657bef44a79bea7490610ae72d"
+          "bytes": 1363,
+          "sha256": "1a45b6d2e5cae49eabce649bf85173b6dce042c8b41ae27f92b147588cb081ae"
         },
         {
           "path": "scenes/props/pickup_item.tscn",
-          "bytes": 935,
-          "sha256": "6a9251f75827a9d5e2357c3aec236a9a3cada0a97c9f9174b487f289504eca5e"
+          "bytes": 908,
+          "sha256": "7c528b0f6b5a312f9523e38b1ddfc4132e3b11c8484bf1aa40d5bc36c43e57b9"
         }
       ]
     },
@@ -304,18 +304,18 @@
       "files": [
         {
           "path": "scripts/core/quest_definition.gd",
-          "bytes": 1292,
-          "sha256": "0607b3905a7700c9ef43c01560c9ea42af5529bd60694940135b06287de9b1af"
+          "bytes": 1256,
+          "sha256": "73837c256247e6620bf423d1da93ad7e38ee17b6551280cbfc4bd5ca2ec3502f"
         },
         {
           "path": "scripts/core/quest_tracker.gd",
-          "bytes": 6041,
-          "sha256": "456f381becd6b302087b1b2e6720a44dc06e35d539cad3a6226f5966dfc83a43"
+          "bytes": 5880,
+          "sha256": "40c9771a1dddbf0365cb42541c7b8377d096a33d3f60da63ad4879e0f1f7395f"
         },
         {
           "path": "data/quests/range_basic.tres",
-          "bytes": 466,
-          "sha256": "573ef83a37c6c7ba3402c25a23c34d2dd3e57c73c21c3ebd282cc51a07d8dc31"
+          "bytes": 452,
+          "sha256": "6b2a943d1f8d54accd496c6ee31251ff020534ad41663e45e2f02bcd9ba1d989"
         }
       ]
     },
@@ -363,13 +363,13 @@
       "files": [
         {
           "path": "scripts/core/target_dummy.gd",
-          "bytes": 4155,
-          "sha256": "30e03144b0b6953e56e1bdd878880072142e14786985aec36b588b94c28dd4b8"
+          "bytes": 4555,
+          "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
         },
         {
           "path": "scenes/actors/target_dummy.tscn",
-          "bytes": 884,
-          "sha256": "e9bec5b13ce2f79e73910f43a13f0e2c490613f4015c5cc88da94df608e1aa7e"
+          "bytes": 860,
+          "sha256": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0"
         }
       ]
     },
@@ -600,13 +600,13 @@
       "files": [
         {
           "path": "scripts/world/pickup.gd",
-          "bytes": 2892,
-          "sha256": "c4217da4e58d8773ed5eb64608e3c09b774492fa0eb115ccb52885f99d0dba81"
+          "bytes": 2806,
+          "sha256": "c0b3d28d8f405bca5efd9c36bf551403df57862f166ea918402b9ea2abe3caac"
         },
         {
           "path": "worlds/ruins/world.json",
-          "bytes": 5771,
-          "sha256": "7ec289a8d61ade1ec345b85aa11f9c5b8e362f7a8f3080a613a764da99c75cde"
+          "bytes": 5597,
+          "sha256": "2a31ca42db092234bcabac3abf9f391e8fd83bce48779fcf90412eba47c3ce60"
         }
       ]
     },
@@ -638,8 +638,8 @@
       "files": [
         {
           "path": "scripts/world/checkpoint.gd",
-          "bytes": 1788,
-          "sha256": "a2375551613947ad6f6329fa9634a23452f4866e7b83f183994544b109e43055"
+          "bytes": 1729,
+          "sha256": "4f4e391ec9fb29af25228c7876b0d0e3aaf4cb020488c88b7f4354359dcf819f"
         }
       ]
     },
@@ -671,13 +671,13 @@
       "files": [
         {
           "path": "scripts/world/hazard.gd",
-          "bytes": 1888,
-          "sha256": "51514404916a65d61807c43f6f3e9ef8c6ba870e3a293bee06f5f6080901c33c"
+          "bytes": 1836,
+          "sha256": "255c51dbc198bf833805be5f3d9de603db1781e1280eeeef21e6ec9e1c6c0f49"
         },
         {
           "path": "worlds/ruins/world.json",
-          "bytes": 5771,
-          "sha256": "7ec289a8d61ade1ec345b85aa11f9c5b8e362f7a8f3080a613a764da99c75cde"
+          "bytes": 5597,
+          "sha256": "2a31ca42db092234bcabac3abf9f391e8fd83bce48779fcf90412eba47c3ce60"
         }
       ]
     },
@@ -710,8 +710,8 @@
       "files": [
         {
           "path": "scripts/world/pickup.gd",
-          "bytes": 2892,
-          "sha256": "c4217da4e58d8773ed5eb64608e3c09b774492fa0eb115ccb52885f99d0dba81"
+          "bytes": 2806,
+          "sha256": "c0b3d28d8f405bca5efd9c36bf551403df57862f166ea918402b9ea2abe3caac"
         }
       ]
     },
@@ -742,13 +742,13 @@
       "files": [
         {
           "path": "scripts/world/room_door.gd",
-          "bytes": 3415,
-          "sha256": "7c66dfe972b802c4504cada3cbc0f3aa2427bc0ffd34e64c2fe58059e598be1c"
+          "bytes": 3325,
+          "sha256": "4d34faf7c1a3c0dd58f7fd3be578962b1b529e0a46a4f06dc42aa13ca2ee5ada"
         },
         {
           "path": "worlds/ruins/world.json",
-          "bytes": 5771,
-          "sha256": "7ec289a8d61ade1ec345b85aa11f9c5b8e362f7a8f3080a613a764da99c75cde"
+          "bytes": 5597,
+          "sha256": "2a31ca42db092234bcabac3abf9f391e8fd83bce48779fcf90412eba47c3ce60"
         }
       ]
     },
@@ -783,8 +783,8 @@
       "files": [
         {
           "path": "scripts/world/room.gd",
-          "bytes": 6136,
-          "sha256": "0bdb9a70ee4f449b2e42e7727eae47b9aa267d0618fbf59060bcf90a75f95a86"
+          "bytes": 5968,
+          "sha256": "c74d7c6d0d3b04920a1b39bc2776308a4dcc6d901e08efba729d99fb246119fc"
         }
       ]
     },
@@ -819,13 +819,13 @@
       "files": [
         {
           "path": "scripts/world/target.gd",
-          "bytes": 3196,
-          "sha256": "bbd1b395111e3511eaa5d7a00c3ddd82edbae88059acb4d38755193f1e4bd506"
+          "bytes": 3114,
+          "sha256": "b477c057686dda2574ced7076e820dc0205717ddad1c7536d2857031c1ddf6fc"
         },
         {
           "path": "worlds/ruins/world.json",
-          "bytes": 5771,
-          "sha256": "7ec289a8d61ade1ec345b85aa11f9c5b8e362f7a8f3080a613a764da99c75cde"
+          "bytes": 5597,
+          "sha256": "2a31ca42db092234bcabac3abf9f391e8fd83bce48779fcf90412eba47c3ce60"
         }
       ]
     },

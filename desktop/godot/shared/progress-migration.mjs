@@ -34,6 +34,7 @@ function collection(entries){
  * candidate runtime. The caller still must load and compare the entire result.
  * No supplied rules, paths or deletion semantics are accepted. */
 export function deriveAdditiveProgress(previousSnapshot,defaultsSnapshot){
+ if(previousSnapshot?.baseId==='creation-sandbox'||defaultsSnapshot?.baseId==='creation-sandbox')return deriveCreationProgress(previousSnapshot,defaultsSnapshot);
  envelope(previousSnapshot);envelope(defaultsSnapshot);
  for(const [side,state] of [['previous',previousSnapshot],['candidateDefaults',defaultsSnapshot]]){
   const equipment=state.body.equipment;
@@ -62,4 +63,29 @@ export function deriveAdditiveProgress(previousSnapshot,defaultsSnapshot){
  }
  if(Buffer.byteLength(canonicalProgressJson(snapshot))>1048576)fail('MIGRATION_SIZE_LIMIT');
  return {format:'craftmine.godot-additive-progress/1',previousSnapshotHash:hashProgress(previousSnapshot),defaultsSnapshotHash:hashProgress(defaultsSnapshot),snapshotHash:hashProgress(snapshot),added,snapshot};
+}
+
+// Only declared ledgers gain fresh runtime defaults. Old ledger keys are kept,
+// including removed objects, so a later reinstall cannot mint the reward again.
+function deriveCreationProgress(previous,defaults){
+ const exact=(value,keys)=>object(value)&&Object.keys(value).length===keys.length&&keys.every(key=>Object.hasOwn(value,key));
+ const id=key=>/^[a-z][a-z0-9_-]{0,63}$/.test(key);
+ const number=(n,min,max)=>typeof n==='number'&&Number.isFinite(n)&&n>=min&&n<=max;
+ const ledger=(value,valid)=>object(value)&&Object.keys(value).length<=4096&&Object.entries(value).every(([key,v])=>id(key)&&valid(v));
+ for(const value of [previous,defaults]){
+  if(!exact(value,['format','worldId','baseId','baseVersion','stateVersion','body'])||value.format!=='craftmine.godot-progress/1'||value.baseId!=='creation-sandbox'||value.baseVersion!=='1.0.0'||value.stateVersion!==1||typeof value.worldId!=='string'||!value.worldId)fail('MIGRATION_UNSUPPORTED_BASE');
+  const b=value.body;
+  if(!exact(b,['format','worldId','baseVersion','player','timeOfDay','sourceTimeOfDay','inventory','openedChests','doors','rules'])||b.format!=='craftmine.creation-progress/1'||b.worldId!==value.worldId||b.baseVersion!==value.baseVersion)fail('MIGRATION_UNKNOWN_NATIVE_SHAPE');
+  if(!exact(b.player,['position','yaw','pitch','onFloor'])||!Array.isArray(b.player.position)||b.player.position.length!==3||!b.player.position.every((n,i)=>number(n,i===1?0:-32,32))||!number(b.player.yaw,-Math.PI,Math.PI)||!number(b.player.pitch,-89*Math.PI/180,89*Math.PI/180)||typeof b.player.onFloor!=='boolean'||!number(b.timeOfDay,0,24)||!number(b.sourceTimeOfDay,0,24))fail('MIGRATION_CREATION_STATE_INVALID');
+  if(!ledger(b.inventory,n=>Number.isSafeInteger(n)&&n>=0&&n<=999999)||!ledger(b.openedChests,n=>n===true)||!ledger(b.doors,n=>typeof n==='boolean')||!ledger(b.rules,object))fail('MIGRATION_CREATION_STATE_INVALID');
+  if(Buffer.byteLength(canonicalProgressJson(value))>1048576)fail('MIGRATION_SIZE_LIMIT');
+ }
+ if(previous.worldId!==defaults.worldId)fail('MIGRATION_IDENTITY_CHANGED');
+ const snapshot=JSON.parse(canonicalProgressJson(previous)),added=[];
+ for(const key of ['doors','rules'])for(const id of Object.keys(defaults.body[key]).sort()){
+  if(!Object.hasOwn(snapshot.body[key],id)){snapshot.body[key][id]=structuredClone(defaults.body[key][id]);added.push({path:'/body/'+key,id});}
+ }
+ if(previous.body.sourceTimeOfDay!==defaults.body.sourceTimeOfDay){snapshot.body.timeOfDay=defaults.body.sourceTimeOfDay;snapshot.body.sourceTimeOfDay=defaults.body.sourceTimeOfDay;}
+ if(Buffer.byteLength(canonicalProgressJson(snapshot))>1048576)fail('MIGRATION_SIZE_LIMIT');
+ return {format:'craftmine.godot-additive-progress/1',previousSnapshotHash:hashProgress(previous),defaultsSnapshotHash:hashProgress(defaults),snapshotHash:hashProgress(snapshot),added,snapshot};
 }

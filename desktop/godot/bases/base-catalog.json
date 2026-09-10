@@ -11,6 +11,108 @@
   "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
   "bases": [
     {
+      "baseId": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "title": "沉浸式造物世界",
+      "status": null,
+      "engine": {
+        "name": "godot",
+        "version": "4.7.2-stable",
+        "language": "GDScript",
+        "renderer": "gl_compatibility",
+        "targets": [
+          "web",
+          "windows-x64"
+        ]
+      },
+      "protocols": {
+        "world": "craftmine.creation-scene/1",
+        "state": "craftmine.creation-progress/1",
+        "progress": "craftmine.godot-progress/1",
+        "probe": "craftmine.godot-observation/1",
+        "params": null,
+        "baseProtocolVersion": 1
+      },
+      "state": {
+        "format": "craftmine.creation-progress/1",
+        "version": 1,
+        "preserved": [
+          "worldId",
+          "player",
+          "timeOfDay",
+          "sourceTimeOfDay",
+          "inventory",
+          "openedChests",
+          "doors",
+          "rules"
+        ],
+        "migrations": []
+      },
+      "assets": {
+        "manifest": "assets/ASSET_MANIFEST.json",
+        "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt"
+      },
+      "contentHash": "0211755105238fcfb2d3ec70c8e6b46c6ba9d4df4b05f7bea331e6b94a16c8be",
+      "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+      "entityIdScheme": null,
+      "capabilities": [
+        "bounded-first-person-movement",
+        "creation-entities",
+        "ray-target-observation",
+        "one-time-chest",
+        "door-interaction",
+        "source-authored-rules",
+        "complete-progress"
+      ],
+      "templates": [
+        {
+          "id": "blank",
+          "kind": "blank-start",
+          "label": "空白造物世界",
+          "entryScene": "res://scenes/creation.tscn",
+          "description": "有边界的 3D 空白地面，可行走、瞄准并持续创造物件与玩法。",
+          "source": "scenes/creation.tscn",
+          "initialState": {
+            "player": "spawn",
+            "timeOfDay": 12,
+            "inventory": {},
+            "openedChests": {},
+            "doors": {},
+            "rules": {},
+            "sourceTimeOfDay": 12
+          },
+          "create": {
+            "tool": "tools/new-world.mjs",
+            "args": [
+              "--template",
+              "blank",
+              "--world-id",
+              "<worldId>",
+              "--out",
+              "<dir>"
+            ]
+          }
+        }
+      ],
+      "components": [],
+      "managedMaterialize": {
+        "function": "materializeBase",
+        "module": "desktop/godot/shared/materialize.mjs",
+        "args": {
+          "baseId": "creation-sandbox",
+          "worldId": "<worldId>",
+          "template": "<templateId>",
+          "out": "<dir>"
+        }
+      },
+      "tools": {
+        "newWorld": "tools/new-world.mjs"
+      },
+      "acceptance": {
+        "headless": "tests/headless.mjs"
+      }
+    },
+    {
       "baseId": "first-person",
       "baseVersion": "0.1.0",
       "title": "First-person base",
@@ -53,7 +155,7 @@
         "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
         "generator": "tools/generate_meshes.mjs"
       },
-      "contentHash": "c131ea79cbb7dabeeabfd553ed285f5b5b5d55282b2373367a51b793c92588e8",
+      "contentHash": "e36a128da5b14e88b25a06aebba055bbb38db6ba26d60fad002204539e51408f",
       "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
       "entityIdScheme": null,
       "capabilities": [],
@@ -335,7 +437,7 @@
         "license": "docs/assets-and-provenance.md",
         "generator": null
       },
-      "contentHash": "7f26102435cc9d3b3fb21858fffc6d4c6ad259e9f2a8a313698c3dcac00e82ed",
+      "contentHash": "c916550ae1478f9fb2d7f6196adfbe754df59d3d10d4cb87ecf80b2b55eaa28f",
       "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
       "entityIdScheme": "stable string id declared in world data, never a node path",
       "capabilities": [

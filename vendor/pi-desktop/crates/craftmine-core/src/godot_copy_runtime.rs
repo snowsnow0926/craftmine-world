@@ -69,6 +69,22 @@ fn transform(files: &mut BTreeMap<String,Vec<u8>>, base: &str, old: &str, new: &
     files.insert("project.godot".into(),result.into_bytes());
     match base {
         "first-person"=>{},
+        "creation-sandbox"=>{
+            // Copied history reserves the same object IDs and records origin;
+            // it must not retain a foreign world binding that blocks all edits.
+            if let Some(bytes)=files.get("world/creation-operations.json") {
+                let mut journal:Value=serde_json::from_slice(bytes)?;
+                ensure!(journal["format"]=="craftmine.creation-operations/1","GODOT_COPY_CREATION_JOURNAL_INVALID");
+                let operations=journal["operations"].as_array_mut().context("GODOT_COPY_CREATION_JOURNAL_INVALID")?;
+                ensure!(operations.len()<=64,"GODOT_COPY_CREATION_JOURNAL_INVALID");
+                for entry in operations {
+                    ensure!(entry["receipt"]["worldId"]==old,"GODOT_COPY_CREATION_JOURNAL_INVALID");
+                    if entry["receipt"].get("originWorldId").is_none(){entry["receipt"]["originWorldId"]=json!(old);}
+                    entry["receipt"]["worldId"]=json!(new);
+                }
+                files.insert("world/creation-operations.json".into(),serde_json::to_vec_pretty(&journal)?);
+            }
+        },
         "top-down"|"mining-sandbox"=>{
             // Only the shipped root metadata schema grants an identity edit.
             let value:Value=serde_json::from_slice(files.get("world.json").context("GODOT_COPY_METADATA_REQUIRED")?)?;
@@ -193,7 +209,7 @@ mod tests {
     use super::*;
     #[test]
     fn fixed_rebinding_preserves_every_other_byte_in_four_bases() -> Result<()> {
-        for base in ["first-person","top-down","side-view","mining-sandbox"] {
+        for base in ["first-person","top-down","side-view","mining-sandbox","creation-sandbox"] {
             let config=b"config_version=5\r\n[craftmine]\r\nruntime/world_id=\"source\"\r\nruntime/enabled=true\r\n";
             let mut files=BTreeMap::from([("project.godot".into(),config.to_vec()),
                 ("script.gd".into(),b"# source must remain source\n".to_vec()),

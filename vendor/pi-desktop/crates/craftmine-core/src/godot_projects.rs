@@ -296,7 +296,7 @@ fn validate_manifest(manifest: &Manifest) -> Result<()> {
     ensure!(
         matches!(
             manifest.base_id.as_str(),
-            "first-person" | "top-down" | "side-view" | "mining-sandbox"
+            "first-person" | "top-down" | "side-view" | "mining-sandbox" | "creation-sandbox"
         ),
         "INVALID_BASE_ID"
     );

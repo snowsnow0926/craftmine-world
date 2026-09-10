@@ -155,9 +155,9 @@ impl TaskJournal {
             )
             .optional()?;
         let owner = copy.clone().unwrap_or_else(|| args.world_id.clone());
-        let (base_id, engine, renderer, target): (String, String, String, String) = self.db.query_row(
-            "SELECT base_id,engine_version,renderer,target FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
-            params![owner, build], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?))
+        let (base_id, engine, renderer, target, source_revision, manifest_hash): (String, String, String, String, i64, String) = self.db.query_row(
+            "SELECT base_id,engine_version,renderer,target,source_revision,manifest_hash FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
+            params![owner, build], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?, row.get(4)?, row.get(5)?))
         ).context("GODOT_BUILD_NOT_FOUND")?;
         ensure!(current.world.snapshot["baseId"] == base_id
             && current.world.build["godot"]["engineVersion"] == engine
@@ -188,6 +188,7 @@ impl TaskJournal {
         let mut descriptor = if verify_artifacts { self.runtime_artifacts(&owner, build, &job)? } else { json!({}) };
         descriptor.as_object_mut().unwrap().extend(json!({"format":"craftmine.godot-runtime-descriptor/1","phase":"formal","worldId":args.world_id,
             "buildId":build,"baseId":base_id,"revision":current.summary.revision,"contentHash":current.content_hash,
+            "sourceRevision":source_revision,"manifestHash":manifest_hash,
             "snapshot":current.world.snapshot,"build":current.world.build,
             "copiedFromWorldId":copy}).as_object().unwrap().clone());
         Ok(descriptor)
