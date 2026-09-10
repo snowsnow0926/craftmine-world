@@ -9099,3 +9099,8 @@ When durable initStatus reports failed with GODOT_JOB_FAILED or GODOT_JOB_ENDED,
 ### Asset favorites and tags (AL2 slice, 2026-09-10)
 
 Open a selected asset detail, favorite and unfavorite it with distinct operation ids, save Chinese tags, and clear them. Reject excessive UTF-8 tag length without sending a write. Drop a response after core commit: controls must retain the request, and Retry after switching away/back must use the exact original id/payload. A late success/error for the previous asset must not replace the current detail. Verify content hashes, version rows, source/license and worlds remain unchanged, and metadata persists after core restart. The standalone real React/Core headless scenario is tests/plan-loop/asset-annotation-headless.mjs; it sends only page-script DOM events/forms with focus and pointer lock audited. Full Electron integration is a separate acceptance step.
+
+
+### Asset selection after metadata refresh (AL2 follow-up, 2026-09-10)
+
+Hold the selected asset body read, complete a favorite/tag annotation and the ensuing search refresh, then release the body read. Detail metadata must reflect the refreshed card rather than the row captured before the edit. Repeat while selecting a different asset before releasing the old read: that old asset must not return. The controlled controller tests freeze this ordering; existing real React/Core evidence for the earlier UI is retained separately.

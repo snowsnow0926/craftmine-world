@@ -96,3 +96,22 @@ test('a confirmed edit releases its write slot while a slow list refresh is outs
  await c.annotate({assetId:'a',favorite:false});wait.resolve({items:[],total:0});await first;
  const edits=f.calls.filter(x=>x.method==='asset.annotate');assert.equal(edits.length,2);assert.notEqual(edits[0].payload.operationId,edits[1].payload.operationId);assert.equal(c.snapshot().selectedMetadata.favorite,false);
 });
+test('a pending selection uses refreshed metadata after annotation acknowledgement is retired',async()=>{
+ const f=fixture(),c=f.controller;await c.search({scope:'local-library'});const wait=deferred();
+ f.intercept((method,p)=>method==='asset.read'&&p.assetId==='a'?wait.promise:null);
+ const selection=c.select('a',1);
+ await c.annotate({assetId:'a',favorite:true,tags:['refreshed']}); // Includes completed host search refresh.
+ assert.equal(c.snapshot().cards.find(card=>card.assetId==='a').favorite,true);
+ assert.equal(c.snapshot().selected,null);
+ wait.resolve({version_:f.body('a'),state:{indexed:true}});await selection;
+ assert.equal(c.snapshot().selected.version_.assetId,'a');
+ assert.equal(c.snapshot().selectedMetadata.favorite,true,'late body read cannot restore metadata captured before the edit');
+ assert.deepEqual(c.snapshot().selectedMetadata.tags,['refreshed']);
+});
+test('a refreshed old asset cannot return after a newer asset selection',async()=>{
+ const f=fixture(),c=f.controller;await c.search({scope:'local-library'});const wait=deferred();
+ f.intercept((method,p)=>method==='asset.read'&&p.assetId==='a'?wait.promise:null);
+ const old=c.select('a',1);await c.annotate({assetId:'a',favorite:true});await c.select('b',1);
+ wait.resolve({version_:f.body('a'),state:{indexed:true}});await old;
+ assert.equal(c.snapshot().selected.version_.assetId,'b');assert.deepEqual(c.snapshot().selectedMetadata,{assetId:'b',tags:['other'],favorite:false});
+});

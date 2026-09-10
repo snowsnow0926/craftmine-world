@@ -20,6 +20,15 @@ also reject stale generations. A failed list refresh does not turn an already
 acknowledged edit into an unacknowledged write. The latest filter is refreshed
 only when the edit has not crossed a search/scope generation.
 
+After a pending `asset.read` completes and still matches the selection
+generation, metadata is resolved again from the current matching card or current
+matching trusted selection before falling back to the originally captured row.
+A retained annotation acknowledgement may then overlay it. This matters when
+an annotation and its search refresh both finish before the body read: that
+refresh has retired the acknowledgement cache, so the captured row is stale.
+The re-resolution must not bypass the selection-generation guard or use metadata
+from another logical asset.
+
 Tags accept comma, Chinese comma or semicolon separators. Trim and deduplicate
 without silently truncating tags. Match the core limit of 32 tags, 40 UTF-8 bytes
 per tag, and no control characters. Empty input submits an empty array to clear
