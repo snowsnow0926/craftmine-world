@@ -1,0 +1,490 @@
+{
+  "format": "craftmine.local-issues-workbench-test/1",
+  "type": "workbench-http-service-fixture",
+  "native": false,
+  "uiCommit": "5a331a02afbb7c959864ee0bbef576820815a782",
+  "uiSourceHashes": {
+    "workbench-ui.mjs": "3a810b1745e3bda1652b2453f63136df55039ff6962b57b800cc16225b60cc1c",
+    "godot-package-ui.mjs": "68db821a84d5360638161cf031a8d328eaa3cb1c04592d9c51e3668d8af844b2",
+    "issue-ui.mjs": "fa5a69dcb219d0eef2a2d24f982a81e6f85c38d121f260ce31cc4c35ad4fe14e",
+    "godot-windows-export-ui.mjs": "2fcce5c7b158963bd7a71269bef2a4b599e4de92d874d432a3a6f017237a14e0"
+  },
+  "serviceSourceHash": "f739c8c2cd0b3a57b42c1faa0a76fbfeb631b808fc0d0562c4ded9be60b30a87",
+  "startedAt": "2026-09-10T00:45:41.486Z",
+  "checks": [
+    {
+      "name": "production createWorkbench mounts the notebook beside backup and diagnostics",
+      "passed": true
+    },
+    {
+      "name": "HTTP lost response retries the same real persisted record; original submitted text remains inert",
+      "passed": true
+    },
+    {
+      "name": "new service factory and reloaded workbench recover the unchanged disk record",
+      "passed": true
+    },
+    {
+      "name": "workbench details and explicit delete confirmation operate on the real ledger",
+      "passed": true
+    },
+    {
+      "name": "normal workbench world switching scopes storage and clears old text",
+      "passed": true
+    },
+    {
+      "name": "late previous-world detail cannot overwrite or prevent the new world notebook",
+      "passed": true
+    },
+    {
+      "name": "late create reply stays in the original world and cannot strand new-world controls",
+      "passed": true
+    },
+    {
+      "name": "old workbench list response cannot replace the new-world notebook",
+      "passed": true
+    },
+    {
+      "name": "closing the workbench cancels deferred redraw and does not reopen it",
+      "passed": true
+    },
+    {
+      "name": "old mutation completion cannot unlock or bypass a pending new-world action",
+      "passed": true
+    },
+    {
+      "name": "no model, world save, external request, input, focus or PointerLock",
+      "passed": true
+    }
+  ],
+  "completed": true,
+  "passed": true,
+  "finishedAt": "2026-09-10T00:45:42.746Z",
+  "calls": [
+    {
+      "channel": "workbench.capabilities",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "alpha",
+        "operationId": "aeec2177-0cc0-41e0-aab1-fc00e5cdcd3d",
+        "description": "  工作台原话\n<script>window.injected=true</script> 世界 🌍  "
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "alpha",
+        "operationId": "aeec2177-0cc0-41e0-aab1-fc00e5cdcd3d",
+        "description": "  工作台原话\n<script>window.injected=true</script> 世界 🌍  "
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "issue.read",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-9c779bd7622809552bbdf75d1ef6fa407bcc8d29a1a42dadfd72afb26f8aad8a"
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.read",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-9c779bd7622809552bbdf75d1ef6fa407bcc8d29a1a42dadfd72afb26f8aad8a"
+      }
+    },
+    {
+      "channel": "issue.delete",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-9c779bd7622809552bbdf75d1ef6fa407bcc8d29a1a42dadfd72afb26f8aad8a",
+        "operationId": "25a6f2c6-fece-43fd-9060-e74111d882cd"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "alpha",
+        "operationId": "c90fe12f-e1b9-45be-9379-48fde1378f90",
+        "description": "alpha surviving issue"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "beta",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "beta",
+        "operationId": "10cbebfa-4777-46a2-a356-093cdd59bbea",
+        "description": "beta separate issue"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "beta",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "issue.read",
+      "input": {
+        "worldId": "beta",
+        "issueId": "issue-e87136c30de4df5520c52b1a36374115e3a84f1385129eb88d9edb844b68fdf4"
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "alpha",
+        "operationId": "f2b39437-ecd3-4a94-8595-6b2a8c8ec226",
+        "description": "late alpha creation"
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "beta",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "beta",
+        "operationId": "98e895e8-1e93-4fdc-a368-3c217d3b2a48",
+        "description": "beta after old creation"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "beta",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "beta",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.read",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-273d1c4572e01ef84aa9986d8a8f1fd822d03a57cf64c831ef7a2e450d46ce21"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "alpha",
+        "operationId": "d38962fe-3867-45c4-9692-c8d3643094a3",
+        "description": "alpha before new-world action"
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "beta",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "beta",
+        "operationId": "d1b1b26d-1657-4e7b-8767-0391e75fb930",
+        "description": "beta after new-world load"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "beta",
+        "offset": 0,
+        "limit": 20
+      }
+    }
+  ],
+  "externalRequests": [],
+  "pageErrors": [],
+  "guardSnapshots": [
+    {
+      "pointerLock": 0,
+      "focus": 0,
+      "trustedInput": 0
+    },
+    {
+      "pointerLock": 0,
+      "focus": 0,
+      "trustedInput": 0
+    }
+  ],
+  "guard": {
+    "pointerLock": 0,
+    "focus": 0,
+    "trustedInput": 0
+  }
+}
