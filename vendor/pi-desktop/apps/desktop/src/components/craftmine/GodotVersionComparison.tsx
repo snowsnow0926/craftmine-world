@@ -30,7 +30,15 @@ export function GodotVersionComparison({ bridge, worldId, viewId, targetOid }: {
     void request("godot.historyCompare", { offset: 0 });
     return () => { generation.current++; };
   }, [bridge, worldId, viewId, targetOid]);
-  return <section data-history-comparison aria-label="与正式版本对比">
+  return <section data-history-comparison data-comparison-busy={busy} aria-label="与正式版本对比">
+    <form data-comparison-form onSubmit={event => {
+      event.preventDefault(); if (busy || !data) return;
+      const button = (event.nativeEvent as SubmitEvent).submitter;
+      const file = button?.getAttribute("data-compare-path");
+      if (file && data.changes.some((item: Data) => item.path === file)) void request("godot.historyDiff", {path: file});
+      else if (button?.hasAttribute("data-compare-previous") && data.offset > 0) void request("godot.historyCompare", {offset: Math.max(0, data.offset - 32)});
+      else if (button?.hasAttribute("data-compare-next") && data.nextOffset != null) void request("godot.historyCompare", {offset: data.nextOffset});
+    }}>
     <h3>与正式版本对比</h3>
     {error && <p role="alert">{error} · 请刷新版本记录后重试。</p>}
     {busy && <p role="status">正在读取差异…</p>}
@@ -38,12 +46,12 @@ export function GodotVersionComparison({ bridge, worldId, viewId, targetOid }: {
       <p data-compare-range>正式 {data.fromOid.slice(0, 12)} → 所选 {data.toOid.slice(0, 12)}</p>
       <p data-compare-count>{data.total === 0 ? "内容相同，没有文件变化。" : `共 ${data.total} 个文件变化 · 当前 ${data.offset + 1}–${data.offset + data.changes.length}`}</p>
       <ul data-compare-files>{data.changes.map((file: Data) => <li key={file.path}>
-        <button disabled={busy} data-compare-path={file.path} onClick={() => void request("godot.historyDiff", { path: file.path })}>
+        <button type="submit" disabled={busy} data-compare-path={file.path}>
           {labels[file.status] ?? file.status} · {file.path}
         </button>
       </li>)}</ul>
-      <button data-compare-previous disabled={busy || data.offset === 0} onClick={() => void request("godot.historyCompare", { offset: Math.max(0, data.offset - 32) })}>上一页变化</button>
-      <button data-compare-next disabled={busy || data.nextOffset == null} onClick={() => void request("godot.historyCompare", { offset: data.nextOffset })}>下一页变化</button>
+      <button type="submit" data-compare-previous disabled={busy || data.offset === 0}>上一页变化</button>
+      <button type="submit" data-compare-next disabled={busy || data.nextOffset == null}>下一页变化</button>
     </>}
     {diff && <div data-compare-detail>
       <p>{diff.path}</p>
@@ -53,5 +61,6 @@ export function GodotVersionComparison({ bridge, worldId, viewId, targetOid }: {
         <pre data-compare-patch style={{ maxHeight: 360, overflow: "auto", whiteSpace: "pre", fontFamily: "monospace" }}>{diff.patch}</pre>
       </>}
     </div>}
+    </form>
   </section>;
 }

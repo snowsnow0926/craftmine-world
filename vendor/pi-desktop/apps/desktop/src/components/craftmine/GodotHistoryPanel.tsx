@@ -57,10 +57,10 @@ export function GodotHistoryPanel({ bridge, worldId, onOpenChecks }: {
   }
   const identity = data ? { branchId, revision: data.index.revision, manifestHash: data.index.manifestHash } : {};
   const style = { width: "100%", minWidth: 0, overflowWrap: "anywhere" as const };
-  return <section data-godot-history="true" style={{ padding: 12, overflow: "auto", minWidth: 0 }}>
+  return <section data-godot-history="true" data-history-world={worldId ?? ""} data-history-view={data?.viewId ?? ""} data-history-head={data?.headOid ?? ""} data-history-formal={data?.appliedOid ?? ""} data-history-busy={busy} style={{ padding: 12, overflow: "auto", minWidth: 0 }}>
     <p>创作分支只改变待检查源码。游玩版本须在检查通过后预览并确认应用。</p>
     {error && <p role="alert" data-history-error>{error}</p>}
-    <button disabled={busy || !worldId} onClick={() => void load(branchId)}>刷新</button>
+    <form data-history-refresh-form onSubmit={event => { event.preventDefault(); if (!busy && worldId) void load(branchId); }}><button type="submit" disabled={busy || !worldId}>刷新</button></form>
     {data && <>
       <p data-history-applied>正式游玩版本：{short(data.appliedOid)}</p>
       <label>创作分支 <select data-history-branch disabled={busy} value={branchId} onChange={event => { setData(null); setJob(null); void load(event.target.value); }}>
@@ -82,8 +82,10 @@ export function GodotHistoryPanel({ bridge, worldId, onOpenChecks }: {
       </fieldset>
       <h3>版本记录</h3>
       {!data.appliedOid && <p>尚无正式版本，应用首个版本后可对比。</p>}
-      <button data-history-compare-head disabled={busy || !data.appliedOid} onClick={() => setCompareOid(data.headOid)}>当前分支与正式版本对比</button>
-      <ul data-history-records>{(data.history.records ?? []).map((record: Data) => <li key={record.oid} style={style}>{short(record.oid)} · {record.subject} {record.oid === data.appliedOid ? "（正式）" : ""} <button data-history-compare={record.oid} disabled={busy || !data.appliedOid} onClick={() => setCompareOid(record.oid)}>与正式版本对比</button></li>)}</ul>
+      <form data-history-select-form onSubmit={event => { event.preventDefault(); const target = (event.nativeEvent as SubmitEvent).submitter?.getAttribute("data-history-compare"); if (!busy && data.appliedOid && target && (target === data.headOid || data.history.records.some((record: Data) => record.oid === target))) setCompareOid(target); }}>
+      <button type="submit" data-history-compare-head data-history-compare={data.headOid} disabled={busy || !data.appliedOid}>当前分支与正式版本对比</button>
+      <ul data-history-records>{(data.history.records ?? []).map((record: Data) => <li key={record.oid} style={style}>{short(record.oid)} · {record.subject} {record.oid === data.appliedOid ? "（正式）" : ""} <button type="submit" data-history-compare={record.oid} disabled={busy || !data.appliedOid}>与正式版本对比</button></li>)}</ul>
+      </form>
       <button disabled={busy || !data.history.skip} onClick={() => void load(branchId, Math.max(0, data.history.skip - 20), data.index.offset ?? 0)}>上一页版本</button>
       <button disabled={busy || data.history.nextSkip == null} onClick={() => void load(branchId, data.history.nextSkip, data.index.offset ?? 0)}>下一页版本</button>
       {compareOid && worldId && <GodotVersionComparison key={`${worldId}:${data.viewId}:${compareOid}`} bridge={bridge} worldId={worldId} viewId={data.viewId} targetOid={compareOid}/>}

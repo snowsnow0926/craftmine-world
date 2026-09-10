@@ -8994,6 +8994,7 @@ The actual ae32974 package returned the expected stale-backup error through Elec
 In an actual managed Git repository, change a[1].gd and a1.gd with different line counts. Requesting the bracketed filename must produce only its patch and counts. Repeat with binary image[1].png and textual image1.png: the bracketed request must remain binary with exact byte sizes. Reject public Git magic prefixes, wildcards, traversal and drive paths without broadening the shared path contract. Preserve the branch head. See [literal content diff](../content-diff-literal-paths.md).
 
 
+<<<<<<< HEAD
 ## PP3b local issue supplements and player retest (2026-09-10)
 
 - In a formally loaded world, open an existing issue and append Unicode text. Confirm the original description/build/instance stay unchanged and the new entry records its own current context.
@@ -9007,3 +9008,8 @@ In an actual managed Git repository, change a[1].gd and a1.gd with different lin
 ## Godot task path budget (2026-09-10)
 
 See godot-task-path-budget.md. Fixed native broker imports at 180/245 UTF-16 cache units must pass; 266 units must reject before allocation with GODOT_TASK_PATH_TOO_LONG. Verify original source hashes, no task directory on rejection, durable finite error after core restart, and matching build stage in the player UI. No UI/input/model automation.
+=======
+### CRAFTMINE-VM2-DESKTOP-001
+
+Compile current Main/React/core, stage same-commit trusted runtime, and launch an isolated short profile copied only from the authorized adopted 500 ms core archive. Use finite historyView form navigation to compare actual versions and text through Main, asserting complete progress, database fingerprint and task facts unchanged. Switch world and reject the old view. Separately check/apply a real 501 ms candidate, capturing a fresh view after draft creation but before application; reject that view after only the formal identity changes. Require refreshed self-comparison, real panel teardown and zero shutdown/input/page failures. See [desktop acceptance](../godot-version-diff-desktop-acceptance.md).
+>>>>>>> ea8d77f (test(history): exercise finite navigation in the actual desktop client)
