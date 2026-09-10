@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, open, rename, unlink, lstat } from "node:fs/promises";
 import { join } from "node:path";
+import { validateTargetFeedbackIntent, validateTargetFeedbackReceipt } from "./craftmine-target-feedback-panel";
 
 export type OperationOwner = { projectId: string; sessionId: string | null; worldId: string };
 type Payload = Record<string, any>;
@@ -14,6 +15,7 @@ const allowed: Record<string, string[]> = {
   "backup.restore": ["grantId", "expectedCurrentHash"],
   "task.budget": ["taskId", "generation", "maxTokens"],
   "draft.recheck": ["taskId", "generation", "revision", "draftHash"],
+  "targetFeedback.submit": ["targetId", "sourceBinding", "values"],
 };
 export const PERSISTENT_WORKBENCH_CHANNELS = new Set(Object.keys(allowed));
 const fail = (code: string): never => { throw Object.assign(new Error(code), { code }); };
@@ -46,6 +48,7 @@ function validatePayload(channel: string, payload: Payload): Payload {
   if (channel === "backup.restore" && (!short(payload.grantId, 100) || !hash(payload.expectedCurrentHash))) fail("INVALID_OPERATION_PARAMS");
   if (channel === "task.budget" && (!short(payload.taskId, 100) || !integer(payload.generation) || payload.generation < 1 || !(payload.maxTokens === null || (integer(payload.maxTokens) && payload.maxTokens > 0)))) fail("INVALID_OPERATION_PARAMS");
   if (channel === "draft.recheck" && (!short(payload.taskId, 100) || !integer(payload.generation) || payload.generation < 1 || !integer(payload.revision) || !hash(payload.draftHash))) fail("INVALID_OPERATION_PARAMS");
+  if (channel === "targetFeedback.submit") validateTargetFeedbackIntent(payload);
   // Only the explicit player-authored business arguments are retained. Never
   // accept provider settings, credentials, archive bytes, paths or error text.
   return JSON.parse(canonical(payload));
@@ -58,7 +61,8 @@ function projection(record: StoredOperation): PendingOperation {
   const { owner: _owner, identity: _identity, hash: _hash, ...result } = record;
   return structuredClone(result);
 }
-function receipt(result: any) {
+function receipt(result: any, channel: string) {
+  if (channel === "targetFeedback.submit") return validateTargetFeedbackReceipt(result);
   if (!plain(result) || Buffer.byteLength(canonical(result)) > 65536) fail("INVALID_OPERATION_RECEIPT");
   const keys = ["budget", "previousMaxTokens", "receipt", "ref", "packageHash", "metadata", "idMap", "dependencies", "applied", "verificationId", "verificationStatus", "replayed", "id", "operationId", "status", "archiveHash", "bytes", "scope", "currentHash", "modelReplay", "credentialsIncluded", "format", "kind", "claim", "sourceRefs", "tags", "appliesTo", "supersedes", "supersededBy", "createdAt", "lastVerifiedAt", "retiredReason", "generation", "draftHash", "revision", "summary", "current", "inputHash", "outputHash", "publishingAvailable", "taskId", "workspaceRevision", "baseBuild"];
   if (Object.keys(result).some(key => !keys.includes(key) && !["activated", "rebuildRequired"].includes(key))) fail("INVALID_OPERATION_RECEIPT");
@@ -93,7 +97,7 @@ export function createCraftmineOperationJournal(directory: string) {
       if (typeof record.operationId !== "string" || !/^[a-zA-Z0-9_-]{8,100}$/.test(record.operationId) || ids.has(record.operationId)) fail("INVALID_OPERATION_JOURNAL");
       ids.add(record.operationId);
       if (!["pending", "running", "uncertain", "completed"].includes(record.state) || record.identity !== identity(record.channel, record.payload) || record.hash !== digest({ owner: record.owner, channel: record.channel, payload: record.payload, operationId: record.operationId })) fail("INVALID_OPERATION_JOURNAL");
-      if (record.state === "completed") receipt(record.result);
+      if (record.state === "completed") receipt(record.result, record.channel);
       if (record.state === "running") record.state = "uncertain";
     }
     return entries = saved.operations;
@@ -147,7 +151,7 @@ export function createCraftmineOperationJournal(directory: string) {
       if (executing.has(operationId)) return executing.get(operationId)!;
       const task = (async () => {
         try {
-          const result = receipt(await action(record));
+          const result = receipt(await action(record), record.channel);
           await locked(async () => {
             const saved = await find(owner, operationId); saved.state = "completed"; saved.result = result; delete saved.errorCode;
             try { await save(); } catch (error) { saved.state = "uncertain"; delete saved.result; throw error; }

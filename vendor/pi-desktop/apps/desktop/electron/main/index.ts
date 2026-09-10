@@ -31,6 +31,7 @@ import { createGodotWindowsExportService } from "./godot-windows-export-service.
 import { createCraftmineDiagnosticsService } from "./craftmine-diagnostics-service";
 import { createCraftmineIssueService } from "./craftmine-issue-service";
 import { createCraftmineIssueContext } from "./craftmine-issue-context";
+import { createCraftmineTargetFeedbackPanel } from "./craftmine-target-feedback-panel";
 import { createCraftmineTelemetry } from "./craftmine-telemetry";
 import { readCraftmineBuildIdentity } from "./craftmine-build-identity";
 import { CraftmineVerifier } from "./craftmine-verifier";
@@ -2634,6 +2635,10 @@ const craftmineDiagnostics = createCraftmineDiagnosticsService({
 const craftmineTelemetry = createCraftmineTelemetry({ observe: craftmineDiagnostics.observe });
 app.once("will-quit", () => craftmineTelemetry.dispose());
 const craftminePanelRequest = createCraftminePanelGateway({
+  targetFeedback: createCraftmineTargetFeedbackPanel({
+    domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
+    blocked: () => !!profileRestore || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy,
+  }),
   operations: createCraftmineOperationJournal(join(dataDir, "craftmine-pending-operations")),
   viewingSession: () => notificationViewingSessionId,
   session: async id => {

@@ -1,6 +1,7 @@
 // Presentation only. All durable facts and authority come from the host bridge.
 import {createGodotPackageUI} from './godot-package-ui.mjs';
 import {createIssueUI} from './issue-ui.mjs';
+import {createTargetFeedbackUI} from './target-feedback-ui.mjs';
 const labels={proposed:'待核实',validated:'已验证',needs_revalidation:'需要复验',retired:'已停用',running:'进行中',interrupted:'已中断',cancelled:'已停止',completed:'已完成',finished:'已完成'};
 const kinds={object:'物体',gameplay:'基础玩法',creation:'组合作品','project-rule':'创作规则','verified-experience':'验证经验','task-history':'任务历史',workflow:'创作流程'};
 const text=(tag,value,className)=>{const element=document.createElement(tag);element.textContent=value??'';if(className)element.className=className;return element;};
@@ -31,6 +32,19 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     pendingArea.append(text('h2','待确认操作'),text('p','这些操作保留了原来的编号和参数。继续前会核对原任务与世界。','workbench-meta'));
     for(const item of response.items){
       const row=document.createElement('article');row.className='workbench-card';row.dataset.pendingOperation=item.operationId;
+      if(item.channel==='targetFeedback.submit'){
+        row.append(text('h3','训练靶反馈调整'),text('p',`${item.payload.targetId} · ${item.payload.values.hitFlashMilliseconds} 毫秒`));
+        row.append(text('p','操作编号和参数已保留。检查通过后仍需预览并采用。','workbench-meta'));
+        const resume=button(item.state==='completed'?'查询并确认这次检查':'查询并继续原调整',()=>action(async()=>{
+          let result=await call('workbench.execute',{operationId:item.operationId});
+          if(item.state==='completed'&&result.job)result=await call('targetFeedback.status',{operationId:item.operationId});
+          parameters.accept(result);
+          const terminal=['passed','failed','cancelled','interrupted','unchanged','rejected'].includes(result.status);
+          if(item.state==='completed'&&terminal)await call('workbench.acknowledge',{operationId:item.operationId});
+          await refreshPending();
+          status(result.status==='passed'?'调整草稿已检查通过，请到“检查记录”预览并采用。':result.status==='rejected'?'这次调整未写入源码，请重新读取参数。':terminal?'这次检查已结束，源码草稿是否保留可查看检查记录。':'调整草稿仍在检查，结果尚未确认。');
+        }));resume.control.disabled=item.state!=='completed'&&active;row.append(resume.form);pendingArea.append(row);continue;
+      }
       row.append(text('h3',({'library.install':'加入作品草稿','library.capture':'保存作品','memory.propose':'保存创作记忆','backup.export':'导出全部世界和作品','backup.restore':'恢复全部世界和作品','draft.recheck':'重新检查草稿','task.budget':'设置任务累计额度'})[item.channel]||'待确认操作'));
       if(item.channel==='memory.propose')row.append(text('p',item.payload.claim));
       if(item.payload.ref)row.append(text('p',`${item.payload.ref.id} · v${item.payload.ref.version}`));
@@ -51,6 +65,8 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
   const godotPackages=createGodotPackageUI({element:pages.library,request,getWorldId:()=>getWorld()?.id,action});
   const issueArea=document.createElement('section');issueArea.dataset.issueNotebook='true';
   const issues=createIssueUI({element:issueArea,request,getWorldId:()=>getWorld()?.id,action});
+  const parameterArea=document.createElement('section');parameterArea.dataset.targetFeedback='true';
+  const parameters=createTargetFeedbackUI({element:parameterArea,request,getWorldId:()=>getWorld()?.id,durableCall,action});
   function status(message,error=false){notice.textContent=message;notice.dataset.error=String(error);}
   function has(channel){return capabilities.has(channel);}
   async function call(channel,payload={}){
@@ -95,7 +111,10 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
   libraryForm.onsubmit=event=>{event.preventDefault();void action(()=>searchLibrary(true));};
   async function searchLibrary(reset=true){
     const world=getWorld()?.world;
-    if(world?.build?.engine?.kind==='godot-web'||world?.build?.scene?.format==='craftmine.godot-scene/1')return godotPackages.show();
+    if(world?.build?.engine?.kind==='godot-web'||world?.build?.scene?.format==='craftmine.godot-scene/1'){
+      const generation=epoch;await godotPackages.show();if(generation!==epoch)return;
+      if(has('targetFeedback.describe')){pages.library.append(parameterArea);await parameters.show();}return;
+    }
     if(!has('library.search')){empty(pages.library,'作品库服务尚未连接。已保存的世界仍可使用。');return;}
     if(reset)libraryOffset=0;
     await refreshTask();
@@ -246,6 +265,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
 
   }
   async function show(tab){
+    if(tab!=='library')parameters.clear();
     currentTab=tab;element.hidden=!tab;for(const [key,page]of Object.entries(pages))page.hidden=key!==tab;
     if(!tab){refreshWhenIdle=false;return;}if(pending){refreshWhenIdle=true;return;}refreshWhenIdle=false;pause();status('正在读取…');
     await action(async()=>{await refreshPending();return tab==='library'?searchLibrary(true):tab==='memory'?searchMemory(true):tab==='task'?showTask():showBackup();});
@@ -258,8 +278,9 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
   async function setWorld(){
     godotPackages.clear();
     issues.clear();
+    parameters.clear();
     epoch++;pendingArea.replaceChildren();pendingArea.hidden=true;capabilities.clear();capabilitiesReady=false;pendingSelection=null;context=null;active=false;selected=null;selectionRevision=0;inspection=null;libraryDetail.hidden=true;renderSelection();
     await refreshCapabilities();
   }
-  return {show,setWorld,setSelection,refreshCapabilities,refreshPending:()=>!pending&&!isLocked()?refreshPending().catch(()=>{pendingArea.replaceChildren();pendingArea.hidden=true;}):Promise.resolve(),get busy(){return pending>0;},get tab(){return currentTab;},refresh:()=>currentTab?show(currentTab):refreshTask(),clearView(){epoch++;refreshWhenIdle=false;issues.clear();selected=null;renderSelection();}};
+  return {show,setWorld,setSelection,refreshCapabilities,refreshPending:()=>!pending&&!isLocked()?refreshPending().catch(()=>{pendingArea.replaceChildren();pendingArea.hidden=true;}):Promise.resolve(),get busy(){return pending>0;},get tab(){return currentTab;},refresh:()=>currentTab?show(currentTab):refreshTask(),clearView(){epoch++;refreshWhenIdle=false;issues.clear();parameters.clear();selected=null;renderSelection();}};
 }

@@ -8898,3 +8898,14 @@ Do not inject OS input, invoke Pointer Lock, show/focus a window, read provider
 credentials, call a model, or export the report. Assert unchanged game progress
 and zero input guard violations. Runtime fixture checks, browser UI tests and
 actual desktop restart evidence must be labeled separately.
+### Player target feedback configuration (2026-09-10)
+
+1. Open a supported first-person training range and read target IDs and the declared integer millisecond value in the creation library.
+2. Reject zero, fractions, out-of-range values, unknown fields, and stale world identity before writing. Submit 500 milliseconds once, duplicate the request, and verify the original operation and check are reused.
+3. Interrupt transport and restart the isolated client. Recover the existing pending operation and query its original check without adopting it.
+4. Preview and close the exact checked candidate. Verify the original formal runtime value and every gameplay field remain unchanged. Closing retains the source draft.
+5. Preview and adopt that candidate. Verify the live runtime reports 500 milliseconds for the selected target, unchanged defaults for the others, and unchanged full saved progress. Restart and verify the same values again.
+6. Submit an old binding after adoption. Verify a visible pre-write rejection and no new source or progress mutation.
+7. Switch pages/worlds during reads and polling. Old responses must not overwrite the active page; background timers must stop. Use isolated headless page scripts with Pointer Lock disabled and no input simulation.
+
+Fixture UI checks and source-only tests are separate from actual client/runtime evidence; do not count them as model or native acceptance.
