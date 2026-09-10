@@ -25,6 +25,10 @@
 
 旧四底座：`test-results/audit-base-save-FTDdlv/report.json`，第一人称、俯视、采矿、横版全部经过真实引擎导入及状态验证；还包括横版拒绝损坏存档的启动保护。
 
+真实 Web：`test-results/creation-web-E1MASo/report.json`，13 项检查通过。测试提取生产 Rust 的可信 Web 导出预设，使用实际 PCK 在独立 Chromium headless 进程加载；完成旧普通机关、新双按普通脚本、候选默认值及完整迁移验证。两版各有截图，页面错误、控制台错误、Pointer Lock 和窗口置前计数均为零。导出必须保留脚本文本，否则运行时完整性哈希会拒绝；这一实际发现已由导出预设修复覆盖。首次截图另发现 HUD 中文缺字，交给运行时分支修复，不能把无脚本错误当成字体正确。
+
+分发：`test-results/staged-materializers-wcImkY/report.json`，实际按分发清单暂存后，第一人称、俯视、横版、采矿和造物五底座均成功创建空白世界并带上初始状态，开发测试脚本不进入玩家项目。分发与发布清单共 18 项测试通过。
+
 ## 已准备的独立依赖环境
 
 `scripts/prepare-isolated-dependencies.mjs` 复用已安装的第三方包，将所有 `@pi-desktop` 工作区包明确绑定到当前工作树。不会把旧工作树的共享类型或业务源码误当成当前版本。验证工作树中已成功编译 shared、plugin-sdk、i18n、plugin-devkit、agent-runtime 五个包。

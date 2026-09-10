@@ -18,4 +18,6 @@
 
 每次保存 `test-results/creation-story-*/report.json` 与引擎日志，包含引擎版本、Rust 文件哈希、每阶段观察、指令回应、状态、原生断言、错误和耗时。旧四底座另运行 `node desktop/godot/bases/tests/audit-persistence.mjs`，不得以 JavaScript 投影结果冒充真实引擎回归。
 
+Web 入口为 `node tests/creation-web-headless.mjs`，可用 `PLAYWRIGHT_MODULE_PATH` 和 `CRAFTMINE_BROWSER` 指定已有 Playwright 和 headless Chromium。它直接提取生产 Rust 导出预设，只替换已校验模板的绝对缓存路径。必须实际加载普通生成规则和双按自定义规则，验证候选默认值、迁移后状态、交互与奖励。浏览器使用本次独立用户目录，初始化禁用 Pointer Lock 和窗口置前，仅通过运行协议和页面脚本通信，不允许输入模拟。截图与错误、输入防护计数一起进入报告。
+
 这里的输入是固定作者案例，不能推断模型首次创作成功率。headless 验收不代表最终画面、麦克风、桌面面板、玩家手感或生产 LPAC 执行器完成验收；测试专用 executor 登记必须在报告中明确标识。
