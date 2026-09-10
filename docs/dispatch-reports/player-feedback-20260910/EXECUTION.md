@@ -20,3 +20,8 @@ The original 827 release, launcher and `C:/cm-playtest-827` are unchanged. No vi
 The integrated workspace installed its pinned JavaScript dependencies offline from `D:/.pnpm-store` with scripts disabled; 796 packages were reused and no packages downloaded. Workspace-generated CLI bins are expected after their build step. Setup logs remain under `test-results/P10/` and are not product acceptance evidence.
 
 Original feedback documents still describe their intake-time status. This execution record, subsequent module reports and candidate identity records describe implementation; no old test total is promoted into a new release result.
+
+
+## Final completion — 2026-09-11
+
+Preview 9 (42bf20d735d60ff2a4a2c238d793807b878b9a40) completed all 112 final-package native checks, both corrective real-model cases, and the actual Windows install/upgrade/busy-refusal/uninstall lifecycle. The original shortcut was restored. This dated result supersedes earlier pending summaries without deleting their failures. See [the final P0 delivery report](P0_FINAL_2026-09-11.md) for exact identities, raw evidence, package locations, review boundaries and the final Git receipt. No new PI tasks were dispatched after the user requested dispatch to stop.
