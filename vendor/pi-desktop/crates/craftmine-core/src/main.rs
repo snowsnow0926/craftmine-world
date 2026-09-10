@@ -40,6 +40,7 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "godotAsset.list" => return journal.godot_asset_list(params),
         "godotBuild.start" => return journal.godot_build_start(params),
         "godotBuild.read" => return journal.godot_build_read(params),
+        "godotBuild.latest" => return journal.godot_build_latest(params),
         "godotBuild.cancel" => return journal.godot_build_cancel(params),
         "godotBuild.receipt" => return journal.godot_build_receipt(params),
         "godotCandidate.read" => return journal.godot_candidate_read(params),

@@ -1011,7 +1011,7 @@ export class PluginRuntime {
       "godotProject.create", "godotProject.index", "godotProject.read", "godotProject.patch", "godotProject.receipt",
       "godotProject.applyFiles",
       "godotProject.sourceContext",
-      "godotBuild.start", "godotBuild.read", "godotBuild.cancel", "godotBuild.receipt",
+      "godotBuild.start", "godotBuild.read", "godotBuild.latest", "godotBuild.cancel", "godotBuild.receipt",
       "godotJob.continue", "godotJob.usage",
       "godotCandidate.list", "godotCandidate.read",
       "godotStorage.status", "godotStorage.reclaimPlan", "godotStorage.reclaimCommit",

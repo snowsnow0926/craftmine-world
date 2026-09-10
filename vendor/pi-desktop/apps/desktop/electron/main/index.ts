@@ -39,6 +39,8 @@ import { readCraftmineBuildIdentity } from "./craftmine-build-identity";
 import { CraftmineVerifier } from "./craftmine-verifier";
 import { GodotBuildVerifier } from "./godot-build-verifier";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
+import {installCreationEvaluation,reserveCreationEvaluationRequest} from "./craftmine-creation-evaluation";
+import {creationTaskStatus} from "./creation-task-status";
 import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
@@ -2582,6 +2584,7 @@ const craftmineGateway = new CraftmineTurnGateway(
       return craftmineMaintenanceContexts.request(binding, operation, input,
         (name, payload) => plugins.requestCraftmineHost(name, payload));
     }
+    if(operation==="budget.reserve")reserveCreationEvaluationRequest(String(input.requestId??""));
     if (operation === "task.context") {
       if (!host) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
       const detail = await host.call<{ session?: any }>("session.get", { id: binding.sessionId });
@@ -6302,7 +6305,7 @@ function registerIpc() {
       return handler(event, payload);
     }));
   };
-  voiceHandler(VOICE_INPUT_CHANNELS.capability, (event) => localVoice.capability(event.sender.id));
+  voiceHandler(VOICE_INPUT_CHANNELS.capability, (event, payload) => localVoice.capability(event.sender.id, !!payload && typeof payload === "object" && (payload as {refresh?:unknown}).refresh === true));
   voiceHandler(VOICE_INPUT_CHANNELS.arm, (event, payload) => {
     if (isHeadlessAcceptance() || !mainWindow?.isFocused()) return false;
     return voicePermission.arm(event.sender.id, event.sender.getURL(), true, payload);
@@ -6318,10 +6321,21 @@ function registerIpc() {
 
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
-    if(payload?.pluginId==="craftmine.world"&&["godot.creationTarget","godot.creationPolicy"].includes(payload.channel)){
+    if(payload?.pluginId==="craftmine.world"&&["godot.creationTarget","godot.creationPolicy","godot.creationTaskStatus"].includes(payload.channel)){
       if((event as Electron.IpcMainInvokeEvent).senderFrame!==mainWindow?.webContents.mainFrame)throw Error("PERMISSION_DENIED");
       const input=payload.payload??{};
       if(!input||typeof input!=="object"||Array.isArray(input))throw Error("CREATION_REQUEST_INVALID");
+      if(payload.channel==="godot.creationTaskStatus"){
+        if(Object.keys(input).length!==1||typeof input.sessionId!=="string"||!input.sessionId||input.sessionId.length>240)throw Error("CREATION_REQUEST_INVALID");
+        if(notificationViewingSessionId!==input.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
+        const detail=await host?.call<{session?:any}>("session.get",{id:input.sessionId});
+        if(!detail?.session||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("CREATION_SESSION_REQUIRED");
+        const worldId=await godotSelection();
+        if(!worldId)return {worldId:null,sessionId:input.sessionId,phase:"idle",requirementStatus:"not-requested"};
+        const [job,formal]=await Promise.all([plugins.requestCraftmineHost("godotBuild.latest",{worldId}),plugins.requestCraftmineHost("godotRuntime.describe",{worldId})]);
+        if(await godotSelection()!==worldId||notificationViewingSessionId!==input.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
+        return creationTaskStatus(worldId,input.sessionId,job as any,formal as any);
+      }
       if(payload.channel==="godot.creationTarget"){
         if(Object.keys(input).length!==1||(input.sessionId!==null&&(typeof input.sessionId!=="string"||!input.sessionId||input.sessionId.length>240)))throw Error("CREATION_REQUEST_INVALID");
         if(input.sessionId===null){
@@ -9628,6 +9642,7 @@ function registerIpc() {
   });
 }
 
+installCreationEvaluation({enabled:!!headlessAcceptance,window:()=>mainWindow,call:(method,input)=>host!.call(method,input),active:sessionId=>activeTurns.has(sessionId),observe:()=>godotWorld.request("observe-envelope",{}),action:(op,args)=>godotWorld.request(op,args),domain:(method,args)=>plugins.requestCraftmineHost(method,args)});
 installNativeAgentAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload), active: (sessionId) => activeTurns.has(sessionId) });
 installP8NativeAcceptance({
   enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(),
