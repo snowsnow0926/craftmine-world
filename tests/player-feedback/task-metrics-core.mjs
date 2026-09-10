@@ -39,7 +39,7 @@ try {
   const first = make('attempt-one', 'agent', startMs, null, null);
   const terminal = make('attempt-one', 'agent', startMs, startMs + 2100);
   let lost = true;
-  const recorder = createTaskMetricsRecorder({ call: async (method, params) => { const result = await host.call(method, params); if (method === 'session.observeModelCall' && params.call.outcome === 'completed' && lost) { lost = false; throw Error('fixed lost reply after commit'); } return result; } });
+  const recorder = createTaskMetricsRecorder({ isCurrent: () => true, call: async (method, params) => { const result = await host.call(method, params); if (method === 'session.observeModelCall' && params.call.outcome === 'completed' && lost) { lost = false; throw Error('fixed lost reply after commit'); } return result; } });
   const observe = call => recorder.observe({ ...owner, ts: Date.now(), event: { type: 'model_call', call } });
   observe(first); observe(terminal); assert.equal((await recorder.drain(owner)).complete, true);
   let current = await host.call('session.turnMetrics', owner); assert.deepEqual(current.usage, expectedUsage); assert.equal(current.calls.observed, 1); assert.equal(current.tps.value, 100); check('real commit then lost reply remains one attempt');
