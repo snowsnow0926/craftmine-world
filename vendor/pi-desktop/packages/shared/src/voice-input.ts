@@ -28,6 +28,17 @@ export type VoiceTranscriptionRequest = {
   locale: string;
   wav: ArrayBuffer;
 };
+
+/** Explicit regions never fall back to another region or language. */
+export function resolveVoiceLocale(requested: string, installed: readonly string[]): string | null {
+  const wanted = requested.toLowerCase();
+  const exact = installed.find(locale => locale.toLowerCase() === wanted);
+  if (exact) return exact;
+  const aliases: Record<string, string> = { zh: "zh-cn", "zh-hans": "zh-cn", "zh-hant": "zh-tw", en: "en-us" };
+  const alias = aliases[wanted];
+  if (alias) return installed.find(locale => locale.toLowerCase() === alias) ?? null;
+  return null;
+}
 export type VoiceTranscriptionResult = {
   requestId: string;
   contextKey: string;

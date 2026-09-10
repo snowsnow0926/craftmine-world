@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
 import type { VoiceCapability, VoiceTranscriptionRequest, VoiceTranscriptionResult } from "../../../../packages/shared/src/voice-input";
-import { VOICE_MAX_AUDIO_BYTES } from "../../../../packages/shared/src/voice-input";
+import { VOICE_MAX_AUDIO_BYTES, normalizeVoiceCapability } from "../../../../packages/shared/src/voice-input";
 
 // Fixed source only. Audio and locale arrive over stdin, never shell interpolation.
 export const LOCAL_VOICE_SCRIPT = String.raw`
@@ -19,7 +19,7 @@ try {
   }
   if ($engines.Count -eq 0) { throw 'No installed local speech recognizer' }
   $selected = $engines | Where-Object { $_.Culture.Name -eq $request.locale } | Select-Object -First 1
-  if ($null -eq $selected) { $selected = $engines[0] }
+  if ($null -eq $selected) { throw 'Requested speech language is not installed' }
   $recognizer = New-Object System.Speech.Recognition.SpeechRecognitionEngine($selected)
   $recognizer.LoadGrammar((New-Object System.Speech.Recognition.DictationGrammar))
   $bytes = [Convert]::FromBase64String($request.audio)
@@ -106,10 +106,11 @@ export class LocalVoiceInputService {
   private disposed = false;
   constructor(private runner = runLocalVoiceProcess, private platform = process.platform) {}
 
-  async capability(ownerId?: number): Promise<VoiceCapability> {
+  async capability(ownerId?: number, refresh = false): Promise<VoiceCapability> {
     const unavailable: VoiceCapability = { available: false, provider: "windows-local", locales: [], reason: "engine-unavailable" };
     if (this.disposed) return unavailable;
     if (this.platform !== "win32") return { available: false, provider: "windows-local", locales: [], reason: "platform" };
+    if (refresh) this.cachedCapability = undefined;
     if (this.cachedCapability) return this.cachedCapability;
     if (this.capabilityJob) {
       if (ownerId !== undefined) this.capabilityJob.owners.add(ownerId);
@@ -120,7 +121,7 @@ export class LocalVoiceInputService {
     entry.result = entry.job.result.then((value) => {
       if (this.disposed || this.capabilityJob !== entry) return unavailable;
       const result = value as VoiceCapability;
-      const locales = Array.isArray(result.locales) ? result.locales.filter((locale) => typeof locale === "string") : [];
+      const locales = normalizeVoiceCapability({ ...result, provider: "windows-local", available: true }).locales;
       const capability: VoiceCapability = { available: locales.length > 0, provider: "windows-local", locales, ...(locales.length ? {} : { reason: "engine-unavailable" as const }) };
       if (capability.available) this.cachedCapability = capability;
       return capability;
@@ -138,7 +139,7 @@ export class LocalVoiceInputService {
     try {
       const result = await entry.job.result as { text: string; locale: string };
       if (this.jobs.get(ownerId) !== entry) throw new Error("Voice input cancelled");
-      if (typeof result.text !== "string" || result.text.length > 16_384 || typeof result.locale !== "string") throw new Error("Invalid local speech result");
+      if (typeof result.text !== "string" || result.text.length > 16_384 || typeof result.locale !== "string" || result.locale.toLowerCase() !== input.locale.toLowerCase()) throw new Error("Invalid local speech result");
       return { requestId: input.requestId, contextKey: input.contextKey, text: result.text, locale: result.locale };
     } finally { if (this.jobs.get(ownerId) === entry) this.jobs.delete(ownerId); }
   }

@@ -1,12 +1,12 @@
 export type VoicePhase = "idle" | "starting" | "recording" | "transcribing" | "error";
 export type VoiceError = "permission" | "microphone" | "unavailable" | "empty" | "transcription";
-export type VoiceState = { phase: VoicePhase; error?: VoiceError };
+export type VoiceState = { phase: VoicePhase; error?: VoiceError; locale?: string };
 export type VoiceCapture = { finish(): Promise<ArrayBuffer>; cancel(): void };
-type VoiceRun = { id: string; context: string; abort: AbortController; capture?: VoiceCapture; phase: VoicePhase; timer?: ReturnType<typeof setTimeout> };
+type VoiceRun = { id: string; context: string; locale: string; abort: AbortController; capture?: VoiceCapture; phase: VoicePhase; timer?: ReturnType<typeof setTimeout> };
 export type VoiceAdapter = {
   arm(requestId: string, contextKey: string): Promise<void>;
   capture(signal: AbortSignal, onLimit: () => void): Promise<VoiceCapture>;
-  transcribe(input: { requestId: string; contextKey: string; locale: string; wav: ArrayBuffer }): Promise<{ requestId: string; contextKey: string; text: string }>;
+  transcribe(input: { requestId: string; contextKey: string; locale: string; wav: ArrayBuffer }): Promise<{ requestId: string; contextKey: string; text: string; locale: string }>;
   cancel(requestId: string): Promise<void>;
 };
 
@@ -27,7 +27,7 @@ export class VoiceInputController {
 
   async start(context: string, locale: string) {
     if (this.run) return;
-    const run: VoiceRun = { id: crypto.randomUUID(), context, abort: new AbortController(), phase: "starting" };
+    const run: VoiceRun = { id: crypto.randomUUID(), context, locale, abort: new AbortController(), phase: "starting" };
     this.run = run;
     this.state({ phase: "starting" });
     // Also bounds an unanswered microphone permission prompt.
@@ -48,7 +48,7 @@ export class VoiceInputController {
     }
   }
 
-  async release(locale: string) {
+  async release(_locale?: string) {
     const run = this.run;
     if (!run || run.phase === "transcribing") return;
     if (!run.capture) { this.cancel(); return; }
@@ -59,12 +59,12 @@ export class VoiceInputController {
       const wav = await run.capture.finish();
       run.capture = undefined;
       if (this.run !== run) return;
-      const result = await this.adapter.transcribe({ requestId: run.id, contextKey: run.context, locale, wav });
+      const result = await this.adapter.transcribe({ requestId: run.id, contextKey: run.context, locale: run.locale, wav });
       if (this.run !== run) return;
-      if (result.requestId !== run.id || result.contextKey !== run.context) throw new Error("Stale voice result");
+      if (result.requestId !== run.id || result.contextKey !== run.context || result.locale?.toLowerCase() !== run.locale.toLowerCase()) throw new Error("Stale voice result");
       this.run = undefined;
       const text = result.text.trim();
-      this.state(text ? { phase: "idle" } : { phase: "error", error: "empty" });
+      this.state(text ? { phase: "idle", locale: result.locale } : { phase: "error", error: "empty" });
       if (text) this.transcript(text);
     } catch {
       if (this.run !== run) return;

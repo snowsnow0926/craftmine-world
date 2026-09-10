@@ -5,3 +5,5 @@
 .voice-input-button:disabled { opacity: 0.45; cursor: default; }
 .voice-input[data-voice-state="recording"] .voice-input-button { color: var(--ds-text-primary); background: var(--ds-bg-hover); }
 .voice-input-status { position: absolute; bottom: calc(100% + 8px); right: 0; padding: 6px 10px; border: 1px solid var(--ds-border-default); border-radius: var(--radius-2xs); background: var(--ds-bg-elevated-opaque); color: var(--ds-text-primary); font-size: var(--text-xs); white-space: nowrap; pointer-events: none; z-index: 5; }
+.voice-input-language { max-width: 96px; min-width: 64px; font-size: var(--text-2xs); color: var(--ds-text-secondary); background: var(--ds-bg-elevated-opaque); border: 1px solid var(--ds-border-default); border-radius: var(--radius-2xs); }
+.voice-input-help { position: absolute; bottom: calc(100% + 8px); right: 0; width: 280px; max-width: 70vw; padding: 6px 10px; border: 1px solid var(--ds-border-default); border-radius: var(--radius-2xs); background: var(--ds-bg-elevated-opaque); color: var(--ds-text-secondary); font-size: var(--text-xs); z-index: 5; }

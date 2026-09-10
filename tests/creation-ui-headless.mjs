@@ -20,6 +20,7 @@ import{useAppStore}from'./src/stores/app-store';import{api}from'./src/lib/api';
 let selected={captureId:'capture-a',worldId:'world-a',target:{entityId:'tree-a',position:[1,0,2],normal:[0,1,0],surface:'entity',revision:1}};
 let policies=new Map(),reads=0,writes=[],sent=[],hold=false,release=null,controller,changeSession,changeEnabled;
 globalThis.__craftmineWorldBridge={invoke:async(_,channel,payload)=>{
+ if(channel==='godot.creationTaskStatus')return{worldId:'world-a',sessionId:payload.sessionId,phase:'idle',requirementStatus:'not-requested'};
  if(channel==='godot.creationTarget'){reads++;const value=structuredClone(selected);if(hold){hold=false;return new Promise(resolve=>{release=()=>resolve(value);});}return value;}
  if(channel==='godot.creationPolicy'){if('autoApply'in payload){if(payload.worldId!==selected.worldId)throw Error('WORLD_CHANGED');writes.push(payload);policies.set(selected.worldId,payload.autoApply);}return{worldId:selected.worldId,autoApply:policies.get(selected.worldId)??false};}
  return{};

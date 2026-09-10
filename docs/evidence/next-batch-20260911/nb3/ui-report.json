@@ -1,0 +1,58 @@
+{
+  "scope": "Real React voice/status UI with fixture host; no speech accuracy or live engine claim",
+  "checks": [
+    {
+      "name": "Chinese UI does not silently record with only an English recognizer",
+      "passed": true
+    },
+    {
+      "name": "available language choice contains only the actual installed language",
+      "passed": true
+    },
+    {
+      "name": "recheck bypasses discovery cache and selects the explicit Chinese alias",
+      "passed": true
+    },
+    {
+      "name": "explicit player language choice is visible on the recording control",
+      "passed": true
+    },
+    {
+      "name": "direct edit checking is visible while the model is not running",
+      "passed": true
+    },
+    {
+      "name": "applied does not imply unknown wishes were checked",
+      "passed": true
+    },
+    {
+      "name": "closing and reopening controls rereads the real terminal result",
+      "passed": true
+    },
+    {
+      "name": "failed status remains visible with the host reason",
+      "passed": true
+    },
+    {
+      "name": "successful draft recovery appears independently of model running state",
+      "passed": true
+    },
+    {
+      "name": "world switch does not retain another worlds terminal status",
+      "passed": true
+    },
+    {
+      "name": "draft remains editable and no transcript is submitted by language settings",
+      "passed": true
+    },
+    {
+      "name": "no microphone input focus or pointer-lock access",
+      "passed": true
+    },
+    {
+      "name": "no unhandled UI errors",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

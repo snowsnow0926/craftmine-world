@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Mic, X } from "lucide-react";
-import { VOICE_INPUT_CHANNELS, normalizeVoiceCapability, type VoiceCapability, type VoiceTranscriptionResult } from "../../../../packages/shared/src/voice-input";
+import { Mic, X, RefreshCw } from "lucide-react";
+import { VOICE_INPUT_CHANNELS, normalizeVoiceCapability, resolveVoiceLocale, type VoiceCapability, type VoiceTranscriptionResult } from "../../../../packages/shared/src/voice-input";
 import { captureVoice } from "../lib/voice-capture";
 import { VoiceInputController, type VoiceAdapter, type VoiceState } from "../lib/voice-input-controller";
 import "./VoiceInput.css";
@@ -54,24 +54,29 @@ export function VoiceInput({ contextKey, disabled = false, onTranscript, labels,
   const copy = labels ?? (i18n.language.startsWith("zh") ? chinese : english);
   const [state, setState] = useState<VoiceState>({ phase: "idle" });
   const [capability, setCapability] = useState<VoiceCapability>();
+  const [selectedLocale, setSelectedLocale] = useState("");
+  const [discovery, setDiscovery] = useState(0);
   const callback = useRef(onTranscript);
   const key = useRef(contextKey);
   callback.current = onTranscript;
   key.current = contextKey;
   const controller = useMemo(() => new VoiceInputController(adapter, setState, (text) => callback.current(text)), [adapter]);
-  const locale = i18n.language || "en";
+  const preferredLocale = i18n.language || "en";
+  const locale = capability ? resolveVoiceLocale(selectedLocale || preferredLocale, capability.locales) : null;
+  const chineseUi = i18n.language.startsWith("zh");
 
   useEffect(() => {
     let disposed = false;
-    if (adapter !== desktopAdapter) { setCapability({ available: true, provider: "windows-local", locales: [] }); return; }
-    void invoke<VoiceCapability>(VOICE_INPUT_CHANNELS.capability).then((value) => { if (!disposed) setCapability(normalizeVoiceCapability(value)); })
+    setCapability(undefined);
+    if (adapter !== desktopAdapter) { setCapability({ available: true, provider: "windows-local", locales: [preferredLocale] }); return; }
+    void invoke<VoiceCapability>(VOICE_INPUT_CHANNELS.capability, { refresh: discovery > 0 }).then((value) => { if (!disposed) setCapability(normalizeVoiceCapability(value)); })
       .catch(() => { if (!disposed) setCapability({ available: false, provider: "windows-local", locales: [] }); });
     return () => { disposed = true; };
-  }, [adapter]);
+  }, [adapter, discovery, preferredLocale]);
   useLayoutEffect(() => {
     controller.cancel();
     return () => controller.cancel();
-  }, [controller, contextKey, disabled]);
+  }, [controller, contextKey, disabled, locale]);
   useEffect(() => {
     const cancel = () => controller.cancel();
     const hidden = () => { if (document.hidden) cancel(); };
@@ -86,22 +91,33 @@ export function VoiceInput({ contextKey, disabled = false, onTranscript, labels,
   }, [controller]);
   const active = ["starting", "recording", "transcribing"].includes(state.phase);
   const status = state.phase === "error" ? copy[state.error ?? "transcription"]
-    : active ? copy[state.phase as "starting" | "recording" | "transcribing"] : "";
-  const unavailable = capability?.available === false;
-  const start = () => { if (!disabled && capability?.available) void controller.start(key.current, locale); };
+    : active ? copy[state.phase as "starting" | "recording" | "transcribing"] : state.locale ? `${chineseUi ? "已转写" : "Transcribed"} · ${state.locale}` : "";
+  const unavailable = capability !== undefined && (!capability.available || !locale);
+  const missing = capability?.reason === "platform" ? (chineseUi ? "此平台不支持本地语音，请打字输入" : "Local speech is unsupported on this platform. Type instead.")
+    : chineseUi ? `未安装 ${selectedLocale || preferredLocale} 识别器。请在 Windows 语言设置中安装对应语音功能后重检，或选择已安装语言、打字输入。`
+    : `No ${selectedLocale || preferredLocale} recognizer. Install its Windows speech feature and recheck, choose an installed language, or type.`;
+  const start = () => { if (!disabled && capability?.available && locale) void controller.start(key.current, locale); };
   return <span className="voice-input" data-voice-state={state.phase}>
-    <button type="button" className="voice-input-button" disabled={disabled || !capability?.available || state.phase === "transcribing"}
+    <button type="button" className="voice-input-button" disabled={disabled || !capability?.available || !locale || state.phase === "transcribing"}
       aria-label={unavailable ? copy.unavailable : copy.hold} aria-pressed={state.phase === "recording"}
-      title={unavailable ? copy.unavailable : `${copy.local}${capability?.locales.length ? ` (${capability.locales.join(", ")})` : ""}`}
+      title={unavailable ? missing : `${copy.local}${locale ? ` · ${locale}` : ""}`}
       onPointerDown={(event) => { if (event.button !== 0) return; event.preventDefault(); event.currentTarget.setPointerCapture(event.pointerId); start(); }}
-      onPointerUp={() => void controller.release(locale)} onPointerCancel={() => controller.cancel()}
-      onLostPointerCapture={() => { if (state.phase === "starting" || state.phase === "recording") void controller.release(locale); }}
+      onPointerUp={() => void controller.release()} onPointerCancel={() => controller.cancel()}
+      onLostPointerCapture={() => { if (state.phase === "starting" || state.phase === "recording") void controller.release(); }}
       onKeyDown={(event) => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); event.stopPropagation(); if (!event.repeat) start(); } }}
-      onKeyUp={(event) => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); event.stopPropagation(); void controller.release(locale); } }}
+      onKeyUp={(event) => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); event.stopPropagation(); void controller.release(); } }}
       onBlur={() => { if (state.phase !== "transcribing") controller.cancel(); }}>
       <Mic size={16} aria-hidden="true" />
     </button>
+    <select className="voice-input-language" aria-label={chineseUi ? "识别语言" : "Speech language"} disabled={active || !capability?.locales.length}
+      value={locale ?? ""} onChange={event => setSelectedLocale(event.currentTarget.value)}>
+      {!locale && <option value="">{capability ? (chineseUi ? "语言不可用" : "Language unavailable") : (chineseUi ? "检测中" : "Detecting")}</option>}
+      {capability?.locales.map(value => <option key={value} value={value}>{value}</option>)}
+    </select>
+    <button type="button" className="voice-input-button" disabled={active || !capability} title={chineseUi ? "重新检测语音语言" : "Recheck speech languages"}
+      aria-label={chineseUi ? "重新检测语音语言" : "Recheck speech languages"} onClick={() => { controller.cancel(); setDiscovery(value => value + 1); }}><RefreshCw size={13} aria-hidden="true" /></button>
     {active ? <button type="button" className="voice-input-button" onClick={() => controller.cancel()} title={copy.cancel} aria-label={copy.cancel}><X size={14} aria-hidden="true" /></button> : null}
     {status ? <span className="voice-input-status" role="status" aria-live="polite">{status}</span> : null}
+    {unavailable && !status ? <span className="voice-input-help" role="status">{missing}</span> : null}
   </span>;
 }

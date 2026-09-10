@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 import { VoiceInputController } from "../src/lib/voice-input-controller.ts";
 import { encodeVoiceWav, MAX_VOICE_SAMPLES } from "../src/lib/voice-pcm.ts";
-import { normalizeVoiceCapability } from "../../../packages/shared/src/voice-input.ts";
+import { normalizeVoiceCapability, resolveVoiceLocale } from "../../../packages/shared/src/voice-input.ts";
 
 const bundled = await build({ entryPoints: [new URL("../electron/main/local-voice-input.ts", import.meta.url).pathname.replace(/^\/(\w:)/, "$1")], bundle: true, write: false, platform: "node", format: "esm" });
 const { validateVoiceRequest, LocalVoiceInputService, runLocalVoiceProcess } = await import(`data:text/javascript;base64,${Buffer.from(bundled.outputFiles[0].text).toString("base64")}`);
@@ -139,4 +139,43 @@ test("cancel terminates a real hidden capability process without opening microph
   const job = runLocalVoiceProcess({ mode: "capability" });
   const rejection = assert.rejects(job.result, /cancelled/);
   job.cancel(); await rejection;
+});
+
+test("Chinese aliases select the declared script region and never a different installed language", () => {
+  assert.equal(resolveVoiceLocale("zh", ["en-US", "zh-CN"]), "zh-CN");
+  assert.equal(resolveVoiceLocale("zh-Hans", ["zh-TW", "zh-CN"]), "zh-CN");
+  assert.equal(resolveVoiceLocale("zh-Hant", ["zh-CN", "zh-TW"]), "zh-TW");
+  for (const requested of ["zh", "zh-CN", "zh-Hans", "zh-Hant", "zh-HK"]) assert.equal(resolveVoiceLocale(requested, ["en-US"]), null);
+  assert.equal(resolveVoiceLocale("zh-CN", ["zh-TW"]), null);
+  assert.equal(resolveVoiceLocale("ZH-cn", ["zh-CN"]), "zh-CN");
+  assert.equal(resolveVoiceLocale("en-US", ["en-GB"]), null);
+});
+
+test("recheck enumerates newly installed languages instead of returning cached success", async () => {
+  let count = 0;
+  const service = new LocalVoiceInputService(() => ({ result: Promise.resolve({locales: ++count === 1 ? ["en-US"] : ["en-US", "zh-CN"]}), cancel() {} }), "win32");
+  assert.deepEqual((await service.capability(1)).locales, ["en-US"]);
+  assert.deepEqual((await service.capability(1)).locales, ["en-US"]);
+  assert.deepEqual((await service.capability(1, true)).locales, ["en-US", "zh-CN"]);
+  assert.equal(count, 2);
+});
+
+test("recording freezes its language before a UI locale change and reports the actual result locale", async () => {
+  let requested;
+  const f = fixture({ transcribe: async input => { requested = input.locale; return {...input, text: "中文草稿"}; } });
+  await f.controller.start("world", "zh-CN"); await f.controller.release("en-US");
+  assert.equal(requested, "zh-CN"); assert.deepEqual(f.texts, ["中文草稿"]);
+  assert.deepEqual(f.states.at(-1), {phase: "idle", locale: "zh-CN"});
+});
+
+test("wrong-language provider results never enter the draft and main rejects them too", async () => {
+  const f = fixture({transcribe: async input => ({...input, locale: "en-US", text: "wrong language"})});
+  await f.controller.start("world", "zh-CN"); await f.controller.release();
+  assert.deepEqual(f.texts, []); assert.equal(f.states.at(-1).error, "transcription");
+  const service = new LocalVoiceInputService(() => ({result: Promise.resolve({text: "wrong", locale: "en-US"}), cancel() {}}), "win32");
+  await assert.rejects(service.transcribe(1, request()), /Invalid local speech result/);
+});
+
+test("real Windows provider rejects a missing language without using a fallback or a microphone", {skip: process.platform !== "win32"}, async () => {
+  await assert.rejects(runLocalVoiceProcess({mode: "transcribe", locale: "zz-ZZ", audio: Buffer.from(wav()).toString("base64")}).result, /failed/);
 });

@@ -9464,3 +9464,16 @@ first-pass improvement requires a later measured benchmark.
 独立 headless/offscreen 中执行真实 React 回调和宿主接口，禁止真实输入与 Pointer Lock。选中树显示名称/金色边框；编辑尺寸和颜色后先检查再采用；取消不产生写请求。删除宝箱并撤销后同一 ID 恢复，已领奖账本不减少。存在规则引用的删除拒绝，后续修改冲突的撤销拒绝，旧无 inverse 日志明确不支持。编译失败、要求不符或采用失败不能修改正式世界。
 
 对应检查：tests/creation-edit-ui-headless.mjs、tests/creation-operations.test.mjs、desktop/test/creation-edit-service.test.mjs、tests/creation-guidance/rule-headless.test.mjs；完整生产宿主任务/采用链由下一批总控集成验收补充。
+
+### CM-NB3-01：中文语音语言与终态可见
+
+仅安装 en-US 时打开简体中文界面，录制禁用并显示安装、重检、选择语言、打字路径。
+新增 zh-CN 后主动重检，选中实际语言；显式选择 en-US 后显示该语言。zh-Hant 不回退
+到 zh-CN，显式区域不跨区域回退。录制开始固定语言，错误 locale 回包不得追加；草稿
+和附件保留。自动验证只使用语言枚举、合成静音及假提供器；真实麦克风准确率单独验收。
+
+模型未运行时直接编辑经历 checking 到 applied，浮层保留最终结果；收起重开补读同一
+宿主结果。unsupported/not-requested 要求显示待验证。失败、中断、取消、恢复分别显示；
+切换世界后旧终态消失，迟到请求不能覆盖新世界。轮询退避、终态停止、卸载取消，读取
+失败不假报成功。运行 node tests/creation-voice-status-headless.mjs，在独立 headless
+进程以页面函数验证实际 React 控件，不操作真实鼠标键盘或麦克风。
