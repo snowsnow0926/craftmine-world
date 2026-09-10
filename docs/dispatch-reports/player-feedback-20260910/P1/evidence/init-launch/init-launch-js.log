@@ -1,0 +1,36 @@
+✔ preview independently stages without writing formal state and cancel retains original native identity (2.0514ms)
+✔ apply discards played preview, checkpoints latest formal state and launches fresh exact state before commit (0.6708ms)
+✔ preview descriptor failure retains original and releases locks (0.3799ms)
+✔ preview load failure retains original and releases locks (0.2036ms)
+✔ preview state failure retains original and releases locks (0.1826ms)
+✔ preview prepare failure retains original and releases locks (0.1283ms)
+✔ apply storage failure never replaces formal instance (0.1929ms)
+✔ apply commit-before failure never replaces formal instance (0.2666ms)
+✔ lost committed reply is recovered by matching original receipt without second commit (0.3137ms)
+✔ unknown commit keeps both instances paused; later read reconciles exact commit once (0.5401ms)
+✔ foreign committed instance proof cannot authorize promotion (0.2824ms)
+✔ page cannot supply token/evidence/snapshot or target another world (0.1495ms)
+✔ two overlapping page invokes cannot both enter the coordinator (0.2069ms)
+✔ a completed candidate superseded by a later build reports closed instead of a mismatch (0.1924ms)
+✔ lost panel reply recovers the completed exact candidate and never a different candidate (0.2133ms)
+✔ first load confirms a world with no formal runtime and never requires a preview (0.2367ms)
+✔ first load refuses a live instance for the same world and releases locks (0.0949ms)
+✔ first load refuses a world that already has a formal build but no live instance (0.0607ms)
+✔ first-load load persists a finite identity-bound failure only after abort (0.1428ms)
+✔ first-load state persists a finite identity-bound failure only after abort (0.0973ms)
+✔ first-load preparation failure has no fabricated durable application failure (0.0966ms)
+✔ lost successful first-load commit reply is reconciled without recording failure (0.1297ms)
+✔ direct first-load entry refuses an uncleared durable failure (0.0585ms)
+✔ failure persistence load-record-lost is explicitly unconfirmed (0.1097ms)
+✔ failure persistence load-record-foreign is explicitly unconfirmed (0.0957ms)
+✔ fresh initializers leave durable launch failure untouched and issue no task/build calls (0.8444ms)
+✔ explicit retry clears the exact failure before reopening a task and relaunching the checked candidate (4.2713ms)
+✔ foreign or still-failed retry responses cannot reach task creation (0.308ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 159.3365

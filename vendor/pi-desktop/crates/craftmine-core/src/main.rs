@@ -63,6 +63,8 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "godotStorage.reclaimCommit" => return journal.godot_storage_reclaim_commit(params),
         "godotWorld.initialize" => return journal.godot_world_initialize(params),
         "godotWorld.initStatus" => return journal.godot_world_init_status(params),
+        "godotWorld.initLaunchFailed" => return journal.godot_world_init_launch_failed(params),
+        "godotWorld.initLaunchRetry" => return journal.godot_world_init_launch_retry(params),
         "godotWorld.rebuildPlan" => return journal.godot_world_rebuild_plan(params),
         "godotRuntime.exportSource" => return journal.godot_runtime_export_source(params),
         "godotWorld.prepareRebuildSource" => return journal.godot_world_prepare_rebuild_source(params),

@@ -78,6 +78,7 @@ const TABLES: &[&str] = &[
     "craftmine_godot_applied_drafts",
     "craftmine_godot_reclaims",
     "craftmine_godot_world_init",
+    "craftmine_godot_init_launch_failures",
     "craftmine_godot_world_copies",
     // Content history: the managed Git repositories and their migration and
     // operation receipts.
@@ -119,6 +120,7 @@ const ADDITIVE_TABLES: &[&str] = &[
     "craftmine_godot_applied_drafts",
     "craftmine_godot_reclaims",
     "craftmine_godot_world_init",
+    "craftmine_godot_init_launch_failures",
     "craftmine_godot_world_copies",
     "craftmine_content_repositories",
     "craftmine_content_revision_map",

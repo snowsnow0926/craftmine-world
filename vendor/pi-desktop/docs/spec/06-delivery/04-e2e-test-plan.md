@@ -9143,3 +9143,8 @@ Controlled host/preload tests must refuse stale, hidden, detached, unshown and f
 ### Player feedback P3 embedded world shortcut scope
 
 The P1 plugin-fullscreen tests exercise exact embedded Craftmine identity, current view ownership, hidden/replaced/zero-size denial, top-frame scope validation and preload disposal without OS input. Seven plugin/Godot bridge tests pass; plugin host/preload strict TypeScript has zero diagnostics. Main window integration and actual unconsumed Escape remain separate verification boundaries.
+
+
+### P1 durable first-load failure and explicit retry
+
+Thirteen actual Core world tests pass, including four new SQLite failure/restart/replay/tombstone/identity/new-candidate/archive cases. Twenty-eight controlled coordinator and initializer tests pass, including finite persistence receipts, failed receipt identity, no automatic task creation after a terminal failure, and exact explicit retry. Core binary check and strict host/initializer TypeScript pass. No OS input or native renderer is started by this slice. Root must independently verify its private RPC and creation-stage integration in the client; unsuccessful or missing prepare receipts remain an explicit boundary.

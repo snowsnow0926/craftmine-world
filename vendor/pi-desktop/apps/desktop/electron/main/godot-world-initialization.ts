@@ -30,9 +30,19 @@ export function createGodotWorldInitializer(options: {
   const domain = options.domain;
   async function initialize(worldId: string, recover=false) {
     if (!/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId)) throw Error("INVALID_WORLD_ID");
-    const status = await domain("godotWorld.initStatus", {worldId});
+    let status = await domain("godotWorld.initStatus", {worldId});
     if (status.playable) return;
     if (!recover && !canAutomaticallyInitialize(status)) return;
+    if (recover && status.launchFailure) {
+      const failure = status.launchFailure;
+      if (failure.worldId !== worldId || failure.initId !== status.initId ||
+        failure.candidateId !== status.candidateId || typeof failure.applicationId !== "string") throw Error("GODOT_INIT_LAUNCH_IDENTITY_MISMATCH");
+      await domain("godotWorld.initLaunchRetry", {worldId, initId: failure.initId,
+        candidateId: failure.candidateId, applicationId: failure.applicationId});
+      status = await domain("godotWorld.initStatus", {worldId});
+      if (status.playable) return;
+      if (!canAutomaticallyInitialize(status)) throw Error("GODOT_INIT_LAUNCH_RETRY_UNCONFIRMED");
+    }
     const directory = path.join(options.worldsRoot, worldId);
     const metadata = JSON.parse(fs.readFileSync(path.join(directory, "managed-base.json"), "utf8"));
     if (metadata.worldId !== worldId || !Array.isArray(metadata.files)) throw Error("MANAGED_BASE_IDENTITY_MISMATCH");

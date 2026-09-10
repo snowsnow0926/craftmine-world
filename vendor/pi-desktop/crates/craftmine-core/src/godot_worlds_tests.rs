@@ -255,6 +255,117 @@ fn initialize(journal: &mut TaskJournal, world: &str, base: &str) -> Result<Valu
         "baseBuild":base,"snapshot":progress(world)}))
 }
 
+fn failed_first_launch(journal: &mut TaskJournal, world: &str) -> Result<Value> {
+    let init=initialize(journal,world,"base-a")?;
+    let context=ctx(&format!("launch-{world}"));
+    journal.workspace_open(&context,world)?;
+    register(journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("e"))?;
+    let project=create_project_in(journal,&context,world,"launch-create")?;
+    let checked=check_to_candidate(journal,&context,world,&project,"launch-check")?;
+    let application=format!("launch-{world}");
+    journal.godot_application_prepare(&json!({"id":application,"token":"launch-token",
+        "candidateId":checked["candidateId"],"worldId":world,"revision":0,"snapshot":progress(world)}))?;
+    journal.godot_application_abort(&json!({"id":application}))?;
+    Ok(json!({"worldId":world,"initId":init["init"]["initId"],"candidateId":checked["candidateId"],"applicationId":application}))
+}
+
+#[test]
+fn first_launch_failure_survives_restart_and_explicit_retry_tombstones_old_delivery() -> Result<()> {
+    let (_directory,path)=temp()?;
+    let mut journal=TaskJournal::open(&path)?;
+    let args=failed_first_launch(&mut journal,"g1")?;
+    assert_eq!(journal.godot_world_init_launch_failed(&args)?["replayed"],false);
+    assert_eq!(journal.godot_world_init_launch_failed(&args)?["replayed"],true);
+    let before=journal.world_read("g1")?;
+    drop(journal);
+    let mut journal=TaskJournal::open(&path)?;
+    let status=journal.godot_world_init_status(&json!({"worldId":"g1"}))?;
+    assert_eq!(status["status"],"failed");assert_eq!(status["playable"],false);
+    assert_eq!(status["reason"],"GODOT_INITIAL_LOAD_FAILED");assert_eq!(status["failureStage"],"confirm");
+    assert_eq!(status["launchFailure"],args);
+    assert_eq!(journal.world_read("g1")?.world,before.world);
+    assert_eq!(journal.godot_world_init_launch_retry(&args)?["cleared"],true);
+    assert_eq!(journal.godot_world_init_launch_retry(&args)?["replayed"],true);
+    assert_eq!(journal.godot_world_init_launch_failed(&args)?["cleared"],true);
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["status"],"checked");
+    // A later genuine application can fail independently; old receipts cannot clear it.
+    journal.godot_application_prepare(&json!({"id":"launch-second","token":"second-token",
+        "candidateId":args["candidateId"],"worldId":"g1","revision":0,"snapshot":progress("g1")}))?;
+    journal.godot_application_abort(&json!({"id":"launch-second"}))?;
+    let mut second=args.clone();second["applicationId"]=json!("launch-second");
+    journal.godot_world_init_launch_failed(&second)?;
+    journal.godot_world_init_launch_retry(&args)?;
+    journal.godot_world_init_launch_failed(&args)?;
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["launchFailure"],second);
+    drop(journal);
+    let mut journal=TaskJournal::open(&path)?;
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["launchFailure"],second);
+    Ok(())
+}
+
+#[test]
+fn first_launch_failure_rejects_wrong_identity_unsettled_stale_and_applied_attempts() -> Result<()> {
+    let (_directory,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let args=failed_first_launch(&mut journal,"g1")?;
+    initialize(&mut journal,"g2","base-a")?;
+    for (field,value) in [("worldId","g2"),("initId","other-init"),("candidateId","other-candidate")] {
+        let mut wrong=args.clone();wrong[field]=json!(value);
+        failed(journal.godot_world_init_launch_failed(&wrong),"GODOT_INIT_LAUNCH_IDENTITY_MISMATCH");
+    }
+    let mut unknown=args.clone();unknown["reason"]=json!("private/raw");
+    assert!(journal.godot_world_init_launch_failed(&unknown).is_err());
+    let prepared=journal.godot_application_prepare(&json!({"id":"new-launch","token":"new-token",
+        "candidateId":args["candidateId"],"worldId":"g1","revision":0,"snapshot":progress("g1")}))?;
+    failed(journal.godot_world_init_launch_failed(&args),"GODOT_INIT_LAUNCH_STALE");
+    let mut newer=args.clone();newer["applicationId"]=json!("new-launch");
+    failed(journal.godot_world_init_launch_failed(&newer),"GODOT_INIT_LAUNCH_NOT_FAILED");
+    journal.godot_application_commit(&json!({"id":"new-launch","token":"new-token",
+        "evidence":{"format":"craftmine.godot-application/2","inputHash":prepared["inputHash"],
+        "launch":{"passed":true,"buildId":prepared["buildId"],"instanceId":"runtime-g1","stateHash":digest("state")},
+        "player":null,"snapshot":progress("g1")}}))?;
+    failed(journal.godot_world_init_launch_failed(&newer),"GODOT_INIT_LAUNCH_NOT_FAILED");
+    failed(journal.godot_world_init_launch_failed(&args),"GODOT_WORLD_ALREADY_INITIALIZED");
+    let status=journal.godot_world_init_status(&json!({"worldId":"g1"}))?;
+    assert_eq!(status["status"],"confirmed");assert_eq!(status["playable"],true);assert_eq!(status["launchFailure"],Value::Null);
+    Ok(())
+}
+
+#[test]
+fn first_launch_failure_does_not_attach_to_a_new_checked_candidate() -> Result<()> {
+    let (_directory,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let args=failed_first_launch(&mut journal,"g1")?;
+    journal.godot_world_init_launch_failed(&args)?;
+    let context=ctx("launch-g1");
+    let project=journal.godot_project_index(&json!({"worldId":"g1","context":context}))?;
+    let newer=check_to_candidate(&mut journal,&context,"g1",&project,"check-new-candidate")?;
+    assert_ne!(newer["candidateId"],args["candidateId"]);
+    let status=journal.godot_world_init_status(&json!({"worldId":"g1"}))?;
+    assert_eq!(status["candidateId"],newer["candidateId"]);
+    assert_eq!(status["status"],"checked");assert_eq!(status["launchFailure"],Value::Null);
+    journal.godot_world_init_launch_failed(&args)?; // Old receipt only replays its old row.
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["status"],"checked");
+    failed(journal.godot_world_init_launch_retry(&args),"GODOT_INIT_LAUNCH_STALE");
+    Ok(())
+}
+
+#[test]
+fn first_launch_failure_archive_roundtrip_keeps_failure_and_accepts_older_absent_table() -> Result<()> {
+    let (_directory,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let args=failed_first_launch(&mut journal,"g1")?;
+    journal.godot_world_init_launch_failed(&args)?;
+    let context=ctx("launch-g1");journal.workspace_end_turn(&context.session_id,&context.turn_id,"error")?;
+    let export=journal.backup_export(&json!({"operationId":"launch-export"}))?;
+    assert_eq!(export["archive"]["tables"]["craftmine_godot_init_launch_failures"]["rows"].as_array().unwrap().len(),1);
+    let expected=journal.backup_status(&json!({}))?["currentHash"].clone();
+    journal.backup_restore(&json!({"operationId":"launch-restore","archive":export["archive"],"expectedCurrentHash":expected}))?;
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["launchFailure"],args);
+    let mut older=export["archive"].clone();
+    older["tables"].as_object_mut().unwrap().remove("craftmine_godot_init_launch_failures");
+    older["hash"]=json!(digest(&serde_json::to_string(&older["tables"])?));
+    assert_eq!(journal.backup_inspect(&json!({"archive":older}))?["valid"],true);
+    Ok(())
+}
+
 #[test]
 fn initialization_path_failure_is_hash_checked_finite_and_persistent() -> Result<()> {
     let (_dir, path) = temp()?;

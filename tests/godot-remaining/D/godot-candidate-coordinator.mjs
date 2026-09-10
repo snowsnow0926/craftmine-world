@@ -11,7 +11,7 @@ function fixture({cold=false,formalBuild=!cold}={}){
  let latest=clone(formal.world.snapshot),pending=null;
  const host={instance:cold?null:{worldId:'alpha',buildId:'build-old',instanceId:'original'},candidateInstance:null,
   async holdSelectionSync(){events.push('hold');return()=>events.push('release');},async pause(){events.push('pause');},async resume(){events.push('resume');},
-  async stageCandidate(descriptor,options){events.push(options?.first?'stage:first':'stage');if(fault==='load')throw Error('bad launch');this.candidateInstance={worldId:'alpha',buildId:descriptor.buildId,instanceId:'candidate-'+(++sequence)};pending=clone(descriptor.snapshot);},
+  async stageCandidate(descriptor,options){events.push(options?.first?'stage:first':'stage');if(fault.startsWith('load'))throw Error('bad launch');this.candidateInstance={worldId:'alpha',buildId:descriptor.buildId,instanceId:'candidate-'+(++sequence)};pending=clone(descriptor.snapshot);},
   async candidateRequest(op){events.push('candidate:'+op);if(op!=='save')return {};const state=clone(pending);if(fault==='state')state.body.coins++;const snapshotText=JSON.stringify(state);return {status:'confirmed',state,runnerReceipt:{format:'craftmine.godot-runner-receipt/1',...this.candidateInstance,snapshotText,snapshotSha256:hash(snapshotText),bytes:Buffer.byteLength(snapshotText)}};},
   setCandidateVisible(v){events.push('candidate-visible:'+v);},setSurfaceVisible(v){events.push('surface:'+v);},
   async discardCandidate(){events.push('discard');pending=null;this.candidateInstance=null;},
@@ -21,6 +21,13 @@ function fixture({cold=false,formalBuild=!cold}={}){
  const adapter={async describe(){events.push('describe-formal');if(!formalExists)return null;return {phase:'formal',worldId:'alpha',buildId:formal.world.build.id,revision:formal.revision,snapshot:clone(formal.world.snapshot)};},async describeCandidate(worldId,id){events.push('describe-candidate');if(fault==='descriptor')throw Error('artifact missing');const r=records.get(id);return {phase:'candidate',worldId,buildId:r.buildId,applicationId:id,applicationInputHash:r.inputHash,revision:formal.revision,snapshot:clone(formal.world.snapshot)};}};
  const domain=async(method,args)=>{
   events.push(method);
+  if(method==='godotWorld.initStatus')return {worldId:'alpha',initId:'init-alpha',playable:false,status:'checked',...(fault==='durable-failure'?{launchFailure:{applicationId:'old'}}:{})};
+  if(method==='godotWorld.initLaunchFailed'){
+   if(fault==='load-record-lost')throw Error('persistence unavailable');
+   const record=records.get(args.applicationId);assert.equal(record.status,'aborted');assert.equal(record.candidateId,args.candidateId);assert.equal(args.initId,'init-alpha');
+   if(fault==='load-record-foreign')return {recorded:true,cleared:false,...args,worldId:'other'};
+   return {recorded:true,cleared:false,replayed:false,...args};
+  }
   if(method==='godotCandidate.read')return {candidate:{},job:{check:{}}};
   if(method==='godotApplication.prepare'){
    if(fault==='prepare')throw Object.assign(Error('prepare invalid'),{errorCode:'INVALID'});
@@ -59,3 +66,26 @@ test('lost panel reply recovers the completed exact candidate and never a differ
 test('first load confirms a world with no formal runtime and never requires a preview',async()=>{const f=fixture({cold:true});assert.equal(f.host.instance,null);const result=await f.coordinator.firstLoad(f.args.worldId,f.args.candidateId);assert.equal(result.status,'applied');assert.equal(f.host.instance.instanceId,'candidate-1');assert.ok(f.events.includes('stage:first'));assert.ok(!f.events.includes('checkpoint'));assert.ok(f.events.includes('release'),'selection hold must be released');assert.equal(f.coordinator.blocking,false);});
 test('first load refuses a live instance for the same world and releases locks',async()=>{const f=fixture();await assert.rejects(f.coordinator.firstLoad(f.args.worldId,f.args.candidateId),/ALREADY_RUNNING/);assert.equal(f.coordinator.blocking,false);assert.equal(f.host.instance.instanceId,'original');});
 test('first load refuses a world that already has a formal build but no live instance',async()=>{const f=fixture({cold:true,formalBuild:true});await assert.rejects(f.coordinator.firstLoad(f.args.worldId,f.args.candidateId),/FORMAL_WORLD_EXISTS/);assert.equal(f.coordinator.blocking,false);});
+
+for(const fault of ['load','state'])test('first-load '+fault+' persists a finite identity-bound failure only after abort',async()=>{
+ const f=fixture({cold:true});f.setFault(fault);await assert.rejects(f.coordinator.firstLoad(f.args.worldId,f.args.candidateId));
+ assert.equal(f.coordinator.blocking,false);assert.equal(f.host.instance,null);
+ assert.ok(f.events.indexOf('godotApplication.abort')<f.events.indexOf('godotWorld.initLaunchFailed'));
+ assert.equal(f.events.filter(x=>x==='godotWorld.initLaunchFailed').length,1);
+});
+test('first-load preparation failure has no fabricated durable application failure',async()=>{
+ const f=fixture({cold:true});f.setFault('prepare');await assert.rejects(f.coordinator.firstLoad(f.args.worldId,f.args.candidateId));
+ assert.ok(!f.events.includes('godotWorld.initLaunchFailed'));
+});
+test('lost successful first-load commit reply is reconciled without recording failure',async()=>{
+ const f=fixture({cold:true});f.setFault('commit-lost');assert.equal((await f.coordinator.firstLoad(f.args.worldId,f.args.candidateId)).status,'applied');
+ assert.ok(!f.events.includes('godotWorld.initLaunchFailed'));
+});
+test('direct first-load entry refuses an uncleared durable failure',async()=>{
+ const f=fixture({cold:true});f.setFault('durable-failure');await assert.rejects(f.coordinator.firstLoad(f.args.worldId,f.args.candidateId),/RETRY_REQUIRED/);
+ assert.ok(!f.events.includes('godotApplication.prepare'));assert.ok(!f.events.includes('hold'));
+});
+for(const fault of ['load-record-lost','load-record-foreign'])test('failure persistence '+fault+' is explicitly unconfirmed',async()=>{
+ const f=fixture({cold:true});f.setFault(fault);await assert.rejects(f.coordinator.firstLoad(f.args.worldId,f.args.candidateId),/FAILURE_RECORD_UNCONFIRMED/);
+ assert.equal(f.host.instance,null);assert.ok(!f.events.includes('godotApplication.commit'));
+});
