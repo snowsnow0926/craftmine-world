@@ -1,0 +1,3 @@
+{"ts":"2026-09-10T01:48:23.374Z","level":"info","channel":"app","category":"lifecycle","message":"app boot craftmine world 0.14.3","data":{"protocolVersion":11}}
+{"ts":"2026-09-10T01:48:47.244Z","level":"info","channel":"app","category":"lifecycle","message":"app shutdown"}
+{"ts":"2026-09-10T01:48:50.325Z","level":"error","channel":"app","category":"lifecycle","message":"service shutdown incomplete","data":{"service":"plugins","error":"AggregateError: PLUGIN_SHUTDOWN_INCOMPLETE: Error: PLUGIN_craftmine.world_CLOSE_TIMEOUT; Error: PLUGIN_pi.browser_CLOSE_TIMEOUT; Error: PLUGIN_pi.files_CLOSE_TIMEOUT"}}

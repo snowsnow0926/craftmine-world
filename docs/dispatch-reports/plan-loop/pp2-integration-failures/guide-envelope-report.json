@@ -1,0 +1,312 @@
+{
+  "format": "craftmine.target-feedback-client/1",
+  "passed": false,
+  "root": "D:\\cm-plan-loop-20260910",
+  "runtime": "D:\\cm-plan-loop-20260910",
+  "out": "D:\\cm-plan-loop-20260910\\test-results\\desktop-native-parameters-oUpnWZ",
+  "commit": "c38d8e46257411c4e74ede68ce29dbfe1ae8f8a7",
+  "mainSha256": "f9323357264ec7434073e51acc4b7a43ed4767ec869d989d686b8585b5027bfa",
+  "pluginSha256": "5d59129f24d64c42a00ace54e7e88599ec47a59c9cfd12bdb99064e22eea9411",
+  "steps": [
+    {
+      "name": "create actual first-person parameter world",
+      "passed": true,
+      "value": {
+        "id": "world-05d0694ac994",
+        "title": "Training target parameter acceptance"
+      }
+    },
+    {
+      "name": "real broker check and baseline runtime parameter",
+      "passed": true,
+      "value": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "buildId": "gbd-7822e228a9be9f9772fe21a42cc38d6225acf3a289ff3e4f330614944ce92511",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "b220b7e1fe7b3b3217da4e61",
+        "payload": {
+          "aim": {
+            "collider": "TargetB",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              0,
+              1.59999990463257,
+              -9.80000114440918
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0,
+              1.59999990463257,
+              6
+            ],
+            "forwardDot": 1,
+            "global": [
+              0.239999994635582,
+              1.39999985694885,
+              5.57999992370605
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "logicalViewportSize": [
+            1200,
+            800
+          ],
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "surfaceSize": [
+            1200,
+            800
+          ],
+          "targetFeedback": {
+            "format": "craftmine.target-feedback-observation/1",
+            "targets": [
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_a"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_b"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_c"
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-05d0694ac994"
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-10T01:48:47Z",
+        "worldId": "world-05d0694ac994"
+      }
+    },
+    {
+      "name": "real library guide is optional, keeps game chrome fixed and uses existing navigation",
+      "passed": false,
+      "error": "Error: Error: INVALID_SURFACE_REQUEST"
+    }
+  ],
+  "launches": [
+    {
+      "at": "2026-09-10T01:48:23.062Z",
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      }
+    }
+  ],
+  "limits": [
+    "Development client and authored runtime from this checkout, using locally rebuilt core/host binaries identified by SHA256; not a Windows release acceptance",
+    "No model prompt, credentials, OS input, Pointer Lock, visible windows, desktop captures or external report export; fixed gameplay captures only the isolated game view",
+    "Snapshot comparison retains every field including stable savedAt metadata"
+  ],
+  "runtimeSourceCommit": "c38d8e46257411c4e74ede68ce29dbfe1ae8f8a7",
+  "runtimeFilesDigest": "b67c53fbab2accc5fde491145395be143f2806e3c844a99f52ab4aaecc25c2d6",
+  "coreSha256": "285578bc384302eaccf2017225d446732ead3daf24c80a52e5150018604060bb",
+  "hostSha256": "04080dcc21e4909699977055724116fc92a8e6bc19fcdc0ea42e91a2a3b3224b",
+  "worldId": "world-05d0694ac994",
+  "baselineBuildId": "gbd-7822e228a9be9f9772fe21a42cc38d6225acf3a289ff3e4f330614944ce92511",
+  "error": "Error: Error: INVALID_SURFACE_REQUEST\n    at ChildProcess.<anonymous> (file:///D:/cm-plan-loop-20260910/tests/plan-loop/target-feedback-client-native.mjs:29:318)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+  "finishedAt": "2026-09-10T01:48:50.504Z"
+}
