@@ -88,6 +88,12 @@ func _run() -> void:
 			require_ok(world.time_of_day == 21.0, "Time must survive restart")
 			var duplicate := await interact("story-chest")
 			require_ok(not duplicate.interacted and duplicate.reason == "already-opened", "Restart must not duplicate reward")
+		"continued":
+			require_ok(world.entities.has("later-rock"), "New source object must exist after continued creation")
+			require_ok(world.inventory.get("story-token", 0) == 2 and world.opened_chests.get("story-chest", false), "Continued creation must preserve old reward ledger")
+			require_ok(world.doors.get("story-door", false) and world.capture().rules["story-rule"].completed, "Continued creation must preserve completed old gameplay")
+			require_ok(not world.doors.get("later-door", true) and not world.capture().rules["later-rule"].completed, "New door and rule must use fresh defaults")
+			require_ok(world.time_of_day == 18.0 and world.capture().sourceTimeOfDay == 18.0, "Source time edit must apply during additive migration")
 	await request("pause")
 	if config.stage in ["play", "reopen"]:
 		var original: Dictionary = world.capture()
@@ -102,6 +108,6 @@ func _run() -> void:
 			require_ok(world.capture() == original, "Rejected restore must not mutate: " + mutation)
 	var observation := await request("observe")
 	var saved := await request("save")
-	var result := {"stage": config.stage, "headless": true, "restored": restored, "observation": observation, "saved": saved, "commands": commands, "checks": checks}
+	var result := {"stage": config.stage, "headless": true, "sampledAt": Time.get_datetime_string_from_system(true) + "Z", "restored": restored, "observation": observation, "saved": saved, "commands": commands, "checks": checks}
 	print("CRAFTMINE_CREATION_STORY=" + JSON.stringify(result))
 	quit(0)

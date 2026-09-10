@@ -12,8 +12,11 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const sourceRoot=path.resolve(process.env.CRAFTMINE_STORY_SOURCE_ROOT || root);
 const require=createRequire(import.meta.url);
 const {compileCreationOperation}=require(path.join(sourceRoot,'plugins/craftmine-world/creation-operations.cjs'));
+const {createCreationSourceService}=require(path.join(sourceRoot,'plugins/craftmine-world/creation-source-service.cjs'));
 const {CoreClient}=require('../plugins/craftmine-world/core-client.cjs');
+const {createPortableRestoreService}=require('../plugins/craftmine-world/portable-restore-service.cjs');
 const {materializeBase}=await import(pathToFileURL(path.join(sourceRoot,'desktop/godot/shared/materialize.mjs')));
+const {deriveAdditiveProgress}=await import(pathToFileURL(path.join(sourceRoot,'desktop/godot/shared/progress-migration.mjs')));
 const sha=value=>createHash('sha256').update(value).digest('hex');
 fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
 const out=fs.mkdtempSync(path.join(root,'test-results/creation-story-'));
@@ -30,8 +33,9 @@ try {
   let observation;
   const stage=async(name,restore,buildId='story-build')=>{
     fs.writeFileSync(path.join(project,'story-config.json'),JSON.stringify({stage:name,restore,buildId}));
-    await environment.run(name+'-import',['--path',project,'--editor','--import']);
-    const stdout=await environment.run(name,['--path',project,'--script','res://story.gd'],{timeout:60000});
+    const label=String(report.stages.length).padStart(2,'0')+'-'+name;
+    await environment.run(label+'-import',['--path',project,'--editor','--import']);
+    const stdout=await environment.run(label,['--path',project,'--script','res://story.gd'],{timeout:60000});
     const lines=stdout.split(/\r?\n/).filter(line=>line.startsWith('CRAFTMINE_CREATION_STORY='));assert.equal(lines.length,1);
     const result=JSON.parse(lines[0].slice('CRAFTMINE_CREATION_STORY='.length));report.stages.push(result);observation=result.observation;
     check(name+'：真实 headless 进程完成',result.headless);return result;
@@ -92,5 +96,73 @@ try {
   const restored=await stage('reopen',reopened.world.snapshot,prepared.buildId);
   assert.deepEqual(restored.restored,snapshot);check('新 Godot 进程恢复全部字段与游玩进度',true);
   check('重开宝箱不重复发放奖励',restored.saved.state.body.inventory['story-token']===2);
+  // Continue authoring after the saved game has reopened. Defaults come from a
+  // separate actual candidate process, then both JS and Rust derive migration.
+  core=new CoreClient(binary,data);await core.start();
+  const nextContext={...context,turnId:'story-continue'};
+  const sourceWorkspace=await core.call('workspace.open',{context:nextContext,selectedWorld:'creation-story'});
+  const beforeEdit=await core.call('godotProject.index',{context:nextContext,worldId:'creation-story',offset:0,limit:32});
+  const bound={format:'craftmine.creation-target/1',worldId:'creation-story',buildId:prepared.buildId,instanceId:'story-instance',sourceRevision:beforeEdit.revision,manifestHash:beforeEdit.manifestHash,snapshotId:'continued-native-capture',sampledAt:restored.sampledAt,playerPosition:restored.observation.player.position,target:restored.observation.creation.target};
+  const sourceService=createCreationSourceService({core,capture:async()=>structuredClone(bound),assertActive:()=>{},sample:async()=>{
+    const observed=await stage('service-sample',snapshot,prepared.buildId);
+    return {worldId:bound.worldId,buildId:bound.buildId,instanceId:bound.instanceId,sampledAt:observed.sampledAt,player:observed.observation.player};
+  }});
+  const sourceRequest={operationId:'continued-service-rock',expected:{worldId:bound.worldId,buildId:bound.buildId,instanceId:bound.instanceId,revision:beforeEdit.revision,manifestHash:beforeEdit.manifestHash,targetSnapshotId:bound.snapshotId},action:'place',id:'later-rock',kind:'rock',position:[6,0,6]};
+  const serviceArgs={context:nextContext,workspace:sourceWorkspace,request:sourceRequest};
+  const serviceResult=await sourceService(serviceArgs);report.sourceService=serviceResult;
+  check('生产源码服务真实 RPC 放置并返回待检查草稿',!serviceResult.applied&&serviceResult.checkRequired&&!serviceResult.replayed);
+  const replay=await sourceService(serviceArgs);check('生产源码服务真实回执恢复不重复创建物体',replay.replayed&&replay.source.revision===serviceResult.source.revision);
+  for(const name of ['world/creation.json','world/creation-operations.json']){
+    let text='',offset=0;do{const read=await core.call('godotProject.read',{context:nextContext,worldId:bound.worldId,...serviceResult.source,path:name,offset,limit:16000});text+=read.text;offset=read.nextOffset;}while(offset!=null);
+    source.files[name]={text,sha256:sha(text)};fs.writeFileSync(path.join(project,name),text);
+  }
+  source.revision=serviceResult.source.revision;source.manifestHash=serviceResult.source.manifestHash;
+  source.buildId=prepared.buildId;
+  apply({action:'place',id:'later-door',kind:'door',position:[-8,0,4]});
+  apply({action:'sequence-door',ruleId:'later-rule',doorId:'later-door',sequence:['marker-b','marker-a']});
+  apply({action:'environment',timeOfDay:18});
+  const defaults=await stage('candidate-defaults');
+  const migration=deriveAdditiveProgress(snapshot,defaults.restored);
+  report.migration=migration;
+  const continued=await stage('continued',migration.snapshot);
+  assert.deepEqual(continued.restored,migration.snapshot);check('真实候选恢复新增对象和规则，同时保留旧进度',true);
+  await environment.run('continued-web-export',['--path',project,'--export-release','Web',path.join(exportRoot,'index.html')],{timeout:120000});
+  let nextIndex=await core.call('godotProject.index',{context:nextContext,worldId:'creation-story',offset:0,limit:32});
+  const oldFiles=[...nextIndex.files];let nextOffset=nextIndex.nextOffset;
+  while(nextOffset!=null){const page=await core.call('godotProject.index',{context:nextContext,worldId:'creation-story',revision:nextIndex.revision,manifestHash:nextIndex.manifestHash,offset:nextOffset,limit:32});oldFiles.push(...page.files);nextOffset=page.nextOffset;}
+  const updates=Object.entries(source.files).filter(([name,file])=>oldFiles.find(old=>old.path===name)?.sha256!==file.sha256).map(([name,file])=>({op:'put',path:name,text:file.text,expectedHash:oldFiles.find(old=>old.path===name)?.sha256??null}));
+  nextIndex=await core.call('godotProject.patch',{context:nextContext,worldId:'creation-story',toolCallId:'continued-source',revision:nextIndex.revision,manifestHash:nextIndex.manifestHash,operations:updates});
+  await core.call('godotExecutor.register',{executorId:'authored-story-fixture',attestation:{format:'craftmine.godot-executor/1',isolation:'authored-test-fixture',evidenceHash:sha('real-godot-story-logs'),engineVersion:'4.7.2-stable',capabilities:{import:true,build:true,check:true}}});
+  const nextJob=await core.call('godotBuild.start',{context:nextContext,worldId:'creation-story',toolCallId:'continued-check',revision:nextIndex.revision,manifestHash:nextIndex.manifestHash,mode:'check'});
+  const nextClaim=await core.call('godotJob.claim',{jobId:nextJob.jobId,token:'continued-claim',executorId:'authored-story-fixture'});
+  fs.cpSync(exportRoot,path.join(nextClaim.artifactsRoot,'web'),{recursive:true});
+  const nextArtifacts=fs.readdirSync(nextClaim.artifactsRoot,{recursive:true}).filter(name=>fs.lstatSync(path.join(nextClaim.artifactsRoot,name)).isFile()).map(name=>{const bytes=fs.readFileSync(path.join(nextClaim.artifactsRoot,name));return {path:name.replaceAll('\\','/'),bytes:bytes.length,sha256:sha(bytes)};});
+  await core.call('godotJob.checkDescriptor',{jobId:nextJob.jobId,token:'continued-claim',artifacts:nextArtifacts});
+  const nextFinished=await core.call('godotJob.finish',{jobId:nextJob.jobId,token:'continued-claim',output:{format:'craftmine.godot-job-result/1',inputHash:nextClaim.inputHash,passed:true,import:{passed:true,log:'Actual continued world import and Web export logs'},compile:{passed:true,errors:[],warnings:[]},check:{passed:true,assertions:[{id:'continued-native-load',passed:true}],defaultsSnapshot:defaults.restored,progressMigration:migration},artifacts:nextArtifacts,engine:{version:'4.7.2-stable',isolation:'authored-test-fixture',evidenceHash:nextClaim.evidenceHash}}});
+  const nextPrepared=await core.call('godotApplication.prepare',{id:'continued-apply',token:'continued-apply-token',worldId:'creation-story',candidateId:nextFinished.candidateId,revision:reopened.revision,snapshot});
+  assert.deepEqual(nextPrepared.input.snapshot,migration.snapshot);check('Rust 独立推导的第二次采用迁移与实际候选一致',true);
+  const nativeContinued=await stage('continued',nextPrepared.input.snapshot,nextPrepared.buildId);
+  await core.call('godotApplication.commit',{id:'continued-apply',token:'continued-apply-token',evidence:{format:'craftmine.godot-application/2',inputHash:nextPrepared.inputHash,launch:{passed:true,buildId:nextPrepared.buildId,instanceId:'story-instance',stateHash:sha(JSON.stringify(nativeContinued.restored))},player:null,snapshot:nativeContinued.restored}});
+  const secondApplied=await core.call('world.read',{id:'creation-story'});assert.deepEqual(secondApplied.world.snapshot,migration.snapshot);
+  check('二次正式采用完成且未重置游玩进度',secondApplied.world.build.id===nextPrepared.buildId);
+  await core.call('godotWorld.copy',{sourceWorldId:'creation-story',targetWorldId:'creation-copy',title:'造物世界独立副本',progress:'formal'});
+  const copied=await core.call('world.read',{id:'creation-copy'});
+  const expectedCopy=structuredClone(migration.snapshot);expectedCopy.worldId='creation-copy';expectedCopy.body.worldId='creation-copy';
+  assert.deepEqual(copied.world.snapshot,expectedCopy);check('第二世界复制仅替换世界身份并保留完整进度',true);
+  assert.deepEqual((await core.call('world.read',{id:'creation-story'})).world.snapshot,migration.snapshot);check('创建副本后原世界未改变',true);
+  for(const worldId of ['creation-story','creation-copy'])await core.call('content.migrate.apply',{worldId});
+  const archivePath=path.join(out,'story-backup.craftmine');
+  await core.call('backup.exportPortable',{operationId:'story-backup',archivePath},120000);
+  const verified=await core.call('backup.verifyPortable',{archivePath},120000);check('真实完整备份通过内容校验',verified.valid);
+  const restoreService=createPortableRestoreService({core,rootDirectory:data});
+  const beforeBackupHash=(await core.call('backup.status',{})).currentHash;
+  const activated=await restoreService.restore({operationId:'story-restore',archivePath,archiveHash:verified.archiveHash,expectedCurrentHash:beforeBackupHash});
+  check('完整备份恢复并激活独立数据目录',activated.activated);
+  assert.deepEqual((await core.call('world.read',{id:'creation-story'})).world.snapshot,migration.snapshot);
+  assert.deepEqual((await core.call('world.read',{id:'creation-copy'})).world.snapshot,expectedCopy);
+  await core.stop();core=new CoreClient(binary,data);await core.start();
+  assert.deepEqual((await core.call('world.read',{id:'creation-story'})).world.snapshot,migration.snapshot);
+  assert.deepEqual((await core.call('world.read',{id:'creation-copy'})).world.snapshot,expectedCopy);
+  check('恢复后重启服务，两个世界及进度仍完整',true);
 } catch(error){report.errors.push(String(error.stack));console.error(error.stack);process.exitCode=1;}
 finally{await core?.stop();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');console.log('Evidence: '+out);}
