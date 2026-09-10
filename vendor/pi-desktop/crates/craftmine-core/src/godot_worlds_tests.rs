@@ -255,6 +255,39 @@ fn initialize(journal: &mut TaskJournal, world: &str, base: &str) -> Result<Valu
         "baseBuild":base,"snapshot":progress(world)}))
 }
 
+#[test]
+fn initialization_path_failure_is_hash_checked_finite_and_persistent() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = TaskJournal::open(&path)?;
+    initialize(&mut journal, "g1", "base-a")?;
+    let context = ctx("path-budget");
+    journal.workspace_open(&context, "g1")?;
+    register(&mut journal, "executor-a", json!({"import":true,"build":true,"check":true}), &digest("e"))?;
+    let project = create_project_in(&mut journal, &context, "g1", "create-one")?;
+    let job = journal.godot_build_start(&json!({"context":context,"worldId":"g1","toolCallId":"path-check",
+        "revision":project["revision"],"manifestHash":project["manifestHash"],"mode":"check"}))?;
+    let claimed = claim(&mut journal, &job, "path-token", "executor-a")?;
+    let mut result = output(&claimed, false, json!([{"id":"executor.failed","passed":false}]), json!([]), json!(["GODOT_TASK_PATH_TOO_LONG"]));
+    result["import"]["passed"] = json!(false);
+    finish(&mut journal, &job, "path-token", &result)?;
+    let before = journal.godot_world_init_status(&json!({"worldId":"g1"}))?;
+    assert_eq!(before["reason"], "GODOT_TASK_PATH_TOO_LONG");
+    assert_eq!(before["status"], "failed");assert_eq!(before["playable"], false);
+    drop(journal);
+    let mut journal = TaskJournal::open(&path)?;
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["reason"], before["reason"]);
+    // The exact recognized code cannot be read from a corrupt output row.
+    journal.db.execute("UPDATE craftmine_godot_jobs SET output_hash='corrupt' WHERE id=?1", [job["jobId"].as_str().unwrap()])?;
+    failed(journal.godot_world_init_status(&json!({"worldId":"g1"})), "CORRUPT_GODOT_JOB_OUTPUT");
+    // Even hash-valid arbitrary text is not exposed through this new path.
+    result["compile"]["errors"] = json!(["unknown C:/private/source"]);
+    let body = serde_json::to_string(&result)?;
+    journal.db.execute("UPDATE craftmine_godot_jobs SET output=?2,output_hash=?3 WHERE id=?1",
+        params![job["jobId"].as_str().unwrap(), body, digest(&body)])?;
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["reason"], "GODOT_JOB_FAILED");
+    Ok(())
+}
+
 fn check_to_candidate(
     journal: &mut TaskJournal,
     context: &WorkspaceContext,

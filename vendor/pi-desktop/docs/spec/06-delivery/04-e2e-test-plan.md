@@ -9002,3 +9002,8 @@ In an actual managed Git repository, change a[1].gd and a1.gd with different lin
 - Lose the reply after atomic rename, retry the same operation, and reopen in a separate process. Retain exactly one entry; deletion plus replay must not resurrect original or supplementary text.
 - Preserve legacy v1 bytes on reads, upgrade to v2 only on a successful mutation, and retain corruption/hardlink/oversize failures. At 32 followups refuse another while keeping deletion available; receipt capacity must still reserve deletions.
 - Run tests/plan-loop/issue-followups-service.mjs and issue-followups-dom.mjs with isolated data, then existing notebook/context/gateway regressions. DOM tests use a declared context fixture; a separate full-client run must verify actual formal context and unchanged gameplay after restart before claiming integration acceptance. No model, upload, credentials, visible windows or OS input.
+
+
+## Godot task path budget (2026-09-10)
+
+See godot-task-path-budget.md. Fixed native broker imports at 180/245 UTF-16 cache units must pass; 266 units must reject before allocation with GODOT_TASK_PATH_TOO_LONG. Verify original source hashes, no task directory on rejection, durable finite error after core restart, and matching build stage in the player UI. No UI/input/model automation.

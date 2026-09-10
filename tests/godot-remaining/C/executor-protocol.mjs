@@ -212,6 +212,22 @@ test('happy check job: real import/export receipts, staged web artifacts, passed
   assert.equal(output.engine.isolation, 'craftmine.windows.lpac-registry.v1');
 });
 
+test('task path preparation rejection retains its reason and never reaches export/check', async t => {
+  let checks = 0;
+  const {core, started, env, jobId} = await runJob(t, {
+    verifier:{godotCheck:async()=>{ checks++; return passingEvidence(); }},
+    beforeJob:async env=>setScenario(env,{omitRequestId:true,state:'failed',
+      error:'GODOT_TASK_PATH_TOO_LONG: prepare editor-cache path uses 266 UTF-16 units; limit 245'}),
+  });
+  assert.equal(started.available,true);
+  assert.equal(core.state.output.passed,false);
+  const ledger=JSON.parse(fs.readFileSync(path.join(env.dataPath,'godot/executor-ledger.json'),'utf8'));
+  assert.equal(ledger.jobs[jobId].reason,'GODOT_TASK_PATH_TOO_LONG');
+  assert.deepEqual(core.state.output.compile.errors,['GODOT_TASK_PATH_TOO_LONG']);
+  assert.equal(core.state.progress.some(row=>row.stage==='export'),false);
+  assert.equal(checks,0);
+});
+
 test('the verifier receives the staged descriptor, never a caller-supplied path', async t => {
   let seen = null;
   const env = environment();

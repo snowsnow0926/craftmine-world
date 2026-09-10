@@ -361,6 +361,21 @@ pub struct TaskLayout {
     pub export_dir: PathBuf,
 }
 
+/// Godot's Windows editor cache creation in AppContainer does not reliably
+/// accept long paths. Keep the observed working compatibility budget
+/// explicit, including AppContainer's redirected Packages/<profile>/AC path.
+/// This is a compatibility budget, not a claim of arbitrary long-path support.
+pub const EDITOR_CACHE_PATH_LIMIT: usize = 245;
+pub fn validate_editor_cache_path(tasks_root: &Path, task_id: &str) -> Result<()> {
+    let cache = tasks_root.join(task_id).join("work").join("Packages")
+        .join(format!("craftmine.godot.task.{task_id}")).join("AC").join("Godot");
+    let units = cache.to_string_lossy().encode_utf16().count();
+    if units > EDITOR_CACHE_PATH_LIMIT {
+        return Err(format!("GODOT_TASK_PATH_TOO_LONG: prepare editor-cache path uses {units} UTF-16 units; limit {EDITOR_CACHE_PATH_LIMIT}").into());
+    }
+    Ok(())
+}
+
 impl TaskLayout {
     pub fn create(root: &Path, task_id: &str) -> Result<Self> {
         validate_task_id(task_id)?;
@@ -457,6 +472,8 @@ impl Task {
         }
         validate_task_id(&pins.editor.file_name)?;
         for template in &pins.templates { validate_task_id(&template.file_name)?; }
+        validate_task_id(task_id)?;
+        validate_editor_cache_path(tasks_root, task_id)?;
         let layout = TaskLayout::create(tasks_root, task_id)?;
         // A task root must never exist without a journal entry: the broker writes
         // the entry after `prepare` succeeds. If preparation fails, remove the
@@ -852,6 +869,29 @@ pub fn now_unix_ms() -> Result<u128> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn editor_cache_path_budget_counts_utf16_and_rejects_before_preparation() {
+        let task_id = "im-fixedlength0000000000000000";
+        let overhead = Path::new(r"D:\").join(task_id).join("work").join("Packages")
+            .join(format!("craftmine.godot.task.{task_id}")).join("AC").join("Godot")
+            .to_string_lossy().encode_utf16().count();
+        let root = PathBuf::from(format!(r"D:\{}", "p".repeat(245 - overhead - 1)));
+        assert!(validate_editor_cache_path(&root, task_id).is_ok());
+        let too_long = PathBuf::from(format!("{}x", root.display()));
+        assert!(validate_editor_cache_path(&too_long, task_id).unwrap_err().to_string().contains("GODOT_TASK_PATH_TOO_LONG"));
+        let unicode = PathBuf::from(format!("{}\u{1f600}", root.display()));
+        assert!(validate_editor_cache_path(&unicode, task_id).unwrap_err().to_string().contains("247 UTF-16"));
+
+        // Even nonexistent roots/engine files must fail with the path reason:
+        // no task directory, source copy, profile or engine may be created.
+        let pins = EnginePins { editor: PinnedInput { source: PathBuf::from("missing.exe"),
+            sha256: "0".repeat(64), file_name: "engine.exe".into() }, templates: vec![] };
+        let error = Task::prepare(&too_long, task_id, TaskKind::Import, None, &pins, TaskBudget::default())
+            .err().unwrap().to_string();
+        assert!(error.starts_with("GODOT_TASK_PATH_TOO_LONG:"));
+        assert!(!too_long.join(task_id).exists());
+    }
 
     #[test]
     fn task_ids_are_restricted() {

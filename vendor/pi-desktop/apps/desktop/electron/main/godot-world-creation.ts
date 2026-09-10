@@ -225,7 +225,7 @@ export function initStatusToCreation(status: Record<string, any> | null | undefi
     if (raw === "building") return stage === "confirm" ? "pending" : stage === "build" ? "running" : "passed";
     if (raw === "checked") return stage === "confirm" ? "running" : "passed";
     if (raw === "blocked" || FAILED_STATUSES.has(raw)) {
-      const blockedAt = reason === "GODOT_EXECUTION_UNAVAILABLE" ? "build" : "project";
+      const blockedAt = ["GODOT_EXECUTION_UNAVAILABLE", "GODOT_TASK_PATH_TOO_LONG"].includes(reason) ? "build" : "project";
       const index = order.indexOf(stage);
       const blockedIndex = order.indexOf(blockedAt);
       return index < blockedIndex ? "passed" : index === blockedIndex ? "failed" : "pending";
@@ -243,11 +243,11 @@ export function initStatusToCreation(status: Record<string, any> | null | undefi
     state: playable ? "ready" : failed ? "failed" : "initializing",
     creation: {
       operationId: String(status.initId ?? ""),
-      stage: stages.find((stage) => stage.status === "running")?.id ?? stages.filter((stage) => stage.status === "passed").at(-1)?.id ?? "materialize",
+      stage: stages.find((stage) => stage.status === "failed" || stage.status === "running")?.id ?? stages.filter((stage) => stage.status === "passed").at(-1)?.id ?? "materialize",
       stages,
       progress,
       error: failed
-        ? {code: reason || "GODOT_WORLD_INIT_FAILED", message: reason || "初始化未完成", stage: stages.find((s) => s.status === "failed")?.id ?? "build", recoverable: true}
+        ? {code: reason || "GODOT_WORLD_INIT_FAILED", message: reason === "GODOT_TASK_PATH_TOO_LONG" ? "任务目录路径过长，无法开始构建。请在较短的数据目录中重试。" : reason || "初始化未完成", stage: stages.find((s) => s.status === "failed")?.id ?? "build", recoverable: true}
         : null,
       // Only actions this module can actually perform are advertised.
       actions: failed ? ["retry", "details"] : ["details"],
@@ -362,6 +362,9 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
         const status = await deps.domain("godotWorld.initStatus", {worldId});
         const mapped = initStatusToCreation(status);
         const failure = deps.initialization?.error(worldId);
+        if (failure === "Error: GODOT_TASK_PATH_TOO_LONG" || failure === "GODOT_TASK_PATH_TOO_LONG") {
+          return initStatusToCreation({...status, status: "failed", playable: false, reason: "GODOT_TASK_PATH_TOO_LONG"});
+        }
         if (failure && mapped.creation) return {state: "failed", creation: {...mapped.creation, error: {code: "GODOT_INITIALIZATION_FAILED", message: failure, stage: mapped.creation.stage, recoverable: true}, actions: ["retry", "details"]}};
         if (!status.playable && !deps.initialization?.running(worldId) && fs.existsSync(path.join(deps.worldsRoot, worldId, ".creation-owner.json"))) void deps.initialization?.start(worldId);
         return mapped;

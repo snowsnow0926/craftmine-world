@@ -1,0 +1,25 @@
+✔ hash-checked job output preserves a finite preparation error without log paths (0.9395ms)
+✔ other failed stages report the failed stage rather than the previous passed stage (0.0892ms)
+✔ the shipped catalog offers only delivered Godot bases and their templates (2.1832ms)
+✔ creation requests are bounded and refuse bases this client cannot build (0.6181ms)
+✔ initial progress comes from the base and never from the client (1.5762ms)
+✔ core init status maps to real stages and never to a pass (0.2908ms)
+✔ the shipped materializer loads from an absolute path exactly once (139.7504ms)
+✔ the main process passes a path, never a pre-converted URL (2.0624ms)
+✔ world ids are stable per operation and reject unsafe ids (0.235ms)
+✔ a lost reply is reconciled against the core and never deletes a registered world (3.7233ms)
+✔ an unknown outcome keeps the source and reports a retryable identity (1.66ms)
+✔ a world the core never registered releases its managed copy (1.8673ms)
+✔ the factory registers through the core and releases only an unregistered copy (4.6188ms)
+✔ the main process injects the isolated Godot build verifier (1.6746ms)
+✔ the create panel keeps one stable operation id for retries (0.463ms)
+✔ the shipped Godot root resolves from the compiled main process directory (2.4196ms)
+✔ the panel coordinator serves Godot bases, creation and real world state (0.809ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 354.2166

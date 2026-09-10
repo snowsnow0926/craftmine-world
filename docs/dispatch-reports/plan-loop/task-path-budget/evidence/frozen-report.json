@@ -1,0 +1,63 @@
+{
+  "at": "2026-09-10T02:41:19.921Z",
+  "brokerSha256": "2f2393f4b0436682f1fb18a1b77ce624b7d09e68b6e34fc232d67aefe9396107",
+  "results": [
+    {
+      "targetLength": 180,
+      "actualCacheLength": 180,
+      "code": 0,
+      "state": "succeeded",
+      "exitCode": 0,
+      "error": null,
+      "cleanup": {
+        "verified": true,
+        "profileHresult": 0,
+        "workRemoved": true,
+        "error": null
+      },
+      "processVerified": true,
+      "networkVerified": true,
+      "cacheError": false,
+      "settingsError": false,
+      "brokerSha256": "2f2393f4b0436682f1fb18a1b77ce624b7d09e68b6e34fc232d67aefe9396107"
+    },
+    {
+      "targetLength": 245,
+      "actualCacheLength": 245,
+      "code": 0,
+      "state": "succeeded",
+      "exitCode": 0,
+      "error": null,
+      "cleanup": {
+        "verified": true,
+        "profileHresult": 0,
+        "workRemoved": true,
+        "error": null
+      },
+      "processVerified": true,
+      "networkVerified": true,
+      "cacheError": false,
+      "settingsError": false,
+      "brokerSha256": "2f2393f4b0436682f1fb18a1b77ce624b7d09e68b6e34fc232d67aefe9396107"
+    },
+    {
+      "targetLength": 266,
+      "actualCacheLength": 266,
+      "code": 0,
+      "state": "succeeded",
+      "exitCode": 0,
+      "error": null,
+      "cleanup": {
+        "verified": true,
+        "profileHresult": 0,
+        "workRemoved": true,
+        "error": null
+      },
+      "processVerified": true,
+      "networkVerified": true,
+      "cacheError": true,
+      "settingsError": true,
+      "brokerSha256": "2f2393f4b0436682f1fb18a1b77ce624b7d09e68b6e34fc232d67aefe9396107"
+    }
+  ]
+}

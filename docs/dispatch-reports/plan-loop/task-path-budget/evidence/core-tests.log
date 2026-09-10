@@ -1,0 +1,275 @@
+   Compiling craftmine-core v0.1.0 (D:\cm-plan-task-paths-20260910\vendor\pi-desktop\crates\craftmine-core)
+warning: unused import: `load_manifest`
+  --> crates\craftmine-core\src\godot_builds.rs:21:22
+   |
+21 |     godot_projects::{load_manifest, ordinary, valid_hash, Manifest},
+   |                      ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `entry` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:11:15
+   |
+11 | pub(super) fn entry(
+   |               ^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `build` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:32:15
+   |
+32 | pub(super) fn build(entries: Vec<AssetLockEntry>) -> Result<AssetLock> {
+   |               ^^^^^
+
+warning: function `resolve_closure` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:37:15
+   |
+37 | pub(super) fn resolve_closure(lock: &AssetLock, roots: &[AssetRef]) -> Result<Vec<AssetRef>> {
+   |               ^^^^^^^^^^^^^^^
+
+warning: function `collect` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:52:4
+   |
+52 | fn collect(entry: &AssetLockEntry, lock: &AssetLock, out: &mut Vec<AssetRef>) {
+   |    ^^^^^^^
+
+warning: field `claim_owner` is never read
+  --> crates\craftmine-core\src\asset_catalog\preview.rs:95:5
+   |
+88 | struct PreviewState {
+   |        ------------ field in this struct
+...
+95 |     claim_owner: String,
+   |     ^^^^^^^^^^^
+
+warning: method `content_files` is never used
+   --> crates\craftmine-core\src\content.rs:618:19
+    |
+236 | impl TaskJournal {
+    | ---------------- method in this implementation
+...
+618 |     pub(crate) fn content_files(
+    |                   ^^^^^^^^^^^^^
+
+warning: function `abort` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:467:8
+    |
+467 | pub fn abort(db: &mut Connection, operation_id: &str, reason: &str) -> Result<ReferenceIntent> {    let intent = load(db, operation...
+    |        ^^^^^
+
+warning: function `receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:588:8
+    |
+588 | pub fn receipt(
+    |        ^^^^^^^
+
+warning: function `store_receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:614:8
+    |
+614 | pub fn store_receipt(
+    |        ^^^^^^^^^^^^^
+
+warning: struct `ContentRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:219:12
+    |
+219 | pub struct ContentRef {
+    |            ^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:226:12
+    |
+225 | impl ContentRef {
+    | --------------- method in this implementation
+226 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `BuildRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:236:12
+    |
+236 | pub struct BuildRef {
+    |            ^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:246:12
+    |
+245 | impl BuildRef {
+    | ------------- method in this implementation
+246 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `ProgressRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:260:12
+    |
+260 | pub struct ProgressRef {
+    |            ^^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:270:12
+    |
+269 | impl ProgressRef {
+    | ---------------- method in this implementation
+270 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: methods `config_dir`, `with_timeout`, `object_type`, and `cat_object` are never used
+   --> crates\craftmine-core\src\content_history\git.rs:493:12
+    |
+368 | impl GitAdapter {
+    | --------------- methods in this implementation
+...
+493 |     pub fn config_dir(&self) -> &Path {
+    |            ^^^^^^^^^^
+...
+497 |     pub fn with_timeout(mut self, timeout: Duration) -> Self {
+    |            ^^^^^^^^^^^^
+...
+816 |     pub fn object_type(&self, git_dir: &Path, oid: &str) -> Result<String> {
+    |            ^^^^^^^^^^^
+...
+824 |     pub fn cat_object(&self, git_dir: &Path, oid: &str) -> Result<Vec<u8>> {
+    |            ^^^^^^^^^^
+
+warning: constant `REPOSITORY_FORMAT` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:30:11
+   |
+30 | pub const REPOSITORY_FORMAT: &str = "craftmine.content-repository/1";
+   |           ^^^^^^^^^^^^^^^^^
+
+warning: method `as_str` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:42:8
+   |
+41 | impl ContentBackend {
+   | ------------------- method in this implementation
+42 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+
+warning: associated function `text` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:108:12
+    |
+107 | impl ContentFile {
+    | ---------------- associated function in this implementation
+108 |     pub fn text(path: &str, text: &str) -> Self {
+    |            ^^^^
+
+warning: struct `MaterializedCopy` is never constructed
+   --> crates\craftmine-core\src\content_history\repo.rs:171:12
+    |
+171 | pub struct MaterializedCopy {
+    |            ^^^^^^^^^^^^^^^^
+
+warning: methods `root`, `content_ref`, `materialize`, `set_draft`, `draft`, and `set_applied` are never used
+   --> crates\craftmine-core\src\content_history\repo.rs:211:12
+    |
+198 | impl RepositoryStore {
+    | -------------------- methods in this implementation
+...
+211 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+...
+477 |     pub fn content_ref(&self, layout: &RepoLayout, oid: &str) -> Result<ContentRef> {
+    |            ^^^^^^^^^^^
+...
+536 |     pub fn materialize(
+    |            ^^^^^^^^^^^
+...
+818 |     pub fn set_draft(
+    |            ^^^^^^^^^
+...
+833 |     pub fn draft(&self, layout: &RepoLayout, branch_id: &str) -> Result<Option<String>> {
+    |            ^^^^^
+...
+891 |     pub fn set_applied(
+    |            ^^^^^^^^^^^
+
+warning: function `group_by_request` is never used
+    --> crates\craftmine-core\src\content_history\repo.rs:1103:8
+     |
+1103 | pub fn group_by_request(records: &[CommitRecord]) -> BTreeMap<String, Vec<&CommitRecord>> {
+     |        ^^^^^^^^^^^^^^^^
+
+warning: function `blob_read` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:363:15
+    |
+363 | pub(super) fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Result<String> {
+    |               ^^^^^^^^^
+
+warning: function `reconcile_git_head` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:541:4
+    |
+541 | fn reconcile_git_head(
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: methods `project_manifest` and `project_is_git_backed` are never used
+   --> crates\craftmine-core\src\godot_projects.rs:754:19
+    |
+727 | impl TaskJournal {
+    | ---------------- methods in this implementation
+...
+754 |     pub(super) fn project_manifest(
+    |                   ^^^^^^^^^^^^^^^^
+...
+878 |     pub(super) fn project_is_git_backed(&self, world: &str) -> Result<bool> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `claim_owner` is never read
+  --> crates\craftmine-core\src\asset_catalog\preview.rs:95:5
+   |
+88 | struct PreviewState {
+   |        ------------ field in this struct
+...
+95 |     claim_owner: String,
+   |     ^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `root` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:211:12
+    |
+198 | impl RepositoryStore {
+    | -------------------- method in this implementation
+...
+211 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+
+warning: function `VECTORS_JSON` should have a snake case name
+   --> crates\craftmine-core\src\content_history\contract_vectors_tests.rs:113:4
+    |
+113 | fn VECTORS_JSON() -> Result<Value> {
+    |    ^^^^^^^^^^^^ help: convert the identifier to snake case: `vectors_json`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `craftmine-core` (lib) generated 26 warnings (run `cargo fix --lib -p craftmine-core` to apply 1 suggestion)
+warning: `craftmine-core` (lib test) generated 11 warnings (7 duplicates) (run `cargo fix --lib -p craftmine-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.94s
+     Running unittests src\lib.rs (target\debug\deps\craftmine_core-13091a1caf054aaf.exe)
+
+running 9 tests
+test godot_worlds::tests::initialize_creates_a_recoverable_record_and_never_declares_a_playable_world ... ok
+test godot_worlds::tests::a_failed_initialization_keeps_a_recoverable_record_and_can_be_retried ... ok
+test godot_worlds::tests::initialization_path_failure_is_hash_checked_finite_and_persistent ... ok
+test godot_worlds::tests::only_a_real_verified_application_confirms_initialization ... ok
+test godot_worlds::tests::backup_descriptor_verifies_the_live_store_and_detects_tampering ... ok
+test godot_worlds::tests::copying_a_formal_world_keeps_identity_separate_and_can_start_from_initial_state ... ok
+test godot_worlds::tests::a_git_backed_world_can_be_copied_and_described_from_its_commit ... ok
+test godot_worlds::tests::portable_restore_rebuilds_applied_source_without_losing_progress_or_drafts ... ok
+test godot_worlds::tests::copied_runtime_rebind_is_exact_persistent_and_requires_independent_application ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 281 filtered out; finished in 10.81s
+
+     Running unittests src\main.rs (target\debug\deps\craftmine_core-d51d032be1083c22.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

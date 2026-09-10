@@ -349,14 +349,26 @@ impl TaskJournal {
                 |row| row.get(0),
             )
             .optional()?;
-        let job: Option<(String, Option<String>)> = tx
+        let mut job: Option<(String, String, Option<String>)> = tx
             .query_row(
-                "SELECT status,COALESCE(interrupt_reason,blocked_reason) FROM craftmine_godot_jobs
+                "SELECT id,status,COALESCE(interrupt_reason,blocked_reason) FROM craftmine_godot_jobs
                  WHERE world_id=?1 ORDER BY created_at DESC,rowid DESC LIMIT 1",
                 [&args.world_id],
-                |row| Ok((row.get(0)?, row.get(1)?)),
+                |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
             )
             .optional()?;
+        if let Some((job_id, status, reason)) = &mut job {
+            if applied.is_none() && candidate.is_none() && status == "failed" && reason.is_none() {
+                // Reuse the existing output-hash verifier; never derive a UI
+                // diagnostic from unchecked serialized output or raw paths.
+                let checked = super::godot_jobs::read_job(&tx, job_id)?;
+                ensure!(checked["worldId"] == args.world_id, "GODOT_WORLD_MISMATCH");
+                if checked["output"]["compile"]["errors"].as_array().is_some_and(|errors|
+                    errors.iter().any(|error| error.as_str() == Some("GODOT_TASK_PATH_TOO_LONG"))) {
+                    *reason = Some("GODOT_TASK_PATH_TOO_LONG".into());
+                }
+            }
+        }
         let project: Option<i64> = tx
             .query_row(
                 "SELECT revision FROM craftmine_godot_projects WHERE world_id=?1",
@@ -368,7 +380,7 @@ impl TaskJournal {
             ("confirmed", None)
         } else if candidate.is_some() {
             ("checked", None)
-        } else if let Some((job_status, job_reason)) = &job {
+        } else if let Some((_, job_status, job_reason)) = &job {
             match job_status.as_str() {
                 "failed" => ("failed", Some(job_reason.clone().unwrap_or_else(|| "GODOT_JOB_FAILED".into()))),
                 "interrupted" | "cancelled" => {

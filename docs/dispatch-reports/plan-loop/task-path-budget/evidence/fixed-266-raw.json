@@ -1,0 +1,6 @@
+{
+  "code": 1,
+  "signal": null,
+  "stdout": "{\"error\":\"GODOT_TASK_PATH_TOO_LONG: prepare editor-cache path uses 266 UTF-16 units; limit 245\",\"schemaVersion\":1,\"state\":\"failed\"}\n",
+  "stderr": "BROKER_ERROR: GODOT_TASK_PATH_TOO_LONG: prepare editor-cache path uses 266 UTF-16 units; limit 245\n"
+}

@@ -1,0 +1,35 @@
+✔ stop drains a real pending broker preflight and prevents obsolete registration (377.299ms)
+✔ stop drains an in-flight registration, revokes it, then admits one fresh restart (184.6116ms)
+✔ happy check job: real import/export receipts, staged web artifacts, passed candidate (333.526ms)
+✔ task path preparation rejection retains its reason and never reaches export/check (230.6677ms)
+✔ the verifier receives the staged descriptor, never a caller-supplied path (339.0012ms)
+✔ check job without a verifier records a failure instead of a false pass (341.3704ms)
+✔ a failing runtime check fails the job and its assertions (355.7684ms)
+✔ forged preflight evidence never registers an executor (577.0127ms)
+✔ measured source files must equal the claimed manifest (837.7687ms)
+✔ unlisted, tampered and escaping artifacts are refused (923.4331ms)
+✔ compile failures are fatal, known native isolation diagnostics are not (543.4358ms)
+✔ a broker that never answers or dies is recorded as a failure, never a pass (431.2156ms)
+✔ a job that exceeds its budget is failed, not left running (1697.6674ms)
+✔ cancel kills the broker, records no result and cancels the core job (506.6217ms)
+✔ executor stop revokes registration and rejects new jobs (95.8081ms)
+✔ sourceSnapshotDigest matches the documented broker digest shape (0.1506ms)
+✔ missing or tampered host files report their own reason (20.7752ms)
+✔ a changed broker binary is refused when a pin is configured (3.5078ms)
+✔ one verified native import crash gets a fresh task, preserving its failure and full check (486.4686ms)
+✔ script errors, changed inputs, unknown cleanup and repeated crashes never become successful retries (1987.925ms)
+✔ finite runtime expectation: matched (253.9338ms)
+✔ finite runtime expectation: descriptor-missing (316.454ms)
+✔ finite runtime expectation: descriptor-dropped (339.2256ms)
+✔ finite runtime expectation: descriptor-mixed (323.3215ms)
+✔ finite runtime expectation: assertion-missing (320.6872ms)
+✔ finite runtime expectation: assertion-false (323.5645ms)
+✔ finite runtime expectation: assertion-duplicate (324.4861ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12568.6359
