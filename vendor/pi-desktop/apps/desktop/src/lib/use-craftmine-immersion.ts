@@ -28,6 +28,9 @@ export function useCraftmineImmersionSurface(
   surfaceRef: RefObject<HTMLElement | null>,
 ) {
   const [hostError, setHostError] = useState("");
+  useEffect(() => () => {
+    void api.craftmineSetImmersion({ active: false, overlay: "closed", overlayBounds: null }).catch(() => undefined);
+  }, []);
   useEffect(() => {
     let disposed = false;
     let frame = 0;
@@ -49,9 +52,10 @@ export function useCraftmineImmersionSurface(
           }
         }
         void api.craftmineSetImmersion({
-          active: active && !blocked,
+          active,
           overlay,
           overlayBounds,
+          blocked,
         }).then(() => { if (!disposed) setHostError(""); }, error => {
           if (!disposed) setHostError(error instanceof Error ? error.message : String(error));
         });
@@ -69,7 +73,6 @@ export function useCraftmineImmersionSurface(
       observer.disconnect();
       layers.disconnect();
       window.removeEventListener("resize", report);
-      void api.craftmineSetImmersion({ active: false, overlay: "closed", overlayBounds: null }).catch(() => undefined);
     };
   }, [active, overlay, blocked, surfaceRef]);
 
@@ -79,7 +82,8 @@ export function useCraftmineImmersionSurface(
     const layers = new WeakMap<KeyboardEvent, boolean>();
     const capture = (event: KeyboardEvent) => {
       const context = fullscreenEscapeContext(document, composing);
-      layers.set(event, context.composing || context.overlayOpen || context.editing || context.pointerLocked);
+      const voiceActive = event.key === "Escape" && !!document.querySelector('.voice-input[data-voice-state="starting"],.voice-input[data-voice-state="recording"],.voice-input[data-voice-state="transcribing"]');
+      layers.set(event, context.composing || context.overlayOpen || context.editing || context.pointerLocked || voiceActive);
     };
     const bubble = (event: KeyboardEvent) => {
       const next = immersionKeyAction(event, loadCraftmineLayout(localStorage).overlay, composing || layers.get(event) === true);

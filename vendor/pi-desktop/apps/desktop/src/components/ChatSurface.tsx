@@ -37,7 +37,7 @@ function projectName(path?: string | null, name?: string | null) {
  * per-session drafts already, and remounting it on every switch discarded its
  * measured metrics and focus.
  */
-export const ChatSurface = memo(function ChatSurface() {
+export const ChatSurface = memo(function ChatSurface({ voiceEnabled = false }: { voiceEnabled?: boolean }) {
   const { t } = useTranslation();
   const activeSessionId = useAppStore((state) => state.activeSessionId);
   const selectingSessionId = useAppStore((state) => state.selectingSessionId);
@@ -175,7 +175,7 @@ export const ChatSurface = memo(function ChatSurface() {
             </div>
           </div>
           <div className="home-composer-wrap">
-            <StableComposer variant="home" />
+            <StableComposer variant="home" voiceEnabled={voiceEnabled} />
           </div>
         </div>
       ) : (
@@ -189,7 +189,7 @@ export const ChatSurface = memo(function ChatSurface() {
               />
             ))}
           </div>
-          <StableComposer variant="docked" />
+          <StableComposer variant="docked" voiceEnabled={voiceEnabled} />
         </>
       )}
 

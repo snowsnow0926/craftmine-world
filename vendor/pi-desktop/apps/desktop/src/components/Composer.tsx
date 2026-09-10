@@ -58,6 +58,9 @@ import {
   useComposerAutocomplete,
 } from "../hooks/use-composer-autocomplete";
 import { ComposerAutocomplete } from "./ComposerAutocomplete";
+import { VoiceInput } from "./VoiceInput";
+import { appendVoiceTranscript } from "../lib/composer-voice-draft";
+import { craftmineWorldBridge } from "../lib/craftmine-worlds";
 import { ContextUsageInspector } from "./ContextUsageInspector";
 import { AskToolCard } from "./AskToolCard";
 import { PlanApprovalBar } from "./PlanApprovalBar";
@@ -592,9 +595,11 @@ type PromptEnhancementError = {
 export function Composer({
   variant = "docked",
   prefill,
+  voiceEnabled = false,
 }: {
   variant?: "home" | "docked";
   prefill?: ComposerPrefill | null;
+  voiceEnabled?: boolean;
 }) {
   const { t } = useTranslation();
   const sendPrompt = useAppStore((s) => s.sendPrompt);
@@ -609,6 +614,16 @@ export function Composer({
   const sessions = useAppStore((s) => s.sessions);
   const activeSessionId = useAppStore((s) => s.activeSessionId);
   const workspacePath = useAppStore((s) => s.workspace?.path ?? "");
+  const [voiceWorldGeneration, setVoiceWorldGeneration] = useState(0);
+  useEffect(() => {
+    const changed = () => setVoiceWorldGeneration(generation => generation + 1);
+    const off = craftmineWorldBridge()?.onChanged(changed);
+    window.addEventListener("craftmine-world-changed", changed);
+    return () => { off?.(); window.removeEventListener("craftmine-world-changed", changed); };
+  }, []);
+  const voiceContextKey = `${activeSessionId ?? HOME_DRAFT_KEY}:${workspacePath}:${voiceWorldGeneration}`;
+  const voiceContextRef = useRef(voiceContextKey);
+  voiceContextRef.current = voiceContextKey;
   const providers = useAppStore((s) => s.providers);
   const providerModels = useAppStore((s) => s.providerModels);
   const liveMessages = useAppStore((s) => s.messages);
@@ -760,6 +775,18 @@ export function Composer({
 
   const liveDraftText = () =>
     ref.current ? readEditorValue(ref.current) : valueRef.current;
+
+  const acceptVoiceTranscript = (transcript: string) => {
+    if (!voiceEnabled || inputBlocked || composing || voiceContextRef.current !== voiceContextKey) return;
+    const before = liveDraftText();
+    const next = appendVoiceTranscript(before, transcript);
+    if (next === before) return;
+    invalidatePromptEnhancement();
+    valueRef.current = next;
+    pendingEditorCaretRef.current = next.length;
+    setValue(next);
+    setCursor(next.length);
+  };
 
   const persistDraft = (key = draftKeyRef.current) =>
     captureComposerDraft(key, liveDraftText(), fileReferencesRef.current);
@@ -2205,6 +2232,7 @@ export function Composer({
 
           <div className="composer-toolbar">
             <div className="composer-left">
+              {voiceEnabled && <VoiceInput contextKey={voiceContextKey} disabled={inputBlocked || composing} onTranscript={acceptVoiceTranscript} />}
               <div className="composer-plus">
                 <button
                   type="button"
