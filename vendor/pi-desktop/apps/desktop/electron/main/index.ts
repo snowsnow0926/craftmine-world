@@ -43,6 +43,7 @@ import {installCreationEvaluation,reserveCreationEvaluationRequest} from "./craf
 import {creationTaskStatus} from "./creation-task-status";
 import {createCreationEditService,validateCreationEdit,type CreationEditInput} from "./creation-edit-service";
 import {readFormalCreationJournal,assertDirectCreationCandidate} from "./creation-edit-guards";
+import {installCreationEditAcceptance} from "./creation-edit-acceptance";
 import type {DirectCreationIntent} from "./creation-check-requirements";
 import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
@@ -1160,6 +1161,7 @@ async function creationEditCapture(owner:number,sessionId:string,captureId:strin
   return {session,projectId,capture};
 }
 const creationEdits=createCreationEditService({
+  directory:join(dataDir,"creation-edits"),
   begin:async(owner,input)=>{
     if(creationEditStarting||activeTurns.size||turnFinalizations.size||profileRestore||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotInitializer.busy||godotRestores.busy)throw Error("ACTIVE_TASK_EXISTS");
     creationEditStarting=true;let turnId:string|undefined;
@@ -6397,8 +6399,15 @@ function registerIpc() {
         const request=validateCreationEdit(input);await assertCreationEditor(event.sender.id,request.sessionId);return creationEdits.start(event.sender.id,request);
       }
       if(payload.channel==="godot.creationEditStatus"){
-        if(Object.keys(input).join(",")!=="operationId"||typeof input.operationId!=="string")throw Error("CREATION_REQUEST_INVALID");
-        const status=creationEdits.status(event.sender.id,input.operationId);await assertCreationEditor(event.sender.id,status.sessionId);return status;
+        if(Object.keys(input).sort().join(",")!=="operationId,sessionId,worldId"||![input.operationId,input.sessionId,input.worldId].every(value=>typeof value==="string"&&value.length>0&&value.length<=240))throw Error("CREATION_REQUEST_INVALID");
+        await assertCreationEditor(event.sender.id,input.sessionId);if(await godotSelection()!==input.worldId)throw Error("CREATION_TARGET_STALE");
+        const status=creationEdits.status(event.sender.id,input.operationId,{sessionId:input.sessionId,worldId:input.worldId});
+        if(status.phase==="interrupted"&&status.jobId&&status.candidateId){
+          const [job,formal]=await Promise.all([plugins.requestCraftmineHost("godotBuild.read",{worldId:input.worldId,jobId:status.jobId}),plugins.requestCraftmineHost("godotRuntime.describe",{worldId:input.worldId})]) as any[];
+          await assertCreationEditor(event.sender.id,input.sessionId);if(await godotSelection()!==input.worldId)throw Error("CREATION_TARGET_STALE");
+          if(job?.jobId===status.jobId&&job.worldId===input.worldId&&job.kind==="check"&&job.status==="passed"&&job.candidateId===status.candidateId&&formal?.worldId===input.worldId&&formal.buildId===job.buildId)return {...status,phase:"applied",error:undefined,reconciled:true};
+        }
+        return status;
       }
       if(payload.channel==="godot.creationEditHistory"){
         if(Object.keys(input).sort().join(",")!=="captureId,sessionId"||typeof input.sessionId!=="string"||typeof input.captureId!=="string")throw Error("CREATION_REQUEST_INVALID");
@@ -9740,6 +9749,26 @@ installP8NativeAcceptance({
     capture: (width, height) => godotWorld.headlessCapture(width, height),
   },
 });
+installCreationEditAcceptance({enabled:!!headlessAcceptance,window:()=>mainWindow,call:(method,args)=>host!.call(method,args),observe:()=>godotWorld.request("observe-envelope",{}),action:(op,args)=>godotWorld.request(op,args),active:sessionId=>activeTurns.has(sessionId)||turnFinalizations.has(sessionId),
+  seed:async(owner,sessionId,captureId)=>{
+    if(activeTurns.size||turnFinalizations.size||creationEditStarting)throw Error("ACTIVE_TASK_EXISTS");
+    const {session,projectId,capture}=await creationEditCapture(owner,sessionId,captureId);
+    const {turnId}=await host!.call<{turnId:string}>("session.beginTurn",{sessionId});activeTurns.set(sessionId,turnId);
+    const context={projectId,sessionId,turnId},content="在这里放一棵树",message={id:crypto.randomUUID(),role:"user",content,createdAt:new Date().toISOString(),status:"complete"};
+    let outcome:"completed"|"error"="error";
+    try{
+      await host!.call("session.appendMessage",{sessionId,turnId,message});await bindCraftmineTurn(sessionId,turnId,session,{id:message.id,text:content},{owner,capture});
+      const bound=creationTargets.bound(context,capture.worldId)!;
+      const tool=async(name:string,args:Record<string,unknown>)=>{const found=plugins.getTools().find(item=>item.pluginId==="craftmine.world"&&item.name===name);if(!found)throw Error("CREATION_TOOL_UNAVAILABLE");return found.execute(args,{...context,toolCallId:`fixed-editor-seed-${name}`,executionId:crypto.randomUUID()}) as Promise<any>;};
+      const source=await tool("godot_project_index",{offset:0,limit:1});
+      const edited=await tool("creation_operation",{request:{operationId:"fixed-editor-seed",action:"place",kind:"tree",id:"editor-tree",expected:{worldId:capture.worldId,buildId:capture.buildId,instanceId:capture.instanceId,targetSnapshotId:capture.snapshotId,revision:source.revision,manifestHash:source.manifestHash}}});
+      const started=await tool("godot_build_start",{...edited.source,mode:"check"});if(started.execution?.enqueued!==true)throw Error("EDIT_ACCEPTANCE_EXECUTOR_UNAVAILABLE");
+      let job:any;const deadline=Date.now()+600000;do{job=await plugins.requestCraftmineHost("godotBuild.read",{worldId:capture.worldId,jobId:started.jobId,context});if(["passed","failed","cancelled","blocked","interrupted"].includes(job.status))break;if(Date.now()>deadline)throw Error("EDIT_ACCEPTANCE_CHECK_TIMEOUT");await new Promise(resolve=>setTimeout(resolve,250));}while(true);
+      if(job.status!=="passed"||!job.candidateId)throw Error("EDIT_ACCEPTANCE_CHECK_FAILED");
+      const guard=()=>assertDirectCreationCandidate((method,args)=>plugins.requestCraftmineHost(method,args),context,bound,job.jobId,job.candidateId);
+      await guard();const result=await godotCandidates.autoApplyVerified(capture.worldId,job.candidateId,{buildId:capture.buildId,instanceId:capture.instanceId},guard);outcome="completed";return {result,job,receipt:edited.receipt,fixedAuthorFixture:true};
+    }finally{await finishTurn(sessionId,outcome,undefined,{createNotification:false,expectedTurnId:turnId});}
+  }});
 installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), toolName: name => { const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name); if (!tool) throw Error("Missing world tool: " + name); return tool.fullName; }, begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId), finish: sessionId => finishTurn(sessionId, "completed", undefined, { createNotification: false }) });
 installHeadlessControl({
   window: () => mainWindow,
