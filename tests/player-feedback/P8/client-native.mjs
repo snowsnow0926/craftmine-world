@@ -1,4 +1,4 @@
-// Run only after the root integrator authorizes this exact compiled candidate.
+﻿// Run only after the root integrator authorizes this exact compiled candidate.
 // One process runs exactly the cases named by CRAFTMINE_P8_CASES, on its own
 // ledger, profile, relay port and log directory, so two cases can run in parallel
 // and a single-case result can never be read as a two-case pass.
@@ -18,16 +18,20 @@ import { createP8Relay, MODEL } from './relay.mjs';
 import { openRequestJournal, ordinaryParents, reconcileMetrics, unwrapP8ProductReply } from './evidence.mjs';
 import { deriveAdditiveProgress } from '../../../desktop/godot/shared/progress-migration.mjs';
 import { createStopControl } from './stop-control.mjs';
-import { p8Authorization } from './authorization.mjs';
+import { p8Authorization, stripCaseArgument } from './authorization.mjs';
 import { readLedgerSummary, admissionAccounting } from './ledger.mjs';
 import { evaluateGameplay } from './gameplay-criteria.mjs';
-import { summarizeRun } from './run-outcome.mjs';
+import { summarizeRun, CASE_PIPELINE_COMPLETE } from './run-outcome.mjs';
 
 /** One initial request plus the three fixed continuations the product allows. */
 const MAX_ROUNDS = 4;
 const CASE_PLAN = Object.freeze({ hammer: { baseId: 'first-person', starterId: 'training-range' }, dog: { baseId: 'top-down', starterId: 'town' } });
+const DRIVER_MODULES = ['client-native.mjs', 'authorization.mjs', 'ledger.mjs', 'evidence.mjs', 'relay.mjs', 'stop-control.mjs', 'gameplay-criteria.mjs', 'run-outcome.mjs', 'review-merge.mjs'];
 
-const options = parameterClientArguments(process.argv.slice(2)), { root, runtime, deps, packaged } = options;
+// This driver owns `--case`; the generic parameter parser stays untouched, so an
+// unknown argument still fails there.
+const driverArgv = process.argv.slice(2), { argv: parameterArgv } = stripCaseArgument(driverArgv);
+const options = parameterClientArguments(parameterArgv), { root, runtime, deps, packaged } = options;
 const app = path.join(root, 'vendor/pi-desktop/apps/desktop'), hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
 assert.equal(execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim(), '', 'P8 source must be clean');
@@ -47,15 +51,21 @@ const parent = path.join(root, 'test-results'); fs.mkdirSync(parent, { recursive
 const out = fs.mkdtempSync(path.join(parent, 'desktop-native-p8-')), profile = path.join(out, 'profile'), legacy = path.join(out, 'legacy'), temp = path.join(out, 'temp'), token = randomUUID(), runId = randomUUID();
 for (const directory of [profile, legacy, temp]) fs.mkdirSync(directory);
 fs.writeFileSync(path.join(profile, 'headless-profile.json'), JSON.stringify({ format: 'craftmine.headless-profile/1', token, legacySource: legacy }));
-// The ledger is resolved after the run's own output directory exists, because a
+// The journal is resolved after the run's own output directory exists, because a
 // parallel run may only journal inside its own new output range.
-const authorization = p8Authorization(process.env, root, { out }), cases = authorization.cases;
-const report = { format: 'craftmine.p8-client/1', passed: false, commit, out, runId, profile, mode: packaged ? 'packaged' : 'development', mainSha256: hash(main), coreSha256: hash(fs.readFileSync(core)), hostSha256: hash(fs.readFileSync(host)), runtimeFilesDigest: packageInfo?.identity.runtimeFilesDigest ?? resources.filesDigest,
-  requestedModel: MODEL, authorization: { phase: authorization.phase, requestLimit: authorization.requestLimit, previousPhaseAdmissions: authorization.previousPhaseAdmissions, mode: authorization.mode, ownership: authorization.ownership }, requestedCases: cases, requestLimit: authorization.requestLimit, cumulativeTokenLimit: null, cases: [], steps: [], launches: [], faults: [], limitations: ['Reconstructed synthetic requests; no player profile or original prompt was copied.', 'Actual product chat and model responses are not authored fixtures. An unverified behavior remains pending even if its build passes.', 'No real OS input, foreground window, Pointer Lock, desktop capture or credential reporting.', 'This run is not installer/signing/clean-machine or player acceptance.'] };
+const authorization = p8Authorization(process.env, root, { out, argv: driverArgv }), cases = authorization.cases;
+const driverHashes = Object.fromEntries(DRIVER_MODULES.map(name => {
+  const file = path.join(root, 'tests/player-feedback/P8', name);
+  return [name, fs.existsSync(file) ? hash(fs.readFileSync(file)) : null];
+}));
+const report = { format: 'craftmine.p8-client/1', passed: false, commit, runtimeSourceCommit: resources?.sourceCommit ?? packageInfo?.identity?.runtimeSourceCommit ?? null, out, runId, profile, mode: packaged ? 'packaged' : 'development', mainSha256: hash(main), coreSha256: hash(fs.readFileSync(core)), hostSha256: hash(fs.readFileSync(host)), runtimeFilesDigest: packageInfo?.identity.runtimeFilesDigest ?? resources.filesDigest,
+  driverHashes, requestedModel: MODEL, authorization: { phase: authorization.phase, requestLimit: authorization.requestLimit, previousPhaseAdmissions: authorization.previousPhaseAdmissions, phaseOneAdmissions: authorization.phaseOneAdmissions, mode: authorization.mode, ownership: authorization.ownership, caseSelection: authorization.caseSelection }, requestedCases: cases, caseSelection: authorization.caseSelection, requestLimit: authorization.requestLimit, cumulativeTokenLimit: null, cases: [], steps: [], launches: [], faults: [], limitations: ['Reconstructed synthetic requests; no player profile or original prompt was copied.', 'Actual product chat and model responses are not authored fixtures. An unverified behavior remains pending even if its build passes.', 'No real OS input, foreground window, Pointer Lock, desktop capture or credential reporting.', 'This run is not installer/signing/clean-machine or player acceptance.', 'Frames and source support an independent review of claims no product channel reports; they are not a substitute for human visual confirmation.'] };
 if (packageInfo) Object.assign(report, packageInfo.identity);
 const save = () => fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2));
+report.pluginSha256 = packageInfo?.identity?.pluginSha256 ?? null; report.appVersion = packageInfo?.identity?.appVersion ?? JSON.parse(fs.readFileSync(path.join(app, 'package.json'), 'utf8')).version;
 const journalPath = authorization.journalPath, journal = openRequestJournal(journalPath, { requestLimit: authorization.requestLimit });
 report.requestJournal = journalPath; report.priorAdmissions = journal.entries.length; report.ledger = authorization.ownership;
+report.journal = { ...authorization.ownership, priorInJournal: journal.entries.length, phaseOneAdmissions: authorization.phaseOneAdmissions, historical: authorization.historical };
 let currentCase = null, relay;
 let child, ended = true, ready = false, launch, exit; const pending = new Map(), reopen = {};
 const stopControl = createStopControl({ runId, out, abort: caseId => p8('abort', caseId), snapshot: caseId => p8('snapshot', caseId), record: event => {
@@ -168,6 +178,13 @@ try {
       const world = await step('create fresh ' + caseId + ' world', () => nav('world.create', { baseId, starterId, title: 'P8 reconstructed ' + caseId, operationId: randomUUID() })); item.worldId = world.id;
       await step('actual initialization build/check', () => until(async () => (await nav('world.list')).worlds.find(row => row.id === world.id), row => { assert.ok(!['failed', 'cancelled', 'interrupted'].includes(row?.state), JSON.stringify(row)); return row?.state === 'ready'; }, 'initialization', 900000)); await loaded(world.id);
       const initial = await rpc('godotObserve'); item.initialBuildId = initial.buildId;
+      // The initial build's own source is the baseline for "the map and the
+      // existing characters are preserved"; the candidate's source is compared
+      // against it afterwards. A missing baseline is recorded, never ignored.
+      await step('retain the initial build source snapshot for content comparison', () => {
+        try { item.initialSource = sourceEvidence(world.id, initial.buildId); assert.ok(item.initialSource.length > 0, 'Initial build exposes no source files'); item.contentSnapshot = { initialFiles: item.initialSource.length }; return { files: item.initialSource.length }; }
+        catch (error) { item.initialSourceError = String(error); report.contentSnapshotIncomplete ??= []; report.contentSnapshotIncomplete.push({ caseId, stage: 'initial', error: String(error) }); process.exitCode = 1; return { unavailable: String(error) }; }
+      });
       await panel(world.id, 'godot.runtimeSave', { freeze: true }); item.before = await state(world.id);
       const beforeCandidates = new Set((await panel(world.id, 'godot.candidateList', { offset: 0, limit: 32 })).items.map(row => row.candidateId));
       const binding = await step('bind real product chat and exact provider', () => p8('initialize', caseId, { worldId: world.id })); item.binding = binding;
@@ -233,14 +250,29 @@ try {
         return { retained: true, allowedAdditions: caseId === 'hammer' ? 'existing core-verified target/interactable migration only' : 'none' };
       });
       const play = await p8('exercise', caseId, {}, 300000);
-      item.gameplay = { ...play, actions: play.actions.map((action, index) => { const bytes = Buffer.from(action.image.pngBase64, 'base64'), file = path.join(out, `${caseId}-action-${index}.png`); fs.writeFileSync(file, bytes); return { ...action, image: { file, sha256: hash(bytes), width: action.image.width, height: action.image.height } }; }) };
+      // Every frame is written to disk with its own hash and its real receipt
+      // time; the raw bytes are replaced by the file record so the report stays
+      // readable while the frames remain on disk for an independent review.
+      let frameIndex = 0;
+      item.gameplay = { ...play, actions: play.actions.map((action, index) => {
+        if (!action.frame) return { ...action, image: null };
+        const bytes = Buffer.from(action.frame.pngBase64, 'base64'), file = path.join(out, `${caseId}-frame-${frameIndex++}-${action.op}.png`);
+        fs.writeFileSync(file, bytes);
+        const { pngBase64, ...rest } = action.frame;
+        return { ...action, frame: { ...rest, file, bytes: bytes.length, sha256: hash(bytes) } };
+      }) };
       // The case is not "played" because the commands returned; each required
-      // mechanic needs its own direct evidence.
+      // mechanic needs its own direct evidence, and a claim no product channel
+      // reports stays review-required rather than being called verified.
       item.gameplay.verdict = evaluateGameplay({ caseId, exercise: item.gameplay, source: item.source });
-      item.behavior = item.gameplay.verdict.verified ? 'verified: every gameplay criterion has direct evidence' : 'not verified: failed=' + JSON.stringify(item.gameplay.verdict.failed) + ' insufficient=' + JSON.stringify(item.gameplay.verdict.insufficient);
+      item.reviewRequired = item.gameplay.verdict.reviewRequired;
+      item.contentSnapshot = { ...(item.contentSnapshot ?? {}), candidateFiles: item.source.length, initialFiles: item.initialSource?.length ?? null };
+      item.behavior = item.gameplay.verdict.verified
+        ? 'verified: every gameplay criterion has direct evidence'
+        : 'not verified: failed=' + JSON.stringify(item.gameplay.verdict.failed) + ' insufficient=' + JSON.stringify(item.gameplay.verdict.insufficient) + ' reviewRequired=' + JSON.stringify(item.gameplay.verdict.reviewRequired);
       if (!item.gameplay.verdict.verified) process.exitCode = 1;
       await panel(world.id, 'godot.runtimeSave', { freeze: true }); item.saved = await state(world.id);
-      item.outcome = 'source-check-apply-save-completed'; save();
+      item.outcome = CASE_PIPELINE_COMPLETE; save();
     } catch (error) { item.outcome = 'failed'; item.error = String(error.stack ?? error); process.exitCode = 1;
       if (item.binding && !ended && !stopControl.requested) { try { await p8('abort', caseId); } catch (abortError) { item.abortError = String(abortError); } }
     } finally { item.finishedAt = new Date().toISOString(); report.relay = relay.snapshot(); save(); }
@@ -275,6 +307,12 @@ finally {
   } catch (error) { report.accountingError = String(error); process.exitCode = 1; }
   report.summary = summarizeRun({ requestedCases: cases, executedCases: report.cases.map(item => item.caseId), cases: report.cases, stopped: !!report.stopped, error: report.error ?? report.shutdownError ?? null, requestLimitReached: authorization.requestLimit !== null && (report.relay?.attempts.length ?? 0) >= authorization.requestLimit });
   report.pipelinePassed = report.summary.pipelinePassed; report.behaviorVerified = report.summary.behaviorVerified; report.reviewRequired = true; report.passed = false;
+  // R9: a single-case run says so in the field names, so it cannot be read as
+  // "both cases passed".
+  report.pipelinePassedForSelectedCase = report.summary.pipelinePassed;
+  report.behaviorVerifiedForSelectedCase = report.summary.behaviorVerified;
+  report.reviewItems = report.cases.flatMap(item => (item.reviewRequired ?? []).map(id => ({ caseId: item.caseId, id, evidence: item.gameplay?.verdict?.criteria?.find(row => row.id === id)?.evidence ?? null })));
+  report.reviewMerged = false;
   report.finishedAt = new Date().toISOString(); save();
-  console.log(JSON.stringify({ out, runId, requestedCases: cases, summary: { pipelinePassed: report.summary.pipelinePassed, behaviorVerified: report.summary.behaviorVerified, singleCasePassed: report.summary.singleCasePassed, combinedTwoCasePassed: report.summary.combinedTwoCasePassed, passed: report.summary.passed }, cases: report.cases.map(({ caseId, outcome, behavior, error }) => ({ caseId, outcome, behavior, error })), admissions: report.admissions, requests: report.relay?.attempts.length, error: report.error, shutdownError: report.shutdownError }));
+  console.log(JSON.stringify({ out, runId, requestedCases: cases, caseSelection: report.caseSelection, summary: { pipelinePassed: report.summary.pipelinePassed, behaviorVerified: report.summary.behaviorVerified, singleCasePassed: report.summary.singleCasePassed, combinedTwoCasePassed: report.summary.combinedTwoCasePassed, passed: report.summary.passed, reviewRequired: report.reviewItems.map(item => item.caseId + ':' + item.id) }, cases: report.cases.map(({ caseId, outcome, behavior, error }) => ({ caseId, outcome, behavior, error })), admissions: report.admissions, requests: report.relay?.attempts.length, error: report.error, shutdownError: report.shutdownError }));
 }

@@ -129,8 +129,23 @@ test('fixed exercise retains actual failures, rejects extra commands, and aborts
   });
   await f.run('initialize', { caseId: 'hammer', worldId: 'world-hammer' });
   await assert.rejects(f.run('exercise', { caseId: 'hammer', op: 'arbitrary' }), /INVALID_REQUEST/);
-  const result = await f.run('exercise', { caseId: 'hammer' }); assert.equal(result.actions.length, 13); assert.ok(result.actions.every(action => action.result.error));
-  assert.deepEqual(operations[1], ['equip', { value: 'thunder_hammer' }]); assert.equal(result.passed, undefined);
+  const result = await f.run('exercise', { caseId: 'hammer' });
+  // The plan is fixed: resume, a three-heading pickup sweep, equip, then the attack
+  // gate and the walk-in. A fixture that always refuses interact must run the whole
+  // sweep, so the plan shape is fully predictable here.
+  const ops = operations.map(entry => entry[0]);
+  assert.equal(ops[0], 'resume');
+  assert.equal(ops.filter(op => op === 'look').length, 4, 'three sweep headings plus the aim reset');
+  assert.equal(ops.filter(op => op === 'interact').length, 9, 'three headings by three interactions');
+  assert.equal(ops.filter(op => op === 'fire').length, 7, 'the gate pair, the reopen and the walk-in shots');
+  assert.equal(result.actions.length, ops.length, 'every performed operation must be recorded');
+  assert.ok(result.actions.every(action => action.result.error));
+  assert.ok(result.actions.every(action => action.observation && Number.isFinite(action.observedAtMs)));
+  const frames = result.actions.filter(action => action.frame);
+  assert.ok(frames.length > 0 && frames.length <= result.plan.maxFrames);
+  assert.ok(frames.every(action => action.frame.pngBase64.startsWith('iVBORw0KGgo')));
+  assert.ok(operations.some(([op, args]) => op === 'equip' && args.value === 'thunder_hammer'));
+  assert.equal(result.passed, undefined);
   operations.length = 0; change = true; await assert.rejects(f.run('exercise', { caseId: 'hammer' }), /RUNTIME_CHANGED/); assert.equal(operations.length, 1);
 });
 
@@ -146,10 +161,18 @@ test('the fixed dog sequence walks away before its far-range talk', async () => 
   }, { CRAFTMINE_P8_NATIVE: '1', CRAFTMINE_P8_PROXY_BASE: 'http://127.0.0.1:12345/' + 'a'.repeat(48) + '/deepseek.com/v1', CRAFTMINE_P8_PROXY_AUTH: 'b'.repeat(64) });
   await run('initialize', { caseId: 'dog', worldId: dogWorld });
   const result = await run('exercise', { caseId: 'dog' });
-  assert.equal(result.actions.length, 10);
-  assert.deepEqual(operations.map(entry => entry[0]), ['resume', 'talk', 'move', 'wait', 'talk', 'move', 'wait', 'move', 'wait', 'talk']);
+  const ops = operations.map(entry => entry[0]);
+  // Near talk, short follow leg, far leg in two directions, then the walk back.
+  assert.deepEqual(ops.slice(0, 10), ['resume', 'talk', 'move', 'wait', 'talk', 'move', 'wait', 'move', 'wait', 'talk']);
+  assert.ok(ops.length > 10 && ops.at(-1) === 'talk', 'the walk back and its talk are recorded');
+  assert.equal(ops.filter(op => op === 'move').length >= 5, true);
   assert.equal(operations[1][1].npcId, 'p8-dog');
-  assert.ok(operations.filter(entry => entry[0] === 'move').every(entry => entry[1].steps <= 600));
+  const shortLeg = operations.find(([op, args]) => op === 'move' && args.steps === 200);
+  const farLeg = operations.find(([op, args]) => op === 'move' && args.steps === 600);
+  assert.ok(shortLeg && farLeg, 'both a short follow leg and a long far leg are issued');
+  assert.ok(operations.filter(entry => entry[0] === 'move').every(entry => entry[1].steps <= 600 && Math.abs(entry[1].dx) <= 1 && Math.abs(entry[1].dy) <= 1));
+  assert.equal(result.actions.length, ops.length, 'every performed operation must be recorded');
+  assert.ok(result.actions.filter(action => action.frame).length <= result.plan.maxFrames);
   assert.ok(result.actions.every(action => action.result.error));
 });
 
