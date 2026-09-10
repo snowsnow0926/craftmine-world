@@ -9871,6 +9871,13 @@ app.on("before-quit", (event) => {
     pluginLauncherAccelerator = null;
   }
   shutdownPromise = (async () => {
+    // Preview workers must finish while their body resolver's plugin is alive.
+    try {
+      await assetPreviews.dispose();
+    } catch (error) {
+      recordHeadlessShutdownFailure("asset-previews", error);
+      logger.app("lifecycle", "error", "asset preview shutdown incomplete", {data: String(error)});
+    }
     await godotExports.dispose();
     // Replies still streaming are stopped through the sidecar first so their
     // aborted final rows can reach the transcript while host-core is alive;
