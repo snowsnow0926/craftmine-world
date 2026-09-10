@@ -56,14 +56,28 @@ test('provider error is counted, never retried or substituted, and credentials a
 });
 
 function fixture(godot = { observe: async () => ({ format: 'craftmine.godot-observation/1', worldId: 'world-hammer', baseId: 'first-person', buildId: 'formal-build', instanceId: 'formal-instance' }) }) {
-  let selected = 'world-hammer'; const calls = [], scripts = []; let active = false;
+  let selected = 'world-hammer'; const calls = [], scripts = []; let active = false, taskStatus = 'completed';
   const sessionId = '11111111-1111-4111-8111-111111111111', providerId = '22222222-2222-4222-8222-222222222222';
   const contents = { isDestroyed: () => false, executeJavaScript: async script => { scripts.push(script); if (script === 'document.body.dataset.worldId') return selected; return { accepted: true, turnId: 'turn-fixture' }; } };
   const run = createP8Acceptance({ enabled: true, window: () => ({ isDestroyed: () => false, webContents: contents }), world: () => contents,
-    call: async (method, params) => { calls.push({ method, params }); if (method === 'providers.create') return { provider: { id: providerId } }; if (method === 'session.create') return { session: { id: sessionId } }; if (method === 'session.get') return { session: { id: sessionId, providerId, modelId: MODEL, messages: [] } }; return null; }, panel: async () => ({ activeWorldId: selected, worlds: [{ id: selected, baseId: 'first-person', runtimeKind: 'godot' }] }), active: () => active, godot,
+    call: async (method, params) => { calls.push({ method, params }); if (method === 'session.turnMetrics') return {status:taskStatus}; if (method === 'providers.create') return { provider: { id: providerId } }; if (method === 'session.create') return { session: { id: sessionId } }; if (method === 'session.get') return { session: { id: sessionId, providerId, modelId: MODEL, messages: [] } }; return null; }, panel: async () => ({ activeWorldId: selected, worlds: [{ id: selected, baseId: 'first-person', runtimeKind: 'godot' }] }), active: () => active, godot,
   }, { CRAFTMINE_P8_NATIVE: '1', CRAFTMINE_P8_PROXY_BASE: 'http://127.0.0.1:12345/' + 'a'.repeat(48) + '/deepseek.com/v1', CRAFTMINE_P8_PROXY_AUTH: 'b'.repeat(64) });
-  return { run, calls, scripts, setSelected: value => { selected = value; }, setActive: value => { active = value; } };
+  return { run, calls, scripts, setSelected: value => { selected = value; }, setActive: value => { active = value; }, setStatus: value => {taskStatus=value;} };
 }
+
+test('continuation is fixed, bounded and refuses running, failed or aborted tasks', async () => {
+  const f=fixture(); await f.run('initialize',{caseId:'hammer',worldId:'world-hammer'});
+  await assert.rejects(f.run('continue',{caseId:'hammer'}),/TERMINAL_REQUIRED/);
+  await f.run('submit',{caseId:'hammer'}); f.setActive(true);
+  await assert.rejects(f.run('continue',{caseId:'hammer'}),/TERMINAL_REQUIRED/); f.setActive(false);
+  for(const status of ['error','aborted']){f.setStatus(status);await assert.rejects(f.run('continue',{caseId:'hammer'}),/COMPLETED_REQUIRED/);}
+  f.setStatus('completed');
+  await assert.rejects(f.run('continue',{caseId:'hammer',prompt:'arbitrary'}),/INVALID_REQUEST/);
+  for(let i=0;i<3;i++)await f.run('continue',{caseId:'hammer'});
+  await assert.rejects(f.run('continue',{caseId:'hammer'}),/CONTINUE_LIMIT/);
+  const prompts=f.scripts.filter(x=>x.includes('piDesktop.channels.invoke.agentPrompt'));
+  assert.equal(prompts.length,4);assert.ok(prompts.slice(1).every(x=>x.includes('thunder_hammer')&&x.includes('不要重建世界')));
+});
 test('finite helper uses real provider/session configuration and a fixed product prompt only once', async () => {
   const f = fixture(); const result = await f.run('initialize', { caseId: 'hammer', worldId: 'world-hammer' });
   assert.equal(result.modelId, MODEL); assert.equal(f.calls.find(x => x.method === 'providers.create').params.defaultModelId, MODEL);

@@ -10,7 +10,7 @@ export const P8_PROMPTS = {
   dog: "这是新的隔离俯视村落测试世界；下面是重建需求，不是原玩家提示。请真正用当前Godot工程工具增加一只明显可见的小狗，稳定ID为p8-dog，在玩家出生点附近；在有限距离内跟随玩家，走远后停止追赶，接近交互时显示一句狗狗对白。保留地图、已有角色、任务、背包、钱物和所有旧进度字段。请先读当前底座规范及相关工程文件，沿实际工具读写、构建、检查反馈修正；不能用旧体素world JSON代替Godot源码，不要只说能做到。小狗可用项目内绘制或几何制作，不需要外部资产下载。不要加入测试专用接口、伪造观察值或为了检查清空旧进度。只完成这个有限功能，实际发起Godot检查并读取结果，通过后保留未采用候选等待玩家确认；明确给出候选ID、真实所在位置、跟随范围与普通交互操作，不要宣称已正式采用。",
 } as const;
 type CaseId = keyof typeof P8_PROMPTS;
-type Binding = { sessionId: string; worldId: string; providerId: string; submitted: boolean };
+type Binding = { sessionId: string; worldId: string; providerId: string; submitted: boolean; continuations?: number };
 export type P8AcceptanceAccess = {
   enabled: boolean;
   window: () => BrowserWindow | null;
@@ -48,7 +48,7 @@ export function createP8Acceptance(access: P8AcceptanceAccess, env: Record<strin
   };
   return async (method: unknown, payload: unknown): Promise<any> => {
     if (!access.enabled || env.CRAFTMINE_P8_NATIVE !== "1") throw Error("P8_NOT_ENABLED");
-    if (!record(payload) || !["hammer", "dog"].includes(payload.caseId) || typeof method !== "string" || !["initialize", "submit", "snapshot", "abort", "exercise"].includes(method)
+    if (!record(payload) || !["hammer", "dog"].includes(payload.caseId) || typeof method !== "string" || !["initialize", "submit", "continue", "snapshot", "abort", "exercise"].includes(method)
       || Object.keys(payload).some(key => !["caseId", ...(method === "initialize" ? ["worldId"] : [])].includes(key))) throw Error("P8_INVALID_REQUEST");
     if (busy) throw Error("P8_BUSY");
     busy = true;
@@ -103,6 +103,16 @@ export function createP8Acceptance(access: P8AcceptanceAccess, env: Record<strin
         if (binding.submitted) throw Error("P8_ALREADY_SUBMITTED");
         await choose(binding); binding.submitted = true;
         return desktop(`piDesktop.invoke(piDesktop.channels.invoke.agentPrompt,${JSON.stringify({ sessionId: binding.sessionId, viewingSessionId: binding.sessionId, messageId: randomUUID(), content: P8_PROMPTS[caseId] })})`);
+      }
+      if (method === "continue") {
+        if (!binding.submitted || access.active(binding.sessionId)) throw Error("P8_CONTINUE_TERMINAL_REQUIRED");
+        if ((binding.continuations ?? 0) >= 3) throw Error("P8_CONTINUE_LIMIT");
+        const previous = await access.call("session.turnMetrics", { sessionId: binding.sessionId });
+        if (previous.status !== "completed") throw Error("P8_CONTINUE_COMPLETED_REQUIRED");
+        await choose(binding);
+        binding.continuations = (binding.continuations ?? 0) + 1;
+        const content = "继续在当前同一个世界完成下面这项尚未完成的需求，保留已经写入的源码。上一轮结束不代表作品已完成。不要再输出上下文摘要；依据实际源码及工具返回的精确哈希作小步修改，发起真实构建/检查并按错误修正，直到得到可供预览的通过检查候选。不要重建世界，不要伪造检查结果，不要自动采用。\n\n" + P8_PROMPTS[caseId];
+        return desktop(`piDesktop.invoke(piDesktop.channels.invoke.agentPrompt,${JSON.stringify({ sessionId: binding.sessionId, viewingSessionId: binding.sessionId, messageId: randomUUID(), content })})`);
       }
       const saved = await access.call("session.get", { id: binding.sessionId });
       const metrics = await access.call("session.turnMetrics", { sessionId: binding.sessionId });

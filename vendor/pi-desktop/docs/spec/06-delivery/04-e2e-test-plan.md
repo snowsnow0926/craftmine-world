@@ -9273,3 +9273,11 @@ changing source or progress. Recover a lost committed reply through its receipt.
 Run the real hammer and dog prompts through packaged chat, check, preview, apply,
 save and restart before claiming model creation acceptance. Use only offscreen
 processes and no input simulation. See godot-authoring-content-context.md.
+### Godot continuation after an incomplete model turn
+
+Use the actual world-specific prompt and preserve the original source between
+up to three fixed follow-ups. A completed conversation without a new checked
+candidate must not pass creation. Verify the continue helper refuses an active,
+failed or aborted turn and arbitrary prompt fields. Preserve per-turn metrics;
+an accepted stop prevents follow-ups and the next case. See
+`godot-creation-continuation.md` for the execution contract.

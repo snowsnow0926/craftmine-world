@@ -75,7 +75,7 @@ function rpc(method, payload = {}, timeout = 30000, type = 'craftmine-headless')
 }
 const p8 = async (method, caseId, extra = {}, timeout = 30000) => {
   const value = await rpc(method, { payload: { caseId, ...extra } }, timeout, 'craftmine-acceptance-p8');
-  return method === 'submit' || method === 'abort' ? unwrapP8ProductReply(value) : value;
+  return method === 'submit' || method === 'continue' || method === 'abort' ? unwrapP8ProductReply(value) : value;
 };
 const nav = async (channel, payload = {}) => {
   if (channel !== 'world.createOptions') return rpc('worldNavigation', { channel, payload }, 180000);
@@ -156,8 +156,10 @@ try {
       const beforeCandidates = new Set((await panel(world.id, 'godot.candidateList', { offset: 0, limit: 32 })).items.map(row => row.candidateId));
       const binding = await step('bind real product chat and exact provider', () => p8('initialize', caseId, { worldId: world.id })); item.binding = binding;
       reopen[caseId] = { sessionId: binding.sessionId, worldId: world.id, providerId: binding.providerId };
+      item.turns = [];
+      for (let turnAttempt = 0; turnAttempt < 4; turnAttempt++) {
       const admissionStart = relay.snapshot().attempts.length;
-      const submitted = await step('submit fixed reconstructed request once', () => p8('submit', caseId)); item.submission = submitted; assert.equal(submitted.accepted, true); assert.ok(submitted.turnId);
+      const submitted = await step(turnAttempt ? 'continue unfinished request in the same world' : 'submit fixed reconstructed request once', () => p8(turnAttempt ? 'continue' : 'submit', caseId)); item.submission = submitted; assert.equal(submitted.accepted, true); assert.ok(submitted.turnId);
       const stopBinding = { caseId, turnId: submitted.turnId, sessionId: binding.sessionId };
       fs.writeFileSync(path.join(out, 'control.json'), JSON.stringify({ format: 'craftmine.p8-control/1', stopFile: stopControl.file, request: { format: 'craftmine.p8-stop/1', action: 'abort', caseId, turnId: submitted.turnId } }, null, 2));
       const final = await step('real task reaches a durable terminal state', () => until(async () => {
@@ -180,8 +182,13 @@ try {
         const stopped = await stopControl.check(stopBinding);
         if (stopped) { item.stop = stopped; report.stopped = true; if (!stopped.cleanAbort) process.exitCode = 1; }
       }
-      if (item.stop) { item.outcome = 'stopped'; item.behavior = 'not accepted; explicit operator stop'; break; }
+      item.turns.push({turnId:submitted.turnId,metrics:item.metrics,requests:item.requests,calls:item.calls,dom:item.dom}); save();
+      if (item.stop) break;
       assert.equal(final.metrics.status, 'completed', 'Model task did not complete successfully');
+      const available = await panel(world.id, 'godot.candidateList', { offset: 0, limit: 32 });
+      if (available.items.some(row => !beforeCandidates.has(row.candidateId) && row.status === 'ready')) break;
+      }
+      if (item.stop) { item.outcome = 'stopped'; item.behavior = 'not accepted; explicit operator stop'; break; }
       const candidate = await step('actual model authored checked candidate exists', async () => {
         const list = await panel(world.id, 'godot.candidateList', { offset: 0, limit: 32 }); const latest = list.items.find(row => !beforeCandidates.has(row.candidateId) && row.status === 'ready'); assert.ok(latest, 'No new ready model candidate');
         const read = await panel(world.id, 'godot.candidateRead', { candidateId: latest.candidateId }); assert.equal(read.checkStatus, 'passed'); assert.equal(read.check.passed, true); assert.equal(read.candidate.worldId, world.id); assert.equal(read.buildId, latest.buildId); assert.notEqual(read.buildId, initial.buildId); item.candidate = read; return latest;
