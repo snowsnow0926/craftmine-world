@@ -1,0 +1,290 @@
+{
+  "kind": "actual-godot-web-electron-verifier",
+  "checks": [
+    {
+      "name": "positive",
+      "passed": true
+    },
+    {
+      "name": "sibling-override",
+      "passed": true
+    }
+  ],
+  "cases": [
+    {
+      "name": "positive",
+      "evidence": {
+        "format": "craftmine.godot-runtime-check/1",
+        "scope": "base-startup",
+        "jobId": "gjob-6bc37e47f9a45741d482da0ac3aff4d48cde72c035778ff92d5e0b767d19c55c",
+        "buildId": "gbd-afa6e9ab3ac6574d50e6b5674d5e76cc95833823a314b397fd6c499dc673ec9c",
+        "worldId": "feedback-positive",
+        "inputHash": "21de06c1530df5f0c5b31b79c6fd8f4fc8c014e62202c5d9b56d90ef02982cdd",
+        "passed": true,
+        "startedAt": "2026-09-10T01:36:13.550Z",
+        "elapsedMs": 8484,
+        "ready": {
+          "ok": true,
+          "ops": [
+            "capabilities",
+            "load",
+            "snapshot",
+            "save",
+            "pause",
+            "resume",
+            "acknowledge",
+            "cancel",
+            "exit"
+          ],
+          "instanceId": "acd823afd4cff377193d2b2b",
+          "elapsedMs": 7761
+        },
+        "render": {
+          "ok": true,
+          "frames": 3,
+          "distinctFrames": 1,
+          "captures": [
+            {
+              "sha256": "967e002daf12a114f7dd5b5073643c3bfa0e715a5a7a1f062b475faf5e0f242e",
+              "width": 960,
+              "height": 640,
+              "coloredSamples": 35,
+              "samples": 35
+            },
+            {
+              "sha256": "967e002daf12a114f7dd5b5073643c3bfa0e715a5a7a1f062b475faf5e0f242e",
+              "width": 960,
+              "height": 640,
+              "coloredSamples": 35,
+              "samples": 35
+            },
+            {
+              "sha256": "967e002daf12a114f7dd5b5073643c3bfa0e715a5a7a1f062b475faf5e0f242e",
+              "width": 960,
+              "height": 640,
+              "coloredSamples": 35,
+              "samples": 35
+            }
+          ]
+        },
+        "errors": {
+          "ok": true,
+          "runtime": [],
+          "console": [],
+          "renderer": null
+        },
+        "snapshot": {
+          "ok": true,
+          "equal": true,
+          "expectedHash": null,
+          "actualHash": "c36d6b98adde7ee3a0ee20295e7985615a988c5aa15e3cac0dda577627cdff3a",
+          "keys": [
+            "base",
+            "state",
+            "worldId"
+          ]
+        },
+        "isolation": {
+          "ok": true,
+          "offscreen": true,
+          "focusable": false,
+          "visible": false,
+          "guard": {
+            "focus": 0,
+            "pointerLock": 0
+          },
+          "networkBlocked": 0,
+          "navigationBlocked": 0,
+          "popupsBlocked": 0,
+          "sessionCleared": true
+        },
+        "recovery": {
+          "ok": true,
+          "gracefulExit": true,
+          "windowDestroyed": true,
+          "serverClosed": true
+        },
+        "assertions": [
+          {
+            "id": "runtime.ready",
+            "passed": true
+          },
+          {
+            "id": "runtime.frame",
+            "passed": true
+          },
+          {
+            "id": "runtime.no-errors",
+            "passed": true
+          },
+          {
+            "id": "runtime.snapshot",
+            "passed": true
+          },
+          {
+            "id": "runtime.isolation",
+            "passed": true
+          },
+          {
+            "id": "runtime.recovery",
+            "passed": true
+          },
+          {
+            "id": "runtime.target-feedback",
+            "passed": true
+          }
+        ],
+        "diagnostics": [
+          "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+          "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+          "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+          "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[960,640],\"status\":\"Loading world…\"}"
+        ],
+        "error": null,
+        "requirementsEvidence": {
+          "format": "craftmine.godot-check-requirements-evidence/1",
+          "requirementsHash": "8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240",
+          "jobId": "gjob-6bc37e47f9a45741d482da0ac3aff4d48cde72c035778ff92d5e0b767d19c55c",
+          "worldId": "feedback-positive",
+          "buildId": "gbd-afa6e9ab3ac6574d50e6b5674d5e76cc95833823a314b397fd6c499dc673ec9c",
+          "instanceId": "acd823afd4cff377193d2b2b",
+          "observations": [
+            {
+              "phase": "loaded",
+              "targetId": "target_a",
+              "hitFlashMilliseconds": 500
+            },
+            {
+              "phase": "running",
+              "targetId": "target_a",
+              "hitFlashMilliseconds": 500
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sibling-override",
+      "evidence": {
+        "format": "craftmine.godot-runtime-check/1",
+        "scope": "base-startup",
+        "jobId": "gjob-6ec923e53a83af7b42f8a83efe32aadac99f5c3614e85255d55c07fc4bab82ec",
+        "buildId": "gbd-b6a17eb5760a2502802a451433ec3f6a5eeff3a34ba373d4ed771dafa9b8c527",
+        "worldId": "feedback-sibling-override",
+        "inputHash": "640d51141209de09b9fcdc6c5cf9bb1007db18eb3ffd1258ffe43192a4835f7f",
+        "passed": false,
+        "startedAt": "2026-09-10T01:36:22.035Z",
+        "elapsedMs": 1697,
+        "ready": {
+          "ok": true,
+          "ops": [
+            "capabilities",
+            "load",
+            "snapshot",
+            "save",
+            "pause",
+            "resume",
+            "acknowledge",
+            "cancel",
+            "exit"
+          ],
+          "instanceId": "a447e1858b9c41206c53a709",
+          "elapsedMs": 1507
+        },
+        "render": {
+          "ok": false,
+          "frames": 0,
+          "distinctFrames": 0,
+          "captures": []
+        },
+        "errors": {
+          "ok": true,
+          "runtime": [],
+          "console": [],
+          "renderer": null
+        },
+        "snapshot": {
+          "ok": false,
+          "equal": false,
+          "expectedHash": null,
+          "actualHash": null,
+          "keys": []
+        },
+        "isolation": {
+          "ok": false,
+          "offscreen": true,
+          "focusable": false,
+          "visible": false,
+          "guard": null,
+          "networkBlocked": 0,
+          "navigationBlocked": 0,
+          "popupsBlocked": 0,
+          "sessionCleared": true
+        },
+        "recovery": {
+          "ok": true,
+          "gracefulExit": true,
+          "windowDestroyed": true,
+          "serverClosed": true
+        },
+        "assertions": [
+          {
+            "id": "runtime.ready",
+            "passed": true
+          },
+          {
+            "id": "runtime.frame",
+            "passed": false
+          },
+          {
+            "id": "runtime.no-errors",
+            "passed": true
+          },
+          {
+            "id": "runtime.snapshot",
+            "passed": false
+          },
+          {
+            "id": "runtime.isolation",
+            "passed": false
+          },
+          {
+            "id": "runtime.recovery",
+            "passed": true
+          },
+          {
+            "id": "runtime.target-feedback",
+            "passed": false,
+            "detail": "GODOT_CHECK_TARGET_FEEDBACK_MISMATCH:loaded"
+          }
+        ],
+        "diagnostics": [
+          "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+          "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+          "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+        ],
+        "error": "GODOT_CHECK_TARGET_FEEDBACK_MISMATCH:loaded",
+        "requirementsEvidence": {
+          "format": "craftmine.godot-check-requirements-evidence/1",
+          "requirementsHash": "8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240",
+          "jobId": "gjob-6ec923e53a83af7b42f8a83efe32aadac99f5c3614e85255d55c07fc4bab82ec",
+          "worldId": "feedback-sibling-override",
+          "buildId": "gbd-b6a17eb5760a2502802a451433ec3f6a5eeff3a34ba373d4ed771dafa9b8c527",
+          "instanceId": "a447e1858b9c41206c53a709",
+          "observations": [
+            {
+              "phase": "loaded",
+              "targetId": "target_a",
+              "hitFlashMilliseconds": 700
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "limits": [
+    "Authored descriptors; Rust finish/candidate authorization is not exercised.",
+    "No model, input or visible window."
+  ],
+  "passed": true
+}

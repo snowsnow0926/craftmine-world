@@ -1,0 +1,300 @@
+{
+  "format": "craftmine.raw-evidence-index/1",
+  "kind": "actual-authored-broker-godot-web-electron-verifier",
+  "files": [
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\descriptors.json",
+      "path": "harness-failure/descriptors.json",
+      "bytes": 5522,
+      "sha256": "89e4d362a20347d9915d81b8cd327038bc46cfe7e7bc170c90266173a1885411"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\electron.log",
+      "path": "harness-failure/electron.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\positive-exportWeb-preflight.json",
+      "path": "harness-failure/positive-exportWeb-preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\positive-exportWeb-task.log",
+      "path": "harness-failure/positive-exportWeb-task.log",
+      "bytes": 21474,
+      "sha256": "070e7ccbaa5702d70809526c8fa09d149d80d2e9f3dbef707c1bfac4d59a2fae"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\positive-exportWeb.receipt.json",
+      "path": "harness-failure/positive-exportWeb.receipt.json",
+      "bytes": 18502,
+      "sha256": "ca39e7913996e676e42761ac2c88ab04185fe50482645cac118be5b06aee8735"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\positive-exportWeb.stderr.log",
+      "path": "harness-failure/positive-exportWeb.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\positive-exportWeb.stdout.log",
+      "path": "harness-failure/positive-exportWeb.stdout.log",
+      "bytes": 14610,
+      "sha256": "fdbe6a3d927d12e7e4003c3f10ab02b03c26795b79f4b7e7e5b807de2607165d"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\positive-import-preflight.json",
+      "path": "harness-failure/positive-import-preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\positive-import-task.log",
+      "path": "harness-failure/positive-import-task.log",
+      "bytes": 6664,
+      "sha256": "1531c43de8277592d604f783a183bc613962b6f105227a40fca578b92a8935ff"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\positive-import.receipt.json",
+      "path": "harness-failure/positive-import.receipt.json",
+      "bytes": 17131,
+      "sha256": "945f4b05676cfa7485f05f742fef2ff5596eb985ab8163b6cf32c03726fdd1fc"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\positive-import.stderr.log",
+      "path": "harness-failure/positive-import.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\positive-import.stdout.log",
+      "path": "harness-failure/positive-import.stdout.log",
+      "bytes": 13548,
+      "sha256": "3f3abb113d914b4d223b2d7c415d96693312bff154b0c1c3f1a024158a341369"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\rerun-exit.json",
+      "path": "harness-failure/rerun-exit.json",
+      "bytes": 24,
+      "sha256": "1aff36f796932c34d424461078ea28c3b7feef0b4538624958a98e8dc7e4bca4"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\setup.json",
+      "path": "harness-failure/setup.json",
+      "bytes": 29855,
+      "sha256": "34a1563eaf4cb3ed6ffecefbed7b01c18752139302c3ba173fb8c5b29e7ae4b7"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\sibling-override-exportWeb-preflight.json",
+      "path": "harness-failure/sibling-override-exportWeb-preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\sibling-override-exportWeb-task.log",
+      "path": "harness-failure/sibling-override-exportWeb-task.log",
+      "bytes": 21788,
+      "sha256": "ed6bbb8bd4acfd6b0a9c7bd616bd422a76eab8647cd8053cec2fa11ca17e9121"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\sibling-override-exportWeb.receipt.json",
+      "path": "harness-failure/sibling-override-exportWeb.receipt.json",
+      "bytes": 18734,
+      "sha256": "74e16f16986b4d36c846c0df550fc5d73f932fa275baed0860739996f95d07d6"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\sibling-override-exportWeb.stderr.log",
+      "path": "harness-failure/sibling-override-exportWeb.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\sibling-override-exportWeb.stdout.log",
+      "path": "harness-failure/sibling-override-exportWeb.stdout.log",
+      "bytes": 14808,
+      "sha256": "ee123bedb20d9f96554a03bb24b065b39292558036aeab8d20ab21fdd08a0770"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\sibling-override-import-preflight.json",
+      "path": "harness-failure/sibling-override-import-preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\sibling-override-import-task.log",
+      "path": "harness-failure/sibling-override-import-task.log",
+      "bytes": 6723,
+      "sha256": "a6cd9ddaf6288c7f7daed16e4a7ccaed24e1cd9a66287a67e5ff8a6d0dbf5cc4"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\sibling-override-import.receipt.json",
+      "path": "harness-failure/sibling-override-import.receipt.json",
+      "bytes": 17367,
+      "sha256": "7d9dd1d0258a60de4f35f0e45be0cff26b7bf9f22e584c9d23bf629a27717672"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\sibling-override-import.stderr.log",
+      "path": "harness-failure/sibling-override-import.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-IYtnBi\\sibling-override-import.stdout.log",
+      "path": "harness-failure/sibling-override-import.stdout.log",
+      "bytes": 13750,
+      "sha256": "79478ef1b8ac18e56466ef3eb78bcf9361a945b92295734459a7e622d737ffed"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\descriptors.json",
+      "path": "native-final/descriptors.json",
+      "bytes": 5522,
+      "sha256": "707cf8104518f82eea6d01d4e70d080e6d28689fb68600884eba99714cf20f3c"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\electron-exit.json",
+      "path": "native-final/electron-exit.json",
+      "bytes": 10,
+      "sha256": "7a97b9b4d758a3929b8a2be53fbe189c9ba9378d6fbb8190d37f7cc14f5cf5d3"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\electron.log",
+      "path": "native-final/electron.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\positive-exportWeb-preflight.json",
+      "path": "native-final/positive-exportWeb-preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\positive-exportWeb-task.log",
+      "path": "native-final/positive-exportWeb-task.log",
+      "bytes": 21474,
+      "sha256": "070e7ccbaa5702d70809526c8fa09d149d80d2e9f3dbef707c1bfac4d59a2fae"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\positive-exportWeb.receipt.json",
+      "path": "native-final/positive-exportWeb.receipt.json",
+      "bytes": 18502,
+      "sha256": "37b5c50c47c9f8734405057a31abe3ecac4fdc52ceddeaecfbadb53cbc72f3b8"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\positive-exportWeb.stderr.log",
+      "path": "native-final/positive-exportWeb.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\positive-exportWeb.stdout.log",
+      "path": "native-final/positive-exportWeb.stdout.log",
+      "bytes": 14610,
+      "sha256": "e78df5f1975c3822d806e3764824141342991c57d16844fa22c6b27cec2d6662"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\positive-import-preflight.json",
+      "path": "native-final/positive-import-preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\positive-import-task.log",
+      "path": "native-final/positive-import-task.log",
+      "bytes": 6664,
+      "sha256": "1531c43de8277592d604f783a183bc613962b6f105227a40fca578b92a8935ff"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\positive-import.receipt.json",
+      "path": "native-final/positive-import.receipt.json",
+      "bytes": 17135,
+      "sha256": "bf15953259ba16b353b92bd03bd1086d9d892f9680d8c0fd996784871cc68342"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\positive-import.stderr.log",
+      "path": "native-final/positive-import.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\positive-import.stdout.log",
+      "path": "native-final/positive-import.stdout.log",
+      "bytes": 13552,
+      "sha256": "235421fe79a4bd3535f47c9e4f784bad5302ff2c4c0e49534c62f50fa0bf2239"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\report.json",
+      "path": "native-final/report.json",
+      "bytes": 8806,
+      "sha256": "3350d7f20f2d695573629e5be8cd30b2288347e47b5a2a25f879ec4961a60759"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\setup.json",
+      "path": "native-final/setup.json",
+      "bytes": 29456,
+      "sha256": "7fcc0b3005672fbf830f8851e188fece1d2d360a8234f9b3e061c57ea149dc7e"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\sibling-override-exportWeb-preflight.json",
+      "path": "native-final/sibling-override-exportWeb-preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\sibling-override-exportWeb-task.log",
+      "path": "native-final/sibling-override-exportWeb-task.log",
+      "bytes": 21788,
+      "sha256": "ed6bbb8bd4acfd6b0a9c7bd616bd422a76eab8647cd8053cec2fa11ca17e9121"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\sibling-override-exportWeb.receipt.json",
+      "path": "native-final/sibling-override-exportWeb.receipt.json",
+      "bytes": 18730,
+      "sha256": "786c9b7d19f129ddd5e91680b03d6de4f158e0408d0753fe349e4e4863668cf5"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\sibling-override-exportWeb.stderr.log",
+      "path": "native-final/sibling-override-exportWeb.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\sibling-override-exportWeb.stdout.log",
+      "path": "native-final/sibling-override-exportWeb.stdout.log",
+      "bytes": 14804,
+      "sha256": "dea07749e696ef3c1a00f613c66e0c3fdd4f99d2b9b1d9328b97c7a3f6bd34bd"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\sibling-override-import-preflight.json",
+      "path": "native-final/sibling-override-import-preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\sibling-override-import-task.log",
+      "path": "native-final/sibling-override-import-task.log",
+      "bytes": 6723,
+      "sha256": "a6cd9ddaf6288c7f7daed16e4a7ccaed24e1cd9a66287a67e5ff8a6d0dbf5cc4"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\sibling-override-import.receipt.json",
+      "path": "native-final/sibling-override-import.receipt.json",
+      "bytes": 17369,
+      "sha256": "3eac3121aa000be632bfba8f736417e65e1684a2e1e3806dd5a04903fc0da812"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\sibling-override-import.stderr.log",
+      "path": "native-final/sibling-override-import.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\sibling-override-import.stdout.log",
+      "path": "native-final/sibling-override-import.stdout.log",
+      "bytes": 13752,
+      "sha256": "ba6d90b44c8090a7e82ed230f173a61802d24331cf79377bbb3727c1b3fccd29"
+    }
+  ]
+}
