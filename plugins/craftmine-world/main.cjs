@@ -121,6 +121,7 @@ async function onLoad() {
   });
   const toolServices={
     ...hostProviders,
+    buildReadWaitMs:30000,
     // The seven-kind limit ledger is read through this process's core client.
     budget:createCoreBudgetProvider(core),
     // The managed executor lives in this process: its own status is the gate,

@@ -17,7 +17,7 @@ const require=createRequire(import.meta.url);
 const source=path.join(root,'plugins/craftmine-world');
 const staging=await mkdtemp(path.join(process.env.PI_SCRATCH_DIR||tmpdir(),'godot-round3-S6-wiring-'));
 const FILES=['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
-  'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs'];
+  'godot-observe.cjs','godot-build-read-wait.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs'];
 for(const file of FILES)await copyFile(path.join(source,file),path.join(staging,file));
 await writeFile(path.join(staging,'domain.cjs'),`
 function fields(args,required,optional){
@@ -228,4 +228,11 @@ test('check requirements come exclusively from the frozen host capture',async()=
  assert.deepEqual(f.calls.find(call=>call.method==='godotBuild.start').params.checkRequirements,{format:'craftmine.godot-check-requirements/1',creation:requirements});
  await assert.rejects(f.call('godot_build_start',{...args,checkRequirements:{format:'fake'}}),/UNKNOWN_FIELD/);
  const unknown=fixture({options:{creationTarget:async()=>({creationRequirements:{status:'unverified',reason:'unknown'}})}});await unknown.call('godot_build_start',args);assert.equal(unknown.calls.find(call=>call.method==='godotBuild.start').params.checkRequirements,undefined);
+});
+
+test('production-style model read waits through a running job to terminal',async()=>{
+ let reads=0;const f=fixture({options:{buildReadWaitMs:1000},coreOverrides:{'godotBuild.read':params=>({...params,kind:'check',buildId:'same-build',status:++reads===1?'running':'passed'})}});
+ const result=await f.call('godot_build_read',{jobId:'gjob-'+'a'.repeat(64)});
+ assert.equal(result.status,'passed');assert.equal(result.waitReason,'terminal');assert.ok(result.waitedMs>=450&&result.waitedMs<1500);assert.equal(reads,2);
+ assert.equal(f.calls.filter(call=>call.method==='godotBuild.start').length,0);
 });

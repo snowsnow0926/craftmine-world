@@ -18,6 +18,7 @@ const SERVICE_CONTRACT_FORMAT='craftmine.tool-services/1';
 // marks an override or tuning value that has a working default: its absence is
 // not a capability gap and must not make the wiring look incomplete.
 const SERVICE_PROVIDERS={
+  buildReadWaitMs:{kind:"number",owner:"NB5",hostMethod:null,optional:true,provides:"bounded model job-read waiting in milliseconds; fixture default is zero",requiredFor:["godot_build_read"]},
   creationTarget:{kind:'function',owner:'R2',hostMethod:'creationTarget',provides:'the immutable host-captured target bound to this invocation turn',requiredFor:['creation_operation']},
   sampleLiveState:{
     kind:'function',owner:'R2',hostMethod:'godotLiveState',
@@ -73,6 +74,7 @@ function validateToolServices(options){
     if(value===undefined||value===null)continue;
     if(declared.kind==='function'&&typeof value!=='function')fail('TOOL_SERVICE_INVALID',`${key} must be a function`);
     if(declared.kind==='object'&&(typeof value!=='object'||Array.isArray(value)))fail('TOOL_SERVICE_INVALID',`${key} must be an object`);
+    if(key==='buildReadWaitMs'&&(!Number.isInteger(value)||value<0||value>30000))fail('TOOL_SERVICE_INVALID','buildReadWaitMs must be an integer 0..30000');
     if(declared.kind==='number'&&!Number.isFinite(value))fail('TOOL_SERVICE_INVALID',`${key} must be a finite number`);
   }
   return options;

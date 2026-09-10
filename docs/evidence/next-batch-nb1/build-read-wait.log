@@ -1,0 +1,38 @@
+✔ production plugin build includes exact guidance resources and serves a pinned body (231.0192ms)
+✔ one model read waits for actual terminal result without writes or enqueues (1.4486ms)
+✔ passed returns immediately (0.1909ms)
+✔ failed returns immediately (0.1123ms)
+✔ cancelled returns immediately (0.0827ms)
+✔ interrupted returns immediately (0.09ms)
+✔ blocked returns immediately (0.1065ms)
+✔ deadline returns last real state and sample age without inventing completion (0.7301ms)
+✔ zero wait performs one bounded immediate read (0.1474ms)
+✔ cancellation during pause prevents further reads (0.3937ms)
+✔ world switch during wait rejects the result (0.2128ms)
+✔ different identity or unknown status cannot finish the original read: {"worldId":"foreign"} (0.1571ms)
+✔ different identity or unknown status cannot finish the original read: {"jobId":"foreign"} (0.1246ms)
+✔ different identity or unknown status cannot finish the original read: {"buildId":"changed"} (0.0724ms)
+✔ different identity or unknown status cannot finish the original read: {"taskId":"changed"} (0.0607ms)
+✔ different identity or unknown status cannot finish the original read: {"status":"invented"} (0.0671ms)
+✔ caller or transport mutation cannot change later request binding (0.1414ms)
+✔ hung core read is bounded even when a fixture ignores the RPC timeout (31.6038ms)
+✔ cancelled turn interrupts a pending real timer read before its deadline (107.3427ms)
+✔ a slow subsequent read returns truthful stale age and timeout reason (30.6724ms)
+✔ invalid wait configuration and extra request identity fail before core (0.2863ms)
+✔ live observation is returned from the host provider, never from saved progress (3.6584ms)
+✔ a stale or foreign sample is reported as unknown, not silently accepted (0.435ms)
+✔ the capability report exposes the real wiring state and the durable ledger (0.6567ms)
+✔ godot_jobs mode=status prefers the live executor over the durable registration row (0.2641ms)
+✔ a queued build job is handed to the live executor in the same turn (0.3492ms)
+✔ cancel and resume reach the live executor service (0.3297ms)
+✔ discussion mode still refuses every write even with live providers wired (0.5663ms)
+✔ check requirements come exclusively from the frozen host capture (0.3451ms)
+✔ production-style model read waits through a running job to terminal (512.1326ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 666.4597

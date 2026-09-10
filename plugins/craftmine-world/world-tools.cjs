@@ -230,6 +230,10 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
         if(captured?.creationRequirements?.status==='verifiable')params.checkRequirements={format:'craftmine.godot-check-requirements/1',creation:captured.creationRequirements.requirements};
       }
       const method=GODOT_METHODS[definition.name];
+      if(definition.name==='godot_build_read'&&(options.buildReadWaitMs??0)>0){
+        return require('./godot-build-read-wait.cjs').readGodotBuildWithWait({core,params,waitMs:options.buildReadWaitMs,assertActive,
+          assertSelected:async()=>{if((await getSettings()).activeWorldId!==selectedWorld)throw Error('GODOT_BUILD_READ_WORLD_CHANGED');}});
+      }
       if(definition.name==='godot_project_patch') {
         const source=await core.call('godotProject.index',{context,worldId:workspace.worldId,
           revision:args.revision,manifestHash:args.manifestHash,limit:1});

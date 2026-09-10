@@ -16,7 +16,7 @@ test('production plugin build includes exact guidance resources and serves a pin
   try {
     execFileSync(process.execPath,[path.join(root,'desktop/build-world-plugin.mjs'),'--output',output],
       {cwd:root,encoding:'utf8',windowsHide:true,timeout:120000,maxBuffer:2*1024*1024});
-    for(const file of ['godot-guidance.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd']){
+    for(const file of ['godot-guidance.cjs','godot-build-read-wait.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd']){
       assert.deepEqual(fs.readFileSync(path.join(output,file)),fs.readFileSync(path.join(root,'plugins/craftmine-world',file)),file);
     }
     assert.equal(fs.existsSync(path.join(output,'guidance/build-catalog.mjs')),false,'developer generator is not a runtime capability');
