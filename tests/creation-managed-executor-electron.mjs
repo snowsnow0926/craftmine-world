@@ -50,7 +50,7 @@ app.whenReady().then(async()=>{
  let source=await call('godotProject.create',{context,worldId,toolCallId:'create',baseBuild:'base-creation',baseId:'creation-sandbox',files:[{path:'project.godot',text:Buffer.from(fixture.files.find(file=>file.path==='project.godot').bytesBase64,'base64').toString('utf8')}]});
  source=await call('godotProject.applyFiles',{context,worldId,toolCallId:'source',revision:source.revision,manifestHash:source.manifestHash,files:fixture.files.filter(file=>file.path!=='project.godot').map(file=>({...file,expectedHash:null}))},30000);
  async function run(name){
-  const job=await call('godotBuild.start',{context,worldId,toolCallId:'check-'+name,revision:source.revision,manifestHash:source.manifestHash,mode:'check',...(name==='sequence'?{checkRequirements:{creation:fixtureRequirements.requirements}}:{})},30000);
+  const job=await call('godotBuild.start',{context,worldId,toolCallId:'check-'+name,revision:source.revision,manifestHash:source.manifestHash,mode:'check',...(name==='sequence'?{checkRequirements:{format:'craftmine.godot-check-requirements/1',creation:fixtureRequirements.requirements}}:{})},30000);
   const item={name,job,before:await call('world.read',{id:worldId})};report.cases.push(item);write();
   assert.equal(executor.enqueue({jobId:job.jobId,worldId,mode:'check'},context).enqueued,true);
   const deadline=Date.now()+360000;
