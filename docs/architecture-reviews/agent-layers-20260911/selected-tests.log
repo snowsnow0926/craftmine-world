@@ -1,0 +1,27 @@
+✔ creation entities retain stable identity and x/z render coordinates across reopen (2.0898ms)
+✔ missing creation scene is an empty world (0.957ms)
+✔ all five creation kinds produce bounded durable source patches without altering input (3.0612ms)
+✔ first operation materializes the blank creation scene when a new base has no scene file (0.2307ms)
+✔ modification preserves stable chest identity and immutable one-time reward declaration (0.5883ms)
+✔ duplicates mint deterministic separate stable identities and reject count/occupancy limits (0.6752ms)
+✔ explicit positions are bounded; here needs authoritative hit; player and obstacle overlap reject (0.4155ms)
+✔ world/build/instance/source/manifest/snapshot mismatches and removed targets fail closed (0.3159ms)
+✔ same operation replay returns original receipt after source moves; changed payload conflicts (0.2423ms)
+✔ environment edits only declared defaults and no caller-defined source or parameter escapes (0.2339ms)
+✔ new sequence door emits actual deterministic source and hashed runtime declaration (0.5937ms)
+✔ operation ledger is bounded and schema advertises precisely supported action branches (0.2071ms)
+✔ full ledger rejects new operations without pruning replay identity (0.3453ms)
+✔ reserved historical entity IDs cannot be reused after source removal (0.2237ms)
+✔ creation scene reopens as deterministic runtime entities and target snapshot (1.1011ms)
+✔ top-down point selection resolves persisted entity identity without UI input (0.2536ms)
+✔ overlapping target selection is deterministic by distance then id (0.1034ms)
+✔ sequence door opens only after the authored marker order (0.1983ms)
+✔ generated GDScript executes ordered signals, wrong-order reset, one-shot latch and restore in headless Godot (179.3834ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 394.525

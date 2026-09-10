@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+LAYER_AUDIT_JSON={"renderer":{"after_invalid":{"collision_shapes":0,"meshes":0,"physics_bodies":0},"before_invalid":{"collision_shapes":0,"meshes":6,"physics_bodies":0},"entities_after":0,"entities_before":5,"has_set_door_open":false},"sequence":{"normal":{"open":true,"snapshot":{"completed":true,"cursor":3}},"repeat_first":{"open":true,"snapshot":{"completed":true,"cursor":3}},"unrelated":{"open":false,"snapshot":{"completed":false,"cursor":0}}}}
+ERROR: Parse JSON failed. Error at line 0: Expected '}'
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] _reload (res://creation_renderer.gd:31)
+       [1] run_audit (res://probe.gd:48)

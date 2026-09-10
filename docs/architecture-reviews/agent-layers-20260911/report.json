@@ -1,0 +1,64 @@
+{
+  "recordedAt": "2026-09-10T20:25:00.861Z",
+  "head": "e61bae85ca3c87553d4be28a138d0766912f515f",
+  "scope": "Fixed isolated real Godot script and node-tree diagnostic; no model, rendered pixels, input, client application or player data",
+  "sourceHashes": {
+    "desktop/godot/bases/first-person/scripts/core/creation_renderer.gd": "0d93aac951a5f34982f77532994725be996fe021541f005aef7f8d1f41bdaefa",
+    "desktop/godot/shared/creation_runtime.mjs": "4c5b3d53f6b081bd4d4eaa33151e5fcdf786e36a5d6630a09220361eb64b71bf",
+    "plugins/craftmine-world/creation-sequence-rule.cjs": "8c6b85d41bd20e6f8df70e32269d9a628d8901087e410c44c5d6f0eec6731ca3",
+    "plugins/craftmine-world/creation-operations.cjs": "21c70886e4527c7bfd27ae41bc4d5f24ee542ea514117a93b473200186bd1637",
+    "plugins/craftmine-world/world-tools.cjs": "79b3c43f477cb7b0e046648c5a7396c8379fe25c4c393b77e8242174ce5a36cd"
+  },
+  "sourceStable": true,
+  "comparisons": {
+    "normal": {
+      "events": [
+        "blue",
+        "red",
+        "green"
+      ],
+      "projectionOpen": true,
+      "generatedScriptOpen": true,
+      "agree": true
+    },
+    "repeat_first": {
+      "events": [
+        "blue",
+        "blue",
+        "red",
+        "green"
+      ],
+      "projectionOpen": false,
+      "generatedScriptOpen": true,
+      "agree": false
+    },
+    "unrelated": {
+      "events": [
+        "blue",
+        "unrelated",
+        "red",
+        "green"
+      ],
+      "projectionOpen": true,
+      "generatedScriptOpen": false,
+      "agree": false
+    }
+  },
+  "renderer": {
+    "after_invalid": {
+      "collision_shapes": 0,
+      "meshes": 0,
+      "physics_bodies": 0
+    },
+    "before_invalid": {
+      "collision_shapes": 0,
+      "meshes": 6,
+      "physics_bodies": 0
+    },
+    "entities_after": 0,
+    "entities_before": 5,
+    "has_set_door_open": false
+  },
+  "isolatedProject": "D:\\Craftmine World\\test-results\\agent-layers-review-20260911\\engine-Ne7aPV",
+  "engineExitCode": 0
+}

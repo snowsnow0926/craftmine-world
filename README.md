@@ -135,10 +135,14 @@ npm run test:live-assets
 - [创作社区与内容分发平台开发计划](docs/COMMUNITY_PLATFORM_DEVELOPMENT_PLAN.md)（网站与客户端、上传发布、审核与阶段上线）
 - [AI 创作效率与可靠性开发计划](docs/AI_CREATION_EFFICIENCY_DEVELOPMENT_PLAN.md)（思考模式、文档与 Skill、模块复用及四组对照）
 - [玩家产品体验与持续创作开发计划](docs/PLAYER_PRODUCT_EXPERIENCE_DEVELOPMENT_PLAN.md)（首次成功、参数调整、问题修复、玩法保护与好友试玩）
+- [沉浸游玩模式与造物主世界方案](docs/IMMERSIVE_PLAYER_AND_MAIN_WORLD_DEVELOPMENT_PLAN.md)（双模式、游戏内两级面板、专属主世界与言出法随）
+- [宣传定位与文案备忘](docs/PROMOTIONAL_VIDEO_POSITIONING_AND_COPY.md) / [宣传片内容与分镜草案](docs/PROMOTIONAL_VIDEO_STORYBOARD_DRAFT.md)（持续收集创意，区分用户主线与候选建议）
 - [Godot 原生运行与多目标交付长期计划](docs/NATIVE_RUNTIME_LONG_TERM_DEVELOPMENT_PLAN.md)（原生运行、中央嵌入、独立导出；暂不排期）
 - [上一版 Harness 项目开发计划书与实现记录](docs/HARNESS_DEVELOPMENT_PLAN.md)
 - [Codex、Claude Code 与 DeepSeek Harness 参考研究](docs/HARNESS_REFERENCE_RESEARCH.md)
 - [Harness 差距评估与优先级](docs/HARNESS_GAP_ASSESSMENT.md)
+- [Agent 分层与架构评估（2026-09-11）](docs/AGENT_LAYERS_ARCHITECTURE_REVIEW_2026-09-11.md)（L0–L4、文档差异、真实引擎诊断与修正顺序）
+- [一句话愿望的 C / D / L 框架与北极星提案](docs/WISH_CDL_FRAMEWORK_AND_NORTH_STAR_PROPOSAL.md)（创造能力、难度、技术范围与有效愿望；讨论稿）
 - [创作循环：愿景、实测证据与决策记录](docs/CREATION_LOOP.md)
 - [历史目标与持续开发记录（已停止）](docs/CONTINUOUS_DEVELOPMENT.md)
 - [开发进度记录](docs/DEVELOPMENT_STATUS.json)
