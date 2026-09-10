@@ -8,6 +8,13 @@ import {contentHash,validateResourceManifest} from '../../plugins/craftmine-worl
 const root=path.resolve(import.meta.dirname,'../..'),base=path.join(root,'desktop/godot/bases/first-person');
 const script=fs.readFileSync(path.join(base,'scripts/core/target_dummy.gd'));
 const hash=value=>createHash('sha256').update(value).digest('hex');
+const profileFiles=['scripts/core/base_world.gd','scripts/core/balance_profile.gd','data/balance/training_range.tres'];
+function officialFixture(){
+ const scenePath='scenes/training_range.tscn',files=new Map();
+ for(const name of [scenePath,'scenes/actors/target_dummy.tscn','scripts/core/target_dummy.gd',...profileFiles])files.set(name,fs.readFileSync(path.join(base,name)));
+ return {scenePath,sceneText:files.get(scenePath).toString('utf8'),targetId:'target_b',files};
+}
+function replaceFile(args,name,from,to){const copy={...args,files:new Map(args.files)};copy.files.set(name,Buffer.from(copy.files.get(name).toString('utf8').replace(from,to)));if(name===args.scenePath)copy.sceneText=copy.files.get(name).toString('utf8');return copy;}
 const scene=`[gd_scene load_steps=2 format=3]
 [ext_resource type="Script" path="res://scripts/core/target_dummy.gd" id="script"]
 [node name="World" type="Node3D"]
@@ -61,11 +68,54 @@ test('existing override replacement preserves CRLF, property spacing and unrelat
 test('official training scene and direct known PackedScene root resolve without modifying template',()=>{
  const scenePath='scenes/training_range.tscn',text=fs.readFileSync(path.join(base,scenePath),'utf8');
  const template='scenes/actors/target_dummy.tscn',templateBytes=fs.readFileSync(path.join(base,template));
- const args={sceneText:text,scenePath,targetId:'target_b',files:new Map([[scenePath,Buffer.from(text)],[template,templateBytes],['scripts/core/target_dummy.gd',script]])};
+ const args=officialFixture();args.files.set(template,templateBytes);
  const result=apply(args,400);assert.equal(result.values.hitFlashMilliseconds,400);
  assert.equal(result.text.replace('hit_flash_seconds = 0.4\n',''),text);
  assert.ok(result.text.indexOf('hit_flash_seconds = 0.4')>result.text.indexOf('target_id = &"target_b"'));
- assert.equal(args.files.get(template),templateBytes);assert.equal(result.binding.dependencies.length,3);
+ assert.equal(args.files.get(template),templateBytes);assert.equal(result.binding.dependencies.length,6);
+});
+test('known world profile defaults and explicit instance/template values follow actual runtime precedence',()=>{
+ let args=replaceFile(officialFixture(),'data/balance/training_range.tres','hit_flash_seconds = 0.12','hit_flash_seconds = 0.25');
+ assert.equal(describeTargetFeedback(args).values.hitFlashMilliseconds,250);
+ const explicit120=apply(args,120);assert.equal(explicit120.changed,true);assert.ok(explicit120.text.includes('hit_flash_seconds = 0.12'));
+ assert.equal(apply(args,250).changed,false);
+ args=replaceFile(args,'scenes/actors/target_dummy.tscn','max_health = 50.0','max_health = 50.0\nhit_flash_seconds = 0.12');
+ assert.equal(describeTargetFeedback(args).values.hitFlashMilliseconds,120);
+ args=replaceFile(args,args.scenePath,'target_id = &"target_b"','target_id = &"target_b"\nhit_flash_seconds = 0.7');
+ assert.equal(describeTargetFeedback(args).values.hitFlashMilliseconds,700);
+ const nullProfile=replaceFile(officialFixture(),args.scenePath,'balance_profile = ExtResource("2_balance")','balance_profile = null');
+ assert.equal(describeTargetFeedback(nullProfile).values.hitFlashMilliseconds,120);
+ const omittedProfile=replaceFile(officialFixture(),args.scenePath,'balance_profile = ExtResource("2_balance")','');
+ assert.equal(describeTargetFeedback(omittedProfile).values.hitFlashMilliseconds,120);
+});
+test('profile and world scripts, resource values and template values participate in stale bindings',()=>{
+ const args=officialFixture(),binding=describeTargetFeedback(args).binding;
+ for(const changed of [replaceFile(args,'data/balance/training_range.tres','0.12','0.25'),replaceFile(args,'scenes/actors/target_dummy.tscn','max_health = 50.0','max_health = 50.0\nhit_flash_seconds = 0.3')]){
+  assert.throws(()=>patchTargetFeedback({...changed,binding,values:{hitFlashMilliseconds:600}}),/STALE_BINDING/);
+ }
+ for(const name of ['scripts/core/base_world.gd','scripts/core/balance_profile.gd','scripts/core/target_dummy.gd']){
+  const changed=replaceFile(args,name,'extends ','# unknown version\nextends ');
+  assert.throws(()=>describeTargetFeedback(changed),/UNKNOWN_SCRIPT/);
+ }
+ for(const name of ['target_dummy.gd','balance_profile.gd']){
+  const legacy={...args,files:new Map(args.files)};legacy.files.set('scripts/core/'+name,fs.readFileSync(path.join(root,'tests/player-product/fixtures/legacy-'+name)));
+  assert.throws(()=>describeTargetFeedback(legacy),/UNKNOWN_SCRIPT/);
+ }
+});
+test('unknown roots, profile expressions, inheritance and duplicate or reordered resource declarations refuse support',()=>{
+ const args=officialFixture(),profile='data/balance/training_range.tres';
+ for(const changed of [
+  replaceFile(args,args.scenePath,'scripts/core/base_world.gd','scripts/core/custom_world.gd'),
+  replaceFile(args,profile,'hit_flash_seconds = 0.12','hit_flash_seconds = 0.1 + 0.02'),
+  replaceFile(args,profile,'hit_flash_seconds = 0.12','hit_flash_seconds = 0.12\nhit_flash_seconds = 0.5'),
+  replaceFile(args,profile,'[resource]','[sub_resource type="Resource" id="bad"]\n[resource]'),
+  replaceFile(args,profile,'script = ExtResource("1_script")','hit_flash_seconds = 0.2\nscript = ExtResource("1_script")'),
+  replaceFile(args,profile,'[resource]','[ext_resource type="Script" path="res://scripts/core/balance_profile.gd" id="1_script"]\n[resource]'),
+  replaceFile(args,profile,'scripts/core/balance_profile.gd','scripts/core/unknown_profile.gd'),
+  replaceFile(args,args.scenePath,'balance_profile = ExtResource("2_balance")','balance_profile = SubResource("custom")')
+ ])assert.throws(()=>describeTargetFeedback(changed),/TARGET_CONFIGURATION_/);
+ const bare=fixture(scene.replace('[node name="World" type="Node3D"]','[node name="World" type="Node3D"]\nbalance_profile = null'));
+ assert.throws(()=>describeTargetFeedback(bare),/WORLD_UNSUPPORTED/);
 });
 test('old scene, dependency or target binding cannot authorize a patch',()=>{
  const args=fixture(),binding=describeTargetFeedback(args).binding;

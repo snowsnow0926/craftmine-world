@@ -15,9 +15,10 @@ default 120, Chinese label `受击闪光时长`, unit `毫秒`. Integer millisec
 the existing CP integer-only canonical content hash. The adapter maps them to
 the target instance's `hit_flash_seconds` numeric TSCN literal.
 
-Zero is deliberately refused for base 0.1.0: its unchanged target script swaps
+Zero is deliberately refused for base 0.1.0: its target script swaps
 the hit material but skips restoration when the remaining duration starts at
-zero. This slice does not alter the shipped base script or its accepted hash.
+zero. The separate explicit-override compatibility fix does not change this
+zero-duration behavior.
 Existing zero overrides are reported unsupported rather than described as a
 working parameter. New overrides are appended after script binding in the node
 block; a target ID or override serialized before `script` is refused because
@@ -61,25 +62,46 @@ Supported targets are non-root `StaticBody3D` nodes using the exact known
 TargetDummy script, or explicit instances of a non-inherited PackedScene whose
 root directly uses that script. This includes the official training scene's
 TargetA/B/C instances. The source script must match SHA256
-`7e5edd7ccc2836472fe672b03ea47646cc1479326784e81b6398435c50771fbe`
+`1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3`
 after CRLF-to-LF conversion; the binding still hashes original bytes. Any
 script edit, subclass, inherited main/template scene, root target, instance
 script override, child override, nested target, expression identity, duplicate
 identity/resource/property/node path, or ambiguous supported syntax is refused.
 There is no fallback from missing target ID to display name or node name.
 
-An explicit numeric override may use 0 through 1 with at most three decimal
+An explicit numeric override may use 0.001 through 1 with at most three decimal
 places. Expressions, exponent notation, trailing comments on that property,
 indented relevant property assignments, and sub-millisecond values are not
-interpreted. The default is the known script's 120 ms, or a valid explicit
-template override. Malformed input fails before any output patch is produced.
+interpreted. Effective value precedence is: explicit instance override, explicit
+PackedScene root override, selected BaseWorld balance-profile value, then the
+known 120 ms script default. Malformed input fails before any patch is produced.
+
+The scene root must be an unscripted `Node3D` with no `balance_profile` property,
+or use exact known `scripts/core/base_world.gd` (LF SHA256
+`2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1`).
+For that BaseWorld only, absent/null `balance_profile` means 120 ms. A selected
+profile must be a unique external `.tres` resource using exact known
+`scripts/core/balance_profile.gd` (LF SHA256
+`9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3`).
+Only its fixed Resource/BalanceProfile structure and literal numeric properties
+are supported. Duplicate resources/properties, reordered script assignment,
+subresources/inheritance and expressions are refused. Consulted root/profile
+scripts and profile resource bytes join the existing binding dependencies.
+
+Legacy target/profile scripts are deliberately unsupported for editing because
+they overwrite instance values during initialization; merely having the same
+file path or base version does not authorize them. Read-only runtime observation
+continues to work on legacy scenes. Unsupported source must be explicitly
+upgraded through ordinary checked source adoption before this editor is enabled.
 
 For a changed value, the planner replaces only the selected instance's property
-value or inserts one line immediately after its node header. Unrelated bytes,
+value or appends one line at the end of its node block, after script binding. Unrelated bytes,
 line endings, existing property spacing, other targets, and shared scripts and
 templates are preserved. A no-op returns identical text without adding an
-override. Caller maps/files are never mutated. Reset to default means passing
-the declared integer 120; it does not delete identity or reset gameplay state.
+override. Caller maps/files are never mutated. Setting 120 ms when a profile
+supplies 250 ms writes an explicit 120 ms instance override. Setting the already
+effective value may remain a no-op; this operation does not remove an override
+or switch back to profile inheritance, and it never resets gameplay state.
 
 ## Required integration and acceptance boundary
 

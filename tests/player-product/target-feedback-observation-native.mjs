@@ -15,9 +15,17 @@ const hash=value=>createHash('sha256').update(value).digest('hex');
 const directory=await fs.mkdtemp(path.join(os.tmpdir(),'target-feedback-observation-')),project=path.join(directory,'project');
 materializeBase({baseId:'first-person',worldId:'feedback-world',template:'training-range',out:project});
 const scenePath='scenes/training_range.tscn',files=new Map();
-for(const name of [scenePath,'scenes/actors/target_dummy.tscn','scripts/core/target_dummy.gd'])files.set(name,await fs.readFile(path.join(project,name)));
+for(const name of [scenePath,'scenes/actors/target_dummy.tscn','scripts/core/target_dummy.gd','scripts/core/base_world.gd','scripts/core/balance_profile.gd','data/balance/training_range.tres'])files.set(name,await fs.readFile(path.join(project,name)));
+const profile250Explicit120Fixture=process.argv.includes('--profile-250-explicit-120-fixture');
+const desiredMilliseconds=profile250Explicit120Fixture?120:500;
+if(profile250Explicit120Fixture){
+ const name='data/balance/training_range.tres',previous=files.get(name).toString('utf8'),modified=previous.replace('hit_flash_seconds = 0.12','hit_flash_seconds = 0.25');
+ assert.notEqual(modified,previous);files.set(name,Buffer.from(modified));await fs.writeFile(path.join(project,name),modified);
+}
 const args={scenePath,sceneText:files.get(scenePath).toString('utf8'),targetId:'target_a',files};
-const patch=patchTargetFeedback({...args,binding:describeTargetFeedback(args).binding,values:{hitFlashMilliseconds:500}});
+const description=describeTargetFeedback(args);if(profile250Explicit120Fixture)assert.equal(description.values.hitFlashMilliseconds,250);
+const patch=patchTargetFeedback({...args,binding:description.binding,values:{hitFlashMilliseconds:desiredMilliseconds}});
+assert.equal(patch.changed,true);
 const isolatedProfileFixture=process.argv.includes('--isolate-balance-profile-fixture');
 const sceneText=isolatedProfileFixture?patch.text.replace(/^balance_profile = ExtResource\("2_balance"\)$/m,'balance_profile = null'):patch.text;
 if(isolatedProfileFixture)assert.notEqual(sceneText,patch.text,'expected fixed scene profile property');
@@ -104,17 +112,17 @@ try{
  for(const phase of ['first-load','fresh-process-reload']){
   await run(phase,['--headless','--path',project,'--script','res://feedback_observe.gd']);
   const report=JSON.parse(await fs.readFile(path.join(project,'observation-result.json'),'utf8'));
-  const expected={worldId:'feedback-world',buildId:'fixture-build',targetId:'target_a',hitFlashMilliseconds:500};
+  const expected={worldId:'feedback-world',buildId:'fixture-build',targetId:'target_a',hitFlashMilliseconds:desiredMilliseconds};
   const actual=report.observation.result.payload.targetFeedback.targets.find(target=>target.targetId==='target_a')?.hitFlashMilliseconds;
   assertTargetFeedbackObservation(report.observation.result,{...expected,hitFlashMilliseconds:actual});assert.equal(validateObservationEnvelope(report.observation.result).ok,true);
   assert.equal(report.samePayload,true);assert.equal(report.sameProgress,true);
   assertTargetFeedbackObservation(report.outsideObservation.result,{...expected,hitFlashMilliseconds:actual});assertTargetFeedbackObservation(report.unknownObservation.result,{...expected,hitFlashMilliseconds:actual});
   assert.equal(report.faults.length,8);
   for(const fault of report.faults){const feedback=fault.observation.result.payload.targetFeedback;assert.equal(validateObservationEnvelope(fault.observation.result).ok,true);assert.deepEqual(feedback.targets,[]);assert.equal(feedback.error,{'invalid-duration':'TARGET_FEEDBACK_INVALID_DURATION','invalid-id':'TARGET_FEEDBACK_INVALID_ID','duplicate-id':'TARGET_FEEDBACK_DUPLICATE_ID','too-many-targets':'TARGET_FEEDBACK_TOO_MANY_TARGETS'}[fault.case]);}
-  results.push({phase,expectedMilliseconds:500,actualMilliseconds:actual,parameterEffective:actual===500,...report});
+  results.push({phase,expectedMilliseconds:desiredMilliseconds,actualMilliseconds:actual,parameterEffective:actual===desiredMilliseconds,...report});
  }
  const passed=results.every(result=>result.parameterEffective);
- await fs.writeFile(path.join(directory,'report.json'),JSON.stringify({passed,observerChecksPassed:true,isolatedProfileFixture,directory,engineSha256:hash(await fs.readFile(engine)),adapterSha256:hash(await fs.readFile(path.join(project,'craftmine_shared/base_adapter.gd'))),sceneSha256:hash(sceneText),results,limits:'Real shared bridge and adapter, fixed headless source load/reload and injected invalid-node tests; no client adoption or saved profile acceptance. An ineffective authored parameter remains a failed acceptance even if observer checks pass. When isolatedProfileFixture=true, this test-only scene disables BalanceProfile to isolate the observer; it is not the shipped training template.'},null,2));
- assert.equal(passed,true,'authored 500ms parameter was overridden at runtime; see retained report');
+ await fs.writeFile(path.join(directory,'report.json'),JSON.stringify({passed,observerChecksPassed:true,isolatedProfileFixture,profile250Explicit120Fixture,describedMilliseconds:description.values.hitFlashMilliseconds,directory,engineSha256:hash(await fs.readFile(engine)),adapterSha256:hash(await fs.readFile(path.join(project,'craftmine_shared/base_adapter.gd'))),sceneSha256:hash(sceneText),results,limits:'Real shared bridge and adapter, fixed headless source load/reload and injected invalid-node tests; no client adoption or saved profile acceptance. An ineffective authored parameter remains a failed acceptance even if observer checks pass. When isolatedProfileFixture=true, this test-only scene disables BalanceProfile to isolate the observer; it is not the shipped training template.'},null,2));
+ assert.equal(passed,true,'authored parameter was overridden at runtime; see retained report');
  console.log(JSON.stringify({passed:true,directory,phases:results.length,faultsPerPhase:8}));
 }catch(error){console.error(error);console.error('Evidence: '+directory);process.exitCode=1;}
