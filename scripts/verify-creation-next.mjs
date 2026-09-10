@@ -11,7 +11,7 @@ fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
 const out=fs.mkdtempSync(path.join(root,'test-results/creation-next-checks-'));
 const report={format:'craftmine.creation-next-checks/1',scope:quick?'unit':'integration',sourceCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8',windowsHide:true}).trim(),startedAt:new Date().toISOString(),out,steps:[],passed:false,limitations:['No real model requests in this command; model comparison has its own report and budget.','No physical microphone, player or clean Windows lifecycle claim.']};
 const persist=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');
-const unit=['creation-operations','creation-source-service','creation-progress-migration','creation-runtime','creation-entities','creation-sequence-rule','creation-model-evaluation','godot-build-read-wait','creation-pack-integrity','godot-generic-read'].map(name=>'tests/'+name+'.test.mjs');
+const unit=['creation-operations','creation-source-service','creation-progress-migration','creation-runtime','creation-entities','creation-sequence-rule','creation-model-evaluation','creation-model-continuation','godot-build-read-wait','creation-pack-integrity','godot-generic-read'].map(name=>'tests/'+name+'.test.mjs');
 unit.push('tests/creation-guidance/guidance.test.mjs','tests/creation-guidance/packaging.test.mjs','desktop/godot/bases/creation-sandbox/tests/contract.test.mjs');
 const host=fs.readdirSync(path.join(root,'vendor/pi-desktop/apps/desktop/test')).filter(name=>/^(?:creation-|voice-input|voice-microphone-permission|composer-voice-draft|craftmine-immersion|immersion-pause-controller).*\.test\.mjs$/.test(name)).sort().map(name=>'vendor/pi-desktop/apps/desktop/test/'+name);
 const steps=[['logic',['--test',...unit]],['host',['--test',...host]]];
@@ -19,19 +19,20 @@ const runtimeRequire=createRequire(path.join(root,'vendor/pi-desktop/packages/ag
 const vitest=path.join(path.dirname(runtimeRequire.resolve('vitest/package.json')),'vitest.mjs');
 steps.push(['runtime-request-boundary',[vitest,'run','--root',path.join(root,'vendor/pi-desktop/packages/agent-runtime'),'src/craftmine-context.test.ts','src/agent-errors.test.ts']]);
 if(!quick)for(const [name,file]of [
- ['editing-ui','creation-edit-ui-headless'],['voice-status-ui','creation-voice-status-headless'],
+ ['editing-ui','creation-edit-ui-headless'],['voice-status-ui','creation-voice-status-headless'],['copy-session-ui','creation-copy-session-ui-headless'],
  ['editing-progress','creation-edit-progress-headless'],['general-behavior','creation-entity-behavior-headless'],
  ['requirements','creation-requirements-web'],['harvest','creation-harvest-web'],
  ['forged-observation','creation-observation-forgery-probe'],['exported-pack','creation-pack-export-headless'],['managed-executor','creation-managed-executor'],
- ['direct-native','creation-edit-native'],
+ ['direct-native','creation-edit-native'],['stock-migration','creation-migration-native'],
 ])steps.push([name,['tests/'+file+'.mjs']]);
+if(!quick)steps.push(['copied-world-native',['tests/creation-managed-executor.mjs'],{CRAFTMINE_CREATION_COPY_SESSION:'1'}]);
 if(!quick)steps.push(['saved-world-story',['tests/creation-story-headless.mjs']],['staged-materializers',['tests/godot-final/staged-materializers.mjs']]);
 persist();
-for(const [name,args]of steps){
+for(const [name,args,environment={}]of steps){
  const log=path.join(out,name+'.log'),item={name,command:[process.execPath,...args],status:'running',startedAt:new Date().toISOString(),log};report.steps.push(item);persist();console.log('Running '+name+'; log '+log);
  const fd=fs.openSync(log,'w'),start=Date.now();
  try{
-  const child=spawn(process.execPath,args,{cwd:root,windowsHide:true,stdio:['ignore',fd,fd],env:{...process.env,CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_REVIEW_ROOT:root,CRAFTMINE_EXPECT_FORGERY_REJECTED:'1'}});
+  const child=spawn(process.execPath,args,{cwd:root,windowsHide:true,stdio:['ignore',fd,fd],env:{...process.env,CRAFTMINE_CREATION_COPY_SESSION:'0',...environment,CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_REVIEW_ROOT:root,CRAFTMINE_EXPECT_FORGERY_REJECTED:'1'}});
   item.exitCode=await new Promise((resolve,reject)=>{child.once('error',reject);child.once('exit',resolve);});item.status=item.exitCode===0?'passed':'failed';
  }catch(error){item.status='failed';item.error=String(error);}
  finally{fs.closeSync(fd);item.elapsedMs=Date.now()-start;item.sha256=createHash('sha256').update(fs.readFileSync(log)).digest('hex');persist();}
