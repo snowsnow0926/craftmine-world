@@ -8947,3 +8947,20 @@ Keep renderer destruction pending after runtime cleanup and verify disposal rema
 ### Retired-world and shutdown audit follow-up
 
 Replace a formal world while its previous renderer destruction is pending. Remove it from current/pending and request disposal: disposal must still wait. Repeat with a retired renderer timeout that occurred before quit: the failure must remain in shutdownFailures. Verify status and the final will-quit IPC carry the field, and that the native runner fails for missing or nonempty shutdownFailures even with exit code zero. Keep nonzero exit rejection unchanged. Recheck real UtilityProcess natural/forced exit with retained stream references after Electron removes listeners; require actual pipe close or closed state, never elapsed time alone. Run only isolated headless processes without real input, focus or Pointer Lock.
+
+### Same-release portable ZIP sealing (2026-09-10)
+
+After an actual clean Windows build and same-run package verify, invoke
+node desktop/seal-portable.mjs --run <that release/run.json>. Require an
+exclusive portable attempt directory, ZIP plus full evidence/seal, exact
+extracted file equality with package-evidence.files, and unchanged original
+release output/seal. Repeat into another fresh attempt without replacing the
+first. Keep unsigned/local-preview, execution, and clean-machine limits explicit.
+
+Run portable-seal.test.mjs and release-run.test.mjs independently on tiny owned
+fixtures. Reject dirty/different HEAD, foreign run, missing/altered evidence,
+changed manifests/payload, wrong archive pins, traversal/ADS/aliases, links,
+special entries, duplicates, and extraction mismatches. Use only an already
+available explicitly hash-pinned 7-Zip for the small real round trip; never
+package an old application to manufacture acceptance for new source. Retain
+failed attempt reports. No model, network download, visible window or OS input.
