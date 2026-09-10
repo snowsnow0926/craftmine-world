@@ -1,0 +1,334 @@
+{
+  "format": "craftmine.version-diff-applied-core/1",
+  "source": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\CraftmineWorld-acceptance-archive-20260910\\cm-plan-loop\\desktop-native-parameters-6Uvnzp\\profile\\plugins\\data\\craftmine.world",
+  "worldId": "world-a5eac9797410",
+  "binarySha256": "285578bc384302eaccf2017225d446732ead3daf24c80a52e5150018604060bb",
+  "checks": [
+    {
+      "name": "actual adopted world has an authoritative formal Git commit",
+      "passed": true
+    },
+    {
+      "name": "actual adopted formal source differs from earlier source",
+      "passed": true
+    },
+    {
+      "name": "real scene diff carries parameter source history",
+      "passed": true
+    },
+    {
+      "name": "reads preserve full progress, source and DB fingerprint",
+      "passed": true
+    },
+    {
+      "name": "full Rust restart preserves exact formal and branch identities",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "The source is a copy of an earlier real broker/candidate/adoption acceptance; this run launches Rust only.",
+    "No model, engine, renderer, or credentials are used in this additional archive check."
+  ],
+  "view": {
+    "worldId": "world-a5eac9797410",
+    "branchId": "main",
+    "viewId": "75adbb17-d75b-48c6-8bec-373f29574e99",
+    "repoId": "world-world-a5eac9797410",
+    "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+    "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+    "branches": [
+      {
+        "branchId": "main",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5"
+      }
+    ],
+    "index": {
+      "applied": false,
+      "baseBuild": "gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78",
+      "baseId": "first-person",
+      "binaryAssetsAvailable": false,
+      "branchId": "main",
+      "currentTaskId": "work-e02bbbe185f1a66abd333278c7e801f10e47a62f0e3b3e3d940e3ba4ffdd4f78",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": false,
+      "files": [
+        {
+          "bytes": 8105,
+          "path": "README.md",
+          "sha256": "edcc5272979082beec274a80857edb875c7c5bcc8a3013e14d1d8fe647b52510"
+        },
+        {
+          "bytes": 4767,
+          "path": "assets/ASSET_MANIFEST.json",
+          "sha256": "95af47c662dd81463e37197335777f5f676039f51895ff24301cf5b1c3e834ef"
+        },
+        {
+          "bytes": 118,
+          "path": "assets/materials/ammo_crate.tres",
+          "sha256": "a3763eec8e67253605c7b3865c7079114967d35cf03a0f84896f366b0ad1c53d"
+        },
+        {
+          "bytes": 119,
+          "path": "assets/materials/crate_wood.tres",
+          "sha256": "5ff3b4f6eab5a10bfc8bded27dcc401bd6ef1436b7b1829b146818dafb80d781"
+        },
+        {
+          "bytes": 212,
+          "path": "assets/materials/pickup_kit.tres",
+          "sha256": "dde90b8d8780e141eb14b4c8e29815049ebccded92ec3e2fc007e414f902480e"
+        },
+        {
+          "bytes": 136,
+          "path": "assets/materials/pistol_body.tres",
+          "sha256": "bfeddf5a87e76da09193a9922e73cf5e0b60547146a58613a32d85f17fbc6b94"
+        },
+        {
+          "bytes": 119,
+          "path": "assets/materials/range_floor.tres",
+          "sha256": "c71eaae57e620474b8051baab1708502ba5eb91e2b6e7bc729fb94328fdebd08"
+        },
+        {
+          "bytes": 120,
+          "path": "assets/materials/range_wall.tres",
+          "sha256": "71cd7c1acee72d90e27fcad6223edb247400d1b007d130abb61bf3b719dbf950"
+        },
+        {
+          "bytes": 136,
+          "path": "assets/materials/sword_blade.tres",
+          "sha256": "488a52dd725408297ec808bfcc5517f4cbd02b89c28b0354aa3b4f68c4b10e87"
+        },
+        {
+          "bytes": 119,
+          "path": "assets/materials/target_plate.tres",
+          "sha256": "0adc3f8b5e8962558b4326d9390f6dcdbc7af70d8f1cc36903e6e2b38fea3810"
+        },
+        {
+          "bytes": 1558,
+          "path": "assets/meshes/ammo_crate.obj",
+          "sha256": "6970e08fb28b072712b605d44a64fe3e106dde06c3c9ae7717377d6fa564384f"
+        },
+        {
+          "bytes": 1123,
+          "path": "assets/meshes/range_crate.obj",
+          "sha256": "74f5577542d69ac6fecb90aff7dc95051ad4e3c1817842975000a252d735c23a"
+        },
+        {
+          "bytes": 2873,
+          "path": "assets/meshes/target_dummy.obj",
+          "sha256": "f74917572b3a445437350d3daf7b42d2d71de478fce945fef9caca5768211b45"
+        },
+        {
+          "bytes": 2900,
+          "path": "assets/meshes/weapon_pistol.obj",
+          "sha256": "3e517f43db502395c9beddf32d93e67cca92d9ff50a81d1e3fb81064a36ce94d"
+        },
+        {
+          "bytes": 2456,
+          "path": "assets/meshes/weapon_sword.obj",
+          "sha256": "8aabc43a73a3d2f6f01044a14fe1589635380b0851b32ee2abf71ae346256b89"
+        },
+        {
+          "bytes": 2784,
+          "path": "assets/provenance/ASSET_PROVENANCE.md",
+          "sha256": "c04684ef6e5c0604b1745e292ff05dedf24e65687d853c6c114eed3e2e5b61be"
+        },
+        {
+          "bytes": 12159,
+          "path": "base_manifest.json",
+          "sha256": "3f914cac3b12544435dc00b83230a6bd65f7be3ffdd83cfa26481580e2a9a72e"
+        },
+        {
+          "bytes": 2006,
+          "path": "craftmine_initial_state.json",
+          "sha256": "b188b75ef1ae80e9fd20993319dc4537726d499f3681c28f50383008ce321b7e"
+        },
+        {
+          "bytes": 4420,
+          "path": "craftmine_shared/base_adapter.gd",
+          "sha256": "7243fd4c5052a5875c93e2ca3c1e84deef92c34b877239c257f1edc3151f22e9"
+        },
+        {
+          "bytes": 6645,
+          "path": "craftmine_shared/runtime_bridge.gd",
+          "sha256": "318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76"
+        },
+        {
+          "bytes": 1759,
+          "path": "craftmine_shared/state_guard.gd",
+          "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+        },
+        {
+          "bytes": 345,
+          "path": "data/balance/blank_start.tres",
+          "sha256": "52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159"
+        },
+        {
+          "bytes": 345,
+          "path": "data/balance/training_range.tres",
+          "sha256": "52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159"
+        },
+        {
+          "bytes": 610,
+          "path": "data/equipment/equipment_catalog.tres",
+          "sha256": "00fa48a213a99939fb4da868a386870e3370a3860c71e256037a40d9dade8c07"
+        },
+        {
+          "bytes": 748,
+          "path": "data/equipment/inspection_tool.tres",
+          "sha256": "ba54f27f694dd94a4b2cf287ac4dd2b1765628156d5ef1a23d7fcfefcaf72d28"
+        },
+        {
+          "bytes": 1114,
+          "path": "data/equipment/pistol.tres",
+          "sha256": "84f00affe56f9ae056fec5867aff546373229adafff3780ae8489da831a21199"
+        },
+        {
+          "bytes": 1118,
+          "path": "data/equipment/practice_sword.tres",
+          "sha256": "0f60670f22ef7fb1dccc7bc5c576c71929985a4134222b9c249ace5fcf647b69"
+        },
+        {
+          "bytes": 452,
+          "path": "data/quests/range_basic.tres",
+          "sha256": "6b2a943d1f8d54accd496c6ee31251ff020534ad41663e45e2f02bcd9ba1d989"
+        },
+        {
+          "bytes": 397,
+          "path": "data/ui/crosshair_melee.tres",
+          "sha256": "129613f4899b9510f85329d2b443cf007bfe3bca7c29d7591288d074b032ab93"
+        },
+        {
+          "bytes": 392,
+          "path": "data/ui/crosshair_precision.tres",
+          "sha256": "bb2ddd54d6f88d2befa109e0e1a9ab9e1638efa98f793018e2868d5a75438a04"
+        },
+        {
+          "bytes": 517,
+          "path": "icon.svg",
+          "sha256": "0591a692ee396c4856ebbed3fb782f07eb0f3782a91bafb5bab48870b067e6f8"
+        },
+        {
+          "bytes": 1407,
+          "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+          "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+        }
+      ],
+      "format": "craftmine.godot-project/1",
+      "language": "GDScript",
+      "lastWriter": {
+        "baseBuild": "gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78",
+        "projectId": "craftmine-target-feedback",
+        "sessionId": "feedback-dd1bb57c72deeda5a30d7e1f643775c6a075bdb6",
+        "taskId": "work-e02bbbe185f1a66abd333278c7e801f10e47a62f0e3b3e3d940e3ba4ffdd4f78",
+        "turnId": "008ed045-9f7c-41f1-9867-43a3de1b0db5"
+      },
+      "manifestHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45",
+      "nextOffset": 32,
+      "renderer": "gl_compatibility",
+      "revision": 2,
+      "status": "source-only",
+      "target": "web",
+      "totalFiles": 68,
+      "verified": false,
+      "worldId": "world-a5eac9797410",
+      "offset": 0
+    },
+    "history": {
+      "limit": 20,
+      "nextSkip": null,
+      "records": [
+        {
+          "authorEmail": "craftmine-local@craftmine.local",
+          "authorName": "Craftmine",
+          "authoredAt": "2026-09-10T10:12:45+08:00",
+          "legacyManifestHash": null,
+          "legacyRevision": null,
+          "oid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "parents": [
+            "20e56310be1a95c76cbc5ad3a9837adb7cee3c73"
+          ],
+          "requestId": "feedback-dd1bb57c72deeda5a30d7e1f643775c6a075bdb6",
+          "subject": "Craftmine project revision 2",
+          "taskId": "work-e02bbbe185f1a66abd333278c7e801f10e47a62f0e3b3e3d940e3ba4ffdd4f78"
+        },
+        {
+          "authorEmail": "craftmine-local@craftmine.local",
+          "authorName": "Craftmine",
+          "authoredAt": "2026-09-10T10:12:03+08:00",
+          "legacyManifestHash": "8ab8133814f802c09cbd2e1c76a290211e508fed3e573d7bcc584cc6cd11ba3b",
+          "legacyRevision": 1,
+          "oid": "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "parents": [
+            "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+          ],
+          "requestId": null,
+          "subject": "Migrate legacy revision 1",
+          "taskId": "work-6cec24987686362a8cf78b6d141855ca1e1a1c63ce5a8caa13648974a3209648"
+        },
+        {
+          "authorEmail": "craftmine-local@craftmine.local",
+          "authorName": "Craftmine",
+          "authoredAt": "2026-09-10T10:12:02+08:00",
+          "legacyManifestHash": "893bea89a8637ec5dcfa87bacebbb4aed8cf86f98939153da790beb5b9a351b9",
+          "legacyRevision": 0,
+          "oid": "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852",
+          "parents": [],
+          "requestId": null,
+          "subject": "Migrate legacy revision 0",
+          "taskId": "work-6cec24987686362a8cf78b6d141855ca1e1a1c63ce5a8caa13648974a3209648"
+        }
+      ],
+      "skip": 0,
+      "total": 3
+    }
+  },
+  "changes": {
+    "worldId": "world-a5eac9797410",
+    "viewId": "75adbb17-d75b-48c6-8bec-373f29574e99",
+    "fromOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+    "toOid": "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+    "changes": [
+      {
+        "path": "scenes/training_range.tscn",
+        "status": "M"
+      }
+    ],
+    "offset": 0,
+    "total": 1,
+    "nextOffset": null
+  },
+  "diff": {
+    "worldId": "world-a5eac9797410",
+    "viewId": "75adbb17-d75b-48c6-8bec-373f29574e99",
+    "fromOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+    "toOid": "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+    "kind": "text",
+    "path": "scenes/training_range.tscn",
+    "added": 0,
+    "removed": 1,
+    "patch": "diff --git a/scenes/training_range.tscn b/scenes/training_range.tscn\nindex 9cfe522..30c2918 100644\n--- a/scenes/training_range.tscn\n+++ b/scenes/training_range.tscn\n@@ -145,7 +145,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -6)\n target_id = &\"target_a\"\n display_name = \"Near target\"\n \n-hit_flash_seconds = 0.5\n [node name=\"TargetB\" parent=\"Targets\" instance=ExtResource(\"11_target\")]\n transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)\n target_id = &\"target_b\"\n",
+    "totalBytes": 491,
+    "shownBytes": 491,
+    "truncated": false
+  },
+  "archiveUnchanged": true,
+  "calls": [
+    "content.status",
+    "godotProject.sourceContext",
+    "godotProject.index",
+    "content.history",
+    "content.status",
+    "content.status",
+    "content.changes",
+    "content.status",
+    "content.status",
+    "content.changes",
+    "content.diff",
+    "content.status",
+    "content.status",
+    "godotProject.sourceContext",
+    "godotProject.index",
+    "content.history",
+    "content.status"
+  ]
+}

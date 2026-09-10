@@ -1,0 +1,12 @@
+{
+  "kind": "real-react-private-service-rust-git",
+  "binarySha256": "285578bc384302eaccf2017225d446732ead3daf24c80a52e5150018604060bb",
+  "checks": [],
+  "errors": [
+    "Error: GODOT_HISTORY_NO_FORMAL_VERSION"
+  ],
+  "limits": [
+    "No real Godot executor or model: truthful blocked check required.",
+    "Electron navigation routing is integrated separately; HTTP replaces only its transport."
+  ]
+}

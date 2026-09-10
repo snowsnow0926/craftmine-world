@@ -8977,3 +8977,13 @@ Run the fresh sealed Windows comprehensive client with REUSE/COPY/BACKUP enabled
 ## 2026-09-10 — Complete-client restore conflict IPC wrapper
 
 The actual ae32974 package returned the expected stale-backup error through Electron IPC after 50 passed steps. The old exact raw-message assertion failed; normal restore was not reached. Preserve that failed run. The helper now recognizes only the exact observed panel channel wrapper and finite conflict code; timeouts, unrelated channels and extra text remain failures. Unit validation: `node --test tests/player-product/complete-exit-contract.test.mjs` (7 tests). Actual-client acceptance must be a separate new run. See `complete-ipc-conflict-recognition.md`.
+
+
+## VM2 read-only version comparison (2026-09-10)
+
+- Open Versions and creation branches for a world with an applied Godot version. Compare a listed revision or the current branch with formal content; verify exact added/deleted/modified files, binary sizes, and text additions/removals.
+- With more than 32 changed files, verify both pages and exact totals; with a patch over 64 KiB, verify visible truncation without invalid UTF-8 or executable source HTML.
+- Change world, branch head or formal version during a delayed read: stale results must not render or expose private Git paths. A source-only world must not invent a formal comparison baseline.
+- Confirm history/source reads do not start/end authoring tasks or change content/progress. Preserve existing branch creation, source editing, blocked/real checking and restart behavior.
+- Use independent headless profiles with Pointer Lock/focus disabled and page-script actions only. Run tests/godot-history-panel.mjs, tests/plan-loop/version-diff-service.test.mjs and tests/plan-loop/version-diff-ui-races.mjs. The optional version-diff-applied-core.mjs requires an explicitly authorized completed test core directory and copies it before use.
+- Fixture applied refs are Git-layer evidence only; packaged application acceptance remains separate.

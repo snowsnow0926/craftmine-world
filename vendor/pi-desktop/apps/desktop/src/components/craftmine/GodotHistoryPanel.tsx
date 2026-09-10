@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { CraftmineWorldBridge } from "../../lib/craftmine-worlds";
+import { GodotVersionComparison } from "./GodotVersionComparison";
 
 type Data = Record<string, any>;
 const short = (value: unknown) => typeof value === "string" ? value.slice(0, 12) : "未应用";
@@ -18,6 +19,7 @@ export function GodotHistoryPanel({ bridge, worldId, onOpenChecks }: {
   const [source, setSource] = useState<Data | null>(null);
   const [text, setText] = useState("");
   const [job, setJob] = useState<Data | null>(null);
+  const [compareOid, setCompareOid] = useState<string | null>(null);
   const epoch = useRef(0);
   const call = async (channel: string, args: Data = {}) => {
     if (!bridge || !worldId) throw Error("请先打开世界");
@@ -25,7 +27,7 @@ export function GodotHistoryPanel({ bridge, worldId, onOpenChecks }: {
   };
   async function load(branch: string, skip = 0, offset = 0) {
     const token = ++epoch.current;
-    setBusy(true); setError(""); setSource(null);
+    setBusy(true); setError(""); setSource(null); setCompareOid(null);
     try {
       const result = await call("godot.historyLoad", { branchId: branch, skip, offset });
       if (token !== epoch.current) return;
@@ -79,9 +81,12 @@ export function GodotHistoryPanel({ bridge, worldId, onOpenChecks }: {
         })}>新建并切换创作分支</button>
       </fieldset>
       <h3>版本记录</h3>
-      <ul data-history-records>{(data.history.records ?? []).map((record: Data) => <li key={record.oid} style={style}>{short(record.oid)} · {record.subject} {record.oid === data.appliedOid ? "（正式）" : ""}</li>)}</ul>
+      {!data.appliedOid && <p>尚无正式版本，应用首个版本后可对比。</p>}
+      <button data-history-compare-head disabled={busy || !data.appliedOid} onClick={() => setCompareOid(data.headOid)}>当前分支与正式版本对比</button>
+      <ul data-history-records>{(data.history.records ?? []).map((record: Data) => <li key={record.oid} style={style}>{short(record.oid)} · {record.subject} {record.oid === data.appliedOid ? "（正式）" : ""} <button data-history-compare={record.oid} disabled={busy || !data.appliedOid} onClick={() => setCompareOid(record.oid)}>与正式版本对比</button></li>)}</ul>
       <button disabled={busy || !data.history.skip} onClick={() => void load(branchId, Math.max(0, data.history.skip - 20), data.index.offset ?? 0)}>上一页版本</button>
       <button disabled={busy || data.history.nextSkip == null} onClick={() => void load(branchId, data.history.nextSkip, data.index.offset ?? 0)}>下一页版本</button>
+      {compareOid && worldId && <GodotVersionComparison key={`${worldId}:${data.viewId}:${compareOid}`} bridge={bridge} worldId={worldId} viewId={data.viewId} targetOid={compareOid}/>}
       <h3>分支源码</h3>
       <ul data-history-files>{(data.index.files ?? []).map((file: Data) => <li key={file.path} style={style}><button disabled={busy} onClick={() => void action(async () => {
         const token = epoch.current;
