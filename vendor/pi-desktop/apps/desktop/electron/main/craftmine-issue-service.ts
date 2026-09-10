@@ -52,7 +52,7 @@ const digest = (value: unknown) => createHash("sha256").update(JSON.stringify(va
 const identifier = (value: unknown): value is string => typeof value === "string" && ID.test(value);
 const validDescription = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0 && value.length <= ISSUE_LIMITS.maxDescriptionLength && Buffer.byteLength(value, "utf8") <= ISSUE_LIMITS.maxDescriptionBytes && !value.includes("\0") && Buffer.from(value, "utf8").toString("utf8") === value;
 const validClient = (value: unknown): value is IssueRecord["client"] => object(value) && keys(value, ["version", "commit"]) && typeof value.version === "string" && /^[A-Za-z0-9][A-Za-z0-9.+_-]{0,63}$/.test(value.version) && (value.commit === undefined || (typeof value.commit === "string" && /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(value.commit)));
-const validFollowup = (kind: unknown, text: unknown) => ["note", "still-present", "player-resolved", "reopened"].includes(String(kind)) && typeof text === "string" &&
+const validFollowup = (kind: unknown, text: unknown) => typeof kind === "string" && ["note", "still-present", "player-resolved", "reopened"].includes(kind) && typeof text === "string" &&
   (kind !== "note" || text.trim().length > 0) && text.length <= ISSUE_LIMITS.maxFollowupLength && Buffer.byteLength(text, "utf8") <= ISSUE_LIMITS.maxFollowupBytes && !text.includes("\0") && Buffer.from(text, "utf8").toString("utf8") === text;
 const followupRequest = (worldId: string, input: Input) => ({ worldId, issueId: input.issueId, revision: input.revision, contextHash: input.contextHash, kind: input.kind, text: input.text });
 const playerStatus = (entries: IssueFollowup[]): PlayerStatus => entries.filter(entry => entry.kind !== "note").at(-1)?.kind as PlayerStatus ?? "recorded";
@@ -92,7 +92,7 @@ function validateRecord(value: unknown): value is IssueRecord {
   try { context(value.context); return true; } catch { return false; }
 }
 function validateLedger(value: unknown): Ledger {
-  if (!object(value) || !keys(value, ["format", "records", "receipts", "followups"]) || !["craftmine.local-issues/1", "craftmine.local-issues/2"].includes(String(value.format)) ||
+  if (!object(value) || !keys(value, ["format", "records", "receipts", "followups"]) || typeof value.format !== "string" || !["craftmine.local-issues/1", "craftmine.local-issues/2"].includes(value.format) ||
       !Array.isArray(value.records) || value.records.length > ISSUE_LIMITS.maxRecords || !value.records.every(validateRecord) ||
       !Array.isArray(value.receipts) || value.receipts.length > ISSUE_LIMITS.maxReceipts) fail("ISSUE_STORAGE_INVALID");
   const legacy = value.format === "craftmine.local-issues/1";
@@ -103,7 +103,7 @@ function validateLedger(value: unknown): Ledger {
   for (const record of value.records) { if (ids.has(record.id)) fail("ISSUE_STORAGE_INVALID"); ids.add(record.id); }
   for (const receipt of value.receipts) {
     if (!object(receipt) || !keys(receipt, ["operationId", "worldId", "method", "requestHash", "issueId", "followupId"]) ||
-        !identifier(receipt.operationId) || !identifier(receipt.worldId) || !(legacy ? ["issue.create", "issue.delete"] : ["issue.create", "issue.delete", "issue.followup"]).includes(String(receipt.method)) ||
+        !identifier(receipt.operationId) || !identifier(receipt.worldId) || typeof receipt.method !== "string" || !(legacy ? ["issue.create", "issue.delete"] : ["issue.create", "issue.delete", "issue.followup"]).includes(receipt.method) ||
         typeof receipt.requestHash !== "string" || !HASH.test(receipt.requestHash) || typeof receipt.issueId !== "string" || !ISSUE_ID.test(receipt.issueId) || operations.has(receipt.operationId)) fail("ISSUE_STORAGE_INVALID");
     if (receipt.method === "issue.followup" ? typeof receipt.followupId !== "string" || !FOLLOWUP_ID.test(receipt.followupId) || receipt.followupId !== `followup-${digest({ operationId: receipt.operationId, worldId: receipt.worldId, issueId: receipt.issueId })}` : receipt.followupId !== undefined) fail("ISSUE_STORAGE_INVALID");
     operations.add(receipt.operationId);
