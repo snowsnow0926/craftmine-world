@@ -141,6 +141,7 @@ export function normalizeBaseManifest(manifest) {
     assets: manifest.contract?.assets || manifest.assets || null,
     templates,
     components: Array.isArray(manifest.components) ? manifest.components : [],
+    sourceFiles: Array.isArray(manifest.contract?.sourceFiles) ? manifest.contract.sourceFiles : [],
     tools: manifest.tools || {},
     acceptance: manifest.acceptance || {},
     raw: manifest,
@@ -199,6 +200,10 @@ export function validateBaseContract(manifest, { baseDir = null } = {}) {
   }
 
   const templateIds = new Set();
+  for (const relative of contract.sourceFiles) {
+    if (!isSafeRelativePath(relative)) issues.push(issue('base-source-path', where, 'Unsafe base source path'));
+    else if (baseDir && !fs.existsSync(path.join(baseDir, relative))) issues.push(issue('base-source-missing', where, `Missing base source ${relative}`));
+  }
   let blankCount = 0;
   for (const template of contract.templates) {
     const at = `${where}/template:${template.id ?? '?'}`;
@@ -332,7 +337,7 @@ export function assertTemplateInitialState({ baseId, templateId, world }) {
 
 /** Stable digest of everything that defines a base version's content contract. */
 export function baseContentHash(baseDir, contract) {
-  const files = [];
+  const files = [...(contract.sourceFiles || [])];
   for (const component of contract.components) {
     for (const file of component.files) {
       const rel = typeof file === 'string' ? file : file.path;

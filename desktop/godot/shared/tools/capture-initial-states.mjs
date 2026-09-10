@@ -31,7 +31,7 @@ func _capture() -> void:
 `;
 const report={format:'craftmine.authored-initial-states/1',engine:engine.actualVersion,runs:engine.runs,states:[]};
 const requested=process.env.CRAFTMINE_CAPTURE_BASES?.split(',');
-for(const [baseId,templates] of Object.entries({'first-person':['blank','training-range'],'top-down':['blank','town'],'side-view':['blank','ruins'],'mining-sandbox':['blank','mine-camp']})){
+for(const [baseId,templates] of Object.entries({'creation-sandbox':['blank'],'first-person':['blank','training-range'],'top-down':['blank','town'],'side-view':['blank','ruins'],'mining-sandbox':['blank','mine-camp']})){
   if(requested&&!requested.includes(baseId))continue;
   for(const template of templates){
     const worldId=`authored-${baseId}-${template}`;

@@ -79,6 +79,16 @@ function argSpec(kind, extra = {}) {
  * (desktop/godot/shared/adapters/*.gd) and the base probe/ops implementations.
  */
 export const BOUNDED_OPERATIONS = Object.freeze({
+  'creation-sandbox': {
+    readOnly: ['snapshot'],
+    mutating: {
+      walk: {forward:argSpec('number',{min:-1,max:1,optional:true}),right:argSpec('number',{min:-1,max:1,optional:true}),frames:argSpec('integer',{min:1,max:600,optional:true})},
+      wait: {frames:argSpec('integer',{min:1,max:600})},
+      look: {yaw:argSpec('number',{min:-Math.PI,max:Math.PI,optional:true}),pitch:argSpec('number',{min:-1.55,max:1.55,optional:true})},
+      interact: {},
+      'set-time': {hours:argSpec('number',{min:0,max:24})},
+    },
+  },
   'first-person': {
     readOnly: ['snapshot', 'crosshair', 'hud', 'probe-aim', 'state'],
     mutating: {
