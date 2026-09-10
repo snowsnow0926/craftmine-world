@@ -1,0 +1,37 @@
+[
+  {
+    "path": "raw/build-js.log",
+    "bytes": 19786,
+    "sha256": "445b8f7b3f53a0972cd69685d92e58c85df0a4eb7b413ecdfb854221e3f1b70a"
+  },
+  {
+    "path": "raw/native-final-stderr.log",
+    "bytes": 146,
+    "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+  },
+  {
+    "path": "raw/native-final-stdout.log",
+    "bytes": 64832,
+    "sha256": "d41c095bcfb6ae63acc8a3fca3685e91a69d52ee3e05e3d769a95d0310b85b13"
+  },
+  {
+    "path": "raw/native-final.json",
+    "bytes": 190254,
+    "sha256": "995cee8a2d03507676261955f805bcc8094bd75569266f938ea0641757452d9d"
+  },
+  {
+    "path": "raw/native-first-failure.json",
+    "bytes": 20457,
+    "sha256": "a618098a482e5a864be6cb55ea206d42a1b7d7c644b9fb06de1935e1f71e450e"
+  },
+  {
+    "path": "raw/native-switch-fixture-failure.json",
+    "bytes": 51315,
+    "sha256": "5446e0c070416a9ba2761a5380486c5c57a805f02990cf34f8e3dc6ac7ad423a"
+  },
+  {
+    "path": "raw/rust-build.log",
+    "bytes": 8315,
+    "sha256": "0ef0e0b8586ed359a932a508f68a70004aa8248d2a93a2f9e3e50fba46665076"
+  }
+]
