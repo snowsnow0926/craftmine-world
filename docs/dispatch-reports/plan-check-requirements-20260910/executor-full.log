@@ -1,0 +1,34 @@
+✔ stop drains a real pending broker preflight and prevents obsolete registration (457.1169ms)
+✔ stop drains an in-flight registration, revokes it, then admits one fresh restart (443.4272ms)
+✔ happy check job: real import/export receipts, staged web artifacts, passed candidate (563.65ms)
+✔ the verifier receives the staged descriptor, never a caller-supplied path (569.9132ms)
+✔ check job without a verifier records a failure instead of a false pass (402.0042ms)
+✔ a failing runtime check fails the job and its assertions (555.9867ms)
+✔ forged preflight evidence never registers an executor (1153.1171ms)
+✔ measured source files must equal the claimed manifest (1858.8366ms)
+✔ unlisted, tampered and escaping artifacts are refused (1906.6381ms)
+✔ compile failures are fatal, known native isolation diagnostics are not (742.7245ms)
+✔ a broker that never answers or dies is recorded as a failure, never a pass (539.6474ms)
+✔ a job that exceeds its budget is failed, not left running (1708.1134ms)
+✔ cancel kills the broker, records no result and cancels the core job (523.4891ms)
+✔ executor stop revokes registration and rejects new jobs (118.6994ms)
+✔ sourceSnapshotDigest matches the documented broker digest shape (0.2339ms)
+✔ missing or tampered host files report their own reason (27.1646ms)
+✔ a changed broker binary is refused when a pin is configured (3.5922ms)
+✔ one verified native import crash gets a fresh task, preserving its failure and full check (528.8674ms)
+✔ script errors, changed inputs, unknown cleanup and repeated crashes never become successful retries (2042.2942ms)
+✔ finite runtime expectation: matched (340.2772ms)
+✔ finite runtime expectation: descriptor-missing (310.6033ms)
+✔ finite runtime expectation: descriptor-dropped (325.7633ms)
+✔ finite runtime expectation: descriptor-mixed (321.6608ms)
+✔ finite runtime expectation: assertion-missing (402.5822ms)
+✔ finite runtime expectation: assertion-false (554.5216ms)
+✔ finite runtime expectation: assertion-duplicate (614.0183ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17129.2343

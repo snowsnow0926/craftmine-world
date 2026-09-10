@@ -8909,3 +8909,22 @@ actual desktop restart evidence must be labeled separately.
 7. Switch pages/worlds during reads and polling. Old responses must not overwrite the active page; background timers must stop. Use isolated headless page scripts with Pointer Lock disabled and no input simulation.
 
 Fixture UI checks and source-only tests are separate from actual client/runtime evidence; do not count them as model or native acceptance.
+
+### Finite runtime check expectation binding (2026-09-10)
+
+Run the real core finite_requirements tests and the executor protocol suite.
+Require post-load and running observations of target_a=500 to pass, preserve
+raw actual values, and retain the same result after restart and finish replay.
+Missing, false, duplicate, partial, wrong-hash, wrong-job/world/build/target, or
+700-millisecond evidence must produce failed job, rejected candidate, refused
+application, and unchanged formal progress. Continue retains requirements;
+older jobs and backup column defaults remain compatible. A required descriptor
+failure must never fall back to an executor-created descriptor.
+
+Separately run the actual isolated verifier on a scene declaring 500 whose
+ancestor or sibling assigns 700 during initialization or running. The entire
+ordinary check must fail, not just the parameter status page. Compare the
+official 500 scene's successful check and adoption. Keep full runtime and
+candidate identities, and distinguish bounded observations from proof of
+arbitrary future behavior. No model call, OS input, visible window, or Pointer
+Lock is required. See godot-check-requirements.md for the finite wire contract.

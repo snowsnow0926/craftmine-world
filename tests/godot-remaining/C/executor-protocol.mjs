@@ -446,3 +446,51 @@ test('script errors, changed inputs, unknown cleanup and repeated crashes never 
     assert.equal(attempts.length,crashTamper==='second-crash'?2:1,crashTamper);assert.ok(attempts.every(x=>x.operation==='import'));
   }
 });
+
+// The broker/core here are protocol fixtures; these are not native engine evidence.
+for (const variant of ['matched','descriptor-missing','descriptor-dropped','descriptor-mixed','assertion-missing','assertion-false','assertion-duplicate']) {
+  test('finite runtime expectation: ' + variant, async t => {
+    const env=environment();t.after(restoreEnv);setScenario(env,{});
+    const core=fakeCore(env), original=core.call.bind(core);
+    const required={format:'craftmine.godot-check-requirements/1',targetFeedback:{targetId:'target_a',hitFlashMilliseconds:500}};
+    const hash=sha256('craftmine.godot-check-requirements/1\ntarget_a\n500\n');
+    let claimed, seen, descriptorCalls=0, fallbackReads=0;
+    core.call=async(method,args)=>{
+      if(method==='godotJob.claim') return claimed={...await original(method,args),checkRequirements:required,checkRequirementsHash:hash};
+      if(method==='world.read') fallbackReads++;
+      if(method==='godotJob.checkDescriptor') {
+        descriptorCalls++;
+        if(variant==='descriptor-missing') throw Error('UNSUPPORTED');
+        const descriptor={format:'craftmine.godot-check-descriptor/1',phase:'check',jobId:args.jobId,
+          worldId:claimed.worldId,buildId:claimed.buildId,inputHash:claimed.inputHash,baseId:'first-person',
+          root:env.artifactsRoot,entry:'web/index.html',threads:true,artifacts:args.artifacts,snapshot:null};
+        if(variant!=='descriptor-dropped') Object.assign(descriptor,{checkRequirements:required,checkRequirementsHash:hash});
+        if(variant==='descriptor-mixed') descriptor.worldId='other-world';
+        return descriptor;
+      }
+      return original(method,args);
+    };
+    const evidence={format:'craftmine.godot-check-requirements-evidence/1',requirementsHash:hash,
+      jobId:'gjob-'+ '7'.repeat(64),worldId:'world-c',buildId:'gbd-'+ 'a'.repeat(64),instanceId:'runtime-one',
+      observations:[{phase:'loaded',targetId:'target_a',hitFlashMilliseconds:500},
+        {phase:'running',targetId:'target_a',hitFlashMilliseconds:500}]};
+    const verifier={godotCheck:async descriptor=>{
+      seen=descriptor;
+      const assertion={id:'runtime.target-feedback',passed:variant!=='assertion-false',detail:'actual observations'};
+      const assertions=variant==='assertion-missing'?[]:variant==='assertion-duplicate'?[assertion,assertion]:[assertion];
+      return passingEvidence({requirementsEvidence:evidence,assertions});
+    }};
+    const executor=makeExecutor({env,core,verifier});
+    assert.equal((await executor.start()).available,true);
+    executor.enqueue({jobId:evidence.jobId,worldId:'world-c',mode:'check'});
+    await settle(executor,evidence.jobId);await executor.stop();
+    assert.equal(descriptorCalls,1);assert.equal(fallbackReads,0,'required checks must never use legacy descriptor fallback');
+    assert.equal(core.state.status,variant==='matched'?'passed':'failed',JSON.stringify(core.state.output));
+    if(variant.startsWith('descriptor-')) assert.equal(seen,undefined);
+    else {
+      assert.deepEqual(seen.checkRequirements,required);
+      assert.deepEqual(core.state.output.check.requirementsEvidence,evidence);
+      assert.equal(core.state.output.check.assertions.find(a=>a.id==='runtime.target-feedback').passed,variant==='matched');
+    }
+  });
+}

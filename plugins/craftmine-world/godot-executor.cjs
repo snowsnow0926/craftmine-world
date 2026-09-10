@@ -16,6 +16,7 @@ const {createHash, randomUUID} = require('node:crypto');
 const fs = require('node:fs');
 const fsp = require('node:fs/promises');
 const path = require('node:path');
+const {isDeepStrictEqual} = require('node:util');
 
 const execFileAsync = (file, args, options = {}) => new Promise(resolve => {
   const settle = (error, stdout, stderr) => resolve({
@@ -719,10 +720,22 @@ function createGodotExecutor(core, options = {}) {
   }
 
   async function checkDescriptorFor(claim, artifacts, token) {
+    const required = claim.checkRequirements !== undefined || claim.checkRequirementsHash !== undefined;
     try {
       const descriptor = await core.call('godotJob.checkDescriptor', {jobId:claim.jobId, token, artifacts}, 30000);
-      if (descriptor && descriptor.format === CHECK_FORMAT) return {descriptor, source:'core'};
+      if (descriptor && descriptor.format === CHECK_FORMAT) {
+        if (required && (!claim.checkRequirements || !claim.checkRequirementsHash
+            || !isDeepStrictEqual(descriptor.checkRequirements, claim.checkRequirements)
+            || descriptor.checkRequirementsHash !== claim.checkRequirementsHash
+            || descriptor.jobId !== claim.jobId || descriptor.worldId !== claim.worldId
+            || descriptor.buildId !== claim.buildId || descriptor.inputHash !== claim.inputHash)) {
+          throw Error('GODOT_CHECK_REQUIREMENTS_DESCRIPTOR_MISMATCH');
+        }
+        return {descriptor, source:'core'};
+      }
+      if (required) throw Error('GODOT_CHECK_REQUIREMENTS_DESCRIPTOR_REQUIRED');
     } catch (error) {
+      if (required) throw error;
       // The core interface is owned by task A. Until it lands, resolve the same
       // descriptor locally from the claim and the formal world; the verifier
       // still validates every staged byte against the recorded artifact list.
@@ -743,7 +756,7 @@ function createGodotExecutor(core, options = {}) {
     }};
   }
 
-  function assertionsFrom(evidence) {
+  function assertionsFrom(evidence, claim) {
     const base = [
       {id:'runtime.ready', passed:evidence?.ready?.ok === true, detail:`ops=${(evidence?.ready?.ops ?? []).join(',')}`},
       {id:'runtime.frame', passed:evidence?.render?.ok === true, detail:`frames=${evidence?.render?.frames ?? 0} distinct=${evidence?.render?.distinctFrames ?? 0}`},
@@ -752,6 +765,12 @@ function createGodotExecutor(core, options = {}) {
       {id:'runtime.isolation', passed:evidence?.isolation?.ok === true, detail:`guard=${JSON.stringify(evidence?.isolation?.guard ?? null)}`},
       {id:'runtime.recovery', passed:evidence?.recovery?.ok === true, detail:`graceful=${evidence?.recovery?.gracefulExit === true}`},
     ];
+    if (claim?.checkRequirements !== undefined || claim?.checkRequirementsHash !== undefined) {
+      const actual = (Array.isArray(evidence?.assertions) ? evidence.assertions : []).filter(item => item?.id === 'runtime.target-feedback');
+      base.push({id:'runtime.target-feedback', passed:actual.length === 1 && actual[0].passed === true
+        && evidence?.requirementsEvidence?.requirementsHash === claim.checkRequirementsHash,
+        detail:actual.length === 1 && typeof actual[0].detail === 'string' ? actual[0].detail.slice(0, 300) : 'runtime expectation evidence required'});
+    }
     return base.map(assertion => assertion.detail ? assertion : {id:assertion.id, passed:assertion.passed});
   }
 
@@ -861,7 +880,7 @@ function createGodotExecutor(core, options = {}) {
         artifacts = [];
       }
       const checkPassed = mode === 'check' ? runtime?.passed === true : true;
-      const assertions = mode === 'check' ? assertionsFrom(runtime) : [];
+      const assertions = mode === 'check' ? assertionsFrom(runtime, claim) : [];
       return await finishJob(entry, {
         import:{passed:true, log:bounded(importLog, 8000)},
         compile:{passed:true, errors:[], warnings:importClassified.warnings.slice(0, 16)},
@@ -898,7 +917,7 @@ function createGodotExecutor(core, options = {}) {
         && assertions.every(assertion => assertion.passed === true),
       import:result.import,
       compile:result.compile,
-      check:{passed:result.check.passed, assertions, ...(result.check.passed && result.runtime?.passed && result.runtime?.defaultsSnapshot && result.runtime?.progressMigration ? {defaultsSnapshot:result.runtime.defaultsSnapshot, progressMigration:result.runtime.progressMigration} : {})},
+      check:{passed:result.check.passed, assertions, ...(result.runtime?.requirementsEvidence ? {requirementsEvidence:result.runtime.requirementsEvidence} : {}), ...(result.check.passed && result.runtime?.passed && result.runtime?.defaultsSnapshot && result.runtime?.progressMigration ? {defaultsSnapshot:result.runtime.defaultsSnapshot, progressMigration:result.runtime.progressMigration} : {})},
       artifacts:result.artifacts,
       engine:{version:ENGINE_VERSION, isolation:ISOLATION, evidenceHash:discovery.evidenceHash},
     };
