@@ -200,6 +200,7 @@ func _create_entity(definition: Dictionary) -> void:
 			var sphere := SphereMesh.new()
 			sphere.radius = 0.6
 			sphere.height = 2
+			canopy.name = "CreationColorMesh"
 			canopy.mesh = sphere
 			canopy.position.y = 3
 			canopy.material_override = _material(color)
@@ -209,12 +210,13 @@ func _create_entity(definition: Dictionary) -> void:
 			var sphere := SphereMesh.new()
 			sphere.radius = 0.7
 			sphere.height = 1.4
+			rock.name = "CreationColorMesh"
 			rock.mesh = sphere
 			rock.position.y = 0.7
 			rock.material_override = _material(color)
 			node.add_child(rock)
 		"chest":
-			_box(node, Vector3(1.2, 0.8, 1), Vector3(0, 0.4, 0), color)
+			_box(node, Vector3(1.2, 0.8, 1), Vector3(0, 0.4, 0), color).name = "CreationColorMesh"
 			var lid := Node3D.new()
 			lid.name = "Lid"
 			lid.position = Vector3(0, 0.85, -0.5)
@@ -239,12 +241,12 @@ func _create_entity(definition: Dictionary) -> void:
 			aim_shape.position = Vector3(0.8, 1.3, 0)
 			aim_area.add_child(aim_shape)
 			hinge.add_child(aim_area)
-			_box(hinge, Vector3(1.6, 2.6, 0.5), Vector3(0.8, 1.3, 0), color)
+			_box(hinge, Vector3(1.6, 2.6, 0.5), Vector3(0.8, 1.3, 0), color).name = "CreationColorMesh"
 			_box(hinge, Vector3(0.12, 0.12, 0.12), Vector3(1.4, 1.3, 0.3), Color("f5d478"))
 			doors[definition.id] = definition.parameters.get("initiallyOpen", false)
 			_update_door(definition.id)
 		"marker":
-			_box(node, Vector3(0.16, 1.4, 0.16), Vector3(0, 0.7, 0), color)
+			_box(node, Vector3(0.16, 1.4, 0.16), Vector3(0, 0.7, 0), color).name = "CreationColorMesh"
 			_box(node, Vector3(0.6, 0.35, 0.6), Vector3(0, 1.2, 0), color.lightened(0.2))
 			var label := Label3D.new()
 			label.font = creation_font
@@ -282,6 +284,11 @@ func refresh_target() -> Dictionary:
 	_update_selection()
 	return target.duplicate(true)
 
+func _observed_color(id: String) -> String:
+	var mesh: MeshInstance3D = entity_nodes[id].find_child("CreationColorMesh", true, false) as MeshInstance3D
+	if mesh == null or not mesh.material_override is StandardMaterial3D: return ""
+	return "#" + mesh.material_override.albedo_color.to_html(false)
+
 func _update_selection() -> void:
 	var id: String = str(target.entityId) if target.entityId != null else ""
 	selection_box.visible = entities.has(id)
@@ -295,7 +302,7 @@ func _update_selection() -> void:
 	target["entityName"] = display_name
 	target["entityKind"] = definition.kind
 	target["scale"] = [node.scale.x, node.scale.y, node.scale.z]
-	target["color"] = definition.color
+	target["color"] = _observed_color(id)
 	selection_label.text = display_name + " · " + id
 	selection_box.global_transform = node.global_transform
 	if highlighted_id == id: return
@@ -530,6 +537,7 @@ func observe() -> Dictionary:
 		var actual_node: Node3D = entity_nodes[id]
 		definition["position"] = [actual_node.position.x, actual_node.position.y, actual_node.position.z]
 		definition["scale"] = [actual_node.scale.x, actual_node.scale.y, actual_node.scale.z]
+		definition["color"] = _observed_color(id)
 		if definition.kind == "chest": definition["opened"] = opened_chests.has(id)
 		if definition.kind == "door": definition["open"] = doors.get(id, false)
 		definitions.append(definition)

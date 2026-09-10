@@ -47,6 +47,11 @@ func run() -> void:
     var actual_first = actual_entities.filter(func(item): return item.id == "first")[0]
     check(actual_first.scale == [1.25,1.5,1.75], "观察返回真实节点尺寸而非旧定义")
     world.entity_nodes.first.scale = original_scale
+    var color_mesh = world.entity_nodes.first.find_child("CreationColorMesh", true, false)
+    var original_color = color_mesh.material_override.albedo_color
+    color_mesh.material_override.albedo_color = Color("123456")
+    check(world._observed_color("first") == "#123456", "颜色从实际材质读取")
+    color_mesh.material_override.albedo_color = original_color
     var rule = world.rule_nodes.example
     var initial = world.capture()
     var overlapping = initial.duplicate(true)
