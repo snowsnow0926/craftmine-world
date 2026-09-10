@@ -112,6 +112,31 @@ describe("Craftmine authoritative request boundary", () => {
     expect(craftmineContextBlocks(s, "review")).toContain('"owned":false');
     expect(() => craftmineContextBlocks(s, "creation")).toThrow();
   });
+  it("finishes an applied task using summary accounting with all tools removed", async () => {
+    const f=fixture(),state=snapshot();state.status="finished";state.lease.owned=false;state.world.buildId="actually-applied";f.set(state);
+    const input={...request,tools:[{name:"creation_operation",description:"Write",parameters:{type:"object"}}]};
+    const reserved=await f.hooks.beforeRequest({requestId:"closeout",purpose:"creation",model,context:input,maxOutputTokens:1000});
+    expect(reserved.readOnlyCloseout).toBe(true);expect(reserved.context.tools).toEqual([]);
+    expect(reserved.context.systemPrompt).toContain("final, self-contained account");
+    expect(JSON.stringify(reserved.context.messages)).toContain("actually-applied");
+    expect(f.calls.find(call=>call.method==="budget.reserve")?.params.purpose).toBe("summary");
+    expect(state.lease.owned).toBe(false);expect(input.tools).toHaveLength(1);
+  });
+  it("refuses a provider tool call during finished-task closeout", async () => {
+    const f=fixture(),state=snapshot();state.status="finished";state.lease.owned=false;f.set(state);
+    const answer=await craftmineGuardedStream(model,request,{},f.hooks,"retry",()=>stream({...result(),stopReason:"toolUse",content:[{type:"toolCall",id:"forged",name:"creation_operation",arguments:{}}]})).result();
+    expect(answer.stopReason).toBe("error");expect(answer.errorMessage).toContain("FINISHED_TASK_TOOL_REFUSED");expect(answer.content).toEqual([]);
+  });
+  it("the actual PI loop can deliver a final response after application released its lease",async()=>{
+    const f=fixture(),state=snapshot();state.status="finished";state.lease.owned=false;state.world.buildId="adopted-build";f.set(state);
+    const runtime=makeRuntime(f.hooks),internal=runtime as any;
+    vi.spyOn(internal.models,"streamSimple").mockImplementation((_model:unknown,context:unknown)=>{
+      expect((context as Context).tools).toEqual([]);expect(JSON.stringify((context as Context).messages)).toContain("adopted-build");return stream(result("世界改动已采用，保留了原有进度。"));
+    });
+    await runtime.prompt("新增机关并采用","latest","turn");
+    expect(internal.fullEntries.at(-1).message.stopReason).toBe("stop");expect(f.calls.filter(call=>call.method==="budget.reserve").every(call=>call.params.purpose==="summary")).toBe(true);
+    await runtime.dispose();
+  });
   it("cancels providers that ignore abort and discards their late success", async () => {
     const f = fixture(), controller = new AbortController(), inner = createAssistantMessageEventStream();
     let resolveStarted!: () => void;

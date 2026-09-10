@@ -205,6 +205,7 @@ import { GodotWorldViewHost } from "./godot-world-view-host";
 import { createCraftmineLiveSampler } from "./craftmine-live-sample";
 import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
 import {createCreationAutoApplyService} from "./creation-auto-apply-service";
+import {readCraftminePromptContext} from "./craftmine-context-read";
 import { createGodotRuntimeAdapter } from "./godot-runtime-adapter";
 import { createGodotCandidateCoordinator } from "./godot-candidate-coordinator";
 import {
@@ -2587,7 +2588,7 @@ const craftmineGateway = new CraftmineTurnGateway(
       if (craftmineProjectIdentity(detail.session, binding.sessionId) !== binding.projectId) throw new Error("CRAFTMINE_PROJECT_CHANGED");
       const latest = detail.session.messages?.findLast((message: UiMessage) => message.role === "user");
       if (!latest) throw new Error("CRAFTMINE_USER_REQUEST_REQUIRED");
-      const result=await plugins.requestCraftmineHost(operation, { context, request: { id: latest.id, text: latest.content } }) as Record<string,unknown>;
+      const result=await readCraftminePromptContext((method,args)=>plugins.requestCraftmineHost(method,args),context,{id:latest.id,text:latest.content});
       return {...result,creationTarget:creationTargets.bound(context,binding.selectedWorld)};
     }
     return plugins.requestCraftmineHost(operation, { ...input, context });
