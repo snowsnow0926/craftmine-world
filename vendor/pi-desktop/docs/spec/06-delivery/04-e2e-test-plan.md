@@ -8977,3 +8977,5 @@ Run the fresh sealed Windows comprehensive client with REUSE/COPY/BACKUP enabled
 ## Godot task path budget (2026-09-10)
 
 See godot-task-path-budget.md. Fixed native broker imports at 180/245 UTF-16 cache units must pass; 266 units must reject before allocation with GODOT_TASK_PATH_TOO_LONG. Verify original source hashes, no task directory on rejection, durable finite error after core restart, and matching build stage in the player UI. No UI/input/model automation.
+
+Follow-up: version discovery does not use editor cache. The real broker/executor/core chain must register after a verified version launch on the 266-unit layout, reject the subsequent import before launch, and retain the failed finite reason after core restart. See task-path-executor-native.cjs and DISCOVERY_FOLLOWUP.md; package acceptance remains separate.

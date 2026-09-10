@@ -7,6 +7,12 @@ profile or launching an engine. The calculation includes the task directory,
 245 budget is an observed working compatibility bound, not a claim that every
 Windows API has this limit or that arbitrary nested project paths are supported.
 
+This editor-cache budget applies to import and exports, not the fixed
+`--headless --version` discovery operation, which never initializes that cache.
+Long-profile discovery must still perform and verify the real version launch,
+Job, token and native network controls. A subsequent import then creates the
+normal durable failed job, so its finite reason survives client/core restart.
+
 The rejection is `GODOT_TASK_PATH_TOO_LONG`. Broker preparation failure evidence
 must remain in the executor attempt ledger. The executor must not retry, export,
 run a check or produce an applicable candidate after this rejection. Original
