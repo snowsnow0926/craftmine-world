@@ -38,6 +38,11 @@ The main-renderer IPC contract is defined in `packages/shared/src/voice-input.ts
 Main must restrict these calls to the trusted main frame. `arm` grants one brief,
 audio-only microphone permission opportunity; it cannot grant camera access or
 permissions to a world/plugin view. Native blur/destruction clears that grant.
+`VoiceMicrophonePermissionGate` validates the owner, exact document URL, main-frame
+identity and bounded request/context identity. Grants expire after 10 seconds using
+a monotonic clock and are consumed by one matching audio-only media request. The
+permission check handler always returns false; only the request handler consumes
+the grant. This follows [Electron's permission handler contract](https://www.electronjs.org/docs/latest/api/session).
 
 ## Validation
 
@@ -46,6 +51,19 @@ stale result rejection, malformed/oversize WAV rejection, owner-scoped process
 cancellation, missing capabilities, and installed Windows engine enumeration plus
 synthetic silence recognition. Synthetic fixtures do not establish speech accuracy.
 Automated tests never record a real microphone or simulate user input.
+
+`node --test test/voice-microphone-permission.test.mjs` verifies one-use grants,
+expiry, navigation, cancellation, and rejection of other documents, owners,
+subframes, camera, mixed-media, and display-capture requests. The opt-in
+`test/voice-permission-probe.cjs` requires `CRAFTMINE_VOICE_PROBE_DATA` (an isolated
+temporary directory) and `CRAFTMINE_VOICE_GATE_BUNDLE` (the helper bundled to CJS).
+Run it only with an explicitly supplied Electron executable. It starts headless
+and offscreen with `show: false`, `focusable: false`, fake media devices, separate
+user/session data, and disabled Pointer Lock. It records machine-readable results
+in its data directory. Electron 43.5.0 passed: an always-false check handler still
+allows one armed request-handler grant, with unarmed requests denied before and
+after. No real microphone was opened. This is a permission plumbing check, not a
+speech accuracy test.
 
 Relevant API references: [Microsoft SpeechRecognitionEngine](https://learn.microsoft.com/en-us/dotnet/api/system.speech.recognition.speechrecognitionengine?view=netframework-4.8.1)
 and [SetInputToWaveStream](https://learn.microsoft.com/en-us/dotnet/api/system.speech.recognition.speechrecognitionengine.setinputtowavestream?view=netframework-4.8.1).
