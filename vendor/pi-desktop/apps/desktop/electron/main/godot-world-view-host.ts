@@ -1,4 +1,4 @@
-import { BrowserWindow, WebContentsView, session, type Session } from "electron";
+import { BrowserWindow, WebContentsView, session, type NativeImage, type Session, type WebContents } from "electron";
 import { join, resolve, sep } from "node:path";
 import { realpath } from "node:fs/promises";
 import {
@@ -94,6 +94,128 @@ const CONSOLE_KEEP = 40;
 const FAULT_KEEP = 20;
 /** Total budget for the diagnostic suffix attached to a startup failure. */
 const DIAGNOSTIC_CHARS = 700;
+/**
+ * Hard cap for one acceptance capture. Readiness is proven by the pixels that
+ * arrive, never by waiting: the loop below only ever accepts a real frame at the
+ * requested size, and a frame that never arrives fails with its own error.
+ */
+const CAPTURE_READY_DEADLINE_MS = 4000;
+/** Longest single wait for the next offscreen frame before re-checking readiness. */
+const CAPTURE_FRAME_WAIT_MS = 120;
+/** Bounded number of readiness observations kept for the failure message. */
+const CAPTURE_OBSERVATION_KEEP = 8;
+/** Distinct pixels sampled as colour evidence, mirroring the acceptance clients. */
+const CAPTURE_COLOR_SAMPLE_LIMIT = 65536;
+
+/**
+ * A screenshot that was composited at all has at least one non-transparent
+ * pixel. An offscreen compositor that has not painted yet returns an all-zero
+ * buffer, so this is the structural "the frame is real" probe; whether the scene
+ * is interesting is the caller's assertion, not this host's.
+ */
+function hasPaintedPixels(pixels: Uint8Array): boolean {
+  const stride = Math.max(1, Math.floor(pixels.length / 4 / CAPTURE_COLOR_SAMPLE_LIMIT));
+  for (let offset = 3; offset < pixels.length; offset += 4 * stride) if (pixels[offset] !== 0) return true;
+  return false;
+}
+
+/** Distinct sampled colours, the evidence the acceptance clients already assert on. */
+function sampledColorCount(pixels: Uint8Array): number {
+  const colors = new Set<number>();
+  const stride = Math.max(1, Math.floor(pixels.length / 4 / CAPTURE_COLOR_SAMPLE_LIMIT));
+  for (let offset = 0; offset + 4 <= pixels.length; offset += 4 * stride) colors.add(pixels[offset] | (pixels[offset + 1] << 8) | (pixels[offset + 2] << 16) | (pixels[offset + 3] << 24));
+  return colors.size;
+}
+
+/** The frame sources this host reads: the compositor's own paint, or a read. */
+type PaintEmitter = {
+  on(name: "paint", listener: (event: unknown, dirty: unknown, image: NativeImage) => void): unknown;
+  off(name: "paint", listener: (event: unknown, dirty: unknown, image: NativeImage) => void): unknown;
+};
+
+/** A frame is evidence only when it is the whole viewport, fully composited. */
+type FrameVerdict = { ok: true; pixels: Uint8Array } | { ok: false; detail: string };
+
+function inspectFrame(image: NativeImage, width: number, height: number): FrameVerdict {
+  const size = image.getSize();
+  if (size.width !== width || size.height !== height) return {ok: false, detail: `image ${size.width}x${size.height}`};
+  const pixels = image.toBitmap();
+  if (pixels.length !== width * height * 4) return {ok: false, detail: `partial buffer ${pixels.length} of ${width * height * 4}`};
+  if (!hasPaintedPixels(pixels)) return {ok: false, detail: `unpainted ${size.width}x${size.height}`};
+  return {ok: true, pixels};
+}
+
+/**
+ * Reads one frame, bounded by the same overall deadline as the readiness loop.
+ *
+ * `capturePage()` can simply never settle, which would make the loop's deadline
+ * unreachable, so the read races the deadline. A read that arrives after the
+ * deadline is dropped here and can never be accepted or claim a resource; the
+ * outcome carries the failure text instead of swallowing it, so a read that
+ * keeps failing is visible in the loop's final error.
+ */
+function readFrame(contents: WebContents, deadline: number): Promise<{image: NativeImage | null; error: string | null; timedOut: boolean}> {
+  const remaining = deadline - Date.now();
+  if (remaining <= 0) return Promise.resolve({image: null, error: null, timedOut: true});
+  return new Promise(resolve => {
+    let settled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const done = (outcome: {image: NativeImage | null; error: string | null; timedOut: boolean}): void => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      resolve(outcome);
+    };
+    timer = setTimeout(() => done({image: null, error: null, timedOut: true}), Math.max(1, remaining));
+    try {
+      contents.capturePage().then(
+        image => done({image: image ?? null, error: null, timedOut: false}),
+        failure => done({image: null, error: failure instanceof Error ? failure.message : String(failure), timedOut: false}),
+      );
+    } catch (failure) {
+      // A read that throws synchronously is recorded like any other read failure.
+      done({image: null, error: failure instanceof Error ? failure.message : String(failure), timedOut: false});
+    }
+  });
+}
+
+/**
+ * Waits for the next offscreen frame, or for `ms`, whichever comes first.
+ *
+ * The compositor's own `paint` event carries the frame it just produced, so a
+ * paint that already covers the requested viewport is returned as evidence. A
+ * partial (dirty-area) image is not evidence and the caller re-reads instead.
+ * The timer only bounds one observation; the listener and the timer are always
+ * released, and a paint that arrives after the wait is dropped.
+ */
+function waitForNextFrame(contents: WebContents, ms: number, width: number, height: number): Promise<NativeImage | null> {
+  const emitter = contents as unknown as PaintEmitter;
+  return new Promise(resolve => {
+    let settled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const done = (image: NativeImage | null): void => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      try { emitter.off("paint", onPaint); } catch { /* the contents are already gone */ }
+      resolve(image);
+    };
+    const onPaint = (_event: unknown, _dirty: unknown, image: NativeImage): void => {
+      const size = image && typeof image.getSize === "function" ? image.getSize() : null;
+      done(size && size.width === width && size.height === height ? image : null);
+    };
+    try { emitter.on("paint", onPaint); } catch { /* destroyed contents resolve on the timer */ }
+    timer = setTimeout(() => done(null), Math.max(1, ms));
+  });
+}
+
+/** Paintability state, so an absent frame is diagnosable instead of assumed. */
+function paintableState(contents: WebContents): string {
+  const probe = contents as unknown as { isPainting?: () => boolean; getBackgroundThrottling?: () => boolean };
+  const painting = typeof probe.isPainting === "function" ? probe.isPainting() : null;
+  const throttled = typeof probe.getBackgroundThrottling === "function" ? probe.getBackgroundThrottling() : null;
+  return `painting=${String(painting)} throttled=${String(throttled)} offscreen=${String(contents.isOffscreen())}`;
+}
 
 /** Drop the per-instance secret origin token from a served request path. */
 export function redactRuntimePath(url: string): string {
@@ -182,6 +304,8 @@ export class GodotWorldViewHost {
   private starting = new Set<Promise<void>>();
   private retirementFailures: string[] = [];
   private onState?: (state: GodotWorldState) => void;
+  /** Bounded readiness budget for one acceptance capture (test seam). */
+  private readonly captureReadyMs: number;
 
   constructor(
     private readonly options: {
@@ -202,9 +326,17 @@ export class GodotWorldViewHost {
       onFullscreenShortcut?: (action: "toggle" | "exit") => void;
       /** Test seam: called with every runtime event. */
       onEvent?: (event: RuntimeEvent) => void;
+      /**
+       * Test seam: readiness budget for one acceptance capture, clamped to a
+       * sane range. Production leaves it unset and uses the fixed default.
+       */
+      captureReadyMs?: number;
     },
   ) {
     this.onState = options.onState;
+    this.captureReadyMs = Number.isSafeInteger(options.captureReadyMs) && (options.captureReadyMs as number) > 0
+      ? Math.min(Math.max(options.captureReadyMs as number, 250), 30_000)
+      : CAPTURE_READY_DEADLINE_MS;
   }
 
   get state(): GodotWorldState | null {
@@ -513,29 +645,124 @@ export class GodotWorldViewHost {
     const owner = this.options.window();
     if (!owner || owner.isDestroyed() || owner.isVisible() || owner.isFocusable() || !owner.webContents.isOffscreen()) throw Error("GODOT_CAPTURE_OWNER_NOT_ISOLATED");
     const previousSize = owner.getContentSize(), minimumSize = owner.getMinimumSize();
+    const wasAttached = owner.contentView.children.includes(instance.view);
     if (this.captureBounds) throw Error("GODOT_CAPTURE_ALREADY_RUNNING");
     this.captureBounds = {x: 0, y: 0, width, height};
     ++this.syncHolds;
+    let failed = false;
     try {
       // Electron's offscreen child compositor follows its owning window's
       // viewport. Resize this hidden test window as well as the game view.
       owner.setMinimumSize(1, 1); owner.setContentSize(width, height, false);
+      // A detached WebContentsView can run its page but has no compositor
+      // surface: capturePage keeps returning 0x0 even while isPainting is true.
+      // Attach only to this already hidden, non-focusable acceptance owner.
+      if (!wasAttached) owner.contentView.addChildView(instance.view);
       instance.view.setBounds({x: 0, y: 0, width, height});
-      await new Promise(resolve => setTimeout(resolve, 350));
+      const frame = await this.awaitCaptureFrame(instance, owner, width, height);
+      // The frame and the viewport observation must describe the same instance:
+      // a promotion or teardown while the observation was in flight must not
+      // return the previous instance's frame as this one's evidence.
       if (this.current !== instance || !instance.alive) throw new Error("GODOT_WORLD_CHANGED");
-      instance.view.webContents.invalidate();
-      const screenshot = await instance.view.webContents.capturePage();
+      if (instance.view.webContents !== frame.contents || frame.contents.isDestroyed()) throw new Error("GODOT_CAPTURE_VIEW_GONE");
       const viewportObservation = await this.request("observe-envelope", {});
-      const pixels = screenshot.toBitmap(), colors = new Set<number>();
-      const stride = Math.max(1, Math.floor(pixels.length / 4 / 65536));
-      for (let offset = 0; offset + 4 <= pixels.length; offset += 4 * stride) colors.add(pixels.readUInt32LE(offset));
-      return {pngBase64: screenshot.toPNG().toString("base64"), ...screenshot.getSize(), pixelStats: {bytes: pixels.length, sampledColors: colors.size}, viewportObservation};
+      if (this.current !== instance || !instance.alive) throw new Error("GODOT_WORLD_CHANGED");
+      if (instance.view.webContents !== frame.contents || frame.contents.isDestroyed()) throw new Error("GODOT_CAPTURE_VIEW_GONE");
+      if (owner.isDestroyed() || owner.isVisible() || owner.isFocusable()) throw new Error("GODOT_CAPTURE_OWNER_NOT_ISOLATED");
+      return {pngBase64: frame.image.toPNG().toString("base64"), width: frame.width, height: frame.height,
+        pixelStats: {bytes: frame.bytes, sampledColors: frame.sampledColors}, viewportObservation};
+    } catch (error) {
+      failed = true;
+      throw error;
     } finally {
+      // Every release step is independent: a window that refuses to resize must
+      // not stop the holds, the capture lock or the view bounds from being
+      // released. Restore failures are reported, never swallowed, and never
+      // replace the error that aborted the capture.
+      const restoreFailures: string[] = [];
       this.captureBounds = null;
-      if (!owner.isDestroyed()) { owner.setContentSize(previousSize[0], previousSize[1], false); owner.setMinimumSize(minimumSize[0], minimumSize[1]); }
-      if (instance.alive && !instance.view.webContents.isDestroyed()) instance.view.setBounds(previous);
+      try {
+        if (!owner.isDestroyed()) owner.setContentSize(previousSize[0], previousSize[1], false);
+      } catch (error) { restoreFailures.push(`owner size: ${error instanceof Error ? error.message : String(error)}`); }
+      try {
+        if (!owner.isDestroyed()) owner.setMinimumSize(minimumSize[0], minimumSize[1]);
+      } catch (error) { restoreFailures.push(`minimum size: ${error instanceof Error ? error.message : String(error)}`); }
+      try {
+        if (instance.alive && !instance.view.webContents.isDestroyed()) instance.view.setBounds(previous);
+      } catch (error) { restoreFailures.push(`view bounds: ${error instanceof Error ? error.message : String(error)}`); }
+      try {
+        if (!wasAttached && !owner.isDestroyed() && owner.contentView.children.includes(instance.view)) owner.contentView.removeChildView(instance.view);
+      } catch (error) { restoreFailures.push(`view attachment: ${error instanceof Error ? error.message : String(error)}`); }
       --this.syncHolds;
-      this.applyBounds();
+      try { this.applyBounds(); } catch (error) { restoreFailures.push(`applyBounds: ${error instanceof Error ? error.message : String(error)}`); }
+      if (restoreFailures.length > 0 && !failed) throw new Error(`GODOT_CAPTURE_RESTORE_FAILED: ${restoreFailures.join("; ")}`);
+    }
+  }
+
+  /**
+   * Waits for a real frame of the requested size from this exact instance.
+   *
+   * The previous version slept for a fixed 350ms and returned whatever
+   * `capturePage()` produced, which is how an acceptance capture could come back
+   * as 0x0: the only thing the old evidence proved is that `capturePage()`
+   * answered with an empty image. So this does not assume the cause. It reads
+   * both frame sources the compositor offers (the `paint` event's own image and
+   * a bounded `capturePage()` read), records the paintable state of the view
+   * when no frame qualifies, re-checks the instance, the view and the hidden
+   * owner on every attempt, and fails at the deadline with that diagnosis
+   * instead of returning a size. Nothing here shows, focuses or activates a
+   * window, and no frame is ever synthesised.
+   */
+  private async awaitCaptureFrame(instance: LiveInstance, owner: BrowserWindow, width: number, height: number): Promise<{
+    image: NativeImage; contents: WebContents; width: number; height: number; bytes: number; sampledColors: number; attempts: number; waitedMs: number;
+  }> {
+    const view = instance.view, contents = view.webContents, startedAt = Date.now();
+    const deadline = startedAt + this.captureReadyMs;
+    const observations: string[] = [];
+    const observe = (detail: string): void => { if (observations.length < CAPTURE_OBSERVATION_KEEP) observations.push(detail); };
+    let attempts = 0;
+    const assertScope = (): void => {
+      if (this.current !== instance || !instance.alive) throw new Error("GODOT_WORLD_CHANGED");
+      if (view.webContents !== contents || contents.isDestroyed()) throw new Error("GODOT_CAPTURE_VIEW_GONE");
+      // The owner must stay hidden and unfocusable for the whole capture: a
+      // shown or focusable owner is a violated isolation, not a slower frame.
+      if (owner.isDestroyed() || owner.isVisible() || owner.isFocusable()) throw new Error("GODOT_CAPTURE_OWNER_NOT_ISOLATED");
+    };
+    const accept = (image: NativeImage, pixels: Uint8Array): {image: NativeImage; contents: WebContents; width: number; height: number; bytes: number; sampledColors: number; attempts: number; waitedMs: number} => ({
+      image, contents, width, height, bytes: pixels.length, sampledColors: sampledColorCount(pixels), attempts, waitedMs: Date.now() - startedAt,
+    });
+    for (;;) {
+      assertScope();
+      attempts += 1;
+      if (attempts === 1) observe(`view ${view.getBounds().width}x${view.getBounds().height} attached=${String(owner.contentView.children.includes(view))} ${paintableState(contents)}`);
+      contents.invalidate();
+      const read = await readFrame(contents, deadline);
+      assertScope();
+      if (read.image) {
+        const verdict = inspectFrame(read.image, width, height);
+        if (verdict.ok) return accept(read.image, verdict.pixels);
+        observe(`capture ${verdict.detail}`);
+      } else if (read.error) {
+        observe(`capture failed: ${read.error}`);
+      } else if (read.timedOut) {
+        observe("capture read timed out at the deadline");
+      }
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) {
+        throw new Error(`GODOT_CAPTURE_EMPTY_FRAME: no painted ${width}x${height} frame from instance ${instance.instanceId} ` +
+          `after ${attempts} attempts in ${Date.now() - startedAt}ms (${observations.join(", ") || "no image"})`);
+      }
+      const painted = await waitForNextFrame(contents, Math.min(remaining, CAPTURE_FRAME_WAIT_MS), width, height);
+      if (!painted) continue;
+      assertScope();
+      const verdict = inspectFrame(painted, width, height);
+      if (verdict.ok) return accept(painted, verdict.pixels);
+      observe(`paint ${verdict.detail}`);
+      const afterPaint = deadline - Date.now();
+      if (afterPaint <= 0) {
+        throw new Error(`GODOT_CAPTURE_EMPTY_FRAME: no painted ${width}x${height} frame from instance ${instance.instanceId} ` +
+          `after ${attempts} attempts in ${Date.now() - startedAt}ms (${observations.join(", ") || "no image"})`);
+      }
     }
   }
 
