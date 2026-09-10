@@ -11,8 +11,8 @@ clean compiled candidate. These reconstructed prompts are not player originals.
 
 Validation (2026-09-10):
 
-- `node --test tests/player-feedback/P8/preflight.test.mjs`: 10/10 synthetic
-  loopback/helper/journal/usage cases passed; no upstream network or engine.
+- `node --test tests/player-feedback/P8/preflight.test.mjs`: 11/11 synthetic
+  loopback/helper/journal/usage/fixed-exercise cases passed; no upstream network or engine.
 - `node --check tests/player-feedback/P8/client-native.mjs`: passed.
 - Strict TypeScript compilation of the actual Main helper and imported fixed
   gameplay helper: passed, using read-only integration dependencies and D output.
