@@ -9475,7 +9475,19 @@ function registerIpc() {
 }
 
 installNativeAgentAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload), active: (sessionId) => activeTurns.has(sessionId) });
-installP8NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload), active: (sessionId) => activeTurns.has(sessionId) });
+installP8NativeAcceptance({
+  enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(),
+  call: (method, params) => host!.call(method, params),
+  panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload),
+  active: (sessionId) => activeTurns.has(sessionId),
+  godot: {
+    observe: () => godotWorld.request("observe-envelope", {}),
+    action: (op, args) => op === "resume" ? godotWorld.resume().then(() => ({status: "ready"}))
+      : op === "pause" ? godotWorld.pause().then(() => ({status: "paused"}))
+      : op === "snapshot" ? godotWorld.snapshot() : godotWorld.request(op, args),
+    capture: (width, height) => godotWorld.headlessCapture(width, height),
+  },
+});
 installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), toolName: name => { const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name); if (!tool) throw Error("Missing world tool: " + name); return tool.fullName; }, begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId), finish: sessionId => finishTurn(sessionId, "completed", undefined, { createNotification: false }) });
 installHeadlessControl({
   window: () => mainWindow,
