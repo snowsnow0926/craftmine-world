@@ -13,6 +13,9 @@ The panel has exactly three channels: `targetFeedback.describe`,
 selection and finite fields before calling the private authoring service.
 Renderer `sourceBinding` is an immutable source observation, not a host task
 binding. Main projects results without source bodies, paths, or host authority.
+The built-in plugin bundles the private target feedback service and its shared
+source parser into its own resources. Loading cannot rely on checkout-relative
+imports or a file available only in a developer source tree.
 Candidate activity, initialization, restore, and copy operations block reads or
 new submissions; status queries remain available for the original operation.
 
