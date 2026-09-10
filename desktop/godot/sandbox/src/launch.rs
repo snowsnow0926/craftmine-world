@@ -543,7 +543,7 @@ fn start_policy(spec: &LaunchSpec, lpac: bool, registry_read: bool, verify_befor
                 Redirection::LogFile(path) => path.parent().ok_or("Missing diagnostic logs parent")?,
                 Redirection::None => return Err("Native fault diagnosis requires owned logs".into()),
             };
-            crate::loader::trace_fault(process.0, information.dwProcessId, output)?;
+            crate::loader::trace_fault(process.0, information.dwProcessId, output, &spec.cwd, spec.timeout)?;
         }
 
         Ok(RunningProcess {

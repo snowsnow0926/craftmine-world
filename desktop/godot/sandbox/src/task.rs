@@ -207,7 +207,7 @@ fn file_total_bytes(path: &Path, unnamed: u64) -> u64 {
 /// hostile task cannot make the parent walk an unbounded tree, and ignores
 /// entries that vanish mid-walk: the Godot editor creates and deletes files
 /// continuously, and a transient `NotFound` must never fail the task.
-fn directory_bytes(root: &Path, cap: u64) -> Result<u64> {
+pub(crate) fn directory_bytes(root: &Path, cap: u64) -> Result<u64> {
     fn visit(root: &Path, cap: u64, total: &mut u64) {
         use std::os::windows::fs::MetadataExt;
         let entries = match fs::read_dir(root) {

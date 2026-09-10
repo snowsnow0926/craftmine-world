@@ -5,9 +5,11 @@ use windows_sys::Win32::{Foundation::*, Storage::FileSystem::*, System::Diagnost
 
 // This path is used only by the independently pinned diagnostic broker. It
 // never attaches to a discovered process and never changes the child policy.
-pub unsafe fn trace_fault(process: HANDLE, pid: u32, output: &std::path::Path) -> Result<()> {
+pub unsafe fn trace_fault(process: HANDLE, pid: u32, output: &std::path::Path, work: &std::path::Path, timeout:Duration) -> Result<()> {
     use std::collections::BTreeMap;
-    let deadline = Instant::now() + Duration::from_secs(120);
+    let deadline = Instant::now() + timeout.min(Duration::from_secs(120));
+    let resource = crate::task::ResourceBudget::default();
+    let mut next_sample = Instant::now();
     let mut modules = BTreeMap::<u64, String>::new();
     let mut initial_breakpoint = true;
     let mut captures = 0u32;
@@ -16,8 +18,14 @@ pub unsafe fn trace_fault(process: HANDLE, pid: u32, output: &std::path::Path) -
     // their exit event. Only hFile is debugger-owned; do not double-close.
     let mut threads = BTreeMap::<u32, HANDLE>::new();
     while Instant::now() < deadline && count < 8192 {
+        if Instant::now() >= next_sample {
+            next_sample = Instant::now() + resource.sample_interval;
+            let bytes = crate::task::directory_bytes(work, resource.work_bytes)?;
+            let log_bytes = std::fs::metadata(output.join("task.log")).map(|m|m.len()).unwrap_or(0);
+            if bytes > resource.work_bytes || log_bytes > resource.log_bytes { return Err("Diagnostic resource sample exceeded fixed broker budget".into()); }
+        }
         let mut event: DEBUG_EVENT = std::mem::zeroed();
-        if WaitForDebugEventEx(&mut event, 500) == 0 {
+        if WaitForDebugEventEx(&mut event, 50) == 0 {
             let error = std::io::Error::last_os_error();
             if error.raw_os_error() == Some(121) { continue; }
             return Err(error.into());
