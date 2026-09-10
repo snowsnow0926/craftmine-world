@@ -5,6 +5,7 @@ var world: Node
 var commands := []
 var checks := []
 var build_id := "story-build"
+var world_id := "creation-story"
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -17,7 +18,7 @@ func require_ok(condition: bool, message: String) -> void:
 		assert(condition, message)
 
 func request(op: String, args := {}) -> Dictionary:
-	var response: Dictionary = await bridge.handle_request({"op": op, "worldId": "creation-story", "buildId": build_id, "instanceId": "story-instance", "args": args})
+	var response: Dictionary = await bridge.handle_request({"op": op, "worldId": world_id, "buildId": build_id, "instanceId": "story-instance", "args": args})
 	commands.append({"op": op, "args": args, "response": response})
 	require_ok(not response.has("error"), op + ": " + str(response))
 	return response.get("result", {})
@@ -49,6 +50,7 @@ func _run() -> void:
 	require_ok(not world.player.capture_mouse_on_click, "Headless player must disable mouse capture")
 	var config: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://story-config.json"))
 	build_id = config.get("buildId", "story-build")
+	world_id = config.get("worldId", "creation-story")
 	var before: Dictionary = await request("load", {"snapshot": config.get("restore")})
 	var restored: Dictionary = before.snapshot.state
 	await request("resume")

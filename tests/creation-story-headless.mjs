@@ -25,17 +25,25 @@ const report={kind:'真实引擎造物故事与 Rust 跨重启保存',sourceRoot
 let core;
 const check=(name,value)=>{report.checks.push({name,passed:!!value});assert.ok(value,name);console.log('PASS '+name);};
 try {
-  const environment=await createGodotProbeEnvironment(out,{web:true});report.engineVersion=environment.actualVersion;report.runs=environment.runs;
+  const environment=await createGodotProbeEnvironment(out,{web:true,threads:true});report.engineVersion=environment.actualVersion;report.runs=environment.runs;
+  const presetLiteral=fs.readFileSync(path.join(sourceRoot,'vendor/pi-desktop/crates/craftmine-core/src/godot_host_resources.rs'),'utf8').match(/const EXPORT_PRESET: &str = ("(?:\\.|[^"\\])*");/);
+  const preset=JSON.parse(presetLiteral[1]);assert.ok(preset.includes('script_export_mode=0'));
+  const prepareExport=directory=>{fs.copyFileSync(path.join(sourceRoot,'desktop/godot/web/shell.html'),path.join(directory,'craftmine_host_shell.html'));fs.writeFileSync(path.join(directory,'export_presets.cfg'),preset.replace('custom_template/release=""','custom_template/release='+JSON.stringify(environment.webTemplate.replaceAll('\\','/'))));};
+  const exportProject=async(label,directory,destination)=>{
+    const fixtures=new Map(['story.gd','story-config.json'].filter(name=>fs.existsSync(path.join(directory,name))).map(name=>[name,fs.readFileSync(path.join(directory,name))]));
+    try{for(const name of fixtures.keys())fs.rmSync(path.join(directory,name));await environment.run(label,['--path',directory,'--export-release','Web',path.join(destination,'index.html')],{timeout:120000});fs.copyFileSync(path.join(sourceRoot,'desktop/godot/web/bridge.js'),path.join(destination,'bridge.js'));}
+    finally{for(const [name,bytes]of fixtures)fs.writeFileSync(path.join(directory,name),bytes);}
+  };
   materializeBase({baseId:'creation-sandbox',worldId:'creation-story',out:project});
   fs.copyFileSync(path.join(root,'tests/fixtures/creation-story.gd'),path.join(project,'story.gd'));
   const source={worldId:'creation-story',buildId:'story-build',instanceId:'story-instance',revision:1,manifestHash:'a'.repeat(64),files:{}};
   for(const name of ['world/creation.json','world/creation-operations.json'])if(fs.existsSync(path.join(project,name))){const text=fs.readFileSync(path.join(project,name),'utf8');source.files[name]={text,sha256:sha(text)};}
   let observation;
-  const stage=async(name,restore,buildId='story-build')=>{
-    fs.writeFileSync(path.join(project,'story-config.json'),JSON.stringify({stage:name,restore,buildId}));
+  const stage=async(name,restore,buildId='story-build',worldId='creation-story',projectRoot=project)=>{
+    fs.writeFileSync(path.join(projectRoot,'story-config.json'),JSON.stringify({stage:name,restore,buildId,worldId}));
     const label=String(report.stages.length).padStart(2,'0')+'-'+name;
-    await environment.run(label+'-import',['--path',project,'--editor','--import']);
-    const stdout=await environment.run(label,['--path',project,'--script','res://story.gd'],{timeout:60000});
+    await environment.run(label+'-import',['--path',projectRoot,'--editor','--import']);
+    const stdout=await environment.run(label,['--path',projectRoot,'--script','res://story.gd'],{timeout:60000});
     const lines=stdout.split(/\r?\n/).filter(line=>line.startsWith('CRAFTMINE_CREATION_STORY='));assert.equal(lines.length,1);
     const result=JSON.parse(lines[0].slice('CRAFTMINE_CREATION_STORY='.length));report.stages.push(result);observation=result.observation;
     check(name+'：真实 headless 进程完成',result.headless);return result;
@@ -54,13 +62,16 @@ try {
   await stage('tree');
   apply({action:'modify',targetId:'story-tree',changes:{scale:[1,2,1]}});
   await stage('enlarged');
+  apply({action:'duplicate',targetId:'story-tree',count:1,offset:[8,0,0]});
   apply({action:'place',id:'story-chest',kind:'chest',position:[2,0,4],parameters:{rewardId:'story-token',rewardCount:2}});
   apply({action:'place',id:'story-door',kind:'door',position:[-4,0,2]});
   apply({action:'place',id:'marker-a',kind:'marker',position:[-2,0,4],parameters:{label:'A'}});
   apply({action:'place',id:'marker-b',kind:'marker',position:[-2,0,6],parameters:{label:'B'}});
   apply({action:'sequence-door',ruleId:'story-rule',doorId:'story-door',sequence:['marker-a','marker-b']});
   let played=await stage('play');
-  check('造物源码产生实际树、宝箱、门和标记',played.observation.creation.entities.length===5);
+  check('造物源码产生实际树、宝箱、门和标记',played.observation.creation.entities.length===6);
+  const trees=played.observation.creation.entities.filter(entity=>entity.kind==='tree');
+  check('有限复制在真实场景保留两个独立稳定身份与大小',trees.length===2&&trees[0].id!==trees[1].id&&trees.every(tree=>tree.scale[1]===2));
   const suppliedBinary=process.env.CRAFTMINE_CORE_BINARY;
   assert.ok(suppliedBinary&&path.isAbsolute(suppliedBinary),'Set CRAFTMINE_CORE_BINARY to a built actual Rust core executable');
   const binary=path.join(out,'craftmine-core.exe');fs.copyFileSync(suppliedBinary,binary);
@@ -69,11 +80,11 @@ try {
   core=new CoreClient(binary,data);await core.start();
   await core.call('world.create',{id:'creation-story',title:'造物验收',world:{build:{id:'story-build',scene:{format:'craftmine.godot-scene/1',baseId:'creation-sandbox'},godot:{}},snapshot:played.restored,extensions:[]}});
   const exportRoot=path.join(out,'export');fs.mkdirSync(exportRoot);
-  fs.writeFileSync(path.join(project,'export_presets.cfg'),`[preset.0]\nname="Web"\nplatform="Web"\nrunnable=true\nexport_filter="all_resources"\ninclude_filter="*.json"\nexclude_filter="story.gd,story-config.json"\n[preset.0.options]\ncustom_template/release=${JSON.stringify(environment.webTemplate.replaceAll('\\','/'))}\nvariant/thread_support=false\nhtml/focus_canvas_on_start=false\n`);
-  await environment.run('story-web-export',['--path',project,'--export-release','Web',path.join(exportRoot,'index.html')],{timeout:120000});
+  prepareExport(project);
+  await exportProject('story-web-export',project,exportRoot);
   const context={projectId:'story-fixture',sessionId:'story-fixture',turnId:'story-turn'};
   await core.call('workspace.open',{context,selectedWorld:'creation-story'});
-  const authoredFiles=fs.readdirSync(project,{recursive:true}).filter(name=>!name.split(/[\\/]/).some(part=>part.startsWith('.'))&&!['story.gd','story-config.json','managed-base.json','export_presets.cfg'].includes(name)&&!name.endsWith('.uid')&&fs.lstatSync(path.join(project,name)).isFile()).map(name=>({path:name.replaceAll('\\','/'),text:fs.readFileSync(path.join(project,name),'utf8')}));
+  const authoredFiles=fs.readdirSync(project,{recursive:true}).filter(name=>!name.split(/[\\/]/).some(part=>part.startsWith('.'))&&!['story.gd','story-config.json','managed-base.json','export_presets.cfg','craftmine_host_shell.html'].includes(name)&&!name.endsWith('.uid')&&fs.lstatSync(path.join(project,name)).isFile()).map(name=>({path:name.replaceAll('\\','/'),text:fs.readFileSync(path.join(project,name),'utf8')}));
   let indexed=await core.call('godotProject.create',{context,worldId:'creation-story',toolCallId:'story-source',baseBuild:'story-build',baseId:'creation-sandbox',files:authoredFiles.slice(0,16)});
   for(let offset=16;offset<authoredFiles.length;offset+=16)indexed=await core.call('godotProject.patch',{context,worldId:'creation-story',toolCallId:'story-source-'+offset,revision:indexed.revision,manifestHash:indexed.manifestHash,operations:authoredFiles.slice(offset,offset+16).map(file=>({op:'put',...file,expectedHash:null}))});
   await core.call('godotExecutor.register',{executorId:'authored-story-fixture',attestation:{format:'craftmine.godot-executor/1',isolation:'authored-test-fixture',evidenceHash:sha('real-godot-story-logs'),engineVersion:'4.7.2-stable',capabilities:{import:true,build:true,check:true}}});
@@ -126,7 +137,7 @@ try {
   report.migration=migration;
   const continued=await stage('continued',migration.snapshot);
   assert.deepEqual(continued.restored,migration.snapshot);check('真实候选恢复新增对象和规则，同时保留旧进度',true);
-  await environment.run('continued-web-export',['--path',project,'--export-release','Web',path.join(exportRoot,'index.html')],{timeout:120000});
+  await exportProject('continued-web-export',project,exportRoot);
   let nextIndex=await core.call('godotProject.index',{context:nextContext,worldId:'creation-story',offset:0,limit:32});
   const oldFiles=[...nextIndex.files];let nextOffset=nextIndex.nextOffset;
   while(nextOffset!=null){const page=await core.call('godotProject.index',{context:nextContext,worldId:'creation-story',revision:nextIndex.revision,manifestHash:nextIndex.manifestHash,offset:nextOffset,limit:32});oldFiles.push(...page.files);nextOffset=page.nextOffset;}
@@ -149,8 +160,42 @@ try {
   const copied=await core.call('world.read',{id:'creation-copy'});
   const expectedCopy=structuredClone(migration.snapshot);expectedCopy.worldId='creation-copy';expectedCopy.body.worldId='creation-copy';
   assert.deepEqual(copied.world.snapshot,expectedCopy);check('第二世界复制仅替换世界身份并保留完整进度',true);
+  const copyContext={projectId:'copy-fixture',sessionId:'copy-fixture',turnId:'copy-read'};
+  await core.call('content.migrate.apply',{worldId:'creation-copy'});
+  await core.call('godotWorld.prepareRebuildSource',{worldId:'creation-copy'});
+  await core.call('godotWorld.prepareCopyRuntime',{worldId:'creation-copy'});
+  let copyWorkspace=await core.call('workspace.open',{context:copyContext,selectedWorld:'creation-copy'});
+  const copyIndex=await core.call('godotProject.index',{context:copyContext,worldId:'creation-copy',offset:0,limit:32});
+  let ledgerText='',ledgerOffset=0;do{const read=await core.call('godotProject.read',{context:copyContext,worldId:'creation-copy',revision:copyIndex.revision,manifestHash:copyIndex.manifestHash,path:'world/creation-operations.json',offset:ledgerOffset,limit:16000});ledgerText+=read.text;ledgerOffset=read.nextOffset;}while(ledgerOffset!=null);
+  const copiedOperations=JSON.parse(ledgerText).operations;
+  check('复制源码操作账本重绑定新世界且保留历史身份',copiedOperations.length>0&&copiedOperations.every(entry=>entry.receipt.worldId==='creation-copy'));
+  const copyProject=path.join(out,'copy-project'),copyExport=path.join(out,'copy-export');fs.mkdirSync(copyProject);fs.mkdirSync(copyExport);
+  const copyFiles=[...copyIndex.files];let copyOffset=copyIndex.nextOffset;
+  while(copyOffset!=null){const next=await core.call('godotProject.index',{context:copyContext,worldId:'creation-copy',revision:copyIndex.revision,manifestHash:copyIndex.manifestHash,offset:copyOffset,limit:32});copyFiles.push(...next.files);copyOffset=next.nextOffset;}
+  for(const file of copyFiles){let text='',offset=0;do{const read=await core.call('godotProject.read',{context:copyContext,worldId:'creation-copy',revision:copyIndex.revision,manifestHash:copyIndex.manifestHash,path:file.path,offset,limit:16000});text+=read.text;offset=read.nextOffset;}while(offset!=null);assert.equal(sha(text),file.sha256);fs.mkdirSync(path.dirname(path.join(copyProject,file.path)),{recursive:true});fs.writeFileSync(path.join(copyProject,file.path),text);}
+  fs.copyFileSync(path.join(root,'tests/fixtures/creation-story.gd'),path.join(copyProject,'story.gd'));
+  const copyNative=await stage('continued',expectedCopy,nextPrepared.buildId,'creation-copy',copyProject);assert.deepEqual(copyNative.restored,expectedCopy);
+  prepareExport(copyProject);await exportProject('copied-web-export',copyProject,copyExport);
+  const copyJob=await core.call('godotBuild.start',{context:copyContext,worldId:'creation-copy',toolCallId:'copied-check',revision:copyIndex.revision,manifestHash:copyIndex.manifestHash,mode:'check'});
+  const copyClaim=await core.call('godotJob.claim',{jobId:copyJob.jobId,token:'copied-claim',executorId:'authored-story-fixture'});
+  fs.cpSync(copyExport,path.join(copyClaim.artifactsRoot,'web'),{recursive:true});
+  const copyArtifacts=fs.readdirSync(copyClaim.artifactsRoot,{recursive:true}).filter(name=>fs.lstatSync(path.join(copyClaim.artifactsRoot,name)).isFile()).map(name=>{const bytes=fs.readFileSync(path.join(copyClaim.artifactsRoot,name));return {path:name.replaceAll('\\','/'),bytes:bytes.length,sha256:sha(bytes)};});
+  const copyFinished=await core.call('godotJob.finish',{jobId:copyJob.jobId,token:'copied-claim',output:{format:'craftmine.godot-job-result/1',inputHash:copyClaim.inputHash,passed:true,import:{passed:true,log:'Actual copied source import and Web export logs'},compile:{passed:true,errors:[],warnings:[]},check:{passed:true,assertions:[{id:'copy-native-load',passed:true}]},artifacts:copyArtifacts,engine:{version:'4.7.2-stable',isolation:'authored-test-fixture',evidenceHash:copyClaim.evidenceHash}}});
+  const copyPrepared=await core.call('godotApplication.prepare',{id:'copy-apply',token:'copy-apply-token',worldId:'creation-copy',candidateId:copyFinished.candidateId,revision:copied.revision,snapshot:expectedCopy});
+  const adoptedCopy=await stage('continued',expectedCopy,copyPrepared.buildId,'creation-copy',copyProject);
+  await core.call('godotApplication.commit',{id:'copy-apply',token:'copy-apply-token',evidence:{format:'craftmine.godot-application/2',inputHash:copyPrepared.inputHash,launch:{passed:true,buildId:copyPrepared.buildId,instanceId:'story-instance',stateHash:sha(JSON.stringify(adoptedCopy.restored))},player:null,snapshot:adoptedCopy.restored}});
+  check('复制世界独立构建与正式采用后真实重开成功',(await core.call('godotRuntime.describe',{worldId:'creation-copy'})).copiedFromWorldId==null);
+  copyContext.turnId='copy-edit';copyWorkspace=await core.call('workspace.open',{context:copyContext,selectedWorld:'creation-copy'});
+  const editableCopy=await core.call('godotProject.index',{context:copyContext,worldId:'creation-copy',offset:0,limit:32});
+  const copyBound={...bound,worldId:'creation-copy',buildId:copyPrepared.buildId,sourceRevision:editableCopy.revision,manifestHash:editableCopy.manifestHash,snapshotId:'copy-native-capture',sampledAt:adoptedCopy.sampledAt,playerPosition:adoptedCopy.observation.player.position,target:adoptedCopy.observation.creation.target};
+  const editCopy=createCreationSourceService({core,capture:async()=>copyBound,assertActive:()=>{},sample:async()=>{const sample=await stage('copy-sample',expectedCopy,copyPrepared.buildId,'creation-copy',copyProject);return {worldId:copyBound.worldId,buildId:copyBound.buildId,instanceId:copyBound.instanceId,sampledAt:sample.sampledAt,player:sample.observation.player};}});
+  const copyEdit=await editCopy({context:copyContext,workspace:copyWorkspace,request:{operationId:'copy-only-object',action:'place',id:'copy-only-object',kind:'marker',position:[12,0,12],expected:{worldId:copyBound.worldId,buildId:copyBound.buildId,instanceId:copyBound.instanceId,revision:editableCopy.revision,manifestHash:editableCopy.manifestHash,targetSnapshotId:copyBound.snapshotId}}});
+  report.copyEdit=copyEdit;check('独立采用的复制世界可通过生产源码服务继续创造',copyEdit.receipt.createdIds.includes('copy-only-object'));
+  const originalAfterCopyEdit=await core.call('godotProject.index',{context:nextContext,worldId:'creation-story',offset:0,limit:32});
+  check('复制世界后续编辑未修改原世界源码',originalAfterCopyEdit.manifestHash===nextIndex.manifestHash);
   assert.deepEqual((await core.call('world.read',{id:'creation-story'})).world.snapshot,migration.snapshot);check('创建副本后原世界未改变',true);
   for(const worldId of ['creation-story','creation-copy'])await core.call('content.migrate.apply',{worldId});
+  const copiedContentBeforeBackup=await core.call('content.status',{worldId:'creation-copy'});
   const archivePath=path.join(out,'story-backup.craftmine');
   await core.call('backup.exportPortable',{operationId:'story-backup',archivePath},120000);
   const verified=await core.call('backup.verifyPortable',{archivePath},120000);check('真实完整备份通过内容校验',verified.valid);
@@ -163,6 +208,7 @@ try {
   await core.stop();core=new CoreClient(binary,data);await core.start();
   assert.deepEqual((await core.call('world.read',{id:'creation-story'})).world.snapshot,migration.snapshot);
   assert.deepEqual((await core.call('world.read',{id:'creation-copy'})).world.snapshot,expectedCopy);
+  assert.equal((await core.call('content.status',{worldId:'creation-copy'})).headOid,copiedContentBeforeBackup.headOid);
   check('恢复后重启服务，两个世界及进度仍完整',true);
 } catch(error){report.errors.push(String(error.stack));console.error(error.stack);process.exitCode=1;}
 finally{await core?.stop();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');console.log('Evidence: '+out);}
