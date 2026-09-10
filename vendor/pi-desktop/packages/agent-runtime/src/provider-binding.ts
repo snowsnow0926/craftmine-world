@@ -191,6 +191,14 @@ export function buildProviderModel(
     binding.api,
     provider.baseUrl ?? catalog?.baseUrl ?? binding.defaultBaseUrl,
   );
+  // Explicit off is a wire command for DeepSeek V4, whose remote default is
+  // thinking enabled. An off-only user binding must not erase this transport
+  // capability before pi-ai has emitted thinking.type=disabled.
+  let deepseekEndpoint = false;
+  try { deepseekEndpoint = new URL(baseUrl).hostname.toLowerCase() === "api.deepseek.com"; } catch { /* Existing URL validation owns malformed endpoints. */ }
+  const deepseekThinking = binding.api === "openai-completions"
+    && (provider.vendorKey?.trim().toLowerCase() === "deepseek" || deepseekEndpoint)
+    && /^deepseek-v4(?:\.\d+)?-(?:flash|pro)(?:-[a-z0-9-]+)?$/i.test(provider.modelId);
   const zhipuCompat = zhipuRequestCompat({
     vendorKey: provider.vendorKey,
     baseUrl,
@@ -214,11 +222,13 @@ export function buildProviderModel(
       ? {
           ...(catalogModel.compat ?? {}),
           ...(zhipuCompat ?? {}),
+          ...(deepseekThinking ? { thinkingFormat: "deepseek", requiresReasoningContentOnAssistantMessages: true } : {}),
           supportsDeveloperRole: catalogModel.compat?.supportsDeveloperRole === true,
         }
       : catalogModel.compat;
   return {
     ...catalogModel,
+    ...(deepseekThinking ? { reasoning: true, thinkingLevelMap: { ...catalogModel.thinkingLevelMap, off: undefined } } : {}),
     id: provider.modelId,
     api: binding.api,
     provider: provider.id,

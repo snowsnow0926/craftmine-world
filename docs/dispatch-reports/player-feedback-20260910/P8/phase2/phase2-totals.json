@@ -1,0 +1,26 @@
+{
+  "newAdmissions": 34,
+  "http200": 34,
+  "oldAdmissions": 16,
+  "cumulativeAdmissions": 50,
+  "totals": {
+    "prompt": 939310,
+    "completion": 153896,
+    "reasoning": 94780,
+    "cacheRead": 426496,
+    "total": 1093206
+  },
+  "fees": "unknown: no verified billing receipt; no guessed fee",
+  "historicalJournalUnchanged": true,
+  "launches": [
+    {
+      "startedAt": "2026-09-10T09:10:00.224Z",
+      "exit": {
+        "code": 4294967295,
+        "signal": null,
+        "error": null
+      }
+    }
+  ],
+  "finishedAt": "2026-09-10T09:21:15.343Z"
+}

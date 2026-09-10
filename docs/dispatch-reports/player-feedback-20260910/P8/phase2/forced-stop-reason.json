@@ -1,0 +1,8 @@
+{
+  "reason": "Parent requested stop of demonstrated no-patch/length loop; runner lacks external normal abort control",
+  "childPid": 251160,
+  "parentPid": 13044,
+  "path": "D:\\cm-fb4-20260910\\desktop\\build\\releases\\b6f15172591d-8841c07a-5025-4ad2-acdc-d0abe5bc51bc\\output\\win-unpacked\\Craftmine World.exe",
+  "at": "2026-09-10T09:21:14.9464331Z",
+  "strictShutdownExpected": "failure, not waived"
+}

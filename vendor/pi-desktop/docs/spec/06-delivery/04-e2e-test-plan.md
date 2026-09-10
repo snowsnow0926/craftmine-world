@@ -9212,3 +9212,17 @@ pre-shutdown phases to preserve their real outcomes. Missing termination rejects
 other owners still start. Actual Electron checks must finish with exit 0, three
 checks, zero BrowserWindows and zero Pointer Lock requests. Keep failed attempts.
 This is isolated ownership evidence, not packaged-client or IOCP-root-cause proof.
+
+
+### P8-THINKING-SUMMARY-20260910
+
+Run node tests/player-feedback/P8/thinking-summary.mjs with installed read-only
+agent-runtime dependencies (CRAFTMINE_P8_TEST_DEPS). Actual pinned SDK must emit
+thinking.type=disabled for an off-only DeepSeek V4 configuration and retain exact
+model/endpoint; high remains enabled and unrelated vendor/model/protocol remain
+unchanged. The synthetic fetch must never contact the provider. Actual runtime
+checkpoint methods and PI compaction must reject length/tool/error/abort results,
+leave the original preparation intact and only construct a complete checkpoint.
+Verify concise handoff instructions reach the summary request. Run provider,
+reasoning and compaction regressions plus runtime strict typecheck. Keep the real
+failed-run evidence; repeat native creation only on the next verified candidate.
