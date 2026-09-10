@@ -55,7 +55,7 @@ the exact call receipt or surfaced; do not silently drop it. P5 consumes only th
 host DTO, not another UI accumulator. No model network request is required for
 validation of this contract.
 
-`createTaskMetricsRecorder({call})` in
+`createTaskMetricsRecorder({call,isCurrent})` in
 `apps/desktop/electron/main/task-metrics-recorder.ts` exposes `observe(envelope)`,
 `drain({sessionId,turnId})` and `release(identity)`. Main calls observe before
 delegation filters; every completion, error and cancellation path drains before
@@ -65,6 +65,21 @@ refusal is followed by private `session.metricsUnavailable {sessionId,turnId}`;
 this stores a durable gap and drain returns `{complete:false,errors}`. If even
 the gap write fails, drain rejects. Main must surface this persistence failure,
 not silently present complete statistics or substitute another active turn.
+The required `isCurrent(identity)` compares the exact envelope session/turn with
+Main's registered active ownership. It only admits or ignores; it never replaces
+an identity. After settlement Main releases the queue and removes that ownership
+without an intervening asynchronous operation. Old late events cannot recreate
+released queues, even after hundreds of old sessions. Current root-owned child
+model events remain admitted regardless of `parentToolCallId`. Main also records
+admission failures only for that same current identity, avoiding an old-turn set
+leak. No unbounded tombstone history is needed.
+
+Processing continues after a failed write and failed durable-gap attempt: the
+queue's processing tail remains fulfilled, while a separate per-turn failure
+latch makes every later drain reject. Healthy events appended during that failure
+are still persisted. A later successful write cannot erase the failed gap or
+make accounting appear complete. Drain follows the newest appended queue tail
+before reporting the latched failure.
 Main can still close that task with private `session.endTurn` and the optional
 strict boolean `metricsUnavailable:true`. The original terminal transaction then
 also inserts the gap. Replaying a closed turn retains the same gap but cannot

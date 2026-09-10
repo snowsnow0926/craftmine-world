@@ -9177,3 +9177,8 @@ Run node tests/player-feedback/P8/preflight.test.mjs with read-only esbuild depe
 ### P8 actual compiled-client and durable request-budget driver
 
 After explicit clean compiled candidate approval, run tests/player-feedback/P8/client-native.mjs using matching source/runtime (or strict package identity). Keep the shared 16-admission journal across profiles and restarts. Verify real fixed prompts, provider-request versus response model identities, durable usage/TPS and actual P5 DOM; then actual checked candidate preview/close/apply, source hashes, full progress and metrics restart. Fixed exercise transport and captures are evidence for separate behavioral review, never automatic proof of a hammer or dog. Require strict owned teardown and retain final failures. No real-model execution is claimed by the offline ten-case preflight.
+
+
+### P4 recorder failure tail and released owner regressions
+
+Run tests/player-feedback/task-metrics.mjs. A model-call double failure followed by a failed gap write must not skip later healthy calls; drain must await appended healthy events then still reject the original gap failure. Release 140 exact owners, remove their Main ownership, replay all stale envelopes and confirm none creates a queue; a current root-owned delegated event must still persist once. Main isCurrent admission compares identity only and never rebinds it. These are production recorder fixtures, not real-model or native-client evidence.

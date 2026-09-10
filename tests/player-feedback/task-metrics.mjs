@@ -6,7 +6,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
-const runtime = path.join(root, 'vendor/pi-desktop/packages/agent-runtime');
+const runtime = process.env.CRAFTMINE_METRICS_TEST_RUNTIME ?? path.join(root, 'vendor/pi-desktop/packages/agent-runtime');
 const require = createRequire(path.join(runtime, 'package.json'));
 const { build } = require('esbuild');
 await mkdir(path.join(root, 'test-results'), { recursive: true });
@@ -69,7 +69,7 @@ test('setup failure and aborted placeholder usage remain unknown, without charac
 test('queue drains exact start/end, clones facts and includes delegated envelopes', async () => {
   const writes = []; let release;
   const wait = new Promise(resolve => { release = resolve; });
-  const recorder = createTaskMetricsRecorder({ call: async (method, params) => { writes.push({ method, params }); await wait; return { ok: true }; } });
+  const recorder = createTaskMetricsRecorder({ isCurrent: () => true, call: async (method, params) => { writes.push({ method, params }); await wait; return { ok: true }; } });
   const input = envelope(structuredClone(call)); recorder.observe(input); input.event.call.modelId = 'changed-after-event';
   const settled = recorder.drain(identity);
   recorder.observe({ ...envelope(done), parentToolCallId: 'task-child' });
@@ -79,7 +79,7 @@ test('queue drains exact start/end, clones facts and includes delegated envelope
 
 test('lost reply retries same immutable payload and never changes owner to active session', async () => {
   const writes = []; let first = true;
-  const recorder = createTaskMetricsRecorder({ call: async (method, params) => { writes.push({ method, params }); if (first) { first = false; throw Error('lost reply'); } return { ok: true }; } });
+  const recorder = createTaskMetricsRecorder({ isCurrent: () => true, call: async (method, params) => { writes.push({ method, params }); if (first) { first = false; throw Error('lost reply'); } return { ok: true }; } });
   recorder.observe(envelope(done)); recorder.observe(envelope({ ...done, callId: 'call-b' }, { sessionId: 'session-b', turnId: 'turn-b' }));
   assert.equal((await recorder.drain(identity)).complete, true);
   await recorder.drain({ sessionId: 'session-b', turnId: 'turn-b' });
@@ -90,20 +90,61 @@ test('lost reply retries same immutable payload and never changes owner to activ
 test('permanent refusal or invalid receipt persists explicit gap; gap failure rejects drain', async () => {
   for (const invalid of [false, true]) {
     const writes = [];
-    const recorder = createTaskMetricsRecorder({ call: async (method, params) => { writes.push({ method, params }); if (method === 'session.metricsUnavailable') return { ok: true }; if (invalid) return { ok: false }; throw Error('disk write failed'); } });
+    const recorder = createTaskMetricsRecorder({ isCurrent: () => true, call: async (method, params) => { writes.push({ method, params }); if (method === 'session.metricsUnavailable') return { ok: true }; if (invalid) return { ok: false }; throw Error('disk write failed'); } });
     recorder.observe(envelope(done)); assert.equal((await recorder.drain(identity)).complete, false);
     assert.deepEqual(writes.map(w => w.method), ['session.observeModelCall', 'session.observeModelCall', 'session.metricsUnavailable']);
     assert.deepEqual(writes[2].params, identity);
   }
-  const failed = createTaskMetricsRecorder({ call: async () => { throw Error('storage unavailable'); } });
+  const failed = createTaskMetricsRecorder({ isCurrent: () => true, call: async () => { throw Error('storage unavailable'); } });
   failed.observe(envelope(done)); await assert.rejects(failed.drain(identity), /storage unavailable/);
 });
 
 test('bounded observation capacity records durable gap once instead of silently dropping facts', async () => {
   let gaps = 0, writes = 0;
-  const recorder = createTaskMetricsRecorder({ call: async method => { if (method === 'session.metricsUnavailable') gaps++; else writes++; return { ok: true }; } });
+  const recorder = createTaskMetricsRecorder({ isCurrent: () => true, call: async method => { if (method === 'session.metricsUnavailable') gaps++; else writes++; return { ok: true }; } });
   for (let i = 0; i < 8200; i++) recorder.observe(envelope({ ...call, callId: `call-${i}` }));
   const result = await recorder.drain(identity); assert.equal(result.complete, false); assert.equal(writes, 8192); assert.equal(gaps, 1);
+});
+
+test('gap write rejection never poisons later healthy calls and drain preserves the failed gap latch', async () => {
+  const writes = []; let blocked = true;
+  const recorder = createTaskMetricsRecorder({ isCurrent: () => true, call: async (method, params) => {
+    writes.push({ method, params }); if (blocked) throw Error('fixed unavailable storage'); return { ok: true };
+  } });
+  recorder.observe(envelope(done)); await assert.rejects(recorder.drain(identity), /fixed unavailable storage/);
+  blocked = false; recorder.observe(envelope({ ...done, callId: 'healthy-after-gap' }));
+  await assert.rejects(recorder.drain(identity), /fixed unavailable storage/);
+  assert.equal(writes.length, 4); assert.equal(writes.at(-1).params.call.callId, 'healthy-after-gap');
+  assert.equal(writes.at(-1).method, 'session.observeModelCall');
+});
+
+test('drain waits for healthy events appended while the failed gap write is in flight', async () => {
+  let release; const gate = new Promise(resolve => { release = resolve; }); const writes = [];
+  const recorder = createTaskMetricsRecorder({ isCurrent: () => true, call: async (method, params) => {
+    writes.push({ method, params }); if (method === 'session.metricsUnavailable') { await gate; throw Error('fixed failed gap'); }
+    if (params.call.callId === 'call-a') throw Error('fixed failed call'); return { ok: true };
+  } });
+  recorder.observe(envelope(done)); const drained = recorder.drain(identity); const rejection = assert.rejects(drained, /fixed failed gap/);
+  await new Promise(resolve => setImmediate(resolve));
+  recorder.observe(envelope({ ...done, callId: 'healthy-during-drain' })); release(); await rejection;
+  assert.equal(writes.at(-1).params.call.callId, 'healthy-during-drain');
+});
+
+test('late released owners never recreate queues; current delegated calls remain admitted by root identity', async () => {
+  const active = new Map(); const writes = [];
+  const recorder = createTaskMetricsRecorder({ isCurrent: owner => active.get(owner.sessionId) === owner.turnId, call: async (method, params) => { writes.push({ method, params }); return { ok: true }; } });
+  const old = [];
+  for (let i = 0; i < 140; i++) {
+    const owner = { sessionId: `session-${i}`, turnId: `turn-${i}` }; old.push(owner); active.set(owner.sessionId, owner.turnId);
+    recorder.observe(envelope(done, owner)); await recorder.drain(owner); recorder.release(owner); active.delete(owner.sessionId);
+  }
+  for (const owner of old) recorder.observe(envelope(done, owner));
+  active.set(identity.sessionId, 'current-turn');
+  recorder.observe(envelope(done, { ...identity, turnId: 'old-turn' }));
+  const owner = { ...identity, turnId: 'current-turn' };
+  recorder.observe({ ...envelope({ ...done, callId: 'delegated', source: 'subagent' }, owner), parentToolCallId: 'child-tool' });
+  assert.equal((await recorder.drain(owner)).complete, true);
+  assert.equal(writes.length, 141); assert.equal(writes.at(-1).params.call.source, 'subagent'); assert.equal(writes.at(-1).params.turnId, 'current-turn');
 });
 
 await writeFile(path.join(out, 'scope.json'), JSON.stringify({ scope: 'Production stream/recorder with deterministic provider event fixtures; no model, Electron or UI execution.', output: out }, null, 2));
