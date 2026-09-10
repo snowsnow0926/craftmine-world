@@ -1,0 +1,13 @@
+   Compiling host-core v0.14.3 (D:\cm-fb-p4-20260910\vendor\pi-desktop\crates\host-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.15s
+     Running unittests src\main.rs (test-results/cargo-target\debug\deps\pi_desktop_host_core-f6291f4316292ee4.exe)
+
+running 5 tests
+test task_metrics::tests::task_metrics_end_gap_and_terminal_status_share_failure_atomicity ... ok
+test task_metrics::tests::task_metrics_models_overlap_wall_time_and_restart ... ok
+test task_metrics::tests::task_metrics_recovery_without_pending_calls_cannot_invent_end_or_completeness ... ok
+test task_metrics::tests::task_metrics_retries_replays_partial_and_owner_isolation ... ok
+test task_metrics::tests::task_metrics_unknown_crash_gap_and_validation ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 301 filtered out; finished in 0.07s
+

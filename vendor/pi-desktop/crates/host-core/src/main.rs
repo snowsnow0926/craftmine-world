@@ -19,6 +19,7 @@ mod secrets;
 mod sessions;
 mod state;
 mod tool_budget;
+mod task_metrics;
 mod tools;
 mod transcripts;
 mod user_skills;

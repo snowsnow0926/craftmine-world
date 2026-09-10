@@ -1008,7 +1008,9 @@ export class GodotWorldViewHost {
       this.detachView(instance.view);
       return;
     }
-    const rect = this.captureBounds ?? gameBounds(this.bounds, this.candidateVisible ? WORLD_CHROME_HEIGHT + 46 : WORLD_CHROME_HEIGHT);
+    // The candidate header is 46px and its persistent application explanation
+    // reserves 100px in world.html. A sibling native view must not cover it.
+    const rect = this.captureBounds ?? gameBounds(this.bounds, this.candidateVisible ? WORLD_CHROME_HEIGHT + 146 : WORLD_CHROME_HEIGHT);
     if (rect.width < 1 || rect.height < 1) { this.detachView(instance.view); return; }
     const children = window.contentView.children;
     if (!children.includes(instance.view)) window.contentView.addChildView(instance.view);

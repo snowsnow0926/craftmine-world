@@ -34,17 +34,20 @@ import { createCraftmineIssueService } from "./craftmine-issue-service";
 import { createCraftmineIssueContext } from "./craftmine-issue-context";
 import { createCraftmineTargetFeedbackPanel } from "./craftmine-target-feedback-panel";
 import { createCraftmineTelemetry } from "./craftmine-telemetry";
+import { createTaskMetricsRecorder } from "./task-metrics-recorder";
 import { readCraftmineBuildIdentity } from "./craftmine-build-identity";
 import { CraftmineVerifier } from "./craftmine-verifier";
 import { GodotBuildVerifier } from "./godot-build-verifier";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
 import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
+import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
 import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure } from "./craftmine-headless";
 import {
   existsSync,
   mkdirSync,
+  readFileSync,
   statSync,
   writeFileSync,
 } from "node:fs";
@@ -928,6 +931,11 @@ const pluginViews = new PluginViewHost(({ pluginId, url }) => {
     data: { api: "view.egress", ok: false, url, ts: Date.now() },
   });
 });
+pluginViews.onWorldFullscreenShortcut = action => {
+  const owner = mainWindow;
+  if (!owner || owner.isDestroyed()) return;
+  owner.setFullScreen(action === "exit" ? false : !owner.isFullScreen());
+};
 const godotSelection = async () => {
   if (!plugins.getLoaded("craftmine.world")) return null;
   const selected = await plugins.requestCraftmineHost("selection.read", {}) as {worldId: string | null};
@@ -944,6 +952,11 @@ const godotWorld: GodotWorldViewHost = new GodotWorldViewHost({
   descriptor: godotAdapter.descriptor,
   progress: godotAdapter.progress,
   onState: state => pluginViews.broadcast("godot-world:state", state),
+  onFullscreenShortcut: action => {
+    const owner = mainWindow;
+    if (!owner || owner.isDestroyed()) return;
+    owner.setFullScreen(action === "exit" ? false : !owner.isFullScreen());
+  },
 });
 // Live observation for the model tools (task S6). The sampler reads the formal
 // instance only, and every envelope carries the host's own world/build/instance
@@ -1068,6 +1081,7 @@ const logger = new Logger(
 const godotInitializer = createGodotWorldInitializer({
   worldsRoot: join(dataDir, "godot-worlds"), domain: (method, params) => plugins.requestCraftmineHost(method, params),
   selection: godotSelection, firstLoad: (worldId, candidateId) => godotCandidates.firstLoad(worldId, candidateId),
+  initialLoadBridge: () => readFileSync(join(godotRoot, "shared", "runtime_bridge.gd")),
 });
 const godotRestores = createGodotRestoreRebuildService({
   domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
@@ -2212,6 +2226,9 @@ function executeNativeMenuAction(
     case "toggleFullScreen":
       target.setFullScreen(!target.isFullScreen());
       break;
+    case "exitFullScreen":
+      target.setFullScreen(false);
+      break;
     case "minimize":
       target.minimize();
       break;
@@ -2455,6 +2472,14 @@ async function importLegacyScheduled() {
 
 /** sessionId → open host turn id, for turn bookkeeping across agent events. */
 const activeTurns = new Map<string, string>();
+const taskMetricsAdmissionFailures = new Set<string>();
+const taskMetricsRecorder = createTaskMetricsRecorder({
+  isCurrent: ({sessionId, turnId}) => activeTurns.get(sessionId) === turnId,
+  call: (method, params) => {
+    if (!host) return Promise.reject(Error("TASK_METRICS_HOST_UNAVAILABLE"));
+    return host.call(method, params);
+  },
+});
 /** Plan submission turns end without a task-complete notification. */
 const planSubmissionTurnIds = new Set<string>();
 /** sessionId → host execution id for an approved plan currently dispatched. */
@@ -2640,6 +2665,7 @@ const craftmineDiagnostics = createCraftmineDiagnosticsService({
 const craftmineTelemetry = createCraftmineTelemetry({ observe: craftmineDiagnostics.observe });
 app.once("will-quit", () => craftmineTelemetry.dispose());
 const craftminePanelRequest = createCraftminePanelGateway({
+  authorizeAssetSource: (root, sourcePath) => plugins.authorizeCraftmineAssetSource(root, sourcePath),
   targetFeedback: createCraftmineTargetFeedbackPanel({
     domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
     blocked: () => !!profileRestore || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy,
@@ -5061,6 +5087,18 @@ function wireSidecar(s: AgentSidecar) {
   s.onNotification((method, params) => {
     if (method === "agent.event") {
       const envelope = params as AgentEventEnvelope;
+      // Account by the event's durable owner before transcript/delegate
+      // handling. Late events must never be rebound to a newer active turn.
+      try {
+        taskMetricsRecorder.observe(envelope);
+      } catch {
+        if (envelope.sessionId && envelope.turnId && activeTurns.get(envelope.sessionId) === envelope.turnId) {
+          taskMetricsAdmissionFailures.add(JSON.stringify([envelope.sessionId, envelope.turnId]));
+        }
+        logger.app("persistence", "warn", "Task metrics observation unavailable", {
+          sessionId: envelope.sessionId,
+        });
+      }
       craftmineTelemetry.observeAgentEvent(envelope);
       const event = envelope.event;
       if (event.type === "tool_start") {
@@ -5377,8 +5415,12 @@ function finishTurn(
   sessionId: string,
   status: "completed" | "aborted" | "error",
   errorCode?: string,
-  options: { createNotification?: boolean; recoverInflight?: boolean } = {},
+  options: { createNotification?: boolean; recoverInflight?: boolean; expectedTurnId?: string; beforeRelease?: () => Promise<void> } = {},
 ): Promise<void> {
+  // Sidecar events carry their original turn even when they arrive after a new
+  // prompt. Never let an old event join or close that newer finalization.
+  if (options.expectedTurnId !== undefined &&
+      activeTurns.get(sessionId) !== options.expectedTurnId) return Promise.resolve();
   const existing = turnFinalizations.get(sessionId);
   if (existing) return existing;
 
@@ -5403,6 +5445,16 @@ function finishTurn(
           (!wasPlanSubmission && shouldCreateTaskNotification(sessionId));
         const turnUsage = activeTurnUsages.get(sessionId);
         activeTurnUsages.delete(sessionId);
+        let metricsUnavailable = taskMetricsAdmissionFailures.has(JSON.stringify([sessionId, turnId]));
+        try {
+          const metrics = await taskMetricsRecorder.drain({ sessionId, turnId });
+          metricsUnavailable ||= !metrics.complete;
+        } catch {
+          metricsUnavailable = true;
+        }
+        if (metricsUnavailable) {
+          logger.app("persistence", "warn", "Task usage is incomplete; preserving an accounting gap", { sessionId });
+        }
         try {
           const result = await host.call<{
             ok: boolean;
@@ -5413,6 +5465,7 @@ function finishTurn(
             status,
             errorCode,
             createNotification,
+            ...(metricsUnavailable ? { metricsUnavailable: true } : {}),
             ...(turnUsage ? { usage: turnUsage } : {}),
             // The reply can no longer finish on its own: promote its last
             // checkpoint instead of waiting for a final row that never comes.
@@ -5455,7 +5508,14 @@ function finishTurn(
             );
         }
       }
+      // Regenerate history is session-scoped. Keep this turn's ownership until
+      // its archive completes so a following prompt cannot be archived here.
+      await options.beforeRelease?.();
     } finally {
+      if (turnId) {
+        taskMetricsRecorder.release({ sessionId, turnId });
+        taskMetricsAdmissionFailures.delete(JSON.stringify([sessionId, turnId]));
+      }
       // Do not release local ownership or wake a queued approved execution
       // until the durable endTurn request has settled above.
       if (turnId && activeTurns.get(sessionId) === turnId) {
@@ -5727,7 +5787,9 @@ function subagentTagged(message: UiMessage, envelope: AgentEventEnvelope): UiMes
 
 function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined {
   const event = envelope.event;
-  const turnId = activeTurns.get(envelope.sessionId);
+  const turnId = envelope.turnId;
+  const ownsActiveTurn = !envelope.parentToolCallId && !!turnId &&
+    turnId === activeTurns.get(envelope.sessionId);
   const executionId = (() => {
     const candidate = approvedExecutionIdsBySession.get(envelope.sessionId);
     if (!candidate) return undefined;
@@ -5735,14 +5797,14 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
       return undefined;
     }
     const executionTurn = approvedExecutionTurns.get(candidate);
-    return executionTurn?.turnId === (envelope.turnId || turnId)
+    return ownsActiveTurn && executionTurn?.turnId === turnId
       ? candidate
       : undefined;
   })();
   if (
     event.type === "planning_state" &&
     event.state === "awaiting_approval" &&
-    (envelope.turnId || turnId)
+    ownsActiveTurn
   ) {
     planSubmissionTurnIds.add(
       planSubmissionTurnKey(envelope.sessionId, envelope.turnId || turnId!),
@@ -5752,7 +5814,7 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
     // Checkpoint only the session's own reply (D299). Delegate rows stream in
     // parallel with the parent's and would thrash a per-session checkpoint;
     // their loss on a crash is bounded to the Task call's activity.
-    if (!envelope.parentToolCallId) {
+    if (ownsActiveTurn) {
       inflightCheckpointer.observe({
         sessionId: envelope.sessionId,
         turnId: envelope.turnId ?? turnId,
@@ -5774,7 +5836,7 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
     });
     if (
       (event.toolName === "SubmitPlan" || event.toolName === "SubmitGoal") &&
-      (envelope.turnId || turnId)
+      ownsActiveTurn
     ) {
       planSubmissionTurnIds.add(
         planSubmissionTurnKey(envelope.sessionId, envelope.turnId || turnId!),
@@ -5793,10 +5855,12 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
         details: event.error.details,
       },
     });
+    if (!ownsActiveTurn) return;
     const turnFinalization = finishTurn(
       envelope.sessionId,
       event.error.code === "TURN_ABORTED" ? "aborted" : "error",
       event.error.code,
+      { expectedTurnId: turnId },
     );
     if (executionId) {
       void turnFinalization.then(() =>
@@ -5810,15 +5874,10 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
     return;
   }
   if (event.type === "agent_end") {
-    const turnFinalization = finishTurn(envelope.sessionId, "completed");
-    if (executionId) {
-      void turnFinalization.then(() =>
-        finishApprovedExecution(executionId, "completed"),
-      );
-    }
+    if (!ownsActiveTurn) return;
     // Persist the completed branch as the active regenerate revision when the
     // latest user turn carries revision metadata (ChatGPT-style history).
-    void (async () => {
+    const archiveCompletedRevision = async () => {
       try {
         if (!host) return;
         // The turn's final assistant message may still be in the outbox. Archive
@@ -5856,20 +5915,29 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
           data: String(error),
         });
       }
-    })();
+    };
+    const turnFinalization = finishTurn(envelope.sessionId, "completed", undefined, {
+      expectedTurnId: turnId,
+      beforeRelease: archiveCompletedRevision,
+    });
+    if (executionId) {
+      void turnFinalization.then(() =>
+        finishApprovedExecution(executionId, "completed"),
+      );
+    }
     return;
   }
-  if (event.type === "turn_end" && !envelope.parentToolCallId) {
+  if (event.type === "turn_end" && ownsActiveTurn) {
     addActiveTurnUsage(envelope.sessionId, event.subagentUsage);
   }
   if (event.type === "message_end" && event.message.role === "assistant") {
-    if (!envelope.parentToolCallId && event.message.usage) {
+    if (ownsActiveTurn && event.message.usage) {
       addActiveTurnUsage(envelope.sessionId, event.message.usage);
     }
     // Checkpoint the finished snapshot before the outbox append (D327).
     // Settling first dropped the last interval of text, and endTurn used to
     // delete the host file while the final row was still queued.
-    if (!envelope.parentToolCallId) {
+    if (ownsActiveTurn) {
       const sessionId = envelope.sessionId;
       const finalId = event.message.id;
       inflightCheckpointer.observe({
@@ -9423,6 +9491,19 @@ function registerIpc() {
 }
 
 installNativeAgentAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload), active: (sessionId) => activeTurns.has(sessionId) });
+installP8NativeAcceptance({
+  enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(),
+  call: (method, params) => host!.call(method, params),
+  panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload),
+  active: (sessionId) => activeTurns.has(sessionId),
+  godot: {
+    observe: () => godotWorld.request("observe-envelope", {}),
+    action: (op, args) => op === "resume" ? godotWorld.resume().then(() => ({status: "ready"}))
+      : op === "pause" ? godotWorld.pause().then(() => ({status: "paused"}))
+      : op === "snapshot" ? godotWorld.snapshot() : godotWorld.request(op, args),
+    capture: (width, height) => godotWorld.headlessCapture(width, height),
+  },
+});
 installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), toolName: name => { const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name); if (!tool) throw Error("Missing world tool: " + name); return tool.fullName; }, begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId), finish: sessionId => finishTurn(sessionId, "completed", undefined, { createNotification: false }) });
 installHeadlessControl({
   window: () => mainWindow,

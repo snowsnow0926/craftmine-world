@@ -1,0 +1,188 @@
+{
+  "format": "craftmine.p7-native-retirement/1",
+  "sourceCommit": "b9c0c0d5bdf371280d1a9814773d614e02920e16",
+  "sourceFiles": [
+    {
+      "path": "desktop/godot/sandbox/src/launch.rs",
+      "sha256": "f9b41e5c3e52cd93d14694dc4733135eee15cb0f378bec04eae204cbd6f8fb47"
+    },
+    {
+      "path": "desktop/godot/sandbox/src/preflight.rs",
+      "sha256": "b44736307f5d0b9acd2d8fe46f8d4842923dd6fcb2d5c90ccbfa2d939a381a64"
+    },
+    {
+      "path": "desktop/godot/sandbox/src/task.rs",
+      "sha256": "fd55e8b13a139defa7db750491223cb25c4ca3771b863a12d3349c9aaf462d37"
+    },
+    {
+      "path": "desktop/godot/sandbox/src/broker.rs",
+      "sha256": "d5d80e0dcab3feb45b0803b2986d2c6c4731fa1d918300f2c1711cc6515eba1a"
+    },
+    {
+      "path": "plugins/craftmine-world/godot-executor.cjs",
+      "sha256": "2f894023af6bddfe390e7bca8a48bc12c5577c06348501ae33aa76f21b062cd5"
+    },
+    {
+      "path": "plugins/craftmine-world/godot-task-bin-retirement.cjs",
+      "sha256": "738f07507b67fe40d926d93b36a6856d3f9b59ae964ecab87dadfa607f8c0c73"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/godot-build-verifier.ts",
+      "sha256": "82f889edb728755d6ebefc8ddb98fced21c33b1420b2e44af5db06b5915212ad"
+    },
+    {
+      "path": "tests/player-feedback/P7/retirement-native.mjs",
+      "sha256": "13ad44e48e2ca57cd670ac592e7fea958a758e887056d53c90c52d86f40a67cd"
+    },
+    {
+      "path": "tests/player-feedback/P7/retirement-electron.mjs",
+      "sha256": "8e12e4449599064857928ead82580edfca0e974d4c57a53c16c000d0dbfb491d"
+    }
+  ],
+  "workingTree": "",
+  "identities": {
+    "core": {
+      "path": "D:/cm-fb-20260910/desktop/build/releases/b9c0c0d5bdf3-1b22d534-54c2-4a0f-80a6-1028eb4b0df6/output/win-unpacked/resources/bin/craftmine-core.exe",
+      "sha256": "64cefac3080dea1f7a1c338008d317dccf7184e8fd91f4b9423fe2b0b8cf3ec0"
+    },
+    "broker": {
+      "format": "craftmine.godot-broker-identity/1",
+      "profile": "release",
+      "protocolVersion": 1,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "recoveryPolicyVersion": "craftmine.windows.recovery-journal.v1",
+      "sourceCommit": "b9c0c0d5bdf371280d1a9814773d614e02920e16",
+      "sourceDigest": "c6883cfef7445c7464791b8cd0a1185bad44a82b7bfdf50f29ccb42129c865ea",
+      "sourceFiles": [
+        {
+          "path": "../shared/windows-export.cfg",
+          "sha256": "bbb3cb73a759318fc891216f57b40923d5888062a7dd6fa729507eb6f5c58357"
+        },
+        {
+          "path": "Cargo.lock",
+          "sha256": "b3e9eb87fa6d402ab1f41f3c36e899fc19bd44705ca8647a88891e210b64d5b6"
+        },
+        {
+          "path": "Cargo.toml",
+          "sha256": "bce6f8f59da66950c7345d35cab1365cd7a4ef02323e74ab9ad7e42bcee23900"
+        },
+        {
+          "path": "src/acl.rs",
+          "sha256": "77a028473fa8726c000c3ba3763a97a55d738cf9d0842f036d74dc28a7cd4fd9"
+        },
+        {
+          "path": "src/bin/godot-host-broker.rs",
+          "sha256": "e63386868f409c496c759a665ba1c61abd4f9db97984f042a80f923d98d3cb91"
+        },
+        {
+          "path": "src/bin/network-diag.rs",
+          "sha256": "28857d4f7009e14f6485c5a3904fd3ea3a08c0d52f4b931988fb538fe787db65"
+        },
+        {
+          "path": "src/bin/sandbox-diag.rs",
+          "sha256": "497bf7049d4b11380e77d1803eb11ae1b602095e9b14e5d4d9bf9290b35a4920"
+        },
+        {
+          "path": "src/broker.rs",
+          "sha256": "d5d80e0dcab3feb45b0803b2986d2c6c4731fa1d918300f2c1711cc6515eba1a"
+        },
+        {
+          "path": "src/desktop.rs",
+          "sha256": "5bcf058af201dfa22c2c58c6393c2431bc483c797c3ec2940a80bb7601bf43a3"
+        },
+        {
+          "path": "src/launch.rs",
+          "sha256": "f9b41e5c3e52cd93d14694dc4733135eee15cb0f378bec04eae204cbd6f8fb47"
+        },
+        {
+          "path": "src/lib.rs",
+          "sha256": "166f42c23d96f45f902ab0c0b1ca10174dd3845677809cc0ebe7e54cc08b47c0"
+        },
+        {
+          "path": "src/loader.rs",
+          "sha256": "28eefe8e4a26df2bc565989a36f15bab6392610985e77412537956b80017465f"
+        },
+        {
+          "path": "src/main.rs",
+          "sha256": "fe596435c7a754c5054c55b045bbda16c991a0dae679ab2d8fd6d959a8d9ff4a"
+        },
+        {
+          "path": "src/network.rs",
+          "sha256": "1be7e971d0dfe84579786ce812fab4e1abd9461dbc52de3ff29a3d32a226b1c8"
+        },
+        {
+          "path": "src/preflight.rs",
+          "sha256": "b44736307f5d0b9acd2d8fe46f8d4842923dd6fcb2d5c90ccbfa2d939a381a64"
+        },
+        {
+          "path": "src/probe.rs",
+          "sha256": "385147044d1e41db9e1abb70e829f7100c3b8df7f891e94c1b026c0b42084554"
+        },
+        {
+          "path": "src/profile.rs",
+          "sha256": "b3d1e78e885e428237ffe7cddb2edee1751a2635b7a97a3d95b58abdc2c42b9f"
+        },
+        {
+          "path": "src/recovery.rs",
+          "sha256": "933880472f7b4792ca9c2ab26ee5ef4072db2301163169d1140baa6fcde0b67c"
+        },
+        {
+          "path": "src/report.rs",
+          "sha256": "b2bc1252522954bf62858d683a73776cdc79bd998ae00ae773233df992bc4599"
+        },
+        {
+          "path": "src/task.rs",
+          "sha256": "fd55e8b13a139defa7db750491223cb25c4ca3771b863a12d3349c9aaf462d37"
+        },
+        {
+          "path": "src/verification.rs",
+          "sha256": "ba0aa85e6e6a406046f57fe99aab59f6465a474ac2149a66e37f56b27ae82b76"
+        }
+      ],
+      "sha256": "090d3f3e263a5cd82b5ddeea2f8aba590070b7a9c6489a419f4ebb1a25f303f7",
+      "bytes": 812032,
+      "builtFrom": "D:\\cm-fb-20260910\\desktop\\godot\\sandbox\\target\\release\\godot-host-broker.exe",
+      "recordedAt": "2026-09-10T07:26:05.642Z"
+    },
+    "electron": {
+      "path": "D:\\cm-fb-20260910\\vendor\\pi-desktop\\node_modules\\.pnpm\\electron@43.4.0_supports-color@7.2.0\\node_modules\\electron\\dist\\electron.exe",
+      "sha256": "bab31519ee1bc5b490caf7844e2b1dbcd4f7bb49a13039103952ab381c02ade4"
+    },
+    "package": {
+      "mode": "packaged",
+      "packaged": "D:/cm-fb-20260910/desktop/build/releases/b9c0c0d5bdf3-1b22d534-54c2-4a0f-80a6-1028eb4b0df6/output/win-unpacked",
+      "commit": "b9c0c0d5bdf371280d1a9814773d614e02920e16",
+      "buildManifestSha256": "82ff45ab47e683c35bba3a6f76b545cea27a1968b0c9381eae7d5f5f02c34284",
+      "sourceArchiveHash": "4ac0e990b1006c35f0034999b011920e6b1a642deed0db3ae471743bdfd39ded",
+      "appVersion": "0.14.4-preview.1",
+      "executableSha256": "df9f4767b32fcb8baa9c29d1556b72e74cf9de986ffb07459229ad27bb27ca3a",
+      "asarSha256": "276c83ceee3378cb53ba65914a2d4b81a1fc901fc0115e34eb615e351a056146",
+      "mainSha256": "b0c15e0946712355bcfb89697e64b359f76e0dd9fadc7ae9d5c26111d4061a4c",
+      "pluginSha256": "6cbb196fd6d62c5363abfd3f98ff1150c65014c31cad98eb9846db25e27a6dca",
+      "coreSha256": "64cefac3080dea1f7a1c338008d317dccf7184e8fd91f4b9423fe2b0b8cf3ec0",
+      "hostSha256": "f0dcc30205d2d7e2be892b4ebd881a0d7fd3ba4de753ab3175582d1fa8d14e80",
+      "runtimeSourceCommit": "b9c0c0d5bdf371280d1a9814773d614e02920e16",
+      "runtimeFilesDigest": "5d0ac705fbf1ab82c3a94b2cc0513a439a2b880b6dc094868beb6e1dbf46b8ae"
+    },
+    "externalDriver": {
+      "path": "file:///D:/cm-fb-20260910/test-results/p7-package-driver/retirement-package-native.mjs",
+      "sha256": "d191f8befaa531b2ed83dbb4f6f01837bbef33a90fe8d4dcd61454b43c73d5be"
+    }
+  },
+  "startedAt": "2026-09-10T07:35:41.415Z",
+  "events": [],
+  "runs": [],
+  "ackBoundaries": [],
+  "cases": [
+    {
+      "name": "success-one",
+      "worldId": "retire-success-one",
+      "freeBefore": 177674780672
+    }
+  ],
+  "restarts": [],
+  "passed": false,
+  "initialFreeBytes": 177676263424,
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'D:\\\\cm-fb-20260910\\\\desktop\\\\build\\\\releases\\\\b9c0c0d5bdf3-1b22d534-54c2-4a0f-80a6-1028eb4b0df6\\\\output\\\\win-unpacked\\\\resources\\\\godot\\\\broker\\\\godot-host-broker.exe'\n- 'D:/cm-fb-20260910/desktop/build/releases/b9c0c0d5bdf3-1b22d534-54c2-4a0f-80a6-1028eb4b0df6/output/win-unpacked/resources/godot/broker/godot-host-broker.exe'\n\n    at spawnBroker (D:\\cm-fb-20260910\\test-results\\p7-native-Yz62zl\\app\\main\\index.cjs:1174:25)\n    at runBroker (D:\\cm-fb-20260910\\plugins\\craftmine-world\\godot-executor.cjs:528:19)\n    at preflight (D:\\cm-fb-20260910\\plugins\\craftmine-world\\godot-executor.cjs:395:23)\n    at D:\\cm-fb-20260910\\plugins\\craftmine-world\\godot-executor.cjs:1354:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async D:\\cm-fb-20260910\\test-results\\p7-native-Yz62zl\\app\\main\\index.cjs:1287:27",
+  "finishedAt": "2026-09-10T07:35:41.985Z"
+}

@@ -1,0 +1,5 @@
+# Complete-client measurement scope
+
+The existing explicitly enabled headless `status` response includes Electron's own process PID, type, creation time, CPU and memory facts. No other application or desktop is inspected. `tests/godot-final/client-complete.mjs` records the current source commit and launched PID; an expected-commit input additionally requires clean matching source. `CRAFTMINE_TEST_PERFORMANCE=1` records these process observations after successful scenario steps. Step durations retain their existing wall-clock definition.
+
+These measurements describe this offscreen run, not display FPS, physical-input latency, a clean machine or a complete process-tree peak. Independent Rust/broker children are outside Electron's metric set. Memory fields use Electron's documented units (KB), and the report must identify sampled working set separately from per-process peak working set. Fresh-profile first start is distinct from an OS-cold boot; subsequent same-profile launches are restart measurements.

@@ -127,6 +127,51 @@ impl TaskJob {
     pub fn policy(&self) -> JobPolicy {
         self.policy
     }
+
+    /// A signalled process handle does not prove the Job accounting has already
+    /// observed zero active processes. Poll this exact owned Job after process
+    /// exit. Only a measured zero qualifies; timeout returns the last nonzero
+    /// measurement and a query failure remains unknown.
+    pub fn completed_active_processes(&self, timeout: Duration) -> Option<u32> {
+        let started = std::time::Instant::now();
+        poll_completed_accounting(
+            || self.active_processes(),
+            || started.elapsed() >= timeout,
+            || std::thread::sleep(Duration::from_millis(10)),
+        )
+    }
+}
+
+fn poll_completed_accounting(
+    mut read: impl FnMut() -> Option<u32>,
+    mut expired: impl FnMut() -> bool,
+    mut yield_once: impl FnMut(),
+) -> Option<u32> {
+    loop {
+        let measured = read();
+        if measured == Some(0) || measured.is_none() || expired() { return measured; }
+        yield_once();
+    }
+}
+
+#[cfg(test)]
+mod completion_accounting_tests {
+    use super::poll_completed_accounting;
+    use std::cell::Cell;
+    #[test]
+    fn completion_requires_a_real_zero_after_lagging_accounting() {
+        let mut samples = [Some(1), Some(1), Some(0)].into_iter();
+        let yields = Cell::new(0);
+        assert_eq!(poll_completed_accounting(|| samples.next().unwrap(), || false,
+            || yields.set(yields.get()+1)), Some(0));
+        assert_eq!(yields.get(), 2);
+    }
+    #[test]
+    fn deadline_never_turns_live_or_unknown_measurement_into_zero() {
+        assert_eq!(poll_completed_accounting(|| Some(1), || true, || panic!("deadline")), Some(1));
+        assert_eq!(poll_completed_accounting(|| None, || false, || panic!("unknown")), None);
+        assert_eq!(poll_completed_accounting(|| Some(0), || true, || panic!("already empty")), Some(0));
+    }
 }
 
 /// A restricted process that is already running.

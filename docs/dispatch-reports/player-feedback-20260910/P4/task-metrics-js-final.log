@@ -1,0 +1,16 @@
+✔ provider stream forwards exact output and records first delta to terminal before forwarding (1.8951ms)
+✔ result-only compaction and separate retries retain independent attempt identities (0.5429ms)
+✔ actual runtime capture keeps old turn and provider binding across a late terminal event (0.1971ms)
+✔ setup failure and aborted placeholder usage remain unknown, without character estimates (0.3249ms)
+✔ queue drains exact start/end, clones facts and includes delegated envelopes (0.353ms)
+✔ lost reply retries same immutable payload and never changes owner to active session (0.4069ms)
+✔ permanent refusal or invalid receipt persists explicit gap; gap failure rejects drain (0.32ms)
+✔ bounded observation capacity records durable gap once instead of silently dropping facts (54.2967ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 466.4339

@@ -1,0 +1,15 @@
+✔ native PNG positive fixture has valid chunk checksums and one decoded pixel (2.2417ms)
+✔ import consumes the real selected directory grant before dispatch and before returning (0.5111ms)
+✔ scan authorizes the directory; preview uses only a managed identity (0.1774ms)
+✔ missing or revoked grants, stale owners and unknown path fields dispatch nothing (0.4132ms)
+✔ a world switch during authorization cannot dispatch into the old world (0.124ms)
+✔ late durable import response is rejected after grant revocation; retry rechecks grant (0.1788ms)
+✔ late preview response cannot paint another owner or viewing session (0.2692ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 136.0712

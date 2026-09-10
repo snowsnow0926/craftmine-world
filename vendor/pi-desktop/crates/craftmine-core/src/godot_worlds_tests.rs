@@ -1,6 +1,130 @@
 use super::*;
 use crate::godot_test_support::*;
 use crate::WorkspaceContext;
+use base64::Engine as _;
+
+fn initial_repair_fixture(journal: &mut TaskJournal) -> Result<(WorkspaceContext,Value,Value)> {
+    let init=initialize(journal,"g1","base-a")?;
+    let context=ctx("repair");journal.workspace_open(&context,"g1")?;
+    let mut files=project_files();
+    files.as_array_mut().unwrap().push(json!({"path":"craftmine_shared/runtime_bridge.gd",
+        "text":include_str!("testdata/initial-load-repair/old.gd")}));
+    let project=journal.godot_project_create(&json!({"context":context,"worldId":"g1","toolCallId":"repair-create",
+        "baseBuild":"base-a","baseId":"first-person","files":files}))?;
+    journal.content_migrate_apply(&json!({"worldId":"g1"}))?;
+    let content=journal.content_status(&json!({"worldId":"g1"}))?;
+    let request=json!({"context":context,"worldId":"g1","toolCallId":"repair-bridge","revision":project["revision"],
+        "manifestHash":project["manifestHash"],"initialLoadRepair":{"initId":init["init"]["initId"]},
+        "operation":{"operationId":"repair-bridge","worldId":"g1","repoId":content["repoId"],"branchId":"main",
+            "expectedHeadOid":content["headOid"],"expectedAppliedOid":content["appliedOid"],"expectedProgressRevision":0},
+        "files":[{"path":"craftmine_shared/runtime_bridge.gd","bytesBase64":base64::prelude::BASE64_STANDARD.encode(include_bytes!("testdata/initial-load-repair/new.gd")),
+            "expectedHash":"318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76"}]});
+    Ok((context,project,request))
+}
+
+#[test]
+fn initial_load_repair_is_exact_replayable_and_preserves_progress_and_other_sources() -> Result<()> {
+    let (_dir,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let (context,project,request)=initial_repair_fixture(&mut journal)?;
+    let before=journal.world_read("g1")?;
+    let repaired=journal.godot_project_apply_files(&request)?;
+    assert_ne!(repaired["manifestHash"],project["manifestHash"]);
+    assert_eq!(journal.godot_project_apply_files(&request)?,repaired);
+    assert_eq!(journal.world_read("g1")?.content_hash,before.content_hash);
+    let content=journal.content_status(&json!({"worldId":"g1"}))?;let(store,layout)=journal.content_layout("g1")?;
+    let old=request["operation"]["expectedHeadOid"].as_str().unwrap();let new=content["headOid"].as_str().unwrap();
+    for file in store.tree_entries(&layout,old)? {
+        if file.path=="craftmine_shared/runtime_bridge.gd"{assert_eq!(store.read_file(&layout,new,&file.path)?,include_bytes!("testdata/initial-load-repair/new.gd"));}
+        else {assert_eq!(store.read_file(&layout,new,&file.path)?,store.read_file(&layout,old,&file.path)?);}
+    }
+    drop(journal);let mut journal=TaskJournal::open(&path)?;
+    assert_eq!(journal.godot_project_apply_files(&request)?,repaired,"lost reply can replay after core restart before application");
+    assert_eq!(journal.godot_project_index(&json!({"context":context,"worldId":"g1"}))?["manifestHash"],repaired["manifestHash"]);
+    assert_eq!(journal.world_read("g1")?.content_hash,before.content_hash);
+    Ok(())
+}
+
+#[test]
+fn initial_load_repair_rejects_bad_scope_pins_owner_and_cas_without_writes() -> Result<()> {
+    let (_dir,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let (context,project,request)=initial_repair_fixture(&mut journal)?;
+    let before=journal.world_read("g1")?;
+    let cases=[("owner","GODOT_INITIAL_REPAIR_OWNER_CHANGED"),("bytes","GODOT_INITIAL_REPAIR_PIN_MISMATCH"),
+        ("path","GODOT_INITIAL_REPAIR_PIN_MISMATCH"),("hash","GODOT_INITIAL_REPAIR_PIN_MISMATCH"),
+        ("files","GODOT_INITIAL_REPAIR_SCOPE"),("head","CONTENT_EXPECTED_HEAD_MISMATCH"),
+        ("applied","CONTENT_EXPECTED_APPLIED_MISMATCH"),("progress","WORLD_REVISION_CONFLICT"),("unknown","unknown field")];
+    for (case,code) in cases {
+        let mut bad=request.clone();match case {
+            "owner"=>bad["initialLoadRepair"]["initId"]=json!("old-init"),
+            "bytes"=>bad["files"][0]["bytesBase64"]=json!(base64::prelude::BASE64_STANDARD.encode(b"extends Node\n")),
+            "path"=>bad["files"][0]["path"]=json!("world.gd"),
+            "hash"=>bad["files"][0]["expectedHash"]=json!("0".repeat(64)),
+            "files"=>bad["files"].as_array_mut().unwrap().push(request["files"][0].clone()),
+            "head"=>bad["operation"]["expectedHeadOid"]=json!("0".repeat(40)),
+            "applied"=>bad["operation"]["expectedAppliedOid"]=json!("0".repeat(40)),
+            "progress"=>bad["operation"]["expectedProgressRevision"]=Value::Null,
+            _=>bad["initialLoadRepair"]["allowApplied"]=json!(true),
+        }
+        failed(journal.godot_project_apply_files(&bad),code);
+        assert_eq!(journal.world_read("g1")?.content_hash,before.content_hash);
+        assert_eq!(journal.godot_project_index(&json!({"context":context,"worldId":"g1"}))?["manifestHash"],project["manifestHash"]);
+    }
+    Ok(())
+}
+
+#[test]
+fn initial_load_repair_rejects_formal_adoption_after_host_read_even_when_git_head_is_unchanged() -> Result<()> {
+    let (_dir,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let (context,project,request)=initial_repair_fixture(&mut journal)?;
+    register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("repair-fixture"))?;
+    let checked=check_to_candidate(&mut journal,&context,"g1",&project,"old-bridge-check")?;
+    let snapshot=journal.world_read("g1")?.world.snapshot;
+    let prepared=journal.godot_application_prepare(&json!({"id":"old-formal","token":"formal-token","candidateId":checked["candidateId"],"worldId":"g1","revision":0,"snapshot":snapshot}))?;
+    // Real Core application transaction is the interleaving, not a fake status flag.
+    // The artifact/check/launch evidence is an authored Core fixture, not engine execution.
+    journal.godot_application_commit(&json!({"id":"old-formal","token":"formal-token","evidence":{"format":"craftmine.godot-application/2",
+        "inputHash":prepared["inputHash"],"launch":{"passed":true,"buildId":prepared["buildId"],"instanceId":"repair-fixture","stateHash":digest("fixture")},"player":null,"snapshot":snapshot}}))?;
+    let formal=journal.world_read("g1")?;
+    assert_eq!(journal.content_status(&json!({"worldId":"g1"}))?["headOid"],request["operation"]["expectedHeadOid"]);
+    failed(journal.godot_project_apply_files(&request),"GODOT_INITIAL_REPAIR_ALREADY_APPLIED");
+    assert_eq!(journal.world_read("g1")?.content_hash,formal.content_hash);
+    assert_eq!(journal.godot_project_index(&json!({"context":context,"worldId":"g1"}))?["manifestHash"],project["manifestHash"]);
+    drop(journal);let mut journal=TaskJournal::open(&path)?;
+    failed(journal.godot_project_apply_files(&request),"GODOT_INITIAL_REPAIR_ALREADY_APPLIED");
+    let editing=ctx("normal-edit");journal.workspace_open(&editing,"g1")?;
+    let mut normal=request.clone();normal.as_object_mut().unwrap().remove("initialLoadRepair");
+    normal["context"]=json!(editing);normal["toolCallId"]=json!("normal-source-edit");
+    normal["operation"]["operationId"]=json!("normal-source-edit");normal["operation"]["expectedProgressRevision"]=json!(formal.summary.revision);
+    normal["files"]=json!([{"path":"world.gd","bytesBase64":base64::prelude::BASE64_STANDARD.encode(b"extends Node3D\nvar damage := 15\n"),"expectedHash":digest(SCRIPT)}]);
+    journal.godot_project_apply_files(&normal)?;
+    assert_eq!(journal.world_read("g1")?.content_hash,formal.content_hash,"ordinary applied-world authoring remains permitted without changing gameplay");
+    Ok(())
+}
+
+#[test]
+fn initial_load_repair_preserves_a_customized_bridge_and_invalidates_prepared_old_candidate() -> Result<()> {
+    let (_dir,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let(context,project,request)=initial_repair_fixture(&mut journal)?;
+    register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("repair-fixture"))?;
+    let checked=check_to_candidate(&mut journal,&context,"g1",&project,"old-bridge-check")?;
+    let snapshot=journal.world_read("g1")?.world.snapshot;
+    let prepared=journal.godot_application_prepare(&json!({"id":"pending-old","token":"pending-token","candidateId":checked["candidateId"],"worldId":"g1","revision":0,"snapshot":snapshot}))?;
+    let repaired=journal.godot_project_apply_files(&request)?;
+    failed(journal.godot_application_commit(&json!({"id":"pending-old","token":"pending-token","evidence":{"format":"craftmine.godot-application/2",
+        "inputHash":prepared["inputHash"],"launch":{"passed":true,"buildId":prepared["buildId"],"instanceId":"repair-fixture","stateHash":digest("fixture")},"player":null,"snapshot":snapshot}})),"GODOT_CANDIDATE_STALE");
+    assert_eq!(journal.world_read("g1")?.world.snapshot,snapshot);
+    assert_eq!(journal.godot_project_index(&json!({"context":context,"worldId":"g1"}))?["manifestHash"],repaired["manifestHash"]);
+    let (_other,other_path)=temp()?;let mut other=TaskJournal::open(&other_path)?;
+    let (context,_,mut repair)=initial_repair_fixture(&mut other)?;
+    let mut custom=repair.clone();custom.as_object_mut().unwrap().remove("initialLoadRepair");custom["toolCallId"]=json!("custom-bridge");custom["operation"]["operationId"]=json!("custom-bridge");
+    custom["files"][0]["bytesBase64"]=json!(base64::prelude::BASE64_STANDARD.encode(b"extends Node\n# user-customized\n"));
+    let changed=other.godot_project_apply_files(&custom)?;
+    repair["revision"]=changed["revision"].clone();repair["manifestHash"]=changed["manifestHash"].clone();
+    repair["operation"]["expectedHeadOid"]=other.content_status(&json!({"worldId":"g1"}))?["headOid"].clone();
+    failed(other.godot_project_apply_files(&repair),"PROJECT_FILE_CONFLICT");
+    assert_eq!(other.godot_project_index(&json!({"context":context,"worldId":"g1"}))?["manifestHash"],changed["manifestHash"]);
+    Ok(())
+}
 
 #[test]
 fn copied_runtime_rebind_is_exact_persistent_and_requires_independent_application() -> Result<()> {
@@ -253,6 +377,117 @@ fn progress(world: &str) -> Value {
 fn initialize(journal: &mut TaskJournal, world: &str, base: &str) -> Result<Value> {
     journal.godot_world_initialize(&json!({"worldId":world,"title":"New World","baseId":"first-person",
         "baseBuild":base,"snapshot":progress(world)}))
+}
+
+fn failed_first_launch(journal: &mut TaskJournal, world: &str) -> Result<Value> {
+    let init=initialize(journal,world,"base-a")?;
+    let context=ctx(&format!("launch-{world}"));
+    journal.workspace_open(&context,world)?;
+    register(journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("e"))?;
+    let project=create_project_in(journal,&context,world,"launch-create")?;
+    let checked=check_to_candidate(journal,&context,world,&project,"launch-check")?;
+    let application=format!("launch-{world}");
+    journal.godot_application_prepare(&json!({"id":application,"token":"launch-token",
+        "candidateId":checked["candidateId"],"worldId":world,"revision":0,"snapshot":progress(world)}))?;
+    journal.godot_application_abort(&json!({"id":application}))?;
+    Ok(json!({"worldId":world,"initId":init["init"]["initId"],"candidateId":checked["candidateId"],"applicationId":application}))
+}
+
+#[test]
+fn first_launch_failure_survives_restart_and_explicit_retry_tombstones_old_delivery() -> Result<()> {
+    let (_directory,path)=temp()?;
+    let mut journal=TaskJournal::open(&path)?;
+    let args=failed_first_launch(&mut journal,"g1")?;
+    assert_eq!(journal.godot_world_init_launch_failed(&args)?["replayed"],false);
+    assert_eq!(journal.godot_world_init_launch_failed(&args)?["replayed"],true);
+    let before=journal.world_read("g1")?;
+    drop(journal);
+    let mut journal=TaskJournal::open(&path)?;
+    let status=journal.godot_world_init_status(&json!({"worldId":"g1"}))?;
+    assert_eq!(status["status"],"failed");assert_eq!(status["playable"],false);
+    assert_eq!(status["reason"],"GODOT_INITIAL_LOAD_FAILED");assert_eq!(status["failureStage"],"confirm");
+    assert_eq!(status["launchFailure"],args);
+    assert_eq!(journal.world_read("g1")?.world,before.world);
+    assert_eq!(journal.godot_world_init_launch_retry(&args)?["cleared"],true);
+    assert_eq!(journal.godot_world_init_launch_retry(&args)?["replayed"],true);
+    assert_eq!(journal.godot_world_init_launch_failed(&args)?["cleared"],true);
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["status"],"checked");
+    // A later genuine application can fail independently; old receipts cannot clear it.
+    journal.godot_application_prepare(&json!({"id":"launch-second","token":"second-token",
+        "candidateId":args["candidateId"],"worldId":"g1","revision":0,"snapshot":progress("g1")}))?;
+    journal.godot_application_abort(&json!({"id":"launch-second"}))?;
+    let mut second=args.clone();second["applicationId"]=json!("launch-second");
+    journal.godot_world_init_launch_failed(&second)?;
+    journal.godot_world_init_launch_retry(&args)?;
+    journal.godot_world_init_launch_failed(&args)?;
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["launchFailure"],second);
+    drop(journal);
+    let mut journal=TaskJournal::open(&path)?;
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["launchFailure"],second);
+    Ok(())
+}
+
+#[test]
+fn first_launch_failure_rejects_wrong_identity_unsettled_stale_and_applied_attempts() -> Result<()> {
+    let (_directory,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let args=failed_first_launch(&mut journal,"g1")?;
+    initialize(&mut journal,"g2","base-a")?;
+    for (field,value) in [("worldId","g2"),("initId","other-init"),("candidateId","other-candidate")] {
+        let mut wrong=args.clone();wrong[field]=json!(value);
+        failed(journal.godot_world_init_launch_failed(&wrong),"GODOT_INIT_LAUNCH_IDENTITY_MISMATCH");
+    }
+    let mut unknown=args.clone();unknown["reason"]=json!("private/raw");
+    assert!(journal.godot_world_init_launch_failed(&unknown).is_err());
+    let prepared=journal.godot_application_prepare(&json!({"id":"new-launch","token":"new-token",
+        "candidateId":args["candidateId"],"worldId":"g1","revision":0,"snapshot":progress("g1")}))?;
+    failed(journal.godot_world_init_launch_failed(&args),"GODOT_INIT_LAUNCH_STALE");
+    let mut newer=args.clone();newer["applicationId"]=json!("new-launch");
+    failed(journal.godot_world_init_launch_failed(&newer),"GODOT_INIT_LAUNCH_NOT_FAILED");
+    journal.godot_application_commit(&json!({"id":"new-launch","token":"new-token",
+        "evidence":{"format":"craftmine.godot-application/2","inputHash":prepared["inputHash"],
+        "launch":{"passed":true,"buildId":prepared["buildId"],"instanceId":"runtime-g1","stateHash":digest("state")},
+        "player":null,"snapshot":progress("g1")}}))?;
+    failed(journal.godot_world_init_launch_failed(&newer),"GODOT_INIT_LAUNCH_NOT_FAILED");
+    failed(journal.godot_world_init_launch_failed(&args),"GODOT_WORLD_ALREADY_INITIALIZED");
+    let status=journal.godot_world_init_status(&json!({"worldId":"g1"}))?;
+    assert_eq!(status["status"],"confirmed");assert_eq!(status["playable"],true);assert_eq!(status["launchFailure"],Value::Null);
+    Ok(())
+}
+
+#[test]
+fn first_launch_failure_does_not_attach_to_a_new_checked_candidate() -> Result<()> {
+    let (_directory,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let args=failed_first_launch(&mut journal,"g1")?;
+    journal.godot_world_init_launch_failed(&args)?;
+    let context=ctx("launch-g1");
+    let project=journal.godot_project_index(&json!({"worldId":"g1","context":context}))?;
+    let newer=check_to_candidate(&mut journal,&context,"g1",&project,"check-new-candidate")?;
+    assert_ne!(newer["candidateId"],args["candidateId"]);
+    let status=journal.godot_world_init_status(&json!({"worldId":"g1"}))?;
+    assert_eq!(status["candidateId"],newer["candidateId"]);
+    assert_eq!(status["status"],"checked");assert_eq!(status["launchFailure"],Value::Null);
+    journal.godot_world_init_launch_failed(&args)?; // Old receipt only replays its old row.
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["status"],"checked");
+    failed(journal.godot_world_init_launch_retry(&args),"GODOT_INIT_LAUNCH_STALE");
+    Ok(())
+}
+
+#[test]
+fn first_launch_failure_archive_roundtrip_keeps_failure_and_accepts_older_absent_table() -> Result<()> {
+    let (_directory,path)=temp()?;let mut journal=TaskJournal::open(&path)?;
+    let args=failed_first_launch(&mut journal,"g1")?;
+    journal.godot_world_init_launch_failed(&args)?;
+    let context=ctx("launch-g1");journal.workspace_end_turn(&context.session_id,&context.turn_id,"error")?;
+    let export=journal.backup_export(&json!({"operationId":"launch-export"}))?;
+    assert_eq!(export["archive"]["tables"]["craftmine_godot_init_launch_failures"]["rows"].as_array().unwrap().len(),1);
+    let expected=journal.backup_status(&json!({}))?["currentHash"].clone();
+    journal.backup_restore(&json!({"operationId":"launch-restore","archive":export["archive"],"expectedCurrentHash":expected}))?;
+    assert_eq!(journal.godot_world_init_status(&json!({"worldId":"g1"}))?["launchFailure"],args);
+    let mut older=export["archive"].clone();
+    older["tables"].as_object_mut().unwrap().remove("craftmine_godot_init_launch_failures");
+    older["hash"]=json!(digest(&serde_json::to_string(&older["tables"])?));
+    assert_eq!(journal.backup_inspect(&json!({"archive":older}))?["valid"],true);
+    Ok(())
 }
 
 #[test]

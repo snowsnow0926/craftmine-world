@@ -1,4 +1,4 @@
-import { assetsProbeScript } from "./craftmine-assets-acceptance";
+import { assetsProbeScript, unwrapAssetsProbeResult } from "./craftmine-assets-acceptance";
 import { targetFeedbackProbeScript } from "./craftmine-target-feedback-acceptance";
 import { historyProbeScript } from "./craftmine-history-acceptance";
 import { app, BrowserWindow, dialog, globalShortcut, Notification, session, shell, type WebContents } from "electron";
@@ -119,6 +119,8 @@ export function installHeadlessControl(access: {
           return godotGameplay(request.method);
         case "status": return {
           name: app.getName(), profile: app.getPath("userData"), runtime: access.runtime(), violations, pageErrors, shutdownFailures,
+          processes: app.getAppMetrics().map(process => ({pid: process.pid, type: process.type,
+            creationTime: process.creationTime, cpu: process.cpu, memory: process.memory})),
           windows: BrowserWindow.getAllWindows().map(window => ({ visible: window.isVisible(), focused: window.isFocused(), focusable: window.isFocusable(), offscreen: window.webContents.isOffscreen() })),
           world: access.world()?.getURL() || null,
         };
@@ -153,7 +155,7 @@ export function installHeadlessControl(access: {
         case "assetsView": {
           if (Object.keys(request).sort().join(",") !== "id,method,payload,type") throw Error("INVALID_ASSET_PROBE");
           const window = access.window(); if (!window) throw Error("Window is not ready");
-          return window.webContents.executeJavaScript(assetsProbeScript(request.payload), false);
+          return unwrapAssetsProbeResult(await window.webContents.executeJavaScript(assetsProbeScript(request.payload), false));
         }
         case "historyView": {
           if (Object.keys(request).sort().join(",") !== "id,method,payload,type") throw Error("INVALID_HISTORY_PROBE");

@@ -367,8 +367,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 6645,
-      "sha256": "318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76"
+      "bytes": 6958,
+      "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
     },
     {
       "path": "scene_materializer.mjs",
@@ -583,5 +583,6 @@
       "sha256": "52b85e2bcf597854225e420642074c2d3ab28c56f5d59bcddc25d9708ae80b3b"
     }
   ],
-  "requiredNotices": []
+  "requiredNotices": [],
+  "hashReviewNote": "2026-09-10 P1 request-drain and primary-failure diagnostics reviewed against commit 487dc779. Only the listed source byte/hash pins were refreshed; authorship, licence, distribution and outstanding rights declarations are unchanged."
 }

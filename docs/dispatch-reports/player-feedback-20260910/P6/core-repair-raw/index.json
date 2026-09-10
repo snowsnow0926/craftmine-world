@@ -1,0 +1,42 @@
+{
+  "format": "craftmine.evidence-index/1",
+  "sourceCommit": "53c5df9c713953fdaa5034dab606b89ac77c999b",
+  "files": [
+    {
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-core-repair-initial.log",
+      "sha256": "06c362b901e50871372ff2d15fadd17617324cd894c5b6142064ec6dc8c39a41",
+      "bytes": 5119,
+      "file": "p6-core-repair-initial.log"
+    },
+    {
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-core-repair-second.log",
+      "sha256": "23aabacda865ce78988609a15e28a22115b718615a0596b2d07e3cb6c1dac6ce",
+      "bytes": 4945,
+      "file": "p6-core-repair-second.log"
+    },
+    {
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-core-repair-third.log",
+      "sha256": "09b77fd569b16d2d267147e3b68a90c3f4596bbfc11cc6e27ce6adc5c050f23e",
+      "bytes": 4269,
+      "file": "p6-core-repair-third.log"
+    },
+    {
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-core-repair-fourth.log",
+      "sha256": "94e1223b7df94ba12b2b6db2c2e421fdbefb41ab1c77a1c1b677124756c3476e",
+      "bytes": 4392,
+      "file": "p6-core-repair-fourth.log"
+    },
+    {
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-core-repair-full.log",
+      "sha256": "1265a6b6c3350ae5b9a55f8fca82e1a0d2c529796a196cafc018ef80688740ed",
+      "bytes": 33473,
+      "file": "p6-core-repair-full.log"
+    },
+    {
+      "source": "D:\\cm-fb-p6-20260910\\test-results\\p6-core-config-nonrepo-temp.log",
+      "sha256": "6e2672dfe8adf38806367357e1e5bf561f2cbeb36e754b473e5b46c08d2fa7b1",
+      "bytes": 3911,
+      "file": "p6-core-config-nonrepo-temp.log"
+    }
+  ]
+}

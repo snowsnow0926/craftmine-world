@@ -59,8 +59,8 @@
       "distribution": [
         "development-only"
       ],
-      "bytes": 3091,
-      "sha256": "6797593e1b85565bb2add85f510ce53c5d7880c8dec1649e2a3fb0d86f59ff69",
+      "bytes": 3096,
+      "sha256": "d2e90546a530f3caf5ab1ec101534a28ecf36a74e7ae21de2e9768e511685908",
       "outstanding": "Formal licence text pending the per-module review in docs/LICENSING_STRATEGY.md (see desktop/delivery/licensing/inventory.json); the project owns this file.",
       "notes": "Type declarations for runtime.mjs, consumed by the Electron main process build and acceptance tests. Build-time only; not shipped at runtime."
     },
@@ -76,8 +76,8 @@
       "distribution": [
         "app-bundle"
       ],
-      "bytes": 19747,
-      "sha256": "1bf3163896b4fae7bdd3a936c9301e366871ef340f94352f6f61ec96f0bdc558",
+      "bytes": 20044,
+      "sha256": "09a8a62728fdc6a53db88af087b335f4364a6f671b95c361b94e5b1f1bb5322c",
       "outstanding": "Formal licence text pending the per-module review in docs/LICENSING_STRATEGY.md (see desktop/delivery/licensing/inventory.json); the project owns this file. Target: creation-core path (AGPL-3.0-only or commercial).",
       "notes": "Host-side Godot Web world runtime: one token-scoped loopback origin per world instance plus the craftmine.godot-runtime/2 protocol. Imported by the Electron main process, app/game.js and app/static-files.mjs. Never copied into a player export."
     },
@@ -138,5 +138,5 @@
       "notes": "Aggregate third-party notices for the exported engine."
     }
   ],
-  "hashReviewNote": "Byte/hash pins and the two runtime entries were refreshed against the integrated tree at e4621478 by desktop/delivery/tools/draft-base-manifest.mjs plus a reviewed hand edit; bridge.js was 5903 bytes when first pinned and is now 6415 bytes. Existing license and distribution declarations are unchanged; runtime.mjs and runtime.d.mts are newly declared and keep an explicit outstanding licence note."
+  "hashReviewNote": "2026-09-10 P1 request-drain and primary-failure diagnostics reviewed against commit 487dc779. Only the listed source byte/hash pins were refreshed; authorship, licence, distribution and outstanding rights declarations are unchanged."
 }

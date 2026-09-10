@@ -117,6 +117,14 @@ struct PatchArgs {
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct InitialLoadRepair { init_id: String }
+
+const INITIAL_BRIDGE_PATH: &str = "craftmine_shared/runtime_bridge.gd";
+const INITIAL_BRIDGE_OLD: &str = "318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76";
+const INITIAL_BRIDGE_NEW: &str = "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2";
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct IndexArgs {
     #[serde(default="main_branch")]
     branch_id:String,
@@ -1123,7 +1131,7 @@ impl TaskJournal {
     }
 
     pub fn godot_project_patch(&mut self, args: &Value) -> Result<Value> {
-        self.project_patch_bytes(args, &request_hash("godotProject.patch", args)?, 16)
+        self.project_patch_bytes(args, &request_hash("godotProject.patch", args)?, 16, None)
     }
 
     /// Private host installation transaction; bytes keep their project paths.
@@ -1134,16 +1142,16 @@ impl TaskJournal {
         #[derive(Deserialize)]
         #[serde(rename_all="camelCase",deny_unknown_fields)]
         struct Args { context: WorkspaceContext,world_id:String,tool_call_id:String,revision:u64,manifest_hash:String,
-            operation:Option<super::content_history::contract::OperationContext>,files:Vec<File> }
+            operation:Option<super::content_history::contract::OperationContext>,files:Vec<File>,initial_load_repair:Option<InitialLoadRepair> }
         let hash=request_hash("godotProject.applyFiles",args)?;
         let parsed:Args=serde_json::from_value(args.clone())?;
         let operations:Vec<Value>=parsed.files.into_iter().map(|file|json!({"op":"putBytes","path":file.path,
             "bytesBase64":file.bytes_base64,"expectedHash":file.expected_hash})).collect();
         self.project_patch_bytes(&json!({"context":parsed.context,"worldId":parsed.world_id,"toolCallId":parsed.tool_call_id,
-            "revision":parsed.revision,"manifestHash":parsed.manifest_hash,"operation":parsed.operation,"operations":operations}),&hash,FILE_COUNT)
+            "revision":parsed.revision,"manifestHash":parsed.manifest_hash,"operation":parsed.operation,"operations":operations}),&hash,FILE_COUNT,parsed.initial_load_repair)
     }
 
-    fn project_patch_bytes(&mut self, args:&Value, request_hash:&str, operation_limit:usize) -> Result<Value> {
+    fn project_patch_bytes(&mut self, args:&Value, request_hash:&str, operation_limit:usize, initial_load_repair:Option<InitialLoadRepair>) -> Result<Value> {
         let _operation_lock = crate::operation_lock::OperationLock::domain(&self.directory)?;
         let args: PatchArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.tool_call_id)?;
@@ -1167,6 +1175,31 @@ impl TaskJournal {
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        if let Some(repair) = &initial_load_repair {
+            // The application commit uses this same domain lock and Immediate
+            // transaction. A host-side status read alone cannot protect this.
+            let (store, layout) = git.as_ref().context("GODOT_INITIAL_REPAIR_REQUIRES_GIT")?;
+            let operation = args.operation.as_ref().context("CONTENT_OPERATION_CONTEXT_REQUIRED")?;
+            ensure!(operation.branch_id == repo::MAIN_BRANCH, "GODOT_INITIAL_REPAIR_SCOPE");
+            ensure!(args.operations.len() == 1, "GODOT_INITIAL_REPAIR_SCOPE");
+            match &args.operations[0] {
+                Operation::PutBytes{path,bytes_base64,expected_hash} => {
+                    ensure!(path == INITIAL_BRIDGE_PATH && expected_hash.as_deref() == Some(INITIAL_BRIDGE_OLD), "GODOT_INITIAL_REPAIR_PIN_MISMATCH");
+                    ensure!(bytes_base64.len() <= FILE_LIMIT * 2, "PROJECT_FILE_TOO_LARGE");
+                    let bytes = STANDARD.decode(bytes_base64).context("INVALID_PROJECT_BASE64")?;
+                    ensure!(digest_bytes(&bytes) == INITIAL_BRIDGE_NEW, "GODOT_INITIAL_REPAIR_PIN_MISMATCH");
+                },
+                _ => anyhow::bail!("GODOT_INITIAL_REPAIR_SCOPE"),
+            }
+            let init = super::godot_worlds::read(&tx, &args.world_id)?.context("GODOT_WORLD_INIT_MISSING")?;
+            ensure!(init["initId"].as_str() == Some(repair.init_id.as_str()), "GODOT_INITIAL_REPAIR_OWNER_CHANGED");
+            let world = worlds::read(&tx, &args.world_id)?;
+            let applied: bool = tx.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_godot_applications WHERE world_id=?1 AND status='applied')", [&args.world_id], |row| row.get(0))?;
+            ensure!(!applied && init["status"] != "confirmed" && init["applicationId"].is_null()
+                && world.world.build["godot"]["initializing"] == true && world.world.build["id"] == init["baseBuild"], "GODOT_INITIAL_REPAIR_ALREADY_APPLIED");
+            ensure!(operation.expected_progress_revision == Some(world.summary.revision), "WORLD_REVISION_CONFLICT");
+            ensure!(store.applied(layout, &args.world_id)? == operation.expected_applied_oid, "CONTENT_EXPECTED_APPLIED_MISMATCH");
+        }
         let workspace = scope(&tx, &args.context, &args.world_id, true)?;
         if !git_backed {
             super::content_history::migration::assert_legacy_writes_allowed(&tx, &args.world_id)?;

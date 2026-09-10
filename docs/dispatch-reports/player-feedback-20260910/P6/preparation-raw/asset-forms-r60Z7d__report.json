@@ -1,0 +1,70 @@
+{
+  "kind": "actual-navigation-forms-finite-probe-with-fixture-host",
+  "sourceCommit": null,
+  "checks": [
+    {
+      "name": "old owner rejected",
+      "passed": true
+    },
+    {
+      "name": "actual auxiliary forms open actual navigation sheet",
+      "passed": true
+    },
+    {
+      "name": "selection restricted to observed cards",
+      "passed": true
+    },
+    {
+      "name": "real favorite form updates acknowledgement",
+      "passed": true
+    },
+    {
+      "name": "favorites filter uses actual form",
+      "passed": true
+    },
+    {
+      "name": "unfavorite removes filtered card with detail retained",
+      "passed": true
+    },
+    {
+      "name": "tag form uses submitted DOM value without React internals",
+      "passed": true
+    },
+    {
+      "name": "other asset cannot be annotated",
+      "passed": true
+    },
+    {
+      "name": "actual directory import form scans the host-picked root",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Fixture host: proves navigation and payloads, not the Rust asset catalog.",
+    "No real model call and no visible-window composition."
+  ],
+  "sourceFiles": [
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/craftmine-assets-acceptance.ts",
+      "sha256": "d45e75dca9f29c1face33f2e9c96c8e7db0444f1ae09471e35eaa30d7f6dd752"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/CraftmineNavigation.tsx",
+      "sha256": "b5c8acd038381544a2ddb16a089e278c9abbd4952b4ed091c8b8647ef1c69f71"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/WorldAuxSections.tsx",
+      "sha256": "4bd5efe3c6c9131868daf084e3d730fe803e9429e0810be884de67f2aa3a5d07"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/assets/AssetLibraryPanel.tsx",
+      "sha256": "2cdbe87c2aceb9b9a4d471dfcdd160005a2e880f2261ca9b7a69732c0532ef76"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/assets/AssetAnnotationEditor.tsx",
+      "sha256": "9d48d4bd20d6ade360f4b517e282331614226f3bf318e3ba1308d14df4721459"
+    }
+  ],
+  "error": "Error: DOM_NOT_SETTLED\n    at until (file:///D:/cm-fb-p6-20260910/tests/plan-loop/asset-forms-headless.mjs:104:161)\n    at async file:///D:/cm-fb-p6-20260910/tests/plan-loop/asset-forms-headless.mjs:116:38"
+}

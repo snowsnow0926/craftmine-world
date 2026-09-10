@@ -9146,6 +9146,27 @@ Controlled host/preload tests must refuse stale, hidden, detached, unshown and f
 ### Player feedback P3 embedded world shortcut scope
 
 The P1 plugin-fullscreen tests exercise exact embedded Craftmine identity, current view ownership, hidden/replaced/zero-size denial, top-frame scope validation and preload disposal without OS input. Seven plugin/Godot bridge tests pass; plugin host/preload strict TypeScript has zero diagnostics. Main window integration and actual unconsumed Escape remain separate verification boundaries.
+### PLAYER-FEEDBACK-P4 — Durable operation metrics
+
+Run the production stream/recorder fixture in `tests/player-feedback/task-metrics.mjs`
+and the actual host-core stdio harness in `tests/player-feedback/task-metrics-core.mjs`
+with a fresh owned D-drive data directory and a same-source host binary. Replay
+multi-round tools, retries, a delegate using another model, compaction, absent
+usage and overlapping generation intervals. Require exact totals without adding
+cache/reasoning twice, explicit partial/unknown coverage, independent model
+bindings and no sum of concurrent TPS. Inject commit-then-lost-reply and permanent
+write refusal, and require exact replay or a durable accounting gap. Query by
+real stored message ID, reject cross-session writes and dual/unknown selectors,
+finish the turn, then terminate/reopen only the owned core process. Preserve
+completed metrics and report interrupted end time as unknown. Do not call a model,
+read user profiles or claim this fixture proves Electron/P5 wiring or P8 billing
+reconciliation. P10 must separately verify Main drains on success/error/abort,
+reads through its finite IPC method, and shows the new DTO per actual owning turn.
+
+
+### P1 durable first-load failure and explicit retry
+
+Thirteen actual Core world tests pass, including four new SQLite failure/restart/replay/tombstone/identity/new-candidate/archive cases. Twenty-eight controlled coordinator and initializer tests pass, including finite persistence receipts, failed receipt identity, no automatic task creation after a terminal failure, and exact explicit retry. Core binary check and strict host/initializer TypeScript pass. No OS input or native renderer is started by this slice. Root must independently verify its private RPC and creation-stage integration in the client; unsuccessful or missing prepare receipts remain an explicit boundary.
 
 
 ### P8 finite authorized model acceptance preflight
@@ -9156,3 +9177,8 @@ Run node tests/player-feedback/P8/preflight.test.mjs with read-only esbuild depe
 ### P8 actual compiled-client and durable request-budget driver
 
 After explicit clean compiled candidate approval, run tests/player-feedback/P8/client-native.mjs using matching source/runtime (or strict package identity). Keep the shared 16-admission journal across profiles and restarts. Verify real fixed prompts, provider-request versus response model identities, durable usage/TPS and actual P5 DOM; then actual checked candidate preview/close/apply, source hashes, full progress and metrics restart. Fixed exercise transport and captures are evidence for separate behavioral review, never automatic proof of a hammer or dog. Require strict owned teardown and retain final failures. No real-model execution is claimed by the offline ten-case preflight.
+
+
+### P4 recorder failure tail and released owner regressions
+
+Run tests/player-feedback/task-metrics.mjs. A model-call double failure followed by a failed gap write must not skip later healthy calls; drain must await appended healthy events then still reject the original gap failure. Release 140 exact owners, remove their Main ownership, replay all stale envelopes and confirm none creates a queue; a current root-owned delegated event must still persist once. Main isCurrent admission compares identity only and never rebinds it. These are production recorder fixtures, not real-model or native-client evidence.

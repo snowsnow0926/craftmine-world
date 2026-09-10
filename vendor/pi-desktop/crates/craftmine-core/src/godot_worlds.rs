@@ -150,6 +150,47 @@ struct StatusArgs {
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct LaunchFailureArgs {
+    world_id: String,
+    init_id: String,
+    candidate_id: String,
+    application_id: String,
+}
+
+fn launch_failure_receipt(args: &LaunchFailureArgs, replayed: bool, cleared: bool) -> Value {
+    json!({"worldId":args.world_id,"initId":args.init_id,"candidateId":args.candidate_id,
+        "applicationId":args.application_id,"recorded":true,"replayed":replayed,"cleared":cleared})
+}
+
+fn validate_launch_identity(db: &Connection, args: &LaunchFailureArgs) -> Result<()> {
+    worlds::validate_id(&args.world_id)?;
+    let init = read(db, &args.world_id)?.context("GODOT_WORLD_NOT_INITIALIZING")?;
+    ensure!(init["initId"] == args.init_id, "GODOT_INIT_LAUNCH_IDENTITY_MISMATCH");
+    let application = super::godot_applications::read(db, &args.application_id)?;
+    ensure!(application["worldId"] == args.world_id && application["candidateId"] == args.candidate_id,
+        "GODOT_INIT_LAUNCH_IDENTITY_MISMATCH");
+    Ok(())
+}
+
+fn require_current_failed_launch(db: &Connection, args: &LaunchFailureArgs) -> Result<()> {
+    let application = super::godot_applications::read(db, &args.application_id)?;
+    ensure!(matches!(application["status"].as_str(), Some("aborted" | "interrupted")),
+        "GODOT_INIT_LAUNCH_NOT_FAILED");
+    let applied: bool = db.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_godot_applications WHERE world_id=?1 AND status='applied')",
+        [&args.world_id], |r| r.get(0))?;
+    ensure!(!applied, "GODOT_WORLD_ALREADY_INITIALIZED");
+    let latest: String = db.query_row("SELECT id FROM craftmine_godot_applications WHERE world_id=?1 ORDER BY created_at DESC,rowid DESC LIMIT 1",
+        [&args.world_id], |r| r.get(0))?;
+    let candidate: Option<String> = db.query_row("SELECT id FROM craftmine_godot_candidates WHERE world_id=?1 AND status='ready' ORDER BY created_at DESC,rowid DESC LIMIT 1",
+        [&args.world_id], |r| r.get(0)).optional()?;
+    ensure!(latest == args.application_id && candidate.as_deref() == Some(args.candidate_id.as_str()),
+        "GODOT_INIT_LAUNCH_STALE");
+    super::godot_jobs::require_ready_candidate(db, &args.candidate_id, &args.world_id)?;
+    Ok(())
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct CopyArgs {
     source_world_id: String,
     target_world_id: String,
@@ -193,6 +234,12 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
             source_build_id TEXT NOT NULL, source_revision INTEGER NOT NULL,
             manifest_hash TEXT NOT NULL, asset_manifest_hash TEXT NOT NULL,
             progress_mode TEXT NOT NULL, created_at INTEGER NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS craftmine_godot_init_launch_failures (
+            application_id TEXT PRIMARY KEY REFERENCES craftmine_godot_applications(id),
+            init_id TEXT NOT NULL REFERENCES craftmine_godot_world_init(id),
+            world_id TEXT NOT NULL REFERENCES craftmine_worlds(id), candidate_id TEXT NOT NULL,
+            cleared INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
         );",
     )?;
     Ok(())
@@ -230,6 +277,45 @@ pub(super) fn confirm(db: &Connection, world: &str, application_id: &str) -> Res
 }
 
 impl TaskJournal {
+    /// Record only a real, settled failed first application. No raw renderer
+    /// diagnostic or caller-selected success state enters durable storage.
+    pub fn godot_world_init_launch_failed(&mut self, args: &Value) -> Result<Value> {
+        self.godot_world_launch_failure_action(args, false)
+    }
+
+    /// Explicit retry clears only this failure; the tombstone prevents delayed
+    /// or duplicated failure delivery from restoring a previously cleared row.
+    pub fn godot_world_init_launch_retry(&mut self, args: &Value) -> Result<Value> {
+        self.godot_world_launch_failure_action(args, true)
+    }
+
+    fn godot_world_launch_failure_action(&mut self, args: &Value, retry: bool) -> Result<Value> {
+        let args: LaunchFailureArgs = serde_json::from_value(args.clone())?;
+        let tx = self.db.transaction_with_behavior(TransactionBehavior::Immediate)?;
+        validate_launch_identity(&tx, &args)?;
+        let existing: Option<(String,String,String,bool)> = tx.query_row(
+            "SELECT init_id,world_id,candidate_id,cleared FROM craftmine_godot_init_launch_failures WHERE application_id=?1",
+            [&args.application_id], |r| Ok((r.get(0)?,r.get(1)?,r.get(2)?,r.get(3)?))).optional()?;
+        if let Some((init,world,candidate,cleared)) = existing {
+            ensure!(init == args.init_id && world == args.world_id && candidate == args.candidate_id,
+                "GODOT_INIT_LAUNCH_IDENTITY_MISMATCH");
+            if !retry || cleared {
+                tx.commit()?;
+                return Ok(launch_failure_receipt(&args, true, cleared));
+            }
+            require_current_failed_launch(&tx, &args)?;
+            tx.execute("UPDATE craftmine_godot_init_launch_failures SET cleared=1,updated_at=?2 WHERE application_id=?1",
+                params![args.application_id,worlds::timestamp()?])?;
+        } else {
+            ensure!(!retry, "GODOT_INIT_LAUNCH_FAILURE_NOT_FOUND");
+            require_current_failed_launch(&tx, &args)?;
+            tx.execute("INSERT INTO craftmine_godot_init_launch_failures(application_id,init_id,world_id,candidate_id,created_at,updated_at) VALUES(?1,?2,?3,?4,?5,?5)",
+                params![args.application_id,args.init_id,args.world_id,args.candidate_id,worlds::timestamp()?])?;
+        }
+        tx.commit()?;
+        Ok(launch_failure_receipt(&args, false, retry))
+    }
+
     /// Create a new Godot world and its initialisation record in one
     /// transaction. No formal build exists yet and the world is not playable.
     pub fn godot_world_initialize(&mut self, args: &Value) -> Result<Value> {
@@ -344,7 +430,7 @@ impl TaskJournal {
         let candidate: Option<String> = tx
             .query_row(
                 "SELECT id FROM craftmine_godot_candidates WHERE world_id=?1 AND status='ready'
-                 ORDER BY created_at DESC LIMIT 1",
+                 ORDER BY created_at DESC,rowid DESC LIMIT 1",
                 [&args.world_id],
                 |row| row.get(0),
             )
@@ -376,8 +462,26 @@ impl TaskJournal {
                 |row| row.get(0),
             )
             .optional()?;
+        let launch_failure: Option<Value> = if applied.is_none() {
+            let row: Option<(String,String)> = tx.query_row(
+                "SELECT f.application_id,f.candidate_id FROM craftmine_godot_init_launch_failures f
+                 WHERE f.world_id=?1 AND f.init_id=?2 AND f.cleared=0
+                 AND f.application_id=(SELECT id FROM craftmine_godot_applications WHERE world_id=?1 ORDER BY created_at DESC,rowid DESC LIMIT 1)",
+                params![args.world_id,init["initId"].as_str()], |r| Ok((r.get(0)?,r.get(1)?))).optional()?;
+            if let Some((application_id,candidate_id)) = row {
+                let binding=LaunchFailureArgs {world_id:args.world_id.clone(),init_id:init["initId"].as_str().unwrap().into(),candidate_id,application_id};
+                validate_launch_identity(&tx,&binding)?;
+                match require_current_failed_launch(&tx,&binding) {
+                    Ok(()) => Some(json!({"worldId":binding.world_id,"initId":binding.init_id,"candidateId":binding.candidate_id,"applicationId":binding.application_id})),
+                    Err(error) if matches!(error.to_string().as_str(),"GODOT_INIT_LAUNCH_STALE"|"GODOT_CANDIDATE_STALE"|"GODOT_INIT_LAUNCH_NOT_FAILED") => None,
+                    Err(error) => return Err(error),
+                }
+            } else {None}
+        } else {None};
         let (status, reason) = if applied.is_some() {
             ("confirmed", None)
+        } else if launch_failure.is_some() {
+            ("failed", Some("GODOT_INITIAL_LOAD_FAILED".into()))
         } else if candidate.is_some() {
             ("checked", None)
         } else if let Some((_, job_status, job_reason)) = &job {
@@ -413,6 +517,7 @@ impl TaskJournal {
             "format":"craftmine.godot-world-init/1","initId":init["initId"],"worldId":args.world_id,
             "title":init["title"],"baseId":init["baseId"],"baseBuild":init["baseBuild"],
             "status":status,"reason":reason,"playable":playable,
+            "failureStage":if launch_failure.is_some(){Some("confirm")}else{None},"launchFailure":launch_failure,
             "applicationId":applied.or(init["applicationId"].as_str().map(str::to_string)),
             "candidateId":candidate,"projectRevision":project,
             "worldRevision":world.summary.revision,"formalBuildId":world.world.build["id"],

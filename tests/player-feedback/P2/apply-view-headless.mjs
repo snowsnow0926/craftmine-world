@@ -91,6 +91,8 @@ try{
  await page.screenshot({path:path.join(out,'voxel-explanation.png')});
  await goto('godot');await page.evaluate(()=>craftmineView.preview('godot-draft'));
  check('Godot preview explains pending formal adoption without polling mutating state', (await state()).reason==='godot-preview'&&await page.evaluate(()=>fixture.calls.every(c=>c.channel!=='godot.candidateState')));
+ check('Godot explanation remains above the sibling candidate surface',await page.evaluate(()=>{const rect=document.getElementById('apply-explanation').getBoundingClientRect();return Math.round(rect.top)===122&&Math.round(rect.bottom)===222&&Math.round(rect.height)===100;}));
+ await page.screenshot({path:path.join(out,'godot-explanation.png')});
  await page.evaluate(()=>{fixture.rejectBeforeApply=true;fixture.wrongPreviewIdentity=true;});await submit(false);
  await page.waitForFunction(()=>document.getElementById('apply-explanation').dataset.reason==='confirming');
  check('Wrong candidate-state identity cannot unlock an uncertain attempt',await page.evaluate(()=>document.getElementById('close-preview').disabled));

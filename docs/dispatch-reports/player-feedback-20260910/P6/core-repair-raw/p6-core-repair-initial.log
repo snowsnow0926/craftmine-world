@@ -1,0 +1,116 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling typenum v1.20.1
+   Compiling find-msvc-tools v0.1.11
+   Compiling unicode-ident v1.0.24
+   Compiling shlex v2.0.1
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling pkg-config v0.3.34
+   Compiling vcpkg v0.2.15
+   Compiling getrandom v0.4.3
+   Compiling zmij v1.0.23
+   Compiling cfg-if v1.0.4
+   Compiling foldhash v0.2.0
+   Compiling anyhow v1.0.104
+   Compiling windows-link v0.2.1
+   Compiling serde_json v1.0.151
+   Compiling const-oid v0.10.2
+   Compiling serde v1.0.229
+   Compiling smallvec v1.15.2
+   Compiling fastrand v2.5.0
+   Compiling fallible-iterator v0.3.0
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling once_cell v1.21.4
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling bitflags v2.13.1
+   Compiling cpufeatures v0.3.0
+   Compiling base64 v0.23.1
+   Compiling windows-sys v0.61.2
+   Compiling hashbrown v0.17.1
+   Compiling cc v1.4.3
+   Compiling hashlink v0.12.1
+   Compiling hybrid-array v0.4.14
+   Compiling tempfile v3.27.0
+   Compiling syn v3.0.3
+   Compiling libsqlite3-sys v0.38.2
+   Compiling crypto-common v0.2.2
+   Compiling block-buffer v0.12.1
+   Compiling digest v0.11.3
+   Compiling sha2 v0.11.0
+   Compiling serde_derive v1.0.229
+   Compiling rusqlite v0.40.2
+   Compiling craftmine-core v0.1.0 (D:\cm-fb-p6-20260910\vendor\pi-desktop\crates\craftmine-core)
+warning: unused import: `load_manifest`
+  --> crates\craftmine-core\src\godot_builds.rs:21:22
+   |
+21 |     godot_projects::{load_manifest, ordinary, valid_hash, Manifest},
+   |                      ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0599]: no method named `encode` found for struct `GeneralPurpose` in the current scope
+   --> crates\craftmine-core\src\godot_worlds_tests.rs:19:110
+    |
+ 19 | ...   "files":[{"path":"craftmine_shared/runtime_bridge.gd","bytesBase64":base64::prelude::BASE64_STANDARD.encode(include_bytes!("t...
+    |                                                                                                            ^^^^^^
+    |
+   ::: C:\Users\WINDOWS\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\base64-0.23.1\src\engine\mod.rs:148:8
+    |
+148 |     fn encode<T: AsRef<[u8]>>(&self, input: T) -> String {
+    |        ------ the method is available for `GeneralPurpose` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `encode_slice` with a similar name, but with different arguments
+   --> C:\Users\WINDOWS\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\base64-0.23.1\src\engine\mod.rs:227:5
+    |
+227 | /     fn encode_slice<T: AsRef<[u8]>>(
+228 | |         &self,
+229 | |         input: T,
+230 | |         output_buf: &mut [u8],
+231 | |     ) -> Result<usize, EncodeSliceError> {
+    | |________________________________________^
+help: trait `Engine` which provides `encode` is implemented but not in scope; perhaps you want to import it
+    |
+  1 + use base64::Engine;
+    |
+
+error[E0599]: no method named `encode` found for struct `GeneralPurpose` in the current scope
+   --> crates\craftmine-core\src\godot_worlds_tests.rs:58:92
+    |
+ 58 |             "bytes"=>bad["files"][0]["bytesBase64"]=json!(base64::prelude::BASE64_STANDARD.encode(b"extends Node\n")),
+    |                                                                                            ^^^^^^
+    |
+   ::: C:\Users\WINDOWS\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\base64-0.23.1\src\engine\mod.rs:148:8
+    |
+148 |     fn encode<T: AsRef<[u8]>>(&self, input: T) -> String {
+    |        ------ the method is available for `GeneralPurpose` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `encode_slice` with a similar name, but with different arguments
+   --> C:\Users\WINDOWS\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\base64-0.23.1\src\engine\mod.rs:227:5
+    |
+227 | /     fn encode_slice<T: AsRef<[u8]>>(
+228 | |         &self,
+229 | |         input: T,
+230 | |         output_buf: &mut [u8],
+231 | |     ) -> Result<usize, EncodeSliceError> {
+    | |________________________________________^
+help: trait `Engine` which provides `encode` is implemented but not in scope; perhaps you want to import it
+    |
+  1 + use base64::Engine;
+    |
+
+warning: variable does not need to be mutable
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+For more information about this error, try `rustc --explain E0599`.
+warning: `craftmine-core` (lib test) generated 2 warnings
+error: could not compile `craftmine-core` (lib test) due to 2 previous errors; 2 warnings emitted

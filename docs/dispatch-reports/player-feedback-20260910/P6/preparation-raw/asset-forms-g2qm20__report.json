@@ -1,0 +1,368 @@
+{
+  "kind": "actual-navigation-forms-finite-probe-with-fixture-host",
+  "sourceCommit": null,
+  "checks": [
+    {
+      "name": "old owner rejected",
+      "passed": true
+    },
+    {
+      "name": "actual auxiliary forms open actual navigation sheet",
+      "passed": true
+    },
+    {
+      "name": "selection restricted to observed cards",
+      "passed": true
+    },
+    {
+      "name": "real favorite form updates acknowledgement",
+      "passed": true
+    },
+    {
+      "name": "favorites filter uses actual form",
+      "passed": true
+    },
+    {
+      "name": "unfavorite removes filtered card with detail retained",
+      "passed": true
+    },
+    {
+      "name": "tag form uses submitted DOM value without React internals",
+      "passed": true
+    },
+    {
+      "name": "other asset cannot be annotated",
+      "passed": true
+    },
+    {
+      "name": "actual directory import form scans the host-picked root",
+      "passed": true
+    },
+    {
+      "name": "actual confirm form supplies the selected scan path for an empty picker file path",
+      "passed": true
+    },
+    {
+      "name": "preview refuses a nonselected asset",
+      "passed": true
+    },
+    {
+      "name": "preview refuses a different version of the same asset",
+      "passed": true
+    },
+    {
+      "name": "actual preview form shows acknowledged fixture preview without writing metadata",
+      "passed": true
+    },
+    {
+      "name": "finite import probe cannot supply a filesystem path",
+      "passed": true
+    },
+    {
+      "name": "close form unmounts sheet",
+      "passed": true
+    },
+    {
+      "name": "no focus or pointer lock",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Fixture host: proves navigation and payloads, not the Rust asset catalog.",
+    "No real model call and no visible-window composition."
+  ],
+  "sourceFiles": [
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/craftmine-assets-acceptance.ts",
+      "sha256": "5883df0aa9d22f7461518d0daad23c5ca1cd330810fbda995bb00e6b69ededf2"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/CraftmineNavigation.tsx",
+      "sha256": "b5c8acd038381544a2ddb16a089e278c9abbd4952b4ed091c8b8647ef1c69f71"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/WorldAuxSections.tsx",
+      "sha256": "4bd5efe3c6c9131868daf084e3d730fe803e9429e0810be884de67f2aa3a5d07"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/assets/AssetLibraryPanel.tsx",
+      "sha256": "8725a1c82be9d9dc3c63f4d7077bcdfdd2397219278a434e0814d70947121cd3"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/assets/AssetAnnotationEditor.tsx",
+      "sha256": "9d48d4bd20d6ade360f4b517e282331614226f3bf318e3ba1308d14df4721459"
+    }
+  ],
+  "calls": [
+    {
+      "channel": "world.list",
+      "payload": {}
+    },
+    {
+      "channel": "workbench.capabilities",
+      "payload": {
+        "worldId": "w1"
+      }
+    },
+    {
+      "channel": "world.createOptions",
+      "payload": {
+        "worldId": "w1"
+      }
+    },
+    {
+      "channel": "task.current",
+      "payload": {
+        "worldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "worldId": "w1",
+        "scope": "local-library",
+        "offset": 0,
+        "limit": 5,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.read",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.previewRead",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.usage",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.versions",
+      "payload": {
+        "assetId": "asset-a",
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:26bc6c07-b619-46a5-bf4a-a098b6759d12",
+        "favorite": true,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": true,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:bc6e48bc-28cf-41f3-9d30-9132ee0c26d8",
+        "favorite": false,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": true,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:2fa8daac-2f2e-4a4c-b1a6-6050df1ad55e",
+        "tags": [
+          "常用",
+          "建筑"
+        ],
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": true,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "world.pickDirectory",
+      "payload": {}
+    },
+    {
+      "channel": "asset.scan",
+      "payload": {
+        "sourceRoot": "D:/owned-fixture-assets",
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.import",
+      "payload": {
+        "operationId": "asset-import:fixture.png:1:fixture.png",
+        "sourceRoot": "D:/owned-fixture-assets",
+        "sourcePath": "D:/owned-fixture-assets/fixture.png",
+        "assetId": "fixture.png",
+        "version": 1,
+        "kind": "object",
+        "mediaKind": "image",
+        "path": "fixture.png",
+        "mediaType": "image/png",
+        "displayName": "fixture.png",
+        "source": {
+          "origin": "player-import",
+          "author": "",
+          "license": "",
+          "licenseStatus": "unknown"
+        },
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.read",
+      "payload": {
+        "assetId": "fixture.png",
+        "version": 1,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.previewRead",
+      "payload": {
+        "assetId": "fixture.png",
+        "version": 1,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.usage",
+      "payload": {
+        "assetId": "fixture.png",
+        "version": 1,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.versions",
+      "payload": {
+        "assetId": "fixture.png",
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.preview",
+      "payload": {
+        "assetId": "fixture.png",
+        "version": 1,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.previewRead",
+      "payload": {
+        "assetId": "fixture.png",
+        "version": 1,
+        "ownerWorldId": "w1"
+      }
+    }
+  ],
+  "passed": true
+}

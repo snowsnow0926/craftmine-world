@@ -1,0 +1,28 @@
+{
+  "format": "craftmine.external-acceptance-driver/1",
+  "createdAt": "2026-09-10T07:25:27.147Z",
+  "patchCommit": "303632b8e018116f5188a0ca26e07f5603540f79",
+  "frozenProductionCommit": "b9c0c0d5bdf371280d1a9814773d614e02920e16",
+  "root": "D:/cm-fb-20260910",
+  "files": [
+    {
+      "file": "D:\\cm-fb-20260910\\test-results\\legacy-driver-303632b8\\legacy-retry-client.mjs",
+      "sha256": "2a49aaed9f97f69d223fdc887c51e203c684e97db882bef4018fb3b63779d635",
+      "bytes": 15823,
+      "originalFile": "D:\\cm-fb-p7-20260910\\tests\\player-feedback\\P1\\legacy-retry-client.mjs",
+      "originalSha256": "378343f11f3f45ffdabc8bcc9c0b4ff97be835c5ba3937cdef2065640032534d"
+    },
+    {
+      "file": "D:\\cm-fb-20260910\\test-results\\legacy-driver-303632b8\\legacy-retry-contract.mjs",
+      "sha256": "9fbe6ac08565360f3330712070acfb0abdc13c3614b7814c430ac78c926ca6d2",
+      "bytes": 3336,
+      "originalFile": "D:\\cm-fb-p7-20260910\\tests\\player-feedback\\P1\\legacy-retry-contract.mjs",
+      "originalSha256": "9fbe6ac08565360f3330712070acfb0abdc13c3614b7814c430ac78c926ca6d2"
+    }
+  ],
+  "changes": [
+    "Only test imports relocate to the frozen root; local contract carries 303632b8 applied-receipt shape correction.",
+    "Driver records its exact external bytes and contract/fixture hashes.",
+    "Fixture esbuild entry remains root/tests/player-feedback/P1/legacy-retry-fixture.mjs and imports frozen root production modules. No tracked product file was changed."
+  ]
+}

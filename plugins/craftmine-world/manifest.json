@@ -1518,6 +1518,7 @@
       }
     ]
   },
+  "fs": { "read": { "root": "userSelected" } },
   "permissions": [
     "ui.view",
     "agent.tool.register",

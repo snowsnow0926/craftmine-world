@@ -1,0 +1,81 @@
+
+[app/timing] [timing] kind=boot phase=when-ready elapsedMs=119
+[app/lifecycle] app boot craftmine world 0.14.4-preview.1
+[app/timing] [timing] kind=boot phase=backends-start elapsedMs=124
+[app/timing] [timing] kind=boot phase=host elapsedMs=695 spawnedMs=4 handshakeMs=566 durationMs=570 ok=true
+[app/runtime] host-core handshake ok
+[agent/runtime] [agent-sidecar] ready (host-proxy mode)
+[app/timing] [timing] kind=boot phase=sidecar elapsedMs=839 spawnedMs=6 configureMs=132 durationMs=138 ok=true
+[app/runtime] agent sidecar configured
+[app/plugin] plugin.service
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=2031 pluginId=craftmine.world durationMs=1191 ok=true
+[app/plugin] plugin restored
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=2103 pluginId=pi.browser durationMs=71 ok=true
+[app/plugin] plugin restored
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=2176 pluginId=pi.files durationMs=73 ok=true
+[app/plugin] plugin restored
+[app/timing] [timing] kind=boot phase=mcp-refresh elapsedMs=2179 durationMs=3 ok=true
+[app/timing] [timing] kind=boot phase=backends-ready elapsedMs=2180
+[app/timing] [timing] kind=boot phase=window-created elapsedMs=2204
+[app/timing] [timing] kind=boot phase=window-loaded elapsedMs=2313 durationMs=108 ok=true
+[app/timing] [timing] kind=boot phase=window-ready elapsedMs=2313
+[app/timing] [timing] kind=boot phase=window-rendered-offscreen elapsedMs=2314
+HEADLESS PAGE 1: [timing] kind=boot phase=renderer-bootstrap durationMs=8 ok=true
+[app/timing] [timing] kind=boot phase=renderer-bootstrap durationMs=8 ok=true
+[app/plugin] plugin.api
+HEADLESS PAGE 3: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+HEADLESS PAGE 3: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+HEADLESS PAGE 3: Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.
+[app/plugin] plugin.api
+HEADLESS PAGE 4: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+HEADLESS PAGE 4: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+HEADLESS PAGE 4: Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 4: [.WebGL-0x29dc0f0a2000] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.

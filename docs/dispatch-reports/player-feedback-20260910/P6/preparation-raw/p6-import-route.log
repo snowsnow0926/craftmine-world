@@ -1,0 +1,14 @@
+✔ import consumes the real selected directory grant before dispatch and before returning (1.1355ms)
+✔ scan authorizes the directory; preview uses only a managed identity (0.2101ms)
+✔ missing or revoked grants, stale owners and unknown path fields dispatch nothing (0.4472ms)
+✔ a world switch during authorization cannot dispatch into the old world (0.5697ms)
+✔ late durable import response is rejected after grant revocation; retry rechecks grant (0.1931ms)
+✔ late preview response cannot paint another owner or viewing session (0.261ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 136.3124
