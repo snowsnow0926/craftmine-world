@@ -1,0 +1,18 @@
+{"out":"D:\\cm-fb-p6-20260910\\test-results\\asset-compiled-worker-CX6SEi","passed":true,"checks":5}
+✔ compiled standalone asset worker decodes PNG, exits normally, and keeps cancellation/timeout (198.1725ms)
+✔ actual success worker exits before the caller receives its result (28.189ms)
+✔ actual cancel worker exits before the caller receives its result (5.2551ms)
+✔ actual timeout worker exits before the caller receives its result (16.2626ms)
+✔ actual error worker exits before the caller receives its result (18.4456ms)
+✔ finite missing-exit fixture rejects after the explicit bound even if terminate resolves (0.7245ms)
+✔ host cancel and dispose wait for the active worker promise rather than only signalling abort (2.452ms)
+{"out":"D:\\cm-fb-p6-20260910\\test-results\\asset-worker-exit-Fzh9K0","passed":true,"cases":7}
+✔ host retains unconfirmed termination for dispose and refuses further workers (1.5652ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 433.58
