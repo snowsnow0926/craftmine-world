@@ -10,7 +10,8 @@ evidence of model creation or gameplay success.
 `installP8NativeAcceptance` takes `enabled`, `window`, `world`, `call`, `panel`
 and `active`. Its exact message envelope is `{type,id,method,payload}` with
 type `craftmine-acceptance-p8`. Methods are initialize, submit, snapshot and
-abort. Payload contains a fixed caseId (hammer or dog); initialize additionally
+abort, plus `exercise` when optional `godot: GodotGameplayAccess` is installed.
+Payload contains a fixed caseId (hammer or dog); initialize additionally
 requires worldId. There is no caller prompt, selector, script, host path or RPC.
 The selected world is checked before and after asynchronous reads. Each case
 has one session/provider/world binding and one submission. Reopening can only
@@ -40,3 +41,32 @@ not establish model availability, output quality, P4 live usage reconciliation,
 or successful gameplay. Raw request/response evidence, usage coverage and timing
 must preserve errors and unknown values; relay and runtime clocks have different
 observation boundaries and must not be presented as identical measurements.
+
+The exercise operation uses only the existing game action adapter: fixed hammer
+equip/look/fire/wait or fixed dog talk/move/wait. It retains failures and game-view
+captures. It does not write expected state or inspect caller-selected nodes.
+Successful command transport is not proof of pickup, visible lightning, cooldown,
+or bounded following. The driver leaves behavior pending for independent review
+of actual generated source and images; it cannot declare a model case passed
+merely because build/check/application/save succeeded.
+
+The native driver is `tests/player-feedback/P8/client-native.mjs`. It requires
+`CRAFTMINE_P8_APPROVED_COMMIT` to equal the clean source HEAD and matches its own
+script bytes against that source. Development mode requires the same runtime
+source and runtime-resource source commit. Packaged mode retains the existing
+strict ASAR/build-manifest/core/runtime identity checks. Output is a fresh D-disk
+headless profile. `test-results/p8-authorized-20260910.ndjson` is the shared
+cross-profile request admission journal: it uses an exclusive lock, rejects
+incomplete bytes and fsyncs each reservation before forwarding. Do not choose
+another source root to reset the authorized quota. A stale lock requires explicit
+operator recovery after verifying its process has ended; the driver fails closed.
+
+Usage reconciliation reads only the owned profile's `task_metric_calls` joined
+to the exact session/turn. It compares reported counts against final provider
+usage (cache read/write and included reasoning are not double-counted), checks
+the Main DTO and actual task-metrics DOM, and independently recomputes TPS from
+durable client timestamps. Provider response aliases remain diagnostic data.
+The driver reads hash-verified built files only in that owned profile, retains
+original candidate receipts, and checks complete saved state and metrics after
+restart. Teardown requires zero exit, no forced stop and empty input/page/shutdown
+failure lists. Finally failures are persisted rather than relabeled as success.
