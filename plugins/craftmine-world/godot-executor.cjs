@@ -55,6 +55,9 @@ const BROKER_TASK_LOG_BYTES = 65536;
 const HEARTBEAT_MS = 30000;
 const JOB_TIMEOUT_MS = 600000;
 const PREFLIGHT_TIMEOUT_MS = 120000;
+// Optional retirement waits for complete pipes, without changing the build's
+// existing exit result or waiting indefinitely for an inherited/open pipe.
+const RETIREMENT_CLOSE_TIMEOUT_MS = 5000;
 const CANCEL_GRACE_MS = 15000;
 const BLOCKED_RETRY_MS = 600000;
 const MAX_JOBS = 2;
@@ -414,23 +417,30 @@ function createGodotExecutor(core, options = {}) {
         stderr:(run.stderr ?? '').slice(0, 600)};
       warn('preflight broker detail:', JSON.stringify(result.detail));
     }
-    if (result.ok) result.retireBin = captureCurrentBin(run, taskId, 'version');
+    if (result.ok) result.retireBin = await captureCurrentBin(run, taskId, 'version');
     return result;
   }
 
-  function captureCurrentBin(run, requestId, operation) {
+  async function captureCurrentBin(run, requestId, operation) {
+    if (!run?.response?.binRetirement) return null;
+    let closedTransport;
     try {
-      return captureBinRetirement({tasksRoot, run, requestId, operation,
+      closedTransport = await run.retirementClose;
+      return captureBinRetirement({tasksRoot, run:{...run, closedTransport}, requestId, operation,
         expectedEngineSha256:discovery.measured?.editorSha256,
         expectedBrokerSha256:discovery.measuredBrokerSha256});
     } catch (error) {
-      warn('bin retirement unavailable; files preserved:', String(error?.message ?? error));
+      warn('bin retirement unavailable; files preserved:', String(error?.message ?? error), JSON.stringify({
+        taskId:requestId, stdioClosed:closedTransport?.stdioClosed === true,
+        reason:closedTransport?.reason ?? closedTransport?.parseError ?? closedTransport?.streamError ?? null,
+        stderr:closedTransport?.stderr ?? run.stderr ?? '', stderrBytes:closedTransport?.stderrBytes ?? null,
+      }));
       return null;
     }
   }
 
-  function rememberBin(entry, run, operation) {
-    const retire = captureCurrentBin(run, run.requestId, operation);
+  async function rememberBin(entry, run, operation) {
+    const retire = await captureCurrentBin(run, run.requestId, operation);
     if (retire) (entry.binRetirements ??= []).push(retire);
   }
 
@@ -521,15 +531,36 @@ function createGodotExecutor(core, options = {}) {
       env:{...process.env, SystemRoot:process.env.SystemRoot},
     });
     let stdout = '', stderr = '', settled = false, cancelled = false, oversized = false, timedOut = false;
+    let stderrBytes = 0, exitStderrBytes = 0, streamError = null;
+    let exitSeen = false, observedExitCode = null, observedExitSignal = null, closeTimer = null, closeSettled = false;
+    let resolveClose;
+    const retirementClose = new Promise(resolve => { resolveClose = resolve; });
+    const finishClose = value => {
+      if (closeSettled) return;
+      closeSettled = true; clearTimeout(closeTimer); resolveClose(value);
+    };
     let resolveRun;
     const done = new Promise(resolve => { resolveRun = resolve; });
-    const finish = value => { if (!settled) { settled = true; clearTimeout(timer); resolveRun(value); } };
+    const finish = value => { if (!settled) { settled = true; clearTimeout(timer); resolveRun({...value, retirementClose}); } };
     child.stdout.on('data', chunk => {
-      stdout += chunk;
+      if (!oversized) stdout += chunk;
       if (Buffer.byteLength(stdout) > BROKER_RESPONSE_BYTES) { oversized = true; cancel('response too large'); }
     });
-    child.stderr.on('data', chunk => { stderr = bounded(stderr + chunk, 8192); });
+    child.stderr.on('data', chunk => { stderrBytes += Buffer.byteLength(chunk); stderr = bounded(stderr + chunk, 8192); });
+    child.stdout.on('error', error => { streamError = 'stdout:' + String(error?.message ?? error).slice(0, 300); });
+    child.stderr.on('error', error => { streamError = 'stderr:' + String(error?.message ?? error).slice(0, 300); });
+    child.on('close', (code, signal) => {
+      let response = null, parseError = null;
+      try { response = JSON.parse(stdout.trim()); } catch (error) { parseError = error.message; }
+      // Node's ChildProcess close event follows process exit and closure of
+      // stdio. This final parse includes every byte, unlike the exit snapshot.
+      finishClose({stdioClosed:true, exitSeen, exitCode:code, signal,
+        exitMatches:code === observedExitCode && signal === observedExitSignal,
+        response, parseError, stderr, stderrBytes, lateStderr:stderrBytes !== exitStderrBytes,
+        streamError, cancelled, timedOut, oversized});
+    });
     child.on('error', error => {
+      streamError = 'process:' + String(error?.message ?? error).slice(0, 300);
       // A failed kill or transport error can leave a live broker holding a task
       // root, so this path recovers like any other non-clean ending.
       const failed = recovery => finish({ok:false, reason:'GODOT_BROKER_SPAWN_FAILED', error:error.message,
@@ -537,6 +568,9 @@ function createGodotExecutor(core, options = {}) {
       recoverTasks('broker-error').then(failed, () => failed(null));
     });
     child.on('exit', (code, signal) => {
+      exitSeen = true; observedExitCode = code; observedExitSignal = signal; exitStderrBytes = stderrBytes;
+      if (!closeSettled) closeTimer = setTimeout(() => finishClose({stdioClosed:false, reason:'GODOT_BROKER_STDIO_CLOSE_TIMEOUT',
+        stderr, stderrBytes, streamError}), RETIREMENT_CLOSE_TIMEOUT_MS);
       let response = null, parseError = null;
       const line = stdout.trim();
       if (line) { try { response = JSON.parse(line); } catch (error) { parseError = error.message; } }
@@ -857,7 +891,8 @@ function createGodotExecutor(core, options = {}) {
           reason:importCheck.reason ?? 'GODOT_COMPILE_FAILED',
         });
       }
-      rememberBin(entry, importRun, 'import');
+      await rememberBin(entry, importRun, 'import');
+      if (entry.cancelled) return await abandon(entry, 'GODOT_JOB_CANCELLED');
       await core.call('godotJob.progress', {jobId, token, stage:'export', percent:45}, 20000).catch(() => {});
 
       let artifacts = [], bridgeReplaced = false, runtime = null, descriptorSource = null, exportLog = '';
@@ -886,7 +921,8 @@ function createGodotExecutor(core, options = {}) {
         }
         await core.call('godotJob.progress', {jobId, token, stage:'stage-artifacts', percent:70}, 20000).catch(() => {});
         const staged = await stageArtifacts(exportRun.response, claim.artifactsRoot, discovery.bridge);
-        rememberBin(entry, exportRun, 'exportWeb');
+        await rememberBin(entry, exportRun, 'exportWeb');
+        if (entry.cancelled) return await abandon(entry, 'GODOT_JOB_CANCELLED');
         artifacts = staged.artifacts;
         bridgeReplaced = staged.bridgeReplaced;
         log('staged', artifacts.length, 'artifacts into', path.resolve(claim.artifactsRoot));

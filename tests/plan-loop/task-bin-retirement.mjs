@@ -37,6 +37,9 @@ async function fixture(operation = 'import') {
     brokerSha256:hash(contents[1]), binRetirement:proof};
   const run = {ok:true, exitCode:0, signal:null, cancelled:false, timedOut:false, oversized:false,
     parseError:null, recovery:null, journalRetired:true, response};
+  run.closedTransport = {stdioClosed:true, exitSeen:true, exitMatches:true, exitCode:0, signal:null,
+    response:structuredClone(response), parseError:null, streamError:null, stderr:'', stderrBytes:0,
+    lateStderr:false, cancelled:false, timedOut:false, oversized:false};
   return {root, tasksRoot, response, proof, run, operation, identity, options:{tasksRoot, run, requestId, operation,
     expectedEngineSha256:hash(contents[0]), expectedBrokerSha256:hash(contents[1])}};
 }

@@ -92,6 +92,12 @@ function captureBinRetirement({tasksRoot, run, requestId, operation, expectedEng
   if (!requestId.startsWith({version:'pf-', import:'im-', exportWeb:'ex-'}[operation])) fail('TASK_INVALID');
   if (run.ok !== true || run.exitCode !== 0 || run.signal != null || run.cancelled || run.timedOut || run.oversized
       || run.parseError || run.recovery || run.journalRetired !== true) fail('TRANSPORT_UNCONFIRMED');
+  const closed = run.closedTransport;
+  if (closed?.stdioClosed !== true || closed.exitSeen !== true || closed.exitMatches !== true
+      || closed.exitCode !== 0 || closed.signal != null || closed.parseError || closed.streamError
+      || closed.cancelled || closed.timedOut || closed.oversized || closed.lateStderr !== false
+      || !Number.isSafeInteger(closed.stderrBytes) || closed.stderrBytes < 0 || closed.stderrBytes > 8192
+      || typeof closed.stderr !== 'string' || !isDeepStrictEqual(closed.response, receipt)) fail('STDIO_UNCONFIRMED');
   if (receipt.taskId !== requestId || receipt.requestId !== requestId || receipt.operation !== operation
       || receipt.state !== 'succeeded' || receipt.exitCode !== 0 || receipt.error !== null
       || receipt.cleanup?.verified !== true || receipt.cleanup.profileHresult !== 0
@@ -144,6 +150,8 @@ function captureBinRetirement({tasksRoot, run, requestId, operation, expectedEng
         for (let i = 0; i < 2; i++) stats.push(await verifiedFile(path.join(bin, NAMES[i]), proof.files[i]));
         await writeNew(path.join(root, 'bin-retirement-ack.json'), {
           format:'craftmine.godot-bin-retirement-ack/1', brokerReceipt:receipt, confirmation,
+          brokerTransport:{stdioClosed:true, exitCode:closed.exitCode, signal:closed.signal,
+            stderr:closed.stderr, stderrBytes:closed.stderrBytes},
         });
         acknowledged = true;
         // No recursive removal, no unknown entries, no artifact/log/source
