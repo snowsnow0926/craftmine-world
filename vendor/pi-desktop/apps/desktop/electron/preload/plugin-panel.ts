@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { attachImmersionInput, IMMERSION_INPUT_CHANNEL } from "../../shared/craftmine-immersion";
 import {
   PLUGIN_PANEL_TITLEBAR_HEIGHT,
   PLUGIN_PANEL_CHROME_META_NAME,
@@ -17,6 +18,12 @@ import { attachFullscreenEscape } from "../../shared/world-fullscreen-shortcuts"
 
 const worldShortcutScope = process.argv.find(argument => argument.startsWith(PLUGIN_WORLD_SHORTCUT_SCOPE_PREFIX))?.slice(PLUGIN_WORLD_SHORTCUT_SCOPE_PREFIX.length);
 if (process.argv.includes(PLUGIN_PANEL_EMBEDDED_ARGUMENT) && worldShortcutScope && /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(worldShortcutScope)) {
+  const disposeInput = attachImmersionInput(window, listener => {
+    const wrapped = (_event: unknown, blocked: boolean) => listener(blocked);
+    ipcRenderer.on(IMMERSION_INPUT_CHANNEL, wrapped);
+    return () => ipcRenderer.removeListener(IMMERSION_INPUT_CHANNEL, wrapped);
+  }, {gameFramesOnly:true});
+  window.addEventListener("pagehide", disposeInput, {once:true});
   const disposeEscape = attachFullscreenEscape(window, {
     onExit: () => { ipcRenderer.send(PLUGIN_WORLD_FULLSCREEN_EXIT_CHANNEL, {scope: worldShortcutScope}); },
   });

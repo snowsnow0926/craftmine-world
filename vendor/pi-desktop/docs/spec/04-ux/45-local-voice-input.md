@@ -46,7 +46,7 @@ permissions to a world/plugin view. Native blur/destruction clears that grant.
 `VoiceMicrophonePermissionGate` validates the owner, exact document URL, main-frame
 identity and bounded request/context identity. Grants expire after 10 seconds using
 a monotonic clock and are consumed by one matching audio-only media request. The
-permission check handler always returns false; only the request handler consumes
+media permission check always returns false; only the request handler consumes
 the grant. This follows [Electron's permission handler contract](https://www.electronjs.org/docs/latest/api/session).
 
 ## Validation

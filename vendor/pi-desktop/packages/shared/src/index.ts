@@ -1,5 +1,6 @@
 export * from "./activation.js";
 export * from "./craftmine-immersion.js";
+export * from "./voice-input.js";
 export * from "./protocol.js";
 export * from "./errors.js";
 export * from "./types.js";

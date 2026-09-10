@@ -34,6 +34,7 @@ const GODOT_CHROME_HEIGHT = 76;
 document.documentElement.style.setProperty('--godot-chrome',GODOT_CHROME_HEIGHT+'px');
 // Godot worlds run in the sibling Electron view, not in the voxel srcdoc iframe.
 let godot=false;
+let immersionHeld=false;
 const godotStateLabels={loading:'载入中',ready:'已就绪',paused:'已暂停',saving:'保存中',saved:'已保存',failed:'运行失败',closed:'已关闭'};
 function isGodotWorld(record) {
   return record?.world?.build?.engine?.kind==='godot-web' ||
@@ -50,6 +51,11 @@ if(bridge) {
   void bridge.invoke('app.getAppearance').then(applyAppearance).catch(()=>{});
   bridge.on?.('appearance:changed',applyAppearance);
   bridge.on?.('godot-world:state',onGodotState);
+  bridge.on?.('craftmine-immersion',value=>{
+    immersionHeld=value===true;
+    if(!godot&&current)send('immersion',{paused:immersionHeld});
+    if(previewFrame&&preview)previewFrame.contentWindow.postMessage({channel:'craftmine-host/1',nonce:preview.nonce,type:'immersion',paused:immersionHeld},'*');
+  });
 }
 
 // State is broadcast by the Electron host; this page never infers it.
@@ -259,7 +265,7 @@ addEventListener('message',event=>{
   const message=event.data;
   if(godot)return;
   if(event.source!==frame.contentWindow||message?.channel!=='craftmine-game/1'||message.nonce!==nonce)return;
-  if(message.type==='ready')send('load',{...current.world,worldId:current.id});
+  if(message.type==='ready')send('load',{...current.world,worldId:current.id,immersionPaused:immersionHeld});
   if(message.type==='selection')void workbench?.setSelection(message);
   if(message.type==='loaded') {
     if(message.version!==current.world.build.id){showError(Error('载入版本不一致'));return;}

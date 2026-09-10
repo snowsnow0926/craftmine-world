@@ -1,4 +1,6 @@
 import { session, shell, WebContentsView, type BrowserWindow } from "electron";
+import type { CraftmineImmersionState, CraftmineImmersionShortcut } from "@pi-desktop/shared";
+import { NO_IMMERSION, IMMERSION_INPUT_CHANNEL, excludeImmersion, immersionShortcut, immersionBlocksInput } from "../../shared/craftmine-immersion";
 import { pathToFileURL } from "node:url";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
@@ -72,6 +74,17 @@ export function pluginViewKey(pluginId: string, viewId: string): string {
 }
 
 export class PluginViewHost {
+  private immersion = NO_IMMERSION;
+  private requestedBounds: PluginViewBounds = { x:0, y:0, width:0, height:0 };
+  onImmersionShortcut?: (action: CraftmineImmersionShortcut) => void;
+
+  setImmersion(state: CraftmineImmersionState): void {
+    this.immersion = state;
+    this.setBounds(this.requestedBounds);
+    const wc = this.headlessWorldContents();
+    if (wc && !wc.isDestroyed()) wc.send(IMMERSION_INPUT_CHANNEL, immersionBlocksInput(state));
+    if (wc && !wc.isDestroyed()) wc.send("pi-plugin-panel-event:craftmine-immersion", immersionBlocksInput(state));
+  }
   private views = new Map<string, LiveView>();
   private disposed = false;
   private disposal: Promise<void> | null = null;
@@ -179,12 +192,13 @@ export class PluginViewHost {
 
   setBounds(bounds: PluginViewBounds): void {
     if (this.disposed) return;
-    this.bounds = {
+    this.requestedBounds = {
       x: Math.max(0, Math.round(Number(bounds.x) || 0)),
       y: Math.max(0, Math.round(Number(bounds.y) || 0)),
       width: Math.max(0, Math.round(Number(bounds.width) || 0)),
       height: Math.max(0, Math.round(Number(bounds.height) || 0)),
     };
+    this.bounds = excludeImmersion(this.requestedBounds, this.immersion);
     const visible = this.visibleKey ? this.views.get(this.visibleKey) : null;
     visible?.view.setBounds(this.bounds);
     this.emitSurface();
@@ -386,20 +400,30 @@ export class PluginViewHost {
     if (worldShortcutScope) {
       const current = (): boolean => {
         const entry = this.views.get(pluginViewKey("craftmine.world", "world"));
-        return !!this.onWorldFullscreenShortcut && this.visibleKey === entry?.key && entry?.view === view &&
+        return this.visibleKey === entry?.key && entry?.view === view &&
           !wc.isDestroyed() && !!this.window && !this.window.isDestroyed() &&
           this.bounds.width > 0 && this.bounds.height > 0 && this.window.contentView.children.includes(view);
       };
       wc.on("before-input-event", (event, input) => {
         if (!current()) return;
+        const action = this.immersion.active && !this.immersion.blocked ? immersionShortcut(input, this.immersion.overlay !== "closed") : null;
+        if (action && action !== "escape") { event.preventDefault(); this.onImmersionShortcut?.(action); return; }
         const decision = nativeFullscreenKeyDecision(input);
         if (decision.preventDefault) event.preventDefault();
         if (decision.action) this.onWorldFullscreenShortcut?.(decision.action);
       });
+      wc.on("did-finish-load", () => {
+        if (!wc.isDestroyed()) wc.send(IMMERSION_INPUT_CHANNEL, immersionBlocksInput(this.immersion));
+        if (!wc.isDestroyed()) wc.send("pi-plugin-panel-event:craftmine-immersion", immersionBlocksInput(this.immersion));
+      });
       wc.ipc.on(PLUGIN_WORLD_FULLSCREEN_EXIT_CHANNEL, (event, payload: unknown) => {
         if (!current() || event.senderFrame !== wc.mainFrame || !payload || typeof payload !== "object") return;
         const value = payload as Record<string, unknown>;
-        if (Object.keys(value).length === 1 && value.scope === worldShortcutScope) this.onWorldFullscreenShortcut?.("exit");
+        if (Object.keys(value).length !== 1 || value.scope !== worldShortcutScope || this.immersion.blocked) return;
+        // Preload has already allowed plugin menus, IME and pointer release to
+        // consume Escape. Only then may the main renderer close its overlay.
+        if (this.immersion.active && this.immersion.overlay !== "closed") this.onImmersionShortcut?.("escape");
+        else this.onWorldFullscreenShortcut?.("exit");
       });
     }
     // A docked view gets exactly one web contents. `window.open` would mint a

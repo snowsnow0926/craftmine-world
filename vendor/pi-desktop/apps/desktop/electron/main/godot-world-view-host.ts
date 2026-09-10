@@ -8,6 +8,9 @@ import {
   type WorldRuntime,
 } from "../../../../../../desktop/godot/web/runtime.mjs";
 import { isHeadlessAcceptance } from "./craftmine-headless";
+import type { CraftmineImmersionState, CraftmineImmersionShortcut } from "@pi-desktop/shared";
+import { NO_IMMERSION, IMMERSION_INPUT_CHANNEL, excludeImmersion, immersionShortcut, immersionBlocksInput } from "../../shared/craftmine-immersion";
+import { createImmersionPauseController } from "./immersion-pause-controller";
 import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import {
   GODOT_WORLD_DETACH_CHANNEL,
@@ -276,6 +279,23 @@ export type GodotWorldDiagnostics = {
 };
 
 export class GodotWorldViewHost {
+  private immersion = NO_IMMERSION;
+  private pauseController = createImmersionPauseController();
+  private pauseIntentRevision = new WeakMap<LiveInstance, number>();
+
+  async setImmersion(state: CraftmineImmersionState): Promise<void> {
+    this.immersion = state;
+    const blocked = immersionBlocksInput(state);
+    for (const instance of [this.current, this.pending]) {
+      if (instance?.alive && !instance.view.webContents.isDestroyed()) instance.view.webContents.send(IMMERSION_INPUT_CHANNEL, blocked);
+    }
+    this.applyBounds();
+    await this.pauseController.setOverlay(blocked);
+    const instance = this.current;
+    if (instance?.alive && this.pauseController.has(instance) && ["ready", "paused", "saved"].includes(this.currentState?.state ?? "")) {
+      this.publish({...this.identityOf(instance), state:this.pauseController.paused(instance) ? "paused" : "ready"});
+    }
+  }
   private current: LiveInstance | null = null;
   /** Replacement instance that has not finished starting yet. */
   private pending: LiveInstance | null = null;
@@ -324,6 +344,7 @@ export class GodotWorldViewHost {
       onState?: (state: GodotWorldState) => void;
       /** Finite native keyboard action for this host's currently displayed view. */
       onFullscreenShortcut?: (action: "toggle" | "exit") => void;
+      onImmersionShortcut?: (action: CraftmineImmersionShortcut) => void;
       /** Test seam: called with every runtime event. */
       onEvent?: (event: RuntimeEvent) => void;
       /**
@@ -387,13 +408,15 @@ export class GodotWorldViewHost {
     // running world is stopped, so a broken candidate build cannot take the
     // player's current world (and its confirmed progress) down with it.
     const previous = this.current;
+    const previouslyPaused = previous && this.pauseController.has(previous) ? this.pauseController.manualPaused(previous) : true;
+    const checkpointIntent = previous ? (this.pauseIntentRevision.get(previous) ?? 0) + (this.frozen?.instance === previous ? 0 : 1) : 0;
     if (previous?.alive) {
       const saved = await this.checkpoint();
       if (saved.status !== "persisted") throw new Error(saved.error);
     }
     try { return await this.startReplacement(request, root, worldId, buildId, previous); }
     catch (error) {
-      if (previous === this.current && previous?.alive) await this.resume().catch(() => undefined);
+      if (previous === this.current && previous?.alive && !previouslyPaused && this.pauseIntentRevision.get(previous) === checkpointIntent) await this.resume().catch(() => undefined);
       throw error;
     }
   }
@@ -483,10 +506,12 @@ export class GodotWorldViewHost {
         const loaded = await runtime.load({ build: request.build ?? null, snapshot: request.snapshot ?? null });
         if (loaded.error) throw new Error(loaded.error);
       }
-      if (!staged) {
-        const resumed = await runtime.resume();
-        if (resumed.error) throw new Error(resumed.error);
-      }
+      if (this.disposed || generation !== this.generation || !instance.alive) throw new Error("World startup was cancelled");
+      await this.pauseController.attach(instance, {
+        pause: async () => { const result = await runtime.pause(); if (result.error) throw new Error(result.error); },
+        resume: async () => { const result = await runtime.resume(); if (result.error) throw new Error(result.error); },
+      });
+      if (!staged) await this.pauseController.setManual(instance, false);
     } catch (error) {
       // Freeze the causal evidence before our own close emits `destroyed`.
       const message = error instanceof Error ? error.message : String(error);
@@ -515,7 +540,7 @@ export class GodotWorldViewHost {
     if (staged) {
       runtime.onEvent(event=>{
         if(this.pending!==instance)return;
-        if(event.type==="exited"||event.type==="runtime-error")instance.alive=false;
+        if(event.type==="exited"||event.type==="runtime-error") { instance.alive=false; this.pauseController.detach(instance); }
         this.options.onEvent?.(event);
       });
       this.stagedRequest = request;
@@ -530,7 +555,7 @@ export class GodotWorldViewHost {
       if (!instance.alive) return;
       this.applyBounds();
     });
-    this.publish({ worldId, buildId, instanceId: runtime.instanceId, state: "ready" });
+    this.publish({ worldId, buildId, instanceId: runtime.instanceId, state: this.pauseController.paused(instance) ? "paused" : "ready" });
     this.applyBounds();
     if (previous) {
       previous.alive = false;
@@ -951,9 +976,9 @@ export class GodotWorldViewHost {
   async pause(): Promise<void> {
     const instance = this.current;
     if (!instance?.alive) return;
-    const response = await instance.runtime.pause();
-    if (response.error) throw new Error(response.error);
-    this.publish({ ...this.identityOf(instance), state: "paused" });
+    this.pauseIntentRevision.set(instance, (this.pauseIntentRevision.get(instance) ?? 0) + 1);
+    await this.pauseController.setManual(instance, true);
+    if (instance === this.current) this.publish({ ...this.identityOf(instance), state: "paused" });
   }
 
   async resume(): Promise<void> {
@@ -961,9 +986,9 @@ export class GodotWorldViewHost {
     const instance = this.current;
     if (!instance?.alive) return;
     this.frozen = null;
-    const response = await instance.runtime.resume();
-    if (response.error) throw new Error(response.error);
-    this.publish({ ...this.identityOf(instance), state: "ready" });
+    this.pauseIntentRevision.set(instance, (this.pauseIntentRevision.get(instance) ?? 0) + 1);
+    await this.pauseController.setManual(instance, false);
+    if (instance === this.current) this.publish({ ...this.identityOf(instance), state: this.pauseController.paused(instance) ? "paused" : "ready" });
   }
 
   /** Freeze and durably save the current instance; successful checkpoints stay paused. */
@@ -973,12 +998,19 @@ export class GodotWorldViewHost {
     if (!instance?.alive) return { status: "failed", error: "No world runtime is running" };
     if (this.frozen?.instance === instance) return this.frozen.result;
     if (this.checkpointPromise) return this.checkpointPromise;
+    let previouslyPaused = this.pauseController.manualPaused(instance);
+    let pauseAcknowledged = false;
+    let checkpointIntent = 0;
     this.checkpointPromise = (async () => {
       try {
         // A snapshot already in flight may predate the freeze. Finish it, then
         // take a new snapshot after the pause acknowledgement.
         if (this.savePromise) await this.savePromise;
+        if (this.current !== instance || !instance.alive) throw new Error("World changed during checkpoint");
+        previouslyPaused = this.pauseController.manualPaused(instance);
+        checkpointIntent = (this.pauseIntentRevision.get(instance) ?? 0) + 1;
         await this.pause();
+        pauseAcknowledged = true;
         const saved = await this.save();
         if (saved.status !== "persisted") throw new Error(saved.error);
         if (this.current !== instance || !instance.alive) throw new Error("World changed during checkpoint");
@@ -986,7 +1018,7 @@ export class GodotWorldViewHost {
         this.publish({ ...this.identityOf(instance), state: "paused" });
         return saved;
       } catch (error) {
-        if (this.current === instance && instance.alive) await this.resume().catch(() => undefined);
+        if (this.current === instance && instance.alive && pauseAcknowledged && !previouslyPaused && this.pauseIntentRevision.get(instance) === checkpointIntent) await this.resume().catch(() => undefined);
         return { status: "failed" as const, error: String(error instanceof Error ? error.message : error) };
       }
     })().finally(() => { this.checkpointPromise = null; });
@@ -1105,6 +1137,7 @@ export class GodotWorldViewHost {
   }
 
   private retireInstance(instance: LiveInstance, graceful: boolean): Promise<void> {
+    this.pauseController.detach(instance);
     instance.retirement ??= this.trackRetirement(async () => {
       const results = await Promise.allSettled([this.closeView(instance), instance.runtime.dispose({graceful})]);
       const failures = results.filter(result => result.status === "rejected");
@@ -1190,11 +1223,14 @@ export class GodotWorldViewHost {
     if (instance !== this.current || !instance.alive) return;
     this.options.onEvent?.(event);
     if (event.type === "runtime-error") {
+      this.pauseIntentRevision.set(instance, (this.pauseIntentRevision.get(instance) ?? 0) + 1);
+      if (this.pauseController.has(instance)) void this.pauseController.setManual(instance, true).catch(() => undefined);
       this.publish({ ...this.identityOf(instance), state: "failed", error: event.error });
       return;
     }
     if (event.type === "exited") {
       instance.alive = false;
+      this.pauseController.detach(instance);
       this.publish({ ...this.identityOf(instance), state: "closed" });
     }
   }
@@ -1206,7 +1242,7 @@ export class GodotWorldViewHost {
    */
   private fail(instance: LiveInstance, error: string, fatal = false): void {
     if (instance !== this.current && instance !== this.pending) return;
-    if (fatal) instance.alive = false;
+    if (fatal) { instance.alive = false; this.pauseController.detach(instance); }
     this.publish({ ...this.identityOf(instance), state: "failed", error });
   }
 
@@ -1237,7 +1273,7 @@ export class GodotWorldViewHost {
     }
     // The candidate header is 46px and its persistent application explanation
     // reserves 100px in world.html. A sibling native view must not cover it.
-    const rect = this.captureBounds ?? gameBounds(this.bounds, this.candidateVisible ? WORLD_CHROME_HEIGHT + 146 : WORLD_CHROME_HEIGHT);
+    const rect = excludeImmersion(this.captureBounds ?? gameBounds(this.bounds, this.candidateVisible ? WORLD_CHROME_HEIGHT + 146 : WORLD_CHROME_HEIGHT), this.immersion);
     if (rect.width < 1 || rect.height < 1) { this.detachView(instance.view); return; }
     const children = window.contentView.children;
     if (!children.includes(instance.view)) window.contentView.addChildView(instance.view);
@@ -1285,7 +1321,7 @@ export class GodotWorldViewHost {
     const displayed = (): boolean => {
       const owner = this.candidateVisible && this.stagedRequest ? this.pending : this.current;
       const window = this.options.window();
-      return !!this.options.onFullscreenShortcut && !this.disposed && this.visible && this.surfaceVisible &&
+      return !this.disposed && this.visible && this.surfaceVisible &&
         !!owner?.alive && owner.runtime === runtime && owner.view === view &&
         !view.webContents.isDestroyed() && !!window && !window.isDestroyed() && window.contentView.children.includes(view);
     };
@@ -1298,9 +1334,15 @@ export class GodotWorldViewHost {
     };
     view.webContents.on("before-input-event", (event, input) => {
       if (!displayed()) return;
+      const action = this.immersion.active && !this.immersion.blocked ? immersionShortcut(input, this.immersion.overlay !== "closed") : null;
+      if (action) { event.preventDefault(); this.options.onImmersionShortcut?.(action); return; }
       const decision = nativeFullscreenKeyDecision(input);
       if (decision.preventDefault) event.preventDefault();
       if (decision.action) shortcut(decision.action);
+      if (!decision.preventDefault && immersionBlocksInput(this.immersion) && input.type !== "keyUp") event.preventDefault();
+    });
+    view.webContents.on("did-finish-load", () => {
+      if (!view.webContents.isDestroyed()) view.webContents.send(IMMERSION_INPUT_CHANNEL, immersionBlocksInput(this.immersion));
     });
     view.webContents.ipc.on(GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL, (event, payload: unknown) => {
       if (!displayed() || event.senderFrame !== view.webContents.mainFrame || !payload || typeof payload !== "object") return;

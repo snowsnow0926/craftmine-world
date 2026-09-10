@@ -273,3 +273,16 @@ test('real local HTTP runtime returned after disposal starts is closed before di
   const disposal=f.host.dispose();factory.resolve();await Promise.all([disposal,cancelled]);
   assert.ok(actual);await assert.rejects(fetch(actual.url));assert.equal(f.host.instance,null);
 });
+
+test('manual pause while checkpoint awaits an earlier save survives later persistence failure',async()=>{
+  const f=fixture();await f.host.ensure(f.request());f.events.length=0;
+  const saving=deferred();f.setProgress(()=>saving.promise);
+  const earlier=f.host.save();const checkpoint=f.host.checkpoint();
+  await f.host.pause();saving.resolve({failed:true,error:'disk unavailable'});
+  await earlier;const result=await checkpoint;
+  assert.equal(result.status,'failed');assert.equal(f.host.state.state,'failed');
+  assert.ok(!f.events.includes('resume:alpha'));
+  await f.host.setImmersion({active:true,overlay:'compact',overlayBounds:{x:0,y:200,width:300,height:100}});
+  await f.host.setImmersion({active:false,overlay:'closed',overlayBounds:null});
+  assert.ok(!f.events.includes('resume:alpha'));
+});

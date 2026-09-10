@@ -9410,3 +9410,51 @@ shutdown/page/input audits for every owned client. Run the full backup/copy
 lifecycle and the two corrective model cases against this same identity. Keep
 preview 8 JOXSwy as a failed native baseline; the local fetch/exit reduction
 which did not reproduce that crash is diagnostic evidence only.
+
+### CM-IW-01: retained creation surfaces inside play
+
+Open an existing world, conversation, running task and unsent draft. Switch
+closed, compact, full and back. Preserve the exact world/session/task, draft and
+attachments; never create a session, send a prompt or cancel the task by changing
+presentation. Resize wide and narrow windows and open composer pickers. Actual
+native plugin/Godot rectangles must exclude the measured creation region. Full
+becomes two rows in narrow windows. A blocking dialog over closed play retains
+the pause hold and hides native content. Returning to create releases only the
+immersion hold. Verify F2/Shift+F2 and F11 from native world and main content;
+Escape must yield to IME, voice, menus and pointer release before closing chat.
+
+### CM-IW-02: pause ownership and legacy input isolation
+
+Keep a manually paused world paused through overlay changes. Race rapid overlay
+changes with delayed runtime acknowledgements. Inject failed pause, failed save,
+failed replacement and a later manual pause. Never automatically resume after a
+failed pause or override the later manual intent. Closing a runtime during load
+must not attach it afterward; dead instances cannot receive overlay requests.
+Legacy opaque frames must reject input while plugin workbench controls remain
+interactive. The scoped legacy immersion hold must stop activity and preserve
+snapshot freeze. Reject foreign source/origin/channel/nonce messages. In player
+acceptance, hold movement while opening chat and confirm no stuck movement after
+return. Pure fixture tests do not establish that physical input outcome.
+
+### CM-IW-03: local voice into the current draft
+
+Explicit hold/release opens audio-only capture and appends recognized text to the
+same composer for correction without sending. Preserve existing text and
+attachments. Enforce 30 seconds and 960044 WAV bytes. Cancel on Escape, blur,
+hidden creation, IME, world/session changes and late permission completion; stop
+tracks and reject delayed transcripts from the old context. Cover absent engine,
+absent microphone, denial, silence and bounded process failure. One armed main
+document may consume one audio grant within 10 seconds; other frames, camera,
+mixed media and expired grants remain denied. Main clipboard copy still works.
+No audio file, remote request or transcript log is produced. Synthetic audio and
+fake-device permission probes do not establish live recognition accuracy.
+
+### AI1-G01: pinned creation guidance discovery and packaging
+
+For a trusted first-person 0.1.0 source on Godot 4.7.2-stable, invoke
+godot_guidance catalog then read the equipment skill and versioned references
+in bounded pages. Verify source revision/manifest provenance, exact interface
+hashes and packaged resources. Reject unsupported bases, forged scope, changed
+interface hashes, unknown IDs and traversal. The normal initial model guidance
+must advertise the real tool. This is discovery/provenance coverage; model
+first-pass improvement requires a later measured benchmark.

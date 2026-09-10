@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { attachImmersionInput, IMMERSION_INPUT_CHANNEL } from "../../shared/craftmine-immersion";
 import {
   GODOT_WORLD_DETACH_CHANNEL,
   GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL,
@@ -21,6 +22,13 @@ const scope = process.argv
   .find((value): value is NonNullable<typeof value> => value !== null);
 
 if (scope) {
+  const disposeInput = attachImmersionInput(window, listener => {
+    const wrapped = (_event: unknown, blocked: boolean) => listener(blocked);
+    ipcRenderer.on(IMMERSION_INPUT_CHANNEL, wrapped);
+    return () => ipcRenderer.removeListener(IMMERSION_INPUT_CHANNEL, wrapped);
+  });
+  ipcRenderer.once(GODOT_WORLD_DETACH_CHANNEL, disposeInput);
+  window.addEventListener("pagehide", disposeInput, {once:true});
   const disposeEscape = attachFullscreenEscape(window, {
     onExit: () => { ipcRenderer.send(GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL, scope); },
   });

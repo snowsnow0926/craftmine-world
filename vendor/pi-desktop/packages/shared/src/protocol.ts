@@ -243,6 +243,7 @@ export const IPC = {
 } as const;
 
 export const IPC_WHITELIST = new Set<string>([
+  "pi-desktop/voice/capability", "pi-desktop/voice/arm", "pi-desktop/voice/transcribe", "pi-desktop/voice/cancel",
   ...Object.values(IPC.invoke),
   ...Object.values(IPC.event),
 ]);

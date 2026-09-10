@@ -43,7 +43,13 @@ import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
-import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure } from "./craftmine-headless";
+import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure, isHeadlessAcceptance } from "./craftmine-headless";
+import { NO_IMMERSION, parseImmersion } from "../../shared/craftmine-immersion";
+import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
+import { LocalVoiceInputService } from "./local-voice-input";
+import { VoiceMicrophonePermissionGate } from "./voice-microphone-permission";
+import { VOICE_INPUT_CHANNELS } from "@pi-desktop/shared";
+import type { CraftmineImmersionState, CraftmineImmersionShortcut } from "@pi-desktop/shared";
 import {
   existsSync,
   mkdirSync,
@@ -928,6 +934,26 @@ const emitBrowserState = (state: BrowserState) => {
   pluginViews.broadcast("browser:state", state);
 };
 const browserPane = new BrowserPane(emitBrowserState);
+let immersionState: CraftmineImmersionState = NO_IMMERSION;
+const localVoice = new LocalVoiceInputService();
+const voicePermission = new VoiceMicrophonePermissionGate(() => {
+  const window = mainWindow;
+  return window && !window.isDestroyed() && !window.webContents.isDestroyed()
+    ? { ownerId: window.webContents.id, documentUrl: window.webContents.getURL() } : undefined;
+});
+function forwardImmersionShortcut(action: CraftmineImmersionShortcut): void {
+  const window = mainWindow;
+  if (!immersionState.active || immersionState.blocked || !window || window.isDestroyed() || window.webContents.isDestroyed()) return;
+  // Called only by a trusted key event from the currently displayed world.
+  // Transfer child-content focus within the user's already focused window.
+  if (!isHeadlessAcceptance() && window.isFocused()) window.webContents.focus();
+  sendToRenderer(IPC.event.craftmineImmersionShortcut, action);
+}
+async function setImmersionState(state: CraftmineImmersionState): Promise<void> {
+  immersionState = state;
+  pluginViews.setImmersion(state);
+  await godotWorld.setImmersion(state);
+}
 const pluginViews = new PluginViewHost(({ pluginId, url }) => {
   logger.app("plugin", "warn", "plugin.api", {
     pluginId,
@@ -950,7 +976,9 @@ const godotAdapter: ReturnType<typeof createGodotRuntimeAdapter> = createGodotRu
   selection: godotSelection,
   instance: () => godotWorld.instance,
 });
+pluginViews.onImmersionShortcut = forwardImmersionShortcut;
 const godotWorld: GodotWorldViewHost = new GodotWorldViewHost({
+  onImmersionShortcut: forwardImmersionShortcut,
   window: () => mainWindow,
   allowedRoots: godotAdapter.allowedRoots,
   descriptor: godotAdapter.descriptor,
@@ -3175,6 +3203,20 @@ async function createWindow() {
   });
   bootTiming.mark("window-created");
   const window = mainWindow;
+  const voiceOwnerId = window.webContents.id;
+  const cancelWindowVoice = () => { voicePermission.cancel(voiceOwnerId); localVoice.cancel(voiceOwnerId); };
+  window.on("blur", cancelWindowVoice);
+  window.webContents.on("destroyed", cancelWindowVoice);
+  window.webContents.on("did-start-navigation", cancelWindowVoice);
+  if (!isHeadlessAcceptance()) {
+    window.webContents.session.setPermissionCheckHandler((contents, permission, _origin, details) =>
+      !window.isDestroyed() && !window.webContents.isDestroyed() && permission === "clipboard-sanitized-write" && contents?.id === voiceOwnerId && details.isMainFrame === true && details.requestingUrl === window.webContents.getURL());
+    window.webContents.session.setPermissionRequestHandler((contents, permission, callback, details) => {
+      if (window.isDestroyed() || window.webContents.isDestroyed()) { callback(false); return; }
+      const clipboard = permission === "clipboard-sanitized-write" && contents?.id === voiceOwnerId && details.isMainFrame === true && details.requestingUrl === window.webContents.getURL();
+      callback(clipboard || (window.isFocused() && voicePermission.request(contents?.id, permission, details)));
+    });
+  }
   craftmineTelemetry.attachWindow(window.webContents);
   window.webContents.on("console-message", (_event, _level, message) => {
     if (typeof message === "string" && message.startsWith("[timing] ")) {
@@ -3429,6 +3471,7 @@ async function createWindow() {
     return { action: "deny" };
   });
   window.webContents.on("did-start-loading", () => {
+    void setImmersionState(NO_IMMERSION).catch(error => logger.app("lifecycle", "error", "Failed to release renderer immersion", {data:String(error)}));
     notificationViewingSessionId = null;
     if (mainWindow === window) resetMenuRendererReady(window);
   });
@@ -3441,6 +3484,12 @@ async function createWindow() {
   // null, so F12 is wired here; macOS additionally inherits Cmd+Alt+I from
   // the View menu role (see application-menu.ts).
   window.webContents.on("before-input-event", (event, input) => {
+    if (immersionState.active && !immersionState.blocked) {
+      const fullscreen = nativeFullscreenKeyDecision(input);
+      if (fullscreen.preventDefault) event.preventDefault();
+      if (fullscreen.action) window.setFullScreen(!window.isFullScreen());
+      if (fullscreen.preventDefault) return;
+    }
     const isPluginLauncherChord =
       process.platform === "win32" &&
       pluginLauncherBinding === "Alt+Space" &&
@@ -6204,6 +6253,32 @@ function registerIpc() {
       });
     }
   };
+
+  ipcMain.handle(IPC.invoke.craftmineSetImmersion, async (event, payload: unknown) => wrap(async () => {
+    assertMainWindowSender(event);
+    if (event.senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+    await setImmersionState(parseImmersion(payload));
+  }));
+  const voiceHandler = (channel: string, handler: (event: Electron.IpcMainInvokeEvent, payload: unknown) => unknown) => {
+    ipcMain.handle(channel, async (event, payload: unknown) => wrap(async () => {
+      assertMainWindowSender(event);
+      if (event.senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+      return handler(event, payload);
+    }));
+  };
+  voiceHandler(VOICE_INPUT_CHANNELS.capability, (event) => localVoice.capability(event.sender.id));
+  voiceHandler(VOICE_INPUT_CHANNELS.arm, (event, payload) => {
+    if (isHeadlessAcceptance() || !mainWindow?.isFocused()) return false;
+    return voicePermission.arm(event.sender.id, event.sender.getURL(), true, payload);
+  });
+  voiceHandler(VOICE_INPUT_CHANNELS.transcribe, (event, payload) => localVoice.transcribe(event.sender.id, payload));
+  voiceHandler(VOICE_INPUT_CHANNELS.cancel, (event, payload) => {
+    const requestId = (payload as {requestId?: unknown} | null)?.requestId;
+    if (requestId !== undefined && typeof requestId !== "string") throw Error("Invalid voice cancellation");
+    voicePermission.cancel(event.sender.id, requestId);
+    localVoice.cancel(event.sender.id, requestId);
+    return true;
+  });
 
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
@@ -9902,6 +9977,7 @@ app.on("before-quit", (event) => {
     // Every owner starts independently: a synchronous close error must not
     // skip other renderers/processes. Each promise reports its real barrier.
     const shutdownOwners = [
+      ["local-voice", () => { voicePermission.dispose(); localVoice.dispose(); }],
       ["host-core", () => host?.dispose()],
       ["plugin-panels", () => pluginPanels.closeAll()],
       ["updater", () => updater.dispose()],
