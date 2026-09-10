@@ -5377,8 +5377,12 @@ function finishTurn(
   sessionId: string,
   status: "completed" | "aborted" | "error",
   errorCode?: string,
-  options: { createNotification?: boolean; recoverInflight?: boolean } = {},
+  options: { createNotification?: boolean; recoverInflight?: boolean; expectedTurnId?: string; beforeRelease?: () => Promise<void> } = {},
 ): Promise<void> {
+  // Sidecar events carry their original turn even when they arrive after a new
+  // prompt. Never let an old event join or close that newer finalization.
+  if (options.expectedTurnId !== undefined &&
+      activeTurns.get(sessionId) !== options.expectedTurnId) return Promise.resolve();
   const existing = turnFinalizations.get(sessionId);
   if (existing) return existing;
 
@@ -5455,6 +5459,9 @@ function finishTurn(
             );
         }
       }
+      // Regenerate history is session-scoped. Keep this turn's ownership until
+      // its archive completes so a following prompt cannot be archived here.
+      await options.beforeRelease?.();
     } finally {
       // Do not release local ownership or wake a queued approved execution
       // until the durable endTurn request has settled above.
@@ -5727,7 +5734,9 @@ function subagentTagged(message: UiMessage, envelope: AgentEventEnvelope): UiMes
 
 function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined {
   const event = envelope.event;
-  const turnId = activeTurns.get(envelope.sessionId);
+  const turnId = envelope.turnId;
+  const ownsActiveTurn = !envelope.parentToolCallId && !!turnId &&
+    turnId === activeTurns.get(envelope.sessionId);
   const executionId = (() => {
     const candidate = approvedExecutionIdsBySession.get(envelope.sessionId);
     if (!candidate) return undefined;
@@ -5735,14 +5744,14 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
       return undefined;
     }
     const executionTurn = approvedExecutionTurns.get(candidate);
-    return executionTurn?.turnId === (envelope.turnId || turnId)
+    return ownsActiveTurn && executionTurn?.turnId === turnId
       ? candidate
       : undefined;
   })();
   if (
     event.type === "planning_state" &&
     event.state === "awaiting_approval" &&
-    (envelope.turnId || turnId)
+    ownsActiveTurn
   ) {
     planSubmissionTurnIds.add(
       planSubmissionTurnKey(envelope.sessionId, envelope.turnId || turnId!),
@@ -5752,7 +5761,7 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
     // Checkpoint only the session's own reply (D299). Delegate rows stream in
     // parallel with the parent's and would thrash a per-session checkpoint;
     // their loss on a crash is bounded to the Task call's activity.
-    if (!envelope.parentToolCallId) {
+    if (ownsActiveTurn) {
       inflightCheckpointer.observe({
         sessionId: envelope.sessionId,
         turnId: envelope.turnId ?? turnId,
@@ -5774,7 +5783,7 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
     });
     if (
       (event.toolName === "SubmitPlan" || event.toolName === "SubmitGoal") &&
-      (envelope.turnId || turnId)
+      ownsActiveTurn
     ) {
       planSubmissionTurnIds.add(
         planSubmissionTurnKey(envelope.sessionId, envelope.turnId || turnId!),
@@ -5793,10 +5802,12 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
         details: event.error.details,
       },
     });
+    if (!ownsActiveTurn) return;
     const turnFinalization = finishTurn(
       envelope.sessionId,
       event.error.code === "TURN_ABORTED" ? "aborted" : "error",
       event.error.code,
+      { expectedTurnId: turnId },
     );
     if (executionId) {
       void turnFinalization.then(() =>
@@ -5810,15 +5821,10 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
     return;
   }
   if (event.type === "agent_end") {
-    const turnFinalization = finishTurn(envelope.sessionId, "completed");
-    if (executionId) {
-      void turnFinalization.then(() =>
-        finishApprovedExecution(executionId, "completed"),
-      );
-    }
+    if (!ownsActiveTurn) return;
     // Persist the completed branch as the active regenerate revision when the
     // latest user turn carries revision metadata (ChatGPT-style history).
-    void (async () => {
+    const archiveCompletedRevision = async () => {
       try {
         if (!host) return;
         // The turn's final assistant message may still be in the outbox. Archive
@@ -5856,20 +5862,29 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
           data: String(error),
         });
       }
-    })();
+    };
+    const turnFinalization = finishTurn(envelope.sessionId, "completed", undefined, {
+      expectedTurnId: turnId,
+      beforeRelease: archiveCompletedRevision,
+    });
+    if (executionId) {
+      void turnFinalization.then(() =>
+        finishApprovedExecution(executionId, "completed"),
+      );
+    }
     return;
   }
-  if (event.type === "turn_end" && !envelope.parentToolCallId) {
+  if (event.type === "turn_end" && ownsActiveTurn) {
     addActiveTurnUsage(envelope.sessionId, event.subagentUsage);
   }
   if (event.type === "message_end" && event.message.role === "assistant") {
-    if (!envelope.parentToolCallId && event.message.usage) {
+    if (ownsActiveTurn && event.message.usage) {
       addActiveTurnUsage(envelope.sessionId, event.message.usage);
     }
     // Checkpoint the finished snapshot before the outbox append (D327).
     // Settling first dropped the last interval of text, and endTurn used to
     // delete the host file while the final row was still queued.
-    if (!envelope.parentToolCallId) {
+    if (ownsActiveTurn) {
       const sessionId = envelope.sessionId;
       const finalId = event.message.id;
       inflightCheckpointer.observe({
