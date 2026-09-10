@@ -221,6 +221,7 @@ export type PluginHostServices = {
     instanceId?: string | null;
   }) => Promise<Record<string, unknown> | null>;
   craftmineCreationTarget?: (input:{projectId:string;sessionId:string;turnId:string}) => Promise<Record<string, unknown>|null>;
+  craftmineCreationCheckCompleted?: (input:{jobId:string;context:{projectId:string;sessionId:string;turnId:string}}) => Promise<Record<string,unknown>>;
   getWorkspacePath: () => string | null;
   getLocale?: () => string;
   getAppVersion?: () => string;
@@ -1635,6 +1636,10 @@ export class PluginRuntime {
         if(!input||typeof input!=="object"||Array.isArray(input)||Object.keys(input).length!==3||
           !["projectId","sessionId","turnId"].every(key=>typeof input[key]==="string"&&input[key].length>0&&input[key].length<=240))throw apiError("INVALID_ARGUMENT", "Invalid creation context");
         return this.services.craftmineCreationTarget(input as {projectId:string;sessionId:string;turnId:string});
+      }
+      case "craftmine.creationCheckCompleted": {
+        if(pluginId!=="craftmine.world"||!this.services.craftmineCreationCheckCompleted)throw apiError("UNSUPPORTED","Creation completion unavailable");
+        return this.services.craftmineCreationCheckCompleted(args[0] as {jobId:string;context:{projectId:string;sessionId:string;turnId:string}});
       }
       case "commands.register": {
         const descriptor = (args[0] ?? {}) as {

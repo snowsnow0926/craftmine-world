@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 const {createGodotCandidateCoordinator}=await import('../../../vendor/pi-desktop/apps/desktop/electron/main/godot-candidate-coordinator.ts');
 const clone=x=>JSON.parse(JSON.stringify(x)),hash=x=>createHash('sha256').update(x).digest('hex');
-function fixture({cold=false,formalBuild=!cold}={}){
+function fixture({cold=false,formalBuild=!cold,git=false}={}){
  const events=[],records=new Map();let selected='alpha',fault='',sequence=0,formalExists=formalBuild;
  const formal={id:'alpha',revision:3,world:{build:{id:'build-old'},snapshot:{format:'craftmine.godot-progress/1',worldId:'alpha',baseId:'first-person',body:{coins:4,quests:{one:1}}}}};
  let latest=clone(formal.world.snapshot),pending=null;
@@ -28,7 +28,7 @@ function fixture({cold=false,formalBuild=!cold}={}){
    if(fault==='load-record-foreign')return {recorded:true,cleared:false,...args,worldId:'other'};
    return {recorded:true,cleared:false,replayed:false,...args};
   }
-  if(method==='godotCandidate.read')return {candidate:{},job:{check:{}}};
+  if(method==='godotCandidate.read')return {candidate:git?{content:{repoId:'repo',branchId:'main',contentOid:'new-content'}}:{},job:{check:{}}};
   if(method==='godotApplication.prepare'){
    if(fault==='prepare')throw Object.assign(Error('prepare invalid'),{errorCode:'INVALID'});
    const r={id:args.id,worldId:args.worldId,candidateId:args.candidateId,buildId:'build-new',inputHash:hash(args.id),status:'prepared',input:{revision:args.revision,snapshot:clone(args.snapshot)}};records.set(args.id,r);return clone(r);
@@ -45,7 +45,12 @@ function fixture({cold=false,formalBuild=!cold}={}){
    if(['commit-lost','commit-unreachable','foreign-receipt'].includes(fault))throw Error('commit response lost');return clone(r);
   }
   if(method==='world.read')return clone(formal);
-  if(method==='content.status')return {backend:'legacy'};
+  if(method==='content.status')return git?{backend:'git',repoId:'repo',headOid:'new-content',appliedOid:'old-content'}:{backend:'legacy'};
+  if(method==='content.apply.prepare')return {state:'prepared'};
+  if(method==='content.apply.advance')return {state:'advanced'};
+  if(method==='content.apply.confirm')return {state:'committed'};
+  if(method==='content.operation.read')return {state:'advanced'};
+  if(method==='content.apply.rollback')return {state:'aborted'};
   throw Error('unknown '+method);
  };
  const coordinator=createGodotCandidateCoordinator({host,adapter,domain,selection:async()=>selected});
@@ -54,6 +59,36 @@ function fixture({cold=false,formalBuild=!cold}={}){
 }
 test('preview independently stages without writing formal state and cancel retains original native identity',async()=>{const f=fixture();await f.coordinator.invoke('godot.candidatePreview',f.args);f.mutatePreview();assert.equal(f.formal.world.snapshot.body.coins,4);assert.ok(!f.events.includes('checkpoint'));await f.coordinator.invoke('godot.candidateClose',{worldId:'alpha'});assert.equal(f.host.instance.instanceId,'original');assert.ok(!f.events.includes('promote'));assert.equal(f.coordinator.blocking,false);});
 test('apply discards played preview, checkpoints latest formal state and launches fresh exact state before commit',async()=>{const f=fixture();await f.coordinator.invoke('godot.candidatePreview',f.args);f.mutatePreview();f.setLatest(27);const result=await f.coordinator.invoke('godot.candidateApply',f.args);assert.equal(result.status,'applied');assert.equal(result.record.world.snapshot.body.coins,27);assert.equal(f.host.instance.instanceId,'candidate-2');assert.equal(f.events.filter(x=>x==='stage').length,2);assert.ok(f.events.indexOf('godotApplication.commit')<f.events.indexOf('promote'));});
+
+test('automatic adoption checkpoints latest progress and never shows a preview',async()=>{
+ const f=fixture();f.setLatest(39);let authorizations=0;
+ const result=await f.coordinator.autoApplyVerified('alpha','candidate-a',{buildId:'build-old',instanceId:'original'},async()=>{authorizations++;});
+ assert.equal(result.status,'applied');assert.equal(f.formal.world.snapshot.body.coins,39);
+ assert.ok(authorizations>=5);assert.equal(f.events.filter(x=>x==='stage').length,1);
+ assert.ok(!f.events.includes('candidate-visible:true'));assert.ok(f.events.indexOf('checkpoint')<f.events.indexOf('godotApplication.prepare'));
+});
+for(const fault of ['storage','load','state','commit-before'])test('automatic '+fault+' failure preserves formal build and latest progress',async()=>{
+ const f=fixture();f.setLatest(41);f.setFault(fault);
+ await assert.rejects(f.coordinator.autoApplyVerified('alpha','candidate-a',{buildId:'build-old',instanceId:'original'},async()=>{}));
+ assert.equal(f.formal.world.build.id,'build-old');assert.equal(f.host.instance.instanceId,'original');assert.equal(f.coordinator.blocking,false);
+ if(fault!=='storage')assert.equal(f.formal.world.snapshot.body.coins,41);
+ assert.ok(!f.events.includes('promote'));
+});
+test('revoking consent after candidate launch aborts without replacing formal play',async()=>{
+ const f=fixture();f.setLatest(42);
+ await assert.rejects(f.coordinator.autoApplyVerified('alpha','candidate-a',{buildId:'build-old',instanceId:'original'},async()=>{if(f.events.includes('candidate:save'))throw Error('CONSENT_REVOKED');}),/CONSENT_REVOKED/);
+ assert.equal(f.formal.world.build.id,'build-old');assert.equal(f.formal.world.snapshot.body.coins,42);assert.ok(!f.events.includes('godotApplication.commit'));assert.equal(f.coordinator.blocking,false);
+});
+test('automatic adoption rejects a foreign instance before touching runtime pause state',async()=>{
+ const f=fixture();await assert.rejects(f.coordinator.autoApplyVerified('alpha','candidate-a',{buildId:'build-old',instanceId:'foreign'},async()=>{}),/TARGET_STALE/);
+ assert.deepEqual(f.events,[]);assert.equal(f.coordinator.blocking,false);
+});
+test('cancellation after content advance rolls its pointer back before replacing the world',async()=>{
+ const f=fixture({git:true});f.setLatest(43);
+ await assert.rejects(f.coordinator.autoApplyVerified('alpha','candidate-a',{buildId:'build-old',instanceId:'original'},async()=>{if(f.events.includes('content.apply.advance'))throw Error('TURN_CANCELLED');}),/TURN_CANCELLED/);
+ assert.ok(f.events.includes('content.apply.rollback'));assert.ok(!f.events.includes('godotApplication.commit'));
+ assert.equal(f.formal.world.build.id,'build-old');assert.equal(f.formal.world.snapshot.body.coins,43);assert.equal(f.coordinator.blocking,false);
+});
 for(const fault of ['descriptor','load','state','prepare'])test('preview '+fault+' failure retains original and releases locks',async()=>{const f=fixture();f.setFault(fault);await assert.rejects(f.coordinator.invoke('godot.candidatePreview',f.args));assert.equal(f.host.instance.instanceId,'original');assert.equal(f.coordinator.blocking,false);assert.ok(!f.events.includes('promote'));});
 for(const fault of ['storage','commit-before'])test('apply '+fault+' failure never replaces formal instance',async()=>{const f=fixture();await f.coordinator.invoke('godot.candidatePreview',f.args);f.setFault(fault);await assert.rejects(f.coordinator.invoke('godot.candidateApply',f.args));assert.equal(f.host.instance.instanceId,'original');assert.equal(f.formal.world.build.id,'build-old');assert.equal(f.coordinator.blocking,false);});
 test('lost committed reply is recovered by matching original receipt without second commit',async()=>{const f=fixture();await f.coordinator.invoke('godot.candidatePreview',f.args);f.setFault('commit-lost');const result=await f.coordinator.invoke('godot.candidateApply',f.args);assert.equal(result.status,'applied');assert.equal(f.events.filter(x=>x==='godotApplication.commit').length,1);assert.equal(f.events.filter(x=>x==='promote').length,1);});

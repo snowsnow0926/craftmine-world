@@ -70,8 +70,9 @@ export function createGodotCandidateCoordinator(options:{
     if(completed.size>32)completed.delete(completed.keys().next().value!);
     drop();return {status:"applied",worldId:session.worldId,candidateId:session.candidateId,record};
   }
-  async function commit(session:Session) {
+  async function commit(session:Session,authorize?:()=>Promise<void>) {
     const status=await rpc("content.status",{worldId:session.worldId});
+    await authorize?.();
     if(status.backend==="git") {
       const candidate=await rpc("godotCandidate.read",{worldId:session.worldId,candidateId:session.candidateId});
       const content=candidate.candidate?.content;
@@ -86,6 +87,7 @@ export function createGodotCandidateCoordinator(options:{
       await rpc("content.apply.prepare",{worldId:session.worldId,context,kind:"apply",targetOid:content.contentOid,detail:"Apply the checked Godot candidate."});
       await rpc("content.apply.advance",{operationId:session.id});
     }
+    await authorize?.();
     let result;
     try {result=await rpc("godotApplication.commit",{id:session.id,token:session.token,evidence:session.evidence});}
     catch {result=await rpc("godotApplication.read",{id:session.id});}
@@ -198,6 +200,34 @@ export function createGodotCandidateCoordinator(options:{
   async function close(){if(!active)return {status:"closed"};const session=active;try{const result=await recover(session);options.host.setSurfaceVisible(true);return result;}catch(error){session.phase="uncertain";await options.host.candidateRequest("pause").catch(()=>undefined);options.host.setCandidateVisible(false);options.host.setSurfaceVisible(false);throw error;}}
   return {
     get blocking(){return busy||!!active;},
+    /** Main-only checked creation completion; never exposed as a page route. */
+    async autoApplyVerified(worldId:string,candidateId:string,expected:{buildId:string;instanceId:string},authorize:()=>Promise<void>) {
+      if(busy||active)throw Error("GODOT_CANDIDATE_ACTIVE");
+      busy=true;
+      const guard=async()=>{
+        await identity(worldId);
+        const current=options.host.instance;
+        if(current?.buildId!==expected.buildId||current.instanceId!==expected.instanceId)throw Error("CREATION_TARGET_STALE");
+        await authorize();
+      };
+      try {
+        await guard();
+        release=await options.host.holdSelectionSync();
+        await guard();
+        await options.host.pause();
+        const checkpoint=await options.host.checkpoint();
+        if(checkpoint.status!=="persisted")throw Error(checkpoint.error);
+        const formal=await options.adapter.describe(worldId);
+        if(!formal||formal.buildId!==expected.buildId||formal.revision!==checkpoint.receipt.revision||!isDeepStrictEqual(formal.snapshot,checkpoint.snapshot))throw Error("GODOT_LATEST_PROGRESS_REQUIRED");
+        await guard();
+        const session=await prepare(worldId,candidateId,formal.revision,formal.snapshot,"applying");
+        session.evidence=await confirm(session);
+        // Consent, cancellation and source identity may change during launch.
+        // Recheck immediately before entering the existing durable transaction.
+        await guard();
+        return await commit(session,guard);
+      }catch(error){if(active||release)return failed(error);throw error;}finally{busy=false;}
+    },
     async closeForDeparture(){if(busy)throw new Error("WORLD_BUSY");busy=true;try{return await close();}finally{busy=false;}},
     /** Private first-load entry for the initialization transaction; not a page route. */
     async firstLoad(worldId:string,candidateId:string) {
