@@ -38,6 +38,15 @@ func run() -> void:
     var loaded = await bridge.handle_request({"worldId":"guidance-world","buildId":"guidance-build","instanceId":"guidance-instance","op":"load","args":{}})
     check(not loaded.has("error"), "桥绑定")
     var world = current_scene
+    world.target = {"entityId":"first"}
+    world._update_selection()
+    check(world.selection_box.visible and world.selection_label.text.contains("first") and world.target.has("entityName"), "真实选中框与对象名称")
+    var original_scale = world.entity_nodes.first.scale
+    world.entity_nodes.first.scale = Vector3(1.25,1.5,1.75)
+    var actual_entities = world.observe().creation.entities
+    var actual_first = actual_entities.filter(func(item): return item.id == "first")[0]
+    check(actual_first.scale == [1.25,1.5,1.75], "观察返回真实节点尺寸而非旧定义")
+    world.entity_nodes.first.scale = original_scale
     var rule = world.rule_nodes.example
     var initial = world.capture()
     var overlapping = initial.duplicate(true)

@@ -25,6 +25,9 @@ var marker: MeshInstance3D
 var sun: DirectionalLight3D
 var status_label: Label
 var creation_font: FontFile
+var selection_box: MeshInstance3D
+var selection_label: Label
+var highlighted_id := ""
 
 func _ready() -> void:
 	creation_font = CreationFont.load_font()
@@ -168,6 +171,15 @@ func _build_hud() -> void:
 	status_label.position = Vector2(20, 18)
 	status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(status_label)
+	selection_label = Label.new()
+	selection_label.position = Vector2(20, 92)
+	selection_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if creation_font != null: selection_label.add_theme_font_override("font", creation_font)
+	layer.add_child(selection_label)
+	selection_box = MeshInstance3D.new()
+	selection_box.material_override = _material(Color("ffd45c"), true)
+	selection_box.visible = false
+	add_child(selection_box)
 
 func _create_entity(definition: Dictionary) -> void:
 	var node := Node3D.new()
@@ -267,7 +279,37 @@ func refresh_target() -> Dictionary:
 		var entity_id: String = collider.get_meta("entity_id", "")
 		target = {"entityId": entity_id if not entity_id.is_empty() else null, "position": [point.x, point.y, point.z], "normal": [normal.x, normal.y, normal.z], "surface": collider.get_meta("surface", "none"), "revision": int(scene_data.revision)}
 		marker.global_position = point + normal * 0.03
+	_update_selection()
 	return target.duplicate(true)
+
+func _update_selection() -> void:
+	var id: String = str(target.entityId) if target.entityId != null else ""
+	selection_box.visible = entities.has(id)
+	selection_label.text = ""
+	if not entities.has(id): return
+	var definition: Dictionary = entities[id]
+	var names := {"tree": "树", "rock": "石头", "chest": "宝箱", "door": "门", "marker": "标记"}
+	var display_name: String = definition.parameters.get("label", "") if definition.kind == "marker" else ""
+	if display_name.is_empty(): display_name = names.get(definition.kind, definition.kind)
+	var node: Node3D = entity_nodes[id]
+	target["entityName"] = display_name
+	target["entityKind"] = definition.kind
+	target["scale"] = [node.scale.x, node.scale.y, node.scale.z]
+	target["color"] = definition.color
+	selection_label.text = display_name + " · " + id
+	selection_box.global_transform = node.global_transform
+	if highlighted_id == id: return
+	highlighted_id = id
+	var half: Vector3 = HALF_EXTENTS[definition.kind] + Vector3(0.03, 0.03, 0.03)
+	var points := [Vector3(-half.x, 0, -half.z), Vector3(half.x, 0, -half.z), Vector3(half.x, half.y * 2, -half.z), Vector3(-half.x, half.y * 2, -half.z), Vector3(-half.x, 0, half.z), Vector3(half.x, 0, half.z), Vector3(half.x, half.y * 2, half.z), Vector3(-half.x, half.y * 2, half.z)]
+	var mesh := ImmediateMesh.new()
+	mesh.surface_begin(Mesh.PRIMITIVE_LINES)
+	for edge in [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]]:
+		mesh.surface_add_vertex(points[edge[0]])
+		mesh.surface_add_vertex(points[edge[1]])
+	mesh.surface_end()
+	selection_box.mesh = mesh
+	selection_box.global_transform = node.global_transform
 
 func interact_target() -> Dictionary:
 	var aimed := refresh_target()
@@ -485,6 +527,9 @@ func observe() -> Dictionary:
 	var obstacles := []
 	for id in entities:
 		var definition: Dictionary = entities[id].duplicate(true)
+		var actual_node: Node3D = entity_nodes[id]
+		definition["position"] = [actual_node.position.x, actual_node.position.y, actual_node.position.z]
+		definition["scale"] = [actual_node.scale.x, actual_node.scale.y, actual_node.scale.z]
 		if definition.kind == "chest": definition["opened"] = opened_chests.has(id)
 		if definition.kind == "door": definition["open"] = doors.get(id, false)
 		definitions.append(definition)
