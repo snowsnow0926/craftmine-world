@@ -1,0 +1,17 @@
+{
+  "format": "craftmine.local-generated-artifacts-retained/1",
+  "files": [
+    {
+      "path": "D:/cm-godot-final-core-20260910/test-install-core.exe",
+      "bytes": 11447808,
+      "sha256": "77d4384c61a1fa2aecff562fcff9746d493480e8ddace7982dccfcc3a9fb7ca1"
+    },
+    {
+      "path": "D:/cm-godot-final-core-20260910/test-restore-core.exe",
+      "bytes": 11516416,
+      "sha256": "41d740d0b14cce18f4980b73c2e1485cba7a30fe18089acde76d0b0a9a5dfc81"
+    }
+  ],
+  "exclude": "D:/Craftmine World/.git/info/exclude",
+  "sourceCommitted": false
+}

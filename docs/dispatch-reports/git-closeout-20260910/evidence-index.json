@@ -1,0 +1,110 @@
+{
+  "format": "craftmine.git-closeout-evidence/1",
+  "at": "2026-09-10T05:23:35.872Z",
+  "testedIntegration": "7a089d6537b6da0c9f9511c96f3d8635adbbebf1",
+  "records": [
+    {
+      "path": "raw/asset-main-core-report.json",
+      "originalPath": "C:/cm-git-closeout/test-results/git-closeout-validation/asset-main-core-report.json",
+      "bytes": 3965,
+      "sha256": "ee514367f94bffba62b23294cdafce1b384d99aac0531a956b452f7727dc43d6"
+    },
+    {
+      "path": "raw/assets-35.log",
+      "originalPath": "C:/cm-git-closeout/test-results/git-closeout-validation/assets-35.log",
+      "bytes": 3789,
+      "sha256": "c97f0b2f79ab00d8a04220e3fe58532500b3035041d22de6e03f632b1e30fa9f"
+    },
+    {
+      "path": "raw/assets-final.log",
+      "originalPath": "C:/cm-git-closeout/test-results/git-closeout-validation/assets-final.log",
+      "bytes": 4833,
+      "sha256": "bf47b6ae3f459c6d0bc524632f85fa0fdc6511cfdbc8440d9aa294c007cdbe7e"
+    },
+    {
+      "path": "raw/assets-with-core.log",
+      "originalPath": "C:/cm-git-closeout/test-results/git-closeout-validation/assets-with-core.log",
+      "bytes": 3854,
+      "sha256": "2104b4d0d0d3ef705e9f6d5681a31f1a73c16c59262c08abe134606810ca9c74"
+    },
+    {
+      "path": "raw/broker-lib.log",
+      "originalPath": "C:/cm-git-closeout/test-results/git-closeout-validation/broker-lib.log",
+      "bytes": 4075,
+      "sha256": "dcd43f970e878414abbd244242e5fd1232bf84b1bc2b5978b94125bd920cff44"
+    },
+    {
+      "path": "raw/desktop-typecheck-junction.log",
+      "originalPath": "C:/cm-git-closeout/test-results/git-closeout-validation/desktop-typecheck-junction.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "raw/desktop-typecheck.log",
+      "originalPath": "C:/cm-git-closeout/test-results/git-closeout-validation/desktop-typecheck.log",
+      "bytes": 965248,
+      "sha256": "08828fa2a84816b2a165d0c9d582c08f190accc641568f854d3926ebcfd95781"
+    },
+    {
+      "path": "raw/retirement-executor-53.log",
+      "originalPath": "C:/cm-git-closeout/test-results/git-closeout-validation/retirement-executor-53.log",
+      "bytes": 5689,
+      "sha256": "75ee888ca64b19bf83d3719f86f7b2b1e52b1dc564d081c3b712c9aeae196c3e"
+    },
+    {
+      "path": "raw/tsconfig.borrowed.json",
+      "originalPath": "C:/cm-git-closeout/test-results/git-closeout-validation/tsconfig.borrowed.json",
+      "bytes": 595,
+      "sha256": "6d973f8888ac1006898df7b004e1eecd6d1d1d98ad9c7ddfcd043f3bf653f4d9"
+    },
+    {
+      "path": "raw/validation-index.json",
+      "originalPath": "C:/cm-git-closeout/test-results/git-closeout-validation/evidence-index.json",
+      "bytes": 3478,
+      "sha256": "018102d1e7d2eb78cdc240cdc608662362c8a3e2044f784f3faa33bf27988c3b"
+    },
+    {
+      "path": "raw/validation-report.md",
+      "originalPath": "C:/cm-git-closeout/test-results/git-closeout-validation/REPORT.md",
+      "bytes": 1617,
+      "sha256": "50688c3a077d9c2196128a3f3ba9de9bb7e4a7b5b9c274fb21c29f1551ba0173"
+    },
+    {
+      "path": "raw/historical-commits.json",
+      "originalPath": "test-results/git-closeout-validation/historical-commits.json",
+      "bytes": 8502,
+      "sha256": "0ed673dd5fbe7d10bdd906e31447ff5834bb5463057dd6e17951eb1eb38a9753"
+    },
+    {
+      "path": "raw/generated-artifacts-retained.json",
+      "originalPath": "test-results/git-closeout-validation/generated-artifacts-retained.json",
+      "bytes": 547,
+      "sha256": "3702ea2fdbec39f161e5f4f3a946953ac8161606cf0e1982b5752f1c2be6840e"
+    },
+    {
+      "path": "raw/outgoing-object-screening.json",
+      "originalPath": "test-results/git-closeout-validation/outgoing-objects.json",
+      "bytes": 2287,
+      "sha256": "b6791f3d62ee821860cfc5ba303d7a2d6758fb19ed24099082eb887dc6b257ec"
+    },
+    {
+      "path": "raw/source-worktree-cleanup.json",
+      "originalPath": "C:/Craftmine-Git-Archive-20260910/source-worktree-cleanup.json",
+      "bytes": 6082,
+      "sha256": "002ed32e5a580b354a1d5ba0ed4361d41b0daeb8a92a32e978ed8028048e05f0"
+    },
+    {
+      "path": "raw/metadata-prune.json",
+      "originalPath": "C:/Craftmine-Git-Archive-20260910/metadata-prune.json",
+      "bytes": 221,
+      "sha256": "7fd2e040c85bc02f7ef79aeb56ddb8261da3a313ac94877afca8b28546d3f7d7"
+    }
+  ],
+  "gitBundle": {
+    "path": "C:/Craftmine-Git-Archive-20260910/before-worktree-cleanup.bundle",
+    "bytes": 50024250,
+    "sha256": "323b607503a4891014a5e42ae21099fd7b399efdfff8501b3b8e8aff071e2c45",
+    "verificationLog": "C:/Craftmine-Git-Archive-20260910/bundle-verify.log"
+  },
+  "allRawCopiesExact": true
+}

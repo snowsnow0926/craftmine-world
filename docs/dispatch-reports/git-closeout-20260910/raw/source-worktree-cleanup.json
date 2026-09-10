@@ -1,0 +1,113 @@
+﻿{
+    "format":  "craftmine.source-worktree-cleanup/1",
+    "authorization":  "User explicitly requested batch commits, worktree cleanup/merging and GitHub push",
+    "startedAt":  "2026-09-10T05:20:53.6092415Z",
+    "bundle":  "C:/Craftmine-Git-Archive-20260910/before-worktree-cleanup.bundle",
+    "freeBefore":  192954048512,
+    "reviewed":  [
+                     {
+                         "path":  "D:\\Craftmine World\\test-results\\worktrees\\godot-cycle04",
+                         "head":  "46739d222ceefc654b596725c96288a4087993b3",
+                         "branch":  "refs/heads/codex/godot-cycle-04-20260909",
+                         "files":  1972
+                     },
+                     {
+                         "path":  "D:\\Craftmine World-worktrees\\godot-parallel-f-20260909",
+                         "head":  "de62480ce40d82babc5b61c15c2e594e36de7768",
+                         "branch":  "refs/heads/codex/godot-parallel-f-20260909",
+                         "files":  2132
+                     },
+                     {
+                         "path":  "D:\\Craftmine World-worktrees\\godot-remaining-g-20260910",
+                         "head":  "c906f3e00e49cf4987f13944694d7f27bb7b2f4b",
+                         "branch":  "refs/heads/codex/godot-remaining-g-20260910",
+                         "files":  2946
+                     },
+                     {
+                         "path":  "D:\\Craftmine World-worktrees\\godot-remaining-h-20260910",
+                         "head":  "da416217a4f2a413edc9cbf2fc8f1a8f30dd0830",
+                         "branch":  "refs/heads/codex/godot-remaining-h-20260910",
+                         "files":  2630
+                     },
+                     {
+                         "path":  "D:\\Craftmine World-worktrees\\godot-remaining-i-20260910",
+                         "head":  "9df9801a48275f1da7e06306d084cafa0791b890",
+                         "branch":  "refs/heads/codex/godot-remaining-i-20260910",
+                         "files":  2795
+                     },
+                     {
+                         "path":  "D:\\Craftmine World-worktrees\\godot-remaining-l-20260910",
+                         "head":  "e0b952db358fdb6f8629e07d453ce08ef73fe52a",
+                         "branch":  "refs/heads/codex/godot-remaining-l-20260910",
+                         "files":  2636
+                     },
+                     {
+                         "path":  "D:\\Craftmine World-worktrees\\godot-round2-r4-20260910",
+                         "head":  "5ee920612d94d4930aa5d9c08485e10a197bff09",
+                         "branch":  "refs/heads/codex/godot-round2-r4-20260910",
+                         "files":  2661
+                     },
+                     {
+                         "path":  "D:\\Craftmine World-worktrees\\godot-round2-r5-20260910",
+                         "head":  "58f44add2d0388e4bdf3c46eea6d21eab1f0478e",
+                         "branch":  "refs/heads/codex/godot-round2-r5-20260910",
+                         "files":  2722
+                     }
+                 ],
+    "removed":  [
+                    {
+                        "path":  "D:\\Craftmine World\\test-results\\worktrees\\godot-cycle04",
+                        "head":  "46739d222ceefc654b596725c96288a4087993b3",
+                        "branch":  "refs/heads/codex/godot-cycle-04-20260909",
+                        "files":  1972
+                    },
+                    {
+                        "path":  "D:\\Craftmine World-worktrees\\godot-parallel-f-20260909",
+                        "head":  "de62480ce40d82babc5b61c15c2e594e36de7768",
+                        "branch":  "refs/heads/codex/godot-parallel-f-20260909",
+                        "files":  2132
+                    },
+                    {
+                        "path":  "D:\\Craftmine World-worktrees\\godot-remaining-g-20260910",
+                        "head":  "c906f3e00e49cf4987f13944694d7f27bb7b2f4b",
+                        "branch":  "refs/heads/codex/godot-remaining-g-20260910",
+                        "files":  2946
+                    },
+                    {
+                        "path":  "D:\\Craftmine World-worktrees\\godot-remaining-h-20260910",
+                        "head":  "da416217a4f2a413edc9cbf2fc8f1a8f30dd0830",
+                        "branch":  "refs/heads/codex/godot-remaining-h-20260910",
+                        "files":  2630
+                    },
+                    {
+                        "path":  "D:\\Craftmine World-worktrees\\godot-remaining-i-20260910",
+                        "head":  "9df9801a48275f1da7e06306d084cafa0791b890",
+                        "branch":  "refs/heads/codex/godot-remaining-i-20260910",
+                        "files":  2795
+                    },
+                    {
+                        "path":  "D:\\Craftmine World-worktrees\\godot-remaining-l-20260910",
+                        "head":  "e0b952db358fdb6f8629e07d453ce08ef73fe52a",
+                        "branch":  "refs/heads/codex/godot-remaining-l-20260910",
+                        "files":  2636
+                    },
+                    {
+                        "path":  "D:\\Craftmine World-worktrees\\godot-round2-r4-20260910",
+                        "head":  "5ee920612d94d4930aa5d9c08485e10a197bff09",
+                        "branch":  "refs/heads/codex/godot-round2-r4-20260910",
+                        "files":  2661
+                    },
+                    {
+                        "path":  "D:\\Craftmine World-worktrees\\godot-round2-r5-20260910",
+                        "head":  "58f44add2d0388e4bdf3c46eea6d21eab1f0478e",
+                        "branch":  "refs/heads/codex/godot-round2-r5-20260910",
+                        "files":  2722
+                    }
+                ],
+    "errors":  [
+
+               ],
+    "forceUsed":  false,
+    "finishedAt":  "2026-09-10T05:20:57.7666066Z",
+    "freeAfter":  193561145344
+}

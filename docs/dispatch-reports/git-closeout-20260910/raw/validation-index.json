@@ -1,0 +1,103 @@
+{
+  "format": "craftmine.git-closeout-validation/1",
+  "recordedAt": "2026-09-10T05:18:30.6341909Z",
+  "sourceRoot": "C:/cm-git-closeout-20260910",
+  "head": "7a089d6537b6da0c9f9511c96f3d8635adbbebf1",
+  "trackedStatus": [],
+  "checks": [
+    {
+      "name": "retirement + executor",
+      "failed": 0,
+      "log": "retirement-executor-53.log",
+      "passed": 53
+    },
+    {
+      "name": "assets Main + annotation + R6",
+      "failed": 0,
+      "log": "assets-with-core.log",
+      "passed": 43
+    },
+    {
+      "name": "broker lib offline",
+      "failed": 0,
+      "log": "broker-lib.log",
+      "passed": 36
+    },
+    {
+      "exitCode": 0,
+      "name": "full desktop TypeScript",
+      "log": "desktop-typecheck-junction.log"
+    }
+  ],
+  "borrowedCore": {
+    "path": "C:/cm-plan-next-20260910/vendor/pi-desktop/target/release/craftmine-core.exe",
+    "sha256": "072556858144cf7c9ce8e3030103a889300cf3add4af2bb0066916ab7811dc7b",
+    "sourceDiffExitCode": 0,
+    "sourceComparedTo": "8276b4540289c0d397c382dff2123edfe1861d42"
+  },
+  "setupFailures": [
+    "assets-35.log: missing ASSET_TEST_DEPS; setup failure retained",
+    "assets-final.log: missing ASSET_TEST_CORE; 42 pass and 1 env failure retained",
+    "desktop-typecheck.log: borrowed paths config did not resolve React/exports; normal tsconfig with temporary dependency junction passed"
+  ],
+  "temporaryDependencyLink": {
+    "target": "C:\\cm-plan-next-20260910\\vendor\\pi-desktop\\apps\\desktop\\node_modules",
+    "path": "C:\\cm-git-closeout-20260910\\vendor\\pi-desktop\\apps\\desktop\\node_modules",
+    "type": "Junction",
+    "cleanup": "Automatic approval review rejected scoped Remove-Item command as blocked by policy. No deletion retry or alternate API. Link remains for root resolution."
+  },
+  "notRun": [
+    "Actual Godot engine",
+    "Electron/client/browser",
+    "Models",
+    "Packaging or sealed binary rebuild",
+    "Full craftmine-core regression"
+  ],
+  "evidence": [
+    {
+      "path": "asset-main-core-report.json",
+      "bytes": 3965,
+      "sha256": "ee514367f94bffba62b23294cdafce1b384d99aac0531a956b452f7727dc43d6"
+    },
+    {
+      "path": "assets-35.log",
+      "bytes": 3789,
+      "sha256": "c97f0b2f79ab00d8a04220e3fe58532500b3035041d22de6e03f632b1e30fa9f"
+    },
+    {
+      "path": "assets-final.log",
+      "bytes": 4833,
+      "sha256": "bf47b6ae3f459c6d0bc524632f85fa0fdc6511cfdbc8440d9aa294c007cdbe7e"
+    },
+    {
+      "path": "assets-with-core.log",
+      "bytes": 3854,
+      "sha256": "2104b4d0d0d3ef705e9f6d5681a31f1a73c16c59262c08abe134606810ca9c74"
+    },
+    {
+      "path": "broker-lib.log",
+      "bytes": 4075,
+      "sha256": "dcd43f970e878414abbd244242e5fd1232bf84b1bc2b5978b94125bd920cff44"
+    },
+    {
+      "path": "desktop-typecheck-junction.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "desktop-typecheck.log",
+      "bytes": 965248,
+      "sha256": "08828fa2a84816b2a165d0c9d582c08f190accc641568f854d3926ebcfd95781"
+    },
+    {
+      "path": "retirement-executor-53.log",
+      "bytes": 5689,
+      "sha256": "75ee888ca64b19bf83d3719f86f7b2b1e52b1dc564d081c3b712c9aeae196c3e"
+    },
+    {
+      "path": "tsconfig.borrowed.json",
+      "bytes": 595,
+      "sha256": "6d973f8888ac1006898df7b004e1eecd6d1d1d98ad9c7ddfcd043f3bf653f4d9"
+    }
+  ]
+}

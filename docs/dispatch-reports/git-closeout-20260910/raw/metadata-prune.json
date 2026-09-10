@@ -1,0 +1,7 @@
+{
+  "at": "2026-09-10T05:21:41.435Z",
+  "removedMetadata": "godot-audit-view-20260909",
+  "reason": "gitdir file points to non-existent location",
+  "workingDirectoryAlreadyMissing": true,
+  "worktreeRegistrations": 81
+}

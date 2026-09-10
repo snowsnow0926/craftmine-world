@@ -1,0 +1,142 @@
+{
+  "format": "craftmine.historical-checkpoint-commits/1",
+  "at": "2026-09-10T05:18:28.699Z",
+  "results": [
+    {
+      "path": "D:/cm-g6-root",
+      "branch": "codex/godot-cycle06-core",
+      "originalHead": "92c98b25f1a9a6b5d83975f16b4eb5c6ea23c621",
+      "originalFilesPreserved": 14,
+      "commits": [
+        {
+          "commit": "50838ee0d9b9a0e21faf3b5824d7364d4d08c64a",
+          "message": "chore(archive): preserve cycle-six core source checkpoint",
+          "paths": [
+            "plugins/craftmine-world/host-requests.cjs",
+            "vendor/pi-desktop/apps/desktop/electron/main/plugin-runtime.ts",
+            "vendor/pi-desktop/crates/craftmine-core/src/godot_builds.rs",
+            "vendor/pi-desktop/crates/craftmine-core/src/godot_builds_tests.rs",
+            "vendor/pi-desktop/crates/craftmine-core/src/godot_jobs.rs",
+            "vendor/pi-desktop/crates/craftmine-core/src/godot_jobs_tests.rs",
+            "vendor/pi-desktop/crates/craftmine-core/src/godot_projects.rs",
+            "vendor/pi-desktop/crates/craftmine-core/src/godot_runtime_tests.rs",
+            "vendor/pi-desktop/crates/craftmine-core/src/lib.rs",
+            "vendor/pi-desktop/crates/craftmine-core/src/main.rs",
+            "vendor/pi-desktop/docs/spec/06-delivery/04-e2e-test-plan.md",
+            "vendor/pi-desktop/crates/craftmine-core/src/godot_host_resources.rs",
+            "vendor/pi-desktop/docs/adr/0317-godot-managed-executor.md",
+            "vendor/pi-desktop/docs/spec/godot-executor-integration.md",
+            "docs/dispatch-reports/godot-cycle06/core/HISTORICAL_CHECKPOINT.md"
+          ]
+        }
+      ],
+      "head": "50838ee0d9b9a0e21faf3b5824d7364d4d08c64a"
+    },
+    {
+      "path": "D:/Craftmine World/test-results/g6-host",
+      "branch": "codex/godot-cycle06-host",
+      "originalHead": "3f52ce6726eeb02630c1fde5d28a66c38f275a0c",
+      "originalFilesPreserved": 16,
+      "commits": [
+        {
+          "commit": "c9dd89c92e9c317d8290061027185d3a3fe0c07e",
+          "message": "chore(archive): preserve cycle-six host source checkpoint",
+          "paths": [
+            "plugins/craftmine-world/view.mjs",
+            "vendor/pi-desktop/apps/desktop/electron/main/godot-runtime-adapter.ts",
+            "vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host.ts",
+            "vendor/pi-desktop/apps/desktop/electron/main/index.ts",
+            "vendor/pi-desktop/docs/spec/06-delivery/04-e2e-test-plan.md",
+            "tests/godot-candidate-coordinator.mjs",
+            "tests/godot-candidate-host.mjs",
+            "tests/godot-candidate-native.mjs",
+            "tests/godot-candidate-native/main.mjs",
+            "tests/godot-candidate-typecheck.mjs",
+            "vendor/pi-desktop/apps/desktop/electron/main/godot-candidate-coordinator.ts",
+            "vendor/pi-desktop/docs/adr/0318-godot-candidate-native-host.md",
+            "vendor/pi-desktop/docs/spec/godot-candidate-native-host.md"
+          ]
+        },
+        {
+          "commit": "77c25d94a7580c69e0a92864c201f9ce227bffe7",
+          "message": "docs(archive): preserve original cycle-six host evidence",
+          "paths": [
+            "docs/dispatch-reports/godot-cycle06/host/coordinator.txt",
+            "docs/dispatch-reports/godot-cycle06/host/staging.txt",
+            "docs/dispatch-reports/godot-cycle06/host/typecheck.txt",
+            "docs/dispatch-reports/godot-cycle06/host/.gitattributes",
+            "docs/dispatch-reports/godot-cycle06/host/HISTORICAL_CHECKPOINT.md"
+          ]
+        }
+      ],
+      "head": "77c25d94a7580c69e0a92864c201f9ce227bffe7"
+    },
+    {
+      "path": "D:/Craftmine World/test-results/g6-sandbox",
+      "branch": "codex/godot-cycle06-sandbox",
+      "originalHead": "3f52ce6726eeb02630c1fde5d28a66c38f275a0c",
+      "originalFilesPreserved": 44,
+      "commits": [
+        {
+          "commit": "ee7de697d8897d3cc2bcc4b049e1b8cfa255340f",
+          "message": "chore(archive): preserve cycle-six sandbox source checkpoint",
+          "paths": [
+            "desktop/godot/sandbox/Cargo.lock",
+            "desktop/godot/sandbox/Cargo.toml",
+            "desktop/godot/sandbox/README.md",
+            "desktop/godot/sandbox/src/desktop.rs",
+            "desktop/godot/sandbox/src/launch.rs",
+            "desktop/godot/sandbox/src/lib.rs",
+            "desktop/godot/sandbox/src/task.rs",
+            "desktop/godot/sandbox/BROKER_PROTOCOL_V1.md",
+            "desktop/godot/sandbox/src/bin/godot-host-broker.rs",
+            "desktop/godot/sandbox/src/broker.rs",
+            "desktop/godot/sandbox/src/preflight.rs",
+            "desktop/godot/sandbox/src/verification.rs"
+          ]
+        },
+        {
+          "commit": "b054c597fb11b5fa7660b99f42af309444782686",
+          "message": "docs(archive): preserve original cycle-six sandbox evidence",
+          "paths": [
+            "docs/dispatch-reports/godot-cycle06/sandbox/REPORT.md",
+            "docs/dispatch-reports/godot-cycle06/sandbox/archive_evidence.py",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/archived-log-manifest.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/cargo-build-final.log",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/cargo-test-final.log",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-eof-1788969989956340300.request.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-eof-1788969989956340300.stderr.log",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-eof-1788969989956340300.stdout.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-eof-1788969989956340300.summary.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-exportweb-1788969941139009800.preflight.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-exportweb-1788969941139009800.request.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-exportweb-1788969941139009800.stderr.log",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-exportweb-1788969941139009800.stdout.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-exportweb-1788969941139009800.summary.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-exportweb-1788969941139009800.task.log",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-import-1788969887184623700.preflight.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-import-1788969887184623700.request.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-import-1788969887184623700.stderr.log",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-import-1788969887184623700.stdout.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-import-1788969887184623700.summary.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-import-1788969887184623700.task.log",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-version-1788969699851830200.request.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-version-1788969699851830200.stderr.log",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-version-1788969699851830200.stdout.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-version-1788969699851830200.summary.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-version-1788969859675809600.preflight.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-version-1788969859675809600.request.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-version-1788969859675809600.stderr.log",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-version-1788969859675809600.stdout.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-version-1788969859675809600.summary.json",
+            "docs/dispatch-reports/godot-cycle06/sandbox/evidence/g6-version-1788969859675809600.task.log",
+            "docs/dispatch-reports/godot-cycle06/sandbox/run_fixed_broker.py",
+            "docs/dispatch-reports/godot-cycle06/sandbox/.gitattributes",
+            "docs/dispatch-reports/godot-cycle06/sandbox/HISTORICAL_CHECKPOINT.md"
+          ]
+        }
+      ],
+      "head": "b054c597fb11b5fa7660b99f42af309444782686"
+    }
+  ]
+}
