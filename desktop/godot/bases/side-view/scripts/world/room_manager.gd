@@ -141,6 +141,7 @@ func enter_room(room_id: String, spawn_id: String, placement: Dictionary, restor
 	if not restoring:
 		state.mark_room_visited(room_id)
 	_update_camera_limits()
+	player.snap_camera_to_player()
 
 	if runtime != null:
 		runtime.current_room_id = room_id

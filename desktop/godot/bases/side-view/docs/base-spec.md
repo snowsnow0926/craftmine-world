@@ -143,3 +143,12 @@ See [the shared authored-base audit contract](../../tests/PERSISTENCE_AUDIT.md) 
 [the state-boundary decision](../../tests/ADR-0001-audit-state-boundary.md).
 Foreign or rejected progress must not mutate live state or overwrite the prior save.
 The audit regression entry point is `desktop/godot/bases/tests/audit-persistence.mjs`.
+
+## Camera placement after teleport and restore
+
+Spawn, respawn, room transition and managed progress restoration immediately settle
+the camera at the placed player, after applying the destination room limits. This
+also applies while the host keeps the tree paused; camera smoothing is retained
+for subsequent ordinary movement. Camera placement cannot advance physics or
+rewrite the restored progress. The native regression entry point is
+`tests/player-feedback/P1/side-view-camera-native.mjs`.

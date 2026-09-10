@@ -317,6 +317,13 @@ func place_at(point: Vector2, facing_value: int = 1) -> void:
 		_update_attack_area()
 	if visual != null:
 		visual.flip_h = facing < 0
+	snap_camera_to_player()
+
+## Teleports must be visible even while the managed runtime is paused.
+func snap_camera_to_player() -> void:
+	if camera != null:
+		camera.reset_smoothing()
+		camera.force_update_scroll()
 
 func set_spawn_point(point: Vector2) -> void:
 	_spawn_point = point

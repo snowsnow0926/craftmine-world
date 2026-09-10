@@ -101,8 +101,8 @@
       "distribution": [
         "development-only"
       ],
-      "bytes": 6156,
-      "sha256": "f44b34e227d8e4aedd1362dd87ad1e6b2d544d34d62ddb046bfdec5d44286e3e",
+      "bytes": 6652,
+      "sha256": "b51dedff4d73b6ec5252712937492948a70e55a2019f0b0e8e09b1cd27ee1f5e",
       "notes": "Project documentation; not loaded by the running game."
     },
     {
@@ -380,8 +380,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 11758,
-      "sha256": "419e61b61caa6cc21eb17521be22af46a273dda5eddf188eb35ff85d3f6a5ba4",
+      "bytes": 11971,
+      "sha256": "c0d8548d9f16f105e5537406b152601743df1616016fe4e9014b9dd76be6499a",
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
@@ -836,8 +836,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 7544,
-      "sha256": "4749f2a8b50d755674a1b3d547cd19b60ccbbffcd8b494456177b45186e87ff4",
+      "bytes": 7576,
+      "sha256": "49d99bb0c768613d5a4c18aada5779ab60c86c696298f1fb38f7d0c54e49022d",
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
