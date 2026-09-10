@@ -18,6 +18,7 @@ const fsp = require('node:fs/promises');
 const path = require('node:path');
 const {isDeepStrictEqual} = require('node:util');
 const {captureBinRetirement} = require('./godot-task-bin-retirement.cjs');
+const {creationTiming} = require('./creation-timing.cjs');
 
 const execFileAsync = (file, args, options = {}) => new Promise(resolve => {
   const settle = (error, stdout, stderr) => resolve({
@@ -877,6 +878,7 @@ function createGodotExecutor(core, options = {}) {
 
   async function runJob(entry) {
     const {jobId, worldId, mode, token} = entry;
+    entry.timing = creationTiming();
     let claim = null, heartbeat = null;
     try {
       claim = await core.call('godotJob.claim', {jobId, token, executorId:EXECUTOR_ID}, 30000);
@@ -973,7 +975,7 @@ function createGodotExecutor(core, options = {}) {
             error:'GODOT_VERIFIER_UNAVAILABLE', ready:{ok:false}, render:{ok:false}, errors:{ok:false},
             snapshot:{ok:false}, isolation:{ok:false}, recovery:{ok:false}};
         } else {
-          runtime = await verifier.godotCheck(resolved.descriptor);
+        runtime = await entry.timing.measure('runtime-check', () => verifier.godotCheck(resolved.descriptor));
         }
       } else {
         artifacts = [];
@@ -996,6 +998,8 @@ function createGodotExecutor(core, options = {}) {
       });
     } finally {
       if (heartbeat) clearInterval(heartbeat);
+      ledgerEntry(jobId).phaseTiming = entry.timing.snapshot();
+      await persistLedger();
       jobs.delete(jobId);
     }
   }
@@ -1049,7 +1053,7 @@ function createGodotExecutor(core, options = {}) {
         // Application is a separate host-owned transaction. Its failure must
         // never turn a durable passed check into an executor finish failure.
         try {
-          durable.creationApplication=await verifier.creationCheckCompleted({jobId,context:entry.context});
+          durable.creationApplication=await entry.timing.measure('creation-application', () => verifier.creationCheckCompleted({jobId,context:entry.context}));
           await persistLedger();
         } catch(error) {warn('creation candidate awaits manual adoption:',jobId,String(error?.message??error));}
       }
