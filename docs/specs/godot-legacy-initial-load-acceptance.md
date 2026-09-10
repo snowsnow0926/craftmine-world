@@ -49,3 +49,12 @@ to actual Core tests and need not each launch another full engine instance.
 Contract unit tests only verify acceptance rejection rules, not native recovery.
 No recovery success is claimed until the native report and both client launches
 pass against the newly compiled candidate. The previous 827 package is ineligible.
+
+On restart, the client automatically reopens its persisted selection. The test
+waits for an actual observation with the expected protocol, world, build and
+instance identity, then checks the selected ready world. It does not race that
+startup with a redundant world.open or query a not-yet-mounted navigation view.
+Only the two observed exact absent-runtime message forms are pending, within a
+120-second deadline; malformed/foreign observations never satisfy the wait.
+Other errors, including WORLD_BUSY and runtime load timeouts, still fail.
+Controlled deadline and schema tests cover these acceptance-only rules.
