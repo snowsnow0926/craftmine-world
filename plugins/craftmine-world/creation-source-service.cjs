@@ -23,12 +23,13 @@ function createCreationSourceService({core,capture,sample,assertActive}) {
   return {...first,files};
  }
  async function read(context,worldId,source,file){
-  check(Number.isSafeInteger(file.bytes)&&file.bytes<=120000,'CREATION_SOURCE_TOO_LARGE');
+  const limit=file.path===JOURNAL_PATH?4*1024*1024:120000;
+  check(Number.isSafeInteger(file.bytes)&&file.bytes<=limit,'CREATION_SOURCE_TOO_LARGE');
   let offset=0,text='';
   do {
    const part=await core.call('godotProject.read',{context,worldId,revision:source.revision,manifestHash:source.manifestHash,path:file.path,offset,limit:16000});assertActive(context);
    check(part.worldId===worldId&&part.revision===source.revision&&part.manifestHash===source.manifestHash&&part.sha256===file.sha256&&typeof part.text==='string','CREATION_SOURCE_CHANGED');
-   text+=part.text;check(Buffer.byteLength(text)<=120000,'CREATION_SOURCE_TOO_LARGE');
+   text+=part.text;check(Buffer.byteLength(text)<=limit,'CREATION_SOURCE_TOO_LARGE');
    const next=part.nextOffset;check(next==null||(Number.isSafeInteger(next)&&next>offset),'CREATION_SOURCE_PAGE_INVALID');offset=next;
   }while(offset!=null);
   check(Buffer.byteLength(text)===file.bytes&&hash(text)===file.sha256,'CREATION_SOURCE_FILE_HASH_MISMATCH');
@@ -67,7 +68,17 @@ function createCreationSourceService({core,capture,sample,assertActive}) {
   // new write's liveness. It never resubmits an uncertain patch.
   if(!result.replayed){const receipt=await previous();if(receipt){known.add(pin(receipt));advances.set(key,known);return response(receipt,true);}}
   if(result.replayed)return response(sourceIndex,true);
-  check(known.has(pin(sourceIndex)),'CREATION_TARGET_SOURCE_CHANGED_RECAPTURE');
+  if(!known.has(pin(sourceIndex))){
+   // Opening a new task can reindex the same formal bytes under a different
+   // revision. Only a complete core-proven formal source identity can rebase
+   // this capture; caller-chosen pins or a journal assertion are insufficient.
+   const formal=await core.call('godotRuntime.exportSource',{worldId:bound.worldId});assertActive(context);
+   check(formal?.worldId===bound.worldId&&formal.buildId===bound.buildId&&formal.baseId==='creation-sandbox'&&formal.sourceRevision===bound.sourceRevision,'CREATION_TARGET_SOURCE_CHANGED_RECAPTURE');
+   const sameContent=sourceIndex.content&&sourceIndex.content.repoId===formal.repoId&&sourceIndex.content.contentOid===formal.contentOid;
+   const formalFiles=Array.isArray(formal.files)?formal.files.filter(file=>file.kind===undefined||file.kind==='source'):[];
+   const sameFiles=formalFiles.length===sourceIndex.files.size&&new Set(formalFiles.map(file=>file.path)).size===formalFiles.length&&formalFiles.every(file=>sourceIndex.files.get(file.path)?.sha256===file.sha256&&sourceIndex.files.get(file.path)?.bytes===file.bytes);
+   check(sameContent||sameFiles,'CREATION_TARGET_SOURCE_CHANGED_RECAPTURE');known.add(pin(sourceIndex));
+  }
   check(typeof sample==='function','CREATION_LIVE_PROVIDER_UNAVAILABLE');
   const live=await sample({worldId:bound.worldId,buildId:bound.buildId,instanceId:bound.instanceId});assertActive(context);
   const age=Date.now()-Date.parse(live?.sampledAt);
