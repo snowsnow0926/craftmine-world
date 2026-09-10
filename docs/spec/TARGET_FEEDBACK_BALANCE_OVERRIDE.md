@@ -48,3 +48,7 @@ engine hash. Generated files are not committed. This is native authored-base
 acceptance; it does not replace a complete client PP2 source/check/application run.
 The configuration adapter's pinned script hash must be updated separately by the
 integration owner after merging these scripts.
+
+Follow-up native run `test-results/target-balance-xxN9zT/` passed **10/10** checks,
+adding a real PackedScene template-root explicit 120ms value under profile 700ms.
+It also remains explicit. Production script hashes are unchanged from the first run.

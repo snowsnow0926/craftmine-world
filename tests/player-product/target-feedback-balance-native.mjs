@@ -18,6 +18,7 @@ scene=scene.replace('target_id = &"target_b"','target_id = &"target_b"\nhit_flas
 await fs.writeFile(path.join(project,'scenes/training_range.tscn'),scene);
 const balance=path.join(project,'data/balance/training_range.tres');
 await fs.writeFile(balance,(await fs.readFile(balance,'utf8')).replace('hit_flash_seconds = 0.12','hit_flash_seconds = 0.25'));
+await fs.writeFile(path.join(project,'scenes/actors/target_template_override.tscn'),(await fs.readFile(path.join(project,'scenes/actors/target_dummy.tscn'),'utf8')).replace('max_health = 50.0','max_health = 50.0\nhit_flash_seconds = 0.12'));
 await fs.writeFile(path.join(project,'test_balance.gd'),`extends SceneTree
 var checks: Array[String] = []
 func check_value(ok: bool, label: String) -> void:
@@ -43,6 +44,10 @@ func run() -> void:
  profile.apply_to(world)
  check_value(is_equal_approx(a.hit_flash_seconds, 0.7), "inherited target follows repeated profile update700")
  check_value(is_equal_approx(b.hit_flash_seconds, 0.5) and is_equal_approx(c.hit_flash_seconds, 0.12), "both explicit targets survive repeated profile update700")
+ var template = load("res://scenes/actors/target_template_override.tscn").instantiate()
+ root.add_child(template)
+ profile.apply_to(world)
+ check_value(is_equal_approx(template.hit_flash_seconds, 0.12), "PackedScene template root explicit120 survives profile700")
  b.apply_damage(7.0)
  var saved = b.snapshot()
  check_value(is_equal_approx(b._flash_remaining, 0.5), "actual damage starts explicit 500ms flash")
@@ -53,6 +58,7 @@ func run() -> void:
  check_value(b.restore(saved) == "" and b.snapshot() == saved and is_equal_approx(b.hit_flash_seconds, 0.5), "restoring progress leaves instance configuration intact")
  print("BALANCE_RESULT " + JSON.stringify({"passed":true,"checks":checks}))
  world.queue_free()
+ template.queue_free()
  await process_frame
  quit(0)
 `);
