@@ -4,18 +4,10 @@
 // decoder cannot block the host. No window, no focus, no input, no playback and
 // no shared data directory are used; the worker is stateless and only returns
 // evidence for the Rust layer to record.
-import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
+import { Worker } from 'node:worker_threads';
 import { fileURLToPath } from 'node:url';
 
-import { PREVIEW_TIMEOUT_MS, previewAsset } from './preview-service.mjs';
-
-if (!isMainThread && workerData?.previewRequest) {
-  try {
-    parentPort.postMessage({ ok: true, result: previewAsset(workerData.previewRequest) });
-  } catch (error) {
-    parentPort.postMessage({ ok: false, error: String(error?.message || error) });
-  }
-}
+import { PREVIEW_TIMEOUT_MS } from './preview-service.mjs';
 
 /**
  * Runs `request` in a worker with a hard timeout. A timeout or an abort signal
@@ -32,12 +24,15 @@ export function runPreviewInWorker(request, { timeoutMs = PREVIEW_TIMEOUT_MS, si
       facts: { workerTerminated: false },
     });
   }
-  const worker = new Worker(fileURLToPath(import.meta.url), {
+  // Main is bundled into index.js. Never spawn import.meta.url itself: that
+  // would load the entire Electron Main module inside a Node worker.
+  const worker = new Worker(fileURLToPath(new URL('./asset-preview-worker.js', import.meta.url)), {
     workerData: { previewRequest: request },
   });
   return new Promise(resolve => {
     let settled = false;
     let timer = null;
+    let response = null;
     const terminate = () => {
       worker.terminate().catch(() => {});
     };
@@ -69,16 +64,15 @@ export function runPreviewInWorker(request, { timeoutMs = PREVIEW_TIMEOUT_MS, si
     timer.unref?.();
     signal?.addEventListener?.('abort', onAbort, { once: true });
     worker.once('message', message => {
-      worker.terminate().catch(() => {});
       if (message?.ok) {
-        finish(message.result);
+        response = message.result;
       } else {
-        finish({
+        response = {
           cacheKey: null,
           status: 'failed',
           detail: String(message?.error || 'PREVIEW_FAILED').slice(0, 200),
           facts: {},
-        });
+        };
       }
     });
     worker.once('error', error => {
@@ -91,6 +85,7 @@ export function runPreviewInWorker(request, { timeoutMs = PREVIEW_TIMEOUT_MS, si
     });
     worker.once('exit', code => {
       if (!settled) {
+        if (code === 0 && response !== null) { finish(response); return; }
         finish({
           cacheKey: null,
           status: 'failed',

@@ -1,0 +1,10 @@
+{"out":"D:\\cm-fb-p6-20260910\\test-results\\asset-compiled-worker-uxIITE","passed":true,"checks":5}
+✔ compiled standalone asset worker decodes PNG, exits normally, and keeps cancellation/timeout (184.0115ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 436.1975

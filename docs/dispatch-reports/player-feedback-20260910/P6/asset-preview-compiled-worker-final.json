@@ -1,0 +1,108 @@
+{
+  "format": "craftmine.asset-compiled-worker/1",
+  "passed": true,
+  "out": "D:\\cm-fb-p6-20260910\\test-results\\asset-compiled-worker-uxIITE",
+  "checks": [
+    "fixed separate build entry, no Main/Electron dependency",
+    "compiled worker actually decoded 1x1 PNG and exited zero",
+    "bundled Main-side runner locates the fixed worker and returns identical evidence",
+    "compiled runner enforces timeout",
+    "compiled runner honours live cancellation"
+  ],
+  "limits": [
+    "Actual Rollup output and real Node worker threads; not Electron ASAR/package acceptance.",
+    "No visible window, input, Pointer Lock, model or engine."
+  ],
+  "files": [
+    {
+      "path": "asset-preview-worker.js",
+      "sha256": "6a005f7efe233314b12a49117289af47c2355f43634663cc292d1eb24dc59dc0",
+      "bytes": 704,
+      "modules": [
+        "D:\\cm-fb-p6-20260910\\vendor\\pi-desktop\\apps\\desktop\\electron\\craftmine-assets\\asset-preview-worker.js"
+      ]
+    },
+    {
+      "path": "index.js",
+      "sha256": "88e5423fa662e5b2782852504192a3ad3e026f1239a8c4089057a1522d54cfc9",
+      "bytes": 3167,
+      "modules": [
+        "D:\\cm-fb-p6-20260910\\vendor\\pi-desktop\\apps\\desktop\\electron\\craftmine-assets\\preview-worker.mjs"
+      ]
+    },
+    {
+      "path": "chunks/preview-service-DwQdpZ8M.js",
+      "sha256": "b73e799fc8f35fbd3d10754cbdafb51e9394c186c48655863592d9e5d9678dec",
+      "bytes": 124068,
+      "modules": [
+        "D:\\cm-fb-p6-20260910\\vendor\\pi-desktop\\apps\\desktop\\electron\\craftmine-assets\\decode\\image-decode.mjs",
+        "D:\\cm-fb-p6-20260910\\vendor\\pi-desktop\\apps\\desktop\\electron\\craftmine-assets\\decode\\audio-decode.mjs",
+        "D:\\cm-fb-p6-20260910\\vendor\\pi-desktop\\apps\\desktop\\electron\\craftmine-assets\\decode\\godot-package.mjs",
+        "D:\\cm-fb-p6-20260910\\vendor\\pi-desktop\\apps\\desktop\\electron\\craftmine-assets\\decode\\glb-render.mjs",
+        "D:\\cm-fb-p6-20260910\\vendor\\pi-desktop\\apps\\desktop\\electron\\craftmine-assets\\preview-service.mjs"
+      ]
+    }
+  ],
+  "direct": {
+    "code": 0,
+    "message": {
+      "ok": true,
+      "result": {
+        "cacheKey": "f6848a995ca5198ea9bf355753f77bf8ade39c947759ac10b33051ac02d8472b",
+        "status": "ok",
+        "detail": "png 1x1",
+        "facts": {
+          "decoder": "image-decode.mjs@1",
+          "digest": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e",
+          "format": "png",
+          "width": 1,
+          "height": 1,
+          "thumbnailWidth": 1,
+          "thumbnailHeight": 1,
+          "thumbnailBytes": 70,
+          "thumbnailBase64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP4////fwAJ+wP99djxmgAAAABJRU5ErkJggg==",
+          "progressive": false,
+          "interlace": "none",
+          "picture": true,
+          "playable": false
+        }
+      }
+    }
+  },
+  "runner": {
+    "cacheKey": "f6848a995ca5198ea9bf355753f77bf8ade39c947759ac10b33051ac02d8472b",
+    "status": "ok",
+    "detail": "png 1x1",
+    "facts": {
+      "decoder": "image-decode.mjs@1",
+      "digest": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e",
+      "format": "png",
+      "width": 1,
+      "height": 1,
+      "thumbnailWidth": 1,
+      "thumbnailHeight": 1,
+      "thumbnailBytes": 70,
+      "thumbnailBase64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP4////fwAJ+wP99djxmgAAAABJRU5ErkJggg==",
+      "progressive": false,
+      "interlace": "none",
+      "picture": true,
+      "playable": false
+    }
+  },
+  "timeout": {
+    "cacheKey": null,
+    "status": "timeout",
+    "detail": "PREVIEW_TIMEOUT",
+    "facts": {
+      "workerTerminated": true
+    }
+  },
+  "cancelled": {
+    "cacheKey": null,
+    "status": "cancelled",
+    "detail": "PREVIEW_CANCELLED",
+    "facts": {
+      "workerTerminated": true
+    }
+  }
+}

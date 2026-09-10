@@ -1,0 +1,15 @@
+[case] worker -> {"ok":"ok","timeout":"timeout"}
+✔ the worker isolates decoding and honours a hard timeout (45.9024ms)
+[measure] preview worker cancel: latency=18ms rssDelta=14380KiB bytes=863910
+[measure] preview worker pre-start cancel: latency=0ms
+✔ cancelling a live preview worker terminates it and reports the latency (62.9257ms)
+✔ a preview cancelled before the worker starts never decodes (0.944ms)
+✔ the cancellation path uses no window, input or playback API (0.6159ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 189.7315
