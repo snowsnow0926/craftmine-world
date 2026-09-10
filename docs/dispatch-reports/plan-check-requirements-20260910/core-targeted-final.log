@@ -1,0 +1,288 @@
+warning: unused import: `load_manifest`
+  --> crates\craftmine-core\src\godot_builds.rs:21:22
+   |
+21 |     godot_projects::{load_manifest, ordinary, valid_hash, Manifest},
+   |                      ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `entry` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:11:15
+   |
+11 | pub(super) fn entry(
+   |               ^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `build` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:32:15
+   |
+32 | pub(super) fn build(entries: Vec<AssetLockEntry>) -> Result<AssetLock> {
+   |               ^^^^^
+
+warning: function `resolve_closure` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:37:15
+   |
+37 | pub(super) fn resolve_closure(lock: &AssetLock, roots: &[AssetRef]) -> Result<Vec<AssetRef>> {
+   |               ^^^^^^^^^^^^^^^
+
+warning: function `collect` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:52:4
+   |
+52 | fn collect(entry: &AssetLockEntry, lock: &AssetLock, out: &mut Vec<AssetRef>) {
+   |    ^^^^^^^
+
+warning: field `claim_owner` is never read
+  --> crates\craftmine-core\src\asset_catalog\preview.rs:95:5
+   |
+88 | struct PreviewState {
+   |        ------------ field in this struct
+...
+95 |     claim_owner: String,
+   |     ^^^^^^^^^^^
+
+warning: method `content_files` is never used
+   --> crates\craftmine-core\src\content.rs:618:19
+    |
+236 | impl TaskJournal {
+    | ---------------- method in this implementation
+...
+618 |     pub(crate) fn content_files(
+    |                   ^^^^^^^^^^^^^
+
+warning: function `abort` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:467:8
+    |
+467 | pub fn abort(db: &mut Connection, operation_id: &str, reason: &str) -> Result<ReferenceIntent> {    let intent = load(db, operation...
+    |        ^^^^^
+
+warning: function `receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:588:8
+    |
+588 | pub fn receipt(
+    |        ^^^^^^^
+
+warning: function `store_receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:614:8
+    |
+614 | pub fn store_receipt(
+    |        ^^^^^^^^^^^^^
+
+warning: struct `ContentRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:219:12
+    |
+219 | pub struct ContentRef {
+    |            ^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:226:12
+    |
+225 | impl ContentRef {
+    | --------------- method in this implementation
+226 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `BuildRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:236:12
+    |
+236 | pub struct BuildRef {
+    |            ^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:246:12
+    |
+245 | impl BuildRef {
+    | ------------- method in this implementation
+246 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `ProgressRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:260:12
+    |
+260 | pub struct ProgressRef {
+    |            ^^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:270:12
+    |
+269 | impl ProgressRef {
+    | ---------------- method in this implementation
+270 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: methods `config_dir`, `with_timeout`, `object_type`, and `cat_object` are never used
+   --> crates\craftmine-core\src\content_history\git.rs:493:12
+    |
+368 | impl GitAdapter {
+    | --------------- methods in this implementation
+...
+493 |     pub fn config_dir(&self) -> &Path {
+    |            ^^^^^^^^^^
+...
+497 |     pub fn with_timeout(mut self, timeout: Duration) -> Self {
+    |            ^^^^^^^^^^^^
+...
+816 |     pub fn object_type(&self, git_dir: &Path, oid: &str) -> Result<String> {
+    |            ^^^^^^^^^^^
+...
+824 |     pub fn cat_object(&self, git_dir: &Path, oid: &str) -> Result<Vec<u8>> {
+    |            ^^^^^^^^^^
+
+warning: constant `REPOSITORY_FORMAT` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:30:11
+   |
+30 | pub const REPOSITORY_FORMAT: &str = "craftmine.content-repository/1";
+   |           ^^^^^^^^^^^^^^^^^
+
+warning: method `as_str` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:42:8
+   |
+41 | impl ContentBackend {
+   | ------------------- method in this implementation
+42 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+
+warning: associated function `text` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:108:12
+    |
+107 | impl ContentFile {
+    | ---------------- associated function in this implementation
+108 |     pub fn text(path: &str, text: &str) -> Self {
+    |            ^^^^
+
+warning: struct `MaterializedCopy` is never constructed
+   --> crates\craftmine-core\src\content_history\repo.rs:171:12
+    |
+171 | pub struct MaterializedCopy {
+    |            ^^^^^^^^^^^^^^^^
+
+warning: methods `root`, `content_ref`, `materialize`, `set_draft`, `draft`, and `set_applied` are never used
+   --> crates\craftmine-core\src\content_history\repo.rs:211:12
+    |
+198 | impl RepositoryStore {
+    | -------------------- methods in this implementation
+...
+211 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+...
+477 |     pub fn content_ref(&self, layout: &RepoLayout, oid: &str) -> Result<ContentRef> {
+    |            ^^^^^^^^^^^
+...
+536 |     pub fn materialize(
+    |            ^^^^^^^^^^^
+...
+818 |     pub fn set_draft(
+    |            ^^^^^^^^^
+...
+833 |     pub fn draft(&self, layout: &RepoLayout, branch_id: &str) -> Result<Option<String>> {
+    |            ^^^^^
+...
+891 |     pub fn set_applied(
+    |            ^^^^^^^^^^^
+
+warning: function `group_by_request` is never used
+    --> crates\craftmine-core\src\content_history\repo.rs:1103:8
+     |
+1103 | pub fn group_by_request(records: &[CommitRecord]) -> BTreeMap<String, Vec<&CommitRecord>> {
+     |        ^^^^^^^^^^^^^^^^
+
+warning: function `blob_read` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:363:15
+    |
+363 | pub(super) fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Result<String> {
+    |               ^^^^^^^^^
+
+warning: function `reconcile_git_head` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:541:4
+    |
+541 | fn reconcile_git_head(
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: methods `project_manifest` and `project_is_git_backed` are never used
+   --> crates\craftmine-core\src\godot_projects.rs:754:19
+    |
+727 | impl TaskJournal {
+    | ---------------- methods in this implementation
+...
+754 |     pub(super) fn project_manifest(
+    |                   ^^^^^^^^^^^^^^^^
+...
+878 |     pub(super) fn project_is_git_backed(&self, world: &str) -> Result<bool> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^
+
+   Compiling craftmine-core v0.1.0 (D:\cm-plan-checks-20260910\vendor\pi-desktop\crates\craftmine-core)
+warning: `craftmine-core` (lib) generated 26 warnings (run `cargo fix --lib -p craftmine-core` to apply 1 suggestion)
+warning: variable does not need to be mutable
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `claim_owner` is never read
+  --> crates\craftmine-core\src\asset_catalog\preview.rs:95:5
+   |
+88 | struct PreviewState {
+   |        ------------ field in this struct
+...
+95 |     claim_owner: String,
+   |     ^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `root` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:211:12
+    |
+198 | impl RepositoryStore {
+    | -------------------- method in this implementation
+...
+211 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+
+warning: function `VECTORS_JSON` should have a snake case name
+   --> crates\craftmine-core\src\content_history\contract_vectors_tests.rs:113:4
+    |
+113 | fn VECTORS_JSON() -> Result<Value> {
+    |    ^^^^^^^^^^^^ help: convert the identifier to snake case: `vectors_json`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `craftmine-core` (lib test) generated 11 warnings (7 duplicates) (run `cargo fix --lib -p craftmine-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.18s
+     Running unittests src\lib.rs (target\debug\deps\craftmine_core-13091a1caf054aaf.exe)
+
+running 5 tests
+{"candidate":"rejected","case":"missing","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+test godot_jobs::requirements_tests::finite_requirements_bound_tolerance_keeps_raw_actual_and_old_backup_columns_default_to_none ... ok
+{"candidate":"ready","case":"match-after-restart","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"bound runtime expectation confirmed","id":"core.target-feedback","passed":true}],"passed":true,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"passed"}
+test godot_jobs::requirements_tests::finite_requirements_validate_scope_hash_and_start_replay ... ok
+test godot_jobs::requirements_tests::finite_requirements_continue_preserves_expectations_and_corrupt_pair_is_refused ... ok
+test godot_jobs::requirements_tests::finite_requirements_actual_match_passes_and_survives_restart_replay ... ok
+{"candidate":"rejected","case":"wrong-hash","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8810ad581e59f2bc3928b261707a71308f7e139eb04820366dc4d5c18d980225","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"wrong-job","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"other-job","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"wrong-world","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"b"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"wrong-build","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"other-build","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"wrong-instance","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"loaded-700","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":700,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"running-700","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":700,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"wrong-target","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_b"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"partial","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"reordered","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"unknown-field","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","expectedInsteadOfObserved":true,"format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"missing-assertion","check":{"assertions":[{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"false-assertion","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":false},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"duplicate-assertion","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+{"candidate":"rejected","case":"no-descriptor","check":{"assertions":[{"detail":null,"id":"runtime.target-feedback","passed":true},{"detail":"GODOT_CHECK_REQUIREMENTS_UNCONFIRMED","id":"core.target-feedback","passed":false}],"passed":false,"requirementsEvidence":{"buildId":"gbd-51583ecbeae6459babfa73c40c1bc5506edc0d820147cdfbe47f32f1becfdb7c","format":"craftmine.godot-check-requirements-evidence/1","instanceId":"runtime-one","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","observations":[{"hitFlashMilliseconds":500.0,"phase":"loaded","targetId":"target_a"},{"hitFlashMilliseconds":500.0,"phase":"running","targetId":"target_a"}],"requirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","worldId":"a"}},"checkRequirementsHash":"8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240","evidenceType":"real-core-authored-executor","jobId":"gjob-4ce55619c053790c27ac11b6b0862567ee5c1a42f55f3c8da1ac62cf7a617283","status":"failed"}
+test godot_jobs::requirements_tests::finite_requirements_missing_false_or_mixed_evidence_rejects_candidate_durably ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 284 filtered out; finished in 1.88s
+
+     Running unittests src\main.rs (target\debug\deps\craftmine_core-d51d032be1083c22.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

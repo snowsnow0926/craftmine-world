@@ -8912,3 +8912,22 @@ Fixture UI checks and source-only tests are separate from actual client/runtime 
 ### Optional creation guide in the library (2026-09-10)
 
 Open the actual library and confirm a collapsed six-step creation guide is inside the workbench. Expanding it must not change the fixed game chrome height. Navigate to checks using its existing action, verify the old guide is cleared, reopen the library and confirm it starts collapsed, then return to the world. No guide action may send a model request, prepare a draft, apply a candidate, or save progress. Use finite headless page scripts with no input simulation. Module-only DOM results are not assembled-client evidence.
+
+### Finite runtime check expectation binding (2026-09-10)
+
+Run the real core finite_requirements tests and the executor protocol suite.
+Require post-load and running observations of target_a=500 to pass, preserve
+raw actual values, and retain the same result after restart and finish replay.
+Missing, false, duplicate, partial, wrong-hash, wrong-job/world/build/target, or
+700-millisecond evidence must produce failed job, rejected candidate, refused
+application, and unchanged formal progress. Continue retains requirements;
+older jobs and backup column defaults remain compatible. A required descriptor
+failure must never fall back to an executor-created descriptor.
+
+Separately run the actual isolated verifier on a scene declaring 500 whose
+ancestor or sibling assigns 700 during initialization or running. The entire
+ordinary check must fail, not just the parameter status page. Compare the
+official 500 scene's successful check and adoption. Keep full runtime and
+candidate identities, and distinguish bounded observations from proof of
+arbitrary future behavior. No model call, OS input, visible window, or Pointer
+Lock is required. See godot-check-requirements.md for the finite wire contract.

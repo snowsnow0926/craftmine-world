@@ -27,6 +27,12 @@ const ARTIFACT_COUNT: usize = 4096;
 #[path = "godot_jobs_tests.rs"]
 mod tests;
 
+#[path = "godot_check_requirements.rs"]
+pub(super) mod requirements;
+#[cfg(test)]
+#[path = "godot_check_requirements_tests.rs"]
+mod requirements_tests;
+
 /// Live isolation attestation of one executor process. It is intentionally not
 /// durable: a restarted core requires the executor to prove itself again.
 #[derive(Clone, Debug)]
@@ -167,6 +173,8 @@ struct CheckResult {
     defaults_snapshot: Option<Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     progress_migration: Option<Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    requirements_evidence: Option<Value>,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -260,6 +268,8 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
         ("origin_job_id", "TEXT"),
         ("check_input", "TEXT"),
         ("check_input_hash", "TEXT"),
+        ("check_requirements", "TEXT"),
+        ("check_requirements_hash", "TEXT"),
     ] {
         let present: bool = db.query_row(
             "SELECT COUNT(*) FROM pragma_table_info('craftmine_godot_jobs') WHERE name=?1",
@@ -410,12 +420,14 @@ pub(super) fn read_job(db: &Connection, id: &str) -> Result<Value> {
         )
         .optional()?;
     let branch:Option<String>=db.query_row("SELECT branch_id FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",params![world_id,build_id],|r|r.get(0)).optional()?;
-    Ok(json!({"jobId":id,"worldId":world_id,"taskId":task_id,"kind":kind,"buildId":build_id,"branchId":branch,
+    let mut result = json!({"jobId":id,"worldId":world_id,"taskId":task_id,"kind":kind,"buildId":build_id,"branchId":branch,
         "sourceRevision":revision,"manifestHash":manifest,"assetManifestHash":assets,"baseId":base_id,
         "baseBuild":base_build,"status":status,"blockedReason":blocked,"executorId":executor,
         "stage":stage,"progress":progress,"leaseExpiresAt":lease,"output":output,
         "outputHash":output_hash,"candidateId":candidate,"createdAt":created,"updatedAt":updated,
-        "interruptReason":interrupt,"originJobId":origin}))
+        "interruptReason":interrupt,"originJobId":origin});
+    requirements::attach(db, id, &mut result)?;
+    Ok(result)
 }
 
 pub(super) fn build_files(
@@ -733,10 +745,11 @@ impl TaskJournal {
         } else {
             Value::Null
         };
-        let result = json!({"format":"craftmine.godot-check-descriptor/1","phase":"check",
+        let mut result = json!({"format":"craftmine.godot-check-descriptor/1","phase":"check",
             "jobId":args.job_id,"inputHash":input_hash,"worldId":world,"buildId":build,
             "baseId":record["baseId"],"root":root.to_string_lossy(),"entry":"web/index.html",
             "threads":true,"artifacts":args.artifacts,"snapshot":snapshot});
+        requirements::attach(&tx, &args.job_id, &mut result)?;
         let previous: Option<String> = tx.query_row("SELECT check_input FROM craftmine_godot_jobs WHERE id=?1", [&args.job_id], |r| r.get(0))?;
         if previous.is_some() {
             let existing = check_input(&tx, &args.job_id)?;
@@ -847,6 +860,7 @@ impl TaskJournal {
                 origin["baseId"].as_str(), origin["baseBuild"].as_str(), request_hash,
                 status, blocked_reason, now, args.origin_job_id],
         )?;
+        requirements::store(&tx, &job_id, requirements::read(&tx, &args.origin_job_id)?.as_ref())?;
         let mut result = read_job(&tx, &job_id)?;
         result["executionAvailable"] = json!(queued);
         result["blockedReason"] = json!(blocked_reason);
@@ -1118,7 +1132,7 @@ impl TaskJournal {
     /// claiming token is retained so a lost response can be answered from the
     /// stored receipt without re-running anything.
     pub fn godot_job_finish(&mut self, args: &Value) -> Result<Value> {
-        let args: FinishArgs = serde_json::from_value(args.clone())?;
+        let mut args: FinishArgs = serde_json::from_value(args.clone())?;
         workspaces::call_id(&args.token)?;
         ensure!(
             args.output.format == "craftmine.godot-job-result/1",
@@ -1141,6 +1155,28 @@ impl TaskJournal {
         let (world, build, record) = owned_job(&tx, &args.job_id, &args.token)?;
         let kind = record["kind"].as_str().context("INVALID_GODOT_JOB")?.to_string();
         let task = record["taskId"].as_str().context("INVALID_GODOT_JOB")?.to_string();
+        let mut requirements_unconfirmed = false;
+        // Normalize before comparing terminal receipts, so replaying the same
+        // executor submission returns the same durable failed result.
+        if let Some(required) = requirements::read(&tx, &args.job_id)? {
+            let required_assertions: Vec<_> = args.output.check.assertions.iter()
+                .filter(|a| a.id == requirements::ASSERTION).collect();
+            let descriptor = check_input(&tx, &args.job_id).ok();
+            let accepted = required_assertions.len() == 1 && required_assertions[0].passed
+                && descriptor.as_ref().is_some_and(|descriptor|
+                    descriptor["jobId"] == args.job_id && descriptor["worldId"] == world
+                    && descriptor["buildId"] == build && descriptor["inputHash"] == args.output.input_hash
+                    && descriptor["artifacts"] == serde_json::to_value(&args.output.artifacts).unwrap_or(Value::Null)
+                    && requirements::evidence_matches(&required, args.output.check.requirements_evidence.as_ref(), descriptor));
+            args.output.check.assertions.push(Assertion { id: "core.target-feedback".into(),
+                passed: accepted, detail: Some(if accepted { "bound runtime expectation confirmed" }
+                    else { "GODOT_CHECK_REQUIREMENTS_UNCONFIRMED" }.into()) });
+            if !accepted {
+                requirements_unconfirmed = true;
+                args.output.passed = false;
+                args.output.check.passed = false;
+            }
+        }
         if matches!(
             record["status"].as_str(),
             Some("passed" | "failed")
@@ -1191,7 +1227,9 @@ impl TaskJournal {
         match (&args.output.check.defaults_snapshot, &args.output.check.progress_migration) {
             (None, None) => {},
             (Some(defaults), Some(proof)) => {
-                ensure!(kind == "check" && passed, "GODOT_ADDITIVE_CHECK_REQUIRED");
+                // A failed requirement still settles durably. Migration evidence
+                // is retained but can only authorize application on a passed check.
+                ensure!(kind == "check" && (passed || requirements_unconfirmed), "GODOT_ADDITIVE_CHECK_REQUIRED");
                 let descriptor = check_input(&tx, &args.job_id)?;
                 ensure!(descriptor["worldId"] == world && descriptor["buildId"] == build
                     && descriptor["inputHash"] == request_hash && defaults["worldId"] == world
