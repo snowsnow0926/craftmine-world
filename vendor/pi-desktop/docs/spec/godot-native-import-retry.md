@@ -33,3 +33,16 @@ and invokes the existing generation-bound task resume route before beginning a
 new turn. Automatic status polling cannot authorize that resume. This preserves
 the existing initialization draft and keeps model replay disabled. An existing
 initialization attempt finishes before an explicit retry starts.
+
+While an explicit retry is scheduled but Core still reports its previous
+terminal failure, the client shows a separate `retry` preparation stage with
+zero progress and only the details action. It does not mark any build stage as
+passed or rewrite the durable failure. A newer Core build/confirmation state
+supersedes this presentation. Concurrent requests for the same pending retry
+share one recovery; asynchronous preparation errors become actionable status.
+
+The `running` reply acknowledges in-process scheduling, not a committed Core
+job or durable retry intent. A client closed before job submission can reopen
+with the previous failure and require another explicit retry. Tests must wait
+for a new attempt or a new terminal outcome, rather than interpreting the old
+failure returned immediately after acknowledgement as the retry result.

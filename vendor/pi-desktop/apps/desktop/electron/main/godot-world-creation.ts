@@ -288,6 +288,10 @@ export async function loadMaterializer(modulePath: string): Promise<GodotCreatio
 
 export function createGodotWorldFactory(deps: GodotCreationDependencies) {
   const options = readGodotCreateOptions({catalogFile: deps.catalogFile, basesRoot: deps.basesRoot});
+  // A retry is scheduled before Core publishes its new build state. Keep that
+  // interval visible without changing or discarding Core's previous failure.
+  const retries = new Map<string, Promise<void>>();
+  const retryFailures = new Map<string, string>();
   const baseOf = (baseId: string): GodotBaseOption => {
     const base = options.bases.find((candidate) => candidate.id === baseId);
     if (!base || !base.delivered) throw new Error("WORLD_BASE_UNAVAILABLE");
@@ -366,10 +370,18 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       try {
         const status = await deps.domain("godotWorld.initStatus", {worldId});
         const mapped = initStatusToCreation(status);
+        if (!status.playable && mapped.state === "failed" && retries.has(worldId)) {
+          return {state: "initializing", creation: {
+            operationId: mapped.creation?.operationId ?? "", stage: "retry", progress: 0,
+            stages: [{id: "retry", label: "准备重新初始化", status: "running" as const}],
+            error: null, actions: ["details"],
+          }};
+        }
         // This finite durable reason comes from the core's identity/hash-checked
         // job output. A stale in-memory recovery error cannot replace it.
-        if (status.playable || ["GODOT_TASK_PATH_TOO_LONG", "GODOT_INITIAL_LOAD_FAILED"].includes(mapped.creation?.error?.code ?? "")) return mapped;
-        const failure = deps.initialization?.error(worldId);
+        if (status.playable || (!retryFailures.has(worldId)
+          && ["GODOT_TASK_PATH_TOO_LONG", "GODOT_INITIAL_LOAD_FAILED"].includes(mapped.creation?.error?.code ?? ""))) return mapped;
+        const failure = retryFailures.get(worldId) ?? deps.initialization?.error(worldId);
         if (failure === "Error: GODOT_TASK_PATH_TOO_LONG" || failure === "GODOT_TASK_PATH_TOO_LONG") {
           return initStatusToCreation({...status, status: "failed", playable: false, reason: "GODOT_TASK_PATH_TOO_LONG"});
         }
@@ -388,9 +400,23 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
         return null;
       }
     },
-    async retry(worldId: string) {
-      if(deps.initialization?.running(worldId))await deps.initialization.start(worldId);
-      await deps.initialization?.start(worldId,{recover:true});
+    retry(worldId: string) {
+      if (!/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId)) throw Error("INVALID_WORLD_ID");
+      const initialization = deps.initialization;
+      if (!initialization) throw Error("GODOT_BASES_UNAVAILABLE");
+      const pending = retries.get(worldId);
+      if (pending) return pending;
+      retryFailures.delete(worldId);
+      const work = (async () => {
+        if (initialization.running(worldId)) await initialization.start(worldId);
+        await initialization.start(worldId, {recover: true});
+      })().catch(error => {
+        // The panel acknowledges scheduling; an asynchronous preparation error
+        // must appear on its next status read, not become an unhandled rejection.
+        retryFailures.set(worldId, String(error));
+      }).finally(() => retries.delete(worldId));
+      retries.set(worldId, work);
+      return work;
     },
   };
 }

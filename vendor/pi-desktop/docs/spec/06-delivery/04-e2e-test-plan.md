@@ -9212,3 +9212,14 @@ pre-shutdown phases to preserve their real outcomes. Missing termination rejects
 other owners still start. Actual Electron checks must finish with exit 0, three
 checks, zero BrowserWindows and zero Pointer Lock requests. Keep failed attempts.
 This is isolated ownership evidence, not packaged-client or IOCP-root-cause proof.
+
+### P1-20260910-RETRY-PREPARATION
+
+Run `node --test tests/player-feedback/P1/retry-presentation.test.mjs` from the
+repository root. A selected failed world must show preparation while its
+explicit retry waits, preserve the previous durable failure, hide duplicate
+retry actions, and adopt a newer Core build or confirmed state. Overlapping
+requests must schedule one recovery after existing initialization finishes.
+Preparation rejection must become actionable; missing initialization cannot
+acknowledge scheduling. A new factory must not replay a volatile retry.
+Actual native recovery remains a separate acceptance requirement.
