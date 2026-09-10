@@ -1,0 +1,80 @@
+{
+  "cases": [
+    {
+      "materialChanged": true,
+      "materialRestored": true,
+      "materialRetained": true,
+      "milliseconds": 1,
+      "passed": true,
+      "property": 0.001,
+      "remainingAfterDamage": 0.001,
+      "remainingAtEnd": 0,
+      "remainingMidpoint": 0.0005,
+      "snapshot": {
+        "damageTaken": 1,
+        "destroyed": false,
+        "health": 49,
+        "hitCount": 1,
+        "id": "target-one"
+      }
+    },
+    {
+      "materialChanged": true,
+      "materialRestored": true,
+      "materialRetained": true,
+      "milliseconds": 500,
+      "passed": true,
+      "property": 0.5,
+      "remainingAfterDamage": 0.5,
+      "remainingAtEnd": 0,
+      "remainingMidpoint": 0.25,
+      "snapshot": {
+        "damageTaken": 1,
+        "destroyed": false,
+        "health": 49,
+        "hitCount": 1,
+        "id": "target-one"
+      }
+    },
+    {
+      "materialChanged": true,
+      "materialRestored": true,
+      "materialRetained": true,
+      "milliseconds": 1000,
+      "passed": true,
+      "property": 1,
+      "remainingAfterDamage": 1,
+      "remainingAtEnd": 0,
+      "remainingMidpoint": 0.5,
+      "snapshot": {
+        "damageTaken": 1,
+        "destroyed": false,
+        "health": 49,
+        "hitCount": 1,
+        "id": "target-one"
+      }
+    }
+  ],
+  "passed": true,
+  "scope": "Actual PackedScene load, damage, flash and controlled process delta; no visual screenshot or full client lifecycle.",
+  "engineSha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+  "scriptSha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3",
+  "scenes": [
+    {
+      "milliseconds": 1,
+      "scenePath": "target-1.tscn",
+      "sha256": "9ffaacd3bb83026e4dce8e3496bd7283432eb4e216b2ee2ec9fcdf5f35415a6d"
+    },
+    {
+      "milliseconds": 500,
+      "scenePath": "target-500.tscn",
+      "sha256": "b64ea13700900ef584cc05e6e70026591d71ced2c8c937d41c222171f2e0d022"
+    },
+    {
+      "milliseconds": 1000,
+      "scenePath": "target-1000.tscn",
+      "sha256": "657ab0f2db9be32d4056f41f350db4bf13b3d19e9339b3c3f609c8894e160bcd"
+    }
+  ],
+  "directory": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\target-feedback-native-rx1kfM"
+}

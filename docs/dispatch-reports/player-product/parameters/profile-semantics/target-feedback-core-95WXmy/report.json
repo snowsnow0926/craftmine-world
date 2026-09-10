@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "directory": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\target-feedback-core-95WXmy",
+  "coreSha256": "f05c6589ab8475a1cc48a6c01bd921bb776d74b9402b734ade2c442ffab85aa3",
+  "result": {
+    "worldId": "alpha",
+    "operationId": "set-feedback",
+    "targetId": "target-one",
+    "status": "check-queued",
+    "applied": false,
+    "draftRetained": true,
+    "source": {
+      "revision": 1,
+      "manifestHash": "44efb524356027a58a45b710347d33081fd410276e66c7fd8d460feac77f6c70"
+    },
+    "job": {
+      "jobId": "gjob-e3299ba423073587562530192261dc4cae4a13278b329a0aeb5e3072743dab24",
+      "status": "queued",
+      "buildId": "gbd-c04886a80d97408317a543f28558dc055c0f693fc214798ce1a70fd590ab7ff8",
+      "candidateId": null
+    }
+  },
+  "status": {
+    "worldId": "alpha",
+    "operationId": "set-feedback",
+    "targetId": "target-one",
+    "status": "cancelled",
+    "applied": false,
+    "draftRetained": true,
+    "source": {
+      "revision": 1,
+      "manifestHash": "44efb524356027a58a45b710347d33081fd410276e66c7fd8d460feac77f6c70"
+    },
+    "job": {
+      "jobId": "gjob-e3299ba423073587562530192261dc4cae4a13278b329a0aeb5e3072743dab24",
+      "status": "cancelled",
+      "buildId": "gbd-c04886a80d97408317a543f28558dc055c0f693fc214798ce1a70fd590ab7ff8",
+      "candidateId": null
+    }
+  },
+  "replay": {
+    "worldId": "alpha",
+    "operationId": "set-feedback",
+    "targetId": "target-one",
+    "status": "cancelled",
+    "applied": false,
+    "draftRetained": true,
+    "source": {
+      "revision": 1,
+      "manifestHash": "44efb524356027a58a45b710347d33081fd410276e66c7fd8d460feac77f6c70"
+    },
+    "job": {
+      "jobId": "gjob-e3299ba423073587562530192261dc4cae4a13278b329a0aeb5e3072743dab24",
+      "status": "cancelled",
+      "buildId": "gbd-c04886a80d97408317a543f28558dc055c0f693fc214798ce1a70fd590ab7ff8",
+      "candidateId": null
+    }
+  },
+  "limits": "Real core and service with fixed executor attestation only; no actual Godot or UI."
+}
