@@ -226,7 +226,9 @@ export function initStatusToCreation(status: Record<string, any> | null | undefi
     if (raw === "building") return stage === "confirm" ? "pending" : stage === "build" ? "running" : "passed";
     if (raw === "checked") return stage === "confirm" ? "running" : "passed";
     if (raw === "blocked" || FAILED_STATUSES.has(raw)) {
-      const blockedAt = ["GODOT_EXECUTION_UNAVAILABLE", "GODOT_TASK_PATH_TOO_LONG"].includes(reason) ? "build" : "project";
+      // The core emits JOB_FAILED/JOB_ENDED only for an existing build/check job.
+      // Do not infer this phase from an arbitrary failed status or reason prefix.
+      const blockedAt = ["GODOT_EXECUTION_UNAVAILABLE", "GODOT_TASK_PATH_TOO_LONG", "GODOT_JOB_FAILED", "GODOT_JOB_ENDED"].includes(reason) ? "build" : "project";
       const index = order.indexOf(stage);
       const blockedIndex = order.indexOf(blockedAt);
       return index < blockedIndex ? "passed" : index === blockedIndex ? "failed" : "pending";

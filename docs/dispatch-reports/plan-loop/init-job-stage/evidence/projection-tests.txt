@@ -1,0 +1,41 @@
+✔ core failed build/check fallback fails the build stage, not project creation (0.9222ms)
+✔ core cancelled or interrupted job fallback fails the build stage, not project creation (0.086ms)
+✔ an unclassified or project failure (GODOT_PROJECT_MISSING) is not promoted by status or an existing project (0.0824ms)
+✔ an unclassified or project failure (GODOT_JOB_FAILED_UNKNOWN) is not promoted by status or an existing project (0.0507ms)
+✔ an unclassified or project failure (Unclassified failure) is not promoted by status or an existing project (0.0486ms)
+✔ an unclassified or project failure (null) is not promoted by status or an existing project (0.0381ms)
+✔ unknown nonterminal status with a job-like reason does not invent failure or success (0.0837ms)
+✔ failed creation survives factory/initializer restart and replay without opening a task; explicit retry resumes (8.7306ms)
+✔ failed is not automatically retried by create replay, status or direct start (2.7736ms)
+✔ cancelled is not automatically retried by create replay, status or direct start (2.4313ms)
+✔ interrupted is not automatically retried by create replay, status or direct start (2.4651ms)
+✔ blocked is not automatically retried by create replay, status or direct start (2.4751ms)
+✔ unrecognized is not automatically retried by create replay, status or direct start (2.7531ms)
+✔ a failed explicit recovery cannot replace the trusted durable path reason (2.7126ms)
+✔ pending retains automatic continuation (2.5786ms)
+✔ drafting retains automatic continuation (2.6932ms)
+✔ building retains automatic continuation (2.6757ms)
+✔ checked retains automatic continuation (2.4462ms)
+✔ the shipped catalog offers only delivered Godot bases and their templates (1.9562ms)
+✔ creation requests are bounded and refuse bases this client cannot build (0.7234ms)
+✔ initial progress comes from the base and never from the client (0.9893ms)
+✔ core init status maps to real stages and never to a pass (0.2889ms)
+✔ the shipped materializer loads from an absolute path exactly once (112.9809ms)
+✔ the main process passes a path, never a pre-converted URL (0.8204ms)
+✔ world ids are stable per operation and reject unsafe ids (0.2179ms)
+✔ a lost reply is reconciled against the core and never deletes a registered world (1.8539ms)
+✔ an unknown outcome keeps the source and reports a retryable identity (1.4347ms)
+✔ a world the core never registered releases its managed copy (1.8495ms)
+✔ the factory registers through the core and releases only an unregistered copy (3.475ms)
+✔ the main process injects the isolated Godot build verifier (1.1903ms)
+✔ the create panel keeps one stable operation id for retries (0.1886ms)
+✔ the shipped Godot root resolves from the compiled main process directory (2.612ms)
+✔ the panel coordinator serves Godot bases, creation and real world state (0.6539ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 338.61

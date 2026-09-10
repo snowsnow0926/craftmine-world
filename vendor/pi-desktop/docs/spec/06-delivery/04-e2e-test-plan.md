@@ -9042,3 +9042,8 @@ produce zero ledger writes. Retain the independent pre-fix coercion failure.
 ### Terminal Godot initialization across restart (2026-09-10)
 
 Use the strict packaged long-profile scenario with an independently pinned source commit and build-manifest hash. After the real import is rejected with GODOT_TASK_PATH_TOO_LONG, read the world repeatedly, exit, reopen and read it again. Creation stage and error stage must remain build, the concise path explanation must persist, and the world must remain unplayable. Status reads and an idempotent create replay must not open a new task or build. Preserve the failed attempt ledger and no-engine-start evidence. Explicit Retry remains available and must use task recovery before a new check; retrying an unchanged overlong profile is not expected to pass. Both client exits require empty shutdown audit arrays. See ../godot-initialization-terminal-recovery.md for module regressions; they do not replace this package scenario.
+
+
+### Known initialization job failure stages (next integration, 2026-09-10)
+
+When durable initStatus reports failed with GODOT_JOB_FAILED or GODOT_JOB_ENDED, the world remains failed with materialize/project passed, build failed and confirm pending. Creation stage and error stage both identify build; the finite reason and retry/details remain unchanged. An unknown reason, a code-prefix lookalike or a project error must not gain this classification merely because projectRevision exists. The projection contract tests do not replace actual client/engine acceptance and are not a claim about the frozen 827 package.
