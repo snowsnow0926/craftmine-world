@@ -13,6 +13,7 @@ import { loadPackageAsar } from '../../../desktop/package-asar.mjs';
 import { assertCleanHeadlessShutdown } from '../../player-product/shutdown-exit-audit.mjs';
 import { createP8Relay, MODEL } from './relay.mjs';
 import { openRequestJournal, ordinaryParents, reconcileMetrics } from './evidence.mjs';
+import { deriveAdditiveProgress } from '../../../desktop/godot/shared/progress-migration.mjs';
 
 const options = parameterClientArguments(process.argv.slice(2)), { root, runtime, deps, packaged } = options;
 const app = path.join(root, 'vendor/pi-desktop/apps/desktop'), hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -89,7 +90,7 @@ async function auditStop() {
   await stop(); assertCleanHeadlessShutdown(launch); return launch;
 }
 async function loaded(worldId) {
-  await until(() => rpc('godotObserve'), value => value?.worldId === worldId && value.instanceId, 'formal runtime', 180000);
+  await until(async () => { try { return await rpc('godotObserve'); } catch (error) { if (/^(No world runtime is running|WORLD_BUSY)$/.test(error.message)) return { waiting: error.message }; throw error; } }, value => value?.worldId === worldId && value.instanceId, 'formal runtime', 180000);
   await until(() => rpc('worldNavigationReady'), value => value.ready && value.worldId === worldId, 'navigation ready');
 }
 async function state(worldId) { const value = (await rpc('godotSnapshot')).state; assert.equal(value?.format, 'craftmine.godot-progress/1'); assert.equal(value.worldId, worldId); return value; }
@@ -163,6 +164,11 @@ try {
         assert.equal(result.status, 'applied'); assert.equal(result.worldId, world.id); assert.equal(result.record.world.build.id, candidate.buildId); item.application = result; return { status: result.status, candidateId: result.candidateId };
       });
       item.firstFrame = await capture(caseId + '-adopted'); item.adoptedState = await state(world.id);
+      await step('adoption preserves every prior progress field', () => {
+        if (caseId === 'hammer') assert.deepEqual(deriveAdditiveProgress(item.before, item.adoptedState).snapshot, item.adoptedState);
+        else assert.deepEqual(item.adoptedState, item.before);
+        return { retained: true, allowedAdditions: caseId === 'hammer' ? 'existing core-verified target/interactable migration only' : 'none' };
+      });
       const play = await p8('exercise', caseId, {}, 120000); item.gameplay = { ...play, actions: play.actions.map((action, index) => { const bytes = Buffer.from(action.image.pngBase64, 'base64'), file = path.join(out, `${caseId}-action-${index}.png`); fs.writeFileSync(file, bytes); return { ...action, image: { file, sha256: hash(bytes), width: action.image.width, height: action.image.height } }; }) };
       await panel(world.id, 'godot.runtimeSave', { freeze: true }); item.saved = await state(world.id);
       item.outcome = 'source-check-apply-save-completed'; item.behavior = 'pending independent inspection of real source/actions/frames';
