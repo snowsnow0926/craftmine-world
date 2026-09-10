@@ -67,7 +67,12 @@ function rpc(method, payload = {}, timeout = 30000, type = 'craftmine-headless')
   });
 }
 const p8 = (method, caseId, extra = {}, timeout = 30000) => rpc(method, { payload: { caseId, ...extra } }, timeout, 'craftmine-acceptance-p8');
-const nav = (channel, payload = {}) => rpc('worldNavigation', { channel, payload }, 180000);
+const nav = async (channel, payload = {}) => {
+  if (channel !== 'world.createOptions') return rpc('worldNavigation', { channel, payload }, 180000);
+  return until(async () => { try { return await rpc('worldNavigation', { channel, payload }, 180000); }
+    catch (error) { if (error.message === 'Error: Window is not ready' || error.message === 'Window is not ready') return { starting: true }; throw error; }
+  }, value => !value.starting, 'main window readiness');
+};
 const panel = (worldId, channel, payload = {}) => rpc('worldPanel', { channel, payload: { worldId, ...payload } }, 180000);
 async function until(fn, accept, label, timeout = 120000) {
   const deadline = Date.now() + timeout; let last;
@@ -88,6 +93,13 @@ async function auditStop() {
   const status = await rpc('status'); assert.deepEqual(status.violations, []); assert.deepEqual(status.pageErrors, []); assert.deepEqual(status.shutdownFailures, []);
   assert.ok(status.windows.every(window => !window.visible && !window.focused && !window.focusable && window.offscreen));
   await stop(); assertCleanHeadlessShutdown(launch); return launch;
+}
+async function controllerReady() {
+  await until(() => ready, Boolean, 'headless notification');
+  await until(async () => {
+    const value = await rpc('status'); assert.deepEqual(value.violations, []); assert.deepEqual(value.pageErrors, []); assert.deepEqual(value.shutdownFailures, []);
+    assert.ok(value.windows.every(window => !window.visible && !window.focused && !window.focusable && window.offscreen)); return value;
+  }, value => value.runtime?.hostAvailable && value.runtime.plugins.includes('craftmine.world') && value.windows.length > 0, 'actual guarded Main/backend readiness');
 }
 async function loaded(worldId) {
   await until(async () => { try { return await rpc('godotObserve'); } catch (error) { if (/^(No world runtime is running|WORLD_BUSY)$/.test(error.message)) return { waiting: error.message }; throw error; } }, value => value?.worldId === worldId && value.instanceId, 'formal runtime', 180000);
@@ -122,7 +134,7 @@ try {
     fs.writeFileSync(path.join(out, `upstream-${event.attempt.id}-${event.kind}.json`), JSON.stringify(event, null, 2));
     report.relay = relay?.snapshot(); save();
   } });
-  await start(); await until(() => ready, Boolean, 'headless controller');
+  await start(); await controllerReady();
   for (const [caseId, baseId, starterId] of [['hammer', 'first-person', 'training-range'], ['dog', 'top-down', 'town']]) {
     currentCase = caseId; const item = { caseId, baseId, outcome: 'running', behavior: 'pending', startedAt: new Date().toISOString() }; report.cases.push(item); save();
     try {
@@ -180,7 +192,7 @@ try {
   await step('first strict owned shutdown', auditStop);
   const savedCases = report.cases.filter(item => item.saved);
   if (savedCases.length) {
-    await start(); await until(() => ready, Boolean, 'restart controller');
+    await start(); await controllerReady();
     for (const item of savedCases) { currentCase = item.caseId; await until(() => nav('world.list'), value => !!value.activeWorldId, 'restart selection'); await until(() => rpc('worldNavigationReady'), value => value.ready, 'restart initial navigation'); await nav('world.open', { id: item.worldId }); await loaded(item.worldId);
       await p8('initialize', item.caseId, { worldId: item.worldId });
       await step('complete saved state and durable task metrics survive restart', async () => { assert.deepEqual(await state(item.worldId), item.saved); const latest = await p8('snapshot', item.caseId); const { observedAtMs: beforeTime, ...before } = item.metrics, { observedAtMs: afterTime, ...after } = latest.metrics; assert.deepEqual(after, before); assert.deepEqual(sourceEvidence(item.worldId, item.candidate.buildId), item.source); item.restart = { passed: true, observedAtMs: afterTime }; });
