@@ -1,5 +1,6 @@
 export type CraftmineLayout = {
   mode: "create" | "play";
+  overlay: CraftmineOverlay;
   widths: { create: number; play: number };
   chatWidth: number;
   /**
@@ -8,6 +9,8 @@ export type CraftmineLayout = {
    */
   aux: Record<string, boolean>;
 };
+
+export type CraftmineOverlay = "closed" | "compact" | "full";
 
 const KEY = "craftmine.desktop.layout.v1";
 export const CRAFTMINE_CHAT_MIN_WIDTH = 360;
@@ -18,6 +21,7 @@ export const CRAFTMINE_PLAY_DEFAULT_WIDTH = 720;
 /** Defaults for "reset layout"; also the shape used when storage is corrupt. */
 export const CRAFTMINE_LAYOUT_DEFAULTS: CraftmineLayout = {
   mode: "create",
+  overlay: "closed",
   widths: { create: CRAFTMINE_CREATE_DEFAULT_WIDTH, play: CRAFTMINE_PLAY_DEFAULT_WIDTH },
   chatWidth: CRAFTMINE_CHAT_DEFAULT_WIDTH,
   aux: {},
@@ -46,6 +50,8 @@ export function loadCraftmineLayout(storage: Pick<Storage, "getItem">): Craftmin
     const value = JSON.parse(storage.getItem(KEY) ?? "null");
     return {
       mode: value?.mode === "play" ? "play" : "create",
+      // Older saved layouts have no overlay preference.
+      overlay: value?.overlay === "compact" || value?.overlay === "full" ? value.overlay : "closed",
       chatWidth: clampCraftmineChatWidth(value?.chatWidth),
       aux: parseAux(value?.aux),
       widths: {
@@ -82,7 +88,17 @@ export function resetCraftmineLayout(
 }
 
 export function changeCraftmineLayout(value: CraftmineLayout, mode: CraftmineLayout["mode"], currentWidth: number): CraftmineLayout {
-  return { ...value, mode, widths: { ...value.widths, [value.mode]: boundedWidth(currentWidth, value.widths[value.mode]) } };
+  return { ...value, mode, overlay: "closed", widths: { ...value.widths, [value.mode]: boundedWidth(currentWidth, value.widths[value.mode]) } };
+}
+
+/** Presentation only: never creates sessions, submits prompts, or stops tasks. */
+export function setCraftmineOverlay(overlay: CraftmineOverlay): void {
+  saveCraftmineLayout(localStorage, { ...loadCraftmineLayout(localStorage), overlay });
+  window.dispatchEvent(new CustomEvent("craftmine-layout-changed"));
+}
+
+export function toggleCraftmineOverlay(current: CraftmineOverlay, requested: "compact" | "full"): CraftmineOverlay {
+  return current === requested ? "closed" : requested;
 }
 
 export function rememberCraftmineChatWidth(storage: Pick<Storage, "getItem" | "setItem">, width: number): void {
