@@ -1,0 +1,4 @@
+{
+  "equivalent": true,
+  "comparison": "Esbuild-normalized complete driver after removing only external driver identity metadata and resolving equivalent imports"
+}
