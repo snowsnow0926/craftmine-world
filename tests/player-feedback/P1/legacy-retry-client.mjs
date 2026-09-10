@@ -15,6 +15,7 @@ import {stopDefaultClient} from '../../player-product/default-client-audit.mjs';
 import {godotPersistentProgress} from '../../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-godot-bases-acceptance.ts';
 import {OLD_BRIDGE,NEW_BRIDGE,sha,inventory,assertNativeFailure,assertRepair} from './legacy-retry-contract.mjs';
 import {waitForInitialRuntime} from './legacy-runtime-ready.mjs';
+import {classifyLegacyRetryHandoff} from './legacy-retry-handoff.mjs';
 
 const options=parameterClientArguments(process.argv.slice(2));
 const {root,deps,runtime,packaged}=options;
@@ -50,7 +51,7 @@ const oldBridge=path.join(out,'old-runtime_bridge.gd');
 const oldBytes=execFileSync('git',['show','eae279915094f09d987ef0eb747eba20ef92cd0e:desktop/godot/shared/runtime_bridge.gd'],{cwd:root,windowsHide:true});assert.equal(sha(oldBytes),OLD_BRIDGE);fs.writeFileSync(oldBridge,oldBytes);
 const config={root,out,profile,worldId,operationId:randomUUID(),core,bases,plugin,oldBridge,materializerUrl:pathToFileURL(path.join(bases,'shared/materialize.mjs')).href,
  toolchain:{broker:path.join(toolchainRoot,'broker/godot-host-broker.exe'),brokerIdentity:path.join(toolchainRoot,'broker/broker-identity.json'),engineRoot:path.join(toolchainRoot,'engine/4.7.2-stable'),toolchainLock:path.join(toolchainRoot,'toolchain.lock.json'),bridgePath:path.join(toolchainRoot,'web/bridge.js')}};
-const report={format:'craftmine.legacy-retry-client/1',out,worldId,identities,startedAt:new Date().toISOString(),steps:[],launches:[],calls:[],passed:false,
+const report={format:'craftmine.legacy-retry-client/1',out,worldId,identities,startedAt:new Date().toISOString(),steps:[],launches:[],calls:[],retryCalls:0,retryTransitions:[],passed:false,
  limits:['Self-authored legacy bridge fixture; no player profile or installed-world migration.', 'Native detached child supplies actual load failure; offscreen full client supplies recovery and rendered gameplay. These are different rendering modes.', 'No input events, model requests, personal settings, generic page scripts or fault injection into product startup.']};
 const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));save();
 const step=async(name,fn)=>{try{const value=await fn();report.steps.push({name,passed:true});save();console.log('PASS '+name);return value;}catch(error){report.steps.push({name,passed:false,error:String(error)});save();throw error;}};
@@ -88,8 +89,24 @@ try {
   const exit=await new Promise((resolve,reject)=>{p.once('error',reject);p.once('close',(code,signal)=>resolve({code,signal,forced}));});clearTimeout(timer);report.fixtureExit=exit;assert.equal(exit.code,0);assert.equal(forced,false);
   report.before=JSON.parse(fs.readFileSync(path.join(out,'native-failure.json')));assertNativeFailure(report.before);
  });
- await step('full client reads the same durable failure without automatically retrying',async()=>{await start();const list=await nav('world.list'),row=list.worlds.find(w=>w.id===worldId);assert.equal(row.state,'failed');assert.equal(row.creation.stage,'confirm');assert.equal(row.creation.error.code,'GODOT_INITIAL_LOAD_FAILED');await nav('world.open',{id:worldId});await until(()=>rpc('worldNavigationReady'),x=>x.ready&&x.worldId===worldId,'failed world navigation');});
- await step('explicit product retry checks a new candidate and confirms first load',async()=>{await nav('world.creationRetry',{worldId});await until(()=>nav('world.list'),list=>{const row=list.worlds.find(w=>w.id===worldId);assert.notEqual(row?.state,'failed',JSON.stringify(row));return row?.state==='ready';},'repaired world',900000);await runtimeReady();const capture=await rpc('godotCaptureView');assert.deepEqual([capture.width,capture.height],[1280,720]);assert.ok(capture.pixelStats.sampledColors>4);report.capture=evidence(capture);});
+ await step('full client reads the same durable failure without automatically retrying',async()=>{await start();const list=await nav('world.list'),row=list.worlds.find(w=>w.id===worldId);assert.equal(row.state,'failed');assert.equal(row.creation.stage,'confirm');assert.equal(row.creation.error.code,'GODOT_INITIAL_LOAD_FAILED');report.retryBaseline=structuredClone(row);save();await nav('world.open',{id:worldId});await until(()=>rpc('worldNavigationReady'),x=>x.ready&&x.worldId===worldId,'failed world navigation');});
+ await step('explicit product retry checks a new candidate and confirms first load',async()=>{
+  const baseline=(await nav('world.list')).worlds.find(row=>row.id===worldId);
+  assert.deepEqual(baseline,report.retryBaseline,'FAILED_BASELINE_CHANGED_BEFORE_RETRY');
+  assert.equal(report.retryCalls,0);report.retryCalls=1;report.retryRequestedAt=new Date().toISOString();save();
+  // Scheduling is acknowledged before the asynchronous initializer owns its
+  // first new state. Never confuse an unchanged old row with a new failure.
+  const reply=await nav('world.creationRetry',{worldId});assert.equal(reply.worldId,worldId);assert.equal(reply.status,'running');report.retryReply=reply;
+  const began=Date.now();let seenPreparing=false;
+  await until(()=>nav('world.list'),list=>{
+    const row=list.worlds.find(value=>value.id===worldId),elapsedMs=Date.now()-began;
+    report.lastRetryRow=row;save();
+    const phase=classifyLegacyRetryHandoff(row,baseline,elapsedMs,seenPreparing);
+    if(report.retryTransitions.at(-1)?.phase!==phase||JSON.stringify(report.retryTransitions.at(-1)?.row)!==JSON.stringify(row))report.retryTransitions.push({elapsedMs,phase,row});
+    if(phase==='preparing')seenPreparing=true;save();return phase==='ready';
+  },'repaired world',900000);
+  await runtimeReady();const capture=await rpc('godotCaptureView');assert.deepEqual([capture.width,capture.height],[1280,720]);assert.ok(capture.pixelStats.sampledColors>4);report.capture=evidence(capture);
+ });
  await step('save full native progress and cleanly close',async()=>{await panel('godot.runtimeSave',{freeze:true});report.snapshot=godotPersistentProgress(await rpc('godotSnapshot'));await stop();});
  await step('only the pinned bridge changes; old source and abort evidence survive',async()=>{report.after=await inspectCore(report.before);assertRepair(report.before,report.after);assert.deepEqual(inventory(path.join(profile,'godot-worlds',worldId)),report.before.managedFiles);assert.equal(sha(fs.readFileSync(oldBridge)),OLD_BRIDGE);});
  await step('full client restart opens the repaired build with complete saved progress',async()=>{await start();await runtimeReady();const selection=await nav('world.list');assert.equal(selection.activeWorldId,worldId);assert.equal(selection.worlds.find(w=>w.id===worldId)?.state,'ready');await panel('godot.runtimeSave',{freeze:true});assert.deepEqual(godotPersistentProgress(await rpc('godotSnapshot')),report.snapshot);await stop();});
