@@ -83,7 +83,7 @@ export function installCreationEvaluation(access:Access){
       const worldId=observation?.worldId;
       return {sessionId,budget:requestBudget?.snapshot(),active:access.active(sessionId),record:await access.call("session.get",{id:sessionId}),metrics:await access.call("session.turnMetrics",{sessionId}).catch(()=>null),observation,
         world:worldId?await access.domain("world.read",{id:worldId}):null,
-        job:worldId?await access.domain("godotBuild.latest",{worldId}):null};
+        job:worldId?await access.domain("godotBuild.latest",{worldId,sessionId}):null};
     }
     if(method==="abort")return invoke("agentAbort",{sessionId});
     if(method==="prompt"){

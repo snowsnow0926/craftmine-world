@@ -6415,7 +6415,7 @@ function registerIpc() {
         if(!detail?.session||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("CREATION_SESSION_REQUIRED");
         const worldId=await godotSelection();
         if(!worldId)return {worldId:null,sessionId:input.sessionId,phase:"idle",requirementStatus:"not-requested"};
-        const [job,formal]=await Promise.all([plugins.requestCraftmineHost("godotBuild.latest",{worldId}),plugins.requestCraftmineHost("godotRuntime.describe",{worldId})]);
+        const [job,formal]=await Promise.all([plugins.requestCraftmineHost("godotBuild.latest",{worldId,sessionId:input.sessionId}),plugins.requestCraftmineHost("godotRuntime.describe",{worldId})]);
         if(await godotSelection()!==worldId||notificationViewingSessionId!==input.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
         return creationTaskStatus(worldId,input.sessionId,job as any,formal as any);
       }

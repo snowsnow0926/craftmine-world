@@ -25,8 +25,9 @@ export function classifyModelCase({submitted=false,checks=[],modelRequests=0,rep
 export function summarizeModelCases(cases){
   const counts=Object.fromEntries(['first_attempt_pass','model_repaired_pass','human_assisted_pass','failed','environment_blocked','not_run'].map(key=>[key,0]));
   for(const item of cases)counts[item.outcome]=(counts[item.outcome]??0)+1;
-  const runs=cases.filter(item=>item.modelRequests>0),unassisted=runs.filter(item=>!item.humanIntervention&&item.outcome!=='environment_blocked');
-  return {counts,realModelRuns:runs.length,denominator:unassisted.length,firstAttemptRate:unassisted.length?unassisted.filter(item=>item.outcome==='first_attempt_pass').length/unassisted.length:null,
+  const runs=cases.filter(item=>item.modelRequests>0),unassisted=runs.filter(item=>!item.humanIntervention);
+  const attempted=cases.filter(item=>item.submitted||item.startedAt||item.modelRequests>0||item.outcome==='environment_blocked');
+  return {counts,attemptedCases:attempted.length,attemptDenominator:attempted.length,attemptAutonomousRate:attempted.length?attempted.filter(item=>['first_attempt_pass','model_repaired_pass'].includes(item.outcome)).length/attempted.length:null,realModelRuns:runs.length,denominator:unassisted.length,firstAttemptRate:unassisted.length?unassisted.filter(item=>item.outcome==='first_attempt_pass').length/unassisted.length:null,
     autonomousCompletionRate:unassisted.length?unassisted.filter(item=>['first_attempt_pass','model_repaired_pass'].includes(item.outcome)).length/unassisted.length:null,
     requestCount:cases.reduce((sum,item)=>sum+(item.modelRequests??0),0),cost:null,costReason:'No verified monetary price or billed cost in the product usage ledger'};
 }

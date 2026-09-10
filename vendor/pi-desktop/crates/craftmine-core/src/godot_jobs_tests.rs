@@ -591,3 +591,16 @@ fn a_repeated_check_reuses_recorded_artifacts_and_refuses_a_changed_one() -> Res
     assert_eq!(served[0]["sha256"], original["sha256"]);
     Ok(())
 }
+
+#[test]
+fn latest_world_job_is_filtered_by_the_host_session_without_starting_a_task() -> Result<()> {
+    let (_dir,path)=temp()?;let mut journal=setup(&path)?;let context=ctx("one");
+    assert!(journal.godot_build_latest(&json!({"worldId":"a","sessionId":context.session_id}))?.is_null());
+    let project=create_project(&mut journal,&context)?;
+    register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("e"))?;
+    let job=start(&mut journal,&context,"latest-check",&project,"check")?;
+    assert_eq!(journal.godot_build_latest(&json!({"worldId":"a","sessionId":context.session_id}))?["jobId"],job["jobId"]);
+    assert!(journal.godot_build_latest(&json!({"worldId":"a","sessionId":"other-session"}))?.is_null());
+    assert!(journal.godot_build_latest(&json!({"worldId":"b","sessionId":context.session_id}))?.is_null());
+    Ok(())
+}

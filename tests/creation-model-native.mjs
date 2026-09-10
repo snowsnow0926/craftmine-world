@@ -63,7 +63,7 @@ async function runCase(result){
   const begin=Date.now();result.startedAt=new Date().toISOString();let before,after,prepared,progressBefore,progressAfter,reopened,restored,baseline,finalSnapshot,originalWorld,originalSnapshot,originalObservation;
   try{
     if(result.id==='CA07'){
-      originalWorld=worldId;await nav('godot.runtimeSave',{worldId,freeze:true});originalSnapshot=completeCreationProgress(await native('godotSnapshot'));originalObservation=await native('godotObserve');
+      originalWorld=worldId;await native('worldPanel',{channel:'godot.runtimeSave',payload:{worldId,freeze:true}});originalSnapshot=completeCreationProgress(await native('godotSnapshot'));originalObservation=await native('godotObserve');
       const copied=await nav('world.copy',{worldId,operationId:randomUUID(),title:'真实模型评测独立副本'});assert.equal(copied.status,'ready');assert.notEqual(copied.targetWorldId,originalWorld);worldId=copied.targetWorldId;await settled(worldId);await evaluate('enable-auto-apply');
     }
     if(result.id==='CA06')await restart();
@@ -86,7 +86,7 @@ async function runCase(result){
     }
     if(!sawTurn||finalSnapshot?.active){await evaluate('abort');await until(()=>evaluate('snapshot'),snapshot=>!snapshot.active,'Abort settles');throw Error('EVALUATION_CASE_TIMEOUT');}
     result.transcript=evidence(`${result.id}-session`,finalSnapshot);result.turnMessages=messages(finalSnapshot).filter(item=>!ids.has(item.id));
-    after=await native('godotObserve');await nav('godot.runtimeSave',{worldId,freeze:true});progressAfter=await native('godotSnapshot');
+    after=await native('godotObserve');await native('worldPanel',{channel:'godot.runtimeSave',payload:{worldId,freeze:true}});progressAfter=await native('godotSnapshot');
     // Runtime effects are inspected before this runner can count a model answer as success.
     if(result.id==='CA05'){
       const behavior={ordinaryScript:false};result.behavior=behavior;
@@ -95,10 +95,10 @@ async function runCase(result){
       const treeId=prepared.target?.entityId;behavior.treeAbsent=!behavior.after.payload?.creation?.obstacles?.some(item=>item.entityId===treeId);
       const firstRules=Object.keys(completeCreationProgress(progressBefore).body.rules),newRules=Object.keys(completeCreationProgress(await native('godotSnapshot')).body.rules).filter(id=>!firstRules.includes(id));
       behavior.ordinaryScript=newRules.length>0&&result.turnMessages.some(item=>/godot_project_patch/.test(item.toolName??''));
-      await nav('godot.runtimeSave',{worldId,freeze:true});const partial=completeCreationProgress(await native('godotSnapshot'));await restart();
+      await native('worldPanel',{channel:'godot.runtimeSave',payload:{worldId,freeze:true}});const partial=completeCreationProgress(await native('godotSnapshot'));await restart();
       const resumed=completeCreationProgress(await native('godotSnapshot'));behavior.partialRestored=isDeepStrictEqual(partial,resumed);behavior.woodRestored=resumed.body.inventory.wood??0;
       await evaluate('wait-regrowth');const regrown=await native('godotObserve');behavior.treeReturned=regrown.payload?.creation?.obstacles?.some(item=>item.entityId===treeId)===true;
-      await nav('godot.runtimeSave',{worldId,freeze:true});after=await native('godotObserve');progressAfter=await native('godotSnapshot');
+      await native('worldPanel',{channel:'godot.runtimeSave',payload:{worldId,freeze:true}});after=await native('godotObserve');progressAfter=await native('godotSnapshot');
     }
     await restart();reopened=await native('godotObserve');restored=await native('godotSnapshot');
     if(originalWorld){await nav('world.open',{id:originalWorld});await settled(originalWorld);const source=await native('godotObserve'),saved=completeCreationProgress(await native('godotSnapshot'));result.copySourceUnchanged=source.buildId===originalObservation.buildId&&isDeepStrictEqual(source.payload.creation.entities,originalObservation.payload.creation.entities)&&isDeepStrictEqual(saved,originalSnapshot);await nav('world.open',{id:worldId});await settled(worldId);}

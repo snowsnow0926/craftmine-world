@@ -3,34 +3,45 @@
   "plan": "docs/CREATION_NEXT_BATCH_PLAN_2026-09-11.md",
   "baseline": "c1660f12",
   "status": "in_progress",
-  "updatedAt": "2026-09-10T21:23:36.190Z",
+  "updatedAt": "2026-09-10T22:09:44.470Z",
   "stages": {
     "NB0": {
+      "status": "complete",
+      "evidence": [
+        "docs/FEEDBACK_RESOLUTION_2026-09-11.md",
+        "docs/evidence/feedback-resolution-20260911/manifest.json"
+      ]
+    },
+    "NB1": {
+      "status": "in_progress",
+      "evidence": [
+        "docs/CREATION_REQUIREMENTS_DEVELOPMENT_2026-09-11.md"
+      ]
+    },
+    "NB2": {
+      "status": "in_progress",
+      "evidence": [
+        "docs/NB2_EDITING_2026-09-11.md"
+      ]
+    },
+    "NB3": {
+      "status": "in_progress",
+      "evidence": [
+        "docs/NB3_VOICE_STATUS_DEVELOPMENT_2026-09-11.md"
+      ]
+    },
+    "NB4": {
+      "status": "in_progress",
+      "evidence": [
+        "test-results/desktop-native-complete-73fuxT/report.json"
+      ]
+    },
+    "NB5": {
       "status": "in_progress",
       "evidence": []
     },
-    "NB1": {
-      "status": "pending",
-      "evidence": []
-    },
-    "NB2": {
-      "status": "pending",
-      "evidence": []
-    },
-    "NB3": {
-      "status": "pending",
-      "evidence": []
-    },
-    "NB4": {
-      "status": "pending",
-      "evidence": []
-    },
-    "NB5": {
-      "status": "pending",
-      "evidence": []
-    },
     "NB6": {
-      "status": "pending",
+      "status": "in_progress",
       "evidence": []
     },
     "NB7": {
@@ -41,7 +52,16 @@
   "externalValidation": {
     "physicalMicrophone": "not_run",
     "realPlayers": "not_run",
-    "cleanWindows": "not_run"
+    "cleanWindows": "本机未发现可用Get-VM/VMware/VirtualBox隔离运行入口；不对个人安装执行生命周期测试"
   },
-  "realModelRuns": 0
+  "realModelRuns": 1,
+  "modelBaseline": {
+    "provider": "deepseek",
+    "model": "deepseek-flash",
+    "requests": 16,
+    "actualCandidatePassed": true,
+    "actualFormalAdoption": true,
+    "acceptance": "首次runner误用导航保存路由，完整重开验收未完成；原始失败保留，修复runner后复验",
+    "artifact": "test-results/desktop-native-complete-73fuxT"
+  }
 }

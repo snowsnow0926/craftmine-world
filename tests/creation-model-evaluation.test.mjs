@@ -20,9 +20,9 @@ test('first attempt repair human intervention and environment failures are separ
   assert.equal(classifyModelCase({...passed,error:'EVALUATION_CASE_TIMEOUT'}),'failed');
   assert.equal(classifyModelCase({}),'not_run');
 });
-test('aggregate uses eligible real runs only and leaves unreported cost unknown',()=>{
+test('aggregate keeps environment failures in denominators and leaves unreported cost unknown',()=>{
   const report=summarizeModelCases([{outcome:'first_attempt_pass',modelRequests:2},{outcome:'model_repaired_pass',modelRequests:4},{outcome:'failed',modelRequests:1},{outcome:'environment_blocked',modelRequests:1},{outcome:'not_run',modelRequests:0}]);
-  assert.equal(report.realModelRuns,4);assert.equal(report.denominator,3);assert.equal(report.firstAttemptRate,1/3);assert.equal(report.autonomousCompletionRate,2/3);assert.equal(report.requestCount,8);assert.equal(report.cost,null);
+  assert.equal(report.realModelRuns,4);assert.equal(report.denominator,4);assert.equal(report.firstAttemptRate,1/4);assert.equal(report.autonomousCompletionRate,2/4);assert.equal(report.requestCount,8);assert.equal(report.cost,null);
   assert.equal(summarizeModelCases([]).firstAttemptRate,null);
 });
 test('polling is not a repair and duplicate transcript rows are not counted twice',()=>{

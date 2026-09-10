@@ -158,7 +158,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     // channel and no model tool exposes it. Routes that the core does not
     // implement are deliberately absent rather than opened as generic RPC.
     const godotRoutes={
-      'godotBuild.latest':[['worldId'],[]],
+      'godotBuild.latest':[['worldId'],['sessionId']],
       'task.recoverable':[['projectId','worldId'],[]],
       'godotWorld.initialize':[['worldId','title','baseId','baseBuild','snapshot'],[]],
       'godotWorld.initStatus':[['worldId'],[]],

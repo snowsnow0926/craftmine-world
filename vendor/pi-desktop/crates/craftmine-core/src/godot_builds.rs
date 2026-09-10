@@ -1016,12 +1016,13 @@ impl TaskJournal {
     pub fn godot_build_latest(&mut self, args: &Value) -> Result<Value> {
         #[derive(Deserialize)]
         #[serde(rename_all = "camelCase", deny_unknown_fields)]
-        struct LatestArgs { world_id: String }
+        struct LatestArgs { world_id: String, #[serde(default)] session_id: Option<String> }
         let args: LatestArgs = serde_json::from_value(args.clone())?;
         super::godot_jobs::world_scope(&self.db, &args.world_id, None)?;
+        if let Some(session) = &args.session_id { ensure!(!session.is_empty() && session.len() <= 240, "INVALID_SESSION_ID"); }
         let job: Option<String> = self.db.query_row(
-            "SELECT id FROM craftmine_godot_jobs WHERE world_id=?1 ORDER BY created_at DESC,rowid DESC LIMIT 1",
-            [&args.world_id], |row| row.get(0),
+            "SELECT j.id FROM craftmine_godot_jobs j JOIN craftmine_tasks t ON t.id=j.task_id WHERE j.world_id=?1 AND (?2 IS NULL OR json_extract(t.binding,'$.sessionId')=?2) ORDER BY j.created_at DESC,j.rowid DESC LIMIT 1",
+            params![&args.world_id, &args.session_id], |row| row.get(0),
         ).optional()?;
         match job {
             Some(job_id) => self.godot_build_read(&json!({"worldId":args.world_id,"jobId":job_id})),
