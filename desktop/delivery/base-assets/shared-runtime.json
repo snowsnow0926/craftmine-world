@@ -41,8 +41,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 9088,
-      "sha256": "b241c896cd2e227a01a34ff475504b7133022c10548afc7710fdad442c61fa51"
+      "bytes": 9456,
+      "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
     },
     {
       "path": "adapters/first-person.gd",
