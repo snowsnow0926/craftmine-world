@@ -1,0 +1,40 @@
+{
+  "format": "craftmine.authored-task-bin-retirement-evidence/1",
+  "baseCommit": "8276b4540289c0d397c382dff2123edfe1861d42",
+  "actualEngine": false,
+  "actualBroker": false,
+  "rustCompiled": false,
+  "historicalProfilesTouched": false,
+  "files": [
+    {
+      "path": "unit-first.log",
+      "bytes": 2366,
+      "sha256": "e043869437f3848e8c60848dbd951e2fb2e6dfc5cb3933025fbb46a20d1607f9"
+    },
+    {
+      "path": "unit-final.log",
+      "bytes": 2367,
+      "sha256": "3608f83f282b324e6836499a895c89b8a38cd20c5369d7caf1eae90672b9d70b"
+    },
+    {
+      "path": "lifecycle-first.log",
+      "bytes": 461,
+      "sha256": "9b01ae2981759bb56dfcc732798e90abc3c3f51343af9a6bf49acefa8281b8c2"
+    },
+    {
+      "path": "executor-regression.log",
+      "bytes": 2643,
+      "sha256": "826a31b47082d25041afd11f878c7860b53224a3fe843f99a61d2b57c8846007"
+    },
+    {
+      "path": "combined-final.log",
+      "bytes": 5047,
+      "sha256": "460f98984fdaa18eaf3a6ac911331716940248ca22a817a0f61ae217c6baa938"
+    },
+    {
+      "path": "rust-parse.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

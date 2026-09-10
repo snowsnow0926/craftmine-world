@@ -451,6 +451,7 @@ pub struct Task {
     process_verification: Option<crate::verification::ProcessVerification>,
     network_preflight: Option<crate::preflight::NetworkPreflight>,
     resource_enforcement: Option<ResourceEnforcement>,
+    completed_job_active_processes: Option<u32>,
 }
 
 impl Task {
@@ -532,6 +533,7 @@ impl Task {
             process_verification: None,
             network_preflight: None,
             resource_enforcement: None,
+            completed_job_active_processes: None,
             engine,
             task_id: task_id.to_string(),
             kind,
@@ -566,6 +568,7 @@ impl Task {
     pub fn process_verification(&self) -> Option<&crate::verification::ProcessVerification> { self.process_verification.as_ref() }
     pub fn network_preflight(&self) -> Option<&crate::preflight::NetworkPreflight> { self.network_preflight.as_ref() }
     pub fn resource_enforcement(&self) -> Option<&ResourceEnforcement> { self.resource_enforcement.as_ref() }
+    pub fn completed_job_active_processes(&self) -> Option<u32> { self.completed_job_active_processes }
 
     /// Host-only entry: the preflight binary is the caller's pinned broker,
     /// not a model-provided path. It runs before project code under the exact
@@ -689,6 +692,7 @@ impl Task {
         self.resource_enforcement = Some(enforcement);
         let (state, exit, reason) = outcome;
         let active = running.job().and_then(|job| job.active_processes());
+        self.completed_job_active_processes = active;
         if state != TaskState::Succeeded && active != Some(0) {
             return Err(format!("Task job still holds {active:?} processes after termination").into());
         }

@@ -16,6 +16,8 @@ pub struct NativeObservation { pub winsock_startup: i32, pub checks: Vec<Network
 #[serde(rename_all="camelCase")]
 pub struct NetworkPreflight {
     pub verified: bool,
+    /// Measured while the completed native child's Job handle is still owned.
+    pub job_active_processes: Option<u32>,
     pub policy_version: String,
     pub host_positive_controls: Vec<String>,
     pub host_received_counts: Vec<usize>,
@@ -131,6 +133,7 @@ pub fn run(mut spec: LaunchSpec, cancel: &AtomicBool) -> Result<NetworkPreflight
         }
     };
     if code != 0 { return Err(format!("Native preflight exited {code}").into()); }
+    let job_active_processes = running.job().and_then(|job| job.active_processes());
     let path = running.log.as_ref().ok_or("Missing native preflight log")?;
     if fs::metadata(path)?.len() > 65536 { return Err("Native observation exceeds limit".into()); }
     let observation: NativeObservation = serde_json::from_slice(&fs::read(path)?)?;
@@ -142,7 +145,7 @@ pub fn run(mut spec: LaunchSpec, cancel: &AtomicBool) -> Result<NetworkPreflight
     std::thread::sleep(Duration::from_millis(50));
     let received = controls.counts.iter().zip(previous).map(|(count, previous)| count.load(Ordering::SeqCst) - previous).collect::<Vec<_>>();
     if received.iter().any(|count| *count != 0) { return Err("Host received restricted network traffic".into()); }
-    Ok(NetworkPreflight { verified: true, policy_version: crate::verification::POLICY_VERSION.into(),
+    Ok(NetworkPreflight { verified: true, job_active_processes, policy_version: crate::verification::POLICY_VERSION.into(),
         host_positive_controls: vec!["tcp4Echo".into(), "tcp6Echo".into(), "udp4Echo".into(), "udp6Echo".into()], host_received_counts: received,
         exact_task_exempt: false, process_verification: verified, observation })
 }

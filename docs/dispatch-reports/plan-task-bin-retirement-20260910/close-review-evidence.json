@@ -1,0 +1,20 @@
+{
+  "format": "craftmine.authored-bin-retirement-close-evidence/1",
+  "baseCommit": "fa82b825733dc1c9ceff086606ecd90fe799196c",
+  "tests": 53,
+  "passed": 53,
+  "failed": 0,
+  "eventOrderingCases": 7,
+  "actualOsPipes": false,
+  "actualEngine": false,
+  "rustCompiled": false,
+  "historicalProfilesTouched": false,
+  "command": "node --test tests/plan-loop/task-bin-retirement-close.mjs tests/plan-loop/task-bin-retirement.mjs tests/godot-remaining/C/executor-protocol.mjs",
+  "files": [
+    {
+      "path": "close-review-combined.log",
+      "bytes": 5690,
+      "sha256": "0fc194a407d94fd3b9ad2cc5bafa58967f5dab7c90b556f9e673a7b1968b8a78"
+    }
+  ]
+}

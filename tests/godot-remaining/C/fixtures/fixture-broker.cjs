@@ -117,6 +117,22 @@ function respond(request) {
       }
     }
   }
+  // Explicit small test fixture for the new private capability; legacy cases
+  // omit it. These are placeholder bytes, not native sandbox evidence.
+  if (scenario.retireBin === true) {
+    const bin = path.join(taskRoot, 'bin'); fs.mkdirSync(bin);
+    const names = ['Godot_v4.7.2-stable_win64.exe', 'broker-preflight.exe'];
+    fs.copyFileSync(path.join(request.engineRoot, 'editor', names[0]), path.join(bin, names[0]));
+    fs.copyFileSync(process.env.CRAFTMINE_GODOT_BROKER_BIN, path.join(bin, names[1]));
+    const nonce = sha256(request.taskId + ':authored-fixture');
+    fs.writeFileSync(path.join(taskRoot, 'task-identity.json'), JSON.stringify({schemaVersion:1, taskId:request.taskId, nonce}));
+    response.networkPreflight.jobActiveProcesses = 0;
+    response.recoveryJournal = {cleared:true, error:null};
+    response.binRetirement = {format:'craftmine.godot-bin-retirement/1', taskId:request.taskId, identityNonce:nonce,
+      engineJobActiveProcesses:0, nativeJobActiveProcesses:0,
+      files:names.map(name => {const bytes=fs.readFileSync(path.join(bin,name));return {path:name,bytes:bytes.length,sha256:sha256(bytes)};})};
+    fs.writeFileSync(path.join(taskRoot, 'bin-retirement.json'), JSON.stringify(response.binRetirement));
+  }
   return response;
 }
 

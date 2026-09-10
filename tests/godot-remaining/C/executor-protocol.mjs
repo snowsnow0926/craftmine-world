@@ -192,6 +192,64 @@ async function runJob(t, {scenario, verifier, jobTimeoutMs, mode = 'check', befo
   return {core, env, started, jobId};
 }
 
+test('new bin retirement waits for core acknowledgment; preflight/import/export preserve diagnostics', async t => {
+  const env = environment(); t.after(restoreEnv); setScenario(env, {retireBin:true});
+  const core = fakeCore(env), originalCall = core.call.bind(core);
+  const tasks = path.join(env.dataPath, 'godot', 'tasks');
+  core.call = async (method, params) => {
+    if (method === 'godotJob.finish') {
+      const buildTasks = fs.readdirSync(tasks).filter(name => /^(im|ex)-/.test(name));
+      assert.equal(buildTasks.length, 2);
+      for (const task of buildTasks) {
+        assert.equal(fs.readdirSync(path.join(tasks, task, 'bin')).length, 2, 'no deletion before core acknowledgment');
+        assert.equal(fs.existsSync(path.join(tasks, task, 'bin-retirement-ack.json')), false);
+      }
+    }
+    return originalCall(method, params);
+  };
+  const executor = makeExecutor({env, core});
+  assert.equal((await executor.start()).available, true);
+  const jobId = 'gjob-' + 'd'.repeat(64);
+  executor.enqueue({jobId, worldId:'world-c', mode:'check'}); await settle(executor, jobId); await executor.stop();
+  assert.equal(core.state.status, 'passed');
+  const roots = fs.readdirSync(tasks).filter(name => /^(pf|im|ex)-/.test(name));
+  assert.equal(roots.length, 3);
+  for (const task of roots) {
+    const root = path.join(tasks, task);
+    assert.deepEqual(fs.readdirSync(path.join(root, 'bin')), []);
+    const ack = JSON.parse(fs.readFileSync(path.join(root, 'bin-retirement-ack.json')));
+    assert.equal(ack.brokerReceipt.taskId, task);
+    assert.equal(fs.existsSync(path.join(root, 'logs', 'task.log')), true);
+    if (task.startsWith('ex-')) assert.equal(fs.existsSync(path.join(root, 'artifacts', 'index.html')), true);
+  }
+});
+
+for (const fault of ['lost-finish', 'failed-check', 'refused-registration']) {
+  test(`new bin retirement preserves copies after ${fault}`, async t => {
+    const env=environment(); t.after(restoreEnv); setScenario(env,{retireBin:true});
+    const core=fakeCore(env), originalCall=core.call.bind(core);
+    core.call=async(method,params)=>{
+      if (method==='godotExecutor.register' && fault==='refused-registration') throw Error('authored registration refusal');
+      const result=await originalCall(method,params);
+      if (method==='godotJob.finish' && fault==='lost-finish') throw Error('authored reply lost after core commit');
+      return result;
+    };
+    const executor=makeExecutor({env,core,verifier:fault==='failed-check'?{godotCheck:async()=>passingEvidence({passed:false,error:'authored runtime failure'})}:undefined});
+    await executor.start();
+    const jobId='gjob-'+'e'.repeat(64);
+    if(fault!=='refused-registration'){executor.enqueue({jobId,worldId:'world-c',mode:'check'});await settle(executor,jobId);}
+    await executor.stop();
+    const tasks=path.join(env.dataPath,'godot','tasks');
+    const roots=fs.readdirSync(tasks).filter(name=>fault==='refused-registration'?name.startsWith('pf-'):/^(im|ex)-/.test(name));
+    assert.equal(roots.length,fault==='refused-registration'?1:2);
+    for(const task of roots){
+      assert.equal(fs.readdirSync(path.join(tasks,task,'bin')).length,2);
+      assert.equal(fs.existsSync(path.join(tasks,task,'bin-retirement-ack.json')),false);
+    }
+    if(fault==='lost-finish')assert.equal(core.state.status,'passed','actual stand-in core committed before its reply was lost');
+  });
+}
+
 test('happy check job: real import/export receipts, staged web artifacts, passed candidate', async t => {
   const {core, env, started} = await runJob(t, {scenario:{}});
   assert.equal(started.available, true);
