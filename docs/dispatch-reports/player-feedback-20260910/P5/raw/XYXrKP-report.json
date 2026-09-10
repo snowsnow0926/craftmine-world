@@ -1,0 +1,74 @@
+{
+  "scope": "Actual TaskMetrics and Sidebar React with authored DTO and IPC fixtures; no provider or native acceptance",
+  "checks": [
+    {
+      "name": "Host totals, TPS, duration and actual model appear",
+      "passed": true
+    },
+    {
+      "name": "Build label is static, reports host version and has no navigation semantics",
+      "passed": true
+    },
+    {
+      "name": "Missing host version has no invented release number",
+      "passed": true
+    },
+    {
+      "name": "Missing usage and speed are unknown, not zero",
+      "passed": true
+    },
+    {
+      "name": "Partial sums and partial TPS are explicitly marked",
+      "passed": true
+    },
+    {
+      "name": "Genuine zero usage remains zero",
+      "passed": true
+    },
+    {
+      "name": "Multiple runtime models remain separately identifiable",
+      "passed": true
+    },
+    {
+      "name": "Long model identities stay within a 320px chat column",
+      "passed": true
+    },
+    {
+      "name": "Read uses the durable message/session identity",
+      "passed": true
+    },
+    {
+      "name": "Late previous-session result cannot overwrite the current operation",
+      "passed": true
+    },
+    {
+      "name": "Mismatched response identity is rejected without fabricated totals",
+      "passed": true
+    },
+    {
+      "name": "Stop-before-persistence race refetches final durable metrics",
+      "passed": true
+    },
+    {
+      "name": "Read failure remains a readable unavailable state",
+      "passed": true
+    },
+    {
+      "name": "Aborted operations remain visible",
+      "passed": true
+    },
+    {
+      "name": "English labels retain actual totals",
+      "passed": true
+    },
+    {
+      "name": "No real input, focus or Pointer Lock requested",
+      "passed": true
+    },
+    {
+      "name": "No unhandled component errors",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

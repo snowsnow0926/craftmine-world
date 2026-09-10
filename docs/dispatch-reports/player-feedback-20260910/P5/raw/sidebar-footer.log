@@ -1,0 +1,13 @@
+✔ the sidebar footer is an action bar, not a fabricated identity (0.9833ms)
+✔ footer exposes settings, plugins and notifications in one row (0.3632ms)
+✔ footer sits on the sidebar content grid without a hairline (0.2795ms)
+✔ footer action buttons share the notification trigger's hit target (0.1858ms)
+✔ Craftmine build label shows the host version without an update action (0.2691ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 98.5589

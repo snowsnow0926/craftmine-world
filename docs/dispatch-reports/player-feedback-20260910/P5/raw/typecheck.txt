@@ -1,0 +1,1 @@
+Full desktop TypeScript check exit 0; command: node vendor/pi-desktop/apps/desktop/node_modules/typescript/bin/tsc -p vendor/pi-desktop/apps/desktop/tsconfig.json --noEmit

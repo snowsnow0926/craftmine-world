@@ -1,0 +1,7 @@
+{
+  "scope": "Actual TaskMetrics and Sidebar React with authored DTO and IPC fixtures; no provider or native acceptance",
+  "checks": [],
+  "errors": [
+    "page.waitForFunction: Timeout 30000ms exceeded.\n    at D:\\cm-fb-20260910\\tests\\player-feedback\\P5\\metrics-headless.mjs:44:14"
+  ]
+}

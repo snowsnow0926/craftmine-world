@@ -86,9 +86,6 @@ import {
 import {
   assistantTurnContent,
   assistantTurnMessages,
-  assistantTurnResponseDuration,
-  assistantTurnResponseOutputTokens,
-  assistantTurnUsage,
   buildTranscriptEntries,
   messageThinking as thinkingText,
   subagentRunsEqual,
@@ -133,6 +130,7 @@ import {
 import { useAppStore } from "../stores/app-store";
 import type { PendingPermission } from "../lib/pending-permissions";
 import { PermissionCard } from "./PermissionCard";
+import { TaskMetricsPanel, TaskMetricsSession } from "./TaskMetrics";
 
 /**
  * Copy chip. Message toolbars are glyph-only (`icon`) with the label in a
@@ -2197,22 +2195,6 @@ const AssistantTurn = memo(function AssistantTurn({
   const actionMessage = [...messages]
     .reverse()
     .find((message) => (message.content || "").trim());
-  const metaMessage = [...messages]
-    .reverse()
-    .find(
-      (message) =>
-        message.modelId ||
-        message.usage ||
-        message.responseDurationMs ||
-        message.responseOutputTokens,
-    );
-  const latestUsageMessage = [...messages]
-    .reverse()
-    .find((message) => message.usage);
-  const usage = assistantTurnUsage(entry);
-  const responseDurationMs = assistantTurnResponseDuration(entry);
-  const responseOutputTokens = assistantTurnResponseOutputTokens(entry);
-  const modelId = metaMessage?.modelId ?? latestUsageMessage?.modelId;
   const hasError = messages.some((message) => Boolean(message.error));
   const complete =
     !isActive && !hasError && Boolean(content) && Boolean(actionMessage);
@@ -2276,14 +2258,7 @@ const AssistantTurn = memo(function AssistantTurn({
             </div>
           ),
         )}
-        {!isActive && metaMessage ? (
-          <MessageMeta
-            modelId={modelId}
-            usage={usage}
-            responseDurationMs={responseDurationMs}
-            responseOutputTokens={responseOutputTokens}
-          />
-        ) : null}
+        <TaskMetricsPanel messageId={messages[0]?.id} running={isActive} />
         {(content || hasError) && actionMessage ? (
           <div className="message-actions">
             {content ? <CopyButton text={content} label={t("chat.copy")} /> : null}
@@ -3046,14 +3021,16 @@ export const ChatTranscript = memo(function ChatTranscript({
             // view, which is exactly the jitter this avoids.
             <div className="transcript-hydration-spacer" aria-hidden />
           ) : null}
-          <TranscriptHistory entries={historyEntries} isRunning={isRunning} />
-          {tailEntry ? (
-            <TranscriptTail
-              entry={tailEntry}
-              isRunning={isRunning}
-              isActive={isRunning && tailEntry.kind === "assistant-turn"}
-            />
-          ) : null}
+          <TaskMetricsSession value={sessionId}>
+            <TranscriptHistory entries={historyEntries} isRunning={isRunning} />
+            {tailEntry ? (
+              <TranscriptTail
+                entry={tailEntry}
+                isRunning={isRunning}
+                isActive={isRunning && tailEntry.kind === "assistant-turn"}
+              />
+            ) : null}
+          </TaskMetricsSession>
           <TurnOutcomeCard
             messages={messages}
             result={latestTurnResult}

@@ -62,7 +62,6 @@ import { BrandLogo } from "./BrandLogo";
 import { CraftmineNavigation } from "./CraftmineNavigation";
 import { NotificationCenter } from "./NotificationCenter";
 import { ProjectRenameDialog, SessionRenameDialog } from "./SessionRenameDialog";
-import { useUpdateState } from "../hooks/use-update-state";
 import {
   IconArchive,
   IconArchiveRestore,
@@ -276,7 +275,6 @@ export function Sidebar({
   const version = useAppStore((s) => s.version);
   const setSettingsTab = useAppStore((s) => s.setSettingsTab);
   const setSettingsAnchor = useAppStore((s) => s.setSettingsAnchor);
-  const update = useUpdateState();
 
   const [sortOpen, setSortOpen] = useState(false);
   const [sessionMenu, setSessionMenu] = useState<string | null>(null);
@@ -581,21 +579,8 @@ export function Sidebar({
 
   // Footer utility bar: settings / plugins / notifications + build chip.
 
-  // An update only earns the accent dot once it is actionable — a pending
-  // check or a failed one keeps the chip quiet.
-  const updateReady =
-    update?.status === "available" || update?.status === "downloaded";
-  const appVersion = update?.currentVersion || version?.version || "";
-  const buildLabel = updateReady
-    ? `v${update?.availableVersion ?? appVersion}`
-    : update?.status === "checking"
-      ? t("updates.checking")
-      : appVersion
-        ? `v${appVersion}`
-        : t("nav.buildUnknown");
-  const buildTitle = updateReady
-    ? t("updates.available", { version: update?.availableVersion ?? "" })
-    : t("nav.checkForUpdates");
+  // This distribution's version is informational, never an upstream updater.
+  const buildLabel = version?.version ? `v${version.version}` : t("nav.buildUnknown");
 
   const onMenuKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Escape") {
@@ -1945,28 +1930,13 @@ export function Sidebar({
             <NotificationCenter onBeforeOpen={() => closeMenus(false)} />
           </div>
 
-          <button
-            type="button"
-            className={`footer-build ${updateReady ? "has-update" : ""}`}
+          <span
+            className="footer-build"
             data-nav="build"
-            title={buildTitle}
-            aria-label={buildTitle}
-            onClick={() => {
-              if (updateReady) {
-                setSettingsAnchor("updates.title");
-                setSettingsTab("about");
-                return;
-              }
-              void (async () => {
-                try {
-                  await api.updatesCheck();
-                } catch { /* ignore */ }
-              })();
-            }}
+            title={`Craftmine World · ${buildLabel}`}
           >
             <span className="footer-build-version">{buildLabel}</span>
-            {updateReady ? <span className="footer-build-dot" aria-hidden /> : null}
-          </button>
+          </span>
         </div>
       </div>
       {renderFloatingMenu()}

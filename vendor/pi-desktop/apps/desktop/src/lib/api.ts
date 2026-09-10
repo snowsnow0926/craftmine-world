@@ -58,6 +58,8 @@ import type {
   Result,
   SessionDetail,
   SessionSummary,
+  TaskMetrics,
+  TaskMetricsQuery,
   ToolPermissionResolution,
   UserSkillInput,
   UserSkillRecord,
@@ -336,6 +338,8 @@ export const api = {
       session: normalizeSessionDetail(result.session),
     })),
   deleteSession: (id: string) => invoke(IPC.invoke.sessionDelete, id),
+  getTaskMetrics: (query: TaskMetricsQuery) =>
+    invoke<TaskMetrics | null>(IPC.invoke.sessionTurnMetrics, query),
   getSessionScratchPath: (sessionId: string) =>
     invoke<{ path: string }>(IPC.invoke.sessionGetScratchPath, { sessionId }),
   openProjectFolder: (path: string) =>

@@ -6534,6 +6534,21 @@ function registerIpc() {
         : result;
     },
   );
+  handle(IPC.invoke.sessionTurnMetrics, async (input: unknown) => {
+    if (!host) throw new Error("host unavailable");
+    if (!input || typeof input !== "object" || Array.isArray(input)) throw new Error("task metrics query required");
+    const query = input as Record<string, unknown>;
+    if (typeof query.sessionId !== "string" || !query.sessionId.trim()) throw new Error("session id required");
+    if (query.turnId !== undefined && query.messageId !== undefined) throw new Error("choose turn id or message id");
+    for (const key of ["turnId", "messageId"] as const) {
+      if (query[key] !== undefined && (typeof query[key] !== "string" || !query[key].trim())) throw new Error("invalid task metrics identity");
+    }
+    return host.call("session.turnMetrics", {
+      sessionId: query.sessionId,
+      ...(query.turnId === undefined ? {} : { turnId: query.turnId }),
+      ...(query.messageId === undefined ? {} : { messageId: query.messageId }),
+    });
+  });
   handle(IPC.invoke.sessionDelete, async (id: string) => {
     if (!host) throw new Error("host unavailable");
     await finishTurn(id, "aborted", "SESSION_DELETED");

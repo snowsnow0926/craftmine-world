@@ -75,17 +75,9 @@ test("footer action buttons share the notification trigger's hit target", () => 
   assert.match(block, /transition:[^;]*var\(--motion-duration-fast\)/);
 });
 
-test("build chip surfaces the version and only dots an actionable update", () => {
-  assert.match(sidebarSource, /const update = useUpdateState\(\)/);
-  assert.match(
-    sidebarSource,
-    /update\?\.status === "available" \|\| update\?\.status === "downloaded"/,
-  );
-  assert.match(sidebarSource, /className="footer-build-dot"/);
-  // An actionable update routes to the Settings row that can act on it.
-  assert.match(sidebarSource, /setSettingsAnchor\("updates\.title"\)/);
-  assert.match(sidebarSource, /setSettingsTab\("about"\)/);
-  assert.match(sidebarSource, /api\.updatesCheck\(\)/);
-  const dot = globalStyles.match(/\.footer-build-dot\s*\{[^}]+\}/)?.[0] ?? "";
-  assert.match(dot, /background:\s*var\(--ds-accent\)/);
+test("Craftmine build label shows the host version without an update action", () => {
+  assert.match(sidebarSource, /<span\s+className="footer-build"/);
+  assert.match(sidebarSource, /version\?\.version/);
+  assert.doesNotMatch(sidebarSource, /useUpdateState|footer-build-dot|api\.updatesCheck\(\)/);
+  assert.doesNotMatch(sidebarSource, /setSettingsAnchor\("updates\.title"\)/);
 });

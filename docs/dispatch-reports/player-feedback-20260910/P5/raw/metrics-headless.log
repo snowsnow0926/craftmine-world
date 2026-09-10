@@ -1,0 +1,18 @@
+PASS Host totals, TPS, duration and actual model appear
+PASS Build label is static, reports host version and has no navigation semantics
+PASS Missing host version has no invented release number
+PASS Missing usage and speed are unknown, not zero
+PASS Partial sums and partial TPS are explicitly marked
+PASS Genuine zero usage remains zero
+PASS Multiple runtime models remain separately identifiable
+PASS Long model identities stay within a 320px chat column
+PASS Read uses the durable message/session identity
+PASS Late previous-session result cannot overwrite the current operation
+PASS Mismatched response identity is rejected without fabricated totals
+PASS Stop-before-persistence race refetches final durable metrics
+PASS Read failure remains a readable unavailable state
+PASS Aborted operations remain visible
+PASS English labels retain actual totals
+PASS No real input, focus or Pointer Lock requested
+PASS No unhandled component errors
+Report: D:\cm-fb-20260910\test-results\P5\metrics-ptooW3\report.json

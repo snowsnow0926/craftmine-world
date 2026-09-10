@@ -141,28 +141,12 @@
     color var(--motion-duration-fast) var(--motion-ease-out);
 }
 
-.footer-build:hover {
-  background: var(--ds-bg-hover);
-  color: var(--ds-text-secondary);
-}
-
 .footer-build-version {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.footer-build.has-update {
-  color: var(--ds-text-primary);
-}
-
-.footer-build-dot {
-  width: 5px;
-  height: 5px;
-  flex: 0 0 auto;
-  border-radius: var(--radius-full);
-  background: var(--ds-accent);
-}
 
 .footer-actions {
   display: flex;
