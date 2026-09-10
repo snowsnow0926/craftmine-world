@@ -115,7 +115,9 @@ try {
   const nextContext={...context,turnId:'story-continue'};
   const sourceWorkspace=await core.call('workspace.open',{context:nextContext,selectedWorld:'creation-story'});
   const beforeEdit=await core.call('godotProject.index',{context:nextContext,worldId:'creation-story',offset:0,limit:32});
-  const bound={format:'craftmine.creation-target/1',worldId:'creation-story',buildId:prepared.buildId,instanceId:'story-instance',sourceRevision:beforeEdit.revision,manifestHash:beforeEdit.manifestHash,snapshotId:'continued-native-capture',sampledAt:restored.sampledAt,playerPosition:restored.observation.player.position,target:restored.observation.creation.target};
+  const formal=await core.call('godotRuntime.describe',{worldId:'creation-story'});
+  const bound={format:'craftmine.creation-target/1',worldId:'creation-story',buildId:prepared.buildId,instanceId:'story-instance',sourceRevision:formal.sourceRevision,manifestHash:formal.manifestHash,snapshotId:'continued-native-capture',sampledAt:restored.sampledAt,playerPosition:restored.observation.player.position,target:restored.observation.creation.target};
+  report.sourcePins={formal:{revision:formal.sourceRevision,manifestHash:formal.manifestHash},draft:{revision:beforeEdit.revision,manifestHash:beforeEdit.manifestHash}};
   const sourceService=createCreationSourceService({core,capture:async()=>structuredClone(bound),assertActive:()=>{},sample:async()=>{
     const observed=await stage('service-sample',snapshot,prepared.buildId);
     return {worldId:bound.worldId,buildId:bound.buildId,instanceId:bound.instanceId,sampledAt:observed.sampledAt,player:observed.observation.player};
@@ -189,7 +191,8 @@ try {
   check('复制世界独立构建与正式采用后真实重开成功',(await core.call('godotRuntime.describe',{worldId:'creation-copy'})).copiedFromWorldId==null);
   copyContext.turnId='copy-edit';copyWorkspace=await core.call('workspace.open',{context:copyContext,selectedWorld:'creation-copy'});
   const editableCopy=await core.call('godotProject.index',{context:copyContext,worldId:'creation-copy',offset:0,limit:32});
-  const copyBound={...bound,worldId:'creation-copy',buildId:copyPrepared.buildId,sourceRevision:editableCopy.revision,manifestHash:editableCopy.manifestHash,snapshotId:'copy-native-capture',sampledAt:adoptedCopy.sampledAt,playerPosition:adoptedCopy.observation.player.position,target:adoptedCopy.observation.creation.target};
+  const copyFormal=await core.call('godotRuntime.describe',{worldId:'creation-copy'});
+  const copyBound={...bound,worldId:'creation-copy',buildId:copyPrepared.buildId,sourceRevision:copyFormal.sourceRevision,manifestHash:copyFormal.manifestHash,snapshotId:'copy-native-capture',sampledAt:adoptedCopy.sampledAt,playerPosition:adoptedCopy.observation.player.position,target:adoptedCopy.observation.creation.target};
   const editCopy=createCreationSourceService({core,capture:async()=>copyBound,assertActive:()=>{},sample:async()=>{const sample=await stage('copy-sample',expectedCopy,copyPrepared.buildId,'creation-copy',copyProject);return {worldId:copyBound.worldId,buildId:copyBound.buildId,instanceId:copyBound.instanceId,sampledAt:sample.sampledAt,player:sample.observation.player};}});
   const copyEdit=await editCopy({context:copyContext,workspace:copyWorkspace,request:{operationId:'copy-only-object',action:'place',id:'copy-only-object',kind:'marker',position:[12,0,12],expected:{worldId:copyBound.worldId,buildId:copyBound.buildId,instanceId:copyBound.instanceId,revision:editableCopy.revision,manifestHash:editableCopy.manifestHash,targetSnapshotId:copyBound.snapshotId}}});
   report.copyEdit=copyEdit;check('独立采用的复制世界可通过生产源码服务继续创造',copyEdit.receipt.createdIds.includes('copy-only-object'));
