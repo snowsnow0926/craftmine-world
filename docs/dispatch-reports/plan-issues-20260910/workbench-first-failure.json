@@ -1,0 +1,250 @@
+{
+  "format": "craftmine.local-issues-workbench-test/1",
+  "type": "workbench-http-service-fixture",
+  "native": false,
+  "uiCommit": "de0dffe472b4f72bb9cd88e5438d99a5e7314b6d",
+  "uiSourceHashes": {
+    "workbench-ui.mjs": "41296ae8b3b3ea41d0164ef29d2900295d365d2e3dbfd89624336a149105a136",
+    "godot-package-ui.mjs": "68db821a84d5360638161cf031a8d328eaa3cb1c04592d9c51e3668d8af844b2",
+    "issue-ui.mjs": "fa5a69dcb219d0eef2a2d24f982a81e6f85c38d121f260ce31cc4c35ad4fe14e",
+    "godot-windows-export-ui.mjs": "2fcce5c7b158963bd7a71269bef2a4b599e4de92d874d432a3a6f017237a14e0"
+  },
+  "serviceSourceHash": "f739c8c2cd0b3a57b42c1faa0a76fbfeb631b808fc0d0562c4ded9be60b30a87",
+  "startedAt": "2026-09-10T00:44:13.570Z",
+  "checks": [
+    {
+      "name": "production createWorkbench mounts the notebook beside backup and diagnostics",
+      "passed": true
+    },
+    {
+      "name": "HTTP lost response retries the same real persisted record; original submitted text remains inert",
+      "passed": true
+    },
+    {
+      "name": "new service factory and reloaded workbench recover the unchanged disk record",
+      "passed": true
+    },
+    {
+      "name": "workbench details and explicit delete confirmation operate on the real ledger",
+      "passed": true
+    },
+    {
+      "name": "normal workbench world switching scopes storage and clears old text",
+      "passed": true
+    }
+  ],
+  "completed": true,
+  "passed": false,
+  "failure": "AssertionError [ERR_ASSERTION]: new world notebook must mount even while the previous-world detail action is pending\n\n0 !== 1\n\n    at file:///D:/cm-plan-issues-20260910/tests/local-issues/workbench-headless.mjs:101:9",
+  "finishedAt": "2026-09-10T00:44:14.972Z",
+  "calls": [
+    {
+      "channel": "workbench.capabilities",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "alpha",
+        "operationId": "35798ca9-95d1-4b95-aa22-75196be5cb47",
+        "description": "  工作台原话\n<script>window.injected=true</script> 世界 🌍  "
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "alpha",
+        "operationId": "35798ca9-95d1-4b95-aa22-75196be5cb47",
+        "description": "  工作台原话\n<script>window.injected=true</script> 世界 🌍  "
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "issue.read",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-096a1a9a3190788e7a4410e32e8196a57fbd86c669f5529c311dce5d05e309c9"
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "issue.read",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-096a1a9a3190788e7a4410e32e8196a57fbd86c669f5529c311dce5d05e309c9"
+      }
+    },
+    {
+      "channel": "issue.delete",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-096a1a9a3190788e7a4410e32e8196a57fbd86c669f5529c311dce5d05e309c9",
+        "operationId": "33160907-7b93-4ce3-b724-59c6c9d6ffc7"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "alpha",
+        "operationId": "46de5790-b080-442d-a7cd-a80b46360b09",
+        "description": "alpha surviving issue"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "beta",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "diagnostics.status",
+      "input": {
+        "worldId": "beta"
+      }
+    },
+    {
+      "channel": "issue.create",
+      "input": {
+        "worldId": "beta",
+        "operationId": "83114945-7cb1-44b4-99d1-7ff3f494768c",
+        "description": "beta separate issue"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "beta",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "issue.read",
+      "input": {
+        "worldId": "beta",
+        "issueId": "issue-2ccea5231f3a322f1153c49bc9e9923d5e42addd3af1ab20e2e8f068b4e0e7df"
+      }
+    },
+    {
+      "channel": "workbench.capabilities",
+      "input": {
+        "worldId": "alpha"
+      }
+    },
+    {
+      "channel": "task.current",
+      "input": {
+        "worldId": "alpha"
+      }
+    }
+  ],
+  "externalRequests": [],
+  "pageErrors": [],
+  "guard": {
+    "pointerLock": 0,
+    "focus": 0,
+    "trustedInput": 0
+  }
+}
