@@ -1,0 +1,133 @@
+﻿{
+    "helperExeSha256":  "51a9c62eec2857329c48e8fb242a386053084c244138b3c2d75271b426e9570b",
+    "testThreadDesktop":  "Default",
+    "passed":  false,
+    "fatal":  "TERMINATION_NOT_BOUNDED",
+    "startedAt":  "2026-09-10T10:01:50.1283816Z",
+    "inputDesktopBefore":  "Default",
+    "format":  "craftmine.windows-host-process-smoke/1",
+    "helperSourceSha256":  "198429c223054a9fc7faa410441f916a3dd06acd3819644e62d6085d20f75e07",
+    "installerInvocations":  0,
+    "productInvocations":  0,
+    "cases":  [
+                  {
+                      "mode":  "normal",
+                      "child":  {
+                                    "pid":  104840,
+                                    "desktop":  "CraftmineInstallAcceptance-5a50702dda384510aecc28b5b4a1df7e",
+                                    "inputDesktop":  "Default",
+                                    "childPid":  null,
+                                    "at":  "2026-09-10T10:01:50.5230449Z"
+                                },
+                      "parent":  {
+                                     "pid":  275676,
+                                     "desktop":  "CraftmineInstallAcceptance-5a50702dda384510aecc28b5b4a1df7e",
+                                     "inputDesktop":  "Default",
+                                     "childPid":  104840,
+                                     "at":  "2026-09-10T10:01:50.5018554Z"
+                                 },
+                      "passed":  true,
+                      "processReceipt":  {
+                                             "Format":  "craftmine.windows-host-process/1",
+                                             "RootPid":  275676,
+                                             "RootExitCode":  0,
+                                             "DurationMs":  930,
+                                             "Desktop":  "CraftmineInstallAcceptance-5a50702dda384510aecc28b5b4a1df7e",
+                                             "Completed":  true,
+                                             "JobActiveZero":  true,
+                                             "LastObservedJobActive":  0,
+                                             "Failure":  null,
+                                             "FailureWin32Code":  null,
+                                             "Cleanup":  "not-needed",
+                                             "CleanupDurationMs":  0,
+                                             "TerminationRequested":  false,
+                                             "TerminationWin32Code":  null,
+                                             "CleanupQueryWin32Code":  null,
+                                             "DescendantExitCodes":  "NOT_OBSERVED"
+                                         },
+                      "directory":  "D:\\cm-host-process-smoke-20260910\\6c1d166b51cb4cf8869e17ebad69736c\\normal"
+                  },
+                  {
+                      "mode":  "nonzero",
+                      "child":  {
+                                    "pid":  226480,
+                                    "desktop":  "CraftmineInstallAcceptance-0a82ab2a15884cc1b04b4d1b67f80133",
+                                    "inputDesktop":  "Default",
+                                    "childPid":  null,
+                                    "at":  "2026-09-10T10:01:51.5050388Z"
+                                },
+                      "parent":  {
+                                     "pid":  233500,
+                                     "desktop":  "CraftmineInstallAcceptance-0a82ab2a15884cc1b04b4d1b67f80133",
+                                     "inputDesktop":  "Default",
+                                     "childPid":  226480,
+                                     "at":  "2026-09-10T10:01:51.4838869Z"
+                                 },
+                      "passed":  true,
+                      "processReceipt":  {
+                                             "Format":  "craftmine.windows-host-process/1",
+                                             "RootPid":  233500,
+                                             "RootExitCode":  0,
+                                             "DurationMs":  937,
+                                             "Desktop":  "CraftmineInstallAcceptance-0a82ab2a15884cc1b04b4d1b67f80133",
+                                             "Completed":  true,
+                                             "JobActiveZero":  true,
+                                             "LastObservedJobActive":  0,
+                                             "Failure":  null,
+                                             "FailureWin32Code":  null,
+                                             "Cleanup":  "not-needed",
+                                             "CleanupDurationMs":  0,
+                                             "TerminationRequested":  false,
+                                             "TerminationWin32Code":  null,
+                                             "CleanupQueryWin32Code":  null,
+                                             "DescendantExitCodes":  "NOT_OBSERVED"
+                                         },
+                      "directory":  "D:\\cm-host-process-smoke-20260910\\6c1d166b51cb4cf8869e17ebad69736c\\nonzero"
+                  },
+                  {
+                      "mode":  "timeout",
+                      "child":  {
+                                    "pid":  246928,
+                                    "desktop":  "CraftmineInstallAcceptance-1a2374a8969c4e51b33c2481e378fee3",
+                                    "inputDesktop":  "Default",
+                                    "childPid":  null,
+                                    "at":  "2026-09-10T10:01:52.4517521Z"
+                                },
+                      "parent":  {
+                                     "pid":  71264,
+                                     "desktop":  "CraftmineInstallAcceptance-1a2374a8969c4e51b33c2481e378fee3",
+                                     "inputDesktop":  "Default",
+                                     "childPid":  246928,
+                                     "at":  "2026-09-10T10:01:52.4259543Z"
+                                 },
+                      "passed":  false,
+                      "processReceipt":  {
+                                             "Format":  "craftmine.windows-host-process/1",
+                                             "RootPid":  71264,
+                                             "RootExitCode":  null,
+                                             "DurationMs":  2039,
+                                             "Desktop":  "CraftmineInstallAcceptance-1a2374a8969c4e51b33c2481e378fee3",
+                                             "Completed":  false,
+                                             "JobActiveZero":  true,
+                                             "LastObservedJobActive":  0,
+                                             "Failure":  "TimeoutException: INSTALLER_OWNED_JOB_TIMEOUT: partial installation retained for inspection",
+                                             "FailureWin32Code":  null,
+                                             "Cleanup":  "terminated-confirmed",
+                                             "CleanupDurationMs":  0,
+                                             "TerminationRequested":  true,
+                                             "TerminationWin32Code":  null,
+                                             "CleanupQueryWin32Code":  null,
+                                             "DescendantExitCodes":  "NOT_OBSERVED"
+                                         },
+                      "directory":  "D:\\cm-host-process-smoke-20260910\\6c1d166b51cb4cf8869e17ebad69736c\\timeout"
+                  }
+              ],
+    "limitations":  [
+                        "Only owned no-window console helpers were run, never an installer.",
+                        "Normal proof observes root exit code and Job active-zero, not strict descendant exit codes.",
+                        "No actual QueryInformationJobObject failure was injected; timeout exercises the same bounded cleanup path.",
+                        "No input/focus API or desktop switch was called."
+                    ],
+    "launcherSourceSha256":  "5d71de380980a2324fd0b6382d118154c1d5e7b55d697158eeb9d29222f8d0b7",
+    "finishedAt":  "2026-09-10T10:01:54.4476921Z"
+}

@@ -89,6 +89,34 @@ Test 'empty directory addition cannot hide in profile comparison' {
     $before=Get-CmDirectories $dir;New-Item -ItemType Directory -Path (Join-Path $dir 'unexpected')|Out-Null
     Reject {Assert-CmDirectoriesEqual $before (Get-CmDirectories $dir) 'DIRECTORY_CHANGED'} 'DIRECTORY_CHANGED'
 }
+Test 'unconfirmed cleanup is rejected even if root exit was zero' {
+    $r=@{Completed=$false;JobActiveZero=$false;RootExitCode=0;Failure='query failed';Cleanup='termination-unconfirmed';RootPid=123}
+    Reject {Assert-CmHostProcessResult $r} 'OWNED_PROCESS_LIFECYCLE_FAILED'
+}
+Test 'confirmed timeout cleanup still fails lifecycle and retains PID evidence' {
+    $r=@{Completed=$false;JobActiveZero=$true;RootExitCode=125;Failure='timeout';Cleanup='terminated-confirmed';RootPid=123}
+    Reject {Assert-CmHostProcessResult $r} 'rootPid=123'
+}
+Test 'normal job zero does not invent descendant exit codes' {
+    $r=@{Completed=$true;JobActiveZero=$true;RootExitSignaled=$true;RootExitCode=0;DescendantExitCodes='NOT_OBSERVED'}
+    Assert-CmHostProcessResult $r;Equal $r.DescendantExitCodes 'NOT_OBSERVED'
+}
+Test 'unrelated PI core is excluded by package identity not PID' {
+    $p=@{Name='pi-desktop-host-core.exe';ExecutablePath='D:\unrelated\resources\bin\pi-desktop-host-core.exe';ProcessId=123}
+    Equal (Test-CmProcessCollision $p 'D:\cm-owned\install' {param($path) 'other-pi'}) $false
+    $p.ProcessId=456;Equal (Test-CmProcessCollision $p 'D:\cm-owned\install' {param($path) 'other-pi'}) $false
+}
+Test 'unknown core ownership and actual broker name remain blocked' {
+    foreach($name in @('pi-desktop-host-core.exe','godot-host-broker.exe')){
+        Equal (Test-CmProcessCollision @{Name=$name;ExecutablePath=$null} 'D:\cm-owned\install' {param($path) 'unknown'}) $true
+    }
+}
+Test 'NSIS prefix danger includes install-other even for unrelated executable' {
+    Equal (Test-CmProcessCollision @{Name='other.exe';ExecutablePath='D:\cm-owned\install-other\other.exe'} 'D:\cm-owned\install' {param($path) 'other-pi'}) $true
+}
+Test 'Craftmine executable is blocked regardless of owner lookup' {
+    Equal (Test-CmProcessCollision @{Name='Craftmine World.exe';ExecutablePath='D:\elsewhere\Craftmine World.exe'} 'D:\cm-owned\install' {param($path) 'other-pi'}) $true
+}
 $report=@{format='craftmine.host-installer-unit/1';installerInvocations=0;nativeLauncherInvocations=0;tests=@($results.ToArray());passed=(@($results|Where-Object {-not $_.passed}).Count -eq 0)}
 $path=Join-Path $out 'report.json';$report|ConvertTo-Json -Depth 12|Set-Content $path -Encoding UTF8
 $results|ForEach-Object {[pscustomobject]$_}|Format-Table name,passed,error -Wrap

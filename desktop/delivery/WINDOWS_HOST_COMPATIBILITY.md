@@ -12,7 +12,10 @@ Execution additionally requires **both** `-Execute -HostCompatibilityAuthorized`
 Do not execute until the candidate installer and corresponding unpacked payload
 have been independently sealed and reviewed. Run non-elevated Windows PowerShell
 5.1 as the current user. Do not run any other Craftmine client or installer during
-the finite test. The runner never launches the installed application.
+the finite test. The runner never launches the installed application. An unrelated
+PI distribution's shared core name does not itself collide: the owner resolver
+requires the `resources/bin` layout and separate `PI-Desktop.exe` product metadata.
+Missing/unknown ownership remains blocked. No PID/path exception is used.
 
 The plan has exactly these fields (replace every placeholder with reviewed pins):
 
@@ -83,8 +86,13 @@ installer executable contains the corresponding payload.
 Every installer/uninstaller is launched suspended onto a newly created, private
 non-input desktop and assigned to a kill-on-close job before resume. The runner
 does not switch desktops, change desktop ACLs, send input, request Pointer Lock,
-or activate a window. It waits at most 900 seconds for **all job processes** and
-retains partial state on failure. Timeout closes only its owned job. No retries,
+or activate a window. It waits at most 900 seconds for **Job active-zero and a
+signaled root process** and retains partial state on failure. On timeout/query
+failure it explicitly terminates only its owned Job, keeps the handles open, and
+polls for up to five additional seconds. The receipt includes root PID/observed root
+exit, last Job activity, termination request/error and confirmed/unconfirmed cleanup.
+Kill-on-close is only a fallback, never proof that termination completed. Descendant
+exit codes remain `NOT_OBSERVED`; active-zero is not descendant strict exit 0. No retries,
 automatic uninstalls, directory cleanup or registry cleanup run after failure.
 
 ## Actual NSIS 26.15.3 constraints
@@ -98,8 +106,12 @@ Reviewed `app-builder-lib@26.15.3/templates/nsis` and `out/targets/nsis/NsisTarg
   and its exact target/hash are recorded before upgrade/uninstall.
 - `ALLOW_ONLY_ONE_INSTALLER_INSTANCE` unconditionally calls `BringToFront` and
   can focus another installer. The private desktop isolates these calls from the
-  input desktop; actual native isolation still requires future execution evidence.
-- Silent `CHECK_APP_RUNNING` can call `Stop-Process`/`taskkill`. Prechecks do not
+  input desktop. Owned windowless helper smoke covers desktop inheritance and
+  normal/timeout lifecycles; installer-specific behavior is still not verified.
+- Silent `CHECK_APP_RUNNING` can call `Stop-Process`/`taskkill`. Its process-path
+  prefix has no trailing separator, so the collision gate also blocks `install-other`
+  when `$INSTDIR` is `install`. The fallback matches the Craftmine executable name.
+  Prechecks do not
   eliminate a concurrent user launch after a check. This is an explicit host-test
   limitation, not proof of process isolation equivalent to a VM. The runner never
   asks NSIS to kill a known existing client and refuses observed collisions.

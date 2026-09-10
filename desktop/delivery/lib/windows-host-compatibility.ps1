@@ -3,6 +3,9 @@ $script:CmHostGuid = 'b6e82c09-fb8e-58e5-a0b3-2d2cd57a1249'
 function Initialize-CmHostNative {
     if (-not ('CraftmineHostProcess' -as [type])) { Add-Type -Path (Join-Path $PSScriptRoot 'windows-host-process.cs') }
 }
+function Assert-CmHostProcessResult($Result) {
+    if(-not $Result.Completed -or -not $Result.JobActiveZero -or -not $Result.RootExitSignaled){throw ('OWNED_PROCESS_LIFECYCLE_FAILED: '+$Result.Failure+'; cleanup='+$Result.Cleanup+'; rootPid='+$Result.RootPid)}
+}
 function Assert-CmKeys($Value, [string[]]$Keys) {
     if ($null -eq $Value -or $Value -is [array] -or $Value -is [string]) { throw 'INVALID_PLAN_OBJECT' }
     $actual = @($Value.PSObject.Properties.Name | Sort-Object)
@@ -121,10 +124,33 @@ function Get-CmShortcuts {
     }
     return ,@($found|Sort-Object path -Unique)
 }
+function Get-CmCoreProcessOwner([string]$ExecutablePath) {
+    if(-not $ExecutablePath){return 'unknown'}
+    try{
+        $full=Assert-CmPath $ExecutablePath;Assert-CmNoLinks $full
+        if($full -notmatch '(?i)^(.*)\\resources\\bin\\[^\\]+\.exe$'){return 'unknown'}
+        $package=$Matches[1]
+        if(Test-Path -LiteralPath (Join-Path $package 'Craftmine World.exe')){return 'craftmine'}
+        # Recognize the separate PI distribution by layout AND executable product
+        # metadata, never by a PID/path exception. No process is opened or stopped.
+        $pi=Join-Path $package 'PI-Desktop.exe';Assert-CmNoLinks $pi
+        if(Test-Path -LiteralPath $pi){$v=(Get-Item -LiteralPath $pi).VersionInfo;if($v.ProductName -ceq 'PI-Desktop' -and $v.FileDescription -ceq 'PI-Desktop'){return 'other-pi'}}
+    }catch{return 'unknown'}
+    return 'unknown'
+}
+function Test-CmProcessCollision($Process,[string]$Install,[scriptblock]$ResolveOwner) {
+    # Match the NSIS danger predicate exactly: it has NO trailing separator.
+    if($Install -and $Process.ExecutablePath -and $Process.ExecutablePath.StartsWith($Install,[StringComparison]::CurrentCultureIgnoreCase)){return $true}
+    if($Process.Name -match '(?i)^(craftmine[ -]?world|Uninstall craftmine world)\.exe$' -or $Process.Name -match '(?i)^Craftmine-World-Setup-.*\.exe$'){return $true}
+    if($Process.Name -match '(?i)^(craftmine-core|pi-desktop-host-core|craftmine-godot-broker|godot-host-broker|broker-preflight|Godot_v4\.7\.2-stable_win64)\.exe$'){
+        return ((& $ResolveOwner $Process.ExecutablePath) -cne 'other-pi')
+    }
+    return $false
+}
 function Assert-CmNoProcesses([string]$Install='') {
     # Only names and executable paths; never inspect command lines or credentials.
     $blocked=@(Get-CimInstance Win32_Process -Property Name,ProcessId,ExecutablePath | Where-Object {
-        $_.Name -match '(?i)^(craftmine[ -]?world|craftmine-core|pi-desktop-host-core|craftmine-godot-broker|broker-preflight|Godot_v4\.7\.2-stable_win64|Uninstall craftmine world)\.exe$' -or $_.Name -match '(?i)^Craftmine-World-Setup-.*\.exe$' -or ($Install -and $_.ExecutablePath -and $_.ExecutablePath.StartsWith($Install+'\',[StringComparison]::OrdinalIgnoreCase))
+        Test-CmProcessCollision $_ $Install {param($path) Get-CmCoreProcessOwner $path}
     } | Select-Object Name,ProcessId,ExecutablePath)
     if($blocked.Count){throw ('CRAFTMINE_PROCESS_COLLISION: '+($blocked|ConvertTo-Json -Compress))}
     # Match the actual NSIS mutex; opening an existing handle does not create it.

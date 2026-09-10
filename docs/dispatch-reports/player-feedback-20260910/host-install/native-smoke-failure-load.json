@@ -1,0 +1,18 @@
+﻿{
+    "finishedAt":  "2026-09-10T10:01:33.1892575Z",
+    "passed":  false,
+    "fatal":  "Cannot add type. The \".EXE\" extension is not supported.",
+    "startedAt":  "2026-09-10T10:01:32.9018291Z",
+    "format":  "craftmine.windows-host-process-smoke/1",
+    "installerInvocations":  0,
+    "productInvocations":  0,
+    "cases":  [
+
+              ],
+    "limitations":  [
+                        "Only owned no-window console helpers were run, never an installer.",
+                        "Normal proof observes root exit code and Job active-zero, not strict descendant exit codes.",
+                        "No actual QueryInformationJobObject failure was injected; timeout exercises the same bounded cleanup path.",
+                        "No input/focus API or desktop switch was called."
+                    ]
+}
