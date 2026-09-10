@@ -50,6 +50,15 @@ export function useCraftmineImmersionSurface(
             const y = Math.min(overlayBounds.y, bounds.y);
             overlayBounds = { x, y, width: Math.max(overlayBounds.x + overlayBounds.width, bounds.right) - x, height: Math.max(overlayBounds.y + overlayBounds.height, bounds.bottom) - y };
           }
+          // Native IPC accepts viewport coordinates only. A tall picker may
+          // extend above a short window, but its visible area still blocks it.
+          const x = Math.max(0, Math.min(window.innerWidth, overlayBounds.x));
+          const y = Math.max(0, Math.min(window.innerHeight, overlayBounds.y));
+          overlayBounds = {
+            x, y,
+            width: Math.max(0, Math.min(window.innerWidth, overlayBounds.x + overlayBounds.width) - x),
+            height: Math.max(0, Math.min(window.innerHeight, overlayBounds.y + overlayBounds.height) - y),
+          };
         }
         void api.craftmineSetImmersion({
           active,
