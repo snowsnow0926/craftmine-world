@@ -23,6 +23,8 @@ Integration owner must wire `authorizeAssetSource: (root, path) => plugins.autho
 
 Retained preparation failures: DOM fixture initially left the favorites filter active before importing, then used asynchronous `rejects` for a synchronous validator exception. Both original reports/logs remain. Grant-test setup initially placed a return at TypeScript module scope, then injected a reserved `default` parameter; original logs remain. These were harness failures, not production success evidence.
 
+Before native execution, independent PNG chunk verification found that the old metadata-only fixture's IDAT CRC was invalid. The positive preview fixture now has the correct CRC; a small test verifies all chunk checksums and decompresses the pixel. Historical metadata acceptance never proved that old image could decode. This correction is test data only, not a decoder relaxation.
+
 All new test data are under the owned D-drive tree, with no actual mouse/keyboard, focus, Pointer Lock, personal profile, or model call. Small hard-link rejection fixtures are new owned test files, not links to shared or historical data.
 
 ## Required remaining evidence
