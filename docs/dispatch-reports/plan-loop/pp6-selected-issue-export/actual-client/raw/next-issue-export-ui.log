@@ -1,0 +1,4 @@
+PASS actual detail export cancellation writes nothing and does not alter original text
+PASS real write failure remains visible and repeated original operation recovers lost reply once
+PASS switching worlds during picker never exports or displays late success in the new notebook
+{"out":"C:\\cm-plan-next-20260910\\test-results\\issue-export-kjY5FZ","passed":true,"checks":3}

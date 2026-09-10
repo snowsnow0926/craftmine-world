@@ -1,0 +1,20 @@
+{
+  "source": "e2050d273d2466f8d36c6b42083a249065bd7a01",
+  "previousNativeSource": "8276b4540289c0d397c382dff2123edfe1861d42",
+  "unchangedTrees": [
+    "vendor/pi-desktop/crates",
+    "vendor/pi-desktop/Cargo.toml",
+    "vendor/pi-desktop/Cargo.lock",
+    "desktop/godot/sandbox"
+  ],
+  "binaries": [
+    [
+      "vendor/pi-desktop/target/release/craftmine-core.exe",
+      "072556858144cf7c9ce8e3030103a889300cf3add4af2bb0066916ab7811dc7b"
+    ],
+    [
+      "vendor/pi-desktop/target/release/pi-desktop-host-core.exe",
+      "4587acd295b5ea9adbf11b080f7cbfb0c7aadf59e2226dc787812fde043309b3"
+    ]
+  ]
+}

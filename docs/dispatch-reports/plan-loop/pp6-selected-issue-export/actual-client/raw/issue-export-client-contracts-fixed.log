@@ -1,0 +1,16 @@
+✔ native acceptance predicate accepts actual exporter bytes and binds every collected field (20.1057ms)
+✔ specific domain rejection cannot be satisfied by timeout, unsupported RPC or unrelated error (0.1512ms)
+✔ actual finite headless panel allowlist adds only existing issue channels and denies an export-all bypass (0.7169ms)
+✔ official expectation rejects a self-consistent wrong returned default and foreign provenance (1.9492ms)
+✔ owned child that never exits after kill rejects within its bounded deadline (50.2357ms)
+✔ natural exit skips kill; killed process exit does not erase forced-stop evidence (14.9505ms)
+✔ final shutdown timeout or audit failure still persists finished failed report (1.1069ms)
+✔ independent expected profile hash identifies the actual checked-in official bytes (0.6019ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 194.6138

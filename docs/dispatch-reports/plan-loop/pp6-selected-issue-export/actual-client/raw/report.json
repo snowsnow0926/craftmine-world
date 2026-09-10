@@ -1,0 +1,700 @@
+{
+  "format": "craftmine.issue-export-client/1",
+  "passed": true,
+  "root": "C:\\cm-plan-next-20260910",
+  "runtime": "C:\\cm-plan-next-20260910",
+  "out": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-issue-export-WjvRuu",
+  "commit": "e2050d273d2466f8d36c6b42083a249065bd7a01",
+  "mode": "development",
+  "mainSha256": "ae35cba74d9927ae51021a6b81861ec57843e01766bf7a7e7b869fbd342b5553",
+  "pluginSha256": "584f73608bcba319ae4b85c2e80891d192b98e0784ac8f0f72037bdf04bc0d7c",
+  "steps": [
+    {
+      "name": "create one authored first-person test world",
+      "passed": true,
+      "value": {
+        "id": "world-0a5b575164f2",
+        "title": "Selected issue JSON acceptance"
+      }
+    },
+    {
+      "name": "one real broker build/check and formal application",
+      "passed": true,
+      "value": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "cad80587e9f66d476b2e1477",
+        "payload": {
+          "aim": {
+            "collider": "TargetB",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              0,
+              1.59999990463257,
+              -9.80000114440918
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0,
+              1.59999990463257,
+              6
+            ],
+            "forwardDot": 1,
+            "global": [
+              0.239999994635582,
+              1.39999985694885,
+              5.57999992370605
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "logicalViewportSize": [
+            1200,
+            800
+          ],
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "surfaceSize": [
+            1200,
+            800
+          ],
+          "targetFeedback": {
+            "format": "craftmine.target-feedback-observation/1",
+            "targets": [
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_a"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_b"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_c"
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-0a5b575164f2"
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-10T04:38:32Z",
+        "worldId": "world-0a5b575164f2"
+      }
+    },
+    {
+      "name": "actual gameplay and explicit checkpoint before local reporting",
+      "passed": true,
+      "value": {
+        "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+        "contentHash": "b7373ad484eadb509c9909cd90f7a3e6b333e24e7622589e19f33d145187637e",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "cad80587e9f66d476b2e1477",
+        "persistedAt": 1789015114152,
+        "revision": 2,
+        "snapshotHash": "c45f91528d2a495173f415f0d7ffa1d0451037dd93b91c05c7a8f2b8ca037783",
+        "snapshotSha256": "185264ed17d0f88ebf2de0f4a494511a2d8a53934e48330821506ae50b853b90",
+        "worldId": "world-0a5b575164f2"
+      }
+    },
+    {
+      "name": "real product issue create captures exact wording and formal identity",
+      "passed": true,
+      "value": {
+        "status": "completed",
+        "replayed": false,
+        "issue": {
+          "format": "craftmine.local-issue/1",
+          "id": "issue-1221283febf93b0aa1e0e41b98db13c836a7634db6f94092809279854e13fdc7",
+          "description": "  玩家原话：命中后颜色保留\n<script>literal text</script> 😃  ",
+          "createdAt": "2026-09-10T04:38:34.251Z",
+          "context": {
+            "phase": "formal",
+            "status": "ready",
+            "worldId": "world-0a5b575164f2",
+            "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+            "baseId": "first-person",
+            "baseVersion": "0.1.0",
+            "instanceId": "cad80587e9f66d476b2e1477",
+            "runtimeTarget": "godot-web",
+            "artifactManifestHash": "44ea2cd208b430cd20280710c523443c3540b0eb21144faef99a18beb90791fa"
+          },
+          "status": "recorded",
+          "scope": "local-only",
+          "reproduction": "not-attempted",
+          "attachments": [],
+          "client": {
+            "version": "0.14.3"
+          }
+        },
+        "deleted": false
+      }
+    },
+    {
+      "name": "append original supplemental wording and explicit player retest status",
+      "passed": true,
+      "value": {
+        "issue": {
+          "format": "craftmine.local-issue/1",
+          "id": "issue-1221283febf93b0aa1e0e41b98db13c836a7634db6f94092809279854e13fdc7",
+          "description": "  玩家原话：命中后颜色保留\n<script>literal text</script> 😃  ",
+          "createdAt": "2026-09-10T04:38:34.251Z",
+          "context": {
+            "phase": "formal",
+            "status": "ready",
+            "worldId": "world-0a5b575164f2",
+            "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+            "baseId": "first-person",
+            "baseVersion": "0.1.0",
+            "instanceId": "cad80587e9f66d476b2e1477",
+            "runtimeTarget": "godot-web",
+            "artifactManifestHash": "44ea2cd208b430cd20280710c523443c3540b0eb21144faef99a18beb90791fa"
+          },
+          "status": "recorded",
+          "scope": "local-only",
+          "reproduction": "not-attempted",
+          "attachments": [],
+          "client": {
+            "version": "0.14.3"
+          }
+        },
+        "followups": [
+          {
+            "format": "craftmine.local-issue-followup/1",
+            "id": "followup-30bd97976fab48fbc26c0509776a601239c6b50e573cc1349684dd5f84d20c16",
+            "issueId": "issue-1221283febf93b0aa1e0e41b98db13c836a7634db6f94092809279854e13fdc7",
+            "revision": 1,
+            "kind": "note",
+            "text": "  补充原话\n不是自动诊断  ",
+            "createdAt": "2026-09-10T04:38:34.389Z",
+            "context": {
+              "phase": "formal",
+              "status": "ready",
+              "worldId": "world-0a5b575164f2",
+              "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "instanceId": "cad80587e9f66d476b2e1477",
+              "runtimeTarget": "godot-web",
+              "artifactManifestHash": "44ea2cd208b430cd20280710c523443c3540b0eb21144faef99a18beb90791fa"
+            },
+            "client": {
+              "version": "0.14.3"
+            }
+          },
+          {
+            "format": "craftmine.local-issue-followup/1",
+            "id": "followup-5a629d81f8514f8eff46d4c8d5b7600491ada4709ae7aca7996ece14df490007",
+            "issueId": "issue-1221283febf93b0aa1e0e41b98db13c836a7634db6f94092809279854e13fdc7",
+            "revision": 2,
+            "kind": "still-present",
+            "text": "  玩家复测：仍能看到  ",
+            "createdAt": "2026-09-10T04:38:34.488Z",
+            "context": {
+              "phase": "formal",
+              "status": "ready",
+              "worldId": "world-0a5b575164f2",
+              "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "instanceId": "cad80587e9f66d476b2e1477",
+              "runtimeTarget": "godot-web",
+              "artifactManifestHash": "44ea2cd208b430cd20280710c523443c3540b0eb21144faef99a18beb90791fa"
+            },
+            "client": {
+              "version": "0.14.3"
+            }
+          }
+        ],
+        "revision": 2,
+        "playerStatus": "still-present"
+      }
+    },
+    {
+      "name": "actual Main export writes only selected record under fixed headless authorization",
+      "passed": true,
+      "value": {
+        "status": "completed",
+        "operationId": "27256a8a-cb21-442d-a8e7-ffe049a52f3a",
+        "issueId": "issue-1221283febf93b0aa1e0e41b98db13c836a7634db6f94092809279854e13fdc7",
+        "revision": 2,
+        "bytes": 3066,
+        "sha256": "e5d16de51e1f9a5c8817a07496ebf8e14404f400781c7d44889a9e82740af122",
+        "scope": "selected-record"
+      }
+    },
+    {
+      "name": "same operation replays exact receipt and exact bytes without ledger or progress writes",
+      "passed": true,
+      "value": {
+        "replayed": true
+      }
+    },
+    {
+      "name": "wrong revision, unknown fields and unsupported channel reject without overwriting",
+      "passed": true,
+      "value": {
+        "rejected": 3
+      }
+    },
+    {
+      "name": "first strict clean shutdown",
+      "passed": true,
+      "value": {
+        "at": "2026-09-10T04:38:03.856Z",
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "error": null
+        }
+      }
+    },
+    {
+      "name": "restart preserves original ledger, selected export and every saved gameplay field",
+      "passed": true,
+      "value": {
+        "ledgerSha256": "5f63bca4e816d3f250acde9254f8f517f532b63a91b36ba39b2524a093df3106",
+        "exportSha256": "e5d16de51e1f9a5c8817a07496ebf8e14404f400781c7d44889a9e82740af122",
+        "crossProcessReceiptReplayTested": false
+      }
+    },
+    {
+      "name": "second strict clean shutdown",
+      "passed": true,
+      "value": {
+        "at": "2026-09-10T04:38:37.933Z",
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "error": null
+        }
+      }
+    }
+  ],
+  "launches": [
+    {
+      "at": "2026-09-10T04:38:03.856Z",
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      }
+    },
+    {
+      "at": "2026-09-10T04:38:37.933Z",
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      }
+    }
+  ],
+  "limits": [
+    "Development client and authored runtime from this checkout, using locally rebuilt core/host binaries identified by SHA256; not a Windows release acceptance",
+    "No model prompt, credentials, OS input, Pointer Lock, visible windows, desktop captures or external transmission; exports only selected test record through Main with fixed headless file authorization",
+    "Snapshot comparison retains every field including stable savedAt metadata",
+    "Main channel and fixed test save authorization; no real OS dialog, no claim of cross-process export receipt recovery"
+  ],
+  "runtimeSourceCommit": "e2050d273d2466f8d36c6b42083a249065bd7a01",
+  "runtimeFilesDigest": "511c8af3c82a69c92b80fe5b3c3c121d394f1dbb84f5c4d6e97e7fc25c2fb0e6",
+  "harnessSha256": "518c02b3367ac6c59452a0bfabd10eccebe626661a69c591740b8836faa55fc8",
+  "coreSha256": "072556858144cf7c9ce8e3030103a889300cf3add4af2bb0066916ab7811dc7b",
+  "hostSha256": "4587acd295b5ea9adbf11b080f7cbfb0c7aadf59e2226dc787812fde043309b3",
+  "worldId": "world-0a5b575164f2",
+  "formalBuildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+  "progress": {
+    "baseId": "first-person",
+    "baseVersion": "0.1.0",
+    "body": {
+      "base": "first-person",
+      "baseVersion": "0.1.0",
+      "equipment": {
+        "active": "pistol",
+        "items": [
+          {
+            "id": "pistol",
+            "magazine": 6,
+            "reserve": 12
+          },
+          {
+            "id": "practice_sword",
+            "magazine": 0,
+            "reserve": 0
+          },
+          {
+            "id": "inspection_tool",
+            "magazine": 0,
+            "reserve": 0
+          }
+        ]
+      },
+      "format": "craftmine.godot-base-state/1",
+      "interactables": [
+        {
+          "enabled": true,
+          "id": "AmmoCrate",
+          "usesLeft": 3
+        },
+        {
+          "enabled": true,
+          "id": "RepairKit",
+          "taken": false
+        }
+      ],
+      "inventory": {
+        "slots": [
+          {
+            "count": 1,
+            "id": "repair_kit"
+          }
+        ]
+      },
+      "player": {
+        "onFloor": true,
+        "pitch": -0.1,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": -0.3
+      },
+      "quests": {
+        "quests": [
+          {
+            "count": 0,
+            "id": "range_basic",
+            "rewardGranted": false,
+            "status": 1
+          }
+        ]
+      },
+      "savedAt": "2026-09-09T20:55:22Z",
+      "stateVersion": 1,
+      "targets": [
+        {
+          "damageTaken": 0,
+          "destroyed": false,
+          "health": 50,
+          "hitCount": 0,
+          "id": "target_a"
+        },
+        {
+          "damageTaken": 0,
+          "destroyed": false,
+          "health": 50,
+          "hitCount": 0,
+          "id": "target_b"
+        },
+        {
+          "damageTaken": 0,
+          "destroyed": false,
+          "health": 50,
+          "hitCount": 0,
+          "id": "target_c"
+        }
+      ],
+      "worldId": "world-0a5b575164f2"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "world-0a5b575164f2"
+  },
+  "issue": {
+    "issue": {
+      "format": "craftmine.local-issue/1",
+      "id": "issue-1221283febf93b0aa1e0e41b98db13c836a7634db6f94092809279854e13fdc7",
+      "description": "  玩家原话：命中后颜色保留\n<script>literal text</script> 😃  ",
+      "createdAt": "2026-09-10T04:38:34.251Z",
+      "context": {
+        "phase": "formal",
+        "status": "ready",
+        "worldId": "world-0a5b575164f2",
+        "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "instanceId": "cad80587e9f66d476b2e1477",
+        "runtimeTarget": "godot-web",
+        "artifactManifestHash": "44ea2cd208b430cd20280710c523443c3540b0eb21144faef99a18beb90791fa"
+      },
+      "status": "recorded",
+      "scope": "local-only",
+      "reproduction": "not-attempted",
+      "attachments": [],
+      "client": {
+        "version": "0.14.3"
+      }
+    },
+    "followups": [
+      {
+        "format": "craftmine.local-issue-followup/1",
+        "id": "followup-30bd97976fab48fbc26c0509776a601239c6b50e573cc1349684dd5f84d20c16",
+        "issueId": "issue-1221283febf93b0aa1e0e41b98db13c836a7634db6f94092809279854e13fdc7",
+        "revision": 1,
+        "kind": "note",
+        "text": "  补充原话\n不是自动诊断  ",
+        "createdAt": "2026-09-10T04:38:34.389Z",
+        "context": {
+          "phase": "formal",
+          "status": "ready",
+          "worldId": "world-0a5b575164f2",
+          "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "instanceId": "cad80587e9f66d476b2e1477",
+          "runtimeTarget": "godot-web",
+          "artifactManifestHash": "44ea2cd208b430cd20280710c523443c3540b0eb21144faef99a18beb90791fa"
+        },
+        "client": {
+          "version": "0.14.3"
+        }
+      },
+      {
+        "format": "craftmine.local-issue-followup/1",
+        "id": "followup-5a629d81f8514f8eff46d4c8d5b7600491ada4709ae7aca7996ece14df490007",
+        "issueId": "issue-1221283febf93b0aa1e0e41b98db13c836a7634db6f94092809279854e13fdc7",
+        "revision": 2,
+        "kind": "still-present",
+        "text": "  玩家复测：仍能看到  ",
+        "createdAt": "2026-09-10T04:38:34.488Z",
+        "context": {
+          "phase": "formal",
+          "status": "ready",
+          "worldId": "world-0a5b575164f2",
+          "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "instanceId": "cad80587e9f66d476b2e1477",
+          "runtimeTarget": "godot-web",
+          "artifactManifestHash": "44ea2cd208b430cd20280710c523443c3540b0eb21144faef99a18beb90791fa"
+        },
+        "client": {
+          "version": "0.14.3"
+        }
+      }
+    ],
+    "revision": 2,
+    "playerStatus": "still-present"
+  },
+  "ledgerSha256": "5f63bca4e816d3f250acde9254f8f517f532b63a91b36ba39b2524a093df3106",
+  "exportSha256": "e5d16de51e1f9a5c8817a07496ebf8e14404f400781c7d44889a9e82740af122",
+  "finishedAt": "2026-09-10T04:38:51.043Z"
+}

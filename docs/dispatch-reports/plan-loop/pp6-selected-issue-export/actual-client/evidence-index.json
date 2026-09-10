@@ -1,0 +1,84 @@
+{
+  "sourceCommit": "e2050d273d2466f8d36c6b42083a249065bd7a01",
+  "mode": "development",
+  "entries": [
+    {
+      "path": "raw/client-1-stderr.log",
+      "bytes": 1523,
+      "sha256": "bf3e6341f394877f0faf4158c49887e94b8f2e995a5a86b450e4568c730fd82b",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-issue-export-WjvRuu\\client-1-stderr.log"
+    },
+    {
+      "path": "raw/client-1-stdout.log",
+      "bytes": 7268,
+      "sha256": "3607eb93ac77a397887cf27be4ce137e434713847de92c7441cb1900ba07095a",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-issue-export-WjvRuu\\client-1-stdout.log"
+    },
+    {
+      "path": "raw/client-2-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-issue-export-WjvRuu\\client-2-stderr.log"
+    },
+    {
+      "path": "raw/client-2-stdout.log",
+      "bytes": 3721,
+      "sha256": "10d315a5b7d1e8d1fa2a14268cd2694d032a3087e2c6105f2602a0b616f17f73",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-issue-export-WjvRuu\\client-2-stdout.log"
+    },
+    {
+      "path": "raw/report.json",
+      "bytes": 21727,
+      "sha256": "062b0704bdc0f2f3822c695296cc756ab0f47d885ce3c60f3dde250c67910079",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-issue-export-WjvRuu\\report.json"
+    },
+    {
+      "path": "raw/selected-issue.json",
+      "bytes": 3066,
+      "sha256": "e5d16de51e1f9a5c8817a07496ebf8e14404f400781c7d44889a9e82740af122",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-issue-export-WjvRuu\\selected-issue.json"
+    },
+    {
+      "path": "raw/issue-export-development-build.log",
+      "bytes": 20593,
+      "sha256": "cc770dec175544aa966f10178344684e81b2563834f0802c9b5a1e0e7a82feeb",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\issue-export-development-build.log"
+    },
+    {
+      "path": "raw/controls-development-native-reuse.json",
+      "bytes": 607,
+      "sha256": "9ea12e39b40e694d3d9ed3d7db9ec6b0687991e4f8d40730c36804b896880c6e",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\controls-development-native-reuse.json"
+    },
+    {
+      "path": "raw/issue-export-client-native.log",
+      "bytes": 1828,
+      "sha256": "904431f7466df1c5de67ef5fb065e07926025bcf11de56ab8446886a960b9f6c",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\issue-export-client-native.log"
+    },
+    {
+      "path": "raw/issue-export-client-contracts-fixed.log",
+      "bytes": 950,
+      "sha256": "8fa919581a24592095925089b1e4c31c64c218b657d6515af4ca1d92a07f1b95",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\issue-export-client-contracts-fixed.log"
+    },
+    {
+      "path": "raw/next-assets-export-tests.log",
+      "bytes": 4710,
+      "sha256": "ea8dec6dba68f0c9d9f69306e6d9e92ceda3c6e0ac4caa73769309ffec09576d",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\next-assets-export-tests.log"
+    },
+    {
+      "path": "raw/next-assets-export-typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\next-assets-export-typecheck.log"
+    },
+    {
+      "path": "raw/next-issue-export-ui.log",
+      "bytes": 379,
+      "sha256": "41a57369b835f6e5a135b63647a09ba7803ad4f631b2c4be02423d521e9d55bd",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\next-issue-export-ui.log"
+    }
+  ]
+}

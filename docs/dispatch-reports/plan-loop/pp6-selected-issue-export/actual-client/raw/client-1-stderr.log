@@ -1,0 +1,17 @@
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+Error occurred in handler for 'pi-plugin-panel-invoke': Error: ISSUE_REVISION_CHANGED
+    at desktopServiceError (file:///C:/cm-plan-next-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:26:24)
+    at Object.request (file:///C:/cm-plan-next-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:294:75)
+    at async PluginPanelHost.pluginId.pluginId [as bridge] (file:///C:/cm-plan-next-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:61202:53)
+    at async Session.<anonymous> (node:electron/js2c/browser_init:2:118313) {
+  code: 'ISSUE_REVISION_CHANGED'
+}
+Error occurred in handler for 'pi-plugin-panel-invoke': Error: ISSUE_INVALID_INPUT
+    at desktopServiceError (file:///C:/cm-plan-next-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:26:24)
+    at Object.request (file:///C:/cm-plan-next-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:294:75)
+    at Object.issues (file:///C:/cm-plan-next-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:62813:84)
+    at request2 (file:///C:/cm-plan-next-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:941:22)
+    at async PluginPanelHost.pluginId.pluginId [as bridge] (file:///C:/cm-plan-next-20260910/vendor/pi-desktop/apps/desktop/out/main/index.js:61202:53)
+    at async Session.<anonymous> (node:electron/js2c/browser_init:2:118313) {
+  code: 'ISSUE_INVALID_INPUT'
+}

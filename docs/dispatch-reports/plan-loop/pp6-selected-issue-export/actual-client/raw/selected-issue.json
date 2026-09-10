@@ -1,0 +1,88 @@
+{
+  "format": "craftmine.local-issue-export/1",
+  "scope": "selected-record",
+  "createdAt": "2026-09-10T04:38:34.498Z",
+  "record": {
+    "format": "craftmine.local-issue/1",
+    "id": "issue-1221283febf93b0aa1e0e41b98db13c836a7634db6f94092809279854e13fdc7",
+    "description": "  玩家原话：命中后颜色保留\n<script>literal text</script> 😃  ",
+    "createdAt": "2026-09-10T04:38:34.251Z",
+    "context": {
+      "phase": "formal",
+      "status": "ready",
+      "worldId": "world-0a5b575164f2",
+      "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "instanceId": "cad80587e9f66d476b2e1477",
+      "runtimeTarget": "godot-web",
+      "artifactManifestHash": "44ea2cd208b430cd20280710c523443c3540b0eb21144faef99a18beb90791fa"
+    },
+    "status": "recorded",
+    "scope": "local-only",
+    "reproduction": "not-attempted",
+    "attachments": [],
+    "client": {
+      "version": "0.14.3"
+    }
+  },
+  "followups": [
+    {
+      "format": "craftmine.local-issue-followup/1",
+      "id": "followup-30bd97976fab48fbc26c0509776a601239c6b50e573cc1349684dd5f84d20c16",
+      "issueId": "issue-1221283febf93b0aa1e0e41b98db13c836a7634db6f94092809279854e13fdc7",
+      "revision": 1,
+      "kind": "note",
+      "text": "  补充原话\n不是自动诊断  ",
+      "createdAt": "2026-09-10T04:38:34.389Z",
+      "context": {
+        "phase": "formal",
+        "status": "ready",
+        "worldId": "world-0a5b575164f2",
+        "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "instanceId": "cad80587e9f66d476b2e1477",
+        "runtimeTarget": "godot-web",
+        "artifactManifestHash": "44ea2cd208b430cd20280710c523443c3540b0eb21144faef99a18beb90791fa"
+      },
+      "client": {
+        "version": "0.14.3"
+      }
+    },
+    {
+      "format": "craftmine.local-issue-followup/1",
+      "id": "followup-5a629d81f8514f8eff46d4c8d5b7600491ada4709ae7aca7996ece14df490007",
+      "issueId": "issue-1221283febf93b0aa1e0e41b98db13c836a7634db6f94092809279854e13fdc7",
+      "revision": 2,
+      "kind": "still-present",
+      "text": "  玩家复测：仍能看到  ",
+      "createdAt": "2026-09-10T04:38:34.488Z",
+      "context": {
+        "phase": "formal",
+        "status": "ready",
+        "worldId": "world-0a5b575164f2",
+        "buildId": "gbd-17af96abae2f1587899ac7b4a0d5117aaee3121f1def6830d13d8db969f387cd",
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "instanceId": "cad80587e9f66d476b2e1477",
+        "runtimeTarget": "godot-web",
+        "artifactManifestHash": "44ea2cd208b430cd20280710c523443c3540b0eb21144faef99a18beb90791fa"
+      },
+      "client": {
+        "version": "0.14.3"
+      }
+    }
+  ],
+  "revision": 2,
+  "playerStatus": "still-present",
+  "exclusions": [
+    "credentials",
+    "chat",
+    "systemLogs",
+    "screenshots",
+    "worldSource",
+    "progressSnapshots",
+    "otherIssues"
+  ]
+}

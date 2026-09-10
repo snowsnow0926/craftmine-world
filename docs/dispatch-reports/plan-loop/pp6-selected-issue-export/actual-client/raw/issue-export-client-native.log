@@ -1,0 +1,12 @@
+PASS create one authored first-person test world
+PASS one real broker build/check and formal application
+PASS actual gameplay and explicit checkpoint before local reporting
+PASS real product issue create captures exact wording and formal identity
+PASS append original supplemental wording and explicit player retest status
+PASS actual Main export writes only selected record under fixed headless authorization
+PASS same operation replays exact receipt and exact bytes without ledger or progress writes
+PASS wrong revision, unknown fields and unsupported channel reject without overwriting
+PASS first strict clean shutdown
+PASS restart preserves original ledger, selected export and every saved gameplay field
+PASS second strict clean shutdown
+{"out":"C:\\cm-plan-next-20260910\\test-results\\desktop-native-issue-export-WjvRuu","passed":true,"steps":[{"name":"create one authored first-person test world","passed":true},{"name":"one real broker build/check and formal application","passed":true},{"name":"actual gameplay and explicit checkpoint before local reporting","passed":true},{"name":"real product issue create captures exact wording and formal identity","passed":true},{"name":"append original supplemental wording and explicit player retest status","passed":true},{"name":"actual Main export writes only selected record under fixed headless authorization","passed":true},{"name":"same operation replays exact receipt and exact bytes without ledger or progress writes","passed":true},{"name":"wrong revision, unknown fields and unsupported channel reject without overwriting","passed":true},{"name":"first strict clean shutdown","passed":true},{"name":"restart preserves original ledger, selected export and every saved gameplay field","passed":true},{"name":"second strict clean shutdown","passed":true}]}
