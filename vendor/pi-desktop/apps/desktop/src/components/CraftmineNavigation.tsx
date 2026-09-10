@@ -128,14 +128,14 @@ export function CraftmineNavigation() {
           <CraftmineLayoutControls />
           {assetsOpen && (
             <div className="craftmine-asset-sheet" role="dialog" aria-modal="true"
-              aria-label={CRAFTMINE_WORLD_TEXT.assetsTitle[lang]} data-asset-sheet="true">
+              aria-label={CRAFTMINE_WORLD_TEXT.assetsTitle[lang]} data-asset-sheet="true" data-asset-owner={controller.activeWorldId ?? ""}>
               <div className="craftmine-asset-sheet-head">
                 <span>{CRAFTMINE_WORLD_TEXT.assetsTitle[lang]}</span>
-                <button type="button" data-asset-sheet-close="true" onClick={() => setAssetsOpen(false)}>
+                <form data-asset-close-form onSubmit={event => {event.preventDefault(); setAssetsOpen(false);}}><button type="submit" data-asset-sheet-close="true">
                   {CRAFTMINE_WORLD_TEXT.assetsClose[lang]}
-                </button>
+                </button></form>
               </div>
-              <AssetLibraryPanel
+              <AssetLibraryPanel key={controller.activeWorldId ?? "global"}
                 bridge={controller.bridge}
                 lang={lang}
                 worldId={controller.activeWorldId}

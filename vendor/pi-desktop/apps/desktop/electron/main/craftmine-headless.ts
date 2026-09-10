@@ -1,3 +1,4 @@
+import { assetsProbeScript } from "./craftmine-assets-acceptance";
 import { targetFeedbackProbeScript } from "./craftmine-target-feedback-acceptance";
 import { historyProbeScript } from "./craftmine-history-acceptance";
 import { app, BrowserWindow, dialog, globalShortcut, Notification, session, shell, type WebContents } from "electron";
@@ -148,6 +149,11 @@ export function installHeadlessControl(access: {
         case "targetFeedbackView": {
           if (Object.keys(request).sort().join(",") !== "id,method,payload,type") throw Error("INVALID_TARGET_FEEDBACK_PROBE");
           return evaluateWorld(targetFeedbackProbeScript(request.payload));
+        }
+        case "assetsView": {
+          if (Object.keys(request).sort().join(",") !== "id,method,payload,type") throw Error("INVALID_ASSET_PROBE");
+          const window = access.window(); if (!window) throw Error("Window is not ready");
+          return window.webContents.executeJavaScript(assetsProbeScript(request.payload), false);
         }
         case "historyView": {
           if (Object.keys(request).sort().join(",") !== "id,method,payload,type") throw Error("INVALID_HISTORY_PROBE");

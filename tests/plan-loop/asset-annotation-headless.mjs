@@ -39,14 +39,14 @@ try{
  const allowed=new Set(['asset.search','asset.read','asset.versions','asset.previewRead','asset.usage','asset.annotate']);
  await page.exposeFunction('assetCall',async(method,payload)=>{
   assert(allowed.has(method));const call={method,payload:structuredClone(payload)};report.calls.push(call);
-  try{const result=await core.call(method,payload);call.result=result;
+  try{assert.equal(payload.ownerWorldId,null);const {ownerWorldId,...args}=payload;const result=await core.call(method,args);call.result=result;
    if(method==='asset.annotate'&&mode==='drop'){mode=null;call.transport='reply-dropped-after-commit';throw Error('FIXED_REPLY_LOST');}
    if(method==='asset.annotate'&&mode==='hold'){mode=null;call.transport='held-after-commit';await new Promise(resolve=>{release=resolve;});}
    return result;
   }catch(error){call.error=String(error);throw error;}
  });
  await page.goto(pathToFileURL(path.join(out,'index.html')).href);
- const select=async id=>{await page.waitForFunction(id=>!!document.querySelector(`[data-asset-id="${id}"]`),id);await page.evaluate(id=>document.querySelector(`[data-asset-id="${id}"]`).dispatchEvent(new Event('click',{bubbles:true})),id);await page.waitForFunction(id=>!!document.querySelector(`[data-annotation-asset="${id}"]`),id);};
+ const select=async id=>{await page.waitForFunction(id=>!!document.querySelector(`[data-asset-id="${id}"]`),id);await page.evaluate(id=>document.querySelector(`[data-asset-id="${id}"]`).form.requestSubmit(),id);await page.waitForFunction(id=>!!document.querySelector(`[data-annotation-asset="${id}"]`),id);};
  const submit=kind=>page.evaluate(kind=>document.querySelector(`[data-annotation-form="${kind}"]`).requestSubmit(),kind);
  const settled=()=>page.waitForFunction(()=>{const b=document.querySelector('[data-annotation-form="favorite"] button');return b&&!b.disabled;});
  const tags=async text=>{await page.evaluate(value=>{const input=document.querySelector('[data-annotation-tags]');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,value);input.dispatchEvent(new Event('input',{bubbles:true}));},text);await submit('tags');};

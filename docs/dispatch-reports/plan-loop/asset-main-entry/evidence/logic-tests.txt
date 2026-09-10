@@ -1,0 +1,44 @@
+✔ buildSearchRequest fills host defaults and clamps the page size (7.6831ms)
+✔ mergePage de-duplicates by assetId+version and keeps order (0.1837ms)
+✔ controller.search sends the built request and loadMore uses nextOffset (0.705ms)
+✔ scope and category switching send the new filter to the host (0.2142ms)
+✔ the four state flags produce four independent badges (0.252ms)
+✔ describePreview covers all six statuses with honest copy (0.3847ms)
+✔ OGG is never playable and never gets a player (0.0809ms)
+✔ preview runs the real service and cancel terminates the attempt (0.9173ms)
+✔ a late preview result for a superseded selection is discarded (0.3199ms)
+✔ scanSummary and importRequestFor produce the import payload (0.667ms)
+✔ snapshot data keys stay disjoint from controller action names (0.1636ms)
+✔ the panel import path reads the scan result, never the scan action (0.419ms)
+✔ AssetLibraryPanel reads scan data from scanResult with a guarded items read (0.5135ms)
+✔ versionOptions lists newest first (0.3688ms)
+✔ host failures reach the caller and stay in the error state (0.4268ms)
+✔ asset UI sources contain no pointer-lock, click or focus emulation (0.7418ms)
+✔ a late search response for a previous scope never overwrites the list (0.2655ms)
+✔ thumbnailSrc only accepts a bounded, well-formed base64 payload (0.1364ms)
+✔ each new edit has a fresh operation, updates only browsing metadata and can clear tags (4.0564ms)
+✔ lost reply retries the frozen original ID and payload and prevents overtaking (0.7536ms)
+✔ late annotation failure stays on the original asset and can be retried after returning (0.4757ms)
+✔ late annotation success does not switch the selected asset (0.3831ms)
+✔ a late read for the previous selection cannot restore its detail or metadata (0.2101ms)
+✔ removing a favorite can remove its card without losing the selected metadata (0.1896ms)
+✔ late previous-selection errors cannot replace the active detail error state (0.2206ms)
+✔ duplicate retry joins the same active operation and a bad receipt remains retryable (0.2674ms)
+✔ a logical asset named constructor is not mistaken for a pending edit (0.19ms)
+✔ a confirmed edit releases its write slot while a slow list refresh is outstanding (0.3725ms)
+✔ a pending selection uses refreshed metadata after annotation acknowledgement is retired (0.2507ms)
+✔ a refreshed old asset cannot return after a newer asset selection (0.2077ms)
+✔ exact Main function chain rejects unsupported methods, unsafe fields and bounded edits before core (1.8336ms)
+✔ old selected-world owner and changed trusted session never receive a confirmed receipt (0.7449ms)
+✔ headless finite asset probe rejects arbitrary selectors/scripts/RPC and unbounded fields (2.0841ms)
+asset main route evidence: C:\cm-init-stage-0910\test-results\asset-main-route-uvTwAm
+✔ navigation → panel gateway → actual private asset service → existing Core persists only metadata (104.5498ms)
+✔ native runner requires explicit mode and sealed package identity without fallback (1.5273ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 392.0759

@@ -147,7 +147,10 @@ export function AssetLibraryPanel({
   onImportRequest,
   audioSrc = null,
 }: AssetLibraryPanelProps) {
-  const controller: AssetLibraryController = useAssetLibrary(bridge);
+  const ownedBridge = useMemo<AssetLibraryBridge | null>(() => bridge ? {
+    call: (channel, payload) => bridge.call(channel, {...payload, ownerWorldId: worldId}),
+  } : null, [bridge, worldId]);
+  const controller: AssetLibraryController = useAssetLibrary(ownedBridge);
   const [view, setView] = useState<"list" | "detail">("list");
 
   const [scope, setScope] = useState<AssetQueryScope>("local-library");
@@ -319,7 +322,9 @@ export function AssetLibraryPanel({
           aria-label={t("filters", lang)}
           onSubmit={(event) => {
             event.preventDefault();
-            searchWith({});
+            const value = event.currentTarget.querySelector<HTMLInputElement>('[data-filter="favorites"]')?.checked ?? favoritesOnly;
+            setFavoritesOnly(value);
+            searchWith({favoritesOnly: value});
           }}
         >
           <label className="asset-library-field">
@@ -471,14 +476,13 @@ export function AssetLibraryPanel({
                 selected.version_.assetId === card.assetId &&
                 selected.version_.version === card.version;
               return (
-                <li key={assetKey(card.assetId, card.version)}>
+                <li key={assetKey(card.assetId, card.version)}><form style={{display:"contents"}} data-asset-select-form onSubmit={event => {event.preventDefault(); openCard(card.assetId, card.version);}}>
                   <button
-                    type="button"
+                    type="submit"
                     className={cx("asset-library-card", active && "is-active")}
                     data-asset-id={card.assetId}
                     data-asset-version={card.version}
                     data-asset-active={active ? "true" : "false"}
-                    onClick={() => openCard(card.assetId, card.version)}
                   >
                     <span
                       className="asset-library-card-state"
@@ -499,7 +503,7 @@ export function AssetLibraryPanel({
                         ))}
                       </span>
                     </span>
-                  </button>
+                  </button></form>
                 </li>
               );
             })}

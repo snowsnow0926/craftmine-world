@@ -9123,3 +9123,8 @@ Hold the selected asset body read, complete a favorite/tag annotation and the en
 - Same-process replay must return the original receipt and bytes. A wrong revision, unknown path field, and unsupported export-all channel must fail with their specific errors and leave the existing output/ledger/progress intact. A timeout is not a successful rejection.
 - Require two strict clean exits with empty shutdownFailures, violations and pageErrors. After restart, verify persisted issue/ledger, output file and every gameplay field. Do not claim cross-process receipt recovery or an actual OS save-dialog interaction; the native fixed authorization path is the boundary under test.
 - Preparation-only contract checks: `node --test tests/plan-loop/issue-export-client-contract.test.mjs tests/player-product/default-client-audit.test.mjs`. Actual native execution remains a separate recorded result.
+
+
+### AL2 Main asset metadata entry (2026-09-10)
+
+Run the bounded asset Main/Core route and actual React form tests. Unknown fields, methods, stale owner, duplicate transaction conflict and finite probe validation must reject. For full-client acceptance use tests/plan-loop/asset-client-native.mjs with an explicit development mode or independently verified same-source package. Seed only two local assets with that selected Core; perform favorite/filter/unfavorite/tag edits through actual navigation forms, restart and compare immutable records and world.list. Both client shutdown audits must be clean. No real input, focus, Pointer Lock, models or personal settings are used. Runner preparation is not full-client evidence.

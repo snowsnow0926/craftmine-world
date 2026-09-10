@@ -1,0 +1,236 @@
+{
+  "kind": "actual-navigation-forms-finite-probe-with-fixture-host",
+  "sourceCommit": null,
+  "checks": [
+    {
+      "name": "old owner rejected",
+      "passed": true
+    },
+    {
+      "name": "actual auxiliary forms open actual navigation sheet",
+      "passed": true
+    },
+    {
+      "name": "selection restricted to observed cards",
+      "passed": true
+    },
+    {
+      "name": "real favorite form updates acknowledgement",
+      "passed": true
+    },
+    {
+      "name": "favorites filter uses actual form",
+      "passed": true
+    },
+    {
+      "name": "unfavorite removes filtered card with detail retained",
+      "passed": true
+    },
+    {
+      "name": "tag form uses submitted DOM value without React internals",
+      "passed": true
+    },
+    {
+      "name": "other asset cannot be annotated",
+      "passed": true
+    },
+    {
+      "name": "close form unmounts sheet",
+      "passed": true
+    },
+    {
+      "name": "no focus or pointer lock",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Fixture host: proves navigation and payloads, not the Rust asset catalog.",
+    "No real model call and no visible-window composition."
+  ],
+  "sourceFiles": [
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/craftmine-assets-acceptance.ts",
+      "sha256": "152cca891ceb4456b3cbd52b42fd71f0c1f2eee970bfa7d81dd5718473165495"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/CraftmineNavigation.tsx",
+      "sha256": "b5c8acd038381544a2ddb16a089e278c9abbd4952b4ed091c8b8647ef1c69f71"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/WorldAuxSections.tsx",
+      "sha256": "4bd5efe3c6c9131868daf084e3d730fe803e9429e0810be884de67f2aa3a5d07"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/assets/AssetLibraryPanel.tsx",
+      "sha256": "64c75c43aaa40e2c8a7b04d0309fbcd3a40389c73657659aec61674f64d2d9f4"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/assets/AssetAnnotationEditor.tsx",
+      "sha256": "9d48d4bd20d6ade360f4b517e282331614226f3bf318e3ba1308d14df4721459"
+    }
+  ],
+  "calls": [
+    {
+      "channel": "world.list",
+      "payload": {}
+    },
+    {
+      "channel": "workbench.capabilities",
+      "payload": {
+        "worldId": "w1"
+      }
+    },
+    {
+      "channel": "world.createOptions",
+      "payload": {
+        "worldId": "w1"
+      }
+    },
+    {
+      "channel": "task.current",
+      "payload": {
+        "worldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "worldId": "w1",
+        "scope": "local-library",
+        "offset": 0,
+        "limit": 5,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.read",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.previewRead",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.usage",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.versions",
+      "payload": {
+        "assetId": "asset-a",
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:fb81d5a9-9a4c-4d31-8a23-960e2443e4d7",
+        "favorite": true,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": true,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:a73820a7-878e-43f2-923f-a2f30d40ae74",
+        "favorite": false,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": true,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:e4a7f129-f313-4806-8f2a-01c3dde76f3a",
+        "tags": [
+          "常用",
+          "建筑"
+        ],
+        "ownerWorldId": "w1"
+      }
+    },
+    {
+      "channel": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": true,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50,
+        "ownerWorldId": "w1"
+      }
+    }
+  ],
+  "passed": true
+}

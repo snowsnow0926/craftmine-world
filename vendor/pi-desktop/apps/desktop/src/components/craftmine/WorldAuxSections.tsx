@@ -55,7 +55,7 @@ export function WorldAuxSections({
       }
       setPending((current) => ({ ...current, [id]: true }));
       try {
-        const summary = await loadAuxSummary(bridge, readFor, id as never);
+        const summary = await loadAuxSummary({...bridge, call: (channel, payload) => bridge.call(channel, channel === "asset.search" ? {...payload, ownerWorldId: readFor} : payload)}, readFor, id as never);
         // A late reply for a world that is no longer active is discarded.
         if (worldIdRef.current !== readFor) return;
         setSummaries((current) => ({ ...current, [id]: { worldId: readFor, summary } }));
@@ -88,30 +88,30 @@ export function WorldAuxSections({
           const summary = loaded && loaded.worldId === worldId ? loaded.summary : null;
           return (
             <li key={section.id} className="craftmine-aux-item" data-aux-section={section.id}>
+              <form style={{display:"contents"}} data-aux-toggle-form={section.id} onSubmit={event => {event.preventDefault(); toggle(section.id);}}>
               <button
-                type="button"
+                type="submit"
                 className="craftmine-aux-toggle"
                 aria-expanded={open}
                 aria-controls={`craftmine-aux-body-${section.id}`}
                 data-aux-toggle={section.id}
-                onClick={() => toggle(section.id)}
               >
                 <ChevronRight size={14} aria-hidden className={`craftmine-aux-chevron${open ? " is-open" : ""}`} />
                 <span className="craftmine-aux-label">{section.label[lang]}</span>
                 <span className="craftmine-aux-summary" data-aux-summary={section.id}>
                   {pending[section.id] ? "..." : auxSummaryText(summary, lang)}
                 </span>
-              </button>
+              </button></form>
               <div id={`craftmine-aux-body-${section.id}`} className="craftmine-aux-body" hidden={!open}>
                 <p className="craftmine-aux-note">{section.note[lang]}</p>
+                <form style={{display:"contents"}} data-aux-open-form={section.id} onSubmit={event => {event.preventDefault(); onOpenSurface(section.surface, section.id);}}>
                 <button
-                  type="button"
+                  type="submit"
                   className="craftmine-aux-open"
                   data-aux-open={section.id}
-                  onClick={() => onOpenSurface(section.surface, section.id)}
                 >
                   {CRAFTMINE_WORLD_TEXT.auxOpen[lang]}
-                </button>
+                </button></form>
               </div>
             </li>
           );
