@@ -1950,7 +1950,7 @@ function AppShell() {
                   <PluginsPage />
                 </div>
               ) : (
-                <ChatSurface />
+                <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen} />
               )}
             </Suspense>
           </section>

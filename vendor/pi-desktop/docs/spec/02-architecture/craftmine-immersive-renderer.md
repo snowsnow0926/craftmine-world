@@ -17,11 +17,15 @@ column for the full conversation beside existing world tools; narrow windows use
 two rows. These are real, non-overlapping native surface rectangles, not a
 transparent overlay drawn above Electron child views. Existing `PluginViewTab`
 measurement continues reporting plugin bounds. The renderer reports
-`craftmineSetImmersion({ active, overlay, overlayBounds })` to Main so Main can
+`craftmineSetImmersion({ active, overlay, overlayBounds, blocked })` to Main so Main can
 enforce the world input boundary and native view clipping while bounds settle.
 Main owns world identity, input blocking and any supported pause reasons.
-The renderer clears active immersion during navigation, blocking sheets/search,
-and unmount. Host errors are shown in the open creation surface.
+The renderer clears active immersion during navigation and unmount. Blocking
+sheets/search retain active immersion and add `blocked`, preserving the gameplay
+input/pause boundary while a modal is open. Changes between compact and full do
+not publish an intermediate inactive state. Host errors are shown in the open
+creation surface. Visible composer picker bounds extend the exclusion rectangle
+when they exceed the compact strip.
 
 F2 toggles compact chat; Shift+F2 toggles the full workbench. Escape dismisses
 an open creation surface only after IME, pointer lock, menus, pickers and other
@@ -29,6 +33,15 @@ dialogs have yielded. Consumed keys and repeats do nothing. Main forwards these
 finite shortcuts from native child surfaces through
 `onCraftmineImmersionShortcut`; they are application scoped, never global.
 Visible compact, full, close and return-to-create controls remain available.
+
+The shared composer includes the reusable `VoiceInput` control while a world
+creation surface is visible. A final transcript appends plain text to the same
+draft, preserving attachments and prior text; it never sends a prompt. Session,
+workspace and host world-change events invalidate recording context. Closing
+creation, opening a blocking sheet, navigating away, entering IME composition or
+requiring plan approval cancels/disables the voice control. Recognition errors
+and unavailable recognition are handled by the voice component without blocking
+the existing text input.
 
 ## Integration E2E scenarios
 
@@ -48,6 +61,10 @@ Visible compact, full, close and return-to-create controls remain available.
 5. Deny or fail the native presentation API. Verify an error appears and no
    fabricated successful gameplay or pause state is shown. Navigate to Settings
    or change the active work panel; Main clears the immersion input reason.
+6. With a fake recognition adapter, deliver a final transcript into an existing
+   draft with attachments. Verify both compact and full expose the same text and
+   no prompt is submitted. Switch world/session or close the overlay before a
+   delayed result arrives; the result must not be appended to the next context.
 
 Pure state checks may run without UI input. Browser acceptance must use an
 independent headless process/profile with `requestPointerLock` disabled and
