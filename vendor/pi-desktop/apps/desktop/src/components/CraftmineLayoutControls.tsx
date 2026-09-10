@@ -9,6 +9,7 @@ import {
   saveCraftmineLayout,
 } from "../lib/craftmine-layout";
 import { CRAFTMINE_WORLD_TEXT } from "../lib/craftmine-worlds-text";
+import { api } from "../lib/api";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
@@ -17,6 +18,17 @@ export function CraftmineLayoutControls() {
   const chinese = i18n.language.startsWith("zh");
   const lang = chinese ? "zh" : "en";
   const [layout, setLayout] = useState(() => loadCraftmineLayout(localStorage));
+  const [fullscreen, setFullscreen] = useState(() => document.documentElement.dataset.fullscreen === "true");
+  const [fullscreenBusy, setFullscreenBusy] = useState(false);
+  const [fullscreenError, setFullscreenError] = useState("");
+  useEffect(() => api.onWindowFullScreen(({ fullScreen }) => setFullscreen(fullScreen)), []);
+  const toggleFullscreen = async () => {
+    if (fullscreenBusy) return;
+    setFullscreenBusy(true); setFullscreenError("");
+    try { const state = await api.nativeMenuAction("toggleFullScreen"); setFullscreen(state.fullScreen); }
+    catch (error) { setFullscreenError(error instanceof Error ? error.message : String(error)); }
+    finally { setFullscreenBusy(false); }
+  };
   useEffect(() => {
     const sync = () => setLayout(loadCraftmineLayout(localStorage));
     window.addEventListener("craftmine-layout-changed", sync);
@@ -53,6 +65,15 @@ export function CraftmineLayoutControls() {
       <button type="button" data-action="reset-layout" onClick={reset} title={CRAFTMINE_WORLD_TEXT.layoutReset[lang]}>
         {CRAFTMINE_WORLD_TEXT.layoutReset[lang]}
       </button>
+      <form onSubmit={event => { event.preventDefault(); void toggleFullscreen(); }}>
+        <button type="submit" data-action="world-fullscreen" aria-pressed={fullscreen} disabled={fullscreenBusy}>
+          {fullscreen ? (chinese ? "退出全屏" : "Exit fullscreen") : (chinese ? "全屏" : "Fullscreen")}
+        </button>
+      </form>
+      <span role="note" style={{ alignSelf: "center", fontSize: "var(--text-2xs)" }}>
+        {chinese ? "F11 全屏切换 · Esc 逐层返回后退出全屏" : "F11 fullscreen · Esc dismisses a layer before exiting fullscreen"}
+      </span>
+      {fullscreenError && <span role="alert">{fullscreenError}</span>}
     </div>
   );
 }

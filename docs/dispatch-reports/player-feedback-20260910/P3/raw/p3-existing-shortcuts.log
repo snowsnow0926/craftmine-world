@@ -1,0 +1,11 @@
+✔ shared shortcut map drives renderer dispatch and native menu accelerators (0.7426ms)
+✔ global shortcut dispatch ignores incomplete keyboard events (0.1709ms)
+✔ Basics exposes editable, conflict-safe, resettable shortcut mappings (0.3229ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105.5165

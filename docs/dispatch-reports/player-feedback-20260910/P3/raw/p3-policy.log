@@ -1,0 +1,21 @@
+✔ native F11 is finite and repeat-safe (0.5595ms)
+✔ escape policy accepts only an unconsumed trusted unmodified first press (0.1268ms)
+✔ unconsumed escape invokes only exit, never toggle/close/navigation (2.4144ms)
+✔ menu present at capture blocks exit even if its handler removes it (0.3466ms)
+✔ same Escape cannot release pointer capture and exit fullscreen (0.2857ms)
+✔ late bubble consumer wins before deferred fullscreen request (0.2016ms)
+✔ new overlay before deferred decision blocks fullscreen exit (0.2117ms)
+✔ composition lifecycle suppresses Escape even without event flag (0.2275ms)
+✔ editing context is retained until the next key (0.2127ms)
+✔ untrusted synthetic key never requests a window action (0.2287ms)
+✔ disposing view cancels queued action and removes all handlers (0.256ms)
+✔ focus departure invalidates a queued action (0.2072ms)
+✔ pending window action is single-flight; failure permits a later request (0.3171ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 151.9886

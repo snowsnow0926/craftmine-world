@@ -1,0 +1,15 @@
+PASS Visible Chinese shortcut and layer instructions
+PASS Fullscreen button uses existing finite window API
+PASS Actual returned window state controls button label
+PASS Second explicit action exits without navigating world
+PASS Window failure is visible and button becomes retryable
+PASS Busy form prevents another window request
+PASS External trusted window-state notification updates control
+PASS No overlay present is observed correctly
+PASS Plain chat input does not consume unhandled Escape by itself
+PASS Native search control retains its Escape clear operation
+PASS Real visible DOM dialog owns Escape layer
+PASS Hidden DOM dialog does not block a later Escape
+PASS Component removes window state listener on disposal
+PASS No pointer-lock/focus request and no page errors
+D:\cm-fb-p3-20260910\test-results\p3-controls-1789021893061
