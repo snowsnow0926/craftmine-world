@@ -433,8 +433,8 @@
         "development-only"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 618,
-      "sha256": "322795b8b2eebfe1818da7b105ab8b8e62c8af100bb77ac369296e9e3d4dc93e"
+      "bytes": 960,
+      "sha256": "818aec910517592220e46a818c953439c501a56f0a6346985ea1388887c09ff9"
     },
     {
       "path": "target-feedback-configuration.mjs",
@@ -449,8 +449,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 16061,
-      "sha256": "f4dd6ef7c25f0d836b721bdb93c220358c9a3c81aee331d30abeeecd28c7f83d"
+      "bytes": 18267,
+      "sha256": "e3fa654506145461c860d7907b136fa4bc1501ca0312922ad852ce6a99691a62"
     },
     {
       "path": "tests/driver.gd",
