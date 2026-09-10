@@ -1,0 +1,108 @@
+﻿{
+    "passed":  true,
+    "installerInvocations":  0,
+    "format":  "craftmine.host-installer-unit/1",
+    "tests":  [
+                  {
+                      "name":  "PowerShell parse and C# compile without launching native helper",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "valid old827 distinct new pinned plan",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "same installer refused as upgrade",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "same source commit refused as upgrade",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "same payload refused as upgrade",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "unexpected predecessor refused",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "C root and quoted argument injection refused",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "relative and traversal roots refused",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "unknown fields and hash coercion refused",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "existing registry blocks before launch",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "existing named shortcut blocks before launch",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "empty registration and shortcuts accepted",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "owned current-user registration accepted",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "machine registry and foreign location rejected",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "uninstaller path and mode exact",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "foreign shortcut is never owned",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "11 stages old-new-busy-uninstall finite order",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "failed busy invariant stops without automatic uninstall",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "complete tree detects changed bytes and extra files",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "SQLite fixture is actual SQLite not empty lock placeholder",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "backup verifies exact manifest plus every copied byte",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "default entry NOT_RUN creates no root",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "any existing cache even empty blocks before first installer",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "owned cache must match exact setup hash and file set",
+                      "passed":  true
+                  },
+                  {
+                      "name":  "empty directory addition cannot hide in profile comparison",
+                      "passed":  true
+                  }
+              ],
+    "nativeLauncherInvocations":  0
+}
