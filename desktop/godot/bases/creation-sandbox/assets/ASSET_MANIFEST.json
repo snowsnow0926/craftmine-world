@@ -1,7 +1,7 @@
 {
   "format": "craftmine.asset-manifest/1",
   "assets": [],
-  "provenance": "All visible meshes are generated in creation_world.gd from Godot primitive meshes. No external bitmap, model, audio or font assets are included.",
+  "provenance": "网格由 creation_world.gd 使用 Godot 基础几何生成。中文 HUD 与标记使用下列保留 OFL 许可的 Noto Sans SC 衍生字库；未加入外部图片、模型或音频。",
   "font": {
     "name": "Craftmine CJK Regular",
     "manifest": "assets/fonts/font.json",
