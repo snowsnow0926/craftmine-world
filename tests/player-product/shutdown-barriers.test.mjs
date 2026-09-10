@@ -48,8 +48,21 @@ test('real isolated child drains stdout/stderr and emits close before sidecar di
 test('UtilityProcess barrier requires exit and both exposed pipe close events',async()=>{
   const child=new EventEmitter();child.stdout=Object.assign(new EventEmitter(),{closed:false});child.stderr=Object.assign(new EventEmitter(),{closed:false});
   const completion=utilityProcessClosed(child);let done=false;completion.then(()=>done=true);
-  child.emit('exit');child.stdout.emit('close');await drain();assert.equal(done,false);
+  child.emit('exit');await drain();child.stdout.emit('close');await drain();assert.equal(done,false);
   child.stderr.emit('close');await completion;assert.equal(done,true);
+});
+test('UtilityProcess exit cleanup may remove all pipe listeners and clear child stream properties',async()=>{
+  const child=new EventEmitter(),stdout=Object.assign(new EventEmitter(),{closed:false}),stderr=Object.assign(new EventEmitter(),{closed:false});
+  child.stdout=stdout;child.stderr=stderr;
+  const completion=utilityProcessClosed(child);let done=false;completion.then(()=>done=true);
+  child.emit('exit');stdout.removeAllListeners();stderr.removeAllListeners();child.stdout=null;child.stderr=null;
+  await drain();assert.equal(done,false);
+  stdout.closed=true;stdout.emit('close');await drain();assert.equal(done,false);
+  stderr.closed=true;stderr.emit('close');await completion;assert.equal(done,true);
+});
+test('UtilityProcess pipes already closed by its exit cleanup need no later event',async()=>{
+  const child=new EventEmitter(),stream=Object.assign(new EventEmitter(),{closed:false});child.stdout=stream;child.stderr=null;
+  const completion=utilityProcessClosed(child);child.emit('exit');stream.closed=true;child.stdout=null;await completion;
 });
 test('plugin disposal kills once and awaits adapter terminal completion across callers',async()=>{
   const closed=gate();let kills=0;

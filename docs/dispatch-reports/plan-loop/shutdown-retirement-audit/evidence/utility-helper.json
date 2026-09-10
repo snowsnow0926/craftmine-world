@@ -1,0 +1,407 @@
+{
+  "format": "craftmine.actual-utility-lifecycle/1",
+  "electron": "43.4.0",
+  "node": "24.18.1",
+  "violations": [],
+  "scenarios": [
+    {
+      "mode": "natural",
+      "events": [
+        {
+          "ms": 1,
+          "name": "registered",
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 25,
+          "name": "spawn",
+          "detail": {
+            "pid": 173728
+          },
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 64,
+          "name": "stdout.data",
+          "detail": "owned stdout ready\n",
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 65,
+          "name": "stderr.data",
+          "detail": "owned stderr ready\n",
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 277,
+          "name": "exit",
+          "detail": {
+            "code": 0
+          },
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 292,
+          "name": "after-exit-task",
+          "detail": {
+            "stdoutProperty": true,
+            "stderrProperty": true
+          },
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 294,
+          "name": "actual-helper-resolved",
+          "state": {
+            "stdout": {
+              "destroyed": true,
+              "closed": true,
+              "readableEnded": true,
+              "readable": false
+            },
+            "stderr": {
+              "destroyed": true,
+              "closed": true,
+              "readableEnded": true,
+              "readable": false
+            }
+          }
+        },
+        {
+          "ms": 401,
+          "name": "after-local-destroy",
+          "state": {
+            "stdout": {
+              "destroyed": true,
+              "closed": true,
+              "readableEnded": true,
+              "readable": false
+            },
+            "stderr": {
+              "destroyed": true,
+              "closed": true,
+              "readableEnded": true,
+              "readable": false
+            }
+          }
+        }
+      ],
+      "beforeDestroy": {
+        "stdout": {
+          "destroyed": true,
+          "closed": true,
+          "readableEnded": true,
+          "readable": false
+        },
+        "stderr": {
+          "destroyed": true,
+          "closed": true,
+          "readableEnded": true,
+          "readable": false
+        }
+      },
+      "afterDestroy": {
+        "stdout": {
+          "destroyed": true,
+          "closed": true,
+          "readableEnded": true,
+          "readable": false
+        },
+        "stderr": {
+          "destroyed": true,
+          "closed": true,
+          "readableEnded": true,
+          "readable": false
+        }
+      }
+    },
+    {
+      "mode": "killed",
+      "events": [
+        {
+          "ms": 0,
+          "name": "registered",
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 5,
+          "name": "spawn",
+          "detail": {
+            "pid": 245676
+          },
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 63,
+          "name": "stdout.data",
+          "detail": "owned stdout ready\n",
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 63,
+          "name": "stderr.data",
+          "detail": "owned stderr ready\n",
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 217,
+          "name": "kill-return",
+          "detail": true,
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 226,
+          "name": "exit",
+          "detail": {
+            "code": 0
+          },
+          "state": {
+            "stdout": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            },
+            "stderr": {
+              "destroyed": false,
+              "closed": false,
+              "readableEnded": false,
+              "readable": true
+            }
+          }
+        },
+        {
+          "ms": 248,
+          "name": "after-exit-task",
+          "detail": {
+            "stdoutProperty": true,
+            "stderrProperty": true
+          },
+          "state": {
+            "stdout": {
+              "destroyed": true,
+              "closed": true,
+              "readableEnded": true,
+              "readable": false
+            },
+            "stderr": {
+              "destroyed": true,
+              "closed": true,
+              "readableEnded": true,
+              "readable": false
+            }
+          }
+        },
+        {
+          "ms": 248,
+          "name": "actual-helper-resolved",
+          "state": {
+            "stdout": {
+              "destroyed": true,
+              "closed": true,
+              "readableEnded": true,
+              "readable": false
+            },
+            "stderr": {
+              "destroyed": true,
+              "closed": true,
+              "readableEnded": true,
+              "readable": false
+            }
+          }
+        },
+        {
+          "ms": 355,
+          "name": "after-local-destroy",
+          "state": {
+            "stdout": {
+              "destroyed": true,
+              "closed": true,
+              "readableEnded": true,
+              "readable": false
+            },
+            "stderr": {
+              "destroyed": true,
+              "closed": true,
+              "readableEnded": true,
+              "readable": false
+            }
+          }
+        }
+      ],
+      "beforeDestroy": {
+        "stdout": {
+          "destroyed": true,
+          "closed": true,
+          "readableEnded": true,
+          "readable": false
+        },
+        "stderr": {
+          "destroyed": true,
+          "closed": true,
+          "readableEnded": true,
+          "readable": false
+        }
+      },
+      "afterDestroy": {
+        "stdout": {
+          "destroyed": true,
+          "closed": true,
+          "readableEnded": true,
+          "readable": false
+        },
+        "stderr": {
+          "destroyed": true,
+          "closed": true,
+          "readableEnded": true,
+          "readable": false
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "finishedAt": "2026-09-10T01:58:03.840Z"
+}

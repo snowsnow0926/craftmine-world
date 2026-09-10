@@ -40,7 +40,7 @@ import { checkCraftmineFrame } from "./craftmine-frame-check";
 import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
-import { configureHeadlessAcceptance, installHeadlessControl } from "./craftmine-headless";
+import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure } from "./craftmine-headless";
 import {
   existsSync,
   mkdirSync,
@@ -9799,10 +9799,13 @@ app.on("before-quit", (event) => {
       await hostShutdown;
     } catch (error) {
       logger.app("lifecycle", "warn", "host shutdown failed", { data: String(error) });
+      recordHeadlessShutdownFailure("host-core", error);
     }
     const shutdownResults = await serviceShutdown;
     shutdownResults.forEach((result, index) => {
-      if (result.status === "rejected") logger.app("lifecycle", "error", "service shutdown incomplete", {
+      if (result.status !== "rejected") return;
+      recordHeadlessShutdownFailure(shutdownServices[index], result.reason);
+      logger.app("lifecycle", "error", "service shutdown incomplete", {
         data: { service: shutdownServices[index], error: String(result.reason) },
       });
     });
@@ -9812,7 +9815,11 @@ app.on("before-quit", (event) => {
     shutdownComplete = true;
     app.quit();
   };
-  void shutdownPromise.then(releaseQuit, releaseQuit);
+  void shutdownPromise.then(releaseQuit, error => {
+    recordHeadlessShutdownFailure("shutdown-sequence", error);
+    logger.app("lifecycle", "error", "shutdown sequence incomplete", {data:String(error)});
+    releaseQuit();
+  });
 });
 
 app.on("activate", () => {

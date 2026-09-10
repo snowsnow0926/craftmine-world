@@ -12,8 +12,11 @@ export function utilityProcessClosed(child: {
   stdout?: { closed?: boolean; once(event: "close", callback: () => void): unknown } | null;
   stderr?: { closed?: boolean; once(event: "close", callback: () => void): unknown } | null;
 }): Promise<void> {
+  // Retain references: Electron clears child.stdout/stderr at exit and removes
+  // their listeners synchronously after exit callbacks. Observe closure in the
+  // promise continuation, after that cleanup, not through discarded listeners.
+  const streams = [child.stdout, child.stderr];
   const exit = new Promise<void>(resolve => { child.once("exit", resolve); });
-  const pipes = [child.stdout, child.stderr].map(stream => !stream || stream.closed ? Promise.resolve()
-    : new Promise<void>(resolve => { stream.once("close", resolve); }));
-  return Promise.all([exit, ...pipes]).then(() => undefined);
+  return exit.then(() => Promise.all(streams.map(stream => !stream || stream.closed ? Promise.resolve()
+    : new Promise<void>(resolve => { stream.once("close", resolve); })))).then(() => undefined);
 }

@@ -19,3 +19,5 @@ No sleep is added and application exit-code acceptance is unchanged. This is
 an independently justified lifecycle repair, not a proven explanation of the
 IOCP crash. UtilityProcess has a distinct exit-plus-stream-close contract;
 Node ChildProcess uses its native close event.
+
+The follow-up retains ownership of retiring instances beyond current/pending selection and retains their failed cleanup evidence. Electron UtilityProcess stream observers are attached after its synchronous exit listener cleanup, using retained stream references. Native headless acceptance now carries and checks shutdownFailures, so a permitted exit zero cannot conceal an incomplete owner teardown. Ordinary quit policy is unchanged; the original IOCP crash is still not attributed by this repair.
