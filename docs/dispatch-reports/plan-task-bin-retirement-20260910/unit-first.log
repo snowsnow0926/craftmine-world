@@ -1,0 +1,23 @@
+✔ import: confirmed receipt retires only fixed copies, keeps complete evidence, idempotent (16.1344ms)
+✔ exportWeb: confirmed receipt retires only fixed copies, keeps complete evidence, idempotent (10.2865ms)
+✔ version: confirmed receipt retires only fixed copies, keeps complete evidence, idempotent (10.669ms)
+✔ legacy broker is not enrolled; no disk writes or history scan (2.2428ms)
+✔ transport, process, cleanup, recovery, pin and schema ambiguity are refused before mutation (3.0188ms)
+✔ core failed/refused/lost confirmation, unflushed ledger, or stop preserves all files (2.8028ms)
+✔ nonce: refuse with bin and diagnostics intact (4.421ms)
+✔ registration: refuse with bin and diagnostics intact (3.4369ms)
+✔ corrupt-marker: refuse with bin and diagnostics intact (4.7424ms)
+✔ extra-file: refuse with bin and diagnostics intact (4.8055ms)
+✔ wrong-hash: refuse with bin and diagnostics intact (4.4195ms)
+✔ work: refuse with bin and diagnostics intact (3.7995ms)
+✔ journal: refuse with bin and diagnostics intact (4.3938ms)
+{"format":"authored-bin-retirement-fixtures/1","directories":["C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-WwrIir","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-7FoC8i","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-qB9UnU","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-xY97RF","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-BfMrsY","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-PFdNvU","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-KsHor8","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-n6r2jo","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-zROYGx","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-t6Ws9U","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-YNKIc8","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-dKpSQP","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-UI9DNi","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-XdS38t"],"actualEngine":false,"actualSandbox":false,"historicalProfilesTouched":false}
+✔ ack-exists: refuse with bin and diagnostics intact (5.0542ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 171.7022

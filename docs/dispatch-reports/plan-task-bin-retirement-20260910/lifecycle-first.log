@@ -1,0 +1,12 @@
+✔ new bin retirement waits for core acknowledgment; preflight/import/export preserve diagnostics (351.0866ms)
+✔ new bin retirement preserves copies after lost-finish (353.8053ms)
+✔ new bin retirement preserves copies after failed-check (353.2974ms)
+✔ new bin retirement preserves copies after refused-registration (100.1979ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1255.5196

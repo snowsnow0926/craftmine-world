@@ -1,0 +1,23 @@
+✔ import: confirmed receipt retires only fixed copies, keeps complete evidence, idempotent (17.8304ms)
+✔ exportWeb: confirmed receipt retires only fixed copies, keeps complete evidence, idempotent (12.4916ms)
+✔ version: confirmed receipt retires only fixed copies, keeps complete evidence, idempotent (10.577ms)
+✔ legacy broker is not enrolled; no disk writes or history scan (3.0396ms)
+✔ transport, process, cleanup, recovery, pin and schema ambiguity are refused before mutation (4.0466ms)
+✔ core failed/refused/lost confirmation, unflushed ledger, or stop preserves all files (2.6673ms)
+✔ nonce: refuse with bin and diagnostics intact (4.3048ms)
+✔ registration: refuse with bin and diagnostics intact (3.5214ms)
+✔ corrupt-marker: refuse with bin and diagnostics intact (3.7581ms)
+✔ extra-file: refuse with bin and diagnostics intact (4.7748ms)
+✔ wrong-hash: refuse with bin and diagnostics intact (3.5781ms)
+✔ work: refuse with bin and diagnostics intact (4.0463ms)
+✔ journal: refuse with bin and diagnostics intact (5.6356ms)
+{"format":"authored-bin-retirement-fixtures/1","directories":["C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-HzbWCh","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-702bCv","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-keseO8","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-PlQAiB","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-At9KYi","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-BxgPr2","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-pciQjw","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-PziKeR","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-IhsBu3","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-CvdbzA","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-xqHExq","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-lK6CHi","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-LTkFtW","C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-bin-retirement-Hkr8Zz"],"actualEngine":false,"actualSandbox":false,"historicalProfilesTouched":false}
+✔ ack-exists: refuse with bin and diagnostics intact (4.5994ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 179.3787

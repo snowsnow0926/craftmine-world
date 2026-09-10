@@ -17,6 +17,7 @@ const fs = require('node:fs');
 const fsp = require('node:fs/promises');
 const path = require('node:path');
 const {isDeepStrictEqual} = require('node:util');
+const {captureBinRetirement} = require('./godot-task-bin-retirement.cjs');
 
 const execFileAsync = (file, args, options = {}) => new Promise(resolve => {
   const settle = (error, stdout, stderr) => resolve({
@@ -413,7 +414,24 @@ function createGodotExecutor(core, options = {}) {
         stderr:(run.stderr ?? '').slice(0, 600)};
       warn('preflight broker detail:', JSON.stringify(result.detail));
     }
+    if (result.ok) result.retireBin = captureCurrentBin(run, taskId, 'version');
     return result;
+  }
+
+  function captureCurrentBin(run, requestId, operation) {
+    try {
+      return captureBinRetirement({tasksRoot, run, requestId, operation,
+        expectedEngineSha256:discovery.measured?.editorSha256,
+        expectedBrokerSha256:discovery.measuredBrokerSha256});
+    } catch (error) {
+      warn('bin retirement unavailable; files preserved:', String(error?.message ?? error));
+      return null;
+    }
+  }
+
+  function rememberBin(entry, run, operation) {
+    const retire = captureCurrentBin(run, run.requestId, operation);
+    if (retire) (entry.binRetirements ??= []).push(retire);
   }
 
   function evidenceOf(verified, preflightResult) {
@@ -839,6 +857,7 @@ function createGodotExecutor(core, options = {}) {
           reason:importCheck.reason ?? 'GODOT_COMPILE_FAILED',
         });
       }
+      rememberBin(entry, importRun, 'import');
       await core.call('godotJob.progress', {jobId, token, stage:'export', percent:45}, 20000).catch(() => {});
 
       let artifacts = [], bridgeReplaced = false, runtime = null, descriptorSource = null, exportLog = '';
@@ -867,6 +886,7 @@ function createGodotExecutor(core, options = {}) {
         }
         await core.call('godotJob.progress', {jobId, token, stage:'stage-artifacts', percent:70}, 20000).catch(() => {});
         const staged = await stageArtifacts(exportRun.response, claim.artifactsRoot, discovery.bridge);
+        rememberBin(entry, exportRun, 'exportWeb');
         artifacts = staged.artifacts;
         bridgeReplaced = staged.bridgeReplaced;
         log('staged', artifacts.length, 'artifacts into', path.resolve(claim.artifactsRoot));
@@ -939,7 +959,20 @@ function createGodotExecutor(core, options = {}) {
       durable.outcome = status;
       durable.finishedAt = nowIso();
       durable.reason = result.reason ?? null;
-      persistLedger();
+      await persistLedger();
+      // Only capabilities from this live job are considered. A restored
+      // ledger, failed/refused finish, cancellation, or shutdown cannot enroll
+      // a task. The helper flushes a complete acknowledgment before unlinking.
+      if (status === 'passed' && !ledgerError && !entry.cancelled && !stopped) {
+        durable.binRetirements = [];
+        for (const retire of entry.binRetirements ?? []) {
+          if (entry.cancelled || stopped) break;
+          const retired = await retire({kind:'job', jobId, record, ledgerFlushed:true}, () => !entry.cancelled && !stopped);
+          durable.binRetirements.push(retired);
+          if (retired.state !== 'retired') warn('bin files preserved:', retired.taskId, retired.reason);
+        }
+        await persistLedger();
+      }
       return {status, candidateId:record?.candidateId ?? null, reason:result.reason ?? null};
     } catch (error) {
       warn('finish refused:', jobId, String(error?.message ?? error), result.reason ?? '');
@@ -1305,6 +1338,10 @@ function createGodotExecutor(core, options = {}) {
         discovery.attestationHash = registration?.attestationHash ?? null;
         discovery.promotedJobs = registration?.promotedJobs ?? 0;
         log('registered', EXECUTOR_ID, 'evidence', discovery.evidenceHash.slice(0, 16), 'promoted', discovery.promotedJobs);
+        if (registered && preflightResult.retireBin) {
+          discovery.preflightBinRetirement = await preflightResult.retireBin({kind:'preflight', record:registration}, current);
+          if (!current()) return status();
+        }
       } catch (error) {
         registered = false;
         if (!current()) return status();

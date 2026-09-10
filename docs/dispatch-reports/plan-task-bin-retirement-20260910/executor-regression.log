@@ -1,0 +1,39 @@
+✔ stop drains a real pending broker preflight and prevents obsolete registration (387.2948ms)
+✔ stop drains an in-flight registration, revokes it, then admits one fresh restart (191.6429ms)
+✔ new bin retirement waits for core acknowledgment; preflight/import/export preserve diagnostics (345.2562ms)
+✔ new bin retirement preserves copies after lost-finish (334.9375ms)
+✔ new bin retirement preserves copies after failed-check (321.2069ms)
+✔ new bin retirement preserves copies after refused-registration (96.3476ms)
+✔ happy check job: real import/export receipts, staged web artifacts, passed candidate (320.098ms)
+✔ task path preparation rejection retains its reason and never reaches export/check (217.3555ms)
+✔ the verifier receives the staged descriptor, never a caller-supplied path (323.7647ms)
+✔ check job without a verifier records a failure instead of a false pass (311.4257ms)
+✔ a failing runtime check fails the job and its assertions (326.3729ms)
+✔ forged preflight evidence never registers an executor (561.5786ms)
+✔ measured source files must equal the claimed manifest (875.1839ms)
+✔ unlisted, tampered and escaping artifacts are refused (944.8395ms)
+✔ compile failures are fatal, known native isolation diagnostics are not (541.9648ms)
+✔ a broker that never answers or dies is recorded as a failure, never a pass (435.8675ms)
+✔ a job that exceeds its budget is failed, not left running (1703.7766ms)
+✔ cancel kills the broker, records no result and cancels the core job (520.6658ms)
+✔ executor stop revokes registration and rejects new jobs (103.8486ms)
+✔ sourceSnapshotDigest matches the documented broker digest shape (0.1863ms)
+✔ missing or tampered host files report their own reason (18.5346ms)
+✔ a changed broker binary is refused when a pin is configured (3.347ms)
+✔ one verified native import crash gets a fresh task, preserving its failure and full check (460.2355ms)
+✔ script errors, changed inputs, unknown cleanup and repeated crashes never become successful retries (1934.2926ms)
+✔ finite runtime expectation: matched (338.9845ms)
+✔ finite runtime expectation: descriptor-missing (339.0794ms)
+✔ finite runtime expectation: descriptor-dropped (324.5533ms)
+✔ finite runtime expectation: descriptor-mixed (328.0108ms)
+✔ finite runtime expectation: assertion-missing (342.2273ms)
+✔ finite runtime expectation: assertion-false (312.4064ms)
+✔ finite runtime expectation: assertion-duplicate (325.402ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13694.249

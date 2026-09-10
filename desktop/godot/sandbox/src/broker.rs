@@ -67,6 +67,15 @@ pub struct Cleanup { pub verified: bool, pub profile_hresult: Option<i32>, pub w
 #[derive(Debug, Serialize)]
 #[serde(rename_all="camelCase")]
 pub struct JournalState { pub path: PathBuf, pub policy_version: String, pub cleared: bool, pub error: Option<String> }
+/// A capability for the current host invocation only. It is never discovered
+/// by scanning old tasks, and it does not authorize removal of logs/artifacts.
+#[derive(Debug, Serialize)]
+#[serde(rename_all="camelCase")]
+pub struct BinRetirement {
+    pub format: &'static str, pub task_id: String, pub identity_nonce: String,
+    pub engine_job_active_processes: u32, pub native_job_active_processes: u32,
+    pub files: Vec<SourceFile>,
+}
 #[derive(Debug, Serialize)]
 #[serde(rename_all="camelCase")]
 pub struct Response {
@@ -80,6 +89,8 @@ pub struct Response {
     pub artifacts: Vec<SourceFile>, pub artifacts_root: PathBuf, pub logs_root: PathBuf, pub logs: Vec<SourceFile>,
     pub cleanup: Cleanup, pub recovery_journal: Option<JournalState>,
     pub error: Option<String>, pub broker_sha256: String,
+    #[serde(skip_serializing_if="Option::is_none")]
+    pub bin_retirement: Option<BinRetirement>,
 }
 
 fn sha256(bytes: &[u8]) -> String { Sha256::digest(bytes).iter().map(|byte| format!("{byte:02x}")).collect() }
@@ -189,7 +200,7 @@ pub fn execute(request: Request, cancel: Arc<AtomicBool>) -> Result<Response> {
         artifacts: Vec::new(), artifacts_root: task.layout.artifacts.clone(), logs_root: task.layout.logs.clone(), logs: Vec::new(),
         cleanup: Cleanup { verified: false, profile_hresult: None, work_removed: false, error: None },
         recovery_journal: Some(JournalState { path: journal_path, policy_version: crate::recovery::JOURNAL_POLICY_VERSION.into(), cleared: false, error: None }),
-        error: None, broker_sha256 };
+        error: None, broker_sha256, bin_retirement: None };
     let work = task.layout.work.clone();
     let outcome = (|| -> Result<()> {
         let (_, copied) = snapshot(if matches!(request.operation, Operation::Version) { None } else { Some(task.layout.project.as_path()) })?;
@@ -221,6 +232,10 @@ pub fn execute(request: Request, cancel: Arc<AtomicBool>) -> Result<Response> {
         }
     } Ok(()) })();
     if let Err(error) = logs_result { response.state = "failed".into(); response.error = Some(format!("Log collection failed: {error}")); }
+    let engine_idle = task.completed_job_active_processes();
+    let native_idle = task.network_preflight().and_then(|value| value.job_active_processes);
+    let task_root = task.layout.root.clone();
+    let nonce = task.identity_nonce.clone();
     match task.finish() {
         Ok(code) => response.cleanup = Cleanup { verified: code >= 0 && !work.exists(), profile_hresult: Some(code), work_removed: !work.exists(), error: None },
         Err(error) => response.cleanup.error = Some(error.to_string()),
@@ -242,12 +257,81 @@ pub fn execute(request: Request, cancel: Arc<AtomicBool>) -> Result<Response> {
     } else if let Some(state) = response.recovery_journal.as_mut() {
         state.error = Some("journal kept because task cleanup was not verified".into());
     }
+    // No deletion here: writing stdout cannot prove that the host received or
+    // durably accepted the final response. The current executor may retire the
+    // fixed bin copies only after its own successful durable acknowledgment.
+    if bin_retirement_eligible(&response, engine_idle, native_idle) {
+        let register = (|| -> Result<BinRetirement> {
+            let mut files = Vec::new();
+            for (name, expected) in [
+                (pins.editor.file_name.as_str(), pins.editor.sha256.as_str()),
+                ("broker-preflight.exe", broker.sha256.as_str()),
+            ] {
+                let path = task_root.join("bin").join(name);
+                let metadata = ordinary(&path)?;
+                if !metadata.is_file() || file_digest(&path)? != expected { return Err("Retirement pin changed".into()); }
+                files.push(SourceFile { path: name.into(), bytes: metadata.len(), sha256: expected.into() });
+            }
+            let proof = BinRetirement { format: "craftmine.godot-bin-retirement/1", task_id: task_id.clone(),
+                identity_nonce: nonce, engine_job_active_processes: 0, native_job_active_processes: 0, files };
+            use std::io::Write;
+            let mut file = fs::OpenOptions::new().write(true).create_new(true).open(task_root.join("bin-retirement.json"))?;
+            file.write_all(&serde_json::to_vec(&proof)?)?;
+            file.sync_all()?;
+            Ok(proof)
+        })();
+        // A failed optional registration preserves all bin files and does not
+        // turn an already completed build into a different product outcome.
+        match register {
+            Ok(proof) => response.bin_retirement = Some(proof),
+            Err(error) => eprintln!("BIN_RETIREMENT_PRESERVED: {error}"),
+        }
+    }
     Ok(response)
+}
+
+fn bin_retirement_eligible(response: &Response, engine: Option<u32>, native: Option<u32>) -> bool {
+    response.state == "succeeded" && response.exit_code == Some(0) && response.error.is_none()
+        && engine == Some(0) && native == Some(0)
+        && response.cleanup.verified && response.cleanup.profile_hresult == Some(0)
+        && response.cleanup.work_removed && response.cleanup.error.is_none()
+        && response.recovery_journal.as_ref().is_some_and(|value| value.cleared && value.error.is_none())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn bin_retirement_requires_both_completed_jobs_and_final_cleanup() {
+        let mut response = Response {
+            schema_version: 1, request_id: "fixture".into(), task_id: "fixture".into(), operation: Operation::Version,
+            source_binding: SourceBinding { world_id: "fixture".into(), build_id: "fixture".into(), source_revision: 0, source_digest: sha256(b"[]") },
+            input_hash: sha256(b"fixture"), source_snapshot_digest: sha256(b"[]"), source_files: vec![],
+            state: "succeeded".into(), exit_code: Some(0), policy_version: "fixture".into(),
+            process_verification: None, network_preflight: None, resource_enforcement: None,
+            artifacts: vec![], artifacts_root: PathBuf::new(), logs_root: PathBuf::new(), logs: vec![],
+            cleanup: Cleanup { verified: true, profile_hresult: Some(0), work_removed: true, error: None },
+            recovery_journal: Some(JournalState { path: PathBuf::new(), policy_version: "fixture".into(), cleared: true, error: None }),
+            error: None, broker_sha256: sha256(b"fixture"), bin_retirement: None,
+        };
+        for operation in [Operation::Version, Operation::Import, Operation::ExportWeb] {
+            response.operation = operation;
+            assert!(bin_retirement_eligible(&response, Some(0), Some(0)));
+            for (engine, native) in [(None, Some(0)), (Some(1), Some(0)), (Some(0), None), (Some(0), Some(1))] {
+                assert!(!bin_retirement_eligible(&response, engine, native));
+            }
+        }
+        for state in ["failed", "cancelled", "running"] {
+            response.state = state.into();
+            assert!(!bin_retirement_eligible(&response, Some(0), Some(0)));
+        }
+        response.state = "succeeded".into();
+        response.recovery_journal.as_mut().unwrap().cleared = false;
+        assert!(!bin_retirement_eligible(&response, Some(0), Some(0)));
+        response.recovery_journal.as_mut().unwrap().cleared = true;
+        response.cleanup.work_removed = false;
+        assert!(!bin_retirement_eligible(&response, Some(0), Some(0)));
+    }
     #[test]
     fn request_cannot_claim_trust_or_supply_command_arguments() {
         let request = r#"{"schemaVersion":1,"requestId":"r","taskId":"t","operation":"version","tasksRoot":"D:/x","engineRoot":"D:/e","sourceBinding":{"worldId":"w","buildId":"b","sourceRevision":0,"sourceDigest":"x"},"inputHash":"x","trusted":true}"#;
