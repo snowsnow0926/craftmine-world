@@ -1,0 +1,16 @@
+{
+  "case": "eof",
+  "transportExit": 0,
+  "state": "cancelled",
+  "error": "Cancelled before native preflight",
+  "evidencePrefix": "D:\\Craftmine World\\test-results\\g6-sandbox\\docs\\dispatch-reports\\godot-cycle06\\sandbox\\evidence\\g6-eof-1788969989956340300",
+  "processVerified": null,
+  "networkVerified": null,
+  "artifactCount": 0,
+  "cleanup": {
+    "verified": true,
+    "profileHresult": 0,
+    "workRemoved": true,
+    "error": null
+  }
+}

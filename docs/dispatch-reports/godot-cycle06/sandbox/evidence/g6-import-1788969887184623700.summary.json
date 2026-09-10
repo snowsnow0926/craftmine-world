@@ -1,0 +1,16 @@
+{
+  "case": "import",
+  "transportExit": 0,
+  "state": "succeeded",
+  "error": null,
+  "evidencePrefix": "D:\\Craftmine World\\test-results\\g6-sandbox\\docs\\dispatch-reports\\godot-cycle06\\sandbox\\evidence\\g6-import-1788969887184623700",
+  "processVerified": true,
+  "networkVerified": true,
+  "artifactCount": 0,
+  "cleanup": {
+    "verified": true,
+    "profileHresult": 0,
+    "workRemoved": true,
+    "error": null
+  }
+}

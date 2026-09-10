@@ -1,0 +1,16 @@
+{
+  "case": "exportWeb",
+  "transportExit": 0,
+  "state": "succeeded",
+  "error": null,
+  "evidencePrefix": "D:\\Craftmine World\\test-results\\g6-sandbox\\docs\\dispatch-reports\\godot-cycle06\\sandbox\\evidence\\g6-exportweb-1788969941139009800",
+  "processVerified": true,
+  "networkVerified": true,
+  "artifactCount": 9,
+  "cleanup": {
+    "verified": true,
+    "profileHresult": 0,
+    "workRemoved": true,
+    "error": null
+  }
+}

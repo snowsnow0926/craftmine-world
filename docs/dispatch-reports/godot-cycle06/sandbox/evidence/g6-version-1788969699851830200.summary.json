@@ -1,0 +1,11 @@
+{
+  "case": "version",
+  "transportExit": 1,
+  "state": "failed",
+  "error": "CreateAppContainerProfile HRESULT 0x80070005; no existing profile reused",
+  "evidencePrefix": "D:\\Craftmine World\\test-results\\g6-sandbox\\docs\\dispatch-reports\\godot-cycle06\\sandbox\\evidence\\g6-version-1788969699851830200",
+  "processVerified": null,
+  "networkVerified": null,
+  "artifactCount": 0,
+  "cleanup": null
+}
