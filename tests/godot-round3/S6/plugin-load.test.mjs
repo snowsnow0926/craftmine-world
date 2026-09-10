@@ -31,6 +31,7 @@ await mkdir(shared,{recursive:true});
 // `domain.cjs` and `core-client.cjs` are deliberately absent: the test supplies
 // stubs for them below.
 const FILES=['manifest.json','main.cjs','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
+  'creation-operations.cjs','creation-sequence-rule.cjs','creation-operation-schema.cjs',
   'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs',
   'verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs',
   'workbench-service.cjs','godot-executor.cjs','godot-task-bin-retirement.cjs','asset-service.mjs','reuse-service.mjs',
@@ -70,6 +71,7 @@ class CoreClient {
     if(method==='godotProject.index')return {worldId:'alpha',revision:3,manifestHash:'b'.repeat(64),baseId:'first-person',
       baseBuild:'gbd-0',engineVersion:'4.7.2-stable',renderer:'gl_compatibility',target:'web',files:[],totalFiles:0,
       nextOffset:null,status:'source-only',verified:false,applied:false,executionAvailable:false,binaryAssetsAvailable:false};
+    if(method==='godotProject.patch')return {revision:4,manifestHash:'c'.repeat(64),operationId:params.toolCallId};
     if(method==='godotCandidate.list')return {items:[],nextOffset:null};
     if(method==='task.context')return {binding:BINDING,generation:5};
     if(method==='budget.inspect')return {ownerTaskId:'task-1',requestCount:4,compactionCount:2,actualTokens:1200,
@@ -119,7 +121,7 @@ const call=(name,args)=>registered.get(name).execute(args,
   {projectId:'project',sessionId:'session',turnId:'turn',executionId:'execution',toolCallId:'call-'+name});
 
 test('the production entry registers the full advertised tool surface',()=>{
-  assert.equal(registered.size,36);
+  assert.equal(registered.size,37);
   for(const name of ['godot_guidance','godot_capability_report','godot_runtime_state','godot_jobs','godot_draft_recovery','godot_history',
     'asset_library','package_library'])assert.ok(registered.has(name),name);
 });
@@ -146,4 +148,11 @@ test('live observation from the real entry reaches the host sampler',async()=>{
   assert.equal(state.live.instanceId,'inst-1');
   assert.equal(state.live.provenance,'live-instance-sample');
   assert.equal(state.durableProgress.source,'last-confirmed-save');
+});
+
+test('creation operation compiles a target-bound placement and commits a source patch',async()=>{
+  const snapshot={snapshotId:'capture-1',worldId:'alpha',buildId:'gbd-0',instanceId:'instance-1',sourceRevision:3,manifestHash:'b'.repeat(64),playerPosition:[0,0,0],target:{entityId:null,position:[2,0,2],normal:[0,1,0],surface:'ground',revision:1}};
+  const expected={worldId:'alpha',buildId:'gbd-0',instanceId:'instance-1',revision:3,manifestHash:'b'.repeat(64),targetSnapshotId:'capture-1'};
+  const result=await call('creation_operation',{request:{operationId:'place-tree',expected,action:'place',kind:'tree'},targetSnapshot:snapshot});
+  assert.equal(result.action,'place');assert.equal(result.worldId,'alpha');assert.equal(result.afterRevision,2);
 });

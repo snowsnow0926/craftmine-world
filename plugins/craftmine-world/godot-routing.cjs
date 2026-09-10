@@ -23,6 +23,7 @@ const LOCAL_TOOLS={
   godot_history:{owner:'S6',hostMethod:'content.*',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED',blockedOwner:'S1'},
   godot_jobs:{owner:'S6',hostMethod:'godotExecutor.status+godotJob.usage+godotJob.continue',needs:[]},
   godot_draft_recovery:{owner:'S6',hostMethod:'task.recoverable+task.resume',needs:['sessionDrafts']},
+  creation_operation:{owner:'S1',hostMethod:'godotProject.index+godotProject.read+godotProject.patch',needs:['godotProjects']},
   asset_library:{owner:'S5',hostMethod:'asset.search+asset.read+asset.versions',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
   package_library:{owner:'S3',hostMethod:'package.check+package.read+package.list',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
   // Pre-existing world tools. They are advertised by the same catalogue, so the
@@ -45,7 +46,7 @@ const LOCAL_TOOLS={
 // Cancelling a job also mutates durable state and is included.
 const WRITE_TOOLS=new Set(['godot_project_create','godot_project_patch','godot_asset_put','godot_build_start',
   'godot_build_cancel','workspace_patch','library_install','verification_submit','verification_cancel',
-  'memory_propose']);
+  'memory_propose','creation_operation']);
 // `godot_draft_recovery` mode=resume reopens a durable task: it is a write, not a
 // read, so a discussion turn must not run it.
 const CONDITIONAL_WRITE_TOOLS={godot_draft_recovery:'resume'};

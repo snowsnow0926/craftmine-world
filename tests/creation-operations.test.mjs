@@ -24,6 +24,14 @@ test('all five creation kinds produce bounded durable source patches without alt
     assert.equal(result.operations[1].expectedHash,null);assert.equal(result.document.revision,2);assert.equal(result.replayed,false);
   }
 });
+test('first operation materializes the blank creation scene when a new base has no scene file',()=>{
+  const f=fixture();delete f.source.files['world/creation.json'];
+  const result=run(f,{kind:'tree',position:[3,0,3]});
+  assert.equal(result.document.format,'craftmine.creation-scene/1');
+  assert.equal(result.operations[0].path,'world/creation.json');
+  assert.equal(result.operations[0].expectedHash,null);
+  assert.equal(JSON.parse(result.operations[0].text).entities.length,1);
+});
 test('modification preserves stable chest identity and immutable one-time reward declaration',()=>{
   const chest=entity('chest-a','chest');chest.parameters={rewardId:'token',rewardCount:2};
   const f=fixture([chest]);const request={operationId:'modify-a',expected:f.request.expected,action:'modify',targetId:'chest-a',changes:{color:'#112233',scale:[1.2,1,1]}};

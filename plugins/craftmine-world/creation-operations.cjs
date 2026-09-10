@@ -61,8 +61,10 @@ function validatePlacement(item,others,snapshot){
 function compileCreationOperation({source,targetSnapshot,request}) {
   check(object(source)&&object(source.files)&&typeof source.worldId==='string'&&source.worldId.length>0&&typeof source.buildId==='string'&&typeof source.instanceId==='string'&&Number.isSafeInteger(source.revision)&&HASH.test(source.manifestHash),'CREATION_SOURCE_BINDING_INVALID');
   check(object(request)&&typeof request.operationId==='string'&&/^[a-zA-Z0-9_-]{1,120}$/.test(request.operationId),'CREATION_OPERATION_ID_INVALID');
-  const sceneFile=readFile(source,SCENE_PATH,true), journalFile=readFile(source,JOURNAL_PATH);
-  const document=scene(readJson(sceneFile));
+  const sceneFile=readFile(source,SCENE_PATH), journalFile=readFile(source,JOURNAL_PATH);
+  // A newly created Godot base has no authored creation scene yet. Treat that
+  // state as the durable blank world and materialize the scene on first use.
+  const document=scene(readJson(sceneFile,{format:'craftmine.creation-scene/1',revision:1,defaults:{timeOfDay:12},entities:[]}));
   const journal=readJson(journalFile,{format:'craftmine.creation-operations/1',operations:[]});
   keys(journal,['format','operations']);check(journal.format==='craftmine.creation-operations/1'&&Array.isArray(journal.operations)&&journal.operations.length<=MAX_OPERATIONS,'CREATION_JOURNAL_INVALID');
   const journalIds=new Set();for(const entry of journal.operations){
@@ -117,7 +119,7 @@ function compileCreationOperation({source,targetSnapshot,request}) {
   next.revision++;scene(next);
   const receipt={format:'craftmine.creation-operation/1',operationId:request.operationId,action:request.action,worldId:source.worldId,buildId:source.buildId,instanceId:source.instanceId,sourceRevision:source.revision,manifestHash:source.manifestHash,targetSnapshotId:snapshot.snapshotId,beforeRevision:document.revision,afterRevision:next.revision,affectedIds,createdIds,requestHash};
   journal.operations.push({operationId:request.operationId,requestHash,receipt});
-  const operations=[{op:'put',path:SCENE_PATH,text:JSON.stringify(next,null,2)+'\n',expectedHash:sceneFile.sha256},{op:'put',path:JOURNAL_PATH,text:JSON.stringify(journal,null,2)+'\n',expectedHash:journalFile?.sha256??null},...extra];
+  const operations=[{op:'put',path:SCENE_PATH,text:JSON.stringify(next,null,2)+'\n',expectedHash:sceneFile?.sha256??null},{op:'put',path:JOURNAL_PATH,text:JSON.stringify(journal,null,2)+'\n',expectedHash:journalFile?.sha256??null},...extra];
   check(operations.every(op=>Buffer.byteLength(op.text)<=120000)&&Buffer.byteLength(JSON.stringify(operations))<=170000,'CREATION_PATCH_TOO_LARGE');
   return {document:next,operations,receipt,sourceBinding:{worldId:source.worldId,buildId:source.buildId,instanceId:source.instanceId,revision:source.revision,manifestHash:source.manifestHash},replayed:false};
 }

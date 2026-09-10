@@ -10,6 +10,7 @@ const {createLibraryBinding}=require('./godot-library.cjs');
 const {executorStatus,usageSummary,continueJob,listRecoverable,resumeDraft,explainRecovery}=require('./godot-jobs.cjs');
 const {validateToolServices,describeToolServices}=require('./tool-services.cjs');
 const {GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS}=require('./godot-routing.cjs');
+const {compileCreationOperation}=require('./creation-operations.cjs');
 
 function hostContext(context) {
   if(context?.toolCallId?.startsWith('@host:'))throw Error('RESERVED_HOST_RECEIPT');
@@ -182,6 +183,38 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
         return resumeDraft(core,{context,worldId:workspace.worldId,taskId:args.taskId,generation:args.generation});
       }
       throw Error('INVALID_RECOVERY_MODE');
+    }
+    if(definition.name==='creation_operation') {
+      // Creation edits are source transactions. Read the exact indexed files
+      // that the compiler needs, compile against the caller's authoritative
+      // target capture, then commit the resulting CAS patch through the same
+      // Rust-owned Godot route used by ordinary source edits.
+      const index=await core.call('godotProject.index',{context,worldId:workspace.worldId,offset:0,limit:32});
+      const source={worldId:workspace.worldId,buildId:index.baseBuild,instanceId:args.targetSnapshot?.instanceId,
+        revision:index.revision,manifestHash:index.manifestHash,files:{}};
+      if(typeof source.instanceId!=='string'||!source.instanceId)throw Error('CREATION_INSTANCE_REQUIRED');
+      const wanted=new Set(['world/creation.json','world/creation-operations.json']);
+      const indexedFiles=[];let offset=0;
+      do {
+        const page=offset===0?index:await core.call('godotProject.index',{context,worldId:workspace.worldId,revision:index.revision,manifestHash:index.manifestHash,offset,limit:32});
+        if(page.revision!==index.revision||page.manifestHash!==index.manifestHash)throw Error('CREATION_SOURCE_CHANGED');
+        indexedFiles.push(...(page.files||[]));
+        const next=page.nextOffset;offset=next==null?null:next;
+      } while(offset!==null);
+      for(const file of indexedFiles)if(wanted.has(file.path)){
+        const part=await core.call('godotProject.read',{context,worldId:workspace.worldId,revision:index.revision,manifestHash:index.manifestHash,path:file.path,offset:0,limit:120000});
+        if(part.nextOffset!==null&&part.nextOffset!==undefined)throw Error('CREATION_SOURCE_TOO_LARGE');
+        source.files[file.path]={text:part.text??'',sha256:file.sha256};
+      }
+      const result=compileCreationOperation({source,targetSnapshot:args.targetSnapshot,request:args.request});
+      if(result.replayed)return result;
+      const params={context,worldId:workspace.worldId,toolCallId:invocation.toolCallId,
+        revision:index.revision,manifestHash:index.manifestHash,operations:result.operations};
+      if(index.content)params.operation={operationId:args.request.operationId,worldId:workspace.worldId,
+        repoId:index.content.repoId,branchId:index.branchId??'main',expectedHeadOid:index.content.contentOid,
+        expectedAppliedOid:null,expectedProgressRevision:null};
+      const patch=await core.call('godotProject.patch',params);
+      return {...result.receipt,source:{revision:patch.revision,manifestHash:patch.manifestHash},replayed:false};
     }
     if(definition.name==='asset_library') {
       const library=createLibraryBinding({core,context,worldId:workspace.worldId,methods:options.libraryMethods});

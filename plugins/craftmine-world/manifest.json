@@ -1079,6 +1079,20 @@
         }
       },
       {
+        "name": "creation_operation",
+        "description": "Apply one bounded, target-bound creation operation to the current Godot world source. Supports placing, modifying, duplicating, changing time of day and adding a sequence door. The operation is compiled with collision, bounds, stale-target and replay checks, then committed as a durable CAS patch. Supply the exact targetSnapshot captured from the running world and the full request; a source receipt does not apply a build or publish it.",
+        "risk": "medium",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "request": { "type": "object" },
+            "targetSnapshot": { "type": "object" }
+          },
+          "required": ["request", "targetSnapshot"],
+          "additionalProperties": false
+        }
+      },
+      {
         "name": "project_inspect",
         "description": "Inspect the actual Craftmine world draft before creating or editing it. The first world tool binds this PI session to the selected world; changing the panel afterwards does not redirect it. Returns revision and a paginated resource index. Use capabilities_read for contracts, workspace_patch to edit, then verification_submit to check the finished draft in the background. A saved or machine-checked draft is not yet applied to the world.",
         "risk": "low",
