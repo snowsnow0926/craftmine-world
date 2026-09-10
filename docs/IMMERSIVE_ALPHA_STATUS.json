@@ -2,44 +2,42 @@
   "format": "craftmine.immersive-alpha-status/1",
   "plan": "docs/OVERALL_DEVELOPMENT_PLAN_2026-09-11.md",
   "baseline": "e61bae85",
-  "updatedAt": "2026-09-10T20:15:33.518Z",
-  "status": "in_progress",
-  "worktree": "D:/cm-iw-full-0911",
-  "branch": "codex/iw-full-0911",
+  "updatedAt": "2026-09-10T20:51:54.791Z",
+  "status": "complete",
+  "worktree": "D:/Craftmine World",
+  "branch": "master",
   "stages": {
     "P0": {
       "status": "complete",
-      "evidence": "固定Godot4.7.2已校验；隔离依赖已就绪"
+      "evidence": "固定 Godot 4.7.2、隔离依赖与独立测试数据已验证；中文计划和基线已归档"
     },
     "P1": {
       "status": "complete",
-      "evidence": "真实3D底座和官方materializer；五base登记，旧四base持久化回归"
+      "evidence": "官方 materializer 创建真实 3D 造物底座；射线、网格、碰撞和五底座创建回归通过"
     },
     "P2": {
       "status": "complete",
-      "evidence": "host opaque capture与UI；14项headless UI通过"
+      "evidence": "真实宿主 opaque capture、请求绑定和中文目标 UI 已集成；14 项无输入 headless UI 检查通过"
     },
     "P3": {
       "status": "complete",
-      "evidence": "生产creation-source-service+真实Rust分页/写入/收据回放"
+      "evidence": "生产 creation-source-service 经真实 Rust 完成分页、CAS、收据回放与跨采用持续创作；复制后可继续独立编辑"
     },
     "P4": {
-      "status": "in_progress",
-      "remaining": "最终生产Web/可信执行器/自动采用跨服务验证"
+      "status": "complete",
+      "evidence": "生产可信执行器链 15 项通过；真实规则、自动采用、最新进度迁移、错误规则拒绝和重启均已验收"
     },
     "P5": {
-      "status": "in_progress",
-      "evidence": "准确guidance、普通双按规则及自定义state重启通过；真实模型分栏账本已冻结",
-      "remaining": "最终导出成品集成"
+      "status": "complete",
+      "evidence": "源码版本及接口哈希绑定的中文指导已打入插件；普通双按规则及自定义状态经原生、Web 与导出包验证；真实模型评测单独记录，未虚报成功率"
     },
     "P6": {
-      "status": "in_progress",
-      "evidence": "二次采用、副本和完整备份恢复；5base staged创建通过",
-      "remaining": "最终源码pin刷新与成品验证"
+      "status": "complete",
+      "evidence": "原生故事 33 项流程检查及 232 项引擎断言通过；副本独立创建与完整备份恢复、桌面及插件构建、749 文件运行资源校验通过"
     },
     "P7": {
-      "status": "pending",
-      "remaining": "综合报告、统一运行入口和本地合并"
+      "status": "complete",
+      "evidence": "统一入口 8 个环节全部通过；中文报告、机器状态、原始证据和构建材料已保存；本地 master 已集成"
     }
   },
   "validation": {
@@ -65,15 +63,72 @@
       "fail": 0
     },
     "story": {
-      "pass": 25,
-      "nativeAssertions": 195,
-      "engineRuns": 23
-    }
+      "pass": 33,
+      "nativeAssertions": 232,
+      "evidence": "docs/evidence/immersive-20260911/root-native-story.json"
+    },
+    "aggregate": {
+      "pass": 8,
+      "fail": 0,
+      "evidence": "docs/evidence/immersive-20260911/root-aggregate.json"
+    },
+    "productionManagedChain": {
+      "pass": 15,
+      "fail": 0,
+      "evidence": "docs/evidence/immersive-20260911/root-managed-chain.json"
+    },
+    "web": {
+      "pass": 13,
+      "fail": 0,
+      "evidence": "docs/evidence/immersive-20260911/root-web.json"
+    },
+    "build": {
+      "typescript": "passed",
+      "desktop": "passed",
+      "plugin": "passed",
+      "stagedBases": 5,
+      "runtimeResourceFiles": 749,
+      "runtimeResourceBytes": 541249872
+    },
+    "countingNote": "不同测试集存在重叠，数字不相加；1 项历史 Rust junction 夹具被显式忽略，不计通过。"
   },
   "notClaimed": [
     "真实玩家首次需求成功率",
     "真实麦克风准确率",
     "已安装客户端手感",
     "公网发布"
-  ]
+  ],
+  "delivery": {
+    "testedCommit": "a6e0e224d30e6c5950017aa41c823bdb12f9dc1a",
+    "implementationMerge": "ce796821",
+    "localBranch": "master",
+    "artifacts": "D:/Craftmine-Alpha-20260911",
+    "artifactManifest": "D:/Craftmine-Alpha-20260911/MANIFEST.json",
+    "installer": false,
+    "pushed": false,
+    "installedClientReplaced": false
+  },
+  "cleanup": {
+    "runtime": {
+      "path": "D:/cm-iw-runtime-0911",
+      "worktreeRemoved": true,
+      "branchRemoved": true
+    },
+    "check": {
+      "path": "D:/cm-iw-check-0911",
+      "registrationRemoved": true,
+      "branchRemoved": true,
+      "residualDirectory": true,
+      "error": "普通 git worktree remove 返回 Filename too long；保留残留，未换方式重试。"
+    },
+    "target": {
+      "path": "D:/cm-iw-target-0911",
+      "registrationRemoved": true,
+      "branchRemoved": true,
+      "residualDirectory": true,
+      "error": "普通 git worktree remove 返回 Filename too long；保留残留，未换方式重试。"
+    },
+    "root": "最终文档合入后执行普通 Git 清理；结果记入交付目录收尾记录。",
+    "historicalTrees": "未触碰"
+  }
 }

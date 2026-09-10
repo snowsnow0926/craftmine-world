@@ -1,106 +1,28 @@
 {
   "format": "craftmine.development/1",
   "objective": "按 Godot 多底座计划循环开发：中央世界、右侧对话、真实工程创作、多底座、保存恢复、作品复用与 Windows 交付",
-  "currentMilestone": "沉浸式造物Alpha：真实3D底座/可信目标/持续源码与进度迁移已接线，正在完成Web/可信执行器和最终交付验收",
+  "currentMilestone": "沉浸式造物 Alpha 的 P0–P7 已完成：真实 3D 世界、可信目标、连续源码创作、新机关、进度迁移、重开复用、生产构建和 8 环节自动验收通过，已本地集成。",
   "baseline": "2f84da9e9779226cf153861ce5a397be1442f2b5",
-  "updated": "2026-09-10T20:15:33.809Z",
+  "updated": "2026-09-10T20:51:54.791Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "godot_goal_active_cycle05_merged",
-    "reason": "用户明确要求将 GODOT_MULTIBASE_DEVELOPMENT_PLAN.md 设为 Goal 并开始循环开发。已创建 active Goal，没有 token 总预算；按阶段实现、验证、修复并记录。",
-    "activeGoal": true,
-    "recurringDevelopment": true,
+    "status": "immersive_alpha_plan_complete",
+    "reason": "中文整体实施计划 P0–P7 的开发和自动验收均已完成；实际玩家、麦克风和模型首轮成功率按计划另行计量。",
+    "activeGoal": false,
+    "recurringDevelopment": false,
     "executionMode": "goal",
-    "previousLiveCompactionTestStopped": true,
-    "automationId": null,
-    "worktree": "D:\\cm-gd5-core",
-    "branch": "codex/godot-cycle05-core",
-    "godotCycle01Cleanup": "76c192a 已快进合并到本地 master；工作树登记和本轮分支已移除。Git 删除返回 Directory not empty，随后对已验证目标 D:/cw-gd-20260909-01 的 PowerShell 递归清理被自动审批以 blocked by policy 拒绝，未给出更具体原因。保留残留目录，不自动重试删除或复用；不阻断新轮次开发。",
-    "nextStep": "GD0由可信宿主核验实际Godot进程token/固定策略并签发任务凭证，补UDP；再接真实A/B执行器、候选实例应用与产品内三底座创建，进行真实模型验收。",
-    "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。",
-    "previousAutomationId": "craftmine-windows",
-    "currentWorktrees": "第5轮代码和128份证据已合入master并再次验哈希；bases/sandbox工作树与分支已移除，host普通Git清理因Filename too long失败而保留，没有换方式重试；root在最后文档合并后普通清理。历史树不动。",
+    "worktree": "D:/Craftmine World",
+    "branch": "master",
     "localMerge": {
       "status": "fast_forward_merged",
       "branch": "master",
-      "implementationCommit": "adda86c4413650801c4fbd8d5e25f82c6d235704",
-      "codeCommit": "bab1468",
-      "evidenceFilesVerified": 128,
-      "allDispatchHeadsAndRepairsPresent": true,
-      "unrelatedDirtyFilesPreserved": true,
+      "implementationCommit": "ce796821",
       "pushed": false,
-      "newDistributionBuilt": false
+      "newDistributionBuilt": true,
+      "newInstallerBuilt": false,
+      "unrelatedDirtyFilesPreserved": true
     },
-    "godotCycle02Cleanup": "e8d903e已快进合并，证据哈希逐项复核。本轮登记及分支已删除；Git留下依赖/仓库副本后，经精确范围审批，仅移除2504个链接条目而不跟随目标，再删除 D:/Craftmine World/test-results/worktrees/godot-cycle02。目录已不存在；未操作历史残留。",
-    "godotCycle03Cleanup": {
-      "mergedCommit": "5e5f756",
-      "coreWorktreeRemoved": true,
-      "coreBranchRemoved": true,
-      "rootWorktree": "D:/Craftmine World/test-results/worktrees/godot-cycle03",
-      "rootBranch": "codex/godot-cycle-03-20260909",
-      "rootRemoved": false,
-      "reviewRejected": true,
-      "rejectionReason": "自动审批认为删除约2418个链接并移除约5万文件的完整工作树及分支属于广泛、不可逆清理，用户授权开发但未明确授权该清理；需要明确确认。工具拒绝在进程创建前发生，未执行任何删除。",
-      "retryPolicy": "保留目录；未重试或采用间接删除。",
-      "blocksDevelopment": false
-    },
-    "godotCycle04Cleanup": {
-      "bases": "removed with branch",
-      "core": "git worktree remove failed Invalid argument; tree and registration retained",
-      "view": "directory removed; metadata removal failed Invalid argument; branch retained",
-      "originalDispatchAndHistoricalTrees": "untouched",
-      "root": "ordinary Git cleanup follows final merge"
-    },
-    "godotCycle04Merge": {
-      "status": "fast_forward_merged",
-      "branch": "master",
-      "implementationCommit": "a8b920df75e4a277db271dfffbb99d683229fe53",
-      "codeCommit": "8db008f7d8a0ce80a4fa0a858aa7f795d9ed6ea5",
-      "evidenceFilesVerified": 27,
-      "allDispatchHeadsAndRepairsPresent": true,
-      "unrelatedDirtyFilesPreserved": true,
-      "pushed": false,
-      "newDistributionBuilt": false
-    },
-    "godotCycle05Cleanup": {
-      "helpers": [
-        {
-          "exitCode": 0,
-          "directoryRemoved": true,
-          "head": "3c2b05de2ba686cf81b6c799de63c80e560906ea",
-          "path": "D:\\cm-gd5-bases",
-          "output": [
-            "Deleted branch codex/godot-cycle05-bases (was 3c2b05d)."
-          ],
-          "branch": "codex/godot-cycle05-bases",
-          "branchRemoved": true
-        },
-        {
-          "exitCode": 0,
-          "directoryRemoved": true,
-          "head": "14ff6222a868d03fe9580067ce330062c099bc73",
-          "path": "D:\\cm-gd5-sandbox",
-          "output": [
-            "Deleted branch codex/godot-cycle05-sandbox (was 14ff622)."
-          ],
-          "branch": "codex/godot-cycle05-sandbox",
-          "branchRemoved": true
-        },
-        {
-          "exitCode": 255,
-          "directoryRemoved": false,
-          "head": "325f0db1c4eafcbcf4a51f63049b04e56fef41c0",
-          "path": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host",
-          "output": [
-            "error: failed to delete 'D:/Craftmine World/test-results/worktrees/gd5-host': Filename too long"
-          ],
-          "branch": "codex/godot-cycle05-host",
-          "branchRemoved": false
-        }
-      ],
-      "root": "ordinary Git cleanup follows final documentation merge; result reported in final response",
-      "historicalTrees": "untouched; no cleanup retry"
-    }
+    "artifacts": "D:/Craftmine-Alpha-20260911"
   },
   "godotMultibasePlan": {
     "document": "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md",
@@ -1533,8 +1455,122 @@
   "immersiveAlpha": {
     "plan": "docs/OVERALL_DEVELOPMENT_PLAN_2026-09-11.md",
     "statusFile": "docs/IMMERSIVE_ALPHA_STATUS.json",
-    "status": "in_progress",
+    "status": "complete",
     "baseline": "e61bae85",
-    "updatedAt": "2026-09-10T20:15:33.809Z"
-  }
+    "updatedAt": "2026-09-10T20:51:54.791Z",
+    "report": "docs/IMMERSIVE_DEVELOPMENT_2026-09-11.md",
+    "evidence": "docs/evidence/immersive-20260911/root-aggregate.json",
+    "testedCommit": "a6e0e224d30e6c5950017aa41c823bdb12f9dc1a",
+    "implementationMerge": "ce796821",
+    "localBranch": "master",
+    "artifacts": "D:/Craftmine-Alpha-20260911",
+    "artifactManifest": "D:/Craftmine-Alpha-20260911/MANIFEST.json",
+    "installer": false,
+    "pushed": false,
+    "installedClientReplaced": false
+  },
+  "executionHistory": [
+    {
+      "archivedAt": "2026-09-10T20:51:54.791Z",
+      "reason": "保留上一轮执行记录；本轮由独立中文整体实施计划接续。",
+      "execution": {
+        "scope": "current_codex_thread",
+        "status": "godot_goal_active_cycle05_merged",
+        "reason": "用户明确要求将 GODOT_MULTIBASE_DEVELOPMENT_PLAN.md 设为 Goal 并开始循环开发。已创建 active Goal，没有 token 总预算；按阶段实现、验证、修复并记录。",
+        "activeGoal": true,
+        "recurringDevelopment": true,
+        "executionMode": "goal",
+        "previousLiveCompactionTestStopped": true,
+        "automationId": null,
+        "worktree": "D:\\cm-gd5-core",
+        "branch": "codex/godot-cycle05-core",
+        "godotCycle01Cleanup": "76c192a 已快进合并到本地 master；工作树登记和本轮分支已移除。Git 删除返回 Directory not empty，随后对已验证目标 D:/cw-gd-20260909-01 的 PowerShell 递归清理被自动审批以 blocked by policy 拒绝，未给出更具体原因。保留残留目录，不自动重试删除或复用；不阻断新轮次开发。",
+        "nextStep": "GD0由可信宿主核验实际Godot进程token/固定策略并签发任务凭证，补UDP；再接真实A/B执行器、候选实例应用与产品内三底座创建，进行真实模型验收。",
+        "cleanupNote": "四批实现均已合并，开发分支与工作树登记已移除。D:/Craftmine World-worktrees/pi-client-20260909、D:/Craftmine World-worktrees/pi-client-w1-20260909、D:/Craftmine World-worktrees/pi-client-w2-20260909、D:/Craftmine World-worktrees/pi-candidates-20260909 留有文件：Git 删除返回 Directory not empty；针对每批自身残留的递归清理均被自动执行审核以 blocked by policy 拒绝，未提供更具体原因。保留这四个目录，不自动重试删除，也不复用。不阻断后续开发。 第 5 批 b3ff0fc 同样已合并，工作树登记与分支已删除。D:/Craftmine World-worktrees/pi-apply-20260909 的 Git 删除返回 Directory not empty，针对本批残留的递归删除被自动审批以 blocked by policy 拒绝，未提供更具体原因。保留该目录，不自动重试删除或复用。",
+        "previousAutomationId": "craftmine-windows",
+        "currentWorktrees": "第5轮代码和128份证据已合入master并再次验哈希；bases/sandbox工作树与分支已移除，host普通Git清理因Filename too long失败而保留，没有换方式重试；root在最后文档合并后普通清理。历史树不动。",
+        "localMerge": {
+          "status": "fast_forward_merged",
+          "branch": "master",
+          "implementationCommit": "adda86c4413650801c4fbd8d5e25f82c6d235704",
+          "codeCommit": "bab1468",
+          "evidenceFilesVerified": 128,
+          "allDispatchHeadsAndRepairsPresent": true,
+          "unrelatedDirtyFilesPreserved": true,
+          "pushed": false,
+          "newDistributionBuilt": false
+        },
+        "godotCycle02Cleanup": "e8d903e已快进合并，证据哈希逐项复核。本轮登记及分支已删除；Git留下依赖/仓库副本后，经精确范围审批，仅移除2504个链接条目而不跟随目标，再删除 D:/Craftmine World/test-results/worktrees/godot-cycle02。目录已不存在；未操作历史残留。",
+        "godotCycle03Cleanup": {
+          "mergedCommit": "5e5f756",
+          "coreWorktreeRemoved": true,
+          "coreBranchRemoved": true,
+          "rootWorktree": "D:/Craftmine World/test-results/worktrees/godot-cycle03",
+          "rootBranch": "codex/godot-cycle-03-20260909",
+          "rootRemoved": false,
+          "reviewRejected": true,
+          "rejectionReason": "自动审批认为删除约2418个链接并移除约5万文件的完整工作树及分支属于广泛、不可逆清理，用户授权开发但未明确授权该清理；需要明确确认。工具拒绝在进程创建前发生，未执行任何删除。",
+          "retryPolicy": "保留目录；未重试或采用间接删除。",
+          "blocksDevelopment": false
+        },
+        "godotCycle04Cleanup": {
+          "bases": "removed with branch",
+          "core": "git worktree remove failed Invalid argument; tree and registration retained",
+          "view": "directory removed; metadata removal failed Invalid argument; branch retained",
+          "originalDispatchAndHistoricalTrees": "untouched",
+          "root": "ordinary Git cleanup follows final merge"
+        },
+        "godotCycle04Merge": {
+          "status": "fast_forward_merged",
+          "branch": "master",
+          "implementationCommit": "a8b920df75e4a277db271dfffbb99d683229fe53",
+          "codeCommit": "8db008f7d8a0ce80a4fa0a858aa7f795d9ed6ea5",
+          "evidenceFilesVerified": 27,
+          "allDispatchHeadsAndRepairsPresent": true,
+          "unrelatedDirtyFilesPreserved": true,
+          "pushed": false,
+          "newDistributionBuilt": false
+        },
+        "godotCycle05Cleanup": {
+          "helpers": [
+            {
+              "exitCode": 0,
+              "directoryRemoved": true,
+              "head": "3c2b05de2ba686cf81b6c799de63c80e560906ea",
+              "path": "D:\\cm-gd5-bases",
+              "output": [
+                "Deleted branch codex/godot-cycle05-bases (was 3c2b05d)."
+              ],
+              "branch": "codex/godot-cycle05-bases",
+              "branchRemoved": true
+            },
+            {
+              "exitCode": 0,
+              "directoryRemoved": true,
+              "head": "14ff6222a868d03fe9580067ce330062c099bc73",
+              "path": "D:\\cm-gd5-sandbox",
+              "output": [
+                "Deleted branch codex/godot-cycle05-sandbox (was 14ff622)."
+              ],
+              "branch": "codex/godot-cycle05-sandbox",
+              "branchRemoved": true
+            },
+            {
+              "exitCode": 255,
+              "directoryRemoved": false,
+              "head": "325f0db1c4eafcbcf4a51f63049b04e56fef41c0",
+              "path": "D:\\Craftmine World\\test-results\\worktrees\\gd5-host",
+              "output": [
+                "error: failed to delete 'D:/Craftmine World/test-results/worktrees/gd5-host': Filename too long"
+              ],
+              "branch": "codex/godot-cycle05-host",
+              "branchRemoved": false
+            }
+          ],
+          "root": "ordinary Git cleanup follows final documentation merge; result reported in final response",
+          "historicalTrees": "untouched; no cleanup retry"
+        }
+      }
+    }
+  ]
 }
