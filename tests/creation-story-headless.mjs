@@ -26,6 +26,15 @@ const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{cwd:sourceRoot,windo
 const report={kind:'真实引擎造物故事与 Rust 跨重启保存',sourceRoot,sourceCommit,out,checks:[],stages:[],limits:['固定作者输入，未调用模型，不能作为首次创作成功率','headless 物理与状态验证，不声称画面、语音或桌面面板验收','验收专用 executor 注册实际导出件，不声称生产沙箱执行器验收'],errors:[]};
 let core;
 const check=(name,value)=>{report.checks.push({name,passed:!!value});assert.ok(value,name);console.log('PASS '+name);};
+// Match the production private host route: content maintenance gets 60 s,
+// portable-backup work gets 120 s. These remain bounded independent calls.
+const maintenance=async(method,args={})=>{
+ const entry={method,worldId:args.worldId??null,timeoutMs:method.startsWith('backup.')?120000:60000,status:'running'},started=Date.now();
+ (report.maintenance??=[]).push(entry);
+ try{const result=await core.call(method,args,entry.timeoutMs);entry.status='passed';return result;}
+ catch(error){entry.status='failed';entry.error=String(error.message);throw error;}
+ finally{entry.elapsedMs=Date.now()-started;}
+};
 try {
   const environment=await createGodotProbeEnvironment(out,{web:true,threads:true});report.engineVersion=environment.actualVersion;report.runs=environment.runs;
   const presetLiteral=fs.readFileSync(path.join(sourceRoot,'vendor/pi-desktop/crates/craftmine-core/src/godot_host_resources.rs'),'utf8').match(/const EXPORT_PRESET: &str = ("(?:\\.|[^"\\])*");/);
@@ -167,7 +176,7 @@ try {
   const expectedCopy=structuredClone(migration.snapshot);expectedCopy.worldId='creation-copy';expectedCopy.body.worldId='creation-copy';
   assert.deepEqual(copied.world.snapshot,expectedCopy);check('第二世界复制仅替换世界身份并保留完整进度',true);
   const copyContext={projectId:'copy-fixture',sessionId:'copy-fixture',turnId:'copy-read'};
-  await core.call('content.migrate.apply',{worldId:'creation-copy'});
+  await maintenance('content.migrate.apply',{worldId:'creation-copy'});
   await core.call('godotWorld.prepareRebuildSource',{worldId:'creation-copy'});
   await core.call('godotWorld.prepareCopyRuntime',{worldId:'creation-copy'});
   let copyWorkspace=await core.call('workspace.open',{context:copyContext,selectedWorld:'creation-copy'});
@@ -201,13 +210,13 @@ try {
   const originalAfterCopyEdit=await core.call('godotProject.index',{context:nextContext,worldId:'creation-story',offset:0,limit:32});
   check('复制世界后续编辑未修改原世界源码',originalAfterCopyEdit.manifestHash===nextIndex.manifestHash);
   assert.deepEqual((await core.call('world.read',{id:'creation-story'})).world.snapshot,migration.snapshot);check('创建副本后原世界未改变',true);
-  for(const worldId of ['creation-story','creation-copy'])await core.call('content.migrate.apply',{worldId});
-  const copiedContentBeforeBackup=await core.call('content.status',{worldId:'creation-copy'});
+  for(const worldId of ['creation-story','creation-copy'])await maintenance('content.migrate.apply',{worldId});
+  const copiedContentBeforeBackup=await maintenance('content.status',{worldId:'creation-copy'});
   const archivePath=path.join(out,'story-backup.craftmine');
-  await core.call('backup.exportPortable',{operationId:'story-backup',archivePath},120000);
-  const verified=await core.call('backup.verifyPortable',{archivePath},120000);check('真实完整备份通过内容校验',verified.valid);
+  report.backupExport=await maintenance('backup.exportPortable',{operationId:'story-backup',archivePath});
+  const verified=await maintenance('backup.verifyPortable',{archivePath});report.backupVerification=verified;check('真实完整备份通过内容校验',verified.valid);
   const restoreService=createPortableRestoreService({core,rootDirectory:data});
-  const beforeBackupHash=(await core.call('backup.status',{})).currentHash;
+  const beforeBackupHash=(await maintenance('backup.status',{})).currentHash;
   const activated=await restoreService.restore({operationId:'story-restore',archivePath,archiveHash:verified.archiveHash,expectedCurrentHash:beforeBackupHash});
   check('完整备份恢复并激活独立数据目录',activated.activated);
   assert.deepEqual((await core.call('world.read',{id:'creation-story'})).world.snapshot,migration.snapshot);
@@ -215,7 +224,7 @@ try {
   await core.stop();core=new CoreClient(binary,data);await core.start();
   assert.deepEqual((await core.call('world.read',{id:'creation-story'})).world.snapshot,migration.snapshot);
   assert.deepEqual((await core.call('world.read',{id:'creation-copy'})).world.snapshot,expectedCopy);
-  assert.equal((await core.call('content.status',{worldId:'creation-copy'})).headOid,copiedContentBeforeBackup.headOid);
+  assert.equal((await maintenance('content.status',{worldId:'creation-copy'})).headOid,copiedContentBeforeBackup.headOid);
   check('恢复后重启服务，两个世界及进度仍完整',true);
 } catch(error){report.errors.push(String(error.stack));console.error(error.stack);process.exitCode=1;}
 finally{await core?.stop();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');console.log('Evidence: '+out);}
