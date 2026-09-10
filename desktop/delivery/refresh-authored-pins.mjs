@@ -35,6 +35,7 @@ const NEW_AUTHORED=new Set([
   'desktop/godot/shared/creation-scene.mjs',
   'desktop/godot/shared/creation_runtime.mjs',
   'desktop/godot/shared/initial-states/creation-sandbox-blank.json',
+  'desktop/godot/bases/creation-sandbox/scripts/creation_font.gd',
 ]);
 export function authored(entry){return entry.author==='Craftmine World project'&&['authored','generated'].includes(entry.origin)&&['project-authored','MIT'].includes(entry.license);}
 function newEntry(relative,manifest){

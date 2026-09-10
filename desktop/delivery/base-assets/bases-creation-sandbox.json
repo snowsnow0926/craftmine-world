@@ -8,24 +8,8 @@
   },
   "sourceDirectory": "desktop/godot/bases/creation-sandbox",
   "rightsStatus": "pending-formal-application",
-  "rightsNote": "项目自行编写的造物源码、场景和原始几何体，角色控制与相机复用项目第一人称底座；无外部图片、模型、音频或字体。本清单记录来源和分发范围，不增加授权或变更既有许可。",
+  "rightsNote": "项目原创源码、场景和几何体沿用原声明；完整中文字体由仓库已有 Noto Sans SC 字体派生，单独遵循 OFL-1.1，并在应用与用户导出中保留许可。字体不归类为项目原创。",
   "entries": [
-    {
-      "path": "README.md",
-      "role": "data",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "development-only"
-      ],
-      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 1677,
-      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
-    },
     {
       "path": "assets/ASSET_MANIFEST.json",
       "role": "data",
@@ -42,6 +26,78 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 212,
       "sha256": "ecbf96a5e7be23561e6c6d096849e310a9d87f7c1131dfb3a1caea4bb9f698f7"
+    },
+    {
+      "path": "assets/fonts/cjk-0.json",
+      "role": "font-data",
+      "origin": "derived",
+      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
+      "version": "Craftmine CJK Regular 1.0",
+      "license": "OFL-1.1",
+      "licenseFile": "assets/fonts/OFL-NotoSansSC.txt",
+      "redistribution": "permitted-with-notice",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/noto-sans-sc.woff2",
+      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
+      "bytes": 2800055,
+      "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+    },
+    {
+      "path": "assets/fonts/cjk-1.json",
+      "role": "font-data",
+      "origin": "derived",
+      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
+      "version": "Craftmine CJK Regular 1.0",
+      "license": "OFL-1.1",
+      "licenseFile": "assets/fonts/OFL-NotoSansSC.txt",
+      "redistribution": "permitted-with-notice",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/noto-sans-sc.woff2",
+      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
+      "bytes": 2790775,
+      "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+    },
+    {
+      "path": "assets/fonts/font.json",
+      "role": "font-data",
+      "origin": "derived",
+      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
+      "version": "Craftmine CJK Regular 1.0",
+      "license": "OFL-1.1",
+      "licenseFile": "assets/fonts/OFL-NotoSansSC.txt",
+      "redistribution": "permitted-with-notice",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/noto-sans-sc.woff2",
+      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
+      "bytes": 832,
+      "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+    },
+    {
+      "path": "assets/fonts/OFL-NotoSansSC.txt",
+      "role": "license",
+      "origin": "upstream",
+      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
+      "version": "Craftmine CJK Regular 1.0",
+      "license": "OFL-1.1",
+      "licenseFile": "assets/fonts/OFL-NotoSansSC.txt",
+      "redistribution": "permitted-with-notice",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
+      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
     },
     {
       "path": "creation-scene.schema.json",
@@ -110,6 +166,22 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 977,
       "sha256": "7d7d408d6052068ee0bd63518e6f4b240a0764a73d26601cb2787a453df603cc"
+    },
+    {
+      "path": "README.md",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 1677,
+      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
     },
     {
       "path": "scenes/creation.tscn",
@@ -287,6 +359,15 @@
       "path": "desktop/godot/bases/creation-sandbox/licenses/ORIGINAL_ASSETS_LICENSE.txt",
       "bytes": 1407,
       "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62",
+      "appliesTo": [
+        "app-bundle",
+        "user-export"
+      ]
+    },
+    {
+      "path": "desktop/godot/bases/creation-sandbox/assets/fonts/OFL-NotoSansSC.txt",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
       "appliesTo": [
         "app-bundle",
         "user-export"
