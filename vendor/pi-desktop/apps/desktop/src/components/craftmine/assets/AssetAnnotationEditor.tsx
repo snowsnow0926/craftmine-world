@@ -35,7 +35,7 @@ export function AssetAnnotationEditor({controller, lang}: {controller: AssetLibr
       event.preventDefault();
       if (disabled) return;
       try {
-        const tags = parseAnnotationTags(text);
+        const tags = parseAnnotationTags(event.currentTarget.querySelector<HTMLInputElement>("[data-annotation-tags]")?.value ?? text);
         setValidation(false);
         void controller.annotate({assetId: metadata.assetId, tags}).catch(() => {});
       } catch {setValidation(true);}

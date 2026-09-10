@@ -1,3 +1,4 @@
+import { ASSET_PANEL_CHANNELS, requestAssetPanel } from "./craftmine-asset-panel";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
 import { PERSISTENT_WORKBENCH_CHANNELS, type CraftmineOperationJournal, type OperationOwner, type PendingOperation } from "./craftmine-operation-journal";
 
@@ -12,7 +13,7 @@ export const CRAFTMINE_PANEL_CHANNELS = new Set([
   "workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge", "draft.recheck", "task.budget",
   // Asset library reads (R6's contract). Writes stay in the player import flow.
   "asset.search", "asset.read", "asset.versions", "asset.usage", "asset.scan",
-  "asset.probe", "asset.previewRead",
+  "asset.probe", "asset.previewRead", "asset.annotate",
   "package.request",
 ]);
 type Domain = (method: string, params: Record<string, any>) => Promise<any>;
@@ -41,6 +42,7 @@ export function createCraftminePanelGateway(options: {
   async function request(channel: string, payload: Record<string, any> = {}, permit?: { token: symbol; owner: OperationOwner }): Promise<any> {
     if (!CRAFTMINE_PANEL_CHANNELS.has(channel)) throw new Error("UNSUPPORTED_WORKBENCH_CHANNEL");
     if (!payload || Array.isArray(payload) || ["context", "host", "sessionId", "turnId", "projectId", "binding", "origin"].some(key => Object.hasOwn(payload, key))) throw new Error("HOST_IDENTITY_REQUIRED");
+    if (ASSET_PANEL_CHANNELS.has(channel)) return requestAssetPanel(channel, payload, options);
     const selection = await options.domain("selection.read", {});
     const worldId = selection.worldId;
     if (typeof worldId !== "string" || !worldId || payload.worldId !== worldId) throw new Error("SELECTED_WORLD_CHANGED");

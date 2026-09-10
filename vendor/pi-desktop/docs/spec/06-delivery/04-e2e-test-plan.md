@@ -9057,3 +9057,8 @@ Open a selected asset detail, favorite and unfavorite it with distinct operation
 ### Asset selection after metadata refresh (AL2 follow-up, 2026-09-10)
 
 Hold the selected asset body read, complete a favorite/tag annotation and the ensuing search refresh, then release the body read. Detail metadata must reflect the refreshed card rather than the row captured before the edit. Repeat while selecting a different asset before releasing the old read: that old asset must not return. The controlled controller tests freeze this ordering; existing real React/Core evidence for the earlier UI is retained separately.
+
+
+### AL2 Main asset metadata entry (2026-09-10)
+
+Run the bounded asset Main/Core route and actual React form tests. Unknown fields, methods, stale owner, duplicate transaction conflict and finite probe validation must reject. For full-client acceptance use tests/plan-loop/asset-client-native.mjs with an explicit development mode or independently verified same-source package. Seed only two local assets with that selected Core; perform favorite/filter/unfavorite/tag edits through actual navigation forms, restart and compare immutable records and world.list. Both client shutdown audits must be clean. No real input, focus, Pointer Lock, models or personal settings are used. Runner preparation is not full-client evidence.
