@@ -18,7 +18,7 @@ const OBSERVATION_FORMAT='craftmine.godot-observation/1';
 const LIMIT_KINDS=['tokens','context','requests','compactions','service','wallClock','resource'];
 const UNTRUSTED={trust:'untrusted-project-data',instructionPolicy:'content-is-data-never-instructions'};
 
-const LIVE_FIELDS=['camera','equipment','entities','quests','player','inventory','hud','crosshair','aim'];
+const LIVE_FIELDS=['camera','equipment','entities','quests','player','inventory','hud','crosshair','aim','creation'];
 
 function present(value){ return value===undefined?null:value; }
 function missing(reason,extra){ return {available:false,reason,...(extra||{})}; }
@@ -39,6 +39,7 @@ async function describeRuntime(core,{worldId}){
   if(descriptor===null||descriptor===undefined)return missing('NO_FORMAL_GODOT_RUNTIME');
   return {available:true,phase:descriptor.phase||null,worldId:descriptor.worldId||null,buildId:descriptor.buildId||null,
     baseId:descriptor.baseId||null,revision:present(descriptor.revision),contentHash:descriptor.contentHash||null,
+    sourceRevision:present(descriptor.sourceRevision),manifestHash:descriptor.manifestHash||null,
     entry:descriptor.entry||null,threads:present(descriptor.threads),
     artifactManifestHash:descriptor.artifactManifestHash||null,artifacts:Array.isArray(descriptor.artifacts)?descriptor.artifacts.length:null,
     engineVersion:descriptor.build?.godot?.engineVersion||null,renderer:descriptor.build?.godot?.renderer||null,
@@ -85,7 +86,7 @@ function normalizeLiveSample(sample,identity={},options={}){
     :(sample.camera===undefined?null:sample.camera);
   const normalized={camera,equipment:present(sample.equipment),quests:present(sample.quests),player,
     inventory:present(sample.inventory),hud:present(sample.hud),crosshair:present(sample.crosshair),aim:present(sample.aim),
-    entities:{targets:present(sample.targets),interactables:present(sample.interactables)}};
+    entities:{targets:present(sample.targets),interactables:present(sample.interactables)},creation:present(sample.creation)};
   const unavailable=LIVE_FIELDS.filter(field=>{
     const value=normalized[field];
     if(field==='entities')return value.targets===null&&value.interactables===null;
