@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {assertCleanHeadlessShutdown} from '../player-product/shutdown-exit-audit.mjs';
 import {createCompleteOutput,completeEnvironment,requireRestoreConflict} from './complete-contract.mjs';
 import {createRequire} from 'node:module';
-import {spawn} from 'node:child_process';
+import {spawn,execFileSync} from 'node:child_process';
 import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {compareGodotPersistentProgress,godotPersistentProgress} from '../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-godot-bases-acceptance.ts';
@@ -26,7 +26,9 @@ assert.ok(readApp('out/preload/craftmine-headless.cjs').includes(Buffer.from('re
 const out=createCompleteOutput(root,process.env.CRAFTMINE_TEST_OUTPUT_ROOT),profile=path.join(out,'profile'),token=randomUUID();
 const legacySource=path.join(out,'legacy');fs.mkdirSync(profile);fs.mkdirSync(legacySource);
 fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));
-const report={format:'craftmine.complete-client-acceptance/1',startedAt:new Date().toISOString(),packaged,out,steps:[],launches:[],calls:[]};
+const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8',windowsHide:true}).trim();
+if(process.env.CRAFTMINE_EXPECTED_COMMIT){assert.equal(sourceCommit,process.env.CRAFTMINE_EXPECTED_COMMIT);assert.equal(execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8',windowsHide:true}).trim(),'');}
+const report={format:'craftmine.complete-client-acceptance/1',startedAt:new Date().toISOString(),sourceCommit,packaged,out,steps:[],launches:[],calls:[],performance:[]};
 const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));
 let images=0;
 function evidence(value){
@@ -49,6 +51,7 @@ function start(){
     host:resources?path.join(resources,'bin/pi-desktop-host-core.exe'):path.join(root,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe'),
     bases:resources?path.join(resources,'godot'):path.join(root,'desktop/godot')});
   child=spawn(packaged?path.join(packaged,'Craftmine World.exe'):require('electron'),packaged?[]:[desktop],{cwd:root,env,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
+  launch.pid=child.pid;
   const current=launch,number=current.number;
   for(const stream of ['stdout','stderr'])child[stream].on('data',bytes=>fs.appendFileSync(path.join(out,`${number}-${stream}.log`),bytes));
   child.on('message',message=>{
@@ -71,7 +74,7 @@ const rpc=(method,payload={},timeout=30000)=>new Promise((resolve,reject)=>{
   child.send({type:'craftmine-headless',id,method,...payload});
 });
 const until=async(fn,predicate,label,timeout=90000)=>{const deadline=Date.now()+timeout;let value,error;while(Date.now()<deadline){if(ended)throw Error('Electron exited');try{value=await fn();if(predicate(value))return value;}catch(e){if(e.fatal)throw e;error=String(e);}await delay(500);}throw Error(`${label}: ${JSON.stringify(value)} ${error??''}`);};
-const step=async(name,fn)=>{const begin=Date.now();try{const result=await fn();report.steps.push({name,passed:true,ms:Date.now()-begin,result:evidence(result)});console.log('PASS '+name);save();return result;}catch(error){report.steps.push({name,passed:false,ms:Date.now()-begin,error:String(error)});save();throw error;}};
+const step=async(name,fn)=>{const begin=Date.now();try{const result=await fn();report.steps.push({name,passed:true,ms:Date.now()-begin,result:evidence(result)});if(process.env.CRAFTMINE_TEST_PERFORMANCE==='1'&&!ended&&ready){const status=await rpc('status');report.performance.push({step:name,launch:launch.number,at:new Date().toISOString(),processes:status.processes});}console.log('PASS '+name);save();return result;}catch(error){report.steps.push({name,passed:false,ms:Date.now()-begin,error:String(error)});save();throw error;}};
 const nav=(channel,payload={})=>rpc('worldNavigation',{channel,payload},180000);
 const panel=(worldId,channel,payload={})=>rpc('worldPanel',{channel,payload:{worldId,...payload}},180000);
 async function stop(){

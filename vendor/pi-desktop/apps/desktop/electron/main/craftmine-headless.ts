@@ -119,6 +119,8 @@ export function installHeadlessControl(access: {
           return godotGameplay(request.method);
         case "status": return {
           name: app.getName(), profile: app.getPath("userData"), runtime: access.runtime(), violations, pageErrors, shutdownFailures,
+          processes: app.getAppMetrics().map(process => ({pid: process.pid, type: process.type,
+            creationTime: process.creationTime, cpu: process.cpu, memory: process.memory})),
           windows: BrowserWindow.getAllWindows().map(window => ({ visible: window.isVisible(), focused: window.isFocused(), focusable: window.isFocusable(), offscreen: window.webContents.isOffscreen() })),
           world: access.world()?.getURL() || null,
         };
