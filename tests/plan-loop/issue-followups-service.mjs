@@ -55,7 +55,7 @@ if(process.argv[2]==='--child'){
  });
  await check('invalid transitions, source/context injection, text bounds and unknown kinds reject',async()=>{
   const f=await fixture(),request=await input(f);await rejected(f.service.request('issue.followup',{...request,kind:'reopened'}),'ISSUE_STATE_CONFLICT');
-  for(const extra of [{kind:'auto-fixed'},{text:'\ud800'},{text:'x'.repeat(2049)},{context:captured},{path:'C:/outside'},{text:'\0'},{revision:1.2},{contextHash:'forged'}])await rejected(f.service.request('issue.followup',{...request,...extra}),'ISSUE_INVALID_INPUT');
+  for(const extra of [{kind:'auto-fixed'},{kind:['note'],text:''},{kind:42},{kind:{}},{text:'\ud800'},{text:'x'.repeat(2049)},{context:captured},{path:'C:/outside'},{text:'\0'},{revision:1.2},{contextHash:'forged'}])await rejected(f.service.request('issue.followup',{...request,...extra}),'ISSUE_INVALID_INPUT');
   await rejected(f.service.request('issue.followup',{...request,worldId:'beta'}),'ISSUE_NOT_FOUND');
  });
  await check('actual process interruption and lost commit reply preserve one durable followup',async()=>{
@@ -67,7 +67,7 @@ if(process.argv[2]==='--child'){
  });
  await check('followup corruption and hardlinks fail without replacing original storage',async()=>{
   const f=await fixture();await f.service.request('issue.followup',await input(f));const file=path.join(f.directory,'issues.json'),valid=JSON.parse(await fs.readFile(file));
-  for(const mutate of [x=>x.followups[0].text='tampered',x=>x.followups[0].context.buildId='tampered',x=>x.followups[0].revision=7]){
+  for(const mutate of [x=>x.followups[0].text='tampered',x=>x.followups[0].context.buildId='tampered',x=>x.followups[0].revision=7,x=>x.followups[0].kind=['note'],x=>x.format=[x.format],x=>x.receipts[1].method=[x.receipts[1].method]]){
    const bad=structuredClone(valid);mutate(bad);const bytes=Buffer.from(JSON.stringify(bad));await fs.writeFile(file,bytes);await rejected(read(f),'ISSUE_STORAGE_INVALID');assert.deepEqual(await fs.readFile(file),bytes);
   }
   await fs.writeFile(file,JSON.stringify(valid));const sentinel=path.join(f.directory,'sentinel');await fs.link(file,sentinel);await rejected(read(f),'ISSUE_STORAGE_INVALID');assert.deepEqual(await fs.readFile(sentinel),Buffer.from(JSON.stringify(valid)));
