@@ -1,0 +1,398 @@
+{
+  "format": "craftmine.creation-observation-forgery/1",
+  "reviewRoot": "D:\\cm-nb-checks",
+  "out": "D:\\cm-nb-edit\\test-results\\observation-forgery-Ropelo",
+  "sourceHashes": {
+    "desktop/godot/bases/creation-sandbox/scripts/creation_world.gd": "8ee492897f407ca02aa193be1ff36cf69e31545abc9ebc4176ef2a01f78c2012",
+    "desktop/godot/shared/adapters/creation-sandbox.gd": "39daa3d3f6d45c4c3023fd212e3b7a405fee99efec115ba6b642ecad2904ea5c",
+    "vendor/pi-desktop/apps/desktop/electron/main/creation-check-requirements.ts": "f2ac0818357737da93f9421444c1e5e6db3737aaaf14c158f13a0093b8897699",
+    "vendor/pi-desktop/apps/desktop/electron/main/godot-check-requirements.ts": "224a876be4caac9d5d6e90cac8c9251ae17988da0ec8d204754d973220d54050"
+  },
+  "checks": [
+    {
+      "name": "真实Web节点保持错误1倍尺寸和关闭碰撞",
+      "passed": true
+    },
+    {
+      "name": "受保护adapter忽略伪造观察并返回真实节点状态",
+      "passed": true
+    },
+    {
+      "name": "生产愿望helper拒绝虚假观察",
+      "passed": true
+    },
+    {
+      "name": "同一helper对真实节点数据拒绝",
+      "passed": true
+    },
+    {
+      "name": "没有输入和焦点请求",
+      "passed": true
+    }
+  ],
+  "console": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+    "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+    "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+    "COUNTEREXAMPLE_ACTUAL={\"scale\":[1.0,1.0,1.0],\"solid\":false}",
+    "COUNTEREXAMPLE_ACTUAL={\"scale\":[1.0,1.0,1.0],\"solid\":false}"
+  ],
+  "passed": true,
+  "forgedWorldSha256": "f224ab5d999f61392a182cef1b4f642a37e168ac30ca51ffeb7fbcd9f867cf34",
+  "engineRuns": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 79,
+      "exitCode": 0
+    },
+    {
+      "label": "import",
+      "elapsedMs": 2115,
+      "exitCode": 0
+    },
+    {
+      "label": "export",
+      "elapsedMs": 2123,
+      "exitCode": 0
+    }
+  ],
+  "requirement": {
+    "status": "verifiable",
+    "requirements": {
+      "format": "craftmine.creation-requirements/1",
+      "requestHash": "76600e60374001ba0d6e93390336c283793f33d6f7be03e25ddc2d7ba2180218",
+      "entities": [
+        {
+          "id": "tree-a",
+          "kind": "tree",
+          "position": [
+            4,
+            0,
+            0
+          ],
+          "color": "#84a866",
+          "scale": [
+            2,
+            2,
+            2
+          ]
+        }
+      ],
+      "counts": [
+        {
+          "kind": "tree",
+          "count": 1
+        },
+        {
+          "kind": "rock",
+          "count": 0
+        },
+        {
+          "kind": "chest",
+          "count": 0
+        },
+        {
+          "kind": "door",
+          "count": 0
+        },
+        {
+          "kind": "marker",
+          "count": 0
+        }
+      ]
+    }
+  },
+  "loaded": {
+    "raw": {
+      "baseId": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "buildId": "forged-observation",
+      "format": "craftmine.godot-observation/1",
+      "instanceId": "2d71bd1fc98c9b2b259114c5",
+      "payload": {
+        "base": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "creation": {
+          "entities": [
+            {
+              "color": "#84a866",
+              "id": "tree-a",
+              "kind": "tree",
+              "meshBounds": {
+                "max": [
+                  4.59932041168213,
+                  3.99999952316284,
+                  0.599320411682129
+                ],
+                "min": [
+                  3.40067958831787,
+                  0,
+                  -0.599320411682129
+                ]
+              },
+              "parameters": {},
+              "position": [
+                4,
+                0,
+                0
+              ],
+              "rotationY": 0,
+              "scale": [
+                1,
+                1,
+                1
+              ],
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "obstacles": [],
+          "physicsTick": 8,
+          "playerBounds": {
+            "halfExtents": [
+              0.3,
+              0.9,
+              0.3
+            ],
+            "position": [
+              0,
+              -2.38418579323607e-8,
+              6
+            ]
+          },
+          "revision": 1,
+          "target": {
+            "entityId": null,
+            "normal": [
+              0,
+              0,
+              1
+            ],
+            "position": [
+              0,
+              1.54999995231628,
+              -31.75
+            ],
+            "revision": 1,
+            "surface": "boundary"
+          },
+          "timeOfDay": 12
+        },
+        "error": "",
+        "inventory": {},
+        "logicalViewportSize": [
+          1440,
+          1000
+        ],
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "ready": true,
+        "surfaceSize": [
+          1440,
+          1000
+        ]
+      },
+      "protocol": "craftmine.godot-runtime/2",
+      "sampledAt": "2026-09-10T22:30:13Z",
+      "worldId": "forgery-world"
+    },
+    "observation": {
+      "phase": "loaded",
+      "timeOfDay": 12,
+      "entities": [
+        {
+          "color": "#84a866",
+          "id": "tree-a",
+          "kind": "tree",
+          "meshBounds": {
+            "max": [
+              4.59932041168213,
+              3.99999952316284,
+              0.599320411682129
+            ],
+            "min": [
+              3.40067958831787,
+              0,
+              -0.599320411682129
+            ]
+          },
+          "parameters": {},
+          "position": [
+            4,
+            0,
+            0
+          ],
+          "rotationY": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "solid": false,
+          "visible": true
+        }
+      ]
+    },
+    "productionHelperPassed": false
+  },
+  "running": {
+    "raw": {
+      "baseId": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "buildId": "forged-observation",
+      "format": "craftmine.godot-observation/1",
+      "instanceId": "2d71bd1fc98c9b2b259114c5",
+      "payload": {
+        "base": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "creation": {
+          "entities": [
+            {
+              "color": "#84a866",
+              "id": "tree-a",
+              "kind": "tree",
+              "meshBounds": {
+                "max": [
+                  4.59932041168213,
+                  3.99999952316284,
+                  0.599320411682129
+                ],
+                "min": [
+                  3.40067958831787,
+                  0,
+                  -0.599320411682129
+                ]
+              },
+              "parameters": {},
+              "position": [
+                4,
+                0,
+                0
+              ],
+              "rotationY": 0,
+              "scale": [
+                1,
+                1,
+                1
+              ],
+              "solid": false,
+              "visible": true
+            }
+          ],
+          "obstacles": [],
+          "physicsTick": 12,
+          "playerBounds": {
+            "halfExtents": [
+              0.3,
+              0.9,
+              0.3
+            ],
+            "position": [
+              0,
+              -2.38418579323607e-8,
+              6
+            ]
+          },
+          "revision": 1,
+          "target": {
+            "entityId": null,
+            "normal": [
+              0,
+              0,
+              1
+            ],
+            "position": [
+              0,
+              1.54999995231628,
+              -31.75
+            ],
+            "revision": 1,
+            "surface": "boundary"
+          },
+          "timeOfDay": 12
+        },
+        "error": "",
+        "inventory": {},
+        "logicalViewportSize": [
+          1440,
+          1000
+        ],
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "ready": true,
+        "surfaceSize": [
+          1440,
+          1000
+        ]
+      },
+      "protocol": "craftmine.godot-runtime/2",
+      "sampledAt": "2026-09-10T22:30:13Z",
+      "worldId": "forgery-world"
+    },
+    "observation": {
+      "phase": "running",
+      "timeOfDay": 12,
+      "entities": [
+        {
+          "color": "#84a866",
+          "id": "tree-a",
+          "kind": "tree",
+          "meshBounds": {
+            "max": [
+              4.59932041168213,
+              3.99999952316284,
+              0.599320411682129
+            ],
+            "min": [
+              3.40067958831787,
+              0,
+              -0.599320411682129
+            ]
+          },
+          "parameters": {},
+          "position": [
+            4,
+            0,
+            0
+          ],
+          "rotationY": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "solid": false,
+          "visible": true
+        }
+      ]
+    },
+    "productionHelperPassed": false
+  },
+  "actualNode": {
+    "scale": [
+      1,
+      1,
+      1
+    ],
+    "solid": false
+  },
+  "finding": "forged observation rejected",
+  "scope": "真实Web导入/导出/运行与生产readGodotCreationObservation+godotCreationMatches双阶段；没有调用完整GodotBuildVerifier、候选采用或模型。"
+}

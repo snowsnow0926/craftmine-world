@@ -10,3 +10,8 @@
 
 
 补充决策：引入通用 entity-behavior 声明与纯读恢复投影，解决非门对象无法收到互动和隐藏对象恢复时误判碰撞的问题。宿主不实现特定采集/重生玩法；新增行为继续由普通源码、真实引擎和愿望验收负责。投影只能覆盖规则声明的唯一对象集合，实际恢复结果另作一致性校验。
+
+
+补充决策：受保护采样器必须验证实际PCK字节，而非仅检查导出前源码。普通EditorPlugin/@tool可能在固定引擎导出时改写工作副本，core源码PIN和broker导出前快照本身不能证明最终包。采用主机纯Node有界读取器校验三个实际脚本及二进制入口，不在用户源码中注入未计入sourceHash的文件，也不启动额外不受broker约束的引擎进程。
+
+格式依据：[Godot PCK读取实现](https://github.com/godotengine/godot/blob/master/core/io/file_access_pack.cpp)与[ProjectSettings二进制读取实现](https://github.com/godotengine/godot/blob/master/core/config/project_settings.cpp)，并以本仓库固定4.7.2真实导出包验证。解析器只接受本轮实测格式；其他加密、差分、稀疏或嵌入形式明确拒绝。

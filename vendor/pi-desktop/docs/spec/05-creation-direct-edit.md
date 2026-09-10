@@ -31,3 +31,12 @@ entity-behavior 必需提供纯读 project_entities(state)，返回每个 entity
 宿主对每个 operationId 先持久保存指纹和阶段，再开始任务；后续阶段以临时文件原子替换。此文件只是操作进展，正式源码、任务和采用仍以 core 为准。重启读取未终态记录时标记 interrupted，保留 jobId/候选/原回执用于核对，不自动重放任何写入。新 renderer owner 必须经宿主当前 session/world 验证后才可重绑定读取；阶段落盘失败不可显示已采用，应返回待核对。
 
 编辑属性从同次宿主射线命中的真实实体采样透传；缺少真实尺寸/颜色时不开放参数编辑。UI状态以session和world共同分区，提交前立即保留唯一操作编号并进入忙碌状态，回复丢失查询同一个编号；结果不明时只提供重新读取原操作状态，不能再次产生新操作。晚到的起始回复不得把已采用结果改回检查中。
+
+
+## 实际导出包中的采样边界
+
+源码PIN以外，creation-sandbox的生产Web执行器在暂存候选前独立读取index.pck实际字节。只接受当前固定Godot4.7.2生成的未加密独立PCK v4；目录、路径别名、文件范围、MD5、受保护base_adapter/runtime_bridge/state_guard的SHA-256均验证。预期SHA来自core已验证的claim.files，不能用导出后被修改的工作副本重新计算“预期”。
+
+实际project.binary采用ECFG长度有界读取，只解析autoload/CraftmineRuntime和craftmine/runtime/adapter两个字符串入口并要求固定值。拒绝重复key、平台后缀覆盖、受保护脚本remap/gdc别名及override.cfg。正常无关配置Variant只按明确长度跳过，不执行、不反序列化对象。核验结果写执行器耐久ledger，不改core结果协议。失败候选不会进入运行验收或采用。
+
+这封闭了已复现的@tool导出期间篡改保护脚本和入口的缺口；不宣称对任意恶意GDScript进行了形式化证明。

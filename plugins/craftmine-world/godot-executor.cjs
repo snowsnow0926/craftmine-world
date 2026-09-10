@@ -738,7 +738,7 @@ function createGodotExecutor(core, options = {}) {
     return files;
   }
 
-  async function stageArtifacts(receipt, artifactsRoot, pinnedBridge) {
+  async function stageArtifacts(receipt, artifactsRoot, pinnedBridge, creationSources = null) {
     const sourceRoot = path.resolve(plainPath(receipt.artifactsRoot ?? ''));
     if (!ordinaryDirectory(sourceRoot)) throw Error('GODOT_ARTIFACT_ROOT_INVALID');
     const targetRoot = path.resolve(plainPath(artifactsRoot));
@@ -746,6 +746,7 @@ function createGodotExecutor(core, options = {}) {
     const listed = Array.isArray(receipt.artifacts) ? receipt.artifacts : [];
     if (!listed.length) throw Error('GODOT_ARTIFACT_MISSING');
     const seen = new Set(), staged = [], copies = [];
+    let creationPackProof = null;
     for (const artifact of listed) {
       const relative = safeRelative(artifact.path);
       const key = relative.toLowerCase();
@@ -756,6 +757,7 @@ function createGodotExecutor(core, options = {}) {
       if (!info.isFile() || info.isSymbolicLink()) throw Error('GODOT_ARTIFACT_INVALID');
       if (info.size !== artifact.bytes) throw Error('GODOT_ARTIFACT_MISMATCH');
       if (await sha256File(from) !== artifact.sha256) throw Error('GODOT_ARTIFACT_MISMATCH');
+      if (creationSources && relative === 'index.pck') creationPackProof = require('./godot-creation-pack.cjs').verifyCreationPack(await fsp.readFile(from), creationSources);
       const to = assertInside(targetRoot, 'web/' + relative);
       // Build artifacts are immutable. Rechecking identical sources may reuse
       // identical bytes, but must never overwrite a previous job's evidence.
@@ -772,6 +774,7 @@ function createGodotExecutor(core, options = {}) {
     const walked = await walkFiles(sourceRoot);
     for (const file of walked) if (!seen.has(file.toLowerCase())) throw Error('GODOT_ARTIFACT_UNLISTED:' + file);
     if (!seen.has('index.html')) throw Error('GODOT_WEB_ENTRY_MISSING');
+    if (creationSources && !creationPackProof) throw Error('CREATION_PACK_MISSING');
     // The host owns the browser bridge; an authored or replaced copy is refused.
     const bridgeTarget = assertInside(targetRoot, 'web/bridge.js');
     const pinned = pinnedBridge;
@@ -794,7 +797,7 @@ function createGodotExecutor(core, options = {}) {
     const bridgeRecord = {path:'web/bridge.js', bytes:fs.statSync(bridgeTarget).size, sha256:pinned.sha256};
     if (existing) Object.assign(existing, bridgeRecord); else staged.push(bridgeRecord);
     staged.sort((left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0);
-    return {artifacts:staged, bridgeReplaced:replaced};
+    return {artifacts:staged, bridgeReplaced:replaced, creationPackProof};
   }
 
   async function walkFiles(root, prefix = '') {
@@ -958,7 +961,8 @@ function createGodotExecutor(core, options = {}) {
           });
         }
         await core.call('godotJob.progress', {jobId, token, stage:'stage-artifacts', percent:70}, 20000).catch(() => {});
-        const staged = await stageArtifacts(exportRun.response, claim.artifactsRoot, discovery.bridge);
+        const staged = await stageArtifacts(exportRun.response, claim.artifactsRoot, discovery.bridge, claim.baseId === 'creation-sandbox' ? files : null);
+        if (staged.creationPackProof) { durable.creationPackProof = staged.creationPackProof; await persistLedger(); }
         await rememberBin(entry, exportRun, 'exportWeb');
         if (entry.cancelled) return await abandon(entry, 'GODOT_JOB_CANCELLED');
         artifacts = staged.artifacts;

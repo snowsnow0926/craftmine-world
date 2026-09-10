@@ -1,0 +1,15 @@
+{
+  "format": "craftmine.creation-pack-evidence/1",
+  "files": [
+    {
+      "file": "export-tool-mutations.json",
+      "source": "D:/cm-nb-edit/test-results/creation-pack-export-wb26gb/report.json",
+      "sha256": "ef4f0b1f92662cd4a80ec64ee02e46f92daf6be1938427290fdd45711edc48ad"
+    },
+    {
+      "file": "forgery-rejected.json",
+      "source": "D:/cm-nb-edit/test-results/observation-forgery-Ropelo/report.json",
+      "sha256": "3c4871bd65f16f1e0cfbd7580ba3d0ef4f7eb51edb4b7e16fe2f50a4947c6e05"
+    }
+  ]
+}
