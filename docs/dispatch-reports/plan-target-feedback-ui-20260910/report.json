@@ -1,0 +1,50 @@
+{
+  "format": "craftmine.target-feedback-ui-test/1",
+  "type": "browser-dom-fixed-transport",
+  "native": false,
+  "sourceCommit": "2313284510327b7f8094d5e0477ec41fb28c152b",
+  "sourceDirty": " M desktop/delivery/refresh-authored-pins.mjs\n M plugins/craftmine-world/workbench-ui.mjs\n M vendor/pi-desktop/apps/desktop/electron/main/craftmine-headless.ts\n M vendor/pi-desktop/apps/desktop/electron/main/craftmine-operation-journal.ts\n M vendor/pi-desktop/apps/desktop/electron/main/craftmine-panel-gateway.ts\n M vendor/pi-desktop/apps/desktop/electron/main/index.ts\n M vendor/pi-desktop/apps/desktop/electron/main/plugin-runtime.ts\n?? desktop/godot/shared/target-feedback-configuration.d.mts\n?? plugins/craftmine-world/target-feedback-ui.mjs\n?? tests/plan-loop/target-feedback-client-native.mjs\n?? tests/plan-loop/target-feedback-panel.test.mjs\n?? vendor/pi-desktop/apps/desktop/electron/main/craftmine-target-feedback-panel.ts\n",
+  "sourceHashes": {
+    "workbench-ui.mjs": "39dc50f4f87585f755a8d2d17ef82931302e8ec01c90a647a301c9e66536cb1b",
+    "target-feedback-ui.mjs": "c0455fc9811d1252c190b4276aaba4eb122077faa1c79d456359b9f699d01423",
+    "godot-package-ui.mjs": "68db821a84d5360638161cf031a8d328eaa3cb1c04592d9c51e3668d8af844b2",
+    "issue-ui.mjs": "fa5a69dcb219d0eef2a2d24f982a81e6f85c38d121f260ce31cc4c35ad4fe14e",
+    "godot-windows-export-ui.mjs": "2fcce5c7b158963bd7a71269bef2a4b599e4de92d874d432a3a6f017237a14e0"
+  },
+  "startedAt": "2026-09-10T00:59:49.926Z",
+  "checks": [
+    {
+      "name": "workbench mount, 1..1000 integer validation and exact selected target durability",
+      "passed": true
+    },
+    {
+      "name": "background status polling never repeats modification; passed does not claim adoption",
+      "passed": true
+    },
+    {
+      "name": "lost reply recovers only through the pending original operation",
+      "passed": true
+    },
+    {
+      "name": "rejected result allows reread and a corrected value",
+      "passed": true
+    },
+    {
+      "name": "late submission across world switch cannot populate or unlock the new world",
+      "passed": true
+    },
+    {
+      "name": "late status after changing tab cannot reopen or poll the hidden parameter page",
+      "passed": true
+    },
+    {
+      "name": "a late initial read cannot overwrite a newer read of the same component",
+      "passed": true
+    }
+  ],
+  "completed": true,
+  "passed": true,
+  "finishedAt": "2026-09-10T00:59:55.588Z",
+  "externalRequests": [],
+  "pageErrors": []
+}

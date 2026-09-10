@@ -1,0 +1,51 @@
+{
+  "format": "craftmine.target-feedback-ui-test/1",
+  "type": "browser-dom-fixed-transport",
+  "native": false,
+  "sourceCommit": "2313284510327b7f8094d5e0477ec41fb28c152b",
+  "sourceDirty": " M plugins/craftmine-world/workbench-ui.mjs\n M vendor/pi-desktop/apps/desktop/electron/main/craftmine-operation-journal.ts\n M vendor/pi-desktop/apps/desktop/electron/main/craftmine-panel-gateway.ts\n M vendor/pi-desktop/apps/desktop/electron/main/index.ts\n M vendor/pi-desktop/apps/desktop/electron/main/plugin-runtime.ts\n?? desktop/godot/shared/target-feedback-configuration.d.mts\n?? plugins/craftmine-world/target-feedback-ui.mjs\n?? tests/plan-loop/target-feedback-panel.test.mjs\n?? vendor/pi-desktop/apps/desktop/electron/main/craftmine-target-feedback-panel.ts\n",
+  "sourceHashes": {
+    "workbench-ui.mjs": "39dc50f4f87585f755a8d2d17ef82931302e8ec01c90a647a301c9e66536cb1b",
+    "target-feedback-ui.mjs": "c413e7b66ed80c18f7f8eacf9e0900184d2271d7247eb7d4ed6cc58250dfef2b",
+    "godot-package-ui.mjs": "68db821a84d5360638161cf031a8d328eaa3cb1c04592d9c51e3668d8af844b2",
+    "issue-ui.mjs": "fa5a69dcb219d0eef2a2d24f982a81e6f85c38d121f260ce31cc4c35ad4fe14e",
+    "godot-windows-export-ui.mjs": "2fcce5c7b158963bd7a71269bef2a4b599e4de92d874d432a3a6f017237a14e0"
+  },
+  "startedAt": "2026-09-10T00:58:29.430Z",
+  "checks": [
+    {
+      "name": "workbench mount, 1..1000 integer validation and exact selected target durability",
+      "passed": true
+    },
+    {
+      "name": "background status polling never repeats modification; passed does not claim adoption",
+      "passed": true
+    },
+    {
+      "name": "lost reply recovers only through the pending original operation",
+      "passed": true
+    },
+    {
+      "name": "rejected result allows reread and a corrected value",
+      "passed": true
+    },
+    {
+      "name": "late submission across world switch cannot populate or unlock the new world",
+      "passed": true
+    },
+    {
+      "name": "late status after changing tab cannot reopen or poll the hidden parameter page",
+      "passed": true
+    },
+    {
+      "name": "a late initial read cannot overwrite a newer read of the same component",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'120' !== '777'\n\n    at file:///D:/cm-plan-issues-20260910/tests/local-issues/target-feedback-headless.mjs:99:73\n    at async check (file:///D:/cm-plan-issues-20260910/tests/local-issues/target-feedback-headless.mjs:27:69)\n    at async file:///D:/cm-plan-issues-20260910/tests/local-issues/target-feedback-headless.mjs:96:2"
+    }
+  ],
+  "completed": true,
+  "passed": false,
+  "finishedAt": "2026-09-10T00:58:33.896Z",
+  "externalRequests": [],
+  "pageErrors": []
+}
