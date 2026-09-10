@@ -1,0 +1,30 @@
+node:internal/test_runner/harness:121
+      throw err;
+      ^
+
+Error: CRAFTMINE_TEST_DESKTOP_DIRECTORY must explicitly name ASAR inspection tooling
+    at file:///C:/cm-plan-vm2-package-20260910/tests/plan-loop/parameter-client-package.test.mjs:24:16
+
+Node.js v24.14.0
+✖ tests\plan-loop\parameter-client-package.test.mjs (95.2179ms)
+✔ VM2 accepts explicit development and requires full independently supplied package identity (0.7446ms)
+✔ package launch and fixture core never fall back to development binaries (0.64ms)
+(node:281920) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ history probe accepts only finite navigation and bounded observed identifiers (0.7993ms)
+✔ real serialized probe refuses unknown DOM target and another world without action (1.6044ms)
+✔ real serialized probe submits only the existing enabled form control (0.6068ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 179.5016
+
+✖ failing tests:
+
+test at tests\plan-loop\parameter-client-package.test.mjs:1:1
+✖ tests\plan-loop\parameter-client-package.test.mjs (95.2179ms)
+  'test failed'

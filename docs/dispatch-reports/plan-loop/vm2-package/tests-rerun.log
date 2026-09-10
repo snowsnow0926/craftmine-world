@@ -1,0 +1,22 @@
+✔ explicit packaged mode requires frozen identity and rejects ambiguous or development overrides (0.7617ms)
+✔ package environment removes inherited development, model and Electron switches (0.1824ms)
+✔ real fixture ASAR and package bytes resolve only bundled launch/runtime paths (31.48ms)
+✔ missing package never falls back to the supplied source/dependency tree (0.3611ms)
+✔ wrong expected commit/hash and invalid entry or absent feature reject before launch (27.7561ms)
+✔ missing/tampered native, plugin and runtime files are not substituted (46.8748ms)
+✔ frozen manifest cannot nominate traversal or unbound guard bytes (18.0455ms)
+✔ VM2 accepts explicit development and requires full independently supplied package identity (0.6639ms)
+✔ package launch and fixture core never fall back to development binaries (0.6404ms)
+(node:224048) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ history probe accepts only finite navigation and bounded observed identifiers (0.8141ms)
+✔ real serialized probe refuses unknown DOM target and another world without action (1.5563ms)
+✔ real serialized probe submits only the existing enabled form control (0.6492ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 254.9721
