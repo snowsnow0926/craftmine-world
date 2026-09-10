@@ -22,7 +22,78 @@
   const send = message => { if (detached || !port) return; port.postMessage({ ...scope, ...message }); };
   const ready = () => { if (started && callback && !exited && !detached) send({ type: 'ready', ops: runtimeOps }); };
   const error = message => { status.textContent = String(message); status.hidden = false; send({ type: 'runtime-error', error: String(message).slice(0, 2000) }); };
-  const finishQuit = () => { if (quitting && active.size === 1 && !exitRequested) { exitRequested = true; engine.requestQuit(); } };
+  /**
+   * Godot's Web audio driver calls `AudioWorklet.addModule()` while the engine
+   * starts and only builds the worklet node in a continuation it chains on the
+   * promise that call returns. Its teardown nulls the AudioContext first, so an
+   * engine that quits inside that window constructs
+   * `new AudioWorkletNode(null, ...)`: the throw escapes as an unhandled page
+   * error and the engine's own exit handler never resolves.
+   *
+   * The quit therefore waits for the engine's real module loads to settle. The
+   * driver's promise is returned unchanged, so its node initialization keeps its
+   * original place in the microtask queue, and the settlement is observed from a
+   * reaction registered before that continuation: the observer is queued ahead
+   * of the driver's continuation, and the quit it releases is queued behind it.
+   * The engine has therefore always run its own continuation before the host is
+   * told to quit, which is an ordering proof, not a delay.
+   *
+   * This is a resource wait on an observable engine operation, and the wait only
+   * ever covers module loads the engine itself started.
+   */
+  const audioModules = { pending: 0, waiters: [] };
+  const settleAudioModules = () => {
+    if (audioModules.pending === 0) return;
+    audioModules.pending -= 1;
+    if (audioModules.pending > 0) return;
+    for (const notify of audioModules.waiters.splice(0)) notify();
+  };
+  const trackAudioWorkletModules = () => {
+    const prototype = globalThis.AudioWorklet && globalThis.AudioWorklet.prototype;
+    const addModule = prototype && prototype.addModule;
+    if (typeof addModule !== 'function') return;
+    try {
+      Object.defineProperty(prototype, 'addModule', { configurable: true, writable: true, value: function (...args) {
+        const loading = addModule.apply(this, args);
+        audioModules.pending += 1;
+        // The reaction is registered before the driver chains its own
+        // continuation on the returned promise, so when the load settles this
+        // observer is queued ahead of that continuation: the barrier it opens is
+        // queued behind it, and the quit therefore always runs after the engine
+        // built its worklet node against the live AudioContext.
+        //
+        // Knowing the outcome means handling the rejection, which on its own
+        // would silence the page's unhandled-rejection report, so the failure is
+        // put straight back on that channel: a module that really fails to load
+        // stays exactly as visible as it was before this barrier existed.
+        void loading.then(
+          () => { settleAudioModules(); },
+          failure => { settleAudioModules(); void Promise.reject(failure); },
+        );
+        return loading;
+      } });
+    } catch {
+      // A frozen prototype just means no barrier: the engine's own ordering.
+    }
+  };
+  const audioModulesSettled = () => audioModules.pending === 0
+    ? Promise.resolve()
+    : new Promise(resolve => { audioModules.waiters.push(resolve); });
+  trackAudioWorkletModules();
+  const finishQuit = () => {
+    if (!quitting || active.size !== 1 || exitRequested) return;
+    exitRequested = true;
+    // The quit is deferred, never dropped: a page that never settles is still
+    // bounded by the host's own teardown, which records the failed exit.
+    void audioModulesSettled().then(() => {
+      try {
+        engine.requestQuit();
+      } catch (failure) {
+        // A quit that really failed must not look like a quiet exit.
+        error(`Godot quit request failed: ${failure && failure.message ? failure.message : failure}`);
+      }
+    });
+  };
   const reply = (id, result, failure) => {
     if (!active.delete(id)) return;
     send({ type: 'response', id, ...(failure ? { error: failure } : { result }) });
