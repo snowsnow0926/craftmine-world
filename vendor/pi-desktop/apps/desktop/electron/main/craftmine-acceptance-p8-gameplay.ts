@@ -2,6 +2,15 @@ import type { GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance.
 
 // These are ordinary game commands over fixed case IDs, not a state-writing or
 // arbitrary node inspector. The caller retains the raw results, including errors.
+//
+// The sequences are sized so the acceptance criteria are actually decidable:
+//   * the hammer sequence forces one attack, an immediate repeat inside the same
+//     cooldown window, a wait longer than the required one second, and then
+//     enough walking for a melee reach to connect with the training target;
+//   * the dog sequence talks at spawn, walks a short way, and then walks as far
+//     as the small town map allows before talking again, so "still in range"
+//     and "out of range" both come from real movement.
+// A blocked leg is retained as evidence instead of being retried silently.
 export async function exerciseP8Gameplay(access: GodotGameplayAccess, caseId: "hammer" | "dog", worldId: string) {
   const first = await access.observe();
   if (first?.format !== "craftmine.godot-observation/1" || first.worldId !== worldId || first.baseId !== (caseId === "hammer" ? "first-person" : "top-down") || !first.buildId || !first.instanceId) throw Error("P8_ACTUAL_RUNTIME_REQUIRED");
@@ -12,8 +21,15 @@ export async function exerciseP8Gameplay(access: GodotGameplayAccess, caseId: "h
     return result;
   };
   const commands: [string, Record<string, unknown>][] = caseId === "hammer"
-    ? [["resume", {}], ["equip", { value: "thunder_hammer" }], ["look", { yaw: 0.245, pitch: 0 }], ["fire", {}], ["fire", {}], ["wait", { frames: 90 }], ["fire", {}]]
-    : [["resume", {}], ["talk", { npcId: "p8-dog" }], ["move", { dx: 1, dy: 0, steps: 45 }], ["wait", { frames: 90 }], ["talk", { npcId: "p8-dog" }]];
+    ? [["resume", {}], ["equip", { value: "thunder_hammer" }], ["look", { yaw: 0, pitch: 0 }],
+       ["fire", {}], ["fire", {}], ["wait", { frames: 90 }], ["fire", {}],
+       ["walk", { forward: 1, frames: 150 }], ["fire", {}],
+       ["walk", { forward: 1, frames: 45 }], ["fire", {}],
+       ["walk", { forward: 1, frames: 45 }], ["fire", {}]]
+    : [["resume", {}], ["talk", { npcId: "p8-dog" }],
+       ["move", { dx: 1, dy: 0, steps: 45 }], ["wait", { frames: 60 }], ["talk", { npcId: "p8-dog" }],
+       ["move", { dx: 1, dy: 0, steps: 600 }], ["wait", { frames: 60 }],
+       ["move", { dx: 0, dy: 1, steps: 600 }], ["wait", { frames: 60 }], ["talk", { npcId: "p8-dog" }]];
   const actions = [];
   for (const [op, args] of commands) {
     let result: unknown;
@@ -26,5 +42,5 @@ export async function exerciseP8Gameplay(access: GodotGameplayAccess, caseId: "h
     actions.push({ op, args, result, observation, image });
   }
   return { format: "craftmine.p8-gameplay/1", caseId, before: first, actions,
-    limitation: "Raw ordinary-command observations and game-view images. They do not alone prove pickup, visible lightning, cooldown timing or bounded NPC following; inspect actual authored source and frames separately." };
+    limitation: "Raw ordinary-command observations and game-view images. The per-criterion verdicts are computed separately from these results, the live observations and the authored source; these raw frames stay available for independent inspection." };
 }

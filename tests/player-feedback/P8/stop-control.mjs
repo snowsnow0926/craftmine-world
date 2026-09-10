@@ -13,33 +13,69 @@ async function bounded(fn, ms, code) {
   finally { clearTimeout(timer); }
 }
 
-// Only the driver owns these callbacks. The file cannot choose an IPC method,
-// session, path, script, provider, or network destination.
-export function createStopControl({ out, abort, snapshot, record = () => {}, abortMs = 30000, terminalMs = 90000, pollMs = 250 }) {
+// Only the driver owns these callbacks. A request file cannot choose an IPC
+// method, session, path, script, provider or network destination, and it cannot
+// rebind the run: it only asks the driver to abort the turn the driver already
+// owns, or the live turn of the run it already owns.
+
+const turnRequest = {
+  keys: 'action,caseId,format,turnId',
+  format: 'craftmine.p8-stop/1',
+  fields: ['action', 'caseId', 'format', 'turnId'],
+};
+const runRequest = {
+  keys: 'action,caseId,format,runId',
+  format: 'craftmine.p8-run-stop/1',
+  fields: ['action', 'caseId', 'format', 'runId'],
+};
+
+function readBounded(file, code) {
+  let fd;
+  try {
+    ordinaryParents(file);
+    const stat = fs.lstatSync(file);
+    if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink !== 1 || stat.size > 1024) return { status: 'rejected', reason: code + '_FILE_REJECTED', digest: 'file' };
+    fd = fs.openSync(file, 'r'); const opened = fs.fstatSync(fd);
+    if (!opened.isFile() || opened.nlink !== 1 || opened.dev !== stat.dev || opened.ino !== stat.ino || opened.size > 1024) return { status: 'rejected', reason: code + '_FILE_CHANGED', digest: 'changed' };
+    const bytes = Buffer.alloc(1025), count = fs.readSync(fd, bytes, 0, bytes.length, 0), raw = bytes.subarray(0, count);
+    const digest = createHash('sha256').update(raw).digest('hex');
+    if (count !== opened.size || count > 1024 || !Buffer.from(raw.toString('utf8')).equals(raw)) return { status: 'rejected', reason: code + '_FILE_CHANGED', digest };
+    let value; try { value = JSON.parse(raw.toString('utf8')); } catch { return { status: 'rejected', reason: code + '_INVALID_JSON', digest }; }
+    return { status: 'value', value, digest };
+  } catch (error) { if (error.code === 'ENOENT') return { status: 'missing' }; return { status: 'rejected', reason: code + '_READ_FAILED', digest: String(error.code ?? 'read') }; }
+  finally { if (fd !== undefined) fs.closeSync(fd); }
+}
+
+export function createStopControl({ out, abort, snapshot, record = () => {}, runId, abortMs = 30000, terminalMs = 90000, pollMs = 250 }) {
   if (!path.isAbsolute(out) || typeof abort !== 'function' || typeof snapshot !== 'function') throw Error('P8_STOP_CONFIGURATION');
-  const file = path.join(out, 'stop-request.json'); ordinaryParents(file);
+  const file = path.join(out, 'stop-request.json'), runFile = path.join(out, 'run-stop.json');
+  ordinaryParents(file);
   let operation, binding, rejectedHash;
   function reject(reason, digest) {
     if (digest !== rejectedHash) { rejectedHash = digest; record({ status: 'rejected', reason }); }
     return null;
   }
+  function missingKey(request, value) { return request.fields.some(field => !(field in value)) || Object.keys(value).sort().join(',') !== request.keys; }
+  /** Turn-scoped request: exact case, exact live turn. */
   function read(current) {
-    let fd;
-    try {
-      ordinaryParents(file);
-      const stat = fs.lstatSync(file);
-      if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink !== 1 || stat.size > 1024) return reject('P8_STOP_FILE_REJECTED', 'file');
-      fd = fs.openSync(file, 'r'); const opened = fs.fstatSync(fd);
-      if (!opened.isFile() || opened.nlink !== 1 || opened.dev !== stat.dev || opened.ino !== stat.ino || opened.size > 1024) return reject('P8_STOP_FILE_CHANGED', 'changed');
-      const bytes = Buffer.alloc(1025), count = fs.readSync(fd, bytes, 0, bytes.length, 0), raw = bytes.subarray(0, count);
-      const digest = createHash('sha256').update(raw).digest('hex');
-      if (count !== opened.size || count > 1024 || !Buffer.from(raw.toString('utf8')).equals(raw)) return reject('P8_STOP_FILE_CHANGED', digest);
-      let value; try { value = JSON.parse(raw.toString('utf8')); } catch { return reject('P8_STOP_INVALID_JSON', digest); }
-      if (!value || Array.isArray(value) || Object.keys(value).sort().join(',') !== 'action,caseId,format,turnId' || value.format !== 'craftmine.p8-stop/1' || value.action !== 'abort' || !['hammer', 'dog'].includes(value.caseId) || !uuid.test(value.turnId)) return reject('P8_STOP_INVALID_REQUEST', digest);
-      if (value.caseId !== current.caseId || value.turnId !== current.turnId) return reject('P8_STOP_STALE_IDENTITY', digest);
-      return value;
-    } catch (error) { if (error.code === 'ENOENT') return null; return reject('P8_STOP_READ_FAILED', error.code ?? 'read'); }
-    finally { if (fd !== undefined) fs.closeSync(fd); }
+    const incoming = readBounded(file, 'P8_STOP');
+    if (incoming.status === 'missing') return null;
+    if (incoming.status === 'rejected') return reject(incoming.reason, incoming.digest);
+    const value = incoming.value;
+    if (!value || Array.isArray(value) || missingKey(turnRequest, value) || value.format !== turnRequest.format || value.action !== 'abort' || !['hammer', 'dog'].includes(value.caseId) || !uuid.test(value.turnId)) return reject('P8_STOP_INVALID_REQUEST', incoming.digest);
+    if (value.caseId !== current.caseId || value.turnId !== current.turnId) return reject('P8_STOP_STALE_IDENTITY', incoming.digest);
+    return value;
+  }
+  function readRun(current) {
+    if (typeof runId !== 'string' || !runId.length) return null;
+    const incoming = readBounded(runFile, 'P8_RUN_STOP');
+    if (incoming.status === 'missing') return null;
+    if (incoming.status === 'rejected') return reject(incoming.reason, incoming.digest);
+    const value = incoming.value;
+    if (!value || Array.isArray(value) || missingKey(runRequest, value) || value.format !== runRequest.format || value.action !== 'abort' || !['hammer', 'dog'].includes(value.caseId)) return reject('P8_RUN_STOP_INVALID_REQUEST', incoming.digest);
+    if (value.caseId !== current.caseId || value.runId !== runId) return reject('P8_RUN_STOP_STALE_IDENTITY', incoming.digest);
+    record({ status: 'run-stop-accepted', ...current, runId });
+    return value;
   }
   async function sample(current, deadline) {
     while (Date.now() < deadline) {
@@ -85,7 +121,7 @@ export function createStopControl({ out, abort, snapshot, record = () => {}, abo
     const result = { status: 'stopped', ...current, requestedAt, finishedAt: new Date().toISOString(), acknowledged, terminalStatus: last.metrics.status, cleanAbort: !abortError, ...(abortError ? { abortError } : {}), snapshot: last };
     record(result); return result;
   }
-  return { file,
+  return { file, runFile,
     get requested() { return operation !== undefined; },
     check(current) {
       if (!current || !['hammer', 'dog'].includes(current.caseId) || !uuid.test(current.turnId) || !uuid.test(current.sessionId)) throw Error('P8_STOP_BINDING_REQUIRED');
@@ -93,7 +129,7 @@ export function createStopControl({ out, abort, snapshot, record = () => {}, abo
         if (binding.caseId !== current.caseId || binding.turnId !== current.turnId || binding.sessionId !== current.sessionId) throw Error('P8_STOP_ALREADY_BOUND');
         return operation;
       }
-      if (!read(current)) return Promise.resolve(null);
+      if (!readRun(current) && !read(current)) return Promise.resolve(null);
       binding = { ...current };
       operation = execute(binding).catch(error => { record({ status: 'failed', ...binding, error: String(error) }); throw error; });
       return operation;
