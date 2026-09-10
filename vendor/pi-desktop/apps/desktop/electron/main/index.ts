@@ -2474,6 +2474,7 @@ async function importLegacyScheduled() {
 const activeTurns = new Map<string, string>();
 const taskMetricsAdmissionFailures = new Set<string>();
 const taskMetricsRecorder = createTaskMetricsRecorder({
+  isCurrent: ({sessionId, turnId}) => activeTurns.get(sessionId) === turnId,
   call: (method, params) => {
     if (!host) return Promise.reject(Error("TASK_METRICS_HOST_UNAVAILABLE"));
     return host.call(method, params);
@@ -5091,7 +5092,7 @@ function wireSidecar(s: AgentSidecar) {
       try {
         taskMetricsRecorder.observe(envelope);
       } catch {
-        if (envelope.sessionId && envelope.turnId) {
+        if (envelope.sessionId && envelope.turnId && activeTurns.get(envelope.sessionId) === envelope.turnId) {
           taskMetricsAdmissionFailures.add(JSON.stringify([envelope.sessionId, envelope.turnId]));
         }
         logger.app("persistence", "warn", "Task metrics observation unavailable", {
