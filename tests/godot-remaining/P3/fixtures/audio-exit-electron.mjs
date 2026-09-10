@@ -6,6 +6,15 @@
 // `godot-check` preload. It never shows a window, never focuses anything and
 // never sends input, mouse or keyboard events.
 //
+// Bridge binding (P8 review, item 1): the served build is only accepted when its
+// `web/bridge.js` is the file the caller declared. In the default `source` mode
+// that is the source tree's `desktop/godot/web/bridge.js`, and a mismatch refuses
+// to start *before* any window, session or HTTP origin exists. An explicit
+// `external` binding names an expected bridge file, which is the counterexample
+// path (an old export): it is recorded in every report and never counts as
+// candidate verification. Either way every report carries the binding: build
+// root, both bridge paths and SHA-256 digests, the entry SHA-256, and the scope.
+//
 // Modes:
 //   exit-ready    - wait for the engine, then request the graceful exit the check
 //                   window performs when its body stops right after ready.
@@ -21,6 +30,8 @@ import {pathToFileURL} from 'node:url';
 
 const CHANNEL = 'pi-desktop/godot-world/message';
 const SCOPE_PREFIX = '--craftmine-godot-scope=';
+const BIND_MODES = ['source', 'external'];
+const REFUSED_EXIT_CODE = 3;
 
 const argv = new Map();
 for (const raw of process.argv.slice(1)) {
@@ -32,6 +43,9 @@ const buildRoot = argv.get('build');
 const preload = argv.get('preload');
 const reportFile = argv.get('report');
 const mode = argv.get('mode') ?? 'exit-ready';
+const bindMode = argv.get('bind') ?? 'source';
+const expectedBridgeArgument = argv.get('expected-bridge') ?? null;
+const expectedBridgePath = expectedBridgeArgument ?? (worktree ? path.join(worktree, 'desktop', 'godot', 'web', 'bridge.js') : null);
 
 // The profile is chosen before the app is ready, and it is never the user's.
 app.setPath('userData', argv.get('profile') ?? path.join(os.tmpdir(), `craftmine-p3-audio-${process.pid}`));
@@ -46,10 +60,11 @@ const runtimeErrors = [];
 let runtimeHost = null;
 
 const report = {
-  mode, preloadErrors: [], rendererGone: [], loadFailures: [], consoleMessages, runtimeErrors,
+  mode, bindMode, preloadErrors: [], rendererGone: [], loadFailures: [], consoleMessages, runtimeErrors,
   windowVisible: null, windowFocusable: null, windowOffscreen: null, documentHasFocus: null,
   exit: null, readyMs: null, runtimeState: null, windowDestroyed: null,
   pageErrors: [], audioWorkletFailures: [],
+  binding: null, bindingRefused: null, scope: null,
 };
 
 function writeReport() {
@@ -57,6 +72,52 @@ function writeReport() {
   try { if (reportFile) fs.writeFileSync(reportFile, line); } catch { /* the caller may read the console line */ }
   try { process.stdout.write(line + '\n'); } catch { /* piped stdout is dropped on Windows */ }
   try { process.stderr.write(line + '\n'); } catch { /* stderr may be gone too */ }
+}
+
+function sha256OrNull(file) {
+  if (!file || !fs.existsSync(file)) return null;
+  return createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+}
+
+/**
+ * Binds the served build to a declared bridge file. Nothing here touches the
+ * build: it only reads digests, so a mismatch can never be "fixed" by rewriting
+ * an export.
+ */
+function bindingEvidence() {
+  const webDir = buildRoot ? path.join(buildRoot, 'web') : null;
+  const bridgePath = webDir ? path.join(webDir, 'bridge.js') : null;
+  const entryPath = webDir ? path.join(webDir, 'index.html') : null;
+  const sourceBridgePath = worktree ? path.join(worktree, 'desktop', 'godot', 'web', 'bridge.js') : null;
+  const bridgeSha256 = sha256OrNull(bridgePath);
+  const expectedBridgeSha256 = sha256OrNull(expectedBridgePath);
+  return {
+    mode: bindMode,
+    buildRoot, worktree,
+    bridgePath, bridgeSha256,
+    expectedBridgePath, expectedBridgeSha256,
+    expectedBridgeExplicit: expectedBridgeArgument !== null,
+    sourceBridgePath, sourceBridgeSha256: sha256OrNull(sourceBridgePath),
+    bridgeMatchesExpected: bridgeSha256 !== null && bridgeSha256 === expectedBridgeSha256,
+    expectedBridgeMatchesSource: expectedBridgeSha256 !== null && expectedBridgeSha256 === sha256OrNull(sourceBridgePath),
+    indexHtmlSha256: sha256OrNull(entryPath),
+    entry: 'web/index.html',
+    threads: true,
+  };
+}
+
+/**
+ * Refuses to serve a build whose bridge is not the declared one. The refusal
+ * happens before a session, an HTTP origin or a window exists, so a wrong build
+ * can never be silently exercised and no renderer is ever started for it.
+ */
+function refuseBinding(evidence, reason) {
+  report.binding = evidence;
+  report.bindingRefused = {mode: bindMode, bridgeSha256: evidence.bridgeSha256,
+    expectedBridgeSha256: evidence.expectedBridgeSha256, expectedBridgePath, reason};
+  trace('binding-refused', reason);
+  writeReport();
+  app.exit(REFUSED_EXIT_CODE);
 }
 
 function artifactsFor(webDir) {
@@ -91,6 +152,7 @@ function checkWindow({isolated, scope}) {
       additionalArguments: [SCOPE_PREFIX + encodeURIComponent(JSON.stringify(scope))],
     },
   });
+  report.scope = scope;
   report.windowVisible = window.isVisible();
   report.windowFocusable = window.isFocusable();
   report.windowOffscreen = window.webContents.isOffscreen();
@@ -162,6 +224,29 @@ async function engineCase(isolated) {
 }
 
 async function main() {
+  const evidence = bindingEvidence();
+  report.binding = evidence;
+  if (!BIND_MODES.includes(bindMode)) {
+    refuseBinding(evidence, `unsupported bridge binding mode: ${bindMode}`);
+    return;
+  }
+  // The preload-only error probe serves no Godot build. Engine modes still
+  // require the exact declared bridge before creating any runtime or window.
+  if (mode !== 'page-failure' && !evidence.bridgeSha256) {
+    refuseBinding(evidence, `build has no readable web/bridge.js: ${evidence.bridgePath}`);
+    return;
+  }
+  if (mode !== 'page-failure' && !evidence.expectedBridgeSha256) {
+    refuseBinding(evidence, `expected bridge is missing or unreadable: ${expectedBridgePath}`);
+    return;
+  }
+  // Default mode: the candidate export must carry this source tree's bridge. A
+  // mismatch is refused here, before any session, origin or window exists.
+  if (mode !== 'page-failure' && !evidence.bridgeMatchesExpected) {
+    refuseBinding(evidence, `build bridge does not match the expected bridge: build=${evidence.bridgeSha256} expected=${evidence.expectedBridgeSha256}`);
+    return;
+  }
+
   const isolated = session.fromPartition(`pi-godot-check-p3-${randomUUID()}`, {cache: false});
   isolated.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
   isolated.setPermissionCheckHandler(() => false);
@@ -183,4 +268,13 @@ app.whenReady().then(main).catch(error => {
   report.fatal = String(error?.stack ?? error);
   writeReport();
   app.exit(9);
+});
+
+// The binding is settled before anything runs, and it is recorded on every exit
+// path, including the refusal.
+process.on('exit', () => {
+  if (!report.binding) {
+    report.binding = bindingEvidence();
+    writeReport();
+  }
 });
