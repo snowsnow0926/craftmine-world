@@ -9167,3 +9167,8 @@ reads through its finite IPC method, and shows the new DTO per actual owning tur
 ### P1 durable first-load failure and explicit retry
 
 Thirteen actual Core world tests pass, including four new SQLite failure/restart/replay/tombstone/identity/new-candidate/archive cases. Twenty-eight controlled coordinator and initializer tests pass, including finite persistence receipts, failed receipt identity, no automatic task creation after a terminal failure, and exact explicit retry. Core binary check and strict host/initializer TypeScript pass. No OS input or native renderer is started by this slice. Root must independently verify its private RPC and creation-stage integration in the client; unsuccessful or missing prepare receipts remain an explicit boundary.
+
+
+### P8 finite authorized model acceptance preflight
+
+Run node tests/player-feedback/P8/preflight.test.mjs with read-only esbuild dependencies. Synthetic loopback tests must reject altered route/auth/model and the seventeenth request before forwarding, retain the counter across restart, redact split credentials, preserve provider errors, and refuse unknown helper methods/world rebinding/duplicate submission. This is offline preflight, not live-model or gameplay acceptance. Real execution requires the separately approved clean compiled candidate and preserved raw evidence.
