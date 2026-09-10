@@ -4,6 +4,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {CoreClient} from '../plugins/craftmine-world/core-client.cjs';
 import {createGodotExecutor} from '../plugins/craftmine-world/godot-executor.cjs';
+import {createCreationSourceService} from '../plugins/craftmine-world/creation-source-service.cjs';
 import {GodotBuildVerifier} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-build-verifier';
 import {GodotWorldViewHost} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host';
 import {createGodotRuntimeAdapter} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-runtime-adapter';
@@ -54,6 +55,8 @@ app.whenReady().then(async()=>{
   item.after=await call('world.read',{id:worldId});write();return item;
  }
  const blank=await run('blank');check('空白世界真实导入、导出和Web检查通过',blank.terminal.status==='passed'&&blank.candidate.candidate.status==='ready');
+ const fontParts=fixture.files.filter(file=>/^assets\/fonts\/cjk-[01]\.json$/.test(file.path));
+ check('完整中文字体分片通过大源码事务、LPAC导出和运行加载',fontParts.length===2&&fontParts.reduce((sum,file)=>sum+Buffer.from(file.bytesBase64,'base64').length,0)>5500000&&blank.runtime.passed&&blank.runtime.errors.ok);
  check('检查不会提前改变正式世界',JSON.stringify(blank.before)===JSON.stringify(blank.after));
  // Bootstrap using the actual candidate instance save receipt, never authored launch evidence.
  const prepared=await call('godotApplication.prepare',{id:'bootstrap',token:'bootstrap-token',worldId,candidateId:blank.terminal.candidateId,revision:blank.before.revision,snapshot:blank.before.world.snapshot});
@@ -61,11 +64,17 @@ app.whenReady().then(async()=>{
  const saved=await host.candidateRequest('save');assert.equal(saved.status,'confirmed');assert.deepEqual(saved.state,prepared.input.snapshot);
  await call('godotApplication.commit',{id:'bootstrap',token:'bootstrap-token',evidence:{format:'craftmine.godot-application/2',inputHash:prepared.inputHash,launch:{passed:true,buildId:descriptor.buildId,instanceId:host.candidateInstance.instanceId,stateHash:saved.runnerReceipt.snapshotSha256},player:null,snapshot:saved.state}});
  await host.promoteCandidate(await adapter.describe(worldId));check('真实候选首载回执建立正式世界',host.instance.buildId===blank.job.buildId);
- context={...context,turnId:'sequence'};activeContext=context;await call('workspace.open',{context,selectedWorld:worldId});
+ context={...context,turnId:'sequence'};activeContext=context;const workspace=await call('workspace.open',{context,selectedWorld:worldId});
  await targets.policy({worldId,autoApply:true});const display=await targets.capture(1,{projectId:context.projectId,sessionId:context.sessionId});
  const capture=await targets.validate(1,{creationTarget:{captureId:display.captureId}},{projectId:context.projectId,sessionId:context.sessionId});await targets.bind(1,capture,context,worldId);
- source=await call('godotProject.index',{context,worldId});const beforeFile=await call('godotProject.read',{context,worldId,revision:source.revision,manifestHash:source.manifestHash,path:'world/creation.json'});
- source=await call('godotProject.patch',{context,worldId,toolCallId:'add-tree-and-rule',revision:source.revision,manifestHash:source.manifestHash,operations:[{op:'put',path:'world/creation.json',text:JSON.stringify(fixture.scene),expectedHash:beforeFile.sha256??source.files.find(file=>file.path==='world/creation.json')?.sha256},{op:'put',path:fixture.rule.declaration.script,text:fixture.rule.text,expectedHash:null}]});
+ source=await call('godotProject.index',{context,worldId});report.sourceOperations=[];
+ const createSource=createCreationSourceService({core:{call},capture:async()=>targets.bound(context,worldId),assertActive:input=>assert.deepEqual(input,activeContext),sample:async input=>{const envelope=await createCraftmineLiveSampler(()=>host)(input);return {...envelope,...envelope.payload};}});
+ const operations=[...fixture.scene.entities.map(entity=>({action:'place',...entity})),{action:'sequence-door',ruleId:'ordered-door',doorId:'new-door',sequence:['mark-a','mark-b']}];
+ for(const [index,operation] of operations.entries()){
+  const result=await createSource({context,workspace,request:{...operation,operationId:'managed-op-'+index,expected:{worldId,buildId:capture.buildId,instanceId:capture.instanceId,revision:source.revision,manifestHash:source.manifestHash,targetSnapshotId:capture.snapshotId}}});
+  report.sourceOperations.push(result);source=result.source;write();
+ }
+ check('真实主进程捕获驱动生产造物事务并连续推进源码',report.sourceOperations.length===5&&report.sourceOperations.every(item=>item.checkRequired&&!item.applied&&!item.replayed));
  const sequence=await run('sequence');check('新增树和源码机关通过生产Web检查',sequence.terminal.status==='passed'&&sequence.runtime.passed);
  check('执行器终态回调自动采用成功',sequence.application?.status==='applied'&&sequence.after.world.build.id===sequence.job.buildId);
  check('采用保留最新背包并增加新门与机关进度',sequence.after.world.snapshot.body.inventory['kept-token']===7&&sequence.after.world.snapshot.body.doors['new-door']===false&&sequence.after.world.snapshot.body.rules['ordered-door'].cursor===0);
@@ -77,7 +86,8 @@ app.whenReady().then(async()=>{
  report.live=await host.request('observe-envelope',{});check('正式运行实例显示新树和源码机关',report.live.payload.creation.entities.some(entity=>entity.id==='new-tree')&&report.live.buildId===sequence.job.buildId);
  context={...context,turnId:'invalid-rule'};activeContext=context;await call('workspace.open',{context,selectedWorld:worldId});source=await call('godotProject.index',{context,worldId});
  const sceneFile=source.files.find(file=>file.path==='world/creation.json');
- source=await call('godotProject.patch',{context,worldId,toolCallId:'invalid-rule',revision:source.revision,manifestHash:source.manifestHash,operations:[{op:'put',path:'world/creation.json',text:JSON.stringify(fixture.invalid),expectedHash:sceneFile.sha256}]});
+ const sceneRead=await call('godotProject.read',{context,worldId,revision:source.revision,manifestHash:source.manifestHash,path:sceneFile.path});const invalidScene=JSON.parse(sceneRead.text);invalidScene.revision++;invalidScene.rules[0].sha256='0'.repeat(64);
+ source=await call('godotProject.patch',{context,worldId,toolCallId:'invalid-rule',revision:source.revision,manifestHash:source.manifestHash,operations:[{op:'put',path:'world/creation.json',text:JSON.stringify(invalidScene),expectedHash:sceneFile.sha256}]});
  const invalid=await run('invalid-rule');check('不匹配的机关源码哈希被真实检查拒绝',invalid.terminal.status==='failed'&&invalid.candidate?.candidate.status==='rejected'&&invalid.runtime.errors.runtime.some(message=>message.includes('Authored rule source hash mismatch')));
  check('失败规则没有触发自动采用且正式构建未变',!invalid.completionInput&&invalid.after.world.build.id===sequence.job.buildId&&JSON.stringify(invalid.before)===JSON.stringify(invalid.after));
  check('所有所属窗口保持隐藏且不可获取焦点',!owner.isVisible()&&!owner.isFocusable());
