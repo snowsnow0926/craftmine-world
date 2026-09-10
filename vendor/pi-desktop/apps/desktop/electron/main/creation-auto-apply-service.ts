@@ -27,7 +27,9 @@ export function createCreationAutoApplyService(deps:Dependencies){
       if(job?.worldId!==worldId||job.jobId!==jobId||job.kind!=="check"||job.status!=="passed"||job.baseId!=="creation-sandbox"||typeof job.candidateId!=="string"||!job.candidateId)throw Error("CREATION_CHECK_NOT_PASSED");
       if(candidateId&&candidateId!==job.candidateId)throw Error("CREATION_CANDIDATE_CHANGED");
       candidateId=job.candidateId;
-      const result=await deps.domain("godotCandidate.read",{context,worldId,candidateId});
+      // This private host route accepts only ids; task ownership is established
+      // by the context-bound job and source index on either side of this read.
+      const result=await deps.domain("godotCandidate.read",{worldId,candidateId});
       const candidate=result?.candidate;
       if(result?.checkStatus!=="passed"||candidate?.status!=="ready"||candidate.worldId!==worldId||candidate.checkJobId!==jobId||candidate.buildId!==job.buildId||candidate.sourceRevision!==job.sourceRevision||candidate.manifestHash!==job.manifestHash||candidate.checkOutputHash!==job.outputHash)throw Error("CREATION_CANDIDATE_UNVERIFIED");
       const source=await deps.domain("godotProject.index",{context,worldId,branchId:job.branchId??"main",offset:0,limit:1});
