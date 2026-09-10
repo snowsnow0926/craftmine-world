@@ -77,6 +77,7 @@ try{
  await client.boot();if(recoverRejected)assertPreDispatchBudget();report.continuationInitialBudget=ledger();assert.ok(!(await client.evaluate('snapshot')).active,'CONTINUATION_ORIGINAL_TASK_ACTIVE');
  for(const item of report.cases){if(state.attempted.includes(item.id)&&!(recoverRejected&&item.id==='CA07'&&state.rejectedRecovery?.status==='reserved-before-recovery')){if(!item.finishedAt){const current=await client.evaluate('snapshot');item.modelRequests=current.metrics?.turnId!==item.beforeTurnId?current.metrics?.calls?.observed??0:0;item.outcome='failed';item.error='CONTINUATION_PREVIOUS_ATTEMPT_INTERRUPTED_NO_REPLAY';save();}if(!successfulOutcomes.has(item.outcome))break;continue;}await runCase(item);if(!successfulOutcomes.has(item.outcome))break;}
 }catch(error){report.error=String(error.stack??error);process.exitCode=1;}finally{
- try{if(!client.isEnded()){const current=await client.evaluate('snapshot');if(current.active)await client.evaluate('abort');}await client.stop();}catch(error){report.shutdownError=String(error);process.exitCode=1;}
+ try{if(!client.isEnded()){const current=await client.evaluate('snapshot');if(current.active)await client.evaluate('abort');}}catch(error){report.shutdownObservationError=String(error);process.exitCode=1;}
+ try{await client.stop();}catch(error){report.shutdownError=String(error);process.exitCode=1;}
  report.originalEvidenceUnchanged=isDeepStrictEqual(treeFiles(original),originalFiles);report.finishedAt=new Date().toISOString();save();fs.unlinkSync(lock);if(!report.originalEvidenceUnchanged||report.cases.some(c=>!successfulOutcomes.has(c.outcome)))process.exitCode=1;console.log('Continuation evidence: '+reportFile);
 }
