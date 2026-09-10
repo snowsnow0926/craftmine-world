@@ -62,6 +62,10 @@ scale 各轴 0.25..4；颜色为六位 `#RRGGBB`；最多 128 个实体。
 marker 的 label（最多 80 字符）；树和岩石的 parameters 为空对象。
 修改门的 initiallyOpen 是新实例的默认状态，既有门的玩家进度按稳定 ID 保留。
 
+此 Alpha 每个世界最多保存 4096 条结构化操作，日志上限 4 MiB；回执中的
+`operationLimit`、`operationsRemaining` 表示操作上限与本次之后剩余次数。旧记录不删除，
+达到上限明确拒绝新操作，不能称为无限创造。
+
 工具写入源码与操作日志，并不等于运行时已采用。重试同一请求使用同一 operationId；
 重放冲突时不能用同 ID 换请求内容。源码或目标过期时重新读取主机实际身份，保留别人的修改。
 
@@ -107,7 +111,8 @@ sourceTimeOfDay、inventory、openedChests、doors、rules。player.position 是
 观察中的 playerBounds.position 是脚底位置。实体 position 同样是物件底部，不是包围盒中心。
 
 旧 inventory、已开宝箱账本、门和规则状态保留；新增门/规则默认必须来自真实候选的 fresh
-capture，再由主机合并。runtime 严格拒绝缺失新默认的直接恢复。源码默认时间改变时，主机
+capture，再由主机合并。runtime 严格拒绝缺失新默认的直接恢复；若最新玩家胶囊与候选实体重叠，恢复会在改变
+任何进度前拒绝，不能把玩家静默推走。已开门的门洞按实际待恢复状态允许通过。源码默认时间改变时，主机
 更新 timeOfDay 和 sourceTimeOfDay；默认未变则保留玩家当前时间。宝箱按稳定 ID 只发一次奖励，
 删除后重放同一 ID 也不能再次领取。受规则管理的门不能直接互动绕过规则。
 

@@ -16,7 +16,7 @@ const snapshot=({sourceCommit,sourcePath,projectPath,path:referencePath=projectP
     requiredInterface,sha256:hash(text),acceptedSourceHashes:[hash(text),hash(text.replace(/\n/g,'\r\n'))],text};
 };
 const fpsCommit='9469aaa487b31ea41b839c7cd4214c2c7f3f293b';
-const creationCommit='6e56747e85f022738b44eecef7fc7bbbe2cf7645';
+const creationCommit='ceead93154fe679f2cac4346239f9aac9b9d4890';
 const makeSkill=({id,title,baseId,baseVersion,file,references})=>{
  const text=read(path.join(here,file));
  return {id,version:'1.0.0',title,path:file,sha256:hash(text),
