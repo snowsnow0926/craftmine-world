@@ -1,0 +1,43 @@
+{
+  "format": "craftmine.target-feedback-client/1",
+  "passed": false,
+  "root": "D:\\cm-plan-loop-20260910",
+  "runtime": "D:\\cm-plan-loop-20260910",
+  "out": "D:\\cm-plan-loop-20260910\\test-results\\desktop-native-parameters-wxO17m",
+  "commit": "9cb31a58980743d924ff0d919dec41012be4c283",
+  "mainSha256": "61fb698f052f095e9ebe5b3177f3bf9ac6a20e8044c55c1ba076fa3ba282d624",
+  "pluginSha256": "e5d12df44851a3d8ed5c0d4091a8c651319ef4cd91d8456882943602888fdf20",
+  "steps": [
+    {
+      "name": "create actual first-person parameter world",
+      "passed": false,
+      "error": "Error: Error: WORLD_PLUGIN_NOT_LOADED"
+    }
+  ],
+  "launches": [
+    {
+      "at": "2026-09-10T01:20:00.184Z",
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      }
+    }
+  ],
+  "limits": [
+    "Development client and current authored runtime source with unchanged baseline core/host binaries, not a Windows release acceptance",
+    "No model prompt, credentials, OS input, Pointer Lock, visible windows, desktop captures or external report export; fixed gameplay captures only the isolated game view",
+    "Snapshot comparison retains every field including stable savedAt metadata"
+  ],
+  "runtimeSourceCommit": "9cb31a58980743d924ff0d919dec41012be4c283",
+  "runtimeFilesDigest": "2b403fef45e85f9f9702d4fd8425e7db7e11a81a564ca9b1ccb321f2b54c7ce5",
+  "coreSha256": "f05c6589ab8475a1cc48a6c01bd921bb776d74b9402b734ade2c442ffab85aa3",
+  "hostSha256": "95729236eab4c63abd3d83734130ac305d8a3027d7b585ddbf628a69a921104b",
+  "error": "Error: Error: WORLD_PLUGIN_NOT_LOADED\n    at ChildProcess.<anonymous> (file:///D:/cm-plan-loop-20260910/tests/plan-loop/target-feedback-client-native.mjs:29:318)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+  "finishedAt": "2026-09-10T01:20:05.622Z"
+}
