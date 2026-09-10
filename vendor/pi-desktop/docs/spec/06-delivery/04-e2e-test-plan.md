@@ -9390,3 +9390,13 @@ Scan ordinary pickup bearings around the whole spawn circle, including behind th
 player; a missing pickup remains unverified. Preserve the adjacent attack pair
 and capture later impacts with actual timestamps. On reopen, tolerate only the
 exact transient world-panel-not-ready reply under the existing deadline.
+
+
+### CM-COMP-10: long portable-restore repository paths
+
+Create real objects under a managed Git path longer than 220 characters. Verify
+byte-identical buffered and streamed reads while raw commands remain repository
+neutral and host Git identity stays excluded. Restore an actual portable archive
+into a similarly long target, reopen it, and compare the domain hash and worlds.
+Repeat the full packaged source/progress backup activation and restart scenario.
+Preserve the old failure receipt; do not shorten the test output to conceal it.

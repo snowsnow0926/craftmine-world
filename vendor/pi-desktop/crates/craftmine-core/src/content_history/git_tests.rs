@@ -15,6 +15,31 @@ fn adapter(dir: &std::path::Path) -> Result<GitAdapter> {
 }
 
 #[test]
+fn long_managed_git_paths_keep_objects_streams_and_isolation_working() -> Result<()> {
+    use std::io::Read;
+    let dir = tempfile::tempdir()?;
+    let mut root = dir.path().join("owned");
+    while root.to_string_lossy().len() < 145 {
+        root = root.join("nested-0123456789");
+    }
+    let adapter = adapter(&root)?;
+    let repo = root.join("repos").join("r".repeat(64)).join("repo.git");
+    assert!(repo.to_string_lossy().len() > 220);
+    adapter.init_bare(&repo, "sha1")?;
+    let bytes = b"actual object under a long managed repository path\n";
+    let oid = adapter.hash_object(&repo, bytes)?;
+    assert_eq!(adapter.cat_object(&repo, &oid)?, bytes);
+    let mut stream = adapter.repo_stream(&repo, &["cat-file", "blob", &oid])?;
+    let mut read = Vec::new();
+    stream.read_to_end(&mut read)?;
+    stream.finish()?;
+    assert_eq!(read, bytes);
+    assert!(!adapter.raw(&["rev-parse", "--git-dir"])?.ok(), "raw calls must still run outside any repository");
+    assert!(!adapter.repo(&repo, &["config", "--global", "--get", "user.name"])?.ok(), "host identity remains isolated");
+    Ok(())
+}
+
+#[test]
 fn discovery_records_provenance_instead_of_assuming_a_bundled_git() -> Result<()> {
     let dir = tempfile::tempdir()?;
     let adapter = adapter(dir.path())?;

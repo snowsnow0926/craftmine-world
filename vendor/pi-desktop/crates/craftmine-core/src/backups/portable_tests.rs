@@ -536,6 +536,30 @@ fn restore_into_a_separate_empty_directory_creates_a_new_database() -> Result<()
 }
 
 #[test]
+fn long_managed_git_paths_survive_a_real_portable_restore() -> Result<()> {
+    let mut fixture = fixture()?;
+    let archives = tempfile::tempdir()?;
+    let archive = archives.path().join("world.cmarchive");
+    let exported = export_to(&mut fixture.db, &archive)?;
+    let root = tempfile::tempdir()?;
+    let mut target = root.path().join("restored");
+    while target.to_string_lossy().len() < 165 {
+        target = target.join("restore-directory");
+    }
+    fs::create_dir_all(target.parent().unwrap())?;
+    let restored = fixture.db.backup_restore_portable(&json!({
+        "operationId": "restore-long-managed-path", "archivePath": archive.to_string_lossy(),
+        "targetDirectory": target.to_string_lossy(),
+    }))?;
+    assert_eq!(restored["status"], "completed");
+    assert_eq!(restored["domainHash"], exported["manifest"]["domainHash"]);
+    let reopened = TaskJournal::open(&target.join("tasks.sqlite"))?;
+    assert_eq!(reopened.world_list()?.len(), 2);
+    assert_eq!(fixture.db.world_list()?.len(), 2);
+    Ok(())
+}
+
+#[test]
 fn restore_refuses_a_target_that_already_holds_a_world() -> Result<()> {    let mut fixture = fixture()?;
     let archives = tempfile::tempdir()?;
     let archive = archives.path().join("world.cmarchive");

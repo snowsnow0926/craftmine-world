@@ -533,6 +533,24 @@ impl GitAdapter {
         self.config_dir.join("work")
     }
 
+    /// Name the same owned repository relative to the neutral working directory.
+    /// Git for Windows checks the literal --git-dir length before core.longpaths
+    /// can help. The backup target and its repos share this private parent, so
+    /// ../.. shortens the argument without moving data or enabling discovery.
+    /// Foreign roots retain the existing explicit absolute-path behavior.
+    fn repository_argument(&self, git_dir: &Path) -> PathBuf {
+        let repository = Self::plain(git_dir);
+        let configuration = Self::plain(&self.config_dir);
+        if repository.is_absolute() {
+            if let Some(parent) = configuration.parent() {
+                if let Ok(relative) = repository.strip_prefix(parent) {
+                    return PathBuf::from("..").join("..").join(relative);
+                }
+            }
+        }
+        repository
+    }
+
     /// Configuration overrides applied to every invocation. They take
     /// precedence over any repository or system configuration.
     fn overrides(&self) -> Vec<String> {
@@ -626,7 +644,7 @@ impl GitAdapter {
     ) -> Result<GitOutput> {
         let mut full = vec![format!(
             "--git-dir={}",
-            Self::plain(git_dir).to_string_lossy()
+            self.repository_argument(git_dir).to_string_lossy()
         )];
         full.extend(args.iter().map(|arg| arg.to_string()));
         self.execute(&full, envs, Some(stdin))
@@ -728,7 +746,7 @@ impl GitAdapter {
     pub fn repo_stream(&self, git_dir: &Path, args: &[&str]) -> Result<GitStream> {
         let mut full = vec![format!(
             "--git-dir={}",
-            Self::plain(git_dir).to_string_lossy()
+            self.repository_argument(git_dir).to_string_lossy()
         )];
         full.extend(args.iter().map(|arg| arg.to_string()));
         let subcommand = full
