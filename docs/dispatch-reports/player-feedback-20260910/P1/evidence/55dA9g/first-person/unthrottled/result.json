@@ -1,0 +1,74 @@
+{
+  "baseId": "first-person",
+  "mode": "unthrottled",
+  "events": [
+    {
+      "at": 1789020837737,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789020837785,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": false
+    },
+    {
+      "at": 1789020838121,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789020838300,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789020838531,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789020838931,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789020838931,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789020838932,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x2a2c0ee61a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020853935,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789020853935,
+      "kind": "failure",
+      "error": "Runtime request timed out: load [fault=renderer-destroyed; console[warning]=[.WebGL-0x2a2c0ee61a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.; requests=15/15]"
+    },
+    {
+      "at": 1789020853935,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "passed": false,
+  "error": "Error: Runtime request timed out: load [fault=renderer-destroyed; console[warning]=[.WebGL-0x2a2c0ee61a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.; requests=15/15]\n    at GodotWorldViewHost.startReplacementInner (D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-55dA9g\\first-person\\unthrottled\\app\\main\\index.cjs:691:13)",
+  "finishedAt": "2026-09-10T06:14:13.936Z"
+}

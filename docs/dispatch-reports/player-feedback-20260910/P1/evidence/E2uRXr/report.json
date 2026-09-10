@@ -1,0 +1,145 @@
+{
+  "out": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-E2uRXr",
+  "startedAt": "2026-09-10T06:18:24.309Z",
+  "sources": {
+    "host": "6e1dbd4516d53570ca2845ed9df58da516ebe2061a7b0c9888f0e51b32a2f93a",
+    "runtime": "09a8a62728fdc6a53db88af087b335f4364a6f671b95c361b94e5b1f1bb5322c"
+  },
+  "dependencies": "C:/cm-plan-next-20260910",
+  "limits": [
+    "Authored exports, actual host; no Core application transaction or product UI",
+    "Hidden owner and software rendering; native child versus offscreen child compared without focus or input"
+  ],
+  "cases": [
+    {
+      "baseId": "first-person",
+      "mode": "native",
+      "result": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-E2uRXr\\first-person\\native\\result.json",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "passed": true
+    },
+    {
+      "baseId": "first-person",
+      "mode": "offscreen",
+      "result": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-E2uRXr\\first-person\\offscreen\\result.json",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "passed": true
+    },
+    {
+      "baseId": "top-down",
+      "mode": "native",
+      "result": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-E2uRXr\\top-down\\native\\result.json",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "passed": true
+    },
+    {
+      "baseId": "top-down",
+      "mode": "offscreen",
+      "result": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-E2uRXr\\top-down\\offscreen\\result.json",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "passed": true
+    },
+    {
+      "baseId": "side-view",
+      "mode": "native",
+      "result": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-E2uRXr\\side-view\\native\\result.json",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "passed": true
+    },
+    {
+      "baseId": "side-view",
+      "mode": "offscreen",
+      "result": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-E2uRXr\\side-view\\offscreen\\result.json",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "passed": true
+    },
+    {
+      "baseId": "mining-sandbox",
+      "mode": "native",
+      "result": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-E2uRXr\\mining-sandbox\\native\\result.json",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "passed": true
+    },
+    {
+      "baseId": "mining-sandbox",
+      "mode": "offscreen",
+      "result": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-E2uRXr\\mining-sandbox\\offscreen\\result.json",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "passed": true
+    }
+  ],
+  "engineRuns": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 76,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-import",
+      "elapsedMs": 2206,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-export",
+      "elapsedMs": 2201,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-import",
+      "elapsedMs": 2119,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-export",
+      "elapsedMs": 2111,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-import",
+      "elapsedMs": 1923,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-export",
+      "elapsedMs": 2110,
+      "exitCode": 0
+    },
+    {
+      "label": "mining-sandbox-import",
+      "elapsedMs": 2016,
+      "exitCode": 0
+    },
+    {
+      "label": "mining-sandbox-export",
+      "elapsedMs": 2109,
+      "exitCode": 0
+    }
+  ],
+  "reusedAuthoredExport": null,
+  "finishedAt": "2026-09-10T06:18:53.886Z",
+  "passed": true
+}

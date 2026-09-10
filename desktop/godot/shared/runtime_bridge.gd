@@ -38,15 +38,23 @@ func receive(arguments: Array) -> void:
 	var request: Variant = JSON.parse_string(arguments[0])
 	if request is Dictionary and queue.size() < 16:
 		queue.append(request)
+		# A detached or hidden Web view may stop producing animation frames
+		# after ready. Host state loading must not wait for the next _process.
+		# Drain on receipt, retaining the same serial queue for async gameplay.
+		_drain_queue()
 
 func _process(_delta: float) -> void:
+	_drain_queue()
+
+func _drain_queue() -> void:
 	if busy or queue.is_empty() or browser == null:
 		return
 	busy = true
-	var request: Dictionary = queue.pop_front()
-	var result := await handle_request(request)
-	result["id"] = request.get("id")
-	browser.complete(JSON.stringify(result))
+	while not queue.is_empty():
+		var request: Dictionary = queue.pop_front()
+		var result := await handle_request(request)
+		result["id"] = request.get("id")
+		browser.complete(JSON.stringify(result))
 	busy = false
 
 func handle_request(request: Dictionary) -> Dictionary:

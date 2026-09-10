@@ -1,0 +1,365 @@
+{
+  "baseId": "mining-sandbox",
+  "mode": "native",
+  "events": [
+    {
+      "at": 1789021330781,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789021330838,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021331163,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021331338,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021331565,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021331812,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021331812,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021331812,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x65740e065a00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021331812,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x65740e065a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021331851,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021331851,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021331852,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021331852,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021331859,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789021331859,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 4,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789021331865,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 4
+    },
+    {
+      "at": 1789021331865,
+      "kind": "load-confirmed"
+    },
+    {
+      "at": 1789021331865,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 5,
+      "op": "pause"
+    },
+    {
+      "at": 1789021331866,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 5
+    },
+    {
+      "at": 1789021331866,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 6,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021331870,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 6
+    },
+    {
+      "at": 1789021331873,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021331877,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021331877,
+      "kind": "first-instance-closed"
+    },
+    {
+      "at": 1789021331883,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 76,
+        "width": 1280,
+        "height": 720
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021332220,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021332358,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021332563,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021332802,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021332802,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021332802,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x44bc0d9e5a00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021332802,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x44bc0d9e5a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021332841,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021332841,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021332843,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021332846,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021332853,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789021332853,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021332855,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021332855,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "passed": true,
+  "state": {
+    "worldId": "alpha",
+    "buildId": "p1-mining-sandbox",
+    "instanceId": "a3faa83af6299e6ff0053824",
+    "state": "ready"
+  },
+  "snapshot": {
+    "base": "mining-sandbox",
+    "state": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "body": {
+        "baseId": "mining-sandbox",
+        "baseVersion": "1.0.0",
+        "chunks": {},
+        "format": "craftmine.godot-mining-sandbox-managed/1",
+        "mapSize": [
+          48,
+          24
+        ],
+        "seed": 20260910,
+        "state": {
+          "chunkIndex": {},
+          "editCount": 0,
+          "equipped": "",
+          "flags": {},
+          "format": "craftmine.godot-mining-sandbox-state/1",
+          "inventory": {},
+          "ledger": {},
+          "ledgerEvicted": 0,
+          "player": {
+            "facing": "right",
+            "health": 3,
+            "position": [
+              104,
+              90.5
+            ],
+            "tile": [
+              6,
+              4
+            ]
+          },
+          "stateVersion": 1,
+          "terrainHash": "",
+          "tools": [],
+          "worldId": "alpha",
+          "worldRevision": 0
+        },
+        "stateVersion": 1,
+        "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "observation": {
+    "baseId": "mining-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "p1-mining-sandbox",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "a3faa83af6299e6ff0053824",
+    "payload": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "bootError": "",
+      "chunks": [],
+      "cursor": [
+        6,
+        4
+      ],
+      "editCount": 0,
+      "equipped": "",
+      "inventory": {},
+      "lastAction": {},
+      "logicalViewportSize": [
+        640,
+        360
+      ],
+      "player": {
+        "equipped": "",
+        "facing": "right",
+        "health": 3,
+        "onFloor": true,
+        "position": [
+          104,
+          90.5
+        ],
+        "tile": [
+          6,
+          4
+        ],
+        "toolTier": 0
+      },
+      "stations": [],
+      "surfaceSize": [
+        0,
+        0
+      ],
+      "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+      "toolTier": 0,
+      "tools": [],
+      "worldId": "alpha",
+      "worldRevision": 0
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T06:22:11Z",
+    "worldId": "alpha"
+  },
+  "snapshotEqual": true,
+  "hiddenSnapshotEqual": true,
+  "reopenedSnapshotEqual": true,
+  "reopenedInstanceChanged": true,
+  "finishedAt": "2026-09-10T06:22:12.856Z"
+}

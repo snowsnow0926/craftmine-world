@@ -1,0 +1,498 @@
+{
+  "baseId": "side-view",
+  "mode": "native",
+  "events": [
+    {
+      "at": 1789021424785,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789021424827,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021425169,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021425341,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021425570,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021425760,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021425760,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021425761,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5b340e03da00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021425761,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5b340e03da00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021425766,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021425766,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021425767,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021425767,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021425767,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789021425767,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 4,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789021425768,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 4
+    },
+    {
+      "at": 1789021425769,
+      "kind": "load-confirmed"
+    },
+    {
+      "at": 1789021425769,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 5,
+      "op": "pause"
+    },
+    {
+      "at": 1789021425770,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 5
+    },
+    {
+      "at": 1789021425770,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 6,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021425770,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 6
+    },
+    {
+      "at": 1789021425770,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 7,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021425771,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 7
+    },
+    {
+      "at": 1789021425774,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021425779,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021425779,
+      "kind": "first-instance-closed"
+    },
+    {
+      "at": 1789021425787,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 76,
+        "width": 1280,
+        "height": 720
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021426137,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021426271,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021426473,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021426659,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021426659,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021426659,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6bf40e055a00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021426659,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6bf40e055a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021426664,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021426664,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021426665,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021426667,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021426668,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021426668,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "loads": [
+    {
+      "instanceId": "4f0f036ce0c1cdf6d3dae946",
+      "response": {
+        "protocol": "craftmine.godot-runtime/2",
+        "worldId": "alpha",
+        "buildId": "p1-side-view",
+        "instanceId": "4f0f036ce0c1cdf6d3dae946",
+        "type": "response",
+        "id": 1,
+        "result": {
+          "loaded": true,
+          "snapshot": {
+            "base": "side-view",
+            "state": {
+              "baseId": "side-view",
+              "baseVersion": "1.0.0",
+              "body": {
+                "abilities": {},
+                "activeCheckpoint": "",
+                "checkpoints": {},
+                "counters": {},
+                "entities": {},
+                "format": "craftmine.godot-sideview-state/1",
+                "inventory": {},
+                "player": {
+                  "facing": 1,
+                  "room": "start",
+                  "x": 80,
+                  "y": 320
+                },
+                "rewards": {},
+                "rooms": {
+                  "start": {
+                    "entries": 1,
+                    "visited": true
+                  }
+                },
+                "stateVersion": 1,
+                "vitals": {
+                  "alive": true,
+                  "health": 3,
+                  "invulnerableRemaining": 0,
+                  "respawnRemaining": 0
+                },
+                "worldId": "alpha"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "alpha"
+            },
+            "worldId": "alpha"
+          }
+        }
+      }
+    },
+    {
+      "instanceId": "a173057dc887a1c661a55913",
+      "response": {
+        "protocol": "craftmine.godot-runtime/2",
+        "worldId": "alpha",
+        "buildId": "p1-side-view",
+        "instanceId": "a173057dc887a1c661a55913",
+        "type": "response",
+        "id": 1,
+        "result": {
+          "loaded": true,
+          "snapshot": {
+            "base": "side-view",
+            "state": {
+              "baseId": "side-view",
+              "baseVersion": "1.0.0",
+              "body": {
+                "abilities": {},
+                "activeCheckpoint": "",
+                "checkpoints": {},
+                "counters": {},
+                "entities": {},
+                "format": "craftmine.godot-sideview-state/1",
+                "inventory": {},
+                "player": {
+                  "facing": 1,
+                  "room": "start",
+                  "x": 80,
+                  "y": 320
+                },
+                "rewards": {},
+                "rooms": {
+                  "start": {
+                    "entries": 1,
+                    "visited": true
+                  }
+                },
+                "stateVersion": 1,
+                "vitals": {
+                  "alive": true,
+                  "health": 3,
+                  "invulnerableRemaining": 0,
+                  "respawnRemaining": 0
+                },
+                "worldId": "alpha"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "alpha"
+            },
+            "worldId": "alpha"
+          }
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "state": {
+    "worldId": "alpha",
+    "buildId": "p1-side-view",
+    "instanceId": "4f0f036ce0c1cdf6d3dae946",
+    "state": "ready"
+  },
+  "snapshot": {
+    "base": "side-view",
+    "state": {
+      "baseId": "side-view",
+      "baseVersion": "1.0.0",
+      "body": {
+        "abilities": {},
+        "activeCheckpoint": "",
+        "checkpoints": {},
+        "counters": {},
+        "entities": {},
+        "format": "craftmine.godot-sideview-state/1",
+        "inventory": {},
+        "player": {
+          "facing": 1,
+          "room": "start",
+          "x": 80,
+          "y": 320
+        },
+        "rewards": {},
+        "rooms": {
+          "start": {
+            "entries": 1,
+            "visited": true
+          }
+        },
+        "stateVersion": 1,
+        "vitals": {
+          "alive": true,
+          "health": 3,
+          "invulnerableRemaining": 0,
+          "respawnRemaining": 0
+        },
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "observation": {
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "buildId": "p1-side-view",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "4f0f036ce0c1cdf6d3dae946",
+    "payload": {
+      "logicalViewportSize": [
+        640,
+        360
+      ],
+      "player": {
+        "alive": true,
+        "doubleJumpAvailable": false,
+        "doubleJumpUnlocked": false,
+        "facing": 1,
+        "health": 3,
+        "onFloor": true,
+        "room": "start",
+        "vx": 0,
+        "vy": 0,
+        "x": 80,
+        "y": 320
+      },
+      "roomId": "start",
+      "surfaceSize": [
+        0,
+        0
+      ],
+      "targets": [],
+      "tick": 8,
+      "visual": {
+        "playerVisible": true,
+        "screenX": 80,
+        "screenY": 300,
+        "textureHeight": 40,
+        "textureWidth": 20,
+        "visible": true
+      }
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T06:23:45Z",
+    "worldId": "alpha"
+  },
+  "snapshotEqual": true,
+  "initialRunningSnapshot": {
+    "base": "side-view",
+    "state": {
+      "baseId": "side-view",
+      "baseVersion": "1.0.0",
+      "body": {
+        "abilities": {},
+        "activeCheckpoint": "",
+        "checkpoints": {},
+        "counters": {},
+        "entities": {},
+        "format": "craftmine.godot-sideview-state/1",
+        "inventory": {},
+        "player": {
+          "facing": 1,
+          "room": "start",
+          "x": 80,
+          "y": 320
+        },
+        "rewards": {},
+        "rooms": {
+          "start": {
+            "entries": 1,
+            "visited": true
+          }
+        },
+        "stateVersion": 1,
+        "vitals": {
+          "alive": true,
+          "health": 3,
+          "invulnerableRemaining": 0,
+          "respawnRemaining": 0
+        },
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "hiddenSnapshotEqual": true,
+  "reopenedSnapshotEqual": true,
+  "reopenedInstanceChanged": true,
+  "finishedAt": "2026-09-10T06:23:46.669Z"
+}

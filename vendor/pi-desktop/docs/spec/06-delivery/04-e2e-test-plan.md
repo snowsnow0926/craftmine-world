@@ -9128,3 +9128,8 @@ Hold the selected asset body read, complete a favorite/tag annotation and the en
 ### AL2 Main asset metadata entry (2026-09-10)
 
 Run the bounded asset Main/Core route and actual React form tests. Unknown fields, methods, stale owner, duplicate transaction conflict and finite probe validation must reject. For full-client acceptance use tests/plan-loop/asset-client-native.mjs with an explicit development mode or independently verified same-source package. Seed only two local assets with that selected Core; perform favorite/filter/unfavorite/tag edits through actual navigation forms, restart and compare immutable records and world.list. Both client shutdown audits must be clean. No real input, focus, Pointer Lock, models or personal settings are used. Runner preparation is not full-client evidence.
+
+
+## P1 hidden initial-load regression (2026-09-10)
+
+Use tests/player-feedback/P1/renderer-load-native.mjs with independent D-drive data. Compare native detached and offscreen child views for all four authored bases. Require actual load-response state equality, paused hidden snapshot preservation and a new-instance restore. Offscreen captures separately require physical 1280x720 and nonempty pixels. Preserve timeout/crash failures and prohibit simulated input, focus and Pointer Lock. Full client application, restart and user display behavior remain separate P10/player checks.

@@ -1,0 +1,68 @@
+{
+  "baseId": "first-person",
+  "mode": "attached-unthrottled",
+  "events": [
+    {
+      "at": 1789020945435,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789020945490,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": false
+    },
+    {
+      "at": 1789020945837,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789020946011,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789020946244,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789020946640,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789020946640,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789020961651,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789020961652,
+      "kind": "failure",
+      "error": "Runtime request timed out: load [fault=renderer-destroyed; console[info]=Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.; requests=15/15]"
+    },
+    {
+      "at": 1789020961652,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "passed": false,
+  "error": "Error: Runtime request timed out: load [fault=renderer-destroyed; console[info]=Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.; requests=15/15]\n    at GodotWorldViewHost.startReplacementInner (D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-qTBk0e\\first-person\\attached-unthrottled\\app\\main\\index.cjs:691:13)",
+  "finishedAt": "2026-09-10T06:16:01.653Z"
+}

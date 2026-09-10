@@ -1,0 +1,740 @@
+{
+  "baseId": "top-down",
+  "mode": "offscreen",
+  "events": [
+    {
+      "at": 1789021422678,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789021422717,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021422988,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021423112,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021423265,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021423369,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021423369,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021423371,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "at": 1789021423371,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423371,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423371,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423371,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423371,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423377,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021423377,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021423377,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423377,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423377,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423378,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021423378,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021423378,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789021423378,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 4,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789021423379,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 4
+    },
+    {
+      "at": 1789021423379,
+      "kind": "load-confirmed"
+    },
+    {
+      "at": 1789021423379,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 5,
+      "op": "pause"
+    },
+    {
+      "at": 1789021423379,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 5
+    },
+    {
+      "at": 1789021423380,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 6,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021423380,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 6
+    },
+    {
+      "at": 1789021423380,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 7,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021423380,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 7
+    },
+    {
+      "at": 1789021423384,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423384,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423384,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423421,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021423422,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "at": 1789021423429,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "at": 1789021423441,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5cec0e361400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "at": 1789021423761,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 8,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789021423764,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 8
+    },
+    {
+      "at": 1789021423776,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021423781,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021423781,
+      "kind": "first-instance-closed"
+    },
+    {
+      "at": 1789021423786,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 76,
+        "width": 1280,
+        "height": 720
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021424023,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021424109,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021424239,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021424343,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021424343,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021424345,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x19ac0e349400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021424345,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x19ac0e349400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021424345,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x19ac0e349400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021424345,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x19ac0e349400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021424345,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x19ac0e349400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021424351,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021424351,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021424351,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x19ac0e349400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021424351,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x19ac0e349400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021424351,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x19ac0e349400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021424354,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021424354,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021424355,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x19ac0e349400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021424355,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x19ac0e349400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021424355,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x19ac0e349400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021424355,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021424355,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "loads": [
+    {
+      "instanceId": "4e1ee035f27e6008dcde3203",
+      "response": {
+        "protocol": "craftmine.godot-runtime/2",
+        "worldId": "alpha",
+        "buildId": "p1-top-down",
+        "instanceId": "4e1ee035f27e6008dcde3203",
+        "type": "response",
+        "id": 1,
+        "result": {
+          "loaded": true,
+          "snapshot": {
+            "base": "top-down",
+            "state": {
+              "baseId": "top-down",
+              "baseVersion": "1.0.0",
+              "body": {
+                "coins": 0,
+                "flags": {},
+                "format": "craftmine.godot-topdown-state/1",
+                "grantedRewards": {},
+                "inventory": {},
+                "player": {
+                  "facing": "down",
+                  "position": [
+                    192,
+                    128
+                  ],
+                  "sceneId": "world"
+                },
+                "quests": {},
+                "scenePositions": {
+                  "world": [
+                    192,
+                    128
+                  ]
+                },
+                "shops": {},
+                "stateVersion": 1,
+                "worldId": "alpha"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "alpha"
+            },
+            "worldId": "alpha"
+          }
+        }
+      }
+    },
+    {
+      "instanceId": "6fe0a5c2672dce0857968018",
+      "response": {
+        "protocol": "craftmine.godot-runtime/2",
+        "worldId": "alpha",
+        "buildId": "p1-top-down",
+        "instanceId": "6fe0a5c2672dce0857968018",
+        "type": "response",
+        "id": 1,
+        "result": {
+          "loaded": true,
+          "snapshot": {
+            "base": "top-down",
+            "state": {
+              "baseId": "top-down",
+              "baseVersion": "1.0.0",
+              "body": {
+                "coins": 0,
+                "flags": {},
+                "format": "craftmine.godot-topdown-state/1",
+                "grantedRewards": {},
+                "inventory": {},
+                "player": {
+                  "facing": "down",
+                  "position": [
+                    192,
+                    128
+                  ],
+                  "sceneId": "world"
+                },
+                "quests": {},
+                "scenePositions": {
+                  "world": [
+                    192,
+                    128
+                  ]
+                },
+                "shops": {},
+                "stateVersion": 1,
+                "worldId": "alpha"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "alpha"
+            },
+            "worldId": "alpha"
+          }
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "state": {
+    "worldId": "alpha",
+    "buildId": "p1-top-down",
+    "instanceId": "4e1ee035f27e6008dcde3203",
+    "state": "ready"
+  },
+  "snapshot": {
+    "base": "top-down",
+    "state": {
+      "baseId": "top-down",
+      "baseVersion": "1.0.0",
+      "body": {
+        "coins": 0,
+        "flags": {},
+        "format": "craftmine.godot-topdown-state/1",
+        "grantedRewards": {},
+        "inventory": {},
+        "player": {
+          "facing": "down",
+          "position": [
+            192,
+            128
+          ],
+          "sceneId": "world"
+        },
+        "quests": {},
+        "scenePositions": {
+          "world": [
+            192,
+            128
+          ]
+        },
+        "shops": {},
+        "stateVersion": 1,
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "observation": {
+    "baseId": "top-down",
+    "baseVersion": "1.0.0",
+    "buildId": "p1-top-down",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "4e1ee035f27e6008dcde3203",
+    "payload": {
+      "bootError": "",
+      "coins": 0,
+      "duplicateEntityIds": [],
+      "flags": {},
+      "format": "craftmine.godot-topdown-snapshot/1",
+      "grantedRewards": {},
+      "inventory": {},
+      "logicalViewportSize": [
+        320,
+        180
+      ],
+      "maps": {
+        "blank-room": {
+          "collisionShapes": 37,
+          "effectiveHeight": 16,
+          "effectiveWidth": 24,
+          "height": 16,
+          "mapId": "blank-room",
+          "ok": true,
+          "solidCells": 93,
+          "tileSize": 16,
+          "tiles": 385,
+          "width": 24
+        }
+      },
+      "physical": {
+        "facing": "down",
+        "overlaps": {},
+        "playerPosition": [
+          192,
+          128
+        ]
+      },
+      "player": {
+        "facing": "down",
+        "position": [
+          192,
+          128
+        ],
+        "sceneId": "world"
+      },
+      "quests": {},
+      "sceneId": "world",
+      "scenePositions": {
+        "world": [
+          192,
+          128
+        ]
+      },
+      "shops": {},
+      "sprite": {
+        "facing": "down",
+        "frame": 0,
+        "moving": false
+      },
+      "stateVersion": 1,
+      "surfaceSize": [
+        0,
+        0
+      ],
+      "worldId": "alpha"
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T06:23:43Z",
+    "worldId": "alpha"
+  },
+  "snapshotEqual": true,
+  "initialRunningSnapshot": {
+    "base": "top-down",
+    "state": {
+      "baseId": "top-down",
+      "baseVersion": "1.0.0",
+      "body": {
+        "coins": 0,
+        "flags": {},
+        "format": "craftmine.godot-topdown-state/1",
+        "grantedRewards": {},
+        "inventory": {},
+        "player": {
+          "facing": "down",
+          "position": [
+            192,
+            128
+          ],
+          "sceneId": "world"
+        },
+        "quests": {},
+        "scenePositions": {
+          "world": [
+            192,
+            128
+          ]
+        },
+        "shops": {},
+        "stateVersion": 1,
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "hiddenSnapshotEqual": true,
+  "capture": {
+    "width": 1280,
+    "height": 720,
+    "pixelStats": {
+      "bytes": 3686400,
+      "sampledColors": 17
+    },
+    "viewportObservation": {
+      "baseId": "top-down",
+      "baseVersion": "1.0.0",
+      "buildId": "p1-top-down",
+      "format": "craftmine.godot-observation/1",
+      "instanceId": "4e1ee035f27e6008dcde3203",
+      "payload": {
+        "bootError": "",
+        "coins": 0,
+        "duplicateEntityIds": [],
+        "flags": {},
+        "format": "craftmine.godot-topdown-snapshot/1",
+        "grantedRewards": {},
+        "inventory": {},
+        "logicalViewportSize": [
+          320,
+          180
+        ],
+        "maps": {
+          "blank-room": {
+            "collisionShapes": 37,
+            "effectiveHeight": 16,
+            "effectiveWidth": 24,
+            "height": 16,
+            "mapId": "blank-room",
+            "ok": true,
+            "solidCells": 93,
+            "tileSize": 16,
+            "tiles": 385,
+            "width": 24
+          }
+        },
+        "physical": {
+          "facing": "down",
+          "overlaps": {},
+          "playerPosition": [
+            192,
+            128
+          ]
+        },
+        "player": {
+          "facing": "down",
+          "position": [
+            192,
+            128
+          ],
+          "sceneId": "world"
+        },
+        "quests": {},
+        "sceneId": "world",
+        "scenePositions": {
+          "world": [
+            192,
+            128
+          ]
+        },
+        "shops": {},
+        "sprite": {
+          "facing": "down",
+          "frame": 0,
+          "moving": false
+        },
+        "stateVersion": 1,
+        "surfaceSize": [
+          1280,
+          720
+        ],
+        "worldId": "alpha"
+      },
+      "protocol": "craftmine.godot-runtime/2",
+      "sampledAt": "2026-09-10T06:23:43Z",
+      "worldId": "alpha"
+    }
+  },
+  "capturePassed": true,
+  "reopenedSnapshotEqual": true,
+  "reopenedInstanceChanged": true,
+  "finishedAt": "2026-09-10T06:23:44.356Z"
+}

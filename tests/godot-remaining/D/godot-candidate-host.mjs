@@ -7,6 +7,7 @@ import {join, resolve, sep} from 'node:path';
 import {stripTypeScriptTypes} from 'node:module';
 import vm from 'node:vm';
 import test from 'node:test';
+import {EventEmitter} from 'node:events';
 
 const source = await readFile(new URL('../../../vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host.ts',import.meta.url),'utf8');
 const compiled = stripTypeScriptTypes(source,{mode:'transform'}).replace(/^import[\s\S]*?from ["'][^"']+["'];\s*/gm,'').replace(/^export /gm,'');
@@ -16,7 +17,7 @@ const deferred=()=>{let resolve; const promise=new Promise(r=>resolve=r); return
 function fixture({cold = false} = {}) {
   const events=[], runtimes=[], views=[];
   let fault=null, descriptor=null, startupGate=null, callback=null, formalExists=!cold, pendingReady=null;
-  const context={module:{exports:{}},join,resolve,sep,realpath,setInterval,clearInterval,console,
+  const context={module:{exports:{}},join,resolve,sep,realpath,setInterval,clearInterval,setTimeout,clearTimeout,console,
     WORLD_CHROME_HEIGHT:76,GODOT_WORLD_MESSAGE_CHANNEL:'message',GODOT_WORLD_DETACH_CHANNEL:'detach',
     async createWorldRuntime(options){
       events.push('start:'+options.worldId);
@@ -51,7 +52,9 @@ function fixture({cold = false} = {}) {
     }});
   host.createView=()=>{
     const handlers={};
-    const view={webContents:{async loadURL(){},on(name,handler){handlers[name]=handler;},once(){},send(){},isDestroyed(){return this.closed===true;},close(){this.closed=true;events.push('close-view');}}};
+    const contents=new EventEmitter(),on=contents.on.bind(contents);
+    Object.assign(contents,{async loadURL(){},on(name,handler){handlers[name]=handler;return on(name,handler);},send(){},isDestroyed(){return this.closed===true;},close(){this.closed=true;events.push('close-view');this.emit('destroyed');}});
+    const view={webContents:contents};
     views.push({view,handlers});
     return view;
   };

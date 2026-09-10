@@ -1,0 +1,68 @@
+{
+  "baseId": "first-person",
+  "mode": "attached",
+  "events": [
+    {
+      "at": 1789020928790,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789020928829,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789020929156,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789020929325,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789020929554,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789020929951,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789020929951,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789020944954,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789020944954,
+      "kind": "failure",
+      "error": "Runtime request timed out: load [fault=renderer-destroyed; console[info]=Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.; requests=15/15]"
+    },
+    {
+      "at": 1789020944955,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "passed": false,
+  "error": "Error: Runtime request timed out: load [fault=renderer-destroyed; console[info]=Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.; requests=15/15]\n    at GodotWorldViewHost.startReplacementInner (D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-qTBk0e\\first-person\\attached\\app\\main\\index.cjs:691:13)",
+  "finishedAt": "2026-09-10T06:15:44.956Z"
+}

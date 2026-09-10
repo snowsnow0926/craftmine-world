@@ -352,12 +352,13 @@ export class GodotWorldViewHost {
         if (resumed.error) throw new Error(resumed.error);
       }
     } catch (error) {
+      // Freeze the causal evidence before our own close emits `destroyed`.
+      const message = error instanceof Error ? error.message : String(error);
+      const reason = `${message}${this.describeFailure(instance)}`;
       this.pending = null;
       instance.alive = false;
       instance.detach();
       await this.retireInstance(instance, false).catch(() => undefined);
-      const message = error instanceof Error ? error.message : String(error);
-      const reason = `${message}${this.describeFailure(instance)}`;
       if (previous?.alive) {
         // The running world is untouched: report its own identity, not the
         // candidate that failed.

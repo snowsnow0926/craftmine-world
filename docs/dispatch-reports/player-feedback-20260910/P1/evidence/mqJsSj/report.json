@@ -1,0 +1,29 @@
+{
+  "out": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-mqJsSj",
+  "startedAt": "2026-09-10T06:13:00.838Z",
+  "sources": {
+    "host": "76dc1e7a020bccb324278c97e722d3b4f7cc9e18e7030bf2f47c0614bcbee1e2",
+    "runtime": "1bf3163896b4fae7bdd3a936c9301e366871ef340f94352f6f61ec96f0bdc558"
+  },
+  "dependencies": "C:/cm-plan-next-20260910",
+  "limits": [
+    "Authored exports, actual host; no Core application transaction or product UI",
+    "Hidden owner and software rendering; native child versus offscreen child compared without focus or input"
+  ],
+  "cases": [],
+  "engineRuns": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 82,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-import",
+      "elapsedMs": 2211,
+      "error": "Error: first-person-import: Godot reported an error"
+    }
+  ],
+  "error": "Error: first-person-import: Godot reported an error\n    at Object.run (file:///D:/cm-fb-p1-20260910/desktop/godot/toolchain.mjs:60:88)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///D:/cm-fb-p1-20260910/tests/player-feedback/P1/renderer-load-native.mjs:27:3",
+  "finishedAt": "2026-09-10T06:13:04.311Z",
+  "passed": false
+}
