@@ -10,25 +10,29 @@ import type { GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance.
 // are captured only at a few decisive moments (bounded), each with its own capture
 // times and an explicit statement of which attack it belongs to.
 //
-// The plan only schedules commands. Whether a repeated attack really was refused
-// inside one second is decided from these recorded receipt times, never from the
-// intended spacing.
+// The plan only schedules commands. Every timing claim is decided from these
+// recorded receipt times, never from the intended spacing, and a capture is never
+// moved into a window whose timing has to be measured.
 //
 // Hammer plan
-//   resume → pickup sweep over three headings (interact before and after each
-//   short walk, stepping back between headings) → equip thunder_hammer → look at
-//   the training target → fire, capture, fire again, wait, fire again → walk in
-//   and keep firing at the target.
-//   The sweep stops early once the hammer is really carried. Directly equipping
-//   is recorded but is never presented as a pickup.
+//   resume → pickup scan over three pitches by three headings at two distances,
+//   interacting each time (bounded, stops early on a real pickup) → equip
+//   thunder_hammer → look at the training target → two adjacent attacks with no
+//   capture between them → wait → attack again → walk in and keep attacking.
+//   Directly equipping is recorded but is never presented as a pickup.
 //
 // Dog plan
 //   resume → talk at spawn → walk well beyond the dog and talk again → walk as
-//   far as the town map allows and talk → walk back until contact returns and
-//   talk again. Every leg records the real distance and the physical overlap
-//   report, so "it followed" and "it stopped" are not inferred from one refusal.
+//   far as the town map allows and talk → walk back along the recorded outbound
+//   path in small steps until contact returns, then talk again. The return uses
+//   the measured outbound displacement, never a guessed number of steps.
 const MAX_FRAMES = 12;
 const SCREEN = { width: 1280, height: 720 };
+/** Steps per return chunk. The town interaction radius is about 14 px wide, so a
+ * chunk of 10 steps (~14.7 px) cannot step over the dog without contact. */
+const RETRACE_CHUNK_STEPS = 10;
+const RETRACE_CHUNK_LIMIT = 60;
+const FALLBACK_PX_PER_STEP = 88 / 60;
 
 export async function exerciseP8Gameplay(access: GodotGameplayAccess, caseId: "hammer" | "dog", worldId: string) {
   const first = await access.observe();
@@ -40,7 +44,7 @@ export async function exerciseP8Gameplay(access: GodotGameplayAccess, caseId: "h
     return result;
   };
   const actions: any[] = [];
-  let frames = 0, attackCount = 0;
+  let frames = 0, attackCount = 0, retrace: Record<string, unknown> | null = null;
   let lastAttack: any = null;
   const act = async (op: string, args: Record<string, unknown>, capture = false) => {
     const commandStartedAtMs = Date.now();
@@ -86,33 +90,47 @@ export async function exerciseP8Gameplay(access: GodotGameplayAccess, caseId: "h
   const carried = (observation: any) => Array.isArray(observation?.payload?.inventory?.slots)
     && observation.payload.inventory.slots.some((slot: any) => typeof slot?.id === "string" && slot.id.includes("thunder_hammer"));
   const overlapsDog = (observation: any) => observation?.payload?.physical?.overlaps?.["p8-dog"] === true;
+  const moveDistance = (dx: number, dy: number) => actions.reduce((sum, action) => (action.op === "move" && Number(action.args?.dx) === dx && Number(action.args?.dy) === dy ? sum + (Number(action.result?.distance) || 0) : sum), 0);
+  const moveSteps = (dx: number, dy: number) => actions.reduce((sum, action) => (action.op === "move" && Number(action.args?.dx) === dx && Number(action.args?.dy) === dy ? sum + (Number(action.args?.steps) || 0) : sum), 0);
 
   if (caseId === "hammer") {
     await act("resume", {});
-    // Bounded pickup sweep near spawn: three headings, up to three interactions
-    // each, returning to the spawn area between headings.
-    const headings = [0, 0.7, -0.7];
-    let picked = false;
-    for (const yaw of headings) {
+    // Bounded pickup scan. A negative pitch looks down (the aim ray is the camera's
+    // -Z, so pitch_pivot.rotation.x > 0 looks up), and these pitches form a ladder
+    // whose rays meet the ground between about 0.7 m and 3.6 m, which is where an
+    // ordinary pickup near the spawn can be. Three headings cover the forward arc,
+    // and the whole scan repeats one walk further out. It stops as soon as the
+    // hammer is really carried. The driver cannot aim at every point in the world,
+    // so a scan that never points at an interactable is reported as untested rather
+    // than as a product failure.
+    const yaws = [0, 0.6, -0.6], pitches = [-1.15, -1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.42];
+    let picked = false, scanned = 0;
+    for (const leg of [0, 1]) {
       if (picked) break;
-      await act("look", { yaw, pitch: -0.4 }, yaw === 0);
-      for (const step of [0, 1, 2]) {
-        if (step > 0) await act("walk", { forward: 1, frames: 24 });
-        const attempt = await act("interact", {});
-        if (carried(attempt.observation)) { picked = true; break; }
+      if (leg === 1) await act("walk", { forward: 1, frames: 24 });
+      for (const yaw of yaws) {
+        for (const pitch of pitches) {
+          await act("look", { yaw, pitch }, scanned === 0);
+          scanned += 1;
+          const attempt = await act("interact", {});
+          if (carried(attempt.observation)) { picked = true; break; }
+        }
+        if (picked) break;
       }
-      if (!picked) await act("walk", { forward: -1, frames: 48 });
     }
+    if (!picked) await act("walk", { forward: -1, frames: 24 });
     // Equip is always attempted and reported; it is never pickup evidence.
     await act("equip", { value: "thunder_hammer" });
     await act("look", { yaw: 0, pitch: 0 }, true);
-    await act("fire", {}, true);
+    // Two adjacent attacks with nothing between them, so the gap between the two
+    // commands is the real one. Frames are taken on later attacks only.
+    await act("fire", {});
     await act("fire", {});
     await act("wait", { frames: 66 });
     await act("fire", {}, true);
     await act("wait", { frames: 12 });
     await act("fire", {}, true);
-    // Close the distance to the training target and keep firing.
+    // Close the distance to the training target and keep attacking.
     await act("walk", { forward: 1, frames: 150 });
     await act("fire", {});
     await act("walk", { forward: 1, frames: 45 });
@@ -133,14 +151,38 @@ export async function exerciseP8Gameplay(access: GodotGameplayAccess, caseId: "h
     await act("move", { dx: 0, dy: 1, steps: 600 });
     await act("wait", { frames: 60 });
     await act("talk", { npcId: "p8-dog" }, true);
-    // Walk back along the same path in bounded chunks until contact returns, so
-    // "it stayed behind" is observed rather than assumed.
-    let contact = false;
-    for (const leg of [{ dx: 0, dy: -1, steps: 400 }, { dx: 0, dy: -1, steps: 400 }, { dx: -1, dy: 0, steps: 400 }, { dx: -1, dy: 0, steps: 400 }]) {
-      await act("move", leg);
-      const settled = await act("wait", { frames: 45 });
+    // Walk back along the measured outbound path. A truncated leg can only
+    // understate the speed, so the fastest observed leg gives the nominal pixels
+    // per step: sizing the northward leg with the southward leg's truncated average
+    // would have overshot into the wall. The north leg is then walked in chunks and
+    // stops on the outbound row or on contact, and the westward sweep advances far
+    // less than the contact area so it cannot step over the dog.
+    const southPx = moveDistance(0, 1);
+    const requiredPx = moveDistance(1, 0);
+    const pxPerStep = Math.max(FALLBACK_PX_PER_STEP * 0.5, ...actions
+      .filter(action => action.op === "move" && Number(action.args?.steps) > 0 && Number(action.result?.distance) > 0)
+      .map(action => Number(action.result.distance) / Number(action.args.steps)));
+    let contact = false, coveredPx = 0, northPx = 0, northChunks = 0, chunks = 0;
+    while (!contact && southPx > 0 && northPx < southPx * 0.98 && northChunks < 40) {
+      const steps = Math.max(1, Math.min(40, Math.round((southPx - northPx) / pxPerStep)));
+      await act("move", { dx: 0, dy: -1, steps });
+      northPx = moveDistance(0, -1);
+      northChunks += 1;
+      const settled = await act("wait", { frames: 15 });
       if (overlapsDog(settled.observation)) { contact = true; break; }
     }
+    while (!contact && chunks < RETRACE_CHUNK_LIMIT && coveredPx < requiredPx * 1.05) {
+      await act("move", { dx: -1, dy: 0, steps: RETRACE_CHUNK_STEPS });
+      coveredPx = moveDistance(-1, 0);
+      chunks += 1;
+      const settled = await act("wait", { frames: 15 });
+      if (overlapsDog(settled.observation)) { contact = true; break; }
+    }
+    // `complete` means the retrace finished its search: either it found the dog, or
+    // it really covered the whole outbound path. Only then can "no contact" be read
+    // as evidence about the dog rather than as a driver limitation.
+    retrace = { southPx, pxPerStep, requiredPx, northPx, northChunks, coveredPx, chunks, chunkSteps: RETRACE_CHUNK_STEPS, chunkLimit: RETRACE_CHUNK_LIMIT,
+      complete: contact || (requiredPx > 0 && coveredPx >= requiredPx * 1.05), contact };
     if (contact) await act("talk", { npcId: "p8-dog" }, true);
     else await act("talk", { npcId: "p8-dog" });
   }
@@ -150,8 +192,9 @@ export async function exerciseP8Gameplay(access: GodotGameplayAccess, caseId: "h
     caseId,
     before: first,
     actions,
+    ...(retrace ? { retrace } : {}),
     plan: { frames: frames, maxFrames: MAX_FRAMES, actions: actions.length, attacks: byOp("fire"), interactions: byOp("interact"), moves: byOp("move"), talks: byOp("talk"),
-      scope: "Fixed per-case plan over a closed op vocabulary. Bounded adaptivity only: it stops picking once the item is really carried, and stops walking back once contact returns. It never injects a caller-supplied op and never writes state." },
+      scope: "Fixed per-case plan over a closed op vocabulary. Bounded adaptivity only: it stops scanning once the item is really carried, and walks back in chunks until contact returns. It never injects a caller-supplied op and never writes state." },
     limitation: "Raw ordinary-command results, live observations and a bounded set of real rendered frames with their real capture times. The per-criterion verdicts are computed separately; frames exist to support an independent review of the lightning effect and the dog's visible stop, which no product channel reports.",
   };
 }

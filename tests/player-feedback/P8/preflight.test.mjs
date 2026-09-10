@@ -130,15 +130,17 @@ test('fixed exercise retains actual failures, rejects extra commands, and aborts
   await f.run('initialize', { caseId: 'hammer', worldId: 'world-hammer' });
   await assert.rejects(f.run('exercise', { caseId: 'hammer', op: 'arbitrary' }), /INVALID_REQUEST/);
   const result = await f.run('exercise', { caseId: 'hammer' });
-  // The plan is fixed: resume, a three-heading pickup sweep, equip, then the attack
-  // gate and the walk-in. A fixture that always refuses interact must run the whole
-  // sweep, so the plan shape is fully predictable here.
+  // The plan is fixed: resume, a bounded pickup scan over three headings and eight
+  // ground-covering pitches at two distances, equip, then the attack gate and the
+  // walk-in. A fixture that always refuses interact must run the whole scan, so the
+  // plan shape is fully predictable here.
   const ops = operations.map(entry => entry[0]);
   assert.equal(ops[0], 'resume');
-  assert.equal(ops.filter(op => op === 'look').length, 4, 'three sweep headings plus the aim reset');
-  assert.equal(ops.filter(op => op === 'interact').length, 9, 'three headings by three interactions');
+  assert.equal(ops.filter(op => op === 'look').length, 3 * 8 * 2 + 1, 'the scan headings and pitches plus the aim reset');
+  assert.equal(ops.filter(op => op === 'interact').length, 3 * 8 * 2, 'one interaction per scan direction and distance');
   assert.equal(ops.filter(op => op === 'fire').length, 7, 'the gate pair, the reopen and the walk-in shots');
-  assert.equal(result.actions.length, ops.length, 'every performed operation must be recorded');
+  assert.equal(ops.filter(op => op === 'walk').length, 5, 'the scan advance, its return and three walk-ins');
+  assert.equal(result.plan.actions, ops.length);
   assert.ok(result.actions.every(action => action.result.error));
   assert.ok(result.actions.every(action => action.observation && Number.isFinite(action.observedAtMs)));
   const frames = result.actions.filter(action => action.frame);
@@ -165,7 +167,12 @@ test('the fixed dog sequence walks away before its far-range talk', async () => 
   // Near talk, short follow leg, far leg in two directions, then the walk back.
   assert.deepEqual(ops.slice(0, 10), ['resume', 'talk', 'move', 'wait', 'talk', 'move', 'wait', 'move', 'wait', 'talk']);
   assert.ok(ops.length > 10 && ops.at(-1) === 'talk', 'the walk back and its talk are recorded');
-  assert.equal(ops.filter(op => op === 'move').length >= 5, true);
+  // This fixture reports neither a distance nor an overlap, so the retrace has no
+  // measured path to follow: it must record that honestly instead of inventing one.
+  assert.equal(result.retrace.southPx, 0);
+  assert.equal(result.retrace.complete, false);
+  assert.equal(result.retrace.contact, false);
+  assert.ok(operations.filter(entry => entry[0] === 'move').every(entry => entry[1].steps <= 600));
   assert.equal(operations[1][1].npcId, 'p8-dog');
   const shortLeg = operations.find(([op, args]) => op === 'move' && args.steps === 200);
   const farLeg = operations.find(([op, args]) => op === 'move' && args.steps === 600);

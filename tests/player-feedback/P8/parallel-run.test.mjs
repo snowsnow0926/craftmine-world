@@ -9,6 +9,9 @@ import { readLedgerSummary, admissionAccounting, JOURNAL_FILE, JOURNAL_ENV, LEGA
 import { openRequestJournal } from './evidence.mjs';
 import { MODEL, ENDPOINT } from './relay.mjs';
 import { summarizeRun, summarizeCase, CASE_PIPELINE_COMPLETE } from './run-outcome.mjs';
+import { evaluateGameplay } from './gameplay-criteria.mjs';
+import { mergeReview, REVIEW_FORMAT } from './review-merge.mjs';
+import { dogExercise, dogSource } from './gameplay-fixtures.mjs';
 
 // Offline verification for the parallel acceptance driver: explicit case
 // selection over argv and environment, one journal per run with a single owner,
@@ -24,7 +27,6 @@ const runDir = () => fs.mkdtempSync(path.join(out, 'run-'));
 const attempt = id => ({ id, endpoint: ENDPOINT, requestedModel: MODEL });
 const historicalPath = path.join(path.dirname(root), 'p8-unlimited-20260910.ndjson');
 const inside = name => { const directory = path.join(root, 'test-results', name); fs.mkdirSync(directory, { recursive: true }); return directory; };
-
 test('case selection is explicit on argv and in the environment, and refuses a mixed request', () => {
   assert.deepEqual(p8Cases({}), ['hammer', 'dog']);
   assert.deepEqual(p8Cases({ CRAFTMINE_P8_CASES: 'hammer' }), ['hammer']);
@@ -40,6 +42,78 @@ test('case selection is explicit on argv and in the environment, and refuses a m
   assert.throws(() => p8CaseSelection({ argv: ['--case'] }), /P8_INVALID_CASE_SELECTION/);
 });
 
+test('a completed single case is a single-case pass and never a two-case pass', () => {
+  const verdict = over => ({ format: 'craftmine.p8-gameplay-verdict/1', criteria: [], machineVerified: true, failed: [], insufficient: [], reviewRequired: [], verified: true, ...over });
+  const complete = { caseId: 'hammer', outcome: CASE_PIPELINE_COMPLETE, restart: { passed: true }, gameplay: { verdict: verdict({}) } };
+  const failedVerdict = { caseId: 'hammer', outcome: CASE_PIPELINE_COMPLETE, restart: { passed: true }, gameplay: { verdict: verdict({ machineVerified: false, verified: false, failed: ['pickup-actual'] }) } };
+  const one = summarizeRun({ requestedCases: ['hammer'], executedCases: ['hammer'], cases: [complete] });
+  assert.equal(one.pipelinePassed, true); assert.equal(one.behaviorVerified, true);
+  assert.equal(one.singleCasePassed, true); assert.equal(one.combinedTwoCasePassed, false);
+  assert.equal(one.passed, false); assert.equal(one.reviewRequired, true);
+  const missing = summarizeRun({ requestedCases: ['hammer', 'dog'], executedCases: ['hammer'], cases: [complete] });
+  assert.equal(missing.pipelinePassed, false); assert.equal(missing.singleCasePassed, false); assert.equal(missing.combinedTwoCasePassed, false);
+  const stopped = summarizeRun({ requestedCases: ['hammer'], executedCases: ['hammer'], cases: [complete], stopped: true });
+  assert.equal(stopped.pipelinePassed, false); assert.equal(stopped.singleCasePassed, false);
+  const unverified = summarizeRun({ requestedCases: ['hammer'], executedCases: ['hammer'], cases: [failedVerdict] });
+  assert.equal(unverified.pipelinePassed, true, 'the pipeline is reported separately from the behaviour');
+  assert.equal(unverified.behaviorVerified, false); assert.equal(unverified.singleCasePassed, false);
+  assert.deepEqual(unverified.gameplayFailed, ['hammer:pickup-actual'], 'the real failure is kept in the summary');
+  const both = summarizeRun({ requestedCases: ['hammer', 'dog'], executedCases: ['hammer', 'dog'], cases: [complete, { ...complete, caseId: 'dog' }] });
+  assert.equal(both.combinedTwoCasePassed, true); assert.equal(both.singleCasePassed, false); assert.equal(both.passed, false);
+});
+
+test('the summary reads the gameplay verdict the driver really writes', () => {
+  // The real evaluateGameplay output, not a hand-written shape: the old bug was
+  // that summarizeCase read item.gameplay.* while the driver writes
+  // item.gameplay.verdict.*, so every failure silently became an empty list.
+  const real = evaluateGameplay({ caseId: 'dog', exercise: { actions: [] }, source: [] });
+  assert.ok(real.failed.length > 0 && real.criterion === undefined, 'the fixture must be a real verdict');
+  assert.ok(Array.isArray(real.criteria) && real.criteria.length > 0);
+  const item = verdict => ({ caseId: 'dog', worldId: 'world-dog', outcome: CASE_PIPELINE_COMPLETE, restart: { passed: true }, gameplay: { verdict } });
+  const summary = summarizeRun({ requestedCases: ['dog'], executedCases: ['dog'], cases: [item(real)] });
+  assert.deepEqual(summary.perCase[0].gameplayFailed, real.failed, 'real failures must survive the summary');
+  assert.deepEqual(summary.perCase[0].gameplayInsufficient, real.insufficient);
+  assert.deepEqual(summary.perCase[0].gameplayReviewRequired, real.reviewRequired);
+  assert.deepEqual(summary.gameplayFailed, real.failed.map(id => 'dog:' + id));
+  assert.deepEqual(summary.reviewRequiredItems, real.reviewRequired.map(id => 'dog:' + id));
+  assert.equal(summary.pendingReview, real.reviewRequired.length > 0);
+  assert.equal(summary.perCase[0].behaviorVerified, false);
+  // The pipeline and the behaviour are separate statements, and the note says so.
+  assert.equal(summary.pipelinePassed, true);
+  assert.equal(summary.behaviorVerified, false);
+  assert.equal(summary.singleCasePassed, false);
+  assert.match(summary.note, /never the gameplay verdict/);
+  assert.match(summary.note, /behaviorVerified requires pipelinePassed/);
+  assert.equal(summarizeCase({ caseId: 'dog', outcome: 'running' }).behaviorVerified, false);
+});
+
+test('a reviewed real verdict reaches the summary without raising the pipeline', () => {
+  const verdict = evaluateGameplay({ caseId: 'dog', exercise: dogExercise(), source: dogSource });
+  assert.deepEqual(verdict.failed, []);
+  assert.equal(verdict.verified, false, 'the deferred visual claims keep it unverified on its own');
+  const frames = verdict.criteria.find(row => row.id === 'dog-visible-in-frames').evidence.evidence;
+  const cited = frames[0].file;
+  const report = {
+    format: 'craftmine.p8-client/1', runId: 'run-1', passed: false, error: null, shutdownError: null, stopped: false, launches: [], steps: [], cases: [
+      { caseId: 'dog', worldId: 'world-dog', outcome: CASE_PIPELINE_COMPLETE, restart: { passed: true }, error: null, gameplay: { verdict } },
+    ],
+    summary: { caseSelection: { requested: ['dog'], executed: ['dog'], requestedCount: 1, executedCount: 1 }, pipelinePassed: true, behaviorVerified: false },
+  };
+  const review = { format: REVIEW_FORMAT, reviewer: 'P6', runId: 'run-1', cases: [{ caseId: 'dog', verdicts: [
+    { id: 'dog-visible-in-frames', verdict: 'confirmed', evidence: [cited] },
+    { id: 'dog-stop-not-continuing', verdict: 'confirmed', evidence: [verdict.criteria.find(row => row.id === 'dog-stop-not-continuing').evidence.frames[0].sha256] },
+  ] }] };
+  const merged = mergeReview({ report, review, reviewSha256: 'c'.repeat(64) });
+  assert.equal(merged.passed, false);
+  assert.equal(merged.summary.pipelinePassed, true, 'a merge never raises or lowers the pipeline verdict');
+  assert.equal(merged.summary.verifiedAfterReview, true);
+  const after = summarizeRun({ requestedCases: ['dog'], executedCases: ['dog'], cases: merged.cases });
+  assert.equal(after.behaviorVerified, true);
+  assert.equal(after.singleCasePassed, true);
+  assert.equal(after.passed, false, 'even a fully reviewed case is not a product acceptance');
+  assert.deepEqual(after.gameplayFailed, []);
+});
+
 test('the driver owns --case and leaves the generic argument parser untouched', () => {
   const { argv, value } = stripCaseArgument(['--source-root', 'D:/x', '--case', 'dog', '--deps-app', 'D:/y']);
   assert.equal(value, 'dog'); assert.deepEqual(argv, ['--source-root', 'D:/x', '--deps-app', 'D:/y']);
@@ -50,22 +124,6 @@ test('the driver owns --case and leaves the generic argument parser untouched', 
   assert.ok(!parser.includes('--case'), 'the generic parser must not learn this driver flag');
 });
 
-test('a completed single case is a single-case pass and never a two-case pass', () => {
-  const complete = { caseId: 'hammer', outcome: CASE_PIPELINE_COMPLETE, restart: { passed: true }, gameplay: { verified: true, failed: [], insufficient: [], reviewRequired: [] } };
-  const one = summarizeRun({ requestedCases: ['hammer'], executedCases: ['hammer'], cases: [complete] });
-  assert.equal(one.pipelinePassed, true); assert.equal(one.behaviorVerified, true);
-  assert.equal(one.singleCasePassed, true); assert.equal(one.combinedTwoCasePassed, false);
-  assert.equal(one.passed, false); assert.equal(one.reviewRequired, true);
-  const missing = summarizeRun({ requestedCases: ['hammer', 'dog'], executedCases: ['hammer'], cases: [complete] });
-  assert.equal(missing.pipelinePassed, false); assert.equal(missing.singleCasePassed, false); assert.equal(missing.combinedTwoCasePassed, false);
-  const stopped = summarizeRun({ requestedCases: ['hammer'], executedCases: ['hammer'], cases: [complete], stopped: true });
-  assert.equal(stopped.pipelinePassed, false); assert.equal(stopped.singleCasePassed, false);
-  const unverified = summarizeRun({ requestedCases: ['hammer'], executedCases: ['hammer'], cases: [{ ...complete, gameplay: { verified: false, failed: ['pickup-actual'], insufficient: [], reviewRequired: [] } }] });
-  assert.equal(unverified.pipelinePassed, true); assert.equal(unverified.behaviorVerified, false); assert.equal(unverified.singleCasePassed, false);
-  const both = summarizeRun({ requestedCases: ['hammer', 'dog'], executedCases: ['hammer', 'dog'], cases: [complete, { ...complete, caseId: 'dog' }] });
-  assert.equal(both.combinedTwoCasePassed, true); assert.equal(both.singleCasePassed, false); assert.equal(both.passed, false);
-  assert.deepEqual(summarizeCase({ caseId: 'dog', outcome: 'running' }).gameplayFailed, []);
-});
 
 test('two parallel runs own one fresh journal each and a journal has a single owner', () => {
   const a = p8Authorization(parallel, root, { out: runDir() }), b = p8Authorization(parallel, root, { out: runDir() });

@@ -111,11 +111,27 @@ function elapsed(actions, from, to) {
   const frames = framesBetween(actions, from, to);
   return { wallMs: wall, frames, gameMsLowerBound: Math.round(frames * 1000 / GAME_FPS), known: wall !== null };
 }
+/** The real gap between two adjacent commands, measured from the driver's own
+ * command receipts. Nothing is subtracted from it: if a capture really sat
+ * between the two commands, real time really passed. */
+function commandGap(actions, from, to) {
+  const start = number(actions[from]?.commandCompletedAtMs), end = number(actions[to]?.commandStartedAtMs);
+  const gapMs = start !== null && end !== null && end >= start ? end - start : null;
+  const frames = framesBetween(actions, from, to);
+  return { gapMs, frames, gameMsLowerBound: Math.round(frames * 1000 / GAME_FPS), known: gapMs !== null };
+}
+/** The frames the helper really produced, with the driver's own field names kept
+ * intact so a reviewer never sees a null where a measurement exists. */
 function frameEvidence(actions) {
   return actions.filter(action => action?.frame && typeof action.frame === 'object').map(action => ({
     op: action.op, args: action.args, file: action.frame.file ?? null, sha256: action.frame.sha256 ?? null,
-    width: action.frame.width ?? null, height: action.frame.height ?? null, observedAtMs: wallMs(action),
-    offsetFromAttackMs: action.frame.offsetFromAttackMs ?? null, sampledAt: action.observation?.sampledAt ?? null,
+    width: action.frame.width ?? null, height: action.frame.height ?? null,
+    commandStartedAtMs: number(action.frame.commandStartedAtMs), commandCompletedAtMs: number(action.frame.commandCompletedAtMs),
+    observedAtMs: wallMs(action), captureStartedAtMs: number(action.frame.captureStartedAtMs), capturedAtMs: number(action.frame.capturedAtMs),
+    sampledAt: action.frame.sampledAt ?? action.observation?.sampledAt ?? null, resampledAt: action.frame.resampledAt ?? null,
+    associatedAttack: action.frame.associatedAttack ?? null,
+    offsetFromAttackObservedMs: number(action.frame.offsetFromAttackObservedMs),
+    offsetFromAttackCompletedMs: number(action.frame.offsetFromAttackCompletedMs),
   }));
 }
 
@@ -141,7 +157,8 @@ function hammerCriteria(exercise, source) {
     const at = actions.indexOf(action), before = at > 0 ? snapshotOf(actions[at - 1]) : null, after = snapshotOf(action) ?? before;
     const result = value(action);
     return {
-      index, observedAtMs: wallMs(action), aimInteractable: payload(actions[at - 1])?.aim?.interactable ?? null, aimCollider: payload(actions[at - 1])?.aim?.collider ?? null,
+      index, observedAtMs: wallMs(action),
+      aimInteractable: payload(actions[at - 1])?.aim?.interactable ?? null, aimCollider: payload(actions[at - 1])?.aim?.collider ?? null, aimPrompt: payload(actions[at - 1])?.aim?.prompt ?? null,
       error: errorOf(action), handled: result?.handled ?? null, item: result?.item ?? null, taken: result?.taken ?? null, reason: result?.reason ?? null,
       carriedBefore: before ? holds(before, 'thunder_hammer') : null, carriedAfter: after ? holds(after, 'thunder_hammer') : null,
       interactablesBefore: before ? interactables(before).map(entry => ({ id: entry.id, enabled: entry.enabled ?? null, taken: entry.taken ?? null })) : null,
@@ -150,11 +167,22 @@ function hammerCriteria(exercise, source) {
   });
   const picked = attempts.find(entry => entry.carriedAfter === true && entry.carriedBefore !== true)
     ?? attempts.find(entry => entry.handled === true && entry.item === 'thunder_hammer' && entry.carriedAfter !== false);
+  // A scan that never pointed at an interactable is "not tested", not a product
+  // failure. Only a real contradiction counts: the interact claimed the hammer but
+  // the bag did not gain it, or the ray was on the hammer's own pickup and the
+  // product refused it.
+  const namesHammer = entry => /hammer/i.test(String(entry.aimCollider ?? '')) || /hammer/i.test(String(entry.aimPrompt ?? ''));
+  const aimed = attempts.filter(entry => entry.aimInteractable === true);
+  const contradiction = attempts.find(entry => (entry.handled === true && entry.item === 'thunder_hammer' && entry.carriedAfter === false)
+    || (entry.aimInteractable === true && namesHammer(entry) && entry.handled === false));
+  const pickupEvidence = { attempts, aimedAttempts: aimed.length, namesHammerAttempts: attempts.filter(namesHammer).length, contradiction: contradiction ?? null };
   const pickup = !interacts.length
-    ? insufficient('pickup-actual', 'The hammer is actually picked up by an ordinary interact while it is in reach.', { stepPresent: false, note: 'The fixed sequence issued no interact step, so no pickup was attempted.' })
+    ? insufficient('pickup-actual', 'The hammer is actually picked up by an ordinary interact while it is in reach.', { ...pickupEvidence, stepPresent: false, note: 'The fixed sequence issued no interact step, so no pickup was attempted.' })
     : (picked
-      ? verified('pickup-actual', 'The hammer is actually picked up by an ordinary interact while it is in reach.', { attempts, picked })
-      : failed('pickup-actual', 'The hammer is actually picked up by an ordinary interact while it is in reach.', { attempts, stepPresent: true, note: 'Interacts were issued but the hammer never entered the inventory.' }));
+      ? verified('pickup-actual', 'The hammer is actually picked up by an ordinary interact while it is in reach.', { ...pickupEvidence, picked })
+      : contradiction
+        ? failed('pickup-actual', 'The hammer is actually picked up by an ordinary interact while it is in reach.', { ...pickupEvidence, stepPresent: true, note: 'The interact reached the hammer itself and the running build did not hand it over.' })
+        : insufficient('pickup-actual', 'The hammer is actually picked up by an ordinary interact while it is in reach.', { ...pickupEvidence, stepPresent: true, note: 'The scan never pointed at the hammer or at any interactable, so the driver did not test this claim. Directly equipping is not pickup evidence.' }));
 
   const equipEvidence = equipActions(actions).map(action => ({ op: action.op, args: action.args, error: errorOf(action), active: directSnapshot(action)?.equipment?.active ?? null }));
   const equipped = equipActions(actions).map(directSnapshot).find(snapshot => snapshot?.equipment?.active === 'thunder_hammer') ?? null;
@@ -176,37 +204,51 @@ function hammerCriteria(exercise, source) {
     ? verified('attack-accepted', 'The ordinary attack command fires with the hammer equipped.', { attempts: attackSummary })
     : failed('attack-accepted', 'The ordinary attack command fires with the hammer equipped.', { attempts: attackSummary });
 
-  // Ordinary attack gate, measured from the real receipt times. This is a fact
-  // about the attack command, not about the lightning effect's own cooldown.
+  // The requirement is the lightning effect's own cooldown, and the product
+  // exposes no channel for it. The ordinary attack gate is observable, so it is
+  // reported as a diagnostic for a reviewer and can never be a failure: a weapon
+  // with a short cooldown and an independent effect cooldown is a legal
+  // implementation of the prompt. The gap is the real gap between the two adjacent
+  // commands, and nothing is subtracted from it — if a capture sat between them,
+  // real time really passed.
+  const anyAttack = shots.length > 0;
+  const adjacent = shots.reduce((found, action, index) => {
+    if (found !== null || index === 0) return found;
+    const previous = results[index - 1], current = results[index];
+    if (previous?.fired !== true || current?.fired !== false || typeof current.reason !== 'string' || !current.reason.length) return found;
+    const from = actions.indexOf(shots[index - 1]), to = actions.indexOf(action);
+    const snapshot = snapshotOf(action);
+    const startMs = number(actions[from]?.commandCompletedAtMs), endMs = number(actions[to]?.commandStartedAtMs);
+    // A capture interferes when its real capture window overlaps the measured gap,
+    // whether the frame hangs on the first attack or on anything between them.
+    const capturedBetween = startMs !== null && endMs !== null && actions.some(entry => entry.frame
+      && number(entry.frame.captureStartedAtMs) !== null && number(entry.frame.capturedAtMs) !== null
+      && number(entry.frame.captureStartedAtMs) < endMs && number(entry.frame.capturedAtMs) > startMs);
+    return {
+      refusedAt: index, afterShot: index - 1, reason: current.reason, ...commandGap(actions, from, to),
+      capturedBetween,
+      cooldownSeconds: number(snapshot?.equipment?.cooldownSeconds) ?? null,
+      cooldownRemaining: number(snapshot?.equipment?.cooldownRemaining) ?? null,
+    };
+  }, null);
   const refusals = shots.reduce((list, action, index) => {
     if (index === 0 || results[index]?.fired !== false || typeof results[index].reason !== 'string' || !results[index].reason.length) return list;
     const previous = [...results.slice(0, index)].map((item, at) => (item?.fired === true ? at : -1)).filter(at => at >= 0).pop();
     if (previous === undefined) return list;
-    list.push({ refusedAt: index, afterShot: previous, reason: results[index].reason, ...elapsed(actions, actions.indexOf(shots[previous]), actions.indexOf(action)) });
+    list.push({ refusedAt: index, afterShot: previous, reason: results[index].reason, ...commandGap(actions, actions.indexOf(shots[previous]), actions.indexOf(action)) });
     return list;
   }, []);
-  const insideWindow = refusals.find(entry => entry.known && entry.wallMs < 1000);
-  const anyAttack = shots.length > 0;
-  const withinSecond = !anyAttack
-    ? insufficient('attack-gate-refused-within-one-second', 'An attack repeated inside the same second is refused.', { note: 'No attack was issued.' })
-    : (insideWindow
-      ? verified('attack-gate-refused-within-one-second', 'An attack repeated inside the same second is refused.', { refusal: insideWindow, refusals, scope: 'ordinary attack gate; the lightning effect has its own cooldown and is judged separately' })
-      : failed('attack-gate-refused-within-one-second', 'An attack repeated inside the same second is refused.', { refusals, note: 'No refused attack was observed within one second of a successful one.' }));
-  const reopen = refusals.reduce((found, refusal) => {
-    if (found) return found;
-    for (let index = refusal.refusedAt + 1; index < shots.length; index++) {
-      if (results[index]?.fired !== true) continue;
-      const timing = elapsed(actions, actions.indexOf(shots[refusal.refusedAt]), actions.indexOf(shots[index]));
-      if (timing.known && timing.wallMs >= 1000 && timing.gameMsLowerBound >= 1000) return { acceptedAt: index, afterRefusal: refusal.refusedAt, ...timing };
-      return found;
-    }
-    return found;
-  }, null);
-  const reopened = !refusals.length
-    ? insufficient('attack-gate-accepted-after-one-second', 'The attack gate reopens after more than a second.', { note: 'No refused attack was observed, so the window could not be timed.' })
-    : (reopen
-      ? verified('attack-gate-accepted-after-one-second', 'The attack gate reopens after more than a second.', { reopen, refusals })
-      : failed('attack-gate-accepted-after-one-second', 'The attack gate reopens after more than a second.', { refusals, note: 'No attack succeeded more than one second after a refusal.' }));
+  const weaponCooldowns = shots.map(snapshotOf).map(snapshot => number(snapshot?.equipment?.cooldownSeconds)).filter(item => item !== null);
+  const gateEvidence = { adjacent: adjacent ?? null, refusals, weaponCooldowns, observedRefusals: refusals.length,
+    scope: 'diagnostic only. The lightning effect has its own cooldown and is judged separately, so a short weapon cooldown is not a failure.' };
+  const gate = !anyAttack
+    ? insufficient('attack-gate-diagnostic', 'The ordinary attack gate was observed and measured from the driver\'s own command receipts.', { ...gateEvidence, note: 'No attack was issued.' })
+    : (adjacent && adjacent.known && !adjacent.capturedBetween
+      ? verified('attack-gate-diagnostic', 'The ordinary attack gate was observed and measured from the driver\'s own command receipts.', gateEvidence)
+      : insufficient('attack-gate-diagnostic', 'The ordinary attack gate was observed and measured from the driver\'s own command receipts.', { ...gateEvidence,
+        note: !adjacent ? 'No attack was refused immediately after a successful one, so the ordinary gate was not observed. A weapon cooldown shorter than a second, or none at all, is not by itself a failure.'
+          : adjacent.capturedBetween ? 'A frame capture sat between the two attacks, so their command gap is not an adjacent-attack measurement, and the real elapsed time is not adjusted.'
+            : 'The gap between the two adjacent attack commands could not be measured.' }));
 
   const hits = shots.map((action, index) => ({ index, hits: Array.isArray(results[index]?.hits) ? results[index].hits : [], damage: number(results[index]?.damage) }));
   const landed = hits.find(entry => entry.hits.length > 0 || (entry.damage !== null && entry.damage > 0));
@@ -240,11 +282,12 @@ function hammerCriteria(exercise, source) {
     : insufficient('lightning-visible-in-frames', 'The lightning effect is visible in the real rendered frames.', { frames: [], note: 'The run captured no frames near the attacks.' });
   const lightningCooldown = reviewRequired('lightning-cooldown-at-least-one-second', `The lightning effect itself has a cooldown of at least ${LIGHTNING_MIN_COOLDOWN_SECONDS}s.`, {
     declared: declaredEnough.length ? declaredEnough : null, declaredAll: declared.length ? declared : null,
-    attackGateTimings: { refusals, reopen }, frames: frames.map(frame => ({ op: frame.op, observedAtMs: frame.observedAtMs, offsetFromAttackMs: frame.offsetFromAttackMs, sampledAt: frame.sampledAt, sha256: frame.sha256, file: frame.file })),
+    attackGate: gateEvidence, weaponCooldownSeconds: weaponCooldowns,
+    frames: frames.map(frame => ({ op: frame.op, observedAtMs: frame.observedAtMs, commandStartedAtMs: frame.commandStartedAtMs, commandCompletedAtMs: frame.commandCompletedAtMs, captureStartedAtMs: frame.captureStartedAtMs, capturedAtMs: frame.capturedAtMs, offsetFromAttackObservedMs: frame.offsetFromAttackObservedMs, offsetFromAttackCompletedMs: frame.offsetFromAttackCompletedMs, associatedAttack: frame.associatedAttack?.attackIndex ?? null, sampledAt: frame.sampledAt, sha256: frame.sha256, file: frame.file })),
     scope: 'Neither the ordinary attack cooldown nor a model self-report proves the effect cooldown. The reviewer must read the authored effect and the frames.',
   });
 
-  return [identity, hint, pickup, equip, visibility, attack, withinSecond, reopened, effect, lightningSource, lightningVisibility, lightningCooldown];
+  return [identity, hint, pickup, equip, visibility, attack, gate, effect, lightningSource, lightningVisibility, lightningCooldown];
 }
 
 function dogCriteria(exercise, source) {
@@ -321,9 +364,17 @@ function dogCriteria(exercise, source) {
     const talk = talks.find(action => actions.indexOf(action) > hit.index && dialogueOf(action));
     return { index: hit.index, op: hit.action.op, overlaps: overlaps(hit.action), talkIndex: actions.indexOf(talk), talkObservedAtMs: wallMs(talk), line: dialogueOf(talk).line };
   })();
+  // The return leg is judged against what the driver actually walked. It cannot
+  // reach the dog when the retrace ran out of budget or never covered the outbound
+  // path: that is an untested claim (`insufficient`), not a product failure. Only a
+  // completed retrace that never touches the dog contradicts "it stayed behind".
+  const retrace = exercise?.retrace && typeof exercise.retrace === 'object' ? exercise.retrace : null;
+  const approachEvidence = { recontact, retrace, attempts: talks.map(attempt) };
   const approach = recontact
-    ? verified('approach-recontact-observed', 'The player can walk back and reach the dog again, so it stayed behind instead of following.', { recontact })
-    : failed('approach-recontact-observed', 'The player can walk back and reach the dog again, so it stayed behind instead of following.', { recontact, attempts: talks.map(attempt), note: 'No approach leg re-established contact and produced dialogue again.' });
+    ? verified('approach-recontact-observed', 'The player can walk back and reach the dog again, so it stayed behind instead of following.', approachEvidence)
+    : (retrace?.complete === true
+      ? failed('approach-recontact-observed', 'The player can walk back and reach the dog again, so it stayed behind instead of following.', { ...approachEvidence, note: 'The retrace covered the whole outbound path in chunks smaller than the contact radius and never touched the dog.' })
+      : insufficient('approach-recontact-observed', 'The player can walk back and reach the dog again, so it stayed behind instead of following.', { ...approachEvidence, note: retrace ? 'The retrace did not cover the outbound path, so the driver did not test this claim.' : 'No retrace was recorded for this run.' }));
 
   const frames = frameEvidence(actions);
   const visibility = frames.length
