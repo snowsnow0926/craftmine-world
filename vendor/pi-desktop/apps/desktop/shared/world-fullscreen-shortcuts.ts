@@ -27,7 +27,10 @@ export function fullscreenEscapeContext(document:Document,composing=false):Fulls
     return style?.display!=="none"&&style?.visibility!=="hidden"&&element.getClientRects().length>0;
   };
   const active=document.activeElement;
-  const editing=!!active&&(active.matches('input,textarea,select,[contenteditable=""],[contenteditable="true"],[role="textbox"]')||!!active.closest('[contenteditable=""],[contenteditable="true"]'));
+  // Plain chat text does not itself consume Escape. IME and autocomplete are
+  // handled independently above/below; native pickers/search clear operations
+  // can consume Escape without a DOM preventDefault, so retain their layer.
+  const editing=!!active&&active.matches('select,input[list],input[type="search"],input[type="color"],input[type="date"],input[type="datetime-local"],input[type="month"],input[type="time"],input[type="week"]');
   const overlayOpen=Array.from(document.querySelectorAll('[role="dialog"],[role="menu"],[role="listbox"],[aria-modal="true"],dialog[open],[popover]')).some(visible);
   return {pointerLocked:!!document.pointerLockElement,overlayOpen,editing,composing};
 }

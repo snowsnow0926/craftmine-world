@@ -1,0 +1,73 @@
+{
+  "format": "craftmine.p3-controls-headless/1",
+  "native": false,
+  "checks": [
+    {
+      "name": "Visible Chinese shortcut and layer instructions",
+      "passed": true
+    },
+    {
+      "name": "Fullscreen button uses existing finite window API",
+      "passed": true
+    },
+    {
+      "name": "Actual returned window state controls button label",
+      "passed": true
+    },
+    {
+      "name": "Second explicit action exits without navigating world",
+      "passed": true
+    },
+    {
+      "name": "Window failure is visible and button becomes retryable",
+      "passed": true
+    },
+    {
+      "name": "Busy form prevents another window request",
+      "passed": true
+    },
+    {
+      "name": "External trusted window-state notification updates control",
+      "passed": true
+    },
+    {
+      "name": "No overlay present is observed correctly",
+      "passed": true
+    },
+    {
+      "name": "Plain chat input does not consume unhandled Escape by itself",
+      "passed": true
+    },
+    {
+      "name": "Native search control retains its Escape clear operation",
+      "passed": true
+    },
+    {
+      "name": "Real visible DOM dialog owns Escape layer",
+      "passed": true
+    },
+    {
+      "name": "Hidden DOM dialog does not block a later Escape",
+      "passed": true
+    },
+    {
+      "name": "Component removes window state listener on disposal",
+      "passed": true
+    },
+    {
+      "name": "No pointer-lock/focus request and no page errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Actual React component and DOM; finite window API fixture",
+    "No OS fullscreen transition, game runtime, real keyboard/mouse/focus/pointer-lock input",
+    "P1/P10 host wiring and same-client/native/device acceptance remain separate"
+  ],
+  "passed": true,
+  "sourceHashes": {
+    "vendor\\pi-desktop\\apps\\desktop\\src\\components\\CraftmineLayoutControls.tsx": "d800bd8dd869db0e0253660a4044ec5418dbf35f48ad6b4489bf0b509686bf29",
+    "vendor\\pi-desktop\\apps\\desktop\\shared\\world-fullscreen-shortcuts.ts": "20fb25ef8f0bb82a62a07b9e4743a55fa4b4e959c1ad715204389bb6da4fdeb0"
+  }
+}

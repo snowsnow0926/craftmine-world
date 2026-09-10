@@ -1,0 +1,55 @@
+{
+  "format": "craftmine.p3-evidence/1",
+  "baseline": "eae279915094f09d987ef0eb747eba20ef92cd0e",
+  "policyPassed": 13,
+  "finalDomPassed": 14,
+  "existingRegressionPassed": 3,
+  "native": false,
+  "files": [
+    {
+      "file": "raw/controls-1789021737994.json",
+      "bytes": 1912,
+      "sha256": "096a6ceab0a48a0974730369d4eb8f4228cfa48bd09bc67397c6f3d08313029a"
+    },
+    {
+      "file": "raw/controls-1789021893061.json",
+      "bytes": 2132,
+      "sha256": "af1bc79cf14d0e9485aa5d3ba7e9cd053e8b0db59a5703bc6a8b66087277cd34"
+    },
+    {
+      "file": "raw/controls.png",
+      "bytes": 11429,
+      "sha256": "0d5e811709f038be4599f86cbb907d7e5e2b9f4218dab0a4ba8b811888c26a87"
+    },
+    {
+      "file": "raw/p3-controls-final.log",
+      "bytes": 854,
+      "sha256": "24919b39f02708d1f27c05c52ef7f4841e6509803de27158879443af97b8726c"
+    },
+    {
+      "file": "raw/p3-controls-first.log",
+      "bytes": 724,
+      "sha256": "c63be0441ea5f5119eb76d2e2bf2ec6ac1f20d2b3991b77fe2c1cced1a238e7c"
+    },
+    {
+      "file": "raw/p3-existing-shortcuts.log",
+      "bytes": 372,
+      "sha256": "8b77cc4aeef8a966679ff39b5de4a6ee004182a94b3a3eee15ac608dca257d1b"
+    },
+    {
+      "file": "raw/p3-policy-final.log",
+      "bytes": 1117,
+      "sha256": "23131acca3cd14776b2d34fa53057ac9d090c0927722e7f7a191b4ad37afd688"
+    },
+    {
+      "file": "raw/p3-policy-typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "raw/p3-policy.log",
+      "bytes": 1101,
+      "sha256": "f30f29313fd287e69a2cd7a0ac96d1442a33593c6438be3ac956e5b1525b24dc"
+    }
+  ]
+}

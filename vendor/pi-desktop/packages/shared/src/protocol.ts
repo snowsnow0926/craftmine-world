@@ -30,6 +30,7 @@ export const NATIVE_MENU_ACTIONS = [
   "zoomOut",
   "resetZoom",
   "toggleFullScreen",
+  "exitFullScreen",
   "minimize",
   "toggleMaximize",
   "close",

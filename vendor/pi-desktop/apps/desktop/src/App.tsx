@@ -38,6 +38,7 @@ import { WindowControls } from "./components/WindowControls";
 import { useAppStore } from "./stores/app-store";
 import type { ToastOptions } from "./stores/app-store";
 import { api } from "./lib/api";
+import { attachFullscreenEscape } from "../shared/world-fullscreen-shortcuts";
 import { commitWorkPanelPresentation } from "./lib/work-panel-presentation";
 import { browserPluginTab, toolWorkPanelTab } from "./lib/work-panel-tabs";
 import {
@@ -432,6 +433,13 @@ function AppShell() {
     return off;
   }, []);
 
+  useEffect(() => attachFullscreenEscape(window, {
+    // Explicit exit is idempotent; an old renderer fullscreen flag must never
+    // toggle a window back into fullscreen. Menus/IME/capture consume first.
+    onExit: () => api.nativeMenuAction("exitFullScreen"),
+    onError: error => showToast(error instanceof Error ? error.message : String(error), { variant: "error" }),
+  }), [showToast]);
+
   useEffect(() => {
     const viewingSessionId = page === "chat" ? activeSessionId ?? null : null;
     void api
@@ -643,6 +651,8 @@ function AppShell() {
         void api.executeCommand(pluginShortcut.setting.command!);
         return;
       }
+      if (shortcut.id === "toggleFullScreen" && e.defaultPrevented) return;
+      if (shortcut.id === "toggleFullScreen" && e.repeat) { e.preventDefault(); return; }
       if (
         e.repeat &&
         (shortcut.id === "navigateBack" || shortcut.id === "navigateForward")
