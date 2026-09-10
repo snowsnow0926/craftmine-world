@@ -1,0 +1,166 @@
+{
+  "format": "craftmine.creation-harvest-engine/1",
+  "out": "D:\\cm-nb-checks\\test-results\\creation-harvest-web-JrM5tr",
+  "checks": [
+    {
+      "name": "harvest actual ordinary script loaded",
+      "passed": true
+    },
+    {
+      "name": "actual harvest, reward, no-repeat, restoration and regrowth",
+      "passed": true
+    },
+    {
+      "name": "double-reward actual ordinary script loaded",
+      "passed": true
+    },
+    {
+      "name": "double-reward runnable incorrect behavior rejected",
+      "passed": true
+    },
+    {
+      "name": "early-regrowth actual ordinary script loaded",
+      "passed": true
+    },
+    {
+      "name": "early-regrowth runnable incorrect behavior rejected",
+      "passed": true
+    },
+    {
+      "name": "lost-progress actual ordinary script loaded",
+      "passed": true
+    },
+    {
+      "name": "lost-progress runnable incorrect behavior rejected",
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 82,
+      "exitCode": 0
+    },
+    {
+      "label": "harvest-import",
+      "elapsedMs": 2403,
+      "exitCode": 0
+    },
+    {
+      "label": "harvest-export",
+      "elapsedMs": 2019,
+      "exitCode": 0
+    },
+    {
+      "label": "double-reward-import",
+      "elapsedMs": 1931,
+      "exitCode": 0
+    },
+    {
+      "label": "double-reward-export",
+      "elapsedMs": 2015,
+      "exitCode": 0
+    },
+    {
+      "label": "early-regrowth-import",
+      "elapsedMs": 1929,
+      "exitCode": 0
+    },
+    {
+      "label": "early-regrowth-export",
+      "elapsedMs": 2019,
+      "exitCode": 0
+    },
+    {
+      "label": "lost-progress-import",
+      "elapsedMs": 1936,
+      "exitCode": 0
+    },
+    {
+      "label": "lost-progress-export",
+      "elapsedMs": 2483,
+      "exitCode": 0
+    }
+  ],
+  "passed": true,
+  "trace": [
+    {
+      "step": "initial",
+      "elapsedTicks": 0,
+      "inventory": {},
+      "visible": true,
+      "solid": true,
+      "progressRestored": false
+    },
+    {
+      "step": "harvested",
+      "elapsedTicks": 20,
+      "inventory": {
+        "wood": 1
+      },
+      "visible": false,
+      "solid": false,
+      "progressRestored": false
+    },
+    {
+      "step": "repeat",
+      "elapsedTicks": 34,
+      "inventory": {
+        "wood": 1
+      },
+      "visible": false,
+      "solid": false,
+      "progressRestored": false
+    },
+    {
+      "step": "midway",
+      "elapsedTicks": 146,
+      "inventory": {
+        "wood": 1
+      },
+      "visible": false,
+      "solid": false,
+      "progressRestored": false
+    },
+    {
+      "step": "restored",
+      "elapsedTicks": 146,
+      "inventory": {
+        "wood": 1
+      },
+      "visible": false,
+      "solid": false,
+      "progressRestored": true
+    },
+    {
+      "step": "before-regrowth",
+      "elapsedTicks": 287,
+      "inventory": {
+        "wood": 1
+      },
+      "visible": false,
+      "solid": false,
+      "progressRestored": false
+    },
+    {
+      "step": "regrown",
+      "elapsedTicks": 340,
+      "inventory": {
+        "wood": 1
+      },
+      "visible": true,
+      "solid": true,
+      "progressRestored": false
+    },
+    {
+      "step": "second-harvest",
+      "elapsedTicks": 387,
+      "inventory": {
+        "wood": 2
+      },
+      "visible": false,
+      "solid": false,
+      "progressRestored": false
+    }
+  ]
+}

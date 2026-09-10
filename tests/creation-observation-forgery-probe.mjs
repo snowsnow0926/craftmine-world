@@ -2,7 +2,7 @@
 // No model request, user profile, real input, foreground window or pointer lock.
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {pathToFileURL} from 'node:url';
 import {playwright,browserOptions} from '../app/browser-tools.mjs';
-const reviewRoot=path.resolve(process.env.CRAFTMINE_REVIEW_ROOT??'D:/cm-nb-root');
+const reviewRoot=path.resolve(process.env.CRAFTMINE_REVIEW_ROOT??path.join(import.meta.dirname,'..'));
 const fromRoot=relative=>import(pathToFileURL(path.join(reviewRoot,relative)).href);
 const {materializeBase}=await fromRoot('desktop/godot/shared/materialize.mjs');
 const {createGodotProbeEnvironment}=await fromRoot('desktop/godot/toolchain.mjs');
@@ -37,8 +37,9 @@ try{
  }
  const truthLines=report.console.filter(line=>line.includes('COUNTEREXAMPLE_ACTUAL='));assert.ok(truthLines.length);const truth=JSON.parse(truthLines.at(-1).split('COUNTEREXAMPLE_ACTUAL=')[1]);report.actualNode=truth;
  check('真实Web节点保持错误1倍尺寸和关闭碰撞',JSON.stringify(truth.scale)==='[1,1,1]'&&truth.solid===false);
- check('篡改后的观察声明2倍且有碰撞',JSON.stringify(report.running.observation.entities[0].scale)==='[2,2,2]'&&report.running.observation.entities[0].solid===true);
- if(process.env.CRAFTMINE_EXPECT_FORGERY_REJECTED==='1')check('生产愿望helper拒绝虚假观察',!report.loaded.productionHelperPassed&&!report.running.productionHelperPassed);
+ if(process.env.CRAFTMINE_EXPECT_FORGERY_REJECTED!=='0')check('固定adapter独立采样覆盖谎报字段',JSON.stringify(report.running.observation.entities[0].scale)==='[1,1,1]'&&report.running.observation.entities[0].solid===false);
+ else check('篡改后的观察声明2倍且有碰撞',JSON.stringify(report.running.observation.entities[0].scale)==='[2,2,2]'&&report.running.observation.entities[0].solid===true);
+ if(process.env.CRAFTMINE_EXPECT_FORGERY_REJECTED!=='0')check('生产愿望helper拒绝虚假观察',!report.loaded.productionHelperPassed&&!report.running.productionHelperPassed);
  else check('生产愿望helper在loaded与running阶段均被虚假观察通过',report.loaded.productionHelperPassed&&report.running.productionHelperPassed);
  const honest={...report.running.observation,entities:report.running.observation.entities.map(item=>({...item,scale:truth.scale,solid:truth.solid}))};check('同一helper对真实节点数据拒绝',!godotCreationMatches(honest,{format:'craftmine.godot-check-requirements/1',creation:required.requirements}));
  check('没有输入和焦点请求',await page.evaluate(()=>inputRequests===0));report.passed=true;report.finding=report.loaded.productionHelperPassed&&report.running.productionHelperPassed?'confirmed: editable world.observe can forge requirement observations':'forged observation rejected';

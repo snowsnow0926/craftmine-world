@@ -43,6 +43,7 @@ impl Requirements {
         }
         Ok(())
     }
+    pub fn is_creation(&self)->bool {self.creation.is_some()}
     pub fn assertion(&self) -> &'static str {if self.creation.is_some(){"runtime.creation-requirements"}else{ASSERTION}}
     pub fn hash(&self) -> String {
         if let Some(creation)=&self.creation {return digest(&serde_json::to_string(&canonical_creation(creation)).unwrap_or_default());}

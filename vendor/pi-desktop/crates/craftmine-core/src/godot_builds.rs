@@ -598,7 +598,9 @@ pub(super) fn materialize(
     manifest: &Manifest,
     assets: &[AssetRow],
     source: &SourceContent<'_>,
+    protect_creation: bool,
 ) -> Result<(Vec<Value>, u64)> {
+    if protect_creation {super::godot_creation_probe::validate_manifest(manifest)?;}
     // The host owns these paths; a project may not declare a file that would
     // overwrite the export preset or the bridge the product injects.
     let host_files = super::godot_host_resources::files();
@@ -631,6 +633,7 @@ pub(super) fn materialize(
                 bytes
             }
         };
+        if protect_creation && path=="project.godot" {super::godot_creation_probe::validate_project(&text)?;}
         let parent = match path.rsplit_once('/') {
             Some((parent, _)) => parent,
             None => "",
@@ -956,7 +959,7 @@ impl TaskJournal {
             _ => SourceContent::Legacy,
         };
         let (files, bytes) =
-            materialize(&self.directory, &args.world_id, &identity, &manifest, &assets, &source)?;
+            materialize(&self.directory, &args.world_id, &identity, &manifest, &assets, &source,args.check_requirements.as_ref().is_some_and(|r|r.is_creation()))?;
         tx.execute(
             "INSERT OR IGNORE INTO craftmine_godot_builds(world_id,build_id,source_revision,manifest_hash,
                 asset_manifest_hash,base_id,base_build,engine_version,renderer,target,files,bytes,created_at,

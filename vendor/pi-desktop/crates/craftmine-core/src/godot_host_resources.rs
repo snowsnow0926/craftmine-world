@@ -33,7 +33,7 @@ pub(super) fn hash() -> String {
         .collect();
     digest(
         &serde_json::to_string(
-            &json!({"format":"craftmine.godot-host-resources/1","files":files}),
+            &json!({"format":"craftmine.godot-host-resources/1","files":files,"creationProbeHash":super::godot_creation_probe::hash()}),
         )
         .unwrap(),
     )

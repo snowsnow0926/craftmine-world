@@ -161,7 +161,9 @@ fn finite_requirements_bound_tolerance_keeps_raw_actual_and_old_backup_columns_d
 #[test]
 fn creation_requirements_bind_persist_and_reject_wrong_runtime_entities() -> Result<()> {
  let (_dir,path)=temp()?;let mut journal=setup(&path)?;
- let project=journal.godot_project_create(&json!({"context":ctx("one"),"worldId":"a","toolCallId":"creation","baseBuild":"base-a","baseId":"creation-sandbox","files":project_files()}))?;
+ let mut files=project_files();for(path,text)in crate::godot_creation_probe::files(){files.as_array_mut().unwrap().push(json!({"path":path,"text":text}));}
+ files[0]["text"]=json!(format!("{}\n[autoload]\nCraftmineRuntime=\"*res://craftmine_shared/runtime_bridge.gd\"\n[craftmine]\nruntime/adapter=\"res://craftmine_shared/base_adapter.gd\"\n",files[0]["text"].as_str().unwrap()));
+ let project=journal.godot_project_create(&json!({"context":ctx("one"),"worldId":"a","toolCallId":"creation","baseBuild":"base-a","baseId":"creation-sandbox","files":files}))?;
  register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("e"))?;
  let requirement=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("double tree"),"entities":[{"id":"tree-a","kind":"tree","scale":[2,2,2],"visible":true,"solid":true}],"counts":[]}});
  let mut args=request(&project,"creation-check");args["checkRequirements"]=requirement.clone();
@@ -222,4 +224,20 @@ fn creation_copy_bounds_and_time_are_checked_by_core() -> Result<()> {
  let mut bad=evidence.clone();bad["observations"][1]["timeOfDay"]=json!(12);assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));
  let mut bad=evidence.clone();bad["observations"][1]["entities"][2]["bounds"]=bad["observations"][1]["entities"][1]["bounds"].clone();assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));
  let mut bad=evidence.clone();bad["observations"][1]["entities"][2]["solid"]=json!(false);assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));Ok(())
+}
+
+#[test]
+fn creation_requirement_build_rejects_modified_probe_and_redirected_entry() -> Result<()> {
+ for target in ["craftmine_shared/base_adapter.gd","craftmine_shared/runtime_bridge.gd","craftmine_shared/state_guard.gd","project.godot"]{
+  let (_dir,path)=temp()?;let mut journal=setup(&path)?;let mut files=project_files();
+  for(path,text)in crate::godot_creation_probe::files(){files.as_array_mut().unwrap().push(json!({"path":path,"text":text}));}
+  files[0]["text"]=json!(format!("{}\n[autoload]\nCraftmineRuntime=\"*res://craftmine_shared/runtime_bridge.gd\"\n[craftmine]\nruntime/adapter=\"res://craftmine_shared/base_adapter.gd\"\n",files[0]["text"].as_str().unwrap()));
+  let file=files.as_array_mut().unwrap().iter_mut().find(|f|f["path"]==target).unwrap();
+  file["text"]=json!(if target=="project.godot"{file["text"].as_str().unwrap().replace("base_adapter.gd","forged_adapter.gd")}else{format!("{}\n# authored replacement",file["text"].as_str().unwrap())});
+  let project=journal.godot_project_create(&json!({"context":ctx("one"),"worldId":"a","toolCallId":"creation","baseBuild":"base-a","baseId":"creation-sandbox","files":files}))?;
+  let mut args=request(&project,"check-pinned");args["checkRequirements"]=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("wish"),"entities":[{"id":"tree-a","scale":[2,2,2]}],"counts":[]}});
+  failed(journal.godot_build_start(&args),if target=="project.godot"{"CREATION_PROBE_ENTRY_MISMATCH"}else{"CREATION_PROBE_SOURCE_MISMATCH"});
+  let jobs:i64=journal.db.query_row("SELECT count(*) FROM craftmine_godot_jobs",[],|row|row.get(0))?;assert_eq!(jobs,0);
+ }
+ Ok(())
 }

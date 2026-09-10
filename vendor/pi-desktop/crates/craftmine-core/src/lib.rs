@@ -23,6 +23,7 @@ mod durable;
 mod godot_applications;
 mod godot_builds;
 mod godot_host_resources;
+mod godot_creation_probe;
 mod godot_jobs;
 mod godot_projects;
 mod godot_runtime;

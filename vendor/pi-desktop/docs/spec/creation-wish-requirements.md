@@ -15,3 +15,7 @@
 普通 entity-behavior 脚本负责行为和持久状态，底座没有内置采伐或奖励实现。固定评测语句的解析改进属于已知输入调优；真实模型评测需单独记载发生顺序。
 
 简单放置的新对象必须实际 visible=true 且 solid=true；直接修改和未涉及对象保留捕获时的可见/碰撞状态。撤销除了恢复 inverse 影响的参数，也冻结未涉及对象的身份、位置、尺度、颜色和已有 presence；单纯数量相等不能证明没有额外修改。
+
+## 受保护采样
+
+entities/obstacles 必须由产品 creation adapter 独立读取实际场景节点、主材质与启用碰撞。world.observe 的对应字段必须被覆盖；目标由实际摄像机射线定位。带 creation 要求的 core check 固定 adapter/runtime_bridge/state_guard 完整字节摘要与固定 project.godot autoload/selector，摘要进入 hostResourcesHash。受保护源码不符、别名或入口重定向须在检查作业产生前拒绝。
