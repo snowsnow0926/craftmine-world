@@ -10,7 +10,13 @@ const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const SCRIPT='scripts/core/target_dummy.gd';
-const SCRIPT_LF_SHA256='7e5edd7ccc2836472fe672b03ea47646cc1479326784e81b6398435c50771fbe';
+// The older target/profile implementation overwrote all instance values at
+// world readiness, so accepting its hash would falsely claim edit support.
+const SCRIPT_LF_SHA256='1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3';
+const WORLD_SCRIPT='scripts/core/base_world.gd';
+const WORLD_SCRIPT_LF_SHA256='2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1';
+const PROFILE_SCRIPT='scripts/core/balance_profile.gd';
+const PROFILE_SCRIPT_LF_SHA256='9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3';
 const PROPERTY='hit_flash_seconds';
 const ID=/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
 const CONFIG={format:'craftmine.interfaces.configuration/1',contractId:'fp.target.feedback/1',
@@ -56,7 +62,7 @@ function parse(text){
   for(const attribute of ['name','parent','type','instance'])requireValue((node.header.match(new RegExp('(?:^|\\s)'+attribute+'=','g'))??[]).length<=1,'TARGET_CONFIGURATION_SCENE_UNSUPPORTED');
   requireValue(!node.duplicateProperties.length,'TARGET_CONFIGURATION_DUPLICATE_PROPERTY');
   const propertyOrder=Object.keys(node.properties),scriptIndex=propertyOrder.indexOf('script');
-  if(scriptIndex>=0)for(const property of ['target_id',PROPERTY]){
+  if(scriptIndex>=0)for(const property of ['target_id',PROPERTY,'balance_profile']){
    const index=propertyOrder.indexOf(property);requireValue(index<0||index>scriptIndex,'TARGET_CONFIGURATION_PROPERTY_BEFORE_SCRIPT');
   }
   const nodePath=node.parent===null?'.':node.parent==='.'?node.name:node.parent+'/'+node.name;
@@ -71,6 +77,46 @@ function milliseconds(node,fallback=120){
  const value=Math.round(Number(raw)*1000);
  requireValue(Number.isInteger(value)&&value>=1&&value<=1000,'TARGET_CONFIGURATION_VALUE_INVALID');return value;
 }
+function knownScript(parsed,node,expectedPath,expectedHash,read){
+ const resource=parsed.resources.get(extId(node.properties.script));
+ requireValue(resource?.type==='Script'&&resource.path==='res://'+expectedPath,'TARGET_CONFIGURATION_UNKNOWN_SCRIPT');
+ requireValue(hash(read(expectedPath).replaceAll('\r\n','\n'))===expectedHash,'TARGET_CONFIGURATION_UNKNOWN_SCRIPT');
+}
+function profileMilliseconds(text,read){
+ // Reuse scene parsing for resource/property order and duplicate detection,
+ // after converting only the two fixed resource section headers in memory.
+ const lines=text.split(/\r?\n/);
+ requireValue(/^\[gd_resource type="Resource"(?: script_class="BalanceProfile")?(?: load_steps=[1-9][0-9]*)? format=3\]$/.test(lines[0]),'TARGET_CONFIGURATION_PROFILE_UNSUPPORTED');
+ const sections=lines.filter(line=>line.startsWith('['));
+ requireValue(sections.filter(line=>line==='[resource]').length===1&&sections.at(-1)==='[resource]'&&sections.every((line,index)=>index===0||line==='[resource]'||line.startsWith('[ext_resource ')),'TARGET_CONFIGURATION_PROFILE_UNSUPPORTED');
+ const bodyStart=lines.indexOf('[resource]');
+ const allowed=['script','player_move_speed','player_jump_velocity','mouse_sensitivity_degrees','gravity_scale',PROPERTY];
+ for(const line of lines.slice(bodyStart+1)){
+  if(!line.trim()||/^;/.test(line))continue;
+  const property=/^([A-Za-z_][A-Za-z0-9_]*)[ \t]*=[ \t]*(.+)$/.exec(line);
+  requireValue(property&&allowed.includes(property[1]),'TARGET_CONFIGURATION_PROFILE_UNSUPPORTED');
+  if(property[1]!=='script')requireValue(/^-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/.test(property[2])&&Number.isFinite(Number(property[2])),'TARGET_CONFIGURATION_PROFILE_EXPRESSION');
+ }
+ lines[0]='[gd_scene format=3]';lines[bodyStart]='[node name="Profile" type="Resource"]';
+ const parsed=parse(lines.join('\n')),profile=parsed.nodes[0];
+ requireValue(parsed.nodes.length===1&&parsed.resources.size===1,'TARGET_CONFIGURATION_PROFILE_UNSUPPORTED');
+ requireValue(Object.keys(profile.properties)[0]==='script','TARGET_CONFIGURATION_PROPERTY_BEFORE_SCRIPT');
+ knownScript(parsed,profile,PROFILE_SCRIPT,PROFILE_SCRIPT_LF_SHA256,read);
+ return milliseconds(profile);
+}
+function worldDefault(parsed,read){
+ const root=parsed.nodes.find(node=>node.parent===null);
+ requireValue(/\btype="Node3D"/.test(root.header),'TARGET_CONFIGURATION_WORLD_UNSUPPORTED');
+ if(!Object.hasOwn(root.properties,'script')){
+  requireValue(!Object.hasOwn(root.properties,'balance_profile'),'TARGET_CONFIGURATION_WORLD_UNSUPPORTED');return 120;
+ }
+ knownScript(parsed,root,WORLD_SCRIPT,WORLD_SCRIPT_LF_SHA256,read);
+ const profile=root.properties.balance_profile;
+ if(profile===undefined||profile==='null')return 120;
+ const resource=parsed.resources.get(extId(profile));
+ requireValue(resource?.type==='Resource'&&resource.path.startsWith('res://')&&resource.path.endsWith('.tres'),'TARGET_CONFIGURATION_PROFILE_UNSUPPORTED');
+ return profileMilliseconds(read(resource.path.slice(6)),read);
+}
 function resolve(args){
  exact(args,['sceneText','scenePath','targetId','files']);
  const {sceneText,scenePath,targetId,files}=args;
@@ -80,6 +126,7 @@ function resolve(args){
  const dependencies=new Map([[scenePath,hash(sceneText)]]);
  const read=name=>{filePath(name);requireValue(files.has(name),'TARGET_CONFIGURATION_DEPENDENCY_MISSING');const body=sourceText(files.get(name));dependencies.set(name,hash(body));return body;};
  const parsed=parse(sceneText),matches=parsed.nodes.filter(node=>node.properties.target_id!==undefined&&literalId(node.properties.target_id)===targetId);
+ const defaultValue=worldDefault(parsed,read);
  requireValue(matches.length===1,'TARGET_CONFIGURATION_TARGET_NOT_FOUND');const node=matches[0];
  requireValue(node.parent!==null,'TARGET_CONFIGURATION_ROOT_TARGET_REFUSED');
  let definition=node,definitionScene=parsed;
@@ -93,10 +140,8 @@ function resolve(args){
   requireValue(!parsed.nodes.some(item=>item!==node&&(item.parent===node.nodePath||item.parent?.startsWith(node.nodePath+'/'))),'TARGET_CONFIGURATION_INSTANCE_CHILD_OVERRIDE');
  }else requireValue(!/\binstance=/.test(node.header),'TARGET_CONFIGURATION_SCENE_UNSUPPORTED');
  requireValue(/\btype="StaticBody3D"/.test(definition.header),'TARGET_CONFIGURATION_SCENE_UNSUPPORTED');
- const script=definitionScene.resources.get(extId(definition.properties.script));
- requireValue(script?.type==='Script'&&script.path==='res://'+SCRIPT,'TARGET_CONFIGURATION_UNKNOWN_SCRIPT');
- requireValue(hash(read(SCRIPT).replaceAll('\r\n','\n'))===SCRIPT_LF_SHA256,'TARGET_CONFIGURATION_UNKNOWN_SCRIPT');
- const fallback=milliseconds(definition);
+ knownScript(definitionScene,definition,SCRIPT,SCRIPT_LF_SHA256,read);
+ const fallback=milliseconds(definition,defaultValue);
  const value=milliseconds(node,fallback);
  return {node,value,binding:{format:'craftmine.target-configuration-binding/1',contractId:CONFIG.contractId,
   scenePath,targetId,nodePath:node.nodePath,sourceHash:hash(sceneText),dependencies:[...dependencies].sort(([a],[b])=>a.localeCompare(b,'en')).map(([path,sha256])=>({path,sha256}))}};
