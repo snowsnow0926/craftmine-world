@@ -8972,3 +8972,8 @@ Hold the runtime factory before it returns any instance. Request disposal and ve
 ### CRAFTMINE-COMPLETE-PACKAGE-SHUTDOWN-001
 
 Run the fresh sealed Windows comprehensive client with REUSE/COPY/BACKUP enabled and an absolute ordinary CRAFTMINE_TEST_OUTPUT_ROOT. Require every actual exit audit to contain empty shutdownFailures in addition to zero exit, no forced stop, no input violations and no page errors. Persist finalizer failures and finishedAt. Require a real wrong-current-hash portable restore rejection with exact BACKUP_CURRENT_HASH_CONFLICT, unchanged selection/build/full progress, fresh reinspection and successful restore/restart. Keep historical recovery-fault reports separate. Commands and evidence limits: [complete package acceptance](complete-package-shutdown-acceptance.md).
+
+
+## Godot task path budget (2026-09-10)
+
+See godot-task-path-budget.md. Fixed native broker imports at 180/245 UTF-16 cache units must pass; 266 units must reject before allocation with GODOT_TASK_PATH_TOO_LONG. Verify original source hashes, no task directory on rejection, durable finite error after core restart, and matching build stage in the player UI. No UI/input/model automation.

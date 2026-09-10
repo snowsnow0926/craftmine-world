@@ -7,6 +7,13 @@ type Domain = (method: string, args: Data) => Promise<any>;
 const sha = (bytes: string | Buffer) => createHash("sha256").update(bytes).digest("hex");
 const SOURCE = new Set([".godot", ".gd", ".tscn", ".tres", ".gdshader", ".gdshaderinc", ".json", ".cfg", ".txt", ".md", ".csv", ".svg", ".obj", ".mtl", ".uid", ".png", ".jpg", ".jpeg", ".webp", ".glb", ".ogg", ".wav"]);
 
+/** Preserve this finite host preparation code from the hash-checked job output. */
+export function initializationJobFailure(current: Data): string {
+  if (Array.isArray(current.output?.compile?.errors)
+    && current.output.compile.errors.includes("GODOT_TASK_PATH_TOO_LONG")) return "GODOT_TASK_PATH_TOO_LONG";
+  return current.blockedReason || current.interruptReason || current.error || `GODOT_JOB_${String(current.status).toUpperCase()}`;
+}
+
 /** Resume an authored base through the same durable project and executor APIs as editing. */
 export function createGodotWorldInitializer(options: {
   worldsRoot: string; domain: Domain; selection: () => Promise<string | null>;
@@ -92,7 +99,7 @@ export function createGodotWorldInitializer(options: {
       while (true) {
         const current = await domain("godotBuild.read", {worldId, jobId: job.jobId});
         if (current.status === "passed") { candidateId = current.candidateId; break; }
-        if (["failed", "cancelled", "interrupted", "blocked"].includes(current.status)) throw Error(current.blockedReason || current.interruptReason || current.error || `GODOT_JOB_${current.status.toUpperCase()}`);
+        if (["failed", "cancelled", "interrupted", "blocked"].includes(current.status)) throw Error(initializationJobFailure(current));
         if (Date.now() > deadline) throw Error("GODOT_INITIALIZATION_TIMEOUT");
         await new Promise(resolve => setTimeout(resolve, 500));
       }

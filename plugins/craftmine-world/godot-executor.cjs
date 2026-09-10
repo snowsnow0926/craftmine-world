@@ -577,7 +577,14 @@ function createGodotExecutor(core, options = {}) {
   function validateBrokerReceipt(response, expected) {
     const fail = reason => ({ok:false, reason, receipt:response ?? null});
     if (!response || typeof response !== 'object') return fail('GODOT_BROKER_RESPONSE_INVALID');
-    if (!response.requestId) return fail('GODOT_BROKER_PREPARATION_FAILED');
+    if (!response.requestId) {
+      // This is a host task preparation limit, not a project compile error.
+      // Keep the raw bounded broker diagnostic in the existing attempt ledger.
+      if (response.schemaVersion === BROKER_SCHEMA_VERSION && response.state === 'failed'
+        && typeof response.error === 'string' && response.error.startsWith('GODOT_TASK_PATH_TOO_LONG:'))
+        return fail('GODOT_TASK_PATH_TOO_LONG');
+      return fail('GODOT_BROKER_PREPARATION_FAILED');
+    }
     if (response.schemaVersion !== BROKER_SCHEMA_VERSION) return fail('GODOT_BROKER_RESPONSE_INVALID');
     if (response.requestId !== expected.requestId || response.taskId !== expected.requestId) return fail('GODOT_BROKER_RESPONSE_MISMATCH');
     if (response.operation !== expected.operation) return fail('GODOT_BROKER_RESPONSE_MISMATCH');

@@ -1,0 +1,58 @@
+{
+  "at": "2026-09-10T02:46:18.277Z",
+  "brokerSha256": "639e11e391707e9b076a34bf5ebb46d77c25cfc83b39a613f688649836cb2c0c",
+  "results": [
+    {
+      "cacheUtf16Units": 180,
+      "code": 0,
+      "state": "succeeded",
+      "exitCode": 0,
+      "error": null,
+      "cleanup": {
+        "verified": true,
+        "profileHresult": 0,
+        "workRemoved": true,
+        "error": null
+      },
+      "processVerified": true,
+      "networkVerified": true,
+      "cacheError": false,
+      "settingsError": false,
+      "tasksRootEmpty": false,
+      "sourceUnchanged": true
+    },
+    {
+      "cacheUtf16Units": 245,
+      "code": 0,
+      "state": "succeeded",
+      "exitCode": 0,
+      "error": null,
+      "cleanup": {
+        "verified": true,
+        "profileHresult": 0,
+        "workRemoved": true,
+        "error": null
+      },
+      "processVerified": true,
+      "networkVerified": true,
+      "cacheError": false,
+      "settingsError": false,
+      "tasksRootEmpty": false,
+      "sourceUnchanged": true
+    },
+    {
+      "cacheUtf16Units": 266,
+      "code": 1,
+      "state": "failed",
+      "exitCode": null,
+      "error": "GODOT_TASK_PATH_TOO_LONG: prepare editor-cache path uses 266 UTF-16 units; limit 245",
+      "cleanup": null,
+      "processVerified": null,
+      "networkVerified": null,
+      "cacheError": false,
+      "settingsError": false,
+      "tasksRootEmpty": true,
+      "sourceUnchanged": true
+    }
+  ]
+}
