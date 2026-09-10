@@ -1,0 +1,8 @@
+
+[godot-executor] registered craftmine-windows-broker-v1 evidence dc5263df4096727c promoted 0
+[godot-executor] staged 10 artifacts into \\?\D:\cm-plan-param-check-20260910\test-results\target-feedback-chain-0kQafy\core-data\godot-builds\f214c1c6c94bd886880e747ca551121724d36b6c291a752ca0b364e188799015\gbd-d5fa7fc58b1025903d7af7866405b71d1a6f6d43cd5a8dc6628f1a5019f9be05\artifacts
+[262976:0910/094625.591:ERROR:mojo\public\cpp\bindings\lib\interface_endpoint_client.cc:748] Message 6 rejected by interface blink.mojom.WidgetHost
+[262976:0910/094625.591:ERROR:mojo\public\cpp\bindings\lib\interface_endpoint_client.cc:748] Message 7 rejected by interface blink.mojom.WidgetHost
+[godot-executor] job finished gjob-ed8460f0e4f0f91fe930e8053248cbb38d61bd4ead5ed9668a955a9c508bb769 passed 
+[godot-executor] staged 10 artifacts into \\?\D:\cm-plan-param-check-20260910\test-results\target-feedback-chain-0kQafy\core-data\godot-builds\a9bd4db1e2b564bdf15ae8398c39c4d5a79876e921c3d027870924acd882813e\gbd-7d9335fde01deee065d228d192ad0a1bcc19c7dde699ca660e4359273b7d25ec\artifacts
+[godot-executor] job finished gjob-91d502af0ead07cafb78f2f75e3fdeb5ad4ca4b18c20d284f421ace89c1b6616 failed reason=GODOT_CHECK_TARGET_FEEDBACK_MISMATCH:loaded
