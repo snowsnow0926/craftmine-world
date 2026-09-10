@@ -12,7 +12,7 @@ const dependency=ref=>({'geometry@2':'基础造型','health@1':'生命值','rang
 
 export function createWorkbench({element,selectionElement,request,getWorld,run=fn=>fn(),pause=()=>{},saveBeforeBackup=async()=>{},reloadWorld=async()=>{},replaceWorld=()=>{},onChange=()=>{},isLocked=()=>false}){
   let epoch=0,currentTab=null,capabilities=new Set(),pending=0,context=null,active=false,selected=null,selectionRevision=0,selectionRequest=0,inspection=null,libraryOffset=0,memoryOffset=0;
-  let capabilitiesReady=false,pendingSelection=null;
+  let capabilitiesReady=false,pendingSelection=null,refreshWhenIdle=false;
   async function durableCall(channel,payload,identity=payload){
     void identity;
     if(!has('workbench.prepare'))throw Error('操作恢复服务尚未连接，请更新桌面服务后再写入。');
@@ -63,7 +63,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
   async function action(fn){
     if(pending||isLocked())return;const generation=epoch;pending++;onChange();status('处理中…');
     try{await run(fn);}catch(error){if(generation===epoch&&safeError(error)!=='WORLD_CHANGED')status(safeError(error),true);}
-    finally{if(generation===epoch&&notice.textContent==='处理中…')status('已更新');pending--;onChange();}
+    finally{if(generation===epoch&&notice.textContent==='处理中…')status('已更新');pending--;onChange();if(!pending&&refreshWhenIdle){refreshWhenIdle=false;void show(currentTab);}}
   }
   function empty(section,message){section.replaceChildren(text('p',message,'workbench-empty'));}
   function renderSelection(){
@@ -247,7 +247,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
   }
   async function show(tab){
     currentTab=tab;element.hidden=!tab;for(const [key,page]of Object.entries(pages))page.hidden=key!==tab;
-    if(!tab)return;pause();status('正在读取…');
+    if(!tab){refreshWhenIdle=false;return;}if(pending){refreshWhenIdle=true;return;}refreshWhenIdle=false;pause();status('正在读取…');
     await action(async()=>{await refreshPending();return tab==='library'?searchLibrary(true):tab==='memory'?searchMemory(true):tab==='task'?showTask():showBackup();});
   }
   async function refreshCapabilities(){
@@ -261,5 +261,5 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     epoch++;pendingArea.replaceChildren();pendingArea.hidden=true;capabilities.clear();capabilitiesReady=false;pendingSelection=null;context=null;active=false;selected=null;selectionRevision=0;inspection=null;libraryDetail.hidden=true;renderSelection();
     await refreshCapabilities();
   }
-  return {show,setWorld,setSelection,refreshCapabilities,refreshPending:()=>!pending&&!isLocked()?refreshPending().catch(()=>{pendingArea.replaceChildren();pendingArea.hidden=true;}):Promise.resolve(),get busy(){return pending>0;},get tab(){return currentTab;},refresh:()=>currentTab?show(currentTab):refreshTask(),clearView(){epoch++;issues.clear();selected=null;renderSelection();}};
+  return {show,setWorld,setSelection,refreshCapabilities,refreshPending:()=>!pending&&!isLocked()?refreshPending().catch(()=>{pendingArea.replaceChildren();pendingArea.hidden=true;}):Promise.resolve(),get busy(){return pending>0;},get tab(){return currentTab;},refresh:()=>currentTab?show(currentTab):refreshTask(),clearView(){epoch++;refreshWhenIdle=false;issues.clear();selected=null;renderSelection();}};
 }

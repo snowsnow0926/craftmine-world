@@ -28,6 +28,11 @@ the view invalidates outstanding responses. Record reads and deletion remain
 available when that world's runtime cannot start; only creation needs a live
 formal instance.
 
+If a previous world's workbench action still owns the UI lock, the new page
+refresh is queued until that action finishes. Its stale result is discarded;
+finishing the action must mount the currently requested page instead of leaving
+the new world's notebook blank. Closing the view cancels the queued refresh.
+
 Limits and exclusions must be visible and truthful: local profile only, not
 included in world backups, no screenshots, chat, raw console, world source or
 progress body. Records are not claims of reproduction or resolution. Storage
