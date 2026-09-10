@@ -103,11 +103,11 @@ function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false
   return {call,calls};
 }
 
-test('the advertised Godot surface is 19 tools and leaks no host identity field',async()=>{
+test('the advertised Godot surface is 20 tools and leaks no host identity field',async()=>{
   const manifest=JSON.parse(await readFile(path.join(source,'manifest.json'),'utf8'));
   const tools=manifest.contributes.agentTools.filter(tool=>tool.name.startsWith('godot_'));
-  assert.equal(tools.length,19);
-  for(const name of ['godot_docs','godot_project_query','godot_runtime_state','godot_project_facts',
+  assert.equal(tools.length,20);
+  for(const name of ['godot_docs','godot_guidance','godot_project_query','godot_runtime_state','godot_project_facts',
     'godot_capability_report','godot_history','godot_jobs','godot_draft_recovery'])assert.ok(tools.some(tool=>tool.name===name),`missing ${name}`);
   for(const tool of tools){
     assert.equal(tool.schema.additionalProperties,false);
@@ -132,7 +132,7 @@ test('godot_capability_report advertises what is really reachable',async()=>{
   const report=await f.call('godot_capability_report',{});
   assert.equal(report.handshake.godotBuildJobs,true);
   assert.equal(report.handshake.godotExecution,false);
-  assert.equal(report.tools.length,34,'all advertised world tools except runtime_info');
+  assert.equal(report.tools.length,35,'all advertised world tools except runtime_info');
   assert.equal(report.tools.filter(tool=>tool.wired===false).length,0);
   assert.equal(report.tools.find(tool=>tool.name==='workspace_patch').reachable,true);
   assert.equal(report.tools.find(tool=>tool.name==='godot_build_start').reachable,true);

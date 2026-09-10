@@ -47,6 +47,8 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       if(args.mode==='read')return docs.readDoc(args);
       throw Error('INVALID_DOCS_MODE');
     }
+    // Validate exact catalog IDs before opening the host-bound workspace.
+    if(definition.name==='godot_guidance')require('./godot-guidance.cjs').validateRequest(args);
     // Discussion-only turns may read anything and change nothing. The host may
     // pass a predicate, or expose discussionOnly/readOnlyTurn through settings;
     // either way the refusal happens before any host call.
@@ -86,6 +88,8 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     assertActive();
     const workspace=await core.call('workspace.open',{context,selectedWorld});
     assertActive();
+    if(definition.name==='godot_guidance')return require('./godot-guidance.cjs').queryGuidance(core,
+      {context,worldId:workspace.worldId,args,assertActive});
     await verifications?.cancelOtherTurns(context);
     await reviews?.cancelOtherTurns(context);
     const godotWrites={godot_project_create:true,godot_project_patch:true,godot_asset_put:true,godot_build_start:true};

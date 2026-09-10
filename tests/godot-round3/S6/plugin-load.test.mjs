@@ -119,8 +119,8 @@ const call=(name,args)=>registered.get(name).execute(args,
   {projectId:'project',sessionId:'session',turnId:'turn',executionId:'execution',toolCallId:'call-'+name});
 
 test('the production entry registers the full advertised tool surface',()=>{
-  assert.equal(registered.size,35);
-  for(const name of ['godot_capability_report','godot_runtime_state','godot_jobs','godot_draft_recovery','godot_history',
+  assert.equal(registered.size,36);
+  for(const name of ['godot_guidance','godot_capability_report','godot_runtime_state','godot_jobs','godot_draft_recovery','godot_history',
     'asset_library','package_library'])assert.ok(registered.has(name),name);
 });
 
