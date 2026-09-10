@@ -7,24 +7,38 @@ import {randomUUID,createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {setTimeout as delay} from 'node:timers/promises';
 import {assertTargetFeedbackObservation,candidateFromTargetFeedbackStatus} from '../player-product/target-feedback-observation.mjs';
-const arg=name=>{const i=process.argv.indexOf(name);assert.ok(i>=0,`Missing ${name}`);return path.resolve(process.argv[i+1]);};
-const root=arg('--source-root'),runtime=arg('--runtime-source'),deps=arg('--deps-app'),app=path.join(root,'vendor/pi-desktop/apps/desktop');
-const require=createRequire(path.join(deps,'package.json')),electron=require('electron'),sha=b=>createHash('sha256').update(b).digest('hex');
-const main=fs.readFileSync(path.join(app,'out/main/index.js'),'utf8');
-for(const marker of ['configureHeadlessAcceptance()','focusable: !headlessAcceptance','offscreen: !!headlessAcceptance','targetFeedback.describe'])assert.ok(main.includes(marker),'Missing isolation/product marker '+marker);
-assert.ok(fs.readFileSync(path.join(app,'out/preload/craftmine-headless.cjs'),'utf8').includes('requestPointerLock'));
-const parent=path.join(root,'test-results');fs.mkdirSync(parent,{recursive:true});const out=fs.mkdtempSync(path.join(parent,'desktop-native-parameters-')),profile=path.join(out,'profile'),legacy=path.join(out,'legacy'),token=randomUUID();fs.mkdirSync(profile);fs.mkdirSync(legacy);fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy}));
-const report={format:'craftmine.target-feedback-client/1',passed:false,root,runtime,out,commit:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),mainSha256:sha(main),pluginSha256:sha(fs.readFileSync(path.join(app,'resources/plugins/craftmine.world/views/view.js'))),steps:[],launches:[],limits:['Development client and authored runtime from this checkout, using locally rebuilt core/host binaries identified by SHA256; not a Windows release acceptance','No model prompt, credentials, OS input, Pointer Lock, visible windows, desktop captures or external report export; fixed gameplay captures only the isolated game view','Snapshot comparison retains every field including stable savedAt metadata']};
+import {loadPackageAsar} from '../../desktop/package-asar.mjs';
+import {parameterClientArguments,inspectParameterPackage,isolatedParameterEnvironment} from './parameter-client-package.mjs';
+const options=parameterClientArguments(process.argv.slice(2));
+const {root,runtime,deps,packaged}=options,app=path.join(root,'vendor/pi-desktop/apps/desktop');
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const commit=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
 assert.equal(execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim(),'','Source must be committed and clean');
-assert.equal(runtime,root,'Runtime source must come from this source checkout');
-const resources=JSON.parse(fs.readFileSync(path.join(runtime,'desktop/build/runtime-resources/runtime-resources.json'),'utf8'));
-assert.equal(resources.sourceCommit,report.commit);report.runtimeSourceCommit=resources.sourceCommit;report.runtimeFilesDigest=resources.filesDigest;
-const core=path.join(runtime,'vendor/pi-desktop/target/release/craftmine-core.exe'),host=path.join(runtime,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe');report.coreSha256=sha(fs.readFileSync(core));report.hostSha256=sha(fs.readFileSync(host));
+if(packaged)assert.equal(commit,options.expectedCommit,'Harness source must match the explicitly frozen package commit');
+// --deps-app supplies only the ASAR inspection library in packaged mode. Never
+// resolve Electron or read development compiled/runtime bytes in this branch.
+const asar=packaged?loadPackageAsar(deps):null;
+const packageInfo=packaged?await inspectParameterPackage({...options,asar}):null;
+const electron=packaged?null:createRequire(path.join(deps,'package.json'))('electron');
+const main=packageInfo?packageInfo.main:fs.readFileSync(path.join(app,'out/main/index.js'),'utf8');
+for(const marker of ['configureHeadlessAcceptance()','focusable: !headlessAcceptance','offscreen: !!headlessAcceptance','targetFeedback.describe'])assert.ok(main.includes(marker),'Missing isolation/product marker '+marker);
+assert.ok((packageInfo?packageInfo.preload:fs.readFileSync(path.join(app,'out/preload/craftmine-headless.cjs'),'utf8')).includes('requestPointerLock'));
+const parent=path.join(root,'test-results');fs.mkdirSync(parent,{recursive:true});const out=fs.mkdtempSync(path.join(parent,'desktop-native-parameters-')),profile=path.join(out,'profile'),legacy=path.join(out,'legacy'),token=randomUUID();fs.mkdirSync(profile);fs.mkdirSync(legacy);fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy}));
+const report={format:'craftmine.target-feedback-client/1',passed:false,root,runtime,out,commit,mode:packaged?'packaged':'development',mainSha256:sha(main),pluginSha256:packageInfo?packageInfo.identity.pluginSha256:sha(fs.readFileSync(path.join(app,'resources/plugins/craftmine.world/views/view.js'))),steps:[],launches:[],limits:[packaged?'Packaged EXE and only bundled core/host/runtime; independently supplied source commit and build-manifest hash verified. ASAR parser is explicit test tooling. Installer execution, full release seal, clean OS, signing and live-model acceptance are separate.':'Development client and authored runtime from this checkout, using locally rebuilt core/host binaries identified by SHA256; not a Windows release acceptance','No model prompt, credentials, OS input, Pointer Lock, visible windows, desktop captures or external report export; fixed gameplay captures only the isolated game view','Snapshot comparison retains every field including stable savedAt metadata']};
+if(packageInfo)Object.assign(report,packageInfo.identity);
+else{
+ assert.equal(runtime,root,'Runtime source must come from this source checkout');
+ const resources=JSON.parse(fs.readFileSync(path.join(runtime,'desktop/build/runtime-resources/runtime-resources.json'),'utf8'));
+ assert.equal(resources.sourceCommit,report.commit);report.runtimeSourceCommit=resources.sourceCommit;report.runtimeFilesDigest=resources.filesDigest;
+}
+const core=packageInfo?packageInfo.core:path.join(runtime,'vendor/pi-desktop/target/release/craftmine-core.exe'),host=packageInfo?packageInfo.host:path.join(runtime,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe');report.coreSha256=sha(fs.readFileSync(core));report.hostSha256=sha(fs.readFileSync(host));
 let child,ended=true,ready=false,exit,launch,formalBuildId;const pending=new Map();
 const persist=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));
-function start(){ended=false;ready=false;launch={at:new Date().toISOString()};report.launches.push(launch);
- const env={...process.env,CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_HEADLESS_ROOT:out,CRAFTMINE_DATA_DIR:profile,CRAFTMINE_HEADLESS_TOKEN:token,CRAFTMINE_CORE_BIN:core,PI_DESKTOP_HOST_BIN:host,CRAFTMINE_GODOT_BASES:path.join(runtime,'desktop/godot')};delete env.ELECTRON_RUN_AS_NODE;delete env.ELECTRON_RENDERER_URL;
- child=spawn(electron,[app],{cwd:root,env,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
+async function start(){
+ if(packageInfo){const current=await inspectParameterPackage({...options,asar});assert.deepEqual(current.identity,packageInfo.identity,'Package bytes changed between launches');}
+ ended=false;ready=false;launch={at:new Date().toISOString()};report.launches.push(launch);
+ const env=isolatedParameterEnvironment(process.env,{out,profile,token,core,host,bases:packageInfo?packageInfo.bases:path.join(runtime,'desktop/godot')});
+ child=spawn(packageInfo?packageInfo.executable:electron,packageInfo?[]:[app],{cwd:packageInfo?packageInfo.cwd:root,env,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
  for(const stream of ['stdout','stderr'])child[stream].on('data',bytes=>fs.appendFileSync(path.join(out,`client-${report.launches.length}-${stream}.log`),bytes));
  child.on('message',message=>{if(message?.type==='craftmine-headless-ready')ready=true;if(message?.type==='craftmine-headless-exit')launch.audit=message;if(message?.type!=='craftmine-headless')return;const p=pending.get(message.id);if(!p)return;pending.delete(message.id);clearTimeout(p.timer);message.error?p.reject(Error(message.error)):p.resolve(message.result);});
  exit=new Promise(resolve=>{const finish=(code,signal,error)=>{if(ended)return;ended=true;launch.exit={code,signal,error:error?String(error):null};for(const p of pending.values()){clearTimeout(p.timer);p.reject(Error('Client exited'));}pending.clear();persist();resolve();};child.once('error',e=>finish(null,null,e));child.once('exit',(code,signal)=>finish(code,signal));});
@@ -41,7 +55,7 @@ const feedback=async(worldId,value)=>{
  const observed=await rpc('godotObserve');assertTargetFeedbackObservation(observed,{worldId,buildId:formalBuildId,targetId:'target_a',hitFlashMilliseconds:value});return observed;
 };
 try{
- start();await until(()=>ready,Boolean,'headless controller');await until(()=>nav('world.createOptions'),x=>x.bases?.some(b=>b.id==='first-person'),'base catalog');
+ await start();await until(()=>ready,Boolean,'headless controller');await until(()=>nav('world.createOptions'),x=>x.bases?.some(b=>b.id==='first-person'),'base catalog');
  const world=await step('create actual first-person parameter world',()=>nav('world.create',{baseId:'first-person',starterId:'training-range',title:'Training target parameter acceptance',operationId:randomUUID()}));report.worldId=world.id;
  await step('real broker check and baseline runtime parameter',async()=>{await until(async()=>{const r=await nav('world.list');return r.worlds.find(x=>x.id===world.id);},x=>{assert.ok(!['failed','cancelled','interrupted'].includes(x?.state),JSON.stringify(x));return x?.state==='ready';},'world initialization',900000);await loaded(world.id);formalBuildId=(await rpc('godotObserve')).buildId;report.baselineBuildId=formalBuildId;return feedback(world.id,120);});
  await step('real library guide is optional, keeps game chrome fixed and uses existing navigation',async()=>{const r=await rpc('worldCreationGuide',{},120000);assert.equal(r.worldId,world.id);assert.equal(r.steps,6);for(const key of ['collapsed','expanded','insideWorkbench','headerUnchanged','checksVisible','clearedAfterNavigation','reopenedCollapsed','clearedAfterWorld'])assert.equal(r[key],true,key);return r;});
@@ -62,13 +76,13 @@ try{
  });
  await step('candidate preview and close retain original formal defaults and gameplay',async()=>{const preview=await panel(world.id,'godot.candidatePreview',{candidateId});assert.deepEqual(preview,{status:'preview',worldId:world.id,candidateId,buildId:checked.job.buildId});const closed=await panel(world.id,'godot.candidateClose');assert.deepEqual(closed,{status:'aborted',worldId:world.id});assert.equal((await panel(world.id,'godot.candidateState',{candidateId})).status,'closed');assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);return feedback(world.id,120);});
  await step('first shutdown keeps checked draft without adopting it',auditStop);
- start();await until(()=>ready,Boolean,'second controller');await loaded(world.id);
+ await start();await until(()=>ready,Boolean,'second controller');await loaded(world.id);
  await step('restart restores pending original operation and original formal runtime',async()=>{const records=await panel(world.id,'workbench.operations'),record=records.items.find(x=>x.operationId===intent.operationId);assert.ok(record);assert.equal(record.channel,'targetFeedback.submit');assert.deepEqual(record.payload,payload);assert.equal(record.state,'completed');assert.deepEqual(await panel(world.id,'workbench.execute',{operationId:intent.operationId}),queued);assert.equal((await panel(world.id,'targetFeedback.status',{operationId:intent.operationId})).job.candidateId,candidateId);assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);return feedback(world.id,120);});
  await step('adopt exact checked parameter candidate',async()=>{const preview=await panel(world.id,'godot.candidatePreview',{candidateId});assert.deepEqual(preview,{status:'preview',worldId:world.id,candidateId,buildId:checked.job.buildId});const adopted=await panel(world.id,'godot.candidateApply',{candidateId});assert.equal(adopted.status,'applied');assert.equal(adopted.worldId,world.id);assert.equal(adopted.candidateId,candidateId);assert.equal(adopted.record.id,world.id);assert.equal(adopted.record.world.build.id,checked.job.buildId);formalBuildId=checked.job.buildId;assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);return{status:adopted.status,observation:await feedback(world.id,500)};});
  await step('formal source agrees with live runtime and preserves other target defaults',async()=>{const r=await panel(world.id,'targetFeedback.describe');assert.equal(r.targets.find(x=>x.targetId==='target_a').values.hitFlashMilliseconds,500);for(const other of r.targets.filter(x=>x.targetId!=='target_a'))assert.equal(other.values.hitFlashMilliseconds,120);return r;});
  await step('stale source binding becomes a visible rejection without a write',async()=>{const r=await panel(world.id,'targetFeedback.submit',{operationId:randomUUID(),...payload,values:{hitFlashMilliseconds:750}});assert.equal(r.status,'rejected');assert.equal(r.reason,'TARGET_FEEDBACK_STALE_BINDING');assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);return r;});
  await step('second shutdown persists adopted parameter',auditStop);
- start();await until(()=>ready,Boolean,'third controller');await loaded(world.id);
+ await start();await until(()=>ready,Boolean,'third controller');await loaded(world.id);
  await step('second restart retains 500 milliseconds and every old gameplay field',async()=>{assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);const r=await panel(world.id,'targetFeedback.describe');assert.equal(r.targets.find(x=>x.targetId==='target_a').values.hitFlashMilliseconds,500);return feedback(world.id,500);});
  await step('third orderly shutdown',auditStop);report.passed=true;
 }catch(e){report.error=String(e.stack??e);process.exitCode=1;}finally{await stop();report.finishedAt=new Date().toISOString();persist();console.log(JSON.stringify({out,passed:report.passed,steps:report.steps.map(({name,passed})=>({name,passed})),error:report.error}));}
