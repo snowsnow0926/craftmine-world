@@ -17,14 +17,15 @@ function findTiming(value,depth=0){
 }
 const duration=(a,b)=>{const value=Date.parse(b)-Date.parse(a);return Number.isFinite(value)&&value>=0?value:null;};
 const rounds=directories.map(directory=>{
- const root=path.resolve(directory),raw=fs.readFileSync(path.join(root,'report.json')),report=JSON.parse(raw);
+ const input=path.resolve(directory),reportPath=fs.statSync(input).isFile()?input:path.join(input,'report.json');
+ const root=path.dirname(reportPath),raw=fs.readFileSync(reportPath),report=JSON.parse(raw);
  if(report.format!=='craftmine.creation-next-model/1')throw Error('MODEL_SUITE_MISMATCH:'+root);
  let ledger=null;const ledgerPath=path.join(root,'profile/plugins/data/craftmine.world/godot/executor-ledger.json');
  if(fs.existsSync(ledgerPath))ledger=JSON.parse(fs.readFileSync(ledgerPath,'utf8'));
- return {directory:root,reportSha256:sha(raw),sourceCommit:report.sourceCommit,compiledMainSha256:report.compiledMainSha256,model:report.model,provider:report.provider,limits:report.limits,summary:report.summary,
+ return {directory:root,reportPath,scope:report.scope??'live-model',parentReportSha256:report.parentReportSha256??null,budgetBefore:report.budgetBefore??null,budgetAfter:report.budgetAfter??null,reportSha256:sha(raw),sourceCommit:report.sourceCommit,compiledMainSha256:report.compiledMainSha256,model:report.model,provider:report.provider,limits:report.limits,summary:report.summary,
   cases:report.cases.map(item=>({id:item.id,request:item.request,evidenceUse:item.evidenceUse??'development_case',outcome:item.outcome,modelRequests:item.modelRequests,repairAttempts:item.repairAttempts??0,elapsedMs:item.elapsedMs??null,error:item.error??null,
    tools:(item.turnMessages??[]).filter(m=>m.role==='tool').map(m=>({name:m.toolName,elapsedMs:m.toolDurationMs??null,status:m.toolStatus??null,...(findTiming(m.toolResult??m.content)?{sourceTiming:findTiming(m.toolResult??m.content)}:{})}))})),
-  jobs:Object.values(ledger?.jobs??{}).map(job=>({jobId:job.jobId,state:job.state,outcome:job.outcome,checkElapsedMs:duration(job.startedAt,job.finishedAt),brokerAttempts:job.attempts.map(attempt=>({operation:attempt.operation,outcome:attempt.outcome,elapsedMs:duration(attempt.startedAt,attempt.finishedAt)})),phaseTiming:job.phaseTiming??null,creationPackProof:job.creationPackProof??null})),
+  jobs:Object.values(ledger?.jobs??{}).filter(job=>Date.parse(job.startedAt)>=Date.parse(report.startedAt)).map(job=>({jobId:job.jobId,state:job.state,outcome:job.outcome,checkElapsedMs:duration(job.startedAt,job.finishedAt),brokerAttempts:job.attempts.map(attempt=>({operation:attempt.operation,outcome:attempt.outcome,elapsedMs:duration(attempt.startedAt,attempt.finishedAt)})),phaseTiming:job.phaseTiming??null,creationPackProof:job.creationPackProof??null})),
  };
 });
 const result={format:'craftmine.creation-model-comparison/1',generatedAt:new Date().toISOString(),rounds,totalObservedRequests:rounds.reduce((sum,round)=>sum+(round.summary?.requestCount??0),0),cost:null,notes:[
