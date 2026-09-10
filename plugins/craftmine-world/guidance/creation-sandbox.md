@@ -1,7 +1,7 @@
 # 沉浸式造物世界：物件操作与普通源码玩法
 
 指导 ID：`creation-sandbox.authoring`，版本 `1.0.0`。仅匹配
-`creation-sandbox` 底座 `1.0.0`、`creation-sandbox-1.0.0` build 和
+`creation-sandbox` 底座 `1.0.0`、初始 `creation-sandbox-1.0.0` 或已采用的 `gbd-*` build，以及
 Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 
 这是按源码整理的接口指南。加载指南或示例不会证明模型首次成功、玩法验收或正式采用。
@@ -19,10 +19,11 @@ Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 需要新的玩家捕获，不能编造目标、坐标、障碍或 snapshot ID。调用工具时不传
 `targetSnapshot`；主机通过本轮上下文取得它。
 
-`creationTarget.sourceRevision` 是主机源码事务 revision，等于工具请求
-`expected.revision`；`creationTarget.target.revision` 是 `world/creation.json`
-内部场景 revision。两者有不同来源，不能互换。`manifestHash`、buildId、instanceId、
-worldId 和 snapshotId 必须使用同一个主机捕获；只查文件得到的几何不是这种授权快照。
+`creationTarget.sourceRevision` 是捕获时主机源码事务 revision，首次操作等于工具请求
+`expected.revision`；同轮后续操作使用上次结果 `source.revision` 与 `source.manifestHash`，
+目标的 worldId、buildId、instanceId、snapshotId 保持原样。`creationTarget.target.revision` 是 `world/creation.json`
+内部场景 revision。两者有不同来源，不能互换。buildId、instanceId、worldId 和 snapshotId
+必须使用同一个主机捕获；只查文件得到的几何不是这种授权快照。
 
 ## 结构化物件编辑
 

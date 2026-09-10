@@ -150,6 +150,9 @@ test('造物指导按真实底座和三个接口哈希匹配，普通脚本示�
  const f=fixture(opts),catalog=await f.run({mode:'catalog'});
  assert.deepEqual(catalog.skills.map(entry=>entry.id),[creationSkill.id]);
  assert.equal(f.calls.filter(call=>call.method==='godotProject.read').length,3);
+ const adopted=await fixture({...opts,baseBuild:'gbd-'+ 'd'.repeat(64)}).run({mode:'catalog'});
+ assert.equal(adopted.available,true);
+ await assert.rejects(fixture({...opts,baseBuild:'gbd-'+ 'd'.repeat(64),modified:true}).run({mode:'catalog'}),/GUIDANCE_INTERFACE_UNSUPPORTED/);
  for(const entry of [creationSkill,creationSkill.references.find(ref=>ref.path==='examples/double-press-rule.gd')]){
   let offset=0,text='';
   do{const result=await f.run({mode:'read',id:creationSkill.id,version:creationSkill.version,sha256:entry.sha256,

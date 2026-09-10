@@ -42,7 +42,10 @@ async function queryGuidance(core,{context,worldId,args,assertActive=()=>{}}){
   const matches=[];
   for(const skill of candidates){
     const target=skill.applicability;
-    if(index.baseId!==target.baseId||index.baseBuild!==target.baseBuild||index.engineVersion!==target.engineVersion)continue;
+    // Core advances baseBuild to the applied build after adoption. Exact
+    // interface hashes below retain the version gate across that lineage.
+    const knownBuild=index.baseBuild===target.baseBuild||(/^gbd-[a-f0-9]{64}$/.test(index.baseBuild)&&skill.references.some(ref=>ref.requiredInterface));
+    if(index.baseId!==target.baseId||!knownBuild||index.engineVersion!==target.engineVersion)continue;
     for(const ref of skill.references.filter(ref=>ref.requiredInterface)){
       let source;
       try {source=await core.call('godotProject.read',{context,worldId,revision:index.revision,
