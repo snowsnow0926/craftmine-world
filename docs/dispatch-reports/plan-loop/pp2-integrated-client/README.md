@@ -55,3 +55,8 @@ suite passed 60 checks, including six new startup timing cases and a real local
 HTTP factory/cleanup case. TypeScript compilation passed. Those timing tests
 are distinct from the native client's ordinary workflow; neither result proves
 the cause of any prior intermittent IOCP failure.
+
+After both runs completed, their full private directories were also moved to
+the same owned C: archive and verified byte for byte to reserve D: space for
+the new Windows release. `final-test-archive-index.json` records these two
+additional locations and hashes; both committed reports above remain intact.
