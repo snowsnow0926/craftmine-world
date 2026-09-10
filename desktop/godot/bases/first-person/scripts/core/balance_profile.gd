@@ -21,7 +21,9 @@ func apply_to(world: BaseWorld) -> void:
 	if world.player.camera_rig != null:
 		world.player.camera_rig.mouse_sensitivity_degrees = mouse_sensitivity_degrees
 	for target in world.get_tree().get_nodes_in_group("base_targets"):
-		if target.get("hit_flash_seconds") != null:
+		if target.has_method("apply_balance_hit_flash_seconds"):
+			target.apply_balance_hit_flash_seconds(hit_flash_seconds)
+		elif target.get("hit_flash_seconds") != null:
 			target.hit_flash_seconds = hit_flash_seconds
 	if world.crosshair != null:
 		world.crosshair.hit_flash_seconds = hit_flash_seconds
