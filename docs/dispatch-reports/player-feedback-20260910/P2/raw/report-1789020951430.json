@@ -1,0 +1,22 @@
+{
+  "format": "craftmine.p2-apply-view/1",
+  "native": false,
+  "limits": [
+    "Actual product DOM and view module; finite fixture bridge and game protocol",
+    "No actual Godot/Core/model or player input",
+    "Restart means page reload against retained fixture state, not OS restart",
+    "Fixture HTML permits inline bootstrap/game scripts; product CSP is unchanged"
+  ],
+  "checks": [],
+  "errors": [
+    "SyntaxError: Invalid or unexpected token",
+    "ReferenceError: CRAFTMINE_BOOT_WORLD is not defined"
+  ],
+  "sourceHashes": {
+    "world.html": "70775ce493307381b7cd98b1e9d8210de935025ee621e24c703380ceb35407c3",
+    "view.mjs": "2dbdc3e62ed3c3a16548141634c293a6bfe0b27d6a9a34c8fdfd6bc2d3aef1ea",
+    "apply-presentation.mjs": "c6b2d945556bbbf95f55b223d54b3f20670b1820aea050d10500885a02deabdb"
+  },
+  "failure": "page.waitForFunction: Timeout 30000ms exceeded.\n    at goto (D:\\cm-fb-p2-20260910\\tests\\player-feedback\\P2\\apply-view-headless.mjs:62:111)\n    at async file:///D:/cm-fb-p2-20260910/tests/player-feedback/P2/apply-view-headless.mjs:66:2",
+  "passed": false
+}

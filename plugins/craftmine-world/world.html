@@ -43,6 +43,9 @@
     #preview-review ul { margin:6px 0; padding-left:20px; }
     #apply-world { background:light-dark(#316349,#b2d2bd); color:light-dark(#fff,#16231b); border-color:transparent; }
     #review-state { font-weight:550; }
+    #apply-explanation { flex:none; padding:8px 12px; border-bottom:1px solid light-dark(#ddd,#393939); font-size:12px; line-height:1.6; }
+    #apply-explanation p { margin:3px 0; overflow-wrap:anywhere; }
+    #apply-reason { font-weight:550; }
     .check-row { padding:12px; margin-bottom:10px; border:1px solid light-dark(#ddd,#393939); border-radius:8px; }
     .check-row h3 { margin:0 0 6px; font-size:13px; font-weight:550; overflow-wrap:anywhere; }
     .check-meta { color:light-dark(#656565,#aaa); display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 10px; }
@@ -117,6 +120,11 @@
     </section>
     <section id="preview-panel" aria-label="草稿预览" hidden>
       <header><span id="preview-title">草稿预览</span><span class="save-state">独立副本</span><button id="close-preview" type="button">返回世界</button><form id="apply-form"><button id="apply-world" type="submit" disabled>应用到世界</button><button id="apply-world-warnings" type="submit" hidden disabled>带评审提示应用</button></form></header>
+      <section id="apply-explanation" aria-label="应用条件" role="status" aria-live="polite">
+        <p id="apply-reason">尚未打开可应用的草稿预览。</p><p id="apply-next-step">在检查记录中打开当前草稿。</p>
+        <button id="refresh-apply-state" type="button" hidden>刷新状态</button>
+        <details id="apply-error-details" hidden><summary>查看未完成原因</summary><p id="apply-error-text"></p></details>
+      </section>
       <section id="preview-review" aria-label="需求检查和评审">
         <div id="review-state" role="status">正在读取评审…</div>
         <details id="review-details"><summary>查看需求与建议</summary><div id="review-notes"></div></details>

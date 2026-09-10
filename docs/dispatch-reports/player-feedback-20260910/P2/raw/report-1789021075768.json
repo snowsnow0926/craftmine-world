@@ -1,0 +1,107 @@
+{
+  "format": "craftmine.p2-apply-view/1",
+  "native": false,
+  "limits": [
+    "Actual product DOM and view module; finite fixture bridge and game protocol",
+    "No actual Godot/Core/model or player input",
+    "Restart means page reload against retained fixture state, not OS restart",
+    "Fixture HTML permits inline bootstrap/game scripts; product CSP is unchanged"
+  ],
+  "checks": [
+    {
+      "name": "Current passed review permits normal application",
+      "passed": true
+    },
+    {
+      "name": "Visible reason for review-missing",
+      "passed": true
+    },
+    {
+      "name": "Visible reason for stale",
+      "passed": true
+    },
+    {
+      "name": "Visible reason for review-running",
+      "passed": true
+    },
+    {
+      "name": "Visible reason for review-failed",
+      "passed": true
+    },
+    {
+      "name": "Visible reason for review-cancelled",
+      "passed": true
+    },
+    {
+      "name": "Visible reason for review-interrupted",
+      "passed": true
+    },
+    {
+      "name": "Visible reason for review-incomplete",
+      "passed": true
+    },
+    {
+      "name": "Read failure is visible, disables application and renders text safely",
+      "passed": true
+    },
+    {
+      "name": "Advisory confirmation remains a distinct enabled choice",
+      "passed": true
+    },
+    {
+      "name": "Lost reply explains original operation reconciliation",
+      "passed": true
+    },
+    {
+      "name": "Repeated form submission never creates another voxel application",
+      "passed": true
+    },
+    {
+      "name": "Confirmed application preserves complete fixture progress",
+      "passed": true
+    },
+    {
+      "name": "Page reload retains adopted build and complete fixture progress",
+      "passed": true
+    },
+    {
+      "name": "Late old-preview rejection is ignored before any corrective refresh",
+      "passed": true
+    },
+    {
+      "name": "New preview still reads its own current review",
+      "passed": true
+    },
+    {
+      "name": "Godot preview explains pending formal adoption without polling mutating state",
+      "passed": true
+    },
+    {
+      "name": "Wrong candidate-state identity cannot unlock an uncertain attempt",
+      "passed": true
+    },
+    {
+      "name": "Exact unchanged-preview receipt permits exit or retry after pre-transaction rejection",
+      "passed": true
+    },
+    {
+      "name": "Godot lost reply reconciles original candidate without applying twice",
+      "passed": true
+    },
+    {
+      "name": "Godot fixture adopted build and full progress survive page reload",
+      "passed": true
+    },
+    {
+      "name": "No pointer lock/focus requests or page errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "sourceHashes": {
+    "world.html": "70775ce493307381b7cd98b1e9d8210de935025ee621e24c703380ceb35407c3",
+    "view.mjs": "cb080c9d293e46392e5d14bff404da12f8782cea9d6b7b96589776cb950d796e",
+    "apply-presentation.mjs": "c6b2d945556bbbf95f55b223d54b3f20670b1820aea050d10500885a02deabdb"
+  },
+  "passed": true
+}

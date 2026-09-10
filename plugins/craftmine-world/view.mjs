@@ -1,5 +1,6 @@
 import {createWorkbench} from './workbench-ui.mjs';
 import {createCreationGuideUI} from './creation-guide-ui.mjs';
+import {applyPresentation} from './apply-presentation.mjs';
 const initialWorld = CRAFTMINE_BOOT_WORLD;
 const gameDocument = CRAFTMINE_GAME_DOCUMENT;
 const frame = document.querySelector('iframe');
@@ -20,6 +21,7 @@ const previewPanel=document.getElementById('preview-panel');
 let previewFrame=null;
 let preview=null,checkOffset=0,checkWorld=null,checksLoading=false,evidenceJob=null,evidenceNext=null;
 let previewReview=null,reviewLoading=false,applicationAttempt=null;
+let reviewError=null,applyError=null;
 let godotIdentity=null;
 let workbench;
 let creationGuide;
@@ -93,10 +95,20 @@ function controls() {
   document.getElementById('close-preview').disabled=busy||closing||!!applicationAttempt;
   document.getElementById('apply-world').textContent=applicationAttempt?.godot?'确认应用结果':'应用到世界';
   document.getElementById('world-mode').disabled=!!preview||!!applicationAttempt;document.getElementById('checks-mode').disabled=!!preview||!!applicationAttempt;
-  document.getElementById('apply-world').disabled=busy||closing|| (!!applicationAttempt&&!applicationAttempt.godot)||!preview||(!preview.godot&&(!previewReview?.current||previewReview.status!=='completed'||!previewReview.acceptance?.passed));
+  const presentation=applyPresentation({busy,closing,preview,review:previewReview,reviewLoading,reviewError,attempt:applicationAttempt,applyError});
+  document.getElementById('apply-world').disabled=presentation.primaryDisabled;
   const warnings=document.getElementById('apply-world-warnings');
-  warnings.hidden=previewReview?.status!=='completed'||previewReview.acceptance?.passed!==false;
-  warnings.disabled=busy||closing||!!applicationAttempt||!preview||!previewReview?.current||warnings.hidden;
+  warnings.hidden=presentation.warningHidden;
+  warnings.disabled=presentation.warningDisabled;
+  const explanation=document.getElementById('apply-explanation');
+  explanation.dataset.reason=presentation.code;
+  document.getElementById('apply-reason').textContent=presentation.reason;
+  document.getElementById('apply-next-step').textContent=presentation.next;
+  document.getElementById('refresh-apply-state').hidden=!preview||!!preview.godot;
+  document.getElementById('refresh-apply-state').disabled=busy||closing||reviewLoading||!!applicationAttempt;
+  const failure=reviewError||applyError;
+  document.getElementById('apply-error-details').hidden=!failure;
+  document.getElementById('apply-error-text').textContent=failure||'';
   document.getElementById('retry-review').disabled=busy||closing||!!applicationAttempt;
   document.getElementById('cancel-review').disabled=busy||closing;
   frame.inert=closing||!!applicationAttempt;
@@ -403,7 +415,7 @@ async function openGodotPreview(candidateId) {
   const worldId=current.id;
   const result=await bridge.invoke('godot.candidatePreview',{worldId,candidateId});
   if(current.id!==worldId)throw Error('世界已切换');
-  preview={godot:true,candidateId,worldId,buildId:result.buildId};previewReview=null;
+  preview={godot:true,candidateId,worldId,buildId:result.buildId};previewReview=null;reviewError=null;applyError=null;
   previewPanel.hidden=false;document.getElementById('preview-title').textContent='Godot 草稿预览';
   document.getElementById('preview-review').hidden=true;
   document.getElementById('apply-world-warnings').hidden=true;
@@ -434,7 +446,7 @@ async function closePreview(resume=true) {
   const closingPreview=preview;
   if(closingPreview.godot&&resume)await bridge.invoke('godot.candidateClose',{worldId:closingPreview.worldId});
   document.getElementById('preview-review').hidden=false;
-  preview=null;previewReview=null;previewPanel.hidden=true;previewFrame?.remove();previewFrame=null;delete document.body.dataset.previewLoaded;
+  preview=null;previewReview=null;reviewError=null;applyError=null;previewPanel.hidden=true;previewFrame?.remove();previewFrame=null;delete document.body.dataset.previewLoaded;
   if(resume)send('resume');controls();
 }
 async function openPreview(id) {
@@ -443,7 +455,7 @@ async function openPreview(id) {
   if(preview)closePreview(false);
   await save({freeze:true});
   const result=await bridge.invoke('verification.preview',{id});
-  const state={nonce:crypto.randomUUID(),world:result.world,job:result.job};preview=state;previewReview=null;
+  const state={nonce:crypto.randomUUID(),world:result.world,job:result.job};preview=state;previewReview=null;reviewError=null;applyError=null;
   previewFrame=document.createElement('iframe');previewFrame.title='草稿预览副本';previewFrame.setAttribute('sandbox','allow-scripts allow-pointer-lock');
   previewPanel.append(previewFrame);
   previewPanel.hidden=false;document.getElementById('preview-title').textContent=result.job.summary;
@@ -471,11 +483,11 @@ async function openPreview(id) {
 }
 async function refreshReview() {
   if(!preview||preview.godot||reviewLoading||closing)return;
-  const state=preview;reviewLoading=true;
+  const state=preview;reviewLoading=true;controls();
   try{
     const records=await bridge.invoke('review.list',{verificationId:state.job.id});
     if(preview!==state)return;
-    const review=records[0]||null;previewReview=review;
+    const review=records[0]||null;previewReview=review;reviewError=null;
     const labels={running:'正在评审与检查需求…',failed:'评审未完成',cancelled:'评审已取消',interrupted:'评审已中断'};
     document.getElementById('review-state').textContent=!review?'尚未完成评审':!review.current?'历史草稿 · 请检查最新草稿':
       review.status==='completed'?(review.acceptance?.passed?'评审检查通过 · 可以应用':'评审发现问题 · 请查看后决定是否应用'):labels[review.status]||review.status;
@@ -492,23 +504,24 @@ async function refreshReview() {
     document.getElementById('retry-review').hidden=!review||!review.current||review.status==='running';
     document.getElementById('cancel-review').hidden=review?.status!=='running';
     if(review?.verdict==='block'||review?.acceptance?.passed===false||review?.error)document.getElementById('review-details').open=true;
-  }catch(error){document.getElementById('review-state').textContent='读取评审失败：'+error.message;previewReview=null;}
+  }catch(error){if(preview!==state)return;document.getElementById('review-state').textContent='读取评审失败：'+error.message;previewReview=null;reviewError=String(error?.message||error).slice(0,600);}
   finally{reviewLoading=false;controls();}
 }
 
 async function applyCandidate(acknowledgeReviewWarnings=false) {
-  if(applicationAttempt?.godot){await reconcileApplication();return;}
+  if(applicationAttempt){await reconcileApplication();return;}
+  applyError=null;
   if(preview?.godot){
     const attempt={godot:true,worldId:preview.worldId,candidateId:preview.candidateId,buildId:preview.buildId};applicationAttempt=attempt;
     try{
       const result=await bridge.invoke('godot.candidateApply',{worldId:attempt.worldId,candidateId:attempt.candidateId});
       if(result.status!=='applied')throw Error('应用尚未提交');
       applicationAttempt=null;mount(result.record);await refreshList();return;
-    }catch(error){await reconcileApplication().catch(()=>{});if(!applicationAttempt&&current?.world?.build?.id===attempt.buildId)return;throw error;}
+    }catch(error){applyError=String(error?.message||error).slice(0,600);await reconcileApplication().catch(()=>{});if(!applicationAttempt&&current?.world?.build?.id===attempt.buildId)return;throw error;}
   }
   const state=preview,review=previewReview;
   if(!state||!review?.current||review.status!=='completed'||(!review.acceptance?.passed&&!(acknowledgeReviewWarnings===true&&review.acceptance?.passed===false)))throw Error('请先完成这份草稿的需求检查与评审');
-  await save({freeze:true});
+  try{await save({freeze:true});}catch(error){applyError=String(error?.message||error).slice(0,600);throw error;}
   const args={operationId:crypto.randomUUID(),verificationId:state.job.id,reviewId:review.id,worldId:current.id,revision:current.revision,...(acknowledgeReviewWarnings?{acknowledgeReviewWarnings:true}:{})};
   applicationAttempt=args;status.textContent='正在检查最新进度并应用…';
   try{
@@ -516,6 +529,7 @@ async function applyCandidate(acknowledgeReviewWarnings=false) {
     if(result.status!=='applied')throw Error('应用尚未提交');
     applicationAttempt=null;mount(result.record);await refreshList();
   }catch(error){
+    applyError=String(error?.message||error).slice(0,600);
     try{
       const recovered=await bridge.invoke('candidate.applicationState',{operationId:args.operationId,worldId:args.worldId});
       if(recovered.status==='applied'){applicationAttempt=null;mount(recovered.record);await refreshList();return;}
@@ -528,7 +542,12 @@ async function reconcileApplication() {
   const attempt=applicationAttempt;if(!attempt)return;
   if(attempt.godot){
     const result=await bridge.invoke('godot.candidateState',{worldId:attempt.worldId,candidateId:attempt.candidateId});
+    if(applicationAttempt!==attempt)return;
     if(result.status==='applied'){applicationAttempt=null;mount(result.record);await refreshList();return;}
+    // The host reports an unchanged preview when apply was rejected before an
+    // application began (for example its operation mutex was busy). Only this
+    // exact candidate identity may release the local uncertain-attempt guard.
+    if(result.status==='preview'&&result.worldId===attempt.worldId&&result.candidateId===attempt.candidateId){applicationAttempt=null;return;}
     if(['closed','aborted','interrupted'].includes(result.status)){applicationAttempt=null;await closePreview(false);return;}
     throw Error('应用结果尚在确认，原世界保持暂停。');
   }
@@ -544,6 +563,7 @@ document.getElementById('world-mode').onclick=()=>setMode(false);
 document.getElementById('checks-mode').onclick=()=>setMode(true);
 document.getElementById('close-preview').onclick=()=>void action(()=>closePreview());
 document.getElementById('apply-form').onsubmit=event=>{event.preventDefault();const acknowledged=event.submitter?.id==='apply-world-warnings';void action(()=>applyCandidate(acknowledged));};
+document.getElementById('refresh-apply-state').onclick=()=>void refreshReview();
 document.getElementById('retry-review').onclick=()=>void action(async()=>{await bridge.invoke('review.start',{verificationId:preview.job.id});await refreshReview();});
 document.getElementById('cancel-review').onclick=()=>void action(async()=>{await bridge.invoke('review.cancel',{id:previewReview.id});await refreshReview();});
 document.getElementById('checks-more').onclick=()=>{checkOffset+=8;void refreshChecks();};
