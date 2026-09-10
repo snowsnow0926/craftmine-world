@@ -1,0 +1,92 @@
+{
+  "format": "craftmine.target-feedback-default-native/1",
+  "kind": "fixed-authored-headless-godot",
+  "engineSha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "checks": [
+    {
+      "kind": "packed-scene",
+      "stage": "verify",
+      "defaults": {
+        "format": "craftmine.target-feedback-default/1",
+        "values": {
+          "hitFlashMilliseconds": 350
+        },
+        "source": {
+          "kind": "packed-scene",
+          "path": "scenes/actors/target_dummy.tscn",
+          "sha256": "d77fa00cfaab126c6464cfa23a501543f1db2f2d8256aed6f4275762fb9d8301"
+        }
+      },
+      "binding": {
+        "format": "craftmine.target-configuration-binding/1",
+        "contractId": "fp.target.feedback/1",
+        "scenePath": "scenes/training_range.tscn",
+        "targetId": "target_b",
+        "nodePath": "Targets/TargetB",
+        "sourceHash": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "dependencies": [
+          {
+            "path": "data/balance/training_range.tres",
+            "sha256": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf"
+          },
+          {
+            "path": "scenes/actors/player.tscn",
+            "sha256": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17"
+          },
+          {
+            "path": "scenes/actors/target_dummy.tscn",
+            "sha256": "d77fa00cfaab126c6464cfa23a501543f1db2f2d8256aed6f4275762fb9d8301"
+          },
+          {
+            "path": "scenes/training_range.tscn",
+            "sha256": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f"
+          },
+          {
+            "path": "scripts/core/balance_profile.gd",
+            "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+          },
+          {
+            "path": "scripts/core/base_world.gd",
+            "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+          },
+          {
+            "path": "scripts/core/player_controller.gd",
+            "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+          },
+          {
+            "path": "scripts/core/target_dummy.gd",
+            "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+          }
+        ]
+      },
+      "sourceHashes": {
+        "scenes/training_range.tscn": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "data/balance/training_range.tres": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf",
+        "scenes/actors/target_dummy.tscn": "d77fa00cfaab126c6464cfa23a501543f1db2f2d8256aed6f4275762fb9d8301",
+        "scripts/core/target_dummy.gd": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3",
+        "scripts/core/base_world.gd": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1",
+        "scripts/core/balance_profile.gd": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3",
+        "scenes/actors/player.tscn": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17",
+        "scripts/core/player_controller.gd": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+      },
+      "patchedSceneSha256": "b4fbf0cd0091ac813736aedad0250a5cf8b0762a98eb3997ab5362b37b134311",
+      "actualMilliseconds": 350,
+      "checks": [
+        "actual inherited value matches parser provenance",
+        "current instance override800 remains distinct",
+        "full progress restore accepted",
+        "all progress fields and other targets exactly preserved",
+        "selected explicit default survives ready and restore",
+        "explicit value does not resume dynamic inheritance",
+        "profile configuration does not mutate saved progress"
+      ],
+      "passed": true,
+      "restart": false
+    }
+  ],
+  "completed": true,
+  "passed": false,
+  "out": "C:\\cm-pp2-default-20260910\\test-results\\target-default-native-y2T497",
+  "failure": "AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /ERROR:|SCRIPT ERROR|DEFAULT_FAIL/. Input:\n\n'Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\\r\\n' +\n  '\\r\\n' +\n  'DEFAULT_RESULT {\"actualMilliseconds\":350.0,\"checks\":[\"full progress restore accepted\",\"selected explicit default survives ready and restore\",\"explicit value does not resume dynamic inheritance\"],\"passed\":true,\"restart\":true}\\r\\n' +\n  '\\n' +\n  'ERROR: DEFAULT_FAIL all progress fields and other targets exactly preserved\\r\\n' +\n  '   at: push_error (core/variant/variant_utility.cpp:1023)\\r\\n' +\n  '   GDScript backtrace (most recent call first):\\r\\n' +\n  '       [0] verify (res://test_default.gd:5)\\r\\n' +\n  '       [1] run (res://test_default.gd:36)\\r\\n' +\n  'SCRIPT ERROR: Assertion failed: all progress fields and other targets exactly preserved\\r\\n' +\n  '   at: verify (res://test_default.gd:7)\\r\\n' +\n  '   GDScript backtrace (most recent call first):\\r\\n' +\n  '       [0] verify (res://test_default.gd:7)\\r\\n' +\n  '       [1] run (res://test_default.gd:36)\\r\\n' +\n  'ERROR: DEFAULT_FAIL profile configuration does not mutate saved progress\\r\\n' +\n  '   at: push_error (core/variant/variant_utility.cpp:1023)\\r\\n' +\n  '   GDScript backtrace (most recent call first):\\r\\n' +\n  '       [0] verify (res://test_default.gd:5)\\r\\n' +\n  '       [1] run (res://test_default.gd:43)\\r\\n' +\n  'SCRIPT ERROR: Assertion failed: profile configuration does not mutate saved progress\\r\\n' +\n  '   at: verify (res://test_default.gd:7)\\r\\n' +\n  '   GDScript backtrace (most recent call first):\\r\\n' +\n  '       [0] verify (res://test_default.gd:7)\\r\\n' +\n  '       [1] run (res://test_default.gd:43)\\r\\n'\n\n    at file:///C:/cm-pp2-default-20260910/tests/player-product/target-feedback-defaults-native.mjs:89:82",
+  "finishedAt": "2026-09-10T03:16:00.088Z"
+}

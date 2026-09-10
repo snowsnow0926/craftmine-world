@@ -1,0 +1,22 @@
+{
+  "format": "craftmine.pp2-default-source/1",
+  "baseCommit": "251c96695eb26776d9fdf9bb2d16e7bb26e5f796",
+  "files": {
+    ".gitattributes": "2edf7b4318a3cac6b7ed5b8a6f8f411e901b7acf105611b5b302d759d6e10921",
+    "desktop/godot/shared/target-feedback-configuration.d.mts": "818aec910517592220e46a818c953439c501a56f0a6346985ea1388887c09ff9",
+    "desktop/godot/shared/target-feedback-configuration.mjs": "e3fa654506145461c860d7907b136fa4bc1501ca0312922ad852ce6a99691a62",
+    "plugins/craftmine-world/target-feedback-service.mjs": "d09cd8cfa7fd6c823f6abbb8628754ae695e44f4c5c93e6445228b05adb55c5d",
+    "plugins/craftmine-world/target-feedback-ui.mjs": "8a6380e9b237a9342fe79a798db803977e21a03d003ed590e1eacf650e99c5d2",
+    "tests/local-issues/target-feedback-headless.mjs": "f90a2795b72392aaa9b7cd3882c169b7481458c957963e93412855794bab8d27",
+    "tests/plan-loop/target-feedback-panel.test.mjs": "4cbd4e2636e6d26d8d463991bcc8d8650a644b9c978f3f59345c37ec3c521f66",
+    "tests/player-product/target-feedback-service.test.mjs": "1f2868336620454b79dc354ab61e7db23cf41521e4668da4441629cd5a1c9f5f",
+    "vendor/pi-desktop/apps/desktop/electron/main/craftmine-target-feedback-panel.ts": "51c3d0b538115decec298b8cc139a7591e008e9d803c0201d7973b135ed520b6",
+    "vendor/pi-desktop/docs/spec/06-delivery/04-e2e-test-plan.md": "6cc4b87930028f2e0d340155cd2cd66540aa3f9028f86559da4809cfa82eb093",
+    "vendor/pi-desktop/docs/spec/target-feedback-configuration.md": "b0d973a9309c9a58fe3f06f59970e8588c82c9e7bc19cf0bfa01a74eab69e68c",
+    "vendor/pi-desktop/docs/spec/target-feedback-service.md": "8b8361e52994c6d4fd0c0dea49822e5c0ff7cbd041dd745de1cac8ff88bb5659",
+    "tests/player-product/target-feedback-defaults.test.mjs": "493df99785ad5d30f47999f85aa1bd913eb4ebe3dbfaa03d9dedc02ae36e9068",
+    "tests/player-product/target-feedback-defaults-native.mjs": "42bc5e4a17d93d9f15da1ffd8164bbc019619a9a6dac36088d93776709d16f75"
+  },
+  "e2eOriginalBytes": 586843,
+  "e2ePrefixPreserved": true
+}

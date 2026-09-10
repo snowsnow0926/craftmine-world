@@ -67,7 +67,7 @@ export function createTargetFeedbackService({call,selected,begin,enqueue,turns,s
    if(node.properties.target_id===undefined)continue;
    const match=/^&?"([A-Za-z0-9][A-Za-z0-9._-]{0,127})"$/.exec(node.properties.target_id);
    if(!match){unsupported.push({nodeName:node.name,reason:'TARGET_CONFIGURATION_EXPLICIT_ID_REQUIRED'});continue;}
-   try{const target=describeTargetFeedback({...pickSource(source),targetId:match[1]});targets.push({targetId:match[1],label:node.name,configuration:target.configuration,binding:binding(source,target),values:target.values});}
+   try{const target=describeTargetFeedback({...pickSource(source),targetId:match[1]});targets.push({targetId:match[1],label:node.name,configuration:target.configuration,binding:binding(source,target),values:target.values,defaults:target.defaults});}
    catch(error){unsupported.push({targetId:match[1],nodeName:node.name,reason:error.code??String(error)});}
   }
   await selection(args.worldId);return {worldId:args.worldId,buildId:source.source.buildId,targets,unsupported,scope:'instance'};

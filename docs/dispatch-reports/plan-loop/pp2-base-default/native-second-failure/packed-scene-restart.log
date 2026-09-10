@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DEFAULT_RESULT {"actualMilliseconds":350.0,"checks":["full progress restore accepted","selected explicit default survives ready and restore","explicit value does not resume dynamic inheritance"],"passed":true,"restart":true}
+
+ERROR: DEFAULT_FAIL all progress fields and other targets exactly preserved
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] verify (res://test_default.gd:5)
+       [1] run (res://test_default.gd:36)
+SCRIPT ERROR: Assertion failed: all progress fields and other targets exactly preserved
+   at: verify (res://test_default.gd:7)
+   GDScript backtrace (most recent call first):
+       [0] verify (res://test_default.gd:7)
+       [1] run (res://test_default.gd:36)
+ERROR: DEFAULT_FAIL profile configuration does not mutate saved progress
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] verify (res://test_default.gd:5)
+       [1] run (res://test_default.gd:43)
+SCRIPT ERROR: Assertion failed: profile configuration does not mutate saved progress
+   at: verify (res://test_default.gd:7)
+   GDScript backtrace (most recent call first):
+       [0] verify (res://test_default.gd:7)
+       [1] run (res://test_default.gd:43)
