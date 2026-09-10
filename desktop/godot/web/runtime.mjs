@@ -204,7 +204,7 @@ export async function createWorldRuntime(options) {
   }
 
   function accept(message) {
-    if (disposed || exited) return;
+    if (disposed || exited || state === 'error') return;
     if (!message || typeof message !== 'object') return;
     // Late or foreign messages are dropped before any state changes: a reloaded
     // page, a stale instance, or another world can never drive this runtime.
@@ -341,6 +341,7 @@ export async function createWorldRuntime(options) {
   function request(op, args = {}, {timeoutMs: perRequest} = {}) {
     if (disposed) return Promise.reject(Error('Godot runtime is disposed'));
     if (exited) return Promise.reject(Error('Godot runtime has exited'));
+    if (state === 'error') return Promise.reject(Error('Godot runtime has failed'));
     if (!ready) return Promise.reject(Error('Godot runtime is not ready'));
     if (perRequest !== undefined && (!Number.isFinite(perRequest) || perRequest < 1 || perRequest > 300000)) return Promise.reject(Error('Invalid runtime request timeout'));
     if (typeof op !== 'string' || !op.length || op.length > 64) return Promise.reject(Error('Invalid runtime operation'));
@@ -381,12 +382,15 @@ export async function createWorldRuntime(options) {
     },
     /**
      * Abort a startup that can no longer succeed (page load failure, renderer
-     * crash). A ready/exited/disposed runtime is unaffected, so a late event can
-     * never overwrite a finished startup.
+     * crash), including the initial load pending after ready. A ready runtime
+     * with no pending request is unaffected by a late startup notification.
      */
     abortStartup(reason) {
-      if (disposed || ready || exited || state === 'error') return false;
-      fail(typeof reason === 'string' && reason ? reason.slice(0, 500) : 'Godot runtime failed to start');
+      if (disposed || exited || state === 'error' || (ready && pending.size === 0)) return false;
+      const failure = typeof reason === 'string' && reason ? reason.slice(0, 500) : 'Godot runtime failed to start';
+      if (!ready) fail(failure);
+      else state = 'error';
+      for (const id of [...pending.keys()]) settle(id, failure);
       return true;
     },
     attach(transport) {

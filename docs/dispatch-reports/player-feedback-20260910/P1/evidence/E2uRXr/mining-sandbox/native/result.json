@@ -1,0 +1,238 @@
+{
+  "baseId": "mining-sandbox",
+  "mode": "native",
+  "events": [
+    {
+      "at": 1789021130360,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789021130396,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021130721,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021130892,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021131126,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021131375,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021131375,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021131376,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x1e840dfeda00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021131376,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x1e840dfeda00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021131417,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021131417,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021131418,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021131418,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021131424,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789021131424,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 4,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789021131431,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 4
+    },
+    {
+      "at": 1789021131431,
+      "kind": "load-confirmed"
+    },
+    {
+      "at": 1789021131431,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021131433,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021131433,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "passed": true,
+  "state": {
+    "worldId": "alpha",
+    "buildId": "p1-mining-sandbox",
+    "instanceId": "d935c03a098d369ad97d8b90",
+    "state": "ready"
+  },
+  "snapshot": {
+    "base": "mining-sandbox",
+    "state": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "body": {
+        "baseId": "mining-sandbox",
+        "baseVersion": "1.0.0",
+        "chunks": {},
+        "format": "craftmine.godot-mining-sandbox-managed/1",
+        "mapSize": [
+          48,
+          24
+        ],
+        "seed": 20260910,
+        "state": {
+          "chunkIndex": {},
+          "editCount": 0,
+          "equipped": "",
+          "flags": {},
+          "format": "craftmine.godot-mining-sandbox-state/1",
+          "inventory": {},
+          "ledger": {},
+          "ledgerEvicted": 0,
+          "player": {
+            "facing": "right",
+            "health": 3,
+            "position": [
+              104,
+              90.5
+            ],
+            "tile": [
+              6,
+              4
+            ]
+          },
+          "stateVersion": 1,
+          "terrainHash": "",
+          "tools": [],
+          "worldId": "alpha",
+          "worldRevision": 0
+        },
+        "stateVersion": 1,
+        "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "observation": {
+    "baseId": "mining-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "p1-mining-sandbox",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "d935c03a098d369ad97d8b90",
+    "payload": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "bootError": "",
+      "chunks": [],
+      "cursor": [
+        6,
+        4
+      ],
+      "editCount": 0,
+      "equipped": "",
+      "inventory": {},
+      "lastAction": {},
+      "logicalViewportSize": [
+        640,
+        360
+      ],
+      "player": {
+        "equipped": "",
+        "facing": "right",
+        "health": 3,
+        "onFloor": true,
+        "position": [
+          104,
+          90.5
+        ],
+        "tile": [
+          6,
+          4
+        ],
+        "toolTier": 0
+      },
+      "stations": [],
+      "surfaceSize": [
+        0,
+        0
+      ],
+      "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+      "toolTier": 0,
+      "tools": [],
+      "worldId": "alpha",
+      "worldRevision": 0
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T06:18:51Z",
+    "worldId": "alpha"
+  },
+  "finishedAt": "2026-09-10T06:18:51.435Z"
+}

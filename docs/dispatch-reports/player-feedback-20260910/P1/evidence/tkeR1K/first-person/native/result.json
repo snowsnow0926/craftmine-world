@@ -1,0 +1,703 @@
+{
+  "baseId": "first-person",
+  "mode": "native",
+  "events": [
+    {
+      "at": 1789021412758,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789021412799,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021413979,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021414160,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021414393,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021414794,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021414795,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021414795,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x65640f075a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021414800,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021414800,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021414801,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021414801,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021414804,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789021414804,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 4,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789021414811,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 4
+    },
+    {
+      "at": 1789021414811,
+      "kind": "load-confirmed"
+    },
+    {
+      "at": 1789021414811,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 5,
+      "op": "pause"
+    },
+    {
+      "at": 1789021414812,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 5
+    },
+    {
+      "at": 1789021414812,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 6,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021414812,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 6
+    },
+    {
+      "at": 1789021414812,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 7,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021414813,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 7
+    },
+    {
+      "at": 1789021414816,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021414820,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021414820,
+      "kind": "first-instance-closed"
+    },
+    {
+      "at": 1789021414827,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 76,
+        "width": 1280,
+        "height": 720
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021416439,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021416575,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021416784,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021417119,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021417119,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021417120,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x2aa40f02da00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021417124,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021417125,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021417126,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021417128,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021417130,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021417130,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "loads": [
+    {
+      "instanceId": "381529f6f0c930ea7c08ff47",
+      "response": {
+        "protocol": "craftmine.godot-runtime/2",
+        "worldId": "alpha",
+        "buildId": "p1-first-person",
+        "instanceId": "381529f6f0c930ea7c08ff47",
+        "type": "response",
+        "id": 1,
+        "result": {
+          "loaded": true,
+          "snapshot": {
+            "base": "first-person",
+            "state": {
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "body": {
+                "base": "first-person",
+                "baseVersion": "0.1.0",
+                "equipment": {
+                  "active": "pistol",
+                  "items": [
+                    {
+                      "id": "pistol",
+                      "magazine": 6,
+                      "reserve": 12
+                    },
+                    {
+                      "id": "practice_sword",
+                      "magazine": 0,
+                      "reserve": 0
+                    },
+                    {
+                      "id": "inspection_tool",
+                      "magazine": 0,
+                      "reserve": 0
+                    }
+                  ]
+                },
+                "format": "craftmine.godot-base-state/1",
+                "interactables": [],
+                "inventory": {
+                  "slots": []
+                },
+                "player": {
+                  "onFloor": true,
+                  "pitch": 0,
+                  "position": [
+                    0,
+                    0.899999976158142,
+                    0
+                  ],
+                  "yaw": 0
+                },
+                "quests": {
+                  "quests": []
+                },
+                "savedAt": "2026-09-09T20:55:20Z",
+                "stateVersion": 1,
+                "targets": [],
+                "worldId": "alpha"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "alpha"
+            },
+            "worldId": "alpha"
+          }
+        }
+      }
+    },
+    {
+      "instanceId": "fc0ea822568b41937c0885d7",
+      "response": {
+        "protocol": "craftmine.godot-runtime/2",
+        "worldId": "alpha",
+        "buildId": "p1-first-person",
+        "instanceId": "fc0ea822568b41937c0885d7",
+        "type": "response",
+        "id": 1,
+        "result": {
+          "loaded": true,
+          "snapshot": {
+            "base": "first-person",
+            "state": {
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "body": {
+                "base": "first-person",
+                "baseVersion": "0.1.0",
+                "equipment": {
+                  "active": "pistol",
+                  "items": [
+                    {
+                      "id": "pistol",
+                      "magazine": 6,
+                      "reserve": 12
+                    },
+                    {
+                      "id": "practice_sword",
+                      "magazine": 0,
+                      "reserve": 0
+                    },
+                    {
+                      "id": "inspection_tool",
+                      "magazine": 0,
+                      "reserve": 0
+                    }
+                  ]
+                },
+                "format": "craftmine.godot-base-state/1",
+                "interactables": [],
+                "inventory": {
+                  "slots": []
+                },
+                "player": {
+                  "onFloor": true,
+                  "pitch": 0,
+                  "position": [
+                    0,
+                    0.899999976158142,
+                    0
+                  ],
+                  "yaw": 0
+                },
+                "quests": {
+                  "quests": []
+                },
+                "savedAt": "2026-09-09T20:55:20Z",
+                "stateVersion": 1,
+                "targets": [],
+                "worldId": "alpha"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "alpha"
+            },
+            "worldId": "alpha"
+          }
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "state": {
+    "worldId": "alpha",
+    "buildId": "p1-first-person",
+    "instanceId": "381529f6f0c930ea7c08ff47",
+    "state": "ready"
+  },
+  "snapshot": {
+    "base": "first-person",
+    "state": {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "body": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [],
+        "inventory": {
+          "slots": []
+        },
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            0
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": []
+        },
+        "savedAt": "2026-09-09T20:55:20Z",
+        "stateVersion": 1,
+        "targets": [],
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "observation": {
+    "baseId": "first-person",
+    "baseVersion": "0.1.0",
+    "buildId": "p1-first-person",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "381529f6f0c930ea7c08ff47",
+    "payload": {
+      "aim": {
+        "collider": "",
+        "hit": false,
+        "interactable": false,
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "prompt": ""
+      },
+      "base": "first-person",
+      "baseVersion": "0.1.0",
+      "crosshair": {
+        "center": [
+          32,
+          32
+        ],
+        "color": [
+          1,
+          1,
+          1,
+          0.920000016689301
+        ],
+        "cooldownRatio": 0,
+        "drawn": true,
+        "enabledForEquipment": true,
+        "globalCenter": [
+          32,
+          32
+        ],
+        "offsetFromViewportCenter": [
+          0,
+          0
+        ],
+        "segments": [
+          {
+            "from": [
+              22,
+              32
+            ],
+            "kind": "line",
+            "to": [
+              29,
+              32
+            ]
+          },
+          {
+            "from": [
+              35,
+              32
+            ],
+            "kind": "line",
+            "to": [
+              42,
+              32
+            ]
+          },
+          {
+            "from": [
+              32,
+              22
+            ],
+            "kind": "line",
+            "to": [
+              32,
+              29
+            ]
+          },
+          {
+            "from": [
+              32,
+              35
+            ],
+            "kind": "line",
+            "to": [
+              32,
+              42
+            ]
+          }
+        ],
+        "shape": 0,
+        "size": [
+          64,
+          64
+        ],
+        "viewportCenter": [
+          32,
+          32
+        ],
+        "viewportSize": [
+          64,
+          64
+        ],
+        "visible": true
+      },
+      "display": {
+        "alignedWithCamera": true,
+        "attachedToCamera": true,
+        "cameraGlobal": [
+          0,
+          1.59999990463257,
+          0
+        ],
+        "forwardDot": 1,
+        "global": [
+          0.239999994635582,
+          1.39999985694885,
+          -0.419999986886978
+        ],
+        "local": [
+          0.239999994635582,
+          -0.200000002980232,
+          -0.419999986886978
+        ],
+        "meshPath": "res://assets/meshes/weapon_pistol.obj",
+        "visible": true
+      },
+      "equipment": {
+        "active": "pistol",
+        "attackMode": "RANGED",
+        "blockReason": "",
+        "capacity": 6,
+        "cooldownRemaining": 0,
+        "cooldownSeconds": 0.35,
+        "crosshairVisible": true,
+        "damage": 12,
+        "displayName": "Service pistol",
+        "magazine": 6,
+        "reloading": false,
+        "reserve": 12
+      },
+      "hasSave": false,
+      "hud": {
+        "ammo": "6 / 6   reserve 12",
+        "equipment": "Service pistol  ·  RANGED",
+        "inventory": "Bag: empty",
+        "lastDamage": 0,
+        "message": "",
+        "prompt": "",
+        "quests": "",
+        "status": "Ready"
+      },
+      "inputCaptured": false,
+      "interactables": [],
+      "inventory": {
+        "slots": []
+      },
+      "levelTitle": "Blank start",
+      "logicalViewportSize": [
+        64,
+        64
+      ],
+      "persistentStorage": true,
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          0
+        ],
+        "yaw": 0
+      },
+      "quests": {
+        "quests": []
+      },
+      "surfaceSize": [
+        0,
+        0
+      ],
+      "targetFeedback": {
+        "format": "craftmine.target-feedback-observation/1",
+        "targets": []
+      },
+      "targets": [],
+      "viewportSize": [
+        64,
+        64
+      ],
+      "windowSize": [
+        64,
+        64
+      ],
+      "worldId": "alpha"
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T06:23:34Z",
+    "worldId": "alpha"
+  },
+  "snapshotEqual": true,
+  "initialRunningSnapshot": {
+    "base": "first-person",
+    "state": {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "body": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [],
+        "inventory": {
+          "slots": []
+        },
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            0
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": []
+        },
+        "savedAt": "2026-09-09T20:55:20Z",
+        "stateVersion": 1,
+        "targets": [],
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "hiddenSnapshotEqual": true,
+  "reopenedSnapshotEqual": true,
+  "reopenedInstanceChanged": true,
+  "finishedAt": "2026-09-10T06:23:37.132Z"
+}

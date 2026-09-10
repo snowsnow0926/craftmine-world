@@ -1,0 +1,42 @@
+(node:235220) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ staged runtime retains old identity and blocks formal saves/departure/quit (7.2738ms)
+✔ promotion requires matching committed artifacts and revision; only then disposes previous (1.9917ms)
+✔ bad candidate startup leaves original running object available for recovery (2.1224ms)
+✔ candidate commands target pending runtime rather than formal request path (2.1623ms)
+✔ renderer crash during candidate startup fails fast with the renderer cause and keeps the original (20.7148ms)
+✔ main-frame load failure during candidate startup fails fast and keeps the original (15.4781ms)
+✔ first instance stages and promotes with no formal world, and refuses while one is running (1.7609ms)
+✔ first staging is refused once a formal instance is alive (1.4429ms)
+✔ a discarded first instance leaves no instance and can be staged again (1.8021ms)
+✔ diagnostics report bounded renderer evidence with the exact instance identity (1.4152ms)
+✔ diagnostics keep a bounded console tail and redact the instance origin token (2.1329ms)
+✔ renderer console control characters never reach the startup error text (6.4558ms)
+✔ abortStartup rejects a pending startup with the exact reason and cannot be repeated (19.9605ms)
+✔ abortStartup cannot overwrite a runtime that already reported ready (4.5684ms)
+✔ abortStartup bounds an oversized reason and uses a default for an empty one (3.8516ms)
+(node:237272) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ world open holds polling through selection commit and releases after success (1.1411ms)
+✔ failed selection read releases transaction so next open works (1.4683ms)
+✔ descriptor/save errors preserve prior instance and selection (0.4102ms)
+✔ selection commit failure restores durable previous world (0.2254ms)
+✔ failed selection write plus failed old startup hides and pauses the mismatched runtime (0.2555ms)
+✔ selection commit with lost reply hides runtime until panel explicitly reopens (0.137ms)
+✔ panel cannot submit snapshot paths identities or save another world (0.171ms)
+✔ declared assets are verified on every GET and HEAD; added files never served (46.3342ms)
+✔ native transport rejects uncloneable/oversize responses and remains usable (20.9774ms)
+✔ page bridge explicitly rejects malformed/oversized completion and callback exceptions (11.8213ms)
+✔ production adapter rejects candidate descriptors and mismatched durable instance/text hash (0.6095ms)
+(node:242252) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a load timeout reports its pre-cleanup cause, not the renderer destroyed by cleanup (100.6275ms)
+✔ renderer failure after ready rejects its pending load with the real renderer cause (4.3569ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 377.3606

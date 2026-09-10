@@ -1,0 +1,686 @@
+{
+  "baseId": "mining-sandbox",
+  "mode": "offscreen",
+  "events": [
+    {
+      "at": 1789021333176,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789021333220,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021333460,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021333588,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021333738,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021333890,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021333890,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021333903,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333903,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333903,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333903,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333903,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333949,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021333949,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021333949,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333949,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333949,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333970,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021333970,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021333970,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333970,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333970,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333989,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333991,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789021333991,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 4,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789021333992,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021333992,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334009,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 4
+    },
+    {
+      "at": 1789021334009,
+      "kind": "load-confirmed"
+    },
+    {
+      "at": 1789021334009,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 5,
+      "op": "pause"
+    },
+    {
+      "at": 1789021334009,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334009,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334009,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334022,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 5
+    },
+    {
+      "at": 1789021334022,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 6,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021334022,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334022,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334022,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334039,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 6
+    },
+    {
+      "at": 1789021334040,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334040,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334040,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334053,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334053,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334053,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334109,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021334109,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "at": 1789021334134,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "at": 1789021334164,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "at": 1789021334188,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x4e840e156c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "at": 1789021334433,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 7,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789021334454,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 7
+    },
+    {
+      "at": 1789021334466,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021334468,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021334468,
+      "kind": "first-instance-closed"
+    },
+    {
+      "at": 1789021334477,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 76,
+        "width": 1280,
+        "height": 720
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021334733,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021334822,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021334953,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021335105,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021335105,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021335120,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335120,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335120,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335120,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335120,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335157,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021335157,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021335157,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335157,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335157,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335178,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021335179,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021335179,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335179,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335179,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335197,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335201,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789021335201,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021335202,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335202,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3940e0d1a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021335202,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021335202,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "passed": false,
+  "state": {
+    "worldId": "alpha",
+    "buildId": "p1-mining-sandbox",
+    "instanceId": "619312eeebf2133102d9c809",
+    "state": "ready"
+  },
+  "snapshot": {
+    "base": "mining-sandbox",
+    "state": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "body": {
+        "baseId": "mining-sandbox",
+        "baseVersion": "1.0.0",
+        "chunks": {},
+        "format": "craftmine.godot-mining-sandbox-managed/1",
+        "mapSize": [
+          48,
+          24
+        ],
+        "seed": 20260910,
+        "state": {
+          "chunkIndex": {},
+          "editCount": 0,
+          "equipped": "",
+          "flags": {},
+          "format": "craftmine.godot-mining-sandbox-state/1",
+          "inventory": {},
+          "ledger": {},
+          "ledgerEvicted": 0,
+          "player": {
+            "facing": "right",
+            "health": 3,
+            "position": [
+              104,
+              91
+            ],
+            "tile": [
+              6,
+              4
+            ]
+          },
+          "stateVersion": 1,
+          "terrainHash": "",
+          "tools": [],
+          "worldId": "alpha",
+          "worldRevision": 0
+        },
+        "stateVersion": 1,
+        "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "observation": {
+    "baseId": "mining-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "p1-mining-sandbox",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "619312eeebf2133102d9c809",
+    "payload": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "bootError": "",
+      "chunks": [],
+      "cursor": [
+        6,
+        4
+      ],
+      "editCount": 0,
+      "equipped": "",
+      "inventory": {},
+      "lastAction": {},
+      "logicalViewportSize": [
+        640,
+        360
+      ],
+      "player": {
+        "equipped": "",
+        "facing": "right",
+        "health": 3,
+        "onFloor": false,
+        "position": [
+          104,
+          93.5
+        ],
+        "tile": [
+          6,
+          5
+        ],
+        "toolTier": 0
+      },
+      "stations": [],
+      "surfaceSize": [
+        0,
+        0
+      ],
+      "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+      "toolTier": 0,
+      "tools": [],
+      "worldId": "alpha",
+      "worldRevision": 0
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T06:22:14Z",
+    "worldId": "alpha"
+  },
+  "snapshotEqual": false,
+  "hiddenSnapshotEqual": false,
+  "capture": {
+    "width": 1280,
+    "height": 720,
+    "pixelStats": {
+      "bytes": 3686400,
+      "sampledColors": 11
+    },
+    "viewportObservation": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "buildId": "p1-mining-sandbox",
+      "format": "craftmine.godot-observation/1",
+      "instanceId": "619312eeebf2133102d9c809",
+      "payload": {
+        "baseId": "mining-sandbox",
+        "baseVersion": "1.0.0",
+        "bootError": "",
+        "chunks": [],
+        "cursor": [
+          6,
+          4
+        ],
+        "editCount": 0,
+        "equipped": "",
+        "inventory": {},
+        "lastAction": {},
+        "logicalViewportSize": [
+          640,
+          360
+        ],
+        "player": {
+          "equipped": "",
+          "facing": "right",
+          "health": 3,
+          "onFloor": false,
+          "position": [
+            104,
+            95.5
+          ],
+          "tile": [
+            6,
+            5
+          ],
+          "toolTier": 0
+        },
+        "stations": [],
+        "surfaceSize": [
+          1280,
+          720
+        ],
+        "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+        "toolTier": 0,
+        "tools": [],
+        "worldId": "alpha",
+        "worldRevision": 0
+      },
+      "protocol": "craftmine.godot-runtime/2",
+      "sampledAt": "2026-09-10T06:22:14Z",
+      "worldId": "alpha"
+    }
+  },
+  "capturePassed": true,
+  "reopenedSnapshotEqual": false,
+  "reopenedInstanceChanged": true,
+  "finishedAt": "2026-09-10T06:22:15.203Z"
+}

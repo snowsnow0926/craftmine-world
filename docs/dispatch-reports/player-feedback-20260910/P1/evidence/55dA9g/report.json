@@ -1,0 +1,66 @@
+{
+  "out": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-55dA9g",
+  "startedAt": "2026-09-10T06:13:33.652Z",
+  "sources": {
+    "host": "76dc1e7a020bccb324278c97e722d3b4f7cc9e18e7030bf2f47c0614bcbee1e2",
+    "runtime": "1bf3163896b4fae7bdd3a936c9301e366871ef340f94352f6f61ec96f0bdc558"
+  },
+  "dependencies": "C:/cm-plan-next-20260910",
+  "limits": [
+    "Authored exports, actual host; no Core application transaction or product UI",
+    "Hidden owner and software rendering; native child versus offscreen child compared without focus or input"
+  ],
+  "cases": [
+    {
+      "baseId": "first-person",
+      "mode": "native",
+      "result": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-55dA9g\\first-person\\native\\result.json",
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "passed": false,
+      "error": "Error: Runtime request timed out: load [fault=renderer-destroyed; console[warning]=[.WebGL-0x4c740ed75a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.; requests=15/15]\n    at GodotWorldViewHost.startReplacementInner (D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-55dA9g\\first-person\\native\\app\\main\\index.cjs:691:13)"
+    },
+    {
+      "baseId": "first-person",
+      "mode": "offscreen",
+      "result": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-55dA9g\\first-person\\offscreen\\result.json",
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "passed": false
+    },
+    {
+      "baseId": "first-person",
+      "mode": "unthrottled",
+      "result": "D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-55dA9g\\first-person\\unthrottled\\result.json",
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "passed": false,
+      "error": "Error: Runtime request timed out: load [fault=renderer-destroyed; console[warning]=[.WebGL-0x2a2c0ee61a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.; requests=15/15]\n    at GodotWorldViewHost.startReplacementInner (D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-55dA9g\\first-person\\unthrottled\\app\\main\\index.cjs:691:13)"
+    }
+  ],
+  "engineRuns": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 84,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-import",
+      "elapsedMs": 2326,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-export",
+      "elapsedMs": 2208,
+      "exitCode": 0
+    }
+  ],
+  "finishedAt": "2026-09-10T06:14:14.054Z",
+  "passed": false
+}

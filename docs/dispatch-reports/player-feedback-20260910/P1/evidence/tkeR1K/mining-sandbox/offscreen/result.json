@@ -1,0 +1,872 @@
+{
+  "baseId": "mining-sandbox",
+  "mode": "offscreen",
+  "events": [
+    {
+      "at": 1789021431597,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789021431638,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021431872,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021432000,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021432162,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021432316,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021432316,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021432330,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432330,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432330,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432330,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432330,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432378,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021432378,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021432378,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432378,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432378,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432398,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021432398,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021432398,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432398,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432398,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432418,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789021432418,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 4,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789021432418,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432418,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432418,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432437,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 4
+    },
+    {
+      "at": 1789021432437,
+      "kind": "load-confirmed"
+    },
+    {
+      "at": 1789021432438,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 5,
+      "op": "pause"
+    },
+    {
+      "at": 1789021432438,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432438,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432438,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432450,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 5
+    },
+    {
+      "at": 1789021432450,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 6,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021432450,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432450,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432450,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432467,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 6
+    },
+    {
+      "at": 1789021432467,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 7,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021432467,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432467,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432467,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432482,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 7
+    },
+    {
+      "at": 1789021432484,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432484,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432485,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432497,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432497,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432497,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432548,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021432548,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "at": 1789021432573,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "at": 1789021432601,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "at": 1789021432624,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x5ac0e308e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "at": 1789021432857,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 8,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789021432878,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 8
+    },
+    {
+      "at": 1789021432892,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021432894,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021432894,
+      "kind": "first-instance-closed"
+    },
+    {
+      "at": 1789021432902,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 76,
+        "width": 1280,
+        "height": 720
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021433130,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021433223,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021433355,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021433502,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021433502,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021433515,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6d140dece600] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021433515,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6d140dece600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021433515,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6d140dece600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021433515,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6d140dece600] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021433515,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6d140dece600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021433550,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021433550,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021433551,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6d140dece600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021433551,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6d140dece600] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021433551,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6d140dece600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021433572,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021433572,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021433573,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6d140dece600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021433573,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6d140dece600] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021433573,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x6d140dece600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021433573,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021433573,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "loads": [
+    {
+      "instanceId": "0d445914358fbbf239ca1f9b",
+      "response": {
+        "protocol": "craftmine.godot-runtime/2",
+        "worldId": "alpha",
+        "buildId": "p1-mining-sandbox",
+        "instanceId": "0d445914358fbbf239ca1f9b",
+        "type": "response",
+        "id": 1,
+        "result": {
+          "loaded": true,
+          "snapshot": {
+            "base": "mining-sandbox",
+            "state": {
+              "baseId": "mining-sandbox",
+              "baseVersion": "1.0.0",
+              "body": {
+                "baseId": "mining-sandbox",
+                "baseVersion": "1.0.0",
+                "chunks": {},
+                "format": "craftmine.godot-mining-sandbox-managed/1",
+                "mapSize": [
+                  48,
+                  24
+                ],
+                "seed": 20260910,
+                "state": {
+                  "chunkIndex": {},
+                  "editCount": 0,
+                  "equipped": "",
+                  "flags": {},
+                  "format": "craftmine.godot-mining-sandbox-state/1",
+                  "inventory": {},
+                  "ledger": {},
+                  "ledgerEvicted": 0,
+                  "player": {
+                    "facing": "right",
+                    "health": 3,
+                    "position": [
+                      104,
+                      90.5
+                    ],
+                    "tile": [
+                      6,
+                      4
+                    ]
+                  },
+                  "stateVersion": 1,
+                  "terrainHash": "",
+                  "tools": [],
+                  "worldId": "alpha",
+                  "worldRevision": 0
+                },
+                "stateVersion": 1,
+                "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+                "worldId": "alpha"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "alpha"
+            },
+            "worldId": "alpha"
+          }
+        }
+      }
+    },
+    {
+      "instanceId": "688a45801ace46e7f45697f9",
+      "response": {
+        "protocol": "craftmine.godot-runtime/2",
+        "worldId": "alpha",
+        "buildId": "p1-mining-sandbox",
+        "instanceId": "688a45801ace46e7f45697f9",
+        "type": "response",
+        "id": 1,
+        "result": {
+          "loaded": true,
+          "snapshot": {
+            "base": "mining-sandbox",
+            "state": {
+              "baseId": "mining-sandbox",
+              "baseVersion": "1.0.0",
+              "body": {
+                "baseId": "mining-sandbox",
+                "baseVersion": "1.0.0",
+                "chunks": {},
+                "format": "craftmine.godot-mining-sandbox-managed/1",
+                "mapSize": [
+                  48,
+                  24
+                ],
+                "seed": 20260910,
+                "state": {
+                  "chunkIndex": {},
+                  "editCount": 0,
+                  "equipped": "",
+                  "flags": {},
+                  "format": "craftmine.godot-mining-sandbox-state/1",
+                  "inventory": {},
+                  "ledger": {},
+                  "ledgerEvicted": 0,
+                  "player": {
+                    "facing": "right",
+                    "health": 3,
+                    "position": [
+                      104,
+                      95.5
+                    ],
+                    "tile": [
+                      6,
+                      5
+                    ]
+                  },
+                  "stateVersion": 1,
+                  "terrainHash": "",
+                  "tools": [],
+                  "worldId": "alpha",
+                  "worldRevision": 0
+                },
+                "stateVersion": 1,
+                "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+                "worldId": "alpha"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "alpha"
+            },
+            "worldId": "alpha"
+          }
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "state": {
+    "worldId": "alpha",
+    "buildId": "p1-mining-sandbox",
+    "instanceId": "0d445914358fbbf239ca1f9b",
+    "state": "ready"
+  },
+  "snapshot": {
+    "base": "mining-sandbox",
+    "state": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "body": {
+        "baseId": "mining-sandbox",
+        "baseVersion": "1.0.0",
+        "chunks": {},
+        "format": "craftmine.godot-mining-sandbox-managed/1",
+        "mapSize": [
+          48,
+          24
+        ],
+        "seed": 20260910,
+        "state": {
+          "chunkIndex": {},
+          "editCount": 0,
+          "equipped": "",
+          "flags": {},
+          "format": "craftmine.godot-mining-sandbox-state/1",
+          "inventory": {},
+          "ledger": {},
+          "ledgerEvicted": 0,
+          "player": {
+            "facing": "right",
+            "health": 3,
+            "position": [
+              104,
+              95.5
+            ],
+            "tile": [
+              6,
+              5
+            ]
+          },
+          "stateVersion": 1,
+          "terrainHash": "",
+          "tools": [],
+          "worldId": "alpha",
+          "worldRevision": 0
+        },
+        "stateVersion": 1,
+        "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "observation": {
+    "baseId": "mining-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "p1-mining-sandbox",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "0d445914358fbbf239ca1f9b",
+    "payload": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "bootError": "",
+      "chunks": [],
+      "cursor": [
+        6,
+        4
+      ],
+      "editCount": 0,
+      "equipped": "",
+      "inventory": {},
+      "lastAction": {},
+      "logicalViewportSize": [
+        640,
+        360
+      ],
+      "player": {
+        "equipped": "",
+        "facing": "right",
+        "health": 3,
+        "onFloor": false,
+        "position": [
+          104,
+          93.5
+        ],
+        "tile": [
+          6,
+          5
+        ],
+        "toolTier": 0
+      },
+      "stations": [],
+      "surfaceSize": [
+        0,
+        0
+      ],
+      "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+      "toolTier": 0,
+      "tools": [],
+      "worldId": "alpha",
+      "worldRevision": 0
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T06:23:52Z",
+    "worldId": "alpha"
+  },
+  "snapshotEqual": true,
+  "initialRunningSnapshot": {
+    "base": "mining-sandbox",
+    "state": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "body": {
+        "baseId": "mining-sandbox",
+        "baseVersion": "1.0.0",
+        "chunks": {},
+        "format": "craftmine.godot-mining-sandbox-managed/1",
+        "mapSize": [
+          48,
+          24
+        ],
+        "seed": 20260910,
+        "state": {
+          "chunkIndex": {},
+          "editCount": 0,
+          "equipped": "",
+          "flags": {},
+          "format": "craftmine.godot-mining-sandbox-state/1",
+          "inventory": {},
+          "ledger": {},
+          "ledgerEvicted": 0,
+          "player": {
+            "facing": "right",
+            "health": 3,
+            "position": [
+              104,
+              92
+            ],
+            "tile": [
+              6,
+              4
+            ]
+          },
+          "stateVersion": 1,
+          "terrainHash": "",
+          "tools": [],
+          "worldId": "alpha",
+          "worldRevision": 0
+        },
+        "stateVersion": 1,
+        "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "hiddenSnapshotEqual": true,
+  "capture": {
+    "width": 1280,
+    "height": 720,
+    "pixelStats": {
+      "bytes": 3686400,
+      "sampledColors": 11
+    },
+    "viewportObservation": {
+      "baseId": "mining-sandbox",
+      "baseVersion": "1.0.0",
+      "buildId": "p1-mining-sandbox",
+      "format": "craftmine.godot-observation/1",
+      "instanceId": "0d445914358fbbf239ca1f9b",
+      "payload": {
+        "baseId": "mining-sandbox",
+        "baseVersion": "1.0.0",
+        "bootError": "",
+        "chunks": [],
+        "cursor": [
+          6,
+          4
+        ],
+        "editCount": 0,
+        "equipped": "",
+        "inventory": {},
+        "lastAction": {},
+        "logicalViewportSize": [
+          640,
+          360
+        ],
+        "player": {
+          "equipped": "",
+          "facing": "right",
+          "health": 3,
+          "onFloor": false,
+          "position": [
+            104,
+            95.5
+          ],
+          "tile": [
+            6,
+            5
+          ],
+          "toolTier": 0
+        },
+        "stations": [],
+        "surfaceSize": [
+          1280,
+          720
+        ],
+        "terrainHash": "e50ed5067fa784aba0cce58ee53b71dbdd99e491e480c04a660f0880f4d8153f",
+        "toolTier": 0,
+        "tools": [],
+        "worldId": "alpha",
+        "worldRevision": 0
+      },
+      "protocol": "craftmine.godot-runtime/2",
+      "sampledAt": "2026-09-10T06:23:52Z",
+      "worldId": "alpha"
+    }
+  },
+  "capturePassed": true,
+  "reopenedSnapshotEqual": true,
+  "reopenedInstanceChanged": true,
+  "finishedAt": "2026-09-10T06:23:53.574Z"
+}

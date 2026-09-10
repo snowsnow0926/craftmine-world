@@ -1,0 +1,9 @@
+{"baseId":"first-person","mode":"native","result":"D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-tkeR1K\\first-person\\native\\result.json","exit":{"code":0,"signal":null},"passed":true}
+{"baseId":"first-person","mode":"offscreen","result":"D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-tkeR1K\\first-person\\offscreen\\result.json","exit":{"code":0,"signal":null},"passed":true}
+{"baseId":"top-down","mode":"native","result":"D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-tkeR1K\\top-down\\native\\result.json","exit":{"code":0,"signal":null},"passed":true}
+{"baseId":"top-down","mode":"offscreen","result":"D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-tkeR1K\\top-down\\offscreen\\result.json","exit":{"code":0,"signal":null},"passed":true}
+{"baseId":"side-view","mode":"native","result":"D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-tkeR1K\\side-view\\native\\result.json","exit":{"code":0,"signal":null},"passed":true}
+{"baseId":"side-view","mode":"offscreen","result":"D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-tkeR1K\\side-view\\offscreen\\result.json","exit":{"code":0,"signal":null},"passed":true}
+{"baseId":"mining-sandbox","mode":"native","result":"D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-tkeR1K\\mining-sandbox\\native\\result.json","exit":{"code":0,"signal":null},"passed":true}
+{"baseId":"mining-sandbox","mode":"offscreen","result":"D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-tkeR1K\\mining-sandbox\\offscreen\\result.json","exit":{"code":0,"signal":null},"passed":true}
+{"out":"D:\\cm-fb-p1-20260910\\test-results\\p1-renderer-load-tkeR1K","passed":true}

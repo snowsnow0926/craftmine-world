@@ -1,0 +1,441 @@
+{
+  "baseId": "first-person",
+  "mode": "offscreen",
+  "events": [
+    {
+      "at": 1789020961967,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789020962005,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789020962240,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789020962363,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789020962519,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789020962802,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789020962803,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789020962806,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3ef40e642600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020962806,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3ef40e642600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020962806,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3ef40e642600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020962812,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3ef40e642600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020962812,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3ef40e642600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020962819,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789020962819,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789020962821,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3ef40e642600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020962821,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3ef40e642600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020962833,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789020962833,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789020962834,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3ef40e642600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020962834,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3ef40e642600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020962851,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789020962851,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 4,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789020962852,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3ef40e642600] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020962852,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x3ef40e642600] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789020962870,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 4
+    },
+    {
+      "at": 1789020962870,
+      "kind": "load-confirmed"
+    },
+    {
+      "at": 1789020962871,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789020962872,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789020962872,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "passed": true,
+  "state": {
+    "worldId": "alpha",
+    "buildId": "p1-first-person",
+    "instanceId": "8c6ffcb8faf003af0c732d90",
+    "state": "ready"
+  },
+  "snapshot": {
+    "base": "first-person",
+    "state": {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "body": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [],
+        "inventory": {
+          "slots": []
+        },
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            0
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": []
+        },
+        "savedAt": "2026-09-09T20:55:20Z",
+        "stateVersion": 1,
+        "targets": [],
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "observation": {
+    "baseId": "first-person",
+    "baseVersion": "0.1.0",
+    "buildId": "p1-first-person",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "8c6ffcb8faf003af0c732d90",
+    "payload": {
+      "aim": {
+        "collider": "",
+        "hit": false,
+        "interactable": false,
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "prompt": ""
+      },
+      "base": "first-person",
+      "baseVersion": "0.1.0",
+      "crosshair": {
+        "center": [
+          32,
+          32
+        ],
+        "color": [
+          1,
+          1,
+          1,
+          0.920000016689301
+        ],
+        "cooldownRatio": 0,
+        "drawn": true,
+        "enabledForEquipment": true,
+        "globalCenter": [
+          32,
+          32
+        ],
+        "offsetFromViewportCenter": [
+          0,
+          0
+        ],
+        "segments": [
+          {
+            "from": [
+              22,
+              32
+            ],
+            "kind": "line",
+            "to": [
+              29,
+              32
+            ]
+          },
+          {
+            "from": [
+              35,
+              32
+            ],
+            "kind": "line",
+            "to": [
+              42,
+              32
+            ]
+          },
+          {
+            "from": [
+              32,
+              22
+            ],
+            "kind": "line",
+            "to": [
+              32,
+              29
+            ]
+          },
+          {
+            "from": [
+              32,
+              35
+            ],
+            "kind": "line",
+            "to": [
+              32,
+              42
+            ]
+          }
+        ],
+        "shape": 0,
+        "size": [
+          64,
+          64
+        ],
+        "viewportCenter": [
+          32,
+          32
+        ],
+        "viewportSize": [
+          64,
+          64
+        ],
+        "visible": true
+      },
+      "display": {
+        "alignedWithCamera": true,
+        "attachedToCamera": true,
+        "cameraGlobal": [
+          0,
+          1.59999990463257,
+          0
+        ],
+        "forwardDot": 1,
+        "global": [
+          0.239999994635582,
+          1.39999985694885,
+          -0.419999986886978
+        ],
+        "local": [
+          0.239999994635582,
+          -0.200000002980232,
+          -0.419999986886978
+        ],
+        "meshPath": "res://assets/meshes/weapon_pistol.obj",
+        "visible": true
+      },
+      "equipment": {
+        "active": "pistol",
+        "attackMode": "RANGED",
+        "blockReason": "",
+        "capacity": 6,
+        "cooldownRemaining": 0,
+        "cooldownSeconds": 0.35,
+        "crosshairVisible": true,
+        "damage": 12,
+        "displayName": "Service pistol",
+        "magazine": 6,
+        "reloading": false,
+        "reserve": 12
+      },
+      "hasSave": false,
+      "hud": {
+        "ammo": "6 / 6   reserve 12",
+        "equipment": "Service pistol  ·  RANGED",
+        "inventory": "Bag: empty",
+        "lastDamage": 0,
+        "message": "",
+        "prompt": "",
+        "quests": "",
+        "status": "Ready"
+      },
+      "inputCaptured": false,
+      "interactables": [],
+      "inventory": {
+        "slots": []
+      },
+      "levelTitle": "Blank start",
+      "logicalViewportSize": [
+        64,
+        64
+      ],
+      "persistentStorage": true,
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          0
+        ],
+        "yaw": 0
+      },
+      "quests": {
+        "quests": []
+      },
+      "surfaceSize": [
+        0,
+        0
+      ],
+      "targetFeedback": {
+        "format": "craftmine.target-feedback-observation/1",
+        "targets": []
+      },
+      "targets": [],
+      "viewportSize": [
+        64,
+        64
+      ],
+      "windowSize": [
+        64,
+        64
+      ],
+      "worldId": "alpha"
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T06:16:02Z",
+    "worldId": "alpha"
+  },
+  "finishedAt": "2026-09-10T06:16:02.873Z"
+}

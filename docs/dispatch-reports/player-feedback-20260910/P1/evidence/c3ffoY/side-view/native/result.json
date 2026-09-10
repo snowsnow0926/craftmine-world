@@ -1,0 +1,345 @@
+{
+  "baseId": "side-view",
+  "mode": "native",
+  "events": [
+    {
+      "at": 1789021324990,
+      "kind": "ensure-start"
+    },
+    {
+      "at": 1789021325024,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021325352,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021325524,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021325749,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021325939,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021325939,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021325939,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x41cc03c69a00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021325940,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x41cc03c69a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021325944,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021325944,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021325945,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021325945,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021325946,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789021325946,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 4,
+      "op": "observe-envelope"
+    },
+    {
+      "at": 1789021325947,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 4
+    },
+    {
+      "at": 1789021325947,
+      "kind": "load-confirmed"
+    },
+    {
+      "at": 1789021325947,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 5,
+      "op": "pause"
+    },
+    {
+      "at": 1789021325948,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 5
+    },
+    {
+      "at": 1789021325948,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 6,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021325948,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 6
+    },
+    {
+      "at": 1789021325952,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021325956,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021325956,
+      "kind": "first-instance-closed"
+    },
+    {
+      "at": 1789021325964,
+      "kind": "view-created",
+      "bounds": {
+        "x": 0,
+        "y": 76,
+        "width": 1280,
+        "height": 720
+      },
+      "throttling": true
+    },
+    {
+      "at": 1789021326336,
+      "kind": "console",
+      "level": "info",
+      "message": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "at": 1789021326469,
+      "kind": "console",
+      "level": "info",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "at": 1789021326674,
+      "kind": "console",
+      "level": "info",
+      "message": "Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+    },
+    {
+      "at": 1789021326859,
+      "kind": "ipc-receive",
+      "type": "ready"
+    },
+    {
+      "at": 1789021326859,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 1,
+      "op": "load"
+    },
+    {
+      "at": 1789021326859,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x61ec0e271a00] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021326859,
+      "kind": "console",
+      "level": "warning",
+      "message": "[.WebGL-0x61ec0e271a00] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size."
+    },
+    {
+      "at": 1789021326864,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 1
+    },
+    {
+      "at": 1789021326865,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 2,
+      "op": "resume"
+    },
+    {
+      "at": 1789021326865,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 2
+    },
+    {
+      "at": 1789021326867,
+      "kind": "ipc-send",
+      "type": "request",
+      "id": 3,
+      "op": "snapshot"
+    },
+    {
+      "at": 1789021326868,
+      "kind": "ipc-receive",
+      "type": "response",
+      "id": 3
+    },
+    {
+      "at": 1789021326868,
+      "kind": "ipc-send"
+    },
+    {
+      "at": 1789021326869,
+      "kind": "destroyed"
+    },
+    {
+      "at": 1789021326869,
+      "kind": "host-disposed"
+    }
+  ],
+  "guards": [],
+  "passed": true,
+  "state": {
+    "worldId": "alpha",
+    "buildId": "p1-side-view",
+    "instanceId": "63ad0364d333586dab330e10",
+    "state": "ready"
+  },
+  "snapshot": {
+    "base": "side-view",
+    "state": {
+      "baseId": "side-view",
+      "baseVersion": "1.0.0",
+      "body": {
+        "abilities": {},
+        "activeCheckpoint": "",
+        "checkpoints": {},
+        "counters": {},
+        "entities": {},
+        "format": "craftmine.godot-sideview-state/1",
+        "inventory": {},
+        "player": {
+          "facing": 1,
+          "room": "start",
+          "x": 80,
+          "y": 320
+        },
+        "rewards": {},
+        "rooms": {
+          "start": {
+            "entries": 1,
+            "visited": true
+          }
+        },
+        "stateVersion": 1,
+        "vitals": {
+          "alive": true,
+          "health": 3,
+          "invulnerableRemaining": 0,
+          "respawnRemaining": 0
+        },
+        "worldId": "alpha"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "alpha"
+    },
+    "worldId": "alpha"
+  },
+  "observation": {
+    "baseId": "side-view",
+    "baseVersion": "1.0.0",
+    "buildId": "p1-side-view",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "63ad0364d333586dab330e10",
+    "payload": {
+      "logicalViewportSize": [
+        640,
+        360
+      ],
+      "player": {
+        "alive": true,
+        "doubleJumpAvailable": false,
+        "doubleJumpUnlocked": false,
+        "facing": 1,
+        "health": 3,
+        "onFloor": true,
+        "room": "start",
+        "vx": 0,
+        "vy": 0,
+        "x": 80,
+        "y": 320
+      },
+      "roomId": "start",
+      "surfaceSize": [
+        0,
+        0
+      ],
+      "targets": [],
+      "tick": 8,
+      "visual": {
+        "playerVisible": true,
+        "screenX": 80,
+        "screenY": 300,
+        "textureHeight": 40,
+        "textureWidth": 20,
+        "visible": true
+      }
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T06:22:05Z",
+    "worldId": "alpha"
+  },
+  "snapshotEqual": true,
+  "hiddenSnapshotEqual": true,
+  "reopenedSnapshotEqual": true,
+  "reopenedInstanceChanged": true,
+  "finishedAt": "2026-09-10T06:22:06.870Z"
+}
