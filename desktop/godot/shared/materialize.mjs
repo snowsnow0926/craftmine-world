@@ -7,6 +7,7 @@ import {createHash} from 'node:crypto';
 const here=path.dirname(fileURLToPath(import.meta.url));
 const bases=path.resolve(here,'../bases');
 const configs={
+  'creation-sandbox':{version:'1.0.0',examples:['blank']},
   'first-person':{version:'0.1.0',examples:['blank','training-range']},
   'top-down':{version:'1.0.0',examples:['blank','town']},
   'side-view':{version:'1.0.0',examples:['blank','ruins']},
@@ -23,10 +24,10 @@ export function materializeBase({baseId,worldId,template='blank',out}) {
   if(!path.isAbsolute(out)) throw Error('Output must be absolute');
   if(fs.existsSync(out)) throw Error('Output must be a fresh managed directory');
   fs.mkdirSync(path.dirname(out),{recursive:true});
-  if(baseId==='first-person') {
+  if(baseId==='first-person'||baseId==='creation-sandbox') {
     fs.cpSync(path.join(bases,baseId),out,{recursive:true,filter:p=>!['.godot','tests','docs','tools'].includes(path.basename(p))});
     const project=path.join(out,'project.godot');
-    if(template==='blank') fs.writeFileSync(project,fs.readFileSync(project,'utf8').replace('res://scenes/training_range.tscn','res://scenes/blank_start.tscn'));
+    if(baseId==='first-person'&&template==='blank') fs.writeFileSync(project,fs.readFileSync(project,'utf8').replace('res://scenes/training_range.tscn','res://scenes/blank_start.tscn'));
   } else {
     const args=TEMPLATE_BASES.includes(baseId)?['--template',template,'--world-id',worldId,'--name',worldId]:['--world',template,'--world-id',worldId];
     const result=spawnSync(process.execPath,[path.join(bases,baseId,'tools/new-world.mjs'),...args,'--out',out],{encoding:'utf8',windowsHide:true,env:{...process.env,ELECTRON_RUN_AS_NODE:'1'}});

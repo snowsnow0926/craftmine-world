@@ -1,0 +1,36 @@
+{
+  "format": "craftmine.authored-initial-state/1",
+  "baseId": "creation-sandbox",
+  "template": "blank",
+  "worldId": "authored-creation-sandbox-blank",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "sourceDigest": "57d3b37d33170b0e2c8866a9d6c735a8f8305848ddac7beca1f75af9027a1553",
+  "snapshot": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {},
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "authored-creation-sandbox-blank"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "authored-creation-sandbox-blank"
+  }
+}
