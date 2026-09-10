@@ -53,8 +53,14 @@ const tokens = (value: unknown) => Math.ceil(Buffer.byteLength(typeof value === 
 export function estimateCraftmineRequest(context: Context, output: number, toolResults = 2048): CraftmineEstimate {
   let attachments = 0;
   const messages = context.messages.map(message => {
-    if (!Array.isArray(message.content)) return message;
-    return { ...message, content: message.content.map(block => {
+    // Runtime metadata (especially tool details, a UI mirror of content) is
+    // absent from the provider request. Keep all model content/signatures and
+    // tool identity, but do not charge the mirror as a second model input.
+    const visible = { role: message.role,
+      ...(message.role === "toolResult" ? { toolCallId: message.toolCallId, toolName: message.toolName, isError: message.isError } : {}),
+      content: message.content };
+    if (!Array.isArray(message.content)) return visible;
+    return { ...visible, content: message.content.map(block => {
       if (block.type !== "image") return block;
       // Budget the entire encoded payload conservatively; unknown vision
       // resolution must never become an unmetered attachment.
@@ -68,7 +74,7 @@ export function estimateCraftmineRequest(context: Context, output: number, toolR
   // the final onPayload check still refuses larger unreserved transformations.
   const parts = { system: tokens(JSON.stringify(context.systemPrompt ?? "")), messages: tokens(messages), tools: tokens(context.tools ?? []), attachments, framing: 1024, output, toolResults };
   const input = parts.system + parts.messages + parts.tools + parts.attachments + parts.framing;
-  return { ...parts, input, total: input + output + toolResults, method: "utf8-half-json-escaped-framing/2" };
+  return { ...parts, input, total: input + output + toolResults, method: "utf8-half-model-content-json-framing/3" };
 }
 
 function craftmineContextData(snapshot: CraftmineTaskContext, purpose: CraftminePurpose): string {
