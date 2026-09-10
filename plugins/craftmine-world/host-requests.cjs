@@ -9,6 +9,7 @@ function assertIdentity(input,snapshot){
 }
 function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns,targetFeedback}){
   const reservations=new Map();
+  const unlimitedRequests=process.env.CRAFTMINE_P8_UNLIMITED_REQUESTS==='1';
   // The bounded surface of the S5 asset service and the S3 works/package
   // service. The router forwards a method name, never an arbitrary core call.
   const ASSET_METHODS=new Set(['search','read','versions','usage','annotate','scan','importAsset','previewRead','probe',
@@ -37,8 +38,18 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     const id=args.requestId;
     const key=keyOf(context,id);
     if(method==='budget.reserve'){
-      if(args.limits!==undefined)throw Error('CRAFTMINE_HOST_LIMITS_REQUIRED');
-      const limits=current.budget.limits;
+      const limits=unlimitedRequests&&current.budget.requestCount===0
+        ?{...current.budget.limits,maxRequests:null,maxTokens:null}:current.budget.limits;
+      // Limits are host-owned. The sidecar may only echo the exact authorized
+      // policy, never choose values or widen an already admitted task.
+      if(args.limits!==undefined){
+        const proposed=args.limits;
+        if(!unlimitedRequests||!proposed||typeof proposed!=='object'||Array.isArray(proposed)||
+          Object.keys(proposed).sort().join(',')!=='maxCompactions,maxRequests,maxTokens'||
+          proposed.maxRequests!==null||proposed.maxTokens!==null||proposed.maxCompactions!==8||
+          proposed.maxRequests!==limits.maxRequests||proposed.maxTokens!==limits.maxTokens||proposed.maxCompactions!==limits.maxCompactions)
+          throw Error('CRAFTMINE_HOST_LIMITS_REQUIRED');
+      }
       const previous=reservations.get(key);
       // Initialize only before the first physical request. An old null policy
       // stays null after consumption; retrying a lost reply keeps its clock.
@@ -292,7 +303,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     const review=method.startsWith('review.');
     const operation=review?method.replace('review.','budget.'):method;
     if(!['budget.reserve','budget.settle','budget.boundary'].includes(operation))throw Error('UNSUPPORTED_HOST_OPERATION');
-    const allowed=operation==='budget.reserve'?['requestId','purpose','estimatedInputTokens','maxOutputTokens']:operation==='budget.settle'?['requestId','status','usage','errorCode']:['eventId','kind'];
+    const allowed=operation==='budget.reserve'?['requestId','purpose','estimatedInputTokens','maxOutputTokens',...(!review?['limits']:[])]:operation==='budget.settle'?['requestId','status','usage','errorCode']:['eventId','kind'];
     fields(params,review?['reviewId','binding','generation']:['context','binding','generation'],allowed);
     const {context:claimedContext,reviewId,...input}=params;
     let context=claimedContext,current;

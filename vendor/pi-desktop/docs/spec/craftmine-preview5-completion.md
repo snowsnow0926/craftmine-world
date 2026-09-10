@@ -16,6 +16,25 @@ reservation fixes its limits, and later reservations cannot change the policy.
 The native snapshot checks the actual durable policy after at least one request
 has been admitted, because a pre-reservation snapshot still contains defaults.
 
+### Preview 6: the private broker boundary
+
+The first packaged preview 5 attempt admitted zero upstream requests: the
+private plugin host router intentionally rejected caller-owned `limits` before
+Rust saw the reservation. The plugin process environment also excludes arbitrary
+Craftmine variables. Main now passes only `CRAFTMINE_P8_UNLIMITED_REQUESTS=1` to
+the built-in broker after validating the headless dated phase. Other plugins and
+ordinary sessions receive no such bit or provider credentials. The broker owns
+the first-request policy; the sidecar may only echo the exact authorized null
+request/token policy with the unchanged compaction limit. Other values, review
+parameters and attempts to widen an admitted task are still rejected.
+
+The regression runs the actual DesktopAgentRuntime hooks, turn gateway, private
+plugin router and real Rust binary for 81 settled requests. It also checks the
+ordinary identity/limit-forgery protections and the filtered plugin environment.
+Run `node desktop/build-world-plugin.mjs`, then use
+`node --experimental-transform-types --test tests/player-feedback/P8/host-budget-route.test.mjs`
+with `CRAFTMINE_CORE_BIN` set to the built binary and TEMP/TMP on the evidence drive.
+
 ## Actual offscreen frame capture
 
 A detached WebContentsView can report `isPainting() === true` but repeatedly

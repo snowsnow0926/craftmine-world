@@ -9368,3 +9368,13 @@ Retry only an exact initialization world-list read timeout under the original
 deadline. Do not replay creation; terminal failures remain failures. Reject a
 candidate with an extra equipment key and require bounded field-level details
 without changing the old save or relaxing the schema.
+
+
+### CM-COMP-08: authorized limits cross the private plugin broker
+
+Run the actual runtime constructor, turn gateway, private plugin router and
+real Rust journal through 81 admitted and settled requests. Derive the plugin
+environment with the production filter: only the built-in broker gets a policy
+bit in a validated headless dated P8 phase. Ordinary callers, other plugins,
+forged parent policy bits, arbitrary limits and review-limit parameters remain
+refused. No provider or relay credential enters the plugin process.

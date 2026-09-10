@@ -1,4 +1,5 @@
 import { ASSET_PANEL_CHANNELS } from "./craftmine-asset-panel";
+import { craftmineAuthorizedBudget } from "@pi-desktop/agent-runtime";
 import {
   readFileSync,
   existsSync,
@@ -625,6 +626,11 @@ export function pluginProcessEnv(pluginId: string, source: NodeJS.ProcessEnv = p
   // Provider credentials and the rest of the host environment stay excluded.
   if (pluginId === "craftmine.world" && source.CRAFTMINE_CORE_BIN) {
     env.CRAFTMINE_CORE_BIN = source.CRAFTMINE_CORE_BIN;
+  }
+  // Forward only the validated policy bit to the built-in broker. No provider
+  // secret, relay credential or arbitrary parent environment enters a plugin.
+  if (pluginId === "craftmine.world" && craftmineAuthorizedBudget(source)) {
+    env.CRAFTMINE_P8_UNLIMITED_REQUESTS = "1";
   }
   return env;
 }
