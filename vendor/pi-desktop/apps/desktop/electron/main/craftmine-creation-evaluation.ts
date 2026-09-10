@@ -44,6 +44,8 @@ export function installCreationEvaluation(access:Access){
       return {sessionId,modelId};
     }
     if(!sessionId)throw Error("EVALUATION_NOT_INITIALIZED");
+    if(method==="resume-play")return access.action("resume",{});
+    if(method==="pause-play")return access.action("pause",{});
     if(method==="chop-tree"){
       const observed=await access.observe(),creation=observed?.payload?.creation;
       if(observed?.baseId!=="creation-sandbox"||!creation?.entities?.some((entity:any)=>entity.kind==="tree"&&entity.id===creation.target?.entityId))throw Error("EVALUATION_TREE_NOT_TARGETED");

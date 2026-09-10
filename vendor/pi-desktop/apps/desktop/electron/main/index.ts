@@ -9746,7 +9746,7 @@ function registerIpc() {
   });
 }
 
-installCreationEvaluation({enabled:!!headlessAcceptance,window:()=>mainWindow,call:(method,input)=>host!.call(method,input),active:sessionId=>activeTurns.has(sessionId),observe:()=>godotWorld.request("observe-envelope",{}),action:(op,args)=>godotWorld.request(op,args),domain:(method,args)=>plugins.requestCraftmineHost(method,args)});
+installCreationEvaluation({enabled:!!headlessAcceptance,window:()=>mainWindow,call:(method,input)=>host!.call(method,input),active:sessionId=>activeTurns.has(sessionId),observe:()=>godotWorld.request("observe-envelope",{}),action:(op,args)=>op==="resume"?godotWorld.resume().then(()=>({status:"ready"})):op==="pause"?godotWorld.pause().then(()=>({status:"paused"})):godotWorld.request(op,args),domain:(method,args)=>plugins.requestCraftmineHost(method,args)});
 installNativeAgentAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload), active: (sessionId) => activeTurns.has(sessionId) });
 installP8NativeAcceptance({
   enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(),

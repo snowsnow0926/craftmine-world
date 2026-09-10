@@ -90,6 +90,7 @@ async function runCase(result){
     // Runtime effects are inspected before this runner can count a model answer as success.
     if(result.id==='CA05'){
       const behavior={ordinaryScript:false};result.behavior=behavior;
+      await evaluate('resume-play');
       await evaluate('aim-tree');behavior.before=await native('godotObserve');behavior.woodBefore=behavior.before.payload?.inventory?.wood??0;
       behavior.chop=await evaluate('chop-tree');behavior.after=await native('godotObserve');behavior.woodAfter=behavior.after.payload?.inventory?.wood??0;
       const treeId=prepared.target?.entityId;behavior.treeAbsent=!behavior.after.payload?.creation?.obstacles?.some(item=>item.entityId===treeId);
@@ -97,7 +98,7 @@ async function runCase(result){
       behavior.ordinaryScript=newRules.length>0&&result.turnMessages.some(item=>/godot_project_patch/.test(item.toolName??''));
       await native('worldPanel',{channel:'godot.runtimeSave',payload:{worldId,freeze:true}});const partial=completeCreationProgress(await native('godotSnapshot'));await restart();
       const resumed=completeCreationProgress(await native('godotSnapshot'));behavior.partialRestored=isDeepStrictEqual(partial,resumed);behavior.woodRestored=resumed.body.inventory.wood??0;
-      await evaluate('wait-regrowth');const regrown=await native('godotObserve');behavior.treeReturned=regrown.payload?.creation?.obstacles?.some(item=>item.entityId===treeId)===true;
+      await evaluate('resume-play');await evaluate('wait-regrowth');const regrown=await native('godotObserve');behavior.treeReturned=regrown.payload?.creation?.obstacles?.some(item=>item.entityId===treeId)===true;
       await native('worldPanel',{channel:'godot.runtimeSave',payload:{worldId,freeze:true}});after=await native('godotObserve');progressAfter=await native('godotSnapshot');
     }
     await restart();reopened=await native('godotObserve');restored=await native('godotSnapshot');
