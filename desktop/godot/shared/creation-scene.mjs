@@ -36,14 +36,19 @@ export function validateCreationScene(scene){
   }
   const rules=scene.rules??[];
   if(!Array.isArray(rules)||rules.length>8){fail('rules','At most eight authored rules are supported');return {ok:false,issues};}
-  const ruleIds=new Set();
+  const ruleIds=new Set(),owned=new Set();
   for(const [index,rule] of rules.entries()){
     const at=`rules[${index}]`;
-    if(!exact(rule,['id','kind','doorId','sequence','script','sha256'])){fail(at,'Unsupported rule fields');continue;}
+    if(!exact(rule,rule?.kind==='entity-behavior'?['id','kind','entityIds','script','sha256']:['id','kind','doorId','sequence','script','sha256'])){fail(at,'Unsupported rule fields');continue;}
     if(!id(rule.id)||ruleIds.has(rule.id))fail(at+'.id','Rule IDs must be unique stable identifiers');
     ruleIds.add(rule.id);
-    if(rule.kind!=='sequence-door'||entities.get(rule.doorId)?.kind!=='door')fail(at,'Rule requires sequence-door kind and a declared door');
-    if(!Array.isArray(rule.sequence)||rule.sequence.length<2||rule.sequence.length>16||new Set(rule.sequence).size!==rule.sequence.length||!rule.sequence.every(key=>entities.get(key)?.kind==='marker'))fail(at+'.sequence','Sequence requires 2..16 distinct declared markers');
+    if(rule.kind==='entity-behavior'){
+      if(!Array.isArray(rule.entityIds)||rule.entityIds.length<1||rule.entityIds.length>16||new Set(rule.entityIds).size!==rule.entityIds.length||!rule.entityIds.every(key=>entities.has(key)&&!owned.has(key)))fail(at+'.entityIds','Behavior requires 1..16 declared entities with one owner');
+      else rule.entityIds.forEach(key=>owned.add(key));
+    }else{
+      if(rule.kind!=='sequence-door'||entities.get(rule.doorId)?.kind!=='door')fail(at,'Rule requires sequence-door kind and a declared door');
+      if(!Array.isArray(rule.sequence)||rule.sequence.length<2||rule.sequence.length>16||new Set(rule.sequence).size!==rule.sequence.length||!rule.sequence.every(key=>entities.get(key)?.kind==='marker'))fail(at+'.sequence','Sequence requires 2..16 distinct declared markers');
+    }
     if(rule.script!==`scripts/creation/rules/${rule.id}.gd`)fail(at+'.script','Rule source must use its exact generated path');
     if(typeof rule.sha256!=='string'||!/^[a-f0-9]{64}$/.test(rule.sha256))fail(at+'.sha256','Rule source requires a SHA-256 hash');
   }

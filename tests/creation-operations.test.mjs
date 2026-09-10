@@ -147,3 +147,10 @@ test('legacy journal without inverse remains replayable but cannot claim reversi
  const f=fixture();const created=run(f,{});accept(f,created);const journal=JSON.parse(f.source.files['world/creation-operations.json'].text);delete journal.operations[0].inverse;f.source.files['world/creation-operations.json']=file(journal);
  assert.equal(run(f,{}).replayed,true);assert.throws(()=>compileCreationOperation({...f,request:operation(f,'undo',{undoOperationId:created.receipt.operationId})}),/UNDO_UNSUPPORTED/);
 });
+
+test('entity behavior declarations accept bounded existing ownership and retain deletion guard',()=>{
+ const f=fixture([entity('tree-a','tree')]);const document=JSON.parse(f.source.files['world/creation.json'].text);document.rules=[{id:'behavior-a',kind:'entity-behavior',entityIds:['tree-a'],script:'scripts/creation/rules/behavior-a.gd',sha256:'a'.repeat(64)}];f.source.files['world/creation.json']=file(document);
+ const modified=compileCreationOperation({...f,request:operation(f,'modify',{targetId:'tree-a',changes:{color:'#123456'}})});assert.equal(modified.document.rules[0].kind,'entity-behavior');
+ assert.throws(()=>compileCreationOperation({...f,request:operation(f,'delete',{targetId:'tree-a'})}),/RULE_DEPENDENCY/);
+ document.rules[0].entityIds=['missing'];f.source.files['world/creation.json']=file(document);assert.throws(()=>compileCreationOperation({...f,request:operation(f,'modify',{targetId:'tree-a',changes:{color:'#123456'}})}),/RULE_TARGET_INVALID/);
+});

@@ -34,8 +34,15 @@ function scene(value){
   const ids=new Set();for(const item of value.entities){entity(item);check(!ids.has(item.id),'CREATION_DUPLICATE_ID');ids.add(item.id);}
   if(value.rules!==undefined){
     check(Array.isArray(value.rules)&&value.rules.length<=8,'CREATION_RULE_LIMIT');const rules=new Set();
-    for(const rule of value.rules){keys(rule,['id','kind','doorId','sequence','script','sha256']);check(identifier(rule.id)&&!rules.has(rule.id)&&rule.kind==='sequence-door'&&rule.script===`scripts/creation/rules/${rule.id}.gd`&&HASH.test(rule.sha256),'CREATION_RULE_INVALID');rules.add(rule.id);
-      check(value.entities.some(item=>item.id===rule.doorId&&item.kind==='door')&&Array.isArray(rule.sequence)&&rule.sequence.length>=2&&rule.sequence.length<=16&&new Set(rule.sequence).size===rule.sequence.length&&rule.sequence.every(id=>value.entities.some(item=>item.id===id&&item.kind==='marker')),'CREATION_RULE_TARGET_INVALID');}
+    const owned=new Set();
+    for(const rule of value.rules){
+      keys(rule,rule?.kind==='entity-behavior'?['id','kind','entityIds','script','sha256']:['id','kind','doorId','sequence','script','sha256']);
+      check(identifier(rule.id)&&!rules.has(rule.id)&&rule.script===`scripts/creation/rules/${rule.id}.gd`&&HASH.test(rule.sha256),'CREATION_RULE_INVALID');rules.add(rule.id);
+      if(rule.kind==='entity-behavior'){
+        check(Array.isArray(rule.entityIds)&&rule.entityIds.length>=1&&rule.entityIds.length<=16&&new Set(rule.entityIds).size===rule.entityIds.length&&rule.entityIds.every(id=>!owned.has(id)&&value.entities.some(item=>item.id===id)),'CREATION_RULE_TARGET_INVALID');
+        rule.entityIds.forEach(id=>owned.add(id));
+      }else check(rule.kind==='sequence-door'&&value.entities.some(item=>item.id===rule.doorId&&item.kind==='door')&&Array.isArray(rule.sequence)&&rule.sequence.length>=2&&rule.sequence.length<=16&&new Set(rule.sequence).size===rule.sequence.length&&rule.sequence.every(id=>value.entities.some(item=>item.id===id&&item.kind==='marker')),'CREATION_RULE_TARGET_INVALID');
+    }
   }
   return value;
 }

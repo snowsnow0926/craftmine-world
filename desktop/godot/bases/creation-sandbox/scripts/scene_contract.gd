@@ -77,21 +77,26 @@ static func validate(scene: Variant) -> String:
 	if not rules is Array or rules.size() > 8:
 		return "Creation scene exceeds eight rules"
 	var rule_ids := {}
+	var behavior_entities := {}
 	for rule in rules:
-		if not fields(rule, ["id", "kind", "doorId", "sequence", "script", "sha256"]):
-			return "Unsupported authored rule fields"
-		if not identifier(rule.id) or rule_ids.has(rule.id):
-			return "Invalid or duplicate rule ID"
+		var kind: String = rule.get("kind", "") if rule is Dictionary else ""
+		var required := ["id", "kind", "entityIds", "script", "sha256"] if kind == "entity-behavior" else ["id", "kind", "doorId", "sequence", "script", "sha256"]
+		if not fields(rule, required): return "Unsupported authored rule fields"
+		if not identifier(rule.id) or rule_ids.has(rule.id): return "Invalid or duplicate rule ID"
 		rule_ids[rule.id] = true
-		if rule.kind != "sequence-door" or not entities.has(rule.doorId) or entities[rule.doorId].kind != "door":
-			return "Rule requires a declared door"
-		if not rule.sequence is Array or rule.sequence.size() < 2 or rule.sequence.size() > 16:
-			return "Rule requires 2..16 markers"
-		var seen := {}
-		for marker in rule.sequence:
-			if not marker is String or seen.has(marker) or not entities.has(marker) or entities[marker].kind != "marker":
-				return "Rule requires distinct declared markers"
-			seen[marker] = true
+		if kind == "entity-behavior":
+			if not rule.entityIds is Array or rule.entityIds.size() < 1 or rule.entityIds.size() > 16: return "Behavior requires 1..16 declared entities"
+			for entity_id in rule.entityIds:
+				if not entity_id is String or not entities.has(entity_id) or behavior_entities.has(entity_id): return "Behavior entities must exist and have one owner"
+				behavior_entities[entity_id] = true
+		elif kind == "sequence-door":
+			if not entities.has(rule.doorId) or entities[rule.doorId].kind != "door": return "Rule requires a declared door"
+			if not rule.sequence is Array or rule.sequence.size() < 2 or rule.sequence.size() > 16: return "Rule requires 2..16 markers"
+			var seen := {}
+			for marker_id in rule.sequence:
+				if not marker_id is String or seen.has(marker_id) or not entities.has(marker_id) or entities[marker_id].kind != "marker": return "Rule requires distinct declared markers"
+				seen[marker_id] = true
+		else: return "Unsupported authored rule kind"
 		if rule.script != "scripts/creation/rules/" + rule.id + ".gd":
 			return "Invalid rule script path"
 		var hash_pattern := RegEx.new()

@@ -71,6 +71,10 @@ func _ready() -> void:
 				_fail("Authored rule is missing " + method + ": " + definition.id)
 				rule.free()
 				return
+		if definition.kind == "entity-behavior" and not rule.has_method("project_entities"):
+			_fail("Entity behavior is missing project_entities: " + definition.id)
+			rule.free()
+			return
 		rule.name = "Rule_" + definition.id
 		add_child(rule)
 		rule.configure(self, definition.duplicate(true))
@@ -340,17 +344,43 @@ func interact_target() -> Dictionary:
 			_update_chest(id)
 		"door":
 			for rule in scene_data.get("rules", []):
-				if rule.doorId == id:
+				if rule.get("doorId", "") == id:
 					return {"interacted": false, "reason": "rule-controlled", "entityId": id}
 			set_door_open(id, not doors.get(id, false))
 		"marker":
 			pass
+		"tree", "rock":
+			var registered := false
+			for rule in scene_data.get("rules", []):
+				if rule.kind == "entity-behavior" and id in rule.entityIds: registered = true
+			if not registered: return {"interacted": false, "reason": "not-interactive"}
 		_:
 			return {"interacted": false, "reason": "not-interactive"}
 	interacted.emit(id)
-	for rule in rule_nodes.values():
-		rule.on_entity_interacted(id)
+	for declaration in scene_data.get("rules", []):
+		if declaration.kind == "entity-behavior" and not id in declaration.entityIds: continue
+		rule_nodes[declaration.id].on_entity_interacted(id)
 	return {"interacted": true, "entityId": id, "kind": definition.kind}
+
+func set_entity_presence(id: String, visible_value: bool, solid_value: bool) -> bool:
+	if not entity_nodes.has(id): return false
+	entity_nodes[id].visible = visible_value
+	entity_nodes[id].get_node("Body").get_child(0).disabled = not solid_value
+	return true
+
+func _entity_presence(id: String) -> Dictionary:
+	return {"visible": entity_nodes[id].is_visible_in_tree(), "solid": not entity_nodes[id].get_node("Body").get_child(0).disabled}
+
+func _project_entity_states(data: Dictionary) -> Dictionary:
+	var result := {}
+	for declaration in scene_data.get("rules", []):
+		if declaration.kind != "entity-behavior": continue
+		var projection: Variant = rule_nodes[declaration.id].project_entities(data.rules[declaration.id].duplicate(true))
+		if not projection is Dictionary or projection.size() != declaration.entityIds.size(): return {"error":"Invalid entity projection: " + declaration.id}
+		for id in declaration.entityIds:
+			if not projection.has(id) or not Contract.fields(projection[id], ["visible", "solid"]) or not projection[id].visible is bool or not projection[id].solid is bool: return {"error":"Invalid entity projection state: " + declaration.id}
+			result[id] = projection[id].duplicate(true)
+	return {"states":result,"error":""}
 
 func set_door_open(id: String, opened: bool) -> bool:
 	if not entities.has(id) or entities[id].kind != "door":
@@ -430,19 +460,22 @@ func validate_progress(data: Variant) -> String:
 	for definition in scene_data.get("rules", []):
 		if not data.rules.has(definition.id):
 			return "Creation progress needs the new rule default: " + definition.id
-		if data.rules[definition.id].get("completed", false) and not data.doors.get(definition.doorId, false):
+		if definition.kind == "sequence-door" and data.rules[definition.id].get("completed", false) and not data.doors.get(definition.doorId, false):
 			return "Completed rule requires its open door: " + definition.id
-	var collision := _player_overlap(Vector3(p[0], p[1], p[2]), data.doors)
+	var projected := _project_entity_states(data)
+	if not projected.error.is_empty(): return projected.error
+	var collision := _player_overlap(Vector3(p[0], p[1], p[2]), data.doors, projected.states)
 	if not collision.is_empty():
 		return "Saved player overlaps candidate entity: " + collision
 	return ""
 
-func _player_overlap(player_position: Vector3, saved_doors: Dictionary) -> String:
+func _player_overlap(player_position: Vector3, saved_doors: Dictionary, projected: Dictionary = {}) -> String:
 	# Capsule versus each actual Y-rotated box, before mutating any progress.
 	# Use the proposed door state, not fresh-instance/default collider state.
 	# A tiny contact tolerance preserves valid saves taken against a wall.
 	for id in entities:
 		var definition: Dictionary = entities[id]
+		if projected.has(id) and not projected[id].solid: continue
 		if definition.kind == "door" and saved_doors.get(id, false):
 			continue
 		var offset := player_position - Vector3(definition.position[0], definition.position[1], definition.position[2])
@@ -480,11 +513,23 @@ func _json_value(value: Variant, depth: int) -> bool:
 
 func restore(data: Dictionary) -> String:
 	var problem := validate_progress(data)
-	if not problem.is_empty():
-		return problem
+	if not problem.is_empty(): return problem
+	var previous := capture()
+	var prior_presence := {}
+	for id in entities: prior_presence[id] = _entity_presence(id)
+	var projected := _project_entity_states(data)
 	problem = player.restore(data.player)
-	if not problem.is_empty():
-		return problem
+	if not problem.is_empty(): return problem
+	_apply_progress(data)
+	for id in projected.states:
+		if _entity_presence(id) != projected.states[id]:
+			_apply_progress(previous)
+			player.restore(previous.player)
+			for entity_id in prior_presence: set_entity_presence(entity_id, prior_presence[entity_id].visible, prior_presence[entity_id].solid)
+			return "Entity behavior restore differs from projection: " + id
+	return ""
+
+func _apply_progress(data: Dictionary) -> void:
 	time_of_day = float(data.timeOfDay)
 	inventory = data.inventory.duplicate(true)
 	opened_chests = data.openedChests.duplicate(true)
@@ -501,7 +546,6 @@ func restore(data: Dictionary) -> String:
 		if rule_state.has(id):
 			rule_nodes[id].restore(rule_state[id])
 	_update_time()
-	return ""
 
 func save_local() -> String:
 	var body := capture()
@@ -538,10 +582,13 @@ func observe() -> Dictionary:
 		definition["position"] = [actual_node.position.x, actual_node.position.y, actual_node.position.z]
 		definition["scale"] = [actual_node.scale.x, actual_node.scale.y, actual_node.scale.z]
 		definition["color"] = _observed_color(id)
+		var presence := _entity_presence(id)
+		definition["visible"] = presence.visible
+		definition["solid"] = presence.solid
 		if definition.kind == "chest": definition["opened"] = opened_chests.has(id)
 		if definition.kind == "door": definition["open"] = doors.get(id, false)
 		definitions.append(definition)
-		if definition.kind == "door" and doors.get(id, false): continue
+		if not definition.solid: continue
 		var half: Vector3 = HALF_EXTENTS[definition.kind]
 		var bounds: AABB = entity_nodes[id].global_transform * AABB(Vector3(-half.x, 0, -half.z), half * 2)
 		obstacles.append({"entityId": id, "min": [bounds.position.x, bounds.position.y, bounds.position.z], "max": [bounds.end.x, bounds.end.y, bounds.end.z]})

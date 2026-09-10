@@ -78,7 +78,7 @@ marker 的 label（最多 80 字符）；树和岩石的 parameters 为空对象
 携带当前 revision、manifestHash 与旧文件 expectedHash；新文件 expectedHash 为 null。
 引擎 API 以 `godot_docs` 和当前脚本为准。
 
-当前 creation.json 的规则声明 kind **仅支持 `sequence-door`**，不能凭空写新的 kind。
+当前 creation.json 支持 `sequence-door` 与 `entity-behavior` 两种规则声明；不能凭空写其他 kind。
 该声明加载的是 `scripts/creation/rules/<规则ID>.gd` 文件，实际逻辑由该普通脚本定义。
 脚本必须扩展 Node，并提供 configure、on_entity_interacted、snapshot、validate_state、restore。
 声明的 sha256 必须是实际完整脚本 UTF-8 字节的 SHA-256。先写脚本，再从该源码版本的
@@ -93,6 +93,28 @@ index/read 返回值取得真实文件 sha256；用下一次 CAS patch 更新声
 样例是可审查源码，不是 `creation_operation` 的新 action，也不是玩家世界已验证的证据。
 若玩法需要任意新场景节点，可以直接扩展场景/脚本；必须把需要保存的状态接入当前支持的
 容器和真实 capture/validate/restore，不能靠临时变量冒充持久进度。
+
+## 普通对象行为接口
+
+与门无关的行为使用 `{id, kind:"entity-behavior", entityIds:[稳定对象ID], script, sha256}`；
+entityIds 必须是 1..16 个已存在对象，一个对象只能归属一个 entity-behavior。脚本路径和哈希
+规则与上述相同。它不是预置玩法，奖励、计时和状态机必须由本次普通源码实现。
+
+除了 configure(world, declaration)、on_entity_interacted(entityId)、snapshot()、
+validate_state(state)、restore(state)，entity-behavior 必须实现纯读取的
+`project_entities(state)`，返回恰好每个声明 entityId 对应的 `{visible:bool, solid:bool}`。
+该投影用于恢复前的玩家碰撞验证；不得在投影中改变世界或状态。restore 后真实节点的可见与
+碰撞必须与投影一致，否则恢复失败并还原先前状态。snapshot/validate/restore 保存自定义数据，
+不能用 configure 默认覆盖已保存进度。计时可用普通 Node `_process`/`_physics_process`，继承世界暂停。
+
+树和石头只有注册了 entity-behavior 才接收真实 E 交互；on_entity_interacted 仅收到自己 entityIds
+中的对象。`world.set_entity_presence(id, visible, solid)` 更新节点可见性与真实 Body 碰撞，
+不删除实体身份；在物理信号回调中应延后调用，避免引擎正在刷新查询时改形状。`world.inventory`
+是既有背包字典；保持稳定物品 ID、非负整数和既有上限，不覆盖其他奖励。是否发放、发多少、
+何时重新可交互都由普通脚本和持久规则状态决定，运行时不内置采集/掉落/重生实现。
+
+运行观察返回实际 `visible`、`solid`、主材质 `color` 与节点 `position`/`scale`；关闭碰撞的对象
+不再列入 obstacles。行为规则仍经过真实编译、结果检查、候选采用和保存重开。
 
 ## 检查、预览、采用与保留进度
 

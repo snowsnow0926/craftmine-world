@@ -15,3 +15,12 @@ creation_operation 新增 delete(targetId)、undo(undoOperationId)。新操作�
 任何删除类操作遇到世界内 authored rules 均拒绝：声明外的普通脚本也可能引用该对象，当前没有可信依赖声明可证明无引用。显示明确冲突提示，而非偷偷删规则。撤销修改仍可在不删除实体时执行。
 
 选中对象由真实引擎射线决定，显示金色边框和中文名称。观察的 position/scale 来自真实节点，不能用旧源码声明冒充运行结果。
+
+
+## 通用对象行为
+
+场景规则可声明 entity-behavior，包含 id、kind、entityIds、script、sha256。一个规则引用 1..16 个已存在对象，一个对象只能属于一个 entity-behavior。固定脚本路径和实际源码哈希仍强制校验。普通脚本自行实现行为，没有内置掉落或重生逻辑。
+
+树/石头只有注册行为后才接受 E 互动；事件只交给声明该对象的规则。set_entity_presence 同时更新可见性与碰撞，observe 读取实际 visible/solid，不把关闭碰撞的对象加入 obstacles。
+
+entity-behavior 必需提供纯读 project_entities(state)，返回每个 entityId 的 visible/solid。恢复前按投影检查玩家碰撞；恢复后真实节点必须匹配投影，不匹配则回滚到原 snapshot 和原实体 presence。保持既有通用 rules 进度字典和严格状态校验，不增加无法兼容的顶层进度字段。任何规则存在时删除类操作仍保守拒绝。
