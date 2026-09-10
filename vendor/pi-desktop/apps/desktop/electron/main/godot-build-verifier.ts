@@ -29,6 +29,7 @@ import {
 import { GODOT_WORLD_MESSAGE_CHANNEL, godotWorldScopeArgument } from "../shared/godot-world-chrome";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
 import { deriveAdditiveProgress } from "../../../../../../desktop/godot/shared/progress-migration.mjs";
+import {parseGodotCheckRequirements,readGodotTargetFeedback,godotTargetFeedbackMatches,type GodotCheckRequirements,type GodotRequirementsEvidence} from "./godot-check-requirements";
 
 /** Descriptor produced by the Rust core (`godotJob.checkDescriptor`). */
 export type GodotRuntimeCheckDescriptor = {
@@ -45,6 +46,8 @@ export type GodotRuntimeCheckDescriptor = {
   threads: boolean;
   artifacts: Array<{ path: string; bytes: number; sha256: string }>;
   snapshot: unknown;
+  checkRequirements?: GodotCheckRequirements;
+  checkRequirementsHash?: string;
 };
 
 export type GodotRuntimeCheckReady = {
@@ -109,11 +112,13 @@ export type GodotRuntimeCheckAssertionId =
   | "runtime.no-errors"
   | "runtime.snapshot"
   | "runtime.isolation"
-  | "runtime.recovery";
+  | "runtime.recovery"
+  | "runtime.target-feedback";
 
 export type GodotRuntimeCheckAssertion = {
   id: GodotRuntimeCheckAssertionId;
   passed: boolean;
+  detail?: string;
 };
 
 export type GodotRuntimeCheckEvidence = {
@@ -138,6 +143,7 @@ export type GodotRuntimeCheckEvidence = {
   error: string | null;
   defaultsSnapshot?: unknown;
   progressMigration?: ReturnType<typeof deriveAdditiveProgress>;
+  requirementsEvidence?: GodotRequirementsEvidence;
 };
 
 /** One bounded deadline for the whole check, mirroring `CraftmineVerifier`. */
@@ -269,6 +275,7 @@ export function parseGodotCheckDescriptor(input: unknown): GodotRuntimeCheckDesc
     artifacts.push({ path, bytes: item.bytes as number, sha256: item.sha256 });
   }
   if (!seen.has("web/index.html")) throw new Error("INVALID_GODOT_CHECK_DESCRIPTOR");
+  const requirements=parseGodotCheckRequirements(input.checkRequirements,input.checkRequirementsHash,baseId);
   return {
     format: "craftmine.godot-check-descriptor/1",
     phase: "check",
@@ -282,6 +289,7 @@ export function parseGodotCheckDescriptor(input: unknown): GodotRuntimeCheckDesc
     threads: input.threads,
     artifacts,
     snapshot,
+    ...(requirements ?? {}),
   };
 }
 
@@ -384,6 +392,9 @@ export class GodotBuildVerifier {
     let expectedSnapshot = descriptor.snapshot ?? null;
     let defaultsSnapshot: unknown;
     let progressMigration: ReturnType<typeof deriveAdditiveProgress> | undefined;
+    let requirementsEvidence: GodotRequirementsEvidence | undefined;
+    let targetFeedbackPassed = false;
+    let targetFeedbackDetail: string | undefined;
     let runtime: WorldRuntime | null = null;
     let window: BrowserWindow | null = null;
     let isolated: Session | null = null;
@@ -428,6 +439,9 @@ export class GodotBuildVerifier {
       });
       runtime = activeRuntime;
       ready.instanceId = activeRuntime.instanceId;
+      if(descriptor.checkRequirements){
+        requirementsEvidence={format:"craftmine.godot-check-requirements-evidence/1",requirementsHash:descriptor.checkRequirementsHash!,jobId:descriptor.jobId,worldId:descriptor.worldId,buildId:descriptor.buildId,instanceId:activeRuntime.instanceId,observations:[]};
+      }
       assertRunning();
 
       const origin = activeRuntime.origin;
@@ -568,6 +582,17 @@ export class GodotBuildVerifier {
       const loaded = await bounded(activeRuntime.load({ build: null, snapshot: expectedSnapshot }));
       if (loaded.error) throw new Error(`GODOT_CHECK_LOAD_FAILED: ${loaded.error}`);
       assertRunning();
+      const observeTargetFeedback = async (phase: "loaded"|"running"): Promise<void> => {
+        if(!descriptor.checkRequirements || !requirementsEvidence)return;
+        try{
+          const observed=await bounded(activeRuntime.request("observe-envelope",{}));
+          if(observed.error)throw Error(`GODOT_CHECK_TARGET_FEEDBACK_OBSERVATION_FAILED: ${observed.error}`);
+          const value=readGodotTargetFeedback(observed.result,requirementsEvidence,descriptor.checkRequirements.targetFeedback.targetId,phase);
+          requirementsEvidence.observations.push(value);
+          if(!godotTargetFeedbackMatches(value,descriptor.checkRequirements))throw Error(`GODOT_CHECK_TARGET_FEEDBACK_MISMATCH:${phase}`);
+        }catch(failure){targetFeedbackDetail=messageOf(failure).slice(0,MAX_ERROR_CHARS);throw failure;}
+      };
+      await observeTargetFeedback("loaded");
 
       // Isolation proof: the guard is installed in the main world of every
       // frame, the renderer has no Node or plugin bridge, and the hidden
@@ -650,6 +675,10 @@ export class GodotBuildVerifier {
       // evidence, not used as a pass criterion.
       render.ok = render.frames >= FRAME_COUNT;
       if (!render.ok) throw new Error("GODOT_CHECK_FRAME_MISSING");
+      // Re-sample after real simulation/frame checks, so a delayed sibling
+      // script cannot overwrite the value after its initial read and pass.
+      await observeTargetFeedback("running");
+      targetFeedbackPassed=!!requirementsEvidence && requirementsEvidence.observations.length===2;
     } catch (failure) {
       error = messageOf(failure);
     } finally {
@@ -706,6 +735,7 @@ export class GodotBuildVerifier {
       { id: "runtime.isolation", passed: isolation.ok },
       { id: "runtime.recovery", passed: recovery.ok },
     ];
+    if(descriptor.checkRequirements)assertions.push({id:"runtime.target-feedback",passed:targetFeedbackPassed,...(targetFeedbackDetail?{detail:targetFeedbackDetail}:{})});
     const passed = assertions.every((assertion) => assertion.passed);
     if (!passed && error === null) {
       error = `GODOT_CHECK_FAILED: ${assertions.filter((assertion) => !assertion.passed).map((assertion) => assertion.id).join(",")}`;
@@ -730,6 +760,7 @@ export class GodotBuildVerifier {
       diagnostics,
       error,
       ...(defaultsSnapshot && progressMigration ? {defaultsSnapshot, progressMigration} : {}),
+      ...(requirementsEvidence ? {requirementsEvidence} : {}),
     };
   }
 }
