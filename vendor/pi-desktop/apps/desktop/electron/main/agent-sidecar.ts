@@ -6,6 +6,7 @@ import { existsSync } from "node:fs";
 import type { HostProcess, ProcessExitHandler, StderrHandler } from "./host-process";
 import { DEFAULT_RPC_TIMEOUT_MS, rpcTimeoutMs } from "@pi-desktop/shared";
 import { CRAFTMINE_PROXY_METHODS, type CraftmineTurnGateway } from "./craftmine-turn-gateway";
+import { awaitOwnedClose } from "./owned-resource-close";
 
 // stderr lines kept per sidecar so an unexpected exit can be reported with the
 // process's last words instead of a bare "agent sidecar exited".
@@ -96,6 +97,8 @@ export class AgentSidecar {
   private handlers = new Set<SidecarNotificationHandler>();
   private exitHandlers = new Set<ProcessExitHandler>();
   private disposed = false;
+  private disposal: Promise<void> | null = null;
+  private childClosed: Promise<void>;
   private closed = false;
   private exitNotified = false;
   private stderrTail: string[] = [];
@@ -133,6 +136,7 @@ export class AgentSidecar {
         ELECTRON_RUN_AS_NODE: "1",
       },
     });
+    this.childClosed = new Promise(resolve => { this.child.once("close", () => resolve()); });
 
     this.child.stderr.setEncoding("utf8");
     this.child.stderr.on("data", (text: string) => {
@@ -578,12 +582,18 @@ export class AgentSidecar {
     });
   }
 
-  async dispose(): Promise<void> {
+  dispose(): Promise<void> {
+    if (this.disposal) return this.disposal;
     this.disposed = true;
     this.projectInstructionRoots.clear();
     this.vendorAuthBindings.clear();
     this.closeTransport(new Error("agent sidecar disposed"));
     this.exitHandlers.clear();
-    this.child.kill();
+    this.disposal = awaitOwnedClose(this.childClosed, "AGENT_SIDECAR");
+    try { this.child.kill(); } catch (error) {
+      // Still await the owned process: an already-exited child may be draining pipes.
+      this.recordStderr(`Sidecar stop request failed: ${String(error)}`);
+    }
+    return this.disposal;
   }
 }

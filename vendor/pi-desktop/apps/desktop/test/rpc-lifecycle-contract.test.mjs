@@ -157,8 +157,11 @@ test("app quit waits for one idempotent teardown before allowing the follow-up q
   assert.match(shutdownSource, /await hostShutdown/);
   assert.match(
     shutdownSource,
-    /await Promise\.allSettled\(\[pluginPanelShutdown, pluginShutdown, sidecarShutdown\]\)/,
+    /Promise\.allSettled\(\[pluginPanelShutdown, pluginShutdown, sidecarShutdown, godotShutdown\]\)/,
   );
+  assert.ok(shutdownSource.indexOf("Promise.allSettled([pluginPanelShutdown") < shutdownSource.indexOf("await hostShutdown"));
+  assert.match(shutdownSource, /await serviceShutdown/);
+  assert.match(shutdownSource, /result\.status === "rejected"[\s\S]*?"service shutdown incomplete"/);
   const releaseQuit = shutdownSource.match(
     /const releaseQuit = \(\) => \{[\s\S]*?shutdownComplete = true;[\s\S]*?app\.quit\(\);[\s\S]*?\};/,
   );

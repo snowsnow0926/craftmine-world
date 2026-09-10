@@ -132,6 +132,7 @@ type LiveInstance = {
   alive: boolean;
   /** The web contents were already closed; closing twice must be a no-op. */
   closed: boolean;
+  closePromise?: Promise<void>;
   /** Bounded renderer console tail; evidence for a failed startup. */
   consoleLog: Array<{ at: number; level: string; message: string }>;
   /** Page/renderer faults observed for this instance, newest last. */
@@ -172,6 +173,7 @@ export class GodotWorldViewHost {
   private lastSync = 0;
   private poll?: ReturnType<typeof setInterval>;
   private disposed = false;
+  private closing: Promise<void> | null = null;
   private disposal: Promise<void> | null = null;
   private onState?: (state: GodotWorldState) => void;
 
@@ -446,16 +448,7 @@ export class GodotWorldViewHost {
       candidate.alive = false;
       candidate.detach();
       this.detachView(candidate.view);
-      this.closeView(candidate);
-      await candidate.runtime.dispose({graceful:false}).catch(()=>undefined);
-      if(!candidate.view.webContents.isDestroyed()) {
-        await new Promise<void>((resolve,reject)=>{
-          const contents=candidate.view.webContents;
-          const done=()=>{clearTimeout(timer);resolve();};
-          const timer=setTimeout(()=>{contents.removeListener("destroyed",done);reject(new Error("GODOT_CANDIDATE_CLOSE_TIMEOUT"));},3000);
-          contents.once("destroyed",done);
-        });
-      }
+      await Promise.all([this.closeView(candidate), candidate.runtime.dispose({graceful:false})]);
     }
     this.applyBounds();
   }
@@ -783,7 +776,15 @@ export class GodotWorldViewHost {
     return { ok: true };
   }
 
-  async close(): Promise<void> {
+  close(): Promise<void> {
+    if (this.closing) return this.closing;
+    const completion = this.closeInternal();
+    this.closing = completion;
+    void completion.finally(() => { if (this.closing === completion) this.closing = null; }).catch(() => undefined);
+    return completion;
+  }
+
+  private async closeInternal(): Promise<void> {
     ++this.generation;
     this.stopPolling();
     const instance = this.current;
@@ -794,13 +795,16 @@ export class GodotWorldViewHost {
     this.candidateVisible = false;
     this.frozen = null;
     this.revision = null;
+    const cleanup: Promise<void>[] = [];
     if (pending) {
       pending.alive = false;
       pending.detach();
-      this.closeView(pending);
-      await pending.runtime.dispose({ graceful: false }).catch(() => undefined);
+      cleanup.push(this.closeView(pending), pending.runtime.dispose({ graceful: false }));
     }
     if (!instance) {
+      const results = await Promise.allSettled(cleanup);
+      const failures = results.filter(result => result.status === "rejected");
+      if (failures.length) throw new AggregateError(failures.map(result => result.reason), "GODOT_WORLD_CLOSE_INCOMPLETE: " + failures.map(result => String(result.reason)).join("; "));
       this.publishState({ state: "closed" });
       return;
     }
@@ -812,8 +816,10 @@ export class GodotWorldViewHost {
       // The renderer may already be gone.
     }
     this.detachView(instance.view);
-    this.closeView(instance);
-    await instance.runtime.dispose({ graceful: true }).catch(() => undefined);
+    cleanup.push(this.closeView(instance), instance.runtime.dispose({ graceful: true }));
+    const results = await Promise.allSettled(cleanup);
+    const failures = results.filter(result => result.status === "rejected");
+    if (failures.length) throw new AggregateError(failures.map(result => result.reason), "GODOT_WORLD_CLOSE_INCOMPLETE: " + failures.map(result => String(result.reason)).join("; "));
     this.publishState({ state: "closed" });
   }
 
@@ -821,19 +827,32 @@ export class GodotWorldViewHost {
     if (this.disposal) return this.disposal;
     this.disposed = true;
     this.stopPolling();
-    this.disposal = this.close().catch(() => undefined);
+    this.disposal = this.close();
     return this.disposal;
   }
 
   /** Close a view at most once; `webContents.close()` is asynchronous. */
-  private closeView(instance: LiveInstance): void {
-    if (instance.closed) return;
+  private closeView(instance: LiveInstance): Promise<void> {
+    if (instance.closePromise) return instance.closePromise;
     instance.closed = true;
-    try {
-      if (!instance.view.webContents.isDestroyed()) instance.view.webContents.close();
-    } catch {
-      // The renderer may already be gone.
-    }
+    const contents = instance.view.webContents;
+    instance.closePromise = new Promise<void>((resolve, reject) => {
+      if (contents.isDestroyed()) { resolve(); return; }
+      const done = () => { clearTimeout(timer); resolve(); };
+      const timer = setTimeout(() => {
+        contents.removeListener("destroyed", done);
+        reject(new Error("GODOT_RENDERER_CLOSE_TIMEOUT"));
+      }, 3000);
+      contents.once("destroyed", done);
+      try { contents.close(); } catch (error) {
+        clearTimeout(timer); contents.removeListener("destroyed", done);
+        if (contents.isDestroyed()) resolve(); else reject(error);
+      }
+    });
+    // Replacement/startup cleanup also records failure even when its caller is
+    // already propagating a different startup error. Disposal awaits this promise.
+    void instance.closePromise.catch(error => this.recordFault(instance, String(error)));
+    return instance.closePromise;
   }
 
   private identityOf(instance: LiveInstance): { worldId: string; buildId: string; instanceId: string } {

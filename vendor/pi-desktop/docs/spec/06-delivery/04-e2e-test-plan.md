@@ -8909,3 +8909,9 @@ actual desktop restart evidence must be labeled separately.
 7. Switch pages/worlds during reads and polling. Old responses must not overwrite the active page; background timers must stop. Use isolated headless page scripts with Pointer Lock disabled and no input simulation.
 
 Fixture UI checks and source-only tests are separate from actual client/runtime evidence; do not count them as model or native acceptance.
+
+### Owned shutdown terminal barriers (PP2 follow-up)
+
+Use an independent headless client/profile with Pointer Lock disabled and no input simulation. Save the formal Godot world, quit and restart. Verify existing progress and the actual exit code; a later successful rerun never erases a nonzero exit. Preserve the L0CaYa failure and the 0Dd08G rerun separately.
+
+Keep renderer destruction pending after runtime cleanup and verify disposal remains pending; deliver destroyed and verify one completion. Withhold destroyed and require a named timeout failure. Distinguish child kill, exit and stdio closure. Verify the real Node child closes its pipes; controlled UtilityProcess ordering still requires native client validation. Concurrent HTTP disposal must share one promise, and a missing server-close callback must reject. Rejected service teardown must be logged as incomplete while retaining the existing final quit policy.

@@ -162,6 +162,7 @@ export async function createWorldRuntime(options) {
   const pending = new Map();
   let sequence = 0;
   let disposed = false;
+  let disposal = null;
   let ready = false;
   let exited = false;
   let state = 'loading';
@@ -434,21 +435,25 @@ export async function createWorldRuntime(options) {
         return {exitCode: null, error: error.message};
       }
     },
-    async dispose({graceful = true} = {}) {
-      if (disposed) return;
-      if (graceful) await runtime.exit();
-      disposed = true;
-      state = 'disposed';
-      clearTimeout(startupTimer);
-      rejectReady(Error('Godot runtime was disposed'));
-      for (const id of [...pending.keys()]) settle(id, 'Godot runtime was disposed');
-      deliver = null;
-      listeners.clear();
-      // A page can hold a keep-alive socket; `server.close()` alone would wait
-      // for it and could hang the caller, so terminate remaining connections.
-      const closed = new Promise(resolve => server.close(resolve));
-      server.closeAllConnections?.();
-      await Promise.race([closed, new Promise(resolve => setTimeout(resolve, 2000))]);
+    dispose({graceful = true} = {}) {
+      if (disposal) return disposal;
+      disposal = (async () => {
+        if (graceful) await runtime.exit();
+        disposed = true;
+        state = 'disposed';
+        clearTimeout(startupTimer);
+        rejectReady(Error('Godot runtime was disposed'));
+        for (const id of [...pending.keys()]) settle(id, 'Godot runtime was disposed');
+        deliver = null;
+        listeners.clear();
+        // A page can hold a keep-alive socket; terminate remaining connections.
+        await new Promise((resolve, reject) => {
+          const timer = setTimeout(() => reject(Error('GODOT_RUNTIME_CLOSE_TIMEOUT')), 2000);
+          server.close(error => {clearTimeout(timer);if(error)reject(error);else resolve();});
+          server.closeAllConnections?.();
+        });
+      })();
+      return disposal;
     },
     evidence() {
       return {
