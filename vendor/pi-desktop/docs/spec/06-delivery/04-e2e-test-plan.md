@@ -9017,3 +9017,5 @@ Compile current Main/React/core, stage same-commit trusted runtime, and launch a
 ## 2026-09-10 — Strict history probe action types
 
 The finite headless history probe rejects array/object/number action discriminators before producing page script. Its existing finite form actions are unchanged. Validation: `node --test tests/plan-loop/version-diff-probe.test.mjs` (3 tests).
+
+Follow-up: version discovery does not use editor cache. The real broker/executor/core chain must register after a verified version launch on the 266-unit layout, reject the subsequent import before launch, and retain the failed finite reason after core restart. See task-path-executor-native.cjs and DISCOVERY_FOLLOWUP.md; package acceptance remains separate.

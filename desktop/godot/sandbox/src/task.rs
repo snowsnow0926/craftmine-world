@@ -473,7 +473,12 @@ impl Task {
         validate_task_id(&pins.editor.file_name)?;
         for template in &pins.templates { validate_task_id(&template.file_name)?; }
         validate_task_id(task_id)?;
-        validate_editor_cache_path(tasks_root, task_id)?;
+        // --version never initializes the editor cache. Discovery must still
+        // attest the actual process/network policy on a long data root; the
+        // subsequent import fails as a durable job before engine startup.
+        if !matches!(kind, TaskKind::Version) {
+            validate_editor_cache_path(tasks_root, task_id)?;
+        }
         let layout = TaskLayout::create(tasks_root, task_id)?;
         // A task root must never exist without a journal entry: the broker writes
         // the entry after `prepare` succeeds. If preparation fails, remove the
@@ -891,6 +896,9 @@ mod tests {
             .err().unwrap().to_string();
         assert!(error.starts_with("GODOT_TASK_PATH_TOO_LONG:"));
         assert!(!too_long.join(task_id).exists());
+        let version_error = Task::prepare(&too_long, task_id, TaskKind::Version, None, &pins, TaskBudget::default())
+            .err().unwrap().to_string();
+        assert!(!version_error.contains("GODOT_TASK_PATH_TOO_LONG"), "version does not initialize an editor cache");
     }
 
     #[test]

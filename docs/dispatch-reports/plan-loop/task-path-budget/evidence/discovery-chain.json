@@ -1,0 +1,363 @@
+{
+  "format": "craftmine.task-path-executor-native/1",
+  "passed": true,
+  "cacheUtf16Units": 266,
+  "coreSha256": "b1feae27ae34757640cd65da9f0313ccd10ee19c44a2aa129246a2a73df1c087",
+  "brokerSha256": "78aa410ba1fa8aeb714e23de328f4733761499d932eea17e81b7a1fa1e35ea19",
+  "out": "D:/cm-path-chain-2",
+  "dataPath": "D:\\cm-path-chain-2\\data-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+  "discovery": {
+    "format": "craftmine.godot-executor-status/1",
+    "executorId": "craftmine-windows-broker-v1",
+    "engineVersion": "4.7.2-stable",
+    "isolation": "craftmine.windows.lpac-registry.v1",
+    "state": "registered",
+    "available": true,
+    "buildAvailable": true,
+    "checkAvailable": true,
+    "reason": null,
+    "broker": {
+      "sha256": "78aa410ba1fa8aeb714e23de328f4733761499d932eea17e81b7a1fa1e35ea19",
+      "pinned": true,
+      "pinSource": "D:\\cm-path-chain-2\\host-selected-broker-identity.json",
+      "sourceCommit": "local-fixed-probe",
+      "protocolVersion": 1
+    },
+    "engineRoot": "D:\\cm-plan-loop-20260910\\desktop\\build\\runtime-resources\\godot\\engine\\4.7.2-stable",
+    "lock": "toolchain.lock.json",
+    "evidenceHash": "6809430e376ca9061403e6a9fa5c2f5a4418d430e6e03013edf06f1276e22739",
+    "bridge": {
+      "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+    },
+    "preflight": {
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "processVerified": true,
+      "networkVerified": true,
+      "cleanupVerified": true,
+      "networkChecks": [
+        {
+          "name": "tcp4",
+          "ok": false,
+          "rawOsError": 10013
+        },
+        {
+          "name": "tcp6",
+          "ok": false,
+          "rawOsError": 10013
+        },
+        {
+          "name": "tcpExternal",
+          "ok": false,
+          "rawOsError": 10013
+        },
+        {
+          "name": "udp4",
+          "ok": false,
+          "rawOsError": 10013
+        },
+        {
+          "name": "udp6",
+          "ok": false,
+          "rawOsError": 10013
+        },
+        {
+          "name": "udpExternal",
+          "ok": false,
+          "rawOsError": 10013
+        }
+      ]
+    },
+    "recoveries": [
+      {
+        "format": "craftmine.godot-recovery-summary/1",
+        "trigger": "startup",
+        "ok": true,
+        "policyVersion": "craftmine.windows.recovery-journal.v1",
+        "tasksRoot": "D:\\cm-path-chain-2\\data-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\\godot\\tasks",
+        "journalRoot": "D:\\cm-path-chain-2\\data-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\\godot\\tasks\\.recovery-journal",
+        "exitCode": 0,
+        "parseError": null,
+        "timedOut": false,
+        "stderr": "",
+        "reconciledCount": 0,
+        "skippedCount": 0,
+        "reportedReconciledCount": 0,
+        "reportedSkippedCount": 0,
+        "reclaimed": [],
+        "skipped": [],
+        "unreadable": [],
+        "finalReceiptClaimed": false
+      },
+      {
+        "format": "craftmine.godot-recovery-summary/1",
+        "trigger": "reconcile",
+        "ok": true,
+        "policyVersion": "craftmine.windows.recovery-journal.v1",
+        "tasksRoot": "D:\\cm-path-chain-2\\data-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\\godot\\tasks",
+        "journalRoot": "D:\\cm-path-chain-2\\data-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\\godot\\tasks\\.recovery-journal",
+        "exitCode": 0,
+        "parseError": null,
+        "timedOut": false,
+        "stderr": "",
+        "reconciledCount": 0,
+        "skippedCount": 0,
+        "reportedReconciledCount": 0,
+        "reportedSkippedCount": 0,
+        "reclaimed": [],
+        "skipped": [],
+        "unreadable": [],
+        "finalReceiptClaimed": false
+      }
+    ],
+    "startupRecovery": {
+      "format": "craftmine.godot-recovery-summary/1",
+      "trigger": "startup",
+      "ok": true,
+      "policyVersion": "craftmine.windows.recovery-journal.v1",
+      "tasksRoot": "D:\\cm-path-chain-2\\data-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\\godot\\tasks",
+      "journalRoot": "D:\\cm-path-chain-2\\data-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\\godot\\tasks\\.recovery-journal",
+      "exitCode": 0,
+      "parseError": null,
+      "timedOut": false,
+      "stderr": "",
+      "reconciledCount": 0,
+      "skippedCount": 0,
+      "reportedReconciledCount": 0,
+      "reportedSkippedCount": 0,
+      "reclaimed": [],
+      "skipped": [],
+      "unreadable": [],
+      "finalReceiptClaimed": false
+    },
+    "restartReconciliation": {
+      "checked": 0,
+      "requeued": [],
+      "terminal": [],
+      "interrupted": [],
+      "unverifiable": [],
+      "recovery": "startup"
+    },
+    "stopRecovery": null,
+    "resources": {
+      "sampled": true,
+      "hardFilesystemQuota": false,
+      "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+      "lastObserved": null
+    },
+    "jobs": [],
+    "ledger": {
+      "jobs": 0,
+      "active": 0,
+      "updatedAt": "2026-09-10T03:06:23.005Z",
+      "error": null
+    },
+    "tasksRoot": "D:\\cm-path-chain-2\\data-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\\godot\\tasks",
+    "registered": true,
+    "revokedOnStop": null
+  },
+  "job": {
+    "artifacts": [],
+    "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "baseBuild": "base-a",
+    "baseId": "first-person",
+    "blockedReason": null,
+    "branchId": "main",
+    "buildId": "gbd-6973c1b6d7b5e30610908ef10916f0e38edd07648e27a3b5a4838a19447d9a7e",
+    "candidateId": "gcan-d886cd32dc5b487a1f110ee956978514e925265bf3d47140ce8536a37c19cd97",
+    "createdAt": 1789009583044,
+    "executorId": "craftmine-windows-broker-v1",
+    "interruptReason": null,
+    "jobId": "gjob-250e1bd104104392e4f53339c3d7fe466cdb8bd0c9a3e855bf38da197c3b6e47",
+    "kind": "check",
+    "leaseExpiresAt": null,
+    "manifestHash": "90714199a881b04b84a75f4fe4f4f20aa3d68eba5773590533ed22e08d618e04",
+    "originJobId": null,
+    "output": {
+      "artifacts": [],
+      "check": {
+        "assertions": [
+          {
+            "detail": "GODOT_TASK_PATH_TOO_LONG",
+            "id": "runtime.not-run",
+            "passed": false
+          }
+        ],
+        "passed": false
+      },
+      "compile": {
+        "errors": [
+          "GODOT_TASK_PATH_TOO_LONG"
+        ],
+        "passed": false,
+        "warnings": []
+      },
+      "engine": {
+        "evidenceHash": "6809430e376ca9061403e6a9fa5c2f5a4418d430e6e03013edf06f1276e22739",
+        "isolation": "craftmine.windows.lpac-registry.v1",
+        "version": "4.7.2-stable"
+      },
+      "format": "craftmine.godot-job-result/1",
+      "import": {
+        "log": "",
+        "passed": false
+      },
+      "inputHash": "4633e5bebff039558716a3fe1758b8a929876a06c42577c03300418fcb30456f",
+      "passed": false
+    },
+    "outputHash": "94855f4692bd1920ed4c875207df6fb3585ee31cbbd9547ade7690c879716dfd",
+    "progress": 100,
+    "sourceRevision": 0,
+    "sourceStale": false,
+    "stage": "failed",
+    "status": "failed",
+    "taskId": "work-9ea204f7c8caa04cf83570fe5ed772ebd9a7a974242d518b10935ab93a3d39e7",
+    "updatedAt": 1789009583091,
+    "worldId": "world-path-budget"
+  },
+  "ledger": {
+    "format": "craftmine.godot-executor-ledger/1",
+    "executorId": "craftmine-windows-broker-v1",
+    "updatedAt": "2026-09-10T03:06:23.092Z",
+    "jobs": {
+      "gjob-250e1bd104104392e4f53339c3d7fe466cdb8bd0c9a3e855bf38da197c3b6e47": {
+        "jobId": "gjob-250e1bd104104392e4f53339c3d7fe466cdb8bd0c9a3e855bf38da197c3b6e47",
+        "worldId": "world-path-budget",
+        "mode": "check",
+        "state": "failed",
+        "attempts": [
+          {
+            "requestId": "im-cf43d215aca04f94bcfa3e8d",
+            "operation": "import",
+            "startedAt": "2026-09-10T03:06:23.052Z",
+            "outcome": "no-final-receipt:failed",
+            "transport": "failed",
+            "recovery": {
+              "trigger": "broker-exit",
+              "ok": true,
+              "parseError": null,
+              "reclaimed": [],
+              "skipped": 0,
+              "unreadable": 0
+            },
+            "finishedAt": "2026-09-10T03:06:23.090Z",
+            "journalRetired": false,
+            "failure": {
+              "exitCode": 1,
+              "engineExitCode": null,
+              "error": "GODOT_TASK_PATH_TOO_LONG: prepare editor-cache path uses 266 UTF-16 units; limit 245",
+              "parseError": null,
+              "cleanup": null,
+              "resources": null,
+              "stderr": "BROKER_ERROR: GODOT_TASK_PATH_TOO_LONG: prepare editor-cache path uses 266 UTF-16 units; limit 245\n"
+            }
+          }
+        ],
+        "startedAt": "2026-09-10T03:06:23.049Z",
+        "finishedAt": "2026-09-10T03:06:23.092Z",
+        "outcome": "failed",
+        "reason": "GODOT_TASK_PATH_TOO_LONG"
+      }
+    }
+  },
+  "candidate": {
+    "buildId": "gbd-6973c1b6d7b5e30610908ef10916f0e38edd07648e27a3b5a4838a19447d9a7e",
+    "candidate": {
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "baseBuild": "base-a",
+      "baseId": "first-person",
+      "buildBytes": 7573,
+      "buildFiles": 4,
+      "buildId": "gbd-6973c1b6d7b5e30610908ef10916f0e38edd07648e27a3b5a4838a19447d9a7e",
+      "candidateId": "gcan-d886cd32dc5b487a1f110ee956978514e925265bf3d47140ce8536a37c19cd97",
+      "checkJobId": "gjob-250e1bd104104392e4f53339c3d7fe466cdb8bd0c9a3e855bf38da197c3b6e47",
+      "checkOutputHash": "94855f4692bd1920ed4c875207df6fb3585ee31cbbd9547ade7690c879716dfd",
+      "content": null,
+      "createdAt": 1789009583091,
+      "manifestHash": "90714199a881b04b84a75f4fe4f4f20aa3d68eba5773590533ed22e08d618e04",
+      "sourceRevision": 0,
+      "status": "rejected",
+      "updatedAt": 1789009583091,
+      "worldId": "world-path-budget"
+    },
+    "check": {
+      "assertions": [
+        {
+          "detail": "GODOT_TASK_PATH_TOO_LONG",
+          "id": "runtime.not-run",
+          "passed": false
+        }
+      ],
+      "passed": false
+    },
+    "checkStatus": "failed",
+    "job": {
+      "artifacts": [],
+      "check": {
+        "assertions": [
+          {
+            "detail": "GODOT_TASK_PATH_TOO_LONG",
+            "id": "runtime.not-run",
+            "passed": false
+          }
+        ],
+        "passed": false
+      },
+      "compile": {
+        "errors": [
+          "GODOT_TASK_PATH_TOO_LONG"
+        ],
+        "passed": false,
+        "warnings": []
+      },
+      "engine": {
+        "evidenceHash": "6809430e376ca9061403e6a9fa5c2f5a4418d430e6e03013edf06f1276e22739",
+        "isolation": "craftmine.windows.lpac-registry.v1",
+        "version": "4.7.2-stable"
+      },
+      "format": "craftmine.godot-job-result/1",
+      "import": {
+        "log": "",
+        "passed": false
+      },
+      "inputHash": "4633e5bebff039558716a3fe1758b8a929876a06c42577c03300418fcb30456f",
+      "passed": false
+    }
+  },
+  "before": {
+    "applicationId": null,
+    "baseBuild": "base-a",
+    "baseId": "first-person",
+    "candidateId": null,
+    "createdAt": 1789009583028,
+    "formalBuildId": "base-a",
+    "format": "craftmine.godot-world-init/1",
+    "initId": "gwinit-8316ed2f49121987d6d05ce80a2d0bb79e6efd1a97723ce252da349bbf6b29f8",
+    "initialSnapshotHash": "f745758f268d280be3df7c3a331faa1ad5c037874fa08864e941589ffe33a356",
+    "playable": false,
+    "projectRevision": 0,
+    "reason": "GODOT_TASK_PATH_TOO_LONG",
+    "status": "failed",
+    "title": "Fixed path failure",
+    "worldId": "world-path-budget",
+    "worldRevision": 0
+  },
+  "after": {
+    "applicationId": null,
+    "baseBuild": "base-a",
+    "baseId": "first-person",
+    "candidateId": null,
+    "createdAt": 1789009583028,
+    "formalBuildId": "base-a",
+    "format": "craftmine.godot-world-init/1",
+    "initId": "gwinit-8316ed2f49121987d6d05ce80a2d0bb79e6efd1a97723ce252da349bbf6b29f8",
+    "initialSnapshotHash": "f745758f268d280be3df7c3a331faa1ad5c037874fa08864e941589ffe33a356",
+    "playable": false,
+    "projectRevision": 0,
+    "reason": "GODOT_TASK_PATH_TOO_LONG",
+    "status": "failed",
+    "title": "Fixed path failure",
+    "worldId": "world-path-budget",
+    "worldRevision": 0
+  },
+  "finishedAt": "2026-09-10T03:06:23.207Z"
+}

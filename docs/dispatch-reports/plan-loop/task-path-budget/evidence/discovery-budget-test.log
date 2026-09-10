@@ -1,0 +1,39 @@
+   Compiling craftmine-godot-sandbox-probe v0.1.0 (D:\cm-plan-task-paths-20260910\desktop\godot\sandbox)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running unittests src\lib.rs (desktop\godot\sandbox\target\debug\deps\craftmine_godot_sandbox_probe-4bb7b40224961141.exe)
+
+running 1 test
+test task::tests::editor_cache_path_budget_counts_utf16_and_rejects_before_preparation ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 34 filtered out; finished in 0.00s
+
+     Running unittests src\probe.rs (desktop\godot\sandbox\target\debug\deps\boundary_probe-37e42394b10721e4.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (desktop\godot\sandbox\target\debug\deps\craftmine_godot_sandbox_probe-b668154f0cf69c54.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\bin\godot-host-broker.rs (desktop\godot\sandbox\target\debug\deps\godot_host_broker-b2e8a09816e06857.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\bin\network-diag.rs (desktop\godot\sandbox\target\debug\deps\network_diag-c665bb7148f12c3b.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\bin\sandbox-diag.rs (desktop\godot\sandbox\target\debug\deps\sandbox_diag-f48cb9f9158e2f95.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
