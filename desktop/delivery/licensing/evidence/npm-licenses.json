@@ -1,13 +1,13 @@
 {
   "format": "craftmine.npm-licenses/1",
-  "generatedAt": "2026-09-09T16:57:50.066Z",
+  "generatedAt": "2026-09-10T16:17:03.203Z",
   "generatedBy": "desktop/delivery/licensing/tools/build-inventory.mjs --refresh-evidence",
   "source": {
-    "packageDirectory": "D:\\Craftmine World\\desktop\\build\\windows-preview-batch-07",
-    "installedInventory": "D:\\Craftmine World\\desktop\\build\\windows-preview-batch-07\\resources\\licenses\\third-party\\npm-inventory.json",
-    "installedInventorySha256": "5b21734b50755dc43e81311d871e121a30003a21c78de087b4da66c0c071b9d9",
+    "packageDirectory": "D:\\Craftmine-Completion-20260910\\pi-control\\npm-stage-preview9",
+    "installedInventory": "D:\\Craftmine-Completion-20260910\\pi-control\\npm-stage-preview9\\resources\\licenses\\third-party\\npm-inventory.json",
+    "installedInventorySha256": "fb3776234856ec9bab60157533068a2ebc96625f45ab0b172f269aec2eaa550e",
     "lockfile": "vendor/pi-desktop/pnpm-lock.yaml",
-    "lockfileSha256": "dc5f1c747258b24b8ccd3b81048f6ad4d8f5ec9cbb135f9a3344c94f9f845254"
+    "lockfileSha256": "a5e040aea5d6d3d8ae6f0867df401076a2fffd087fa6b95205b6910976f2ff95"
   },
   "counts": {
     "packages": 796,
@@ -3451,12 +3451,12 @@
       ]
     },
     {
-      "package": "electron@43.4.0",
+      "package": "electron@43.5.0",
       "name": "electron",
-      "version": "43.4.0",
+      "version": "43.5.0",
       "license": "MIT",
       "licenseFiles": [
-        "electron@43.4.0-LICENSE"
+        "electron@43.5.0-LICENSE"
       ]
     },
     {

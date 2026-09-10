@@ -71,3 +71,29 @@ Starting activities are registered before the runtime factory can return and rem
 A runtime returned after disposal starts is never attached as a new world; its owned cleanup must finish before disposal succeeds. A rejected factory remains rejected for its original caller; no returned resource is invented. If late cleanup fails, retirement failure is preserved. A factory/startup that has not completed after the finite ten-second shutdown budget rejects with GODOT_STARTUP_CLOSE_TIMEOUT. Repeated dispose calls retain that same failure, even if a late runtime is subsequently cleaned. Elapsed time never proves cleanup.
 
 Controlled tests cover pending factory plus gated cleanup, factory rejection, late cleanup rejection, cancellation while waiting for ready, and a sticky startup timeout with late cleanup. A real local HTTP runtime confirms the late-created origin is closed before successful disposal. Full-client validation remains separate and the prior IOCP cause is not determined.
+
+## Electron delayed-worker teardown correction (preview 9)
+
+The preview 8 parameter-default run JOXSwy passed seventeen checks, then its
+second client exited with 0x80000003 and PostQueuedCompletionStatus(6). Original
+logs and the failed strict exit remain retained. The same package completed all
+fifty-five comprehensive checks and eight clean exits; intermittent failures
+are not erased by successful runs.
+
+Electron is now pinned exactly to 43.5.0. Its upstream change #53013 backports
+Node #61999: a stopped delayed-task scheduler refuses late V8 worker posts under
+the task-queue lock, before they can signal a destroyed libuv completion port.
+The old locked runtime 43.4.0 did not include that patch. This is an upstream
+mitigation matched to the observed signature, not a symbolized proof that every
+previous native crash had this cause. All application-owned teardown barriers
+and strict nonzero-exit rejection remain unchanged.
+
+A local-only reduction of the upstream fetch/exit fixture completed twenty
+old-runtime iterations without reproducing the application crash. It does not
+prove the old runtime safe or establish a before/after reproduction. Acceptance
+therefore requires the new package parameter, full-client, asset, export, legacy
+and real-model shutdown runs. No GUI input, force-exit substitution, synthetic
+zero exit or retry that overwrites failed evidence is permitted.
+
+Sources: https://github.com/electron/electron/pull/53013 and
+https://github.com/electron/electron/releases/tag/v43.5.0 .

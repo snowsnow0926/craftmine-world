@@ -9400,3 +9400,13 @@ neutral and host Git identity stays excluded. Restore an actual portable archive
 into a similarly long target, reopen it, and compare the domain hash and worlds.
 Repeat the full packaged source/progress backup activation and restart scenario.
 Preserve the old failure receipt; do not shorten the test output to conceal it.
+
+
+### CM-COMP-11: Windows runtime shutdown after delayed worker activity
+
+Bind the exact Electron 43.5.0 package, exercise live source-default edits,
+checks, previews, adoption and restart, then require exit zero and empty
+shutdown/page/input audits for every owned client. Run the full backup/copy
+lifecycle and the two corrective model cases against this same identity. Keep
+preview 8 JOXSwy as a failed native baseline; the local fetch/exit reduction
+which did not reproduce that crash is diagnostic evidence only.
