@@ -123,3 +123,7 @@ terminates only its own process to verify interruption recovery. It does not
 claim natural host shutdown, Electron integration, paid provider reconciliation
 or player acceptance. Main/P5 integration and authorized P8 provider comparison
 are separate acceptance boundaries.
+
+### Compaction presentation ownership
+
+A PI compaction divider does not create another user operation. The transcript keeps the real first assistant message as the host lookup anchor and mounts its metrics panel only on the final visible segment before the next user message. Earlier segments relinquish the panel and cancel outstanding reads. Memoized transcript rows must compare this ownership field. Totals still come exclusively from the durable host DTO; grouping supplies placement, never usage arithmetic.

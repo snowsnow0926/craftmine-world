@@ -2042,6 +2042,7 @@ function assistantTurnPropsEqual(
   if (
     previous.isActive !== next.isActive ||
     previous.entry.anchorId !== next.entry.anchorId ||
+    previous.entry.metricsMessageId !== next.entry.metricsMessageId ||
     previous.entry.parts.length !== next.entry.parts.length
   ) {
     return false;
@@ -2258,7 +2259,7 @@ const AssistantTurn = memo(function AssistantTurn({
             </div>
           ),
         )}
-        <TaskMetricsPanel messageId={messages[0]?.id} running={isActive} />
+        <TaskMetricsPanel messageId={entry.metricsMessageId} running={isActive} />
         {(content || hasError) && actionMessage ? (
           <div className="message-actions">
             {content ? <CopyButton text={content} label={t("chat.copy")} /> : null}

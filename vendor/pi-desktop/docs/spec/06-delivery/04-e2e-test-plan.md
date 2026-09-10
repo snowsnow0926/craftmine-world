@@ -9182,3 +9182,8 @@ After explicit clean compiled candidate approval, run tests/player-feedback/P8/c
 ### P4 recorder failure tail and released owner regressions
 
 Run tests/player-feedback/task-metrics.mjs. A model-call double failure followed by a failed gap write must not skip later healthy calls; drain must await appended healthy events then still reject the original gap failure. Release 140 exact owners, remove their Main ownership, replay all stale envelopes and confirm none creates a queue; a current root-owned delegated event must still persist once. Main isCurrent admission compares identity only and never rebinds it. These are production recorder fixtures, not real-model or native-client evidence.
+
+
+### P5-20260910-COMPACTION-METRICS
+
+Render one user operation split by three real transcript compaction marks. There must be one metrics card, using a real assistant message lookup, throughout running and terminal states. A second user operation keeps a distinct card. A late response for a previous session cannot overwrite current identity or totals. Run `node tests/player-feedback/P8/metrics-compaction-headless.mjs` for authored transport with actual React/projection; it does not claim native or provider acceptance. The P8 native runner separately requires exactly one card for its durable turn.
