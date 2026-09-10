@@ -11,39 +11,49 @@ var revision := 0
 func _ready() -> void:
 	_reload()
 
+func _valid_entity(value: Variant) -> bool:
+	if not value is Dictionary or not value.get("id") is String or not value.get("kind") in ["tree", "rock", "chest", "door", "marker"]:
+		return false
+	for key in ["position", "scale"]:
+		var vector: Variant = value.get(key)
+		if not vector is Array or vector.size() != 3:
+			return false
+		for item in vector:
+			if not (item is int or item is float) or not is_finite(float(item)):
+				return false
+	for item in value.scale:
+		if item < 0.25 or item > 4: return false
+	var angle: Variant = value.get("rotationY")
+	return (angle is int or angle is float) and is_finite(float(angle)) and absf(float(angle)) <= 180 and value.get("color") is String and Color.html_is_valid(value.color)
+
 func _reload() -> void:
 	entities.clear()
 	var file := FileAccess.open(PATH, FileAccess.READ)
 	if file == null:
 		queue_redraw()
 		return
+	if file.get_length() > 131072:
+		file.close()
+		return
 	var parsed: Variant = JSON.parse_string(file.get_as_text())
 	file.close()
-	if not parsed is Dictionary or not parsed.get("entities") is Array:
+	if not parsed is Dictionary or parsed.get("format") != "craftmine.creation-scene/1" or not parsed.get("entities") is Array or parsed.entities.size() > 128:
 		queue_redraw()
 		return
 	revision = int(parsed.get("revision", 0))
 	for value in parsed.entities:
-		if value is Dictionary and value.get("id") is String and value.get("kind") is String:
+		if _valid_entity(value):
 			entities.append(value)
 	queue_redraw()
 
-func _process(_delta: float) -> void:
-	# Creation operations replace the JSON atomically. Polling keeps a running
-	# world in sync after an AI operation without requiring input or a restart.
-	var stamp := FileAccess.get_modified_time(ProjectSettings.globalize_path(PATH)) if FileAccess.file_exists(PATH) else 0
-	if stamp != get_meta("creation_stamp", -1):
-		set_meta("creation_stamp", stamp)
-		_reload()
-
 func _draw() -> void:
 	for entity in entities:
-		var p := entity.get("position", [])
+		var p: Variant = entity.get("position", [])
 		if not p is Array or p.size() != 3: continue
 		var at := Vector2(float(p[0]) * SCALE + 192.0, float(p[2]) * SCALE + 128.0)
-		var scale := entity.get("scale", [1, 1, 1])
-		var sx := float(scale[0]) if scale is Array and scale.size() > 0 else 1.0
-		var sy := float(scale[1]) if scale is Array and scale.size() > 1 else 1.0
+		var entity_scale: Variant = entity.get("scale", [1, 1, 1])
+		var sx := float(entity_scale[0]) if entity_scale is Array and entity_scale.size() > 0 else 1.0
+		var sy := float(entity_scale[1]) if entity_scale is Array and entity_scale.size() > 1 else 1.0
 		var kind := String(entity.get("kind", "marker"))
 		var color := Color(String(entity.get("color", "#84A866")))
 		match kind:
