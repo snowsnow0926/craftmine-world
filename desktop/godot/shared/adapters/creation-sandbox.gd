@@ -134,6 +134,11 @@ func observe() -> Dictionary:
 	if not document is Dictionary or not document.get("entities") is Array:
 		return {"error": "Creation observation source declaration unavailable"}
 	var declared := {}
+	var mutable_presence := {}
+	for rule in document.get("rules", []):
+		if rule is Dictionary and rule.get("kind") == "entity-behavior" and rule.get("entityIds") is Array:
+			for id in rule.entityIds:
+				mutable_presence[str(id)] = true
 	for entry in document.entities:
 		if entry is Dictionary and entry.get("id") is String:
 			declared[entry.id] = entry
@@ -145,6 +150,7 @@ func observe() -> Dictionary:
 		var id := str(child.name).trim_prefix("Entity_")
 		var definition: Dictionary = declared.get(id, {"id": id, "kind": "unknown", "parameters": {}})
 		var sampled := _actual_entity(child as Node3D, definition)
+		sampled["presenceMutable"] = mutable_presence.has(id)
 		if sampled.has("collisionBounds"):
 			obstacles.append({"entityId": id, "min": sampled.collisionBounds.min, "max": sampled.collisionBounds.max})
 		actual.append(sampled)

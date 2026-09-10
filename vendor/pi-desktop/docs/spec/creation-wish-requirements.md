@@ -19,3 +19,5 @@
 ## 受保护采样
 
 entities/obstacles 必须由产品 creation adapter 独立读取实际场景节点、主材质与启用碰撞。world.observe 的对应字段必须被覆盖；目标由实际摄像机射线定位。带 creation 要求的 core check 固定 adapter/runtime_bridge/state_guard 完整字节摘要与固定 project.godot autoload/selector，摘要进入 hostResourcesHash。受保护源码不符、别名或入口重定向须在检查作业产生前拒绝。
+
+可信 adapter 可依据 scene.rules 的 entity-behavior.entityIds 输出 capture-only presenceMutable 元信息。只有这些已有动态对象的瞬时 visible/solid 不冻结，以便最新合法重生进度继续；静态对象保留 presence，新增对象仍必须可见/可碰撞。元信息不能进入核心要求字段或由模型提供。

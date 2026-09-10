@@ -1,5 +1,5 @@
 import {createHash} from 'node:crypto';
-export type CreationEntity = {id:string;kind:string;position:number[];scale:number[];color?:string;open?:boolean;visible?:boolean;solid?:boolean;bounds?:{min:number[];max:number[]}};
+export type CreationEntity = {id:string;kind:string;position:number[];scale:number[];color?:string;open?:boolean;visible?:boolean;solid?:boolean;presenceMutable?:boolean;bounds?:{min:number[];max:number[]}};
 export type CreationRequirement = {format:'craftmine.creation-requirements/1';requestHash:string;entities:Array<{id?:string;kind?:string;position?:number[];scale?:number[];color?:string;visible?:boolean;solid?:boolean;absent?:boolean;excludeIds?:string[]}>;counts:Array<{kind:string;count:number}>;doorSequence?:{doorId:string;steps:string[]};harvest?:{entityId:string;inventoryId:"wood";reward:1;regrowFrames:300};timeOfDay?:18;duplicates?:{kind:string;count:2;scale:number[];color:string;priorIds:string[]}};
 export type FrozenCreationRequirement = {status:'verifiable';requirements:CreationRequirement}|{status:'unverified';reason:string};
 export type DirectCreationIntent = {action:'modify';targetId:string;changes:{scale?:number[];color?:string}}|{action:'delete';targetId:string}|{action:'undo';undoOperationId:string;formalJournal:unknown};
@@ -7,6 +7,8 @@ const hash=(value:string)=>createHash('sha256').update(value).digest('hex');
 const kinds=['tree','rock','chest','door','marker'];
 const vector=(value:unknown):value is number[]=>Array.isArray(value)&&value.length===3&&value.every(n=>typeof n==='number'&&Number.isFinite(n)&&Math.abs(n)<=100000);
 const id=(v:unknown):v is string=>typeof v==='string'&&/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(v);
+// Runtime progress owns presence for declared entity behaviors; keep static objects exact.
+const frozenPresence=(e:CreationEntity)=>e.presenceMutable===true?{}:{...(typeof e.visible==='boolean'?{visible:e.visible}:{}),...(typeof e.solid==='boolean'?{solid:e.solid}:{})};
 export function validCreationRequirement(value:any):value is CreationRequirement {
  if(!value||value.format!=='craftmine.creation-requirements/1'||!/^[a-f0-9]{64}$/.test(value.requestHash)||!Array.isArray(value.entities)||!Array.isArray(value.counts)||value.entities.length>256||value.counts.length>5||value.entities.length+value.counts.length===0&&!value.doorSequence&&!value.harvest&&value.timeOfDay===undefined&&!value.duplicates)return false;
  if(Object.keys(value).some(k=>!['format','requestHash','entities','counts','doorSequence','harvest','timeOfDay','duplicates'].includes(k)))return false;
@@ -35,19 +37,19 @@ export function freezeCreationRequirements(capture:{target:{entityId:string|null
   const enlarge=/^(?:请)?把(?:这棵树|这个对象|它)(?:放大到|变为)([2-9])倍$/.exec(text);
   if(text==='让这棵树可以按E砍伐，砍掉时给背包增加一块木头，5秒后重新长出来。保存重开后保留木头和树的生长状态'&&selected?.kind==='tree'){r.harvest={entityId:selected.id,inventoryId:'wood',reward:1,regrowFrames:300};r.entities.push({id:selected.id,kind:'tree',position:[...selected.position],scale:[...selected.scale]});}
   else if(text==='把时间设为18点'){r.timeOfDay=18;}
-  else if(color&&selected?.kind==='tree'){r.entities.push({id:selected.id,kind:'tree',position:selected.position,scale:selected.scale,color:color[1],...(typeof selected.visible==='boolean'?{visible:selected.visible}:{}),...(typeof selected.solid==='boolean'?{solid:selected.solid}:{})});}
+  else if(color&&selected?.kind==='tree'){r.entities.push({id:selected.id,kind:'tree',position:selected.position,scale:selected.scale,color:color[1],...frozenPresence(selected)});}
   else if(text==='复制这棵树两个，排开一点'&&selected?.kind==='tree'&&selected.color){r.duplicates={kind:'tree',count:2,scale:[...selected.scale],color:selected.color,priorIds:all.map(e=>e.id)};r.counts.push({kind:'tree',count:all.filter(e=>e.kind==='tree').length+2});}
   else if(place&&capture.target.position){const kind=text.endsWith('树')?'tree':text.endsWith('石头')?'rock':text.endsWith('箱子')?'chest':text.endsWith('门')?'door':'marker';r.entities.push({kind,position:capture.target.position.map(n=>Math.round(n*1000)/1000),excludeIds:all.map(e=>e.id),visible:true,solid:true});r.counts.push({kind,count:all.filter(e=>e.kind===kind).length+1});}
-  else if(enlarge&&selected){r.entities.push({id:selected.id,kind:selected.kind,position:[...selected.position],...(selected.color?{color:selected.color}:{}),...(typeof selected.visible==='boolean'?{visible:selected.visible}:{}),...(typeof selected.solid==='boolean'?{solid:selected.solid}:{}),scale:selected.scale.map(n=>n*Number(enlarge[1]))});}
+  else if(enlarge&&selected){r.entities.push({id:selected.id,kind:selected.kind,position:[...selected.position],...(selected.color?{color:selected.color}:{}),...frozenPresence(selected),scale:selected.scale.map(n=>n*Number(enlarge[1]))});}
   else if(/^(?:请)?删除(?:这个对象|这棵树|它)$/.test(text)&&selected){r.entities.push({id:selected.id,absent:true});r.counts.push({kind:selected.kind,count:all.filter(e=>e.kind===selected.kind).length-1});}
   else {const sequence=/^依次触碰([A-Za-z0-9._-]+(?:、[A-Za-z0-9._-]+){1,7})后打开([A-Za-z0-9._-]+)$/.exec(text);if(!sequence)return unknown;const steps=sequence[1].split('、'),doorId=sequence[2];if(!all.some(e=>e.id===doorId&&e.kind==='door')||!steps.every(id=>all.some(e=>e.id===id&&e.kind==='marker')))return unknown;r.doorSequence={doorId,steps};r.entities.push({id:doorId,kind:'door'},...steps.map(id=>({id,kind:'marker'})));}
  }else{
   if(!selected||input.targetId!==selected.id)return unknown;
   if(input.action==='delete'){r.entities.push({id:selected.id,absent:true});r.counts.push({kind:selected.kind,count:all.filter(e=>e.kind===selected.kind).length-1});}
-  else if(input.action==='modify'&&Object.keys(input.changes).length&&Object.keys(input.changes).every(k=>['scale','color'].includes(k)))r.entities.push({id:selected.id,kind:selected.kind,position:[...selected.position],scale:[...selected.scale],...(selected.color?{color:selected.color}:{}),...(typeof selected.visible==='boolean'?{visible:selected.visible}:{}),...(typeof selected.solid==='boolean'?{solid:selected.solid}:{}),...input.changes});else return unknown;
+  else if(input.action==='modify'&&Object.keys(input.changes).length&&Object.keys(input.changes).every(k=>['scale','color'].includes(k)))r.entities.push({id:selected.id,kind:selected.kind,position:[...selected.position],scale:[...selected.scale],...(selected.color?{color:selected.color}:{}),...frozenPresence(selected),...input.changes});else return unknown;
  }
  const changedIds=new Set(r.entities.map(e=>e.id).filter(Boolean));
- for(const e of all)if(!changedIds.has(e.id))r.entities.push({id:e.id,kind:e.kind,position:[...e.position],scale:[...e.scale],...(e.color?{color:e.color}:{}),...(typeof e.visible==='boolean'?{visible:e.visible}:{}),...(typeof e.solid==='boolean'?{solid:e.solid}:{})});
+ for(const e of all)if(!changedIds.has(e.id))r.entities.push({id:e.id,kind:e.kind,position:[...e.position],scale:[...e.scale],...(e.color?{color:e.color}:{}),...frozenPresence(e)});
  for(const kind of kinds)if(!r.counts.some(c=>c.kind===kind))r.counts.push({kind,count:all.filter(e=>e.kind===kind).length});
  return validCreationRequirement(r)?{status:'verifiable',requirements:r}:unknown;
 }
@@ -83,6 +85,6 @@ export function freezeUndoRequirements(capture:{entities?:CreationEntity[]},form
  const actual=capture.entities.filter(e=>ids.includes(e.id));
  if(actual.length!==inverse.after.length||inverse.after.some((e:any)=>!actual.some(a=>a.id===e.id&&a.kind===e.kind&&a.position.every((n,i)=>Math.abs(n-e.position[i])<=0.00001)&&a.scale.every((n,i)=>Math.abs(n-e.scale[i])<=0.00001)&&a.color?.toLowerCase()===e.color?.toLowerCase())))return unknown;
  const r:CreationRequirement={format:'craftmine.creation-requirements/1',requestHash:hash(JSON.stringify(['undo',operationId,inverse])),entities:ids.map(id=>{const before=inverse.before.find((e:any)=>e.id===id);return before?{id,kind:before.kind,position:before.position,scale:before.scale,...(before.color?{color:before.color}:{})}:{id,absent:true};}),counts:kinds.map(kind=>({kind,count:capture.entities!.filter(e=>e.kind===kind&&!ids.includes(e.id)).length+inverse.before.filter((e:any)=>e.kind===kind).length}))};
- for(const e of capture.entities)if(!ids.includes(e.id))r.entities.push({id:e.id,kind:e.kind,position:[...e.position],scale:[...e.scale],...(e.color?{color:e.color}:{}),...(typeof e.visible==='boolean'?{visible:e.visible}:{}),...(typeof e.solid==='boolean'?{solid:e.solid}:{})});
+ for(const e of capture.entities)if(!ids.includes(e.id))r.entities.push({id:e.id,kind:e.kind,position:[...e.position],scale:[...e.scale],...(e.color?{color:e.color}:{}),...frozenPresence(e)});
  return validCreationRequirement(r)?{status:'verifiable',requirements:r}:unknown;
 }

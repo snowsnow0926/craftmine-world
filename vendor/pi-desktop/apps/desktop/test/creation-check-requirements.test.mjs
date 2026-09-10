@@ -86,4 +86,17 @@ test('undo also freezes untouched objects instead of checking only their count',
  const journal={format:'craftmine.creation-operations/1',operations:[{operationId:'edit-a',receipt:{undoSupported:true},inverse:{format:'craftmine.creation-inverse/1',before:[old],after:[changed]}}]};
  const frozen=freezeUndoRequirements({entities:[changed,other]},journal,'edit-a');assert.equal(frozen.status,'verifiable');assert.equal(creationEntitiesMatch(frozen.requirements,[old,other]),true);
  for(const change of [{position:[9,0,0]},{scale:[2,2,2]},{color:'#ff0000'},{visible:true},{solid:true}])assert.equal(creationEntitiesMatch(frozen.requirements,[old,{...other,...change}]),false);
+ const dynamic={...other,presenceMutable:true};const whileGrowing=freezeUndoRequirements({entities:[changed,dynamic]},journal,'edit-a');assert.equal(creationEntitiesMatch(whileGrowing.requirements,[old,{...dynamic,visible:true,solid:true}]),true);
+});
+
+test('existing declared behavior may regrow while an unrelated wish is being checked',()=>{
+ const growing={...tree,visible:false,solid:false,presenceMutable:true};
+ const frozen=freezeCreationRequirements({target:{entityId:null,position:[4,0,0]},entities:[growing]},'在这里再放一块石头，保留已有物体和游玩进度');
+ const rock={id:'rock-new',kind:'rock',position:[4,0,0],scale:[1,1,1],color:'#84a866',visible:true,solid:true};
+ assert.equal(creationEntitiesMatch(frozen.requirements,[{...growing,visible:true,solid:true},rock]),true);
+ assert.equal(frozen.requirements.entities.some(e=>Object.hasOwn(e,'presenceMutable')),false);
+ assert.equal(creationEntitiesMatch(frozen.requirements,[{...growing,position:[9,0,0],visible:true,solid:true},rock]),false);
+ assert.equal(creationEntitiesMatch(frozen.requirements,[growing,{...rock,visible:false}]),false);
+ const staticCapture={target:{entityId:null,position:[4,0,0]},entities:[{...growing,presenceMutable:false}]};
+ assert.equal(creationEntitiesMatch(freezeCreationRequirements(staticCapture,'在这里再放一块石头，保留已有物体和游玩进度').requirements,[{...growing,visible:true,solid:true},rock]),false);
 });

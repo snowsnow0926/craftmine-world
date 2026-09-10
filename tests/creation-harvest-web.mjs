@@ -1,3 +1,4 @@
+import {readGodotCreationObservation,godotCreationMatches} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-check-requirements.ts';
 // Isolated real Web engine: no physical input, focus or pointer-lock requests.
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {createRequire} from 'node:module';
 import {createGodotProbeEnvironment} from '../desktop/godot/toolchain.mjs';import {createWorldRuntime} from '../desktop/godot/web/runtime.mjs';import {materializeBase} from '../desktop/godot/shared/materialize.mjs';import {playwright,browserOptions} from '../app/browser-tools.mjs';
@@ -28,7 +29,11 @@ try{
   const raw=(await runtime.request('observe-envelope')).result;const actual=raw.payload.creation.entities;
   check(variant+' actual ordinary script loaded',actual.length===1&&actual[0].visible===true&&actual[0].solid===true);
   const required=freezeCreationRequirements({target:{entityId:'tree-a',position:[0,0,0]},entities},'让这棵树可以按E砍伐，砍掉时给背包增加一块木头，5秒后重新长出来。保存重开后保留木头和树的生长状态。').requirements;
-  if(variant==='harvest'){const trace=await verifyCreationHarvest(runtime,required,defaults,p=>p);report.trace=trace;check('actual harvest, reward, no-repeat, restoration and regrowth',creationHarvestTraceMatches(required,trace));}
+  if(variant==='harvest'){const trace=await verifyCreationHarvest(runtime,required,defaults,p=>p);report.trace=trace;check('actual harvest, reward, no-repeat, restoration and regrowth',creationHarvestTraceMatches(required,trace));
+   const hidden=(await runtime.request('observe-envelope')).result;const hiddenTree=hidden.payload.creation.entities[0];check('trusted declaration marks hidden behavior presence as mutable',hiddenTree.presenceMutable===true&&hiddenTree.visible===false&&hiddenTree.solid===false);
+   const nextWish=freezeCreationRequirements({target:{entityId:null,position:[4,0,0]},entities:hidden.payload.creation.entities},'把时间设为18点').requirements;
+   await runtime.request('wait',{frames:330});await runtime.request('set-time',{hours:18});
+   check('later unrelated wish accepts actual natural regrowth with preserved identity',godotCreationMatches(readGodotCreationObservation((await runtime.request('observe-envelope')).result,runtime,'running'),{format:'craftmine.godot-check-requirements/1',creation:nextWish}));}
   else {await assert.rejects(verifyCreationHarvest(runtime,required,defaults,p=>p),/REQUIREMENTS_MISMATCH|PROGRESS_MISMATCH|HARVEST_RESTORE|restore differs from projection/);check(variant+' runnable incorrect behavior rejected',true);}
   await runtime.dispose({graceful:true});runtime=null;await page.close();page=null;
  }
