@@ -8876,3 +8876,7 @@ all other saved worlds after retry and restart. See godot-native-import-retry.md
 ### Final package lease and initialization recovery integration
 
 Verify that a passed component check cannot unlock repeated import until its owned task lease is released. Exercise concurrent status/background finalization and a lost end-turn reply. Use the actual failed private initialization profile with the rebuilt immutable package; retry must retain its world ID and all previous world snapshots through another restart. Run all four bases, continuous component reuse, copies and portable restoration against the same rebuilt package.
+
+### Await owned Godot shutdown cleanup
+
+Run the gated disposal regression in tests/godot-host-lifecycle.mjs. Repeat actual saved-world profile checks and orderly exit; retain the WCI7EM native failure separately. A continuation of already applied initialization recovery must bind the earlier report hash and compare its snapshots without replay. See godot-shutdown-cleanup.md.

@@ -47,6 +47,14 @@ test('keeps failed run, later successful rerun and unfinished run separately',as
   assert.ok(!output.includes('PRIVATE_VALUE'));assert.ok(!output.includes('ORIGINAL_PROMPT'));
   assert.ok(!Object.hasOwn(report,'passRate'));assert.ok(!Object.hasOwn(report.formalModel,'cost'));
 });
+
+test('initialization retry failures and later continuation remain separate reports',async t=>{
+  const f=await fixture(t);
+  await f.write('test-results/desktop-native-retry-failed/report.json',{finishedAt,passed:false,steps:[{name:'quit',passed:false}]});
+  await f.write('test-results/desktop-native-retry-resumed/report.json',{finishedAt,passed:true,recoveryAppliedHere:false,steps:[{name:'compare original saved fields',passed:true}]});
+  const summary=await summarizeEvidence({root:f.root});assert.equal(summary.reports.length,2);
+  assert.ok(summary.reports.every(report=>report.kind==='actual-client-initialization-retry'));assert.deepEqual(summary.reports.map(report=>report.state),['failed','passed']);
+});
 test('damaged JSON remains visible with original byte hash; absent report remains running',async t=>{
   const f=await fixture(t);const bytes='{interrupted json';
   await f.write('test-results/desktop-native-complete-broken/report.json',bytes);

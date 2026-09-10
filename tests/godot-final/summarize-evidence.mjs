@@ -25,6 +25,7 @@ async function discover(root) {
   for(const dir of await entries(results)) {
     if(dir.isDirectory() && /^desktop-native-complete-/.test(dir.name)) found.push({file:path.join(results,dir.name,'report.json'),kind:'actual-client'});
     if(dir.isDirectory() && /^desktop-native-wx-/.test(dir.name)) found.push({file:path.join(results,dir.name,'report.json'),kind:'actual-client-windows-export'});
+    if(dir.isDirectory() && /^desktop-native-retry-/.test(dir.name)) found.push({file:path.join(results,dir.name,'report.json'),kind:'actual-client-initialization-retry'});
   }
   const recovery = path.join(results,'desktop-native-recovery-gql5Pk');
   for(const dir of await entries(recovery)) if(dir.isDirectory() && dir.name.startsWith('fault-evidence-')) found.push({file:path.join(recovery,dir.name,'report.json'),kind:'actual-client-recovery'});

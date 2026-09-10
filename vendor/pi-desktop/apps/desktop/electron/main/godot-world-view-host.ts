@@ -172,6 +172,7 @@ export class GodotWorldViewHost {
   private lastSync = 0;
   private poll?: ReturnType<typeof setInterval>;
   private disposed = false;
+  private disposal: Promise<void> | null = null;
   private onState?: (state: GodotWorldState) => void;
 
   constructor(
@@ -816,10 +817,12 @@ export class GodotWorldViewHost {
     this.publishState({ state: "closed" });
   }
 
-  dispose(): void {
+  dispose(): Promise<void> {
+    if (this.disposal) return this.disposal;
     this.disposed = true;
     this.stopPolling();
-    void this.close().catch(() => undefined);
+    this.disposal = this.close().catch(() => undefined);
+    return this.disposal;
   }
 
   /** Close a view at most once; `webContents.close()` is asynchronous. */

@@ -11,6 +11,7 @@ node tests/godot-final/summarize-evidence.mjs --root D:/cm-godot-final-20260910 
 生成 `test-results/final-audit-summary.json` 和中文 `final-audit-summary.md`；不提交这两份变化中的生成物。输入只读：
 
 - `test-results/desktop-native-complete-*/report.json`：真实完整客户端。
+- `test-results/desktop-native-retry-*/report.json`：实际初始化恢复及同资料续验，逐次保留失败，续验不代表再次执行恢复。
 - `test-results/desktop-native-wx-*/report.json`：真实客户端 Windows 独立游戏导出，包括最终包使用 `--output-parent <root>/test-results` 生成的运行。
 - `docs/dispatch-reports/godot-final/**/windows-client/report.json` 与 `first-failure-report.json`：已保留的真实客户端导出成功和首次 profile 拒绝记录。统一类型为 `actual-client-windows-export`，要求原报告格式 `craftmine.windows-client-export/1`；不能用直调导出 service 的报告冒充完整入口。
 - `test-results/desktop-native-recovery-gql5Pk/fault-evidence-*/report.json`：真实客户端恢复故障记录。

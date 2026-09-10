@@ -18,12 +18,21 @@ const create=old.calls.findLast(call=>call.payload?.channel==='world.create'&&ca
 assert.equal(create.payload.payload.baseId,'side-view');const worldId=create.result.id;
 const expected=new Map();for(const call of old.calls)if(call.method==='godotSnapshot'&&call.result?.state?.worldId)expected.set(call.result.state.worldId,call.result);
 assert.ok(expected.size>=2);
+let previousRecovery=null;
+if(process.argv[3]) {
+ const directory=path.resolve(process.argv[3]);assert.equal(path.dirname(directory),path.join(root,'test-results'));assert.ok(path.basename(directory).startsWith('desktop-native-retry-'));assert.ok(!fs.lstatSync(directory).isSymbolicLink());
+ const file=path.join(directory,'report.json'),bytes=fs.readFileSync(file),prior=JSON.parse(bytes);
+ assert.equal(prior.format,'craftmine.client-initialization-retry/1');assert.equal(path.resolve(prior.failed),failed);assert.equal(prior.worldId,worldId);assert.equal(prior.originalReportSha256,hash(oldBytes));assert.ok(prior.finishedAt);
+ for(const name of ['retry the same failed world through the product action','recovered side-view game produces actual pixels and gameplay','orderly close after recovery'])assert.ok(prior.steps.some(step=>step.name===name&&step.passed));
+ for(const call of prior.calls)if(call.method==='godotSnapshot'&&call.result?.state?.worldId)expected.set(call.result.state.worldId,call.result);
+ assert.ok(expected.has(worldId));previousRecovery={file,sha256:hash(bytes),packaged:prior.packaged};
+}
 const out=fs.mkdtempSync(path.join(root,'test-results/desktop-native-retry-'));
 fs.writeFileSync(path.join(out,'original-report.json'),oldBytes);
 const ledger=fs.readFileSync(path.join(profile,'plugins/data/craftmine.world/godot/executor-ledger.json'));
 fs.writeFileSync(path.join(out,'original-executor-ledger.json'),ledger);
 const report={format:'craftmine.client-initialization-retry/1',startedAt:new Date().toISOString(),out,failed,packaged,worldId,
- originalReportSha256:hash(oldBytes),originalLedgerSha256:hash(ledger),steps:[],calls:[],launches:[]};
+ originalReportSha256:hash(oldBytes),originalLedgerSha256:hash(ledger),previousRecovery,recoveryAppliedHere:!previousRecovery,steps:[],calls:[],launches:[]};
 const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));
 let child,ended=true,ready=false,exit=Promise.resolve(),launch,imageCount=0;const pending=new Map();
 function evidence(value){if(Array.isArray(value))return value.map(evidence);if(value&&typeof value==='object'){const result={};for(const[k,v]of Object.entries(value)){if(k==='pngBase64'){const bytes=Buffer.from(v,'base64'),file=`capture-${++imageCount}.png`;fs.writeFileSync(path.join(out,file),bytes);result.image={file,sha256:hash(bytes),bytes:bytes.length};}else result[k]=evidence(v);}return result;}return value;}
@@ -40,12 +49,14 @@ const nav=(channel,payload={})=>rpc('worldNavigation',{channel,payload});
 const until=async(fn,accept,label,timeout=120000)=>{const deadline=Date.now()+timeout;let result;while(Date.now()<deadline){if(ended)throw Error('Client exited');result=await fn();if(accept(result))return result;await delay(500);}throw Error(label+': '+JSON.stringify(result));};
 const step=async(name,fn)=>{try{const result=await fn();report.steps.push({name,passed:true,result:evidence(result)});save();console.log('PASS '+name);return result;}catch(error){report.steps.push({name,passed:false,error:String(error)});save();throw error;}};
 async function stop(){if(ended)return;try{await rpc('quit',{},5000);}catch{}await Promise.race([exit,delay(15000)]);if(!ended){launch.forcedStop=true;child.kill();}await exit;}
-async function started(){await until(()=>ready,Boolean,'Controller');const status=await until(()=>rpc('status'),value=>value.windows?.length>0,'Offscreen window');assert.deepEqual(status.violations,[]);assert.ok(status.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));await until(()=>nav('world.createOptions'),x=>x.bases?.length>0,'Catalog');return status;}
+async function started(){await until(()=>ready,Boolean,'Controller');const status=await until(()=>rpc('status'),value=>value.windows?.length>0,'Offscreen window');assert.deepEqual(status.violations,[]);assert.ok(status.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));await until(()=>nav('world.createOptions'),x=>x.bases?.length>0,'Catalog');const list=await nav('world.list'),active=list.worlds.find(w=>w.id===list.activeWorldId);await until(()=>rpc('worldNavigationReady'),x=>x.ready&&x.worldId===list.activeWorldId,'Startup navigation ready');if(active?.state==='ready')await settled(active.id);return status;}
 async function settled(id){const began=Date.now();await until(()=>nav('world.list'),list=>{const row=list.worlds.find(w=>w.id===id);if(row?.state==='failed'&&Date.now()-began>5000)throw Error(JSON.stringify(row.creation));return row?.state==='ready';},'World ready',600000);await until(()=>rpc('godotObserve'),x=>x.worldId===id&&x.instanceId,'Actual runtime');await until(()=>rpc('worldNavigationReady'),x=>x.ready&&x.worldId===id,'Navigation');}
 try{
- start();await step('start the recorded package on the actual failed profile',async()=>{const status=await started();await until(()=>rpc('worldNavigationReady'),x=>x.ready&&x.worldId===worldId,'Failed world navigation ready');return status;});
+ start();await step('start the recorded package on the original profile',started);
+ if(!previousRecovery){
  await step('retry the same failed world through the product action',async()=>{const before=await nav('world.list');assert.equal(before.worlds.find(w=>w.id===worldId).state,'failed');const result=await nav('world.creationRetry',{worldId});assert.equal(result.worldId,worldId);await settled(worldId);const after=await nav('world.list');assert.equal(after.worlds.length,before.worlds.length);return result;});
  await step('recovered side-view game produces actual pixels and gameplay',async()=>{const play=await rpc('godotPlayRuins',{},240000);assert.equal(play.ok,true,play.error);const capture=await rpc('godotCaptureView');assert.ok(capture.pixelStats.sampledColors>4);await rpc('worldPanel',{channel:'godot.runtimeSave',payload:{worldId,freeze:true}});expected.set(worldId,await rpc('godotSnapshot'));return {play,capture};});
+ }else await step('continue checks against the recorded recovered world without replaying recovery',async()=>{const list=await nav('world.list');assert.equal(list.worlds.find(w=>w.id===worldId).state,'ready');return previousRecovery;});
  for(const[id,snapshot]of expected)await step('same profile keeps complete native progress '+id,async()=>{await nav('world.open',{id});await settled(id);const compared=compareGodotPersistentProgress(snapshot,await rpc('godotSnapshot'));assert.equal(compared.equal,true,JSON.stringify(compared.differences));return compared;});
  await step('orderly close after recovery',async()=>{await stop();assert.equal(launch.exit.code,0);assert.ok(!launch.forcedStop);assert.deepEqual(launch.exitAudit.violations,[]);return launch;});
  start();await step('second restart uses the repaired profile',started);

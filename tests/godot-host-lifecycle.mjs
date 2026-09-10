@@ -22,6 +22,7 @@ function fixture() {
       events.push('start:'+options.worldId);
       if(startupGate) await startupGate.promise;
       const runtime={...options,instanceId:'instance-'+runtimes.length,url:'http://127.0.0.1/test',origin:'http://127.0.0.1',
+        requests:[],
         attach(){return ()=>{};},onEvent(){},async waitReady(){if(fault==='startup')throw Error('broken candidate');},
         async load(){return {};},async pause(){events.push('pause:'+options.worldId);return fault==='pause'?{error:'pause rejected'}:{};},
         async resume(){events.push('resume:'+options.worldId);return {};},
@@ -91,6 +92,15 @@ test('dispose during startup cannot resurrect the world',async()=>{
 });
 test('missing revision is rejected instead of guessed zero',async()=>{
   const f=fixture(),request=f.request();delete request.revision;await assert.rejects(f.host.ensure(request),/revision is required/);assert.equal(f.runtimes.length,0);
+});
+
+test('shutdown disposal waits for owned runtime cleanup and shares concurrent callers',async()=>{
+  const f=fixture(),gate=deferred();await f.host.ensure(f.request());let cleaned=false,returned=false;
+  f.runtimes[0].dispose=async()=>{await gate.promise;cleaned=true;};
+  const first=f.host.dispose(),second=f.host.dispose();assert.equal(first,second);
+  first.then(()=>{returned=true;});await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(returned,false);assert.equal(cleaned,false);assert.equal(f.host.instance,null);
+  gate.resolve();await first;assert.equal(cleaned,true);assert.equal(returned,true);
 });
 test('concurrent save requests share one persistence transaction',async()=>{
   const f=fixture();await f.host.ensure(f.request());const gate=deferred();f.setProgress(async call=>{await gate.promise;return {receipt:{format:'craftmine.progress-receipt/1',worldId:call.worldId,buildId:call.buildId,revision:call.revision+1,contentHash:'b'.repeat(64)}};});

@@ -9770,7 +9770,7 @@ app.on("before-quit", (event) => {
     userMcp.disposeAll();
     browserPane.dispose();
     pluginViews.dispose();
-    godotWorld.dispose();
+    const godotShutdown = godotWorld.dispose();
     inflightCheckpointer.dispose();
     const sidecarShutdown = sidecar?.dispose();
 
@@ -9779,7 +9779,7 @@ app.on("before-quit", (event) => {
     } catch (error) {
       logger.app("lifecycle", "warn", "host shutdown failed", { data: String(error) });
     }
-    await Promise.allSettled([pluginPanelShutdown, pluginShutdown, sidecarShutdown]);
+    await Promise.allSettled([pluginPanelShutdown, pluginShutdown, sidecarShutdown, godotShutdown]);
   })();
 
   const releaseQuit = () => {
