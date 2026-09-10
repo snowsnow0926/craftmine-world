@@ -21,6 +21,7 @@ if(!quick)for(const [name,file]of [
  ['forged-observation','creation-observation-forgery-probe'],['exported-pack','creation-pack-export-headless'],['managed-executor','creation-managed-executor'],
  ['direct-native','creation-edit-native'],
 ])steps.push([name,['tests/'+file+'.mjs']]);
+if(!quick)steps.push(['saved-world-story',['tests/creation-story-headless.mjs']],['staged-materializers',['tests/godot-final/staged-materializers.mjs']]);
 persist();
 for(const [name,args]of steps){
  const log=path.join(out,name+'.log'),item={name,command:[process.execPath,...args],status:'running',startedAt:new Date().toISOString(),log};report.steps.push(item);persist();console.log('Running '+name+'; log '+log);
