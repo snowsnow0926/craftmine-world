@@ -9281,3 +9281,71 @@ candidate must not pass creation. Verify the continue helper refuses an active,
 failed or aborted turn and arbitrary prompt fields. Preserve per-turn metrics;
 an accepted stop prevents follow-ups and the next case. See
 `godot-creation-continuation.md` for the execution contract.
+
+## Craftmine parallel completion preview 4 (2026-09-10)
+
+These scenarios specify the completion gate. Their presence is not a claim that
+a particular release passed. Record the exact source commit, package identity,
+original evidence and actual result separately. All automation uses independent
+offscreen/headless processes and data, with Pointer Lock disabled before page
+startup. No real input, foreground window or personal browser is used.
+
+### CM-COMP-01: added equipment preserves a real old save
+
+Create old progress through ordinary play with non-default ammunition, an active
+selection and target damage. Add equipment to a separate candidate and capture
+defaults in a fresh process. Confirm the old unmigrated save is refused. Apply
+the restricted migration and require every old value to remain unchanged while
+only new identities take candidate defaults. Save, exit and reopen in another
+process; equip the new item and damage a real target. Reject forged defaults,
+proofs, duplicate/deleted identities and invalid ammunition without partial writes.
+The JS/Rust protocol checks and native progress-migration entry provide distinct
+evidence; a synthetic equipment fixture is not the real-model hammer acceptance.
+
+### CM-COMP-02: refused finishes settle without replacing evidence
+
+Reject a finish after execution, read the exact core job identity and settle a
+still-active job as failure without artifact claims. If a terminal reply was
+lost, recover the existing terminal state. If settlement also fails, preserve
+both original and settlement errors and confirm only an exact core terminal
+record. An unreachable core remains unconfirmed. Recheck identical artifacts,
+then conflicting artifacts; original bytes and records must remain unchanged.
+Cancellation, interrupted leases and late callbacks must not revive success.
+
+### CM-COMP-03: audio initialization and external process exit
+
+Request quit while the engine's audio module promise is unresolved. Require the
+engine's worklet-node continuation to finish before quit clears its context.
+Retain actual load and quit errors. The real-engine check window must reach
+ready and exit without page errors, and a deliberately failing page must remain
+observable. Independently record the outer Electron process exit: an internal
+engine result cannot substitute for a normal process exit, and timeout or signal
+termination cannot pass. Preserve original reports, including failed attempts.
+
+### CM-COMP-04: independent model cases and honest gameplay evidence
+
+Run hammer and dog separately at the same frozen commit, with separate
+profiles, loopback ports, journals and evidence directories. Preserve previous
+journals read-only and report new admissions separately. Each case must complete
+real source creation, build, check, preview, adoption, gameplay, save and reopen.
+Record the actual function's action list, raw replies, full observations, source
+snapshots and time-stamped frames. A direct equip is not pickup evidence. The
+ordinary attack gate is distinct from the lightning effect's cooldown. A missed
+scan or failed test route is evidence insufficiency, not proof of a product
+failure. Use bounded routes and actual displacement when returning to the dog.
+Summary fields consume the same nested verdict shape the driver emits.
+An independent source/frame review may resolve only deferred criteria; it cannot
+overturn machine failures or erase missing pipeline and shutdown evidence.
+Stopping a case prevents another case or continuation from starting.
+
+### CM-COMP-05: frozen package and host installation lifecycle
+
+Bind each acceptance harness, unpacked payload, installer, portable archive and
+source archive to their exact release identities. An evidence directory inside
+the release is refused before any write. Run native regression against that
+package and keep its actual counts. After every related client/test exits, run
+the separately authorized host install, upgrade, occupied-upgrade refusal and
+uninstall-retaining-data sequence. Validate system PowerShell tools before
+creating the owned root, read UTF-8 manifests explicitly, and verify restoration
+of the original shortcut bytes and metadata. Host compatibility results do not
+claim clean-VM, physical-input, signing or rights-review coverage.
