@@ -82,7 +82,7 @@ test('new sequence door emits actual deterministic source and hashed runtime dec
   assert.throws(()=>compileCreationOperation({...f,request:{...request,sequence:['red','missing']}}),/RULE_TARGET_INVALID/);
 });
 test('operation ledger is bounded and schema advertises precisely supported action branches',()=>{
-  assert.equal(MAX_OPERATIONS,64);
+  assert.equal(MAX_OPERATIONS,4096);
   const f=fixture();f.source.files['world/creation-operations.json']=file({format:'craftmine.creation-operations/1',operations:[null]});assert.throws(()=>run(f,{}),/JOURNAL_INVALID/);
   assert.deepEqual(CREATION_OPERATION_SCHEMA.oneOf.map(branch=>branch.properties.action.const),['place','modify','duplicate','environment','sequence-door']);
   for(const branch of CREATION_OPERATION_SCHEMA.oneOf)assert.equal(branch.additionalProperties,false);
@@ -90,7 +90,7 @@ test('operation ledger is bounded and schema advertises precisely supported acti
 test('full ledger rejects new operations without pruning replay identity',()=>{
   const f=fixture();const operations=Array.from({length:MAX_OPERATIONS},(_,index)=>({operationId:`old-${index}`,requestHash:'c'.repeat(64),receipt:{operationId:`old-${index}`,requestHash:'c'.repeat(64),worldId:f.source.worldId,createdIds:[]}}));
   f.source.files['world/creation-operations.json']=file({format:'craftmine.creation-operations/1',operations});
-  assert.throws(()=>run(f,{}),/JOURNAL_FULL/);assert.equal(JSON.parse(f.source.files['world/creation-operations.json'].text).operations.length,64);
+  assert.throws(()=>run(f,{}),/JOURNAL_FULL/);assert.equal(JSON.parse(f.source.files['world/creation-operations.json'].text).operations.length,MAX_OPERATIONS);
 });
 test('reserved historical entity IDs cannot be reused after source removal',()=>{
   const f=fixture(),first=run(f,{id:'one-time-chest',kind:'chest'});
@@ -98,4 +98,23 @@ test('reserved historical entity IDs cannot be reused after source removal',()=>
   const document=first.document;document.entities=[];f.source.files['world/creation.json']=file(document);
   f.targetSnapshot.target.revision=2;
   assert.throws(()=>run(f,{operationId:'new-op',id:'one-time-chest',kind:'chest'}),/DUPLICATE_ID/);
+});
+
+test('players near the walking boundary can create at a valid interior target',()=>{
+ const f=fixture();f.targetSnapshot.playerPosition=[30,.9,0];
+ const result=run(f,{kind:'rock',position:[26,0,0]});assert.deepEqual(result.document.entities[0].position,[26,0,0]);
+ f.targetSnapshot.playerPosition=[32.1,.9,0];assert.throws(()=>run(f,{kind:'rock',position:[26,0,0]}),/TARGET_INVALID/);
+});
+
+test('large append-only ledgers pass the former 64-entry and 120k limits and report remaining capacity',()=>{
+ const f=fixture();const operations=Array.from({length:MAX_OPERATIONS-1},(_,index)=>({operationId:`old-${index}`,requestHash:'c'.repeat(64),receipt:{operationId:`old-${index}`,requestHash:'c'.repeat(64),worldId:f.source.worldId,createdIds:[]}}));
+ f.source.files['world/creation-operations.json']=file({format:'craftmine.creation-operations/1',operations});
+ assert.ok(Buffer.byteLength(f.source.files['world/creation-operations.json'].text)>120000);
+ const result=run(f,{}),journal=result.operations.find(op=>op.path==='world/creation-operations.json');
+ assert.equal(result.receipt.operationCount,4096);assert.equal(result.receipt.operationLimit,4096);assert.equal(result.receipt.operationsRemaining,0);
+ assert.deepEqual(JSON.parse(journal.text).operations.slice(0,-1),operations);
+ for(const op of result.operations)f.source.files[op.path]={text:op.text,sha256:hash(op.text)};
+ assert.equal(run(f,{}).replayed,true);
+ f.source.files['world/creation-operations.json']=file({format:'craftmine.creation-operations/1',operations:[],padding:'x'.repeat(4*1024*1024)});
+ assert.throws(()=>run(f,{}),/SOURCE_FILE_HASH_MISMATCH/);
 });
