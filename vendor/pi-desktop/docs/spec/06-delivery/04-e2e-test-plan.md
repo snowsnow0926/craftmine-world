@@ -9133,3 +9133,8 @@ Run the bounded asset Main/Core route and actual React form tests. Unknown field
 ## P1 hidden initial-load regression (2026-09-10)
 
 Use tests/player-feedback/P1/renderer-load-native.mjs with independent D-drive data. Compare native detached and offscreen child views for all four authored bases. Require actual load-response state equality, paused hidden snapshot preservation and a new-instance restore. Offscreen captures separately require physical 1280x720 and nonempty pixels. Preserve timeout/crash failures and prohibit simulated input, focus and Pointer Lock. Full client application, restart and user display behavior remain separate P10/player checks.
+
+
+## P1/P3 Godot child shortcut scope (2026-09-10)
+
+Controlled host/preload tests must refuse stale, hidden, detached, unshown and foreign-scope callers. Plain F11 toggles once; repeat is consumed. Escape respects consumed events, menus, editing, IME and pointer capture, sends only fixed scope and requests exit rather than toggle. Main integration and actual user keys are separate acceptance; no simulated keyboard or focus is permitted.
