@@ -118,6 +118,29 @@ Test 'NSIS prefix danger includes install-other even for unrelated executable' {
 Test 'Craftmine executable is blocked regardless of owner lookup' {
     Equal (Test-CmProcessCollision @{Name='Craftmine World.exe';ExecutablePath='D:\elsewhere\Craftmine World.exe'} 'D:\cm-owned\install' {param($path) 'other-pi'}) $true
 }
+Test 'BOM-less UTF-8 build manifest with non-ASCII product still parses' {
+    # Windows PowerShell reads a BOM-less file as ANSI. The real 0.14.3 manifest
+    # is UTF-8 without a BOM and carries a Chinese product name, which corrupted
+    # the JSON before Get-CmPackage pinned any package.
+    $pkg=Join-Path $out 'encoding-package'
+    foreach($dir in @('resources/source','resources/bin')){New-Item -ItemType Directory -Path (Join-Path $pkg $dir) -Force|Out-Null}
+    foreach($rel in @('Craftmine World.exe','resources/app.asar','resources/bin/craftmine-core.exe','resources/bin/pi-desktop-host-core.exe','resources/source/CraftmineWorld-source.zip')){
+        [IO.File]::WriteAllText((Join-Path $pkg $rel),'fixture; never executed')
+    }
+    $product='craftmine world / '+([string][char]0x6700)+([string][char]0x4E2D)+([string][char]0x5E7B)+([string][char]0x60F3)
+    $manifest=[ordered]@{format='craftmine.build/1';commit=('a'*40);appId='world.craftmine.desktop';product=$product;profileDirectory='CraftmineWorld'}
+    $manifestPath=Join-Path $pkg 'resources/source/build-manifest.json'
+    [IO.File]::WriteAllText($manifestPath,($manifest|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
+    $installer=Join-Path $out 'encoding-installer.exe';[IO.File]::WriteAllText($installer,'fixture; never executed')
+    $part=[ordered]@{installer=$installer;installerSha256=(Get-CmHash $installer);packageRoot=$pkg;packageTreeSha256=(Get-CmTreeDigest (Get-CmTree $pkg));commit=('a'*40);buildManifestSha256=(Get-CmHash $manifestPath);version='1.0.0'}
+    $tree=Get-CmPackage $part
+    Equal $tree.Count 6
+    $short=Join-Path $out 'encoding-package-short';Copy-Item -LiteralPath $pkg -Destination $short -Recurse
+    Remove-Item -LiteralPath (Join-Path $short 'resources/app.asar')
+    # OrderedDictionary.Clone() is an explicit interface member, so rebuild it.
+    $missing=[ordered]@{installer=$part.installer;installerSha256=$part.installerSha256;packageRoot=$short;packageTreeSha256=(Get-CmTreeDigest (Get-CmTree $short));commit=$part.commit;buildManifestSha256=$part.buildManifestSha256;version=$part.version}
+    Reject {Get-CmPackage $missing} 'PACKAGE_REQUIRED_FILE_MISSING'
+}
 Test 'system Windows PowerShell tooling is required for hashing' {
     Assert-CmHostTooling|Out-Null
     $good=@{}
