@@ -40,12 +40,14 @@ import { CraftmineVerifier } from "./craftmine-verifier";
 import { GodotBuildVerifier } from "./godot-build-verifier";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
 import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
+import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
 import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure } from "./craftmine-headless";
 import {
   existsSync,
   mkdirSync,
+  readFileSync,
   statSync,
   writeFileSync,
 } from "node:fs";
@@ -1079,6 +1081,7 @@ const logger = new Logger(
 const godotInitializer = createGodotWorldInitializer({
   worldsRoot: join(dataDir, "godot-worlds"), domain: (method, params) => plugins.requestCraftmineHost(method, params),
   selection: godotSelection, firstLoad: (worldId, candidateId) => godotCandidates.firstLoad(worldId, candidateId),
+  initialLoadBridge: () => readFileSync(join(godotRoot, "shared", "runtime_bridge.gd")),
 });
 const godotRestores = createGodotRestoreRebuildService({
   domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
@@ -2661,6 +2664,7 @@ const craftmineDiagnostics = createCraftmineDiagnosticsService({
 const craftmineTelemetry = createCraftmineTelemetry({ observe: craftmineDiagnostics.observe });
 app.once("will-quit", () => craftmineTelemetry.dispose());
 const craftminePanelRequest = createCraftminePanelGateway({
+  authorizeAssetSource: (root, sourcePath) => plugins.authorizeCraftmineAssetSource(root, sourcePath),
   targetFeedback: createCraftmineTargetFeedbackPanel({
     domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
     blocked: () => !!profileRestore || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy,
@@ -9471,6 +9475,7 @@ function registerIpc() {
 }
 
 installNativeAgentAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload), active: (sessionId) => activeTurns.has(sessionId) });
+installP8NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), panel: (channel, payload) => plugins.invokePanelBridge("craftmine.world", channel, payload), active: (sessionId) => activeTurns.has(sessionId) });
 installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), toolName: name => { const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name); if (!tool) throw Error("Missing world tool: " + name); return tool.fullName; }, begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId), finish: sessionId => finishTurn(sessionId, "completed", undefined, { createNotification: false }) });
 installHeadlessControl({
   window: () => mainWindow,

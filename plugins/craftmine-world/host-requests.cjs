@@ -161,7 +161,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'godotWorld.backupSnapshot':[['worldId'],['context']],
       'godotWorld.verifySnapshot':[['worldId','snapshot'],['context']],
       'godotProject.create':[['context','worldId','toolCallId','baseBuild','baseId','files'],[]],
-      'godotProject.applyFiles':[['context','worldId','toolCallId','revision','manifestHash','files'],['operation']],
+      'godotProject.applyFiles':[['context','worldId','toolCallId','revision','manifestHash','files'],['operation','initialLoadRepair']],
       'godotProject.index':[['context','worldId'],['revision','manifestHash','offset','limit','branchId']],
       'godotProject.sourceContext':[['worldId'],[]],
       'godotProject.read':[['context','worldId','revision','manifestHash','path'],['offset','limit','branchId']],

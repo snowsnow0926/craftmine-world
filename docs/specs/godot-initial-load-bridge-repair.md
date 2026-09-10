@@ -15,3 +15,11 @@ This validation occurs after read authorization but before live-write authorizat
 The host must send a numeric `initStatus.worldRevision`, not null. It must continue to build/check the new manifest and use ordinary first-load/candidate adoption. The operation does not modify managed-base materialization or progress, and cannot approve a candidate by itself.
 
 The targeted regression uses actual Core/Git transactions with fixed authored artifact/check/launch receipts. It covers both serialization orders: formal adoption before the source repair (reject repair despite the same Git head), and source repair before an already prepared old application (reject stale candidate). This is not real Godot execution, a multiprocess stress test, or product-client acceptance.
+
+## Host integration
+
+Only an explicit initialization retry enables the repair. The host reads the bundled replacement and requires its pinned bytes. A customized bridge is refused; an already updated bridge requires no edit. For an already checked project or an initialization with a candidate, missing source files are refused instead of being filled from the original managed base. Initial incomplete materialization can still resume its existing installation path.
+
+The host binds the repair to the current manifest, Git head, applied reference and numeric world revision. It does not change original managed-base files, their receipt, or progress. A new manifest must pass a fresh check before first-load adoption. Durable first-load failure remains a confirmation-stage, actionable message even when Main retains an older raw timeout string.
+
+Verification: 37 controlled initializer, creation-stage and acceptance-relay tests pass in the integrated checkout. Six of these exercise old/new bridge bytes and preserved materialization; none is a claim of native gameplay or final-package acceptance.

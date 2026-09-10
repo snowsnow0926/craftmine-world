@@ -5,11 +5,20 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
-import {createGodotWorldInitializer} from '../../../vendor/pi-desktop/apps/desktop/electron/main/godot-world-initialization.ts';
+import {register} from 'node:module';
+register(new URL('../../../vendor/pi-desktop/apps/desktop/test/helpers/ts-import-hooks.mjs',import.meta.url));
+const {createGodotWorldInitializer}=await import('../../../vendor/pi-desktop/apps/desktop/electron/main/godot-world-initialization.ts');
+const {createGodotWorldFactory}=await import('../../../vendor/pi-desktop/apps/desktop/electron/main/godot-world-creation.ts');
 const worldId='launch-world';
 const binding={worldId,initId:'gwinit-exact',candidateId:'candidate-exact',applicationId:'app-exact'};
 const status=()=>({worldId,initId:binding.initId,candidateId:binding.candidateId,status:'failed',playable:false,
  reason:'GODOT_INITIAL_LOAD_FAILED',failureStage:'confirm',launchFailure:{...binding}});
+test('durable first-load failure keeps its actionable confirmation-stage message',async()=>{
+ const factory=createGodotWorldFactory({worldsRoot:'D:/not-accessed',catalogFile:'D:/not-accessed',basesRoot:'D:/not-accessed',
+  domain:async()=>status(),materialize:()=>assert.fail('must not materialize'),
+  initialization:{start:async()=>assert.fail('must not auto retry'),running:()=>false,error:()=> 'Error: Runtime request timed out: load'}});
+ const result=await factory.status(worldId);assert.equal(result.creation.error.code,'GODOT_INITIAL_LOAD_FAILED');assert.equal(result.creation.stage,'confirm');assert.match(result.creation.error.message,/重新初始化/);assert.equal(result.creation.error.message.includes('timed out'),false);
+});
 test('fresh initializers leave durable launch failure untouched and issue no task/build calls',async()=>{
  const calls=[];
  const domain=async(method,args)=>{calls.push({method,args});assert.equal(method,'godotWorld.initStatus');return status();};

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {createHash, randomUUID} from "node:crypto";
+import {INITIAL_LOAD_BRIDGE_PATH, initialLoadBridgeRepair} from "./godot-initial-load-repair";
 
 type Data = Record<string, any>;
 type Domain = (method: string, args: Data) => Promise<any>;
@@ -24,6 +25,7 @@ export function initializationJobFailure(current: Data): string {
 export function createGodotWorldInitializer(options: {
   worldsRoot: string; domain: Domain; selection: () => Promise<string | null>;
   firstLoad: (worldId: string, candidateId: string) => Promise<unknown>;
+  initialLoadBridge?: () => Buffer;
 }) {
   const running = new Map<string, Promise<void>>();
   const failures = new Map<string, string>();
@@ -87,6 +89,11 @@ export function createGodotWorldInitializer(options: {
     } while (offset);
     const missing = files.filter(file => !existing.has(file.path));
     if (missing.length) {
+      // A checked project was already complete. Missing source after that point
+      // may be an intentional edit and must not be reconstructed from the base.
+      if (recover && (status.candidateId || status.status === "checked")) {
+        throw Error("GODOT_INITIAL_SOURCE_MISSING");
+      }
       const content = await domain("content.status", {worldId});
       const installedFiles = missing.map(({path, bytesBase64}) => ({path, bytesBase64, expectedHash: null}));
       const operationId = `base-patch-${sha(JSON.stringify(installedFiles)).slice(0, 40)}`;
@@ -94,11 +101,35 @@ export function createGodotWorldInitializer(options: {
         revision: project.revision, manifestHash: project.manifestHash, files: installedFiles,
         ...(content.backend === "git" ? {operation: {operationId, worldId, repoId: content.repoId, branchId: "main",
           expectedHeadOid: content.headOid, expectedAppliedOid: content.appliedOid, expectedProgressRevision: null}} : {})});
+      for (const file of missing) existing.set(file.path, file.sha256);
     }
     const contentStatus = await domain("content.status", {worldId});
     if (contentStatus.backend !== "git") {
       await domain("content.migrate.apply", {worldId});
       project = await domain("godotProject.index", {context, worldId});
+    }
+    // Explicit retry may repair the exact bridge shipped before P1. The
+    // managed-base directory stays immutable; this is a new Core/Git draft
+    // revision and therefore requires a fresh build/candidate before adoption.
+    if (recover && options.initialLoadBridge) {
+      const repair = initialLoadBridgeRepair(existing.get(INITIAL_LOAD_BRIDGE_PATH), options.initialLoadBridge());
+      if (repair) {
+        const latest = await domain("godotWorld.initStatus", {worldId});
+        if (latest.playable || latest.status === "confirmed" || latest.initId !== status.initId) {
+          throw Error("GODOT_INITIAL_BRIDGE_REPAIR_OWNER_CHANGED");
+        }
+        if (!Number.isSafeInteger(latest.worldRevision) || latest.worldRevision < 0) {
+          throw Error("GODOT_INITIAL_BRIDGE_REPAIR_REVISION_REQUIRED");
+        }
+        const content = await domain("content.status", {worldId});
+        if (content.backend !== "git") throw Error("GODOT_INITIAL_BRIDGE_REPAIR_REQUIRES_GIT");
+        const operationId = `initial-bridge-${sha(JSON.stringify([project.manifestHash, repair])).slice(0, 40)}`;
+        project = await domain("godotProject.applyFiles", {context, worldId, toolCallId: operationId,
+          revision: project.revision, manifestHash: project.manifestHash, files: [repair],
+          initialLoadRepair: {initId: latest.initId},
+          operation: {operationId, worldId, repoId: content.repoId, branchId: "main",
+            expectedHeadOid: content.headOid, expectedAppliedOid: content.appliedOid, expectedProgressRevision: latest.worldRevision}});
+      }
     }
     const candidates = await domain("godotCandidate.list", {worldId});
     let candidateId = (candidates.items ?? []).find((item: Data) => item.status === "ready" && item.manifestHash === project.manifestHash)?.candidateId;

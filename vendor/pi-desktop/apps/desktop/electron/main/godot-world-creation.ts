@@ -252,7 +252,7 @@ export function initStatusToCreation(status: Record<string, any> | null | undefi
       stages,
       progress,
       error: failed
-        ? {code: reason || "GODOT_WORLD_INIT_FAILED", message: reason === "GODOT_INITIAL_LOAD_FAILED" ? "首次进入世界失败。已保留世界和检查结果，可选择重新初始化后再试。" : reason === "GODOT_TASK_PATH_TOO_LONG" ? "任务目录路径过长，无法开始构建。请在较短的数据目录中重试。" : reason || "初始化未完成", stage: stages.find((s) => s.status === "failed")?.id ?? "build", recoverable: true}
+        ? {code: reason || "GODOT_WORLD_INIT_FAILED", message: reason === "GODOT_INITIAL_LOAD_FAILED" ? "首次进入世界失败。重新初始化会修复可识别的旧版加载组件并重新检查；原始源码和存档会保留。" : reason === "GODOT_TASK_PATH_TOO_LONG" ? "任务目录路径过长，无法开始构建。请在较短的数据目录中重试。" : reason || "初始化未完成", stage: stages.find((s) => s.status === "failed")?.id ?? "build", recoverable: true}
         : null,
       // Only actions this module can actually perform are advertised.
       actions: failed ? ["retry", "details"] : ["details"],
@@ -368,12 +368,20 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
         const mapped = initStatusToCreation(status);
         // This finite durable reason comes from the core's identity/hash-checked
         // job output. A stale in-memory recovery error cannot replace it.
-        if (status.playable || mapped.creation?.error?.code === "GODOT_TASK_PATH_TOO_LONG") return mapped;
+        if (status.playable || ["GODOT_TASK_PATH_TOO_LONG", "GODOT_INITIAL_LOAD_FAILED"].includes(mapped.creation?.error?.code ?? "")) return mapped;
         const failure = deps.initialization?.error(worldId);
         if (failure === "Error: GODOT_TASK_PATH_TOO_LONG" || failure === "GODOT_TASK_PATH_TOO_LONG") {
           return initStatusToCreation({...status, status: "failed", playable: false, reason: "GODOT_TASK_PATH_TOO_LONG"});
         }
-        if (failure && mapped.creation) return {state: "failed", creation: {...mapped.creation, error: {code: "GODOT_INITIALIZATION_FAILED", message: failure, stage: mapped.creation.stage, recoverable: true}, actions: ["retry", "details"]}};
+        if (failure && mapped.creation) {
+          const code = failure.replace(/^Error: /, "");
+          const message = code === "GODOT_INITIAL_BRIDGE_CUSTOMIZED"
+            ? "世界的加载组件已被修改，无法自动修复。请保留当前世界，在新世界中重试，或查看详情处理修改。"
+            : code === "GODOT_INITIAL_SOURCE_MISSING"
+              ? "已检查的世界缺少源码文件。为保留你的修改，未自动补回；请从备份恢复缺失文件后重试。"
+              : failure;
+          return {state: "failed", creation: {...mapped.creation, error: {code: "GODOT_INITIALIZATION_FAILED", message, stage: mapped.creation.stage, recoverable: true}, actions: ["retry", "details"]}};
+        }
         if (canAutomaticallyInitialize(status) && !deps.initialization?.running(worldId) && fs.existsSync(path.join(deps.worldsRoot, worldId, ".creation-owner.json"))) void deps.initialization?.start(worldId);
         return mapped;
       } catch {
