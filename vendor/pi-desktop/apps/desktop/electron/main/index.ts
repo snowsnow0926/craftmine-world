@@ -204,6 +204,7 @@ import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
 import { GodotWorldViewHost } from "./godot-world-view-host";
 import { createCraftmineLiveSampler } from "./craftmine-live-sample";
 import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
+import {createCreationAutoApplyService} from "./creation-auto-apply-service";
 import { createGodotRuntimeAdapter } from "./godot-runtime-adapter";
 import { createGodotCandidateCoordinator } from "./godot-candidate-coordinator";
 import {
@@ -1117,6 +1118,25 @@ plugins.setServices({craftmineCreationTarget:async context=>{
   const binding=craftmineGateway.get(context.sessionId);
   if(!binding||binding.turnId!==context.turnId||binding.projectId!==context.projectId||activeTurns.get(context.sessionId)!==context.turnId)throw Error("CREATION_ACTIVE_TURN_REQUIRED");
   return creationTargets.bound(context,binding.selectedWorld);
+}});
+const creationAutoApply=createCreationAutoApplyService({
+  capture:async context=>{
+    const binding=craftmineGateway.get(context.sessionId);
+    if(!binding||binding.turnId!==context.turnId||binding.projectId!==context.projectId||activeTurns.get(context.sessionId)!==context.turnId||turnFinalizations.has(context.sessionId))throw Error("CREATION_ACTIVE_TURN_REQUIRED");
+    if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy)throw Error("WORLD_BUSY");
+    if(!mainWindow||mainWindow.isDestroyed()||mainWindow.webContents.isDestroyed()||immersionState.blocked||notificationViewingSessionId!==context.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
+    const detail=await host?.call<{session?:any}>("session.get",{id:context.sessionId});
+    if(!detail?.session||craftmineProjectIdentity(detail.session,context.sessionId)!==context.projectId||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("CREATION_PROJECT_CHANGED");
+    if(await godotSelection()!==binding.selectedWorld)throw Error("CREATION_TARGET_STALE");
+    return creationTargets.bound(context,binding.selectedWorld);
+  },
+  domain:(method,input)=>plugins.requestCraftmineHost(method,input),
+  apply:(worldId,candidateId,expected,guard)=>godotCandidates.autoApplyVerified(worldId,candidateId,expected,guard),
+});
+plugins.setServices({craftmineCreationCheckCompleted:async input=>{
+  const result=await creationAutoApply.completed(input);
+  if(result.status==="applied")sendToRenderer(IPC.event.craftmineWorldChanged,{});
+  return result;
 }});
 
 const logger = new Logger(

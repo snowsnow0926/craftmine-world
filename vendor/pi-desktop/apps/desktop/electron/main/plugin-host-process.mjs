@@ -120,6 +120,7 @@ function buildApi() {
       // observation envelope, or null when no formal instance is running.
       godotLiveState: (input) => call("craftmine.godotLiveState", [input]),
       creationTarget: (input) => call("craftmine.creationTarget", [input]),
+      creationCheckCompleted: (input) => call("craftmine.creationCheckCompleted", [input]),
     } } : {}),
     app: {
       getVersion: () => call("app.getVersion"),
