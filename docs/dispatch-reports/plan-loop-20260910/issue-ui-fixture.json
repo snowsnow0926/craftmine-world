@@ -1,0 +1,11 @@
+{
+  "fixture": true,
+  "passed": true,
+  "checks": [
+    "lost response retries exact operation and original text; markup stays inert",
+    "deletion requires explicit confirmation and refreshes list",
+    "known pre-write failure releases description for correction",
+    "old initial list cannot overwrite a newer create result",
+    "world switching discards late results and old description"
+  ]
+}
