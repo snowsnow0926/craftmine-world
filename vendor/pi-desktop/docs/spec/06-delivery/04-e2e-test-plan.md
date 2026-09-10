@@ -9252,3 +9252,8 @@ repeat that separately on the retained failed profile with the new package.
 ### P8-OWNED-STOP-20260910 — Stop the current real-model acceptance turn
 
 In a newly authorized exact-source packaged P8 run, read its owned control.json and write only its finite request to the adjacent stop-request.json. Verify the driver invokes the existing current-session abort once, waits for the same durable turn to become inactive with terminal metrics, preserves usage evidence, does not start the other case or adopt a candidate, and requires the existing strict exit audit. Repeat the request and verify no second abort. A stale identity, additional method/path field, linked file or oversized request must invoke nothing. A lost abort reply or terminal timeout must remain a failed result, without retrying an unknown mutation or erasing the earlier forced-exit evidence. Offline controller/relay tests are not a live packaged abort result.
+
+
+### P8-FAILED-CASE-STOP-20260910 — A failed bound task cannot start another case
+
+Inject a failure after the fixed hammer case has a real session binding. Regardless of whether error-cleanup abort acknowledges, loses its response, or fails, verify that the driver records the original failure, never begins dog, and still executes the existing strict owned shutdown audit. Preserve abort errors and shutdown rejection. The successful-case control must retain normal continuation. Offline verification executes the actual checked-in catch/finally/break/shutdown snippet and does not count as a live model or SDK abort result.

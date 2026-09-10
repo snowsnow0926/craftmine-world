@@ -5,3 +5,10 @@ The driver now consumes an exact current-turn stop file and uses its existing ow
 Validation: stop-control.test.mjs 13/13; existing preflight.test.mjs 13/13; thinking-summary.mjs 12/12 with the current source dependencies; client-native.mjs syntax and git diff --check passed. Raw stop-controller output is retained in offline-final.log (SHA-256 67ab674f20092d057e776dd61340160442dd2465d819644369c4df246d29f2b5). These are controlled callbacks and a local stubbed relay, not a real packaged normal-abort proof. That remains for the next authorized package.
 
 The next phase uses explicit unlimited-20260910 authorization and a shared sibling admission journal. Historical 16 + 34 = 50 admissions remain separate and immutable. The prior forced client exit, failed creation, and zero dog requests remain failures in the original reports. The Chinese delivery record is D:/Craftmine-Feedback-Preview-20260910/真实模型验收记录.md, with phase-two 1,093,206 reported tokens and fees unknown.
+
+Post-review correction: all failed cases now leave the case loop, including
+those with an established session and a failed/unknown abort reply. The actual
+driver catch/finally/exit snippet passed six controlled VM branch checks in
+`case-failure.test.mjs`. An acknowledged abort without terminal evidence also
+cannot start the next case. The existing strict shutdown call and failure
+record remain active. This is offline driver validation, not a live abort.

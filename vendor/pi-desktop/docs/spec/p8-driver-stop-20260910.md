@@ -35,6 +35,13 @@ cannot become a successful clean exit. Repeated valid stop reads share the
 same operation promise. This bounded control is available during the model
 turn and the final pre-application check, not as a general UI control plane.
 
+Any failed case also ends the case loop, whether or not it already has a
+session binding. Error cleanup may attempt the existing abort once, but an
+abort acknowledgment or a lost reply never permits starting the next case.
+The original case error and any abort error remain recorded, and the first
+strict shutdown audit is still executed. This rule prevents a failure after
+binding from starting another paid request while the previous task is unknown.
+
 ## Authorization phases
 
 The legacy driver mode and its regression tests retain the original default
@@ -65,3 +72,10 @@ stale requests, oversized/hard-linked files and continued admissions beyond
 Electron launch. The upcoming same-source packaged run must still prove a
 normal live abort. These tests do not reclassify the prior forced-exit failure
 or establish success for either requested creative case.
+
+Run `node tests/player-feedback/P8/case-failure.test.mjs` to execute the actual
+checked-in catch/finally/loop-exit and strict-shutdown call under a controlled
+VM. Its six cases cover bound failure with lost reply, acknowledgment without
+terminal evidence, unbound failure, a previously requested stop, strict exit
+failure retention and the successful continuation control. No model or
+application is launched by this test.
