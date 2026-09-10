@@ -1,0 +1,14 @@
+{
+  "format": "craftmine.external-acceptance-driver/1",
+  "createdAt": "2026-09-10T07:48:20.837Z",
+  "frozenProductionCommit": "beb66d76c00a102c755ec7aeaed59b19cf5c68a9",
+  "source": "D:/cm-fb2-20260910/tests/player-feedback/P1/legacy-retry-client.mjs",
+  "originalSha256": "8c100c9a0df695c4726cf30126f9fb5add2b8c235227486bccab7416bde937d5",
+  "file": "D:/cm-fb2-20260910/test-results/legacy-driver-beb66d76/legacy-retry-client.mjs",
+  "sha256": "48382e5274811295aad56f74f686b194a10eacaef9e6aeb1d1aa08b09d67823d",
+  "changes": [
+    "Relocate test imports to frozen root2, including unchanged contract and production modules.",
+    "Only two exact absent-runtime message variants are pending. All other errors still throw; no deadline, result, pixel, save, restart or exit check changes.",
+    "No product edits or package byte changes."
+  ]
+}

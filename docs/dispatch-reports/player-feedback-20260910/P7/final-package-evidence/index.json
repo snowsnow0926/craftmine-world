@@ -1,0 +1,576 @@
+{
+  "format": "craftmine.package-legacy-retirement-evidence/1",
+  "createdAt": "2026-09-10T08:00:39.583Z",
+  "frozenCommit": "beb66d76c00a102c755ec7aeaed59b19cf5c68a9",
+  "manifestSha256": "44295bd32541ce246465e6a491ef4d32d8f07c66bba2bbb2bc8e0382c5e964fe",
+  "legacy": {
+    "steps": 6,
+    "passed": 5,
+    "passedOverall": false,
+    "error": "AssertionError [ERR_ASSERTION]: Client must exit zero\n\n2147483651 !== 0\n\n    at assertCleanHeadlessShutdown (file:///D:/cm-fb2-20260910/tests/player-product/shutdown-exit-audit.mjs:5:10)\n    at stop (file:///D:/cm-fb2-20260910/test-results/legacy-driver-beb66d76/legacy-retry-client-v3.mjs:72:161)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///D:/cm-fb2-20260910/test-results/legacy-driver-beb66d76/legacy-retry-client-v3.mjs:95:423\n    at async step (file:///D:/cm-fb2-20260910/test-results/legacy-driver-beb66d76/legacy-retry-client-v3.mjs:56:45)\n    at async file:///D:/cm-fb2-20260910/test-results/legacy-driver-beb66d76/legacy-retry-client-v3.mjs:95:2",
+    "clientCloses": [
+      {
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      },
+      {
+        "exit": {
+          "code": 2147483651,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      }
+    ],
+    "oldRevision": 1,
+    "newRevision": 2,
+    "sourceFiles": 66,
+    "managedFiles": 68,
+    "oldCandidate": "gcan-eb5a8d810d545d4862cb35f07bb13f338e126b77ddd525380217685a8d245130",
+    "newCandidate": "gcan-a7f0a62e1f75ee8cd1975fdeef735a0a0f99ce663b6f4929d492b53dda929353"
+  },
+  "retirement": {
+    "cases": [
+      {
+        "name": "success-one",
+        "status": "passed",
+        "retirements": 2
+      },
+      {
+        "name": "success-two",
+        "status": "passed",
+        "retirements": 2
+      },
+      {
+        "name": "syntax-failure",
+        "status": "failed",
+        "retirements": 0
+      }
+    ],
+    "retiredTasks": 8,
+    "logicalBytesRemoved": 1453367360,
+    "preservedFiles": 82,
+    "preservedLogicalBytes": 260677501,
+    "coreClose": {
+      "code": 0,
+      "signal": null
+    },
+    "freeBefore": 169700315136,
+    "freeAfter": 168891891712
+  },
+  "records": [
+    {
+      "kind": "legacy-restart-open-race",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-S1AjU5\\1-stderr.log",
+      "archive": "legacy-restart-open-race/1-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-restart-open-race",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-S1AjU5\\1-stdout.log",
+      "archive": "legacy-restart-open-race/1-stdout.log",
+      "bytes": 7281,
+      "sha256": "8bca02261ad4a927612f0bc7a24776275afcf295a691d6cc33c11e1861716a08"
+    },
+    {
+      "kind": "legacy-restart-open-race",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-S1AjU5\\2-stderr.log",
+      "archive": "legacy-restart-open-race/2-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-restart-open-race",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-S1AjU5\\2-stdout.log",
+      "archive": "legacy-restart-open-race/2-stdout.log",
+      "bytes": 3442,
+      "sha256": "17d27ff4fe75e9d41ad890db5ae8b5da1806570b8a65d39ae20e1cf2c9125d81"
+    },
+    {
+      "kind": "legacy-restart-open-race",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-S1AjU5\\fixture-config.json",
+      "archive": "legacy-restart-open-race/fixture-config.json",
+      "bytes": 1923,
+      "sha256": "dde0cab698e638557bc81a6f694eedecfa27e198a52b918045d2a5ce0272c8ed"
+    },
+    {
+      "kind": "legacy-restart-open-race",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-S1AjU5\\fixture-stderr.log",
+      "archive": "legacy-restart-open-race/fixture-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-restart-open-race",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-S1AjU5\\fixture-stdout.log",
+      "archive": "legacy-restart-open-race/fixture-stdout.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "kind": "legacy-restart-open-race",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-S1AjU5\\native-failure.json",
+      "archive": "legacy-restart-open-race/native-failure.json",
+      "bytes": 60296,
+      "sha256": "ac4f6ca5ae52a0dcaf8798ff6c5cb86954192e909ce41ea069febd45a1c579a7"
+    },
+    {
+      "kind": "legacy-restart-open-race",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-S1AjU5\\report.json",
+      "archive": "legacy-restart-open-race/report.json",
+      "bytes": 341442,
+      "sha256": "2336620ae3338685c82e841def12acd2efc15ff2318477bec5274bfbe3a8f04b"
+    },
+    {
+      "kind": "legacy-premature-navigation-query",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-HmTb2E\\1-stderr.log",
+      "archive": "legacy-premature-navigation-query/1-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-premature-navigation-query",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-HmTb2E\\1-stdout.log",
+      "archive": "legacy-premature-navigation-query/1-stdout.log",
+      "bytes": 7821,
+      "sha256": "802c78972d764be3fb5a6740c26df98500bcf95f82480d6c1ece60d5dc47dca6"
+    },
+    {
+      "kind": "legacy-premature-navigation-query",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-HmTb2E\\2-stderr.log",
+      "archive": "legacy-premature-navigation-query/2-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-premature-navigation-query",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-HmTb2E\\2-stdout.log",
+      "archive": "legacy-premature-navigation-query/2-stdout.log",
+      "bytes": 1969,
+      "sha256": "4d1ee304b6a6dfad9a780a422ab21dcd05a9c94a9edeeb74118aad89446f7d98"
+    },
+    {
+      "kind": "legacy-premature-navigation-query",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-HmTb2E\\fixture-config.json",
+      "archive": "legacy-premature-navigation-query/fixture-config.json",
+      "bytes": 1923,
+      "sha256": "d39123197707d4c45280015b83a30d0d0aeeefccccf0678b5838686e045ce38f"
+    },
+    {
+      "kind": "legacy-premature-navigation-query",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-HmTb2E\\fixture-stderr.log",
+      "archive": "legacy-premature-navigation-query/fixture-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-premature-navigation-query",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-HmTb2E\\fixture-stdout.log",
+      "archive": "legacy-premature-navigation-query/fixture-stdout.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "kind": "legacy-premature-navigation-query",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-HmTb2E\\native-failure.json",
+      "archive": "legacy-premature-navigation-query/native-failure.json",
+      "bytes": 60296,
+      "sha256": "05ccab131ab5b8e7904bcc8f86719593a70853a8e3e3a869094b751f2a0cc3ba"
+    },
+    {
+      "kind": "legacy-premature-navigation-query",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-HmTb2E\\report.json",
+      "archive": "legacy-premature-navigation-query/report.json",
+      "bytes": 343781,
+      "sha256": "7115e5827c4e06cd8e46abf0e1971aa999c1f10f0438ac96dcc058e5a14bcdd5"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\1-stderr.log",
+      "archive": "legacy-final/1-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\1-stdout.log",
+      "archive": "legacy-final/1-stdout.log",
+      "bytes": 6700,
+      "sha256": "349c4e765492b51ff5f4f84f0848fff6a23a3d9582605dc9a10dce46d2b7ed1f"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\2-stderr.log",
+      "archive": "legacy-final/2-stderr.log",
+      "bytes": 191,
+      "sha256": "72ba302d2e6f4f92e3d69f899d27ee4fb5a36f4f0338809e43cc290ceb8bb597"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\2-stdout.log",
+      "archive": "legacy-final/2-stdout.log",
+      "bytes": 3146,
+      "sha256": "cab23e7899dcfe99234ffc88ca47c6275b5a108e5030fb275abdb1b5d8f0baa6"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\fixture-config.json",
+      "archive": "legacy-final/fixture-config.json",
+      "bytes": 1923,
+      "sha256": "f7f4811ab9583a5ce6c8e3862d30df7b74658fe985f6237129e707a6f3bd3b61"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\fixture-stderr.log",
+      "archive": "legacy-final/fixture-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\fixture-stdout.log",
+      "archive": "legacy-final/fixture-stdout.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\native-failure.json",
+      "archive": "legacy-final/native-failure.json",
+      "bytes": 60296,
+      "sha256": "5b509bcddecaef92b648f0d31dfca410e7c5ba0a91b1e4b610b5b4d4a547924a"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\report.json",
+      "archive": "legacy-final/report.json",
+      "bytes": 352704,
+      "sha256": "2741e1175348c32e510cca45d20fe8b90685d8a0785124bbc2bfbb65d73469d0"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\config.json",
+      "archive": "retirement-final/config.json",
+      "bytes": 806977,
+      "sha256": "2788bfae8be3bc7ef9edf287b4cc330be49636a72c99a5c59e82da888da25d71"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\electron-exit.json",
+      "archive": "retirement-final/electron-exit.json",
+      "bytes": 39,
+      "sha256": "1dff4461e0d850ac31ff79ecc82e4eb2e8d59dff2e999f7a66e9c2ed2069bc8c"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\electron-stdout.log",
+      "archive": "retirement-final/electron-stdout.log",
+      "bytes": 78,
+      "sha256": "31cfb8b3c415a2c40aff9ea589ed9e8e241c4e97bf2ad8c02d9c6d8b0ae86bdc"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\ex-82e594aed9a34c67954c8ea2.stderr.log",
+      "archive": "retirement-final/ex-82e594aed9a34c67954c8ea2.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\ex-82e594aed9a34c67954c8ea2.stdout.log",
+      "archive": "retirement-final/ex-82e594aed9a34c67954c8ea2.stdout.log",
+      "bytes": 14981,
+      "sha256": "6efe8b2401020911e60907f8b80610c9b5f55d0dc4e95f8d04ca8db4c3bd3a1b"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\ex-848a79cd4cd94af69268a300.stderr.log",
+      "archive": "retirement-final/ex-848a79cd4cd94af69268a300.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\ex-848a79cd4cd94af69268a300.stdout.log",
+      "archive": "retirement-final/ex-848a79cd4cd94af69268a300.stdout.log",
+      "bytes": 14989,
+      "sha256": "ca2a5330054676276c82cbff3ad60944c0d8ac02a4d338b8e206650dd35381c5"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\im-7a06a40151b9411b83e123e0.stderr.log",
+      "archive": "retirement-final/im-7a06a40151b9411b83e123e0.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\im-7a06a40151b9411b83e123e0.stdout.log",
+      "archive": "retirement-final/im-7a06a40151b9411b83e123e0.stdout.log",
+      "bytes": 14042,
+      "sha256": "10b22b1c89a9c41911aa4f4ee38d3cb4c61a325097163cafd7f853eff2570625"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\im-9afa83b691564f16b5dbbe7d.stderr.log",
+      "archive": "retirement-final/im-9afa83b691564f16b5dbbe7d.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\im-9afa83b691564f16b5dbbe7d.stdout.log",
+      "archive": "retirement-final/im-9afa83b691564f16b5dbbe7d.stdout.log",
+      "bytes": 13925,
+      "sha256": "44ec41e58877b528fccb642a027c28269b312f16f5e3d1ffb7d433c6b4b41982"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\im-c0d08a2b006f47bb8376b471.stderr.log",
+      "archive": "retirement-final/im-c0d08a2b006f47bb8376b471.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\im-c0d08a2b006f47bb8376b471.stdout.log",
+      "archive": "retirement-final/im-c0d08a2b006f47bb8376b471.stdout.log",
+      "bytes": 13929,
+      "sha256": "6e52b23c2995958371fdbd029f617aa7efbcfea2d5d047cba08b0c9eccc66de4"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\pf-63ecb227bede459dba571135.stderr.log",
+      "archive": "retirement-final/pf-63ecb227bede459dba571135.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\pf-63ecb227bede459dba571135.stdout.log",
+      "archive": "retirement-final/pf-63ecb227bede459dba571135.stdout.log",
+      "bytes": 4713,
+      "sha256": "a1689163703315ca494024c82e106aaf8109ad2ececce567ae4e419fc2a80454"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\pf-69e78d7f55ca449da67189e5.stderr.log",
+      "archive": "retirement-final/pf-69e78d7f55ca449da67189e5.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\pf-69e78d7f55ca449da67189e5.stdout.log",
+      "archive": "retirement-final/pf-69e78d7f55ca449da67189e5.stdout.log",
+      "bytes": 4708,
+      "sha256": "8061453e9e4893ed856ed3890467047c3e2c9a001893fccf6b95c03a5f324ff5"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\pf-99072179e5244b42b0c99690.stderr.log",
+      "archive": "retirement-final/pf-99072179e5244b42b0c99690.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\pf-99072179e5244b42b0c99690.stdout.log",
+      "archive": "retirement-final/pf-99072179e5244b42b0c99690.stdout.log",
+      "bytes": 4713,
+      "sha256": "ce300b57f7682774b14909dbbff334c1391340281930125f0f9d45501f38fd8f"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\pf-b87412772d0a495c94a01d26.stderr.log",
+      "archive": "retirement-final/pf-b87412772d0a495c94a01d26.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\pf-b87412772d0a495c94a01d26.stdout.log",
+      "archive": "retirement-final/pf-b87412772d0a495c94a01d26.stdout.log",
+      "bytes": 4705,
+      "sha256": "fbc0aac590b9b45f05de5444c7a26406dac7de8a7d9aa172f285779dc0d21b50"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb2-20260910\\test-results\\p7-native-td1Ntt\\report.json",
+      "archive": "retirement-final/report.json",
+      "bytes": 358988,
+      "sha256": "797187a262f7868e3e85c1244880734986956f32a220f98f3fc9bf9f084e323d"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb2-20260910/test-results/legacy-driver-beb66d76/identity.json",
+      "archive": "legacy-driver-beb66d76/identity.json",
+      "bytes": 843,
+      "sha256": "385df8da71b2ee847f9e93ec8bfeaa5a0fe695804ee74e80471c696a9e984fb1"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb2-20260910/test-results/legacy-driver-beb66d76/legacy-retry-client-v2.mjs",
+      "archive": "legacy-driver-beb66d76/legacy-retry-client-v2.mjs",
+      "bytes": 16305,
+      "sha256": "d62e278b60d6bef46376b3c095c2bdede3c14516f929b779e677764f65844b2c"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb2-20260910/test-results/legacy-driver-beb66d76/legacy-retry-client-v3.mjs",
+      "archive": "legacy-driver-beb66d76/legacy-retry-client-v3.mjs",
+      "bytes": 15951,
+      "sha256": "1932a8d5278a10de11c2a0340a3edb25d0787ad5329bf6b5a2ed2c68f4de04d9"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb2-20260910/test-results/legacy-driver-beb66d76/legacy-retry-client.mjs",
+      "archive": "legacy-driver-beb66d76/legacy-retry-client.mjs",
+      "bytes": 16111,
+      "sha256": "48382e5274811295aad56f74f686b194a10eacaef9e6aeb1d1aa08b09d67823d"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb2-20260910/test-results/legacy-driver-beb66d76/legacy-runtime-ready.mjs",
+      "archive": "legacy-driver-beb66d76/legacy-runtime-ready.mjs",
+      "bytes": 1081,
+      "sha256": "20374aa0547a3a5b9adf23ae705bac0aead3165ae97f4038f84457606fa9f3aa"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb2-20260910/test-results/p7-package-driver/identity.json",
+      "archive": "p7-package-driver/identity.json",
+      "bytes": 757,
+      "sha256": "725256ef2f4754c4e1a1090975d42af246700d3bfab16a50b2b944f30be21afe"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb2-20260910/test-results/p7-package-driver/retirement-package-native.mjs",
+      "archive": "p7-package-driver/retirement-package-native.mjs",
+      "bytes": 6801,
+      "sha256": "78b9868b73ed82deebce875fff05adc10e9396862eea8805dacb7414d94b1ccd"
+    },
+    {
+      "kind": "actual-isolated-game-image",
+      "source": "D:/cm-fb2-20260910/test-results/desktop-native-lr-OmsTrR/capture-354a8aa4-459a-49eb-b42f-b83c9416cb65.png",
+      "archive": "legacy-final/world.png",
+      "bytes": 247992,
+      "sha256": "862fd9cc7fab8862149434109521cc6cb0c6cfa2b1d0c56f04ae86389627e170"
+    },
+    {
+      "kind": "shutdown-diagnosis",
+      "source": "D:/cm-fb2-20260910/test-results/desktop-native-lr-OmsTrR/shutdown-minimal-c6WYox/report.json",
+      "archive": "shutdown-minimal-c6WYox/report.json",
+      "bytes": 5196,
+      "sha256": "ca57508216823b679fd26c05e5ff45c39b2e8891ca6f1e498e5c6410cc556c67"
+    },
+    {
+      "kind": "shutdown-diagnosis",
+      "source": "D:/cm-fb2-20260910/test-results/desktop-native-lr-OmsTrR/shutdown-minimal-c6WYox/stderr.log",
+      "archive": "shutdown-minimal-c6WYox/stderr.log",
+      "bytes": 34,
+      "sha256": "5127288394decbd8aa7b555cccebeb835f01fbe70b7fddbae4a716bc87c35990"
+    },
+    {
+      "kind": "shutdown-diagnosis",
+      "source": "D:/cm-fb2-20260910/test-results/desktop-native-lr-OmsTrR/shutdown-minimal-c6WYox/stdout.log",
+      "archive": "shutdown-minimal-c6WYox/stdout.log",
+      "bytes": 309,
+      "sha256": "89046d9cd6ce1865481dea946ccf0c1bcfa3cf48719656eb9e248784769b2dba"
+    },
+    {
+      "kind": "shutdown-diagnosis",
+      "source": "D:/cm-fb2-20260910/test-results/desktop-native-lr-OmsTrR/shutdown-minimal-5WYJsn/report.json",
+      "archive": "shutdown-minimal-5WYJsn/report.json",
+      "bytes": 73839,
+      "sha256": "9e996f17ec091d0f3e5427d85623365487bfbd6d072cb3e52ae3dab84be46c0c"
+    },
+    {
+      "kind": "shutdown-diagnosis",
+      "source": "D:/cm-fb2-20260910/test-results/desktop-native-lr-OmsTrR/shutdown-minimal-5WYJsn/stderr.log",
+      "archive": "shutdown-minimal-5WYJsn/stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "shutdown-diagnosis",
+      "source": "D:/cm-fb2-20260910/test-results/desktop-native-lr-OmsTrR/shutdown-minimal-5WYJsn/stdout.log",
+      "archive": "shutdown-minimal-5WYJsn/stdout.log",
+      "bytes": 3440,
+      "sha256": "04351a5acdaa5710ff993551ad385571334af1ec78841c9c45640eeb6a680b25"
+    },
+    {
+      "kind": "shutdown-diagnosis",
+      "source": "D:/cm-fb-p7-20260910/test-results/shutdown-minimal.mjs",
+      "archive": "shutdown-minimal.mjs",
+      "bytes": 4988,
+      "sha256": "f3c72c3da3f6c9d437fb2940a77367189d88ba60713bef227d5e4e4872750045"
+    }
+  ],
+  "shutdownMinimal": {
+    "passed": true,
+    "raw": "D:/cm-fb2-20260910/test-results/desktop-native-lr-OmsTrR/shutdown-minimal-5WYJsn/report.json",
+    "launch": {
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    "events": [
+      {
+        "at": "2026-09-10T08:08:02.104Z",
+        "type": "ipc",
+        "value": {
+          "type": "craftmine-headless-exit"
+        }
+      },
+      {
+        "at": "2026-09-10T08:08:02.107Z",
+        "type": "disconnect"
+      },
+      {
+        "at": "2026-09-10T08:08:02.226Z",
+        "type": "stderr-close"
+      },
+      {
+        "at": "2026-09-10T08:08:02.227Z",
+        "type": "stdout-close"
+      },
+      {
+        "at": "2026-09-10T08:08:02.237Z",
+        "type": "exit",
+        "value": {
+          "code": 0,
+          "signal": null
+        }
+      },
+      {
+        "at": "2026-09-10T08:08:02.237Z",
+        "type": "close",
+        "value": {
+          "code": 0,
+          "signal": null
+        }
+      }
+    ]
+  }
+}

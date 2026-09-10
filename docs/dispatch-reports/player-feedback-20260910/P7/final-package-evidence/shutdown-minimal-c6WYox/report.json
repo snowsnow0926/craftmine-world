@@ -1,0 +1,179 @@
+{
+  "format": "craftmine.shutdown-minimal/1",
+  "original": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR",
+  "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile",
+  "worldId": "legacy-d756f5f46b904b178a12",
+  "identity": {
+    "mode": "packaged",
+    "packaged": "D:\\cm-fb2-20260910\\desktop\\build\\releases\\beb66d76c00a-04d1dca3-2129-4a62-9cf9-653326e6ef6f\\output\\win-unpacked",
+    "commit": "beb66d76c00a102c755ec7aeaed59b19cf5c68a9",
+    "buildManifestSha256": "44295bd32541ce246465e6a491ef4d32d8f07c66bba2bbb2bc8e0382c5e964fe",
+    "sourceArchiveHash": "b7fae4b9c45b19b8b6fd3082ece0180e6fd3e4232b662f1d99d07fac230f538f",
+    "appVersion": "0.14.4-preview.1",
+    "executableSha256": "5b041bb94055ae7c511ae56730e5c7f7d0db8d7c8beeeb4ae14b45196c9eca7e",
+    "asarSha256": "e17daaafeabb091bac1396e2e6d7a34835bf47b23b6a2dfada374f5555b7b774",
+    "mainSha256": "3fe088c7503798d866b9e99e1023a427d2511f080685bc5e957b9f4bf33e31a6",
+    "pluginSha256": "6cbb196fd6d62c5363abfd3f98ff1150c65014c31cad98eb9846db25e27a6dca",
+    "coreSha256": "476297048415332458e451aa2646f47b0fb57d98e76c8d5929645c8eb7fedd63",
+    "hostSha256": "29efc54cd80423702f7fa229ebd1c80d1ca926a870588182026a5eb50101ef7c",
+    "runtimeSourceCommit": "beb66d76c00a102c755ec7aeaed59b19cf5c68a9",
+    "runtimeFilesDigest": "54385f1ab8253df632e9da3f0ddd3e09dad905ee4b3f0b31730d1fb646ea95e6"
+  },
+  "driverSha256": "3ce2c765bfeece837ea5591837a4a5ae5064f05e3358d1434fc322a87d8430dd",
+  "startedAt": "2026-09-10T08:07:28.156Z",
+  "events": [
+    {
+      "at": "2026-09-10T08:07:28.173Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 2
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:28.300Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless-ready"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:28.385Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "4231e811-e9d2-4824-b0dc-b0e59caeda83"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:28.395Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 186
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:28.458Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "9a1efffa-7d92-4081-a2dc-a8ccb8ae5ed9"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:28.459Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 29
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:28.460Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 92
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:31.465Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless-exit"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:31.466Z",
+      "type": "stderr",
+      "value": {
+        "bytes": 34
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:31.466Z",
+      "type": "disconnect"
+    },
+    {
+      "at": "2026-09-10T08:07:31.560Z",
+      "type": "stdout-close"
+    },
+    {
+      "at": "2026-09-10T08:07:31.560Z",
+      "type": "stderr-close"
+    },
+    {
+      "at": "2026-09-10T08:07:31.569Z",
+      "type": "exit",
+      "value": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:31.570Z",
+      "type": "close",
+      "value": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "calls": [
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:28.375Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": false,
+          "plugins": []
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 270524,
+            "type": "Browser",
+            "creationTime": 1789027648161.847,
+            "cpu": {
+              "cumulativeCPUUsage": 0.3125,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 124700,
+              "peakWorkingSetSize": 124704,
+              "privateBytes": 119900
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:28.385Z"
+    },
+    {
+      "method": "quit",
+      "startedAt": "2026-09-10T08:07:28.395Z",
+      "result": {
+        "requested": true
+      },
+      "finishedAt": "2026-09-10T08:07:28.459Z"
+    }
+  ],
+  "launch": {
+    "audit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": [],
+      "shutdownFailures": []
+    },
+    "exit": {
+      "code": 0,
+      "signal": null
+    }
+  },
+  "passed": false,
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(status.windows.length&&status.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen))\n\n    at file:///D:/cm-fb-p7-20260910/test-results/shutdown-minimal.mjs:29:175\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+  "finishedAt": "2026-09-10T08:07:31.570Z"
+}
