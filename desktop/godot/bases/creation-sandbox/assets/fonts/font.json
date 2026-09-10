@@ -1,0 +1,26 @@
+{
+  "format": "craftmine.font/1",
+  "family": "Craftmine CJK",
+  "weight": 400,
+  "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/noto-sans-sc.woff2",
+  "sourceSha256": "aef8c34277afad81ecd0227138a830263c0caea65b7aea66d1195395f097b55a",
+  "license": "OFL-1.1",
+  "licenseFile": "OFL-NotoSansSC.txt",
+  "generator": "scripts/build-creation-font.py",
+  "fontToolsVersion": "4.65.0",
+  "glyphCoverage": 30890,
+  "bytes": 4193040,
+  "sha256": "26bd97430799c56865d0184b076dcb50e225e0fcf119d2ecc6aa1f382578b7db",
+  "parts": [
+    {
+      "path": "cjk-0.json",
+      "bytes": 2800055,
+      "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+    },
+    {
+      "path": "cjk-1.json",
+      "bytes": 2790775,
+      "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+    }
+  ]
+}
