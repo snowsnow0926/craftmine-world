@@ -49,6 +49,7 @@ export type WindowControlAction = (typeof WINDOW_CONTROL_ACTIONS)[number];
 
 export const IPC = {
   invoke: {
+    craftmineSetImmersion: "pi-desktop/craftmine/setImmersion",
     appGetVersion: "pi-desktop/app/getVersion",
     appOpenFeedback: "pi-desktop/app/openFeedback",
     appHealth: "pi-desktop/app/health",
@@ -220,6 +221,7 @@ export const IPC = {
     nativeMenuAction: "pi-desktop/menu/nativeAction",
   },
   event: {
+    craftmineImmersionShortcut: "pi-desktop/craftmine/immersionShortcut",
     pluginChanged: "pi-desktop/event/pluginChanged",
     craftmineWorldChanged: "pi-desktop/event/craftmineWorldChanged",
     pluginLauncherShown: "pi-desktop/pluginLauncher/event/shown",
