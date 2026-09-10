@@ -1,0 +1,33 @@
+{
+  "scope": "Actual host-core stdio and SQLite, production Main queue with deterministic model-call facts; no model or Electron.",
+  "binary": "D:\\cm-fb-p4-20260910\\test-results\\cargo-target\\debug\\pi-desktop-host-core.exe",
+  "binarySha256": "f0d52e1fbf5af975fb74641d940fdeaf41cc94899a9793a6b719f7800aab93a9",
+  "passed": true,
+  "checks": [
+    "real commit then lost reply remains one attempt",
+    "message ownership, retry, compaction, delegated model and overlapping TPS",
+    "wrong-session, dual selectors and unknown fields rejected",
+    "end-turn settles actual wall time and rejects new late facts",
+    "real process restart preserves completed accounting and reports interrupted time unknown",
+    "atomic end-turn gap, exact boolean validation and replay preserve original terminal state"
+  ],
+  "launches": [
+    {
+      "stderr": "\u001b[2m2026-09-10T06:40:13.170291Z\u001b[0m \u001b[32m INFO\u001b[0m \u001b[2mpi_desktop_host_core\u001b[0m\u001b[2m:\u001b[0m host-core starting \u001b[3mpath\u001b[0m\u001b[2m=\u001b[0mD:\\cm-fb-p4-20260910\\test-results\\task-metrics-core-hvjkrY\\owned-data\n",
+      "exit": {
+        "code": null,
+        "signal": "SIGTERM"
+      },
+      "termination": "owned SIGTERM for process-interruption coverage"
+    },
+    {
+      "stderr": "\u001b[2m2026-09-10T06:40:13.226188Z\u001b[0m \u001b[32m INFO\u001b[0m \u001b[2mpi_desktop_host_core\u001b[0m\u001b[2m:\u001b[0m host-core starting \u001b[3mpath\u001b[0m\u001b[2m=\u001b[0mD:\\cm-fb-p4-20260910\\test-results\\task-metrics-core-hvjkrY\\owned-data\n",
+      "exit": {
+        "code": null,
+        "signal": "SIGTERM"
+      },
+      "termination": "owned SIGTERM for process-interruption coverage"
+    }
+  ],
+  "finishedAt": "2026-09-10T06:40:13.234Z"
+}

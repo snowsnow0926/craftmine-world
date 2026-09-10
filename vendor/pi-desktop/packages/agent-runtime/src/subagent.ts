@@ -20,6 +20,7 @@
  */
 
 import { randomUUID } from "node:crypto";
+import { observeModelStream } from "./task-metrics-stream.js";
 import {
   Agent,
   convertToLlm,
@@ -238,7 +239,9 @@ export class SubagentRun {
           m,
           context,
           requestOptions,
-          (retryOptions) => models.streamSimple(m, context, retryOptions),
+          (retryOptions) => opts.turnId ? observeModelStream({ model: m, providerId: opts.provider.id, source: "subagent",
+            create: () => models.streamSimple(m, context, retryOptions), emit: call => this.emit({ type: "model_call", call }) })
+            : models.streamSimple(m, context, retryOptions),
           {
             claim: (error, phase) => this.claimProviderRetry(error, phase),
             headers: () => this.providerRetryHeaders,

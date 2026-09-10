@@ -1,0 +1,7 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running unittests src\main.rs (test-results/cargo-target\debug\deps\pi_desktop_host_core-f6291f4316292ee4.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 306 filtered out; finished in 0.00s
+

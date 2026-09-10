@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { observeModelStream } from "./task-metrics-stream.js";
 import { CRAFTMINE_SYSTEM_PROMPT, appendCraftmineRequestData, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
 import {
   Agent,
@@ -1461,7 +1462,7 @@ Delegation rules:
           context,
           requestOptions,
           (retryOptions) => craftmineGuardedStream(m, context, retryOptions, this.craftmineHooks, providerAttempt++ === 0 ? "creation" : "retry",
-            (boundedContext, boundedOptions) => models.streamSimple(m, boundedContext, boundedOptions)),
+            (boundedContext, boundedOptions) => this.trackedModelStream(m, "agent", () => models.streamSimple(m, boundedContext, boundedOptions))),
           {
             allowOutputLimitRepair: !this.craftmineHooks,
             claim: (error, phase) => this.claimProviderRetry(error, phase),
@@ -3855,6 +3856,13 @@ Delegation rules:
     });
   }
 
+  private trackedModelStream(model: Model<Api>, source: "agent" | "compaction", create: () => ReturnType<Models["streamSimple"]>) {
+    const turnId = this.turnId;
+    if (!turnId) return create();
+    return observeModelStream({ model, providerId: this.provider.id, source, create,
+      emit: call => this.emit({ type: "model_call", call }, turnId) });
+  }
+
   private setAgentActivity(activity: AgentActivity): void {
     this.agentActivity = activity;
     this.emit({ type: "status", status: this.getStatus() });
@@ -4737,13 +4745,13 @@ Delegation rules:
     preparation: ShapedPreparation,
     signal: AbortSignal,
   ): Promise<Awaited<ReturnType<typeof compact>>> {
-    const models: Models = this.craftmineHooks ? new Proxy(this.models, {
+    const models: Models = new Proxy(this.models, {
       get: (target, property, receiver) => property === "completeSimple"
         ? (model: Model<Api>, context: import("@earendil-works/pi-ai").Context, options?: SimpleStreamOptions) =>
           craftmineGuardedStream(model, context, options, this.craftmineHooks, "summary",
-            (boundedContext, boundedOptions) => target.streamSimple(model, boundedContext, boundedOptions)).result()
+            (boundedContext, boundedOptions) => this.trackedModelStream(model, "compaction", () => target.streamSimple(model, boundedContext, boundedOptions))).result()
         : Reflect.get(target, property, receiver),
-    }) : this.models;
+    });
     return compact(
       preparation,
       models,

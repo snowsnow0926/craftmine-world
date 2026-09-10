@@ -1,0 +1,15 @@
+node:internal/fs/promises:637
+  return new FileHandle(await PromisePrototypeThen(
+                        ^
+
+Error: ENOENT: no such file or directory, open 'D:\cm-fb-p4-20260910\test-results\cargo-target\debug\host-core.exe'
+    at async open (node:internal/fs/promises:637:25)
+    at async readFile (node:internal/fs/promises:1269:14)
+    at async file:///D:/cm-fb-p4-20260910/tests/player-feedback/task-metrics-core.mjs:18:194 {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\cm-fb-p4-20260910\\test-results\\cargo-target\\debug\\host-core.exe'
+}
+
+Node.js v24.14.0

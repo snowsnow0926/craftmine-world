@@ -9128,3 +9128,20 @@ Hold the selected asset body read, complete a favorite/tag annotation and the en
 ### AL2 Main asset metadata entry (2026-09-10)
 
 Run the bounded asset Main/Core route and actual React form tests. Unknown fields, methods, stale owner, duplicate transaction conflict and finite probe validation must reject. For full-client acceptance use tests/plan-loop/asset-client-native.mjs with an explicit development mode or independently verified same-source package. Seed only two local assets with that selected Core; perform favorite/filter/unfavorite/tag edits through actual navigation forms, restart and compare immutable records and world.list. Both client shutdown audits must be clean. No real input, focus, Pointer Lock, models or personal settings are used. Runner preparation is not full-client evidence.
+
+### PLAYER-FEEDBACK-P4 — Durable operation metrics
+
+Run the production stream/recorder fixture in `tests/player-feedback/task-metrics.mjs`
+and the actual host-core stdio harness in `tests/player-feedback/task-metrics-core.mjs`
+with a fresh owned D-drive data directory and a same-source host binary. Replay
+multi-round tools, retries, a delegate using another model, compaction, absent
+usage and overlapping generation intervals. Require exact totals without adding
+cache/reasoning twice, explicit partial/unknown coverage, independent model
+bindings and no sum of concurrent TPS. Inject commit-then-lost-reply and permanent
+write refusal, and require exact replay or a durable accounting gap. Query by
+real stored message ID, reject cross-session writes and dual/unknown selectors,
+finish the turn, then terminate/reopen only the owned core process. Preserve
+completed metrics and report interrupted end time as unknown. Do not call a model,
+read user profiles or claim this fixture proves Electron/P5 wiring or P8 billing
+reconciliation. P10 must separately verify Main drains on success/error/abort,
+reads through its finite IPC method, and shows the new DTO per actual owning turn.

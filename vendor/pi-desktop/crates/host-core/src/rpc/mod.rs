@@ -1645,6 +1645,35 @@ async fn handle_request(
             Ok(json!({ "ok": true, "imported": imported, "skipped": !imported }))
         }
 
+        "session.observeModelCall" | "session.turnMetrics" | "session.metricsUnavailable" => {
+            let allowed = if method == "session.observeModelCall" {
+                vec!["sessionId", "turnId", "call"]
+            } else if method == "session.metricsUnavailable" {vec!["sessionId","turnId"]}
+            else { vec!["sessionId", "turnId", "messageId"] };
+            if params.as_object().is_none_or(|p| p.keys().any(|k| !allowed.contains(&k.as_str()))) {
+                return Err(rpc_err(1002, "Invalid metrics fields", "INVALID_PARAMS"));
+            }
+            let session_id=params.get("sessionId").and_then(Value::as_str)
+                .ok_or_else(||rpc_err(1002,"sessionId required","INVALID_PARAMS"))?;
+            let st=state.lock().await;
+            for field in ["turnId","messageId"] {
+                if params.get(field).is_some_and(|v|v.as_str().is_none()) {
+                    return Err(rpc_err(1002,"Invalid selector type","INVALID_PARAMS"));
+                }
+            }
+            let result=if method == "session.metricsUnavailable" {
+                let turn_id=params.get("turnId").and_then(Value::as_str)
+                    .ok_or_else(||rpc_err(1002,"turnId required","INVALID_PARAMS"))?;
+                crate::task_metrics::mark_unavailable(&st.db,session_id,turn_id)
+            } else if method == "session.observeModelCall" {
+                let turn_id=params.get("turnId").and_then(Value::as_str)
+                    .ok_or_else(||rpc_err(1002,"turnId required","INVALID_PARAMS"))?;
+                crate::task_metrics::observe(&st.db,session_id,turn_id,params.get("call").unwrap_or(&Value::Null))
+            } else {
+                crate::task_metrics::read(&st.db,session_id,params.get("turnId").and_then(Value::as_str),params.get("messageId").and_then(Value::as_str))
+            };
+            result.map_err(|e| {let code=e.to_string();rpc_err(1002,code.clone(),&code)})
+        }
         "session.beginTurn" => {
             let session_id = params
                 .get("sessionId")
@@ -1668,6 +1697,9 @@ async fn handle_request(
             Ok(json!({ "turnId": turn_id }))
         }
         "session.endTurn" => {
+            if params.get("metricsUnavailable").is_some_and(|v| v.as_bool().is_none()) {
+                return Err(rpc_err(1002, "metricsUnavailable must be a boolean", "INVALID_PARAMS"));
+            }
             let turn_id = params
                 .get("turnId")
                 .and_then(|v| v.as_str())
@@ -1677,7 +1709,7 @@ async fn handle_request(
                 .and_then(|v| v.as_str())
                 .unwrap_or("completed");
             let st = state.lock().await;
-            let result = sessions::end_turn_settling(
+            let result = sessions::end_turn_settling_with_metrics(
                 &st.db,
                 turn_id,
                 status,
@@ -1691,6 +1723,7 @@ async fn handle_request(
                     .get("recoverInflight")
                     .and_then(|v| v.as_bool())
                     .unwrap_or(false),
+                params.get("metricsUnavailable").and_then(Value::as_bool).unwrap_or(false),
             )
             .map_err(|e| rpc_err(1000, e.to_string(), "INTERNAL"))?;
             let mut response = json!({ "ok": result.updated });

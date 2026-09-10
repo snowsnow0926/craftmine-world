@@ -1,0 +1,22 @@
+{
+  "scope": "Actual host-core stdio and SQLite, production Main queue with deterministic model-call facts; no model or Electron.",
+  "binary": "D:\\cm-fb-p4-20260910\\test-results\\cargo-target\\debug\\pi-desktop-host-core.exe",
+  "binarySha256": "7d57187461c97b613db14c01ebdfbddaf2450136ee46592bf9c18d8bc465a878",
+  "passed": false,
+  "checks": [
+    "real commit then lost reply remains one attempt",
+    "message ownership, retry, compaction, delegated model and overlapping TPS"
+  ],
+  "launches": [
+    {
+      "stderr": "\u001b[2m2026-09-10T06:32:24.069613Z\u001b[0m \u001b[32m INFO\u001b[0m \u001b[2mpi_desktop_host_core\u001b[0m\u001b[2m:\u001b[0m host-core starting \u001b[3mpath\u001b[0m\u001b[2m=\u001b[0mD:\\cm-fb-p4-20260910\\test-results\\task-metrics-core-WC06x6\\owned-data\n",
+      "exit": null
+    }
+  ],
+  "failure": {
+    "message": "The validation function is expected to return \"true\". Received false\n\nCaught error:\n\nError: TASK_METRICS_OWNER_MISMATCH",
+    "stack": "AssertionError [ERR_ASSERTION]: The validation function is expected to return \"true\". Received false\n\nCaught error:\n\nError: TASK_METRICS_OWNER_MISMATCH\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///D:/cm-fb-p4-20260910/tests/player-feedback/task-metrics-core.mjs:53:3"
+  },
+  "shutdownFailure": "CORE_CLOSE_TIMEOUT",
+  "finishedAt": "2026-09-10T06:32:29.083Z"
+}

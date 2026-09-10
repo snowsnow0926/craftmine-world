@@ -487,6 +487,8 @@ impl Database {
             }
         }
         let db = Self { conn, data_dir };
+        // Additive, backwards-readable metrics table; existing turns stay unknown.
+        db.conn.execute_batch(crate::task_metrics::SCHEMA)?;
         db.boot_maintenance()?;
         Ok(db)
     }
@@ -504,6 +506,10 @@ impl Database {
             [],
         );
         let tx = self.conn.unchecked_transaction()?;
+        // Recovery time is not the interrupted operation's actual end. Keep
+        // this fact in the same transaction as the existing abort settlement.
+        tx.execute("INSERT OR IGNORE INTO task_metric_interruptions(turn_id) SELECT id FROM turns WHERE status='running'", [])?;
+        tx.execute("INSERT OR IGNORE INTO task_metric_gaps(turn_id) SELECT id FROM turns WHERE status='running'", [])?;
         tx.execute(
             "UPDATE turns
              SET status = 'aborted', error_code = COALESCE(error_code, 'TURN_ABORTED'),
