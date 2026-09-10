@@ -2499,6 +2499,20 @@ pub fn end_turn_settling(
     create_notification: bool,
     recover_inflight: bool,
 ) -> Result<EndTurnResult> {
+    end_turn_settling_with_metrics(db, turn_id, status, error_code, usage, create_notification, recover_inflight, false)
+}
+
+/// Main can atomically mark incomplete accounting while still closing the task.
+pub fn end_turn_settling_with_metrics(
+    db: &Database,
+    turn_id: &str,
+    status: &str,
+    error_code: Option<&str>,
+    usage: Option<&Value>,
+    create_notification: bool,
+    recover_inflight: bool,
+    metrics_unavailable: bool,
+) -> Result<EndTurnResult> {
     let status = match status {
         "completed" | "aborted" | "error" => status,
         _ => "completed",
@@ -2515,6 +2529,11 @@ pub fn end_turn_settling(
         .query_row(params![turn_id], |r| r.get(0))
         .optional()?;
     let tx = db.conn().unchecked_transaction()?;
+    if metrics_unavailable {
+        // Replays may find an already-ended turn. Persist the same gap without
+        // changing its terminal status, usage or end timestamp.
+        tx.execute("INSERT OR IGNORE INTO task_metric_gaps(turn_id) SELECT id FROM turns WHERE id=?1", [turn_id])?;
+    }
     let n = tx
         .prepare_cached(
             "UPDATE turns SET status = ?1, error_code = ?2, ended_at = ?3,

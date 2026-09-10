@@ -9146,3 +9146,19 @@ Controlled host/preload tests must refuse stale, hidden, detached, unshown and f
 ### Player feedback P3 embedded world shortcut scope
 
 The P1 plugin-fullscreen tests exercise exact embedded Craftmine identity, current view ownership, hidden/replaced/zero-size denial, top-frame scope validation and preload disposal without OS input. Seven plugin/Godot bridge tests pass; plugin host/preload strict TypeScript has zero diagnostics. Main window integration and actual unconsumed Escape remain separate verification boundaries.
+### PLAYER-FEEDBACK-P4 — Durable operation metrics
+
+Run the production stream/recorder fixture in `tests/player-feedback/task-metrics.mjs`
+and the actual host-core stdio harness in `tests/player-feedback/task-metrics-core.mjs`
+with a fresh owned D-drive data directory and a same-source host binary. Replay
+multi-round tools, retries, a delegate using another model, compaction, absent
+usage and overlapping generation intervals. Require exact totals without adding
+cache/reasoning twice, explicit partial/unknown coverage, independent model
+bindings and no sum of concurrent TPS. Inject commit-then-lost-reply and permanent
+write refusal, and require exact replay or a durable accounting gap. Query by
+real stored message ID, reject cross-session writes and dual/unknown selectors,
+finish the turn, then terminate/reopen only the owned core process. Preserve
+completed metrics and report interrupted end time as unknown. Do not call a model,
+read user profiles or claim this fixture proves Electron/P5 wiring or P8 billing
+reconciliation. P10 must separately verify Main drains on success/error/abort,
+reads through its finite IPC method, and shows the new DTO per actual owning turn.

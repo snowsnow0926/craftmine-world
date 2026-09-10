@@ -1,0 +1,10 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running unittests src\main.rs (test-results/cargo-target\debug\deps\pi_desktop_host_core-f6291f4316292ee4.exe)
+
+running 3 tests
+test sessions::tests::completed_turn_end_drops_checkpoint_once_the_final_row_landed ... ok
+test sessions::tests::completed_turn_end_keeps_an_unindexed_checkpoint ... ok
+test sessions::tests::sidecar_loss_recovers_the_checkpoint_at_turn_end ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 303 filtered out; finished in 0.04s
+
