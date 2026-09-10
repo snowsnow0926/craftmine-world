@@ -44,6 +44,7 @@ test('read exposes bounded contract values but no path/source/context; submit wr
  assert.ok(!JSON.stringify(args.binding).includes('path'));assert.ok(!JSON.stringify(args.binding).includes('scripts/'));
  const result=await f.service.submit(args);assert.equal(result.applied,false);assert.equal(result.status,'check-queued');assert.equal(result.draftRetained,true);
  assert.equal(f.calls.filter(x=>x.method==='godotProject.applyFiles').length,1);assert.equal(f.calls.filter(x=>x.method==='godotBuild.start').length,1);
+ assert.deepEqual(f.calls.find(x=>x.method==='godotBuild.start').args.checkRequirements,{format:'craftmine.godot-check-requirements/1',targetFeedback:{targetId:'target_a',hitFlashMilliseconds:800}});
  assert.equal(f.calls.filter(x=>/Application|saveProgress/.test(x.method)).length,0);
  for(const [name,bytes]of f.original)if(name!=='scenes/training_range.tscn')assert.deepEqual(f.files.get(name),bytes);
  assert.ok(f.files.get('scenes/training_range.tscn').toString().includes('hit_flash_seconds = 0.8'));
@@ -57,6 +58,9 @@ test('lost core replies use durable receipts; replay after restart and main adva
  const f=await fixture(t),args=await request(f);f.setLost();await f.service.submit(args);
  f.setJob({status:'passed',candidateId:'candidate-one'});const restarted=createTargetFeedbackService(f.options);
  const result=await restarted.submit(args);assert.equal(result.status,'passed');assert.equal(result.job.candidateId,'candidate-one');
+ const buildRequest=f.calls.find(x=>x.method==='godotBuild.start').args;
+ const replay=f.calls.filter(x=>x.method==='godotBuild.receipt').at(-1).args.request;
+ assert.deepEqual(replay,buildRequest);assert.equal(replay.checkRequirements.targetFeedback.hitFlashMilliseconds,800);
  assert.equal(f.calls.filter(x=>x.method==='godotProject.applyFiles').length,1);assert.equal(f.calls.filter(x=>x.method==='godotBuild.start').length,1);assert.equal(f.beginCount,1);
  await assert.rejects(restarted.submit({...args,values:{hitFlashMilliseconds:100}}),/REPLAY_MISMATCH/);
 });
@@ -96,4 +100,13 @@ test('private ledger refuses hard links, oversized bodies and malformed operatio
  await fs.writeFile(file,JSON.stringify({...JSON.parse(original),format:'wrong'}));
  await assert.rejects(f.service.status({worldId:'alpha',operationId:args.operationId}),/INTENT_INVALID/);
  assert.equal(f.calls.filter(x=>x.method==='godotProject.applyFiles').length,1);
+});
+test('persisted check requirements cannot differ from the original intent or its build request',async t=>{
+ const f=await fixture(t),args=await request(f);await f.service.submit(args);
+ const [name]=await fs.readdir(f.options.stagingRoot),file=path.join(f.options.stagingRoot,name),original=JSON.parse(await fs.readFile(file,'utf8'));
+ const changed=clone(original);changed.checkRequirements.targetFeedback.hitFlashMilliseconds=400;await fs.writeFile(file,JSON.stringify(changed));
+ await assert.rejects(createTargetFeedbackService(f.options).status({worldId:'alpha',operationId:args.operationId}),/INTENT_INVALID/);
+ changed.buildRequest.checkRequirements=clone(changed.checkRequirements);await fs.writeFile(file,JSON.stringify(changed));
+ await assert.rejects(createTargetFeedbackService(f.options).submit(args),/INTENT_INVALID/);
+ assert.equal(f.calls.filter(x=>x.method==='godotBuild.start').length,1);assert.equal(f.calls.filter(x=>x.method==='godotProject.applyFiles').length,1);
 });

@@ -76,11 +76,17 @@ export function createTargetFeedbackService({call,selected,begin,enqueue,turns,s
  const keyFor=(worldId,operationId)=>hash(JSON.stringify([worldId,operationId]));
  async function intentPath(worldId,operationId){id(worldId);id(operationId);await fs.mkdir(stagingRoot,{recursive:true});await noLinks(stagingRoot);return path.join(stagingRoot,keyFor(worldId,operationId)+'.json');}
  function validateIntent(intent){
-  fields(intent,['format','requestHash','worldId','operationId','targetId','context','applyRequest','taskBinding','receipt','buildRequest','job','result']);
+  fields(intent,['format','requestHash','worldId','operationId','targetId','context','applyRequest','taskBinding','receipt','buildRequest','job','result','checkRequirements']);
   check(intent.format==='craftmine.target-feedback-operation/1'&&/^[a-f0-9]{64}$/.test(intent.requestHash),'TARGET_FEEDBACK_INTENT_INVALID');id(intent.worldId);id(intent.operationId);
   if(intent.result){fields(intent.result,['status','worldId','operationId','applied','draftRetained']);check(intent.result.status==='unchanged'&&intent.result.worldId===intent.worldId&&intent.result.operationId===intent.operationId&&intent.result.applied===false&&intent.result.draftRetained===false,'TARGET_FEEDBACK_INTENT_INVALID');return;}
   id(intent.targetId);check(object(intent.context)&&object(intent.applyRequest)&&intent.applyRequest.worldId===intent.worldId&&isDeepStrictEqual(intent.applyRequest.context,intent.context)&&intent.applyRequest.operation?.operationId===intent.operationId&&intent.applyRequest.operation?.worldId===intent.worldId,'TARGET_FEEDBACK_INTENT_INVALID');
+  if(intent.checkRequirements!==undefined){
+   fields(intent.checkRequirements,['format','targetFeedback']);fields(intent.checkRequirements.targetFeedback,['targetId','hitFlashMilliseconds']);
+   const required=intent.checkRequirements.targetFeedback;
+   check(intent.checkRequirements.format==='craftmine.godot-check-requirements/1'&&required.targetId===intent.targetId&&Number.isInteger(required.hitFlashMilliseconds)&&required.hitFlashMilliseconds>=1&&required.hitFlashMilliseconds<=1000,'TARGET_FEEDBACK_INTENT_INVALID');
+  }
   if(intent.buildRequest)check(intent.buildRequest.worldId===intent.worldId&&intent.buildRequest.mode==='check'&&isDeepStrictEqual(intent.buildRequest.context,intent.context),'TARGET_FEEDBACK_INTENT_INVALID');
+  if(intent.buildRequest)check(isDeepStrictEqual(intent.buildRequest.checkRequirements,intent.checkRequirements),'TARGET_FEEDBACK_INTENT_INVALID');
   if(intent.job)check(typeof intent.job.jobId==='string','TARGET_FEEDBACK_INTENT_INVALID');
  }
  async function load(file){let fd;try{
@@ -118,6 +124,8 @@ export function createTargetFeedbackService({call,selected,begin,enqueue,turns,s
    const file=await intentPath(args.worldId,args.operationId);let intent=await load(file),owned=false,handedOff=false;
    const resumedBeforeTurn=!!intent&&!intent.taskBinding&&!intent.result;
    if(intent)check(intent.requestHash===requestHash&&intent.worldId===args.worldId&&intent.operationId===args.operationId,'REPLAY_MISMATCH');
+   const requirements={format:'craftmine.godot-check-requirements/1',targetFeedback:{targetId:args.targetId,hitFlashMilliseconds:args.values?.hitFlashMilliseconds}};
+   if(intent?.checkRequirements)check(isDeepStrictEqual(intent.checkRequirements,requirements),'TARGET_FEEDBACK_INTENT_INVALID');
    try{
     if(intent?.result)return intent.result;
     if(intent?.taskBinding){
@@ -136,7 +144,8 @@ export function createTargetFeedbackService({call,selected,begin,enqueue,turns,s
       await store(file,{format:'craftmine.target-feedback-operation/1',requestHash,worldId:args.worldId,operationId:args.operationId,result});return result;
      }
      const context={projectId:'craftmine-target-feedback',sessionId:'feedback-'+key.slice(0,40),turnId:args.operationId};
-     intent={format:'craftmine.target-feedback-operation/1',requestHash,worldId:args.worldId,operationId:args.operationId,targetId:args.targetId,context};
+     intent={format:'craftmine.target-feedback-operation/1',requestHash,worldId:args.worldId,operationId:args.operationId,targetId:args.targetId,context,
+      checkRequirements:requirements};
      // Persist the exact source operation before beginning a lease or writing.
      intent.applyRequest={context,worldId:args.worldId,toolCallId:'feedback-'+key.slice(0,40),revision:source.index.revision,manifestHash:source.index.manifestHash,
       operation:{operationId:args.operationId,worldId:args.worldId,repoId:source.status.repoId,branchId:'main',expectedHeadOid:source.status.headOid,expectedAppliedOid:source.status.appliedOid,expectedProgressRevision:source.record.revision},
@@ -156,6 +165,7 @@ export function createTargetFeedbackService({call,selected,begin,enqueue,turns,s
       operation:{operationId:args.operationId,worldId:args.worldId,repoId:source.status.repoId,branchId:'main',expectedHeadOid:source.status.headOid,expectedAppliedOid:source.status.appliedOid,expectedProgressRevision:source.record.revision},
       files:[{path:source.scenePath,bytesBase64:Buffer.from(patch.text).toString('base64'),expectedHash:patch.previousHash}]};
      check(isDeepStrictEqual(intent.applyRequest,expected),'TARGET_FEEDBACK_INTENT_INVALID');
+     intent.checkRequirements=requirements;await store(file,intent);
     }
     owned=true;
     const begun=await begin({context:intent.context,selectedWorld:intent.worldId,request:{id:intent.operationId,text:'Adjust this target instance hit feedback and check the candidate; do not apply it.'}});
@@ -167,7 +177,7 @@ export function createTargetFeedbackService({call,selected,begin,enqueue,turns,s
      try{intent.receipt=await call('godotProject.applyFiles',intent.applyRequest);}catch(error){intent.receipt=await receipt(intent,'godotProject.applyFiles',intent.applyRequest);if(!intent.receipt)throw error;}
      await store(file,intent);
     }
-    intent.buildRequest={context:intent.context,worldId:intent.worldId,branchId:'main',toolCallId:intent.applyRequest.toolCallId+'-check',revision:intent.receipt.revision,manifestHash:intent.receipt.manifestHash,mode:'check'};await store(file,intent);
+    intent.buildRequest={context:intent.context,worldId:intent.worldId,branchId:'main',toolCallId:intent.applyRequest.toolCallId+'-check',revision:intent.receipt.revision,manifestHash:intent.receipt.manifestHash,mode:'check',...(intent.checkRequirements?{checkRequirements:intent.checkRequirements}:{})};await store(file,intent);
     try{intent.job=await call('godotBuild.start',intent.buildRequest);}catch(error){intent.job=await receipt(intent,'godotBuild.start',intent.buildRequest);if(!intent.job)throw error;}
     await store(file,intent);
     if(intent.job.status!=='blocked'){turns.watch({...intent.job,worldId:intent.worldId},intent.context);handedOff=true;await enqueue(intent.job,intent.context);}

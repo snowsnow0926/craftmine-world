@@ -33,6 +33,17 @@ does not adopt the candidate. Preview, close, and adoption use the established
 candidate controls. Closing preview retains the draft. Parameter configuration
 does not edit health, damage counters, ammunition, or saved player progress.
 
+New adjustment intents also persist `craftmine.godot-check-requirements/1` with
+the exact target ID and requested integer duration. The same requirements travel
+in the original build request and every receipt lookup. Corrupt or mismatching
+requirements cannot authorize a new write or check. An unstarted intent may add
+requirements only after rederiving its original source plan. Already-created
+legacy jobs keep their original requests and are not relabeled as having run
+the newer assertion. An unchanged source value does not imply live verification.
+The core/verifier owns enforcement of this expectation as part of the real
+check, so a separate UI status cannot turn a passing candidate into a protected
+one. This service fixture validation alone does not prove that integration.
+
 ## Presentation and recovery
 
 The form locks its original intent while a response or check is unresolved.
