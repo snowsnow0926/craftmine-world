@@ -51,3 +51,17 @@ test('strict-shutdown rejection remains observable after the failed case is reta
 test('successful case retains the normal next-case path', async () => {
   const result = await run({ fail: false }); assert.deepEqual(result.visited, ['hammer', 'dog']); assert.equal(result.aborts, 0); assert.equal(result.audits, 1); assert.equal(result.failure, undefined);
 });
+
+test('accepted stop with a terminal timeout suppresses restart of an earlier saved case', async () => {
+  const from = source.indexOf('  const savedCases =');
+  const to = source.indexOf('  // Behavioral assertions require', from);
+  assert.ok(from > 0 && to > from);
+  const restart = source.slice(from, to);
+  for (const [requested, stopped, expectedStarts] of [[true, false, 0], [true, true, 0], [false, false, 1]]) {
+    let starts = 0;
+    const context = { report: { stopped, cases: [{ caseId: 'hammer', saved: { complete: true } }, { caseId: 'dog', outcome: 'failed', error: 'P8_STOP_TERMINAL_TIMEOUT' }] }, stopControl: { requested }, start: async () => { starts++; throw Error('TEST_RESTART_REACHED'); } };
+    try { await vm.runInNewContext(`(async () => { ${restart} })()`, context); }
+    catch (error) { assert.equal(error.message, 'TEST_RESTART_REACHED'); }
+    assert.equal(starts, expectedStarts);
+  }
+});

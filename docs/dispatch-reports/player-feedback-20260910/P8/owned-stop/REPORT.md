@@ -12,3 +12,5 @@ driver catch/finally/exit snippet passed six controlled VM branch checks in
 `case-failure.test.mjs`. An acknowledged abort without terminal evidence also
 cannot start the next case. The existing strict shutdown call and failure
 record remain active. This is offline driver validation, not a live abort.
+
+A second composition check found that a prior saved hammer could restart after an accepted dog stop timed out. Restart now additionally requires no accepted stop operation. The actual savedCases/restart block passes the stopped-timeout negative and ordinary-restart positive controls; case-failure.test.mjs is now 7/7. No application or model was run.
