@@ -9494,3 +9494,11 @@ first-pass improvement requires a later measured benchmark.
 重启后验证原操作只读核对为已采用，并拒绝其他世界读取该操作。测试不得请求真实输入、
 聚焦窗口、Pointer Lock 或个人麦克风；不把固定作者样例计入模型首次成功率。
 造物观察伪造反例：保持真实节点scale=1/solid=false，world.observe谎报scale=2/solid=true；固定adapter必须返回真实值，两个检查阶段拒绝。替换adapter/runtime_bridge/state_guard源码或重定向项目入口不得产生creation检查作业。正常复制、门与普通采伐规则继续通过。
+
+### CM-NB2-MIGRATION：preview.10 原版源码升级
+
+运行 node tests/creation-migration-native.mjs，从固定 c1660f12 Git 源码创建隔离旧世界。
+以新客户端打开时先核对旧完整快照保持不变，随后正常源码事务升级、要求检查与候选采用。
+继续真实属性编辑、删除、撤销和新进程重开；原版/本版换行和未知自定义代码的处理规则
+由 creation-source-migration.test.mjs 覆盖。额外未采用草稿不能被升级覆盖，丢回包或丢绑定
+只能查原回执和完整源码等价关系。测试不访问个人存档、麦克风、浏览器或真实输入。

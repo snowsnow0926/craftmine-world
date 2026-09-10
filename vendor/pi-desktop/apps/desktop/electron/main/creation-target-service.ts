@@ -2,6 +2,7 @@ import {freezeCreationRequirements, type CreationEntity, type FrozenCreationRequ
 import fs from "node:fs";
 import path from "node:path";
 import {createHash, randomUUID} from "node:crypto";
+import type {CreationMigrationAdvance} from './creation-source-migration';
 
 type Context = {projectId:string;sessionId:string;turnId:string};
 type Vector = [number,number,number];
@@ -10,7 +11,7 @@ type CaptureSession = {projectId:string;sessionId:string|null};
 export type CreationCapture = {
   format:"craftmine.creation-target/1";snapshotId:string;worldId:string;buildId:string;instanceId:string;
   sourceRevision:number;manifestHash:string;sampledAt:string;capturedAt:number;
-  playerPosition:Vector;target:Target;autoApply:boolean;entities?:CreationEntity[];creationRequirements?:FrozenCreationRequirement;
+  playerPosition:Vector;target:Target;autoApply:boolean;entities?:CreationEntity[];creationRequirements?:FrozenCreationRequirement;sourceMigration?:CreationMigrationAdvance;
 };
 type Dependencies = {
   directory:string;
@@ -133,6 +134,11 @@ export function createCreationTargetService(deps:Dependencies) {
       if(!record)return null;
       if(contextKey(record.context)!==contextKey(context)||record.capture?.worldId!==worldId||record.capture?.format!=="craftmine.creation-target/1")fail("CREATION_CONTEXT_INVALID");
       return {...structuredClone(record.capture),autoApply:record.capture.autoApply===true&&policyFor(worldId).autoApply};
+    },
+    recordSourceMigration(context:Context,capture:CreationCapture,advance:CreationMigrationAdvance){
+      const name=file("turns",contextKey(context)),record=read(name);
+      if(!record||contextKey(record.context)!==contextKey(context)||record.capture?.snapshotId!==capture.snapshotId||record.capture.worldId!==capture.worldId||advance.format!=="craftmine.creation-migration-advance/1"||advance.formalBuildId!==capture.buildId||advance.formalSourceRevision!==capture.sourceRevision||advance.formalManifestHash!==capture.manifestHash||!Number.isSafeInteger(advance.revision)||!/^[a-f0-9]{64}$/.test(advance.manifestHash))fail("CREATION_MIGRATION_CONTEXT_INVALID");
+      write(name,{...record,capture:{...record.capture,sourceMigration:structuredClone(advance)}});
     },
     policyFor,
     revokeOwner(owner:number){for(const [key,item]of pending)if(item.owner===owner&&!item.bound)pending.delete(key);},

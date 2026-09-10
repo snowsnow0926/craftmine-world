@@ -14,6 +14,8 @@ const readStatus=(scope:string):Status|null=>{
 const saveStatus=(scope:string,status:Status)=>{statuses.set(scope,status);try{sessionStorage.setItem("creation-edit:"+scope,JSON.stringify(status));}catch{}};
 const failures:Record<string,string>={CREATION_DELETE_RULE_DEPENDENCY:"世界中有机关脚本，无法确认删除是否会破坏引用，请先处理机关依赖。",CREATION_UNDO_CONFLICT:"对象已被后续修改，不能撤销这一步。",CREATION_UNDO_UNSUPPORTED:"这条旧操作没有可用的撤销记录。",CREATION_ALREADY_UNDONE:"这条操作已经撤销。",CREATION_TARGET_EXPIRED:"指向已过期，请更新指向后重试。",CREATION_TARGET_STALE:"世界已变化，请更新指向后重试。",CREATION_PLAYER_OVERLAP:"对象会挡住玩家，请移动后重试。",CREATION_OCCUPIED:"对象会与其他物件重叠。"};
 
+Object.assign(failures,{CREATION_MIGRATION_NEEDED:"旧版底座含有自定义改动，需要手动适配；源码和存档已保留。",CREATION_MIGRATION_DRAFT_CONFLICT:"当前还有未采用的源码修改，请先处理草稿。正式世界保持原样。"});
+
 export function CreationObjectEditor({controller}:{controller:ReturnType<typeof useCreationTarget>}){
   const zh=useTranslation().i18n.language.startsWith("zh");
   const sessionId=controller.sessionId,target=controller.capture?.target,worldId=controller.capture?.worldId??null;

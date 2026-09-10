@@ -65,6 +65,10 @@ function createCreationSourceService({core,capture,sample,assertActive}) {
   }
   const key=JSON.stringify([context.projectId,context.sessionId,context.turnId,bound.snapshotId]);
   const known=advances.get(key)??new Set([`${bound.sourceRevision}:${bound.manifestHash}`]);
+  // This advance is written only by the main host after an exact stock-file
+  // migration and receipt verification; the model cannot supply this record.
+  const migration=bound.sourceMigration;
+  if(migration?.format==='craftmine.creation-migration-advance/1'&&migration.formalBuildId===bound.buildId&&migration.formalSourceRevision===bound.sourceRevision&&migration.formalManifestHash===bound.manifestHash&&Number.isSafeInteger(migration.revision)&&/^[a-f0-9]{64}$/.test(migration.manifestHash))known.add(pin(migration));
   const previous=async()=>timing.measure('receipt-lookup',()=>core.call('godotProject.receipt',{binding:workspace.task.binding,worldId:workspace.worldId,toolCallId,method:'godotProject.patch',request:params}));
   const response=(receipt,replayed)=>({format:'craftmine.creation-operation-result/1',receipt:result.receipt,source:{revision:receipt.revision,manifestHash:receipt.manifestHash},replayed,applied:false,checkRequired:true,timing:timing.snapshot()});
   // Exact committed request lookup also recovers reply loss before checking a

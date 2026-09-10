@@ -1,0 +1,1028 @@
+{
+  "scope": "Actual React editor and real native production tool/runtime pipeline; fixed-author tree fixture; zero model",
+  "compiledSha256": "b6f4814373b82938c38bead1fa69b8c60ce7123ff4ed058003f9489ff1c9fcef",
+  "out": "D:\\cm-nb-host\\test-results\\desktop-native-complete-A3eDbg",
+  "checks": [
+    {
+      "name": "historical c166 world reopens unchanged before migration",
+      "passed": true
+    },
+    {
+      "name": "fixed author prepares a real checked tree without a model",
+      "passed": true
+    },
+    {
+      "name": "historical stock migrates through a real receipt before ordinary editing",
+      "passed": true
+    },
+    {
+      "name": "actual React editor reads the real selected tree",
+      "passed": true
+    },
+    {
+      "name": "actual source check and adoption changed size and color",
+      "passed": true
+    },
+    {
+      "name": "refreshed actual properties retain scale and color in the editor",
+      "passed": true
+    },
+    {
+      "name": "delete removes actual runtime object and collision",
+      "passed": true
+    },
+    {
+      "name": "undo restores same stable object and its edited properties",
+      "passed": true
+    },
+    {
+      "name": "direct changes preserve player position inventory and reward ledgers",
+      "passed": true
+    },
+    {
+      "name": "real direct turn has zero observed model requests",
+      "passed": true
+    },
+    {
+      "name": "UI requested no real input or pointer lock",
+      "passed": true
+    },
+    {
+      "name": "UI has no uncaught errors",
+      "passed": true
+    },
+    {
+      "name": "same isolated session reopens",
+      "passed": true
+    },
+    {
+      "name": "new runtime restores same modified tree",
+      "passed": true
+    },
+    {
+      "name": "full progress survives reopen",
+      "passed": true
+    },
+    {
+      "name": "interrupted phase reconciles actual applied build without replay",
+      "passed": true
+    },
+    {
+      "name": "cold status cannot be rebound to a different world",
+      "passed": true
+    },
+    {
+      "name": "reconciliation does not call a model",
+      "passed": true
+    },
+    {
+      "name": "production windows remain hidden unfocused offscreen",
+      "passed": true
+    }
+  ],
+  "launches": [
+    {
+      "number": 1,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "number": 2,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "number": 3,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "operations": [
+    {
+      "payload": {
+        "sessionId": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+        "captureId": "9dcba2b4-f36c-4d40-bc21-01ccbc450b0e",
+        "operationId": "dc160b5d-ad01-4b1e-bd3e-2b7c36d9e311",
+        "action": "modify",
+        "changes": {
+          "scale": [
+            2,
+            2,
+            2
+          ],
+          "color": "#88bb44"
+        }
+      },
+      "result": {
+        "operationId": "dc160b5d-ad01-4b1e-bd3e-2b7c36d9e311",
+        "sessionId": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+        "phase": "preparing"
+      }
+    },
+    {
+      "payload": {
+        "sessionId": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+        "captureId": "a4cfddf7-3bc4-4425-886b-0536562281ec",
+        "operationId": "98079344-e8b5-4453-a754-c0d437ebc552",
+        "action": "delete"
+      },
+      "result": {
+        "operationId": "98079344-e8b5-4453-a754-c0d437ebc552",
+        "sessionId": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+        "phase": "preparing"
+      }
+    },
+    {
+      "payload": {
+        "sessionId": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+        "captureId": "a75b30b6-4651-4508-9703-f4dca13ff0d2",
+        "operationId": "6f88b031-3b5d-418f-a7bc-e946efb51447",
+        "action": "undo",
+        "undoOperationId": "98079344-e8b5-4453-a754-c0d437ebc552"
+      },
+      "result": {
+        "operationId": "6f88b031-3b5d-418f-a7bc-e946efb51447",
+        "sessionId": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+        "phase": "preparing"
+      }
+    }
+  ],
+  "legacyBefore": {
+    "observation": {
+      "baseId": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "buildId": "gbd-b429da508654354600e581194e7a72a8dc065c79db6b9a0732bbfb847f248f51",
+      "format": "craftmine.godot-observation/1",
+      "instanceId": "1c412e0d89cafd417dc869f7",
+      "payload": {
+        "base": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "creation": {
+          "entities": [],
+          "obstacles": [],
+          "playerBounds": {
+            "halfExtents": [
+              0.3,
+              0.9,
+              0.3
+            ],
+            "position": [
+              0,
+              -2.38418579323607e-8,
+              6
+            ]
+          },
+          "revision": 1,
+          "target": {
+            "entityId": null,
+            "normal": [
+              0,
+              0,
+              1
+            ],
+            "position": [
+              0,
+              1.54999995231628,
+              -31.75
+            ],
+            "revision": 1,
+            "surface": "boundary"
+          },
+          "timeOfDay": 12
+        },
+        "error": "",
+        "inventory": {},
+        "logicalViewportSize": [
+          1200,
+          800
+        ],
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "ready": true,
+        "surfaceSize": [
+          1200,
+          800
+        ]
+      },
+      "protocol": "craftmine.godot-runtime/2",
+      "sampledAt": "2026-09-10T22:34:00Z",
+      "worldId": "world-975d8322f846"
+    },
+    "snapshot": {
+      "base": "creation-sandbox",
+      "state": {
+        "baseId": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "body": {
+          "baseVersion": "1.0.0",
+          "doors": {},
+          "format": "craftmine.creation-progress/1",
+          "inventory": {},
+          "openedChests": {},
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "rules": {},
+          "sourceTimeOfDay": 12,
+          "timeOfDay": 12,
+          "worldId": "world-975d8322f846"
+        },
+        "format": "craftmine.godot-progress/1",
+        "stateVersion": 1,
+        "worldId": "world-975d8322f846"
+      },
+      "worldId": "world-975d8322f846"
+    }
+  },
+  "seed": {
+    "result": {
+      "status": "applied",
+      "worldId": "world-975d8322f846",
+      "candidateId": "gcan-4d62ea3881a1cad408ef055a08f92f1335d90c429f91243dd2f9a21a8d0803e1",
+      "record": {
+        "baseId": "creation-sandbox",
+        "contentHash": "6f9f071e9795be68b6b42fffe78874386c569d58fc11fa4032db511cb00fb4d4",
+        "id": "world-975d8322f846",
+        "revision": 3,
+        "runtimeKind": "godot",
+        "title": "真实直接编辑验收世界",
+        "updatedAt": 1789079667211,
+        "world": {
+          "build": {
+            "godot": {
+              "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "baseBuild": "gbd-b429da508654354600e581194e7a72a8dc065c79db6b9a0732bbfb847f248f51",
+              "engineVersion": "4.7.2-stable",
+              "manifestHash": "719cd155c0e53bf73a55b8ecf1de2910e8b8b4c71a9da8bf867bf6e707ef6607",
+              "renderer": "gl_compatibility",
+              "sourceRevision": 3,
+              "target": "web"
+            },
+            "id": "gbd-4f069b8771a112f672438197dc46d44eb7b5e2fda7efe4bc67f186b9a20fcdcc",
+            "scene": {
+              "baseId": "creation-sandbox",
+              "entry": "res://main.tscn",
+              "format": "craftmine.godot-scene/1",
+              "projectHash": "719cd155c0e53bf73a55b8ecf1de2910e8b8b4c71a9da8bf867bf6e707ef6607"
+            }
+          },
+          "extensions": [],
+          "snapshot": {
+            "baseId": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseVersion": "1.0.0",
+              "doors": {},
+              "format": "craftmine.creation-progress/1",
+              "inventory": {},
+              "openedChests": {},
+              "player": {
+                "onFloor": true,
+                "pitch": -0.4,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  6
+                ],
+                "yaw": 0.55
+              },
+              "rules": {},
+              "sourceTimeOfDay": 12,
+              "timeOfDay": 12,
+              "worldId": "world-975d8322f846"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "world-975d8322f846"
+          }
+        }
+      }
+    },
+    "job": {
+      "artifacts": [
+        {
+          "bytes": 9919,
+          "kind": "artifact",
+          "path": "web/bridge.js",
+          "sha256": "a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5"
+        },
+        {
+          "bytes": 11944,
+          "kind": "artifact",
+          "path": "web/index.apple-touch-icon.png",
+          "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+        },
+        {
+          "bytes": 2973,
+          "kind": "artifact",
+          "path": "web/index.audio.position.worklet.js",
+          "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+        },
+        {
+          "bytes": 7298,
+          "kind": "artifact",
+          "path": "web/index.audio.worklet.js",
+          "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+        },
+        {
+          "bytes": 965,
+          "kind": "artifact",
+          "path": "web/index.html",
+          "sha256": "2ef5ecbbce604fbe0c055975577438ba42fa77e7def0eea265271be3bfa9e0c1"
+        },
+        {
+          "bytes": 5700,
+          "kind": "artifact",
+          "path": "web/index.icon.png",
+          "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+        },
+        {
+          "bytes": 314653,
+          "kind": "artifact",
+          "path": "web/index.js",
+          "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+        },
+        {
+          "bytes": 5676544,
+          "kind": "artifact",
+          "path": "web/index.pck",
+          "sha256": "e8af0d26299de7c88265237c778176a92a0bf7647ea8ed306298a91985243af1"
+        },
+        {
+          "bytes": 21443,
+          "kind": "artifact",
+          "path": "web/index.png",
+          "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+        },
+        {
+          "bytes": 38820072,
+          "kind": "artifact",
+          "path": "web/index.wasm",
+          "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+        }
+      ],
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "baseBuild": "gbd-b429da508654354600e581194e7a72a8dc065c79db6b9a0732bbfb847f248f51",
+      "baseId": "creation-sandbox",
+      "blockedReason": null,
+      "branchId": "main",
+      "buildId": "gbd-4f069b8771a112f672438197dc46d44eb7b5e2fda7efe4bc67f186b9a20fcdcc",
+      "candidateId": "gcan-4d62ea3881a1cad408ef055a08f92f1335d90c429f91243dd2f9a21a8d0803e1",
+      "checkRequirements": {
+        "creation": {
+          "counts": [
+            {
+              "count": 1,
+              "kind": "tree"
+            },
+            {
+              "count": 0,
+              "kind": "rock"
+            },
+            {
+              "count": 0,
+              "kind": "chest"
+            },
+            {
+              "count": 0,
+              "kind": "door"
+            },
+            {
+              "count": 0,
+              "kind": "marker"
+            }
+          ],
+          "entities": [
+            {
+              "excludeIds": [],
+              "kind": "tree",
+              "position": [
+                -1.916,
+                0,
+                2.875
+              ]
+            }
+          ],
+          "format": "craftmine.creation-requirements/1",
+          "requestHash": "ac986123b062ed634df6ef178b3d14911ff02491a624c8179453c411e588e9cc"
+        },
+        "format": "craftmine.godot-check-requirements/1"
+      },
+      "checkRequirementsHash": "c1ac5e32392acc727b321125c051a1a7c7c60b9dce7677f7baad3e9b0be9a6d2",
+      "createdAt": 1789079654769,
+      "executorId": "craftmine-windows-broker-v1",
+      "interruptReason": null,
+      "jobId": "gjob-ecf03f18ac51b5211b7463f8d2839bb660a773814b99f53c5f4e00bff932cb10",
+      "kind": "check",
+      "leaseExpiresAt": null,
+      "manifestHash": "719cd155c0e53bf73a55b8ecf1de2910e8b8b4c71a9da8bf867bf6e707ef6607",
+      "originJobId": null,
+      "output": {
+        "artifacts": [
+          {
+            "bytes": 9919,
+            "path": "web/bridge.js",
+            "sha256": "a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5"
+          },
+          {
+            "bytes": 11944,
+            "path": "web/index.apple-touch-icon.png",
+            "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+          },
+          {
+            "bytes": 2973,
+            "path": "web/index.audio.position.worklet.js",
+            "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+          },
+          {
+            "bytes": 7298,
+            "path": "web/index.audio.worklet.js",
+            "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+          },
+          {
+            "bytes": 965,
+            "path": "web/index.html",
+            "sha256": "2ef5ecbbce604fbe0c055975577438ba42fa77e7def0eea265271be3bfa9e0c1"
+          },
+          {
+            "bytes": 5700,
+            "path": "web/index.icon.png",
+            "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+          },
+          {
+            "bytes": 314653,
+            "path": "web/index.js",
+            "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+          },
+          {
+            "bytes": 5676544,
+            "path": "web/index.pck",
+            "sha256": "e8af0d26299de7c88265237c778176a92a0bf7647ea8ed306298a91985243af1"
+          },
+          {
+            "bytes": 21443,
+            "path": "web/index.png",
+            "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+          },
+          {
+            "bytes": 38820072,
+            "path": "web/index.wasm",
+            "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+          }
+        ],
+        "check": {
+          "assertions": [
+            {
+              "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+              "id": "runtime.ready",
+              "passed": true
+            },
+            {
+              "detail": "frames=3 distinct=1",
+              "id": "runtime.frame",
+              "passed": true
+            },
+            {
+              "detail": null,
+              "id": "runtime.no-errors",
+              "passed": true
+            },
+            {
+              "detail": "formal progress unchanged",
+              "id": "runtime.snapshot",
+              "passed": true
+            },
+            {
+              "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+              "id": "runtime.isolation",
+              "passed": true
+            },
+            {
+              "detail": "graceful=true",
+              "id": "runtime.recovery",
+              "passed": true
+            },
+            {
+              "detail": "runtime expectation evidence required",
+              "id": "runtime.creation-requirements",
+              "passed": true
+            },
+            {
+              "detail": "bound runtime expectation confirmed",
+              "id": "core.creation-requirements",
+              "passed": true
+            }
+          ],
+          "defaultsSnapshot": {
+            "baseId": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseVersion": "1.0.0",
+              "doors": {},
+              "format": "craftmine.creation-progress/1",
+              "inventory": {},
+              "openedChests": {},
+              "player": {
+                "onFloor": true,
+                "pitch": 0,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  6
+                ],
+                "yaw": 0
+              },
+              "rules": {},
+              "sourceTimeOfDay": 12,
+              "timeOfDay": 12,
+              "worldId": "world-975d8322f846"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "world-975d8322f846"
+          },
+          "passed": true,
+          "progressMigration": {
+            "added": [],
+            "defaultsSnapshotHash": "60883856b16f73cf7571a7c9d49bb9b0d5870e37684ae95331ae6d77659cae25",
+            "format": "craftmine.godot-additive-progress/1",
+            "previousSnapshotHash": "10339395fae38636ee8d10d2e3deb9c8ca9acfa6a96f28555221b8fb9a49b534",
+            "snapshot": {
+              "baseId": "creation-sandbox",
+              "baseVersion": "1.0.0",
+              "body": {
+                "baseVersion": "1.0.0",
+                "doors": {},
+                "format": "craftmine.creation-progress/1",
+                "inventory": {},
+                "openedChests": {},
+                "player": {
+                  "onFloor": true,
+                  "pitch": -0.4,
+                  "position": [
+                    0,
+                    0.899999976158142,
+                    6
+                  ],
+                  "yaw": 0.55
+                },
+                "rules": {},
+                "sourceTimeOfDay": 12,
+                "timeOfDay": 12,
+                "worldId": "world-975d8322f846"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "world-975d8322f846"
+            },
+            "snapshotHash": "10339395fae38636ee8d10d2e3deb9c8ca9acfa6a96f28555221b8fb9a49b534"
+          },
+          "requirementsEvidence": {
+            "buildId": "gbd-4f069b8771a112f672438197dc46d44eb7b5e2fda7efe4bc67f186b9a20fcdcc",
+            "format": "craftmine.godot-check-requirements-evidence/1",
+            "instanceId": "3a676fc7215868bc0cfee676",
+            "jobId": "gjob-ecf03f18ac51b5211b7463f8d2839bb660a773814b99f53c5f4e00bff932cb10",
+            "observations": [
+              {
+                "entities": [
+                  {
+                    "collisionBounds": {
+                      "max": [
+                        -1.31622076034546,
+                        4,
+                        3.47456455230713
+                      ],
+                      "min": [
+                        -2.51622080802917,
+                        0,
+                        2.27456474304199
+                      ]
+                    },
+                    "color": "#84a866",
+                    "id": "editor-tree",
+                    "kind": "tree",
+                    "meshBounds": {
+                      "max": [
+                        -1.31690037250519,
+                        3.99999952316284,
+                        3.47388505935669
+                      ],
+                      "min": [
+                        -2.51554107666016,
+                        0,
+                        2.27524423599243
+                      ]
+                    },
+                    "parameters": {},
+                    "position": [
+                      -1.91622078418732,
+                      4.4703483581543e-8,
+                      2.87456464767456
+                    ],
+                    "rotationY": 0,
+                    "scale": [
+                      1,
+                      1,
+                      1
+                    ],
+                    "solid": true,
+                    "visible": true
+                  }
+                ],
+                "phase": "loaded"
+              },
+              {
+                "entities": [
+                  {
+                    "collisionBounds": {
+                      "max": [
+                        -1.31622076034546,
+                        4,
+                        3.47456455230713
+                      ],
+                      "min": [
+                        -2.51622080802917,
+                        0,
+                        2.27456474304199
+                      ]
+                    },
+                    "color": "#84a866",
+                    "id": "editor-tree",
+                    "kind": "tree",
+                    "meshBounds": {
+                      "max": [
+                        -1.31690037250519,
+                        3.99999952316284,
+                        3.47388505935669
+                      ],
+                      "min": [
+                        -2.51554107666016,
+                        0,
+                        2.27524423599243
+                      ]
+                    },
+                    "parameters": {},
+                    "position": [
+                      -1.91622078418732,
+                      4.4703483581543e-8,
+                      2.87456464767456
+                    ],
+                    "rotationY": 0,
+                    "scale": [
+                      1,
+                      1,
+                      1
+                    ],
+                    "solid": true,
+                    "visible": true
+                  }
+                ],
+                "phase": "running"
+              }
+            ],
+            "requirementsHash": "c1ac5e32392acc727b321125c051a1a7c7c60b9dce7677f7baad3e9b0be9a6d2",
+            "worldId": "world-975d8322f846"
+          }
+        },
+        "compile": {
+          "errors": [],
+          "passed": true,
+          "warnings": []
+        },
+        "engine": {
+          "evidenceHash": "5effa11921fd03b4a144ca0a5631b935b2b32b402637c43a65724c9241081d57",
+          "isolation": "craftmine.windows.lpac-registry.v1",
+          "version": "4.7.2-stable"
+        },
+        "format": "craftmine.godot-job-result/1",
+        "import": {
+          "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Call to GetAdaptersAddresses failed with error 5.\r\n   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started 项目初始化 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在扫描文件结构……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在加载全局类名……\u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在校验 GDExtension……\u001b[39m\u001b[0m\r\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在创建自动加载脚本……\u001b[39m\u001b[0m\r\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在初始化插件……\u001b[39m\u001b[0m\r\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在启动文件扫描……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started 正在注册全局类…… (8 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  11% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  22% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | CameraRig\u001b[39m\u001b[0m\r\n[  44% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | PlayerController\u001b[39m\u001b[0m\r\n[  55% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  66% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  77% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started 正在加载编辑器 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载编辑器布局……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载停靠面板……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\r\n\u001b[0m\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n",
+          "passed": true
+        },
+        "inputHash": "a5ff2f5e0892b1acc67d8de12d2cab37cb75bc4d5ce2a334d914c3570c9dcdb2",
+        "passed": true
+      },
+      "outputHash": "1ca3ab18acbc7025a18d166fa766ff17c15486dae27fa9cb310627197fe1ffdb",
+      "progress": 100,
+      "sourceRevision": 3,
+      "sourceStale": false,
+      "stage": "passed",
+      "status": "passed",
+      "taskId": "work-6f0a56bf0879c83003670a7d99be5c7d5622e44402d3bb0220fae90307937dea",
+      "updatedAt": 1789079664027,
+      "worldId": "world-975d8322f846"
+    },
+    "receipt": {
+      "format": "craftmine.creation-operation/1",
+      "operationId": "fixed-editor-seed",
+      "action": "place",
+      "worldId": "world-975d8322f846",
+      "buildId": "gbd-b429da508654354600e581194e7a72a8dc065c79db6b9a0732bbfb847f248f51",
+      "instanceId": "8c35cdfd3a6fb60880191193",
+      "sourceRevision": 2,
+      "manifestHash": "bdf98878e60ef39c46905f7751557b23bcf429a62c61a3424bf2c9ff610391bb",
+      "targetSnapshotId": "cfca0b57-a4fb-4364-89ed-da8f451ccdc9",
+      "operationCount": 1,
+      "operationLimit": 4096,
+      "operationsRemaining": 4095,
+      "beforeRevision": 1,
+      "afterRevision": 2,
+      "affectedIds": [
+        "editor-tree"
+      ],
+      "createdIds": [
+        "editor-tree"
+      ],
+      "requestHash": "42b15fd94029de678cbb3752a3d7fe5d3bfcef94e6ab598a01939a0ec07c3540",
+      "undoSupported": true
+    },
+    "migration": {
+      "format": "craftmine.creation-migration-advance/1",
+      "revision": 2,
+      "manifestHash": "bdf98878e60ef39c46905f7751557b23bcf429a62c61a3424bf2c9ff610391bb",
+      "formalBuildId": "gbd-b429da508654354600e581194e7a72a8dc065c79db6b9a0732bbfb847f248f51",
+      "formalSourceRevision": 1,
+      "formalManifestHash": "6214a7c3e8368cdcfac1e7b58e80b58f59b6a1819e34ead44fa7217e9f07168b",
+      "migrationId": "8cb1a6413d8e480fd25815a8728c7bdeae789dedee9e934f998418379b099ee8",
+      "receiptRevision": 2,
+      "receiptManifestHash": "bdf98878e60ef39c46905f7751557b23bcf429a62c61a3424bf2c9ff610391bb"
+    },
+    "fixedAuthorFixture": true
+  },
+  "session": {
+    "sessionId": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+    "active": false,
+    "record": {
+      "session": {
+        "createdAt": "2026-09-10T22:34:12.231Z",
+        "id": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+        "messageCount": 7,
+        "messages": [
+          {
+            "content": "在这里放一棵树",
+            "createdAt": "2026-09-10T22:34:12.336Z",
+            "id": "addb6f9a-046d-4104-8cf0-f5363c1ad039",
+            "role": "user",
+            "status": "complete"
+          },
+          {
+            "content": "调整选中物体，尺寸 2 × 2 × 2，颜色 #88bb44",
+            "createdAt": "2026-09-10T22:34:29.457Z",
+            "id": "9a9a0e61-e71e-4384-9314-2b187d82fdd8",
+            "role": "user",
+            "status": "complete"
+          },
+          {
+            "content": "物体编辑已检查并采用。",
+            "createdAt": "2026-09-10T22:34:45.094Z",
+            "id": "57a7ef4f-cd8f-4ea0-b0bd-f4855caa85d4",
+            "role": "assistant",
+            "status": "complete"
+          },
+          {
+            "content": "删除选中的物体",
+            "createdAt": "2026-09-10T22:34:46.510Z",
+            "id": "33bf6520-8f13-4709-92e5-10cbc26e660e",
+            "role": "user",
+            "status": "complete"
+          },
+          {
+            "content": "物体编辑已检查并采用。",
+            "createdAt": "2026-09-10T22:35:04.981Z",
+            "id": "abfd2b0a-af5d-4a55-bcfd-bff2dd1a1815",
+            "role": "assistant",
+            "status": "complete"
+          },
+          {
+            "content": "撤销上一次物体编辑",
+            "createdAt": "2026-09-10T22:35:07.751Z",
+            "id": "45f3f8c8-4e10-4a4c-b26f-e374441bd4fb",
+            "role": "user",
+            "status": "complete"
+          },
+          {
+            "content": "物体编辑已检查并采用。",
+            "createdAt": "2026-09-10T22:35:23.581Z",
+            "id": "e2ae719a-611e-4ca8-b94c-d97c6d9633cf",
+            "role": "assistant",
+            "status": "complete"
+          }
+        ],
+        "mode": "agent",
+        "modelId": null,
+        "permissionMode": "inherit",
+        "projectPath": null,
+        "providerId": null,
+        "thinkingLevel": "off",
+        "title": "直接编辑无模型验收",
+        "updatedAt": "2026-09-10T22:35:23.606Z"
+      }
+    },
+    "metrics": {
+      "calls": {
+        "observed": 0,
+        "pending": 0,
+        "reported": 0
+      },
+      "coverage": "unknown",
+      "endedAtMs": 1789079723643,
+      "format": "craftmine.task-metrics/1",
+      "modelIdentity": "runtime-binding",
+      "models": [],
+      "observedAtMs": 1789079723916,
+      "scope": "root-and-delegates",
+      "sessionId": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+      "startedAtMs": 1789079707751,
+      "status": "completed",
+      "tps": {
+        "coverage": "unknown",
+        "generationMs": null,
+        "outputTokens": null,
+        "value": null,
+        "window": "model-generation"
+      },
+      "turnId": "b5c5023c-8c91-4c17-80f4-efe8c050e385",
+      "usage": null,
+      "wallTimeMs": 15892
+    },
+    "observation": {
+      "baseId": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "buildId": "gbd-b263963d4e58aed32e8f72bcce02b0a735313ba902c10e501b5cfa49b32861ba",
+      "format": "craftmine.godot-observation/1",
+      "instanceId": "55697e3ef09fd257e4d02d65",
+      "payload": {
+        "base": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "creation": {
+          "entities": [
+            {
+              "collisionBounds": {
+                "max": [
+                  -0.716220855712891,
+                  8,
+                  4.07456493377686
+                ],
+                "min": [
+                  -3.11622095108032,
+                  0,
+                  1.67456459999084
+                ]
+              },
+              "color": "#88bb44",
+              "id": "editor-tree",
+              "kind": "tree",
+              "meshBounds": {
+                "max": [
+                  -0.71757984161377,
+                  7.99999904632568,
+                  4.07320547103882
+                ],
+                "min": [
+                  -3.11486148834229,
+                  0,
+                  1.6759238243103
+                ]
+              },
+              "parameters": {},
+              "position": [
+                -1.91622078418732,
+                4.4703483581543e-8,
+                2.87456464767456
+              ],
+              "rotationY": 0,
+              "scale": [
+                2,
+                2,
+                2
+              ],
+              "solid": true,
+              "visible": true
+            }
+          ],
+          "obstacles": [
+            {
+              "entityId": "editor-tree",
+              "max": [
+                -0.716220855712891,
+                8,
+                4.07456493377686
+              ],
+              "min": [
+                -3.11622095108032,
+                0,
+                1.67456459999084
+              ]
+            }
+          ],
+          "physicsTick": 28,
+          "playerBounds": {
+            "halfExtents": [
+              0.3,
+              0.9,
+              0.3
+            ],
+            "position": [
+              0,
+              -2.38418579323607e-8,
+              6
+            ]
+          },
+          "revision": 5,
+          "target": {
+            "color": "#88bb44",
+            "entityId": "editor-tree",
+            "entityKind": "tree",
+            "entityName": "树",
+            "normal": [
+              0,
+              0,
+              1
+            ],
+            "position": [
+              -1.18049466609955,
+              1.85802674293518,
+              4.07456493377686
+            ],
+            "revision": 5,
+            "scale": [
+              2,
+              2,
+              2
+            ],
+            "surface": "entity"
+          },
+          "timeOfDay": 12
+        },
+        "error": "",
+        "inventory": {},
+        "logicalViewportSize": [
+          1200,
+          800
+        ],
+        "player": {
+          "onFloor": true,
+          "pitch": 0.135548617263277,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0.550000017645721
+        },
+        "ready": true,
+        "surfaceSize": [
+          1200,
+          800
+        ]
+      },
+      "protocol": "craftmine.godot-runtime/2",
+      "sampledAt": "2026-09-10T22:35:23Z",
+      "worldId": "world-975d8322f846"
+    }
+  },
+  "injectedFault": {
+    "scope": "task phase record only; formal core/source/progress untouched",
+    "operationId": "6f88b031-3b5d-418f-a7bc-e946efb51447",
+    "phase": "applying"
+  }
+}

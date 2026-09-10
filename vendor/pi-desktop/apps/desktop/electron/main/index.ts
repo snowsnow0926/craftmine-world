@@ -44,6 +44,7 @@ import {creationTaskStatus} from "./creation-task-status";
 import {createCreationEditService,validateCreationEdit,type CreationEditInput} from "./creation-edit-service";
 import {readFormalCreationJournal,assertDirectCreationCandidate} from "./creation-edit-guards";
 import {installCreationEditAcceptance} from "./creation-edit-acceptance";
+import {createCreationSourceMigration} from "./creation-source-migration";
 import type {DirectCreationIntent} from "./creation-check-requirements";
 import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
@@ -1120,6 +1121,16 @@ const creationTargets=createCreationTargetService({
   directory:join(dataDir,"creation-context"),selection:godotSelection,instance:()=>godotWorld.instance,
   descriptor:worldId=>plugins.requestCraftmineHost("godotRuntime.describe",{worldId}),
   sample:createCraftmineLiveSampler(()=>godotWorld),
+});
+const migrateCreationSource=createCreationSourceMigration({
+  directory:join(dataDir,"creation-migrations"),resourcesRoot:godotRoot,
+  domain:(method,args)=>plugins.requestCraftmineHost(method,args),
+  assertActive:async(context,capture)=>{
+    if(activeTurns.get(context.sessionId)!==context.turnId||turnFinalizations.has(context.sessionId)||await godotSelection()!==capture.worldId)throw Error("CREATION_MIGRATION_CONTEXT_CHANGED");
+    const formal=await plugins.requestCraftmineHost("godotRuntime.describe",{worldId:capture.worldId}) as any;
+    const instance=godotWorld.instance;if(!instance||instance.worldId!==capture.worldId||instance.buildId!==capture.buildId||instance.instanceId!==capture.instanceId||formal?.buildId!==capture.buildId||formal.sourceRevision!==capture.sourceRevision||formal.manifestHash!==capture.manifestHash)throw Error("CREATION_MIGRATION_FORMAL_CHANGED");
+  },
+  recordAdvance:(context,capture,advance)=>creationTargets.recordSourceMigration(context,capture,advance),
 });
 plugins.setServices({craftmineCreationTarget:async context=>{
   const binding=craftmineGateway.get(context.sessionId);
@@ -2686,6 +2697,7 @@ async function bindCraftmineTurn(sessionId: string, turnId: string, session: any
   }) as { world: { id: string } };
   craftmineGateway.bind({ projectId, sessionId, turnId, selectedWorld: result.world.id });
   if(target)await creationTargets.bind(target.owner,target.capture,{projectId,sessionId,turnId},result.world.id,target.intent??request.text);
+  if(target?.capture)await migrateCreationSource({projectId,sessionId,turnId},target.capture);
   return true;
 }
 /** sessionId -> last assistant usage recorded for active turn */
@@ -9766,7 +9778,7 @@ installCreationEditAcceptance({enabled:!!headlessAcceptance,window:()=>mainWindo
       let job:any;const deadline=Date.now()+600000;do{job=await plugins.requestCraftmineHost("godotBuild.read",{worldId:capture.worldId,jobId:started.jobId,context});if(["passed","failed","cancelled","blocked","interrupted"].includes(job.status))break;if(Date.now()>deadline)throw Error("EDIT_ACCEPTANCE_CHECK_TIMEOUT");await new Promise(resolve=>setTimeout(resolve,250));}while(true);
       if(job.status!=="passed"||!job.candidateId)throw Error("EDIT_ACCEPTANCE_CHECK_FAILED");
       const guard=()=>assertDirectCreationCandidate((method,args)=>plugins.requestCraftmineHost(method,args),context,bound,job.jobId,job.candidateId);
-      await guard();const result=await godotCandidates.autoApplyVerified(capture.worldId,job.candidateId,{buildId:capture.buildId,instanceId:capture.instanceId},guard);outcome="completed";return {result,job,receipt:edited.receipt,fixedAuthorFixture:true};
+      await guard();const result=await godotCandidates.autoApplyVerified(capture.worldId,job.candidateId,{buildId:capture.buildId,instanceId:capture.instanceId},guard);outcome="completed";return {result,job,receipt:edited.receipt,migration:bound.sourceMigration??null,fixedAuthorFixture:true};
     }finally{await finishTurn(sessionId,outcome,undefined,{createNotification:false,expectedTurnId:turnId});}
   }});
 installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), toolName: name => { const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name); if (!tool) throw Error("Missing world tool: " + name); return tool.fullName; }, begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId), finish: sessionId => finishTurn(sessionId, "completed", undefined, { createNotification: false }) });

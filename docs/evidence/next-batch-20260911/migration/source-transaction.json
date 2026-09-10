@@ -1,0 +1,84 @@
+{
+  "format": "craftmine.creation-source-migration/1",
+  "worldId": "world-975d8322f846",
+  "migrationId": "8cb1a6413d8e480fd25815a8728c7bdeae789dedee9e934f998418379b099ee8",
+  "formalBuildId": "gbd-b429da508654354600e581194e7a72a8dc065c79db6b9a0732bbfb847f248f51",
+  "binding": {
+    "baseBuild": "gbd-b429da508654354600e581194e7a72a8dc065c79db6b9a0732bbfb847f248f51",
+    "projectId": "pi-77099f2cdd0bace3dcacc22d68885d22242606cf7f67856bda1c5ccbc87f14c9",
+    "sessionId": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+    "taskId": "work-6f0a56bf0879c83003670a7d99be5c7d5622e44402d3bb0220fae90307937dea",
+    "turnId": "a6074849-13e5-4b06-a56f-9846117ae776"
+  },
+  "request": {
+    "context": {
+      "projectId": "pi-77099f2cdd0bace3dcacc22d68885d22242606cf7f67856bda1c5ccbc87f14c9",
+      "sessionId": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+      "turnId": "a6074849-13e5-4b06-a56f-9846117ae776"
+    },
+    "worldId": "world-975d8322f846",
+    "toolCallId": "host-stock-upgrade-8cb1a6413d8e480fd25815a8728c7bdeae789dedee9e934f998418379b099ee8",
+    "revision": 1,
+    "manifestHash": "6214a7c3e8368cdcfac1e7b58e80b58f59b6a1819e34ead44fa7217e9f07168b",
+    "operations": [
+      {
+        "op": "put",
+        "path": "craftmine_shared/base_adapter.gd",
+        "expectedHash": "ea6140a3cde5fb368c62ad899840ddbb53e9259f44e67843ced7087d38c10418",
+        "newBytes": 9088,
+        "newSha256": "b241c896cd2e227a01a34ff475504b7133022c10548afc7710fdad442c61fa51"
+      },
+      {
+        "op": "put",
+        "path": "scripts/creation_world.gd",
+        "expectedHash": "ef16e5d2e0e9ad8786c99875051a23b184fc815ee012e0a3167f8904a289946b",
+        "newBytes": 26575,
+        "newSha256": "f599887d0ebe4c17c37fec16ac8821d1e0f97da2cbac88758ae71870c2d5ce9a"
+      },
+      {
+        "op": "put",
+        "path": "scripts/scene_contract.gd",
+        "expectedHash": "a66041df090694a176cc8dcb0f08632a1157e2d5fdee40d884e9dc6558276915",
+        "newBytes": 5289,
+        "newSha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+      }
+    ],
+    "operation": {
+      "operationId": "host-stock-upgrade-8cb1a6413d8e480fd25815a8728c7bdeae789dedee9e934f998418379b099ee8",
+      "worldId": "world-975d8322f846",
+      "repoId": "world-world-975d8322f846",
+      "branchId": "main",
+      "expectedHeadOid": "3c76d96b9b9bb7fdb98f615353dcad2d8d7b03de",
+      "expectedAppliedOid": null,
+      "expectedProgressRevision": null
+    }
+  },
+  "receipt": {
+    "assetLockHash": "70396c0e7b3582530fb2765684ae9a8bbc6579c93066539e5ed83ce0db5a4809",
+    "baseBuild": "gbd-b429da508654354600e581194e7a72a8dc065c79db6b9a0732bbfb847f248f51",
+    "branchId": "main",
+    "commitOid": "6283fcd11f0cab1308a776c60a025343982ca2cf",
+    "currentTaskId": "work-6f0a56bf0879c83003670a7d99be5c7d5622e44402d3bb0220fae90307937dea",
+    "fileCount": 21,
+    "lastWriter": {
+      "baseBuild": "gbd-b429da508654354600e581194e7a72a8dc065c79db6b9a0732bbfb847f248f51",
+      "projectId": "pi-77099f2cdd0bace3dcacc22d68885d22242606cf7f67856bda1c5ccbc87f14c9",
+      "sessionId": "d306e8d3-1c72-449b-afe8-f20b11c23016",
+      "taskId": "work-6f0a56bf0879c83003670a7d99be5c7d5622e44402d3bb0220fae90307937dea",
+      "turnId": "a6074849-13e5-4b06-a56f-9846117ae776"
+    },
+    "manifestHash": "bdf98878e60ef39c46905f7751557b23bcf429a62c61a3424bf2c9ff610391bb",
+    "revision": 2
+  },
+  "advance": {
+    "format": "craftmine.creation-migration-advance/1",
+    "revision": 2,
+    "manifestHash": "bdf98878e60ef39c46905f7751557b23bcf429a62c61a3424bf2c9ff610391bb",
+    "formalBuildId": "gbd-b429da508654354600e581194e7a72a8dc065c79db6b9a0732bbfb847f248f51",
+    "formalSourceRevision": 1,
+    "formalManifestHash": "6214a7c3e8368cdcfac1e7b58e80b58f59b6a1819e34ead44fa7217e9f07168b",
+    "migrationId": "8cb1a6413d8e480fd25815a8728c7bdeae789dedee9e934f998418379b099ee8",
+    "receiptRevision": 2,
+    "receiptManifestHash": "bdf98878e60ef39c46905f7751557b23bcf429a62c61a3424bf2c9ff610391bb"
+  }
+}
