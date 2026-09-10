@@ -27,14 +27,23 @@ function collection(entries){
  * No supplied rules, paths or deletion semantics are accepted. */
 export function deriveAdditiveProgress(previousSnapshot,defaultsSnapshot){
  envelope(previousSnapshot);envelope(defaultsSnapshot);
+ for(const state of [previousSnapshot,defaultsSnapshot]){
+  const equipment=state.body.equipment;
+  if(!object(equipment)||canonicalProgressJson(Object.keys(equipment).sort())!==canonicalProgressJson(['active','items'])||typeof equipment.active!=='string')fail('MIGRATION_EQUIPMENT_SHAPE');
+  const items=collection(equipment.items);
+  if(!items.has(equipment.active))fail('MIGRATION_EQUIPMENT_ACTIVE');
+  for(const item of items.values())if(canonicalProgressJson(Object.keys(item).sort())!==canonicalProgressJson(['id','magazine','reserve'])||!['magazine','reserve'].every(key=>Number.isSafeInteger(item[key])&&item[key]>=0&&item[key]<=99999))fail('MIGRATION_EQUIPMENT_SHAPE');
+ }
  for(const key of ['format','worldId','baseId','baseVersion','stateVersion'])if(previousSnapshot[key]!==defaultsSnapshot[key])fail('MIGRATION_IDENTITY_CHANGED');
  const snapshot=JSON.parse(canonicalProgressJson(previousSnapshot)),added=[];
- for(const key of ['targets','interactables']){
-  const old=collection(previousSnapshot.body[key]),defaults=collection(defaultsSnapshot.body[key]);
+ for(const key of ['targets','interactables','equipment/items']){
+  const keys=key.split('/'),read=state=>keys.reduce((value,part)=>value[part],state.body);
+  const old=collection(read(previousSnapshot)),defaults=collection(read(defaultsSnapshot));
   for(const [id,entry]of old){const fresh=defaults.get(id);if(!fresh)fail('MIGRATION_ENTITY_REMOVED');if(canonicalProgressJson(Object.keys(entry).sort())!==canonicalProgressJson(Object.keys(fresh).sort()))fail('MIGRATION_ENTITY_SHAPE_CHANGED');for(const field of Object.keys(entry)){if(Array.isArray(entry[field])!==Array.isArray(fresh[field])||object(entry[field])!==object(fresh[field])||typeof entry[field]!==typeof fresh[field])fail('MIGRATION_ENTITY_SHAPE_CHANGED');}}
   // Follow real candidate scene order. Existing entries retain every value;
   // new identities use only values captured from that scene, never old clones.
-  snapshot.body[key]=defaultsSnapshot.body[key].map(entry=>{if(old.has(entry.id))return JSON.parse(canonicalProgressJson(old.get(entry.id)));added.push({path:'/body/'+key,id:entry.id});return JSON.parse(canonicalProgressJson(entry));});
+  const entries=read(defaultsSnapshot).map(entry=>{if(old.has(entry.id))return JSON.parse(canonicalProgressJson(old.get(entry.id)));added.push({path:'/body/'+key,id:entry.id});return JSON.parse(canonicalProgressJson(entry));});
+  if(keys.length===2)snapshot.body[keys[0]][keys[1]]=entries;else snapshot.body[key]=entries;
  }
  if(Buffer.byteLength(canonicalProgressJson(snapshot))>1048576)fail('MIGRATION_SIZE_LIMIT');
  return {format:'craftmine.godot-additive-progress/1',previousSnapshotHash:hashProgress(previousSnapshot),defaultsSnapshotHash:hashProgress(defaultsSnapshot),snapshotHash:hashProgress(snapshot),added,snapshot};
