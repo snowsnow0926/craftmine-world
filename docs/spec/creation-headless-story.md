@@ -1,0 +1,19 @@
+# 造物世界真实引擎故事验收
+
+日期：2026-09-11。用户要求测试不占鼠标，本流程仅运行独立 headless Godot 与隔离 Rust 服务，不生成任何真实输入或可见窗口。
+
+## 执行范围
+
+入口 `node tests/creation-story-headless.mjs`。必须设置 `CRAFTMINE_GODOT_CACHE_DIR` 为完整固定引擎缓存、`CRAFTMINE_CORE_BINARY` 为当前构建的 Rust 服务绝对路径。可选 `CRAFTMINE_STORY_SOURCE_ROOT` 指定另一份待验源码；默认测试当前工作树。引擎及 Rust 可执行文件复制到本次独立目录，缓存只读复用。
+
+流程使用实际底座物化代码和受限操作编译器，从真实物理射线获得“这里”与树的身份，逐次保存源码并重启场景。它验证放树、放大同一树、宝箱一次奖励、错误顺序不触发、正确顺序开门且移除实体碰撞、普通角色控制器移动、四类非法进度恢复拒绝且不改变原状态。
+
+最终源码通过真实 Godot Web 导出。测试专用 executor 将这次导出件登记为候选；真实 Rust 源码、检查、采用流程完成后，用实际采用版本标识再运行游戏。真实引擎保存回执交给 `godotRuntime.saveProgress`，退出 Rust 再读回，交给另一 Godot 进程恢复，逐字段比较并验证宝箱不重复奖励。
+
+所有源码登记按核心每批最多 16 个文件的约束执行，不直接修改数据库。物体互动使用视线、距离与正常 `interact` 接口；不直接写奖励、规则进度或门状态来构造通过结果。
+
+## 证据与边界
+
+每次保存 `test-results/creation-story-*/report.json` 与引擎日志，包含引擎版本、Rust 文件哈希、每阶段观察、指令回应、状态、原生断言、错误和耗时。旧四底座另运行 `node desktop/godot/bases/tests/audit-persistence.mjs`，不得以 JavaScript 投影结果冒充真实引擎回归。
+
+这里的输入是固定作者案例，不能推断模型首次创作成功率。headless 验收不代表最终画面、麦克风、桌面面板、玩家手感或生产 LPAC 执行器完成验收；测试专用 executor 登记必须在报告中明确标识。
