@@ -158,8 +158,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 2658,
-      "sha256": "ef192cf60cc2204d3cef99f468f6acb0483f0db819ac0cd9e9f18e217f6db97d"
+      "bytes": 1611,
+      "sha256": "63acea86c11df9533d5d0a44b127039b13bc1406a4e67b881f49791a8b8a21f0"
     },
     {
       "path": "creation-scene.mjs",
@@ -192,8 +192,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 5131,
-      "sha256": "4c5b3d53f6b081bd4d4eaa33151e5fcdf786e36a5d6630a09220361eb64b71bf"
+      "bytes": 2862,
+      "sha256": "e4852919b91bb738f04f2c33140e6d852765e5ed4a6cb9475b2bb3ff6f1a0d59"
     },
     {
       "path": "draft_install.mjs",
@@ -615,7 +615,7 @@
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 643,
-      "sha256": "bbb3cb73a759318fc891216f57b40923d5888062a7dd6fa729507eb6f5c58357"
+      "sha256": "b7a6371150ef720f6e9ef8dcbae3dc02ff05150e4078868872b81d4ee1170d22"
     }
   ],
   "externalEntries": [
