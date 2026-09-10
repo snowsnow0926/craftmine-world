@@ -55,3 +55,24 @@ node tests/creation-model-followups-native.mjs
 随后重开验收遇到 `EVALUATION_SESSION_MISSING`：新会话被产品自动命名为“放置树木并保留原有内容”，测试控制器仍要求初始化时的固定标题。模型和思考强度仍正确为 `deepseek-flash/high`。这是测试控制器使用可变标题识别会话的问题；保留本次 CA07 失败分类，不重新发送已经执行的愿望。HOLDOUT01 仍未执行。
 
 本次第五次客户端初始化失败后，旧 runner 的清理逻辑先查询评测快照，又因尚未初始化而抛错，导致跳过退出。已验证该 Electron 的父进程属于本次 runner 后定向终止，父进程退出码 1，无其直接子进程残留；这次不计为正常退出。独立记录在 `continuation-shutdown-supplement.json`，原报告不覆盖。工具现已修正为即使评测快照失败，也单独调用原生退出入口，避免依赖评测初始化成功。
+
+## 最终有限评测结果
+
+总控将测试会话身份改为稳定 UUID、实际 provider、模型与思考配置验证，并完成最终编译后，运行 `tests/creation-model-final-native.mjs`。使用同一个 K7eooB profile、真实新会话、原来的 37/40 预算；没有重新发送 CA07，也没有新建预算。
+
+`test-results/desktop-native-complete-K7eooB/final-continuation-report.json` 的 CA07 零请求补验共 15 项通过，包含实际采用构建、新树及碰撞、完整进度重开一致、原世界构建与全部对象及完整进度未变。补验前后 37 条预约文件字节完全一致，原 CA07 失败报告仍保留。
+
+随后仅执行原话颜色修改案例 HOLDOUT01。该名称是历史标识，此表达已用于开发，不应宣传为未见过的独立保留集。实际发生 3 次模型请求，累计预约 40/40；下一次模型调用被 `EVALUATION_REQUEST_LIMIT` 在网络前拒绝。目标颜色未改变，也未完成新的检查采用，因此结果记为 `failed`，原因是本次有限预算内未完成。没有追加请求、额度或替模型写入答案。
+
+此次两次客户端退出码均为 0，窗口与输入隔离违规、页面错误和退出失败均为空。原 IjZqHs 报告、profile 与全部文件 SHA 仍不变。最后入口的唯一尝试登记会阻止再次执行；这份最终报告只含新增的 HOLDOUT01 一个模型样本、3 次调用，CA07 补验不计模型样本。
+
+最终新增模型请求合计为 15：CA06 为 6，CA07 为 6，HOLDOUT01 为 3；加原始 25 次恰好达到共同 40 次上限。汇总应取 `continuation-recovered-report.json` 中的 CA06/CA07，加 `final-continuation-report.json` 中的 HOLDOUT01，保留两次原产物补验与历史失败说明，不重复累计旧续测报告。
+
+```powershell
+$env:CRAFTMINE_SOURCE_ROOT='D:/cm-nb-root'
+$env:CRAFTMINE_CONTINUATION_RECOVERY='D:/cm-nb-root/test-results/desktop-native-complete-K7eooB/report.json'
+$env:CRAFTMINE_LIVE_CONFIG='D:/Craftmine World/.craftmine/secrets.json'
+node tests/creation-model-final-native.mjs
+```
+
+该命令已经执行完成，仅作为可复核入口记录，不可在现有 profile 中重新获取预算或重放案例。
