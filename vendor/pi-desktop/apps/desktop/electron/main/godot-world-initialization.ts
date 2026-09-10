@@ -5,6 +5,9 @@ import {INITIAL_LOAD_BRIDGE_PATH, initialLoadBridgeRepair} from "./godot-initial
 
 type Data = Record<string, any>;
 type Domain = (method: string, args: Data) => Promise<any>;
+export type InitializationPreparation = {
+  attempt: number; pending: boolean; error: string | null; status: Data | null;
+};
 const sha = (bytes: string | Buffer) => createHash("sha256").update(bytes).digest("hex");
 const SOURCE = new Set([".godot", ".gd", ".tscn", ".tres", ".gdshader", ".gdshaderinc", ".json", ".cfg", ".txt", ".md", ".csv", ".svg", ".obj", ".mtl", ".uid", ".png", ".jpg", ".jpeg", ".webp", ".glb", ".ogg", ".wav"]);
 
@@ -29,10 +32,13 @@ export function createGodotWorldInitializer(options: {
 }) {
   const running = new Map<string, Promise<void>>();
   const failures = new Map<string, string>();
+  const preparations = new Map<string, InitializationPreparation>();
+  let nextAttempt = 0;
   const domain = options.domain;
-  async function initialize(worldId: string, recover=false) {
+  async function initialize(worldId: string, recover: boolean, preparation: InitializationPreparation) {
     if (!/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId)) throw Error("INVALID_WORLD_ID");
     let status = await domain("godotWorld.initStatus", {worldId});
+    preparation.status = status;
     if (status.playable) return;
     if (!recover && !canAutomaticallyInitialize(status)) return;
     if (recover && status.launchFailure) {
@@ -42,6 +48,7 @@ export function createGodotWorldInitializer(options: {
       await domain("godotWorld.initLaunchRetry", {worldId, initId: failure.initId,
         candidateId: failure.candidateId, applicationId: failure.applicationId});
       status = await domain("godotWorld.initStatus", {worldId});
+      preparation.status = status;
       if (status.playable) return;
       if (!canAutomaticallyInitialize(status)) throw Error("GODOT_INIT_LAUNCH_RETRY_UNCONFIRMED");
     }
@@ -141,6 +148,9 @@ export function createGodotWorldInitializer(options: {
         if (Date.now() > gateDeadline || gate.state === "unavailable") throw Error(gate.reason || "GODOT_EXECUTOR_UNAVAILABLE");
         await new Promise(resolve => setTimeout(resolve, 500));
       }
+      // Submission may commit even if its reply is lost. From this boundary,
+      // only Core can describe the attempt; finalization is not preparation.
+      preparation.pending = false;
       const job = await domain("godotBuild.start", {context, worldId, toolCallId: `base-build-${project.manifestHash}`,
         revision: project.revision, manifestHash: project.manifestHash, mode: "check"});
       const deadline = Date.now() + 900_000;
@@ -152,6 +162,7 @@ export function createGodotWorldInitializer(options: {
         await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
+    preparation.pending = false;
     if (candidateId && await options.selection() === worldId) await options.firstLoad(worldId, candidateId);
     completed = true;
     } finally {
@@ -163,12 +174,18 @@ export function createGodotWorldInitializer(options: {
     start(worldId: string, settings?: {recover?:boolean}) {
       if (!running.has(worldId)) {
         failures.delete(worldId);
-        const work = initialize(worldId,settings?.recover===true).catch(error => {failures.set(worldId, String(error));}).finally(() => running.delete(worldId));
+        const preparation: InitializationPreparation = {attempt: ++nextAttempt, pending: true, error: null, status: null};
+        preparations.set(worldId, preparation);
+        const work = initialize(worldId,settings?.recover===true, preparation).catch(error => {
+          failures.set(worldId, String(error));
+          if (preparation.pending) preparation.error = String(error);
+        }).finally(() => { preparation.pending = false; running.delete(worldId); });
         running.set(worldId, work);
       }
       return running.get(worldId)!;
     },
     error: (worldId: string) => failures.get(worldId) ?? null,
+    preparation: (worldId: string): InitializationPreparation | null => preparations.get(worldId) ?? null,
     running: (worldId: string) => running.has(worldId),
   };
 }

@@ -260,6 +260,13 @@ export function initStatusToCreation(status: Record<string, any> | null | undefi
   };
 }
 
+// Compare only Core identity/state fields, never volatile presentation errors.
+function preparationStatusKey(status: Record<string, any> | null): string {
+  return JSON.stringify([status?.worldId, status?.initId, status?.status, status?.reason,
+    status?.playable, status?.failureStage, status?.projectRevision, status?.worldRevision,
+    status?.candidateId, status?.applicationId, status?.launchFailure]);
+}
+
 export type GodotCreationDependencies = {
   /** Absolute directory where per-world project sources live. */
   worldsRoot: string;
@@ -268,7 +275,8 @@ export type GodotCreationDependencies = {
   domain: (method: string, params: Record<string, unknown>) => Promise<any>;
   materialize: (input: {baseId: string; worldId: string; template: string; out: string}) => unknown;
   makeWorldId?: () => string;
-  initialization?: {start: (worldId: string, settings?: {recover?:boolean}) => Promise<void>; error: (worldId: string) => string | null; running: (worldId: string) => boolean};
+  initialization?: {start: (worldId: string, settings?: {recover?:boolean}) => Promise<void>; error: (worldId: string) => string | null; running: (worldId: string) => boolean;
+    preparation?: (worldId: string) => import("./godot-world-initialization").InitializationPreparation | null};
 };
 
 /**
@@ -290,8 +298,8 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
   const options = readGodotCreateOptions({catalogFile: deps.catalogFile, basesRoot: deps.basesRoot});
   // A retry is scheduled before Core publishes its new build state. Keep that
   // interval visible without changing or discarding Core's previous failure.
-  const retries = new Map<string, Promise<void>>();
-  const retryFailures = new Map<string, string>();
+  const retries = new Map<string, {work: Promise<void>; waiting: boolean}>();
+  const retryFailures = new Map<string, {attempt: number; statusKey: string; error: string}>();
   const baseOf = (baseId: string): GodotBaseOption => {
     const base = options.bases.find((candidate) => candidate.id === baseId);
     if (!base || !base.delivered) throw new Error("WORLD_BASE_UNAVAILABLE");
@@ -370,7 +378,11 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       try {
         const status = await deps.domain("godotWorld.initStatus", {worldId});
         const mapped = initStatusToCreation(status);
-        if (!status.playable && mapped.state === "failed" && retries.has(worldId)) {
+        const retry = retries.get(worldId);
+        const preparation = deps.initialization?.preparation?.(worldId);
+        if (!status.playable && mapped.state === "failed" && retry
+          && (retry.waiting || (preparation?.pending === true
+            && preparationStatusKey(preparation.status) === preparationStatusKey(status)))) {
           return {state: "initializing", creation: {
             operationId: mapped.creation?.operationId ?? "", stage: "retry", progress: 0,
             stages: [{id: "retry", label: "准备重新初始化", status: "running" as const}],
@@ -379,9 +391,20 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
         }
         // This finite durable reason comes from the core's identity/hash-checked
         // job output. A stale in-memory recovery error cannot replace it.
-        if (status.playable || (!retryFailures.has(worldId)
+        const remembered = retryFailures.get(worldId);
+        const retryFailure = remembered && preparation?.attempt === remembered.attempt
+          && preparationStatusKey(status) === remembered.statusKey ? remembered.error : null;
+        if (remembered && !retryFailure) retryFailures.delete(worldId);
+        if (status.playable || (!retryFailure
           && ["GODOT_TASK_PATH_TOO_LONG", "GODOT_INITIAL_LOAD_FAILED"].includes(mapped.creation?.error?.code ?? ""))) return mapped;
-        const failure = retryFailures.get(worldId) ?? deps.initialization?.error(worldId);
+        // Once a retry has submitted a build/first-load, newer Core failures
+        // are authoritative even while workspace.endTurn is still pending.
+        if (mapped.state === "failed" && preparation && !preparation.pending && !preparation.error) return mapped;
+        const failure = retryFailure ?? (preparation
+          ? preparation.error
+            ? preparationStatusKey(preparation.status) === preparationStatusKey(status) ? preparation.error : null
+            : deps.initialization?.error(worldId)
+          : deps.initialization?.error(worldId));
         if (failure === "Error: GODOT_TASK_PATH_TOO_LONG" || failure === "GODOT_TASK_PATH_TOO_LONG") {
           return initStatusToCreation({...status, status: "failed", playable: false, reason: "GODOT_TASK_PATH_TOO_LONG"});
         }
@@ -392,6 +415,11 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
             : code === "GODOT_INITIAL_SOURCE_MISSING"
               ? "已检查的世界缺少源码文件。为保留你的修改，未自动补回；请从备份恢复缺失文件后重试。"
               : failure;
+          if (retryFailure && mapped.creation.error
+            && ["GODOT_TASK_PATH_TOO_LONG", "GODOT_INITIAL_LOAD_FAILED"].includes(mapped.creation.error.code)) {
+            return {state: "failed", creation: {...mapped.creation, error: {...mapped.creation.error,
+              message: `${mapped.creation.error.message} 本次重试准备失败：${message}`}}};
+          }
           return {state: "failed", creation: {...mapped.creation, error: {code: "GODOT_INITIALIZATION_FAILED", message, stage: mapped.creation.stage, recoverable: true}, actions: ["retry", "details"]}};
         }
         if (canAutomaticallyInitialize(status) && !deps.initialization?.running(worldId) && fs.existsSync(path.join(deps.worldsRoot, worldId, ".creation-owner.json"))) void deps.initialization?.start(worldId);
@@ -405,18 +433,29 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       const initialization = deps.initialization;
       if (!initialization) throw Error("GODOT_BASES_UNAVAILABLE");
       const pending = retries.get(worldId);
-      if (pending) return pending;
+      if (pending) return pending.work;
       retryFailures.delete(worldId);
-      const work = (async () => {
+      const retry = {work: Promise.resolve(), waiting: true};
+      const rememberPreparationFailure = () => {
+        const preparation = initialization.preparation?.(worldId);
+        if (preparation?.error && preparation.status) retryFailures.set(worldId, {
+          attempt: preparation.attempt, statusKey: preparationStatusKey(preparation.status), error: preparation.error,
+        });
+      };
+      // Install the shared record before invoking any initializer callbacks.
+      retries.set(worldId, retry);
+      retry.work = Promise.resolve().then(async () => {
         if (initialization.running(worldId)) await initialization.start(worldId);
+        retry.waiting = false;
         await initialization.start(worldId, {recover: true});
-      })().catch(error => {
+        // The production initializer resolves on failure and exposes its error.
+        rememberPreparationFailure();
+      }).catch(() => {
         // The panel acknowledges scheduling; an asynchronous preparation error
         // must appear on its next status read, not become an unhandled rejection.
-        retryFailures.set(worldId, String(error));
+        rememberPreparationFailure();
       }).finally(() => retries.delete(worldId));
-      retries.set(worldId, work);
-      return work;
+      return retry.work;
     },
   };
 }
