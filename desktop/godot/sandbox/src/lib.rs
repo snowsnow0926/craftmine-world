@@ -12,6 +12,9 @@ pub mod network;
 pub mod profile;
 pub mod report;
 pub mod task;
+pub mod verification;
+pub mod preflight;
+pub mod broker;
 
 use std::ffi::OsStr;
 use std::os::windows::ffi::OsStrExt;

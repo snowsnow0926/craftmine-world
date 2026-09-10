@@ -6,11 +6,32 @@ free-form command line. Callers describe a task through `task::Task`, and the
 crate owns the profile, desktop, directory permissions, budget, logs,
 cancellation and artifact handoff.
 
-Status on 2026-09-09 (standard user, session 1, not elevated): the boundary
-works end to end for real Godot 4.7.2 — native denial probes, `--version`,
-headless import and Web export — and editor-time code (`@tool` resource and an
-enabled editor plugin) stays inside the same boundary. See
-[Verified](#verified-on-2026-09-09) and [Not verified](#not-verified).
+Cycle 6 adds the versioned host verification candidate described in
+[BROKER_PROTOCOL_V1.md](BROKER_PROTOCOL_V1.md). Historical observations below
+remain evidence of their particular builds, not a reusable authorization for
+new tasks. Cycle 5 corrected the old `None == success` network error mistake,
+measured explicit TCP denials for LPAC plus `registryRead`, and ran pinned Godot
+import/export successfully while its legacy script-only gate remained unknown.
+
+The private `godot-host-broker.exe run` now repeats TCP and UDP native preflight
+for every task. Both native preflight and actual Godot are created suspended
+inside a creation-time Job, and the host verifies package SID, the exact single
+registry capability, Low integrity, executable identity and actual Job limits
+before resuming. Unsupported LPAC query 87 is recorded explicitly. The host
+constructs the receipt; a model cannot submit a `trusted` flag or a receipt.
+
+Godot socket creation converts Windows failures to generic `FAILED` in the
+pinned engine. Under this v1 contract its `error=1` is diagnostic/compatibility
+evidence, not an independent OS proof. It is never rewritten to 10013. The
+proof obligation is instead the reviewed fixed creation policy, host-read
+actual process identity and the matching per-task native TCP/UDP denial tests.
+
+Use `Task::run_with_preflight` for this full candidate result. `Task::run` alone
+performs suspended host verification but has no network receipt and is
+insufficient for broker/core acceptance. The private CLI additionally fixes
+engine/template hashes, snapshots actual inputs and owns cancellation/cleanup.
+This crate does not enable the product executor; core and browser gates remain
+independent requirements.
 
 ## Layout
 
@@ -19,9 +40,13 @@ enabled editor plugin) stays inside the same boundary. See
 | `src/lib.rs` | shared helpers (`wide`, `win`, `Handle`, `Result`) |
 | `src/acl.rs` | scoped directory grants + integrity label inspection |
 | `src/desktop.rs` | task desktop on a non-interactive window station |
-| `src/profile.rs` | one fresh AppContainer profile per run, always deleted |
+| `src/profile.rs` | fresh profile per run; recorded normal/cooperative cleanup |
 | `src/launch.rs` | creation-time boundary: AppContainer, job, handle list, env |
 | `src/task.rs` | product API: prepare / run / cancel / logs / artifacts |
+| `src/verification.rs` | host token, image and Job checks before resume |
+| `src/preflight.rs` | fixed native TCP/UDP observations and host echo controls |
+| `src/broker.rs` | bounded strict request/response and pinned task execution |
+| `src/bin/godot-host-broker.rs` | private JSON line transport and cancellation |
 | `src/report.rs` | read-only identity and environment reports |
 | `src/loader.rs` | bounded, read-only loader diagnostics |
 | `src/main.rs` | fixed trusted acceptance gate (no arguments) |
@@ -68,7 +93,10 @@ Two further findings from real engine runs:
 ## What the boundary enforces
 
 - One fresh `craftmine.godot.task.<task_id>` AppContainer profile per run, no
-  capabilities, no reuse; deleted with a recorded HRESULT.
+  reuse. The v1 broker uses LPAC with exactly `registryRead`; the older baseline
+  diagnostic used no capabilities. Normal and cooperative cancellation paths
+  delete the profile with a recorded HRESULT. Hard broker termination requires
+  later recovery of profile/work state and cannot claim completed cleanup.
 - A task desktop created on the logon session's non-interactive station
   (`Service-0x0-…$`, `WSF_VISIBLE` false). `WinSta0` is refused for the
   default-station path, and no existing station ACL is modified.

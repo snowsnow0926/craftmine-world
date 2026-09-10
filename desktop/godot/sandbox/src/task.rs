@@ -245,6 +245,8 @@ pub struct Task {
     status: TaskStatus,
     log: PathBuf,
     engine: PathBuf,
+    process_verification: Option<crate::verification::ProcessVerification>,
+    network_preflight: Option<crate::preflight::NetworkPreflight>,
 }
 
 impl Task {
@@ -308,6 +310,8 @@ impl Task {
         let log = layout.logs.join("task.log");
         let engine = layout.bin.join(&pins.editor.file_name);
         Ok(Self {
+            process_verification: None,
+            network_preflight: None,
             engine,
             task_id: task_id.to_string(),
             kind,
@@ -337,6 +341,32 @@ impl Task {
         &self.log
     }
 
+    pub fn process_verification(&self) -> Option<&crate::verification::ProcessVerification> { self.process_verification.as_ref() }
+    pub fn network_preflight(&self) -> Option<&crate::preflight::NetworkPreflight> { self.network_preflight.as_ref() }
+
+    /// Host-only entry: the preflight binary is the caller's pinned broker,
+    /// not a model-provided path. It runs before project code under the exact
+    /// same package SID, capabilities, private desktop and policy recipe.
+    pub fn run_with_preflight(&mut self, broker: &PinnedInput, cancel: Arc<AtomicBool>) -> Result<&TaskStatus> {
+        if self.status.state != TaskState::Prepared { return Err("Task has already been run".into()); }
+        let binary = self.layout.bin.join("broker-preflight.exe");
+        copy_pinned(broker, &binary)?;
+        let spec = LaunchSpec { executable: binary, args: Vec::new(), cwd: self.layout.work.clone(),
+            redirection: Redirection::LogFile(self.layout.logs.join("preflight.json")), desktop: Some(self.desktop.name.clone()),
+            appcontainer: Some(self.profile.sid()), job: Some(self.budget.job), child_process_policy: None,
+            handle_list: true, environment: Some(minimal_environment(&self.layout.work, &std::env::var("SystemRoot")?)),
+            timeout: Duration::from_secs(20), diagnose: false };
+        match crate::preflight::run(spec, &cancel) {
+            Ok(result) => self.network_preflight = Some(result),
+            Err(error) => {
+                self.status = TaskStatus { state: if cancel.load(std::sync::atomic::Ordering::SeqCst) { TaskState::Cancelled } else { TaskState::Failed },
+                    exit_code: None, message: error.to_string() };
+                return Ok(&self.status);
+            }
+        }
+        self.run(Some(cancel))
+    }
+
     /// Runs the task, honouring both the budget timeout and an optional
     /// cancellation flag that another thread may set at any time. Cancellation
     /// terminates the whole task job, so no task process survives.
@@ -358,7 +388,7 @@ impl Task {
         };
         let engine = self.engine.clone();
         let system_root = std::env::var("SystemRoot")?;
-        let running = start_unless_cancelled(cancel.as_deref(), || crate::launch::start(&LaunchSpec {
+        let running = start_unless_cancelled(cancel.as_deref(), || crate::launch::start_verified(&LaunchSpec {
             executable: engine,
             args: self.kind.args(&self.layout.project, &self.layout.export_dir),
             cwd: self.layout.work.clone(),
@@ -377,6 +407,7 @@ impl Task {
                 message: "cancelled before process creation; no task process started".into() };
             return Ok(());
         };
+        self.process_verification = running.verification.clone();
         let started = std::time::Instant::now();
         let outcome = loop {
             if let Some(exit) = running.wait(Duration::from_millis(200))? {
@@ -420,6 +451,7 @@ impl Task {
     pub fn collect_artifacts(&self) -> Result<Vec<Artifact>> {
         if self.status.state != TaskState::Succeeded { return Err("Only successful tasks can hand off artifacts".into()); }
         let mut artifacts = Vec::new();
+        let mut total = 0u64;
         if !self.layout.export_dir.is_dir() {
             return Ok(artifacts);
         }
@@ -429,9 +461,14 @@ impl Task {
                 return Err("Export artifact must be a regular file".into());
             }
             let path = entry.path();
+            let bytes = entry.metadata()?.len();
+            total = total.checked_add(bytes).ok_or("Artifact size overflow")?;
+            if artifacts.len() >= 4096 || bytes > 256 * 1024 * 1024 || total > 512 * 1024 * 1024 {
+                return Err("Artifact file count or byte limit exceeded".into());
+            }
             artifacts.push(Artifact {
                 name: entry.file_name().to_string_lossy().into_owned(),
-                bytes: entry.metadata()?.len(),
+                bytes,
                 sha256: digest(&path)?,
             });
         }
