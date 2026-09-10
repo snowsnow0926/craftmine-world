@@ -15,7 +15,10 @@ export async function verifyCreationDoorSequence(runtime:any,r:CreationRequireme
   for(const [dx,dz,yaw] of [[0,2,0],[2,0,Math.PI/2],[0,-2,Math.PI],[-2,0,-Math.PI/2]]){
    const state=structuredClone(snapshot.state),[x,y,z]=entity.position;
    state.body.player={position:[x+dx,y+0.9,z+dz],yaw,pitch:Math.atan2(entity.scale[1]*0.6-1.55,2),onFloor:true};
-   await call('pause');const restored:any=await bounded(runtime.load({build:null,snapshot:state}));await call('resume');
+   await call('pause');let restored:any;
+   try{restored=await bounded(runtime.load({build:null,snapshot:state}));}
+   catch(error){if(!String(error).includes('Saved player overlaps candidate entity:'))throw error;await call('resume');continue;}
+   await call('resume');
    if(restored.error)continue;
    await call('wait',{frames:2});
    const aimed=await call('observe-envelope');if(aimed?.payload?.creation?.target?.entityId!==id)continue;
