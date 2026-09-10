@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { readCreationEntities, creationRenderItemsForBase } from '../../../../../desktop/godot/shared/creation-entities.mjs';
 
 const source = JSON.stringify({
-  format: 'craftmine.creation-scene/1', revision: 3,
-  entities: [{ id: 'tree-1', kind: 'tree', position: [2, 4, 9], scale: [2, 1, 1], color: '#4a8' }],
+  format: 'craftmine.creation-scene/1', revision: 3, defaults:{timeOfDay:12},
+  entities: [{ id: 'tree-1', kind: 'tree', position: [2, 4, 9], rotationY:0, scale: [2, 1, 1], color: '#44aa88', parameters:{} }],
 });
 
 test('side-view projects creation entities on x/y plane', () => {
