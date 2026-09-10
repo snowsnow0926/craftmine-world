@@ -52,6 +52,9 @@ parameter/guide story from the portable payload, issue followups and history
 comparison through the pinned packaged client, explicit long-path failure and
 restart, and independent Windows game export/save/reopen. Preserve full progress
 comparisons, strict shutdown audits and package hashes before and after use.
+The parameter and Windows export harnesses bound their final forced-stop wait
+to five seconds and report `CLIENT_STOP_TIMEOUT` instead of hanging indefinitely.
+Forced shutdown remains a failed acceptance; the timeout does not relax cleanup.
 
 ## Remaining scope and limits
 
