@@ -25,7 +25,7 @@ $context=@{plan=$plan;root=$rootItem.FullName;install=(Join-Path $plan.root 'ins
 # Leave profile absent through the first installer, so the old guard cannot
 # create an empty-profile backup before the controlled synthetic seed exists.
 foreach($part in @('temp','evidence')){New-Item -ItemType Directory -Path (Join-Path $context.root $part) -ErrorAction Stop|Out-Null}
-$report=[ordered]@{format='craftmine.windows-host-compatibility/1';environment='host-compatibility';a17='NOT_VERIFIED';status='RUNNING';passed=$false;startedAt=[DateTime]::UtcNow.ToString('o');plan=$plan;steps=@();invocations=@();limitations=@('Personal host; not clean-OS, VM, ephemeral or CI acceptance.','No application launch, GUI play, model request, cross-user, reboot, signing or performance validation.','NSIS 26.15.3 has no runtime no-start-menu flag. Only the initially absent current-user Craftmine shortcut may be created and removed by its own uninstaller.','Process prechecks cannot exclude a user concurrently launching an existing client after the check. NSIS CHECK_APP_RUNNING can terminate a matching process. Keep other Craftmine launches stopped during this finite run.','Private non-input desktop prevents installer BringToFront from targeting the current input desktop; this helper has only static/unit validation until this run succeeds.','On failure, preserve partial owned install, registrations and all evidence; no automatic cleanup or retry.')}
+$report=[ordered]@{format='craftmine.windows-host-compatibility/1';environment='host-compatibility';a17='NOT_VERIFIED';status='RUNNING';passed=$false;startedAt=[DateTime]::UtcNow.ToString('o');plan=$plan;steps=@();invocations=@();limitations=@('Personal host; not clean-OS, VM, ephemeral or CI acceptance.','No application launch, GUI play, model request, cross-user, reboot, signing or performance validation.','NSIS 26.15.3 has no runtime no-start-menu flag. Only the initially absent current-user Craftmine shortcut may be created and removed by its own uninstaller.','Process prechecks cannot exclude a user concurrently launching an existing client after the check. NSIS CHECK_APP_RUNNING can terminate a matching process. Keep other Craftmine launches stopped during this finite run.','Private non-input desktop prevents installer BringToFront from targeting the current input desktop; owned windowless helpers validated desktop inheritance and bounded cleanup, while installer-specific behavior still requires this actual run.','On failure, preserve partial owned install, registrations and all evidence; no automatic cleanup or retry.')}
 $reportPath=Join-Path $context.root 'evidence/report.json'
 $report.installerCache=@{path=$installerCache;location='real-current-user-LocalApplicationData';initiallyAbsent=$true;retainedAfterUninstall=$true}
 $report.limitations+='NSIS writes its exact current-user installer cache outside D. An existing cache directory is a collision; only this run-created cache may be overwritten by the approved next installer. Remaining owned cache is recorded and retained, never silently deleted.'
@@ -46,17 +46,19 @@ function Invoke-CmOwnedInstaller([string]$File,[string]$ExpectedHash,[string]$Ar
     # The owned uninstaller must be able to remove its own original executable.
     $share=if($File -ieq (Join-Path $context.install 'Uninstall craftmine world.exe')){[IO.FileShare]::Read -bor [IO.FileShare]::Delete}else{[IO.FileShare]::Read}
     $pin=[IO.File]::Open($File,[IO.FileMode]::Open,[IO.FileAccess]::Read,$share)
+    $invocation=@{file=$File;sha256=$ExpectedHash;arguments=$Arguments;startedAt=[DateTime]::UtcNow.ToString('o')}
+    $report.invocations+= $invocation;Save-CmHostReport
     try{
         $result=[CraftmineHostProcess]::Run($File,$Arguments,$context.temp,900)
-        $report.invocations+=@{file=$File;sha256=$ExpectedHash;arguments=$Arguments;result=$result};Save-CmHostReport
-        if(-not $result.AllOwnedProcessesExited){throw 'OWNED_PROCESS_EXIT_UNCONFIRMED'}
+        $invocation.result=$result;Save-CmHostReport
+        Assert-CmHostProcessResult $result
         return $result
     }catch{
-        $report.invocations+=@{file=$File;sha256=$ExpectedHash;arguments=$Arguments;error=$_.Exception.Message};Save-CmHostReport;throw
+        $invocation.error=$_.Exception.Message;Save-CmHostReport;throw
     }finally{$pin.Dispose()}
 }
 function Invoke-CmSetup($Part){return Invoke-CmOwnedInstaller $Part.installer $Part.installerSha256 ('/S /currentuser --no-desktop-shortcut /D='+$context.install)}
-function Assert-CmZero($Result){if($Result.ExitCode -ne 0){throw ('INSTALLER_EXIT_'+$Result.ExitCode)}}
+function Assert-CmZero($Result){if($null -eq $Result.RootExitCode -or $Result.RootExitCode -ne 0){throw ('INSTALLER_ROOT_EXIT_'+$Result.RootExitCode)}}
 function Assert-CmSameRegistration($Before,$After){if(($Before|ConvertTo-Json -Depth 12 -Compress) -cne ($After|ConvertTo-Json -Depth 12 -Compress)){throw 'REGISTRY_OR_SHORTCUT_CHANGED'}}
 $actions=@{
     preflight={param($c) Assert-CmOwnership;Assert-CmCleanHost (Get-CmRegistry) (Get-CmShortcuts);Assert-CmAbsentInstallerCache $c.installerCache;Assert-CmNoProcesses $c.install;@{registryAbsent=$true;shortcutsAbsent=$true;installerCacheAbsent=$true;inputDesktopUntouched=$true}}
@@ -88,7 +90,7 @@ $actions=@{
     busyUpgrade={param($c)
         Assert-CmOwnedRegistration (Get-CmRegistry) $c.install;Assert-CmOwnedShortcuts (Get-CmShortcuts) $c.install
         $lock=[IO.File]::Open((Join-Path $c.profile 'pi.sqlite'),[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
-        try{$r=Invoke-CmSetup $c.plan.next;if($r.ExitCode -ne 2){throw ('EXPECTED_UPGRADE_GUARD_EXIT_2_ACTUAL_'+$r.ExitCode)};$r}finally{$lock.Dispose()}
+        try{$r=Invoke-CmSetup $c.plan.next;if($r.RootExitCode -ne 2){throw ('EXPECTED_UPGRADE_GUARD_ROOT_EXIT_2_ACTUAL_'+$r.RootExitCode)};$r}finally{$lock.Dispose()}
     }
     verifyUnchanged={param($c)
         Assert-CmTreeEqual $c.newInstalled (Get-CmTree $c.install) 'BUSY_UPGRADE_CHANGED_NEW_INSTALL'

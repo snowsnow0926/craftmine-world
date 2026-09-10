@@ -1,0 +1,38 @@
+
+name                                                                     passed error
+----                                                                     ------ -----
+PowerShell parse and C# compile without launching native helper            True      
+valid old827 distinct new pinned plan                                      True      
+same installer refused as upgrade                                          True      
+same source commit refused as upgrade                                      True      
+same payload refused as upgrade                                            True      
+unexpected predecessor refused                                             True      
+C root and quoted argument injection refused                               True      
+relative and traversal roots refused                                       True      
+unknown fields and hash coercion refused                                   True      
+existing registry blocks before launch                                     True      
+existing named shortcut blocks before launch                               True      
+empty registration and shortcuts accepted                                  True      
+owned current-user registration accepted                                   True      
+machine registry and foreign location rejected                             True      
+uninstaller path and mode exact                                            True      
+foreign shortcut is never owned                                            True      
+11 stages old-new-busy-uninstall finite order                              True      
+failed busy invariant stops without automatic uninstall                    True      
+complete tree detects changed bytes and extra files                        True      
+SQLite fixture is actual SQLite not empty lock placeholder                 True      
+backup verifies exact manifest plus every copied byte                      True      
+default entry NOT_RUN creates no root                                      True      
+any existing cache even empty blocks before first installer                True      
+owned cache must match exact setup hash and file set                       True      
+empty directory addition cannot hide in profile comparison                 True      
+unconfirmed cleanup is rejected even if root exit was zero                 True      
+confirmed timeout cleanup still fails lifecycle and retains PID evidence   True      
+normal job zero does not invent descendant exit codes                      True      
+unrelated PI core is excluded by package identity not PID                  True      
+unknown core ownership and actual broker name remain blocked               True      
+NSIS prefix danger includes install-other even for unrelated executable    True      
+Craftmine executable is blocked regardless of owner lookup                 True      
+
+
+D:\cm-fb-host-install-20260910\test-results\host-installer\unit-3009e2e8e288415694908884ef7e354d\report.json
