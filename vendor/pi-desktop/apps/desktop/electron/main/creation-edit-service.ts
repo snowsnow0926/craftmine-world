@@ -1,11 +1,14 @@
+import fs from "node:fs";
+import path from "node:path";
 import {createHash} from "node:crypto";
 import type {CreationCapture} from "./creation-target-service";
 
 type Context={projectId:string;sessionId:string;turnId:string};
 export type CreationEditInput={sessionId:string;captureId:string;operationId:string;action:"modify"|"delete"|"undo";changes?:{scale?:number[];color?:string};undoOperationId?:string};
-export type CreationEditStatus={operationId:string;sessionId:string;phase:"preparing"|"editing"|"checking"|"applying"|"applied"|"failed";worldId?:string;jobId?:string;candidateId?:string;receipt?:any;error?:string};
+export type CreationEditStatus={operationId:string;sessionId:string;phase:"preparing"|"editing"|"checking"|"applying"|"applied"|"failed"|"interrupted";worldId?:string;jobId?:string;candidateId?:string;receipt?:any;error?:string};
 type Bound={context:Context;capture:CreationCapture};
 type Dependencies={
+  directory?:string;
   begin(owner:number,input:CreationEditInput):Promise<Bound>;
   execute(bound:Bound,name:string,args:Record<string,unknown>,toolCallId:string):Promise<any>;
   readJob(bound:Bound,jobId:string):Promise<any>;
@@ -34,12 +37,37 @@ export function validateCreationEdit(value:unknown):CreationEditInput {
 
 /** Explicit player edits use normal plugin tools and a durable host turn, without a model. */
 export function createCreationEditService(deps:Dependencies){
-  const records=new Map<string,{owner:number;hash:string;status:CreationEditStatus}>();
+  type RecordEntry={owner:number|null;hash:string;status:CreationEditStatus};
+  const records=new Map<string,RecordEntry>();
+  const recordPath=(operationId:string)=>path.join(deps.directory!,createHash("sha256").update(operationId).digest("hex")+".json");
+  const persist=(entry:RecordEntry)=>{
+    if(!deps.directory)return;
+    const target=recordPath(entry.status.operationId),temporary=target+".tmp";
+    try{
+      fs.mkdirSync(deps.directory,{recursive:true});
+      fs.writeFileSync(temporary,JSON.stringify({format:"craftmine.creation-edit-state/1",hash:entry.hash,status:entry.status}),{encoding:"utf8",flag:"w"});
+      fs.renameSync(temporary,target);
+    }catch(error){try{fs.unlinkSync(temporary);}catch{}throw Error("CREATION_EDIT_STATE_PERSIST_FAILED: "+String(error));}
+  };
+  const lookup=(operationId:string):RecordEntry|undefined=>{
+    const cached=records.get(operationId);if(cached)return cached;
+    if(!deps.directory)return;
+    let stored:any;
+    try{const target=recordPath(operationId);if(fs.statSync(target).size>131072)fail("CREATION_EDIT_STATE_INVALID");stored=JSON.parse(fs.readFileSync(target,"utf8"));}
+    catch(error){if((error as NodeJS.ErrnoException).code==="ENOENT")return;throw error;}
+    if(stored?.format!=="craftmine.creation-edit-state/1"||typeof stored.hash!=="string"||!/^[a-f0-9]{64}$/.test(stored.hash)||stored.status?.operationId!==operationId||typeof stored.status.sessionId!=="string"||!["preparing","editing","checking","applying","applied","failed","interrupted"].includes(stored.status.phase))fail("CREATION_EDIT_STATE_INVALID");
+    const status:CreationEditStatus=stored.status;
+    if(!["applied","failed","interrupted"].includes(status.phase))Object.assign(status,{phase:"interrupted",error:"CREATION_EDIT_INTERRUPTED_REVIEW_DRAFT"});
+    const entry:RecordEntry={owner:null,hash:stored.hash,status};persist(entry);records.set(operationId,entry);return entry;
+  };
   const busy=new Set<string>();
   const pause=deps.pause??(ms=>new Promise(resolve=>setTimeout(resolve,ms)));
   async function run(owner:number,input:CreationEditInput,status:CreationEditStatus){
     let bound:Bound|undefined;
-    const publish=(patch:Partial<CreationEditStatus>)=>{Object.assign(status,patch);deps.changed?.(owner,structuredClone(status));};
+    const publish=(patch:Partial<CreationEditStatus>)=>{
+      const next={...status,...patch},entry=records.get(input.operationId)!;
+      persist({...entry,status:next});Object.assign(status,next);deps.changed?.(owner,structuredClone(status));
+    };
     try{
       bound=await deps.begin(owner,input);publish({worldId:bound.capture.worldId,phase:"editing"});
       const invoke=(name:string,args:Record<string,unknown>,step:string)=>deps.execute(bound!,name,args,`edit-${input.operationId}-${step}`);
@@ -64,23 +92,35 @@ export function createCreationEditService(deps:Dependencies){
       const result=await deps.apply(bound,job.jobId,job.candidateId);
       if(result?.status!=="applied")fail(result?.reason??"CREATION_EDIT_APPLY_FAILED");
       publish({phase:"applied"});
-    }catch(error){publish({phase:"failed",error:error instanceof Error?error.message:String(error)});}
+    }catch(error){
+      const message=error instanceof Error?error.message:String(error);
+      try{publish({phase:message.includes("CREATION_EDIT_STATE_PERSIST_FAILED")?"interrupted":"failed",error:message});}
+      catch{Object.assign(status,{phase:"interrupted",error:message});deps.changed?.(owner,structuredClone(status));}
+    }
     finally{
-      if(bound)try{await deps.finish(bound,structuredClone(status));}catch(error){publish({error:`CREATION_EDIT_CLOSEOUT_FAILED: ${String(error)}`});}
+      if(bound)try{await deps.finish(bound,structuredClone(status));}catch(error){
+        const message=`CREATION_EDIT_CLOSEOUT_FAILED: ${String(error)}`;
+        try{publish({error:message});}catch{Object.assign(status,{phase:"interrupted",error:message});deps.changed?.(owner,structuredClone(status));}
+      }
       busy.delete(input.sessionId);
     }
   }
   return {
     start(owner:number,value:unknown){
       const input=validateCreationEdit(value),hash=createHash("sha256").update(JSON.stringify(input)).digest("hex");
-      const previous=records.get(input.operationId);
+      const previous=lookup(input.operationId);
       if(previous){if(previous.owner!==owner||previous.hash!==hash)fail("CREATION_EDIT_REPLAY_CONFLICT");return structuredClone(previous.status);}
       if(busy.has(input.sessionId))fail("CREATION_EDIT_BUSY");
-      if(records.size>=128){const completed=[...records].find(([,entry])=>["applied","failed"].includes(entry.status.phase));if(completed)records.delete(completed[0]);else fail("CREATION_EDIT_BUSY");}
+      if(records.size>=128){const completed=[...records].find(([,entry])=>["applied","failed","interrupted"].includes(entry.status.phase));if(completed)records.delete(completed[0]);else fail("CREATION_EDIT_BUSY");}
       const status:CreationEditStatus={operationId:input.operationId,sessionId:input.sessionId,phase:"preparing"};
-      records.set(input.operationId,{owner,hash,status});busy.add(input.sessionId);void run(owner,input,status);
+      const entry={owner,hash,status};persist(entry);records.set(input.operationId,entry);busy.add(input.sessionId);void run(owner,input,status);
       return structuredClone(status);
     },
-    status(owner:number,operationId:string){const value=records.get(operationId);if(!value||value.owner!==owner)fail("CREATION_EDIT_NOT_FOUND");return structuredClone(value.status);},
+    status(owner:number,operationId:string,authorization?:{sessionId:string;worldId:string}){
+      const value=lookup(operationId);if(!value)fail("CREATION_EDIT_NOT_FOUND");
+      if(authorization&&(value.status.sessionId!==authorization.sessionId||(value.status.worldId!==undefined&&value.status.worldId!==authorization.worldId)))fail("CREATION_EDIT_CONTEXT_CHANGED");
+      if(value.owner!==owner){if(!authorization)fail("CREATION_EDIT_NOT_FOUND");value.owner=owner;}
+      return structuredClone(value.status);
+    },
   };
 }

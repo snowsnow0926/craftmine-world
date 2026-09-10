@@ -24,3 +24,10 @@ creation_operation 新增 delete(targetId)、undo(undoOperationId)。新操作�
 树/石头只有注册行为后才接受 E 互动；事件只交给声明该对象的规则。set_entity_presence 同时更新可见性与碰撞，observe 读取实际 visible/solid，不把关闭碰撞的对象加入 obstacles。
 
 entity-behavior 必需提供纯读 project_entities(state)，返回每个 entityId 的 visible/solid。恢复前按投影检查玩家碰撞；恢复后真实节点必须匹配投影，不匹配则回滚到原 snapshot 和原实体 presence。保持既有通用 rules 进度字典和严格状态校验，不增加无法兼容的顶层进度字段。任何规则存在时删除类操作仍保守拒绝。
+
+
+## 直接编辑状态恢复
+
+宿主对每个 operationId 先持久保存指纹和阶段，再开始任务；后续阶段以临时文件原子替换。此文件只是操作进展，正式源码、任务和采用仍以 core 为准。重启读取未终态记录时标记 interrupted，保留 jobId/候选/原回执用于核对，不自动重放任何写入。新 renderer owner 必须经宿主当前 session/world 验证后才可重绑定读取；阶段落盘失败不可显示已采用，应返回待核对。
+
+编辑属性从同次宿主射线命中的真实实体采样透传；缺少真实尺寸/颜色时不开放参数编辑。UI状态以session和world共同分区，提交前立即保留唯一操作编号并进入忙碌状态，回复丢失查询同一个编号；结果不明时只提供重新读取原操作状态，不能再次产生新操作。晚到的起始回复不得把已采用结果改回检查中。
