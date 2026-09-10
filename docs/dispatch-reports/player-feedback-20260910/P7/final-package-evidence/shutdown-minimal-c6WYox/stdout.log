@@ -1,0 +1,6 @@
+
+[app/timing] [timing] kind=boot phase=when-ready elapsedMs=96
+[app/lifecycle] app boot craftmine world 0.14.4-preview.1
+[app/timing] [timing] kind=boot phase=backends-start elapsedMs=99
+[app/lifecycle] app shutdown
+[app/timing] [timing] kind=boot phase=host elapsedMs=167 spawnedMs=4 durationMs=68 ok=false

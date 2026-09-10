@@ -1,0 +1,38 @@
+
+[app/timing] [timing] kind=boot phase=when-ready elapsedMs=178
+[app/lifecycle] app boot craftmine world 0.14.4-preview.1
+[app/timing] [timing] kind=boot phase=backends-start elapsedMs=181
+[app/timing] [timing] kind=boot phase=host elapsedMs=337 spawnedMs=3 handshakeMs=152 durationMs=155 ok=true
+[app/runtime] host-core handshake ok
+[agent/runtime] [agent-sidecar] ready (host-proxy mode)
+[app/timing] [timing] kind=boot phase=sidecar elapsedMs=487 spawnedMs=6 configureMs=137 durationMs=144 ok=true
+[app/runtime] agent sidecar configured
+[app/plugin] plugin.service
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=1692 pluginId=craftmine.world durationMs=1204 ok=true
+[app/plugin] plugin restored
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=1769 pluginId=pi.browser durationMs=76 ok=true
+[app/plugin] plugin restored
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=1837 pluginId=pi.files durationMs=68 ok=true
+[app/plugin] plugin restored
+[app/timing] [timing] kind=boot phase=mcp-refresh elapsedMs=1840 durationMs=3 ok=true
+[app/timing] [timing] kind=boot phase=backends-ready elapsedMs=1841
+[app/timing] [timing] kind=boot phase=window-created elapsedMs=1869
+[app/timing] [timing] kind=boot phase=window-loaded elapsedMs=1979 durationMs=110 ok=true
+[app/timing] [timing] kind=boot phase=window-ready elapsedMs=1979
+[app/timing] [timing] kind=boot phase=window-rendered-offscreen elapsedMs=1980
+HEADLESS PAGE 1: [timing] kind=boot phase=renderer-bootstrap durationMs=9 ok=true
+[app/timing] [timing] kind=boot phase=renderer-bootstrap durationMs=9 ok=true
+[app/lifecycle] app shutdown
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.service
+[app/plugin] plugin.api

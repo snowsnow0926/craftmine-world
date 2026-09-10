@@ -1,0 +1,2735 @@
+{
+  "format": "craftmine.shutdown-minimal/1",
+  "original": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR",
+  "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile",
+  "worldId": "legacy-d756f5f46b904b178a12",
+  "identity": {
+    "mode": "packaged",
+    "packaged": "D:\\cm-fb2-20260910\\desktop\\build\\releases\\beb66d76c00a-04d1dca3-2129-4a62-9cf9-653326e6ef6f\\output\\win-unpacked",
+    "commit": "beb66d76c00a102c755ec7aeaed59b19cf5c68a9",
+    "buildManifestSha256": "44295bd32541ce246465e6a491ef4d32d8f07c66bba2bbb2bc8e0382c5e964fe",
+    "sourceArchiveHash": "b7fae4b9c45b19b8b6fd3082ece0180e6fd3e4232b662f1d99d07fac230f538f",
+    "appVersion": "0.14.4-preview.1",
+    "executableSha256": "5b041bb94055ae7c511ae56730e5c7f7d0db8d7c8beeeb4ae14b45196c9eca7e",
+    "asarSha256": "e17daaafeabb091bac1396e2e6d7a34835bf47b23b6a2dfada374f5555b7b774",
+    "mainSha256": "3fe088c7503798d866b9e99e1023a427d2511f080685bc5e957b9f4bf33e31a6",
+    "pluginSha256": "6cbb196fd6d62c5363abfd3f98ff1150c65014c31cad98eb9846db25e27a6dca",
+    "coreSha256": "476297048415332458e451aa2646f47b0fb57d98e76c8d5929645c8eb7fedd63",
+    "hostSha256": "29efc54cd80423702f7fa229ebd1c80d1ca926a870588182026a5eb50101ef7c",
+    "runtimeSourceCommit": "beb66d76c00a102c755ec7aeaed59b19cf5c68a9",
+    "runtimeFilesDigest": "54385f1ab8253df632e9da3f0ddd3e09dad905ee4b3f0b31730d1fb646ea95e6"
+  },
+  "driverSha256": "f3c72c3da3f6c9d437fb2940a77367189d88ba60713bef227d5e4e4872750045",
+  "startedAt": "2026-09-10T08:07:49.391Z",
+  "events": [
+    {
+      "at": "2026-09-10T08:07:49.405Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 2
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.527Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless-ready"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.609Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 62
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.611Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 58
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.611Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 66
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.664Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "8cb8a68d-732b-4346-95eb-97eb50f7c417"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.665Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 106
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.665Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 37
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.768Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "b3391d02-869c-4b98-b9fb-f7d402a70965"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.800Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 56
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.802Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 111
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.802Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 39
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.875Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "987bc39a-2910-4ce2-b5fa-a23e8f3dd689"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.901Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 28
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.919Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 28
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.919Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 52
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:49.983Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "b4ad72e3-fe1c-4009-b4a9-6b5090d93919"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:50.090Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "ffb66dad-b901-4f56-a09d-1a37f4298a75"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:50.198Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "a290f040-4663-4c64-8b39-a055b91d1fa7"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:50.306Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "051a7743-2607-4711-bdf1-57bff5d5ae50"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:50.413Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "348639d2-2b51-4f51-a48b-d9e42cd05466"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:50.523Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "f350d902-ed94-47de-a0d0-86e57ca10b7f"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:50.631Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "ab5aa466-90af-4117-8d60-ab33bc39b770"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:50.739Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "960428d8-e687-4353-a130-a3d4afac503b"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:50.848Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "9e248898-0a21-4e26-9f91-76ca5e8ec32e"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:50.853Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 24
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:50.953Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "dd9841c0-9b96-4bc4-88c8-663211f3afdd"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.029Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 28
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.030Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 48
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.030Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 146
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.061Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "55f854b1-a255-400b-9d6a-7561950d91fe"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.095Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 24
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.095Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 139
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.158Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 24
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.158Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 137
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.160Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 86
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.161Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 68
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.163Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "fe088de9-0406-4bef-8116-746a6a73579f"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.184Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 68
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.276Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "8aaf5fc4-bb5d-4cb3-9bf4-6766680c8d88"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.278Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "d9939e1b-1ba6-4085-94f9-f170798a9bdd",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.295Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 90
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.295Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 66
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.313Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 79
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.324Z",
+      "type": "stderr",
+      "value": {
+        "bytes": 146
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.324Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 160
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.539Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "804f6406-13b3-4ada-a9ce-ef6b9395b019",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.688Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 89
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:51.798Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "85bd72d6-1127-4b0d-a260-e35f92f8f059",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:52.059Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "08a3d884-774e-4068-87a9-ab9598f0b5c7",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:52.322Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "abc5f404-0e10-4815-b899-194d0d198684",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:52.584Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "1f5fba65-e172-47ce-94bc-5a47004c602a",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:52.848Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "635cfa30-e5dd-48f0-96ba-f81888403357",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:53.108Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "710fff96-8885-4002-946d-9fc5e1f94b91",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:53.370Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "69292cc3-c100-46bc-9235-d3638cc55eae",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:53.429Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 133
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:53.592Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 97
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:53.630Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "f560362e-36de-4174-af1f-1aca6d99f44e",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:53.892Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "3e58799d-ee45-44ba-80d5-e8f156b5771a",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:54.154Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "6000803b-780f-4c7a-8021-8dee01b3ed72",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:54.415Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "1e814c3e-0b95-41ce-82f1-0eb9a531904a",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:54.675Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "efe4458a-0735-45b5-8c64-b8449dad4e55",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:54.934Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "74f1479d-d3de-4bfb-9770-dd20c665b022",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:55.197Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "36e6d63a-fef8-4dd4-9533-16f452c3fb8b",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:55.458Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "abf39fc5-9112-4fce-92c6-a276531247c2",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:55.720Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "6803f407-82d1-4868-8ef8-56a3bdd5a1db",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:55.981Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "eac16d6e-a29f-4626-8890-8d09e0303f2b",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:56.244Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "de5ae4e9-3569-4857-87d4-d6778f6c1b5f",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:56.504Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "b4176023-60d4-4683-a32d-f88a1bb81279",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:56.766Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "909ff836-1895-4fb2-b04f-a4cd0405af98",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:57.017Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "7225e7c3-33b3-4ec0-902b-8dd2151e7ae8",
+        "error": "Error: No world runtime is running"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:57.177Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 142
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:57.178Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 289
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:57.182Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 147
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:57.183Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 142
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:57.185Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 147
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:57.186Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 142
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:59.012Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 147
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:59.028Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "eb1878b5-2532-4a29-9820-4da29b650680"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:59.030Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "fbb28ec8-61b0-4e4e-95eb-1064ae2cf267"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:59.032Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "0a4e3c89-feac-47cb-a321-c3ec9f5dcda9"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:59.034Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "22b7ac59-cbca-4d30-8146-99e4e548917e"
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:59.088Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 29
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:59.111Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 28
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:59.111Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 24
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:59.128Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 28
+      }
+    },
+    {
+      "at": "2026-09-10T08:07:59.128Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 24
+      }
+    },
+    {
+      "at": "2026-09-10T08:08:02.104Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless-exit"
+      }
+    },
+    {
+      "at": "2026-09-10T08:08:02.107Z",
+      "type": "disconnect"
+    },
+    {
+      "at": "2026-09-10T08:08:02.226Z",
+      "type": "stderr-close"
+    },
+    {
+      "at": "2026-09-10T08:08:02.227Z",
+      "type": "stdout-close"
+    },
+    {
+      "at": "2026-09-10T08:08:02.237Z",
+      "type": "exit",
+      "value": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "at": "2026-09-10T08:08:02.237Z",
+      "type": "close",
+      "value": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "calls": [
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:49.609Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": []
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.296875,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 138408,
+              "peakWorkingSetSize": 138412,
+              "privateBytes": 123496
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:49.665Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:49.767Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": []
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.460042,
+              "percentCPUUsage": 5.628047417611072,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 188556,
+              "peakWorkingSetSize": 188560,
+              "privateBytes": 174560
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031522,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45520,
+              "peakWorkingSetSize": 45524,
+              "privateBytes": 11776
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:49.768Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:49.874Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.470205,
+              "percentCPUUsage": 0.3387124726710393,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 189864,
+              "peakWorkingSetSize": 189992,
+              "privateBytes": 175232
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152031,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031663,
+              "percentCPUUsage": 0.004692329605205358,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45580,
+              "peakWorkingSetSize": 45584,
+              "privateBytes": 11792
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.0738,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 69936,
+              "peakWorkingSetSize": 69940,
+              "privateBytes": 32056
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:49.875Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:49.982Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.475531,
+              "percentCPUUsage": 0.17561862203680673,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 190300,
+              "peakWorkingSetSize": 190304,
+              "privateBytes": 175576
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152079,
+              "percentCPUUsage": 0.0015827146457818677,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031663,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45580,
+              "peakWorkingSetSize": 45584,
+              "privateBytes": 11792
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.176458,
+              "percentCPUUsage": 3.383559259913567,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 250900,
+              "peakWorkingSetSize": 250904,
+              "privateBytes": 244604
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:49.984Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:50.090Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.476192,
+              "percentCPUUsage": 0.022097859081852345,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 190304,
+              "peakWorkingSetSize": 190308,
+              "privateBytes": 175576
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152124,
+              "percentCPUUsage": 0.0015045195768087335,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031663,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45580,
+              "peakWorkingSetSize": 45584,
+              "privateBytes": 11792
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.264358,
+              "percentCPUUsage": 2.939488669424904,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 271196,
+              "peakWorkingSetSize": 271200,
+              "privateBytes": 264212
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:50.091Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:50.197Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.476887,
+              "percentCPUUsage": 0.023095286833493284,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 190320,
+              "peakWorkingSetSize": 190324,
+              "privateBytes": 175576
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152173,
+              "percentCPUUsage": 0.0016280887168800239,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031663,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45580,
+              "peakWorkingSetSize": 45584,
+              "privateBytes": 11792
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.264358,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 271196,
+              "peakWorkingSetSize": 271200,
+              "privateBytes": 264212
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:50.198Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:50.305Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.47763,
+              "percentCPUUsage": 0.024563055313488062,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 190324,
+              "peakWorkingSetSize": 190328,
+              "privateBytes": 175576
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152219,
+              "percentCPUUsage": 0.0015205726873411662,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031663,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45580,
+              "peakWorkingSetSize": 45584,
+              "privateBytes": 11792
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.264358,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 271196,
+              "peakWorkingSetSize": 271200,
+              "privateBytes": 264212
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:50.306Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:50.413Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.478393,
+              "percentCPUUsage": 0.02530669861347152,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 190352,
+              "peakWorkingSetSize": 190356,
+              "privateBytes": 175560
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152272,
+              "percentCPUUsage": 0.0017584745200359925,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031663,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45580,
+              "peakWorkingSetSize": 45584,
+              "privateBytes": 11792
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.264617,
+              "percentCPUUsage": 0.008597213573373733,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 271196,
+              "peakWorkingSetSize": 271268,
+              "privateBytes": 264212
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:50.414Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:50.522Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.479098,
+              "percentCPUUsage": 0.02299727947076899,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 190412,
+              "peakWorkingSetSize": 190416,
+              "privateBytes": 175580
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152314,
+              "percentCPUUsage": 0.001369812974868498,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031663,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45580,
+              "peakWorkingSetSize": 45584,
+              "privateBytes": 11792
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.264617,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 271196,
+              "peakWorkingSetSize": 271268,
+              "privateBytes": 264212
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:50.523Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:50.630Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.48208,
+              "percentCPUUsage": 0.09871256569251731,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 191256,
+              "peakWorkingSetSize": 191280,
+              "privateBytes": 176176
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152364,
+              "percentCPUUsage": 0.0016554931912876028,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031663,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45580,
+              "peakWorkingSetSize": 45584,
+              "privateBytes": 11792
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.264617,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 271196,
+              "peakWorkingSetSize": 271268,
+              "privateBytes": 264212
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:50.631Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:50.738Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.482701,
+              "percentCPUUsage": 0.0204618243643984,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 191260,
+              "peakWorkingSetSize": 191280,
+              "privateBytes": 176176
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152416,
+              "percentCPUUsage": 0.001713310445263026,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031663,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45580,
+              "peakWorkingSetSize": 45584,
+              "privateBytes": 11792
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.264849,
+              "percentCPUUsage": 0.00764273130133313,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 271200,
+              "peakWorkingSetSize": 271268,
+              "privateBytes": 264216
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:50.740Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:50.846Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.483349,
+              "percentCPUUsage": 0.021342214505064825,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 191268,
+              "peakWorkingSetSize": 191280,
+              "privateBytes": 176176
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152469,
+              "percentCPUUsage": 0.0017453248345893086,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031663,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45580,
+              "peakWorkingSetSize": 45584,
+              "privateBytes": 11792
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.26505,
+              "percentCPUUsage": 0.006617841701226507,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 271208,
+              "peakWorkingSetSize": 271276,
+              "privateBytes": 264224
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:50.848Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:50.953Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.484594,
+              "percentCPUUsage": 0.04204978694774613,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 191304,
+              "peakWorkingSetSize": 191308,
+              "privateBytes": 176172
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152521,
+              "percentCPUUsage": 0.0017563959835277078,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031663,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45580,
+              "peakWorkingSetSize": 45584,
+              "privateBytes": 11792
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.38359,
+              "percentCPUUsage": 4.005005750396311,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 274336,
+              "peakWorkingSetSize": 274340,
+              "privateBytes": 267396
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:50.954Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:51.060Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world",
+            "pi.browser"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.49189,
+              "percentCPUUsage": 0.24221177595410723,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 191676,
+              "peakWorkingSetSize": 191804,
+              "privateBytes": 176568
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152574,
+              "percentCPUUsage": 0.001759455246097993,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.031791,
+              "percentCPUUsage": 0.004249368902321616,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45588,
+              "peakWorkingSetSize": 45592,
+              "privateBytes": 11796
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.450853,
+              "percentCPUUsage": 2.233238509593931,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 254992,
+              "peakWorkingSetSize": 274440,
+              "privateBytes": 247924
+            }
+          },
+          {
+            "pid": 233744,
+            "type": "Utility",
+            "creationTime": 1789027671034.633,
+            "cpu": {
+              "cumulativeCPUUsage": 0.034305,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 64212,
+              "peakWorkingSetSize": 64216,
+              "privateBytes": 25112
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:51.061Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:51.161Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world",
+            "pi.browser",
+            "pi.files"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.501648,
+              "percentCPUUsage": 0.3429645521286437,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 192208,
+              "peakWorkingSetSize": 192212,
+              "privateBytes": 176732
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.152615,
+              "percentCPUUsage": 0.001441353775714103,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 71980,
+              "peakWorkingSetSize": 71984,
+              "privateBytes": 66720
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.03189,
+              "percentCPUUsage": 0.0034799309919139056,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45616,
+              "peakWorkingSetSize": 45620,
+              "privateBytes": 11816
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.450853,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 254992,
+              "peakWorkingSetSize": 274440,
+              "privateBytes": 247924
+            }
+          },
+          {
+            "pid": 233744,
+            "type": "Utility",
+            "creationTime": 1789027671034.633,
+            "cpu": {
+              "cumulativeCPUUsage": 0.070093,
+              "percentCPUUsage": 1.257692772659415,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 69572,
+              "peakWorkingSetSize": 69576,
+              "privateBytes": 32200
+            }
+          },
+          {
+            "pid": 254120,
+            "type": "Utility",
+            "creationTime": 1789027671099.96,
+            "cpu": {
+              "cumulativeCPUUsage": 0.067989,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 66664,
+              "peakWorkingSetSize": 66788,
+              "privateBytes": 27552
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:51.163Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:51.276Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world",
+            "pi.browser",
+            "pi.files"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.546209,
+              "percentCPUUsage": 1.3987082955100463,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 208416,
+              "peakWorkingSetSize": 212168,
+              "privateBytes": 184016
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 0.208932,
+              "percentCPUUsage": 1.7684589596435762,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 103140,
+              "peakWorkingSetSize": 103144,
+              "privateBytes": 91352
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.032616,
+              "percentCPUUsage": 0.02281440512852743,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 45864,
+              "peakWorkingSetSize": 45868,
+              "privateBytes": 11912
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.450853,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 254992,
+              "peakWorkingSetSize": 274440,
+              "privateBytes": 247924
+            }
+          },
+          {
+            "pid": 233744,
+            "type": "Utility",
+            "creationTime": 1789027671034.633,
+            "cpu": {
+              "cumulativeCPUUsage": 0.070093,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 69572,
+              "peakWorkingSetSize": 69576,
+              "privateBytes": 32200
+            }
+          },
+          {
+            "pid": 254120,
+            "type": "Utility",
+            "creationTime": 1789027671099.96,
+            "cpu": {
+              "cumulativeCPUUsage": 0.067989,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 66664,
+              "peakWorkingSetSize": 66788,
+              "privateBytes": 27552
+            }
+          },
+          {
+            "pid": 221572,
+            "type": "Tab",
+            "creationTime": 1789027671190.835,
+            "cpu": {
+              "cumulativeCPUUsage": 0.100569,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 90192,
+              "peakWorkingSetSize": 109032,
+              "privateBytes": 40620
+            }
+          }
+        ],
+        "windows": [
+          {
+            "visible": false,
+            "focused": false,
+            "focusable": false,
+            "offscreen": true
+          }
+        ],
+        "world": null
+      },
+      "finishedAt": "2026-09-10T08:07:51.277Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:51.277Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:51.538Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:51.797Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:52.059Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:52.322Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:52.584Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:52.847Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:53.108Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:53.369Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:53.630Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:53.892Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:54.154Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:54.414Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:54.674Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:54.934Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:55.196Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:55.458Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:55.720Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:55.981Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:56.243Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:56.504Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:56.766Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:57.017Z"
+    },
+    {
+      "method": "godotObserve",
+      "startedAt": "2026-09-10T08:07:57.279Z",
+      "result": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "buildId": "gbd-f2c2f0efe12cbab21430f4d8703129a164a93fbcd31dc4b6c90e49a629191f16",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "89c7787b7221ee69d28a0836",
+        "payload": {
+          "aim": {
+            "collider": "TargetB",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              0,
+              1.59999990463257,
+              -9.80000114440918
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0,
+              1.59999990463257,
+              6
+            ],
+            "forwardDot": 1,
+            "global": [
+              0.239999994635582,
+              1.39999985694885,
+              5.57999992370605
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "logicalViewportSize": [
+            1200,
+            800
+          ],
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "surfaceSize": [
+            1200,
+            800
+          ],
+          "targetFeedback": {
+            "format": "craftmine.target-feedback-observation/1",
+            "targets": [
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_a"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_b"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_c"
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "legacy-d756f5f46b904b178a12"
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-10T08:07:59Z",
+        "worldId": "legacy-d756f5f46b904b178a12"
+      },
+      "finishedAt": "2026-09-10T08:07:59.029Z"
+    },
+    {
+      "method": "godotSnapshot",
+      "startedAt": "2026-09-10T08:07:59.029Z",
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "legacy-d756f5f46b904b178a12"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "legacy-d756f5f46b904b178a12"
+        },
+        "worldId": "legacy-d756f5f46b904b178a12"
+      },
+      "finishedAt": "2026-09-10T08:07:59.031Z"
+    },
+    {
+      "method": "status",
+      "startedAt": "2026-09-10T08:07:59.031Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-lr-OmsTrR\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world",
+            "pi.browser",
+            "pi.files"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 231792,
+            "type": "Browser",
+            "creationTime": 1789027669396.187,
+            "cpu": {
+              "cumulativeCPUUsage": 0.921427,
+              "percentCPUUsage": 0.17279399852233218,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 334416,
+              "peakWorkingSetSize": 338164,
+              "privateBytes": 300252
+            }
+          },
+          {
+            "pid": 272780,
+            "type": "GPU",
+            "creationTime": 1789027669607.858,
+            "cpu": {
+              "cumulativeCPUUsage": 8.156933,
+              "percentCPUUsage": 3.6601583888673725,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 217264,
+              "peakWorkingSetSize": 239988,
+              "privateBytes": 363712
+            }
+          },
+          {
+            "pid": 266356,
+            "type": "Utility",
+            "creationTime": 1789027669610.869,
+            "cpu": {
+              "cumulativeCPUUsage": 0.085234,
+              "percentCPUUsage": 0.02423110206596279,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 49700,
+              "peakWorkingSetSize": 52044,
+              "privateBytes": 14192
+            }
+          },
+          {
+            "pid": 36508,
+            "type": "Utility",
+            "creationTime": 1789027669807.71,
+            "cpu": {
+              "cumulativeCPUUsage": 0.460712,
+              "percentCPUUsage": 0.004540126995351046,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 255952,
+              "peakWorkingSetSize": 274440,
+              "privateBytes": 248560
+            }
+          },
+          {
+            "pid": 233744,
+            "type": "Utility",
+            "creationTime": 1789027671034.633,
+            "cpu": {
+              "cumulativeCPUUsage": 0.070093,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 69572,
+              "peakWorkingSetSize": 69576,
+              "privateBytes": 32200
+            }
+          },
+          {
+            "pid": 254120,
+            "type": "Utility",
+            "creationTime": 1789027671099.96,
+            "cpu": {
+              "cumulativeCPUUsage": 0.067989,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 66664,
+              "peakWorkingSetSize": 66788,
+              "privateBytes": 27552
+            }
+          },
+          {
+            "pid": 221572,
+            "type": "Tab",
+            "creationTime": 1789027671190.835,
+            "cpu": {
+              "cumulativeCPUUsage": 0.324815,
+              "percentCPUUsage": 0.10326383454297618,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 128044,
+              "peakWorkingSetSize": 128048,
+              "privateBytes": 68004
+            }
+          },
+          {
+            "pid": 236572,
+            "type": "Tab",
+            "creationTime": 1789027671381.653,
+            "cpu": {
+              "cumulativeCPUUsage": 0.060248,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 97276,
+              "peakWorkingSetSize": 97280,
+              "privateBytes": 33384
+            }
+          },
+          {
+            "pid": 261920,
+            "type": "Tab",
+            "creationTime": 1789027671426.92,
+            "cpu": {
+              "cumulativeCPUUsage": 1.580631,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 336024,
+              "peakWorkingSetSize": 524856,
+              "privateBytes": 319188
+            }
+          },
+          {
+            "pid": 251572,
+            "type": "Utility",
+            "creationTime": 1789027673435.314,
+            "cpu": {
+              "cumulativeCPUUsage": 0.048064,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 94424,
+              "peakWorkingSetSize": 94428,
+              "privateBytes": 11704
+            }
+          }
+        ],
+        "windows": [
+          {
+            "visible": false,
+            "focused": false,
+            "focusable": false,
+            "offscreen": true
+          }
+        ],
+        "world": "file:///D:/cm-fb2-20260910/desktop/build/releases/beb66d76c00a-04d1dca3-2129-4a62-9cf9-653326e6ef6f/output/win-unpacked/resources/plugins/craftmine.world/views/world.html"
+      },
+      "finishedAt": "2026-09-10T08:07:59.033Z"
+    },
+    {
+      "method": "quit",
+      "startedAt": "2026-09-10T08:07:59.033Z",
+      "result": {
+        "requested": true
+      },
+      "finishedAt": "2026-09-10T08:07:59.034Z"
+    }
+  ],
+  "launch": {
+    "audit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": [],
+      "shutdownFailures": []
+    },
+    "exit": {
+      "code": 0,
+      "signal": null
+    }
+  },
+  "passed": true,
+  "finishedAt": "2026-09-10T08:08:02.238Z"
+}
