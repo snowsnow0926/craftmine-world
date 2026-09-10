@@ -39,6 +39,14 @@ func run() -> void:
     check(not loaded.has("error"), "桥绑定")
     var world = current_scene
     var rule = world.rule_nodes.example
+    var initial = world.capture()
+    var overlapping = initial.duplicate(true)
+    overlapping.player.position = [0, 0.9, 0]
+    check(world.restore(overlapping).contains("overlaps candidate entity"), "拒绝最新玩家进度与候选实体重叠")
+    check(world.capture() == initial, "拒绝重叠不改变任何进度")
+    overlapping.doors.door = true
+    check(world.restore(overlapping).is_empty(), "已开门允许玩家恢复在门洞")
+    check(world.restore(initial).is_empty(), "恢复到原有有效位置")
     var partial: Dictionary
     if "restore" in OS.get_cmdline_user_args():
         partial = JSON.parse_string(FileAccess.get_file_as_string("res://partial.json"))
