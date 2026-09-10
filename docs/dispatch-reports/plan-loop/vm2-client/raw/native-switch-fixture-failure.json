@@ -1,0 +1,1844 @@
+{
+  "format": "craftmine.vm2-desktop-acceptance/1",
+  "passed": false,
+  "commit": "90795765597f571d264d6f67f0cba4344e995756",
+  "root": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-vm2-client-20260910",
+  "out": "C:\\cm-vm2\\test-results\\desktop-native-vm2-ldFIEO",
+  "source": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\CraftmineWorld-acceptance-archive-20260910\\cm-plan-loop\\desktop-native-parameters-6Uvnzp\\profile\\plugins\\data\\craftmine.world",
+  "worldId": "world-a5eac9797410",
+  "mainSha256": "27555c3b9e9def06cbf7de522abf9993bc647a7cd3326f3bfa83ed8122a281f1",
+  "coreSha256": "4ae551823094146d8b2acebfd24d0de6d09a37b5d1c069f1919e6dd3a8f23784",
+  "hostSha256": "abc995c9b5a8284ca5d8ea651bcc22cc46da0fefbb25cdabe7f9b867a2bbbda8",
+  "runtimeSourceCommit": "90795765597f571d264d6f67f0cba4344e995756",
+  "runtimeFilesDigest": "ea575552829e31ccea870a8029f36a5042b67f8bfaba59a66818acf665302ae8",
+  "steps": [
+    {
+      "name": "actual React history opens through finite form navigation without authoring work",
+      "passed": true,
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "name": "actual Main historyCompare channel renders the formal-to-historical file list",
+      "passed": true,
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "name": "actual Main historyDiff renders the exact earlier parameter source",
+      "passed": true,
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": "diff --git a/scenes/training_range.tscn b/scenes/training_range.tscn\nindex 9cfe522..30c2918 100644\n--- a/scenes/training_range.tscn\n+++ b/scenes/training_range.tscn\n@@ -145,7 +145,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -6)\n target_id = &\"target_a\"\n display_name = \"Near target\"\n \n-hit_flash_seconds = 0.5\n [node name=\"TargetB\" parent=\"Targets\" instance=ExtResource(\"11_target\")]\n transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)\n target_id = &\"target_b\"\n",
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "name": "switching real worlds rejects the old history identity",
+      "passed": false,
+      "error": "Error: Error: WORLD_VIEW_START_TIMEOUT"
+    }
+  ],
+  "calls": [
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "result": {
+        "worlds": [
+          {
+            "id": "vm2-empty-world",
+            "revision": 0,
+            "runtimeKind": "legacy",
+            "title": "Isolated VM2 empty fixture",
+            "updatedAt": 1789008996514,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          },
+          {
+            "baseId": "first-person",
+            "id": "world-a5eac9797410",
+            "revision": 3,
+            "runtimeKind": "godot",
+            "title": "Training target parameter acceptance",
+            "updatedAt": 1789006392219,
+            "base": {
+              "id": "first-person",
+              "label": "Godot 第一人称",
+              "delivered": false
+            },
+            "state": "ready",
+            "creation": {
+              "operationId": "gwinit-bf01308234512a488001497cd2209929235fd59cad9f4d83e38fd71a3f1a4996",
+              "stage": "confirm",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "passed"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "passed"
+                }
+              ],
+              "progress": 100,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "1353c107-f04e-4aeb-af07-6773182f39cc",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789006321886,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.open",
+        "payload": {
+          "id": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "ok": true,
+        "activeWorldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "godotObserve",
+      "payload": {},
+      "result": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "1a8e78506028236cecf5d831",
+        "payload": {
+          "aim": {
+            "collider": "Floor",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              4.72290277481079,
+              4.4703483581543e-8,
+              -9.26786231994629
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.0206519551575184,
+              1.5965029001236,
+              5.93323802947998
+            ],
+            "forwardDot": 1.00000011920929,
+            "global": [
+              0.367530554533005,
+              1.35557198524475,
+              5.62400102615356
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "logicalViewportSize": [
+            1200,
+            800
+          ],
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "surfaceSize": [
+            1200,
+            800
+          ],
+          "targetFeedback": {
+            "format": "craftmine.target-feedback-observation/1",
+            "targets": [
+              {
+                "hitFlashMilliseconds": 500,
+                "targetId": "target_a"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_b"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_c"
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-a5eac9797410"
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-10T02:56:46Z",
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldNavigationReady",
+      "payload": {},
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "ready": true
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "godot.runtimeSave",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "freeze": true
+        }
+      },
+      "result": {
+        "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+        "contentHash": "043b90797aca36ab3f452e5f8a9326a4bcf1e10731cca14c88bbe56eda18cf9e",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "1a8e78506028236cecf5d831",
+        "persistedAt": 1789006392219,
+        "revision": 3,
+        "snapshotHash": "b58a86f36a5a197048082f770b5fb178e51f0068a50d313e46e809e763a12ded",
+        "snapshotSha256": "fe28937d11e2c0c9a02d96fd8f96e87e1c22c2899f74ed143994d6ebac43fb64",
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "godotSnapshot",
+      "payload": {},
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-a5eac9797410"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-a5eac9797410"
+        },
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "backup.status",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "currentHash": "057de0b12466d53e3e0f2fd81162a7c01cf86abad4425671c5c71c9752d48cc2",
+        "scope": "profile"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.operations",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "items": []
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "open",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": false,
+        "viewId": null,
+        "headOid": null,
+        "appliedOid": null,
+        "busy": false,
+        "branch": null,
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "",
+        "headOid": "",
+        "appliedOid": "",
+        "busy": true,
+        "branch": null,
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "godotSnapshot",
+      "payload": {},
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-a5eac9797410"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-a5eac9797410"
+        },
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "backup.status",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "currentHash": "057de0b12466d53e3e0f2fd81162a7c01cf86abad4425671c5c71c9752d48cc2",
+        "scope": "profile"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.operations",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "items": []
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "compareVersion",
+          "worldId": "world-a5eac9797410",
+          "targetOid": "20e56310be1a95c76cbc5ad3a9837adb7cee3c73"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": true,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "godotSnapshot",
+      "payload": {},
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-a5eac9797410"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-a5eac9797410"
+        },
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "backup.status",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "currentHash": "057de0b12466d53e3e0f2fd81162a7c01cf86abad4425671c5c71c9752d48cc2",
+        "scope": "profile"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.operations",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "items": []
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "diff",
+          "worldId": "world-a5eac9797410",
+          "path": "scenes/training_range.tscn"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": true,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": "diff --git a/scenes/training_range.tscn b/scenes/training_range.tscn\nindex 9cfe522..30c2918 100644\n--- a/scenes/training_range.tscn\n+++ b/scenes/training_range.tscn\n@@ -145,7 +145,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -6)\n target_id = &\"target_a\"\n display_name = \"Near target\"\n \n-hit_flash_seconds = 0.5\n [node name=\"TargetB\" parent=\"Targets\" instance=ExtResource(\"11_target\")]\n transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)\n target_id = &\"target_b\"\n",
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "godotSnapshot",
+      "payload": {},
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-a5eac9797410"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-a5eac9797410"
+        },
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "backup.status",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "currentHash": "057de0b12466d53e3e0f2fd81162a7c01cf86abad4425671c5c71c9752d48cc2",
+        "scope": "profile"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.operations",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "items": []
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.open",
+        "payload": {
+          "id": "vm2-empty-world"
+        }
+      },
+      "result": {
+        "ok": true,
+        "activeWorldId": "vm2-empty-world"
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "godot.historyCompare",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "viewId": "90f9cab7-dac6-4b2b-9d1b-e25694568efd",
+          "targetOid": "20e56310be1a95c76cbc5ad3a9837adb7cee3c73"
+        }
+      },
+      "error": "Error: Error: GODOT_WORLD_CHANGED"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.open",
+        "payload": {
+          "id": "world-a5eac9797410"
+        }
+      },
+      "error": "Error: Error: WORLD_VIEW_START_TIMEOUT"
+    },
+    {
+      "method": "quit",
+      "payload": {},
+      "result": {
+        "requested": true
+      }
+    }
+  ],
+  "launches": [
+    {
+      "at": "2026-09-10T02:56:36.640Z",
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "error": ""
+      }
+    }
+  ],
+  "limits": [
+    "Newly compiled development client with this source commit; not an ASAR, installer or sealed Windows acceptance.",
+    "Only the explicitly authorized completed test core is copied; no personal profile, credential, network/model request, real input, focus or Pointer Lock.",
+    "Read-only comparisons are audited separately from deliberate fixture setup and a real finite 501 ms check/application used to test formal-version invalidation."
+  ],
+  "originalWorld": {
+    "baseId": "first-person",
+    "contentHash": "043b90797aca36ab3f452e5f8a9326a4bcf1e10731cca14c88bbe56eda18cf9e",
+    "id": "world-a5eac9797410",
+    "revision": 3,
+    "runtimeKind": "godot",
+    "title": "Training target parameter acceptance",
+    "updatedAt": 1789006392219,
+    "world": {
+      "build": {
+        "godot": {
+          "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "baseBuild": "gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78",
+          "engineVersion": "4.7.2-stable",
+          "manifestHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45",
+          "renderer": "gl_compatibility",
+          "sourceRevision": 2,
+          "target": "web"
+        },
+        "id": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+        "scene": {
+          "baseId": "first-person",
+          "entry": "res://main.tscn",
+          "format": "craftmine.godot-scene/1",
+          "projectHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45"
+        }
+      },
+      "extensions": [],
+      "snapshot": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "body": {
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "equipment": {
+            "active": "pistol",
+            "items": [
+              {
+                "id": "pistol",
+                "magazine": 6,
+                "reserve": 12
+              },
+              {
+                "id": "practice_sword",
+                "magazine": 0,
+                "reserve": 0
+              },
+              {
+                "id": "inspection_tool",
+                "magazine": 0,
+                "reserve": 0
+              }
+            ]
+          },
+          "format": "craftmine.godot-base-state/1",
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "savedAt": "2026-09-09T20:55:22Z",
+          "stateVersion": 1,
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "worldId": "world-a5eac9797410"
+        },
+        "format": "craftmine.godot-progress/1",
+        "stateVersion": 1,
+        "worldId": "world-a5eac9797410"
+      }
+    }
+  },
+  "before": {
+    "progress": {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "body": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": true,
+          "pitch": -0.1,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": -0.3
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-09T20:55:22Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "world-a5eac9797410"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "world-a5eac9797410"
+    },
+    "db": {
+      "currentHash": "057de0b12466d53e3e0f2fd81162a7c01cf86abad4425671c5c71c9752d48cc2",
+      "scope": "profile"
+    },
+    "task": {
+      "items": []
+    }
+  },
+  "error": "Error: Error: WORLD_VIEW_START_TIMEOUT\n    at ChildProcess.<anonymous> (file:///C:/Users/WINDOWS/AppData/Local/Temp/cm-vm2-client-20260910/tests/plan-loop/version-diff-client-native.mjs:35:737)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+  "archiveUnchanged": true,
+  "finishedAt": "2026-09-10T02:57:07.591Z"
+}
