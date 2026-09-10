@@ -1,0 +1,7 @@
+.voice-input { position: relative; display: inline-flex; align-items: center; gap: 2px; }
+.voice-input-button { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 0; border-radius: var(--radius-2xs); color: var(--ds-text-secondary); background: transparent; touch-action: none; }
+.voice-input-button:hover { background: var(--ds-bg-hover); }
+.voice-input-button:focus-visible { outline: 2px solid var(--ds-text-primary); outline-offset: 2px; }
+.voice-input-button:disabled { opacity: 0.45; cursor: default; }
+.voice-input[data-voice-state="recording"] .voice-input-button { color: var(--ds-text-primary); background: var(--ds-bg-hover); }
+.voice-input-status { position: absolute; bottom: calc(100% + 8px); right: 0; padding: 6px 10px; border: 1px solid var(--ds-border-default); border-radius: var(--radius-2xs); background: var(--ds-bg-elevated-opaque); color: var(--ds-text-primary); font-size: var(--text-xs); white-space: nowrap; pointer-events: none; z-index: 5; }
