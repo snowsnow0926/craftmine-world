@@ -37,8 +37,11 @@ export function assertNativeFailure(report) {
 }
 export function assertRepair(before, after) {
   assert.equal(after.init.status,'confirmed'); assert.equal(after.init.playable,true);
-  assert.notEqual(after.init.candidateId,before.candidateId);
-  assert.equal(after.job.status,'passed'); assert.equal(after.job.candidateId,after.init.candidateId);
+  assert.equal(after.application.id,after.init.applicationId);
+  assert.equal(after.application.status,'applied');
+  assert.notEqual(after.application.id,before.application.id);
+  assert.notEqual(after.application.candidateId,before.candidateId);
+  assert.equal(after.job.status,'passed'); assert.equal(after.job.candidateId,after.application.candidateId);
   assert.notEqual(after.job.jobId,before.job.jobId);
   assert.ok(after.project.revision>before.project.revision);
   assert.notEqual(after.project.manifestHash,before.project.manifestHash);
