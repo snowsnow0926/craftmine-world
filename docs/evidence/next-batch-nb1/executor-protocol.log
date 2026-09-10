@@ -1,0 +1,50 @@
+✔ stop drains a real pending broker preflight and prevents obsolete registration (369.4112ms)
+✔ stop drains an in-flight registration, revokes it, then admits one fresh restart (200.6089ms)
+✔ new bin retirement waits for core acknowledgment; preflight/import/export preserve diagnostics (347.7267ms)
+✔ new bin retirement preserves copies after lost-finish (337.3111ms)
+✔ new bin retirement preserves copies after failed-check (354.2046ms)
+✔ new bin retirement preserves copies after refused-registration (98.3721ms)
+✔ happy check job: real import/export receipts, staged web artifacts, passed candidate (334.4718ms)
+✔ task path preparation rejection retains its reason and never reaches export/check (216.9148ms)
+✔ the verifier receives the staged descriptor, never a caller-supplied path (324.3227ms)
+✔ check job without a verifier records a failure instead of a false pass (324.0113ms)
+✔ a failing runtime check fails the job and its assertions (323.6531ms)
+✔ forged preflight evidence never registers an executor (555.138ms)
+✔ measured source files must equal the claimed manifest (859.5922ms)
+✔ unlisted, tampered and escaping artifacts are refused (957.3562ms)
+✔ compile failures are fatal, known native isolation diagnostics are not (550.4748ms)
+✔ a broker that never answers or dies is recorded as a failure, never a pass (446.0631ms)
+✔ a job that exceeds its budget is failed, not left running (1705.3848ms)
+✔ cancel kills the broker, records no result and cancels the core job (509.607ms)
+✔ executor stop revokes registration and rejects new jobs (98.5319ms)
+✔ sourceSnapshotDigest matches the documented broker digest shape (0.1699ms)
+✔ missing or tampered host files report their own reason (17.7818ms)
+✔ a changed broker binary is refused when a pin is configured (3.1682ms)
+✔ actual two-log shape permits one verified native import recovery and preserves its full check (472.0934ms)
+﹣ a linked declared preflight cannot authorize native import recovery (5.5955ms) # host does not permit file symlinks
+✔ script errors, changed inputs, unknown cleanup and repeated crashes never become successful retries (3404.9938ms)
+✔ finite runtime expectation: matched (324.767ms)
+✔ finite runtime expectation: descriptor-missing (308.4924ms)
+✔ finite runtime expectation: descriptor-dropped (324.5202ms)
+✔ finite runtime expectation: descriptor-mixed (322.0828ms)
+✔ finite runtime expectation: assertion-missing (320.8084ms)
+✔ finite runtime expectation: assertion-false (320.3911ms)
+✔ finite runtime expectation: assertion-duplicate (326.9555ms)
+✔ a refused finish results in a core-confirmed failure that keeps the original identity (325.7813ms)
+✔ a lost terminal reply is read back from the core, never re-submitted or faked (320.6979ms)
+✔ a conflicting artifact is refused without overwriting or deleting the old evidence (323.6392ms)
+✔ a same-source recheck reuses verified bytes and can never replace them (783.6963ms)
+✔ a cancelled job reports the core cancel and submits no result (721.3835ms)
+✔ an interrupted job records the core state instead of a failure it cannot prove (323.4047ms)
+✔ a wrong token leaves the job unconfirmed and never confirmed (321.2155ms)
+✔ a cross-world record is refused instead of settling a foreign job (323.5406ms)
+✔ a stop during a running job reports no completion and deletes no evidence (503.994ms)
+✔ a refused settlement resolved by a second read keeps the original reason and both errors (325.4201ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 41
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 19436.2492

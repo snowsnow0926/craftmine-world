@@ -1,0 +1,101 @@
+{
+  "format": "craftmine.creation-harvest-engine/1",
+  "out": "D:\\cm-nb-checks\\test-results\\creation-harvest-web-HQq5HG",
+  "checks": [
+    {
+      "name": "harvest actual ordinary script loaded",
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 74,
+      "exitCode": 0
+    },
+    {
+      "label": "harvest-import",
+      "elapsedMs": 2117,
+      "exitCode": 0
+    },
+    {
+      "label": "harvest-export",
+      "elapsedMs": 2017,
+      "exitCode": 0
+    }
+  ],
+  "passed": false,
+  "error": "Error: CREATION_HARVEST_REQUIREMENTS_MISMATCH\n    at verifyCreationHarvest (file:///D:/cm-nb-checks/vendor/pi-desktop/apps/desktop/electron/main/creation-harvest-verifier.ts:27:63)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:472:9)\n    at async file:///D:/cm-nb-checks/tests/creation-harvest-web.mjs:31:39",
+  "failedTrace": [
+    {
+      "step": "initial",
+      "inventory": {},
+      "visible": true,
+      "solid": true,
+      "progressRestored": false
+    },
+    {
+      "step": "harvested",
+      "inventory": {
+        "wood": 1
+      },
+      "visible": false,
+      "solid": false,
+      "progressRestored": false
+    },
+    {
+      "step": "repeat",
+      "inventory": {
+        "wood": 1
+      },
+      "visible": false,
+      "solid": false,
+      "progressRestored": false
+    },
+    {
+      "step": "midway",
+      "inventory": {
+        "wood": 1
+      },
+      "visible": false,
+      "solid": false,
+      "progressRestored": false
+    },
+    {
+      "step": "restored",
+      "inventory": {
+        "wood": 1
+      },
+      "visible": false,
+      "solid": false,
+      "progressRestored": true
+    },
+    {
+      "step": "before-regrowth",
+      "inventory": {
+        "wood": 1
+      },
+      "visible": true,
+      "solid": true,
+      "progressRestored": false
+    },
+    {
+      "step": "regrown",
+      "inventory": {
+        "wood": 1
+      },
+      "visible": true,
+      "solid": true,
+      "progressRestored": false
+    },
+    {
+      "step": "second-harvest",
+      "inventory": {
+        "wood": 2
+      },
+      "visible": false,
+      "solid": false,
+      "progressRestored": false
+    }
+  ]
+}

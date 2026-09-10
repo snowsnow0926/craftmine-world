@@ -13,6 +13,7 @@ var world_id := "creation-local"
 var ready_for_play := false
 var failure := ""
 var entities := {}
+var physics_tick: int = 0
 var entity_nodes := {}
 var rule_nodes := {}
 var rule_state := {}
@@ -261,6 +262,7 @@ func _create_entity(definition: Dictionary) -> void:
 			node.add_child(label)
 
 func _physics_process(_delta: float) -> void:
+	physics_tick += 1
 	if ready_for_play:
 		refresh_target()
 
@@ -592,4 +594,4 @@ func observe() -> Dictionary:
 		var half: Vector3 = HALF_EXTENTS[definition.kind]
 		var bounds: AABB = entity_nodes[id].global_transform * AABB(Vector3(-half.x, 0, -half.z), half * 2)
 		obstacles.append({"entityId": id, "min": [bounds.position.x, bounds.position.y, bounds.position.z], "max": [bounds.end.x, bounds.end.y, bounds.end.z]})
-	return {"base": "creation-sandbox", "baseVersion": BASE_VERSION, "player": player.snapshot(), "creation": {"revision": int(scene_data.get("revision", 1)), "target": refresh_target(), "entities": definitions, "obstacles": obstacles, "playerBounds": {"position": [player.position.x, player.position.y - 0.9, player.position.z], "halfExtents": [0.3, 0.9, 0.3]}, "timeOfDay": time_of_day}, "inventory": inventory.duplicate(true), "ready": ready_for_play, "error": failure}
+	return {"base": "creation-sandbox", "baseVersion": BASE_VERSION, "player": player.snapshot(), "creation": {"physicsTick": physics_tick, "revision": int(scene_data.get("revision", 1)), "target": refresh_target(), "entities": definitions, "obstacles": obstacles, "playerBounds": {"position": [player.position.x, player.position.y - 0.9, player.position.z], "halfExtents": [0.3, 0.9, 0.3]}, "timeOfDay": time_of_day}, "inventory": inventory.duplicate(true), "ready": ready_for_play, "error": failure}

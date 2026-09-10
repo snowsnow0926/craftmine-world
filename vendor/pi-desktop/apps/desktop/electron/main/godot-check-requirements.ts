@@ -11,7 +11,9 @@ export type GodotRequirementsObservation = {
   targetId?: string;
   hitFlashMilliseconds?: number;
   entities?:CreationEntity[];
+  timeOfDay?:number;
   doorTrace?:import("./creation-door-verifier").CreationDoorTrace;
+  harvestTrace?:import("./creation-harvest-verifier").CreationHarvestTrace;
 };
 export type GodotRequirementsEvidence = {
   format: "craftmine.godot-check-requirements-evidence/1";
@@ -68,7 +70,8 @@ export function godotTargetFeedbackMatches(observation: GodotRequirementsObserva
 }
 
 export function readGodotCreationObservation(raw:unknown,scope:{worldId:string;buildId:string;instanceId:string},phase:"loaded"|"running"):GodotRequirementsObservation {
- if(!record(raw)||raw.format!=="craftmine.godot-observation/1"||raw.baseId!=="creation-sandbox"||raw.worldId!==scope.worldId||raw.buildId!==scope.buildId||raw.instanceId!==scope.instanceId||typeof raw.sampledAt!=="string"||!Number.isFinite(Date.parse(raw.sampledAt))||!record(raw.payload)||!record(raw.payload.creation)||!Array.isArray(raw.payload.creation.entities))throw Error("GODOT_CHECK_CREATION_OBSERVATION_INVALID");
- return {phase,entities:structuredClone(raw.payload.creation.entities) as CreationEntity[]};
+ if(!record(raw)||raw.format!=="craftmine.godot-observation/1"||raw.baseId!=="creation-sandbox"||raw.baseVersion!=="1.0.0"||raw.worldId!==scope.worldId||raw.buildId!==scope.buildId||raw.instanceId!==scope.instanceId||typeof raw.sampledAt!=="string"||!Number.isFinite(Date.parse(raw.sampledAt))||!record(raw.payload)||!record(raw.payload.creation)||!Array.isArray(raw.payload.creation.entities))throw Error("GODOT_CHECK_CREATION_OBSERVATION_INVALID");
+ const creation=raw.payload.creation;
+ return {phase,timeOfDay:creation.timeOfDay as number,entities:structuredClone(creation.entities as any[]).map((e:any)=>{const b=Array.isArray(creation.obstacles)?creation.obstacles.find((b:any)=>b.entityId===e.id):null;return b?{...e,bounds:{min:b.min,max:b.max}}:e;}) as CreationEntity[]};
 }
-export function godotCreationMatches(observation:GodotRequirementsObservation,requirements:GodotCheckRequirements):boolean{return !!requirements.creation&&!!observation.entities&&creationEntitiesMatch(requirements.creation,observation.entities);}
+export function godotCreationMatches(observation:GodotRequirementsObservation,requirements:GodotCheckRequirements):boolean{return !!requirements.creation&&!!observation.entities&&creationEntitiesMatch(requirements.creation,observation.entities)&&(requirements.creation.timeOfDay===undefined||observation.timeOfDay===requirements.creation.timeOfDay);}

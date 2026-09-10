@@ -1,3 +1,4 @@
+import {verifyCreationHarvest} from "./creation-harvest-verifier";
 import {verifyCreationDoorSequence} from "./creation-door-verifier";
 import {readGodotCreationObservation,godotCreationMatches} from "./godot-check-requirements";
 /**
@@ -570,7 +571,7 @@ export class GodotBuildVerifier {
       } finally {
         clearInterval(probe);
       }
-      if ((["first-person", "creation-sandbox"].includes(descriptor.baseId) && isRecord(descriptor.snapshot) && descriptor.snapshot.format === "craftmine.godot-progress/1") || descriptor.checkRequirements?.creation?.doorSequence) {
+      if ((["first-person", "creation-sandbox"].includes(descriptor.baseId) && isRecord(descriptor.snapshot) && descriptor.snapshot.format === "craftmine.godot-progress/1") || descriptor.checkRequirements?.creation?.doorSequence || descriptor.checkRequirements?.creation?.harvest) {
         // Read defaults from this exact new scene before restoring any player
         // state. Only fixed additive entity rules can combine the two snapshots.
         const fresh = await bounded(activeRuntime.load({build:null, snapshot:null}));
@@ -593,7 +594,7 @@ export class GodotBuildVerifier {
           const creation=!!descriptor.checkRequirements.creation;
           const value=creation?readGodotCreationObservation(observed.result,requirementsEvidence,phase):readGodotTargetFeedback(observed.result,requirementsEvidence,descriptor.checkRequirements.targetFeedback!.targetId,phase);
           requirementsEvidence.observations.push(value);
-          if(!(creation?godotCreationMatches(value,descriptor.checkRequirements):godotTargetFeedbackMatches(value,descriptor.checkRequirements)))throw Error(`GODOT_CHECK_REQUIREMENTS_MISMATCH:${phase}`);
+          if(!(creation?godotCreationMatches(value,descriptor.checkRequirements):godotTargetFeedbackMatches(value,descriptor.checkRequirements)))throw Error(`${creation?"GODOT_CHECK_REQUIREMENTS_MISMATCH":"GODOT_CHECK_TARGET_FEEDBACK_MISMATCH"}:${phase}`);
         }catch(failure){targetFeedbackDetail=messageOf(failure).slice(0,MAX_ERROR_CHARS);throw failure;}
       };
       await observeTargetFeedback("loaded");
@@ -683,6 +684,7 @@ export class GodotBuildVerifier {
       // this bounded check window; future arbitrary script behavior is unproven.
       await observeTargetFeedback("running");
       if(descriptor.checkRequirements?.creation?.doorSequence && requirementsEvidence){requirementsEvidence.observations[1].doorTrace=await verifyCreationDoorSequence(activeRuntime,descriptor.checkRequirements.creation,defaultsSnapshot,bounded);}
+      if(descriptor.checkRequirements?.creation?.harvest && requirementsEvidence){requirementsEvidence.observations[1].harvestTrace=await verifyCreationHarvest(activeRuntime,descriptor.checkRequirements.creation,defaultsSnapshot,bounded);}
       targetFeedbackPassed=!!requirementsEvidence && requirementsEvidence.observations.length===2;
     } catch (failure) {
       error = messageOf(failure);

@@ -1,3 +1,4 @@
+import {creationHarvestTraceMatches} from '../electron/main/creation-harvest-verifier.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {freezeCreationRequirements,creationEntitiesMatch,creationRequirementsHash,assertCreationJobRequirements,freezeUndoRequirements} from '../electron/main/creation-check-requirements.ts';
@@ -31,7 +32,7 @@ test('creation core descriptor parses only exact canonical hash and scoped engin
  assert.deepEqual(parseGodotCheckRequirements(outer,creationRequirementsHash(r),'creation-sandbox').checkRequirements,outer);
  assert.throws(()=>parseGodotCheckRequirements(outer,'f'.repeat(64),'creation-sandbox'));
  const scope={worldId:'world',buildId:'build',instanceId:'instance'},entities=[tree,{...tree,id:'new',position:[3,0,0]}];
- const raw={format:'craftmine.godot-observation/1',baseId:'creation-sandbox',...scope,sampledAt:new Date().toISOString(),payload:{creation:{entities}}};
+ const raw={format:'craftmine.godot-observation/1',baseId:'creation-sandbox',baseVersion:'1.0.0',...scope,sampledAt:new Date().toISOString(),payload:{creation:{entities}}};
  assert.equal(godotCreationMatches(readGodotCreationObservation(raw,scope,'loaded'),outer),true);
  assert.throws(()=>readGodotCreationObservation({...raw,instanceId:'foreign'},scope,'loaded'));
 });
@@ -48,3 +49,26 @@ test('undo freezes formal inverse and refuses replay or changed actual entities'
  assert.equal(freezeUndoRequirements({entities:[{...tree,scale:[3,3,3]}]},journal,'edit-a').status,'unverified');journal.operations.push({operationId:'undo-a',receipt:{undoOperationId:'edit-a'}});assert.equal(freezeUndoRequirements(actual,journal,'edit-a').status,'unverified');
 });
 test('canonical requirement digest agrees with Rust numeric encoding',()=>{assert.equal(creationRequirementsHash({format:'craftmine.creation-requirements/1',requestHash:'a'.repeat(64),entities:[{id:'tree-a',position:[0.000001,2.4,0],scale:[1,2,3]}],counts:[]}), 'f85e44d5f4e124c7527d53f15378a5a0dca699e08c1e14edca73a10bef061a2e');});
+
+test('harvest accepts only the complete exact wish and preserves explicit expectations',()=>{
+ const text='让这棵树可以按E砍伐，砍掉时给背包增加一块木头，5秒后重新长出来。保存重开后保留木头和树的生长状态。';
+ const frozen=freezeCreationRequirements(capture,text);assert.equal(frozen.status,'verifiable');assert.deepEqual(frozen.requirements.harvest,{entityId:'tree-a',inventoryId:'wood',reward:1,regrowFrames:300});
+ for(const changed of [text+'同时变红',text.replace('5秒','6秒'),text.replace('一块木头','两块木头')])assert.equal(freezeCreationRequirements(capture,changed).status,'unverified');
+ const steps=['initial','harvested','repeat','midway','restored','before-regrowth','regrown','second-harvest'];const trace=steps.map((step,i)=>({step,inventory:i?{stone:3,wood:i===7?2:1}:{stone:3},visible:i===0||i===6,solid:i===0||i===6,progressRestored:i===4,elapsedTicks:i===5?280:i===6?330:i*10}));
+ assert.equal(creationHarvestTraceMatches(frozen.requirements,trace),true);
+ for(const bad of [trace.slice(0,-1),trace.map((e,i)=>i===2?{...e,inventory:{wood:2,stone:3}}:e),trace.map((e,i)=>i===4?{...e,progressRestored:false}:e),trace.map((e,i)=>i===1?{...e,solid:true}:e),trace.map((e,i)=>i===5?{...e,visible:true}:e)])assert.equal(creationHarvestTraceMatches(frozen.requirements,bad),false);
+});
+
+test('frozen evaluation variants are exact bounded phrases, not keyword matching',()=>{
+ for(const text of ['把这棵树变大一倍','在这里再放一块石头，保留已有物体和游玩进度','在这个副本的这里放一棵树，保留之前的内容','这棵树的颜色改成#88bb44，其他东西保持原样','把时间设为18点','复制这棵树两个，排开一点']){
+  assert.equal(freezeCreationRequirements(capture,text).status,'verifiable',text);
+  assert.equal(freezeCreationRequirements(capture,text+'然后删光其他东西').status,'unverified');
+ }
+ const required=freezeCreationRequirements(capture,'复制这棵树两个，排开一点').requirements;
+ const entity=(id,x)=>({...tree,id,position:[x,0,0],visible:true,solid:true,bounds:{min:[x-0.6,0,-0.6],max:[x+0.6,4,0.6]}});
+ assert.equal(creationEntitiesMatch(required,[entity('tree-a',2),entity('copy-a',4),entity('copy-b',6)]),true);
+ assert.equal(creationEntitiesMatch(required,[entity('tree-a',2),entity('copy-a',4),entity('copy-b',4)]),false);
+ const time=freezeCreationRequirements(capture,'把时间设为18点').requirements;
+ assert.equal(godotCreationMatches({phase:'loaded',entities:[tree],timeOfDay:18},{format:'craftmine.godot-check-requirements/1',creation:time}),true);
+ assert.equal(godotCreationMatches({phase:'loaded',entities:[tree],timeOfDay:12},{format:'craftmine.godot-check-requirements/1',creation:time}),false);
+});

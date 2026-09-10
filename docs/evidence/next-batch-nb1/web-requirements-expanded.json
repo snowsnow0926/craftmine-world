@@ -1,0 +1,186 @@
+{
+  "format": "craftmine.creation-requirements-engine/1",
+  "out": "D:\\cm-nb-checks\\test-results\\creation-requirements-web-gifak3",
+  "checks": [
+    {
+      "name": "correct real engine answers entities",
+      "passed": true
+    },
+    {
+      "name": "correct correct runtime target and scale",
+      "passed": true
+    },
+    {
+      "name": "correct wrong scale rejected",
+      "passed": true
+    },
+    {
+      "name": "correct wrong identity rejected",
+      "passed": true
+    },
+    {
+      "name": "correct wrong color rejected",
+      "passed": true
+    },
+    {
+      "name": "correct wrong count rejected",
+      "passed": true
+    },
+    {
+      "name": "correct actual duplicate count, style and separated collision bounds",
+      "passed": true
+    },
+    {
+      "name": "correct wrong actual time rejected",
+      "passed": true
+    },
+    {
+      "name": "correct exact requested time observed",
+      "passed": true
+    },
+    {
+      "name": "real sequence requires ordered interactions",
+      "passed": true
+    },
+    {
+      "name": "unconditional real engine answers entities",
+      "passed": true
+    },
+    {
+      "name": "unconditional correct runtime target and scale",
+      "passed": true
+    },
+    {
+      "name": "unconditional wrong scale rejected",
+      "passed": true
+    },
+    {
+      "name": "unconditional wrong identity rejected",
+      "passed": true
+    },
+    {
+      "name": "unconditional wrong color rejected",
+      "passed": true
+    },
+    {
+      "name": "unconditional wrong count rejected",
+      "passed": true
+    },
+    {
+      "name": "unconditional actual duplicate count, style and separated collision bounds",
+      "passed": true
+    },
+    {
+      "name": "unconditional wrong actual time rejected",
+      "passed": true
+    },
+    {
+      "name": "unconditional exact requested time observed",
+      "passed": true
+    },
+    {
+      "name": "runnable unconditional door candidate rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies real engine answers entities",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies correct runtime target and scale",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies wrong scale rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies wrong identity rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies wrong color rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies wrong count rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies actual duplicate count, style and separated collision bounds",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies wrong actual time rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies exact requested time observed",
+      "passed": true
+    },
+    {
+      "name": "real sequence requires ordered interactions",
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 77,
+      "exitCode": 0
+    },
+    {
+      "label": "correct-import",
+      "elapsedMs": 2124,
+      "exitCode": 0
+    },
+    {
+      "label": "correct-export",
+      "elapsedMs": 2015,
+      "exitCode": 0
+    },
+    {
+      "label": "unconditional-import",
+      "elapsedMs": 1929,
+      "exitCode": 0
+    },
+    {
+      "label": "unconditional-export",
+      "elapsedMs": 2015,
+      "exitCode": 0
+    },
+    {
+      "label": "overlapping-copies-import",
+      "elapsedMs": 2023,
+      "exitCode": 0
+    },
+    {
+      "label": "overlapping-copies-export",
+      "elapsedMs": 2109,
+      "exitCode": 0
+    }
+  ],
+  "passed": true,
+  "trace": [
+    {
+      "step": "initial",
+      "doorOpen": false,
+      "interacted": false
+    },
+    {
+      "step": "marker-b",
+      "doorOpen": false,
+      "interacted": true
+    },
+    {
+      "step": "marker-a",
+      "doorOpen": false,
+      "interacted": true
+    },
+    {
+      "step": "marker-b",
+      "doorOpen": true,
+      "interacted": true
+    }
+  ]
+}

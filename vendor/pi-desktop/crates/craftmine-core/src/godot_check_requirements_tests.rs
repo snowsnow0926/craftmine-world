@@ -198,3 +198,28 @@ fn creation_door_trace_rejects_unconditional_open_missing_steps_and_wrong_order(
  for index in 0..3 {let mut bad=evidence.clone();bad["observations"][1]["doorTrace"][index]["doorOpen"]=json!(true);assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));}
  let mut bad=evidence.clone();bad["observations"][1]["doorTrace"][2]["step"]=json!("marker-b");assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));Ok(())
 }
+
+#[test]
+fn creation_harvest_trace_requires_reward_collision_and_persistence() -> Result<()> {
+ let value=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("harvest"),"entities":[],"counts":[],"harvest":{"entityId":"tree-a","inventoryId":"wood","reward":1,"regrowFrames":300}}});
+ let r:requirements::Requirements=serde_json::from_value(value.clone())?;r.validate("creation-sandbox","check")?;
+ let descriptor=json!({"format":"craftmine.godot-check-descriptor/1","phase":"check","checkRequirements":value,"checkRequirementsHash":r.hash(),"jobId":"job","worldId":"world","buildId":"build"});
+ let steps=["initial","harvested","repeat","midway","restored","before-regrowth","regrown","second-harvest"];
+ let trace:Vec<Value>=steps.iter().enumerate().map(|(i,step)|json!({"step":step,"inventory":if i==0{json!({"stone":3})}else{json!({"stone":3,"wood":if i==7{2}else{1}})},"visible":i==0||i==6,"solid":i==0||i==6,"progressRestored":i==4,"elapsedTicks":if i==5{280}else if i==6{330}else{i*10}})).collect();
+ let evidence=json!({"format":"craftmine.godot-check-requirements-evidence/1","requirementsHash":r.hash(),"jobId":"job","worldId":"world","buildId":"build","instanceId":"engine","observations":[{"phase":"loaded","entities":[]},{"phase":"running","entities":[],"harvestTrace":trace}]});
+ assert!(requirements::evidence_matches(&r,Some(&evidence),&descriptor));
+ for (index,field,value) in [(1,"solid",json!(true)),(4,"progressRestored",json!(false)),(5,"visible",json!(true)),(2,"inventory",json!({"stone":3,"wood":2}))]{let mut bad=evidence.clone();bad["observations"][1]["harvestTrace"][index][field]=value;assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));}Ok(())
+}
+
+#[test]
+fn creation_copy_bounds_and_time_are_checked_by_core() -> Result<()> {
+ let value=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("copies and time"),"entities":[],"counts":[],"timeOfDay":18,"duplicates":{"kind":"tree","count":2,"scale":[1,1,1],"color":"#84a866","priorIds":["tree-a"]}}});
+ let r:requirements::Requirements=serde_json::from_value(value.clone())?;r.validate("creation-sandbox","check")?;
+ let descriptor=json!({"format":"craftmine.godot-check-descriptor/1","phase":"check","checkRequirements":value,"checkRequirementsHash":r.hash(),"jobId":"job","worldId":"world","buildId":"build"});
+ let entities:Vec<_>=[("tree-a",0.0),("copy-a",4.0),("copy-b",8.0)].iter().map(|(id,x)|json!({"id":id,"kind":"tree","scale":[1,1,1],"position":[x,0,0],"color":"#84A866","visible":true,"solid":true,"bounds":{"min":[x-0.6,0,-0.6],"max":[x+0.6,4,0.6]}})).collect();
+ let evidence=json!({"format":"craftmine.godot-check-requirements-evidence/1","requirementsHash":r.hash(),"jobId":"job","worldId":"world","buildId":"build","instanceId":"engine","observations":[{"phase":"loaded","entities":entities,"timeOfDay":18},{"phase":"running","entities":entities,"timeOfDay":18}]});
+ assert!(requirements::evidence_matches(&r,Some(&evidence),&descriptor));
+ let mut bad=evidence.clone();bad["observations"][1]["timeOfDay"]=json!(12);assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));
+ let mut bad=evidence.clone();bad["observations"][1]["entities"][2]["bounds"]=bad["observations"][1]["entities"][1]["bounds"].clone();assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));
+ let mut bad=evidence.clone();bad["observations"][1]["entities"][2]["solid"]=json!(false);assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));Ok(())
+}
