@@ -9458,3 +9458,9 @@ hashes and packaged resources. Reject unsupported bases, forged scope, changed
 interface hashes, unknown IDs and traversal. The normal initial model guidance
 must advertise the real tool. This is discovery/provenance coverage; model
 first-pass improvement requires a later measured benchmark.
+
+## 造物世界直接编辑（2026-09-11）
+
+独立 headless/offscreen 中执行真实 React 回调和宿主接口，禁止真实输入与 Pointer Lock。选中树显示名称/金色边框；编辑尺寸和颜色后先检查再采用；取消不产生写请求。删除宝箱并撤销后同一 ID 恢复，已领奖账本不减少。存在规则引用的删除拒绝，后续修改冲突的撤销拒绝，旧无 inverse 日志明确不支持。编译失败、要求不符或采用失败不能修改正式世界。
+
+对应检查：tests/creation-edit-ui-headless.mjs、tests/creation-operations.test.mjs、desktop/test/creation-edit-service.test.mjs、tests/creation-guidance/rule-headless.test.mjs；完整生产宿主任务/采用链由下一批总控集成验收补充。

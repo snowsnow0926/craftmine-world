@@ -1,5 +1,9 @@
 export type CreationTarget = {
   entityId: string | null;
+  entityName?: string;
+  entityKind?: string;
+  scale?: [number,number,number];
+  color?: string;
   position: [number, number, number];
   normal: [number, number, number];
   surface: "entity" | "ground";
@@ -24,7 +28,7 @@ export function parseCreationTarget(value: unknown): CreationTargetCapture {
   const validSurface = hit.surface === "ground" || (hit.surface === "entity" && entityId !== null);
   const revision = typeof hit.revision === "number" && Number.isSafeInteger(hit.revision) && hit.revision >= 0 ? hit.revision : null;
   const target = position && normal && validSurface && revision !== null
-    ? { entityId: hit.surface === "entity" ? entityId : null, position, normal, surface: hit.surface as "entity" | "ground", revision }
+    ? { entityId: hit.surface === "entity" ? entityId : null, position, normal, surface: hit.surface as "entity" | "ground", revision, ...(id(hit.entityName)?{entityName: id(hit.entityName)!}:{}), ...(id(hit.entityKind)?{entityKind:id(hit.entityKind)!}:{}), ...(vector(hit.scale)?{scale:vector(hit.scale)!}:{}), ...(typeof hit.color === "string" && /^#[a-fA-F0-9]{6}$/.test(hit.color)?{color:hit.color}:{}) }
     : null;
   return { captureId: target || raw.target === null ? id(raw.captureId) : null, worldId: id(raw.worldId), target, reason: id(raw.reason) };
 }

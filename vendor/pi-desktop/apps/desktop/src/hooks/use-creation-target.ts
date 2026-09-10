@@ -54,5 +54,5 @@ export function useCreationTarget(enabled: boolean, sessionKey: string, sessionI
       if (generation === policyEpoch.current) setPolicyError(failure instanceof Error ? failure.message : String(failure));
     } finally { if (generation === policyEpoch.current) setPolicyBusy(false); }
   };
-  return { capture: enabled && captureSessionKey === sessionKey ? capture : null, loading, error, available: !!bridge, refresh, policy: enabled && captureSessionKey === sessionKey ? policy : null, policyBusy, policyError, changePolicy };
+  return { sessionId, capture: enabled && captureSessionKey === sessionKey ? capture : null, loading, error, available: !!bridge, refresh, policy: enabled && captureSessionKey === sessionKey ? policy : null, policyBusy, policyError, changePolicy };
 }
