@@ -55,6 +55,9 @@ comparisons, strict shutdown audits and package hashes before and after use.
 The parameter and Windows export harnesses bound their final forced-stop wait
 to five seconds and report `CLIENT_STOP_TIMEOUT` instead of hanging indefinitely.
 Forced shutdown remains a failed acceptance; the timeout does not relax cleanup.
+Both harnesses preserve their result file if shutdown fails. The Windows export
+harness now enforces the same complete shutdown audit inside its own pass gate,
+instead of relying only on the later release report audit.
 
 ## Remaining scope and limits
 
