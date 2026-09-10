@@ -297,14 +297,19 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       const job=await core.call('verification.submit',{context,toolCallId:invocation.toolCallId,revision:args.workspaceRevision,summary:args.summary,origin:invocation.craftmineOrigin||null});
       verifications.enqueue(job,context);return job;
     }
-    if(definition.name==='project_inspect')return inspectDraft(workspace,args);
+    if(definition.name==='project_inspect'||definition.name==='capabilities_read'){
+      const record=await core.call('world.read',{id:workspace.worldId});assertActive();
+      const {isGodotWorkspace,readGodotGeneric}=require('./godot-generic-read.cjs');
+      if(isGodotWorkspace(workspace,record))return readGodotGeneric({name:definition.name,args,core,context,workspace,record,assertActive,services,capture:options.creationTarget});
+      if(definition.name==='project_inspect')return inspectDraft(workspace,args);
+      return readCapabilities(args,draftPackages(workspace.task.draft,record.world).extensions,workspace.task.draft.scene);
+    }
     if(definition.name==='resource_read') {
       const result=readDraftResource(workspace,args);
       await core.call('workspace.recordRead',{context,revision:result.workspaceRevision,key:args.kind+':'+args.id,hash:result.hash});
       return result;
     }
     const record=await core.call('world.read',{id:workspace.worldId});
-    if(definition.name==='capabilities_read')return readCapabilities(args,draftPackages(workspace.task.draft,record.world).extensions,workspace.task.draft.scene);
     if(definition.name==='workspace_patch') {
       const params={context,toolCallId:invocation.toolCallId,request:args};
       const previous=await core.call('workspace.receipt',params);

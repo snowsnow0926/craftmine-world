@@ -1733,7 +1733,7 @@
       },
       {
         "name": "project_inspect",
-        "description": "Inspect the actual Craftmine world draft before creating or editing it. The first world tool binds this PI session to the selected world; changing the panel afterwards does not redirect it. Returns revision and a paginated resource index. Use capabilities_read for contracts, workspace_patch to edit, then verification_submit to check the finished draft in the background. A saved or machine-checked draft is not yet applied to the world.",
+        "description": "Inspect the actual world bound to this session. Godot worlds return the real Godot project file index with revision/manifestHash and appropriate Godot next tools; legacy voxel worlds return their resource index. This read never creates fake voxel objects for Godot. Follow the returned runtime-specific tool route; a source draft or passed check is not yet applied.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -1755,7 +1755,7 @@
       },
       {
         "name": "capabilities_read",
-        "description": "Read the installed world contracts in bounded pages. Sections: objects and systems are schemas, behaviors is the authored JavaScript module guide (initialState and params are objects), catalog lists actual commands and loaded extensions. Follow next until the needed section is complete. All authored code runs in the gameplay sandbox.",
+        "description": "Read runtime-specific installed contracts in bounded pages. For Godot worlds, all sections return actual Godot project/capability context and Godot tool guidance, never legacy voxel schemas or JavaScript behavior APIs. For legacy voxel worlds: objects/systems schemas, behaviors JavaScript guide, catalog installed commands/extensions. Follow next until the requested section is complete.",
         "risk": "low",
         "schema": {
           "type": "object",

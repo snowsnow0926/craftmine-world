@@ -28,8 +28,8 @@ const LOCAL_TOOLS={
   package_library:{owner:'S3',hostMethod:'package.check+package.read+package.list',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
   // Pre-existing world tools. They are advertised by the same catalogue, so the
   // inventory must report them truthfully instead of as unwired.
-  project_inspect:{owner:'S1',hostMethod:'workspace.open+inspect',needs:['sessionDrafts']},
-  capabilities_read:{owner:'S1',hostMethod:'world.read+capabilities',needs:['sessionDrafts']},
+  project_inspect:{owner:'S1',hostMethod:'workspace.open+world.read+(Godot:godotProject.index|legacy:inspect)',needs:['sessionDrafts']},
+  capabilities_read:{owner:'S1',hostMethod:'world.read+(Godot:godotProject.index+hello|legacy:capabilities)',needs:['sessionDrafts']},
   resource_read:{owner:'S1',hostMethod:'workspace.recordRead',needs:['sessionDrafts']},
   workspace_patch:{owner:'S1',hostMethod:'workspace.commit',needs:['sessionDrafts']},
   requirements_read:{owner:'S1',hostMethod:'task.readRequirements',needs:['sessionDrafts']},

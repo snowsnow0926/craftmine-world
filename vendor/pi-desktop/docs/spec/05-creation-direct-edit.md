@@ -40,3 +40,8 @@ entity-behavior 必需提供纯读 project_entities(state)，返回每个 entity
 实际project.binary采用ECFG长度有界读取，只解析autoload/CraftmineRuntime和craftmine/runtime/adapter两个字符串入口并要求固定值。拒绝重复key、平台后缀覆盖、受保护脚本remap/gdc别名及override.cfg。正常无关配置Variant只按明确长度跳过，不执行、不反序列化对象。核验结果写执行器耐久ledger，不改core结果协议。失败候选不会进入运行验收或采用。
 
 这封闭了已复现的@tool导出期间篡改保护脚本和入口的缺口；不宣称对任意恶意GDScript进行了形式化证明。
+
+
+## 通用只读工具的Godot分流
+
+project_inspect与capabilities_read按真实绑定世界的runtimeKind/场景合同分流。Godot必须返回godotProject.index文件、源码身份及适用Godot能力，不将craftmine.godot-scene/1送入体素对象升级/素材遍历。缺少工程明确不可用；权限和身份错误继续失败。legacy保留旧资源与schema。响应提供runtimeKind、baseId、sourceRevision/manifestHash和nextTools，正文支持有界Unicode分页；当前world/panel变化不能重定向已绑定任务。

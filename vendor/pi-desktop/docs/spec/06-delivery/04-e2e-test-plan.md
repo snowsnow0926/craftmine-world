@@ -9502,3 +9502,7 @@ first-pass improvement requires a later measured benchmark.
 继续真实属性编辑、删除、撤销和新进程重开；原版/本版换行和未知自定义代码的处理规则
 由 creation-source-migration.test.mjs 覆盖。额外未采用草稿不能被升级覆盖，丢回包或丢绑定
 只能查原回执和完整源码等价关系。测试不访问个人存档、麦克风、浏览器或真实输入。
+
+## Godot通用只读入口回归（2026-09-11）
+
+在真实Godot场景合同与legacy体素合同上分别调用默认project_inspect和capabilities_read。Godot返回真实源码文件、身份与GDScript工具，不应触发undefined.map/objects iterable；legacy目录/schema保持。缺失源码明确不可用；跨世界与权限错误失败。tests/godot-generic-read.test.mjs与tests/godot-generic-read-core.mjs覆盖，不调用模型或用户输入。
