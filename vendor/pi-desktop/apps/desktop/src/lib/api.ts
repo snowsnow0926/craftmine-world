@@ -1,4 +1,6 @@
 import type {
+  CraftmineImmersionState,
+  CraftmineImmersionShortcut,
   ActivationScope,
   AgentCapabilityQuery,
   AgentEventEnvelope,
@@ -284,6 +286,11 @@ function normalizePlansChangedEvent(value: unknown): PlanningStateEvent {
 }
 
 export const api = {
+  craftmineSetImmersion: (state: CraftmineImmersionState) => invoke<void>(IPC.invoke.craftmineSetImmersion, state),
+  onCraftmineImmersionShortcut: (listener: (action: CraftmineImmersionShortcut) => void) =>
+    window.piDesktop?.on(IPC.event.craftmineImmersionShortcut, (action) => {
+      if (action === "compact" || action === "full" || action === "escape") listener(action);
+    }) ?? (() => {}),
   getVersion: () => invoke<AppVersionInfo>(IPC.invoke.appGetVersion),
   health: () => invoke<HostHealth>(IPC.invoke.appHealth),
   getOnboarding: () => invoke<OnboardingState>(IPC.invoke.appGetOnboarding),
