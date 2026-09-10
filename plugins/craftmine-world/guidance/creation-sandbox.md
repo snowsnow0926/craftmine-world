@@ -19,8 +19,10 @@ Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 需要新的玩家捕获，不能编造目标、坐标、障碍或 snapshot ID。调用工具时不传
 `targetSnapshot`；主机通过本轮上下文取得它。
 
-`creationTarget.sourceRevision` 是捕获时主机源码事务 revision，首次操作等于工具请求
-`expected.revision`；同轮后续操作使用上次结果 `source.revision` 与 `source.manifestHash`，
+`creationTarget.sourceRevision` 是捕获时正式构建的源码 revision。工具请求的
+`expected.revision` 与 `expected.manifestHash` 使用当前 `godot_project_index` 的结果；
+新任务可能为相同正式源码重新编号，工具会由核心完整源码身份校验此重基准。
+同轮后续操作使用上次结果 `source.revision` 与 `source.manifestHash`，
 目标的 worldId、buildId、instanceId、snapshotId 保持原样。`creationTarget.target.revision` 是 `world/creation.json`
 内部场景 revision。两者有不同来源，不能互换。buildId、instanceId、worldId 和 snapshotId
 必须使用同一个主机捕获；只查文件得到的几何不是这种授权快照。
@@ -38,8 +40,8 @@ Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
       worldId: creationTarget.worldId,
       buildId: creationTarget.buildId,
       instanceId: creationTarget.instanceId,
-      revision: creationTarget.sourceRevision,
-      manifestHash: creationTarget.manifestHash,
+      revision: sourceIndex.revision,
+      manifestHash: sourceIndex.manifestHash,
       targetSnapshotId: creationTarget.snapshotId
     },
     action: "place",

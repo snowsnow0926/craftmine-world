@@ -76,7 +76,7 @@ fn transform(files: &mut BTreeMap<String,Vec<u8>>, base: &str, old: &str, new: &
                 let mut journal:Value=serde_json::from_slice(bytes)?;
                 ensure!(journal["format"]=="craftmine.creation-operations/1","GODOT_COPY_CREATION_JOURNAL_INVALID");
                 let operations=journal["operations"].as_array_mut().context("GODOT_COPY_CREATION_JOURNAL_INVALID")?;
-                ensure!(operations.len()<=64,"GODOT_COPY_CREATION_JOURNAL_INVALID");
+                ensure!(operations.len()<=4096,"GODOT_COPY_CREATION_JOURNAL_INVALID");
                 for entry in operations {
                     ensure!(entry["receipt"]["worldId"]==old,"GODOT_COPY_CREATION_JOURNAL_INVALID");
                     if entry["receipt"].get("originWorldId").is_none(){entry["receipt"]["originWorldId"]=json!(old);}
