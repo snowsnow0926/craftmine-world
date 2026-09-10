@@ -675,8 +675,8 @@ export class GodotBuildVerifier {
       // evidence, not used as a pass criterion.
       render.ok = render.frames >= FRAME_COUNT;
       if (!render.ok) throw new Error("GODOT_CHECK_FRAME_MISSING");
-      // Re-sample after real simulation/frame checks, so a delayed sibling
-      // script cannot overwrite the value after its initial read and pass.
+      // Re-sample after real simulation/frame checks to catch overrides during
+      // this bounded check window; future arbitrary script behavior is unproven.
       await observeTargetFeedback("running");
       targetFeedbackPassed=!!requirementsEvidence && requirementsEvidence.observations.length===2;
     } catch (failure) {

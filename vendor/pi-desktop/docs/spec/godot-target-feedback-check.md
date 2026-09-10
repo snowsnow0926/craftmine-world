@@ -15,6 +15,7 @@ instance, first-person base version 0.1.0, and the fixed bounded target-feedback
 shape. Duplicate/missing IDs, error observations and non-finite values fail.
 Actual values are preserved without rounding; tolerance is at most 1e-6 ms.
 No parameter write, source-value fallback or state substitution is permitted.
+These two samples cover the bounded check window, not all future script behavior.
 
 `requirementsEvidence` records the requirements hash, job/world/build/instance
 and ordered `loaded` and `running` observations. The additional assertion

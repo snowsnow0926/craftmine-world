@@ -1,0 +1,154 @@
+[
+  {
+    "name": "positive",
+    "descriptor": {
+      "format": "craftmine.godot-check-descriptor/1",
+      "phase": "check",
+      "jobId": "gjob-6bc37e47f9a45741d482da0ac3aff4d48cde72c035778ff92d5e0b767d19c55c",
+      "inputHash": "21de06c1530df5f0c5b31b79c6fd8f4fc8c014e62202c5d9b56d90ef02982cdd",
+      "worldId": "feedback-positive",
+      "buildId": "gbd-afa6e9ab3ac6574d50e6b5674d5e76cc95833823a314b397fd6c499dc673ec9c",
+      "baseId": "first-person",
+      "root": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\positive\\artifacts",
+      "entry": "web/index.html",
+      "threads": true,
+      "artifacts": [
+        {
+          "path": "web/bridge.js",
+          "bytes": 6415,
+          "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+        },
+        {
+          "path": "web/index.apple-touch-icon.png",
+          "bytes": 9395,
+          "sha256": "5e84aed46eb199395bac370fe195fbce66a34430ec04411d600cc78d349f9b62"
+        },
+        {
+          "path": "web/index.audio.position.worklet.js",
+          "bytes": 2973,
+          "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+        },
+        {
+          "path": "web/index.audio.worklet.js",
+          "bytes": 7298,
+          "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+        },
+        {
+          "path": "web/index.html",
+          "bytes": 965,
+          "sha256": "b960a98c136a7488a5870d2c71bfb67fb9700d80a94c34f1a82b1b3a545d1829"
+        },
+        {
+          "path": "web/index.icon.png",
+          "bytes": 4355,
+          "sha256": "9c169796e4366405ba202f3e57ae43dff7fb9b4cc8f248a0284134c32261fb4f"
+        },
+        {
+          "path": "web/index.js",
+          "bytes": 314653,
+          "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+        },
+        {
+          "path": "web/index.pck",
+          "bytes": 226028,
+          "sha256": "f082a35c9462ff46e70f1f1ea56ab53b3130682a26234c31db6b5591ce3ad8da"
+        },
+        {
+          "path": "web/index.png",
+          "bytes": 21443,
+          "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+        },
+        {
+          "path": "web/index.wasm",
+          "bytes": 38820072,
+          "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+        }
+      ],
+      "snapshot": null,
+      "checkRequirements": {
+        "format": "craftmine.godot-check-requirements/1",
+        "targetFeedback": {
+          "targetId": "target_a",
+          "hitFlashMilliseconds": 500
+        }
+      },
+      "checkRequirementsHash": "8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240"
+    }
+  },
+  {
+    "name": "sibling-override",
+    "descriptor": {
+      "format": "craftmine.godot-check-descriptor/1",
+      "phase": "check",
+      "jobId": "gjob-6ec923e53a83af7b42f8a83efe32aadac99f5c3614e85255d55c07fc4bab82ec",
+      "inputHash": "640d51141209de09b9fcdc6c5cf9bb1007db18eb3ffd1258ffe43192a4835f7f",
+      "worldId": "feedback-sibling-override",
+      "buildId": "gbd-b6a17eb5760a2502802a451433ec3f6a5eeff3a34ba373d4ed771dafa9b8c527",
+      "baseId": "first-person",
+      "root": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-verifier-lANgAN\\sibling-override\\artifacts",
+      "entry": "web/index.html",
+      "threads": true,
+      "artifacts": [
+        {
+          "path": "web/bridge.js",
+          "bytes": 6415,
+          "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+        },
+        {
+          "path": "web/index.apple-touch-icon.png",
+          "bytes": 9395,
+          "sha256": "5e84aed46eb199395bac370fe195fbce66a34430ec04411d600cc78d349f9b62"
+        },
+        {
+          "path": "web/index.audio.position.worklet.js",
+          "bytes": 2973,
+          "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+        },
+        {
+          "path": "web/index.audio.worklet.js",
+          "bytes": 7298,
+          "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+        },
+        {
+          "path": "web/index.html",
+          "bytes": 965,
+          "sha256": "2c45340aae5484d986f00ab917f427ecf597480609b0d2ab535edfb08c8ca80c"
+        },
+        {
+          "path": "web/index.icon.png",
+          "bytes": 4355,
+          "sha256": "9c169796e4366405ba202f3e57ae43dff7fb9b4cc8f248a0284134c32261fb4f"
+        },
+        {
+          "path": "web/index.js",
+          "bytes": 314653,
+          "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+        },
+        {
+          "path": "web/index.pck",
+          "bytes": 226784,
+          "sha256": "696059817b86343ff00915df758237511512333aabeb8a3c8d78062e5bf65a9e"
+        },
+        {
+          "path": "web/index.png",
+          "bytes": 21443,
+          "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+        },
+        {
+          "path": "web/index.wasm",
+          "bytes": 38820072,
+          "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+        }
+      ],
+      "snapshot": null,
+      "checkRequirements": {
+        "format": "craftmine.godot-check-requirements/1",
+        "targetFeedback": {
+          "targetId": "target_a",
+          "hitFlashMilliseconds": 500
+        }
+      },
+      "checkRequirementsHash": "8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240"
+    }
+  }
+]
