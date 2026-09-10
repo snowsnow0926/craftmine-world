@@ -1,0 +1,14 @@
+{
+  "engine": "D:/Craftmine World/desktop/build/godot/4.7.2-stable/editor/Godot_v4.7.2-stable_win64_console.exe",
+  "args": [
+    "--headless",
+    "--path",
+    "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\target-feedback-observation-KtkgIy\\project",
+    "--script",
+    "res://feedback_observe.gd"
+  ],
+  "code": 0,
+  "signal": null,
+  "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\n",
+  "stderr": ""
+}

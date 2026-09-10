@@ -15,6 +15,24 @@
 export const OBSERVATION_FORMAT = 'craftmine.godot-observation/1';
 export const OPERATION_REQUEST_FORMAT = 'craftmine.godot-operation-request/1';
 export const OPERATION_RESULT_FORMAT = 'craftmine.godot-operation-result/1';
+export const TARGET_FEEDBACK_OBSERVATION_FORMAT = 'craftmine.target-feedback-observation/1';
+export const TARGET_FEEDBACK_OBSERVATION_LIMIT = 256;
+const targetFeedbackErrors = ['TARGET_FEEDBACK_SCRIPT_UNAVAILABLE','TARGET_FEEDBACK_TOO_MANY_TARGETS','TARGET_FEEDBACK_INVALID_ID','TARGET_FEEDBACK_DUPLICATE_ID','TARGET_FEEDBACK_INVALID_DURATION'];
+
+/** Optional finite live configuration observation; an honest unavailable result
+ * is valid schema, but cannot be used to assert that a target value was seen. */
+export function validateTargetFeedbackObservation(value) {
+  const issues=[];
+  const invalid=()=>issues.push({code:'target-feedback',at:'payload.targetFeedback',message:'invalid bounded target feedback observation'});
+  if(!value||typeof value!=='object'||Array.isArray(value)||value.format!==TARGET_FEEDBACK_OBSERVATION_FORMAT||Object.keys(value).some(key=>!['format','targets','error'].includes(key))||!Array.isArray(value.targets)||value.targets.length>TARGET_FEEDBACK_OBSERVATION_LIMIT){invalid();return {ok:false,issues};}
+  if('error' in value){if(!targetFeedbackErrors.includes(value.error)||value.targets.length!==0)invalid();return {ok:issues.length===0,issues};}
+  const ids=new Set();
+  for(const target of value.targets){
+    if(!target||typeof target!=='object'||Array.isArray(target)||Object.keys(target).sort().join(',')!=='hitFlashMilliseconds,targetId'||typeof target.targetId!=='string'||target.targetId.match(/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/)?.[0]!==target.targetId||ids.has(target.targetId)||!Number.isInteger(target.hitFlashMilliseconds)||target.hitFlashMilliseconds<1||target.hitFlashMilliseconds>1000){invalid();continue;}
+    ids.add(target.targetId);
+  }
+  return {ok:issues.length===0,issues};
+}
 
 export const OBSERVATION_REQUIRED_FIELDS = Object.freeze([
   'format',
@@ -299,6 +317,10 @@ export function validateObservationEnvelope(envelope, { expect = null } = {}) {
   }
   if (!('payload' in envelope) || envelope.payload === null || typeof envelope.payload !== 'object') {
     issues.push({ code: 'payload', at: 'payload', message: 'payload must be an object' });
+  }
+  if(envelope.payload && Object.hasOwn(envelope.payload,'targetFeedback')){
+    if(envelope.baseId!=='first-person')issues.push({code:'target-feedback-base',at:'baseId',message:'target feedback belongs to first-person'});
+    issues.push(...validateTargetFeedbackObservation(envelope.payload.targetFeedback).issues);
   }
   if (expect) {
     for (const [key, value] of Object.entries(expect)) {
