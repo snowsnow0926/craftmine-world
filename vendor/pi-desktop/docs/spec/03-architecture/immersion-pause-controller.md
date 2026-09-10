@@ -12,6 +12,9 @@ never be reused, even after detach. Use one fresh token for each runtime instanc
 after each affected instance has reconciled the latest intent. `detach(token)`
 is idempotent and disables all further dispatch to that instance. `paused(token)`
 returns intended pause, not a claim about observed physical runtime state.
+`manualPaused(token)` exposes only manual intent so host checkpoint recovery can
+preserve it independently of the overlay. `has(token)` returns attachment status;
+unlike the intent getters it returns false for missing or detached tokens.
 
 Only one pause/resume callback is in flight for each token. Rapid changes during
 an acknowledgement are coalesced and reconciled before waiting callers resolve.
