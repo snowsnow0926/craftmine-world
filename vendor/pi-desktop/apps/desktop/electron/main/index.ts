@@ -203,6 +203,7 @@ import { PluginViewHost, pluginViewKey } from "./plugin-view-host";
 import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
 import { GodotWorldViewHost } from "./godot-world-view-host";
 import { createCraftmineLiveSampler } from "./craftmine-live-sample";
+import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
 import { createGodotRuntimeAdapter } from "./godot-runtime-adapter";
 import { createGodotCandidateCoordinator } from "./godot-candidate-coordinator";
 import {
@@ -1106,6 +1107,17 @@ const IMPORT_SOURCES = new Set<ExternalSource>([
 
 const dataDir =
   process.env.PI_DESKTOP_DATA_DIR || join(homedir(), ".pi-desktop");
+
+const creationTargets=createCreationTargetService({
+  directory:join(dataDir,"creation-context"),selection:godotSelection,instance:()=>godotWorld.instance,
+  descriptor:worldId=>plugins.requestCraftmineHost("godotRuntime.describe",{worldId}),
+  sample:createCraftmineLiveSampler(()=>godotWorld),
+});
+plugins.setServices({craftmineCreationTarget:async context=>{
+  const binding=craftmineGateway.get(context.sessionId);
+  if(!binding||binding.turnId!==context.turnId||binding.projectId!==context.projectId||activeTurns.get(context.sessionId)!==context.turnId)throw Error("CREATION_ACTIVE_TURN_REQUIRED");
+  return creationTargets.bound(context,binding.selectedWorld);
+}});
 
 const logger = new Logger(
   dataDir,
@@ -2555,7 +2567,8 @@ const craftmineGateway = new CraftmineTurnGateway(
       if (craftmineProjectIdentity(detail.session, binding.sessionId) !== binding.projectId) throw new Error("CRAFTMINE_PROJECT_CHANGED");
       const latest = detail.session.messages?.findLast((message: UiMessage) => message.role === "user");
       if (!latest) throw new Error("CRAFTMINE_USER_REQUEST_REQUIRED");
-      return plugins.requestCraftmineHost(operation, { context, request: { id: latest.id, text: latest.content } });
+      const result=await plugins.requestCraftmineHost(operation, { context, request: { id: latest.id, text: latest.content } }) as Record<string,unknown>;
+      return {...result,creationTarget:creationTargets.bound(context,binding.selectedWorld)};
     }
     return plugins.requestCraftmineHost(operation, { ...input, context });
   },
@@ -2563,8 +2576,9 @@ const craftmineGateway = new CraftmineTurnGateway(
 );
 
 async function bindCraftmineTurn(sessionId: string, turnId: string, session: any,
-  request: { id: string; text: string }): Promise<boolean> {
+  request: { id: string; text: string },target?:{owner:number;capture:CreationCapture|null}): Promise<boolean> {
   if (!plugins.getLoaded("craftmine.world") || !pluginActiveInProject("craftmine.world", session.projectPath ?? null)) {
+    if(target?.capture)throw Error("CREATION_PROJECT_CHANGED");
     craftmineGateway.beginGeneric(sessionId, turnId); return false;
   }
   const selection = await plugins.requestCraftmineHost("selection.read", {}) as { worldId: string | null };
@@ -2577,6 +2591,7 @@ async function bindCraftmineTurn(sessionId: string, turnId: string, session: any
     context: { projectId, sessionId, turnId }, selectedWorld, request,
   }) as { world: { id: string } };
   craftmineGateway.bind({ projectId, sessionId, turnId, selectedWorld: result.world.id });
+  if(target)await creationTargets.bind(target.owner,target.capture,{projectId,sessionId,turnId},result.world.id);
   return true;
 }
 /** sessionId -> last assistant usage recorded for active turn */
@@ -6282,6 +6297,24 @@ function registerIpc() {
 
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
+    if(payload?.pluginId==="craftmine.world"&&["godot.creationTarget","godot.creationPolicy"].includes(payload.channel)){
+      if((event as Electron.IpcMainInvokeEvent).senderFrame!==mainWindow?.webContents.mainFrame)throw Error("PERMISSION_DENIED");
+      const input=payload.payload??{};
+      if(!input||typeof input!=="object"||Array.isArray(input))throw Error("CREATION_REQUEST_INVALID");
+      if(payload.channel==="godot.creationTarget"){
+        if(Object.keys(input).length!==1||(input.sessionId!==null&&(typeof input.sessionId!=="string"||!input.sessionId||input.sessionId.length>240)))throw Error("CREATION_REQUEST_INVALID");
+        if(input.sessionId===null){
+          const projectPath=currentWorkspacePath();
+          if(!projectPath)return {captureId:null,target:null,reason:"CREATION_PROJECT_REQUIRED"};
+          const draftId="new-creation-draft";
+          return creationTargets.capture(event.sender.id,{sessionId:null,projectId:craftmineProjectIdentity({id:draftId,projectPath},draftId)});
+        }
+        const detail=await host?.call<{session?:any}>("session.get",{id:input.sessionId});
+        if(!detail?.session)throw Error("CREATION_SESSION_REQUIRED");
+        return creationTargets.capture(event.sender.id,{sessionId:input.sessionId,projectId:craftmineProjectIdentity(detail.session,input.sessionId)});
+      }
+      return creationTargets.policy(input);
+    }
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
     if (payload?.channel==="world.creationRetry" && (godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotRestores.busy)) throw Error("ACTIVE_TASK_EXISTS");
     return invokeCraftmineNavigation(payload, {
@@ -8274,7 +8307,9 @@ function registerIpc() {
     return { title };
   });
 
-  handle(IPC.invoke.agentPrompt, async (req: AgentPromptRequest) => {
+  handleWithEvent(IPC.invoke.agentPrompt, async (event, req: AgentPromptRequest) => {
+    assertMainWindowSender(event);
+    if((event as Electron.IpcMainInvokeEvent).senderFrame!==mainWindow?.webContents.mainFrame)throw Error("PERMISSION_DENIED");
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
     if (godotCopies.busy || godotExportBusy) throw Error("ACTIVE_TASK_EXISTS");
     if (!host || !sidecar) throw new Error("backend unavailable");
@@ -8298,6 +8333,7 @@ function registerIpc() {
         errorCode: ErrorCodes.NOT_FOUND,
       });
     }
+    const creationCapture=await creationTargets.validate(event.sender.id,req.requestContext,{sessionId:req.sessionId,projectId:craftmineProjectIdentity(session,req.sessionId)});
     // The host's own transcript decides where the cut lands, so a renderer
     // holding a bounded window cannot shift it.
     const allMessages = Array.isArray(session.messages) ? session.messages : [];
@@ -8528,7 +8564,7 @@ function registerIpc() {
     let result: { accepted: boolean; turnId: string };
     try {
       const craftmineWorld = await bindCraftmineTurn(req.sessionId, durableTurnId, session,
-        { id: userMessage.id, text: userMessage.content });
+        { id: userMessage.id, text: userMessage.content },{owner:event.sender.id,capture:creationCapture});
       result = await sidecar.call<{ accepted: boolean; turnId: string }>(
         "agent.prompt",
         {

@@ -42,6 +42,8 @@ export type CraftmineWorldBase = {
   description: string;
   /** false when the host knows the base only as a planned/schema value. */
   delivered: boolean;
+  /** Per-base starting content, when the host provides a scoped catalog. */
+  starters?: CraftmineWorldStarter[];
 };
 
 export type CraftmineWorldStarter = {
@@ -252,6 +254,10 @@ function parseBase(value: unknown): CraftmineWorldBase | null {
     // Only an explicit `delivered: true` counts; a silent host must never make
     // a planned base selectable.
     delivered: raw.delivered === true,
+    ...(Array.isArray(raw.starters) ? { starters: raw.starters.flatMap(item => {
+      const starter = parseStarter(item);
+      return starter ? [starter] : [];
+    }) } : {}),
   };
 }
 
@@ -394,6 +400,24 @@ export function parseWorldCapabilities(value: unknown): CraftmineWorldCapabiliti
     switch: typeof raw.switch === "boolean" ? raw.switch : null,
     createActions: raw.createActions === true,
   };
+}
+
+/** A base with an explicit empty starter list must not inherit another base's templates. */
+export function worldStartersForBase(capabilities: CraftmineWorldCapabilities | null, baseId: string): CraftmineWorldStarter[] {
+  const base = capabilities?.bases.find(entry => entry.id === baseId);
+  return base?.starters ?? capabilities?.starters ?? [];
+}
+
+export function worldCreationBaseLabel(base: CraftmineWorldBase, lang: CraftmineLang): string {
+  return base.id === "creation-sandbox" ? (lang === "zh" ? "造物世界" : "Creation world") : base.label;
+}
+
+export function resolveWorldCreationSelection(capabilities: CraftmineWorldCapabilities | null, baseId: string, starterId: string): {baseId: string; starterId: string} {
+  const base = capabilities?.bases.find(entry => entry.id === baseId && entry.delivered)
+    ?? capabilities?.bases.find(entry => entry.delivered);
+  const starters = worldStartersForBase(capabilities, base?.id ?? "");
+  const starter = starters.find(entry => entry.id === (starterId || "blank") && entry.delivered);
+  return {baseId: base?.id ?? "", starterId: starter?.id ?? ""};
 }
 
 /**

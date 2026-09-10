@@ -1,10 +1,12 @@
 import type { ComposerDraftSnapshot } from "./composer-smart-stop";
+import type { CreationRequestContext } from "./creation-target";
 
 export type QueuedPrompt = {
   id: string;
   sessionId: string;
   content: string;
   draft: ComposerDraftSnapshot;
+  requestContext?: CreationRequestContext;
   createdAt: number;
   sendNowRequested?: boolean;
 };

@@ -61,6 +61,9 @@ import { ComposerAutocomplete } from "./ComposerAutocomplete";
 import { VoiceInput } from "./VoiceInput";
 import { appendVoiceTranscript } from "../lib/composer-voice-draft";
 import { craftmineWorldBridge } from "../lib/craftmine-worlds";
+import { useCreationTarget } from "../hooks/use-creation-target";
+import { creationRequestContext } from "../lib/creation-target";
+import { CreationTargetContext } from "./CreationTargetContext";
 import { ContextUsageInspector } from "./ContextUsageInspector";
 import { AskToolCard } from "./AskToolCard";
 import { PlanApprovalBar } from "./PlanApprovalBar";
@@ -622,6 +625,7 @@ export function Composer({
     return () => { off?.(); window.removeEventListener("craftmine-world-changed", changed); };
   }, []);
   const voiceContextKey = `${activeSessionId ?? HOME_DRAFT_KEY}:${workspacePath}:${voiceWorldGeneration}`;
+  const creationTarget = useCreationTarget(voiceEnabled, `${activeSessionId ?? HOME_DRAFT_KEY}:${workspacePath}`, activeSessionId);
   const voiceContextRef = useRef(voiceContextKey);
   voiceContextRef.current = voiceContextKey;
   const providers = useAppStore((s) => s.providers);
@@ -1644,6 +1648,7 @@ export function Composer({
     }
     invalidatePromptEnhancement();
     const submittedDraftKey = draftKey;
+    const submittedRequestContext = creationRequestContext(creationTarget.capture);
     // Slash dispatch (D123): builtin/plugin aliases execute locally without
     // a session or a model; templates and unknown /names stay prompt text
     // (main expands templates). Runs before the model-ready gate on purpose.
@@ -1680,8 +1685,10 @@ export function Composer({
                 activeFileReferences,
               ),
               draftSnapshot(visibleCommandBody),
+              undefined,
+              submittedRequestContext,
             );
-            if (accepted) clearDraftForKey(submittedDraftKey);
+            if (accepted) { clearDraftForKey(submittedDraftKey); void creationTarget.refresh(); }
           } catch (e) {
             showToast(e instanceof Error ? e.message : String(e), {
               variant: "error",
@@ -1717,8 +1724,9 @@ export function Composer({
     // puts the draft back.
     const submittedDraft = draftSnapshot(text);
     clearDraftForKey(submittedDraftKey);
-    const accepted = await sendPrompt(inlineContent, submittedDraft);
+    const accepted = await sendPrompt(inlineContent, submittedDraft, undefined, submittedRequestContext);
     if (!accepted) restoreDraftForKey(submittedDraftKey, submittedDraft);
+    else void creationTarget.refresh();
   };
 
   /** Programmatic draft application: state + pending caret for the sync effect. */
@@ -2039,6 +2047,7 @@ export function Composer({
       className={`composer-dock composer-dock-${variant}`}
     >
       <div className="composer-stack">
+        {voiceEnabled && <CreationTargetContext controller={creationTarget} />}
         {planCheckpoint?.status === "pending" ? (
           <PlanApprovalBar proposal={planCheckpoint} />
         ) : null}

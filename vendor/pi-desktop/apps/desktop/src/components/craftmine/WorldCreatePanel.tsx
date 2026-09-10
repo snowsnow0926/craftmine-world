@@ -3,6 +3,9 @@ import {
   CRAFTMINE_WORLD_TITLE_MAX,
   normalizeWorldTitle,
   validateWorldTitle,
+  worldStartersForBase,
+  worldCreationBaseLabel,
+  resolveWorldCreationSelection,
   type CraftmineLang,
 } from "../../lib/craftmine-worlds";
 import { CRAFTMINE_WORLD_TEXT } from "../../lib/craftmine-worlds-text";
@@ -26,8 +29,8 @@ export function WorldCreatePanel({
   onClose: () => void;
 }) {
   const bases = controller.capabilities?.bases ?? [];
-  const starters = controller.capabilities?.starters ?? [];
   const [baseId, setBaseId] = useState(() => bases.find((base) => base.delivered)?.id ?? "");
+  const starters = worldStartersForBase(controller.capabilities, baseId);
   const [starterId, setStarterId] = useState("");
   const [title, setTitle] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
@@ -47,10 +50,7 @@ export function WorldCreatePanel({
     setLocalError(null);
     // Resolve the selection against the current capabilities: a base that
     // arrived late, was removed, or is not delivered must never be sent.
-    const chosenBase = bases.find((base) => base.id === baseId && base.delivered)?.id
-      ?? bases.find((base) => base.delivered)?.id
-      ?? "";
-    const chosenStarter = starters.find((starter) => starter.id === starterId && starter.delivered)?.id ?? "";
+    const {baseId: chosenBase, starterId: chosenStarter} = resolveWorldCreationSelection(controller.capabilities, baseId, starterId);
     const created = await controller.create({
       title: normalizeWorldTitle(title),
       operationId: operationId.current,
@@ -91,10 +91,10 @@ export function WorldCreatePanel({
                 value={base.id}
                 checked={baseId === base.id}
                 disabled={!base.delivered}
-                onChange={() => setBaseId(base.id)}
+                onChange={() => { setBaseId(base.id); setStarterId(""); }}
               />
               <span className="craftmine-world-choice-text">
-                <span className="craftmine-world-choice-label">{base.label}</span>
+                <span className="craftmine-world-choice-label">{worldCreationBaseLabel(base, lang)}</span>
                 {base.description && <span className="craftmine-world-choice-desc">{base.description}</span>}
               </span>
               {!base.delivered && <span className="craftmine-world-tag">{CRAFTMINE_WORLD_TEXT.planned[lang]}</span>}
@@ -120,7 +120,7 @@ export function WorldCreatePanel({
           />
           <span>{CRAFTMINE_WORLD_TEXT.createStarterBlank[lang]}</span>
         </label>
-        {starters.map((starter) => (
+        {starters.filter(starter => starter.id !== "blank").map((starter) => (
           <label
             key={starter.id}
             className="craftmine-world-choice"
