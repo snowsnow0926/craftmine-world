@@ -43,7 +43,7 @@ export function createTargetFeedbackUI({element,request,getWorldId,durableCall,a
   const generation=epoch,id=world,sequence=++readSequence;reading=true;controls();
   try{const result=await call('targetFeedback.describe',{});if(sequence!==readSequence)return;fields=result.targets;select.replaceChildren();
    for(const target of fields){const option=text('option',`${target.label} · ${target.targetId}`);option.value=target.targetId;select.append(option);}
-   if(fields.length)select.value=fields[0].targetId;choose();notice.textContent=fields.length?'只修改所选训练靶的受击闪光时长。':'此世界没有可调整的训练靶。';
+   if(fields.length)select.value=fields[0].targetId;choose();notice.textContent=fields.length?'只修改所选训练靶的受击闪光时长。':result.unsupportedCount?'当前训练靶版本暂不支持参数面板，可继续通过创作对话修改。':'此世界没有可调整的训练靶。';
   }catch(error){if(current(generation,id)&&sequence===readSequence){fields=[];notice.textContent=errors[error?.code]||errors[error?.message]||'暂时无法读取可调整参数。请先打开正式的第一人称训练场。';}}
   finally{if(current(generation,id)&&sequence===readSequence){reading=false;controls();}}
  }
