@@ -614,7 +614,7 @@ impl Task {
         };
         let engine = self.engine.clone();
         let system_root = std::env::var("SystemRoot")?;
-        let running = start_unless_cancelled(cancel.as_deref(), || crate::launch::start_verified(&LaunchSpec {
+        let running = start_unless_cancelled(cancel.as_deref(), || crate::launch::start_verified_diagnostic(&LaunchSpec {
             executable: engine,
             args: self.kind.args(&self.layout.project, &self.layout.export_dir),
             cwd: self.layout.work.clone(),

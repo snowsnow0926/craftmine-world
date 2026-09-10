@@ -270,6 +270,16 @@ pub fn start_verified(spec: &LaunchSpec) -> Result<RunningProcess> {
     start_policy(spec, true, true, true)
 }
 
+/// Private diagnostic build only. Keeps the production recipe and suspended
+/// identity verification; the sole difference is the creator-owned debugger.
+pub(crate) fn start_verified_diagnostic(spec: &LaunchSpec) -> Result<RunningProcess> {
+    if spec.job.is_none_or(|job| job.process_memory_bytes != crate::verification::MEMORY_BYTES)
+        || spec.child_process_policy.is_some() || spec.environment.is_none() || !spec.diagnose {
+        return Err("Diagnostic verified launch requires the fixed policy recipe".into());
+    }
+    start_policy(spec, true, true, true)
+}
+
 // LPAC is a fixed diagnostic variant, not a product policy selection API.
 fn start_policy(spec: &LaunchSpec, lpac: bool, registry_read: bool, verify_before_resume: bool) -> Result<RunningProcess> {
     if lpac && (spec.appcontainer.is_none() || spec.job.is_none()
