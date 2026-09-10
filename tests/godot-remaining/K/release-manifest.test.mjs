@@ -81,7 +81,7 @@ function buildRoot() {
   write(path.join(root, 'vendor/pi-desktop/target/release/craftmine-core.exe'), 'synthetic core binary\n');
   // Independent shipped requirement: do not make fixture coverage follow a
   // production allowlist that could accidentally drop the fourth base again.
-  for (const [index, baseId] of ['first-person', 'side-view', 'top-down', 'mining-sandbox'].entries()) {
+  for (const [index, baseId] of ['first-person', 'side-view', 'top-down', 'mining-sandbox', 'creation-sandbox'].entries()) {
     const directory = path.join(root, 'desktop/godot/bases', baseId);
     const manifestName = baseId === 'first-person' ? 'base_manifest.json' : 'manifest.json';
     write(path.join(directory, manifestName), JSON.stringify({
@@ -194,8 +194,8 @@ test('create() pins real bytes for every component', () => {
     assert.equal(file.bytes, fs.statSync(path.join(root, file.path)).size);
   }
 
-  assert.deepEqual(Object.keys(manifest.components.bases).sort(), ['first-person','mining-sandbox','side-view','top-down']);
-  for (const baseId of ['first-person','side-view','top-down','mining-sandbox']) {
+  assert.deepEqual(Object.keys(manifest.components.bases).sort(), ['creation-sandbox','first-person','mining-sandbox','side-view','top-down']);
+  for (const baseId of ['first-person','side-view','top-down','mining-sandbox','creation-sandbox']) {
     const base = manifest.components.bases[baseId];
     assert.equal(base.baseId, baseId);
     assert.equal(base.engine.version, '4.7.2-stable');
@@ -231,8 +231,8 @@ test('create() pins real bytes for every component', () => {
   assert.ok(manifest.reproducibility.limits.length >= 3);
 });
 
-test('release inventory independently contains all four shipped bases and six declared mining components', () => {
-  const expectedBases=['first-person','mining-sandbox','side-view','top-down'];
+test('release inventory independently contains all five shipped bases and six declared mining components', () => {
+  const expectedBases=['creation-sandbox','first-person','mining-sandbox','side-view','top-down'];
   const expectedComponents=['ms.crafting-station','ms.material','ms.ore-vein','ms.recipe','ms.spawn-point','ms.terrain-layer'];
   assert.deepEqual([...BASE_IDS].sort(),expectedBases);
   const repo=path.resolve(HERE,'../../..');
