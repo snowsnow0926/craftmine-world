@@ -55,7 +55,7 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
   return <div className="creation-object-editor">
     <div className="creation-target-row">
       <button type="button" disabled={!sessionId||!target?.entityId||busy} onClick={()=>setOpen(!open)}>{zh?"编辑对象":"Edit object"}</button>
-      <button type="button" disabled={!sessionId||!undo||busy||!controller.capture?.captureId} onClick={()=>void submit("undo")}>{zh?"撤销上次操作":"Undo last edit"}</button>
+      <button type="button" title={zh?"支持本版记录的放置、参数修改、复制和删除；旧记录与规则修改暂不可撤销。":"Supports recorded placement, property edits, duplication and deletion; older records and rule edits cannot be undone."} disabled={!sessionId||!undo||busy||!controller.capture?.captureId} onClick={()=>void submit("undo")}>{zh?"撤销上次操作":"Undo last edit"}</button>
     </div>
     {open&&<fieldset disabled={busy}>
       <legend>{target?.entityName??target?.entityId}</legend>
