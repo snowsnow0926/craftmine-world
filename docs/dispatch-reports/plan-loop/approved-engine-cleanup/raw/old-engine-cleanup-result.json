@@ -1,0 +1,336 @@
+﻿{
+    "format":  "craftmine.approved-old-engine-cleanup/1",
+    "startedAt":  "2026-09-10T04:45:06.6637536Z",
+    "authorization":  "User explicitly approved the 64-file proposal in this task",
+    "proposalSha256":  "17cf7028b2b7808d58f9f5d7fff74e162bbb1267daa45d8fd1713a56b6d8f584",
+    "freeBefore":  2338365440,
+    "deleted":  [
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-15a9c1d232144e0b8fe6cbbe\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-29eb62076c6941e0a5a2a3b6\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-4546572c08d24b8cb40c5da1\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-540ab2cf4e5b46cb8b29409b\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-6ec8c42c541d465d9a39555e\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-732af9db404840d5a5c4493c\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-8434d464be71486693d14921\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-9019065fcbdc4d5fb0f27b31\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-94d3c41910a34590878bad26\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-b3b284c6bc9d4b7eabc6aa8b\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-d399c110cb2c4051b067f66b\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-e3b2fa47b57848f18cd89895\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-053f44008fe149d192448caf\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-1163ebda1b094e13bc05ca17\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-125eeb7a05ed4c368d85dced\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-12ae110ec866461888efbeba\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-537025a1531d4439817e3a13\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-719bed6e8a82467eb9f8b28b\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-85a2ff79cbd6458fa8f842cf\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-9bec70cffe7043aab83b2ff4\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-9f192f64b73143b7aaf2ee93\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-a31ce8013998420d97a01476\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-c500ed85933643949ab7e57e\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-f18177170207497eaeaf6943\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-12e9a9da231c40ca8b884b8a\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-1748479d494a4f7ebfbe678f\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-50548f0ac9ec443c831b7d17\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-5bd64b888b0240cd9a16fe9d\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-8dccbf3a1ed44b64aa791682\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-94511bf03be349918a3cdb76\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-988607c8e83444f19d722c12\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-9cbb596ea0174699bed78471\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-ba8bd2c3bbb044829159082c\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-d8503e5352194c0591a248d0\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-1b4e4e673c6541a3b155a7bc\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-345ec9ecef43457f918b9b1d\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-3b65d876553d4a9a989ca87f\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-4732470c10354975bfccf0fc\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-4a7ecdd3ff42453392b0ea73\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-6afdf63640984477aa6fcad0\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-79a8bf1c4f944dee81e1331c\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-93ea04074bac4eeabc78b520\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-9cfdce25992d40b38b16304f\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-ebccea7fdeb144e7841e2229\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\ex-ed9a0472889243a1a16ef42f\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-041ffaa2d41b4f728d6342ea\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-05fa13284a4543a19742b7fd\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-18d8786d9da445a5a28ac7e5\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-240f96189b1f47bbb1eb1eef\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-329adac172bc4d50966de24a\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-5a217e6cf1f343818976f9a0\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-69abc79f873742afaf87b313\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-b2b427aea3984a5f95e25ceb\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-dd77c085e61d4c3fb9477b10\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-e363ddf334004149bcba94c4\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\im-eb7d5906f8434437832e5cf5\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-261d6108e13b46738ce6e88e\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-45294cd2f4b047baa3be9d40\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-617707c5f5cd445a873b44b2\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-6d9700904e6d47acbb61952f\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-75c11805c1cc43ada0501f9d\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-a827c9416ca84a56a0309582\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-dd933ce244b347bea926527d\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    },
+                    {
+                        "path":  "C:\\cm-release-test-20260910\\test-results\\desktop-native-complete-UqYcKp\\profile\\plugins\\data\\craftmine.world\\godot\\tasks\\pf-ff5af36a30dd4dc2a002a1c6\\bin\\Godot_v4.7.2-stable_win64.exe",
+                        "bytes":  180858888,
+                        "sha256":  "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+                    }
+                ],
+    "errors":  [
+
+               ],
+    "recursive":  false,
+    "moved":  false,
+    "freeAfter":  10107408384,
+    "finishedAt":  "2026-09-10T04:45:17.7218379Z"
+}

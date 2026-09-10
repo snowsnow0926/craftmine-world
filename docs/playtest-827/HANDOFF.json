@@ -1,0 +1,119 @@
+{
+  "format": "craftmine.local-playtest-handoff/1",
+  "startedAt": "2026-09-10T04:58:53.583Z",
+  "finishedAt": "2026-09-10T04:58:56.278Z",
+  "sourceCommit": "8276b4540289c0d397c382dff2123edfe1861d42",
+  "release": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6",
+  "profileOnUserLaunch": "C:/cm-playtest-827",
+  "applicationLaunched": false,
+  "osInput": false,
+  "installerExecuted": false,
+  "newFeaturePackageBuilt": false,
+  "packageReverified": {
+    "files": 1565,
+    "bytes": 974369789,
+    "packageEvidence": {
+      "path": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\package-evidence.json",
+      "bytes": 300621,
+      "sha256": "24e7b58dace8de38b8eb50ff36374e46ce5784d58aaed9be867a7cabd57e8e99"
+    }
+  },
+  "distribution": [
+    {
+      "path": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\output\\Craftmine-World-Setup-0.14.3.exe",
+      "bytes": 343274433,
+      "sha256": "9e9805b6335738bebc6938067f63218d81e7cd4c0d96169361af8010cc1af378"
+    },
+    {
+      "path": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\output\\Craftmine-World-Setup-0.14.3.exe.blockmap",
+      "bytes": 359190,
+      "sha256": "41eeb4705cc0e2e16dcd9fda9682aed25c3242a5fb1a3c5bf15a316b34c26c61"
+    },
+    {
+      "path": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\portable-7a6780f7-45b6-4f6d-ae5c-e670e8a898bf\\Craftmine-World-portable-8276b4540289.zip",
+      "bytes": 441282226,
+      "sha256": "823ed2803692eb9a54c80fde044d812b8bc5d617c4ec0903c8075a272f74b7ed"
+    },
+    {
+      "path": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\output\\win-unpacked\\resources\\source\\CraftmineWorld-source.zip",
+      "bytes": 53898614,
+      "sha256": "962c308d3d752b200ee508729459e1322269cf11a2a2aa47210ec6833fb872e3"
+    }
+  ],
+  "primaryDocumentsPreserved": [
+    {
+      "path": "D:\\Craftmine World\\README.md",
+      "bytes": 12765,
+      "sha256": "a15ecab9ffbbf733e5fbe8a722a050e8ff7a31c8d4b41d57bbc2a01dfb44195e"
+    },
+    {
+      "path": "D:\\Craftmine World\\docs\\GODOT_MULTIBASE_DEVELOPMENT_PLAN.md",
+      "bytes": 49718,
+      "sha256": "eeb688fbedadc3641aa5d553531bd4c08f8f0cfb2fa236c9f1169e7483fac291"
+    },
+    {
+      "path": "D:\\Craftmine World\\docs\\AI_CREATION_EFFICIENCY_DEVELOPMENT_PLAN.md",
+      "bytes": 29868,
+      "sha256": "c638ccdcce06a89b7b3f76518c264cf1dd6d83fdb6e1961847f5b91051a7fe0b"
+    },
+    {
+      "path": "D:\\Craftmine World\\docs\\ASSET_LIBRARY_DEVELOPMENT_PLAN.md",
+      "bytes": 24715,
+      "sha256": "a386891a2937723690cda7e0ca3aab21e7729daac263d8ffd43561ff4d0eac32"
+    },
+    {
+      "path": "D:\\Craftmine World\\docs\\COMMUNITY_PLATFORM_DEVELOPMENT_PLAN.md",
+      "bytes": 34461,
+      "sha256": "6e7617c035f774e71121f04e0abe8b6d175456e7a802cd0b23457175ad67b7da"
+    },
+    {
+      "path": "D:\\Craftmine World\\docs\\CREATION_PACKAGE_DEVELOPMENT_PLAN.md",
+      "bytes": 32599,
+      "sha256": "28356f7593ce5e397b626ed3ea304aa8064684549733b7085da9ea025b545880"
+    },
+    {
+      "path": "D:\\Craftmine World\\docs\\LICENSING_STRATEGY.md",
+      "bytes": 9597,
+      "sha256": "84695156ed65abb4ee293303ec5cb488c593b35201266d8da25d46e466bd48da"
+    },
+    {
+      "path": "D:\\Craftmine World\\docs\\NATIVE_RUNTIME_LONG_TERM_DEVELOPMENT_PLAN.md",
+      "bytes": 34378,
+      "sha256": "32bcd3b01c52162ec86d48169a0c55098c4948cf85a3f5848e085902a7dd8a3a"
+    },
+    {
+      "path": "D:\\Craftmine World\\docs\\PLAYER_PRODUCT_EXPERIENCE_DEVELOPMENT_PLAN.md",
+      "bytes": 38651,
+      "sha256": "d309d6402c39416f09c1d2ae006cde487806f39c6d6243e3f64a8537a261e529"
+    },
+    {
+      "path": "D:\\Craftmine World\\docs\\VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md",
+      "bytes": 22081,
+      "sha256": "76d859c84354d74de4de3a99a4a098bd6246f75c2819632206b0e4105cc2598a"
+    }
+  ],
+  "delivered": [
+    {
+      "path": "C:\\Craftmine-Playtest-20260910\\开发进度报告.md",
+      "bytes": 15855,
+      "sha256": "6666856d8d42b5df0805132a6e5481e4659aceec24e8c3228d5d14a832ca0f92"
+    },
+    {
+      "path": "C:\\Craftmine-Playtest-20260910\\试玩说明.md",
+      "bytes": 4494,
+      "sha256": "2ced36041a3e725d18fc60a122ace4013d67a9741598bdda74b41d2afe179de2"
+    },
+    {
+      "path": "C:\\Craftmine-Playtest-20260910\\Start-Craftmine-827.cmd",
+      "bytes": 555,
+      "sha256": "d564659bd4923c0ff4207e88a21c27747c7f1f097157ab391eb5d686a6d51123"
+    }
+  ],
+  "launcherValidation": "Static inspection only; user explicitly controls interactive launch.",
+  "cleanupCheckpoint": {
+    "path": "C:\\cm-plan-next-20260910\\docs\\dispatch-reports\\plan-loop\\approved-engine-cleanup\\CHECKPOINT.json",
+    "bytes": 1401,
+    "sha256": "4162e9ca444e9c7c76eb74533453636ebdfba66da6343232bc4241235a7c6286"
+  },
+  "documentationFinalizedAt": "2026-09-10T05:01:35.554Z"
+}

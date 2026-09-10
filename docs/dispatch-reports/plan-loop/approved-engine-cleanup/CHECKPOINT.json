@@ -1,0 +1,38 @@
+{
+  "format": "craftmine.approved-engine-cleanup-checkpoint/1",
+  "userAuthorization": "允许按清单清理",
+  "scope": "Exactly 64 listed engine staging EXE copies in two finished isolated test profiles. No other deletion or move.",
+  "result": {
+    "deleted": 64,
+    "errors": 0,
+    "freeBefore": 2338365440,
+    "freeAfter": 10107408384
+  },
+  "retainedVerification": {
+    "approvedAbsent": 64,
+    "approvedBytes": 11574968832,
+    "retainedFilesVerified": 7051,
+    "retainedBytesVerified": 1928277608,
+    "directories": 3157,
+    "anomalies": 0,
+    "passed": true,
+    "original": {
+      "path": "C:\\cm-plan-next-20260910\\test-results\\old-engine-cleanup-retained-verification.json",
+      "bytes": 2412135,
+      "sha256": "66c6ee2b2ea46993b92f0227833ac7c0ed988b7226024155d18319c0055c085e"
+    }
+  },
+  "raw": [
+    {
+      "path": "C:\\cm-plan-next-20260910\\docs\\dispatch-reports\\plan-loop\\approved-engine-cleanup\\raw\\old-engine-cleanup-proposal.json",
+      "bytes": 39263,
+      "sha256": "17cf7028b2b7808d58f9f5d7fff74e162bbb1267daa45d8fd1713a56b6d8f584"
+    },
+    {
+      "path": "C:\\cm-plan-next-20260910\\docs\\dispatch-reports\\plan-loop\\approved-engine-cleanup\\raw\\old-engine-cleanup-result.json",
+      "bytes": 27928,
+      "sha256": "7fb0307e3208337483cd125e4b35ee70db2ddb87d7e6031ebcaf618ce61e13d0"
+    }
+  ],
+  "previousCompressionReportsUnchanged": true
+}
