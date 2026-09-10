@@ -8931,3 +8931,10 @@ official 500 scene's successful check and adoption. Keep full runtime and
 candidate identities, and distinguish bounded observations from proof of
 arbitrary future behavior. No model call, OS input, visible window, or Pointer
 Lock is required. See godot-check-requirements.md for the finite wire contract.
+
+
+### Owned shutdown terminal barriers (PP2 follow-up)
+
+Use an independent headless client/profile with Pointer Lock disabled and no input simulation. Save the formal Godot world, quit and restart. Verify existing progress and the actual exit code; a later successful rerun never erases a nonzero exit. Preserve the L0CaYa failure and the 0Dd08G rerun separately.
+
+Keep renderer destruction pending after runtime cleanup and verify disposal remains pending; deliver destroyed and verify one completion. Withhold destroyed and require a named timeout failure. Distinguish child kill, exit and stdio closure. Verify the real Node child closes its pipes; controlled UtilityProcess ordering still requires native client validation. Concurrent HTTP disposal must share one promise, and a missing server-close callback must reject. Rejected service teardown must be logged as incomplete while retaining the existing final quit policy.

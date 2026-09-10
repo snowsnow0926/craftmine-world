@@ -9790,13 +9790,22 @@ app.on("before-quit", (event) => {
     const godotShutdown = godotWorld.dispose();
     inflightCheckpointer.dispose();
     const sidecarShutdown = sidecar?.dispose();
+    const shutdownServices = ["plugin-panels", "plugins", "agent-sidecar", "godot-world"];
+    // Attach rejection handlers before waiting for host-core: another owner
+    // may fail its close barrier immediately while that host is still exiting.
+    const serviceShutdown = Promise.allSettled([pluginPanelShutdown, pluginShutdown, sidecarShutdown, godotShutdown]);
 
     try {
       await hostShutdown;
     } catch (error) {
       logger.app("lifecycle", "warn", "host shutdown failed", { data: String(error) });
     }
-    await Promise.allSettled([pluginPanelShutdown, pluginShutdown, sidecarShutdown, godotShutdown]);
+    const shutdownResults = await serviceShutdown;
+    shutdownResults.forEach((result, index) => {
+      if (result.status === "rejected") logger.app("lifecycle", "error", "service shutdown incomplete", {
+        data: { service: shutdownServices[index], error: String(result.reason) },
+      });
+    });
   })();
 
   const releaseQuit = () => {

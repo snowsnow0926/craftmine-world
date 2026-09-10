@@ -67,6 +67,7 @@ import { McpServerClient, type McpServerClientOptions } from "./plugin-mcp";
 import { DevPluginWatcher, type DevPluginWatcherDeps } from "./plugin-watcher";
 import { parseAllowedExternalUrl } from "./safe-open-external";
 import type { PluginAppearance } from "../shared/plugin-panel-chrome";
+import { awaitOwnedClose, utilityProcessClosed } from "./owned-resource-close";
 
 export type RegisteredCommand = {
   id: string;
@@ -140,6 +141,8 @@ export type PluginProcessHandle = {
   postMessage: (message: unknown) => void;
   onMessage: (handler: (message: any) => void) => void;
   onExit: (handler: (code: number) => void) => void;
+  /** Process exit plus exposed stdio closure. Pipe-owning adapters must provide this. */
+  closed?: Promise<void>;
   onLog?: (handler: (level: string, message: string) => void) => void;
   kill: () => void;
 };
@@ -631,7 +634,9 @@ const spawnUtilityProcess: PluginProcessSpawner = async ({ pluginId, entry }) =>
     stdio: "pipe",
     env: pluginProcessEnv(pluginId),
   });
+  const closed = utilityProcessClosed(child);
   return {
+    closed,
     postMessage: (message) => child.postMessage(message),
     onMessage: (handler) => child.on("message", handler),
     onExit: (handler) => child.on("exit", (code) => handler(code ?? 0)),
@@ -675,6 +680,7 @@ export class PluginRuntime {
   /** Plugins being reloaded by the supervisor; their backoff must survive. */
   private restarting = new Set<string>();
   private loaded = new Map<string, LoadedPlugin>();
+  private disposal: Promise<void> | null = null;
   private toasts: Array<{ message: string; level?: string }> = [];
   private services: PluginHostServices;
   /**
@@ -1033,6 +1039,8 @@ export class PluginRuntime {
     const entry = this.services.hostEntry ?? join(__dirname, "plugin-host-process.js");
     const spawn = this.services.spawnProcess ?? spawnUtilityProcess;
     const child = await spawn({ pluginId: manifest.id, entry, pluginPath });
+    // Compatibility for adapters exposing no pipes: their terminal event is onExit.
+    child.closed ??= new Promise(resolve => child.onExit(() => resolve()));
 
     const loaded: LoadedPlugin = {
       manifest,
@@ -1180,7 +1188,13 @@ export class PluginRuntime {
    * Plugins stop in parallel and the whole sequence is bounded: a wedged
    * `onUnload` must never be the reason the app appears to hang on quit.
    */
-  async disposeAll(): Promise<void> {
+  disposeAll(): Promise<void> {
+    if (this.disposal) return this.disposal;
+    this.disposal = this.disposeAllInternal();
+    return this.disposal;
+  }
+
+  private async disposeAllInternal(): Promise<void> {
     const loadedPlugins = [...this.loaded.values()];
     // Mark first, in one pass: a child that dies while a sibling is still
     // stopping must already be covered by the guard in `handleChildExit`.
@@ -1189,20 +1203,26 @@ export class PluginRuntime {
       this.cancelRestarts(loaded.manifest.id);
     }
     this.disposeWatchers();
-    await Promise.race([
-      Promise.allSettled(loadedPlugins.map((loaded) => this.disposePlugin(loaded))),
-      new Promise((resolve) => setTimeout(resolve, PLUGIN_DISPOSE_ALL_TIMEOUT_MS).unref?.()),
-    ]);
+    const failures: unknown[] = [];
+    try {
+      const hooks = Promise.allSettled(loadedPlugins.map((loaded) => this.disposePlugin(loaded)));
+      await awaitOwnedClose(hooks, "PLUGIN_HOOKS", PLUGIN_DISPOSE_ALL_TIMEOUT_MS);
+      for (const result of await hooks) if (result.status === "rejected") failures.push(result.reason);
+    } catch (error) { failures.push(error); }
     // Whatever survived the budget is killed outright; the app is going away.
     for (const loaded of loadedPlugins) {
       try {
         loaded.child?.kill();
-      } catch {
-        // Already gone.
+      } catch (error) {
+        failures.push(error);
       }
     }
+    const results = await Promise.allSettled(loadedPlugins.map(loaded => loaded.child?.closed
+      ? awaitOwnedClose(loaded.child.closed, `PLUGIN_${loaded.manifest.id}`) : Promise.resolve()));
+    for (const result of results) if (result.status === "rejected") failures.push(result.reason);
     this.loaded.clear();
     this.serviceStates.clear();
+    if (failures.length) throw new AggregateError(failures, "PLUGIN_SHUTDOWN_INCOMPLETE: " + failures.map(String).join("; "));
   }
 
   /** Stop one plugin's services and run its unload hook, for `disposeAll`. */

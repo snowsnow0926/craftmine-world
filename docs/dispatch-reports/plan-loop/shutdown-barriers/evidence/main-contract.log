@@ -1,0 +1,19 @@
+✔ sidecar detaches host listeners and gates every child write (0.5934ms)
+✔ host transport closes pending calls and listeners on process death (0.0934ms)
+✔ host transport retries transient RPC overload with a bounded backoff (0.0896ms)
+✔ host disposal closes stdin, observes exit, and force-kills only after grace (0.1714ms)
+✔ Bash defaults are finite and the tool advertises the effective timeout (0.1261ms)
+✔ turn ownership and execution queue wake only after durable turn settlement (0.3169ms)
+✔ late tool metadata cleanup is scoped to the turn that started the call (0.3122ms)
+✔ app quit waits for one idempotent teardown before allowing the follow-up quit (0.2229ms)
+✔ settings writes validate without applying read defaults (0.3489ms)
+✔ renderer notification drops silently when the render frame is disposed (0.1379ms)
+✔ sidecar crash reports carry the last stderr lines (0.1811ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 95.2277

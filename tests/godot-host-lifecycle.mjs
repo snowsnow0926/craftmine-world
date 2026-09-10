@@ -7,16 +7,17 @@ import {join, resolve, sep} from 'node:path';
 import {stripTypeScriptTypes} from 'node:module';
 import vm from 'node:vm';
 import test from 'node:test';
+import {EventEmitter} from 'node:events';
 
 const source = await readFile(new URL('../vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host.ts',import.meta.url),'utf8');
 const compiled = stripTypeScriptTypes(source,{mode:'transform'}).replace(/^import[\s\S]*?from ["'][^"']+["'];\s*/gm,'').replace(/^export /gm,'');
 const directory = await mkdtemp(join(tmpdir(),'godot-host-lifecycle-'));
 const root = join(directory,'builds'); await mkdir(root);
 const deferred=()=>{let resolve; const promise=new Promise(r=>resolve=r); return {promise,resolve};};
-function fixture() {
+function fixture(clock={setTimeout,clearTimeout}) {
   const events=[], runtimes=[];
   let fault=null, descriptor=null, startupGate=null, callback=null;
-  const context={module:{exports:{}},join,resolve,sep,realpath,setInterval,clearInterval,console,
+  const context={module:{exports:{}},join,resolve,sep,realpath,setInterval,clearInterval,...clock,console,
     WORLD_CHROME_HEIGHT:76,GODOT_WORLD_MESSAGE_CHANNEL:'message',GODOT_WORLD_DETACH_CHANNEL:'detach',
     async createWorldRuntime(options){
       events.push('start:'+options.worldId);
@@ -44,7 +45,7 @@ function fixture() {
       if(fault==='revision')receipt.revision=call.revision-1;
       return {receipt};
     }});
-  host.createView=()=>({webContents:{async loadURL(){},on(){},once(){},send(){},isDestroyed(){return false;},close(){events.push('close-view');}}});
+  host.createView=()=>{const contents=new EventEmitter();let destroyed=false;return {webContents:Object.assign(contents,{async loadURL(){},send(){},isDestroyed(){return destroyed;},close(){events.push('close-view');destroyed=true;contents.emit('destroyed');}})};};
   const request=(worldId='alpha',revision=8)=>({worldId,buildId:'build-'+worldId,revision,root,artifacts:[{path:'index.html',sha256:'a'.repeat(64),bytes:0}]});
   return {host,events,runtimes,request,metadata:context.module.exports.godotEngineOf,setFault:x=>fault=x,setDescriptor:x=>descriptor=x,setGate:x=>startupGate=x,setProgress:x=>callback=x};
 }
@@ -122,4 +123,24 @@ test('B formal build metadata is recognized without trusting document filesystem
   const metadata=f.metadata({id:'gbd-example',scene:{format:'craftmine.godot-scene/1'},godot:{target:'web'},engine:{root:'C:/private',entry:'secret.txt'}});
   assert.equal(metadata.buildId,'gbd-example');assert.equal(metadata.kind,'godot-web');assert.equal(metadata.root,undefined);assert.equal(metadata.entry,undefined);
   assert.equal(f.metadata({engine:{kind:'godot-web',buildId:'fixture',root:'C:/private'}}).root,undefined);
+});
+
+test('formal world disposal waits for destroyed even after runtime cleanup, without closing twice',async()=>{
+  const f=fixture();await f.host.ensure(f.request());
+  const contents=f.host.current.view.webContents;let closes=0,done=false;
+  contents.close=()=>{closes++;};
+  const first=f.host.close(),disposal=f.host.dispose();
+  assert.equal(first,disposal);disposal.then(()=>done=true);
+  await new Promise(resolve=>setImmediate(resolve));assert.equal(done,false);assert.equal(closes,1);
+  contents.emit('destroyed');await disposal;assert.equal(done,true);assert.equal(closes,1);
+});
+
+test('missing renderer destroyed event rejects disposal with a specific timeout and removes listener',async()=>{
+  let deadline;
+  const f=fixture({setTimeout:callback=>{deadline=callback;return 1;},clearTimeout(){}});await f.host.ensure(f.request());
+  const instance=f.host.current,contents=instance.view.webContents;contents.close=()=>{};
+  const disposal=f.host.dispose(),rejected=assert.rejects(disposal,/GODOT_RENDERER_CLOSE_TIMEOUT/);
+  deadline();await rejected;assert.equal(contents.listenerCount('destroyed'),1); // The separate diagnostics listener remains.
+  assert.ok(instance.faults.some(value=>value.includes('GODOT_RENDERER_CLOSE_TIMEOUT')));
+  assert.equal(f.host.dispose(),disposal);
 });
