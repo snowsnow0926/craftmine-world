@@ -15,7 +15,7 @@ const hash=value=>createHash('sha256').update(value).digest('hex');
 const directory=await fs.mkdtemp(path.join(os.tmpdir(),'target-feedback-observation-')),project=path.join(directory,'project');
 materializeBase({baseId:'first-person',worldId:'feedback-world',template:'training-range',out:project});
 const scenePath='scenes/training_range.tscn',files=new Map();
-for(const name of [scenePath,'scenes/actors/target_dummy.tscn','scripts/core/target_dummy.gd','scripts/core/base_world.gd','scripts/core/balance_profile.gd','data/balance/training_range.tres'])files.set(name,await fs.readFile(path.join(project,name)));
+for(const name of [scenePath,'scenes/actors/target_dummy.tscn','scripts/core/target_dummy.gd','scripts/core/base_world.gd','scripts/core/balance_profile.gd','data/balance/training_range.tres','scenes/actors/player.tscn','scripts/core/player_controller.gd'])files.set(name,await fs.readFile(path.join(project,name)));
 const profile250Explicit120Fixture=process.argv.includes('--profile-250-explicit-120-fixture');
 const desiredMilliseconds=profile250Explicit120Fixture?120:500;
 if(profile250Explicit120Fixture){

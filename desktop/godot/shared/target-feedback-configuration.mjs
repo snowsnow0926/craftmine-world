@@ -17,6 +17,10 @@ const WORLD_SCRIPT='scripts/core/base_world.gd';
 const WORLD_SCRIPT_LF_SHA256='2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1';
 const PROFILE_SCRIPT='scripts/core/balance_profile.gd';
 const PROFILE_SCRIPT_LF_SHA256='9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3';
+const PLAYER_SCENE='scenes/actors/player.tscn';
+const PLAYER_SCENE_LF_SHA256='7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17';
+const PLAYER_SCRIPT='scripts/core/player_controller.gd';
+const PLAYER_SCRIPT_LF_SHA256='a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324';
 const PROPERTY='hit_flash_seconds';
 const ID=/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
 const CONFIG={format:'craftmine.interfaces.configuration/1',contractId:'fp.target.feedback/1',
@@ -62,7 +66,7 @@ function parse(text){
   for(const attribute of ['name','parent','type','instance'])requireValue((node.header.match(new RegExp('(?:^|\\s)'+attribute+'=','g'))??[]).length<=1,'TARGET_CONFIGURATION_SCENE_UNSUPPORTED');
   requireValue(!node.duplicateProperties.length,'TARGET_CONFIGURATION_DUPLICATE_PROPERTY');
   const propertyOrder=Object.keys(node.properties),scriptIndex=propertyOrder.indexOf('script');
-  if(scriptIndex>=0)for(const property of ['target_id',PROPERTY,'balance_profile']){
+  if(scriptIndex>=0)for(const property of ['target_id',PROPERTY,'balance_profile','player_path']){
    const index=propertyOrder.indexOf(property);requireValue(index<0||index>scriptIndex,'TARGET_CONFIGURATION_PROPERTY_BEFORE_SCRIPT');
   }
   const nodePath=node.parent===null?'.':node.parent==='.'?node.name:node.parent+'/'+node.name;
@@ -113,6 +117,21 @@ function worldDefault(parsed,read){
  knownScript(parsed,root,WORLD_SCRIPT,WORLD_SCRIPT_LF_SHA256,read);
  const profile=root.properties.balance_profile;
  if(profile===undefined||profile==='null')return 120;
+ // BalanceProfile returns without applying anything if BaseWorld cannot bind
+ // a PlayerController. Only the fixed known scene path is proven here; custom
+ // paths/player implementations must use the ordinary checked authoring flow.
+ requireValue(root.properties.player_path===undefined||root.properties.player_path==='^"Player"','TARGET_CONFIGURATION_PLAYER_UNSUPPORTED');
+ const player=parsed.nodes.find(node=>node.nodePath==='Player');
+ requireValue(player&&player.parent==='.'&&!Object.hasOwn(player.properties,'script')&&!parsed.nodes.some(node=>node!==player&&(node.parent==='Player'||node.parent?.startsWith('Player/'))),'TARGET_CONFIGURATION_PLAYER_UNSUPPORTED');
+ const instance=/\binstance=(ExtResource\("[A-Za-z0-9_-]+"\))/.exec(player.header);
+ requireValue(instance,'TARGET_CONFIGURATION_PLAYER_UNSUPPORTED');
+ const playerResource=parsed.resources.get(extId(instance[1]));
+ requireValue(playerResource?.type==='PackedScene'&&playerResource.path==='res://'+PLAYER_SCENE,'TARGET_CONFIGURATION_PLAYER_UNSUPPORTED');
+ const playerText=read(PLAYER_SCENE);
+ requireValue(hash(playerText.replaceAll('\r\n','\n'))===PLAYER_SCENE_LF_SHA256,'TARGET_CONFIGURATION_PLAYER_UNSUPPORTED');
+ const playerScene=parse(playerText),playerRoot=playerScene.nodes.find(node=>node.parent===null);
+ requireValue(/\btype="CharacterBody3D"/.test(playerRoot.header),'TARGET_CONFIGURATION_PLAYER_UNSUPPORTED');
+ knownScript(playerScene,playerRoot,PLAYER_SCRIPT,PLAYER_SCRIPT_LF_SHA256,read);
  const resource=parsed.resources.get(extId(profile));
  requireValue(resource?.type==='Resource'&&resource.path.startsWith('res://')&&resource.path.endsWith('.tres'),'TARGET_CONFIGURATION_PROFILE_UNSUPPORTED');
  return profileMilliseconds(read(resource.path.slice(6)),read);
