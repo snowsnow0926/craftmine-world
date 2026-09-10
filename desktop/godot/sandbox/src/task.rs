@@ -626,7 +626,9 @@ impl Task {
             handle_list: true,
             environment: Some(minimal_environment(&self.layout.work, &system_root)),
             timeout: self.budget.timeout,
-            diagnose: false,
+            // Independent diagnostic build only: keep all production security
+            // attributes and observe this exact child from process creation.
+            diagnose: true,
         }))?;
         let Some(running) = running else {
             self.status = TaskStatus { state: TaskState::Cancelled, exit_code: None,
