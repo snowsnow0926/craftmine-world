@@ -16,6 +16,7 @@ import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {inspectParameterPackage} from '../plan-loop/parameter-client-package.mjs';
 import {loadPackageAsar} from '../../desktop/package-asar.mjs';
+import {pathToFileURL} from 'node:url';
 
 function fail(code, detail) {
   const error = Error(detail ? `${code}:${detail}` : code);
@@ -66,10 +67,32 @@ function git(root, ...args) {
   return execFileSync('git', args, {cwd: root, encoding: 'utf8', windowsHide: true}).trim();
 }
 
+// Windows path containment. A raw string prefix accepts a descendant of the
+// release, so an "evidence" directory inside it could overwrite frozen
+// artifacts, and it also rejects an unrelated sibling whose name merely starts
+// with the same text. Compare canonical relative paths instead, and fold case
+// because Windows path comparison is case-insensitive.
+function fold(value) {
+  return process.platform === 'win32' ? value.toLowerCase() : value;
+}
+
+// 'equal' and 'inside' are both unsafe for an evidence sink; 'outside' covers
+// siblings, ancestors, unrelated trees and other drives.
+export function classifyContainment(container, candidate) {
+  const relative = path.relative(fold(path.resolve(container)), fold(path.resolve(candidate)));
+  if (relative === '') return 'equal';
+  if (path.isAbsolute(relative) || relative.split(path.sep).includes('..')) return 'outside';
+  return 'inside';
+}
+
 async function main() {
   const options = parseArguments(process.argv.slice(2));
   const checks = [];
   const record = (name, passed, detail) => { checks.push({name, passed, ...(detail === undefined ? {} : {detail})}); if (!passed) fail('PREFLIGHT_CHECK_FAILED', name); };
+  // Refuse an unsafe evidence sink before any filesystem work, so a rejected
+  // run can never create a directory inside the audited release.
+  const relation = classifyContainment(options.releaseRoot, options.outputParent);
+  if (relation !== 'outside') fail('PREFLIGHT_OUTPUT_INSIDE_RELEASE', `${options.outputParent} (${relation})`);
 
   regularDirectory(options.root);
   regularDirectory(options.deps);
@@ -107,12 +130,11 @@ async function main() {
     record(`packaged ${name} is a regular file`, fs.statSync(file).isFile(), file);
   }
   record('packaged godot bases directory', fs.statSync(identity.bases).isDirectory(), identity.bases);
-  record('core/host/bases are inside the audited release', [identity.core, identity.host, identity.bases].every(value => value.startsWith(packaged)), undefined);
+  record('core/host/bases are inside the audited release', [identity.core, identity.host, identity.bases].every(value => classifyContainment(packaged, value) === 'inside'), undefined);
 
   // 5. Evidence sink for this run: independent absolute directory, never the
   // release itself and never a symlinked parent.
   regularDirectory(options.outputParent, {create: true});
-  if (packaged.startsWith(options.outputParent)) fail('PREFLIGHT_OUTPUT_INSIDE_RELEASE', options.outputParent);
   const out = fs.mkdtempSync(path.join(options.outputParent, 'p8-preflight-'));
   const report = {
     format: 'craftmine.p8-package-preflight/1',
@@ -146,8 +168,9 @@ async function main() {
   console.log('Evidence: ' + out);
   return {out, report};
 }
-
-main().then(() => {
+// Importable for tests: only self-execute when invoked as the entry script.
+const invokedDirectly = process.argv[1] ? import.meta.url === pathToFileURL(process.argv[1]).href : false;
+if (invokedDirectly) main().then(() => {
   process.exitCode = 0;
 }).catch(error => {
   console.error('PREFLIGHT FAILED ' + (error.code ? `${error.code} ${error.message}` : String(error?.stack ?? error)));
