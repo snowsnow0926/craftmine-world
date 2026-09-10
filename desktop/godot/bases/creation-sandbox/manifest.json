@@ -49,7 +49,12 @@
       "scripts/reused/player_controller.gd",
       "scripts/reused/camera_rig.gd",
       "world/creation.json",
-      "creation-scene.schema.json"
+      "creation-scene.schema.json",
+      "scripts/creation_font.gd",
+      "assets/fonts/font.json",
+      "assets/fonts/cjk-0.json",
+      "assets/fonts/cjk-1.json",
+      "assets/fonts/OFL-NotoSansSC.txt"
     ]
   },
   "templates": [

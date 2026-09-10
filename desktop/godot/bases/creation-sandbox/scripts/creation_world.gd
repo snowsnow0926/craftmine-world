@@ -1,6 +1,7 @@
 extends Node3D
 
 const Contract = preload("res://scripts/scene_contract.gd")
+const CreationFont = preload("res://scripts/creation_font.gd")
 const BASE_VERSION := "1.0.0"
 const HALF_EXTENTS := {"tree": Vector3(0.6, 2, 0.6), "rock": Vector3(0.7, 0.7, 0.7), "chest": Vector3(0.6, 0.55, 0.5), "door": Vector3(0.8, 1.3, 0.25), "marker": Vector3(0.3, 0.7, 0.3)}
 const INTERACTION_DISTANCE := 3.5
@@ -23,12 +24,17 @@ var target := {"entityId": null, "position": null, "normal": null, "surface": "n
 var marker: MeshInstance3D
 var sun: DirectionalLight3D
 var status_label: Label
+var creation_font: FontFile
 
 func _ready() -> void:
+	creation_font = CreationFont.load_font()
 	player.capture_mouse_on_click = DisplayServer.get_name() != "headless"
 	player.input_enabled = DisplayServer.get_name() != "headless"
 	_build_environment()
 	_build_hud()
+	if creation_font == null:
+		_fail("Bundled CJK font is missing or invalid")
+		return
 	var file := FileAccess.open("res://world/creation.json", FileAccess.READ)
 	if file == null or file.get_length() > 131072:
 		_fail("Creation source is missing or exceeds 128 KiB")
@@ -157,6 +163,8 @@ func _build_hud() -> void:
 	crosshair.add_theme_font_size_override("font_size", 22)
 	layer.add_child(crosshair)
 	status_label = Label.new()
+	if creation_font != null:
+		status_label.add_theme_font_override("font", creation_font)
 	status_label.position = Vector2(20, 18)
 	status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(status_label)
@@ -227,6 +235,7 @@ func _create_entity(definition: Dictionary) -> void:
 			_box(node, Vector3(0.16, 1.4, 0.16), Vector3(0, 0.7, 0), color)
 			_box(node, Vector3(0.6, 0.35, 0.6), Vector3(0, 1.2, 0), color.lightened(0.2))
 			var label := Label3D.new()
+			label.font = creation_font
 			label.text = definition.parameters.get("label", "")
 			label.position.y = 1.7
 			label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
