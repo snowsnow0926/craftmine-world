@@ -4,7 +4,7 @@
   "template": "blank",
   "worldId": "authored-creation-sandbox-blank",
   "engine": "4.7.2.stable.official.ed1daf0bf",
-  "sourceDigest": "57d3b37d33170b0e2c8866a9d6c735a8f8305848ddac7beca1f75af9027a1553",
+  "sourceDigest": "45d8edb9bb8e51fbc95760c9cf42468735e2080ce45e3844e425e0231393c650",
   "snapshot": {
     "baseId": "creation-sandbox",
     "baseVersion": "1.0.0",

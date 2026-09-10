@@ -340,7 +340,7 @@ func validate_progress(data: Variant) -> String:
 	if not Contract.fields(data.player, ["position", "yaw", "pitch", "onFloor"]) or not data.player.onFloor is bool:
 		return "Invalid saved player"
 	var p: Variant = data.player.position
-	if not p is Array or p.size() != 3 or not Contract.finite(p[0], -32, 32) or not Contract.finite(p[1], 0, 32) or not Contract.finite(p[2], -32, 32) or not Contract.finite(data.player.yaw, -PI - 0.001, PI + 0.001) or not Contract.finite(data.player.pitch, -PI * 0.5, PI * 0.5):
+	if not p is Array or p.size() != 3 or not Contract.finite(p[0], -32, 32) or not Contract.finite(p[1], 0, 32) or not Contract.finite(p[2], -32, 32) or not Contract.finite(data.player.yaw, -PI, PI) or not Contract.finite(data.player.pitch, -deg_to_rad(89), deg_to_rad(89)):
 		return "Saved player pose is outside the sandbox"
 	for key in ["inventory", "openedChests", "doors", "rules"]:
 		if not data[key] is Dictionary or data[key].size() > 4096:
